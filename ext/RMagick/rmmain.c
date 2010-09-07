@@ -1254,9 +1254,7 @@ Init_RMagick2(void)
         ENUMERATOR(IntegerInterpolatePixel)
         ENUMERATOR(MeshInterpolatePixel)
         ENUMERATOR(NearestNeighborInterpolatePixel)
-#if defined(HAVE_SPLINEINTERPOLATEPIXEL)
         ENUMERATOR(SplineInterpolatePixel)
-#endif
     END_ENUM
 
 #if defined(HAVE_TYPE_MAGICKFUNCTION)
