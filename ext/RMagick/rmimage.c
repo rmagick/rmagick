@@ -4129,7 +4129,8 @@ Image_contrast_stretch_channel(int argc, VALUE *argv, VALUE self)
  *  @param iterations apply the operation this many times (or no change).
  *                    A value of -1 means loop until no change found.
  *                    How this is applied may depend on the morphology method.
- *                    Typically this is a value of 1. 
+ *                    Typically this is a value of 1.
+ *  @param kernel morphology kernel to apply
  */
 
 VALUE
@@ -4144,7 +4145,7 @@ Image_morphology(VALUE self, VALUE method_v, VALUE iterations, VALUE kernel_v)
   Check_Type(iterations, T_FIXNUM);
 
   if (TYPE(kernel_v) == T_STRING)
-    kernel_v = rb_funcall(Class_KernelInfo, rm_ID_new, 1, kernel_v);
+    kernel_v = rb_class_new_instance(1, &kernel_v, Class_KernelInfo);
 
   if (rb_obj_is_kind_of(kernel_v, Class_KernelInfo))
     Data_Get_Struct(kernel_v, KernelInfo, kernel);
@@ -4174,6 +4175,7 @@ Image_morphology(VALUE self, VALUE method_v, VALUE iterations, VALUE kernel_v)
  *                    A value of -1 means loop until no change found.
  *                    How this is applied may depend on the morphology method.
  *                    Typically this is a value of 1. 
+ *  @param kernel morphology kernel to apply
  */
 
 VALUE
