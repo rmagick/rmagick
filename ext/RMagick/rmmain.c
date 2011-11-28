@@ -335,6 +335,8 @@ Init_RMagick2(void)
     rb_define_method(Class_Image, "contrast_stretch_channel", Image_contrast_stretch_channel, -1);
     rb_define_method(Class_Image, "convolve", Image_convolve, 2);
     rb_define_method(Class_Image, "convolve_channel", Image_convolve_channel, -1);
+    rb_define_method(Class_Image, "morphology", Image_morphology, 3);
+    rb_define_method(Class_Image, "morphology_channel", Image_morphology_channel, 3);
     rb_define_method(Class_Image, "copy", Image_copy, 0);
     rb_define_method(Class_Image, "crop", Image_crop, -1);
     rb_define_method(Class_Image, "crop!", Image_crop_bang, -1);
@@ -747,6 +749,24 @@ Init_RMagick2(void)
     DCL_ATTR_ACCESSOR(Info, undercolor)
     DCL_ATTR_ACCESSOR(Info, units)
     DCL_ATTR_ACCESSOR(Info, view)
+
+    /*-----------------------------------------------------------------------*/
+    /* Class Magick::KernelInfo                                              */
+    /*-----------------------------------------------------------------------*/
+
+    Class_KernelInfo = rb_define_class_under(Module_Magick, "KernelInfo", rb_cObject);
+
+    rb_define_alloc_func(Class_KernelInfo, KernelInfo_alloc);
+
+    rb_define_method(Class_KernelInfo, "initialize", KernelInfo_initialize, 1);
+    rb_define_method(Class_KernelInfo, "zero_nans", KernelInfo_zero_nans, 0);
+    rb_define_method(Class_KernelInfo, "unity_add", KernelInfo_unity_add, 1);
+    rb_define_method(Class_KernelInfo, "show", KernelInfo_show, 0);
+    rb_define_method(Class_KernelInfo, "scale", KernelInfo_scale, 2);
+    rb_define_method(Class_KernelInfo, "scale_geometry", KernelInfo_scale_geometry, 1);
+    rb_define_method(Class_KernelInfo, "clone", KernelInfo_clone, 0);
+
+    rb_define_singleton_method(Class_KernelInfo, "builtin", KernelInfo_builtin, 2);
 
 
     /*-----------------------------------------------------------------------*/
@@ -1550,6 +1570,79 @@ Init_RMagick2(void)
         ENUMERATOR(BoldWeight)
         ENUMERATOR(BolderWeight)
         ENUMERATOR(LighterWeight)
+    END_ENUM
+
+    // For KernelInfo scaling
+    DEF_ENUM(GeometryFlags)
+        ENUMERATOR(NormalizeValue)
+        ENUMERATOR(CorrelateNormalizeValue)
+        ENUMERATOR(PercentValue)
+    END_ENUM
+
+    // Morphology methods
+    DEF_ENUM(MorphologyMethod)
+      ENUMERATOR(UndefinedMorphology)
+      ENUMERATOR(ConvolveMorphology)
+      ENUMERATOR(CorrelateMorphology)
+      ENUMERATOR(ErodeMorphology)
+      ENUMERATOR(DilateMorphology)
+      ENUMERATOR(ErodeIntensityMorphology)
+      ENUMERATOR(DilateIntensityMorphology)
+      ENUMERATOR(DistanceMorphology)
+      ENUMERATOR(OpenMorphology)
+      ENUMERATOR(CloseMorphology)
+      ENUMERATOR(OpenIntensityMorphology)
+      ENUMERATOR(CloseIntensityMorphology)
+      ENUMERATOR(SmoothMorphology)
+      ENUMERATOR(EdgeInMorphology)
+      ENUMERATOR(EdgeOutMorphology)
+      ENUMERATOR(EdgeMorphology)
+      ENUMERATOR(TopHatMorphology)
+      ENUMERATOR(BottomHatMorphology)
+      ENUMERATOR(HitAndMissMorphology)
+      ENUMERATOR(ThinningMorphology)
+      ENUMERATOR(ThickenMorphology)
+      ENUMERATOR(VoronoiMorphology)
+    END_ENUM
+
+    DEF_ENUM(KernelInfoType)
+      ENUMERATOR(UndefinedKernel)
+      ENUMERATOR(UnityKernel)
+      ENUMERATOR(GaussianKernel)
+      ENUMERATOR(DoGKernel)
+      ENUMERATOR(LoGKernel)
+      ENUMERATOR(BlurKernel)
+      ENUMERATOR(CometKernel)
+      ENUMERATOR(LaplacianKernel)
+      ENUMERATOR(SobelKernel)
+      ENUMERATOR(FreiChenKernel)
+      ENUMERATOR(RobertsKernel)
+      ENUMERATOR(PrewittKernel)
+      ENUMERATOR(CompassKernel)
+      ENUMERATOR(KirschKernel)
+      ENUMERATOR(DiamondKernel)
+      ENUMERATOR(SquareKernel)
+      ENUMERATOR(RectangleKernel)
+      ENUMERATOR(OctagonKernel)
+      ENUMERATOR(DiskKernel)
+      ENUMERATOR(PlusKernel)
+      ENUMERATOR(CrossKernel)
+      ENUMERATOR(RingKernel)
+      ENUMERATOR(PeaksKernel)
+      ENUMERATOR(EdgesKernel)
+      ENUMERATOR(CornersKernel)
+      ENUMERATOR(DiagonalsKernel)
+      ENUMERATOR(LineEndsKernel)
+      ENUMERATOR(LineJunctionsKernel)
+      ENUMERATOR(RidgesKernel)
+      ENUMERATOR(ConvexHullKernel)
+      ENUMERATOR(ThinSEKernel)
+      ENUMERATOR(SkeletonKernel)
+      ENUMERATOR(ChebyshevKernel)
+      ENUMERATOR(ManhattanKernel)
+      ENUMERATOR(OctagonalKernel)
+      ENUMERATOR(EuclideanKernel)
+      ENUMERATOR(UserDefinedKernel)
     END_ENUM
 
     /*-----------------------------------------------------------------------*/
