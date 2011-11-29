@@ -864,6 +864,7 @@ Init_RMagick2(void)
     rb_define_method(Class_Enum, "to_i", Enum_to_i, 0);
     rb_define_method(Class_Enum, "<=>", Enum_spaceship, 1);
     rb_define_method(Class_Enum, "===", Enum_case_eq, 1);
+    rb_define_method(Class_Enum, "|", Enum_bitwise_or, 1);
 
     // AlignType constants
     DEF_ENUM(AlignType)

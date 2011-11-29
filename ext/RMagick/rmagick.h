@@ -1218,6 +1218,7 @@ extern VALUE  Enum_initialize(VALUE, VALUE, VALUE);
 extern VALUE  Enum_to_s(VALUE);
 extern VALUE  Enum_to_i(VALUE);
 extern VALUE  Enum_spaceship(VALUE, VALUE);
+extern VALUE  Enum_bitwise_or(VALUE, VALUE);
 extern VALUE  Enum_case_eq(VALUE, VALUE);
 extern VALUE  Enum_type_initialize(VALUE, VALUE, VALUE);
 extern VALUE  Enum_type_each(VALUE);

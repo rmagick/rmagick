@@ -198,6 +198,39 @@ Enum_spaceship(VALUE self, VALUE other)
     return INT2FIX(0);
 }
 
+/**
+ * Bitwise OR for enums
+ * 
+ * Ruby usage:
+ *   - @verbatim Enum1 | Enum2 @endverbatim
+ * 
+ * Notes:
+ *   - Enums must be instances of the same class.
+ *
+ * @param Enum1 this object
+ * @param Enum2 another enum
+ * @return new Enum instance
+ */
+VALUE
+Enum_bitwise_or(VALUE self, VALUE another)
+{
+  VALUE new_enum;
+  MagickEnum *this, *that, *new_enum_data;
+
+  if (CLASS_OF(another) != CLASS_OF(self))
+    rb_raise(rb_eArgError, "Expected class %s but got %s", rb_class2name(CLASS_OF(self)), rb_class2name(CLASS_OF(another)));
+
+  new_enum = Enum_alloc(CLASS_OF(self));
+
+  Data_Get_Struct(self, MagickEnum, this);
+  Data_Get_Struct(another, MagickEnum, that);
+  Data_Get_Struct(new_enum, MagickEnum, new_enum_data);
+
+  new_enum_data->id = rb_to_id(rb_sprintf("%s|%s", rb_id2name(this->id), rb_id2name(that->id)));
+  new_enum_data->val = this->val | that->val;
+
+  return new_enum;
+}
 
 /**
  * Return the name of an enum.
