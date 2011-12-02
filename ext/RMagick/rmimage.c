@@ -4136,31 +4136,12 @@ Image_contrast_stretch_channel(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_morphology(VALUE self, VALUE method_v, VALUE iterations, VALUE kernel_v)
 {
-  Image *image, *new_image;
-  ExceptionInfo exception;
-  MorphologyMethod method;
-  KernelInfo *kernel;
+  static VALUE default_channels_const = 0;
 
-  VALUE_TO_ENUM(method_v, method, MorphologyMethod);
-  Check_Type(iterations, T_FIXNUM);
+  if(!default_channels_const)
+    default_channels_const = rb_const_get(Module_Magick, rb_intern("DefaultChannels"));
 
-  if (TYPE(kernel_v) == T_STRING)
-    kernel_v = rb_class_new_instance(1, &kernel_v, Class_KernelInfo);
-
-  if (rb_obj_is_kind_of(kernel_v, Class_KernelInfo))
-    Data_Get_Struct(kernel_v, KernelInfo, kernel);
-  else
-    rb_raise(rb_eArgError, "expected String or Magick::KernelInfo");
-
-  image = rm_check_destroyed(self);
-  GetExceptionInfo(&exception);
-
-  new_image = MorphologyImage(image, method, NUM2LONG(iterations), kernel, &exception);
-  rm_check_exception(&exception, new_image, DestroyOnError);
-  DestroyExceptionInfo(&exception);
-
-  rm_ensure_result(new_image);
-  return rm_image_new(new_image);
+  return Image_morphology_channel(self, default_channels_const, method_v, iterations, kernel_v);
 }
 
 /** Apply a user supplied kernel to the image channel according to the given mophology method.
@@ -4192,17 +4173,17 @@ Image_morphology_channel(VALUE self, VALUE channel_v, VALUE method_v, VALUE iter
   Check_Type(iterations, T_FIXNUM);
 
   if (TYPE(kernel_v) == T_STRING)
-    kernel_v = rb_funcall(Class_KernelInfo, rm_ID_new, 1, kernel_v);
+    kernel_v = rb_class_new_instance(1, &kernel_v, Class_KernelInfo);
 
-  if (rb_obj_is_kind_of(kernel_v, Class_KernelInfo))
-    Data_Get_Struct(kernel_v, KernelInfo, kernel);
-  else
+  if (!rb_obj_is_kind_of(kernel_v, Class_KernelInfo))
     rb_raise(rb_eArgError, "expected String or Magick::KernelInfo");
+
+  Data_Get_Struct(kernel_v, KernelInfo, kernel);
 
   image = rm_check_destroyed(self);
   GetExceptionInfo(&exception);
 
-  new_image = MorphologyApply(image, channel, method, NUM2LONG(iterations), kernel, &exception);
+  new_image = MorphologyImageChannel(image, channel, method, NUM2LONG(iterations), kernel, &exception);
   rm_check_exception(&exception, new_image, DestroyOnError);
   DestroyExceptionInfo(&exception);
 

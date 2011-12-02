@@ -765,6 +765,7 @@ Init_RMagick2(void)
     rb_define_method(Class_KernelInfo, "scale", KernelInfo_scale, 2);
     rb_define_method(Class_KernelInfo, "scale_geometry", KernelInfo_scale_geometry, 1);
     rb_define_method(Class_KernelInfo, "clone", KernelInfo_clone, 0);
+    rb_define_method(Class_KernelInfo, "dup", KernelInfo_clone, 0);
 
     rb_define_singleton_method(Class_KernelInfo, "builtin", KernelInfo_builtin, 2);
 

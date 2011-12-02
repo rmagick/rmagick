@@ -214,13 +214,16 @@ Enum_spaceship(VALUE self, VALUE other)
 VALUE
 Enum_bitwise_or(VALUE self, VALUE another)
 {
-  VALUE new_enum;
+  VALUE new_enum, cls;
   MagickEnum *this, *that, *new_enum_data;
 
-  if (CLASS_OF(another) != CLASS_OF(self))
-    rb_raise(rb_eArgError, "Expected class %s but got %s", rb_class2name(CLASS_OF(self)), rb_class2name(CLASS_OF(another)));
+  cls = CLASS_OF(self);
+  if (CLASS_OF(another) != cls)
+  {
+    rb_raise(rb_eArgError, "Expected class %s but got %s", rb_class2name(cls), rb_class2name(CLASS_OF(another)));
+  }
 
-  new_enum = Enum_alloc(CLASS_OF(self));
+  new_enum = Enum_alloc(cls);
 
   Data_Get_Struct(self, MagickEnum, this);
   Data_Get_Struct(another, MagickEnum, that);
