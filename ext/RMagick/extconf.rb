@@ -201,7 +201,7 @@ end
 
 if RUBY_PLATFORM !~ /mswin|mingw/
 
-  unless `Magick-config --libs`[/\bl\s*(MagickCore|Magick)\b/]
+  unless `Magick-config --libs`[/\bl\s*(MagickCore|Magick)6?\b/]
     exit_failure "Can't install RMagick #{RMAGICK_VERS}. " +
            "Can't find the ImageMagick library or one of the dependent libraries. " +
            "Check the mkmf.log file for more detailed information.\n"
