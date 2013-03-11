@@ -189,7 +189,7 @@ SRC
     # binaries). This causes problems when /usr/lib is in the path (e.g., using
     # the default Ruby installation).
     def check_partial_imagemagick_versions()
-       prefix = config_string("prefix")
+       prefix = config_string("prefix") || ""
        matches = [
          prefix+"/lib/lib?agick*",
          prefix+"/include/ImageMagick",
