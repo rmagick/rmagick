@@ -1,6 +1,4 @@
-
-# Build the tar.gz, tar.bz2, and .gem files for an RMagick Release
-# Expects the CVS tag for release RMagick x.y.z to be in the form RMagick_x-y-z.
+# Build the .gem file for an RMagick Release
 # To use: cd to $HOME
 # run:    rake -f path/to/build_tarball.rake clean
 #         rake -f path/to/build_tarball.rake release=tag beta=whatever
@@ -14,17 +12,13 @@ require 'find'
 require 'fileutils'
 include FileUtils
 
-
-CVSSERVER = ":ext:rmagick@rubyforge.org/var/cvs/rmagick"
-
-
-# CVS_Tag is the CVS tag for this release. Dist_Directory is CVS_Tag,
+# GIT_Tag is the CVS tag for this release. Dist_Directory is GIT_Tag,
 # modified for use as a directory name.
 if ENV.include?("release")
-  CVS_Tag = ENV["release"]
-  Dist_Directory = CVS_Tag.tr('_-','-.')
+  GIT_Tag = ENV["release"]
+  Dist_Directory = GIT_Tag.tr('_-','-.')
 else
-  CVS_Tag = "HEAD"
+  GIT_Tag = "HEAD"
   Dist_Directory = "RMagick-0.0.0"
 end
 
@@ -40,9 +34,6 @@ Release = Dist_Directory + (ENV.include?("beta") ? "-" + ENV["beta"] : "")
 
 README = "README.html"
 MANIFEST = "ext/RMagick/MANIFEST"
-
-
-
 
 # Change the version number placeholders in a file.
 # Returns an array of lines from the file.
@@ -76,23 +67,17 @@ def reversion_file(name)
   end
 end
 
-
-
-
+desc "Update version in extconf"
 task :extconf do
   Dir.chdir(Dist_Directory) { reversion_file "ext/RMagick/extconf.rb" }
 end
 
-
-
-
+desc "Update gemspec version"
 task :gemspec do
   Dir.chdir(Dist_Directory) { reversion_file "rmagick.gemspec" }
 end
 
-
-
-
+desc "Build README.txt from README.rc using RedCloth"
 task "README.txt" do
   Dir.chdir Dist_Directory do
     reversion_file "README.rc"
@@ -102,9 +87,7 @@ task "README.txt" do
   end
 end
 
-
-
-
+desc "Build README.html from README.txt"
 task README => "README.txt" do
   puts "writing #{README}"
   Dir.chdir Dist_Directory do
@@ -128,33 +111,28 @@ END_HTML_TAIL
   end
 end
 
-
-
-
+desc "Update versions in html files"
 task :doc do
   Dir.chdir(File.join(Dist_Directory, "doc")) do
       FileList["*.html"].each { |d| reversion_file(d) }
   end
 end
 
-
-
-
 # Remove files we don't want in the tarball.
 # Ensure files are not executable. (ref: bug #10080)
+desc "Remove files we don't want in the .gem; ensure files are not executable"
 task :fix_files do
-    Dir.chdir Dist_Directory do
-        rm_rf "test", :verbose => true
-        rm "lib/rvg/to_c.rb", :verbose => true
-        rm "README.rc", :verbose => true
-        rm "README.txt", :verbose => true
-        chmod 0644, FileList["doc/*.html", "doc/ex/*.rb", "doc/ex/images/*", "examples/*.rb"]
-    end
+  Dir.chdir Dist_Directory do
+    rm_rf "test", :verbose => true
+    rm "lib/rvg/to_c.rb", :verbose => true
+    rm "README.rc", :verbose => true
+    rm "README.txt", :verbose => true
+    chmod 0644, FileList["doc/*.html", "doc/ex/*.rb", "doc/ex/images/*", "examples/*.rb"]
+  end
 end
 
 
-
-
+desc "Build manifest"
 task :manifest do
   now = Time.new
   now = now.strftime("%H:%M:%S %m/%d/%y")
@@ -171,45 +149,27 @@ task :manifest do
   end
 end
 
-
-
-
+desc "Tag release"
 task :export do
-  sh "cvs -d#{CVSSERVER}  export -r #{CVS_Tag} -d #{Dist_Directory} RMagick"
+  cvsserver = ":ext:rmagick@rubyforge.org/var/cvs/rmagick"
+  puts "!!!!!cvs -d#{cvsserver} export -r #{GIT_Tag} -d #{Dist_Directory} RMagick"
 end
 
-
-
-
+desc "Build files"
 task :collateral => [README, :gemspec, :extconf, :doc]
 
 GEM = Dist_Directory.downcase + ".gem"
 
+desc "tag and build gem"
 task :default => [:export, :collateral, :fix_files, :manifest] do
-  sh "tar czf #{Release}.tar.gz #{Dist_Directory}"
-  sh "tar cjf #{Release}.tar.bz2 #{Dist_Directory}"
-  sh "tar c #{Release} | 7z a -t7z -m0=lzma -mx=9 -mfb=64 -ms=on -si#{Release}.tar #{Release}.tar.lzma"
-
-  # Extract with
-  #   7z e RMagick-x.y.z.tar.lzma -so | tar xv
-  #sh "tar cf  #{Release}.tar #{Dist_Directory}"
-  #sh "7z a -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on #{Release}.tar.lzma #{Release}.tar"
-  #rm_rf Release+".tar", :verbose => true
-
   Dir.chdir(Dist_Directory) do
     sh "gem build rmagick.gemspec"
     mv GEM, "../", :verbose => true
   end
 end
 
-
-
-
+desc "Remove #{Dist_Directory} and #{GEM}"
 task :clean do
   rm_rf Dist_Directory, :verbose => true
-  rm_rf Release+".tar.gz", :verbose => true
-  rm_rf Release+".tar.bz2", :verbose => true
-  rm_rf Release+".tar.lzma", :verbose => true
   rm_rf GEM, :verbose => true
 end
-
