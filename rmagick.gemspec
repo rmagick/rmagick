@@ -6,9 +6,9 @@ Gem::Specification.new do |s|
   s.summary = %q{Ruby binding to ImageMagick}
   s.description = %q{RMagick is an interface between Ruby and ImageMagick.}
   s.authors = [%q{Tim Hunter}, %q{Omer Bar-or}, %q{Benjamin Thomas}, %q{Moncef Maiza}]
-  s.post_install_message = "Please report any bugs. This bugfix release may contain bugs. See https://github.com/rmagick/rmagick/compare/RMagick_2-13-2...master and https://github.com/rmagick/rmagick/issues/18"
+  s.post_install_message = "Please report any bugs. This bugfix release may contain bugs. See https://github.com/gemhome/rmagick/compare/RMagick_2-13-2...master and https://github.com/rmagick/rmagick/issues/18"
   s.email = %q{rmagick@rubyforge.org}
-  s.homepage = %q{https://github.com/rmagick/rmagick}
+  s.homepage = %q{https://github.com/gemhome/rmagick}
   s.license = 'MIT'
   s.files = Dir.glob('**/*')
   s.bindir = 'bin'
