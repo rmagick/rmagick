@@ -20,4 +20,5 @@ Gem::Specification.new do |s|
   s.has_rdoc = false
   s.required_ruby_version = '>= 1.8.5'
   s.requirements << 'ImageMagick 6.4.9 or later'
+  s.add_development_dependency 'rake-compiler'
 end

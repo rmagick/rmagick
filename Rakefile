@@ -39,10 +39,17 @@ task "release" do
   end
 end
 
+require 'rake/extensiontask'
 require 'rake/testtask'
+
+Rake::ExtensionTask.new('RMagick2') do |ext|
+  ext.ext_dir = 'ext/RMagick'
+end
 
 Rake::TestTask.new(:test) do |t|
   t.libs << 'test'
 end
+
+task :test => :compile
 
 task :default => :test
