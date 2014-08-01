@@ -38,3 +38,11 @@ task "release" do
     exit $?.exitstatus
   end
 end
+
+require 'rake/testtask'
+
+Rake::TestTask.new(:test) do |t|
+  t.libs << 'test'
+end
+
+task :default => :test
