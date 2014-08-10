@@ -260,7 +260,6 @@ class Magick_UT < Test::Unit::TestCase
       assert_nothing_raised { Magick.set_log_format("format %d%e%f") }
     end
 
-    # put old limits back in place after testing
     def test_limit_resources
         cur = new = nil
 
