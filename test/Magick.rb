@@ -265,7 +265,7 @@ class Magick_UT < Test::Unit::TestCase
         cur = new = nil
 
         assert_nothing_raised {cur = Magick::limit_resource(:memory, 500)}
-        assert_equal(782635008, cur)
+        assert_equal(3221225472, cur)
         assert_nothing_raised {new = Magick::limit_resource("memory")}
         assert_equal(500, new)
         Magick::limit_resource(:memory, cur)
@@ -292,7 +292,6 @@ class Magick_UT < Test::Unit::TestCase
         assert_raise(ArgumentError) { Magick::limit_resource("xxx") }
         assert_raise(ArgumentError) { Magick::limit_resource("map", 3500, 2) }
         assert_raise(ArgumentError) { Magick::limit_resource() }
-
     end
 
     # test the @@_tmpnam_ class variable
