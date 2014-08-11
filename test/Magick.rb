@@ -260,30 +260,33 @@ class Magick_UT < Test::Unit::TestCase
       assert_nothing_raised { Magick.set_log_format("format %d%e%f") }
     end
 
-    # put old limits back in place after testing
     def test_limit_resources
         cur = new = nil
 
         assert_nothing_raised {cur = Magick::limit_resource(:memory, 500)}
-        assert_equal(3221225472, cur)
+        assert_kind_of(Integer, cur)
+        assert(cur > 1024 ** 2)
         assert_nothing_raised {new = Magick::limit_resource("memory")}
         assert_equal(500, new)
         Magick::limit_resource(:memory, cur)
 
         assert_nothing_raised {cur = Magick::limit_resource(:map, 3500)}
-        assert_equal(2087026688, cur)
+        assert_kind_of(Integer, cur)
+        assert(cur > 1024 ** 2)
         assert_nothing_raised {new = Magick::limit_resource("map")}
         assert_equal(3500, new)
         Magick::limit_resource(:map, cur)
 
         assert_nothing_raised {cur = Magick::limit_resource(:disk, 3*1024*1024*1024)}
-        assert_equal(4294967295, cur)
+        assert_kind_of(Integer, cur)
+        assert(cur > 1024 ** 2)
         assert_nothing_raised {new = Magick::limit_resource("disk")}
         assert_equal(3221225472, new)
         Magick::limit_resource(:disk, cur)
 
         assert_nothing_raised {cur = Magick::limit_resource(:file, 500)}
-        assert_equal(768, cur)
+        assert_kind_of(Integer, cur)
+        assert(cur > 1024)
         assert_nothing_raised {new = Magick::limit_resource("file")}
         assert_equal(500, new)
         Magick::limit_resource(:file, cur)
