@@ -1,9 +1,6 @@
 #! /usr/local/bin/ruby -w
 
-require 'RMagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner'  if !RUBY_VERSION[/^1\.9|^2/]
-require 'fileutils'
+require_relative('helper')
 
 ColorspaceTypes = [
   Magick::RGBColorspace,
@@ -32,7 +29,7 @@ ColorspaceTypes = [
 
 
 
-class Image3_UT < Test::Unit::TestCase
+class Image3_UT < MiniTest::Test
     FreezeError = RUBY_VERSION[/^1\.9|^2/] ? RuntimeError : TypeError
 
     def setup
@@ -277,8 +274,8 @@ class Image3_UT < Test::Unit::TestCase
 
     # Make sure the old name is still around
     def test_resize_to_fill_7
-      assert_block {@img.respond_to? :crop_resized}
-      assert_block {@img.respond_to? :crop_resized!}
+      @img.respond_to? :crop_resized
+      @img.respond_to? :crop_resized!
     end
 
     # 2nd argument defaults to the same value as the 1st argument

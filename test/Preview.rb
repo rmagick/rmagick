@@ -1,11 +1,7 @@
-#! /usr/local/bin/ruby -w
 
-require 'RMagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner' if !RUBY_VERSION[/^1\.9|^2/]
+require_relative('helper')
 
-
-class Preview_UT < Test::Unit::TestCase
+class Preview_UT < MiniTest::Test
 
     def test_preview
         preview_types = [

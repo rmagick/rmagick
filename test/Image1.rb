@@ -1,11 +1,8 @@
 #! /usr/local/bin/ruby -w
 
-require 'RMagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner' if !RUBY_VERSION[/^1\.9|^2/]
+require_relative('helper')
 
-
-class Image1_UT < Test::Unit::TestCase
+class Image1_UT < MiniTest::Test
     FreezeError = RUBY_VERSION[/^1\.9|^2/] ? RuntimeError : TypeError
 
     def setup
@@ -63,11 +60,11 @@ class Image1_UT < Test::Unit::TestCase
             # can't compare it directly to the original image.
             assert_equal(@img.columns, res.columns)
             assert_equal(@img.rows, res.rows)
-            assert_block { pixels.all? { |v| 0 <= v && v <= Magick::QuantumRange } }
+            assert pixels.all? { |v| 0 <= v && v <= Magick::QuantumRange }
         end
 
         pixels = @img.dispatch(0, 0, @img.columns, @img.rows, 'RGBA', true)
-        assert_block { pixels.all? { |v| 0.0 <= v && v <= 1.0 } }
+        assert pixels.all? { |v| 0.0 <= v && v <= 1.0 }
 
         # dispatch wants exactly 5 or exactly 6 arguments
         assert_raise(ArgumentError) { @img.dispatch }
@@ -387,9 +384,9 @@ class Image1_UT < Test::Unit::TestCase
     end
 
     def test_changed?
-#        assert_block { !@img.changed? }
+#        !@img.changed?
 #        @img.pixel_color(0,0,'red')
-#        assert_block { @img.changed? }
+#        @img.changed?
     end
 
     def test_channel

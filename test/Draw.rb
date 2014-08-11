@@ -1,9 +1,6 @@
-
 #! /usr/local/bin/ruby -w
 
-require 'RMagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner'  if !RUBY_VERSION[/^1\.9|^2/]
+require_relative('helper')
 
 class Magick::Draw
   def self._dummy_img_
@@ -11,7 +8,7 @@ class Magick::Draw
   end
 end
 
-class Draw_UT < Test::Unit::TestCase
+class Draw_UT < MiniTest::Test
 
     def setup
         @draw = Magick::Draw.new

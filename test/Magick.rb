@@ -1,10 +1,5 @@
 
-#! /usr/local/bin/ruby -w
-
-require 'RMagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner' if !RUBY_VERSION[/^1\.9|^2/]
-
+require_relative('helper')
 
 module Magick
   def self._tmpnam_
@@ -31,7 +26,7 @@ class Magick::AnchorType
 end
 
 
-class Magick_UT < Test::Unit::TestCase
+class Magick_UT < MiniTest::Test
 
     def test_colors
       res = nil
