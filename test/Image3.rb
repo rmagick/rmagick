@@ -10,7 +10,7 @@ ColorspaceTypes = [
   Magick::GRAYColorspace,
   Magick::TransparentColorspace,
   Magick::OHTAColorspace,
-  Magick::LABColorspace,
+  Magick::LabColorspace,
   Magick::XYZColorspace,
   Magick::YCbCrColorspace,
   Magick::YCCColorspace,
@@ -22,7 +22,6 @@ ColorspaceTypes = [
   Magick::HSLColorspace,
   Magick::HWBColorspace,
   Magick::HSBColorspace,
-  Magick::LABColorspace,
   Magick::Rec601LumaColorspace,
   Magick::Rec601YCbCrColorspace,
   Magick::Rec709LumaColorspace,
@@ -406,7 +405,7 @@ class Image3_UT < Test::Unit::TestCase
 
         # Don't test colorspaces that require PsuedoColor images
         (ColorspaceTypes - [Magick::OHTAColorspace,
-                            Magick::LABColorspace,
+                            Magick::LabColorspace,
                             Magick::XYZColorspace,
                             Magick::YCbCrColorspace,
                             Magick::YCCColorspace,
