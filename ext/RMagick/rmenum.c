@@ -408,8 +408,8 @@ ColorspaceType_new(ColorspaceType cs)
         case HSBColorspace:
             name = "HSBColorspace";
             break;
-        case LABColorspace:
-            name = "LABColorspace";
+        case LabColorspace:
+            name = "LabColorspace";
             break;
         case Rec601YCbCrColorspace:
             name = "Rec601YCbCrColorspace";

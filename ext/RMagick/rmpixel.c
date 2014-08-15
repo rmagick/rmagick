@@ -960,7 +960,7 @@ Pixel_to_HSL(VALUE self)
  * Notes:
  *   - Default compliance is AllCompliance
  *   - Default matte is false
- *   - Default depth is QuantumDepth
+ *   - Default depth is MAGICKCORE_QUANTUM_DEPTH
  *   - Default hex is false
  *   - The conversion respects the value of the 'opacity' field in the Pixel
  *
@@ -981,7 +981,7 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
     ExceptionInfo exception;
     ComplianceType compliance = AllCompliance;
     unsigned int matte = MagickFalse;
-    unsigned int depth = QuantumDepth;
+    unsigned int depth = MAGICKCORE_QUANTUM_DEPTH;
 
     switch (argc)
     {
@@ -994,10 +994,10 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
             switch (depth)
             {
                 case 8:
-#if QuantumDepth == 16 || QuantumDepth == 32
+#if MAGICKCORE_QUANTUM_DEPTH == 16 || MAGICKCORE_QUANTUM_DEPTH == 32
                 case 16:
 #endif
-#if QuantumDepth == 32
+#if MAGICKCORE_QUANTUM_DEPTH == 32
                 case 32:
 #endif
                     break;

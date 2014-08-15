@@ -216,10 +216,12 @@ have_func("snprintf", headers)
    "AutoGammaImageChannel",          # 6.5.5-1
    "AutoLevelImageChannel",          # 6.5.5-1
    "BlueShiftImage",                 # 6.5.4-3
+   "ColorMatrixImage",               # 6.6.1-0
    "ConstituteComponentTerminus",    # 6.5.7-9
    "DeskewImage",                    # 6.4.2-5
    "EncipherImage",                  # 6.3.8-6
    "EqualizeImageChannel",           # 6.3.6-9
+   "EvaluateImages",                 # 6.8.6-4
    "FloodfillPaintImage",            # 6.3.7
    "FunctionImageChannel",           # 6.4.8-8
    "GetAuthenticIndexQueue",         # 6.4.5-6
@@ -234,12 +236,14 @@ have_func("snprintf", headers)
    "OpaquePaintImageChannel",        # 6.3.7-10
    "QueueAuthenticPixels",           # 6.4.5-6
    "RemapImage",                     # 6.4.4-0
+   "RemapImages",                    # 6.4.4-0
    "RemoveImageArtifact",            # 6.3.6
    "SelectiveBlurImageChannel",      # 6.5.0-3
    "SetImageAlphaChannel",           # 6.3.6-9
    "SetImageArtifact",               # 6.3.6
    "SetMagickMemoryMethods",         # 6.4.1
    "SparseColorImage",               # 6.3.6-?
+   "StatisticImage",                 # 6.6.8-6
    "SyncAuthenticPixels",            # 6.4.5-6
    "TransformImageColorspace",       # 6.5.1
    "TransparentPaintImage",          # 6.3.7-10

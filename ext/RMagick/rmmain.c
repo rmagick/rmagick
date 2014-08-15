@@ -818,9 +818,8 @@ Init_RMagick2(void)
 
 
     // Miscellaneous fixed-point constants
-    DEF_CONST(MaxRGB);
     DEF_CONST(QuantumRange);
-    DEF_CONST(QuantumDepth);
+    DEF_CONST(MAGICKCORE_QUANTUM_DEPTH);
     DEF_CONST(OpaqueOpacity);
     DEF_CONST(TransparentOpacity);
 
@@ -946,7 +945,7 @@ Init_RMagick2(void)
         ENUMERATOR(HSLColorspace)
         ENUMERATOR(HWBColorspace)
         ENUMERATOR(HSBColorspace)
-        ENUMERATOR(LABColorspace)
+        ENUMERATOR(LabColorspace)
         ENUMERATOR(Rec601LumaColorspace)
         ENUMERATOR(Rec601YCbCrColorspace)
         ENUMERATOR(Rec709LumaColorspace)

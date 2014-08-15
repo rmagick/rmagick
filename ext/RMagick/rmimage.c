@@ -8134,11 +8134,12 @@ Image_map(int argc, VALUE *argv, VALUE self)
     volatile VALUE map_obj, map_arg;
     unsigned int dither = MagickFalse;
 
-    image = rm_check_destroyed(self);
-
 #if defined(HAVE_REMAPIMAGE)
+    QuantizeInfo quantize_info;
     rb_warning("Image#map is deprecated. Use Image#remap instead");
 #endif
+
+    image = rm_check_destroyed(self);
 
     switch (argc)
     {
@@ -8156,7 +8157,13 @@ Image_map(int argc, VALUE *argv, VALUE self)
 
     map_obj = rm_cur_image(map_arg);
     map = rm_check_destroyed(map_obj);
+#if defined(HAVE_REMAPIMAGE)
+    GetQuantizeInfo(&quantize_info);
+    quantize_info.dither=dither;
+    (void) RemapImage(&quantize_info, new_image, map);
+#else
     (void) MapImage(new_image, map, dither);
+#endif
     rm_check_image_exception(new_image, DestroyOnError);
 
     return rm_image_new(new_image);
@@ -8651,8 +8658,11 @@ Image_median_filter(int argc, VALUE *argv, VALUE self)
     }
 
     GetExceptionInfo(&exception);
-
+#if defined(HAVE_STATISTICIMAGE)
+    new_image = StatisticImage(image, MedianStatistic, (size_t)radius, (size_t)radius, &exception);
+#else
     new_image = MedianFilterImage(image, radius, &exception);
+#endif
     rm_check_exception(&exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(&exception);
@@ -10687,6 +10697,10 @@ Image_recolor(VALUE self, VALUE color_matrix)
     double *matrix;
     ExceptionInfo exception;
 
+#if defined(HAVE_COLORMATRIXIMAGE)
+    KernelInfo *kernel_info;
+#endif
+
     image = rm_check_destroyed(self);
     GetExceptionInfo(&exception);
 
@@ -10702,7 +10716,19 @@ Image_recolor(VALUE self, VALUE color_matrix)
     order = (unsigned long)sqrt((double)(len + 1.0));
 
     // RecolorImage sets the ExceptionInfo and returns a NULL image if an error occurs.
+#if defined(HAVE_COLORMATRIXIMAGE)
+    kernel_info = AcquireKernelInfo("1");
+    if (kernel_info == (KernelInfo *) NULL)
+      return((Image *) NULL);
+    kernel_info->width = order;
+    kernel_info->height = order;
+    kernel_info->values = (double *) matrix;
+    new_image = ColorMatrixImage(image, kernel_info, &exception);
+    kernel_info->values = (double *) NULL;
+    kernel_info = DestroyKernelInfo(kernel_info);
+#else
     new_image = RecolorImage(image, order, matrix, &exception);
+#endif
     xfree((void *)matrix);
 
     rm_check_exception(&exception, new_image, DestroyOnError);
@@ -10831,7 +10857,11 @@ Image_reduce_noise(VALUE self, VALUE radius)
     image = rm_check_destroyed(self);
 
     GetExceptionInfo(&exception);
+#if defined(HAVE_STATISTICIMAGE)
+    new_image = StatisticImage(image, NonpeakStatistic, (size_t)radius, (size_t)radius, &exception);
+#else
     new_image = ReduceNoiseImage(image, NUM2DBL(radius), &exception);
+#endif
     rm_check_exception(&exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(&exception);
