@@ -1,9 +1,7 @@
-require 'RMagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner' if !RUBY_VERSION[/^1\.9|^2/]
 
+require_relative('helper')
 
-class Import_Export_UT < Test::Unit::TestCase
+class Import_Export_UT < MiniTest::Test
 
   def setup
     @test = Magick::Image.read(File.join(IMAGES_DIR, 'Flower_Hat.jpg')).first

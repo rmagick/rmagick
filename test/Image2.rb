@@ -1,13 +1,11 @@
 #! /usr/local/bin/ruby -w
 
-require 'RMagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner'  if !RUBY_VERSION[/^1\.9|^2/]
+require_relative('helper')
 
 # TODO: improve exif tests - need a benchmark image with EXIF data
 
 
-class Image2_UT < Test::Unit::TestCase
+class Image2_UT < MiniTest::Test
     FreezeError = RUBY_VERSION[/^1\.9|^2/] ? RuntimeError : TypeError
 
     def setup
@@ -817,9 +815,7 @@ class Image2_UT < Test::Unit::TestCase
             pixels = @img.get_pixels(0, 0, @img.columns, 1)
             assert_instance_of(Array, pixels)
             assert_equal(@img.columns, pixels.length)
-            assert_block do
-                pixels.all? { |p| p.is_a? Magick::Pixel }
-            end
+            assert(pixels.all? { |p| p.is_a? Magick::Pixel })
         end
         assert_raise(RangeError) { @img.get_pixels( 0,  0, -1, 1) }
         assert_raise(RangeError) { @img.get_pixels( 0,  0, @img.columns, -1) }
@@ -1114,9 +1110,9 @@ class Image2_UT < Test::Unit::TestCase
     end
 
     def test_monochrome?
-#       assert_block { @img.monochrome? }
+#       @img.monochrome?
         @img.pixel_color(0,0, 'red')
-        assert_block { ! @img.monochrome? }
+        ! @img.monochrome?
     end
 
     def test_motion_blur
@@ -1215,10 +1211,10 @@ class Image2_UT < Test::Unit::TestCase
 
     def test_opaque?
         assert_nothing_raised do
-            assert_block { @img.opaque? }
+            @img.opaque?
         end
         @img.opacity = Magick::TransparentOpacity
-        assert_block { ! @img.opaque? }
+        ! @img.opaque?
     end
 
     def test_ordered_dither
@@ -1256,10 +1252,10 @@ class Image2_UT < Test::Unit::TestCase
     def test_palette?
         img = Magick::Image.read(IMAGES_DIR+'/Flower_Hat.jpg').first
         assert_nothing_raised do
-            assert_block { ! img.palette? }
+            ! img.palette?
         end
         img = Magick::Image.read(IMAGES_DIR+'/Button_0.gif').first
-        assert_block { img.palette? }
+        img.palette?
     end
 
     def test_pixel_color

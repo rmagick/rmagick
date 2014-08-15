@@ -1,9 +1,6 @@
 #! /usr/local/bin/ruby -w
 
-require 'fileutils'
-require 'RMagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner'  if !RUBY_VERSION[/^1\.9|^2/]
+require_relative('helper')
 
 # TODO
 #   test frozen attributes!
@@ -11,7 +8,7 @@ require 'test/unit/ui/console/testrunner'  if !RUBY_VERSION[/^1\.9|^2/]
 #   improve test_montage
 
 
-class Image_Attributes_UT < Test::Unit::TestCase
+class Image_Attributes_UT < MiniTest::Test
     FreezeError = RUBY_VERSION[/^1\.9|^2/] ? RuntimeError : TypeError
 
     def setup

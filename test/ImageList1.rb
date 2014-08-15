@@ -1,10 +1,8 @@
 #! /usr/local/bin/ruby -w
 
-require 'RMagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner' if !RUBY_VERSION[/^1\.9|^2/]
+require_relative('helper')
 
-class ImageList1_UT < Test::Unit::TestCase
+class ImageList1_UT < MiniTest::Test
 
     def setup
         @list = Magick::ImageList.new(*FILES[0..9])
@@ -796,7 +794,7 @@ class ImageList1_UT < Test::Unit::TestCase
         list2 = Magick::ImageList.new
         assert_raise(TypeError) { list2 <=> @list }
         assert_raise(TypeError) { @list <=> list2 }
-        assert_nothing_raised(TypeError) { list <=> list2 }
+        assert_nothing_raised { list <=> list2 }
     end
 
 end

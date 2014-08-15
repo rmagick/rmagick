@@ -1,12 +1,7 @@
 
-#! /usr/local/bin/ruby -w
+require_relative('helper')
 
-require 'RMagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner' if !RUBY_VERSION[/^1\.9|^2/]
-
-
-class Info_UT < Test::Unit::TestCase
+class Info_UT < MiniTest::Test
 
     def setup
         @info = Magick::Image::Info.new

@@ -1,13 +1,9 @@
 
 #! /usr/local/bin/ruby -w
 
-require 'fileutils'
-require 'RMagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner' if !RUBY_VERSION[/^1\.9|^2/]
+require_relative('helper')
 
-
-class ImageList2_UT < Test::Unit::TestCase
+class ImageList2_UT < MiniTest::Test
 
     def setup
         @ilist = Magick::ImageList.new
@@ -93,10 +89,9 @@ class ImageList2_UT < Test::Unit::TestCase
 
     def flatten_images
         @ilist.read(IMAGES_DIR+'/Button_0.gif', IMAGES_DIR+'/Button_1.gif')
-        assert_nothing_thrown do
-            img = @ilist.flatten_images
-            assert_instance_of(Magick::Image, img)
-        end
+        
+        img = @ilist.flatten_images
+        assert_instance_of(Magick::Image, img)
     end
 
     def test_from_blob
@@ -151,31 +146,30 @@ class ImageList2_UT < Test::Unit::TestCase
         @ilist.read(*Dir[IMAGES_DIR+'/Button_*.gif'])
         ilist = @ilist.copy
         montage = nil
-        assert_nothing_thrown do
-            montage = ilist.montage do
-                self.background_color = 'black'
-                self.background_color = Magick::Pixel.new(Magick::QuantumRange, 0, 0)
-                self.border_color = 'red'
-                self.border_color = Magick::Pixel.new(0, 0, 0)
-                self.border_width = 2
-                self.compose = Magick::OverCompositeOp;
-                self.fill = 'green'
-                self.font = 'Arial'
-                self.frame = '20x20+4+4'
-                self.frame = Magick::Geometry.new(20, 20, 4, 4)
-                self.geometry = '63x60+5+5'
-                self.geometry = Magick::Geometry.new(63, 60, 5, 5)
-                self.gravity = Magick::SouthGravity
-                self.matte_color = '#bdbdbd'
-                self.pointsize = 12
-                self.shadow = true
-                self.stroke = 'transparent'
-                self.tile = '4x9'
-                self.tile = Magick::Geometry.new(4, 9)
-            end
-            assert_instance_of(Magick::ImageList, montage)
-            assert_equal(@ilist, ilist)
+
+        montage = ilist.montage do
+            self.background_color = 'black'
+            self.background_color = Magick::Pixel.new(Magick::QuantumRange, 0, 0)
+            self.border_color = 'red'
+            self.border_color = Magick::Pixel.new(0, 0, 0)
+            self.border_width = 2
+            self.compose = Magick::OverCompositeOp;
+            self.fill = 'green'
+            self.font = 'Arial'
+            self.frame = '20x20+4+4'
+            self.frame = Magick::Geometry.new(20, 20, 4, 4)
+            self.geometry = '63x60+5+5'
+            self.geometry = Magick::Geometry.new(63, 60, 5, 5)
+            self.gravity = Magick::SouthGravity
+            self.matte_color = '#bdbdbd'
+            self.pointsize = 12
+            self.shadow = true
+            self.stroke = 'transparent'
+            self.tile = '4x9'
+            self.tile = Magick::Geometry.new(4, 9)
         end
+        assert_instance_of(Magick::ImageList, montage)
+        assert_equal(@ilist, ilist)
 
         # test illegal option arguments
         # looks like IM doesn't diagnose invalid geometry args
@@ -238,10 +232,9 @@ class ImageList2_UT < Test::Unit::TestCase
 
     def test_mosaic
         @ilist.read(IMAGES_DIR+'/Button_0.gif', IMAGES_DIR+'/Button_1.gif')
-        assert_nothing_thrown do
-            res = @ilist.mosaic
-            assert_instance_of(Magick::Image, res)
-        end
+        
+        res = @ilist.mosaic
+        assert_instance_of(Magick::Image, res)
     end
 
     def test_new_image

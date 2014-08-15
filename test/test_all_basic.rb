@@ -1,7 +1,5 @@
-#! /usr/local/bin/ruby -w
-require 'RMagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner'  if !RUBY_VERSION[/^1\.9|^2/]
+
+require_relative('helper')
 
 puts RUBY_VERSION
 puts RUBY_VERSION.class
