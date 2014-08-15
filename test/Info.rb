@@ -58,7 +58,7 @@ class Info_UT < Test::Unit::TestCase
 
     def test_background_color
       assert_nothing_raised { @info.background_color = "red" }
-      red = Magick::Pixel.new(Magick::MaxRGB)
+      red = Magick::Pixel.new(Magick::QuantumRange)
       assert_nothing_raised { @info.background_color = red }
       assert_equal("red", @info.background_color)
       img = Magick::Image.new(20,20) { self.background_color = "red" }
@@ -67,7 +67,7 @@ class Info_UT < Test::Unit::TestCase
 
     def test_border_color
       assert_nothing_raised { @info.border_color = "red" }
-      red = Magick::Pixel.new(Magick::MaxRGB)
+      red = Magick::Pixel.new(Magick::QuantumRange)
       assert_nothing_raised { @info.border_color = red }
       assert_equal("red", @info.border_color)
       img = Magick::Image.new(20,20) { self.border_color = "red" }
@@ -185,7 +185,7 @@ class Info_UT < Test::Unit::TestCase
       assert_nothing_raised { @info.fuzz = 50 }
       assert_equal(50, @info.fuzz)
       assert_nothing_raised { @info.fuzz = "50%" }
-      assert_equal(Magick::MaxRGB * 0.5, @info.fuzz)
+      assert_equal(Magick::QuantumRange * 0.5, @info.fuzz)
     end
 
     def test_gravity
@@ -216,7 +216,7 @@ class Info_UT < Test::Unit::TestCase
 
     def test_matte_color
       assert_nothing_raised { @info.matte_color = "red" }
-      red = Magick::Pixel.new(Magick::MaxRGB)
+      red = Magick::Pixel.new(Magick::QuantumRange)
       assert_nothing_raised { @info.matte_color = red }
       assert_equal("red", @info.matte_color)
       img = Magick::Image.new(20,20) { self.matte_color = "red" }
