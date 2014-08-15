@@ -502,7 +502,7 @@ Pixel_from_hsla(int argc, VALUE *argv, VALUE class)
         case 3:
             // saturation and lightness are out of 255 in new ImageMagicks and
             // out of 100 in old ImageMagicks. Compromise: always use %.
-            l = rm_percentage(argv[2],255.0); 
+            l = rm_percentage(argv[2],255.0);
             s = rm_percentage(argv[1],255.0);
             h = rm_percentage(argv[0],360.0);
             break;
@@ -666,10 +666,8 @@ Pixel_hash(VALUE self)
     hash += ScaleQuantumToChar(pixel->green) << 16;
     hash += ScaleQuantumToChar(pixel->blue)  << 8;
     hash += ScaleQuantumToChar(pixel->opacity);
-    hash >>= 1;
 
-    return INT2FIX(hash);
-
+    return UINT2NUM(hash >> 1);
 }
 
 
@@ -877,7 +875,7 @@ Pixel_spaceship(VALUE self, VALUE other)
 /**
  * Return [hue, saturation, lightness, alpha] in the same ranges as
  * Pixel_from_hsla.
- * 
+ *
  *
  * Ruby usage:
  *   - @verbatim Pixel#to_hsla @endverbatim
