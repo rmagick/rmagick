@@ -287,7 +287,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
     end
 
     def test_depth
-        assert_equal(Magick::QuantumDepth, @img.depth)
+        assert_equal(Magick::MAGICKCORE_QUANTUM_DEPTH, @img.depth)
         assert_raise(NoMethodError) { @img.depth = 2 }
     end
 
@@ -539,7 +539,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
 
     def test_quantum_depth
         assert_nothing_raised { @img.quantum_depth }
-        assert_equal(Magick::QuantumDepth, @img.quantum_depth)
+        assert_equal(Magick::MAGICKCORE_QUANTUM_DEPTH, @img.quantum_depth)
         assert_raise(NoMethodError) { @img.quantum_depth = 8 }
     end
 
