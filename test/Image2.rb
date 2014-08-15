@@ -582,7 +582,7 @@ class Image2_UT < Test::Unit::TestCase
         end
         assert_nothing_raised do
             res = @img.export_pixels_to_str(0, 0, 10, 10, "I", Magick::LongPixel)
-            assert_equal(10*10*8, res.length)
+            assert_equal(10*10*[1].pack("L!").length, res.length)
         end
         assert_nothing_raised do
             res = @img.export_pixels_to_str(0, 0, 10, 10, "I", Magick::FloatPixel)
