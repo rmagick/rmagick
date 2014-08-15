@@ -168,6 +168,8 @@ class Image3_UT < Test::Unit::TestCase
     end
 
     def test_resample
+        @img.x_resolution = 72
+        @img.y_resolution = 72
         assert_nothing_raised { @img.resample }
         assert_nothing_raised { @img.resample(100) }
         assert_nothing_raised { @img.resample(100, 100) }
