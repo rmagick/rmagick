@@ -1,5 +1,36 @@
 language: ruby
+env:
+  # Currently successful release
+  - IMAGEMAGICK_VERSION=6.6.9-10
+  # Ubuntu's current stable release
+  - IMAGEMAGICK_VERSION=6.7.7-10
+  # Latest 6.7 release
+  - IMAGEMAGICK_VERSION=6.7.9-10
+  # Latest 6.8 release
+  - IMAGEMAGICK_VERSION=6.8.9-6
+  # Try with HDRI support, we don't mind if this fails currently.
+  - IMAGEMAGICK_VERSION=6.8.9-6 CONFIGURE_OPTIONS=--enable-hdri
+before_install:
+  - dpkg --list imagemagick
+  - sudo apt-get remove imagemagick
+  - sudo apt-get install build-essential libx11-dev libxext-dev zlib1g-dev libpng12-dev libjpeg-dev libfreetype6-dev libxml2-dev
+  - sudo apt-get build-dep imagemagick
+  # ImageMagick stores it's releases in two directories which is a pain, since head is in the top level directory, others are in the legacy subdirectory.
+  - (wget http://www.imagemagick.org/download/ImageMagick-${IMAGEMAGICK_VERSION}.tar.gz) || (wget http://www.imagemagick.org/download/legacy/ImageMagick-${IMAGEMAGICK_VERSION}.tar.gz)
+  - tar -xzvf ImageMagick-${IMAGEMAGICK_VERSION}.tar.gz
+  - cd ImageMagick-${IMAGEMAGICK_VERSION}
+  - ./configure --prefix=/usr $CONFIGURE_OPTIONS
+  - sudo make install
+  - cd ..
+  - sudo ldconfig
 rvm:
   - 1.9
   - 2.0
   - 2.1
+matrix:
+  allow_failures:
+    - env: IMAGEMAGICK_VERSION=6.7.7-10
+    - env: IMAGEMAGICK_VERSION=6.7.9-10
+    - env: IMAGEMAGICK_VERSION=6.8.9-6
+    - env: IMAGEMAGICK_VERSION=6.8.9-6 CONFIGURE_OPTIONS=--enable-hdri
+    - env: IMAGEMAGICK_VERSION=6.8.9-6 CONFIGURE_OPTIONS=--enable-hdri
