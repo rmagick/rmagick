@@ -10,7 +10,7 @@ env:
   - IMAGEMAGICK_VERSION=6.8.9-6
   # Try with HDRI support, we don't mind if this fails currently.
   - IMAGEMAGICK_VERSION=6.8.9-6 CONFIGURE_OPTIONS=--enable-hdri
-install:
+before_install:
   - dpkg --list imagemagick
   - sudo apt-get remove imagemagick
   - sudo apt-get install build-essential libx11-dev libxext-dev zlib1g-dev libpng12-dev libjpeg-dev libfreetype6-dev libxml2-dev
@@ -23,7 +23,6 @@ install:
   - sudo make install
   - cd ..
   - sudo ldconfig
-  - bundle install
 rvm:
   - 1.9
   - 2.0
