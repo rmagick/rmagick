@@ -31,6 +31,6 @@ img.mask q
 
 # Use the #level method to darken the image under the black part of the mask.
 
-img = img.level(0, Magick::MaxRGB, 0.50)
+img = img.level(0, Magick::QuantumRange, 0.50)
 img.write('mask.jpg')
 

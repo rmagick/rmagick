@@ -960,11 +960,11 @@ Info_depth_eq(VALUE self, VALUE depth)
     switch (d)
     {
         case 8:                     // always okay
-#if QuantumDepth == 16 || QuantumDepth == 32 || QuantumDepth == 64
+#if MAGICKCORE_QUANTUM_DEPTH == 16 || MAGICKCORE_QUANTUM_DEPTH == 32 || MAGICKCORE_QUANTUM_DEPTH == 64
         case 16:
-#if QuantumDepth == 32 || QuantumDepth == 64
+#if MAGICKCORE_QUANTUM_DEPTH == 32 || MAGICKCORE_QUANTUM_DEPTH == 64
         case 32:
-#if QuantumDepth == 64
+#if MAGICKCORE_QUANTUM_DEPTH == 64
         case 64:
 #endif
 #endif

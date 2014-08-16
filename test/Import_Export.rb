@@ -42,7 +42,7 @@ class Import_Export_UT < Test::Unit::TestCase
   def test_import_export
     pixels = @test.export_pixels(0, 0, @test.columns, @test.rows, "RGB")
 
-    case Magick::QuantumDepth
+    case Magick::MAGICKCORE_QUANTUM_DEPTH
       when 8
         p = pixels.pack("C*")
         import(p, Magick::CharPixel)

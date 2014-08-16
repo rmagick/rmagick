@@ -32,7 +32,7 @@ module Magick
                 puts "\t\tGray: #{channel_depth(Magick::GrayChannel)}-bits\n"
                 puts "\t\tOpacity: #{channel_depth(Magick::OpacityChannel)}-bits\n" if matte
             end
-            scale = Magick::QuantumRange / (Magick::QuantumRange >> (Magick::QuantumDepth-channel_depth))
+            scale = Magick::QuantumRange / (Magick::QuantumRange >> (Magick::MAGICKCORE_QUANTUM_DEPTH-channel_depth))
             puts "\tChannel statistics:\n"
             case color_space
             when Magick::RGBColorspace
