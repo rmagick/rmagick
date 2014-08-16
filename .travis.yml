@@ -11,6 +11,7 @@ install:
   - ./configure --with-prefix=/usr
   - sudo make install
   - cd ..
+  - bundle install
 rvm:
   - 1.9
   - 2.0
