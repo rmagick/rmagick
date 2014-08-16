@@ -1,7 +1,7 @@
 language: ruby
 env:
   # Currently successful release
-  - IMAGEMAGICK_VERSION=6.6.9-7
+  - IMAGEMAGICK_VERSION=6.6.9-10
   # Ubuntu's current stable release
   - IMAGEMAGICK_VERSION=6.7.7-10
   # Latest 6.7 release
