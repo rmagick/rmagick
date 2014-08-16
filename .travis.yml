@@ -1,4 +1,13 @@
 language: ruby
+env:
+  - IMAGEMAGICK_VERSION=6.8.9-6
+install:
+  - sudo dpkg --purge ImageMagick
+  - wget http://www.imagemagick.org/download/ImageMagick-${IMAGEMAGICK_VERSION}.tar.gz
+  - tar -xzvf ImageMagick-${IMAGEMAGICK_VERSION}.tar.gz
+  - cd ImageMagick-${IMAGEMAGICK_VERSION}
+  - ./configure
+  - sudo make checkinstall
 rvm:
   - 1.9
   - 2.0
