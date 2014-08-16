@@ -10,6 +10,7 @@ install:
   - cd ImageMagick-${IMAGEMAGICK_VERSION}
   - ./configure --with-prefix=/usr
   - sudo make install
+  - cd ..
 rvm:
   - 1.9
   - 2.0
