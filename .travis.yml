@@ -8,9 +8,10 @@ install:
   - wget http://www.imagemagick.org/download/ImageMagick-${IMAGEMAGICK_VERSION}.tar.gz
   - tar -xzvf ImageMagick-${IMAGEMAGICK_VERSION}.tar.gz
   - cd ImageMagick-${IMAGEMAGICK_VERSION}
-  - ./configure --with-prefix=/usr
+  - ./configure --prefix=/usr
   - sudo make install
   - cd ..
+  - sudo ldconfig
   - bundle install
 rvm:
   - 1.9
