@@ -15,8 +15,7 @@ before_install:
   - sudo apt-get remove imagemagick
   - sudo apt-get install build-essential libx11-dev libxext-dev zlib1g-dev libpng12-dev libjpeg-dev libfreetype6-dev libxml2-dev
   - sudo apt-get build-dep imagemagick
-  # ImageMagick stores it's releases in two directories which is a pain, since head is in the top level directory, others are in the legacy subdirectory.
-  - (wget http://www.imagemagick.org/download/ImageMagick-${IMAGEMAGICK_VERSION}.tar.gz) || (wget http://www.imagemagick.org/download/legacy/ImageMagick-${IMAGEMAGICK_VERSION}.tar.gz)
+  - wget http://www.imagemagick.org/download/releases/ImageMagick-${IMAGEMAGICK_VERSION}.tar.gz
   - tar -xzvf ImageMagick-${IMAGEMAGICK_VERSION}.tar.gz
   - cd ImageMagick-${IMAGEMAGICK_VERSION}
   - ./configure --prefix=/usr $CONFIGURE_OPTIONS
