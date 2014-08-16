@@ -124,7 +124,7 @@ class Image2_UT < Test::Unit::TestCase
         assert_raise(IndexError) { @img.convolve(5, kernel) }
         assert_raise(IndexError) { @img.convolve(order, "x") }
         assert_raise(TypeError) { @img.convolve(3, [1.0, 1.0, 1.0, 1.0, 'x', 1.0, 1.0, 1.0, 1.0]) }
-        assert_raise(Magick::ImageMagickError) { @img.convolve(2, [1.0, 1.0, 1.0, 1.0]) }
+        assert_raise(Magick::ImageMagickError) { @img.convolve(-1, [1.0, 1.0, 1.0, 1.0]) }
     end
 
     def test_convolve_channel
