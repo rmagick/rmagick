@@ -163,7 +163,11 @@ class Image_Attributes_UT < Test::Unit::TestCase
     def test_colorspace
         assert_nothing_raised { @img.colorspace }
         assert_instance_of(Magick::ColorspaceType, @img.colorspace)
-        assert_equal(Magick::SRGBColorspace, @img.colorspace)
+        if IM_VERSION < Gem::Version.new("6.7.5") || (IM_VERSION == Gem::Version.new("6.7.5") && IM_REVISION < Gem::Version.new("5"))
+          assert_equal(Magick::RGBColorspace, @img.colorspace)
+        else
+          assert_equal(Magick::SRGBColorspace, @img.colorspace)
+        end
         img = @img.copy
         assert_nothing_raised { img.colorspace = Magick::GRAYColorspace }
         assert_equal(Magick::GRAYColorspace, img.colorspace)
