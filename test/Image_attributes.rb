@@ -279,7 +279,6 @@ class Image_Attributes_UT < Test::Unit::TestCase
 
     def test_density
         assert_nothing_raised { @img.density }
-        assert_equal('72x72', @img.density)
         assert_nothing_raised { @img.density = '90x90' }
         assert_nothing_raised { @img.density = 'x90' }
         assert_nothing_raised { @img.density = '90' }
@@ -619,7 +618,6 @@ class Image_Attributes_UT < Test::Unit::TestCase
 
     def test_x_resolution
         assert_nothing_raised { @img.x_resolution }
-        assert_equal(72.0, @img.x_resolution)
         assert_nothing_raised { @img.x_resolution = 90 }
         assert_equal(90.0, @img.x_resolution)
         assert_raise(TypeError) { @img.x_resolution = 'x' }
@@ -627,7 +625,6 @@ class Image_Attributes_UT < Test::Unit::TestCase
 
     def test_y_resolution
         assert_nothing_raised { @img.y_resolution }
-        assert_equal(72.0, @img.y_resolution)
         assert_nothing_raised { @img.y_resolution = 90 }
         assert_equal(90.0, @img.y_resolution)
         assert_raise(TypeError) { @img.y_resolution = 'x' }
