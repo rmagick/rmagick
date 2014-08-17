@@ -14,6 +14,12 @@ FILES = Dir[IMAGES_DIR+'/Button_*.gif'].sort
 FLOWER_HAT = IMAGES_DIR+'/Flower_Hat.jpg'
 IMAGE_WITH_PROFILE = IMAGES_DIR+'/image_with_profile.jpg'
 
+Magick::Magick_version =~ /ImageMagick (\d+\.\d+\.\d+)-(\d+) /
+abort "Unable to get ImageMagick version" unless $1 && $2
+
+IM_VERSION = Gem::Version.new($1)
+IM_REVISION = Gem::Version.new($2)
+
 require 'Image1.rb'
 require 'Image2.rb'
 require 'Image3.rb'
