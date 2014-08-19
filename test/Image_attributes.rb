@@ -549,7 +549,11 @@ class Image_Attributes_UT < Test::Unit::TestCase
     def test_rendering_intent
         assert_nothing_raised { @img.rendering_intent }
         assert_instance_of(Magick::RenderingIntent, @img.rendering_intent)
-        assert_equal(Magick::UndefinedIntent, @img.rendering_intent)
+        if IM_VERSION < Gem::Version.new("6.7.5") || (IM_VERSION == Gem::Version.new("6.7.5") && IM_REVISION < Gem::Version.new("5"))
+          assert_equal(Magick::UndefinedIntent, @img.rendering_intent)
+        else
+          assert_equal(Magick::PerceptualIntent, @img.rendering_intent)
+        end
         assert_nothing_raised { @img.rendering_intent = Magick::SaturationIntent }
         assert_nothing_raised { @img.rendering_intent = Magick::PerceptualIntent }
         assert_nothing_raised { @img.rendering_intent = Magick::AbsoluteIntent }
