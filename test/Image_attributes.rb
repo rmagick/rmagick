@@ -397,7 +397,11 @@ class Image_Attributes_UT < Test::Unit::TestCase
     def test_gamma
         assert_nothing_raised { @img.gamma }
         assert_instance_of(Float, @img.gamma)
-        assert_equal(0.0, @img.gamma)
+        if IM_VERSION < Gem::Version.new("6.7.5") || (IM_VERSION == Gem::Version.new("6.7.5") && IM_REVISION < Gem::Version.new("5"))
+          assert_equal(0.0, @img.gamma)
+        else
+          assert_equal(0.45454543828964233, @img.gamma)
+        end
         assert_nothing_raised { @img.gamma = 2.0 }
         assert_equal(2.0, @img.gamma)
         assert_raise(TypeError) { @img.gamma = 'x' }
