@@ -606,7 +606,11 @@ class Image_Attributes_UT < Test::Unit::TestCase
 
     def test_total_colors
         assert_nothing_raised { @hat.total_colors }
-        assert_equal(27980, @hat.total_colors)
+        if IM_VERSION < Gem::Version.new("6.7.5") || (IM_VERSION == Gem::Version.new("6.7.5") && IM_REVISION < Gem::Version.new("5"))
+          assert_equal(27980, @hat.total_colors)
+        else
+          assert_equal(27942, @hat.total_colors)
+        end
         assert_raise(NoMethodError) { @img.total_colors = 2 }
     end
 
