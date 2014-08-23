@@ -33,7 +33,7 @@ VALUE
 Magick_colors(VALUE class)
 {
     const ColorInfo **color_info_list;
-    unsigned long number_colors, x;
+    size_t number_colors, x;
     volatile VALUE ary;
     ExceptionInfo *exception;
 
@@ -82,7 +82,7 @@ VALUE
 Magick_fonts(VALUE class)
 {
     const TypeInfo **type_info;
-    unsigned long number_types, x;
+    size_t number_types, x;
     volatile VALUE ary;
     ExceptionInfo *exception;
 
@@ -166,7 +166,7 @@ VALUE
 Magick_init_formats(VALUE class)
 {
     const MagickInfo **magick_info;
-    unsigned long number_formats, x;
+    size_t number_formats, x;
     volatile VALUE formats;
     ExceptionInfo *exception;
 
