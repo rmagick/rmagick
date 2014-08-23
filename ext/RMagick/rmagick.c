@@ -35,13 +35,13 @@ Magick_colors(VALUE class)
     const ColorInfo **color_info_list;
     unsigned long number_colors, x;
     volatile VALUE ary;
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    color_info_list = GetColorInfoList("*", &number_colors, &exception);
+    color_info_list = GetColorInfoList("*", &number_colors, exception);
     CHECK_EXCEPTION()
-    (void) DestroyExceptionInfo(&exception);
+    (void) DestroyExceptionInfo(exception);
 
 
     if (rb_block_given_p())
@@ -84,12 +84,12 @@ Magick_fonts(VALUE class)
     const TypeInfo **type_info;
     unsigned long number_types, x;
     volatile VALUE ary;
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
-    GetExceptionInfo(&exception);
-    type_info = GetTypeInfoList("*", &number_types, &exception);
+    exception = AcquireExceptionInfo();
+    type_info = GetTypeInfoList("*", &number_types, exception);
     CHECK_EXCEPTION()
-    (void) DestroyExceptionInfo(&exception);
+    (void) DestroyExceptionInfo(exception);
 
     if (rb_block_given_p())
     {
@@ -168,16 +168,16 @@ Magick_init_formats(VALUE class)
     const MagickInfo **magick_info;
     unsigned long number_formats, x;
     volatile VALUE formats;
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
     class = class;      // defeat "never referenced" message from icc
     formats = rb_hash_new();
 
     // IM 6.1.3 added an exception argument to GetMagickInfoList
-    GetExceptionInfo(&exception);
-    magick_info = GetMagickInfoList("*", &number_formats, &exception);
+    exception = AcquireExceptionInfo();
+    magick_info = GetMagickInfoList("*", &number_formats, exception);
     CHECK_EXCEPTION()
-    (void) DestroyExceptionInfo(&exception);
+    (void) DestroyExceptionInfo(exception);
 
 
     for (x = 0; x < number_formats; x++)

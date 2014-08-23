@@ -217,12 +217,12 @@ Color_Name_to_PixelPacket(PixelPacket *color, VALUE name_arg)
 {
     MagickBooleanType okay;
     char *name;
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
     name = StringValuePtr(name_arg);
-    okay = QueryColorDatabase(name, color, &exception);
-    (void) DestroyExceptionInfo(&exception);
+    okay = QueryColorDatabase(name, color, exception);
+    (void) DestroyExceptionInfo(exception);
     if (!okay)
     {
         rb_raise(rb_eArgError, "invalid color name %s", name);
@@ -444,15 +444,15 @@ VALUE
 Pixel_from_color(VALUE class, VALUE name)
 {
     PixelPacket pp;
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
     MagickBooleanType okay;
 
     class = class;      // defeat "never referenced" message from icc
 
-    GetExceptionInfo(&exception);
-    okay = QueryColorDatabase(StringValuePtr(name), &pp, &exception);
+    exception = AcquireExceptionInfo();
+    okay = QueryColorDatabase(StringValuePtr(name), &pp, exception);
     CHECK_EXCEPTION()
-    (void) DestroyExceptionInfo(&exception);
+    (void) DestroyExceptionInfo(exception);
 
     if (!okay)
     {
@@ -488,7 +488,7 @@ Pixel_from_hsla(int argc, VALUE *argv, VALUE class)
 {
     double h, s, l, a = 1.0;
     MagickPixelPacket pp;
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
     char name[50];
     MagickBooleanType alpha = MagickFalse;
 
@@ -547,12 +547,12 @@ Pixel_from_hsla(int argc, VALUE *argv, VALUE class)
         sprintf(name, "hsl(%-2.1f,%-2.1f,%-2.1f)", h, s, l);
     }
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    (void) QueryMagickColor(name, &pp, &exception);
+    (void) QueryMagickColor(name, &pp, exception);
     CHECK_EXCEPTION()
 
-    (void) DestroyExceptionInfo(&exception);
+    (void) DestroyExceptionInfo(exception);
 
     return Pixel_from_MagickPixelPacket(&pp);
 }
@@ -978,7 +978,7 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
     MagickPixelPacket mpp;
     MagickBooleanType hex = MagickFalse;
     char name[MaxTextExtent];
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
     ComplianceType compliance = AllCompliance;
     unsigned int matte = MagickFalse;
     unsigned int depth = MAGICKCORE_QUANTUM_DEPTH;
@@ -1026,7 +1026,7 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
     GetMagickPixelPacket(image, &mpp);
     rm_set_magick_pixel_packet(pixel, &mpp);
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
 #if defined(HAVE_NEW_QUERYMAGICKCOLORNAME)
     // Support for hex-format color names moved out of QueryMagickColorname
@@ -1042,14 +1042,14 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
     }
     else
     {
-        (void) QueryMagickColorname(image, &mpp, compliance, name, &exception);
+        (void) QueryMagickColorname(image, &mpp, compliance, name, exception);
     }
 #else
-    (void) QueryMagickColorname(image, &mpp, compliance, hex, name, &exception);
+    (void) QueryMagickColorname(image, &mpp, compliance, hex, name, exception);
 #endif
     (void) DestroyImage(image);
     CHECK_EXCEPTION()
-    (void) DestroyExceptionInfo(&exception);
+    (void) DestroyExceptionInfo(exception);
 
     // Always return a string, even if it's ""
     return rb_str_new2(name);

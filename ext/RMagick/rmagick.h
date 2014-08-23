@@ -457,7 +457,7 @@ EXTERN ID rm_ID_y;                 /**< "y" */
    Handle warnings & errors
 */
 //! Handle warnings & errors
-#define CHECK_EXCEPTION() rm_check_exception(&exception, NULL, RetainOnError);
+#define CHECK_EXCEPTION() rm_check_exception(exception, NULL, RetainOnError);
 
 
 /*

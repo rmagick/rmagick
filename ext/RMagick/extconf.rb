@@ -219,6 +219,7 @@ have_func("snprintf", headers)
    "ColorMatrixImage",               # 6.6.1-0
    "ConstituteComponentTerminus",    # 6.5.7-9
    "DeskewImage",                    # 6.4.2-5
+   "DestroyConstitute",              # 6.5.7-9(deprecated)
    "EncipherImage",                  # 6.3.8-6
    "EqualizeImageChannel",           # 6.3.6-9
    "EvaluateImages",                 # 6.8.6-4
@@ -238,6 +239,8 @@ have_func("snprintf", headers)
    "RemapImage",                     # 6.4.4-0
    "RemapImages",                    # 6.4.4-0
    "RemoveImageArtifact",            # 6.3.6
+   "RotationalBlurImage",            # 6.8.8-9
+   "RotationalBlurImageChannel",     # 6.8.8-9
    "SelectiveBlurImageChannel",      # 6.5.0-3
    "SetImageAlphaChannel",           # 6.3.6-9
    "SetImageArtifact",               # 6.3.6

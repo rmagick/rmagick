@@ -501,16 +501,16 @@ image_to_str(Image *image)
     unsigned char *blob;
     size_t length;
     Info *info;
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
     if (image)
     {
         info = CloneImageInfo(NULL);
-        GetExceptionInfo(&exception);
-        blob = ImageToBlob(info, image, &length, &exception);
+        exception = AcquireExceptionInfo();
+        blob = ImageToBlob(info, image, &length, exception);
         DestroyImageInfo(info);
         CHECK_EXCEPTION();
-        DestroyExceptionInfo(&exception);
+        DestroyExceptionInfo(exception);
         dimg = rb_str_new((char *)blob, (long)length);
         magick_free((void*)blob);
     }
@@ -536,16 +536,16 @@ Image *str_to_image(VALUE str)
 {
     Image *image = NULL;
     Info *info;
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
     if (str != Qnil)
     {
         info = CloneImageInfo(NULL);
-        GetExceptionInfo(&exception);
-        image = BlobToImage(info, RSTRING_PTR(str), RSTRING_LEN(str), &exception);
+        exception = AcquireExceptionInfo();
+        image = BlobToImage(info, RSTRING_PTR(str), RSTRING_LEN(str), exception);
         DestroyImageInfo(info);
         CHECK_EXCEPTION();
-        DestroyExceptionInfo(&exception);
+        DestroyExceptionInfo(exception);
     }
 
     return image;
@@ -1776,15 +1776,15 @@ VALUE
 PolaroidOptions_initialize(VALUE self)
 {
     Draw *draw;
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
     // Default shadow color
     Data_Get_Struct(self, Draw, draw);
 
-    GetExceptionInfo(&exception);
-    (void) QueryColorDatabase("gray75", &draw->shadow_color, &exception);
+    exception = AcquireExceptionInfo();
+    (void) QueryColorDatabase("gray75", &draw->shadow_color, exception);
     CHECK_EXCEPTION()
-    (void) QueryColorDatabase("#dfdfdf", &draw->info->border_color, &exception);
+    (void) QueryColorDatabase("#dfdfdf", &draw->info->border_color, exception);
 
     if (rb_block_given_p())
     {

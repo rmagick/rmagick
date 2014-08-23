@@ -93,7 +93,7 @@ static VALUE set_color_option(VALUE self, const char *option, VALUE color)
     Info *info;
     char *name;
     PixelPacket pp;
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
     MagickBooleanType okay;
 
     Data_Get_Struct(self, Info, info);
@@ -104,10 +104,10 @@ static VALUE set_color_option(VALUE self, const char *option, VALUE color)
     }
     else
     {
-        GetExceptionInfo(&exception);
+        exception = AcquireExceptionInfo();
         name = StringValuePtr(color);
-        okay = QueryColorDatabase(name, &pp, &exception);
-        (void) DestroyExceptionInfo(&exception);
+        okay = QueryColorDatabase(name, &pp, exception);
+        (void) DestroyExceptionInfo(exception);
         if (!okay)
         {
             rb_raise(rb_eArgError, "invalid color name `%s'", name);
@@ -1359,14 +1359,14 @@ VALUE Info_format(VALUE self)
 {
     Info *info;
     const MagickInfo *magick_info ;
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
     Data_Get_Struct(self, Info, info);
     if (*info->magick)
     {
-        GetExceptionInfo(&exception);
-        magick_info = GetMagickInfo(info->magick, &exception);
-        (void) DestroyExceptionInfo(&exception);
+        exception = AcquireExceptionInfo();
+        magick_info = GetMagickInfo(info->magick, exception);
+        (void) DestroyExceptionInfo(exception);
 
         return magick_info ? rb_str_new2(magick_info->name) : Qnil;
     }
@@ -1390,16 +1390,16 @@ Info_format_eq(VALUE self, VALUE magick)
     Info *info;
     const MagickInfo *m;
     char *mgk;
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
     Data_Get_Struct(self, Info, info);
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
     mgk = StringValuePtr(magick);
-    m = GetMagickInfo(mgk, &exception);
+    m = GetMagickInfo(mgk, exception);
     CHECK_EXCEPTION()
-    (void) DestroyExceptionInfo(&exception);
+    (void) DestroyExceptionInfo(exception);
 
     if (!m)
     {

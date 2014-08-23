@@ -627,13 +627,13 @@ VALUE
 rm_pixelpacket_to_color_name(Image *image, PixelPacket *color)
 {
     char name[MaxTextExtent];
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
-    (void) QueryColorname(image, color, X11Compliance, name, &exception);
+    (void) QueryColorname(image, color, X11Compliance, name, exception);
     CHECK_EXCEPTION()
-    (void) DestroyExceptionInfo(&exception);
+    (void) DestroyExceptionInfo(exception);
 
     return rb_str_new2(name);
 }
@@ -698,11 +698,11 @@ rm_write_temp_image(Image *image, char *temp_name)
 #define TMPNAM_CLASS_VAR "@@_tmpnam_"
 
     MagickBooleanType okay;
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
     volatile VALUE id_value;
     int id;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
 
     // 'id' is always the value of its previous use
@@ -722,9 +722,9 @@ rm_write_temp_image(Image *image, char *temp_name)
     sprintf(temp_name, "mpri:%d", id);
 
     // Omit "mpri:" from filename to form the key
-    okay = SetImageRegistry(ImageRegistryType, temp_name+5, image, &exception);
+    okay = SetImageRegistry(ImageRegistryType, temp_name+5, image, exception);
     CHECK_EXCEPTION()
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
     if (!okay)
     {
         rb_raise(rb_eRuntimeError, "SetImageRegistry failed.");
@@ -1389,16 +1389,16 @@ Image *
 rm_clone_image(Image *image)
 {
     Image *clone;
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
-    GetExceptionInfo(&exception);
-    clone = CloneImage(image, 0, 0, MagickTrue, &exception);
+    exception = AcquireExceptionInfo();
+    clone = CloneImage(image, 0, 0, MagickTrue, exception);
     if (!clone)
     {
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
-    rm_check_exception(&exception, clone, DestroyOnError);
-    (void) DestroyExceptionInfo(&exception);
+    rm_check_exception(exception, clone, DestroyOnError);
+    (void) DestroyExceptionInfo(exception);
 
     return clone;
 }
@@ -1486,7 +1486,7 @@ rm_split(Image *image)
 void
 rm_check_image_exception(Image *imglist, ErrorRetention retention)
 {
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
     Image *badboy = NULL;
     Image *image;
 
@@ -1495,7 +1495,7 @@ rm_check_image_exception(Image *imglist, ErrorRetention retention)
         return;
     }
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
     // Find the image with the highest severity
     image = GetFirstImageInList(imglist);
@@ -1506,7 +1506,7 @@ rm_check_image_exception(Image *imglist, ErrorRetention retention)
             if (!badboy || image->exception.severity > badboy->exception.severity)
             {
                 badboy = image;
-                InheritException(&exception, &badboy->exception);
+                InheritException(exception, &badboy->exception);
             }
 
             ClearMagickException(&image->exception);
@@ -1516,10 +1516,10 @@ rm_check_image_exception(Image *imglist, ErrorRetention retention)
 
     if (badboy)
     {
-        rm_check_exception(&exception, imglist, retention);
+        rm_check_exception(exception, imglist, retention);
     }
 
-    (void) DestroyExceptionInfo(&exception);
+    (void) DestroyExceptionInfo(exception);
 }
 
 
