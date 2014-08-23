@@ -93,7 +93,7 @@ ImageList_append(VALUE self, VALUE stack_arg)
 {
     Image *images, *new_image;
     unsigned int stack;
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
     // Convert the image array to an image sequence.
     images = images_from_imagelist(self);
@@ -102,11 +102,11 @@ ImageList_append(VALUE self, VALUE stack_arg)
     // otherwise left-to-right.
     stack = RTEST(stack_arg);
 
-    GetExceptionInfo(&exception);
-    new_image = AppendImages(images, stack, &exception);
+    exception = AcquireExceptionInfo();
+    new_image = AppendImages(images, stack, exception);
     rm_split(images);
-    rm_check_exception(&exception, new_image, DestroyOnError);
-    (void) DestroyExceptionInfo(&exception);
+    rm_check_exception(exception, new_image, DestroyOnError);
+    (void) DestroyExceptionInfo(exception);
 
     rm_ensure_result(new_image);
 
@@ -127,21 +127,21 @@ VALUE
 ImageList_average(VALUE self)
 {
     Image *images, *new_image;
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
     // Convert the images array to an images sequence.
     images = images_from_imagelist(self);
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 #if defined(HAVE_EVALUATEIMAGES)
-    new_image = EvaluateImages(images, MeanEvaluateOperator, &exception);
+    new_image = EvaluateImages(images, MeanEvaluateOperator, exception);
 #else
-    new_image = AverageImages(images, &exception);
+    new_image = AverageImages(images, exception);
 #endif
 
     rm_split(images);
-    rm_check_exception(&exception, new_image, DestroyOnError);
-    (void) DestroyExceptionInfo(&exception);
+    rm_check_exception(exception, new_image, DestroyOnError);
+    (void) DestroyExceptionInfo(exception);
 
     rm_ensure_result(new_image);
 
@@ -166,16 +166,16 @@ VALUE
 ImageList_coalesce(VALUE self)
 {
     Image *images, *new_images;
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
     // Convert the image array to an image sequence.
     images = images_from_imagelist(self);
 
-    GetExceptionInfo(&exception);
-    new_images = CoalesceImages(images, &exception);
+    exception = AcquireExceptionInfo();
+    new_images = CoalesceImages(images, exception);
     rm_split(images);
-    rm_check_exception(&exception, new_images, DestroyOnError);
-    (void) DestroyExceptionInfo(&exception);
+    rm_check_exception(exception, new_images, DestroyOnError);
+    (void) DestroyExceptionInfo(exception);
 
     rm_ensure_result(new_images);
 
@@ -206,7 +206,7 @@ ImageList_composite_layers(int argc, VALUE *argv, VALUE self)
     Image *dest, *source, *new_images;
     RectangleInfo geometry;
     CompositeOperator operator = OverCompositeOp;
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
     switch (argc)
     {
@@ -236,11 +236,11 @@ ImageList_composite_layers(int argc, VALUE *argv, VALUE self)
                         , new_images->page.height != 0 ? new_images->page.height : new_images->rows
                         , new_images->gravity, &geometry);
 
-    GetExceptionInfo(&exception);
-    CompositeLayers(new_images, operator, source, geometry.x, geometry.y, &exception);
+    exception = AcquireExceptionInfo();
+    CompositeLayers(new_images, operator, source, geometry.x, geometry.y, exception);
     rm_split(source);
-    rm_check_exception(&exception, new_images, DestroyOnError);
-    (void) DestroyExceptionInfo(&exception);
+    rm_check_exception(exception, new_images, DestroyOnError);
+    (void) DestroyExceptionInfo(exception);
 
     return rm_imagelist_from_images(new_images);
 }
@@ -260,14 +260,14 @@ VALUE
 ImageList_deconstruct(VALUE self)
 {
     Image *new_images, *images;
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
     images = images_from_imagelist(self);
-    GetExceptionInfo(&exception);
-    new_images = DeconstructImages(images, &exception);
+    exception = AcquireExceptionInfo();
+    new_images = DeconstructImages(images, exception);
     rm_split(images);
-    rm_check_exception(&exception, new_images, DestroyOnError);
-    (void) DestroyExceptionInfo(&exception);
+    rm_check_exception(exception, new_images, DestroyOnError);
+    (void) DestroyExceptionInfo(exception);
 
     rm_ensure_result(new_images);
 
@@ -322,20 +322,20 @@ VALUE
 ImageList_flatten_images(VALUE self)
 {
     Image *images, *new_image;
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
     images = images_from_imagelist(self);
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
 #if defined(HAVE_ENUM_FLATTENLAYER)
-    new_image = MergeImageLayers(images, FlattenLayer, &exception);
+    new_image = MergeImageLayers(images, FlattenLayer, exception);
 #else
-    new_image = FlattenImages(images, &exception);
+    new_image = FlattenImages(images, exception);
 #endif
 
     rm_split(images);
-    rm_check_exception(&exception, new_image, DestroyOnError);
-    (void) DestroyExceptionInfo(&exception);
+    rm_check_exception(exception, new_image, DestroyOnError);
+    (void) DestroyExceptionInfo(exception);
 
     rm_ensure_result(new_image);
 
@@ -365,7 +365,7 @@ ImageList_fx(int argc, VALUE *argv, VALUE self)
     Image *images, *new_image;
     char *expression;
     ChannelType channels;
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
 
     channels = extract_channels(&argc, argv);
@@ -383,11 +383,11 @@ ImageList_fx(int argc, VALUE *argv, VALUE self)
     expression = StringValuePtr(argv[0]);
 
     images = images_from_imagelist(self);
-    GetExceptionInfo(&exception);
-    new_image = FxImageChannel(images, channels, expression, &exception);
+    exception = AcquireExceptionInfo();
+    new_image = FxImageChannel(images, channels, expression, exception);
     rm_split(images);
-    rm_check_exception(&exception, new_image, DestroyOnError);
-    (void) DestroyExceptionInfo(&exception);
+    rm_check_exception(exception, new_image, DestroyOnError);
+    (void) DestroyExceptionInfo(exception);
 
     rm_ensure_result(new_image);
 
@@ -418,7 +418,7 @@ ImageList_map(int argc, VALUE *argv, VALUE self)
     Image *map;
     unsigned int dither = MagickFalse;
     volatile VALUE scene, new_imagelist, t;
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
 #if defined(HAVE_REMAPIMAGES)
     QuantizeInfo quantize_info;
@@ -440,13 +440,13 @@ ImageList_map(int argc, VALUE *argv, VALUE self)
 
 
     // Convert image array to image sequence, clone image sequence.
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
     images = images_from_imagelist(self);
-    new_images = CloneImageList(images, &exception);
+    new_images = CloneImageList(images, exception);
     rm_split(images);
-    rm_check_exception(&exception, new_images, DestroyOnError);
-    (void) DestroyExceptionInfo(&exception);
+    rm_check_exception(exception, new_images, DestroyOnError);
+    (void) DestroyExceptionInfo(exception);
 
     rm_ensure_result(new_images);
 
@@ -488,7 +488,7 @@ ImageList_montage(VALUE self)
     volatile VALUE montage_obj;
     Montage *montage;
     Image *new_images, *images;
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
     // Create a new instance of the Magick::Montage class
     montage_obj = rm_montage_new();
@@ -513,13 +513,13 @@ ImageList_montage(VALUE self)
         }
     }
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
     // MontageImage can return more than one image.
-    new_images = MontageImages(images, montage->info, &exception);
+    new_images = MontageImages(images, montage->info, exception);
     rm_split(images);
-    rm_check_exception(&exception, new_images, DestroyOnError);
-    (void) DestroyExceptionInfo(&exception);
+    rm_check_exception(exception, new_images, DestroyOnError);
+    (void) DestroyExceptionInfo(exception);
 
     rm_ensure_result(new_images);
 
@@ -545,7 +545,7 @@ VALUE
 ImageList_morph(VALUE self, VALUE nimages)
 {
     Image *images, *new_images;
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
     long number_images;
 
 
@@ -556,12 +556,12 @@ ImageList_morph(VALUE self, VALUE nimages)
         rb_raise(rb_eArgError, "number of intervening images must be > 0");
     }
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
     images = images_from_imagelist(self);
-    new_images = MorphImages(images, (unsigned long)number_images, &exception);
+    new_images = MorphImages(images, (unsigned long)number_images, exception);
     rm_split(images);
-    rm_check_exception(&exception, new_images, DestroyOnError);
-    (void) DestroyExceptionInfo(&exception);
+    rm_check_exception(exception, new_images, DestroyOnError);
+    (void) DestroyExceptionInfo(exception);
 
     rm_ensure_result(new_images);
 
@@ -582,20 +582,20 @@ VALUE
 ImageList_mosaic(VALUE self)
 {
     Image *images, *new_image;
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
     images = images_from_imagelist(self);
 
 #if defined(HAVE_ENUM_MOSAICLAYER)
-    new_image = MergeImageLayers(images, MosaicLayer, &exception);
+    new_image = MergeImageLayers(images, MosaicLayer, exception);
 #else
-    new_image = MosaicImages(images, &exception);
+    new_image = MosaicImages(images, exception);
 #endif
 
     rm_split(images);
-    rm_check_exception(&exception, new_image, DestroyOnError);
-    (void) DestroyExceptionInfo(&exception);
+    rm_check_exception(exception, new_image, DestroyOnError);
+    (void) DestroyExceptionInfo(exception);
 
     rm_ensure_result(new_image);
 
@@ -618,12 +618,12 @@ ImageList_optimize_layers(VALUE self, VALUE method)
 {
     Image *images, *new_images, *new_images2;
     LAYERMETHODTYPE mthd;
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
     QuantizeInfo quantize_info;
 
     new_images2 = NULL;     // defeat "unused variable" message
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 #if defined(HAVE_TYPE_IMAGELAYERMETHOD)
     VALUE_TO_ENUM(method, mthd, ImageLayerMethod);
 #else
@@ -634,22 +634,22 @@ ImageList_optimize_layers(VALUE self, VALUE method)
     switch (mthd)
     {
         case CoalesceLayer:
-            new_images = CoalesceImages(images, &exception);
+            new_images = CoalesceImages(images, exception);
             break;
         case DisposeLayer:
-            new_images = DisposeImages(images, &exception);
+            new_images = DisposeImages(images, exception);
             break;
         case OptimizeTransLayer:
             new_images = clone_imagelist(images);
-            OptimizeImageTransparency(new_images, &exception);
+            OptimizeImageTransparency(new_images, exception);
             break;
         case RemoveDupsLayer:
             new_images = clone_imagelist(images);
-            RemoveDuplicateLayers(&new_images, &exception);
+            RemoveDuplicateLayers(&new_images, exception);
             break;
         case RemoveZeroLayer:
             new_images = clone_imagelist(images);
-            RemoveZeroDelayLayers(&new_images, &exception);
+            RemoveZeroDelayLayers(&new_images, exception);
             break;
         case CompositeLayer:
             rm_split(images);
@@ -657,19 +657,19 @@ ImageList_optimize_layers(VALUE self, VALUE method)
             break;
             // In 6.3.4-ish, OptimizeImageLayer replaced OptimizeLayer
         case OptimizeImageLayer:
-            new_images = OptimizeImageLayers(images, &exception);
+            new_images = OptimizeImageLayers(images, exception);
             break;
             // and OptimizeLayer became a "General Purpose, GIF Animation Optimizer" (ref. mogrify.c)
         case OptimizeLayer:
-            new_images = CoalesceImages(images, &exception);
+            new_images = CoalesceImages(images, exception);
             rm_split(images);
-            rm_check_exception(&exception, new_images, DestroyOnError);
-            new_images2 = OptimizeImageLayers(new_images, &exception);
+            rm_check_exception(exception, new_images, DestroyOnError);
+            new_images2 = OptimizeImageLayers(new_images, exception);
             DestroyImageList(new_images);
-            rm_check_exception(&exception, new_images2, DestroyOnError);
+            rm_check_exception(exception, new_images2, DestroyOnError);
             new_images = new_images2;
-            OptimizeImageTransparency(new_images, &exception);
-            rm_check_exception(&exception, new_images, DestroyOnError);
+            OptimizeImageTransparency(new_images, exception);
+            rm_check_exception(exception, new_images, DestroyOnError);
             // mogrify supports -dither here. We don't.
 #if defined(HAVE_REMAPIMAGE)
             GetQuantizeInfo(&quantize_info);
@@ -679,31 +679,31 @@ ImageList_optimize_layers(VALUE self, VALUE method)
 #endif
             break;
         case OptimizePlusLayer:
-            new_images = OptimizePlusImageLayers(images, &exception);
+            new_images = OptimizePlusImageLayers(images, exception);
             break;
         case CompareAnyLayer:
         case CompareClearLayer:
         case CompareOverlayLayer:
-            new_images = CompareImageLayers(images, mthd, &exception);
+            new_images = CompareImageLayers(images, mthd, exception);
             break;
 #if defined(HAVE_ENUM_MOSAICLAYER)
         case MosaicLayer:
-            new_images = MergeImageLayers(images, mthd, &exception);
+            new_images = MergeImageLayers(images, mthd, exception);
             break;
 #endif
 #if defined(HAVE_ENUM_FLATTENLAYER)
         case FlattenLayer:
-            new_images = MergeImageLayers(images, mthd, &exception);
+            new_images = MergeImageLayers(images, mthd, exception);
             break;
 #endif
 #if defined(HAVE_ENUM_MERGELAYER)
         case MergeLayer:
-            new_images = MergeImageLayers(images, mthd, &exception);
+            new_images = MergeImageLayers(images, mthd, exception);
             break;
 #endif
 #if defined(HAVE_ENUM_TRIMBOUNDSLAYER)
         case TrimBoundsLayer:
-            new_images = MergeImageLayers(images, mthd, &exception);
+            new_images = MergeImageLayers(images, mthd, exception);
             break;
 #endif
         default:
@@ -713,8 +713,8 @@ ImageList_optimize_layers(VALUE self, VALUE method)
     }
 
     rm_split(images);
-    rm_check_exception(&exception, new_images, DestroyOnError);
-    (void) DestroyExceptionInfo(&exception);
+    rm_check_exception(exception, new_images, DestroyOnError);
+    (void) DestroyExceptionInfo(exception);
 
     rm_ensure_result(new_images);
 
@@ -893,20 +893,20 @@ static Image *
 clone_imagelist(Image *images)
 {
     Image *new_imagelist = NULL, *image, *clone;
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 
     image = GetFirstImageInList(images);
     while (image)
     {
-        clone = CloneImage(image, 0, 0, MagickTrue, &exception);
-        rm_check_exception(&exception, new_imagelist, DestroyOnError);
+        clone = CloneImage(image, 0, 0, MagickTrue, exception);
+        rm_check_exception(exception, new_imagelist, DestroyOnError);
         AppendImageToList(&new_imagelist, clone);
         image = GetNextImageInList(image);
     }
 
-    (void) DestroyExceptionInfo(&exception);
+    (void) DestroyExceptionInfo(exception);
     return new_imagelist;
 }
 
@@ -941,7 +941,7 @@ ImageList_quantize(int argc, VALUE *argv, VALUE self)
     Image *images, *new_images;
     Image *new_image;
     QuantizeInfo quantize_info;
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
     volatile VALUE new_imagelist, scene;
 
     GetQuantizeInfo(&quantize_info);
@@ -975,18 +975,18 @@ ImageList_quantize(int argc, VALUE *argv, VALUE self)
 
 
     // Convert image array to image sequence, clone image sequence.
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
     images = images_from_imagelist(self);
-    new_images = CloneImageList(images, &exception);
+    new_images = CloneImageList(images, exception);
     rm_split(images);
-    rm_check_exception(&exception, new_images, DestroyOnError);
-    (void) DestroyExceptionInfo(&exception);
+    rm_check_exception(exception, new_images, DestroyOnError);
 
     rm_ensure_result(new_images);
 
 
     (void) QuantizeImages(&quantize_info, new_images);
-    rm_check_exception(&exception, new_images, DestroyOnError);
+    rm_check_exception(exception, new_images, DestroyOnError);
+    (void) DestroyExceptionInfo(exception);
 
     // Create new ImageList object, convert mapped image sequence to images,
     // append to images array.
@@ -1091,7 +1091,7 @@ ImageList_to_blob(VALUE self)
     volatile VALUE blob_str;
     void *blob = NULL;
     size_t length = 0;
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
     info_obj = rm_info_new();
     Data_Get_Struct(info_obj, Info, info);
@@ -1099,9 +1099,9 @@ ImageList_to_blob(VALUE self)
     // Convert the images array to an images sequence.
     images = images_from_imagelist(self);
 
-    GetExceptionInfo(&exception);
-    (void) SetImageInfo(info, MagickTrue, &exception);
-    rm_check_exception(&exception, images, RetainOnError);
+    exception = AcquireExceptionInfo();
+    (void) SetImageInfo(info, MagickTrue, exception);
+    rm_check_exception(exception, images, RetainOnError);
 
     if (*info->magick != '\0')
     {
@@ -1121,8 +1121,8 @@ ImageList_to_blob(VALUE self)
     // can happen is that there's only one image or the format
     // doesn't support multi-image files.
     info->adjoin = MagickTrue;
-    blob = ImagesToBlob(info, images, &length, &exception);
-    if (blob && exception.severity >= ErrorException)
+    blob = ImagesToBlob(info, images, &length, exception);
+    if (blob && exception->severity >= ErrorException)
     {
         magick_free((void*)blob);
         blob = NULL;
@@ -1130,7 +1130,7 @@ ImageList_to_blob(VALUE self)
     }
     rm_split(images);
     CHECK_EXCEPTION()
-    (void) DestroyExceptionInfo(&exception);
+    (void) DestroyExceptionInfo(exception);
 
 
     if (length == 0 || !blob)
@@ -1166,7 +1166,7 @@ ImageList_write(VALUE self, VALUE file)
     const MagickInfo *m;
     volatile VALUE info_obj;
     unsigned long scene;
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
     info_obj = rm_info_new();
     Data_Get_Struct(info_obj, Info, info);
@@ -1198,13 +1198,13 @@ ImageList_write(VALUE self, VALUE file)
     }
 
     // Find out if the format supports multi-images files.
-    GetExceptionInfo(&exception);
-    (void) SetImageInfo(info, MagickTrue, &exception);
-    rm_check_exception(&exception, images, RetainOnError);
+    exception = AcquireExceptionInfo();
+    (void) SetImageInfo(info, MagickTrue, exception);
+    rm_check_exception(exception, images, RetainOnError);
 
-    m = GetMagickInfo(info->magick, &exception);
-    rm_check_exception(&exception, images, RetainOnError);
-    (void) DestroyExceptionInfo(&exception);
+    m = GetMagickInfo(info->magick, exception);
+    rm_check_exception(exception, images, RetainOnError);
+    (void) DestroyExceptionInfo(exception);
 
     // Tell WriteImage if we want a multi-images file.
     if (imagelist_length(self) > 1L && m->adjoin)

@@ -120,9 +120,9 @@ point_fill(
     unsigned long x, y;
     MagickRealType red_step, green_step, blue_step;
 #if defined(HAVE_SYNCAUTHENTICPIXELS) || defined(HAVE_QUEUEAUTHENTICPIXELS)
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 #endif
 
     steps = sqrt((double)((image->columns-x0)*(image->columns-x0)
@@ -137,7 +137,7 @@ point_fill(
         PixelPacket *row_pixels;
 
 #if defined(HAVE_QUEUEAUTHENTICPIXELS)
-        row_pixels = QueueAuthenticPixels(image, 0, (long int)y, image->columns, 1, &exception);
+        row_pixels = QueueAuthenticPixels(image, 0, (long int)y, image->columns, 1, exception);
         CHECK_EXCEPTION()
 #else
         row_pixels = SetImagePixels(image, 0, (long int)y, image->columns, 1);
@@ -153,7 +153,7 @@ point_fill(
         }
 
 #if defined(HAVE_SYNCAUTHENTICPIXELS)
-        SyncAuthenticPixels(image, &exception);
+        SyncAuthenticPixels(image, exception);
         CHECK_EXCEPTION()
 #else
         SyncImagePixels(image);
@@ -162,7 +162,7 @@ point_fill(
     }
 
 #if defined(HAVE_SYNCAUTHENTICPIXELS) || defined(HAVE_QUEUEAUTHENTICPIXELS)
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 #endif
 }
 
@@ -189,9 +189,9 @@ vertical_fill(
     PixelPacket *master;
     MagickRealType red_step, green_step, blue_step;
 #if defined(HAVE_SYNCAUTHENTICPIXELS) || defined(HAVE_QUEUEAUTHENTICPIXELS)
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 #endif
 
     steps = FMAX(x1, ((long)image->columns)-x1);
@@ -227,7 +227,7 @@ vertical_fill(
         PixelPacket *row_pixels;
 
 #if defined(HAVE_QUEUEAUTHENTICPIXELS)
-        row_pixels = QueueAuthenticPixels(image, 0, (long int)y, image->columns, 1, &exception);
+        row_pixels = QueueAuthenticPixels(image, 0, (long int)y, image->columns, 1, exception);
         CHECK_EXCEPTION()
 #else
         row_pixels = SetImagePixels(image, 0, (long int)y, image->columns, 1);
@@ -237,7 +237,7 @@ vertical_fill(
         memcpy(row_pixels, master, image->columns * sizeof(PixelPacket));
 
 #if defined(HAVE_SYNCAUTHENTICPIXELS)
-        SyncAuthenticPixels(image, &exception);
+        SyncAuthenticPixels(image, exception);
         CHECK_EXCEPTION()
 #else
         SyncImagePixels(image);
@@ -246,7 +246,7 @@ vertical_fill(
     }
 
 #if defined(HAVE_SYNCAUTHENTICPIXELS) || defined(HAVE_QUEUEAUTHENTICPIXELS)
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 #endif
 
     xfree((void *)master);
@@ -274,9 +274,9 @@ horizontal_fill(
     PixelPacket *master;
     MagickRealType red_step, green_step, blue_step;
 #if defined(HAVE_SYNCAUTHENTICPIXELS) || defined(HAVE_QUEUEAUTHENTICPIXELS)
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 #endif
 
     steps = FMAX(y1, ((long)image->rows)-y1);
@@ -310,7 +310,7 @@ horizontal_fill(
         PixelPacket *col_pixels;
 
 #if defined(HAVE_QUEUEAUTHENTICPIXELS)
-        col_pixels = QueueAuthenticPixels(image, (long int)x, 0, 1, image->rows, &exception);
+        col_pixels = QueueAuthenticPixels(image, (long int)x, 0, 1, image->rows, exception);
 #else
         col_pixels = SetImagePixels(image, (long int)x, 0, 1, image->rows);
         rm_check_image_exception(image, RetainOnError);
@@ -318,7 +318,7 @@ horizontal_fill(
         memcpy(col_pixels, master, image->rows * sizeof(PixelPacket));
 
 #if defined(HAVE_SYNCAUTHENTICPIXELS)
-        SyncAuthenticPixels(image, &exception);
+        SyncAuthenticPixels(image, exception);
         CHECK_EXCEPTION()
 #else
         SyncImagePixels(image);
@@ -327,7 +327,7 @@ horizontal_fill(
     }
 
 #if defined(HAVE_SYNCAUTHENTICPIXELS) || defined(HAVE_QUEUEAUTHENTICPIXELS)
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 #endif
 
     xfree((PixelPacket *)master);
@@ -362,9 +362,9 @@ v_diagonal_fill(
     double m, b, steps = 0.0;
     double d1, d2;
 #if defined(HAVE_SYNCAUTHENTICPIXELS) || defined(HAVE_QUEUEAUTHENTICPIXELS)
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 #endif
 
     // Compute the equation of the line: y=mx+b
@@ -408,7 +408,7 @@ v_diagonal_fill(
         PixelPacket *row_pixels;
 
 #if defined(HAVE_QUEUEAUTHENTICPIXELS)
-        row_pixels = QueueAuthenticPixels(image, 0, (long int)y, image->columns, 1, &exception);
+        row_pixels = QueueAuthenticPixels(image, 0, (long int)y, image->columns, 1, exception);
         CHECK_EXCEPTION()
 #else
         row_pixels = SetImagePixels(image, 0, (long int)y, image->columns, 1);
@@ -424,7 +424,7 @@ v_diagonal_fill(
         }
 
 #if defined(HAVE_SYNCAUTHENTICPIXELS)
-        SyncAuthenticPixels(image, &exception);
+        SyncAuthenticPixels(image, exception);
         CHECK_EXCEPTION()
 #else
         SyncImagePixels(image);
@@ -433,7 +433,7 @@ v_diagonal_fill(
     }
 
 #if defined(HAVE_SYNCAUTHENTICPIXELS) || defined(HAVE_QUEUEAUTHENTICPIXELS)
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 #endif
 
 }
@@ -467,9 +467,9 @@ h_diagonal_fill(
     MagickRealType red_step, green_step, blue_step;
     double d1, d2;
 #if defined(HAVE_SYNCAUTHENTICPIXELS) || defined(HAVE_QUEUEAUTHENTICPIXELS)
-    ExceptionInfo exception;
+    ExceptionInfo *exception;
 
-    GetExceptionInfo(&exception);
+    exception = AcquireExceptionInfo();
 #endif
 
     // Compute the equation of the line: y=mx+b
@@ -515,7 +515,7 @@ h_diagonal_fill(
         PixelPacket *row_pixels;
 
 #if defined(HAVE_QUEUEAUTHENTICPIXELS)
-        row_pixels = QueueAuthenticPixels(image, 0, (long int)y, image->columns, 1, &exception);
+        row_pixels = QueueAuthenticPixels(image, 0, (long int)y, image->columns, 1, exception);
         CHECK_EXCEPTION()
 #else
         row_pixels = SetImagePixels(image, 0, (long int)y, image->columns, 1);
@@ -531,7 +531,7 @@ h_diagonal_fill(
         }
 
 #if defined(HAVE_SYNCAUTHENTICPIXELS)
-        SyncAuthenticPixels(image, &exception);
+        SyncAuthenticPixels(image, exception);
         CHECK_EXCEPTION()
 #else
         SyncImagePixels(image);
@@ -540,7 +540,7 @@ h_diagonal_fill(
     }
 
 #if defined(HAVE_SYNCAUTHENTICPIXELS) || defined(HAVE_QUEUEAUTHENTICPIXELS)
-    DestroyExceptionInfo(&exception);
+    DestroyExceptionInfo(exception);
 #endif
 }
 
