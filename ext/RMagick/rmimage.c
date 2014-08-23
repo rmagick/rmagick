@@ -22,7 +22,7 @@ typedef Image *(magnifier_t)(const Image *, ExceptionInfo *);
 /** Method that reads an image */
 typedef Image *(reader_t)(const Info *, ExceptionInfo *);
 /** Method that scales an image */
-typedef Image *(scaler_t)(const Image *, const unsigned long, const unsigned long, ExceptionInfo *);
+typedef Image *(scaler_t)(const Image *, const size_t, const size_t, ExceptionInfo *);
 /** Method that computes threshold on an image */
 typedef MagickBooleanType (thresholder_t)(Image *, const char *);
 /** Method that transforms an image */
@@ -2238,7 +2238,7 @@ Image_channel_extrema(int argc, VALUE *argv, VALUE self)
     Image *image;
     ChannelType channels;
     ExceptionInfo *exception;
-    unsigned long min, max;
+    size_t min, max;
     volatile VALUE ary;
 
     image = rm_check_destroyed(self);
@@ -2506,7 +2506,7 @@ Image_color_histogram(VALUE self)
 {
     Image *image, *dc_copy = NULL;
     volatile VALUE hash, pixel;
-    unsigned long x, colors;
+    size_t x, colors;
     ColorPacket *histogram;
     ExceptionInfo *exception;
 
@@ -6198,7 +6198,7 @@ Image_find_similar_region(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *target;
     volatile VALUE region, targ;
-    long x = 0L, y = 0L;
+    ssize_t x = 0L, y = 0L;
     ExceptionInfo *exception;
     unsigned int okay;
 
