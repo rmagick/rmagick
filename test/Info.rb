@@ -224,6 +224,9 @@ class Info_UT < Test::Unit::TestCase
     end
 
     def test_monitor
+      if RUBY_PLATFORM =~ /x64-mingw/
+        return
+      end
       assert_nothing_raised { @info.monitor = lambda {} }
       monitor = Proc.new do |mth, q, s|
         assert_equal("resize!", mth)
