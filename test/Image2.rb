@@ -444,7 +444,11 @@ class Image2_UT < Test::Unit::TestCase
             @img.each_profile do |name, value|
                 assert_equal("iptc", name)
                 # As of 6.3.1
-                assert_equal("8BIM\004\004\000\000\000\000\001\340test profile", value)
+                if IM_VERSION < Gem::Version.new("6.6.4") || (IM_VERSION == Gem::Version.new("6.6.4") && IM_REVISION < Gem::Version.new("5"))
+                    assert_equal("8BIM\004\004\000\000\000\000\001\340test profile", value)
+                else
+                    assert_equal("test profile", value)
+                end
             end
         end
     end
