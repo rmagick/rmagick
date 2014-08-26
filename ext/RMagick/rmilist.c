@@ -1178,7 +1178,12 @@ ImageList_write(VALUE self, VALUE file)
 
         // Ensure file is open - raise error if not
         GetOpenFile(file, fptr);
+#if defined(_WIN32)
+        add_format_prefix(info, fptr->pathv);
+        SetImageInfoFile(info, NULL);
+#else
         SetImageInfoFile(info, GetReadFile(fptr));
+#endif
     }
     else
     {

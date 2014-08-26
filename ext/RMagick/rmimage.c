@@ -14733,8 +14733,14 @@ Image_write(VALUE self, VALUE file)
         // Ensure file is open - raise error if not
         GetOpenFile(file, fptr);
         rb_io_check_writable(fptr);
+#if defined(_WIN32)
+        add_format_prefix(info, fptr->pathv);
+        strcpy(image->filename, info->filename);
+        SetImageInfoFile(info, NULL);
+#else
         SetImageInfoFile(info, GetWriteFile(fptr));
         memset(image->filename, 0, sizeof(image->filename));
+#endif
     }
     else
     {
