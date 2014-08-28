@@ -100,7 +100,7 @@ class ImageList2_UT < Test::Unit::TestCase
     end
 
     def test_from_blob
-        hat = File.open(FLOWER_HAT)
+        hat = File.open(FLOWER_HAT, "rb")
         blob = hat.read
         assert_nothing_raised { @ilist.from_blob(blob) }
         assert_instance_of(Magick::Image, @ilist[0])
