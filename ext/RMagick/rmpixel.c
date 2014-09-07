@@ -911,7 +911,7 @@ Pixel_to_hsla(VALUE self)
     }
     else
     {
-        alpha = ROUND_TO_QUANTUM(QuantumRange - (pixel->opacity / QuantumRange));
+        alpha = (double)(QuantumRange - pixel->opacity) / (double)QuantumRange;
     }
 
     hsla = rb_ary_new3(4, rb_float_new(hue), rb_float_new(sat), rb_float_new(lum), rb_float_new(alpha));
