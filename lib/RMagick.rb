@@ -333,7 +333,7 @@ class Draw
 
     # Specify text drawing font
     def font(name)
-        primitive "font #{name}"
+        primitive "font \'#{name}\'"
     end
 
     def font_family(name)
