@@ -1958,5 +1958,17 @@ class HatchFill
    end
 end
 
+# Fill class with solid monochromatic color
+class SolidFill
+   def initialize(bgcolor)
+      @bgcolor = bgcolor
+   end
+
+   def fill(img)
+      img.background_color = @bgcolor
+      img.erase!
+   end
+end
+
 end # Magick
 
