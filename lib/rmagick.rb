@@ -1,1 +1,1 @@
-require 'RMagick'
+require 'rmagick_internal.rb'
