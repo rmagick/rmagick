@@ -40,12 +40,16 @@ class Import_Export_UT < Test::Unit::TestCase
   end
 
   def test_import_export
+    is_hdri_support = Magick::Magick_features =~ /HDRI/
     pixels = @test.export_pixels(0, 0, @test.columns, @test.rows, "RGB")
 
     case Magick::MAGICKCORE_QUANTUM_DEPTH
       when 8
         p = pixels.pack("C*")
         import(p, Magick::CharPixel)
+        if is_hdri_support
+          p = pixels.pack("F*")
+        end
         import(p, Magick::QuantumPixel)
 
         spixels = pixels.collect {|px| px * 257}
@@ -64,6 +68,9 @@ class Import_Export_UT < Test::Unit::TestCase
 
         p = pixels.pack("S*")
         import(p, Magick::ShortPixel)
+        if is_hdri_support
+          p = pixels.pack("F*")
+        end
         import(p, Magick::QuantumPixel)
 
         ipixels = pixels.collect {|px| px * 65537}
@@ -84,6 +91,9 @@ class Import_Export_UT < Test::Unit::TestCase
         p = pixels.pack("I*")
         import(p, Magick::IntegerPixel)
         import(p, Magick::LongPixel)
+        if is_hdri_support
+          p = pixels.pack("D*")
+        end
         import(p, Magick::QuantumPixel)
 
       when 64
