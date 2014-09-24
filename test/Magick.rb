@@ -69,6 +69,12 @@ class Magick_UT < Test::Unit::TestCase
       assert_equal(3, ary.length)
     end
 
+    def test_features
+      res = nil
+      assert_nothing_raised { res = Magick::Magick_features }
+      assert_instance_of(String, res)
+    end
+
     def test_fonts
       res = nil
       assert_nothing_raised { res = Magick.fonts }

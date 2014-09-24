@@ -22,6 +22,7 @@ void Init_RMagick(void);
 
 static void test_Magick_version(void);
 static void version_constants(void);
+static void features_constant(void);
 
 
 
@@ -824,6 +825,7 @@ Init_RMagick2(void)
     DEF_CONST(TransparentOpacity);
 
     version_constants();
+    features_constant();
 
     /*-----------------------------------------------------------------------*/
     /* Class Magick::Enum                                                    */
@@ -1701,4 +1703,25 @@ version_constants(void)
     rb_obj_freeze(str);
     rb_define_const(Module_Magick, "Long_version", str);
 
+}
+
+
+/**
+ * Create Features constant.
+ *
+ * No Ruby usage (internal function)
+ */
+static void
+features_constant(void)
+{
+    volatile VALUE features;
+
+#if defined(HAVE_GETMAGICKFEATURES)
+    features = rb_str_new2(GetMagickFeatures());
+#else
+    features = rb_str_new2(MagickSupport);
+#endif
+
+    rb_obj_freeze(features);
+    rb_define_const(Module_Magick, "Magick_features", features);
 }
