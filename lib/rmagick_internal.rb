@@ -979,16 +979,6 @@ class Image
         self
     end
 
-    # Corresponds to ImageMagick's -resample option
-    def resample(x_res=72.0, y_res=nil)
-        y_res ||= x_res
-        width = x_res * columns / x_resolution + 0.5
-        height = y_res * rows / y_resolution + 0.5
-        self.x_resolution = x_res
-        self.y_resolution = y_res
-        resize(width, height)
-    end
-
     # Force an image to exact dimensions without changing the aspect ratio.
     # Resize and crop if necessary. (Thanks to Jerett Taylor!)
     def resize_to_fill(ncols, nrows=nil, gravity=CenterGravity)

@@ -432,6 +432,8 @@ Init_RMagick2(void)
     rb_define_method(Class_Image, "random_threshold_channel", Image_random_threshold_channel, -1);
     rb_define_method(Class_Image, "recolor", Image_recolor, 1);
     rb_define_method(Class_Image, "reduce_noise", Image_reduce_noise, 1);
+    rb_define_method(Class_Image, "resample", Image_resample, -1);
+    rb_define_method(Class_Image, "resample!", Image_resample_bang, -1);
     rb_define_method(Class_Image, "resize", Image_resize, -1);
     rb_define_method(Class_Image, "resize!", Image_resize_bang, -1);
     rb_define_method(Class_Image, "roll", Image_roll, 2);

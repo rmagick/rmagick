@@ -10978,6 +10978,152 @@ Image_rendering_intent_eq(VALUE self, VALUE ri)
 
 
 /**
+ * Resample image to specified horizontal resolution, vertical resolution,
+ * filter and blur factor.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param bang whether the bang (!) version of the method was called
+ * @param argc number of input arguments
+ * @param argv array of input arguments
+ * @param self this object
+ * @return self if bang, otherwise a new image
+ * @see Image_resample
+ * @see Image_resample_bang
+ */
+static VALUE
+resample(int bang, int argc, VALUE *argv, VALUE self)
+{
+    Image *image, *new_image;
+    FilterTypes filter;
+    double x_resolution, y_resolution, blur;
+    double width, height;
+    ExceptionInfo *exception;
+
+    Data_Get_Struct(self, Image, image);
+
+    // Set up defaults
+    filter  = image->filter;
+    blur    = image->blur;
+    x_resolution = 72.0;
+    y_resolution = 72.0;
+
+    switch (argc)
+    {
+        case 4:
+            blur = NUM2DBL(argv[3]);
+        case 3:
+            VALUE_TO_ENUM(argv[2], filter, FilterTypes);
+        case 2:
+            y_resolution = NUM2DBL(argv[1]);
+            if (y_resolution < 0.0)
+            {
+                rb_raise(rb_eArgError, "invalid y_resolution value (%lf given)", y_resolution);
+            }
+        case 1:
+            x_resolution = NUM2DBL(argv[0]);
+            if (x_resolution < 0.0)
+            {
+                rb_raise(rb_eArgError, "invalid x_resolution value (%lf given)", x_resolution);
+            }
+            if (argc == 1)
+            {
+                y_resolution = x_resolution;
+            }
+            width = (x_resolution * image->columns /
+                        (image->x_resolution == 0.0 ? 72.0 : image->x_resolution) + 0.5);
+            height = (y_resolution * image->rows /
+                         (image->y_resolution == 0.0 ? 72.0 : image->y_resolution) + 0.5);
+            if (width > (double)ULONG_MAX || height > (double)ULONG_MAX)
+            {
+                rb_raise(rb_eRangeError, "resampled image too big");
+            }
+            break;
+        case 0:
+            break;
+        default:
+            rb_raise(rb_eArgError, "wrong number of arguments (%d for 0 to 4)", argc);
+            break;
+    }
+
+    exception = AcquireExceptionInfo();
+    new_image = ResampleImage(image, x_resolution, y_resolution, filter, blur, exception);
+    rm_check_exception(exception, new_image, DestroyOnError);
+
+    (void) DestroyExceptionInfo(exception);
+
+    rm_ensure_result(new_image);
+
+    if (bang)
+    {
+        UPDATE_DATA_PTR(self, new_image);
+        (void) rm_image_destroy(image);
+        return self;
+    }
+    return rm_image_new(new_image);
+}
+
+/**
+ * Resample image to specified horizontal resolution, vertical resolution,
+ * filter and blur factor.
+ *
+ * Ruby usage:
+ *   - @verbatim Image#resample @endverbatim
+ *   - @verbatim Image#resample(resolution) @endverbatim
+ *   - @verbatim Image#resample(x_resolution, y_resolution) @endverbatim
+ *   - @verbatim Image#resample(x_resolution, y_resolution, filter) @endverbatim
+ *   - @verbatim Image#resample(x_resolution, y_resolution, filter, blur) @endverbatim
+ *
+ * Notes:
+ *   - Default filter is image->filter
+ *   - Default blur is image->blur
+ *
+ * @param argc number of input arguments
+ * @param argv array of input arguments
+ * @param self this object
+ * @return a new image
+ * @see resample
+ * @see Image_resample_bang
+ */
+VALUE
+Image_resample(int argc, VALUE *argv, VALUE self)
+{
+    (void) rm_check_destroyed(self);
+    return resample(False, argc, argv, self);
+}
+
+
+/**
+ * Resample image to specified horizontal resolution, vertical resolution,
+ * filter and blur factor.
+ *
+ * Ruby usage:
+ *   - @verbatim Image#resample @endverbatim
+ *   - @verbatim Image#resample(resolution) @endverbatim
+ *   - @verbatim Image#resample(x_resolution, y_resolution) @endverbatim
+ *   - @verbatim Image#resample(x_resolution, y_resolution, filter) @endverbatim
+ *   - @verbatim Image#resample(x_resolution, y_resolution, filter, blur) @endverbatim
+ *
+ * Notes:
+ *   - Default filter is image->filter
+ *   - Default blur is image->blur
+ *
+ * @param argc number of input arguments
+ * @param argv array of input arguments
+ * @param self this object
+ * @return a new image
+ * @see resample
+ * @see Image_resample
+ */
+VALUE
+Image_resample_bang(int argc, VALUE *argv, VALUE self)
+{
+    (void) rm_check_frozen(self);
+    return resample(True, argc, argv, self);
+}
+
+
+/**
  * Scale an image to the desired dimensions using the specified filter and blur
  * factor.
  *
