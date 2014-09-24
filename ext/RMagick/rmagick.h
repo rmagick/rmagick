@@ -1075,6 +1075,8 @@ extern VALUE Image_read_inline(VALUE, VALUE);
 extern VALUE Image_recolor(VALUE, VALUE);
 extern VALUE Image_reduce_noise(VALUE, VALUE);
 extern VALUE Image_remap(int, VALUE *, VALUE);
+extern VALUE Image_resample(int, VALUE *, VALUE);
+extern VALUE Image_resample_bang(int, VALUE *, VALUE);
 extern VALUE Image_resize(int, VALUE *, VALUE);
 extern VALUE Image_resize_bang(int, VALUE *, VALUE);
 extern VALUE Image_roll(VALUE, VALUE, VALUE);

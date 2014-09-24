@@ -29,6 +29,23 @@ ColorspaceTypes = [
   Magick::LogColorspace
 ]
 
+Filters = [
+  Magick::PointFilter,
+  Magick::BoxFilter,
+  Magick::TriangleFilter,
+  Magick::HermiteFilter,
+  Magick::HanningFilter,
+  Magick::HammingFilter,
+  Magick::BlackmanFilter,
+  Magick::GaussianFilter,
+  Magick::QuadraticFilter,
+  Magick::CubicFilter,
+  Magick::CatromFilter,
+  Magick::MitchellFilter,
+  Magick::LanczosFilter,
+  Magick::BesselFilter,
+  Magick::SincFilter
+]
 
 
 class Image3_UT < Test::Unit::TestCase
@@ -173,6 +190,12 @@ class Image3_UT < Test::Unit::TestCase
         assert_nothing_raised { @img.resample(100) }
         assert_nothing_raised { @img.resample(100, 100) }
 
+        @img.x_resolution = 0
+        @img.y_resolution = 0
+        assert_nothing_raised { @img.resample }
+        assert_nothing_raised { @img.resample(100) }
+        assert_nothing_raised { @img.resample(100, 100) }
+
         girl = Magick::Image.read(IMAGES_DIR+'/Flower_Hat.jpg').first
         assert_equal(240.0, girl.x_resolution)
         assert_equal(240.0, girl.y_resolution)
@@ -181,9 +204,32 @@ class Image3_UT < Test::Unit::TestCase
         assert_equal(125, res.rows)
         assert_equal(120.0, res.x_resolution)
         assert_equal(120.0, res.y_resolution)
+        assert_equal(200, girl.columns)
+        assert_equal(250, girl.rows)
+        assert_equal(240.0, girl.x_resolution)
+        assert_equal(240.0, girl.y_resolution)
 
-        assert_raise(NoMethodError) { @img.resample('x') }
-        assert_raise(NoMethodError) { @img.resample(100, 'x') }
+        Filters.each do |filter|
+            assert_nothing_raised { @img.resample(50, 50, filter) }
+        end
+        assert_nothing_raised { @img.resample(50, 50, Magick::PointFilter, 2.0) }
+
+        assert_raise(TypeError) { @img.resample('x') }
+        assert_raise(TypeError) { @img.resample(100, 'x') }
+        assert_raise(TypeError) { @img.resample(50, 50, 2) }
+        assert_raise(TypeError) { @img.resample(50, 50, Magick::CubicFilter, 'x') }
+        assert_raise(ArgumentError) { @img.resample(50, 50, Magick::SincFilter, 2.0, 'x') }
+        assert_raise(ArgumentError) { @img.resample(-100) }
+        assert_raise(ArgumentError) { @img.resample(100, -100) }
+    end
+
+    def test_resample!
+        assert_nothing_raised do
+            res = @img.resample!(50)
+            assert_same(@img, res)
+        end
+        @img.freeze
+        assert_raise(FreezeError) { @img.resample!(50) }
     end
 
     def test_resize
@@ -192,24 +238,8 @@ class Image3_UT < Test::Unit::TestCase
             assert_instance_of(Magick::Image, res)
         end
         assert_nothing_raised { @img.resize(50,50) }
-        filters = [
-          Magick::PointFilter,
-          Magick::BoxFilter,
-          Magick::TriangleFilter,
-          Magick::HermiteFilter,
-          Magick::HanningFilter,
-          Magick::HammingFilter,
-          Magick::BlackmanFilter,
-          Magick::GaussianFilter,
-          Magick::QuadraticFilter,
-          Magick::CubicFilter,
-          Magick::CatromFilter,
-          Magick::MitchellFilter,
-          Magick::LanczosFilter,
-          Magick::BesselFilter,
-          Magick::SincFilter ]
 
-        filters.each do |filter|
+        Filters.each do |filter|
             assert_nothing_raised { @img.resize(50, 50, filter) }
         end
         assert_nothing_raised { @img.resize(50, 50, Magick::PointFilter, 2.0) }
