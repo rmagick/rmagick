@@ -292,7 +292,7 @@ class Magick_UT < Test::Unit::TestCase
 
         assert_nothing_raised {cur = Magick::limit_resource(:file, 500)}
         assert_kind_of(Integer, cur)
-        assert(cur > 1024)
+        assert(cur > 512)
         assert_nothing_raised {new = Magick::limit_resource("file")}
         assert_equal(500, new)
         Magick::limit_resource(:file, cur)
