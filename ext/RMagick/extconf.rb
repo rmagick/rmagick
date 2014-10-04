@@ -176,7 +176,7 @@ if RUBY_PLATFORM !~ /mswin|mingw/
   if $pkg_config
     # Save flags
     $CFLAGS     = ENV["CFLAGS"].to_s   + " " + `pkg-config --cflags MagickCore`.chomp
-    $CPPFLAGS   = ENV["CPPFLAGS"].to_s + " " + `pkg-config -cppflags MagickCore`.chomp
+    $CPPFLAGS   = ENV["CPPFLAGS"].to_s + " " + `pkg-config --cflags MagickCore`.chomp
     $LDFLAGS    = ENV["LDFLAGS"].to_s  + " " + `pkg-config --libs MagickCore`.chomp
     $LOCAL_LIBS = ENV["LIBS"].to_s     + " " + `pkg-config --libs MagickCore`.chomp
   end
