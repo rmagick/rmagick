@@ -131,9 +131,17 @@ if RUBY_PLATFORM !~ /mswin|mingw/
     exit_failure "No C compiler found in ${ENV['PATH']}. See mkmf.log for details."
   end
 
+  # ugly way to handle which config tool we're going to use...
+  $magick_config = false
+  $pkg_config = false
+
   # Check for Magick-config
-  unless find_executable("Magick-config")
-    exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find Magick-config in #{ENV['PATH']}\n"
+  if find_executable("Magick-config")
+    $magick_config = true
+  elsif find_executable("pkg-config")
+    $pkg_config = true
+  else
+    exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find Magick-config or pkg-config in #{ENV['PATH']}\n"
   end
 
   check_multiple_imagemagick_versions()
@@ -141,23 +149,37 @@ if RUBY_PLATFORM !~ /mswin|mingw/
 
   # Ensure minimum ImageMagick version
   unless checking_for("ImageMagick version >= #{MIN_IM_VERS}")  do
-    version = `Magick-config --version`.chomp.tr(".","").to_i
-    version >= MIN_IM_VERS_NO
+    # extract version info from convert binary (could use identify as well)
+    convert_version_string = /^Version: ImageMagick\s+(?<Version>\d+\.\d+\.\d+\-\d+)\s+(?<Unknown>\S+)\s+(?<Arch>\S+)\s+(?<Date>\S+)/
+    match_data = `convert -version`.match(convert_version_string)
+    unless match_data.nil?
+      # taken from previous version, this doesn't look right though
+      # for example 6.8.12 whould show as greater than 6.12.9
+      # is there some property of imagemagick versioning that prevents this situation?
+      version = match_data['Version'].chomp.tr(".","").to_i
+      version >= MIN_IM_VERS_NO
+    end
   end
     exit_failure "Can't install RMagick #{RMAGICK_VERS}. You must have ImageMagick #{MIN_IM_VERS} or later.\n"
   end
 
 
+  # either set flags using Magick-config or pkg-config (new Debian default)
+  if $magick_config
+    # Save flags
+    $CFLAGS     = ENV["CFLAGS"].to_s   + " " + `Magick-config --cflags`.chomp
+    $CPPFLAGS   = ENV["CPPFLAGS"].to_s + " " + `Magick-config --cppflags`.chomp
+    $LDFLAGS    = ENV["LDFLAGS"].to_s  + " " + `Magick-config --ldflags`.chomp
+    $LOCAL_LIBS = ENV["LIBS"].to_s     + " " + `Magick-config --libs`.chomp
+  end
 
-
-  $magick_version = `Magick-config --version`.chomp
-
-
-  # Save flags
-  $CFLAGS     = ENV["CFLAGS"].to_s   + " " + `Magick-config --cflags`.chomp
-  $CPPFLAGS   = ENV["CPPFLAGS"].to_s + " " + `Magick-config --cppflags`.chomp
-  $LDFLAGS    = ENV["LDFLAGS"].to_s  + " " + `Magick-config --ldflags`.chomp
-  $LOCAL_LIBS = ENV["LIBS"].to_s     + " " + `Magick-config --libs`.chomp
+  if $pkg_config
+    # Save flags
+    $CFLAGS     = ENV["CFLAGS"].to_s   + " " + `pkg-config --cflags MagickCore`.chomp
+    $CPPFLAGS   = ENV["CPPFLAGS"].to_s + " " + `pkg-config --cflags MagickCore`.chomp
+    $LDFLAGS    = ENV["LDFLAGS"].to_s  + " " + `pkg-config --libs MagickCore`.chomp
+    $LOCAL_LIBS = ENV["LIBS"].to_s     + " " + `pkg-config --libs MagickCore`.chomp
+  end
 
 elsif RUBY_PLATFORM =~ /mingw/  # mingw
 
@@ -201,10 +223,13 @@ end
 
 if RUBY_PLATFORM !~ /mswin|mingw/
 
-  unless `Magick-config --libs`[/\bl\s*(MagickCore|Magick)6?\b/]
-    exit_failure "Can't install RMagick #{RMAGICK_VERS}. " +
-           "Can't find the ImageMagick library or one of the dependent libraries. " +
-           "Check the mkmf.log file for more detailed information.\n"
+  # check for pkg-config if Magick-config doesn't exist
+  if $magick_config && `Magick-config --libs`[/\bl\s*(MagickCore|Magick)6?\b/]
+  elsif $pkg_config && `pkg-config --libs MagickCore`[/\bl\s*(MagickCore|Magick)6?\b/]
+  else
+      exit_failure "Can't install RMagick #{RMAGICK_VERS}. " +
+             "Can't find the ImageMagick library or one of the dependent libraries. " +
+             "Check the mkmf.log file for more detailed information.\n"
   end
 end
 
