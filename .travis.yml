@@ -1,4 +1,7 @@
 language: ruby
+os:
+  - linux
+  - osx
 env:
   # Currently successful release
   - IMAGEMAGICK_VERSION=6.6.9-10
