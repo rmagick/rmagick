@@ -1,4 +1,7 @@
 language: ruby
+os:
+  - linux
+  - osx
 env:
   # Currently successful release
   - IMAGEMAGICK_VERSION=6.6.9-10
@@ -11,6 +14,7 @@ env:
   # Try with HDRI support, we don't mind if this fails currently.
   - IMAGEMAGICK_VERSION=6.8.9-6 CONFIGURE_OPTIONS=--enable-hdri
 before_install:
+  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
   - dpkg --list imagemagick
   - sudo apt-get remove imagemagick
   - sudo apt-get install build-essential libx11-dev libxext-dev zlib1g-dev libpng12-dev libjpeg-dev libfreetype6-dev libxml2-dev
@@ -22,6 +26,10 @@ before_install:
   - sudo make install
   - cd ..
   - sudo ldconfig
+  - else
+  - brew update
+  - brew install imagemagick
+  - fi
 rvm:
   - 1.9
   - 2.0
