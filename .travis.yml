@@ -14,22 +14,23 @@ env:
   # Try with HDRI support, we don't mind if this fails currently.
   - IMAGEMAGICK_VERSION=6.8.9-6 CONFIGURE_OPTIONS=--enable-hdri
 before_install:
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-  - dpkg --list imagemagick
-  - sudo apt-get remove imagemagick
-  - sudo apt-get install build-essential libx11-dev libxext-dev zlib1g-dev libpng12-dev libjpeg-dev libfreetype6-dev libxml2-dev
-  - sudo apt-get build-dep imagemagick
-  - wget http://www.imagemagick.org/download/releases/ImageMagick-${IMAGEMAGICK_VERSION}.tar.gz
-  - tar -xzvf ImageMagick-${IMAGEMAGICK_VERSION}.tar.gz
-  - cd ImageMagick-${IMAGEMAGICK_VERSION}
-  - ./configure --prefix=/usr $CONFIGURE_OPTIONS
-  - sudo make install
-  - cd ..
-  - sudo ldconfig
-  - else
-  - brew update
-  - brew install imagemagick
-  - fi
+  - >
+    if [ "$TRAVIS_OS_NAME" == "linux" ]; then
+      dpkg --list imagemagick
+      sudo apt-get remove imagemagick
+      sudo apt-get install build-essential libx11-dev libxext-dev zlib1g-dev libpng12-dev libjpeg-dev libfreetype6-dev libxml2-dev
+      sudo apt-get build-dep imagemagick
+      wget http://www.imagemagick.org/download/releases/ImageMagick-${IMAGEMAGICK_VERSION}.tar.gz
+      tar -xzvf ImageMagick-${IMAGEMAGICK_VERSION}.tar.gz
+      cd ImageMagick-${IMAGEMAGICK_VERSION}
+      ./configure --prefix=/usr $CONFIGURE_OPTIONS
+      sudo make install
+      cd ..
+      sudo ldconfig
+    else
+      brew update
+      brew install imagemagick
+    fi
 rvm:
   - 1.9
   - 2.0
