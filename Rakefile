@@ -30,7 +30,7 @@ task "release" do
       sh "git push"
       sh "git push --tags"
     else
-      abort "tagging abd pushing gem failed"
+      abort "tagging aborted pushing gem failed"
     end
 
   else

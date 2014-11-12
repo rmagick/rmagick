@@ -25,3 +25,12 @@ Require RMagick in your project as follows:
 ```ruby
 require 'rmagick'
 ```
+
+## Releasing
+
+See https://github.com/rmagick/rmagick/wiki/Release-Process
+
+1. update ChangeLog
+2. Edit lib/rmagick/version.rb
+3. Run tests
+4. rake release
