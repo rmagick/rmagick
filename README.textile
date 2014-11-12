@@ -29,11 +29,11 @@ h2(#prereq). Prerequisites
 
 *O/S* Linux, &#042;BSD, OS X, Windows 2000, XP, Vista, other &#042;nix-like systems.
 
-*Ruby* Version 1.8.2 or later. You can get Ruby from "www.ruby-lang.org":http://www.ruby-lang.org.
-The use of versions of Ruby older than 1.8.4 with RMagick is deprecated. Support will be
-removed in a future release.
+*Ruby* Version 1.8.5 or later. You can get Ruby from "www.ruby-lang.org":http://www.ruby-lang.org.
 
-*ImageMagick* Version 6.3.0 or later. You can get ImageMagick from "www.imagemagick.org":http://www.imagemagick.org.
+Ruby must be able to build C-Extensions (e.g. MRI, Rubinius, not JRuby)
+
+*ImageMagick* Version 6.4.9 or later. You can get ImageMagick from "www.imagemagick.org":http://www.imagemagick.org.
 
 h2(#install). Installing RMagick
 
