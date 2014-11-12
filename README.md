@@ -1,6 +1,7 @@
 # RMagick
 
 [![Build Status](https://travis-ci.org/gemhome/rmagick.svg?branch=master)](https://travis-ci.org/gemhome/rmagick)
+[![Reference Status](https://www.versioneye.com/ruby/rmagick/reference_badge.svg)](https://www.versioneye.com/ruby/rmagick/references)
 
 This is the official fork of RMagick. The decision to create a fork [originated here](https://github.com/rmagick/rmagick/issues/18#issuecomment-50022523), where you can read more about why it happened.
 
