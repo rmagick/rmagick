@@ -77,11 +77,11 @@ task :gemspec do
   Dir.chdir(Dist_Directory) { reversion_file "rmagick.gemspec" }
 end
 
-desc "Build README.txt from README.rc using RedCloth"
+desc "Build README.txt from README.textile using RedCloth"
 task "README.txt" do
   Dir.chdir Dist_Directory do
-    reversion_file "README.rc"
-    body = File.readlines "README.rc"
+    reversion_file "README.textile"
+    body = File.readlines "README.textile"
     body = RedCloth.new(body.join).to_html + "\n"
     File.open("README.txt", "w") { |f| f.write body }
   end
@@ -125,7 +125,7 @@ task :fix_files do
   Dir.chdir Dist_Directory do
     rm_rf "test", :verbose => true
     rm "lib/rvg/to_c.rb", :verbose => true
-    rm "README.rc", :verbose => true
+    rm "README.textile", :verbose => true
     rm "README.txt", :verbose => true
     chmod 0644, FileList["doc/*.html", "doc/ex/*.rb", "doc/ex/images/*", "examples/*.rb"]
   end
