@@ -1,0 +1,163 @@
+h1. RMagick
+
+!https://badge.fury.io/rb/rmagick.svg!:http://badge.fury.io/rb/rmagick
+
+!https://travis-ci.org/gemhome/rmagick.svg?branch=master!:https://travis-ci.org/gemhome/rmagick
+
+This is the official fork of RMagick. The decision to create a fork "originated here":https://github.com/rmagick/rmagick/issues/18#issuecomment-50022523, where you can read more about why it happened.
+
+h3. Table of Contents
+
+* "Introduction":#intro
+* "Prerequisites":#prereq
+* "Installing RMagick":#install
+* "Things that can go wrong":#wrong
+* "Upgrading":#upgrade
+* "More samples":#samples
+* "Reporting Bugs":#bugs
+* "Contact Information":#contact
+* "Credits":#credits
+* "License":#license
+* "Releasing":#releasing
+
+h2(#intro). Introduction
+
+RMagick is an interface between the Ruby programming language and the
+ImageMagick image processing library.
+
+h2(#prereq). Prerequisites
+
+*O/S* Linux, &#042;BSD, OS X, Windows 2000, XP, Vista, other &#042;nix-like systems.
+
+*Ruby* Version 1.8.5 or later. You can get Ruby from "www.ruby-lang.org":http://www.ruby-lang.org.
+
+Ruby must be able to build C-Extensions (e.g. MRI, Rubinius, not JRuby)
+
+*ImageMagick* Version 6.4.9 or later. You can get ImageMagick from "www.imagemagick.org":http://www.imagemagick.org.
+
+h2(#install). Installing RMagick
+
+h4. Installing via Bundler
+
+Add to your `Gemfile`:
+
+bc. gem 'rmagick'
+
+Then run:
+
+bc. bundle install
+
+h4. Installing via RubyGems
+
+Run:
+
+bc. gem install rmagick
+
+Require RMagick in your project as follows:
+
+bc. require 'rmagick'
+
+h2(#wrong). Things that can go wrong
+
+The "RMagick installation FAQ":https://web.archive.org/web/20140512193354/http://rmagick.rubyforge.org/install-faq.html
+has answers to the most commonly reported problems, though may be out of date.
+
+h4. Can't install RMagick. Can't find libMagick or one of the dependent libraries. Check the mkmf.log file for more detailed information.
+
+Typically this message means that one or more of the libraries that ImageMagick
+depends on hasn't been installed. Examine the mkmf.log file in the ext/RMagick
+subdirectory of the installation directory for any error messages. These messages
+typically contain enough additional information for you to be able to diagnose
+the problem. Also see "this FAQ":https://web.archive.org/web/20140512193354/http://rmagick.rubyforge.org/install-faq.html#libmagick.
+
+h4. Cannot open shared object file
+
+If you get a message like this:
+
+<pre>
+    $DIR/RMagick.rb:11:in `require': libMagick.so.0:
+      cannot open shared object file: No such file or directory -
+      $DIR/RMagick2.so (LoadError)
+</pre>
+
+you probably do not have the directory in which the ImageMagick library
+is installed in your load path.  An easy way to fix this is to define
+the directory in the LD_LIBRARY_PATH environment variable.  For
+example, suppose you installed the ImageMagick library libMagick.so in
+/usr/local/lib.  (By default this is where it is installed.) Create the
+LD_LIBRARY_PATH variable like this:
+
+<pre>
+        export LD_LIBRARY_PATH=/usr/local/lib
+</pre>
+
+On Linux, see @ld(1)@ and @ld.so(8)@ for more information. On other operating
+systems, see the documentation for the dynamic loading facility.
+
+
+h2(#upgrade). Upgrading
+
+If you upgrade to a newer release of ImageMagick, make sure you're using a
+release of RMagick that supports that release. It's safe to install a new
+release of RMagick over an earlier release.
+
+h2(#samples). More samples
+
+You can find more sample RMagick programs in the /example directory.
+These programs are not installed in the RMagick documentation tree.
+
+h2(#bugs). Reporting bugs
+
+Please report bugs in RMagick, its documentation, or its installation
+programs to me via the bug tracker on the "RMagick issues page":https://github.com/gemhome
+
+However, I can't help with Ruby installation and configuration or ImageMagick
+installation and configuration. Information about reporting problems and
+getting help for ImageMagick is available at the "ImageMagick web site":http://www.imagemagick.org
+or the "ImageMagick Forum":http://www.imagemagick.org/discourse-server.
+
+h2(#contact). Contact Information
+
+*Author:* Tim Hunter, Omer Bar-or, Benjamin Thomas
+
+h2(#credits). Credits
+
+Thanks to "ImageMagick Studio LLC":http://www.imagemagick.org for ImageMagick
+and for hosting the RMagick documentation.
+
+h2(#license). MIT License
+
+<pre>
+Copyright &copy; 2002-2009 by Timothy P. Hunter
+
+Changes since Nov. 2009 copyright &copy; by Benjamin Thomas and Omer Bar-or
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the "Software"),
+to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+</pre>
+
+<hr>
+
+h2(#releasing). Releasing
+
+See https://github.com/rmagick/rmagick/wiki/Release-Process
+
+# Update ChangeLog
+# Edit lib/rmagick/version.rb
+# Are the tests passing? Run `rake` again just to be sure.
+# `rake release`

@@ -1,13 +1,12 @@
 require "mkmf"
 require "date"
 
-RMAGICK_VERS = "0.0.0"
-MIN_RUBY_VERS = "1.8.5"
+require File.expand_path('../../../../lib/rmagick/version')
+RMAGICK_VERS = Magick::VERSION
+MIN_RUBY_VERS = Magick::MIN_RUBY_VERSION
 MIN_RUBY_VERS_NO = MIN_RUBY_VERS.tr(".","").to_i
-MIN_IM_VERS = "6.4.9"
+MIN_IM_VERS = Magick::MIN_IM_VERSION
 MIN_IM_VERS_NO = MIN_IM_VERS.tr(".","").to_i
-
-
 
 # Test for a specific value in an enum type
 def have_enum_value(enum, value, headers=nil, &b)
