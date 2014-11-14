@@ -173,4 +173,10 @@ end
 
 task :test => :compile
 
-task :default => :test
+if ENV['STYLE_CHECKS']
+  require 'rubocop/rake_task'
+  RuboCop::RakeTask.new
+  task :default => [:test, :rubocop]
+else
+  task :default => :test
+end
