@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.files                       = files
   s.test_files                  = test_files
   s.executables                 = executables
-  s.require_paths << 'ext'
+  s.require_paths << 'ext' << 'deprecated'
 
   s.rubyforge_project = %q{rmagick}
   s.extensions = %w{ext/RMagick/extconf.rb}
