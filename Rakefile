@@ -163,8 +163,16 @@ end
 require 'rake/extensiontask'
 require 'rake/testtask'
 
-Rake::ExtensionTask.new('RMagick2') do |ext|
+# One does not simply require filename.gemspec
+gemspec = File.read('rmagick.gemspec')
+spec = eval(gemspec)
+
+Gem::PackageTask.new(spec) do |pkg|
+end
+
+Rake::ExtensionTask.new('RMagick2', spec) do |ext|
   ext.ext_dir = 'ext/RMagick'
+  ext.cross_compile = true
 end
 
 Rake::TestTask.new(:test) do |t|
