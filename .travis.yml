@@ -1,7 +1,9 @@
 language: ruby
+
 os:
   - linux
   #- osx
+
 env:
   # Currently successful release
   - IMAGEMAGICK_VERSION=6.6.9-10
@@ -13,12 +15,15 @@ env:
   - IMAGEMAGICK_VERSION=6.8.9-6
   # Try with HDRI support, we don't mind if this fails currently.
   - IMAGEMAGICK_VERSION=6.8.9-6 CONFIGURE_OPTIONS=--enable-hdri
+
 before_install:
   - source before_install_$TRAVIS_OS_NAME.sh
+
 rvm:
   - 1.9
   - 2.0
   - 2.1
+
 matrix:
   exclude:
 #    - rvm: 1.9
@@ -42,3 +47,11 @@ matrix:
     - env: IMAGEMAGICK_VERSION=6.7.9-10
     #- env: IMAGEMAGICK_VERSION=6.8.9-6
     - env: IMAGEMAGICK_VERSION=6.8.9-6 CONFIGURE_OPTIONS=--enable-hdri
+
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/ad730913e004db13788c
+    on_success: change  # options: [always|never|change] default: always
+    on_failure: always  # options: [always|never|change] default: always
+    on_start: false     # default: false
