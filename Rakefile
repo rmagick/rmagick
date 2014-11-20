@@ -157,7 +157,6 @@ END_HTML_TAIL
       end
     end
   end
-
 end
 
 require 'rake/extensiontask'
