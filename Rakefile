@@ -173,6 +173,7 @@ end
 Rake::ExtensionTask.new('RMagick2', spec) do |ext|
   ext.ext_dir = 'ext/RMagick'
   ext.cross_compile = true
+  ext.cross_config_options << '--with-opt-include=/usr/include/ImageMagick'
 end
 
 Rake::TestTask.new(:test) do |t|
