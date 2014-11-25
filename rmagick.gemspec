@@ -31,5 +31,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rake-compiler'
   if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('1.9.2')
     s.add_development_dependency 'rubocop', '~> 0.26.1'
+    s.add_development_dependency 'simplecov'
   end
 end
