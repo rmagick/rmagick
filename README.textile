@@ -1,6 +1,6 @@
 h1. RMagick
 
-!https://img.shields.io/gem/v/rmagick.svg?style=flat(RubyGems)!:http://rubygems.org/gems/rmagick !https://img.shields.io/gem/dt/rmagick.svg?style=flat! !https://img.shields.io/travis/gemhome/rmagick.svg?style=flat(Travis CI)!:https://travis-ci.org/gemhome/rmagick !https://img.shields.io/codeclimate/github/gemhome/rmagick.svg?style=flat(Code Climate)!:https://codeclimate.com/github/gemhome/rmagick !https://badges.gitter.im/Join%20Chat.svg(Gitter)!:https://gitter.im/gemhome/rmagick?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+!https://img.shields.io/gem/v/rmagick.svg?style=flat(RubyGems)!:http://rubygems.org/gems/rmagick !https://img.shields.io/gem/dt/rmagick.svg?style=flat! !https://www.versioneye.com/ruby/rmagick/reference_badge.svg?style=flat(VersionEye)!:https://www.versioneye.com/ruby/rmagick/references !https://img.shields.io/travis/gemhome/rmagick.svg?style=flat(Travis CI)!:https://travis-ci.org/gemhome/rmagick !https://img.shields.io/codeclimate/github/gemhome/rmagick.svg?style=flat(Code Climate)!:https://codeclimate.com/github/gemhome/rmagick !https://badges.gitter.im/Join%20Chat.svg(Gitter)!:https://gitter.im/gemhome/rmagick?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 
 This is the official fork of RMagick. The decision to create a fork "originated here":https://github.com/rmagick/rmagick/issues/18#issuecomment-50022523, where you can read more about why it happened.
 
