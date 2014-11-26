@@ -1,4 +1,9 @@
 require 'simplecov'
+require 'rake'
+require "bundler/gem_tasks"
+
+
+## BUILD, TAG, RELEASE
 require './lib/rmagick/version'
 require 'fileutils'
 task :config do
@@ -161,13 +166,63 @@ END_HTML_TAIL
 
 end
 
-require 'rake/extensiontask'
-require 'rake/testtask'
+## COMPILATION
+# Given:
+# ext/RMagick/extconf.rb: create_makefile("RMagick2")
+# lib/rmagick_internal.rb: require 'RMagick2.so'
+# #+> extension_name = "RMagick2"
+# #=> gem_name = 'rmagick'
+require "rake/extensiontask"
+require "rake/clean"
 
-Rake::ExtensionTask.new('RMagick2') do |ext|
-  ext.ext_dir = 'ext/RMagick'
+CLEAN.include(
+  "tmp",
+  "lib/1.8",
+  "lib/1.9",
+  "lib/2.0",
+  "lib/2.1",
+  "lib/RMagick2.jar",
+  "lib/RMagick2.so"
+)
+CLOBBER.include(
+  "pkg"
+)
+
+GEMSPEC = Gem::Specification.load(File.expand_path("../rmagick.gemspec", __FILE__))
+
+
+if RUBY_PLATFORM =~ /java/
+  Rake::JavaExtensionTask.new("RMagick2", GEMSPEC) do |ext|
+    ext.ext_dir = 'ext/RMagick'
+  end
+else
+  Rake::ExtensionTask.new("RMagick2", GEMSPEC) do |ext|
+    ext.ext_dir = 'ext/RMagick'
+    ext.cross_compile = true
+    ext.cross_platform = ['x86-mingw32', 'x64-mingw32']
+    ext.tmp_dir = 'tmp'
+  end
+
+  ENV['RUBY_CC_VERSION'].to_s.split(':').each do |ruby_version|
+    platforms = {
+      "x86-mingw32" => "i686-w64-mingw32",
+      "x64-mingw32" => "x86_64-w64-mingw32"
+    }
+    platforms.each do |platform, prefix|
+      task "copy:RMagick2:#{platform}:#{ruby_version}" do |t|
+        %w[lib tmp/#{platform}/stage/lib].each do |dir|
+          so_file = "#{dir}/#{ruby_version[/^\d+\.\d+/]}/RMagick2.so"
+          if File.exists?(so_file)
+            sh "#{prefix}-strip -S #{so_file}"
+          end
+        end
+      end
+    end
+  end
 end
 
+## TESTING
+require 'rake/testtask'
 Rake::TestTask.new(:test) do |t|
   t.libs << 'test'
 end
