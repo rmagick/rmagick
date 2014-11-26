@@ -1,7 +1,50 @@
+HEAD
+RMagick 2.13.4
+    #129 from @theschoolmaster
+      proof of concept for using pkg-config in place of Magick-config on debian based systems
+
+    #127 from @u338steven
+      Changed Image#resample to calling ResampleImage (related #29, #45)
+
+    #124 from @u338steven
+      Fixed #122: lib/RMagick.rb is overwritten by lib/rmagick.rb on case-insensitive systems
+
+    #123 from @prijutme4ty
+      New class SolidFill in order to fill image with monochromatic background
+
+    #121 from @markotom
+      Quotes for correct path of font file
+
+    #120 from @chulkilee
+      Allow MagickCore6 from Magick-config
+
+    #112 from @u338steven/
+      Fixed: build error with ImageMagick 6.8.9 (when deprecated functions are excluded)
+
+    #102 from @u338steven
+      Fixed: related x_resolution, y_resolution
+
+    from @u338steven
+      Lots of test fixes
+
+    #95 from @ioquatix
+      Fix pixel hash test
+
+    #94 from @u338steven
+      Fixed: build error on Windows Ruby x64 (with ImageMagick 6.8.0-10 or Ima...
+
+    #91 from @vassilevsky
+      Do not test machine and OS-specific integers
+      Fix initial memory limit test
+
+RMagick 2.13.3
+    #90 from @bricef
+      Fix installation error on systems with HRDI enabled RMagick
+
 RMagick 2.13.2
     o Fixed issues preventing RMagick from working with version 6.8 or higher
-    o Fixed issues preventing RMagick from working with ruby 1.9.3	
-	
+    o Fixed issues preventing RMagick from working with ruby 1.9.3
+
 RMagick 2.13.1
     o Fixed bug preventing RMagick from working with version 6.5.9 or higher
 
@@ -9,10 +52,10 @@ RMagick 2.13.0
     o Added Doxygen documentation, for automatic documentation
     o Fixed bug #27467, get RMagick to compile witH ImageMagick 6.5.7
     o Fixed bug #27607, switch Pixel#from_hsla and Pixel#to_hsla to use ranges
-      0-255 instead of 0-100 for saturation and lightness (range used by 
+      0-255 instead of 0-100 for saturation and lightness (range used by
       ImageMagick 6.5.6-5 and higher). Also added ability to specify all
       arguments to these functions as percentages (bug report by Arthur Chan).
-	
+
 
 RMagick 2.12.2
     o Add feature tests for SinusoidFunction and PolynomialFunction enum
