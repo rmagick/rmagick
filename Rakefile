@@ -172,7 +172,9 @@ end
 # lib/rmagick_internal.rb: require 'RMagick2.so'
 # #+> extension_name = "RMagick2"
 # #=> gem_name = 'rmagick'
-require "rake/extensiontask"
+require 'rubygems/package_task'
+require 'rake/extensiontask'
+require 'rake/javaextensiontask'
 require "rake/clean"
 
 CLEAN.include(
@@ -190,17 +192,21 @@ CLOBBER.include(
 
 GEMSPEC = Gem::Specification.load(File.expand_path("../rmagick.gemspec", __FILE__))
 
+Gem::PackageTask.new(GEMSPEC) do |pkg|
+  pkg.need_zip = true
+  pkg.need_tar = true
+end
 
 if RUBY_PLATFORM =~ /java/
-  Rake::JavaExtensionTask.new("RMagick2", GEMSPEC) do |ext|
-    ext.ext_dir = 'ext/RMagick'
+  task :java do
+    puts "skipping java task"
   end
 else
-  Rake::ExtensionTask.new("RMagick2", GEMSPEC) do |ext|
+  Rake::ExtensionTask.new('rmagick', GEMSPEC) do |ext|
+    ext.tmp_dir = 'tmp'
     ext.ext_dir = 'ext/RMagick'
     ext.cross_compile = true
     ext.cross_platform = ['x86-mingw32', 'x64-mingw32']
-    ext.tmp_dir = 'tmp'
   end
 
   ENV['RUBY_CC_VERSION'].to_s.split(':').each do |ruby_version|
@@ -209,9 +215,9 @@ else
       "x64-mingw32" => "x86_64-w64-mingw32"
     }
     platforms.each do |platform, prefix|
-      task "copy:RMagick2:#{platform}:#{ruby_version}" do |t|
+      task "copy:rmagick:#{platform}:#{ruby_version}" do |t|
         %w[lib tmp/#{platform}/stage/lib].each do |dir|
-          so_file = "#{dir}/#{ruby_version[/^\d+\.\d+/]}/RMagick2.so"
+          so_file = "#{dir}/#{ruby_version[/^\d+\.\d+/]}/rmagick.so"
           if File.exists?(so_file)
             sh "#{prefix}-strip -S #{so_file}"
           end
@@ -221,7 +227,9 @@ else
   end
 end
 
-## TESTING
+
+
+
 require 'rake/testtask'
 Rake::TestTask.new(:test) do |t|
   t.libs << 'test'
