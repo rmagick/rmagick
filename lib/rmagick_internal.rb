@@ -8,7 +8,7 @@
 #               to the classes.
 #==============================================================================
 
-require 'RMagick2.so'
+require_relative 'RMagick2.so'
 
 module Magick
     @formats = nil
