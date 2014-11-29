@@ -1,4 +1,4 @@
-#! /usr/local/bin/ruby -w
+#!/usr/bin/env ruby
 if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('1.9.2')
   require 'simplecov'
   SimpleCov.start do
