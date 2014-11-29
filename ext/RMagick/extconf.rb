@@ -7,8 +7,6 @@ module RMagick
     RMAGICK_VERS = ::Magick::VERSION
     MIN_RUBY_VERS = ::Magick::MIN_RUBY_VERSION
     MIN_RUBY_VERS_NO = MIN_RUBY_VERS.tr(".","").to_i
-    MIN_IM_VERS = ::Magick::MIN_IM_VERSION
-    MIN_IM_VERS_NO = MIN_IM_VERS.tr(".","").to_i
 
     attr_reader :headers
     def initialize
@@ -73,27 +71,19 @@ module RMagick
         check_partial_imagemagick_versions()
 
         # Ensure minimum ImageMagick version
-        unless checking_for("ImageMagick version >= #{MIN_IM_VERS}")  do
+        # Check minimum ImageMagick version if possible
+        checking_for("outdated ImageMagick version (<= #{Magick::MIN_IM_VERSION})") do
+
           # extract version info from convert binary (could use identify as well)
-          convert_version_string = /^Version:\sImageMagick\s+
-                                    (\d+\.\d+\.\d+\-\d+) # version
-                                    \s+
-                                    (\S+) # unknown
-                                    \s+
-                                    (\S+) # arch
-                                    \s+
-                                    (\S+) # date
-                                    /x
-          match_data = `convert -version`.match(convert_version_string)
-          unless match_data.nil?
-            # taken from previous version, this doesn't look right though
-            # for example 6.8.12 whould show as greater than 6.12.9
-            # is there some property of imagemagick versioning that prevents this situation?
-            version = match_data[1].chomp.tr(".","").to_i
-            version >= MIN_IM_VERS_NO
+          # TODO: Extract the value of MagickLibVersionText constant in MagickCore/version.h somehow
+          `convert -version`.match(/^Version: ImageMagick (\d+\.\d+\.\d+)/) do |matches|
+            version = matches[1]
+            Logging::message("Detected ImageMagick version: #{version}\n")
+
+            if Gem::Version.new(version) < Gem::Version.new(Magick::MIN_IM_VERSION)
+              exit_failure "Can't install RMagick #{RMAGICK_VERS}. You must have ImageMagick #{Magick::MIN_IM_VERSION} or later.\n"
+            end
           end
-        end
-          exit_failure "Can't install RMagick #{RMAGICK_VERS}. You must have ImageMagick #{MIN_IM_VERS} or later.\n"
         end
 
 
