@@ -1,7 +1,9 @@
 #! /usr/local/bin/ruby -w
-require 'simplecov'
-SimpleCov.start do
-  add_filter '/test/'
+if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('1.9.2')
+  require 'simplecov'
+  SimpleCov.start do
+    add_filter '/test/'
+  end
 end
 
 require_relative '../lib/rmagick'
