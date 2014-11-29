@@ -1,6 +1,8 @@
 require "mkmf"
 require "date"
 
+require File.expand_path('../../../lib/require_relative', __FILE__)
+
 require_relative '../../lib/rmagick/version'
 
 RMAGICK_VERS = Magick::VERSION
