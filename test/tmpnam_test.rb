@@ -1,5 +1,5 @@
 require 'minitest/autorun'
-require_relative '../lib/rmagick'
+require 'rmagick'
 
 class TmpnamTest < Minitest::Test
   # test the @@_tmpnam_ class variable
