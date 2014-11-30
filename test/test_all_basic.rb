@@ -6,6 +6,7 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('1.9.2')
   end
 end
 
+require File.expand_path('../../lib/require_relative', __FILE__)
 require_relative '../lib/rmagick'
 require 'test/unit'
 require 'test/unit/ui/console/testrunner'  if !RUBY_VERSION[/^1\.9|^2/]
