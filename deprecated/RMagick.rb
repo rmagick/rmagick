@@ -3,4 +3,4 @@
 
 warn '[DEPRECATION] requiring "RMagick" is deprecated. Use "rmagick" instead'
 
-require_relative '../lib/rmagick_internal'
+require 'rmagick_internal'
