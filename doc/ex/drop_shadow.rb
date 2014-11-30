@@ -1,4 +1,4 @@
-#! /usr/local/bin/ruby -w
+#!/usr/bin/env ruby -w
 require "rmagick"
 
 # Add a drop shadow to a text string. This example

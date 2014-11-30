@@ -1,4 +1,4 @@
-#! /usr/local/bin/ruby -w
+#!/usr/bin/env ruby -w
 # RMagick version of ImageMagick's "smile.c" example program.
 
 require "rmagick"

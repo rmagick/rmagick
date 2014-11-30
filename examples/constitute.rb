@@ -1,4 +1,4 @@
-#! /usr/local/bin/ruby -w
+#!/usr/bin/env ruby -w
 require "rmagick"
 
 f = Magick::Image.read("../doc/ex/images/Flower_Hat.jpg").first

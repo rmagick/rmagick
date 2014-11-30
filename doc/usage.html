@@ -334,7 +334,7 @@ exit
   in those files (remember, each input file can contain multiple
   images) into one animated GIF file.</p>
   <pre class="example">
-#! /usr/local/bin/ruby -w
+#!/usr/bin/env ruby -w
 require "rmagick"
 anim = ImageList.new("start.gif", "middle.gif", "finish.gif")
 anim.write("animated.gif")

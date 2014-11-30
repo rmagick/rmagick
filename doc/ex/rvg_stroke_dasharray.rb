@@ -1,4 +1,4 @@
-#! /usr/local/bin/ruby -w
+#!/usr/bin/env ruby -w
 require 'rvg/rvg'
 
 rvg = Magick::RVG.new(200, 100) do |canvas|

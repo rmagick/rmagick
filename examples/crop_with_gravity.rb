@@ -1,4 +1,4 @@
-#! /usr/local/bin/ruby -w
+#!/usr/bin/env ruby -w
 
 #=======================================================#
 # Thanks to Robert Wagner for the idea of allowing a    #

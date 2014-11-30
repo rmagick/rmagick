@@ -1,4 +1,4 @@
-#! /usr/local/bin/ruby -w
+#!/usr/bin/env ruby -w
 #
 #   A RMagick version of Magick++/demo/gravity.cpp
 #

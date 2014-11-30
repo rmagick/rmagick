@@ -1,4 +1,4 @@
-#! /usr/local/bin/ruby -w
+#!/usr/bin/env ruby -w
 require 'simplecov'
 require 'RMagick'
 require 'test/unit'

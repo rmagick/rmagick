@@ -1,5 +1,5 @@
 
-#! /usr/local/bin/ruby -w
+#!/usr/bin/env ruby -w
 
 require "rmagick"
 require 'test/unit'
