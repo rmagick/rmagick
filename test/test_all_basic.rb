@@ -1,19 +1,24 @@
 #!/usr/bin/env ruby -w
-require 'simplecov'
-require 'RMagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner'  if !RUBY_VERSION[/^1\.9|^2/]
-
 puts RUBY_VERSION
 puts RUBY_VERSION.class
-
 root_dir = File.expand_path("../..", __FILE__)
-$LOAD_PATH.push(root_dir)
-
 IMAGES_DIR = File.join(root_dir, 'doc/ex/images')
 FILES = Dir[IMAGES_DIR+'/Button_*.gif'].sort
 FLOWER_HAT = IMAGES_DIR+'/Flower_Hat.jpg'
 IMAGE_WITH_PROFILE = IMAGES_DIR+'/image_with_profile.jpg'
+
+require 'test/unit'
+if RUBY_VERSION < '1.9'
+  require 'test/unit/ui/console/testrunner'
+  $LOAD_PATH.push(root_dir)
+else
+  require 'simplecov'
+  $LOAD_PATH.unshift(File.join(root_dir, 'lib'))
+  $LOAD_PATH.unshift(File.join(root_dir, 'test'))
+end
+
+
+require 'rmagick'
 
 Magick::Magick_version =~ /ImageMagick (\d+\.\d+\.\d+)-(\d+) /
 abort "Unable to get ImageMagick version" unless $1 && $2
