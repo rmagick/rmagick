@@ -3,7 +3,7 @@ require "date"
 
 module RMagick
   class Extconf
-    require_relative '../../lib/rmagick/version'
+    require 'rmagick/version'
     RMAGICK_VERS = ::Magick::VERSION
     MIN_RUBY_VERS = ::Magick::MIN_RUBY_VERSION
     MIN_RUBY_VERS_NO = MIN_RUBY_VERS.tr(".","").to_i
@@ -75,13 +75,21 @@ module RMagick
         # Ensure minimum ImageMagick version
         unless checking_for("ImageMagick version >= #{MIN_IM_VERS}")  do
           # extract version info from convert binary (could use identify as well)
-          convert_version_string = /^Version: ImageMagick\s+(?<Version>\d+\.\d+\.\d+\-\d+)\s+(?<Unknown>\S+)\s+(?<Arch>\S+)\s+(?<Date>\S+)/
+          convert_version_string = /^Version:\sImageMagick\s+
+                                    (\d+\.\d+\.\d+\-\d+) # version
+                                    \s+
+                                    (\S+) # unknown
+                                    \s+
+                                    (\S+) # arch
+                                    \s+
+                                    (\S+) # date
+                                    /x
           match_data = `convert -version`.match(convert_version_string)
           unless match_data.nil?
             # taken from previous version, this doesn't look right though
             # for example 6.8.12 whould show as greater than 6.12.9
             # is there some property of imagemagick versioning that prevents this situation?
-            version = match_data['Version'].chomp.tr(".","").to_i
+            version = match_data[1].chomp.tr(".","").to_i
             version >= MIN_IM_VERS_NO
           end
         end
