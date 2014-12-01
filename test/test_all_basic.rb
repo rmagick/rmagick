@@ -1,9 +1,12 @@
-#! /usr/local/bin/ruby -w
-require 'simplecov'
-SimpleCov.start do
-  add_filter '/test/'
+#!/usr/bin/env ruby
+if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('1.9.2')
+  require 'simplecov'
+  SimpleCov.start do
+    add_filter '/test/'
+  end
 end
 
+require File.expand_path('../../lib/require_relative', __FILE__)
 require_relative '../lib/rmagick'
 require 'test/unit'
 require 'test/unit/ui/console/testrunner'  if !RUBY_VERSION[/^1\.9|^2/]
