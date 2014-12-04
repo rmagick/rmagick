@@ -1,5 +1,5 @@
 #!/usr/local/bin/ruby -w
-require 'RMagick'
+require "rmagick"
 
 # Demonstrate the Image#colorize method by converting
 # a full-color image to "sepia-tone"

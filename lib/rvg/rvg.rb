@@ -28,7 +28,7 @@
 #
 #++############################################################################
 
-require 'RMagick'
+require "rmagick"
 require 'rvg/misc'
 require 'rvg/describable'
 require 'rvg/stylable'

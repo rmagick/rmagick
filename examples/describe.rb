@@ -3,7 +3,7 @@
 # Usage: describe.rb filename1 [filename2...]
 # Notes: The output is similar to ImageMagick's identify command.
 
-require 'RMagick'
+require "rmagick"
 
 puts <<END_INFO
 

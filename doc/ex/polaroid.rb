@@ -1,5 +1,5 @@
 #! /usr/local/bin/ruby -w
-require 'RMagick'
+require "rmagick"
 require 'date'
 
 # Demonstrate the Image#polaroid method

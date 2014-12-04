@@ -78,7 +78,7 @@
   line and then prints a variety of information about each image to
   the terminal.</p>
   <pre class="example">
-require 'RMagick'
+require "rmagick"
 ARGV.each { |file|
     puts file
     img = Magick::Image::read(file).first

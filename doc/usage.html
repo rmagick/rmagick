@@ -130,7 +130,7 @@
   displays<span class="sup"><a href="#display">1</a></span> it on
   your monitor</p>
   <pre class="example">
-1. require 'RMagick'
+1. require "rmagick"
 2. include Magick
 3.
 4. cat = ImageList.new("Cheetah.jpg")
@@ -194,7 +194,7 @@
 
   <p>Going back to the example, let's make one modification.</p>
   <pre class="example">
-1. require 'RMagick'
+1. require "rmagick"
 2. include Magick
 3.
 4. cat = ImageList.new("Cheetah.jpg")
@@ -219,7 +219,7 @@
   <p>Here's how to write the small cheetah to a file in GIF
   format.</p>
   <pre class="example">
-1. require 'RMagick'
+1. require "rmagick"
 2. include Magick
 3.
 4. cat = ImageList.new("Cheetah.jpg")
@@ -293,7 +293,7 @@
   the background color of a new image to red with the
   <code>background_color=</code> method, as shown here:</p>
   <pre class="example">
-require 'RMagick'
+require "rmagick"
 include Magick
 # Create a 100x100 red image.
 f = Image.new(100,100) { self.background_color = "red" }
@@ -335,7 +335,7 @@ exit
   images) into one animated GIF file.</p>
   <pre class="example">
 #! /usr/local/bin/ruby -w
-require 'RMagick'
+require "rmagick"
 anim = ImageList.new("start.gif", "middle.gif", "finish.gif")
 anim.write("animated.gif")
 exit
@@ -1423,7 +1423,7 @@ exit
   created the circle in the center of the above image.</p>
   <pre class="example">
  1. !# /usr/local/bin/ruby -w
- 2. require 'RMagick'
+ 2. require "rmagick"
  3.
  4. canvas = Magick::ImageList.new
  5. canvas.new_image(250, 250, Magick::HatchFill.new('white', 'gray90'))
@@ -1494,7 +1494,7 @@ exit
   </div>
   <pre class="example">
  1.   #! /usr/local/bin/ruby -w
- 2.   require 'RMagick'
+ 2.   require "rmagick"
  3.
  4.   # Demonstrate the annotate method
  5.

@@ -1,6 +1,6 @@
 #! /usr/local/bin/ruby -w
 
-require 'RMagick'
+require "rmagick"
 
 hat = Magick::Image.read("images/Flower_Hat.jpg").first
 hat.resize!(0.25)

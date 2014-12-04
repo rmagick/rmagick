@@ -1,4 +1,4 @@
-require "RMagick"
+require "rmagick"
 
 def draw_centers(img, all_four = true)
    gc = Magick::Draw.new

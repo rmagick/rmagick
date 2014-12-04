@@ -1,6 +1,6 @@
 #! /usr/local/bin/ruby -w
 
-require 'RMagick'
+require "rmagick"
 
 imgl = Magick::ImageList.new
 imgl.new_image(500,180, Magick::HatchFill.new('white','lightcyan2'))

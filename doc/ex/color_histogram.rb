@@ -1,6 +1,6 @@
 #! /usr/local/bin/ruby -w
 
-require 'RMagick'
+require "rmagick"
 
 NUM_COLORS = 256
 HIST_HEIGHT = 200

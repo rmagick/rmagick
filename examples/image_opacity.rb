@@ -1,7 +1,7 @@
 
 # Ccreate a semi-transparent title for an image.
 
-require 'RMagick'
+require "rmagick"
 include Magick
 
 puts <<END_INFO

@@ -1,6 +1,6 @@
 #! /usr/local/bin/ruby -w
 
-require 'RMagick'
+require "rmagick"
 
 # Read the snake image file and scale to 200 pixels high.
 begin

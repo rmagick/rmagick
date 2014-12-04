@@ -1,5 +1,5 @@
 #! /usr/local/bin/ruby -w
-require 'RMagick'
+require "rmagick"
 include Magick
 
 puts("Creating colors.miff. This may take a few seconds...")

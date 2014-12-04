@@ -1,5 +1,5 @@
 #! /usr/local/bin/ruby -w
-require 'RMagick'
+require "rmagick"
 
 canvas = Magick::Image.new(260, 125)
 gc = Magick::Draw.new

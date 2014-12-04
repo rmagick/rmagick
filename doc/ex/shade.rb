@@ -1,5 +1,5 @@
 #! /usr/local/bin/ruby -w
-require 'RMagick'
+require "rmagick"
 
 # Demonstrate Image#shade
 

@@ -1,5 +1,5 @@
 #! /usr/local/bin/ruby -w
-require 'RMagick'
+require "rmagick"
 
 class Magick::ImageList
   # Create a shadow image for each image in the list

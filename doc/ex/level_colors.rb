@@ -1,4 +1,4 @@
-require 'RMagick'
+require "rmagick"
 
 img = Magick::Image.read("images/Flower_Hat.jpg").first
 begin

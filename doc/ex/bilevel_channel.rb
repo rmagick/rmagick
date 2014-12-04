@@ -1,6 +1,6 @@
 #! /usr/local/bin/ruby -w
 
-require 'RMagick'
+require "rmagick"
 
 img = Magick::Image.read('images/Flower_Hat.jpg').first
 result = img.bilevel_channel(2*Magick::QuantumRange/3, Magick::RedChannel)

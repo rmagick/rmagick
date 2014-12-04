@@ -1,6 +1,6 @@
 #! /usr/local/bin/ruby -w
 
-require 'RMagick'
+require "rmagick"
 
 gc = Magick::Draw.new
 gc.pattern('triangles', 0, 0, 16, 16) {

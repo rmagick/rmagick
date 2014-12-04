@@ -2,7 +2,7 @@
 # Demonstrate the export_pixels and import_pixels methods.
 #
 
-require 'RMagick'
+require "rmagick"
 include Magick
 
 puts <<END_INFO

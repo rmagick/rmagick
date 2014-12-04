@@ -1,5 +1,5 @@
 #!/usr/local/bin/ruby -w
-require 'RMagick'
+require "rmagick"
 
 # Demonstrate the ImageListImage#quantize method by converting
 # a color image into a monochrome image.

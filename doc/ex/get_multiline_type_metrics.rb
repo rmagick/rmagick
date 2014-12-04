@@ -1,5 +1,5 @@
 #! /usr/local/bin/ruby -w
-require 'RMagick'
+require "rmagick"
 
 TEXT = 'get\nmultiline\ntype\nmetrics'
 

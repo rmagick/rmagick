@@ -2,7 +2,7 @@
 # an animated MIFF file showing a rotating text string.
 
 
-require 'RMagick'
+require "rmagick"
 include Magick
 
 puts <<END_INFO

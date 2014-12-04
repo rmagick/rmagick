@@ -1,5 +1,5 @@
 #! /usr/local/bin/ruby -w
-require 'RMagick'
+require "rmagick"
 
 before = Magick::Image.read("images/Flower_Hat.jpg").first
 before.resize!(0.50)  # make it small so this example will run fast
