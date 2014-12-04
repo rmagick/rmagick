@@ -3,7 +3,7 @@
 #   A RMagick version of Magick++/demo/gravity.cpp
 #
 
-require 'RMagick'
+require "rmagick"
 
 x, y = 100, 100
 

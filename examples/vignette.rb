@@ -1,4 +1,4 @@
-require 'RMagick'
+require "rmagick"
 include Magick
 
 puts <<END_INFO

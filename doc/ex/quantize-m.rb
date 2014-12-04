@@ -2,7 +2,7 @@
 
 # Demonstrate the ImageList#quantize method
 
-require 'RMagick'
+require "rmagick"
 
 snapshots = Magick::ImageList.new "images/Ballerina.jpg","images/Gold_Statue.jpg","images/Shorts.jpg"
 

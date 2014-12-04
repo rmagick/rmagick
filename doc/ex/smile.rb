@@ -1,7 +1,7 @@
 #! /usr/local/bin/ruby -w
 # RMagick version of ImageMagick's "smile.c" example program.
 
-require 'RMagick'
+require "rmagick"
 include Magick
 
 SmileWidth = 48

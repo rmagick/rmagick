@@ -1,5 +1,5 @@
 #! /usr/local/bin/ruby -w
-require 'RMagick'
+require "rmagick"
 
 # Demonstrate the Image#texture_fill_to_border method
 # This example is nearly identical to the color_fill_to_border example.

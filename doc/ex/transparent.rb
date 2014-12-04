@@ -1,5 +1,5 @@
 #! /usr/local/bin/ruby -w
-require 'RMagick'
+require "rmagick"
 
 # Demonstrate the Image#transparent method.
 # Change all black pixels in the image to transparent.

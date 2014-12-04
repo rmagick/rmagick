@@ -1,6 +1,6 @@
 #!/usr/local/bin/ruby -w
 
-require 'RMagick'
+require "rmagick"
 
 # Demonstrate the use of RMagick's Draw class
 # and show the default coordinate system.

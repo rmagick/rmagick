@@ -1,5 +1,5 @@
 #! /usr/local/bin/ruby -w
-require 'RMagick'
+require "rmagick"
 
 i = Magick::Image.new(300, 220, Magick::HatchFill.new("white","lightcyan2"))
 gc = Magick::Draw.new

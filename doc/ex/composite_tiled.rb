@@ -1,4 +1,4 @@
-require 'RMagick'
+require "rmagick"
 
 # Create a transparent image to tile over the background image.
 wm = Magick::Image.read("xc:none") { self.size = "100x50" }.first

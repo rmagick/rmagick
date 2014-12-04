@@ -1,5 +1,5 @@
 #! /usr/local/bin/ruby -w
-require 'RMagick'
+require "rmagick"
 
 # Demonstrate the Image#texture_floodfill method
 # This example is nearly identical to the color_floodfill example.

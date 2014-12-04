@@ -1,4 +1,4 @@
-require 'RMagick'
+require "rmagick"
 
 background = Magick::Image.read('images/Flower_Hat.jpg').first
 source = Magick::Image.read('pattern:checkerboard') {self.size = "#{background.columns}x#{background.rows}"}.first

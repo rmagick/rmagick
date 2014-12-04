@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'RMagick'
+require "rmagick"
 
 
 results = Magick::ImageList.new

@@ -1,6 +1,6 @@
 #! /usr/local/bin/ruby -w
 
-require 'RMagick'
+require "rmagick"
 
 bgnd = Magick::Image.read('images/Violin.jpg').first
 overlay = Magick::Image.read('images/Flower_Hat.jpg').first

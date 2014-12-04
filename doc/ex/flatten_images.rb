@@ -2,7 +2,7 @@
 
 # Demonstrate flatten_images method. Create an image with a drop-shadow effect.
 
-require 'RMagick'
+require "rmagick"
 
 RMagick = 'RMagick'
 

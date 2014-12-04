@@ -1,4 +1,4 @@
-require 'RMagick'
+require "rmagick"
 
 # Draw a big red Bezier curve on a transparent background.
 img = Magick::Image.new(340, 120) {self.background_color = 'none'}

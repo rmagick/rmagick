@@ -5,7 +5,7 @@
 # Concept and algorithms lifted from Magick++ demo script written
 # by Bob Friesenhahn.
 #
-require 'RMagick'
+require "rmagick"
 include Magick
 
 #

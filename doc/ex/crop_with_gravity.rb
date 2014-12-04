@@ -7,7 +7,7 @@
 
 # Demo the use of the GravityType argument to Image#crop.
 
-require 'RMagick'
+require "rmagick"
 include Magick
 
 shorts = Image.read('images/Shorts.jpg').first

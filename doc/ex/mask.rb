@@ -1,6 +1,6 @@
 #! /usr/local/bin/ruby -w
 
-require 'RMagick'
+require "rmagick"
 
 # This example demonstrates the mask attribute. The mask image must
 # be the same size as the image being masked. Since this mask image does

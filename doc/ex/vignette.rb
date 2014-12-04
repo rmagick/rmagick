@@ -1,6 +1,6 @@
 #! /usr/local/bin/ruby -w
 
-require 'RMagick'
+require "rmagick"
 
 # Demonstrate the Image#vignette method.
 # Compare this example with the vignette.rb script in the examples directory.

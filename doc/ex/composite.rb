@@ -3,7 +3,7 @@
 # Demonstrate the effects of various composite operators.
 # Based on ImageMagick's composite test.
 
-require 'RMagick'
+require "rmagick"
 include Magick
 
 ROWS = 70

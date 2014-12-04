@@ -5,7 +5,7 @@
 # Usage: pattern_fill.rb <name-of-pattern>
 # Try 'checkerboard' or 'verticalsaw'
 
-require 'RMagick'
+require "rmagick"
 include Magick
 
 puts <<END_INFO

@@ -1,5 +1,5 @@
 #! /usr/local/bin/ruby -w
-require 'RMagick'
+require "rmagick"
 
 # Demonstrate the affine primitive. Transform the
 # coordinate space to put the origin in the lower

@@ -1,6 +1,6 @@
 #! /usr/local/bin/ruby -w
 
-require 'RMagick'
+require "rmagick"
 
 points = [145, 65, 174,151, 264,151, 192,205,
           218,291, 145,240,  72,291,  98,205,

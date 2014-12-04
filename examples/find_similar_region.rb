@@ -1,4 +1,4 @@
-require 'RMagick'
+require "rmagick"
 
 #   The Image#find_similar_region searches for a region in the image
 #   similar to the target. This example uses a rectangle from the image

@@ -1,5 +1,5 @@
 #! /usr/local/bin/ruby -w
-require 'RMagick'
+require "rmagick"
 
 # Demonstrate the Magick::Draw#fill_pattern and #stroke_pattern attributes.
 

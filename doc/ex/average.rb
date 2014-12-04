@@ -1,6 +1,6 @@
 #! /usr/local/bin/ruby -w
 # Demonstrate ImageList#average method
-require 'RMagick'
+require "rmagick"
 
 images = Magick::ImageList.new("images/Button_A.gif", "images/Button_B.gif", "images/Button_C.gif")
 
