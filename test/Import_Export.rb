@@ -1,4 +1,4 @@
-require 'RMagick'
+require "rmagick"
 require 'test/unit'
 require 'test/unit/ui/console/testrunner' if !RUBY_VERSION[/^1\.9|^2/]
 
