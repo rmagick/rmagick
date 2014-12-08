@@ -1,4 +1,4 @@
-#! /usr/local/bin/ruby -w
+#!/usr/bin/env ruby -w
 
 # Demonstrate the effects of various composite operators.
 # Based on ImageMagick's composite test.

@@ -1,1 +1,1 @@
-require_relative 'rmagick_internal.rb'
+require 'rmagick_internal.rb'

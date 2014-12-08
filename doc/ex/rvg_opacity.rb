@@ -1,4 +1,4 @@
-#! /usr/local/bin/ruby -w
+#!/usr/bin/env ruby -w
 require 'rvg/rvg'
 
 FONT_STYLES = {:font_size=>20, :font_weight=>'bold', :fill=>'white'}

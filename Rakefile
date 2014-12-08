@@ -1,3 +1,4 @@
+require 'simplecov'
 require './lib/rmagick/version'
 require 'fileutils'
 task :config do

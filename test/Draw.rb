@@ -1,7 +1,7 @@
 
-#! /usr/local/bin/ruby -w
+#!/usr/bin/env ruby -w
 
-require_relative '../lib/rmagick'
+require "rmagick"
 require 'test/unit'
 require 'test/unit/ui/console/testrunner'  if !RUBY_VERSION[/^1\.9|^2/]
 
