@@ -59,10 +59,10 @@ module RMagick
         $pkg_config = false
 
         # Check for Magick-config
-        if find_executable("Magick-config")
-          $magick_config = true
-        elsif find_executable("pkg-config")
+        if find_executable("pkg-config")
           $pkg_config = true
+        elsif find_executable("Magick-config")
+          $magick_config = true
         else
           exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find Magick-config or pkg-config in #{ENV['PATH']}\n"
         end
@@ -80,7 +80,7 @@ module RMagick
             version = matches[1]
             Logging::message("Detected ImageMagick version: #{version}\n")
 
-            if Gem::Version.new(version) < Gem::Version.new(Magick::MIN_IM_VERSION)
+            if !$pkg_config && Gem::Version.new(version) < Gem::Version.new(Magick::MIN_IM_VERSION)
               exit_failure "Can't install RMagick #{RMAGICK_VERS}. You must have ImageMagick #{Magick::MIN_IM_VERSION} or later.\n"
             end
           end
