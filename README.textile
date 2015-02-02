@@ -13,6 +13,7 @@ h3. Table of Contents
 * "Upgrading":#upgrade
 * "More samples":#samples
 * "Reporting Bugs":#bugs
+* "Development Setup":#dev-setup
 * "Contact Information":#contact
 * "Credits":#credits
 * "License":#license
@@ -113,6 +114,67 @@ However, I can't help with Ruby installation and configuration or ImageMagick
 installation and configuration. Information about reporting problems and
 getting help for ImageMagick is available at the "ImageMagick web site":http://www.imagemagick.org
 or the "ImageMagick Forum":http://www.imagemagick.org/discourse-server.
+
+h2(#dev-setup). Development Setup
+
+In order to minimize issues on your local machine, we recommend that you make
+use of a "Vagrant installation":https://github.com/tjschuck/rake-compiler-dev-box.
+
+Steps to get up and running with a passing build are as follows:
+
+h4. 1) set up the Vagrant environment
+
+If you don't already have Vagrant installed, you can download and install it
+from "here":https://www.vagrantup.com/. Once installed, we can set up a pre-built environment:
+
+<pre>
+git clone https://github.com/tjschuck/rake-compiler-dev-box.git
+cd rake-compiler-dev-box
+vagrant up
+</pre>
+
+This last part will probably take a while as it has to download an Ubuntu image
+and configure it. If there is an error during this process, you may need to
+reboot your computer and enable virtualization in your BIOS settings.
+
+h4. 2) clone RMagick and log in to the vagrant box
+
+Within the `rake-compiler-dev-box` directory:
+
+<pre>
+git clone https://github.com/gemhome/rmagick.git # or your fork
+vagrant ssh
+</pre>
+
+h4. 3) install ImageMagick and additional environment stuff
+
+<pre>
+cd /vagrant/rmagick
+export IMAGEMAGICK_VERSION=6.6.9-10 # the only known passing version as of this writing
+sh ./before_install_linux.sh
+</pre>
+
+This will take just a few minutes to build ImageMagick
+
+h4. 4) build RMagick
+
+<pre>
+rake
+</pre>
+
+This compiles the RMagick extensions and runs the tests. If all goes well
+you'll see a lot of output, eventually ending in something like:
+
+<pre>
+Finished tests in 35.865734s, 11.3758 tests/s, 6560.3007 assertions/s.
+
+408 tests, 235290 assertions, 0 failures, 0 errors, 0 skips
+</pre>
+
+And you're all set! The copy of RMagick within `/vagrant/rmagick` inside your
+Vagrant session is the same as the one in the `rake-compiler-dev-box` directory
+on your machine. You can make changes locally and run tests within your `ssh`
+session.
 
 h2(#contact). Contact Information
 
