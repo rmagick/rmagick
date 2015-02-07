@@ -193,11 +193,11 @@ class Image1_UT < Test::Unit::TestCase
     def test_add_compose_mask
         mask = Magick::Image.new(20,20)
         assert_nothing_raised { @img.add_compose_mask(mask) }
-        assert_nothing_raised { @img.delete_compose_mask() }
+        assert_nothing_raised { @img.delete_compose_mask }
         assert_nothing_raised { @img.add_compose_mask(mask) }
         assert_nothing_raised { @img.add_compose_mask(mask) }
-        assert_nothing_raised { @img.delete_compose_mask() }
-        assert_nothing_raised { @img.delete_compose_mask() }
+        assert_nothing_raised { @img.delete_compose_mask }
+        assert_nothing_raised { @img.delete_compose_mask }
     end
 
     def test_add_noise
@@ -613,7 +613,7 @@ class Image1_UT < Test::Unit::TestCase
       assert_nothing_raised { Magick::Image.combine(r, g, b, nil) }
       res = Magick::Image.combine(r, g, b)
       assert_instance_of(Magick::Image, res)
-      assert_raise(ArgumentError) { Magick::Image.combine() }
+      assert_raise(ArgumentError) { Magick::Image.combine }
       assert_raise(ArgumentError) { Magick::Image.combine(nil) }
       assert_raise(ArgumentError) { Magick::Image.combine(r, g, b, a, r) }
       assert_raise(TypeError) { Magick::Image.combine(1, g, b, a) }

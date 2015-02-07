@@ -17,7 +17,7 @@ module Magick
 
 class << self
     def formats(&block)
-       @formats ||= init_formats()
+       @formats ||= init_formats
        if block_given?
           @formats.each { |k,v| yield k, v }
           self
@@ -850,7 +850,7 @@ class Image
                 exif_data.split("\n").each { |exif| ary.push(exif.split('=')) }
             end
         else
-            get_exif_by_entry()     # ensure properties is populated with exif data
+            get_exif_by_entry     # ensure properties is populated with exif data
             entry.each do |name|
                 rval = self["EXIF:#{name}"]
                 ary.push([name, rval])
@@ -872,7 +872,7 @@ class Image
                 end
             end
         else
-            get_exif_by_number()    # ensure properties is populated with exif data
+            get_exif_by_number    # ensure properties is populated with exif data
             tag.each do |num|
                 rval = self['#%04X' % num.to_i]
                 hash[num] = rval == 'unknown' ? nil : rval
@@ -1289,7 +1289,7 @@ class ImageList
 
 private
 
-    def get_current()
+    def get_current
         return @images[@scene].__id__ rescue nil
     end
 
@@ -1314,17 +1314,17 @@ protected
     # Find old current image, update scene number
     # current is the id of the old current image.
     def set_current(current)
-        if length() == 0
+        if length == 0
             self.scene = nil
             return
         # Don't bother looking for current image
-        elsif scene() == nil || scene() >= length()
-            self.scene = length() - 1
+        elsif scene == nil || scene >= length
+            self.scene = length - 1
             return
         elsif current != nil
             # Find last instance of "current" in the list.
             # If "current" isn't in the list, set current to last image.
-            self.scene = length() - 1
+            self.scene = length - 1
             each_with_index do |f,i|
                 if f.__id__ == current
                     self.scene = i
@@ -1332,7 +1332,7 @@ protected
             end
             return
         end
-        self.scene = length() - 1
+        self.scene = length - 1
     end
 
 public
@@ -1381,7 +1381,7 @@ public
         unless n.kind_of? Integer
             Kernel.raise ArgumentError, "Integer required (#{n.class} given)"
         end
-        current = get_current()
+        current = get_current
         ilist = self.class.new
         (@images * n).each {|image| ilist << image}
         ilist.set_current current
@@ -1457,8 +1457,8 @@ public
 
     # Array#nitems is not available in 1.9
     if Array.instance_methods.include?("nitems")
-       def nitems()
-          @images.nitems()
+       def nitems
+          @images.nitems
        end
     end
 
@@ -1475,7 +1475,7 @@ public
 
     # override Enumerable#collect
     def collect(&block)
-        current = get_current()
+        current = get_current
         a = @images.collect(&block)
         ilist = self.class.new
         a.each {|image| ilist << image}
@@ -1515,7 +1515,7 @@ public
     alias_method :affinity, :remap
 
     def compact
-        current = get_current()
+        current = get_current
         ilist = self.class.new
         a = @images.compact
         a.each {|image| ilist << image}
@@ -1524,7 +1524,7 @@ public
     end
 
     def compact!
-        current = get_current()
+        current = get_current
         a = @images.compact!    # returns nil if no changes were made
         set_current current
         return a.nil? ? nil : self
@@ -1547,21 +1547,21 @@ public
 
     def delete(obj, &block)
         is_an_image obj
-        current = get_current()
+        current = get_current
         a = @images.delete(obj, &block)
         set_current current
         return a
     end
 
     def delete_at(ndx)
-        current = get_current()
+        current = get_current
         a = @images.delete_at(ndx)
         set_current current
         return a
     end
 
     def delete_if(&block)
-        current = get_current()
+        current = get_current
         @images.delete_if(&block)
         set_current current
         self
@@ -1588,7 +1588,7 @@ public
 
     def fill(*args, &block)
         is_an_image args[0] unless block_given?
-        current = get_current()
+        current = get_current
         @images.fill(*args, &block)
         is_an_image_array self
         set_current current
@@ -1597,7 +1597,7 @@ public
 
     # Override Enumerable's find_all
     def find_all(&block)
-        current = get_current()
+        current = get_current
         a = @images.find_all(&block)
         ilist = self.class.new
         a.each {|image| ilist << image}
@@ -1632,7 +1632,7 @@ public
 
     def insert(index, *args)
         args.each {|image| is_an_image image}
-        current = get_current()
+        current = get_current
         @images.insert(index, *args)
         set_current current
         return self
@@ -1669,7 +1669,7 @@ public
     end
 
     # Custom marshal/unmarshal for Ruby 1.8.
-    def marshal_dump()
+    def marshal_dump
        ary = [@scene]
        @images.each {|i| ary << Marshal.dump(i)}
        ary
@@ -1729,7 +1729,7 @@ public
     end
 
     def pop
-        current = get_current()
+        current = get_current
         a = @images.pop       # can return nil
         set_current current
         return a
@@ -1758,7 +1758,7 @@ public
 
     # override Enumerable's reject
     def reject(&block)
-        current = get_current()
+        current = get_current
         ilist = self.class.new
         a = @images.reject(&block)
         a.each {|image| ilist << image}
@@ -1767,7 +1767,7 @@ public
     end
 
     def reject!(&block)
-        current = get_current()
+        current = get_current
         a = @images.reject!(&block)
         @images = a if !a.nil?
         set_current current
@@ -1776,7 +1776,7 @@ public
 
     def replace(other)
         is_an_image_array other
-        current = get_current()
+        current = get_current
         @images.clear
         other.each {|image| @images << image}
         @scene = self.length == 0 ? nil : 0
@@ -1796,7 +1796,7 @@ public
     end
 
     def reverse
-        current = get_current()
+        current = get_current
         a = self.class.new
         @images.reverse_each {|image| a << image}
         a.set_current current
@@ -1804,7 +1804,7 @@ public
     end
 
     def reverse!
-        current = get_current()
+        current = get_current
         @images.reverse!
         set_current current
         self
@@ -1816,14 +1816,14 @@ public
     end
 
     def shift
-        current = get_current()
+        current = get_current
         a = @images.shift
         set_current current
         return a
     end
 
     def slice(*args)
-        current = get_current()
+        current = get_current
         slice = @images.slice(*args)
         if slice
             ilist = self.class.new
@@ -1839,7 +1839,7 @@ public
     end
 
     def slice!(*args)
-        current = get_current()
+        current = get_current
         a = @images.slice!(*args)
         set_current current
         return a
@@ -1859,7 +1859,7 @@ public
     end
 
     def uniq
-        current = get_current()
+        current = get_current
         a = self.class.new
         @images.uniq.each {|image| a << image}
         a.set_current current
@@ -1867,7 +1867,7 @@ public
     end
 
     def uniq!(*args)
-        current = get_current()
+        current = get_current
         a = @images.uniq!
         set_current current
         return a.nil? ? nil : self

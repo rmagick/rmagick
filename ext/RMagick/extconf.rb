@@ -67,8 +67,8 @@ module RMagick
           exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find Magick-config or pkg-config in #{ENV['PATH']}\n"
         end
 
-        check_multiple_imagemagick_versions()
-        check_partial_imagemagick_versions()
+        check_multiple_imagemagick_versions
+        check_partial_imagemagick_versions
 
         # Ensure minimum ImageMagick version
         # Check minimum ImageMagick version if possible
@@ -161,7 +161,7 @@ SRC
     end
 
     # Seems like lots of people have multiple versions of ImageMagick installed.
-    def check_multiple_imagemagick_versions()
+    def check_multiple_imagemagick_versions
        versions = []
        path = ENV['PATH'].split(File::PATH_SEPARATOR)
        path.each do |dir|
@@ -188,7 +188,7 @@ SRC
     # ImageMagick in the prefix /usr (some libraries, no includes, and no
     # binaries). This causes problems when /usr/lib is in the path (e.g., using
     # the default Ruby installation).
-    def check_partial_imagemagick_versions()
+    def check_partial_imagemagick_versions
        prefix = config_string("prefix") || ""
        matches = [
          prefix+"/lib/lib?agick*",
@@ -414,7 +414,7 @@ SRC
       $defs.push("-DRUBY_VERSION_STRING=\"ruby #{RUBY_VERSION}\"")
       $defs.push("-DRMAGICK_VERSION_STRING=\"RMagick #{RMAGICK_VERS}\"")
 
-      create_header()
+      create_header
     end
 
     def create_makefile_file

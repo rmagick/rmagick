@@ -115,7 +115,7 @@ class ImageList2_UT < Test::Unit::TestCase
       assert_nothing_raised { @ilist.fx('1/2') }
       assert_nothing_raised { @ilist.fx('1/2', Magick::BlueChannel) }
       assert_nothing_raised { @ilist.fx('1/2', Magick::BlueChannel, Magick::RedChannel) }
-      assert_raise(ArgumentError) { @ilist.fx() }
+      assert_raise(ArgumentError) { @ilist.fx }
       assert_raise(ArgumentError) { @ilist.fx(Magick::BlueChannel) }
       assert_raise(TypeError) { @ilist.fx(1) }
       assert_raise(TypeError) { @ilist.fx('1/2', 1) }

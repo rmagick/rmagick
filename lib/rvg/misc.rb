@@ -122,7 +122,7 @@ module Magick
                     words = text.split(::Magick::RVG::WORD_SEP)
                     words.each do |word|
                         unless first_word
-                            wx, wy = get_word_spacing()
+                            wx, wy = get_word_spacing
                             x_rel_coords << wx
                             y_rel_coords << wy
                         end
@@ -176,7 +176,7 @@ module Magick
 
             class LRTextStrategy < TextStrategy
 
-                def get_word_spacing()
+                def get_word_spacing
                     @word_space ||= glyph_metrics(@ctx.text_attrs.glyph_orientation_horizontal, ' ')[0]
                     [@word_space + @ctx.text_attrs.word_spacing, 0]
                 end
@@ -192,7 +192,7 @@ module Magick
                     dy = y_rel_coords.max
 
                     # We're handling the anchoring.
-                    @ctx.gc.push()
+                    @ctx.gc.push
                     @ctx.gc.text_anchor(Magick::StartAnchor)
                     if @ctx.text_attrs.text_anchor == :end
                         x -= dx
@@ -228,7 +228,7 @@ module Magick
                         end
                     end
 
-                    @ctx.gc.pop()
+                    @ctx.gc.pop
                     [dx, 0]
                 end
 
@@ -245,7 +245,7 @@ module Magick
 
             class TBTextStrategy < TextStrategy
 
-                def get_word_spacing()
+                def get_word_spacing
                     @word_space ||= glyph_metrics(@ctx.text_attrs.glyph_orientation_vertical, ' ')[1]
                     [0, @word_space + @ctx.text_attrs.word_spacing]
                 end
@@ -261,7 +261,7 @@ module Magick
                     dy = y_rel_coords.inject(0) {|sum, a| sum + a}
 
                     # We're handling the anchoring.
-                    @ctx.gc.push()
+                    @ctx.gc.push
                     @ctx.gc.text_anchor(Magick::StartAnchor)
                     if @ctx.text_attrs.text_anchor == :end
                         y -= dy
@@ -308,7 +308,7 @@ module Magick
                         end
                     end
 
-                    @ctx.gc.pop()
+                    @ctx.gc.pop
                     [0, dy]
                 end
 
@@ -350,7 +350,7 @@ module Magick
 
                 WRITING_MODE = %w{lr-tb lr rl-tb rl tb-rl tb}
 
-                def initialize()
+                def initialize
                     @affine = Array.new
                     @affine << Magick::AffineMatrix.new(1, 0, 0, 1, 0, 0)
                     @baseline_shift = Array.new
@@ -369,7 +369,7 @@ module Magick
                     @writing_mode << 'lr-tb'
                 end
 
-                def push()
+                def push
                     @affine.push(@affine.last.dup)
                     @baseline_shift.push(@baseline_shift.last)
                     @text_anchor.push(@text_anchor.last)
@@ -380,7 +380,7 @@ module Magick
                     @word_spacing.push(@word_spacing.last)
                 end
 
-                def pop()
+                def pop
                     @affine.pop
                     @baseline_shift.pop
                     @text_anchor.pop
@@ -400,11 +400,11 @@ module Magick
                     @affine[-1].ty = ty
                 end
 
-                def affine()
+                def affine
                     @affine[-1]
                 end
 
-                def baseline_shift()
+                def baseline_shift
                     @baseline_shift[-1]
                 end
 
@@ -412,7 +412,7 @@ module Magick
                     @baseline_shift[-1] = value
                 end
 
-                def text_anchor()
+                def text_anchor
                     @text_anchor[-1]
                 end
 
@@ -420,7 +420,7 @@ module Magick
                     @text_anchor[-1] = anchor
                 end
 
-                def glyph_orientation_vertical()
+                def glyph_orientation_vertical
                     @glyph_orientation_vertical[-1]
                 end
 
@@ -428,7 +428,7 @@ module Magick
                     @glyph_orientation_vertical[-1] = angle
                 end
 
-                def glyph_orientation_horizontal()
+                def glyph_orientation_horizontal
                     @glyph_orientation_horizontal[-1]
                 end
 
@@ -436,7 +436,7 @@ module Magick
                     @glyph_orientation_horizontal[-1] = angle
                 end
 
-                def letter_spacing()
+                def letter_spacing
                     @letter_spacing[-1]
                 end
 
@@ -450,7 +450,7 @@ module Magick
                     @glyph_orientation_horizontal[-1] != 0
                 end
 
-                def word_spacing()
+                def word_spacing
                     @word_spacing[-1]
                 end
 
@@ -458,7 +458,7 @@ module Magick
                     @word_spacing[-1] = value
                 end
 
-                def writing_mode()
+                def writing_mode
                     @writing_mode[-1]
                 end
 
@@ -512,13 +512,13 @@ module Magick
 
               private
 
-                def init_matrix()
+                def init_matrix
                     @rx = @ry = 0
                     @sx = @sy = 1
                     @tx = @ty = 0
                 end
 
-                def concat_matrix()
+                def concat_matrix
                     curr = @text_attrs.affine
                     sx = curr.sx * @sx + curr.ry * @rx
                     rx = curr.rx * @sx + curr.sy * @rx
@@ -527,19 +527,19 @@ module Magick
                     tx = curr.sx * @tx + curr.ry * @ty + curr.tx
                     ty = curr.rx * @tx + curr.sy * @ty + curr.ty
                     @text_attrs.set_affine(sx, rx, ry, sy, tx, ty)
-                    init_matrix()
+                    init_matrix
                 end
 
               public
 
                 attr_reader :gc, :text_attrs
 
-                def initialize()
+                def initialize
                     @gc = Magick::Draw.new
                     @shadow = Array.new
                     @shadow << Magick::Draw.new
                     @text_attrs = TextAttributes.new
-                    init_matrix()
+                    init_matrix
                 end
 
                 def method_missing(methID, *args, &block)
@@ -617,7 +617,7 @@ module Magick
                     nil
                 end
 
-                def inspect()
+                def inspect
                     @gc.inspect
                 end
 
@@ -626,14 +626,14 @@ module Magick
                     nil
                 end
 
-                def push()
+                def push
                     @gc.push
                     @shadow.push(@shadow.last.dup)
                     @text_attrs.push
                     nil
                 end
 
-                def pop()
+                def pop
                     @gc.pop
                     @shadow.pop
                     @text_attrs.pop
@@ -647,7 +647,7 @@ module Magick
                     @rx =  Math.sin(GraphicContext.degrees_to_radians(degrees))
                     @ry = -Math.sin(GraphicContext.degrees_to_radians(degrees))
                     @sy =  Math.cos(GraphicContext.degrees_to_radians(degrees))
-                    concat_matrix()
+                    concat_matrix
                     nil
                 end
 
@@ -655,11 +655,11 @@ module Magick
                     sx, sy = Magick::RVG.convert_to_float(sx, sy)
                     @gc.scale(sx, sy)
                     @sx, @sy = sx, sy
-                    concat_matrix()
+                    concat_matrix
                     nil
                 end
 
-                def shadow()
+                def shadow
                     @shadow.last
                 end
 
@@ -667,7 +667,7 @@ module Magick
                     degrees = Magick::RVG.convert_one_to_float(degrees)
                     @gc.skewX(degrees)
                     @ry = Math.tan(GraphicContext.degrees_to_radians(degrees))
-                    concat_matrix()
+                    concat_matrix
                     nil
                 end
 
@@ -675,7 +675,7 @@ module Magick
                     degrees = Magick::RVG.convert_one_to_float(degrees)
                     @gc.skewY(degrees)
                     @rx = Math.tan(GraphicContext.degrees_to_radians(degrees))
-                    concat_matrix()
+                    concat_matrix
                     nil
                 end
 
@@ -718,7 +718,7 @@ module Magick
                     tx, ty = Magick::RVG.convert_to_float(tx, ty)
                     @gc.translate(tx, ty)
                     @tx, @ty = tx, ty
-                    concat_matrix()
+                    concat_matrix
                     nil
                 end
 

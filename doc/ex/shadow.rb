@@ -19,7 +19,7 @@ before.border!(1,1,'gray80')
 before.write('shadow_before.gif')
 
 # Create the shadow.
-shadow = img.shadow()
+shadow = img.shadow
 # Composite the original image over the shadow, composite the result
 # onto a white background, add a border, write it to the "after" file.
 shadow = shadow.composite(img, Magick::NorthWestGravity, Magick::OverCompositeOp)

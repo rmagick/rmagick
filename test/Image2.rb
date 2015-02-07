@@ -928,7 +928,7 @@ class Image2_UT < Test::Unit::TestCase
     def level_colors
       res = nil
       assert_nothing_raised do
-        res = @img.level_colors()
+        res = @img.level_colors
       end
       assert_instance_of(Magick::Image, res)
       assert_not_same(@img, res)
@@ -960,7 +960,7 @@ class Image2_UT < Test::Unit::TestCase
       # too many arguments
       assert_raise(ArgumentError) { @img.levelize_channel(0, Magick::QuantumRange, 0.5, 1, Magick::RedChannel) }
       # not enough arguments
-      assert_raise(ArgumentError) { @img.levelize_channel() }
+      assert_raise(ArgumentError) { @img.levelize_channel }
     end
 
 =begin
@@ -1251,7 +1251,7 @@ class Image2_UT < Test::Unit::TestCase
       # Too many arguments
       assert_raise(ArgumentError) { @img.paint_transparent("red", Magick::TransparentOpacity, true, 50, 50) }
       # Not enough
-      assert_raise(ArgumentError) { @img.paint_transparent() }
+      assert_raise(ArgumentError) { @img.paint_transparent }
       assert_raise(TypeError) { @img.paint_transparent("red", Magick::TransparentOpacity, true, []) }
       assert_raise(TypeError) { @img.paint_transparent("red", "blue") }
       assert_raise(TypeError) { @img.paint_transparent(50) }

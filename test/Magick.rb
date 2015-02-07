@@ -107,7 +107,7 @@ class Magick_UT < Test::Unit::TestCase
 
     def test_geometry
       g, gs, g2, gs2 = nil, nil, nil, nil
-      assert_nothing_raised { g = Magick::Geometry.new() }
+      assert_nothing_raised { g = Magick::Geometry.new }
       assert_nothing_raised { gs = g.to_s }
       assert_equal("", gs)
 
@@ -300,7 +300,7 @@ class Magick_UT < Test::Unit::TestCase
         assert_raise(ArgumentError) { Magick::limit_resource(:xxx) }
         assert_raise(ArgumentError) { Magick::limit_resource("xxx") }
         assert_raise(ArgumentError) { Magick::limit_resource("map", 3500, 2) }
-        assert_raise(ArgumentError) { Magick::limit_resource() }
+        assert_raise(ArgumentError) { Magick::limit_resource }
     end
 
     def test_trace_proc

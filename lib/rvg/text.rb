@@ -84,11 +84,11 @@ module Magick
                 super
             end
 
-            def cx()
+            def cx
                 @parent.cx
             end
 
-            def cy()
+            def cy
                 @parent.cy
             end
 

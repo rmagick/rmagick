@@ -178,7 +178,7 @@ class Image3_UT < Test::Unit::TestCase
        assert_nothing_raised { @img.remap(remap_image, Magick::RiemersmaDitherMethod) }
        assert_nothing_raised { @img.remap(remap_image, Magick::FloydSteinbergDitherMethod) }
 
-       assert_raise(ArgumentError) {@img.remap() }
+       assert_raise(ArgumentError) {@img.remap }
        assert_raise(ArgumentError) {@img.remap(remap_image, Magick::NoDitherMethod, 1) }
        assert_raise(TypeError) {@img.remap(remap_image, 1) }
     end

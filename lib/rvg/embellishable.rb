@@ -223,7 +223,7 @@ module Magick
                 gc.composite(@x+tx, @y+ty, width*scale, height*scale, @image)
             end
 
-            def init_viewbox()
+            def init_viewbox
                 @align = nil
                 @vbx_width, @vbx_height = @image.columns, @image.rows
                 @meet_or_slice = 'meet'
@@ -241,7 +241,7 @@ module Magick
                 if @width < 0 || @height < 0
                     raise ArgumentError, "width, height must be >= 0"
                 end
-                init_viewbox()
+                init_viewbox
             end
 
             def add_primitives(gc)      #:nodoc:

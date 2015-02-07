@@ -60,7 +60,7 @@ module Magick
 
         # background_fill defaults to 'none'. If background_fill has been set to something
         # else, combine it with the background_fill_opacity.
-        def bgfill()
+        def bgfill
             if @background_fill.nil?
                 color = Magick::Pixel.new(0,0,0,Magick::TransparentOpacity)
             else
@@ -82,7 +82,7 @@ module Magick
                             Magick::Image.new(@width, @height, Magick::TextureFill.new(@background_image))
                         when :fit
                             width, height = @width, @height
-                            bgcolor = bgfill()
+                            bgcolor = bgfill
                             @background_image.change_geometry(Magick::Geometry.new(width, height)) do |new_cols, new_rows|
                                 bg_image = @background_image.resize(new_cols, new_rows)
                                 if bg_image.columns != width || bg_image.rows != height
@@ -96,7 +96,7 @@ module Magick
                     canvas = @background_image.copy
                 end
             else
-                bgcolor = bgfill()
+                bgcolor = bgfill
                 canvas = Magick::Image.new(Integer(@width), Integer(@height)) { self.background_color = bgcolor }
             end
             canvas[:desc] = @desc if @desc

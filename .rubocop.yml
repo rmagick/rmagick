@@ -178,11 +178,6 @@ Style/CommentIndentation:
 Style/ConstantName:
   Enabled: false
 
-# Offense count: 29
-# Cop supports --auto-correct.
-Style/DefWithParentheses:
-  Enabled: false
-
 # Offense count: 12
 # Cop supports --auto-correct.
 Style/DeprecatedHashMethods:
@@ -313,11 +308,6 @@ Style/LeadingCommentSpace:
 # Offense count: 14
 # Cop supports --auto-correct.
 Style/LineEndConcatenation:
-  Enabled: false
-
-# Offense count: 63
-# Cop supports --auto-correct.
-Style/MethodCallParentheses:
   Enabled: false
 
 # Offense count: 4
