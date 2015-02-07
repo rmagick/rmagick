@@ -286,7 +286,7 @@ Usage: histogram.rb <image-filename>
 END_INFO
 
 # Get filename from command line.
-if !ARGV[0] then
+if !ARGV[0]
     puts "No filename argument. Defaulting to Flower_Hat.jpg"
     filename = '../doc/ex/images/Flower_Hat.jpg'
 else

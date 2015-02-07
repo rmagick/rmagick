@@ -297,7 +297,7 @@ begin
     # format is a fixed-size image, so I don't need to specify a size.
     puts "Adding logo image..."
     logo = Image.read("logo:").first
-    if /GraphicsMagick/.match Magick_version then
+    if /GraphicsMagick/.match Magick_version
         logo.resize!(200.0/logo.rows)
     else
         logo.crop!(98, 0, 461, 455).resize!(0.45)

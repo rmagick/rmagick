@@ -315,11 +315,6 @@ Style/LineEndConcatenation:
 Style/MethodName:
   Enabled: false
 
-# Offense count: 8
-# Cop supports --auto-correct.
-Style/MultilineIfThen:
-  Enabled: false
-
 # Offense count: 14
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.

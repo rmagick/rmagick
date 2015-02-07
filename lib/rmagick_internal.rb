@@ -567,7 +567,7 @@ class Draw
             primitive "stroke-dasharray none"
         else
             list.each { |x|
-                if x <= 0 then
+                if x <= 0
                     Kernel.raise ArgumentError, "dash array elements must be > 0 (#{x} given)"
                 end
             }
@@ -1423,7 +1423,7 @@ public
 
     def [](*args)
         a = @images[*args]
-        if a.respond_to?(:each) then
+        if a.respond_to?(:each)
             ilist = self.class.new
             a.each {|image| ilist << image}
             a = ilist
@@ -1433,7 +1433,7 @@ public
 
     def []=(*args)
         obj = @images.[]=(*args)
-        if obj && obj.respond_to?(:each) then
+        if obj && obj.respond_to?(:each)
             is_an_image_array(obj)
             set_current obj.last.__id__
         elsif obj
@@ -1827,7 +1827,7 @@ public
         slice = @images.slice(*args)
         if slice
             ilist = self.class.new
-            if slice.respond_to?(:each) then
+            if slice.respond_to?(:each)
                 slice.each {|image| ilist << image}
             else
                 ilist << slice
