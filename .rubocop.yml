@@ -462,8 +462,11 @@ Style/SpaceInsideBrackets:
 Style/SpaceInsideHashLiteralBraces:
   Enabled: false
 
-# Offense count: 73
+# Offense count: 35
 # Cop supports --auto-correct.
+# Many method calls in consecutive lines in RMagick have parameters aligned vertically.
+# Therefore this cop should better be disabled.
+# But you can delete this rule temporarily, run `rubocop -a`, and commit good fixes only.
 Style/SpaceInsideParens:
   Enabled: false
 

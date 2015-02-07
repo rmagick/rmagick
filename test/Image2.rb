@@ -291,7 +291,7 @@ class Image2_UT < Test::Unit::TestCase
                   assert_raises(Magick::DestroyedImageError) { @img.send(method, *args) }
               else
                   # Don't know how to test!
-                  flunk("don't know how to test method #{method}" )
+                  flunk("don't know how to test method #{method}")
           end
       end
     end
@@ -375,7 +375,7 @@ class Image2_UT < Test::Unit::TestCase
         src = Magick::Image.new(@img.columns, @img.rows)
         src_list = Magick::ImageList.new
         src_list << src.copy
-        assert_nothing_raised { @img.dissolve(src, 0.50 ) }
+        assert_nothing_raised { @img.dissolve(src, 0.50) }
         assert_nothing_raised { @img.dissolve(src_list, 0.50) }
         assert_nothing_raised { @img.dissolve(src, '50%') }
         assert_nothing_raised { @img.dissolve(src, 0.50, 0.10) }
@@ -825,10 +825,10 @@ class Image2_UT < Test::Unit::TestCase
                 pixels.all? { |p| p.is_a? Magick::Pixel }
             end
         end
-        assert_raise(RangeError) { @img.get_pixels( 0,  0, -1, 1) }
-        assert_raise(RangeError) { @img.get_pixels( 0,  0, @img.columns, -1) }
-        assert_raise(RangeError) { @img.get_pixels( 0,  0, @img.columns+1, 1) }
-        assert_raise(RangeError) { @img.get_pixels( 0,  0, @img.columns, @img.rows+1) }
+        assert_raise(RangeError) { @img.get_pixels(0,  0, -1, 1) }
+        assert_raise(RangeError) { @img.get_pixels(0,  0, @img.columns, -1) }
+        assert_raise(RangeError) { @img.get_pixels(0,  0, @img.columns+1, 1) }
+        assert_raise(RangeError) { @img.get_pixels(0,  0, @img.columns, @img.rows+1) }
     end
 
     def test_gray?
