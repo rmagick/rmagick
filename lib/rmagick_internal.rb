@@ -1411,7 +1411,7 @@ public
         end
         if @scene.nil? && other.scene.nil?
             return 0
-        elsif @scene.nil? && ! other.scene.nil?
+        elsif @scene.nil? && !other.scene.nil?
             Kernel.raise TypeError, "cannot convert nil into #{other.scene.class}"
         elsif ! @scene.nil? && other.scene.nil?
             Kernel.raise TypeError, "cannot convert nil into #{self.scene.class}"

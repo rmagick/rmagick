@@ -1260,7 +1260,7 @@ class Image2_UT < Test::Unit::TestCase
     def test_palette?
         img = Magick::Image.read(IMAGES_DIR+'/Flower_Hat.jpg').first
         assert_nothing_raised do
-            assert_block { ! img.palette? }
+            assert_block { !img.palette? }
         end
         img = Magick::Image.read(IMAGES_DIR+'/Button_0.gif').first
         assert_block { img.palette? }

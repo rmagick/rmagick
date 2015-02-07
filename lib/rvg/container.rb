@@ -107,7 +107,7 @@ module Magick
                 # If the element is not a group, defs, symbol, or rvg,
                 # wrap a group around it so it can get a transform and
                 # possibly a new viewport.
-                if ! element.respond_to?(:ref)
+                if !element.respond_to?(:ref)
                     @element = Group.new
                     @element << element.deep_copy
                 else

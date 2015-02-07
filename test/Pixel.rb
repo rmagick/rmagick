@@ -42,7 +42,7 @@ class Pixel_UT < Test::Unit::TestCase
       blue = Magick::Pixel.from_color('blue')
       assert_nothing_raised { red.fcmp(red) }
       assert(red.fcmp(red))
-      assert(! red.fcmp(blue) )
+      assert(!red.fcmp(blue) )
 
       assert_nothing_raised { red.fcmp(blue, 10) }
       assert_nothing_raised { red.fcmp(blue, 10, Magick::RGBColorspace) }
