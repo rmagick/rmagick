@@ -10,8 +10,8 @@ module Magick
             puts filename + "\n"
             puts "\tFormat: #{format}\n"
             puts "\tGeometry: #{columns}x#{rows}\n"
-            puts "\tClass: #{class_type.to_s}\n"
-            puts "\tType: #{image_type.to_s}\n"
+            puts "\tClass: #{class_type}\n"
+            puts "\tType: #{image_type}\n"
             puts "\tEndianess: #{endian}\n"
             puts "\tColorspace: #{colorspace}\n"
             puts "\tChannelDepth:\n"
@@ -99,7 +99,7 @@ module Magick
             puts "\tMean error per pixel: #{mean_error_per_pixel}\n" if mean_error_per_pixel != 0.0
             puts "\tNormalized mean error: #{normalized_mean_error}\n" if normalized_mean_error != 0.0
             puts "\tNormalized maximum error: #{normalized_maximum_error}\n" if normalized_maximum_error != 0.0
-            puts "\tRendering-intent: #{rendering_intent.to_s}\n"
+            puts "\tRendering-intent: #{rendering_intent}\n"
             puts "\tGamma: #{gamma}\n" if gamma != 0.0
             chrom = chromaticity
             if chrom.red_primary.x != 0.0 || chrom.green_primary.x != 0.0 || chrom.blue_primary.x != 0.0 || chrom.white_point.x != 0.0
@@ -116,7 +116,7 @@ module Magick
             if x_resolution != 0.0 && y_resolution != 0.0
                 puts "\tResolution: #{sprintf("%gx%g", x_resolution, y_resolution)}\n"
             end
-            puts "\tUnits: #{units.to_s}\n"
+            puts "\tUnits: #{units}\n"
             size = filesize
             if size >= 1048576
                 puts "\tFilesize: #{"%.1f" % (size/1048576.0)}mb\n"
@@ -125,7 +125,7 @@ module Magick
             else
                 puts "\tFilesize: #{size}b\n"
             end
-            puts "\tInterlace: #{interlace.to_s}\n"
+            puts "\tInterlace: #{interlace}\n"
             puts "\tBackground Color: #{background_color}\n"
             puts "\tBorder Color: #{border_color}\n"
             puts "\tMatte Color: #{matte_color}\n"
@@ -133,13 +133,13 @@ module Magick
             if pg.width != 0 || pg.height != 0 || pg.x != 0 || pg.y != 0
                 puts "\tPage geometry: #{pg.width}x#{pg.height}+#{pg.x}+#{pg.y}\n"
             end
-            puts "\tDispose: #{dispose.to_s}\n"
+            puts "\tDispose: #{dispose}\n"
             puts "\tDelay: #{delay}\n" if delay != 0
             puts "\tIterations: #{iterations}\n" unless iterations == 1
             puts "\tScene: #{scene}\n" if scene != 0
-            puts "\tCompression: #{compression.to_s}\n"
+            puts "\tCompression: #{compression}\n"
             puts "\tQuality: #{quality}\n" unless quality == 0
-            puts "\tOrientation: #{orientation.to_s}\n"
+            puts "\tOrientation: #{orientation}\n"
             puts "\tMontage: #{montage}\n" if montage
             signature # compute but ignore - will be displayed along with the other properties
             properties.each do |prop, value|

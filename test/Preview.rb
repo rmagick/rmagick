@@ -46,7 +46,7 @@ class Preview_UT < Test::Unit::TestCase
         end
         puts "\n"
         preview_types.each do |type|
-            puts "testing #{type.to_s}..."
+            puts "testing #{type}..."
             assert_nothing_raised { hat.preview(type) }
         end
         assert_raise(TypeError) { hat.preview(2) }
