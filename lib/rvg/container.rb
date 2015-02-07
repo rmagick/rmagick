@@ -75,7 +75,7 @@ module Magick
 
             # Translate container according to #use arguments
             def ref(x, y, width, height)    #:nodoc:
-                translate(x, y) if (x != 0 || y != 0)
+                translate(x, y) if x != 0 || y != 0
             end
 
             # Append an arbitrary object to the group's content. Called

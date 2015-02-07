@@ -243,7 +243,7 @@ module Magick
         # Accept #use arguments. Use (x,y) to generate an additional translate.
         # Override @width and @height if new values are supplied.
         def ref(x, y, rw, rh)   #:nodoc:
-            translate(x, y) if (x != 0 || y != 0)
+            translate(x, y) if x != 0 || y != 0
             @width = rw if rw
             @height = rh if rh
         end
@@ -252,7 +252,7 @@ module Magick
         def corner(x, y)        #:nodoc:
             @nested = true
             @x, @y = Float(x), Float(y)
-            translate(@x, @y) if (@x != 0.0 || @y != 0.0)
+            translate(@x, @y) if @x != 0.0 || @y != 0.0
         end
 
         # Primitives for the outermost RVG object

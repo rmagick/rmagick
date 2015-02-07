@@ -114,11 +114,11 @@ module Magick
 
                 gc.clip_path(name)
                 # Add a non-scaled translation if meet or slice
-                gc.translate(tx, ty) if (tx.abs > 1.0e-10 || ty.abs > 1.0e-10)
+                gc.translate(tx, ty) if tx.abs > 1.0e-10 || ty.abs > 1.0e-10
                 # Scale viewbox as necessary
-                gc.scale(sx, sy) if (sx != 1.0 || sy != 1.0)
+                gc.scale(sx, sy) if sx != 1.0 || sy != 1.0
                 # Add a scaled translation if non-0 origin
-                gc.translate(-@vbx_x, -@vbx_y) if (@vbx_x.abs != 0.0 || @vbx_y.abs != 0)
+                gc.translate(-@vbx_x, -@vbx_y) if @vbx_x.abs != 0.0 || @vbx_y.abs != 0
             end
 
             def initialize(*args, &block)

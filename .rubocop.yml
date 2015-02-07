@@ -365,12 +365,6 @@ Style/NumericLiterals:
 Style/OpMethod:
   Enabled: false
 
-# Offense count: 24
-# Cop supports --auto-correct.
-# Configuration parameters: AllowSafeAssignment.
-Style/ParenthesesAroundCondition:
-  Enabled: false
-
 # Offense count: 19
 # Cop supports --auto-correct.
 # Configuration parameters: PreferredDelimiters.
