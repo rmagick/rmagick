@@ -217,7 +217,7 @@ Colors: #{number_colors}
                     blue[pixel.blue & MAX_QUANTUM] += 1
 
                     # Only count opacity channel if some pixels are not opaque.
-                    if !opaque?
+                    unless opaque?
                         alpha[pixel.opacity & MAX_QUANTUM] += 1
                     end
                     v = pixel_intensity(pixel)

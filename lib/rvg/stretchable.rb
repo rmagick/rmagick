@@ -148,7 +148,7 @@ module Magick
 
                 # return the user-coordinate space attributes if defined
                 class << self
-                  if not defined? @redefined then
+                  unless defined? @redefined then
                     @redefined = true
                     define_method(:x) { @vbx_x }
                     define_method(:y) { @vbx_y }

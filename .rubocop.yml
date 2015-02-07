@@ -330,11 +330,6 @@ Style/MultilineOperationIndentation:
 Style/MultilineTernaryOperator:
   Enabled: false
 
-# Offense count: 45
-# Cop supports --auto-correct.
-Style/NegatedIf:
-  Enabled: false
-
 # Offense count: 3
 # Configuration parameters: EnforcedStyle, MinBodyLength, SupportedStyles.
 Style/Next:

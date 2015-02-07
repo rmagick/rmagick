@@ -249,7 +249,7 @@ class Draw
 
     # Define the clipping rule.
     def clip_rule(rule)
-        if  not ["evenodd", "nonzero"].include?(rule.downcase)
+        unless  ["evenodd", "nonzero"].include?(rule.downcase)
             Kernel.raise ArgumentError, "Unknown clipping rule #{rule}"
         end
         primitive "clip-rule #{rule}"
@@ -257,7 +257,7 @@ class Draw
 
     # Define the clip units
     def clip_units(unit)
-        if  not ["userspace", "userspaceonuse", "objectboundingbox"].include?(unit.downcase)
+        unless  ["userspace", "userspaceonuse", "objectboundingbox"].include?(unit.downcase)
             Kernel.raise ArgumentError, "Unknown clip unit #{unit}"
         end
         primitive "clip-units #{unit}"
@@ -266,7 +266,7 @@ class Draw
     # Set color in image according to specified colorization rule. Rule is one of
     # point, replace, floodfill, filltoborder,reset
     def color(x, y, method)
-        if  not PAINT_METHOD_NAMES.has_key?(method.to_i)
+        unless  PAINT_METHOD_NAMES.has_key?(method.to_i)
             Kernel.raise ArgumentError, "Unknown PaintMethod: #{method}"
         end
         primitive "color #{x},#{y},#{PAINT_METHOD_NAMES[method.to_i]}"
@@ -325,7 +325,7 @@ class Draw
     end
 
     def fill_rule(rule)
-        if  not ["evenodd", "nonzero"].include?(rule.downcase)
+        unless  ["evenodd", "nonzero"].include?(rule.downcase)
             Kernel.raise ArgumentError, "Unknown fill rule #{rule}"
         end
         primitive "fill-rule #{rule}"
@@ -341,14 +341,14 @@ class Draw
     end
 
     def font_stretch(stretch)
-        if  not STRETCH_TYPE_NAMES.has_key?(stretch.to_i)
+        unless  STRETCH_TYPE_NAMES.has_key?(stretch.to_i)
             Kernel.raise ArgumentError, "Unknown stretch type"
         end
         primitive "font-stretch #{STRETCH_TYPE_NAMES[stretch.to_i]}"
     end
 
     def font_style(style)
-        if  not STYLE_TYPE_NAMES.has_key?(style.to_i)
+        unless  STYLE_TYPE_NAMES.has_key?(style.to_i)
             Kernel.raise ArgumentError, "Unknown style type"
         end
         primitive "font-style #{STYLE_TYPE_NAMES[style.to_i]}"
@@ -367,7 +367,7 @@ class Draw
     # Specify the text positioning gravity, one of:
     # NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast
     def gravity(grav)
-        if  not GRAVITY_NAMES.has_key?(grav.to_i)
+        unless  GRAVITY_NAMES.has_key?(grav.to_i)
             Kernel.raise ArgumentError, "Unknown text positioning gravity"
         end
         primitive "gravity #{GRAVITY_NAMES[grav.to_i]}"
@@ -417,7 +417,7 @@ class Draw
     # Set matte (make transparent) in image according to the specified
     # colorization rule
     def matte(x, y, method)
-        if  not PAINT_METHOD_NAMES.has_key?(method.to_i)
+        unless  PAINT_METHOD_NAMES.has_key?(method.to_i)
             Kernel.raise ArgumentError, "Unknown paint method"
         end
         primitive "matte #{x},#{y} #{PAINT_METHOD_NAMES[method.to_i]}"
@@ -581,14 +581,14 @@ class Draw
     end
 
     def stroke_linecap(value)
-        if  not ["butt", "round", "square"].include?(value.downcase)
+        unless  ["butt", "round", "square"].include?(value.downcase)
             Kernel.raise ArgumentError, "Unknown linecap type: #{value}"
         end
         primitive "stroke-linecap #{value}"
     end
 
     def stroke_linejoin(value)
-        if  not ["round", "miter", "bevel"].include?(value.downcase)
+        unless  ["round", "miter", "bevel"].include?(value.downcase)
             Kernel.raise ArgumentError, "Unknown linejoin type: #{value}"
         end
         primitive "stroke-linejoin #{value}"
@@ -634,7 +634,7 @@ class Draw
 
     # Specify text alignment relative to a given point
     def text_align(alignment)
-        if  not ALIGN_TYPE_NAMES.has_key?(alignment.to_i)
+        unless  ALIGN_TYPE_NAMES.has_key?(alignment.to_i)
             Kernel.raise ArgumentError, "Unknown alignment constant: #{alignment}"
         end
         primitive "text-align #{ALIGN_TYPE_NAMES[alignment.to_i]}"
@@ -642,7 +642,7 @@ class Draw
 
     # SVG-compatible version of text_align
     def text_anchor(anchor)
-        if  not ANCHOR_TYPE_NAMES.has_key?(anchor.to_i)
+        unless  ANCHOR_TYPE_NAMES.has_key?(anchor.to_i)
             Kernel.raise ArgumentError, "Unknown anchor constant: #{anchor}"
         end
         primitive "text-anchor #{ANCHOR_TYPE_NAMES[anchor.to_i]}"
@@ -1138,7 +1138,7 @@ class Image
 
             def []=(*args)
                 rv = args.delete_at(-1)     # get rvalue
-                if ! rv.is_a?(Pixel)        # must be a Pixel or a color name
+                unless rv.is_a?(Pixel)        # must be a Pixel or a color name
                     begin
                         rv = Pixel.from_color(rv)
                     rescue TypeError
@@ -1500,7 +1500,7 @@ public
 
     # Return the current image
     def cur_image
-        if ! @scene
+        unless @scene
             Kernel.raise IndexError, "no images in this list"
         end
         @images[@scene]
@@ -1769,7 +1769,7 @@ public
     def reject!(&block)
         current = get_current
         a = @images.reject!(&block)
-        @images = a if !a.nil?
+        @images = a unless a.nil?
         set_current current
         return a.nil? ? nil : self
     end

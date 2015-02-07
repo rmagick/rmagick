@@ -7,7 +7,7 @@ module Magick
         class << self
             attr_reader :dpi
             def dpi=(n)
-                if !defined?(@dpi)
+                unless defined?(@dpi)
                     [Float, Fixnum].each do |c|
                         c.class_eval <<-END_DEFS
                             # the default measurement - 1px is 1 pixel

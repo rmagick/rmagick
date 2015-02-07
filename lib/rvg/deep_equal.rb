@@ -26,7 +26,7 @@ module Magick
                                 puts "#{iv} has deep_equal but self.#{iv} and other.#{iv} are the same object."
                                 return false
                             end
-                            if !itv.deep_equal(otv)
+                            unless itv.deep_equal(otv)
                                 puts "Not equal.\nself.#{iv}=#{itv.inspect}\nother.#{iv}=#{otv.inspect}"
                                 return false
                             end
