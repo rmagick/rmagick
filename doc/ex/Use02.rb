@@ -7,7 +7,7 @@ rvg = Magick::RVG.new(10.cm, 3.5.cm).viewbox(0, 0, 100, 35) do |canvas|
     canvas.desc = "Example Use02 - Chain 'styles' to 'use'"
     r = Magick::RVG::Group.new do |grp|
             grp.rect(60, 10).styles(:fill=>'yellow')
-        end
+    end
     canvas.rect(99.6, 34.6, 0.1, 0.1).styles(:fill=>'none', :stroke=>'blue', :stroke_width=>0.2)
 
     # Since the rectangle specified the fill color the :fill style is ignored here.

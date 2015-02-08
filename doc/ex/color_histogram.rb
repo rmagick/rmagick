@@ -37,7 +37,7 @@ text.annotate(canvas, 0, 0, 0, 20, "Color Frequency\nHistogram") do
     self.pointsize = 10
     self.gravity = Magick::NorthGravity
     self.stroke = 'transparent'
-    end
+end
 
 canvas.border!(1, 1, "white")
 canvas.border!(1, 1, "black")

@@ -6,7 +6,7 @@ require "rmagick"
 
 before = Magick::Image.new(200,200) do
     self.background_color = 'black'
-    end
+end
 
 circle = Magick::Draw.new
 circle.fill('transparent')

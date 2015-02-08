@@ -53,7 +53,7 @@ begin
         self.stroke = "gold"
         self.fill = "gold"
         self.gravity = NorthGravity
-        end
+    end
 
     puts "   blur..."
     example << model.blur_image(0.0, 1.5)
@@ -150,7 +150,7 @@ begin
     puts "   gradient..."
     example.read("gradient:#20a0ff-#ffff00") do
         self.size = Geometry.new(model.columns, model.rows)
-        end
+    end
     example.cur_image[:Label] = "Gradient"
 
     puts "   grayscale..."
@@ -189,7 +189,7 @@ begin
     puts "   plasma..."
     example.read("plasma:fractal") do
         self.size = Geometry.new(model.columns, model.rows)
-        end
+    end
     example.cur_image[:Label] = "Plasma"
 
     puts "   quantize..."

@@ -20,7 +20,7 @@ f = 1
     # Annotate the previous image
     legend.annotate(img[f-1], 0,0,7,10, f.to_s)
     f += 1
-    end
+end
 
 # Annotate the last image
 legend.annotate(img, 0,0,7,10, f.to_s)
@@ -29,7 +29,7 @@ legend.annotate(img, 0,0,7,10, f.to_s)
 imgs = img.montage do
     self.geometry = Magick::Geometry.new(img.columns, img.rows)
     self.tile = "2x2"
-    end
+end
 
 imgs.write('contrast.jpg')
 #imgs.display

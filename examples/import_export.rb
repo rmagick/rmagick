@@ -20,7 +20,7 @@ begin
     img.rows.times do |r|
         scanline = img.export_pixels(0, r, img.columns, 1, "RGB");
         copy.import_pixels(0, r, img.columns, 1, "RGB", scanline);
-        end
+    end
 rescue NotImplementedError
     $stderr.puts "The export_pixels and import_pixels methods are not supported" +
                  " by this version of ImageMagick/GraphicsMagick"

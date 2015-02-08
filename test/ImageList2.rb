@@ -301,7 +301,7 @@ class ImageList2_UT < Test::Unit::TestCase
             res = @ilist.quantize
             assert_instance_of(Magick::ImageList, res)
             assert_equal(1, res.scene)
-            end
+        end
         assert_nothing_raised { @ilist.quantize(128) }
         assert_raise(TypeError) { @ilist.quantize('x') }
         assert_nothing_raised { @ilist.quantize(128, Magick::RGBColorspace) }

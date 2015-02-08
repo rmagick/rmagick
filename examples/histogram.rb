@@ -178,7 +178,7 @@ Colors: #{number_colors}
                 self.stroke = 'transparent'
                 self.fill = fg
                 self.gravity = CenterGravity
-                end
+            end
             info['Label'] = 'Info'
 
             return info

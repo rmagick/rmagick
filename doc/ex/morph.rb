@@ -13,7 +13,7 @@ number = '0'
 4.times do
     i.read "images/Button_" + number + ".gif"
     number.succ!
-    end
+end
 
 puts "This may take a few seconds..."
 morph = i.morph 8

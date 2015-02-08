@@ -37,7 +37,7 @@ montage = pairs.montage do
     self.geometry = "#{pairs.columns}x#{pairs.rows}+0+0"
     self.tile = "6x3"
     self.border_width = 1
-    end
+end
 montage.write('crop_with_gravity.miff')
 #montage.display
 

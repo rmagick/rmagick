@@ -741,7 +741,7 @@ class Image1_UT < Test::Unit::TestCase
         composite_ops.each do |op|
             gravity.each do |grav|
                 assert_nothing_raised { img1.composite(img2, grav, 0, 0, op) }
-                end
+            end
         end
         assert_raise(TypeError) { img1.composite(img2, 0, 0, 2, Magick::OverCompositeOp) }
 

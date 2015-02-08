@@ -17,7 +17,7 @@ ann.annotate(img, 0,0,0,0, "TextureFill.new(granite)") do
     self.font_weight = Magick::BoldWeight
     self.stroke = 'transparent'
     self.pointsize = 14
-    end
+end
 
 #img.display
 img.write("texturefill.gif")

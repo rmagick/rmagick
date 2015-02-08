@@ -34,7 +34,7 @@ begin
     monitor = Proc.new do |text, quantum, span|
         printf("Extracting watermark...%3.0f%% complete\n", ((1.0-(quantum/span.to_f))*100.0))
         true
-        end
+    end
 
     stegano = Magick::Image.read('stegano:img.miff') do
         self.size = Magick::Geometry.new(wmcols, wmrows, 91)

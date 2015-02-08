@@ -41,7 +41,7 @@ begin
               self.background_color = "none"
               self.geometry = "100x100+10+10"
               self.tile = "2x2"
-            end
+  end
 
   montage.write("sparse_color.png")
 

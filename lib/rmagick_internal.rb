@@ -1612,7 +1612,7 @@ public
         end
         blobs.each do |b|
             Magick::Image.from_blob(b, &block).each { |n| @images << n  }
-            end
+        end
         @scene = length - 1
         self
     end
@@ -1623,7 +1623,7 @@ public
         @scene = nil
         filenames.each do |f|
             Magick::Image.read(f, &block).each { |n| @images << n }
-            end
+        end
         if length > 0
             @scene = length - 1     # last image in array
         end
@@ -1723,7 +1723,7 @@ public
         end
         files.each do |f|
             Magick::Image.ping(f, &block).each { |n| @images << n }
-            end
+        end
         @scene = length - 1
         self
     end
@@ -1751,7 +1751,7 @@ public
         end
         files.each do |f|
             Magick::Image.read(f, &block).each { |n| @images << n }
-            end
+        end
         @scene = length - 1
         self
     end

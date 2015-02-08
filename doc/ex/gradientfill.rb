@@ -20,7 +20,7 @@ ann.annotate(img, 0,0,0,0, "GradientFill.new(0, 0, 0, #{Rows}, '#{Start}', '#{En
     self.fill = 'white'
     self.stroke = 'transparent'
     self.pointsize = 14
-    end
+end
 
 #img.display
 img.write("gradientfill.gif")

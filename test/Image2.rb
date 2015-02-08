@@ -234,7 +234,7 @@ class Image2_UT < Test::Unit::TestCase
         res = @img.deskew
         assert_instance_of(Magick::Image, res)
         assert_not_same(@img, res)
-      end
+       end
 
       assert_nothing_raised { @img.deskew(0.10) }
       assert_nothing_raised { @img.deskew("95%") }
@@ -542,7 +542,7 @@ class Image2_UT < Test::Unit::TestCase
         assert_nothing_raised do
             res = @img.export_pixels(0, 0, 10, 10, 'RGBA')
             assert_equal(10*10*"RGBA".length, res.length)
-       end
+        end
        assert_nothing_raised do
             res = @img.export_pixels(0, 0, 10, 10, 'I')
             assert_equal(10*10*"I".length, res.length)

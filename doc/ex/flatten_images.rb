@@ -18,7 +18,7 @@ primitives.annotate i, 0, 0, 2, 2, RMagick do
     self.pointsize = 32
     self.fill = "gray50"
     self.gravity = Magick::CenterGravity
-    end
+end
 
 # Create another transparent image for the text itself
 i.new_image(200, 100) { self.background_color = 'transparent' }
@@ -28,7 +28,7 @@ primitives.annotate i, 0, 0, -2, -2, RMagick do
     self.fill = "red"
     self.stroke = "black"
     self.gravity = Magick::CenterGravity
-    end
+end
 
 # Flatten all 3 into a single image.
 # i.display

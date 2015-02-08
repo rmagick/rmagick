@@ -195,7 +195,7 @@ class ImageList1_UT < Test::Unit::TestCase
             img = @list.at(-1)
             assert_same(img, @list[9])
             assert_same(cur, @list.cur_image)
-        end
+         end
     end
 
     def test_star

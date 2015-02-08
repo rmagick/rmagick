@@ -20,7 +20,7 @@ result = imgs.montage do
     self.fill = 'white'
     self.pointsize =9
     self.geometry = Magick::Geometry.new(img.columns/2, img.rows/2, 5, 5)
-    end
+end
 
 result.write('channel.jpg')
 

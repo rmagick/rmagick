@@ -7,7 +7,7 @@ require "rmagick"
 before = Magick::Image.new(200,200) do
     self.background_color = 'white'
     self.border_color = 'black'
-    end
+end
 before.border!(1,1,'black')
 
 circle = Magick::Draw.new
