@@ -49,7 +49,7 @@ module RMagick
 
         # Check for compiler. Extract first word so ENV['CC'] can be a program name with arguments.
         config = defined?(RbConfig) ? ::RbConfig : ::Config
-        cc = (ENV["CC"] or config::CONFIG["CC"] or "gcc").split(' ').first
+        cc = (ENV["CC"] || config::CONFIG["CC"] || "gcc").split(' ').first
         unless find_executable(cc)
           exit_failure "No C compiler found in ${ENV['PATH']}. See mkmf.log for details."
         end
@@ -198,7 +198,7 @@ SRC
          Dir.glob(file_glob)
        end
        matches.delete_if { |arr| arr.empty? }
-       if 0 < matches.length and matches.length < 3
+       if 0 < matches.length && matches.length < 3
           msg = "\nWarning: Found a partial ImageMagick installation. Your operating system likely has some built-in ImageMagick libraries but not all of ImageMagick. This will most likely cause problems at both compile and runtime.\nFound partial installation at: "+prefix+"\n"
           Logging::message msg
           message msg
