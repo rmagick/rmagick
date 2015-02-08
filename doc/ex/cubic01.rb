@@ -38,7 +38,6 @@ rvg = Magick::RVG.new(5.cm, 4.cm).viewbox(0, 0, 500, 400) do |canvas|
 
     canvas.text(25, 70, 'M100,200 C100,100 250,100 250,200').styles(Label)
     canvas.text(225, 350, 'S400,300 400,200').styles(Label)
-
 end
 
 rvg.draw.write('cubic01.gif')

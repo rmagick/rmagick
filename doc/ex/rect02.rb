@@ -15,7 +15,6 @@ rvg = Magick::RVG.new(12.cm, 4.cm) do |canvas|
     canvas.g.translate(700, 210).rotate(-30) do |grp|
         grp.rect(400, 200, 0, 0).round(50).styles(:fill=>'none', :stroke=>'purple', :stroke_width=>30)
     end
-
 end
 
 rvg.draw.write('rect02.gif')

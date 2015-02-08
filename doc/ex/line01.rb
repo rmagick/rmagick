@@ -16,7 +16,6 @@ rvg = Magick::RVG.new(12.cm, 4.cm).viewbox(0, 0, 1200, 400) do |canvas|
         grp.line(700, 300, 900, 100).styles(:stroke_width=>20)
         grp.line(900, 300, 1100, 100).styles(:stroke_width=>25)
     end
-
 end
 
 rvg.draw.write('line01.gif')

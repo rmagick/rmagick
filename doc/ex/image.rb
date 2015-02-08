@@ -39,7 +39,6 @@ rvg = Magick::RVG.new(525, 270) do |canvas|
         t.text(425, 140, 'xMaxYMax')
         t.text(310, 253, 'slice')
     end
-
 end
 
 rvg.draw.write('image.gif')

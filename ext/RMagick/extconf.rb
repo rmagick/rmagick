@@ -72,7 +72,6 @@ module RMagick
         # Ensure minimum ImageMagick version
         # Check minimum ImageMagick version if possible
         checking_for("outdated ImageMagick version (<= #{Magick::MIN_IM_VERSION})") do
-
           # extract version info from convert binary (could use identify as well)
           # TODO: Extract the value of MagickLibVersionText constant in MagickCore/version.h somehow
           `convert -version`.match(/^Version: ImageMagick (\d+\.\d+\.\d+)/) do |matches|

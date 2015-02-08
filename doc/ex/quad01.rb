@@ -29,7 +29,6 @@ rvg = Magick::RVG.new(12.cm, 6.cm).viewbox(0, 0, 1200, 600) do |canvas|
 
     canvas.path("M200,300 L400,50 L600,300 L800,550 L1000,300")
                 .styles(:fill=>'none', :stroke=>'#888', :stroke_width=>2)
-
 end
 
 rvg.draw.write('quad01.gif')

@@ -19,7 +19,6 @@ rvg = Magick::RVG.new(6.cm, 6.cm).viewbox(0,0,600,600) do |canvas|
     end
 
     canvas.rect(596,596).styles(:fill=>'none',:stroke=>'blue')
-
 end
 
 rvg.draw.write('tref01.gif')

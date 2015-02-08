@@ -25,7 +25,6 @@ rvg = Magick::RVG.new(400, 150) do |canvas|
         end
         grp.text(30, 30, 'ABC (translated coord system)').styles(:font_size=>20, :font_family=>'Verdana', :font_weight=>'normal', :font_style=>'normal')
     end
-
 end
 
 rvg.draw.write('NewCoordSys.gif')

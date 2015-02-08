@@ -14,7 +14,6 @@ rvg = Magick::RVG.new(10.cm, 3.cm).viewbox(0,0,1000,300) do |canvas|
         end
     end
     canvas.rect(997, 297).styles(:fill=>'none', :stroke=>'blue')
-
 end
 
 rvg.draw.write('tspan03.gif')

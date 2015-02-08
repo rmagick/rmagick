@@ -24,7 +24,6 @@ rvg = Magick::RVG.new(12.cm, (5.25).cm).viewbox(0, 0, 1200, 525) do |canvas|
     canvas.rect(1196, 522, 1, 1).styles(:fill=>'none', :stroke=>'blue', :stroke_width=>1)
 
     canvas.g.styles(:font_size=>30, :font_family=>'Verdana', :font_weight=>'normal', :font_style=>'normal') do |grp|
-
         grp.use(base_ellipses)
 
         grp.g.translate(400,0) do |grp2|
@@ -54,7 +53,6 @@ rvg = Magick::RVG.new(12.cm, (5.25).cm).viewbox(0, 0, 1200, 525) do |canvas|
             grp2.use(base_ellipses)
             grp2.path("M 125,75 a100,50 0 1,1 100,50").styles(PathStyles)
         end
-
     end
 end
 

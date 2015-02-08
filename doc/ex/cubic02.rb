@@ -86,7 +86,6 @@ rvg = Magick::RVG.new(10.cm, 10.cm).viewbox(0, 0, 1000, 1000) do |canvas|
     canvas.circle(10, 775, 900).styles(AutoCtlPoint)
     canvas.text(750, 945, "M600,800 C625,700 725,700 750,800").styles(Label)
     canvas.text(750, 975, "S875,900 900,800").styles(Label)
-
 end
 
 rvg.draw.write('cubic02.gif')

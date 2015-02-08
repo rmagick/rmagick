@@ -11,7 +11,6 @@ rvg = Magick::RVG.new(400, 150) do |canvas|
     end
 
     canvas.text(30, 30, 'ABC (orig coord system)').styles(:font_size=>20, :font_family=>'Verdana', :font_weight=>'normal', :font_style=>'normal')
-
 end
 
 rvg.draw.write('OrigCoordSys.gif')

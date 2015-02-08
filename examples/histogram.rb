@@ -80,7 +80,6 @@ module Magick
 
             HISTOGRAM_COLS.times do |x|
                 HISTOGRAM_ROWS.times do |y|
-
                     yf = Float(y)
                     if yf >= HISTOGRAM_ROWS - (red[x] * scale)
                         red_column[y].red = QuantumRange
