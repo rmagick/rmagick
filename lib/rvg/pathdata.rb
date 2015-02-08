@@ -13,6 +13,7 @@ module Magick
         class PathData
 
           private
+
             def add_points(req, *coords)
                 if coords
                     if coords.length % req != 0

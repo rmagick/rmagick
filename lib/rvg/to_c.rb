@@ -1,6 +1,7 @@
 class Magick::RVG
 
   private
+
     def header_text(pgm, name)
         pgm.puts <<"END_HEADER"
 /*

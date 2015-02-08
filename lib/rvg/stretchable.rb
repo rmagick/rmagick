@@ -39,6 +39,7 @@ module Magick
         module Stretchable
 
           private
+
             # Scale to fit
             def set_viewbox_none(width, height)
                 sx, sy = 1.0, 1.0
@@ -128,6 +129,7 @@ module Magick
             end
 
           public
+
             include PreserveAspectRatio
 
             # Describe a user coordinate system to be imposed on the viewbox.

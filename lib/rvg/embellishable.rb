@@ -178,6 +178,7 @@ module Magick
             include Duplicatable
 
           private
+
             def align_to_viewport(scale)
                 tx = case @align
                         when 'none', /\AxMin/

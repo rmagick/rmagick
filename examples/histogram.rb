@@ -29,6 +29,7 @@ module Magick
     class Image
 
       private
+
         HISTOGRAM_COLS = 256
         HISTOGRAM_ROWS = 200
         MAX_QUANTUM = 255
@@ -200,6 +201,7 @@ Colors: #{number_colors}
         end
 
       public
+
         # Create the histogram montage.
         def histogram(fg='white', bg='black')
 

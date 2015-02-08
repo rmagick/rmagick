@@ -204,6 +204,7 @@ class Draw
         }.freeze
 
   private
+
     def enquote(str)
         if str.length > 2 && /\A(?:\"[^\"]+\"|\'[^\']+\'|\{[^\}]+\})\z/.match(str)
             return str
