@@ -86,11 +86,6 @@ Style/AccessModifierIndentation:
 Style/AccessorMethodName:
   Enabled: false
 
-# Offense count: 5
-# Cop supports --auto-correct.
-Style/Alias:
-  Enabled: false
-
 # Offense count: 20
 # Cop supports --auto-correct.
 Style/AlignArray:

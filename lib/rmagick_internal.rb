@@ -316,8 +316,8 @@ class Draw
     def fill(colorspec)
         primitive "fill #{enquote(colorspec)}"
     end
-    alias fill_color fill
-    alias fill_pattern fill
+    alias_method :fill_color, :fill
+    alias_method :fill_pattern, :fill
 
     # Specify fill opacity (use "xx%" to indicate percentage)
     def fill_opacity(opacity)
@@ -467,7 +467,7 @@ class Draw
     def pointsize(points)
         primitive "font-size #{points}"
     end
-    alias font_size pointsize
+    alias_method :font_size, :pointsize
 
     # Draw a polygon
     def polygon(*points)
@@ -552,8 +552,8 @@ class Draw
     def stroke(colorspec)
         primitive "stroke #{enquote(colorspec)}"
     end
-    alias stroke_color stroke
-    alias stroke_pattern stroke
+    alias_method :stroke_color, :stroke
+    alias_method :stroke_pattern, :stroke
 
     # Specify if stroke should be antialiased or not
     def stroke_antialias(bool)
