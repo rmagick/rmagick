@@ -4,7 +4,6 @@ require "rmagick"
 require 'test/unit'
 require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
 
-
 class Image1_UT < Test::Unit::TestCase
     FreezeError = RUBY_VERSION[/^1\.9|^2/] ? RuntimeError : TypeError
 
@@ -272,7 +271,6 @@ class Image1_UT < Test::Unit::TestCase
        assert_nothing_raised { res = @img.auto_gamma_channel Magick::RedChannel, Magick::BlueChannel }
        assert_raise(TypeError) { @img.auto_gamma_channel(1) }
     end
-
 
     def test_auto_level
        res = nil
@@ -752,7 +750,6 @@ class Image1_UT < Test::Unit::TestCase
         img2.destroy!
         assert_raise(Magick::DestroyedImageError) { img1.composite(img2, Magick::CenterGravity, Magick::OverCompositeOp) }
     end
-
 
 end
 

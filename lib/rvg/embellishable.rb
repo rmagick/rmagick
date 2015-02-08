@@ -170,7 +170,6 @@ module Magick
 
         end     # class Polyline
 
-
         class Image
             include Stylable
             include Transformable
@@ -255,7 +254,6 @@ module Magick
             end
 
         end     # class Image
-
 
         # Methods that construct basic shapes within a container
         module ShapeConstructors

@@ -47,7 +47,6 @@ Filters = [
   Magick::SincFilter
 ]
 
-
 class Image3_UT < Test::Unit::TestCase
     FreezeError = RUBY_VERSION[/^1\.9|^2/] ? RuntimeError : TypeError
 
@@ -1023,7 +1022,6 @@ class Image3_UT < Test::Unit::TestCase
         assert_equal("JPEG", img.first.format)
         FileUtils.rm('test.0')
     end
-
 
 end
 

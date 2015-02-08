@@ -24,5 +24,4 @@ rescue NotImplementedError
     result.resize!(img.columns, img.rows)
 end
 
-
 result.write('polaroid.jpg')

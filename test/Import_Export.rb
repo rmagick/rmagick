@@ -2,7 +2,6 @@ require "rmagick"
 require 'test/unit'
 require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
 
-
 class Import_Export_UT < Test::Unit::TestCase
 
   def setup
@@ -117,7 +116,6 @@ class Import_Export_UT < Test::Unit::TestCase
   end
 
 end
-
 
 if __FILE__ == $0
 IMAGES_DIR = '../doc/ex/images'

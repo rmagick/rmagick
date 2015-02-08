@@ -139,7 +139,6 @@ class Geometry
     end
 end
 
-
 class Draw
 
     # Thse hashes are used to map Magick constant
@@ -665,7 +664,6 @@ class Draw
         primitive "translate #{x},#{y}"
     end
 end # class Magick::Draw
-
 
 # Define IPTC record number:dataset tags for use with Image#get_iptc_dataset
 module IPTC
@@ -1893,7 +1891,6 @@ public
 
 end # Magick::ImageList
 
-
 #  Collects non-specific optional method arguments
 class OptionalMethodArguments
     def initialize(img)
@@ -1922,7 +1919,6 @@ class OptionalMethodArguments
        @img.define("lowlight-color", color)
     end
 end
-
 
 # Example fill class. Fills the image with the specified background
 # color, then crosshatches with the specified crosshatch color.

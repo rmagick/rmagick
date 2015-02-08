@@ -5,7 +5,6 @@ require "rmagick"
 require 'test/unit'
 require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
 
-
 module Magick
   def self._tmpnam_
     @@_tmpnam_
@@ -29,7 +28,6 @@ class Magick::AnchorType
     @@enumerators
   end
 end
-
 
 class Magick_UT < Test::Unit::TestCase
 

@@ -36,7 +36,6 @@ module Magick
 
         end     # module Duplicatable
 
-
         # Convert an array of method arguments to Float objects. If any
         # cannot be converted, raise ArgumentError and issue a message.
         def self.fmsg(*args)
@@ -68,10 +67,6 @@ module Magick
 
     end # class RVG
 end # module Magick
-
-
-
-
 
 module Magick
     class RVG
@@ -242,7 +237,6 @@ module Magick
 
             end     # class RLTextStrategy
 
-
             class TBTextStrategy < TextStrategy
 
                 def get_word_spacing
@@ -336,9 +330,6 @@ module Magick
         end # class Utility
     end # class RVG
 end # module Magick
-
-
-
 
 module Magick
     class RVG

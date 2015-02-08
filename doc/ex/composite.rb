@@ -40,7 +40,6 @@ list << image_A
 list << image_B
 list << null.copy
 
-
 list << image_B.composite(image_A, CenterGravity, OverCompositeOp)
 list.cur_image['Label'] = 'A over B'
 list << image_A.composite(image_B, CenterGravity, OverCompositeOp)

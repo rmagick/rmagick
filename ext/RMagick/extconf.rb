@@ -35,7 +35,6 @@ module RMagick
       headers << "stdint.h" if have_header("stdint.h")  # defines uint64_t
       headers << "sys/types.h" if have_header("sys/types.h")
 
-
       if have_header("wand/MagickWand.h")
          headers << "wand/MagickWand.h"
       else
@@ -85,7 +84,6 @@ module RMagick
             end
           end
         end
-
 
         # either set flags using Magick-config or pkg-config (new Debian default)
         if $magick_config
@@ -333,7 +331,6 @@ SRC
       #check_sizeof("unsigned long", headers)
       #check_sizeof("Image *", headers)
 
-
       have_enum_values("AlphaChannelType", ["CopyAlphaChannel",                    # 6.4.3-7
                                             "BackgroundAlphaChannel"], headers)    # 6.5.2-5
       have_enum_values("CompositeOperator", ["BlurCompositeOp",                    # 6.5.3-7
@@ -398,7 +395,6 @@ SRC
                                               "VerticalTileEdgeVirtualPixelMethod",   # 6.5.0-1
                                               "CheckerTileVirtualPixelMethod"],       # 6.5.0-1
                                                                        headers)
-
 
       # Now test Ruby 1.9.0 features.
       headers = ["ruby.h"]

@@ -86,7 +86,6 @@ module Magick
 
         end     # class Group
 
-
         # A Use object allows the re-use of RVG and RVG::Group
         # objects within a container. Create a Use object with the
         # RVG::UseConstructors#use method.

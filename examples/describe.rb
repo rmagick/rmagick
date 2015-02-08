@@ -16,7 +16,6 @@ if ARGV.length == 0
     exit
 end
 
-
 ARGV.each do |file|
     puts file
     img = Magick::Image.read(file).first

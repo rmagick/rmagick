@@ -102,7 +102,6 @@ module Magick
 
         end     # module TextLink
 
-
         class Tref < TextBase  #:nodoc:
             include TextLink
 
@@ -166,8 +165,6 @@ module Magick
             end
 
         end     # class Text
-
-
 
         # Methods that construct text objects within a container
         module TextConstructors

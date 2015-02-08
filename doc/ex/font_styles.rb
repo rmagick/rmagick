@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby -w
 require 'rvg/rvg'
 
-
 rvg = Magick::RVG.new(200, 250) do |canvas|
     canvas.background_fill = 'white'
 

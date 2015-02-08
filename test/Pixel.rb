@@ -4,7 +4,6 @@ require "rmagick"
 require 'test/unit'
 require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
 
-
 class Pixel_UT < Test::Unit::TestCase
 
     def setup

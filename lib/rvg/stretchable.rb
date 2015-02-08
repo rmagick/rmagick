@@ -34,7 +34,6 @@ module Magick
             end
         end     # module PreserveAspectRatio
 
-
         # The methods in this module describe the user-coordinate space.
         # RVG and Pattern objects are stretchable.
         module Stretchable

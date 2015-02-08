@@ -2,7 +2,6 @@
 
 require "rmagick"
 
-
 results = Magick::ImageList.new
 
 img = Magick::Image.new(270, 60) {self.background_color = "black" }

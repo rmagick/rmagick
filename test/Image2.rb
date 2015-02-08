@@ -6,7 +6,6 @@ require 'test/unit/ui/console/testrunner'  unless RUBY_VERSION[/^1\.9|^2/]
 
 # TODO: improve exif tests - need a benchmark image with EXIF data
 
-
 class Image2_UT < Test::Unit::TestCase
     FreezeError = RUBY_VERSION[/^1\.9|^2/] ? RuntimeError : TypeError
 
@@ -485,7 +484,6 @@ class Image2_UT < Test::Unit::TestCase
         end
     end
 
-
     def test_equalize
         assert_nothing_raised do
             res = @img.equalize
@@ -649,7 +647,6 @@ class Image2_UT < Test::Unit::TestCase
             assert_equal(10, x)
             assert_equal(10, y)
         end
-
 
         x = girl.find_similar_region(@img)
         assert_nil(x)

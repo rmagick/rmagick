@@ -10,7 +10,6 @@ require 'test/unit/ui/console/testrunner'  unless RUBY_VERSION[/^1\.9|^2/]
 #   improve test_directory
 #   improve test_montage
 
-
 class Image_Attributes_UT < Test::Unit::TestCase
     FreezeError = RUBY_VERSION[/^1\.9|^2/] ? RuntimeError : TypeError
 
@@ -692,7 +691,6 @@ class Image_Attributes_UT < Test::Unit::TestCase
     end
 
 end     # class Image_Attributes_UT
-
 
 if __FILE__ == $0
 FLOWER_HAT = '../doc/ex/images/Flower_Hat.jpg'

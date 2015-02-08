@@ -24,8 +24,6 @@ module Magick
     end     # class Draw
 end
 
-
-
 Origin_x = 110
 Origin_y = 230
 Glyph = 'g'

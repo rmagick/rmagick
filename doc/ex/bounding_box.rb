@@ -26,7 +26,6 @@ gc.circle(bb.x+bb.width, bb.y, bb.x+bb.width+2, bb.y+2)
 gc.circle(bb.x, bb.y+bb.height, bb.x+2, bb.y+bb.height+2)
 gc.circle(bb.x+bb.width, bb.y+bb.height, bb.x+bb.width+2, bb.y+bb.height+2)
 
-
 gc.fill("black")
 gc.stroke("transparent")
 gc.font_weight(Magick::NormalWeight)
@@ -36,7 +35,6 @@ gc.text(bb.x-15, bb.y-5, "\'#{bb.x},#{bb.y}\'")
 gc.text(bb.x+bb.width-15, bb.y-5, "\'#{bb.x+bb.width},#{bb.y}\'")
 gc.text(bb.x-15, bb.y+bb.height+15, "\'#{bb.x},#{bb.y+bb.height}\'")
 gc.text(bb.x+bb.width-15, bb.y+bb.height+15, "\'#{bb.x+bb.width},#{bb.y+bb.height}\'")
-
 
 gc.draw(img)
 

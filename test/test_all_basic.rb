@@ -17,7 +17,6 @@ else
   $LOAD_PATH.unshift(File.join(root_dir, 'test'))
 end
 
-
 require 'rmagick'
 
 Magick::Magick_version =~ /ImageMagick (\d+\.\d+\.\d+)-(\d+) /
