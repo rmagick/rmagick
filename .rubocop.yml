@@ -127,11 +127,6 @@ Style/ClassAndModuleCamelCase:
 Style/ClassAndModuleChildren:
   Enabled: false
 
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/ClassMethods:
-  Enabled: false
-
 # Offense count: 26
 # Cop supports --auto-correct.
 Style/ColonMethodCall:

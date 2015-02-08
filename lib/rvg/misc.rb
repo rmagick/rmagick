@@ -506,7 +506,7 @@ module Magick
                                     'rt-tb'=>RLTextStrategy, 'rl'=>RLTextStrategy,
                                     'tb-rl'=>TBTextStrategy, 'tb'=>TBTextStrategy}
 
-                def GraphicContext.degrees_to_radians(deg)
+                def self.degrees_to_radians(deg)
                     Math::PI * (deg % 360.0) / 180.0
                 end
 

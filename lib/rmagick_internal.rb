@@ -95,7 +95,7 @@ class Geometry
     Y = X
     RE = /\A#{W}x?#{H}#{X}#{Y}([!<>@\^]?)\Z/
 
-    def Geometry.from_s(str)
+    def self.from_s(str)
 
         m = RE.match(str)
         if m
