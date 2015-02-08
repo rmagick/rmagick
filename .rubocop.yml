@@ -145,12 +145,6 @@ Style/DeprecatedHashMethods:
 Style/Documentation:
   Enabled: false
 
-# Offense count: 7
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/DotPosition:
-  Enabled: false
-
 # Offense count: 2
 # Cop supports --auto-correct.
 # Configuration parameters: AllowAdjacentOneLineDefs.

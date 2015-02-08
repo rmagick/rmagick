@@ -14,8 +14,8 @@ rvg = Magick::RVG.new(12.cm, 4.cm).viewbox(0, 0, 1200, 400) do |canvas|
                     231,161,321,161).styles(:fill=>'red', :stroke=>'blue', :stroke_width=>10)
 
     canvas.polygon(850,75,958,137.5,958,262.5,
-                    850,325,742,262.6,742,137.5).
-                    styles(:fill=>'lime', :stroke=>'blue', :stroke_width=>10)
+                    850,325,742,262.6,742,137.5)
+                    .styles(:fill=>'lime', :stroke=>'blue', :stroke_width=>10)
 
 end
 
