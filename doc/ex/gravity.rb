@@ -23,49 +23,49 @@ begin
     draw.fill = "#600"
     draw.undercolor = "red"
 
-    0.step(330, 30) { |angle|
+    0.step(330, 30) do |angle|
         puts "angle #{angle}"
         pic.new_image(600, 600) { self.background_color = "white" }
 
         lines.draw pic
 
-        draw.annotate(pic, 0,0,x,y, "NorthWest") {
+        draw.annotate(pic, 0,0,x,y, "NorthWest") do
             self.gravity = Magick::NorthWestGravity
             self.rotation = angle
-        }
-        draw.annotate(pic, 0,0,0,y, "North") {
+        end
+        draw.annotate(pic, 0,0,0,y, "North") do
             self.gravity = Magick::NorthGravity
             self.rotation = angle
-        }
-        draw.annotate(pic, 0,0,x,y, "NorthEast") {
+        end
+        draw.annotate(pic, 0,0,x,y, "NorthEast") do
             self.gravity = Magick::NorthEastGravity
             self.rotation = angle
-        }
-        draw.annotate(pic, 0,0,x,0, "East") {
+        end
+        draw.annotate(pic, 0,0,x,0, "East") do
             self.gravity = Magick::EastGravity
             self.rotation = angle
-        }
-        draw.annotate(pic, 0,0,0,0, "Center") {
+        end
+        draw.annotate(pic, 0,0,0,0, "Center") do
             self.gravity = Magick::CenterGravity
             self.rotation = angle
-        }
-        draw.annotate(pic, 0,0,x,y, "SouthEast") {
+        end
+        draw.annotate(pic, 0,0,x,y, "SouthEast") do
             self.gravity = Magick::SouthEastGravity
             self.rotation = angle
-        }
-        draw.annotate(pic, 0,0,0,y, "South") {
+        end
+        draw.annotate(pic, 0,0,0,y, "South") do
             self.gravity = Magick::SouthGravity
             self.rotation = angle
-        }
-        draw.annotate(pic, 0,0,x,y, "SouthWest") {
+        end
+        draw.annotate(pic, 0,0,x,y, "SouthWest") do
             self.gravity =  Magick::SouthWestGravity
             self.rotation = angle
-        }
-        draw.annotate(pic, 0,0,x,0, "West") {
+        end
+        draw.annotate(pic, 0,0,x,0, "West") do
             self.gravity = Magick::WestGravity
             self.rotation = angle
-        }
-    }
+        end
+    end
 
     puts "Writing image \"rm_gravity_out.miff\"..."
     pic.delay = 20

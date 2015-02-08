@@ -5,14 +5,14 @@ buttons = Magick::ImageList.new
 
 # Read 25 alphabet image files, scale to 1/4 size
 letter = 'A'
-26.times {
+26.times do
     if letter != 'M'            # "M" is not the same size as the other letters
         tiny = Magick::Image.read('images/Button_' + letter + '.gif').first
         tiny.scale! 0.25
         buttons << tiny
     end
     letter.succ!
-    }
+    end
 
 # Create a image that will hold the alphabet images in 5 rows and 5 columns.
 cells = Magick::ImageList.new
@@ -31,7 +31,7 @@ col = (0..4).to_a * 5
 # over the result, and so forth, respecting the page offset of the images.
 
 srand 1234
-25.times { |i|
+25.times do |i|
     # Randomly select a row and column for this copy of the "tinya" image.
     # Compute the x,y position of this copy in pixels and store the
     # result in the image's page attribute. Append a copy of the image
@@ -46,7 +46,7 @@ srand 1234
     button.page = offset
     button.matte = true
     cells << button
-    }
+    end
 
 puts "This may take a few seconds..."
 cells.delay = 10

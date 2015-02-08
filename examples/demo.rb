@@ -47,13 +47,13 @@ begin
     example << model.cur_image.copy
     example.cur_image[:Label] = "Annotate"
     draw = Draw.new
-    draw.annotate(example, 0, 0, 0, 20, "RMagick") {
+    draw.annotate(example, 0, 0, 0, 20, "RMagick") do
         self.pointsize = 18;
         self.font = Font;
         self.stroke = "gold"
         self.fill = "gold"
         self.gravity = NorthGravity
-        }
+        end
 
     puts "   blur..."
     example << model.blur_image(0.0, 1.5)
@@ -148,9 +148,9 @@ begin
     # with the read method. Here we create a gradient image that is
     # the same size as the model image.
     puts "   gradient..."
-    example.read("gradient:#20a0ff-#ffff00") {
+    example.read("gradient:#20a0ff-#ffff00") do
         self.size = Geometry.new(model.columns, model.rows)
-        }
+        end
     example.cur_image[:Label] = "Gradient"
 
     puts "   grayscale..."
@@ -187,9 +187,9 @@ begin
 
     # The plasma format is very similar to the gradient format, above.
     puts "   plasma..."
-    example.read("plasma:fractal") {
+    example.read("plasma:fractal") do
         self.size = Geometry.new(model.columns, model.rows)
-        }
+        end
     example.cur_image[:Label] = "Plasma"
 
     puts "   quantize..."
@@ -272,7 +272,7 @@ begin
 
     puts "Montage images..."
 
-    montage = example.montage {
+    montage = example.montage do
         self.geometry = "130x194+10+5>"
         self.gravity = CenterGravity
         self.border_width = 1
@@ -291,7 +291,7 @@ begin
         self.filename = "RMagick Demo"
 #       self.shadow = true
 #       self.frame = "20x20+4+4"
-    }
+    end
 
     # Add the ImageMagick logo to the top of the montage. The "logo:"
     # format is a fixed-size image, so I don't need to specify a size.

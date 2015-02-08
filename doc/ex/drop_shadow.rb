@@ -26,9 +26,9 @@ text.stroke = 'transparent'
 
 # Draw the shadow text first. The color is a very light gray.
 # Position the text to the right and down.
-text.annotate(ex, 0,0,2,2, Text) {
+text.annotate(ex, 0,0,2,2, Text) do
     self.fill = 'gray60'
-    }
+    end
 
 # Save the first frame of the animation.
 anim << ex.copy
@@ -39,9 +39,9 @@ anim << ex.copy
 
 # Add the foreground text in solid black. Position it
 # to the left and up from the shadow text.
-text.annotate(ex, 0,0,-1,-1, Text) {
+text.annotate(ex, 0,0,-1,-1, Text) do
     self.fill = 'maroon'
-    }
+    end
 
 # Save yet another copy of the image as the 3rd frame.
 anim << ex.copy

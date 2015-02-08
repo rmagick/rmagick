@@ -4,10 +4,10 @@ require "rmagick"
 # Demonstrate the Image#texture_fill_to_border method
 # This example is nearly identical to the color_fill_to_border example.
 
-before = Magick::Image.new(200,200) {
+before = Magick::Image.new(200,200) do
     self.background_color = 'white'
     self.border_color = 'black'
-    }
+    end
 before.border!(1,1,'black')
 
 circle = Magick::Draw.new

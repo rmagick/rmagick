@@ -4,9 +4,9 @@ require "rmagick"
 # Demonstrate the Image#transparent method.
 # Change all black pixels in the image to transparent.
 
-before = Magick::Image.new(200,200) {
+before = Magick::Image.new(200,200) do
     self.background_color = 'black'
-    }
+    end
 
 circle = Magick::Draw.new
 circle.fill('transparent')

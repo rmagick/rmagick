@@ -16,11 +16,11 @@ rvg = Magick::RVG.new(6.cm, 4.cm).viewbox(0,0,600,400) do |canvas|
     end
 
     # Draw 12 copies.
-    2.times {|y|
-        6.times {|x|
+    2.times do|y|
+        6.times do|x|
             canvas.use(stick, x*100, y*200)
-        }
-    }
+        end
+    end
 end
 
 rvg.draw.write('group.gif')

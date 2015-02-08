@@ -7,9 +7,9 @@ hat.resize!(0.25)
 
 # Construct a pattern using the hat image
 gc = Magick::Draw.new
-gc.pattern('hat', 0, 0, hat.columns, hat.rows) {
+gc.pattern('hat', 0, 0, hat.columns, hat.rows) do
     gc.composite(0, 0, 0, 0, hat)
-}
+end
 
 # Set the fill to the hat "pattern." Draw an ellipse
 gc.fill('hat')

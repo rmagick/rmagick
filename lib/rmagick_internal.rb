@@ -566,11 +566,11 @@ class Draw
         if list.length == 0
             primitive "stroke-dasharray none"
         else
-            list.each { |x|
+            list.each do |x|
                 if x <= 0
                     Kernel.raise ArgumentError, "dash array elements must be > 0 (#{x} given)"
                 end
-            }
+            end
             primitive "stroke-dasharray #{list.join(',')}"
         end
     end
@@ -1610,9 +1610,9 @@ public
         if (blobs.length == 0)
             Kernel.raise ArgumentError, "no blobs given"
         end
-        blobs.each { |b|
+        blobs.each do |b|
             Magick::Image.from_blob(b, &block).each { |n| @images << n  }
-            }
+            end
         @scene = length - 1
         self
     end
@@ -1621,9 +1621,9 @@ public
     def initialize(*filenames, &block)
         @images = []
         @scene = nil
-        filenames.each { |f|
+        filenames.each do |f|
             Magick::Image.read(f, &block).each { |n| @images << n }
-            }
+            end
         if length > 0
             @scene = length - 1     # last image in array
         end
@@ -1721,9 +1721,9 @@ public
         if (files.length == 0)
             Kernel.raise ArgumentError, "no files given"
         end
-        files.each { |f|
+        files.each do |f|
             Magick::Image.ping(f, &block).each { |n| @images << n }
-            }
+            end
         @scene = length - 1
         self
     end
@@ -1749,9 +1749,9 @@ public
         if (files.length == 0)
             Kernel.raise ArgumentError, "no files given"
         end
-        files.each { |f|
+        files.each do |f|
             Magick::Image.read(f, &block).each { |n| @images << n }
-            }
+            end
         @scene = length - 1
         self
     end
@@ -1939,12 +1939,12 @@ class HatchFill
       img.background_color = @bgcolor
       img.erase!                # sets image to background color
       pixels = Array.new([img.rows, img.columns].max, @hatchpixel)
-      @dist.step((img.columns-1)/@dist*@dist, @dist) { |x|
+      @dist.step((img.columns-1)/@dist*@dist, @dist) do |x|
          img.store_pixels(x,0,1,img.rows,pixels)
-      }
-      @dist.step((img.rows-1)/@dist*@dist, @dist) { |y|
+      end
+      @dist.step((img.rows-1)/@dist*@dist, @dist) do |y|
          img.store_pixels(0,y,img.columns,1,pixels)
-      }
+      end
    end
 end
 

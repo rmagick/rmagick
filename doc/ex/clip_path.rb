@@ -10,9 +10,9 @@ pr = Magick::Draw.new
 
 # Define a clip-path.
 # The name of the clip-path is "example"
-pr.define_clip_path('example') {
+pr.define_clip_path('example') do
     pr.polygon(*points)
-    }
+    end
 
 # Enable the clip-path
 pr.push

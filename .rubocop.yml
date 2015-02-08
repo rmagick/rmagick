@@ -114,11 +114,6 @@ Style/BarePercentLiterals:
 Style/BlockComments:
   Enabled: false
 
-# Offense count: 69
-# Cop supports --auto-correct.
-Style/Blocks:
-  Enabled: false
-
 # Offense count: 7
 Style/CaseEquality:
   Enabled: false

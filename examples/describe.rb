@@ -17,7 +17,7 @@ if ARGV.length == 0
 end
 
 
-ARGV.each { |file|
+ARGV.each do |file|
     puts file
     img = Magick::Image::read(file).first
     puts "   Format: #{img.format}"
@@ -37,8 +37,8 @@ ARGV.each { |file|
 
     if img.properties.length > 0
         puts "   Properties:"
-        img.properties { |name,value|
+        img.properties do |name,value|
             puts %Q|      #{name} = "#{value}"|
-        }
+        end
     end
-}
+end

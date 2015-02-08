@@ -22,22 +22,22 @@ gc.affine(1, 0, 0, -scale, 0, HIST_HEIGHT)
 # handle images with fewer than NUM_COLORS colors
 start = NUM_COLORS - img.number_colors
 
-pixels.each { |pixel|
+pixels.each do |pixel|
     gc.stroke(pixel.to_color)
     gc.line(start, 0, start, hist[pixel])
     start = start.succ
-}
+end
 
 hatch = Magick::HatchFill.new("white", "gray95")
 canvas = Magick::Image.new(NUM_COLORS, HIST_HEIGHT, hatch)
 gc.draw(canvas)
 
 text = Magick::Draw.new
-text.annotate(canvas, 0, 0, 0, 20, "Color Frequency\nHistogram") {
+text.annotate(canvas, 0, 0, 0, 20, "Color Frequency\nHistogram") do
     self.pointsize = 10
     self.gravity = Magick::NorthGravity
     self.stroke = 'transparent'
-    }
+    end
 
 canvas.border!(1, 1, "white")
 canvas.border!(1, 1, "black")

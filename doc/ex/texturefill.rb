@@ -11,13 +11,13 @@ img.new_image(300, 100, fill)
 # Annotate the filled image with the code that created the fill.
 
 ann = Magick::Draw.new
-ann.annotate(img, 0,0,0,0, "TextureFill.new(granite)") {
+ann.annotate(img, 0,0,0,0, "TextureFill.new(granite)") do
     self.gravity = Magick::CenterGravity
     self.fill = 'white'
     self.font_weight = Magick::BoldWeight
     self.stroke = 'transparent'
     self.pointsize = 14
-    }
+    end
 
 #img.display
 img.write("texturefill.gif")

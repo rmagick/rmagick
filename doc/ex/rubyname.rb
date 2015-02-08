@@ -13,17 +13,17 @@ text = Magick::Draw.new
 text.pointsize = 52
 text.gravity = Magick::CenterGravity
 
-text.annotate(canvas, 0,0,2,2, Text) {
+text.annotate(canvas, 0,0,2,2, Text) do
     self.fill = 'gray83'
-}
+end
 
-text.annotate(canvas, 0,0,-1.5,-1.5, Text) {
+text.annotate(canvas, 0,0,-1.5,-1.5, Text) do
     self.fill = 'gray40'
-}
+end
 
-text.annotate(canvas, 0,0,0,0, Text) {
+text.annotate(canvas, 0,0,0,0, Text) do
     self.fill = 'darkred'
-}
+end
 
 #canvas.display
 canvas.write('rubyname.gif')

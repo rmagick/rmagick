@@ -28,14 +28,14 @@ fg = Image.new(bg.columns, bg.rows) { self.background_color = "none" }
 # Here's where we'll collect the individual frames.
 animation = ImageList.new
 
-0.step(345,15) { |degrees|
+0.step(345,15) do |degrees|
     frame = fg.copy
-    text.annotate(frame, 0,0,0,0, "Rotating Text") {
+    text.annotate(frame, 0,0,0,0, "Rotating Text") do
         self.rotation = degrees
-    }
+    end
     # Composite the text over the gradient filled background frame.
     animation << bg.composite(frame, CenterGravity, DisplaceCompositeOp)
-}
+end
 
 animation.delay = 8
 
