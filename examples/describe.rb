@@ -19,7 +19,7 @@ end
 
 ARGV.each do |file|
     puts file
-    img = Magick::Image::read(file).first
+    img = Magick::Image.read(file).first
     puts "   Format: #{img.format}"
     puts "   Geometry: #{img.columns}x#{img.rows}"
     puts "   Class: " + case img.class_type

@@ -1,6 +1,6 @@
 require 'rvg/rvg'
 
-Magick::RVG::dpi = 90
+Magick::RVG.dpi = 90
 
 
 rvg = Magick::RVG.new(10.cm, 3.cm).viewbox(0,0,1000,300) do |canvas|

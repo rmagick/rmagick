@@ -78,7 +78,7 @@ module RMagick
           # TODO: Extract the value of MagickLibVersionText constant in MagickCore/version.h somehow
           `convert -version`.match(/^Version: ImageMagick (\d+\.\d+\.\d+)/) do |matches|
             version = matches[1]
-            Logging::message("Detected ImageMagick version: #{version}\n")
+            Logging.message("Detected ImageMagick version: #{version}\n")
 
             if Gem::Version.new(version) < Gem::Version.new(Magick::MIN_IM_VERSION)
               exit_failure "Can't install RMagick #{RMAGICK_VERS}. You must have ImageMagick #{Magick::MIN_IM_VERSION} or later.\n"
@@ -155,7 +155,7 @@ SRC
     end
 
     def exit_failure(msg)
-      Logging::message msg
+      Logging.message msg
       message msg+"\n"
       exit(1)
     end
@@ -179,7 +179,7 @@ SRC
              msg << "         #{dir}/Magick-config reports version #{vers} is installed in #{prefix}\n"
           end
           msg << "Using #{versions[0][0]} from #{versions[0][1]}.\n\n"
-          Logging::message msg
+          Logging.message msg
           message msg
        end
     end
@@ -200,7 +200,7 @@ SRC
        matches.delete_if { |arr| arr.empty? }
        if 0 < matches.length && matches.length < 3
           msg = "\nWarning: Found a partial ImageMagick installation. Your operating system likely has some built-in ImageMagick libraries but not all of ImageMagick. This will most likely cause problems at both compile and runtime.\nFound partial installation at: "+prefix+"\n"
-          Logging::message msg
+          Logging.message msg
           message msg
        end
     end
@@ -443,7 +443,7 @@ Ruby #{RUBY_VERSION} (#{RUBY_PLATFORM}) and ImageMagick #{$magick_version}
 
 END_SUMMARY
 
-      Logging::message summary
+      Logging.message summary
       message summary
     end
 
@@ -453,7 +453,7 @@ end
 extconf = RMagick::Extconf.new
 at_exit do
   msg = "Configured compile options: #{extconf.configured_compile_options}"
-  Logging::message msg
+  Logging.message msg
   message msg+"\n"
 end
 extconf.create_makefile_file
