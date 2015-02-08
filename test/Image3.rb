@@ -300,6 +300,7 @@ class Image3_UT < Test::Unit::TestCase
         assert_equal(20, changed.columns)
         assert_equal(400, changed.rows)
     end
+
     def test_resize_to_fill_6
         changed = @img.resize_to_fill(3000,400)
         assert_equal(3000, changed.columns)
