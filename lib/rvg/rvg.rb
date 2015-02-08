@@ -140,7 +140,7 @@ module Magick
         # Sets an image to use as the canvas background. See background_position= for layout options.
         def background_image=(bg_image)
             warn "background_image= has no effect in nested RVG objects" if @nested
-            if bg_image && !bg_image.kind_of?(Magick::Image)
+            if bg_image && !bg_image.is_a?(Magick::Image)
                 raise ArgumentError, "background image must be an Image (got #{bg_image.class})"
             end
             @background_image = bg_image
@@ -173,7 +173,7 @@ module Magick
         # The default fill is "none", that is, transparent black.
         def background_fill=(color)
             warn "background_fill= has no effect in nested RVG objects" if @nested
-            if !color.kind_of?(Magick::Pixel)
+            if !color.is_a?(Magick::Pixel)
                 begin
                     @background_fill = Magick::Pixel.from_color(color)
                 rescue Magick::ImageMagickError

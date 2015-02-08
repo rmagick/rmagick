@@ -1296,7 +1296,7 @@ private
 protected
 
     def is_an_image(obj)
-        unless obj.kind_of? Magick::Image
+        unless obj.is_a? Magick::Image
             Kernel.raise ArgumentError, "Magick::Image required (#{obj.class} given)"
         end
         true
@@ -1378,7 +1378,7 @@ public
     end
 
     def *(n)
-        unless n.kind_of? Integer
+        unless n.is_a? Integer
             Kernel.raise ArgumentError, "Integer required (#{n.class} given)"
         end
         current = get_current
@@ -1401,7 +1401,7 @@ public
     #   return if A.scene != B.scene
     #   return A.length <=> B.length
     def <=>(other)
-        unless other.kind_of? self.class
+        unless other.is_a? self.class
            Kernel.raise TypeError, "#{self.class} required (#{other.class} given)"
         end
         size = [self.length, other.length].min

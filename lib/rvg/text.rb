@@ -155,7 +155,7 @@ module Magick
             # Reference a Tspan object. <tt>x</tt> and <tt>y</tt> are just
             # like <tt>x</tt> and <tt>y</tt> in RVG::TextBase#tspan
             def tref(obj, x=nil, y=nil)
-                unless obj.kind_of?(Tspan)
+                unless obj.is_a?(Tspan)
                     raise ArgumentError, "wrong argument type #{obj.class} (expected Tspan)"
                 end
                 obj = obj.deep_copy
