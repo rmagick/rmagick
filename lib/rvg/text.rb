@@ -75,7 +75,6 @@ module Magick
 
         # Tspan and Tref shared methods - read/update @cx, @cy in parent Text object.
         module TextLink     #:nodoc:
-
             def add_primitives(gc)
                 @parent.cx = @x if @x
                 @parent.cy = @y if @y
@@ -97,7 +96,6 @@ module Magick
             def cy=(y)
                 @parent.cy = y
             end
-
         end     # module TextLink
 
         class Tref < TextBase  #:nodoc:
@@ -162,7 +160,6 @@ module Magick
 
         # Methods that construct text objects within a container
         module TextConstructors
-
             # Draw a text string at (<tt>x</tt>,<tt>y</tt>). The string can
             # be omitted. Optionally, define text chunks within the associated
             # block.
@@ -171,7 +168,6 @@ module Magick
                 @content << t
                 return t
             end
-
         end     # module TextConstructors
     end # class RVG
 end # module Magick

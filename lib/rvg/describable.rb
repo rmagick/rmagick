@@ -10,7 +10,6 @@ module Magick
         #++
         # This module defines a number of metadata attributes.
         module Describable
-
           private
 
             def initialize(*args, &block)       #:nodoc:
@@ -44,7 +43,6 @@ module Magick
             def metadata
                 @metadata.to_s
             end
-
         end     # module Describable
     end # class RVG
 end # module Magick

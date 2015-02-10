@@ -145,12 +145,6 @@ Style/DeprecatedHashMethods:
 Style/Documentation:
   Enabled: false
 
-# Offense count: 25
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/EmptyLinesAroundModuleBody:
-  Enabled: false
-
 # Offense count: 13
 # Cop supports --auto-correct.
 Style/EmptyLiteral:

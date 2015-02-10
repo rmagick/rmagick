@@ -24,7 +24,6 @@ module Magick
         # is not the same as
         #   g.scale(2).translate(10,20)
         module Transformable
-
           private
 
             # Apply transforms in the same order they were specified!
@@ -122,7 +121,6 @@ module Magick
                 yield(self) if block_given?
                 self
             end
-
         end     # module Transformable
     end # class RVG
 end # module Magick

@@ -239,7 +239,6 @@ module Magick
 
         # Methods that construct basic shapes within a container
         module ShapeConstructors
-
             # Draws a circle whose center is [<tt>cx</tt>, <tt>cy</tt>] and radius is +r+.
             def circle(r, cx=0, cy=0)
                 circle = Circle.new(r, cx, cy)
@@ -305,12 +304,10 @@ module Magick
                 @content << polyline
                 return polyline
             end
-
         end     # module ShapeContent
 
         # Methods that reference ("use") other drawable objects within a container
         module UseConstructors
-
             # Reference an object to be inserted into the container's
             # content. [<tt>x</tt>,<tt>y</tt>] is the offset from the upper-left
             # corner. If the argument is an RVG or Image object and +width+ and +height+
@@ -321,12 +318,10 @@ module Magick
                 @content << use
                 return use
             end
-
         end     # module UseConstructors
 
         # Methods that construct container objects within a container
         module StructureConstructors
-
             # Establishes a new viewport. [<tt>x</tt>, <tt>y</tt>] is the coordinate of the
             # upper-left corner within the containing viewport. This is a
             # _container_ method. Styles and
@@ -360,12 +355,10 @@ module Magick
                 @content << group
                 return group
             end
-
         end     # module StructureConstructors
 
         # Methods that construct raster image objects within a container
         module ImageConstructors
-
             # Composite a raster image at [<tt>x</tt>,<tt>y</tt>]
             # in a viewport of the specified <tt>width</tt> and <tt>height</tt>.
             # If not specified, the width and height are the width and height
@@ -378,7 +371,6 @@ module Magick
                 @content << img
                 return img
             end
-
         end     # module ImageConstructors
 
         # Methods that create shapes, text, and other drawable objects

@@ -16,7 +16,6 @@ class PixelColumn < Array
 end
 
 module Magick
-
     class Pixel
         def reset(bg)
             self.red = bg.red

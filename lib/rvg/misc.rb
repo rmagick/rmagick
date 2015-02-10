@@ -5,7 +5,6 @@ module Magick
         # This is a standard deep_copy method that is used in most classes.
         # Thanks to Robert Klemme.
         module Duplicatable
-
             def deep_copy(h = {})
                 # Prevent recursion. If we reach the
                 # object we started with, stop copying.
@@ -32,7 +31,6 @@ module Magick
                 end
                 return copy
             end
-
         end     # module Duplicatable
 
         # Convert an array of method arguments to Float objects. If any

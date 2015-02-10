@@ -36,7 +36,6 @@ module Magick
         # The methods in this module describe the user-coordinate space.
         # RVG and Pattern objects are stretchable.
         module Stretchable
-
           private
 
             # Scale to fit
@@ -160,7 +159,6 @@ module Magick
                 yield(self) if block_given?
                 self
             end
-
         end     # module Stretchable
     end # class RVG
 end # module Magick

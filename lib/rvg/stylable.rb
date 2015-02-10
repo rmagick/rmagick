@@ -52,7 +52,6 @@ module Magick
 
         # This module is mixed into classes that can have styles.
         module Stylable
-
           private
 
             # For each style that has a value, add a style primitive to the gc.
@@ -113,7 +112,6 @@ module Magick
                 yield(self) if block_given?
                 self
             end
-
         end     # module Stylable
     end # class RVG
 end # module Magick

@@ -768,7 +768,6 @@ module IPTC
         rec = const_get(record)
         rec.constants.each { |ds| rec.const_get(ds).freeze }
     end
-
 end # module Magick::IPTC
 
 # Ruby-level Magick::Image methods
@@ -1946,6 +1945,5 @@ class SolidFill
       img.erase!
    end
 end
-
 end # Magick
 
