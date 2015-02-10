@@ -10,7 +10,7 @@ Start = "#900"
 End = "#000"
 
 fill = Magick::GradientFill.new(0, 0, 0, Rows, Start, End)
-img = Magick::Image.new(Cols, Rows, fill);
+img = Magick::Image.new(Cols, Rows, fill)
 
 # Annotate the filled image with the code that created the fill.
 

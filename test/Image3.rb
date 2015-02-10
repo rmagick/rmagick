@@ -368,7 +368,7 @@ class Image3_UT < Test::Unit::TestCase
             res = img.rotate(90, '>')
             assert_instance_of(Magick::Image, res)
             assert_equal(50, res.columns)
-            assert_equal(100, res.rows);
+            assert_equal(100, res.rows)
         end
         assert_nothing_raised do
             res = img.rotate(90, '<')

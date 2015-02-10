@@ -48,8 +48,8 @@ begin
     example.cur_image[:Label] = "Annotate"
     draw = Draw.new
     draw.annotate(example, 0, 0, 0, 20, "RMagick") do
-        self.pointsize = 18;
-        self.font = Font;
+        self.pointsize = 18
+        self.font = Font
         self.stroke = "gold"
         self.fill = "gold"
         self.gravity = NorthGravity
@@ -285,8 +285,8 @@ begin
 
 #       self.texture = Image.read("granite:").first
         self.background_color = "white"
-        self.font = Font;
-        self.pointsize = 18;
+        self.font = Font
+        self.pointsize = 18
         self.fill = "#600"
         self.filename = "RMagick Demo"
 #       self.shadow = true

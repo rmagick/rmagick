@@ -141,7 +141,7 @@ module Magick
                     column = Array.new(HISTOGRAM_ROWS).fill {Pixel.new}
                     HISTOGRAM_ROWS.times do |y|
                         if y >= HISTOGRAM_ROWS - (hist[pixel] * scale)
-                            column[y] = pixel;
+                            column[y] = pixel
                         end
                     end
                     histogram.store_pixels(x, 0, 1, HISTOGRAM_ROWS, column)

@@ -156,7 +156,7 @@ class ImageList2_UT < Test::Unit::TestCase
                 self.border_color = 'red'
                 self.border_color = Magick::Pixel.new(0, 0, 0)
                 self.border_width = 2
-                self.compose = Magick::OverCompositeOp;
+                self.compose = Magick::OverCompositeOp
                 self.fill = 'green'
                 self.font = 'Arial'
                 self.frame = '20x20+4+4'

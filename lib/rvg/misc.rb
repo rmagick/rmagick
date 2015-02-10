@@ -136,7 +136,7 @@ module Magick
                         when :baseline
                             x = 0
                         when :sub
-                            ;
+
                         when :super
                             x = -x
                         when /[-+]?(\d+)%/
@@ -190,7 +190,7 @@ module Magick
                     # Align the first glyph
                     case @ctx.text_attrs.glyph_orientation_horizontal
                         when 0
-                            ;
+
                         when 90
                             y -= dy
                         when 180
