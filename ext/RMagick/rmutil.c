@@ -1609,7 +1609,7 @@ rm_error_handler(const ExceptionType severity, const char *reason, const char *d
 void
 rm_fatal_error_handler(const ExceptionType severity, const char *reason, const char *description)
 {
-    rb_raise(Class_FatalImageMagickError, GetLocaleExceptionMessage(severity, reason));
+    rb_raise(Class_FatalImageMagickError, "%s", GetLocaleExceptionMessage(severity, reason));
     description = description;
 }
 
@@ -1649,7 +1649,7 @@ handle_exception(ExceptionInfo *exception, Image *imglist, ErrorRetention retent
             exception->description ? ": " : "",
             exception->description ? GetLocaleExceptionMessage(exception->severity, exception->description) : "");
         msg[sizeof(msg)-1] = '\0';
-        rb_warning(msg);
+        rb_warning("%s", msg);
 
         // Caller deletes ExceptionInfo...
 
