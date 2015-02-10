@@ -165,9 +165,7 @@ Style/GlobalVars:
 Style/GuardClause:
   Enabled: false
 
-# Offense count: 535
 # Cop supports --auto-correct.
-# Configuration parameters: SupportedStyles.
 Style/HashSyntax:
   EnforcedStyle: hash_rockets
 
