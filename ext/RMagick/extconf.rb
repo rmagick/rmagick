@@ -237,8 +237,8 @@ END_MSWIN
         if $magick_config && `Magick-config --libs`[/\bl\s*(MagickCore|Magick)6?\b/]
         elsif $pkg_config && `pkg-config --libs MagickCore`[/\bl\s*(MagickCore|Magick)6?\b/]
         else
-            exit_failure "Can't install RMagick #{RMAGICK_VERS}. " +
-                   "Can't find the ImageMagick library or one of the dependent libraries. " +
+            exit_failure "Can't install RMagick #{RMAGICK_VERS}. " \
+                   "Can't find the ImageMagick library or one of the dependent libraries. " \
                    "Check the mkmf.log file for more detailed information.\n"
         end
       end

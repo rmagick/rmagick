@@ -124,7 +124,7 @@ module Magick
             begin
                 hist = img.color_histogram
             rescue NotImplementedError
-                $stderr.puts "The color_histogram method is not supported by this version "+
+                $stderr.puts "The color_histogram method is not supported by this version "\
                              "of ImageMagick/GraphicsMagick"
 
             else
