@@ -15,7 +15,7 @@ module Magick
             def add_points(req, *coords)
                 if coords
                     if coords.length % req != 0
-                        raise ArgumentError, "wrong number of coordinates specified. A multiple of #{req} required, #{req+coords.length} given."
+                        fail ArgumentError, "wrong number of coordinates specified. A multiple of #{req} required, #{req+coords.length} given."
                     end
                     coords.each {|c| @path << ("%g" % c)}
                 end

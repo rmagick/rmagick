@@ -148,7 +148,7 @@ module Magick
             # like <tt>x</tt> and <tt>y</tt> in RVG::TextBase#tspan
             def tref(obj, x=nil, y=nil)
                 unless obj.is_a?(Tspan)
-                    raise ArgumentError, "wrong argument type #{obj.class} (expected Tspan)"
+                    fail ArgumentError, "wrong argument type #{obj.class} (expected Tspan)"
                 end
                 obj = obj.deep_copy
                 obj.parent = self

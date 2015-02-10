@@ -91,7 +91,7 @@ module Magick
                             @transforms << [:rotate, [angle]]
                             @transforms << [:translate, [-cx, -cy]]
                         else
-                            raise ArgumentError, "wrong number of arguments (#{args.length} for 1 or 3)"
+                            fail ArgumentError, "wrong number of arguments (#{args.length} for 1 or 3)"
                     end
                 rescue ArgumentError
                     raise ArgumentError, "arguments must be convertable to float (got #{[angle, *args].collect {|a| a.class}.join(', ')})"

@@ -14,8 +14,8 @@ module Magick
         # The placement & orientation is affected by the
         # current user coordinate system.
         def brace(w, h)
-            raise(ArgumentError, "width must be != 0") unless w != 0
-            raise(ArgumentError, "height must be != 0") unless h != 0
+            fail(ArgumentError, "width must be != 0") unless w != 0
+            fail(ArgumentError, "height must be != 0") unless h != 0
             path("M0,0 Q#{w},0 #{w/2.0},#{-h/4.0} T#{w},#{-h/2.0}" \
                  "Q0,#{-h/2.0} #{w/2.0},#{-(3.0*h/4.0)} T0,#{-h}")
         end

@@ -60,10 +60,10 @@ class Geometry
     attr_accessor :width, :height, :x, :y, :flag
 
     def initialize(width=nil, height=nil, x=nil, y=nil, flag=nil)
-        raise(ArgumentError, "width set to #{width}") if width.is_a? GeometryValue
-        raise(ArgumentError, "height set to #{height}") if height.is_a? GeometryValue
-        raise(ArgumentError, "x set to #{x}") if x.is_a? GeometryValue
-        raise(ArgumentError, "y set to #{y}") if y.is_a? GeometryValue
+        fail(ArgumentError, "width set to #{width}") if width.is_a? GeometryValue
+        fail(ArgumentError, "height set to #{height}") if height.is_a? GeometryValue
+        fail(ArgumentError, "x set to #{x}") if x.is_a? GeometryValue
+        fail(ArgumentError, "y set to #{y}") if y.is_a? GeometryValue
 
         # Support floating-point width and height arguments so Geometry
         # objects can be used to specify Image#density= arguments.
@@ -1525,7 +1525,7 @@ public
     # Set same delay for all images
     def delay=(d)
         if Integer(d) < 0
-            raise ArgumentError, "delay must be greater than or equal to 0"
+            fail ArgumentError, "delay must be greater than or equal to 0"
         end
         @images.each { |f| f.delay = Integer(d) }
     end
