@@ -93,15 +93,15 @@ class Image3_UT < Test::Unit::TestCase
 
     def test_quantum_operator
         quantum_ops = [
-            Magick::AddQuantumOperator,
-            Magick::AndQuantumOperator,
-            Magick::DivideQuantumOperator,
-            Magick::LShiftQuantumOperator,
-            Magick::MultiplyQuantumOperator,
-            Magick::OrQuantumOperator,
-            Magick::RShiftQuantumOperator,
-            Magick::SubtractQuantumOperator,
-            Magick::XorQuantumOperator ]
+          Magick::AddQuantumOperator,
+          Magick::AndQuantumOperator,
+          Magick::DivideQuantumOperator,
+          Magick::LShiftQuantumOperator,
+          Magick::MultiplyQuantumOperator,
+          Magick::OrQuantumOperator,
+          Magick::RShiftQuantumOperator,
+          Magick::SubtractQuantumOperator,
+          Magick::XorQuantumOperator ]
 
         assert_nothing_raised do
             res = @img.quantum_operator(Magick::AddQuantumOperator, 2)
@@ -487,19 +487,19 @@ class Image3_UT < Test::Unit::TestCase
 
     def test_set_channel_depth
         channels = [
-              Magick::RedChannel,
-              Magick::GrayChannel,
-              Magick::CyanChannel,
-              Magick::GreenChannel,
-              Magick::MagentaChannel,
-              Magick::BlueChannel,
-              Magick::YellowChannel,
+          Magick::RedChannel,
+          Magick::GrayChannel,
+          Magick::CyanChannel,
+          Magick::GreenChannel,
+          Magick::MagentaChannel,
+          Magick::BlueChannel,
+          Magick::YellowChannel,
         #     Magick::AlphaChannel,
-              Magick::OpacityChannel,
-              Magick::MatteChannel,
-              Magick::BlackChannel,
-              Magick::IndexChannel,
-              Magick::AllChannels]
+          Magick::OpacityChannel,
+          Magick::MatteChannel,
+          Magick::BlackChannel,
+          Magick::IndexChannel,
+          Magick::AllChannels]
 
         channels.each do |ch|
             assert_nothing_raised {@img.set_channel_depth(ch, 8) }

@@ -288,7 +288,7 @@ END_MSWIN
          'TransformImageColorspace',       # 6.5.1
          'TransparentPaintImage',          # 6.3.7-10
          'TransparentPaintImageChroma'     # 6.4.5-6
-         ].each do |func|
+        ].each do |func|
           have_func(func, headers)
         end
 
