@@ -67,14 +67,14 @@ class Geometry
 
         # Support floating-point width and height arguments so Geometry
         # objects can be used to specify Image#density= arguments.
-        if width == nil
+        if width.nil?
             @width = 0
         elsif width.to_f >= 0.0
             @width = width.to_f
         else
             Kernel.raise ArgumentError, "width must be >= 0: #{width}"
         end
-        if height == nil
+        if height.nil?
             @height = 0
         elsif height.to_f >= 0.0
             @height = height.to_f
@@ -1307,10 +1307,10 @@ protected
             self.scene = nil
             return
         # Don't bother looking for current image
-        elsif scene == nil || scene >= length
+        elsif scene.nil? || scene >= length
             self.scene = length - 1
             return
-        elsif current != nil
+        elsif !current.nil?
             # Find last instance of "current" in the list.
             # If "current" isn't in the list, set current to last image.
             self.scene = length - 1
