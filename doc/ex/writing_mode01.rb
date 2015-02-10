@@ -9,10 +9,10 @@ TEXT_STYLES = {:writing_mode=>'tb',
                :font_size=>16}
 
 TEXT_STYLES2 = {:writing_mode=>'tb',
-               :glyph_orientation_vertical=>90,
-               :fill=>'green',
-               :font_weight=>'bold',
-               :font_size=>16}
+                :glyph_orientation_vertical=>90,
+                :fill=>'green',
+                :font_weight=>'bold',
+                :font_size=>16}
 
 rvg = Magick::RVG.new(1.25.in, 7.in).viewbox(0,0,125,700) do |canvas|
     canvas.background_fill = 'white'
