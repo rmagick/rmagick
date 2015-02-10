@@ -322,11 +322,6 @@ Style/SpaceInsideHashLiteralBraces:
 Style/SpaceInsideParens:
   Enabled: false
 
-# Offense count: 23
-# Cop supports --auto-correct.
-Style/SpecialGlobalVars:
-  Enabled: false
-
 # Offense count: 1405
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.

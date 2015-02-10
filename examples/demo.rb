@@ -318,7 +318,7 @@ begin
     # montage_image.display
 
 rescue
-    puts "Caught exception: #{$!}"
+    puts "Caught exception: #{$ERROR_INFO}"
 end
 
 exit

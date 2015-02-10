@@ -799,7 +799,7 @@ class ImageList1_UT < Test::Unit::TestCase
     end
 end
 
-if __FILE__ == $0
+if __FILE__ == $PROGRAM_NAME
 IMAGES_DIR = '../doc/ex/images'
 FILES = Dir[IMAGES_DIR+'/Button_*.gif'].sort
 Test::Unit::UI::Console::TestRunner.run(ImageList1_UT) unless RUBY_VERSION[/^1\.9|^2/]

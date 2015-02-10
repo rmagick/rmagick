@@ -72,7 +72,7 @@ begin
     pic.write "./rm_gravity_out.miff"
 
 rescue
-    puts "#{$!} exception raised."
+    puts "#{$ERROR_INFO} exception raised."
     exit 1
 end
 

@@ -49,7 +49,7 @@ begin
     stegano[0].write('stegano.gif')
 
 rescue Magick::ImageMagickError
-    puts "#{$0}: ImageMagickError - #{$!}"
+    puts "#{$PROGRAM_NAME}: ImageMagickError - #{$ERROR_INFO}"
 end
 
 exit

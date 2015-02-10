@@ -691,7 +691,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
     end
 end     # class Image_Attributes_UT
 
-if __FILE__ == $0
+if __FILE__ == $PROGRAM_NAME
 FLOWER_HAT = '../doc/ex/images/Flower_Hat.jpg'
 Test::Unit::UI::Console::TestRunner.run(Image_Attributes_UT) unless RUBY_VERSION[/^1\.9|^2/]
 end

@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{https://github.com/gemhome/rmagick}
   s.license = 'MIT'
 
-      tracked_files = `git ls-files`.split($\)
+      tracked_files = `git ls-files`.split($OUTPUT_RECORD_SEPARATOR)
       file_exclusion_regex = %r{(\Alib/rvg/to_c.rb)}
       files         = tracked_files.reject{|file| file[file_exclusion_regex] }
       test_files    = files.grep(%r{^(test|spec|features)/})

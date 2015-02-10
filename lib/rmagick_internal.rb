@@ -1679,7 +1679,7 @@ public
     rescue NoMethodError
       Kernel.raise NoMethodError, "undefined method `#{methID.id2name}' for #{self.class}"
     rescue Exception
-        $@.delete_if { |s| /:in `send'$/.match(s) || /:in `method_missing'$/.match(s) }
+        $ERROR_POSITION.delete_if { |s| /:in `send'$/.match(s) || /:in `method_missing'$/.match(s) }
         Kernel.raise
     end
 

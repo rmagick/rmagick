@@ -37,6 +37,6 @@ begin
     snake.write("drawcomp2.gif")
 
 rescue Magick::ImageMagickError
-    puts "#{$0}: ImageMagickError - #{$!}"
+    puts "#{$PROGRAM_NAME}: ImageMagickError - #{$ERROR_INFO}"
 end
 exit

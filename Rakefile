@@ -22,26 +22,26 @@ end
 desc "abort when repo nto clean or has uncommited code"
 task :assert_clean_repo do
   sh("git diff --exit-code")
-  abort "Git repo not clean" unless $?.success?
+  abort "Git repo not clean" unless $CHILD_STATUS.success?
   sh("git diff-index --quiet --cached HEAD")
-  abort "Git repo not commited" unless $?.success?
+  abort "Git repo not commited" unless $CHILD_STATUS.success?
 end
 
 desc "build gem"
 task :build => [:config] do
   sh "gem build -V rmagick.gemspec"
-  if $?.success?
+  if $CHILD_STATUS.success?
     FileUtils.mkdir_p(File.join(base, 'pkg'))
     FileUtils.mv(File.join(base, gem_name), 'pkg')
   else
     STDERR.puts "Could not build gem"
-    exit $?.exitstatus
+    exit $CHILD_STATUS.exitstatus
   end
 end
 
 task :push_and_tag => [:build] do
   sh "gem push #{File.join(base, 'pkg', gem_name)}"
-  if $?.success?
+  if $CHILD_STATUS.success?
     sh "git tag -a -m \"Version #{version}\" #{version_tag}"
     STDOUT.puts "Tagged #{version_tag}."
     sh "git push"
