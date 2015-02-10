@@ -183,4 +183,3 @@ ilist.each do |img|
 end
 
 exit
-

@@ -30,4 +30,3 @@ img = bg[0].composite(img, Magick::CenterGravity, Magick::OverCompositeOp)
 
 img.write('matte_floodfill_after.gif')
 exit
-

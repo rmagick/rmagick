@@ -1940,4 +1940,3 @@ class SolidFill
    end
 end
 end # Magick
-

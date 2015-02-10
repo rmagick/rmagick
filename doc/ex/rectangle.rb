@@ -32,4 +32,3 @@ imgl.border!(1,1, 'lightcyan2')
 
 imgl.write('rectangle.gif')
 exit
-

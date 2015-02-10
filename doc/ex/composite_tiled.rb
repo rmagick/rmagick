@@ -19,5 +19,3 @@ img = Magick::Image.read('images/Flower_Hat.jpg').first
 # Composite the tile image over the background image.
 img.composite_tiled! wm
 img.write 'composite_tiled.jpg'
-
-

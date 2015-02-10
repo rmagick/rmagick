@@ -23,4 +23,3 @@ result = imgs.montage do
 end
 
 result.write('channel.jpg')
-

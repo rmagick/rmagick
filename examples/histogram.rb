@@ -319,4 +319,3 @@ histogram.write("./#{name}_Histogram.miff")
 Thread.kill(timer)
 puts 'Done!'
 exit
-

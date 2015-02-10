@@ -15,4 +15,3 @@ rvg = Magick::RVG.new(150, 100) do |canvas|
 end
 
 rvg.draw.write('baseline_shift01.gif')
-

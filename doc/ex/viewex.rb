@@ -31,4 +31,3 @@ end
 
 img.scale(5).write('viewex.gif')
 exit
-

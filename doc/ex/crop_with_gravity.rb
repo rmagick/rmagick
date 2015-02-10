@@ -40,7 +40,3 @@ montage = pairs.montage do
 end
 montage.write('crop_with_gravity.miff')
 #montage.display
-
-
-
-

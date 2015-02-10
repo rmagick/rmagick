@@ -20,4 +20,3 @@ rvg = Magick::RVG.new(300, 100) do |canvas|
 end
 
 rvg.draw.write('InitialCoords.gif')
-

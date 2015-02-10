@@ -28,4 +28,3 @@ after = bg.composite(shadow, Magick::CenterGravity, Magick::OverCompositeOp)
 after.border!(1,1,'gray80')
 
 after.write('shadow_after.gif')
-

@@ -706,4 +706,3 @@ module Magick
         end # class Utility
     end # class RVG
 end # module Magick
-

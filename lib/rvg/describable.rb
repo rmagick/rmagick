@@ -46,4 +46,3 @@ module Magick
         end     # module Describable
     end # class RVG
 end # module Magick
-

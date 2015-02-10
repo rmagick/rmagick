@@ -30,4 +30,3 @@ gc.draw imgl
 imgl.border!(1,1, 'lightcyan2')
 
 imgl.write('arcpath.gif')
-

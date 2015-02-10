@@ -32,4 +32,3 @@ rvg = Magick::RVG.new(12.cm, 6.cm).viewbox(0, 0, 1200, 600) do |canvas|
 end
 
 rvg.draw.write('quad01.gif')
-

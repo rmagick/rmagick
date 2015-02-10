@@ -131,4 +131,3 @@ end
 
 montage.write('composite.gif')
 exit
-

@@ -12,4 +12,3 @@ rvg = Magick::RVG.new(12.cm, 4.cm) do |canvas|
 end
 
 rvg.draw.write('rect01.gif')
-

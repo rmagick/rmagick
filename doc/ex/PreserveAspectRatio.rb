@@ -202,4 +202,3 @@ rvg = Magick::RVG.new(450, 300) do |canvas|
 end
 
 rvg.draw.write('PreserveAspectRatio.gif')
-

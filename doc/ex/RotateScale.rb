@@ -34,4 +34,3 @@ rvg = Magick::RVG.new(400, 120) do |canvas|
 end
 
 rvg.draw.write('RotateScale.gif')
-

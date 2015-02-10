@@ -40,4 +40,3 @@ imgl.border!(1,1, 'lightcyan2')
 
 imgl.write('cbezier4.gif')
 exit(0)
-

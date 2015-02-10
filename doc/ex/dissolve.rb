@@ -10,4 +10,3 @@ bgnd.resize_to_fill!(overlay.columns, overlay.rows)
 
 composited = bgnd.dissolve(overlay, 0.50)
 composited.write('dissolve.jpg')
-

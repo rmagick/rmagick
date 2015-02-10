@@ -385,4 +385,3 @@ module Magick
         end     # module Embellishable
     end # class RVG
 end # module Magick
-

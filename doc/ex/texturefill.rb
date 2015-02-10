@@ -22,4 +22,3 @@ end
 #img.display
 img.write('texturefill.gif')
 exit
-

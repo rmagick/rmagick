@@ -39,4 +39,3 @@ gc.draw(imgl)
 imgl.border!(1,1, 'lightcyan2')
 imgl.write('cbezier2.gif')
 exit(0)
-

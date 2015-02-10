@@ -17,5 +17,3 @@ rescue NotImplementedError
 end
 
 montage.write('remap_images.jpg')
-
-

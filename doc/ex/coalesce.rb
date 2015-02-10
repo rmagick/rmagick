@@ -55,6 +55,3 @@ res = cells.coalesce
 res.write 'coalesce_anim.gif'
 res[25].write 'coalesce.gif'
 exit
-
-
-

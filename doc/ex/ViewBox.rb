@@ -29,4 +29,3 @@ end
 
 example(300, 200).write('ViewBox_300x200.gif')
 example(150, 200).write('ViewBox_150x200.gif')
-

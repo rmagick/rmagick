@@ -162,4 +162,3 @@ module Magick
         end     # module Stretchable
     end # class RVG
 end # module Magick
-

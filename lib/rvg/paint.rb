@@ -49,4 +49,3 @@ module Magick
         end     # class Pattern
     end # class RVG
 end # module Magick
-

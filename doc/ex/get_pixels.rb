@@ -45,4 +45,3 @@ combine = rocks.composite(grayrocks, Magick::CenterGravity, Magick::OverComposit
 #combine.display
 combine.write 'get_pixels.jpg'
 exit
-

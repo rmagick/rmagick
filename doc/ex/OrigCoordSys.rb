@@ -14,4 +14,3 @@ rvg = Magick::RVG.new(400, 150) do |canvas|
 end
 
 rvg.draw.write('OrigCoordSys.gif')
-

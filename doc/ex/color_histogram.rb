@@ -45,4 +45,3 @@ canvas.border!(3, 3, 'white')
 canvas.write('color_histogram.gif')
 
 exit
-

@@ -52,4 +52,3 @@ rescue NotImplementedError, NameError
   img.write('sparse_color.png')
 
 end
-

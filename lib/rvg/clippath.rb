@@ -42,4 +42,3 @@ module Magick
         end     # class ClipPath
     end # class RVG
 end # module Magick
-

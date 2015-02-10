@@ -8,4 +8,3 @@ rvg = Magick::RVG.new(150, 150) do |canvas|
 end
 
 rvg.draw.write('stroke_fill.gif')
-

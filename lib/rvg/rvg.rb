@@ -278,4 +278,3 @@ module Magick
         end
     end # end class RVG
 end # end module Magick
-

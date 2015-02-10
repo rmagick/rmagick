@@ -21,6 +21,3 @@ gc.annotate(img, 0, 0, 0, 0, "PATT\nERNS") do
 end
 
 img.write('fill_pattern.gif')
-
-
-

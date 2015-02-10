@@ -76,4 +76,3 @@ checkerboard = Image.read('pattern:checkerboard') {self.size = "#{ballerina.colu
 vignette = checkerboard[0].composite(ballerina, CenterGravity, OverCompositeOp)
 vignette.display
 exit
-

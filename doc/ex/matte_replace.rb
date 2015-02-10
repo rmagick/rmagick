@@ -37,4 +37,3 @@ img = bg[0].composite(img, Magick::CenterGravity, Magick::OverCompositeOp)
 
 img.write('matte_replace_after.gif')
 exit
-

@@ -17,4 +17,3 @@ rvg = Magick::RVG.new(200, 100) do |canvas|
 end
 
 rvg.draw.write('text_styles.gif')
-

@@ -25,4 +25,3 @@ mark = mark.wave(2.5, 70).rotate(-90)
 # Composite the watermark in the lower right (southeast) corner.
 img2 = img.watermark(mark, 0.25, 0, Magick::SouthEastGravity)
 img2.write('watermark.jpg')
-

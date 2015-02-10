@@ -39,4 +39,3 @@ gc.draw(imgl)
 imgl.border!(1,1, 'LightCyan2')
 
 imgl.write('line.gif')
-

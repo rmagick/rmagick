@@ -62,4 +62,3 @@ thumbnail = white_bg.composite(img, CenterGravity, OverCompositeOp)
 
 thumbnail.write('thumbnail.gif')
 exit
-

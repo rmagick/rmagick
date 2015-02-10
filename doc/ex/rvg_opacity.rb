@@ -16,4 +16,3 @@ rvg = Magick::RVG.new(450, 150) do |canvas|
 end
 
 rvg.draw.write('rvg_opacity.gif')
-

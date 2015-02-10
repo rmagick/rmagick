@@ -121,4 +121,3 @@ module Magick
         end # class Use
     end # class RVG
 end # module Magick
-

@@ -40,4 +40,3 @@ imgl.border!(1,1,'lightcyan2')
 #imgl.display
 imgl.write('stroke_dasharray.gif')
 exit
-

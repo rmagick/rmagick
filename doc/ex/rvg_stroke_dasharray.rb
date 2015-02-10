@@ -9,4 +9,3 @@ rvg = Magick::RVG.new(200, 100) do |canvas|
 end
 
 rvg.draw.write('rvg_stroke_dasharray.gif')
-

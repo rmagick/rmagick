@@ -117,4 +117,3 @@ end
 if __FILE__ == $PROGRAM_NAME
 Test::Unit::UI::Console::TestRunner.run(Draw_UT)  unless RUBY_VERSION[/^1\.9|^2/]
 end
-

@@ -115,4 +115,3 @@ module Magick
         end     # module Stylable
     end # class RVG
 end # module Magick
-

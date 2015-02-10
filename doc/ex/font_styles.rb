@@ -30,4 +30,3 @@ rvg = Magick::RVG.new(200, 250) do |canvas|
 end
 
 rvg.draw.write('font_styles.gif')
-

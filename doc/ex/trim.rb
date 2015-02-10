@@ -21,4 +21,3 @@ after.border!((cols-img.columns)/2, (rows-img.rows)/2, 'white')
 before.write('trim_before.jpg')
 after.write('trim_after.jpg')
 exit
-

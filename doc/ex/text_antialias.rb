@@ -35,4 +35,3 @@ imgl.page = Magick::Rectangle.new(365, 180)
 imgl.border!(1,1,'black')
 imgl.write('text_antialias.gif')
 exit
-

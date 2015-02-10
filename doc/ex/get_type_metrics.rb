@@ -139,4 +139,3 @@ gc.text((metrics.max_advance)/2-38, -metrics.descent+35, 'max_advance')
 gc.draw(canvas)
 canvas.border!(1,1,'blue')
 canvas.write('get_type_metrics.gif')
-

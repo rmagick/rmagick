@@ -23,4 +23,3 @@ morph.iterations = 10000
 # morph.animate(12)
 morph.write 'morph.gif'
 exit
-

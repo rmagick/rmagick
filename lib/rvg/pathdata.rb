@@ -125,4 +125,3 @@ module Magick
         end # class PathData
     end # class RVG
 end # module Magick
-

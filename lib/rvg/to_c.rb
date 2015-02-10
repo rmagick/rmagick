@@ -99,4 +99,3 @@ END_TRAILER
         $stderr.puts 'Done'
     end
 end     # class Magick::RVG
-

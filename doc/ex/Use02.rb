@@ -18,4 +18,3 @@ rvg = Magick::RVG.new(10.cm, 3.5.cm).viewbox(0, 0, 100, 35) do |canvas|
 end
 
 rvg.draw.write('Use02.gif')
-

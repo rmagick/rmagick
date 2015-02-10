@@ -124,4 +124,3 @@ module Magick
         end     # module Transformable
     end # class RVG
 end # module Magick
-

@@ -10,4 +10,3 @@ rvg = Magick::RVG.new(hat.columns, hat.rows) do |canvas|
 end
 
 rvg.draw.write('rvg_clippath.gif')
-

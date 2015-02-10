@@ -33,4 +33,3 @@ img.mask q
 
 img = img.level(0, Magick::QuantumRange, 0.50)
 img.write('mask.jpg')
-

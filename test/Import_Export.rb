@@ -119,4 +119,3 @@ if __FILE__ == $PROGRAM_NAME
 IMAGES_DIR = '../doc/ex/images'
 Test::Unit::UI::Console::TestRunner.run(Import_Export_UT) unless RUBY_VERSION[/^1\.9|^2/]
 end
-

@@ -9,4 +9,3 @@ rescue NotImplementedError
    img = Magick::Image.read('images/notimplemented.gif').first
 end
 img.write('remap.jpg')
-

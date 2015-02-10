@@ -61,4 +61,3 @@ module Magick
         end     # class << self
     end # class RVG
 end # module Magick
-

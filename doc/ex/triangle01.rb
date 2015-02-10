@@ -13,4 +13,3 @@ rvg = Magick::RVG.new(4.cm, 4.cm).viewbox(0, 0, 400, 400) do |canvas|
 end
 
 rvg.draw.write('triangle01.gif')
-
