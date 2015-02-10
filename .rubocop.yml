@@ -339,11 +339,6 @@ Style/Tab:
 Style/TrailingComma:
   Enabled: false
 
-# Offense count: 10
-# Cop supports --auto-correct.
-Style/UnneededPercentQ:
-  Enabled: false
-
 # Offense count: 2
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 Style/VariableName:
