@@ -145,11 +145,6 @@ Style/DeprecatedHashMethods:
 Style/Documentation:
   Enabled: false
 
-# Offense count: 13
-# Cop supports --auto-correct.
-Style/EmptyLiteral:
-  Enabled: false
-
 # Offense count: 4
 # Cop supports --auto-correct.
 Style/EvenOdd:

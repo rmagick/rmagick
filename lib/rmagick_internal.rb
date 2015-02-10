@@ -838,7 +838,7 @@ class Image
     # return all entries and values. The return value is an array of [name,value]
     # arrays.
     def get_exif_by_entry(*entry)
-        ary = Array.new
+        ary = []
         if entry.length == 0
             exif_data = self['EXIF:*']
             if exif_data
@@ -856,7 +856,7 @@ class Image
 
     # Retrieve EXIF data by tag number or all tag/value pairs. The return value is a hash.
     def get_exif_by_number(*tag)
-        hash = Hash.new
+        hash = {}
         if tag.length == 0
             exif_data = self['EXIF:!']
             if exif_data
@@ -1842,7 +1842,7 @@ public
     end
 
     def to_a
-        a = Array.new
+        a = []
         @images.each {|image| a << image}
         return a
     end

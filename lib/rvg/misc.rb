@@ -324,21 +324,21 @@ module Magick
                 WRITING_MODE = %w{lr-tb lr rl-tb rl tb-rl tb}
 
                 def initialize
-                    @affine = Array.new
+                    @affine = []
                     @affine << Magick::AffineMatrix.new(1, 0, 0, 1, 0, 0)
-                    @baseline_shift = Array.new
+                    @baseline_shift = []
                     @baseline_shift << :baseline
-                    @glyph_orientation_horizontal = Array.new
+                    @glyph_orientation_horizontal = []
                     @glyph_orientation_horizontal << 0
-                    @glyph_orientation_vertical = Array.new
+                    @glyph_orientation_vertical = []
                     @glyph_orientation_vertical << 90
-                    @letter_spacing = Array.new
+                    @letter_spacing = []
                     @letter_spacing << 0
-                    @text_anchor = Array.new
+                    @text_anchor = []
                     @text_anchor << :start
-                    @word_spacing = Array.new
+                    @word_spacing = []
                     @word_spacing << 0
-                    @writing_mode = Array.new
+                    @writing_mode = []
                     @writing_mode << 'lr-tb'
                 end
 
@@ -507,7 +507,7 @@ module Magick
 
                 def initialize
                     @gc = Magick::Draw.new
-                    @shadow = Array.new
+                    @shadow = []
                     @shadow << Magick::Draw.new
                     @text_attrs = TextAttributes.new
                     init_matrix

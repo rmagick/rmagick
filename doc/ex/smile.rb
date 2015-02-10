@@ -103,7 +103,7 @@ SmileBits = [
 
   img = Image.new(SmileWidth, SmileHeight)
 
-    q = Array.new                           # Create an array of pixels one
+    q = []                           # Create an array of pixels one
     SmileWidth.times do                     # row long
         q << Magick::Pixel.new(0,0,0,0)
     end
