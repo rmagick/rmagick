@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
 # Demonstrate the Magick::TextureFill class.
 
@@ -11,7 +11,7 @@ img.new_image(300, 100, fill)
 # Annotate the filled image with the code that created the fill.
 
 ann = Magick::Draw.new
-ann.annotate(img, 0,0,0,0, "TextureFill.new(granite)") do
+ann.annotate(img, 0,0,0,0, 'TextureFill.new(granite)') do
     self.gravity = Magick::CenterGravity
     self.fill = 'white'
     self.font_weight = Magick::BoldWeight
@@ -20,6 +20,6 @@ ann.annotate(img, 0,0,0,0, "TextureFill.new(granite)") do
 end
 
 #img.display
-img.write("texturefill.gif")
+img.write('texturefill.gif')
 exit
 

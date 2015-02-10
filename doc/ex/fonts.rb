@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
 # Compute column widths
 name_length = 0

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby -w
 
-require "rmagick"
+require 'rmagick'
 
 points = [145, 65, 174,151, 264,151, 192,205,
           218,291, 145,240,  72,291,  98,205,
@@ -21,7 +21,7 @@ pr.clip_path('example')
 # Composite the Flower Hat image over
 # the background using the clip-path
 girl = Magick::ImageList.new
-girl.read("images/Flower_Hat.jpg")
+girl.read('images/Flower_Hat.jpg')
 
 cols = rows = nil
 
@@ -29,7 +29,7 @@ cols = rows = nil
 # we widen our picture to fit. The change_geometry
 # method will adjust the height proportionately.
 
-girl.change_geometry("280") do |c,r|
+girl.change_geometry('280') do |c,r|
     pr.composite(0,0, c, r, girl)
     cols = c
     rows = r
@@ -55,6 +55,6 @@ pr.draw(canvas)
 crop = canvas.bounding_box
 canvas.crop!(crop.x, crop.y, crop.width, crop.height)
 
-canvas.write("clip_path.gif")
+canvas.write('clip_path.gif')
 
 exit

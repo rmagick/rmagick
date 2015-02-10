@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
 imgl = Magick::ImageList.new
 imgl.new_image(400, 150) { self.background_color = 'white' }
@@ -45,4 +45,4 @@ gc.text(280,120, "\"'bevel' join\"")
 
 gc.draw(imgl)
 
-imgl.write("stroke_linejoin.gif")
+imgl.write('stroke_linejoin.gif')

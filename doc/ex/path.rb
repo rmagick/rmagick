@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
 imgl = Magick::ImageList.new
 imgl.new_image(390, 240, Magick::HatchFill.new('white','lightcyan2'))
@@ -10,7 +10,7 @@ gc = Magick::Draw.new
 gc.fill_opacity 0
 gc.stroke 'red'
 gc.stroke_width 3
-gc.path "M20,120 C20,20 170,20 170,120 S320,220 320,120"
+gc.path 'M20,120 C20,20 170,20 170,120 S320,220 320,120'
 
 # Annotate
 # Show end points
@@ -41,7 +41,7 @@ gc.circle 170,220, 173,223
 # Add labels
 gc.font_weight Magick::NormalWeight
 gc.font_style Magick::NormalStyle
-gc.stroke "none"       # unset stroke color
+gc.stroke 'none'       # unset stroke color
 gc.fill 'black'
 
 # Add end point labels

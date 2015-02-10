@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby -w
 
-require "rmagick"
+require 'rmagick'
 
 img = Magick::Image.read('images/Flower_Hat.jpg').first
 imgs = Magick::ImageList.new
@@ -14,7 +14,7 @@ imgs << img.channel(Magick::BlueChannel)
 imgs.cur_image['Label'] = 'BlueChannel'
 
 result = imgs.montage do
-    self.tile = "2x2"
+    self.tile = '2x2'
     self.background_color = 'black'
     self.stroke = 'transparent'
     self.fill = 'white'

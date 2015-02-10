@@ -1,4 +1,4 @@
-require "rmagick"
+require 'rmagick'
 require 'test/unit'
 require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
 
@@ -9,7 +9,7 @@ class Import_Export_UT < Test::Unit::TestCase
 
   def import_pixels(pixels, type)
     img = Magick::Image.new(@test.columns, @test.rows)
-    res = img.import_pixels(0, 0, @test.columns, @test.rows, "RGB", pixels, type)
+    res = img.import_pixels(0, 0, @test.columns, @test.rows, 'RGB', pixels, type)
     _, diff = img.compare_channel(@test, Magick::MeanAbsoluteErrorMetric)
     #_.display
     diff
@@ -28,87 +28,87 @@ class Import_Export_UT < Test::Unit::TestCase
   end
 
   def test_import_export_float
-    pixels = @test.export_pixels(0, 0, @test.columns, @test.rows, "RGB")
+    pixels = @test.export_pixels(0, 0, @test.columns, @test.rows, 'RGB')
     fpixels = pixels.collect {|p| p.to_f / Magick::QuantumRange}
-    p = fpixels.pack("F*")
+    p = fpixels.pack('F*')
     fimport(p, Magick::FloatPixel)
 
-    p = fpixels.pack("D*")
+    p = fpixels.pack('D*')
     fimport(p, Magick::DoublePixel)
   end
 
   def test_import_export
     is_hdri_support = Magick::Magick_features =~ /HDRI/
-    pixels = @test.export_pixels(0, 0, @test.columns, @test.rows, "RGB")
+    pixels = @test.export_pixels(0, 0, @test.columns, @test.rows, 'RGB')
 
     case Magick::MAGICKCORE_QUANTUM_DEPTH
       when 8
-        p = pixels.pack("C*")
+        p = pixels.pack('C*')
         import(p, Magick::CharPixel)
         if is_hdri_support
-          p = pixels.pack("F*")
+          p = pixels.pack('F*')
         end
         import(p, Magick::QuantumPixel)
 
         spixels = pixels.collect {|px| px * 257}
-        p = spixels.pack("S*")
+        p = spixels.pack('S*')
         import(p, Magick::ShortPixel)
 
         ipixels = pixels.collect {|px| px * 16843009}
-        p = ipixels.pack("I*")
+        p = ipixels.pack('I*')
         import(p, Magick::IntegerPixel)
         import(p, Magick::LongPixel)
 
       when 16
         cpixels = pixels.collect {|px| px / 257}
-        p = cpixels.pack("C*")
+        p = cpixels.pack('C*')
         import(p, Magick::CharPixel)
 
-        p = pixels.pack("S*")
+        p = pixels.pack('S*')
         import(p, Magick::ShortPixel)
         if is_hdri_support
-          p = pixels.pack("F*")
+          p = pixels.pack('F*')
         end
         import(p, Magick::QuantumPixel)
 
         ipixels = pixels.collect {|px| px * 65537}
-        p = ipixels.pack("I*")
+        p = ipixels.pack('I*')
         # Diff s/b 0.0 but never is.
         #import(p, Magick::IntegerPixel, 430.7834)
         #import(p, Magick::LongPixel, 430.7834)
 
       when 32
         cpixels = pixels.collect {|px| px / 16843009}
-        p = cpixels.pack("C*")
+        p = cpixels.pack('C*')
         import(p, Magick::CharPixel)
 
         spixels = pixels.collect {|px| px / 65537}
-        p = spixels.pack("S*")
+        p = spixels.pack('S*')
         import(p, Magick::ShortPixel)
 
-        p = pixels.pack("I*")
+        p = pixels.pack('I*')
         import(p, Magick::IntegerPixel)
         import(p, Magick::LongPixel)
         if is_hdri_support
-          p = pixels.pack("D*")
+          p = pixels.pack('D*')
         end
         import(p, Magick::QuantumPixel)
 
       when 64
         cpixels = pixels.collect {|px| px / 72340172838076673}
-        p = cpixels.pack("C*")
+        p = cpixels.pack('C*')
         import(p, Magick::CharPixel)
 
         spixels = pixels.collect {|px| px / 281479271743489}
-        p = spixels.pack("S*")
+        p = spixels.pack('S*')
         import(p, Magick::ShortPixel)
 
         ipixels = pixels.collect {|px| px / 4294967297 }
-        p = ipixels.pack("I*")
+        p = ipixels.pack('I*')
         import(p, Magick::IntegerPixel)
         import(p, Magick::LongPixel)
 
-        p = pixels.pack("Q*")
+        p = pixels.pack('Q*')
         import(p, Magick::QuantumPixel)
 
     end

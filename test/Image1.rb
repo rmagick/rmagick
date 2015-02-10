@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby -w
 
-require "rmagick"
+require 'rmagick'
 require 'test/unit'
 require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
 
@@ -103,7 +103,7 @@ class Image1_UT < Test::Unit::TestCase
     def test_read_inline
         img = Magick::Image.read(IMAGES_DIR+'/Button_0.gif').first
         blob = img.to_blob
-        encoded = [blob].pack("m*")
+        encoded = [blob].pack('m*')
         res = Magick::Image.read_inline(encoded)
         assert_instance_of(Array, res)
         assert_instance_of(Magick::Image, res[0])
@@ -226,11 +226,11 @@ class Image1_UT < Test::Unit::TestCase
     end
 
     def add_delete_profile
-        img = Magick::Image.read("cmyk.jpg"),first
-        assert_nothing_raised { img.add_profile("cmyk.icm") }
-        assert_nothing_raised { img.add_profile("srgb.icm") }
-        img.each_profile { |name, value| assert_equal("icc", name) }
-        assert_nothing_raised { img.delete_profile("icc") }
+        img = Magick::Image.read('cmyk.jpg'),first
+        assert_nothing_raised { img.add_profile('cmyk.icm') }
+        assert_nothing_raised { img.add_profile('srgb.icm') }
+        img.each_profile { |name, value| assert_equal('icc', name) }
+        assert_nothing_raised { img.delete_profile('icc') }
     end
 
     def test_affine_matrix
@@ -310,7 +310,7 @@ class Image1_UT < Test::Unit::TestCase
     end
 
     def test_blend
-      @img2 = Magick::Image.new(20,20) {self.background_color = "black"}
+      @img2 = Magick::Image.new(20,20) {self.background_color = 'black'}
       assert_nothing_raised { @img.blend(@img2, 0.25) }
       res = @img.blend(@img2, 0.25)
       assert_instance_of(Magick::Image, res)
@@ -375,10 +375,10 @@ class Image1_UT < Test::Unit::TestCase
     end
 
     def test_change_geometry
-        assert_raise(ArgumentError) { @img.change_geometry("sss") }
-        assert_raise(LocalJumpError) { @img.change_geometry("100x100") }
+        assert_raise(ArgumentError) { @img.change_geometry('sss') }
+        assert_raise(LocalJumpError) { @img.change_geometry('100x100') }
         assert_nothing_raised do
-            res = @img.change_geometry("100x100") { 1 }
+            res = @img.change_geometry('100x100') { 1 }
             assert_equal(1, res)
         end
         assert_raise(ArgumentError) { @img.change_geometry([]) }

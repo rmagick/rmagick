@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby -w
 
-require "rmagick"
+require 'rmagick'
 
 gc = Magick::Draw.new
 gc.pattern('triangles', 0, 0, 16, 16) do
@@ -19,7 +19,7 @@ gc.ellipse(150, 75, 130, 60, 0, 360)
 img = Magick::Image.new(300, 150, Magick::HatchFill.new('white','lightcyan2',8))
 gc.draw(img)
 
-img.border!(1,1, "lightcyan2")
+img.border!(1,1, 'lightcyan2')
 
 img.write('pattern1.gif')
 exit

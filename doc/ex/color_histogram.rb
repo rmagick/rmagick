@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby -w
 
-require "rmagick"
+require 'rmagick'
 
 NUM_COLORS = 256
 HIST_HEIGHT = 200
@@ -28,7 +28,7 @@ pixels.each do |pixel|
     start = start.succ
 end
 
-hatch = Magick::HatchFill.new("white", "gray95")
+hatch = Magick::HatchFill.new('white', 'gray95')
 canvas = Magick::Image.new(NUM_COLORS, HIST_HEIGHT, hatch)
 gc.draw(canvas)
 
@@ -39,10 +39,10 @@ text.annotate(canvas, 0, 0, 0, 20, "Color Frequency\nHistogram") do
     self.stroke = 'transparent'
 end
 
-canvas.border!(1, 1, "white")
-canvas.border!(1, 1, "black")
-canvas.border!(3, 3, "white")
-canvas.write("color_histogram.gif")
+canvas.border!(1, 1, 'white')
+canvas.border!(1, 1, 'black')
+canvas.border!(3, 3, 'white')
+canvas.write('color_histogram.gif')
 
 exit
 

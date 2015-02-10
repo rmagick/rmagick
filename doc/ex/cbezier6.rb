@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby -w
 
-require "rmagick"
+require 'rmagick'
 
 imgl = Magick::ImageList.new
 imgl.new_image(400, 300, Magick::HatchFill.new('white','lightcyan2'))
@@ -49,5 +49,5 @@ gc.draw(imgl)
 
 imgl.border!(1,1, 'lightcyan2')
 
-imgl.write("cbezier6.gif")
+imgl.write('cbezier6.gif')
 exit

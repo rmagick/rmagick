@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
 imgl = Magick::ImageList.new
 imgl.new_image(250, 250, Magick::HatchFill.new('white','lightcyan2'))
@@ -46,7 +46,7 @@ gc.text(0, 20, "'+y'")
 
 gc.draw(imgl)
 
-imgl.border!(1,1, "lightcyan2")
+imgl.border!(1,1, 'lightcyan2')
 
-imgl.write("skewx.gif")
+imgl.write('skewx.gif')
 

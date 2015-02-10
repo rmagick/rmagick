@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
 imgl = Magick::ImageList.new
 imgl.new_image(250, 250, Magick::HatchFill.new('white','LightCyan2'))
@@ -36,7 +36,7 @@ gc.text(30,220, "'50,200'")
 gc.text(180, 220, "'200,200'")
 
 gc.draw(imgl)
-imgl.border!(1,1, "LightCyan2")
+imgl.border!(1,1, 'LightCyan2')
 
-imgl.write("line.gif")
+imgl.write('line.gif')
 

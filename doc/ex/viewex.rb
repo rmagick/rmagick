@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby -w
 
-require "rmagick"
+require 'rmagick'
 
 img = Magick::Image.new(40, 40) {self.background_color = 'lightcyan2'}
 
@@ -29,6 +29,6 @@ img.view(10, 5, 20, 20) do |view|
     view[4,8][10].blue = Magick::QuantumRange
 end
 
-img.scale(5).write("viewex.gif")
+img.scale(5).write('viewex.gif')
 exit
 

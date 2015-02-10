@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby -w
 
-require "rmagick"
+require 'rmagick'
 
 img = Magick::Image.read('images/Flower_Hat.jpg').first
 
@@ -14,7 +14,7 @@ frames = Magick::ImageList.new
 implosion = 0.25
 8.times do
     frames << img.implode(implosion)
-    legend.annotate(frames, 0,0,10,20, sprintf("% 4.2f", implosion))
+    legend.annotate(frames, 0,0,10,20, sprintf('% 4.2f', implosion))
     frames.matte = false
     implosion -= 0.10
 end
@@ -22,13 +22,13 @@ end
 7.times do
     implosion += 0.10
     frames << img.implode(implosion)
-    legend.annotate(frames, 0,0,10,20, sprintf("% 4.2f", implosion))
+    legend.annotate(frames, 0,0,10,20, sprintf('% 4.2f', implosion))
     frames.matte = false
 end
 
 frames.delay = 10
 frames.iterations = 0
-puts "Producing animation..."
+puts 'Producing animation...'
 
-frames.write("implode.gif")
+frames.write('implode.gif')
 exit

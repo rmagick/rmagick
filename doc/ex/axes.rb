@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby -w
 
-require "rmagick"
+require 'rmagick'
 
 # Demonstrate the use of RMagick's Draw class
 # and show the default coordinate system.
@@ -56,9 +56,9 @@ labels.text(20,30, "'+x'")
 labels.gravity(Magick::SouthWestGravity)
 labels.text(20,20, "'+y'")
 labels.gravity(Magick::CenterGravity)
-labels.text(0,0, "Rotation")
+labels.text(0,0, 'Rotation')
 labels.draw(canvas)
 
 #canvas.display
-canvas.write("axes.gif")
+canvas.write('axes.gif')
 exit

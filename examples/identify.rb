@@ -1,10 +1,10 @@
-require "rmagick"
+require 'rmagick'
 
 module Magick
     class Image
         # Print information similar to the identify -verbose command
         def identify
-            printf "Image: "
+            printf 'Image: '
             puts "#{base_filename}=>" if base_filename != filename
             puts filename + "\n"
             puts "\tFormat: #{format}\n"
@@ -145,7 +145,7 @@ module Magick
                 next if prop[0,1] == '['
                 puts "\t#{prop}: #{value}\n"
             end
-            clip_path = self["8BIM:1999,2998:#1"]
+            clip_path = self['8BIM:1999,2998:#1']
             if clip_path
                 puts "\tClipping path: #{clip_path}\n"
             end

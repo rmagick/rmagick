@@ -1,4 +1,4 @@
-require "rmagick"
+require 'rmagick'
 include Magick
 
 puts <<END_INFO
@@ -30,7 +30,7 @@ case ARGV.length
         size = DEFAULT_SIZE
     else
         size = DEFAULT_SIZE
-        image = "../doc/ex/images/Flower_Hat.jpg"
+        image = '../doc/ex/images/Flower_Hat.jpg'
 end
 
 geom = "#{size}x#{size}"
@@ -48,18 +48,18 @@ img.change_geometry!(geom) { |cols, rows| img.thumbnail! cols, rows }
 # for the raised border. A 3-pixel raised edge means that the
 # background needs to be 6 pixels larger in each dimension.
 
-bg = Image.new(size+6, size+6) { self.background_color = "gray75" }
+bg = Image.new(size+6, size+6) { self.background_color = 'gray75' }
 bg = bg.raise(3,3)
 
 # Just for the purposes of this example, display the thumbnail background on
 # a larger white background.
 
-white_bg = Image.new(size+50, size+50) {self.background_color = "white"}
+white_bg = Image.new(size+50, size+50) {self.background_color = 'white'}
 white_bg = white_bg.composite(bg, CenterGravity, OverCompositeOp)
 
 # Finally, center the thumbnail on the gray background.
 thumbnail = white_bg.composite(img, CenterGravity, OverCompositeOp)
 
-thumbnail.write("thumbnail.gif")
+thumbnail.write('thumbnail.gif')
 exit
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 require 'date'
 
 # Demonstrate the Image#polaroid method
@@ -12,7 +12,7 @@ begin
       self.font_weight = Magick::NormalWeight
       self.font_style = Magick::NormalStyle
       self.gravity = Magick::CenterGravity
-      self.border_color = "#f0f0f8"
+      self.border_color = '#f0f0f8'
     end
 
     # Composite it on a white background so the result is opaque.

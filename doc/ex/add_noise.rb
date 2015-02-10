@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
 # Demonstrate the Image#add_noise method
 NOISE_TYPES = [Magick::UniformNoise, Magick::GaussianNoise,

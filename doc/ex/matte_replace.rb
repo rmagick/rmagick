@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby -w
 
-require "rmagick"
+require 'rmagick'
 
 img = Magick::Image.new(200,200)
 img.compression = Magick::LZWCompression

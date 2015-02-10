@@ -1,10 +1,10 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
 # Demonstrate the Image#adaptive_threshold method
 
-img = Magick::Image.read("images/Flower_Hat.jpg").first
+img = Magick::Image.read('images/Flower_Hat.jpg').first
 result = img.adaptive_threshold
-result.write("adaptive_threshold.jpg")
+result.write('adaptive_threshold.jpg')
 exit
 

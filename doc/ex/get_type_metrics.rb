@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
 # Add a method for drawing braces.
 module Magick
@@ -14,8 +14,8 @@ module Magick
         # The placement & orientation is affected by the
         # current user coordinate system.
         def brace(w, h)
-            fail(ArgumentError, "width must be != 0") unless w != 0
-            fail(ArgumentError, "height must be != 0") unless h != 0
+            fail(ArgumentError, 'width must be != 0') unless w != 0
+            fail(ArgumentError, 'height must be != 0') unless h != 0
             path("M0,0 Q#{w},0 #{w/2.0},#{-h/4.0} T#{w},#{-h/2.0}" \
                  "Q0,#{-h/2.0} #{w/2.0},#{-(3.0*h/4.0)} T0,#{-h}")
         end
@@ -25,7 +25,7 @@ end
 Origin_x = 110
 Origin_y = 230
 Glyph = 'g'
-Face = RUBY_PLATFORM =~ /mswin/ ? "Verdana" : "Times"
+Face = RUBY_PLATFORM =~ /mswin/ ? 'Verdana' : 'Times'
 
 canvas = Magick::Image.new(410, 320, Magick::HatchFill.new('white', 'lightcyan2'))
 
@@ -134,7 +134,7 @@ gc.text(metrics.width+40, -(metrics.ascent/2)+4, 'ascent')
 gc.text(metrics.width+40, -(metrics.descent/2)+4, 'descent')
 gc.text(-60, -metrics.descent-metrics.height/2+4, 'height')
 gc.text((metrics.width/2)-15, -metrics.descent-metrics.height-25, 'width')
-gc.text((metrics.max_advance)/2-38, -metrics.descent+35, "max_advance")
+gc.text((metrics.max_advance)/2-38, -metrics.descent+35, 'max_advance')
 
 gc.draw(canvas)
 canvas.border!(1,1,'blue')

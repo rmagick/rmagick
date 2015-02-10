@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
 TEXT = 'get\nmultiline\ntype\nmetrics'
 

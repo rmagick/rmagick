@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
 canvas = Magick::Image.new(260, 125)
 gc = Magick::Draw.new
@@ -33,5 +33,5 @@ gc.text( 30,15, '"75%"')
 gc.text( 90,15, '"100%"')
 
 gc.draw(canvas)
-canvas.write("opacity.png")
+canvas.write('opacity.png')
 exit

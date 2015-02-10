@@ -1,7 +1,7 @@
 
 #!/usr/bin/env ruby -w
 
-require "rmagick"
+require 'rmagick'
 require 'test/unit'
 require 'test/unit/ui/console/testrunner'  unless RUBY_VERSION[/^1\.9|^2/]
 
@@ -24,7 +24,7 @@ class Draw_UT < Test::Unit::TestCase
       end
 
       # cause it to become defined. save the object id.
-      @draw.get_type_metrics("ABCDEF")
+      @draw.get_type_metrics('ABCDEF')
       dummy = nil
       assert_nothing_raised do
         dummy = Magick::Draw._dummy_img_
@@ -33,7 +33,7 @@ class Draw_UT < Test::Unit::TestCase
       assert_instance_of(Magick::Image, dummy)
 
       # ensure that it is always the same object
-      @draw.get_type_metrics("ABCDEF")
+      @draw.get_type_metrics('ABCDEF')
       dummy2 = nil
       assert_nothing_raised do
         dummy2 = Magick::Draw._dummy_img_
@@ -44,52 +44,52 @@ class Draw_UT < Test::Unit::TestCase
     def test_kerning
         assert_nothing_raised { @draw.kerning = 1 }
         assert_nothing_raised { @draw.kerning(1) }
-        assert_raise(ArgumentError) { @draw.kerning("a") }
+        assert_raise(ArgumentError) { @draw.kerning('a') }
         assert_raise(TypeError) { @draw.kerning([]) }
     end
 
     def test_interline_spacing
         assert_nothing_raised { @draw.interline_spacing = 1 }
         assert_nothing_raised { @draw.interline_spacing(1) }
-        assert_raise(ArgumentError) { @draw.interline_spacing("a") }
+        assert_raise(ArgumentError) { @draw.interline_spacing('a') }
         assert_raise(TypeError) { @draw.interline_spacing([]) }
     end
 
     def test_interword_spacing
         assert_nothing_raised { @draw.interword_spacing = 1 }
         assert_nothing_raised { @draw.interword_spacing(1) }
-        assert_raise(ArgumentError) { @draw.interword_spacing("a") }
+        assert_raise(ArgumentError) { @draw.interword_spacing('a') }
         assert_raise(TypeError) { @draw.interword_spacing([]) }
     end
 
     def assert_marshal
-       rose = Magick::Image.read("rose:").first
-       granite = Magick::Image.read("granite:").first
-       s = granite.to_blob {self.format="miff"}
+       rose = Magick::Image.read('rose:').first
+       granite = Magick::Image.read('granite:').first
+       s = granite.to_blob {self.format='miff'}
        granite = Magick::Image.from_blob(s).first
-       blue_stroke = Magick::Image.new(20,20) {self.background_color = "blue"}
-       s = blue_stroke.to_blob {self.format="miff"}
+       blue_stroke = Magick::Image.new(20,20) {self.background_color = 'blue'}
+       s = blue_stroke.to_blob {self.format='miff'}
        blue_stroke = Magick::Image.from_blob(s).first
 
        @draw.affine = Magick::AffineMatrix.new(1, 2, 3, 4, 5, 6)
        @draw.decorate = Magick::LineThroughDecoration
-       @draw.encoding = "AdobeCustom"
+       @draw.encoding = 'AdobeCustom'
        @draw.gravity = Magick::CenterGravity
-       @draw.fill = Magick::Pixel.from_color("red")
-       @draw.stroke = Magick::Pixel.from_color("blue")
+       @draw.fill = Magick::Pixel.from_color('red')
+       @draw.stroke = Magick::Pixel.from_color('blue')
        @draw.stroke_width = 5
        @draw.fill_pattern = granite
        @draw.stroke_pattern = blue_stroke
        @draw.text_antialias = true
-       @draw.font = "Arial-Bold"
-       @draw.font_family = "arial"
+       @draw.font = 'Arial-Bold'
+       @draw.font_family = 'arial'
        @draw.font_style = Magick::ItalicStyle
        @draw.font_stretch = Magick::CondensedStretch
        @draw.font_weight = Magick::BoldWeight
        @draw.pointsize = 12
-       @draw.density = "72x72"
+       @draw.density = '72x72'
        @draw.align = Magick::CenterAlign
-       @draw.undercolor = Magick::Pixel.from_color("green")
+       @draw.undercolor = Magick::Pixel.from_color('green')
        @draw.kerning = 10.5
        @draw.interword_spacing = 3.75
 

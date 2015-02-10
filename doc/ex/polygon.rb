@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
 imgl = Magick::ImageList.new
 imgl.new_image(290, 200, Magick::HatchFill.new('white','lightcyan2'))
@@ -18,7 +18,7 @@ gc.polygon(225,37.5,  279,68.75, 279,131.25,
            225,162.5, 171,131.3, 171,68.75)
 
 gc.draw(imgl)
-imgl.border!(1,1, "lightcyan2")
+imgl.border!(1,1, 'lightcyan2')
 
-imgl.write("polygon.gif")
+imgl.write('polygon.gif')
 

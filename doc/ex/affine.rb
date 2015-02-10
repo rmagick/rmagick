@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
 # Demonstrate the affine primitive. Transform the
 # coordinate space to put the origin in the lower
@@ -43,6 +43,6 @@ text_gc.text(max_x-20, max_y-16, "'+x'")
 text_gc.text(12, 15, "'+y'")
 text_gc.draw(imgl)
 
-imgl.border!(1, 1, "lightcyan2")
+imgl.border!(1, 1, 'lightcyan2')
 
-imgl.write("affine.gif")
+imgl.write('affine.gif')

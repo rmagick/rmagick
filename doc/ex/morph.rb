@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby -w
 
-require "rmagick"
+require 'rmagick'
 
 # Demonstrate the morph method
 
@@ -11,16 +11,16 @@ require "rmagick"
 i = Magick::ImageList.new
 number = '0'
 4.times do
-    i.read "images/Button_" + number + ".gif"
+    i.read 'images/Button_' + number + '.gif'
     number.succ!
 end
 
-puts "This may take a few seconds..."
+puts 'This may take a few seconds...'
 morph = i.morph 8
 morph.delay = 12
 morph.iterations = 10000
 # Display the resulting sequence as an animation.
 # morph.animate(12)
-morph.write "morph.gif"
+morph.write 'morph.gif'
 exit
 

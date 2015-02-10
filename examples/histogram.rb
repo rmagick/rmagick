@@ -2,7 +2,7 @@
 # from either ImageMagick 6.0.0 or GraphicsMagick 1.1
 # Specify an image filename as an argument.
 
-require "rmagick"
+require 'rmagick'
 
 class PixelColumn < Array
     def initialize(size)
@@ -124,8 +124,8 @@ module Magick
             begin
                 hist = img.color_histogram
             rescue NotImplementedError
-                $stderr.puts "The color_histogram method is not supported by this version "\
-                             "of ImageMagick/GraphicsMagick"
+                $stderr.puts 'The color_histogram method is not supported by this version '\
+                             'of ImageMagick/GraphicsMagick'
 
             else
                 pixels = hist.keys.sort_by {|pixel| hist[pixel] }
@@ -155,7 +155,7 @@ module Magick
 
         # Use AnnotateImage to write the stats.
         def info_text(fg, bg)
-            klass = class_type == DirectClass ? "DirectClass" : "PsuedoClass"
+            klass = class_type == DirectClass ? 'DirectClass' : 'PsuedoClass'
 
             text = <<-END_TEXT
 Format: #{format}
@@ -183,7 +183,7 @@ Colors: #{number_colors}
         end
 
         def intensity_hist(int_histogram)
-            gradient = (Image.read("gradient:#ffff80-#ff9000") { self.size="#{HISTOGRAM_COLS}x#{HISTOGRAM_ROWS}" }).first
+            gradient = (Image.read('gradient:#ffff80-#ff9000') { self.size="#{HISTOGRAM_COLS}x#{HISTOGRAM_ROWS}" }).first
             int_histogram = gradient.composite(int_histogram, CenterGravity, OverCompositeOp)
 
             int_histogram['Label'] = 'Intensity'
@@ -266,7 +266,7 @@ Colors: #{number_colors}
                 self.stroke = 'transparent'
                 self.fill = fg
                 self.border_width = 1
-                self.tile         = "4x2"
+                self.tile         = '4x2'
                 self.geometry     = "#{HISTOGRAM_COLS}x#{HISTOGRAM_ROWS}+10+10"
             end
 
@@ -284,7 +284,7 @@ END_INFO
 
 # Get filename from command line.
 if !ARGV[0]
-    puts "No filename argument. Defaulting to Flower_Hat.jpg"
+    puts 'No filename argument. Defaulting to Flower_Hat.jpg'
     filename = '../doc/ex/images/Flower_Hat.jpg'
 else
     filename = ARGV[0]
@@ -293,7 +293,7 @@ end
 # Only process first frame if multi-frame image
 image = Magick::Image.read(filename)
 if image.length > 1
-    puts "Charting 1st image"
+    puts 'Charting 1st image'
 end
 image = image.first
 
@@ -305,7 +305,7 @@ printf "Creating #{name}_Histogram.miff"
 timer = Thread.new do
     loop do
         sleep(1)
-        printf "."
+        printf '.'
     end
 end
 
@@ -317,6 +317,6 @@ histogram.compression = Magick::ZipCompression
 histogram.write("./#{name}_Histogram.miff")
 
 Thread.kill(timer)
-puts "Done!"
+puts 'Done!'
 exit
 

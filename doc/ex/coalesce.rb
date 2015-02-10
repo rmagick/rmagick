@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
 buttons = Magick::ImageList.new
 
@@ -17,7 +17,7 @@ end
 # Create a image that will hold the alphabet images in 5 rows and 5 columns.
 cells = Magick::ImageList.new
 cells.new_image buttons.columns*5, buttons.rows*5 do
-    self.background_color = "#000000ff"     # transparent
+    self.background_color = '#000000ff'     # transparent
 end
 cells.matte = true
 
@@ -48,12 +48,12 @@ srand 1234
     cells << button
 end
 
-puts "This may take a few seconds..."
+puts 'This may take a few seconds...'
 cells.delay = 10
 cells.iterations = 10000
 res = cells.coalesce
-res.write "coalesce_anim.gif"
-res[25].write "coalesce.gif"
+res.write 'coalesce_anim.gif'
+res[25].write 'coalesce.gif'
 exit
 
 

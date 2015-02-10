@@ -2,7 +2,7 @@
 #!/usr/bin/env ruby -w
 
 require 'fileutils'
-require "rmagick"
+require 'rmagick'
 require 'test/unit'
 require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
 
@@ -98,7 +98,7 @@ class ImageList2_UT < Test::Unit::TestCase
     end
 
     def test_from_blob
-        hat = File.open(FLOWER_HAT, "rb")
+        hat = File.open(FLOWER_HAT, 'rb')
         blob = hat.read
         assert_nothing_raised { @ilist.from_blob(blob) }
         assert_instance_of(Magick::Image, @ilist[0])
@@ -120,7 +120,7 @@ class ImageList2_UT < Test::Unit::TestCase
     end
 
     def test_map
-        map = Magick::Image.read("netscape:")[0]
+        map = Magick::Image.read('netscape:')[0]
         @ilist.read(IMAGES_DIR+'/Button_0.gif', IMAGES_DIR+'/Button_1.gif')
         assert_nothing_raised do
             img = @ilist.map(map)
@@ -131,7 +131,7 @@ class ImageList2_UT < Test::Unit::TestCase
             assert_instance_of(Magick::ImageList, img)
         end
 
-        map = Magick::ImageList.new("netscape:")
+        map = Magick::ImageList.new('netscape:')
         img = @ilist.map(map, true)
         assert_instance_of(Magick::ImageList, img)
     end
@@ -329,7 +329,7 @@ class ImageList2_UT < Test::Unit::TestCase
     def test_remap
        @ilist.read(*Dir[IMAGES_DIR+'/Button_*.gif'])
        assert_nothing_raised { @ilist.remap }
-       remap_image = Magick::Image.new(20,20) {self.background_color = "green"}
+       remap_image = Magick::Image.new(20,20) {self.background_color = 'green'}
        assert_nothing_raised { @ilist.remap(remap_image) }
        assert_nothing_raised { @ilist.remap(remap_image, Magick::NoDitherMethod) }
        assert_nothing_raised { @ilist.remap(remap_image, Magick::RiemersmaDitherMethod) }
@@ -359,21 +359,21 @@ class ImageList2_UT < Test::Unit::TestCase
         assert_equal('GIF', list.format)
         FileUtils.rm('temp.gif')
 
-        @ilist.write("jpg:temp.foo")
+        @ilist.write('jpg:temp.foo')
         list = Magick::ImageList.new('temp.foo')
         assert_equal('JPEG', list.format)
         FileUtils.rm('temp.foo')
 
-        @ilist.write("temp.0") { self.format = "JPEG" }
+        @ilist.write('temp.0') { self.format = 'JPEG' }
         list = Magick::ImageList.new('temp.0')
-        assert_equal("JPEG", list.format)
+        assert_equal('JPEG', list.format)
         FileUtils.rm('temp.0')
 
-        f = File.new("test.0", "w")
-        @ilist.write(f) { self.format = "JPEG" }
+        f = File.new('test.0', 'w')
+        @ilist.write(f) { self.format = 'JPEG' }
         f.close
         list = Magick::ImageList.new('test.0')
-        assert_equal("JPEG", list.format)
+        assert_equal('JPEG', list.format)
         FileUtils.rm('test.0')
     end
 end

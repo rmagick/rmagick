@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 include Magick
 
-puts("Creating colors.miff. This may take a few seconds...")
+puts('Creating colors.miff. This may take a few seconds...')
 
 colors = ImageList.new
 

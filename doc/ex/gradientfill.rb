@@ -1,13 +1,13 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
 # Demonstrate the GradientFill class
 
 Rows = 100
 Cols = 300
 
-Start = "#900"
-End = "#000"
+Start = '#900'
+End = '#000'
 
 fill = Magick::GradientFill.new(0, 0, 0, Rows, Start, End)
 img = Magick::Image.new(Cols, Rows, fill)
@@ -23,5 +23,5 @@ ann.annotate(img, 0,0,0,0, "GradientFill.new(0, 0, 0, #{Rows}, '#{Start}', '#{En
 end
 
 #img.display
-img.write("gradientfill.gif")
+img.write('gradientfill.gif')
 exit

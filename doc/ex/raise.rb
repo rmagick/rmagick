@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
 # Demonstrate the Image#raise method.
 img = Magick::Image.read('images/Flower_Hat.jpg').first

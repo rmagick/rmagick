@@ -1,7 +1,7 @@
 require 'rvg/rvg'
 
 rvg = Magick::RVG.new(400, 150) do |canvas|
-    canvas.desc = "Example OrigCoordSys - Simple transformations: original picture"
+    canvas.desc = 'Example OrigCoordSys - Simple transformations: original picture'
     canvas.background_fill = 'white'
 
     canvas.g.styles(:fill=>'none', :stroke=>'black', :stroke_width=>3) do |grp|

@@ -89,14 +89,14 @@ END_TRAILER
     # Convert an RVG object to a stand-alone C program
     # suitable for reproducing a bug.
     def to_c(name)
-        pgm = File.open(name+".c", "w")
+        pgm = File.open(name+'.c', 'w')
         header_text(pgm, name)
         gc = Draw.new
         add_primitives(gc)
         list_primitives(pgm, gc)
         trailer_text(pgm, name)
         pgm.close
-        $stderr.puts "Done"
+        $stderr.puts 'Done'
     end
 end     # class Magick::RVG
 

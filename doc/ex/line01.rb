@@ -4,7 +4,7 @@ Magick::RVG.dpi = 90
 
 rvg = Magick::RVG.new(12.cm, 4.cm).viewbox(0, 0, 1200, 400) do |canvas|
     canvas.background_fill = 'white'
-    canvas.desc = "Example line01 - lines expressed in user coordinates"
+    canvas.desc = 'Example line01 - lines expressed in user coordinates'
 
     # Show outline of canvas using the 'rect' method
     canvas.rect(1195, 395, 1, 1).styles(:fill=>'none', :stroke=>'blue', :stroke_width=>2)

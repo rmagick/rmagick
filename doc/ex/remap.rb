@@ -1,12 +1,12 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
-img = Magick::Image.read("images/Flower_Hat.jpg").first
-rose = Magick::Image.read("images/Yellow_Rose.miff").first
+img = Magick::Image.read('images/Flower_Hat.jpg').first
+rose = Magick::Image.read('images/Yellow_Rose.miff').first
 begin
    img.affinity(rose)
 rescue NotImplementedError
-   img = Magick::Image.read("images/notimplemented.gif").first
+   img = Magick::Image.read('images/notimplemented.gif').first
 end
-img.write("remap.jpg")
+img.write('remap.jpg')
 

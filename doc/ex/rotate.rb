@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
 imgl = Magick::ImageList.new
 imgl.new_image(200, 200, Magick::HatchFill.new('white','lightcyan2'))
@@ -34,12 +34,12 @@ gc.fill('black')
 gc.stroke('transparent')
 
 gc.text(8, 15, "'0,0'")
-gc.text(110, 16, "x")
-gc.text(12, 115, "y")
+gc.text(110, 16, 'x')
+gc.text(12, 115, 'y')
 
 gc.draw(imgl)
 
-imgl.border!(1,1, "lightcyan2")
+imgl.border!(1,1, 'lightcyan2')
 
-imgl.write("rotate.gif")
+imgl.write('rotate.gif')
 

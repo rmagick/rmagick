@@ -2,7 +2,7 @@
 # Demonstrate the export_pixels and import_pixels methods.
 #
 
-require "rmagick"
+require 'rmagick'
 include Magick
 
 puts <<END_INFO
@@ -18,14 +18,14 @@ copy = Image.new(img.columns, img.rows)
 
 begin
     img.rows.times do |r|
-        scanline = img.export_pixels(0, r, img.columns, 1, "RGB")
-        copy.import_pixels(0, r, img.columns, 1, "RGB", scanline)
+        scanline = img.export_pixels(0, r, img.columns, 1, 'RGB')
+        copy.import_pixels(0, r, img.columns, 1, 'RGB', scanline)
     end
 rescue NotImplementedError
-    $stderr.puts "The export_pixels and import_pixels methods are not supported" \
-                 " by this version of ImageMagick/GraphicsMagick"
+    $stderr.puts 'The export_pixels and import_pixels methods are not supported' \
+                 ' by this version of ImageMagick/GraphicsMagick'
     exit
 end
 
-copy.write("copy.gif")
+copy.write('copy.gif')
 exit

@@ -1,4 +1,4 @@
-require "rmagick"
+require 'rmagick'
 include Magick
 
 puts <<END_INFO
@@ -13,7 +13,7 @@ puts <<END_INFO
 
 END_INFO
 
-ballerina = Image.read("../doc/ex/images/Ballerina3.jpg")[0]
+ballerina = Image.read('../doc/ex/images/Ballerina3.jpg')[0]
 
 # Note: this technique won't work with every image. To make a pretty
 # vignette you need an image with a uniform, fairly dark background.
@@ -62,9 +62,9 @@ ballerina = ballerina.composite(oval, CenterGravity, CopyOpacityCompositeOp)
 # save it as a GIF or a JPEG. The PNG format can handle it, though.
 
 begin
-    ballerina.write("vignette.png")
+    ballerina.write('vignette.png')
 rescue ImageMagickError
-    puts "Write failed. No PNG support?"
+    puts 'Write failed. No PNG support?'
     # In case PNG support isn't installed, just ignore the exception.
 end
 
@@ -72,7 +72,7 @@ end
 # supports 1`level of transparency. Therefore, composite the vignette over a
 # standard "checkerboard" background. The resulting image will be 100% opaque.
 
-checkerboard = Image.read("pattern:checkerboard") {self.size = "#{ballerina.columns}x#{ballerina.rows}"}
+checkerboard = Image.read('pattern:checkerboard') {self.size = "#{ballerina.columns}x#{ballerina.rows}"}
 vignette = checkerboard[0].composite(ballerina, CenterGravity, OverCompositeOp)
 vignette.display
 exit

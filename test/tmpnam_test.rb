@@ -6,9 +6,9 @@ class TmpnamTest < Minitest::Test
   # the count is incremented by Image::Info#texture=,
   # ImageList::Montage#texture=, and Draw.composite
   def test_tmpnam
-    tmpfiles = Dir[ENV["HOME"] + "/tmp/magick*"].length
+    tmpfiles = Dir[ENV['HOME'] + '/tmp/magick*'].length
 
-    texture = Magick::Image.read("granite:") { self.size = "20x20" }.first
+    texture = Magick::Image.read('granite:') { self.size = '20x20' }.first
     info = Magick::Image::Info.new
 
     # does not exist at first
@@ -37,7 +37,7 @@ class TmpnamTest < Minitest::Test
     gc.composite(0, 0, 20, 20, texture)
     assert_equal(6, Magick._tmpnam_)
 
-    tmpfiles2 = Dir[ENV["HOME"] + "/tmp/magick*"].length
+    tmpfiles2 = Dir[ENV['HOME'] + '/tmp/magick*'].length
 
     # The 2nd montage texture deletes the first.
     # The 2nd info texture deletes the first.

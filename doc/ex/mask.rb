@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby -w
 
-require "rmagick"
+require 'rmagick'
 
 # This example demonstrates the mask attribute. The mask image must
 # be the same size as the image being masked. Since this mask image does
@@ -12,11 +12,11 @@ require "rmagick"
 # In this example the mask is simply the words "Flower Hat" in black text
 # positioned near the bottom of the white clip mask image.
 
-img = Magick::Image.read("images/Flower_Hat.jpg").first
+img = Magick::Image.read('images/Flower_Hat.jpg').first
 q = Magick::Image.new(img.columns, img.rows)
 
 gc = Magick::Draw.new
-gc.annotate(q, 0, 0, 0, 0, "Flower Hat") do
+gc.annotate(q, 0, 0, 0, 0, 'Flower Hat') do
     gc.gravity = Magick::SouthGravity
     gc.pointsize = 36
     gc.font_weight = Magick::BoldWeight

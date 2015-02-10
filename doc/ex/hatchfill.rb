@@ -1,13 +1,13 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
 # Demonstrate the HatchFill class
 
 Cols = 300
 Rows = 100
 
-Background = "white"
-Foreground = "LightCyan2"
+Background = 'white'
+Foreground = 'LightCyan2'
 
 fill = Magick::HatchFill.new(Background, Foreground)
 img = Magick::ImageList.new

@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
-i = Magick::Image.new(300, 220, Magick::HatchFill.new("white","lightcyan2"))
+i = Magick::Image.new(300, 220, Magick::HatchFill.new('white','lightcyan2'))
 gc = Magick::Draw.new
 
 # Draw the border rectangle.
@@ -21,19 +21,19 @@ gc.circle(146,  50, 146+3,  50)
 gc.font_weight(Magick::NormalWeight)
 gc.font_style(Magick::NormalStyle)
 gc.stroke('transparent')
-gc.fill("black")
+gc.fill('black')
 gc.fill_opacity(1)
 
 # xMagick recognizes the braces as delimiters.
 gc.gravity(Magick::NorthWestGravity)
-gc.text(42, 37, "{40, 50}")
-gc.text(188, 108, "{0 degrees}")
+gc.text(42, 37, '{40, 50}')
+gc.text(188, 108, '{0 degrees}')
 
 gc.gravity(Magick::SouthEastGravity)
-gc.text(300-250, 220-195, "{250, 180}")
+gc.text(300-250, 220-195, '{250, 180}')
 
 gc.gravity(Magick::NorthGravity)
-gc.text(0, 67, "{270 degrees}")
+gc.text(0, 67, '{270 degrees}')
 
 # Draw the arc
 gc.fill_opacity(0)
@@ -43,7 +43,7 @@ gc.arc(40, 50, 250,180, 0, 270)
 # Draw on the canvas
 gc.draw(i)
 
-i.border!(1,1, "lightcyan2")
+i.border!(1,1, 'lightcyan2')
 
 #i.display
-i.write("arc.gif")
+i.write('arc.gif')

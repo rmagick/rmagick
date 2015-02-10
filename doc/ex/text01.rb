@@ -5,7 +5,7 @@ Magick::RVG.dpi = 90
 rvg = Magick::RVG.new(10.cm, 3.cm).viewbox(0,0,1000,300) do |canvas|
     canvas.background_fill = 'white'
     canvas.desc = "Example text01 - 'Hello, out there' in blue"
-    canvas.text(250, 150, "Hello, out there")
+    canvas.text(250, 150, 'Hello, out there')
                 .styles(:font_family=>'Verdana', :font_size=>55, :fill=>'blue', :font_weight=>'normal', :font_style=>'normal')
     canvas.circle(5, 250, 150).styles(:fill=>'red')
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby -w
 
-require "rmagick"
+require 'rmagick'
 
 # Demonstrate the Image#vignette method.
 # Compare this example with the vignette.rb script in the examples directory.

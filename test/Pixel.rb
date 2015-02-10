@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby -w
 
-require "rmagick"
+require 'rmagick'
 require 'test/unit'
 require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
 
@@ -51,8 +51,8 @@ class Pixel_UT < Test::Unit::TestCase
     def test_from_hsla
       assert_nothing_raised { Magick::Pixel.from_hsla(127, 50, 50) }
       assert_nothing_raised { Magick::Pixel.from_hsla(127, 50, 50, 0) }
-      assert_nothing_raised { Magick::Pixel.from_hsla(127, "50%", 50, 0) }
-      assert_nothing_raised { Magick::Pixel.from_hsla("10%", "50%", 50, 0) }
+      assert_nothing_raised { Magick::Pixel.from_hsla(127, '50%', 50, 0) }
+      assert_nothing_raised { Magick::Pixel.from_hsla('10%', '50%', 50, 0) }
       assert_raise(TypeError) { Magick::Pixel.from_hsla([], 50, 50, 0) }
       assert_raise(TypeError) { Magick::Pixel.from_hsla(127, [], 50, 0) }
       assert_raise(TypeError) { Magick::Pixel.from_hsla(127, 50, [], 0) }
@@ -81,7 +81,7 @@ class Pixel_UT < Test::Unit::TestCase
       end
 
       # test percentages
-      args = ["20%","20%","20%","20%"]
+      args = ['20%','20%','20%','20%']
       args2 = [360.0/5,255.0/5,255.0/5,1.0/5]
       px = Magick::Pixel.from_hsla(*args)
       hsla = px.to_hsla
@@ -107,8 +107,8 @@ class Pixel_UT < Test::Unit::TestCase
       assert_nothing_raised { @pixel.to_color(Magick::AllCompliance, false, 8, true) }
       assert_nothing_raised { @pixel.to_color(Magick::AllCompliance, false, 16, true) }
 
-      assert_equal("#A52A2A", @pixel.to_color(Magick::AllCompliance, false, 8, true))
-      assert_equal("#A5A52A2A2A2A", @pixel.to_color(Magick::AllCompliance, false, 16, true))
+      assert_equal('#A52A2A', @pixel.to_color(Magick::AllCompliance, false, 8, true))
+      assert_equal('#A5A52A2A2A2A', @pixel.to_color(Magick::AllCompliance, false, 16, true))
 
       assert_raise(ArgumentError) { @pixel.to_color(Magick::AllCompliance, false, 32) }
       assert_raise(TypeError) { @pixel.to_color(1) }

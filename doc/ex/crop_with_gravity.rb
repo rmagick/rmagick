@@ -7,7 +7,7 @@
 
 # Demo the use of the GravityType argument to Image#crop.
 
-require "rmagick"
+require 'rmagick'
 include Magick
 
 shorts = Image.read('images/Shorts.jpg').first
@@ -27,7 +27,7 @@ pairs = ImageList.new
     pattern = shorts.composite(mask, gravity, OverCompositeOp)
     cropped = shorts.crop(gravity, regwidth, regheight)
     result = black.composite(cropped, gravity, OverCompositeOp)
-    result.border_color = "white"
+    result.border_color = 'white'
     pairs << pattern
     pairs << result
 end
@@ -35,7 +35,7 @@ end
 # Montage into a single image
 montage = pairs.montage do
     self.geometry = "#{pairs.columns}x#{pairs.rows}+0+0"
-    self.tile = "6x3"
+    self.tile = '6x3'
     self.border_width = 1
 end
 montage.write('crop_with_gravity.miff')

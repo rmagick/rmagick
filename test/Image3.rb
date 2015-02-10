@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby -w
 
-require "rmagick"
+require 'rmagick'
 require 'test/unit'
 require 'test/unit/ui/console/testrunner'  unless RUBY_VERSION[/^1\.9|^2/]
 require 'fileutils'
@@ -171,7 +171,7 @@ class Image3_UT < Test::Unit::TestCase
     end
 
     def test_remap
-       remap_image = Magick::Image.new(20,20) {self.background_color = "green"}
+       remap_image = Magick::Image.new(20,20) {self.background_color = 'green'}
        assert_nothing_raised { @img.remap(remap_image) }
        assert_nothing_raised { @img.remap(remap_image, Magick::NoDitherMethod) }
        assert_nothing_raised { @img.remap(remap_image, Magick::RiemersmaDitherMethod) }
@@ -981,44 +981,44 @@ class Image3_UT < Test::Unit::TestCase
     def test_write
         @img.write('temp.gif')
         img = Magick::Image.read('temp.gif')
-        assert_equal("GIF", img.first.format)
+        assert_equal('GIF', img.first.format)
         FileUtils.rm('temp.gif')
 
-        @img.write("jpg:temp.foo")
+        @img.write('jpg:temp.foo')
         img = Magick::Image.read('temp.foo')
-        assert_equal("JPEG", img.first.format)
+        assert_equal('JPEG', img.first.format)
         FileUtils.rm('temp.foo')
 
-        @img.write("temp.0") { self.format = "JPEG" }
+        @img.write('temp.0') { self.format = 'JPEG' }
         img = Magick::Image.read('temp.0')
-        assert_equal("JPEG", img.first.format)
+        assert_equal('JPEG', img.first.format)
 
         # JPEG has two names.
-        @img.write("jpeg:temp.0") { self.format = "JPEG" }
+        @img.write('jpeg:temp.0') { self.format = 'JPEG' }
         img = Magick::Image.read('temp.0')
-        assert_equal("JPEG", img.first.format)
+        assert_equal('JPEG', img.first.format)
 
-        @img.write("jpg:temp.0") { self.format = "JPG" }
+        @img.write('jpg:temp.0') { self.format = 'JPG' }
         img = Magick::Image.read('temp.0')
-        assert_equal("JPEG", img.first.format)
+        assert_equal('JPEG', img.first.format)
 
-        @img.write("jpg:temp.0") { self.format = "JPEG" }
+        @img.write('jpg:temp.0') { self.format = 'JPEG' }
         img = Magick::Image.read('temp.0')
-        assert_equal("JPEG", img.first.format)
+        assert_equal('JPEG', img.first.format)
 
-        @img.write("jpeg:temp.0") { self.format = "JPG" }
+        @img.write('jpeg:temp.0') { self.format = 'JPG' }
         img = Magick::Image.read('temp.0')
-        assert_equal("JPEG", img.first.format)
+        assert_equal('JPEG', img.first.format)
 
         assert_raise(RuntimeError) do
-          @img.write("gif:temp.0") { self.format = "JPEG" }
+          @img.write('gif:temp.0') { self.format = 'JPEG' }
         end
 
-        f = File.new("test.0", "w")
-        @img.write(f) { self.format = "JPEG" }
+        f = File.new('test.0', 'w')
+        @img.write(f) { self.format = 'JPEG' }
         f.close
         img = Magick::Image.read('test.0')
-        assert_equal("JPEG", img.first.format)
+        assert_equal('JPEG', img.first.format)
         FileUtils.rm('test.0')
     end
 end

@@ -3,7 +3,7 @@
 # Usage: describe.rb filename1 [filename2...]
 # Notes: The output is similar to ImageMagick's identify command.
 
-require "rmagick"
+require 'rmagick'
 
 puts <<END_INFO
 
@@ -12,7 +12,7 @@ This example shows how to extract attributes from an image.
 END_INFO
 
 if ARGV.length == 0
-    puts "Specify one or more image filenames as arguments."
+    puts 'Specify one or more image filenames as arguments.'
     exit
 end
 
@@ -21,11 +21,11 @@ ARGV.each do |file|
     img = Magick::Image.read(file).first
     puts "   Format: #{img.format}"
     puts "   Geometry: #{img.columns}x#{img.rows}"
-    puts "   Class: " + case img.class_type
+    puts '   Class: ' + case img.class_type
                             when Magick::DirectClass
-                                "DirectClass"
+                                'DirectClass'
                             when Magick::PseudoClass
-                                "PseudoClass"
+                                'PseudoClass'
                         end
     puts "   Depth: #{img.depth} bits-per-pixel"
     puts "   Colors: #{img.number_colors}"
@@ -35,7 +35,7 @@ ARGV.each do |file|
          "inch" : "centimeter"}"
 
     if img.properties.length > 0
-        puts "   Properties:"
+        puts '   Properties:'
         img.properties do |name,value|
             puts %Q|      #{name} = "#{value}"|
         end

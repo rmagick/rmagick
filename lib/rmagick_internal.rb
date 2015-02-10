@@ -103,7 +103,7 @@ class Geometry
             y      = m[6].to_i
             flag   = RFLAGS[m[7]]
         else
-            Kernel.raise ArgumentError, "invalid geometry format"
+            Kernel.raise ArgumentError, 'invalid geometry format'
         end
         if str['%']
           flag = PercentGeometry
@@ -115,7 +115,7 @@ class Geometry
     def to_s
         str = ''
         if @width > 0
-          fmt = @width.truncate == @width ? "%d" : "%.2f"
+          fmt = @width.truncate == @width ? '%d' : '%.2f'
           str << sprintf(fmt, @width)
           str << '%' if @flag == PercentGeometry
         end
@@ -125,11 +125,11 @@ class Geometry
         end
 
         if @height > 0
-          fmt = @height.truncate == @height ? "%d" : "%.2f"
+          fmt = @height.truncate == @height ? '%d' : '%.2f'
           str << sprintf(fmt, @height)
           str << '%' if @flag == PercentGeometry
         end
-        str << sprintf("%+d%+d", @x, @y) if @x != 0 || @y != 0
+        str << sprintf('%+d%+d', @x, @y) if @x != 0 || @y != 0
         if @flag != PercentGeometry
           str << FLAGS[@flag.to_i]
         end
@@ -215,28 +215,28 @@ class Draw
     # Apply coordinate transformations to support scaling (s), rotation (r),
     # and translation (t). Angles are specified in radians.
     def affine(sx, rx, ry, sy, tx, ty)
-        primitive "affine " + sprintf("%g,%g,%g,%g,%g,%g", sx, rx, ry, sy, tx, ty)
+        primitive 'affine ' + sprintf('%g,%g,%g,%g,%g,%g', sx, rx, ry, sy, tx, ty)
     end
 
     # Draw an arc.
     def arc(startX, startY, endX, endY, startDegrees, endDegrees)
-        primitive "arc " + sprintf("%g,%g %g,%g %g,%g",
+        primitive 'arc ' + sprintf('%g,%g %g,%g %g,%g',
                     startX, startY, endX, endY, startDegrees, endDegrees)
     end
 
     # Draw a bezier curve.
     def bezier(*points)
         if points.length == 0
-            Kernel.raise ArgumentError, "no points specified"
+            Kernel.raise ArgumentError, 'no points specified'
         elsif points.length.odd?
-            Kernel.raise ArgumentError, "odd number of arguments specified"
+            Kernel.raise ArgumentError, 'odd number of arguments specified'
         end
-        primitive "bezier " + points.join(',')
+        primitive 'bezier ' + points.join(',')
     end
 
     # Draw a circle
     def circle(originX, originY, perimX, perimY)
-        primitive "circle " + sprintf("%g,%g %g,%g", originX, originY, perimX, perimY)
+        primitive 'circle ' + sprintf('%g,%g %g,%g', originX, originY, perimX, perimY)
     end
 
     # Invoke a clip-path defined by def_clip_path.
@@ -246,7 +246,7 @@ class Draw
 
     # Define the clipping rule.
     def clip_rule(rule)
-        unless  ["evenodd", "nonzero"].include?(rule.downcase)
+        unless  ['evenodd', 'nonzero'].include?(rule.downcase)
             Kernel.raise ArgumentError, "Unknown clipping rule #{rule}"
         end
         primitive "clip-rule #{rule}"
@@ -254,7 +254,7 @@ class Draw
 
     # Define the clip units
     def clip_units(unit)
-        unless  ["userspace", "userspaceonuse", "objectboundingbox"].include?(unit.downcase)
+        unless  ['userspace', 'userspaceonuse', 'objectboundingbox'].include?(unit.downcase)
             Kernel.raise ArgumentError, "Unknown clip unit #{unit}"
         end
         primitive "clip-units #{unit}"
@@ -297,7 +297,7 @@ class Draw
 
     # Draw an ellipse
     def ellipse(originX, originY, width, height, arcStart, arcEnd)
-        primitive "ellipse " + sprintf("%g,%g %g,%g %g,%g",
+        primitive 'ellipse ' + sprintf('%g,%g %g,%g %g,%g',
                         originX, originY, width, height, arcStart, arcEnd)
     end
 
@@ -320,7 +320,7 @@ class Draw
     end
 
     def fill_rule(rule)
-        unless  ["evenodd", "nonzero"].include?(rule.downcase)
+        unless  ['evenodd', 'nonzero'].include?(rule.downcase)
             Kernel.raise ArgumentError, "Unknown fill rule #{rule}"
         end
         primitive "fill-rule #{rule}"
@@ -337,14 +337,14 @@ class Draw
 
     def font_stretch(stretch)
         unless  STRETCH_TYPE_NAMES.has_key?(stretch.to_i)
-            Kernel.raise ArgumentError, "Unknown stretch type"
+            Kernel.raise ArgumentError, 'Unknown stretch type'
         end
         primitive "font-stretch #{STRETCH_TYPE_NAMES[stretch.to_i]}"
     end
 
     def font_style(style)
         unless  STYLE_TYPE_NAMES.has_key?(style.to_i)
-            Kernel.raise ArgumentError, "Unknown style type"
+            Kernel.raise ArgumentError, 'Unknown style type'
         end
         primitive "font-style #{STYLE_TYPE_NAMES[style.to_i]}"
     end
@@ -363,7 +363,7 @@ class Draw
     # NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast
     def gravity(grav)
         unless  GRAVITY_NAMES.has_key?(grav.to_i)
-            Kernel.raise ArgumentError, "Unknown text positioning gravity"
+            Kernel.raise ArgumentError, 'Unknown text positioning gravity'
         end
         primitive "gravity #{GRAVITY_NAMES[grav.to_i]}"
     end
@@ -373,7 +373,7 @@ class Draw
          begin
              Float(space)
          rescue ArgumentError
-             Kernel.raise ArgumentError, "invalid value for interline_spacing"
+             Kernel.raise ArgumentError, 'invalid value for interline_spacing'
          rescue TypeError
              Kernel.raise TypeError, "can't convert #{space.class} into Float"
          end
@@ -385,7 +385,7 @@ class Draw
         begin
             Float(space)
         rescue ArgumentError
-            Kernel.raise ArgumentError, "invalid value for interword_spacing"
+            Kernel.raise ArgumentError, 'invalid value for interword_spacing'
         rescue TypeError
             Kernel.raise TypeError, "can't convert #{space.class} into Float"
         end
@@ -397,7 +397,7 @@ class Draw
         begin
             Float(space)
         rescue ArgumentError
-            Kernel.raise ArgumentError, "invalid value for kerning"
+            Kernel.raise ArgumentError, 'invalid value for kerning'
         rescue TypeError
             Kernel.raise TypeError, "can't convert #{space.class} into Float"
         end
@@ -406,14 +406,14 @@ class Draw
 
     # Draw a line
     def line(startX, startY, endX, endY)
-        primitive "line " + sprintf("%g,%g %g,%g", startX, startY, endX, endY)
+        primitive 'line ' + sprintf('%g,%g %g,%g', startX, startY, endX, endY)
     end
 
     # Set matte (make transparent) in image according to the specified
     # colorization rule
     def matte(x, y, method)
         unless  PAINT_METHOD_NAMES.has_key?(method.to_i)
-            Kernel.raise ArgumentError, "Unknown paint method"
+            Kernel.raise ArgumentError, 'Unknown paint method'
         end
         primitive "matte #{x},#{y} #{PAINT_METHOD_NAMES[method.to_i]}"
     end
@@ -423,7 +423,7 @@ class Draw
     def opacity(opacity)
         if (Numeric === opacity)
             if opacity < 0 || opacity > 1.0
-                Kernel.raise ArgumentError, "opacity must be >= 0 and <= 1.0"
+                Kernel.raise ArgumentError, 'opacity must be >= 0 and <= 1.0'
             end
         end
         primitive "opacity #{opacity}"
@@ -465,21 +465,21 @@ class Draw
     # Draw a polygon
     def polygon(*points)
         if points.length == 0
-            Kernel.raise ArgumentError, "no points specified"
+            Kernel.raise ArgumentError, 'no points specified'
         elsif points.length.odd?
-            Kernel.raise ArgumentError, "odd number of points specified"
+            Kernel.raise ArgumentError, 'odd number of points specified'
         end
-        primitive "polygon " + points.join(',')
+        primitive 'polygon ' + points.join(',')
     end
 
     # Draw a polyline
     def polyline(*points)
         if points.length == 0
-            Kernel.raise ArgumentError, "no points specified"
+            Kernel.raise ArgumentError, 'no points specified'
         elsif points.length.odd?
-            Kernel.raise ArgumentError, "odd number of points specified"
+            Kernel.raise ArgumentError, 'odd number of points specified'
         end
-        primitive "polyline " + points.join(',')
+        primitive 'polyline ' + points.join(',')
     end
 
     # Return to the previously-saved set of whatever
@@ -490,10 +490,10 @@ class Draw
 
     def pop(*what)
         if what.length == 0
-            primitive "pop graphic-context"
+            primitive 'pop graphic-context'
         else
             # to_s allows a Symbol to be used instead of a String
-            primitive "pop " + what.map {|w| w.to_s}.join(' ')
+            primitive 'pop ' + what.map {|w| w.to_s}.join(' ')
         end
     end
 
@@ -504,16 +504,16 @@ class Draw
     # push('pattern')
     def push(*what)
         if what.length == 0
-            primitive "push graphic-context"
+            primitive 'push graphic-context'
         else
             # to_s allows a Symbol to be used instead of a String
-            primitive "push " + what.map {|w| w.to_s}.join(' ')
+            primitive 'push ' + what.map {|w| w.to_s}.join(' ')
         end
     end
 
     # Draw a rectangle
     def rectangle(upper_left_x, upper_left_y, lower_right_x, lower_right_y)
-        primitive "rectangle " + sprintf("%g,%g %g,%g",
+        primitive 'rectangle ' + sprintf('%g,%g %g,%g',
                 upper_left_x, upper_left_y, lower_right_x, lower_right_y)
     end
 
@@ -524,7 +524,7 @@ class Draw
 
     # Draw a rectangle with rounded corners
     def roundrectangle(center_x, center_y, width, height, corner_width, corner_height)
-        primitive "roundrectangle " + sprintf("%g,%g,%g,%g,%g,%g",
+        primitive 'roundrectangle ' + sprintf('%g,%g,%g,%g,%g,%g',
             center_x, center_y, width, height, corner_width, corner_height)
     end
 
@@ -557,7 +557,7 @@ class Draw
     # Specify a stroke dash pattern
     def stroke_dasharray(*list)
         if list.length == 0
-            primitive "stroke-dasharray none"
+            primitive 'stroke-dasharray none'
         else
             list.each do |x|
                 if x <= 0
@@ -574,14 +574,14 @@ class Draw
     end
 
     def stroke_linecap(value)
-        unless  ["butt", "round", "square"].include?(value.downcase)
+        unless  ['butt', 'round', 'square'].include?(value.downcase)
             Kernel.raise ArgumentError, "Unknown linecap type: #{value}"
         end
         primitive "stroke-linecap #{value}"
     end
 
     def stroke_linejoin(value)
-        unless  ["round", "miter", "bevel"].include?(value.downcase)
+        unless  ['round', 'miter', 'bevel'].include?(value.downcase)
             Kernel.raise ArgumentError, "Unknown linejoin type: #{value}"
         end
         primitive "stroke-linejoin #{value}"
@@ -589,7 +589,7 @@ class Draw
 
     def stroke_miterlimit(value)
         if value < 1
-            Kernel.raise ArgumentError, "miterlimit must be >= 1"
+            Kernel.raise ArgumentError, 'miterlimit must be >= 1'
         end
         primitive "stroke-miterlimit #{value}"
     end
@@ -608,7 +608,7 @@ class Draw
     # Draw text at position x,y. Add quotes to text that is not already quoted.
     def text(x, y, text)
         if text.to_s.empty?
-            Kernel.raise ArgumentError, "missing text argument"
+            Kernel.raise ArgumentError, 'missing text argument'
         end
         if text.length > 2 && /\A(?:\"[^\"]+\"|\'[^\']+\'|\{[^\}]+\})\z/.match(text)
             ; # text already quoted
@@ -662,101 +662,101 @@ end # class Magick::Draw
 # Define IPTC record number:dataset tags for use with Image#get_iptc_dataset
 module IPTC
     module Envelope
-        Model_Version                          = "1:00"
-        Destination                            = "1:05"
-        File_Format                            = "1:20"
-        File_Format_Version                    = "1:22"
-        Service_Identifier                     = "1:30"
-        Envelope_Number                        = "1:40"
-        Product_ID                             = "1:50"
-        Envelope_Priority                      = "1:60"
-        Date_Sent                              = "1:70"
-        Time_Sent                              = "1:80"
-        Coded_Character_Set                    = "1:90"
-        UNO                                    = "1:100"
-        Unique_Name_of_Object                  = "1:100"
-        ARM_Identifier                         = "1:120"
-        ARM_Version                            = "1:122"
+        Model_Version                          = '1:00'
+        Destination                            = '1:05'
+        File_Format                            = '1:20'
+        File_Format_Version                    = '1:22'
+        Service_Identifier                     = '1:30'
+        Envelope_Number                        = '1:40'
+        Product_ID                             = '1:50'
+        Envelope_Priority                      = '1:60'
+        Date_Sent                              = '1:70'
+        Time_Sent                              = '1:80'
+        Coded_Character_Set                    = '1:90'
+        UNO                                    = '1:100'
+        Unique_Name_of_Object                  = '1:100'
+        ARM_Identifier                         = '1:120'
+        ARM_Version                            = '1:122'
     end
 
     module Application
-        Record_Version                         = "2:00"
-        Object_Type_Reference                  = "2:03"
-        Object_Name                            = "2:05"
-        Title                                  = "2:05"
-        Edit_Status                            = "2:07"
-        Editorial_Update                       = "2:08"
-        Urgency                                = "2:10"
-        Subject_Reference                      = "2:12"
-        Category                               = "2:15"
-        Supplemental_Category                  = "2:20"
-        Fixture_Identifier                     = "2:22"
-        Keywords                               = "2:25"
-        Content_Location_Code                  = "2:26"
-        Content_Location_Name                  = "2:27"
-        Release_Date                           = "2:30"
-        Release_Time                           = "2:35"
-        Expiration_Date                        = "2:37"
-        Expiration_Time                        = "2:35"
-        Special_Instructions                   = "2:40"
-        Action_Advised                         = "2:42"
-        Reference_Service                      = "2:45"
-        Reference_Date                         = "2:47"
-        Reference_Number                       = "2:50"
-        Date_Created                           = "2:55"
-        Time_Created                           = "2:60"
-        Digital_Creation_Date                  = "2:62"
-        Digital_Creation_Time                  = "2:63"
-        Originating_Program                    = "2:65"
-        Program_Version                        = "2:70"
-        Object_Cycle                           = "2:75"
-        By_Line                                = "2:80"
-        Author                                 = "2:80"
-        By_Line_Title                          = "2:85"
-        Author_Position                        = "2:85"
-        City                                   = "2:90"
-        Sub_Location                           = "2:92"
-        Province                               = "2:95"
-        State                                  = "2:95"
-        Country_Primary_Location_Code          = "2:100"
-        Country_Primary_Location_Name          = "2:101"
-        Original_Transmission_Reference        = "2:103"
-        Headline                               = "2:105"
-        Credit                                 = "2:110"
-        Source                                 = "2:115"
-        Copyright_Notice                       = "2:116"
-        Contact                                = "2:118"
-        Abstract                               = "2:120"
-        Caption                                = "2:120"
-        Editor                                 = "2:122"
-        Caption_Writer                         = "2:122"
-        Rasterized_Caption                     = "2:125"
-        Image_Type                             = "2:130"
-        Image_Orientation                      = "2:131"
-        Language_Identifier                    = "2:135"
-        Audio_Type                             = "2:150"
-        Audio_Sampling_Rate                    = "2:151"
-        Audio_Sampling_Resolution              = "2:152"
-        Audio_Duration                         = "2:153"
-        Audio_Outcue                           = "2:154"
-        ObjectData_Preview_File_Format         = "2:200"
-        ObjectData_Preview_File_Format_Version = "2:201"
-        ObjectData_Preview_Data                = "2:202"
+        Record_Version                         = '2:00'
+        Object_Type_Reference                  = '2:03'
+        Object_Name                            = '2:05'
+        Title                                  = '2:05'
+        Edit_Status                            = '2:07'
+        Editorial_Update                       = '2:08'
+        Urgency                                = '2:10'
+        Subject_Reference                      = '2:12'
+        Category                               = '2:15'
+        Supplemental_Category                  = '2:20'
+        Fixture_Identifier                     = '2:22'
+        Keywords                               = '2:25'
+        Content_Location_Code                  = '2:26'
+        Content_Location_Name                  = '2:27'
+        Release_Date                           = '2:30'
+        Release_Time                           = '2:35'
+        Expiration_Date                        = '2:37'
+        Expiration_Time                        = '2:35'
+        Special_Instructions                   = '2:40'
+        Action_Advised                         = '2:42'
+        Reference_Service                      = '2:45'
+        Reference_Date                         = '2:47'
+        Reference_Number                       = '2:50'
+        Date_Created                           = '2:55'
+        Time_Created                           = '2:60'
+        Digital_Creation_Date                  = '2:62'
+        Digital_Creation_Time                  = '2:63'
+        Originating_Program                    = '2:65'
+        Program_Version                        = '2:70'
+        Object_Cycle                           = '2:75'
+        By_Line                                = '2:80'
+        Author                                 = '2:80'
+        By_Line_Title                          = '2:85'
+        Author_Position                        = '2:85'
+        City                                   = '2:90'
+        Sub_Location                           = '2:92'
+        Province                               = '2:95'
+        State                                  = '2:95'
+        Country_Primary_Location_Code          = '2:100'
+        Country_Primary_Location_Name          = '2:101'
+        Original_Transmission_Reference        = '2:103'
+        Headline                               = '2:105'
+        Credit                                 = '2:110'
+        Source                                 = '2:115'
+        Copyright_Notice                       = '2:116'
+        Contact                                = '2:118'
+        Abstract                               = '2:120'
+        Caption                                = '2:120'
+        Editor                                 = '2:122'
+        Caption_Writer                         = '2:122'
+        Rasterized_Caption                     = '2:125'
+        Image_Type                             = '2:130'
+        Image_Orientation                      = '2:131'
+        Language_Identifier                    = '2:135'
+        Audio_Type                             = '2:150'
+        Audio_Sampling_Rate                    = '2:151'
+        Audio_Sampling_Resolution              = '2:152'
+        Audio_Duration                         = '2:153'
+        Audio_Outcue                           = '2:154'
+        ObjectData_Preview_File_Format         = '2:200'
+        ObjectData_Preview_File_Format_Version = '2:201'
+        ObjectData_Preview_Data                = '2:202'
     end
 
     module Pre_ObjectData_Descriptor
-        Size_Mode                              = "7:10"
-        Max_Subfile_Size                       = "7:20"
-        ObjectData_Size_Announced              = "7:90"
-        Maximum_ObjectData_Size                = "7:95"
+        Size_Mode                              = '7:10'
+        Max_Subfile_Size                       = '7:20'
+        ObjectData_Size_Announced              = '7:90'
+        Maximum_ObjectData_Size                = '7:95'
     end
 
     module ObjectData
-        Subfile                                = "8:10"
+        Subfile                                = '8:10'
     end
 
     module Post_ObjectData_Descriptor
-        Confirmed_ObjectData_Size              = "9:10"
+        Confirmed_ObjectData_Size              = '9:10'
     end
 
     # Make all constants above immutable
@@ -1325,16 +1325,16 @@ public
     # Allow scene to be set to nil
     def scene=(n)
         if n.nil?
-            Kernel.raise IndexError, "scene number out of bounds" unless @images.length == 0
+            Kernel.raise IndexError, 'scene number out of bounds' unless @images.length == 0
             @scene = nil
             return @scene
         elsif @images.length == 0
-            Kernel.raise IndexError, "scene number out of bounds"
+            Kernel.raise IndexError, 'scene number out of bounds'
         end
 
         n = Integer(n)
         if n < 0 || n > length - 1
-            Kernel.raise IndexError, "scene number out of bounds"
+            Kernel.raise IndexError, 'scene number out of bounds'
         end
         @scene = n
         @scene
@@ -1441,7 +1441,7 @@ public
     alias_method :size, :length
 
     # Array#nitems is not available in 1.9
-    if Array.instance_methods.include?("nitems")
+    if Array.instance_methods.include?('nitems')
        def nitems
           @images.nitems
        end
@@ -1486,7 +1486,7 @@ public
     # Return the current image
     def cur_image
         unless @scene
-            Kernel.raise IndexError, "no images in this list"
+            Kernel.raise IndexError, 'no images in this list'
         end
         @images[@scene]
     end
@@ -1525,7 +1525,7 @@ public
     # Set same delay for all images
     def delay=(d)
         if Integer(d) < 0
-            fail ArgumentError, "delay must be greater than or equal to 0"
+            fail ArgumentError, 'delay must be greater than or equal to 0'
         end
         @images.each { |f| f.delay = Integer(d) }
     end
@@ -1593,7 +1593,7 @@ public
 
     def from_blob(*blobs, &block)
         if (blobs.length == 0)
-            Kernel.raise ArgumentError, "no blobs given"
+            Kernel.raise ArgumentError, 'no blobs given'
         end
         blobs.each do |b|
             Magick::Image.from_blob(b, &block).each { |n| @images << n  }
@@ -1627,14 +1627,14 @@ public
     def inspect
         img = []
         @images.each {|image| img << image.inspect }
-        img = "[" + img.join(",\n") + "]\nscene=#{@scene}"
+        img = '[' + img.join(",\n") + "]\nscene=#{@scene}"
     end
 
     # Set the number of iterations of an animated GIF
     def iterations=(n)
         n = Integer(n)
         if n < 0 || n > 65535
-            Kernel.raise ArgumentError, "iterations must be between 0 and 65535"
+            Kernel.raise ArgumentError, 'iterations must be between 0 and 65535'
         end
         @images.each {|f| f.iterations=n}
         self
@@ -1702,7 +1702,7 @@ public
     # Ping files and concatenate the new images
     def ping(*files, &block)
         if (files.length == 0)
-            Kernel.raise ArgumentError, "no files given"
+            Kernel.raise ArgumentError, 'no files given'
         end
         files.each do |f|
             Magick::Image.ping(f, &block).each { |n| @images << n }
@@ -1730,7 +1730,7 @@ public
     # Read files and concatenate the new images
     def read(*files, &block)
         if (files.length == 0)
-            Kernel.raise ArgumentError, "no files given"
+            Kernel.raise ArgumentError, 'no files given'
         end
         files.each do |f|
             Magick::Image.read(f, &block).each { |n| @images << n }
@@ -1830,7 +1830,7 @@ public
 
     def ticks_per_second=(t)
         if Integer(t) < 0
-            Kernel.raise ArgumentError, "ticks_per_second must be greater than or equal to 0"
+            Kernel.raise ArgumentError, 'ticks_per_second must be greater than or equal to 0'
         end
         @images.each { |f| f.ticks_per_second = Integer(t) }
     end
@@ -1894,13 +1894,13 @@ class OptionalMethodArguments
     # accepts Pixel object or color name
     def highlight_color=(color)
        color = @img.to_color(color) if color.respond_to?(:to_color)
-       @img.define("highlight-color", color)
+       @img.define('highlight-color', color)
     end
 
     # accepts Pixel object or color name
     def lowlight_color=(color)
        color = @img.to_color(color) if color.respond_to?(:to_color)
-       @img.define("lowlight-color", color)
+       @img.define('lowlight-color', color)
     end
 end
 
@@ -1909,7 +1909,7 @@ end
 # @dist is the number of pixels between hatch lines.
 # See Magick::Draw examples.
 class HatchFill
-   def initialize(bgcolor, hatchcolor="white", dist=10)
+   def initialize(bgcolor, hatchcolor='white', dist=10)
       @bgcolor = bgcolor
       @hatchpixel = Pixel.from_color(hatchcolor)
       @dist = dist

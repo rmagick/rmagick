@@ -93,8 +93,8 @@ module Magick
                 end
 
                 def glyph_metrics(glyph_orientation, glyph)
-                    gm = @ctx.shadow.get_type_metrics("a" + glyph + "a")
-                    gm2 = @ctx.shadow.get_type_metrics("aa")
+                    gm = @ctx.shadow.get_type_metrics('a' + glyph + 'a')
+                    gm2 = @ctx.shadow.get_type_metrics('aa')
                     h = (gm.ascent - gm.descent + 0.5).to_i
                     w = gm.width - gm2.width
                     if glyph_orientation == 0 || glyph_orientation == 180

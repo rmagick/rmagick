@@ -109,7 +109,7 @@ module Magick
                         x_coords = Array(points[0])
                         y_coords = Array(points[1])
                         unless x_coords.length > 0 && y_coords.length > 0
-                            fail ArgumentError, "array arguments must contain at least one point"
+                            fail ArgumentError, 'array arguments must contain at least one point'
                         end
                         n = x_coords.length - y_coords.length
                         short = n > 0 ? y_coords : x_coords
@@ -221,7 +221,7 @@ module Magick
                 @image = image.copy # use a copy of the image in case app. re-uses the argument
                 @x, @y, @width, @height = Magick::RVG.convert_to_float(x, y, width || @image.columns, height || @image.rows)
                 if @width < 0 || @height < 0
-                    fail ArgumentError, "width, height must be >= 0"
+                    fail ArgumentError, 'width, height must be >= 0'
                 end
                 init_viewbox
             end

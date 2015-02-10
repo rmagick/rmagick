@@ -5,7 +5,7 @@
 # Usage: pattern_fill.rb <name-of-pattern>
 # Try 'checkerboard' or 'verticalsaw'
 
-require "rmagick"
+require 'rmagick'
 include Magick
 
 puts <<END_INFO
@@ -26,7 +26,7 @@ end
 if ARGV[0]
     pattern = ARGV[0]
 else
-    $stderr.puts "Defaulting to checkerboard pattern."
+    $stderr.puts 'Defaulting to checkerboard pattern.'
     pattern = 'checkerboard'
 end
 
@@ -34,5 +34,5 @@ end
 attrs = Image.ping("pattern:#{pattern}").first
 
 tryit = Image.new(10*attrs.columns, 10*attrs.rows, PatternFill.new(pattern))
-tryit.write("pattern_fill.gif")
+tryit.write('pattern_fill.gif')
 exit

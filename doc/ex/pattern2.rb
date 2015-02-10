@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby -w
 
-require "rmagick"
+require 'rmagick'
 
-hat = Magick::Image.read("images/Flower_Hat.jpg").first
+hat = Magick::Image.read('images/Flower_Hat.jpg').first
 hat.resize!(0.25)
 
 # Construct a pattern using the hat image
@@ -21,6 +21,6 @@ img = Magick::Image.new(300, 150, Magick::HatchFill.new('white','lightcyan2',8))
 # Draw the ellipse using the fill
 gc.draw(img)
 
-img.border!(1,1, "lightcyan2")
+img.border!(1,1, 'lightcyan2')
 img.write('pattern2.gif')
 exit

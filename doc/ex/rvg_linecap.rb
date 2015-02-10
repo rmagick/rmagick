@@ -12,7 +12,7 @@ CIRCLE = {:fill=>'#ffcccc', :stroke=>'none'}
 
 rvg = Magick::RVG.new(12.cm, 2.cm).viewbox(0, 0, 1200, 200) do |canvas|
     canvas.background_fill = 'white'
-    canvas.desc = "Example linecap - demonstrates three stroke-linecap values"
+    canvas.desc = 'Example linecap - demonstrates three stroke-linecap values'
 
     canvas.g.translate(200, 75) do |butt|
         butt.line(-125, 0, 125, 0).styles(BUTT)

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
 # Demonstrate partial transparency and the get_pixels and
 # store_pixels methods by creating an image that goes from

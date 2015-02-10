@@ -3,13 +3,13 @@
 # Demonstrate the effects of various composite operators.
 # Based on ImageMagick's composite test.
 
-require "rmagick"
+require 'rmagick'
 include Magick
 
 ROWS = 70
 COLS = 70
-COLOR_A = "#999966"
-COLOR_B = "#990066"
+COLOR_A = '#999966'
+COLOR_B = '#990066'
 
 img = Image.new(COLS, ROWS)
 triangle = Draw.new
@@ -30,10 +30,10 @@ image_B = img.transparent('white', TransparentOpacity)
 image_B['Label'] = 'B'
 
 list = ImageList.new
-null = Image.read("xc:white") { self.size = Geometry.new(COLS,ROWS) }
+null = Image.read('xc:white') { self.size = Geometry.new(COLS,ROWS) }
 null = null.first.transparent('white', TransparentOpacity)
 null.border_color = 'transparent'
-granite =  Image.read("granite:")
+granite =  Image.read('granite:')
 
 list << null.copy
 list << image_A

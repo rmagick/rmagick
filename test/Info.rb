@@ -1,7 +1,7 @@
 
 #!/usr/bin/env ruby -w
 
-require "rmagick"
+require 'rmagick'
 require 'test/unit'
 require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
 
@@ -16,18 +16,18 @@ class Info_UT < Test::Unit::TestCase
         assert_nil(@info['fill'])
 
         assert_nothing_raised { @info['fill'] = 'red' }
-        assert_equal("red", @info['fill'])
+        assert_equal('red', @info['fill'])
 
         assert_nothing_raised { @info['fill'] = nil }
         assert_nil(@info['fill'])
 
         # 2-argument form
         assert_nothing_raised { @info['tiff', 'bits-per-sample'] = 2 }
-        assert_equal("2", @info['tiff', 'bits-per-sample'])
+        assert_equal('2', @info['tiff', 'bits-per-sample'])
 
         # define and undefine
         assert_nothing_raised { @info.define('tiff', 'bits-per-sample', 4) }
-        assert_equal("4", @info['tiff', 'bits-per-sample'])
+        assert_equal('4', @info['tiff', 'bits-per-sample'])
 
         assert_nothing_raised { @info.undefine('tiff', 'bits-per-sample') }
         assert_nil(@info['tiff', 'bits-per-sample'])
@@ -49,33 +49,33 @@ class Info_UT < Test::Unit::TestCase
     end
 
     def test_authenticate
-      assert_nothing_raised { @info.authenticate = "string" }
-      assert_equal("string", @info.authenticate)
+      assert_nothing_raised { @info.authenticate = 'string' }
+      assert_equal('string', @info.authenticate)
     end
 
     def test_background_color
-      assert_nothing_raised { @info.background_color = "red" }
+      assert_nothing_raised { @info.background_color = 'red' }
       red = Magick::Pixel.new(Magick::QuantumRange)
       assert_nothing_raised { @info.background_color = red }
-      assert_equal("red", @info.background_color)
-      img = Magick::Image.new(20,20) { self.background_color = "red" }
-      assert_equal("red", img.background_color)
+      assert_equal('red', @info.background_color)
+      img = Magick::Image.new(20,20) { self.background_color = 'red' }
+      assert_equal('red', img.background_color)
     end
 
     def test_border_color
-      assert_nothing_raised { @info.border_color = "red" }
+      assert_nothing_raised { @info.border_color = 'red' }
       red = Magick::Pixel.new(Magick::QuantumRange)
       assert_nothing_raised { @info.border_color = red }
-      assert_equal("red", @info.border_color)
-      img = Magick::Image.new(20,20) { self.border_color = "red" }
-      assert_equal("red", img.border_color)
+      assert_equal('red', @info.border_color)
+      img = Magick::Image.new(20,20) { self.border_color = 'red' }
+      assert_equal('red', img.border_color)
     end
 
     def caption
-      assert_nothing_raised { @info.caption = "string" }
-      assert_equal("string", @info.caption)
-      img = Magick::Image.new(20,20) { self.caption = "string" }
-      assert_equal("string", img.caption)
+      assert_nothing_raised { @info.caption = 'string' }
+      assert_equal('string', @info.caption)
+      img = Magick::Image.new(20,20) { self.caption = 'string' }
+      assert_equal('string', img.caption)
     end
 
     def test_channel
@@ -93,8 +93,8 @@ class Info_UT < Test::Unit::TestCase
     end
 
     def test_comment
-      assert_nothing_raised { @info.comment = "comment" }
-      assert_equal("comment", @info.comment)
+      assert_nothing_raised { @info.comment = 'comment' }
+      assert_equal('comment', @info.comment)
     end
 
     def test_compression
@@ -105,15 +105,15 @@ class Info_UT < Test::Unit::TestCase
     end
 
     def test_define
-      assert_nothing_raised { @info.define("tiff", "bits-per-sample", 2) }
-      assert_nothing_raised { @info.undefine("tiff", "bits-per-sample") }
+      assert_nothing_raised { @info.define('tiff', 'bits-per-sample', 2) }
+      assert_nothing_raised { @info.undefine('tiff', 'bits-per-sample') }
     end
 
     def test_density
-      assert_nothing_raised { @info.density = "72x72" }
-      assert_equal("72x72", @info.density)
+      assert_nothing_raised { @info.density = '72x72' }
+      assert_equal('72x72', @info.density)
       assert_nothing_raised { @info.density = Magick::Geometry.new(72, 72) }
-      assert_equal("72x72", @info.density)
+      assert_equal('72x72', @info.density)
     end
 
     def test_delay
@@ -144,15 +144,15 @@ class Info_UT < Test::Unit::TestCase
     end
 
     def test_extract
-        assert_nothing_raised { @info.extract = "100x100" }
-        assert_equal("100x100", @info.extract)
+        assert_nothing_raised { @info.extract = '100x100' }
+        assert_equal('100x100', @info.extract)
         assert_nothing_raised { @info.extract = Magick::Geometry.new(100, 100) }
-        assert_equal("100x100", @info.extract)
+        assert_equal('100x100', @info.extract)
     end
 
     def test_filename
-      assert_nothing_raised { @info.filename = "string" }
-      assert_equal("string", @info.filename)
+      assert_nothing_raised { @info.filename = 'string' }
+      assert_equal('string', @info.filename)
     end
 
     def test_fill
@@ -160,7 +160,7 @@ class Info_UT < Test::Unit::TestCase
         assert_nil(@info.fill)
 
         assert_nothing_raised { @info.fill = 'white' }
-        assert_equal("white", @info.fill)
+        assert_equal('white', @info.fill)
 
         assert_nothing_raised { @info.fill = nil }
         assert_nil(@info.fill)
@@ -169,19 +169,19 @@ class Info_UT < Test::Unit::TestCase
     end
 
     def test_font
-      assert_nothing_raised { @info.font = "Arial" }
-      assert_equal("Arial", @info.font)
+      assert_nothing_raised { @info.font = 'Arial' }
+      assert_equal('Arial', @info.font)
     end
 
     def test_format
-      assert_nothing_raised { @info.format = "GIF" }
-      assert_equal("GIF", @info.format)
+      assert_nothing_raised { @info.format = 'GIF' }
+      assert_equal('GIF', @info.format)
     end
 
     def test_fuzz
       assert_nothing_raised { @info.fuzz = 50 }
       assert_equal(50, @info.fuzz)
-      assert_nothing_raised { @info.fuzz = "50%" }
+      assert_nothing_raised { @info.fuzz = '50%' }
       assert_equal(Magick::QuantumRange * 0.5, @info.fuzz)
     end
 
@@ -207,23 +207,23 @@ class Info_UT < Test::Unit::TestCase
     end
 
     def test_label
-      assert_nothing_raised { @info.label = "string" }
-      assert_equal("string", @info.label)
+      assert_nothing_raised { @info.label = 'string' }
+      assert_equal('string', @info.label)
     end
 
     def test_matte_color
-      assert_nothing_raised { @info.matte_color = "red" }
+      assert_nothing_raised { @info.matte_color = 'red' }
       red = Magick::Pixel.new(Magick::QuantumRange)
       assert_nothing_raised { @info.matte_color = red }
-      assert_equal("red", @info.matte_color)
-      img = Magick::Image.new(20,20) { self.matte_color = "red" }
-      assert_equal("red", img.matte_color)
+      assert_equal('red', @info.matte_color)
+      img = Magick::Image.new(20,20) { self.matte_color = 'red' }
+      assert_equal('red', img.matte_color)
     end
 
     def test_monitor
       assert_nothing_raised { @info.monitor = lambda {} }
       monitor = Proc.new do |mth, q, s|
-        assert_equal("resize!", mth)
+        assert_equal('resize!', mth)
         assert_instance_of(Fixnum, q)
         assert_instance_of(Fixnum, s)
         true
@@ -246,15 +246,15 @@ class Info_UT < Test::Unit::TestCase
     end
 
     def test_origin
-      assert_nothing_raised { @info.origin = "+10+10" }
-      assert_equal("+10+10", @info.origin)
+      assert_nothing_raised { @info.origin = '+10+10' }
+      assert_equal('+10+10', @info.origin)
       assert_nothing_raised { @info.origin = Magick::Geometry.new(nil, nil, 10, 10) }
-      assert_equal("+10+10", @info.origin)
+      assert_equal('+10+10', @info.origin)
     end
 
     def test_page
-      assert_nothing_raised { @info.page = "612x792>" }
-      assert_equal("612x792>", @info.page)
+      assert_nothing_raised { @info.page = '612x792>' }
+      assert_equal('612x792>', @info.page)
     end
 
     def test_pointsize
@@ -268,20 +268,20 @@ class Info_UT < Test::Unit::TestCase
     end
 
     def test_sampling_factor
-      assert_nothing_raised { @info.sampling_factor = "2x1" }
-      assert_equal("2x1", @info.sampling_factor)
+      assert_nothing_raised { @info.sampling_factor = '2x1' }
+      assert_equal('2x1', @info.sampling_factor)
     end
 
     def test_server_name
-      assert_nothing_raised { @info.server_name = "foo" }
-      assert_equal("foo", @info.server_name)
+      assert_nothing_raised { @info.server_name = 'foo' }
+      assert_equal('foo', @info.server_name)
     end
 
     def test_size
-      assert_nothing_raised { @info.size = "200x100" }
-      assert_equal("200x100", @info.size)
+      assert_nothing_raised { @info.size = '200x100' }
+      assert_equal('200x100', @info.size)
       assert_nothing_raised { @info.size = Magick::Geometry.new(100,200) }
-      assert_equal("100x200", @info.size)
+      assert_equal('100x200', @info.size)
     end
 
     def test_stroke
@@ -289,7 +289,7 @@ class Info_UT < Test::Unit::TestCase
         assert_nil(@info.stroke)
 
         assert_nothing_raised { @info.stroke = 'white' }
-        assert_equal("white", @info.stroke)
+        assert_equal('white', @info.stroke)
 
         assert_nothing_raised { @info.stroke = nil }
         assert_nil(@info.stroke)
@@ -307,15 +307,15 @@ class Info_UT < Test::Unit::TestCase
     end
 
     def test_texture
-      img = Magick::Image.read("granite:") {self.size = "20x20" }
+      img = Magick::Image.read('granite:') {self.size = '20x20' }
       assert_nothing_raised { @info.texture = img.first }
     end
 
     def test_tile_offset
-      assert_nothing_raised { @info.tile_offset = "200x100" }
-      assert_equal("200x100", @info.tile_offset)
+      assert_nothing_raised { @info.tile_offset = '200x100' }
+      assert_equal('200x100', @info.tile_offset)
       assert_nothing_raised { @info.tile_offset = Magick::Geometry.new(100,200) }
-      assert_equal("100x200", @info.tile_offset)
+      assert_equal('100x200', @info.tile_offset)
     end
 
     def test_undercolor
@@ -323,7 +323,7 @@ class Info_UT < Test::Unit::TestCase
       assert_nil(@info.undercolor)
 
       assert_nothing_raised { @info.undercolor = 'white' }
-      assert_equal("white", @info.undercolor)
+      assert_equal('white', @info.undercolor)
 
       assert_nothing_raised { @info.undercolor = nil }
       assert_nil(@info.undercolor)
@@ -339,7 +339,7 @@ class Info_UT < Test::Unit::TestCase
     end
 
     def test_view
-      assert_nothing_raised { @info.view = "string" }
-      assert_equal("string", @info.view)
+      assert_nothing_raised { @info.view = 'string' }
+      assert_equal('string', @info.view)
     end
 end

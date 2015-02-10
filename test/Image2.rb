@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby -w
 
-require "rmagick"
+require 'rmagick'
 require 'test/unit'
 require 'test/unit/ui/console/testrunner'  unless RUBY_VERSION[/^1\.9|^2/]
 
@@ -37,7 +37,7 @@ class Image2_UT < Test::Unit::TestCase
 
     def test_composite_mathematics
        bg = Magick::Image.new(50, 50)
-       fg = Magick::Image.new(50, 50) {self.background_color = "black" }
+       fg = Magick::Image.new(50, 50) {self.background_color = 'black' }
        res = nil
        assert_nothing_raised { res = bg.composite_mathematics(fg, 1, 0, 0, 0, Magick::CenterGravity) }
        assert_instance_of(Magick::Image, res)
@@ -54,7 +54,7 @@ class Image2_UT < Test::Unit::TestCase
 
     def test_composite_tiled
       bg = Magick::Image.new(200,200)
-      fg = Magick::Image.new(50,100) { self.background_color = "black" }
+      fg = Magick::Image.new(50,100) { self.background_color = 'black' }
       res = nil
       assert_nothing_raised do
         res = bg.composite_tiled(fg)
@@ -120,7 +120,7 @@ class Image2_UT < Test::Unit::TestCase
         assert_raise(ArgumentError) { @img.convolve }
         assert_raise(ArgumentError) { @img.convolve(order) }
         assert_raise(IndexError) { @img.convolve(5, kernel) }
-        assert_raise(IndexError) { @img.convolve(order, "x") }
+        assert_raise(IndexError) { @img.convolve(order, 'x') }
         assert_raise(TypeError) { @img.convolve(3, [1.0, 1.0, 1.0, 1.0, 'x', 1.0, 1.0, 1.0, 1.0]) }
         assert_raise(Magick::ImageMagickError) { @img.convolve(-1, [1.0, 1.0, 1.0, 1.0]) }
     end
@@ -208,8 +208,8 @@ class Image2_UT < Test::Unit::TestCase
     def test_decipher         # tests encipher, too.
       res = res2 = nil
       assert_nothing_raised do
-        res = @img.encipher "passphrase"
-        res2 = res.decipher "passphrase"
+        res = @img.encipher 'passphrase'
+        res2 = res.decipher 'passphrase'
       end
       assert_instance_of(Magick::Image, res)
       assert_not_same(@img, res)
@@ -223,8 +223,8 @@ class Image2_UT < Test::Unit::TestCase
     end
 
     def test_define
-      assert_nothing_raised { @img.define("deskew:auto-crop", 40) }
-      assert_nothing_raised { @img.undefine("deskew:auto-crop") }
+      assert_nothing_raised { @img.define('deskew:auto-crop', 40) }
+      assert_nothing_raised { @img.undefine('deskew:auto-crop') }
     end
 
     def test_deskew
@@ -235,9 +235,9 @@ class Image2_UT < Test::Unit::TestCase
        end
 
       assert_nothing_raised { @img.deskew(0.10) }
-      assert_nothing_raised { @img.deskew("95%") }
-      assert_raise(ArgumentError) { @img.deskew("x") }
-      assert_raise(TypeError) {@img.deskew(0.40, "x") }
+      assert_nothing_raised { @img.deskew('95%') }
+      assert_raise(ArgumentError) { @img.deskew('x') }
+      assert_raise(TypeError) {@img.deskew(0.40, 'x') }
       assert_raise(ArgumentError) {@img.deskew(0.40, 20, [1]) }
     end
 
@@ -268,14 +268,14 @@ class Image2_UT < Test::Unit::TestCase
           method = method.to_s
 
           case
-              when method == "[]="
+              when method == '[]='
                   assert_raises(Magick::DestroyedImageError) { @img['foo'] = 1 }
-              when method == "difference"
+              when method == 'difference'
                   other = Magick::Image.new(20,20)
                   assert_raises(Magick::DestroyedImageError) { @img.difference(other) }
-              when method == "get_iptc_dataset"
+              when method == 'get_iptc_dataset'
                   assert_raises(Magick::DestroyedImageError) { @img.get_iptc_dataset('x') }
-              when method == "profile!"
+              when method == 'profile!'
                   assert_raises(Magick::DestroyedImageError) { @img.profile!('x', 'y') }
               when /=\Z/.match(method)
                   assert_raises(Magick::DestroyedImageError) { @img.send(method, 1) }
@@ -309,15 +309,15 @@ class Image2_UT < Test::Unit::TestCase
           assert(which == :c || which == :d, "unexpected value for which: #{which}")
           assert_equal(:destroy!, method) if which == :d
           if which == :c
-            assert(!images.has_key?(addr), "duplicate image addresses")
+            assert(!images.has_key?(addr), 'duplicate image addresses')
             images[addr] = name
           else
-            assert(images.has_key?(addr), "destroying image that was not created")
+            assert(images.has_key?(addr), 'destroying image that was not created')
             assert_equal(name, images[addr])
           end
         end
-        unmapped = Magick::ImageList.new(IMAGES_DIR+"/Hot_Air_Balloons.jpg", IMAGES_DIR+"/Violin.jpg", IMAGES_DIR+"/Polynesia.jpg")
-        map = Magick::ImageList.new "netscape:"
+        unmapped = Magick::ImageList.new(IMAGES_DIR+'/Hot_Air_Balloons.jpg', IMAGES_DIR+'/Violin.jpg', IMAGES_DIR+'/Polynesia.jpg')
+        map = Magick::ImageList.new 'netscape:'
         mapped = unmapped.map map, false
         unmapped.each {|i| i.destroy!}
         map.destroy!
@@ -345,7 +345,7 @@ class Image2_UT < Test::Unit::TestCase
     end
 
     def test_displace
-      @img2 = Magick::Image.new(20,20) {self.background_color = "black"}
+      @img2 = Magick::Image.new(20,20) {self.background_color = 'black'}
       assert_nothing_raised { @img.displace(@img2, 25) }
       res = @img.displace(@img2, 25)
       assert_instance_of(Magick::Image, res)
@@ -435,15 +435,15 @@ class Image2_UT < Test::Unit::TestCase
     end
 
     def test_each_profile
-        @img.iptc_profile = "test profile"
+        @img.iptc_profile = 'test profile'
         assert_nothing_raised do
             @img.each_profile do |name, value|
-                assert_equal("iptc", name)
+                assert_equal('iptc', name)
                 # As of 6.3.1
-                if IM_VERSION < Gem::Version.new("6.6.4") || (IM_VERSION == Gem::Version.new("6.6.4") && IM_REVISION < Gem::Version.new("5"))
+                if IM_VERSION < Gem::Version.new('6.6.4') || (IM_VERSION == Gem::Version.new('6.6.4') && IM_REVISION < Gem::Version.new('5'))
                     assert_equal("8BIM\004\004\000\000\000\000\001\340test profile", value)
                 else
-                    assert_equal("test profile", value)
+                    assert_equal('test profile', value)
                 end
             end
         end
@@ -525,7 +525,7 @@ class Image2_UT < Test::Unit::TestCase
         assert_nothing_raised do
             res = @img.export_pixels
             assert_instance_of(Array, res)
-            assert_equal(@img.columns*@img.rows*"RGB".length, res.length)
+            assert_equal(@img.columns*@img.rows*'RGB'.length, res.length)
             res.each do |p|
                 assert_kind_of(Integer, p)
             end
@@ -536,11 +536,11 @@ class Image2_UT < Test::Unit::TestCase
         assert_nothing_raised { res = @img.export_pixels(0, 0, 10, 10) }
         assert_nothing_raised do
             res = @img.export_pixels(0, 0, 10, 10, 'RGBA')
-            assert_equal(10*10*"RGBA".length, res.length)
+            assert_equal(10*10*'RGBA'.length, res.length)
         end
        assert_nothing_raised do
             res = @img.export_pixels(0, 0, 10, 10, 'I')
-            assert_equal(10*10*"I".length, res.length)
+            assert_equal(10*10*'I'.length, res.length)
        end
 
        # too many arguments
@@ -551,51 +551,51 @@ class Image2_UT < Test::Unit::TestCase
         assert_nothing_raised do
             res = @img.export_pixels_to_str
             assert_instance_of(String, res)
-            assert_equal(@img.columns*@img.rows*"RGB".length, res.length)
+            assert_equal(@img.columns*@img.rows*'RGB'.length, res.length)
         end
         assert_nothing_raised { @img.export_pixels_to_str(0) }
         assert_nothing_raised { @img.export_pixels_to_str(0, 0) }
         assert_nothing_raised { @img.export_pixels_to_str(0, 0, 10) }
         assert_nothing_raised { @img.export_pixels_to_str(0, 0, 10, 10) }
         assert_nothing_raised do
-            res = @img.export_pixels_to_str(0, 0, 10, 10, "RGBA")
-            assert_equal(10*10*"RGBA".length, res.length)
+            res = @img.export_pixels_to_str(0, 0, 10, 10, 'RGBA')
+            assert_equal(10*10*'RGBA'.length, res.length)
         end
         assert_nothing_raised do
-            res = @img.export_pixels_to_str(0, 0, 10, 10, "I")
-            assert_equal(10*10*"I".length, res.length)
+            res = @img.export_pixels_to_str(0, 0, 10, 10, 'I')
+            assert_equal(10*10*'I'.length, res.length)
         end
 
         assert_nothing_raised do
-            res = @img.export_pixels_to_str(0, 0, 10, 10, "I", Magick::CharPixel)
+            res = @img.export_pixels_to_str(0, 0, 10, 10, 'I', Magick::CharPixel)
             assert_equal(10*10*1, res.length)
         end
         assert_nothing_raised do
-            res = @img.export_pixels_to_str(0, 0, 10, 10, "I", Magick::ShortPixel)
+            res = @img.export_pixels_to_str(0, 0, 10, 10, 'I', Magick::ShortPixel)
             assert_equal(10*10*2, res.length)
         end
         assert_nothing_raised do
-            res = @img.export_pixels_to_str(0, 0, 10, 10, "I", Magick::IntegerPixel)
+            res = @img.export_pixels_to_str(0, 0, 10, 10, 'I', Magick::IntegerPixel)
             assert_equal(10*10*4, res.length)
         end
         assert_nothing_raised do
-            res = @img.export_pixels_to_str(0, 0, 10, 10, "I", Magick::LongPixel)
-            assert_equal(10*10*[1].pack("L!").length, res.length)
+            res = @img.export_pixels_to_str(0, 0, 10, 10, 'I', Magick::LongPixel)
+            assert_equal(10*10*[1].pack('L!').length, res.length)
         end
         assert_nothing_raised do
-            res = @img.export_pixels_to_str(0, 0, 10, 10, "I", Magick::FloatPixel)
+            res = @img.export_pixels_to_str(0, 0, 10, 10, 'I', Magick::FloatPixel)
             assert_equal(10*10*4, res.length)
         end
         assert_nothing_raised do
-            res = @img.export_pixels_to_str(0, 0, 10, 10, "I", Magick::DoublePixel)
+            res = @img.export_pixels_to_str(0, 0, 10, 10, 'I', Magick::DoublePixel)
             assert_equal(10*10*8, res.length)
         end
-        assert_nothing_raised { @img.export_pixels_to_str(0, 0, 10, 10, "I", Magick::QuantumPixel) }
+        assert_nothing_raised { @img.export_pixels_to_str(0, 0, 10, 10, 'I', Magick::QuantumPixel) }
 
         # too many arguments
-        assert_raise(ArgumentError) { @img.export_pixels_to_str(0, 0, 10, 10, "I", Magick::QuantumPixel, 1) }
+        assert_raise(ArgumentError) { @img.export_pixels_to_str(0, 0, 10, 10, 'I', Magick::QuantumPixel, 1) }
         # last arg s/b StorageType
-        assert_raise(TypeError) { @img.export_pixels_to_str(0, 0, 10, 10, "I", 2) }
+        assert_raise(TypeError) { @img.export_pixels_to_str(0, 0, 10, 10, 'I', 2) }
     end
 
     def test_extent
@@ -616,7 +616,7 @@ class Image2_UT < Test::Unit::TestCase
     end
 
     def test_find_similar_region
-        girl = Magick::Image.read(IMAGES_DIR+"/Flower_Hat.jpg").first
+        girl = Magick::Image.read(IMAGES_DIR+'/Flower_Hat.jpg').first
         region = girl.crop(10, 10, 50, 50)
         assert_nothing_raised do
             x, y = girl.find_similar_region(region)
@@ -716,7 +716,7 @@ class Image2_UT < Test::Unit::TestCase
     end
 
     def test_function_channel
-       img = Magick::Image.read("gradient:") {self.size = "20x600"}
+       img = Magick::Image.read('gradient:') {self.size = '20x600'}
        img = img.first
        img.rotate!(90)
        assert_nothing_raised { img.function_channel Magick::PolynomialFunction, 0.33 }
@@ -844,9 +844,9 @@ class Image2_UT < Test::Unit::TestCase
     end
 
     def test_import_pixels
-        pixels = @img.export_pixels(0, 0, @img.columns, 1, "RGB")
+        pixels = @img.export_pixels(0, 0, @img.columns, 1, 'RGB')
         assert_nothing_raised do
-            res = @img.import_pixels(0, 0, @img.columns, 1, "RGB", pixels)
+            res = @img.import_pixels(0, 0, @img.columns, 1, 'RGB', pixels)
             assert_same(@img, res)
         end
         assert_raise(ArgumentError) { @img.import_pixels }
@@ -854,22 +854,22 @@ class Image2_UT < Test::Unit::TestCase
         assert_raise(ArgumentError) { @img.import_pixels(0, 0) }
         assert_raise(ArgumentError) { @img.import_pixels(0, 0, @img.columns) }
         assert_raise(ArgumentError) { @img.import_pixels(0, 0, @img.columns, 1) }
-        assert_raise(ArgumentError) { @img.import_pixels(0, 0, @img.columns, 1, "RGB") }
-        assert_raise(TypeError) { @img.import_pixels('x', 0, @img.columns, 1, "RGB", pixels) }
-        assert_raise(TypeError) { @img.import_pixels(0, 'x', @img.columns, 1, "RGB", pixels) }
-        assert_raise(TypeError) { @img.import_pixels(0, 0, 'x', 1, "RGB", pixels) }
-        assert_raise(TypeError) { @img.import_pixels(0, 0, @img.columns, 'x', "RGB", pixels) }
+        assert_raise(ArgumentError) { @img.import_pixels(0, 0, @img.columns, 1, 'RGB') }
+        assert_raise(TypeError) { @img.import_pixels('x', 0, @img.columns, 1, 'RGB', pixels) }
+        assert_raise(TypeError) { @img.import_pixels(0, 'x', @img.columns, 1, 'RGB', pixels) }
+        assert_raise(TypeError) { @img.import_pixels(0, 0, 'x', 1, 'RGB', pixels) }
+        assert_raise(TypeError) { @img.import_pixels(0, 0, @img.columns, 'x', 'RGB', pixels) }
         assert_raise(TypeError) { @img.import_pixels(0, 0, @img.columns, 1, [2], pixels) }
-        assert_raise(ArgumentError) { @img.import_pixels(-1, 0, @img.columns, 1, "RGB", pixels) }
-        assert_raise(ArgumentError) { @img.import_pixels(0, -1, @img.columns, 1, "RGB", pixels) }
-        assert_raise(ArgumentError) { @img.import_pixels(0, 0, -1, 1, "RGB", pixels) }
-        assert_raise(ArgumentError) { @img.import_pixels(0, 0, @img.columns, -1, "RGB", pixels) }
+        assert_raise(ArgumentError) { @img.import_pixels(-1, 0, @img.columns, 1, 'RGB', pixels) }
+        assert_raise(ArgumentError) { @img.import_pixels(0, -1, @img.columns, 1, 'RGB', pixels) }
+        assert_raise(ArgumentError) { @img.import_pixels(0, 0, -1, 1, 'RGB', pixels) }
+        assert_raise(ArgumentError) { @img.import_pixels(0, 0, @img.columns, -1, 'RGB', pixels) }
 
         # pixel array is too small
-        assert_raise(ArgumentError) { @img.import_pixels(0, 0, @img.columns, 2, "RGB", pixels) }
+        assert_raise(ArgumentError) { @img.import_pixels(0, 0, @img.columns, 2, 'RGB', pixels) }
         # pixel array doesn't contain a multiple of the map length
         pixels.shift
-        assert_raise(ArgumentError) { @img.import_pixels(0, 0, @img.columns, 1, "RGB", pixels) }
+        assert_raise(ArgumentError) { @img.import_pixels(0, 0, @img.columns, 1, 'RGB', pixels) }
     end
 
     def test_level
@@ -925,17 +925,17 @@ class Image2_UT < Test::Unit::TestCase
       assert_instance_of(Magick::Image, res)
       assert_not_same(@img, res)
 
-      assert_nothing_raised { @img.level_colors("black") }
-      assert_nothing_raised { @img.level_colors("black", Pixel.new(0,0,0)) }
+      assert_nothing_raised { @img.level_colors('black') }
+      assert_nothing_raised { @img.level_colors('black', Pixel.new(0,0,0)) }
       assert_nothing_raised { @img.level_colors(Pixel.new(0,0,0), Pixel.new(Magick::QuantumRange,Magick::QuantumRange,Magick::QuantumRange)) }
-      assert_nothing_raised { @img.level_colors("black", "white") }
-      assert_nothing_raised { @img.level_colors("black", "white", false) }
+      assert_nothing_raised { @img.level_colors('black', 'white') }
+      assert_nothing_raised { @img.level_colors('black', 'white', false) }
       # too many arguments
-      assert_raises(ArgumentError) { @img.level_colors("black", "white", false, 1) }
+      assert_raises(ArgumentError) { @img.level_colors('black', 'white', false, 1) }
       # not a pixel or a string
       assert_raises(ArgumentError) { @img.level_colors([]) }
       # not a color name
-      assert_raises(ArgumentError) { @img.level_colors("xxx") }
+      assert_raises(ArgumentError) { @img.level_colors('xxx') }
     end
 
     def levelize_channel
@@ -992,7 +992,7 @@ class Image2_UT < Test::Unit::TestCase
     end
 
     def test_map
-        map = Magick::Image.read("netscape:").first
+        map = Magick::Image.read('netscape:').first
         assert_nothing_raised do
             res = @img.map(map)
             assert_instance_of(Magick::Image, res)
@@ -1232,20 +1232,20 @@ class Image2_UT < Test::Unit::TestCase
 
     def test_paint_transparent
       res = nil
-      assert_nothing_raised { res = @img.paint_transparent("red") }
+      assert_nothing_raised { res = @img.paint_transparent('red') }
       assert_not_nil(res)
       assert_instance_of(Magick::Image, res)
       assert_not_same(res, @img)
-      assert_nothing_raised { @img.paint_transparent("red", Magick::TransparentOpacity) }
-      assert_nothing_raised { @img.paint_transparent("red", Magick::TransparentOpacity, true) }
-      assert_nothing_raised { @img.paint_transparent("red", Magick::TransparentOpacity, true, 50) }
+      assert_nothing_raised { @img.paint_transparent('red', Magick::TransparentOpacity) }
+      assert_nothing_raised { @img.paint_transparent('red', Magick::TransparentOpacity, true) }
+      assert_nothing_raised { @img.paint_transparent('red', Magick::TransparentOpacity, true, 50) }
 
       # Too many arguments
-      assert_raise(ArgumentError) { @img.paint_transparent("red", Magick::TransparentOpacity, true, 50, 50) }
+      assert_raise(ArgumentError) { @img.paint_transparent('red', Magick::TransparentOpacity, true, 50, 50) }
       # Not enough
       assert_raise(ArgumentError) { @img.paint_transparent }
-      assert_raise(TypeError) { @img.paint_transparent("red", Magick::TransparentOpacity, true, []) }
-      assert_raise(TypeError) { @img.paint_transparent("red", "blue") }
+      assert_raise(TypeError) { @img.paint_transparent('red', Magick::TransparentOpacity, true, []) }
+      assert_raise(TypeError) { @img.paint_transparent('red', 'blue') }
       assert_raise(TypeError) { @img.paint_transparent(50) }
     end
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
 imgl = Magick::ImageList.new
 imgl.new_image(300, 100, Magick::HatchFill.new('white','lightcyan2'))
@@ -17,7 +17,7 @@ gc.polyline(*points)
 
 gc.draw(imgl)
 
-imgl.border!(1,1, "lightcyan2")
+imgl.border!(1,1, 'lightcyan2')
 
-imgl.write("polyline.gif")
+imgl.write('polyline.gif')
 

@@ -1,4 +1,4 @@
-require "rmagick"
+require 'rmagick'
 
 #   The Image#find_similar_region searches for a region in the image
 #   similar to the target. This example uses a rectangle from the image
@@ -22,7 +22,7 @@ begin
         puts "Found similar region. Writing `find_similar_region.gif'..."
         img.write('find_similar_region.gif')
     else
-        puts "No match!"
+        puts 'No match!'
     end
 rescue NotImplementedError
     $stderr.puts <<-END_MSG

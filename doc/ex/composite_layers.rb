@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
 class Magick::ImageList
   # Create a shadow image for each image in the list
@@ -15,20 +15,20 @@ gc = Magick::Draw.new
 gc.gravity = Magick::CenterGravity
 gc.pointsize = 24
 gc.font_weight = Magick::BoldWeight
-gc.fill = "darkred"
-gc.stroke = "black"
+gc.fill = 'darkred'
+gc.stroke = 'black'
 gc.stroke_width = 1
 
 23.times do
-  ruby << Magick::Image.new(100, 100) {self.background_color = "none"}
-  gc.annotate(ruby, 0, 0, 0, 0, "Ruby")
+  ruby << Magick::Image.new(100, 100) {self.background_color = 'none'}
+  gc.annotate(ruby, 0, 0, 0, 0, 'Ruby')
   gc.rotation = 15
 end
 
 # Create a gradient background
 bg = Magick::ImageList.new
-bg.new_image(99, 99, Magick::GradientFill.new(50, 50, 50, 50, "white", "tan"))
-bg.border!(1, 1, "black")
+bg.new_image(99, 99, Magick::GradientFill.new(50, 50, 50, 50, 'white', 'tan'))
+bg.border!(1, 1, 'black')
 
 # Create the animated shadows of the rotating "Ruby" animation
 shadows = ruby.shadow(2, 5, 3)
@@ -41,13 +41,13 @@ begin
   # Composite the "Ruby" animation over the previous composite
   result = result.composite_layers(ruby)
   result.delay = 10
-  result.write("composite_layers.gif")
-  result[0].write("composite_layers1.gif")
+  result.write('composite_layers.gif')
+  result[0].write('composite_layers1.gif')
 
 rescue NotImplementedError
     result = Magick::Image.read('images/notimplemented.gif').first
     result.resize!(100, 100)
-    result.write("composite_layers.gif")
-    result.write("composite_layers1.gif")
+    result.write('composite_layers.gif')
+    result.write('composite_layers1.gif')
 end
 exit

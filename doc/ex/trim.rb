@@ -1,4 +1,4 @@
-require "rmagick"
+require 'rmagick'
 
 # Demonstrate the trim method
 

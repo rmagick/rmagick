@@ -28,7 +28,7 @@
 #
 #++############################################################################
 
-require "rmagick"
+require 'rmagick'
 require 'rvg/misc'
 require 'rvg/describable'
 require 'rvg/stylable'
@@ -138,7 +138,7 @@ module Magick
 
         # Sets an image to use as the canvas background. See background_position= for layout options.
         def background_image=(bg_image)
-            warn "background_image= has no effect in nested RVG objects" if @nested
+            warn 'background_image= has no effect in nested RVG objects' if @nested
             if bg_image && !bg_image.is_a?(Magick::Image)
                 fail ArgumentError, "background image must be an Image (got #{bg_image.class})"
             end
@@ -149,7 +149,7 @@ module Magick
         # The object must have a <tt>fill</tt> method. See the <b>Fill Classes</b>
         # section in the RMagick doc for more information.
         def background_pattern=(filler)
-            warn "background_pattern= has no effect in nested RVG objects" if @nested
+            warn 'background_pattern= has no effect in nested RVG objects' if @nested
             @background_pattern = filler
         end
 
@@ -160,7 +160,7 @@ module Magick
         #        image proportions. Center the image on the canvas. Color any part of
         #        the canvas not covered by the image with the background color.
         def background_position=(pos)
-            warn "background_position= has no effect in nested RVG objects" if @nested
+            warn 'background_position= has no effect in nested RVG objects' if @nested
             bg_pos = pos.to_s.downcase
             unless ['scaled', 'tiled', 'fit'].include?(bg_pos)
                 fail ArgumentError, "background position must be `scaled', `tiled', or `fit' (#{pos} given)"
@@ -171,7 +171,7 @@ module Magick
         # Sets the canvas background color. Either a Magick::Pixel or a color name.
         # The default fill is "none", that is, transparent black.
         def background_fill=(color)
-            warn "background_fill= has no effect in nested RVG objects" if @nested
+            warn 'background_fill= has no effect in nested RVG objects' if @nested
             if !color.is_a?(Magick::Pixel)
                 begin
                     @background_fill = Magick::Pixel.from_color(color)
@@ -190,7 +190,7 @@ module Magick
         # Opacity of the background fill color, a number between 0.0 (transparent) and
         # 1.0 (opaque). The default is 1.0 when the background_fill= attribute has been set.
         def background_fill_opacity=(opacity)
-            warn "background_fill_opacity= has no effect in nested RVG objects" if @nested
+            warn 'background_fill_opacity= has no effect in nested RVG objects' if @nested
             begin
                 @background_fill_opacity = Float(opacity)
             rescue ArgumentError
@@ -229,7 +229,7 @@ module Magick
         # Construct a canvas or reuse an existing canvas.
         # Execute drawing commands. Return the canvas.
         def draw
-            fail StandardError, "draw not permitted in nested RVG objects" if @nested
+            fail StandardError, 'draw not permitted in nested RVG objects' if @nested
             @canvas ||= new_canvas    # allow drawing over existing canvas
             gc = Utility::GraphicContext.new
             add_outermost_primitives(gc)
@@ -268,7 +268,7 @@ module Magick
         # Primitives for nested RVG objects
         def add_primitives(gc)  #:nodoc:
             if @width.nil? || @height.nil?
-                fail ArgumentError, "RVG width or height undefined"
+                fail ArgumentError, 'RVG width or height undefined'
             elsif @width == 0 || @height == 0
                 return self
             end

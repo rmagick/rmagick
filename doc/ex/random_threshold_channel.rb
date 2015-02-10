@@ -2,7 +2,7 @@
 
 # Demonstrate the random_channel_threshold method
 
-require "rmagick"
+require 'rmagick'
 
 img = Magick::Image.read('images/Flower_Hat.jpg').first
 

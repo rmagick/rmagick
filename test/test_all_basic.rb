@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby -w
 puts RUBY_VERSION
 puts RUBY_VERSION.class
-root_dir = File.expand_path("../..", __FILE__)
+root_dir = File.expand_path('../..', __FILE__)
 IMAGES_DIR = File.join(root_dir, 'doc/ex/images')
 FILES = Dir[IMAGES_DIR+'/Button_*.gif'].sort
 FLOWER_HAT = IMAGES_DIR+'/Flower_Hat.jpg'
@@ -20,7 +20,7 @@ end
 require 'rmagick'
 
 Magick::Magick_version =~ /ImageMagick (\d+\.\d+\.\d+)-(\d+) /
-abort "Unable to get ImageMagick version" unless $1 && $2
+abort 'Unable to get ImageMagick version' unless $1 && $2
 
 IM_VERSION = Gem::Version.new($1)
 IM_REVISION = Gem::Version.new($2)

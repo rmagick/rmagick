@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
 # Add a drop shadow to a text string. This example
 # uses a 3-image animation to show each step of the

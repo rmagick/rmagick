@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
 # Demonstrate the "path" drawing primitive.
 
@@ -27,7 +27,7 @@ gc.path('M200,175 l 25,-12.5 ' \
                 'a12.5,50   -15 0,1 25,-12.5 l 25,-12.5')
 
 gc.draw imgl
-imgl.border!(1,1, "lightcyan2")
+imgl.border!(1,1, 'lightcyan2')
 
 imgl.write('arcpath.gif')
 

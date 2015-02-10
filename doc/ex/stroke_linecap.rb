@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
 imgl = Magick::ImageList.new
 imgl.new_image(615, 100)
@@ -41,4 +41,4 @@ gc.text(450,90, "\"'square' cap\"")
 
 gc.draw(imgl)
 
-imgl.write("stroke_linecap.gif")
+imgl.write('stroke_linecap.gif')

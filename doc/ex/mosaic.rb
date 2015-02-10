@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
 # Demonstrate the mosaic method
 
@@ -9,7 +9,7 @@ letter = 'A'
 26.times do
     # 'M' is not the same size as the other letters.
     if letter != 'M'
-        a.read("images/Button_"+letter+".gif")
+        a.read('images/Button_'+letter+'.gif')
     end
     letter.succ!
 end
@@ -30,6 +30,6 @@ end
 
 # Make a 5x5 mosaic
 mosaic = b.mosaic
-mosaic.write("mosaic.gif")
+mosaic.write('mosaic.gif')
 # mosaic.display
 exit

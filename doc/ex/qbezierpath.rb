@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
 imgl = Magick::ImageList.new
 imgl.new_image(500, 300, Magick::HatchFill.new('white','lightcyan2'))
@@ -10,7 +10,7 @@ gc = Magick::Draw.new
 gc.fill_opacity 0
 gc.stroke 'red'
 gc.stroke_width 3
-gc.path "M20,150 Q120,25 220,150 T420,150"
+gc.path 'M20,150 Q120,25 220,150 T420,150'
 
 # Annotate
 # Show end points
@@ -47,6 +47,6 @@ gc.text 330,280, "'320,275'"
 
 gc.draw imgl
 
-imgl.border!(1,1, "lightcyan2")
+imgl.border!(1,1, 'lightcyan2')
 #imgl.display
-imgl.write "qbezierpath.gif"
+imgl.write 'qbezierpath.gif'

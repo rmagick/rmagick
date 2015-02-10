@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
 imgl = Magick::ImageList.new
-imgl.new_image(275, 170) { self.background_color = "white" }
+imgl.new_image(275, 170) { self.background_color = 'white' }
 
 gc = Magick::Draw.new
 gc.fill('black')
@@ -32,7 +32,7 @@ gc.draw(imgl)
 # crop to a representative portion.
 imgl.resize!(3).crop!(235,270, 365,180)
 imgl.page = Magick::Rectangle.new(365, 180)
-imgl.border!(1,1,"black")
-imgl.write("text_antialias.gif")
+imgl.border!(1,1,'black')
+imgl.write('text_antialias.gif')
 exit
 

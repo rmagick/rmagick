@@ -5,31 +5,31 @@
 # Concept and algorithms lifted from Magick++ demo script written
 # by Bob Friesenhahn.
 #
-require "rmagick"
+require 'rmagick'
 include Magick
 
 #
 #   RMagick version of Magick++/demo/demo.cpp
 #
 
-Font = "Helvetica"
+Font = 'Helvetica'
 
 begin
-    puts "Read images..."
+    puts 'Read images...'
 
-    model = ImageList.new("../doc/ex/images/model.miff")
-    model.border_color = "black"
-    model.background_color = "black"
-    model.cur_image[:Label] = "RMagick"
+    model = ImageList.new('../doc/ex/images/model.miff')
+    model.border_color = 'black'
+    model.background_color = 'black'
+    model.cur_image[:Label] = 'RMagick'
 
-    smile = ImageList.new("../doc/ex/images/smile.miff")
-    smile.border_color = "black"
-    smile.cur_image[:Label] = "Smile"
+    smile = ImageList.new('../doc/ex/images/smile.miff')
+    smile.border_color = 'black'
+    smile.cur_image[:Label] = 'Smile'
 
     #
     #   Create image stack
     #
-    puts "Creating thumbnails"
+    puts 'Creating thumbnails'
 
     # Construct an initial list containing five copies of a null
     # image. This will give us room to fit the logo at the top.
@@ -37,108 +37,108 @@ begin
     # optional "size" attribute in the parm block associated with
     # the read method. There are two more examples of this, below.
     example = ImageList.new
-    5.times { example.read("NULL:black") { self.size = "70x70"} }
+    5.times { example.read('NULL:black') { self.size = '70x70'} }
 
-    puts "   add noise..."
+    puts '   add noise...'
     example << model.add_noise(LaplacianNoise)
-    example.cur_image[:Label] = "Add Noise"
+    example.cur_image[:Label] = 'Add Noise'
 
-    puts "   annotate..."
+    puts '   annotate...'
     example << model.cur_image.copy
-    example.cur_image[:Label] = "Annotate"
+    example.cur_image[:Label] = 'Annotate'
     draw = Draw.new
-    draw.annotate(example, 0, 0, 0, 20, "RMagick") do
+    draw.annotate(example, 0, 0, 0, 20, 'RMagick') do
         self.pointsize = 18
         self.font = Font
-        self.stroke = "gold"
-        self.fill = "gold"
+        self.stroke = 'gold'
+        self.fill = 'gold'
         self.gravity = NorthGravity
     end
 
-    puts "   blur..."
+    puts '   blur...'
     example << model.blur_image(0.0, 1.5)
-    example.cur_image[:Label] = "Blur"
+    example.cur_image[:Label] = 'Blur'
 
-    puts "   border..."
-    example << model.border(6, 6, "gold")
-    example.cur_image[:Label] = "Border"
+    puts '   border...'
+    example << model.border(6, 6, 'gold')
+    example.cur_image[:Label] = 'Border'
 
-    puts "   channel..."
+    puts '   channel...'
     example << model.channel(RedChannel)
-    example.cur_image[:Label] = "Channel"
+    example.cur_image[:Label] = 'Channel'
 
-    puts "   charcoal..."
+    puts '   charcoal...'
     example << model.charcoal
-    example.cur_image[:Label] = "Charcoal"
+    example.cur_image[:Label] = 'Charcoal'
 
-    puts "   composite..."
+    puts '   composite...'
     example << model.composite(smile, 35, 65, OverCompositeOp)
-    example.cur_image[:Label] = "Composite"
+    example.cur_image[:Label] = 'Composite'
 
-    puts "   contrast..."
+    puts '   contrast...'
     example << model.contrast(false)
-    example.cur_image[:Label] = "Contrast"
+    example.cur_image[:Label] = 'Contrast'
 
-    puts "   convolve..."
+    puts '   convolve...'
     kernel = [ 1, 1, 1, 1, 4, 1, 1, 1, 1 ]
     example << model.convolve(3, kernel)
-    example.cur_image[:Label] = "Convolve"
+    example.cur_image[:Label] = 'Convolve'
 
-    puts "   crop..."
+    puts '   crop...'
     example << model.crop(25, 50, 80, 80)
-    example.cur_image[:Label] = "Crop"
+    example.cur_image[:Label] = 'Crop'
 
-    puts "   despeckle..."
+    puts '   despeckle...'
     example << model.despeckle
-    example.cur_image[:Label] = "Despeckle"
+    example.cur_image[:Label] = 'Despeckle'
 
-    puts "   draw..."
+    puts '   draw...'
     example << model.cur_image.copy
-    example.cur_image[:Label] = "Draw"
+    example.cur_image[:Label] = 'Draw'
     gc = Draw.new
-    gc.fill "black"
+    gc.fill 'black'
     gc.fill_opacity 0
-    gc.stroke "gold"
+    gc.stroke 'gold'
     gc.stroke_width 2
     gc.circle 60,90, 60,120
     gc.draw(example)
 
-    puts "   edge..."
+    puts '   edge...'
     example << model.edge(0)
-    example.cur_image[:Label] = "Detect Edges"
+    example.cur_image[:Label] = 'Detect Edges'
 
-    puts "   emboss..."
+    puts '   emboss...'
     example << model.emboss
-    example.cur_image[:Label] = "Emboss"
+    example.cur_image[:Label] = 'Emboss'
 
-    puts "   equalize..."
+    puts '   equalize...'
     example << model.equalize
-    example.cur_image[:Label] = "Equalize"
+    example.cur_image[:Label] = 'Equalize'
 
-    puts "   explode..."
+    puts '   explode...'
     example << model.implode(-1)
-    example.background_color = "#000000ff"
-    example.cur_image[:Label] = "Explode"
+    example.background_color = '#000000ff'
+    example.cur_image[:Label] = 'Explode'
 
-    puts "   flip..."
+    puts '   flip...'
     example << model.flip
-    example.cur_image[:Label] = "Flip"
+    example.cur_image[:Label] = 'Flip'
 
-    puts "   flop..."
+    puts '   flop...'
     example << model.flop
-    example.cur_image[:Label] = "Flop"
+    example.cur_image[:Label] = 'Flop'
 
-    puts "   frame..."
+    puts '   frame...'
     example << model.frame
-    example.cur_image[:Label] = "Frame"
+    example.cur_image[:Label] = 'Frame'
 
-    puts "   gamma..."
+    puts '   gamma...'
     example << model.gamma_correct(1.6)
-    example.cur_image[:Label] = "Gamma"
+    example.cur_image[:Label] = 'Gamma'
 
-    puts "   gaussian blur..."
+    puts '   gaussian blur...'
     example << model.gaussian_blur(1, 1.5)
-    example.cur_image[:Label] = "Gaussian Blur"
+    example.cur_image[:Label] = 'Gaussian Blur'
 
     # To add an Image in one of ImageMagick's built-in formats,
     # call the read method. The filename specifies the format and
@@ -147,122 +147,122 @@ begin
     # "WxH", to the optional "size" attribute in the block associated
     # with the read method. Here we create a gradient image that is
     # the same size as the model image.
-    puts "   gradient..."
-    example.read("gradient:#20a0ff-#ffff00") do
+    puts '   gradient...'
+    example.read('gradient:#20a0ff-#ffff00') do
         self.size = Geometry.new(model.columns, model.rows)
     end
-    example.cur_image[:Label] = "Gradient"
+    example.cur_image[:Label] = 'Gradient'
 
-    puts "   grayscale..."
+    puts '   grayscale...'
     example << model.cur_image.quantize(256, GRAYColorspace)
-    example.cur_image[:Label] = "Grayscale"
+    example.cur_image[:Label] = 'Grayscale'
 
-    puts "   implode..."
+    puts '   implode...'
     example << model.implode(0.5)
-    example.cur_image[:Label] = "Implode"
+    example.cur_image[:Label] = 'Implode'
 
-    puts "   median filter..."
+    puts '   median filter...'
     example << model.median_filter(0)
-    example.cur_image[:Label] = "Median Filter"
+    example.cur_image[:Label] = 'Median Filter'
 
-    puts "   modulate..."
+    puts '   modulate...'
     example << model.modulate(1.10, 1.10, 1.10)
-    example.cur_image[:Label] = "Modulate"
+    example.cur_image[:Label] = 'Modulate'
 
-    puts "   monochrome..."
+    puts '   monochrome...'
     example << model.cur_image.quantize(2, GRAYColorspace, false)
-    example.cur_image[:Label] = "Monochrome"
+    example.cur_image[:Label] = 'Monochrome'
 
-    puts "   negate..."
+    puts '   negate...'
     example << model.negate
-    example.cur_image[:Label] = "Negate"
+    example.cur_image[:Label] = 'Negate'
 
-    puts "   normalize..."
+    puts '   normalize...'
     example << model.normalize
-    example.cur_image[:Label] = "Normalize"
+    example.cur_image[:Label] = 'Normalize'
 
-    puts "   oil paint..."
+    puts '   oil paint...'
     example << model.oil_paint(3.0)
-    example.cur_image[:Label] = "Oil Paint"
+    example.cur_image[:Label] = 'Oil Paint'
 
     # The plasma format is very similar to the gradient format, above.
-    puts "   plasma..."
-    example.read("plasma:fractal") do
+    puts '   plasma...'
+    example.read('plasma:fractal') do
         self.size = Geometry.new(model.columns, model.rows)
     end
-    example.cur_image[:Label] = "Plasma"
+    example.cur_image[:Label] = 'Plasma'
 
-    puts "   quantize..."
+    puts '   quantize...'
     example << model.cur_image.quantize
-    example.cur_image[:Label] = "Quantize"
+    example.cur_image[:Label] = 'Quantize'
 
-    puts "   raise..."
+    puts '   raise...'
     example << model.raise
-    example.cur_image[:Label] = "Raise"
+    example.cur_image[:Label] = 'Raise'
 
-    puts "   reduce noise..."
+    puts '   reduce noise...'
     example << model.reduce_noise(3.0)
-    example.cur_image[:Label] = "Reduce Noise"
+    example.cur_image[:Label] = 'Reduce Noise'
 
-    puts "   resize..."
+    puts '   resize...'
     example << model.resize(0.50)
-    example.cur_image[:Label] = "Resize"
+    example.cur_image[:Label] = 'Resize'
 
-    puts "   roll..."
+    puts '   roll...'
     example << model.roll(20, 10)
-    example.cur_image[:Label] = "Roll"
+    example.cur_image[:Label] = 'Roll'
 
-    puts "   rotate..."
-    example << model.rotate(45).transparent("black")
-    example.cur_image[:Label] = "Rotate"
+    puts '   rotate...'
+    example << model.rotate(45).transparent('black')
+    example.cur_image[:Label] = 'Rotate'
 
-    puts "   scale..."
+    puts '   scale...'
     example << model.scale(0.60)
-    example.cur_image[:Label] = "Scale"
+    example.cur_image[:Label] = 'Scale'
 
-    puts "   segment..."
+    puts '   segment...'
     example << model.segment
-    example.cur_image[:Label] = "Segment"
+    example.cur_image[:Label] = 'Segment'
 
-    puts "   shade..."
+    puts '   shade...'
     example << model.shade(false, 30, 30)
-    example.cur_image[:Label] = "Shade"
+    example.cur_image[:Label] = 'Shade'
 
-    puts "   sharpen..."
+    puts '   sharpen...'
     example << model.sharpen(0.0, 1.0)
-    example.cur_image[:Label] = "Sharpen"
+    example.cur_image[:Label] = 'Sharpen'
 
-    puts "   shave..."
+    puts '   shave...'
     example << model.shave(10, 10)
-    example.cur_image[:Label] = "Shave"
+    example.cur_image[:Label] = 'Shave'
 
-    puts "   shear..."
-    example << model.shear(45, 45).transparent("black")
-    example.cur_image[:Label] = "Shear"
+    puts '   shear...'
+    example << model.shear(45, 45).transparent('black')
+    example.cur_image[:Label] = 'Shear'
 
-    puts "   spread..."
+    puts '   spread...'
     example << model.spread(3)
-    example.cur_image[:Label] = "Spread"
+    example.cur_image[:Label] = 'Spread'
 
-    puts "   solarize..."
+    puts '   solarize...'
     example << model.solarize(50.0)
-    example.cur_image[:Label] = "Solarize"
+    example.cur_image[:Label] = 'Solarize'
 
-    puts "   swirl..."
+    puts '   swirl...'
     temp = model.copy
-    temp.background_color = "#000000ff"
+    temp.background_color = '#000000ff'
     example << temp.swirl(90)
-    example.cur_image[:Label] = "Swirl"
+    example.cur_image[:Label] = 'Swirl'
 
-    puts "   unsharp mask..."
+    puts '   unsharp mask...'
     example << model.unsharp_mask(0.0, 1.0, 1.0, 0.05)
-    example.cur_image[:Label] = "Unsharp Mask"
+    example.cur_image[:Label] = 'Unsharp Mask'
 
-    puts "   wave..."
+    puts '   wave...'
     temp = model.copy
-    temp.cur_image[:Label] = "Wave"
+    temp.cur_image[:Label] = 'Wave'
     temp.matte = true
-    temp.background_color = "#000000ff"
+    temp.background_color = '#000000ff'
     example << temp.wave(25, 150)
 
     #
@@ -270,10 +270,10 @@ begin
     #   montage parameters are supplied via a block
     #
 
-    puts "Montage images..."
+    puts 'Montage images...'
 
     montage = example.montage do
-        self.geometry = "130x194+10+5>"
+        self.geometry = '130x194+10+5>'
         self.gravity = CenterGravity
         self.border_width = 1
         rows = (example.size + 4) / 5
@@ -284,19 +284,19 @@ begin
         # as the background texture.
 
 #       self.texture = Image.read("granite:").first
-        self.background_color = "white"
+        self.background_color = 'white'
         self.font = Font
         self.pointsize = 18
-        self.fill = "#600"
-        self.filename = "RMagick Demo"
+        self.fill = '#600'
+        self.filename = 'RMagick Demo'
 #       self.shadow = true
 #       self.frame = "20x20+4+4"
     end
 
     # Add the ImageMagick logo to the top of the montage. The "logo:"
     # format is a fixed-size image, so I don't need to specify a size.
-    puts "Adding logo image..."
-    logo = Image.read("logo:").first
+    puts 'Adding logo image...'
+    logo = Image.read('logo:').first
     if /GraphicsMagick/.match Magick_version
         logo.resize!(200.0/logo.rows)
     else
@@ -310,8 +310,8 @@ begin
     # Write the result to a file
     montage_image.compression = RLECompression
     montage_image.matte = false
-    puts "Writing image ./rm_demo_out.miff"
-    montage_image.write "rm_demo_out.miff"
+    puts 'Writing image ./rm_demo_out.miff'
+    montage_image.write 'rm_demo_out.miff'
 
     # Uncomment the following lines to display image to screen
     # puts "Displaying image..."

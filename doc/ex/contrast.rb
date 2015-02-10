@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
 # Demonstrate the Image#contrast method
 
@@ -28,7 +28,7 @@ legend.annotate(img, 0,0,7,10, f.to_s)
 # Montage into a single image
 imgs = img.montage do
     self.geometry = Magick::Geometry.new(img.columns, img.rows)
-    self.tile = "2x2"
+    self.tile = '2x2'
 end
 
 imgs.write('contrast.jpg')

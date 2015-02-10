@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby -w
 
 require 'fileutils'
-require "rmagick"
+require 'rmagick'
 require 'test/unit'
 require 'test/unit/ui/console/testrunner'  unless RUBY_VERSION[/^1\.9|^2/]
 
@@ -34,13 +34,13 @@ class Image_Attributes_UT < Test::Unit::TestCase
 
     def test_background_color
         assert_nothing_raised { @img.background_color }
-        assert_equal("white", @img.background_color)
-        assert_nothing_raised { @img.background_color = "#dfdfdf" }
+        assert_equal('white', @img.background_color)
+        assert_nothing_raised { @img.background_color = '#dfdfdf' }
         #assert_equal("rgb(223,223,223)", @img.background_color)
-        assert_equal("#DFDFDFDFDFDF", @img.background_color)
+        assert_equal('#DFDFDFDFDFDF', @img.background_color)
         assert_nothing_raised { @img.background_color = Magick::Pixel.new(Magick::QuantumRange, Magick::QuantumRange/2.0, Magick::QuantumRange/2.0) }
         #assert_equal("rgb(100%,49.9992%,49.9992%)", @img.background_color)
-        assert_equal("#FFFF7FFF7FFF", @img.background_color)
+        assert_equal('#FFFF7FFF7FFF', @img.background_color)
         assert_raise(TypeError) { @img.background_color = 2 }
     end
 
@@ -52,8 +52,8 @@ class Image_Attributes_UT < Test::Unit::TestCase
 
     def test_base_filename
         assert_nothing_raised { @img.base_filename }
-        assert_equal("", @img.base_filename)
-        assert_raise(NoMethodError) { @img.base_filename = "xxx" }
+        assert_equal('', @img.base_filename)
+        assert_raise(NoMethodError) { @img.base_filename = 'xxx' }
     end
 
     def test_base_rows
@@ -94,12 +94,12 @@ class Image_Attributes_UT < Test::Unit::TestCase
     def test_border_color
         assert_nothing_raised { @img.border_color }
         #assert_equal("rgb(223,223,223)", @img.border_color)
-        assert_equal("#DFDFDFDFDFDF", @img.border_color)
-        assert_nothing_raised { @img.border_color = "red" }
-        assert_equal("red", @img.border_color)
+        assert_equal('#DFDFDFDFDFDF', @img.border_color)
+        assert_nothing_raised { @img.border_color = 'red' }
+        assert_equal('red', @img.border_color)
         assert_nothing_raised { @img.border_color = Magick::Pixel.new(Magick::QuantumRange, Magick::QuantumRange/2, Magick::QuantumRange/2) }
         #assert_equal("rgb(100%,49.9992%,49.9992%)", @img.border_color)
-        assert_equal("#FFFF7FFF7FFF", @img.border_color)
+        assert_equal('#FFFF7FFF7FFF', @img.border_color)
         assert_raise(TypeError) { @img.border_color = 2 }
     end
 
@@ -162,7 +162,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
     def test_colorspace
         assert_nothing_raised { @img.colorspace }
         assert_instance_of(Magick::ColorspaceType, @img.colorspace)
-        if IM_VERSION < Gem::Version.new("6.7.5") || (IM_VERSION == Gem::Version.new("6.7.5") && IM_REVISION < Gem::Version.new("5"))
+        if IM_VERSION < Gem::Version.new('6.7.5') || (IM_VERSION == Gem::Version.new('6.7.5') && IM_REVISION < Gem::Version.new('5'))
           assert_equal(Magick::RGBColorspace, @img.colorspace)
         else
           assert_equal(Magick::SRGBColorspace, @img.colorspace)
@@ -339,7 +339,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
 
     def test_filename
         assert_nothing_raised { @img.filename }
-        assert_equal("", @img.filename)
+        assert_equal('', @img.filename)
         assert_raises(NoMethodError) { @img.filename = 'xxx' }
     end
 
@@ -396,7 +396,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
     def test_gamma
         assert_nothing_raised { @img.gamma }
         assert_instance_of(Float, @img.gamma)
-        if IM_VERSION < Gem::Version.new("6.7.5") || (IM_VERSION == Gem::Version.new("6.7.5") && IM_REVISION < Gem::Version.new("5"))
+        if IM_VERSION < Gem::Version.new('6.7.5') || (IM_VERSION == Gem::Version.new('6.7.5') && IM_REVISION < Gem::Version.new('5'))
           assert_equal(0.0, @img.gamma)
         else
           assert_equal(0.45454543828964233, @img.gamma)
@@ -489,7 +489,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
 
     def test_number_colors
         assert_nothing_raised { @hat.number_colors }
-        if IM_VERSION < Gem::Version.new("6.7.5") || (IM_VERSION == Gem::Version.new("6.7.5") && IM_REVISION < Gem::Version.new("5"))
+        if IM_VERSION < Gem::Version.new('6.7.5') || (IM_VERSION == Gem::Version.new('6.7.5') && IM_REVISION < Gem::Version.new('5'))
           assert_equal(27980, @hat.number_colors)
         else
           assert_equal(27942, @hat.number_colors)
@@ -556,7 +556,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
     def test_rendering_intent
         assert_nothing_raised { @img.rendering_intent }
         assert_instance_of(Magick::RenderingIntent, @img.rendering_intent)
-        if IM_VERSION < Gem::Version.new("6.7.5") || (IM_VERSION == Gem::Version.new("6.7.5") && IM_REVISION < Gem::Version.new("5"))
+        if IM_VERSION < Gem::Version.new('6.7.5') || (IM_VERSION == Gem::Version.new('6.7.5') && IM_REVISION < Gem::Version.new('5'))
           assert_equal(Magick::UndefinedIntent, @img.rendering_intent)
         else
           assert_equal(Magick::PerceptualIntent, @img.rendering_intent)
@@ -605,7 +605,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
 
     def test_total_colors
         assert_nothing_raised { @hat.total_colors }
-        if IM_VERSION < Gem::Version.new("6.7.5") || (IM_VERSION == Gem::Version.new("6.7.5") && IM_REVISION < Gem::Version.new("5"))
+        if IM_VERSION < Gem::Version.new('6.7.5') || (IM_VERSION == Gem::Version.new('6.7.5') && IM_REVISION < Gem::Version.new('5'))
           assert_equal(27980, @hat.total_colors)
         else
           assert_equal(27942, @hat.total_colors)

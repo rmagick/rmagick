@@ -17,8 +17,8 @@ TEXT_STYLES2 = {:writing_mode=>'lr',
 rvg = Magick::RVG.new(3.in, 1.in).viewbox(0,0,300,100) do |canvas|
     canvas.background_fill = 'white'
 
-    canvas.text(15, 40, ":glyph_orientation_horizontal=0").styles(TEXT_STYLES)
-    canvas.text(15, 80, ":glyph_orientation_horizontal=180").styles(TEXT_STYLES2)
+    canvas.text(15, 40, ':glyph_orientation_horizontal=0').styles(TEXT_STYLES)
+    canvas.text(15, 80, ':glyph_orientation_horizontal=180').styles(TEXT_STYLES2)
 
     canvas.rect(299, 99).styles(:fill=>'none',:stroke=>'blue')
 end

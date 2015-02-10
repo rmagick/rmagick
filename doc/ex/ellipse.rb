@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby -w
-require "rmagick"
+require 'rmagick'
 
 imgl = Magick::ImageList.new
 imgl.new_image(360, 250, Magick::HatchFill.new('white','LightCyan2'))
@@ -40,6 +40,6 @@ gc.text(120, 100, "'Height=75'")
 gc.text(85, 140, "'Width=150'")
 gc.draw(imgl)
 
-imgl.border!(1,1, "LightCyan2")
+imgl.border!(1,1, 'LightCyan2')
 
-imgl.write("ellipse.gif")
+imgl.write('ellipse.gif')
