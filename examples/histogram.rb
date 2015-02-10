@@ -184,7 +184,6 @@ Colors: #{number_colors}
         end
 
         def intensity_hist(int_histogram)
-
             gradient = (Image.read("gradient:#ffff80-#ff9000") { self.size="#{HISTOGRAM_COLS}x#{HISTOGRAM_ROWS}" }).first
             int_histogram = gradient.composite(int_histogram, CenterGravity, OverCompositeOp)
 
@@ -202,7 +201,6 @@ Colors: #{number_colors}
 
         # Create the histogram montage.
         def histogram(fg='white', bg='black')
-
             red   = Array.new(HISTOGRAM_COLS, 0)
             green = Array.new(HISTOGRAM_COLS, 0)
             blue  = Array.new(HISTOGRAM_COLS, 0)

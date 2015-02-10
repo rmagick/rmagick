@@ -124,7 +124,6 @@ module RMagick
         $LOCAL_LIBS = 'CORE_RL_magick_.lib X11.lib'
 
       end
-
     end
 
     # Test for a specific value in an enum type

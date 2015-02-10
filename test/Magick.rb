@@ -252,7 +252,6 @@ class Magick_UT < Test::Unit::TestCase
       assert_raise(ArgumentError) { Magick::Geometry.new(40, Magick::AreaGeometry) }
       assert_raise(ArgumentError) { Magick::Geometry.new(40, 20, Magick::AreaGeometry) }
       assert_raise(ArgumentError) { Magick::Geometry.new(40, 20, 10, Magick::AreaGeometry) }
-
     end
 
     def test_set_log_event_mask

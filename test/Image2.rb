@@ -107,7 +107,6 @@ class Image2_UT < Test::Unit::TestCase
         assert_raise(ArgumentError) { @img.contrast_stretch_channel }
         assert_raise(ArgumentError) { @img.contrast_stretch_channel('x') }
         assert_raise(ArgumentError) { @img.contrast_stretch_channel(25, 'x') }
-
     end
 
     def test_convolve
@@ -548,7 +547,6 @@ class Image2_UT < Test::Unit::TestCase
 
        # too many arguments
        assert_raise(ArgumentError) { @img.export_pixels(0, 0, 10, 10, 'I', 2) }
-
     end
 
     def test_export_pixels_to_str
@@ -657,7 +655,6 @@ class Image2_UT < Test::Unit::TestCase
 
         region.destroy!
         assert_raise(Magick::DestroyedImageError) { girl.find_similar_region(region) }
-
     end
 
     def test_flip

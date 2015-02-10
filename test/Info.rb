@@ -11,7 +11,6 @@ class Info_UT < Test::Unit::TestCase
     end
 
     def test_options
-
         # 1-argument form
         assert_nothing_raised { @info['fill'] }
         assert_nil(@info['fill'])

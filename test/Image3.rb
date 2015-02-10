@@ -979,7 +979,6 @@ class Image3_UT < Test::Unit::TestCase
 
     # test write with #format= attribute
     def test_write
-
         @img.write('temp.gif')
         img = Magick::Image.read('temp.gif')
         assert_equal("GIF", img.first.format)

@@ -85,7 +85,6 @@ class Geometry
         @x    = x.to_i
         @y    = y.to_i
         @flag = flag
-
     end
 
     # Construct an object from a geometry string
@@ -96,7 +95,6 @@ class Geometry
     RE = /\A#{W}x?#{H}#{X}#{Y}([!<>@\^]?)\Z/
 
     def self.from_s(str)
-
         m = RE.match(str)
         if m
             width  = (m[1] || m[2]).to_f
@@ -1250,7 +1248,6 @@ class Image
                         @cols = Range.new(start, start+length, true)
                         @unique = false
                 end
-
             end
 
             # iterator called from subscript methods
