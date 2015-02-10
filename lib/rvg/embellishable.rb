@@ -118,7 +118,7 @@ module Magick
                         points = x_coords.zip(y_coords).flatten
                 end
                 n = points.length
-                if n < 4 || n % 2 != 0
+                if n < 4 || n.odd?
                     raise ArgumentError, "insufficient/odd number of points specified: #{n}"
                 end
                 return Magick::RVG.convert_to_float(*points)

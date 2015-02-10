@@ -228,7 +228,7 @@ class Draw
     def bezier(*points)
         if points.length == 0
             Kernel.raise ArgumentError, "no points specified"
-        elsif points.length % 2 != 0
+        elsif points.length.odd?
             Kernel.raise ArgumentError, "odd number of arguments specified"
         end
         primitive "bezier " + points.join(',')
@@ -470,7 +470,7 @@ class Draw
     def polygon(*points)
         if points.length == 0
             Kernel.raise ArgumentError, "no points specified"
-        elsif points.length % 2 != 0
+        elsif points.length.odd?
             Kernel.raise ArgumentError, "odd number of points specified"
         end
         primitive "polygon " + points.join(',')
@@ -480,7 +480,7 @@ class Draw
     def polyline(*points)
         if points.length == 0
             Kernel.raise ArgumentError, "no points specified"
-        elsif points.length % 2 != 0
+        elsif points.length.odd?
             Kernel.raise ArgumentError, "odd number of points specified"
         end
         primitive "polyline " + points.join(',')
