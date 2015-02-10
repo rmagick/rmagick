@@ -71,7 +71,7 @@ END_HEADER
         exit(1);
   }
 
-  strcpy(image->filename, "#{name+".gif"}");
+  strcpy(image->filename, "#{name+'.gif'}");
   WriteImage(info, image);
 
   DestroyDrawInfo(draw);

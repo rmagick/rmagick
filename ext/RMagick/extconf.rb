@@ -428,11 +428,11 @@ SRC
 summary = <<"END_SUMMARY"
 
 
-#{"=" * 70}
-#{DateTime.now.strftime("%a %d%b%y %T")}
+#{'=' * 70}
+#{DateTime.now.strftime('%a %d%b%y %T')}
 This installation of RMagick #{RMAGICK_VERS} is configured for
 Ruby #{RUBY_VERSION} (#{RUBY_PLATFORM}) and ImageMagick #{$magick_version}
-#{"=" * 70}
+#{'=' * 70}
 
 
 END_SUMMARY

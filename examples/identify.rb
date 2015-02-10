@@ -103,24 +103,24 @@ module Magick
             chrom = chromaticity
             if chrom.red_primary.x != 0.0 || chrom.green_primary.x != 0.0 || chrom.blue_primary.x != 0.0 || chrom.white_point.x != 0.0
                 puts "\tChromaticity:\n"
-                puts "\t\tred primary: (#{sprintf("%g,%g", chrom.red_primary.x, chrom.red_primary.y)})\n"
-                puts "\t\tgreen primary: (#{sprintf("%g,%g", chrom.green_primary.x, chrom.green_primary.y)})\n"
-                puts "\t\tblue primary: (#{sprintf("%g,%g", chrom.blue_primary.x, chrom.blue_primary.y)})\n"
-                puts "\t\twhite point: (#{sprintf("%g,%g", chrom.white_point.x, chrom.white_point.y)})\n"
+                puts "\t\tred primary: (#{sprintf('%g,%g', chrom.red_primary.x, chrom.red_primary.y)})\n"
+                puts "\t\tgreen primary: (#{sprintf('%g,%g', chrom.green_primary.x, chrom.green_primary.y)})\n"
+                puts "\t\tblue primary: (#{sprintf('%g,%g', chrom.blue_primary.x, chrom.blue_primary.y)})\n"
+                puts "\t\twhite point: (#{sprintf('%g,%g', chrom.white_point.x, chrom.white_point.y)})\n"
             end
             ex_info = extract_info
             if ex_info.width * ex_info.height != 0.0
                 puts "\tTile geometry: #{ex_info.width}x#{ex_info.height}+#{ex_info.x}+#{ex_info.y}\n"
             end
             if x_resolution != 0.0 && y_resolution != 0.0
-                puts "\tResolution: #{sprintf("%gx%g", x_resolution, y_resolution)}\n"
+                puts "\tResolution: #{sprintf('%gx%g', x_resolution, y_resolution)}\n"
             end
             puts "\tUnits: #{units}\n"
             size = filesize
             if size >= 1048576
-                puts "\tFilesize: #{"%.1f" % (size/1048576.0)}mb\n"
+                puts "\tFilesize: #{'%.1f' % (size/1048576.0)}mb\n"
             elsif size >= 1024
-                puts "\tFilesize: #{"%.0f" % (size/1024.0)}kb\n"
+                puts "\tFilesize: #{'%.0f' % (size/1024.0)}kb\n"
             else
                 puts "\tFilesize: #{size}b\n"
             end

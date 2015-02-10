@@ -7,7 +7,7 @@ task :config do
   end
   # e.g. 2.13.3 becomes RMagick_2-13-3
   def version_tag
-    "RMagick_#{version.gsub(".","-")}"
+    "RMagick_#{version.gsub('.','-')}"
   end
   # e.g. 2.13.3 becomes rmagick-2.13.3.gem
   def gem_name
