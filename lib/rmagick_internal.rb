@@ -221,7 +221,7 @@ class Draw
     # Draw an arc.
     def arc(startX, startY, endX, endY, startDegrees, endDegrees)
         primitive 'arc ' + sprintf('%g,%g %g,%g %g,%g',
-                    startX, startY, endX, endY, startDegrees, endDegrees)
+                                   startX, startY, endX, endY, startDegrees, endDegrees)
     end
 
     # Draw a bezier curve.
@@ -298,7 +298,7 @@ class Draw
     # Draw an ellipse
     def ellipse(originX, originY, width, height, arcStart, arcEnd)
         primitive 'ellipse ' + sprintf('%g,%g %g,%g %g,%g',
-                        originX, originY, width, height, arcStart, arcEnd)
+                                       originX, originY, width, height, arcStart, arcEnd)
     end
 
     # Let anything through, but the only defined argument
@@ -514,7 +514,7 @@ class Draw
     # Draw a rectangle
     def rectangle(upper_left_x, upper_left_y, lower_right_x, lower_right_y)
         primitive 'rectangle ' + sprintf('%g,%g %g,%g',
-                upper_left_x, upper_left_y, lower_right_x, lower_right_y)
+                                         upper_left_x, upper_left_y, lower_right_x, lower_right_y)
     end
 
     # Specify coordinate space rotation. "angle" is measured in degrees
@@ -525,7 +525,7 @@ class Draw
     # Draw a rectangle with rounded corners
     def roundrectangle(center_x, center_y, width, height, corner_width, corner_height)
         primitive 'roundrectangle ' + sprintf('%g,%g,%g,%g,%g,%g',
-            center_x, center_y, width, height, corner_width, corner_height)
+                                              center_x, center_y, width, height, corner_width, corner_height)
     end
 
     # Specify scaling to be applied to coordinate space on subsequent drawing commands.

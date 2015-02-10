@@ -378,7 +378,7 @@ SRC
                                                   'CosineEvaluateOperator',         # 6.4.8-5
                                                   'SineEvaluateOperator',           # 6.4.8-5
                                                   'AddModulusEvaluateOperator'],    # 6.4.8-5
-                                                                       headers)
+                       headers)
       have_enum_values('MagickFunction', ['ArcsinFunction',                        # 6.5.2-8
                                           'ArctanFunction',                        # 6.5.2-8
                                           'PolynomialFunction',                    # 6.4.8-8
@@ -392,7 +392,7 @@ SRC
                                               'HorizontalTileEdgeVirtualPixelMethod', # 6.5.0-1
                                               'VerticalTileEdgeVirtualPixelMethod',   # 6.5.0-1
                                               'CheckerTileVirtualPixelMethod'],       # 6.5.0-1
-                                                                       headers)
+                       headers)
 
       # Now test Ruby 1.9.0 features.
       headers = ['ruby.h']
