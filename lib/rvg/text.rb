@@ -52,8 +52,8 @@ module Magick
             def add_primitives(gc)  #:nodoc:
                 if @text || @tspans.length > 0
                     gc.push
-                    x = self.cx + @dx
-                    y = self.cy + @dy
+                    x = cx + @dx
+                    y = cy + @dy
                     if @rotation != 0
                         gc.translate(x, y)
                         gc.rotate(@rotation)

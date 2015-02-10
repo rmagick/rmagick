@@ -1389,7 +1389,7 @@ public
         unless other.is_a? self.class
            Kernel.raise TypeError, "#{self.class} required (#{other.class} given)"
         end
-        size = [self.length, other.length].min
+        size = [length, other.length].min
         size.times do |x|
             r = self[x] <=> other[x]
             return r unless r == 0
@@ -1399,11 +1399,11 @@ public
         elsif @scene.nil? && !other.scene.nil?
             Kernel.raise TypeError, "cannot convert nil into #{other.scene.class}"
         elsif ! @scene.nil? && other.scene.nil?
-            Kernel.raise TypeError, "cannot convert nil into #{self.scene.class}"
+            Kernel.raise TypeError, "cannot convert nil into #{scene.class}"
         end
-        r = self.scene <=> other.scene
+        r = scene <=> other.scene
         return r unless r == 0
-        self.length <=> other.length
+        length <=> other.length
     end
 
     def [](*args)
@@ -1762,7 +1762,7 @@ public
         current = get_current
         @images.clear
         other.each {|image| @images << image}
-        @scene = self.length == 0 ? nil : 0
+        @scene = length == 0 ? nil : 0
         set_current current
         self
     end

@@ -9,7 +9,7 @@ module Magick
         # When unit-testing, it also has a deep_equal method.
         class Content < Array       #:nodoc:
             def deep_copy(h = {})
-                me = self.__id__
+                me = __id__
                 copy = h[me]
                 unless copy
                     copy = self.class.new

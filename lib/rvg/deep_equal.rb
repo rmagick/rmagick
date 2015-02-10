@@ -15,10 +15,10 @@ module Magick
         [Shape, TextBase, Image, Group, Content, Use, ClipPath, Pattern, self].each do |c|
             c.class_eval do
                 def deep_equal(other)
-                    ivs = self.instance_variables
+                    ivs = instance_variables
 
                     ivs.each do |iv|
-                        itv = self.instance_variable_get(iv)
+                        itv = instance_variable_get(iv)
                         otv = other.instance_variable_get(iv)
                         if itv.respond_to?(:deep_equal)
                             if itv.equal?(otv)
