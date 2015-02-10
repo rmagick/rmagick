@@ -29,7 +29,7 @@ module Magick
                     end
                     copy.freeze if frozen?
                 end
-                return copy
+                copy
             end
         end     # module Duplicatable
 
@@ -50,7 +50,7 @@ module Magick
             rescue ArgumentError, TypeError
                 raise ArgumentError, self.fmsg(*args)
             end
-            return fargs
+            fargs
         end
 
         def self.convert_one_to_float(arg)
@@ -59,7 +59,7 @@ module Magick
             rescue ArgumentError, TypeError
                 raise ArgumentError, "argument cannot be converted to Float (got #{arg.class})"
             end
-            return farg
+            farg
         end
     end # class RVG
 end # module Magick
@@ -89,7 +89,7 @@ module Magick
 
                     # escape existing braces, surround with braces
                     text.gsub!(/[}]/) { |b| '\\' + b }
-                    return '{' +  text + '}'
+                    '{' +  text + '}'
                 end
 
                 def glyph_metrics(glyph_orientation, glyph)
@@ -145,7 +145,7 @@ module Magick
                         else
                             x = -@ctx.text_attrs.baseline_shift
                     end
-                    return x
+                    x
                 end
 
                 def render_glyph(glyph_orientation, x, y, glyph)
@@ -665,7 +665,7 @@ module Magick
                         text_renderer = DefaultTextStrategy.new(self)
                     end
 
-                    return text_renderer.render(x, y, text)
+                    text_renderer.render(x, y, text)
                 end
 
                 def text_anchor(anchor)

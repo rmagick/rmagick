@@ -7,7 +7,7 @@ module Magick
                         puts "#{c.inspect} not equal.\nself:#{self} != other:#{other}"
                         return false
                     end
-                    return true
+                    true
                 end
             end
         end
@@ -46,7 +46,7 @@ module Magick
                         end
                     end
 
-                    return true
+                    true
                 end
             end
         end

@@ -31,7 +31,7 @@ module Magick
                 tspan = Tspan.new(text, x, y)
                 tspan.parent = self
                 @tspans << tspan
-                return tspan
+                tspan
             end
 
             # Add <tt>x</tt> and <tt>y</tt> to the current text position.
@@ -154,7 +154,7 @@ module Magick
                 obj.parent = self
                 tref = Tref.new(obj, x, y, self)
                 @tspans << tref
-                return tref
+                tref
             end
         end     # class Text
 
@@ -166,7 +166,7 @@ module Magick
             def text(x=0, y=0, text=nil, &block)
                 t = Text.new(x, y, text, &block)
                 @content << t
-                return t
+                t
             end
         end     # module TextConstructors
     end # class RVG

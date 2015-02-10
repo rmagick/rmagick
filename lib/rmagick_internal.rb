@@ -784,7 +784,7 @@ class Image
     def color_point(x, y, fill)
         f = copy
         f.pixel_color(x, y, fill)
-        return f
+        f
     end
 
     # Set all pixels that have the same color as the pixel at x,y and
@@ -847,7 +847,7 @@ class Image
                 ary.push([name, rval])
             end
         end
-        return ary
+        ary
     end
 
     # Retrieve EXIF data by tag number or all tag/value pairs. The return value is a hash.
@@ -869,7 +869,7 @@ class Image
                 hash[num] = rval == 'unknown' ? nil : rval
             end
         end
-        return hash
+        hash
     end
 
     # Retrieve IPTC information by record number:dataset tag constant defined in
@@ -920,7 +920,7 @@ class Image
             end
         end
 
-        return level2(black_point, white_point, gamma)
+        level2(black_point, white_point, gamma)
     end
 
     # These four methods are equivalent to the Draw#matte method
@@ -934,7 +934,7 @@ class Image
         pixel = f.pixel_color(x,y)
         pixel.opacity = TransparentOpacity
         f.pixel_color(x, y, pixel)
-        return f
+        f
     end
 
     # Make transparent all pixels that are the same color as the
@@ -1059,13 +1059,13 @@ class Image
         def [](*args)
             rows = Rows.new(@view, @width, @height, args)
             rows.add_observer(self)
-            return rows
+            rows
         end
 
         # Store changed pixels back to image
         def sync(force=false)
             @img.store_pixels(x, y, width, height, @view) if @dirty || force
-            return (@dirty || force)
+            @dirty || force
         end
 
         # Get update from Rows - if @dirty ever becomes
@@ -1337,7 +1337,7 @@ public
             Kernel.raise IndexError, "scene number out of bounds"
         end
         @scene = n
-        return @scene
+        @scene
     end
 
     # All the binary operators work the same way.
@@ -1370,7 +1370,7 @@ public
         ilist = self.class.new
         (@images * n).each {|image| ilist << image}
         ilist.set_current current
-        return ilist
+        ilist
     end
 
     def <<(obj)
@@ -1403,7 +1403,7 @@ public
         end
         r = self.scene <=> other.scene
         return r unless r == 0
-        return self.length <=> other.length
+        self.length <=> other.length
     end
 
     def [](*args)
@@ -1413,7 +1413,7 @@ public
             a.each {|image| ilist << image}
             a = ilist
         end
-        return a
+        a
     end
 
     def []=(*args)
@@ -1427,7 +1427,7 @@ public
         else
             set_current nil
         end
-        return obj
+        obj
     end
 
     [:at, :each, :each_index, :empty?, :fetch,
@@ -1455,7 +1455,7 @@ public
     def clone
         ditto = dup
         ditto.freeze if frozen?
-        return ditto
+        ditto
     end
 
     # override Enumerable#collect
@@ -1465,7 +1465,7 @@ public
         ilist = self.class.new
         a.each {|image| ilist << image}
         ilist.set_current current
-        return ilist
+        ilist
     end
 
     def collect!(&block)
@@ -1480,7 +1480,7 @@ public
         @images.each { |f| ditto << f.copy }
         ditto.scene = @scene
         ditto.taint if tainted?
-        return ditto
+        ditto
     end
 
     # Return the current image
@@ -1505,21 +1505,21 @@ public
         a = @images.compact
         a.each {|image| ilist << image}
         ilist.set_current current
-        return ilist
+        ilist
     end
 
     def compact!
         current = get_current
         a = @images.compact!    # returns nil if no changes were made
         set_current current
-        return a.nil? ? nil : self
+        a.nil? ? nil : self
     end
 
     def concat(other)
         is_an_image_array other
         other.each {|image| @images << image}
         @scene = length-1
-        return self
+        self
     end
 
     # Set same delay for all images
@@ -1535,14 +1535,14 @@ public
         current = get_current
         a = @images.delete(obj, &block)
         set_current current
-        return a
+        a
     end
 
     def delete_at(ndx)
         current = get_current
         a = @images.delete_at(ndx)
         set_current current
-        return a
+        a
     end
 
     def delete_if(&block)
@@ -1557,7 +1557,7 @@ public
         @images.each {|img| ditto << img}
         ditto.scene = @scene
         ditto.taint if tainted?
-        return ditto
+        ditto
     end
 
     def eql?(other)
@@ -1568,7 +1568,7 @@ public
       rescue NoMethodError
         # "other" is a plain Array
       end
-      return eql
+      eql
     end
 
     def fill(*args, &block)
@@ -1587,7 +1587,7 @@ public
         ilist = self.class.new
         a.each {|image| ilist << image}
         ilist.set_current current
-        return ilist
+        ilist
     end
     alias_method :select, :find_all
 
@@ -1620,7 +1620,7 @@ public
         current = get_current
         @images.insert(index, *args)
         set_current current
-        return self
+        self
     end
 
     # Call inspect for all the images
@@ -1650,7 +1650,7 @@ public
           @scene = a.length - 1
           a = ilist
         end
-        return a
+        a
     end
 
     # Custom marshal/unmarshal for Ruby 1.8.
@@ -1715,7 +1715,7 @@ public
         current = get_current
         a = @images.pop       # can return nil
         set_current current
-        return a
+        a
     end
 
     def push(*objs)
@@ -1746,7 +1746,7 @@ public
         a = @images.reject(&block)
         a.each {|image| ilist << image}
         ilist.set_current current
-        return ilist
+        ilist
     end
 
     def reject!(&block)
@@ -1754,7 +1754,7 @@ public
         a = @images.reject!(&block)
         @images = a unless a.nil?
         set_current current
-        return a.nil? ? nil : self
+        a.nil? ? nil : self
     end
 
     def replace(other)
@@ -1783,7 +1783,7 @@ public
         a = self.class.new
         @images.reverse_each {|image| a << image}
         a.set_current current
-        return a
+        a
     end
 
     def reverse!
@@ -1802,7 +1802,7 @@ public
         current = get_current
         a = @images.shift
         set_current current
-        return a
+        a
     end
 
     def slice(*args)
@@ -1818,14 +1818,14 @@ public
         else
             ilist = nil
         end
-        return ilist
+        ilist
     end
 
     def slice!(*args)
         current = get_current
         a = @images.slice!(*args)
         set_current current
-        return a
+        a
     end
 
     def ticks_per_second=(t)
@@ -1838,7 +1838,7 @@ public
     def to_a
         a = []
         @images.each {|image| a << image}
-        return a
+        a
     end
 
     def uniq
@@ -1846,14 +1846,14 @@ public
         a = self.class.new
         @images.uniq.each {|image| a << image}
         a.set_current current
-        return a
+        a
     end
 
     def uniq!(*args)
         current = get_current
         a = @images.uniq!
         set_current current
-        return a.nil? ? nil : self
+        a.nil? ? nil : self
     end
 
     # @scene -> new object
@@ -1869,7 +1869,7 @@ public
         a = self.class.new
         @images.values_at(*args).each {|image| a << image}
         a.scene = a.length - 1
-        return a
+        a
     end
     alias_method :indexes, :values_at
     alias_method :indices, :values_at

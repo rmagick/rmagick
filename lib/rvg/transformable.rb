@@ -11,7 +11,7 @@ module Magick
             def deep_copy(h=nil)
                 copy = self.class.new
                 each { |transform| copy << [transform[0], transform[1].dup] }
-                return copy
+                copy
             end
         end     # class Transform
 

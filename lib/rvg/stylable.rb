@@ -44,7 +44,7 @@ module Magick
             def deep_copy(h=nil)
                 copy = Styles.new
                 each_pair { |style, value| copy[style] = value }
-                return copy
+                copy
             end
         end     # class Styles
 

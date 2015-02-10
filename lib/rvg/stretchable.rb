@@ -49,7 +49,7 @@ module Magick
                     sy = height / @vbx_height
                 end
 
-                return [sx, sy]
+                [sx, sy]
             end
 
             # Use align attribute to compute x- and y-offset from viewport's upper-left corner.
@@ -71,19 +71,19 @@ module Magick
                          when /YMax\z/
                              height - @vbx_height*sy
                 end
-                return [tx, ty]
+                [tx, ty]
             end
 
             # Scale to smaller viewbox dimension
             def set_viewbox_meet(width, height)
                 sx = sy = [width / @vbx_width, height / @vbx_height].min
-                return [sx, sy]
+                [sx, sy]
             end
 
             # Scale to larger viewbox dimension
             def set_viewbox_slice(width, height)
                 sx = sy = [width / @vbx_width, height / @vbx_height].max
-                return [sx, sy]
+                [sx, sy]
             end
 
             # Establish the viewbox as necessary

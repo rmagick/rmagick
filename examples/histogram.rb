@@ -51,7 +51,7 @@ module Magick
             gc.draw(histogram)
             histogram['Label'] = 'Alpha'
 
-            return histogram
+            histogram
         end
 
         def channel_histograms(red, green, blue, int, scale, fg, bg)
@@ -114,7 +114,7 @@ module Magick
                 int_column.reset(bg)
             end
 
-           return red_histogram, green_histogram, blue_histogram, rgb_histogram, int_histogram
+           [red_histogram, green_histogram, blue_histogram, rgb_histogram, int_histogram]
         end
 
         # Make the color histogram. Quantize the image to 256 colors if necessary.
@@ -179,7 +179,7 @@ Colors: #{number_colors}
             end
             info['Label'] = 'Info'
 
-            return info
+            info
         end
 
         def intensity_hist(int_histogram)
@@ -188,7 +188,7 @@ Colors: #{number_colors}
 
             int_histogram['Label'] = 'Intensity'
 
-            return int_histogram
+            int_histogram
         end
 
         # Returns a value between 0 and MAX_QUANTUM. Same as the PixelIntensity macro.
@@ -270,7 +270,7 @@ Colors: #{number_colors}
                 self.geometry     = "#{HISTOGRAM_COLS}x#{HISTOGRAM_ROWS}+10+10"
             end
 
-            return histogram
+            histogram
         end
     end
 end

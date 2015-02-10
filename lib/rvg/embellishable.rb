@@ -121,7 +121,7 @@ module Magick
                 if n < 4 || n.odd?
                     raise ArgumentError, "insufficient/odd number of points specified: #{n}"
                 end
-                return Magick::RVG.convert_to_float(*points)
+                Magick::RVG.convert_to_float(*points)
             end
         end     # class PolyShape
 
@@ -179,7 +179,7 @@ module Magick
                         when /YMax\z/
                             @height - @image.rows*scale
                 end
-                return [tx, ty]
+                [tx, ty]
             end
 
             def add_composite_primitive(gc)
@@ -243,7 +243,7 @@ module Magick
             def circle(r, cx=0, cy=0)
                 circle = Circle.new(r, cx, cy)
                 @content << circle
-                return circle
+                circle
             end
 
             # Draws an ellipse whose center is [<tt>cx</tt>, <tt>cy</tt>] and having
@@ -251,14 +251,14 @@ module Magick
             def ellipse(rx, ry, cx=0, cy=0)
                 ellipse = Ellipse.new(rx, ry, cx, cy)
                 @content << ellipse
-                return ellipse
+                ellipse
             end
 
             # Draws a line from [<tt>x1</tt>, <tt>y1</tt>] to  [<tt>x2</tt>, <tt>y2</tt>].
             def line(x1=0, y1=0, x2=0, y2=0)
                 line = Line.new(x1, y1, x2, y2)
                 @content << line
-                return line
+                line
             end
 
             # Draws a path defined by an SVG path string or a PathData
@@ -266,7 +266,7 @@ module Magick
             def path(path)
                 path = Path.new(path)
                 @content << path
-                return path
+                path
             end
 
             # Draws a rectangle whose upper-left corner is [<tt>x</tt>, <tt>y</tt>] and
@@ -282,7 +282,7 @@ module Magick
             def rect(width, height, x=0, y=0)
                 rect = Rect.new(width, height, x, y)
                 @content << rect
-                return rect
+                rect
             end
 
             # Draws a polygon. The arguments are [<tt>x</tt>, <tt>y</tt>] pairs that
@@ -293,7 +293,7 @@ module Magick
             def polygon(*points)
                 polygon = Polygon.new(*points)
                 @content << polygon
-                return polygon
+                polygon
             end
 
             # Draws a polyline. The arguments are [<tt>x</tt>, <tt>y</tt>] pairs that
@@ -302,7 +302,7 @@ module Magick
             def polyline(*points)
                 polyline = Polyline.new(*points)
                 @content << polyline
-                return polyline
+                polyline
             end
         end     # module ShapeContent
 
@@ -316,7 +316,7 @@ module Magick
             def use(obj, x=0, y=0, width=nil, height=nil)
                 use = Use.new(obj, x, y, width, height)
                 @content << use
-                return use
+                use
             end
         end     # module UseConstructors
 
@@ -338,7 +338,7 @@ module Magick
                 end
                 rvg.corner(x, y)
                 @content << rvg
-                return rvg
+                rvg
             end
 
             # Defines a group.
@@ -353,7 +353,7 @@ module Magick
             def g(&block)
                 group = Group.new(&block)
                 @content << group
-                return group
+                group
             end
         end     # module StructureConstructors
 
@@ -369,7 +369,7 @@ module Magick
             def image(image, width=nil, height=nil, x=0, y=0)
                 img = Image.new(image, width, height, x, y)
                 @content << img
-                return img
+                img
             end
         end     # module ImageConstructors
 

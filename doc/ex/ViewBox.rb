@@ -24,7 +24,7 @@ def example(cols, rows)
         # A text string that spans most of the viewport
         canvas.text(100, 600, 'Stretch to fit').styles(:font_size=>200, :font_style=>'normal', :font_weight=>'normal', :font_family=>'Verdana')
     end
-    return rvg.draw
+    rvg.draw
 end
 
 example(300, 200).write('ViewBox_300x200.gif')

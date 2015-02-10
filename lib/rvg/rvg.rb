@@ -66,7 +66,7 @@ module Magick
                 color = @background_fill
                 color.opacity = (1.0 - @background_fill_opacity) * Magick::TransparentOpacity
             end
-            return color
+            color
         end
 
         def new_canvas
@@ -101,7 +101,7 @@ module Magick
             canvas[:desc] = @desc if @desc
             canvas[:title] = @title if @title
             canvas[:metadata] = @metadata if @metadata
-            return canvas
+            canvas
         end
 
         if ENV['debug_prim']
@@ -236,7 +236,7 @@ module Magick
             pp(self) if ENV['debug_rvg']
             print_gc(gc) if ENV['debug_prim']
             gc.draw(@canvas)
-            return @canvas
+            @canvas
         end
 
         # Accept #use arguments. Use (x,y) to generate an additional translate.

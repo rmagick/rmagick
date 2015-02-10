@@ -28,7 +28,7 @@ module Magick
                     copy.freeze if frozen?
                     h[me] = copy
                 end
-                return copy
+                copy
             end
         end     # class Content
 
