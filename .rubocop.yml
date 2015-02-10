@@ -87,11 +87,6 @@ Style/AccessorMethodName:
 Style/BarePercentLiterals:
   Enabled: false
 
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/BlockComments:
-  Enabled: false
-
 # Offense count: 7
 Style/CaseEquality:
   Enabled: false
