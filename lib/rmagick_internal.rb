@@ -285,16 +285,14 @@ class Draw
     # the clip-path primitives with "push(pop) defs" and "push
     # (pop) graphic-context".
     def define_clip_path(name)
-        begin
-            push('defs')
-            push('clip-path', name)
-            push('graphic-context')
-            yield
-        ensure
-            pop('graphic-context')
-            pop('clip-path')
-            pop('defs')
-        end
+        push('defs')
+        push('clip-path', name)
+        push('graphic-context')
+        yield
+    ensure
+        pop('graphic-context')
+        pop('clip-path')
+        pop('defs')
     end
 
     # Draw an ellipse
@@ -442,16 +440,14 @@ class Draw
     # draw the pattern. Reference the pattern by using its name
     # as the argument to the 'fill' or 'stroke' methods
     def pattern(name, x, y, width, height)
-        begin
-            push('defs')
-            push("pattern #{name} #{x} #{y} #{width} #{height}")
-            push('graphic-context')
-            yield
-        ensure
-            pop('graphic-context')
-            pop('pattern')
-            pop('defs')
-        end
+        push('defs')
+        push("pattern #{name} #{x} #{y} #{width} #{height}")
+        push('graphic-context')
+        yield
+    ensure
+        pop('graphic-context')
+        pop('pattern')
+        pop('defs')
     end
 
     # Set point to fill color.
@@ -1675,18 +1671,16 @@ public
     # send it to the current image in the array. If there are no images, send
     # it up the line. Catch a NameError and emit a useful message.
     def method_missing(methID, *args, &block)
-        begin
-            if @scene
-                @images[@scene].send(methID, *args, &block)
-            else
-                super
-            end
-        rescue NoMethodError
-          Kernel.raise NoMethodError, "undefined method `#{methID.id2name}' for #{self.class}"
-        rescue Exception
-            $@.delete_if { |s| /:in `send'$/.match(s) || /:in `method_missing'$/.match(s) }
-            Kernel.raise
+        if @scene
+            @images[@scene].send(methID, *args, &block)
+        else
+            super
         end
+    rescue NoMethodError
+      Kernel.raise NoMethodError, "undefined method `#{methID.id2name}' for #{self.class}"
+    rescue Exception
+        $@.delete_if { |s| /:in `send'$/.match(s) || /:in `method_missing'$/.match(s) }
+        Kernel.raise
     end
 
     # Create a new image and add it to the end
