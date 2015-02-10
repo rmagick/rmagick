@@ -5,11 +5,9 @@
 
 module Magick
     class RVG
-
         # Content is simply an Array with a deep_copy method.
         # When unit-testing, it also has a deep_equal method.
         class Content < Array       #:nodoc:
-
             def deep_copy(h = {})
                 me = self.__id__
                 copy = h[me]
@@ -32,7 +30,6 @@ module Magick
                 end
                 return copy
             end
-
         end     # class Content
 
         # Define a collection of shapes, text, etc. that can be reused.
@@ -83,7 +80,6 @@ module Magick
             def <<(obj)                     #:nodoc:
                 @content << obj
             end
-
         end     # class Group
 
         # A Use object allows the re-use of RVG and RVG::Group
@@ -122,9 +118,7 @@ module Magick
                 @element.add_primitives(gc)
                 gc.pop
             end
-
         end # class Use
-
     end # class RVG
 end # module Magick
 

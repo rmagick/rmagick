@@ -5,7 +5,6 @@
 
 module Magick
     class RVG
-
         module PreserveAspectRatio
             #--
             #   Included in Stretchable module and Image class
@@ -163,7 +162,6 @@ module Magick
             end
 
         end     # module Stretchable
-
     end # class RVG
 end # module Magick
 

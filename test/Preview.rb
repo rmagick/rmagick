@@ -5,7 +5,6 @@ require 'test/unit'
 require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
 
 class Preview_UT < Test::Unit::TestCase
-
     def test_preview
         preview_types = [
           Magick::RotatePreview,
@@ -50,7 +49,6 @@ class Preview_UT < Test::Unit::TestCase
         end
         assert_raise(TypeError) { hat.preview(2) }
     end
-
 end
 
 if __FILE__ == $0

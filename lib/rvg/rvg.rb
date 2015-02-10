@@ -48,7 +48,6 @@ require 'pp' if ENV['debug_rvg']
 # must be contained within an RVG object.
 module Magick
     class RVG
-
         include Stylable
         include Transformable
         include Stretchable
@@ -277,7 +276,6 @@ module Magick
             add_outermost_primitives(gc)
             gc.pop
         end
-
     end # end class RVG
 end # end module Magick
 

@@ -1022,7 +1022,6 @@ class Image3_UT < Test::Unit::TestCase
         assert_equal("JPEG", img.first.format)
         FileUtils.rm('test.0')
     end
-
 end
 
 if __FILE__ == $0

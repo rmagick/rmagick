@@ -27,7 +27,6 @@ module Magick
     end
 
     class Image
-
       private
 
         HISTOGRAM_COLS = 256

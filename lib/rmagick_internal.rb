@@ -140,7 +140,6 @@ class Geometry
 end
 
 class Draw
-
     # Thse hashes are used to map Magick constant
     # values to the strings used in the primitives.
     ALIGN_TYPE_NAMES = {
@@ -1103,7 +1102,6 @@ class Image
                     end
                 END_EVAL
             end
-
         end # class Magick::Image::View::Pixels
 
         # Magick::Image::View::Rows
@@ -1273,15 +1271,11 @@ class Image
                 end
                 nil    # useless return value
             end
-
         end # class Magick::Image::View::Rows
-
     end     # class Magick::Image::View
-
 end # class Magick::Image
 
 class ImageList
-
     include Comparable
     include Enumerable
     attr_reader :scene
@@ -1889,7 +1883,6 @@ public
     end
     alias_method :indexes, :values_at
     alias_method :indices, :values_at
-
 end # Magick::ImageList
 
 #  Collects non-specific optional method arguments

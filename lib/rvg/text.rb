@@ -6,7 +6,6 @@
 
 module Magick
     class RVG
-
         # Base class for Tspan, Tref and Text.
         class TextBase
             include Stylable
@@ -72,7 +71,6 @@ module Magick
                     gc.pop
                 end
             end
-
         end     # class TextBase
 
         # Tspan and Tref shared methods - read/update @cx, @cy in parent Text object.
@@ -111,7 +109,6 @@ module Magick
                 @tspans << obj
                 @parent = parent
             end
-
         end     # class Tref
 
         class Tspan < TextBase  #:nodoc:
@@ -128,11 +125,9 @@ module Magick
                 @x, @y = Magick::RVG.convert_to_float(x, y, :allow_nil)
                 super(text, &block)
             end
-
         end     # class Tspan
 
         class Text < TextBase
-
             attr_accessor :cx, :cy  #:nodoc:
 
             # Define a text string starting at [<tt>x</tt>, <tt>y</tt>].
@@ -163,7 +158,6 @@ module Magick
                 @tspans << tref
                 return tref
             end
-
         end     # class Text
 
         # Methods that construct text objects within a container
@@ -179,6 +173,5 @@ module Magick
             end
 
         end     # module TextConstructors
-
     end # class RVG
 end # module Magick

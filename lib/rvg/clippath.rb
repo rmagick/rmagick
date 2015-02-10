@@ -4,7 +4,6 @@
 #++
 module Magick
     class RVG
-
         class ClipPath
             include ShapeConstructors
             include UseConstructors
@@ -40,9 +39,7 @@ module Magick
                 end
                 gc.clip_path(name)
             end
-
         end     # class ClipPath
-
     end # class RVG
 end # module Magick
 

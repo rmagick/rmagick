@@ -750,7 +750,6 @@ class Image1_UT < Test::Unit::TestCase
         img2.destroy!
         assert_raise(Magick::DestroyedImageError) { img1.composite(img2, Magick::CenterGravity, Magick::OverCompositeOp) }
     end
-
 end
 
 if __FILE__ == $0

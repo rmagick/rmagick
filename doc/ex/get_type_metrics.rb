@@ -4,7 +4,6 @@ require "rmagick"
 # Add a method for drawing braces.
 module Magick
     class Draw
-
         # (w,h) - width & height of rectangle enclosing brace.
         # Normally the brace is drawn with its opening to the
         # left and its lower point on the origin.
@@ -20,7 +19,6 @@ module Magick
             path("M0,0 Q#{w},0 #{w/2.0},#{-h/4.0} T#{w},#{-h/2.0}" +
                  "Q0,#{-h/2.0} #{w/2.0},#{-(3.0*h/4.0)} T0,#{-h}")
         end
-
     end     # class Draw
 end
 

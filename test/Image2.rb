@@ -1299,7 +1299,6 @@ class Image2_UT < Test::Unit::TestCase
         assert_nothing_raised { @img.posterize(5, true) }
         assert_raise(ArgumentError) { @img.posterize(5, true, 'x') }
     end
-
 end
 
 if __FILE__ == $0

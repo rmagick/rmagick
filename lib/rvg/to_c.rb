@@ -1,5 +1,4 @@
 class Magick::RVG
-
   private
 
     def header_text(pgm, name)
@@ -99,6 +98,5 @@ END_TRAILER
         pgm.close
         $stderr.puts "Done"
     end
-
 end     # class Magick::RVG
 

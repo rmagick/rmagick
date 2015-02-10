@@ -3,7 +3,6 @@ require 'test/unit'
 require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
 
 class Import_Export_UT < Test::Unit::TestCase
-
   def setup
     @test = Magick::Image.read(File.join(IMAGES_DIR, 'Flower_Hat.jpg')).first
   end
@@ -114,7 +113,6 @@ class Import_Export_UT < Test::Unit::TestCase
 
     end
   end
-
 end
 
 if __FILE__ == $0

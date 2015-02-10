@@ -5,7 +5,6 @@ require 'test/unit'
 require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
 
 class Pixel_UT < Test::Unit::TestCase
-
     def setup
         @pixel = Magick::Pixel.from_color('brown')
     end
@@ -114,5 +113,4 @@ class Pixel_UT < Test::Unit::TestCase
       assert_raise(ArgumentError) { @pixel.to_color(Magick::AllCompliance, false, 32) }
       assert_raise(TypeError) { @pixel.to_color(1) }
     end
-
 end

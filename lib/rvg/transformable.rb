@@ -5,17 +5,14 @@
 
 module Magick
     class RVG
-
         # Transforms is an Array with a deep_copy method.
         # During unit-testing it also has a deep_equal method.
         class Transforms < Array        #:nodoc:
-
             def deep_copy(h=nil)
                 copy = self.class.new
                 each { |transform| copy << [transform[0], transform[1].dup] }
                 return copy
             end
-
         end     # class Transform
 
         # Transformations are operations on the coordinate system.
@@ -127,7 +124,6 @@ module Magick
             end
 
         end     # module Transformable
-
     end # class RVG
 end # module Magick
 

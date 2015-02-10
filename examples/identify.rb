@@ -2,7 +2,6 @@ require "rmagick"
 
 module Magick
     class Image
-
         # Print information similar to the identify -verbose command
         def identify
             printf "Image: "

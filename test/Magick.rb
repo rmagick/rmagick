@@ -30,7 +30,6 @@ class Magick::AnchorType
 end
 
 class Magick_UT < Test::Unit::TestCase
-
     def test_colors
       res = nil
       assert_nothing_raised { res = Magick.colors }

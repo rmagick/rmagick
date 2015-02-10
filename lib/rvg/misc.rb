@@ -2,7 +2,6 @@
 # Copyright (C) 2009 Timothy P. Hunter
 module Magick
     class RVG
-
         # This is a standard deep_copy method that is used in most classes.
         # Thanks to Robert Klemme.
         module Duplicatable
@@ -64,16 +63,13 @@ module Magick
             end
             return farg
         end
-
     end # class RVG
 end # module Magick
 
 module Magick
     class RVG
         class Utility
-
             class TextStrategy
-
                 def initialize(context)
                     @ctx = context
                     @ctx.shadow.affine = @ctx.text_attrs.affine
@@ -166,11 +162,9 @@ module Magick
                         @ctx.gc.pop
                     end
                 end
-
             end     # class TextStrategy
 
             class LRTextStrategy < TextStrategy
-
                 def get_word_spacing
                     @word_space ||= glyph_metrics(@ctx.text_attrs.glyph_orientation_horizontal, ' ')[0]
                     [@word_space + @ctx.text_attrs.word_spacing, 0]
@@ -226,19 +220,15 @@ module Magick
                     @ctx.gc.pop
                     [dx, 0]
                 end
-
             end     # class LRTextStrategy
 
             class RLTextStrategy < TextStrategy
-
                 def render(x, y, text)
                     raise NotImplementedError
                 end
-
             end     # class RLTextStrategy
 
             class TBTextStrategy < TextStrategy
-
                 def get_word_spacing
                     @word_space ||= glyph_metrics(@ctx.text_attrs.glyph_orientation_vertical, ' ')[1]
                     [0, @word_space + @ctx.text_attrs.word_spacing]
@@ -305,12 +295,10 @@ module Magick
                     @ctx.gc.pop
                     [0, dy]
                 end
-
             end     # class TBTextStrategy
 
             # Handle "easy" text
             class DefaultTextStrategy < TextStrategy
-
                 def render(x, y, text)
                     @ctx.gc.text(x, y, enquote(text))
                     tm = @ctx.shadow.get_type_metrics(text)
@@ -324,9 +312,7 @@ module Magick
                           end
                     [dx, 0]
                 end
-
             end     # class NormalTextStrategy
-
         end # class Utility
     end # class RVG
 end # module Magick
@@ -334,9 +320,7 @@ end # module Magick
 module Magick
     class RVG
         class Utility
-
             class TextAttributes
-
               public
 
                 WRITING_MODE = %w{lr-tb lr rl-tb rl tb-rl tb}
@@ -456,11 +440,9 @@ module Magick
                 def writing_mode=(mode)
                     @writing_mode[-1] = WRITING_MODE.include?(mode) ? mode : 'lr-tb'
                 end
-
             end     # class TextAttributes
 
             class GraphicContext
-
                 FONT_STRETCH =    {:normal          => Magick::NormalStretch,
                                    :ultra_condensed => Magick::UltraCondensedStretch,
                                    :extra_condensed => Magick::ExtraCondensedStretch,
@@ -722,9 +704,7 @@ module Magick
                     @text_attrs.writing_mode = mode
                     nil
                 end
-
             end     # class GraphicContext
-
         end # class Utility
     end # class RVG
 end # module Magick

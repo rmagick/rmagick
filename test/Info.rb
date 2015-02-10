@@ -6,7 +6,6 @@ require 'test/unit'
 require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
 
 class Info_UT < Test::Unit::TestCase
-
     def setup
         @info = Magick::Image::Info.new
     end
@@ -344,5 +343,4 @@ class Info_UT < Test::Unit::TestCase
       assert_nothing_raised { @info.view = "string" }
       assert_equal("string", @info.view)
     end
-
 end

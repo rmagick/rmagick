@@ -441,7 +441,6 @@ END_SUMMARY
       Logging.message summary
       message summary
     end
-
   end
 end
 

@@ -1,6 +1,5 @@
 module Magick
     class RVG
-
         [PathData, Styles, Transforms].each do |c|
             c.class_eval do
                 def deep_equal(other)
@@ -51,6 +50,5 @@ module Magick
                 end
             end
         end
-
     end # class RVG
 end # module Magick

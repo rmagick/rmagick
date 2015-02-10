@@ -2,7 +2,6 @@
 # Copyright (C) 2009 Timothy P. Hunter
 module Magick
     class RVG
-
         # Define RVG.dpi and RVG.dpi=. Add conversions to Fixnum and Float classes
         class << self
             attr_reader :dpi
@@ -60,7 +59,6 @@ module Magick
                 raise TypeError, "Can't convert `#{n}' to Float"
             end
         end     # class << self
-
     end # class RVG
 end # module Magick
 

@@ -7,7 +7,6 @@
 
 module Magick
     class RVG
-
         class Pattern
             include StructureConstructors
             include UseConstructors
@@ -47,9 +46,7 @@ module Magick
                 end
                 gc.__send__(style, name)
             end
-
         end     # class Pattern
-
     end # class RVG
 end # module Magick
 

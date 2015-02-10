@@ -12,7 +12,6 @@ class Magick::Draw
 end
 
 class Draw_UT < Test::Unit::TestCase
-
     def setup
         @draw = Magick::Draw.new
     end

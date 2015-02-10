@@ -5,7 +5,6 @@
 
 module Magick
     class RVG
-
         # Parent class of Circle, Ellipse, Text, etc.
         class Shape             #:nodoc:
             include Stylable
@@ -20,11 +19,9 @@ module Magick
                 gc.__send__(@primitive, *@args)
                 gc.pop
             end
-
         end     # class Shape
 
         class Circle < Shape
-
             # Define a circle with radius +r+ and centered at [<tt>cx</tt>, <tt>cy</tt>].
             # Use the RVG::ShapeConstructors#circle method to create Circle objects in a container.
             def initialize(r, cx=0, cy=0)
@@ -37,11 +34,9 @@ module Magick
                 @args = [cx, cy, cx+r, cy]
                 self
             end
-
         end     # class Circle
 
         class Ellipse < Shape
-
             # Define an ellipse with a center at [<tt>cx</tt>, <tt>cy</tt>], a horizontal radius +rx+
             # and a vertical radius +ry+.
             # Use the RVG::ShapeConstructors#ellipse method to create Ellipse objects in a container.
@@ -55,11 +50,9 @@ module Magick
                 # Ellipses are always complete.
                 @args = [cx, cy, rx, ry, 0, 360]
             end
-
         end     # class Ellipse
 
         class Line < Shape
-
             # Define a line from [<tt>x1</tt>, <tt>y1</tt>] to [<tt>x2</tt>, <tt>y2</tt>].
             # Use the RVG::ShapeConstructors#line method to create Line objects in a container.
             def initialize(x1=0, y1=0, x2=0, y2=0)
@@ -67,11 +60,9 @@ module Magick
                 @primitive = :line
                 @args = [x1, y1, x2, y2]
             end
-
         end     # class Line
 
         class Path < Shape
-
             # Define an SVG path. The argument can be either a path string
             # or a PathData object.
             # Use the RVG::ShapeConstructors#path method to create Path objects in a container.
@@ -80,11 +71,9 @@ module Magick
                 @primitive = :path
                 @args = [path.to_s]
             end
-
         end     # class Path
 
         class Rect < Shape
-
             # Define a width x height rectangle. The upper-left corner is at [<tt>x</tt>, <tt>y</tt>].
             # If either <tt>width</tt> or <tt>height</tt> is 0, the rectangle is not rendered.
             # Use the RVG::ShapeConstructors#rect method to create Rect objects in a container.
@@ -109,11 +98,9 @@ module Magick
                 @primitive = :roundrectangle
                 self
             end
-
         end     # class Rect
 
         class PolyShape < Shape
-
             def polypoints(points)
                 case points.length
                     when 1
@@ -136,11 +123,9 @@ module Magick
                 end
                 return Magick::RVG.convert_to_float(*points)
             end
-
         end     # class PolyShape
 
         class Polygon < PolyShape
-
             # Draws a polygon. The arguments are [<tt>x</tt>, <tt>y</tt>] pairs that
             # define the points that make up the polygon. At least two
             # points must be specified. If the last point is not the
@@ -152,11 +137,9 @@ module Magick
                 @primitive = :polygon
                 @args = polypoints(points)
             end
-
         end     # class Polygon
 
         class Polyline < PolyShape
-
             # Draws a polyline. The arguments are [<tt>x</tt>, <tt>y</tt>] pairs that
             # define the points that make up the polyline. At least two
             # points must be specified.
@@ -167,7 +150,6 @@ module Magick
                 @primitive = :polyline
                 @args = Magick::RVG.convert_to_float(*points)
             end
-
         end     # class Polyline
 
         class Image
@@ -253,7 +235,6 @@ module Magick
                 add_composite_primitive(gc)
                 gc.pop
             end
-
         end     # class Image
 
         # Methods that construct basic shapes within a container
@@ -410,7 +391,6 @@ module Magick
             include UseConstructors
             include ImageConstructors
         end     # module Embellishable
-
     end # class RVG
 end # module Magick
 

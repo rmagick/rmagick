@@ -5,7 +5,6 @@
 
 module Magick
     class RVG
-
         #--
         # Corresponds to SVG's Description.class
         #++
@@ -47,7 +46,6 @@ module Magick
             end
 
         end     # module Describable
-
     end # class RVG
 end # module Magick
 

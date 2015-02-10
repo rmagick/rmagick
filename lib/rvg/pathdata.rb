@@ -5,13 +5,11 @@
 
 module Magick
     class RVG
-
         # The PathData class provides an object-oriented way to produce an SVG
         # path. Each of the methods corresponds to a path command. Construct a
         # path by calling one or more methods. The path object can be passed
         # as an argument to the RVG::ShapeConstructors#path method.
         class PathData
-
           private
 
             def add_points(req, *coords)
@@ -124,9 +122,7 @@ module Magick
             def arc(abs, rx, ry, x_axis_rotation, large_arc_flag, sweep_flag, x, y)
                 @path << sprintf("%s%g,%g %g %d %d %g,%g ", (abs ? 'A' : 'a'), rx, ry, x_axis_rotation, large_arc_flag, sweep_flag, x, y)
             end
-
         end # class PathData
-
     end # class RVG
 end # module Magick
 

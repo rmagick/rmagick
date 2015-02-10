@@ -689,7 +689,6 @@ class Image_Attributes_UT < Test::Unit::TestCase
         assert_raise(FreezeError) { @img.x_resolution = 72.0 }
         assert_raise(FreezeError) { @img.y_resolution = 72.0 }
     end
-
 end     # class Image_Attributes_UT
 
 if __FILE__ == $0

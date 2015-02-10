@@ -5,7 +5,6 @@
 
 module Magick
     class RVG
-
         #:stopdoc:
         STYLES = [:clip_path, :clip_rule, :fill, :fill_opacity, :fill_rule, :font,
             :font_family, :font_size, :font_stretch, :font_style, :font_weight,
@@ -19,7 +18,6 @@ module Magick
 
         # Styles is a Struct class with a couple of extra methods
         class Styles
-
             def set(styles)
                 begin
                     styles.each_pair do |style, value|
@@ -48,7 +46,6 @@ module Magick
                 each_pair { |style, value| copy[style] = value }
                 return copy
             end
-
         end     # class Styles
 
         #:startdoc:
@@ -118,7 +115,6 @@ module Magick
             end
 
         end     # module Stylable
-
     end # class RVG
 end # module Magick
 
