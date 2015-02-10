@@ -152,12 +152,6 @@ Style/HashSyntax:
 Style/IfUnlessModifier:
   Enabled: false
 
-# Offense count: 16
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/IndentHash:
-  Enabled: false
-
 # Offense count: 50
 # Cop supports --auto-correct.
 Style/IndentationConsistency:

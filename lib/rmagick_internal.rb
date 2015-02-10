@@ -141,64 +141,64 @@ class Draw
     # Thse hashes are used to map Magick constant
     # values to the strings used in the primitives.
     ALIGN_TYPE_NAMES = {
-        LeftAlign.to_i => 'left',
-        RightAlign.to_i => 'right',
-        CenterAlign.to_i => 'center'
-        }.freeze
+      LeftAlign.to_i => 'left',
+      RightAlign.to_i => 'right',
+      CenterAlign.to_i => 'center'
+    }.freeze
     ANCHOR_TYPE_NAMES = {
-        StartAnchor.to_i => 'start',
-        MiddleAnchor.to_i => 'middle',
-        EndAnchor.to_i => 'end'
-        }.freeze
+      StartAnchor.to_i => 'start',
+      MiddleAnchor.to_i => 'middle',
+      EndAnchor.to_i => 'end'
+    }.freeze
     DECORATION_TYPE_NAMES = {
-        NoDecoration.to_i => 'none',
-        UnderlineDecoration.to_i => 'underline',
-        OverlineDecoration.to_i => 'overline',
-        LineThroughDecoration.to_i => 'line-through'
-        }.freeze
+      NoDecoration.to_i => 'none',
+      UnderlineDecoration.to_i => 'underline',
+      OverlineDecoration.to_i => 'overline',
+      LineThroughDecoration.to_i => 'line-through'
+    }.freeze
     FONT_WEIGHT_NAMES = {
-        AnyWeight.to_i => 'all',
-        NormalWeight.to_i => 'normal',
-        BoldWeight.to_i => 'bold',
-        BolderWeight.to_i => 'bolder',
-        LighterWeight.to_i => 'lighter',
-        }.freeze
+      AnyWeight.to_i => 'all',
+      NormalWeight.to_i => 'normal',
+      BoldWeight.to_i => 'bold',
+      BolderWeight.to_i => 'bolder',
+      LighterWeight.to_i => 'lighter',
+    }.freeze
     GRAVITY_NAMES = {
-        NorthWestGravity.to_i => 'northwest',
-        NorthGravity.to_i => 'north',
-        NorthEastGravity.to_i => 'northeast',
-        WestGravity.to_i => 'west',
-        CenterGravity.to_i => 'center',
-        EastGravity.to_i => 'east',
-        SouthWestGravity.to_i => 'southwest',
-        SouthGravity.to_i => 'south',
-        SouthEastGravity.to_i => 'southeast'
-        }.freeze
+      NorthWestGravity.to_i => 'northwest',
+      NorthGravity.to_i => 'north',
+      NorthEastGravity.to_i => 'northeast',
+      WestGravity.to_i => 'west',
+      CenterGravity.to_i => 'center',
+      EastGravity.to_i => 'east',
+      SouthWestGravity.to_i => 'southwest',
+      SouthGravity.to_i => 'south',
+      SouthEastGravity.to_i => 'southeast'
+    }.freeze
     PAINT_METHOD_NAMES = {
-        PointMethod.to_i => 'point',
-        ReplaceMethod.to_i => 'replace',
-        FloodfillMethod.to_i => 'floodfill',
-        FillToBorderMethod.to_i => 'filltoborder',
-        ResetMethod.to_i => 'reset'
-        }.freeze
+      PointMethod.to_i => 'point',
+      ReplaceMethod.to_i => 'replace',
+      FloodfillMethod.to_i => 'floodfill',
+      FillToBorderMethod.to_i => 'filltoborder',
+      ResetMethod.to_i => 'reset'
+    }.freeze
     STRETCH_TYPE_NAMES = {
-        NormalStretch.to_i => 'normal',
-        UltraCondensedStretch.to_i => 'ultra-condensed',
-        ExtraCondensedStretch.to_i => 'extra-condensed',
-        CondensedStretch.to_i => 'condensed',
-        SemiCondensedStretch.to_i => 'semi-condensed',
-        SemiExpandedStretch.to_i => 'semi-expanded',
-        ExpandedStretch.to_i => 'expanded',
-        ExtraExpandedStretch.to_i => 'extra-expanded',
-        UltraExpandedStretch.to_i => 'ultra-expanded',
-        AnyStretch.to_i => 'all'
-        }.freeze
+      NormalStretch.to_i => 'normal',
+      UltraCondensedStretch.to_i => 'ultra-condensed',
+      ExtraCondensedStretch.to_i => 'extra-condensed',
+      CondensedStretch.to_i => 'condensed',
+      SemiCondensedStretch.to_i => 'semi-condensed',
+      SemiExpandedStretch.to_i => 'semi-expanded',
+      ExpandedStretch.to_i => 'expanded',
+      ExtraExpandedStretch.to_i => 'extra-expanded',
+      UltraExpandedStretch.to_i => 'ultra-expanded',
+      AnyStretch.to_i => 'all'
+    }.freeze
     STYLE_TYPE_NAMES = {
-        NormalStyle.to_i => 'normal',
-        ItalicStyle.to_i => 'italic',
-        ObliqueStyle.to_i => 'oblique',
-        AnyStyle.to_i => 'all'
-        }.freeze
+      NormalStyle.to_i => 'normal',
+      ItalicStyle.to_i => 'italic',
+      ObliqueStyle.to_i => 'oblique',
+      AnyStyle.to_i => 'all'
+    }.freeze
 
   private
 
