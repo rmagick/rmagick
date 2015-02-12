@@ -298,7 +298,7 @@ class Image2_UT < Test::Unit::TestCase
     def test_destroy2
         images = {}
         GC.disable
-        Magick.trace_proc = Proc.new do |which, id, addr, method|
+        Magick.trace_proc = proc do |which, id, addr, method|
           m = id.split(/ /)
           name = File.basename m[0]
           format = m[1]

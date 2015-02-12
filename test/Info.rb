@@ -222,7 +222,7 @@ class Info_UT < Test::Unit::TestCase
 
     def test_monitor
       assert_nothing_raised { @info.monitor = lambda {} }
-      monitor = Proc.new do |mth, q, s|
+      monitor = proc do |mth, q, s|
         assert_equal('resize!', mth)
         assert_instance_of(Fixnum, q)
         assert_instance_of(Fixnum, s)

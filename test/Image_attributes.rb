@@ -477,7 +477,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
 
     def test_monitor
         assert_raise(NoMethodError) { @img.monitor }
-        monitor = Proc.new { |name, q, s| puts name }
+        monitor = proc { |name, q, s| puts name }
         assert_nothing_raised { @img.monitor = monitor }
         assert_nothing_raised { @img.monitor = nil }
     end
@@ -678,7 +678,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
         assert_raise(FreezeError) { @img.iptc_profile = 'xxx' }
         assert_raise(FreezeError) { @img.mask = @img }
         assert_raise(FreezeError) { @img.matte = true }
-        assert_raise(FreezeError) { @img.monitor = Proc.new { |name, q, s| puts name } }
+        assert_raise(FreezeError) { @img.monitor = proc { |name, q, s| puts name } }
         assert_raise(FreezeError) { @img.offset = 100 }
         assert_raise(FreezeError) { @img.opacity = 100 }
         assert_raise(FreezeError) { @img.page = Magick::Rectangle.new(1,2,3,4) }
