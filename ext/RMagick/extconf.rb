@@ -209,8 +209,8 @@ SRC
     # set ARCHFLAGS appropriately for OSX
     def set_archflags_for_osx
       archflags = []
-      fullpath = `which convert` rescue nil
-      fileinfo = `file #{fullpath}` rescue nil
+      fullpath = `which convert`
+      fileinfo = `file #{fullpath}`
 
       # default ARCHFLAGS
       archs = $ARCH_FLAG.scan(/-arch\s+(\S+)/).flatten
@@ -222,7 +222,7 @@ SRC
       end
 
       if archflags.length != 0
-        $ARCH_FLAG = archflags.join(" ")
+        $ARCH_FLAG = archflags.join(' ')
       end
     end
 
