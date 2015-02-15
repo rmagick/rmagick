@@ -101,6 +101,10 @@ module RMagick
           $LOCAL_LIBS = ENV['LIBS'].to_s     + ' ' + `pkg-config --libs MagickCore`.chomp
         end
 
+        if RUBY_PLATFORM =~ /darwin/ # osx
+          set_archflags_for_osx
+        end
+
       elsif RUBY_PLATFORM =~ /mingw/  # mingw
 
         `convert -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-\d+ /
@@ -199,6 +203,27 @@ SRC
           Logging.message msg
           message msg
        end
+    end
+
+    # issue #169
+    # set ARCHFLAGS appropriately for OSX
+    def set_archflags_for_osx
+      archflags = []
+      fullpath = `which convert` rescue nil
+      fileinfo = `file #{fullpath}` rescue nil
+
+      # default ARCHFLAGS
+      archs = $ARCH_FLAG.scan(/-arch\s+(\S+)/).flatten
+
+      archs.each do |arch|
+        if fileinfo.include?(arch)
+          archflags << "-arch #{arch}"
+        end
+      end
+
+      if archflags.length != 0
+        $ARCH_FLAG = archflags.join(" ")
+      end
     end
 
     def assert_can_compile!
