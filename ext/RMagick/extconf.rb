@@ -222,7 +222,7 @@ SRC
       end
 
       if archflags.length != 0
-        $ARCH_FLAG = archflags.join(" ")
+        $ARCH_FLAG = archflags.join(' ')
       end
     end
 
