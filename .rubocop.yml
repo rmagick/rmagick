@@ -151,6 +151,9 @@ Style/LeadingCommentSpace:
 Style/MethodName:
   Enabled: false
 
+Style/MultilineOperationIndentation:
+  EnforcedStyle: indented
+
 # Offense count: 1
 Style/MultilineTernaryOperator:
   Enabled: false
