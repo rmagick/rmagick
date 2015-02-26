@@ -19,7 +19,7 @@ module Magick
       path("M0,0 Q#{w},0 #{w/2.0},#{-h/4.0} T#{w},#{-h/2.0}" \
            "Q0,#{-h/2.0} #{w/2.0},#{-(3.0*h/4.0)} T0,#{-h}")
     end
-  end     # class Draw
+  end
 end
 
 Origin_x = 110
