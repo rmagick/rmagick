@@ -53,8 +53,8 @@ oval = oval.blur_image(0, 20)
 
 ballerina.matte = true  # Ensure the ballerina image's opacity channel is enabled.
 oval.matte = false      # Force the CopyOpacityCompositeOp to use pixel intensity
-                        # to determine how much transparency to add to the ballerina
-                        # pixels.
+# to determine how much transparency to add to the ballerina
+# pixels.
 
 ballerina = ballerina.composite(oval, CenterGravity, CopyOpacityCompositeOp)
 
@@ -62,10 +62,10 @@ ballerina = ballerina.composite(oval, CenterGravity, CopyOpacityCompositeOp)
 # save it as a GIF or a JPEG. The PNG format can handle it, though.
 
 begin
-    ballerina.write('vignette.png')
+  ballerina.write('vignette.png')
 rescue ImageMagickError
-    puts 'Write failed. No PNG support?'
-    # In case PNG support isn't installed, just ignore the exception.
+  puts 'Write failed. No PNG support?'
+  # In case PNG support isn't installed, just ignore the exception.
 end
 
 # At this point the vignette is complete. However, the `display' method only

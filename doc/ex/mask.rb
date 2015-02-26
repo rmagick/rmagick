@@ -17,9 +17,9 @@ q = Magick::Image.new(img.columns, img.rows)
 
 gc = Magick::Draw.new
 gc.annotate(q, 0, 0, 0, 0, 'Flower Hat') do
-    gc.gravity = Magick::SouthGravity
-    gc.pointsize = 36
-    gc.font_weight = Magick::BoldWeight
+  gc.gravity = Magick::SouthGravity
+  gc.pointsize = 36
+  gc.font_weight = Magick::BoldWeight
 end
 
 # Set the matte attribute to false, indicating the absence of an alpha channel

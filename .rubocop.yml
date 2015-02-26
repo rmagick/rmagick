@@ -72,12 +72,6 @@ Metrics/PerceivedComplexity:
   Max: 41
 
 # Offense count: 4
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/AccessModifierIndentation:
-  Enabled: false
-
-# Offense count: 4
 Style/AccessorMethodName:
   Enabled: false
 
@@ -91,11 +85,6 @@ Style/BarePercentLiterals:
 Style/CaseEquality:
   Enabled: false
 
-# Offense count: 67
-# Configuration parameters: IndentWhenRelativeTo, SupportedStyles, IndentOneStep.
-Style/CaseIndentation:
-  Enabled: false
-
 # Offense count: 14
 Style/ClassAndModuleCamelCase:
   Enabled: false
@@ -103,11 +92,6 @@ Style/ClassAndModuleCamelCase:
 # Offense count: 6
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 Style/ClassAndModuleChildren:
-  Enabled: false
-
-# Offense count: 13
-# Cop supports --auto-correct.
-Style/CommentIndentation:
   Enabled: false
 
 # Offense count: 126
@@ -152,17 +136,6 @@ Style/HashSyntax:
 Style/IfUnlessModifier:
   Enabled: false
 
-# Offense count: 50
-# Cop supports --auto-correct.
-Style/IndentationConsistency:
-  Enabled: false
-
-# Offense count: 1773
-# Cop supports --auto-correct.
-# Configuration parameters: Width.
-Style/IndentationWidth:
-  Enabled: false
-
 # Offense count: 1
 # Cop supports --auto-correct.
 Style/Lambda:
@@ -176,12 +149,6 @@ Style/LeadingCommentSpace:
 # Offense count: 4
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 Style/MethodName:
-  Enabled: false
-
-# Offense count: 14
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/MultilineOperationIndentation:
   Enabled: false
 
 # Offense count: 1

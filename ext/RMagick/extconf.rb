@@ -36,9 +36,9 @@ module RMagick
       headers << 'sys/types.h' if have_header('sys/types.h')
 
       if have_header('wand/MagickWand.h')
-         headers << 'wand/MagickWand.h'
+        headers << 'wand/MagickWand.h'
       else
-         exit_failure "\nCan't install RMagick #{RMAGICK_VERS}. Can't find MagickWand.h."
+        exit_failure "\nCan't install RMagick #{RMAGICK_VERS}. Can't find MagickWand.h."
       end
     end
 
@@ -162,26 +162,26 @@ SRC
 
     # Seems like lots of people have multiple versions of ImageMagick installed.
     def check_multiple_imagemagick_versions
-       versions = []
-       path = ENV['PATH'].split(File::PATH_SEPARATOR)
-       path.each do |dir|
-          file = File.join(dir, 'Magick-config')
-          if File.executable? file
-             vers = `#{file} --version`.chomp.strip
-             prefix = `#{file} --prefix`.chomp.strip
-             versions << [vers, prefix, dir]
-          end
-       end
-       versions.uniq!
-       if versions.size > 1
-          msg = "\nWarning: Found more than one ImageMagick installation. This could cause problems at runtime.\n"
-          versions.each do |vers, prefix, dir|
-             msg << "         #{dir}/Magick-config reports version #{vers} is installed in #{prefix}\n"
-          end
-          msg << "Using #{versions[0][0]} from #{versions[0][1]}.\n\n"
-          Logging.message msg
-          message msg
-       end
+      versions = []
+      path = ENV['PATH'].split(File::PATH_SEPARATOR)
+      path.each do |dir|
+        file = File.join(dir, 'Magick-config')
+        if File.executable? file
+          vers = `#{file} --version`.chomp.strip
+          prefix = `#{file} --prefix`.chomp.strip
+          versions << [vers, prefix, dir]
+        end
+      end
+      versions.uniq!
+      if versions.size > 1
+        msg = "\nWarning: Found more than one ImageMagick installation. This could cause problems at runtime.\n"
+        versions.each do |vers, prefix, dir|
+          msg << "         #{dir}/Magick-config reports version #{vers} is installed in #{prefix}\n"
+        end
+        msg << "Using #{versions[0][0]} from #{versions[0][1]}.\n\n"
+        Logging.message msg
+        message msg
+      end
     end
 
     # Ubuntu (maybe other systems) comes with a partial installation of
@@ -189,20 +189,20 @@ SRC
     # binaries). This causes problems when /usr/lib is in the path (e.g., using
     # the default Ruby installation).
     def check_partial_imagemagick_versions
-       prefix = config_string('prefix') || ''
-       matches = [
-         prefix+'/lib/lib?agick*',
-         prefix+'/include/ImageMagick',
-         prefix+'/bin/Magick-config',
-       ].map do |file_glob|
-         Dir.glob(file_glob)
-       end
-       matches.delete_if { |arr| arr.empty? }
-       if 0 < matches.length && matches.length < 3
-          msg = "\nWarning: Found a partial ImageMagick installation. Your operating system likely has some built-in ImageMagick libraries but not all of ImageMagick. This will most likely cause problems at both compile and runtime.\nFound partial installation at: "+prefix+"\n"
-          Logging.message msg
-          message msg
-       end
+      prefix = config_string('prefix') || ''
+      matches = [
+        prefix+'/lib/lib?agick*',
+        prefix+'/include/ImageMagick',
+        prefix+'/bin/Magick-config',
+      ].map do |file_glob|
+        Dir.glob(file_glob)
+      end
+      matches.delete_if { |arr| arr.empty? }
+      if 0 < matches.length && matches.length < 3
+        msg = "\nWarning: Found a partial ImageMagick installation. Your operating system likely has some built-in ImageMagick libraries but not all of ImageMagick. This will most likely cause problems at both compile and runtime.\nFound partial installation at: "+prefix+"\n"
+        Logging.message msg
+        message msg
+      end
     end
 
     # issue #169
@@ -271,51 +271,51 @@ END_MSWIN
 
     def create_header_file
       have_func('snprintf', headers)
-        ['AcquireImage',                   # 6.4.1
-         'AffinityImage',                  # 6.4.3-6
-         'AffinityImages',                 # 6.4.3-6
-         'AutoGammaImageChannel',          # 6.5.5-1
-         'AutoLevelImageChannel',          # 6.5.5-1
-         'BlueShiftImage',                 # 6.5.4-3
-         'ColorMatrixImage',               # 6.6.1-0
-         'ConstituteComponentTerminus',    # 6.5.7-9
-         'DeskewImage',                    # 6.4.2-5
-         'DestroyConstitute',              # 6.5.7-9(deprecated)
-         'EncipherImage',                  # 6.3.8-6
-         'EqualizeImageChannel',           # 6.3.6-9
-         'EvaluateImages',                 # 6.8.6-4
-         'FloodfillPaintImage',            # 6.3.7
-         'FunctionImageChannel',           # 6.4.8-8
-         'GetAuthenticIndexQueue',         # 6.4.5-6
-         'GetAuthenticPixels',             # 6.4.5-6
-         'GetImageAlphaChannel',           # 6.3.9-2
-         'GetMagickFeatures',              # 6.5.7-1
-         'GetVirtualPixels',               # 6.4.5-6
-         'LevelImageColors',               # 6.4.2
-         'LevelColorsImageChannel',        # 6.5.6-4
-         'LevelizeImageChannel',           # 6.4.2
-         'LiquidRescaleImage',             # 6.3.8-2
-         'MagickLibAddendum',              # 6.5.9-1
-         'OpaquePaintImageChannel',        # 6.3.7-10
-         'QueueAuthenticPixels',           # 6.4.5-6
-         'RemapImage',                     # 6.4.4-0
-         'RemapImages',                    # 6.4.4-0
-         'RemoveImageArtifact',            # 6.3.6
-         'RotationalBlurImage',            # 6.8.8-9
-         'RotationalBlurImageChannel',     # 6.8.8-9
-         'SelectiveBlurImageChannel',      # 6.5.0-3
-         'SetImageAlphaChannel',           # 6.3.6-9
-         'SetImageArtifact',               # 6.3.6
-         'SetMagickMemoryMethods',         # 6.4.1
-         'SparseColorImage',               # 6.3.6-?
-         'StatisticImage',                 # 6.6.8-6
-         'SyncAuthenticPixels',            # 6.4.5-6
-         'TransformImageColorspace',       # 6.5.1
-         'TransparentPaintImage',          # 6.3.7-10
-         'TransparentPaintImageChroma'     # 6.4.5-6
-        ].each do |func|
-          have_func(func, headers)
-        end
+      ['AcquireImage',                   # 6.4.1
+       'AffinityImage',                  # 6.4.3-6
+       'AffinityImages',                 # 6.4.3-6
+       'AutoGammaImageChannel',          # 6.5.5-1
+       'AutoLevelImageChannel',          # 6.5.5-1
+       'BlueShiftImage',                 # 6.5.4-3
+       'ColorMatrixImage',               # 6.6.1-0
+       'ConstituteComponentTerminus',    # 6.5.7-9
+       'DeskewImage',                    # 6.4.2-5
+       'DestroyConstitute',              # 6.5.7-9(deprecated)
+       'EncipherImage',                  # 6.3.8-6
+       'EqualizeImageChannel',           # 6.3.6-9
+       'EvaluateImages',                 # 6.8.6-4
+       'FloodfillPaintImage',            # 6.3.7
+       'FunctionImageChannel',           # 6.4.8-8
+       'GetAuthenticIndexQueue',         # 6.4.5-6
+       'GetAuthenticPixels',             # 6.4.5-6
+       'GetImageAlphaChannel',           # 6.3.9-2
+       'GetMagickFeatures',              # 6.5.7-1
+       'GetVirtualPixels',               # 6.4.5-6
+       'LevelImageColors',               # 6.4.2
+       'LevelColorsImageChannel',        # 6.5.6-4
+       'LevelizeImageChannel',           # 6.4.2
+       'LiquidRescaleImage',             # 6.3.8-2
+       'MagickLibAddendum',              # 6.5.9-1
+       'OpaquePaintImageChannel',        # 6.3.7-10
+       'QueueAuthenticPixels',           # 6.4.5-6
+       'RemapImage',                     # 6.4.4-0
+       'RemapImages',                    # 6.4.4-0
+       'RemoveImageArtifact',            # 6.3.6
+       'RotationalBlurImage',            # 6.8.8-9
+       'RotationalBlurImageChannel',     # 6.8.8-9
+       'SelectiveBlurImageChannel',      # 6.5.0-3
+       'SetImageAlphaChannel',           # 6.3.6-9
+       'SetImageArtifact',               # 6.3.6
+       'SetMagickMemoryMethods',         # 6.4.1
+       'SparseColorImage',               # 6.3.6-?
+       'StatisticImage',                 # 6.6.8-6
+       'SyncAuthenticPixels',            # 6.4.5-6
+       'TransformImageColorspace',       # 6.5.1
+       'TransparentPaintImage',          # 6.3.7-10
+       'TransparentPaintImageChroma'     # 6.4.5-6
+      ].each do |func|
+        have_func(func, headers)
+      end
 
       checking_for('QueryMagickColorname() new signature')  do
         if try_compile(<<"SRC")
@@ -422,9 +422,9 @@ SRC
       # Now test Ruby 1.9.0 features.
       headers = ['ruby.h']
       if have_header('ruby/io.h')
-         headers << 'ruby/io.h'
+        headers << 'ruby/io.h'
       else
-         headers << 'rubyio.h'
+        headers << 'rubyio.h'
       end
 
       have_func('rb_frame_this_func', headers)
@@ -450,7 +450,7 @@ SRC
     end
 
     def print_summary
-summary = <<"END_SUMMARY"
+      summary = <<"END_SUMMARY"
 
 
 #{'=' * 70}

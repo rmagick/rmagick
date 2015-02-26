@@ -14,15 +14,15 @@ text.pointsize = 52
 text.gravity = Magick::CenterGravity
 
 text.annotate(canvas, 0,0,2,2, Text) do
-    self.fill = 'gray83'
+  self.fill = 'gray83'
 end
 
 text.annotate(canvas, 0,0,-1.5,-1.5, Text) do
-    self.fill = 'gray40'
+  self.fill = 'gray40'
 end
 
 text.annotate(canvas, 0,0,0,0, Text) do
-    self.fill = 'darkred'
+  self.fill = 'darkred'
 end
 
 #canvas.display

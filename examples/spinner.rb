@@ -24,24 +24,24 @@ spinner = Magick::ImageList.new
 level = Magick::QuantumRange / 2 / NFRAMES
 
 NFRAMES.times do |x|
-    gc = Magick::Draw.new
-    gc.translate(DIM/2, DIM/2)
-    gc.stroke('none')
-    intensity = 0.58 * Magick::QuantumRange
+  gc = Magick::Draw.new
+  gc.translate(DIM/2, DIM/2)
+  gc.stroke('none')
+  intensity = 0.58 * Magick::QuantumRange
+  fill_color = Magick::Pixel.new(intensity, intensity, intensity).to_color
+  gc.fill(fill_color)
+  angle = x * (360/NFRAMES)
+  NFRAMES.times do
+    gc.rotate(angle)
+    intensity = [intensity, Magick::QuantumRange].min
     fill_color = Magick::Pixel.new(intensity, intensity, intensity).to_color
     gc.fill(fill_color)
-    angle = x * (360/NFRAMES)
-    NFRAMES.times do
-        gc.rotate(angle)
-        intensity = [intensity, Magick::QuantumRange].min
-        fill_color = Magick::Pixel.new(intensity, intensity, intensity).to_color
-        gc.fill(fill_color)
-        gc.roundrectangle(7, -1, 15, 0, 1, 1)
-        angle = -(360/NFRAMES)
-        intensity += level
-    end
-    spinner << frame.copy
-    gc.draw(spinner)
+    gc.roundrectangle(7, -1, 15, 0, 1, 1)
+    angle = -(360/NFRAMES)
+    intensity += level
+  end
+  spinner << frame.copy
+  gc.draw(spinner)
 end
 
 spinner.delay = DELAY

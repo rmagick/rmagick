@@ -23,14 +23,14 @@ DEFAULT_SIZE = 120
 
 case ARGV.length
     when 2
-        size = ARGV[1].to_i
-        image = ARGV[0]
+      size = ARGV[1].to_i
+      image = ARGV[0]
     when 1
-        image = ARGV[0]
-        size = DEFAULT_SIZE
+      image = ARGV[0]
+      size = DEFAULT_SIZE
     else
-        size = DEFAULT_SIZE
-        image = '../doc/ex/images/Flower_Hat.jpg'
+      size = DEFAULT_SIZE
+      image = '../doc/ex/images/Flower_Hat.jpg'
 end
 
 geom = "#{size}x#{size}"

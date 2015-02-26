@@ -24,19 +24,19 @@ pairs = ImageList.new
 [NorthWestGravity, NorthGravity, NorthEastGravity,
  WestGravity, CenterGravity, EastGravity,
  SouthWestGravity, SouthGravity, SouthEastGravity].each do |gravity|
-    pattern = shorts.composite(mask, gravity, OverCompositeOp)
-    cropped = shorts.crop(gravity, regwidth, regheight)
-    result = black.composite(cropped, gravity, OverCompositeOp)
-    result.border_color = 'white'
-    pairs << pattern
-    pairs << result
+  pattern = shorts.composite(mask, gravity, OverCompositeOp)
+  cropped = shorts.crop(gravity, regwidth, regheight)
+  result = black.composite(cropped, gravity, OverCompositeOp)
+  result.border_color = 'white'
+  pairs << pattern
+  pairs << result
 end
 
 # Montage into a single image
 montage = pairs.montage do
-    self.geometry = "#{pairs.columns}x#{pairs.rows}+0+0"
-    self.tile = '6x3'
-    self.border_width = 1
+  self.geometry = "#{pairs.columns}x#{pairs.rows}+0+0"
+  self.tile = '6x3'
+  self.border_width = 1
 end
 montage.write('crop_with_gravity.miff')
 #montage.display

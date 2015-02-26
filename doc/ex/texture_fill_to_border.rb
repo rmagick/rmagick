@@ -5,8 +5,8 @@ require 'rmagick'
 # This example is nearly identical to the color_fill_to_border example.
 
 before = Magick::Image.new(200,200) do
-    self.background_color = 'white'
-    self.border_color = 'black'
+  self.background_color = 'white'
+  self.border_color = 'black'
 end
 before.border!(1,1,'black')
 

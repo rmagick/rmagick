@@ -17,14 +17,14 @@ img = Image.read('../doc/ex/images/Gold_Statue.jpg').first
 copy = Image.new(img.columns, img.rows)
 
 begin
-    img.rows.times do |r|
-        scanline = img.export_pixels(0, r, img.columns, 1, 'RGB')
-        copy.import_pixels(0, r, img.columns, 1, 'RGB', scanline)
-    end
+  img.rows.times do |r|
+    scanline = img.export_pixels(0, r, img.columns, 1, 'RGB')
+    copy.import_pixels(0, r, img.columns, 1, 'RGB', scanline)
+  end
 rescue NotImplementedError
-    $stderr.puts 'The export_pixels and import_pixels methods are not supported' \
-                 ' by this version of ImageMagick/GraphicsMagick'
-    exit
+  $stderr.puts 'The export_pixels and import_pixels methods are not supported' \
+               ' by this version of ImageMagick/GraphicsMagick'
+  exit
 end
 
 copy.write('copy.gif')

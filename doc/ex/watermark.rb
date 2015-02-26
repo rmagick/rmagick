@@ -9,15 +9,15 @@ mark = Magick::Image.new(140, 40) {self.background_color = 'none'}
 gc = Magick::Draw.new
 
 gc.annotate(mark, 0, 0, 0, -5, 'RMagick') do
-    gc.gravity = Magick::CenterGravity
-    gc.pointsize = 32
-    if RUBY_PLATFORM =~ /mswin32/
-        gc.font_family = 'Georgia'
-    else
-        gc.font_family = 'Times'
-    end
-    gc.fill = 'white'
-    gc.stroke = 'none'
+  gc.gravity = Magick::CenterGravity
+  gc.pointsize = 32
+  if RUBY_PLATFORM =~ /mswin32/
+    gc.font_family = 'Georgia'
+  else
+    gc.font_family = 'Times'
+  end
+  gc.fill = 'white'
+  gc.stroke = 'none'
 end
 
 mark = mark.wave(2.5, 70).rotate(-90)

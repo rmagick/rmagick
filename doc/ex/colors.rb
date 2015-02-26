@@ -15,16 +15,16 @@ puts("\tCreating color swatches...")
 # Create a 200x25 image for each named color.
 # Label with the name, RGB values, and compliance type.
 colors do |c|
-    if c.name !~ /grey/    # omit SVG 'grays'
-        colors.new_image(200, 25) do
-            self.background_color = c.color
-            self.border_color = 'gray50'
-        end
-        rgb  = sprintf('#%02x%02x%02x', c.color.red&0xff,  c.color.green&0xff, c.color.blue&0xff)
-        rgb += sprintf('%02x', c.color.opacity&0xff) if c.color.opacity != 0
-        m = /(.*?)Compliance/.match c.compliance.to_s
-        colors.cur_image['Label'] = "#{c.name} (#{rgb}) #{m[1]}"
+  if c.name !~ /grey/    # omit SVG 'grays'
+    colors.new_image(200, 25) do
+      self.background_color = c.color
+      self.border_color = 'gray50'
     end
+    rgb  = sprintf('#%02x%02x%02x', c.color.red&0xff,  c.color.green&0xff, c.color.blue&0xff)
+    rgb += sprintf('%02x', c.color.opacity&0xff) if c.color.opacity != 0
+    m = /(.*?)Compliance/.match c.compliance.to_s
+    colors.cur_image['Label'] = "#{c.name} (#{rgb}) #{m[1]}"
+  end
 end
 
 puts("\tCreating montage...")
@@ -32,24 +32,24 @@ puts("\tCreating montage...")
 # Montage. Each image will have 40 tiles.
 # There will be 16 images.
 montage = colors.montage do
-    self.geometry = '200x25+10+5'
-    self.gravity = CenterGravity
-    self.tile = '4x10'
-    self.background_color = 'black'
-    self.border_width = 1
-    self.fill = 'white'
-    self.stroke = 'transparent'
+  self.geometry = '200x25+10+5'
+  self.gravity = CenterGravity
+  self.tile = '4x10'
+  self.background_color = 'black'
+  self.border_width = 1
+  self.fill = 'white'
+  self.stroke = 'transparent'
 end
 
 # Add the title at the top, over the 'null:'
 # tiles we added at the very beginning.
 title = Draw.new
 title.annotate(montage, 0,0,0,20, 'Named Colors') do
-    self.fill = 'white'
-    self.stroke = 'transparent'
-    self.pointsize = 32
-    self.font_weight = BoldWeight
-    self.gravity = NorthGravity
+  self.fill = 'white'
+  self.stroke = 'transparent'
+  self.pointsize = 32
+  self.font_weight = BoldWeight
+  self.gravity = NorthGravity
 end
 
 puts("\tWriting ./colors.miff")

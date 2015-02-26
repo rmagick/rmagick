@@ -8,24 +8,24 @@ img = Magick::Image.new(270, 60) {self.background_color = 'black' }
 
 gc = Magick::Draw.new
 gc.annotate(img, 0, 0, 0, -15, 'RUBY!') do
-    gc.fill = '#a00'
-    gc.stroke = '#f00'
-    gc.stroke_width = 2
-    gc.font_weight = Magick::BoldWeight
-    gc.gravity = Magick::SouthGravity
+  gc.fill = '#a00'
+  gc.stroke = '#f00'
+  gc.stroke_width = 2
+  gc.font_weight = Magick::BoldWeight
+  gc.gravity = Magick::SouthGravity
   if RUBY_PLATFORM =~ /mswin32/
     gc.font_family = 'Georgia'
-      gc.pointsize = 76
+    gc.pointsize = 76
   else
-      gc.font_family = 'times'
+    gc.font_family = 'times'
     gc.pointsize = 80
   end
 end
 
 # Add a little bit of shading
 if Magick.const_defined? 'HardLightCompositeOp'
-    shade = img.shade(true, 310, 30)
-    img.composite!(shade, Magick::CenterGravity, Magick::HardLightCompositeOp)
+  shade = img.shade(true, 310, 30)
+  img.composite!(shade, Magick::CenterGravity, Magick::HardLightCompositeOp)
 end
 
 # Create the default reflection
@@ -51,8 +51,8 @@ results << ilist.append(true)
 # Montage into a single demo image. Use a white background so
 # there won't be any problems with transparency in the browser.
 result = results.montage do
-    self.geometry = '270x120'
-    self.tile = '1x4'
-    self.background_color = 'black'
+  self.geometry = '270x120'
+  self.tile = '1x4'
+  self.background_color = 'black'
 end
 result.write('wet_floor.gif')
