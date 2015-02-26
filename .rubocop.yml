@@ -251,6 +251,9 @@ Style/SpaceInsideHashLiteralBraces:
 Style/SpaceInsideParens:
   Enabled: false
 
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+
 # Offense count: 12
 # Cop supports --auto-correct.
 # Configuration parameters: IgnoredMethods.
