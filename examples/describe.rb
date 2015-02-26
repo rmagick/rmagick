@@ -22,10 +22,10 @@ ARGV.each do |file|
   puts "   Format: #{img.format}"
   puts "   Geometry: #{img.columns}x#{img.rows}"
   puts '   Class: ' + case img.class_type
-                          when Magick::DirectClass
-                            'DirectClass'
-                          when Magick::PseudoClass
-                            'PseudoClass'
+                      when Magick::DirectClass
+                        'DirectClass'
+                      when Magick::PseudoClass
+                        'PseudoClass'
                       end
   puts "   Depth: #{img.depth} bits-per-pixel"
   puts "   Colors: #{img.number_colors}"
