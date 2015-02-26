@@ -6,7 +6,7 @@ buttons = Magick::ImageList.new
 # Read 25 alphabet image files, scale to 1/4 size
 letter = 'A'
 26.times do
-  if letter != 'M'            # "M" is not the same size as the other letters
+  if letter != 'M' # "M" is not the same size as the other letters
     tiny = Magick::Image.read('images/Button_' + letter + '.gif').first
     tiny.scale! 0.25
     buttons << tiny
@@ -17,7 +17,7 @@ end
 # Create a image that will hold the alphabet images in 5 rows and 5 columns.
 cells = Magick::ImageList.new
 cells.new_image buttons.columns*5, buttons.rows*5 do
-  self.background_color = '#000000ff'     # transparent
+  self.background_color = '#000000ff' # transparent
 end
 cells.matte = true
 

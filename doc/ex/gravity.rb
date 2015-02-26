@@ -58,7 +58,7 @@ begin
       self.rotation = angle
     end
     draw.annotate(pic, 0,0,x,y, 'SouthWest') do
-      self.gravity =  Magick::SouthWestGravity
+      self.gravity = Magick::SouthWestGravity
       self.rotation = angle
     end
     draw.annotate(pic, 0,0,x,0, 'West') do

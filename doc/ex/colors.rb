@@ -15,7 +15,7 @@ puts("\tCreating color swatches...")
 # Create a 200x25 image for each named color.
 # Label with the name, RGB values, and compliance type.
 colors do |c|
-  if c.name !~ /grey/    # omit SVG 'grays'
+  if c.name !~ /grey/ # omit SVG 'grays'
     colors.new_image(200, 25) do
       self.background_color = c.color
       self.border_color = 'gray50'
