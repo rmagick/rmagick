@@ -107,6 +107,9 @@ Style/DeprecatedHashMethods:
 Style/Documentation:
   Enabled: false
 
+Style/DotPosition:
+  EnforcedStyle: leading
+
 # Offense count: 24
 # Configuration parameters: Exclude.
 Style/FileName:
