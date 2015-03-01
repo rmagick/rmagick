@@ -4,11 +4,11 @@ require 'rmagick'
 
 gc = Magick::Draw.new
 gc.pattern('triangles', 0, 0, 16, 16) do
-    gc.fill('darkblue')
-    gc.rectangle(0,0, 16,16)
-    gc.fill('yellow')
-    gc.stroke('red')
-    gc.polygon(0,0, 8,16, 16,0, 0,0)
+  gc.fill('darkblue')
+  gc.rectangle(0,0, 16,16)
+  gc.fill('yellow')
+  gc.stroke('red')
+  gc.polygon(0,0, 8,16, 16,0, 0,0)
 end
 
 gc.stroke('triangles')

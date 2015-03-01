@@ -9,11 +9,11 @@ result += images
 result << rose
 
 begin
-   result += images.copy.affinity(rose)
-   montage = result.montage { self.tile = '4x2' }
-   montage.alpha Magick::DeactivateAlphaChannel
+  result += images.copy.affinity(rose)
+  montage = result.montage { self.tile = '4x2' }
+  montage.alpha Magick::DeactivateAlphaChannel
 rescue NotImplementedError
-   montage = Magick::Image.read('images/notimplemented.gif').first
+  montage = Magick::Image.read('images/notimplemented.gif').first
 end
 
 montage.write('remap_images.jpg')

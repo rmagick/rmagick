@@ -11,7 +11,7 @@ pr = Magick::Draw.new
 # Define a clip-path.
 # The name of the clip-path is "example"
 pr.define_clip_path('example') do
-    pr.polygon(*points)
+  pr.polygon(*points)
 end
 
 # Enable the clip-path
@@ -30,9 +30,9 @@ cols = rows = nil
 # method will adjust the height proportionately.
 
 girl.change_geometry('280') do |c,r|
-    pr.composite(0,0, c, r, girl)
-    cols = c
-    rows = r
+  pr.composite(0,0, c, r, girl)
+  cols = c
+  rows = r
 end
 
 pr.pop

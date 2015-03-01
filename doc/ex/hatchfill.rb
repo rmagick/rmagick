@@ -17,10 +17,10 @@ img.new_image(Cols, Rows, fill)
 
 ann = Magick::Draw.new
 ann.annotate(img, 0,0,0,0, "HatchFill.new('#{Background}', '#{Foreground}')") do
-    self.gravity = Magick::CenterGravity
-    self.fill = 'black'
-    self.stroke = 'transparent'
-    self.pointsize = 14
+  self.gravity = Magick::CenterGravity
+  self.fill = 'black'
+  self.stroke = 'transparent'
+  self.pointsize = 14
 end
 #img.display
 img.write('hatchfill.gif')

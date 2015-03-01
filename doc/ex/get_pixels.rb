@@ -24,19 +24,19 @@ cols = grayrocks.columns
 step = Magick::TransparentOpacity / cols.to_f
 opacity_steps = Array.new(cols)
 cols.times do |x|
-    opacity_steps[x] = Magick::TransparentOpacity - Integer(x * step)
-    if opacity_steps[x] < Magick::OpaqueOpacity
-        opacity_steps[x] = Magick::OpaqueOpacity
-    end
+  opacity_steps[x] = Magick::TransparentOpacity - Integer(x * step)
+  if opacity_steps[x] < Magick::OpaqueOpacity
+    opacity_steps[x] = Magick::OpaqueOpacity
+  end
 end
 
 # Get each row of pixels from the mono image.
 # Copy the pre-computed opacity values to the pixels.
 # Store the pixels back.
 rows.times do |y|
-    pixels = grayrocks.get_pixels(0, y, cols, 1)
-    pixels.each_with_index { |p,x| p.opacity = opacity_steps[x] }
-    grayrocks.store_pixels(0, y, cols, 1, pixels)
+  pixels = grayrocks.get_pixels(0, y, cols, 1)
+  pixels.each_with_index { |p,x| p.opacity = opacity_steps[x] }
+  grayrocks.store_pixels(0, y, cols, 1, pixels)
 end
 
 # Composite the mono version of the image over the color version.

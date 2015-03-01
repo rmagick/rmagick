@@ -10,22 +10,22 @@ img = Magick::Image.read('../doc/ex/images/Flower_Hat.jpg').first
 target = img.crop(21, 94, 118, 126)
 
 begin
-    res = img.find_similar_region(target)
-    if res
-        gc = Magick::Draw.new
-        gc.stroke('red')
-        gc.stroke_width(2)
-        gc.fill('none')
-        gc.rectangle(res[0], res[1], res[0]+target.columns, res[1]+target.rows)
-        gc.draw(img)
-        img.matte = false
-        puts "Found similar region. Writing `find_similar_region.gif'..."
-        img.write('find_similar_region.gif')
-    else
-        puts 'No match!'
-    end
+  res = img.find_similar_region(target)
+  if res
+    gc = Magick::Draw.new
+    gc.stroke('red')
+    gc.stroke_width(2)
+    gc.fill('none')
+    gc.rectangle(res[0], res[1], res[0]+target.columns, res[1]+target.rows)
+    gc.draw(img)
+    img.matte = false
+    puts "Found similar region. Writing `find_similar_region.gif'..."
+    img.write('find_similar_region.gif')
+  else
+    puts 'No match!'
+  end
 rescue NotImplementedError
-    $stderr.puts <<-END_MSG
+  $stderr.puts <<-END_MSG
     The find_similar_region method is not supported by this version of
     ImageMagick/GraphicsMagick.
     END_MSG

@@ -12,11 +12,11 @@ Gem::Specification.new do |s|
   s.homepage = 'https://github.com/gemhome/rmagick'
   s.license = 'MIT'
 
-      tracked_files = `git ls-files`.split($OUTPUT_RECORD_SEPARATOR)
-      file_exclusion_regex = %r{(\Alib/rvg/to_c.rb)}
-      files         = tracked_files.reject{|file| file[file_exclusion_regex] }
-      test_files    = files.grep(%r{^(test|spec|features)/})
-      executables   = files.grep(%r{^bin/}).map{ |f| File.basename(f) }
+  tracked_files = `git ls-files`.split($OUTPUT_RECORD_SEPARATOR)
+  file_exclusion_regex = %r{(\Alib/rvg/to_c.rb)}
+  files         = tracked_files.reject{|file| file[file_exclusion_regex] }
+  test_files    = files.grep(%r{^(test|spec|features)/})
+  executables   = files.grep(%r{^bin/}).map{ |f| File.basename(f) }
 
   s.files                       = files
   s.test_files                  = test_files

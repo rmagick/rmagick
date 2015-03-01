@@ -121,12 +121,12 @@ list << image_B.composite(image_A, CenterGravity, OverlayCompositeOp)
 list.cur_image['Label'] = 'A overlay B'
 
 montage = list.montage do
-    self.geometry = Geometry.new(COLS, ROWS, 3, 3)
-    rows = (list.size+3) / 4
-    self.tile = Geometry.new(4, rows)
-    self.texture = granite[0]
-    self.fill = 'white'
-    self.stroke = 'transparent'
+  self.geometry = Geometry.new(COLS, ROWS, 3, 3)
+  rows = (list.size+3) / 4
+  self.tile = Geometry.new(4, rows)
+  self.texture = granite[0]
+  self.fill = 'white'
+  self.stroke = 'transparent'
 end
 
 montage.write('composite.gif')

@@ -13,17 +13,17 @@ frames = Magick::ImageList.new
 
 implosion = 0.25
 8.times do
-    frames << img.implode(implosion)
-    legend.annotate(frames, 0,0,10,20, sprintf('% 4.2f', implosion))
-    frames.matte = false
-    implosion -= 0.10
+  frames << img.implode(implosion)
+  legend.annotate(frames, 0,0,10,20, sprintf('% 4.2f', implosion))
+  frames.matte = false
+  implosion -= 0.10
 end
 
 7.times do
-    implosion += 0.10
-    frames << img.implode(implosion)
-    legend.annotate(frames, 0,0,10,20, sprintf('% 4.2f', implosion))
-    frames.matte = false
+  implosion += 0.10
+  frames << img.implode(implosion)
+  legend.annotate(frames, 0,0,10,20, sprintf('% 4.2f', implosion))
+  frames.matte = false
 end
 
 frames.delay = 10

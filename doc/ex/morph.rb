@@ -11,8 +11,8 @@ require 'rmagick'
 i = Magick::ImageList.new
 number = '0'
 4.times do
-    i.read 'images/Button_' + number + '.gif'
-    number.succ!
+  i.read 'images/Button_' + number + '.gif'
+  number.succ!
 end
 
 puts 'This may take a few seconds...'

@@ -17,17 +17,17 @@ supported patterns as an argument. For example, try "checkerboard".
 END_INFO
 
 class PatternFill < Magick::TextureFill
-    def initialize(name='bricks')
-        @pat_img = Magick::Image.read("pattern:#{name}").first
-        super(@pat_img)
-    end
+  def initialize(name='bricks')
+    @pat_img = Magick::Image.read("pattern:#{name}").first
+    super(@pat_img)
+  end
 end
 
 if ARGV[0]
-    pattern = ARGV[0]
+  pattern = ARGV[0]
 else
-    $stderr.puts 'Defaulting to checkerboard pattern.'
-    pattern = 'checkerboard'
+  $stderr.puts 'Defaulting to checkerboard pattern.'
+  pattern = 'checkerboard'
 end
 
 # Create a sample image that is 100x bigger than the pattern.
