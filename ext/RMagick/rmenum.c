@@ -176,21 +176,23 @@ Enum_spaceship(VALUE self, VALUE other)
 {
     MagickEnum *this, *that;
 
-    Data_Get_Struct(self, MagickEnum, this);
-    Data_Get_Struct(other, MagickEnum, that);
+    if(CLASS_OF(self) == CLASS_OF(other)) {
+        Data_Get_Struct(self, MagickEnum, this);
+        Data_Get_Struct(other, MagickEnum, that);
 
-    if (this->val > that->val)
-    {
-        return INT2FIX(1);
+        if (this->val > that->val)
+        {
+            return INT2FIX(1);
+        }
+        else if (this->val < that->val)
+        {
+            return INT2FIX(-1);
+        }
+
+        return INT2FIX(0);
     }
-    else if (this->val < that->val)
-    {
-        return INT2FIX(-1);
-    }
 
-    // Values are equal, check class.
-
-    return rb_funcall(CLASS_OF(self), rm_ID_spaceship, 1, CLASS_OF(other));
+    return Qnil;
 }
 
 
