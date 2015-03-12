@@ -15,8 +15,8 @@ env:
   - IMAGEMAGICK_VERSION=6.8.9-10
   # Try with HDRI support, we don't mind if this fails currently.
   - IMAGEMAGICK_VERSION=6.8.9-10 CONFIGURE_OPTIONS=--enable-hdri
-  # Latest 6.9 release
-  - IMAGEMAGICK_VERSION=6.9.0-9
+  # Latest release
+  - IMAGEMAGICK_VERSION=latest
 
 before_install:
   - source before_install_$TRAVIS_OS_NAME.sh
