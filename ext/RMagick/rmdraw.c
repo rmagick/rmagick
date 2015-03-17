@@ -1930,21 +1930,28 @@ get_type_metrics(
         case 1:                   // use default image
             text = rm_str2cstr(argv[0], &text_l);
 
-            for (x = 0; x < text_l; x++)
+            for (x = 0; x < text_l-1; x++)
             {
                 // Ensure text string doesn't refer to image attributes.
-                if (text[x] == '%' && x < text_l-1)
+                if (text[x] == '%')
                 {
                     int y;
                     char spec = text[x+1];
 
-                    for (y = 0; y < ATTRS_L; y++)
+                    if (spec == '%')
                     {
-                        if (spec == attrs[y])
+                        x++;
+                    }
+                    else
+                    {
+                        for (y = 0; y < ATTRS_L; y++)
                         {
-                            rb_raise(rb_eArgError,
-                                     "text string contains image attribute reference `%%%c'",
-                                     spec);
+                            if (spec == attrs[y])
+                            {
+                                rb_raise(rb_eArgError,
+                                         "text string contains image attribute reference `%%%c'",
+                                         spec);
+                            }
                         }
                     }
                 }
