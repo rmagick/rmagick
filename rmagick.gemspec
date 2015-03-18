@@ -29,7 +29,12 @@ Gem::Specification.new do |s|
   s.required_ruby_version = ">= #{Magick::MIN_RUBY_VERSION}"
   s.requirements << "ImageMagick #{Magick::MIN_IM_VERSION} or later"
   s.add_development_dependency 'rake-compiler'
+
   if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('1.9.2')
     s.add_development_dependency 'rubocop', '~> 0.26.1'
+  end
+
+  if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.2.0')
+    s.add_development_dependency 'test-unit', '~> 2'
   end
 end
