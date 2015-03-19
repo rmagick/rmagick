@@ -296,35 +296,38 @@ class Image2_UT < Test::Unit::TestCase
 
     # ensure destroy! works
     def test_destroy2
-        images = {}
-        GC.disable
-        Magick.trace_proc = proc do |which, id, addr, method|
-          m = id.split(/ /)
-          name = File.basename m[0]
-          format = m[1]
-          size = m[2]
-          geometry = m[3]
-          image_class = m[4]
+      images = {}
+      GC.disable
 
-          assert(which == :c || which == :d, "unexpected value for which: #{which}")
-          assert_equal(:destroy!, method) if which == :d
-          if which == :c
-            assert(!images.has_key?(addr), 'duplicate image addresses')
-            images[addr] = name
-          else
-            assert(images.has_key?(addr), 'destroying image that was not created')
-            assert_equal(name, images[addr])
-          end
+      Magick.trace_proc = proc do |which, id, addr, method|
+        m = id.split(/ /)
+        name = File.basename m[0]
+        format = m[1]
+        size = m[2]
+        geometry = m[3]
+        image_class = m[4]
+
+        assert(which == :c || which == :d, "unexpected value for which: #{which}")
+        assert_equal(:destroy!, method) if which == :d
+
+        if which == :c
+          assert(!images.has_key?(addr), 'duplicate image addresses')
+          images[addr] = name
+        else
+          assert(images.has_key?(addr), 'destroying image that was not created')
+          assert_equal(name, images[addr])
         end
-        unmapped = Magick::ImageList.new(IMAGES_DIR+'/Hot_Air_Balloons.jpg', IMAGES_DIR+'/Violin.jpg', IMAGES_DIR+'/Polynesia.jpg')
-        map = Magick::ImageList.new 'netscape:'
-        mapped = unmapped.map map, false
-        unmapped.each {|i| i.destroy!}
-        map.destroy!
-        mapped.each {|i| i.destroy!}
+      end
+
+      unmapped = Magick::ImageList.new(IMAGES_DIR+'/Hot_Air_Balloons.jpg', IMAGES_DIR+'/Violin.jpg', IMAGES_DIR+'/Polynesia.jpg')
+      map = Magick::ImageList.new 'netscape:'
+      mapped = unmapped.map map, false
+      unmapped.each {|i| i.destroy!}
+      map.destroy!
+      mapped.each {|i| i.destroy!}
     ensure
-        GC.enable
-        Magick.trace_proc = nil
+      GC.enable
+      Magick.trace_proc = nil
     end
 
     def test_difference

@@ -12,29 +12,31 @@ require 'RMagick2.so'
 
 module Magick
   @formats = nil
-    @trace_proc = nil
-    @exit_block_set_up = nil
+  @trace_proc = nil
+  @exit_block_set_up = nil
 
-    class << self
-        def formats(&block)
-          @formats ||= init_formats
-           if block_given?
-             @formats.each { |k,v| yield k, v }
-              self
-           else
-             @formats
-           end
-        end
-    
-        # remove reference to the proc at exit
-        def trace_proc=(p)
-          if @trace_proc.nil? && !p.nil? && !@exit_block_set_up
-            at_exit { @trace_proc = nil }
-             @exit_block_set_up = true
-          end
-           @trace_proc = p
-        end
+  class << self
+    def formats(&block)
+      @formats ||= init_formats
+
+      if block_given?
+        @formats.each{|k, v| yield k, v }
+        self
+      else
+        @formats
+      end
     end
+
+    # remove reference to the proc at exit
+    def trace_proc=(p)
+      if @trace_proc.nil? && !p.nil? && !@exit_block_set_up
+        at_exit { @trace_proc = nil }
+        @exit_block_set_up = true
+      end
+
+      @trace_proc = p
+    end
+  end
 
     # Geometry class and related enum constants
     class GeometryValue < Enum
