@@ -34,6 +34,8 @@
 
 **Merged pull requests:**
 
+- Silence warnings on Ruby 2.2 [\#180](https://github.com/gemhome/rmagick/pull/180) ([meanphil](https://github.com/meanphil))
+
 - Better fix for ImageMagick release download error 404 [\#181](https://github.com/gemhome/rmagick/pull/181) ([u338steven](https://github.com/u338steven))
 
 - Fixed escaping of '%' sign in get\_type\_metrics [\#179](https://github.com/gemhome/rmagick/pull/179) ([mkluczny](https://github.com/mkluczny))
