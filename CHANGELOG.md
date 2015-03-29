@@ -1,12 +1,12 @@
 # Change Log
 
-## [Unreleased](https://github.com/gemhome/rmagick/tree/HEAD)
+## [RMagick_2-14-0](https://github.com/gemhome/rmagick/tree/RMagick_2-14-0) (2015-03-30)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_2-13-4...HEAD)
+[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_2-13-4...RMagick_2-14-0)
 
 **Closed issues:**
 
-- Bundle install doesn't work!\(OS X Yosemite 10.10.2\) [\#169](https://github.com/gemhome/rmagick/issues/169)
+- Bundle install doesn't work \(OS X Yosemite 10.10.2\) [\#169](https://github.com/gemhome/rmagick/issues/169)
 
 - Unable to install rmagick on Mac OS X Yosemite \(10.10.2\) [\#168](https://github.com/gemhome/rmagick/issues/168)
 
@@ -14,13 +14,11 @@
 
 - Support -Werror=format-security [\#166](https://github.com/gemhome/rmagick/issues/166)
 
-- The rmagick not install in Windows7 64bit rails 4.2.0 and ruby 2.1.5 [\#165](https://github.com/gemhome/rmagick/issues/165)
+- Not installing in Windows7 64bit rails 4.2.0 and ruby 2.1.5 [\#165](https://github.com/gemhome/rmagick/issues/165)
 
 - Cannot build old versions of ImageMagick locally [\#163](https://github.com/gemhome/rmagick/issues/163)
 
 - Image corruption during BGRA conversion [\#159](https://github.com/gemhome/rmagick/issues/159)
-
-- Versio [\#149](https://github.com/gemhome/rmagick/issues/149)
 
 - Rmagick 2.13.4 compile error [\#148](https://github.com/gemhome/rmagick/issues/148)
 
@@ -36,37 +34,31 @@
 
 **Merged pull requests:**
 
-- more robust \#177\(Fix for ImageMagick 404\) [\#181](https://github.com/gemhome/rmagick/pull/181) ([u338steven](https://github.com/u338steven))
+- Better fix for ImageMagick release download error 404 [\#181](https://github.com/gemhome/rmagick/pull/181) ([u338steven](https://github.com/u338steven))
 
 - Fixed escaping of '%' sign in get\_type\_metrics [\#179](https://github.com/gemhome/rmagick/pull/179) ([mkluczny](https://github.com/mkluczny))
 
-- Fix for ImageMagick 404 [\#177](https://github.com/gemhome/rmagick/pull/177) ([mockdeep](https://github.com/mockdeep))
+- Fix for ImageMagick release download error 404 [\#177](https://github.com/gemhome/rmagick/pull/177) ([mockdeep](https://github.com/mockdeep))
 
-- The Great Indentation Fix of 2015 [\#174](https://github.com/gemhome/rmagick/pull/174) ([vassilevsky](https://github.com/vassilevsky))
+- Fix: in require: cannot load such file -- rmagick/version \(LoadError\) [\#172](https://github.com/gemhome/rmagick/pull/172) ([u338steven](https://github.com/u338steven))
 
-- fix: in `require': cannot load such file -- rmagick/version \(LoadError\) [\#172](https://github.com/gemhome/rmagick/pull/172) ([u338steven](https://github.com/u338steven))
+- Set ARCHFLAGS appropriately for OS X \(\#169\) [\#170](https://github.com/gemhome/rmagick/pull/170) ([u338steven](https://github.com/u338steven))
 
-- set ARCHFLAGS appropriately for OSX \(\#169\) [\#170](https://github.com/gemhome/rmagick/pull/170) ([u338steven](https://github.com/u338steven))
+- Add documentation to readme for setting up dev env [\#164](https://github.com/gemhome/rmagick/pull/164) ([mockdeep](https://github.com/mockdeep))
 
-- add documentation to readme for setting up dev env [\#164](https://github.com/gemhome/rmagick/pull/164) ([mockdeep](https://github.com/mockdeep))
-
-- Change all require RMagick to rmagick [\#157](https://github.com/gemhome/rmagick/pull/157) ([bf4](https://github.com/bf4))
-
-- Fix \#148; More robust feature detection [\#156](https://github.com/gemhome/rmagick/pull/156) ([bf4](https://github.com/bf4))
-
-- Let 1.8 fail [\#155](https://github.com/gemhome/rmagick/pull/155) ([bf4](https://github.com/bf4))
+- More robust feature detection [\#156](https://github.com/gemhome/rmagick/pull/156) ([bf4](https://github.com/bf4))
 
 - Make extconf.rb \(a little\) easier to understand [\#154](https://github.com/gemhome/rmagick/pull/154) ([bf4](https://github.com/bf4))
 
 - 1.8 compatibility changes [\#153](https://github.com/gemhome/rmagick/pull/153) ([bf4](https://github.com/bf4))
 
-- only require rubocop on ruby versions \>= 1.9.2 [\#151](https://github.com/gemhome/rmagick/pull/151) ([mockdeep](https://github.com/mockdeep))
+- Only require rubocop on ruby versions \>= 1.9.2 [\#151](https://github.com/gemhome/rmagick/pull/151) ([mockdeep](https://github.com/mockdeep))
 
-- set up simplecov [\#147](https://github.com/gemhome/rmagick/pull/147) ([mockdeep](https://github.com/mockdeep))
+- Set up simplecov [\#147](https://github.com/gemhome/rmagick/pull/147) ([mockdeep](https://github.com/mockdeep))
 
-- move deprecated RMagick.rb file [\#141](https://github.com/gemhome/rmagick/pull/141) ([mockdeep](https://github.com/mockdeep))
+- Move deprecated RMagick.rb file [\#141](https://github.com/gemhome/rmagick/pull/141) ([mockdeep](https://github.com/mockdeep))
 
-- adding rubocop [\#138](https://github.com/gemhome/rmagick/pull/138) ([mockdeep](https://github.com/mockdeep))
+- Added RuboCop [\#138](https://github.com/gemhome/rmagick/pull/138) ([mockdeep](https://github.com/mockdeep))
 
 - Support Ruby 1.8 [\#152](https://github.com/gemhome/rmagick/pull/152) ([vassilevsky](https://github.com/vassilevsky))
 
@@ -122,13 +114,9 @@
 
 - sizeof\(DrawInfo\) is incorrect [\#110](https://github.com/gemhome/rmagick/issues/110)
 
-- solid fill class [\#65](https://github.com/gemhome/rmagick/issues/65)
+- Solid fill class [\#65](https://github.com/gemhome/rmagick/issues/65)
 
 - Fixed build error with ImageMagick 6.8.8 and Ruby 2.0 [\#61](https://github.com/gemhome/rmagick/issues/61)
-
-- nvert -version [\#49](https://github.com/gemhome/rmagick/issues/49)
-
-- close [\#48](https://github.com/gemhome/rmagick/issues/48)
 
 - Text cropped during generation [\#47](https://github.com/gemhome/rmagick/issues/47)
 
@@ -146,17 +134,17 @@
 
 - rmagick 1.15.17 Failed Install on Mac OS X [\#18](https://github.com/gemhome/rmagick/issues/18)
 
-- ruby 1.9.2, ImageMagick 6.6.9, RMagick 2.13.1, Mac OS 10.6 [\#17](https://github.com/gemhome/rmagick/issues/17)
+- Ruby 1.9.2, ImageMagick 6.6.9, RMagick 2.13.1, Mac OS 10.6 [\#17](https://github.com/gemhome/rmagick/issues/17)
 
 - Rmagick fails to require lcms-2.1 [\#16](https://github.com/gemhome/rmagick/issues/16)
 
-- vector density on read [\#15](https://github.com/gemhome/rmagick/issues/15)
+- Vector density on read [\#15](https://github.com/gemhome/rmagick/issues/15)
 
 - Problems installing with homebrew \(and not macports\) [\#14](https://github.com/gemhome/rmagick/issues/14)
 
 - Rmagick + Rails 3 [\#11](https://github.com/gemhome/rmagick/issues/11)
 
-- uninitialized constant Magick::Hatchfill \(NameError\) [\#10](https://github.com/gemhome/rmagick/issues/10)
+- Uninitialized constant Magick::Hatchfill \(NameError\) [\#10](https://github.com/gemhome/rmagick/issues/10)
 
 - Segfaults w/ 1.9.2 and threads [\#9](https://github.com/gemhome/rmagick/issues/9)
 
@@ -164,7 +152,7 @@
 
 - Can't install rmagick [\#6](https://github.com/gemhome/rmagick/issues/6)
 
-- can't install rmagick on cygwin with ruby 1.8.7 \(2008-08-11 patchlevel 72\) \[i386-cygwin\] [\#4](https://github.com/gemhome/rmagick/issues/4)
+- Can't install rmagick on cygwin with ruby 1.8.7 \(2008-08-11 patchlevel 72\) \[i386-cygwin\] [\#4](https://github.com/gemhome/rmagick/issues/4)
 
 - Could you please post a binary for ruby 1.9.1 on win32!? [\#3](https://github.com/gemhome/rmagick/issues/3)
 
@@ -172,15 +160,11 @@
 
 **Merged pull requests:**
 
-- fix path for build [\#142](https://github.com/gemhome/rmagick/pull/142) ([mockdeep](https://github.com/mockdeep))
+- Fix path for build [\#142](https://github.com/gemhome/rmagick/pull/142) ([mockdeep](https://github.com/mockdeep))
 
 - Fix wrong relative path for lib/rmagick/version [\#139](https://github.com/gemhome/rmagick/pull/139) ([marwan-tanager](https://github.com/marwan-tanager))
 
 - Add Contributor's Guide [\#136](https://github.com/gemhome/rmagick/pull/136) ([vassilevsky](https://github.com/vassilevsky))
-
-- Green OS X Build [\#133](https://github.com/gemhome/rmagick/pull/133) ([vassilevsky](https://github.com/vassilevsky))
-
-- Enable builds on OS X [\#131](https://github.com/gemhome/rmagick/pull/131) ([vassilevsky](https://github.com/vassilevsky))
 
 - proof of concept for using pkg-config in place of Magick-config on debian based systems [\#129](https://github.com/gemhome/rmagick/pull/129) ([theschoolmaster](https://github.com/theschoolmaster))
 
@@ -238,7 +222,7 @@
 
 - Fix pixel hash test [\#95](https://github.com/gemhome/rmagick/pull/95) ([vassilevsky](https://github.com/vassilevsky))
 
-- Fixed: build error on Windows Ruby x64 \(with ImageMagick 6.8.0-10 or Ima... [\#94](https://github.com/gemhome/rmagick/pull/94) ([u338steven](https://github.com/u338steven))
+- Fixed: build error on Windows Ruby x64 \(with ImageMagick 6.8.0-10 / 6.8.7-7 [\#94](https://github.com/gemhome/rmagick/pull/94) ([u338steven](https://github.com/u338steven))
 
 - Do not test machine and OS-specific integers [\#91](https://github.com/gemhome/rmagick/pull/91) ([vassilevsky](https://github.com/vassilevsky))
 
@@ -248,10 +232,6 @@
 
 - Remove build support for RAA and rubyforge; annotate Rake tasks [\#69](https://github.com/gemhome/rmagick/pull/69) ([bf4](https://github.com/bf4))
 
-- line [\#146](https://github.com/gemhome/rmagick/pull/146) ([vassilevsky](https://github.com/vassilevsky))
-
-- line [\#145](https://github.com/gemhome/rmagick/pull/145) ([vassilevsky](https://github.com/vassilevsky))
-
 - Add a Gitter chat badge to README.md [\#143](https://github.com/gemhome/rmagick/pull/143) ([gitter-badger](https://github.com/gitter-badger))
 
 - Add a badge with the number of references to the gem from other gems [\#137](https://github.com/gemhome/rmagick/pull/137) ([vassilevsky](https://github.com/vassilevsky))
@@ -260,7 +240,7 @@
 
 - Update to releases directory [\#105](https://github.com/gemhome/rmagick/pull/105) ([dtykocki](https://github.com/dtykocki))
 
-- Test multiple versions of ImageMagic. [\#103](https://github.com/gemhome/rmagick/pull/103) ([ioquatix](https://github.com/ioquatix))
+- Test multiple versions of ImageMagick [\#103](https://github.com/gemhome/rmagick/pull/103) ([ioquatix](https://github.com/ioquatix))
 
 - Add "Contributing" section to README and add Hound configuration [\#71](https://github.com/gemhome/rmagick/pull/71) ([linduxed](https://github.com/linduxed))
 
@@ -268,303 +248,401 @@
 
 [Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_2-13-2...RMagick_2-13-3)
 
-## [RMagick_2-13-2](https://github.com/gemhome/rmagick/tree/RMagick_2-13-2) (2013-02-02)
+**Closed issues:**
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_2-13-1...RMagick_2-13-2)
+- Bundle Install doesn't work! [\#128](https://github.com/rmagick/rmagick/issues/128)
 
-## [RMagick_2-13-1](https://github.com/gemhome/rmagick/tree/RMagick_2-13-1) (2010-04-05)
+- "checking for ImageMagick version \>= 6.4.9... no" on Debian Sid + rbenv [\#126](https://github.com/rmagick/rmagick/issues/126)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_2-13-0...RMagick_2-13-1)
+- ImageMagick library function failed to return a result  on from\_blob [\#124](https://github.com/rmagick/rmagick/issues/124)
 
-## [RMagick_2-13-0](https://github.com/gemhome/rmagick/tree/RMagick_2-13-0) (2009-12-24)
+- Update repos project URL [\#121](https://github.com/rmagick/rmagick/issues/121)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_2-12-2...RMagick_2-13-0)
+- RMagick 2.13.3 ghost release? [\#119](https://github.com/rmagick/rmagick/issues/119)
 
-## [RMagick_2-12-2](https://github.com/gemhome/rmagick/tree/RMagick_2-12-2) (2009-10-10)
+- Windows install fails: undefined reference to GetExceptionInfo etc [\#111](https://github.com/rmagick/rmagick/issues/111)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_2-12-1...RMagick_2-12-2)
+- Can't install on OS X 10.10 Yosemite [\#108](https://github.com/rmagick/rmagick/issues/108)
 
-## [RMagick_2-12-1](https://github.com/gemhome/rmagick/tree/RMagick_2-12-1) (2009-10-05)
+- RMagick looses gif transparency after get\_pixels and store\_pixels [\#106](https://github.com/rmagick/rmagick/issues/106)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_2-12-0...RMagick_2-12-1)
+- Reason: image not found [\#102](https://github.com/rmagick/rmagick/issues/102)
 
-## [RMagick_2-12-0](https://github.com/gemhome/rmagick/tree/RMagick_2-12-0) (2009-10-03)
+- Digest::Digest is deprecated; use Digest [\#99](https://github.com/rmagick/rmagick/issues/99)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_2-11-1...RMagick_2-12-0)
+- ERROR:  Error installing rmagick - Failed to build gem native extension. [\#95](https://github.com/rmagick/rmagick/issues/95)
 
-## [RMagick_2-11-1](https://github.com/gemhome/rmagick/tree/RMagick_2-11-1) (2009-09-05)
+- Issue with LevelImageColors [\#94](https://github.com/rmagick/rmagick/issues/94)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_2-11-0...RMagick_2-11-1)
+- Install problem with rmagick [\#88](https://github.com/rmagick/rmagick/issues/88)
 
-## [RMagick_2-11-0](https://github.com/gemhome/rmagick/tree/RMagick_2-11-0) (2009-07-29)
+- Rmagick won't install [\#80](https://github.com/rmagick/rmagick/issues/80)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_2-10-0...RMagick_2-11-0)
+- unable to install on windows8 [\#74](https://github.com/rmagick/rmagick/issues/74)
 
-## [RMagick_2-10-0](https://github.com/gemhome/rmagick/tree/RMagick_2-10-0) (2009-06-19)
+- error when doing a gem install [\#68](https://github.com/rmagick/rmagick/issues/68)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_2-9-2...RMagick_2-10-0)
+- InitializeMagick deprecated, replace with MagickCoreGenesis [\#64](https://github.com/rmagick/rmagick/issues/64)
 
-## [RMagick_2-9-2](https://github.com/gemhome/rmagick/tree/RMagick_2-9-2) (2009-05-13)
+- Cannot install RMagic on Mountain Lion 10.8.2 [\#61](https://github.com/rmagick/rmagick/issues/61)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_2-9-1...RMagick_2-9-2)
+- rmagick installation issue after a brew uprage [\#60](https://github.com/rmagick/rmagick/issues/60)
 
-## [RMagick_2-9-1](https://github.com/gemhome/rmagick/tree/RMagick_2-9-1) (2009-02-01)
+- RMagick doesn't support HDRI ImageMagick [\#18](https://github.com/rmagick/rmagick/issues/18)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_2-9-0...RMagick_2-9-1)
+- Leaking memory? [\#12](https://github.com/rmagick/rmagick/issues/12)
 
-## [RMagick_2-9-0](https://github.com/gemhome/rmagick/tree/RMagick_2-9-0) (2009-01-13)
+**Merged pull requests:**
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-15-0-updates...RMagick_2-9-0)
+- Fix installation error on systems with HRDI enabled RMagick [\#90](https://github.com/rmagick/rmagick/pull/90) ([peteonrails](https://github.com/peteonrails))
 
-## [RMagick_1-15-0-updates](https://github.com/gemhome/rmagick/tree/RMagick_1-15-0-updates) (2008-12-05)
+- Add MIT license information [\#78](https://github.com/rmagick/rmagick/pull/78) ([brysgo](https://github.com/brysgo))
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-15-17...RMagick_1-15-0-updates)
+- --base=gemhome [\#123](https://github.com/rmagick/rmagick/pull/123) ([bf4](https://github.com/bf4))
 
-## [RMagick_1-15-17](https://github.com/gemhome/rmagick/tree/RMagick_1-15-17) (2008-12-05)
+- 1.8 compatibility changes [\#122](https://github.com/rmagick/rmagick/pull/122) ([bf4](https://github.com/bf4))
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_2-8-0...RMagick_1-15-17)
+- POC for using pkg-config in place of Magick-config on debian based systems [\#116](https://github.com/rmagick/rmagick/pull/116) ([theschoolmaster](https://github.com/theschoolmaster))
 
-## [RMagick_2-8-0](https://github.com/gemhome/rmagick/tree/RMagick_2-8-0) (2008-12-04)
+- set prefix to empty string if config\_string\(prefix\) is nill [\#101](https://github.com/rmagick/rmagick/pull/101) ([trbrink](https://github.com/trbrink))
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-15-16...RMagick_2-8-0)
+- Add license into gemspec [\#86](https://github.com/rmagick/rmagick/pull/86) ([kuahyeow](https://github.com/kuahyeow))
 
-## [RMagick_1-15-16](https://github.com/gemhome/rmagick/tree/RMagick_1-15-16) (2008-11-25)
+- Little detail in Docs fixed, leaving no doubt to the reader. [\#81](https://github.com/rmagick/rmagick/pull/81) ([marcofognog](https://github.com/marcofognog))
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_2-7-2...RMagick_1-15-16)
+- Update homepage link in gemspec [\#65](https://github.com/rmagick/rmagick/pull/65) ([killthekitten](https://github.com/killthekitten))
 
-## [RMagick_2-7-2](https://github.com/gemhome/rmagick/tree/RMagick_2-7-2) (2008-11-13)
+- New imagemagick library names [\#63](https://github.com/rmagick/rmagick/pull/63) ([jo](https://github.com/jo))
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_2-7-1...RMagick_2-7-2)
+- use pkg\_config before have\_library [\#62](https://github.com/rmagick/rmagick/pull/62) ([znz](https://github.com/znz))
 
-## [RMagick_2-7-1](https://github.com/gemhome/rmagick/tree/RMagick_2-7-1) (2008-11-01)
+- Fix build with ruby-head \(2.0\) [\#58](https://github.com/rmagick/rmagick/pull/58) ([crazymykl](https://github.com/crazymykl))
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_2-7-0...RMagick_2-7-1)
+## [RMagick_2-13-2](https://github.com/rmagick/rmagick/tree/RMagick_2-13-2) (2013-02-02)
 
-## [RMagick_2-7-0](https://github.com/gemhome/rmagick/tree/RMagick_2-7-0) (2008-09-28)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_2-13-1...RMagick_2-13-2)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-15-15...RMagick_2-7-0)
+**Closed issues:**
 
-## [RMagick_1-15-15](https://github.com/gemhome/rmagick/tree/RMagick_1-15-15) (2008-09-10)
+- RVG :stroke\_dasharray is not drawing correctly [\#56](https://github.com/rmagick/rmagick/issues/56)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_2-6-0...RMagick_1-15-15)
+- Incompatibility with ImageMagick installed via Homebrew and RMagick under MacRuby [\#49](https://github.com/rmagick/rmagick/issues/49)
 
-## [RMagick_2-6-0](https://github.com/gemhome/rmagick/tree/RMagick_2-6-0) (2008-09-10)
+- Rmagick 1.15.17 doesn't work with ree  [\#48](https://github.com/rmagick/rmagick/issues/48)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_2-5-2...RMagick_2-6-0)
+- Can't rotate text [\#42](https://github.com/rmagick/rmagick/issues/42)
 
-## [RMagick_2-5-2](https://github.com/gemhome/rmagick/tree/RMagick_2-5-2) (2008-07-13)
+- Opacity [\#37](https://github.com/rmagick/rmagick/issues/37)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_2-5-1...RMagick_2-5-2)
+- Does not install on Mac OS X 10.7.2 and Ruby 1.9.3-p0 [\#36](https://github.com/rmagick/rmagick/issues/36)
 
-## [RMagick_2-5-1](https://github.com/gemhome/rmagick/tree/RMagick_2-5-1) (2008-06-21)
+- Scale doesn't work [\#32](https://github.com/rmagick/rmagick/issues/32)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_2-5-0...RMagick_2-5-1)
+- ld: library not found for -lclparser  OS X 10.7 [\#30](https://github.com/rmagick/rmagick/issues/30)
 
-## [RMagick_2-5-0](https://github.com/gemhome/rmagick/tree/RMagick_2-5-0) (2008-06-08)
+- RMagick & Rails performance [\#29](https://github.com/rmagick/rmagick/issues/29)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_2-4-0...RMagick_2-5-0)
+- Can't install rmagick on my windows\(Ruby192\) [\#27](https://github.com/rmagick/rmagick/issues/27)
 
-## [RMagick_2-4-0](https://github.com/gemhome/rmagick/tree/RMagick_2-4-0) (2008-06-02)
+- Error installing rmagick on Snow Leopard and REE 1.8.7 [\#23](https://github.com/rmagick/rmagick/issues/23)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-15-14...RMagick_2-4-0)
+**Merged pull requests:**
 
-## [RMagick_1-15-14](https://github.com/gemhome/rmagick/tree/RMagick_1-15-14) (2008-05-05)
+- Fix the bug for MSWIN and MINGW [\#20](https://github.com/rmagick/rmagick/pull/20) ([dw3w4at](https://github.com/dw3w4at))
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_2-3-0...RMagick_1-15-14)
+## [RMagick_2-13-1](https://github.com/rmagick/rmagick/tree/RMagick_2-13-1) (2010-04-05)
 
-## [RMagick_2-3-0](https://github.com/gemhome/rmagick/tree/RMagick_2-3-0) (2008-03-29)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_2-13-0...RMagick_2-13-1)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-15-13...RMagick_2-3-0)
+## [RMagick_2-13-0](https://github.com/rmagick/rmagick/tree/RMagick_2-13-0) (2009-12-24)
 
-## [RMagick_1-15-13](https://github.com/gemhome/rmagick/tree/RMagick_1-15-13) (2008-02-14)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_2-12-2...RMagick_2-13-0)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_2-2-2...RMagick_1-15-13)
+## [RMagick_2-12-2](https://github.com/rmagick/rmagick/tree/RMagick_2-12-2) (2009-10-10)
 
-## [RMagick_2-2-2](https://github.com/gemhome/rmagick/tree/RMagick_2-2-2) (2008-02-13)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_2-12-1...RMagick_2-12-2)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_2-2-0...RMagick_2-2-2)
+## [RMagick_2-12-1](https://github.com/rmagick/rmagick/tree/RMagick_2-12-1) (2009-10-05)
 
-## [RMagick_2-2-0](https://github.com/gemhome/rmagick/tree/RMagick_2-2-0) (2008-01-31)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_2-12-0...RMagick_2-12-1)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_2-1-0...RMagick_2-2-0)
+## [RMagick_2-12-0](https://github.com/rmagick/rmagick/tree/RMagick_2-12-0) (2009-10-03)
 
-## [RMagick_2-1-0](https://github.com/gemhome/rmagick/tree/RMagick_2-1-0) (2008-01-09)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_2-11-1...RMagick_2-12-0)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_2-0-0...RMagick_2-1-0)
+## [RMagick_2-11-1](https://github.com/rmagick/rmagick/tree/RMagick_2-11-1) (2009-09-05)
 
-## [RMagick_2-0-0](https://github.com/gemhome/rmagick/tree/RMagick_2-0-0) (2007-12-27)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_2-11-0...RMagick_2-11-1)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-15-12...RMagick_2-0-0)
+## [RMagick_2-11-0](https://github.com/rmagick/rmagick/tree/RMagick_2-11-0) (2009-07-29)
 
-## [RMagick_1-15-12](https://github.com/gemhome/rmagick/tree/RMagick_1-15-12) (2007-12-26)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_2-10-0...RMagick_2-11-0)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-15-11...RMagick_1-15-12)
+## [RMagick_2-10-0](https://github.com/rmagick/rmagick/tree/RMagick_2-10-0) (2009-06-19)
 
-## [RMagick_1-15-11](https://github.com/gemhome/rmagick/tree/RMagick_1-15-11) (2007-11-25)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_2-9-2...RMagick_2-10-0)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-15-10...RMagick_1-15-11)
+## [RMagick_2-9-2](https://github.com/rmagick/rmagick/tree/RMagick_2-9-2) (2009-05-13)
 
-## [RMagick_1-15-10](https://github.com/gemhome/rmagick/tree/RMagick_1-15-10) (2007-09-16)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_2-9-1...RMagick_2-9-2)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-15-0-fixes...RMagick_1-15-10)
+## [RMagick_2-9-1](https://github.com/rmagick/rmagick/tree/RMagick_2-9-1) (2009-02-01)
 
-## [RMagick_1-15-0-fixes](https://github.com/gemhome/rmagick/tree/RMagick_1-15-0-fixes) (2007-08-09)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_2-9-0...RMagick_2-9-1)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-15-9...RMagick_1-15-0-fixes)
+## [RMagick_2-9-0](https://github.com/rmagick/rmagick/tree/RMagick_2-9-0) (2009-01-13)
 
-## [RMagick_1-15-9](https://github.com/gemhome/rmagick/tree/RMagick_1-15-9) (2007-08-09)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-15-17...RMagick_2-9-0)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-15-8...RMagick_1-15-9)
+## [RMagick_1-15-17](https://github.com/rmagick/rmagick/tree/RMagick_1-15-17) (2008-12-05)
 
-## [RMagick_1-15-8](https://github.com/gemhome/rmagick/tree/RMagick_1-15-8) (2007-07-31)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-15-0-updates...RMagick_1-15-17)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-15-7...RMagick_1-15-8)
+## [RMagick_1-15-0-updates](https://github.com/rmagick/rmagick/tree/RMagick_1-15-0-updates) (2008-12-05)
 
-## [RMagick_1-15-7](https://github.com/gemhome/rmagick/tree/RMagick_1-15-7) (2007-06-09)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_2-8-0...RMagick_1-15-0-updates)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-15-6...RMagick_1-15-7)
+## [RMagick_2-8-0](https://github.com/rmagick/rmagick/tree/RMagick_2-8-0) (2008-12-04)
 
-## [RMagick_1-15-6](https://github.com/gemhome/rmagick/tree/RMagick_1-15-6) (2007-04-25)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-15-16...RMagick_2-8-0)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-15-5...RMagick_1-15-6)
+## [RMagick_1-15-16](https://github.com/rmagick/rmagick/tree/RMagick_1-15-16) (2008-11-25)
 
-## [RMagick_1-15-5](https://github.com/gemhome/rmagick/tree/RMagick_1-15-5) (2007-03-31)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_2-7-2...RMagick_1-15-16)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-15-4...RMagick_1-15-5)
+## [RMagick_2-7-2](https://github.com/rmagick/rmagick/tree/RMagick_2-7-2) (2008-11-13)
 
-## [RMagick_1-15-4](https://github.com/gemhome/rmagick/tree/RMagick_1-15-4) (2007-03-04)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_2-7-1...RMagick_2-7-2)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-15-3...RMagick_1-15-4)
+## [RMagick_2-7-1](https://github.com/rmagick/rmagick/tree/RMagick_2-7-1) (2008-11-01)
 
-## [RMagick_1-15-3](https://github.com/gemhome/rmagick/tree/RMagick_1-15-3) (2007-02-19)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_2-7-0...RMagick_2-7-1)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-15-2...RMagick_1-15-3)
+## [RMagick_2-7-0](https://github.com/rmagick/rmagick/tree/RMagick_2-7-0) (2008-09-28)
 
-## [RMagick_1-15-2](https://github.com/gemhome/rmagick/tree/RMagick_1-15-2) (2007-02-04)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-15-15...RMagick_2-7-0)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-15-1...RMagick_1-15-2)
+## [RMagick_1-15-15](https://github.com/rmagick/rmagick/tree/RMagick_1-15-15) (2008-09-10)
 
-## [RMagick_1-15-1](https://github.com/gemhome/rmagick/tree/RMagick_1-15-1) (2007-02-01)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_2-6-0...RMagick_1-15-15)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-15-0...RMagick_1-15-1)
+## [RMagick_2-6-0](https://github.com/rmagick/rmagick/tree/RMagick_2-6-0) (2008-09-10)
 
-## [RMagick_1-15-0](https://github.com/gemhome/rmagick/tree/RMagick_1-15-0) (2007-01-20)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_2-5-2...RMagick_2-6-0)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-14-1...RMagick_1-15-0)
+## [RMagick_2-5-2](https://github.com/rmagick/rmagick/tree/RMagick_2-5-2) (2008-07-13)
 
-## [RMagick_1-14-1](https://github.com/gemhome/rmagick/tree/RMagick_1-14-1) (2006-10-21)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_2-5-1...RMagick_2-5-2)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-13-0...RMagick_1-14-1)
+## [RMagick_2-5-1](https://github.com/rmagick/rmagick/tree/RMagick_2-5-1) (2008-06-21)
 
-## [RMagick_1-13-0](https://github.com/gemhome/rmagick/tree/RMagick_1-13-0) (2006-06-28)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_2-5-0...RMagick_2-5-1)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-12-0...RMagick_1-13-0)
+## [RMagick_2-5-0](https://github.com/rmagick/rmagick/tree/RMagick_2-5-0) (2008-06-08)
 
-## [RMagick_1-12-0](https://github.com/gemhome/rmagick/tree/RMagick_1-12-0) (2006-06-03)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_2-4-0...RMagick_2-5-0)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-11-1...RMagick_1-12-0)
+## [RMagick_2-4-0](https://github.com/rmagick/rmagick/tree/RMagick_2-4-0) (2008-06-02)
 
-## [RMagick_1-11-1](https://github.com/gemhome/rmagick/tree/RMagick_1-11-1) (2006-05-27)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-15-14...RMagick_2-4-0)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-11-0...RMagick_1-11-1)
+## [RMagick_1-15-14](https://github.com/rmagick/rmagick/tree/RMagick_1-15-14) (2008-05-05)
 
-## [RMagick_1-11-0](https://github.com/gemhome/rmagick/tree/RMagick_1-11-0) (2006-05-11)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_2-3-0...RMagick_1-15-14)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-10-1...RMagick_1-11-0)
+## [RMagick_2-3-0](https://github.com/rmagick/rmagick/tree/RMagick_2-3-0) (2008-03-29)
 
-## [RMagick_1-10-1](https://github.com/gemhome/rmagick/tree/RMagick_1-10-1) (2006-02-25)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-15-13...RMagick_2-3-0)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-10-0...RMagick_1-10-1)
+## [RMagick_1-15-13](https://github.com/rmagick/rmagick/tree/RMagick_1-15-13) (2008-02-14)
 
-## [RMagick_1-10-0](https://github.com/gemhome/rmagick/tree/RMagick_1-10-0) (2006-01-21)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_2-2-2...RMagick_1-15-13)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-9-3...RMagick_1-10-0)
+## [RMagick_2-2-2](https://github.com/rmagick/rmagick/tree/RMagick_2-2-2) (2008-02-13)
 
-## [RMagick_1-9-3](https://github.com/gemhome/rmagick/tree/RMagick_1-9-3) (2005-10-17)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_2-2-0...RMagick_2-2-2)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-9-2...RMagick_1-9-3)
+## [RMagick_2-2-0](https://github.com/rmagick/rmagick/tree/RMagick_2-2-0) (2008-01-31)
 
-## [RMagick_1-9-2](https://github.com/gemhome/rmagick/tree/RMagick_1-9-2) (2005-09-14)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_2-1-0...RMagick_2-2-0)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-9-1...RMagick_1-9-2)
+## [RMagick_2-1-0](https://github.com/rmagick/rmagick/tree/RMagick_2-1-0) (2008-01-09)
 
-## [RMagick_1-9-1](https://github.com/gemhome/rmagick/tree/RMagick_1-9-1) (2005-09-07)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_2-0-0...RMagick_2-1-0)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-9-0...RMagick_1-9-1)
+## [RMagick_2-0-0](https://github.com/rmagick/rmagick/tree/RMagick_2-0-0) (2007-12-27)
 
-## [RMagick_1-9-0](https://github.com/gemhome/rmagick/tree/RMagick_1-9-0) (2005-07-15)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-15-12...RMagick_2-0-0)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-8-3...RMagick_1-9-0)
+## [RMagick_1-15-12](https://github.com/rmagick/rmagick/tree/RMagick_1-15-12) (2007-12-26)
 
-## [RMagick_1-8-3](https://github.com/gemhome/rmagick/tree/RMagick_1-8-3) (2005-06-17)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-15-11...RMagick_1-15-12)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-8-2...RMagick_1-8-3)
+## [RMagick_1-15-11](https://github.com/rmagick/rmagick/tree/RMagick_1-15-11) (2007-11-25)
 
-## [RMagick_1-8-2](https://github.com/gemhome/rmagick/tree/RMagick_1-8-2) (2005-06-10)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-15-10...RMagick_1-15-11)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-8-1...RMagick_1-8-2)
+## [RMagick_1-15-10](https://github.com/rmagick/rmagick/tree/RMagick_1-15-10) (2007-09-16)
 
-## [RMagick_1-8-1](https://github.com/gemhome/rmagick/tree/RMagick_1-8-1) (2005-05-22)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-15-0-fixes...RMagick_1-15-10)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-8-0...RMagick_1-8-1)
+## [RMagick_1-15-0-fixes](https://github.com/rmagick/rmagick/tree/RMagick_1-15-0-fixes) (2007-08-09)
 
-## [RMagick_1-8-0](https://github.com/gemhome/rmagick/tree/RMagick_1-8-0) (2005-04-30)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-15-9...RMagick_1-15-0-fixes)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-7-4...RMagick_1-8-0)
+## [RMagick_1-15-9](https://github.com/rmagick/rmagick/tree/RMagick_1-15-9) (2007-08-09)
 
-## [RMagick_1-7-4](https://github.com/gemhome/rmagick/tree/RMagick_1-7-4) (2005-04-02)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-15-8...RMagick_1-15-9)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-7-2...RMagick_1-7-4)
+## [RMagick_1-15-8](https://github.com/rmagick/rmagick/tree/RMagick_1-15-8) (2007-07-31)
 
-## [RMagick_1-7-2](https://github.com/gemhome/rmagick/tree/RMagick_1-7-2) (2005-04-02)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-15-7...RMagick_1-15-8)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-7-1...RMagick_1-7-2)
+## [RMagick_1-15-7](https://github.com/rmagick/rmagick/tree/RMagick_1-15-7) (2007-06-09)
 
-## [RMagick_1-7-1](https://github.com/gemhome/rmagick/tree/RMagick_1-7-1) (2004-12-25)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-15-6...RMagick_1-15-7)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-7-0...RMagick_1-7-1)
+## [RMagick_1-15-6](https://github.com/rmagick/rmagick/tree/RMagick_1-15-6) (2007-04-25)
 
-## [RMagick_1-7-0](https://github.com/gemhome/rmagick/tree/RMagick_1-7-0) (2004-12-18)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-15-5...RMagick_1-15-6)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-6-2...RMagick_1-7-0)
+## [RMagick_1-15-5](https://github.com/rmagick/rmagick/tree/RMagick_1-15-5) (2007-03-31)
 
-## [RMagick_1-6-2](https://github.com/gemhome/rmagick/tree/RMagick_1-6-2) (2004-12-01)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-15-4...RMagick_1-15-5)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-6-1...RMagick_1-6-2)
+## [RMagick_1-15-4](https://github.com/rmagick/rmagick/tree/RMagick_1-15-4) (2007-03-04)
 
-## [RMagick_1-6-1](https://github.com/gemhome/rmagick/tree/RMagick_1-6-1) (2004-12-01)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-15-3...RMagick_1-15-4)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-6-0...RMagick_1-6-1)
+## [RMagick_1-15-3](https://github.com/rmagick/rmagick/tree/RMagick_1-15-3) (2007-02-19)
 
-## [RMagick_1-6-0](https://github.com/gemhome/rmagick/tree/RMagick_1-6-0) (2004-08-18)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-15-2...RMagick_1-15-3)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-5-0...RMagick_1-6-0)
+## [RMagick_1-15-2](https://github.com/rmagick/rmagick/tree/RMagick_1-15-2) (2007-02-04)
 
-## [RMagick_1-5-0](https://github.com/gemhome/rmagick/tree/RMagick_1-5-0) (2004-04-21)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-15-1...RMagick_1-15-2)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-4-0...RMagick_1-5-0)
+## [RMagick_1-15-1](https://github.com/rmagick/rmagick/tree/RMagick_1-15-1) (2007-02-01)
 
-## [RMagick_1-4-0](https://github.com/gemhome/rmagick/tree/RMagick_1-4-0) (2004-02-16)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-15-0...RMagick_1-15-1)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-3-1...RMagick_1-4-0)
+## [RMagick_1-15-0](https://github.com/rmagick/rmagick/tree/RMagick_1-15-0) (2007-01-20)
 
-## [RMagick_1-3-1](https://github.com/gemhome/rmagick/tree/RMagick_1-3-1) (2004-01-02)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-14-1...RMagick_1-15-0)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-3-2...RMagick_1-3-1)
+## [RMagick_1-14-1](https://github.com/rmagick/rmagick/tree/RMagick_1-14-1) (2006-10-21)
 
-## [RMagick_1-3-2](https://github.com/gemhome/rmagick/tree/RMagick_1-3-2) (2003-12-09)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-13-0...RMagick_1-14-1)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/RMagick_1-3-0...RMagick_1-3-2)
+## [RMagick_1-13-0](https://github.com/rmagick/rmagick/tree/RMagick_1-13-0) (2006-06-28)
 
-## [RMagick_1-3-0](https://github.com/gemhome/rmagick/tree/RMagick_1-3-0) (2003-08-03)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-12-0...RMagick_1-13-0)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/R1-2-2...RMagick_1-3-0)
+## [RMagick_1-12-0](https://github.com/rmagick/rmagick/tree/RMagick_1-12-0) (2006-06-03)
 
-## [R1-2-2](https://github.com/gemhome/rmagick/tree/R1-2-2) (2003-07-01)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-11-1...RMagick_1-12-0)
 
-[Full Changelog](https://github.com/gemhome/rmagick/compare/From_RubyMagick...R1-2-2)
+## [RMagick_1-11-1](https://github.com/rmagick/rmagick/tree/RMagick_1-11-1) (2006-05-27)
 
-## [From_RubyMagick](https://github.com/gemhome/rmagick/tree/From_RubyMagick) (2003-07-01)
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-11-0...RMagick_1-11-1)
+
+## [RMagick_1-11-0](https://github.com/rmagick/rmagick/tree/RMagick_1-11-0) (2006-05-11)
+
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-10-1...RMagick_1-11-0)
+
+## [RMagick_1-10-1](https://github.com/rmagick/rmagick/tree/RMagick_1-10-1) (2006-02-25)
+
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-10-0...RMagick_1-10-1)
+
+## [RMagick_1-10-0](https://github.com/rmagick/rmagick/tree/RMagick_1-10-0) (2006-01-21)
+
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-9-3...RMagick_1-10-0)
+
+## [RMagick_1-9-3](https://github.com/rmagick/rmagick/tree/RMagick_1-9-3) (2005-10-17)
+
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-9-2...RMagick_1-9-3)
+
+## [RMagick_1-9-2](https://github.com/rmagick/rmagick/tree/RMagick_1-9-2) (2005-09-14)
+
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-9-1...RMagick_1-9-2)
+
+## [RMagick_1-9-1](https://github.com/rmagick/rmagick/tree/RMagick_1-9-1) (2005-09-07)
+
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-9-0...RMagick_1-9-1)
+
+## [RMagick_1-9-0](https://github.com/rmagick/rmagick/tree/RMagick_1-9-0) (2005-07-15)
+
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-8-3...RMagick_1-9-0)
+
+## [RMagick_1-8-3](https://github.com/rmagick/rmagick/tree/RMagick_1-8-3) (2005-06-17)
+
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-8-2...RMagick_1-8-3)
+
+## [RMagick_1-8-2](https://github.com/rmagick/rmagick/tree/RMagick_1-8-2) (2005-06-10)
+
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-8-1...RMagick_1-8-2)
+
+## [RMagick_1-8-1](https://github.com/rmagick/rmagick/tree/RMagick_1-8-1) (2005-05-22)
+
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-8-0...RMagick_1-8-1)
+
+## [RMagick_1-8-0](https://github.com/rmagick/rmagick/tree/RMagick_1-8-0) (2005-04-30)
+
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-7-4...RMagick_1-8-0)
+
+## [RMagick_1-7-4](https://github.com/rmagick/rmagick/tree/RMagick_1-7-4) (2005-04-02)
+
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-7-2...RMagick_1-7-4)
+
+## [RMagick_1-7-2](https://github.com/rmagick/rmagick/tree/RMagick_1-7-2) (2005-04-02)
+
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-7-1...RMagick_1-7-2)
+
+## [RMagick_1-7-1](https://github.com/rmagick/rmagick/tree/RMagick_1-7-1) (2004-12-25)
+
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-7-0...RMagick_1-7-1)
+
+## [RMagick_1-7-0](https://github.com/rmagick/rmagick/tree/RMagick_1-7-0) (2004-12-18)
+
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-6-1...RMagick_1-7-0)
+
+## [RMagick_1-6-1](https://github.com/rmagick/rmagick/tree/RMagick_1-6-1) (2004-12-01)
+
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-6-2...RMagick_1-6-1)
+
+## [RMagick_1-6-2](https://github.com/rmagick/rmagick/tree/RMagick_1-6-2) (2004-12-01)
+
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-6-0...RMagick_1-6-2)
+
+## [RMagick_1-6-0](https://github.com/rmagick/rmagick/tree/RMagick_1-6-0) (2004-08-18)
+
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-5-0...RMagick_1-6-0)
+
+## [RMagick_1-5-0](https://github.com/rmagick/rmagick/tree/RMagick_1-5-0) (2004-04-21)
+
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-4-0...RMagick_1-5-0)
+
+## [RMagick_1-4-0](https://github.com/rmagick/rmagick/tree/RMagick_1-4-0) (2004-02-16)
+
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-3-1...RMagick_1-4-0)
+
+## [RMagick_1-3-1](https://github.com/rmagick/rmagick/tree/RMagick_1-3-1) (2004-01-02)
+
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-3-2...RMagick_1-3-1)
+
+## [RMagick_1-3-2](https://github.com/rmagick/rmagick/tree/RMagick_1-3-2) (2003-12-09)
+
+[Full Changelog](https://github.com/rmagick/rmagick/compare/RMagick_1-3-0...RMagick_1-3-2)
+
+## [RMagick_1-3-0](https://github.com/rmagick/rmagick/tree/RMagick_1-3-0) (2003-08-03)
+
+[Full Changelog](https://github.com/rmagick/rmagick/compare/R1-2-2...RMagick_1-3-0)
+
+## [R1-2-2](https://github.com/rmagick/rmagick/tree/R1-2-2) (2003-07-01)
+
+[Full Changelog](https://github.com/rmagick/rmagick/compare/From_RubyMagick...R1-2-2)
+
+## [From_RubyMagick](https://github.com/rmagick/rmagick/tree/From_RubyMagick) (2003-07-01)
 
 
 
