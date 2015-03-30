@@ -1726,7 +1726,7 @@ features_constant(void)
     // 6.5.5 - 6.5.6
     features = rb_str_new2(MagickSupport);
 #else
-    features = rb_str_new("unknown",7);
+    features = rb_str_new("unknown", 7);
 #endif
 
     rb_obj_freeze(features);
