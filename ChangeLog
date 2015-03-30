@@ -1,4 +1,16 @@
 HEAD
+    o RMagick.rb moved to deprecated directory - @mockdeep
+    o Better ImageMagick feature detection - @bf4
+    o Prevent compilation failures if prefix is an empty string - @voxik
+    o SplineInterpolatePixel preprocessor check removed - @joshk
+    o Make error format a string literal - @mtasaka
+    o Automatically set ARCHFLAGS on OS X - @u338steven
+    o Fixed 'rmagick/version' require failure - @u338steven
+    o Fixed escaping of '%' in Draw#get_type_metrics - @mkluczny
+    o Silence warnings on Ruby 2.2 when comparing Enums - @meanphil
+    o Multiple test suite improvements - @mockdeep, @bf4
+    o Ruby source code formatting with RuboCop - @vassilevsky
+
 RMagick 2.13.4
     #129 from @theschoolmaster
       proof of concept for using pkg-config in place of Magick-config on debian based systems
