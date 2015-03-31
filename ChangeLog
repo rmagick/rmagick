@@ -1,4 +1,4 @@
-HEAD
+RMagick 2.14.0
     o RMagick.rb moved to deprecated directory - @mockdeep
     o Better ImageMagick feature detection - @bf4
     o Prevent compilation failures if prefix is an empty string - @voxik
