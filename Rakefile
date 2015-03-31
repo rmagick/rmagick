@@ -1,6 +1,8 @@
 require 'simplecov'
 require './lib/rmagick/version'
 require 'fileutils'
+require 'English'
+
 task :config do
   def version
     Magick::VERSION

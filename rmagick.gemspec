@@ -1,5 +1,7 @@
 require 'date'
+require 'English'
 require './lib/rmagick/version'
+
 Gem::Specification.new do |s|
   s.name = 'rmagick'
   s.version = Magick::VERSION

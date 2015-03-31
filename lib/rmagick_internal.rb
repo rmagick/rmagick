@@ -8,6 +8,7 @@
 #               to the classes.
 #==============================================================================
 
+require 'English'
 require 'RMagick2.so'
 
 module Magick
