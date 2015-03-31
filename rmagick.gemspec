@@ -7,7 +7,6 @@ Gem::Specification.new do |s|
   s.summary = 'Ruby binding to ImageMagick'
   s.description = 'RMagick is an interface between Ruby and ImageMagick.'
   s.authors = ['Tim Hunter', 'Omer Bar-or', 'Benjamin Thomas', 'Moncef Maiza']
-  s.post_install_message = 'Please report any bugs. See https://github.com/gemhome/rmagick/compare/RMagick_2-13-2...master and https://github.com/rmagick/rmagick/issues/18'
   s.email = 'github@benjaminfleischer.com'
   s.homepage = 'https://github.com/gemhome/rmagick'
   s.license = 'MIT'
