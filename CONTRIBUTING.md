@@ -20,3 +20,13 @@ Priorities
 
 1. Green build of the gem on all operating systems. You can see the current build state on [the project page at Travis CI](https://travis-ci.org/gemhome/rmagick). You are welcome to improve it.
 2. [Open issues](https://github.com/gemhome/rmagick/issues). You are welcome to reproduce them, report current state, suggest solutions, open pull requests with fixes.
+
+
+Testing
+-------
+
+Our goal is to migrate to [RSpec](http://rspec.info).
+
+If you write new tests, please do it in RSpec. You can use the `spec_it` branch as a base for yours.
+
+You are also welcome to convert existing Test/Unit tests to RSpec.
