@@ -4,7 +4,7 @@ RMagick Contributor's Guide
 Welcome
 -------
 
-Thank you for considering contributing to RMagick. Your contribution is always welcome!
+Thank you for considering contributing to RMagick. Your contribution is always welcome and appreciated!
 
 
 Background
