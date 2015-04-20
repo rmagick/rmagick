@@ -21,7 +21,7 @@ task :config do
   end
 end
 
-desc 'abort when repo nto clean or has uncommited code'
+desc 'abort when repo is not clean or has uncommited code'
 task :assert_clean_repo do
   sh('git diff --exit-code')
   abort 'Git repo not clean' unless $CHILD_STATUS.success?
