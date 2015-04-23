@@ -357,7 +357,8 @@ SRC
       #check_sizeof("Image *", headers)
 
       have_enum_values('AlphaChannelType', ['CopyAlphaChannel',                    # 6.4.3-7
-                                            'BackgroundAlphaChannel'], headers)    # 6.5.2-5
+                                            'BackgroundAlphaChannel',              # 6.5.2-5
+                                            'RemoveAlphaChannel'], headers)        # 6.7.5-1
       have_enum_values('CompositeOperator', ['BlurCompositeOp',                    # 6.5.3-7
                                              'DistortCompositeOp',                 # 6.5.3-10
                                              'LinearBurnCompositeOp',              # 6.5.4-3
