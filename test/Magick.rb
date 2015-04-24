@@ -51,7 +51,7 @@ class Magick_UT < Test::Unit::TestCase
         ary = Magick::AlphaChannelType.enumerators
       end
       assert_instance_of(Array, ary)
-      assert_equal(11, ary.length)
+      assert_equal(12, ary.length)
 
       assert_nothing_raised do
         ary = Magick::AlignType.enumerators
