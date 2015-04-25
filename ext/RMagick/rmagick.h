@@ -139,6 +139,10 @@
 #define RARRAY_PTR(a) RARRAY((a))->ptr /**< Ruby array pointer */
 #endif
 
+// Backport this macro to 1.8.6
+#if !defined(RB_GC_GUARD)
+#define RB_GC_GUARD(x) (x)
+#endif
 
 //! Convert a C string to a Ruby symbol. Used in marshal_dump/marshal_load methods
 #define CSTR2SYM(s) ID2SYM(rb_intern(s))

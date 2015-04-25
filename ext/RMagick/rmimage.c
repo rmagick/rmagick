@@ -978,7 +978,7 @@ static VALUE
 auto_orient(int bang, VALUE self)
 {
     Image *image;
-    volatile VALUE new_image;
+    VALUE new_image;
     VALUE degrees[1];
 
     Data_Get_Struct(self, Image, image);
@@ -1024,6 +1024,8 @@ auto_orient(int bang, VALUE self)
 
     Data_Get_Struct(new_image, Image, image);
     image->orientation = TopLeftOrientation;
+
+    RB_GC_GUARD(new_image);
 
     return new_image;
 }
@@ -1254,7 +1256,7 @@ Image_black_point_compensation(VALUE self)
 {
     Image *image;
     const char *attr;
-    volatile VALUE value;
+    VALUE value;
 
     image = rm_check_destroyed(self);
 
@@ -1267,6 +1269,9 @@ Image_black_point_compensation(VALUE self)
     {
         value = Qfalse;
     }
+
+    RB_GC_GUARD(value);
+
     return value;
 }
 
@@ -1658,7 +1663,7 @@ special_composite(Image *image, Image *overlay, double image_pct, double overlay
 VALUE
 Image_blend(int argc, VALUE *argv, VALUE self)
 {
-    volatile VALUE ovly;
+    VALUE ovly;
     Image *image, *overlay;
     double src_percent, dst_percent;
     long x_offset = 0L, y_offset = 0L;
@@ -1694,6 +1699,8 @@ Image_blend(int argc, VALUE *argv, VALUE self)
             rb_raise(rb_eArgError, "wrong number of arguments (%d for 2 to 6)", argc);
             break;
     }
+
+    RB_GC_GUARD(ovly);
 
     return special_composite(image, overlay, src_percent, dst_percent
                              , x_offset, y_offset, BlendCompositeOp);
@@ -2030,7 +2037,7 @@ Image_capture(int argc, VALUE *argv, VALUE self)
 {
     Image *image;
     ImageInfo *image_info;
-    volatile VALUE info_obj;
+    VALUE info_obj;
     XImportInfo ximage_info;
 
     self = self;  // Suppress "never referenced" message from icc
@@ -2070,6 +2077,8 @@ Image_capture(int argc, VALUE *argv, VALUE self)
 
     rm_set_user_artifact(image, image_info);
 
+    RB_GC_GUARD(info_obj);
+
     return rm_image_new(image);
 }
 
@@ -2089,10 +2098,10 @@ Image_change_geometry(VALUE self, VALUE geom_arg)
 {
     Image *image;
     RectangleInfo rect;
-    volatile VALUE geom_str;
+    VALUE geom_str;
     char *geometry;
     unsigned int flags;
-    volatile VALUE ary;
+    VALUE ary;
 
     image = rm_check_destroyed(self);
     geom_str = rm_to_s(geom_arg);
@@ -2112,6 +2121,9 @@ Image_change_geometry(VALUE self, VALUE geom_arg)
     rb_ary_store(ary, 0, ULONG2NUM(rect.width));
     rb_ary_store(ary, 1, ULONG2NUM(rect.height));
     rb_ary_store(ary, 2, self);
+
+    RB_GC_GUARD(geom_str);
+    RB_GC_GUARD(ary);
 
     return rb_yield(ary);
 }
@@ -2239,7 +2251,7 @@ Image_channel_extrema(int argc, VALUE *argv, VALUE self)
     ChannelType channels;
     ExceptionInfo *exception;
     size_t min, max;
-    volatile VALUE ary;
+    VALUE ary;
 
     image = rm_check_destroyed(self);
 
@@ -2260,6 +2272,8 @@ Image_channel_extrema(int argc, VALUE *argv, VALUE self)
     ary = rb_ary_new2(2);
     rb_ary_store(ary, 0, ULONG2NUM(min));
     rb_ary_store(ary, 1, ULONG2NUM(max));
+
+    RB_GC_GUARD(ary);
 
     return ary;
 }
@@ -2287,7 +2301,7 @@ Image_channel_mean(int argc, VALUE *argv, VALUE self)
     ChannelType channels;
     ExceptionInfo *exception;
     double mean, stddev;
-    volatile VALUE ary;
+    VALUE ary;
 
     image = rm_check_destroyed(self);
 
@@ -2308,6 +2322,8 @@ Image_channel_mean(int argc, VALUE *argv, VALUE self)
     ary = rb_ary_new2(2);
     rb_ary_store(ary, 0, rb_float_new(mean));
     rb_ary_store(ary, 1, rb_float_new(stddev));
+
+    RB_GC_GUARD(ary);
 
     return ary;
 }
@@ -2428,13 +2444,15 @@ Image_chromaticity_eq(VALUE self, VALUE chroma)
 VALUE
 Image_clone(VALUE self)
 {
-    volatile VALUE clone;
+    VALUE clone;
 
     clone = Image_dup(self);
     if (OBJ_FROZEN(self))
     {
         OBJ_FREEZE(clone);
     }
+
+    RB_GC_GUARD(clone);
 
     return clone;
 }
@@ -2505,7 +2523,7 @@ VALUE
 Image_color_histogram(VALUE self)
 {
     Image *image, *dc_copy = NULL;
-    volatile VALUE hash, pixel;
+    VALUE hash, pixel;
     size_t x, colors;
     ColorPacket *histogram;
     ExceptionInfo *exception;
@@ -2559,6 +2577,9 @@ Image_color_histogram(VALUE self)
         // Do not trace destruction
         (void) DestroyImage(dc_copy);
     }
+
+    RB_GC_GUARD(hash);
+    RB_GC_GUARD(pixel);
 
     return hash;
 }
@@ -3126,7 +3147,7 @@ Image_compare_channel(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *r_image, *difference_image;
     double distortion;
-    volatile VALUE ary, ref;
+    VALUE ary, ref;
     MetricType metric_type;
     ChannelType channels;
     ExceptionInfo *exception;
@@ -3167,6 +3188,9 @@ Image_compare_channel(int argc, VALUE *argv, VALUE self)
     ary = rb_ary_new2(2);
     rb_ary_store(ary, 0, rm_image_new(difference_image));
     rb_ary_store(ary, 1, rb_float_new(distortion));
+
+    RB_GC_GUARD(ary);
+    RB_GC_GUARD(ref);
 
     return ary;
 }
@@ -3235,7 +3259,7 @@ composite(int bang, int argc, VALUE *argv, VALUE self, ChannelType channels)
     Image *comp_image;
     CompositeOperator operator = UndefinedCompositeOp;
     GravityType gravity;
-    volatile VALUE comp;
+    VALUE comp;
     signed long x_offset = 0;
     signed long y_offset = 0;
 
@@ -3253,6 +3277,7 @@ composite(int bang, int argc, VALUE *argv, VALUE self, ChannelType channels)
 
     comp = rm_cur_image(argv[0]);
     comp_image = rm_check_destroyed(comp);
+    RB_GC_GUARD(comp);
 
     switch (argc)
     {
@@ -3829,7 +3854,7 @@ Image_constitute(VALUE class, VALUE width_arg, VALUE height_arg
 {
     Image *image;
     ExceptionInfo *exception;
-    volatile VALUE pixel, pixel0;
+    VALUE pixel, pixel0;
     unsigned long width, height;
     long x, npixels;
     char *map;
@@ -3840,7 +3865,7 @@ Image_constitute(VALUE class, VALUE width_arg, VALUE height_arg
         Quantum *i;
         void *v;
     } pixels;
-    volatile VALUE pixel_class;
+    VALUE pixel_class;
     StorageType stg_type;
 
     class = class;  // Suppress "never referenced" message from icc
@@ -3936,6 +3961,10 @@ Image_constitute(VALUE class, VALUE width_arg, VALUE height_arg
 #if defined(HAVE_DESTROYCONSTITUTE) || defined(HAVE_CONSTITUTECOMPONENTTERMINUS)
     DestroyConstitute();
 #endif
+
+    RB_GC_GUARD(pixel);
+    RB_GC_GUARD(pixel0);
+    RB_GC_GUARD(pixel_class);
 
     return rm_image_new(image);
 }
@@ -4156,7 +4185,7 @@ Image_convolve_channel(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
     double *kernel;
-    volatile VALUE ary;
+    VALUE ary;
     unsigned int x, order;
     ChannelType channels;
     ExceptionInfo *exception;
@@ -4197,6 +4226,8 @@ Image_convolve_channel(int argc, VALUE *argv, VALUE self)
     (void) DestroyExceptionInfo(exception);
 
     rm_ensure_result(new_image);
+
+    RB_GC_GUARD(ary);
 
     return rm_image_new(new_image);
 }
@@ -4362,7 +4393,7 @@ Image_density_eq(VALUE self, VALUE density_arg)
 {
     Image *image;
     char *density;
-    volatile VALUE x_val, y_val;
+    VALUE x_val, y_val;
     int count;
     double x_res, y_res;
 
@@ -4405,6 +4436,9 @@ Image_density_eq(VALUE self, VALUE density_arg)
         }
 
     }
+
+    RB_GC_GUARD(x_val);
+    RB_GC_GUARD(y_val);
 
     return self;
 }
@@ -4744,7 +4778,7 @@ Image_difference(VALUE self, VALUE other)
 {
     Image *image;
     Image *image2;
-    volatile VALUE mean, nmean, nmax;
+    VALUE mean, nmean, nmax;
 
     image = rm_check_destroyed(self);
     other = rm_cur_image(other);
@@ -4756,6 +4790,11 @@ Image_difference(VALUE self, VALUE other)
     mean  = rb_float_new(image->error.mean_error_per_pixel);
     nmean = rb_float_new(image->error.normalized_mean_error);
     nmax  = rb_float_new(image->error.normalized_maximum_error);
+
+    RB_GC_GUARD(mean);
+    RB_GC_GUARD(nmean);
+    RB_GC_GUARD(nmax);
+
     return rb_ary_new3(3, mean, nmean, nmax);
 }
 
@@ -4799,7 +4838,7 @@ VALUE
 Image_displace(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *displacement_map;
-    volatile VALUE dmap;
+    VALUE dmap;
     double x_amplitude = 0.0, y_amplitude = 0.0;
     long x_offset = 0L, y_offset = 0L;
 
@@ -4832,6 +4871,8 @@ Image_displace(int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    RB_GC_GUARD(dmap);
+
     return special_composite(image, displacement_map, x_amplitude, y_amplitude
                              , x_offset, y_offset, DisplaceCompositeOp);
 }
@@ -4863,7 +4904,7 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
     Image *image;
     long x, y;
     unsigned long columns, rows, n, npixels;
-    volatile VALUE pixels_ary;
+    VALUE pixels_ary;
     StorageType stg_type = QuantumPixel;
     char *map;
     long mapL;
@@ -4933,6 +4974,9 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
 
     exit:
     xfree((void *)pixels.v);
+
+    RB_GC_GUARD(pixels_ary);
+
     return pixels_ary;
 }
 
@@ -4951,7 +4995,7 @@ Image_display(VALUE self)
 {
     Image *image;
     Info *info;
-    volatile VALUE info_obj;
+    VALUE info_obj;
 
     image = rm_check_destroyed(self);
 
@@ -4965,6 +5009,8 @@ Image_display(VALUE self)
 
     (void) DisplayImages(info, image);
     rm_check_image_exception(image, RetainOnError);
+
+    RB_GC_GUARD(info_obj);
 
     return self;
 }
@@ -5037,7 +5083,7 @@ Image_dissolve(int argc, VALUE *argv, VALUE self)
     Image *image, *overlay;
     double src_percent, dst_percent = -1.0;
     long x_offset = 0L, y_offset = 0L;
-    volatile VALUE composite_image, ovly;
+    VALUE composite_image, ovly;
 
     image = rm_check_destroyed(self);
 
@@ -5071,6 +5117,9 @@ Image_dissolve(int argc, VALUE *argv, VALUE self)
     composite_image =  special_composite(image, overlay, src_percent, dst_percent
                                          , x_offset, y_offset, DissolveCompositeOp);
 
+    RB_GC_GUARD(composite_image);
+    RB_GC_GUARD(ovly);
+
     return composite_image;
 }
 
@@ -5099,7 +5148,7 @@ VALUE
 Image_distort(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
-    volatile VALUE pts;
+    VALUE pts;
     unsigned long n, npoints;
     DistortImageMethod distortion_method;
     double *points;
@@ -5140,6 +5189,8 @@ Image_distort(int argc, VALUE *argv, VALUE self)
     (void) DestroyExceptionInfo(exception);
     rm_ensure_result(new_image);
 
+    RB_GC_GUARD(pts);
+
     return rm_image_new(new_image);
 }
 
@@ -5167,7 +5218,7 @@ Image_distortion_channel(int argc, VALUE *argv, VALUE self)
     ChannelType channels;
     ExceptionInfo *exception;
     MetricType metric;
-    volatile VALUE rec;
+    VALUE rec;
     double distortion;
 
     image = rm_check_destroyed(self);
@@ -5190,6 +5241,8 @@ Image_distortion_channel(int argc, VALUE *argv, VALUE self)
     CHECK_EXCEPTION()
 
     (void) DestroyExceptionInfo(exception);
+
+    RB_GC_GUARD(rec);
 
     return rb_float_new(distortion);
 }
@@ -5217,7 +5270,7 @@ Image__dump(VALUE self, VALUE depth)
     void *blob;
     size_t length;
     DumpedImage mi;
-    volatile VALUE str;
+    VALUE str;
     ExceptionInfo *exception;
 
     depth = depth;  // Suppress "never referenced" message from icc
@@ -5260,6 +5313,9 @@ Image__dump(VALUE self, VALUE depth)
     str = rb_str_new((char *)&mi, (long)(mi.len+offsetof(DumpedImage,magick)));
     str = rb_str_buf_cat(str, (char *)blob, (long)length);
     magick_free((void*)blob);
+
+    RB_GC_GUARD(str);
+
     return str;
 }
 
@@ -5278,7 +5334,7 @@ Image__dump(VALUE self, VALUE depth)
 VALUE
 Image_dup(VALUE self)
 {
-    volatile VALUE dup;
+    VALUE dup;
 
     (void) rm_check_destroyed(self);
     dup = Data_Wrap_Struct(CLASS_OF(self), NULL, rm_image_destroy, NULL);
@@ -5286,6 +5342,9 @@ Image_dup(VALUE self)
     {
         (void) rb_obj_taint(dup);
     }
+
+    RB_GC_GUARD(dup);
+
     return rb_funcall(dup, rm_ID_initialize_copy, 1, self);
 }
 
@@ -5306,7 +5365,7 @@ VALUE
 Image_each_profile(VALUE self)
 {
     Image *image;
-    volatile VALUE ary, val;
+    VALUE ary, val;
     char *name;
     const StringInfo *profile;
 
@@ -5332,6 +5391,9 @@ Image_each_profile(VALUE self)
         val = rb_yield(ary);
         name = GetNextImageProfile(image);
     }
+
+    RB_GC_GUARD(ary);
+    RB_GC_GUARD(val);
 
     return val;
 }
@@ -5809,7 +5871,7 @@ Image_export_pixels(int argc, VALUE *argv, VALUE self)
     unsigned int okay;
     const char *map = "RGB";
     Quantum *pixels;
-    volatile VALUE ary;
+    VALUE ary;
     ExceptionInfo *exception;
 
 
@@ -5872,6 +5934,8 @@ Image_export_pixels(int argc, VALUE *argv, VALUE self)
     }
 
     xfree((void *)pixels);
+
+    RB_GC_GUARD(ary);
 
     return ary;
 }
@@ -5984,7 +6048,7 @@ Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
     unsigned int okay;
     const char *map = "RGB";
     StorageType type = CharPixel;
-    volatile VALUE string;
+    VALUE string;
     char *str;
     ExceptionInfo *exception;
 
@@ -6071,6 +6135,8 @@ Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
     }
 
     (void) DestroyExceptionInfo(exception);
+
+    RB_GC_GUARD(string);
 
     return string;
 }
@@ -6197,7 +6263,7 @@ VALUE
 Image_find_similar_region(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *target;
-    volatile VALUE region, targ;
+    VALUE region, targ;
     ssize_t x = 0L, y = 0L;
     ExceptionInfo *exception;
     unsigned int okay;
@@ -6232,6 +6298,9 @@ Image_find_similar_region(int argc, VALUE *argv, VALUE self)
     region = rb_ary_new2(2);
     rb_ary_store(region, 0L, LONG2NUM(x));
     rb_ary_store(region, 1L, LONG2NUM(y));
+
+    RB_GC_GUARD(region);
+    RB_GC_GUARD(targ);
 
     return region;
 }
@@ -6541,7 +6610,7 @@ Image_from_blob(VALUE class, VALUE blob_arg)
 {
     Image *images;
     Info *info;
-    volatile VALUE info_obj;
+    VALUE info_obj;
     ExceptionInfo *exception;
     void *blob;
     long length;
@@ -6563,6 +6632,8 @@ Image_from_blob(VALUE class, VALUE blob_arg)
 
     rm_ensure_result(images);
     rm_set_user_artifact(images, info);
+
+    RB_GC_GUARD(info_obj);
 
     return array_from_images(images);
 }
@@ -6917,7 +6988,7 @@ Image_geometry_eq(
                  VALUE geometry)
 {
     Image *image;
-    volatile VALUE geom_str;
+    VALUE geom_str;
     char *geom;
 
     image = rm_check_frozen(self);
@@ -6937,6 +7008,9 @@ Image_geometry_eq(
         rb_raise(rb_eTypeError, "invalid geometry: %s", geom);
     }
     magick_clone_string(&image->geometry, geom);
+
+    RB_GC_GUARD(geom_str);
+
     return self;
 }
 
@@ -7143,7 +7217,7 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
     unsigned long n, npixels;
     long buffer_l;
     char *map;
-    volatile VALUE pixel_arg, pixel_ary;
+    VALUE pixel_arg, pixel_ary;
     StorageType stg_type = CharPixel;
     size_t type_sz, map_l;
     Quantum *pixels = NULL;
@@ -7262,8 +7336,9 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
             pixels = ALLOC_N(Quantum, npixels);
             for (n = 0; n < npixels; n++)
             {
-                volatile VALUE p = rb_ary_entry(pixel_ary, n);
+                VALUE p = rb_ary_entry(pixel_ary, n);
                 pixels[n] = NUM2QUANTUM(p);
+                RB_GC_GUARD(p);
             }
             buffer = (void *) pixels;
             stg_type = QuantumPixel;
@@ -7289,6 +7364,9 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
         // Shouldn't get here...
         rm_magick_error("ImportImagePixels failed with no explanation.", NULL);
     }
+
+    RB_GC_GUARD(pixel_arg);
+    RB_GC_GUARD(pixel_ary);
 
     return self;
 }
@@ -8133,7 +8211,7 @@ Image_map(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
     Image *map;
-    volatile VALUE map_obj, map_arg;
+    VALUE map_obj, map_arg;
     unsigned int dither = MagickFalse;
 
 #if defined(HAVE_REMAPIMAGE)
@@ -8167,6 +8245,9 @@ Image_map(int argc, VALUE *argv, VALUE self)
     (void) MapImage(new_image, map, dither);
 #endif
     rm_check_image_exception(new_image, DestroyOnError);
+
+    RB_GC_GUARD(map_obj);
+    RB_GC_GUARD(map_arg);
 
     return rm_image_new(new_image);
 }
@@ -8343,7 +8424,7 @@ Image_mask_eq(VALUE self, VALUE mask)
 VALUE
 Image_mask(int argc, VALUE *argv, VALUE self)
 {
-    volatile VALUE mask;
+    VALUE mask;
     Image *image, *mask_image, *resized_image;
     Image *clip_mask;
     long x, y;
@@ -8438,6 +8519,8 @@ Image_mask(int argc, VALUE *argv, VALUE self)
     {
         (void) SetImageClipMask(image, NULL);
     }
+
+    RB_GC_GUARD(mask);
 
     // Always return a copy of the mask!
     return get_image_mask(image);
@@ -8702,7 +8785,7 @@ Image_mime_type(VALUE self)
 {
     Image *image;
     char *type;
-    volatile VALUE mime_type;
+    VALUE mime_type;
 
     image = rm_check_destroyed(self);
     type = MagickToMime(image->magick);
@@ -8714,6 +8797,8 @@ Image_mime_type(VALUE self)
 
     // The returned string must be deallocated by the user.
     magick_free(type);
+
+    RB_GC_GUARD(mime_type);
 
     return mime_type;
 }
@@ -9076,9 +9161,12 @@ Image_negate_channel(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_alloc(VALUE class)
 {
-    volatile VALUE image_obj;
+    VALUE image_obj;
 
     image_obj = Data_Wrap_Struct(class, NULL, rm_image_destroy, NULL);
+
+    RB_GC_GUARD(image_obj);
+
     return image_obj;
 }
 
@@ -9101,9 +9189,9 @@ Image_alloc(VALUE class)
 VALUE
 Image_initialize(int argc, VALUE *argv, VALUE self)
 {
-    volatile VALUE fill = 0;
+    VALUE fill = 0;
     Info *info;
-    volatile VALUE info_obj;
+    VALUE info_obj;
     Image *image;
     unsigned long cols, rows;
 
@@ -9149,6 +9237,9 @@ Image_initialize(int argc, VALUE *argv, VALUE self)
     {
         (void) rb_funcall(fill, rm_ID_fill, 1, self);
     }
+
+    RB_GC_GUARD(fill);
+    RB_GC_GUARD(info_obj);
 
     return self;
 }
@@ -9959,7 +10050,7 @@ VALUE
 Image_polaroid(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *clone, *new_image;
-    volatile VALUE options;
+    VALUE options;
     double angle = -5.0;
     Draw *draw;
     ExceptionInfo *exception;
@@ -9992,6 +10083,8 @@ Image_polaroid(int argc, VALUE *argv, VALUE self)
     (void) DestroyExceptionInfo(exception);
 
     rm_ensure_result(new_image);
+
+    RB_GC_GUARD(options);
 
     return rm_image_new(new_image);
 }
@@ -10495,7 +10588,7 @@ Image_random_threshold_channel(int argc, VALUE *argv, VALUE self)
     Image *image, *new_image;
     ChannelType channels;
     char *thresholds;
-    volatile VALUE geom_str;
+    VALUE geom_str;
     ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
@@ -10524,6 +10617,8 @@ Image_random_threshold_channel(int argc, VALUE *argv, VALUE self)
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
+
+    RB_GC_GUARD(geom_str);
 
     return rm_image_new(new_image);
 }
@@ -10645,7 +10740,7 @@ rd_image(VALUE class, VALUE file, reader_t reader)
     char *filename;
     long filename_l;
     Info *info;
-    volatile VALUE info_obj;
+    VALUE info_obj;
     Image *images;
     ExceptionInfo *exception;
 
@@ -10682,6 +10777,8 @@ rd_image(VALUE class, VALUE file, reader_t reader)
     rm_check_exception(exception, images, DestroyOnError);
     rm_set_user_artifact(images, info);
     (void) DestroyExceptionInfo(exception);
+
+    RB_GC_GUARD(info_obj);
 
     return array_from_images(images);
 }
@@ -10766,7 +10863,7 @@ Image_recolor(VALUE self, VALUE color_matrix)
 VALUE
 Image_read_inline(VALUE self, VALUE content)
 {
-    volatile VALUE info_obj;
+    VALUE info_obj;
     Image *images;
     ImageInfo *info;
     char *image_data;
@@ -10815,6 +10912,8 @@ Image_read_inline(VALUE self, VALUE content)
     (void) DestroyExceptionInfo(exception);
     rm_set_user_artifact(images, info);
 
+    RB_GC_GUARD(info_obj);
+
     return array_from_images(images);
 }
 
@@ -10830,7 +10929,7 @@ Image_read_inline(VALUE self, VALUE content)
 static VALUE
 array_from_images(Image *images)
 {
-    volatile VALUE image_obj, image_ary;
+    VALUE image_obj, image_ary;
     Image *image;
 
     // Orphan the image, create an Image object, add it to the array.
@@ -10842,6 +10941,9 @@ array_from_images(Image *images)
         image_obj = rm_image_new(image);
         (void) rb_ary_push(image_ary, image_obj);
     }
+
+    RB_GC_GUARD(image_obj);
+    RB_GC_GUARD(image_ary);
 
     return image_ary;
 }
@@ -10904,8 +11006,9 @@ Image_remap(int argc, VALUE *argv, VALUE self)
     image = rm_check_frozen(self);
     if (argc > 0)
     {
-        volatile VALUE t = rm_cur_image(argv[0]);
+        VALUE t = rm_cur_image(argv[0]);
         remap_image = rm_check_destroyed(t);
+        RB_GC_GUARD(t);
     }
 
     GetQuantizeInfo(&quantize_info);
@@ -11889,8 +11992,8 @@ VALUE
 Image_properties(VALUE self)
 {
     Image *image;
-    volatile VALUE attr_hash;
-    volatile VALUE ary;
+    VALUE attr_hash;
+    VALUE ary;
     char *property;
     const char *value;
 
@@ -11911,6 +12014,9 @@ Image_properties(VALUE self)
             property = GetNextImageProperty(image);
         }
         rm_check_image_exception(image, RetainOnError);
+
+        RB_GC_GUARD(ary);
+
         return self;
     }
 
@@ -11927,6 +12033,9 @@ Image_properties(VALUE self)
             property = GetNextImageProperty(image);
         }
         rm_check_image_exception(image, RetainOnError);
+
+        RB_GC_GUARD(attr_hash);
+
         return attr_hash;
     }
 
@@ -12578,6 +12687,8 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
     CHECK_EXCEPTION();
     rm_ensure_result(new_image);
 
+    RB_GC_GUARD(args);
+
     return rm_image_new(new_image);
 
 #else
@@ -12721,7 +12832,7 @@ VALUE
 Image_stegano(VALUE self, VALUE watermark_image, VALUE offset)
 {
     Image *image, *new_image;
-    volatile VALUE wm_image;
+    VALUE wm_image;
     Image *watermark;
     ExceptionInfo *exception;
 
@@ -12739,6 +12850,8 @@ Image_stegano(VALUE self, VALUE watermark_image, VALUE offset)
     (void) DestroyExceptionInfo(exception);
 
     rm_ensure_result(new_image);
+
+    RB_GC_GUARD(wm_image);
 
     return rm_image_new(new_image);
 }
@@ -12760,7 +12873,7 @@ VALUE
 Image_stereo(VALUE self, VALUE offset_image_arg)
 {
     Image *image, *new_image;
-    volatile VALUE offset_image;
+    VALUE offset_image;
     Image *offset;
     ExceptionInfo *exception;
 
@@ -12776,6 +12889,8 @@ Image_stereo(VALUE self, VALUE offset_image_arg)
     (void) DestroyExceptionInfo(exception);
 
     rm_ensure_result(new_image);
+
+    RB_GC_GUARD(offset_image);
 
     return rm_image_new(new_image);
 }
@@ -12868,7 +12983,7 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg
 {
     Image *image;
     Pixel *pixels, *pixel;
-    volatile VALUE new_pixel;
+    VALUE new_pixel;
     long n, size;
     long x, y;
     unsigned long cols, rows;
@@ -12933,6 +13048,8 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg
         DestroyExceptionInfo(exception);
 #endif
     }
+
+    RB_GC_GUARD(new_pixel);
 
     return self;
 }
@@ -13002,8 +13119,11 @@ VALUE
 Image_sync_profiles(VALUE self)
 {
     Image *image = rm_check_destroyed(self);
-    volatile VALUE okay =  SyncImageProfiles(image) ? Qtrue : Qfalse;
+    VALUE okay =  SyncImageProfiles(image) ? Qtrue : Qfalse;
     rm_check_image_exception(image, RetainOnError);
+
+    RB_GC_GUARD(okay);
+
     return okay;
 }
 
@@ -13036,7 +13156,7 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj
     Image *image, *new_image;
     Image *texture_image;
     PixelPacket color;
-    volatile VALUE texture;
+    VALUE texture;
     DrawInfo *draw_info;
     long x, y;
     PaintMethod method;
@@ -13104,6 +13224,7 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj
     (void) DestroyDrawInfo(draw_info);
     rm_check_image_exception(new_image, DestroyOnError);
 
+    RB_GC_GUARD(texture);
 
     return rm_image_new(new_image);
 }
@@ -13453,8 +13574,8 @@ Image_to_blob(VALUE self)
     Image *image;
     Info *info;
     const MagickInfo *magick_info;
-    volatile VALUE info_obj;
-    volatile VALUE blob_str;
+    VALUE info_obj;
+    VALUE blob_str;
     void *blob = NULL;
     size_t length = 2048;       // Do what Magick++ does
     ExceptionInfo *exception;
@@ -13517,6 +13638,9 @@ Image_to_blob(VALUE self)
     blob_str = rb_str_new(blob, length);
 
     magick_free((void*)blob);
+
+    RB_GC_GUARD(info_obj);
+    RB_GC_GUARD(blob_str);
 
     return blob_str;
 }
@@ -14472,7 +14596,7 @@ Image_watermark(int argc, VALUE *argv, VALUE self)
     double src_percent = 100.0, dst_percent = 100.0;
     long x_offset = 0L, y_offset = 0L;
     char geometry[20];
-    volatile VALUE ovly;
+    VALUE ovly;
 
     image = rm_check_destroyed(self);
 
@@ -14514,6 +14638,8 @@ Image_watermark(int argc, VALUE *argv, VALUE self)
     (void) CompositeImage(new_image, ModulateCompositeOp, overlay, x_offset, y_offset);
 
     rm_check_image_exception(new_image, DestroyOnError);
+
+    RB_GC_GUARD(ovly);
 
     return rm_image_new(new_image);
 }
@@ -14865,7 +14991,7 @@ Image_write(VALUE self, VALUE file)
 {
     Image *image;
     Info *info;
-    volatile VALUE info_obj;
+    VALUE info_obj;
 
     image = rm_check_destroyed(self);
 
@@ -14900,6 +15026,8 @@ Image_write(VALUE self, VALUE file)
     info->adjoin = MagickFalse;
     (void) WriteImage(info, image);
     rm_check_image_exception(image, RetainOnError);
+
+    RB_GC_GUARD(info_obj);
 
     return self;
 }
@@ -14937,7 +15065,7 @@ DEF_ATTR_ACCESSOR(Image, y_resolution, dbl)
 static VALUE
 cropper(int bang, int argc, VALUE *argv, VALUE self)
 {
-    volatile VALUE x, y, width, height;
+    VALUE x, y, width, height;
     unsigned long nx = 0, ny = 0;
     unsigned long columns, rows;
     int reset_page = 0;
@@ -15098,6 +15226,12 @@ cropper(int bang, int argc, VALUE *argv, VALUE self)
         Data_Get_Struct(cropped, Image, image);
         ResetImagePage(image, "0x0+0+0");
     }
+
+    RB_GC_GUARD(x);
+    RB_GC_GUARD(y);
+    RB_GC_GUARD(width);
+    RB_GC_GUARD(height);
+
     return cropped;
 }
 
@@ -15168,7 +15302,7 @@ xform_image(int bang, VALUE self, VALUE x, VALUE y, VALUE width, VALUE height, x
  */
 ChannelType extract_channels(int *argc, VALUE *argv)
 {
-    volatile VALUE arg;
+    VALUE arg;
     ChannelType channels, ch_arg;
 
     channels = 0;
@@ -15190,6 +15324,8 @@ ChannelType extract_channels(int *argc, VALUE *argv)
     {
         channels = DefaultChannels;
     }
+
+    RB_GC_GUARD(arg);
 
     return channels;
 }
@@ -15221,7 +15357,7 @@ raise_ChannelType_error(VALUE arg)
  */
 static void call_trace_proc(Image *image, const char *which)
 {
-    volatile VALUE trace;
+    VALUE trace;
     VALUE trace_args[4];
 
     if (rb_ivar_defined(Module_Magick, rm_ID_trace_proc) == Qtrue)
@@ -15246,6 +15382,7 @@ static void call_trace_proc(Image *image, const char *which)
         }
     }
 
+    RB_GC_GUARD(trace);
 }
 
 

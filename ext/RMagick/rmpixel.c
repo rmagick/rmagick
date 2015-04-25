@@ -294,13 +294,15 @@ Pixel_case_eq(VALUE self, VALUE other)
 VALUE
 Pixel_clone(VALUE self)
 {
-    volatile VALUE clone;
+    VALUE clone;
 
     clone = Pixel_dup(self);
     if (OBJ_FROZEN(self))
     {
         OBJ_FREEZE(clone);
     }
+
+    RB_GC_GUARD(clone);
 
     return clone;
 }
@@ -321,7 +323,7 @@ VALUE
 Pixel_dup(VALUE self)
 {
     Pixel *pixel;
-    volatile VALUE dup;
+    VALUE dup;
 
     pixel = ALLOC(Pixel);
     memset(pixel, '\0', sizeof(Pixel));
@@ -330,6 +332,9 @@ Pixel_dup(VALUE self)
     {
         (void) rb_obj_taint(dup);
     }
+
+    RB_GC_GUARD(dup);
+
     return rb_funcall(dup, rm_ID_initialize_copy, 1, self);
 }
 
@@ -794,7 +799,7 @@ VALUE
 Pixel_marshal_dump(VALUE self)
 {
     Pixel *pixel;
-    volatile VALUE dpixel;
+    VALUE dpixel;
 
     Data_Get_Struct(self, Pixel, pixel);
     dpixel = rb_hash_new();
@@ -802,6 +807,9 @@ Pixel_marshal_dump(VALUE self)
     rb_hash_aset(dpixel, CSTR2SYM("green"), QUANTUM2NUM(pixel->green));
     rb_hash_aset(dpixel, CSTR2SYM("blue"), QUANTUM2NUM(pixel->blue));
     rb_hash_aset(dpixel, CSTR2SYM("opacity"), QUANTUM2NUM(pixel->opacity));
+
+    RB_GC_GUARD(dpixel);
+
     return dpixel;
 }
 
@@ -892,7 +900,7 @@ Pixel_to_hsla(VALUE self)
 {
     double hue, sat, lum, alpha;
     Pixel *pixel;
-    volatile VALUE hsla;
+    VALUE hsla;
 
     Data_Get_Struct(self, Pixel, pixel);
 
@@ -915,6 +923,9 @@ Pixel_to_hsla(VALUE self)
     }
 
     hsla = rb_ary_new3(4, rb_float_new(hue), rb_float_new(sat), rb_float_new(lum), rb_float_new(alpha));
+
+    RB_GC_GUARD(hsla);
+
     return hsla;
 }
 
@@ -933,7 +944,7 @@ Pixel_to_HSL(VALUE self)
 {
     Pixel *pixel;
     double hue, saturation, luminosity;
-    volatile VALUE hsl;
+    VALUE hsl;
 
     Data_Get_Struct(self, Pixel, pixel);
 
@@ -942,6 +953,8 @@ Pixel_to_HSL(VALUE self)
 
     hsl = rb_ary_new3(3, rb_float_new(hue), rb_float_new(saturation),
                       rb_float_new(luminosity));
+
+    RB_GC_GUARD(hsl);
 
     return hsl;
 }

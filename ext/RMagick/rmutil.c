@@ -585,12 +585,14 @@ rm_fuzz_to_dbl(VALUE fuzz_arg)
 Quantum
 rm_app2quantum(VALUE obj)
 {
-    volatile VALUE v = obj;
+    VALUE v = obj;
 
     if (TYPE(obj) == T_FLOAT)
     {
         v = rb_funcall(obj, rm_ID_to_i, 0);
     }
+
+    RB_GC_GUARD(v);
 
     return NUM2QUANTUM(v);
 }
@@ -661,7 +663,7 @@ rm_pixelpacket_to_color_name_info(Info *info, PixelPacket *color)
 {
     Image *image;
     Info *my_info;
-    volatile VALUE color_name;
+    VALUE color_name;
 
     my_info = info ? info : CloneImageInfo(NULL);
 
@@ -673,6 +675,8 @@ rm_pixelpacket_to_color_name_info(Info *info, PixelPacket *color)
     {
         (void) DestroyImageInfo(my_info);
     }
+
+    RB_GC_GUARD(color_name);
 
     return color_name;
 }
@@ -699,7 +703,7 @@ rm_write_temp_image(Image *image, char *temp_name)
 
     MagickBooleanType okay;
     ExceptionInfo *exception;
-    volatile VALUE id_value;
+    VALUE id_value;
     int id;
 
     exception = AcquireExceptionInfo();
@@ -730,6 +734,7 @@ rm_write_temp_image(Image *image, char *temp_name)
         rb_raise(rb_eRuntimeError, "SetImageRegistry failed.");
     }
 
+    RB_GC_GUARD(id_value);
 }
 
 
@@ -789,13 +794,17 @@ rm_not_implemented(void)
 void
 rm_magick_error(const char *msg, const char *loc)
 {
-    volatile VALUE exc, mesg, extra;
+    VALUE exc, mesg, extra;
 
     mesg = rb_str_new2(msg);
     extra = loc ? rb_str_new2(loc) : Qnil;
 
     exc = rb_funcall(Class_ImageMagickError, rm_ID_new, 2, mesg, extra);
     (void) rb_funcall(rb_cObject, rb_intern("raise"), 1, exc);
+
+    RB_GC_GUARD(exc);
+    RB_GC_GUARD(mesg);
+    RB_GC_GUARD(extra);
 }
 
 
@@ -820,7 +829,7 @@ ImageMagickError_initialize(int argc, VALUE *argv, VALUE self)
 {
     VALUE super_argv[1] = {(VALUE)0};
     int super_argc = 0;
-    volatile VALUE extra = Qnil;
+    VALUE extra = Qnil;
 
     switch(argc)
     {
@@ -838,6 +847,7 @@ ImageMagickError_initialize(int argc, VALUE *argv, VALUE self)
     (void) rb_call_super(super_argc, (const VALUE *)super_argv);
     (void) rb_iv_set(self, "@"MAGICK_LOC, extra);
 
+    RB_GC_GUARD(extra);
 
     return self;
 }
@@ -922,21 +932,24 @@ void rm_set_user_artifact(Image *images, Info *info)
 void
 rm_get_optional_arguments(VALUE img)
 {
-  volatile VALUE OptionalMethodArguments;
-  volatile VALUE opt_args;
-  VALUE argv[1];
+    VALUE optional_method_arguments;
+    VALUE opt_args;
+    VALUE argv[1];
 
-  // opt_args = Magick::OptionalMethodArguments.new(img)
-  // opt_args.instance_eval { block }
-  if (rb_block_given_p())
-  {
-      OptionalMethodArguments = rb_const_get_from(Module_Magick, rb_intern("OptionalMethodArguments"));
-      argv[0] = img;
-      opt_args = rb_class_new_instance(1, argv, OptionalMethodArguments);
-      (void) rb_obj_instance_eval(0, NULL, opt_args);
-  }
+    // opt_args = Magick::OptionalMethodArguments.new(img)
+    // opt_args.instance_eval { block }
+    if (rb_block_given_p())
+    {
+        optional_method_arguments = rb_const_get_from(Module_Magick, rb_intern("OptionalMethodArguments"));
+        argv[0] = img;
+        opt_args = rb_class_new_instance(1, argv, optional_method_arguments);
+        (void) rb_obj_instance_eval(0, NULL, opt_args);
+    }
 
-  return;
+    RB_GC_GUARD(optional_method_arguments);
+    RB_GC_GUARD(opt_args);
+
+    return;
 }
 
 
@@ -1159,7 +1172,7 @@ rm_exif_by_entry(Image *image)
     const char *property, *value;
     char *str;
     size_t len = 0, property_l, value_l;
-    volatile VALUE v;
+    VALUE v;
 
     (void) GetImageProperty(image, "exif:*");
     ResetImagePropertyIterator(image);
@@ -1223,6 +1236,9 @@ rm_exif_by_entry(Image *image)
 
     v = rb_str_new(str, len);
     xfree(str);
+
+    RB_GC_GUARD(v);
+
     return v;
 }
 
@@ -1245,7 +1261,7 @@ rm_exif_by_number(Image *image)
     const char *property, *value;
     char *str;
     size_t len = 0, property_l, value_l;
-    volatile VALUE v;
+    VALUE v;
 
     (void) GetImageProperty(image, "exif:!");
     ResetImagePropertyIterator(image);
@@ -1309,6 +1325,9 @@ rm_exif_by_number(Image *image)
 
     v = rb_str_new(str, len);
     xfree(str);
+
+    RB_GC_GUARD(v);
+
     return v;
 }
 
@@ -1426,8 +1445,8 @@ rm_progress_monitor(
     const MagickSizeType sp,
     void *client_data)
 {
-    volatile VALUE rval;
-    volatile VALUE method, offset, span;
+    VALUE rval;
+    VALUE method, offset, span;
 
     tag = tag;      // defeat gcc message
 
@@ -1442,6 +1461,11 @@ rm_progress_monitor(
     method = rb_str_new2(rb_id2name(THIS_FUNC()));
 
     rval = rb_funcall((VALUE)client_data, rm_ID_call, 3, method, offset, span);
+
+    RB_GC_GUARD(rval);
+    RB_GC_GUARD(method);
+    RB_GC_GUARD(offset);
+    RB_GC_GUARD(span);
 
     return RTEST(rval) ? MagickTrue : MagickFalse;
 }

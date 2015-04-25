@@ -497,7 +497,7 @@ Draw_interword_spacing_eq(VALUE self, VALUE spacing)
 static VALUE
 image_to_str(Image *image)
 {
-    volatile VALUE dimg = Qnil;
+    VALUE dimg = Qnil;
     unsigned char *blob;
     size_t length;
     Info *info;
@@ -514,6 +514,8 @@ image_to_str(Image *image)
         dimg = rb_str_new((char *)blob, (long)length);
         magick_free((void*)blob);
     }
+
+    RB_GC_GUARD(dimg);
 
     return dimg;
 }
@@ -664,7 +666,7 @@ Draw_marshal_load(VALUE self, VALUE ddraw)
 {
     Draw *draw;
     Pixel *pixel;
-    volatile VALUE val;
+    VALUE val;
 
     Data_Get_Struct(self, Draw, draw);
 
@@ -724,6 +726,8 @@ Draw_marshal_load(VALUE self, VALUE ddraw)
 #endif
 
     draw->primitives = rb_hash_aref(ddraw, CSTR2SYM("primitives"));
+
+    RB_GC_GUARD(val);
 
     return self;
 }
@@ -1051,13 +1055,15 @@ VALUE Draw_annotate(
 VALUE
 Draw_clone(VALUE self)
 {
-    volatile VALUE clone;
+    VALUE clone;
 
     clone = Draw_dup(self);
     if (OBJ_FROZEN(self))
     {
         OBJ_FREEZE(clone);
     }
+
+    RB_GC_GUARD(clone);
 
     return clone;
 }
@@ -1087,7 +1093,7 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
     const char *op = "Over";
     double x, y, width, height;
     CompositeOperator cop = OverCompositeOp;
-    volatile VALUE image;
+    VALUE image;
     Image *comp_img;
     struct TmpFile_Name *tmpfile_name;
     char name[MaxTextExtent];
@@ -1339,6 +1345,8 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
     // Send "primitive" to self.
     (void) rb_funcall(self, rb_intern("primitive"), 1, rb_str_new2(primitive));
 
+    RB_GC_GUARD(image);
+
     return self;
 }
 
@@ -1399,7 +1407,7 @@ VALUE
 Draw_dup(VALUE self)
 {
     Draw *draw;
-    volatile VALUE dup;
+    VALUE dup;
 
     draw = ALLOC(Draw);
     memset(draw, 0, sizeof(Draw));
@@ -1408,6 +1416,9 @@ Draw_dup(VALUE self)
     {
         (void)rb_obj_taint(dup);
     }
+
+    RB_GC_GUARD(dup);
+
     return rb_funcall(dup, rm_ID_initialize_copy, 1, self);
 }
 
@@ -1513,7 +1524,7 @@ VALUE
 Draw_initialize(VALUE self)
 {
     Draw *draw, *draw_options;
-    volatile VALUE options;
+    VALUE options;
 
     Data_Get_Struct(self, Draw, draw);
 
@@ -1521,6 +1532,8 @@ Draw_initialize(VALUE self)
     Data_Get_Struct(options, Draw, draw_options);
     draw->info = draw_options->info;
     draw_options->info = NULL;
+
+    RB_GC_GUARD(options);
 
     return self;
 }
@@ -1560,11 +1573,13 @@ Draw_inspect(VALUE self)
 VALUE Draw_alloc(VALUE class)
 {
     Draw *draw;
-    volatile VALUE draw_obj;
+    VALUE draw_obj;
 
     draw = ALLOC(Draw);
     memset(draw, 0, sizeof(Draw));
     draw_obj = Data_Wrap_Struct(class, mark_Draw, destroy_Draw, draw);
+
+    RB_GC_GUARD(draw_obj);
 
     return draw_obj;
 }
@@ -1685,11 +1700,13 @@ VALUE
 DrawOptions_alloc(VALUE class)
 {
     Draw *draw_options;
-    volatile VALUE draw_options_obj;
+    VALUE draw_options_obj;
 
     draw_options = ALLOC(Draw);
     memset(draw_options, 0, sizeof(Draw));
     draw_options_obj = Data_Wrap_Struct(class, mark_Draw, destroy_Draw, draw_options);
+
+    RB_GC_GUARD(draw_options_obj);
 
     return draw_options_obj;
 }
@@ -1745,7 +1762,7 @@ DrawOptions_initialize(VALUE self)
 VALUE
 PolaroidOptions_alloc(VALUE class)
 {
-    volatile VALUE polaroid_obj;
+    VALUE polaroid_obj;
     ImageInfo *image_info;
     Draw *draw;
 
@@ -1758,6 +1775,8 @@ PolaroidOptions_alloc(VALUE class)
     (void)(void) DestroyImageInfo(image_info);
 
     polaroid_obj = Data_Wrap_Struct(class, NULL, destroy_Draw, draw);
+
+    RB_GC_GUARD(polaroid_obj);
 
     return polaroid_obj;
 }
@@ -1863,7 +1882,7 @@ static VALUE
 get_dummy_tm_img(VALUE klass)
 {
 #define DUMMY_IMG_CLASS_VAR "@@_dummy_img_"
-    volatile VALUE dummy_img = 0;
+    VALUE dummy_img = 0;
     Info *info;
     Image *image;
 
@@ -1886,6 +1905,8 @@ get_dummy_tm_img(VALUE klass)
         rb_cv_set(klass, DUMMY_IMG_CLASS_VAR, dummy_img);
     }
     dummy_img = rb_cv_get(klass, DUMMY_IMG_CLASS_VAR);
+
+    RB_GC_GUARD(dummy_img);
 
     return dummy_img;
 }
@@ -1918,7 +1939,7 @@ get_type_metrics(
  #define ATTRS_L ((int)(sizeof(attrs)-1))
     Image *image;
     Draw *draw;
-    volatile VALUE t;
+    VALUE t;
     TypeMetric metrics;
     char *text = NULL;
     long text_l;
@@ -1994,5 +2015,8 @@ get_type_metrics(
         rb_raise(rb_eRuntimeError, "Can't measure text. Are the fonts installed? "
                  "Is the FreeType library installed?");
     }
+
+    RB_GC_GUARD(t);
+
     return Import_TypeMetric(&metrics);
 }
