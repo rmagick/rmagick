@@ -317,7 +317,7 @@ VALUE
 Info_aset(int argc, VALUE *argv, VALUE self)
 {
     Info *info;
-    volatile VALUE value;
+    VALUE value;
     char *format_p, *key_p, *value_p = NULL;
     long format_l, key_l;
     char ckey[MaxTextExtent];
@@ -373,6 +373,7 @@ Info_aset(int argc, VALUE *argv, VALUE self)
         }
     }
 
+    RB_GC_GUARD(value);
 
     return self;
 }
@@ -745,7 +746,7 @@ Info_define(int argc, VALUE *argv, VALUE self)
     long format_l, key_l;
     char ckey[100];
     unsigned int okay;
-    volatile VALUE fmt_arg;
+    VALUE fmt_arg;
 
     Data_Get_Struct(self, Info, info);
 
@@ -776,6 +777,8 @@ Info_define(int argc, VALUE *argv, VALUE self)
         rb_warn("%.20s=\"%.78s\" not defined - SetImageOption failed.", ckey, value);
         return Qnil;
     }
+
+    RB_GC_GUARD(fmt_arg);
 
     return self;
 }
@@ -903,7 +906,7 @@ VALUE
 Info_density_eq(VALUE self, VALUE density_arg)
 {
     Info *info;
-    volatile VALUE density;
+    VALUE density;
     char *dens;
 
     Data_Get_Struct(self, Info, info);
@@ -923,6 +926,8 @@ Info_density_eq(VALUE self, VALUE density_arg)
     }
 
     magick_clone_string(&info->density, dens);
+
+    RB_GC_GUARD(density);
 
     return self;
 }
@@ -1189,7 +1194,7 @@ Info_extract_eq(VALUE self, VALUE extract_arg)
 {
     Info *info;
     char *extr;
-    volatile VALUE extract;
+    VALUE extract;
 
     Data_Get_Struct(self, Info, info);
 
@@ -1208,6 +1213,8 @@ Info_extract_eq(VALUE self, VALUE extract_arg)
     }
 
     magick_clone_string(&info->extract, extr);
+
+    RB_GC_GUARD(extract);
 
     return self;
 }
@@ -1816,7 +1823,7 @@ VALUE
 Info_origin_eq(VALUE self, VALUE origin_arg)
 {
     Info *info;
-    volatile VALUE origin_str;
+    VALUE origin_str;
     char *origin;
 
     Data_Get_Struct(self, Info, info);
@@ -1836,6 +1843,9 @@ Info_origin_eq(VALUE self, VALUE origin_arg)
     }
 
     (void) SetImageOption(info, "origin", origin);
+
+    RB_GC_GUARD(origin_str);
+
     return self;
 }
 
@@ -1874,7 +1884,7 @@ VALUE
 Info_page_eq(VALUE self, VALUE page_arg)
 {
     Info *info;
-    volatile VALUE geom_str;
+    VALUE geom_str;
     char *geometry;
 
     Data_Get_Struct(self, Info, info);
@@ -1893,6 +1903,8 @@ Info_page_eq(VALUE self, VALUE page_arg)
         return self;
     }
     magick_clone_string(&info->page, geometry);
+
+    RB_GC_GUARD(geom_str);
 
     return self;
 }
@@ -2081,7 +2093,7 @@ VALUE
 Info_size_eq(VALUE self, VALUE size_arg)
 {
     Info *info;
-    volatile VALUE size;
+    VALUE size;
     char *sz;
 
     Data_Get_Struct(self, Info, info);
@@ -2101,6 +2113,8 @@ Info_size_eq(VALUE self, VALUE size_arg)
     }
 
     magick_clone_string(&info->size, sz);
+
+    RB_GC_GUARD(size);
 
     return self;
 }
@@ -2235,7 +2249,7 @@ VALUE
 Info_tile_offset_eq(VALUE self, VALUE offset)
 {
     Info *info;
-    volatile VALUE offset_str;
+    VALUE offset_str;
     char *tile_offset;
 
     offset_str = rm_to_s(offset);
@@ -2249,6 +2263,9 @@ Info_tile_offset_eq(VALUE self, VALUE offset)
 
     (void) DeleteImageOption(info, "tile-offset");
     (void) SetImageOption(info, "tile-offset", tile_offset);
+
+    RB_GC_GUARD(offset_str);
+
     return self;
 }
 
@@ -2513,7 +2530,7 @@ VALUE
 Info_alloc(VALUE class)
 {
     Info *info;
-    volatile VALUE info_obj;
+    VALUE info_obj;
 
     info = CloneImageInfo(NULL);
     if (!info)
@@ -2521,6 +2538,9 @@ Info_alloc(VALUE class)
         rb_raise(rb_eNoMemError, "not enough memory to initialize Info object");
     }
     info_obj = Data_Wrap_Struct(class, NULL, destroy_Info, info);
+
+    RB_GC_GUARD(info_obj);
+
     return info_obj;
 }
 
@@ -2538,9 +2558,12 @@ Info_alloc(VALUE class)
 VALUE
 rm_info_new(void)
 {
-    volatile VALUE info_obj;
+    VALUE info_obj;
 
     info_obj = Info_alloc(Class_Info);
+
+    RB_GC_GUARD(info_obj);
+
     return Info_initialize(info_obj);
 }
 

@@ -675,7 +675,7 @@ TextureFill_initialize(VALUE self, VALUE texture_arg)
 {
     rm_TextureFill *fill;
     Image *texture;
-    volatile VALUE texture_image;
+    VALUE texture_image;
 
     Data_Get_Struct(self, rm_TextureFill, fill);
 
@@ -686,6 +686,9 @@ TextureFill_initialize(VALUE self, VALUE texture_arg)
     (void) ReferenceImage(texture);
 
     fill->texture = texture;
+
+    RB_GC_GUARD(texture_image);
+
     return self;
 }
 

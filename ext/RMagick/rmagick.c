@@ -34,7 +34,7 @@ Magick_colors(VALUE class)
 {
     const ColorInfo **color_info_list;
     size_t number_colors, x;
-    volatile VALUE ary;
+    VALUE ary;
     ExceptionInfo *exception;
 
     exception = AcquireExceptionInfo();
@@ -62,6 +62,7 @@ Magick_colors(VALUE class)
         }
 
         magick_free((void *)color_info_list);
+        RB_GC_GUARD(ary);
         return ary;
     }
 }
@@ -83,7 +84,7 @@ Magick_fonts(VALUE class)
 {
     const TypeInfo **type_info;
     size_t number_types, x;
-    volatile VALUE ary;
+    VALUE ary;
     ExceptionInfo *exception;
 
     exception = AcquireExceptionInfo();
@@ -108,6 +109,7 @@ Magick_fonts(VALUE class)
             (void) rb_ary_push(ary, Import_TypeInfo((const TypeInfo *)type_info[x]));
         }
         magick_free((void *)type_info);
+        RB_GC_GUARD(ary);
         return ary;
     }
 
@@ -167,7 +169,7 @@ Magick_init_formats(VALUE class)
 {
     const MagickInfo **magick_info;
     size_t number_formats, x;
-    volatile VALUE formats;
+    VALUE formats;
     ExceptionInfo *exception;
 
     class = class;      // defeat "never referenced" message from icc
@@ -186,6 +188,7 @@ Magick_init_formats(VALUE class)
                             , rb_str_new2(magick_info[x]->name)
                             , MagickInfo_to_format((const MagickInfo *)magick_info[x]));
     }
+    RB_GC_GUARD(formats);
     return formats;
 }
 
@@ -206,7 +209,7 @@ Magick_init_formats(VALUE class)
 VALUE
 Magick_limit_resource(int argc, VALUE *argv, VALUE class)
 {
-    volatile VALUE resource, limit;
+    VALUE resource, limit;
     ResourceType res = UndefinedResource;
     char *str;
     ID id;
@@ -280,12 +283,16 @@ Magick_limit_resource(int argc, VALUE *argv, VALUE class)
             break;
     }
 
+    RB_GC_GUARD(resource);
+
     cur_limit = GetMagickResourceLimit(res);
 
     if (argc > 1)
     {
         (void) SetMagickResourceLimit(res, (MagickSizeType)NUM2ULONG(limit));
     }
+
+    RB_GC_GUARD(limit);
 
     return ULONG2NUM(cur_limit);
 }

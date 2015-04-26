@@ -131,7 +131,7 @@ static void set_managed_memory(void)
 void
 Init_RMagick2(void)
 {
-    volatile VALUE observable;
+    VALUE observable;
 
     MagickCoreGenesis("RMagick", MagickFalse);
 
@@ -1620,6 +1620,7 @@ Init_RMagick2(void)
     SetErrorHandler(rm_error_handler);
     SetWarningHandler(rm_warning_handler);
 
+    RB_GC_GUARD(observable);
 }
 
 
@@ -1681,7 +1682,7 @@ static void
 version_constants(void)
 {
     const char *mgk_version;
-    volatile VALUE str;
+    VALUE str;
     char long_version[1000];
 
     mgk_version = GetMagickVersion(NULL);
@@ -1706,6 +1707,7 @@ version_constants(void)
     rb_obj_freeze(str);
     rb_define_const(Module_Magick, "Long_version", str);
 
+    RB_GC_GUARD(str);
 }
 
 
@@ -1717,7 +1719,7 @@ version_constants(void)
 static void
 features_constant(void)
 {
-    volatile VALUE features;
+    VALUE features;
 
 #if defined(HAVE_GETMAGICKFEATURES)
     // 6.5.7 - latest (7.0.0)
@@ -1734,4 +1736,6 @@ features_constant(void)
 
     rb_obj_freeze(features);
     rb_define_const(Module_Magick, "Magick_features", features);
+
+    RB_GC_GUARD(features);
 }

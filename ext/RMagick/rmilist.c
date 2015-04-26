@@ -44,7 +44,7 @@ ImageList_animate(int argc, VALUE *argv, VALUE self)
 {
     Image *images;
     Info *info;
-    volatile VALUE info_obj;
+    VALUE info_obj;
 
     if (argc > 1)
     {
@@ -73,6 +73,8 @@ ImageList_animate(int argc, VALUE *argv, VALUE self)
     (void) AnimateImages(info, images);
     rm_check_image_exception(images, RetainOnError);
     rm_split(images);
+
+    RB_GC_GUARD(info_obj);
 
     return self;
 }
@@ -202,7 +204,7 @@ ImageList_coalesce(VALUE self)
 VALUE
 ImageList_composite_layers(int argc, VALUE *argv, VALUE self)
 {
-    volatile VALUE source_images;
+    VALUE source_images;
     Image *dest, *source, *new_images;
     RectangleInfo geometry;
     CompositeOperator operator = OverCompositeOp;
@@ -241,6 +243,8 @@ ImageList_composite_layers(int argc, VALUE *argv, VALUE self)
     rm_split(source);
     rm_check_exception(exception, new_images, DestroyOnError);
     (void) DestroyExceptionInfo(exception);
+
+    RB_GC_GUARD(source_images);
 
     return rm_imagelist_from_images(new_images);
 }
@@ -289,7 +293,7 @@ ImageList_display(VALUE self)
 {
     Image *images;
     Info *info;
-    volatile VALUE info_obj;
+    VALUE info_obj;
 
     // Create a new Info object to use with this call
     info_obj = rm_info_new();
@@ -301,6 +305,8 @@ ImageList_display(VALUE self)
     (void) DisplayImages(info, images);
     rm_split(images);
     rm_check_image_exception(images, RetainOnError);
+
+    RB_GC_GUARD(info_obj);
 
     return self;
 }
@@ -417,7 +423,7 @@ ImageList_map(int argc, VALUE *argv, VALUE self)
     Image *images, *new_images = NULL;
     Image *map;
     unsigned int dither = MagickFalse;
-    volatile VALUE scene, new_imagelist, t;
+    VALUE scene, new_imagelist, t;
     ExceptionInfo *exception;
 
 #if defined(HAVE_REMAPIMAGES)
@@ -465,6 +471,10 @@ ImageList_map(int argc, VALUE *argv, VALUE self)
     scene = rb_iv_get(self, "@scene");
     (void) imagelist_scene_eq(new_imagelist, scene);
 
+    RB_GC_GUARD(scene);
+    RB_GC_GUARD(new_imagelist);
+    RB_GC_GUARD(t);
+
     return new_imagelist;
 }
 
@@ -485,7 +495,7 @@ ImageList_map(int argc, VALUE *argv, VALUE self)
 VALUE
 ImageList_montage(VALUE self)
 {
-    volatile VALUE montage_obj;
+    VALUE montage_obj;
     Montage *montage;
     Image *new_images, *images;
     ExceptionInfo *exception;
@@ -522,6 +532,8 @@ ImageList_montage(VALUE self)
     (void) DestroyExceptionInfo(exception);
 
     rm_ensure_result(new_images);
+
+    RB_GC_GUARD(montage_obj);
 
     return rm_imagelist_from_images(new_images);
 }
@@ -754,7 +766,7 @@ ImageList_new(void)
 VALUE
 rm_imagelist_from_images(Image *images)
 {
-    volatile VALUE new_imagelist;
+    VALUE new_imagelist;
     Image *image;
 
     if (!images)
@@ -771,6 +783,9 @@ rm_imagelist_from_images(Image *images)
     }
 
     (void) rb_iv_set(new_imagelist, "@scene", INT2FIX(0));
+
+    RB_GC_GUARD(new_imagelist);
+
     return new_imagelist;
 }
 
@@ -790,7 +805,7 @@ images_from_imagelist(VALUE imagelist)
 {
     long x, len;
     Image *head = NULL;
-    volatile VALUE images, t;
+    VALUE images, t;
 
     len = check_imagelist_length(imagelist);
 
@@ -803,6 +818,9 @@ images_from_imagelist(VALUE imagelist)
         image = rm_check_destroyed(t);
         AppendImageToList(&head, image);
     }
+
+    RB_GC_GUARD(images);
+    RB_GC_GUARD(t);
 
     return head;
 }
@@ -837,7 +855,10 @@ imagelist_scene_eq(VALUE imagelist, VALUE scene)
 static long
 imagelist_length(VALUE imagelist)
 {
-    volatile VALUE images = rb_iv_get(imagelist, "@images");
+    VALUE images = rb_iv_get(imagelist, "@images");
+
+    RB_GC_GUARD(images);
+
     return RARRAY_LEN(images);
 }
 
@@ -942,7 +963,7 @@ ImageList_quantize(int argc, VALUE *argv, VALUE self)
     Image *new_image;
     QuantizeInfo quantize_info;
     ExceptionInfo *exception;
-    volatile VALUE new_imagelist, scene;
+    VALUE new_imagelist, scene;
 
     GetQuantizeInfo(&quantize_info);
 
@@ -1000,6 +1021,9 @@ ImageList_quantize(int argc, VALUE *argv, VALUE self)
     scene = rb_iv_get(self, "@scene");
     (void) rb_iv_set(new_imagelist, "@scene", scene);
 
+    RB_GC_GUARD(new_imagelist);
+    RB_GC_GUARD(scene);
+
     return new_imagelist;
 }
 
@@ -1032,8 +1056,9 @@ ImageList_remap(int argc, VALUE *argv, VALUE self)
 
     if (argc > 0 && argv[0] != Qnil)
     {
-        volatile VALUE t = rm_cur_image(argv[0]);
+        VALUE t = rm_cur_image(argv[0]);
         remap_image = rm_check_destroyed(t);
+        RB_GC_GUARD(t);
     }
 
     GetQuantizeInfo(&quantize_info);
@@ -1087,8 +1112,8 @@ ImageList_to_blob(VALUE self)
 {
     Image *images, *image;
     Info *info;
-    volatile VALUE info_obj;
-    volatile VALUE blob_str;
+    VALUE info_obj;
+    VALUE blob_str;
     void *blob = NULL;
     size_t length = 0;
     ExceptionInfo *exception;
@@ -1141,6 +1166,9 @@ ImageList_to_blob(VALUE self)
     blob_str = rb_str_new(blob, (long)length);
     magick_free((void*)blob);
 
+    RB_GC_GUARD(info_obj);
+    RB_GC_GUARD(blob_str);
+
     return blob_str;
 }
 
@@ -1164,7 +1192,7 @@ ImageList_write(VALUE self, VALUE file)
     Image *images, *img;
     Info *info;
     const MagickInfo *m;
-    volatile VALUE info_obj;
+    VALUE info_obj;
     unsigned long scene;
     ExceptionInfo *exception;
 
@@ -1230,5 +1258,8 @@ ImageList_write(VALUE self, VALUE file)
     }
 
     rm_split(images);
+
+    RB_GC_GUARD(info_obj);
+
     return self;
 }

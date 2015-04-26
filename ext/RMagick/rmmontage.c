@@ -63,7 +63,7 @@ Montage_alloc(VALUE class)
     MontageInfo *montage_info;
     Montage *montage;
     Info *image_info;
-    volatile VALUE montage_obj;
+    VALUE montage_obj;
 
     // DO NOT call rm_info_new - we don't want to support an Info parm block.
     image_info = CloneImageInfo(NULL);
@@ -84,6 +84,8 @@ Montage_alloc(VALUE class)
     montage->info = montage_info;
     montage->compose = OverCompositeOp;
     montage_obj = Data_Wrap_Struct(class, NULL, destroy_Montage, montage);
+
+    RB_GC_GUARD(montage_obj);
 
     return montage_obj;
 }
@@ -256,11 +258,13 @@ VALUE
 Montage_frame_eq(VALUE self, VALUE frame_arg)
 {
     Montage *montage;
-    volatile VALUE frame;
+    VALUE frame;
 
     Data_Get_Struct(self, Montage, montage);
     frame = rm_to_s(frame_arg);
     magick_clone_string(&montage->info->frame, StringValuePtr(frame));
+
+    RB_GC_GUARD(frame);
 
     return self;
 }
@@ -280,11 +284,13 @@ VALUE
 Montage_geometry_eq(VALUE self, VALUE geometry_arg)
 {
     Montage *montage;
-    volatile VALUE geometry;
+    VALUE geometry;
 
     Data_Get_Struct(self, Montage, montage);
     geometry = rm_to_s(geometry_arg);
     magick_clone_string(&montage->info->geometry, StringValuePtr(geometry));
+
+    RB_GC_GUARD(geometry);
 
     return self;
 }
@@ -465,11 +471,13 @@ VALUE
 Montage_tile_eq(VALUE self, VALUE tile_arg)
 {
     Montage *montage;
-    volatile VALUE tile;
+    VALUE tile;
 
     Data_Get_Struct(self, Montage, montage);
     tile = rm_to_s(tile_arg);
     magick_clone_string(&montage->info->tile, StringValuePtr(tile));
+
+    RB_GC_GUARD(tile);
 
     return self;
 }

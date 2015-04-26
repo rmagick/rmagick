@@ -78,10 +78,13 @@ VALUE
 Enum_alloc(VALUE class)
 {
    MagickEnum *magick_enum;
-   volatile VALUE enumr;
+   VALUE enumr;
 
    enumr = Data_Make_Struct(class, MagickEnum, NULL, NULL, magick_enum);
    rb_obj_freeze(enumr);
+
+   RB_GC_GUARD(enumr);
+
    return enumr;
 }
 
@@ -230,7 +233,7 @@ VALUE
 Enum_type_initialize(VALUE self, VALUE sym, VALUE val)
 {
     VALUE super_argv[2];
-    volatile VALUE enumerators;
+    VALUE enumerators;
 
     super_argv[0] = sym;
     super_argv[1] = val;
@@ -243,6 +246,8 @@ Enum_type_initialize(VALUE self, VALUE sym, VALUE val)
 
     enumerators = rb_cv_get(CLASS_OF(self), ENUMERATORS_CLASS_VAR);
     (void) rb_ary_push(enumerators, self);
+
+    RB_GC_GUARD(enumerators);
 
     return self;
 }
@@ -286,8 +291,8 @@ Enum_type_inspect(VALUE self)
 static VALUE
 Enum_type_values(VALUE class)
 {
-    volatile VALUE enumerators, copy;
-    volatile VALUE rv;
+    VALUE enumerators, copy;
+    VALUE rv;
     int x;
 
     enumerators = rb_cv_get(class, ENUMERATORS_CLASS_VAR);
@@ -310,6 +315,10 @@ Enum_type_values(VALUE class)
         rb_obj_freeze(copy);
         rv = copy;
     }
+
+    RB_GC_GUARD(enumerators);
+    RB_GC_GUARD(copy);
+    RB_GC_GUARD(rv);
 
     return rv;
 }

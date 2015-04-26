@@ -65,7 +65,7 @@ Import_AffineMatrix(AffineMatrix *affine)
 void
 Export_AffineMatrix(AffineMatrix *am, VALUE st)
 {
-    volatile VALUE values, v;
+    VALUE values, v;
 
     if (CLASS_OF(st) != Class_AffineMatrix)
     {
@@ -85,6 +85,9 @@ Export_AffineMatrix(AffineMatrix *am, VALUE st)
     am->tx = v == Qnil ? 0.0 : NUM2DBL(v);
     v = rb_ary_entry(values, 5);
     am->ty = v == Qnil ? 0.0 : NUM2DBL(v);
+
+    RB_GC_GUARD(values);
+    RB_GC_GUARD(v);
 }
 
 
@@ -99,15 +102,20 @@ Export_AffineMatrix(AffineMatrix *am, VALUE st)
 VALUE
 ChromaticityInfo_new(ChromaticityInfo *ci)
 {
-    volatile VALUE red_primary;
-    volatile VALUE green_primary;
-    volatile VALUE blue_primary;
-    volatile VALUE white_point;
+    VALUE red_primary;
+    VALUE green_primary;
+    VALUE blue_primary;
+    VALUE white_point;
 
     red_primary   = Import_PrimaryInfo(&ci->red_primary);
     green_primary = Import_PrimaryInfo(&ci->green_primary);
     blue_primary  = Import_PrimaryInfo(&ci->blue_primary);
     white_point   = Import_PrimaryInfo(&ci->white_point);
+
+    RB_GC_GUARD(red_primary);
+    RB_GC_GUARD(green_primary);
+    RB_GC_GUARD(blue_primary);
+    RB_GC_GUARD(white_point);
 
     return rb_funcall(Class_Chromaticity, rm_ID_new, 4
                     , red_primary, green_primary, blue_primary, white_point);
@@ -126,9 +134,9 @@ ChromaticityInfo_new(ChromaticityInfo *ci)
 void
 Export_ChromaticityInfo(ChromaticityInfo *ci, VALUE chrom)
 {
-    volatile VALUE chrom_members;
-    volatile VALUE red_primary, green_primary, blue_primary, white_point;
-    volatile VALUE entry_members, x, y;
+    VALUE chrom_members;
+    VALUE red_primary, green_primary, blue_primary, white_point;
+    VALUE entry_members, x, y;
     ID values_id;
 
     if (CLASS_OF(chrom) != Class_Chromaticity)
@@ -176,6 +184,15 @@ Export_ChromaticityInfo(ChromaticityInfo *ci, VALUE chrom)
     y = rb_ary_entry(entry_members, 1);         // white_point.y
     ci->white_point.y = y == Qnil ? 0.0 : NUM2DBL(y);
     ci->white_point.z = 0.0;
+
+    RB_GC_GUARD(chrom_members);
+    RB_GC_GUARD(red_primary);
+    RB_GC_GUARD(green_primary);
+    RB_GC_GUARD(blue_primary);
+    RB_GC_GUARD(white_point);
+    RB_GC_GUARD(entry_members);
+    RB_GC_GUARD(x);
+    RB_GC_GUARD(y);
 }
 
 
@@ -219,15 +236,19 @@ VALUE
 Import_ColorInfo(const ColorInfo *ci)
 {
     ComplianceType compliance_type;
-    volatile VALUE name;
-    volatile VALUE compliance;
-    volatile VALUE color;
+    VALUE name;
+    VALUE compliance;
+    VALUE color;
 
     name       = rb_str_new2(ci->name);
 
     compliance_type = ci->compliance;
     compliance = ComplianceType_new(compliance_type);
     color      = Pixel_from_MagickPixelPacket(&(ci->color));
+
+    RB_GC_GUARD(name);
+    RB_GC_GUARD(compliance);
+    RB_GC_GUARD(color);
 
     return rb_funcall(Class_Color, rm_ID_new, 3
                     , name, compliance, color);
@@ -246,7 +267,7 @@ void
 Export_ColorInfo(ColorInfo *ci, VALUE st)
 {
     Pixel *pixel;
-    volatile VALUE members, m;
+    VALUE members, m;
 
     if (CLASS_OF(st) != Class_Color)
     {
@@ -281,6 +302,9 @@ Export_ColorInfo(ColorInfo *ci, VALUE st)
         ci->color.opacity = (MagickRealType) OpaqueOpacity;
         ci->color.index = (MagickRealType) 0;
     }
+
+    RB_GC_GUARD(members);
+    RB_GC_GUARD(m);
 }
 
 
@@ -441,9 +465,9 @@ ComplianceType_new(ComplianceType compliance)
 VALUE
 Import_TypeInfo(const TypeInfo *ti)
 {
-    volatile VALUE name, description, family;
-    volatile VALUE style, stretch, weight;
-    volatile VALUE encoding, foundry, format;
+    VALUE name, description, family;
+    VALUE style, stretch, weight;
+    VALUE encoding, foundry, format;
 
     name        = rb_str_new2(ti->name);
     family      = rb_str_new2(ti->family);
@@ -454,6 +478,16 @@ Import_TypeInfo(const TypeInfo *ti)
     encoding    = ti->encoding    ? rb_str_new2(ti->encoding) : Qnil;
     foundry     = ti->foundry     ? rb_str_new2(ti->foundry)  : Qnil;
     format      = ti->format      ? rb_str_new2(ti->format)   : Qnil;
+
+    RB_GC_GUARD(name);
+    RB_GC_GUARD(description);
+    RB_GC_GUARD(family);
+    RB_GC_GUARD(style);
+    RB_GC_GUARD(stretch);
+    RB_GC_GUARD(weight);
+    RB_GC_GUARD(encoding);
+    RB_GC_GUARD(foundry);
+    RB_GC_GUARD(format);
 
     return rb_funcall(Class_Font, rm_ID_new, 9
                     , name, description, family, style
@@ -472,7 +506,7 @@ Import_TypeInfo(const TypeInfo *ti)
 void
 Export_TypeInfo(TypeInfo *ti, VALUE st)
 {
-    volatile VALUE members, m;
+    VALUE members, m;
 
     if (CLASS_OF(st) != Class_Font)
     {
@@ -511,6 +545,9 @@ Export_TypeInfo(TypeInfo *ti, VALUE st)
     m = rb_ary_entry(members, 8);
     if (m != Qnil)
         (void) CloneString((char **)&(ti->format), StringValuePtr(m));
+
+    RB_GC_GUARD(members);
+    RB_GC_GUARD(m);
 }
 
 
@@ -616,7 +653,7 @@ Import_PointInfo(PointInfo *p)
 void
 Export_PointInfo(PointInfo *pi, VALUE sp)
 {
-    volatile VALUE members, m;
+    VALUE members, m;
 
     if (CLASS_OF(sp) != Class_Point)
     {
@@ -628,6 +665,9 @@ Export_PointInfo(PointInfo *pi, VALUE sp)
     pi->x = m == Qnil ? 0.0 : NUM2DBL(m);
     m = rb_ary_entry(members, 1);
     pi->y = m == Qnil ? 0.0 : NUM2DBL(m);
+
+    RB_GC_GUARD(members);
+    RB_GC_GUARD(m);
 }
 
 
@@ -658,7 +698,7 @@ Import_PrimaryInfo(PrimaryInfo *p)
 void
 Export_PrimaryInfo(PrimaryInfo *pi, VALUE sp)
 {
-    volatile VALUE members, m;
+    VALUE members, m;
 
     if (CLASS_OF(sp) != Class_Primary)
     {
@@ -672,6 +712,9 @@ Export_PrimaryInfo(PrimaryInfo *pi, VALUE sp)
     pi->y = m == Qnil ? 0.0 : NUM2DBL(m);
     m = rb_ary_entry(members, 2);
     pi->z = m == Qnil ? 0.0 : NUM2DBL(m);
+
+    RB_GC_GUARD(members);
+    RB_GC_GUARD(m);
 }
 
 
@@ -707,14 +750,20 @@ PrimaryInfo_to_s(VALUE self)
 VALUE
 Import_RectangleInfo(RectangleInfo *rect)
 {
-    volatile VALUE width;
-    volatile VALUE height;
-    volatile VALUE x, y;
+    VALUE width;
+    VALUE height;
+    VALUE x, y;
 
     width  = UINT2NUM(rect->width);
     height = UINT2NUM(rect->height);
     x      = INT2NUM(rect->x);
     y      = INT2NUM(rect->y);
+
+    RB_GC_GUARD(width);
+    RB_GC_GUARD(height);
+    RB_GC_GUARD(x);
+    RB_GC_GUARD(y);
+
     return rb_funcall(Class_Rectangle, rm_ID_new, 4
                     , width, height, x, y);
 }
@@ -731,7 +780,7 @@ Import_RectangleInfo(RectangleInfo *rect)
 void
 Export_RectangleInfo(RectangleInfo *rect, VALUE sr)
 {
-    volatile VALUE members, m;
+    VALUE members, m;
 
     if (CLASS_OF(sr) != Class_Rectangle)
     {
@@ -747,6 +796,9 @@ Export_RectangleInfo(RectangleInfo *rect, VALUE sr)
     rect->x      = m == Qnil ? 0 : NUM2LONG (m);
     m = rb_ary_entry(members, 3);
     rect->y      = m == Qnil ? 0 : NUM2LONG (m);
+
+    RB_GC_GUARD(members);
+    RB_GC_GUARD(m);
 }
 
 
@@ -783,12 +835,18 @@ RectangleInfo_to_s(VALUE self)
 VALUE
 Import_SegmentInfo(SegmentInfo *segment)
 {
-    volatile VALUE x1, y1, x2, y2;
+    VALUE x1, y1, x2, y2;
 
     x1 = rb_float_new(segment->x1);
     y1 = rb_float_new(segment->y1);
     x2 = rb_float_new(segment->x2);
     y2 = rb_float_new(segment->y2);
+
+    RB_GC_GUARD(x1);
+    RB_GC_GUARD(y1);
+    RB_GC_GUARD(x2);
+    RB_GC_GUARD(y2);
+    
     return rb_funcall(Class_Segment, rm_ID_new, 4, x1, y1, x2, y2);
 }
 
@@ -804,7 +862,7 @@ Import_SegmentInfo(SegmentInfo *segment)
 void
 Export_SegmentInfo(SegmentInfo *segment, VALUE s)
 {
-    volatile VALUE members, m;
+    VALUE members, m;
 
     if (CLASS_OF(s) != Class_Segment)
     {
@@ -821,6 +879,9 @@ Export_SegmentInfo(SegmentInfo *segment, VALUE s)
     segment->x2 = m == Qnil ? 0.0 : NUM2DBL(m);
     m = rb_ary_entry(members, 3);
     segment->y2 = m == Qnil ? 0.0 : NUM2DBL(m);
+
+    RB_GC_GUARD(members);
+    RB_GC_GUARD(m);
 }
 
 
@@ -943,10 +1004,10 @@ StyleType_new(StyleType style)
 VALUE
 Import_TypeMetric(TypeMetric *tm)
 {
-    volatile VALUE pixels_per_em;
-    volatile VALUE ascent, descent;
-    volatile VALUE width, height, max_advance;
-    volatile VALUE bounds, underline_position, underline_thickness;
+    VALUE pixels_per_em;
+    VALUE ascent, descent;
+    VALUE width, height, max_advance;
+    VALUE bounds, underline_position, underline_thickness;
 
     pixels_per_em       = Import_PointInfo(&tm->pixels_per_em);
     ascent              = rb_float_new(tm->ascent);
@@ -957,6 +1018,16 @@ Import_TypeMetric(TypeMetric *tm)
     bounds              = Import_SegmentInfo(&tm->bounds);
     underline_position  = rb_float_new(tm->underline_position);
     underline_thickness = rb_float_new(tm->underline_position);
+
+    RB_GC_GUARD(pixels_per_em);
+    RB_GC_GUARD(ascent);
+    RB_GC_GUARD(descent);
+    RB_GC_GUARD(width);
+    RB_GC_GUARD(height);
+    RB_GC_GUARD(max_advance);
+    RB_GC_GUARD(bounds);
+    RB_GC_GUARD(underline_position);
+    RB_GC_GUARD(underline_thickness);
 
     return rb_funcall(Class_TypeMetric, rm_ID_new, 9
                     , pixels_per_em, ascent, descent, width
@@ -976,8 +1047,8 @@ Import_TypeMetric(TypeMetric *tm)
 void
 Export_TypeMetric(TypeMetric *tm, VALUE st)
 {
-    volatile VALUE members, m;
-    volatile VALUE pixels_per_em;
+    VALUE members, m;
+    VALUE pixels_per_em;
 
     if (CLASS_OF(st) != Class_TypeMetric)
     {
@@ -1007,6 +1078,10 @@ Export_TypeMetric(TypeMetric *tm, VALUE st)
     tm->underline_position  = m == Qnil ? 0.0 : NUM2DBL(m);
     m = rb_ary_entry(members, 8);
     tm->underline_thickness = m == Qnil ? 0.0 : NUM2DBL(m);
+
+    RB_GC_GUARD(members);
+    RB_GC_GUARD(m);
+    RB_GC_GUARD(pixels_per_em);
 }
 
 
@@ -1022,7 +1097,7 @@ Export_TypeMetric(TypeMetric *tm, VALUE st)
 VALUE
 TypeMetric_to_s(VALUE self)
 {
-    volatile VALUE str;
+    VALUE str;
     TypeMetric tm;
     char temp[200];
     int len;
@@ -1041,6 +1116,8 @@ TypeMetric_to_s(VALUE self)
     rb_str_cat(str, temp, len);
     len = sprintf(temp, "underline_position=%g underline_thickness=%g", tm.underline_position, tm.underline_thickness);
     rb_str_cat(str, temp, len);
+
+    RB_GC_GUARD(str);
 
     return str;
 }
