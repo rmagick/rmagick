@@ -29,7 +29,7 @@ Testing
 
 Our goal is to migrate to [RSpec](http://rspec.info).
 
-If you write new tests, please do it in RSpec. You can use the `spec_it` branch as a base for yours.
+If you write new tests, please do it in RSpec.
 
 You are also welcome to convert existing Test/Unit tests to RSpec.
 
