@@ -33,7 +33,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec', '~> 3.2.0'
 
   if Gem::Version.new(RUBY_VERSION.dup) >= Gem::Version.new('1.9.2')
-    s.add_development_dependency 'rubocop', '~> 0.26.1'
+    s.add_development_dependency 'rubocop'
   end
 
   if Gem::Version.new(RUBY_VERSION.dup) >= Gem::Version.new('2.2.0')
