@@ -301,11 +301,6 @@ Style/SymbolProc:
 Style/TrailingComma:
   Enabled: false
 
-# Offense count: 204
-# Cop supports --auto-correct.
-Style/TrailingWhitespace:
-  Enabled: false
-
 # Offense count: 2
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 Style/VariableName:
