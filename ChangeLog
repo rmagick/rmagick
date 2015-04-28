@@ -1,3 +1,8 @@
+RMagick 2.15.0
+    o Ability to remove alpha channel - @ollie
+    o C local variables guarded against GC to avoid segfaults - @u338steven
+    o trace_proc protected with a mutex to avoid segfaults - @u338steven
+
 RMagick 2.14.0
     o RMagick.rb moved to deprecated directory - @mockdeep
     o Better ImageMagick feature detection - @bf4
