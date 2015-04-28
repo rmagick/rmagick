@@ -11,6 +11,15 @@ Style/DeprecatedHashMethods:
 Style/Lambda:
   Enabled: false
 
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+
+Style/MultilineOperationIndentation:
+  EnforcedStyle: indented
+
+Style/DotPosition:
+  EnforcedStyle: leading
+
 # Auto-generated config to be cleaned up and deleted:
 
 # Offense count: 2
@@ -156,12 +165,6 @@ Style/GuardClause:
 Style/IfUnlessModifier:
   Enabled: false
 
-# Offense count: 651
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/IndentationConsistency:
-  Enabled: false
-
 # Offense count: 1049
 # Cop supports --auto-correct.
 # Configuration parameters: Width.
@@ -299,11 +302,6 @@ Style/SymbolProc:
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyleForMultiline, SupportedStyles.
 Style/TrailingComma:
-  Enabled: false
-
-# Offense count: 204
-# Cop supports --auto-correct.
-Style/TrailingWhitespace:
   Enabled: false
 
 # Offense count: 2

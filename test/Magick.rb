@@ -87,7 +87,7 @@ class Magick_UT < Test::Unit::TestCase
         assert_instance_of(String, f.foundry) unless f.foundry.nil?
         assert_instance_of(String, f.format) unless f.format.nil?
       end
-    Magick.fonts {|f| assert_instance_of(Magick::Font, f) }
+      Magick.fonts {|f| assert_instance_of(Magick::Font, f) }
     end
 
     def test_formats
