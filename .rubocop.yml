@@ -11,6 +11,15 @@ Style/DeprecatedHashMethods:
 Style/Lambda:
   Enabled: false
 
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+
+Style/MultilineOperationIndentation:
+  EnforcedStyle: indented
+
+Style/DotPosition:
+  EnforcedStyle: leading
+
 # Auto-generated config to be cleaned up and deleted:
 
 # Offense count: 2
