@@ -1,9 +1,14 @@
-RMagick 2.15.0
+# Change Log
+
+All notable changes to this project will be documented in this file.
+This project adheres to [Semantic Versioning](http://semver.org/).
+
+## RMagick 2.15.0
     o Ability to remove alpha channel - @ollie
     o C local variables guarded against GC to avoid segfaults - @u338steven
     o trace_proc protected with a mutex to avoid segfaults - @u338steven
 
-RMagick 2.14.0
+## RMagick 2.14.0
     o RMagick.rb moved to deprecated directory - @mockdeep
     o Better ImageMagick feature detection - @bf4
     o Prevent compilation failures if prefix is an empty string - @voxik
@@ -16,7 +21,7 @@ RMagick 2.14.0
     o Multiple test suite improvements - @mockdeep, @bf4
     o Ruby source code formatting with RuboCop - @vassilevsky
 
-RMagick 2.13.4
+## RMagick 2.13.4
     #129 from @theschoolmaster
       proof of concept for using pkg-config in place of Magick-config on debian based systems
 
@@ -54,18 +59,18 @@ RMagick 2.13.4
       Do not test machine and OS-specific integers
       Fix initial memory limit test
 
-RMagick 2.13.3
+## RMagick 2.13.3
     #90 from @bricef
       Fix installation error on systems with HRDI enabled RMagick
 
-RMagick 2.13.2
+## RMagick 2.13.2
     o Fixed issues preventing RMagick from working with version 6.8 or higher
     o Fixed issues preventing RMagick from working with ruby 1.9.3
 
-RMagick 2.13.1
+## RMagick 2.13.1
     o Fixed bug preventing RMagick from working with version 6.5.9 or higher
 
-RMagick 2.13.0
+## RMagick 2.13.0
     o Added Doxygen documentation, for automatic documentation
     o Fixed bug #27467, get RMagick to compile witH ImageMagick 6.5.7
     o Fixed bug #27607, switch Pixel#from_hsla and Pixel#to_hsla to use ranges
@@ -74,23 +79,23 @@ RMagick 2.13.0
       arguments to these functions as percentages (bug report by Arthur Chan).
 
 
-RMagick 2.12.2
+## RMagick 2.12.2
     o Add feature tests for SinusoidFunction and PolynomialFunction enum
       values to allow compiling with ImageMagick 6.4.8-7 (bug report by Mark
       Richman)
 
-RMagick 2.12.1
+## RMagick 2.12.1
     o Fix bug #27239, allow 2.12.0 to compile with older releases of ImageMagick
       (bug report by Sam Lown)
 
-RMagick 2.12.0
+## RMagick 2.12.0
     o Added Image#function_channel (available in ImageMagick 6.4.8-8)
     o Added Image#auto_level_channel, Image#auto_gamma_channel (available in
       ImageMagick 6.5.5-1)
     o Added Draw#interline_spacing, #interline_spacing= (available in
       ImageMagick 6.5.5-8)
 
-RMagick 2.11.1
+## RMagick 2.11.1
     o Applied Alexey Borzenkov's mingw patches to extconf.rb.
     o Fixed a bug in Magick.trace_proc that could cause a segv at program exit
       with Ruby 1.9.1 (bug report by Larry Young)
@@ -98,7 +103,7 @@ RMagick 2.11.1
       Pxr24Compression, B44Compression, B44ACompression (available in
       ImageMagick 6.5.5-4)
 
-RMagick 2.11.0
+## RMagick 2.11.0
     o Fix bug #26475, dissolve and watermark don't work with new versions of
       ImageMagick (reported by Jim Crate)
     o Add Image#composite_mathematics (available in ImageMagick 6.5.4-3)
@@ -106,7 +111,7 @@ RMagick 2.11.0
       PegtopCompositeOp, PinLightCompositeOp, VividLightCompositeOp enum values
       (available in ImageMagick 6.5.4-3)
 
-RMagick 2.10.0
+## RMagick 2.10.0
     o ImageMagick releases earlier than 6.3.5-10 and Ruby releases earlier
       than 1.8.5 no longer supported.
     o (Experimental) Support the use of Ruby managed memory for all memory
@@ -116,7 +121,7 @@ RMagick 2.10.0
       6.5.2-5)
     o Add new DistortCompositeOp enum value (available in ImageMagick 6.5.3-7)
 
-RMagick 2.9.2
+## RMagick 2.9.2
     o Add new HorizontalTileEdgeVirtualPixelMethod,
       VerticalTileEdgeVirtualPixelMethod, CheckerTileVirtualPixelMethod
       VirtualPixelMethod enum values (available in ImageMagick 6.5.0-1)
@@ -128,11 +133,11 @@ RMagick 2.9.2
     o Fix bug #25892, stack buffer overflow in Magick::TypeMetric.to_s
       (reported by Roman Simecek)
 
-RMagick 2.9.1
+## RMagick 2.9.1
     o Fix a bug that prevents the use of transparent background colors when
       built with ImageMagick 6.4.9-0
 
-RMagick 2.9.0
+## RMagick 2.9.0
     o Fix #23209, improve RVG's letter spacing (patch from Jonah Fox)
     o Add Draw#kerning= attribute (available in ImageMagick 6.4.7-8)
     o Add Draw#interword_spacing= attribute (available in ImageMagick
@@ -142,7 +147,7 @@ RMagick 2.9.0
     o Feature #23171, support ImageList, Draw, Pixel marshaling.
     o Support all the new EvaluateOperator constants
 
-RMagick 2.8.0
+## RMagick 2.8.0
     o Add the endian, scene, and transparent_color attributes to Image::Info
     o Deprecate Image#endian= attribute setter
     o Add the transparent_chroma method to the Image class (available in
@@ -152,11 +157,11 @@ RMagick 2.8.0
     o Update Image#change_geometry to work with the new ParseSizeGeometry API
       in ImageMagick 6.4.6-9.
 
-RMagick 2.7.2
+## RMagick 2.7.2
     o Fix bug #22740, some Image::Info attribute values are not propogated to
       the image object (bug report by Thomas Watson)
 
-RMagick 2.7.1
+## RMagick 2.7.1
     o Fix bug #22471, Magick::fonts can abend on 64-bit systems (bug report and
       patch by James Le Cuirot)
     o ImageList.new accepts a block which is passed on to Image::read when
@@ -167,7 +172,7 @@ RMagick 2.7.1
       ImageMagick raises a fatal (unrecoverable) exception.
     o Added feature #22618, Image#total_ink_density (request by F. Behrens)
 
-RMagick 2.7.0
+## RMagick 2.7.0
     o Fix bug #22152, extconf.rb does not respect the LDFLAGS environment
       variable (bug report by Joseph Sokol-Margolis)
     o Fix bug #22190, the NoDitherMethod enum value is not defined in
@@ -181,7 +186,7 @@ RMagick 2.7.0
       ImageList#remap. Retain the old names as aliases. (Changed in ImageMagick
       6.4.4-0)
 
-RMagick 2.6.0
+## RMagick 2.6.0
     o Fix bug #21237, Image::write ignores format attribute when called with a
       Tempfile pathname (bug report by Jack Shedd)
     o Fix bug #21897, ImageList#from_blob abends when certain corrupt JPEG
@@ -210,23 +215,23 @@ RMagick 2.6.0
     o Support optional highlight_color and lowlight_color arguments
       to Image#compare_channel
 
-RMagick 2.5.2
+## RMagick 2.5.2
     o Add support for MergeLayer to Magick::ImageList#optimize_layers (patch
       #21189, submitted by Andrew Watson)
     o Add PowQuantumOperator argument for Image#quantum_operator (available
       in ImageMagick 6.4.1-9)
 
-RMagick 2.5.1
+## RMagick 2.5.1
     o Update Pixel#to_color to work with the new QueryMagickColorname API in
       ImageMagick 6.4.1-9.
 
-RMagick 2.5.0
+## RMagick 2.5.0
     o Added Image#add_compose_mask, #delete_compose_mask (feature #20531)
 
-RMagick 2.4.0
+## RMagick 2.4.0
     o Added Image#image_type= (feature #20490)
 
-RMagick 2.3.0
+## RMagick 2.3.0
     o Added Image#encipher, Image#decipher (available with ImageMagick 6.3.8-6)
     o Added DTX1Compression, DTX1Compression, and DTX1Compression
       CompressionType enums (available in ImageMagick 6.3.9-4)
@@ -243,11 +248,11 @@ RMagick 2.3.0
     o Fix bug #18271, rvg width and height attributes wrong after a call to
       viewbox (reported by Greg Jarman)
 
-RMagick 2.2.2
+## RMagick 2.2.2
     o Fix bug #18016, add test for InitializeMagick in libMagickCore to
       extconf.rb
 
-RMagick 2.2.0
+## RMagick 2.2.0
     o Added Image#opaque_channel, Image#paint_transparent (available with
       ImageMagick 6.3.7-10)
     o Added Image#liquid_rescale (available with ImageMagick 6.3.8-2)
@@ -257,7 +262,7 @@ RMagick 2.2.0
     o Fixed bug #17470, get_exif_by_number, get_exif_by_entry may fail when
       called with one or more arguments
 
-RMagick 2.1.0
+## RMagick 2.1.0
     o Added Image::Info#caption= attribute
     o Rename Image#crop_resized, #crop_resized! to #resize_to_fill,
       #resize_to_fill!. Add aliases for the old names.
@@ -266,7 +271,7 @@ RMagick 2.1.0
     o Fix bug #16931, apostrophe in #error directive causes error in some
       versions of GCC (bug report by Justin Dossey)
 
-RMagick 2.0.0
+## RMagick 2.0.0
     o Replaced configure/make/make install with standard Ruby setup.rb,
       extconf.rb
     o Removed support for Ruby earlier than 1.8.2
@@ -344,25 +349,25 @@ RMagick 2.0.0
     o Updated for ImageMagick 6.3.7-5
     o Made changes as necessary to work with current Ruby 1.9.0
 
-RMagick 1.15.12
+## RMagick 1.15.12
     o Fix bug #16221, starting with ImageMagick 6.3.2, get_exif_by_entry/number
       returns empty array/hash when no arguments are specified, even though the
       image has EXIF data (bug report from Paul Clegg)
 
-RMagick 1.15.11
+## RMagick 1.15.11
     o Fix bug #15887, the x_ and y_resolution attributes don't respect the units
       attribute (bug report from Ben Greenburg)
     o Fix bug #15889, memory leak in Draw#composite method (bug report from Till
       Vollmer)
 
-RMagick 1.15.10
+## RMagick 1.15.10
     o Update Magick::Pixel.from_HSL, #to_HSL to work with new APIs in
       ImageMagick 6.3.5-9.
 
-RMagick 1.15.9
+## RMagick 1.15.9
     o Fixed bug #12089 (bug report from Hans de Graaff)
 
-RMagick 1.15.8
+## RMagick 1.15.8
     o Fixed bug #12671, incorrect link in HTML doc (bug report from Thomas R.
       Koll
     o Fixed bug #11890, incorrect usage description for Draw#text_undercolor in
@@ -370,39 +375,39 @@ RMagick 1.15.8
     o Fixed bug #12706, specifying both a gravity and offsets to Image#composite
       positions the composite image incorrectly (bug report from Benoit Larroque)
 
-RMagick 1.15.7
+## RMagick 1.15.7
     o Fix bug #11033, make distclean misses some files (bug report from Lucas
       Nussbaum)
     o Work around SetMagickRegistry problem in ImageMagick 6.3.4-7
 
-RMagick 1.15.6
+## RMagick 1.15.6
     o Fix bug #10070, memory leak in Draw#get_type_metrics,
       Draw#get_multiline_type_metrics, Draw#annotate (bug report from Sinclair
       Bain)
     o Fix bug #10080, scripts in examples directory should not be marked
       executable (bug report from Lucas Nussbaum)
 
-RMagick 1.15.5
+## RMagick 1.15.5
     o Fix bug #9637, export_pixels always exports all 0's for 1-bit images (bug
       report from Doug Patterson)
 
-RMagick 1.15.4
+## RMagick 1.15.4
     o Fix bug #8927, RMagick and rbgsl both export the name ID_call (bug report
       from Shin Enomoto)
 
-RMagick 1.15.3
+## RMagick 1.15.3
     o Fix bug #8697, Image::Info.fill= doesn't work when creating "caption:"
       format images (bug report from choonkeat)
 
-RMagick 1.15.2
+## RMagick 1.15.2
     o Fix bug #8408, a compatibility problem with some versions of ImageMagick
       before 6.2.5 (bug report from Geir Gluckstad)
 
-RMagick 1.15.1
+## RMagick 1.15.1
     o Fix bug #8307, compatibility problems with older (6.0.x) versions of
       ImageMagick (bug report from Chris Taggart)
 
-RMagick 1.15.0
+## RMagick 1.15.0
     o Added fx method to ImageList class
     o Added wet_floor method to the Image class
     o Added linear_stretch method to the Image class (available with
@@ -423,11 +428,11 @@ RMagick 1.15.0
       in the right scope (bug report from Andrew Kaspick)
     o Tested with ImageMagick 6.3.2-0
 
-RMagick 1.14.1
+## RMagick 1.14.1
     o Handle change to the type of the ColorInfo.color field introduced by
       ImageMagick 6.3.0
 
-RMagick 1.14.0
+## RMagick 1.14.0
     o Feature request #5015, support CMYK->RGB conversions. Added the
       add_profile and delete_profiles to the Image class. Fixed the profile!,
       iptc_profile, and color_profile methods. Added the
@@ -461,7 +466,7 @@ RMagick 1.14.0
     o Fix bug #5506, wrong argument used to intialize AffineMatrix (bug
       report from Michael Shantzis)
 
-RMagick 1.13.0
+## RMagick 1.13.0
     o Added transform, transform!, transpose, transpose! methods to Image class
       (available with ImageMagick 6.2.8)
     o Feature #4844, add auto_orient, auto_orient! methods to Image class
@@ -478,16 +483,16 @@ RMagick 1.13.0
     o Fix bug #4821, correct doc for Image#rotate (bug report from Tim Pease)
     o Update the Draw#annotate documentation
 
-RMagick 1.12.0
+## RMagick 1.12.0
     o Fix bug #4630, the new signature for #level is incompatible with
       releases prior to 1.10.1 (bug report from Al Evans)
 
-RMagick 1.11.1
+## RMagick 1.11.1
     o Fix bug #4511, add Makefile, rmagick_config.h as dependencies
       in the Makefile (bug report from Eric Hodel)
     o Ensure ExceptionInfo structures are freed
 
-RMagick 1.11.0
+## RMagick 1.11.0
     o Feature #3705, add resize_to_fit (thanks to Robert Manni for the code)
     o Added optimize_layers method to the ImageList class (available with
       ImageMagick 6.2.6)
@@ -502,7 +507,7 @@ RMagick 1.11.0
       is rescued and execution continues.
     o Tested with ImageMagick 6.2.7
 
-RMagick 1.10.1
+## RMagick 1.10.1
     o Fix bug #3437, memory leak in ImageList#to_blob
     o Fix bug #3363, Image#composite doesn't work when the source image
       is bigger than the destination
@@ -510,7 +515,7 @@ RMagick 1.10.1
       storage types
     o Feature #3597, add border_color attribute to the Draw class
 
-RMagick 1.10.0
+## RMagick 1.10.0
     o Added add_noise_channel method to Image class (available with ImageMagick 6.2.5)
     o Added vignette method to the Image class (available with ImageMagick 6.2.6)
     o Added crop_resize method to the Image class (thanks to Jerret Taylor for
@@ -528,18 +533,18 @@ RMagick 1.10.0
     o Tested with ImageMagick 6.2.6
     o Removed support for all versions of ImageMagick prior to 6.0.0
 
-RMagick 1.9.3
+## RMagick 1.9.3
     o Feature #2521, add Image#distortion_channel method
     o Fixed bug #2546, ImageList#to_blob builds multi-image blobs again. (ImageMagick 6.2.0
       silently broke the ImageToBlob method.) Thanks to Tom Werner for reporting this bug.
     o Test with GraphicsMagick 1.1.7
 
-RMagick 1.9.2
+## RMagick 1.9.2
     o Feature #2412, add the virtual_pixel_method attribute and the VirtualPixelMethod
       enumeration
     o Feature #2462, add the ticks_per_second attribute
 
-RMagick 1.9.1
+## RMagick 1.9.1
     o Fixed bug #2157, Image#total_colors is now an alias of Image#number_colors
     o Fixed bug #2155, Image#dispose= now accepts a DisposeType enum, #dispose
       now returns a DisposeType enum.
@@ -559,27 +564,27 @@ RMagick 1.9.1
       as a pixel data array. (Thanks to Ara T. Howard for this suggestion!)
     o Fixed to compile without errors with ImageMagick 6.2.4-4.
 
-RMagick 1.9.0
+## RMagick 1.9.0
     o Added Image#monitor=, Image::Info#monitor=. Deprecated Magick.set_monitor.
     o Fixed bug #2070, support color names with embedded spaces
     o Fixed bug #2109, properly scope Magick constants in RVG
 
-RMagick 1.8.3
+## RMagick 1.8.3
     o Tested with ImageMagick 6.2.3-2
     o Added comment, delay, dispose, fill, gravity, and label attributes to
       Image::Info
 
-RMagick 1.8.2
+## RMagick 1.8.2
     o Fix bug #1983, potential buffer overflow in version_constants
     o Added feature #2015, support the pointsize, authenticate,
       and sampling_factor attributes in Image::Info
 
-RMagick 1.8.1
+## RMagick 1.8.1
     o Fix bugs #1876, #1888, #1919
     o Added feature #1941, RVG's polyline, polygon accept array arguments
     o Numerous fixes to the RVG documentation
 
-RMagick 1.8.0
+## RMagick 1.8.0
     o Added Image#shadow (ImageMagick 6.1.7)
     o Added Image::Info#undefine, #[], #[]=
     o Added sigmoidal_contrast_channel, sepiatone to Image class (ImageMagick 6.2.1)
@@ -588,22 +593,22 @@ RMagick 1.8.0
     o Added RVG documentation, examples, updated installer
     o Tested with ImageMagick 6.2.2-0, latest GraphicsMagick 1.2
 
-RMagick 1.7.4
+## RMagick 1.7.4
     o Fix bug #1727
     o Fix affine_transform.rb
     o Tested with ImageMagick 6.2.1
 
-RMagick 1.7.3
+## RMagick 1.7.3
     o Fix bug #1553, a build issue with ImageMagick 6.0.x
 
-RMagick 1.7.2
+## RMagick 1.7.2
     o Fix bugs #1308, #1310, #1314, #1533
 
-RMagick 1.7.1
+## RMagick 1.7.1
     o Fix bugs #1250, #1253
     o Tested with ImageMagick 6.1.7, Ruby 1.8.2
 
-RMagick 1.7.0
+## RMagick 1.7.0
     o Added splice, set_channel_depth to Image class (ImageMagick 6.0.0)
     o Added sharpen_channel, blur_channel to Image class (ImageMagick 6.0.1)
     o Added get_multiline_type_metrics to Draw class (ImageMagick 6.1.5),
@@ -619,17 +624,17 @@ RMagick 1.7.0
       array before calling destroy_Draw
     o Tested with ImageMagick 6.1.6, GraphicsMagick 1.1.4, Ruby 1.8.2preview3.
 
-RMagick 1.6.2
+## RMagick 1.6.2
     o Fixed ImageList#deconstruct to return an imagelist
     o Fixed installation procedure to propagate user's CFLAGS, CPPFLAGS,
       and LDFLAGS through to the low-level Makefile
     o Fixed bugs #1048, #1127
 
-RMagick 1.6.1
+## RMagick 1.6.1
     o Changed to match changes in ImageMagick 6.1.4 API
     o Fixed bug #950
 
-RMagick 1.6.0
+## RMagick 1.6.0
     o Added posterize, gaussian_blur_channel, convolve_channel methods to Image class
       (ImageMagick 6.0.0)
     o Added new CompositeOperator constants (ImageMagick 6.0.0)
@@ -639,7 +644,7 @@ RMagick 1.6.0
     o Fixed bugs #624, #642, #716, applied patch #819 (thanks to Daniel Quimper)
     o Tested with ImageMagick 6.0.5-2, GraphicsMagick 1.1.3, Ruby 1.8.2
 
-RMagick 1.5.0
+## RMagick 1.5.0
     o Added meaningful implementations of dup and clone to the Image and Draw
       classes. Clarified the documentation.
     o Do not allow changes to frozen Image, ImageList, and Draw objects.
@@ -657,7 +662,7 @@ RMagick 1.5.0
     o Added composite! method to Image class
     o Deprecated random_channel_threshold method when linked with ImageMagick 6.0.0.
 
-RMagick 1.4.0
+## RMagick 1.4.0
     o Revised and updated documentation
     o Implemented enumeration values as instances of an Enum
       class. Based on a description by Paul Brannon in ruby-talk 79041.
@@ -684,7 +689,7 @@ RMagick 1.4.0
       classes (Fix for bug #254.)
     o Tested with latest ImageMagick 6.0.0 beta and GraphicsMagick 1.1 snapshot
 
-RMagick 1.3.2
+## RMagick 1.3.2
     o Fix profile! to require only 2 arguments, as documented.
     o Correct spelling of 'transparent' in text_antialias.rb example.
     o Add output of `Magick-config --libs` to LIBS variable in configure
@@ -692,7 +697,7 @@ RMagick 1.3.2
     o Test with GraphicsMagick 1.0.4
     o Test with latest ImageMagick 5.5.8 beta
 
-RMagick 1.3.1
+## RMagick 1.3.1
     o Fixed default base URI in the links to the installed xMagick doc
     o Applied the patch for bug #76 that caused the rubyname.rb example
       to hang when installing on FreeBSD.
@@ -703,7 +708,7 @@ RMagick 1.3.1
     o Fixed the handle_error function to re-initialize the exception
       structure after destroying its contents.
 
-RMagick 1.3.0
+## RMagick 1.3.0
     o Added strip!, import_pixels, export_pixels, random_channel_threshold
       to the Image class. (Available only with ImageMagick 5.5.8, which
       is still in beta.)
@@ -729,7 +734,7 @@ RMagick 1.3.0
     o Tested with Ruby 1.8.0
     o Changed to MIT license
 
-RMagick 1.2.2
+## RMagick 1.2.2
     o Fixed many bugs in configuration script
     o Added support for GraphicsMagick 1.0 (with assistance from Bob Friesenhahn)
     o Changed default documentation directory (--doc-dir option default) to
@@ -737,10 +742,10 @@ RMagick 1.2.2
     o Added "examples" directory to contain example programs that aren't
       referenced by the documentation
 
-RMagick 1.2.1
+## RMagick 1.2.1
     o Yet another fix to the Cygwin installation procedure
 
-RMagick 1.2.0
+## RMagick 1.2.0
     o Changed install to work correctly on Cygwin
       (Cygwin testing by Yuki Hirakawa and David Martinez Garcia.)
     o Changed install to support Gentoo ebuild
@@ -761,7 +766,7 @@ RMagick 1.2.0
     o Undefined zip and transpose methods in ImageList class for Ruby 1.8.0
     o ImageMagick 5.5.7 supported
 
-RMagick 1.1.0
+## RMagick 1.1.0
     o Fixed bug in handle_error that caused an abend when linked with IM 5.5.6
     o Added RMAGICK image "format". When read, returns 252x108 RMagick logo
       in PNG format.
@@ -773,17 +778,17 @@ RMagick 1.1.0
     o Added Draw#text_align, Draw#text_anchor, Draw#text_undercolor
     o ImageMagick 5.5.6 supported
 
-RMagick 1.0.0
+## RMagick 1.0.0
     o Fixed warnings when compiling with Ruby 1.8.0
     o Added Draw#rotation=, rotated_text.rb
     o Fixed temp image files in Montage_texture and Draw_composite
     o ImageMagick 5.5.5 supported
 
-RMagick 0.9.5
+## RMagick 0.9.5
     o Added channel.rb example
     o Fixed install problems with IM 5.5.1
 
-RMagick 0.9.4
+## RMagick 0.9.4
     o Cleaned up documentation.
     o Added logging methods Magick.set_log_event_mask and Magick.set_log_format
     o Added Magick.set_monitor
@@ -795,7 +800,7 @@ RMagick 0.9.4
     o Added rmconst.rb utility script
     o ImageMagick 5.5.4 supported
 
-RMagick 0.9.3
+## RMagick 0.9.3
     o Changed ImageList#<=> to use same algorithm as Array#<=>
     o Changed Draw class variables to class constants
     o Fixed bug in Magick::colors method that caused some colors
@@ -807,7 +812,7 @@ RMagick 0.9.3
     o ImageMagick 5.5.3 supported
     o Ruby 1.6.8, 1.8.0preview1 supported
 
-RMagick 0.9.2
+## RMagick 0.9.2
     o Added crop!, flip!, flop!, magnify!, minify!, resize!, sample!,
       scale!, shave!, channel_threshold methods to Image class
     o Documented DisposeType, ColorSeparationMatteType and OptimizeType
@@ -820,7 +825,7 @@ RMagick 0.9.2
     o ImageMagick 5.5.2 supported
     o Removed last vestiges of 5.4.9 support
 
-RMagick 0.9.1
+## RMagick 0.9.1
     o Added -Wl,rpath option to $LDFLAGS in extconf.rb
     o #include <sys/types.h> in rmagick.h
     o Changed set_cache_threshold to call SetMagickResourceLimit instead of SetCacheThreshold
@@ -829,5 +834,5 @@ RMagick 0.9.1
     o Defined Image#<=>, defined Image#== in terms of Image#<=>
     o Defined ImageList#<=> in terms of Image#<=>
 
-RMagick 0.9.0
+## RMagick 0.9.0
     1st beta
