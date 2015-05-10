@@ -11,26 +11,26 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## RMagick 2.14.0
 
-- RMagick.rb moved to deprecated directory - @mockdeep
+- `RMagick.rb` moved to deprecated directory - @mockdeep
 - Better ImageMagick feature detection - @bf4
 - Prevent compilation failures if prefix is an empty string - @voxik
-- SplineInterpolatePixel preprocessor check removed - @joshk
+- `SplineInterpolatePixel` preprocessor check removed - @joshk
 - Make error format a string literal - @mtasaka
-- Automatically set ARCHFLAGS on OS X - @u338steven
-- Fixed 'rmagick/version' require failure - @u338steven
-- Fixed escaping of '%' in Draw#get_type_metrics - @mkluczny
+- Automatically set `ARCHFLAGS` on OS X - @u338steven
+- Fixed `rmagick/version` require failure - @u338steven
+- Fixed escaping of `%` in `Draw#get_type_metrics` - @mkluczny
 - Silence warnings on Ruby 2.2 when comparing Enums - @meanphil
 - Multiple test suite improvements - @mockdeep, @bf4
 - Ruby source code formatting with RuboCop - @vassilevsky
 
 ## RMagick 2.13.4
 
-- Proof of concept for using pkg-config in place of Magick-config on debian based systems (#129) - @theschoolmaster
-- Changed Image#resample to calling ResampleImage (#127, related #29, #45) - @u338steven
-- Fixed #122: lib/RMagick.rb is overwritten by lib/rmagick.rb on case-insensitive systems (#124) - @u338steven
-- New class SolidFill in order to fill image with monochromatic background (#123) - @prijutme4ty
+- Proof of concept for using `pkg-config` in place of `Magick-config` on debian based systems (#129) - @theschoolmaster
+- Changed `Image#resample` to calling `ResampleImage` (#127, related #29, #45) - @u338steven
+- Fixed #122: `lib/RMagick.rb` is overwritten by `lib/rmagick.rb` on case-insensitive systems (#124) - @u338steven
+- New class `SolidFill` in order to fill image with monochromatic background (#123) - @prijutme4ty
 - Quotes for correct path of font file (#121) - @markotom
-- Allow MagickCore6 from Magick-config (#120) - @chulkilee
+- Allow `MagickCore6` from `Magick-config` (#120) - @chulkilee
 - Fixed: build error with ImageMagick 6.8.9 (when deprecated functions are excluded) (#112) - @u338steven
 - Fixed: related x_resolution, y_resolution (#102) - @u338steven
 - Lots of test fixes - @u338steven
@@ -54,7 +54,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 - Added Doxygen documentation, for automatic documentation
 - Fixed bug #27467, get RMagick to compile witH ImageMagick 6.5.7
-- Fixed bug #27607, switch Pixel#from_hsla and Pixel#to_hsla to use ranges
+- Fixed bug #27607, switch `Pixel#from_hsla` and `Pixel#to_hsla` to use ranges
   0-255 instead of 0-100 for saturation and lightness (range used by
   ImageMagick 6.5.6-5 and higher). Also added ability to specify all
   arguments to these functions as percentages (bug report by Arthur Chan).
@@ -62,7 +62,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## RMagick 2.12.2
 
-- Add feature tests for SinusoidFunction and PolynomialFunction enum
+- Add feature tests for `SinusoidFunction` and `PolynomialFunction` enum
   values to allow compiling with ImageMagick 6.4.8-7 (bug report by Mark
   Richman)
 
@@ -73,28 +73,28 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## RMagick 2.12.0
 
-- Added Image#function_channel (available in ImageMagick 6.4.8-8)
-- Added Image#auto_level_channel, Image#auto_gamma_channel (available in
+- Added `Image#function_channel` (available in ImageMagick 6.4.8-8)
+- Added `Image#auto_level_channel`, `Image#auto_gamma_channel` (available in
   ImageMagick 6.5.5-1)
-- Added Draw#interline_spacing, #interline_spacing= (available in
+- Added `Draw#interline_spacing`, `#interline_spacing=` (available in
   ImageMagick 6.5.5-8)
 
 ## RMagick 2.11.1
 
-- Applied Alexey Borzenkov's mingw patches to extconf.rb.
-- Fixed a bug in Magick.trace_proc that could cause a segv at program exit
+- Applied Alexey Borzenkov's mingw patches to `extconf.rb`.
+- Fixed a bug in `Magick.trace_proc` that could cause a segv at program exit
   with Ruby 1.9.1 (bug report by Larry Young)
-- Added new CompressionType enum values ZipSCompression, PixCompression,
-  Pxr24Compression, B44Compression, B44ACompression (available in
+- Added new `CompressionType` enum values `ZipSCompression`, `PixCompression`,
+  `Pxr24Compression`, `B44Compression`, `B44ACompression` (available in
   ImageMagick 6.5.5-4)
 
 ## RMagick 2.11.0
 
 - Fix bug #26475, dissolve and watermark don't work with new versions of
   ImageMagick (reported by Jim Crate)
-- Add Image#composite_mathematics (available in ImageMagick 6.5.4-3)
-- Add new LinearDodgeCompositeOp, LinearBurnCompositeOp,
-  PegtopCompositeOp, PinLightCompositeOp, VividLightCompositeOp enum values
+- Add `Image#composite_mathematics` (available in ImageMagick 6.5.4-3)
+- Add new `LinearDodgeCompositeOp`, `LinearBurnCompositeOp`,
+  `PegtopCompositeOp`, `PinLightCompositeOp`, `VividLightCompositeOp` enum values
   (available in ImageMagick 6.5.4-3)
 
 ## RMagick 2.10.0
@@ -103,22 +103,22 @@ This project adheres to [Semantic Versioning](http://semver.org/).
   than 1.8.5 no longer supported.
 - (Experimental) Support the use of Ruby managed memory for all memory
   allocations (available in ImageMagick 6.5.3-10)
-- Add Image#selective_blur_channel (available in ImageMagick 6.5.0-3)
-- Add new AlphaBackgroundChannel enum value (available in ImageMagick
+- Add `Image#selective_blur_channel` (available in ImageMagick 6.5.0-3)
+- Add new `AlphaBackgroundChannel` enum value (available in ImageMagick
   6.5.2-5)
-- Add new DistortCompositeOp enum value (available in ImageMagick 6.5.3-7)
+- Add new `DistortCompositeOp` enum value (available in ImageMagick 6.5.3-7)
 
 ## RMagick 2.9.2
 
-- Add new HorizontalTileEdgeVirtualPixelMethod,
-  VerticalTileEdgeVirtualPixelMethod, CheckerTileVirtualPixelMethod
-  VirtualPixelMethod enum values (available in ImageMagick 6.5.0-1)
-- Added BilinearForwardDistortion, BilinearReverseDistortion enums
+- Add new `HorizontalTileEdgeVirtualPixelMethod`,
+  `VerticalTileEdgeVirtualPixelMethod`, `CheckerTileVirtualPixelMethod`
+  `VirtualPixelMethod` enum values (available in ImageMagick 6.5.0-1)
+- Added `BilinearForwardDistortion`, `BilinearReverseDistortion` enums
   (available in ImageMagick 6.5.1-2)
-- Add missing composite operators to Magick::Draw#composite method
+- Add missing composite operators to `Magick::Draw#composite` method
 - Add warning about dropping support for ImageMagick < 6.3.5 and
   Ruby < 1.8.5
-- Fix bug #25892, stack buffer overflow in Magick::TypeMetric.to_s
+- Fix bug #25892, stack buffer overflow in `Magick::TypeMetric.to_s`
   (reported by Roman Simecek)
 
 ## RMagick 2.9.1
@@ -129,120 +129,120 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## RMagick 2.9.0
 
 - Fix #23209, improve RVG's letter spacing (patch from Jonah Fox)
-- Add Draw#kerning= attribute (available in ImageMagick 6.4.7-8)
-- Add Draw#interword_spacing= attribute (available in ImageMagick
+- Add `Draw#kerning=` attribute (available in ImageMagick 6.4.7-8)
+- Add `Draw#interword_spacing=` attribute (available in ImageMagick
   6.4.8-0)
-- Add Draw#kerning, Draw#interword_spacing primitive methods (available in
+- Add `Draw#kerning`, `Draw#interword_spacing` primitive methods (available in
   ImageMagick 6.4.8-3)
-- Feature #23171, support ImageList, Draw, Pixel marshaling.
-- Support all the new EvaluateOperator constants
+- Feature #23171, support `ImageList`, `Draw`, `Pixel` marshaling.
+- Support all the new `EvaluateOperator` constants
 
 ## RMagick 2.8.0
 
-- Add the endian, scene, and transparent_color attributes to Image::Info
-- Deprecate Image#endian= attribute setter
-- Add the transparent_chroma method to the Image class (available in
+- Add the `endian`, `scene`, and `transparent_color` attributes to `Image::Info`
+- Deprecate `Image#endian=` attribute setter
+- Add the `transparent_chroma` method to the `Image` class (available in
   ImageMagick 6.4.5-6)
-- Add the sparse_color method to the Image class (available in ImageMagick
+- Add the `sparse_color` method to the `Image` class (available in ImageMagick
   6.4.3)
-- Update Image#change_geometry to work with the new ParseSizeGeometry API
+- Update `Image#change_geometry` to work with the new `ParseSizeGeometry` API
   in ImageMagick 6.4.6-9.
 
 ## RMagick 2.7.2
 
-- Fix bug #22740, some Image::Info attribute values are not propogated to
+- Fix bug #22740, some `Image::Info` attribute values are not propogated to
   the image object (bug report by Thomas Watson)
 
 ## RMagick 2.7.1
 
-- Fix bug #22471, Magick::fonts can abend on 64-bit systems (bug report and
+- Fix bug #22471, `Magick::fonts` can abend on 64-bit systems (bug report and
   patch by James Le Cuirot)
-- ImageList.new accepts a block which is passed on to Image::read when
+- `ImageList.new` accepts a block which is passed on to `Image::read` when
   reading the input  images. The block is executed in the context of an
-  Image::Info object.
+  `Image::Info` object.
 - Add support for the "user" image property.
-- Define the Magick::FatalImageMagickError exception class, raised if
+- Define the `Magick::FatalImageMagickError` exception class, raised if
   ImageMagick raises a fatal (unrecoverable) exception.
-- Added feature #22618, Image#total_ink_density (request by F. Behrens)
+- Added feature #22618, `Image#total_ink_density` (request by F. Behrens)
 
 ## RMagick 2.7.0
 
-- Fix bug #22152, extconf.rb does not respect the LDFLAGS environment
+- Fix bug #22152, `extconf.rb` does not respect the `LDFLAGS` environment
   variable (bug report by Joseph Sokol-Margolis)
-- Fix bug #22190, the NoDitherMethod enum value is not defined in
+- Fix bug #22190, the `NoDitherMethod` enum value is not defined in
   ImageMagick 6.4.2
-- Add the TrimBoundsLayer ImageLayerMethod enum value (available in
+- Add the `TrimBoundsLayer` `ImageLayerMethod` enum value (available in
   ImageMagick 6.4.3-8)
-- Add the CopyAlphaChannel, ExtractAlphaChannel, OpaqueAlphaChannel,
-  ShapeAlphaChannel, and TransparentAlphaChannel AlphaChannelType enum
+- Add the `CopyAlphaChannel`, `ExtractAlphaChannel`, `OpaqueAlphaChannel`,
+  `ShapeAlphaChannel`, and `TransparentAlphaChannel` `AlphaChannelType` enum
   values (available in ImageMagick 6.4.3-7)
-- Rename Image#affinity and ImageList#affinity to Image#remap and
-  ImageList#remap. Retain the old names as aliases. (Changed in ImageMagick
+- Rename `Image#affinity` and `ImageList#affinity` to `Image#remap` and
+  `ImageList#remap`. Retain the old names as aliases. (Changed in ImageMagick
   6.4.4-0)
 
 ## RMagick 2.6.0
 
-- Fix bug #21237, Image::write ignores format attribute when called with a
-  Tempfile pathname (bug report by Jack Shedd)
-- Fix bug #21897, ImageList#from_blob abends when certain corrupt JPEG
+- Fix bug #21237, `Image::write` ignores format attribute when called with a
+  `Tempfile` pathname (bug report by Jack Shedd)
+- Fix bug #21897, `ImageList#from_blob` abends when certain corrupt JPEG
   images are used (bug report by Peter Szabo)
-- Add Image#composite_tiled, Image#composite_tiled! (ref:
+- Add `Image#composite_tiled`, `Image#composite_tiled!` (ref:
   http://rubyforge.org/forum/forum.php?thread_id=27347&forum_id=33)
-- Add Image#deskew (available with ImageMagick 6.4.2-5)
-- Add Image#define, Image#undefine (available in ImageMagick 6.3.6)
-- Add Image#level_colors (available in ImageMagick 6.4.2-1)
-- Add Image#levelize_channel (available in ImageMagick 6.4.2-1)
-- Add Image#affinity, ImageList#affinity (available in ImageMagick 6.4.3-6).
-  These methods replace Image#map and ImageList#map.
-- Accept DitherMethod values for the dither argument to Image#quantize,
-  ImageList#quantize
-- Add the BarrelDistortion, PolynomialDistortion, ShepardsDistortion,
-  PolarDistortion, and DePolarDistortion MagickDistortion Method enum values
+- Add `Image#deskew` (available with ImageMagick 6.4.2-5)
+- Add `Image#define`, `Image#undefine` (available in ImageMagick 6.3.6)
+- Add `Image#level_colors` (available in ImageMagick 6.4.2-1)
+- Add `Image#levelize_channel` (available in ImageMagick 6.4.2-1)
+- Add `Image#affinity`, `ImageList#affinity` (available in ImageMagick 6.4.3-6).
+  These methods replace `Image#map` and `ImageList#map`.
+- Accept `DitherMethod` values for the `dither` argument to `Image#quantize`,
+  `ImageList#quantize`
+- Add the `BarrelDistortion`, `PolynomialDistortion`, `ShepardsDistortion`,
+  `PolarDistortion`, and `DePolarDistortion` `MagickDistortion` Method enum values
   (available in ImageMagick 6.4.2-6)
-- Add the HorizontalTileVirtualPixelMethod and
-  VerticalTileVirtualPixelMethod VirtualPixelMethod enum values
+- Add the `HorizontalTileVirtualPixelMethod` and
+  `VerticalTileVirtualPixelMethod` `VirtualPixelMethod` enum values
   (available in ImageMagick 6.4.2-6)
-- Add DitherMethod enum class
-- Added general-purpose OptionalMethodArguments class to handle ad-hoc
+- Add `DitherMethod` enum class
+- Added general-purpose `OptionalMethodArguments` class to handle ad-hoc
   optional arguments.
 - Support optional "distort:viewport" and "distort:scale" arguments to
-  Image#distort
-- Support optional highlight_color and lowlight_color arguments
-  to Image#compare_channel
+  `Image#distort`
+- Support optional `highlight_color` and `lowlight_color` arguments
+  to `Image#compare_channel`
 
 ## RMagick 2.5.2
 
-- Add support for MergeLayer to Magick::ImageList#optimize_layers (patch
+- Add support for `MergeLayer` to `Magick::ImageList#optimize_layers` (patch
   #21189, submitted by Andrew Watson)
-- Add PowQuantumOperator argument for Image#quantum_operator (available
+- Add `PowQuantumOperator` argument for `Image#quantum_operator` (available
   in ImageMagick 6.4.1-9)
 
 ## RMagick 2.5.1
 
-- Update Pixel#to_color to work with the new QueryMagickColorname API in
+- Update `Pixel#to_color` to work with the new `QueryMagickColorname` API in
   ImageMagick 6.4.1-9.
 
 ## RMagick 2.5.0
 
-- Added Image#add_compose_mask, #delete_compose_mask (feature #20531)
+- Added `Image#add_compose_mask`, `#delete_compose_mask` (feature #20531)
 
 ## RMagick 2.4.0
 
-- Added Image#image_type= (feature #20490)
+- Added `Image#image_type=` (feature #20490)
 
 ## RMagick 2.3.0
 
-- Added Image#encipher, Image#decipher (available with ImageMagick 6.3.8-6)
-- Added DTX1Compression, DTX1Compression, and DTX1Compression
-  CompressionType enums (available in ImageMagick 6.3.9-4)
-- Added optional "use hex format" argument to Pixel#to_color
-- Support :area resource type in Magick.limit_resource
-- Pixel.from_HSL and Pixel#to_HSL are deprecated. Use Pixel.from_hsla
-  and Pixel#to_hsla instead. The new methods rely on the ImageMagick 6.3.5
+- Added `Image#encipher`, `Image#decipher` (available with ImageMagick 6.3.8-6)
+- Added `DTX1Compression`, `DTX1Compression`, and `DTX1Compression`
+  `CompressionType` enums (available in ImageMagick 6.3.9-4)
+- Added optional "use hex format" argument to `Pixel#to_color`
+- Support `:area` resource type in `Magick.limit_resource`
+- `Pixel.from_HSL` and `Pixel#to_HSL` are deprecated. Use `Pixel.from_hsla`
+  and `Pixel#to_hsla` instead. The new methods rely on the ImageMagick 6.3.5
   and later API.
-- The Image#alpha and alpha= attributes are deprecated. Use alpha() and
-  alpha? instead.
-- The Image#mask= attribute is deprecated. Use mask() instead.
+- The `Image#alpha` and `alpha=` attributes are deprecated. Use `alpha()` and
+  `alpha?` instead.
+- The `Image#mask=` attribute is deprecated. Use `mask()` instead.
 - The use of Ruby older than version 1.8.4 with RMagick is deprecated and
   will not be supported in a future release.
 - Fix bug #18271, rvg width and height attributes wrong after a call to
@@ -250,105 +250,105 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## RMagick 2.2.2
 
-- Fix bug #18016, add test for InitializeMagick in libMagickCore to
-  extconf.rb
+- Fix bug #18016, add test for `InitializeMagick` in `libMagickCore` to
+  `extconf.rb`
 
 ## RMagick 2.2.0
 
-- Added Image#opaque_channel, Image#paint_transparent (available with
+- Added `Image#opaque_channel`, `Image#paint_transparent` (available with
   ImageMagick 6.3.7-10)
-- Added Image#liquid_rescale (available with ImageMagick 6.3.8-2)
-- Added CMYColorspace ColorspaceType value
+- Added `Image#liquid_rescale` (available with ImageMagick 6.3.8-2)
+- Added `CMYColorspace` `ColorspaceType` value
 - Fixed bug #17148, compiler error message on Solaris (bug report by Trever
   Wennblom)
-- Fixed bug #17470, get_exif_by_number, get_exif_by_entry may fail when
+- Fixed bug #17470, `get_exif_by_number`, `get_exif_by_entry` may fail when
   called with one or more arguments
 
 ## RMagick 2.1.0
 
-- Added Image::Info#caption= attribute
-- Rename Image#crop_resized, #crop_resized! to #resize_to_fill,
-  #resize_to_fill!. Add aliases for the old names.
-- Fix bug #16776, in the axes.rb example the last 2 arguments to
-  border.rectangle are swapped (bug report by Alain Feler)
+- Added `Image::Info#caption=` attribute
+- Rename `Image#crop_resized`, `#crop_resized!` to `#resize_to_fill`,
+  `#resize_to_fill!`. Add aliases for the old names.
+- Fix bug #16776, in the `axes.rb` example the last 2 arguments to
+  `border.rectangle` are swapped (bug report by Alain Feler)
 - Fix bug #16931, apostrophe in #error directive causes error in some
   versions of GCC (bug report by Justin Dossey)
 
 ## RMagick 2.0.0
 
-- Replaced configure/make/make install with standard Ruby setup.rb,
-  extconf.rb
+- Replaced `configure`/`make`/`make install` with standard Ruby `setup.rb`,
+  `extconf.rb`
 - Removed support for Ruby earlier than 1.8.2
 - Removed support for GraphicsMagick. As a result these methods are no
-  longer available: Image#grayscale_pseudo_class, Image#statistics.
+  longer available: `Image#grayscale_pseudo_class`, `Image#statistics`.
 - Removed support for all releases of ImageMagick earlier than 6.3.0.
-- Removed deprecated Image#random_channel_threshold. Use
-  Image#random_threshold_channel instead
-- Removed deprecated Image#channel_threshold. Use
-  Image#random_threshold_channel instead
-- Removed unecessary Image#montage=
-- Removed unecessary and undocumented Image#image_type=
-- Removed deprecated Image::Info#tile_info, tile_info= attributes.
-- Removed deprecated Image::Info#tile, tile= attributes. Use #extract,
-  #extract= instead
-- Removed deprecated Image::Info#subimage, subimage= attributes. Use
-  scene, scene= instead
-- Removed deprecated Image::Info#subrange, subrange= attributes. Use
-  number_scenes, number_scenes= instead
-- Removed deprecated Magick.set_monitor. Use Image#set_monitor,
-  Image::Info#set_monitor instead
-- Removed deprecated RunlengthEncodedCompression CompressionType. Use
-  RLECompression instead
-- Deprecated Image#matte, matte= with ImageMagick 6.3.5 and later
-- Added Image::Info#stroke=, stroke_width= and undercolor= attributes
-- Added Image::Info#tile_offset= attribute
-- Added Draw#fill_pattern= and #stroke_pattern= annotate attributes
-- Changed Image::Info[] and Image::Info[]= to allow an omitted "format"
+- Removed deprecated `Image#random_channel_threshold`. Use
+  `Image#random_threshold_channel` instead
+- Removed deprecated `Image#channel_threshold`. Use
+  `Image#random_threshold_channel` instead
+- Removed unecessary `Image#montage=`
+- Removed unecessary and undocumented `Image#image_type=`
+- Removed deprecated `Image::Info#tile_info`, `tile_info=` attributes.
+- Removed deprecated `Image::Info#tile`, `tile=` attributes. Use `#extract`,
+  `#extract=` instead
+- Removed deprecated `Image::Info#subimage`, `subimage=` attributes. Use
+  `scene`, `scene=` instead
+- Removed deprecated `Image::Info#subrange`, `subrange=` attributes. Use
+  `number_scenes`, `number_scenes=` instead
+- Removed deprecated `Magick.set_monitor`. Use `Image#set_monitor`,
+  `Image::Info#set_monitor` instead
+- Removed deprecated `RunlengthEncodedCompression` `CompressionType`. Use
+  `RLECompression` instead
+- Deprecated `Image#matte`, `matte=` with ImageMagick 6.3.5 and later
+- Added `Image::Info#stroke=`, `stroke_width=` and `undercolor=` attributes
+- Added `Image::Info#tile_offset=` attribute
+- Added `Draw#fill_pattern=` and `#stroke_pattern=` annotate attributes
+- Changed `Image::Info[]` and `Image::Info[]=` to allow an omitted "format"
   argument
-- Added Image#destroy!, destroyed?, check_destroyed methods
-- Support Image object creation/destruction tracing with the
-  Magick.trace_proc attribute
-- Added Magick::QuantumRange. Magick::MaxRGB is deprecated.
-- Added OptimizeTransLayer, RemoveDupsLayer, RemoveZeroLayer,
-  OptimizeImageLayer ImageLayerMethods enum values (available with
+- Added `Image#destroy!`, `destroyed?`, `check_destroyed` methods
+- Support `Image` object creation/destruction tracing with the
+  `Magick.trace_proc` attribute
+- Added `Magick::QuantumRange`. `Magick::MaxRGB` is deprecated.
+- Added `OptimizeTransLayer`, `RemoveDupsLayer`, `RemoveZeroLayer`,
+  `OptimizeImageLayer` `ImageLayerMethods` enum values (available with
   ImageMagick 6.3.3),
-  MosaicLayer, FlattenLayer (available with ImageMagick 6.3.6)
+  `MosaicLayer`, `FlattenLayer` (available with ImageMagick 6.3.6)
 - RMagick works with Q32 version of ImageMagick
-- Added ChangeMaskCompositeOp, DivideCompositeOp, LinearLightCompositeOp
-  CompositeOperator enum values
-- Added SplineInterpolatePixel InterpolatePixelMethod enum value
-- Added DitherVirtualPixelMethod, RandomVirtualPixelMethod,
-  BlackVirtualPixelMethod, GrayVirtualPixelMethod, WhiteVirtualPixelMethod
-  (available with ImageMagick 6.3.5), and MaskVirtualPixelMethod (available
-  with ImageMagick 6.3.3) VirtualPixelMethod enum values
-- Added GIFInterlace, JPEGInterlace, PNGInterlace Interlace type enum
+- Added `ChangeMaskCompositeOp`, `DivideCompositeOp`, `LinearLightCompositeOp`
+  `CompositeOperator` enum values
+- Added `SplineInterpolatePixel` `InterpolatePixelMethod` enum value
+- Added `DitherVirtualPixelMethod`, `RandomVirtualPixelMethod`,
+  `BlackVirtualPixelMethod`, `GrayVirtualPixelMethod`, `WhiteVirtualPixelMethod`
+  (available with ImageMagick 6.3.5), and `MaskVirtualPixelMethod` (available
+  with ImageMagick 6.3.3) `VirtualPixelMethod` enum values
+- Added `GIFInterlace`, `JPEGInterlace`, `PNGInterlace` `Interlace` type enum
   values (available with ImageMagick 6.3.4)
-- Added SentinelFilter FilterTypes enum value (available in ImageMagick
+- Added `SentinelFilter` `FilterTypes` enum value (available in ImageMagick
   6.3.6)
-- Added Image.combine
-- Added Image#separate (available with ImageMagick 6.3.2)
-- Added Image#distort (available with ImageMagick 6.3.5)
-- Added Image#each_pixel (thanks to Russell Norris for the suggestion and
+- Added `Image.combine`
+- Added `Image#separate` (available with ImageMagick 6.3.2)
+- Added `Image#distort` (available with ImageMagick 6.3.5)
+- Added `Image#each_pixel` (thanks to Russell Norris for the suggestion and
   code)
-- Added Image#histogram? (available with ImageMagick 6.3.5)
-- Added Image#sync_profiles  (available with ImageMagick 6.3.2)
-- Added Image#extent (available with ImageMagick 6.3.1)
-- Added Image#excerpt, Image#excerpt! (available with ImageMagick 6.3.5)
-- Added Image::Info#attenuate
-- Added Image#clut_channel (available with ImageMagick 6.3.5)
-- Feature Request #16264, added ImageList#composite_layers (available with
+- Added `Image#histogram?` (available with ImageMagick 6.3.5)
+- Added `Image#sync_profiles`  (available with ImageMagick 6.3.2)
+- Added `Image#extent` (available with ImageMagick 6.3.1)
+- Added `Image#excerpt`, `Image#excerpt!` (available with ImageMagick 6.3.5)
+- Added `Image::Info#attenuate`
+- Added `Image#clut_channel` (available with ImageMagick 6.3.5)
+- Feature Request #16264, added `ImageList#composite_layers` (available with
   ImageMagick 6.3.3, request from Steve Martocci)
-- Added Image#alpha= (available with ImageMagick 6.3.5)
-- Added Image#gravity=
-- Added Image#equalize_channel (available with ImageMagick 6.3.6)
-- Added new FilterTypes values KaiserFilter, WelshFilter, ParzenFilter,
-  LagrangeFilter, BohmanFilter, BartlettFilter (available with ImageMagick
+- Added `Image#alpha=` (available with ImageMagick 6.3.5)
+- Added `Image#gravity=`
+- Added `Image#equalize_channel` (available with ImageMagick 6.3.6)
+- Added new `FilterTypes` values `KaiserFilter`, `WelshFilter`, `ParzenFilter`,
+  `LagrangeFilter`, `BohmanFilter`, `BartlettFilter` (available with ImageMagick
   6.3.6)
-- Fix bug #10339, Image#trim does not support "reset page information
+- Fix bug #10339, `Image#trim` does not support "reset page information
   option" (bug report from Nobody)
-- Renamed RMagick.so to RMagick2.so to prevent confusion between RMagick.rb
-  and RMagick.so
-- Feature Request #16276, re-organize doc to not split Image method pages
+- Renamed `RMagick.so` to `RMagick2.so` to prevent confusion between `RMagick.rb`
+  and `RMagick.so`
+- Feature Request #16276, re-organize doc to not split `Image` method pages
   in the middle of an initial letter (request from Roy Leban)
 - Updated for ImageMagick 6.3.7-5
 - Made changes as necessary to work with current Ruby 1.9.0
