@@ -25,47 +25,21 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## RMagick 2.13.4
 
-- #129 from @theschoolmaster
-  proof of concept for using pkg-config in place of Magick-config on debian based systems
-
-- #127 from @u338steven
-  Changed Image#resample to calling ResampleImage (related #29, #45)
-
-- #124 from @u338steven
-  Fixed #122: lib/RMagick.rb is overwritten by lib/rmagick.rb on case-insensitive systems
-
-- #123 from @prijutme4ty
-  New class SolidFill in order to fill image with monochromatic background
-
-- #121 from @markotom
-  Quotes for correct path of font file
-
-- #120 from @chulkilee
-  Allow MagickCore6 from Magick-config
-
-- #112 from @u338steven/
-  Fixed: build error with ImageMagick 6.8.9 (when deprecated functions are excluded)
-
-- #102 from @u338steven
-  Fixed: related x_resolution, y_resolution
-
-- from @u338steven
-  Lots of test fixes
-
-- #95 from @ioquatix
-  Fix pixel hash test
-
-- #94 from @u338steven
-  Fixed: build error on Windows Ruby x64 (with ImageMagick 6.8.0-10 or Ima...
-
-- #91 from @vassilevsky
-  Do not test machine and OS-specific integers
-  Fix initial memory limit test
+- Proof of concept for using pkg-config in place of Magick-config on debian based systems (#129) - @theschoolmaster
+- Changed Image#resample to calling ResampleImage (#127, related #29, #45) - @u338steven
+- Fixed #122: lib/RMagick.rb is overwritten by lib/rmagick.rb on case-insensitive systems (#124) - @u338steven
+- New class SolidFill in order to fill image with monochromatic background (#123) - @prijutme4ty
+- Quotes for correct path of font file (#121) - @markotom
+- Allow MagickCore6 from Magick-config (#120) - @chulkilee
+- Fixed: build error with ImageMagick 6.8.9 (when deprecated functions are excluded) (#112) - @u338steven
+- Fixed: related x_resolution, y_resolution (#102) - @u338steven
+- Lots of test fixes - @u338steven
+- Fix pixel hash test (#95) - @ioquatix
+- Fixed: build error on Windows Ruby x64 (with ImageMagick 6.8.0-10 / ImageMagick 6.8.7-7) (#94) - @u338steven
 
 ## RMagick 2.13.3
 
-- #90 from @bricef
-  Fix installation error on systems with HRDI enabled RMagick
+- Fix installation error on systems with HRDI enabled RMagick (#90) - @bricef
 
 ## RMagick 2.13.2
 
