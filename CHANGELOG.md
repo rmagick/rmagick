@@ -233,7 +233,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## RMagick 2.3.0
 
 - Added `Image#encipher`, `Image#decipher` (available with ImageMagick 6.3.8-6)
-- Added `DTX1Compression`, `DTX1Compression`, and `DTX1Compression`
+- Added `DXT1Compression`, `DXT3Compression`, and `DXT5Compression`
   `CompressionType` enums (available in ImageMagick 6.3.9-4)
 - Added optional "use hex format" argument to `Pixel#to_color`
 - Support `:area` resource type in `Magick.limit_resource`
