@@ -80,7 +80,7 @@ module RMagick
             version = matches[1]
             Logging::message("Detected ImageMagick version: #{version}\n")
 
-            if cant_install_rmagick?(version)
+            unless can_install?(version)
               exit_failure "Can't install RMagick #{RMAGICK_VERS}. You must have ImageMagick #{Magick::MIN_IM_VERSION} or later.\n"
             end
           end
@@ -130,8 +130,8 @@ module RMagick
 
     end
 
-    def cant_install_rmagick?(version)
-      Gem::Version.new(version) < Gem::Version.new(Magick::MIN_IM_VERSION)
+    def can_install?(version)
+      Gem::Version.new(version) >= Gem::Version.new(Magick::MIN_IM_VERSION)
     end
 
     # Test for a specific value in an enum type
