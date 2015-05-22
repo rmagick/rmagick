@@ -3,7 +3,7 @@ require "date"
 
 module RMagick
   class Extconf
-    require "#{File.dirname(__FILE__)}/../../lib/rmagick/version"
+    require File.join(File.dirname(__FILE__), "..", "..", "lib/rmagick/version")
     RMAGICK_VERS = ::Magick::VERSION
     MIN_RUBY_VERS = ::Magick::MIN_RUBY_VERSION
     MIN_RUBY_VERS_NO = MIN_RUBY_VERS.tr(".","").to_i
