@@ -131,8 +131,7 @@ module RMagick
     end
 
     def cant_install_rmagick?(version)
-      !$pkg_config &&
-        Gem::Version.new(version) < Gem::Version.new(Magick::MIN_IM_VERSION)
+      Gem::Version.new(version) < Gem::Version.new(Magick::MIN_IM_VERSION)
     end
 
     # Test for a specific value in an enum type
