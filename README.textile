@@ -93,6 +93,13 @@ LD_LIBRARY_PATH variable like this:
 On Linux, see @ld(1)@ and @ld.so(8)@ for more information. On other operating
 systems, see the documentation for the dynamic loading facility.
 
+h4. Segmentation fault
+
+Default stack size of your operating system might be too small. Try removing the limit with this command:
+
+<pre>
+        ulimit -s unlimited
+</pre>
 
 h2(#upgrade). Upgrading
 
