@@ -69,6 +69,15 @@ subdirectory of the installation directory for any error messages. These message
 typically contain enough additional information for you to be able to diagnose
 the problem. Also see "this FAQ":https://web.archive.org/web/20140512193354/http://rmagick.rubyforge.org/install-faq.html#libmagick.
 
+On OS X with Homebrew, try [re]installing pkg-config:
+
+<pre>
+brew uninstall pkg-config
+brew install pkg-config
+brew unlink pkg-config
+brew link pkg-config
+</pre>
+
 h4. Cannot open shared object file
 
 If you get a message like this:
