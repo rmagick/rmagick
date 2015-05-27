@@ -12,11 +12,6 @@ module RMagick
     MIN_RUBY_VERS_NO = MIN_RUBY_VERS.tr('.','').to_i
 
     attr_reader :headers
-    def initialize
-      configure_compile_options
-      assert_can_compile!
-      configure_headers
-    end
 
     def configured_compile_options
       {
@@ -441,6 +436,9 @@ SRC
     end
 
     def create_makefile_file
+      configure_compile_options
+      assert_can_compile!
+      configure_headers
       create_header_file
       # Prior to 1.8.5 mkmf duplicated the symbols on the command line and in the
       # extconf.h header. Suppress that behavior by removing the symbol array.
