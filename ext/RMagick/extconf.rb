@@ -13,6 +13,22 @@ module RMagick
 
     attr_reader :headers
 
+    def create_makefile_file
+      configure_compile_options
+      assert_can_compile!
+      configure_headers
+      create_header_file
+      # Prior to 1.8.5 mkmf duplicated the symbols on the command line and in the
+      # extconf.h header. Suppress that behavior by removing the symbol array.
+      $defs = []
+
+      # Force re-compilation if the generated Makefile changed.
+      $config_h = 'Makefile rmagick.h'
+
+      create_makefile('RMagick2')
+      print_summary
+    end
+
     def configured_compile_options
       {
         :magick_config => $magick_config,
@@ -26,6 +42,8 @@ module RMagick
         :config_h       => $config_h,
       }
     end
+
+    private
 
     def configure_headers
       #headers = %w{assert.h ctype.h errno.h float.h limits.h math.h stdarg.h stddef.h stdint.h stdio.h stdlib.h string.h time.h}
@@ -433,22 +451,6 @@ SRC
       $defs.push("-DRMAGICK_VERSION_STRING=\"RMagick #{RMAGICK_VERS}\"")
 
       create_header
-    end
-
-    def create_makefile_file
-      configure_compile_options
-      assert_can_compile!
-      configure_headers
-      create_header_file
-      # Prior to 1.8.5 mkmf duplicated the symbols on the command line and in the
-      # extconf.h header. Suppress that behavior by removing the symbol array.
-      $defs = []
-
-      # Force re-compilation if the generated Makefile changed.
-      $config_h = 'Makefile rmagick.h'
-
-      create_makefile('RMagick2')
-      print_summary
     end
 
     def print_summary
