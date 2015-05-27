@@ -1,11 +1,12 @@
 lib_dir = File.expand_path('../../lib', File.dirname(__FILE__))
 $LOAD_PATH.unshift(lib_dir) unless $LOAD_PATH.include?(lib_dir)
+
 require 'mkmf'
 require 'date'
+require 'rmagick/version'
 
 module RMagick
   class Extconf
-    require 'rmagick/version'
     RMAGICK_VERS = ::Magick::VERSION
     MIN_RUBY_VERS = ::Magick::MIN_RUBY_VERSION
     MIN_RUBY_VERS_NO = MIN_RUBY_VERS.tr('.','').to_i
