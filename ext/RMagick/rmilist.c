@@ -816,6 +816,11 @@ images_from_imagelist(VALUE imagelist)
 
         t = rb_ary_entry(images, x);
         image = rm_check_destroyed(t);
+        // avoid a loop in this linked imagelist, issue #202
+        if (head == image || GetPreviousImageInList(image) != NULL)
+        {
+            image = rm_clone_image(image);
+        }
         AppendImageToList(&head, image);
     }
 
