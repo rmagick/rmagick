@@ -3,6 +3,10 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 2.15.1
+
+- Fix loop in linked list in `ImageList` methods => they no longer hang - @u338steven
+
 ## RMagick 2.15.0
 
 - Ability to remove alpha channel - @ollie
