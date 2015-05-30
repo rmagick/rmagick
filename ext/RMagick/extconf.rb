@@ -9,7 +9,7 @@ module RMagick
   class Extconf
     RMAGICK_VERS = ::Magick::VERSION
     MIN_RUBY_VERS = ::Magick::MIN_RUBY_VERSION
-    MIN_RUBY_VERS_NO = MIN_RUBY_VERS.tr('.','').to_i
+    MIN_RUBY_VERS_NO = MIN_RUBY_VERS.tr('.', '').to_i
 
     attr_reader :headers
 
@@ -18,6 +18,7 @@ module RMagick
       assert_can_compile!
       configure_headers
       create_header_file
+
       # Prior to 1.8.5 mkmf duplicated the symbols on the command line and in the
       # extconf.h header. Suppress that behavior by removing the symbol array.
       $defs = []
@@ -31,24 +32,23 @@ module RMagick
 
     def configured_compile_options
       {
-        :magick_config => $magick_config,
-        :pkg_config    => $pkg_config,
+        :magick_config  => $magick_config,
+        :pkg_config     => $pkg_config,
         :magick_version => $magick_version,
         :local_libs     => $LOCAL_LIBS,
         :cflags         => $CFLAGS,
         :cppflags       => $CPPFLAGS,
         :ldflags        => $LDFLAGS,
         :defs           => $defs,
-        :config_h       => $config_h,
+        :config_h       => $config_h
       }
     end
 
     private
 
     def configure_headers
-      #headers = %w{assert.h ctype.h errno.h float.h limits.h math.h stdarg.h stddef.h stdint.h stdio.h stdlib.h string.h time.h}
-      @headers = %w{assert.h ctype.h stdio.h stdlib.h math.h time.h}
-      headers << 'stdint.h' if have_header('stdint.h')  # defines uint64_t
+      @headers = %w(assert.h ctype.h stdio.h stdlib.h math.h time.h)
+      headers << 'stdint.h' if have_header('stdint.h') # defines uint64_t
       headers << 'sys/types.h' if have_header('sys/types.h')
 
       if have_header('wand/MagickWand.h')
@@ -120,9 +120,7 @@ module RMagick
         if RUBY_PLATFORM =~ /darwin/ # osx
           set_archflags_for_osx
         end
-
       elsif RUBY_PLATFORM =~ /mingw/  # mingw
-
         `convert -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-\d+ /
         abort 'Unable to get ImageMagick version' unless $1
         $magick_version = $1
@@ -131,9 +129,7 @@ module RMagick
         else
           $LOCAL_LIBS = '-lCORE_RL_magick_ -lX11'
         end
-
-      else  # mswin
-
+      else # mswin
         `convert -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-\d+ /
         abort 'Unable to get ImageMagick version' unless $1
         $magick_version = $1
@@ -142,12 +138,11 @@ module RMagick
         # The /link option is required by the Makefile but causes warnings in the mkmf.log file.
         $LDFLAGS = %Q{/link /LIBPATH:"C:\\Program Files\\Microsoft Platform SDK for Windows Server 2003 R2\\Lib" /LIBPATH:"C:\\Program Files\\ImageMagick-#{$magick_version}-Q8\\lib" /LIBPATH:"C:\\ruby\\lib"}
         $LOCAL_LIBS = 'CORE_RL_magick_.lib X11.lib'
-
       end
     end
 
     # Test for a specific value in an enum type
-    def have_enum_value(enum, value, headers=nil, &b)
+    def have_enum_value(enum, value, headers = nil, &b)
       checking_for "#{enum}.#{value}" do
         if try_compile(<<"SRC", &b)
 #{COMMON_HEADERS}
@@ -164,7 +159,7 @@ SRC
     end
 
     # Test for multiple values of the same enum type
-    def have_enum_values(enum, values, headers=nil, &b)
+    def have_enum_values(enum, values, headers = nil, &b)
       values.each do |value|
         have_enum_value(enum, value, headers, &b)
       end
@@ -172,7 +167,7 @@ SRC
 
     def exit_failure(msg)
       Logging.message msg
-      message msg+"\n"
+      message msg + "\n"
       exit(1)
     end
 
@@ -180,6 +175,7 @@ SRC
     def check_multiple_imagemagick_versions
       versions = []
       path = ENV['PATH'].split(File::PATH_SEPARATOR)
+
       path.each do |dir|
         file = File.join(dir, 'Magick-config')
         if File.executable? file
@@ -188,12 +184,16 @@ SRC
           versions << [vers, prefix, dir]
         end
       end
+
       versions.uniq!
+
       if versions.size > 1
         msg = "\nWarning: Found more than one ImageMagick installation. This could cause problems at runtime.\n"
+
         versions.each do |vers, prefix, dir|
           msg << "         #{dir}/Magick-config reports version #{vers} is installed in #{prefix}\n"
         end
+
         msg << "Using #{versions[0][0]} from #{versions[0][1]}.\n\n"
         Logging.message msg
         message msg
@@ -207,15 +207,15 @@ SRC
     def check_partial_imagemagick_versions
       prefix = config_string('prefix') || ''
       matches = [
-        prefix+'/lib/lib?agick*',
-        prefix+'/include/ImageMagick',
-        prefix+'/bin/Magick-config',
+        prefix + '/lib/lib?agick*',
+        prefix + '/include/ImageMagick',
+        prefix + '/bin/Magick-config'
       ].map do |file_glob|
         Dir.glob(file_glob)
       end
-      matches.delete_if { |arr| arr.empty? }
+      matches.delete_if(&:empty?)
       if 0 < matches.length && matches.length < 3
-        msg = "\nWarning: Found a partial ImageMagick installation. Your operating system likely has some built-in ImageMagick libraries but not all of ImageMagick. This will most likely cause problems at both compile and runtime.\nFound partial installation at: "+prefix+"\n"
+        msg = "\nWarning: Found a partial ImageMagick installation. Your operating system likely has some built-in ImageMagick libraries but not all of ImageMagick. This will most likely cause problems at both compile and runtime.\nFound partial installation at: #{prefix}\n"
         Logging.message msg
         message msg
       end
@@ -264,7 +264,7 @@ END_MSWIN
 
     def assert_minimum_ruby_version!
       unless checking_for("Ruby version >= #{MIN_RUBY_VERS}") do
-        version = RUBY_VERSION.tr('.','').to_i
+        version = RUBY_VERSION.tr('.', '').to_i
         version >= MIN_RUBY_VERS_NO
       end
         exit_failure "Can't install RMagick #{RMAGICK_VERS}. Ruby #{MIN_RUBY_VERS} or later required.\n"
@@ -273,14 +273,13 @@ END_MSWIN
 
     def assert_has_dev_libs!
       if RUBY_PLATFORM !~ /mswin|mingw/
-
         # check for pkg-config if Magick-config doesn't exist
         if $magick_config && `Magick-config --libs`[/\bl\s*(MagickCore|Magick)6?\b/]
         elsif $pkg_config && `pkg-config --libs MagickCore`[/\bl\s*(MagickCore|Magick)6?\b/]
         else
-            exit_failure "Can't install RMagick #{RMAGICK_VERS}. " \
-                   "Can't find the ImageMagick library or one of the dependent libraries. " \
-                   "Check the mkmf.log file for more detailed information.\n"
+          exit_failure "Can't install RMagick #{RMAGICK_VERS}. " \
+                       "Can't find the ImageMagick library or one of the dependent libraries. " \
+                       "Check the mkmf.log file for more detailed information.\n"
         end
       end
     end
@@ -363,16 +362,11 @@ SRC
       have_type('MagickFunction', headers)                  # 6.4.8-8
       have_type('ImageLayerMethod', headers)                # 6.3.6 replaces MagickLayerMethod
       have_type('long double', headers)
-      #have_type("unsigned long long", headers)
-      #have_type("uint64_t", headers)
-      #have_type("__int64", headers)
-      #have_type("uintmax_t", headers)
-      #check_sizeof("unsigned long", headers)
-      #check_sizeof("Image *", headers)
 
       have_enum_values('AlphaChannelType', ['CopyAlphaChannel',                    # 6.4.3-7
                                             'BackgroundAlphaChannel',              # 6.5.2-5
                                             'RemoveAlphaChannel'], headers)        # 6.7.5-1
+
       have_enum_values('CompositeOperator', ['BlurCompositeOp',                    # 6.5.3-7
                                              'DistortCompositeOp',                 # 6.5.3-10
                                              'LinearBurnCompositeOp',              # 6.5.4-3
@@ -381,6 +375,7 @@ SRC
                                              'PegtopLightCompositeOp',             # 6.5.4-3
                                              'PinLightCompositeOp',                # 6.5.4-3
                                              'VividLightCompositeOp'], headers)    # 6.5.4-3
+
       have_enum_values('CompressionType', ['DXT1Compression',                      # 6.3.9-3
                                            'DXT3Compression',                      # 6.3.9-3
                                            'DXT5Compression',                      # 6.3.9-3
@@ -398,7 +393,9 @@ SRC
                                               'PolarDistortion',                   # 6.4.2-6
                                               'PolynomialDistortion',              # 6.4.2-4
                                               'ShepardsDistortion'], headers)      # 6.4.2-4
+
       have_enum_value('DitherMethod', 'NoDitherMethod', headers)                   # 6.4.3
+
       have_enum_values('FilterTypes', ['KaiserFilter',                             # 6.3.6
                                        'WelshFilter',                              # 6.3.6-4
                                        'ParzenFilter',                             # 6.3.6-4
@@ -406,6 +403,7 @@ SRC
                                        'BohmanFilter',                             # 6.3.7-2
                                        'BartlettFilter',                           # 6.3.7-2
                                        'SentinelFilter'], headers)                 # 6.3.7-2
+
       have_enum_values('MagickEvaluateOperator', ['PowEvaluateOperator',           # 6.4.1-9
                                                   'LogEvaluateOperator',            # 6.4.2
                                                   'ThresholdEvaluateOperator',      # 6.4.3
@@ -419,22 +417,23 @@ SRC
                                                   'UniformNoiseEvaluateOperator',   # 6.4.3
                                                   'CosineEvaluateOperator',         # 6.4.8-5
                                                   'SineEvaluateOperator',           # 6.4.8-5
-                                                  'AddModulusEvaluateOperator'],    # 6.4.8-5
-                       headers)
+                                                  'AddModulusEvaluateOperator'], headers) # 6.4.8-5
+
       have_enum_values('MagickFunction', ['ArcsinFunction',                        # 6.5.2-8
                                           'ArctanFunction',                        # 6.5.2-8
                                           'PolynomialFunction',                    # 6.4.8-8
                                           'SinusoidFunction'], headers)            # 6.4.8-8
+
       have_enum_values('ImageLayerMethod', ['FlattenLayer',                           # 6.3.6-2
                                             'MergeLayer',                             # 6.3.6
                                             'MosaicLayer',                            # 6.3.6-2
-                                            'TrimBoundsLayer' ], headers)             # 6.4.3-8
+                                            'TrimBoundsLayer'], headers)              # 6.4.3-8
+
       have_enum_values('VirtualPixelMethod', ['HorizontalTileVirtualPixelMethod',     # 6.4.2-6
                                               'VerticalTileVirtualPixelMethod',       # 6.4.2-6
                                               'HorizontalTileEdgeVirtualPixelMethod', # 6.5.0-1
                                               'VerticalTileEdgeVirtualPixelMethod',   # 6.5.0-1
-                                              'CheckerTileVirtualPixelMethod'],       # 6.5.0-1
-                       headers)
+                                              'CheckerTileVirtualPixelMethod'], headers) # 6.5.0-1
 
       # Now test Ruby 1.9.0 features.
       headers = ['ruby.h']
@@ -473,9 +472,11 @@ END_SUMMARY
 end
 
 extconf = RMagick::Extconf.new
+
 at_exit do
   msg = "Configured compile options: #{extconf.configured_compile_options}"
   Logging.message msg
-  message msg+"\n"
+  message msg + "\n"
 end
+
 extconf.create_makefile_file
