@@ -1,5 +1,4 @@
 RSpec.describe Magick::ImageList do
-  # issue 202
   describe 'images_from_imagelist' do
     it 'works with identical instances' do
       expect do
