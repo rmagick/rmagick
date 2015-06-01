@@ -62,8 +62,10 @@ module RMagick
         # Check for Magick-config
         if find_executable('Magick-config') && !has_graphicsmagick_libmagick_dev_compat?
           $magick_config = true
+          $magick_version = `Magick-config --version`[/^(\d+\.\d+\.\d+)/]
         elsif find_executable('pkg-config')
           $pkg_config = true
+          $magick_version = `pkg-config MagickCore --modversion`[/^(\d+\.\d+\.\d+)/]
         else
           exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find Magick-config or pkg-config in #{ENV['PATH']}\n"
         end
@@ -74,15 +76,10 @@ module RMagick
         # Ensure minimum ImageMagick version
         # Check minimum ImageMagick version if possible
         checking_for("outdated ImageMagick version (<= #{Magick::MIN_IM_VERSION})") do
-          # extract version info from convert binary (could use identify as well)
-          # TODO: Extract the value of MagickLibVersionText constant in MagickCore/version.h somehow
-          `convert -version`.match(/^Version: ImageMagick (\d+\.\d+\.\d+)/) do |matches|
-            version = matches[1]
-            Logging.message("Detected ImageMagick version: #{version}\n")
+          Logging.message("Detected ImageMagick version: #{$magick_version}\n")
 
-            if Gem::Version.new(version) < Gem::Version.new(Magick::MIN_IM_VERSION)
-              exit_failure "Can't install RMagick #{RMAGICK_VERS}. You must have ImageMagick #{Magick::MIN_IM_VERSION} or later.\n"
-            end
+          if Gem::Version.new($magick_version) < Gem::Version.new(Magick::MIN_IM_VERSION)
+            exit_failure "Can't install RMagick #{RMAGICK_VERS}. You must have ImageMagick #{Magick::MIN_IM_VERSION} or later.\n"
           end
         end
 
