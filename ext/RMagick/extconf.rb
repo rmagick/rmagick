@@ -110,11 +110,8 @@ module RMagick
         `convert -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
         abort 'Unable to get ImageMagick version' unless $1
         $magick_version = $1
-        if RUBY_PLATFORM =~ /x64/
-          $LOCAL_LIBS = '-lCORE_RL_magick_'
-        else
-          $LOCAL_LIBS = '-lCORE_RL_magick_ -lX11'
-        end
+        $LOCAL_LIBS = '-lCORE_RL_magick_'
+        have_library('X11')
 
       else  # mswin
 
@@ -125,7 +122,8 @@ module RMagick
         $CPPFLAGS = %Q{-I"C:\\Program Files\\Microsoft Platform SDK for Windows Server 2003 R2\\Include" -I"C:\\Program Files\\ImageMagick-#{$magick_version}-Q8\\include"}
         # The /link option is required by the Makefile but causes warnings in the mkmf.log file.
         $LDFLAGS = %Q{/link /LIBPATH:"C:\\Program Files\\Microsoft Platform SDK for Windows Server 2003 R2\\Lib" /LIBPATH:"C:\\Program Files\\ImageMagick-#{$magick_version}-Q8\\lib" /LIBPATH:"C:\\ruby\\lib"}
-        $LOCAL_LIBS = 'CORE_RL_magick_.lib X11.lib'
+        $LOCAL_LIBS = 'CORE_RL_magick_.lib'
+        have_library('X11')
 
       end
     end
