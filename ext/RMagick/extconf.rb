@@ -60,7 +60,7 @@ module RMagick
         $pkg_config = false
 
         # Check for Magick-config
-        if find_executable('Magick-config')
+        if find_executable('Magick-config') && !has_graphicsmagick_libmagick_dev_compat?
           $magick_config = true
         elsif find_executable('pkg-config')
           $pkg_config = true
@@ -153,6 +153,20 @@ SRC
     def have_enum_values(enum, values, headers=nil, &b)
       values.each do |value|
         have_enum_value(enum, value, headers, &b)
+      end
+    end
+
+    def has_graphicsmagick_libmagick_dev_compat?
+      config_path = `which Magick-config`.chomp
+      if File.exist?(config_path) &&
+         File.symlink?(config_path) &&
+         File.readlink(config_path) =~ /GraphicsMagick/
+        msg = 'Found a graphicsmagick-libmagick-dev-compat installation.'
+        Logging.message msg
+        message msg+"\n"
+        true
+      else
+        false
       end
     end
 
