@@ -1,6 +1,6 @@
 h1. RMagick
 
-!https://img.shields.io/gem/v/rmagick.svg?style=flat(RubyGems)!:http://rubygems.org/gems/rmagick !https://img.shields.io/gem/dt/rmagick.svg?style=flat! !https://www.versioneye.com/ruby/rmagick/reference_badge.svg?style=flat(VersionEye)!:https://www.versioneye.com/ruby/rmagick/references !https://img.shields.io/travis/gemhome/rmagick/master.svg?style=flat(Travis CI)!:https://travis-ci.org/gemhome/rmagick !https://img.shields.io/codeclimate/github/gemhome/rmagick.svg?style=flat(Code Climate)!:https://codeclimate.com/github/gemhome/rmagick !https://badges.gitter.im/Join%20Chat.svg(Gitter)!:https://gitter.im/gemhome/rmagick?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+!https://img.shields.io/gem/v/rmagick.svg?style=flat(RubyGems)!:http://rubygems.org/gems/rmagick !https://img.shields.io/gem/dt/rmagick.svg?style=flat! !https://www.versioneye.com/ruby/rmagick/reference_badge.svg?style=flat(VersionEye)!:https://www.versioneye.com/ruby/rmagick/references !https://img.shields.io/travis/rmagick/rmagick/master.svg?style=flat(Travis CI)!:https://travis-ci.org/rmagick/rmagick !https://img.shields.io/codeclimate/github/rmagick/rmagick.svg?style=flat(Code Climate)!:https://codeclimate.com/github/rmagick/rmagick !https://badges.gitter.im/Join%20Chat.svg(Gitter)!:https://gitter.im/rmagick/rmagick?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 
 This is the official fork of RMagick. The decision to create a fork "originated here":https://github.com/rmagick/rmagick/issues/18#issuecomment-50022523, where you can read more about why it happened.
 
@@ -124,7 +124,7 @@ These programs are not installed in the RMagick documentation tree.
 h2(#bugs). Reporting bugs
 
 Please report bugs in RMagick, its documentation, or its installation
-programs to me via the bug tracker on the "RMagick issues page":https://github.com/gemhome
+programs to me via the bug tracker on the "RMagick issues page":https://github.com/rmagick/rmagick/issues
 
 However, I can't help with Ruby installation and configuration or ImageMagick
 installation and configuration. Information about reporting problems and
@@ -158,7 +158,7 @@ h4. 2) clone RMagick and log in to the vagrant box
 Within the `rake-compiler-dev-box` directory:
 
 <pre>
-git clone https://github.com/gemhome/rmagick.git # or your fork
+git clone https://github.com/rmagick/rmagick.git # or your fork
 vagrant ssh
 </pre>
 

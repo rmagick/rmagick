@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.description = 'RMagick is an interface between Ruby and ImageMagick.'
   s.authors = ['Tim Hunter', 'Omer Bar-or', 'Benjamin Thomas', 'Moncef Maiza']
   s.email = 'github@benjaminfleischer.com'
-  s.homepage = 'https://github.com/gemhome/rmagick'
+  s.homepage = 'https://github.com/rmagick/rmagick'
   s.license = 'MIT'
 
   tracked_files = `git ls-files`.split($OUTPUT_RECORD_SEPARATOR)

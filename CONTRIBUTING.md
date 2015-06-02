@@ -20,8 +20,8 @@ RMagick is a Ruby gem with a C extension. The extension wraps the ImageMagick C 
 Priorities
 ----------
 
-1. Green build of the gem on all operating systems. You can see the current build state on [the project page at Travis CI](https://travis-ci.org/gemhome/rmagick). You are welcome to improve it.
-2. [Open issues](https://github.com/gemhome/rmagick/issues). You are welcome to reproduce them, report current state, suggest solutions, open pull requests with fixes. If you don't know where to start, sort issues by least recently updated. You can also [subscribe to receive random issues by email](http://www.codetriage.com/gemhome/rmagick).
+1. Green build of the gem on all operating systems. You can see the current build state on [the project page at Travis CI](https://travis-ci.org/rmagick/rmagick). You are welcome to improve it.
+2. [Open issues](https://github.com/rmagick/rmagick/issues). You are welcome to reproduce them, report current state, suggest solutions, open pull requests with fixes. If you don't know where to start, sort issues by least recently updated. You can also [subscribe to receive random issues by email](http://www.codetriage.com/rmagick/rmagick).
 
 
 Testing
