@@ -3,6 +3,10 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 2.15.2
+
+- GitHub repository moved back to github.com/rmagick/rmagick - @wurde, @vassilevsky
+
 ## RMagick 2.15.1
 
 - Fix loop in linked list in `ImageList` methods => they no longer hang - @u338steven
