@@ -132,40 +132,42 @@ if RUBY_PLATFORM !~ /mswin|mingw/
   end
 
   # Check for Magick-config
-  unless find_executable("Magick-config")
-    exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find Magick-config in #{ENV['PATH']}\n"
-  end
+  # unless find_executable("Magick-config")
+  #   exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find Magick-config in #{ENV['PATH']}\n"
+  # end
 
-  check_multiple_imagemagick_versions()
-  check_partial_imagemagick_versions()
+  # check_multiple_imagemagick_versions()
+  # check_partial_imagemagick_versions()
 
-  # Ensure minimum ImageMagick version
-  unless checking_for("ImageMagick version >= #{MIN_IM_VERS}")  do
-    version = `Magick-config --version`.chomp.tr(".","").to_i
-    version >= MIN_IM_VERS_NO
-  end
-    exit_failure "Can't install RMagick #{RMAGICK_VERS}. You must have ImageMagick #{MIN_IM_VERS} or later.\n"
-  end
-
-
+  # # Ensure minimum ImageMagick version
+  # unless checking_for("ImageMagick version >= #{MIN_IM_VERS}")  do
+  #   version = `Magick-config --version`.chomp.tr(".","").to_i
+  #   version >= MIN_IM_VERS_NO
+  # end
+  #   exit_failure "Can't install RMagick #{RMAGICK_VERS}. You must have ImageMagick #{MIN_IM_VERS} or later.\n"
+  # end
 
 
-  $magick_version = `Magick-config --version`.chomp
 
-  # Ensure ImageMagick is not configured for HDRI
-  unless checking_for("HDRI disabled version of ImageMagick") do
-    not (`Magick-config --version`["HDRI"])
-  end
-    exit_failure "\nCan't install RMagick #{RMAGICK_VERS}."+
-           "\nRMagick does not work when ImageMagick is configured for High Dynamic Range Images."+
-           "\nDon't use the --enable-hdri option when configuring ImageMagick.\n"
-  end
+
+  # $magick_version = `Magick-config --version`.chomp
+
+  # # Ensure ImageMagick is not configured for HDRI
+  # unless checking_for("HDRI disabled version of ImageMagick") do
+  #   not (`Magick-config --version`["HDRI"])
+  # end
+  #   exit_failure "\nCan't install RMagick #{RMAGICK_VERS}."+
+  #          "\nRMagick does not work when ImageMagick is configured for High Dynamic Range Images."+
+  #          "\nDon't use the --enable-hdri option when configuring ImageMagick.\n"
+  # end
+
+  $magick_version = `pkg-config --modversion ImageMagick`
 
   # Save flags
-  $CFLAGS     = ENV["CFLAGS"].to_s   + " " + `Magick-config --cflags`.chomp
-  $CPPFLAGS   = ENV["CPPFLAGS"].to_s + " " + `Magick-config --cppflags`.chomp
-  $LDFLAGS    = ENV["LDFLAGS"].to_s  + " " + `Magick-config --ldflags`.chomp
-  $LOCAL_LIBS = ENV["LIBS"].to_s     + " " + `Magick-config --libs`.chomp
+  $CFLAGS     = ENV["CFLAGS"].to_s   + " " + `pkg-config ImageMagick --cflags`.chomp
+  $CPPFLAGS   = ENV["CPPFLAGS"].to_s + " " + `pkg-config ImageMagick --cflags-only-I`.chomp
+  $LDFLAGS    = ENV["LDFLAGS"].to_s  + " " + `pkg-config ImageMagick --libs`.chomp
+  $LOCAL_LIBS = ENV["LIBS"].to_s     + " " + `pkg-config ImageMagick --libs`.chomp
 
 elsif RUBY_PLATFORM =~ /mingw/  # mingw
 
@@ -205,7 +207,7 @@ end
 
 if RUBY_PLATFORM !~ /mswin|mingw/
 
-  unless `Magick-config --libs`[/\bl\s*(MagickCore|Magick)\b/]
+  unless `pkg-config ImageMagick --libs`[/\bl\s*(MagickCore|Magick)\b/]
     exit_failure "Can't install RMagick #{RMAGICK_VERS}. " +
            "Can't find the ImageMagick library or one of the dependent libraries. " +
            "Check the mkmf.log file for more detailed information.\n"
