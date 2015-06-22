@@ -109,7 +109,7 @@ module RMagick
 
       elsif RUBY_PLATFORM =~ /mingw/  # mingw
 
-        `convert -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-\d+ /
+        `convert -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
         abort 'Unable to get ImageMagick version' unless $1
         $magick_version = $1
         if RUBY_PLATFORM =~ /x64/
@@ -120,7 +120,7 @@ module RMagick
 
       else  # mswin
 
-        `convert -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-\d+ /
+        `convert -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
         abort 'Unable to get ImageMagick version' unless $1
         $magick_version = $1
         $CFLAGS = '-W3'
