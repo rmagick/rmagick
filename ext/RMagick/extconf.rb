@@ -120,7 +120,7 @@ module RMagick
 
       else  # mswin
 
-        `convert -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
+        `convert -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)/
         abort 'Unable to get ImageMagick version' unless $1
         $magick_version = $1
         $CFLAGS = '-W3'
