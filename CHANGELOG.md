@@ -3,6 +3,10 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 2.15.3
+
+- Fixed ImageMagick version detection on Windows - @maisumakun
+
 ## RMagick 2.15.2
 
 - GitHub repository moved back to github.com/rmagick/rmagick - @wurde, @vassilevsky
