@@ -3,6 +3,8 @@ language: ruby
 os:
   - linux
 
+sudo: required
+
 env:
   # Currently successful release
   - IMAGEMAGICK_VERSION=6.6.9-10 STYLE_CHECKS=true
