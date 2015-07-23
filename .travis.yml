@@ -54,11 +54,16 @@ matrix:
     - rvm: 2.0
       env: IMAGEMAGICK_VERSION=6.8.9-10 CONFIGURE_OPTIONS=--enable-hdri
   allow_failures:
-    - rvm: 1.8
-    - rvm: 2.2
     - env: IMAGEMAGICK_VERSION=6.7.7-10
     - env: IMAGEMAGICK_VERSION=6.7.9-10
+      rvm: 2.1
+    - env: IMAGEMAGICK_VERSION=6.7.9-10
+      rvm: 2.2
+    - env: IMAGEMAGICK_VERSION=6.8.9-10
+      rvm: 2.1
     - env: IMAGEMAGICK_VERSION=6.8.9-10 CONFIGURE_OPTIONS=--enable-hdri
+      rvm: 2.1
+    - env: IMAGEMAGICK_VERSION=latest
 
 notifications:
   webhooks:
