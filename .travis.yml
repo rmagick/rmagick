@@ -5,7 +5,6 @@ os:
 
 env:
   # Currently successful release
-  - IMAGEMAGICK_VERSION=6.6.9-10
   - IMAGEMAGICK_VERSION=6.6.9-10 STYLE_CHECKS=true
   # Ubuntu's current stable release
   - IMAGEMAGICK_VERSION=6.7.7-10
@@ -55,7 +54,6 @@ matrix:
   allow_failures:
     - rvm: 1.8
     - rvm: 2.2
-    - env: IMAGEMAGICK_VERSION=6.6.9-10 STYLE_CHECKS=true
     - env: IMAGEMAGICK_VERSION=6.7.7-10
     - env: IMAGEMAGICK_VERSION=6.7.9-10
     - env: IMAGEMAGICK_VERSION=6.8.9-10 CONFIGURE_OPTIONS=--enable-hdri

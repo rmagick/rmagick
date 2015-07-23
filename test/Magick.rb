@@ -102,7 +102,10 @@ class Magick_UT < Test::Unit::TestCase
     end
 
     def test_geometry
-      g, gs, g2, gs2 = nil, nil, nil, nil
+      g = nil
+      gs = nil
+      g2 = nil
+      gs2 = nil
       assert_nothing_raised { g = Magick::Geometry.new }
       assert_nothing_raised { gs = g.to_s }
       assert_equal('', gs)

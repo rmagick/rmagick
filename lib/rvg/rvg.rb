@@ -80,7 +80,8 @@ module Magick
                         when :tiled
                             Magick::Image.new(@width, @height, Magick::TextureFill.new(@background_image))
                         when :fit
-                            width, height = @width, @height
+                            width = @width
+                            height = @height
                             bgcolor = bgfill
                             @background_image.change_geometry(Magick::Geometry.new(width, height)) do |new_cols, new_rows|
                                 bg_image = @background_image.resize(new_cols, new_rows)
@@ -214,14 +215,16 @@ module Magick
         # groups unless overridden by an inner container or the object itself.
         def initialize(width=nil, height=nil)
             super
-            @width, @height = width, height
+            @width = width
+            @height = height
             @content = Content.new
             @canvas = nil
             @background_fill = nil
             @background_fill_opacity = 1.0  # applies only if background_fill= is used
             @background_position = :scaled
             @background_pattern, @background_image, @desc, @title, @metadata = nil
-            @x, @y = 0.0, 0.0
+            @x = 0.0
+            @y = 0.0
             @nested = false
             yield(self) if block_given?
         end
@@ -250,7 +253,8 @@ module Magick
         # Used by Magick::Embellishable.rvg to set non-0 x- and y-coordinates
         def corner(x, y)        #:nodoc:
             @nested = true
-            @x, @y = Float(x), Float(y)
+            @x = Float(x)
+            @y = Float(y)
             translate(@x, @y) if @x != 0.0 || @y != 0.0
         end
 

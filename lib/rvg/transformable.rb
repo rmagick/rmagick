@@ -86,7 +86,8 @@ module Magick
                         when 0
                             @transforms << [:rotate, [Float(angle)]]
                         when 2
-                            cx, cy = Float(args[0]), Float(args[1])
+                            cx = Float(args[0])
+                            cy = Float(args[1])
                             @transforms << [:translate, [cx, cy]]
                             @transforms << [:rotate, [angle]]
                             @transforms << [:translate, [-cx, -cy]]

@@ -5,7 +5,8 @@
 
 require 'rmagick'
 
-x, y = 100, 100
+x = 100
+y = 100
 
 begin
 
