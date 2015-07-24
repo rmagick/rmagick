@@ -625,7 +625,8 @@ module Magick
                 def scale(sx, sy)
                     sx, sy = Magick::RVG.convert_to_float(sx, sy)
                     @gc.scale(sx, sy)
-                    @sx, @sy = sx, sy
+                    @sx = sx
+                    @sy = sy
                     concat_matrix
                     nil
                 end
@@ -688,7 +689,8 @@ module Magick
                 def translate(tx, ty)
                     tx, ty = Magick::RVG.convert_to_float(tx, ty)
                     @gc.translate(tx, ty)
-                    @tx, @ty = tx, ty
+                    @tx = tx
+                    @ty = ty
                     concat_matrix
                     nil
                 end

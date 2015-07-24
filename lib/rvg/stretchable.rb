@@ -40,7 +40,8 @@ module Magick
 
             # Scale to fit
             def set_viewbox_none(width, height)
-                sx, sy = 1.0, 1.0
+                sx = 1.0
+                sy = 1.0
 
                 if @vbx_width
                     sx = width / @vbx_width
@@ -95,7 +96,8 @@ module Magick
 
                 if @align == 'none'
                     sx, sy = set_viewbox_none(width, height)
-                    tx, ty = 0, 0
+                    tx = 0
+                    ty = 0
                 elsif @meet_or_slice == 'meet'
                     sx, sy = set_viewbox_meet(width, height)
                     tx, ty = align_to_viewport(width, height, sx, sy)

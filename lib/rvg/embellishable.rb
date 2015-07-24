@@ -186,10 +186,12 @@ module Magick
                 if @align == 'none'
                     # Let RMagick do the scaling
                     scale = 1.0
-                    width, height = @width, @height
+                    width = @width
+                    height = @height
                 elsif @meet_or_slice == 'meet'
                     scale = [@width/@image.columns, @height/@image.rows].min
-                    width, height = @image.columns, @image.rows
+                    width = @image.columns
+                    height = @image.rows
                 else
                     # Establish clipping path around the current viewport
                     name = __id__.to_s
@@ -199,7 +201,8 @@ module Magick
 
                     gc.clip_path(name)
                     scale = [@width/@image.columns, @height/@image.rows].max
-                    width, height = @image.columns, @image.rows
+                    width = @image.columns
+                    height = @image.rows
                 end
                 tx, ty = align_to_viewport(scale)
                 gc.composite(@x+tx, @y+ty, width*scale, height*scale, @image)
@@ -207,7 +210,8 @@ module Magick
 
             def init_viewbox
                 @align = nil
-                @vbx_width, @vbx_height = @image.columns, @image.rows
+                @vbx_width = @image.columns
+                @vbx_height = @image.rows
                 @meet_or_slice = 'meet'
             end
 
@@ -331,7 +335,8 @@ module Magick
             def rvg(cols, rows, x=0, y=0, &block)
                 rvg = Magick::RVG.new(cols, rows, &block)
                 begin
-                    x, y = Float(x), Float(y)
+                    x = Float(x)
+                    y = Float(y)
                 rescue ArgumentError
                     args = [cols, rows, x, y]
                     raise ArgumentError, "at least one argument is not convertable to Float (got #{args.collect {|a| a.class}.join(', ')})"
