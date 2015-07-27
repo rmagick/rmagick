@@ -3,7 +3,6 @@
 # Copyright (C) 2009 Timothy P. Hunter
 #++
 # Text-related classes
-
 module Magick
     class RVG
         # Base class for Tspan, Tref and Text.
