@@ -14,9 +14,6 @@ Style/Lambda:
 Style/StringLiterals:
   EnforcedStyle: single_quotes
 
-Style/MultilineOperationIndentation:
-  EnforcedStyle: indented
-
 Style/DotPosition:
   EnforcedStyle: leading
 
@@ -25,6 +22,9 @@ Style/DotPosition:
 # Offense count: 2
 # Cop supports --auto-correct.
 Lint/BlockAlignment:
+  Enabled: false
+
+Lint/FormatParameterMismatch:
   Enabled: false
 
 # Offense count: 1
@@ -93,8 +93,14 @@ Metrics/ParameterLists:
 Metrics/PerceivedComplexity:
   Max: 41
 
+Performance/StringReplacement:
+  Enabled: false
+
 # Offense count: 4
 Style/AccessorMethodName:
+  Enabled: false
+
+Style/AlignArray:
   Enabled: false
 
 # Offense count: 3
@@ -126,6 +132,9 @@ Style/ClassAndModuleChildren:
 Style/ClosingParenthesisIndentation:
   Enabled: false
 
+Style/CollectionMethods:
+  Enabled: false
+
 # Offense count: 5
 # Cop supports --auto-correct.
 Style/CommentIndentation:
@@ -137,6 +146,12 @@ Style/ConstantName:
 
 # Offense count: 62
 Style/Documentation:
+  Enabled: false
+
+Style/EmptyLinesAroundBlockBody:
+  Enabled: false
+
+Style/ExtraSpacing:
   Enabled: false
 
 # Offense count: 23
@@ -163,6 +178,12 @@ Style/GuardClause:
 # Cop supports --auto-correct.
 # Configuration parameters: MaxLineLength.
 Style/IfUnlessModifier:
+  Enabled: false
+
+Style/IndentArray:
+  Enabled: false
+
+Style/IndentationConsistency:
   Enabled: false
 
 # Offense count: 1049
@@ -225,6 +246,9 @@ Style/PredicateName:
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles, AllowInnerSlashes.
 Style/RegexpLiteral:
+  Enabled: false
+
+Style/RescueEnsureAlignment:
   Enabled: false
 
 # Offense count: 2
