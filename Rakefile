@@ -3,6 +3,8 @@ require './lib/rmagick/version'
 require 'fileutils'
 require 'English'
 
+ruby_version = Gem::Version.new(RUBY_VERSION.dup)
+
 task :config do
   def version
     Magick::VERSION
@@ -182,7 +184,7 @@ task :spec => :compile
 if ENV['STYLE_CHECKS']
   require 'rubocop/rake_task'
   RuboCop::RakeTask.new
-  task :default => [:spec, :test, :rubocop]
+  task :default => [:rubocop]
 else
   task :default => [:spec, :test]
 end
