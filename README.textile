@@ -69,6 +69,10 @@ the problem. Also see "this FAQ":https://web.archive.org/web/20140512193354/http
 
 On OS X with Homebrew, try [re]installing pkg-config:
 
+On Linux(you are awesome), try
+
+bc. sudo apt-get install libmagickwand-dev
+
 <pre>
 brew uninstall pkg-config
 brew install pkg-config
