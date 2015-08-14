@@ -37,4 +37,14 @@ You are also welcome to convert existing Test/Unit tests to RSpec.
 Committing
 ----------
 
+All work for a next release is done in the `develop` branch. Please create your branch off of it.
+
 It is better if you follow [Git Style Guide](https://github.com/agis-/git-style-guide).
+
+
+Pull Requests
+-------------
+
+Please choose the `rmagick/rmagick` repo and the `develop` branch as the destination for your pull request.
+
+NOTE: GitHub suggests `rmagick-temp/rmagick` repo by default. **This is incorrect.** Please switch to `rmagick/rmagick`. It should be the next repo in the drop-down list.

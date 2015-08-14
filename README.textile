@@ -32,6 +32,10 @@ Ruby must be able to build C-Extensions (e.g. MRI, Rubinius, not JRuby)
 
 *ImageMagick* Version 6.4.9 or later. You can get ImageMagick from "www.imagemagick.org":http://www.imagemagick.org.
 
+On Ubuntu, you can run:
+
+bc. sudo apt-get install libmagickwand-dev
+
 h2(#install). Installing RMagick
 
 h4. Installing via Bundler

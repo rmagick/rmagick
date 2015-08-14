@@ -1,5 +1,6 @@
 lib_dir = File.expand_path('../../lib', File.dirname(__FILE__))
 $LOAD_PATH.unshift(lib_dir) unless $LOAD_PATH.include?(lib_dir)
+require 'rubygems'
 require 'mkmf'
 require 'date'
 
@@ -60,10 +61,12 @@ module RMagick
         $pkg_config = false
 
         # Check for Magick-config
-        if find_executable('Magick-config')
+        if find_executable('Magick-config') && !has_graphicsmagick_libmagick_dev_compat?
           $magick_config = true
+          $magick_version = `Magick-config --version`[/^(\d+\.\d+\.\d+)/]
         elsif find_executable('pkg-config')
           $pkg_config = true
+          $magick_version = `pkg-config MagickCore --modversion`[/^(\d+\.\d+\.\d+)/]
         else
           exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find Magick-config or pkg-config in #{ENV['PATH']}\n"
         end
@@ -74,15 +77,10 @@ module RMagick
         # Ensure minimum ImageMagick version
         # Check minimum ImageMagick version if possible
         checking_for("outdated ImageMagick version (<= #{Magick::MIN_IM_VERSION})") do
-          # extract version info from convert binary (could use identify as well)
-          # TODO: Extract the value of MagickLibVersionText constant in MagickCore/version.h somehow
-          `convert -version`.match(/^Version: ImageMagick (\d+\.\d+\.\d+)/) do |matches|
-            version = matches[1]
-            Logging.message("Detected ImageMagick version: #{version}\n")
+          Logging.message("Detected ImageMagick version: #{$magick_version}\n")
 
-            if Gem::Version.new(version) < Gem::Version.new(Magick::MIN_IM_VERSION)
-              exit_failure "Can't install RMagick #{RMAGICK_VERS}. You must have ImageMagick #{Magick::MIN_IM_VERSION} or later.\n"
-            end
+          if Gem::Version.new($magick_version) < Gem::Version.new(Magick::MIN_IM_VERSION)
+            exit_failure "Can't install RMagick #{RMAGICK_VERS}. You must have ImageMagick #{Magick::MIN_IM_VERSION} or later.\n"
           end
         end
 
@@ -109,25 +107,25 @@ module RMagick
 
       elsif RUBY_PLATFORM =~ /mingw/  # mingw
 
-        `convert -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
+        `identify -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
         abort 'Unable to get ImageMagick version' unless $1
         $magick_version = $1
-        if RUBY_PLATFORM =~ /x64/
-          $LOCAL_LIBS = '-lCORE_RL_magick_'
-        else
-          $LOCAL_LIBS = '-lCORE_RL_magick_ -lX11'
+        unless have_library('CORE_RL_magick_')
+          search_paths_for_library_for_mingw
         end
+        have_library('X11')
 
       else  # mswin
 
-        `convert -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
+        `identify -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
         abort 'Unable to get ImageMagick version' unless $1
         $magick_version = $1
         $CFLAGS = '-W3'
         $CPPFLAGS = %Q{-I"C:\\Program Files\\Microsoft Platform SDK for Windows Server 2003 R2\\Include" -I"C:\\Program Files\\ImageMagick-#{$magick_version}-Q8\\include"}
         # The /link option is required by the Makefile but causes warnings in the mkmf.log file.
         $LDFLAGS = %Q{/link /LIBPATH:"C:\\Program Files\\Microsoft Platform SDK for Windows Server 2003 R2\\Lib" /LIBPATH:"C:\\Program Files\\ImageMagick-#{$magick_version}-Q8\\lib" /LIBPATH:"C:\\ruby\\lib"}
-        $LOCAL_LIBS = 'CORE_RL_magick_.lib X11.lib'
+        $LOCAL_LIBS = 'CORE_RL_magick_.lib'
+        have_library('X11')
 
       end
     end
@@ -153,6 +151,20 @@ SRC
     def have_enum_values(enum, values, headers=nil, &b)
       values.each do |value|
         have_enum_value(enum, value, headers, &b)
+      end
+    end
+
+    def has_graphicsmagick_libmagick_dev_compat?
+      config_path = `which Magick-config`.chomp
+      if File.exist?(config_path) &&
+         File.symlink?(config_path) &&
+         File.readlink(config_path) =~ /GraphicsMagick/
+        msg = 'Found a graphicsmagick-libmagick-dev-compat installation.'
+        Logging.message msg
+        message msg+"\n"
+        true
+      else
+        false
       end
     end
 
@@ -225,6 +237,37 @@ SRC
 
       if archflags.length != 0
         $ARCH_FLAG = archflags.join(' ')
+      end
+    end
+
+    def search_paths_for_library_for_mingw
+      msg = 'searching PATH for the ImageMagick library...'
+      Logging.message msg
+      message msg+"\n"
+
+      found_lib = false
+
+      paths = ENV['PATH'].split(File::PATH_SEPARATOR)
+      paths.each do |dir|
+        lib = File.join(dir, 'lib')
+        lib_file = File.join(lib, 'CORE_RL_magick_.lib')
+        if File.exist?(lib_file)
+          $CPPFLAGS = %Q{-I"#{File.join(dir, 'include')}"}
+          $LDFLAGS = %Q{-L"#{lib}"}
+          found_lib = have_library('CORE_RL_magick_')
+          break if found_lib
+        end
+      end
+
+      unless found_lib
+        exit_failure <<END_MINGW
+Can't install RMagick #{RMAGICK_VERS}.
+Can't find the ImageMagick library.
+Retry with '--with-opt-dir' option.
+Usage: gem install rmagick -- '--with-opt-dir=\"[path to ImageMagick]\"'
+e.g.
+  gem install rmagick -- '--with-opt-dir=\"C:\Program Files\ImageMagick-6.9.1-Q16\"'
+END_MINGW
       end
     end
 
