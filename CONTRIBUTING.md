@@ -37,4 +37,12 @@ You are also welcome to convert existing Test/Unit tests to RSpec.
 Committing
 ----------
 
+All work for a next release is done in the `develop` branch. Please create your branch off of it.
+
 It is better if you follow [Git Style Guide](https://github.com/agis-/git-style-guide).
+
+
+Pull Requests
+-------------
+
+Please choose `develop` as the destination branch for your pull request.
