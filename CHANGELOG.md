@@ -3,6 +3,10 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 2.15.4
+
+- Improved C extension building process - @u338steven
+
 ## RMagick 2.15.3
 
 - Fixed ImageMagick version detection on Windows - @maisumakun
