@@ -36,7 +36,7 @@ On Ubuntu, you can run:
 
 bc. sudo apt-get install libmagickwand-dev
 
-*Note to windows users:* Please make sure that you choose an ImageMagick version that matches the bitness of your ruby version.
+*Note to Windows users:* Please make sure that you choose an ImageMagick version that matches the bitness of your Ruby version.
 
 h2(#install). Installing RMagick
 
