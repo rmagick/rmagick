@@ -26,7 +26,7 @@ h2(#prereq). Prerequisites
 
 *O/S* Linux, &#042;BSD, OS X, Windows 2000, XP, Vista, other &#042;nix-like systems.
 
-*Ruby* Version 1.8.5 or later. You can get Ruby from "www.ruby-lang.org":http://www.ruby-lang.org.
+*Ruby* Version 2.0.0 or later. You can get Ruby from "www.ruby-lang.org":http://www.ruby-lang.org.
 
 Ruby must be able to build C-Extensions (e.g. MRI, Rubinius, not JRuby)
 
