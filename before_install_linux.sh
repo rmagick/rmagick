@@ -19,3 +19,7 @@ esac
 sudo make install
 cd ..
 sudo ldconfig
+
+# Fix for "NoMethodError: undefined method `spec' for nil:NilClass" on Travis
+# According to https://twitter.com/apotonick/status/678331744311836672
+gem install bundler
