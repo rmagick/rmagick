@@ -642,6 +642,26 @@ ImageList_morph(VALUE self, VALUE nimages)
     return rm_imagelist_from_images(new_images);
 }
 
+// Actual mosaic operation without the Global VM Lock
+void *
+ImageList_mosaic_no_gvl_wrapper(void *args)
+{
+  Image *new_image;
+  struct imagelist_arguments *imagelist_args = (struct imagelist_arguments *)args;
+  imagelist_args->exception = AcquireExceptionInfo();
+  #if defined(HAVE_ENUM_MOSAICLAYER)
+      new_image = MergeImageLayers(imagelist_args->images, MosaicLayer, imagelist_args->exception);
+  #else
+      new_image = MosaicImages(imagelist_args->images, imagelist_args->exception);
+  #endif
+  rm_split(imagelist_args->images);
+  rm_check_exception(imagelist_args->exception, new_image, DestroyOnError);
+  (void) DestroyExceptionInfo(imagelist_args->exception);
+
+  rm_ensure_result(new_image);
+
+  return (void *)new_image;
+}
 
 /**
  * Merge all the images into a single image.
@@ -655,23 +675,11 @@ ImageList_morph(VALUE self, VALUE nimages)
 VALUE
 ImageList_mosaic(VALUE self)
 {
-    Image *images, *new_image;
-    ExceptionInfo *exception;
+    struct imagelist_arguments imagelist_args;
+    Image *new_image;
+    imagelist_args.images = images_from_imagelist(self);
 
-    exception = AcquireExceptionInfo();
-    images = images_from_imagelist(self);
-
-#if defined(HAVE_ENUM_MOSAICLAYER)
-    new_image = MergeImageLayers(images, MosaicLayer, exception);
-#else
-    new_image = MosaicImages(images, exception);
-#endif
-
-    rm_split(images);
-    rm_check_exception(exception, new_image, DestroyOnError);
-    (void) DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
+    new_image = (Image *)rb_thread_call_without_gvl(ImageList_mosaic_no_gvl_wrapper, &imagelist_args, RUBY_UBF_PROCESS, NULL);
 
     return rm_image_new(new_image);
 }
