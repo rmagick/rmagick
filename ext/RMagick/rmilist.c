@@ -80,6 +80,12 @@ ImageList_animate(int argc, VALUE *argv, VALUE self)
     return self;
 }
 
+struct imagelist_arguments
+{
+  Image *images;
+  ExceptionInfo *exception;
+};
+
 struct append_arguments
 {
   Image *images;
@@ -87,7 +93,7 @@ struct append_arguments
   ExceptionInfo *exception;
 };
 
-// Actual append operation without the Global VM 
+// Actual append operation without the Global VM
 void *
 ImageList_append_no_gvl_wrapper(void *args)
 {
@@ -131,6 +137,27 @@ ImageList_append(VALUE self, VALUE stack_arg)
     return rm_image_new(new_image);
 }
 
+// Actual average operation without the Global VM
+void *
+ImageList_average_no_gvl_wrapper(void *args)
+{
+  Image *new_image;
+  struct imagelist_arguments *imagelist_args = (struct imagelist_arguments *)args;
+  imagelist_args->exception = AcquireExceptionInfo();
+#if defined(HAVE_EVALUATEIMAGES)
+  new_image = EvaluateImages(imagelist_args->images, MeanEvaluateOperator, imagelist_args->exception);
+#else
+  new_image = AverageImages(imagelist_args->images, imagelist_args->exception);
+#endif
+
+  rm_split(imagelist_args->images);
+  rm_check_exception(imagelist_args->exception, new_image, DestroyOnError);
+  (void) DestroyExceptionInfo(imagelist_args->exception);
+
+  rm_ensure_result(new_image);
+
+  return (void *)new_image;
+}
 
 /**
  * Average all images together by calling AverageImages.
@@ -144,24 +171,13 @@ ImageList_append(VALUE self, VALUE stack_arg)
 VALUE
 ImageList_average(VALUE self)
 {
-    Image *images, *new_image;
-    ExceptionInfo *exception;
+    struct imagelist_arguments imagelist_args;
+    Image *new_image;
 
     // Convert the images array to an images sequence.
-    images = images_from_imagelist(self);
+    imagelist_args.images = images_from_imagelist(self);
 
-    exception = AcquireExceptionInfo();
-#if defined(HAVE_EVALUATEIMAGES)
-    new_image = EvaluateImages(images, MeanEvaluateOperator, exception);
-#else
-    new_image = AverageImages(images, exception);
-#endif
-
-    rm_split(images);
-    rm_check_exception(exception, new_image, DestroyOnError);
-    (void) DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
+    new_image = (Image *)rb_thread_call_without_gvl(ImageList_average_no_gvl_wrapper, &imagelist_args, RUBY_UBF_PROCESS, NULL);
 
     return rm_image_new(new_image);
 }
