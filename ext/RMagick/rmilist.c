@@ -182,6 +182,22 @@ ImageList_average(VALUE self)
     return rm_image_new(new_image);
 }
 
+// Actual coalesce operation without the Global VM
+void *
+ImageList_coalesce_no_gvl_wrapper(void *args)
+{
+  Image *new_images;
+  struct imagelist_arguments *imagelist_args = (struct imagelist_arguments *)args;
+  imagelist_args->exception = AcquireExceptionInfo();
+  new_images = CoalesceImages(imagelist_args->images, imagelist_args->exception);
+  rm_split(imagelist_args->images);
+  rm_check_exception(imagelist_args->exception, new_images, DestroyOnError);
+  (void) DestroyExceptionInfo(imagelist_args->exception);
+
+  rm_ensure_result(new_images);
+
+  return (void *)new_images;
+}
 
 /**
  * Call CoalesceImages.
@@ -199,19 +215,13 @@ ImageList_average(VALUE self)
 VALUE
 ImageList_coalesce(VALUE self)
 {
-    Image *images, *new_images;
-    ExceptionInfo *exception;
+    struct imagelist_arguments imagelist_args;
+    Image *new_images;
 
     // Convert the image array to an image sequence.
-    images = images_from_imagelist(self);
+    imagelist_args.images = images_from_imagelist(self);
 
-    exception = AcquireExceptionInfo();
-    new_images = CoalesceImages(images, exception);
-    rm_split(images);
-    rm_check_exception(exception, new_images, DestroyOnError);
-    (void) DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_images);
+    new_images = (Image *)rb_thread_call_without_gvl(ImageList_coalesce_no_gvl_wrapper, &imagelist_args, RUBY_UBF_PROCESS, NULL);
 
     return rm_imagelist_from_images(new_images);
 }
