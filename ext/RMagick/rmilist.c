@@ -93,7 +93,7 @@ struct append_arguments
   ExceptionInfo *exception;
 };
 
-// Actual append operation without the Global VM
+// Actual append operation without the Global VM Lock
 void *
 ImageList_append_no_gvl_wrapper(void *args)
 {
@@ -137,7 +137,7 @@ ImageList_append(VALUE self, VALUE stack_arg)
     return rm_image_new(new_image);
 }
 
-// Actual average operation without the Global VM
+// Actual average operation without the Global VM Lock
 void *
 ImageList_average_no_gvl_wrapper(void *args)
 {
@@ -182,7 +182,7 @@ ImageList_average(VALUE self)
     return rm_image_new(new_image);
 }
 
-// Actual coalesce operation without the Global VM
+// Actual coalesce operation without the Global VM Lock
 void *
 ImageList_coalesce_no_gvl_wrapper(void *args)
 {
@@ -292,6 +292,23 @@ ImageList_composite_layers(int argc, VALUE *argv, VALUE self)
 }
 
 
+// Actual deconstruct operation without the Global VM Lock
+void *
+ImageList_deconstruct_no_gvl_wrapper(void *args)
+{
+  Image *new_images;
+  struct imagelist_arguments *imagelist_args = (struct imagelist_arguments *)args;
+  imagelist_args->exception = AcquireExceptionInfo();
+  new_images = DeconstructImages(imagelist_args->images, imagelist_args->exception);
+  rm_split(imagelist_args->images);
+  rm_check_exception(imagelist_args->exception, new_images, DestroyOnError);
+  (void) DestroyExceptionInfo(imagelist_args->exception);
+
+  rm_ensure_result(new_images);
+
+  return (void *)new_images;
+}
+
 /**
  * Compare each image with the next in a sequence and returns the maximum
  * bounding region of any pixel differences it discovers.
@@ -305,17 +322,11 @@ ImageList_composite_layers(int argc, VALUE *argv, VALUE self)
 VALUE
 ImageList_deconstruct(VALUE self)
 {
-    Image *new_images, *images;
-    ExceptionInfo *exception;
+    struct imagelist_arguments imagelist_args;
+    Image *new_images;
 
-    images = images_from_imagelist(self);
-    exception = AcquireExceptionInfo();
-    new_images = DeconstructImages(images, exception);
-    rm_split(images);
-    rm_check_exception(exception, new_images, DestroyOnError);
-    (void) DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_images);
+    imagelist_args.images = images_from_imagelist(self);
+    new_images = (Image *)rb_thread_call_without_gvl(ImageList_deconstruct_no_gvl_wrapper, &imagelist_args, RUBY_UBF_PROCESS, NULL);
 
     return rm_imagelist_from_images(new_images);
 }
