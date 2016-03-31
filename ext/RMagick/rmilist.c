@@ -11,6 +11,7 @@
  ******************************************************************************/
 
 #include "rmagick.h"
+#include "ruby/thread.h"
 
 static Image *clone_imagelist(Image *);
 static Image *images_from_imagelist(VALUE);
@@ -79,6 +80,28 @@ ImageList_animate(int argc, VALUE *argv, VALUE self)
     return self;
 }
 
+struct append_arguments
+{
+  Image *images;
+  unsigned int stack;
+  ExceptionInfo *exception;
+};
+
+// Actual append operation without the Global VM 
+void *
+ImageList_append_no_gvl_wrapper(void *args)
+{
+  struct append_arguments *append_args = (struct append_arguments *)args;
+  append_args->exception = AcquireExceptionInfo();
+  Image *new_image = AppendImages(append_args->images, append_args->stack, append_args->exception);
+  rm_split(append_args->images);
+  rm_check_exception(append_args->exception, new_image, DestroyOnError);
+  (void) DestroyExceptionInfo(append_args->exception);
+
+  rm_ensure_result(new_image);
+
+  return (void *)new_image;
+}
 
 /**
  * Append all the images by calling ImageAppend.
@@ -93,24 +116,17 @@ ImageList_animate(int argc, VALUE *argv, VALUE self)
 VALUE
 ImageList_append(VALUE self, VALUE stack_arg)
 {
-    Image *images, *new_image;
-    unsigned int stack;
-    ExceptionInfo *exception;
+    Image *new_image;
+    struct append_arguments append_args;
 
     // Convert the image array to an image sequence.
-    images = images_from_imagelist(self);
+    append_args.images = images_from_imagelist(self);
 
     // If stack == true, stack rectangular images top-to-bottom,
     // otherwise left-to-right.
-    stack = RTEST(stack_arg);
+    append_args.stack = RTEST(stack_arg);
 
-    exception = AcquireExceptionInfo();
-    new_image = AppendImages(images, stack, exception);
-    rm_split(images);
-    rm_check_exception(exception, new_image, DestroyOnError);
-    (void) DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
+    new_image = (Image *)rb_thread_call_without_gvl(ImageList_append_no_gvl_wrapper, &append_args, RUBY_UBF_PROCESS, NULL);
 
     return rm_image_new(new_image);
 }
