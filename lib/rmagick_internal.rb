@@ -1812,7 +1812,6 @@ module Magick
     end
 
     def slice(*args)
-      current = get_current
       slice = @images.slice(*args)
       if slice
         ilist = self.class.new
