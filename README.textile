@@ -56,9 +56,13 @@ Run:
 
 bc. gem install rmagick
 
+h4. Versioning
+
 RMagick is versioned according to Semantic Versioning.
 For stable version compatible with Ruby 1.8+, use `~> 2.0`.
 Upcoming version 3 will work on Ruby 2.x only.
+
+h2(#usage). Using RMagick
 
 Require RMagick in your project as follows:
 
