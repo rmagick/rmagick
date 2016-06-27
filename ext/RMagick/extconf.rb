@@ -465,13 +465,7 @@ SRC
                                               'CheckerTileVirtualPixelMethod'],       # 6.5.0-1
                        headers)
 
-      # Now test Ruby 1.9.0 features.
-      headers = ['ruby.h']
-      if have_header('ruby/io.h')
-        headers << 'ruby/io.h'
-      else
-        headers << 'rubyio.h'
-      end
+      headers = ['ruby.h', 'ruby/io.h']
 
       have_func('rb_frame_this_func', headers)
 

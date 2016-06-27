@@ -29,11 +29,7 @@
 #include <sys/types.h>
 #endif
 #include "ruby.h"
-#if defined(HAVE_RUBY_IO_H)
-#include "ruby/io.h"        // >= 1.9.0-5
-#else
-#include "rubyio.h"
-#endif
+#include "ruby/io.h"
 
 
 // Undef Ruby's versions of these symbols
@@ -85,7 +81,7 @@
 
 //! degrees to radians conversion
 #undef DegreesToRadians     // defined in ImageMagick.h in 6.0.2
-#define DegreesToRadians(x) ((x)*3.14159265358979323846/180.0) 
+#define DegreesToRadians(x) ((x)*3.14159265358979323846/180.0)
 
 //! pixel intensity calculation
 #define PIXEL_INTENSITY(q) ((Quantum)(0.299*(q)->red + 0.587*(q)->green + 0.114*(q)->blue + 0.5))
@@ -120,28 +116,6 @@
 #if defined(HAVE_RB_IO_T)
 #undef OpenFile
 #define OpenFile rb_io_t /**< Ruby open file */
-#endif
-
-// These macros are required in 1.9.1 but aren't defined prior to 1.8.6.
-#if !defined(RSTRING_LEN)
-#define RSTRING_LEN(s) (RSTRING((s))->len) /**< Ruby string length */
-#endif
-#if !defined(RSTRING_PTR)
-#define RSTRING_PTR(s) (RSTRING((s))->ptr) /**< Ruby string pointer */
-#endif
-
-// Backport these two macros to 1.8
-#if !defined(RARRAY_LEN)
-#define RARRAY_LEN(a) RARRAY((a))->len /**< Ruby array length */
-#endif
-// Matz says this macro is read-only! (see http://www.ruby-forum.com/topic/146072)
-#if !defined(RARRAY_PTR)
-#define RARRAY_PTR(a) RARRAY((a))->ptr /**< Ruby array pointer */
-#endif
-
-// Backport this macro to 1.8.6
-#if !defined(RB_GC_GUARD)
-#define RB_GC_GUARD(x) (x)
 #endif
 
 //! Convert a C string to a Ruby symbol. Used in marshal_dump/marshal_load methods
@@ -469,7 +443,7 @@ EXTERN ID rm_ID_y;                 /**< "y" */
 */
 //! attribute reader
 #define DCL_ATTR_READER(class, attr) \
-    rb_define_method(Class_##class, #attr, class##_##attr, 0); 
+    rb_define_method(Class_##class, #attr, class##_##attr, 0);
 //! attribute writer
 #define DCL_ATTR_WRITER(class, attr) \
     rb_define_method(Class_##class, #attr "=", class##_##attr##_eq, 1);
