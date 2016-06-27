@@ -6602,7 +6602,7 @@ Image_frame(int argc, VALUE *argv, VALUE self)
  *   - @verbatim Image.from_blob(blob) <{ parm block }> @endverbatim
  *
  * @param class the Ruby Image class (unused)
- * @param blob_arg the blog as a Ruby string
+ * @param blob_arg the blob as a Ruby string
  * @return an array of new images
  */
 VALUE
