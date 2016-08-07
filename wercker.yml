@@ -1,0 +1,10 @@
+box: centos:6
+build:
+  steps:
+    - script:
+        name: install rmagick
+        code: |
+          sudo yum install -y ruby ruby-devel rubygems ImageMagick-devel gcc
+          echo 'Ruby has been installed. Installing RMagick...'
+          sudo gem install rmagick
+          echo 'RMagick has been installed.'
