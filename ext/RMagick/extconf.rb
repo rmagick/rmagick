@@ -58,6 +58,7 @@ module RMagick
         end
 
         # ugly way to handle which config tool we're going to use...
+        $with_magick_wand = false
         $magick_config = false
         $pkg_config = false
 
