@@ -88,13 +88,12 @@ module RMagick
 
         # From ImageMagick 6.9 binaries are split to two and we have to use
         # MagickWand instead of MagickCore
-        checking_for('newer version of ImageMagick (>= 6.9)') do
-          version_data = $magick_version.split('.').map(&:to_i)
-          $with_magick_wand = version_data[0] > 6 || (version_data[0] == 6 && version_data[1] > 8)
+        checking_for("presence of MagickWand API (ImageMagick version >= #{Magick::MIN_WAND_VERSION})") do
+          $with_magick_wand = Gem::Version.new($magick_version) >= Gem::Version.new(Magick::MIN_WAND_VERSION)
           if $with_magick_wand
-            Logging.message('Detected 6.9+ version, using MagickWand package')
+            Logging.message('Detected 6.9+ version, using MagickWand API')
           else
-            Logging.message('Older version detected, using MagickCore package')
+            Logging.message('Older version detected, using MagickCore API')
           end
         end
 
