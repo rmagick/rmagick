@@ -37,6 +37,10 @@ Gem::Specification.new do |s|
     s.add_development_dependency 'rake', '~> 10.0'
   end
 
+  if Gem::Version.new(RUBY_VERSION.dup) < Gem::Version.new('2.0.0')
+    s.add_development_dependency 'json', '~> 1.0'
+  end
+
   if Gem::Version.new(RUBY_VERSION.dup) >= Gem::Version.new('1.9.2')
     s.add_development_dependency 'rubocop', '~> 0.33.0'
   end
