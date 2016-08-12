@@ -6,7 +6,8 @@ def v(version)
   Gem::Version.new(version)
 end
 
-RUBY = v(RUBY_VERSION.dup)
+RUBY     = v(RUBY_VERSION.dup)
+RUBYGEMS = v(Gem::VERSION.dup)
 
 Gem::Specification.new do |s|
   s.name = 'rmagick'
@@ -36,7 +37,6 @@ Gem::Specification.new do |s|
   s.required_ruby_version = ">= #{Magick::MIN_RUBY_VERSION}"
   s.requirements << "ImageMagick #{Magick::MIN_IM_VERSION} or later"
 
-  s.add_development_dependency 'rake-compiler'
   s.add_development_dependency 'rspec', '~> 3.2.0'
 
   if RUBY < v('1.9.0')
@@ -53,5 +53,11 @@ Gem::Specification.new do |s|
 
   if RUBY >= v('2.2.0')
     s.add_development_dependency 'test-unit', '~> 2'
+  end
+
+  if RUBYGEMS < v('1.8.23')
+    s.add_development_dependency 'rake-compiler', '~> 0.8.0'
+  else
+    s.add_development_dependency 'rake-compiler'
   end
 end
