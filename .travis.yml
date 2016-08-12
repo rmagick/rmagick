@@ -22,6 +22,8 @@ env:
 before_install:
   - source before_install_$TRAVIS_OS_NAME.sh
 
+install: bundle install --verbose
+
 rvm:
   - 1.8
   - 1.9
