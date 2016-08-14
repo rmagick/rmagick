@@ -55,7 +55,7 @@ Gem::Specification.new do |s|
     s.add_development_dependency 'test-unit', '~> 2'
   end
 
-  if RUBYGEMS < v('1.8.23')
+  if RUBYGEMS < v('1.8.25')
     s.add_development_dependency 'rake-compiler', '~> 0.8.0'
   else
     s.add_development_dependency 'rake-compiler'
