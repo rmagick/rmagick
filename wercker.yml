@@ -1,0 +1,10 @@
+box: centos:6
+build:
+  steps:
+  - script:
+      name: deps
+      code: sudo yum install -y ruby ruby-devel rubygems ImageMagick-devel gcc git
+  - bundle-install
+  - script:
+      name: tests
+      code: bundle exec rake

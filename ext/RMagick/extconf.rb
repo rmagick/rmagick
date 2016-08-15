@@ -21,6 +21,7 @@ module RMagick
     def configured_compile_options
       {
         :magick_config => $magick_config,
+        :with_magick_wand => $with_magick_wand,
         :pkg_config    => $pkg_config,
         :magick_version => $magick_version,
         :local_libs     => $LOCAL_LIBS,
@@ -57,6 +58,7 @@ module RMagick
         end
 
         # ugly way to handle which config tool we're going to use...
+        $with_magick_wand = false
         $magick_config = false
         $pkg_config = false
 
@@ -84,21 +86,50 @@ module RMagick
           end
         end
 
-        # either set flags using Magick-config or pkg-config (new Debian default)
-        if $magick_config
-          # Save flags
-          $CFLAGS     = ENV['CFLAGS'].to_s   + ' ' + `Magick-config --cflags`.chomp
-          $CPPFLAGS   = ENV['CPPFLAGS'].to_s + ' ' + `Magick-config --cppflags`.chomp
-          $LDFLAGS    = ENV['LDFLAGS'].to_s  + ' ' + `Magick-config --ldflags`.chomp
-          $LOCAL_LIBS = ENV['LIBS'].to_s     + ' ' + `Magick-config --libs`.chomp
+        # From ImageMagick 6.9 binaries are split to two and we have to use
+        # MagickWand instead of MagickCore
+        checking_for("presence of MagickWand API (ImageMagick version >= #{Magick::MIN_WAND_VERSION})") do
+          $with_magick_wand = Gem::Version.new($magick_version) >= Gem::Version.new(Magick::MIN_WAND_VERSION)
+          if $with_magick_wand
+            Logging.message('Detected 6.9+ version, using MagickWand API')
+          else
+            Logging.message('Older version detected, using MagickCore API')
+          end
         end
 
-        if $pkg_config
-          # Save flags
-          $CFLAGS     = ENV['CFLAGS'].to_s   + ' ' + `pkg-config --cflags MagickCore`.chomp
-          $CPPFLAGS   = ENV['CPPFLAGS'].to_s + ' ' + `pkg-config --cflags MagickCore`.chomp
-          $LDFLAGS    = ENV['LDFLAGS'].to_s  + ' ' + `pkg-config --libs MagickCore`.chomp
-          $LOCAL_LIBS = ENV['LIBS'].to_s     + ' ' + `pkg-config --libs MagickCore`.chomp
+        # either set flags using Magick-config, MagickWand-config or pkg-config (new Debian default)
+        if $with_magick_wand
+          if $magick_config
+            # Save flags
+            $CFLAGS     = ENV['CFLAGS'].to_s   + ' ' + `MagickWand-config --cflags`.chomp
+            $CPPFLAGS   = ENV['CPPFLAGS'].to_s + ' ' + `MagickWand-config --cppflags`.chomp
+            $LDFLAGS    = ENV['LDFLAGS'].to_s  + ' ' + `MagickWand-config --ldflags`.chomp
+            $LOCAL_LIBS = ENV['LIBS'].to_s     + ' ' + `MagickWand-config --libs`.chomp
+          end
+
+          if $pkg_config
+            # Save flags
+            $CFLAGS     = ENV['CFLAGS'].to_s   + ' ' + `pkg-config --cflags MagickWand`.chomp
+            $CPPFLAGS   = ENV['CPPFLAGS'].to_s + ' ' + `pkg-config --cflags MagickWand`.chomp
+            $LDFLAGS    = ENV['LDFLAGS'].to_s  + ' ' + `pkg-config --libs MagickWand`.chomp
+            $LOCAL_LIBS = ENV['LIBS'].to_s     + ' ' + `pkg-config --libs MagickWand`.chomp
+          end
+        else
+          if $magick_config
+            # Save flags
+            $CFLAGS     = ENV['CFLAGS'].to_s   + ' ' + `Magick-config --cflags`.chomp
+            $CPPFLAGS   = ENV['CPPFLAGS'].to_s + ' ' + `Magick-config --cppflags`.chomp
+            $LDFLAGS    = ENV['LDFLAGS'].to_s  + ' ' + `Magick-config --ldflags`.chomp
+            $LOCAL_LIBS = ENV['LIBS'].to_s     + ' ' + `Magick-config --libs`.chomp
+          end
+
+          if $pkg_config
+            # Save flags
+            $CFLAGS     = ENV['CFLAGS'].to_s   + ' ' + `pkg-config --cflags MagickCore`.chomp
+            $CPPFLAGS   = ENV['CPPFLAGS'].to_s + ' ' + `pkg-config --cflags MagickCore`.chomp
+            $LDFLAGS    = ENV['LDFLAGS'].to_s  + ' ' + `pkg-config --libs MagickCore`.chomp
+            $LOCAL_LIBS = ENV['LIBS'].to_s     + ' ' + `pkg-config --libs MagickCore`.chomp
+          end
         end
 
         if RUBY_PLATFORM =~ /darwin/ # osx

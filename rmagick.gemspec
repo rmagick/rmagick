@@ -2,6 +2,12 @@ require 'date'
 require 'English'
 require './lib/rmagick/version'
 
+def v(version)
+  Gem::Version.new(version)
+end
+
+RUBY = v(RUBY_VERSION.dup)
+
 Gem::Specification.new do |s|
   s.name = 'rmagick'
   s.version = Magick::VERSION
@@ -29,11 +35,12 @@ Gem::Specification.new do |s|
   s.has_rdoc = false
   s.required_ruby_version = ">= #{Magick::MIN_RUBY_VERSION}"
   s.requirements << "ImageMagick #{Magick::MIN_IM_VERSION} or later"
+
   s.add_development_dependency 'rake-compiler'
   s.add_development_dependency 'rspec', '~> 3.2.0'
   s.add_development_dependency 'rubocop', '~> 0.33.0'
 
-  if Gem::Version.new(RUBY_VERSION.dup) >= Gem::Version.new('2.2.0')
+  if RUBY >= v('2.2.0')
     s.add_development_dependency 'test-unit', '~> 2'
   end
 end

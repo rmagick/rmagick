@@ -649,10 +649,13 @@ title.annotate(montage, 0,0,0,40, 'Named Colors') {
     <h4>Description</h4>
 
     <p>Returns information for a specific string if rendered on a
-    image. The <code>get_multiline_type_metrics</code> method is
-    the same as <code>get_type_metrics</code>, except the former
-    returns the maximum height and width for multiple lines of
-    text. (Text lines are separated by "\n" characters.)</p>
+    image.  Metrics are derived from either the <a href="#attributes">
+    annotate attributes</a> or from the <a href="info.html">image
+    info attributes</a>, but not from any drawing primitive methods.
+    The <code>get_multiline_type_metrics</code> method is the same as 
+    <code>get_type_metrics</code>, except the former returns the 
+    maximum height and width for multiple lines of text. (Text lines
+    are separated by "\n" characters.)</p>
 
     <p>The Magick++ documentation for its TypeMetric class provides
     this useful additional information. (I've changed it a bit to

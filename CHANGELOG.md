@@ -3,6 +3,10 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 2.16.0
+
+- Support ImageMagick 6.9+ - @ZipoKing
+
 ## RMagick 2.15.4
 
 - Improved C extension building process - @u338steven
