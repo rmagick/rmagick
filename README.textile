@@ -68,7 +68,7 @@ Require RMagick in your project as follows:
 
 bc. require 'rmagick'
 
-See https://rmagick.github.io/usage.html for links to more infomation
+See https://rmagick.github.io/usage.html for links to more information.
 
 h2(#wrong). Things that can go wrong
 
