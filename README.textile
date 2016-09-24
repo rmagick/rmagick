@@ -68,6 +68,8 @@ Require RMagick in your project as follows:
 
 bc. require 'rmagick'
 
+See https://rmagick.github.io/usage.html for links to more infomation
+
 h2(#wrong). Things that can go wrong
 
 The "RMagick installation FAQ":https://web.archive.org/web/20140512193354/http://rmagick.rubyforge.org/install-faq.html
