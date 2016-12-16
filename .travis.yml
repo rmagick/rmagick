@@ -20,7 +20,7 @@ env:
   - IMAGEMAGICK_VERSION=latest
 
 before_install:
-  - source before_install_$TRAVIS_OS_NAME.sh
+  - ruby before_install.rb
 
 install: bundle install --verbose
 
@@ -32,6 +32,9 @@ rvm:
   - 2.2
 
 matrix:
+  include:
+    - rvm: 2.1
+      env: STYLE_CHECKS=true
   exclude:
     - rvm: 1.8
       env: IMAGEMAGICK_VERSION=6.7.9-10
