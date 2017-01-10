@@ -153,4 +153,14 @@ RSpec.describe Magick::Draw do
       expect { draw.stroke_pattern = 1 }.to raise_error(NoMethodError)
     end
   end
+
+  describe '#get_type_metrics' do
+    it 'accepts an @ as the first character' do
+      expect { draw.get_type_metrics('@test') }.not_to raise_error
+    end
+
+    it 'accepts an @ as a character other than the first' do
+      expect { draw.get_type_metrics('test@') }.not_to raise_error
+    end
+  end
 end
