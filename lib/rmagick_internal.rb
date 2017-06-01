@@ -1040,6 +1040,14 @@ module Magick
       end
     end
 
+    def map_pixel
+      result = []
+      get_pixels(0, 0, columns, rows).each_with_index do |p, n|
+        result << yield(p, n%columns, n/columns)
+      end
+      result
+    end
+
     # Magick::Image::View class
     class View
       attr_reader :x, :y, :width, :height
