@@ -15,7 +15,7 @@ text.pointsize = 28
 text.font_weight = BoldWeight
 text.font_style = ItalicStyle
 text.gravity = CenterGravity
-text.fill = 'black'
+text.fill = 'white'
 
 # Let's make it interesting. Composite the
 # rotated text over a gradient fill background.
