@@ -1535,6 +1535,15 @@ module Magick
       end
       @images.each { |f| f.delay = Integer(d) }
     end
+    
+    #function which will able to give time to every picture specifically according to the user.
+    def delay_pre=(d)
+      if Integer(d) < 0
+         fail ArgumentError, 'delay must be greater than or equal to 0'
+      end
+      f = @images.last
+      f.delay = Integer(d)
+    end 
 
     def delete(obj, &block)
       is_an_image obj
