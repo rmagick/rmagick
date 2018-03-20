@@ -1595,6 +1595,21 @@ module Magick
       self
     end
 
+    # To make Image Black and White
+    def bnw()
+    	images = @images.first
+      @pixels = images.get_pixels(0, 0, images.columns, images.rows)
+
+	  for @pixel in @pixels
+		  avg = (@pixel.red + @pixel.green + @pixel.blue) / 3
+		  @pixel.red = avg
+		  @pixel.green = avg
+		  @pixel.blue = avg
+	  end
+	  images.store_pixels(0, 0, images.columns, images.rows, @pixels)
+	  return images
+    end
+
     # Override Enumerable's find_all
     def find_all(&block)
       current = get_current
