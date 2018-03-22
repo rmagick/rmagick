@@ -1538,9 +1538,9 @@ module Magick
     
     #function which will able to give time to every picture specifically according to the user.
     def delay_pre=(d)
-      if Integer(d) < 0
+       if Integer(d) < 0
          fail ArgumentError, 'delay must be greater than or equal to 0'
-      end
+       end
       f = @images.last
       f.delay = Integer(d)
     end 
@@ -1597,17 +1597,16 @@ module Magick
 
     # To make Image Black and White
     def bnw()
-    	images = @images.first
+      images = @images.first
       @pixels = images.get_pixels(0, 0, images.columns, images.rows)
-
-	  for @pixel in @pixels
-		  avg = (@pixel.red + @pixel.green + @pixel.blue) / 3
-		  @pixel.red = avg
-		  @pixel.green = avg
-		  @pixel.blue = avg
-	  end
-	  images.store_pixels(0, 0, images.columns, images.rows, @pixels)
-	  return images
+         for @pixel in @pixels
+                  avg = (@pixel.red + @pixel.green + @pixel.blue) / 3
+                  @pixel.red = avg
+                  @pixel.green = avg
+                  @pixel.blue = avg
+         end
+      images.store_pixels(0, 0, images.columns, images.rows, @pixels)
+           return images
     end
 
     # Override Enumerable's find_all
