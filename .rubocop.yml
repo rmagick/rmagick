@@ -22,11 +22,6 @@ Layout/DotPosition:
 
 # Auto-generated config to be cleaned up and deleted:
 
-# Offense count: 6
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/ClassAndModuleChildren:
-  Enabled: false
-
 # Offense count: 126
 Naming/ConstantName:
   Enabled: false
