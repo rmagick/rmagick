@@ -361,3 +361,7 @@ Naming/VariableName:
 # Configuration parameters: WordRegex.
 Style/WordArray:
   Enabled: false
+
+# %i supported only since ruby 2.0
+Style/SymbolArray:
+  EnforcedStyle: brackets

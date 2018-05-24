@@ -299,10 +299,3 @@ Style/SignalException:
 Style/StringLiterals:
   Exclude:
     - 'doc/ex/gravity.rb'
-
-# Offense count: 7
-# Cop supports --auto-correct.
-# Configuration parameters: MinSize, SupportedStyles.
-# SupportedStyles: percent, brackets
-Style/SymbolArray:
-  EnforcedStyle: brackets
