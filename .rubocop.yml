@@ -22,10 +22,6 @@ Layout/DotPosition:
 
 # Auto-generated config to be cleaned up and deleted:
 
-# Offense count: 4
-Naming/AccessorMethodName:
-  Enabled: false
-
 Layout/AlignArray:
   Enabled: false
 
