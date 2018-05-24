@@ -136,8 +136,8 @@ module Magick
             when :super
               x = -x
             when /[-+]?(\d+)%/
-              m = $1 == '-' ? -1.0 : 1.0
-              x = (m * x * $1.to_f / 100.0)
+              m = Regexp.last_match(1) == '-' ? -1.0 : 1.0
+              x = (m * x * Regexp.last_match(1).to_f / 100.0)
             else
               x = -@ctx.text_attrs.baseline_shift
           end

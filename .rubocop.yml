@@ -238,11 +238,6 @@ Naming/HeredocDelimiterNaming:
 Style/PercentLiteralDelimiters:
   Enabled: false
 
-# Offense count: 10
-# Cop supports --auto-correct.
-Style/PerlBackrefs:
-  Enabled: false
-
 # Offense count: 4
 # Configuration parameters: NamePrefix, NamePrefixBlacklist.
 Naming/PredicateName:

@@ -139,8 +139,8 @@ module RMagick
       elsif RUBY_PLATFORM =~ /mingw/  # mingw
 
         `identify -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
-        abort 'Unable to get ImageMagick version' unless $1
-        $magick_version = $1
+        abort 'Unable to get ImageMagick version' unless Regexp.last_match(1)
+        $magick_version = Regexp.last_match(1)
         unless have_library('CORE_RL_magick_')
           search_paths_for_library_for_mingw
         end
@@ -149,8 +149,8 @@ module RMagick
       else  # mswin
 
         `identify -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
-        abort 'Unable to get ImageMagick version' unless $1
-        $magick_version = $1
+        abort 'Unable to get ImageMagick version' unless Regexp.last_match(1)
+        $magick_version = Regexp.last_match(1)
         $CFLAGS = '-W3'
         $CPPFLAGS = %Q{-I"C:\\Program Files\\Microsoft Platform SDK for Windows Server 2003 R2\\Include" -I"C:\\Program Files\\ImageMagick-#{$magick_version}-Q8\\include"}
         # The /link option is required by the Makefile but causes warnings in the mkmf.log file.

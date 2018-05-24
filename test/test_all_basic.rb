@@ -20,10 +20,10 @@ end
 require 'rmagick'
 
 Magick::Magick_version =~ /ImageMagick (\d+\.\d+\.\d+)-(\d+) /
-abort 'Unable to get ImageMagick version' unless $1 && $2
+abort 'Unable to get ImageMagick version' unless Regexp.last_match(1) && Regexp.last_match(2)
 
-IM_VERSION = Gem::Version.new($1)
-IM_REVISION = Gem::Version.new($2)
+IM_VERSION = Gem::Version.new(Regexp.last_match(1))
+IM_REVISION = Gem::Version.new(Regexp.last_match(2))
 
 require 'Image1.rb'
 require 'Image2.rb'
