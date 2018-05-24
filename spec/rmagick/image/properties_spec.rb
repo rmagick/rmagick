@@ -1,5 +1,4 @@
 RSpec.describe Magick::Image, '#properties' do
-
   let(:img) { Magick::Image.new(20, 20) }
   let(:freeze_error) { RUBY_VERSION[/^1\.9|^2/] ? RuntimeError : TypeError }
 
@@ -25,5 +24,4 @@ RSpec.describe Magick::Image, '#properties' do
     img.freeze
     expect { img['d'] = 'str_4' }.to raise_error(freeze_error)
   end
-
 end

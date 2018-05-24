@@ -1,5 +1,4 @@
 RSpec.describe Magick::Image, '#composite' do
-
   let(:img1) { Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first }
   let(:img2) { Magick::Image.read(IMAGES_DIR + '/Button_1.gif').first }
   let(:composite_ops) do
@@ -136,5 +135,4 @@ RSpec.describe Magick::Image, '#composite' do
       img1.composite(img2, Magick::CenterGravity, Magick::OverCompositeOp)
     end.to raise_error(Magick::DestroyedImageError)
   end
-
 end

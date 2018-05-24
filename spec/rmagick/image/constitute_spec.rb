@@ -1,5 +1,4 @@
 RSpec.describe Magick::Image, '#constitute' do
-
   let(:img) { Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first }
   let(:pixels) { img.dispatch(0, 0, img.columns, img.rows, 'RGBA') }
 
@@ -11,5 +10,4 @@ RSpec.describe Magick::Image, '#constitute' do
     expect(res.rows).to eq img.rows
     expect(pixels.all? { |v| v >= 0 && v <= Magick::QuantumRange }).to be true
   end
-
 end

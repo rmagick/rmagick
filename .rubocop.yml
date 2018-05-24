@@ -146,9 +146,6 @@ Naming/ConstantName:
 Style/Documentation:
   Enabled: false
 
-Layout/EmptyLinesAroundBlockBody:
-  Enabled: false
-
 # Offense count: 23
 # Configuration parameters: Exclude.
 Naming/FileName:
