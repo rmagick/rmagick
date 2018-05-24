@@ -1,10 +1,13 @@
+inherit_from:
+    - .rubocop_todo.yml
+
 # Custom configuration, edit with care! This gem needs to be backwards
 # compatible with Ruby 1.8:
 
 Style/HashSyntax:
   EnforcedStyle: hash_rockets
 
-Style/DeprecatedHashMethods:
+Style/PreferredHashMethods:
   Enabled: false
 
 # TODO: How to warn if stabby proc is used?
@@ -14,7 +17,7 @@ Style/Lambda:
 Style/StringLiterals:
   EnforcedStyle: single_quotes
 
-Style/DotPosition:
+Layout/DotPosition:
   EnforcedStyle: leading
 
 # Auto-generated config to be cleaned up and deleted:
@@ -97,10 +100,10 @@ Performance/StringReplacement:
   Enabled: false
 
 # Offense count: 4
-Style/AccessorMethodName:
+Naming/AccessorMethodName:
   Enabled: false
 
-Style/AlignArray:
+Layout/AlignArray:
   Enabled: false
 
 # Offense count: 3
@@ -115,11 +118,11 @@ Style/CaseEquality:
 
 # Offense count: 63
 # Configuration parameters: IndentWhenRelativeTo, SupportedStyles, IndentOneStep.
-Style/CaseIndentation:
+Layout/CaseIndentation:
   Enabled: false
 
 # Offense count: 13
-Style/ClassAndModuleCamelCase:
+Naming/ClassAndModuleCamelCase:
   Enabled: false
 
 # Offense count: 6
@@ -129,7 +132,7 @@ Style/ClassAndModuleChildren:
 
 # Offense count: 1
 # Cop supports --auto-correct.
-Style/ClosingParenthesisIndentation:
+Layout/ClosingParenthesisIndentation:
   Enabled: false
 
 Style/CollectionMethods:
@@ -137,26 +140,26 @@ Style/CollectionMethods:
 
 # Offense count: 5
 # Cop supports --auto-correct.
-Style/CommentIndentation:
+Layout/CommentIndentation:
   Enabled: false
 
 # Offense count: 126
-Style/ConstantName:
+Naming/ConstantName:
   Enabled: false
 
 # Offense count: 62
 Style/Documentation:
   Enabled: false
 
-Style/EmptyLinesAroundBlockBody:
+Layout/EmptyLinesAroundBlockBody:
   Enabled: false
 
-Style/ExtraSpacing:
+Layout/ExtraSpacing:
   Enabled: false
 
 # Offense count: 23
 # Configuration parameters: Exclude.
-Style/FileName:
+Naming/FileName:
   Enabled: false
 
 # Offense count: 68
@@ -180,32 +183,38 @@ Style/GuardClause:
 Style/IfUnlessModifier:
   Enabled: false
 
-Style/IndentArray:
+Layout/IndentArray:
   Enabled: false
 
-Style/IndentationConsistency:
+Layout/IndentationConsistency:
+  Enabled: false
+
+Layout/IndentHeredoc:
   Enabled: false
 
 # Offense count: 1049
 # Cop supports --auto-correct.
 # Configuration parameters: Width.
-Style/IndentationWidth:
+Layout/IndentationWidth:
   Enabled: false
 
 # Offense count: 47
 # Cop supports --auto-correct.
-Style/LeadingCommentSpace:
+Layout/LeadingCommentSpace:
   Enabled: false
 
 # Offense count: 4
 # Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/MethodName:
+Naming/MethodName:
   Enabled: false
 
 # Offense count: 9
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/MultilineOperationIndentation:
+Layout/MultilineOperationIndentation:
+  Enabled: false
+
+Layout/MultilineArrayBraceLayout:
   Enabled: false
 
 # Offense count: 1
@@ -222,8 +231,10 @@ Style/Next:
 Style/NumericLiterals:
   MinDigits: 18
 
-# Offense count: 1
-Style/OpMethod:
+Naming/HeredocDelimiterCase:
+  Enabled: false
+
+Naming/HeredocDelimiterNaming:
   Enabled: false
 
 # Offense count: 9
@@ -239,7 +250,7 @@ Style/PerlBackrefs:
 
 # Offense count: 4
 # Configuration parameters: NamePrefix, NamePrefixBlacklist.
-Style/PredicateName:
+Naming/PredicateName:
   Enabled: false
 
 # Offense count: 1
@@ -248,7 +259,13 @@ Style/PredicateName:
 Style/RegexpLiteral:
   Enabled: false
 
-Style/RescueEnsureAlignment:
+Style/YodaCondition:
+  Enabled: false
+
+Style/ZeroLengthPredicate:
+  Enabled: false
+
+Layout/RescueEnsureAlignment:
   Enabled: false
 
 # Offense count: 2
@@ -268,52 +285,52 @@ Style/SingleLineBlockParams:
 
 # Offense count: 7
 # Cop supports --auto-correct.
-Style/SingleSpaceBeforeFirstArg:
+Layout/SpaceBeforeFirstArg:
   Enabled: false
 
 # Offense count: 1114
 # Cop supports --auto-correct.
-Style/SpaceAfterComma:
+Layout/SpaceAfterComma:
   Enabled: false
 
 # Offense count: 91
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/SpaceAroundEqualsInParameterDefault:
+Layout/SpaceAroundEqualsInParameterDefault:
   Enabled: false
 
 # Offense count: 1066
 # Cop supports --auto-correct.
 # Configuration parameters: MultiSpaceAllowedForOperators.
-Style/SpaceAroundOperators:
+Layout/SpaceAroundOperators:
   Enabled: false
 
 # Offense count: 3
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/SpaceBeforeBlockBraces:
+Layout/SpaceBeforeBlockBraces:
   Enabled: false
 
 # Offense count: 204
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles, EnforcedStyleForEmptyBraces, SpaceBeforeBlockParameters.
-Style/SpaceInsideBlockBraces:
+Layout/SpaceInsideBlockBraces:
   Enabled: false
 
 # Offense count: 6
 # Cop supports --auto-correct.
-Style/SpaceInsideBrackets:
+Layout/SpaceInsideBrackets:
   Enabled: false
 
 # Offense count: 68
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, EnforcedStyleForEmptyBraces, SupportedStyles.
-Style/SpaceInsideHashLiteralBraces:
+Layout/SpaceInsideHashLiteralBraces:
   Enabled: false
 
 # Offense count: 35
 # Cop supports --auto-correct.
-Style/SpaceInsideParens:
+Layout/SpaceInsideParens:
   Enabled: false
 
 # Offense count: 12
@@ -325,16 +342,22 @@ Style/SymbolProc:
 # Offense count: 3
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyleForMultiline, SupportedStyles.
-Style/TrailingComma:
+Style/TrailingCommaInLiteral:
+  Enabled: false
+
+# Offense count: 3
+# Cop supports --auto-correct.
+# Configuration parameters: EnforcedStyleForMultiline, SupportedStyles.
+Style/TrailingCommaInArguments:
   Enabled: false
 
 # Offense count: 2
 # Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/VariableName:
+Naming/VariableName:
   Enabled: false
 
 # Offense count: 7
 # Cop supports --auto-correct.
 # Configuration parameters: WordRegex.
 Style/WordArray:
-  MinSize: 3
+  Enabled: false
