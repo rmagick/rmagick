@@ -98,7 +98,10 @@ class Magick_UT < Test::Unit::TestCase
     assert_instance_of(String, f)
     assert_instance_of(String, v)
     end
-    Magick.formats.each { |f, v| assert_not_nil(f); assert_not_nil(v) }
+    Magick.formats.each do |f, v|
+      assert_not_nil(f)
+      assert_not_nil(v)
+    end
   end
 
   def test_geometry

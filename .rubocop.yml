@@ -267,12 +267,6 @@ Layout/RescueEnsureAlignment:
 Style/RescueModifier:
   Enabled: false
 
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: AllowAsExpressionSeparator.
-Style/Semicolon:
-  Enabled: false
-
 # Fixing this issues cause some test to fail
 Lint/UnifiedInteger:
   Enabled: false
