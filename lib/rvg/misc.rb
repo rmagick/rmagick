@@ -15,14 +15,14 @@ module Magick
           ivars.each do |ivar|
             ivalue = instance_variable_get(ivar)
             cvalue = if NilClass === ivalue || Symbol === ivalue || Float === ivalue || Fixnum === ivalue || FalseClass === ivalue || TrueClass === ivalue
-                ivalue
+                       ivalue
                      elsif ivalue.respond_to?(:deep_copy)
-                ivalue.deep_copy(h)
+                       ivalue.deep_copy(h)
                      elsif ivalue.respond_to?(:dup)
-                ivalue.dup
+                       ivalue.dup
                      else
-                ivalue
-              end
+                       ivalue
+                     end
             copy.instance_variable_set(ivar, cvalue)
           end
           copy.freeze if frozen?
@@ -295,13 +295,13 @@ module Magick
           @ctx.gc.text(x, y, enquote(text))
           tm = @ctx.shadow.get_type_metrics(text)
           dx = case @ctx.text_attrs.text_anchor
-              when :start
+               when :start
                  tm.width
-              when :middle
+               when :middle
                  tm.width / 2
-              when :end
+               when :end
                  0
-              end
+               end
           [dx, 0]
         end
       end     # class NormalTextStrategy
@@ -534,13 +534,13 @@ module Magick
 
         def baseline_shift(value)
           @text_attrs.baseline_shift = case value
-            when 'baseline', 'sub', 'super'
-              value.intern
-            when /[-+]?\d+%/, Numeric
-              value
-            else
-              :baseline
-            end
+                                       when 'baseline', 'sub', 'super'
+                                         value.intern
+                                       when /[-+]?\d+%/, Numeric
+                                         value
+                                       else
+                                         :baseline
+                                       end
           nil
         end
 

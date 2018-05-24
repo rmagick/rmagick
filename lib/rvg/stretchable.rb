@@ -61,7 +61,7 @@ module Magick
                (width - @vbx_width*sx) / 2.0
              when /\AxMax/
                width - @vbx_width*sx
-        end
+             end
 
         ty = case @align
              when /YMin\z/
@@ -70,7 +70,7 @@ module Magick
                (height - @vbx_height*sy) / 2.0
              when /YMax\z/
                height - @vbx_height*sy
-        end
+             end
         [tx, ty]
       end
 

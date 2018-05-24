@@ -6,17 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 8
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleAlignWith, SupportedStylesAlignWith, AutoCorrect.
-# SupportedStylesAlignWith: keyword, variable, start_of_line
-Lint/EndAlignment:
-  Exclude:
-    - 'lib/rvg/container.rb'
-    - 'lib/rvg/embellishable.rb'
-    - 'lib/rvg/misc.rb'
-    - 'lib/rvg/stretchable.rb'
-
 # Offense count: 7
 Lint/RescueWithoutErrorClass:
   Exclude:

@@ -14,14 +14,14 @@ module Magick
           copy = self.class.new
           each do |c|
             copy << if c.nil?
-              nil
+                      nil
                     elsif c.respond_to?(:deep_copy)
-              c.deep_copy(h)
+                      c.deep_copy(h)
                     elsif c.respond_to?(:dup)
-              c.dup rescue c
+                      c.dup rescue c
                     else
-              c
-            end
+                      c
+                    end
           end
           copy.freeze if frozen?
           h[me] = copy
