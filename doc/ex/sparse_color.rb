@@ -16,7 +16,6 @@ imgl = Magick::ImageList.new
 img = Magick::Image.new(100, 100)
 
 begin
-
   img2 = img.sparse_color(Magick::VoronoiColorInterpolate, 30, 10, 'red',
                           10, 80, 'blue', 70, 60, 'lime', 80, 20, 'yellow')
   img2['Label'] = 'Voroni'
@@ -50,5 +49,4 @@ rescue NotImplementedError, NameError
   img = Magick::Image.read('images/notimplemented.gif').first
   img.resize!(240, 272)
   img.write('sparse_color.png')
-
 end

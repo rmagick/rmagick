@@ -9,7 +9,6 @@ x = 100
 y = 100
 
 begin
-
   pic = Magick::ImageList.new
 
   lines = Magick::Draw.new
