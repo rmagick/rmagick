@@ -607,7 +607,7 @@ module Magick
     def text(x, y, text)
       Kernel.raise ArgumentError, 'missing text argument' if text.to_s.empty?
       if text.length > 2 && /\A(?:\"[^\"]+\"|\'[^\']+\'|\{[^\}]+\})\z/.match(text)
-         # text already quoted
+      # text already quoted
       elsif !text['\'']
         text = '\'' + text + '\''
       elsif !text['"']
@@ -1216,7 +1216,7 @@ module Magick
             start += @width if start < 0
 
             if start > @width || start < 0 || length < 0
-               # nop
+            # nop
             elsif start + length > @width
               length = @width - length
               length = [length, 0].max

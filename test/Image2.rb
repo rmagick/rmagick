@@ -958,28 +958,28 @@ class Image2_UT < Test::Unit::TestCase
     assert_raise(ArgumentError) { @img.levelize_channel }
   end
 
-#     def test_liquid_rescale
-#       begin
-#         @img.liquid_rescale(15,15)
-#       rescue NotImplementedError
-#         puts "liquid_rescale not implemented."
-#         return
-#       end
-#
-#       res = nil
-#       assert_nothing_raised do
-#         res = @img.liquid_rescale(15, 15)
-#       end
-#       assert_equal(15, res.columns)
-#       assert_equal(15, res.rows)
-#       assert_nothing_raised { @img.liquid_rescale(15, 15, 0, 0) }
-#       assert_raise(ArgumentError) { @img.liquid_rescale(15) }
-#       assert_raise(ArgumentError) { @img.liquid_rescale(15, 15, 0, 0, 0) }
-#       assert_raise(TypeError) { @img.liquid_rescale([], 15) }
-#       assert_raise(TypeError) { @img.liquid_rescale(15, []) }
-#       assert_raise(TypeError) { @img.liquid_rescale(15, 15, []) }
-#       assert_raise(TypeError) { @img.liquid_rescale(15, 15, 0, []) }
-#     end
+  #     def test_liquid_rescale
+  #       begin
+  #         @img.liquid_rescale(15,15)
+  #       rescue NotImplementedError
+  #         puts "liquid_rescale not implemented."
+  #         return
+  #       end
+  #
+  #       res = nil
+  #       assert_nothing_raised do
+  #         res = @img.liquid_rescale(15, 15)
+  #       end
+  #       assert_equal(15, res.columns)
+  #       assert_equal(15, res.rows)
+  #       assert_nothing_raised { @img.liquid_rescale(15, 15, 0, 0) }
+  #       assert_raise(ArgumentError) { @img.liquid_rescale(15) }
+  #       assert_raise(ArgumentError) { @img.liquid_rescale(15, 15, 0, 0, 0) }
+  #       assert_raise(TypeError) { @img.liquid_rescale([], 15) }
+  #       assert_raise(TypeError) { @img.liquid_rescale(15, []) }
+  #       assert_raise(TypeError) { @img.liquid_rescale(15, 15, []) }
+  #       assert_raise(TypeError) { @img.liquid_rescale(15, 15, 0, []) }
+  #     end
 
   def test_magnify
     assert_nothing_raised do
@@ -1111,7 +1111,7 @@ class Image2_UT < Test::Unit::TestCase
   end
 
   def test_monochrome?
-#       assert_block { @img.monochrome? }
+    #       assert_block { @img.monochrome? }
     @img.pixel_color(0, 0, 'red')
     assert_block { !@img.monochrome? }
   end

@@ -133,11 +133,6 @@ Layout/ClosingParenthesisIndentation:
 Style/CollectionMethods:
   Enabled: false
 
-# Offense count: 5
-# Cop supports --auto-correct.
-Layout/CommentIndentation:
-  Enabled: false
-
 # Offense count: 126
 Naming/ConstantName:
   Enabled: false

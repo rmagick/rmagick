@@ -5,7 +5,7 @@
 # Text-related classes
 module Magick
   class RVG
-      # Base class for Tspan, Tref and Text.
+    # Base class for Tspan, Tref and Text.
     class TextBase
       include Stylable
       include Duplicatable
@@ -23,9 +23,9 @@ module Magick
 
       public
 
-        # Create a new text chunk. Each chunk can have its own initial position and styles.
-        # If <tt>x</tt> and <tt>y</tt> are omitted the text starts at the current text
-        # position.
+      # Create a new text chunk. Each chunk can have its own initial position and styles.
+      # If <tt>x</tt> and <tt>y</tt> are omitted the text starts at the current text
+      # position.
       def tspan(text, x = nil, y = nil)
         tspan = Tspan.new(text, x, y)
         tspan.parent = self
@@ -33,21 +33,21 @@ module Magick
         tspan
       end
 
-        # Add <tt>x</tt> and <tt>y</tt> to the current text position.
+      # Add <tt>x</tt> and <tt>y</tt> to the current text position.
       def d(x, y = 0)
         @dx, @dy = Magick::RVG.convert_to_float(x, y)
         yield(self) if block_given?
         self
       end
 
-        # Rotate the text about the current text position.
+      # Rotate the text about the current text position.
       def rotate(degrees)
         @rotation = Magick::RVG.convert_to_float(degrees)[0]
         yield(self) if block_given?
         self
       end
 
-        # We do our own transformations.
+      # We do our own transformations.
       def add_primitives(gc) #:nodoc:
         if @text || !@tspans.empty?
           gc.push
@@ -72,7 +72,7 @@ module Magick
       end
     end # class TextBase
 
-      # Tspan and Tref shared methods - read/update @cx, @cy in parent Text object.
+    # Tspan and Tref shared methods - read/update @cx, @cy in parent Text object.
     module TextLink #:nodoc:
       def add_primitives(gc)
         @parent.cx = @x if @x
@@ -113,11 +113,11 @@ module Magick
 
       attr_accessor :parent
 
-        # Define a text segment starting at (<tt>x</tt>, <tt>y</tt>).
-        # If <tt>x</tt> and <tt>y</tt> are omitted the segment starts
-        # at the current text position.
-        #
-        # Tspan objects can contain Tspan objects.
+      # Define a text segment starting at (<tt>x</tt>, <tt>y</tt>).
+      # If <tt>x</tt> and <tt>y</tt> are omitted the segment starts
+      # at the current text position.
+      #
+      # Tspan objects can contain Tspan objects.
       def initialize(text = nil, x = nil, y = nil, &block)
         @x, @y = Magick::RVG.convert_to_float(x, y, :allow_nil)
         super(text, &block)
@@ -127,24 +127,24 @@ module Magick
     class Text < TextBase
       attr_accessor :cx, :cy #:nodoc:
 
-        # Define a text string starting at [<tt>x</tt>, <tt>y</tt>].
-        # Use the RVG::TextConstructors#text method to create Text objects in a container.
-        #
-        #  container.text(100, 100, "Simple text").styles(:font=>'Arial')
-        #
-        # Text objects can contain Tspan objects.
-        #
-        #  container.text(100, 100).styles(:font=>'Arial') do |t|
-        #     t.tspan("Red text").styles(:fill=>'red')
-        #     t.tspan("Blue text").styles(:fill=>'blue')
-        #  end
+      # Define a text string starting at [<tt>x</tt>, <tt>y</tt>].
+      # Use the RVG::TextConstructors#text method to create Text objects in a container.
+      #
+      #  container.text(100, 100, "Simple text").styles(:font=>'Arial')
+      #
+      # Text objects can contain Tspan objects.
+      #
+      #  container.text(100, 100).styles(:font=>'Arial') do |t|
+      #     t.tspan("Red text").styles(:fill=>'red')
+      #     t.tspan("Blue text").styles(:fill=>'blue')
+      #  end
       def initialize(x = 0, y = 0, text = nil, &block)
         @cx, @cy = Magick::RVG.convert_to_float(x, y)
         super(text, &block)
       end
 
-        # Reference a Tspan object. <tt>x</tt> and <tt>y</tt> are just
-        # like <tt>x</tt> and <tt>y</tt> in RVG::TextBase#tspan
+      # Reference a Tspan object. <tt>x</tt> and <tt>y</tt> are just
+      # like <tt>x</tt> and <tt>y</tt> in RVG::TextBase#tspan
       def tref(obj, x = nil, y = nil)
         unless obj.is_a?(Tspan)
           raise ArgumentError, "wrong argument type #{obj.class} (expected Tspan)"
@@ -157,11 +157,11 @@ module Magick
       end
     end # class Text
 
-      # Methods that construct text objects within a container
+    # Methods that construct text objects within a container
     module TextConstructors
-        # Draw a text string at (<tt>x</tt>,<tt>y</tt>). The string can
-        # be omitted. Optionally, define text chunks within the associated
-        # block.
+      # Draw a text string at (<tt>x</tt>,<tt>y</tt>). The string can
+      # be omitted. Optionally, define text chunks within the associated
+      # block.
       def text(x = 0, y = 0, text = nil, &block)
         t = Text.new(x, y, text, &block)
         @content << t

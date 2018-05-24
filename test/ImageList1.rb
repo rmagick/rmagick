@@ -39,7 +39,7 @@ class ImageList1_UT < Test::Unit::TestCase
     assert_raise(ArgumentError) { @list.iterations = 'x' }
   end
 
-    # also tests #size
+  # also tests #size
   def test_length
     assert_nothing_raised { @list.length }
     assert_equal(10, @list.length)
@@ -57,7 +57,7 @@ class ImageList1_UT < Test::Unit::TestCase
     assert_raise(IndexError) { @list.scene = 1000 }
     assert_raise(IndexError) { @list.scene = nil }
 
-      # allow nil on empty list
+    # allow nil on empty list
     empty_list = Magick::ImageList.new
     assert_nothing_raised { empty_list.scene = nil }
   end
@@ -103,7 +103,7 @@ class ImageList1_UT < Test::Unit::TestCase
       assert_equal(0, @list.scene)
     end
 
-      # replace 2 images with 1
+    # replace 2 images with 1
     assert_nothing_raised do
       img = Magick::Image.new(5, 5)
       rv = @list[1, 2] = img
@@ -113,7 +113,7 @@ class ImageList1_UT < Test::Unit::TestCase
       assert_equal(1, @list.scene)
     end
 
-      # replace 1 image with 2
+    # replace 1 image with 2
     assert_nothing_raised do
       img = Magick::Image.new(5, 5)
       img2 = Magick::Image.new(5, 5)
@@ -171,7 +171,7 @@ class ImageList1_UT < Test::Unit::TestCase
       assert_same(cur, res.cur_image)
     end
 
-      # current scene not in the result, set result scene to last image in result
+    # current scene not in the result, set result scene to last image in result
     @list.scene = 2
     assert_nothing_raised do
       res = @list & @list2
@@ -238,7 +238,7 @@ class ImageList1_UT < Test::Unit::TestCase
       assert_same(cur, res.cur_image)
     end
 
-      # current scene not in result - set result scene to last image in result
+    # current scene not in result - set result scene to last image in result
     @list.scene = 7
     cur = @list.cur_image
     assert_nothing_raised do
@@ -263,8 +263,8 @@ class ImageList1_UT < Test::Unit::TestCase
   def test_or
     assert_nothing_raised do
       @list.scene = 7
-        # The or of these two lists should be the same as @list
-        # but not be the *same* list
+      # The or of these two lists should be the same as @list
+      # but not be the *same* list
       res = @list | @list2
       assert_instance_of(Magick::ImageList, res)
       assert_not_same(res, @list)
@@ -272,7 +272,7 @@ class ImageList1_UT < Test::Unit::TestCase
       assert_equal(res, @list)
     end
 
-      # Try or'ing disjoint lists
+    # Try or'ing disjoint lists
     temp_list = Magick::ImageList.new(*FILES[10..14])
     res = @list | temp_list
     assert_instance_of(Magick::ImageList, res)
@@ -341,15 +341,15 @@ class ImageList1_UT < Test::Unit::TestCase
       assert_equal(9, @list.length)
       assert_same(cur, @list.cur_image)
 
-        # Try deleting the current image.
+      # Try deleting the current image.
       assert_same(cur, @list.delete(cur))
       assert_same(@list[-1], @list.cur_image)
 
       assert_raise(ArgumentError) { @list.delete(2) }
       assert_raise(ArgumentError) { @list.delete([2]) }
 
-        # Try deleting something that isn't in the list.
-        # Should return the value of the block.
+      # Try deleting something that isn't in the list.
+      # Should return the value of the block.
       assert_nothing_raised do
         img = Magick::Image.read(FILES[10]).first
         res = @list.delete(img) { 1 }
@@ -377,7 +377,7 @@ class ImageList1_UT < Test::Unit::TestCase
       assert_same(cur, @list.cur_image)
     end
 
-      # Delete the current image
+    # Delete the current image
     assert_nothing_raised do
       @list.delete_if { |img| img.filename =~ /7/ }
       assert_instance_of(Magick::ImageList, @list)
@@ -386,7 +386,7 @@ class ImageList1_UT < Test::Unit::TestCase
     end
   end
 
-    # defined by Enumerable
+  # defined by Enumerable
   def test_enumerables
     assert_nothing_raised { @list.detect { true } }
     assert_nothing_raised do
@@ -561,7 +561,7 @@ class ImageList1_UT < Test::Unit::TestCase
     assert_same(list, @list)
     assert_same(cur, @list.cur_image)
 
-      # Omit current image from result list - result cur_image s/b last image
+    # Omit current image from result list - result cur_image s/b last image
     res = @list.reject { |img| img.filename =~ /Button_7/ }
     assert_equal(9, res.length)
     assert_same(res[-1], res.cur_image)
@@ -578,7 +578,7 @@ class ImageList1_UT < Test::Unit::TestCase
       assert_same(cur, @list.cur_image)
     end
 
-      # Delete the current image
+    # Delete the current image
     assert_nothing_raised do
       @list.reject! { |img| img.filename =~ /7/ }
       assert_instance_of(Magick::ImageList, @list)
@@ -586,12 +586,12 @@ class ImageList1_UT < Test::Unit::TestCase
       assert_same(@list[-1], @list.cur_image)
     end
 
-      # returns nil if no changes are made
+    # returns nil if no changes are made
     assert_nil(@list.reject! { false })
   end
 
   def test_replace1
-      # Replace with empty list
+    # Replace with empty list
     assert_nothing_raised do
       res = @list.replace([])
       assert_same(res, @list)
@@ -599,7 +599,7 @@ class ImageList1_UT < Test::Unit::TestCase
       assert_nil(@list.scene)
     end
 
-      # Replace empty list with non-empty list
+    # Replace empty list with non-empty list
     temp = Magick::ImageList.new
     assert_nothing_raised do
       temp.replace(@list2)
@@ -607,12 +607,12 @@ class ImageList1_UT < Test::Unit::TestCase
       assert_equal(4, temp.scene)
     end
 
-      # Try to replace with illegal values
+    # Try to replace with illegal values
     assert_raise(ArgumentError) { @list.replace([1, 2, 3]) }
   end
 
   def test_replace2
-      # Replace with shorter list
+    # Replace with shorter list
     assert_nothing_raised do
       @list.scene = 7
       cur = @list.cur_image
@@ -625,7 +625,7 @@ class ImageList1_UT < Test::Unit::TestCase
   end
 
   def test_replace3
-      # Replace with longer list
+    # Replace with longer list
     assert_nothing_raised do
       @list2.scene = 2
       cur = @list2.cur_image
@@ -653,7 +653,7 @@ class ImageList1_UT < Test::Unit::TestCase
     assert_same(cur, @list.cur_image)
   end
 
-    # Just validate its existence
+  # Just validate its existence
   def test_reverse_each
     assert_nothing_raised do
       @list.reverse_each { |img| assert_instance_of(Magick::Image, img) }
@@ -718,7 +718,7 @@ class ImageList1_UT < Test::Unit::TestCase
     assert_nothing_raised { @list.slice!(20) }
   end
 
-    # simply ensure existence
+  # simply ensure existence
   def test_sort
     assert_nothing_raised { @list.sort }
     assert_nothing_raised { @list.sort! }
