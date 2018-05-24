@@ -102,11 +102,11 @@ module Magick
             end
           end
 
-          rgb_histogram.store_pixels(  x, 0, 1, HISTOGRAM_ROWS, rgb_column)
-          red_histogram.store_pixels(  x, 0, 1, HISTOGRAM_ROWS, red_column)
+          rgb_histogram.store_pixels(x, 0, 1, HISTOGRAM_ROWS, rgb_column)
+          red_histogram.store_pixels(x, 0, 1, HISTOGRAM_ROWS, red_column)
           green_histogram.store_pixels(x, 0, 1, HISTOGRAM_ROWS, green_column)
-          blue_histogram.store_pixels( x, 0, 1, HISTOGRAM_ROWS, blue_column)
-          int_histogram.store_pixels(  x, 0, 1, HISTOGRAM_ROWS, int_column)
+          blue_histogram.store_pixels(x, 0, 1, HISTOGRAM_ROWS, blue_column)
+          int_histogram.store_pixels(x, 0, 1, HISTOGRAM_ROWS, int_column)
           rgb_column.reset(bg)
           red_column.reset(bg)
           green_column.reset(bg)

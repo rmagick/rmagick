@@ -26,8 +26,8 @@ gc.line(0,  max_y, -7, max_y-7)
 gc.stroke('gray50')
 gc.stroke_width(1)
 gc.line(-max_x, 0, max_x,    0)
-gc.line( max_x, 0, max_x-5, -5)
-gc.line( max_x, 0, max_x-5,  5)
+gc.line(max_x, 0, max_x-5, -5)
+gc.line(max_x, 0, max_x-5,  5)
 
 gc.draw(imgl)
 

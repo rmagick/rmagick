@@ -24,8 +24,8 @@ gc.line(0,  max_y, -10, max_y-10)
 gc.stroke('red')
 gc.stroke_width(3)
 gc.line(-max_x+10, 0, max_x-10,   0)
-gc.line( max_x-10, 0, max_x-20, -10)
-gc.line( max_x-10, 0, max_x-20,  10)
+gc.line(max_x-10, 0, max_x-20, -10)
+gc.line(max_x-10, 0, max_x-20,  10)
 
 gc.draw(imgl)
 

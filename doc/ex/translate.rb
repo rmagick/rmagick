@@ -20,8 +20,8 @@ gc.line(0,  max_y, -10, max_y-10)
 
 # Draw right-pointing arrow
 gc.line(-max_x, 0, max_x,     0)
-gc.line( max_x, 0, max_x-10, -10)
-gc.line( max_x, 0, max_x-10,  10)
+gc.line(max_x, 0, max_x-10, -10)
+gc.line(max_x, 0, max_x-10,  10)
 
 # Add labels
 gc.font_weight(Magick::NormalWeight)

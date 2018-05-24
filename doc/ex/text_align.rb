@@ -26,9 +26,9 @@ gc.text(100, 70, 'LeftAlign')
 # to which each sample is aligned.
 gc.stroke('gray50')
 gc.line(100, 10, 100, 90)
-gc.line( 98, 30, 102, 30)
-gc.line( 98, 50, 102, 50)
-gc.line( 98, 70, 102, 70)
+gc.line(98, 30, 102, 30)
+gc.line(98, 50, 102, 50)
+gc.line(98, 70, 102, 70)
 
 gc.draw(canvas)
 canvas.border!(1,1,'gray50')

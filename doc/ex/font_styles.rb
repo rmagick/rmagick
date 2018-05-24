@@ -15,9 +15,9 @@ rvg = Magick::RVG.new(200, 250) do |canvas|
 
   canvas.g.styles(:font_size=>14, :font_weight=>'normal', :font_style=>'normal') do |grp|
     if RUBY_PLATFORM =~ /mswin32/
-      grp.text( 8, 120, ":font_family=>'Courier-New'").styles(:font_family=>'Courier-New')
+      grp.text(8, 120, ":font_family=>'Courier-New'").styles(:font_family=>'Courier-New')
     else
-      grp.text( 8, 120, ":font_family=>'Courier'").styles(:font_family=>'Courier')
+      grp.text(8, 120, ":font_family=>'Courier'").styles(:font_family=>'Courier')
     end
     grp.text(10, 140, ":font_weight=>'bold'").styles(:font_weight=>'bold')
     grp.text(10, 160, ":font_stretch=>'normal'").styles(:font_stretch=>'normal')

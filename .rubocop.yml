@@ -328,11 +328,6 @@ Layout/SpaceInsideBrackets:
 Layout/SpaceInsideHashLiteralBraces:
   Enabled: false
 
-# Offense count: 35
-# Cop supports --auto-correct.
-Layout/SpaceInsideParens:
-  Enabled: false
-
 # Need very caution rewrite of code
 Lint/RescueWithoutErrorClass:
   Enabled: false

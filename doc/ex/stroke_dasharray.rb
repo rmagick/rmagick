@@ -29,10 +29,10 @@ gc.font_weight(Magick::NormalWeight)
 gc.font_style(Magick::NormalStyle)
 
 gc.gravity(Magick::CenterGravity)
-gc.text( 0, -60, "'gc.stroke_dasharray(30, 10, 10, 10)'")
-gc.text( 0,   0, "'gc.stroke_dasharray(5, 10, 5)'")
-gc.text( 0,  12, "'gc.stroke_dashoffset(10)'")
-gc.text( 0,  60, "'gc.stroke_dasharray(10, 10)'")
+gc.text(0, -60, "'gc.stroke_dasharray(30, 10, 10, 10)'")
+gc.text(0,   0, "'gc.stroke_dasharray(5, 10, 5)'")
+gc.text(0,  12, "'gc.stroke_dashoffset(10)'")
+gc.text(0,  60, "'gc.stroke_dasharray(10, 10)'")
 
 gc.draw(imgl)
 
