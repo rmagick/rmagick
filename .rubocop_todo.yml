@@ -8,12 +8,6 @@
 
 # Offense count: 1
 # Cop supports --auto-correct.
-Layout/SpaceInsideArrayPercentLiteral:
-  Exclude:
-    - 'test/Image2.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
 Layout/SpaceInsidePercentLiteralDelimiters:
   Exclude:
     - 'test/Image2.rb'
