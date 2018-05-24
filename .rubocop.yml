@@ -273,10 +273,6 @@ Style/RescueModifier:
 Style/Semicolon:
   Enabled: false
 
-# Need very caution rewrite of code
-Lint/RescueWithoutErrorClass:
-  Enabled: false
-
 # Fixing this issues cause some test to fail
 Lint/UnifiedInteger:
   Enabled: false
