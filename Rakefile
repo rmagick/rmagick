@@ -144,7 +144,7 @@ END_HTML_TAIL
   desc "Remove files we don't want in the .gem; ensure files are not executable"
   task :fix_files do
     rm 'README.txt', :verbose => true
-    chmod 0644, FileList['doc/*.html', 'doc/ex/*.rb', 'doc/ex/images/*', 'examples/*.rb']
+    chmod 0o644, FileList['doc/*.html', 'doc/ex/*.rb', 'doc/ex/images/*', 'examples/*.rb']
   end
 
   desc 'Build manifest'
