@@ -292,7 +292,6 @@ class ImageList1_UT < Test::Unit::TestCase
 
   def test_collect
     assert_nothing_raised do
-      cur = @list.cur_image
       scene = @list.scene
       res = @list.collect(&:negate)
       assert_instance_of(Magick::ImageList, res)
@@ -329,8 +328,8 @@ class ImageList1_UT < Test::Unit::TestCase
       assert_equal(15, res.length)
       assert_same(res[14], res.cur_image)
     end
-    assert_raise(ArgumentError) { res = @list.concat(2) }
-    assert_raise(ArgumentError) { res = @list.concat([2]) }
+    assert_raise(ArgumentError) { @list.concat(2) }
+    assert_raise(ArgumentError) { @list.concat([2]) }
   end
 
   def test_delete

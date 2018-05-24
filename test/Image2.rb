@@ -77,7 +77,7 @@ class Image2_UT < Test::Unit::TestCase
     assert_equal(Magick::DirectClass, @img.class_type)
     assert_nothing_raised { @img.compress_colormap! }
     assert_equal(Magick::PseudoClass, @img.class_type)
-    img = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
+    @img = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
     assert_equal(Magick::PseudoClass, @img.class_type)
     assert_nothing_raised { @img.compress_colormap! }
   end
@@ -302,10 +302,6 @@ class Image2_UT < Test::Unit::TestCase
     Magick.trace_proc = proc do |which, id, addr, method|
       m = id.split(/ /)
       name = File.basename m[0]
-      format = m[1]
-      size = m[2]
-      geometry = m[3]
-      image_class = m[4]
 
       assert(which == :c || which == :d, "unexpected value for which: #{which}")
       assert_equal(:destroy!, method) if which == :d
@@ -533,10 +529,10 @@ class Image2_UT < Test::Unit::TestCase
         assert_kind_of(Integer, p)
       end
     end
-    assert_nothing_raised { res = @img.export_pixels(0) }
-    assert_nothing_raised { res = @img.export_pixels(0, 0) }
-    assert_nothing_raised { res = @img.export_pixels(0, 0, 10) }
-    assert_nothing_raised { res = @img.export_pixels(0, 0, 10, 10) }
+    assert_nothing_raised { @img.export_pixels(0) }
+    assert_nothing_raised { @img.export_pixels(0, 0) }
+    assert_nothing_raised { @img.export_pixels(0, 0, 10) }
+    assert_nothing_raised { @img.export_pixels(0, 0, 10, 10) }
     assert_nothing_raised do
       res = @img.export_pixels(0, 0, 10, 10, 'RGBA')
       assert_equal(10 * 10 * 'RGBA'.length, res.length)

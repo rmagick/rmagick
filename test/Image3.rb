@@ -682,7 +682,7 @@ class Image3_UT < Test::Unit::TestCase
   end
 
   def test_stegano
-    img = Magick::Image.new(100, 100) { self.background_color = 'black' }
+    @img = Magick::Image.new(100, 100) { self.background_color = 'black' }
     watermark = Magick::Image.new(10, 10) { self.background_color = 'white' }
     assert_nothing_raised do
       res = @img.stegano(watermark, 0)

@@ -108,7 +108,6 @@ class Magick_UT < Test::Unit::TestCase
     g = nil
     gs = nil
     g2 = nil
-    gs2 = nil
     assert_nothing_raised { g = Magick::Geometry.new }
     assert_nothing_raised { gs = g.to_s }
     assert_equal('', gs)
@@ -312,7 +311,7 @@ class Magick_UT < Test::Unit::TestCase
       assert_equal(:initialize, method)
     end
     begin
-      img = Magick::Image.new(20, 20)
+      Magick::Image.new(20, 20)
     ensure
       Magick.trace_proc = nil
     end

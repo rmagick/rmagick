@@ -24,7 +24,7 @@ rvg = Magick::RVG.new(450, 300) do |canvas|
   end
 
   # SVG to fit
-  grp = canvas.g.styles(:font_size => 9) do |grp|
+  canvas.g.styles(:font_size => 9) do |grp|
     grp.text(10, 30, 'SVG to fit')
     grp.g.translate(20, 40) do |grp2|
       grp2.use(viewport2)

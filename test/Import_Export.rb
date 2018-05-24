@@ -9,7 +9,7 @@ class Import_Export_UT < Test::Unit::TestCase
 
   def import_pixels(pixels, type)
     img = Magick::Image.new(@test.columns, @test.rows)
-    res = img.import_pixels(0, 0, @test.columns, @test.rows, 'RGB', pixels, type)
+    img.import_pixels(0, 0, @test.columns, @test.rows, 'RGB', pixels, type)
     _, diff = img.compare_channel(@test, Magick::MeanAbsoluteErrorMetric)
     # _.display
     diff
@@ -68,7 +68,7 @@ class Import_Export_UT < Test::Unit::TestCase
         import(p, Magick::QuantumPixel)
 
         ipixels = pixels.collect { |px| px * 65_537 }
-        p = ipixels.pack('I*')
+        ipixels.pack('I*')
         # Diff s/b 0.0 but never is.
         # import(p, Magick::IntegerPixel, 430.7834)
         # import(p, Magick::LongPixel, 430.7834)

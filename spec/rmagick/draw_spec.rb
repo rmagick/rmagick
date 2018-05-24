@@ -81,7 +81,6 @@ RSpec.describe Magick::Draw do
   describe '#marshal_dump', '#marshal_load' do
     it 'marshals without an error' do
       skip 'this spec fails on some versions of ImageMagick'
-      rose = Magick::Image.read('rose:').first
       granite = Magick::Image.read('granite:').first
       s = granite.to_blob { self.format = 'miff' }
       granite = Magick::Image.from_blob(s).first
