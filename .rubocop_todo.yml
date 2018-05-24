@@ -6,17 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 7
-Lint/RescueWithoutErrorClass:
-  Exclude:
-    - 'Rakefile'
-    - 'doc/ex/gravity.rb'
-    - 'doc/ex/mosaic.rb'
-    - 'examples/demo.rb'
-    - 'lib/rmagick_internal.rb'
-    - 'lib/rvg/container.rb'
-    - 'lib/rvg/rvg.rb'
-
 # Offense count: 2
 Lint/ReturnInVoidContext:
   Exclude:
