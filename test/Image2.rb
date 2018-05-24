@@ -1112,7 +1112,7 @@ class Image2_UT < Test::Unit::TestCase
   def test_monochrome?
 #       assert_block { @img.monochrome? }
     @img.pixel_color(0,0, 'red')
-    assert_block { ! @img.monochrome? }
+    assert_block { !@img.monochrome? }
   end
 
   def test_motion_blur
@@ -1214,7 +1214,7 @@ class Image2_UT < Test::Unit::TestCase
     assert_block { @img.opaque? }
     end
     @img.opacity = Magick::TransparentOpacity
-    assert_block { ! @img.opaque? }
+    assert_block { !@img.opaque? }
   end
 
   def test_ordered_dither

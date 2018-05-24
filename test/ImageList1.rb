@@ -406,7 +406,7 @@ class ImageList1_UT < Test::Unit::TestCase
       list2 = @list
       assert(@list.eql?(list2))
       list2 = @list.copy
-      assert(! @list.eql?(list2))
+      assert(!@list.eql?(list2))
     end
 
     def test_fill

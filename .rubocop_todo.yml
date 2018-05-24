@@ -6,15 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 5
-# Cop supports --auto-correct.
-Layout/SpaceAfterNot:
-  Exclude:
-    - 'lib/rmagick_internal.rb'
-    - 'test/Image2.rb'
-    - 'test/ImageList1.rb'
-    - 'test/Image_attributes.rb'
-
 # Offense count: 2
 # Cop supports --auto-correct.
 Layout/SpaceAroundKeyword:

@@ -590,7 +590,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
 
   def test_start_loop
     assert_nothing_raised { @img.start_loop }
-    assert(! @img.start_loop)
+    assert(!@img.start_loop)
     assert_nothing_raised { @img.start_loop = true }
     assert(@img.start_loop)
   end
