@@ -23,11 +23,6 @@ Lint/ReturnInVoidContext:
     - 'lib/rmagick_internal.rb'
     - 'lib/rvg/units.rb'
 
-# Offense count: 31
-# Cop supports --auto-correct.
-Lint/ScriptPermission:
-  Enabled: false
-
 # Offense count: 7
 # Cop supports --auto-correct.
 Lint/UnifiedInteger:
