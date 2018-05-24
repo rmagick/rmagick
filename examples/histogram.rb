@@ -245,11 +245,11 @@ Colors: #{number_colors}
         charts << channel_hists.shift
 
         # Add Alpha channel or image stats
-        if !opaque?
-          charts << alpha_hist(alpha, scale, fg, bg)
-        else
-          charts << info_text(fg, bg)
-        end
+        charts << if !opaque?
+          alpha_hist(alpha, scale, fg, bg)
+                  else
+          info_text(fg, bg)
+                  end
 
         # Add the RGB histogram
         charts << channel_hists.shift

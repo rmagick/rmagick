@@ -72,8 +72,8 @@ module Magick
       if @background_pattern
         canvas = Magick::Image.new(@width, @height, @background_pattern)
       elsif @background_image
-        if @width != @background_image.columns || @height != @background_image.rows
-          canvas = case @background_position
+        canvas = if @width != @background_image.columns || @height != @background_image.rows
+          case @background_position
             when :scaled
               @background_image.resize(@width, @height)
             when :tiled
@@ -91,9 +91,9 @@ module Magick
                 bg_image
               end
           end
-        else
-          canvas = @background_image.copy
-        end
+                 else
+          @background_image.copy
+                 end
       else
         bgcolor = bgfill
         canvas = Magick::Image.new(Integer(@width), Integer(@height)) { self.background_color = bgcolor }

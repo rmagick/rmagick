@@ -252,11 +252,11 @@ class Image2_UT < Test::Unit::TestCase
   # ensure methods detect destroyed images
   def test_destroy
     methods = Magick::Image.instance_methods(false).sort
-    if RUBY_VERSION[/^1\.9|^2/]
-    methods -= [:__display__, :destroy!, :destroyed?, :inspect, :cur_image, :marshal_load]
-    else
-    methods -= %w{ __display__ destroy! destroyed? inspect cur_image  marshal_load}
-    end
+    methods -= if RUBY_VERSION[/^1\.9|^2/]
+    [:__display__, :destroy!, :destroyed?, :inspect, :cur_image, :marshal_load]
+               else
+    %w{ __display__ destroy! destroyed? inspect cur_image  marshal_load}
+               end
 
     assert_equal(false, @img.destroyed?)
     @img.destroy!

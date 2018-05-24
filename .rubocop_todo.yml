@@ -187,18 +187,6 @@ Style/Alias:
   Exclude:
     - 'lib/rmagick_internal.rb'
 
-# Offense count: 6
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, SingleLineConditionsOnly, IncludeTernaryExpressions.
-# SupportedStyles: assign_to_condition, assign_inside_condition
-Style/ConditionalAssignment:
-  Exclude:
-    - 'doc/ex/watermark.rb'
-    - 'examples/histogram.rb'
-    - 'lib/rvg/misc.rb'
-    - 'lib/rvg/rvg.rb'
-    - 'test/Image2.rb'
-
 # Offense count: 3
 Style/MethodMissing:
   Exclude:
