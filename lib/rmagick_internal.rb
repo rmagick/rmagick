@@ -427,7 +427,7 @@ module Magick
     # Specify drawing fill and stroke opacities. If the value is a string
     # ending with a %, the number will be multiplied by 0.01.
     def opacity(opacity)
-      if (Numeric === opacity)
+      if Numeric === opacity
         if opacity < 0 || opacity > 1.0
           Kernel.raise ArgumentError, 'opacity must be >= 0 and <= 1.0'
         end
@@ -1598,7 +1598,7 @@ module Magick
     alias_method :select, :find_all
 
     def from_blob(*blobs, &block)
-      if (blobs.length == 0)
+      if blobs.length == 0
         Kernel.raise ArgumentError, 'no blobs given'
       end
       blobs.each do |b|
@@ -1707,7 +1707,7 @@ module Magick
 
     # Ping files and concatenate the new images
     def ping(*files, &block)
-      if (files.length == 0)
+      if files.length == 0
         Kernel.raise ArgumentError, 'no files given'
       end
       files.each do |f|
@@ -1735,7 +1735,7 @@ module Magick
 
     # Read files and concatenate the new images
     def read(*files, &block)
-      if (files.length == 0)
+      if files.length == 0
         Kernel.raise ArgumentError, 'no files given'
       end
       files.each do |f|
