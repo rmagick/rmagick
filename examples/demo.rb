@@ -80,7 +80,7 @@ begin
   example.cur_image[:Label] = 'Contrast'
 
   puts '   convolve...'
-  kernel = [ 1, 1, 1, 1, 4, 1, 1, 1, 1 ]
+  kernel = [1, 1, 1, 1, 4, 1, 1, 1, 1]
   example << model.convolve(3, kernel)
   example.cur_image[:Label] = 'Convolve'
 

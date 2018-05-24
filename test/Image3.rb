@@ -101,7 +101,7 @@ class Image3_UT < Test::Unit::TestCase
       Magick::OrQuantumOperator,
       Magick::RShiftQuantumOperator,
       Magick::SubtractQuantumOperator,
-      Magick::XorQuantumOperator ]
+      Magick::XorQuantumOperator]
 
     assert_nothing_raised do
       res = @img.quantum_operator(Magick::AddQuantumOperator, 2)
