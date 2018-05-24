@@ -91,9 +91,6 @@ Metrics/ParameterLists:
 Metrics/PerceivedComplexity:
   Max: 41
 
-Performance/StringReplacement:
-  Enabled: false
-
 # Offense count: 4
 Naming/AccessorMethodName:
   Enabled: false
