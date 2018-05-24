@@ -255,7 +255,7 @@ class Image2_UT < Test::Unit::TestCase
     methods -= if RUBY_VERSION[/^1\.9|^2/]
     [:__display__, :destroy!, :destroyed?, :inspect, :cur_image, :marshal_load]
                else
-    %w{ __display__ destroy! destroyed? inspect cur_image marshal_load}
+    %w{__display__ destroy! destroyed? inspect cur_image marshal_load}
                end
 
     assert_equal(false, @img.destroyed?)
