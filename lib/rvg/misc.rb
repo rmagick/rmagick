@@ -14,15 +14,13 @@ module Magick
           ivars = instance_variables
           ivars.each do |ivar|
             ivalue = instance_variable_get(ivar)
-            cvalue = case
-              when NilClass === ivalue, Symbol === ivalue, Float === ivalue,
-                 Fixnum === ivalue, FalseClass === ivalue, TrueClass === ivalue
+            cvalue = if NilClass === ivalue || Symbol === ivalue || Float === ivalue || Fixnum === ivalue || FalseClass === ivalue || TrueClass === ivalue
                 ivalue
-              when ivalue.respond_to?(:deep_copy)
+                     elsif ivalue.respond_to?(:deep_copy)
                 ivalue.deep_copy(h)
-              when ivalue.respond_to?(:dup)
+                     elsif ivalue.respond_to?(:dup)
                 ivalue.dup
-              else
+                     else
                 ivalue
               end
             copy.instance_variable_set(ivar, cvalue)

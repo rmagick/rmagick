@@ -267,24 +267,23 @@ class Image2_UT < Test::Unit::TestCase
     arity = @img.method(method).arity
     method = method.to_s
 
-    case
-    when method == '[]='
+    if method == '[]='
       assert_raises(Magick::DestroyedImageError) { @img['foo'] = 1 }
-    when method == 'difference'
+    elsif method == 'difference'
       other = Magick::Image.new(20,20)
       assert_raises(Magick::DestroyedImageError) { @img.difference(other) }
-    when method == 'get_iptc_dataset'
+    elsif method == 'get_iptc_dataset'
       assert_raises(Magick::DestroyedImageError) { @img.get_iptc_dataset('x') }
-    when method == 'profile!'
+    elsif method == 'profile!'
       assert_raises(Magick::DestroyedImageError) { @img.profile!('x', 'y') }
-    when /=\Z/.match(method)
+    elsif /=\Z/.match(method)
       assert_raises(Magick::DestroyedImageError) { @img.send(method, 1) }
-    when arity.zero?
+    elsif arity.zero?
       assert_raises(Magick::DestroyedImageError) { @img.send(method) }
-    when arity < 0
+    elsif arity < 0
       args = (1..-arity).to_a
       assert_raises(Magick::DestroyedImageError) { @img.send(method, *args) }
-    when arity > 0
+    elsif arity > 0
       args = (1..arity).to_a
       assert_raises(Magick::DestroyedImageError) { @img.send(method, *args) }
     else

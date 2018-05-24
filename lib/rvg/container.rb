@@ -13,14 +13,13 @@ module Magick
         unless copy
           copy = self.class.new
           each do |c|
-            copy << case
-            when c.nil?
+            copy << if c.nil?
               nil
-            when c.respond_to?(:deep_copy)
+                    elsif c.respond_to?(:deep_copy)
               c.deep_copy(h)
-            when c.respond_to?(:dup)
+                    elsif c.respond_to?(:dup)
               c.dup rescue c
-            else
+                    else
               c
             end
           end

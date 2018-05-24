@@ -200,14 +200,6 @@ Style/ConditionalAssignment:
     - 'test/Image2.rb'
 
 # Offense count: 3
-# Cop supports --auto-correct.
-Style/EmptyCaseCondition:
-  Exclude:
-    - 'lib/rvg/container.rb'
-    - 'lib/rvg/misc.rb'
-    - 'test/Image2.rb'
-
-# Offense count: 3
 Style/MethodMissing:
   Exclude:
     - 'lib/rmagick_internal.rb'
