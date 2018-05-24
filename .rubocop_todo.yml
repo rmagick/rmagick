@@ -208,12 +208,6 @@ Style/EmptyCaseCondition:
     - 'test/Image2.rb'
 
 # Offense count: 3
-Style/IfInsideElse:
-  Exclude:
-    - 'examples/identify.rb'
-    - 'lib/rmagick_internal.rb'
-
-# Offense count: 3
 Style/MethodMissing:
   Exclude:
     - 'lib/rmagick_internal.rb'

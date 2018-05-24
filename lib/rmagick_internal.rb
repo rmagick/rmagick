@@ -1195,11 +1195,9 @@ module Magick
 
             if start > @height || start < 0 || length < 0
               Kernel.raise IndexError, "index [#{@rows.first}] out of range"
-            else
-              if start + length > @height
-                length = @height - length
-                length = [length, 0].max
-              end
+            elsif start + length > @height
+              length = @height - length
+              length = [length, 0].max
             end
             # Create a Range for the specified set of rows
             @rows = Range.new(start, start+length, true)
@@ -1239,11 +1237,9 @@ module Magick
 
             if start > @width || start < 0 || length < 0
               ; #nop
-            else
-              if start + length > @width
-                length = @width - length
-                length = [length, 0].max
-              end
+            elsif start + length > @width
+              length = @width - length
+              length = [length, 0].max
             end
             # Create a Range for the specified set of columns
             @cols = Range.new(start, start+length, true)

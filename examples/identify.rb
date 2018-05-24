@@ -87,12 +87,10 @@ module Magick
       end
       if class_type == Magick::DirectClass
         puts "\tColors: #{total_colors}\n"
+      elsif total_colors <= colors
+        puts "\tColors: #{colors}\n"
       else
-        if total_colors <= colors
-          puts "\tColors: #{colors}\n"
-        else
-          puts "\tColors: #{total_colors}=>#{colors}\n"
-        end
+        puts "\tColors: #{total_colors}=>#{colors}\n"
       end
       # Histogram goes here
       puts "\tMean error per pixel: #{mean_error_per_pixel}\n" if mean_error_per_pixel != 0.0
