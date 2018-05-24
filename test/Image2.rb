@@ -162,10 +162,10 @@ class Image2_UT < Test::Unit::TestCase
     end
     gravity = [
       Magick::NorthEastGravity,
-    Magick::EastGravity,
-    Magick::SouthWestGravity,
-    Magick::SouthGravity,
-    Magick::SouthEastGravity
+      Magick::EastGravity,
+      Magick::SouthWestGravity,
+      Magick::SouthGravity,
+      Magick::SouthEastGravity
     ]
 
     # 3-argument form

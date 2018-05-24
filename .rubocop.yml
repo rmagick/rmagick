@@ -22,9 +22,6 @@ Layout/DotPosition:
 
 # Auto-generated config to be cleaned up and deleted:
 
-Layout/AlignArray:
-  Enabled: false
-
 # Offense count: 3
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
