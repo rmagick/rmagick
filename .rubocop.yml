@@ -22,37 +22,6 @@ Layout/DotPosition:
 
 # Auto-generated config to be cleaned up and deleted:
 
-# Offense count: 183
-Metrics/AbcSize:
-  Max: 559
-
-# Offense count: 1
-Metrics/BlockNesting:
-  Max: 4
-
-# Offense count: 17
-# Configuration parameters: CountComments.
-Metrics/ClassLength:
-  Max: 1099
-
-# Offense count: 22
-Metrics/CyclomaticComplexity:
-  Max: 42
-
-# Offense count: 178
-# Configuration parameters: CountComments.
-Metrics/MethodLength:
-  Max: 157
-
-# Offense count: 13
-# Configuration parameters: CountKeywordArgs.
-Metrics/ParameterLists:
-  Max: 8
-
-# Offense count: 14
-Metrics/PerceivedComplexity:
-  Max: 41
-
 # Offense count: 4
 Naming/AccessorMethodName:
   Enabled: false
