@@ -18,7 +18,11 @@ module Magick
                     elsif c.respond_to?(:deep_copy)
                       c.deep_copy(h)
                     elsif c.respond_to?(:dup)
-                      c.dup rescue c
+                      begin
+                        c.dup
+                      rescue
+                        c
+                      end
                     else
                       c
                     end

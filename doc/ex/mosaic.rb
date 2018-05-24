@@ -24,7 +24,11 @@ a.scene = 0
     page.x = j * b.columns
     page.y = i * b.rows
     b.page = page
-    (a.scene += 1) rescue a.scene = 0
+    begin
+      (a.scene += 1)
+    rescue
+      a.scene = 0
+    end
   end
 end
 

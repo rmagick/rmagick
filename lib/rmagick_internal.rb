@@ -1277,7 +1277,9 @@ module Magick
     private
 
     def get_current
-      return @images[@scene].__id__ rescue nil
+        return @images[@scene].__id__
+      rescue
+        nil
     end
 
     protected
