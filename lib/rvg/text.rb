@@ -12,7 +12,7 @@ module Magick
 
       private
 
-      def initialize(text, &block) #:nodoc:
+      def initialize(text) #:nodoc:
         super()
         @text = text.to_s if text
         @dx = @dy = 0

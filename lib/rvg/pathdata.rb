@@ -32,7 +32,7 @@ module Magick
         @path
       end
 
-      def deep_copy(h = nil) #:nodoc:
+      def deep_copy(_h = nil) #:nodoc:
         @path.dup
       end
 
@@ -47,7 +47,7 @@ module Magick
 
       # Add a <tt>closepath</tt> command. The <tt>abs</tt> argument
       # is ignored.
-      def closepath(abs = true)
+      def closepath(_abs = true)
         @path << 'Z' # ignore `abs'
       end
 

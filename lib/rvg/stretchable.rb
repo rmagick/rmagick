@@ -116,7 +116,7 @@ module Magick
         gc.translate(-@vbx_x, -@vbx_y) if @vbx_x.abs != 0.0 || @vbx_y.abs != 0
       end
 
-      def initialize(*args, &block)
+      def initialize(*_args)
         super()
         @vbx_x, @vbx_y, @vbx_width, @vbx_height = nil
         @meet_or_slice = 'meet'

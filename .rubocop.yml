@@ -51,11 +51,6 @@ Lint/UnderscorePrefixedVariableName:
 Lint/UnusedBlockArgument:
   Enabled: false
 
-# Offense count: 17
-# Cop supports --auto-correct.
-Lint/UnusedMethodArgument:
-  Enabled: false
-
 # Offense count: 183
 Metrics/AbcSize:
   Max: 559

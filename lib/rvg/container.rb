@@ -73,7 +73,7 @@ module Magick
       end
 
       # Translate container according to #use arguments
-      def ref(x, y, width, height) #:nodoc:
+      def ref(x, y, _width, _height) #:nodoc:
         translate(x, y) if x != 0 || y != 0
       end
 

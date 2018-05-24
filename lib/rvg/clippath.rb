@@ -32,7 +32,7 @@ module Magick
         yield(self) if block_given?
       end
 
-      def add_primitives(gc, style) #:nodoc:
+      def add_primitives(gc, _style) #:nodoc:
         name = __id__.to_s
         gc.define_clip_path(name) do
           gc.clip_units(@clip_path_units)

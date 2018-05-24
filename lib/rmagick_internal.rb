@@ -17,7 +17,7 @@ module Magick
   @exit_block_set_up = nil
 
   class << self
-    def formats(&block)
+    def formats
       @formats ||= init_formats
 
       if block_given?
@@ -1820,7 +1820,7 @@ module Magick
       a
     end
 
-    def uniq!(*args)
+    def uniq!(*_args)
       current = get_current
       a = @images.uniq!
       set_current current

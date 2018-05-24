@@ -213,7 +213,7 @@ module Magick
       end     # class LRTextStrategy
 
       class RLTextStrategy < TextStrategy
-        def render(x, y, text)
+        def render(_x, _y, _text)
           raise NotImplementedError
         end
       end     # class RLTextStrategy
