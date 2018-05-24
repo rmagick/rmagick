@@ -252,7 +252,7 @@ module Magick
 
     # Define the clipping rule.
     def clip_rule(rule)
-      unless  ['evenodd', 'nonzero'].include?(rule.downcase)
+      unless  %w[evenodd nonzero].include?(rule.downcase)
         Kernel.raise ArgumentError, "Unknown clipping rule #{rule}"
       end
       primitive "clip-rule #{rule}"
@@ -260,7 +260,7 @@ module Magick
 
     # Define the clip units
     def clip_units(unit)
-      unless  ['userspace', 'userspaceonuse', 'objectboundingbox'].include?(unit.downcase)
+      unless  %w[userspace userspaceonuse objectboundingbox].include?(unit.downcase)
         Kernel.raise ArgumentError, "Unknown clip unit #{unit}"
       end
       primitive "clip-units #{unit}"
@@ -326,7 +326,7 @@ module Magick
     end
 
     def fill_rule(rule)
-      unless  ['evenodd', 'nonzero'].include?(rule.downcase)
+      unless  %w[evenodd nonzero].include?(rule.downcase)
         Kernel.raise ArgumentError, "Unknown fill rule #{rule}"
       end
       primitive "fill-rule #{rule}"
@@ -580,14 +580,14 @@ module Magick
     end
 
     def stroke_linecap(value)
-      unless  ['butt', 'round', 'square'].include?(value.downcase)
+      unless  %w[butt round square].include?(value.downcase)
         Kernel.raise ArgumentError, "Unknown linecap type: #{value}"
       end
       primitive "stroke-linecap #{value}"
     end
 
     def stroke_linejoin(value)
-      unless  ['round', 'miter', 'bevel'].include?(value.downcase)
+      unless  %w[round miter bevel].include?(value.downcase)
         Kernel.raise ArgumentError, "Unknown linejoin type: #{value}"
       end
       primitive "stroke-linejoin #{value}"

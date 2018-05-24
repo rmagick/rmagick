@@ -162,7 +162,7 @@ module Magick
     def background_position=(pos)
       warn 'background_position= has no effect in nested RVG objects' if @nested
       bg_pos = pos.to_s.downcase
-      unless ['scaled', 'tiled', 'fit'].include?(bg_pos)
+      unless %w[scaled tiled fit].include?(bg_pos)
         raise ArgumentError, "background position must be `scaled', `tiled', or `fit' (#{pos} given)"
       end
       @background_position = bg_pos.to_sym
