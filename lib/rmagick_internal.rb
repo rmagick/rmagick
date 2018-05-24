@@ -210,9 +210,9 @@ module Magick
 
     def enquote(str)
       if str.length > 2 && /\A(?:\"[^\"]+\"|\'[^\']+\'|\{[^\}]+\})\z/.match(str)
-        return str
+        str
       else
-        return '"' + str + '"'
+        '"' + str + '"'
       end
     end
 
