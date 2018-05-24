@@ -27,9 +27,6 @@ Layout/DotPosition:
 Lint/BlockAlignment:
   Enabled: false
 
-Lint/FormatParameterMismatch:
-  Enabled: false
-
 # Offense count: 1
 Lint/HandleExceptions:
   Enabled: false
