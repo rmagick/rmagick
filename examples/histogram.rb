@@ -131,9 +131,9 @@ module Magick
           scale = HISTOGRAM_ROWS / (hist.values.max * AIR_FACTOR)
 
           histogram = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do
-                self.background_color = bg
-                self.border_color = fg
-              end
+            self.background_color = bg
+            self.border_color = fg
+          end
 
           x = 0
           pixels.each do |pixel|
@@ -163,9 +163,9 @@ Colors: #{number_colors}
             END_TEXT
 
         info = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do
-              self.background_color = bg
-              self.border_color = fg
-            end
+          self.background_color = bg
+          self.border_color = fg
+        end
 
         gc = Draw.new
 
