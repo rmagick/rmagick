@@ -8,9 +8,7 @@ a = Magick::ImageList.new
 letter = 'A'
 26.times do
   # 'M' is not the same size as the other letters.
-  if letter != 'M'
-    a.read('images/Button_' + letter + '.gif')
-  end
+  a.read('images/Button_' + letter + '.gif') if letter != 'M'
   letter.succ!
 end
 

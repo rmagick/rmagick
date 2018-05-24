@@ -111,9 +111,7 @@ module Magick
       else
         Kernel.raise ArgumentError, 'invalid geometry format'
       end
-      if str['%']
-        flag = PercentGeometry
-      end
+      flag = PercentGeometry if str['%']
       Geometry.new(width, height, x, y, flag)
     end
 
@@ -126,9 +124,7 @@ module Magick
         str << '%' if @flag == PercentGeometry
       end
 
-      if (@width > 0 && @flag != PercentGeometry) || (@height > 0)
-        str << 'x'
-      end
+      str << 'x' if (@width > 0 && @flag != PercentGeometry) || (@height > 0)
 
       if @height > 0
         fmt = @height.truncate == @height ? '%d' : '%.2f'
@@ -136,9 +132,7 @@ module Magick
         str << '%' if @flag == PercentGeometry
       end
       str << sprintf('%+d%+d', @x, @y) if @x != 0 || @y != 0
-      if @flag != PercentGeometry
-        str << FLAGS[@flag.to_i]
-      end
+      str << FLAGS[@flag.to_i] if @flag != PercentGeometry
       str
     end
   end
@@ -594,9 +588,7 @@ module Magick
     end
 
     def stroke_miterlimit(value)
-      if value < 1
-        Kernel.raise ArgumentError, 'miterlimit must be >= 1'
-      end
+      Kernel.raise ArgumentError, 'miterlimit must be >= 1' if value < 1
       primitive "stroke-miterlimit #{value}"
     end
 
@@ -613,9 +605,7 @@ module Magick
 
     # Draw text at position x,y. Add quotes to text that is not already quoted.
     def text(x, y, text)
-      if text.to_s.empty?
-        Kernel.raise ArgumentError, 'missing text argument'
-      end
+      Kernel.raise ArgumentError, 'missing text argument' if text.to_s.empty?
       if text.length > 2 && /\A(?:\"[^\"]+\"|\'[^\']+\'|\{[^\}]+\})\z/.match(text)
          # text already quoted
       elsif !text['\'']
@@ -921,9 +911,7 @@ module Magick
 
       if gamma.abs > 10.0 || white_point.abs <= 10.0 || white_point.abs < gamma.abs
         gamma, white_point = white_point, gamma
-        unless gamma_arg
-          white_point = Magick::QuantumRange - black_point
-        end
+        white_point = Magick::QuantumRange - black_point unless gamma_arg
       end
 
       level2(black_point, white_point, gamma)
@@ -1173,9 +1161,7 @@ module Magick
               @rows = @rows.first
             else
               @rows = Integer(@rows.first)
-              if @rows < 0
-                @rows += @height
-              end
+              @rows += @height if @rows < 0
               if @rows < 0 || @rows > @height - 1
                 Kernel.raise IndexError, "index [#{@rows}] out of range"
               end
@@ -1189,9 +1175,7 @@ module Magick
             length = Integer(@rows[1])
 
             # Negative start -> start from last row
-            if start < 0
-              start += @height
-            end
+            start += @height if start < 0
 
             if start > @height || start < 0 || length < 0
               Kernel.raise IndexError, "index [#{@rows.first}] out of range"
@@ -1215,9 +1199,7 @@ module Magick
               @unique = false
             else
               @cols = Integer(@cols.first)
-              if @cols < 0
-                @cols += @width
-              end
+              @cols += @width if @cols < 0
               if @cols < 0 || @cols > @width - 1
                 Kernel.raise IndexError, "index [#{@cols}] out of range"
               end
@@ -1231,9 +1213,7 @@ module Magick
             length = Integer(@cols[1])
 
             # Negative start -> start from last row
-            if start < 0
-              start += @width
-            end
+            start += @width if start < 0
 
             if start > @width || start < 0 || length < 0
                # nop
@@ -1253,9 +1233,7 @@ module Magick
           maxcols = @width - 1
 
           @rows.each do |j|
-            if j > maxrows
-              Kernel.raise IndexError, "index [#{j}] out of range"
-            end
+            Kernel.raise IndexError, "index [#{j}] out of range" if j > maxrows
             @cols.each do |i|
               if i > maxcols
                 Kernel.raise IndexError, "index [#{i}] out of range"
@@ -1315,9 +1293,7 @@ module Magick
         # If "current" isn't in the list, set current to last image.
         self.scene = length - 1
         each_with_index do |f, i|
-          if f.__id__ == current
-            self.scene = i
-          end
+          self.scene = i if f.__id__ == current
         end
         return
       end
@@ -1489,9 +1465,7 @@ module Magick
 
     # Return the current image
     def cur_image
-      unless @scene
-        Kernel.raise IndexError, 'no images in this list'
-      end
+      Kernel.raise IndexError, 'no images in this list' unless @scene
       @images[@scene]
     end
 
@@ -1596,9 +1570,7 @@ module Magick
     alias_method :select, :find_all
 
     def from_blob(*blobs, &block)
-      if blobs.length.zero?
-        Kernel.raise ArgumentError, 'no blobs given'
-      end
+      Kernel.raise ArgumentError, 'no blobs given' if blobs.length.zero?
       blobs.each do |b|
         Magick::Image.from_blob(b, &block).each { |n| @images << n  }
       end
@@ -1705,9 +1677,7 @@ module Magick
 
     # Ping files and concatenate the new images
     def ping(*files, &block)
-      if files.length.zero?
-        Kernel.raise ArgumentError, 'no files given'
-      end
+      Kernel.raise ArgumentError, 'no files given' if files.length.zero?
       files.each do |f|
         Magick::Image.ping(f, &block).each { |n| @images << n }
       end
@@ -1733,9 +1703,7 @@ module Magick
 
     # Read files and concatenate the new images
     def read(*files, &block)
-      if files.length.zero?
-        Kernel.raise ArgumentError, 'no files given'
-      end
+      Kernel.raise ArgumentError, 'no files given' if files.length.zero?
       files.each do |f|
         Magick::Image.read(f, &block).each { |n| @images << n }
       end

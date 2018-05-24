@@ -26,9 +26,7 @@ module Magick
       def initialize(r, cx = 0, cy = 0)
         super()
         r, cx, cy = Magick::RVG.convert_to_float(r, cx, cy)
-        if r < 0
-          raise ArgumentError, "radius must be >= 0 (#{r} given)"
-        end
+        raise ArgumentError, "radius must be >= 0 (#{r} given)" if r < 0
         @primitive = :circle
         @args = [cx, cy, cx + r, cy]
         self

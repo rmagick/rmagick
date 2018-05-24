@@ -139,9 +139,7 @@ module Magick
           pixels.each do |pixel|
             column = Array.new(HISTOGRAM_ROWS).fill { Pixel.new }
             HISTOGRAM_ROWS.times do |y|
-              if y >= HISTOGRAM_ROWS - (hist[pixel] * scale)
-                column[y] = pixel
-              end
+              column[y] = pixel if y >= HISTOGRAM_ROWS - (hist[pixel] * scale)
             end
             histogram.store_pixels(x, 0, 1, HISTOGRAM_ROWS, column)
             x = x.succ
@@ -213,9 +211,7 @@ Colors: #{number_colors}
             blue[pixel.blue & MAX_QUANTUM] += 1
 
             # Only count opacity channel if some pixels are not opaque.
-            unless opaque?
-              alpha[pixel.opacity & MAX_QUANTUM] += 1
-            end
+            alpha[pixel.opacity & MAX_QUANTUM] += 1 unless opaque?
             v = pixel_intensity(pixel)
             int[v] += 1
           end
@@ -291,9 +287,7 @@ end
 
 # Only process first frame if multi-frame image
 image = Magick::Image.read(filename)
-if image.length > 1
-  puts 'Charting 1st image'
-end
+puts 'Charting 1st image' if image.length > 1
 image = image.first
 
 # Give the user something to look at while we're working.

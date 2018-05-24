@@ -144,9 +144,7 @@ module Magick
         puts "\t#{prop}: #{value}\n"
       end
       clip_path = self['8BIM:1999,2998:#1']
-      if clip_path
-        puts "\tClipping path: #{clip_path}\n"
-      end
+      puts "\tClipping path: #{clip_path}\n" if clip_path
       each_profile do |name, value|
         puts "\tProfile-#{name}: #{value.length}\n"
         if name == 'exif'

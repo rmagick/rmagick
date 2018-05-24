@@ -45,9 +45,7 @@ class Import_Export_UT < Test::Unit::TestCase
       when 8
         p = pixels.pack('C*')
         import(p, Magick::CharPixel)
-        if is_hdri_support
-          p = pixels.pack('F*')
-        end
+        p = pixels.pack('F*') if is_hdri_support
         import(p, Magick::QuantumPixel)
 
         spixels = pixels.collect { |px| px * 257 }
@@ -66,9 +64,7 @@ class Import_Export_UT < Test::Unit::TestCase
 
         p = pixels.pack('S*')
         import(p, Magick::ShortPixel)
-        if is_hdri_support
-          p = pixels.pack('F*')
-        end
+        p = pixels.pack('F*') if is_hdri_support
         import(p, Magick::QuantumPixel)
 
         ipixels = pixels.collect { |px| px * 65_537 }
@@ -89,9 +85,7 @@ class Import_Export_UT < Test::Unit::TestCase
         p = pixels.pack('I*')
         import(p, Magick::IntegerPixel)
         import(p, Magick::LongPixel)
-        if is_hdri_support
-          p = pixels.pack('D*')
-        end
+        p = pixels.pack('D*') if is_hdri_support
         import(p, Magick::QuantumPixel)
 
       when 64

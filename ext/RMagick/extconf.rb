@@ -132,9 +132,7 @@ module RMagick
           end
         end
 
-        if RUBY_PLATFORM =~ /darwin/ # osx
-          set_archflags_for_osx
-        end
+        set_archflags_for_osx if RUBY_PLATFORM =~ /darwin/ # osx
 
       elsif RUBY_PLATFORM =~ /mingw/  # mingw
 
@@ -261,14 +259,10 @@ SRC
       archs = $ARCH_FLAG.scan(/-arch\s+(\S+)/).flatten
 
       archs.each do |arch|
-        if fileinfo.include?(arch)
-          archflags << "-arch #{arch}"
-        end
+        archflags << "-arch #{arch}" if fileinfo.include?(arch)
       end
 
-      unless archflags.empty?
-        $ARCH_FLAG = archflags.join(' ')
-      end
+      $ARCH_FLAG = archflags.join(' ') unless archflags.empty?
     end
 
     def search_paths_for_library_for_mingw

@@ -42,12 +42,8 @@ module Magick
         sx = 1.0
         sy = 1.0
 
-        if @vbx_width
-          sx = width / @vbx_width
-        end
-        if @vbx_height
-          sy = height / @vbx_height
-        end
+        sx = width / @vbx_width if @vbx_width
+        sy = height / @vbx_height if @vbx_height
 
         [sx, sy]
       end

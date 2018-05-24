@@ -40,7 +40,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec', '~> 3'
   s.add_development_dependency 'rubocop', '~> 0.50.0'
 
-  if RUBY >= v('2.2.0')
-    s.add_development_dependency 'test-unit', '~> 2'
-  end
+  s.add_development_dependency 'test-unit', '~> 2' if RUBY >= v('2.2.0')
 end

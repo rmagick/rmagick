@@ -199,9 +199,7 @@ module Magick
 
           first_word = true
           text.split(::Magick::RVG::WORD_SEP).each do |word|
-            unless first_word
-              x += x_rel_coords.shift
-            end
+            x += x_rel_coords.shift unless first_word
             first_word = false
             word.split('').each do |glyph|
               render_glyph(@ctx.text_attrs.glyph_orientation_horizontal, x, y, glyph)
