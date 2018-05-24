@@ -212,10 +212,6 @@ Layout/MultilineOperationIndentation:
 Layout/MultilineArrayBraceLayout:
   Enabled: false
 
-# Offense count: 1
-Style/MultilineTernaryOperator:
-  Enabled: false
-
 # Offense count: 3
 # Configuration parameters: EnforcedStyle, MinBodyLength, SupportedStyles.
 Style/Next:
