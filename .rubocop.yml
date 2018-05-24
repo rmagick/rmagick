@@ -278,11 +278,6 @@ Style/RescueModifier:
 Style/Semicolon:
   Enabled: false
 
-# Offense count: 2
-# Configuration parameters: Methods.
-Style/SingleLineBlockParams:
-  Enabled: false
-
 # Need very caution rewrite of code
 Lint/RescueWithoutErrorClass:
   Enabled: false
