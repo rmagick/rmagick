@@ -23,17 +23,6 @@ Lint/ReturnInVoidContext:
     - 'lib/rmagick_internal.rb'
     - 'lib/rvg/units.rb'
 
-# Offense count: 7
-# Cop supports --auto-correct.
-Lint/UnifiedInteger:
-  Exclude:
-    - 'lib/rvg/deep_equal.rb'
-    - 'lib/rvg/misc.rb'
-    - 'lib/rvg/units.rb'
-    - 'test/Image1.rb'
-    - 'test/Info.rb'
-    - 'test/Magick.rb'
-
 # Offense count: 1
 # Configuration parameters: ContextCreatingMethods, MethodCreatingMethods.
 Lint/UselessAccessModifier:
