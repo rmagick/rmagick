@@ -411,8 +411,8 @@ module Magick
 
         def non_default?
           @baseline_shift[-1] != :baseline || @letter_spacing[-1] != 0 ||
-          @word_spacing[-1] != 0 || @writing_mode[-1][/\Alr/].nil? ||
-          @glyph_orientation_horizontal[-1] != 0
+            @word_spacing[-1] != 0 || @writing_mode[-1][/\Alr/].nil? ||
+            @glyph_orientation_horizontal[-1] != 0
         end
 
         def word_spacing
