@@ -313,8 +313,6 @@ module Magick
   class RVG
     class Utility
       class TextAttributes
-        public
-
         WRITING_MODE = %w{lr-tb lr rl-tb rl tb-rl tb}
 
         def initialize

@@ -23,12 +23,6 @@ Lint/ReturnInVoidContext:
     - 'lib/rmagick_internal.rb'
     - 'lib/rvg/units.rb'
 
-# Offense count: 1
-# Configuration parameters: ContextCreatingMethods, MethodCreatingMethods.
-Lint/UselessAccessModifier:
-  Exclude:
-    - 'lib/rvg/misc.rb'
-
 # Offense count: 6
 Lint/Void:
   Exclude:
