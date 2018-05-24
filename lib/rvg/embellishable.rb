@@ -107,7 +107,7 @@ module Magick
           when 2
             x_coords = Array(points[0])
             y_coords = Array(points[1])
-            unless x_coords.length > 0 && y_coords.length > 0
+            unless !x_coords.empty? && !y_coords.empty?
               raise ArgumentError, 'array arguments must contain at least one point'
             end
             n = x_coords.length - y_coords.length

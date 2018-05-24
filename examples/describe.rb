@@ -34,7 +34,7 @@ ARGV.each do |file|
        "pixels/#{img.units == Magick::PixelsPerInchResolution ?
        'inch' : 'centimeter'}"
 
-  if img.properties.length > 0
+  unless img.properties.empty?
     puts '   Properties:'
     img.properties do |name, value|
       puts %Q|      #{name} = "#{value}"|

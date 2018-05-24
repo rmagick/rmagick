@@ -49,7 +49,7 @@ module Magick
 
             # We do our own transformations.
             def add_primitives(gc)  #:nodoc:
-                if @text || @tspans.length > 0
+                if @text || !@tspans.empty?
                     gc.push
                     x = cx + @dx
                     y = cy + @dy

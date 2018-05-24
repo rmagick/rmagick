@@ -257,9 +257,6 @@ Style/RegexpLiteral:
 Style/YodaCondition:
   Enabled: false
 
-Style/ZeroLengthPredicate:
-  Enabled: false
-
 # Fixing this issues cause some test to fail
 Lint/UnifiedInteger:
   Enabled: false
