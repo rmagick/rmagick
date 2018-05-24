@@ -22,11 +22,6 @@ Layout/DotPosition:
 
 # Auto-generated config to be cleaned up and deleted:
 
-# Offense count: 45
-# Configuration parameters: AllowedVariables.
-Style/GlobalVars:
-  Enabled: false
-
 # Offense count: 8
 # Configuration parameters: MinBodyLength.
 Style/GuardClause:
