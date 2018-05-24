@@ -102,7 +102,7 @@ class Image3_UT < Test::Unit::TestCase
       Magick::RShiftQuantumOperator,
       Magick::SubtractQuantumOperator,
       Magick::XorQuantumOperator
-]
+    ]
 
     assert_nothing_raised do
       res = @img.quantum_operator(Magick::AddQuantumOperator, 2)
@@ -501,7 +501,7 @@ class Image3_UT < Test::Unit::TestCase
       Magick::BlackChannel,
       Magick::IndexChannel,
       Magick::AllChannels
-]
+    ]
 
     channels.each do |ch|
       assert_nothing_raised { @img.set_channel_depth(ch, 8) }

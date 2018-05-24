@@ -172,9 +172,6 @@ Style/GlobalVars:
 Style/GuardClause:
   Enabled: false
 
-Layout/IndentArray:
-  Enabled: false
-
 Layout/IndentationConsistency:
   Enabled: false
 

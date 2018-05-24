@@ -161,12 +161,12 @@ class Image2_UT < Test::Unit::TestCase
     assert_not_same(@img, res)
     end
     gravity = [
-    Magick::NorthEastGravity,
+      Magick::NorthEastGravity,
     Magick::EastGravity,
     Magick::SouthWestGravity,
     Magick::SouthGravity,
     Magick::SouthEastGravity
-]
+    ]
 
     # 3-argument form
     gravity.each do |grav|
