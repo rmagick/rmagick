@@ -274,20 +274,3 @@ Style/RedundantParentheses:
 Style/RedundantReturn:
   Exclude:
     - 'lib/rmagick_internal.rb'
-
-# Offense count: 27
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: only_raise, only_fail, semantic
-Style/SignalException:
-  Exclude:
-    - 'doc/ex/get_type_metrics.rb'
-    - 'lib/rmagick_internal.rb'
-    - 'lib/rvg/clippath.rb'
-    - 'lib/rvg/embellishable.rb'
-    - 'lib/rvg/misc.rb'
-    - 'lib/rvg/pathdata.rb'
-    - 'lib/rvg/rvg.rb'
-    - 'lib/rvg/stretchable.rb'
-    - 'lib/rvg/text.rb'
-    - 'lib/rvg/transformable.rb'

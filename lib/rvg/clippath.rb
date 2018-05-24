@@ -24,7 +24,7 @@ module Magick
       def initialize(clip_path_units = 'userSpaceOnUse')
         super()
         unless ['userSpaceOnUse', 'objectBoundingBox'].include?(clip_path_units)
-          fail ArgumentError, "undefined value for clip path units: #{clip_path_units}"
+          raise ArgumentError, "undefined value for clip path units: #{clip_path_units}"
         end
 
         @clip_path_units = clip_path_units

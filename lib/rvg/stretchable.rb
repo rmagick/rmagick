@@ -16,7 +16,7 @@ module Magick
         @align = align.to_s
         if @align != 'none'
           m = /\A(xMin|xMid|xMax)(YMin|YMid|YMax)\z/.match(@align)
-          fail(ArgumentError, "unknown alignment specifier: #{@align}") unless m
+          raise(ArgumentError, "unknown alignment specifier: #{@align}") unless m
         end
 
         if meet_or_slice
@@ -24,7 +24,7 @@ module Magick
           if meet_or_slice == 'meet' || meet_or_slice == 'slice'
             @meet_or_slice = meet_or_slice
           else
-            fail(ArgumentError, "specifier must be `meet' or `slice' (got #{meet_or_slice})")
+            raise(ArgumentError, "specifier must be `meet' or `slice' (got #{meet_or_slice})")
           end
         end
         yield(self) if block_given?
@@ -143,8 +143,8 @@ module Magick
         rescue ArgumentError
           raise ArgumentError, "arguments must be convertable to float (got #{x.class}, #{y.class}, #{width.class}, #{height.class})"
         end
-        fail(ArgumentError, "viewbox width must be > 0 (#{width} given)") unless width >= 0
-        fail(ArgumentError, "viewbox height must be > 0 (#{height} given)") unless height >= 0
+        raise(ArgumentError, "viewbox width must be > 0 (#{width} given)") unless width >= 0
+        raise(ArgumentError, "viewbox height must be > 0 (#{height} given)") unless height >= 0
 
         # return the user-coordinate space attributes if defined
         class << self

@@ -222,7 +222,7 @@ module Magick
 
       class RLTextStrategy < TextStrategy
         def render(x, y, text)
-          fail NotImplementedError
+          raise NotImplementedError
         end
       end     # class RLTextStrategy
 
