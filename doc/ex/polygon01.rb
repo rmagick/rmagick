@@ -15,7 +15,7 @@ rvg = Magick::RVG.new(12.cm, 4.cm).viewbox(0, 0, 1200, 400) do |canvas|
 
   canvas.polygon(850,75,958,137.5,958,262.5,
                  850,325,742,262.6,742,137.5)
-    .styles(:fill=>'lime', :stroke=>'blue', :stroke_width=>10)
+        .styles(:fill=>'lime', :stroke=>'blue', :stroke_width=>10)
 end
 
 rvg.draw.write('polygon01.gif')

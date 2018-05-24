@@ -6,18 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 7
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, IndentationWidth.
-# SupportedStyles: aligned, indented, indented_relative_to_receiver
-Layout/MultilineMethodCallIndentation:
-  Exclude:
-    - 'doc/ex/arcs01.rb'
-    - 'doc/ex/polygon01.rb'
-    - 'doc/ex/quad01.rb'
-    - 'doc/ex/rvg_stroke_dasharray.rb'
-    - 'doc/ex/text01.rb'
-
 # Offense count: 5
 # Cop supports --auto-correct.
 Layout/SpaceAfterNot:
