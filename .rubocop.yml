@@ -283,11 +283,6 @@ Style/Semicolon:
 Style/SingleLineBlockParams:
   Enabled: false
 
-# Offense count: 7
-# Cop supports --auto-correct.
-Layout/SpaceBeforeFirstArg:
-  Enabled: false
-
 # Need very caution rewrite of code
 Lint/RescueWithoutErrorClass:
   Enabled: false
