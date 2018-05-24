@@ -140,7 +140,7 @@ class Image1_UT < Test::Unit::TestCase
     img = Magick::Image.read('cmyk.jpg'), first
     assert_nothing_raised { img.add_profile('cmyk.icm') }
     assert_nothing_raised { img.add_profile('srgb.icm') }
-    img.each_profile { |name, value| assert_equal('icc', name) }
+    img.each_profile { |name, _value| assert_equal('icc', name) }
     assert_nothing_raised { img.delete_profile('icc') }
   end
 

@@ -79,7 +79,7 @@ class ImageList1_UT < Test::Unit::TestCase
 
   def test_any
     q = nil
-    assert_nothing_raised { q = @list.all? { |i| false } }
+    assert_nothing_raised { q = @list.all? { |_i| false } }
     assert(!q)
     assert_nothing_raised { q = @list.all? { |i| i.class == Magick::Image } }
     assert(q)
@@ -389,7 +389,7 @@ class ImageList1_UT < Test::Unit::TestCase
   def test_enumerables
     assert_nothing_raised { @list.detect { true } }
     assert_nothing_raised do
-      @list.each_with_index { |img, n| assert_instance_of(Magick::Image, img) }
+      @list.each_with_index { |img, _n| assert_instance_of(Magick::Image, img) }
     end
     assert_nothing_raised { @list.entries }
     assert_nothing_raised { @list.include?(@list[0]) }
@@ -483,7 +483,7 @@ class ImageList1_UT < Test::Unit::TestCase
   def test___map__
     img = @list[0]
     assert_nothing_raised do
-      @list.__map__ { |x| img }
+      @list.__map__ { |_x| img }
     end
     assert_instance_of(Magick::ImageList, @list)
     assert_raise(ArgumentError) { @list.__map__ { 2 } }

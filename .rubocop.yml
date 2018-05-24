@@ -46,11 +46,6 @@ Lint/ShadowingOuterLocalVariable:
 Lint/UnderscorePrefixedVariableName:
   Enabled: false
 
-# Offense count: 9
-# Cop supports --auto-correct.
-Lint/UnusedBlockArgument:
-  Enabled: false
-
 # Offense count: 183
 Metrics/AbcSize:
   Max: 559

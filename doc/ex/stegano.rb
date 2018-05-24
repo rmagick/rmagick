@@ -31,7 +31,7 @@ begin
 
   # This can take some time. Keep track of how far along we are.
 
-  monitor = proc do |text, quantum, span|
+  monitor = proc do |_text, quantum, span|
     printf("Extracting watermark...%3.0f%% complete\n", ((1.0 - (quantum / span.to_f)) * 100.0))
     true
   end
