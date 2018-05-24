@@ -21,7 +21,7 @@ module Magick
 
         if meet_or_slice
           meet_or_slice = meet_or_slice.to_s.downcase
-          if meet_or_slice == 'meet' || meet_or_slice == 'slice'
+          if ['meet', 'slice'].include?(meet_or_slice)
             @meet_or_slice = meet_or_slice
           else
             raise(ArgumentError, "specifier must be `meet' or `slice' (got #{meet_or_slice})")

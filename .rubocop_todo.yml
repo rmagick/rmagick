@@ -219,12 +219,6 @@ Style/MethodMissing:
     - 'lib/rmagick_internal.rb'
     - 'lib/rvg/misc.rb'
 
-# Offense count: 3
-Style/MultipleComparison:
-  Exclude:
-    - 'lib/rvg/misc.rb'
-    - 'lib/rvg/stretchable.rb'
-
 # Offense count: 158
 # Cop supports --auto-correct.
 Style/MutableConstant:
