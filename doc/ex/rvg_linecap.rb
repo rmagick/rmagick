@@ -3,12 +3,12 @@ require 'rvg/rvg'
 
 Magick::RVG.dpi = 90
 
-BUTT   = {:stroke=>'black', :stroke_width=>70, :stroke_linecap=>'butt'}
-ROUND  = {:stroke=>'black', :stroke_width=>70, :stroke_linecap=>'round'}
-SQUARE = {:stroke=>'black', :stroke_width=>70, :stroke_linecap=>'square'}
-THIN   = {:stroke=>'#ffcccc', :stroke_width=>5}
-TEXT   = {:text_anchor=>'middle', :font_size=>50, :font_family=>'Verdana'}
-CIRCLE = {:fill=>'#ffcccc', :stroke=>'none'}
+BUTT   = { :stroke=>'black', :stroke_width=>70, :stroke_linecap=>'butt' }
+ROUND  = { :stroke=>'black', :stroke_width=>70, :stroke_linecap=>'round' }
+SQUARE = { :stroke=>'black', :stroke_width=>70, :stroke_linecap=>'square' }
+THIN   = { :stroke=>'#ffcccc', :stroke_width=>5 }
+TEXT   = { :text_anchor=>'middle', :font_size=>50, :font_family=>'Verdana' }
+CIRCLE = { :fill=>'#ffcccc', :stroke=>'none' }
 
 rvg = Magick::RVG.new(12.cm, 2.cm).viewbox(0, 0, 1200, 200) do |canvas|
   canvas.background_fill = 'white'

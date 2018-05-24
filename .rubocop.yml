@@ -322,12 +322,6 @@ Layout/SpaceInsideBlockBraces:
 Layout/SpaceInsideBrackets:
   Enabled: false
 
-# Offense count: 68
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, EnforcedStyleForEmptyBraces, SupportedStyles.
-Layout/SpaceInsideHashLiteralBraces:
-  Enabled: false
-
 # Need very caution rewrite of code
 Lint/RescueWithoutErrorClass:
   Enabled: false

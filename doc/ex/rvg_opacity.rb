@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby -w
 require 'rvg/rvg'
 
-FONT_STYLES = {:font_size=>20, :font_weight=>'bold', :fill=>'white'}
+FONT_STYLES = { :font_size=>20, :font_weight=>'bold', :fill=>'white' }
 
 rvg = Magick::RVG.new(450, 150) do |canvas|
   canvas.background_fill = 'white'
