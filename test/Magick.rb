@@ -29,7 +29,7 @@ class Magick::AnchorType
   end
 end
 
-class Magick_UT < Test::Unit::TestCase
+class MagickUT < Test::Unit::TestCase
   def test_colors
     res = nil
     assert_nothing_raised { res = Magick.colors }
@@ -319,5 +319,5 @@ class Magick_UT < Test::Unit::TestCase
 end
 
 if $PROGRAM_NAME == __FILE__
-  Test::Unit::UI::Console::TestRunner.run(Magick_UT) unless RUBY_VERSION[/^1\.9|^2/]
+  Test::Unit::UI::Console::TestRunner.run(MagickUT) unless RUBY_VERSION[/^1\.9|^2/]
 end

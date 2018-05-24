@@ -6,7 +6,7 @@ require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
 
 # TODO: improve exif tests - need a benchmark image with EXIF data
 
-class Image2_UT < Test::Unit::TestCase
+class Image2UT < Test::Unit::TestCase
   FreezeError = RUBY_VERSION[/^1\.9|^2/] ? RuntimeError : TypeError
 
   def setup
@@ -1296,5 +1296,5 @@ end
 if $PROGRAM_NAME == __FILE__
   IMAGES_DIR = '../doc/ex/images'
   FILES = Dir[IMAGES_DIR + '/Button_*.gif']
-  Test::Unit::UI::Console::TestRunner.run(Image2_UT) unless RUBY_VERSION[/^1\.9|^2/]
+  Test::Unit::UI::Console::TestRunner.run(Image2UT) unless RUBY_VERSION[/^1\.9|^2/]
 end

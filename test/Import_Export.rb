@@ -2,7 +2,7 @@ require 'rmagick'
 require 'test/unit'
 require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
 
-class Import_Export_UT < Test::Unit::TestCase
+class ImportExportUT < Test::Unit::TestCase
   def setup
     @test = Magick::Image.read(File.join(IMAGES_DIR, 'Flower_Hat.jpg')).first
   end
@@ -111,5 +111,5 @@ end
 
 if $PROGRAM_NAME == __FILE__
   IMAGES_DIR = '../doc/ex/images'
-  Test::Unit::UI::Console::TestRunner.run(Import_Export_UT) unless RUBY_VERSION[/^1\.9|^2/]
+  Test::Unit::UI::Console::TestRunner.run(ImportExportUT) unless RUBY_VERSION[/^1\.9|^2/]
 end

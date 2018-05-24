@@ -22,10 +22,6 @@ Layout/DotPosition:
 
 # Auto-generated config to be cleaned up and deleted:
 
-# Offense count: 13
-Naming/ClassAndModuleCamelCase:
-  Enabled: false
-
 # Offense count: 6
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 Style/ClassAndModuleChildren:
