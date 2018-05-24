@@ -82,16 +82,16 @@ module Magick
       def rotate(angle, *args)
         begin
           case args.length
-            when 0
-              @transforms << [:rotate, [Float(angle)]]
-            when 2
-              cx = Float(args[0])
-              cy = Float(args[1])
-              @transforms << [:translate, [cx, cy]]
-              @transforms << [:rotate, [angle]]
-              @transforms << [:translate, [-cx, -cy]]
-            else
-              raise ArgumentError, "wrong number of arguments (#{args.length} for 1 or 3)"
+          when 0
+            @transforms << [:rotate, [Float(angle)]]
+          when 2
+            cx = Float(args[0])
+            cy = Float(args[1])
+            @transforms << [:translate, [cx, cy]]
+            @transforms << [:rotate, [angle]]
+            @transforms << [:translate, [-cx, -cy]]
+          else
+            raise ArgumentError, "wrong number of arguments (#{args.length} for 1 or 3)"
           end
         rescue ArgumentError
           raise ArgumentError, "arguments must be convertable to float (got #{[angle, *args].collect(&:class).join(', ')})"

@@ -100,19 +100,19 @@ module Magick
     class PolyShape < Shape
       def polypoints(points)
         case points.length
-          when 1
-            points = Array(points[0])
-          when 2
-            x_coords = Array(points[0])
-            y_coords = Array(points[1])
-            unless !x_coords.empty? && !y_coords.empty?
-              raise ArgumentError, 'array arguments must contain at least one point'
-            end
-            n = x_coords.length - y_coords.length
-            short = n > 0 ? y_coords : x_coords
-            olen = short.length
-            n.abs.times { |x| short << short[x % olen] }
-            points = x_coords.zip(y_coords).flatten
+        when 1
+          points = Array(points[0])
+        when 2
+          x_coords = Array(points[0])
+          y_coords = Array(points[1])
+          unless !x_coords.empty? && !y_coords.empty?
+            raise ArgumentError, 'array arguments must contain at least one point'
+          end
+          n = x_coords.length - y_coords.length
+          short = n > 0 ? y_coords : x_coords
+          olen = short.length
+          n.abs.times { |x| short << short[x % olen] }
+          points = x_coords.zip(y_coords).flatten
         end
         n = points.length
         if n < 4 || n.odd?

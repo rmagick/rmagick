@@ -22,11 +22,6 @@ Layout/DotPosition:
 
 # Auto-generated config to be cleaned up and deleted:
 
-# Offense count: 63
-# Configuration parameters: IndentWhenRelativeTo, SupportedStyles, IndentOneStep.
-Layout/CaseIndentation:
-  Enabled: false
-
 # Offense count: 13
 Naming/ClassAndModuleCamelCase:
   Enabled: false

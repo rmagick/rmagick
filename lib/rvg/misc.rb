@@ -131,15 +131,15 @@ module Magick
                 glyph_dimensions.ascent - glyph_dimensions.descent
               end
           case @ctx.text_attrs.baseline_shift
-            when :baseline
-              x = 0
-            when :super
-              x = -x
-            when /[-+]?(\d+)%/
-              m = Regexp.last_match(1) == '-' ? -1.0 : 1.0
-              x = (m * x * Regexp.last_match(1).to_f / 100.0)
-            else
-              x = -@ctx.text_attrs.baseline_shift
+          when :baseline
+            x = 0
+          when :super
+            x = -x
+          when /[-+]?(\d+)%/
+            m = Regexp.last_match(1) == '-' ? -1.0 : 1.0
+            x = (m * x * Regexp.last_match(1).to_f / 100.0)
+          else
+            x = -@ctx.text_attrs.baseline_shift
           end
           x
         end
@@ -185,14 +185,14 @@ module Magick
 
           # Align the first glyph
           case @ctx.text_attrs.glyph_orientation_horizontal
-            when 90
-              y -= dy
-            when 180
-              x += x_rel_coords.shift
-              x_rel_coords << 0
-              y -= dy
-            when 270
-              x += x_rel_coords[0]
+          when 90
+            y -= dy
+          when 180
+            x += x_rel_coords.shift
+            x_rel_coords << 0
+            y -= dy
+          when 270
+            x += x_rel_coords[0]
           end
 
           y += shift_baseline(@ctx.text_attrs.glyph_orientation_horizontal, text[0, 1])
@@ -247,17 +247,17 @@ module Magick
           # is aligned on x and its top is aligned on y.
 
           case @ctx.text_attrs.glyph_orientation_vertical
-            when 0
-              x -= x_rel_coords.max / 2
-              y += y_rel_coords[0]
-            when 90
-              x -= x_rel_coords.max / 2
-            when 180
-              x += x_rel_coords.max / 2
-            when 270
-              x += x_rel_coords.max / 2
-              y += y_rel_coords.shift
-              y_rel_coords << 0 # since we used an element we need to add a dummy
+          when 0
+            x -= x_rel_coords.max / 2
+            y += y_rel_coords[0]
+          when 90
+            x -= x_rel_coords.max / 2
+          when 180
+            x += x_rel_coords.max / 2
+          when 270
+            x += x_rel_coords.max / 2
+            y += y_rel_coords.shift
+            y_rel_coords << 0 # since we used an element we need to add a dummy
           end
 
           x -= shift_baseline(@ctx.text_attrs.glyph_orientation_vertical, text[0, 1])
@@ -271,10 +271,10 @@ module Magick
             first_word = false
             word.split('').each do |glyph|
               case @ctx.text_attrs.glyph_orientation_vertical.to_i
-                when 0, 90, 270
-                  x_shift = (dx - x_rel_coords.shift) / 2
-                when 180
-                  x_shift = -(dx - x_rel_coords.shift) / 2
+              when 0, 90, 270
+                x_shift = (dx - x_rel_coords.shift) / 2
+              when 180
+                x_shift = -(dx - x_rel_coords.shift) / 2
               end
 
               render_glyph(@ctx.text_attrs.glyph_orientation_vertical, x + x_shift, y, glyph)
