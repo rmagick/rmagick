@@ -22,7 +22,7 @@ rvg = Magick::RVG.new(12.cm, 5.25.cm).viewbox(0, 0, 1200, 400) do |canvas|
            a25,75 -30 0,1 50,-25 l 50,-25
            a25,100 -30 0,1 50,-25 l 50,-25
            END_PATH
-         ).styles(:fill => 'none', :stroke => 'red', :stroke_width => 5)
+             ).styles(:fill => 'none', :stroke => 'red', :stroke_width => 5)
 end
 
 rvg.draw.write('arcs01.gif')
