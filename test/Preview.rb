@@ -35,7 +35,8 @@ class Preview_UT < Test::Unit::TestCase
       Magick::WavePreview,
       Magick::OilPaintPreview,
       Magick::CharcoalDrawingPreview,
-      Magick::JPEGPreview]
+      Magick::JPEGPreview
+]
 
     hat = Magick::Image.read(IMAGES_DIR + '/Flower_Hat.jpg').first
     assert_nothing_raised do

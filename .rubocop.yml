@@ -209,9 +209,6 @@ Naming/MethodName:
 Layout/MultilineOperationIndentation:
   Enabled: false
 
-Layout/MultilineArrayBraceLayout:
-  Enabled: false
-
 # Offense count: 3
 # Configuration parameters: EnforcedStyle, MinBodyLength, SupportedStyles.
 Style/Next:
