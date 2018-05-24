@@ -14,13 +14,13 @@ gc.pointsize(16)
 gc.gravity(Magick::CenterGravity)
 
 gc.text_undercolor('cyan')
-gc.text(0,-20,"text_undercolor('cyan')")
+gc.text(0, -20, "text_undercolor('cyan')")
 
 gc.text_undercolor('yellow')
-gc.text(0,0,"text_undercolor('yellow')")
+gc.text(0, 0, "text_undercolor('yellow')")
 
 gc.text_undercolor('pink')
-gc.text(0,20,"text_undercolor('pink')")
+gc.text(0, 20, "text_undercolor('pink')")
 
 gc.draw(canvas)
 

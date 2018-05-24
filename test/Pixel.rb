@@ -81,8 +81,8 @@ class Pixel_UT < Test::Unit::TestCase
     end
 
     # test percentages
-    args = ['20%','20%','20%','20%']
-    args2 = [360.0 / 5,255.0 / 5,255.0 / 5,1.0 / 5]
+    args = ['20%', '20%', '20%', '20%']
+    args2 = [360.0 / 5, 255.0 / 5, 255.0 / 5, 1.0 / 5]
     px = Magick::Pixel.from_hsla(*args)
     hsla = px.to_hsla
     px2 = Magick::Pixel.from_hsla(*args2)

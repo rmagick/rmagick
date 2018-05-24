@@ -17,7 +17,7 @@ begin
   sign.scale!(150.0 / sign.rows)
 
   # Change the white pixels in the sign to transparent.
-  sign = sign.matte_replace(0,0)
+  sign = sign.matte_replace(0, 0)
 
   # Create a "nosnake" draw object. Add a composite
   # primitive that composites the "no" symbol over

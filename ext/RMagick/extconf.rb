@@ -9,7 +9,7 @@ module RMagick
     require 'rmagick/version'
     RMAGICK_VERS = ::Magick::VERSION
     MIN_RUBY_VERS = ::Magick::MIN_RUBY_VERSION
-    MIN_RUBY_VERS_NO = MIN_RUBY_VERS.tr('.','').to_i
+    MIN_RUBY_VERS_NO = MIN_RUBY_VERS.tr('.', '').to_i
 
     attr_reader :headers
     def initialize
@@ -324,7 +324,7 @@ END_MSWIN
 
     def assert_minimum_ruby_version!
       unless checking_for("Ruby version >= #{MIN_RUBY_VERS}") do
-        version = RUBY_VERSION.tr('.','').to_i
+        version = RUBY_VERSION.tr('.', '').to_i
         version >= MIN_RUBY_VERS_NO
       end
         exit_failure "Can't install RMagick #{RMAGICK_VERS}. Ruby #{MIN_RUBY_VERS} or later required.\n"

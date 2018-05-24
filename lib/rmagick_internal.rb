@@ -864,7 +864,7 @@ module Magick
         if exif_data
           exif_data.split("\n").each do |exif|
             tag, value = exif.split('=')
-            tag = tag[1,4].hex
+            tag = tag[1, 4].hex
             hash[tag] = value
           end
         end
@@ -937,7 +937,7 @@ module Magick
     def matte_point(x, y)
       f = copy
       f.opacity = OpaqueOpacity unless f.matte
-      pixel = f.pixel_color(x,y)
+      pixel = f.pixel_color(x, y)
       pixel.opacity = TransparentOpacity
       f.pixel_color(x, y, pixel)
       f
@@ -1312,7 +1312,7 @@ module Magick
         # Find last instance of "current" in the list.
         # If "current" isn't in the list, set current to last image.
         self.scene = length - 1
-        each_with_index do |f,i|
+        each_with_index do |f, i|
           if f.__id__ == current
             self.scene = i
           end
@@ -1921,10 +1921,10 @@ module Magick
       img.erase!                # sets image to background color
       pixels = Array.new([img.rows, img.columns].max, @hatchpixel)
       @dist.step((img.columns - 1) / @dist * @dist, @dist) do |x|
-        img.store_pixels(x,0,1,img.rows,pixels)
+        img.store_pixels(x, 0, 1, img.rows, pixels)
       end
       @dist.step((img.rows - 1) / @dist * @dist, @dist) do |y|
-        img.store_pixels(0,y,img.columns,1,pixels)
+        img.store_pixels(0, y, img.columns, 1, pixels)
       end
     end
   end

@@ -12,10 +12,10 @@ img.view(10, 5, 20, 20) do |view|
 
   # Change the top and bottom rows to red.
   view[0][] = 'red'
-  view[-1,1][] = 'red'
+  view[-1, 1][] = 'red'
 
   # Set 6 pixels to black.
-  view[[13,15]][[12,14,16]] = 'black'
+  view[[13, 15]][[12, 14, 16]] = 'black'
 
   # Set 1 pixel to yellow.
   view[5][7] = 'yellow'
@@ -26,7 +26,7 @@ img.view(10, 5, 20, 20) do |view|
 
   # Change the blue channel of 8 pixels
   # on column 10.
-  view[4,8][10].blue = Magick::QuantumRange
+  view[4, 8][10].blue = Magick::QuantumRange
 end
 
 img.scale(5).write('viewex.gif')

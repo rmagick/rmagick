@@ -59,11 +59,11 @@ class Image1_UT < Test::Unit::TestCase
 
   def test_adaptive_resize
     assert_nothing_raised do
-      res = @img.adaptive_resize(10,10)
+      res = @img.adaptive_resize(10, 10)
       assert_instance_of(Magick::Image, res)
     end
     assert_nothing_raised { @img.adaptive_resize(2) }
-    assert_raise(ArgumentError) { @img.adaptive_resize(10,10,10) }
+    assert_raise(ArgumentError) { @img.adaptive_resize(10, 10, 10) }
     assert_raise(ArgumentError) { @img.adaptive_resize }
   end
 
@@ -95,13 +95,13 @@ class Image1_UT < Test::Unit::TestCase
       assert_instance_of(Magick::Image, res)
     end
     assert_nothing_raised { @img.adaptive_threshold(2) }
-    assert_nothing_raised { @img.adaptive_threshold(2,4) }
-    assert_nothing_raised { @img.adaptive_threshold(2,4,1) }
-    assert_raise(ArgumentError) { @img.adaptive_threshold(2,4,1,2) }
+    assert_nothing_raised { @img.adaptive_threshold(2, 4) }
+    assert_nothing_raised { @img.adaptive_threshold(2, 4, 1) }
+    assert_raise(ArgumentError) { @img.adaptive_threshold(2, 4, 1, 2) }
   end
 
   def test_add_compose_mask
-    mask = Magick::Image.new(20,20)
+    mask = Magick::Image.new(20, 20)
     assert_nothing_raised { @img.add_compose_mask(mask) }
     assert_nothing_raised { @img.delete_compose_mask }
     assert_nothing_raised { @img.add_compose_mask(mask) }
@@ -137,7 +137,7 @@ class Image1_UT < Test::Unit::TestCase
   end
 
   def add_delete_profile
-    img = Magick::Image.read('cmyk.jpg'),first
+    img = Magick::Image.read('cmyk.jpg'), first
     assert_nothing_raised { img.add_profile('cmyk.icm') }
     assert_nothing_raised { img.add_profile('srgb.icm') }
     img.each_profile { |name, value| assert_equal('icc', name) }
@@ -221,7 +221,7 @@ class Image1_UT < Test::Unit::TestCase
   end
 
   def test_blend
-    @img2 = Magick::Image.new(20,20) { self.background_color = 'black' }
+    @img2 = Magick::Image.new(20, 20) { self.background_color = 'black' }
     assert_nothing_raised { @img.blend(@img2, 0.25) }
     res = @img.blend(@img2, 0.25)
     assert_instance_of(Magick::Image, res)
@@ -245,13 +245,13 @@ class Image1_UT < Test::Unit::TestCase
   def test_blur_channel
     assert_nothing_raised { @img.blur_channel }
     assert_nothing_raised { @img.blur_channel(1) }
-    assert_nothing_raised { @img.blur_channel(1,2) }
-    assert_nothing_raised { @img.blur_channel(1,2, Magick::RedChannel) }
-    assert_nothing_raised { @img.blur_channel(1,2, Magick::RedChannel, Magick::BlueChannel, Magick::GreenChannel, Magick::OpacityChannel) }
-    assert_nothing_raised { @img.blur_channel(1,2, Magick::CyanChannel, Magick::MagentaChannel, Magick::YellowChannel, Magick::BlackChannel) }
-    assert_nothing_raised { @img.blur_channel(1,2, Magick::GrayChannel) }
-    assert_nothing_raised { @img.blur_channel(1,2, Magick::AllChannels) }
-    assert_raise(TypeError) { @img.blur_channel(1,2,2) }
+    assert_nothing_raised { @img.blur_channel(1, 2) }
+    assert_nothing_raised { @img.blur_channel(1, 2, Magick::RedChannel) }
+    assert_nothing_raised { @img.blur_channel(1, 2, Magick::RedChannel, Magick::BlueChannel, Magick::GreenChannel, Magick::OpacityChannel) }
+    assert_nothing_raised { @img.blur_channel(1, 2, Magick::CyanChannel, Magick::MagentaChannel, Magick::YellowChannel, Magick::BlackChannel) }
+    assert_nothing_raised { @img.blur_channel(1, 2, Magick::GrayChannel) }
+    assert_nothing_raised { @img.blur_channel(1, 2, Magick::AllChannels) }
+    assert_raise(TypeError) { @img.blur_channel(1, 2, 2) }
     res = @img.blur_channel
     assert_instance_of(Magick::Image,  res)
   end
@@ -259,8 +259,8 @@ class Image1_UT < Test::Unit::TestCase
   def test_blur_image
     assert_nothing_raised { @img.blur_image }
     assert_nothing_raised { @img.blur_image(1) }
-    assert_nothing_raised { @img.blur_image(1,2) }
-    assert_raise(ArgumentError) { @img.blur_image(1,2,3) }
+    assert_nothing_raised { @img.blur_image(1, 2) }
+    assert_raise(ArgumentError) { @img.blur_image(1, 2, 3) }
     res = @img.blur_image
     assert_instance_of(Magick::Image,  res)
   end
@@ -279,10 +279,10 @@ class Image1_UT < Test::Unit::TestCase
   def test_border
     assert_nothing_raised { @img.border(2, 2, 'red') }
     assert_nothing_raised { @img.border!(2, 2, 'red') }
-    res = @img.border(2,2, 'red')
+    res = @img.border(2, 2, 'red')
     assert_instance_of(Magick::Image,  res)
     @img.freeze
-    assert_raise(FreezeError) { @img.border!(2,2, 'red') }
+    assert_raise(FreezeError) { @img.border!(2, 2, 'red') }
   end
 
   def test_change_geometry
@@ -397,8 +397,8 @@ class Image1_UT < Test::Unit::TestCase
   end
 
   def test_clut_channel
-    img = Magick::Image.new(20,20) { self.colorspace = Magick::GRAYColorspace }
-    clut = Magick::Image.new(20,1) { self.background_color = 'red' }
+    img = Magick::Image.new(20, 20) { self.colorspace = Magick::GRAYColorspace }
+    clut = Magick::Image.new(20, 1) { self.background_color = 'red' }
     res = nil
     assert_nothing_raised { res = img.clut_channel(clut) }
     assert_same(res, img)
@@ -508,10 +508,10 @@ class Image1_UT < Test::Unit::TestCase
   end
 
   def test_combine
-    r = Magick::Image.new(20,20) { self.background_color = 'red' }
-    g = Magick::Image.new(20,20) { self.background_color = 'green' }
-    b = Magick::Image.new(20,20) { self.background_color = 'blue' }
-    a = Magick::Image.new(20,20) { self.background_color = 'transparent' }
+    r = Magick::Image.new(20, 20) { self.background_color = 'red' }
+    g = Magick::Image.new(20, 20) { self.background_color = 'green' }
+    b = Magick::Image.new(20, 20) { self.background_color = 'blue' }
+    a = Magick::Image.new(20, 20) { self.background_color = 'transparent' }
     assert_nothing_raised { Magick::Image.combine(r) }
     assert_nothing_raised { Magick::Image.combine(r, g) }
     assert_nothing_raised { Magick::Image.combine(r, g, b) }

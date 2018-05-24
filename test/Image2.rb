@@ -53,8 +53,8 @@ class Image2_UT < Test::Unit::TestCase
   end
 
   def test_composite_tiled
-    bg = Magick::Image.new(200,200)
-    fg = Magick::Image.new(50,100) { self.background_color = 'black' }
+    bg = Magick::Image.new(200, 200)
+    fg = Magick::Image.new(50, 100) { self.background_color = 'black' }
     res = nil
     assert_nothing_raised do
     res = bg.composite_tiled(fg)
@@ -270,7 +270,7 @@ class Image2_UT < Test::Unit::TestCase
     if method == '[]='
       assert_raises(Magick::DestroyedImageError) { @img['foo'] = 1 }
     elsif method == 'difference'
-      other = Magick::Image.new(20,20)
+      other = Magick::Image.new(20, 20)
       assert_raises(Magick::DestroyedImageError) { @img.difference(other) }
     elsif method == 'get_iptc_dataset'
       assert_raises(Magick::DestroyedImageError) { @img.get_iptc_dataset('x') }
@@ -347,7 +347,7 @@ class Image2_UT < Test::Unit::TestCase
   end
 
   def test_displace
-    @img2 = Magick::Image.new(20,20) { self.background_color = 'black' }
+    @img2 = Magick::Image.new(20, 20) { self.background_color = 'black' }
     assert_nothing_raised { @img.displace(@img2, 25) }
     res = @img.displace(@img2, 25)
     assert_instance_of(Magick::Image, res)
@@ -393,11 +393,11 @@ class Image2_UT < Test::Unit::TestCase
 
   def test_distort
     @img = Magick::Image.new(200, 200)
-    assert_nothing_raised { @img.distort(Magick::AffineDistortion, [2,60, 2,60,     32,60, 32,60,    2,30, 17,35]) }
-    assert_nothing_raised { @img.distort(Magick::AffineProjectionDistortion, [1,0,0,1,0,0]) }
-    assert_nothing_raised { @img.distort(Magick::BilinearDistortion, [7,40, 4,30,   4,124, 4,123,   85,122, 100,123,   85,2, 100,30]) }
-    assert_nothing_raised { @img.distort(Magick::PerspectiveDistortion, [7,40, 4,30,   4,124, 4,123,   85,122, 100,123,   85,2, 100,30]) }
-    assert_nothing_raised { @img.distort(Magick::ScaleRotateTranslateDistortion, [28,24,  0.4,0.8 - 110,  37.5,60]) }
+    assert_nothing_raised { @img.distort(Magick::AffineDistortion, [2, 60, 2, 60,     32, 60, 32, 60,    2, 30, 17, 35]) }
+    assert_nothing_raised { @img.distort(Magick::AffineProjectionDistortion, [1, 0, 0, 1, 0, 0]) }
+    assert_nothing_raised { @img.distort(Magick::BilinearDistortion, [7, 40, 4, 30,   4, 124, 4, 123,   85, 122, 100, 123,   85, 2, 100, 30]) }
+    assert_nothing_raised { @img.distort(Magick::PerspectiveDistortion, [7, 40, 4, 30,   4, 124, 4, 123,   85, 122, 100, 123,   85, 2, 100, 30]) }
+    assert_nothing_raised { @img.distort(Magick::ScaleRotateTranslateDistortion, [28, 24,  0.4, 0.8 - 110,  37.5, 60]) }
     assert_raise(ArgumentError) { @img.distort }
     assert_raise(ArgumentError) { @img.distort(Magick::AffineDistortion) }
     assert_raise(TypeError) { @img.distort(1, [1]) }
@@ -419,7 +419,7 @@ class Image2_UT < Test::Unit::TestCase
     assert_raise(ArgumentError) { @img.distortion_channel }
     assert_raise(ArgumentError) { @img.distortion_channel(@img) }
 
-    img = Magick::Image.new(20,20)
+    img = Magick::Image.new(20, 20)
     img.destroy!
     assert_raise(Magick::DestroyedImageError) { @img.distortion_channel(img, Magick::MeanSquaredErrorMetric) }
   end
@@ -513,12 +513,12 @@ class Image2_UT < Test::Unit::TestCase
   def test_excerpt
     res = nil
     img = Magick::Image.new(200, 200)
-    assert_nothing_raised { res = @img.excerpt(20,20,50,100) }
+    assert_nothing_raised { res = @img.excerpt(20, 20, 50, 100) }
     assert_not_same(img, res)
     assert_equal(50, res.columns)
     assert_equal(100, res.rows)
 
-    assert_nothing_raised { img.excerpt!(20,20,50,100) }
+    assert_nothing_raised { img.excerpt!(20, 20, 50, 100) }
     assert_equal(50, img.columns)
     assert_equal(100, img.rows)
   end
@@ -928,8 +928,8 @@ class Image2_UT < Test::Unit::TestCase
     assert_not_same(@img, res)
 
     assert_nothing_raised { @img.level_colors('black') }
-    assert_nothing_raised { @img.level_colors('black', Pixel.new(0,0,0)) }
-    assert_nothing_raised { @img.level_colors(Pixel.new(0,0,0), Pixel.new(Magick::QuantumRange,Magick::QuantumRange,Magick::QuantumRange)) }
+    assert_nothing_raised { @img.level_colors('black', Pixel.new(0, 0, 0)) }
+    assert_nothing_raised { @img.level_colors(Pixel.new(0, 0, 0), Pixel.new(Magick::QuantumRange, Magick::QuantumRange, Magick::QuantumRange)) }
     assert_nothing_raised { @img.level_colors('black', 'white') }
     assert_nothing_raised { @img.level_colors('black', 'white', false) }
     # too many arguments
@@ -1016,7 +1016,7 @@ class Image2_UT < Test::Unit::TestCase
   end
 
   def test_mask
-    cimg = Magick::Image.new(10,10)
+    cimg = Magick::Image.new(10, 10)
     assert_nothing_raised { @img.mask(cimg) }
     res = nil
     assert_nothing_raised { res = @img.mask }
@@ -1111,7 +1111,7 @@ class Image2_UT < Test::Unit::TestCase
 
   def test_monochrome?
 #       assert_block { @img.monochrome? }
-    @img.pixel_color(0,0, 'red')
+    @img.pixel_color(0, 0, 'red')
     assert_block { !@img.monochrome? }
   end
 
@@ -1260,10 +1260,10 @@ class Image2_UT < Test::Unit::TestCase
 
   def test_pixel_color
     assert_nothing_raised do
-    res = @img.pixel_color(0,0)
+    res = @img.pixel_color(0, 0)
     assert_instance_of(Magick::Pixel, res)
     end
-    res = @img.pixel_color(0,0)
+    res = @img.pixel_color(0, 0)
     assert_equal(@img.background_color, res.to_color)
     res = @img.pixel_color(0, 0, 'red')
     assert_equal('white', res.to_color)
@@ -1271,7 +1271,7 @@ class Image2_UT < Test::Unit::TestCase
     assert_equal('red', res.to_color)
 
     blue = Magick::Pixel.new(0, 0, Magick::QuantumRange)
-    assert_nothing_raised { @img.pixel_color(0,0, blue) }
+    assert_nothing_raised { @img.pixel_color(0, 0, blue) }
     # If args are out-of-bounds return the background color
     img = Magick::Image.new(10, 10) { self.background_color = 'blue' }
     assert_equal('blue', img.pixel_color(50, 50).to_color)

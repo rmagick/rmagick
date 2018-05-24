@@ -21,7 +21,7 @@ cells.new_image buttons.columns * 5, buttons.rows * 5 do
 end
 cells.matte = true
 
-offset = Magick::Rectangle.new(0,0,0,0)
+offset = Magick::Rectangle.new(0, 0, 0, 0)
 
 # Create 2 arrays from which we can randomly choose row,col pairs
 row = [0] * 5 + [1] * 5 + [2] * 5 + [3] * 5 + [4] * 5

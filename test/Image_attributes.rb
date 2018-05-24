@@ -532,7 +532,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_equal(0, page.height)
     assert_equal(0, page.x)
     assert_equal(0, page.y)
-    page = Magick::Rectangle.new(1,2,3,4)
+    page = Magick::Rectangle.new(1, 2, 3, 4)
     assert_nothing_raised { @img.page = page }
     assert_equal(1, page.width)
     assert_equal(2, page.height)
@@ -654,10 +654,10 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_raise(FreezeError) { @img.background_color = 'xxx' }
     assert_raise(FreezeError) { @img.blur = 50 }
     assert_raise(FreezeError) { @img.border_color = 'xxx' }
-    rp = Magick::Point.new(1,1)
-    gp = Magick::Point.new(1,1)
-    bp = Magick::Point.new(1,1)
-    wp = Magick::Point.new(1,1)
+    rp = Magick::Point.new(1, 1)
+    gp = Magick::Point.new(1, 1)
+    bp = Magick::Point.new(1, 1)
+    wp = Magick::Point.new(1, 1)
     assert_raise(FreezeError) { @img.chromaticity = Magick::Chromaticity.new(rp, gp, bp, wp) }
     assert_raise(FreezeError) { @img.class_type = Magick::DirectClass }
     assert_raise(FreezeError) { @img.color_profile = 'xxx' }
@@ -668,7 +668,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_raise(FreezeError) { @img.density = '72.0x72.0' }
     assert_raise(FreezeError) { @img.dispose = Magick::NoneDispose }
     assert_raise(FreezeError) { @img.endian = Magick::MSBEndian }
-    assert_raise(FreezeError) { @img.extract_info = Magick::Rectangle.new(1,2,3,4) }
+    assert_raise(FreezeError) { @img.extract_info = Magick::Rectangle.new(1, 2, 3, 4) }
     assert_raise(FreezeError) { @img.filter = Magick::PointFilter }
     assert_raise(FreezeError) { @img.format = 'GIF' }
     assert_raise(FreezeError) { @img.fuzz = 50.0 }
@@ -681,7 +681,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_raise(FreezeError) { @img.monitor = proc { |name, q, s| puts name } }
     assert_raise(FreezeError) { @img.offset = 100 }
     assert_raise(FreezeError) { @img.opacity = 100 }
-    assert_raise(FreezeError) { @img.page = Magick::Rectangle.new(1,2,3,4) }
+    assert_raise(FreezeError) { @img.page = Magick::Rectangle.new(1, 2, 3, 4) }
     assert_raise(FreezeError) { @img.rendering_intent = Magick::SaturationIntent }
     assert_raise(FreezeError) { @img.start_loop = true }
     assert_raise(FreezeError) { @img.ticks_per_second = 1000 }

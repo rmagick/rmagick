@@ -58,7 +58,7 @@ class Info_UT < Test::Unit::TestCase
     red = Magick::Pixel.new(Magick::QuantumRange)
     assert_nothing_raised { @info.background_color = red }
     assert_equal('red', @info.background_color)
-    img = Magick::Image.new(20,20) { self.background_color = 'red' }
+    img = Magick::Image.new(20, 20) { self.background_color = 'red' }
     assert_equal('red', img.background_color)
   end
 
@@ -67,14 +67,14 @@ class Info_UT < Test::Unit::TestCase
     red = Magick::Pixel.new(Magick::QuantumRange)
     assert_nothing_raised { @info.border_color = red }
     assert_equal('red', @info.border_color)
-    img = Magick::Image.new(20,20) { self.border_color = 'red' }
+    img = Magick::Image.new(20, 20) { self.border_color = 'red' }
     assert_equal('red', img.border_color)
   end
 
   def caption
     assert_nothing_raised { @info.caption = 'string' }
     assert_equal('string', @info.caption)
-    img = Magick::Image.new(20,20) { self.caption = 'string' }
+    img = Magick::Image.new(20, 20) { self.caption = 'string' }
     assert_equal('string', img.caption)
   end
 
@@ -216,7 +216,7 @@ class Info_UT < Test::Unit::TestCase
     red = Magick::Pixel.new(Magick::QuantumRange)
     assert_nothing_raised { @info.matte_color = red }
     assert_equal('red', @info.matte_color)
-    img = Magick::Image.new(20,20) { self.matte_color = 'red' }
+    img = Magick::Image.new(20, 20) { self.matte_color = 'red' }
     assert_equal('red', img.matte_color)
   end
 
@@ -280,7 +280,7 @@ class Info_UT < Test::Unit::TestCase
   def test_size
     assert_nothing_raised { @info.size = '200x100' }
     assert_equal('200x100', @info.size)
-    assert_nothing_raised { @info.size = Magick::Geometry.new(100,200) }
+    assert_nothing_raised { @info.size = Magick::Geometry.new(100, 200) }
     assert_equal('100x200', @info.size)
   end
 
@@ -314,7 +314,7 @@ class Info_UT < Test::Unit::TestCase
   def test_tile_offset
     assert_nothing_raised { @info.tile_offset = '200x100' }
     assert_equal('200x100', @info.tile_offset)
-    assert_nothing_raised { @info.tile_offset = Magick::Geometry.new(100,200) }
+    assert_nothing_raised { @info.tile_offset = Magick::Geometry.new(100, 200) }
     assert_equal('100x200', @info.tile_offset)
   end
 

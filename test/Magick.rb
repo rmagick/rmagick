@@ -309,7 +309,7 @@ class Magick_UT < Test::Unit::TestCase
     assert_equal(:initialize, method)
     end
     begin
-    img = Magick::Image.new(20,20)
+    img = Magick::Image.new(20, 20)
     ensure
     Magick.trace_proc = nil
     end

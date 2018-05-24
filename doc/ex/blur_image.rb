@@ -6,7 +6,7 @@ require 'rmagick'
 img = Magick::Image.read('images/Flower_Hat.jpg').first
 
 # Make a blurry copy.
-img = img.blur_image(0.0,2.5)
+img = img.blur_image(0.0, 2.5)
 
 img.write('blur_image.jpg')
 exit

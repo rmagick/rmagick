@@ -16,7 +16,7 @@ def example(cols, rows)
     # Because of the viewBox attribute above,
     # the rectangle will end up filling the entire area
     # reserved for the SVG content.
-    canvas.rect(1500, 1000).styles(:fill => 'yellow',:stroke => 'blue',:stroke_width => 12)
+    canvas.rect(1500, 1000).styles(:fill => 'yellow', :stroke => 'blue', :stroke_width => 12)
 
     # A large, red triangle
     canvas.path('M 750,100 L 250,900 L 1250,900 z').styles(:fill => 'red')

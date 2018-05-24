@@ -2,7 +2,7 @@
 require 'rmagick'
 
 imgl = Magick::ImageList.new
-imgl.new_image(250, 250, Magick::HatchFill.new('white','lightcyan2'))
+imgl.new_image(250, 250, Magick::HatchFill.new('white', 'lightcyan2'))
 
 gc = Magick::Draw.new
 
@@ -46,6 +46,6 @@ gc.text(0, 20, "'+y'")
 
 gc.draw(imgl)
 
-imgl.border!(1,1, 'lightcyan2')
+imgl.border!(1, 1, 'lightcyan2')
 
 imgl.write('skewx.gif')

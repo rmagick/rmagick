@@ -15,7 +15,7 @@ img = Image.new(COLS, ROWS)
 triangle = Draw.new
 triangle.fill(COLOR_A)
 triangle.stroke('transparent')
-triangle.polygon(0,0, COLS,0, 0,ROWS, 0,0)
+triangle.polygon(0, 0, COLS, 0, 0, ROWS, 0, 0)
 triangle.draw(img)
 image_a = img.transparent('white', TransparentOpacity)
 image_a['Label'] = 'A'
@@ -24,13 +24,13 @@ img = Image.new(COLS, ROWS)
 triangle = Draw.new
 triangle.fill(COLOR_B)
 triangle.stroke('transparent')
-triangle.polygon(0,0, COLS,ROWS, COLS,0, 0,0)
+triangle.polygon(0, 0, COLS, ROWS, COLS, 0, 0, 0)
 triangle.draw(img)
 image__b = img.transparent('white', TransparentOpacity)
 image__b['Label'] = 'B'
 
 list = ImageList.new
-null = Image.read('xc:white') { self.size = Geometry.new(COLS,ROWS) }
+null = Image.read('xc:white') { self.size = Geometry.new(COLS, ROWS) }
 null = null.first.transparent('white', TransparentOpacity)
 null.border_color = 'transparent'
 granite = Image.read('granite:')

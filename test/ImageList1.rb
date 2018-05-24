@@ -89,13 +89,13 @@ class ImageList1_UT < Test::Unit::TestCase
         assert_nothing_raised { @list[0] }
         assert_instance_of(Magick::Image, @list[0])
         assert_instance_of(Magick::Image, @list[-1])
-        assert_instance_of(Magick::ImageList, @list[0,1])
+        assert_instance_of(Magick::ImageList, @list[0, 1])
         assert_instance_of(Magick::ImageList, @list[0..2])
         assert_nil(@list[20])
     end
 
     def test_aset
-        img = Magick::Image.new(5,5)
+        img = Magick::Image.new(5, 5)
         assert_nothing_raised do
             rv = @list[0] = img
             assert_same(img, rv)
@@ -105,8 +105,8 @@ class ImageList1_UT < Test::Unit::TestCase
 
         # replace 2 images with 1
         assert_nothing_raised do
-            img = Magick::Image.new(5,5)
-            rv = @list[1,2] = img
+            img = Magick::Image.new(5, 5)
+            rv = @list[1, 2] = img
             assert_same(img, rv)
             assert_equal(9, @list.length)
             assert_same(img, @list[1])
@@ -115,10 +115,10 @@ class ImageList1_UT < Test::Unit::TestCase
 
         # replace 1 image with 2
         assert_nothing_raised do
-            img = Magick::Image.new(5,5)
-            img2 = Magick::Image.new(5,5)
+            img = Magick::Image.new(5, 5)
+            img2 = Magick::Image.new(5, 5)
             ary = [img, img2]
-            rv = @list[3,1] = ary
+            rv = @list[3, 1] = ary
             assert_same(ary, rv)
             assert_equal(10, @list.length)
             assert_same(img, @list[3])
@@ -127,7 +127,7 @@ class ImageList1_UT < Test::Unit::TestCase
         end
 
         assert_nothing_raised do
-            img = Magick::Image.new(5,5)
+            img = Magick::Image.new(5, 5)
             rv = @list[5..6] = img
             assert_same(img, rv)
             assert_equal(9, @list.length)
@@ -154,7 +154,7 @@ class ImageList1_UT < Test::Unit::TestCase
         end
 
         assert_raise(ArgumentError) { @list[0] = 1 }
-        assert_raise(ArgumentError) { @list[0,1] = [1,2] }
+        assert_raise(ArgumentError) { @list[0, 1] = [1, 2] }
         assert_raise(ArgumentError) { @list[2..3] = 'x' }
     end
 
@@ -464,13 +464,13 @@ class ImageList1_UT < Test::Unit::TestCase
     end
 
     def test_last
-        img = Magick::Image.new(5,5)
+        img = Magick::Image.new(5, 5)
         @list << img
         img2 = nil
         assert_nothing_raised { img2 = @list.last }
         assert_instance_of(Magick::Image, img2)
         assert_equal(img2, img)
-        img2 = Magick::Image.new(5,5)
+        img2 = Magick::Image.new(5, 5)
         @list << img2
         ilist = nil
         assert_nothing_raised { ilist = @list.last(2) }
@@ -688,7 +688,7 @@ class ImageList1_UT < Test::Unit::TestCase
     def test_slice
         assert_nothing_raised { @list.slice(0) }
         assert_nothing_raised { @list.slice(-1) }
-        assert_nothing_raised { @list.slice(0,1) }
+        assert_nothing_raised { @list.slice(0, 1) }
         assert_nothing_raised { @list.slice(0..2) }
         assert_nothing_raised { @list.slice(20) }
     end
@@ -708,7 +708,7 @@ class ImageList1_UT < Test::Unit::TestCase
         assert_equal(8, @list.length)
         assert_equal(7, @list.scene)
         assert_nothing_raised { @list.slice!(-1) }
-        assert_nothing_raised { @list.slice!(0,1) }
+        assert_nothing_raised { @list.slice!(0, 1) }
         assert_nothing_raised { @list.slice!(0..2) }
         assert_nothing_raised { @list.slice!(20) }
     end
@@ -766,12 +766,12 @@ class ImageList1_UT < Test::Unit::TestCase
         @list.unshift(img)
         assert_equal(0, @list.scene)
         assert_raise(ArgumentError) { @list.unshift(2) }
-        assert_raise(ArgumentError) { @list.unshift([1,2]) }
+        assert_raise(ArgumentError) { @list.unshift([1, 2]) }
     end
 
     def test_values_at
         ilist = nil
-        assert_nothing_raised { ilist = @list.values_at(1,3,5) }
+        assert_nothing_raised { ilist = @list.values_at(1, 3, 5) }
         assert_instance_of(Magick::ImageList, ilist)
         assert_equal(3, ilist.length)
         assert_equal(2, ilist.scene)

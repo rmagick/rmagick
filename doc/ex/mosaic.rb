@@ -16,7 +16,7 @@ end
 
 # Make a copy of "a" with all the images quarter-sized
 b = Magick::ImageList.new
-page = Magick::Rectangle.new(0,0,0,0)
+page = Magick::Rectangle.new(0, 0, 0, 0)
 a.scene = 0
 5.times do |i|
   5.times do |j|

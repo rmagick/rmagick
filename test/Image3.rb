@@ -142,8 +142,8 @@ class Image3_UT < Test::Unit::TestCase
       assert_instance_of(Magick::Image, res)
     end
     assert_nothing_raised { @img.raise(4) }
-    assert_nothing_raised { @img.raise(4,4) }
-    assert_nothing_raised { @img.raise(4,4, false) }
+    assert_nothing_raised { @img.raise(4, 4) }
+    assert_nothing_raised { @img.raise(4, 4, false) }
     assert_raise(TypeError) { @img.raise('x') }
     assert_raise(TypeError) { @img.raise(2, 'x') }
     assert_raise(ArgumentError) { @img.raise(4, 4, false, 2) }
@@ -171,7 +171,7 @@ class Image3_UT < Test::Unit::TestCase
   end
 
   def test_remap
-     remap_image = Magick::Image.new(20,20) { self.background_color = 'green' }
+     remap_image = Magick::Image.new(20, 20) { self.background_color = 'green' }
      assert_nothing_raised { @img.remap(remap_image) }
      assert_nothing_raised { @img.remap(remap_image, Magick::NoDitherMethod) }
      assert_nothing_raised { @img.remap(remap_image, Magick::RiemersmaDitherMethod) }
@@ -236,7 +236,7 @@ class Image3_UT < Test::Unit::TestCase
       res = @img.resize(2)
       assert_instance_of(Magick::Image, res)
     end
-    assert_nothing_raised { @img.resize(50,50) }
+    assert_nothing_raised { @img.resize(50, 50) }
 
     Filters.each do |filter|
       assert_nothing_raised { @img.resize(50, 50, filter) }
@@ -260,7 +260,7 @@ class Image3_UT < Test::Unit::TestCase
   end
 
   def test_resize_to_fill_0
-    changed = @img.resize_to_fill(@img.columns,@img.rows)
+    changed = @img.resize_to_fill(@img.columns, @img.rows)
     assert_equal(@img.columns, changed.columns)
     assert_equal(@img.rows, changed.rows)
     assert_not_same(changed, @img)
@@ -268,40 +268,40 @@ class Image3_UT < Test::Unit::TestCase
 
   def test_resize_to_fill_1
     @img = Magick::Image.new(200, 250)
-    @img.resize_to_fill!(100,100)
+    @img.resize_to_fill!(100, 100)
     assert_equal(100, @img.columns)
     assert_equal(100, @img.rows)
   end
 
   def test_resize_to_fill_2
     @img = Magick::Image.new(200, 250)
-    changed = @img.resize_to_fill(300,100)
+    changed = @img.resize_to_fill(300, 100)
     assert_equal(300, changed.columns)
     assert_equal(100, changed.rows)
   end
 
   def test_resize_to_fill_3
     @img = Magick::Image.new(200, 250)
-    changed = @img.resize_to_fill(100,300)
+    changed = @img.resize_to_fill(100, 300)
     assert_equal(100, changed.columns)
     assert_equal(300, changed.rows)
   end
 
   def test_resize_to_fill_4
     @img = Magick::Image.new(200, 250)
-    changed = @img.resize_to_fill(300,350)
+    changed = @img.resize_to_fill(300, 350)
     assert_equal(300, changed.columns)
     assert_equal(350, changed.rows)
   end
 
   def test_resize_to_fill_5
-    changed = @img.resize_to_fill(20,400)
+    changed = @img.resize_to_fill(20, 400)
     assert_equal(20, changed.columns)
     assert_equal(400, changed.rows)
   end
 
   def test_resize_to_fill_6
-    changed = @img.resize_to_fill(3000,400)
+    changed = @img.resize_to_fill(3000, 400)
     assert_equal(3000, changed.columns)
     assert_equal(400, changed.rows)
   end
@@ -564,15 +564,15 @@ class Image3_UT < Test::Unit::TestCase
 
   def test_shave
     assert_nothing_raised do
-      res = @img.shave(5,5)
+      res = @img.shave(5, 5)
       assert_instance_of(Magick::Image, res)
     end
     assert_nothing_raised do
-      res = @img.shave!(5,5)
+      res = @img.shave!(5, 5)
       assert_same(@img, res)
     end
     @img.freeze
-    assert_raise(FreezeError) { @img.shave!(2,2) }
+    assert_raise(FreezeError) { @img.shave!(2, 2) }
   end
 
   def test_shear
@@ -661,7 +661,7 @@ class Image3_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.splice(0, 0, 2, 2, 'red') }
     red = Magick::Pixel.new(Magick::QuantumRange)
     assert_nothing_raised { @img.splice(0, 0, 2, 2, red) }
-    assert_raise(ArgumentError) { @img.splice(0,0, 2, 2, red, 'x') }
+    assert_raise(ArgumentError) { @img.splice(0, 0, 2, 2, red, 'x') }
     assert_raise(TypeError) { @img.splice([], 0, 2, 2, red) }
     assert_raise(TypeError) { @img.splice(0, 'x', 2, 2, red) }
     assert_raise(TypeError) { @img.splice(0, 0, 'x', 2, red) }
@@ -697,7 +697,7 @@ class Image3_UT < Test::Unit::TestCase
       assert_instance_of(Magick::Image, res)
     end
 
-    img = Magick::Image.new(20,20)
+    img = Magick::Image.new(20, 20)
     img.destroy!
     assert_raise(Magick::DestroyedImageError) { @img.stereo(img) }
   end
@@ -929,7 +929,7 @@ class Image3_UT < Test::Unit::TestCase
   end
 
   def test_watermark
-    mark = Magick::Image.new(5,5)
+    mark = Magick::Image.new(5, 5)
     mark_list = Magick::ImageList.new
     mark_list << mark.copy
     assert_nothing_raised { @img.watermark(mark) }

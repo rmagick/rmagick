@@ -51,7 +51,7 @@ rvg = Magick::RVG.new(450, 300) do |canvas|
         grp3.use(viewport1)
 
         # xMin
-        grp3.rvg(50, 30).viewbox(0,0,30,40).preserve_aspect_ratio('xMinYMin', 'meet') do |canvas2|
+        grp3.rvg(50, 30).viewbox(0, 0, 30, 40).preserve_aspect_ratio('xMinYMin', 'meet') do |canvas2|
           canvas2.rect(29, 39, 0.5, 0.5).styles(:fill => 'black', :stroke => 'red')
           canvas2.use(smile)
         end
@@ -71,7 +71,7 @@ rvg = Magick::RVG.new(450, 300) do |canvas|
       grp2.g.translate(0, 70) do |grp3|
         grp3.text(0, -10, 'xMax*')
         grp3.use(viewport1)
-        grp3.rvg(50, 30).viewbox(0,0,30,40).preserve_aspect_ratio('xMaxYMax', 'meet') do |canvas2|
+        grp3.rvg(50, 30).viewbox(0, 0, 30, 40).preserve_aspect_ratio('xMaxYMax', 'meet') do |canvas2|
           canvas2.rect(29, 39, 0.5, 0.5).styles(:fill => 'black', :stroke => 'red')
           canvas2.use(smile)
         end
@@ -86,7 +86,7 @@ rvg = Magick::RVG.new(450, 300) do |canvas|
       grp2.g do |grp3|
         grp3.text(0, -10, '*YMin')
         grp3.rect(29, 59, 0.5, 0.5).styles(:fill => 'none', :stroke => 'blue')
-        grp3.rvg(30, 60).viewbox(0,0,30,40).preserve_aspect_ratio('xMinYMin', 'meet') do |canvas2|
+        grp3.rvg(30, 60).viewbox(0, 0, 30, 40).preserve_aspect_ratio('xMinYMin', 'meet') do |canvas2|
           canvas2.use(viewport2)
           canvas2.use(smile)
         end
@@ -106,7 +106,7 @@ rvg = Magick::RVG.new(450, 300) do |canvas|
       grp2.g.translate(100, 0) do |grp3|
         grp3.text(0, -10, '*YMax')
         grp3.rect(29, 59, 0.5, 0.5).styles(:fill => 'none', :stroke => 'blue')
-        grp3.rvg(30, 60).viewbox(0,0,30,40).preserve_aspect_ratio('xMaxYMax', 'meet') do |canvas2|
+        grp3.rvg(30, 60).viewbox(0, 0, 30, 40).preserve_aspect_ratio('xMaxYMax', 'meet') do |canvas2|
           canvas2.rect(29, 39, 0.5, 0.5).styles(:fill => 'black', :stroke => 'red')
           canvas2.use(smile)
         end
@@ -123,7 +123,7 @@ rvg = Magick::RVG.new(450, 300) do |canvas|
         grp3.rect(29, 59, 0.5, 0.5).styles(:fill => 'none', :stroke => 'blue')
         grp3.rvg(30, 60) do |canvas2|
           canvas2.preserve_aspect_ratio('xMinYMin', 'slice')
-          canvas2.viewbox(0,0,30,40)
+          canvas2.viewbox(0, 0, 30, 40)
           canvas2.use(viewport2)
           canvas2.use(smile)
         end
@@ -136,7 +136,7 @@ rvg = Magick::RVG.new(450, 300) do |canvas|
         grp3.rect(29, 59, 0.5, 0.5).styles(:fill => 'none', :stroke => 'blue')
         grp3.rvg(30, 60) do |canvas2|
           canvas2.preserve_aspect_ratio('xMidYMid', 'slice')
-          canvas2.viewbox(0,0,30,40)
+          canvas2.viewbox(0, 0, 30, 40)
           canvas2.rect(29, 39, 0.5, 0.5).styles(:fill => 'black', :stroke => 'red')
           canvas2.use(smile)
         end
@@ -149,7 +149,7 @@ rvg = Magick::RVG.new(450, 300) do |canvas|
         grp3.rect(29, 59, 0.5, 0.5).styles(:fill => 'none', :stroke => 'blue')
         grp3.rvg(30, 60) do |canvas2|
           canvas2.preserve_aspect_ratio('xMaxYMax', 'slice')
-          canvas2.viewbox(0,0,30,40)
+          canvas2.viewbox(0, 0, 30, 40)
           canvas2.rect(29, 39, 0.5, 0.5).styles(:fill => 'black', :stroke => 'red')
           canvas2.use(smile)
         end
@@ -166,7 +166,7 @@ rvg = Magick::RVG.new(450, 300) do |canvas|
         grp3.use(viewport1)
         grp3.rvg(50, 30) do |canvas2|
           canvas2.preserve_aspect_ratio('xMinYMin', 'slice')
-          canvas2.viewbox(0,0,30,40)
+          canvas2.viewbox(0, 0, 30, 40)
           canvas2.rect(29, 39, 0.5, 0.5).styles(:fill => 'black', :stroke => 'red')
           canvas2.use(smile)
         end
@@ -179,7 +179,7 @@ rvg = Magick::RVG.new(450, 300) do |canvas|
         grp3.use(viewport1)
         grp3.rvg(50, 30) do |canvas2|
           canvas2.preserve_aspect_ratio('xMidYMid', 'slice')
-          canvas2.viewbox(0,0,30,40)
+          canvas2.viewbox(0, 0, 30, 40)
           canvas2.rect(29, 39, 0.5, 0.5).styles(:fill => 'black', :stroke => 'red')
           canvas2.use(smile)
         end
@@ -192,7 +192,7 @@ rvg = Magick::RVG.new(450, 300) do |canvas|
         grp3.use(viewport1)
         grp3.rvg(50, 30) do |canvas2|
           canvas2.preserve_aspect_ratio('xMaxYMax', 'slice')
-          canvas2.viewbox(0,0,30,40)
+          canvas2.viewbox(0, 0, 30, 40)
           canvas2.rect(29, 39, 0.5, 0.5).styles(:fill => 'black', :stroke => 'red')
           canvas2.use(smile)
         end

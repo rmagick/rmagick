@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby -w
 require 'rmagick'
 
-i = Magick::Image.new(300, 220, Magick::HatchFill.new('white','lightcyan2'))
+i = Magick::Image.new(300, 220, Magick::HatchFill.new('white', 'lightcyan2'))
 gc = Magick::Draw.new
 
 # Draw the border rectangle.
@@ -38,12 +38,12 @@ gc.text(0, 67, '{270 degrees}')
 # Draw the arc
 gc.fill_opacity(0)
 gc.stroke('red').stroke_width(3)
-gc.arc(40, 50, 250,180, 0, 270)
+gc.arc(40, 50, 250, 180, 0, 270)
 
 # Draw on the canvas
 gc.draw(i)
 
-i.border!(1,1, 'lightcyan2')
+i.border!(1, 1, 'lightcyan2')
 
 #i.display
 i.write('arc.gif')

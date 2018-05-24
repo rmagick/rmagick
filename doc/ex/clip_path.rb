@@ -2,9 +2,9 @@
 
 require 'rmagick'
 
-points = [145, 65, 174,151, 264,151, 192,205,
-          218,291, 145,240,  72,291,  98,205,
-          26,151, 116,151]
+points = [145, 65, 174, 151, 264, 151, 192, 205,
+          218, 291, 145, 240,  72, 291,  98, 205,
+          26, 151, 116, 151]
 
 pr = Magick::Draw.new
 
@@ -29,8 +29,8 @@ cols = rows = nil
 # we widen our picture to fit. The change_geometry
 # method will adjust the height proportionately.
 
-girl.change_geometry('280') do |c,r|
-  pr.composite(0,0, c, r, girl)
+girl.change_geometry('280') do |c, r|
+  pr.composite(0, 0, c, r, girl)
   cols = c
   rows = r
 end

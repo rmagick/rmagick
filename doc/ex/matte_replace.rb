@@ -2,7 +2,7 @@
 
 require 'rmagick'
 
-img = Magick::Image.new(200,200)
+img = Magick::Image.new(200, 200)
 img.compression = Magick::LZWCompression
 
 bg = Magick::Image.read('plasma:fractal') { self.size = '200x200' }

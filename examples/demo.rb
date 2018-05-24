@@ -100,7 +100,7 @@ begin
   gc.fill_opacity 0
   gc.stroke 'gold'
   gc.stroke_width 2
-  gc.circle 60,90, 60,120
+  gc.circle 60, 90, 60, 120
   gc.draw(example)
 
   puts '   edge...'
@@ -277,7 +277,7 @@ begin
     self.gravity = CenterGravity
     self.border_width = 1
     rows = (example.size + 4) / 5
-    self.tile = Geometry.new(5,rows)
+    self.tile = Geometry.new(5, rows)
     self.compose = OverCompositeOp
 
     # Use the ImageMagick built-in "granite" format

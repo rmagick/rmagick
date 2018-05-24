@@ -140,7 +140,7 @@ module Magick
       puts "\tMontage: #{montage}\n" if montage
       signature # compute but ignore - will be displayed along with the other properties
       properties.each do |prop, value|
-        next if prop[0,1] == '['
+        next if prop[0, 1] == '['
         puts "\t#{prop}: #{value}\n"
       end
       clip_path = self['8BIM:1999,2998:#1']

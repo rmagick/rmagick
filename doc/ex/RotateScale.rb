@@ -10,9 +10,9 @@ rvg = Magick::RVG.new(400, 120) do |canvas|
   end
   # Establish a new coordinate system whose origin is at (50,30)
   # in the original coord. system and which is rotated by 30 degrees.
-  canvas.g.translate(50,30) do |grp|
+  canvas.g.translate(50, 30) do |grp|
     grp.g.rotate(30) do |grp2|
-      grp2.g.styles(:fill => 'none',:stroke => 'red',:stroke_width => 3) do |grp3|
+      grp2.g.styles(:fill => 'none', :stroke => 'red', :stroke_width => 3) do |grp3|
         grp3.line(0, 0, 50, 0)
         grp3.line(0, 0, 0, 50)
       end
@@ -22,9 +22,9 @@ rvg = Magick::RVG.new(400, 120) do |canvas|
 
   # Establish a new coordinate system whose origin is at (200,40)
   # in the original coord. systm and which is scaled by 1.5
-  canvas.g.translate(200,40) do |grp|
+  canvas.g.translate(200, 40) do |grp|
     grp.g.scale(1.5) do |grp2|
-      grp2.g.styles(:fill => 'none',:stroke => 'red',:stroke_width => 3) do |grp3|
+      grp2.g.styles(:fill => 'none', :stroke => 'red', :stroke_width => 3) do |grp3|
         grp3.line(0, 0, 50, 0)
         grp3.line(0, 0, 0, 50)
       end

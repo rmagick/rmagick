@@ -31,6 +31,6 @@ gc.line(98, 50, 102, 50)
 gc.line(98, 70, 102, 70)
 
 gc.draw(canvas)
-canvas.border!(1,1,'gray50')
+canvas.border!(1, 1, 'gray50')
 canvas.write('text_align.gif')
 exit

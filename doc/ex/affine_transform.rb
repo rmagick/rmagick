@@ -14,7 +14,7 @@ img = img.affine_transform(flipflop)
 # Scale the image, make the background transparent,
 # and write it to a JPEG file.
 img.scale!(250.0 / img.rows)
-img = img.matte_replace(0,0)
+img = img.matte_replace(0, 0)
 img.write('affine_transform.jpg')
 
 exit

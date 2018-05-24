@@ -35,7 +35,7 @@ end
 # Store the pixels back.
 rows.times do |y|
   pixels = grayrocks.get_pixels(0, y, cols, 1)
-  pixels.each_with_index { |p,x| p.opacity = opacity_steps[x] }
+  pixels.each_with_index { |p, x| p.opacity = opacity_steps[x] }
   grayrocks.store_pixels(0, y, cols, 1, pixels)
 end
 

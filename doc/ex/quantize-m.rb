@@ -4,7 +4,7 @@
 
 require 'rmagick'
 
-snapshots = Magick::ImageList.new 'images/Ballerina.jpg','images/Gold_Statue.jpg','images/Shorts.jpg'
+snapshots = Magick::ImageList.new 'images/Ballerina.jpg', 'images/Gold_Statue.jpg', 'images/Shorts.jpg'
 
 # Quantize all 3 images to a single set of 16 colors in the RGB colorspace
 $stdout.sync = true

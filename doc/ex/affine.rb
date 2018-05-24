@@ -6,7 +6,7 @@ require 'rmagick'
 # left corner.
 
 imgl = Magick::ImageList.new
-imgl.new_image 200, 200, Magick::HatchFill.new('white','lightcyan2')
+imgl.new_image 200, 200, Magick::HatchFill.new('white', 'lightcyan2')
 
 gc = Magick::Draw.new
 

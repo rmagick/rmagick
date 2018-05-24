@@ -53,7 +53,7 @@ gc.circle(0, 0, 0, 2)
 
 # All our lines will be medium-gray, dashed, and thin.
 gc.stroke('gray50')
-gc.stroke_dasharray(5,2)
+gc.stroke_dasharray(5, 2)
 gc.stroke_width(1)
 gc.fill('none')
 
@@ -137,5 +137,5 @@ gc.text((metrics.width / 2) - 15, -metrics.descent - metrics.height - 25, 'width
 gc.text(metrics.max_advance / 2 - 38, -metrics.descent + 35, 'max_advance')
 
 gc.draw(canvas)
-canvas.border!(1,1,'blue')
+canvas.border!(1, 1, 'blue')
 canvas.write('get_type_metrics.gif')

@@ -195,7 +195,7 @@ module Magick
               x += x_rel_coords[0]
           end
 
-          y += shift_baseline(@ctx.text_attrs.glyph_orientation_horizontal, text[0,1])
+          y += shift_baseline(@ctx.text_attrs.glyph_orientation_horizontal, text[0, 1])
 
           first_word = true
           text.split(::Magick::RVG::WORD_SEP).each do |word|
@@ -262,7 +262,7 @@ module Magick
               y_rel_coords << 0   # since we used an element we need to add a dummy
           end
 
-          x -= shift_baseline(@ctx.text_attrs.glyph_orientation_vertical, text[0,1])
+          x -= shift_baseline(@ctx.text_attrs.glyph_orientation_vertical, text[0, 1])
 
           first_word = true
           text.split(::Magick::RVG::WORD_SEP).each do |word|

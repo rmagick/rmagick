@@ -49,7 +49,7 @@ img.change_geometry!(geom) { |cols, rows| img.thumbnail! cols, rows }
 # background needs to be 6 pixels larger in each dimension.
 
 bg = Image.new(size + 6, size + 6) { self.background_color = 'gray75' }
-bg = bg.raise(3,3)
+bg = bg.raise(3, 3)
 
 # Just for the purposes of this example, display the thumbnail background on
 # a larger white background.

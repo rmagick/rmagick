@@ -9,7 +9,7 @@ rvg = Magick::RVG.new(200, 250) do |canvas|
       grp2.text(10, 30, 'default size')
       grp2.text(10, 50, ':font_size=>14').styles(:font_size => 14)
       grp2.text(10, 70, ':font_size=>16').styles(:font_size => 16)
-      grp2.text(10,100, ':font_size=>24').styles(:font_size => 24)
+      grp2.text(10, 100, ':font_size=>24').styles(:font_size => 24)
     end
   end
 

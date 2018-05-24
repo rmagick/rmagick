@@ -1,14 +1,14 @@
 #!/usr/bin/env ruby -w
 require 'rmagick'
 
-img = Magick::Image.new(200,200) { self.background_color = '#ffffcc' }
+img = Magick::Image.new(200, 200) { self.background_color = '#ffffcc' }
 
 # Draw a blue circle.
 gc = Magick::Draw.new
 gc.stroke_width(5)
 gc.stroke('blue')
 gc.fill_opacity(0)
-gc.circle(100,100, 100,150)
+gc.circle(100, 100, 100, 150)
 gc.draw(img)
 
 # Get the bounding box. Use the values to draw

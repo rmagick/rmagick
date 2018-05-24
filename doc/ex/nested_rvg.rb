@@ -2,7 +2,7 @@
 
 require 'rvg/rvg'
 
-target = Magick::RVG.new.viewbox(0,0,200,200) do |targ|
+target = Magick::RVG.new.viewbox(0, 0, 200, 200) do |targ|
   targ.g.styles(:stroke_width => 20, :stroke => '#ff5600', :fill => '#abd600') do |grp|
     grp.circle(90, 100, 100)
     grp.circle(60, 100, 100)

@@ -36,6 +36,6 @@ gc.fill('none')
 gc.rectangle(x, y, x + metrics.width, y + metrics.height)
 gc.draw(background)
 
-background.border!(1,1, 'blue')
+background.border!(1, 1, 'blue')
 
 background.write('get_multiline_type_metrics.gif')

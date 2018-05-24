@@ -2,7 +2,7 @@ require 'rvg/rvg'
 
 Magick::RVG.dpi = 90
 
-rvg = Magick::RVG.new(10.cm, 3.cm).viewbox(0,0,1000,300) do |canvas|
+rvg = Magick::RVG.new(10.cm, 3.cm).viewbox(0, 0, 1000, 300) do |canvas|
   canvas.background_fill = 'white'
   canvas.desc = "Example text01 - 'Hello, out there' in blue"
   canvas.text(250, 150, 'Hello, out there')

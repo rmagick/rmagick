@@ -2,9 +2,9 @@ require 'rvg/rvg'
 
 rvg = Magick::RVG.new(300, 300) do |canvas|
   canvas.background_fill = 'white'
-  triangles = Magick::RVG::Pattern.new(16, 16).viewbox(0,0, 50,50) do |pat|
+  triangles = Magick::RVG::Pattern.new(16, 16).viewbox(0, 0, 50, 50) do |pat|
     pat.rect(50, 50).styles(:fill => 'darkblue')
-    pat.polygon(0,0, 25,50, 50,0, 0,0).styles(:fill => 'yellow', :stroke => 'red')
+    pat.polygon(0, 0, 25, 50, 50, 0, 0, 0).styles(:fill => 'yellow', :stroke => 'red')
   end
 
   canvas.ellipse(130, 60, 150, 75).styles(:stroke_width => 16, :fill => 'none', :stroke => triangles)

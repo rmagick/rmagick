@@ -21,10 +21,10 @@ rvg = Magick::RVG.new(5.cm, 4.cm).viewbox(0, 0, 500, 400) do |canvas|
   canvas.background_fill = 'white'
   canvas.rect(496, 395, 1, 1).styles(Border)
 
-  canvas.polyline(100,200, 100,100).styles(Connect)
-  canvas.polyline(250,100, 250,200).styles(Connect)
-  canvas.polyline(250,200, 250,300).styles(Connect)
-  canvas.polyline(400,300, 400,200).styles(Connect)
+  canvas.polyline(100, 200, 100, 100).styles(Connect)
+  canvas.polyline(250, 100, 250, 200).styles(Connect)
+  canvas.polyline(250, 200, 250, 300).styles(Connect)
+  canvas.polyline(400, 300, 400, 200).styles(Connect)
 
   canvas.path('M100,200 C100,100 250,100 250,200 S400,300 400,200').styles(SamplePath)
 

@@ -4,7 +4,7 @@ require 'rmagick'
 # Demonstrate the "path" drawing primitive.
 
 imgl = Magick::ImageList.new
-imgl.new_image(450, 200, Magick::HatchFill.new('white','lightcyan2'))
+imgl.new_image(450, 200, Magick::HatchFill.new('white', 'lightcyan2'))
 
 gc = Magick::Draw.new
 
@@ -27,6 +27,6 @@ gc.path('M200,175 l 25,-12.5 ' \
                 'a12.5,50   -15 0,1 25,-12.5 l 25,-12.5')
 
 gc.draw imgl
-imgl.border!(1,1, 'lightcyan2')
+imgl.border!(1, 1, 'lightcyan2')
 
 imgl.write('arcpath.gif')

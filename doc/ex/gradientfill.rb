@@ -15,7 +15,7 @@ img = Magick::Image.new(Cols, Rows, fill)
 # Annotate the filled image with the code that created the fill.
 
 ann = Magick::Draw.new
-ann.annotate(img, 0,0,0,0, "GradientFill.new(0, 0, 0, #{Rows}, '#{Start}', '#{End}')") do
+ann.annotate(img, 0, 0, 0, 0, "GradientFill.new(0, 0, 0, #{Rows}, '#{Start}', '#{End}')") do
   self.gravity = Magick::CenterGravity
   self.fill = 'white'
   self.stroke = 'transparent'
