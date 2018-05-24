@@ -65,7 +65,7 @@ module Magick
 
     attr_accessor :width, :height, :x, :y, :flag
 
-    def initialize(width=nil, height=nil, x=nil, y=nil, flag=nil)
+    def initialize(width = nil, height = nil, x = nil, y = nil, flag = nil)
       raise(ArgumentError, "width set to #{width}") if width.is_a? GeometryValue
       raise(ArgumentError, "height set to #{height}") if height.is_a? GeometryValue
       raise(ArgumentError, "x set to #{x}") if x.is_a? GeometryValue
@@ -575,7 +575,7 @@ module Magick
     end
 
     # Specify the initial offset in the dash pattern
-    def stroke_dashoffset(value=0)
+    def stroke_dashoffset(value = 0)
       primitive "stroke-dashoffset #{value}"
     end
 
@@ -909,7 +909,7 @@ module Magick
     # look like they're in the old order.
 
     # (Thanks to Al Evans for the suggestion.)
-    def level(black_point=0.0, white_point=nil, gamma=nil)
+    def level(black_point = 0.0, white_point = nil, gamma = nil)
       black_point = Float(black_point)
 
       white_point ||= Magick::QuantumRange - black_point
@@ -978,11 +978,11 @@ module Magick
 
     # Force an image to exact dimensions without changing the aspect ratio.
     # Resize and crop if necessary. (Thanks to Jerett Taylor!)
-    def resize_to_fill(ncols, nrows=nil, gravity=CenterGravity)
+    def resize_to_fill(ncols, nrows = nil, gravity = CenterGravity)
       copy.resize_to_fill!(ncols, nrows, gravity)
     end
 
-    def resize_to_fill!(ncols, nrows=nil, gravity=CenterGravity)
+    def resize_to_fill!(ncols, nrows = nil, gravity = CenterGravity)
       nrows ||= ncols
       if ncols != columns || nrows != rows
         scale = [ncols / columns.to_f, nrows / rows.to_f].max
@@ -998,14 +998,14 @@ module Magick
 
     # Convenience method to resize retaining the aspect ratio.
     # (Thanks to Robert Manni!)
-    def resize_to_fit(cols, rows=nil)
+    def resize_to_fit(cols, rows = nil)
       rows ||= cols
       change_geometry(Geometry.new(cols, rows)) do |ncols, nrows|
         resize(ncols, nrows)
       end
     end
 
-    def resize_to_fit!(cols, rows=nil)
+    def resize_to_fit!(cols, rows = nil)
       rows ||= cols
       change_geometry(Geometry.new(cols, rows)) do |ncols, nrows|
         resize!(ncols, nrows)
@@ -1069,7 +1069,7 @@ module Magick
       end
 
       # Store changed pixels back to image
-      def sync(force=false)
+      def sync(force = false)
         @img.store_pixels(x, y, width, height, @view) if @dirty || force
         @dirty || force
       end
@@ -1771,7 +1771,7 @@ module Magick
 
     # Ensure respond_to? answers correctly when we are delegating to Image
     alias_method :__respond_to__?, :respond_to?
-    def respond_to?(meth_id, priv=false)
+    def respond_to?(meth_id, priv = false)
       return true if __respond_to__?(meth_id, priv)
       if @scene
         @images[@scene].respond_to?(meth_id, priv)
@@ -1910,7 +1910,7 @@ module Magick
   # @dist is the number of pixels between hatch lines.
   # See Magick::Draw examples.
   class HatchFill
-    def initialize(bgcolor, hatchcolor='white', dist=10)
+    def initialize(bgcolor, hatchcolor = 'white', dist = 10)
       @bgcolor = bgcolor
       @hatchpixel = Pixel.from_color(hatchcolor)
       @dist = dist

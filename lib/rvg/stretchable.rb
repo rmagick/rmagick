@@ -12,7 +12,7 @@ module Magick
       # [+align+] a combination of 'xMin', 'xMid', or 'xMax', followed by
       #           'YMin', 'YMid', or 'YMax'
       # [+meet_or_slice+] one of 'meet' or 'slice'
-      def preserve_aspect_ratio(align, meet_or_slice='meet')
+      def preserve_aspect_ratio(align, meet_or_slice = 'meet')
         @align = align.to_s
         if @align != 'none'
           m = /\A(xMin|xMid|xMax)(YMin|YMid|YMax)\z/.match(@align)

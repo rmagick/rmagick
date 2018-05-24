@@ -26,7 +26,7 @@ module Magick
             # Create a new text chunk. Each chunk can have its own initial position and styles.
             # If <tt>x</tt> and <tt>y</tt> are omitted the text starts at the current text
             # position.
-            def tspan(text, x=nil, y=nil)
+            def tspan(text, x = nil, y = nil)
                 tspan = Tspan.new(text, x, y)
                 tspan.parent = self
                 @tspans << tspan
@@ -34,7 +34,7 @@ module Magick
             end
 
             # Add <tt>x</tt> and <tt>y</tt> to the current text position.
-            def d(x, y=0)
+            def d(x, y = 0)
                 @dx, @dy = Magick::RVG.convert_to_float(x, y)
                 yield(self) if block_given?
                 self
@@ -118,7 +118,7 @@ module Magick
             # at the current text position.
             #
             # Tspan objects can contain Tspan objects.
-            def initialize(text=nil, x=nil, y=nil, &block)
+            def initialize(text = nil, x = nil, y = nil, &block)
                 @x, @y = Magick::RVG.convert_to_float(x, y, :allow_nil)
                 super(text, &block)
             end
@@ -138,14 +138,14 @@ module Magick
             #     t.tspan("Red text").styles(:fill=>'red')
             #     t.tspan("Blue text").styles(:fill=>'blue')
             #  end
-            def initialize(x=0, y=0, text=nil, &block)
+            def initialize(x = 0, y = 0, text = nil, &block)
                 @cx, @cy = Magick::RVG.convert_to_float(x, y)
                 super(text, &block)
             end
 
             # Reference a Tspan object. <tt>x</tt> and <tt>y</tt> are just
             # like <tt>x</tt> and <tt>y</tt> in RVG::TextBase#tspan
-            def tref(obj, x=nil, y=nil)
+            def tref(obj, x = nil, y = nil)
                 unless obj.is_a?(Tspan)
                     raise ArgumentError, "wrong argument type #{obj.class} (expected Tspan)"
                 end
@@ -162,7 +162,7 @@ module Magick
             # Draw a text string at (<tt>x</tt>,<tt>y</tt>). The string can
             # be omitted. Optionally, define text chunks within the associated
             # block.
-            def text(x=0, y=0, text=nil, &block)
+            def text(x = 0, y = 0, text = nil, &block)
                 t = Text.new(x, y, text, &block)
                 @content << t
                 t

@@ -162,7 +162,7 @@ module RMagick
     end
 
     # Test for a specific value in an enum type
-    def have_enum_value(enum, value, headers=nil, &b)
+    def have_enum_value(enum, value, headers = nil, &b)
       checking_for "#{enum}.#{value}" do
         if try_compile(<<"SRC", &b)
 #{COMMON_HEADERS}
@@ -179,7 +179,7 @@ SRC
     end
 
     # Test for multiple values of the same enum type
-    def have_enum_values(enum, values, headers=nil, &b)
+    def have_enum_values(enum, values, headers = nil, &b)
       values.each do |value|
         have_enum_value(enum, value, headers, &b)
       end

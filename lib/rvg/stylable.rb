@@ -40,7 +40,7 @@ module Magick
       end
 
       # The "usual" deep_copy method doesn't copy a Struct correctly.
-      def deep_copy(h=nil)
+      def deep_copy(h = nil)
         copy = Styles.new
         each_pair { |style, value| copy[style] = value }
         copy

@@ -17,7 +17,7 @@ supported patterns as an argument. For example, try "checkerboard".
 END_INFO
 
 class PatternFill < Magick::TextureFill
-  def initialize(name='bricks')
+  def initialize(name = 'bricks')
     @pat_img = Magick::Image.read("pattern:#{name}").first
     super(@pat_img)
   end

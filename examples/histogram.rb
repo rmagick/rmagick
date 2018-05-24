@@ -198,7 +198,7 @@ Colors: #{number_colors}
     public
 
       # Create the histogram montage.
-      def histogram(fg='white', bg='black')
+      def histogram(fg = 'white', bg = 'black')
         red   = Array.new(HISTOGRAM_COLS, 0)
         green = Array.new(HISTOGRAM_COLS, 0)
         blue  = Array.new(HISTOGRAM_COLS, 0)
