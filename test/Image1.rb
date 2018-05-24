@@ -174,7 +174,7 @@ class Image1_UT < Test::Unit::TestCase
   end
 
   def test_auto_gamma
-     res = nil
+    res = nil
      assert_nothing_raised { res = @img.auto_gamma_channel }
      assert_instance_of(Magick::Image, res)
      assert_not_same(@img, res)
@@ -184,7 +184,7 @@ class Image1_UT < Test::Unit::TestCase
   end
 
   def test_auto_level
-     res = nil
+    res = nil
      assert_nothing_raised { res = @img.auto_level_channel }
      assert_instance_of(Magick::Image, res)
      assert_not_same(@img, res)
@@ -559,7 +559,7 @@ class Image1_UT < Test::Unit::TestCase
 end
 
 if $PROGRAM_NAME == __FILE__
-IMAGES_DIR = '../doc/ex/images'
+  IMAGES_DIR = '../doc/ex/images'
 FILES = Dir[IMAGES_DIR + '/Button_*.gif']
 Test::Unit::UI::Console::TestRunner.run(Image1_UT)  unless RUBY_VERSION[/^1\.9|^2/]
 end

@@ -116,6 +116,6 @@ class Import_Export_UT < Test::Unit::TestCase
 end
 
 if $PROGRAM_NAME == __FILE__
-IMAGES_DIR = '../doc/ex/images'
+  IMAGES_DIR = '../doc/ex/images'
 Test::Unit::UI::Console::TestRunner.run(Import_Export_UT) unless RUBY_VERSION[/^1\.9|^2/]
 end

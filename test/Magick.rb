@@ -35,7 +35,7 @@ class Magick_UT < Test::Unit::TestCase
     assert_nothing_raised { res = Magick.colors }
     assert_instance_of(Array, res)
     res.each do |c|
-    assert_instance_of(Magick::Color, c)
+      assert_instance_of(Magick::Color, c)
     assert_instance_of(String, c.name)
     assert_instance_of(Magick::ComplianceType, c.compliance)
     assert_instance_of(Magick::Pixel, c.color)
@@ -48,18 +48,18 @@ class Magick_UT < Test::Unit::TestCase
   def test_enumerators
     ary = nil
     assert_nothing_raised do
-    ary = Magick::AlphaChannelType.enumerators
+      ary = Magick::AlphaChannelType.enumerators
     end
     assert_instance_of(Array, ary)
 
     assert_nothing_raised do
-    ary = Magick::AlignType.enumerators
+      ary = Magick::AlignType.enumerators
     end
     assert_instance_of(Array, ary)
     assert_equal(4, ary.length)
 
     assert_nothing_raised do
-    ary = Magick::AnchorType.enumerators
+      ary = Magick::AnchorType.enumerators
     end
     assert_instance_of(Array, ary)
     assert_equal(3, ary.length)
@@ -76,7 +76,7 @@ class Magick_UT < Test::Unit::TestCase
     assert_nothing_raised { res = Magick.fonts }
     assert_instance_of(Array, res)
     res.each do |f|
-    assert_instance_of(Magick::Font, f)
+      assert_instance_of(Magick::Font, f)
     assert_instance_of(String, f.name)
     assert_instance_of(String, f.description) unless f.description.nil?
     assert_instance_of(String, f.family)
@@ -95,7 +95,7 @@ class Magick_UT < Test::Unit::TestCase
     assert_nothing_raised { res = Magick.formats }
     assert_instance_of(Hash, res)
     res.each do |f, v|
-    assert_instance_of(String, f)
+      assert_instance_of(String, f)
     assert_instance_of(String, v)
     end
     Magick.formats.each do |f, v|
@@ -306,19 +306,19 @@ class Magick_UT < Test::Unit::TestCase
 
   def test_trace_proc
     Magick.trace_proc = proc do |which, description, id, method|
-    assert(which == :c)
+      assert(which == :c)
     assert_instance_of(String, description)
     assert_instance_of(String, id)
     assert_equal(:initialize, method)
     end
     begin
-    img = Magick::Image.new(20, 20)
+      img = Magick::Image.new(20, 20)
     ensure
-    Magick.trace_proc = nil
+      Magick.trace_proc = nil
     end
   end
 end
 
 if $PROGRAM_NAME == __FILE__
-Test::Unit::UI::Console::TestRunner.run(Magick_UT) unless RUBY_VERSION[/^1\.9|^2/]
+  Test::Unit::UI::Console::TestRunner.run(Magick_UT) unless RUBY_VERSION[/^1\.9|^2/]
 end

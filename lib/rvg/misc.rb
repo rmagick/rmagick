@@ -126,9 +126,9 @@ module Magick
         def shift_baseline(glyph_orientation, glyph)
           glyph_dimensions = @ctx.shadow.get_type_metrics(glyph)
           x = if glyph_orientation.zero? || glyph_orientation == 180
-            glyph_dimensions.width
+                glyph_dimensions.width
               else
-            glyph_dimensions.ascent - glyph_dimensions.descent
+                glyph_dimensions.ascent - glyph_dimensions.descent
               end
           case @ctx.text_attrs.baseline_shift
             when :baseline
@@ -667,9 +667,9 @@ module Magick
         def text(x, y, text)
           return if text.length.zero?
           text_renderer = if @text_attrs.non_default?
-            TEXT_STRATEGIES[@text_attrs.writing_mode].new(self)
+                            TEXT_STRATEGIES[@text_attrs.writing_mode].new(self)
                           else
-            DefaultTextStrategy.new(self)
+                            DefaultTextStrategy.new(self)
                           end
 
           text_renderer.render(x, y, text)

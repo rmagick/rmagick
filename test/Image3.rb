@@ -172,7 +172,7 @@ class Image3_UT < Test::Unit::TestCase
   end
 
   def test_remap
-     remap_image = Magick::Image.new(20, 20) { self.background_color = 'green' }
+    remap_image = Magick::Image.new(20, 20) { self.background_color = 'green' }
      assert_nothing_raised { @img.remap(remap_image) }
      assert_nothing_raised { @img.remap(remap_image, Magick::NoDitherMethod) }
      assert_nothing_raised { @img.remap(remap_image, Magick::RiemersmaDitherMethod) }
@@ -1026,7 +1026,7 @@ class Image3_UT < Test::Unit::TestCase
 end
 
 if $PROGRAM_NAME == __FILE__
-IMAGES_DIR = '../doc/ex/images'
+  IMAGES_DIR = '../doc/ex/images'
 FILES = Dir[IMAGES_DIR + '/Button_*.gif']
 Test::Unit::UI::Console::TestRunner.run(Image3_UT) unless RUBY_VERSION[/^1\.9|^2/]
 end

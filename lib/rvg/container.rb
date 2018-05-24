@@ -52,7 +52,7 @@ module Magick
     #       grp.circle(10, 20, 20).styles(:stroke=>'blue')
     #   end
     class Group
-        include Stylable
+      include Stylable
         include Transformable
         include Embellishable
         include Describable

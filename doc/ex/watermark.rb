@@ -12,9 +12,9 @@ gc.annotate(mark, 0, 0, 0, -5, 'RMagick') do
   gc.gravity = Magick::CenterGravity
   gc.pointsize = 32
   gc.font_family = if RUBY_PLATFORM =~ /mswin32/
-    'Georgia'
+                     'Georgia'
                    else
-    'Times'
+                     'Times'
                    end
   gc.fill = 'white'
   gc.stroke = 'none'

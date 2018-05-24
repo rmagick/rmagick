@@ -187,12 +187,6 @@ Layout/IndentationConsistency:
 Layout/IndentHeredoc:
   Enabled: false
 
-# Offense count: 1049
-# Cop supports --auto-correct.
-# Configuration parameters: Width.
-Layout/IndentationWidth:
-  Enabled: false
-
 # Offense count: 4
 # Configuration parameters: EnforcedStyle, SupportedStyles.
 Naming/MethodName:

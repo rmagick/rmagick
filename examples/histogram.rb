@@ -124,8 +124,8 @@ module Magick
         begin
           hist = img.color_histogram
         rescue NotImplementedError
-        $stderr.puts 'The color_histogram method is not supported by this version '\
-                     'of ImageMagick/GraphicsMagick'
+          $stderr.puts 'The color_histogram method is not supported by this version '\
+                       'of ImageMagick/GraphicsMagick'
         else
           pixels = hist.keys.sort_by { |pixel| hist[pixel] }
           scale = HISTOGRAM_ROWS / (hist.values.max * AIR_FACTOR)
@@ -245,9 +245,9 @@ Colors: #{number_colors}
 
         # Add Alpha channel or image stats
         charts << if !opaque?
-          alpha_hist(alpha, scale, fg, bg)
+                    alpha_hist(alpha, scale, fg, bg)
                   else
-          info_text(fg, bg)
+                    info_text(fg, bg)
                   end
 
         # Add the RGB histogram
