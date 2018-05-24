@@ -157,11 +157,6 @@ Layout/ExtraSpacing:
 Naming/FileName:
   Enabled: false
 
-# Offense count: 68
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Style/FormatString:
-  Enabled: false
-
 # Offense count: 45
 # Configuration parameters: AllowedVariables.
 Style/GlobalVars:

@@ -120,7 +120,7 @@ module Magick
       str = ''
       if @width > 0
         fmt = @width.truncate == @width ? '%d' : '%.2f'
-        str << sprintf(fmt, @width)
+        str << format(fmt, @width)
         str << '%' if @flag == PercentGeometry
       end
 
@@ -128,10 +128,10 @@ module Magick
 
       if @height > 0
         fmt = @height.truncate == @height ? '%d' : '%.2f'
-        str << sprintf(fmt, @height)
+        str << format(fmt, @height)
         str << '%' if @flag == PercentGeometry
       end
-      str << sprintf('%+d%+d', @x, @y) if @x != 0 || @y != 0
+      str << format('%+d%+d', @x, @y) if @x != 0 || @y != 0
       str << FLAGS[@flag.to_i] if @flag != PercentGeometry
       str
     end
@@ -215,13 +215,13 @@ module Magick
     # Apply coordinate transformations to support scaling (s), rotation (r),
     # and translation (t). Angles are specified in radians.
     def affine(sx, rx, ry, sy, tx, ty)
-      primitive 'affine ' + sprintf('%g,%g,%g,%g,%g,%g', sx, rx, ry, sy, tx, ty)
+      primitive 'affine ' + format('%g,%g,%g,%g,%g,%g', sx, rx, ry, sy, tx, ty)
     end
 
     # Draw an arc.
     def arc(start_x, start_y, end_x, end_y, start_degrees, end_degrees)
-      primitive 'arc ' + sprintf('%g,%g %g,%g %g,%g',
-                                 start_x, start_y, end_x, end_y, start_degrees, end_degrees)
+      primitive 'arc ' + format('%g,%g %g,%g %g,%g',
+                                start_x, start_y, end_x, end_y, start_degrees, end_degrees)
     end
 
     # Draw a bezier curve.
@@ -236,7 +236,7 @@ module Magick
 
     # Draw a circle
     def circle(origin_x, origin_y, perim_x, perim_y)
-      primitive 'circle ' + sprintf('%g,%g %g,%g', origin_x, origin_y, perim_x, perim_y)
+      primitive 'circle ' + format('%g,%g %g,%g', origin_x, origin_y, perim_x, perim_y)
     end
 
     # Invoke a clip-path defined by def_clip_path.
@@ -297,8 +297,8 @@ module Magick
 
     # Draw an ellipse
     def ellipse(origin_x, origin_y, width, height, arc_start, arc_end)
-      primitive 'ellipse ' + sprintf('%g,%g %g,%g %g,%g',
-                                     origin_x, origin_y, width, height, arc_start, arc_end)
+      primitive 'ellipse ' + format('%g,%g %g,%g %g,%g',
+                                    origin_x, origin_y, width, height, arc_start, arc_end)
     end
 
     # Let anything through, but the only defined argument
@@ -406,7 +406,7 @@ module Magick
 
     # Draw a line
     def line(start_x, start_y, end_x, end_y)
-      primitive 'line ' + sprintf('%g,%g %g,%g', start_x, start_y, end_x, end_y)
+      primitive 'line ' + format('%g,%g %g,%g', start_x, start_y, end_x, end_y)
     end
 
     # Set matte (make transparent) in image according to the specified
@@ -513,8 +513,8 @@ module Magick
 
     # Draw a rectangle
     def rectangle(upper_left_x, upper_left_y, lower_right_x, lower_right_y)
-      primitive 'rectangle ' + sprintf('%g,%g %g,%g',
-                                       upper_left_x, upper_left_y, lower_right_x, lower_right_y)
+      primitive 'rectangle ' + format('%g,%g %g,%g',
+                                      upper_left_x, upper_left_y, lower_right_x, lower_right_y)
     end
 
     # Specify coordinate space rotation. "angle" is measured in degrees
@@ -524,8 +524,8 @@ module Magick
 
     # Draw a rectangle with rounded corners
     def roundrectangle(center_x, center_y, width, height, corner_width, corner_height)
-      primitive 'roundrectangle ' + sprintf('%g,%g,%g,%g,%g,%g',
-                                            center_x, center_y, width, height, corner_width, corner_height)
+      primitive 'roundrectangle ' + format('%g,%g,%g,%g,%g,%g',
+                                           center_x, center_y, width, height, corner_width, corner_height)
     end
 
     # Specify scaling to be applied to coordinate space on subsequent drawing commands.
@@ -861,7 +861,7 @@ module Magick
       else
         get_exif_by_number    # ensure properties is populated with exif data
         tag.each do |num|
-          rval = self['#%04X' % num.to_i]
+          rval = self[format('#%04X', num.to_i)]
           hash[num] = rval == 'unknown' ? nil : rval
         end
       end
