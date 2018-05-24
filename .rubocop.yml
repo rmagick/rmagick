@@ -305,12 +305,6 @@ Layout/SpaceAroundEqualsInParameterDefault:
 Layout/SpaceAroundOperators:
   Enabled: false
 
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Layout/SpaceBeforeBlockBraces:
-  Enabled: false
-
 # Need very caution rewrite of code
 Lint/RescueWithoutErrorClass:
   Enabled: false

@@ -21,7 +21,7 @@ module Magick
       @formats ||= init_formats
 
       if block_given?
-        @formats.each{ |k, v| yield k, v }
+        @formats.each { |k, v| yield k, v }
         self
       else
         @formats
