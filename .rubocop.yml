@@ -333,12 +333,6 @@ Layout/SpaceInsideHashLiteralBraces:
 Layout/SpaceInsideParens:
   Enabled: false
 
-# Offense count: 12
-# Cop supports --auto-correct.
-# Configuration parameters: IgnoredMethods.
-Style/SymbolProc:
-  Enabled: false
-
 # Need very caution rewrite of code
 Lint/RescueWithoutErrorClass:
   Enabled: false

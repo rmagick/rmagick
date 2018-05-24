@@ -176,8 +176,6 @@ if ARGV.length.zero?
 end
 
 ilist = Magick::ImageList.new(*ARGV)
-ilist.each do |img|
-  img.identify
-end
+ilist.each(&:identify)
 
 exit

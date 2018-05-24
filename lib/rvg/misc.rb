@@ -34,7 +34,7 @@ module Magick
     # Convert an array of method arguments to Float objects. If any
     # cannot be converted, raise ArgumentError and issue a message.
     def self.fmsg(*args)
-      "at least one argument cannot be converted to Float (got #{args.collect {|a| a.class}.join(', ')})"
+      "at least one argument cannot be converted to Float (got #{args.collect(&:class).join(', ')})"
     end
 
     def self.convert_to_float(*args)

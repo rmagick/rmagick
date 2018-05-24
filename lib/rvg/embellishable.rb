@@ -338,7 +338,7 @@ module Magick
           y = Float(y)
         rescue ArgumentError
           args = [cols, rows, x, y]
-          raise ArgumentError, "at least one argument is not convertable to Float (got #{args.collect {|a| a.class}.join(', ')})"
+          raise ArgumentError, "at least one argument is not convertable to Float (got #{args.collect(&:class).join(', ')})"
         end
         rvg.corner(x, y)
         @content << rvg

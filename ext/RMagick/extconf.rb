@@ -242,7 +242,7 @@ SRC
       ].map do |file_glob|
         Dir.glob(file_glob)
       end
-      matches.delete_if { |arr| arr.empty? }
+      matches.delete_if(&:empty?)
       if 0 < matches.length && matches.length < 3
         msg = "\nWarning: Found a partial ImageMagick installation. Your operating system likely has some built-in ImageMagick libraries but not all of ImageMagick. This will most likely cause problems at both compile and runtime.\nFound partial installation at: "+prefix+"\n"
         Logging.message msg

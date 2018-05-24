@@ -499,7 +499,7 @@ module Magick
         primitive 'pop graphic-context'
       else
         # to_s allows a Symbol to be used instead of a String
-        primitive 'pop ' + what.map {|w| w.to_s}.join(' ')
+        primitive 'pop ' + what.map(&:to_s).join(' ')
       end
     end
 
@@ -513,7 +513,7 @@ module Magick
         primitive 'push graphic-context'
       else
         # to_s allows a Symbol to be used instead of a String
-        primitive 'push ' + what.map {|w| w.to_s}.join(' ')
+        primitive 'push ' + what.map(&:to_s).join(' ')
       end
     end
 

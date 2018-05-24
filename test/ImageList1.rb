@@ -294,14 +294,14 @@ class ImageList1_UT < Test::Unit::TestCase
         assert_nothing_raised do
             cur = @list.cur_image
             scene = @list.scene
-            res = @list.collect { |img| img.negate }
+            res = @list.collect(&:negate)
             assert_instance_of(Magick::ImageList, res)
             assert_not_same(res, @list)
             assert_equal(scene, res.scene)
         end
         assert_nothing_raised do
             scene = @list.scene
-            @list.collect! { |img| img.negate }
+            @list.collect!(&:negate)
             assert_instance_of(Magick::ImageList, @list)
             assert_equal(scene, @list.scene)
         end
@@ -398,7 +398,7 @@ class ImageList1_UT < Test::Unit::TestCase
       assert_nothing_raised { @list.max }
       assert_nothing_raised { @list.min }
       assert_nothing_raised { @list.sort }
-      assert_nothing_raised { @list.sort_by {|img| img.signature} }
+      assert_nothing_raised { @list.sort_by(&:signature) }
       assert_nothing_raised { @list.zip }
     end
 
