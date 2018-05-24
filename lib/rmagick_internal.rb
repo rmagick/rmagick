@@ -421,7 +421,7 @@ module Magick
     # Specify drawing fill and stroke opacities. If the value is a string
     # ending with a %, the number will be multiplied by 0.01.
     def opacity(opacity)
-      if Numeric === opacity
+      if opacity.is_a?(Numeric)
         if opacity < 0 || opacity > 1.0
           Kernel.raise ArgumentError, 'opacity must be >= 0 and <= 1.0'
         end

@@ -14,7 +14,7 @@ module Magick
           ivars = instance_variables
           ivars.each do |ivar|
             ivalue = instance_variable_get(ivar)
-            cvalue = if NilClass === ivalue || Symbol === ivalue || Float === ivalue || Fixnum === ivalue || FalseClass === ivalue || TrueClass === ivalue
+            cvalue = if ivalue.is_a?(NilClass) || ivalue.is_a?(Symbol) || ivalue.is_a?(Float) || ivalue.is_a?(Fixnum) || ivalue.is_a?(FalseClass) || ivalue.is_a?(TrueClass)
                        ivalue
                      elsif ivalue.respond_to?(:deep_copy)
                        ivalue.deep_copy(h)
