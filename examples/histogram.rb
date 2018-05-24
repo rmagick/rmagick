@@ -60,11 +60,11 @@ module Magick
           self.border_color = fg
         end
         rgb_histogram['Label'] = 'RGB'
-        red_histogram   = rgb_histogram.copy
+        red_histogram = rgb_histogram.copy
         red_histogram['Label'] = 'Red'
         green_histogram = rgb_histogram.copy
         green_histogram['Label'] = 'Green'
-        blue_histogram  = rgb_histogram.copy
+        blue_histogram = rgb_histogram.copy
         blue_histogram['Label'] = 'Blue'
         int_histogram = rgb_histogram.copy
         int_histogram['Label'] = 'Intensity'
@@ -128,7 +128,7 @@ module Magick
                      'of ImageMagick/GraphicsMagick'
         else
           pixels = hist.keys.sort_by { |pixel| hist[pixel] }
-          scale = HISTOGRAM_ROWS / (hist.values.max*AIR_FACTOR)
+          scale = HISTOGRAM_ROWS / (hist.values.max * AIR_FACTOR)
 
           histogram = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do
                 self.background_color = bg
@@ -182,7 +182,7 @@ Colors: #{number_colors}
       end
 
       def intensity_hist(int_histogram)
-        gradient = (Image.read('gradient:#ffff80-#ff9000') { self.size="#{HISTOGRAM_COLS}x#{HISTOGRAM_ROWS}" }).first
+        gradient = (Image.read('gradient:#ffff80-#ff9000') { self.size = "#{HISTOGRAM_COLS}x#{HISTOGRAM_ROWS}" }).first
         int_histogram = gradient.composite(int_histogram, CenterGravity, OverCompositeOp)
 
         int_histogram['Label'] = 'Intensity'
@@ -192,7 +192,7 @@ Colors: #{number_colors}
 
       # Returns a value between 0 and MAX_QUANTUM. Same as the PixelIntensity macro.
       def pixel_intensity(pixel)
-        (306*(pixel.red & MAX_QUANTUM) + 601*(pixel.green & MAX_QUANTUM) + 117*(pixel.blue & MAX_QUANTUM))/1024
+        (306 * (pixel.red & MAX_QUANTUM) + 601 * (pixel.green & MAX_QUANTUM) + 117 * (pixel.blue & MAX_QUANTUM)) / 1024
       end
 
     public
@@ -226,7 +226,7 @@ Colors: #{number_colors}
         # The RGBA and intensity histograms are all drawn to the same scale.
 
         max = [red.max, green.max, blue.max, alpha.max, int.max].max
-        scale = HISTOGRAM_ROWS / (max*AIR_FACTOR)
+        scale = HISTOGRAM_ROWS / (max * AIR_FACTOR)
 
         charts = ImageList.new
 

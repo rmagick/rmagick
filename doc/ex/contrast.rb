@@ -18,7 +18,7 @@ f = 1
   img << img.contrast
 
   # Annotate the previous image
-  legend.annotate(img[f-1], 0,0,7,10, f.to_s)
+  legend.annotate(img[f - 1], 0,0,7,10, f.to_s)
   f += 1
 end
 

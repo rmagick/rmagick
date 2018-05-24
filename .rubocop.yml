@@ -299,12 +299,6 @@ Layout/SpaceAfterComma:
 Layout/SpaceAroundEqualsInParameterDefault:
   Enabled: false
 
-# Offense count: 1066
-# Cop supports --auto-correct.
-# Configuration parameters: MultiSpaceAllowedForOperators.
-Layout/SpaceAroundOperators:
-  Enabled: false
-
 # Need very caution rewrite of code
 Lint/RescueWithoutErrorClass:
   Enabled: false

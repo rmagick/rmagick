@@ -31,7 +31,7 @@ END_HEADER
         indent = 0
         primitives.each do |cmd|
             indent -= 1 if cmd['pop ']
-            pgm.print('  ', ('  '*indent), '"', cmd, '\n"', "\n")
+            pgm.print('  ', ('  ' * indent), '"', cmd, '\n"', "\n")
             indent += 1 if cmd['push ']
         end
     end
@@ -71,7 +71,7 @@ END_HEADER
         exit(1);
   }
 
-  strcpy(image->filename, "#{name+'.gif'}");
+  strcpy(image->filename, "#{name + '.gif'}");
   WriteImage(info, image);
 
   DestroyDrawInfo(draw);
@@ -89,7 +89,7 @@ END_TRAILER
     # Convert an RVG object to a stand-alone C program
     # suitable for reproducing a bug.
     def to_c(name)
-        pgm = File.open(name+'.c', 'w')
+        pgm = File.open(name + '.c', 'w')
         header_text(pgm, name)
         gc = Draw.new
         add_primitives(gc)

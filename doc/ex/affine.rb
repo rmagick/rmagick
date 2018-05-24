@@ -25,10 +25,10 @@ gc.fill('gray50')
 gc.stroke_width(1)
 
 # Draw up-pointing arrow.
-gc.polyline(10, 10, 10, max_y-10, 5, max_y-15, 15, max_y-15, 10, max_y-10)
+gc.polyline(10, 10, 10, max_y - 10, 5, max_y - 15, 15, max_y - 15, 10, max_y - 10)
 
 # Draw right-pointing arrow
-gc.polyline(10, 10, max_x-10, 10, max_x-15, 5, max_x-15, 15, max_x-10, 10)
+gc.polyline(10, 10, max_x - 10, 10, max_x - 15, 5, max_x - 15, 15, max_x - 10, 10)
 
 gc.draw(imgl)
 
@@ -38,8 +38,8 @@ text_gc = Magick::Draw.new
 text_gc.pointsize(14)
 text_gc.font_weight(Magick::NormalWeight)
 text_gc.stroke('transparent')
-text_gc.text(15, max_y-15, "'0,0'")
-text_gc.text(max_x-20, max_y-16, "'+x'")
+text_gc.text(15, max_y - 15, "'0,0'")
+text_gc.text(max_x - 20, max_y - 16, "'+x'")
 text_gc.text(12, 15, "'+y'")
 text_gc.draw(imgl)
 

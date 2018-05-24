@@ -1,6 +1,6 @@
 RSpec.describe Magick::Image, '#constitute' do
 
-  let(:img) { Magick::Image.read(IMAGES_DIR+'/Button_0.gif').first }
+  let(:img) { Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first }
   let(:pixels) { img.dispatch(0, 0, img.columns, img.rows, 'RGBA') }
 
   it 'returns an equivalent image to the given pixels' do

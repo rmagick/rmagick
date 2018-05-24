@@ -30,7 +30,7 @@ module Magick
           raise ArgumentError, "radius must be >= 0 (#{r} given)"
         end
         @primitive = :circle
-        @args = [cx, cy, cx+r, cy]
+        @args = [cx, cy, cx + r, cy]
         self
       end
     end     # class Circle
@@ -82,7 +82,7 @@ module Magick
         if width < 0 || height < 0
           raise ArgumentError, "width, height must be >= 0 (#{width}, #{height} given)"
         end
-        @args = [x, y, x+width, y+height]
+        @args = [x, y, x + width, y + height]
         @primitive = :rectangle
       end
 
@@ -165,18 +165,18 @@ module Magick
              when 'none', /\AxMin/
                0
              when NilClass, /\AxMid/
-               (@width - @image.columns*scale) / 2.0
+               (@width - @image.columns * scale) / 2.0
              when /\AxMax/
-               @width - @image.columns*scale
+               @width - @image.columns * scale
              end
 
         ty = case @align
              when 'none', /YMin\z/
                0
              when NilClass, /YMid\z/
-               (@height - @image.rows*scale) / 2.0
+               (@height - @image.rows * scale) / 2.0
              when /YMax\z/
-               @height - @image.rows*scale
+               @height - @image.rows * scale
              end
         [tx, ty]
       end
@@ -188,7 +188,7 @@ module Magick
           width = @width
           height = @height
         elsif @meet_or_slice == 'meet'
-          scale = [@width/@image.columns, @height/@image.rows].min
+          scale = [@width / @image.columns, @height / @image.rows].min
           width = @image.columns
           height = @image.rows
         else
@@ -199,12 +199,12 @@ module Magick
           end
 
           gc.clip_path(name)
-          scale = [@width/@image.columns, @height/@image.rows].max
+          scale = [@width / @image.columns, @height / @image.rows].max
           width = @image.columns
           height = @image.rows
         end
         tx, ty = align_to_viewport(scale)
-        gc.composite(@x+tx, @y+ty, width*scale, height*scale, @image)
+        gc.composite(@x + tx, @y + ty, width * scale, height * scale, @image)
       end
 
       def init_viewbox

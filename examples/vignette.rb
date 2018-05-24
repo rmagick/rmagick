@@ -32,9 +32,9 @@ oval = Image.new(ballerina.columns, ballerina.rows) { self.background_color = 'b
 gc = Draw.new
 gc.stroke('white')
 gc.fill('white')
-gc.ellipse(ballerina.columns/2, ballerina.rows/2,
-           ballerina.columns/2-(ballerina.columns*0.10),
-           ballerina.rows/2-(ballerina.rows*0.10), 0, 360)
+gc.ellipse(ballerina.columns / 2, ballerina.rows / 2,
+           ballerina.columns / 2 - (ballerina.columns * 0.10),
+           ballerina.rows / 2 - (ballerina.rows * 0.10), 0, 360)
 gc.draw(oval)
 
 # Add a lot of blurring to the oval. I use blur_image because it's much faster

@@ -22,7 +22,7 @@ img.view(10, 5, 20, 20) do |view|
 
   # Change the green channel of all the
   # pixels on row 8.
-  view[8][].green = Magick::QuantumRange/2
+  view[8][].green = Magick::QuantumRange / 2
 
   # Change the blue channel of 8 pixels
   # on column 10.

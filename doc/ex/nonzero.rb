@@ -7,13 +7,13 @@ rvg = Magick::RVG.new(12.cm, 4.cm).viewbox(0, 0, 1200, 400) do |canvas|
   canvas.background_fill = 'white'
   canvas.desc = "Example fillrule - nonzero - demonstrates fill_rule=>'nonzero'"
 
-  canvas.rect(1195, 393, 1, 1).styles(:fill=>'none', :stroke=>'blue')
+  canvas.rect(1195, 393, 1, 1).styles(:fill => 'none', :stroke => 'blue')
 
   triangle = Magick::RVG::Group.new do |defs|
-    defs.path('M 16,0 L -8,9 v-18 z').styles(:fill=>'black', :stroke=>'none')
+    defs.path('M 16,0 L -8,9 v-18 z').styles(:fill => 'black', :stroke => 'none')
   end
 
-  canvas.g.styles(:fill_rule=>'nonzero', :fill=>'red', :stroke=>'black', :stroke_width=>3) do |grp|
+  canvas.g.styles(:fill_rule => 'nonzero', :fill => 'red', :stroke => 'black', :stroke_width => 3) do |grp|
     grp.path('M 250,75 L 323,301 131,161 369,161 177,301 z')
     grp.use(triangle).translate(306.21, 249).rotate(72)
     grp.use(triangle).translate(175.16,193.2).rotate(216)

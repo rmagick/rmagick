@@ -75,13 +75,13 @@ module Magick
           if text.length > 2 && /\A(?:\"[^\"]+\"|\'[^\']+\'|\{[^\}]+\})\z/.match(text)
             return text
           elsif !text['\'']
-            text = '\''+text+'\''
+            text = '\'' + text + '\''
             return text
           elsif !text['"']
-            text = '"'+text+'"'
+            text = '"' + text + '"'
             return text
           elsif !(text['{'] || text['}'])
-            text = '{'+text+'}'
+            text = '{' + text + '}'
             return text
           end
 
@@ -166,7 +166,7 @@ module Magick
 
         def get_letter_spacing(glyph)
           gx, gy = glyph_metrics(@ctx.text_attrs.glyph_orientation_horizontal, glyph)
-          [gx+@ctx.text_attrs.letter_spacing, gy]
+          [gx + @ctx.text_attrs.letter_spacing, gy]
         end
 
         def render(x, y, text)
@@ -228,7 +228,7 @@ module Magick
 
         def get_letter_spacing(glyph)
           gx, gy = glyph_metrics(@ctx.text_attrs.glyph_orientation_vertical, glyph)
-          [gx, gy+@ctx.text_attrs.letter_spacing]
+          [gx, gy + @ctx.text_attrs.letter_spacing]
         end
 
         def render(x, y, text)
@@ -279,7 +279,7 @@ module Magick
                   x_shift = -(dx - x_rel_coords.shift) / 2
               end
 
-              render_glyph(@ctx.text_attrs.glyph_orientation_vertical, x+x_shift, y, glyph)
+              render_glyph(@ctx.text_attrs.glyph_orientation_vertical, x + x_shift, y, glyph)
               y += y_rel_coords.shift
             end
           end
@@ -477,7 +477,7 @@ module Magick
           :line_through => Magick::LineThroughDecoration
         }
 
-        TEXT_STRATEGIES  = {
+        TEXT_STRATEGIES = {
           'lr-tb' => LRTextStrategy, 'lr' => LRTextStrategy,
           'rt-tb' => RLTextStrategy, 'rl' => RLTextStrategy,
           'tb-rl' => TBTextStrategy, 'tb' => TBTextStrategy

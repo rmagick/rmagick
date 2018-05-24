@@ -22,7 +22,7 @@ module RMagick
       {
         :magick_config => $magick_config,
         :with_magick_wand => $with_magick_wand,
-        :pkg_config    => $pkg_config,
+        :pkg_config => $pkg_config,
         :magick_version => $magick_version,
         :local_libs     => $LOCAL_LIBS,
         :cflags         => $CFLAGS,
@@ -192,7 +192,7 @@ SRC
          File.readlink(config_path) =~ /GraphicsMagick/
         msg = 'Found a graphicsmagick-libmagick-dev-compat installation.'
         Logging.message msg
-        message msg+"\n"
+        message msg + "\n"
         true
       else
         false
@@ -201,7 +201,7 @@ SRC
 
     def exit_failure(msg)
       Logging.message msg
-      message msg+"\n"
+      message msg + "\n"
       exit(1)
     end
 
@@ -236,15 +236,15 @@ SRC
     def check_partial_imagemagick_versions
       prefix = config_string('prefix') || ''
       matches = [
-        prefix+'/lib/lib?agick*',
-        prefix+'/include/ImageMagick',
-        prefix+'/bin/Magick-config'
+        prefix + '/lib/lib?agick*',
+        prefix + '/include/ImageMagick',
+        prefix + '/bin/Magick-config'
       ].map do |file_glob|
         Dir.glob(file_glob)
       end
       matches.delete_if(&:empty?)
       if 0 < matches.length && matches.length < 3
-        msg = "\nWarning: Found a partial ImageMagick installation. Your operating system likely has some built-in ImageMagick libraries but not all of ImageMagick. This will most likely cause problems at both compile and runtime.\nFound partial installation at: "+prefix+"\n"
+        msg = "\nWarning: Found a partial ImageMagick installation. Your operating system likely has some built-in ImageMagick libraries but not all of ImageMagick. This will most likely cause problems at both compile and runtime.\nFound partial installation at: " + prefix + "\n"
         Logging.message msg
         message msg
       end
@@ -274,7 +274,7 @@ SRC
     def search_paths_for_library_for_mingw
       msg = 'searching PATH for the ImageMagick library...'
       Logging.message msg
-      message msg+"\n"
+      message msg + "\n"
 
       found_lib = false
 
@@ -543,6 +543,6 @@ extconf = RMagick::Extconf.new
 at_exit do
   msg = "Configured compile options: #{extconf.configured_compile_options}"
   Logging.message msg
-  message msg+"\n"
+  message msg + "\n"
 end
 extconf.create_makefile_file

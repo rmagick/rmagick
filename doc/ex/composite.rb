@@ -33,7 +33,7 @@ list = ImageList.new
 null = Image.read('xc:white') { self.size = Geometry.new(COLS,ROWS) }
 null = null.first.transparent('white', TransparentOpacity)
 null.border_color = 'transparent'
-granite =  Image.read('granite:')
+granite = Image.read('granite:')
 
 list << null.copy
 list << image_a
@@ -122,7 +122,7 @@ list.cur_image['Label'] = 'A overlay B'
 
 montage = list.montage do
   self.geometry = Geometry.new(COLS, ROWS, 3, 3)
-  rows = (list.size+3) / 4
+  rows = (list.size + 3) / 4
   self.tile = Geometry.new(4, rows)
   self.texture = granite[0]
   self.fill = 'white'

@@ -1,7 +1,7 @@
 RSpec.describe Magick::Image, '#composite' do
 
-  let(:img1) { Magick::Image.read(IMAGES_DIR+'/Button_0.gif').first }
-  let(:img2) { Magick::Image.read(IMAGES_DIR+'/Button_1.gif').first }
+  let(:img1) { Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first }
+  let(:img2) { Magick::Image.read(IMAGES_DIR + '/Button_1.gif').first }
   let(:composite_ops) do
     [
       Magick::UndefinedCompositeOp,

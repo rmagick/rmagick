@@ -13,7 +13,7 @@ hist = img.color_histogram
 # sort pixels by increasing count
 pixels = hist.keys.sort_by { |pixel| hist[pixel] }
 
-scale = HIST_HEIGHT / (hist.values.max*1.025)   # put 2.5% air at the top
+scale = HIST_HEIGHT / (hist.values.max * 1.025)   # put 2.5% air at the top
 
 gc = Magick::Draw.new
 gc.stroke_width(1)

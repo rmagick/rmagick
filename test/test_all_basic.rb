@@ -3,9 +3,9 @@ puts RUBY_VERSION
 puts RUBY_VERSION.class
 root_dir = File.expand_path('../..', __FILE__)
 IMAGES_DIR = File.join(root_dir, 'doc/ex/images')
-FILES = Dir[IMAGES_DIR+'/Button_*.gif'].sort
-FLOWER_HAT = IMAGES_DIR+'/Flower_Hat.jpg'
-IMAGE_WITH_PROFILE = IMAGES_DIR+'/image_with_profile.jpg'
+FILES = Dir[IMAGES_DIR + '/Button_*.gif'].sort
+FLOWER_HAT = IMAGES_DIR + '/Flower_Hat.jpg'
+IMAGE_WITH_PROFILE = IMAGES_DIR + '/image_with_profile.jpg'
 
 require 'test/unit'
 if RUBY_VERSION < '1.9'

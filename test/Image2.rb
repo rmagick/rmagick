@@ -14,8 +14,8 @@ class Image2_UT < Test::Unit::TestCase
   end
 
   def test_composite!
-    img1 = Magick::Image.read(IMAGES_DIR+'/Button_0.gif').first
-    img2 = Magick::Image.read(IMAGES_DIR+'/Button_1.gif').first
+    img1 = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
+    img2 = Magick::Image.read(IMAGES_DIR + '/Button_1.gif').first
     assert_nothing_raised do
     res = img1.composite!(img2, Magick::NorthWestGravity, Magick::OverCompositeOp)
     assert_same(img1, res)
@@ -26,8 +26,8 @@ class Image2_UT < Test::Unit::TestCase
 
   def test_composite_affine
     affine = Magick::AffineMatrix.new(1, 0, 1, 0, 0, 0)
-    img1 = Magick::Image.read(IMAGES_DIR+'/Button_0.gif').first
-    img2 = Magick::Image.read(IMAGES_DIR+'/Button_1.gif').first
+    img1 = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
+    img2 = Magick::Image.read(IMAGES_DIR + '/Button_1.gif').first
     assert_nothing_raised do
     res = img1.composite_affine(img2, affine)
     assert_instance_of(Magick::Image, res)
@@ -77,7 +77,7 @@ class Image2_UT < Test::Unit::TestCase
     assert_equal(Magick::DirectClass, @img.class_type)
     assert_nothing_raised { @img.compress_colormap! }
     assert_equal(Magick::PseudoClass, @img.class_type)
-    img = Magick::Image.read(IMAGES_DIR+'/Button_0.gif').first
+    img = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
     assert_equal(Magick::PseudoClass, @img.class_type)
     assert_nothing_raised { @img.compress_colormap! }
   end
@@ -156,7 +156,7 @@ class Image2_UT < Test::Unit::TestCase
     assert_raise(ArgumentError) { @img.crop }
     assert_raise(ArgumentError) { @img.crop(0, 0) }
     assert_nothing_raised do
-    res = @img.crop(0, 0, @img.columns/2, @img.rows/2)
+    res = @img.crop(0, 0, @img.columns / 2, @img.rows / 2)
     assert_instance_of(Magick::Image, res)
     assert_not_same(@img, res)
     end
@@ -169,29 +169,29 @@ class Image2_UT < Test::Unit::TestCase
 
     # 3-argument form
     gravity.each do |grav|
-    assert_nothing_raised { @img.crop(grav, @img.columns/2, @img.rows/2) }
+    assert_nothing_raised { @img.crop(grav, @img.columns / 2, @img.rows / 2) }
     end
-    assert_raise(TypeError) { @img.crop(2, @img.columns/2, @img.rows/2) }
-    assert_raise(TypeError) { @img.crop(Magick::NorthWestGravity, @img.columns/2, @img.rows/2, 2) }
+    assert_raise(TypeError) { @img.crop(2, @img.columns / 2, @img.rows / 2) }
+    assert_raise(TypeError) { @img.crop(Magick::NorthWestGravity, @img.columns / 2, @img.rows / 2, 2) }
 
     # 4-argument form
-    assert_raise(TypeError) { @img.crop(0, 0, @img.columns/2, 'x') }
-    assert_raise(TypeError) { @img.crop(0, 0, 'x', @img.rows/2) }
-    assert_raise(TypeError) { @img.crop(0, 'x', @img.columns/2, @img.rows/2) }
-    assert_raise(TypeError) { @img.crop('x', 0, @img.columns/2, @img.rows/2) }
-    assert_raise(TypeError) { @img.crop(0, 0, @img.columns/2, @img.rows/2, 2) }
+    assert_raise(TypeError) { @img.crop(0, 0, @img.columns / 2, 'x') }
+    assert_raise(TypeError) { @img.crop(0, 0, 'x', @img.rows / 2) }
+    assert_raise(TypeError) { @img.crop(0, 'x', @img.columns / 2, @img.rows / 2) }
+    assert_raise(TypeError) { @img.crop('x', 0, @img.columns / 2, @img.rows / 2) }
+    assert_raise(TypeError) { @img.crop(0, 0, @img.columns / 2, @img.rows / 2, 2) }
 
     # 5-argument form
     gravity.each do |grav|
-    assert_nothing_raised { @img.crop(grav, 0, 0, @img.columns/2, @img.rows/2) }
+    assert_nothing_raised { @img.crop(grav, 0, 0, @img.columns / 2, @img.rows / 2) }
     end
 
-    assert_raise(ArgumentError) { @img.crop(Magick::NorthWestGravity, 0, 0, @img.columns/2, @img.rows/2, 2) }
+    assert_raise(ArgumentError) { @img.crop(Magick::NorthWestGravity, 0, 0, @img.columns / 2, @img.rows / 2, 2) }
   end
 
   def test_crop!
     assert_nothing_raised do
-    res = @img.crop!(0, 0, @img.columns/2, @img.rows/2)
+    res = @img.crop!(0, 0, @img.columns / 2, @img.rows / 2)
     assert_same(@img, res)
     end
   end
@@ -318,7 +318,7 @@ class Image2_UT < Test::Unit::TestCase
     end
     end
 
-    unmapped = Magick::ImageList.new(IMAGES_DIR+'/Hot_Air_Balloons.jpg', IMAGES_DIR+'/Violin.jpg', IMAGES_DIR+'/Polynesia.jpg')
+    unmapped = Magick::ImageList.new(IMAGES_DIR + '/Hot_Air_Balloons.jpg', IMAGES_DIR + '/Violin.jpg', IMAGES_DIR + '/Polynesia.jpg')
     map = Magick::ImageList.new 'netscape:'
     mapped = unmapped.map map, false
     unmapped.each(&:destroy!)
@@ -330,8 +330,8 @@ class Image2_UT < Test::Unit::TestCase
   end
 
   def test_difference
-    img1 = Magick::Image.read(IMAGES_DIR+'/Button_0.gif').first
-    img2 = Magick::Image.read(IMAGES_DIR+'/Button_1.gif').first
+    img1 = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
+    img2 = Magick::Image.read(IMAGES_DIR + '/Button_1.gif').first
     assert_nothing_raised do
     res = img1.difference(img2)
     assert_instance_of(Array, res)
@@ -397,7 +397,7 @@ class Image2_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.distort(Magick::AffineProjectionDistortion, [1,0,0,1,0,0]) }
     assert_nothing_raised { @img.distort(Magick::BilinearDistortion, [7,40, 4,30,   4,124, 4,123,   85,122, 100,123,   85,2, 100,30]) }
     assert_nothing_raised { @img.distort(Magick::PerspectiveDistortion, [7,40, 4,30,   4,124, 4,123,   85,122, 100,123,   85,2, 100,30]) }
-    assert_nothing_raised { @img.distort(Magick::ScaleRotateTranslateDistortion, [28,24,  0.4,0.8  -110,  37.5,60]) }
+    assert_nothing_raised { @img.distort(Magick::ScaleRotateTranslateDistortion, [28,24,  0.4,0.8 - 110,  37.5,60]) }
     assert_raise(ArgumentError) { @img.distort }
     assert_raise(ArgumentError) { @img.distort(Magick::AffineDistortion) }
     assert_raise(TypeError) { @img.distort(1, [1]) }
@@ -527,7 +527,7 @@ class Image2_UT < Test::Unit::TestCase
     assert_nothing_raised do
     res = @img.export_pixels
     assert_instance_of(Array, res)
-    assert_equal(@img.columns*@img.rows*'RGB'.length, res.length)
+    assert_equal(@img.columns * @img.rows * 'RGB'.length, res.length)
     res.each do |p|
       assert_kind_of(Integer, p)
     end
@@ -538,11 +538,11 @@ class Image2_UT < Test::Unit::TestCase
     assert_nothing_raised { res = @img.export_pixels(0, 0, 10, 10) }
     assert_nothing_raised do
     res = @img.export_pixels(0, 0, 10, 10, 'RGBA')
-    assert_equal(10*10*'RGBA'.length, res.length)
+    assert_equal(10 * 10 * 'RGBA'.length, res.length)
     end
     assert_nothing_raised do
     res = @img.export_pixels(0, 0, 10, 10, 'I')
-    assert_equal(10*10*'I'.length, res.length)
+    assert_equal(10 * 10 * 'I'.length, res.length)
     end
 
     # too many arguments
@@ -553,7 +553,7 @@ class Image2_UT < Test::Unit::TestCase
     assert_nothing_raised do
     res = @img.export_pixels_to_str
     assert_instance_of(String, res)
-    assert_equal(@img.columns*@img.rows*'RGB'.length, res.length)
+    assert_equal(@img.columns * @img.rows * 'RGB'.length, res.length)
     end
     assert_nothing_raised { @img.export_pixels_to_str(0) }
     assert_nothing_raised { @img.export_pixels_to_str(0, 0) }
@@ -561,36 +561,36 @@ class Image2_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.export_pixels_to_str(0, 0, 10, 10) }
     assert_nothing_raised do
     res = @img.export_pixels_to_str(0, 0, 10, 10, 'RGBA')
-    assert_equal(10*10*'RGBA'.length, res.length)
+    assert_equal(10 * 10 * 'RGBA'.length, res.length)
     end
     assert_nothing_raised do
     res = @img.export_pixels_to_str(0, 0, 10, 10, 'I')
-    assert_equal(10*10*'I'.length, res.length)
+    assert_equal(10 * 10 * 'I'.length, res.length)
     end
 
     assert_nothing_raised do
     res = @img.export_pixels_to_str(0, 0, 10, 10, 'I', Magick::CharPixel)
-    assert_equal(10*10*1, res.length)
+    assert_equal(10 * 10 * 1, res.length)
     end
     assert_nothing_raised do
     res = @img.export_pixels_to_str(0, 0, 10, 10, 'I', Magick::ShortPixel)
-    assert_equal(10*10*2, res.length)
+    assert_equal(10 * 10 * 2, res.length)
     end
     assert_nothing_raised do
     res = @img.export_pixels_to_str(0, 0, 10, 10, 'I', Magick::IntegerPixel)
-    assert_equal(10*10*4, res.length)
+    assert_equal(10 * 10 * 4, res.length)
     end
     assert_nothing_raised do
     res = @img.export_pixels_to_str(0, 0, 10, 10, 'I', Magick::LongPixel)
-    assert_equal(10*10*[1].pack('L!').length, res.length)
+    assert_equal(10 * 10 * [1].pack('L!').length, res.length)
     end
     assert_nothing_raised do
     res = @img.export_pixels_to_str(0, 0, 10, 10, 'I', Magick::FloatPixel)
-    assert_equal(10*10*4, res.length)
+    assert_equal(10 * 10 * 4, res.length)
     end
     assert_nothing_raised do
     res = @img.export_pixels_to_str(0, 0, 10, 10, 'I', Magick::DoublePixel)
-    assert_equal(10*10*8, res.length)
+    assert_equal(10 * 10 * 8, res.length)
     end
     assert_nothing_raised { @img.export_pixels_to_str(0, 0, 10, 10, 'I', Magick::QuantumPixel) }
 
@@ -618,7 +618,7 @@ class Image2_UT < Test::Unit::TestCase
   end
 
   def test_find_similar_region
-    girl = Magick::Image.read(IMAGES_DIR+'/Flower_Hat.jpg').first
+    girl = Magick::Image.read(IMAGES_DIR + '/Flower_Hat.jpg').first
     region = girl.crop(10, 10, 50, 50)
     assert_nothing_raised do
     x, y = girl.find_similar_region(region)
@@ -821,8 +821,8 @@ class Image2_UT < Test::Unit::TestCase
     end
     assert_raise(RangeError) { @img.get_pixels(0,  0, -1, 1) }
     assert_raise(RangeError) { @img.get_pixels(0,  0, @img.columns, -1) }
-    assert_raise(RangeError) { @img.get_pixels(0,  0, @img.columns+1, 1) }
-    assert_raise(RangeError) { @img.get_pixels(0,  0, @img.columns, @img.rows+1) }
+    assert_raise(RangeError) { @img.get_pixels(0,  0, @img.columns + 1, 1) }
+    assert_raise(RangeError) { @img.get_pixels(0,  0, @img.columns, @img.rows + 1) }
   end
 
   def test_gray?
@@ -1007,7 +1007,7 @@ class Image2_UT < Test::Unit::TestCase
   end
 
   def test_marshal
-    img =  Magick::Image.read(IMAGES_DIR+'/Button_0.gif').first
+    img = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
     d = nil
     img2 = nil
     assert_nothing_raised { d = Marshal.dump(img) }
@@ -1037,29 +1037,29 @@ class Image2_UT < Test::Unit::TestCase
 
   def test_matte_fill_to_border
     assert_nothing_raised do
-    res = @img.matte_fill_to_border(@img.columns/2, @img.rows/2)
+    res = @img.matte_fill_to_border(@img.columns / 2, @img.rows / 2)
     assert_instance_of(Magick::Image, res)
     assert_not_same(@img, res)
     end
     assert_nothing_raised { @img.matte_fill_to_border(@img.columns, @img.rows) }
-    assert_raise(ArgumentError) { @img.matte_fill_to_border(@img.columns+1, @img.rows) }
-    assert_raise(ArgumentError) { @img.matte_fill_to_border(@img.columns, @img.rows+1) }
+    assert_raise(ArgumentError) { @img.matte_fill_to_border(@img.columns + 1, @img.rows) }
+    assert_raise(ArgumentError) { @img.matte_fill_to_border(@img.columns, @img.rows + 1) }
   end
 
   def test_matte_floodfill
     assert_nothing_raised do
-    res = @img.matte_floodfill(@img.columns/2, @img.rows/2)
+    res = @img.matte_floodfill(@img.columns / 2, @img.rows / 2)
     assert_instance_of(Magick::Image, res)
     assert_not_same(@img, res)
     end
     assert_nothing_raised { @img.matte_floodfill(@img.columns, @img.rows) }
-    assert_raise(ArgumentError) { @img.matte_floodfill(@img.columns+1, @img.rows) }
-    assert_raise(ArgumentError) { @img.matte_floodfill(@img.columns, @img.rows+1) }
+    assert_raise(ArgumentError) { @img.matte_floodfill(@img.columns + 1, @img.rows) }
+    assert_raise(ArgumentError) { @img.matte_floodfill(@img.columns, @img.rows + 1) }
   end
 
   def test_matte_replace
     assert_nothing_raised do
-    res = @img.matte_replace(@img.columns/2, @img.rows/2)
+    res = @img.matte_replace(@img.columns / 2, @img.rows / 2)
     assert_instance_of(Magick::Image, res)
     assert_not_same(@img, res)
     end
@@ -1250,11 +1250,11 @@ class Image2_UT < Test::Unit::TestCase
   end
 
   def test_palette?
-    img = Magick::Image.read(IMAGES_DIR+'/Flower_Hat.jpg').first
+    img = Magick::Image.read(IMAGES_DIR + '/Flower_Hat.jpg').first
     assert_nothing_raised do
     assert_block { !img.palette? }
     end
-    img = Magick::Image.read(IMAGES_DIR+'/Button_0.gif').first
+    img = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
     assert_block { img.palette? }
   end
 
@@ -1298,6 +1298,6 @@ end
 
 if __FILE__ == $PROGRAM_NAME
   IMAGES_DIR = '../doc/ex/images'
-  FILES = Dir[IMAGES_DIR+'/Button_*.gif']
+  FILES = Dir[IMAGES_DIR + '/Button_*.gif']
   Test::Unit::UI::Console::TestRunner.run(Image2_UT) unless RUBY_VERSION[/^1\.9|^2/]
 end

@@ -12,7 +12,7 @@ class Image1_UT < Test::Unit::TestCase
   end
 
   def test_read_inline
-    img = Magick::Image.read(IMAGES_DIR+'/Button_0.gif').first
+    img = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
     blob = img.to_blob
     encoded = [blob].pack('m*')
     res = Magick::Image.read_inline(encoded)
@@ -22,8 +22,8 @@ class Image1_UT < Test::Unit::TestCase
   end
 
   def test_spaceship
-    img0 = Magick::Image.read(IMAGES_DIR+'/Button_0.gif').first
-    img1 = Magick::Image.read(IMAGES_DIR+'/Button_1.gif').first
+    img0 = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
+    img1 = Magick::Image.read(IMAGES_DIR + '/Button_1.gif').first
     sig0 = img0.signature
     sig1 = img1.signature
     # since <=> is based on the signature, the images should
@@ -145,7 +145,7 @@ class Image1_UT < Test::Unit::TestCase
   end
 
   def test_affine_matrix
-    affine = Magick::AffineMatrix.new(1, Math::PI/6, Math::PI/6, 1, 0, 0)
+    affine = Magick::AffineMatrix.new(1, Math::PI / 6, Math::PI / 6, 1, 0, 0)
     assert_nothing_raised { @img.affine_transform(affine) }
     assert_raise(TypeError) { @img.affine_transform(0) }
     res = @img.affine_transform(affine)
@@ -411,22 +411,22 @@ class Image1_UT < Test::Unit::TestCase
     assert_raise(ArgumentError) { @img.color_fill_to_border(-1, 1, 'red') }
     assert_raise(ArgumentError) { @img.color_fill_to_border(1, 100, 'red') }
     assert_nothing_raised do
-      res = @img.color_fill_to_border(@img.columns/2, @img.rows/2, 'red')
+      res = @img.color_fill_to_border(@img.columns / 2, @img.rows / 2, 'red')
       assert_instance_of(Magick::Image, res)
     end
     pixel = Magick::Pixel.new(Magick::QuantumRange)
-    assert_nothing_raised { @img.color_fill_to_border(@img.columns/2, @img.rows/2, pixel) }
+    assert_nothing_raised { @img.color_fill_to_border(@img.columns / 2, @img.rows / 2, pixel) }
   end
 
   def test_color_floodfill
     assert_raise(ArgumentError) { @img.color_floodfill(-1, 1, 'red') }
     assert_raise(ArgumentError) { @img.color_floodfill(1, 100, 'red') }
     assert_nothing_raised do
-      res = @img.color_floodfill(@img.columns/2, @img.rows/2, 'red')
+      res = @img.color_floodfill(@img.columns / 2, @img.rows / 2, 'red')
       assert_instance_of(Magick::Image, res)
     end
     pixel = Magick::Pixel.new(Magick::QuantumRange)
-    assert_nothing_raised { @img.color_floodfill(@img.columns/2, @img.rows/2, pixel) }
+    assert_nothing_raised { @img.color_floodfill(@img.columns / 2, @img.rows / 2, pixel) }
   end
 
   def test_color_histogram
@@ -460,12 +460,12 @@ class Image1_UT < Test::Unit::TestCase
     # IndexError b/c @img is DirectClass
     assert_raise(IndexError) { @img.colormap(0) }
     # Read PseudoClass image
-    pc_img = Magick::Image.read(IMAGES_DIR+'/Button_0.gif').first
+    pc_img = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
     assert_nothing_raised { pc_img.colormap(0) }
     ncolors = pc_img.colors
-    assert_raise(IndexError) { pc_img.colormap(ncolors+1) }
+    assert_raise(IndexError) { pc_img.colormap(ncolors + 1) }
     assert_raise(IndexError) { pc_img.colormap(-1) }
-    assert_nothing_raised { pc_img.colormap(ncolors-1) }
+    assert_nothing_raised { pc_img.colormap(ncolors - 1) }
     res = pc_img.colormap(0)
     assert_instance_of(String, res)
 
@@ -529,8 +529,8 @@ class Image1_UT < Test::Unit::TestCase
   end
 
   def test_compare_channel
-    img1 = Magick::Image.read(IMAGES_DIR+'/Button_0.gif').first
-    img2 = Magick::Image.read(IMAGES_DIR+'/Button_1.gif').first
+    img1 = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
+    img2 = Magick::Image.read(IMAGES_DIR + '/Button_1.gif').first
     assert_nothing_raised { img1.compare_channel(img2, Magick::MeanAbsoluteErrorMetric) }
     assert_nothing_raised { img1.compare_channel(img2, Magick::MeanSquaredErrorMetric) }
     assert_nothing_raised { img1.compare_channel(img2, Magick::PeakAbsoluteErrorMetric) }
@@ -560,6 +560,6 @@ end
 
 if __FILE__ == $PROGRAM_NAME
 IMAGES_DIR = '../doc/ex/images'
-FILES = Dir[IMAGES_DIR+'/Button_*.gif']
+FILES = Dir[IMAGES_DIR + '/Button_*.gif']
 Test::Unit::UI::Console::TestRunner.run(Image1_UT)  unless RUBY_VERSION[/^1\.9|^2/]
 end

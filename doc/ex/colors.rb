@@ -20,8 +20,8 @@ colors do |c|
       self.background_color = c.color
       self.border_color = 'gray50'
     end
-    rgb  = sprintf('#%02x%02x%02x', c.color.red&0xff,  c.color.green&0xff, c.color.blue&0xff)
-    rgb += sprintf('%02x', c.color.opacity&0xff) if c.color.opacity != 0
+    rgb  = sprintf('#%02x%02x%02x', c.color.red & 0xff,  c.color.green & 0xff, c.color.blue & 0xff)
+    rgb += sprintf('%02x', c.color.opacity & 0xff) if c.color.opacity != 0
     m = /(.*?)Compliance/.match c.compliance.to_s
     colors.cur_image['Label'] = "#{c.name} (#{rgb}) #{m[1]}"
   end

@@ -510,7 +510,7 @@ class ImageList1_UT < Test::Unit::TestCase
     def test_partition
       a = nil
       n = -1
-      assert_nothing_raised { a = @list.partition { n += 1; (n&1).zero? } }
+      assert_nothing_raised { a = @list.partition { n += 1; (n & 1).zero? } }
       assert_instance_of(Array, a)
       assert_equal(2, a.size)
       assert_instance_of(Magick::ImageList, a[0])
@@ -801,6 +801,6 @@ end
 
 if __FILE__ == $PROGRAM_NAME
 IMAGES_DIR = '../doc/ex/images'
-FILES = Dir[IMAGES_DIR+'/Button_*.gif'].sort
+FILES = Dir[IMAGES_DIR + '/Button_*.gif'].sort
 Test::Unit::UI::Console::TestRunner.run(ImageList1_UT) unless RUBY_VERSION[/^1\.9|^2/]
 end

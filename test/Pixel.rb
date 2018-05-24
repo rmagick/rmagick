@@ -63,7 +63,7 @@ class Pixel_UT < Test::Unit::TestCase
     25.times do |s|
       25.times do |l|
       5.times do |a|
-        args = [20*h, s+25, l+25, a/5.0]
+        args = [20 * h, s + 25, l + 25, a / 5.0]
         px = Magick::Pixel.from_hsla(*args)
         hsla = px.to_hsla
         #puts "[#{args.join(', ')}] = [#{hsla.join(', ')}]"
@@ -82,7 +82,7 @@ class Pixel_UT < Test::Unit::TestCase
 
     # test percentages
     args = ['20%','20%','20%','20%']
-    args2 = [360.0/5,255.0/5,255.0/5,1.0/5]
+    args2 = [360.0 / 5,255.0 / 5,255.0 / 5,1.0 / 5]
     px = Magick::Pixel.from_hsla(*args)
     hsla = px.to_hsla
     px2 = Magick::Pixel.from_hsla(*args2)

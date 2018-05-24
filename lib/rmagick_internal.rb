@@ -619,14 +619,14 @@ module Magick
       if text.length > 2 && /\A(?:\"[^\"]+\"|\'[^\']+\'|\{[^\}]+\})\z/.match(text)
         ; # text already quoted
       elsif !text['\'']
-        text = '\''+text+'\''
+        text = '\'' + text + '\''
       elsif !text['"']
-        text = '"'+text+'"'
+        text = '"' + text + '"'
       elsif !(text['{'] || text['}'])
-        text = '{'+text+'}'
+        text = '{' + text + '}'
       else
         # escape existing braces, surround with braces
-        text = '{' +  text.gsub(/[}]/) { |b| '\\' + b } + '}'
+        text = '{' + text.gsub(/[}]/) { |b| '\\' + b } + '}'
       end
       primitive "text #{x},#{y} #{text}"
     end
@@ -830,7 +830,7 @@ module Magick
     # Thanks to Russell Norris!
     def each_pixel
       get_pixels(0, 0, columns, rows).each_with_index do |p, n|
-        yield(p, n%columns, n/columns)
+        yield(p, n % columns, n / columns)
       end
       self
     end
@@ -881,7 +881,7 @@ module Magick
     # Retrieve IPTC information by record number:dataset tag constant defined in
     # Magick::IPTC, above.
     def get_iptc_dataset(ds)
-      self['IPTC:'+ds]
+      self['IPTC:' + ds]
     end
 
     # Iterate over IPTC record number:dataset tags, yield for each non-nil dataset
@@ -985,8 +985,8 @@ module Magick
     def resize_to_fill!(ncols, nrows=nil, gravity=CenterGravity)
       nrows ||= ncols
       if ncols != columns || nrows != rows
-        scale = [ncols/columns.to_f, nrows/rows.to_f].max
-        resize!(scale*columns+0.5, scale*rows+0.5)
+        scale = [ncols / columns.to_f, nrows / rows.to_f].max
+        resize!(scale * columns + 0.5, scale * rows + 0.5)
       end
       crop!(gravity, ncols, nrows, true) if ncols != columns || nrows != rows
       self
@@ -1050,7 +1050,7 @@ module Magick
         if width <= 0 || height <= 0
           Kernel.raise ArgumentError, "invalid geometry (#{width}x#{height}+#{x}+#{y})"
         end
-        if x < 0 || y < 0 || (x+width) > img.columns || (y+height) > img.rows
+        if x < 0 || y < 0 || (x + width) > img.columns || (y + height) > img.rows
           Kernel.raise RangeError, "geometry (#{width}x#{height}+#{x}+#{y}) exceeds image boundary"
         end
         @view = img.get_pixels(x, y, width, height)
@@ -1119,7 +1119,7 @@ module Magick
 
           # Both View::Pixels and Magick::Pixel implement Observable
           if @unique
-            pixels = @view[@rows[0]*@width + @cols[0]]
+            pixels = @view[@rows[0] * @width + @cols[0]]
             pixels.add_observer(self)
           else
             pixels = View::Pixels.new
@@ -1176,7 +1176,7 @@ module Magick
               if @rows < 0
                 @rows += @height
               end
-              if @rows < 0 || @rows > @height-1
+              if @rows < 0 || @rows > @height - 1
                 Kernel.raise IndexError, "index [#{@rows}] out of range"
               end
               # Convert back to an array
@@ -1200,7 +1200,7 @@ module Magick
               length = [length, 0].max
             end
             # Create a Range for the specified set of rows
-            @rows = Range.new(start, start+length, true)
+            @rows = Range.new(start, start + length, true)
           end
 
           case @cols.length
@@ -1218,7 +1218,7 @@ module Magick
               if @cols < 0
                 @cols += @width
               end
-              if @cols < 0 || @cols > @width-1
+              if @cols < 0 || @cols > @width - 1
                 Kernel.raise IndexError, "index [#{@cols}] out of range"
               end
               # Convert back to array
@@ -1242,7 +1242,7 @@ module Magick
               length = [length, 0].max
             end
             # Create a Range for the specified set of columns
-            @cols = Range.new(start, start+length, true)
+            @cols = Range.new(start, start + length, true)
             @unique = false
           end
         end
@@ -1260,7 +1260,7 @@ module Magick
               if i > maxcols
                 Kernel.raise IndexError, "index [#{i}] out of range"
               end
-              yield j*@width + i
+              yield j * @width + i
             end
           end
           nil    # useless return value
@@ -1520,7 +1520,7 @@ module Magick
     def concat(other)
       is_an_image_array other
       other.each { |image| @images << image }
-      @scene = length-1
+      @scene = length - 1
       self
     end
 
@@ -1638,7 +1638,7 @@ module Magick
       if n < 0 || n > 65535
         Kernel.raise ArgumentError, 'iterations must be between 0 and 65535'
       end
-      @images.each { |f| f.iterations=n }
+      @images.each { |f| f.iterations = n }
       self
     end
 
@@ -1920,10 +1920,10 @@ module Magick
       img.background_color = @bgcolor
       img.erase!                # sets image to background color
       pixels = Array.new([img.rows, img.columns].max, @hatchpixel)
-      @dist.step((img.columns-1)/@dist*@dist, @dist) do |x|
+      @dist.step((img.columns - 1) / @dist * @dist, @dist) do |x|
         img.store_pixels(x,0,1,img.rows,pixels)
       end
-      @dist.step((img.rows-1)/@dist*@dist, @dist) do |y|
+      @dist.step((img.rows - 1) / @dist * @dist, @dist) do |y|
         img.store_pixels(0,y,img.columns,1,pixels)
       end
     end

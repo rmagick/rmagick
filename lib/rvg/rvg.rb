@@ -110,7 +110,7 @@ module Magick
         indent = 0
         primitives.each do |cmd|
           indent -= 1 if cmd['pop ']
-          print(('   '*indent), cmd, "\n")
+          print(('   ' * indent), cmd, "\n")
           indent += 1 if cmd['push ']
         end
       end

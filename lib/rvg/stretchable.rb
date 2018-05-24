@@ -58,18 +58,18 @@ module Magick
              when /\AxMin/
                0
              when NilClass, /\AxMid/
-               (width - @vbx_width*sx) / 2.0
+               (width - @vbx_width * sx) / 2.0
              when /\AxMax/
-               width - @vbx_width*sx
+               width - @vbx_width * sx
              end
 
         ty = case @align
              when /YMin\z/
                0
              when NilClass, /YMid\z/
-               (height - @vbx_height*sy) / 2.0
+               (height - @vbx_height * sy) / 2.0
              when /YMax\z/
-               height - @vbx_height*sy
+               height - @vbx_height * sy
              end
         [tx, ty]
       end

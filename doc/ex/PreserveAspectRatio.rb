@@ -4,15 +4,15 @@ rvg = Magick::RVG.new(450, 300) do |canvas|
   canvas.desc = 'Example Preserve Aspect Ratio'
   canvas.background_fill = 'white'
 
-  canvas.rect(448, 298, 1, 1).styles(:fill=>'none', :stroke=>'blue')
+  canvas.rect(448, 298, 1, 1).styles(:fill => 'none', :stroke => 'blue')
 
   # Define the smiley-face
   smile = Magick::RVG::Group.new do |grp|
     grp.translate(0, 5)
-    grp.circle(10, 15, 15).styles(:fill=>'yellow', :stroke=>'none')
-    grp.circle(1.5, 12, 12).styles(:fill=>'black', :stroke=>'none')
-    grp.circle(1.5, 17, 12).styles(:fill=>'black', :stroke=>'none')
-    grp.path('M10 19 A 8 8 0 0 0 20 19').styles(:stroke=>'black', :stroke_width=>2)
+    grp.circle(10, 15, 15).styles(:fill => 'yellow', :stroke => 'none')
+    grp.circle(1.5, 12, 12).styles(:fill => 'black', :stroke => 'none')
+    grp.circle(1.5, 17, 12).styles(:fill => 'black', :stroke => 'none')
+    grp.path('M10 19 A 8 8 0 0 0 20 19').styles(:stroke => 'black', :stroke_width => 2)
   end
 
   viewport1 = Magick::RVG::Group.new do |grp|
@@ -20,11 +20,11 @@ rvg = Magick::RVG.new(450, 300) do |canvas|
   end
 
   viewport2 = Magick::RVG::Group.new do |grp|
-    grp.rect(29, 39, 0.5, 0.5).styles(:fill=>'black', :stroke=>'red')
+    grp.rect(29, 39, 0.5, 0.5).styles(:fill => 'black', :stroke => 'red')
   end
 
   # SVG to fit
-  grp = canvas.g.styles(:font_size=>9) do |grp|
+  grp = canvas.g.styles(:font_size => 9) do |grp|
     grp.text(10, 30, 'SVG to fit')
     grp.g.translate(20, 40) do |grp2|
       grp2.use(viewport2)

@@ -37,7 +37,7 @@ class Preview_UT < Test::Unit::TestCase
       Magick::CharcoalDrawingPreview,
       Magick::JPEGPreview]
 
-    hat = Magick::Image.read(IMAGES_DIR+'/Flower_Hat.jpg').first
+    hat = Magick::Image.read(IMAGES_DIR + '/Flower_Hat.jpg').first
     assert_nothing_raised do
       prev = hat.preview(Magick::RotatePreview)
       assert_instance_of(Magick::Image, prev)

@@ -195,7 +195,7 @@ class Image3_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.resample(100) }
     assert_nothing_raised { @img.resample(100, 100) }
 
-    girl = Magick::Image.read(IMAGES_DIR+'/Flower_Hat.jpg').first
+    girl = Magick::Image.read(IMAGES_DIR + '/Flower_Hat.jpg').first
     assert_equal(240.0, girl.x_resolution)
     assert_equal(240.0, girl.y_resolution)
     res = girl.resample(120, 120)
@@ -480,7 +480,7 @@ class Image3_UT < Test::Unit::TestCase
       res = @img.sepiatone
       assert_instance_of(Magick::Image, res)
     end
-    assert_nothing_raised { @img.sepiatone(Magick::QuantumRange*0.80) }
+    assert_nothing_raised { @img.sepiatone(Magick::QuantumRange * 0.80) }
     assert_raise(ArgumentError) { @img.sepiatone(Magick::QuantumRange, 2) }
     assert_raise(TypeError) { @img.sepiatone('x') }
   end
@@ -713,8 +713,8 @@ class Image3_UT < Test::Unit::TestCase
     assert_raise(TypeError) { @img.store_pixels(0, 0, @img.columns, 1, pixels) }
     assert_raise(RangeError) { @img.store_pixels(-1, 0, @img.columns, 1, pixels) }
     assert_raise(RangeError) { @img.store_pixels(0, -1, @img.columns, 1, pixels) }
-    assert_raise(RangeError) { @img.store_pixels(0, 0, 1+@img.columns, 1, pixels) }
-    assert_raise(RangeError) { @img.store_pixels(-1, 0, 1, 1+@img.rows, pixels) }
+    assert_raise(RangeError) { @img.store_pixels(0, 0, 1 + @img.columns, 1, pixels) }
+    assert_raise(RangeError) { @img.store_pixels(-1, 0, 1, 1 + @img.rows, pixels) }
     assert_raise(IndexError) { @img.store_pixels(0, 0, @img.columns, 1, ['x']) }
   end
 
@@ -739,21 +739,21 @@ class Image3_UT < Test::Unit::TestCase
   def test_texture_fill_to_border
     texture = Magick::Image.read('granite:').first
     assert_nothing_raised do
-      res = @img.texture_fill_to_border(@img.columns/2, @img.rows/2, texture)
+      res = @img.texture_fill_to_border(@img.columns / 2, @img.rows / 2, texture)
       assert_instance_of(Magick::Image, res)
     end
-    assert_raise(NoMethodError) { @img.texture_fill_to_border(@img.columns/2, @img.rows/2, 'x') }
+    assert_raise(NoMethodError) { @img.texture_fill_to_border(@img.columns / 2, @img.rows / 2, 'x') }
   end
 
   def test_texture_floodfill
     texture = Magick::Image.read('granite:').first
     assert_nothing_raised do
-      res = @img.texture_floodfill(@img.columns/2, @img.rows/2, texture)
+      res = @img.texture_floodfill(@img.columns / 2, @img.rows / 2, texture)
       assert_instance_of(Magick::Image, res)
     end
-    assert_raise(NoMethodError) { @img.texture_floodfill(@img.columns/2, @img.rows/2, 'x') }
+    assert_raise(NoMethodError) { @img.texture_floodfill(@img.columns / 2, @img.rows / 2, 'x') }
     texture.destroy!
-    assert_raise(Magick::DestroyedImageError) { @img.texture_floodfill(@img.columns/2, @img.rows/2, texture) }
+    assert_raise(Magick::DestroyedImageError) { @img.texture_floodfill(@img.columns / 2, @img.rows / 2, texture) }
   end
 
   def test_threshold
@@ -809,7 +809,7 @@ class Image3_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.transparent(pixel) }
     assert_nothing_raised { @img.transparent('white', Magick::TransparentOpacity) }
     assert_raise(ArgumentError) { @img.transparent('white', Magick::TransparentOpacity, 2) }
-    assert_nothing_raised { @img.transparent('white', Magick::QuantumRange/2) }
+    assert_nothing_raised { @img.transparent('white', Magick::QuantumRange / 2) }
     assert_raise(TypeError) { @img.transparent(2) }
   end
 
@@ -841,7 +841,7 @@ class Image3_UT < Test::Unit::TestCase
 
   def test_trim
     # Can't use the default image because it's a solid color
-    hat = Magick::Image.read(IMAGES_DIR+'/Flower_Hat.jpg').first
+    hat = Magick::Image.read(IMAGES_DIR + '/Flower_Hat.jpg').first
     assert_nothing_raised do
       res = hat.trim
       assert_instance_of(Magick::Image, res)
@@ -1025,6 +1025,6 @@ end
 
 if __FILE__ == $PROGRAM_NAME
 IMAGES_DIR = '../doc/ex/images'
-FILES = Dir[IMAGES_DIR+'/Button_*.gif']
+FILES = Dir[IMAGES_DIR + '/Button_*.gif']
 Test::Unit::UI::Console::TestRunner.run(Image3_UT) unless RUBY_VERSION[/^1\.9|^2/]
 end

@@ -16,7 +16,7 @@ begin
     gc.stroke('red')
     gc.stroke_width(2)
     gc.fill('none')
-    gc.rectangle(res[0], res[1], res[0]+target.columns, res[1]+target.rows)
+    gc.rectangle(res[0], res[1], res[0] + target.columns, res[1] + target.rows)
     gc.draw(img)
     img.matte = false
     puts "Found similar region. Writing `find_similar_region.gif'..."

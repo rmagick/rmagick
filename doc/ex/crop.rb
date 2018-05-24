@@ -14,14 +14,14 @@ rect = Magick::Draw.new
 rect.stroke('transparent')
 rect.fill('white')
 rect.fill_opacity(0.25)
-rect.rectangle(23, 81, 107+23, 139+81)
+rect.rectangle(23, 81, 107 + 23, 139 + 81)
 rect.draw(img)
 
 img.write('crop_before.png')
 
 # Create a image to use as a background for
 # the "after" image.
-bg = Magick::Image.new(img.columns, img.rows) { self.background_color='none' }
+bg = Magick::Image.new(img.columns, img.rows) { self.background_color = 'none' }
 
 # Composite the the "after" (chopped) image on the background
 bg = bg.composite(chopped, 23, 81, Magick::OverCompositeOp)

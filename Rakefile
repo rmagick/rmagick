@@ -59,7 +59,7 @@ desc 'Release'
 task :release => [:assert_clean_repo, :push_and_tag]
 
 desc 'Release and build the legacy way'
-task :legacy_release=> ['legacy:README.html', 'legacy:extconf', 'legacy:doc', 'legacy:manifest', 'release']
+task :legacy_release => ['legacy:README.html', 'legacy:extconf', 'legacy:doc', 'legacy:manifest', 'release']
 
 namespace :legacy do
   require 'find'

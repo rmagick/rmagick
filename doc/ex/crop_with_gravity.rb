@@ -12,8 +12,8 @@ include Magick
 
 shorts = Image.read('images/Shorts.jpg').first
 
-regwidth = shorts.columns/2
-regheight = shorts.rows/2
+regwidth = shorts.columns / 2
+regheight = shorts.rows / 2
 
 mask = Image.new(regwidth, regheight) { self.background_color = 'white' }
 mask.opacity = 0.50 * TransparentOpacity

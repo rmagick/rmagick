@@ -9,7 +9,7 @@ letter = 'A'
 26.times do
   # 'M' is not the same size as the other letters.
   if letter != 'M'
-    a.read('images/Button_'+letter+'.gif')
+    a.read('images/Button_' + letter + '.gif')
   end
   letter.succ!
 end

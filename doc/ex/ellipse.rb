@@ -14,17 +14,17 @@ gc.ellipse(180,125, 150,75, 0, 270)
 
 # Draw horizontal width line
 gc.stroke('gray50').stroke_width(1)
-gc.line(180-150, 125, 180, 125)
+gc.line(180 - 150, 125, 180, 125)
 
 # Draw vertical height line
-gc.line(180, 125-75, 180, 125)
+gc.line(180, 125 - 75, 180, 125)
 gc.fill_opacity(0)
 
 # Draw arcStart circle
-gc.circle(180+150, 125, 180+150+3, 125+3)
+gc.circle(180 + 150, 125, 180 + 150 + 3, 125 + 3)
 
 # Draw arcEnd circle
-gc.circle(180, 125-75, 180+3, 125-75+3)
+gc.circle(180, 125 - 75, 180 + 3, 125 - 75 + 3)
 
 # Annotate
 gc.font_weight(Magick::NormalWeight)

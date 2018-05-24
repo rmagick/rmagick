@@ -40,7 +40,7 @@ ilist[1] = img.wet_floor(0.25, 0.5)
 results << ilist.append(true)
 
 # Add a slant
-xform = Magick::AffineMatrix.new(1.0, 0.0, Math::PI/4.0, 1.0, 0.0, 0.0)
+xform = Magick::AffineMatrix.new(1.0, 0.0, Math::PI / 4.0, 1.0, 0.0, 0.0)
 ilist[1] = ilist[1].affine_transform(xform)
 results << ilist.append(true)
 

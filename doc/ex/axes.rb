@@ -14,7 +14,7 @@ canvas.new_image(250, 250, Magick::HatchFill.new('white', 'gray90'))
 border = Magick::Draw.new
 border.stroke('thistle')
 border.fill_opacity(0)
-border.rectangle(0,0, canvas.columns-1, canvas.rows-1)
+border.rectangle(0,0, canvas.columns - 1, canvas.rows - 1)
 border.draw(canvas)
 
 # Draw gold axes with arrow-heads.
@@ -24,9 +24,9 @@ axes.stroke('gold3')
 axes.stroke_width(4)
 axes.stroke_linecap('round')
 axes.stroke_linejoin('round')
-axes.polyline(18,canvas.rows-10, 10,canvas.rows-3, 3,canvas.rows-10,
-              10,canvas.rows-10, 10,10, canvas.columns-10,10,
-              canvas.columns-10,3, canvas.columns-3,10, canvas.columns-10, 18)
+axes.polyline(18,canvas.rows - 10, 10,canvas.rows - 3, 3,canvas.rows - 10,
+              10,canvas.rows - 10, 10,10, canvas.columns - 10,10,
+              canvas.columns - 10,3, canvas.columns - 3,10, canvas.columns - 10, 18)
 axes.draw(canvas)
 
 # Draw a red circle to show the direction of rotation.
@@ -38,7 +38,7 @@ circle.stroke_opacity(0.75)
 circle.stroke_width(6)
 circle.stroke_linecap('round')
 circle.stroke_linejoin('round')
-circle.ellipse(canvas.rows/2,canvas.columns/2, 80, 80, 0, 315)
+circle.ellipse(canvas.rows / 2,canvas.columns / 2, 80, 80, 0, 315)
 circle.polyline(180,70, 173,78, 190,78, 191,62)
 circle.draw(canvas)
 
