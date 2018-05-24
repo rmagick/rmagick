@@ -9,7 +9,7 @@ RSpec.describe Magick::Image, '#constitute' do
     # can't compare it directly to the original image.
     expect(res.columns).to eq img.columns
     expect(res.rows).to eq img.rows
-    expect(pixels.all? { |v| 0 <= v && v <= Magick::QuantumRange }).to be true
+    expect(pixels.all? { |v| v >= 0 && v <= Magick::QuantumRange }).to be true
   end
 
 end

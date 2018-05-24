@@ -254,9 +254,6 @@ Naming/PredicateName:
 Style/RegexpLiteral:
   Enabled: false
 
-Style/YodaCondition:
-  Enabled: false
-
 # Fixing this issues cause some test to fail
 Lint/UnifiedInteger:
   Enabled: false

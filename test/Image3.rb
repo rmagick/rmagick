@@ -1023,7 +1023,7 @@ class Image3_UT < Test::Unit::TestCase
   end
 end
 
-if __FILE__ == $PROGRAM_NAME
+if $PROGRAM_NAME == __FILE__
 IMAGES_DIR = '../doc/ex/images'
 FILES = Dir[IMAGES_DIR + '/Button_*.gif']
 Test::Unit::UI::Console::TestRunner.run(Image3_UT) unless RUBY_VERSION[/^1\.9|^2/]
