@@ -519,8 +519,8 @@ module Magick
           init_matrix
         end
 
-        def method_missing(methID, *args, &block)
-          @gc.__send__(methID, *args, &block)
+        def method_missing(meth_id, *args, &block)
+          @gc.__send__(meth_id, *args, &block)
         end
 
         def affine(sx, rx, ry, sy, tx, ty)

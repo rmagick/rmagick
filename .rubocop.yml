@@ -351,11 +351,6 @@ Style/TrailingCommaInLiteral:
 Style/TrailingCommaInArguments:
   Enabled: false
 
-# Offense count: 2
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Naming/VariableName:
-  Enabled: false
-
 # Need very caution rewrite of code
 Lint/RescueWithoutErrorClass:
   Enabled: false

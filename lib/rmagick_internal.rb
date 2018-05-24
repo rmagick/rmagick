@@ -225,9 +225,9 @@ module Magick
     end
 
     # Draw an arc.
-    def arc(startX, startY, endX, endY, startDegrees, endDegrees)
+    def arc(start_x, start_y, end_x, end_y, start_degrees, end_degrees)
       primitive 'arc ' + sprintf('%g,%g %g,%g %g,%g',
-                                 startX, startY, endX, endY, startDegrees, endDegrees)
+                                 start_x, start_y, end_x, end_y, start_degrees, end_degrees)
     end
 
     # Draw a bezier curve.
@@ -241,8 +241,8 @@ module Magick
     end
 
     # Draw a circle
-    def circle(originX, originY, perimX, perimY)
-      primitive 'circle ' + sprintf('%g,%g %g,%g', originX, originY, perimX, perimY)
+    def circle(origin_x, origin_y, perim_x, perim_y)
+      primitive 'circle ' + sprintf('%g,%g %g,%g', origin_x, origin_y, perim_x, perim_y)
     end
 
     # Invoke a clip-path defined by def_clip_path.
@@ -302,9 +302,9 @@ module Magick
     end
 
     # Draw an ellipse
-    def ellipse(originX, originY, width, height, arcStart, arcEnd)
+    def ellipse(origin_x, origin_y, width, height, arc_start, arc_end)
       primitive 'ellipse ' + sprintf('%g,%g %g,%g %g,%g',
-                                     originX, originY, width, height, arcStart, arcEnd)
+                                     origin_x, origin_y, width, height, arc_start, arc_end)
     end
 
     # Let anything through, but the only defined argument
@@ -411,8 +411,8 @@ module Magick
     end
 
     # Draw a line
-    def line(startX, startY, endX, endY)
-      primitive 'line ' + sprintf('%g,%g %g,%g', startX, startY, endX, endY)
+    def line(start_x, start_y, end_x, end_y)
+      primitive 'line ' + sprintf('%g,%g %g,%g', start_x, start_y, end_x, end_y)
     end
 
     # Set matte (make transparent) in image according to the specified
@@ -1672,14 +1672,14 @@ module Magick
     # the method to the current image. If the method isn't explicitly supported,
     # send it to the current image in the array. If there are no images, send
     # it up the line. Catch a NameError and emit a useful message.
-    def method_missing(methID, *args, &block)
+    def method_missing(meth_id, *args, &block)
       if @scene
-        @images[@scene].send(methID, *args, &block)
+        @images[@scene].send(meth_id, *args, &block)
       else
         super
       end
     rescue NoMethodError
-      Kernel.raise NoMethodError, "undefined method `#{methID.id2name}' for #{self.class}"
+      Kernel.raise NoMethodError, "undefined method `#{meth_id.id2name}' for #{self.class}"
     rescue Exception
       $ERROR_POSITION.delete_if { |s| /:in `send'$/.match(s) || /:in `method_missing'$/.match(s) }
       Kernel.raise
@@ -1771,10 +1771,10 @@ module Magick
 
     # Ensure respond_to? answers correctly when we are delegating to Image
     alias_method :__respond_to__?, :respond_to?
-    def respond_to?(methID, priv=false)
-      return true if __respond_to__?(methID, priv)
+    def respond_to?(meth_id, priv=false)
+      return true if __respond_to__?(meth_id, priv)
       if @scene
-        @images[@scene].respond_to?(methID, priv)
+        @images[@scene].respond_to?(meth_id, priv)
       else
         super
       end

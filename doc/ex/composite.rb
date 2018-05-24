@@ -17,8 +17,8 @@ triangle.fill(COLOR_A)
 triangle.stroke('transparent')
 triangle.polygon(0,0, COLS,0, 0,ROWS, 0,0)
 triangle.draw(img)
-image_A = img.transparent('white', TransparentOpacity)
-image_A['Label'] = 'A'
+image_a = img.transparent('white', TransparentOpacity)
+image_a['Label'] = 'A'
 
 img = Image.new(COLS, ROWS)
 triangle = Draw.new
@@ -26,8 +26,8 @@ triangle.fill(COLOR_B)
 triangle.stroke('transparent')
 triangle.polygon(0,0, COLS,ROWS, COLS,0, 0,0)
 triangle.draw(img)
-image_B = img.transparent('white', TransparentOpacity)
-image_B['Label'] = 'B'
+image__b = img.transparent('white', TransparentOpacity)
+image__b['Label'] = 'B'
 
 list = ImageList.new
 null = Image.read('xc:white') { self.size = Geometry.new(COLS,ROWS) }
@@ -36,88 +36,88 @@ null.border_color = 'transparent'
 granite =  Image.read('granite:')
 
 list << null.copy
-list << image_A
-list << image_B
+list << image_a
+list << image__b
 list << null.copy
 
-list << image_B.composite(image_A, CenterGravity, OverCompositeOp)
+list << image__b.composite(image_a, CenterGravity, OverCompositeOp)
 list.cur_image['Label'] = 'A over B'
-list << image_A.composite(image_B, CenterGravity, OverCompositeOp)
+list << image_a.composite(image__b, CenterGravity, OverCompositeOp)
 list.cur_image['Label'] = 'B over A'
 
-list << image_B.composite(image_A, CenterGravity, InCompositeOp)
+list << image__b.composite(image_a, CenterGravity, InCompositeOp)
 list.cur_image['Label'] = 'A in B'
-list << image_A.composite(image_B, CenterGravity, InCompositeOp)
+list << image_a.composite(image__b, CenterGravity, InCompositeOp)
 list.cur_image['Label'] = 'B in A'
 
-list << image_B.composite(image_A, CenterGravity, OutCompositeOp)
+list << image__b.composite(image_a, CenterGravity, OutCompositeOp)
 list.cur_image['Label'] = 'A out B'
-list << image_A.composite(image_B, CenterGravity, OutCompositeOp)
+list << image_a.composite(image__b, CenterGravity, OutCompositeOp)
 list.cur_image['Label'] = 'B out A'
 
-list << image_B.composite(image_A, CenterGravity, AtopCompositeOp)
+list << image__b.composite(image_a, CenterGravity, AtopCompositeOp)
 list.cur_image['Label'] = 'A atop B'
-list << image_A.composite(image_B, CenterGravity, AtopCompositeOp)
+list << image_a.composite(image__b, CenterGravity, AtopCompositeOp)
 list.cur_image['Label'] = 'B atop A'
 
-list << image_B.composite(image_A, CenterGravity, XorCompositeOp)
+list << image__b.composite(image_a, CenterGravity, XorCompositeOp)
 list.cur_image['Label'] = 'A xor B'
 
-list << image_B.composite(image_A, CenterGravity, MultiplyCompositeOp)
+list << image__b.composite(image_a, CenterGravity, MultiplyCompositeOp)
 list.cur_image['Label'] = 'A multiply B'
 
-list << image_B.composite(image_A, CenterGravity, ScreenCompositeOp)
+list << image__b.composite(image_a, CenterGravity, ScreenCompositeOp)
 list.cur_image['Label'] = 'A screen B'
 
-list << image_B.composite(image_A, CenterGravity, DarkenCompositeOp)
+list << image__b.composite(image_a, CenterGravity, DarkenCompositeOp)
 list.cur_image['Label'] = 'A darken B'
 
-list << image_B.composite(image_A, CenterGravity, LightenCompositeOp)
+list << image__b.composite(image_a, CenterGravity, LightenCompositeOp)
 list.cur_image['Label'] = 'A lighten B'
 
-list << image_B.composite(image_A, CenterGravity, PlusCompositeOp)
+list << image__b.composite(image_a, CenterGravity, PlusCompositeOp)
 list.cur_image['Label'] = 'A plus B'
 
-list << image_B.composite(image_A, CenterGravity, MinusCompositeOp)
+list << image__b.composite(image_a, CenterGravity, MinusCompositeOp)
 list.cur_image['Label'] = 'A minus B'
 
-list << image_B.composite(image_A, CenterGravity, AddCompositeOp)
+list << image__b.composite(image_a, CenterGravity, AddCompositeOp)
 list.cur_image['Label'] = 'A add B'
 
-list << image_B.composite(image_A, CenterGravity, SubtractCompositeOp)
+list << image__b.composite(image_a, CenterGravity, SubtractCompositeOp)
 list.cur_image['Label'] = 'A subtract B'
 
-list << image_B.composite(image_A, CenterGravity, DifferenceCompositeOp)
+list << image__b.composite(image_a, CenterGravity, DifferenceCompositeOp)
 list.cur_image['Label'] = 'A difference B'
 
-list << image_B.composite(image_A, CenterGravity, HueCompositeOp)
+list << image__b.composite(image_a, CenterGravity, HueCompositeOp)
 list.cur_image['Label'] = 'A hue B'
 
-list << image_B.composite(image_A, CenterGravity, SaturateCompositeOp)
+list << image__b.composite(image_a, CenterGravity, SaturateCompositeOp)
 list.cur_image['Label'] = 'A saturate B'
 
-list << image_B.composite(image_A, CenterGravity, LuminizeCompositeOp)
+list << image__b.composite(image_a, CenterGravity, LuminizeCompositeOp)
 list.cur_image['Label'] = 'A luminize B'
 
-list << image_B.composite(image_A, CenterGravity, ColorizeCompositeOp)
+list << image__b.composite(image_a, CenterGravity, ColorizeCompositeOp)
 list.cur_image['Label'] = 'A colorize B'
 
-list << image_B.composite(image_A, CenterGravity, BumpmapCompositeOp)
+list << image__b.composite(image_a, CenterGravity, BumpmapCompositeOp)
 list.cur_image['Label'] = 'A bumpmap B'
 
-list << image_B.composite(image_A, CenterGravity, DissolveCompositeOp)
+list << image__b.composite(image_a, CenterGravity, DissolveCompositeOp)
 list.cur_image['Label'] = 'A dissolve B'
 
-list << image_B.composite(image_A, CenterGravity, ThresholdCompositeOp)
+list << image__b.composite(image_a, CenterGravity, ThresholdCompositeOp)
 list.cur_image['Label'] = 'A threshold B'
 
-list << image_B.composite(image_A, CenterGravity, ModulateCompositeOp)
+list << image__b.composite(image_a, CenterGravity, ModulateCompositeOp)
 list.cur_image['Label'] = 'A modulate B'
 
-list << image_A.composite(image_B, CenterGravity, ModulateCompositeOp)
+list << image_a.composite(image__b, CenterGravity, ModulateCompositeOp)
 list.cur_image['Label'] = 'B modulate A'
 
-list << image_B.composite(image_A, CenterGravity, OverlayCompositeOp)
+list << image__b.composite(image_a, CenterGravity, OverlayCompositeOp)
 list.cur_image['Label'] = 'A overlay B'
 
 montage = list.montage do
