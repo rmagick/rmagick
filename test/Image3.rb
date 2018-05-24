@@ -173,14 +173,14 @@ class Image3_UT < Test::Unit::TestCase
 
   def test_remap
     remap_image = Magick::Image.new(20, 20) { self.background_color = 'green' }
-     assert_nothing_raised { @img.remap(remap_image) }
-     assert_nothing_raised { @img.remap(remap_image, Magick::NoDitherMethod) }
-     assert_nothing_raised { @img.remap(remap_image, Magick::RiemersmaDitherMethod) }
-     assert_nothing_raised { @img.remap(remap_image, Magick::FloydSteinbergDitherMethod) }
+    assert_nothing_raised { @img.remap(remap_image) }
+    assert_nothing_raised { @img.remap(remap_image, Magick::NoDitherMethod) }
+    assert_nothing_raised { @img.remap(remap_image, Magick::RiemersmaDitherMethod) }
+    assert_nothing_raised { @img.remap(remap_image, Magick::FloydSteinbergDitherMethod) }
 
-     assert_raise(ArgumentError) { @img.remap }
-     assert_raise(ArgumentError) { @img.remap(remap_image, Magick::NoDitherMethod, 1) }
-     assert_raise(TypeError) { @img.remap(remap_image, 1) }
+    assert_raise(ArgumentError) { @img.remap }
+    assert_raise(ArgumentError) { @img.remap(remap_image, Magick::NoDitherMethod, 1) }
+    assert_raise(TypeError) { @img.remap(remap_image, 1) }
   end
 
   def test_resample
@@ -1027,6 +1027,6 @@ end
 
 if $PROGRAM_NAME == __FILE__
   IMAGES_DIR = '../doc/ex/images'
-FILES = Dir[IMAGES_DIR + '/Button_*.gif']
-Test::Unit::UI::Console::TestRunner.run(Image3_UT) unless RUBY_VERSION[/^1\.9|^2/]
+  FILES = Dir[IMAGES_DIR + '/Button_*.gif']
+  Test::Unit::UI::Console::TestRunner.run(Image3_UT) unless RUBY_VERSION[/^1\.9|^2/]
 end

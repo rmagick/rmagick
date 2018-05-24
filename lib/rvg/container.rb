@@ -53,10 +53,10 @@ module Magick
     #   end
     class Group
       include Stylable
-        include Transformable
-        include Embellishable
-        include Describable
-        include Duplicatable
+      include Transformable
+      include Embellishable
+      include Describable
+      include Duplicatable
 
       def initialize
         super

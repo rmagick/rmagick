@@ -28,12 +28,12 @@ END_HEADER
 
     def list_primitives(pgm, gc)
       primitives = gc.inspect.split("\n")
-        indent = 0
-        primitives.each do |cmd|
-          indent -= 1 if cmd['pop ']
-            pgm.print('  ', ('  ' * indent), '"', cmd, '\n"', "\n")
-            indent += 1 if cmd['push ']
-        end
+      indent = 0
+      primitives.each do |cmd|
+        indent -= 1 if cmd['pop ']
+        pgm.print('  ', ('  ' * indent), '"', cmd, '\n"', "\n")
+        indent += 1 if cmd['push ']
+      end
     end
 
     def trailer_text(pgm, name)
@@ -90,12 +90,12 @@ END_TRAILER
     # suitable for reproducing a bug.
     def to_c(name)
       pgm = File.open(name + '.c', 'w')
-        header_text(pgm, name)
-        gc = Draw.new
-        add_primitives(gc)
-        list_primitives(pgm, gc)
-        trailer_text(pgm, name)
-        pgm.close
-        $stderr.puts 'Done'
+      header_text(pgm, name)
+      gc = Draw.new
+      add_primitives(gc)
+      list_primitives(pgm, gc)
+      trailer_text(pgm, name)
+      pgm.close
+      $stderr.puts 'Done'
     end
 end     # class Magick::RVG

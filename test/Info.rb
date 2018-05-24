@@ -88,7 +88,7 @@ class Info_UT < Test::Unit::TestCase
   def test_colorspace
     Magick::ColorspaceType.values.each do |cs|
       assert_nothing_raised { @info.colorspace = cs }
-    assert_equal(cs, @info.colorspace)
+      assert_equal(cs, @info.colorspace)
     end
   end
 
@@ -100,7 +100,7 @@ class Info_UT < Test::Unit::TestCase
   def test_compression
     Magick::CompressionType.values.each do |v|
       assert_nothing_raised { @info.compression = v }
-    assert_equal(v, @info.compression)
+      assert_equal(v, @info.compression)
     end
   end
 
@@ -132,7 +132,7 @@ class Info_UT < Test::Unit::TestCase
   def test_dispose
     Magick::DisposeType.values.each do |v|
       assert_nothing_raised { @info.dispose = v }
-    assert_equal(v, @info.dispose)
+      assert_equal(v, @info.dispose)
     end
   end
 
@@ -188,21 +188,21 @@ class Info_UT < Test::Unit::TestCase
   def test_gravity
     Magick::GravityType.values.each do |v|
       assert_nothing_raised { @info.gravity = v }
-    assert_equal(v, @info.gravity)
+      assert_equal(v, @info.gravity)
     end
   end
 
   def test_image_type
     Magick::ImageType.values.each do |v|
       assert_nothing_raised { @info.image_type = v }
-    assert_equal(v, @info.image_type)
+      assert_equal(v, @info.image_type)
     end
   end
 
   def test_interlace
     Magick::InterlaceType.values.each do |v|
       assert_nothing_raised { @info.interlace = v }
-    assert_equal(v, @info.interlace)
+      assert_equal(v, @info.interlace)
     end
   end
 
@@ -224,9 +224,9 @@ class Info_UT < Test::Unit::TestCase
     assert_nothing_raised { @info.monitor = lambda {} }
     monitor = proc do |mth, q, s|
       assert_equal('resize!', mth)
-    assert_instance_of(Fixnum, q)
-    assert_instance_of(Fixnum, s)
-    true
+      assert_instance_of(Fixnum, q)
+      assert_instance_of(Fixnum, s)
+      true
     end
     img = Magick::Image.new(2000, 2000) { self.monitor = monitor }
     img.resize!(20, 20)
@@ -241,7 +241,7 @@ class Info_UT < Test::Unit::TestCase
   def test_orientation
     Magick::OrientationType.values.each do |v|
       assert_nothing_raised { @info.orientation = v }
-    assert_equal(v, @info.orientation)
+      assert_equal(v, @info.orientation)
     end
   end
 
@@ -334,7 +334,7 @@ class Info_UT < Test::Unit::TestCase
   def test_units
     Magick::ResolutionType.values.each do |v|
       assert_nothing_raised { @info.units = v }
-    assert_equal(v, @info.units)
+      assert_equal(v, @info.units)
     end
   end
 

@@ -36,9 +36,9 @@ class Magick_UT < Test::Unit::TestCase
     assert_instance_of(Array, res)
     res.each do |c|
       assert_instance_of(Magick::Color, c)
-    assert_instance_of(String, c.name)
-    assert_instance_of(Magick::ComplianceType, c.compliance)
-    assert_instance_of(Magick::Pixel, c.color)
+      assert_instance_of(String, c.name)
+      assert_instance_of(Magick::ComplianceType, c.compliance)
+      assert_instance_of(Magick::Pixel, c.color)
     end
     Magick.colors { |c| assert_instance_of(Magick::Color, c) }
   end
@@ -77,15 +77,15 @@ class Magick_UT < Test::Unit::TestCase
     assert_instance_of(Array, res)
     res.each do |f|
       assert_instance_of(Magick::Font, f)
-    assert_instance_of(String, f.name)
-    assert_instance_of(String, f.description) unless f.description.nil?
-    assert_instance_of(String, f.family)
-    assert_instance_of(Magick::StyleType, f.style)
-    assert_instance_of(Magick::StretchType, f.stretch)
-    assert_instance_of(Fixnum, f.weight)
-    assert_instance_of(String, f.encoding) unless f.encoding.nil?
-    assert_instance_of(String, f.foundry) unless f.foundry.nil?
-    assert_instance_of(String, f.format) unless f.format.nil?
+      assert_instance_of(String, f.name)
+      assert_instance_of(String, f.description) unless f.description.nil?
+      assert_instance_of(String, f.family)
+      assert_instance_of(Magick::StyleType, f.style)
+      assert_instance_of(Magick::StretchType, f.stretch)
+      assert_instance_of(Fixnum, f.weight)
+      assert_instance_of(String, f.encoding) unless f.encoding.nil?
+      assert_instance_of(String, f.foundry) unless f.foundry.nil?
+      assert_instance_of(String, f.format) unless f.format.nil?
     end
     Magick.fonts { |f| assert_instance_of(Magick::Font, f) }
   end
@@ -96,7 +96,7 @@ class Magick_UT < Test::Unit::TestCase
     assert_instance_of(Hash, res)
     res.each do |f, v|
       assert_instance_of(String, f)
-    assert_instance_of(String, v)
+      assert_instance_of(String, v)
     end
     Magick.formats.each do |f, v|
       assert_not_nil(f)
@@ -307,9 +307,9 @@ class Magick_UT < Test::Unit::TestCase
   def test_trace_proc
     Magick.trace_proc = proc do |which, description, id, method|
       assert(which == :c)
-    assert_instance_of(String, description)
-    assert_instance_of(String, id)
-    assert_equal(:initialize, method)
+      assert_instance_of(String, description)
+      assert_instance_of(String, id)
+      assert_equal(:initialize, method)
     end
     begin
       img = Magick::Image.new(20, 20)

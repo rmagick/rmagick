@@ -54,5 +54,5 @@ end
 
 if $PROGRAM_NAME == __FILE__
   IMAGES_DIR = '../doc/ex/images'
-Test::Unit::UI::Console::TestRunner.run(Preview_UT) unless RUBY_VERSION[/^1\.9|^2/]
+  Test::Unit::UI::Console::TestRunner.run(Preview_UT) unless RUBY_VERSION[/^1\.9|^2/]
 end

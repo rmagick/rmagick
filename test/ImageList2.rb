@@ -138,11 +138,11 @@ class ImageList2_UT < Test::Unit::TestCase
 
   def test_marshal
     ilist1 = Magick::ImageList.new(*Dir[IMAGES_DIR + '/Button_*.gif'])
-     d = nil
-     ilist2 = nil
-     assert_nothing_raised { d = Marshal.dump(ilist1) }
-     assert_nothing_raised { ilist2 = Marshal.load(d) }
-     assert_equal(ilist1, ilist2)
+    d = nil
+    ilist2 = nil
+    assert_nothing_raised { d = Marshal.dump(ilist1) }
+    assert_nothing_raised { ilist2 = Marshal.load(d) }
+    assert_equal(ilist1, ilist2)
   end
 
   def test_montage
@@ -328,16 +328,16 @@ class ImageList2_UT < Test::Unit::TestCase
 
   def test_remap
     @ilist.read(*Dir[IMAGES_DIR + '/Button_*.gif'])
-     assert_nothing_raised { @ilist.remap }
-     remap_image = Magick::Image.new(20, 20) { self.background_color = 'green' }
-     assert_nothing_raised { @ilist.remap(remap_image) }
-     assert_nothing_raised { @ilist.remap(remap_image, Magick::NoDitherMethod) }
-     assert_nothing_raised { @ilist.remap(remap_image, Magick::RiemersmaDitherMethod) }
-     assert_nothing_raised { @ilist.remap(remap_image, Magick::FloydSteinbergDitherMethod) }
-     assert_raise(ArgumentError) { @ilist.remap(remap_image, Magick::NoDitherMethod, 1) }
+    assert_nothing_raised { @ilist.remap }
+    remap_image = Magick::Image.new(20, 20) { self.background_color = 'green' }
+    assert_nothing_raised { @ilist.remap(remap_image) }
+    assert_nothing_raised { @ilist.remap(remap_image, Magick::NoDitherMethod) }
+    assert_nothing_raised { @ilist.remap(remap_image, Magick::RiemersmaDitherMethod) }
+    assert_nothing_raised { @ilist.remap(remap_image, Magick::FloydSteinbergDitherMethod) }
+    assert_raise(ArgumentError) { @ilist.remap(remap_image, Magick::NoDitherMethod, 1) }
 
-     remap_image.destroy!
-     assert_raise(Magick::DestroyedImageError) { @ilist.remap(remap_image) }
+    remap_image.destroy!
+    assert_raise(Magick::DestroyedImageError) { @ilist.remap(remap_image) }
      # assert_raise(TypeError) { @ilist.affinity(affinity_image, 1) }
   end
 
@@ -380,6 +380,6 @@ end
 
 if $PROGRAM_NAME == __FILE__
   IMAGES_DIR = '../doc/ex/images'
-FLOWER_HAT = IMAGES_DIR + '/Flower_Hat.jpg'
-Test::Unit::UI::Console::TestRunner.run(ImageList2_UT) unless RUBY_VERSION[/^1\.9|^2/]
+  FLOWER_HAT = IMAGES_DIR + '/Flower_Hat.jpg'
+  Test::Unit::UI::Console::TestRunner.run(ImageList2_UT) unless RUBY_VERSION[/^1\.9|^2/]
 end
