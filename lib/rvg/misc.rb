@@ -480,7 +480,8 @@ module Magick
           :none         => Magick::NoDecoration,
           :underline    => Magick::UnderlineDecoration,
           :overline     => Magick::OverlineDecoration,
-          :line_through => Magick::LineThroughDecoration}
+          :line_through => Magick::LineThroughDecoration
+        }
 
         TEXT_STRATEGIES  = {
           'lr-tb' => LRTextStrategy, 'lr' => LRTextStrategy,
