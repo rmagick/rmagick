@@ -152,7 +152,7 @@ module Magick
           @redefined = true
           define_method(:x) { @vbx_x }
           define_method(:y) { @vbx_y }
-          define_method(:width) { @vbx_width}
+          define_method(:width) { @vbx_width }
           define_method(:height) { @vbx_height }
           end
         end

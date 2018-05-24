@@ -4,7 +4,7 @@ require 'rmagick'
 
 results = Magick::ImageList.new
 
-img = Magick::Image.new(270, 60) {self.background_color = 'black' }
+img = Magick::Image.new(270, 60) { self.background_color = 'black' }
 
 gc = Magick::Draw.new
 gc.annotate(img, 0, 0, 0, -15, 'RUBY!') do

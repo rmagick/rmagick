@@ -37,7 +37,7 @@ begin
   # optional "size" attribute in the parm block associated with
   # the read method. There are two more examples of this, below.
   example = ImageList.new
-  5.times { example.read('NULL:black') { self.size = '70x70'} }
+  5.times { example.read('NULL:black') { self.size = '70x70' } }
 
   puts '   add noise...'
   example << model.add_noise(LaplacianNoise)

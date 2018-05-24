@@ -43,7 +43,7 @@ canvas = Magick::Image.new(cols, rows)
 star = Magick::Draw.new
 star.stroke('gray50')
 star.fill('gray50')
-points.map! {|p| p + 8}
+points.map! { |p| p + 8 }
 star.polygon(*points)
 star.draw(canvas)
 canvas = canvas.blur_image(0, 3)

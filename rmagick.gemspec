@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
 
   tracked_files = `git ls-files`.split($OUTPUT_RECORD_SEPARATOR)
   file_exclusion_regex = %r{(\Alib/rvg/to_c.rb)}
-  files         = tracked_files.reject{|file| file[file_exclusion_regex] }
+  files         = tracked_files.reject{ |file| file[file_exclusion_regex] }
   test_files    = files.grep(%r{^(test|spec|features)/})
   executables   = files.grep(%r{^bin/}).map{ |f| File.basename(f) }
 

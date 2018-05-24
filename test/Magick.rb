@@ -40,7 +40,7 @@ class Magick_UT < Test::Unit::TestCase
     assert_instance_of(Magick::ComplianceType, c.compliance)
     assert_instance_of(Magick::Pixel, c.color)
     end
-    Magick.colors {|c| assert_instance_of(Magick::Color, c) }
+    Magick.colors { |c| assert_instance_of(Magick::Color, c) }
   end
 
   # Test a few of the @@enumerator arrays in the Enum subclasses.
@@ -87,7 +87,7 @@ class Magick_UT < Test::Unit::TestCase
     assert_instance_of(String, f.foundry) unless f.foundry.nil?
     assert_instance_of(String, f.format) unless f.format.nil?
     end
-    Magick.fonts {|f| assert_instance_of(Magick::Font, f) }
+    Magick.fonts { |f| assert_instance_of(Magick::Font, f) }
   end
 
   def test_formats
@@ -267,31 +267,31 @@ class Magick_UT < Test::Unit::TestCase
   def test_limit_resources
     cur = new = nil
 
-    assert_nothing_raised {cur = Magick.limit_resource(:memory, 500)}
+    assert_nothing_raised { cur = Magick.limit_resource(:memory, 500) }
     assert_kind_of(Integer, cur)
     assert(cur > 1024 ** 2)
-    assert_nothing_raised {new = Magick.limit_resource('memory')}
+    assert_nothing_raised { new = Magick.limit_resource('memory') }
     assert_equal(500, new)
     Magick.limit_resource(:memory, cur)
 
-    assert_nothing_raised {cur = Magick.limit_resource(:map, 3500)}
+    assert_nothing_raised { cur = Magick.limit_resource(:map, 3500) }
     assert_kind_of(Integer, cur)
     assert(cur > 1024 ** 2)
-    assert_nothing_raised {new = Magick.limit_resource('map')}
+    assert_nothing_raised { new = Magick.limit_resource('map') }
     assert_equal(3500, new)
     Magick.limit_resource(:map, cur)
 
-    assert_nothing_raised {cur = Magick.limit_resource(:disk, 3*1024*1024*1024)}
+    assert_nothing_raised { cur = Magick.limit_resource(:disk, 3*1024*1024*1024) }
     assert_kind_of(Integer, cur)
     assert(cur > 1024 ** 2)
-    assert_nothing_raised {new = Magick.limit_resource('disk')}
+    assert_nothing_raised { new = Magick.limit_resource('disk') }
     assert_equal(3221225472, new)
     Magick.limit_resource(:disk, cur)
 
-    assert_nothing_raised {cur = Magick.limit_resource(:file, 500)}
+    assert_nothing_raised { cur = Magick.limit_resource(:file, 500) }
     assert_kind_of(Integer, cur)
     assert(cur > 512)
-    assert_nothing_raised {new = Magick.limit_resource('file')}
+    assert_nothing_raised { new = Magick.limit_resource('file') }
     assert_equal(500, new)
     Magick.limit_resource(:file, cur)
 

@@ -54,7 +54,7 @@ bg = bg.raise(3,3)
 # Just for the purposes of this example, display the thumbnail background on
 # a larger white background.
 
-white_bg = Image.new(size+50, size+50) {self.background_color = 'white'}
+white_bg = Image.new(size+50, size+50) { self.background_color = 'white' }
 white_bg = white_bg.composite(bg, CenterGravity, OverCompositeOp)
 
 # Finally, center the thumbnail on the gray background.

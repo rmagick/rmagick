@@ -221,7 +221,7 @@ class Image1_UT < Test::Unit::TestCase
   end
 
   def test_blend
-    @img2 = Magick::Image.new(20,20) {self.background_color = 'black'}
+    @img2 = Magick::Image.new(20,20) { self.background_color = 'black' }
     assert_nothing_raised { @img.blend(@img2, 0.25) }
     res = @img.blend(@img2, 0.25)
     assert_instance_of(Magick::Image, res)
@@ -397,10 +397,10 @@ class Image1_UT < Test::Unit::TestCase
   end
 
   def test_clut_channel
-    img = Magick::Image.new(20,20) {self.colorspace = Magick::GRAYColorspace}
-    clut = Magick::Image.new(20,1) {self.background_color = 'red'}
+    img = Magick::Image.new(20,20) { self.colorspace = Magick::GRAYColorspace }
+    clut = Magick::Image.new(20,1) { self.background_color = 'red' }
     res = nil
-    assert_nothing_raised {res = img.clut_channel(clut)}
+    assert_nothing_raised { res = img.clut_channel(clut) }
     assert_same(res, img)
     assert_nothing_raised { img.clut_channel(clut, Magick::RedChannel) }
     assert_nothing_raised { img.clut_channel(clut, Magick::RedChannel, Magick::BlueChannel) }

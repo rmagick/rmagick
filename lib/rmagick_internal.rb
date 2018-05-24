@@ -21,7 +21,7 @@ module Magick
       @formats ||= init_formats
 
       if block_given?
-        @formats.each{|k, v| yield k, v }
+        @formats.each{ |k, v| yield k, v }
         self
       else
         @formats
@@ -1370,7 +1370,7 @@ module Magick
       end
       current = get_current
       ilist = self.class.new
-      (@images * n).each {|image| ilist << image}
+      (@images * n).each { |image| ilist << image }
       ilist.set_current current
       ilist
     end
@@ -1412,7 +1412,7 @@ module Magick
       a = @images[*args]
       if a.respond_to?(:each)
         ilist = self.class.new
-        a.each {|image| ilist << image}
+        a.each { |image| ilist << image }
         a = ilist
       end
       a
@@ -1465,7 +1465,7 @@ module Magick
       current = get_current
       a = @images.collect(&block)
       ilist = self.class.new
-      a.each {|image| ilist << image}
+      a.each { |image| ilist << image }
       ilist.set_current current
       ilist
     end
@@ -1505,7 +1505,7 @@ module Magick
       current = get_current
       ilist = self.class.new
       a = @images.compact
-      a.each {|image| ilist << image}
+      a.each { |image| ilist << image }
       ilist.set_current current
       ilist
     end
@@ -1519,7 +1519,7 @@ module Magick
 
     def concat(other)
       is_an_image_array other
-      other.each {|image| @images << image}
+      other.each { |image| @images << image }
       @scene = length-1
       self
     end
@@ -1556,7 +1556,7 @@ module Magick
 
     def dup
       ditto = self.class.new
-      @images.each {|img| ditto << img}
+      @images.each { |img| ditto << img }
       ditto.scene = @scene
       ditto.taint if tainted?
       ditto
@@ -1587,7 +1587,7 @@ module Magick
       current = get_current
       a = @images.find_all(&block)
       ilist = self.class.new
-      a.each {|image| ilist << image}
+      a.each { |image| ilist << image }
       ilist.set_current current
       ilist
     end
@@ -1618,7 +1618,7 @@ module Magick
     end
 
     def insert(index, *args)
-      args.each {|image| is_an_image image}
+      args.each { |image| is_an_image image }
       current = get_current
       @images.insert(index, *args)
       set_current current
@@ -1628,7 +1628,7 @@ module Magick
     # Call inspect for all the images
     def inspect
       img = []
-      @images.each {|image| img << image.inspect }
+      @images.each { |image| img << image.inspect }
       img = '[' + img.join(",\n") + "]\nscene=#{@scene}"
     end
 
@@ -1638,7 +1638,7 @@ module Magick
       if n < 0 || n > 65535
         Kernel.raise ArgumentError, 'iterations must be between 0 and 65535'
       end
-      @images.each {|f| f.iterations=n}
+      @images.each { |f| f.iterations=n }
       self
     end
 
@@ -1648,7 +1648,7 @@ module Magick
       else
         a = @images.last(*args)
         ilist = self.class.new
-        a.each {|img| ilist << img}
+        a.each { |img| ilist << img }
         @scene = a.length - 1
         a = ilist
       end
@@ -1658,14 +1658,14 @@ module Magick
     # Custom marshal/unmarshal for Ruby 1.8.
     def marshal_dump
       ary = [@scene]
-      @images.each {|i| ary << Marshal.dump(i)}
+      @images.each { |i| ary << Marshal.dump(i) }
       ary
     end
 
     def marshal_load(ary)
       @scene = ary.shift
       @images = []
-      ary.each {|a| @images << Marshal.load(a)}
+      ary.each { |a| @images << Marshal.load(a) }
     end
 
     # The ImageList class supports the Magick::Image class methods by simply sending
@@ -1693,10 +1693,10 @@ module Magick
     def partition(&block)
       a = @images.partition(&block)
       t = self.class.new
-      a[0].each { |img| t << img}
+      a[0].each { |img| t << img }
       t.set_current nil
       f = self.class.new
-      a[1].each { |img| f << img}
+      a[1].each { |img| f << img }
       f.set_current nil
       [t, f]
     end
@@ -1746,7 +1746,7 @@ module Magick
       current = get_current
       ilist = self.class.new
       a = @images.reject(&block)
-      a.each {|image| ilist << image}
+      a.each { |image| ilist << image }
       ilist.set_current current
       ilist
     end
@@ -1763,7 +1763,7 @@ module Magick
       is_an_image_array other
       current = get_current
       @images.clear
-      other.each {|image| @images << image}
+      other.each { |image| @images << image }
       @scene = length.zero? ? nil : 0
       set_current current
       self
@@ -1783,7 +1783,7 @@ module Magick
     def reverse
       current = get_current
       a = self.class.new
-      @images.reverse_each {|image| a << image}
+      @images.reverse_each { |image| a << image }
       a.set_current current
       a
     end
@@ -1796,7 +1796,7 @@ module Magick
     end
 
     def reverse_each
-      @images.reverse_each {|image| yield(image)}
+      @images.reverse_each { |image| yield(image) }
       self
     end
 
@@ -1812,7 +1812,7 @@ module Magick
       if slice
         ilist = self.class.new
         if slice.respond_to?(:each)
-          slice.each {|image| ilist << image}
+          slice.each { |image| ilist << image }
         else
           ilist << slice
         end
@@ -1838,14 +1838,14 @@ module Magick
 
     def to_a
       a = []
-      @images.each {|image| a << image}
+      @images.each { |image| a << image }
       a
     end
 
     def uniq
       current = get_current
       a = self.class.new
-      @images.uniq.each {|image| a << image}
+      @images.uniq.each { |image| a << image }
       a.set_current current
       a
     end
@@ -1868,7 +1868,7 @@ module Magick
     def values_at(*args)
       a = @images.values_at(*args)
       a = self.class.new
-      @images.values_at(*args).each {|image| a << image}
+      @images.values_at(*args).each { |image| a << image }
       a.scene = a.length - 1
       a
     end

@@ -415,23 +415,23 @@ class ImageList1_UT < Test::Unit::TestCase
         assert_nothing_raised do
             assert_instance_of(Magick::ImageList, list.fill(img))
         end
-        list.each {|el| assert_same(el, img) }
+        list.each { |el| assert_same(el, img) }
 
         list = @list.copy
         list.fill(img, 0, 3)
-        0.upto(2) {|i| assert_same(img, list[i]) }
+        0.upto(2) { |i| assert_same(img, list[i]) }
 
         list = @list.copy
         list.fill(img, 4..7)
-        4.upto(7) {|i| assert_same(img, list[i]) }
+        4.upto(7) { |i| assert_same(img, list[i]) }
 
         list = @list.copy
         list.fill { |i| list[i] = img }
-        list.each {|el| assert_same(el, img) }
+        list.each { |el| assert_same(el, img) }
 
         list = @list.copy
         list.fill(0, 3) { |i| list[i] = img }
-        0.upto(2) {|i| assert_same(img, list[i]) }
+        0.upto(2) { |i| assert_same(img, list[i]) }
 
         assert_raise(ArgumentError) { list.fill('x', 0) }
     end
@@ -548,7 +548,7 @@ class ImageList1_UT < Test::Unit::TestCase
         cur = @list.cur_image
         list = @list
         assert_nothing_raised do
-            res = @list.reject {|img| img.filename =~ /Button_9/ }
+            res = @list.reject { |img| img.filename =~ /Button_9/ }
             assert_equal(9, res.length)
             assert_instance_of(Magick::ImageList, res)
             assert_same(cur, res.cur_image)
@@ -557,7 +557,7 @@ class ImageList1_UT < Test::Unit::TestCase
         assert_same(cur, @list.cur_image)
 
         # Omit current image from result list - result cur_image s/b last image
-        res = @list.reject {|img| img.filename =~ /Button_7/}
+        res = @list.reject { |img| img.filename =~ /Button_7/ }
         assert_equal(9, res.length)
         assert_same(res[-1], res.cur_image)
         assert_same(cur, @list.cur_image)

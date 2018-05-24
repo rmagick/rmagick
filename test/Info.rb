@@ -87,7 +87,7 @@ class Info_UT < Test::Unit::TestCase
 
   def test_colorspace
     Magick::ColorspaceType.values.each do |cs|
-    assert_nothing_raised {@info.colorspace = cs}
+    assert_nothing_raised { @info.colorspace = cs }
     assert_equal(cs, @info.colorspace)
     end
   end
@@ -307,7 +307,7 @@ class Info_UT < Test::Unit::TestCase
   end
 
   def test_texture
-    img = Magick::Image.read('granite:') {self.size = '20x20' }
+    img = Magick::Image.read('granite:') { self.size = '20x20' }
     assert_nothing_raised { @info.texture = img.first }
   end
 

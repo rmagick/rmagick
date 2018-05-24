@@ -277,8 +277,8 @@ class ImageList2_UT < Test::Unit::TestCase
         assert_equal(2, res.length)
       end
     end
-    assert_raise(ArgumentError) {@ilist.optimize_layers(Magick::UndefinedLayer)}
-    assert_raise(TypeError) {@ilist.optimize_layers(2)}
+    assert_raise(ArgumentError) { @ilist.optimize_layers(Magick::UndefinedLayer) }
+    assert_raise(TypeError) { @ilist.optimize_layers(2) }
   end
 
   def test_ping
@@ -329,7 +329,7 @@ class ImageList2_UT < Test::Unit::TestCase
   def test_remap
      @ilist.read(*Dir[IMAGES_DIR+'/Button_*.gif'])
      assert_nothing_raised { @ilist.remap }
-     remap_image = Magick::Image.new(20,20) {self.background_color = 'green'}
+     remap_image = Magick::Image.new(20,20) { self.background_color = 'green' }
      assert_nothing_raised { @ilist.remap(remap_image) }
      assert_nothing_raised { @ilist.remap(remap_image, Magick::NoDitherMethod) }
      assert_nothing_raised { @ilist.remap(remap_image, Magick::RiemersmaDitherMethod) }

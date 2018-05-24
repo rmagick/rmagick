@@ -20,7 +20,7 @@ gc.stroke = 'black'
 gc.stroke_width = 1
 
 23.times do
-  ruby << Magick::Image.new(100, 100) {self.background_color = 'none'}
+  ruby << Magick::Image.new(100, 100) { self.background_color = 'none' }
   gc.annotate(ruby, 0, 0, 0, 0, 'Ruby')
   gc.rotation = 15
 end

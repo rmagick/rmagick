@@ -37,7 +37,7 @@ class Image2_UT < Test::Unit::TestCase
 
   def test_composite_mathematics
     bg = Magick::Image.new(50, 50)
-    fg = Magick::Image.new(50, 50) {self.background_color = 'black' }
+    fg = Magick::Image.new(50, 50) { self.background_color = 'black' }
     res = nil
     assert_nothing_raised { res = bg.composite_mathematics(fg, 1, 0, 0, 0, Magick::CenterGravity) }
     assert_instance_of(Magick::Image, res)
@@ -237,8 +237,8 @@ class Image2_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.deskew(0.10) }
     assert_nothing_raised { @img.deskew('95%') }
     assert_raise(ArgumentError) { @img.deskew('x') }
-    assert_raise(TypeError) {@img.deskew(0.40, 'x') }
-    assert_raise(ArgumentError) {@img.deskew(0.40, 20, [1]) }
+    assert_raise(TypeError) { @img.deskew(0.40, 'x') }
+    assert_raise(ArgumentError) { @img.deskew(0.40, 20, [1]) }
   end
 
   def test_despeckle
@@ -347,7 +347,7 @@ class Image2_UT < Test::Unit::TestCase
   end
 
   def test_displace
-    @img2 = Magick::Image.new(20,20) {self.background_color = 'black'}
+    @img2 = Magick::Image.new(20,20) { self.background_color = 'black' }
     assert_nothing_raised { @img.displace(@img2, 25) }
     res = @img.displace(@img2, 25)
     assert_instance_of(Magick::Image, res)
@@ -718,7 +718,7 @@ class Image2_UT < Test::Unit::TestCase
   end
 
   def test_function_channel
-    img = Magick::Image.read('gradient:') {self.size = '20x600'}
+    img = Magick::Image.read('gradient:') { self.size = '20x600' }
     img = img.first
     img.rotate!(90)
     assert_nothing_raised { img.function_channel Magick::PolynomialFunction, 0.33 }

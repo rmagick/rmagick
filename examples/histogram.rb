@@ -7,11 +7,11 @@ require 'rmagick'
 class PixelColumn < Array
   def initialize(size)
     super
-    fill {Magick::Pixel.new}
+    fill { Magick::Pixel.new }
   end
 
   def reset(bg)
-    each {|pixel| pixel.reset(bg)}
+    each { |pixel| pixel.reset(bg) }
   end
 end
 
@@ -127,7 +127,7 @@ module Magick
         $stderr.puts 'The color_histogram method is not supported by this version '\
                      'of ImageMagick/GraphicsMagick'
         else
-          pixels = hist.keys.sort_by {|pixel| hist[pixel] }
+          pixels = hist.keys.sort_by { |pixel| hist[pixel] }
           scale = HISTOGRAM_ROWS / (hist.values.max*AIR_FACTOR)
 
           histogram = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do
@@ -137,7 +137,7 @@ module Magick
 
           x = 0
           pixels.each do |pixel|
-            column = Array.new(HISTOGRAM_ROWS).fill {Pixel.new}
+            column = Array.new(HISTOGRAM_ROWS).fill { Pixel.new }
             HISTOGRAM_ROWS.times do |y|
               if y >= HISTOGRAM_ROWS - (hist[pixel] * scale)
                 column[y] = pixel

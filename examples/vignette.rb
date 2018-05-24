@@ -28,7 +28,7 @@ ballerina = Image.read('../doc/ex/images/Ballerina3.jpg')[0]
 # The size of the oval is arbitrary - in this case it's 90% of the
 # size of the image.
 
-oval = Image.new(ballerina.columns, ballerina.rows) {self.background_color = 'black'}
+oval = Image.new(ballerina.columns, ballerina.rows) { self.background_color = 'black' }
 gc = Draw.new
 gc.stroke('white')
 gc.fill('white')
@@ -72,7 +72,7 @@ end
 # supports 1`level of transparency. Therefore, composite the vignette over a
 # standard "checkerboard" background. The resulting image will be 100% opaque.
 
-checkerboard = Image.read('pattern:checkerboard') {self.size = "#{ballerina.columns}x#{ballerina.rows}"}
+checkerboard = Image.read('pattern:checkerboard') { self.size = "#{ballerina.columns}x#{ballerina.rows}" }
 vignette = checkerboard[0].composite(ballerina, CenterGravity, OverCompositeOp)
 vignette.display
 exit

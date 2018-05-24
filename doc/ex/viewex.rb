@@ -2,7 +2,7 @@
 
 require 'rmagick'
 
-img = Magick::Image.new(40, 40) {self.background_color = 'lightcyan2'}
+img = Magick::Image.new(40, 40) { self.background_color = 'lightcyan2' }
 
 # The view is 400 pixels square, starting
 # column 10, row 5 from the top of the image.

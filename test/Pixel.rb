@@ -11,7 +11,7 @@ class Pixel_UT < Test::Unit::TestCase
 
   def test_hash
     hash = nil
-    assert_nothing_raised { hash = @pixel.hash}
+    assert_nothing_raised { hash = @pixel.hash }
     assert_not_nil(hash)
     assert_equal(1385501952, hash)
 

@@ -171,15 +171,15 @@ class Image3_UT < Test::Unit::TestCase
   end
 
   def test_remap
-     remap_image = Magick::Image.new(20,20) {self.background_color = 'green'}
+     remap_image = Magick::Image.new(20,20) { self.background_color = 'green' }
      assert_nothing_raised { @img.remap(remap_image) }
      assert_nothing_raised { @img.remap(remap_image, Magick::NoDitherMethod) }
      assert_nothing_raised { @img.remap(remap_image, Magick::RiemersmaDitherMethod) }
      assert_nothing_raised { @img.remap(remap_image, Magick::FloydSteinbergDitherMethod) }
 
-     assert_raise(ArgumentError) {@img.remap }
-     assert_raise(ArgumentError) {@img.remap(remap_image, Magick::NoDitherMethod, 1) }
-     assert_raise(TypeError) {@img.remap(remap_image, 1) }
+     assert_raise(ArgumentError) { @img.remap }
+     assert_raise(ArgumentError) { @img.remap(remap_image, Magick::NoDitherMethod, 1) }
+     assert_raise(TypeError) { @img.remap(remap_image, 1) }
   end
 
   def test_resample
@@ -308,8 +308,8 @@ class Image3_UT < Test::Unit::TestCase
 
   # Make sure the old name is still around
   def test_resize_to_fill_7
-    assert_block {@img.respond_to? :crop_resized}
-    assert_block {@img.respond_to? :crop_resized!}
+    assert_block { @img.respond_to? :crop_resized }
+    assert_block { @img.respond_to? :crop_resized! }
   end
 
   # 2nd argument defaults to the same value as the 1st argument
@@ -502,7 +502,7 @@ class Image3_UT < Test::Unit::TestCase
       Magick::AllChannels]
 
     channels.each do |ch|
-      assert_nothing_raised {@img.set_channel_depth(ch, 8) }
+      assert_nothing_raised { @img.set_channel_depth(ch, 8) }
     end
   end
 

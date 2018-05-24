@@ -15,7 +15,7 @@ DIM = 32                        # width & height of image in pixels
 DELAY = 100.0 / (NFRAMES/2)     # 2 rotations per second
 
 # 'frame' is a single frame in the animation.
-frame = Magick::Image.new(DIM, DIM) {self.background_color = 'transparent'}
+frame = Magick::Image.new(DIM, DIM) { self.background_color = 'transparent' }
 
 # 'spinner' will contain the frames that make up the animated GIF
 spinner = Magick::ImageList.new

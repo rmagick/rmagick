@@ -171,7 +171,7 @@ module Magick
 
         def render(x, y, text)
           x_rel_coords, y_rel_coords = text_rel_coords(text)
-          dx = x_rel_coords.inject(0) {|sum, a| sum + a}
+          dx = x_rel_coords.inject(0) { |sum, a| sum + a }
           dy = y_rel_coords.max
 
           # We're handling the anchoring.
@@ -234,7 +234,7 @@ module Magick
         def render(x, y, text)
           x_rel_coords, y_rel_coords = text_rel_coords(text)
           dx = x_rel_coords.max
-          dy = y_rel_coords.inject(0) {|sum, a| sum + a}
+          dy = y_rel_coords.inject(0) { |sum, a| sum + a }
 
           # We're handling the anchoring.
           @ctx.gc.push
@@ -576,7 +576,7 @@ module Magick
 
         def font_weight(weight)
           # If the arg is not in the hash use it directly. Handles numeric values.
-          weight = FONT_WEIGHT.fetch(weight) {|key| key}
+          weight = FONT_WEIGHT.fetch(weight) { |key| key }
           @gc.font_weight(weight)
           @shadow[-1].font_weight = weight
           nil

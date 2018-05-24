@@ -29,7 +29,7 @@ class Import_Export_UT < Test::Unit::TestCase
 
   def test_import_export_float
     pixels = @test.export_pixels(0, 0, @test.columns, @test.rows, 'RGB')
-    fpixels = pixels.collect {|p| p.to_f / Magick::QuantumRange}
+    fpixels = pixels.collect { |p| p.to_f / Magick::QuantumRange }
     p = fpixels.pack('F*')
     fimport(p, Magick::FloatPixel)
 
@@ -50,17 +50,17 @@ class Import_Export_UT < Test::Unit::TestCase
         end
         import(p, Magick::QuantumPixel)
 
-        spixels = pixels.collect {|px| px * 257}
+        spixels = pixels.collect { |px| px * 257 }
         p = spixels.pack('S*')
         import(p, Magick::ShortPixel)
 
-        ipixels = pixels.collect {|px| px * 16843009}
+        ipixels = pixels.collect { |px| px * 16843009 }
         p = ipixels.pack('I*')
         import(p, Magick::IntegerPixel)
         import(p, Magick::LongPixel)
 
       when 16
-        cpixels = pixels.collect {|px| px / 257}
+        cpixels = pixels.collect { |px| px / 257 }
         p = cpixels.pack('C*')
         import(p, Magick::CharPixel)
 
@@ -71,18 +71,18 @@ class Import_Export_UT < Test::Unit::TestCase
         end
         import(p, Magick::QuantumPixel)
 
-        ipixels = pixels.collect {|px| px * 65537}
+        ipixels = pixels.collect { |px| px * 65537 }
         p = ipixels.pack('I*')
         # Diff s/b 0.0 but never is.
         #import(p, Magick::IntegerPixel, 430.7834)
         #import(p, Magick::LongPixel, 430.7834)
 
       when 32
-        cpixels = pixels.collect {|px| px / 16843009}
+        cpixels = pixels.collect { |px| px / 16843009 }
         p = cpixels.pack('C*')
         import(p, Magick::CharPixel)
 
-        spixels = pixels.collect {|px| px / 65537}
+        spixels = pixels.collect { |px| px / 65537 }
         p = spixels.pack('S*')
         import(p, Magick::ShortPixel)
 
@@ -95,15 +95,15 @@ class Import_Export_UT < Test::Unit::TestCase
         import(p, Magick::QuantumPixel)
 
       when 64
-        cpixels = pixels.collect {|px| px / 72340172838076673}
+        cpixels = pixels.collect { |px| px / 72340172838076673 }
         p = cpixels.pack('C*')
         import(p, Magick::CharPixel)
 
-        spixels = pixels.collect {|px| px / 281479271743489}
+        spixels = pixels.collect { |px| px / 281479271743489 }
         p = spixels.pack('S*')
         import(p, Magick::ShortPixel)
 
-        ipixels = pixels.collect {|px| px / 4294967297 }
+        ipixels = pixels.collect { |px| px / 4294967297 }
         p = ipixels.pack('I*')
         import(p, Magick::IntegerPixel)
         import(p, Magick::LongPixel)

@@ -16,7 +16,7 @@ module Magick
           if coords.length % req != 0
             raise ArgumentError, "wrong number of coordinates specified. A multiple of #{req} required, #{req+coords.length} given."
           end
-          coords.each {|c| @path << ('%g' % c)}
+          coords.each { |c| @path << ('%g' % c) }
         end
       end
 

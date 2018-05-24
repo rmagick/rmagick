@@ -113,7 +113,7 @@ module Magick
             n = x_coords.length - y_coords.length
             short = n > 0 ? y_coords : x_coords
             olen = short.length
-            n.abs.times {|x| short << short[x % olen]}
+            n.abs.times { |x| short << short[x % olen] }
             points = x_coords.zip(y_coords).flatten
         end
         n = points.length
