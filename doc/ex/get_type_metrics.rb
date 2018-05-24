@@ -134,7 +134,7 @@ gc.text(metrics.width+40, -(metrics.ascent/2)+4, 'ascent')
 gc.text(metrics.width+40, -(metrics.descent/2)+4, 'descent')
 gc.text(-60, -metrics.descent-metrics.height/2+4, 'height')
 gc.text((metrics.width/2)-15, -metrics.descent-metrics.height-25, 'width')
-gc.text((metrics.max_advance)/2-38, -metrics.descent+35, 'max_advance')
+gc.text(metrics.max_advance/2-38, -metrics.descent+35, 'max_advance')
 
 gc.draw(canvas)
 canvas.border!(1,1,'blue')

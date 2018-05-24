@@ -282,10 +282,10 @@ class Image2_UT < Test::Unit::TestCase
     when arity == 0
       assert_raises(Magick::DestroyedImageError) { @img.send(method) }
     when arity < 0
-      args = (1..(-arity)).to_a
+      args = (1..-arity).to_a
       assert_raises(Magick::DestroyedImageError) { @img.send(method, *args) }
     when arity > 0
-      args = (1..(arity)).to_a
+      args = (1..arity).to_a
       assert_raises(Magick::DestroyedImageError) { @img.send(method, *args) }
     else
       # Don't know how to test!

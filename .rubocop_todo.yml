@@ -259,11 +259,3 @@ Style/NumericPredicate:
 Style/ParenthesesAroundCondition:
   Exclude:
     - 'lib/rmagick_internal.rb'
-
-# Offense count: 4
-# Cop supports --auto-correct.
-Style/RedundantParentheses:
-  Exclude:
-    - 'doc/ex/arcs02.rb'
-    - 'doc/ex/get_type_metrics.rb'
-    - 'test/Image2.rb'
