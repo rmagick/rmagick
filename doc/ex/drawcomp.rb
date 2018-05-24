@@ -35,7 +35,6 @@ begin
 
   coffee.write('drawcomp1.gif')
   snake.write('drawcomp2.gif')
-
 rescue Magick::ImageMagickError
   puts "#{$PROGRAM_NAME}: ImageMagickError - #{$ERROR_INFO}"
 end

@@ -43,7 +43,6 @@ begin
   result.delay = 10
   result.write('composite_layers.gif')
   result[0].write('composite_layers1.gif')
-
 rescue NotImplementedError
   result = Magick::Image.read('images/notimplemented.gif').first
   result.resize!(100, 100)

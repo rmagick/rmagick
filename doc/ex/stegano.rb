@@ -47,7 +47,6 @@ begin
   File.delete('img.miff')
 
   stegano[0].write('stegano.gif')
-
 rescue Magick::ImageMagickError
   puts "#{$PROGRAM_NAME}: ImageMagickError - #{$ERROR_INFO}"
 end

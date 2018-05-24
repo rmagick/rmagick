@@ -43,9 +43,7 @@ begin
   end
 
   montage.write('sparse_color.png')
-
 rescue NotImplementedError, NameError
-
   img = Magick::Image.read('images/notimplemented.gif').first
   img.resize!(240, 272)
   img.write('sparse_color.png')

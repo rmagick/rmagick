@@ -126,7 +126,6 @@ module Magick
       rescue NotImplementedError
         $stderr.puts 'The color_histogram method is not supported by this version '\
                      'of ImageMagick/GraphicsMagick'
-
         else
           pixels = hist.keys.sort_by {|pixel| hist[pixel] }
           scale = HISTOGRAM_ROWS / (hist.values.max*AIR_FACTOR)
