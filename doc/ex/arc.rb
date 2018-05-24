@@ -12,10 +12,10 @@ gc.rectangle(40, 50, 250, 180)
 
 # Draw the circles around the rectangle corners and
 # arc endpoints. All the circles have a 3-pixel radius.
-gc.circle(40,   50,  40 + 3,  50)
+gc.circle(40, 50, 40 + 3, 50)
 gc.circle(250, 180, 250 + 3, 180)
 gc.circle(250, 114, 250 + 3, 114)
-gc.circle(146,  50, 146 + 3,  50)
+gc.circle(146, 50, 146 + 3, 50)
 
 # Annotate
 gc.font_weight(Magick::NormalWeight)

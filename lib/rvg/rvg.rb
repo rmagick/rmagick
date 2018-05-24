@@ -118,7 +118,7 @@ module Magick
 
     public
 
-    WORD_SEP = / /     # Regexp to separate words
+    WORD_SEP = / / # Regexp to separate words
 
     # The background image specified by background_image=
     attr_reader :background_image
@@ -219,7 +219,7 @@ module Magick
       @content = Content.new
       @canvas = nil
       @background_fill = nil
-      @background_fill_opacity = 1.0  # applies only if background_fill= is used
+      @background_fill_opacity = 1.0 # applies only if background_fill= is used
       @background_position = :scaled
       @background_pattern, @background_image, @desc, @title, @metadata = nil
       @x = 0.0
@@ -232,7 +232,7 @@ module Magick
     # Execute drawing commands. Return the canvas.
     def draw
       raise StandardError, 'draw not permitted in nested RVG objects' if @nested
-      @canvas ||= new_canvas    # allow drawing over existing canvas
+      @canvas ||= new_canvas # allow drawing over existing canvas
       gc = Utility::GraphicContext.new
       add_outermost_primitives(gc)
       pp(self) if ENV['debug_rvg']
@@ -243,14 +243,14 @@ module Magick
 
     # Accept #use arguments. Use (x,y) to generate an additional translate.
     # Override @width and @height if new values are supplied.
-    def ref(x, y, rw, rh)   #:nodoc:
+    def ref(x, y, rw, rh) #:nodoc:
       translate(x, y) if x != 0 || y != 0
       @width = rw if rw
       @height = rh if rh
     end
 
     # Used by Magick::Embellishable.rvg to set non-0 x- and y-coordinates
-    def corner(x, y)        #:nodoc:
+    def corner(x, y) #:nodoc:
       @nested = true
       @x = Float(x)
       @y = Float(y)
@@ -258,7 +258,7 @@ module Magick
     end
 
     # Primitives for the outermost RVG object
-    def add_outermost_primitives(gc)    #:nodoc:
+    def add_outermost_primitives(gc) #:nodoc:
       add_transform_primitives(gc)
       gc.push
       add_viewbox_primitives(@width, @height, gc)
@@ -269,7 +269,7 @@ module Magick
     end
 
     # Primitives for nested RVG objects
-    def add_primitives(gc)  #:nodoc:
+    def add_primitives(gc) #:nodoc:
       if @width.nil? || @height.nil?
         raise ArgumentError, 'RVG width or height undefined'
       elsif @width.zero? || @height.zero?

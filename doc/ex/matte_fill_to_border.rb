@@ -15,7 +15,7 @@ gc.fill('white')
 gc.roundrectangle(0, 0, 199, 199, 8, 8)
 
 gc.fill('black')
-gc.circle(100,  45, 100,  25)
+gc.circle(100, 45, 100, 25)
 gc.circle(45, 100,  25, 100)
 gc.circle(100, 155, 100, 175)
 gc.circle(155, 100, 175, 100)

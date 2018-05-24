@@ -12,7 +12,7 @@ END_INFO
 
 NFRAMES = 12                    # number of frames in the animation
 DIM = 32                        # width & height of image in pixels
-DELAY = 100.0 / (NFRAMES / 2)     # 2 rotations per second
+DELAY = 100.0 / (NFRAMES / 2) # 2 rotations per second
 
 # 'frame' is a single frame in the animation.
 frame = Magick::Image.new(DIM, DIM) { self.background_color = 'transparent' }

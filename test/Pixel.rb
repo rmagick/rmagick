@@ -91,7 +91,7 @@ class Pixel_UT < Test::Unit::TestCase
     assert_in_delta(hsla[0], hsla2[0], 0.25, "#{hsla.inspect} != #{hsla2.inspect} with args: #{args.inspect} and #{args2.inspect}")
     assert_in_delta(hsla[1], hsla2[1], 0.25, "#{hsla.inspect} != #{hsla2.inspect} with args: #{args.inspect} and #{args2.inspect}")
     assert_in_delta(hsla[2], hsla2[2], 0.25, "#{hsla.inspect} != #{hsla2.inspect} with args: #{args.inspect} and #{args2.inspect}")
-    assert_in_delta(hsla[3], hsla2[3], 0.005,  "#{hsla.inspect} != #{hsla2.inspect} with args: #{args.inspect} and #{args2.inspect}")
+    assert_in_delta(hsla[3], hsla2[3], 0.005, "#{hsla.inspect} != #{hsla2.inspect} with args: #{args.inspect} and #{args2.inspect}")
   end
 
   def test_to_color

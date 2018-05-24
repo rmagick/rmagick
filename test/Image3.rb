@@ -2,7 +2,7 @@
 
 require 'rmagick'
 require 'test/unit'
-require 'test/unit/ui/console/testrunner'  unless RUBY_VERSION[/^1\.9|^2/]
+require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
 require 'fileutils'
 
 ColorspaceTypes = [
@@ -453,7 +453,7 @@ class Image3_UT < Test::Unit::TestCase
 
     assert_nothing_raised { @img.segment(Magick::RGBColorspace, 2.0) }
     assert_nothing_raised { @img.segment(Magick::RGBColorspace, 2.0, 2.0) }
-    assert_nothing_raised { @img.segment(Magick::RGBColorspace,  2.0, 2.0, false) }
+    assert_nothing_raised { @img.segment(Magick::RGBColorspace, 2.0, 2.0, false) }
 
     assert_raise(ArgumentError) { @img.segment(Magick::RGBColorspace, 2.0, 2.0, false, 2) }
     assert_raise(TypeError) { @img.segment(2) }
@@ -648,10 +648,10 @@ class Image3_UT < Test::Unit::TestCase
     assert_raise(TypeError) { img.sparse_color(1, *args) }
     # missing arguments
     assert_raise(ArgumentError) { img.sparse_color(Magick::VoronoiColorInterpolate) }
-    args << 10   # too many arguments
+    args << 10 # too many arguments
     assert_raise(ArgumentError) { img.sparse_color(Magick::VoronoiColorInterpolate, *args) }
     args.shift
-    args.shift  # too few
+    args.shift # too few
     assert_raise(ArgumentError) { img.sparse_color(Magick::VoronoiColorInterpolate, *args) }
   end
 
@@ -976,7 +976,7 @@ class Image3_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.white_threshold(50, 50, 50, 50) }
     assert_raise(ArgumentError) { @img.white_threshold(50, 50, 50, 50, 50) }
     res = @img.white_threshold(50)
-    assert_instance_of(Magick::Image,  res)
+    assert_instance_of(Magick::Image, res)
   end
 
   # test write with #format= attribute

@@ -11,7 +11,7 @@ module Magick
     module Describable
       private
 
-      def initialize(*args, &block)       #:nodoc:
+      def initialize(*args, &block) #:nodoc:
         super
         @title, @desc, @metadata = nil
       end
@@ -42,6 +42,6 @@ module Magick
       def metadata
         @metadata.to_s
       end
-    end     # module Describable
+    end # module Describable
   end # class RVG
 end # module Magick

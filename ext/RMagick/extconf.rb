@@ -36,7 +36,7 @@ module RMagick
     def configure_headers
       # headers = %w{assert.h ctype.h errno.h float.h limits.h math.h stdarg.h stddef.h stdint.h stdio.h stdlib.h string.h time.h}
       @headers = %w{assert.h ctype.h stdio.h stdlib.h math.h time.h}
-      headers << 'stdint.h' if have_header('stdint.h')  # defines uint64_t
+      headers << 'stdint.h' if have_header('stdint.h') # defines uint64_t
       headers << 'sys/types.h' if have_header('sys/types.h')
 
       if have_header('wand/MagickWand.h')
@@ -134,7 +134,7 @@ module RMagick
 
         set_archflags_for_osx if RUBY_PLATFORM =~ /darwin/ # osx
 
-      elsif RUBY_PLATFORM =~ /mingw/  # mingw
+      elsif RUBY_PLATFORM =~ /mingw/ # mingw
 
         `identify -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
         abort 'Unable to get ImageMagick version' unless Regexp.last_match(1)
@@ -144,7 +144,7 @@ module RMagick
         end
         have_library('X11')
 
-      else  # mswin
+      else # mswin
 
         `identify -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
         abort 'Unable to get ImageMagick version' unless Regexp.last_match(1)
@@ -387,7 +387,7 @@ END_MSWIN
         have_func(func, headers)
       end
 
-      checking_for('QueryMagickColorname() new signature')  do
+      checking_for('QueryMagickColorname() new signature') do
         if try_compile(<<"SRC")
 #{COMMON_HEADERS}
 #{cpp_include(headers)}
@@ -482,7 +482,7 @@ SRC
       have_enum_values('ImageLayerMethod', ['FlattenLayer',                           # 6.3.6-2
                                             'MergeLayer',                             # 6.3.6
                                             'MosaicLayer',                            # 6.3.6-2
-                                            'TrimBoundsLayer'], headers)             # 6.4.3-8
+                                            'TrimBoundsLayer'], headers) # 6.4.3-8
       have_enum_values('VirtualPixelMethod', ['HorizontalTileVirtualPixelMethod',     # 6.4.2-6
                                               'VerticalTileVirtualPixelMethod',       # 6.4.2-6
                                               'HorizontalTileEdgeVirtualPixelMethod', # 6.5.0-1

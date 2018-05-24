@@ -7,7 +7,7 @@ require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
 class ImageList1_UT < Test::Unit::TestCase
   def setup
     @list = Magick::ImageList.new(*FILES[0..9])
-    @list2 = Magick::ImageList.new   # intersection is 5..9
+    @list2 = Magick::ImageList.new # intersection is 5..9
     @list2 << @list[5]
     @list2 << @list[6]
     @list2 << @list[7]
@@ -544,7 +544,7 @@ class ImageList1_UT < Test::Unit::TestCase
     img1 = @list[0]
     img2 = @list[1]
     assert_nothing_raised { @list.push(img1, img2) }
-    assert_same(list, @list)    # push returns self
+    assert_same(list, @list) # push returns self
     assert_same(img2, @list.cur_image)
   end
 

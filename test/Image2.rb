@@ -2,7 +2,7 @@
 
 require 'rmagick'
 require 'test/unit'
-require 'test/unit/ui/console/testrunner'  unless RUBY_VERSION[/^1\.9|^2/]
+require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
 
 # TODO: improve exif tests - need a benchmark image with EXIF data
 
@@ -206,7 +206,7 @@ class Image2_UT < Test::Unit::TestCase
     end
   end
 
-  def test_decipher         # tests encipher, too.
+  def test_decipher # tests encipher, too.
     res = res2 = nil
     assert_nothing_raised do
       res = @img.encipher 'passphrase'
@@ -394,11 +394,11 @@ class Image2_UT < Test::Unit::TestCase
 
   def test_distort
     @img = Magick::Image.new(200, 200)
-    assert_nothing_raised { @img.distort(Magick::AffineDistortion, [2, 60, 2, 60,     32, 60, 32, 60,    2, 30, 17, 35]) }
+    assert_nothing_raised { @img.distort(Magick::AffineDistortion, [2, 60, 2, 60, 32, 60, 32, 60, 2, 30, 17, 35]) }
     assert_nothing_raised { @img.distort(Magick::AffineProjectionDistortion, [1, 0, 0, 1, 0, 0]) }
-    assert_nothing_raised { @img.distort(Magick::BilinearDistortion, [7, 40, 4, 30,   4, 124, 4, 123,   85, 122, 100, 123,   85, 2, 100, 30]) }
-    assert_nothing_raised { @img.distort(Magick::PerspectiveDistortion, [7, 40, 4, 30,   4, 124, 4, 123,   85, 122, 100, 123,   85, 2, 100, 30]) }
-    assert_nothing_raised { @img.distort(Magick::ScaleRotateTranslateDistortion, [28, 24,  0.4, 0.8 - 110,  37.5, 60]) }
+    assert_nothing_raised { @img.distort(Magick::BilinearDistortion, [7, 40, 4, 30, 4, 124, 4, 123, 85, 122, 100, 123, 85, 2, 100, 30]) }
+    assert_nothing_raised { @img.distort(Magick::PerspectiveDistortion, [7, 40, 4, 30,   4, 124, 4, 123, 85, 122, 100, 123, 85, 2, 100, 30]) }
+    assert_nothing_raised { @img.distort(Magick::ScaleRotateTranslateDistortion, [28, 24, 0.4, 0.8 - 110, 37.5, 60]) }
     assert_raise(ArgumentError) { @img.distort }
     assert_raise(ArgumentError) { @img.distort(Magick::AffineDistortion) }
     assert_raise(TypeError) { @img.distort(1, [1]) }

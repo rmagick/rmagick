@@ -246,7 +246,7 @@ module Magick
 
     # Define the clipping rule.
     def clip_rule(rule)
-      unless  %w[evenodd nonzero].include?(rule.downcase)
+      unless %w[evenodd nonzero].include?(rule.downcase)
         Kernel.raise ArgumentError, "Unknown clipping rule #{rule}"
       end
       primitive "clip-rule #{rule}"
@@ -254,7 +254,7 @@ module Magick
 
     # Define the clip units
     def clip_units(unit)
-      unless  %w[userspace userspaceonuse objectboundingbox].include?(unit.downcase)
+      unless %w[userspace userspaceonuse objectboundingbox].include?(unit.downcase)
         Kernel.raise ArgumentError, "Unknown clip unit #{unit}"
       end
       primitive "clip-units #{unit}"
@@ -263,7 +263,7 @@ module Magick
     # Set color in image according to specified colorization rule. Rule is one of
     # point, replace, floodfill, filltoborder,reset
     def color(x, y, method)
-      unless  PAINT_METHOD_NAMES.has_key?(method.to_i)
+      unless PAINT_METHOD_NAMES.has_key?(method.to_i)
         Kernel.raise ArgumentError, "Unknown PaintMethod: #{method}"
       end
       primitive "color #{x},#{y},#{PAINT_METHOD_NAMES[method.to_i]}"
@@ -272,7 +272,7 @@ module Magick
     # Specify EITHER the text decoration (none, underline, overline,
     # line-through) OR the text solid background color (any color name or spec)
     def decorate(decoration)
-      if  DECORATION_TYPE_NAMES.has_key?(decoration.to_i)
+      if DECORATION_TYPE_NAMES.has_key?(decoration.to_i)
         primitive "decorate #{DECORATION_TYPE_NAMES[decoration.to_i]}"
       else
         primitive "decorate #{enquote(decoration)}"
@@ -320,7 +320,7 @@ module Magick
     end
 
     def fill_rule(rule)
-      unless  %w[evenodd nonzero].include?(rule.downcase)
+      unless %w[evenodd nonzero].include?(rule.downcase)
         Kernel.raise ArgumentError, "Unknown fill rule #{rule}"
       end
       primitive "fill-rule #{rule}"
@@ -336,14 +336,14 @@ module Magick
     end
 
     def font_stretch(stretch)
-      unless  STRETCH_TYPE_NAMES.has_key?(stretch.to_i)
+      unless STRETCH_TYPE_NAMES.has_key?(stretch.to_i)
         Kernel.raise ArgumentError, 'Unknown stretch type'
       end
       primitive "font-stretch #{STRETCH_TYPE_NAMES[stretch.to_i]}"
     end
 
     def font_style(style)
-      unless  STYLE_TYPE_NAMES.has_key?(style.to_i)
+      unless STYLE_TYPE_NAMES.has_key?(style.to_i)
         Kernel.raise ArgumentError, 'Unknown style type'
       end
       primitive "font-style #{STYLE_TYPE_NAMES[style.to_i]}"
@@ -352,7 +352,7 @@ module Magick
     # The font weight argument can be either a font weight
     # constant or [100,200,...,900]
     def font_weight(weight)
-      if  FONT_WEIGHT_NAMES.has_key?(weight.to_i)
+      if FONT_WEIGHT_NAMES.has_key?(weight.to_i)
         primitive "font-weight #{FONT_WEIGHT_NAMES[weight.to_i]}"
       else
         primitive "font-weight #{weight}"
@@ -362,7 +362,7 @@ module Magick
     # Specify the text positioning gravity, one of:
     # NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast
     def gravity(grav)
-      unless  GRAVITY_NAMES.has_key?(grav.to_i)
+      unless GRAVITY_NAMES.has_key?(grav.to_i)
         Kernel.raise ArgumentError, 'Unknown text positioning gravity'
       end
       primitive "gravity #{GRAVITY_NAMES[grav.to_i]}"
@@ -412,7 +412,7 @@ module Magick
     # Set matte (make transparent) in image according to the specified
     # colorization rule
     def matte(x, y, method)
-      unless  PAINT_METHOD_NAMES.has_key?(method.to_i)
+      unless PAINT_METHOD_NAMES.has_key?(method.to_i)
         Kernel.raise ArgumentError, 'Unknown paint method'
       end
       primitive "matte #{x},#{y} #{PAINT_METHOD_NAMES[method.to_i]}"
@@ -574,14 +574,14 @@ module Magick
     end
 
     def stroke_linecap(value)
-      unless  %w[butt round square].include?(value.downcase)
+      unless %w[butt round square].include?(value.downcase)
         Kernel.raise ArgumentError, "Unknown linecap type: #{value}"
       end
       primitive "stroke-linecap #{value}"
     end
 
     def stroke_linejoin(value)
-      unless  %w[round miter bevel].include?(value.downcase)
+      unless %w[round miter bevel].include?(value.downcase)
         Kernel.raise ArgumentError, "Unknown linejoin type: #{value}"
       end
       primitive "stroke-linejoin #{value}"
@@ -623,7 +623,7 @@ module Magick
 
     # Specify text alignment relative to a given point
     def text_align(alignment)
-      unless  ALIGN_TYPE_NAMES.has_key?(alignment.to_i)
+      unless ALIGN_TYPE_NAMES.has_key?(alignment.to_i)
         Kernel.raise ArgumentError, "Unknown alignment constant: #{alignment}"
       end
       primitive "text-align #{ALIGN_TYPE_NAMES[alignment.to_i]}"
@@ -631,7 +631,7 @@ module Magick
 
     # SVG-compatible version of text_align
     def text_anchor(anchor)
-      unless  ANCHOR_TYPE_NAMES.has_key?(anchor.to_i)
+      unless ANCHOR_TYPE_NAMES.has_key?(anchor.to_i)
         Kernel.raise ArgumentError, "Unknown anchor constant: #{anchor}"
       end
       primitive "text-anchor #{ANCHOR_TYPE_NAMES[anchor.to_i]}"
@@ -837,7 +837,7 @@ module Magick
           exif_data.split("\n").each { |exif| ary.push(exif.split('=')) }
         end
       else
-        get_exif_by_entry     # ensure properties is populated with exif data
+        get_exif_by_entry # ensure properties is populated with exif data
         entry.each do |name|
           rval = self["EXIF:#{name}"]
           ary.push([name, rval])
@@ -859,7 +859,7 @@ module Magick
           end
         end
       else
-        get_exif_by_number    # ensure properties is populated with exif data
+        get_exif_by_number # ensure properties is populated with exif data
         tag.each do |num|
           rval = self[format('#%04X', num.to_i)]
           hash[num] = rval == 'unknown' ? nil : rval
@@ -1066,7 +1066,7 @@ module Magick
       # true, don't change it back to false!
       def update(rows)
         @dirty = true
-        rows.delete_observer(self)      # No need to tell us again.
+        rows.delete_observer(self) # No need to tell us again.
         nil
       end
 
@@ -1121,8 +1121,8 @@ module Magick
         end
 
         def []=(*args)
-          rv = args.delete_at(-1)     # get rvalue
-          unless rv.is_a?(Pixel)        # must be a Pixel or a color name
+          rv = args.delete_at(-1) # get rvalue
+          unless rv.is_a?(Pixel) # must be a Pixel or a color name
             begin
               rv = Pixel.from_color(rv)
             rescue TypeError
@@ -1147,7 +1147,7 @@ module Magick
         private
 
         def cols(*args)
-          @cols = args[0]     # remove the outermost array
+          @cols = args[0] # remove the outermost array
           @unique = false
 
           # Convert @rows to an Enumerable object
@@ -1188,10 +1188,10 @@ module Magick
           end
 
           case @cols.length
-          when 0                  # all rows
-            @cols = Range.new(0, @width, true)  # convert to range
+          when 0 # all rows
+            @cols = Range.new(0, @width, true) # convert to range
             @unique = false
-          when 1                  # Range, Array, or a single integer
+          when 1 # Range, Array, or a single integer
             # if the single element is already an Enumerable
             # object, get it.
             if @cols.first.respond_to? :each
@@ -1241,10 +1241,10 @@ module Magick
               yield j * @width + i
             end
           end
-          nil    # useless return value
+          nil # useless return value
         end
       end # class Magick::Image::View::Rows
-    end     # class Magick::Image::View
+    end # class Magick::Image::View
   end # class Magick::Image
 
   class ImageList
@@ -1488,7 +1488,7 @@ module Magick
 
     def compact!
       current = get_current
-      a = @images.compact!    # returns nil if no changes were made
+      a = @images.compact! # returns nil if no changes were made
       set_current current
       a.nil? ? nil : self
     end
@@ -1572,7 +1572,7 @@ module Magick
     def from_blob(*blobs, &block)
       Kernel.raise ArgumentError, 'no blobs given' if blobs.length.zero?
       blobs.each do |b|
-        Magick::Image.from_blob(b, &block).each { |n| @images << n  }
+        Magick::Image.from_blob(b, &block).each { |n| @images << n }
       end
       @scene = length - 1
       self
@@ -1586,7 +1586,7 @@ module Magick
         Magick::Image.read(f, &block).each { |n| @images << n }
       end
       if length > 0
-        @scene = length - 1     # last image in array
+        @scene = length - 1 # last image in array
       end
       self
     end
@@ -1687,7 +1687,7 @@ module Magick
 
     def pop
       current = get_current
-      a = @images.pop       # can return nil
+      a = @images.pop # can return nil
       set_current current
       a
     end
@@ -1886,9 +1886,9 @@ module Magick
       @dist = dist
     end
 
-    def fill(img)                # required
+    def fill(img) # required
       img.background_color = @bgcolor
-      img.erase!                # sets image to background color
+      img.erase! # sets image to background color
       pixels = Array.new([img.rows, img.columns].max, @hatchpixel)
       @dist.step((img.columns - 1) / @dist * @dist, @dist) do |x|
         img.store_pixels(x, 0, 1, img.rows, pixels)

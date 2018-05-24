@@ -5,7 +5,7 @@
 module Magick
   class RVG
     # Parent class of Circle, Ellipse, Text, etc.
-    class Shape  #:nodoc:
+    class Shape #:nodoc:
       include Stylable
       include Transformable
       include Duplicatable
@@ -18,7 +18,7 @@ module Magick
         gc.__send__(@primitive, *@args)
         gc.pop
       end
-    end     # class Shape
+    end # class Shape
 
     class Circle < Shape
       # Define a circle with radius +r+ and centered at [<tt>cx</tt>, <tt>cy</tt>].
@@ -31,7 +31,7 @@ module Magick
         @args = [cx, cy, cx + r, cy]
         self
       end
-    end     # class Circle
+    end # class Circle
 
     class Ellipse < Shape
       # Define an ellipse with a center at [<tt>cx</tt>, <tt>cy</tt>], a horizontal radius +rx+
@@ -47,7 +47,7 @@ module Magick
         # Ellipses are always complete.
         @args = [cx, cy, rx, ry, 0, 360]
       end
-    end     # class Ellipse
+    end # class Ellipse
 
     class Line < Shape
       # Define a line from [<tt>x1</tt>, <tt>y1</tt>] to [<tt>x2</tt>, <tt>y2</tt>].
@@ -57,7 +57,7 @@ module Magick
         @primitive = :line
         @args = [x1, y1, x2, y2]
       end
-    end     # class Line
+    end # class Line
 
     class Path < Shape
       # Define an SVG path. The argument can be either a path string
@@ -68,7 +68,7 @@ module Magick
         @primitive = :path
         @args = [path.to_s]
       end
-    end     # class Path
+    end # class Path
 
     class Rect < Shape
       # Define a width x height rectangle. The upper-left corner is at [<tt>x</tt>, <tt>y</tt>].
@@ -134,7 +134,7 @@ module Magick
         @primitive = :polygon
         @args = polypoints(points)
       end
-    end     # class Polygon
+    end # class Polygon
 
     class Polyline < PolyShape
       # Draws a polyline. The arguments are [<tt>x</tt>, <tt>y</tt>] pairs that
@@ -147,7 +147,7 @@ module Magick
         @primitive = :polyline
         @args = Magick::RVG.convert_to_float(*points)
       end
-    end     # class Polyline
+    end # class Polyline
 
     class Image
       include Stylable
@@ -236,7 +236,7 @@ module Magick
         add_composite_primitive(gc)
         gc.pop
       end
-    end     # class Image
+    end # class Image
 
     # Methods that construct basic shapes within a container
     module ShapeConstructors
@@ -305,7 +305,7 @@ module Magick
         @content << polyline
         polyline
       end
-    end     # module ShapeContent
+    end # module ShapeContent
 
     # Methods that reference ("use") other drawable objects within a container
     module UseConstructors
@@ -319,7 +319,7 @@ module Magick
         @content << use
         use
       end
-    end     # module UseConstructors
+    end # module UseConstructors
 
     # Methods that construct container objects within a container
     module StructureConstructors
@@ -357,7 +357,7 @@ module Magick
         @content << group
         group
       end
-    end     # module StructureConstructors
+    end # module StructureConstructors
 
     # Methods that construct raster image objects within a container
     module ImageConstructors
@@ -373,7 +373,7 @@ module Magick
         @content << img
         img
       end
-    end     # module ImageConstructors
+    end # module ImageConstructors
 
     # Methods that create shapes, text, and other drawable objects
     # within container objects such as ::Magick::RVG and
@@ -384,6 +384,6 @@ module Magick
       include TextConstructors
       include UseConstructors
       include ImageConstructors
-    end     # module Embellishable
+    end # module Embellishable
   end # class RVG
 end # module Magick

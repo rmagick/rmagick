@@ -12,7 +12,7 @@ module Magick
         each { |transform| copy << [transform[0], transform[1].dup] }
         copy
       end
-    end     # class Transform
+    end # class Transform
 
     # Transformations are operations on the coordinate system.
     # All the transformations defined within a container (an RVG object
@@ -121,6 +121,6 @@ module Magick
         yield(self) if block_given?
         self
       end
-    end     # module Transformable
+    end # module Transformable
   end # class RVG
 end # module Magick

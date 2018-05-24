@@ -149,9 +149,6 @@ Style/Documentation:
 Layout/EmptyLinesAroundBlockBody:
   Enabled: false
 
-Layout/ExtraSpacing:
-  Enabled: false
-
 # Offense count: 23
 # Configuration parameters: Exclude.
 Naming/FileName:

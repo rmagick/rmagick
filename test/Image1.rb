@@ -217,7 +217,7 @@ class Image1_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.bilevel_channel(100, Magick::AllChannels) }
     assert_raise(TypeError) { @img.bilevel_channel(100, 2) }
     res = @img.bilevel_channel(100)
-    assert_instance_of(Magick::Image,  res)
+    assert_instance_of(Magick::Image, res)
   end
 
   def test_blend
@@ -253,7 +253,7 @@ class Image1_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.blur_channel(1, 2, Magick::AllChannels) }
     assert_raise(TypeError) { @img.blur_channel(1, 2, 2) }
     res = @img.blur_channel
-    assert_instance_of(Magick::Image,  res)
+    assert_instance_of(Magick::Image, res)
   end
 
   def test_blur_image
@@ -262,7 +262,7 @@ class Image1_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.blur_image(1, 2) }
     assert_raise(ArgumentError) { @img.blur_image(1, 2, 3) }
     res = @img.blur_image
-    assert_instance_of(Magick::Image,  res)
+    assert_instance_of(Magick::Image, res)
   end
 
   def test_black_threshold
@@ -273,14 +273,14 @@ class Image1_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.black_threshold(50, 50, 50, 50) }
     assert_raise(ArgumentError) { @img.black_threshold(50, 50, 50, 50, 50) }
     res = @img.black_threshold(50)
-    assert_instance_of(Magick::Image,  res)
+    assert_instance_of(Magick::Image, res)
   end
 
   def test_border
     assert_nothing_raised { @img.border(2, 2, 'red') }
     assert_nothing_raised { @img.border!(2, 2, 'red') }
     res = @img.border(2, 2, 'red')
-    assert_instance_of(Magick::Image,  res)
+    assert_instance_of(Magick::Image, res)
     @img.freeze
     assert_raise(FreezeError) { @img.border!(2, 2, 'red') }
   end
@@ -502,7 +502,7 @@ class Image1_UT < Test::Unit::TestCase
     pixel = Magick::Pixel.new(Magick::QuantumRange)
     assert_nothing_raised { @img.color_reset!(pixel) }
     assert_raise(TypeError) { @img.color_reset!([2]) }
-    assert_raise(ArgumentError)  { @img.color_reset!('x') }
+    assert_raise(ArgumentError) { @img.color_reset!('x') }
     @img.freeze
     assert_raise(FreezeError) { @img.color_reset!('red') }
   end
@@ -561,5 +561,5 @@ end
 if $PROGRAM_NAME == __FILE__
   IMAGES_DIR = '../doc/ex/images'
   FILES = Dir[IMAGES_DIR + '/Button_*.gif']
-  Test::Unit::UI::Console::TestRunner.run(Image1_UT)  unless RUBY_VERSION[/^1\.9|^2/]
+  Test::Unit::UI::Console::TestRunner.run(Image1_UT) unless RUBY_VERSION[/^1\.9|^2/]
 end

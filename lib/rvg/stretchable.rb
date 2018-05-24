@@ -30,7 +30,7 @@ module Magick
         yield(self) if block_given?
         self
       end
-    end     # module PreserveAspectRatio
+    end # module PreserveAspectRatio
 
     # The methods in this module describe the user-coordinate space.
     # RVG and Pattern objects are stretchable.

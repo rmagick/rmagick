@@ -45,7 +45,7 @@ module Magick
         each_pair { |style, value| copy[style] = value }
         copy
       end
-    end     # class Styles
+    end # class Styles
 
     #:startdoc:
 
@@ -111,6 +111,6 @@ module Magick
         yield(self) if block_given?
         self
       end
-    end     # module Stylable
+    end # module Stylable
   end # class RVG
 end # module Magick

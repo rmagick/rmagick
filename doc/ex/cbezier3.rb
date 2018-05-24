@@ -31,7 +31,7 @@ gc.font_style(Magick::NormalStyle)
 gc.fill('black')
 gc.stroke('transparent')
 gc.text(107, 150, "'100,150'")
-gc.text(30, 50,  "'25,50'")
+gc.text(30, 50, "'25,50'")
 gc.text(409, 150, "'400,150'")
 gc.text(480, 50, "'475,50'")
 

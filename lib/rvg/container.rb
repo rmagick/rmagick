@@ -6,7 +6,7 @@ module Magick
   class RVG
     # Content is simply an Array with a deep_copy method.
     # When unit-testing, it also has a deep_equal method.
-    class Content < Array       #:nodoc:
+    class Content < Array #:nodoc:
       def deep_copy(h = {})
         me = __id__
         copy = h[me]
@@ -32,7 +32,7 @@ module Magick
         end
         copy
       end
-    end  # class Content
+    end # class Content
 
     # Define a collection of shapes, text, etc. that can be reused.
     # Group objects are _containers_. That is, styles and transforms defined
@@ -64,7 +64,7 @@ module Magick
         yield(self) if block_given?
       end
 
-      def add_primitives(gc)  #:nodoc:
+      def add_primitives(gc) #:nodoc:
         gc.push
         add_transform_primitives(gc)
         add_style_primitives(gc)
@@ -73,16 +73,16 @@ module Magick
       end
 
       # Translate container according to #use arguments
-      def ref(x, y, width, height)    #:nodoc:
+      def ref(x, y, width, height) #:nodoc:
         translate(x, y) if x != 0 || y != 0
       end
 
       # Append an arbitrary object to the group's content. Called
       # by #use to insert a non-container object into a group.
-      def <<(obj)  #:nodoc:
+      def <<(obj) #:nodoc:
         @content << obj
       end
-    end  # class Group
+    end # class Group
 
     # A Use object allows the re-use of RVG and RVG::Group
     # objects within a container. Create a Use object with the
@@ -113,7 +113,7 @@ module Magick
         @element.ref(x, y, width, height)
       end
 
-      def add_primitives(gc)  #:nodoc:
+      def add_primitives(gc) #:nodoc:
         gc.push
         add_transform_primitives(gc)
         add_style_primitives(gc)

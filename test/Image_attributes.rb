@@ -3,7 +3,7 @@
 require 'fileutils'
 require 'rmagick'
 require 'test/unit'
-require 'test/unit/ui/console/testrunner'  unless RUBY_VERSION[/^1\.9|^2/]
+require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
 
 # TODO
 #   test frozen attributes!
@@ -689,7 +689,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_raise(FreezeError) { @img.x_resolution = 72.0 }
     assert_raise(FreezeError) { @img.y_resolution = 72.0 }
   end
-end     # class Image_Attributes_UT
+end # class Image_Attributes_UT
 
 if $PROGRAM_NAME == __FILE__
   FLOWER_HAT = '../doc/ex/images/Flower_Hat.jpg'

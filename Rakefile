@@ -159,7 +159,7 @@ END_HTML_TAIL
       f.puts "MANIFEST for #{Magick::VERSION} - #{now}\n\n"
       Find.find('.') do |name|
         next if File.directory? name
-        f.puts name[2..-1]    # remove leading "./"
+        f.puts name[2..-1] # remove leading "./"
       end
     end
   end

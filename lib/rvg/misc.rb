@@ -29,7 +29,7 @@ module Magick
         end
         copy
       end
-    end     # module Duplicatable
+    end # module Duplicatable
 
     # Convert an array of method arguments to Float objects. If any
     # cannot be converted, raise ArgumentError and issue a message.
@@ -156,7 +156,7 @@ module Magick
             @ctx.gc.pop
           end
         end
-      end     # class TextStrategy
+      end # class TextStrategy
 
       class LRTextStrategy < TextStrategy
         def get_word_spacing
@@ -257,7 +257,7 @@ module Magick
             when 270
               x += x_rel_coords.max / 2
               y += y_rel_coords.shift
-              y_rel_coords << 0   # since we used an element we need to add a dummy
+              y_rel_coords << 0 # since we used an element we need to add a dummy
           end
 
           x -= shift_baseline(@ctx.text_attrs.glyph_orientation_vertical, text[0, 1])
@@ -285,7 +285,7 @@ module Magick
           @ctx.gc.pop
           [0, dy]
         end
-      end     # class TBTextStrategy
+      end # class TBTextStrategy
 
       # Handle "easy" text
       class DefaultTextStrategy < TextStrategy
@@ -302,7 +302,7 @@ module Magick
                end
           [dx, 0]
         end
-      end     # class NormalTextStrategy
+      end # class NormalTextStrategy
     end # class Utility
   end # class RVG
 end # module Magick
@@ -428,7 +428,7 @@ module Magick
         def writing_mode=(mode)
           @writing_mode[-1] = WRITING_MODE.include?(mode) ? mode : 'lr-tb'
         end
-      end     # class TextAttributes
+      end # class TextAttributes
 
       class GraphicContext
         FONT_STRETCH = {
@@ -708,7 +708,7 @@ module Magick
           @text_attrs.writing_mode = mode
           nil
         end
-      end  # class GraphicContext
+      end # class GraphicContext
     end # class Utility
   end # class RVG
 end # module Magick

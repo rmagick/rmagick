@@ -98,4 +98,4 @@ END_TRAILER
       pgm.close
       $stderr.puts 'Done'
     end
-end     # class Magick::RVG
+end # class Magick::RVG

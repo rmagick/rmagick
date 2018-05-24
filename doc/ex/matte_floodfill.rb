@@ -16,7 +16,7 @@ gc.roundrectangle(0, 0, 199, 199, 8, 8)
 
 gc.fill('yellow')
 gc.stroke('red')
-gc.circle(100, 100, 100,  25)
+gc.circle(100, 100, 100, 25)
 gc.draw(img)
 
 img.write('matte_floodfill_before.gif')

@@ -12,7 +12,7 @@ module Magick
 
       private
 
-      def initialize(text, &block)    #:nodoc:
+      def initialize(text, &block) #:nodoc:
         super()
         @text = text.to_s if text
         @dx = @dy = 0
@@ -48,7 +48,7 @@ module Magick
       end
 
         # We do our own transformations.
-      def add_primitives(gc)  #:nodoc:
+      def add_primitives(gc) #:nodoc:
         if @text || !@tspans.empty?
           gc.push
           x = cx + @dx
@@ -70,10 +70,10 @@ module Magick
           gc.pop
         end
       end
-    end     # class TextBase
+    end # class TextBase
 
       # Tspan and Tref shared methods - read/update @cx, @cy in parent Text object.
-    module TextLink     #:nodoc:
+    module TextLink #:nodoc:
       def add_primitives(gc)
         @parent.cx = @x if @x
         @parent.cy = @y if @y
@@ -95,9 +95,9 @@ module Magick
       def cy=(y)
         @parent.cy = y
       end
-    end     # module TextLink
+    end # module TextLink
 
-    class Tref < TextBase  #:nodoc:
+    class Tref < TextBase #:nodoc:
       include TextLink
 
       def initialize(obj, x, y, parent)
@@ -106,9 +106,9 @@ module Magick
         @tspans << obj
         @parent = parent
       end
-    end     # class Tref
+    end # class Tref
 
-    class Tspan < TextBase  #:nodoc:
+    class Tspan < TextBase #:nodoc:
       include TextLink
 
       attr_accessor :parent
@@ -122,10 +122,10 @@ module Magick
         @x, @y = Magick::RVG.convert_to_float(x, y, :allow_nil)
         super(text, &block)
       end
-    end     # class Tspan
+    end # class Tspan
 
     class Text < TextBase
-      attr_accessor :cx, :cy  #:nodoc:
+      attr_accessor :cx, :cy #:nodoc:
 
         # Define a text string starting at [<tt>x</tt>, <tt>y</tt>].
         # Use the RVG::TextConstructors#text method to create Text objects in a container.
@@ -155,7 +155,7 @@ module Magick
         @tspans << tref
         tref
       end
-    end     # class Text
+    end # class Text
 
       # Methods that construct text objects within a container
     module TextConstructors
@@ -167,6 +167,6 @@ module Magick
         @content << t
         t
       end
-    end     # module TextConstructors
+    end # module TextConstructors
   end # class RVG
 end # module Magick
