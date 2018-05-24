@@ -46,7 +46,7 @@ module Magick
         args.pop
       end
       begin
-        fargs = args.collect { |a| (allow_nil && a.nil?) ? a : Float(a) }
+        fargs = args.collect { |a| allow_nil && a.nil? ? a : Float(a) }
       rescue ArgumentError, TypeError
         raise ArgumentError, fmsg(*args)
       end
