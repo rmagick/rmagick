@@ -167,7 +167,7 @@ module Magick
       NormalWeight.to_i => 'normal',
       BoldWeight.to_i => 'bold',
       BolderWeight.to_i => 'bolder',
-      LighterWeight.to_i => 'lighter',
+      LighterWeight.to_i => 'lighter'
     }.freeze
     GRAVITY_NAMES = {
       NorthWestGravity.to_i => 'northwest',

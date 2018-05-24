@@ -29,7 +29,7 @@ module RMagick
         :cppflags       => $CPPFLAGS,
         :ldflags        => $LDFLAGS,
         :defs           => $defs,
-        :config_h       => $config_h,
+        :config_h       => $config_h
       }
     end
 
@@ -238,7 +238,7 @@ SRC
       matches = [
         prefix+'/lib/lib?agick*',
         prefix+'/include/ImageMagick',
-        prefix+'/bin/Magick-config',
+        prefix+'/bin/Magick-config'
       ].map do |file_glob|
         Dir.glob(file_glob)
       end
