@@ -79,7 +79,7 @@ namespace :legacy do
 
     lines = File.readlines name
     lines.each do |line|
-      line.gsub!(%r{0\.0\.0}, Magick::VERSION)
+      line.gsub!(/0\.0\.0/, Magick::VERSION)
       line.gsub!(%r{YY/MM/DD}, now)
     end
     lines

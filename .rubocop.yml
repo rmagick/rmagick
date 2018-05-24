@@ -248,12 +248,6 @@ Style/PerlBackrefs:
 Naming/PredicateName:
   Enabled: false
 
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, AllowInnerSlashes.
-Style/RegexpLiteral:
-  Enabled: false
-
 # Fixing this issues cause some test to fail
 Lint/UnifiedInteger:
   Enabled: false
