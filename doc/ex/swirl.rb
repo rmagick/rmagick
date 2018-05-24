@@ -11,7 +11,7 @@ animation << img.copy
 30.step(360, 45) { |degrees| animation << img.swirl(degrees) }
 
 animation.delay = 20
-animation.iterations = 10000
+animation.iterations = 10_000
 
 animation.write('swirl.gif')
 exit

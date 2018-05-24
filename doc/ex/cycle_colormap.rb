@@ -15,7 +15,7 @@ animation[0] = balloons
 4.times { animation << animation.cycle_colormap(-jump) }
 
 animation.delay = 20
-animation.iterations = 10000
+animation.iterations = 10_000
 #animation.animate
 animation.write('cycle_colormap.gif')
 exit

@@ -288,7 +288,7 @@ class Magick_UT < Test::Unit::TestCase
     assert_kind_of(Integer, cur)
     assert(cur > 1024**2)
     assert_nothing_raised { new = Magick.limit_resource('disk') }
-    assert_equal(3221225472, new)
+    assert_equal(3_221_225_472, new)
     Magick.limit_resource(:disk, cur)
 
     assert_nothing_raised { cur = Magick.limit_resource(:file, 500) }

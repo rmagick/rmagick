@@ -1637,7 +1637,7 @@ module Magick
     # Set the number of iterations of an animated GIF
     def iterations=(n)
       n = Integer(n)
-      if n < 0 || n > 65535
+      if n < 0 || n > 65_535
         Kernel.raise ArgumentError, 'iterations must be between 0 and 65535'
       end
       @images.each { |f| f.iterations = n }

@@ -490,9 +490,9 @@ class Image_Attributes_UT < Test::Unit::TestCase
   def test_number_colors
     assert_nothing_raised { @hat.number_colors }
     if IM_VERSION < Gem::Version.new('6.7.5') || (IM_VERSION == Gem::Version.new('6.7.5') && IM_REVISION < Gem::Version.new('5'))
-      assert_equal(27980, @hat.number_colors)
+      assert_equal(27_980, @hat.number_colors)
     else
-      assert_equal(27942, @hat.number_colors)
+      assert_equal(27_942, @hat.number_colors)
     end
     assert_raise(NoMethodError) { @hat.number_colors = 2 }
   end
@@ -606,9 +606,9 @@ class Image_Attributes_UT < Test::Unit::TestCase
   def test_total_colors
     assert_nothing_raised { @hat.total_colors }
     if IM_VERSION < Gem::Version.new('6.7.5') || (IM_VERSION == Gem::Version.new('6.7.5') && IM_REVISION < Gem::Version.new('5'))
-      assert_equal(27980, @hat.total_colors)
+      assert_equal(27_980, @hat.total_colors)
     else
-      assert_equal(27942, @hat.total_colors)
+      assert_equal(27_942, @hat.total_colors)
     end
     assert_raise(NoMethodError) { @img.total_colors = 2 }
   end

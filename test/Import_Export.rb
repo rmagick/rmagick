@@ -54,7 +54,7 @@ class Import_Export_UT < Test::Unit::TestCase
         p = spixels.pack('S*')
         import(p, Magick::ShortPixel)
 
-        ipixels = pixels.collect { |px| px * 16843009 }
+        ipixels = pixels.collect { |px| px * 16_843_009 }
         p = ipixels.pack('I*')
         import(p, Magick::IntegerPixel)
         import(p, Magick::LongPixel)
@@ -71,18 +71,18 @@ class Import_Export_UT < Test::Unit::TestCase
         end
         import(p, Magick::QuantumPixel)
 
-        ipixels = pixels.collect { |px| px * 65537 }
+        ipixels = pixels.collect { |px| px * 65_537 }
         p = ipixels.pack('I*')
         # Diff s/b 0.0 but never is.
         #import(p, Magick::IntegerPixel, 430.7834)
         #import(p, Magick::LongPixel, 430.7834)
 
       when 32
-        cpixels = pixels.collect { |px| px / 16843009 }
+        cpixels = pixels.collect { |px| px / 16_843_009 }
         p = cpixels.pack('C*')
         import(p, Magick::CharPixel)
 
-        spixels = pixels.collect { |px| px / 65537 }
+        spixels = pixels.collect { |px| px / 65_537 }
         p = spixels.pack('S*')
         import(p, Magick::ShortPixel)
 
@@ -95,15 +95,15 @@ class Import_Export_UT < Test::Unit::TestCase
         import(p, Magick::QuantumPixel)
 
       when 64
-        cpixels = pixels.collect { |px| px / 72340172838076673 }
+        cpixels = pixels.collect { |px| px / 72_340_172_838_076_673 }
         p = cpixels.pack('C*')
         import(p, Magick::CharPixel)
 
-        spixels = pixels.collect { |px| px / 281479271743489 }
+        spixels = pixels.collect { |px| px / 281_479_271_743_489 }
         p = spixels.pack('S*')
         import(p, Magick::ShortPixel)
 
-        ipixels = pixels.collect { |px| px / 4294967297 }
+        ipixels = pixels.collect { |px| px / 4_294_967_297 }
         p = ipixels.pack('I*')
         import(p, Magick::IntegerPixel)
         import(p, Magick::LongPixel)

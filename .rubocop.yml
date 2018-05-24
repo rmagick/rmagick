@@ -221,11 +221,6 @@ Style/MultilineTernaryOperator:
 Style/Next:
   Enabled: false
 
-# Offense count: 21
-# Cop supports --auto-correct.
-Style/NumericLiterals:
-  MinDigits: 18
-
 Naming/HeredocDelimiterCase:
   Enabled: false
 

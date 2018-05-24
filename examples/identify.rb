@@ -115,8 +115,8 @@ module Magick
       end
       puts "\tUnits: #{units}\n"
       size = filesize
-      if size >= 1048576
-        puts "\tFilesize: #{'%.1f' % (size / 1048576.0)}mb\n"
+      if size >= 1_048_576
+        puts "\tFilesize: #{'%.1f' % (size / 1_048_576.0)}mb\n"
       elsif size >= 1024
         puts "\tFilesize: #{'%.0f' % (size / 1024.0)}kb\n"
       else
