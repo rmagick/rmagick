@@ -137,7 +137,7 @@ module Magick
       puts "\tIterations: #{iterations}\n" unless iterations == 1
       puts "\tScene: #{scene}\n" if scene != 0
       puts "\tCompression: #{compression}\n"
-      puts "\tQuality: #{quality}\n" unless quality == 0
+      puts "\tQuality: #{quality}\n" unless quality.zero?
       puts "\tOrientation: #{orientation}\n"
       puts "\tMontage: #{montage}\n" if montage
       signature # compute but ignore - will be displayed along with the other properties
@@ -166,7 +166,7 @@ module Magick
   end
 end
 
-if ARGV.length == 0
+if ARGV.length.zero?
   puts <<-'END_USAGE'
     This example displays information about the specified image file(s)
     that is similar to ImageMagick/GraphicsMagick's identify command.

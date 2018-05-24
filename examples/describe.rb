@@ -11,7 +11,7 @@ This example shows how to extract attributes from an image.
 
 END_INFO
 
-if ARGV.length == 0
+if ARGV.length.zero?
   puts 'Specify one or more image filenames as arguments.'
   exit
 end

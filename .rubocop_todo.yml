@@ -237,18 +237,3 @@ Style/MutableConstant:
 Style/NumericLiteralPrefix:
   Exclude:
     - 'Rakefile'
-
-# Offense count: 30
-# Cop supports --auto-correct.
-# Configuration parameters: AutoCorrect, EnforcedStyle, SupportedStyles.
-# SupportedStyles: predicate, comparison
-Style/NumericPredicate:
-  Exclude:
-    - 'spec/**/*'
-    - 'examples/describe.rb'
-    - 'examples/identify.rb'
-    - 'lib/rmagick_internal.rb'
-    - 'lib/rvg/embellishable.rb'
-    - 'lib/rvg/misc.rb'
-    - 'lib/rvg/rvg.rb'
-    - 'test/Image2.rb'

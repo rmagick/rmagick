@@ -97,7 +97,7 @@ module Magick
           gm2 = @ctx.shadow.get_type_metrics('aa')
           h = (gm.ascent - gm.descent + 0.5).to_i
           w = gm.width - gm2.width
-          if glyph_orientation == 0 || glyph_orientation == 180
+          if glyph_orientation.zero? || glyph_orientation == 180
             [w, h]
           else
             [h, w]
@@ -127,7 +127,7 @@ module Magick
 
         def shift_baseline(glyph_orientation, glyph)
           glyph_dimensions = @ctx.shadow.get_type_metrics(glyph)
-          if glyph_orientation == 0 || glyph_orientation == 180
+          if glyph_orientation.zero? || glyph_orientation == 180
             x = glyph_dimensions.width
           else
             x = glyph_dimensions.ascent - glyph_dimensions.descent
@@ -149,7 +149,7 @@ module Magick
         end
 
         def render_glyph(glyph_orientation, x, y, glyph)
-          if glyph_orientation == 0
+          if glyph_orientation.zero?
             @ctx.gc.text(x, y, enquote(glyph))
           else
             @ctx.gc.push
@@ -672,7 +672,7 @@ module Magick
         end
 
         def text(x, y, text)
-          return if text.length == 0
+          return if text.length.zero?
           if @text_attrs.non_default?
             text_renderer = TEXT_STRATEGIES[@text_attrs.writing_mode].new(self)
           else

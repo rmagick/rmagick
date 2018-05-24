@@ -232,7 +232,7 @@ module Magick
 
     # Draw a bezier curve.
     def bezier(*points)
-      if points.length == 0
+      if points.length.zero?
         Kernel.raise ArgumentError, 'no points specified'
       elsif points.length.odd?
         Kernel.raise ArgumentError, 'odd number of arguments specified'
@@ -470,7 +470,7 @@ module Magick
 
     # Draw a polygon
     def polygon(*points)
-      if points.length == 0
+      if points.length.zero?
         Kernel.raise ArgumentError, 'no points specified'
       elsif points.length.odd?
         Kernel.raise ArgumentError, 'odd number of points specified'
@@ -480,7 +480,7 @@ module Magick
 
     # Draw a polyline
     def polyline(*points)
-      if points.length == 0
+      if points.length.zero?
         Kernel.raise ArgumentError, 'no points specified'
       elsif points.length.odd?
         Kernel.raise ArgumentError, 'odd number of points specified'
@@ -495,7 +495,7 @@ module Magick
     # pop('pattern')
 
     def pop(*what)
-      if what.length == 0
+      if what.length.zero?
         primitive 'pop graphic-context'
       else
         # to_s allows a Symbol to be used instead of a String
@@ -509,7 +509,7 @@ module Magick
     # push('gradient')
     # push('pattern')
     def push(*what)
-      if what.length == 0
+      if what.length.zero?
         primitive 'push graphic-context'
       else
         # to_s allows a Symbol to be used instead of a String
@@ -562,7 +562,7 @@ module Magick
 
     # Specify a stroke dash pattern
     def stroke_dasharray(*list)
-      if list.length == 0
+      if list.length.zero?
         primitive 'stroke-dasharray none'
       else
         list.each do |x|
@@ -841,7 +841,7 @@ module Magick
     # arrays.
     def get_exif_by_entry(*entry)
       ary = []
-      if entry.length == 0
+      if entry.length.zero?
         exif_data = self['EXIF:*']
         if exif_data
           exif_data.split("\n").each { |exif| ary.push(exif.split('=')) }
@@ -859,7 +859,7 @@ module Magick
     # Retrieve EXIF data by tag number or all tag/value pairs. The return value is a hash.
     def get_exif_by_number(*tag)
       hash = {}
-      if tag.length == 0
+      if tag.length.zero?
         exif_data = self['EXIF:!']
         if exif_data
           exif_data.split("\n").each do |exif|
@@ -1305,7 +1305,7 @@ module Magick
     # Find old current image, update scene number
     # current is the id of the old current image.
     def set_current(current)
-      if length == 0
+      if length.zero?
         self.scene = nil
         return
       # Don't bother looking for current image
@@ -1331,10 +1331,10 @@ module Magick
     # Allow scene to be set to nil
     def scene=(n)
       if n.nil?
-        Kernel.raise IndexError, 'scene number out of bounds' unless @images.length == 0
+        Kernel.raise IndexError, 'scene number out of bounds' unless @images.length.zero?
         @scene = nil
         return @scene
-      elsif @images.length == 0
+      elsif @images.length.zero?
         Kernel.raise IndexError, 'scene number out of bounds'
       end
 
@@ -1398,7 +1398,7 @@ module Magick
       size = [length, other.length].min
       size.times do |x|
         r = self[x] <=> other[x]
-        return r unless r == 0
+        return r unless r.zero?
       end
       if @scene.nil? && other.scene.nil?
         return 0
@@ -1408,7 +1408,7 @@ module Magick
         Kernel.raise TypeError, "cannot convert nil into #{scene.class}"
       end
       r = scene <=> other.scene
-      return r unless r == 0
+      return r unless r.zero?
       length <=> other.length
     end
 
@@ -1598,7 +1598,7 @@ module Magick
     alias_method :select, :find_all
 
     def from_blob(*blobs, &block)
-      if blobs.length == 0
+      if blobs.length.zero?
         Kernel.raise ArgumentError, 'no blobs given'
       end
       blobs.each do |b|
@@ -1647,7 +1647,7 @@ module Magick
     end
 
     def last(*args)
-      if args.length == 0
+      if args.length.zero?
         a = @images.last
       else
         a = @images.last(*args)
@@ -1707,7 +1707,7 @@ module Magick
 
     # Ping files and concatenate the new images
     def ping(*files, &block)
-      if files.length == 0
+      if files.length.zero?
         Kernel.raise ArgumentError, 'no files given'
       end
       files.each do |f|
@@ -1735,7 +1735,7 @@ module Magick
 
     # Read files and concatenate the new images
     def read(*files, &block)
-      if files.length == 0
+      if files.length.zero?
         Kernel.raise ArgumentError, 'no files given'
       end
       files.each do |f|
@@ -1768,7 +1768,7 @@ module Magick
       current = get_current
       @images.clear
       other.each {|image| @images << image}
-      @scene = length == 0 ? nil : 0
+      @scene = length.zero? ? nil : 0
       set_current current
       self
     end

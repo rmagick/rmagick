@@ -279,7 +279,7 @@ class Image2_UT < Test::Unit::TestCase
       assert_raises(Magick::DestroyedImageError) { @img.profile!('x', 'y') }
     when /=\Z/.match(method)
       assert_raises(Magick::DestroyedImageError) { @img.send(method, 1) }
-    when arity == 0
+    when arity.zero?
       assert_raises(Magick::DestroyedImageError) { @img.send(method) }
     when arity < 0
       args = (1..-arity).to_a

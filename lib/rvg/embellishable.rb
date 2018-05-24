@@ -231,7 +231,7 @@ module Magick
 
       def add_primitives(gc) #:nodoc:
         # Do not render if width or height is 0
-        return if @width == 0 || @height == 0
+        return if @width.zero? || @height.zero?
         gc.push
         add_transform_primitives(gc)
         add_style_primitives(gc)

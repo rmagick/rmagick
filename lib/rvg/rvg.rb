@@ -272,7 +272,7 @@ module Magick
     def add_primitives(gc)  #:nodoc:
       if @width.nil? || @height.nil?
         raise ArgumentError, 'RVG width or height undefined'
-      elsif @width == 0 || @height == 0
+      elsif @width.zero? || @height.zero?
         return self
       end
       gc.push
