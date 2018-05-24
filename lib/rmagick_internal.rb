@@ -1236,7 +1236,7 @@ module Magick
             end
 
             if start > @width || start < 0 || length < 0
-               #nop
+               # nop
             elsif start + length > @width
               length = @width - length
               length = [length, 0].max

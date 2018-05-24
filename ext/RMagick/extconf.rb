@@ -34,7 +34,7 @@ module RMagick
     end
 
     def configure_headers
-      #headers = %w{assert.h ctype.h errno.h float.h limits.h math.h stdarg.h stddef.h stdint.h stdio.h stdlib.h string.h time.h}
+      # headers = %w{assert.h ctype.h errno.h float.h limits.h math.h stdarg.h stddef.h stdint.h stdio.h stdlib.h string.h time.h}
       @headers = %w{assert.h ctype.h stdio.h stdlib.h math.h time.h}
       headers << 'stdint.h' if have_header('stdint.h')  # defines uint64_t
       headers << 'sys/types.h' if have_header('sys/types.h')
@@ -423,12 +423,12 @@ SRC
       have_type('MagickFunction', headers)                  # 6.4.8-8
       have_type('ImageLayerMethod', headers)                # 6.3.6 replaces MagickLayerMethod
       have_type('long double', headers)
-      #have_type("unsigned long long", headers)
-      #have_type("uint64_t", headers)
-      #have_type("__int64", headers)
-      #have_type("uintmax_t", headers)
-      #check_sizeof("unsigned long", headers)
-      #check_sizeof("Image *", headers)
+      # have_type("unsigned long long", headers)
+      # have_type("uint64_t", headers)
+      # have_type("__int64", headers)
+      # have_type("uintmax_t", headers)
+      # check_sizeof("unsigned long", headers)
+      # check_sizeof("Image *", headers)
 
       have_enum_values('AlphaChannelType', ['CopyAlphaChannel',                    # 6.4.3-7
                                             'BackgroundAlphaChannel',              # 6.5.2-5

@@ -23,6 +23,6 @@ line.draw(img)
 # then crop everything but the face.
 img.crop!(Magick::CenterGravity, 250, 200)
 
-#img.display
+# img.display
 img.write('unsharp_mask.jpg')
 exit

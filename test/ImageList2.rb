@@ -1,5 +1,5 @@
 
-#!/usr/bin/env ruby -w
+# !/usr/bin/env ruby -w
 
 require 'fileutils'
 require 'rmagick'
@@ -338,7 +338,7 @@ class ImageList2_UT < Test::Unit::TestCase
 
      remap_image.destroy!
      assert_raise(Magick::DestroyedImageError) { @ilist.remap(remap_image) }
-     #assert_raise(TypeError) { @ilist.affinity(affinity_image, 1) }
+     # assert_raise(TypeError) { @ilist.affinity(affinity_image, 1) }
   end
 
   def test_to_blob

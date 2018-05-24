@@ -469,7 +469,7 @@ class Image1_UT < Test::Unit::TestCase
     res = pc_img.colormap(0)
     assert_instance_of(String, res)
 
-    #test 'set' operation
+    # test 'set' operation
     assert_nothing_raised do
       old_color = pc_img.colormap(0)
       res = pc_img.colormap(0, 'red')

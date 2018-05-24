@@ -16,6 +16,6 @@ animation[0] = balloons
 
 animation.delay = 20
 animation.iterations = 10_000
-#animation.animate
+# animation.animate
 animation.write('cycle_colormap.gif')
 exit

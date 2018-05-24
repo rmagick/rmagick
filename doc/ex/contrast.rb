@@ -32,5 +32,5 @@ imgs = img.montage do
 end
 
 imgs.write('contrast.jpg')
-#imgs.display
+# imgs.display
 exit

@@ -43,7 +43,7 @@ class TmpnamTest < Minitest::Test
     # The 2nd info texture deletes the first.
     # Both composite images are still alive.
     # Therefore only 4 tmp files are left.
-    #assert_equal(tmpfiles+4, tmpfiles2)
+    # assert_equal(tmpfiles+4, tmpfiles2)
     # 6.4.1-5 - only 1 tmpfile?
     assert_equal(tmpfiles, tmpfiles2)
   end

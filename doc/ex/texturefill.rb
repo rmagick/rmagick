@@ -19,6 +19,6 @@ ann.annotate(img, 0, 0, 0, 0, 'TextureFill.new(granite)') do
   self.pointsize = 14
 end
 
-#img.display
+# img.display
 img.write('texturefill.gif')
 exit

@@ -22,6 +22,6 @@ ann.annotate(img, 0, 0, 0, 0, "HatchFill.new('#{Background}', '#{Foreground}')")
   self.stroke = 'transparent'
   self.pointsize = 14
 end
-#img.display
+# img.display
 img.write('hatchfill.gif')
 exit

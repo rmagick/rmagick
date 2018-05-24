@@ -39,4 +39,4 @@ montage = pairs.montage do
   self.border_width = 1
 end
 montage.write('crop_with_gravity.miff')
-#montage.display
+# montage.display

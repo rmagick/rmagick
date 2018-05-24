@@ -48,5 +48,5 @@ gc.text 330, 280, "'320,275'"
 gc.draw imgl
 
 imgl.border!(1, 1, 'lightcyan2')
-#imgl.display
+# imgl.display
 imgl.write 'qbezierpath.gif'

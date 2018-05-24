@@ -25,6 +25,6 @@ text.annotate(canvas, 0, 0, 0, 0, Text) do
   self.fill = 'darkred'
 end
 
-#canvas.display
+# canvas.display
 canvas.write('rubyname.gif')
 exit

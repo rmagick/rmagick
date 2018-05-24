@@ -37,6 +37,6 @@ gc.text(0,  60, "'gc.stroke_dasharray(10, 10)'")
 gc.draw(imgl)
 
 imgl.border!(1, 1, 'lightcyan2')
-#imgl.display
+# imgl.display
 imgl.write('stroke_dasharray.gif')
 exit

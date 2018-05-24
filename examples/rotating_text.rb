@@ -38,7 +38,7 @@ end
 
 animation.delay = 8
 
-#animation.animate
+# animation.animate
 puts '...Writing rotating_text.gif'
 animation.write('rotating_text.gif')
 exit

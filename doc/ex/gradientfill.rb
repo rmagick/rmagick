@@ -22,6 +22,6 @@ ann.annotate(img, 0, 0, 0, 0, "GradientFill.new(0, 0, 0, #{Rows}, '#{Start}', '#
   self.pointsize = 14
 end
 
-#img.display
+# img.display
 img.write('gradientfill.gif')
 exit

@@ -55,6 +55,6 @@ anim.cur_image.delay = 300
 # Iterate forever.
 anim.iterations = 0
 
-#anim.animate
+# anim.animate
 anim.write('drop_shadow.gif')
 exit

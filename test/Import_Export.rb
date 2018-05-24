@@ -11,19 +11,19 @@ class Import_Export_UT < Test::Unit::TestCase
     img = Magick::Image.new(@test.columns, @test.rows)
     res = img.import_pixels(0, 0, @test.columns, @test.rows, 'RGB', pixels, type)
     _, diff = img.compare_channel(@test, Magick::MeanAbsoluteErrorMetric)
-    #_.display
+    # _.display
     diff
   end
 
   def import(pixels, type, expected = 0.0)
     diff = import_pixels(pixels, type)
-    #puts "Type=#{type} diff=#{diff}"
+    # puts "Type=#{type} diff=#{diff}"
     assert_in_delta(expected, diff, 0.1)
   end
 
   def fimport(pixels, type)
     diff = import_pixels(pixels, type)
-    #puts "Type=#{type} diff=#{diff}"
+    # puts "Type=#{type} diff=#{diff}"
     assert_in_delta(0.0, diff, 50.0)
   end
 
@@ -74,8 +74,8 @@ class Import_Export_UT < Test::Unit::TestCase
         ipixels = pixels.collect { |px| px * 65_537 }
         p = ipixels.pack('I*')
         # Diff s/b 0.0 but never is.
-        #import(p, Magick::IntegerPixel, 430.7834)
-        #import(p, Magick::LongPixel, 430.7834)
+        # import(p, Magick::IntegerPixel, 430.7834)
+        # import(p, Magick::LongPixel, 430.7834)
 
       when 32
         cpixels = pixels.collect { |px| px / 16_843_009 }

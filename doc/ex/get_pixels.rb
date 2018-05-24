@@ -42,6 +42,6 @@ end
 # Composite the mono version of the image over the color version.
 grayrocks.matte = true
 combine = rocks.composite(grayrocks, Magick::CenterGravity, Magick::OverCompositeOp)
-#combine.display
+# combine.display
 combine.write 'get_pixels.jpg'
 exit

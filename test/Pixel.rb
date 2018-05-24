@@ -66,11 +66,11 @@ class Pixel_UT < Test::Unit::TestCase
         args = [20 * h, s + 25, l + 25, a / 5.0]
         px = Magick::Pixel.from_hsla(*args)
         hsla = px.to_hsla
-        #puts "[#{args.join(', ')}] = [#{hsla.join(', ')}]"
+        # puts "[#{args.join(', ')}] = [#{hsla.join(', ')}]"
         # Handle cases where the result is very near 360
-        #hsla[0] = ((hsla[0] + 0.005) % 360.0) - 0.005
-        #hsla[1] = ((hsla[1] + 0.005) % 360.0) - 0.005
-        #hsla[2] = ((hsla[2] + 0.005) % 360.0) - 0.005
+        # hsla[0] = ((hsla[0] + 0.005) % 360.0) - 0.005
+        # hsla[1] = ((hsla[1] + 0.005) % 360.0) - 0.005
+        # hsla[2] = ((hsla[2] + 0.005) % 360.0) - 0.005
         assert_in_delta(args[0], hsla[0], 0.25, "expected #{args.inspect} got #{hsla.inspect}")
         assert_in_delta(args[1], hsla[1], 0.25, "expected #{args.inspect} got #{hsla.inspect}")
         assert_in_delta(args[2], hsla[2], 0.25, "expected #{args.inspect} got #{hsla.inspect}")

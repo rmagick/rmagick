@@ -59,6 +59,6 @@ labels.gravity(Magick::CenterGravity)
 labels.text(0, 0, 'Rotation')
 labels.draw(canvas)
 
-#canvas.display
+# canvas.display
 canvas.write('axes.gif')
 exit
