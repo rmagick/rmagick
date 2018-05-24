@@ -130,9 +130,6 @@ Style/ClassAndModuleChildren:
 Layout/ClosingParenthesisIndentation:
   Enabled: false
 
-Style/CollectionMethods:
-  Enabled: false
-
 # Offense count: 126
 Naming/ConstantName:
   Enabled: false
