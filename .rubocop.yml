@@ -22,10 +22,6 @@ Layout/DotPosition:
 
 # Auto-generated config to be cleaned up and deleted:
 
-# Offense count: 62
-Style/Documentation:
-  Enabled: false
-
 # Offense count: 23
 # Configuration parameters: Exclude.
 Naming/FileName:
