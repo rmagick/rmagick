@@ -29,9 +29,6 @@ Style/PreferredHashMethods:
 Style/Lambda:
   Enabled: false
 
-Style/StringLiterals:
-  EnforcedStyle: single_quotes
-
 # %i supported only since ruby 2.0
 Style/SymbolArray:
   EnforcedStyle: brackets
