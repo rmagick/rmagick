@@ -1322,7 +1322,7 @@ module Magick
 
     # All the binary operators work the same way.
     # 'other' should be either an ImageList or an Array
-    %w{& + - |}.each do |op|
+    %w[& + - |].each do |op|
       module_eval <<-END_BINOPS
         def #{op}(other)
           ilist = self.class.new

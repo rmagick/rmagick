@@ -36,6 +36,6 @@ ARGV.each do |file|
   next if img.properties.empty?
   puts '   Properties:'
   img.properties do |name, value|
-    puts %|      #{name} = "#{value}"|
+    puts %(      #{name} = "#{value}")
   end
 end

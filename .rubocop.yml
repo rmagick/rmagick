@@ -33,12 +33,6 @@ Naming/HeredocDelimiterCase:
 Naming/HeredocDelimiterNaming:
   Enabled: false
 
-# Offense count: 9
-# Cop supports --auto-correct.
-# Configuration parameters: PreferredDelimiters.
-Style/PercentLiteralDelimiters:
-  Enabled: false
-
 # Offense count: 4
 # Configuration parameters: NamePrefix, NamePrefixBlacklist.
 Naming/PredicateName:

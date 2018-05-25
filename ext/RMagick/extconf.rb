@@ -35,7 +35,7 @@ module RMagick
 
     def configure_headers
       # headers = %w{assert.h ctype.h errno.h float.h limits.h math.h stdarg.h stddef.h stdint.h stdio.h stdlib.h string.h time.h}
-      @headers = %w{assert.h ctype.h stdio.h stdlib.h math.h time.h}
+      @headers = %w[assert.h ctype.h stdio.h stdlib.h math.h time.h]
       headers << 'stdint.h' if have_header('stdint.h') # defines uint64_t
       headers << 'sys/types.h' if have_header('sys/types.h')
 
@@ -150,9 +150,9 @@ module RMagick
         abort 'Unable to get ImageMagick version' unless Regexp.last_match(1)
         $magick_version = Regexp.last_match(1)
         $CFLAGS = '-W3'
-        $CPPFLAGS = %{-I"C:\\Program Files\\Microsoft Platform SDK for Windows Server 2003 R2\\Include" -I"C:\\Program Files\\ImageMagick-#{$magick_version}-Q8\\include"}
+        $CPPFLAGS = %(-I"C:\\Program Files\\Microsoft Platform SDK for Windows Server 2003 R2\\Include" -I"C:\\Program Files\\ImageMagick-#{$magick_version}-Q8\\include")
         # The /link option is required by the Makefile but causes warnings in the mkmf.log file.
-        $LDFLAGS = %{/link /LIBPATH:"C:\\Program Files\\Microsoft Platform SDK for Windows Server 2003 R2\\Lib" /LIBPATH:"C:\\Program Files\\ImageMagick-#{$magick_version}-Q8\\lib" /LIBPATH:"C:\\ruby\\lib"}
+        $LDFLAGS = %(/link /LIBPATH:"C:\\Program Files\\Microsoft Platform SDK for Windows Server 2003 R2\\Lib" /LIBPATH:"C:\\Program Files\\ImageMagick-#{$magick_version}-Q8\\lib" /LIBPATH:"C:\\ruby\\lib")
         $LOCAL_LIBS = 'CORE_RL_magick_.lib'
         have_library('X11')
 
@@ -276,8 +276,8 @@ SRC
         lib = File.join(dir, 'lib')
         lib_file = File.join(lib, 'CORE_RL_magick_.lib')
         next unless File.exist?(lib_file)
-        $CPPFLAGS = %{-I"#{File.join(dir, 'include')}"}
-        $LDFLAGS = %{-L"#{lib}"}
+        $CPPFLAGS = %(-I"#{File.join(dir, 'include')}")
+        $LDFLAGS = %(-L"#{lib}")
         found_lib = have_library('CORE_RL_magick_')
         break if found_lib
       end

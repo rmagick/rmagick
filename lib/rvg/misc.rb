@@ -311,7 +311,7 @@ module Magick
   class RVG
     class Utility
       class TextAttributes
-        WRITING_MODE = %w{lr-tb lr rl-tb rl tb-rl tb}
+        WRITING_MODE = %w[lr-tb lr rl-tb rl tb-rl tb]
 
         def initialize
           @affine = []

@@ -1,7 +1,7 @@
 require 'rvg/rvg'
 
 Magick::RVG.dpi = 90
-Fill = %w{yellow pink green blue cyan red purple brown}
+Fill = %w[yellow pink green blue cyan red purple brown]
 
 rvg = Magick::RVG.new(6.cm, 6.cm).viewbox(0, 0, 600, 600) do |canvas|
   canvas.background_fill = 'white'
