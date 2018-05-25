@@ -33,11 +33,6 @@ Naming/HeredocDelimiterCase:
 Naming/HeredocDelimiterNaming:
   Enabled: false
 
-# Offense count: 4
-# Configuration parameters: NamePrefix, NamePrefixBlacklist.
-Naming/PredicateName:
-  Enabled: false
-
 # Fixing this issues cause some test to fail
 Lint/UnifiedInteger:
   Enabled: false
