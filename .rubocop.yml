@@ -27,9 +27,6 @@ Layout/DotPosition:
 Style/GuardClause:
   Enabled: false
 
-Layout/IndentHeredoc:
-  Enabled: false
-
 # Offense count: 3
 # Configuration parameters: EnforcedStyle, MinBodyLength, SupportedStyles.
 Style/Next:
