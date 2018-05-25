@@ -4,6 +4,21 @@ inherit_from:
 # Custom configuration, edit with care! This gem needs to be backwards
 # compatible with Ruby 1.8:
 
+Layout/DotPosition:
+  EnforcedStyle: leading
+
+# Fixing this issues cause some test to fail
+Lint/UnifiedInteger:
+  Enabled: false
+
+# Enabling this cop cause rubocop 0.50 to crash on heredoc files
+Naming/HeredocDelimiterCase:
+  Enabled: false
+
+# Enabling this cop cause rubocop 0.50 to crash on heredoc files
+Naming/HeredocDelimiterNaming:
+  Enabled: false
+
 Style/HashSyntax:
   EnforcedStyle: hash_rockets
 
@@ -17,8 +32,9 @@ Style/Lambda:
 Style/StringLiterals:
   EnforcedStyle: single_quotes
 
-Layout/DotPosition:
-  EnforcedStyle: leading
+# %i supported only since ruby 2.0
+Style/SymbolArray:
+  EnforcedStyle: brackets
 
 # Auto-generated config to be cleaned up and deleted:
 
@@ -26,17 +42,3 @@ Layout/DotPosition:
 # Configuration parameters: MinBodyLength.
 Style/GuardClause:
   Enabled: false
-
-Naming/HeredocDelimiterCase:
-  Enabled: false
-
-Naming/HeredocDelimiterNaming:
-  Enabled: false
-
-# Fixing this issues cause some test to fail
-Lint/UnifiedInteger:
-  Enabled: false
-
-# %i supported only since ruby 2.0
-Style/SymbolArray:
-  EnforcedStyle: brackets
