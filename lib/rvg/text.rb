@@ -49,26 +49,25 @@ module Magick
 
       # We do our own transformations.
       def add_primitives(gc) #:nodoc:
-        if @text || !@tspans.empty?
-          gc.push
-          x = cx + @dx
-          y = cy + @dy
-          if @rotation != 0
-            gc.translate(x, y)
-            gc.rotate(@rotation)
-            gc.translate(-x, -y)
-          end
-          add_style_primitives(gc)
-          if @text
-            x2, y2 = gc.text(x, y, @text)
-            self.cx = x + x2
-            self.cy = y + y2
-          end
-          @tspans.each do |tspan|
-            tspan.add_primitives(gc)
-          end
-          gc.pop
+        return if !@text && @tspans.empty?
+        gc.push
+        x = cx + @dx
+        y = cy + @dy
+        if @rotation != 0
+          gc.translate(x, y)
+          gc.rotate(@rotation)
+          gc.translate(-x, -y)
         end
+        add_style_primitives(gc)
+        if @text
+          x2, y2 = gc.text(x, y, @text)
+          self.cx = x + x2
+          self.cy = y + y2
+        end
+        @tspans.each do |tspan|
+          tspan.add_primitives(gc)
+        end
+        gc.pop
       end
     end # class TextBase
 

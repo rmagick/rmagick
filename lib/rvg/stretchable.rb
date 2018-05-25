@@ -21,11 +21,8 @@ module Magick
 
         if meet_or_slice
           meet_or_slice = meet_or_slice.to_s.downcase
-          if %w[meet slice].include?(meet_or_slice)
-            @meet_or_slice = meet_or_slice
-          else
-            raise(ArgumentError, "specifier must be `meet' or `slice' (got #{meet_or_slice})")
-          end
+          raise(ArgumentError, "specifier must be `meet' or `slice' (got #{meet_or_slice})") unless %w[meet slice].include?(meet_or_slice)
+          @meet_or_slice = meet_or_slice
         end
         yield(self) if block_given?
         self

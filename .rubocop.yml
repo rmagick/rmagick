@@ -35,10 +35,3 @@ Style/StringLiterals:
 # %i supported only since ruby 2.0
 Style/SymbolArray:
   EnforcedStyle: brackets
-
-# Auto-generated config to be cleaned up and deleted:
-
-# Offense count: 8
-# Configuration parameters: MinBodyLength.
-Style/GuardClause:
-  Enabled: false

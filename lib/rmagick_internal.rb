@@ -1016,16 +1016,13 @@ module Magick
     def view(x, y, width, height)
       view = View.new(self, x, y, width, height)
 
-      if block_given?
-        begin
-          yield(view)
-        ensure
-          view.sync
-        end
-        return nil
-      else
-        return view
+      return view unless block_given?
+      begin
+        yield(view)
+      ensure
+        view.sync
       end
+      nil
     end
 
     # Magick::Image::View class
@@ -1374,13 +1371,9 @@ module Magick
         r = self[x] <=> other[x]
         return r unless r.zero?
       end
-      if @scene.nil? && other.scene.nil?
-        return 0
-      elsif @scene.nil? && !other.scene.nil?
-        Kernel.raise TypeError, "cannot convert nil into #{other.scene.class}"
-      elsif !@scene.nil? && other.scene.nil?
-        Kernel.raise TypeError, "cannot convert nil into #{scene.class}"
-      end
+      return 0 if @scene.nil? && other.scene.nil?
+      Kernel.raise TypeError, "cannot convert nil into #{other.scene.class}" if @scene.nil? && !other.scene.nil?
+      Kernel.raise TypeError, "cannot convert nil into #{scene.class}" if !@scene.nil? && other.scene.nil?
       r = scene <=> other.scene
       return r unless r.zero?
       length <=> other.length

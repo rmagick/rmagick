@@ -270,11 +270,8 @@ module Magick
 
     # Primitives for nested RVG objects
     def add_primitives(gc) #:nodoc:
-      if @width.nil? || @height.nil?
-        raise ArgumentError, 'RVG width or height undefined'
-      elsif @width.zero? || @height.zero?
-        return self
-      end
+      raise ArgumentError, 'RVG width or height undefined' if @width.nil? || @height.nil?
+      return self if @width.zero? || @height.zero?
       gc.push
       add_outermost_primitives(gc)
       gc.pop
