@@ -147,11 +147,10 @@ module Magick
       puts "\tClipping path: #{clip_path}\n" if clip_path
       each_profile do |name, value|
         puts "\tProfile-#{name}: #{value.length}\n"
-        if name == 'exif'
-          exif_attrs = get_exif_by_entry
-          exif_attrs.each do |attr|
-            puts "\t\t#{attr[0]}: #{attr[1]}\n"
-          end
+        next unless name == 'exif'
+        exif_attrs = get_exif_by_entry
+        exif_attrs.each do |attr|
+          puts "\t\t#{attr[0]}: #{attr[1]}\n"
         end
       end
       puts "\tTainted: True\n" if changed?

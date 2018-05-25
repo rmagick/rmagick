@@ -27,11 +27,6 @@ Layout/DotPosition:
 Style/GuardClause:
   Enabled: false
 
-# Offense count: 3
-# Configuration parameters: EnforcedStyle, MinBodyLength, SupportedStyles.
-Style/Next:
-  Enabled: false
-
 Naming/HeredocDelimiterCase:
   Enabled: false
 

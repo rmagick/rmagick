@@ -33,10 +33,9 @@ ARGV.each do |file|
   puts "   Resolution: #{img.x_resolution.to_i}x#{img.y_resolution.to_i} "\
        "pixels/#{img.units == Magick::PixelsPerInchResolution ? 'inch' : 'centimeter'}"
 
-  unless img.properties.empty?
-    puts '   Properties:'
-    img.properties do |name, value|
-      puts %|      #{name} = "#{value}"|
-    end
+  next if img.properties.empty?
+  puts '   Properties:'
+  img.properties do |name, value|
+    puts %|      #{name} = "#{value}"|
   end
 end

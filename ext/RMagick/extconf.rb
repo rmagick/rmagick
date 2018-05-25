@@ -209,11 +209,10 @@ SRC
       path = ENV['PATH'].split(File::PATH_SEPARATOR)
       path.each do |dir|
         file = File.join(dir, 'Magick-config')
-        if File.executable? file
-          vers = `#{file} --version`.chomp.strip
-          prefix = `#{file} --prefix`.chomp.strip
-          versions << [vers, prefix, dir]
-        end
+        next unless File.executable? file
+        vers = `#{file} --version`.chomp.strip
+        prefix = `#{file} --prefix`.chomp.strip
+        versions << [vers, prefix, dir]
       end
       versions.uniq!
       if versions.size > 1
@@ -276,12 +275,11 @@ SRC
       paths.each do |dir|
         lib = File.join(dir, 'lib')
         lib_file = File.join(lib, 'CORE_RL_magick_.lib')
-        if File.exist?(lib_file)
-          $CPPFLAGS = %{-I"#{File.join(dir, 'include')}"}
-          $LDFLAGS = %{-L"#{lib}"}
-          found_lib = have_library('CORE_RL_magick_')
-          break if found_lib
-        end
+        next unless File.exist?(lib_file)
+        $CPPFLAGS = %{-I"#{File.join(dir, 'include')}"}
+        $LDFLAGS = %{-L"#{lib}"}
+        found_lib = have_library('CORE_RL_magick_')
+        break if found_lib
       end
 
       unless found_lib
