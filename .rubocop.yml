@@ -16,6 +16,7 @@ Naming/HeredocDelimiterCase:
 Naming/HeredocDelimiterNaming:
   Enabled: false
 
+# for support of older rubies
 Style/HashSyntax:
   EnforcedStyle: hash_rockets
 
