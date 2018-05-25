@@ -30,11 +30,6 @@ Style/GuardClause:
 Layout/IndentHeredoc:
   Enabled: false
 
-# Offense count: 4
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-Naming/MethodName:
-  Enabled: false
-
 # Offense count: 3
 # Configuration parameters: EnforcedStyle, MinBodyLength, SupportedStyles.
 Style/Next:
