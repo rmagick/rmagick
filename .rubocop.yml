@@ -20,8 +20,9 @@ Naming/HeredocDelimiterNaming:
 Style/HashSyntax:
   EnforcedStyle: hash_rockets
 
+# Encforce verbose mode for compatibility with older rubies
 Style/PreferredHashMethods:
-  Enabled: false
+  EnforcedStyle: verbose
 
 # TODO: How to warn if stabby proc is used?
 Style/Lambda:
