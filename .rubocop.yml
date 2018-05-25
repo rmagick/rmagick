@@ -20,13 +20,13 @@ Naming/HeredocDelimiterNaming:
 Style/HashSyntax:
   EnforcedStyle: hash_rockets
 
-# Encforce verbose mode for compatibility with older rubies
+# Enforce verbose mode for compatibility with older rubies
 Style/PreferredHashMethods:
   EnforcedStyle: verbose
 
-# TODO: How to warn if stabby proc is used?
+# Enforce mode for compatibility with older rubies
 Style/Lambda:
-  Enabled: false
+  EnforcedStyle: lambda
 
 # %i supported only since ruby 2.0
 Style/SymbolArray:
