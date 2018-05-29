@@ -41,6 +41,8 @@ module RMagick
 
       if have_header('wand/MagickWand.h')
         headers << 'wand/MagickWand.h'
+      elsif have_header('MagickWand/MagickWand.h')
+        headers << 'MagickWand/MagickWand.h'
       else
         exit_failure "\nCan't install RMagick #{RMAGICK_VERS}. Can't find MagickWand.h."
       end
