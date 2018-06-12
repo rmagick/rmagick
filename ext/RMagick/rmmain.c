@@ -314,6 +314,7 @@ Init_RMagick2(void)
     rb_define_method(Class_Image, "channel_depth", Image_channel_depth, -1);
     rb_define_method(Class_Image, "channel_extrema", Image_channel_extrema, -1);
     rb_define_method(Class_Image, "channel_mean", Image_channel_mean, -1);
+    rb_define_method(Class_Image, "channel_entropy", Image_channel_entropy, -1);
     rb_define_method(Class_Image, "charcoal", Image_charcoal, -1);
     rb_define_method(Class_Image, "chop", Image_chop, 4);
     rb_define_method(Class_Image, "clut_channel", Image_clut_channel, -1);
