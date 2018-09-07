@@ -1262,7 +1262,7 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
             case SrcOverCompositeOp:
                 op = "SrcOver";
                 break;
-            case SubtractCompositeOp:
+            case ModulusSubtractCompositeOp:
                 op = "Subtract";
                 break;
             case ThresholdCompositeOp:

@@ -233,7 +233,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.compose = Magick::SrcInCompositeOp }
     assert_nothing_raised { @img.compose = Magick::SrcOutCompositeOp }
     assert_nothing_raised { @img.compose = Magick::SrcOverCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::SubtractCompositeOp }
+    assert_nothing_raised { @img.compose = Magick::ModulusSubtractCompositeOp }
     assert_nothing_raised { @img.compose = Magick::ThresholdCompositeOp }
     assert_nothing_raised { @img.compose = Magick::XorCompositeOp }
     assert_nothing_raised { @img.compose = Magick::MathematicsCompositeOp }

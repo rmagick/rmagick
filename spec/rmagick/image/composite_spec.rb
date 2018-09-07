@@ -47,7 +47,7 @@ RSpec.describe Magick::Image, '#composite' do
       Magick::SrcInCompositeOp,
       Magick::SrcOutCompositeOp,
       Magick::SrcOverCompositeOp,
-      Magick::SubtractCompositeOp,
+      Magick::ModulusSubtractCompositeOp,
       Magick::ThresholdCompositeOp,
       Magick::XorCompositeOp,
       Magick::BlendCompositeOp,
