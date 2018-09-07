@@ -1151,7 +1151,7 @@ extern VALUE  rm_enum_new(VALUE, VALUE, VALUE);
 extern VALUE  ChromaticityInfo_to_s(VALUE);
 extern VALUE  ChromaticityInfo_new(ChromaticityInfo *);
 extern void   Color_to_PixelPacket(PixelPacket *, VALUE);
-extern void   Color_to_PixelInfo(Image *, PixelInfo *, VALUE);
+extern void   Color_to_PixelInfoWithImage(Image *, PixelInfo *, VALUE);
 extern VALUE  Color_to_s(VALUE);
 extern VALUE  Import_ColorInfo(const ColorInfo *);
 extern VALUE  ClassType_new(ClassType);

@@ -319,7 +319,7 @@ Export_ColorInfo(ColorInfo *ci, VALUE st)
  * @param color the name of the color
  */
 void
-Color_to_PixelInfo(Image *image, PixelInfo *mpp, VALUE color)
+Color_to_PixelInfoWithImage(Image *image, PixelInfo *mpp, VALUE color)
 {
     PixelPacket pp;
 
