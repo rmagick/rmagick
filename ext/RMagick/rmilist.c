@@ -988,7 +988,7 @@ ImageList_quantize(int argc, VALUE *argv, VALUE self)
     rm_ensure_result(new_images);
 
 
-    (void) QuantizeImages(&quantize_info, new_images);
+    (void) QuantizeImages(&quantize_info, new_images, exception);
     rm_check_exception(exception, new_images, DestroyOnError);
     (void) DestroyExceptionInfo(exception);
 
