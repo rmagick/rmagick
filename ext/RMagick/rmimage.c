@@ -5300,7 +5300,7 @@ Image_distort(int argc, VALUE *argv, VALUE self)
     Image *image, *new_image;
     VALUE pts;
     unsigned long n, npoints;
-    DistortImageMethod distortion_method;
+    DistortMethod distortion_method;
     double *points;
     MagickBooleanType bestfit = MagickFalse;
     ExceptionInfo *exception;
@@ -5315,7 +5315,7 @@ Image_distort(int argc, VALUE *argv, VALUE self)
         case 2:
             // Ensure pts is an array
             pts = rb_Array(argv[1]);
-            VALUE_TO_ENUM(argv[0], distortion_method, DistortImageMethod);
+            VALUE_TO_ENUM(argv[0], distortion_method, DistortMethod);
             break;
         default:
             rb_raise(rb_eArgError, "wrong number of arguments (expected 2 or 3, got %d)", argc);

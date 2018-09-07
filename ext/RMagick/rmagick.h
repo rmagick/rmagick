@@ -320,7 +320,7 @@ EXTERN VALUE Class_CompositeOperator;
 EXTERN VALUE Class_CompressionType;
 EXTERN VALUE Class_DecorationType;
 EXTERN VALUE Class_DisposeType;
-EXTERN VALUE Class_DistortImageMethod;
+EXTERN VALUE Class_DistortMethod;
 EXTERN VALUE Class_DitherMethod;
 EXTERN VALUE Class_EndianType;
 EXTERN VALUE Class_FilterType;

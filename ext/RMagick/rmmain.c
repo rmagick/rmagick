@@ -1128,7 +1128,7 @@ Init_RMagick2(void)
     END_ENUM
 
     // DistortImage "method" argument values
-    DEF_ENUM(DistortImageMethod)
+    DEF_ENUM(DistortMethod)
         ENUMERATOR(UndefinedDistortion)
         ENUMERATOR(AffineDistortion)
         ENUMERATOR(AffineProjectionDistortion)
