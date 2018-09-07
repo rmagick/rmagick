@@ -310,7 +310,7 @@ EXTERN VALUE Class_QuantumExpressionOperator;
 // Enum classes
 EXTERN VALUE Class_Enum;
 EXTERN VALUE Class_AlignType;
-EXTERN VALUE Class_AlphaChannelType;
+EXTERN VALUE Class_AlphaChannelOption;
 EXTERN VALUE Class_AnchorType;
 EXTERN VALUE Class_ChannelType;
 EXTERN VALUE Class_ClassType;

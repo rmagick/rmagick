@@ -579,7 +579,7 @@ VALUE
 Image_alpha(int argc, VALUE *argv, VALUE self)
 {
     Image *image;
-    AlphaChannelType alpha;
+    AlphaChannelOption alpha;
 
 
     // For backward compatibility, make alpha() act like alpha?
@@ -594,7 +594,7 @@ Image_alpha(int argc, VALUE *argv, VALUE self)
 
 
     image = rm_check_frozen(self);
-    VALUE_TO_ENUM(argv[0], alpha, AlphaChannelType);
+    VALUE_TO_ENUM(argv[0], alpha, AlphaChannelOption);
 
     (void) SetImageAlphaChannel(image, alpha);
     rm_check_image_exception(image, RetainOnError);
