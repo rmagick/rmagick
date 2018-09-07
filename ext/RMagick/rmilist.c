@@ -682,7 +682,7 @@ ImageList_optimize_layers(VALUE self, VALUE method)
         case CompareAnyLayer:
         case CompareClearLayer:
         case CompareOverlayLayer:
-            new_images = CompareImageLayers(images, mthd, exception);
+            new_images = CompareImagesLayers(images, mthd, exception);
             break;
         case MosaicLayer:
             new_images = MergeImageLayers(images, mthd, exception);
