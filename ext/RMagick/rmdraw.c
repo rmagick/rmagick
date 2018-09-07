@@ -1154,7 +1154,7 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
             case DistortCompositeOp:
                 op = "Distort";
                 break;
-            case DivideCompositeOp:
+            case DivideDstCompositeOp:
                 op = "Divide";
                 break;
             case DstCompositeOp:
