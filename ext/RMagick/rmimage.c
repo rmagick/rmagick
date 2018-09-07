@@ -24,7 +24,7 @@ typedef Image *(reader_t)(const Info *, ExceptionInfo *);
 /** Method that scales an image */
 typedef Image *(scaler_t)(const Image *, const size_t, const size_t, ExceptionInfo *);
 /** Method that computes threshold on an image */
-typedef MagickBooleanType (thresholder_t)(Image *, const char *);
+typedef MagickBooleanType (thresholder_t)(Image *, const char *, ExceptionInfo *);
 /** Method that transforms an image */
 typedef Image *(xformer_t)(const Image *, const RectangleInfo *, ExceptionInfo *);
 
