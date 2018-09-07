@@ -685,11 +685,15 @@ rm_pixelpacket_to_color_name_info(Info *info, PixelPacket *color)
     Image *image;
     Info *my_info;
     VALUE color_name;
+    ExceptionInfo *exception;
 
     my_info = info ? info : CloneImageInfo(NULL);
 
-    image = AcquireImage(info);
+    exception = AcquireExceptionInfo();
+    image = AcquireImage(info, exception);
     image->matte = MagickFalse;
+    (void) DestroyExceptionInfo(exception);
+
     color_name = rm_pixelinfo_to_color_name(image, color);
     (void) DestroyImage(image);
     if (!info)

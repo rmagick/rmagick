@@ -381,6 +381,7 @@ Pixel_fcmp(int argc, VALUE *argv, VALUE self)
     ColorspaceType colorspace = RGBColorspace;
     double fuzz = 0.0;
     unsigned int equal;
+    ExceptionInfo *exception;
 
     switch (argc)
     {
@@ -408,7 +409,9 @@ Pixel_fcmp(int argc, VALUE *argv, VALUE self)
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
 
-    image = AcquireImage(info);
+    exception = AcquireExceptionInfo();
+    image = AcquireImage(info, exception);
+    (void) DestroyExceptionInfo(exception);
 
     // Delete Info now in case we have to raise an exception
     (void) DestroyImageInfo(info);
@@ -999,16 +1002,16 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
 
     Data_Get_Struct(self, Pixel, pixel);
 
+    exception = AcquireExceptionInfo();
+
     info = CloneImageInfo(NULL);
-    image = AcquireImage(info);
+    image = AcquireImage(info, exception);
     image->depth = depth;
     image->matte = matte;
     (void) DestroyImageInfo(info);
 
     GetPixelInfo(image, &mpp);
     rm_set_pixel_info(pixel, &mpp);
-
-    exception = AcquireExceptionInfo();
 
     // Support for hex-format color names moved out of QueryMagickColorname
     // in 6.4.1-9. The 'hex' argument was removed as well.

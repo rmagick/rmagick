@@ -1866,6 +1866,7 @@ get_dummy_tm_img(VALUE klass)
     VALUE dummy_img = 0;
     Info *info;
     Image *image;
+    ExceptionInfo *exception;
 
     if (rb_cvar_defined(klass, rb_intern(DUMMY_IMG_CLASS_VAR)) != Qtrue)
     {
@@ -1875,7 +1876,11 @@ get_dummy_tm_img(VALUE klass)
         {
             rb_raise(rb_eNoMemError, "not enough memory to continue");
         }
-        image = AcquireImage(info);
+
+        exception = AcquireExceptionInfo();
+        image = AcquireImage(info, exception);
+        (void) DestroyExceptionInfo(exception);
+
         if (!image)
         {
             rb_raise(rb_eNoMemError, "not enough memory to continue");
