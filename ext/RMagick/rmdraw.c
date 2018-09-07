@@ -18,7 +18,7 @@ static void destroy_Draw(void *);
 static VALUE new_DrawOptions(void);
 
 /** Method that gets type metrics */
-typedef MagickBooleanType (get_type_metrics_func_t)(Image *, const DrawInfo *, TypeMetric *);
+typedef MagickBooleanType (get_type_metrics_func_t)(Image *, const DrawInfo *, TypeMetric *, ExceptionInfo *);
 static VALUE get_type_metrics(int, VALUE *, VALUE, get_type_metrics_func_t);
 
 
@@ -1957,7 +1957,7 @@ get_type_metrics(
         rb_raise(rb_eArgError, "no text to measure");
     }
 
-    okay = (*getter)(image, draw->info, &metrics);
+    okay = (*getter)(image, draw->info, &metrics, exception);
 
     magick_free(draw->info->text);
     draw->info->text = NULL;
