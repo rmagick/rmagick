@@ -971,10 +971,10 @@ VALUE Draw_annotate(
     exception = AcquireExceptionInfo();
     draw->info->text = InterpretImageProperties(NULL, image, StringValuePtr(text), exception);
     rm_check_exception(exception, image, RetainOnError);
-    (void) DestroyExceptionInfo(exception);
 
     if (!draw->info->text)
     {
+        (void) DestroyExceptionInfo(exception);
         rb_raise(rb_eArgError, "no text");
     }
 
@@ -998,13 +998,14 @@ VALUE Draw_annotate(
 
     magick_clone_string(&draw->info->geometry, geometry_str);
 
-    (void) AnnotateImage(image, draw->info);
+    (void) AnnotateImage(image, draw->info, exception);
 
     magick_free(draw->info->text);
     draw->info->text = NULL;
     draw->info->affine = keep;
 
     rm_check_exception(exception, image, RetainOnError);
+    (void) DestroyExceptionInfo(exception);
 
     return self;
 }
