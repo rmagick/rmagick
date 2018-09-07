@@ -720,15 +720,15 @@ DisposeType_new(DisposeType type)
 
 
 /**
- * Return the name of a FilterTypes enum as a string.
+ * Return the name of a FilterType enum as a string.
  *
  * No Ruby usage (internal function)
  *
- * @param type the FilterTypes
+ * @param type the FilterType
  * @return the name
  */
 static const char *
-FilterTypes_name(FilterTypes type)
+FilterType_name(FilterType type)
 {
     switch(type)
     {
@@ -774,18 +774,18 @@ FilterTypes_name(FilterTypes type)
 
 
 /**
- * Construct an FilterTypes enum object for the specified value.
+ * Construct an FilterType enum object for the specified value.
  *
  * No Ruby usage (internal function)
  *
- * @param type the FilterTypes
- * @return a new FilterTypes enumerator
+ * @param type the FilterType
+ * @return a new FilterType enumerator
  */
 VALUE
-FilterTypes_new(FilterTypes type)
+FilterType_new(FilterType type)
 {
-    const char *name = FilterTypes_name(type);
-    return rm_enum_new(Class_FilterTypes, ID2SYM(rb_intern(name)), INT2FIX(type));
+    const char *name = FilterType_name(type);
+    return rm_enum_new(Class_FilterType, ID2SYM(rb_intern(name)), INT2FIX(type));
 }
 
 
