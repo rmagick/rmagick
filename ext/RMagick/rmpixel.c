@@ -492,7 +492,7 @@ VALUE
 Pixel_from_hsla(int argc, VALUE *argv, VALUE class)
 {
     double h, s, l, a = 1.0;
-    MagickPixelPacket pp;
+    PixelInfo pp;
     ExceptionInfo *exception;
     char name[50];
     MagickBooleanType alpha = MagickFalse;
@@ -550,7 +550,7 @@ Pixel_from_hsla(int argc, VALUE *argv, VALUE class)
 
     (void) DestroyExceptionInfo(exception);
 
-    return Pixel_from_MagickPixelPacket(&pp);
+    return Pixel_from_PixelInfo(&pp);
 }
 
 
@@ -592,18 +592,18 @@ Pixel_from_HSL(VALUE class, VALUE hsl)
 
 
 /**
- * Create a Magick::Pixel object from a MagickPixelPacket structure.
+ * Create a Magick::Pixel object from a PixelInfo structure.
  *
  * No Ruby usage (internal function)
  *
  * Notes:
  *   - Bypasses normal Pixel.new, Pixel#initialize methods
  *
- * @param pp the MagickPixelPacket
+ * @param pp the PixelInfo
  * @return a new Magick::Pixel object
  */
 VALUE
-Pixel_from_MagickPixelPacket(const MagickPixelPacket *pp)
+Pixel_from_PixelInfo(const PixelInfo *pp)
 {
     Pixel *pixel;
 
@@ -979,7 +979,7 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
     Info *info;
     Image *image;
     Pixel *pixel;
-    MagickPixelPacket mpp;
+    PixelInfo mpp;
     MagickBooleanType hex = MagickFalse;
     char name[MaxTextExtent];
     ExceptionInfo *exception;
@@ -1027,8 +1027,8 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
     image->matte = matte;
     (void) DestroyImageInfo(info);
 
-    GetMagickPixelPacket(image, &mpp);
-    rm_set_magick_pixel_packet(pixel, &mpp);
+    GetPixelInfo(image, &mpp);
+    rm_set_pixel_info(pixel, &mpp);
 
     exception = AcquireExceptionInfo();
 
@@ -1080,18 +1080,15 @@ Pixel_to_s(VALUE self)
 
 
 /**
- * Convert a PixelPacket to a MagickPixelPacket.
+ * Convert a PixelPacket to a PixelInfo.
  *
  * No Ruby usage (internal function)
  *
- * Notes:
- *   - Same code as the private function SetMagickPixelPacket in ImageMagick.
- *
  * @param pixel the pixel
- * @param pp the MagickPixelPacket to be modified
+ * @param pp the PixelInfo to be modified
  */
 void
-rm_set_magick_pixel_packet(Pixel *pixel, MagickPixelPacket *pp)
+rm_set_pixel_info(Pixel *pixel, PixelInfo *pp)
 {
     pp->red     = (MagickRealType) pixel->red;
     pp->green   = (MagickRealType) pixel->green;

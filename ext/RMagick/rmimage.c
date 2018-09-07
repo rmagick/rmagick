@@ -2747,7 +2747,7 @@ Image_color_flood_fill( VALUE self, VALUE target_color, VALUE fill_color
     PixelPacket fill;
     long x, y;
     int fill_method;
-    MagickPixelPacket target_mpp;
+    PixelInfo target_mpp;
     MagickBooleanType invert;
 
     image = rm_check_destroyed(self);
@@ -2781,7 +2781,7 @@ Image_color_flood_fill( VALUE self, VALUE target_color, VALUE fill_color
 
     new_image = rm_clone_image(image);
 
-    GetMagickPixelPacket(new_image, &target_mpp);
+    GetPixelInfo(new_image, &target_mpp);
     if (fill_method == FillToBorderMethod)
     {
         invert = MagickTrue;
@@ -7828,7 +7828,7 @@ VALUE
 Image_level_colors(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
-    MagickPixelPacket black_color, white_color;
+    PixelInfo black_color, white_color;
     ChannelType channels;
     ExceptionInfo *exception;
     MagickBooleanType invert = MagickTrue;
@@ -7844,15 +7844,15 @@ Image_level_colors(int argc, VALUE *argv, VALUE self)
             invert = RTEST(argv[2]);
 
         case 2:
-            Color_to_MagickPixelPacket(image, &white_color, argv[1]);
-            Color_to_MagickPixelPacket(image, &black_color, argv[0]);
+            Color_to_PixelInfo(image, &white_color, argv[1]);
+            Color_to_PixelInfo(image, &black_color, argv[0]);
             break;
 
         case 1:
-            Color_to_MagickPixelPacket(image, &black_color, argv[0]);
+            Color_to_PixelInfo(image, &black_color, argv[0]);
             exception = AcquireExceptionInfo();
 
-            GetMagickPixelPacket(image, &white_color);
+            GetPixelInfo(image, &white_color);
             (void) QueryMagickColor("white", &white_color, exception);
             CHECK_EXCEPTION()
 
@@ -7861,11 +7861,11 @@ Image_level_colors(int argc, VALUE *argv, VALUE self)
         case 0:
             exception = AcquireExceptionInfo();
 
-            GetMagickPixelPacket(image, &white_color);
+            GetPixelInfo(image, &white_color);
             (void) QueryMagickColor("white", &white_color, exception);
             CHECK_EXCEPTION()
 
-            GetMagickPixelPacket(image, &black_color);
+            GetPixelInfo(image, &black_color);
             (void) QueryMagickColor("black", &black_color, exception);
             CHECK_EXCEPTION()
 
@@ -8631,7 +8631,7 @@ Image_matte_flood_fill(VALUE self, VALUE color, VALUE opacity, VALUE x_obj, VALU
     long x, y;
     PaintMethod method;
     DrawInfo *draw_info;
-    MagickPixelPacket target_mpp;
+    PixelInfo target_mpp;
     MagickBooleanType invert;
 
     image = rm_check_destroyed(self);
@@ -9433,15 +9433,15 @@ VALUE
 Image_opaque(VALUE self, VALUE target, VALUE fill)
 {
     Image *image, *new_image;
-    MagickPixelPacket target_pp;
-    MagickPixelPacket fill_pp;
+    PixelInfo target_pp;
+    PixelInfo fill_pp;
     MagickBooleanType okay;
 
     image = rm_check_destroyed(self);
 
     // Allow color name or Pixel
-    Color_to_MagickPixelPacket(image, &target_pp, target);
-    Color_to_MagickPixelPacket(image, &fill_pp, fill);
+    Color_to_PixelInfo(image, &target_pp, target);
+    Color_to_PixelInfo(image, &fill_pp, fill);
 
     new_image = rm_clone_image(image);
 
@@ -9484,7 +9484,7 @@ VALUE
 Image_opaque_channel(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
-    MagickPixelPacket target_pp, fill_pp;
+    PixelInfo target_pp, fill_pp;
     ChannelType channels;
     double keep, fuzz;
     MagickBooleanType okay, invert = MagickFalse;
@@ -9511,8 +9511,8 @@ Image_opaque_channel(int argc, VALUE *argv, VALUE self)
             invert = RTEST(argv[2]);
         case 2:
             // Allow color name or Pixel
-            Color_to_MagickPixelPacket(image, &fill_pp, argv[1]);
-            Color_to_MagickPixelPacket(image, &target_pp, argv[0]);
+            Color_to_PixelInfo(image, &fill_pp, argv[1]);
+            Color_to_PixelInfo(image, &target_pp, argv[0]);
             break;
         default:
             rb_raise(rb_eArgError, "wrong number of arguments (got %d, expected 2 or more)", argc);
@@ -9725,7 +9725,7 @@ VALUE
 Image_paint_transparent(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
-    MagickPixelPacket color;
+    PixelInfo color;
     Quantum opacity = TransparentOpacity;
     double keep, fuzz;
     MagickBooleanType okay, invert = MagickFalse;
@@ -9744,7 +9744,7 @@ Image_paint_transparent(int argc, VALUE *argv, VALUE self)
         case 2:
             opacity = APP2QUANTUM(argv[1]);
         case 1:
-            Color_to_MagickPixelPacket(image, &color, argv[0]);
+            Color_to_PixelInfo(image, &color, argv[0]);
             break;
         default:
             rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 to 4)", argc);
@@ -9757,7 +9757,7 @@ Image_paint_transparent(int argc, VALUE *argv, VALUE self)
     keep = new_image->fuzz;
     new_image->fuzz = fuzz;
 
-    okay = TransparentPaintImage(new_image, (const MagickPixelPacket *)&color, opacity, invert);
+    okay = TransparentPaintImage(new_image, (const PixelInfo *)&color, opacity, invert);
     new_image->fuzz = keep;
 
     // Is it possible for TransparentPaintImage to silently fail?
@@ -12522,7 +12522,7 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
     int n, exp;
     double * volatile args;
     ChannelType channels;
-    MagickPixelPacket pp;
+    PixelInfo pp;
     ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
@@ -12571,7 +12571,7 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
             xfree((void *)args);
             rb_raise(rb_eTypeError, "type mismatch: %s and %s given", rb_class2name(CLASS_OF(elem1)), rb_class2name(CLASS_OF(elem2)));
         }
-        Color_to_MagickPixelPacket(NULL, &pp, argv[n++]);
+        Color_to_PixelInfo(NULL, &pp, argv[n++]);
         if (channels & RedChannel)
         {
             args[x++] = pp.red / QuantumRange;
@@ -13055,7 +13055,7 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj
     DrawInfo *draw_info;
     long x, y;
     PaintMethod method;
-    MagickPixelPacket color_mpp;
+    PixelInfo color_mpp;
     MagickBooleanType invert;
 
     image = rm_check_destroyed(self);
@@ -13090,7 +13090,7 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj
     new_image = rm_clone_image(image);
 
 
-    GetMagickPixelPacket(new_image, &color_mpp);
+    GetPixelInfo(new_image, &color_mpp);
     if (method == FillToBorderMethod)
     {
         invert = MagickTrue;
@@ -13645,7 +13645,7 @@ VALUE
 Image_transparent(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
-    MagickPixelPacket color;
+    PixelInfo color;
     Quantum opacity = TransparentOpacity;
     MagickBooleanType okay;
 
@@ -13656,7 +13656,7 @@ Image_transparent(int argc, VALUE *argv, VALUE self)
         case 2:
             opacity = APP2QUANTUM(argv[1]);
         case 1:
-            Color_to_MagickPixelPacket(image, &color, argv[0]);
+            Color_to_PixelInfo(image, &color, argv[0]);
             break;
         default:
             rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 or 2)", argc);
@@ -13701,7 +13701,7 @@ Image_transparent_chroma(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
     Quantum opacity = TransparentOpacity;
-    MagickPixelPacket low, high;
+    PixelInfo low, high;
     MagickBooleanType invert = MagickFalse;
     MagickBooleanType okay;
 
@@ -13714,8 +13714,8 @@ Image_transparent_chroma(int argc, VALUE *argv, VALUE self)
         case 3:
             opacity = APP2QUANTUM(argv[2]);
         case 2:
-            Color_to_MagickPixelPacket(image, &high, argv[1]);
-            Color_to_MagickPixelPacket(image, &low, argv[0]);
+            Color_to_PixelInfo(image, &high, argv[1]);
+            Color_to_PixelInfo(image, &low, argv[0]);
             break;
         default:
             rb_raise(rb_eArgError, "wrong number of arguments (%d for 2, 3 or 4)", argc);
