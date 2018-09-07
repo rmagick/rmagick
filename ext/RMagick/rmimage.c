@@ -2572,7 +2572,7 @@ Image_color_histogram(VALUE self)
     Image *image, *dc_copy = NULL;
     VALUE hash, pixel;
     size_t x, colors;
-    ColorPacket *histogram;
+    PixelInfo *histogram;
     ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
