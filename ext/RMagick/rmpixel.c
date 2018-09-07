@@ -15,7 +15,7 @@
 
 
 
-static void Color_Name_to_PixelPacket(PixelPacket *, VALUE);
+static void Color_Name_to_PixelInfo(PixelInfo *, VALUE);
 
 
 
@@ -176,15 +176,15 @@ color_arg_rescue(VALUE arg)
 
 
 /**
- * Convert either a String color name or a Magick::Pixel to a PixelPacket.
+ * Convert either a String color name or a Magick::Pixel to a PixelInfo.
  *
  * No Ruby usage (internal function)
  *
- * @param pp the PixelPacket to modify
+ * @param pp the PixelInfo to modify
  * @param color the color name or Magick::Pixel
  */
 void
-Color_to_PixelPacket(PixelPacket *pp, VALUE color)
+Color_to_PixelInfo(PixelInfo *pp, VALUE color)
 {
     Pixel *pixel;
 
@@ -198,7 +198,7 @@ Color_to_PixelPacket(PixelPacket *pp, VALUE color)
     {
         // require 'to_str' here instead of just 'to_s'.
         color = rb_rescue(rb_str_to_str, color, color_arg_rescue, color);
-        Color_Name_to_PixelPacket(pp, color);
+        Color_Name_to_PixelInfo(pp, color);
     }
 }
 
@@ -213,7 +213,7 @@ Color_to_PixelPacket(PixelPacket *pp, VALUE color)
  * @throw ArgumentError
  */
 static void
-Color_Name_to_PixelPacket(PixelPacket *color, VALUE name_arg)
+Color_Name_to_PixelInfo(PixelInfo *color, VALUE name_arg)
 {
     MagickBooleanType okay;
     char *name;
@@ -568,7 +568,7 @@ Pixel_from_hsla(int argc, VALUE *argv, VALUE class)
 VALUE
 Pixel_from_HSL(VALUE class, VALUE hsl)
 {
-    PixelPacket rgb;
+    PixelInfo rgb;
     double hue, saturation, luminosity;
 
     class = class;      // defeat "never referenced" message from icc
@@ -587,7 +587,7 @@ Pixel_from_HSL(VALUE class, VALUE hsl)
     rb_warning("Pixel#from_HSL is deprecated; use from_hsla");
     ConvertHSLToRGB(hue, saturation, luminosity,
                  &rgb.red, &rgb.green, &rgb.blue);
-    return Pixel_from_PixelPacket(&rgb);
+    return Pixel_from_PixelInfo(&rgb);
 }
 
 
@@ -613,28 +613,6 @@ Pixel_from_PixelInfo(const PixelInfo *pp)
     pixel->blue    = ROUND_TO_QUANTUM(pp->blue);
     pixel->opacity = ROUND_TO_QUANTUM(pp->opacity);
 
-    return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
-}
-
-
-/**
- * Create a Magick::Pixel object from a PixelPacket structure.
- *
- * No Ruby usage (internal function)
- *
- * Notes:
- *   - Bypasses normal Pixel.new, Pixel#initialize methods
- *
- * @param pp the PixelPacket
- * @return a new Magick::Pixel object
- */
-VALUE
-Pixel_from_PixelPacket(const PixelPacket *pp)
-{
-    Pixel *pixel;
-
-    pixel = ALLOC(Pixel);
-    *pixel = *pp;
     return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
 }
 

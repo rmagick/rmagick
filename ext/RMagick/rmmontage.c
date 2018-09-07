@@ -107,7 +107,7 @@ Montage_background_color_eq(VALUE self, VALUE color)
     Montage *montage;
 
     Data_Get_Struct(self, Montage, montage);
-    Color_to_PixelPacket(&montage->info->background_color, color);
+    Color_to_PixelInfo(&montage->info->background_color, color);
     return self;
 }
 
@@ -128,7 +128,7 @@ Montage_border_color_eq(VALUE self, VALUE color)
     Montage *montage;
 
     Data_Get_Struct(self, Montage, montage);
-    Color_to_PixelPacket(&montage->info->border_color, color);
+    Color_to_PixelInfo(&montage->info->border_color, color);
     return self;
 }
 
@@ -212,7 +212,7 @@ Montage_fill_eq(VALUE self, VALUE color)
     Montage *montage;
 
     Data_Get_Struct(self, Montage, montage);
-    Color_to_PixelPacket(&montage->info->fill, color);
+    Color_to_PixelInfo(&montage->info->fill, color);
     return self;
 }
 
@@ -350,7 +350,7 @@ Montage_matte_color_eq(VALUE self, VALUE color)
     Montage *montage;
 
     Data_Get_Struct(self, Montage, montage);
-    Color_to_PixelPacket(&montage->info->matte_color, color);
+    Color_to_PixelInfo(&montage->info->matte_color, color);
     return self;
 }
 
@@ -413,7 +413,7 @@ Montage_stroke_eq(VALUE self, VALUE color)
     Montage *montage;
 
     Data_Get_Struct(self, Montage, montage);
-    Color_to_PixelPacket(&montage->info->stroke, color);
+    Color_to_PixelInfo(&montage->info->stroke, color);
     return self;
 }
 

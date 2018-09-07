@@ -19,8 +19,8 @@ typedef struct
     double y1; /**< y position of first point */
     double x2; /**< x position of second point */
     double y2; /**< y position of second point */
-    PixelPacket start_color; /**< the start color */
-    PixelPacket stop_color; /**< the stop color */
+    PixelInfo start_color; /**< the start color */
+    PixelInfo stop_color; /**< the stop color */
 } rm_GradientFill;
 
 /** Data associated with a TextureFill */
@@ -91,8 +91,8 @@ GradientFill_initialize(
     fill->y1 = NUM2DBL(y1);
     fill->x2 = NUM2DBL(x2);
     fill->y2 = NUM2DBL(y2);
-    Color_to_PixelPacket(&fill->start_color, start_color);
-    Color_to_PixelPacket(&fill->stop_color, stop_color);
+    Color_to_PixelInfo(&fill->start_color, start_color);
+    Color_to_PixelInfo(&fill->stop_color, stop_color);
 
     return self;
 }
@@ -113,8 +113,8 @@ point_fill(
           Image *image,
           double x0,
           double y0,
-          PixelPacket *start_color,
-          PixelPacket *stop_color)
+          PixelInfo *start_color,
+          PixelInfo *stop_color)
 {
     double steps, distance;
     unsigned long x, y;
@@ -168,12 +168,12 @@ static void
 vertical_fill(
              Image *image,
              double x1,
-             PixelPacket *start_color,
-             PixelPacket *stop_color)
+             PixelInfo *start_color,
+             PixelInfo *stop_color)
 {
     double steps;
     unsigned long x, y;
-    PixelPacket *master;
+    PixelInfo *master;
     MagickRealType red_step, green_step, blue_step;
     ExceptionInfo *exception;
 
@@ -195,7 +195,7 @@ vertical_fill(
 
     // All the rows are the same. Make a "master row" and simply copy
     // it to each actual row.
-    master = ALLOC_N(PixelPacket, image->columns);
+    master = ALLOC_N(PixelInfo, image->columns);
 
     for (x = 0; x < image->columns; x++)
     {
@@ -239,12 +239,12 @@ static void
 horizontal_fill(
                Image *image,
                double y1,
-               PixelPacket *start_color,
-               PixelPacket *stop_color)
+               PixelInfo *start_color,
+               PixelInfo *stop_color)
 {
     double steps;
     unsigned long x, y;
-    PixelPacket *master;
+    PixelInfo *master;
     MagickRealType red_step, green_step, blue_step;
     ExceptionInfo *exception;
 
@@ -265,7 +265,7 @@ horizontal_fill(
 
     // All the columns are the same, so make a master column and copy it to
     // each of the "real" columns.
-    master = ALLOC_N(PixelPacket, image->rows);
+    master = ALLOC_N(PixelInfo, image->rows);
 
     for (y = 0; y < image->rows; y++)
     {
@@ -314,8 +314,8 @@ v_diagonal_fill(
                double y1,
                double x2,
                double y2,
-               PixelPacket *start_color,
-               PixelPacket *stop_color)
+               PixelInfo *start_color,
+               PixelInfo *stop_color)
 {
     unsigned long x, y;
     MagickRealType red_step, green_step, blue_step;
@@ -351,7 +351,7 @@ v_diagonal_fill(
     // If the line is entirely > image->rows, swap the start & end color
     if (steps < 0)
     {
-        PixelPacket t = *stop_color;
+        PixelInfo t = *stop_color;
         *stop_color = *start_color;
         *start_color = t;
         steps = -steps;
@@ -405,8 +405,8 @@ h_diagonal_fill(
                double y1,
                double x2,
                double y2,
-               PixelPacket *start_color,
-               PixelPacket *stop_color)
+               PixelInfo *start_color,
+               PixelInfo *stop_color)
 {
     unsigned long x, y;
     double m, b, steps = 0.0;
@@ -444,7 +444,7 @@ h_diagonal_fill(
     // If the line is entirely > image->columns, swap the start & end color
     if (steps < 0)
     {
-        PixelPacket t = *stop_color;
+        PixelInfo t = *stop_color;
         *stop_color = *start_color;
         *start_color = t;
         steps = -steps;
@@ -493,7 +493,7 @@ GradientFill_fill(VALUE self, VALUE image_obj)
 {
     rm_GradientFill *fill;
     Image *image;
-    PixelPacket start_color, stop_color;
+    PixelInfo start_color, stop_color;
     double x1, y1, x2, y2;          // points on the line
 
     Data_Get_Struct(self, rm_GradientFill, fill);

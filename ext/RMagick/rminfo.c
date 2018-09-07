@@ -92,7 +92,7 @@ static VALUE set_color_option(VALUE self, const char *option, VALUE color)
 {
     Info *info;
     char *name;
-    PixelPacket pp;
+    PixelInfo pp;
     ExceptionInfo *exception;
     MagickBooleanType okay;
 
@@ -514,7 +514,7 @@ Info_background_color_eq(VALUE self, VALUE bc_arg)
     //char colorname[MaxTextExtent];
 
     Data_Get_Struct(self, Info, info);
-    Color_to_PixelPacket(&info->background_color, bc_arg);
+    Color_to_PixelInfo(&info->background_color, bc_arg);
     //SetImageOption(info, "background", pixel_packet_to_hexname(&info->background_color, colorname));
     return self;
 }
@@ -559,7 +559,7 @@ Info_border_color_eq(VALUE self, VALUE bc_arg)
     //char colorname[MaxTextExtent];
 
     Data_Get_Struct(self, Info, info);
-    Color_to_PixelPacket(&info->border_color, bc_arg);
+    Color_to_PixelInfo(&info->border_color, bc_arg);
     //SetImageOption(info, "bordercolor", pixel_packet_to_hexname(&info->border_color, colorname));
     return self;
 }
@@ -1698,7 +1698,7 @@ Info_matte_color_eq(VALUE self, VALUE matte_arg)
     //char colorname[MaxTextExtent];
 
     Data_Get_Struct(self, Info, info);
-    Color_to_PixelPacket(&info->matte_color, matte_arg);
+    Color_to_PixelInfo(&info->matte_color, matte_arg);
     //SetImageOption(info, "mattecolor", pixel_packet_to_hexname(&info->matte_color, colorname));
     return self;
 }
@@ -2305,7 +2305,7 @@ Info_transparent_color_eq(VALUE self, VALUE tc_arg)
     //char colorname[MaxTextExtent];
 
     Data_Get_Struct(self, Info, info);
-    Color_to_PixelPacket(&info->transparent_color, tc_arg);
+    Color_to_PixelInfo(&info->transparent_color, tc_arg);
     //SetImageOption(info, "transparent", pixel_packet_to_hexname(&info->transparent_color, colorname));
     return self;
 }

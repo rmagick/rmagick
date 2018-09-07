@@ -647,7 +647,7 @@ rm_cur_image(VALUE img)
  * @see rm_pixelpacket_to_color_name_info
  */
 VALUE
-rm_pixelpacket_to_color_name(Image *image, PixelPacket *color)
+rm_pixelinfo_to_color_name(Image *image, PixelInfo *color)
 {
     char name[MaxTextExtent];
     ExceptionInfo *exception;
@@ -677,7 +677,7 @@ rm_pixelpacket_to_color_name(Image *image, PixelPacket *color)
  * @param info the info
  * @param color the color intensity as a PixelPacket
  * @return the named color as a String
- * @see rm_pixelpacket_to_color_name
+ * @see rm_pixelinfo_to_color_name
  */
 VALUE
 rm_pixelpacket_to_color_name_info(Info *info, PixelPacket *color)
@@ -690,7 +690,7 @@ rm_pixelpacket_to_color_name_info(Info *info, PixelPacket *color)
 
     image = AcquireImage(info);
     image->matte = MagickFalse;
-    color_name = rm_pixelpacket_to_color_name(image, color);
+    color_name = rm_pixelinfo_to_color_name(image, color);
     (void) DestroyImage(image);
     if (!info)
     {
