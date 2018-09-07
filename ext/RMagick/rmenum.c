@@ -843,7 +843,6 @@ GravityType_name(GravityType type)
         ENUM_TO_NAME(SouthWestGravity)
         ENUM_TO_NAME(SouthGravity)
         ENUM_TO_NAME(SouthEastGravity)
-        ENUM_TO_NAME(StaticGravity)
     }
 
     // Defeat "duplicate case value" error.
