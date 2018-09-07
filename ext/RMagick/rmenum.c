@@ -964,15 +964,15 @@ InterlaceType_new(InterlaceType interlace)
 
 
 /**
- * Return the name of a InterpolatePixelMethod enum as a string.
+ * Return the name of a PixelInterpolateMethod enum as a string.
  *
  * No Ruby usage (internal function)
  *
- * @param interpolate the InterpolatePixelMethod
+ * @param interpolate the PixelInterpolateMethod
  * @return the name
  */
 static const char *
-InterpolatePixelMethod_name(InterpolatePixelMethod interpolate)
+PixelInterpolateMethod_name(PixelInterpolateMethod interpolate)
 {
     switch(interpolate)
     {
@@ -997,18 +997,18 @@ InterpolatePixelMethod_name(InterpolatePixelMethod interpolate)
 
 
 /**
- * Construct an InterpolatePixelMethod enum object for the specified value.
+ * Construct an PixelInterpolateMethod enum object for the specified value.
  *
  * No Ruby usage (internal function)
  *
- * @param interpolate the InterpolatePixelMethod
- * @return a new InterpolatePixelMethod enumerator
+ * @param interpolate the PixelInterpolateMethod
+ * @return a new PixelInterpolateMethod enumerator
  */
 VALUE
-InterpolatePixelMethod_new(InterpolatePixelMethod interpolate)
+PixelInterpolateMethod_new(PixelInterpolateMethod interpolate)
 {
-    const char *name = InterpolatePixelMethod_name(interpolate);
-    return rm_enum_new(Class_InterpolatePixelMethod, ID2SYM(rb_intern(name)), INT2FIX(interpolate));
+    const char *name = PixelInterpolateMethod_name(interpolate);
+    return rm_enum_new(Class_PixelInterpolateMethod, ID2SYM(rb_intern(name)), INT2FIX(interpolate));
 }
 
 

@@ -1242,7 +1242,7 @@ Init_RMagick2(void)
         ENUMERATOR(PNGInterlace)
     END_ENUM
 
-    DEF_ENUM(InterpolatePixelMethod)
+    DEF_ENUM(PixelInterpolateMethod)
         ENUMERATOR(UndefinedInterpolatePixel)
         ENUMERATOR(AverageInterpolatePixel)
         ENUMERATOR(BicubicInterpolatePixel)
