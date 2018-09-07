@@ -1119,6 +1119,17 @@ Image_base_rows(VALUE self)
     return INT2FIX(image->magick_rows);
 }
 
+static inline double StringToDoubleInterval(const char *string, const double interval)
+{
+  char *q;
+  double value;
+
+  value = InterpretLocaleValue(string, &q);
+  if (*q == '%') {
+    value *= interval / 100.0;
+  }
+  return(value);
+}
 
 /**
  * Get image bias (used when convolving an image).
@@ -1133,7 +1144,14 @@ VALUE
 Image_bias(VALUE self)
 {
     Image *image = rm_check_destroyed(self);
-    return rb_float_new(image->bias);
+    double bias = 0.0;
+    const char *artifact = GetImageArtifact(image, "convolve:bias");
+
+    if (artifact) {
+        bias = StringToDoubleInterval(artifact, (double)QuantumRange + 1.0);
+    }
+
+    return rb_float_new(bias);
 }
 
 
@@ -1152,10 +1170,13 @@ Image_bias_eq(VALUE self, VALUE pct)
 {
     Image *image;
     double bias;
+    char value[MagickPathExtent];
 
     image = rm_check_frozen(self);
     bias = rm_percentage(pct,1.0);
-    image->bias = bias * QuantumRange;
+
+    FormatLocaleString(value, MagickPathExtent,"%.20g", bias * QuantumRange);
+    SetImageArtifact(image, "convolve:bias", value);
 
     return self;
 }
