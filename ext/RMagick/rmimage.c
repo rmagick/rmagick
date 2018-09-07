@@ -11,7 +11,7 @@
  ******************************************************************************/
 
 #include "rmagick.h"
-#include "magick/xwindow.h"     // XImageInfo
+#include "MagickCore/xwindow.h"     // XImageInfo
 
 /** Method that effects an image */
 typedef Image *(effector_t)(const Image *, const double, const double, ExceptionInfo *);

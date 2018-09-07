@@ -13,7 +13,7 @@
 
 #define MAIN                        // Define external variables
 #include "rmagick.h"
-#include "magick/version.h"
+#include "MagickCore/version.h"
 
 /*----------------------------------------------------------------------------\
 | External declarations
