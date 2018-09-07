@@ -4527,7 +4527,7 @@ Image_density(VALUE self)
 
     image = rm_check_destroyed(self);
 
-    sprintf(density, "%gx%g", image->x_resolution, image->y_resolution);
+    sprintf(density, "%gx%g", image->resolution.x, image->resolution.y);
     return rb_str_new2(density);
 }
 
@@ -4579,8 +4579,8 @@ Image_density_eq(VALUE self, VALUE density_arg)
         {
             rb_raise(rb_eArgError, "invalid x resolution: %f", x_res);
         }
-        image->y_resolution = y_res != 0.0 ? y_res : x_res;
-        image->x_resolution = x_res;
+        image->resolution.y = y_res != 0.0 ? y_res : x_res;
+        image->resolution.x = x_res;
     }
 
     // Convert the argument to a string
@@ -4592,10 +4592,10 @@ Image_density_eq(VALUE self, VALUE density_arg)
             rb_raise(rb_eArgError, "invalid density geometry %s", density);
         }
 
-        count = sscanf(density, "%lfx%lf", &image->x_resolution, &image->y_resolution);
+        count = sscanf(density, "%lfx%lf", &image->resolution.x, &image->resolution.y);
         if (count < 2)
         {
-            image->y_resolution = image->x_resolution;
+            image->resolution.y = image->resolution.x;
         }
 
     }
@@ -11159,9 +11159,9 @@ resample(int bang, int argc, VALUE *argv, VALUE self)
                 y_resolution = x_resolution;
             }
             width = (x_resolution * image->columns /
-                        (image->x_resolution == 0.0 ? 72.0 : image->x_resolution) + 0.5);
+                        (image->resolution.x == 0.0 ? 72.0 : image->resolution.x) + 0.5);
             height = (y_resolution * image->rows /
-                         (image->y_resolution == 0.0 ? 72.0 : image->y_resolution) + 0.5);
+                         (image->resolution.y == 0.0 ? 72.0 : image->resolution.y) + 0.5);
             if (width > (double)ULONG_MAX || height > (double)ULONG_MAX)
             {
                 rb_raise(rb_eRangeError, "resampled image too big");
@@ -14262,23 +14262,23 @@ Image_units_eq(VALUE self, VALUE restype)
             case PixelsPerInchResolution:
                 if (units == PixelsPerCentimeterResolution)
                 {
-                    image->x_resolution /= 2.54;
-                    image->y_resolution /= 2.54;
+                    image->resolution.x /= 2.54;
+                    image->resolution.y /= 2.54;
                 }
                 break;
 
             case PixelsPerCentimeterResolution:
                 if (units == PixelsPerInchResolution)
                 {
-                    image->x_resolution *= 2.54;
-                    image->y_resolution *= 2.54;
+                    image->resolution.x *= 2.54;
+                    image->resolution.y *= 2.54;
                 }
                 break;
 
             default:
                 // UndefinedResolution
-                image->x_resolution = 0.0;
-                image->y_resolution = 0.0;
+                image->resolution.x = 0.0;
+                image->resolution.y = 0.0;
                 break;
         }
 

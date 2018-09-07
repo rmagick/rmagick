@@ -1048,11 +1048,11 @@ void rm_sync_image_options(Image *image, Info *info)
     if (info->density)
     {
         flags = ParseGeometry(info->density, &geometry_info);
-        image->x_resolution = geometry_info.rho;
-        image->y_resolution = geometry_info.sigma;
+        image->resolution.x = geometry_info.rho;
+        image->resolution.y = geometry_info.sigma;
         if ((flags & SigmaValue) == 0)
         {
-            image->y_resolution = image->x_resolution;
+            image->resolution.y = image->resolution.x;
         }
     }
 
@@ -1142,8 +1142,8 @@ void rm_sync_image_options(Image *image, Info *info)
               {
                 if (info->units == PixelsPerCentimeterResolution)
                 {
-                    image->x_resolution /= 2.54;
-                    image->y_resolution /= 2.54;
+                    image->resolution.x /= 2.54;
+                    image->resolution.y /= 2.54;
                 }
                 break;
               }
@@ -1151,8 +1151,8 @@ void rm_sync_image_options(Image *image, Info *info)
               {
                 if (info->units == PixelsPerInchResolution)
                 {
-                    image->x_resolution *= 2.54;
-                    image->y_resolution *= 2.54;
+                    image->resolution.x *= 2.54;
+                    image->resolution.y *= 2.54;
                 }
                 break;
               }
