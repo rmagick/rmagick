@@ -185,7 +185,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_equal(Magick::UndefinedCompositeOp, @img.compose)
 
     assert_nothing_raised { @img.compose = Magick::NoCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::AddCompositeOp }
+    assert_nothing_raised { @img.compose = Magick::ModulusAddCompositeOp }
     assert_nothing_raised { @img.compose = Magick::AtopCompositeOp }
     assert_nothing_raised { @img.compose = Magick::BlendCompositeOp }
     assert_nothing_raised { @img.compose = Magick::BumpmapCompositeOp }

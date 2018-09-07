@@ -5,7 +5,7 @@ RSpec.describe Magick::Image, '#composite' do
     [
       Magick::UndefinedCompositeOp,
       Magick::NoCompositeOp,
-      Magick::AddCompositeOp,
+      Magick::ModulusAddCompositeOp,
       Magick::AtopCompositeOp,
       Magick::BumpmapCompositeOp,
       Magick::ClearCompositeOp,

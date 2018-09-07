@@ -81,7 +81,7 @@ list.cur_image['Label'] = 'A plus B'
 list << image__b.composite(image_a, CenterGravity, MinusCompositeOp)
 list.cur_image['Label'] = 'A minus B'
 
-list << image__b.composite(image_a, CenterGravity, AddCompositeOp)
+list << image__b.composite(image_a, CenterGravity, ModulusAddCompositeOp)
 list.cur_image['Label'] = 'A add B'
 
 list << image__b.composite(image_a, CenterGravity, SubtractCompositeOp)

@@ -534,7 +534,7 @@ CompositeOperator_name(CompositeOperator op)
     {
         ENUM_TO_NAME(UndefinedCompositeOp)
         ENUM_TO_NAME(NoCompositeOp)
-        ENUM_TO_NAME(AddCompositeOp)
+        ENUM_TO_NAME(ModulusAddCompositeOp)
         ENUM_TO_NAME(AtopCompositeOp)
         ENUM_TO_NAME(BlurCompositeOp)
         ENUM_TO_NAME(BumpmapCompositeOp)
