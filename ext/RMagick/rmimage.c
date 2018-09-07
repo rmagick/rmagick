@@ -421,7 +421,7 @@ Image_add_noise(VALUE self, VALUE noise)
     VALUE_TO_ENUM(noise, noise_type, NoiseType);
 
     exception = AcquireExceptionInfo();
-    new_image = AddNoiseImage(image, noise_type, exception);
+    new_image = AddNoiseImage(image, noise_type, 1.0, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
