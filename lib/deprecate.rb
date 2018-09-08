@@ -7,5 +7,15 @@ module Magick
     def blur=(value)
       warn "Image#blur= is deprecated. It is no effect now."
     end
+
+    class Info
+      def group
+        warn "Info#group is deprecated. It is no effect now."
+      end
+
+      def group=(value)
+        warn "Info#group= is deprecated. It is no effect now."
+      end
+    end
   end
 end

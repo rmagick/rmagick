@@ -1568,8 +1568,6 @@ Info_gravity_eq(VALUE self, VALUE grav)
 }
 
 
-DEF_ATTR_ACCESSOR(Info, group, long)
-
 /**
  * Get the classification type.
  *
