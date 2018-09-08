@@ -909,7 +909,6 @@ Init_RMagick2(void)
 
 
         ENUMERATOR(BlackChannel)
-        ENUMERATOR(MatteChannel)
         ENUMERATOR(IndexChannel)
         ENUMERATOR(GrayChannel)
         ENUMERATOR(AllChannels)
