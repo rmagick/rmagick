@@ -14255,14 +14255,9 @@ VALUE Image_image_type(VALUE self)
 {
     Image *image;
     ImageType type;
-    ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
-    exception = AcquireExceptionInfo();
-    type = GetImageType(image, exception);
-    CHECK_EXCEPTION()
-
-    (void) DestroyExceptionInfo(exception);
+    type = GetImageType(image);
 
     return ImageType_new(type);
 }
