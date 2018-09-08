@@ -15016,10 +15016,49 @@ Image_write(VALUE self, VALUE file)
 }
 
 
-DEF_ATTR_ACCESSOR(Image, x_resolution, dbl)
+VALUE Image_x_resolution(VALUE self)
+{
+    Image *image;
+    if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {
+        (void) rm_check_destroyed(self);
+    }
+    Data_Get_Struct(self, Image, image);
+    return C_dbl_to_R_dbl(image->resolution.x);
+}
 
-DEF_ATTR_ACCESSOR(Image, y_resolution, dbl)
+VALUE Image_x_resolution_eq(VALUE self, VALUE val)
+{
+    Image *image;
+    if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {
+        (void) rm_check_destroyed(self);
+    }
+    rb_check_frozen(self);
+    Data_Get_Struct(self, Image, image);
+    image->resolution.x = R_dbl_to_C_dbl(val);
+    return self;
+}
 
+VALUE Image_y_resolution(VALUE self)
+{
+    Image *image;
+    if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {
+        (void) rm_check_destroyed(self);
+    }
+    Data_Get_Struct(self, Image, image);
+    return C_dbl_to_R_dbl(image->resolution.y);
+}
+
+VALUE Image_y_resolution_eq(VALUE self, VALUE val)
+{
+    Image *image;
+    if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {
+        (void) rm_check_destroyed(self);
+    }
+    rb_check_frozen(self);
+    Data_Get_Struct(self, Image, image);
+    image->resolution.y = R_dbl_to_C_dbl(val);
+    return self;
+}
 
 /**
  * Determine if the argument list is x, y, width, height
