@@ -84,7 +84,7 @@
 #define DegreesToRadians(x) ((x)*3.14159265358979323846/180.0)
 
 //! pixel intensity calculation
-#define PIXEL_INTENSITY(q) ((Quantum)(0.299*(q)->red + 0.587*(q)->green + 0.114*(q)->blue + 0.5))
+#define PIXEL_INTENSITY(image, q) (0.299 * GetPixelRed(image,q) + 0.587 * GetPixelGreen(image,q) + 0.114 * GetPixelBlue(image,q) + 0.5)
 
 //! find maximum of longs
 #define LMAX(a,b) ((((long)(a))>((long)(b)))?((long)(a)):((long)(b)))

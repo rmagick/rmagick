@@ -8569,7 +8569,7 @@ Image_mask(int argc, VALUE *argv, VALUE self)
     Image *image, *mask_image, *resized_image;
     Image *clip_mask;
     long x, y;
-    PixelPacket *q;
+    Quantum *q;
     ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
@@ -8611,43 +8611,40 @@ Image_mask(int argc, VALUE *argv, VALUE self)
         {
             q = GetAuthenticPixels(clip_mask, 0, y, clip_mask->columns, 1, exception);
             rm_check_exception(exception, clip_mask, DestroyOnError);
-
             if (!q)
             {
                 break;
             }
             for (x = 0; x < (long) clip_mask->columns; x++)
             {
-                if (clip_mask->matte == MagickFalse)
-                {
-                    q->alpha = PIXEL_INTENSITY(q);
-                }
-                q->red = q->alpha;
-                q->green = q->alpha;
-                q->blue = q->alpha;
-                q += 1;
+                Quantum alpha = PIXEL_INTENSITY(clip_mask, q);
+                SetPixelAlpha(clip_mask, alpha, q);
+
+                SetPixelRed(clip_mask, alpha, q);
+                SetPixelGreen(clip_mask, alpha, q);
+                SetPixelBlue(clip_mask, alpha, q);
+
+                q += GetPixelChannels(clip_mask);
             }
 
             SyncAuthenticPixels(clip_mask, exception);
             rm_check_exception(exception, clip_mask, DestroyOnError);
         }
-        (void) DestroyExceptionInfo(exception);
 
-        SetImageStorageClass(clip_mask, DirectClass);
-        rm_check_image_exception(clip_mask, DestroyOnError);
+        SetImageStorageClass(clip_mask, DirectClass, exception);
+        rm_check_exception(exception, clip_mask, DestroyOnError);
 
-        clip_mask->matte = MagickTrue;
+        (void) SetImageMask(image, WritePixelMask, clip_mask, exception);
+        rm_check_exception(exception, clip_mask, DestroyOnError);
 
-        // SetImageClipMask clones the clip_mask image. We can
-        // destroy our copy after SetImageClipMask is done with it.
-
-        (void) SetImageClipMask(image, clip_mask);
         (void) DestroyImage(clip_mask);
     }
     else
     {
-        (void) SetImageClipMask(image, NULL);
+        (void) SetImageMask(image, WritePixelMask, NULL, exception);
+        rm_check_exception(exception, clip_mask, DestroyOnError);
     }
+    (void) DestroyExceptionInfo(exception);
 
     RB_GC_GUARD(mask);
 
