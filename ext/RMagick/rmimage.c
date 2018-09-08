@@ -10173,7 +10173,7 @@ Image_polaroid(int argc, VALUE *argv, VALUE self)
     clone->border_color = draw->info->border_color;
 
     exception = AcquireExceptionInfo();
-    new_image = PolaroidImage(clone, draw->info, angle, exception);
+    new_image = PolaroidImage(clone, draw->info, NULL, angle, UndefinedInterpolatePixel, exception);
     rm_check_exception(exception, clone, DestroyOnError);
 
     (void) DestroyImage(clone);
