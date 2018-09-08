@@ -9956,7 +9956,7 @@ Image_paint_transparent(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_palette_q(VALUE self)
 {
-    return has_attribute(self, IsPaletteImage);
+    return has_attribute(self, (MagickBooleanType (*)(const Image *, ExceptionInfo *))IsPaletteImage);
 }
 
 
