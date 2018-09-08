@@ -2442,7 +2442,16 @@ Info_units_eq(VALUE self, VALUE units)
  * @param self this object.
  * @return the viewing parameters
  */
-DEF_ATTR_READER(Info, view, str)
+VALUE Info_view(VALUE self)
+{
+    Info *info;
+    const char* option;
+
+    Data_Get_Struct(self, Info, info);
+    option = GetImageOption(info, "fpx:view");
+
+    return rb_str_new2(option);
+}
 
 /**
  * Set FlashPix viewing parameters.
@@ -2458,20 +2467,15 @@ VALUE
 Info_view_eq(VALUE self, VALUE view_arg)
 {
     Info *info;
-    char *view;
+    char *option = NULL;
 
     Data_Get_Struct(self, Info, info);
 
-    if (NIL_P(view_arg) || StringValuePtr(view_arg) == NULL)
-    {
-        magick_free(info->view);
-        info->view = NULL;
+    if (!NIL_P(view_arg)) {
+        option = StringValuePtr(view_arg);
     }
-    else
-    {
-        view = StringValuePtr(view_arg);
-        magick_clone_string(&info->view, view);
-    }
+    SetImageOption(info, "fpx:view", option);
+
     return self;
 }
 
