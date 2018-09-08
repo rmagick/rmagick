@@ -12096,14 +12096,14 @@ Image_properties(VALUE self)
         ary = rb_ary_new2(2);
 
         ResetImagePropertyIterator(image);
-        property = GetNextImageProperty(image);
+        property = (char *)GetNextImageProperty(image);
         while (property)
         {
             value = GetImageProperty(image, property);
             (void) rb_ary_store(ary, 0, rb_str_new2(property));
             (void) rb_ary_store(ary, 1, rb_str_new2(value));
             (void) rb_yield(ary);
-            property = GetNextImageProperty(image);
+            property = (char *)GetNextImageProperty(image);
         }
         rm_check_image_exception(image, RetainOnError);
 
@@ -12117,12 +12117,12 @@ Image_properties(VALUE self)
     {
         attr_hash = rb_hash_new();
         ResetImagePropertyIterator(image);
-        property = GetNextImageProperty(image);
+        property =(char *)GetNextImageProperty(image);
         while (property)
         {
             value = GetImageProperty(image, property);
             (void) rb_hash_aset(attr_hash, rb_str_new2(property), rb_str_new2(value));
-            property = GetNextImageProperty(image);
+            property = (char *)GetNextImageProperty(image);
         }
         rm_check_image_exception(image, RetainOnError);
 
