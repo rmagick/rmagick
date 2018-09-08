@@ -851,19 +851,19 @@ Pixel_spaceship(VALUE self, VALUE other)
 
     if (this->red != that->red)
     {
-        return INT2NUM((this->red - that->red)/abs(this->red - that->red));
+        return INT2NUM((this->red - that->red)/fabs(this->red - that->red));
     }
     else if(this->green != that->green)
     {
-        return INT2NUM((this->green - that->green)/abs(this->green - that->green));
+        return INT2NUM((this->green - that->green)/fabs(this->green - that->green));
     }
     else if(this->blue != that->blue)
     {
-        return INT2NUM((this->blue - that->blue)/abs(this->blue - that->blue));
+        return INT2NUM((this->blue - that->blue)/fabs(this->blue - that->blue));
     }
     else if(this->alpha != that->alpha)
     {
-        return INT2NUM((this->alpha - that->alpha)/abs(this->alpha - that->alpha));
+        return INT2NUM((this->alpha - that->alpha)/fabs(this->alpha - that->alpha));
     }
 
     // Values are equal, check class.
