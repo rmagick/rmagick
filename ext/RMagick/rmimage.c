@@ -14811,7 +14811,7 @@ Image_wave(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    new_image = WaveImage(image, amplitude, wavelength, exception);
+    new_image = WaveImage(image, amplitude, wavelength, UndefinedInterpolatePixel, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
