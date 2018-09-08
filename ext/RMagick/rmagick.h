@@ -1206,7 +1206,7 @@ extern void  *magick_safe_realloc(void *, const size_t, const size_t);
 extern void   magick_clone_string(char **, const char *);
 extern VALUE  rm_cur_image(VALUE);
 extern VALUE  rm_pixelinfo_to_color_name(Image *, PixelInfo *);
-extern VALUE  rm_pixelpacket_to_color_name_info(Info *, PixelPacket *);
+extern VALUE  rm_pixelinfo_to_color_name_info(Info *, PixelInfo *);
 extern VALUE  rm_no_freeze(VALUE);
 extern int    rm_strcasecmp(const char *, const char *);
 extern int    rm_strncasecmp(const char *, const char *, size_t);

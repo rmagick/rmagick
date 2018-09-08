@@ -479,7 +479,7 @@ Info_background_color(VALUE self)
     Info *info;
 
     Data_Get_Struct(self, Info, info);
-    return rm_pixelpacket_to_color_name_info(info, &info->background_color);
+    return rm_pixelinfo_to_color_name_info(info, &info->background_color);
 }
 
 
@@ -525,7 +525,7 @@ Info_border_color(VALUE self)
     Info *info;
 
     Data_Get_Struct(self, Info, info);
-    return rm_pixelpacket_to_color_name_info(info, &info->border_color);
+    return rm_pixelinfo_to_color_name_info(info, &info->border_color);
 }
 
 /**
@@ -1666,7 +1666,7 @@ Info_matte_color(VALUE self)
     Info *info;
 
     Data_Get_Struct(self, Info, info);
-    return rm_pixelpacket_to_color_name_info(info, &info->matte_color);
+    return rm_pixelinfo_to_color_name_info(info, &info->matte_color);
 }
 
 /**
@@ -2272,7 +2272,7 @@ Info_transparent_color(VALUE self)
     Info *info;
 
     Data_Get_Struct(self, Info, info);
-    return rm_pixelpacket_to_color_name_info(info, &info->transparent_color);
+    return rm_pixelinfo_to_color_name_info(info, &info->transparent_color);
 }
 
 

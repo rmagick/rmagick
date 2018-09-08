@@ -644,7 +644,7 @@ rm_cur_image(VALUE img)
  * @param image the image
  * @param color the color intensity as a PixelPacket
  * @return the named color as a String
- * @see rm_pixelpacket_to_color_name_info
+ * @see rm_pixelinfo_to_color_name_info
  */
 VALUE
 rm_pixelinfo_to_color_name(Image *image, PixelInfo *color)
@@ -680,7 +680,7 @@ rm_pixelinfo_to_color_name(Image *image, PixelInfo *color)
  * @see rm_pixelinfo_to_color_name
  */
 VALUE
-rm_pixelpacket_to_color_name_info(Info *info, PixelPacket *color)
+rm_pixelinfo_to_color_name_info(Info *info, PixelInfo *color)
 {
     Image *image;
     Info *my_info;
