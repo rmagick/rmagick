@@ -13612,7 +13612,7 @@ VALUE
 Image_tint(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
-    Pixel *tint;
+    PixelInfo *tint;
     double red_pct_opaque, green_pct_opaque, blue_pct_opaque;
     double alpha_pct_opaque = 1.0;
     char opacity[50];
@@ -13661,10 +13661,10 @@ Image_tint(int argc, VALUE *argv, VALUE self)
             "%g,%g,%g,%g", red_pct_opaque*100.0, green_pct_opaque*100.0
             , blue_pct_opaque*100.0, alpha_pct_opaque*100.0);
 
-    Data_Get_Struct(argv[0], Pixel, tint);
+    Data_Get_Struct(argv[0], PixelInfo, tint);
     exception = AcquireExceptionInfo();
 
-    new_image = TintImage(image, opacity, *tint, exception);
+    new_image = TintImage(image, opacity, tint, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
