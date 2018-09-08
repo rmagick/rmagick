@@ -12915,7 +12915,7 @@ Image_spread(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    new_image = SpreadImage(image, radius, exception);
+    new_image = SpreadImage(image, UndefinedInterpolatePixel, radius, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
     rm_ensure_result(new_image);
 
