@@ -9065,7 +9065,7 @@ Image_monitor_eq(VALUE self, VALUE monitor)
 VALUE
 Image_monochrome_q(VALUE self)
 {
-    return has_attribute(self, (MagickBooleanType (*)(const Image *, ExceptionInfo *))IsMonochromeImage);
+    return has_attribute(self, (MagickBooleanType (*)(const Image *, ExceptionInfo *))IsImageMonochrome);
 }
 
 
