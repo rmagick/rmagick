@@ -527,7 +527,6 @@ Image_add_profile(VALUE self, VALUE name)
     profile_image = ReadImage(info, exception);
     (void) DestroyImageInfo(info);
     rm_check_exception(exception, profile_image, DestroyOnError);
-    (void) DestroyExceptionInfo(exception);
     rm_ensure_result(profile_image);
 
     ResetImageProfileIterator(profile_image);
@@ -538,7 +537,7 @@ Image_add_profile(VALUE self, VALUE name)
         if (profile)
         {
             (void)ProfileImage(image, profile_name, GetStringInfoDatum(profile)
-                               , GetStringInfoLength(profile), MagickFalse);
+                               , GetStringInfoLength(profile), exception);
             if (image->exception.severity >= ErrorException)
             {
                 break;
@@ -547,6 +546,7 @@ Image_add_profile(VALUE self, VALUE name)
         profile_name = GetNextImageProfile(profile_image);
     }
 
+    (void) DestroyExceptionInfo(exception);
     (void) DestroyImage(profile_image);
     rm_check_image_exception(image, RetainOnError);
 
@@ -2631,7 +2631,6 @@ set_profile(VALUE self, const char *name, VALUE profile)
     profile_image = BlobToImage(info, profile_blob, (size_t)profile_length, exception);
     (void) DestroyImageInfo(info);
     CHECK_EXCEPTION()
-    (void) DestroyExceptionInfo(exception);
 
     ResetImageProfileIterator(profile_image);
     profile_name = GetNextImageProfile(profile_image);
@@ -2644,7 +2643,7 @@ set_profile(VALUE self, const char *name, VALUE profile)
             {
                 (void)ProfileImage(image, profile_name, profile_data->datum
                                    , (unsigned long)profile_data->length
-                                   , (MagickBooleanType)MagickFalse);
+                                   , exception);
                 if (image->exception.severity >= ErrorException)
                 {
                     break;
@@ -2655,7 +2654,8 @@ set_profile(VALUE self, const char *name, VALUE profile)
     }
 
     (void) DestroyImage(profile_image);
-    rm_check_image_exception(image, RetainOnError);
+    rm_check_exception(exception, image, RetainOnError);
+    (void) DestroyExceptionInfo(exception);
 
     return self;
 }
