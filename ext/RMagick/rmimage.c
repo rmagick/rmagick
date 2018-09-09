@@ -3862,9 +3862,13 @@ Image_compression_eq(VALUE self, VALUE compression)
 VALUE
 Image_compress_colormap_bang(VALUE self)
 {
+    ExceptionInfo *exception;
     Image *image = rm_check_frozen(self);
-    (void) CompressImageColormap(image);
-    rm_check_image_exception(image, RetainOnError);
+
+    exception = AcquireExceptionInfo();
+    (void) CompressImageColormap(image, exception);
+    rm_check_exception(exception, image, RetainOnError);
+    (void) DestroyExceptionInfo(exception);
 
     return self;
 }
