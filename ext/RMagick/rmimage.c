@@ -5801,8 +5801,8 @@ Image_equalize(VALUE self)
     exception = AcquireExceptionInfo();
     new_image = rm_clone_image(image);
 
-    (void) EqualizeImage(new_image);
-    rm_check_image_exception(new_image, DestroyOnError);
+    (void) EqualizeImage(new_image, exception);
+    rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
 
