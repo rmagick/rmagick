@@ -648,12 +648,15 @@ TextureFill_fill(VALUE self, VALUE image_obj)
 {
     rm_TextureFill *fill;
     Image *image;
+    ExceptionInfo *exception;
 
     image = rm_check_destroyed(image_obj);
     Data_Get_Struct(self, rm_TextureFill, fill);
 
-    (void) TextureImage(image, fill->texture);
-    rm_check_image_exception(image, RetainOnError);
+    exception = AcquireExceptionInfo();
+    (void) TextureImage(image, fill->texture, exception);
+    rm_check_exception(exception, image, RetainOnError);
+    (void) DestroyExceptionInfo(exception);
 
     return self;
 }
