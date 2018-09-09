@@ -454,14 +454,14 @@ ImageList_map(int argc, VALUE *argv, VALUE self)
     new_images = CloneImageList(images, exception);
     rm_split(images);
     rm_check_exception(exception, new_images, DestroyOnError);
-    (void) DestroyExceptionInfo(exception);
 
     rm_ensure_result(new_images);
 
     // Call ImageMagick
     GetQuantizeInfo(&quantize_info);
-    (void) RemapImages(&quantize_info, new_images, map);
-    rm_check_image_exception(new_images, DestroyOnError);
+    (void) RemapImages(&quantize_info, new_images, map, exception);
+    rm_check_exception(exception, new_images, DestroyOnError);
+    (void) DestroyExceptionInfo(exception);
 
     // Set @scene in new ImageList object to same value as in self.
     new_imagelist = rm_imagelist_from_images(new_images);
@@ -674,7 +674,7 @@ ImageList_optimize_layers(VALUE self, VALUE method)
             rm_check_exception(exception, new_images, DestroyOnError);
             // mogrify supports -dither here. We don't.
             GetQuantizeInfo(&quantize_info);
-            (void) RemapImages(&quantize_info, new_images, NULL);
+            (void) RemapImages(&quantize_info, new_images, NULL, exception);
             break;
         case OptimizePlusLayer:
             new_images = OptimizePlusImageLayers(images, exception);
@@ -1034,6 +1034,7 @@ ImageList_remap(int argc, VALUE *argv, VALUE self)
 {
     Image *images, *remap_image = NULL;
     QuantizeInfo quantize_info;
+    ExceptionInfo *exception;
 
 
     if (argc > 0 && argv[0] != Qnil)
@@ -1056,8 +1057,11 @@ ImageList_remap(int argc, VALUE *argv, VALUE self)
 
     images = images_from_imagelist(self);
 
-    (void) RemapImages(&quantize_info, images, remap_image);
-    rm_check_image_exception(images, RetainOnError);
+    exception = AcquireExceptionInfo();
+    (void) RemapImages(&quantize_info, images, remap_image, exception);
+    rm_check_exception(exception, images, RetainOnError);
+    (void) DestroyExceptionInfo(exception);
+
     rm_split(images);
 
     return self;
