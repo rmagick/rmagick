@@ -4494,14 +4494,17 @@ Image_cycle_colormap(VALUE self, VALUE amount)
 {
     Image *image, *new_image;
     int amt;
+    ExceptionInfo *exception;
 
     amt = NUM2INT(amount);
 
     image = rm_check_destroyed(self);
     new_image = rm_clone_image(image);
 
-    (void) CycleColormapImage(new_image, amt);
+    exception = AcquireExceptionInfo();
+    (void) CycleColormapImage(new_image, amt, exception);
     // No need to check for an error
+    (void) DestroyExceptionInfo(exception);
 
     return rm_image_new(new_image);
 }
