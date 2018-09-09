@@ -1340,6 +1340,7 @@ Draw_draw(VALUE self, VALUE image_arg)
 {
     Draw *draw;
     Image *image;
+    ExceptionInfo *exception;
 
     image_arg = rm_cur_image(image_arg);
     image = rm_check_frozen(image_arg);
@@ -1353,8 +1354,10 @@ Draw_draw(VALUE self, VALUE image_arg)
     // Point the DrawInfo structure at the current set of primitives.
     magick_clone_string(&(draw->info->primitive), StringValuePtr(draw->primitives));
 
-    (void) DrawImage(image, draw->info);
-    rm_check_image_exception(image, RetainOnError);
+    exception = AcquireExceptionInfo();
+    (void) DrawImage(image, draw->info, exception);
+    rm_check_exception(exception, image, RetainOnError);
+    (void) DestroyExceptionInfo(exception);
 
     magick_free(draw->info->primitive);
     draw->info->primitive = NULL;
