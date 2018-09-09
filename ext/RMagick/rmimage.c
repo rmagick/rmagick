@@ -2015,6 +2015,7 @@ Image_capture(int argc, VALUE *argv, VALUE self)
     ImageInfo *image_info;
     VALUE info_obj;
     XImportInfo ximage_info;
+    ExceptionInfo *exception;
 
     self = self;  // Suppress "never referenced" message from icc
 
@@ -2047,8 +2048,11 @@ Image_capture(int argc, VALUE *argv, VALUE self)
     Data_Get_Struct(info_obj, Info, image_info);
 
     // If an error occurs, IM will call our error handler and we raise an exception.
-    image = XImportImage(image_info, &ximage_info);
-    rm_check_image_exception(image, DestroyOnError);
+    exception = AcquireExceptionInfo();
+    image = XImportImage(image_info, &ximage_info, exception);
+    rm_check_exception(exception, image, DestroyOnError);
+    (void) DestroyExceptionInfo(exception);
+
     rm_ensure_result(image);
 
     rm_set_user_artifact(image, image_info);
