@@ -950,6 +950,7 @@ VALUE Draw_annotate(
     long x, y;
     AffineMatrix keep;
     char geometry_str[50];
+    ExceptionInfo *exception;
 
     // Save the affine matrix in case it is modified by
     // Draw#rotation=
@@ -967,7 +968,11 @@ VALUE Draw_annotate(
     }
 
     // Translate & store in Draw structure
-    draw->info->text = InterpretImageProperties(NULL, image, StringValuePtr(text));
+    exception = AcquireExceptionInfo();
+    draw->info->text = InterpretImageProperties(NULL, image, StringValuePtr(text), exception);
+    rm_check_exception(exception, image, RetainOnError);
+    (void) DestroyExceptionInfo(exception);
+
     if (!draw->info->text)
     {
         rb_raise(rb_eArgError, "no text");
@@ -999,7 +1004,7 @@ VALUE Draw_annotate(
     draw->info->text = NULL;
     draw->info->affine = keep;
 
-    rm_check_image_exception(image, RetainOnError);
+    rm_check_exception(exception, image, RetainOnError);
 
     return self;
 }
@@ -1915,6 +1920,7 @@ get_type_metrics(
     long text_l;
     long x;
     unsigned int okay;
+    ExceptionInfo *exception;
 
     switch (argc)
     {
@@ -1938,9 +1944,12 @@ get_type_metrics(
     }
 
     Data_Get_Struct(self, Draw, draw);
-    draw->info->text = InterpretImageProperties(NULL, image, text);
+
+    exception = AcquireExceptionInfo();
+    draw->info->text = InterpretImageProperties(NULL, image, text, exception);
     if (!draw->info->text)
     {
+        (void) DestroyExceptionInfo(exception);
         rb_raise(rb_eArgError, "no text to measure");
     }
 
@@ -1949,10 +1958,11 @@ get_type_metrics(
     magick_free(draw->info->text);
     draw->info->text = NULL;
 
+    rm_check_exception(exception, image, RetainOnError);
+    (void) DestroyExceptionInfo(exception);
+
     if (!okay)
     {
-        rm_check_image_exception(image, RetainOnError);
-
         // Shouldn't get here...
         rb_raise(rb_eRuntimeError, "Can't measure text. Are the fonts installed? "
                  "Is the FreeType library installed?");
