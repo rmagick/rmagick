@@ -2577,18 +2577,19 @@ Image_color_histogram(VALUE self)
 
     image = rm_check_destroyed(self);
 
+    exception = AcquireExceptionInfo();
+
     // If image not DirectClass make a DirectClass copy.
     if (image->storage_class != DirectClass)
     {
         dc_copy = rm_clone_image(image);
-        (void) SyncImage(dc_copy);
+        (void) SyncImage(dc_copy, exception);
         magick_free(dc_copy->colormap);
         dc_copy->colormap = NULL;
         dc_copy->storage_class = DirectClass;
         image = dc_copy;
     }
 
-    exception = AcquireExceptionInfo();
     histogram = GetImageHistogram(image, &colors, exception);
 
     if (histogram == NULL)
@@ -12898,14 +12899,17 @@ Image_class_type_eq(VALUE self, VALUE new_class_type)
     Image *image;
     ClassType class_type;
     QuantizeInfo qinfo;
+    ExceptionInfo *exception;
 
     image = rm_check_frozen(self);
 
     VALUE_TO_ENUM(new_class_type, class_type, ClassType);
 
+    exception = AcquireExceptionInfo();
+
     if (image->storage_class == PseudoClass && class_type == DirectClass)
     {
-        (void) SyncImage(image);
+        (void) SyncImage(image, exception);
         magick_free(image->colormap);
         image->colormap = NULL;
     }
@@ -12917,6 +12921,9 @@ Image_class_type_eq(VALUE self, VALUE new_class_type)
     }
 
     (void) SetImageStorageClass(image, class_type);
+
+    (void) DestroyExceptionInfo(exception);
+
     return self;
 }
 
