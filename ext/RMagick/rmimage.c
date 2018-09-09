@@ -4923,13 +4923,16 @@ Image_difference(VALUE self, VALUE other)
     Image *image;
     Image *image2;
     VALUE mean, nmean, nmax;
+    ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
     other = rm_cur_image(other);
     image2 = rm_check_destroyed(other);
 
-    (void) IsImagesEqual(image, image2);
+    exception = AcquireExceptionInfo();
+    (void) IsImagesEqual(image, image2, exception);
     // No need to check for error
+    (void) DestroyExceptionInfo(exception);
 
     mean  = rb_float_new(image->error.mean_error_per_pixel);
     nmean = rb_float_new(image->error.normalized_mean_error);
