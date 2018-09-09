@@ -1211,7 +1211,6 @@ ImageList_write(VALUE self, VALUE file)
 
     m = GetMagickInfo(info->magick, exception);
     rm_check_exception(exception, images, RetainOnError);
-    (void) DestroyExceptionInfo(exception);
 
     // Tell WriteImage if we want a multi-images file.
     if (imagelist_length(self) > 1L && (m->image_info && m->image_info->adjoin))
@@ -1222,14 +1221,15 @@ ImageList_write(VALUE self, VALUE file)
     for (img = images; img; img = GetNextImageInList(img))
     {
         rm_sync_image_options(img, info);
-        (void) WriteImage(info, img);
+        (void) WriteImage(info, img, exception);
         // images will be split before raising an exception
-        rm_check_image_exception(images, RetainOnError);
+        rm_check_exception(exception, images, RetainOnError);
         if (info->adjoin)
         {
             break;
         }
     }
+    (void) DestroyExceptionInfo(exception);
 
     rm_split(images);
 

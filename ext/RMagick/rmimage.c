@@ -14842,6 +14842,7 @@ Image_write(VALUE self, VALUE file)
     Image *image;
     Info *info;
     VALUE info_obj;
+    ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
 
@@ -14873,9 +14874,11 @@ Image_write(VALUE self, VALUE file)
 
     rm_sync_image_options(image, info);
 
+    exception = AcquireExceptionInfo();
     info->adjoin = MagickFalse;
-    (void) WriteImage(info, image);
-    rm_check_image_exception(image, RetainOnError);
+    (void) WriteImage(info, image, exception);
+    rm_check_exception(exception, image, RetainOnError);
+    (void) DestroyExceptionInfo(exception);
 
     RB_GC_GUARD(info_obj);
 
