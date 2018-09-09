@@ -3996,11 +3996,12 @@ Image_constitute(VALUE class, VALUE width_arg, VALUE height_arg
     if (!image)
     {
         xfree(pixels.v);
+        (void) DestroyExceptionInfo(exception);
         rb_raise(rb_eNoMemError, "not enough memory to continue.");
     }
 
-    SetImageExtent(image, width, height);
-    rm_check_image_exception(image, DestroyOnError);
+    SetImageExtent(image, width, height, exception);
+    rm_check_exception(exception, image, DestroyOnError);
 
     (void) SetImageBackgroundColor(image);
     rm_check_image_exception(image, DestroyOnError);
@@ -9285,7 +9286,7 @@ Image_initialize(int argc, VALUE *argv, VALUE self)
     // NOW store a real image in the image object.
     UPDATE_DATA_PTR(self, image);
 
-    SetImageExtent(image, cols, rows);
+    SetImageExtent(image, cols, rows, exception);
 
     // If the caller did not supply a fill argument, call SetImageBackgroundColor
     // to fill the image using the background color. The background color can
