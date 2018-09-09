@@ -3512,6 +3512,7 @@ Image_composite_affine(VALUE self, VALUE source, VALUE affine_matrix)
 {
     Image *image, *composite_image, *new_image;
     AffineMatrix affine;
+    ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
     composite_image = rm_check_destroyed(source);
@@ -3519,8 +3520,10 @@ Image_composite_affine(VALUE self, VALUE source, VALUE affine_matrix)
     Export_AffineMatrix(&affine, affine_matrix);
     new_image = rm_clone_image(image);
 
-    (void) DrawAffineImage(new_image, composite_image, &affine);
-    rm_check_image_exception(new_image, DestroyOnError);
+    exception = AcquireExceptionInfo();
+    (void) DrawAffineImage(new_image, composite_image, &affine, exception);
+    rm_check_exception(exception, new_image, DestroyOnError);
+    (void) DestroyExceptionInfo(exception);
 
     return rm_image_new(new_image);
 }
