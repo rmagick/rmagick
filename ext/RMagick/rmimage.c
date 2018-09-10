@@ -13848,10 +13848,15 @@ Image_total_ink_density(VALUE self)
 {
     Image *image;
     double density;
+    ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
-    density = GetImageTotalInkDensity(image);
+
+    exception = AcquireExceptionInfo();
+    density = GetImageTotalInkDensity(image, exception);
     rm_check_image_exception(image, RetainOnError);
+    (void) DestroyExceptionInfo(exception);
+
     return rb_float_new(density);
 }
 
