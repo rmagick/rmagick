@@ -910,7 +910,12 @@ rm_get_property(const Image *img, const char *property)
 MagickBooleanType
 rm_set_property(Image *image, const char *property, const char *value)
 {
-    return SetImageProperty(image, property, value);
+    ExceptionInfo *exception = AcquireExceptionInfo();
+    MagickBooleanType ret = SetImageProperty(image, property, value, exception);
+    rm_check_exception(exception, image, RetainOnError);
+    (void) DestroyExceptionInfo(exception);
+
+    return ret;
 }
 
 
