@@ -13068,7 +13068,7 @@ Image_class_type_eq(VALUE self, VALUE new_class_type)
         (void) QuantizeImage(&qinfo, image, exception);
     }
 
-    (void) SetImageStorageClass(image, class_type);
+    (void) SetImageStorageClass(image, class_type, exception);
 
     (void) DestroyExceptionInfo(exception);
 
@@ -13123,18 +13123,19 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg
     size = (long)(cols * rows);
     rm_check_ary_len(new_pixels, size);
 
-    okay = SetImageStorageClass(image, DirectClass);
-    rm_check_image_exception(image, RetainOnError);
+    exception = AcquireExceptionInfo();
+
+    okay = SetImageStorageClass(image, DirectClass, exception);
+    rm_check_exception(exception, image, RetainOnError);
     if (!okay)
     {
+        DestroyExceptionInfo(exception);
         rb_raise(Class_ImageMagickError, "SetImageStorageClass failed. Can't store pixels.");
     }
 
     // Get a pointer to the pixels. Replace the values with the PixelPackets
     // from the pixels argument.
     {
-        exception = AcquireExceptionInfo();
-
         pixels = GetAuthenticPixels(image, x, y, cols, rows, exception);
         CHECK_EXCEPTION()
         DestroyExceptionInfo(exception);
@@ -14889,8 +14890,8 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
     CHECK_EXCEPTION();
 
 
-    (void) SetImageStorageClass(reflection, DirectClass);
-    rm_check_image_exception(reflection, DestroyOnError);
+    (void) SetImageStorageClass(reflection, DirectClass, exception);
+    rm_check_exception(exception, reflection, DestroyOnError);
 
 
     opacity = initial;
