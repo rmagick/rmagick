@@ -14277,10 +14277,16 @@ VALUE Image_image_type_eq(VALUE self, VALUE image_type)
 {
     Image *image;
     ImageType type;
+    ExceptionInfo *exception;
 
     image = rm_check_frozen(self);
     VALUE_TO_ENUM(image_type, type, ImageType);
-    SetImageType(image, type);
+
+    exception = AcquireExceptionInfo();
+    SetImageType(image, type, exception);
+    rm_check_exception(exception, image, RetainOnError);
+    (void) DestroyExceptionInfo(exception);
+    
     return image_type;
 }
 
