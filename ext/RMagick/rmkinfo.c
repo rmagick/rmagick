@@ -53,10 +53,14 @@ VALUE
 KernelInfo_initialize(VALUE self, VALUE kernel_string)
 {
   KernelInfo *kernel;
+  ExceptionInfo *exception;
 
   Check_Type(kernel_string, T_STRING);
 
-  kernel = AcquireKernelInfo(StringValueCStr(kernel_string));
+  exception = AcquireExceptionInfo();
+  kernel = AcquireKernelInfo(StringValueCStr(kernel_string), exception);
+  CHECK_EXCEPTION();
+  (void) DestroyExceptionInfo(exception);
 
   if (kernel == NULL)
     rb_raise(rb_eRuntimeError, "failed to parse kernel string");
