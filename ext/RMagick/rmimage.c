@@ -13146,8 +13146,13 @@ VALUE
 Image_strip_bang(VALUE self)
 {
     Image *image = rm_check_frozen(self);
-    (void) StripImage(image);
-    rm_check_image_exception(image, RetainOnError);
+    ExceptionInfo *exception;
+
+    exception = AcquireExceptionInfo();
+    (void) StripImage(image, exception);
+    rm_check_exception(exception, image, RetainOnError);
+    (void) DestroyExceptionInfo(exception);
+
     return self;
 }
 
