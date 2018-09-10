@@ -12088,8 +12088,11 @@ Image_properties(VALUE self)
     VALUE ary;
     char *property;
     const char *value;
+    ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
+
+    exception = AcquireExceptionInfo();
 
     if (rb_block_given_p())
     {
@@ -12099,13 +12102,14 @@ Image_properties(VALUE self)
         property = (char *)GetNextImageProperty(image);
         while (property)
         {
-            value = GetImageProperty(image, property);
+            value = GetImageProperty(image, property, exception);
             (void) rb_ary_store(ary, 0, rb_str_new2(property));
             (void) rb_ary_store(ary, 1, rb_str_new2(value));
             (void) rb_yield(ary);
             property = (char *)GetNextImageProperty(image);
         }
-        rm_check_image_exception(image, RetainOnError);
+        rm_check_exception(exception, image, RetainOnError);
+        (void) DestroyExceptionInfo(exception);
 
         RB_GC_GUARD(ary);
 
@@ -12120,11 +12124,12 @@ Image_properties(VALUE self)
         property =(char *)GetNextImageProperty(image);
         while (property)
         {
-            value = GetImageProperty(image, property);
+            value = GetImageProperty(image, property, exception);
             (void) rb_hash_aset(attr_hash, rb_str_new2(property), rb_str_new2(value));
             property = (char *)GetNextImageProperty(image);
         }
-        rm_check_image_exception(image, RetainOnError);
+        rm_check_exception(exception, image, RetainOnError);
+        (void) DestroyExceptionInfo(exception);
 
         RB_GC_GUARD(attr_hash);
 

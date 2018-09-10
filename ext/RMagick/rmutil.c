@@ -890,7 +890,11 @@ ImageMagickError_initialize(int argc, VALUE *argv, VALUE self)
 const char *
 rm_get_property(const Image *img, const char *property)
 {
-    return GetImageProperty(img, property);
+    ExceptionInfo *exception = AcquireExceptionInfo();
+    const char *prop = GetImageProperty(img, property, exception);
+    (void) DestroyExceptionInfo(exception);
+
+    return prop;
 }
 
 
@@ -1187,8 +1191,11 @@ rm_exif_by_entry(Image *image)
     char *str;
     size_t len = 0, property_l, value_l;
     VALUE v;
+    ExceptionInfo *exception;
 
-    (void) GetImageProperty(image, "exif:*");
+    exception = AcquireExceptionInfo();
+
+    (void) GetImageProperty(image, "exif:*", exception);
     ResetImagePropertyIterator(image);
     property = GetNextImageProperty(image);
 
@@ -1204,7 +1211,7 @@ rm_exif_by_entry(Image *image)
                 len += 1;   // there will be a \n between property=value entries
             }
             len += property_l - 5;
-            value = GetImageProperty(image,property);
+            value = GetImageProperty(image, property, exception);
             if (value)
             {
                 // add 1 for the = between property and value
@@ -1236,7 +1243,7 @@ rm_exif_by_entry(Image *image)
             }
             memcpy(str+len, property+5, property_l-5);
             len += property_l - 5;
-            value = GetImageProperty(image,property);
+            value = GetImageProperty(image, property, exception);
             if (value)
             {
                 value_l = strlen(value);
@@ -1247,6 +1254,8 @@ rm_exif_by_entry(Image *image)
         }
         property = GetNextImageProperty(image);
     }
+
+    (void) DestroyExceptionInfo(exception);
 
     v = rb_str_new(str, len);
     xfree(str);
@@ -1276,8 +1285,11 @@ rm_exif_by_number(Image *image)
     char *str;
     size_t len = 0, property_l, value_l;
     VALUE v;
+    ExceptionInfo *exception;
 
-    (void) GetImageProperty(image, "exif:!");
+    exception = AcquireExceptionInfo();
+
+    (void) GetImageProperty(image, "exif:!", exception);
     ResetImagePropertyIterator(image);
     property = GetNextImageProperty(image);
 
@@ -1293,7 +1305,7 @@ rm_exif_by_number(Image *image)
                 len += 1;   // there will be a \n between property=value entries
             }
             len += property_l;
-            value = GetImageProperty(image,property);
+            value = GetImageProperty(image, property, exception);
             if (value)
             {
                 // add 1 for the = between property and value
@@ -1325,7 +1337,7 @@ rm_exif_by_number(Image *image)
             }
             memcpy(str+len, property, property_l);
             len += property_l;
-            value = GetImageProperty(image,property);
+            value = GetImageProperty(image, property, exception);
             if (value)
             {
                 value_l = strlen(value);
@@ -1336,6 +1348,8 @@ rm_exif_by_number(Image *image)
         }
         property = GetNextImageProperty(image);
     }
+
+    (void) DestroyExceptionInfo(exception);
 
     v = rb_str_new(str, len);
     xfree(str);
