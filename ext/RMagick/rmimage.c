@@ -14676,11 +14676,16 @@ Image_virtual_pixel_method_eq(VALUE self, VALUE method)
 {
     Image *image;
     VirtualPixelMethod vpm;
+    ExceptionInfo *exception;
 
     image = rm_check_frozen(self);
     VALUE_TO_ENUM(method, vpm, VirtualPixelMethod);
-    (void) SetImageVirtualPixelMethod(image, vpm);
-    rm_check_image_exception(image, RetainOnError);
+
+    exception = AcquireExceptionInfo();
+    (void) SetImageVirtualPixelMethod(image, vpm, exception);
+    rm_check_exception(exception, image, RetainOnError);
+    (void) DestroyExceptionInfo(exception);
+
     return self;
 }
 
