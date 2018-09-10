@@ -13708,14 +13708,15 @@ Image_to_blob(VALUE self)
 
     image = rm_check_destroyed(self);
 
+    exception = AcquireExceptionInfo();
+
     // Copy the depth and magick fields to the Image
     if (info->depth != 0)
     {
-        (void) SetImageDepth(image, info->depth);
-        rm_check_image_exception(image, RetainOnError);
+        (void) SetImageDepth(image, info->depth, exception);
+        rm_check_exception(exception, image, RetainOnError);
     }
 
-    exception = AcquireExceptionInfo();
     if (*info->magick)
     {
         (void) SetImageInfo(info, MagickTrue, exception);
@@ -13723,6 +13724,7 @@ Image_to_blob(VALUE self)
 
         if (*info->magick == '\0')
         {
+            (void) DestroyExceptionInfo(exception);
             return Qnil;
         }
         strncpy(image->magick, info->magick, sizeof(info->magick)-1);
@@ -13738,6 +13740,7 @@ Image_to_blob(VALUE self)
                || !rm_strcasecmp(magick_info->name, "JPG"))
               && (image->rows == 0 || image->columns == 0))
         {
+            (void) DestroyExceptionInfo(exception);
             rb_raise(rb_eRuntimeError, "Can't convert %lux%lu %.4s image to a blob"
                      , image->columns, image->rows, magick_info->name);
         }
