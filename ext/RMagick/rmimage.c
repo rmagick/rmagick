@@ -4006,9 +4006,9 @@ Image_constitute(VALUE class, VALUE width_arg, VALUE height_arg
     (void) SetImageBackgroundColor(image, exception);
     rm_check_exception(exception, image, DestroyOnError);
 
-    (void) ImportImagePixels(image, 0, 0, width, height, map, stg_type, (const void *)pixels.v);
+    (void) ImportImagePixels(image, 0, 0, width, height, map, stg_type, (const void *)pixels.v, exception);
     xfree(pixels.v);
-    rm_check_image_exception(image, DestroyOnError);
+    rm_check_exception(exception, image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
 
@@ -7333,6 +7333,7 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
     double *fpixels = NULL;
     void *buffer;
     unsigned int okay;
+    ExceptionInfo *exception;
 
     image = rm_check_frozen(self);
 
@@ -7467,7 +7468,8 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
     }
 
 
-    okay = ImportImagePixels(image, x_off, y_off, cols, rows, map, stg_type, buffer);
+    exception = AcquireExceptionInfo();
+    okay = ImportImagePixels(image, x_off, y_off, cols, rows, map, stg_type, buffer, exception);
 
     // Free pixel array before checking for errors.
     if (pixels)
@@ -7479,9 +7481,11 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
         xfree((void *)fpixels);
     }
 
+    rm_check_exception(exception, image, RetainOnError);
+    (void) DestroyExceptionInfo(exception);
+
     if (!okay)
     {
-        rm_check_image_exception(image, RetainOnError);
         // Shouldn't get here...
         rm_magick_error("ImportImagePixels failed with no explanation.", NULL);
     }
