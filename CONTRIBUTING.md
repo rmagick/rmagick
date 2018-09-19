@@ -33,6 +33,12 @@ If you write new tests, please do it in RSpec.
 
 You are also welcome to convert existing Test/Unit tests to RSpec.
 
+Run all tests:
+
+    bundle exec rake
+
+It will run RSpec and Minitest tests.
+
 
 Committing
 ----------
