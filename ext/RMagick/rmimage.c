@@ -13215,7 +13215,7 @@ Image_swirl(VALUE self, VALUE degrees_obj)
     image = rm_check_destroyed(self);
 
     exception = AcquireExceptionInfo();
-    new_image = SwirlImage(image, degrees, exception);
+    new_image = SwirlImage(image, degrees, image->interpolate, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
