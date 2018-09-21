@@ -106,7 +106,7 @@ static VALUE set_color_option(VALUE self, const char *option, VALUE color)
     {
         name = StringValuePtr(color);
         exception = AcquireExceptionInfo();
-        okay = QueryColorDatabase(name, &pp, exception);
+        okay = QueryColorCompliance(name, AllCompliance, &pp, exception);
         (void) DestroyExceptionInfo(exception);
         if (!okay)
         {

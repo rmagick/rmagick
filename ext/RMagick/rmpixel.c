@@ -221,7 +221,7 @@ Color_Name_to_PixelInfo(PixelInfo *color, VALUE name_arg)
 
     exception = AcquireExceptionInfo();
     name = StringValuePtr(name_arg);
-    okay = QueryColorDatabase(name, color, exception);
+    okay = QueryColorCompliance(name, AllCompliance, color, exception);
     (void) DestroyExceptionInfo(exception);
     if (!okay)
     {
@@ -448,14 +448,14 @@ Pixel_fcmp(int argc, VALUE *argv, VALUE self)
 VALUE
 Pixel_from_color(VALUE class, VALUE name)
 {
-    PixelPacket pp;
+    PixelInfo pp;
     ExceptionInfo *exception;
     MagickBooleanType okay;
 
     class = class;      // defeat "never referenced" message from icc
 
     exception = AcquireExceptionInfo();
-    okay = QueryColorDatabase(StringValuePtr(name), &pp, exception);
+    okay = QueryColorCompliance(StringValuePtr(name), AllCompliance, &pp, exception);
     CHECK_EXCEPTION()
     (void) DestroyExceptionInfo(exception);
 
@@ -464,7 +464,7 @@ Pixel_from_color(VALUE class, VALUE name)
         rb_raise(rb_eArgError, "invalid color name: %s", StringValuePtr(name));
     }
 
-    return Pixel_from_PixelPacket(&pp);
+    return Pixel_from_PixelInfo(&pp);
 }
 
 
