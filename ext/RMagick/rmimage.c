@@ -13169,12 +13169,14 @@ Image_threshold(VALUE self, VALUE threshold_obj)
 {
     Image *image, *new_image;
     double threshold = NUM2DBL(threshold_obj);
+    ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
     new_image = rm_clone_image(image);
 
-    (void) BilevelImageChannel(new_image, DefaultChannels, threshold);
-    rm_check_image_exception(new_image, DestroyOnError);
+    exception = AcquireExceptionInfo();
+    (void) BilevelImage(new_image, threshold, exception);
+    rm_check_exception(exception, new_image, DestroyOnError);
 
     return rm_image_new(new_image);
 }
