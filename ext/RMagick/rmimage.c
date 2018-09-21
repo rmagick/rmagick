@@ -9787,8 +9787,7 @@ Image_ordered_dither(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 
-    // ImageMagick >= 6.2.9
-    (void) OrderedPosterizeImage(new_image, threshold_map, exception);
+    (void) OrderedDitherImage(new_image, threshold_map, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
