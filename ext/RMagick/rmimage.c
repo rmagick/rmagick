@@ -6431,7 +6431,7 @@ Image_find_similar_region(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    okay = IsImageSimilar(image, target, &x, &y, exception);
+    okay = IsEquivalentImage(image, target, &x, &y, exception);
     CHECK_EXCEPTION();
     (void) DestroyExceptionInfo(exception);
 
