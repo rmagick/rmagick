@@ -272,7 +272,7 @@ ImageList_deconstruct(VALUE self)
 
     images = images_from_imagelist(self);
     exception = AcquireExceptionInfo();
-    new_images = DeconstructImages(images, exception);
+    new_images = CompareImagesLayers(images, CompareAnyLayer, exception);
     rm_split(images);
     rm_check_exception(exception, new_images, DestroyOnError);
     (void) DestroyExceptionInfo(exception);
