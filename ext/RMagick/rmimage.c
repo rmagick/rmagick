@@ -538,7 +538,7 @@ Image_add_profile(VALUE self, VALUE name)
         {
             (void)ProfileImage(image, profile_name, GetStringInfoDatum(profile)
                                , GetStringInfoLength(profile), exception);
-            if (image->exception.severity >= ErrorException)
+            if (exception->severity >= ErrorException)
             {
                 break;
             }
@@ -546,10 +546,9 @@ Image_add_profile(VALUE self, VALUE name)
         profile_name = GetNextImageProfile(profile_image);
     }
 
+    rm_check_exception(exception, image, RetainOnError);
     (void) DestroyExceptionInfo(exception);
     (void) DestroyImage(profile_image);
-    rm_check_image_exception(image, RetainOnError);
-
 
     return self;
 }
@@ -2644,7 +2643,7 @@ set_profile(VALUE self, const char *name, VALUE profile)
                 (void)ProfileImage(image, profile_name, profile_data->datum
                                    , (unsigned long)profile_data->length
                                    , exception);
-                if (image->exception.severity >= ErrorException)
+                if (exception->severity >= ErrorException)
                 {
                     break;
                 }
@@ -2653,8 +2652,8 @@ set_profile(VALUE self, const char *name, VALUE profile)
         profile_name = GetNextImageProfile(profile_image);
     }
 
-    (void) DestroyImage(profile_image);
     rm_check_exception(exception, image, RetainOnError);
+    (void) DestroyImage(profile_image);
     (void) DestroyExceptionInfo(exception);
 
     return self;
