@@ -461,12 +461,6 @@ ColorspaceType_new(ColorspaceType cs)
         case Rec601YCbCrColorspace:
             name = "Rec601YCbCrColorspace";
             break;
-        case Rec601LumaColorspace:
-            name = "Rec601LumaColorspace";
-            break;
-        case Rec709LumaColorspace:
-            name = "Rec709LumaColorspace";
-            break;
         case Rec709YCbCrColorspace:
             name = "Rec709YCbCrColorspace";
             break;
