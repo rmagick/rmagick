@@ -3061,10 +3061,15 @@ Image_colorspace_eq(VALUE self, VALUE colorspace)
 {
     Image *image;
     ColorspaceType new_cs;
+    ExceptionInfo *exception;
 
     image = rm_check_frozen(self);
     VALUE_TO_ENUM(colorspace, new_cs, ColorspaceType);
-    (void) TransformImageColorspace(image, new_cs);
+
+    exception = AcquireExceptionInfo();
+    (void) TransformImageColorspace(image, new_cs, exception);
+    rm_check_exception(exception, image, RetainOnError);
+    (void) DestroyExceptionInfo(exception);
 
     return self;
 }
