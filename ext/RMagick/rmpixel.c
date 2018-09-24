@@ -526,7 +526,7 @@ Pixel_from_hsla(int argc, VALUE *argv, VALUE class)
 
     exception = AcquireExceptionInfo();
 
-    (void) QueryMagickColor(name, &pp, exception);
+    (void) QueryColorCompliance(name, AllCompliance, &pp, exception);
     CHECK_EXCEPTION()
 
     (void) DestroyExceptionInfo(exception);
