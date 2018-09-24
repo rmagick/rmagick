@@ -149,10 +149,10 @@ MagickInfo_to_format(const MagickInfo *magick_info)
 {
     char mode[4];
 
-    mode[0] = magick_info->blob_support ? '*': ' ';
+    mode[0] = (magick_info->flags & CoderBlobSupportFlag) ? '*': ' ';
     mode[1] = magick_info->decoder ? 'r' : '-';
     mode[2] = magick_info->encoder ? 'w' : '-';
-    mode[3] = magick_info->encoder && magick_info->adjoin ? '+' : '-';
+    mode[3] = magick_info->encoder && (magick_info->flags & CoderAdjoinFlag) ? '+' : '-';
 
     return rb_str_new(mode, sizeof(mode));
 }
