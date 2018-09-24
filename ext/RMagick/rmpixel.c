@@ -1011,8 +1011,7 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
     GetPixelInfo(image, &mpp);
     rm_set_pixel_info(pixel, &mpp);
 
-    // Support for hex-format color names moved out of QueryMagickColorname
-    // in 6.4.1-9. The 'hex' argument was removed as well.
+    // Support for hex-format color names moved out of QueryColorname
     if (hex)
     {
         if (compliance == XPMCompliance)
@@ -1023,9 +1022,8 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
     }
     else
     {
-        (void) QueryMagickColorname(image, &mpp, compliance, name, exception);
+        (void) QueryColorname(image, &mpp, compliance, name, exception);
     }
-
     (void) DestroyImage(image);
     CHECK_EXCEPTION()
     (void) DestroyExceptionInfo(exception);
