@@ -375,6 +375,7 @@ Image_add_compose_mask(VALUE self, VALUE mask)
 {
     Image *image;
     Image *mask_image = NULL;
+    ExceptionInfo *exception;
 
     image = rm_check_frozen(self);
     mask_image = rm_check_destroyed(mask);
@@ -383,9 +384,13 @@ Image_add_compose_mask(VALUE self, VALUE mask)
         rb_raise(rb_eArgError, "mask must be the same size as image");
     }
 
+    exception = AcquireExceptionInfo();
+
     // Delete any previously-existing mask image.
     // Store a clone of the new mask image.
-    (void) SetImageMask(image, mask_image);
+    (void) SetImageMask(image, CompositePixelMask, mask_image, exception);
+    (void) DestroyExceptionInfo(exception);
+
     (void) NegateImage(image->mask, MagickFalse);
 
     // Since both Set and GetImageMask clone the mask image I don't see any
@@ -4612,12 +4617,16 @@ DEF_ATTR_ACCESSOR(Image, delay, ulong)
 VALUE
 Image_delete_compose_mask(VALUE self)
 {
+    ExceptionInfo *exception;
     Image *image = rm_check_frozen(self);
 
-    // Store a clone of the mask image
-    (void) SetImageMask(image, NULL);
-    rm_check_image_exception(image, RetainOnError);
+    exception = AcquireExceptionInfo();
 
+    // Store a clone of the mask image
+    (void) SetImageMask(image, UndefinedPixelMask, NULL, exception);
+    rm_check_exception(exception, image, RetainOnError);
+    (void) DestroyExceptionInfo(exception);
+    
     return self;
 }
 
