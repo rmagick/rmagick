@@ -45,18 +45,18 @@ gc.draw(oval)
 
 oval = oval.blur_image(0, 20)
 
-# The CopyOpacityCompositeOp transforms the opacity level of each image pixel
+# The CopyAlphaCompositeOp transforms the opacity level of each image pixel
 # according to the intensity of the composite image pixels. In this case, the
 # black pixels outside the oval become transparent and the white pixels inside
 # the oval remain opaque. Each gray pixel around the border of the oval has a
 # varying level of transparency depending on how dark or light it is.
 
 ballerina.matte = true  # Ensure the ballerina image's opacity channel is enabled.
-oval.matte = false      # Force the CopyOpacityCompositeOp to use pixel intensity
+oval.matte = false      # Force the CopyAlphaCompositeOp to use pixel intensity
 # to determine how much transparency to add to the ballerina
 # pixels.
 
-ballerina = ballerina.composite(oval, CenterGravity, CopyOpacityCompositeOp)
+ballerina = ballerina.composite(oval, CenterGravity, CopyAlphaCompositeOp)
 
 # Since the vignette has multiple levels of transparency, we can't
 # save it as a GIF or a JPEG. The PNG format can handle it, though.

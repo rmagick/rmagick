@@ -1139,8 +1139,8 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
             case CopyMagentaCompositeOp:
                 op = "CopyMagenta";
                 break;
-            case CopyOpacityCompositeOp:
-                op = "CopyOpacity";
+            case CopyAlphaCompositeOp:
+                op = "CopyAlpha";
                 break;
             case CopyRedCompositeOp:
                 op = "CopyRed";
