@@ -2328,6 +2328,54 @@ Image_channel_mean(int argc, VALUE *argv, VALUE self)
     return ary;
 }
 
+/**
+ * Return an array of the entropy for the channel.
+ *
+ * Ruby usage:
+ *   - @verbatim Image#channel_entropy @endverbatim
+ *   - @verbatim Image#channel_entropy(channel) @endverbatim
+ *
+ * Notes:
+ *   - Default channel is AllChannels
+ *
+ * @param argc number of input arguments
+ * @param argv array of input arguments
+ * @param self this object
+ * @return an array [mean, std. deviation]
+ */
+VALUE
+Image_channel_entropy(int argc, VALUE *argv, VALUE self)
+{
+    Image *image;
+    ChannelType channels;
+    ExceptionInfo *exception;
+    double entropy;
+    VALUE ary;
+
+    image = rm_check_destroyed(self);
+
+    channels = extract_channels(&argc, argv);
+
+    // Ensure all arguments consumed.
+    if (argc > 0)
+    {
+        raise_ChannelType_error(argv[argc-1]);
+    }
+
+    exception = AcquireExceptionInfo();
+    (void) GetImageChannelEntropy(image, channels, &entropy, exception);
+    CHECK_EXCEPTION()
+
+    (void) DestroyExceptionInfo(exception);
+
+    ary = rb_ary_new2(1);
+    rb_ary_store(ary, 0, rb_float_new(entropy));
+
+    RB_GC_GUARD(ary);
+
+    return ary;
+}
+
 
 /**
  * Return a new image that is a copy of the input image with the edges
