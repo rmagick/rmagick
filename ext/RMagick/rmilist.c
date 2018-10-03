@@ -11,6 +11,7 @@
  ******************************************************************************/
 
 #include "rmagick.h"
+#include "ruby/thread.h"
 
 static Image *clone_imagelist(Image *);
 static Image *images_from_imagelist(VALUE);
@@ -79,6 +80,34 @@ ImageList_animate(int argc, VALUE *argv, VALUE self)
     return self;
 }
 
+struct imagelist_arguments
+{
+  Image *images;
+  ExceptionInfo *exception;
+};
+
+struct append_arguments
+{
+  Image *images;
+  unsigned int stack;
+  ExceptionInfo *exception;
+};
+
+// Actual append operation without the Global VM Lock
+void *
+ImageList_append_no_gvl_wrapper(void *args)
+{
+  struct append_arguments *append_args = (struct append_arguments *)args;
+  append_args->exception = AcquireExceptionInfo();
+  Image *new_image = AppendImages(append_args->images, append_args->stack, append_args->exception);
+  rm_split(append_args->images);
+  rm_check_exception(append_args->exception, new_image, DestroyOnError);
+  (void) DestroyExceptionInfo(append_args->exception);
+
+  rm_ensure_result(new_image);
+
+  return (void *)new_image;
+}
 
 /**
  * Append all the images by calling ImageAppend.
@@ -93,28 +122,42 @@ ImageList_animate(int argc, VALUE *argv, VALUE self)
 VALUE
 ImageList_append(VALUE self, VALUE stack_arg)
 {
-    Image *images, *new_image;
-    unsigned int stack;
-    ExceptionInfo *exception;
+    Image *new_image;
+    struct append_arguments append_args;
 
     // Convert the image array to an image sequence.
-    images = images_from_imagelist(self);
+    append_args.images = images_from_imagelist(self);
 
     // If stack == true, stack rectangular images top-to-bottom,
     // otherwise left-to-right.
-    stack = RTEST(stack_arg);
+    append_args.stack = RTEST(stack_arg);
 
-    exception = AcquireExceptionInfo();
-    new_image = AppendImages(images, stack, exception);
-    rm_split(images);
-    rm_check_exception(exception, new_image, DestroyOnError);
-    (void) DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
+    new_image = (Image *)rb_thread_call_without_gvl(ImageList_append_no_gvl_wrapper, &append_args, RUBY_UBF_PROCESS, NULL);
 
     return rm_image_new(new_image);
 }
 
+// Actual average operation without the Global VM Lock
+void *
+ImageList_average_no_gvl_wrapper(void *args)
+{
+  Image *new_image;
+  struct imagelist_arguments *imagelist_args = (struct imagelist_arguments *)args;
+  imagelist_args->exception = AcquireExceptionInfo();
+#if defined(HAVE_EVALUATEIMAGES)
+  new_image = EvaluateImages(imagelist_args->images, MeanEvaluateOperator, imagelist_args->exception);
+#else
+  new_image = AverageImages(imagelist_args->images, imagelist_args->exception);
+#endif
+
+  rm_split(imagelist_args->images);
+  rm_check_exception(imagelist_args->exception, new_image, DestroyOnError);
+  (void) DestroyExceptionInfo(imagelist_args->exception);
+
+  rm_ensure_result(new_image);
+
+  return (void *)new_image;
+}
 
 /**
  * Average all images together by calling AverageImages.
@@ -128,28 +171,33 @@ ImageList_append(VALUE self, VALUE stack_arg)
 VALUE
 ImageList_average(VALUE self)
 {
-    Image *images, *new_image;
-    ExceptionInfo *exception;
+    struct imagelist_arguments imagelist_args;
+    Image *new_image;
 
     // Convert the images array to an images sequence.
-    images = images_from_imagelist(self);
+    imagelist_args.images = images_from_imagelist(self);
 
-    exception = AcquireExceptionInfo();
-#if defined(HAVE_EVALUATEIMAGES)
-    new_image = EvaluateImages(images, MeanEvaluateOperator, exception);
-#else
-    new_image = AverageImages(images, exception);
-#endif
-
-    rm_split(images);
-    rm_check_exception(exception, new_image, DestroyOnError);
-    (void) DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
+    new_image = (Image *)rb_thread_call_without_gvl(ImageList_average_no_gvl_wrapper, &imagelist_args, RUBY_UBF_PROCESS, NULL);
 
     return rm_image_new(new_image);
 }
 
+// Actual coalesce operation without the Global VM Lock
+void *
+ImageList_coalesce_no_gvl_wrapper(void *args)
+{
+  Image *new_images;
+  struct imagelist_arguments *imagelist_args = (struct imagelist_arguments *)args;
+  imagelist_args->exception = AcquireExceptionInfo();
+  new_images = CoalesceImages(imagelist_args->images, imagelist_args->exception);
+  rm_split(imagelist_args->images);
+  rm_check_exception(imagelist_args->exception, new_images, DestroyOnError);
+  (void) DestroyExceptionInfo(imagelist_args->exception);
+
+  rm_ensure_result(new_images);
+
+  return (void *)new_images;
+}
 
 /**
  * Call CoalesceImages.
@@ -167,19 +215,13 @@ ImageList_average(VALUE self)
 VALUE
 ImageList_coalesce(VALUE self)
 {
-    Image *images, *new_images;
-    ExceptionInfo *exception;
+    struct imagelist_arguments imagelist_args;
+    Image *new_images;
 
     // Convert the image array to an image sequence.
-    images = images_from_imagelist(self);
+    imagelist_args.images = images_from_imagelist(self);
 
-    exception = AcquireExceptionInfo();
-    new_images = CoalesceImages(images, exception);
-    rm_split(images);
-    rm_check_exception(exception, new_images, DestroyOnError);
-    (void) DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_images);
+    new_images = (Image *)rb_thread_call_without_gvl(ImageList_coalesce_no_gvl_wrapper, &imagelist_args, RUBY_UBF_PROCESS, NULL);
 
     return rm_imagelist_from_images(new_images);
 }
@@ -250,6 +292,23 @@ ImageList_composite_layers(int argc, VALUE *argv, VALUE self)
 }
 
 
+// Actual deconstruct operation without the Global VM Lock
+void *
+ImageList_deconstruct_no_gvl_wrapper(void *args)
+{
+  Image *new_images;
+  struct imagelist_arguments *imagelist_args = (struct imagelist_arguments *)args;
+  imagelist_args->exception = AcquireExceptionInfo();
+  new_images = DeconstructImages(imagelist_args->images, imagelist_args->exception);
+  rm_split(imagelist_args->images);
+  rm_check_exception(imagelist_args->exception, new_images, DestroyOnError);
+  (void) DestroyExceptionInfo(imagelist_args->exception);
+
+  rm_ensure_result(new_images);
+
+  return (void *)new_images;
+}
+
 /**
  * Compare each image with the next in a sequence and returns the maximum
  * bounding region of any pixel differences it discovers.
@@ -263,17 +322,11 @@ ImageList_composite_layers(int argc, VALUE *argv, VALUE self)
 VALUE
 ImageList_deconstruct(VALUE self)
 {
-    Image *new_images, *images;
-    ExceptionInfo *exception;
+    struct imagelist_arguments imagelist_args;
+    Image *new_images;
 
-    images = images_from_imagelist(self);
-    exception = AcquireExceptionInfo();
-    new_images = DeconstructImages(images, exception);
-    rm_split(images);
-    rm_check_exception(exception, new_images, DestroyOnError);
-    (void) DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_images);
+    imagelist_args.images = images_from_imagelist(self);
+    new_images = (Image *)rb_thread_call_without_gvl(ImageList_deconstruct_no_gvl_wrapper, &imagelist_args, RUBY_UBF_PROCESS, NULL);
 
     return rm_imagelist_from_images(new_images);
 }
@@ -311,6 +364,26 @@ ImageList_display(VALUE self)
     return self;
 }
 
+// Actual flatten operation without the Global VM Lock
+void *
+ImageList_flatten_no_gvl_wrapper(void *args)
+{
+  Image *new_image;
+  struct imagelist_arguments *imagelist_args = (struct imagelist_arguments *)args;
+  imagelist_args->exception = AcquireExceptionInfo();
+  #if defined(HAVE_ENUM_FLATTENLAYER)
+      new_image = MergeImageLayers(imagelist_args->images, FlattenLayer, imagelist_args->exception);
+  #else
+      new_image = FlattenImages(imagelist_args->images, imagelist_args->exception);
+  #endif
+  rm_split(imagelist_args->images);
+  rm_check_exception(imagelist_args->exception, new_image, DestroyOnError);
+  (void) DestroyExceptionInfo(imagelist_args->exception);
+
+  rm_ensure_result(new_image);
+
+  return (void *)new_image;
+}
 
 /**
  * Merge all the images into a single image.
@@ -327,23 +400,12 @@ ImageList_display(VALUE self)
 VALUE
 ImageList_flatten_images(VALUE self)
 {
-    Image *images, *new_image;
-    ExceptionInfo *exception;
+    struct imagelist_arguments imagelist_args;
+    Image *new_image;
 
-    images = images_from_imagelist(self);
-    exception = AcquireExceptionInfo();
+    imagelist_args.images = images_from_imagelist(self);
 
-#if defined(HAVE_ENUM_FLATTENLAYER)
-    new_image = MergeImageLayers(images, FlattenLayer, exception);
-#else
-    new_image = FlattenImages(images, exception);
-#endif
-
-    rm_split(images);
-    rm_check_exception(exception, new_image, DestroyOnError);
-    (void) DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
+    new_image = (Image *)rb_thread_call_without_gvl(ImageList_flatten_no_gvl_wrapper, &imagelist_args, RUBY_UBF_PROCESS, NULL);
 
     return rm_image_new(new_image);
 }
@@ -580,6 +642,26 @@ ImageList_morph(VALUE self, VALUE nimages)
     return rm_imagelist_from_images(new_images);
 }
 
+// Actual mosaic operation without the Global VM Lock
+void *
+ImageList_mosaic_no_gvl_wrapper(void *args)
+{
+  Image *new_image;
+  struct imagelist_arguments *imagelist_args = (struct imagelist_arguments *)args;
+  imagelist_args->exception = AcquireExceptionInfo();
+  #if defined(HAVE_ENUM_MOSAICLAYER)
+      new_image = MergeImageLayers(imagelist_args->images, MosaicLayer, imagelist_args->exception);
+  #else
+      new_image = MosaicImages(imagelist_args->images, imagelist_args->exception);
+  #endif
+  rm_split(imagelist_args->images);
+  rm_check_exception(imagelist_args->exception, new_image, DestroyOnError);
+  (void) DestroyExceptionInfo(imagelist_args->exception);
+
+  rm_ensure_result(new_image);
+
+  return (void *)new_image;
+}
 
 /**
  * Merge all the images into a single image.
@@ -593,23 +675,11 @@ ImageList_morph(VALUE self, VALUE nimages)
 VALUE
 ImageList_mosaic(VALUE self)
 {
-    Image *images, *new_image;
-    ExceptionInfo *exception;
+    struct imagelist_arguments imagelist_args;
+    Image *new_image;
+    imagelist_args.images = images_from_imagelist(self);
 
-    exception = AcquireExceptionInfo();
-    images = images_from_imagelist(self);
-
-#if defined(HAVE_ENUM_MOSAICLAYER)
-    new_image = MergeImageLayers(images, MosaicLayer, exception);
-#else
-    new_image = MosaicImages(images, exception);
-#endif
-
-    rm_split(images);
-    rm_check_exception(exception, new_image, DestroyOnError);
-    (void) DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
+    new_image = (Image *)rb_thread_call_without_gvl(ImageList_mosaic_no_gvl_wrapper, &imagelist_args, RUBY_UBF_PROCESS, NULL);
 
     return rm_image_new(new_image);
 }
