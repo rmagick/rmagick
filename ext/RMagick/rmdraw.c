@@ -1935,8 +1935,6 @@ get_type_metrics(
                 VALUE self,
                 get_type_metrics_func_t getter)
 {
-    static char attrs[] = "OPbcdefghiklmnopqrstuwxyz[@#%";
- #define ATTRS_L ((int)(sizeof(attrs)-1))
     Image *image;
     Draw *draw;
     VALUE t;
@@ -1950,34 +1948,6 @@ get_type_metrics(
     {
         case 1:                   // use default image
             text = rm_str2cstr(argv[0], &text_l);
-
-            for (x = 0; x < text_l-1; x++)
-            {
-                // Ensure text string doesn't refer to image attributes.
-                if (text[x] == '%')
-                {
-                    int y;
-                    char spec = text[x+1];
-
-                    if (spec == '%')
-                    {
-                        x++;
-                    }
-                    else
-                    {
-                        for (y = 0; y < ATTRS_L; y++)
-                        {
-                            if (spec == attrs[y])
-                            {
-                                rb_raise(rb_eArgError,
-                                         "text string contains image attribute reference `%%%c'",
-                                         spec);
-                            }
-                        }
-                    }
-                }
-            }
-
             Data_Get_Struct(get_dummy_tm_img(CLASS_OF(self)), Image, image);
             break;
         case 2:
