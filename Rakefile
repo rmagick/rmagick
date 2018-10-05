@@ -32,7 +32,7 @@ task :assert_clean_repo do
 end
 
 desc 'build gem'
-task :build => [:config] do
+task build: [:config] do
   sh 'gem build -V rmagick.gemspec'
   if $CHILD_STATUS.success?
     FileUtils.mkdir_p(File.join(base, 'pkg'))
@@ -43,7 +43,7 @@ task :build => [:config] do
   end
 end
 
-task :push_and_tag => [:build] do
+task push_and_tag: [:build] do
   sh "gem push #{File.join(base, 'pkg', gem_name)}"
   if $CHILD_STATUS.success?
     sh "git tag -a -m \"Version #{version}\" #{version_tag}"
@@ -56,10 +56,10 @@ task :push_and_tag => [:build] do
 end
 
 desc 'Release'
-task :release => [:assert_clean_repo, :push_and_tag]
+task release: [:assert_clean_repo, :push_and_tag]
 
 desc 'Release and build the legacy way'
-task :legacy_release => ['legacy:README.html', 'legacy:extconf', 'legacy:doc', 'legacy:manifest', 'release']
+task legacy_release: ['legacy:README.html', 'legacy:extconf', 'legacy:doc', 'legacy:manifest', 'release']
 
 namespace :legacy do
   require 'find'
@@ -145,7 +145,7 @@ END_HTML_TAIL
   # Ensure files are not executable. (ref: bug #10080)
   desc "Remove files we don't want in the .gem; ensure files are not executable"
   task :fix_files do
-    rm 'README.txt', :verbose => true
+    rm 'README.txt', verbose: true
     chmod 0o644, FileList['doc/*.html', 'doc/ex/*.rb', 'doc/ex/images/*', 'examples/*.rb']
   end
 
@@ -178,13 +178,13 @@ Rake::TestTask.new(:test) do |t|
   t.libs << 'test'
 end
 
-task :test => :compile
-task :spec => :compile
+task test: :compile
+task spec: :compile
 
 if ENV['STYLE_CHECKS']
   require 'rubocop/rake_task'
   RuboCop::RakeTask.new
-  task :default => [:spec, :test, :rubocop]
+  task default: [:spec, :test, :rubocop]
 else
-  task :default => [:spec, :test]
+  task default: [:spec, :test]
 end

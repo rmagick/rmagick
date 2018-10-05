@@ -3,7 +3,7 @@ require 'timeout'
 RSpec.describe Magick::Image, '#read' do
   describe 'issue #200' do
     before do
-      pid = Process.spawn File.join(SUPPORT_DIR, 'issue_200', 'app.rb'), :err => :close, :out => :close
+      pid = Process.spawn File.join(SUPPORT_DIR, 'issue_200', 'app.rb'), err: :close, out: :close
       begin
         Timeout::timeout(1) do
           _, @status = Process.waitpid2 pid

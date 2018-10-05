@@ -21,16 +21,16 @@ module RMagick
 
     def configured_compile_options
       {
-        :magick_config => $magick_config,
-        :with_magick_wand => $with_magick_wand,
-        :pkg_config => $pkg_config,
-        :magick_version => $magick_version,
-        :local_libs => $LOCAL_LIBS,
-        :cflags => $CFLAGS,
-        :cppflags => $CPPFLAGS,
-        :ldflags => $LDFLAGS,
-        :defs => $defs,
-        :config_h => $config_h
+        magick_config: $magick_config,
+        with_magick_wand: $with_magick_wand,
+        pkg_config: $pkg_config,
+        magick_version: $magick_version,
+        local_libs: $LOCAL_LIBS,
+        cflags: $CFLAGS,
+        cppflags: $CPPFLAGS,
+        ldflags: $LDFLAGS,
+        defs: $defs,
+        config_h: $config_h
       }
     end
 
