@@ -24,23 +24,6 @@ Layout/IndentHeredoc:
     - 'ext/RMagick/extconf.rb'
     - 'lib/rvg/to_c.rb'
 
-# Offense count: 15
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: normal, rails
-Layout/IndentationConsistency:
-  Exclude:
-    - 'examples/histogram.rb'
-    - 'lib/rvg/to_c.rb'
-
-# Offense count: 15
-# Cop supports --auto-correct.
-# Configuration parameters: Width, IgnoredPatterns.
-Layout/IndentationWidth:
-  Exclude:
-    - 'examples/histogram.rb'
-    - 'lib/rvg/to_c.rb'
-
 # Offense count: 6
 # Cop supports --auto-correct.
 Layout/LeadingBlankLines:
