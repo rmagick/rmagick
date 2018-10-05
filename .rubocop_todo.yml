@@ -417,17 +417,6 @@ Style/StderrPuts:
     - 'examples/pattern_fill.rb'
     - 'lib/rvg/to_c.rb'
 
-# Offense count: 8
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, ConsistentQuotesInMultiline.
-# SupportedStyles: single_quotes, double_quotes
-Style/StringLiterals:
-  Exclude:
-    - 'test/Image1.rb'
-    - 'test/Image2.rb'
-    - 'test/Image3.rb'
-    - 'test/Image_attributes.rb'
-
 # Offense count: 687
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
 # URISchemes: http, https
