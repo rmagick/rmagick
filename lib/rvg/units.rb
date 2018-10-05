@@ -54,7 +54,7 @@ module Magick
         end
 
         @dpi = Float(n)
-        return @dpi
+        @dpi
       rescue ArgumentError
         raise TypeError, "Can't convert `#{n}' to Float"
       end

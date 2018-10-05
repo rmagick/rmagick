@@ -1252,7 +1252,7 @@ module Magick
     private
 
     def get_current
-      return @images[@scene].__id__
+      @images[@scene].__id__
     rescue StandardError
       nil
     end
