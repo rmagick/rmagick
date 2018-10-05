@@ -56,7 +56,7 @@ task push_and_tag: [:build] do
 end
 
 desc 'Release'
-task release: [:assert_clean_repo, :push_and_tag]
+task release: %i[assert_clean_repo push_and_tag]
 
 desc 'Release and build the legacy way'
 task legacy_release: ['legacy:README.html', 'legacy:extconf', 'legacy:doc', 'legacy:manifest', 'release']
@@ -184,7 +184,7 @@ task spec: :compile
 if ENV['STYLE_CHECKS']
   require 'rubocop/rake_task'
   RuboCop::RakeTask.new
-  task default: [:spec, :test, :rubocop]
+  task default: %i[spec test rubocop]
 else
-  task default: [:spec, :test]
+  task default: %i[spec test]
 end

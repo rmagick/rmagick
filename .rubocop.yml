@@ -7,7 +7,3 @@ inherit_from:
 # Fixing this issues cause some test to fail
 Lint/UnifiedInteger:
   Enabled: false
-
-# %i supported only since ruby 2.0
-Style/SymbolArray:
-  EnforcedStyle: brackets

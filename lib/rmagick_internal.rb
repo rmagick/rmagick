@@ -1073,7 +1073,7 @@ module Magick
         include Observable
 
         # Define a getter and a setter for each channel.
-        [:red, :green, :blue, :opacity].each do |c|
+        %i[red green blue opacity].each do |c|
           module_eval <<-END_EVAL
             def #{c}
                 return collect { |p| p.#{c} }
@@ -1403,8 +1403,8 @@ module Magick
       obj
     end
 
-    [:at, :each, :each_index, :empty?, :fetch,
-     :first, :hash, :include?, :index, :length, :rindex, :sort!].each do |mth|
+    %i[at each each_index empty? fetch
+       first hash include? index length rindex sort!].each do |mth|
       module_eval <<-END_SIMPLE_DELEGATES
         def #{mth}(*args, &block)
           @images.#{mth}(*args, &block)
