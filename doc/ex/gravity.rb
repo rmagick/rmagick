@@ -70,7 +70,7 @@ begin
   puts 'Writing image "rm_gravity_out.miff"...'
   pic.delay = 20
   pic.write './rm_gravity_out.miff'
-rescue
+rescue StandardError
   puts "#{$ERROR_INFO} exception raised."
   exit 1
 end

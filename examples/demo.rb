@@ -316,7 +316,7 @@ begin
 # Uncomment the following lines to display image to screen
 # puts "Displaying image..."
 # montage_image.display
-rescue
+rescue StandardError
   puts "Caught exception: #{$ERROR_INFO}"
 end
 

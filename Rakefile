@@ -92,7 +92,7 @@ namespace :legacy do
     mv name, tmp_name
     begin
       File.open(name, 'w') { |f| lines.each { |line| f.write line } }
-    rescue
+    rescue StandardError
       mv tmp_name, name
     ensure
       rm tmp_name

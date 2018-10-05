@@ -179,7 +179,7 @@ module Magick
           raise ArgumentError, "unknown color `#{color}'"
         rescue TypeError
           raise TypeError, "cannot convert #{color.class} into Pixel"
-        rescue
+        rescue StandardError
           raise ArgumentError, "argument must be a color name or a Pixel (got #{color.class})"
         end
       else

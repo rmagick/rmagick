@@ -393,20 +393,6 @@ Style/RescueModifier:
   Exclude:
     - 'spec/support/issue_200/app.rb'
 
-# Offense count: 7
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: implicit, explicit
-Style/RescueStandardError:
-  Exclude:
-    - 'Rakefile'
-    - 'doc/ex/gravity.rb'
-    - 'doc/ex/mosaic.rb'
-    - 'examples/demo.rb'
-    - 'lib/rmagick_internal.rb'
-    - 'lib/rvg/container.rb'
-    - 'lib/rvg/rvg.rb'
-
 # Offense count: 687
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
 # URISchemes: http, https

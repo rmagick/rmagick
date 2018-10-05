@@ -20,7 +20,7 @@ module Magick
                     elsif c.respond_to?(:dup)
                       begin
                         c.dup
-                      rescue
+                      rescue StandardError
                         c
                       end
                     else

@@ -24,7 +24,7 @@ a.scene = 0
     b.page = page
     begin
       (a.scene += 1)
-    rescue
+    rescue StandardError
       a.scene = 0
     end
   end
