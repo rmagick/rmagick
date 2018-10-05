@@ -6729,7 +6729,7 @@ Image_frame(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    new_image = FrameImage(image, &frame_info, exception);
+    new_image = FrameImage(image, &frame_info, OverCompositeOp, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
