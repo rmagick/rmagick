@@ -96,6 +96,6 @@ END_TRAILER
       list_primitives(pgm, gc)
       trailer_text(pgm, name)
       pgm.close
-      $stderr.puts 'Done'
+      warn 'Done'
     end
 end # class Magick::RVG

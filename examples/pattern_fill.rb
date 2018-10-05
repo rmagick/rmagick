@@ -26,7 +26,7 @@ end
 if ARGV[0]
   pattern = ARGV[0]
 else
-  $stderr.puts 'Defaulting to checkerboard pattern.'
+  warn 'Defaulting to checkerboard pattern.'
   pattern = 'checkerboard'
 end
 

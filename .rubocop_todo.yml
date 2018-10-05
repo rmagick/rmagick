@@ -407,16 +407,6 @@ Style/RescueStandardError:
     - 'lib/rvg/container.rb'
     - 'lib/rvg/rvg.rb'
 
-# Offense count: 5
-# Cop supports --auto-correct.
-Style/StderrPuts:
-  Exclude:
-    - 'examples/find_similar_region.rb'
-    - 'examples/histogram.rb'
-    - 'examples/import_export.rb'
-    - 'examples/pattern_fill.rb'
-    - 'lib/rvg/to_c.rb'
-
 # Offense count: 687
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
 # URISchemes: http, https
