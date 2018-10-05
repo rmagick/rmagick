@@ -168,7 +168,7 @@ if ARGV.length.zero?
 
     Usage:
     ruby identify.rb filename [filename...]
-    END_USAGE
+  END_USAGE
   exit
 end
 

@@ -7,7 +7,7 @@ rvg = Magick::RVG.new(12.cm, 6.cm).viewbox(0, 0, 1200, 600) do |canvas|
   canvas.desc = <<-END_DESC
         Picture showing a "Q" a "T" command, along with annotations showing the
         control points and end points
-        END_DESC
+  END_DESC
   canvas.background_fill = 'white'
   canvas.rect(1195, 592, 1, 1).styles(fill: 'none', stroke: 'blue', stroke_width: 1)
 

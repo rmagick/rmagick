@@ -16,7 +16,7 @@ rvg = Magick::RVG.new(5.cm, 4.cm).viewbox(0, 0, 500, 400) do |canvas|
         Picture showing a simple example of path data using both a
         "C" and an "S" command, along with annotations showing the
         control points and end points.
-        END_DESC
+  END_DESC
 
   canvas.background_fill = 'white'
   canvas.rect(496, 395, 1, 1).styles(Border)

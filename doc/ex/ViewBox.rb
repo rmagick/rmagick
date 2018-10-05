@@ -7,7 +7,7 @@ def example(cols, rows)
             Example ViewBox - uses the viewBox attribute to automatically create an
             initial user coordinate system which causes the graphic to scale to fit
             into the viewport no matter what size the viewport is.
-            END_DESC
+    END_DESC
 
     canvas.viewbox(0, 0, 1500, 1000)
     canvas.preserve_aspect_ratio('none')

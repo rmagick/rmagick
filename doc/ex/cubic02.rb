@@ -16,7 +16,7 @@ rvg = Magick::RVG.new(10.cm, 10.cm).viewbox(0, 0, 1000, 1000) do |canvas|
         Picture showing examples of "C" and "S" commands,
         along with annotations showing the control points
         and end points
-        END_DESC
+  END_DESC
 
   canvas.background_fill = 'white'
   canvas.rect(996, 996, 1, 1).styles(Border)

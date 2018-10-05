@@ -1084,7 +1084,7 @@ module Magick
                 notify_observers(self)
                 nil
             end
-        END_EVAL
+          END_EVAL
         end
       end # class Magick::Image::View::Pixels
 

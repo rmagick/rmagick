@@ -28,7 +28,7 @@ rescue NotImplementedError
   warn <<-END_MSG
     The find_similar_region method is not supported by this version of
     ImageMagick/GraphicsMagick.
-    END_MSG
+  END_MSG
 end
 
 exit

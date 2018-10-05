@@ -6,21 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 11
-# Cop supports --auto-correct.
-Layout/ClosingHeredocIndentation:
-  Exclude:
-    - 'doc/ex/ViewBox.rb'
-    - 'doc/ex/arcs01.rb'
-    - 'doc/ex/arcs02.rb'
-    - 'doc/ex/cubic01.rb'
-    - 'doc/ex/cubic02.rb'
-    - 'doc/ex/quad01.rb'
-    - 'examples/find_similar_region.rb'
-    - 'examples/histogram.rb'
-    - 'examples/identify.rb'
-    - 'lib/rmagick_internal.rb'
-
 # Offense count: 36
 # Cop supports --auto-correct.
 Layout/EmptyLineAfterGuardClause:

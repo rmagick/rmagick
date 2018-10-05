@@ -160,7 +160,7 @@ Geometry: #{columns}x#{rows}
 Class: #{klass}
 Depth: #{depth} bits-per-pixel component
 Colors: #{number_colors}
-            END_TEXT
+        END_TEXT
 
         info = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do
           self.background_color = bg

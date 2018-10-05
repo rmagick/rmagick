@@ -11,7 +11,7 @@ rvg = Magick::RVG.new(12.cm, 5.25.cm).viewbox(0, 0, 1200, 525) do |canvas|
         Pictures showing the result of setting
         large-arc-flag and sweep-flag to the four
         possible combinations of 0 and 1.
-    END_DESC
+  END_DESC
   canvas.background_fill = 'white'
 
   base_ellipses = Magick::RVG::Group.new.styles(BaseEllipsesStyles) do |base|
