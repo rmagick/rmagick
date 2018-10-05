@@ -10208,6 +10208,7 @@ Image_posterize(int argc, VALUE *argv, VALUE self)
     Image *image, *new_image;
     MagickBooleanType dither = MagickFalse;
     unsigned long levels = 4;
+    ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
     switch (argc)
@@ -10226,8 +10227,10 @@ Image_posterize(int argc, VALUE *argv, VALUE self)
 
     new_image = rm_clone_image(image);
 
-    (void) PosterizeImage(new_image, levels, dither);
-    rm_check_image_exception(new_image, DestroyOnError);
+    exception = AcquireExceptionInfo();
+    (void) PosterizeImage(new_image, levels, UndefinedDitherMethod, exception);
+    rm_check_exception(exception, new_image, DestroyOnError);
+    (void) DestroyExceptionInfo(exception);
 
     return rm_image_new(new_image);
 }
