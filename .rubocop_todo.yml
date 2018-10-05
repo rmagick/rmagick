@@ -24,17 +24,6 @@ Layout/IndentHeredoc:
     - 'ext/RMagick/extconf.rb'
     - 'lib/rvg/to_c.rb'
 
-# Offense count: 6
-# Cop supports --auto-correct.
-Layout/LeadingBlankLines:
-  Exclude:
-    - 'examples/describe.rb'
-    - 'examples/image_opacity.rb'
-    - 'examples/pattern_fill.rb'
-    - 'test/ImageList2.rb'
-    - 'test/Info.rb'
-    - 'test/Magick.rb'
-
 # Offense count: 1
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
