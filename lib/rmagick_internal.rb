@@ -1536,8 +1536,9 @@ module Magick
       @images.each { |f| f.delay = Integer(d) }
     end
     
-    #function which will able to give time to every picture specifically according to the user.
+    # Function which will able to give time to every picture specifically according to the user.
     def delay_pre=(d)
+       # Time Unit: milliseconds
        if Integer(d) < 0
          fail ArgumentError, 'delay must be greater than or equal to 0'
        end
