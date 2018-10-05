@@ -39,6 +39,10 @@ Run all tests:
 
 It will run RSpec and Minitest tests.
 
+Useful information about RSpec:
+* [Better Specs](http://www.betterspecs.org/) — how to write RSpec tests better
+* [RSpec matchers cheat sheet](http://cheatrags.com/rspec-matchers) - how to use RSpec matchers to test different things
+
 
 Committing
 ----------
