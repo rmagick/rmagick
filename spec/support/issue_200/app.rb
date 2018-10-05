@@ -1,4 +1,8 @@
 #!/usr/bin/env ruby
 require 'rmagick'
 
-Magick::Image.read(nil) rescue nil
+begin
+  Magick::Image.read(nil)
+rescue StandardError
+  nil
+end
