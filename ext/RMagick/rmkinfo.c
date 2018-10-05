@@ -238,12 +238,16 @@ KernelInfo_builtin(VALUE self, VALUE what, VALUE geometry)
   KernelInfo *kernel;
   KernelInfoType kernel_type;
   GeometryInfo info;
+  ExceptionInfo *exception;
 
   Check_Type(geometry, T_STRING);
   VALUE_TO_ENUM(what, kernel_type, KernelInfoType);
   ParseGeometry(StringValueCStr(geometry), &info);
 
-  kernel = AcquireKernelBuiltIn(kernel_type, &info);
+  exception = AcquireExceptionInfo();
+  kernel = AcquireKernelBuiltIn(kernel_type, &info, exception);
+  CHECK_EXCEPTION();
+  (void) DestroyExceptionInfo(exception);
 
   if (!kernel)
     rb_raise(rb_eRuntimeError, "failed to acquire builtin kernel");
