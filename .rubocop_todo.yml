@@ -6,24 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 36
-# Cop supports --auto-correct.
-Layout/EmptyLineAfterGuardClause:
-  Exclude:
-    - 'Rakefile'
-    - 'doc/ex/get_type_metrics.rb'
-    - 'examples/describe.rb'
-    - 'examples/identify.rb'
-    - 'ext/RMagick/extconf.rb'
-    - 'lib/rmagick_internal.rb'
-    - 'lib/rvg/embellishable.rb'
-    - 'lib/rvg/misc.rb'
-    - 'lib/rvg/pathdata.rb'
-    - 'lib/rvg/rvg.rb'
-    - 'lib/rvg/stretchable.rb'
-    - 'lib/rvg/text.rb'
-    - 'test/Image3.rb'
-
 # Offense count: 18
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.

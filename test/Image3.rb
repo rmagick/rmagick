@@ -633,6 +633,7 @@ class Image3_UT < Test::Unit::TestCase
     # assert good calls work
     Magick::SparseColorMethod.values do |v|
       next if v == Magick::UndefinedColorInterpolate
+
       assert_nothing_raised { img.sparse_color(v, *args) }
     end
     args << Magick::RedChannel

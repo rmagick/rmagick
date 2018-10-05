@@ -211,12 +211,14 @@ SRC
       path.each do |dir|
         file = File.join(dir, 'Magick-config')
         next unless File.executable? file
+
         vers = `#{file} --version`.chomp.strip
         prefix = `#{file} --prefix`.chomp.strip
         versions << [vers, prefix, dir]
       end
       versions.uniq!
       return unless versions.size > 1
+
       msg = "\nWarning: Found more than one ImageMagick installation. This could cause problems at runtime.\n"
       versions.each do |vers, prefix, dir|
         msg << "         #{dir}/Magick-config reports version #{vers} is installed in #{prefix}\n"
@@ -241,6 +243,7 @@ SRC
       end
       matches.delete_if(&:empty?)
       return unless !matches.empty? && matches.length < 3
+
       msg = "\nWarning: Found a partial ImageMagick installation. Your operating system likely has some built-in ImageMagick libraries but not all of ImageMagick. This will most likely cause problems at both compile and runtime.\nFound partial installation at: " + prefix + "\n"
       Logging.message msg
       message msg
@@ -275,6 +278,7 @@ SRC
         lib = File.join(dir, 'lib')
         lib_file = File.join(lib, 'CORE_RL_magick_.lib')
         next unless File.exist?(lib_file)
+
         $CPPFLAGS = %(-I"#{File.join(dir, 'include')}")
         $LDFLAGS = %(-L"#{lib}")
         found_lib = have_library('CORE_RL_magick_')
@@ -282,6 +286,7 @@ SRC
       end
 
       return if found_lib
+
       exit_failure <<END_MINGW
 Can't install RMagick #{RMAGICK_VERS}.
 Can't find the ImageMagick library.
@@ -300,6 +305,7 @@ END_MINGW
 
     def assert_not_windows!
       return unless RUBY_PLATFORM =~ /mswin/
+
       abort <<END_MSWIN
 +----------------------------------------------------------------------------+
 | This rmagick gem is for use only on Linux, BSD, OS X, and similar systems  |
@@ -322,6 +328,7 @@ END_MSWIN
 
     def assert_has_dev_libs!
       return unless RUBY_PLATFORM !~ /mswin|mingw/
+
       # check for pkg-config if Magick-config doesn't exist
       if $magick_config && `Magick-config --libs`[/\bl\s*(MagickCore|Magick)6?\b/]
       elsif $pkg_config && `pkg-config --libs MagickCore`[/\bl\s*(MagickCore|Magick)6?\b/]

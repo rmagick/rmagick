@@ -27,6 +27,7 @@ module Magick
         super()
         r, cx, cy = Magick::RVG.convert_to_float(r, cx, cy)
         raise ArgumentError, "radius must be >= 0 (#{r} given)" if r < 0
+
         @primitive = :circle
         @args = [cx, cy, cx + r, cy]
         self
@@ -43,6 +44,7 @@ module Magick
         if rx < 0 || ry < 0
           raise ArgumentError, "radii must be >= 0 (#{rx}, #{ry} given)"
         end
+
         @primitive = :ellipse
         # Ellipses are always complete.
         @args = [cx, cy, rx, ry, 0, 360]
@@ -80,6 +82,7 @@ module Magick
         if width < 0 || height < 0
           raise ArgumentError, "width, height must be >= 0 (#{width}, #{height} given)"
         end
+
         @args = [x, y, x + width, y + height]
         @primitive = :rectangle
       end
@@ -91,6 +94,7 @@ module Magick
         if rx < 0 || ry < 0
           raise ArgumentError, "rx, ry must be >= 0 (#{rx}, #{ry} given)"
         end
+
         @args << rx << ry
         @primitive = :roundrectangle
         self
@@ -108,6 +112,7 @@ module Magick
           unless !x_coords.empty? && !y_coords.empty?
             raise ArgumentError, 'array arguments must contain at least one point'
           end
+
           n = x_coords.length - y_coords.length
           short = n > 0 ? y_coords : x_coords
           olen = short.length
@@ -118,6 +123,7 @@ module Magick
         if n < 4 || n.odd?
           raise ArgumentError, "insufficient/odd number of points specified: #{n}"
         end
+
         Magick::RVG.convert_to_float(*points)
       end
     end  # class PolyShape
@@ -224,12 +230,14 @@ module Magick
         if @width < 0 || @height < 0
           raise ArgumentError, 'width, height must be >= 0'
         end
+
         init_viewbox
       end
 
       def add_primitives(gc) #:nodoc:
         # Do not render if width or height is 0
         return if @width.zero? || @height.zero?
+
         gc.push
         add_transform_primitives(gc)
         add_style_primitives(gc)

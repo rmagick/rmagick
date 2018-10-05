@@ -50,6 +50,7 @@ module Magick
       # We do our own transformations.
       def add_primitives(gc) #:nodoc:
         return if !@text && @tspans.empty?
+
         gc.push
         x = cx + @dx
         y = cy + @dy
@@ -148,6 +149,7 @@ module Magick
         unless obj.is_a?(Tspan)
           raise ArgumentError, "wrong argument type #{obj.class} (expected Tspan)"
         end
+
         obj = obj.deep_copy
         obj.parent = self
         tref = Tref.new(obj, x, y, self)

@@ -142,6 +142,7 @@ module Magick
       if bg_image && !bg_image.is_a?(Magick::Image)
         raise ArgumentError, "background image must be an Image (got #{bg_image.class})"
       end
+
       @background_image = bg_image
     end
 
@@ -165,6 +166,7 @@ module Magick
       unless %w[scaled tiled fit].include?(bg_pos)
         raise ArgumentError, "background position must be `scaled', `tiled', or `fit' (#{pos} given)"
       end
+
       @background_position = bg_pos.to_sym
     end
 
@@ -232,6 +234,7 @@ module Magick
     # Execute drawing commands. Return the canvas.
     def draw
       raise StandardError, 'draw not permitted in nested RVG objects' if @nested
+
       @canvas ||= new_canvas # allow drawing over existing canvas
       gc = Utility::GraphicContext.new
       add_outermost_primitives(gc)
@@ -272,6 +275,7 @@ module Magick
     def add_primitives(gc) #:nodoc:
       raise ArgumentError, 'RVG width or height undefined' if @width.nil? || @height.nil?
       return self if @width.zero? || @height.zero?
+
       gc.push
       add_outermost_primitives(gc)
       gc.pop

@@ -73,6 +73,7 @@ module Magick
 
         def enquote(text)
           return text if text.length > 2 && /\A(?:\"[^\"]+\"|\'[^\']+\'|\{[^\}]+\})\z/.match(text)
+
           if !text['\'']
             text = '\'' + text + '\''
             return text
@@ -663,6 +664,7 @@ module Magick
 
         def text(x, y, text)
           return if text.length.zero?
+
           text_renderer = if @text_attrs.non_default?
                             TEXT_STRATEGIES[@text_attrs.writing_mode].new(self)
                           else

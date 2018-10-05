@@ -1017,6 +1017,7 @@ module Magick
       view = View.new(self, x, y, width, height)
 
       return view unless block_given?
+
       begin
         yield(view)
       ensure
@@ -1372,10 +1373,12 @@ module Magick
         return r unless r.zero?
       end
       return 0 if @scene.nil? && other.scene.nil?
+
       Kernel.raise TypeError, "cannot convert nil into #{other.scene.class}" if @scene.nil? && !other.scene.nil?
       Kernel.raise TypeError, "cannot convert nil into #{scene.class}" if !@scene.nil? && other.scene.nil?
       r = scene <=> other.scene
       return r unless r.zero?
+
       length <=> other.length
     end
 
@@ -1498,6 +1501,7 @@ module Magick
       if Integer(d) < 0
         raise ArgumentError, 'delay must be greater than or equal to 0'
       end
+
       @images.each { |f| f.delay = Integer(d) }
     end
 
@@ -1736,6 +1740,7 @@ module Magick
     alias_method :__respond_to__?, :respond_to?
     def respond_to?(meth_id, priv = false)
       return true if __respond_to__?(meth_id, priv)
+
       if @scene
         @images[@scene].respond_to?(meth_id, priv)
       else

@@ -141,6 +141,7 @@ module Magick
       signature # compute but ignore - will be displayed along with the other properties
       properties.each do |prop, value|
         next if prop[0, 1] == '['
+
         puts "\t#{prop}: #{value}\n"
       end
       clip_path = self['8BIM:1999,2998:#1']
@@ -148,6 +149,7 @@ module Magick
       each_profile do |name, value|
         puts "\tProfile-#{name}: #{value.length}\n"
         next unless name == 'exif'
+
         exif_attrs = get_exif_by_entry
         exif_attrs.each do |attr|
           puts "\t\t#{attr[0]}: #{attr[1]}\n"
