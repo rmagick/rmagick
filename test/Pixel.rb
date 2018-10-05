@@ -4,22 +4,22 @@ require 'rmagick'
 require 'test/unit'
 require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
 
-class Pixel_UT < Test::Unit::TestCase
+class PixelUT < Test::Unit::TestCase
   def setup
     @pixel = Magick::Pixel.from_color('brown')
   end
 
   def test_hash
     hash = nil
-    assert_nothing_raised { hash = @pixel.hash}
+    assert_nothing_raised { hash = @pixel.hash }
     assert_not_nil(hash)
-    assert_equal(1385501952, hash)
+    assert_equal(1_385_501_952, hash)
 
     p = Magick::Pixel.new
     assert_equal(0, p.hash)
 
     p = Magick::Pixel.from_color('red')
-    assert_equal(2139095040, p.hash)
+    assert_equal(2_139_095_040, p.hash)
 
     # Pixel.hash sacrifices the last bit of the opacity channel
     p = Magick::Pixel.new(0, 0, 0, 72)
@@ -60,29 +60,29 @@ class Pixel_UT < Test::Unit::TestCase
     assert_nothing_raised { @pixel.to_hsla }
 
     18.times do |h|
-    25.times do |s|
-      25.times do |l|
-      5.times do |a|
-        args = [20*h, s+25, l+25, a/5.0]
-        px = Magick::Pixel.from_hsla(*args)
-        hsla = px.to_hsla
-        #puts "[#{args.join(', ')}] = [#{hsla.join(', ')}]"
-        # Handle cases where the result is very near 360
-        #hsla[0] = ((hsla[0] + 0.005) % 360.0) - 0.005
-        #hsla[1] = ((hsla[1] + 0.005) % 360.0) - 0.005
-        #hsla[2] = ((hsla[2] + 0.005) % 360.0) - 0.005
-        assert_in_delta(args[0], hsla[0], 0.25, "expected #{args.inspect} got #{hsla.inspect}")
-        assert_in_delta(args[1], hsla[1], 0.25, "expected #{args.inspect} got #{hsla.inspect}")
-        assert_in_delta(args[2], hsla[2], 0.25, "expected #{args.inspect} got #{hsla.inspect}")
-        assert_in_delta(args[3], hsla[3], 0.005, "expected #{args.inspect} got #{hsla.inspect}")
+      25.times do |s|
+        25.times do |l|
+          5.times do |a|
+            args = [20 * h, s + 25, l + 25, a / 5.0]
+            px = Magick::Pixel.from_hsla(*args)
+            hsla = px.to_hsla
+            # puts "[#{args.join(', ')}] = [#{hsla.join(', ')}]"
+            # Handle cases where the result is very near 360
+            # hsla[0] = ((hsla[0] + 0.005) % 360.0) - 0.005
+            # hsla[1] = ((hsla[1] + 0.005) % 360.0) - 0.005
+            # hsla[2] = ((hsla[2] + 0.005) % 360.0) - 0.005
+            assert_in_delta(args[0], hsla[0], 0.25, "expected #{args.inspect} got #{hsla.inspect}")
+            assert_in_delta(args[1], hsla[1], 0.25, "expected #{args.inspect} got #{hsla.inspect}")
+            assert_in_delta(args[2], hsla[2], 0.25, "expected #{args.inspect} got #{hsla.inspect}")
+            assert_in_delta(args[3], hsla[3], 0.005, "expected #{args.inspect} got #{hsla.inspect}")
+          end
+        end
       end
-      end
-    end
     end
 
     # test percentages
-    args = ['20%','20%','20%','20%']
-    args2 = [360.0/5,255.0/5,255.0/5,1.0/5]
+    args = ['20%', '20%', '20%', '20%']
+    args2 = [360.0 / 5, 255.0 / 5, 255.0 / 5, 1.0 / 5]
     px = Magick::Pixel.from_hsla(*args)
     hsla = px.to_hsla
     px2 = Magick::Pixel.from_hsla(*args2)
@@ -91,7 +91,7 @@ class Pixel_UT < Test::Unit::TestCase
     assert_in_delta(hsla[0], hsla2[0], 0.25, "#{hsla.inspect} != #{hsla2.inspect} with args: #{args.inspect} and #{args2.inspect}")
     assert_in_delta(hsla[1], hsla2[1], 0.25, "#{hsla.inspect} != #{hsla2.inspect} with args: #{args.inspect} and #{args2.inspect}")
     assert_in_delta(hsla[2], hsla2[2], 0.25, "#{hsla.inspect} != #{hsla2.inspect} with args: #{args.inspect} and #{args2.inspect}")
-    assert_in_delta(hsla[3], hsla2[3], 0.005,  "#{hsla.inspect} != #{hsla2.inspect} with args: #{args.inspect} and #{args2.inspect}")
+    assert_in_delta(hsla[3], hsla2[3], 0.005, "#{hsla.inspect} != #{hsla2.inspect} with args: #{args.inspect} and #{args2.inspect}")
   end
 
   def test_to_color

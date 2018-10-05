@@ -20,7 +20,7 @@ gc.stroke = 'black'
 gc.stroke_width = 1
 
 23.times do
-  ruby << Magick::Image.new(100, 100) {self.background_color = 'none'}
+  ruby << Magick::Image.new(100, 100) { self.background_color = 'none' }
   gc.annotate(ruby, 0, 0, 0, 0, 'Ruby')
   gc.rotation = 15
 end
@@ -43,7 +43,6 @@ begin
   result.delay = 10
   result.write('composite_layers.gif')
   result[0].write('composite_layers1.gif')
-
 rescue NotImplementedError
   result = Magick::Image.read('images/notimplemented.gif').first
   result.resize!(100, 100)

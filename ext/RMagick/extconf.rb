@@ -9,9 +9,10 @@ module RMagick
     require 'rmagick/version'
     RMAGICK_VERS = ::Magick::VERSION
     MIN_RUBY_VERS = ::Magick::MIN_RUBY_VERSION
-    MIN_RUBY_VERS_NO = MIN_RUBY_VERS.tr('.','').to_i
+    MIN_RUBY_VERS_NO = MIN_RUBY_VERS.tr('.', '').to_i
 
     attr_reader :headers
+
     def initialize
       configure_compile_options
       assert_can_compile!
@@ -22,21 +23,21 @@ module RMagick
       {
         :magick_config => $magick_config,
         :with_magick_wand => $with_magick_wand,
-        :pkg_config    => $pkg_config,
+        :pkg_config => $pkg_config,
         :magick_version => $magick_version,
-        :local_libs     => $LOCAL_LIBS,
-        :cflags         => $CFLAGS,
-        :cppflags       => $CPPFLAGS,
-        :ldflags        => $LDFLAGS,
-        :defs           => $defs,
-        :config_h       => $config_h,
+        :local_libs => $LOCAL_LIBS,
+        :cflags => $CFLAGS,
+        :cppflags => $CPPFLAGS,
+        :ldflags => $LDFLAGS,
+        :defs => $defs,
+        :config_h => $config_h
       }
     end
 
     def configure_headers
-      #headers = %w{assert.h ctype.h errno.h float.h limits.h math.h stdarg.h stddef.h stdint.h stdio.h stdlib.h string.h time.h}
-      @headers = %w{assert.h ctype.h stdio.h stdlib.h math.h time.h}
-      headers << 'stdint.h' if have_header('stdint.h')  # defines uint64_t
+      # headers = %w{assert.h ctype.h errno.h float.h limits.h math.h stdarg.h stddef.h stdint.h stdio.h stdlib.h string.h time.h}
+      @headers = %w[assert.h ctype.h stdio.h stdlib.h math.h time.h]
+      headers << 'stdint.h' if have_header('stdint.h') # defines uint64_t
       headers << 'sys/types.h' if have_header('sys/types.h')
 
       if have_header('wand/MagickWand.h')
@@ -101,60 +102,58 @@ module RMagick
         if $with_magick_wand
           if $magick_config
             # Save flags
-            $CFLAGS     = ENV['CFLAGS'].to_s   + ' ' + `MagickWand-config --cflags`.chomp
-            $CPPFLAGS   = ENV['CPPFLAGS'].to_s + ' ' + `MagickWand-config --cppflags`.chomp
-            $LDFLAGS    = ENV['LDFLAGS'].to_s  + ' ' + `MagickWand-config --ldflags`.chomp
-            $LOCAL_LIBS = ENV['LIBS'].to_s     + ' ' + `MagickWand-config --libs`.chomp
+            $CFLAGS = ENV['CFLAGS'].to_s + ' ' + `MagickWand-config --cflags`.chomp
+            $CPPFLAGS = ENV['CPPFLAGS'].to_s + ' ' + `MagickWand-config --cppflags`.chomp
+            $LDFLAGS = ENV['LDFLAGS'].to_s + ' ' + `MagickWand-config --ldflags`.chomp
+            $LOCAL_LIBS = ENV['LIBS'].to_s + ' ' + `MagickWand-config --libs`.chomp
           end
 
           if $pkg_config
             # Save flags
-            $CFLAGS     = ENV['CFLAGS'].to_s   + ' ' + `pkg-config --cflags MagickWand`.chomp
-            $CPPFLAGS   = ENV['CPPFLAGS'].to_s + ' ' + `pkg-config --cflags MagickWand`.chomp
-            $LDFLAGS    = ENV['LDFLAGS'].to_s  + ' ' + `pkg-config --libs MagickWand`.chomp
-            $LOCAL_LIBS = ENV['LIBS'].to_s     + ' ' + `pkg-config --libs MagickWand`.chomp
+            $CFLAGS = ENV['CFLAGS'].to_s + ' ' + `pkg-config --cflags MagickWand`.chomp
+            $CPPFLAGS = ENV['CPPFLAGS'].to_s + ' ' + `pkg-config --cflags MagickWand`.chomp
+            $LDFLAGS = ENV['LDFLAGS'].to_s + ' ' + `pkg-config --libs MagickWand`.chomp
+            $LOCAL_LIBS = ENV['LIBS'].to_s + ' ' + `pkg-config --libs MagickWand`.chomp
           end
         else
           if $magick_config
             # Save flags
-            $CFLAGS     = ENV['CFLAGS'].to_s   + ' ' + `Magick-config --cflags`.chomp
-            $CPPFLAGS   = ENV['CPPFLAGS'].to_s + ' ' + `Magick-config --cppflags`.chomp
-            $LDFLAGS    = ENV['LDFLAGS'].to_s  + ' ' + `Magick-config --ldflags`.chomp
-            $LOCAL_LIBS = ENV['LIBS'].to_s     + ' ' + `Magick-config --libs`.chomp
+            $CFLAGS = ENV['CFLAGS'].to_s + ' ' + `Magick-config --cflags`.chomp
+            $CPPFLAGS = ENV['CPPFLAGS'].to_s + ' ' + `Magick-config --cppflags`.chomp
+            $LDFLAGS = ENV['LDFLAGS'].to_s + ' ' + `Magick-config --ldflags`.chomp
+            $LOCAL_LIBS = ENV['LIBS'].to_s + ' ' + `Magick-config --libs`.chomp
           end
 
           if $pkg_config
             # Save flags
-            $CFLAGS     = ENV['CFLAGS'].to_s   + ' ' + `pkg-config --cflags MagickCore`.chomp
-            $CPPFLAGS   = ENV['CPPFLAGS'].to_s + ' ' + `pkg-config --cflags MagickCore`.chomp
-            $LDFLAGS    = ENV['LDFLAGS'].to_s  + ' ' + `pkg-config --libs MagickCore`.chomp
-            $LOCAL_LIBS = ENV['LIBS'].to_s     + ' ' + `pkg-config --libs MagickCore`.chomp
+            $CFLAGS = ENV['CFLAGS'].to_s + ' ' + `pkg-config --cflags MagickCore`.chomp
+            $CPPFLAGS = ENV['CPPFLAGS'].to_s + ' ' + `pkg-config --cflags MagickCore`.chomp
+            $LDFLAGS = ENV['LDFLAGS'].to_s + ' ' + `pkg-config --libs MagickCore`.chomp
+            $LOCAL_LIBS = ENV['LIBS'].to_s + ' ' + `pkg-config --libs MagickCore`.chomp
           end
         end
 
-        if RUBY_PLATFORM =~ /darwin/ # osx
-          set_archflags_for_osx
-        end
+        set_archflags_for_osx if RUBY_PLATFORM =~ /darwin/ # osx
 
-      elsif RUBY_PLATFORM =~ /mingw/  # mingw
+      elsif RUBY_PLATFORM =~ /mingw/ # mingw
 
         `identify -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
-        abort 'Unable to get ImageMagick version' unless $1
-        $magick_version = $1
+        abort 'Unable to get ImageMagick version' unless Regexp.last_match(1)
+        $magick_version = Regexp.last_match(1)
         unless have_library('CORE_RL_magick_')
           search_paths_for_library_for_mingw
         end
         have_library('X11')
 
-      else  # mswin
+      else # mswin
 
         `identify -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
-        abort 'Unable to get ImageMagick version' unless $1
-        $magick_version = $1
+        abort 'Unable to get ImageMagick version' unless Regexp.last_match(1)
+        $magick_version = Regexp.last_match(1)
         $CFLAGS = '-W3'
-        $CPPFLAGS = %Q{-I"C:\\Program Files\\Microsoft Platform SDK for Windows Server 2003 R2\\Include" -I"C:\\Program Files\\ImageMagick-#{$magick_version}-Q8\\include"}
+        $CPPFLAGS = %(-I"C:\\Program Files\\Microsoft Platform SDK for Windows Server 2003 R2\\Include" -I"C:\\Program Files\\ImageMagick-#{$magick_version}-Q8\\include")
         # The /link option is required by the Makefile but causes warnings in the mkmf.log file.
-        $LDFLAGS = %Q{/link /LIBPATH:"C:\\Program Files\\Microsoft Platform SDK for Windows Server 2003 R2\\Lib" /LIBPATH:"C:\\Program Files\\ImageMagick-#{$magick_version}-Q8\\lib" /LIBPATH:"C:\\ruby\\lib"}
+        $LDFLAGS = %(/link /LIBPATH:"C:\\Program Files\\Microsoft Platform SDK for Windows Server 2003 R2\\Lib" /LIBPATH:"C:\\Program Files\\ImageMagick-#{$magick_version}-Q8\\lib" /LIBPATH:"C:\\ruby\\lib")
         $LOCAL_LIBS = 'CORE_RL_magick_.lib'
         have_library('X11')
 
@@ -162,11 +161,11 @@ module RMagick
     end
 
     # Test for a specific value in an enum type
-    def have_enum_value(enum, value, headers=nil, &b)
+    def have_enum_value(enum, value, headers = nil, &b)
       checking_for "#{enum}.#{value}" do
         if try_compile(<<"SRC", &b)
 #{COMMON_HEADERS}
-#{cpp_include(headers)}
+        #{cpp_include(headers)}
 /*top*/
 int main() { #{enum} t = #{value}; t = t; return 0; }
 SRC
@@ -179,7 +178,7 @@ SRC
     end
 
     # Test for multiple values of the same enum type
-    def have_enum_values(enum, values, headers=nil, &b)
+    def have_enum_values(enum, values, headers = nil, &b)
       values.each do |value|
         have_enum_value(enum, value, headers, &b)
       end
@@ -192,7 +191,7 @@ SRC
          File.readlink(config_path) =~ /GraphicsMagick/
         msg = 'Found a graphicsmagick-libmagick-dev-compat installation.'
         Logging.message msg
-        message msg+"\n"
+        message msg + "\n"
         true
       else
         false
@@ -201,7 +200,7 @@ SRC
 
     def exit_failure(msg)
       Logging.message msg
-      message msg+"\n"
+      message msg + "\n"
       exit(1)
     end
 
@@ -211,22 +210,20 @@ SRC
       path = ENV['PATH'].split(File::PATH_SEPARATOR)
       path.each do |dir|
         file = File.join(dir, 'Magick-config')
-        if File.executable? file
-          vers = `#{file} --version`.chomp.strip
-          prefix = `#{file} --prefix`.chomp.strip
-          versions << [vers, prefix, dir]
-        end
+        next unless File.executable? file
+        vers = `#{file} --version`.chomp.strip
+        prefix = `#{file} --prefix`.chomp.strip
+        versions << [vers, prefix, dir]
       end
       versions.uniq!
-      if versions.size > 1
-        msg = "\nWarning: Found more than one ImageMagick installation. This could cause problems at runtime.\n"
-        versions.each do |vers, prefix, dir|
-          msg << "         #{dir}/Magick-config reports version #{vers} is installed in #{prefix}\n"
-        end
-        msg << "Using #{versions[0][0]} from #{versions[0][1]}.\n\n"
-        Logging.message msg
-        message msg
+      return unless versions.size > 1
+      msg = "\nWarning: Found more than one ImageMagick installation. This could cause problems at runtime.\n"
+      versions.each do |vers, prefix, dir|
+        msg << "         #{dir}/Magick-config reports version #{vers} is installed in #{prefix}\n"
       end
+      msg << "Using #{versions[0][0]} from #{versions[0][1]}.\n\n"
+      Logging.message msg
+      message msg
     end
 
     # Ubuntu (maybe other systems) comes with a partial installation of
@@ -236,18 +233,17 @@ SRC
     def check_partial_imagemagick_versions
       prefix = config_string('prefix') || ''
       matches = [
-        prefix+'/lib/lib?agick*',
-        prefix+'/include/ImageMagick',
-        prefix+'/bin/Magick-config',
+        prefix + '/lib/lib?agick*',
+        prefix + '/include/ImageMagick',
+        prefix + '/bin/Magick-config'
       ].map do |file_glob|
         Dir.glob(file_glob)
       end
-      matches.delete_if { |arr| arr.empty? }
-      if 0 < matches.length && matches.length < 3
-        msg = "\nWarning: Found a partial ImageMagick installation. Your operating system likely has some built-in ImageMagick libraries but not all of ImageMagick. This will most likely cause problems at both compile and runtime.\nFound partial installation at: "+prefix+"\n"
-        Logging.message msg
-        message msg
-      end
+      matches.delete_if(&:empty?)
+      return unless !matches.empty? && matches.length < 3
+      msg = "\nWarning: Found a partial ImageMagick installation. Your operating system likely has some built-in ImageMagick libraries but not all of ImageMagick. This will most likely cause problems at both compile and runtime.\nFound partial installation at: " + prefix + "\n"
+      Logging.message msg
+      message msg
     end
 
     # issue #169
@@ -261,20 +257,16 @@ SRC
       archs = $ARCH_FLAG.scan(/-arch\s+(\S+)/).flatten
 
       archs.each do |arch|
-        if fileinfo.include?(arch)
-          archflags << "-arch #{arch}"
-        end
+        archflags << "-arch #{arch}" if fileinfo.include?(arch)
       end
 
-      if archflags.length != 0
-        $ARCH_FLAG = archflags.join(' ')
-      end
+      $ARCH_FLAG = archflags.join(' ') unless archflags.empty?
     end
 
     def search_paths_for_library_for_mingw
       msg = 'searching PATH for the ImageMagick library...'
       Logging.message msg
-      message msg+"\n"
+      message msg + "\n"
 
       found_lib = false
 
@@ -282,16 +274,15 @@ SRC
       paths.each do |dir|
         lib = File.join(dir, 'lib')
         lib_file = File.join(lib, 'CORE_RL_magick_.lib')
-        if File.exist?(lib_file)
-          $CPPFLAGS = %Q{-I"#{File.join(dir, 'include')}"}
-          $LDFLAGS = %Q{-L"#{lib}"}
-          found_lib = have_library('CORE_RL_magick_')
-          break if found_lib
-        end
+        next unless File.exist?(lib_file)
+        $CPPFLAGS = %(-I"#{File.join(dir, 'include')}")
+        $LDFLAGS = %(-L"#{lib}")
+        found_lib = have_library('CORE_RL_magick_')
+        break if found_lib
       end
 
-      unless found_lib
-        exit_failure <<END_MINGW
+      return if found_lib
+      exit_failure <<END_MINGW
 Can't install RMagick #{RMAGICK_VERS}.
 Can't find the ImageMagick library.
 Retry with '--with-opt-dir' option.
@@ -299,7 +290,6 @@ Usage: gem install rmagick -- '--with-opt-dir=\"[path to ImageMagick]\"'
 e.g.
   gem install rmagick -- '--with-opt-dir=\"C:\Program Files\ImageMagick-6.9.1-Q16\"'
 END_MINGW
-      end
     end
 
     def assert_can_compile!
@@ -309,8 +299,8 @@ END_MINGW
     end
 
     def assert_not_windows!
-      if RUBY_PLATFORM =~ /mswin/
-        abort <<END_MSWIN
+      return unless RUBY_PLATFORM =~ /mswin/
+      abort <<END_MSWIN
 +----------------------------------------------------------------------------+
 | This rmagick gem is for use only on Linux, BSD, OS X, and similar systems  |
 | that have a gnu or similar toolchain installed. The rmagick-win32 gem is a |
@@ -319,12 +309,11 @@ END_MINGW
 | See http://rmagick.rubyforge.org/install-faq.html for more information.    |
 +----------------------------------------------------------------------------+
 END_MSWIN
-      end
     end
 
     def assert_minimum_ruby_version!
       unless checking_for("Ruby version >= #{MIN_RUBY_VERS}") do
-        version = RUBY_VERSION.tr('.','').to_i
+        version = RUBY_VERSION.tr('.', '').to_i
         version >= MIN_RUBY_VERS_NO
       end
         exit_failure "Can't install RMagick #{RMAGICK_VERS}. Ruby #{MIN_RUBY_VERS} or later required.\n"
@@ -332,71 +321,69 @@ END_MSWIN
     end
 
     def assert_has_dev_libs!
-      if RUBY_PLATFORM !~ /mswin|mingw/
-
-        # check for pkg-config if Magick-config doesn't exist
-        if $magick_config && `Magick-config --libs`[/\bl\s*(MagickCore|Magick)6?\b/]
-        elsif $pkg_config && `pkg-config --libs MagickCore`[/\bl\s*(MagickCore|Magick)6?\b/]
-        else
-            exit_failure "Can't install RMagick #{RMAGICK_VERS}. " \
+      return unless RUBY_PLATFORM !~ /mswin|mingw/
+      # check for pkg-config if Magick-config doesn't exist
+      if $magick_config && `Magick-config --libs`[/\bl\s*(MagickCore|Magick)6?\b/]
+      elsif $pkg_config && `pkg-config --libs MagickCore`[/\bl\s*(MagickCore|Magick)6?\b/]
+      else
+        exit_failure "Can't install RMagick #{RMAGICK_VERS}. " \
                    "Can't find the ImageMagick library or one of the dependent libraries. " \
                    "Check the mkmf.log file for more detailed information.\n"
-        end
       end
     end
 
     def create_header_file
       have_func('snprintf', headers)
-      ['AcquireImage',                   # 6.4.1
-       'AffinityImage',                  # 6.4.3-6
-       'AffinityImages',                 # 6.4.3-6
-       'AutoGammaImageChannel',          # 6.5.5-1
-       'AutoLevelImageChannel',          # 6.5.5-1
-       'BlueShiftImage',                 # 6.5.4-3
-       'ColorMatrixImage',               # 6.6.1-0
-       'ConstituteComponentTerminus',    # 6.5.7-9
-       'DeskewImage',                    # 6.4.2-5
-       'DestroyConstitute',              # 6.5.7-9(deprecated)
-       'EncipherImage',                  # 6.3.8-6
-       'EqualizeImageChannel',           # 6.3.6-9
-       'EvaluateImages',                 # 6.8.6-4
-       'FloodfillPaintImage',            # 6.3.7
-       'FunctionImageChannel',           # 6.4.8-8
-       'GetAuthenticIndexQueue',         # 6.4.5-6
-       'GetAuthenticPixels',             # 6.4.5-6
-       'GetImageAlphaChannel',           # 6.3.9-2
-       'GetMagickFeatures',              # 6.5.7-1
-       'GetVirtualPixels',               # 6.4.5-6
-       'LevelImageColors',               # 6.4.2
-       'LevelColorsImageChannel',        # 6.5.6-4
-       'LevelizeImageChannel',           # 6.4.2
-       'LiquidRescaleImage',             # 6.3.8-2
-       'MagickLibAddendum',              # 6.5.9-1
-       'OpaquePaintImageChannel',        # 6.3.7-10
-       'QueueAuthenticPixels',           # 6.4.5-6
-       'RemapImage',                     # 6.4.4-0
-       'RemapImages',                    # 6.4.4-0
-       'RemoveImageArtifact',            # 6.3.6
-       'RotationalBlurImage',            # 6.8.8-9
-       'RotationalBlurImageChannel',     # 6.8.8-9
-       'SelectiveBlurImageChannel',      # 6.5.0-3
-       'SetImageAlphaChannel',           # 6.3.6-9
-       'SetImageArtifact',               # 6.3.6
-       'SetMagickMemoryMethods',         # 6.4.1
-       'SparseColorImage',               # 6.3.6-?
-       'StatisticImage',                 # 6.6.8-6
-       'SyncAuthenticPixels',            # 6.4.5-6
-       'TransformImageColorspace',       # 6.5.1
-       'TransparentPaintImage',          # 6.3.7-10
-       'TransparentPaintImageChroma'     # 6.4.5-6
+      ['AcquireImage', # 6.4.1
+       'AffinityImage', # 6.4.3-6
+       'AffinityImages', # 6.4.3-6
+       'AutoGammaImageChannel', # 6.5.5-1
+       'AutoLevelImageChannel', # 6.5.5-1
+       'BlueShiftImage', # 6.5.4-3
+       'ColorMatrixImage', # 6.6.1-0
+       'ConstituteComponentTerminus', # 6.5.7-9
+       'DeskewImage', # 6.4.2-5
+       'DestroyConstitute', # 6.5.7-9(deprecated)
+       'EncipherImage', # 6.3.8-6
+       'EqualizeImageChannel', # 6.3.6-9
+       'EvaluateImages', # 6.8.6-4
+       'FloodfillPaintImage', # 6.3.7
+       'FunctionImageChannel', # 6.4.8-8
+       'GetAuthenticIndexQueue', # 6.4.5-6
+       'GetAuthenticPixels', # 6.4.5-6
+       'GetImageAlphaChannel', # 6.3.9-2
+       'GetMagickFeatures', # 6.5.7-1
+       'GetVirtualPixels', # 6.4.5-6
+       'LevelImageColors', # 6.4.2
+       'LevelColorsImageChannel', # 6.5.6-4
+       'LevelizeImageChannel', # 6.4.2
+       'LiquidRescaleImage', # 6.3.8-2
+       'MagickLibAddendum', # 6.5.9-1
+       'OpaquePaintImageChannel', # 6.3.7-10
+       'QueueAuthenticPixels', # 6.4.5-6
+       'RemapImage', # 6.4.4-0
+       'RemapImages', # 6.4.4-0
+       'RemoveImageArtifact', # 6.3.6
+       'RotationalBlurImage', # 6.8.8-9
+       'RotationalBlurImageChannel', # 6.8.8-9
+       'SelectiveBlurImageChannel', # 6.5.0-3
+       'SetImageAlphaChannel', # 6.3.6-9
+       'SetImageArtifact', # 6.3.6
+       'SetMagickMemoryMethods', # 6.4.1
+       'SparseColorImage', # 6.3.6-?
+       'StatisticImage', # 6.6.8-6
+       'SyncAuthenticPixels', # 6.4.5-6
+       'TransformImageColorspace', # 6.5.1
+       'TransparentPaintImage', # 6.3.7-10
+       'TransparentPaintImageChroma' # 6.4.5-6
       ].each do |func|
         have_func(func, headers)
       end
 
-      checking_for('QueryMagickColorname() new signature')  do
+      checking_for('QueryMagickColorname() new signature') do
         if try_compile(<<"SRC")
 #{COMMON_HEADERS}
-#{cpp_include(headers)}
+        #{cpp_include(headers)}
 /*top*/
 int main() {
   MagickBooleanType okay;
@@ -415,85 +402,85 @@ SRC
         end
       end
 
-      have_struct_member('Image', 'type', headers)          # ???
-      have_struct_member('DrawInfo', 'kerning', headers)    # 6.4.7-8
-      have_struct_member('DrawInfo', 'interline_spacing', headers)   # 6.5.5-8
-      have_struct_member('DrawInfo', 'interword_spacing', headers)   # 6.4.8-0
-      have_type('DitherMethod', headers)                    # 6.4.2
-      have_type('MagickFunction', headers)                  # 6.4.8-8
-      have_type('ImageLayerMethod', headers)                # 6.3.6 replaces MagickLayerMethod
+      have_struct_member('Image', 'type', headers) # ???
+      have_struct_member('DrawInfo', 'kerning', headers) # 6.4.7-8
+      have_struct_member('DrawInfo', 'interline_spacing', headers) # 6.5.5-8
+      have_struct_member('DrawInfo', 'interword_spacing', headers) # 6.4.8-0
+      have_type('DitherMethod', headers) # 6.4.2
+      have_type('MagickFunction', headers) # 6.4.8-8
+      have_type('ImageLayerMethod', headers) # 6.3.6 replaces MagickLayerMethod
       have_type('long double', headers)
-      #have_type("unsigned long long", headers)
-      #have_type("uint64_t", headers)
-      #have_type("__int64", headers)
-      #have_type("uintmax_t", headers)
-      #check_sizeof("unsigned long", headers)
-      #check_sizeof("Image *", headers)
+      # have_type("unsigned long long", headers)
+      # have_type("uint64_t", headers)
+      # have_type("__int64", headers)
+      # have_type("uintmax_t", headers)
+      # check_sizeof("unsigned long", headers)
+      # check_sizeof("Image *", headers)
 
-      have_enum_values('AlphaChannelType', ['CopyAlphaChannel',                    # 6.4.3-7
-                                            'BackgroundAlphaChannel',              # 6.5.2-5
-                                            'RemoveAlphaChannel'], headers)        # 6.7.5-1
-      have_enum_values('CompositeOperator', ['BlurCompositeOp',                    # 6.5.3-7
-                                             'DistortCompositeOp',                 # 6.5.3-10
-                                             'LinearBurnCompositeOp',              # 6.5.4-3
-                                             'LinearDodgeCompositeOp',             # 6.5.4-3
-                                             'MathematicsCompositeOp',             # 6.5.4-3
-                                             'PegtopLightCompositeOp',             # 6.5.4-3
-                                             'PinLightCompositeOp',                # 6.5.4-3
-                                             'VividLightCompositeOp'], headers)    # 6.5.4-3
-      have_enum_values('CompressionType', ['DXT1Compression',                      # 6.3.9-3
-                                           'DXT3Compression',                      # 6.3.9-3
-                                           'DXT5Compression',                      # 6.3.9-3
-                                           'ZipSCompression',                      # 6.5.5-4
-                                           'PizCompression',                       # 6.5.5-4
-                                           'Pxr24Compression',                     # 6.5.5-4
-                                           'B44Compression',                       # 6.5.5-4
-                                           'B44ACompression'], headers)            # 6.5.5-4
+      have_enum_values('AlphaChannelType', ['CopyAlphaChannel', # 6.4.3-7
+                                            'BackgroundAlphaChannel', # 6.5.2-5
+                                            'RemoveAlphaChannel'], headers) # 6.7.5-1
+      have_enum_values('CompositeOperator', ['BlurCompositeOp', # 6.5.3-7
+                                             'DistortCompositeOp', # 6.5.3-10
+                                             'LinearBurnCompositeOp', # 6.5.4-3
+                                             'LinearDodgeCompositeOp', # 6.5.4-3
+                                             'MathematicsCompositeOp', # 6.5.4-3
+                                             'PegtopLightCompositeOp', # 6.5.4-3
+                                             'PinLightCompositeOp', # 6.5.4-3
+                                             'VividLightCompositeOp'], headers) # 6.5.4-3
+      have_enum_values('CompressionType', ['DXT1Compression', # 6.3.9-3
+                                           'DXT3Compression', # 6.3.9-3
+                                           'DXT5Compression', # 6.3.9-3
+                                           'ZipSCompression', # 6.5.5-4
+                                           'PizCompression', # 6.5.5-4
+                                           'Pxr24Compression', # 6.5.5-4
+                                           'B44Compression', # 6.5.5-4
+                                           'B44ACompression'], headers) # 6.5.5-4
 
-      have_enum_values('DistortImageMethod', ['BarrelDistortion',                  # 6.4.2-5
-                                              'BarrelInverseDistortion',           # 6.4.3-8
-                                              'BilinearForwardDistortion',         # 6.5.1-2
-                                              'BilinearReverseDistortion',         # 6.5.1-2
-                                              'DePolarDistortion',                 # 6.4.2-6
-                                              'PolarDistortion',                   # 6.4.2-6
-                                              'PolynomialDistortion',              # 6.4.2-4
-                                              'ShepardsDistortion'], headers)      # 6.4.2-4
-      have_enum_value('DitherMethod', 'NoDitherMethod', headers)                   # 6.4.3
-      have_enum_values('FilterTypes', ['KaiserFilter',                             # 6.3.6
-                                       'WelshFilter',                              # 6.3.6-4
-                                       'ParzenFilter',                             # 6.3.6-4
-                                       'LagrangeFilter',                           # 6.3.7-2
-                                       'BohmanFilter',                             # 6.3.7-2
-                                       'BartlettFilter',                           # 6.3.7-2
-                                       'SentinelFilter'], headers)                 # 6.3.7-2
-      have_enum_values('MagickEvaluateOperator', ['PowEvaluateOperator',           # 6.4.1-9
-                                                  'LogEvaluateOperator',            # 6.4.2
-                                                  'ThresholdEvaluateOperator',      # 6.4.3
+      have_enum_values('DistortImageMethod', ['BarrelDistortion', # 6.4.2-5
+                                              'BarrelInverseDistortion', # 6.4.3-8
+                                              'BilinearForwardDistortion', # 6.5.1-2
+                                              'BilinearReverseDistortion', # 6.5.1-2
+                                              'DePolarDistortion', # 6.4.2-6
+                                              'PolarDistortion', # 6.4.2-6
+                                              'PolynomialDistortion', # 6.4.2-4
+                                              'ShepardsDistortion'], headers) # 6.4.2-4
+      have_enum_value('DitherMethod', 'NoDitherMethod', headers) # 6.4.3
+      have_enum_values('FilterTypes', ['KaiserFilter', # 6.3.6
+                                       'WelshFilter', # 6.3.6-4
+                                       'ParzenFilter', # 6.3.6-4
+                                       'LagrangeFilter', # 6.3.7-2
+                                       'BohmanFilter', # 6.3.7-2
+                                       'BartlettFilter', # 6.3.7-2
+                                       'SentinelFilter'], headers) # 6.3.7-2
+      have_enum_values('MagickEvaluateOperator', ['PowEvaluateOperator', # 6.4.1-9
+                                                  'LogEvaluateOperator', # 6.4.2
+                                                  'ThresholdEvaluateOperator', # 6.4.3
                                                   'ThresholdBlackEvaluateOperator', # 6.4.3
                                                   'ThresholdWhiteEvaluateOperator', # 6.4.3
-                                                  'GaussianNoiseEvaluateOperator',  # 6.4.3
-                                                  'ImpulseNoiseEvaluateOperator',   # 6.4.3
+                                                  'GaussianNoiseEvaluateOperator', # 6.4.3
+                                                  'ImpulseNoiseEvaluateOperator', # 6.4.3
                                                   'LaplacianNoiseEvaluateOperator', # 6.4.3
                                                   'MultiplicativeNoiseEvaluateOperator', # 6.4.3
-                                                  'PoissonNoiseEvaluateOperator',   # 6.4.3
-                                                  'UniformNoiseEvaluateOperator',   # 6.4.3
-                                                  'CosineEvaluateOperator',         # 6.4.8-5
-                                                  'SineEvaluateOperator',           # 6.4.8-5
-                                                  'AddModulusEvaluateOperator'],    # 6.4.8-5
+                                                  'PoissonNoiseEvaluateOperator', # 6.4.3
+                                                  'UniformNoiseEvaluateOperator', # 6.4.3
+                                                  'CosineEvaluateOperator', # 6.4.8-5
+                                                  'SineEvaluateOperator', # 6.4.8-5
+                                                  'AddModulusEvaluateOperator'], # 6.4.8-5
                        headers)
-      have_enum_values('MagickFunction', ['ArcsinFunction',                        # 6.5.2-8
-                                          'ArctanFunction',                        # 6.5.2-8
-                                          'PolynomialFunction',                    # 6.4.8-8
-                                          'SinusoidFunction'], headers)            # 6.4.8-8
-      have_enum_values('ImageLayerMethod', ['FlattenLayer',                           # 6.3.6-2
-                                            'MergeLayer',                             # 6.3.6
-                                            'MosaicLayer',                            # 6.3.6-2
-                                            'TrimBoundsLayer' ], headers)             # 6.4.3-8
-      have_enum_values('VirtualPixelMethod', ['HorizontalTileVirtualPixelMethod',     # 6.4.2-6
-                                              'VerticalTileVirtualPixelMethod',       # 6.4.2-6
+      have_enum_values('MagickFunction', ['ArcsinFunction', # 6.5.2-8
+                                          'ArctanFunction', # 6.5.2-8
+                                          'PolynomialFunction', # 6.4.8-8
+                                          'SinusoidFunction'], headers) # 6.4.8-8
+      have_enum_values('ImageLayerMethod', ['FlattenLayer', # 6.3.6-2
+                                            'MergeLayer', # 6.3.6
+                                            'MosaicLayer', # 6.3.6-2
+                                            'TrimBoundsLayer'], headers) # 6.4.3-8
+      have_enum_values('VirtualPixelMethod', ['HorizontalTileVirtualPixelMethod', # 6.4.2-6
+                                              'VerticalTileVirtualPixelMethod', # 6.4.2-6
                                               'HorizontalTileEdgeVirtualPixelMethod', # 6.5.0-1
-                                              'VerticalTileEdgeVirtualPixelMethod',   # 6.5.0-1
-                                              'CheckerTileVirtualPixelMethod'],       # 6.5.0-1
+                                              'VerticalTileEdgeVirtualPixelMethod', # 6.5.0-1
+                                              'CheckerTileVirtualPixelMethod'], # 6.5.0-1
                        headers)
 
       headers = ['ruby.h', 'ruby/io.h']
@@ -525,10 +512,10 @@ SRC
 
 
 #{'=' * 70}
-#{DateTime.now.strftime('%a %d%b%y %T')}
+      #{DateTime.now.strftime('%a %d%b%y %T')}
 This installation of RMagick #{RMAGICK_VERS} is configured for
 Ruby #{RUBY_VERSION} (#{RUBY_PLATFORM}) and ImageMagick #{$magick_version}
-#{'=' * 70}
+      #{'=' * 70}
 
 
 END_SUMMARY
@@ -543,6 +530,6 @@ extconf = RMagick::Extconf.new
 at_exit do
   msg = "Configured compile options: #{extconf.configured_compile_options}"
   Logging.message msg
-  message msg+"\n"
+  message msg + "\n"
 end
 extconf.create_makefile_file

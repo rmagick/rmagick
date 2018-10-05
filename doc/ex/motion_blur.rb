@@ -5,7 +5,7 @@ require 'rmagick'
 
 img = Magick::Image.read('images/Flower_Hat.jpg').first
 
-img = img.motion_blur(0,7,180)
+img = img.motion_blur(0, 7, 180)
 
 img.write('motion_blur.jpg')
 exit

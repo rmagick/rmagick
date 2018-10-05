@@ -7,14 +7,14 @@ require 'rmagick'
 # shrinking it and converting it to B&W.
 begin
   watermark = Magick::Image.read('images/Snake.wmf').first
-  watermark.scale!(64.0/watermark.rows)
+  watermark.scale!(64.0 / watermark.rows)
   watermark = watermark.quantize(256, Magick::GRAYColorspace)
   wmrows = watermark.rows
   wmcols = watermark.columns
 
   # Read the image in which we'll hide the watermark.
   img = Magick::Image.read('images/Flower_Hat.jpg').first
-  img.scale!(250.0/img.rows)
+  img.scale!(250.0 / img.rows)
 
   # Embed the watermark starting at offset 91.
   puts 'Embedding watermark...'
@@ -31,8 +31,8 @@ begin
 
   # This can take some time. Keep track of how far along we are.
 
-  monitor = proc do |text, quantum, span|
-    printf("Extracting watermark...%3.0f%% complete\n", ((1.0-(quantum/span.to_f))*100.0))
+  monitor = proc do |_text, quantum, span|
+    printf("Extracting watermark...%3.0f%% complete\n", ((1.0 - (quantum / span.to_f)) * 100.0))
     true
   end
 
@@ -47,7 +47,6 @@ begin
   File.delete('img.miff')
 
   stegano[0].write('stegano.gif')
-
 rescue Magick::ImageMagickError
   puts "#{$PROGRAM_NAME}: ImageMagickError - #{$ERROR_INFO}"
 end

@@ -8,7 +8,7 @@ require 'rmagick'
 # Read the colorful picture of a rock formation. Scale
 # it to 300 pixels high because we don't want a big picture.
 rocks = Magick::Image.read('images/Red_Rocks.jpg').first
-rocks.scale!(250.0/rocks.rows)
+rocks.scale!(250.0 / rocks.rows)
 
 # Make a monochrome copy. See Image#quantize for details
 grayrocks = rocks.quantize(256, Magick::GRAYColorspace)
@@ -35,13 +35,13 @@ end
 # Store the pixels back.
 rows.times do |y|
   pixels = grayrocks.get_pixels(0, y, cols, 1)
-  pixels.each_with_index { |p,x| p.opacity = opacity_steps[x] }
+  pixels.each_with_index { |p, x| p.opacity = opacity_steps[x] }
   grayrocks.store_pixels(0, y, cols, 1, pixels)
 end
 
 # Composite the mono version of the image over the color version.
 grayrocks.matte = true
 combine = rocks.composite(grayrocks, Magick::CenterGravity, Magick::OverCompositeOp)
-#combine.display
+# combine.display
 combine.write 'get_pixels.jpg'
 exit

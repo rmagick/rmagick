@@ -23,8 +23,8 @@ module Magick
       # Attach the clipping path to an object with the :clip_path style.
       def initialize(clip_path_units = 'userSpaceOnUse')
         super()
-        unless ['userSpaceOnUse', 'objectBoundingBox'].include?(clip_path_units)
-          fail ArgumentError, "undefined value for clip path units: #{clip_path_units}"
+        unless %w[userSpaceOnUse objectBoundingBox].include?(clip_path_units)
+          raise ArgumentError, "undefined value for clip path units: #{clip_path_units}"
         end
 
         @clip_path_units = clip_path_units
@@ -32,7 +32,7 @@ module Magick
         yield(self) if block_given?
       end
 
-      def add_primitives(gc, style) #:nodoc:
+      def add_primitives(gc, _style) #:nodoc:
         name = __id__.to_s
         gc.define_clip_path(name) do
           gc.clip_units(@clip_path_units)

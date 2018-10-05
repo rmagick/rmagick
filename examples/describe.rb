@@ -11,7 +11,7 @@ This example shows how to extract attributes from an image.
 
 END_INFO
 
-if ARGV.length == 0
+if ARGV.length.zero?
   puts 'Specify one or more image filenames as arguments.'
   exit
 end
@@ -31,13 +31,11 @@ ARGV.each do |file|
   puts "   Colors: #{img.number_colors}"
   puts "   Filesize: #{img.filesize}"
   puts "   Resolution: #{img.x_resolution.to_i}x#{img.y_resolution.to_i} "\
-       "pixels/#{img.units == Magick::PixelsPerInchResolution ?
-       'inch' : 'centimeter'}"
+       "pixels/#{img.units == Magick::PixelsPerInchResolution ? 'inch' : 'centimeter'}"
 
-  if img.properties.length > 0
-    puts '   Properties:'
-    img.properties do |name,value|
-      puts %Q|      #{name} = "#{value}"|
-    end
+  next if img.properties.empty?
+  puts '   Properties:'
+  img.properties do |name, value|
+    puts %(      #{name} = "#{value}")
   end
 end

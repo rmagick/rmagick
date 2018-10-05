@@ -18,7 +18,7 @@ end
 puts 'This may take a few seconds...'
 morph = i.morph 8
 morph.delay = 12
-morph.iterations = 10000
+morph.iterations = 10_000
 # Display the resulting sequence as an animation.
 # morph.animate(12)
 morph.write 'morph.gif'

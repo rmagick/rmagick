@@ -19,7 +19,7 @@ text.fill = 'white'
 
 # Let's make it interesting. Composite the
 # rotated text over a gradient fill background.
-fill = GradientFill.new(100,100,100,100,'yellow','red')
+fill = GradientFill.new(100, 100, 100, 100, 'yellow', 'red')
 bg = Image.new(200, 200, fill)
 
 # The "none" color is transparent.
@@ -28,9 +28,9 @@ fg = Image.new(bg.columns, bg.rows) { self.background_color = 'none' }
 # Here's where we'll collect the individual frames.
 animation = ImageList.new
 
-0.step(345,15) do |degrees|
+0.step(345, 15) do |degrees|
   frame = fg.copy
-  text.annotate(frame, 0,0,0,0, 'Rotating Text') do
+  text.annotate(frame, 0, 0, 0, 0, 'Rotating Text') do
     self.rotation = degrees
   end
   # Composite the text over the gradient filled background frame.
@@ -39,7 +39,7 @@ end
 
 animation.delay = 8
 
-#animation.animate
+# animation.animate
 puts '...Writing rotating_text.gif'
 animation.write('rotating_text.gif')
 exit

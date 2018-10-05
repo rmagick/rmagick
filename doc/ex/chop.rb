@@ -6,14 +6,14 @@ require 'rmagick'
 img = Magick::Image.read('images/Flower_Hat.jpg')[0]
 
 # Chop the specified rectangle out of the img.
-chopped = img.chop(0, img.rows/2, img.columns/2, img.rows)
+chopped = img.chop(0, img.rows / 2, img.columns / 2, img.rows)
 
 # Make a "before" image by highlighting the chopped area.
 gc = Magick::Draw.new
 gc.fill('white')
 gc.stroke('transparent')
 gc.fill_opacity(0.25)
-gc.rectangle(0, img.rows/2, img.columns/2, img.rows)
+gc.rectangle(0, img.rows / 2, img.columns / 2, img.rows)
 gc.draw(img)
 
 img.write('chop_before.jpg')

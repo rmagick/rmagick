@@ -26,7 +26,7 @@ text.stroke = 'transparent'
 
 # Draw the shadow text first. The color is a very light gray.
 # Position the text to the right and down.
-text.annotate(ex, 0,0,2,2, Text) do
+text.annotate(ex, 0, 0, 2, 2, Text) do
   self.fill = 'gray60'
 end
 
@@ -34,12 +34,12 @@ end
 anim << ex.copy
 
 # Blur the shadow. Save a copy of the image as the 2nd frame.
-ex = ex.blur_image(0,3)
+ex = ex.blur_image(0, 3)
 anim << ex.copy
 
 # Add the foreground text in solid black. Position it
 # to the left and up from the shadow text.
-text.annotate(ex, 0,0,-1,-1, Text) do
+text.annotate(ex, 0, 0, -1, -1, Text) do
   self.fill = 'maroon'
 end
 
@@ -55,6 +55,6 @@ anim.cur_image.delay = 300
 # Iterate forever.
 anim.iterations = 0
 
-#anim.animate
+# anim.animate
 anim.write('drop_shadow.gif')
 exit

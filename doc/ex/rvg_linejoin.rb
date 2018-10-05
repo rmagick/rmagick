@@ -2,12 +2,12 @@ require 'rvg/rvg'
 
 Magick::RVG.dpi = 90
 
-MITER = {:stroke=>'black', :stroke_width=>70, :fill=>'none', :stroke_linejoin=>'miter'}
-ROUND = {:stroke=>'black', :stroke_width=>70, :fill=>'none', :stroke_linejoin=>'round'}
-BEVEL = {:stroke=>'black', :stroke_width=>70, :fill=>'none', :stroke_linejoin=>'bevel'}
-THIN  = {:stroke=>'#ffcccc', :stroke_width=>5, :fill=>'none'}
-TEXT   = {:text_anchor=>'middle', :font_size=>50, :font_family=>'Verdana'}
-CIRCLE = {:fill=>'#ffcccc', :stroke=>'none'}
+MITER = { :stroke => 'black', :stroke_width => 70, :fill => 'none', :stroke_linejoin => 'miter' }
+ROUND = { :stroke => 'black', :stroke_width => 70, :fill => 'none', :stroke_linejoin => 'round' }
+BEVEL = { :stroke => 'black', :stroke_width => 70, :fill => 'none', :stroke_linejoin => 'bevel' }
+THIN  = { :stroke => '#ffcccc', :stroke_width => 5, :fill => 'none' }
+TEXT   = { :text_anchor => 'middle', :font_size => 50, :font_family => 'Verdana' }
+CIRCLE = { :fill => '#ffcccc', :stroke => 'none' }
 
 rvg = Magick::RVG.new(12.cm, 3.5.cm).viewbox(0, 0, 1200, 350) do |canvas|
   canvas.desc = 'Example linecap - demonstrates three stroke-linecap values'
@@ -34,7 +34,7 @@ rvg = Magick::RVG.new(12.cm, 3.5.cm).viewbox(0, 0, 1200, 350) do |canvas|
     bevel.text(0, 230, "'bevel' join").styles(TEXT)
   end
 
-  canvas.rect(1192, 345, 1, 1).styles(:stroke=>'blue', :fill=>'none')
+  canvas.rect(1192, 345, 1, 1).styles(:stroke => 'blue', :fill => 'none')
 end
 
 rvg.draw.write('rvg_linejoin.gif')

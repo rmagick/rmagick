@@ -5,12 +5,8 @@ require 'rmagick'
 name_length = 0
 family_length = 0
 Magick.fonts do |font|
-  if font.name.length > name_length
-    name_length = font.name.length
-  end
-  if font.family.length > family_length
-    family_length = font.family.length
-  end
+  name_length = font.name.length if font.name.length > name_length
+  family_length = font.family.length if font.family.length > family_length
 end
 
 # Print all fonts

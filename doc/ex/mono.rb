@@ -13,11 +13,11 @@ cheetah.scale!(0.33)
 mono_cheetah = cheetah.quantize 256, Magick::GRAYColorspace
 
 # Cut the top off the monochrome cheetah image.
-mono_bottom = mono_cheetah.crop 0, mono_cheetah.rows/2, mono_cheetah.columns, mono_cheetah.rows/2
+mono_bottom = mono_cheetah.crop 0, mono_cheetah.rows / 2, mono_cheetah.columns, mono_cheetah.rows / 2
 
 # Composite the half-height mono cheetah onto the bottom of
 # the original color cheetah.
-before_after = cheetah.composite mono_bottom, 0, cheetah.rows/2, Magick::OverCompositeOp
+before_after = cheetah.composite mono_bottom, 0, cheetah.rows / 2, Magick::OverCompositeOp
 
 before_after.write 'mono.jpg'
 exit

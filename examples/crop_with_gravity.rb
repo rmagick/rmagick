@@ -12,13 +12,13 @@ include Magick
 
 shorts = Image.read('../doc/ex/images/Shorts.jpg').first
 
-regwidth = shorts.columns/2
-regheight = shorts.rows/2
+regwidth = shorts.columns / 2
+regheight = shorts.rows / 2
 
-mask = Image.new(regwidth, regheight) { self.background_color = 'white'}
+mask = Image.new(regwidth, regheight) { self.background_color = 'white' }
 mask.opacity = 0.50 * TransparentOpacity
 
-black = Image.new(shorts.columns, shorts.rows) {self.background_color = 'black'}
+black = Image.new(shorts.columns, shorts.rows) { self.background_color = 'black' }
 pairs = ImageList.new
 
 [NorthWestGravity, NorthGravity, NorthEastGravity,
@@ -39,4 +39,4 @@ montage = pairs.montage do
   self.border_width = 1
 end
 montage.write('crop_with_gravity.miff')
-#montage.display
+# montage.display

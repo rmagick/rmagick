@@ -18,12 +18,12 @@ f = 1
   img << img.contrast
 
   # Annotate the previous image
-  legend.annotate(img[f-1], 0,0,7,10, f.to_s)
+  legend.annotate(img[f - 1], 0, 0, 7, 10, f.to_s)
   f += 1
 end
 
 # Annotate the last image
-legend.annotate(img, 0,0,7,10, f.to_s)
+legend.annotate(img, 0, 0, 7, 10, f.to_s)
 
 # Montage into a single image
 imgs = img.montage do
@@ -32,5 +32,5 @@ imgs = img.montage do
 end
 
 imgs.write('contrast.jpg')
-#imgs.display
+# imgs.display
 exit

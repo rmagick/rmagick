@@ -12,25 +12,22 @@ module Magick
       # [+align+] a combination of 'xMin', 'xMid', or 'xMax', followed by
       #           'YMin', 'YMid', or 'YMax'
       # [+meet_or_slice+] one of 'meet' or 'slice'
-      def preserve_aspect_ratio(align, meet_or_slice='meet')
+      def preserve_aspect_ratio(align, meet_or_slice = 'meet')
         @align = align.to_s
         if @align != 'none'
           m = /\A(xMin|xMid|xMax)(YMin|YMid|YMax)\z/.match(@align)
-          fail(ArgumentError, "unknown alignment specifier: #{@align}") unless m
+          raise(ArgumentError, "unknown alignment specifier: #{@align}") unless m
         end
 
         if meet_or_slice
           meet_or_slice = meet_or_slice.to_s.downcase
-          if meet_or_slice == 'meet' || meet_or_slice == 'slice'
-            @meet_or_slice = meet_or_slice
-          else
-            fail(ArgumentError, "specifier must be `meet' or `slice' (got #{meet_or_slice})")
-          end
+          raise(ArgumentError, "specifier must be `meet' or `slice' (got #{meet_or_slice})") unless %w[meet slice].include?(meet_or_slice)
+          @meet_or_slice = meet_or_slice
         end
         yield(self) if block_given?
         self
       end
-    end     # module PreserveAspectRatio
+    end # module PreserveAspectRatio
 
     # The methods in this module describe the user-coordinate space.
     # RVG and Pattern objects are stretchable.
@@ -42,12 +39,8 @@ module Magick
         sx = 1.0
         sy = 1.0
 
-        if @vbx_width
-          sx = width / @vbx_width
-        end
-        if @vbx_height
-          sy = height / @vbx_height
-        end
+        sx = width / @vbx_width if @vbx_width
+        sy = height / @vbx_height if @vbx_height
 
         [sx, sy]
       end
@@ -58,19 +51,19 @@ module Magick
              when /\AxMin/
                0
              when NilClass, /\AxMid/
-               (width - @vbx_width*sx) / 2.0
+               (width - @vbx_width * sx) / 2.0
              when /\AxMax/
-               width - @vbx_width*sx
-        end
+               width - @vbx_width * sx
+             end
 
         ty = case @align
              when /YMin\z/
                0
              when NilClass, /YMid\z/
-               (height - @vbx_height*sy) / 2.0
+               (height - @vbx_height * sy) / 2.0
              when /YMax\z/
-               height - @vbx_height*sy
-        end
+               height - @vbx_height * sy
+             end
         [tx, ty]
       end
 
@@ -120,7 +113,7 @@ module Magick
         gc.translate(-@vbx_x, -@vbx_y) if @vbx_x.abs != 0.0 || @vbx_y.abs != 0
       end
 
-      def initialize(*args, &block)
+      def initialize(*_args)
         super()
         @vbx_x, @vbx_y, @vbx_width, @vbx_height = nil
         @meet_or_slice = 'meet'
@@ -143,17 +136,17 @@ module Magick
         rescue ArgumentError
           raise ArgumentError, "arguments must be convertable to float (got #{x.class}, #{y.class}, #{width.class}, #{height.class})"
         end
-        fail(ArgumentError, "viewbox width must be > 0 (#{width} given)") unless width >= 0
-        fail(ArgumentError, "viewbox height must be > 0 (#{height} given)") unless height >= 0
+        raise(ArgumentError, "viewbox width must be > 0 (#{width} given)") unless width >= 0
+        raise(ArgumentError, "viewbox height must be > 0 (#{height} given)") unless height >= 0
 
         # return the user-coordinate space attributes if defined
         class << self
           unless defined? @redefined
-          @redefined = true
-          define_method(:x) { @vbx_x }
-          define_method(:y) { @vbx_y }
-          define_method(:width) { @vbx_width}
-          define_method(:height) { @vbx_height }
+            @redefined = true
+            define_method(:x) { @vbx_x }
+            define_method(:y) { @vbx_y }
+            define_method(:width) { @vbx_width }
+            define_method(:height) { @vbx_height }
           end
         end
 

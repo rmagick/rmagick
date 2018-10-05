@@ -60,7 +60,7 @@ module Magick
     # else, combine it with the background_fill_opacity.
     def bgfill
       if @background_fill.nil?
-        color = Magick::Pixel.new(0,0,0,Magick::TransparentOpacity)
+        color = Magick::Pixel.new(0, 0, 0, Magick::TransparentOpacity)
       else
         color = @background_fill
         color.opacity = (1.0 - @background_fill_opacity) * Magick::TransparentOpacity
@@ -72,28 +72,28 @@ module Magick
       if @background_pattern
         canvas = Magick::Image.new(@width, @height, @background_pattern)
       elsif @background_image
-        if @width != @background_image.columns || @height != @background_image.rows
-          canvas = case @background_position
-            when :scaled
-              @background_image.resize(@width, @height)
-            when :tiled
-              Magick::Image.new(@width, @height, Magick::TextureFill.new(@background_image))
-            when :fit
-              width = @width
-              height = @height
-              bgcolor = bgfill
-              @background_image.change_geometry(Magick::Geometry.new(width, height)) do |new_cols, new_rows|
-                bg_image = @background_image.resize(new_cols, new_rows)
-                if bg_image.columns != width || bg_image.rows != height
-                  bg = Magick::Image.new(width, height) { self.background_color = bgcolor }
-                  bg_image = bg.composite!(bg_image, Magick::CenterGravity, Magick::OverCompositeOp)
-                end
-                bg_image
-              end
-          end
-        else
-          canvas = @background_image.copy
-        end
+        canvas = if @width != @background_image.columns || @height != @background_image.rows
+                   case @background_position
+                   when :scaled
+                     @background_image.resize(@width, @height)
+                   when :tiled
+                     Magick::Image.new(@width, @height, Magick::TextureFill.new(@background_image))
+                   when :fit
+                     width = @width
+                     height = @height
+                     bgcolor = bgfill
+                     @background_image.change_geometry(Magick::Geometry.new(width, height)) do |new_cols, new_rows|
+                       bg_image = @background_image.resize(new_cols, new_rows)
+                       if bg_image.columns != width || bg_image.rows != height
+                         bg = Magick::Image.new(width, height) { self.background_color = bgcolor }
+                         bg_image = bg.composite!(bg_image, Magick::CenterGravity, Magick::OverCompositeOp)
+                       end
+                       bg_image
+                     end
+                   end
+                 else
+                   @background_image.copy
+                 end
       else
         bgcolor = bgfill
         canvas = Magick::Image.new(Integer(@width), Integer(@height)) { self.background_color = bgcolor }
@@ -110,7 +110,7 @@ module Magick
         indent = 0
         primitives.each do |cmd|
           indent -= 1 if cmd['pop ']
-          print(('   '*indent), cmd, "\n")
+          print(('   ' * indent), cmd, "\n")
           indent += 1 if cmd['push ']
         end
       end
@@ -118,7 +118,7 @@ module Magick
 
     public
 
-    WORD_SEP = / /     # Regexp to separate words
+    WORD_SEP = / / # Regexp to separate words
 
     # The background image specified by background_image=
     attr_reader :background_image
@@ -140,7 +140,7 @@ module Magick
     def background_image=(bg_image)
       warn 'background_image= has no effect in nested RVG objects' if @nested
       if bg_image && !bg_image.is_a?(Magick::Image)
-        fail ArgumentError, "background image must be an Image (got #{bg_image.class})"
+        raise ArgumentError, "background image must be an Image (got #{bg_image.class})"
       end
       @background_image = bg_image
     end
@@ -162,8 +162,8 @@ module Magick
     def background_position=(pos)
       warn 'background_position= has no effect in nested RVG objects' if @nested
       bg_pos = pos.to_s.downcase
-      unless ['scaled', 'tiled', 'fit'].include?(bg_pos)
-        fail ArgumentError, "background position must be `scaled', `tiled', or `fit' (#{pos} given)"
+      unless %w[scaled tiled fit].include?(bg_pos)
+        raise ArgumentError, "background position must be `scaled', `tiled', or `fit' (#{pos} given)"
       end
       @background_position = bg_pos.to_sym
     end
@@ -219,7 +219,7 @@ module Magick
       @content = Content.new
       @canvas = nil
       @background_fill = nil
-      @background_fill_opacity = 1.0  # applies only if background_fill= is used
+      @background_fill_opacity = 1.0 # applies only if background_fill= is used
       @background_position = :scaled
       @background_pattern, @background_image, @desc, @title, @metadata = nil
       @x = 0.0
@@ -231,8 +231,8 @@ module Magick
     # Construct a canvas or reuse an existing canvas.
     # Execute drawing commands. Return the canvas.
     def draw
-      fail StandardError, 'draw not permitted in nested RVG objects' if @nested
-      @canvas ||= new_canvas    # allow drawing over existing canvas
+      raise StandardError, 'draw not permitted in nested RVG objects' if @nested
+      @canvas ||= new_canvas # allow drawing over existing canvas
       gc = Utility::GraphicContext.new
       add_outermost_primitives(gc)
       pp(self) if ENV['debug_rvg']
@@ -243,14 +243,14 @@ module Magick
 
     # Accept #use arguments. Use (x,y) to generate an additional translate.
     # Override @width and @height if new values are supplied.
-    def ref(x, y, rw, rh)   #:nodoc:
+    def ref(x, y, rw, rh) #:nodoc:
       translate(x, y) if x != 0 || y != 0
       @width = rw if rw
       @height = rh if rh
     end
 
     # Used by Magick::Embellishable.rvg to set non-0 x- and y-coordinates
-    def corner(x, y)        #:nodoc:
+    def corner(x, y) #:nodoc:
       @nested = true
       @x = Float(x)
       @y = Float(y)
@@ -258,7 +258,7 @@ module Magick
     end
 
     # Primitives for the outermost RVG object
-    def add_outermost_primitives(gc)    #:nodoc:
+    def add_outermost_primitives(gc) #:nodoc:
       add_transform_primitives(gc)
       gc.push
       add_viewbox_primitives(@width, @height, gc)
@@ -269,12 +269,9 @@ module Magick
     end
 
     # Primitives for nested RVG objects
-    def add_primitives(gc)  #:nodoc:
-      if @width.nil? || @height.nil?
-        fail ArgumentError, 'RVG width or height undefined'
-      elsif @width == 0 || @height == 0
-        return self
-      end
+    def add_primitives(gc) #:nodoc:
+      raise ArgumentError, 'RVG width or height undefined' if @width.nil? || @height.nil?
+      return self if @width.zero? || @height.zero?
       gc.push
       add_outermost_primitives(gc)
       gc.pop

@@ -2,7 +2,7 @@
 
 require 'rmagick'
 require 'test/unit'
-require 'test/unit/ui/console/testrunner'  unless RUBY_VERSION[/^1\.9|^2/]
+require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
 require 'fileutils'
 
 ColorspaceTypes = [
@@ -101,7 +101,8 @@ class Image3_UT < Test::Unit::TestCase
       Magick::OrQuantumOperator,
       Magick::RShiftQuantumOperator,
       Magick::SubtractQuantumOperator,
-      Magick::XorQuantumOperator ]
+      Magick::XorQuantumOperator
+    ]
 
     assert_nothing_raised do
       res = @img.quantum_operator(Magick::AddQuantumOperator, 2)
@@ -142,8 +143,8 @@ class Image3_UT < Test::Unit::TestCase
       assert_instance_of(Magick::Image, res)
     end
     assert_nothing_raised { @img.raise(4) }
-    assert_nothing_raised { @img.raise(4,4) }
-    assert_nothing_raised { @img.raise(4,4, false) }
+    assert_nothing_raised { @img.raise(4, 4) }
+    assert_nothing_raised { @img.raise(4, 4, false) }
     assert_raise(TypeError) { @img.raise('x') }
     assert_raise(TypeError) { @img.raise(2, 'x') }
     assert_raise(ArgumentError) { @img.raise(4, 4, false, 2) }
@@ -171,15 +172,15 @@ class Image3_UT < Test::Unit::TestCase
   end
 
   def test_remap
-     remap_image = Magick::Image.new(20,20) {self.background_color = 'green'}
-     assert_nothing_raised { @img.remap(remap_image) }
-     assert_nothing_raised { @img.remap(remap_image, Magick::NoDitherMethod) }
-     assert_nothing_raised { @img.remap(remap_image, Magick::RiemersmaDitherMethod) }
-     assert_nothing_raised { @img.remap(remap_image, Magick::FloydSteinbergDitherMethod) }
+    remap_image = Magick::Image.new(20, 20) { self.background_color = 'green' }
+    assert_nothing_raised { @img.remap(remap_image) }
+    assert_nothing_raised { @img.remap(remap_image, Magick::NoDitherMethod) }
+    assert_nothing_raised { @img.remap(remap_image, Magick::RiemersmaDitherMethod) }
+    assert_nothing_raised { @img.remap(remap_image, Magick::FloydSteinbergDitherMethod) }
 
-     assert_raise(ArgumentError) {@img.remap }
-     assert_raise(ArgumentError) {@img.remap(remap_image, Magick::NoDitherMethod, 1) }
-     assert_raise(TypeError) {@img.remap(remap_image, 1) }
+    assert_raise(ArgumentError) { @img.remap }
+    assert_raise(ArgumentError) { @img.remap(remap_image, Magick::NoDitherMethod, 1) }
+    assert_raise(TypeError) { @img.remap(remap_image, 1) }
   end
 
   def test_resample
@@ -195,7 +196,7 @@ class Image3_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.resample(100) }
     assert_nothing_raised { @img.resample(100, 100) }
 
-    girl = Magick::Image.read(IMAGES_DIR+'/Flower_Hat.jpg').first
+    girl = Magick::Image.read(IMAGES_DIR + '/Flower_Hat.jpg').first
     assert_equal(240.0, girl.x_resolution)
     assert_equal(240.0, girl.y_resolution)
     res = girl.resample(120, 120)
@@ -236,7 +237,7 @@ class Image3_UT < Test::Unit::TestCase
       res = @img.resize(2)
       assert_instance_of(Magick::Image, res)
     end
-    assert_nothing_raised { @img.resize(50,50) }
+    assert_nothing_raised { @img.resize(50, 50) }
 
     Filters.each do |filter|
       assert_nothing_raised { @img.resize(50, 50, filter) }
@@ -260,7 +261,7 @@ class Image3_UT < Test::Unit::TestCase
   end
 
   def test_resize_to_fill_0
-    changed = @img.resize_to_fill(@img.columns,@img.rows)
+    changed = @img.resize_to_fill(@img.columns, @img.rows)
     assert_equal(@img.columns, changed.columns)
     assert_equal(@img.rows, changed.rows)
     assert_not_same(changed, @img)
@@ -268,48 +269,48 @@ class Image3_UT < Test::Unit::TestCase
 
   def test_resize_to_fill_1
     @img = Magick::Image.new(200, 250)
-    @img.resize_to_fill!(100,100)
+    @img.resize_to_fill!(100, 100)
     assert_equal(100, @img.columns)
     assert_equal(100, @img.rows)
   end
 
   def test_resize_to_fill_2
     @img = Magick::Image.new(200, 250)
-    changed = @img.resize_to_fill(300,100)
+    changed = @img.resize_to_fill(300, 100)
     assert_equal(300, changed.columns)
     assert_equal(100, changed.rows)
   end
 
   def test_resize_to_fill_3
     @img = Magick::Image.new(200, 250)
-    changed = @img.resize_to_fill(100,300)
+    changed = @img.resize_to_fill(100, 300)
     assert_equal(100, changed.columns)
     assert_equal(300, changed.rows)
   end
 
   def test_resize_to_fill_4
     @img = Magick::Image.new(200, 250)
-    changed = @img.resize_to_fill(300,350)
+    changed = @img.resize_to_fill(300, 350)
     assert_equal(300, changed.columns)
     assert_equal(350, changed.rows)
   end
 
   def test_resize_to_fill_5
-    changed = @img.resize_to_fill(20,400)
+    changed = @img.resize_to_fill(20, 400)
     assert_equal(20, changed.columns)
     assert_equal(400, changed.rows)
   end
 
   def test_resize_to_fill_6
-    changed = @img.resize_to_fill(3000,400)
+    changed = @img.resize_to_fill(3000, 400)
     assert_equal(3000, changed.columns)
     assert_equal(400, changed.rows)
   end
 
   # Make sure the old name is still around
   def test_resize_to_fill_7
-    assert_block {@img.respond_to? :crop_resized}
-    assert_block {@img.respond_to? :crop_resized!}
+    assert_block { @img.respond_to? :crop_resized }
+    assert_block { @img.respond_to? :crop_resized! }
   end
 
   # 2nd argument defaults to the same value as the 1st argument
@@ -437,22 +438,22 @@ class Image3_UT < Test::Unit::TestCase
 
     # Don't test colorspaces that require PsuedoColor images
     (ColorspaceTypes - [Magick::OHTAColorspace,
-              Magick::LabColorspace,
-              Magick::XYZColorspace,
-              Magick::YCbCrColorspace,
-              Magick::YCCColorspace,
-              Magick::YIQColorspace,
-              Magick::YPbPrColorspace,
-              Magick::YUVColorspace,
-              Magick::Rec601YCbCrColorspace,
-              Magick::Rec709YCbCrColorspace,
-              Magick::LogColorspace]).each do |cs|
+                        Magick::LabColorspace,
+                        Magick::XYZColorspace,
+                        Magick::YCbCrColorspace,
+                        Magick::YCCColorspace,
+                        Magick::YIQColorspace,
+                        Magick::YPbPrColorspace,
+                        Magick::YUVColorspace,
+                        Magick::Rec601YCbCrColorspace,
+                        Magick::Rec709YCbCrColorspace,
+                        Magick::LogColorspace]).each do |cs|
       assert_nothing_raised { @img.segment(cs) }
     end
 
     assert_nothing_raised { @img.segment(Magick::RGBColorspace, 2.0) }
     assert_nothing_raised { @img.segment(Magick::RGBColorspace, 2.0, 2.0) }
-    assert_nothing_raised { @img.segment(Magick::RGBColorspace,  2.0, 2.0, false) }
+    assert_nothing_raised { @img.segment(Magick::RGBColorspace, 2.0, 2.0, false) }
 
     assert_raise(ArgumentError) { @img.segment(Magick::RGBColorspace, 2.0, 2.0, false, 2) }
     assert_raise(TypeError) { @img.segment(2) }
@@ -480,7 +481,7 @@ class Image3_UT < Test::Unit::TestCase
       res = @img.sepiatone
       assert_instance_of(Magick::Image, res)
     end
-    assert_nothing_raised { @img.sepiatone(Magick::QuantumRange*0.80) }
+    assert_nothing_raised { @img.sepiatone(Magick::QuantumRange * 0.80) }
     assert_raise(ArgumentError) { @img.sepiatone(Magick::QuantumRange, 2) }
     assert_raise(TypeError) { @img.sepiatone('x') }
   end
@@ -494,15 +495,16 @@ class Image3_UT < Test::Unit::TestCase
       Magick::MagentaChannel,
       Magick::BlueChannel,
       Magick::YellowChannel,
-    #     Magick::AlphaChannel,
+      #     Magick::AlphaChannel,
       Magick::OpacityChannel,
       Magick::MatteChannel,
       Magick::BlackChannel,
       Magick::IndexChannel,
-      Magick::AllChannels]
+      Magick::AllChannels
+    ]
 
     channels.each do |ch|
-      assert_nothing_raised {@img.set_channel_depth(ch, 8) }
+      assert_nothing_raised { @img.set_channel_depth(ch, 8) }
     end
   end
 
@@ -564,15 +566,15 @@ class Image3_UT < Test::Unit::TestCase
 
   def test_shave
     assert_nothing_raised do
-      res = @img.shave(5,5)
+      res = @img.shave(5, 5)
       assert_instance_of(Magick::Image, res)
     end
     assert_nothing_raised do
-      res = @img.shave!(5,5)
+      res = @img.shave!(5, 5)
       assert_same(@img, res)
     end
     @img.freeze
-    assert_raise(FreezeError) { @img.shave!(2,2) }
+    assert_raise(FreezeError) { @img.shave!(2, 2) }
   end
 
   def test_shear
@@ -646,10 +648,10 @@ class Image3_UT < Test::Unit::TestCase
     assert_raise(TypeError) { img.sparse_color(1, *args) }
     # missing arguments
     assert_raise(ArgumentError) { img.sparse_color(Magick::VoronoiColorInterpolate) }
-    args << 10   # too many arguments
+    args << 10 # too many arguments
     assert_raise(ArgumentError) { img.sparse_color(Magick::VoronoiColorInterpolate, *args) }
     args.shift
-    args.shift  # too few
+    args.shift # too few
     assert_raise(ArgumentError) { img.sparse_color(Magick::VoronoiColorInterpolate, *args) }
   end
 
@@ -661,7 +663,7 @@ class Image3_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.splice(0, 0, 2, 2, 'red') }
     red = Magick::Pixel.new(Magick::QuantumRange)
     assert_nothing_raised { @img.splice(0, 0, 2, 2, red) }
-    assert_raise(ArgumentError) { @img.splice(0,0, 2, 2, red, 'x') }
+    assert_raise(ArgumentError) { @img.splice(0, 0, 2, 2, red, 'x') }
     assert_raise(TypeError) { @img.splice([], 0, 2, 2, red) }
     assert_raise(TypeError) { @img.splice(0, 'x', 2, 2, red) }
     assert_raise(TypeError) { @img.splice(0, 0, 'x', 2, red) }
@@ -680,7 +682,7 @@ class Image3_UT < Test::Unit::TestCase
   end
 
   def test_stegano
-    img = Magick::Image.new(100, 100) { self.background_color = 'black' }
+    @img = Magick::Image.new(100, 100) { self.background_color = 'black' }
     watermark = Magick::Image.new(10, 10) { self.background_color = 'white' }
     assert_nothing_raised do
       res = @img.stegano(watermark, 0)
@@ -697,7 +699,7 @@ class Image3_UT < Test::Unit::TestCase
       assert_instance_of(Magick::Image, res)
     end
 
-    img = Magick::Image.new(20,20)
+    img = Magick::Image.new(20, 20)
     img.destroy!
     assert_raise(Magick::DestroyedImageError) { @img.stereo(img) }
   end
@@ -713,8 +715,8 @@ class Image3_UT < Test::Unit::TestCase
     assert_raise(TypeError) { @img.store_pixels(0, 0, @img.columns, 1, pixels) }
     assert_raise(RangeError) { @img.store_pixels(-1, 0, @img.columns, 1, pixels) }
     assert_raise(RangeError) { @img.store_pixels(0, -1, @img.columns, 1, pixels) }
-    assert_raise(RangeError) { @img.store_pixels(0, 0, 1+@img.columns, 1, pixels) }
-    assert_raise(RangeError) { @img.store_pixels(-1, 0, 1, 1+@img.rows, pixels) }
+    assert_raise(RangeError) { @img.store_pixels(0, 0, 1 + @img.columns, 1, pixels) }
+    assert_raise(RangeError) { @img.store_pixels(-1, 0, 1, 1 + @img.rows, pixels) }
     assert_raise(IndexError) { @img.store_pixels(0, 0, @img.columns, 1, ['x']) }
   end
 
@@ -739,21 +741,21 @@ class Image3_UT < Test::Unit::TestCase
   def test_texture_fill_to_border
     texture = Magick::Image.read('granite:').first
     assert_nothing_raised do
-      res = @img.texture_fill_to_border(@img.columns/2, @img.rows/2, texture)
+      res = @img.texture_fill_to_border(@img.columns / 2, @img.rows / 2, texture)
       assert_instance_of(Magick::Image, res)
     end
-    assert_raise(NoMethodError) { @img.texture_fill_to_border(@img.columns/2, @img.rows/2, 'x') }
+    assert_raise(NoMethodError) { @img.texture_fill_to_border(@img.columns / 2, @img.rows / 2, 'x') }
   end
 
   def test_texture_floodfill
     texture = Magick::Image.read('granite:').first
     assert_nothing_raised do
-      res = @img.texture_floodfill(@img.columns/2, @img.rows/2, texture)
+      res = @img.texture_floodfill(@img.columns / 2, @img.rows / 2, texture)
       assert_instance_of(Magick::Image, res)
     end
-    assert_raise(NoMethodError) { @img.texture_floodfill(@img.columns/2, @img.rows/2, 'x') }
+    assert_raise(NoMethodError) { @img.texture_floodfill(@img.columns / 2, @img.rows / 2, 'x') }
     texture.destroy!
-    assert_raise(Magick::DestroyedImageError) { @img.texture_floodfill(@img.columns/2, @img.rows/2, texture) }
+    assert_raise(Magick::DestroyedImageError) { @img.texture_floodfill(@img.columns / 2, @img.rows / 2, texture) }
   end
 
   def test_threshold
@@ -809,7 +811,7 @@ class Image3_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.transparent(pixel) }
     assert_nothing_raised { @img.transparent('white', Magick::TransparentOpacity) }
     assert_raise(ArgumentError) { @img.transparent('white', Magick::TransparentOpacity, 2) }
-    assert_nothing_raised { @img.transparent('white', Magick::QuantumRange/2) }
+    assert_nothing_raised { @img.transparent('white', Magick::QuantumRange / 2) }
     assert_raise(TypeError) { @img.transparent(2) }
   end
 
@@ -841,7 +843,7 @@ class Image3_UT < Test::Unit::TestCase
 
   def test_trim
     # Can't use the default image because it's a solid color
-    hat = Magick::Image.read(IMAGES_DIR+'/Flower_Hat.jpg').first
+    hat = Magick::Image.read(IMAGES_DIR + '/Flower_Hat.jpg').first
     assert_nothing_raised do
       res = hat.trim
       assert_instance_of(Magick::Image, res)
@@ -929,7 +931,7 @@ class Image3_UT < Test::Unit::TestCase
   end
 
   def test_watermark
-    mark = Magick::Image.new(5,5)
+    mark = Magick::Image.new(5, 5)
     mark_list = Magick::ImageList.new
     mark_list << mark.copy
     assert_nothing_raised { @img.watermark(mark) }
@@ -974,7 +976,7 @@ class Image3_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.white_threshold(50, 50, 50, 50) }
     assert_raise(ArgumentError) { @img.white_threshold(50, 50, 50, 50, 50) }
     res = @img.white_threshold(50)
-    assert_instance_of(Magick::Image,  res)
+    assert_instance_of(Magick::Image, res)
   end
 
   # test write with #format= attribute
@@ -1023,8 +1025,8 @@ class Image3_UT < Test::Unit::TestCase
   end
 end
 
-if __FILE__ == $PROGRAM_NAME
-IMAGES_DIR = '../doc/ex/images'
-FILES = Dir[IMAGES_DIR+'/Button_*.gif']
-Test::Unit::UI::Console::TestRunner.run(Image3_UT) unless RUBY_VERSION[/^1\.9|^2/]
+if $PROGRAM_NAME == __FILE__
+  IMAGES_DIR = '../doc/ex/images'
+  FILES = Dir[IMAGES_DIR + '/Button_*.gif']
+  Test::Unit::UI::Console::TestRunner.run(Image3UT) unless RUBY_VERSION[/^1\.9|^2/]
 end

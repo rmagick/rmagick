@@ -7,11 +7,11 @@ require 'rmagick'
 class PixelColumn < Array
   def initialize(size)
     super
-    fill {Magick::Pixel.new}
+    fill { Magick::Pixel.new }
   end
 
   def reset(bg)
-    each {|pixel| pixel.reset(bg)}
+    each { |pixel| pixel.reset(bg) }
   end
 end
 
@@ -60,11 +60,11 @@ module Magick
           self.border_color = fg
         end
         rgb_histogram['Label'] = 'RGB'
-        red_histogram   = rgb_histogram.copy
+        red_histogram = rgb_histogram.copy
         red_histogram['Label'] = 'Red'
         green_histogram = rgb_histogram.copy
         green_histogram['Label'] = 'Green'
-        blue_histogram  = rgb_histogram.copy
+        blue_histogram = rgb_histogram.copy
         blue_histogram['Label'] = 'Blue'
         int_histogram = rgb_histogram.copy
         int_histogram['Label'] = 'Intensity'
@@ -102,11 +102,11 @@ module Magick
             end
           end
 
-          rgb_histogram.store_pixels(  x, 0, 1, HISTOGRAM_ROWS, rgb_column)
-          red_histogram.store_pixels(  x, 0, 1, HISTOGRAM_ROWS, red_column)
+          rgb_histogram.store_pixels(x, 0, 1, HISTOGRAM_ROWS, rgb_column)
+          red_histogram.store_pixels(x, 0, 1, HISTOGRAM_ROWS, red_column)
           green_histogram.store_pixels(x, 0, 1, HISTOGRAM_ROWS, green_column)
-          blue_histogram.store_pixels( x, 0, 1, HISTOGRAM_ROWS, blue_column)
-          int_histogram.store_pixels(  x, 0, 1, HISTOGRAM_ROWS, int_column)
+          blue_histogram.store_pixels(x, 0, 1, HISTOGRAM_ROWS, blue_column)
+          int_histogram.store_pixels(x, 0, 1, HISTOGRAM_ROWS, int_column)
           rgb_column.reset(bg)
           red_column.reset(bg)
           green_column.reset(bg)
@@ -123,26 +123,23 @@ module Magick
 
         begin
           hist = img.color_histogram
-      rescue NotImplementedError
-        $stderr.puts 'The color_histogram method is not supported by this version '\
-                     'of ImageMagick/GraphicsMagick'
-
+        rescue NotImplementedError
+          $stderr.puts 'The color_histogram method is not supported by this version '\
+                       'of ImageMagick/GraphicsMagick'
         else
-          pixels = hist.keys.sort_by {|pixel| hist[pixel] }
-          scale = HISTOGRAM_ROWS / (hist.values.max*AIR_FACTOR)
+          pixels = hist.keys.sort_by { |pixel| hist[pixel] }
+          scale = HISTOGRAM_ROWS / (hist.values.max * AIR_FACTOR)
 
           histogram = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do
-                self.background_color = bg
-                self.border_color = fg
-              end
+            self.background_color = bg
+            self.border_color = fg
+          end
 
           x = 0
           pixels.each do |pixel|
-            column = Array.new(HISTOGRAM_ROWS).fill {Pixel.new}
+            column = Array.new(HISTOGRAM_ROWS).fill { Pixel.new }
             HISTOGRAM_ROWS.times do |y|
-              if y >= HISTOGRAM_ROWS - (hist[pixel] * scale)
-                column[y] = pixel
-              end
+              column[y] = pixel if y >= HISTOGRAM_ROWS - (hist[pixel] * scale)
             end
             histogram.store_pixels(x, 0, 1, HISTOGRAM_ROWS, column)
             x = x.succ
@@ -166,9 +163,9 @@ Colors: #{number_colors}
             END_TEXT
 
         info = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do
-              self.background_color = bg
-              self.border_color = fg
-            end
+          self.background_color = bg
+          self.border_color = fg
+        end
 
         gc = Draw.new
 
@@ -183,7 +180,7 @@ Colors: #{number_colors}
       end
 
       def intensity_hist(int_histogram)
-        gradient = (Image.read('gradient:#ffff80-#ff9000') { self.size="#{HISTOGRAM_COLS}x#{HISTOGRAM_ROWS}" }).first
+        gradient = (Image.read('gradient:#ffff80-#ff9000') { self.size = "#{HISTOGRAM_COLS}x#{HISTOGRAM_ROWS}" }).first
         int_histogram = gradient.composite(int_histogram, CenterGravity, OverCompositeOp)
 
         int_histogram['Label'] = 'Intensity'
@@ -193,13 +190,13 @@ Colors: #{number_colors}
 
       # Returns a value between 0 and MAX_QUANTUM. Same as the PixelIntensity macro.
       def pixel_intensity(pixel)
-        (306*(pixel.red & MAX_QUANTUM) + 601*(pixel.green & MAX_QUANTUM) + 117*(pixel.blue & MAX_QUANTUM))/1024
+        (306 * (pixel.red & MAX_QUANTUM) + 601 * (pixel.green & MAX_QUANTUM) + 117 * (pixel.blue & MAX_QUANTUM)) / 1024
       end
 
     public
 
       # Create the histogram montage.
-      def histogram(fg='white', bg='black')
+      def histogram(fg = 'white', bg = 'black')
         red   = Array.new(HISTOGRAM_COLS, 0)
         green = Array.new(HISTOGRAM_COLS, 0)
         blue  = Array.new(HISTOGRAM_COLS, 0)
@@ -214,9 +211,7 @@ Colors: #{number_colors}
             blue[pixel.blue & MAX_QUANTUM] += 1
 
             # Only count opacity channel if some pixels are not opaque.
-            unless opaque?
-              alpha[pixel.opacity & MAX_QUANTUM] += 1
-            end
+            alpha[pixel.opacity & MAX_QUANTUM] += 1 unless opaque?
             v = pixel_intensity(pixel)
             int[v] += 1
           end
@@ -227,7 +222,7 @@ Colors: #{number_colors}
         # The RGBA and intensity histograms are all drawn to the same scale.
 
         max = [red.max, green.max, blue.max, alpha.max, int.max].max
-        scale = HISTOGRAM_ROWS / (max*AIR_FACTOR)
+        scale = HISTOGRAM_ROWS / (max * AIR_FACTOR)
 
         charts = ImageList.new
 
@@ -245,11 +240,11 @@ Colors: #{number_colors}
         charts << channel_hists.shift
 
         # Add Alpha channel or image stats
-        if !opaque?
-          charts << alpha_hist(alpha, scale, fg, bg)
-        else
-          charts << info_text(fg, bg)
-        end
+        charts << if !opaque?
+                    alpha_hist(alpha, scale, fg, bg)
+                  else
+                    info_text(fg, bg)
+                  end
 
         # Add the RGB histogram
         charts << channel_hists.shift
@@ -292,13 +287,11 @@ end
 
 # Only process first frame if multi-frame image
 image = Magick::Image.read(filename)
-if image.length > 1
-  puts 'Charting 1st image'
-end
+puts 'Charting 1st image' if image.length > 1
 image = image.first
 
 # Give the user something to look at while we're working.
-name = File.basename(filename).sub(/\..*?$/,'')
+name = File.basename(filename).sub(/\..*?$/, '')
 $defout.sync = true
 printf "Creating #{name}_Histogram.miff"
 

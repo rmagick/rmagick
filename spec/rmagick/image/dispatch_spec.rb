@@ -1,6 +1,5 @@
 RSpec.describe Magick::Image, '#dispatch' do
-
-  let(:img) { Magick::Image.read(IMAGES_DIR+'/Button_0.gif').first }
+  let(:img) { Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first }
 
   it 'expects exactly 5 or 6 arguments' do
     expect { img.dispatch }.to raise_error(ArgumentError)
@@ -14,5 +13,4 @@ RSpec.describe Magick::Image, '#dispatch' do
       img.dispatch(0, 0, 20, 20, 'RGBA', false, false)
     end.to raise_error(ArgumentError)
   end
-
 end

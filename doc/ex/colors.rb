@@ -20,8 +20,8 @@ colors do |c|
       self.background_color = c.color
       self.border_color = 'gray50'
     end
-    rgb  = sprintf('#%02x%02x%02x', c.color.red&0xff,  c.color.green&0xff, c.color.blue&0xff)
-    rgb += sprintf('%02x', c.color.opacity&0xff) if c.color.opacity != 0
+    rgb  = format('#%02x%02x%02x', c.color.red & 0xff, c.color.green & 0xff, c.color.blue & 0xff)
+    rgb += format('%02x', c.color.opacity & 0xff) if c.color.opacity != 0
     m = /(.*?)Compliance/.match c.compliance.to_s
     colors.cur_image['Label'] = "#{c.name} (#{rgb}) #{m[1]}"
   end
@@ -44,7 +44,7 @@ end
 # Add the title at the top, over the 'null:'
 # tiles we added at the very beginning.
 title = Draw.new
-title.annotate(montage, 0,0,0,20, 'Named Colors') do
+title.annotate(montage, 0, 0, 0, 20, 'Named Colors') do
   self.fill = 'white'
   self.stroke = 'transparent'
   self.pointsize = 32
@@ -58,7 +58,7 @@ montage.write('colors.miff')
 
 # Make a small sample of the full montage to display in the HTML file.
 sample = montage[8].crop(55, 325, 495, 110)
-sample.page = Rectangle.new(495,110)
+sample.page = Rectangle.new(495, 110)
 sample.write('colors.gif')
 
 exit

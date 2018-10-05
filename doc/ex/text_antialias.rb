@@ -30,8 +30,8 @@ gc.draw(imgl)
 # Blow up the image so we can
 # easily see the image, then
 # crop to a representative portion.
-imgl.resize!(3).crop!(235,270, 365,180)
+imgl.resize!(3).crop!(235, 270, 365, 180)
 imgl.page = Magick::Rectangle.new(365, 180)
-imgl.border!(1,1,'black')
+imgl.border!(1, 1, 'black')
 imgl.write('text_antialias.gif')
 exit

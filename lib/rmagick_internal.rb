@@ -17,11 +17,11 @@ module Magick
   @exit_block_set_up = nil
 
   class << self
-    def formats(&block)
+    def formats
       @formats ||= init_formats
 
       if block_given?
-        @formats.each{|k, v| yield k, v }
+        @formats.each { |k, v| yield k, v }
         self
       else
         @formats
@@ -65,11 +65,11 @@ module Magick
 
     attr_accessor :width, :height, :x, :y, :flag
 
-    def initialize(width=nil, height=nil, x=nil, y=nil, flag=nil)
-      fail(ArgumentError, "width set to #{width}") if width.is_a? GeometryValue
-      fail(ArgumentError, "height set to #{height}") if height.is_a? GeometryValue
-      fail(ArgumentError, "x set to #{x}") if x.is_a? GeometryValue
-      fail(ArgumentError, "y set to #{y}") if y.is_a? GeometryValue
+    def initialize(width = nil, height = nil, x = nil, y = nil, flag = nil)
+      raise(ArgumentError, "width set to #{width}") if width.is_a? GeometryValue
+      raise(ArgumentError, "height set to #{height}") if height.is_a? GeometryValue
+      raise(ArgumentError, "x set to #{x}") if x.is_a? GeometryValue
+      raise(ArgumentError, "y set to #{y}") if y.is_a? GeometryValue
 
       # Support floating-point width and height arguments so Geometry
       # objects can be used to specify Image#density= arguments.
@@ -111,9 +111,7 @@ module Magick
       else
         Kernel.raise ArgumentError, 'invalid geometry format'
       end
-      if str['%']
-        flag = PercentGeometry
-      end
+      flag = PercentGeometry if str['%']
       Geometry.new(width, height, x, y, flag)
     end
 
@@ -122,23 +120,19 @@ module Magick
       str = ''
       if @width > 0
         fmt = @width.truncate == @width ? '%d' : '%.2f'
-        str << sprintf(fmt, @width)
+        str << format(fmt, @width)
         str << '%' if @flag == PercentGeometry
       end
 
-      if (@width > 0 && @flag != PercentGeometry) || (@height > 0)
-        str << 'x'
-      end
+      str << 'x' if (@width > 0 && @flag != PercentGeometry) || (@height > 0)
 
       if @height > 0
         fmt = @height.truncate == @height ? '%d' : '%.2f'
-        str << sprintf(fmt, @height)
+        str << format(fmt, @height)
         str << '%' if @flag == PercentGeometry
       end
-      str << sprintf('%+d%+d', @x, @y) if @x != 0 || @y != 0
-      if @flag != PercentGeometry
-        str << FLAGS[@flag.to_i]
-      end
+      str << format('%+d%+d', @x, @y) if @x != 0 || @y != 0
+      str << FLAGS[@flag.to_i] if @flag != PercentGeometry
       str
     end
   end
@@ -167,7 +161,7 @@ module Magick
       NormalWeight.to_i => 'normal',
       BoldWeight.to_i => 'bold',
       BolderWeight.to_i => 'bolder',
-      LighterWeight.to_i => 'lighter',
+      LighterWeight.to_i => 'lighter'
     }.freeze
     GRAVITY_NAMES = {
       NorthWestGravity.to_i => 'northwest',
@@ -210,9 +204,9 @@ module Magick
 
     def enquote(str)
       if str.length > 2 && /\A(?:\"[^\"]+\"|\'[^\']+\'|\{[^\}]+\})\z/.match(str)
-        return str
+        str
       else
-        return '"' + str + '"'
+        '"' + str + '"'
       end
     end
 
@@ -221,18 +215,18 @@ module Magick
     # Apply coordinate transformations to support scaling (s), rotation (r),
     # and translation (t). Angles are specified in radians.
     def affine(sx, rx, ry, sy, tx, ty)
-      primitive 'affine ' + sprintf('%g,%g,%g,%g,%g,%g', sx, rx, ry, sy, tx, ty)
+      primitive 'affine ' + format('%g,%g,%g,%g,%g,%g', sx, rx, ry, sy, tx, ty)
     end
 
     # Draw an arc.
-    def arc(startX, startY, endX, endY, startDegrees, endDegrees)
-      primitive 'arc ' + sprintf('%g,%g %g,%g %g,%g',
-                                 startX, startY, endX, endY, startDegrees, endDegrees)
+    def arc(start_x, start_y, end_x, end_y, start_degrees, end_degrees)
+      primitive 'arc ' + format('%g,%g %g,%g %g,%g',
+                                start_x, start_y, end_x, end_y, start_degrees, end_degrees)
     end
 
     # Draw a bezier curve.
     def bezier(*points)
-      if points.length == 0
+      if points.length.zero?
         Kernel.raise ArgumentError, 'no points specified'
       elsif points.length.odd?
         Kernel.raise ArgumentError, 'odd number of arguments specified'
@@ -241,8 +235,8 @@ module Magick
     end
 
     # Draw a circle
-    def circle(originX, originY, perimX, perimY)
-      primitive 'circle ' + sprintf('%g,%g %g,%g', originX, originY, perimX, perimY)
+    def circle(origin_x, origin_y, perim_x, perim_y)
+      primitive 'circle ' + format('%g,%g %g,%g', origin_x, origin_y, perim_x, perim_y)
     end
 
     # Invoke a clip-path defined by def_clip_path.
@@ -252,7 +246,7 @@ module Magick
 
     # Define the clipping rule.
     def clip_rule(rule)
-      unless  ['evenodd', 'nonzero'].include?(rule.downcase)
+      unless %w[evenodd nonzero].include?(rule.downcase)
         Kernel.raise ArgumentError, "Unknown clipping rule #{rule}"
       end
       primitive "clip-rule #{rule}"
@@ -260,7 +254,7 @@ module Magick
 
     # Define the clip units
     def clip_units(unit)
-      unless  ['userspace', 'userspaceonuse', 'objectboundingbox'].include?(unit.downcase)
+      unless %w[userspace userspaceonuse objectboundingbox].include?(unit.downcase)
         Kernel.raise ArgumentError, "Unknown clip unit #{unit}"
       end
       primitive "clip-units #{unit}"
@@ -269,7 +263,7 @@ module Magick
     # Set color in image according to specified colorization rule. Rule is one of
     # point, replace, floodfill, filltoborder,reset
     def color(x, y, method)
-      unless  PAINT_METHOD_NAMES.has_key?(method.to_i)
+      unless PAINT_METHOD_NAMES.has_key?(method.to_i)
         Kernel.raise ArgumentError, "Unknown PaintMethod: #{method}"
       end
       primitive "color #{x},#{y},#{PAINT_METHOD_NAMES[method.to_i]}"
@@ -278,7 +272,7 @@ module Magick
     # Specify EITHER the text decoration (none, underline, overline,
     # line-through) OR the text solid background color (any color name or spec)
     def decorate(decoration)
-      if  DECORATION_TYPE_NAMES.has_key?(decoration.to_i)
+      if DECORATION_TYPE_NAMES.has_key?(decoration.to_i)
         primitive "decorate #{DECORATION_TYPE_NAMES[decoration.to_i]}"
       else
         primitive "decorate #{enquote(decoration)}"
@@ -302,9 +296,9 @@ module Magick
     end
 
     # Draw an ellipse
-    def ellipse(originX, originY, width, height, arcStart, arcEnd)
-      primitive 'ellipse ' + sprintf('%g,%g %g,%g %g,%g',
-                                     originX, originY, width, height, arcStart, arcEnd)
+    def ellipse(origin_x, origin_y, width, height, arc_start, arc_end)
+      primitive 'ellipse ' + format('%g,%g %g,%g %g,%g',
+                                    origin_x, origin_y, width, height, arc_start, arc_end)
     end
 
     # Let anything through, but the only defined argument
@@ -326,7 +320,7 @@ module Magick
     end
 
     def fill_rule(rule)
-      unless  ['evenodd', 'nonzero'].include?(rule.downcase)
+      unless %w[evenodd nonzero].include?(rule.downcase)
         Kernel.raise ArgumentError, "Unknown fill rule #{rule}"
       end
       primitive "fill-rule #{rule}"
@@ -342,14 +336,14 @@ module Magick
     end
 
     def font_stretch(stretch)
-      unless  STRETCH_TYPE_NAMES.has_key?(stretch.to_i)
+      unless STRETCH_TYPE_NAMES.has_key?(stretch.to_i)
         Kernel.raise ArgumentError, 'Unknown stretch type'
       end
       primitive "font-stretch #{STRETCH_TYPE_NAMES[stretch.to_i]}"
     end
 
     def font_style(style)
-      unless  STYLE_TYPE_NAMES.has_key?(style.to_i)
+      unless STYLE_TYPE_NAMES.has_key?(style.to_i)
         Kernel.raise ArgumentError, 'Unknown style type'
       end
       primitive "font-style #{STYLE_TYPE_NAMES[style.to_i]}"
@@ -358,7 +352,7 @@ module Magick
     # The font weight argument can be either a font weight
     # constant or [100,200,...,900]
     def font_weight(weight)
-      if  FONT_WEIGHT_NAMES.has_key?(weight.to_i)
+      if FONT_WEIGHT_NAMES.has_key?(weight.to_i)
         primitive "font-weight #{FONT_WEIGHT_NAMES[weight.to_i]}"
       else
         primitive "font-weight #{weight}"
@@ -368,7 +362,7 @@ module Magick
     # Specify the text positioning gravity, one of:
     # NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast
     def gravity(grav)
-      unless  GRAVITY_NAMES.has_key?(grav.to_i)
+      unless GRAVITY_NAMES.has_key?(grav.to_i)
         Kernel.raise ArgumentError, 'Unknown text positioning gravity'
       end
       primitive "gravity #{GRAVITY_NAMES[grav.to_i]}"
@@ -411,14 +405,14 @@ module Magick
     end
 
     # Draw a line
-    def line(startX, startY, endX, endY)
-      primitive 'line ' + sprintf('%g,%g %g,%g', startX, startY, endX, endY)
+    def line(start_x, start_y, end_x, end_y)
+      primitive 'line ' + format('%g,%g %g,%g', start_x, start_y, end_x, end_y)
     end
 
     # Set matte (make transparent) in image according to the specified
     # colorization rule
     def matte(x, y, method)
-      unless  PAINT_METHOD_NAMES.has_key?(method.to_i)
+      unless PAINT_METHOD_NAMES.has_key?(method.to_i)
         Kernel.raise ArgumentError, 'Unknown paint method'
       end
       primitive "matte #{x},#{y} #{PAINT_METHOD_NAMES[method.to_i]}"
@@ -427,7 +421,7 @@ module Magick
     # Specify drawing fill and stroke opacities. If the value is a string
     # ending with a %, the number will be multiplied by 0.01.
     def opacity(opacity)
-      if (Numeric === opacity)
+      if opacity.is_a?(Numeric)
         if opacity < 0 || opacity > 1.0
           Kernel.raise ArgumentError, 'opacity must be >= 0 and <= 1.0'
         end
@@ -470,7 +464,7 @@ module Magick
 
     # Draw a polygon
     def polygon(*points)
-      if points.length == 0
+      if points.length.zero?
         Kernel.raise ArgumentError, 'no points specified'
       elsif points.length.odd?
         Kernel.raise ArgumentError, 'odd number of points specified'
@@ -480,7 +474,7 @@ module Magick
 
     # Draw a polyline
     def polyline(*points)
-      if points.length == 0
+      if points.length.zero?
         Kernel.raise ArgumentError, 'no points specified'
       elsif points.length.odd?
         Kernel.raise ArgumentError, 'odd number of points specified'
@@ -495,11 +489,11 @@ module Magick
     # pop('pattern')
 
     def pop(*what)
-      if what.length == 0
+      if what.length.zero?
         primitive 'pop graphic-context'
       else
         # to_s allows a Symbol to be used instead of a String
-        primitive 'pop ' + what.map {|w| w.to_s}.join(' ')
+        primitive 'pop ' + what.map(&:to_s).join(' ')
       end
     end
 
@@ -509,18 +503,18 @@ module Magick
     # push('gradient')
     # push('pattern')
     def push(*what)
-      if what.length == 0
+      if what.length.zero?
         primitive 'push graphic-context'
       else
         # to_s allows a Symbol to be used instead of a String
-        primitive 'push ' + what.map {|w| w.to_s}.join(' ')
+        primitive 'push ' + what.map(&:to_s).join(' ')
       end
     end
 
     # Draw a rectangle
     def rectangle(upper_left_x, upper_left_y, lower_right_x, lower_right_y)
-      primitive 'rectangle ' + sprintf('%g,%g %g,%g',
-                                       upper_left_x, upper_left_y, lower_right_x, lower_right_y)
+      primitive 'rectangle ' + format('%g,%g %g,%g',
+                                      upper_left_x, upper_left_y, lower_right_x, lower_right_y)
     end
 
     # Specify coordinate space rotation. "angle" is measured in degrees
@@ -530,8 +524,8 @@ module Magick
 
     # Draw a rectangle with rounded corners
     def roundrectangle(center_x, center_y, width, height, corner_width, corner_height)
-      primitive 'roundrectangle ' + sprintf('%g,%g,%g,%g,%g,%g',
-                                            center_x, center_y, width, height, corner_width, corner_height)
+      primitive 'roundrectangle ' + format('%g,%g,%g,%g,%g,%g',
+                                           center_x, center_y, width, height, corner_width, corner_height)
     end
 
     # Specify scaling to be applied to coordinate space on subsequent drawing commands.
@@ -562,7 +556,7 @@ module Magick
 
     # Specify a stroke dash pattern
     def stroke_dasharray(*list)
-      if list.length == 0
+      if list.length.zero?
         primitive 'stroke-dasharray none'
       else
         list.each do |x|
@@ -575,28 +569,26 @@ module Magick
     end
 
     # Specify the initial offset in the dash pattern
-    def stroke_dashoffset(value=0)
+    def stroke_dashoffset(value = 0)
       primitive "stroke-dashoffset #{value}"
     end
 
     def stroke_linecap(value)
-      unless  ['butt', 'round', 'square'].include?(value.downcase)
+      unless %w[butt round square].include?(value.downcase)
         Kernel.raise ArgumentError, "Unknown linecap type: #{value}"
       end
       primitive "stroke-linecap #{value}"
     end
 
     def stroke_linejoin(value)
-      unless  ['round', 'miter', 'bevel'].include?(value.downcase)
+      unless %w[round miter bevel].include?(value.downcase)
         Kernel.raise ArgumentError, "Unknown linejoin type: #{value}"
       end
       primitive "stroke-linejoin #{value}"
     end
 
     def stroke_miterlimit(value)
-      if value < 1
-        Kernel.raise ArgumentError, 'miterlimit must be >= 1'
-      end
+      Kernel.raise ArgumentError, 'miterlimit must be >= 1' if value < 1
       primitive "stroke-miterlimit #{value}"
     end
 
@@ -613,27 +605,25 @@ module Magick
 
     # Draw text at position x,y. Add quotes to text that is not already quoted.
     def text(x, y, text)
-      if text.to_s.empty?
-        Kernel.raise ArgumentError, 'missing text argument'
-      end
+      Kernel.raise ArgumentError, 'missing text argument' if text.to_s.empty?
       if text.length > 2 && /\A(?:\"[^\"]+\"|\'[^\']+\'|\{[^\}]+\})\z/.match(text)
-        ; # text already quoted
+      # text already quoted
       elsif !text['\'']
-        text = '\''+text+'\''
+        text = '\'' + text + '\''
       elsif !text['"']
-        text = '"'+text+'"'
+        text = '"' + text + '"'
       elsif !(text['{'] || text['}'])
-        text = '{'+text+'}'
+        text = '{' + text + '}'
       else
         # escape existing braces, surround with braces
-        text = '{' +  text.gsub(/[}]/) { |b| '\\' + b } + '}'
+        text = '{' + text.gsub(/[}]/) { |b| '\\' + b } + '}'
       end
       primitive "text #{x},#{y} #{text}"
     end
 
     # Specify text alignment relative to a given point
     def text_align(alignment)
-      unless  ALIGN_TYPE_NAMES.has_key?(alignment.to_i)
+      unless ALIGN_TYPE_NAMES.has_key?(alignment.to_i)
         Kernel.raise ArgumentError, "Unknown alignment constant: #{alignment}"
       end
       primitive "text-align #{ALIGN_TYPE_NAMES[alignment.to_i]}"
@@ -641,7 +631,7 @@ module Magick
 
     # SVG-compatible version of text_align
     def text_anchor(anchor)
-      unless  ANCHOR_TYPE_NAMES.has_key?(anchor.to_i)
+      unless ANCHOR_TYPE_NAMES.has_key?(anchor.to_i)
         Kernel.raise ArgumentError, "Unknown anchor constant: #{anchor}"
       end
       primitive "text-anchor #{ANCHOR_TYPE_NAMES[anchor.to_i]}"
@@ -830,7 +820,7 @@ module Magick
     # Thanks to Russell Norris!
     def each_pixel
       get_pixels(0, 0, columns, rows).each_with_index do |p, n|
-        yield(p, n%columns, n/columns)
+        yield(p, n % columns, n / columns)
       end
       self
     end
@@ -841,13 +831,13 @@ module Magick
     # arrays.
     def get_exif_by_entry(*entry)
       ary = []
-      if entry.length == 0
+      if entry.length.zero?
         exif_data = self['EXIF:*']
         if exif_data
           exif_data.split("\n").each { |exif| ary.push(exif.split('=')) }
         end
       else
-        get_exif_by_entry     # ensure properties is populated with exif data
+        get_exif_by_entry # ensure properties is populated with exif data
         entry.each do |name|
           rval = self["EXIF:#{name}"]
           ary.push([name, rval])
@@ -859,19 +849,19 @@ module Magick
     # Retrieve EXIF data by tag number or all tag/value pairs. The return value is a hash.
     def get_exif_by_number(*tag)
       hash = {}
-      if tag.length == 0
+      if tag.length.zero?
         exif_data = self['EXIF:!']
         if exif_data
           exif_data.split("\n").each do |exif|
             tag, value = exif.split('=')
-            tag = tag[1,4].hex
+            tag = tag[1, 4].hex
             hash[tag] = value
           end
         end
       else
-        get_exif_by_number    # ensure properties is populated with exif data
+        get_exif_by_number # ensure properties is populated with exif data
         tag.each do |num|
-          rval = self['#%04X' % num.to_i]
+          rval = self[format('#%04X', num.to_i)]
           hash[num] = rval == 'unknown' ? nil : rval
         end
       end
@@ -881,7 +871,7 @@ module Magick
     # Retrieve IPTC information by record number:dataset tag constant defined in
     # Magick::IPTC, above.
     def get_iptc_dataset(ds)
-      self['IPTC:'+ds]
+      self['IPTC:' + ds]
     end
 
     # Iterate over IPTC record number:dataset tags, yield for each non-nil dataset
@@ -909,7 +899,7 @@ module Magick
     # look like they're in the old order.
 
     # (Thanks to Al Evans for the suggestion.)
-    def level(black_point=0.0, white_point=nil, gamma=nil)
+    def level(black_point = 0.0, white_point = nil, gamma = nil)
       black_point = Float(black_point)
 
       white_point ||= Magick::QuantumRange - black_point
@@ -921,9 +911,7 @@ module Magick
 
       if gamma.abs > 10.0 || white_point.abs <= 10.0 || white_point.abs < gamma.abs
         gamma, white_point = white_point, gamma
-        unless gamma_arg
-          white_point = Magick::QuantumRange - black_point
-        end
+        white_point = Magick::QuantumRange - black_point unless gamma_arg
       end
 
       level2(black_point, white_point, gamma)
@@ -937,7 +925,7 @@ module Magick
     def matte_point(x, y)
       f = copy
       f.opacity = OpaqueOpacity unless f.matte
-      pixel = f.pixel_color(x,y)
+      pixel = f.pixel_color(x, y)
       pixel.opacity = TransparentOpacity
       f.pixel_color(x, y, pixel)
       f
@@ -978,15 +966,15 @@ module Magick
 
     # Force an image to exact dimensions without changing the aspect ratio.
     # Resize and crop if necessary. (Thanks to Jerett Taylor!)
-    def resize_to_fill(ncols, nrows=nil, gravity=CenterGravity)
+    def resize_to_fill(ncols, nrows = nil, gravity = CenterGravity)
       copy.resize_to_fill!(ncols, nrows, gravity)
     end
 
-    def resize_to_fill!(ncols, nrows=nil, gravity=CenterGravity)
+    def resize_to_fill!(ncols, nrows = nil, gravity = CenterGravity)
       nrows ||= ncols
       if ncols != columns || nrows != rows
-        scale = [ncols/columns.to_f, nrows/rows.to_f].max
-        resize!(scale*columns+0.5, scale*rows+0.5)
+        scale = [ncols / columns.to_f, nrows / rows.to_f].max
+        resize!(scale * columns + 0.5, scale * rows + 0.5)
       end
       crop!(gravity, ncols, nrows, true) if ncols != columns || nrows != rows
       self
@@ -998,14 +986,14 @@ module Magick
 
     # Convenience method to resize retaining the aspect ratio.
     # (Thanks to Robert Manni!)
-    def resize_to_fit(cols, rows=nil)
+    def resize_to_fit(cols, rows = nil)
       rows ||= cols
       change_geometry(Geometry.new(cols, rows)) do |ncols, nrows|
         resize(ncols, nrows)
       end
     end
 
-    def resize_to_fit!(cols, rows=nil)
+    def resize_to_fit!(cols, rows = nil)
       rows ||= cols
       change_geometry(Geometry.new(cols, rows)) do |ncols, nrows|
         resize!(ncols, nrows)
@@ -1028,16 +1016,13 @@ module Magick
     def view(x, y, width, height)
       view = View.new(self, x, y, width, height)
 
-      if block_given?
-        begin
-          yield(view)
-        ensure
-          view.sync
-        end
-        return nil
-      else
-        return view
+      return view unless block_given?
+      begin
+        yield(view)
+      ensure
+        view.sync
       end
+      nil
     end
 
     # Magick::Image::View class
@@ -1050,7 +1035,7 @@ module Magick
         if width <= 0 || height <= 0
           Kernel.raise ArgumentError, "invalid geometry (#{width}x#{height}+#{x}+#{y})"
         end
-        if x < 0 || y < 0 || (x+width) > img.columns || (y+height) > img.rows
+        if x < 0 || y < 0 || (x + width) > img.columns || (y + height) > img.rows
           Kernel.raise RangeError, "geometry (#{width}x#{height}+#{x}+#{y}) exceeds image boundary"
         end
         @view = img.get_pixels(x, y, width, height)
@@ -1069,7 +1054,7 @@ module Magick
       end
 
       # Store changed pixels back to image
-      def sync(force=false)
+      def sync(force = false)
         @img.store_pixels(x, y, width, height, @view) if @dirty || force
         @dirty || force
       end
@@ -1078,7 +1063,7 @@ module Magick
       # true, don't change it back to false!
       def update(rows)
         @dirty = true
-        rows.delete_observer(self)      # No need to tell us again.
+        rows.delete_observer(self) # No need to tell us again.
         nil
       end
 
@@ -1119,7 +1104,7 @@ module Magick
 
           # Both View::Pixels and Magick::Pixel implement Observable
           if @unique
-            pixels = @view[@rows[0]*@width + @cols[0]]
+            pixels = @view[@rows[0] * @width + @cols[0]]
             pixels.add_observer(self)
           else
             pixels = View::Pixels.new
@@ -1133,8 +1118,8 @@ module Magick
         end
 
         def []=(*args)
-          rv = args.delete_at(-1)     # get rvalue
-          unless rv.is_a?(Pixel)        # must be a Pixel or a color name
+          rv = args.delete_at(-1) # get rvalue
+          unless rv.is_a?(Pixel) # must be a Pixel or a color name
             begin
               rv = Pixel.from_color(rv)
             rescue TypeError
@@ -1159,7 +1144,7 @@ module Magick
         private
 
         def cols(*args)
-          @cols = args[0]     # remove the outermost array
+          @cols = args[0] # remove the outermost array
           @unique = false
 
           # Convert @rows to an Enumerable object
@@ -1173,10 +1158,8 @@ module Magick
               @rows = @rows.first
             else
               @rows = Integer(@rows.first)
-              if @rows < 0
-                @rows += @height
-              end
-              if @rows < 0 || @rows > @height-1
+              @rows += @height if @rows < 0
+              if @rows < 0 || @rows > @height - 1
                 Kernel.raise IndexError, "index [#{@rows}] out of range"
               end
               # Convert back to an array
@@ -1189,27 +1172,23 @@ module Magick
             length = Integer(@rows[1])
 
             # Negative start -> start from last row
-            if start < 0
-              start += @height
-            end
+            start += @height if start < 0
 
             if start > @height || start < 0 || length < 0
               Kernel.raise IndexError, "index [#{@rows.first}] out of range"
-            else
-              if start + length > @height
-                length = @height - length
-                length = [length, 0].max
-              end
+            elsif start + length > @height
+              length = @height - length
+              length = [length, 0].max
             end
             # Create a Range for the specified set of rows
-            @rows = Range.new(start, start+length, true)
+            @rows = Range.new(start, start + length, true)
           end
 
           case @cols.length
-          when 0                  # all rows
-            @cols = Range.new(0, @width, true)  # convert to range
+          when 0 # all rows
+            @cols = Range.new(0, @width, true) # convert to range
             @unique = false
-          when 1                  # Range, Array, or a single integer
+          when 1 # Range, Array, or a single integer
             # if the single element is already an Enumerable
             # object, get it.
             if @cols.first.respond_to? :each
@@ -1217,10 +1196,8 @@ module Magick
               @unique = false
             else
               @cols = Integer(@cols.first)
-              if @cols < 0
-                @cols += @width
-              end
-              if @cols < 0 || @cols > @width-1
+              @cols += @width if @cols < 0
+              if @cols < 0 || @cols > @width - 1
                 Kernel.raise IndexError, "index [#{@cols}] out of range"
               end
               # Convert back to array
@@ -1233,20 +1210,16 @@ module Magick
             length = Integer(@cols[1])
 
             # Negative start -> start from last row
-            if start < 0
-              start += @width
-            end
+            start += @width if start < 0
 
             if start > @width || start < 0 || length < 0
-              ; #nop
-            else
-              if start + length > @width
-                length = @width - length
-                length = [length, 0].max
-              end
+            # nop
+            elsif start + length > @width
+              length = @width - length
+              length = [length, 0].max
             end
             # Create a Range for the specified set of columns
-            @cols = Range.new(start, start+length, true)
+            @cols = Range.new(start, start + length, true)
             @unique = false
           end
         end
@@ -1257,20 +1230,18 @@ module Magick
           maxcols = @width - 1
 
           @rows.each do |j|
-            if j > maxrows
-              Kernel.raise IndexError, "index [#{j}] out of range"
-            end
+            Kernel.raise IndexError, "index [#{j}] out of range" if j > maxrows
             @cols.each do |i|
               if i > maxcols
                 Kernel.raise IndexError, "index [#{i}] out of range"
               end
-              yield j*@width + i
+              yield j * @width + i
             end
           end
-          nil    # useless return value
+          nil # useless return value
         end
       end # class Magick::Image::View::Rows
-    end     # class Magick::Image::View
+    end # class Magick::Image::View
   end # class Magick::Image
 
   class ImageList
@@ -1281,7 +1252,9 @@ module Magick
     private
 
     def get_current
-      return @images[@scene].__id__ rescue nil
+      return @images[@scene].__id__
+    rescue
+      nil
     end
 
     protected
@@ -1305,7 +1278,7 @@ module Magick
     # Find old current image, update scene number
     # current is the id of the old current image.
     def set_current(current)
-      if length == 0
+      if length.zero?
         self.scene = nil
         return
       # Don't bother looking for current image
@@ -1316,10 +1289,8 @@ module Magick
         # Find last instance of "current" in the list.
         # If "current" isn't in the list, set current to last image.
         self.scene = length - 1
-        each_with_index do |f,i|
-          if f.__id__ == current
-            self.scene = i
-          end
+        each_with_index do |f, i|
+          self.scene = i if f.__id__ == current
         end
         return
       end
@@ -1331,10 +1302,10 @@ module Magick
     # Allow scene to be set to nil
     def scene=(n)
       if n.nil?
-        Kernel.raise IndexError, 'scene number out of bounds' unless @images.length == 0
+        Kernel.raise IndexError, 'scene number out of bounds' unless @images.length.zero?
         @scene = nil
         return @scene
-      elsif @images.length == 0
+      elsif @images.length.zero?
         Kernel.raise IndexError, 'scene number out of bounds'
       end
 
@@ -1348,7 +1319,7 @@ module Magick
 
     # All the binary operators work the same way.
     # 'other' should be either an ImageList or an Array
-    %w{& + - |}.each do |op|
+    %w[& + - |].each do |op|
       module_eval <<-END_BINOPS
         def #{op}(other)
           ilist = self.class.new
@@ -1374,7 +1345,7 @@ module Magick
       end
       current = get_current
       ilist = self.class.new
-      (@images * n).each {|image| ilist << image}
+      (@images * n).each { |image| ilist << image }
       ilist.set_current current
       ilist
     end
@@ -1398,17 +1369,13 @@ module Magick
       size = [length, other.length].min
       size.times do |x|
         r = self[x] <=> other[x]
-        return r unless r == 0
+        return r unless r.zero?
       end
-      if @scene.nil? && other.scene.nil?
-        return 0
-      elsif @scene.nil? && !other.scene.nil?
-        Kernel.raise TypeError, "cannot convert nil into #{other.scene.class}"
-      elsif ! @scene.nil? && other.scene.nil?
-        Kernel.raise TypeError, "cannot convert nil into #{scene.class}"
-      end
+      return 0 if @scene.nil? && other.scene.nil?
+      Kernel.raise TypeError, "cannot convert nil into #{other.scene.class}" if @scene.nil? && !other.scene.nil?
+      Kernel.raise TypeError, "cannot convert nil into #{scene.class}" if !@scene.nil? && other.scene.nil?
       r = scene <=> other.scene
-      return r unless r == 0
+      return r unless r.zero?
       length <=> other.length
     end
 
@@ -1416,7 +1383,7 @@ module Magick
       a = @images[*args]
       if a.respond_to?(:each)
         ilist = self.class.new
-        a.each {|image| ilist << image}
+        a.each { |image| ilist << image }
         a = ilist
       end
       a
@@ -1469,7 +1436,7 @@ module Magick
       current = get_current
       a = @images.collect(&block)
       ilist = self.class.new
-      a.each {|image| ilist << image}
+      a.each { |image| ilist << image }
       ilist.set_current current
       ilist
     end
@@ -1491,9 +1458,7 @@ module Magick
 
     # Return the current image
     def cur_image
-      unless @scene
-        Kernel.raise IndexError, 'no images in this list'
-      end
+      Kernel.raise IndexError, 'no images in this list' unless @scene
       @images[@scene]
     end
 
@@ -1509,29 +1474,29 @@ module Magick
       current = get_current
       ilist = self.class.new
       a = @images.compact
-      a.each {|image| ilist << image}
+      a.each { |image| ilist << image }
       ilist.set_current current
       ilist
     end
 
     def compact!
       current = get_current
-      a = @images.compact!    # returns nil if no changes were made
+      a = @images.compact! # returns nil if no changes were made
       set_current current
       a.nil? ? nil : self
     end
 
     def concat(other)
       is_an_image_array other
-      other.each {|image| @images << image}
-      @scene = length-1
+      other.each { |image| @images << image }
+      @scene = length - 1
       self
     end
 
     # Set same delay for all images
     def delay=(d)
       if Integer(d) < 0
-        fail ArgumentError, 'delay must be greater than or equal to 0'
+        raise ArgumentError, 'delay must be greater than or equal to 0'
       end
       @images.each { |f| f.delay = Integer(d) }
     end
@@ -1560,7 +1525,7 @@ module Magick
 
     def dup
       ditto = self.class.new
-      @images.each {|img| ditto << img}
+      @images.each { |img| ditto << img }
       ditto.scene = @scene
       ditto.taint if tainted?
       ditto
@@ -1591,18 +1556,16 @@ module Magick
       current = get_current
       a = @images.find_all(&block)
       ilist = self.class.new
-      a.each {|image| ilist << image}
+      a.each { |image| ilist << image }
       ilist.set_current current
       ilist
     end
     alias_method :select, :find_all
 
     def from_blob(*blobs, &block)
-      if (blobs.length == 0)
-        Kernel.raise ArgumentError, 'no blobs given'
-      end
+      Kernel.raise ArgumentError, 'no blobs given' if blobs.length.zero?
       blobs.each do |b|
-        Magick::Image.from_blob(b, &block).each { |n| @images << n  }
+        Magick::Image.from_blob(b, &block).each { |n| @images << n }
       end
       @scene = length - 1
       self
@@ -1616,13 +1579,13 @@ module Magick
         Magick::Image.read(f, &block).each { |n| @images << n }
       end
       if length > 0
-        @scene = length - 1     # last image in array
+        @scene = length - 1 # last image in array
       end
       self
     end
 
     def insert(index, *args)
-      args.each {|image| is_an_image image}
+      args.each { |image| is_an_image image }
       current = get_current
       @images.insert(index, *args)
       set_current current
@@ -1632,27 +1595,27 @@ module Magick
     # Call inspect for all the images
     def inspect
       img = []
-      @images.each {|image| img << image.inspect }
+      @images.each { |image| img << image.inspect }
       img = '[' + img.join(",\n") + "]\nscene=#{@scene}"
     end
 
     # Set the number of iterations of an animated GIF
     def iterations=(n)
       n = Integer(n)
-      if n < 0 || n > 65535
+      if n < 0 || n > 65_535
         Kernel.raise ArgumentError, 'iterations must be between 0 and 65535'
       end
-      @images.each {|f| f.iterations=n}
+      @images.each { |f| f.iterations = n }
       self
     end
 
     def last(*args)
-      if args.length == 0
+      if args.length.zero?
         a = @images.last
       else
         a = @images.last(*args)
         ilist = self.class.new
-        a.each {|img| ilist << img}
+        a.each { |img| ilist << img }
         @scene = a.length - 1
         a = ilist
       end
@@ -1662,28 +1625,28 @@ module Magick
     # Custom marshal/unmarshal for Ruby 1.8.
     def marshal_dump
       ary = [@scene]
-      @images.each {|i| ary << Marshal.dump(i)}
+      @images.each { |i| ary << Marshal.dump(i) }
       ary
     end
 
     def marshal_load(ary)
       @scene = ary.shift
       @images = []
-      ary.each {|a| @images << Marshal.load(a)}
+      ary.each { |a| @images << Marshal.load(a) }
     end
 
     # The ImageList class supports the Magick::Image class methods by simply sending
     # the method to the current image. If the method isn't explicitly supported,
     # send it to the current image in the array. If there are no images, send
     # it up the line. Catch a NameError and emit a useful message.
-    def method_missing(methID, *args, &block)
+    def method_missing(meth_id, *args, &block)
       if @scene
-        @images[@scene].send(methID, *args, &block)
+        @images[@scene].send(meth_id, *args, &block)
       else
         super
       end
     rescue NoMethodError
-      Kernel.raise NoMethodError, "undefined method `#{methID.id2name}' for #{self.class}"
+      Kernel.raise NoMethodError, "undefined method `#{meth_id.id2name}' for #{self.class}"
     rescue Exception
       $ERROR_POSITION.delete_if { |s| /:in `send'$/.match(s) || /:in `method_missing'$/.match(s) }
       Kernel.raise
@@ -1697,19 +1660,17 @@ module Magick
     def partition(&block)
       a = @images.partition(&block)
       t = self.class.new
-      a[0].each { |img| t << img}
+      a[0].each { |img| t << img }
       t.set_current nil
       f = self.class.new
-      a[1].each { |img| f << img}
+      a[1].each { |img| f << img }
       f.set_current nil
       [t, f]
     end
 
     # Ping files and concatenate the new images
     def ping(*files, &block)
-      if (files.length == 0)
-        Kernel.raise ArgumentError, 'no files given'
-      end
+      Kernel.raise ArgumentError, 'no files given' if files.length.zero?
       files.each do |f|
         Magick::Image.ping(f, &block).each { |n| @images << n }
       end
@@ -1719,7 +1680,7 @@ module Magick
 
     def pop
       current = get_current
-      a = @images.pop       # can return nil
+      a = @images.pop # can return nil
       set_current current
       a
     end
@@ -1735,9 +1696,7 @@ module Magick
 
     # Read files and concatenate the new images
     def read(*files, &block)
-      if (files.length == 0)
-        Kernel.raise ArgumentError, 'no files given'
-      end
+      Kernel.raise ArgumentError, 'no files given' if files.length.zero?
       files.each do |f|
         Magick::Image.read(f, &block).each { |n| @images << n }
       end
@@ -1750,7 +1709,7 @@ module Magick
       current = get_current
       ilist = self.class.new
       a = @images.reject(&block)
-      a.each {|image| ilist << image}
+      a.each { |image| ilist << image }
       ilist.set_current current
       ilist
     end
@@ -1767,18 +1726,18 @@ module Magick
       is_an_image_array other
       current = get_current
       @images.clear
-      other.each {|image| @images << image}
-      @scene = length == 0 ? nil : 0
+      other.each { |image| @images << image }
+      @scene = length.zero? ? nil : 0
       set_current current
       self
     end
 
     # Ensure respond_to? answers correctly when we are delegating to Image
     alias_method :__respond_to__?, :respond_to?
-    def respond_to?(methID, priv=false)
-      return true if __respond_to__?(methID, priv)
+    def respond_to?(meth_id, priv = false)
+      return true if __respond_to__?(meth_id, priv)
       if @scene
-        @images[@scene].respond_to?(methID, priv)
+        @images[@scene].respond_to?(meth_id, priv)
       else
         super
       end
@@ -1787,7 +1746,7 @@ module Magick
     def reverse
       current = get_current
       a = self.class.new
-      @images.reverse_each {|image| a << image}
+      @images.reverse_each { |image| a << image }
       a.set_current current
       a
     end
@@ -1800,7 +1759,7 @@ module Magick
     end
 
     def reverse_each
-      @images.reverse_each {|image| yield(image)}
+      @images.reverse_each { |image| yield(image) }
       self
     end
 
@@ -1816,7 +1775,7 @@ module Magick
       if slice
         ilist = self.class.new
         if slice.respond_to?(:each)
-          slice.each {|image| ilist << image}
+          slice.each { |image| ilist << image }
         else
           ilist << slice
         end
@@ -1842,19 +1801,19 @@ module Magick
 
     def to_a
       a = []
-      @images.each {|image| a << image}
+      @images.each { |image| a << image }
       a
     end
 
     def uniq
       current = get_current
       a = self.class.new
-      @images.uniq.each {|image| a << image}
+      @images.uniq.each { |image| a << image }
       a.set_current current
       a
     end
 
-    def uniq!(*args)
+    def uniq!(*_args)
       current = get_current
       a = @images.uniq!
       set_current current
@@ -1872,7 +1831,7 @@ module Magick
     def values_at(*args)
       a = @images.values_at(*args)
       a = self.class.new
-      @images.values_at(*args).each {|image| a << image}
+      @images.values_at(*args).each { |image| a << image }
       a.scene = a.length - 1
       a
     end
@@ -1914,21 +1873,21 @@ module Magick
   # @dist is the number of pixels between hatch lines.
   # See Magick::Draw examples.
   class HatchFill
-    def initialize(bgcolor, hatchcolor='white', dist=10)
+    def initialize(bgcolor, hatchcolor = 'white', dist = 10)
       @bgcolor = bgcolor
       @hatchpixel = Pixel.from_color(hatchcolor)
       @dist = dist
     end
 
-    def fill(img)                # required
+    def fill(img) # required
       img.background_color = @bgcolor
-      img.erase!                # sets image to background color
+      img.erase! # sets image to background color
       pixels = Array.new([img.rows, img.columns].max, @hatchpixel)
-      @dist.step((img.columns-1)/@dist*@dist, @dist) do |x|
-        img.store_pixels(x,0,1,img.rows,pixels)
+      @dist.step((img.columns - 1) / @dist * @dist, @dist) do |x|
+        img.store_pixels(x, 0, 1, img.rows, pixels)
       end
-      @dist.step((img.rows-1)/@dist*@dist, @dist) do |y|
-        img.store_pixels(0,y,img.columns,1,pixels)
+      @dist.step((img.rows - 1) / @dist * @dist, @dist) do |y|
+        img.store_pixels(0, y, img.columns, 1, pixels)
       end
     end
   end

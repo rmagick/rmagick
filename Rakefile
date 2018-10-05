@@ -7,10 +7,12 @@ task :config do
   def version
     Magick::VERSION
   end
+
   # e.g. 2.13.3 becomes RMagick_2-13-3
   def version_tag
-    "RMagick_#{version.gsub('.','-')}"
+    "RMagick_#{version.tr('.', '-')}"
   end
+
   # e.g. 2.13.3 becomes rmagick-2.13.3.gem
   def gem_name
     "rmagick-#{version}.gem"
@@ -57,7 +59,7 @@ desc 'Release'
 task :release => [:assert_clean_repo, :push_and_tag]
 
 desc 'Release and build the legacy way'
-task :legacy_release=> ['legacy:README.html', 'legacy:extconf', 'legacy:doc', 'legacy:manifest', 'release']
+task :legacy_release => ['legacy:README.html', 'legacy:extconf', 'legacy:doc', 'legacy:manifest', 'release']
 
 namespace :legacy do
   require 'find'
@@ -77,7 +79,7 @@ namespace :legacy do
 
     lines = File.readlines name
     lines.each do |line|
-      line.gsub!(%r{0\.0\.0}, Magick::VERSION)
+      line.gsub!(/0\.0\.0/, Magick::VERSION)
       line.gsub!(%r{YY/MM/DD}, now)
     end
     lines
@@ -144,7 +146,7 @@ END_HTML_TAIL
   desc "Remove files we don't want in the .gem; ensure files are not executable"
   task :fix_files do
     rm 'README.txt', :verbose => true
-    chmod 0644, FileList['doc/*.html', 'doc/ex/*.rb', 'doc/ex/images/*', 'examples/*.rb']
+    chmod 0o644, FileList['doc/*.html', 'doc/ex/*.rb', 'doc/ex/images/*', 'examples/*.rb']
   end
 
   desc 'Build manifest'
@@ -157,7 +159,7 @@ END_HTML_TAIL
       f.puts "MANIFEST for #{Magick::VERSION} - #{now}\n\n"
       Find.find('.') do |name|
         next if File.directory? name
-        f.puts name[2..-1]    # remove leading "./"
+        f.puts name[2..-1] # remove leading "./"
       end
     end
   end

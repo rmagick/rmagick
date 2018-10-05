@@ -3,9 +3,9 @@ puts RUBY_VERSION
 puts RUBY_VERSION.class
 root_dir = File.expand_path('../..', __FILE__)
 IMAGES_DIR = File.join(root_dir, 'doc/ex/images')
-FILES = Dir[IMAGES_DIR+'/Button_*.gif'].sort
-FLOWER_HAT = IMAGES_DIR+'/Flower_Hat.jpg'
-IMAGE_WITH_PROFILE = IMAGES_DIR+'/image_with_profile.jpg'
+FILES = Dir[IMAGES_DIR + '/Button_*.gif'].sort
+FLOWER_HAT = IMAGES_DIR + '/Flower_Hat.jpg'
+IMAGE_WITH_PROFILE = IMAGES_DIR + '/image_with_profile.jpg'
 
 require 'test/unit'
 if RUBY_VERSION < '1.9'
@@ -20,10 +20,10 @@ end
 require 'rmagick'
 
 Magick::Magick_version =~ /ImageMagick (\d+\.\d+\.\d+)-(\d+) /
-abort 'Unable to get ImageMagick version' unless $1 && $2
+abort 'Unable to get ImageMagick version' unless Regexp.last_match(1) && Regexp.last_match(2)
 
-IM_VERSION = Gem::Version.new($1)
-IM_REVISION = Gem::Version.new($2)
+IM_VERSION = Gem::Version.new(Regexp.last_match(1))
+IM_REVISION = Gem::Version.new(Regexp.last_match(2))
 
 require 'Image1.rb'
 require 'Image2.rb'

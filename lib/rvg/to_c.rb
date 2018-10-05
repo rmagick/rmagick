@@ -2,7 +2,7 @@ class Magick::RVG
   private
 
     def header_text(pgm, name)
-        pgm.puts <<"END_HEADER"
+      pgm.puts <<"END_HEADER"
 /*
 Version: #{Magick_version}
 
@@ -27,17 +27,17 @@ END_HEADER
     end
 
     def list_primitives(pgm, gc)
-        primitives = gc.inspect.split("\n")
-        indent = 0
-        primitives.each do |cmd|
-            indent -= 1 if cmd['pop ']
-            pgm.print('  ', ('  '*indent), '"', cmd, '\n"', "\n")
-            indent += 1 if cmd['push ']
-        end
+      primitives = gc.inspect.split("\n")
+      indent = 0
+      primitives.each do |cmd|
+        indent -= 1 if cmd['pop ']
+        pgm.print('  ', ('  ' * indent), '"', cmd, '\n"', "\n")
+        indent += 1 if cmd['push ']
+      end
     end
 
     def trailer_text(pgm, name)
-        pgm.puts <<"END_TRAILER"
+      pgm.puts <<"END_TRAILER"
   ;
 
   InitializeMagick("#{name}");
@@ -71,7 +71,7 @@ END_HEADER
         exit(1);
   }
 
-  strcpy(image->filename, "#{name+'.gif'}");
+  strcpy(image->filename, "#{name + '.gif'}");
   WriteImage(info, image);
 
   DestroyDrawInfo(draw);
@@ -89,13 +89,13 @@ END_TRAILER
     # Convert an RVG object to a stand-alone C program
     # suitable for reproducing a bug.
     def to_c(name)
-        pgm = File.open(name+'.c', 'w')
-        header_text(pgm, name)
-        gc = Draw.new
-        add_primitives(gc)
-        list_primitives(pgm, gc)
-        trailer_text(pgm, name)
-        pgm.close
-        $stderr.puts 'Done'
+      pgm = File.open(name + '.c', 'w')
+      header_text(pgm, name)
+      gc = Draw.new
+      add_primitives(gc)
+      list_primitives(pgm, gc)
+      trailer_text(pgm, name)
+      pgm.close
+      $stderr.puts 'Done'
     end
-end     # class Magick::RVG
+end # class Magick::RVG

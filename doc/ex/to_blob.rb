@@ -2,7 +2,7 @@
 require 'rmagick'
 
 before = Magick::Image.read('images/Flower_Hat.jpg').first
-before.resize!(0.50)  # make it small so this example will run fast
+before.resize!(0.50) # make it small so this example will run fast
 
 blob = before.to_blob
 # We could pass the format, depth, and geometry as optional

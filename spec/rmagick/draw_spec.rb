@@ -81,11 +81,10 @@ RSpec.describe Magick::Draw do
   describe '#marshal_dump', '#marshal_load' do
     it 'marshals without an error' do
       skip 'this spec fails on some versions of ImageMagick'
-      rose = Magick::Image.read('rose:').first
       granite = Magick::Image.read('granite:').first
       s = granite.to_blob { self.format = 'miff' }
       granite = Magick::Image.from_blob(s).first
-      blue_stroke = Magick::Image.new(20,20) { self.background_color = 'blue' }
+      blue_stroke = Magick::Image.new(20, 20) { self.background_color = 'blue' }
       s = blue_stroke.to_blob { self.format = 'miff' }
       blue_stroke = Magick::Image.from_blob(s).first
 
@@ -120,12 +119,12 @@ RSpec.describe Magick::Draw do
 
   describe '#fill_pattern' do
     it 'accepts an Image argument' do
-      img = Magick::Image.new(20,20)
+      img = Magick::Image.new(20, 20)
       expect { draw.fill_pattern = img }.not_to raise_error
     end
 
     it 'accepts an ImageList argument' do
-      img = Magick::Image.new(20,20)
+      img = Magick::Image.new(20, 20)
       ilist = Magick::ImageList.new
       ilist << img
       expect { draw.fill_pattern = ilist }.not_to raise_error
@@ -138,12 +137,12 @@ RSpec.describe Magick::Draw do
 
   describe '#stroke_pattern' do
     it 'accepts an Image argument' do
-      img = Magick::Image.new(20,20)
+      img = Magick::Image.new(20, 20)
       expect { draw.stroke_pattern = img }.not_to raise_error
     end
 
     it 'accepts an ImageList argument' do
-      img = Magick::Image.new(20,20)
+      img = Magick::Image.new(20, 20)
       ilist = Magick::ImageList.new
       ilist << img
       expect { draw.stroke_pattern = ilist }.not_to raise_error

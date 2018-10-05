@@ -28,14 +28,14 @@ gc.stroke_width(5)
 gc.stroke_linejoin('round')
 gc.fill('cyan')
 gc.fill_opacity(0.10)
-gc.rectangle(x, y, x+metrics.width, y+metrics.height)
+gc.rectangle(x, y, x + metrics.width, y + metrics.height)
 
 gc.stroke('white')
 gc.stroke_width(1)
 gc.fill('none')
-gc.rectangle(x, y, x+metrics.width, y+metrics.height)
+gc.rectangle(x, y, x + metrics.width, y + metrics.height)
 gc.draw(background)
 
-background.border!(1,1, 'blue')
+background.border!(1, 1, 'blue')
 
 background.write('get_multiline_type_metrics.gif')

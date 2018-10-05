@@ -14,10 +14,10 @@ module Magick
     # The placement & orientation is affected by the
     # current user coordinate system.
     def brace(w, h)
-      fail(ArgumentError, 'width must be != 0') unless w != 0
-      fail(ArgumentError, 'height must be != 0') unless h != 0
-      path("M0,0 Q#{w},0 #{w/2.0},#{-h/4.0} T#{w},#{-h/2.0}" \
-           "Q0,#{-h/2.0} #{w/2.0},#{-(3.0*h/4.0)} T0,#{-h}")
+      raise(ArgumentError, 'width must be != 0') unless w != 0
+      raise(ArgumentError, 'height must be != 0') unless h != 0
+      path("M0,0 Q#{w},0 #{w / 2.0},#{-h / 4.0} T#{w},#{-h / 2.0}" \
+           "Q0,#{-h / 2.0} #{w / 2.0},#{-(3.0 * h / 4.0)} T0,#{-h}")
     end
   end
 end
@@ -53,32 +53,32 @@ gc.circle(0, 0, 0, 2)
 
 # All our lines will be medium-gray, dashed, and thin.
 gc.stroke('gray50')
-gc.stroke_dasharray(5,2)
+gc.stroke_dasharray(5, 2)
 gc.stroke_width(1)
 gc.fill('none')
 
 # baseline
-gc.line(-10, 0, metrics.width+20, 0)
+gc.line(-10, 0, metrics.width + 20, 0)
 
 # a vertical line through the origin
-gc.line(0, -metrics.descent-metrics.height-10, 0, -metrics.descent+15)
+gc.line(0, -metrics.descent - metrics.height - 10, 0, -metrics.descent + 15)
 
 # descent
-gc.line(-10, -metrics.descent, metrics.width+20, -metrics.descent)
+gc.line(-10, -metrics.descent, metrics.width + 20, -metrics.descent)
 
 # ascent
-gc.line(-10, -metrics.ascent, metrics.width+20, -metrics.ascent)
+gc.line(-10, -metrics.ascent, metrics.width + 20, -metrics.ascent)
 
 # height
-gc.line(-10, -metrics.descent-metrics.height,
-        metrics.width+10, -metrics.descent-metrics.height)
+gc.line(-10, -metrics.descent - metrics.height,
+        metrics.width + 10, -metrics.descent - metrics.height)
 
 # width
-gc.line(metrics.width, -metrics.descent-metrics.height-10,
-        metrics.width, -metrics.descent+20)
+gc.line(metrics.width, -metrics.descent - metrics.height - 10,
+        metrics.width, -metrics.descent + 20)
 
 # max_advance
-gc.line(metrics.max_advance, -10, metrics.max_advance, -metrics.descent+20)
+gc.line(metrics.max_advance, -10, metrics.max_advance, -metrics.descent + 20)
 
 gc.draw(canvas)
 
@@ -94,33 +94,33 @@ gc.translate(Origin_x, Origin_y)
 
 # between origin and descent
 gc.push
-gc.translate(metrics.width+23, 0)
+gc.translate(metrics.width + 23, 0)
 gc.brace(10, metrics.descent)
 gc.pop
 
 # between origin and ascent
 gc.push
-gc.translate(metrics.width+23, 0)
+gc.translate(metrics.width + 23, 0)
 gc.brace(10, metrics.ascent)
 gc.pop
 
 # between origin and height
 gc.push
-gc.translate(-13, -metrics.descent-metrics.height)
+gc.translate(-13, -metrics.descent - metrics.height)
 gc.rotate(180)
 gc.brace(10, metrics.height)
 gc.pop
 
 # between origin and width
 gc.push
-gc.translate(metrics.width, -metrics.descent-metrics.height-10-3)
+gc.translate(metrics.width, -metrics.descent - metrics.height - 10 - 3)
 gc.rotate(-90)
 gc.brace(10, metrics.width)
 gc.pop
 
 # between origin and max_advance
 gc.push
-gc.translate(0, -metrics.descent+15)
+gc.translate(0, -metrics.descent + 15)
 gc.rotate(90)
 gc.brace(10, metrics.max_advance)
 gc.pop
@@ -130,12 +130,12 @@ gc.font_weight(Magick::NormalWeight)
 gc.font_style(Magick::NormalStyle)
 gc.stroke('none')
 gc.fill('black')
-gc.text(metrics.width+40, -(metrics.ascent/2)+4, 'ascent')
-gc.text(metrics.width+40, -(metrics.descent/2)+4, 'descent')
-gc.text(-60, -metrics.descent-metrics.height/2+4, 'height')
-gc.text((metrics.width/2)-15, -metrics.descent-metrics.height-25, 'width')
-gc.text((metrics.max_advance)/2-38, -metrics.descent+35, 'max_advance')
+gc.text(metrics.width + 40, -(metrics.ascent / 2) + 4, 'ascent')
+gc.text(metrics.width + 40, -(metrics.descent / 2) + 4, 'descent')
+gc.text(-60, -metrics.descent - metrics.height / 2 + 4, 'height')
+gc.text((metrics.width / 2) - 15, -metrics.descent - metrics.height - 25, 'width')
+gc.text(metrics.max_advance / 2 - 38, -metrics.descent + 35, 'max_advance')
 
 gc.draw(canvas)
-canvas.border!(1,1,'blue')
+canvas.border!(1, 1, 'blue')
 canvas.write('get_type_metrics.gif')

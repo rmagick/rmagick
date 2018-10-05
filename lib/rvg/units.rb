@@ -58,6 +58,6 @@ module Magick
       rescue ArgumentError
         raise TypeError, "Can't convert `#{n}' to Float"
       end
-    end     # class << self
+    end # class << self
   end # class RVG
 end # module Magick

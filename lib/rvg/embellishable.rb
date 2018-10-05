@@ -5,7 +5,7 @@
 module Magick
   class RVG
     # Parent class of Circle, Ellipse, Text, etc.
-    class Shape  #:nodoc:
+    class Shape #:nodoc:
       include Stylable
       include Transformable
       include Duplicatable
@@ -18,7 +18,7 @@ module Magick
         gc.__send__(@primitive, *@args)
         gc.pop
       end
-    end     # class Shape
+    end # class Shape
 
     class Circle < Shape
       # Define a circle with radius +r+ and centered at [<tt>cx</tt>, <tt>cy</tt>].
@@ -26,14 +26,12 @@ module Magick
       def initialize(r, cx = 0, cy = 0)
         super()
         r, cx, cy = Magick::RVG.convert_to_float(r, cx, cy)
-        if r < 0
-          fail ArgumentError, "radius must be >= 0 (#{r} given)"
-        end
+        raise ArgumentError, "radius must be >= 0 (#{r} given)" if r < 0
         @primitive = :circle
-        @args = [cx, cy, cx+r, cy]
+        @args = [cx, cy, cx + r, cy]
         self
       end
-    end     # class Circle
+    end # class Circle
 
     class Ellipse < Shape
       # Define an ellipse with a center at [<tt>cx</tt>, <tt>cy</tt>], a horizontal radius +rx+
@@ -43,13 +41,13 @@ module Magick
         super()
         rx, ry, cx, cy = Magick::RVG.convert_to_float(rx, ry, cx, cy)
         if rx < 0 || ry < 0
-          fail ArgumentError, "radii must be >= 0 (#{rx}, #{ry} given)"
+          raise ArgumentError, "radii must be >= 0 (#{rx}, #{ry} given)"
         end
         @primitive = :ellipse
         # Ellipses are always complete.
         @args = [cx, cy, rx, ry, 0, 360]
       end
-    end     # class Ellipse
+    end # class Ellipse
 
     class Line < Shape
       # Define a line from [<tt>x1</tt>, <tt>y1</tt>] to [<tt>x2</tt>, <tt>y2</tt>].
@@ -59,7 +57,7 @@ module Magick
         @primitive = :line
         @args = [x1, y1, x2, y2]
       end
-    end     # class Line
+    end # class Line
 
     class Path < Shape
       # Define an SVG path. The argument can be either a path string
@@ -70,7 +68,7 @@ module Magick
         @primitive = :path
         @args = [path.to_s]
       end
-    end     # class Path
+    end # class Path
 
     class Rect < Shape
       # Define a width x height rectangle. The upper-left corner is at [<tt>x</tt>, <tt>y</tt>].
@@ -80,9 +78,9 @@ module Magick
         super()
         width, height, x, y = Magick::RVG.convert_to_float(width, height, x, y)
         if width < 0 || height < 0
-          fail ArgumentError, "width, height must be >= 0 (#{width}, #{height} given)"
+          raise ArgumentError, "width, height must be >= 0 (#{width}, #{height} given)"
         end
-        @args = [x, y, x+width, y+height]
+        @args = [x, y, x + width, y + height]
         @primitive = :rectangle
       end
 
@@ -91,7 +89,7 @@ module Magick
       def round(rx, ry = nil)
         rx, ry = Magick::RVG.convert_to_float(rx, ry || rx)
         if rx < 0 || ry < 0
-          fail ArgumentError, "rx, ry must be >= 0 (#{rx}, #{ry} given)"
+          raise ArgumentError, "rx, ry must be >= 0 (#{rx}, #{ry} given)"
         end
         @args << rx << ry
         @primitive = :roundrectangle
@@ -102,23 +100,23 @@ module Magick
     class PolyShape < Shape
       def polypoints(points)
         case points.length
-          when 1
-            points = Array(points[0])
-          when 2
-            x_coords = Array(points[0])
-            y_coords = Array(points[1])
-            unless x_coords.length > 0 && y_coords.length > 0
-              fail ArgumentError, 'array arguments must contain at least one point'
-            end
-            n = x_coords.length - y_coords.length
-            short = n > 0 ? y_coords : x_coords
-            olen = short.length
-            n.abs.times {|x| short << short[x % olen]}
-            points = x_coords.zip(y_coords).flatten
+        when 1
+          points = Array(points[0])
+        when 2
+          x_coords = Array(points[0])
+          y_coords = Array(points[1])
+          unless !x_coords.empty? && !y_coords.empty?
+            raise ArgumentError, 'array arguments must contain at least one point'
+          end
+          n = x_coords.length - y_coords.length
+          short = n > 0 ? y_coords : x_coords
+          olen = short.length
+          n.abs.times { |x| short << short[x % olen] }
+          points = x_coords.zip(y_coords).flatten
         end
         n = points.length
         if n < 4 || n.odd?
-          fail ArgumentError, "insufficient/odd number of points specified: #{n}"
+          raise ArgumentError, "insufficient/odd number of points specified: #{n}"
         end
         Magick::RVG.convert_to_float(*points)
       end
@@ -136,7 +134,7 @@ module Magick
         @primitive = :polygon
         @args = polypoints(points)
       end
-    end     # class Polygon
+    end # class Polygon
 
     class Polyline < PolyShape
       # Draws a polyline. The arguments are [<tt>x</tt>, <tt>y</tt>] pairs that
@@ -149,7 +147,7 @@ module Magick
         @primitive = :polyline
         @args = Magick::RVG.convert_to_float(*points)
       end
-    end     # class Polyline
+    end # class Polyline
 
     class Image
       include Stylable
@@ -162,22 +160,22 @@ module Magick
 
       def align_to_viewport(scale)
         tx = case @align
-            when 'none', /\AxMin/
-              0
-            when NilClass, /\AxMid/
-              (@width - @image.columns*scale) / 2.0
-            when /\AxMax/
-              @width - @image.columns*scale
-        end
+             when 'none', /\AxMin/
+               0
+             when NilClass, /\AxMid/
+               (@width - @image.columns * scale) / 2.0
+             when /\AxMax/
+               @width - @image.columns * scale
+             end
 
         ty = case @align
-            when 'none', /YMin\z/
-              0
-            when NilClass, /YMid\z/
-              (@height - @image.rows*scale) / 2.0
-            when /YMax\z/
-              @height - @image.rows*scale
-        end
+             when 'none', /YMin\z/
+               0
+             when NilClass, /YMid\z/
+               (@height - @image.rows * scale) / 2.0
+             when /YMax\z/
+               @height - @image.rows * scale
+             end
         [tx, ty]
       end
 
@@ -188,7 +186,7 @@ module Magick
           width = @width
           height = @height
         elsif @meet_or_slice == 'meet'
-          scale = [@width/@image.columns, @height/@image.rows].min
+          scale = [@width / @image.columns, @height / @image.rows].min
           width = @image.columns
           height = @image.rows
         else
@@ -199,12 +197,12 @@ module Magick
           end
 
           gc.clip_path(name)
-          scale = [@width/@image.columns, @height/@image.rows].max
+          scale = [@width / @image.columns, @height / @image.rows].max
           width = @image.columns
           height = @image.rows
         end
         tx, ty = align_to_viewport(scale)
-        gc.composite(@x+tx, @y+ty, width*scale, height*scale, @image)
+        gc.composite(@x + tx, @y + ty, width * scale, height * scale, @image)
       end
 
       def init_viewbox
@@ -224,21 +222,21 @@ module Magick
         @image = image.copy # use a copy of the image in case app. re-uses the argument
         @x, @y, @width, @height = Magick::RVG.convert_to_float(x, y, width || @image.columns, height || @image.rows)
         if @width < 0 || @height < 0
-          fail ArgumentError, 'width, height must be >= 0'
+          raise ArgumentError, 'width, height must be >= 0'
         end
         init_viewbox
       end
 
       def add_primitives(gc) #:nodoc:
         # Do not render if width or height is 0
-        return if @width == 0 || @height == 0
+        return if @width.zero? || @height.zero?
         gc.push
         add_transform_primitives(gc)
         add_style_primitives(gc)
         add_composite_primitive(gc)
         gc.pop
       end
-    end     # class Image
+    end # class Image
 
     # Methods that construct basic shapes within a container
     module ShapeConstructors
@@ -307,7 +305,7 @@ module Magick
         @content << polyline
         polyline
       end
-    end     # module ShapeContent
+    end # module ShapeContent
 
     # Methods that reference ("use") other drawable objects within a container
     module UseConstructors
@@ -321,7 +319,7 @@ module Magick
         @content << use
         use
       end
-    end     # module UseConstructors
+    end # module UseConstructors
 
     # Methods that construct container objects within a container
     module StructureConstructors
@@ -338,7 +336,7 @@ module Magick
           y = Float(y)
         rescue ArgumentError
           args = [cols, rows, x, y]
-          raise ArgumentError, "at least one argument is not convertable to Float (got #{args.collect {|a| a.class}.join(', ')})"
+          raise ArgumentError, "at least one argument is not convertable to Float (got #{args.collect(&:class).join(', ')})"
         end
         rvg.corner(x, y)
         @content << rvg
@@ -359,7 +357,7 @@ module Magick
         @content << group
         group
       end
-    end     # module StructureConstructors
+    end # module StructureConstructors
 
     # Methods that construct raster image objects within a container
     module ImageConstructors
@@ -375,7 +373,7 @@ module Magick
         @content << img
         img
       end
-    end     # module ImageConstructors
+    end # module ImageConstructors
 
     # Methods that create shapes, text, and other drawable objects
     # within container objects such as ::Magick::RVG and
@@ -386,6 +384,6 @@ module Magick
       include TextConstructors
       include UseConstructors
       include ImageConstructors
-    end     # module Embellishable
+    end # module Embellishable
   end # class RVG
 end # module Magick

@@ -30,17 +30,17 @@ module Magick
               end
             else
               case itv
-                when Float, Symbol, TrueClass, FalseClass, Fixnum, NilClass
-                  return false if itv != otv
-                else
-                  if itv.equal?(otv)
-                    puts "#{iv} is dup-able but self.#{iv} and other.#{iv} are the same object."
-                    return false
-                  end
-                  if itv != otv
-                    puts "Not equal.\nself.#{iv}=#{itv.inspect}\nother.#{iv}=#{otv.inspect}"
-                    return false
-                  end
+              when Float, Symbol, TrueClass, FalseClass, Fixnum, NilClass
+                return false if itv != otv
+              else
+                if itv.equal?(otv)
+                  puts "#{iv} is dup-able but self.#{iv} and other.#{iv} are the same object."
+                  return false
+                end
+                if itv != otv
+                  puts "Not equal.\nself.#{iv}=#{itv.inspect}\nother.#{iv}=#{otv.inspect}"
+                  return false
+                end
               end
             end
           end

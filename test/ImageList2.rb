@@ -1,18 +1,18 @@
 
-#!/usr/bin/env ruby -w
+# !/usr/bin/env ruby -w
 
 require 'fileutils'
 require 'rmagick'
 require 'test/unit'
 require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
 
-class ImageList2_UT < Test::Unit::TestCase
+class ImageList2UT < Test::Unit::TestCase
   def setup
     @ilist = Magick::ImageList.new
   end
 
   def test_append
-    @ilist.read(IMAGES_DIR+'/Button_0.gif', IMAGES_DIR+'/Button_0.gif')
+    @ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_0.gif')
     assert_nothing_raised do
       img = @ilist.append(true)
       assert_instance_of(Magick::Image, img)
@@ -26,7 +26,7 @@ class ImageList2_UT < Test::Unit::TestCase
   end
 
   def test_average
-    @ilist.read(IMAGES_DIR+'/Button_0.gif', IMAGES_DIR+'/Button_0.gif')
+    @ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_0.gif')
     assert_nothing_raised do
       img = @ilist.average
       assert_instance_of(Magick::Image, img)
@@ -35,7 +35,7 @@ class ImageList2_UT < Test::Unit::TestCase
   end
 
   def test_clone
-    @ilist.read(*Dir[IMAGES_DIR+'/Button_*.gif'])
+    @ilist.read(*Dir[IMAGES_DIR + '/Button_*.gif'])
     ilist2 = @ilist.clone
     assert_equal(ilist2, @ilist)
     assert_equal(@ilist.frozen?, ilist2.frozen?)
@@ -48,7 +48,7 @@ class ImageList2_UT < Test::Unit::TestCase
   end
 
   def test_coalesce
-    @ilist.read(IMAGES_DIR+'/Button_0.gif', IMAGES_DIR+'/Button_0.gif')
+    @ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_0.gif')
     ilist = nil
     assert_nothing_raised { ilist = @ilist.coalesce }
     assert_instance_of(Magick::ImageList, ilist)
@@ -57,7 +57,7 @@ class ImageList2_UT < Test::Unit::TestCase
   end
 
   def test_copy
-    @ilist.read(*Dir[IMAGES_DIR+'/Button_*.gif'])
+    @ilist.read(*Dir[IMAGES_DIR + '/Button_*.gif'])
     @ilist.scene = 7
     ilist2 = @ilist.copy
     assert_not_same(@ilist, ilist2)
@@ -68,7 +68,7 @@ class ImageList2_UT < Test::Unit::TestCase
   end
 
   def test_deconstruct
-    @ilist.read(IMAGES_DIR+'/Button_0.gif', IMAGES_DIR+'/Button_1.gif')
+    @ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_1.gif')
     ilist = nil
     assert_nothing_raised { ilist = @ilist.deconstruct }
     assert_instance_of(Magick::ImageList, ilist)
@@ -77,7 +77,7 @@ class ImageList2_UT < Test::Unit::TestCase
   end
 
   def test_dup
-    @ilist.read(*Dir[IMAGES_DIR+'/Button_*.gif'])
+    @ilist.read(*Dir[IMAGES_DIR + '/Button_*.gif'])
     ilist2 = @ilist.dup
     assert_equal(ilist2, @ilist)
     assert_equal(@ilist.frozen?, ilist2.frozen?)
@@ -90,7 +90,7 @@ class ImageList2_UT < Test::Unit::TestCase
   end
 
   def flatten_images
-    @ilist.read(IMAGES_DIR+'/Button_0.gif', IMAGES_DIR+'/Button_1.gif')
+    @ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_1.gif')
     assert_nothing_thrown do
       img = @ilist.flatten_images
       assert_instance_of(Magick::Image, img)
@@ -109,7 +109,7 @@ class ImageList2_UT < Test::Unit::TestCase
   end
 
   def test_fx
-    @ilist.read(IMAGES_DIR+'/Button_0.gif', IMAGES_DIR+'/Button_1.gif')
+    @ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_1.gif')
     assert_nothing_raised { @ilist.fx('1/2') }
     assert_nothing_raised { @ilist.fx('1/2', Magick::BlueChannel) }
     assert_nothing_raised { @ilist.fx('1/2', Magick::BlueChannel, Magick::RedChannel) }
@@ -121,7 +121,7 @@ class ImageList2_UT < Test::Unit::TestCase
 
   def test_map
     map = Magick::Image.read('netscape:')[0]
-    @ilist.read(IMAGES_DIR+'/Button_0.gif', IMAGES_DIR+'/Button_1.gif')
+    @ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_1.gif')
     assert_nothing_raised do
       img = @ilist.map(map)
       assert_instance_of(Magick::ImageList, img)
@@ -137,16 +137,16 @@ class ImageList2_UT < Test::Unit::TestCase
   end
 
   def test_marshal
-     ilist1 = Magick::ImageList.new(*Dir[IMAGES_DIR+'/Button_*.gif'])
-     d = nil
-     ilist2 = nil
-     assert_nothing_raised { d = Marshal.dump(ilist1) }
-     assert_nothing_raised { ilist2 = Marshal.load(d) }
-     assert_equal(ilist1, ilist2)
+    ilist1 = Magick::ImageList.new(*Dir[IMAGES_DIR + '/Button_*.gif'])
+    d = nil
+    ilist2 = nil
+    assert_nothing_raised { d = Marshal.dump(ilist1) }
+    assert_nothing_raised { ilist2 = Marshal.load(d) }
+    assert_equal(ilist1, ilist2)
   end
 
   def test_montage
-    @ilist.read(*Dir[IMAGES_DIR+'/Button_*.gif'])
+    @ilist.read(*Dir[IMAGES_DIR + '/Button_*.gif'])
     ilist = @ilist.copy
     montage = nil
     assert_nothing_thrown do
@@ -223,7 +223,7 @@ class ImageList2_UT < Test::Unit::TestCase
   def test_morph
     # can't morph an empty list
     assert_raise(ArgumentError) { @ilist.morph(1) }
-    @ilist.read(IMAGES_DIR+'/Button_0.gif', IMAGES_DIR+'/Button_1.gif')
+    @ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_1.gif')
     # can't specify a negative argument
     assert_raise(ArgumentError) { @ilist.morph(-1) }
     assert_nothing_raised do
@@ -235,7 +235,7 @@ class ImageList2_UT < Test::Unit::TestCase
   end
 
   def test_mosaic
-    @ilist.read(IMAGES_DIR+'/Button_0.gif', IMAGES_DIR+'/Button_1.gif')
+    @ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_1.gif')
     assert_nothing_thrown do
       res = @ilist.mosaic
       assert_instance_of(Magick::Image, res)
@@ -269,7 +269,7 @@ class ImageList2_UT < Test::Unit::TestCase
       Magick::RemoveDupsLayer,
       Magick::RemoveZeroLayer
     ]
-    @ilist.read(IMAGES_DIR+'/Button_0.gif', IMAGES_DIR+'/Button_1.gif')
+    @ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_1.gif')
     layer_methods.each do |method|
       assert_nothing_raised do
         res = @ilist.optimize_layers(method)
@@ -277,8 +277,8 @@ class ImageList2_UT < Test::Unit::TestCase
         assert_equal(2, res.length)
       end
     end
-    assert_raise(ArgumentError) {@ilist.optimize_layers(Magick::UndefinedLayer)}
-    assert_raise(TypeError) {@ilist.optimize_layers(2)}
+    assert_raise(ArgumentError) { @ilist.optimize_layers(Magick::UndefinedLayer) }
+    assert_raise(TypeError) { @ilist.optimize_layers(2) }
   end
 
   def test_ping
@@ -294,7 +294,7 @@ class ImageList2_UT < Test::Unit::TestCase
   end
 
   def test_quantize
-    @ilist.read(IMAGES_DIR+'/Button_0.gif', IMAGES_DIR+'/Button_1.gif')
+    @ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_1.gif')
     assert_nothing_raised do
       res = @ilist.quantize
       assert_instance_of(Magick::ImageList, res)
@@ -327,22 +327,22 @@ class ImageList2_UT < Test::Unit::TestCase
   end
 
   def test_remap
-     @ilist.read(*Dir[IMAGES_DIR+'/Button_*.gif'])
-     assert_nothing_raised { @ilist.remap }
-     remap_image = Magick::Image.new(20,20) {self.background_color = 'green'}
-     assert_nothing_raised { @ilist.remap(remap_image) }
-     assert_nothing_raised { @ilist.remap(remap_image, Magick::NoDitherMethod) }
-     assert_nothing_raised { @ilist.remap(remap_image, Magick::RiemersmaDitherMethod) }
-     assert_nothing_raised { @ilist.remap(remap_image, Magick::FloydSteinbergDitherMethod) }
-     assert_raise(ArgumentError) { @ilist.remap(remap_image, Magick::NoDitherMethod, 1) }
+    @ilist.read(*Dir[IMAGES_DIR + '/Button_*.gif'])
+    assert_nothing_raised { @ilist.remap }
+    remap_image = Magick::Image.new(20, 20) { self.background_color = 'green' }
+    assert_nothing_raised { @ilist.remap(remap_image) }
+    assert_nothing_raised { @ilist.remap(remap_image, Magick::NoDitherMethod) }
+    assert_nothing_raised { @ilist.remap(remap_image, Magick::RiemersmaDitherMethod) }
+    assert_nothing_raised { @ilist.remap(remap_image, Magick::FloydSteinbergDitherMethod) }
+    assert_raise(ArgumentError) { @ilist.remap(remap_image, Magick::NoDitherMethod, 1) }
 
-     remap_image.destroy!
-     assert_raise(Magick::DestroyedImageError) { @ilist.remap(remap_image) }
-     #assert_raise(TypeError) { @ilist.affinity(affinity_image, 1) }
+    remap_image.destroy!
+    assert_raise(Magick::DestroyedImageError) { @ilist.remap(remap_image) }
+    # assert_raise(TypeError) { @ilist.affinity(affinity_image, 1) }
   end
 
   def test_to_blob
-    @ilist.read(IMAGES_DIR+'/Button_0.gif')
+    @ilist.read(IMAGES_DIR + '/Button_0.gif')
     blob = nil
     assert_nothing_raised { blob = @ilist.to_blob }
     img = @ilist.from_blob(blob)
@@ -351,7 +351,7 @@ class ImageList2_UT < Test::Unit::TestCase
   end
 
   def test_write
-    @ilist.read(IMAGES_DIR+'/Button_0.gif')
+    @ilist.read(IMAGES_DIR + '/Button_0.gif')
     assert_nothing_raised do
       @ilist.write('temp.gif')
     end
@@ -378,8 +378,8 @@ class ImageList2_UT < Test::Unit::TestCase
   end
 end
 
-if __FILE__ == $PROGRAM_NAME
-IMAGES_DIR = '../doc/ex/images'
-FLOWER_HAT = IMAGES_DIR+'/Flower_Hat.jpg'
-Test::Unit::UI::Console::TestRunner.run(ImageList2_UT) unless RUBY_VERSION[/^1\.9|^2/]
+if $PROGRAM_NAME == __FILE__
+  IMAGES_DIR = '../doc/ex/images'
+  FLOWER_HAT = IMAGES_DIR + '/Flower_Hat.jpg'
+  Test::Unit::UI::Console::TestRunner.run(ImageList2UT) unless RUBY_VERSION[/^1\.9|^2/]
 end

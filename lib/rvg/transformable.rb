@@ -7,12 +7,12 @@ module Magick
     # Transforms is an Array with a deep_copy method.
     # During unit-testing it also has a deep_equal method.
     class Transforms < Array #:nodoc:
-      def deep_copy(h = nil)
+      def deep_copy(_h = nil)
         copy = self.class.new
         each { |transform| copy << [transform[0], transform[1].dup] }
         copy
       end
-    end     # class Transform
+    end # class Transform
 
     # Transformations are operations on the coordinate system.
     # All the transformations defined within a container (an RVG object
@@ -30,7 +30,7 @@ module Magick
         @transforms.each { |transform| gc.__send__(transform[0], *transform[1]) }
       end
 
-      def initialize(*args, &block)
+      def initialize(*_args)
         super()
         @transforms = Transforms.new
       end
@@ -82,19 +82,19 @@ module Magick
       def rotate(angle, *args)
         begin
           case args.length
-            when 0
-              @transforms << [:rotate, [Float(angle)]]
-            when 2
-              cx = Float(args[0])
-              cy = Float(args[1])
-              @transforms << [:translate, [cx, cy]]
-              @transforms << [:rotate, [angle]]
-              @transforms << [:translate, [-cx, -cy]]
-            else
-              fail ArgumentError, "wrong number of arguments (#{args.length} for 1 or 3)"
+          when 0
+            @transforms << [:rotate, [Float(angle)]]
+          when 2
+            cx = Float(args[0])
+            cy = Float(args[1])
+            @transforms << [:translate, [cx, cy]]
+            @transforms << [:rotate, [angle]]
+            @transforms << [:translate, [-cx, -cy]]
+          else
+            raise ArgumentError, "wrong number of arguments (#{args.length} for 1 or 3)"
           end
         rescue ArgumentError
-          raise ArgumentError, "arguments must be convertable to float (got #{[angle, *args].collect {|a| a.class}.join(', ')})"
+          raise ArgumentError, "arguments must be convertable to float (got #{[angle, *args].collect(&:class).join(', ')})"
         end
         yield(self) if block_given?
         self
@@ -121,6 +121,6 @@ module Magick
         yield(self) if block_given?
         self
       end
-    end     # module Transformable
+    end # module Transformable
   end # class RVG
 end # module Magick

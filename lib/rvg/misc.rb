@@ -14,29 +14,27 @@ module Magick
           ivars = instance_variables
           ivars.each do |ivar|
             ivalue = instance_variable_get(ivar)
-            cvalue = case
-              when NilClass === ivalue, Symbol === ivalue, Float === ivalue,
-                 Fixnum === ivalue, FalseClass === ivalue, TrueClass === ivalue
-                ivalue
-              when ivalue.respond_to?(:deep_copy)
-                ivalue.deep_copy(h)
-              when ivalue.respond_to?(:dup)
-                ivalue.dup
-              else
-                ivalue
-              end
+            cvalue = if ivalue.is_a?(NilClass) || ivalue.is_a?(Symbol) || ivalue.is_a?(Float) || ivalue.is_a?(Fixnum) || ivalue.is_a?(FalseClass) || ivalue.is_a?(TrueClass)
+                       ivalue
+                     elsif ivalue.respond_to?(:deep_copy)
+                       ivalue.deep_copy(h)
+                     elsif ivalue.respond_to?(:dup)
+                       ivalue.dup
+                     else
+                       ivalue
+                     end
             copy.instance_variable_set(ivar, cvalue)
           end
           copy.freeze if frozen?
         end
         copy
       end
-    end     # module Duplicatable
+    end # module Duplicatable
 
     # Convert an array of method arguments to Float objects. If any
     # cannot be converted, raise ArgumentError and issue a message.
     def self.fmsg(*args)
-      "at least one argument cannot be converted to Float (got #{args.collect {|a| a.class}.join(', ')})"
+      "at least one argument cannot be converted to Float (got #{args.collect(&:class).join(', ')})"
     end
 
     def self.convert_to_float(*args)
@@ -46,7 +44,7 @@ module Magick
         args.pop
       end
       begin
-        fargs = args.collect { |a| (allow_nil && a.nil?) ? a : Float(a) }
+        fargs = args.collect { |a| allow_nil && a.nil? ? a : Float(a) }
       rescue ArgumentError, TypeError
         raise ArgumentError, fmsg(*args)
       end
@@ -74,16 +72,15 @@ module Magick
         end
 
         def enquote(text)
-          if text.length > 2 && /\A(?:\"[^\"]+\"|\'[^\']+\'|\{[^\}]+\})\z/.match(text)
-            return text
-          elsif !text['\'']
-            text = '\''+text+'\''
+          return text if text.length > 2 && /\A(?:\"[^\"]+\"|\'[^\']+\'|\{[^\}]+\})\z/.match(text)
+          if !text['\'']
+            text = '\'' + text + '\''
             return text
           elsif !text['"']
-            text = '"'+text+'"'
+            text = '"' + text + '"'
             return text
           elsif !(text['{'] || text['}'])
-            text = '{'+text+'}'
+            text = '{' + text + '}'
             return text
           end
 
@@ -97,7 +94,7 @@ module Magick
           gm2 = @ctx.shadow.get_type_metrics('aa')
           h = (gm.ascent - gm.descent + 0.5).to_i
           w = gm.width - gm2.width
-          if glyph_orientation == 0 || glyph_orientation == 180
+          if glyph_orientation.zero? || glyph_orientation == 180
             [w, h]
           else
             [h, w]
@@ -127,29 +124,27 @@ module Magick
 
         def shift_baseline(glyph_orientation, glyph)
           glyph_dimensions = @ctx.shadow.get_type_metrics(glyph)
-          if glyph_orientation == 0 || glyph_orientation == 180
-            x = glyph_dimensions.width
-          else
-            x = glyph_dimensions.ascent - glyph_dimensions.descent
-          end
+          x = if glyph_orientation.zero? || glyph_orientation == 180
+                glyph_dimensions.width
+              else
+                glyph_dimensions.ascent - glyph_dimensions.descent
+              end
           case @ctx.text_attrs.baseline_shift
-            when :baseline
-              x = 0
-            when :sub
-
-            when :super
-              x = -x
-            when /[-+]?(\d+)%/
-              m = $1 == '-' ? -1.0 : 1.0
-              x = (m * x * $1.to_f / 100.0)
-            else
-              x = -@ctx.text_attrs.baseline_shift
+          when :baseline
+            x = 0
+          when :super
+            x = -x
+          when /[-+]?(\d+)%/
+            m = Regexp.last_match(1) == '-' ? -1.0 : 1.0
+            x = (m * x * Regexp.last_match(1).to_f / 100.0)
+          else
+            x = -@ctx.text_attrs.baseline_shift
           end
           x
         end
 
         def render_glyph(glyph_orientation, x, y, glyph)
-          if glyph_orientation == 0
+          if glyph_orientation.zero?
             @ctx.gc.text(x, y, enquote(glyph))
           else
             @ctx.gc.push
@@ -160,7 +155,7 @@ module Magick
             @ctx.gc.pop
           end
         end
-      end     # class TextStrategy
+      end # class TextStrategy
 
       class LRTextStrategy < TextStrategy
         def get_word_spacing
@@ -170,12 +165,12 @@ module Magick
 
         def get_letter_spacing(glyph)
           gx, gy = glyph_metrics(@ctx.text_attrs.glyph_orientation_horizontal, glyph)
-          [gx+@ctx.text_attrs.letter_spacing, gy]
+          [gx + @ctx.text_attrs.letter_spacing, gy]
         end
 
         def render(x, y, text)
           x_rel_coords, y_rel_coords = text_rel_coords(text)
-          dx = x_rel_coords.inject(0) {|sum, a| sum + a}
+          dx = x_rel_coords.inject(0) { |sum, a| sum + a }
           dy = y_rel_coords.max
 
           # We're handling the anchoring.
@@ -189,25 +184,21 @@ module Magick
 
           # Align the first glyph
           case @ctx.text_attrs.glyph_orientation_horizontal
-            when 0
-
-            when 90
-              y -= dy
-            when 180
-              x += x_rel_coords.shift
-              x_rel_coords << 0
-              y -= dy
-            when 270
-              x += x_rel_coords[0]
+          when 90
+            y -= dy
+          when 180
+            x += x_rel_coords.shift
+            x_rel_coords << 0
+            y -= dy
+          when 270
+            x += x_rel_coords[0]
           end
 
-          y += shift_baseline(@ctx.text_attrs.glyph_orientation_horizontal, text[0,1])
+          y += shift_baseline(@ctx.text_attrs.glyph_orientation_horizontal, text[0, 1])
 
           first_word = true
           text.split(::Magick::RVG::WORD_SEP).each do |word|
-            unless first_word
-              x += x_rel_coords.shift
-            end
+            x += x_rel_coords.shift unless first_word
             first_word = false
             word.split('').each do |glyph|
               render_glyph(@ctx.text_attrs.glyph_orientation_horizontal, x, y, glyph)
@@ -221,8 +212,8 @@ module Magick
       end     # class LRTextStrategy
 
       class RLTextStrategy < TextStrategy
-        def render(x, y, text)
-          fail NotImplementedError
+        def render(_x, _y, _text)
+          raise NotImplementedError
         end
       end     # class RLTextStrategy
 
@@ -234,13 +225,13 @@ module Magick
 
         def get_letter_spacing(glyph)
           gx, gy = glyph_metrics(@ctx.text_attrs.glyph_orientation_vertical, glyph)
-          [gx, gy+@ctx.text_attrs.letter_spacing]
+          [gx, gy + @ctx.text_attrs.letter_spacing]
         end
 
         def render(x, y, text)
           x_rel_coords, y_rel_coords = text_rel_coords(text)
           dx = x_rel_coords.max
-          dy = y_rel_coords.inject(0) {|sum, a| sum + a}
+          dy = y_rel_coords.inject(0) { |sum, a| sum + a }
 
           # We're handling the anchoring.
           @ctx.gc.push
@@ -255,20 +246,20 @@ module Magick
           # is aligned on x and its top is aligned on y.
 
           case @ctx.text_attrs.glyph_orientation_vertical
-            when 0
-              x -= x_rel_coords.max / 2
-              y += y_rel_coords[0]
-            when 90
-              x -= x_rel_coords.max / 2
-            when 180
-              x += x_rel_coords.max / 2
-            when 270
-              x += x_rel_coords.max / 2
-              y += y_rel_coords.shift
-              y_rel_coords << 0   # since we used an element we need to add a dummy
+          when 0
+            x -= x_rel_coords.max / 2
+            y += y_rel_coords[0]
+          when 90
+            x -= x_rel_coords.max / 2
+          when 180
+            x += x_rel_coords.max / 2
+          when 270
+            x += x_rel_coords.max / 2
+            y += y_rel_coords.shift
+            y_rel_coords << 0 # since we used an element we need to add a dummy
           end
 
-          x -= shift_baseline(@ctx.text_attrs.glyph_orientation_vertical, text[0,1])
+          x -= shift_baseline(@ctx.text_attrs.glyph_orientation_vertical, text[0, 1])
 
           first_word = true
           text.split(::Magick::RVG::WORD_SEP).each do |word|
@@ -279,13 +270,13 @@ module Magick
             first_word = false
             word.split('').each do |glyph|
               case @ctx.text_attrs.glyph_orientation_vertical.to_i
-                when 0, 90, 270
-                  x_shift = (dx - x_rel_coords.shift) / 2
-                when 180
-                  x_shift = -(dx - x_rel_coords.shift) / 2
+              when 0, 90, 270
+                x_shift = (dx - x_rel_coords.shift) / 2
+              when 180
+                x_shift = -(dx - x_rel_coords.shift) / 2
               end
 
-              render_glyph(@ctx.text_attrs.glyph_orientation_vertical, x+x_shift, y, glyph)
+              render_glyph(@ctx.text_attrs.glyph_orientation_vertical, x + x_shift, y, glyph)
               y += y_rel_coords.shift
             end
           end
@@ -293,7 +284,7 @@ module Magick
           @ctx.gc.pop
           [0, dy]
         end
-      end     # class TBTextStrategy
+      end # class TBTextStrategy
 
       # Handle "easy" text
       class DefaultTextStrategy < TextStrategy
@@ -301,16 +292,16 @@ module Magick
           @ctx.gc.text(x, y, enquote(text))
           tm = @ctx.shadow.get_type_metrics(text)
           dx = case @ctx.text_attrs.text_anchor
-              when :start
+               when :start
                  tm.width
-              when :middle
+               when :middle
                  tm.width / 2
-              when :end
+               when :end
                  0
-              end
+               end
           [dx, 0]
         end
-      end     # class NormalTextStrategy
+      end # class NormalTextStrategy
     end # class Utility
   end # class RVG
 end # module Magick
@@ -319,9 +310,7 @@ module Magick
   class RVG
     class Utility
       class TextAttributes
-        public
-
-        WRITING_MODE = %w{lr-tb lr rl-tb rl tb-rl tb}
+        WRITING_MODE = %w[lr-tb lr rl-tb rl tb-rl tb]
 
         def initialize
           @affine = []
@@ -419,8 +408,8 @@ module Magick
 
         def non_default?
           @baseline_shift[-1] != :baseline || @letter_spacing[-1] != 0 ||
-          @word_spacing[-1] != 0 || @writing_mode[-1][/\Alr/].nil? ||
-          @glyph_orientation_horizontal[-1] != 0
+            @word_spacing[-1] != 0 || @writing_mode[-1][/\Alr/].nil? ||
+            @glyph_orientation_horizontal[-1] != 0
         end
 
         def word_spacing
@@ -438,7 +427,7 @@ module Magick
         def writing_mode=(mode)
           @writing_mode[-1] = WRITING_MODE.include?(mode) ? mode : 'lr-tb'
         end
-      end     # class TextAttributes
+      end # class TextAttributes
 
       class GraphicContext
         FONT_STRETCH = {
@@ -482,9 +471,10 @@ module Magick
           :none         => Magick::NoDecoration,
           :underline    => Magick::UnderlineDecoration,
           :overline     => Magick::OverlineDecoration,
-          :line_through => Magick::LineThroughDecoration}
+          :line_through => Magick::LineThroughDecoration
+        }
 
-        TEXT_STRATEGIES  = {
+        TEXT_STRATEGIES = {
           'lr-tb' => LRTextStrategy, 'lr' => LRTextStrategy,
           'rt-tb' => RLTextStrategy, 'rl' => RLTextStrategy,
           'tb-rl' => TBTextStrategy, 'tb' => TBTextStrategy
@@ -526,8 +516,8 @@ module Magick
           init_matrix
         end
 
-        def method_missing(methID, *args, &block)
-          @gc.__send__(methID, *args, &block)
+        def method_missing(meth_id, *args, &block)
+          @gc.__send__(meth_id, *args, &block)
         end
 
         def affine(sx, rx, ry, sy, tx, ty)
@@ -539,13 +529,13 @@ module Magick
 
         def baseline_shift(value)
           @text_attrs.baseline_shift = case value
-            when 'baseline', 'sub', 'super'
-              value.intern
-            when /[-+]?\d+%/, Numeric
-              value
-            else
-              :baseline
-            end
+                                       when 'baseline', 'sub', 'super'
+                                         value.intern
+                                       when /[-+]?\d+%/, Numeric
+                                         value
+                                       else
+                                         :baseline
+                                       end
           nil
         end
 
@@ -583,7 +573,7 @@ module Magick
 
         def font_weight(weight)
           # If the arg is not in the hash use it directly. Handles numeric values.
-          weight = FONT_WEIGHT.fetch(weight) {|key| key}
+          weight = FONT_WEIGHT.fetch(weight) { |key| key }
           @gc.font_weight(weight)
           @shadow[-1].font_weight = weight
           nil
@@ -672,12 +662,12 @@ module Magick
         end
 
         def text(x, y, text)
-          return if text.length == 0
-          if @text_attrs.non_default?
-            text_renderer = TEXT_STRATEGIES[@text_attrs.writing_mode].new(self)
-          else
-            text_renderer = DefaultTextStrategy.new(self)
-          end
+          return if text.length.zero?
+          text_renderer = if @text_attrs.non_default?
+                            TEXT_STRATEGIES[@text_attrs.writing_mode].new(self)
+                          else
+                            DefaultTextStrategy.new(self)
+                          end
 
           text_renderer.render(x, y, text)
         end
@@ -717,7 +707,7 @@ module Magick
           @text_attrs.writing_mode = mode
           nil
         end
-      end  # class GraphicContext
+      end # class GraphicContext
     end # class Utility
   end # class RVG
 end # module Magick

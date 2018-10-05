@@ -5,17 +5,17 @@ require 'rmagick'
 img = Magick::Image.read('images/Flower_Hat.jpg').first
 
 # Make a watermark from the word "RMagick"
-mark = Magick::Image.new(140, 40) {self.background_color = 'none'}
+mark = Magick::Image.new(140, 40) { self.background_color = 'none' }
 gc = Magick::Draw.new
 
 gc.annotate(mark, 0, 0, 0, -5, 'RMagick') do
   gc.gravity = Magick::CenterGravity
   gc.pointsize = 32
-  if RUBY_PLATFORM =~ /mswin32/
-    gc.font_family = 'Georgia'
-  else
-    gc.font_family = 'Times'
-  end
+  gc.font_family = if RUBY_PLATFORM =~ /mswin32/
+                     'Georgia'
+                   else
+                     'Times'
+                   end
   gc.fill = 'white'
   gc.stroke = 'none'
 end

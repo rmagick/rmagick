@@ -16,15 +16,15 @@ end
 
 # Create a image that will hold the alphabet images in 5 rows and 5 columns.
 cells = Magick::ImageList.new
-cells.new_image buttons.columns*5, buttons.rows*5 do
+cells.new_image buttons.columns * 5, buttons.rows * 5 do
   self.background_color = '#000000ff' # transparent
 end
 cells.matte = true
 
-offset = Magick::Rectangle.new(0,0,0,0)
+offset = Magick::Rectangle.new(0, 0, 0, 0)
 
 # Create 2 arrays from which we can randomly choose row,col pairs
-row = [0]*5 + [1]*5 + [2]*5 + [3]*5 + [4]*5
+row = [0] * 5 + [1] * 5 + [2] * 5 + [3] * 5 + [4] * 5
 col = (0..4).to_a * 5
 
 # The coalesce method composites the 2nd image over the 1st, the 3rd image
@@ -41,8 +41,8 @@ srand 1234
   y = col.delete_at n
 
   button = buttons[i]
-  offset.x = x*button.columns
-  offset.y = y*button.rows
+  offset.x = x * button.columns
+  offset.y = y * button.rows
   button.page = offset
   button.matte = true
   cells << button
@@ -50,7 +50,7 @@ end
 
 puts 'This may take a few seconds...'
 cells.delay = 10
-cells.iterations = 10000
+cells.iterations = 10_000
 res = cells.coalesce
 res.write 'coalesce_anim.gif'
 res[25].write 'coalesce.gif'

@@ -3,7 +3,7 @@
 require 'fileutils'
 require 'rmagick'
 require 'test/unit'
-require 'test/unit/ui/console/testrunner'  unless RUBY_VERSION[/^1\.9|^2/]
+require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
 
 # TODO
 #   test frozen attributes!
@@ -36,10 +36,10 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.background_color }
     assert_equal('white', @img.background_color)
     assert_nothing_raised { @img.background_color = '#dfdfdf' }
-    #assert_equal("rgb(223,223,223)", @img.background_color)
+    # assert_equal("rgb(223,223,223)", @img.background_color)
     assert_equal('#DFDFDFDFDFDF', @img.background_color)
-    assert_nothing_raised { @img.background_color = Magick::Pixel.new(Magick::QuantumRange, Magick::QuantumRange/2.0, Magick::QuantumRange/2.0) }
-    #assert_equal("rgb(100%,49.9992%,49.9992%)", @img.background_color)
+    assert_nothing_raised { @img.background_color = Magick::Pixel.new(Magick::QuantumRange, Magick::QuantumRange / 2.0, Magick::QuantumRange / 2.0) }
+    # assert_equal("rgb(100%,49.9992%,49.9992%)", @img.background_color)
     assert_equal('#FFFF7FFF7FFF', @img.background_color)
     assert_raise(TypeError) { @img.background_color = 2 }
   end
@@ -93,12 +93,12 @@ class Image_Attributes_UT < Test::Unit::TestCase
 
   def test_border_color
     assert_nothing_raised { @img.border_color }
-    #assert_equal("rgb(223,223,223)", @img.border_color)
+    # assert_equal("rgb(223,223,223)", @img.border_color)
     assert_equal('#DFDFDFDFDFDF', @img.border_color)
     assert_nothing_raised { @img.border_color = 'red' }
     assert_equal('red', @img.border_color)
-    assert_nothing_raised { @img.border_color = Magick::Pixel.new(Magick::QuantumRange, Magick::QuantumRange/2, Magick::QuantumRange/2) }
-    #assert_equal("rgb(100%,49.9992%,49.9992%)", @img.border_color)
+    assert_nothing_raised { @img.border_color = Magick::Pixel.new(Magick::QuantumRange, Magick::QuantumRange / 2, Magick::QuantumRange / 2) }
+    # assert_equal("rgb(100%,49.9992%,49.9992%)", @img.border_color)
     assert_equal('#FFFF7FFF7FFF', @img.border_color)
     assert_raise(TypeError) { @img.border_color = 2 }
   end
@@ -477,7 +477,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
 
   def test_monitor
     assert_raise(NoMethodError) { @img.monitor }
-    monitor = proc { |name, q, s| puts name }
+    monitor = proc { |name, _q, _s| puts name }
     assert_nothing_raised { @img.monitor = monitor }
     assert_nothing_raised { @img.monitor = nil }
   end
@@ -490,9 +490,9 @@ class Image_Attributes_UT < Test::Unit::TestCase
   def test_number_colors
     assert_nothing_raised { @hat.number_colors }
     if IM_VERSION < Gem::Version.new('6.7.5') || (IM_VERSION == Gem::Version.new('6.7.5') && IM_REVISION < Gem::Version.new('5'))
-      assert_equal(27980, @hat.number_colors)
+      assert_equal(27_980, @hat.number_colors)
     else
-      assert_equal(27942, @hat.number_colors)
+      assert_equal(27_942, @hat.number_colors)
     end
     assert_raise(NoMethodError) { @hat.number_colors = 2 }
   end
@@ -532,7 +532,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_equal(0, page.height)
     assert_equal(0, page.x)
     assert_equal(0, page.y)
-    page = Magick::Rectangle.new(1,2,3,4)
+    page = Magick::Rectangle.new(1, 2, 3, 4)
     assert_nothing_raised { @img.page = page }
     assert_equal(1, page.width)
     assert_equal(2, page.height)
@@ -590,7 +590,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
 
   def test_start_loop
     assert_nothing_raised { @img.start_loop }
-    assert(! @img.start_loop)
+    assert(!@img.start_loop)
     assert_nothing_raised { @img.start_loop = true }
     assert(@img.start_loop)
   end
@@ -606,9 +606,9 @@ class Image_Attributes_UT < Test::Unit::TestCase
   def test_total_colors
     assert_nothing_raised { @hat.total_colors }
     if IM_VERSION < Gem::Version.new('6.7.5') || (IM_VERSION == Gem::Version.new('6.7.5') && IM_REVISION < Gem::Version.new('5'))
-      assert_equal(27980, @hat.total_colors)
+      assert_equal(27_980, @hat.total_colors)
     else
-      assert_equal(27942, @hat.total_colors)
+      assert_equal(27_942, @hat.total_colors)
     end
     assert_raise(NoMethodError) { @img.total_colors = 2 }
   end
@@ -654,10 +654,10 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_raise(FreezeError) { @img.background_color = 'xxx' }
     assert_raise(FreezeError) { @img.blur = 50 }
     assert_raise(FreezeError) { @img.border_color = 'xxx' }
-    rp = Magick::Point.new(1,1)
-    gp = Magick::Point.new(1,1)
-    bp = Magick::Point.new(1,1)
-    wp = Magick::Point.new(1,1)
+    rp = Magick::Point.new(1, 1)
+    gp = Magick::Point.new(1, 1)
+    bp = Magick::Point.new(1, 1)
+    wp = Magick::Point.new(1, 1)
     assert_raise(FreezeError) { @img.chromaticity = Magick::Chromaticity.new(rp, gp, bp, wp) }
     assert_raise(FreezeError) { @img.class_type = Magick::DirectClass }
     assert_raise(FreezeError) { @img.color_profile = 'xxx' }
@@ -668,7 +668,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_raise(FreezeError) { @img.density = '72.0x72.0' }
     assert_raise(FreezeError) { @img.dispose = Magick::NoneDispose }
     assert_raise(FreezeError) { @img.endian = Magick::MSBEndian }
-    assert_raise(FreezeError) { @img.extract_info = Magick::Rectangle.new(1,2,3,4) }
+    assert_raise(FreezeError) { @img.extract_info = Magick::Rectangle.new(1, 2, 3, 4) }
     assert_raise(FreezeError) { @img.filter = Magick::PointFilter }
     assert_raise(FreezeError) { @img.format = 'GIF' }
     assert_raise(FreezeError) { @img.fuzz = 50.0 }
@@ -678,10 +678,10 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_raise(FreezeError) { @img.iptc_profile = 'xxx' }
     assert_raise(FreezeError) { @img.mask = @img }
     assert_raise(FreezeError) { @img.matte = true }
-    assert_raise(FreezeError) { @img.monitor = proc { |name, q, s| puts name } }
+    assert_raise(FreezeError) { @img.monitor = proc { |name, _q, _s| puts name } }
     assert_raise(FreezeError) { @img.offset = 100 }
     assert_raise(FreezeError) { @img.opacity = 100 }
-    assert_raise(FreezeError) { @img.page = Magick::Rectangle.new(1,2,3,4) }
+    assert_raise(FreezeError) { @img.page = Magick::Rectangle.new(1, 2, 3, 4) }
     assert_raise(FreezeError) { @img.rendering_intent = Magick::SaturationIntent }
     assert_raise(FreezeError) { @img.start_loop = true }
     assert_raise(FreezeError) { @img.ticks_per_second = 1000 }
@@ -689,9 +689,9 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_raise(FreezeError) { @img.x_resolution = 72.0 }
     assert_raise(FreezeError) { @img.y_resolution = 72.0 }
   end
-end     # class Image_Attributes_UT
+end # class Image_Attributes_UT
 
-if __FILE__ == $PROGRAM_NAME
-FLOWER_HAT = '../doc/ex/images/Flower_Hat.jpg'
-Test::Unit::UI::Console::TestRunner.run(Image_Attributes_UT) unless RUBY_VERSION[/^1\.9|^2/]
+if $PROGRAM_NAME == __FILE__
+  FLOWER_HAT = '../doc/ex/images/Flower_Hat.jpg'
+  Test::Unit::UI::Console::TestRunner.run(ImageAttributesUT) unless RUBY_VERSION[/^1\.9|^2/]
 end

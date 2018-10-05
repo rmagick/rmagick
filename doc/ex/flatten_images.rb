@@ -9,7 +9,7 @@ RMagick = 'RMagick'
 i = Magick::ImageList.new
 
 # Create a background image with a gradient fill
-i.new_image(200, 100, Magick::GradientFill.new(100,50, 100, 50, 'khaki1', 'turquoise'))
+i.new_image(200, 100, Magick::GradientFill.new(100, 50, 100, 50, 'khaki1', 'turquoise'))
 
 # Create a transparent image for the text shadow
 i.new_image(200, 100) { self.background_color = 'transparent' }

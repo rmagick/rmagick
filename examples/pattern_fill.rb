@@ -17,7 +17,7 @@ supported patterns as an argument. For example, try "checkerboard".
 END_INFO
 
 class PatternFill < Magick::TextureFill
-  def initialize(name='bricks')
+  def initialize(name = 'bricks')
     @pat_img = Magick::Image.read("pattern:#{name}").first
     super(@pat_img)
   end
@@ -33,6 +33,6 @@ end
 # Create a sample image that is 100x bigger than the pattern.
 attrs = Image.ping("pattern:#{pattern}").first
 
-tryit = Image.new(10*attrs.columns, 10*attrs.rows, PatternFill.new(pattern))
+tryit = Image.new(10 * attrs.columns, 10 * attrs.rows, PatternFill.new(pattern))
 tryit.write('pattern_fill.gif')
 exit

@@ -37,7 +37,7 @@ begin
   # optional "size" attribute in the parm block associated with
   # the read method. There are two more examples of this, below.
   example = ImageList.new
-  5.times { example.read('NULL:black') { self.size = '70x70'} }
+  5.times { example.read('NULL:black') { self.size = '70x70' } }
 
   puts '   add noise...'
   example << model.add_noise(LaplacianNoise)
@@ -80,7 +80,7 @@ begin
   example.cur_image[:Label] = 'Contrast'
 
   puts '   convolve...'
-  kernel = [ 1, 1, 1, 1, 4, 1, 1, 1, 1 ]
+  kernel = [1, 1, 1, 1, 4, 1, 1, 1, 1]
   example << model.convolve(3, kernel)
   example.cur_image[:Label] = 'Convolve'
 
@@ -100,7 +100,7 @@ begin
   gc.fill_opacity 0
   gc.stroke 'gold'
   gc.stroke_width 2
-  gc.circle 60,90, 60,120
+  gc.circle 60, 90, 60, 120
   gc.draw(example)
 
   puts '   edge...'
@@ -277,7 +277,7 @@ begin
     self.gravity = CenterGravity
     self.border_width = 1
     rows = (example.size + 4) / 5
-    self.tile = Geometry.new(5,rows)
+    self.tile = Geometry.new(5, rows)
     self.compose = OverCompositeOp
 
     # Use the ImageMagick built-in "granite" format
@@ -298,7 +298,7 @@ begin
   puts 'Adding logo image...'
   logo = Image.read('logo:').first
   if /GraphicsMagick/.match Magick_version
-    logo.resize!(200.0/logo.rows)
+    logo.resize!(200.0 / logo.rows)
   else
     logo.crop!(98, 0, 461, 455).resize!(0.45)
   end
@@ -316,7 +316,6 @@ begin
 # Uncomment the following lines to display image to screen
 # puts "Displaying image..."
 # montage_image.display
-
 rescue
   puts "Caught exception: #{$ERROR_INFO}"
 end

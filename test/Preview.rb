@@ -4,7 +4,7 @@ require 'rmagick'
 require 'test/unit'
 require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
 
-class Preview_UT < Test::Unit::TestCase
+class PreviewUT < Test::Unit::TestCase
   def test_preview
     preview_types = [
       Magick::RotatePreview,
@@ -35,9 +35,10 @@ class Preview_UT < Test::Unit::TestCase
       Magick::WavePreview,
       Magick::OilPaintPreview,
       Magick::CharcoalDrawingPreview,
-      Magick::JPEGPreview ]
+      Magick::JPEGPreview
+    ]
 
-    hat = Magick::Image.read(IMAGES_DIR+'/Flower_Hat.jpg').first
+    hat = Magick::Image.read(IMAGES_DIR + '/Flower_Hat.jpg').first
     assert_nothing_raised do
       prev = hat.preview(Magick::RotatePreview)
       assert_instance_of(Magick::Image, prev)
@@ -51,7 +52,7 @@ class Preview_UT < Test::Unit::TestCase
   end
 end
 
-if __FILE__ == $PROGRAM_NAME
-IMAGES_DIR = '../doc/ex/images'
-Test::Unit::UI::Console::TestRunner.run(Preview_UT) unless RUBY_VERSION[/^1\.9|^2/]
+if $PROGRAM_NAME == __FILE__
+  IMAGES_DIR = '../doc/ex/images'
+  Test::Unit::UI::Console::TestRunner.run(PreviewUT) unless RUBY_VERSION[/^1\.9|^2/]
 end

@@ -1,5 +1,5 @@
 
-#!/usr/bin/env ruby -w
+# !/usr/bin/env ruby -w
 
 require 'rmagick'
 require 'test/unit'
@@ -29,18 +29,18 @@ class Magick::AnchorType
   end
 end
 
-class Magick_UT < Test::Unit::TestCase
+class MagickUT < Test::Unit::TestCase
   def test_colors
     res = nil
     assert_nothing_raised { res = Magick.colors }
     assert_instance_of(Array, res)
     res.each do |c|
-    assert_instance_of(Magick::Color, c)
-    assert_instance_of(String, c.name)
-    assert_instance_of(Magick::ComplianceType, c.compliance)
-    assert_instance_of(Magick::Pixel, c.color)
+      assert_instance_of(Magick::Color, c)
+      assert_instance_of(String, c.name)
+      assert_instance_of(Magick::ComplianceType, c.compliance)
+      assert_instance_of(Magick::Pixel, c.color)
     end
-    Magick.colors {|c| assert_instance_of(Magick::Color, c) }
+    Magick.colors { |c| assert_instance_of(Magick::Color, c) }
   end
 
   # Test a few of the @@enumerator arrays in the Enum subclasses.
@@ -48,18 +48,18 @@ class Magick_UT < Test::Unit::TestCase
   def test_enumerators
     ary = nil
     assert_nothing_raised do
-    ary = Magick::AlphaChannelType.enumerators
+      ary = Magick::AlphaChannelType.enumerators
     end
     assert_instance_of(Array, ary)
 
     assert_nothing_raised do
-    ary = Magick::AlignType.enumerators
+      ary = Magick::AlignType.enumerators
     end
     assert_instance_of(Array, ary)
     assert_equal(4, ary.length)
 
     assert_nothing_raised do
-    ary = Magick::AnchorType.enumerators
+      ary = Magick::AnchorType.enumerators
     end
     assert_instance_of(Array, ary)
     assert_equal(3, ary.length)
@@ -76,18 +76,18 @@ class Magick_UT < Test::Unit::TestCase
     assert_nothing_raised { res = Magick.fonts }
     assert_instance_of(Array, res)
     res.each do |f|
-    assert_instance_of(Magick::Font, f)
-    assert_instance_of(String, f.name)
-    assert_instance_of(String, f.description) unless f.description.nil?
-    assert_instance_of(String, f.family)
-    assert_instance_of(Magick::StyleType, f.style)
-    assert_instance_of(Magick::StretchType, f.stretch)
-    assert_instance_of(Fixnum, f.weight)
-    assert_instance_of(String, f.encoding) unless f.encoding.nil?
-    assert_instance_of(String, f.foundry) unless f.foundry.nil?
-    assert_instance_of(String, f.format) unless f.format.nil?
+      assert_instance_of(Magick::Font, f)
+      assert_instance_of(String, f.name)
+      assert_instance_of(String, f.description) unless f.description.nil?
+      assert_instance_of(String, f.family)
+      assert_instance_of(Magick::StyleType, f.style)
+      assert_instance_of(Magick::StretchType, f.stretch)
+      assert_instance_of(Fixnum, f.weight)
+      assert_instance_of(String, f.encoding) unless f.encoding.nil?
+      assert_instance_of(String, f.foundry) unless f.foundry.nil?
+      assert_instance_of(String, f.format) unless f.format.nil?
     end
-    Magick.fonts {|f| assert_instance_of(Magick::Font, f) }
+    Magick.fonts { |f| assert_instance_of(Magick::Font, f) }
   end
 
   def test_formats
@@ -95,17 +95,19 @@ class Magick_UT < Test::Unit::TestCase
     assert_nothing_raised { res = Magick.formats }
     assert_instance_of(Hash, res)
     res.each do |f, v|
-    assert_instance_of(String, f)
-    assert_instance_of(String, v)
+      assert_instance_of(String, f)
+      assert_instance_of(String, v)
     end
-    Magick.formats.each { |f, v| assert_not_nil(f); assert_not_nil(v) }
+    Magick.formats.each do |f, v|
+      assert_not_nil(f)
+      assert_not_nil(v)
+    end
   end
 
   def test_geometry
     g = nil
     gs = nil
     g2 = nil
-    gs2 = nil
     assert_nothing_raised { g = Magick::Geometry.new }
     assert_nothing_raised { gs = g.to_s }
     assert_equal('', gs)
@@ -267,31 +269,31 @@ class Magick_UT < Test::Unit::TestCase
   def test_limit_resources
     cur = new = nil
 
-    assert_nothing_raised {cur = Magick.limit_resource(:memory, 500)}
+    assert_nothing_raised { cur = Magick.limit_resource(:memory, 500) }
     assert_kind_of(Integer, cur)
-    assert(cur > 1024 ** 2)
-    assert_nothing_raised {new = Magick.limit_resource('memory')}
+    assert(cur > 1024**2)
+    assert_nothing_raised { new = Magick.limit_resource('memory') }
     assert_equal(500, new)
     Magick.limit_resource(:memory, cur)
 
-    assert_nothing_raised {cur = Magick.limit_resource(:map, 3500)}
+    assert_nothing_raised { cur = Magick.limit_resource(:map, 3500) }
     assert_kind_of(Integer, cur)
-    assert(cur > 1024 ** 2)
-    assert_nothing_raised {new = Magick.limit_resource('map')}
+    assert(cur > 1024**2)
+    assert_nothing_raised { new = Magick.limit_resource('map') }
     assert_equal(3500, new)
     Magick.limit_resource(:map, cur)
 
-    assert_nothing_raised {cur = Magick.limit_resource(:disk, 3*1024*1024*1024)}
+    assert_nothing_raised { cur = Magick.limit_resource(:disk, 3 * 1024 * 1024 * 1024) }
     assert_kind_of(Integer, cur)
-    assert(cur > 1024 ** 2)
-    assert_nothing_raised {new = Magick.limit_resource('disk')}
-    assert_equal(3221225472, new)
+    assert(cur > 1024**2)
+    assert_nothing_raised { new = Magick.limit_resource('disk') }
+    assert_equal(3_221_225_472, new)
     Magick.limit_resource(:disk, cur)
 
-    assert_nothing_raised {cur = Magick.limit_resource(:file, 500)}
+    assert_nothing_raised { cur = Magick.limit_resource(:file, 500) }
     assert_kind_of(Integer, cur)
     assert(cur > 512)
-    assert_nothing_raised {new = Magick.limit_resource('file')}
+    assert_nothing_raised { new = Magick.limit_resource('file') }
     assert_equal(500, new)
     Magick.limit_resource(:file, cur)
 
@@ -303,19 +305,19 @@ class Magick_UT < Test::Unit::TestCase
 
   def test_trace_proc
     Magick.trace_proc = proc do |which, description, id, method|
-    assert(which == :c)
-    assert_instance_of(String, description)
-    assert_instance_of(String, id)
-    assert_equal(:initialize, method)
+      assert(which == :c)
+      assert_instance_of(String, description)
+      assert_instance_of(String, id)
+      assert_equal(:initialize, method)
     end
     begin
-    img = Magick::Image.new(20,20)
+      Magick::Image.new(20, 20)
     ensure
-    Magick.trace_proc = nil
+      Magick.trace_proc = nil
     end
   end
 end
 
-if __FILE__ == $PROGRAM_NAME
-Test::Unit::UI::Console::TestRunner.run(Magick_UT) unless RUBY_VERSION[/^1\.9|^2/]
+if $PROGRAM_NAME == __FILE__
+  Test::Unit::UI::Console::TestRunner.run(MagickUT) unless RUBY_VERSION[/^1\.9|^2/]
 end
