@@ -8,10 +8,6 @@ inherit_from:
 Lint/UnifiedInteger:
   Enabled: false
 
-# Enforce verbose mode for compatibility with older rubies
-Style/PreferredHashMethods:
-  EnforcedStyle: verbose
-
 # Enforce mode for compatibility with older rubies
 Style/Lambda:
   EnforcedStyle: lambda

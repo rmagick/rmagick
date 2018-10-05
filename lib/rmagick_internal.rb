@@ -263,7 +263,7 @@ module Magick
     # Set color in image according to specified colorization rule. Rule is one of
     # point, replace, floodfill, filltoborder,reset
     def color(x, y, method)
-      unless PAINT_METHOD_NAMES.has_key?(method.to_i)
+      unless PAINT_METHOD_NAMES.key?(method.to_i)
         Kernel.raise ArgumentError, "Unknown PaintMethod: #{method}"
       end
       primitive "color #{x},#{y},#{PAINT_METHOD_NAMES[method.to_i]}"
@@ -272,7 +272,7 @@ module Magick
     # Specify EITHER the text decoration (none, underline, overline,
     # line-through) OR the text solid background color (any color name or spec)
     def decorate(decoration)
-      if DECORATION_TYPE_NAMES.has_key?(decoration.to_i)
+      if DECORATION_TYPE_NAMES.key?(decoration.to_i)
         primitive "decorate #{DECORATION_TYPE_NAMES[decoration.to_i]}"
       else
         primitive "decorate #{enquote(decoration)}"
@@ -336,14 +336,14 @@ module Magick
     end
 
     def font_stretch(stretch)
-      unless STRETCH_TYPE_NAMES.has_key?(stretch.to_i)
+      unless STRETCH_TYPE_NAMES.key?(stretch.to_i)
         Kernel.raise ArgumentError, 'Unknown stretch type'
       end
       primitive "font-stretch #{STRETCH_TYPE_NAMES[stretch.to_i]}"
     end
 
     def font_style(style)
-      unless STYLE_TYPE_NAMES.has_key?(style.to_i)
+      unless STYLE_TYPE_NAMES.key?(style.to_i)
         Kernel.raise ArgumentError, 'Unknown style type'
       end
       primitive "font-style #{STYLE_TYPE_NAMES[style.to_i]}"
@@ -352,7 +352,7 @@ module Magick
     # The font weight argument can be either a font weight
     # constant or [100,200,...,900]
     def font_weight(weight)
-      if FONT_WEIGHT_NAMES.has_key?(weight.to_i)
+      if FONT_WEIGHT_NAMES.key?(weight.to_i)
         primitive "font-weight #{FONT_WEIGHT_NAMES[weight.to_i]}"
       else
         primitive "font-weight #{weight}"
@@ -362,7 +362,7 @@ module Magick
     # Specify the text positioning gravity, one of:
     # NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast
     def gravity(grav)
-      unless GRAVITY_NAMES.has_key?(grav.to_i)
+      unless GRAVITY_NAMES.key?(grav.to_i)
         Kernel.raise ArgumentError, 'Unknown text positioning gravity'
       end
       primitive "gravity #{GRAVITY_NAMES[grav.to_i]}"
@@ -412,7 +412,7 @@ module Magick
     # Set matte (make transparent) in image according to the specified
     # colorization rule
     def matte(x, y, method)
-      unless PAINT_METHOD_NAMES.has_key?(method.to_i)
+      unless PAINT_METHOD_NAMES.key?(method.to_i)
         Kernel.raise ArgumentError, 'Unknown paint method'
       end
       primitive "matte #{x},#{y} #{PAINT_METHOD_NAMES[method.to_i]}"
@@ -623,7 +623,7 @@ module Magick
 
     # Specify text alignment relative to a given point
     def text_align(alignment)
-      unless ALIGN_TYPE_NAMES.has_key?(alignment.to_i)
+      unless ALIGN_TYPE_NAMES.key?(alignment.to_i)
         Kernel.raise ArgumentError, "Unknown alignment constant: #{alignment}"
       end
       primitive "text-align #{ALIGN_TYPE_NAMES[alignment.to_i]}"
@@ -631,7 +631,7 @@ module Magick
 
     # SVG-compatible version of text_align
     def text_anchor(anchor)
-      unless ANCHOR_TYPE_NAMES.has_key?(anchor.to_i)
+      unless ANCHOR_TYPE_NAMES.key?(anchor.to_i)
         Kernel.raise ArgumentError, "Unknown anchor constant: #{anchor}"
       end
       primitive "text-anchor #{ANCHOR_TYPE_NAMES[anchor.to_i]}"

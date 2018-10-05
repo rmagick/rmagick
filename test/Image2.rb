@@ -307,10 +307,10 @@ class Image2_UT < Test::Unit::TestCase
       assert_equal(:destroy!, method) if which == :d
 
       if which == :c
-        assert(!images.has_key?(addr), 'duplicate image addresses')
+        assert(!images.key?(addr), 'duplicate image addresses')
         images[addr] = name
       else
-        assert(images.has_key?(addr), 'destroying image that was not created')
+        assert(images.key?(addr), 'destroying image that was not created')
         assert_equal(name, images[addr])
       end
     end
