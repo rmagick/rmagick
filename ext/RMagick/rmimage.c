@@ -1857,7 +1857,7 @@ border(int bang, VALUE self, VALUE width, VALUE height, VALUE color)
     Color_to_PixelInfo(&image->border_color, color);
 
     exception = AcquireExceptionInfo();
-    new_image = BorderImage(image, &rect, exception);
+    new_image = BorderImage(image, &rect, OverCompositeOp, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
