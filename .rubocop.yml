@@ -8,14 +8,6 @@ inherit_from:
 Lint/UnifiedInteger:
   Enabled: false
 
-# Enabling this cop cause rubocop 0.50 to crash on heredoc files
-Naming/HeredocDelimiterCase:
-  Enabled: false
-
-# Enabling this cop cause rubocop 0.50 to crash on heredoc files
-Naming/HeredocDelimiterNaming:
-  Enabled: false
-
 # for support of older rubies
 Style/HashSyntax:
   EnforcedStyle: hash_rockets
