@@ -9561,7 +9561,7 @@ Image_oil_paint(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 
-    new_image = OilPaintImage(image, radius, exception);
+    new_image = OilPaintImage(image, radius, 1.0, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
