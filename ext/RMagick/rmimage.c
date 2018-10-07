@@ -2145,16 +2145,18 @@ Image_channel(VALUE self, VALUE channel_arg)
 {
     Image *image, *new_image;
     ChannelType channel;
+    ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
 
     VALUE_TO_ENUM(channel_arg, channel, ChannelType);
 
-    new_image = rm_clone_image(image);
+    exception = AcquireExceptionInfo();
+    SetImageChannelMask(image, channel);
+    new_image = SeparateImage(image, channel, exception);
+    rm_check_exception(exception, new_image, DestroyOnError);
+    (void) DestroyExceptionInfo(exception);
 
-    (void) SeparateImageChannel(new_image, channel);
-
-    rm_check_image_exception(new_image, DestroyOnError);
     rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
