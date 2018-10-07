@@ -7338,7 +7338,7 @@ Image_implode(int argc, VALUE *argv, VALUE self)
     image = rm_check_destroyed(self);
     exception = AcquireExceptionInfo();
 
-    new_image = ImplodeImage(image, amount, exception);
+    new_image = ImplodeImage(image, amount, UndefinedInterpolatePixel, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
     (void) DestroyExceptionInfo(exception);
 
