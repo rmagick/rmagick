@@ -1214,7 +1214,7 @@ ImageList_write(VALUE self, VALUE file)
     (void) DestroyExceptionInfo(exception);
 
     // Tell WriteImage if we want a multi-images file.
-    if (imagelist_length(self) > 1L && m->adjoin)
+    if (imagelist_length(self) > 1L && (m->image_info && m->image_info->adjoin))
     {
         info->adjoin = MagickTrue;
     }
