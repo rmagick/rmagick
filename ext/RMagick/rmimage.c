@@ -11919,7 +11919,8 @@ Image_separate(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    new_images = SeparateImages(image, channels, exception);
+    SetImageChannelMask(image, channels);
+    new_images = SeparateImages(image, exception);
     rm_check_exception(exception, new_images, DestroyOnError);
     DestroyExceptionInfo(exception);
     rm_ensure_result(new_images);
