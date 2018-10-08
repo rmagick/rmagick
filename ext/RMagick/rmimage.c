@@ -2558,7 +2558,7 @@ Image_clut_channel(int argc, VALUE *argv, VALUE self)
  * Call GetImageHistogram.
  *
  * Ruby usage:
- *   - @verbatim Image_color_histogram(VALUE self); @endverbatim
+ *   - @verbatim color_histogram @endverbatim
  *
  * Notes:
  *   - returns hash @verbatim {aPixel=>count} @endverbatim
@@ -2611,7 +2611,7 @@ Image_color_histogram(VALUE self)
     hash = rb_hash_new();
     for (x = 0; x < colors; x++)
     {
-        pixel = Pixel_from_PixelInfo(&histogram[x].pixel);
+        pixel = Pixel_from_PixelInfo(&histogram[x]);
         (void) rb_hash_aset(hash, pixel, ULONG2NUM((unsigned long)histogram[x].count));
     }
 
