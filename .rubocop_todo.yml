@@ -253,11 +253,6 @@ Style/MixinUsage:
     - 'examples/thumbnail.rb'
     - 'examples/vignette.rb'
 
-# Offense count: 1
-Style/MultipleComparison:
-  Exclude:
-    - 'test/Image2.rb'
-
 # Offense count: 158
 # Cop supports --auto-correct.
 Style/MutableConstant:
