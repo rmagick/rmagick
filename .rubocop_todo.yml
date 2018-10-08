@@ -204,12 +204,6 @@ Style/ClassAndModuleChildren:
     - 'spec/rmagick/draw_spec.rb'
     - 'test/Magick.rb'
 
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/ColonMethodCall:
-  Exclude:
-    - 'spec/rmagick/image/read_spec.rb'
-
 # Offense count: 90
 Style/CommentedKeyword:
   Enabled: false
