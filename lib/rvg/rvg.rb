@@ -139,9 +139,8 @@ module Magick
     # Sets an image to use as the canvas background. See background_position= for layout options.
     def background_image=(bg_image)
       warn 'background_image= has no effect in nested RVG objects' if @nested
-      if bg_image && !bg_image.is_a?(Magick::Image)
-        raise ArgumentError, "background image must be an Image (got #{bg_image.class})"
-      end
+      raise ArgumentError, "background image must be an Image (got #{bg_image.class})" if bg_image && !bg_image.is_a?(Magick::Image)
+
       @background_image = bg_image
     end
 
@@ -162,9 +161,8 @@ module Magick
     def background_position=(pos)
       warn 'background_position= has no effect in nested RVG objects' if @nested
       bg_pos = pos.to_s.downcase
-      unless %w[scaled tiled fit].include?(bg_pos)
-        raise ArgumentError, "background position must be `scaled', `tiled', or `fit' (#{pos} given)"
-      end
+      raise ArgumentError, "background position must be `scaled', `tiled', or `fit' (#{pos} given)" unless %w[scaled tiled fit].include?(bg_pos)
+
       @background_position = bg_pos.to_sym
     end
 
@@ -179,7 +177,7 @@ module Magick
           raise ArgumentError, "unknown color `#{color}'"
         rescue TypeError
           raise TypeError, "cannot convert #{color.class} into Pixel"
-        rescue
+        rescue StandardError
           raise ArgumentError, "argument must be a color name or a Pixel (got #{color.class})"
         end
       else
@@ -232,6 +230,7 @@ module Magick
     # Execute drawing commands. Return the canvas.
     def draw
       raise StandardError, 'draw not permitted in nested RVG objects' if @nested
+
       @canvas ||= new_canvas # allow drawing over existing canvas
       gc = Utility::GraphicContext.new
       add_outermost_primitives(gc)
@@ -272,6 +271,7 @@ module Magick
     def add_primitives(gc) #:nodoc:
       raise ArgumentError, 'RVG width or height undefined' if @width.nil? || @height.nil?
       return self if @width.zero? || @height.zero?
+
       gc.push
       add_outermost_primitives(gc)
       gc.pop

@@ -5,13 +5,13 @@
 module Magick
   class RVG
     #:stopdoc:
-    STYLES = [:clip_path, :clip_rule, :fill, :fill_opacity, :fill_rule, :font,
-              :font_family, :font_size, :font_stretch, :font_style, :font_weight,
-              :opacity, :stroke, :stroke_dasharray, :stroke_dashoffset, :stroke_linecap,
-              :stroke_linejoin, :stroke_miterlimit, :stroke_opacity, :stroke_width,
-              :text_anchor, :text_decoration,
-              :glyph_orientation_vertical, :glyph_orientation_horizontal,
-              :letter_spacing, :word_spacing, :baseline_shift, :writing_mode]
+    STYLES = %i[clip_path clip_rule fill fill_opacity fill_rule font
+                font_family font_size font_stretch font_style font_weight
+                opacity stroke stroke_dasharray stroke_dashoffset stroke_linecap
+                stroke_linejoin stroke_miterlimit stroke_opacity stroke_width
+                text_anchor text_decoration
+                glyph_orientation_vertical glyph_orientation_horizontal
+                letter_spacing word_spacing baseline_shift writing_mode]
 
     Styles = Struct.new(*STYLES)
 

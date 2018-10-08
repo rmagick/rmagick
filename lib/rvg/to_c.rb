@@ -1,8 +1,8 @@
 class Magick::RVG
   private
 
-    def header_text(pgm, name)
-      pgm.puts <<"END_HEADER"
+  def header_text(pgm, name)
+    pgm.puts <<"END_HEADER"
 /*
 Version: #{Magick_version}
 
@@ -24,20 +24,20 @@ int main(int argc,char **argv)
   DrawInfo *draw;
   const char * const primitives =
 END_HEADER
-    end
+  end
 
-    def list_primitives(pgm, gc)
-      primitives = gc.inspect.split("\n")
-      indent = 0
-      primitives.each do |cmd|
-        indent -= 1 if cmd['pop ']
-        pgm.print('  ', ('  ' * indent), '"', cmd, '\n"', "\n")
-        indent += 1 if cmd['push ']
-      end
+  def list_primitives(pgm, gc)
+    primitives = gc.inspect.split("\n")
+    indent = 0
+    primitives.each do |cmd|
+      indent -= 1 if cmd['pop ']
+      pgm.print('  ', ('  ' * indent), '"', cmd, '\n"', "\n")
+      indent += 1 if cmd['push ']
     end
+  end
 
-    def trailer_text(pgm, name)
-      pgm.puts <<"END_TRAILER"
+  def trailer_text(pgm, name)
+    pgm.puts <<"END_TRAILER"
   ;
 
   InitializeMagick("#{name}");
@@ -82,20 +82,20 @@ END_HEADER
   return 0;
 }
 END_TRAILER
-    end
+  end
 
   public
 
-    # Convert an RVG object to a stand-alone C program
-    # suitable for reproducing a bug.
-    def to_c(name)
-      pgm = File.open(name + '.c', 'w')
-      header_text(pgm, name)
-      gc = Draw.new
-      add_primitives(gc)
-      list_primitives(pgm, gc)
-      trailer_text(pgm, name)
-      pgm.close
-      $stderr.puts 'Done'
-    end
+  # Convert an RVG object to a stand-alone C program
+  # suitable for reproducing a bug.
+  def to_c(name)
+    pgm = File.open(name + '.c', 'w')
+    header_text(pgm, name)
+    gc = Draw.new
+    add_primitives(gc)
+    list_primitives(pgm, gc)
+    trailer_text(pgm, name)
+    pgm.close
+    warn 'Done'
+  end
 end # class Magick::RVG

@@ -107,12 +107,8 @@ module Magick
         puts "\t\twhite point: (#{format('%g,%g', chrom.white_point.x, chrom.white_point.y)})\n"
       end
       ex_info = extract_info
-      if ex_info.width * ex_info.height != 0.0
-        puts "\tTile geometry: #{ex_info.width}x#{ex_info.height}+#{ex_info.x}+#{ex_info.y}\n"
-      end
-      if x_resolution != 0.0 && y_resolution != 0.0
-        puts "\tResolution: #{format('%gx%g', x_resolution, y_resolution)}\n"
-      end
+      puts "\tTile geometry: #{ex_info.width}x#{ex_info.height}+#{ex_info.x}+#{ex_info.y}\n" if ex_info.width * ex_info.height != 0.0
+      puts "\tResolution: #{format('%gx%g', x_resolution, y_resolution)}\n" if x_resolution != 0.0 && y_resolution != 0.0
       puts "\tUnits: #{units}\n"
       size = filesize
       if size >= 1_048_576
@@ -127,9 +123,7 @@ module Magick
       puts "\tBorder Color: #{border_color}\n"
       puts "\tMatte Color: #{matte_color}\n"
       pg = page
-      if pg.width != 0 || pg.height != 0 || pg.x != 0 || pg.y != 0
-        puts "\tPage geometry: #{pg.width}x#{pg.height}+#{pg.x}+#{pg.y}\n"
-      end
+      puts "\tPage geometry: #{pg.width}x#{pg.height}+#{pg.x}+#{pg.y}\n" if pg.width != 0 || pg.height != 0 || pg.x != 0 || pg.y != 0
       puts "\tDispose: #{dispose}\n"
       puts "\tDelay: #{delay}\n" if delay != 0
       puts "\tIterations: #{iterations}\n" unless iterations == 1
@@ -141,6 +135,7 @@ module Magick
       signature # compute but ignore - will be displayed along with the other properties
       properties.each do |prop, value|
         next if prop[0, 1] == '['
+
         puts "\t#{prop}: #{value}\n"
       end
       clip_path = self['8BIM:1999,2998:#1']
@@ -148,6 +143,7 @@ module Magick
       each_profile do |name, value|
         puts "\tProfile-#{name}: #{value.length}\n"
         next unless name == 'exif'
+
         exif_attrs = get_exif_by_entry
         exif_attrs.each do |attr|
           puts "\t\t#{attr[0]}: #{attr[1]}\n"
@@ -168,7 +164,7 @@ if ARGV.length.zero?
 
     Usage:
     ruby identify.rb filename [filename...]
-    END_USAGE
+  END_USAGE
   exit
 end
 

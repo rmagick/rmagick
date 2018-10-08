@@ -7,27 +7,3 @@ inherit_from:
 # Fixing this issues cause some test to fail
 Lint/UnifiedInteger:
   Enabled: false
-
-# Enabling this cop cause rubocop 0.50 to crash on heredoc files
-Naming/HeredocDelimiterCase:
-  Enabled: false
-
-# Enabling this cop cause rubocop 0.50 to crash on heredoc files
-Naming/HeredocDelimiterNaming:
-  Enabled: false
-
-# for support of older rubies
-Style/HashSyntax:
-  EnforcedStyle: hash_rockets
-
-# Enforce verbose mode for compatibility with older rubies
-Style/PreferredHashMethods:
-  EnforcedStyle: verbose
-
-# Enforce mode for compatibility with older rubies
-Style/Lambda:
-  EnforcedStyle: lambda
-
-# %i supported only since ruby 2.0
-Style/SymbolArray:
-  EnforcedStyle: brackets

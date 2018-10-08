@@ -2,13 +2,13 @@ require 'rvg/rvg'
 
 Magick::RVG.dpi = 90
 
-Border       = { :fill => 'none', :stroke => 'blue', :stroke_width => 1 }
-Connect      = { :fill => 'none', :stroke => '#888888', :stroke_width => 2 }
-SamplePath   = { :fill => 'none', :stroke => 'red', :stroke_width => 5 }
-EndPoint     = { :fill => 'none', :stroke => '#888888', :stroke_width => 2 }
-CtlPoint     = { :fill => '#888888', :stroke => 'none' }
-AutoCtlPoint = { :fill => 'none', :stroke => 'blue', :stroke_width => 4 }
-Label        = { :text_anchor => 'middle', :font_size => 22, :font_family => 'Verdana', :font_weight => 'normal', :font_style => 'normal' }
+Border       = { fill: 'none', stroke: 'blue', stroke_width: 1 }
+Connect      = { fill: 'none', stroke: '#888888', stroke_width: 2 }
+SamplePath   = { fill: 'none', stroke: 'red', stroke_width: 5 }
+EndPoint     = { fill: 'none', stroke: '#888888', stroke_width: 2 }
+CtlPoint     = { fill: '#888888', stroke: 'none' }
+AutoCtlPoint = { fill: 'none', stroke: 'blue', stroke_width: 4 }
+Label        = { text_anchor: 'middle', font_size: 22, font_family: 'Verdana', font_weight: 'normal', font_style: 'normal' }
 
 rvg = Magick::RVG.new(10.cm, 10.cm).viewbox(0, 0, 1000, 1000) do |canvas|
   canvas.title = 'Example cubic02 - cubic Bezier commands in path data'
@@ -16,7 +16,7 @@ rvg = Magick::RVG.new(10.cm, 10.cm).viewbox(0, 0, 1000, 1000) do |canvas|
         Picture showing examples of "C" and "S" commands,
         along with annotations showing the control points
         and end points
-        END_DESC
+  END_DESC
 
   canvas.background_fill = 'white'
   canvas.rect(996, 996, 1, 1).styles(Border)

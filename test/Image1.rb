@@ -5,8 +5,6 @@ require 'test/unit'
 require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
 
 class Image1_UT < Test::Unit::TestCase
-  FreezeError = RUBY_VERSION > "2.5" ? FrozenError : (RUBY_VERSION > "1.9" ? RuntimeError : TypeError)
-
   def setup
     @img = Magick::Image.new(20, 20)
   end

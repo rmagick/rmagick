@@ -48,8 +48,6 @@ Filters = [
 ]
 
 class Image3_UT < Test::Unit::TestCase
-  FreezeError = RUBY_VERSION > "2.5" ? FrozenError : (RUBY_VERSION > "1.9" ? RuntimeError : TypeError)
-
   def setup
     @img = Magick::Image.new(20, 20)
     @p = Magick::Image.read(IMAGE_WITH_PROFILE).first.color_profile
@@ -633,6 +631,7 @@ class Image3_UT < Test::Unit::TestCase
     # assert good calls work
     Magick::SparseColorMethod.values do |v|
       next if v == Magick::UndefinedColorInterpolate
+
       assert_nothing_raised { img.sparse_color(v, *args) }
     end
     args << Magick::RedChannel

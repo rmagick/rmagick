@@ -1,4 +1,3 @@
-
 # Ccreate a semi-transparent title for an image.
 
 require 'rmagick'

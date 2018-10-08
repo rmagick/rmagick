@@ -7,8 +7,6 @@ require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
 # TODO: improve exif tests - need a benchmark image with EXIF data
 
 class Image2_UT < Test::Unit::TestCase
-  FreezeError = RUBY_VERSION > "2.5" ? FrozenError : (RUBY_VERSION > "1.9" ? RuntimeError : TypeError)
-
   def setup
     @img = Magick::Image.new(20, 20)
   end
@@ -254,7 +252,7 @@ class Image2_UT < Test::Unit::TestCase
   def test_destroy
     methods = Magick::Image.instance_methods(false).sort
     methods -= if RUBY_VERSION[/^1\.9|^2/]
-                 [:__display__, :destroy!, :destroyed?, :inspect, :cur_image, :marshal_load]
+                 %i[__display__ destroy! destroyed? inspect cur_image marshal_load]
                else
                  %w[__display__ destroy! destroyed? inspect cur_image marshal_load]
                end
@@ -303,14 +301,14 @@ class Image2_UT < Test::Unit::TestCase
       m = id.split(/ /)
       name = File.basename m[0]
 
-      assert(which == :c || which == :d, "unexpected value for which: #{which}")
+      assert(%i[c d].include?(which), "unexpected value for which: #{which}")
       assert_equal(:destroy!, method) if which == :d
 
       if which == :c
-        assert(!images.has_key?(addr), 'duplicate image addresses')
+        assert(!images.key?(addr), 'duplicate image addresses')
         images[addr] = name
       else
-        assert(images.has_key?(addr), 'destroying image that was not created')
+        assert(images.key?(addr), 'destroying image that was not created')
         assert_equal(name, images[addr])
       end
     end

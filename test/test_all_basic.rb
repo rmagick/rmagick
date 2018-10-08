@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby -w
 puts RUBY_VERSION
 puts RUBY_VERSION.class
-root_dir = File.expand_path('../..', __FILE__)
+root_dir = File.expand_path('..', __dir__)
 IMAGES_DIR = File.join(root_dir, 'doc/ex/images')
 FILES = Dir[IMAGES_DIR + '/Button_*.gif'].sort
 FLOWER_HAT = IMAGES_DIR + '/Flower_Hat.jpg'
@@ -24,6 +24,14 @@ abort 'Unable to get ImageMagick version' unless Regexp.last_match(1) && Regexp.
 
 IM_VERSION = Gem::Version.new(Regexp.last_match(1))
 IM_REVISION = Gem::Version.new(Regexp.last_match(2))
+
+FreezeError = if RUBY_VERSION > '2.5'
+                FrozenError
+              elsif RUBY_VERSION > '1.9'
+                RuntimeError
+              else
+                TypeError
+              end
 
 require 'Image1.rb'
 require 'Image2.rb'

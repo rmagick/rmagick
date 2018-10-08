@@ -1,4 +1,3 @@
-
 # Demonstrate ImageMagick's new (5.5.7-3 and later) built-in patterns.
 # Create a Fill class that can be reused to fill in new Image backgrounds.
 
@@ -26,7 +25,7 @@ end
 if ARGV[0]
   pattern = ARGV[0]
 else
-  $stderr.puts 'Defaulting to checkerboard pattern.'
+  warn 'Defaulting to checkerboard pattern.'
   pattern = 'checkerboard'
 end
 

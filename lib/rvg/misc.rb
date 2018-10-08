@@ -73,6 +73,7 @@ module Magick
 
         def enquote(text)
           return text if text.length > 2 && /\A(?:\"[^\"]+\"|\'[^\']+\'|\{[^\}]+\})\z/.match(text)
+
           if !text['\'']
             text = '\'' + text + '\''
             return text
@@ -431,21 +432,21 @@ module Magick
 
       class GraphicContext
         FONT_STRETCH = {
-          :normal => Magick::NormalStretch,
-          :ultra_condensed => Magick::UltraCondensedStretch,
-          :extra_condensed => Magick::ExtraCondensedStretch,
-          :condensed       => Magick::CondensedStretch,
-          :semi_condensed  => Magick::SemiCondensedStretch,
-          :semi_expanded   => Magick::SemiExpandedStretch,
-          :expanded        => Magick::ExpandedStretch,
-          :extra_expanded  => Magick::ExtraExpandedStretch,
-          :ultra_expanded  => Magick::UltraExpandedStretch
+          normal: Magick::NormalStretch,
+          ultra_condensed: Magick::UltraCondensedStretch,
+          extra_condensed: Magick::ExtraCondensedStretch,
+          condensed: Magick::CondensedStretch,
+          semi_condensed: Magick::SemiCondensedStretch,
+          semi_expanded: Magick::SemiExpandedStretch,
+          expanded: Magick::ExpandedStretch,
+          extra_expanded: Magick::ExtraExpandedStretch,
+          ultra_expanded: Magick::UltraExpandedStretch
         }
 
         FONT_STYLE = {
-          :normal  => Magick::NormalStyle,
-          :italic  => Magick::ItalicStyle,
-          :oblique => Magick::ObliqueStyle
+          normal: Magick::NormalStyle,
+          italic: Magick::ItalicStyle,
+          oblique: Magick::ObliqueStyle
         }
 
         FONT_WEIGHT = {
@@ -456,22 +457,22 @@ module Magick
         }
 
         TEXT_ANCHOR = {
-          :start  => Magick::StartAnchor,
-          :middle => Magick::MiddleAnchor,
-          :end    => Magick::EndAnchor
+          start: Magick::StartAnchor,
+          middle: Magick::MiddleAnchor,
+          end: Magick::EndAnchor
         }
 
         ANCHOR_TO_ALIGN = {
-          :start  => Magick::LeftAlign,
-          :middle => Magick::CenterAlign,
-          :end    => Magick::RightAlign
+          start: Magick::LeftAlign,
+          middle: Magick::CenterAlign,
+          end: Magick::RightAlign
         }
 
         TEXT_DECORATION = {
-          :none         => Magick::NoDecoration,
-          :underline    => Magick::UnderlineDecoration,
-          :overline     => Magick::OverlineDecoration,
-          :line_through => Magick::LineThroughDecoration
+          none: Magick::NoDecoration,
+          underline: Magick::UnderlineDecoration,
+          overline: Magick::OverlineDecoration,
+          line_through: Magick::LineThroughDecoration
         }
 
         TEXT_STRATEGIES = {
@@ -663,6 +664,7 @@ module Magick
 
         def text(x, y, text)
           return if text.length.zero?
+
           text_renderer = if @text_attrs.non_default?
                             TEXT_STRATEGIES[@text_attrs.writing_mode].new(self)
                           else

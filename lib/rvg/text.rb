@@ -50,6 +50,7 @@ module Magick
       # We do our own transformations.
       def add_primitives(gc) #:nodoc:
         return if !@text && @tspans.empty?
+
         gc.push
         x = cx + @dx
         y = cy + @dy
@@ -145,9 +146,8 @@ module Magick
       # Reference a Tspan object. <tt>x</tt> and <tt>y</tt> are just
       # like <tt>x</tt> and <tt>y</tt> in RVG::TextBase#tspan
       def tref(obj, x = nil, y = nil)
-        unless obj.is_a?(Tspan)
-          raise ArgumentError, "wrong argument type #{obj.class} (expected Tspan)"
-        end
+        raise ArgumentError, "wrong argument type #{obj.class} (expected Tspan)" unless obj.is_a?(Tspan)
+
         obj = obj.deep_copy
         obj.parent = self
         tref = Tref.new(obj, x, y, self)

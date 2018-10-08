@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 gemspec
 
 group :development, :test do
-  gem 'simplecov', :require => false
+  gem 'simplecov', require: false
 end
 # Used by README.textile
 # gem "RedCloth"
