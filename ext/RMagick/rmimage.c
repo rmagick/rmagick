@@ -2247,8 +2247,9 @@ Image_channel_extrema(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    (void) GetImageChannelExtrema(image, channels, &min, &max, exception);
-    CHECK_EXCEPTION()
+    SetImageChannelMask(image, channels);
+    (void) GetImageExtrema(image, &min, &max, exception);
+    rm_check_exception(exception, image, RetainOnError);
 
     (void) DestroyExceptionInfo(exception);
 
