@@ -25,9 +25,7 @@ step = Magick::TransparentOpacity / cols.to_f
 opacity_steps = Array.new(cols)
 cols.times do |x|
   opacity_steps[x] = Magick::TransparentOpacity - Integer(x * step)
-  if opacity_steps[x] < Magick::OpaqueOpacity
-    opacity_steps[x] = Magick::OpaqueOpacity
-  end
+  opacity_steps[x] = Magick::OpaqueOpacity if opacity_steps[x] < Magick::OpaqueOpacity
 end
 
 # Get each row of pixels from the mono image.

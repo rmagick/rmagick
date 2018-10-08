@@ -41,9 +41,7 @@ module Magick
       def initialize(rx, ry, cx = 0, cy = 0)
         super()
         rx, ry, cx, cy = Magick::RVG.convert_to_float(rx, ry, cx, cy)
-        if rx < 0 || ry < 0
-          raise ArgumentError, "radii must be >= 0 (#{rx}, #{ry} given)"
-        end
+        raise ArgumentError, "radii must be >= 0 (#{rx}, #{ry} given)" if rx < 0 || ry < 0
 
         @primitive = :ellipse
         # Ellipses are always complete.
@@ -79,9 +77,7 @@ module Magick
       def initialize(width, height, x = 0, y = 0)
         super()
         width, height, x, y = Magick::RVG.convert_to_float(width, height, x, y)
-        if width < 0 || height < 0
-          raise ArgumentError, "width, height must be >= 0 (#{width}, #{height} given)"
-        end
+        raise ArgumentError, "width, height must be >= 0 (#{width}, #{height} given)" if width < 0 || height < 0
 
         @args = [x, y, x + width, y + height]
         @primitive = :rectangle
@@ -91,9 +87,7 @@ module Magick
       # are the x- and y-axis radii. If y is omitted it defaults to x.
       def round(rx, ry = nil)
         rx, ry = Magick::RVG.convert_to_float(rx, ry || rx)
-        if rx < 0 || ry < 0
-          raise ArgumentError, "rx, ry must be >= 0 (#{rx}, #{ry} given)"
-        end
+        raise ArgumentError, "rx, ry must be >= 0 (#{rx}, #{ry} given)" if rx < 0 || ry < 0
 
         @args << rx << ry
         @primitive = :roundrectangle
@@ -109,9 +103,7 @@ module Magick
         when 2
           x_coords = Array(points[0])
           y_coords = Array(points[1])
-          unless !x_coords.empty? && !y_coords.empty?
-            raise ArgumentError, 'array arguments must contain at least one point'
-          end
+          raise ArgumentError, 'array arguments must contain at least one point' unless !x_coords.empty? && !y_coords.empty?
 
           n = x_coords.length - y_coords.length
           short = n > 0 ? y_coords : x_coords
@@ -120,9 +112,7 @@ module Magick
           points = x_coords.zip(y_coords).flatten
         end
         n = points.length
-        if n < 4 || n.odd?
-          raise ArgumentError, "insufficient/odd number of points specified: #{n}"
-        end
+        raise ArgumentError, "insufficient/odd number of points specified: #{n}" if n < 4 || n.odd?
 
         Magick::RVG.convert_to_float(*points)
       end
@@ -227,9 +217,7 @@ module Magick
         super()             # run module initializers
         @image = image.copy # use a copy of the image in case app. re-uses the argument
         @x, @y, @width, @height = Magick::RVG.convert_to_float(x, y, width || @image.columns, height || @image.rows)
-        if @width < 0 || @height < 0
-          raise ArgumentError, 'width, height must be >= 0'
-        end
+        raise ArgumentError, 'width, height must be >= 0' if @width < 0 || @height < 0
 
         init_viewbox
       end

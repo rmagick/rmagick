@@ -246,26 +246,20 @@ module Magick
 
     # Define the clipping rule.
     def clip_rule(rule)
-      unless %w[evenodd nonzero].include?(rule.downcase)
-        Kernel.raise ArgumentError, "Unknown clipping rule #{rule}"
-      end
+      Kernel.raise ArgumentError, "Unknown clipping rule #{rule}" unless %w[evenodd nonzero].include?(rule.downcase)
       primitive "clip-rule #{rule}"
     end
 
     # Define the clip units
     def clip_units(unit)
-      unless %w[userspace userspaceonuse objectboundingbox].include?(unit.downcase)
-        Kernel.raise ArgumentError, "Unknown clip unit #{unit}"
-      end
+      Kernel.raise ArgumentError, "Unknown clip unit #{unit}" unless %w[userspace userspaceonuse objectboundingbox].include?(unit.downcase)
       primitive "clip-units #{unit}"
     end
 
     # Set color in image according to specified colorization rule. Rule is one of
     # point, replace, floodfill, filltoborder,reset
     def color(x, y, method)
-      unless PAINT_METHOD_NAMES.key?(method.to_i)
-        Kernel.raise ArgumentError, "Unknown PaintMethod: #{method}"
-      end
+      Kernel.raise ArgumentError, "Unknown PaintMethod: #{method}" unless PAINT_METHOD_NAMES.key?(method.to_i)
       primitive "color #{x},#{y},#{PAINT_METHOD_NAMES[method.to_i]}"
     end
 
@@ -320,9 +314,7 @@ module Magick
     end
 
     def fill_rule(rule)
-      unless %w[evenodd nonzero].include?(rule.downcase)
-        Kernel.raise ArgumentError, "Unknown fill rule #{rule}"
-      end
+      Kernel.raise ArgumentError, "Unknown fill rule #{rule}" unless %w[evenodd nonzero].include?(rule.downcase)
       primitive "fill-rule #{rule}"
     end
 
@@ -336,16 +328,12 @@ module Magick
     end
 
     def font_stretch(stretch)
-      unless STRETCH_TYPE_NAMES.key?(stretch.to_i)
-        Kernel.raise ArgumentError, 'Unknown stretch type'
-      end
+      Kernel.raise ArgumentError, 'Unknown stretch type' unless STRETCH_TYPE_NAMES.key?(stretch.to_i)
       primitive "font-stretch #{STRETCH_TYPE_NAMES[stretch.to_i]}"
     end
 
     def font_style(style)
-      unless STYLE_TYPE_NAMES.key?(style.to_i)
-        Kernel.raise ArgumentError, 'Unknown style type'
-      end
+      Kernel.raise ArgumentError, 'Unknown style type' unless STYLE_TYPE_NAMES.key?(style.to_i)
       primitive "font-style #{STYLE_TYPE_NAMES[style.to_i]}"
     end
 
@@ -362,9 +350,7 @@ module Magick
     # Specify the text positioning gravity, one of:
     # NorthWest, North, NorthEast, West, Center, East, SouthWest, South, SouthEast
     def gravity(grav)
-      unless GRAVITY_NAMES.key?(grav.to_i)
-        Kernel.raise ArgumentError, 'Unknown text positioning gravity'
-      end
+      Kernel.raise ArgumentError, 'Unknown text positioning gravity' unless GRAVITY_NAMES.key?(grav.to_i)
       primitive "gravity #{GRAVITY_NAMES[grav.to_i]}"
     end
 
@@ -412,9 +398,7 @@ module Magick
     # Set matte (make transparent) in image according to the specified
     # colorization rule
     def matte(x, y, method)
-      unless PAINT_METHOD_NAMES.key?(method.to_i)
-        Kernel.raise ArgumentError, 'Unknown paint method'
-      end
+      Kernel.raise ArgumentError, 'Unknown paint method' unless PAINT_METHOD_NAMES.key?(method.to_i)
       primitive "matte #{x},#{y} #{PAINT_METHOD_NAMES[method.to_i]}"
     end
 
@@ -422,9 +406,7 @@ module Magick
     # ending with a %, the number will be multiplied by 0.01.
     def opacity(opacity)
       if opacity.is_a?(Numeric)
-        if opacity < 0 || opacity > 1.0
-          Kernel.raise ArgumentError, 'opacity must be >= 0 and <= 1.0'
-        end
+        Kernel.raise ArgumentError, 'opacity must be >= 0 and <= 1.0' if opacity < 0 || opacity > 1.0
       end
       primitive "opacity #{opacity}"
     end
@@ -560,9 +542,7 @@ module Magick
         primitive 'stroke-dasharray none'
       else
         list.each do |x|
-          if x <= 0
-            Kernel.raise ArgumentError, "dash array elements must be > 0 (#{x} given)"
-          end
+          Kernel.raise ArgumentError, "dash array elements must be > 0 (#{x} given)" if x <= 0
         end
         primitive "stroke-dasharray #{list.join(',')}"
       end
@@ -574,16 +554,12 @@ module Magick
     end
 
     def stroke_linecap(value)
-      unless %w[butt round square].include?(value.downcase)
-        Kernel.raise ArgumentError, "Unknown linecap type: #{value}"
-      end
+      Kernel.raise ArgumentError, "Unknown linecap type: #{value}" unless %w[butt round square].include?(value.downcase)
       primitive "stroke-linecap #{value}"
     end
 
     def stroke_linejoin(value)
-      unless %w[round miter bevel].include?(value.downcase)
-        Kernel.raise ArgumentError, "Unknown linejoin type: #{value}"
-      end
+      Kernel.raise ArgumentError, "Unknown linejoin type: #{value}" unless %w[round miter bevel].include?(value.downcase)
       primitive "stroke-linejoin #{value}"
     end
 
@@ -623,17 +599,13 @@ module Magick
 
     # Specify text alignment relative to a given point
     def text_align(alignment)
-      unless ALIGN_TYPE_NAMES.key?(alignment.to_i)
-        Kernel.raise ArgumentError, "Unknown alignment constant: #{alignment}"
-      end
+      Kernel.raise ArgumentError, "Unknown alignment constant: #{alignment}" unless ALIGN_TYPE_NAMES.key?(alignment.to_i)
       primitive "text-align #{ALIGN_TYPE_NAMES[alignment.to_i]}"
     end
 
     # SVG-compatible version of text_align
     def text_anchor(anchor)
-      unless ANCHOR_TYPE_NAMES.key?(anchor.to_i)
-        Kernel.raise ArgumentError, "Unknown anchor constant: #{anchor}"
-      end
+      Kernel.raise ArgumentError, "Unknown anchor constant: #{anchor}" unless ANCHOR_TYPE_NAMES.key?(anchor.to_i)
       primitive "text-anchor #{ANCHOR_TYPE_NAMES[anchor.to_i]}"
     end
 
@@ -833,9 +805,7 @@ module Magick
       ary = []
       if entry.length.zero?
         exif_data = self['EXIF:*']
-        if exif_data
-          exif_data.split("\n").each { |exif| ary.push(exif.split('=')) }
-        end
+        exif_data.split("\n").each { |exif| ary.push(exif.split('=')) } if exif_data
       else
         get_exif_by_entry # ensure properties is populated with exif data
         entry.each do |name|
@@ -1033,12 +1003,8 @@ module Magick
 
       def initialize(img, x, y, width, height)
         img.check_destroyed
-        if width <= 0 || height <= 0
-          Kernel.raise ArgumentError, "invalid geometry (#{width}x#{height}+#{x}+#{y})"
-        end
-        if x < 0 || y < 0 || (x + width) > img.columns || (y + height) > img.rows
-          Kernel.raise RangeError, "geometry (#{width}x#{height}+#{x}+#{y}) exceeds image boundary"
-        end
+        Kernel.raise ArgumentError, "invalid geometry (#{width}x#{height}+#{x}+#{y})" if width <= 0 || height <= 0
+        Kernel.raise RangeError, "geometry (#{width}x#{height}+#{x}+#{y}) exceeds image boundary" if x < 0 || y < 0 || (x + width) > img.columns || (y + height) > img.rows
         @view = img.get_pixels(x, y, width, height)
         @img = img
         @x = x
@@ -1160,9 +1126,7 @@ module Magick
             else
               @rows = Integer(@rows.first)
               @rows += @height if @rows < 0
-              if @rows < 0 || @rows > @height - 1
-                Kernel.raise IndexError, "index [#{@rows}] out of range"
-              end
+              Kernel.raise IndexError, "index [#{@rows}] out of range" if @rows < 0 || @rows > @height - 1
               # Convert back to an array
               @rows = Array.new(1, @rows)
               @unique = true
@@ -1198,9 +1162,7 @@ module Magick
             else
               @cols = Integer(@cols.first)
               @cols += @width if @cols < 0
-              if @cols < 0 || @cols > @width - 1
-                Kernel.raise IndexError, "index [#{@cols}] out of range"
-              end
+              Kernel.raise IndexError, "index [#{@cols}] out of range" if @cols < 0 || @cols > @width - 1
               # Convert back to array
               @cols = Array.new(1, @cols)
               @unique &&= true
@@ -1233,9 +1195,7 @@ module Magick
           @rows.each do |j|
             Kernel.raise IndexError, "index [#{j}] out of range" if j > maxrows
             @cols.each do |i|
-              if i > maxcols
-                Kernel.raise IndexError, "index [#{i}] out of range"
-              end
+              Kernel.raise IndexError, "index [#{i}] out of range" if i > maxcols
               yield j * @width + i
             end
           end
@@ -1261,17 +1221,13 @@ module Magick
     protected
 
     def is_an_image(obj)
-      unless obj.is_a? Magick::Image
-        Kernel.raise ArgumentError, "Magick::Image required (#{obj.class} given)"
-      end
+      Kernel.raise ArgumentError, "Magick::Image required (#{obj.class} given)" unless obj.is_a? Magick::Image
       true
     end
 
     # Ensure array is always an array of Magick::Image objects
     def is_an_image_array(ary)
-      unless ary.respond_to? :each
-        Kernel.raise ArgumentError, "Magick::ImageList or array of Magick::Images required (#{ary.class} given)"
-      end
+      Kernel.raise ArgumentError, "Magick::ImageList or array of Magick::Images required (#{ary.class} given)" unless ary.respond_to? :each
       ary.each { |obj| is_an_image obj }
       true
     end
@@ -1311,9 +1267,7 @@ module Magick
       end
 
       n = Integer(n)
-      if n < 0 || n > length - 1
-        Kernel.raise IndexError, 'scene number out of bounds'
-      end
+      Kernel.raise IndexError, 'scene number out of bounds' if n < 0 || n > length - 1
       @scene = n
       @scene
     end
@@ -1341,9 +1295,7 @@ module Magick
     end
 
     def *(n)
-      unless n.is_a? Integer
-        Kernel.raise ArgumentError, "Integer required (#{n.class} given)"
-      end
+      Kernel.raise ArgumentError, "Integer required (#{n.class} given)" unless n.is_a? Integer
       current = get_current
       ilist = self.class.new
       (@images * n).each { |image| ilist << image }
@@ -1364,9 +1316,7 @@ module Magick
     #   return if A.scene != B.scene
     #   return A.length <=> B.length
     def <=>(other)
-      unless other.is_a? self.class
-        Kernel.raise TypeError, "#{self.class} required (#{other.class} given)"
-      end
+      Kernel.raise TypeError, "#{self.class} required (#{other.class} given)" unless other.is_a? self.class
       size = [length, other.length].min
       size.times do |x|
         r = self[x] <=> other[x]
@@ -1498,9 +1448,7 @@ module Magick
 
     # Set same delay for all images
     def delay=(d)
-      if Integer(d) < 0
-        raise ArgumentError, 'delay must be greater than or equal to 0'
-      end
+      raise ArgumentError, 'delay must be greater than or equal to 0' if Integer(d) < 0
 
       @images.each { |f| f.delay = Integer(d) }
     end
@@ -1606,9 +1554,7 @@ module Magick
     # Set the number of iterations of an animated GIF
     def iterations=(n)
       n = Integer(n)
-      if n < 0 || n > 65_535
-        Kernel.raise ArgumentError, 'iterations must be between 0 and 65535'
-      end
+      Kernel.raise ArgumentError, 'iterations must be between 0 and 65535' if n < 0 || n > 65_535
       @images.each { |f| f.iterations = n }
       self
     end
@@ -1798,9 +1744,7 @@ module Magick
     end
 
     def ticks_per_second=(t)
-      if Integer(t) < 0
-        Kernel.raise ArgumentError, 'ticks_per_second must be greater than or equal to 0'
-      end
+      Kernel.raise ArgumentError, 'ticks_per_second must be greater than or equal to 0' if Integer(t) < 0
       @images.each { |f| f.ticks_per_second = Integer(t) }
     end
 

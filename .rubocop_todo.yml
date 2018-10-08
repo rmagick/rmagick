@@ -235,21 +235,6 @@ Style/GlobalVars:
     - 'examples/histogram.rb'
     - 'ext/RMagick/extconf.rb'
 
-# Offense count: 47
-# Cop supports --auto-correct.
-Style/IfUnlessModifier:
-  Exclude:
-    - 'doc/ex/get_pixels.rb'
-    - 'examples/histogram.rb'
-    - 'examples/identify.rb'
-    - 'ext/RMagick/extconf.rb'
-    - 'lib/rmagick_internal.rb'
-    - 'lib/rvg/clippath.rb'
-    - 'lib/rvg/embellishable.rb'
-    - 'lib/rvg/pathdata.rb'
-    - 'lib/rvg/rvg.rb'
-    - 'lib/rvg/text.rb'
-
 # Offense count: 2
 Style/MethodMissingSuper:
   Exclude:

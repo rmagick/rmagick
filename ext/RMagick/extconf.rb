@@ -54,9 +54,7 @@ module RMagick
         # Check for compiler. Extract first word so ENV['CC'] can be a program name with arguments.
         config = defined?(RbConfig) ? ::RbConfig : ::Config
         cc = (ENV['CC'] || config::CONFIG['CC'] || 'gcc').split(' ').first
-        unless find_executable(cc)
-          exit_failure "No C compiler found in ${ENV['PATH']}. See mkmf.log for details."
-        end
+        exit_failure "No C compiler found in ${ENV['PATH']}. See mkmf.log for details." unless find_executable(cc)
 
         # ugly way to handle which config tool we're going to use...
         $with_magick_wand = false
@@ -82,9 +80,7 @@ module RMagick
         checking_for("outdated ImageMagick version (<= #{Magick::MIN_IM_VERSION})") do
           Logging.message("Detected ImageMagick version: #{$magick_version}\n")
 
-          if Gem::Version.new($magick_version) < Gem::Version.new(Magick::MIN_IM_VERSION)
-            exit_failure "Can't install RMagick #{RMAGICK_VERS}. You must have ImageMagick #{Magick::MIN_IM_VERSION} or later.\n"
-          end
+          exit_failure "Can't install RMagick #{RMAGICK_VERS}. You must have ImageMagick #{Magick::MIN_IM_VERSION} or later.\n" if Gem::Version.new($magick_version) < Gem::Version.new(Magick::MIN_IM_VERSION)
         end
 
         # From ImageMagick 6.9 binaries are split to two and we have to use
@@ -140,9 +136,7 @@ module RMagick
         `identify -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
         abort 'Unable to get ImageMagick version' unless Regexp.last_match(1)
         $magick_version = Regexp.last_match(1)
-        unless have_library('CORE_RL_magick_')
-          search_paths_for_library_for_mingw
-        end
+        search_paths_for_library_for_mingw unless have_library('CORE_RL_magick_')
         have_library('X11')
 
       else # mswin

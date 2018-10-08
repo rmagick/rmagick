@@ -97,9 +97,7 @@ module Magick
             blue_column[y].green = 0
             rgb_column[y].blue = QuantumRange
           end
-          if yf >= HISTOGRAM_ROWS - (int[x] * scale)
-            int_column[y].opacity = TransparentOpacity
-          end
+          int_column[y].opacity = TransparentOpacity if yf >= HISTOGRAM_ROWS - (int[x] * scale)
         end
 
         rgb_histogram.store_pixels(x, 0, 1, HISTOGRAM_ROWS, rgb_column)

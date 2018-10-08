@@ -23,9 +23,7 @@ module Magick
       # Attach the clipping path to an object with the :clip_path style.
       def initialize(clip_path_units = 'userSpaceOnUse')
         super()
-        unless %w[userSpaceOnUse objectBoundingBox].include?(clip_path_units)
-          raise ArgumentError, "undefined value for clip path units: #{clip_path_units}"
-        end
+        raise ArgumentError, "undefined value for clip path units: #{clip_path_units}" unless %w[userSpaceOnUse objectBoundingBox].include?(clip_path_units)
 
         @clip_path_units = clip_path_units
         @content = Content.new

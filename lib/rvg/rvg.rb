@@ -139,9 +139,7 @@ module Magick
     # Sets an image to use as the canvas background. See background_position= for layout options.
     def background_image=(bg_image)
       warn 'background_image= has no effect in nested RVG objects' if @nested
-      if bg_image && !bg_image.is_a?(Magick::Image)
-        raise ArgumentError, "background image must be an Image (got #{bg_image.class})"
-      end
+      raise ArgumentError, "background image must be an Image (got #{bg_image.class})" if bg_image && !bg_image.is_a?(Magick::Image)
 
       @background_image = bg_image
     end
@@ -163,9 +161,7 @@ module Magick
     def background_position=(pos)
       warn 'background_position= has no effect in nested RVG objects' if @nested
       bg_pos = pos.to_s.downcase
-      unless %w[scaled tiled fit].include?(bg_pos)
-        raise ArgumentError, "background position must be `scaled', `tiled', or `fit' (#{pos} given)"
-      end
+      raise ArgumentError, "background position must be `scaled', `tiled', or `fit' (#{pos} given)" unless %w[scaled tiled fit].include?(bg_pos)
 
       @background_position = bg_pos.to_sym
     end
