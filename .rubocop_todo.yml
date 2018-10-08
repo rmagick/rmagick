@@ -218,14 +218,6 @@ Style/EvalWithLocation:
     - 'lib/rmagick_internal.rb'
     - 'lib/rvg/units.rb'
 
-# Offense count: 3
-# Cop supports --auto-correct.
-Style/ExpandPathArguments:
-  Exclude:
-    - 'Rakefile'
-    - 'spec/spec_helper.rb'
-    - 'test/test_all_basic.rb'
-
 # Offense count: 158
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: annotated, template, unannotated

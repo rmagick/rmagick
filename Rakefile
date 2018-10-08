@@ -19,7 +19,7 @@ task :config do
   end
 
   def base
-    File.expand_path('..', __FILE__)
+    File.expand_path(__dir__)
   end
 end
 
