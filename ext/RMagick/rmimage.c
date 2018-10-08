@@ -2298,8 +2298,10 @@ Image_channel_mean(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    (void) GetImageChannelMean(image, channels, &mean, &stddev, exception);
-    CHECK_EXCEPTION()
+
+    SetImageChannelMask(image, channels);
+    (void) GetImageMean(image, &mean, &stddev, exception);
+    rm_check_exception(exception, image, RetainOnError);
 
     (void) DestroyExceptionInfo(exception);
 
