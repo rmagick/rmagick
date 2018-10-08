@@ -25,6 +25,14 @@ abort 'Unable to get ImageMagick version' unless Regexp.last_match(1) && Regexp.
 IM_VERSION = Gem::Version.new(Regexp.last_match(1))
 IM_REVISION = Gem::Version.new(Regexp.last_match(2))
 
+FreezeError = if RUBY_VERSION > '2.5'
+                FrozenError
+              elsif RUBY_VERSION > '1.9'
+                RuntimeError
+              else
+                TypeError
+              end
+
 require 'Image1.rb'
 require 'Image2.rb'
 require 'Image3.rb'

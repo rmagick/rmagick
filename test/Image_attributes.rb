@@ -11,8 +11,6 @@ require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
 #   improve test_montage
 
 class Image_Attributes_UT < Test::Unit::TestCase
-  FreezeError = RUBY_VERSION > '2.5' ? FrozenError : (RUBY_VERSION > '1.9' ? RuntimeError : TypeError)
-
   def setup
     @img = Magick::Image.new(100, 100)
     gc = Magick::Draw.new

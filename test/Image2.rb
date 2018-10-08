@@ -7,8 +7,6 @@ require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
 # TODO: improve exif tests - need a benchmark image with EXIF data
 
 class Image2_UT < Test::Unit::TestCase
-  FreezeError = RUBY_VERSION > '2.5' ? FrozenError : (RUBY_VERSION > '1.9' ? RuntimeError : TypeError)
-
   def setup
     @img = Magick::Image.new(20, 20)
   end
