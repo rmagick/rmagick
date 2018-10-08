@@ -301,7 +301,7 @@ class Image2_UT < Test::Unit::TestCase
       m = id.split(/ /)
       name = File.basename m[0]
 
-      assert([:c, :d].include?(which), "unexpected value for which: #{which}")
+      assert(%i[c d].include?(which), "unexpected value for which: #{which}")
       assert_equal(:destroy!, method) if which == :d
 
       if which == :c
