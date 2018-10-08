@@ -1294,11 +1294,11 @@ module Magick
       END_BINOPS
     end
 
-    def *(n)
-      Kernel.raise ArgumentError, "Integer required (#{n.class} given)" unless n.is_a? Integer
+    def *(other)
+      Kernel.raise ArgumentError, "Integer required (#{other.class} given)" unless other.is_a? Integer
       current = get_current
       ilist = self.class.new
-      (@images * n).each { |image| ilist << image }
+      (@images * other).each { |image| ilist << image }
       ilist.set_current current
       ilist
     end

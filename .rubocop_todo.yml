@@ -98,11 +98,6 @@ Naming/AccessorMethodName:
     - 'lib/rmagick_internal.rb'
     - 'lib/rvg/misc.rb'
 
-# Offense count: 1
-Naming/BinaryOperatorParameterName:
-  Exclude:
-    - 'lib/rmagick_internal.rb'
-
 # Offense count: 6
 Naming/ClassAndModuleCamelCase:
   Exclude:
