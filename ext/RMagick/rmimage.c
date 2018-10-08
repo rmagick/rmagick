@@ -2168,10 +2168,10 @@ Image_channel(VALUE self, VALUE channel_arg)
  *
  * Ruby usage:
  *   - @verbatim Image#channel_depth @endverbatim
- *   - @verbatim Image#channel_depth(channel_depth) @endverbatim
+ *   - @verbatim Image#channel_depth(channel) @endverbatim
  *
  * Notes:
- *   - Default channel_depth is AllChannels
+ *   - Default channel is AllChannels
  *
  * @param argc number of input arguments
  * @param argv array of input arguments
@@ -2197,9 +2197,10 @@ Image_channel_depth(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 
-    channel_depth = GetImageChannelDepth(image, channels, exception);
-    CHECK_EXCEPTION()
-
+    SetImageChannelMask(image, channels);
+    channel_depth = GetImageDepth(image, exception);
+    rm_check_exception(exception, image, RetainOnError);
+    
     (void) DestroyExceptionInfo(exception);
 
     return ULONG2NUM(channel_depth);
