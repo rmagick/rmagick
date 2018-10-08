@@ -469,10 +469,10 @@ Image_add_noise_channel(int argc, VALUE *argv, VALUE self)
     }
 
     VALUE_TO_ENUM(argv[0], noise_type, NoiseType);
-    channels &= ~OpacityChannel;
 
     exception = AcquireExceptionInfo();
-    new_image = AddNoiseImageChannel(image, channels, noise_type, exception);
+    SetImageChannelMask(image, channels);
+    new_image = AddNoiseImage(image, noise_type, 1.0, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
