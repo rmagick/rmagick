@@ -2517,6 +2517,7 @@ Image_clut_channel(int argc, VALUE *argv, VALUE self)
     Image *image, *clut;
     ChannelType channels;
     MagickBooleanType okay;
+    ExceptionInfo *exception;
 
     image = rm_check_frozen(self);
 
@@ -2537,9 +2538,13 @@ Image_clut_channel(int argc, VALUE *argv, VALUE self)
 
     Data_Get_Struct(argv[0], Image, clut);
 
-    okay = ClutImageChannel(image, channels, clut);
-    rm_check_image_exception(image, RetainOnError);
-    rm_check_image_exception(clut, RetainOnError);
+    exception = AcquireExceptionInfo();
+    SetImageChannelMask(image, channels);
+    okay = ClutImage(image, clut, UndefinedInterpolatePixel, exception);
+    rm_check_exception(exception, image, RetainOnError);
+    rm_check_exception(exception, clut, RetainOnError);
+    (void) DestroyExceptionInfo(exception);
+
     if (!okay)
     {
         rb_raise(rb_eRuntimeError, "ClutImageChannel failed.");
