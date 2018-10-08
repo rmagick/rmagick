@@ -33,14 +33,6 @@ Layout/MultilineArrayBraceLayout:
     - 'ext/RMagick/extconf.rb'
 
 # Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: final_newline, final_blank_line
-Layout/TrailingBlankLines:
-  Exclude:
-    - 'spec/rmagick/image/channel_entropy_spec.rb'
-
-# Offense count: 1
 Lint/HandleExceptions:
   Exclude:
     - 'lib/rmagick_internal.rb'
