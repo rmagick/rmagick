@@ -193,14 +193,6 @@ Security/MarshalLoad:
     - 'test/Image2.rb'
     - 'test/ImageList2.rb'
 
-# Offense count: 17
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: prefer_alias, prefer_alias_method
-Style/Alias:
-  Exclude:
-    - 'lib/rmagick_internal.rb'
-
 # Offense count: 6
 # Cop supports --auto-correct.
 # Configuration parameters: AutoCorrect, EnforcedStyle.

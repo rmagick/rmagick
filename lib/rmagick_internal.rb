@@ -311,8 +311,8 @@ module Magick
     def fill(colorspec)
       primitive "fill #{enquote(colorspec)}"
     end
-    alias_method :fill_color, :fill
-    alias_method :fill_pattern, :fill
+    alias fill_color fill
+    alias fill_pattern fill
 
     # Specify fill opacity (use "xx%" to indicate percentage)
     def fill_opacity(opacity)
@@ -460,7 +460,7 @@ module Magick
     def pointsize(points)
       primitive "font-size #{points}"
     end
-    alias_method :font_size, :pointsize
+    alias font_size pointsize
 
     # Draw a polygon
     def polygon(*points)
@@ -545,8 +545,8 @@ module Magick
     def stroke(colorspec)
       primitive "stroke #{enquote(colorspec)}"
     end
-    alias_method :stroke_color, :stroke
-    alias_method :stroke_pattern, :stroke
+    alias stroke_color stroke
+    alias stroke_pattern stroke
 
     # Specify if stroke should be antialiased or not
     def stroke_antialias(bool)
@@ -766,7 +766,7 @@ module Magick
   class Image
     include Comparable
 
-    alias_method :affinity, :remap
+    alias affinity remap
 
     # Provide an alternate version of Draw#annotate, for folks who
     # want to find it in this class.
@@ -981,8 +981,8 @@ module Magick
     end
 
     # Preserve aliases used < RMagick 2.0.1
-    alias_method :crop_resized, :resize_to_fill
-    alias_method :crop_resized!, :resize_to_fill!
+    alias crop_resized resize_to_fill
+    alias crop_resized! resize_to_fill!
 
     # Convenience method to resize retaining the aspect ratio.
     # (Thanks to Robert Manni!)
@@ -1414,7 +1414,7 @@ module Magick
         end
       END_SIMPLE_DELEGATES
     end
-    alias_method :size, :length
+    alias size length
 
     # Array#nitems is not available in 1.9
     if Array.instance_methods.include?('nitems')
@@ -1466,12 +1466,12 @@ module Magick
     end
 
     # ImageList#map took over the "map" name. Use alternatives.
-    alias_method :__map__, :collect
-    alias_method :map!, :collect!
-    alias_method :__map__!, :collect!
+    alias __map__ collect
+    alias map! collect!
+    alias __map__! collect!
 
     # ImageMagic used affinity in 6.4.3, switch to remap in 6.4.4.
-    alias_method :affinity, :remap
+    alias affinity remap
 
     def compact
       current = get_current
@@ -1564,7 +1564,7 @@ module Magick
       ilist.set_current current
       ilist
     end
-    alias_method :select, :find_all
+    alias select find_all
 
     def from_blob(*blobs, &block)
       Kernel.raise ArgumentError, 'no blobs given' if blobs.length.zero?
@@ -1737,7 +1737,7 @@ module Magick
     end
 
     # Ensure respond_to? answers correctly when we are delegating to Image
-    alias_method :__respond_to__?, :respond_to?
+    alias __respond_to__? respond_to?
     def respond_to?(meth_id, priv = false)
       return true if __respond_to__?(meth_id, priv)
 
@@ -1840,8 +1840,8 @@ module Magick
       a.scene = a.length - 1
       a
     end
-    alias_method :indexes, :values_at
-    alias_method :indices, :values_at
+    alias indexes values_at
+    alias indices values_at
   end # Magick::ImageList
 
   #  Collects non-specific optional method arguments
