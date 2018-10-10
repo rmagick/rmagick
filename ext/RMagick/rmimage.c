@@ -3220,12 +3220,12 @@ Image_compare_channel(int argc, VALUE *argv, VALUE self)
     VALUE_TO_ENUM(argv[1], metric_type, MetricType);
 
     exception = AcquireExceptionInfo();
-    difference_image = CompareImageChannels(image
-                                            , r_image
-                                            , channels
-                                            , metric_type
-                                            , &distortion
-                                            , exception);
+    SetImageChannelMask(image, channels);
+    difference_image = CompareImages(image
+                                     , r_image
+                                     , metric_type
+                                     , &distortion
+                                     , exception);
     rm_check_exception(exception, difference_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
