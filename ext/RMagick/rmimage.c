@@ -295,7 +295,7 @@ Image_adaptive_sharpen(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_adaptive_sharpen_channel(int argc, VALUE *argv, VALUE self)
 {
-    return adaptive_channel_method(argc, argv, self, AdaptiveSharpenImageChannel);
+    return adaptive_channel_method(argc, argv, self, AdaptiveSharpenImage);
 }
 
 
