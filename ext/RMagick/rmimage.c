@@ -4240,7 +4240,8 @@ Image_morphology_channel(VALUE self, VALUE channel_v, VALUE method_v, VALUE iter
   image = rm_check_destroyed(self);
   exception = AcquireExceptionInfo();
 
-  new_image = MorphologyImageChannel(image, channel, method, NUM2LONG(iterations), kernel, exception);
+  SetImageChannelMask(image, channel);
+  new_image = MorphologyImage(image, method, NUM2LONG(iterations), kernel, exception);
   rm_check_exception(exception, new_image, DestroyOnError);
   DestroyExceptionInfo(exception);
 
