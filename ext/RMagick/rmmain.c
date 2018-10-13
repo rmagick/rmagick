@@ -337,7 +337,7 @@ Init_RMagick2(void)
     rb_define_method(Class_Image, "convolve", Image_convolve, 2);
     rb_define_method(Class_Image, "convolve_channel", Image_convolve_channel, -1);
     rb_define_method(Class_Image, "morphology", Image_morphology, 3);
-    rb_define_method(Class_Image, "morphology_channel", Image_morphology_channel, 3);
+    rb_define_method(Class_Image, "morphology_channel", Image_morphology_channel, 4);
     rb_define_method(Class_Image, "copy", Image_copy, 0);
     rb_define_method(Class_Image, "crop", Image_crop, -1);
     rb_define_method(Class_Image, "crop!", Image_crop_bang, -1);
