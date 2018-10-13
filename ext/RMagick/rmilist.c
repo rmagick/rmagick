@@ -377,7 +377,6 @@ ImageList_fx(int argc, VALUE *argv, VALUE self)
     ChannelType channels;
     ExceptionInfo *exception;
 
-
     channels = extract_channels(&argc, argv);
 
     // There must be exactly 1 remaining argument.
@@ -394,7 +393,8 @@ ImageList_fx(int argc, VALUE *argv, VALUE self)
 
     images = images_from_imagelist(self);
     exception = AcquireExceptionInfo();
-    new_image = FxImageChannel(images, channels, expression, exception);
+    SetImageChannelMask(images, channels);
+    new_image = FxImage(images, expression, exception);
     rm_split(images);
     rm_check_exception(exception, new_image, DestroyOnError);
     (void) DestroyExceptionInfo(exception);
