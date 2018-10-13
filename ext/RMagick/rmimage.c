@@ -5393,9 +5393,9 @@ Image_distortion_channel(int argc, VALUE *argv, VALUE self)
     reconstruct = rm_check_destroyed(rec);
     VALUE_TO_ENUM(argv[1], metric, MetricType);
     exception = AcquireExceptionInfo();
-    (void) GetImageChannelDistortion(image, reconstruct, channels
-                                     , metric, &distortion, exception);
-    CHECK_EXCEPTION()
+    SetImageChannelMask(image, channels);
+    (void) GetImageDistortion(image, reconstruct, metric, &distortion, exception);
+    rm_check_exception(exception, image, RetainOnError);
 
     (void) DestroyExceptionInfo(exception);
 
