@@ -4154,6 +4154,7 @@ Image_contrast_stretch_channel(int argc, VALUE *argv, VALUE self)
     Image *image, *new_image;
     ChannelType channels;
     double black_point, white_point;
+    ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
     channels = extract_channels(&argc, argv);
@@ -4166,8 +4167,11 @@ Image_contrast_stretch_channel(int argc, VALUE *argv, VALUE self)
 
     new_image = rm_clone_image(image);
 
-    (void) ContrastStretchImageChannel(new_image, channels, black_point, white_point);
-    rm_check_image_exception(new_image, DestroyOnError);
+    exception = AcquireExceptionInfo();
+    SetImageChannelMask(new_image, channels);
+    (void) ContrastStretchImage(new_image, black_point, white_point, exception);
+    rm_check_exception(exception, new_image, DestroyOnError);
+    (void) DestroyExceptionInfo(exception);
 
     return rm_image_new(new_image);
 }
