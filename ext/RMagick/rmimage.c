@@ -106,7 +106,7 @@ adaptive_method(int argc, VALUE *argv, VALUE self
  */
 static VALUE
 adaptive_channel_method(int argc, VALUE *argv, VALUE self
-                        , Image *fp(const Image *, const ChannelType, const double, const double, ExceptionInfo *))
+                        , Image *fp(const Image *, const double, const double, ExceptionInfo *))
 {
     Image *image, *new_image;
     double radius = 0.0;
@@ -132,7 +132,8 @@ adaptive_channel_method(int argc, VALUE *argv, VALUE self
 
     exception = AcquireExceptionInfo();
 
-    new_image = (fp)(image, channels, radius, sigma, exception);
+    SetImageChannelMask(image, channels);
+    new_image = (fp)(image, radius, sigma, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
@@ -191,7 +192,7 @@ Image_adaptive_blur(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_adaptive_blur_channel(int argc, VALUE *argv, VALUE self)
 {
-    return adaptive_channel_method(argc, argv, self, AdaptiveBlurImageChannel);
+    return adaptive_channel_method(argc, argv, self, AdaptiveBlurImage);
 }
 
 
