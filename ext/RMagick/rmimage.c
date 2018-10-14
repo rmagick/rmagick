@@ -6864,7 +6864,8 @@ Image_function_channel(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
     new_image = rm_clone_image(image);
-    (void) FunctionImageChannel(new_image, channels, function, nparms, parms, exception);
+    SetImageChannelMask(new_image, channels);
+    (void) FunctionImage(new_image, function, nparms, parms, exception);
     (void) xfree(parms);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
