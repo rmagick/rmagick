@@ -919,7 +919,7 @@ Image_auto_gamma_channel(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_auto_level_channel(int argc, VALUE *argv, VALUE self)
 {
-    return auto_channel(argc, argv, self, AutoLevelImageChannel);
+    return auto_channel(argc, argv, self, AutoLevelImage);
 }
 
 
