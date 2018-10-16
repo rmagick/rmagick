@@ -4263,12 +4263,16 @@ Image_convolve(VALUE self, VALUE order_arg, VALUE kernel_arg)
 {
     Image *image, *new_image;
     KernelInfo *kernel_info;
-    unsigned int x, order;
+    unsigned int x;
+    int order;
     ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
 
-    order = NUM2UINT(order_arg);
+    order = NUM2INT(order_arg);
+    if (order < 0) {
+        rb_raise(rb_eArgError, "Negative order given");
+    }
 
     kernel_arg = rb_Array(kernel_arg);
     rm_check_ary_len(kernel_arg, (long)(order*order));
@@ -4329,7 +4333,8 @@ Image_convolve_channel(int argc, VALUE *argv, VALUE self)
     Image *image, *new_image;
     KernelInfo *kernel_info;
     VALUE ary;
-    unsigned int x, order;
+    unsigned int x;
+    int order;
     ChannelType channels;
     ExceptionInfo *exception;
 
@@ -4347,7 +4352,10 @@ Image_convolve_channel(int argc, VALUE *argv, VALUE self)
         rb_raise(rb_eArgError, "wrong number of arguments (%d for 2 or more)", argc);
     }
 
-    order = NUM2UINT(argv[0]);
+    order = NUM2INT(argv[0]);
+    if (order < 0) {
+        rb_raise(rb_eArgError, "Negative order given");
+    }
     ary = argv[1];
 
     rm_check_ary_len(ary, (long)(order*order));
