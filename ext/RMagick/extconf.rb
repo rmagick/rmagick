@@ -353,6 +353,7 @@ END_MSWIN
        'GetAuthenticIndexQueue', # 6.4.5-6
        'GetAuthenticPixels', # 6.4.5-6
        'GetImageAlphaChannel', # 6.3.9-2
+       'GetImageChannelEntropy', # 6.9.0-0
        'GetMagickFeatures', # 6.5.7-1
        'GetVirtualPixels', # 6.4.5-6
        'LevelImageColors', # 6.4.2
