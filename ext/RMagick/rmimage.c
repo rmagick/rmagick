@@ -4003,8 +4003,8 @@ Image_constitute(VALUE class, VALUE width_arg, VALUE height_arg
     SetImageExtent(image, width, height, exception);
     rm_check_exception(exception, image, DestroyOnError);
 
-    (void) SetImageBackgroundColor(image);
-    rm_check_image_exception(image, DestroyOnError);
+    (void) SetImageBackgroundColor(image, exception);
+    rm_check_exception(exception, image, DestroyOnError);
 
     (void) ImportImagePixels(image, 0, 0, width, height, map, stg_type, (const void *)pixels.v);
     xfree(pixels.v);
@@ -5843,10 +5843,13 @@ Image_equalize_channel(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_erase_bang(VALUE self)
 {
+    ExceptionInfo *exception;
     Image *image = rm_check_frozen(self);
 
-    (void) SetImageBackgroundColor(image);
-    rm_check_image_exception(image, RetainOnError);
+    exception = AcquireExceptionInfo();
+    (void) SetImageBackgroundColor(image, exception);
+    rm_check_exception(exception, image, RetainOnError);
+    (void) DestroyExceptionInfo(exception);
 
     return self;
 }
@@ -9293,15 +9296,16 @@ Image_initialize(int argc, VALUE *argv, VALUE self)
     // be set by specifying it when creating the Info parm block.
     if (!fill)
     {
-        (void) SetImageBackgroundColor(image);
+        (void) SetImageBackgroundColor(image, exception);
+        (void) DestroyExceptionInfo(exception);
     }
     // fillobj.fill(self)
     else
     {
+        (void) DestroyExceptionInfo(exception);
         (void) rb_funcall(fill, rm_ID_fill, 1, self);
     }
 
-    (void) DestroyExceptionInfo(exception);
 
     RB_GC_GUARD(fill);
     RB_GC_GUARD(info_obj);
