@@ -18,11 +18,18 @@ env:
   - IMAGEMAGICK_VERSION=6.8.9-10 CONFIGURE_OPTIONS=--enable-hdri
   # Latest release
   - IMAGEMAGICK_VERSION=latest
+  global:
+    - CC_TEST_REPORTER_ID=d7788b6945c0e4f7ac0a138f44fa55f3572661be5c3e769357737eb3f4ef7041
 
 before_install:
   - source before_install_$TRAVIS_OS_NAME.sh
 
 install: bundle install --verbose
+
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
 
 rvm:
   - 2.0
@@ -53,6 +60,9 @@ matrix:
     - env: IMAGEMAGICK_VERSION=6.8.9-10 CONFIGURE_OPTIONS=--enable-hdri
       rvm: 2.1
     - env: IMAGEMAGICK_VERSION=latest
+
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 
 notifications:
   webhooks:
