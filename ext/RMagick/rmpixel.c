@@ -68,15 +68,15 @@ DEF_ATTR_READER(Pixel, green, int)
 DEF_ATTR_READER(Pixel, blue, int)
 
 /**
- * Get Pixel opacity attribute.
+ * Get Pixel alpha attribute.
  *
  * Ruby usage:
- *   - @verbatim Pixel#opacity @endverbatim
+ *   - @verbatim Pixel#alpha @endverbatim
  *
  * @param self this object
- * @return the opacity value
+ * @return the alpha value
  */
-DEF_ATTR_READER(Pixel, opacity, int)
+DEF_ATTR_READER(Pixel, alpha, int)
 
 /**
  * Set Pixel red attribute.
@@ -130,10 +130,10 @@ DEF_PIXEL_CHANNEL_WRITER(green)
 DEF_PIXEL_CHANNEL_WRITER(blue)
 
 /**
- * Set Pixel opacity attribute.
+ * Set Pixel alpha attribute.
  *
  * Ruby usage:
- *   - @verbatim Pixel#opacity= @endverbatim
+ *   - @verbatim Pixel#alpha= @endverbatim
  *
  * Notes:
  *   - Pixel is Observable. Setters call changed, notify_observers
@@ -141,10 +141,10 @@ DEF_PIXEL_CHANNEL_WRITER(blue)
  *     Pixel was a Struct class.
  *
  * @param self this object
- * @param v the opacity value
+ * @param v the alpha value
  * @return self
  */
-DEF_PIXEL_CHANNEL_WRITER(opacity)
+DEF_PIXEL_CHANNEL_WRITER(alpha)
 
 
 /*
@@ -153,7 +153,7 @@ DEF_PIXEL_CHANNEL_WRITER(opacity)
 DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(cyan, red)
 DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(magenta, green)
 DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(yellow, blue)
-DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(black, opacity)
+DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(black, alpha)
 
 
 /**
@@ -273,7 +273,7 @@ Pixel_case_eq(VALUE self, VALUE other)
         return (this->red == that->red
             && this->blue == that->blue
             && this->green == that->green
-            && this->opacity == that->opacity) ? Qtrue : Qfalse;
+            && this->alpha == that->alpha) ? Qtrue : Qfalse;
     }
 
     return Qfalse;
@@ -436,7 +436,7 @@ Pixel_fcmp(int argc, VALUE *argv, VALUE self)
  *
  * Notes:
  *   - The "inverse" is Image_to_color, b/c the conversion of a pixel to a
- *     color name requires both a color depth and if the opacity value has
+ *     color name requires both a color depth and if the alpha value has
  *     meaning (i.e. whether image->matte == True or not).
  *
  * @param class the Ruby class to use
@@ -611,7 +611,7 @@ Pixel_from_PixelInfo(const PixelInfo *pp)
     pixel->red     = ROUND_TO_QUANTUM(pp->red);
     pixel->green   = ROUND_TO_QUANTUM(pp->green);
     pixel->blue    = ROUND_TO_QUANTUM(pp->blue);
-    pixel->opacity = ROUND_TO_QUANTUM(pp->opacity);
+    pixel->alpha   = ROUND_TO_QUANTUM(pp->alpha);
 
     return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
 }
@@ -622,7 +622,7 @@ Pixel_from_PixelInfo(const PixelInfo *pp)
  *   - @verbatim Pixel#hash @endverbatim
  *
  * Notes:
- *   - INT2FIX left-shifts 1 bit. Sacrifice 1 bit from the opacity attribute to
+ *   - INT2FIX left-shifts 1 bit. Sacrifice 1 bit from the alpha attribute to
  *     the FIXNUM_FLAG.
  *
  * @param self this object
@@ -639,7 +639,7 @@ Pixel_hash(VALUE self)
     hash  = ScaleQuantumToChar(pixel->red)   << 24;
     hash += ScaleQuantumToChar(pixel->green) << 16;
     hash += ScaleQuantumToChar(pixel->blue)  << 8;
-    hash += ScaleQuantumToChar(pixel->opacity);
+    hash += ScaleQuantumToChar(pixel->alpha);
 
     return UINT2NUM(hash >> 1);
 }
@@ -677,13 +677,13 @@ Pixel_init_copy(VALUE self, VALUE orig)
  *   - @verbatim Pixel#initialize(red) @endverbatim
  *   - @verbatim Pixel#initialize(red,green) @endverbatim
  *   - @verbatim Pixel#initialize(red,green,blue) @endverbatim
- *   - @verbatim Pixel#initialize(red,green,blue,opacity) @endverbatim
+ *   - @verbatim Pixel#initialize(red,green,blue,alpha) @endverbatim
  *
  * Notes:
  *   - Default red is 0.0
  *   - Default green is 0.0
  *   - Default blue is 0.0
- *   - Default opacity is 0.0
+ *   - Default alpha is 0.0
  *   - For backward compatibility, arguments may be nil.
  *
  * @param argc number of input arguments
@@ -703,7 +703,7 @@ Pixel_initialize(int argc, VALUE *argv, VALUE self)
         case 4:
             if (argv[3] != Qnil)
             {
-                pixel->opacity = APP2QUANTUM(argv[3]);
+                pixel->alpha = APP2QUANTUM(argv[3]);
             }
         case 3:
             if (argv[2] != Qnil)
@@ -775,7 +775,7 @@ Pixel_marshal_dump(VALUE self)
     rb_hash_aset(dpixel, CSTR2SYM("red"), QUANTUM2NUM(pixel->red));
     rb_hash_aset(dpixel, CSTR2SYM("green"), QUANTUM2NUM(pixel->green));
     rb_hash_aset(dpixel, CSTR2SYM("blue"), QUANTUM2NUM(pixel->blue));
-    rb_hash_aset(dpixel, CSTR2SYM("opacity"), QUANTUM2NUM(pixel->opacity));
+    rb_hash_aset(dpixel, CSTR2SYM("alpha"), QUANTUM2NUM(pixel->alpha));
 
     RB_GC_GUARD(dpixel);
 
@@ -802,7 +802,7 @@ Pixel_marshal_load(VALUE self, VALUE dpixel)
     pixel->red = NUM2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("red")));
     pixel->green = NUM2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("green")));
     pixel->blue = NUM2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("blue")));
-    pixel->opacity = NUM2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("opacity")));
+    pixel->alpha = NUM2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("alpha")));
     return self;
 }
 
@@ -837,9 +837,9 @@ Pixel_spaceship(VALUE self, VALUE other)
     {
         return INT2NUM((this->blue - that->blue)/abs(this->blue - that->blue));
     }
-    else if(this->opacity != that->opacity)
+    else if(this->alpha != that->alpha)
     {
-        return INT2NUM((this->opacity - that->opacity)/abs(this->opacity - that->opacity));
+        return INT2NUM((this->alpha - that->alpha)/abs(this->alpha - that->alpha));
     }
 
     // Values are equal, check class.
@@ -878,17 +878,17 @@ Pixel_to_hsla(VALUE self)
     sat *= 255.0;
     lum *= 255.0;
 
-    if (pixel->opacity == OpaqueOpacity)
+    if (pixel->alpha == OpaqueAlpha)
     {
         alpha = 1.0;
     }
-    else if (pixel->opacity == TransparentOpacity)
+    else if (pixel->alpha == TransparentAlpha)
     {
         alpha = 0.0;
     }
     else
     {
-        alpha = (double)(QuantumRange - pixel->opacity) / (double)QuantumRange;
+        alpha = (double)(QuantumRange - pixel->alpha) / (double)QuantumRange;
     }
 
     hsla = rb_ary_new3(4, rb_float_new(hue), rb_float_new(sat), rb_float_new(lum), rb_float_new(alpha));
@@ -944,7 +944,7 @@ Pixel_to_HSL(VALUE self)
  *   - Default matte is false
  *   - Default depth is MAGICKCORE_QUANTUM_DEPTH
  *   - Default hex is false
- *   - The conversion respects the value of the 'opacity' field in the Pixel
+ *   - The conversion respects the value of the 'alpha' field in the Pixel
  *
  * @param argc number of input arguments
  * @param argv array of input arguments
@@ -1051,8 +1051,8 @@ Pixel_to_s(VALUE self)
     char buff[100];
 
     Data_Get_Struct(self, Pixel, pixel);
-    sprintf(buff, "red=" QuantumFormat ", green=" QuantumFormat ", blue=" QuantumFormat ", opacity=" QuantumFormat
-          , pixel->red, pixel->green, pixel->blue, pixel->opacity);
+    sprintf(buff, "red=" QuantumFormat ", green=" QuantumFormat ", blue=" QuantumFormat ", alpha=" QuantumFormat
+          , pixel->red, pixel->green, pixel->blue, pixel->alpha);
     return rb_str_new2(buff);
 }
 
@@ -1071,7 +1071,7 @@ rm_set_pixel_info(Pixel *pixel, PixelInfo *pp)
     pp->red     = (MagickRealType) pixel->red;
     pp->green   = (MagickRealType) pixel->green;
     pp->blue    = (MagickRealType) pixel->blue;
-    pp->opacity = (MagickRealType) pixel->opacity;
+    pp->alpha   = (MagickRealType) pixel->alpha;
     pp->index   = (MagickRealType) 0.0;
 }
 

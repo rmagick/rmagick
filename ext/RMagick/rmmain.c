@@ -625,7 +625,7 @@ Init_RMagick2(void)
     DCL_ATTR_ACCESSOR(Pixel, red)
     DCL_ATTR_ACCESSOR(Pixel, green)
     DCL_ATTR_ACCESSOR(Pixel, blue)
-    DCL_ATTR_ACCESSOR(Pixel, opacity)
+    DCL_ATTR_ACCESSOR(Pixel, alpha)
 
     // Define the CMYK attributes
     DCL_ATTR_ACCESSOR(Pixel, cyan)
@@ -840,7 +840,7 @@ Init_RMagick2(void)
     // Miscellaneous fixed-point constants
     DEF_CONST(QuantumRange);
     DEF_CONST(MAGICKCORE_QUANTUM_DEPTH);
-    DEF_CONST(OpaqueOpacity);
+    DEF_CONST(OpaqueAlpha);
     DEF_CONST(TransparentOpacity);
 
     version_constants();

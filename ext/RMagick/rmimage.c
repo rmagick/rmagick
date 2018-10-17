@@ -8484,11 +8484,11 @@ Image_mask(int argc, VALUE *argv, VALUE self)
             {
                 if (clip_mask->matte == MagickFalse)
                 {
-                    q->opacity = PIXEL_INTENSITY(q);
+                    q->alpha = PIXEL_INTENSITY(q);
                 }
-                q->red = q->opacity;
-                q->green = q->opacity;
-                q->blue = q->opacity;
+                q->red = q->alpha;
+                q->green = q->alpha;
+                q->blue = q->alpha;
                 q += 1;
             }
 
@@ -8656,13 +8656,13 @@ Image_matte_flood_fill(VALUE self, VALUE color, VALUE opacity, VALUE x_obj, VALU
 
     new_image = rm_clone_image(image);
 
-    // FloodfillPaintImage looks for the opacity in the DrawInfo.fill field.
+    // FloodfillPaintImage looks for the alpha in the DrawInfo.fill field.
     draw_info = CloneDrawInfo(NULL, NULL);
     if (!draw_info)
     {
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
-    draw_info->fill.opacity = op;
+    draw_info->fill.alpha = op;
 
     if (method == FillToBorderMethod)
     {
@@ -9875,7 +9875,7 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
         }
         if (!image->matte)
         {
-            old_color.opacity = OpaqueOpacity;
+            old_color.opacity = OpaqueAlpha;
         }
         return Pixel_from_PixelInfo(&old_color);
     }
@@ -9910,7 +9910,7 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
         old_color = *pixel;
         if (!image->matte)
         {
-            old_color.opacity = OpaqueOpacity;
+            old_color.opacity = OpaqueAlpha;
         }
     }
     *pixel = new_color;
@@ -12590,7 +12590,7 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
         }
         if (channels & OpacityChannel)
         {
-            args[x++] = pp.opacity / QuantumRange;
+            args[x++] = pp.alpha / QuantumRange;
         }
     }
 
@@ -13632,7 +13632,7 @@ Image_total_ink_density(VALUE self)
  *
  * Notes:
  *   - Default opacity is Magick::TransparentOpacity.
- *   - Can use Magick::OpaqueOpacity or Magick::TransparentOpacity, or any
+ *   - Can use Magick::OpaqueAlpha or Magick::TransparentOpacity, or any
  *     value >= 0 && <= QuantumRange.
  *   - Use Image#fuzz= to define the tolerance level.
  *

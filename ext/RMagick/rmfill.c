@@ -143,7 +143,7 @@ point_fill(
             row_pixels[x].red     = ROUND_TO_QUANTUM(start_color->red   + (distance * red_step));
             row_pixels[x].green   = ROUND_TO_QUANTUM(start_color->green + (distance * green_step));
             row_pixels[x].blue    = ROUND_TO_QUANTUM(start_color->blue  + (distance * blue_step));
-            row_pixels[x].opacity = OpaqueOpacity;
+            row_pixels[x].opacity = OpaqueAlpha;
         }
 
         SyncAuthenticPixels(image, exception);
@@ -203,7 +203,7 @@ vertical_fill(
         master[x].red     = ROUND_TO_QUANTUM(start_color->red   + (red_step * distance));
         master[x].green   = ROUND_TO_QUANTUM(start_color->green + (green_step * distance));
         master[x].blue    = ROUND_TO_QUANTUM(start_color->blue  + (blue_step * distance));
-        master[x].opacity = OpaqueOpacity;
+        master[x].alpha   = OpaqueAlpha;
     }
 
     // Now copy the master row to each actual row.
@@ -273,7 +273,7 @@ horizontal_fill(
         master[y].red     = ROUND_TO_QUANTUM(start_color->red   + (distance * red_step));
         master[y].green   = ROUND_TO_QUANTUM(start_color->green + (distance * green_step));
         master[y].blue    = ROUND_TO_QUANTUM(start_color->blue  + (distance * blue_step));
-        master[y].opacity = OpaqueOpacity;
+        master[y].alpha   = OpaqueAlpha;
     }
 
     for (x = 0; x < image->columns; x++)
@@ -374,7 +374,7 @@ v_diagonal_fill(
             row_pixels[x].red     = ROUND_TO_QUANTUM(start_color->red   + (distance * red_step));
             row_pixels[x].green   = ROUND_TO_QUANTUM(start_color->green + (distance * green_step));
             row_pixels[x].blue    = ROUND_TO_QUANTUM(start_color->blue  + (distance * blue_step));
-            row_pixels[x].opacity = OpaqueOpacity;
+            row_pixels[x].alpha = OpaqueAlpha;
         }
 
         SyncAuthenticPixels(image, exception);
@@ -467,7 +467,7 @@ h_diagonal_fill(
             row_pixels[x].red     = ROUND_TO_QUANTUM(start_color->red   + (distance * red_step));
             row_pixels[x].green   = ROUND_TO_QUANTUM(start_color->green + (distance * green_step));
             row_pixels[x].blue    = ROUND_TO_QUANTUM(start_color->blue  + (distance * blue_step));
-            row_pixels[x].opacity = OpaqueOpacity;
+            row_pixels[x].alpha = OpaqueAlpha;
         }
 
         SyncAuthenticPixels(image, exception);
