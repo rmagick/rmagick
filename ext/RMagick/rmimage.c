@@ -12052,11 +12052,16 @@ Image_opacity_eq(VALUE self, VALUE opacity_arg)
 {
     Image *image;
     Quantum opacity;
+    ExceptionInfo *exception;
 
     image = rm_check_frozen(self);
     opacity = APP2QUANTUM(opacity_arg);
-    (void) SetImageOpacity(image, opacity);
-    rm_check_image_exception(image, RetainOnError);
+
+    exception = AcquireExceptionInfo();
+    (void) SetImageAlpha(image, opacity, exception);
+    rm_check_exception(exception, image, RetainOnError);
+    DestroyExceptionInfo(exception);
+
     return self;
 }
 
