@@ -691,7 +691,6 @@ rm_pixelpacket_to_color_name_info(Info *info, PixelPacket *color)
 
     exception = AcquireExceptionInfo();
     image = AcquireImage(info, exception);
-    image->matte = MagickFalse;
     (void) DestroyExceptionInfo(exception);
 
     color_name = rm_pixelinfo_to_color_name(image, color);

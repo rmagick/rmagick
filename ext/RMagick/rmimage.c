@@ -12670,10 +12670,6 @@ count_channels(Image *image, ChannelType *channels)
     {
         *channels = (ChannelType) (*channels & ~IndexChannel);  /* remove index channels from count */
     }
-    if ( image->matte == MagickFalse )
-    {
-        *channels = (ChannelType) (*channels & ~OpacityChannel);  /* remove matte/alpha *channels from count */
-    }
 
     if (*channels & RedChannel)
     {
@@ -14897,7 +14893,6 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
     rm_check_image_exception(reflection, DestroyOnError);
 
 
-    reflection->matte = MagickTrue;
     opacity = initial;
 
     for (y = 0; y < max_rows; y++)

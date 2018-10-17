@@ -1028,7 +1028,6 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
     info = CloneImageInfo(NULL);
     image = AcquireImage(info, exception);
     image->depth = depth;
-    image->matte = matte;
     (void) DestroyImageInfo(info);
 
     GetPixelInfo(image, &mpp);
@@ -1040,7 +1039,6 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
     {
         if (compliance == XPMCompliance)
         {
-            mpp.matte = MagickFalse;
             mpp.depth = (unsigned long) min(1.0 * image->depth, 16.0);
         }
         (void) GetColorTuple(&mpp, MagickTrue, name);
