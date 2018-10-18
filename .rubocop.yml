@@ -1,8 +1,7 @@
 inherit_from:
     - .rubocop_todo.yml
 
-# Custom configuration, edit with care! This gem needs to be backwards
-# compatible with Ruby 1.8:
+# Custom configuration, edit with care!
 
 # Fixing this issues cause some test to fail
 Lint/UnifiedInteger:
