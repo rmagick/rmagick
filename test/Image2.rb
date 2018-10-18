@@ -114,7 +114,7 @@ class Image2_UT < Test::Unit::TestCase
     assert_raise(ArgumentError) { @img.morphology_channel(Magick::RedChannel, Magick::EdgeOutMorphology, 2) }
     assert_raise(ArgumentError) { @img.morphology_channel(Magick::RedChannel, Magick::EdgeOutMorphology, 2, :not_kernel_info) }
 
-    kernel = Magick::KernelInfo.new("Octagon")
+    kernel = Magick::KernelInfo.new('Octagon')
     assert_nothing_raised do
       res = @img.morphology_channel(Magick::RedChannel, Magick::EdgeOutMorphology, 2, kernel)
       assert_instance_of(Magick::Image, res)
