@@ -6,3 +6,8 @@ inherit_from:
 # Fixing this issues cause some test to fail
 Lint/UnifiedInteger:
   Enabled: false
+
+Metrics/ClassLength:
+  Max: 500
+  Exclude:
+  - test/**/*
