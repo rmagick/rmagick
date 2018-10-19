@@ -12340,7 +12340,8 @@ Image_sharpen_channel(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    new_image = SharpenImageChannel(image, channels, radius, sigma, exception);
+    SetImageChannelMask(image, channels);
+    new_image = SharpenImage(image, radius, sigma, exception);
 
     rm_check_exception(exception, new_image, DestroyOnError);
     (void) DestroyExceptionInfo(exception);
