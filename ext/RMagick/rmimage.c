@@ -7100,7 +7100,8 @@ Image_gaussian_blur_channel(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    new_image = GaussianBlurImageChannel(image, channels, radius, sigma, exception);
+    SetImageChannelMask(image, channels);
+    new_image = GaussianBlurImage(image, radius, sigma, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
