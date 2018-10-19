@@ -11842,7 +11842,8 @@ Image_selective_blur_channel(int argc, VALUE *argv, VALUE self)
     threshold = rm_percentage(argv[2],1.0) * QuantumRange;
 
     exception = AcquireExceptionInfo();
-    new_image = SelectiveBlurImageChannel(image, channels, radius, sigma, threshold, exception);
+    SetImageChannelMask(image, channels);
+    new_image = SelectiveBlurImage(image, radius, sigma, threshold, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
     (void) DestroyExceptionInfo(exception);
     rm_ensure_result(new_image);
