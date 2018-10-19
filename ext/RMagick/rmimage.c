@@ -9240,6 +9240,7 @@ Image_negate_channel(int argc, VALUE *argv, VALUE self)
     Image *image, *new_image;
     ChannelType channels;
     unsigned int grayscale = MagickFalse;
+    ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
     channels = extract_channels(&argc, argv);
@@ -9258,8 +9259,11 @@ Image_negate_channel(int argc, VALUE *argv, VALUE self)
 
     new_image = rm_clone_image(image);
 
-    (void)NegateImageChannel(new_image, channels, grayscale);
-    rm_check_image_exception(new_image, DestroyOnError);
+    exception = AcquireExceptionInfo();
+    SetImageChannelMask(new_image, channels);
+    (void)NegateImage(new_image, grayscale, exception);
+    rm_check_exception(exception, new_image, DestroyOnError);
+    (void) DestroyExceptionInfo(exception);
 
     return rm_image_new(new_image);
 }
