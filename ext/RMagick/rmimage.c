@@ -11869,14 +11869,18 @@ Image_set_channel_depth(VALUE self, VALUE channel_arg, VALUE depth)
     Image *image;
     ChannelType channel;
     unsigned long channel_depth;
+    ExceptionInfo *exception;
 
     image = rm_check_frozen(self);
 
     VALUE_TO_ENUM(channel_arg, channel, ChannelType);
     channel_depth = NUM2ULONG(depth);
 
-    (void) SetImageChannelDepth(image, channel, channel_depth);
-    rm_check_image_exception(image, RetainOnError);
+    exception = AcquireExceptionInfo();
+    SetImageChannelMask(image, channel);
+    (void) SetImageDepth(image, channel_depth, exception);
+    rm_check_exception(exception, image, RetainOnError);
+    (void) DestroyExceptionInfo(exception);
 
     return self;
 }
