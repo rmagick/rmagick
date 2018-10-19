@@ -14562,8 +14562,8 @@ Image_unsharp_mask_channel(int argc, VALUE *argv, VALUE self)
     unsharp_mask_args(argc, argv, &radius, &sigma, &amount, &threshold);
 
     exception = AcquireExceptionInfo();
-    new_image = UnsharpMaskImageChannel(image, channels, radius, sigma, amount
-                                        , threshold, exception);
+    SetImageChannelMask(image, channels);
+    new_image = UnsharpMaskImage(image, radius, sigma, amount, threshold, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
