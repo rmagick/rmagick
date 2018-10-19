@@ -10641,7 +10641,8 @@ Image_radial_blur_channel(int argc, VALUE *argv, VALUE self)
     angle = NUM2DBL(argv[0]);
     exception = AcquireExceptionInfo();
 
-    new_image = RotationalBlurImageChannel(image, channels, angle, exception);
+    SetImageChannelMask(image, channels);
+    new_image = RotationalBlurImage(image, angle, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
     (void) DestroyExceptionInfo(exception);
     rm_ensure_result(new_image);
