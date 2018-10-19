@@ -10672,8 +10672,9 @@ Image_random_threshold_channel(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
     ChannelType channels;
-    char *thresholds;
     VALUE geom_str;
+    GeometryInfo geom_info;
+    double min_threshold, max_threshold;
     ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
@@ -10692,13 +10693,16 @@ Image_random_threshold_channel(int argc, VALUE *argv, VALUE self)
 
     // Accept any argument that has a to_s method.
     geom_str = rm_to_s(argv[0]);
-    thresholds = StringValuePtr(geom_str);
+    (void) ParseGeometry(StringValuePtr(geom_str), &geom_info);
+    min_threshold = geom_info.rho;
+    max_threshold = geom_info.sigma;
 
     new_image = rm_clone_image(image);
 
     exception = AcquireExceptionInfo();
 
-    (void) RandomThresholdImageChannel(new_image, channels, thresholds, exception);
+    SetImageChannelMask(new_image, channels);
+    (void) RandomThresholdImage(new_image, min_threshold, max_threshold, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
