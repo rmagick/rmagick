@@ -14853,13 +14853,13 @@ VALUE
 Image_wet_floor(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *reflection, *flip_image;
-    const PixelPacket *p;
-    PixelPacket *q;
+    const Quantum *p;
+    Quantum *q;
     RectangleInfo geometry;
     long x, y, max_rows;
     double initial = 0.5;
     double rate = 1.0;
-    double opacity, step;
+    double opacity, step = 0.0;
     const char *func;
     ExceptionInfo *exception;
 
@@ -14887,36 +14887,27 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
         rb_raise(rb_eArgError, "Transparency change rate must be >= 0.0 (%g)", rate);
     }
 
-    initial *= TransparentAlpha;
+    initial *= QuantumRange;
 
     // The number of rows in which to transition from the initial level of
     // transparency to complete transparency. rate == 0.0 -> no change.
+    max_rows = (long)((double)image->rows) / (3.0 * rate);
+    max_rows = (long)min((unsigned long)max_rows, image->rows);
     if (rate > 0.0)
     {
-        max_rows = (long)((double)image->rows) / (3.0 * rate);
-        max_rows = (long)min((unsigned long)max_rows, image->rows);
-        step =  (TransparentAlpha - initial) / max_rows;
+        step =  (QuantumRange - initial) / max_rows;
     }
-    else
-    {
-        max_rows = (long)image->rows;
-        step = 0.0;
-    }
-
 
     exception = AcquireExceptionInfo();
     flip_image = FlipImage(image, exception);
-    CHECK_EXCEPTION();
-
+    rm_check_exception(exception, image, RetainOnError);
 
     geometry.x = 0;
     geometry.y = 0;
     geometry.width = image->columns;
     geometry.height = max_rows;
     reflection = CropImage(flip_image, &geometry, exception);
-    DestroyImage(flip_image);
-    CHECK_EXCEPTION();
-
+    rm_check_exception(exception, flip_image, RetainOnError);
 
     (void) SetImageStorageClass(reflection, DirectClass, exception);
     rm_check_exception(exception, reflection, DestroyOnError);
@@ -14926,9 +14917,9 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
 
     for (y = 0; y < max_rows; y++)
     {
-        if (opacity > TransparentAlpha)
+        if (opacity > QuantumRange)
         {
-            opacity = TransparentAlpha;
+            opacity = QuantumRange;
         }
 
         p = GetVirtualPixels(reflection, 0, y, image->columns, 1, exception);
@@ -14940,7 +14931,6 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
         }
 
         q = QueueAuthenticPixels(reflection, 0, y, image->columns, 1, exception);
-
         rm_check_exception(exception, reflection, DestroyOnError);
         if (!q)
         {
@@ -14950,11 +14940,19 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
 
         for (x = 0; x < (long) image->columns; x++)
         {
-            q[x] = p[x];
-            // Never make a pixel *less* transparent than it already is.
-            q[x].opacity = max(q[x].opacity, (Quantum)opacity);
-        }
+            Quantum alpha = GetPixelAlpha(image, q);
 
+            SetPixelRed(reflection, GetPixelRed(image, p), q);
+            SetPixelGreen(reflection, GetPixelGreen(image, p), q);
+            SetPixelBlue(reflection, GetPixelBlue(image, p), q);
+            if (step > 0.0) {
+                SetPixelAlpha(reflection, QuantumRange - opacity, q);
+                reflection->alpha_trait = BlendPixelTrait;
+            }
+
+            p += GetPixelChannels(reflection);
+            q += GetPixelChannels(reflection);
+        }
 
         SyncAuthenticPixels(reflection, exception);
         rm_check_exception(exception, reflection, DestroyOnError);
