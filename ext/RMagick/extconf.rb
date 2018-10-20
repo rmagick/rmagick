@@ -295,7 +295,6 @@ END_MINGW
     def create_header_file
       have_func('snprintf', headers)
       [
-        'GetImageChannelEntropy', # 6.9.0-0
         'SetImageGray' # 6.9.1-10
       ].each do |func|
         have_func(func, headers)

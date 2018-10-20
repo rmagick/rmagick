@@ -2330,7 +2330,6 @@ Image_channel_mean(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_channel_entropy(int argc, VALUE *argv, VALUE self)
 {
-#if defined(HAVE_GETIMAGECHANNELENTROPY)
     Image *image;
     ChannelType channels;
     ExceptionInfo *exception;
@@ -2348,8 +2347,9 @@ Image_channel_entropy(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    (void) GetImageChannelEntropy(image, channels, &entropy, exception);
-    CHECK_EXCEPTION()
+    SetImageChannelMask(image, channels);
+    (void) GetImageEntropy(image, &entropy, exception);
+    rm_check_exception(exception, image, RetainOnError);
 
     (void) DestroyExceptionInfo(exception);
 
@@ -2359,13 +2359,6 @@ Image_channel_entropy(int argc, VALUE *argv, VALUE self)
     RB_GC_GUARD(ary);
 
     return ary;
-#else
-    rm_not_implemented();
-    return (VALUE) 0;
-    argc = argc;
-    argv = argv;
-    self = self;
-#endif
 }
 
 
