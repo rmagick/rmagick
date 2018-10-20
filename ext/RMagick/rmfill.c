@@ -117,6 +117,7 @@ point_fill(
           PixelInfo *stop_color)
 {
     double steps, distance;
+    double red, green, blue;
     unsigned long x, y;
     MagickRealType red_step, green_step, blue_step;
     ExceptionInfo *exception;
@@ -132,7 +133,7 @@ point_fill(
 
     for (y = 0; y < image->rows; y++)
     {
-        PixelPacket *row_pixels;
+        Quantum *row_pixels;
 
         row_pixels = QueueAuthenticPixels(image, 0, (long int)y, image->columns, 1, exception);
         CHECK_EXCEPTION()
@@ -140,10 +141,16 @@ point_fill(
         for (x = 0; x < image->columns; x++)
         {
             distance = sqrt((double)((x-x0)*(x-x0)+(y-y0)*(y-y0)));
-            row_pixels[x].red     = ROUND_TO_QUANTUM(start_color->red   + (distance * red_step));
-            row_pixels[x].green   = ROUND_TO_QUANTUM(start_color->green + (distance * green_step));
-            row_pixels[x].blue    = ROUND_TO_QUANTUM(start_color->blue  + (distance * blue_step));
-            row_pixels[x].opacity = OpaqueAlpha;
+            red   = ROUND_TO_QUANTUM(start_color->red   + (distance * red_step));
+            green = ROUND_TO_QUANTUM(start_color->green + (distance * green_step));
+            blue  = ROUND_TO_QUANTUM(start_color->blue  + (distance * blue_step));
+
+            SetPixelRed(image, red, row_pixels);
+            SetPixelGreen(image, green, row_pixels);
+            SetPixelBlue(image, blue, row_pixels);
+            SetPixelAlpha(image, OpaqueAlpha, row_pixels);
+
+            row_pixels += GetPixelChannels(image);
         }
 
         SyncAuthenticPixels(image, exception);
