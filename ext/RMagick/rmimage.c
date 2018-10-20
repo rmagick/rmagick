@@ -7832,8 +7832,8 @@ VALUE
 Image_level2(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
+    ExceptionInfo *exception;
     double black_point = 0.0, gamma_val = 1.0, white_point = (double)QuantumRange;
-    char level[50];
 
     image = rm_check_destroyed(self);
     switch (argc)
@@ -7860,9 +7860,10 @@ Image_level2(int argc, VALUE *argv, VALUE self)
 
     new_image = rm_clone_image(image);
 
-    sprintf(level, "%gx%g+%g", black_point, white_point, gamma_val);
-    (void) LevelImage(new_image, level);
-    rm_check_image_exception(new_image, DestroyOnError);
+    exception = AcquireExceptionInfo();
+    (void) LevelImage(new_image, black_point, white_point, gamma_val, exception);
+    rm_check_exception(exception, new_image, DestroyOnError);
+    (void) DestroyExceptionInfo(exception);
 
     return rm_image_new(new_image);
 }
