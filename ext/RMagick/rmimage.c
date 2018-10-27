@@ -7189,7 +7189,7 @@ VALUE
 Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE rows_arg)
 {
     Image *image;
-    const PixelPacket *pixels;
+    const Quantum *pixels;
     ExceptionInfo *exception;
     long x, y;
     unsigned long columns, rows;
@@ -7229,7 +7229,8 @@ Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE row
     // Convert the PixelPackets to Magick::Pixel objects
     for (n = 0; n < size; n++)
     {
-        rb_ary_store(pixel_ary, n, Pixel_from_PixelInfo(&pixels[n]));
+        rb_ary_store(pixel_ary, n, Pixel_from_Quantum(image, pixels));
+        pixels += GetPixelChannels(image);
     }
 
     return pixel_ary;
