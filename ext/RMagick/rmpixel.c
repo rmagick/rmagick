@@ -619,6 +619,27 @@ Pixel_from_PixelInfo(const PixelInfo *pp)
     return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
 }
 
+/**
+ * Create a Magick::Pixel object from a Quantum.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param pp the Quantum
+ * @return a new Magick::Pixel object
+ */
+VALUE
+Pixel_from_Quantum(Image *image, const Quantum *quantum)
+{
+    Pixel *pixel;
+
+    pixel          = ALLOC(Pixel);
+    pixel->red     = GetPixelRed(image, quantum);
+    pixel->green   = GetPixelGreen(image, quantum);
+    pixel->blue    = GetPixelBlue(image, quantum);
+    pixel->alpha   = GetPixelAlpha(image, quantum);
+
+    return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
+}
 
 /**
  * Ruby usage:

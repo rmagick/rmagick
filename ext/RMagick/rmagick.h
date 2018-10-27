@@ -1165,6 +1165,7 @@ extern VALUE  Font_to_s(VALUE);
 extern VALUE  ImageType_new(ImageType);
 extern VALUE  InterlaceType_new(InterlaceType);
 extern VALUE  Pixel_from_PixelInfo(const PixelInfo *);
+extern VALUE  Pixel_from_Quantum(Image *image, const Quantum *quantum);
 extern void   Export_PointInfo(PointInfo *, VALUE);
 extern VALUE  Import_PointInfo(PointInfo *);
 extern VALUE  PrimaryInfo_to_s(VALUE);
