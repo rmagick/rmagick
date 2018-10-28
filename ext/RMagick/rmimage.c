@@ -8511,8 +8511,7 @@ get_image_mask(Image *image)
 
     exception = AcquireExceptionInfo();
 
-    // The returned clip mask is a clone, ours to keep.
-    mask = GetImageClipMask(image, exception);
+    mask = GetImageMask(image, WritePixelMask, exception);
     rm_check_exception(exception, mask, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
