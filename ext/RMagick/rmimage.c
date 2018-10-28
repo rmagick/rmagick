@@ -13100,7 +13100,8 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg
                    , VALUE rows_arg, VALUE new_pixels)
 {
     Image *image;
-    Pixel *pixels, *pixel;
+    Quantum *pixels;
+    PixelInfo *pixel;
     VALUE new_pixel;
     long n, size;
     long x, y;
@@ -13146,7 +13147,13 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg
             {
                 new_pixel = rb_ary_entry(new_pixels, n);
                 Data_Get_Struct(new_pixel, Pixel, pixel);
-                pixels[n] = *pixel;
+
+                SetPixelRed(image, pixel->red, pixels);
+                SetPixelGreen(image, pixel->green, pixels);
+                SetPixelBlue(image, pixel->blue, pixels);
+                SetPixelAlpha(image, pixel->alpha, pixels);
+
+                pixels += GetPixelChannels(image);
             }
             exception = AcquireExceptionInfo();
 
