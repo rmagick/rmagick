@@ -1,7 +1,7 @@
 dpkg --list imagemagick
 sudo apt-get update
 sudo apt-get remove -y imagemagick
-sudo apt-get install -y build-essential libx11-dev libxext-dev zlib1g-dev libpng12-dev libjpeg-dev libfreetype6-dev libxml2-dev
+sudo apt-get install -y build-essential libx11-dev libxext-dev zlib1g-dev libpng12-dev libjpeg-dev libfreetype6-dev libxml2-dev ccache
 sudo apt-get build-dep -y imagemagick
 case $IMAGEMAGICK_VERSION in
     latest)
@@ -15,7 +15,8 @@ case $IMAGEMAGICK_VERSION in
         cd ImageMagick-${IMAGEMAGICK_VERSION}
     ;;
 esac
-./configure --prefix=/usr $CONFIGURE_OPTIONS
+CC="ccache cc" CXX="ccache c++" ./configure --prefix=/usr $CONFIGURE_OPTIONS
+make
 sudo make install
 cd ..
 sudo ldconfig
