@@ -752,7 +752,6 @@ Init_RMagick2(void)
     rb_define_alloc_func(Class_KernelInfo, KernelInfo_alloc);
 
     rb_define_method(Class_KernelInfo, "initialize", KernelInfo_initialize, 1);
-    rb_define_method(Class_KernelInfo, "zero_nans", KernelInfo_zero_nans, 0);
     rb_define_method(Class_KernelInfo, "unity_add", KernelInfo_unity_add, 1);
     rb_define_method(Class_KernelInfo, "show", KernelInfo_show, 0);
     rb_define_method(Class_KernelInfo, "scale", KernelInfo_scale, 2);

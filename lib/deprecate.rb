@@ -22,4 +22,10 @@ module Magick
       end
     end
   end
+
+  class KernelInfo
+    def zero_nans
+      warn "KernelInfo#zero_nans is deprecated. It is no effect now."
+    end
+  end
 end

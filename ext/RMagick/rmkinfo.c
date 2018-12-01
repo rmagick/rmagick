@@ -71,22 +71,7 @@ KernelInfo_initialize(VALUE self, VALUE kernel_string)
 }
 
 /**
- * Zero kerne NaNs.
- *
- * Ruby usage:
- *   - @verbatim KernelInfo#zero_nans @endverbatim
- *
- * @param self this object
- */
-VALUE
-KernelInfo_zero_nans(VALUE self)
-{
-  ZeroKernelNans((KernelInfo*)DATA_PTR(self));
-  return Qnil;
-}
-
-/**
- * Adds a given amount of the 'Unity' Convolution Kernel to the given pre-scaled and normalized Kernel.
+ * Adds a given amount of the 'Unity' Convolution Kernel to the given pre-scaled an1d normalized Kernel.
  *
  * Ruby usage:
  *   - @verbatim KernelInfo#unity_add(scale) @endverbatim
