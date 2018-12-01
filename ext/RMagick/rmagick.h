@@ -1241,7 +1241,6 @@ typedef enum
     DestroyOnError = 1 /**< do not retain on error */
 } ErrorRetention;
 
-extern void   rm_check_image_exception(Image *, ErrorRetention);
 extern void   rm_check_exception(ExceptionInfo *, Image *, ErrorRetention);
 extern void   rm_ensure_result(Image *);
 extern Image *rm_clone_image(Image *);

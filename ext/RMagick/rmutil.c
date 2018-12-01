@@ -1543,57 +1543,6 @@ rm_split(Image *image)
 
 
 /**
- * If an ExceptionInfo struct in a list of images indicates a warning, issue a
- * warning message. If an ExceptionInfo struct indicates an error, raise an
- * exception and optionally destroy the images.
- *
- * No Ruby usage (internal function)
- *
- * @param imglist the list of images
- * @param retention retention strategy in case of an error (either RetainOnError
- * or DestroyOnError)
- */
-void
-rm_check_image_exception(Image *imglist, ErrorRetention retention)
-{
-    ExceptionInfo *exception;
-    Image *badboy = NULL;
-    Image *image;
-
-    if (imglist == NULL)
-    {
-        return;
-    }
-
-    exception = AcquireExceptionInfo();
-
-    // Find the image with the highest severity
-    image = GetFirstImageInList(imglist);
-    while (image)
-    {
-        if (image->exception.severity != UndefinedException)
-        {
-            if (!badboy || image->exception.severity > badboy->exception.severity)
-            {
-                badboy = image;
-                InheritException(exception, &badboy->exception);
-            }
-
-            ClearMagickException(&image->exception);
-        }
-        image = GetNextImageInList(image);
-    }
-
-    if (badboy)
-    {
-        rm_check_exception(exception, imglist, retention);
-    }
-
-    (void) DestroyExceptionInfo(exception);
-}
-
-
-/**
  * Call handle_exception if there is an exception to handle.
  *
  * No Ruby usage (internal function)
