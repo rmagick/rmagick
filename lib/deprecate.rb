@@ -27,5 +27,9 @@ module Magick
     def zero_nans
       warn "KernelInfo#zero_nans is deprecated. It is no effect now."
     end
+
+    def show
+      warn "KernelInfo#show is deprecated. It is no effect now."
+    end
   end
 end

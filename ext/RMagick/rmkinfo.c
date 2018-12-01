@@ -90,21 +90,6 @@ KernelInfo_unity_add(VALUE self, VALUE scale)
 }
 
 /**
- * Dumps KernelInfo object to stderr
- *
- * Ruby usage:
- *   - @verbatim KernelInfo#show @endverbatim
- *
- * @param self this object
- */
-VALUE
-KernelInfo_show(VALUE self)
-{
-  ShowKernelInfo((KernelInfo*)DATA_PTR(self));
-  return Qnil;
-}
-
-/**
  * Scales the given kernel list by the given amount, with or without normalization
  * of the sum of the kernel values (as per given flags).
  *
