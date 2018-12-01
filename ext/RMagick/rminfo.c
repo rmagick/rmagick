@@ -422,16 +422,16 @@ VALUE
 Info_authenticate(VALUE self)
 {
     Info *info;
+    char *string;
 
     Data_Get_Struct(self, Info, info);
-    if (info->authenticate)
-    {
-        return rb_str_new2(info->authenticate);
-    }
-    else
+    string = (char*)GetImageOption(info, "authenticate");
+
+    if (!string)
     {
         return Qnil;
     }
+    return rb_str_new2(string);
 }
 
 
@@ -450,24 +450,14 @@ Info_authenticate_eq(VALUE self, VALUE passwd)
 {
     Info *info;
     char *passwd_p = NULL;
-    long passwd_l = 0;
 
     Data_Get_Struct(self, Info, info);
 
     if (!NIL_P(passwd))
     {
-        passwd_p = rm_str2cstr(passwd, &passwd_l);
+        passwd_p = StringValuePtr(passwd);
     }
-
-    if (info->authenticate)
-    {
-        magick_free(info->authenticate);
-        info->authenticate = NULL;
-    }
-    if (passwd_l > 0)
-    {
-        magick_clone_string(&info->authenticate, passwd_p);
-    }
+    SetImageOption(info, "authenticate", passwd_p);
 
     return self;
 }
