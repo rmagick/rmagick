@@ -2090,7 +2090,6 @@ Image_change_geometry(VALUE self, VALUE geom_arg)
     memset(&rect, 0, sizeof(rect));
 
     SetGeometry(image, &rect);
-    rm_check_image_exception(image, RetainOnError);
     flags = ParseMetaGeometry(geometry, &rect.x,&rect.y, &rect.width,&rect.height);
     if (flags == NoValue)
     {
@@ -2124,7 +2123,6 @@ Image_changed_q(VALUE self)
 {
     Image *image = rm_check_destroyed(self);
     VALUE okay = IsTaintImage(image) ? Qtrue : Qfalse;
-    rm_check_image_exception(image, RetainOnError);
     return okay;
 }
 
@@ -4738,7 +4736,6 @@ Image_delete_profile(VALUE self, VALUE name)
 {
     Image *image = rm_check_frozen(self);
     (void) DeleteImageProfile(image, StringValuePtr(name));
-    rm_check_image_exception(image, RetainOnError);
 
     return self;
 }
@@ -7765,7 +7762,6 @@ Image_iptc_profile(VALUE self)
 
     image = rm_check_destroyed(self);
     profile = GetImageProfile(image, "iptc");
-    rm_check_image_exception(image, RetainOnError);
     if (!profile)
     {
         return Qnil;
@@ -10330,8 +10326,6 @@ Image_quantum_depth(VALUE self)
 
     image = rm_check_destroyed(self);
     quantum_depth = GetImageQuantumDepth(image, MagickFalse);
-
-    rm_check_image_exception(image, RetainOnError);
 
     return ULONG2NUM(quantum_depth);
 }
@@ -13240,7 +13234,6 @@ Image_sync_profiles(VALUE self)
 {
     Image *image = rm_check_destroyed(self);
     VALUE okay =  SyncImageProfiles(image) ? Qtrue : Qfalse;
-    rm_check_image_exception(image, RetainOnError);
 
     RB_GC_GUARD(okay);
 
@@ -13854,7 +13847,7 @@ Image_total_ink_density(VALUE self)
 
     exception = AcquireExceptionInfo();
     density = GetImageTotalInkDensity(image, exception);
-    rm_check_image_exception(image, RetainOnError);
+    rm_check_exception(exception, image, RetainOnError);
     (void) DestroyExceptionInfo(exception);
 
     return rb_float_new(density);
@@ -14656,7 +14649,7 @@ Image_virtual_pixel_method(VALUE self)
 
     image = rm_check_destroyed(self);
     vpm = GetImageVirtualPixelMethod(image);
-    rm_check_image_exception(image, RetainOnError);
+
     return VirtualPixelMethod_new(vpm);
 }
 
@@ -15416,7 +15409,6 @@ xform_image(int bang, VALUE self, VALUE x, VALUE y, VALUE width, VALUE height, x
     new_image = (xformer)(image, &rect, exception);
 
     // An exception can occur in either the old or the new images
-    rm_check_image_exception(image, RetainOnError);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
