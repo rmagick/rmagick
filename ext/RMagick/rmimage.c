@@ -8671,7 +8671,7 @@ Image_matte(VALUE self)
     Image *image;
 
     image = rm_check_destroyed(self);
-    return image->matte ? Qtrue : Qfalse;
+    return (image->alpha_trait != UndefinedPixelTrait) ? Qtrue : Qfalse;
 }
 
 
