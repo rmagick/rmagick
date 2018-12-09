@@ -270,7 +270,6 @@ class Image3_UT < Test::Unit::TestCase
     assert_raise(TypeError) { @img.resample('x') }
     assert_raise(TypeError) { @img.resample(100, 'x') }
     assert_raise(TypeError) { @img.resample(50, 50, 2) }
-    assert_raise(TypeError) { @img.resample(50, 50, Magick::CubicFilter, 'x') }
     assert_raise(ArgumentError) { @img.resample(50, 50, Magick::SincFilter, 2.0, 'x') }
     assert_raise(ArgumentError) { @img.resample(-100) }
     assert_raise(ArgumentError) { @img.resample(100, -100) }

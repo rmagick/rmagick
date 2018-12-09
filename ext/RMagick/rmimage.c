@@ -11188,7 +11188,7 @@ resample(int bang, int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
     FilterType filter;
-    double x_resolution, y_resolution, blur;
+    double x_resolution, y_resolution;
     double width, height;
     ExceptionInfo *exception;
 
@@ -11196,14 +11196,12 @@ resample(int bang, int argc, VALUE *argv, VALUE self)
 
     // Set up defaults
     filter  = image->filter;
-    blur    = image->blur;
     x_resolution = 72.0;
     y_resolution = 72.0;
 
     switch (argc)
     {
         case 4:
-            blur = NUM2DBL(argv[3]);
         case 3:
             VALUE_TO_ENUM(argv[2], filter, FilterType);
         case 2:
@@ -11239,7 +11237,7 @@ resample(int bang, int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    new_image = ResampleImage(image, x_resolution, y_resolution, filter, blur, exception);
+    new_image = ResampleImage(image, x_resolution, y_resolution, filter, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
