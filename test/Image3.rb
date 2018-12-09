@@ -299,7 +299,6 @@ class Image3_UT < Test::Unit::TestCase
     assert_raise(TypeError) { @img.resize('x') }
     assert_raise(TypeError) { @img.resize(50, 'x') }
     assert_raise(TypeError) { @img.resize(50, 50, 2) }
-    assert_raise(TypeError) { @img.resize(50, 50, Magick::CubicFilter, 'x') }
     assert_raise(ArgumentError) { @img.resize(50, 50, Magick::SincFilter, 2.0, 'x') }
     assert_raise(ArgumentError) { @img.resize }
   end

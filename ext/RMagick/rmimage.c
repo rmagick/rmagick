@@ -8596,7 +8596,7 @@ Image_mask(int argc, VALUE *argv, VALUE self)
         {
             exception = AcquireExceptionInfo();
             resized_image = ResizeImage(clip_mask, image->columns, image->rows
-                                        , UndefinedFilter, 0.0, exception);
+                                        , UndefinedFilter, exception);
             rm_check_exception(exception, resized_image, DestroyOnError);
             (void) DestroyExceptionInfo(exception);
             rm_ensure_result(resized_image);
@@ -11306,21 +11306,19 @@ resize(int bang, int argc, VALUE *argv, VALUE self)
     double scale_arg;
     FilterType filter;
     unsigned long rows, columns;
-    double blur, drows, dcols;
+    double drows, dcols;
     ExceptionInfo *exception;
 
     Data_Get_Struct(self, Image, image);
 
     // Set up defaults
     filter  = image->filter;
-    blur    = image->blur;
     rows    = image->rows;
     columns = image->columns;
 
     switch (argc)
     {
         case 4:
-            blur = NUM2DBL(argv[3]);
         case 3:
             VALUE_TO_ENUM(argv[2], filter, FilterType);
         case 2:
@@ -11352,7 +11350,7 @@ resize(int bang, int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    new_image = ResizeImage(image, columns, rows, filter, blur, exception);
+    new_image = ResizeImage(image, columns, rows, filter, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
