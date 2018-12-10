@@ -267,9 +267,9 @@ class Image2_UT < Test::Unit::TestCase
   def test_destroy
     methods = Magick::Image.instance_methods(false).sort
     methods -= if RUBY_VERSION[/^1\.9|^2/]
-                 %i[__display__ destroy! destroyed? inspect cur_image marshal_load blur blur=]
+                 %i[__display__ destroy! destroyed? inspect cur_image marshal_load blur blur= sync_profiles]
                else
-                 %w[__display__ destroy! destroyed? inspect cur_image marshal_load blur blur=]
+                 %w[__display__ destroy! destroyed? inspect cur_image marshal_load blur blur= sync_profiles]
                end
 
     assert_equal(false, @img.destroyed?)

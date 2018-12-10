@@ -786,7 +786,7 @@ class Image3_UT < Test::Unit::TestCase
   end
 
   def test_sync_profiles
-    assert_nothing_raised { assert(@img.sync_profiles) }
+    assert_nothing_raised { @img.sync_profiles }
   end
 
   def test_texture_fill_to_border
