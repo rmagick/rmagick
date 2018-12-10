@@ -8088,9 +8088,9 @@ Image_levelize_channel(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
     SetImageChannelMask(new_image, channels);
     status = LevelizeImage(new_image, black_point, white_point, gamma, exception);
+    rm_check_exception(exception, new_image, DestroyOnError);
     (void) DestroyExceptionInfo(exception);
 
-    rm_check_exception(exception, new_image, DestroyOnError);
     if (!status)
     {
         rb_raise(rb_eRuntimeError, "LevelizeImageChannel failed for unknown reason.");
