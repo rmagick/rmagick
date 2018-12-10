@@ -1740,9 +1740,6 @@ Image_blue_shift(int argc, VALUE *argv, VALUE self)
 
 
 
-DEF_ATTR_ACCESSOR(Image, blur, dbl)
-
-
 /**
  * Call BlurImageChannel.
  *
