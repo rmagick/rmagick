@@ -378,7 +378,7 @@ Pixel_fcmp(int argc, VALUE *argv, VALUE self)
     Info *info;
 
     Pixel *this, *that;
-    ColorspaceType colorspace = RGBColorspace;
+    ColorspaceType colorspace = sRGBColorspace;
     double fuzz = 0.0;
     unsigned int equal;
     ExceptionInfo *exception;
@@ -400,32 +400,10 @@ Pixel_fcmp(int argc, VALUE *argv, VALUE self)
     Data_Get_Struct(self, Pixel, this);
     Data_Get_Struct(argv[0], Pixel, that);
 
-    // The IsColorSimilar function expects to get the
-    // colorspace and fuzz parameters from an Image structure.
+    this->colorspace = colorspace;
+    this->fuzz = fuzz;
 
-    info = CloneImageInfo(NULL);
-    if (!info)
-    {
-        rb_raise(rb_eNoMemError, "not enough memory to continue");
-    }
-
-    exception = AcquireExceptionInfo();
-    image = AcquireImage(info, exception);
-    (void) DestroyExceptionInfo(exception);
-
-    // Delete Info now in case we have to raise an exception
-    (void) DestroyImageInfo(info);
-
-    if (!image)
-    {
-        rb_raise(rb_eNoMemError, "not enough memory to continue");
-    }
-
-    image->colorspace = colorspace;
-    image->fuzz = fuzz;
-
-    equal = IsColorSimilar(image, this, that);
-    (void) DestroyImage(image);
+    equal = IsFuzzyEquivalencePixelInfo(that, this);
 
     return equal ? Qtrue : Qfalse;
 }
