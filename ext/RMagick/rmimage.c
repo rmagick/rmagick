@@ -12801,7 +12801,7 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    new_image = SparseColorImage(image, channels, method, nargs, args, exception);
+    new_image = SparseColorImage(image, method, nargs, args, exception);
     xfree(args);
     CHECK_EXCEPTION();
     (void) DestroyExceptionInfo(exception);
