@@ -59,3 +59,26 @@ Pull Requests
 Please choose the `rmagick/rmagick` repo and the `develop` branch as the destination for your pull request.
 
 NOTE: GitHub suggests `rmagick-temp/rmagick` repo by default. **This is incorrect.** Please switch to `rmagick/rmagick`. It should be the next repo in the drop-down list.
+
+Every pull request is tested:
+
+1. On [Travis CI](https://travis-ci.org/rmagick/rmagick).
+   It runs all Minitest and RSpec tests on several Ruby and ImageMagick versions.
+   See [.travis.yml](.travis.yml) for details.
+2. On [Semaphore CI](https://semaphoreci.com/rmagick/rmagick).
+   It runs [RuboCop](https://rubocop.readthedocs.io).
+   RuboCop is run on a different CI server and appears as a different check on pull request pages because this way it is easier to spot what kind of tests are failed.
+
+An ideal pull request does not fail these tests.
+If your pull request fails these tests, please improve it and push the improvements until it doesn't.
+You can ignore failures that are not caused by your changes.
+
+A quick way to fix formatting errors is to run `bundle exec rubocop --autocorrect path/to/file.rb`.
+
+If you add new classes or methods, please add tests for them as well.
+RSpec is preferred (see above).
+Tests should test all possible branches of code execution (all conditions in `if`/`case` statements, etc.) to avoid errors later.
+
+
+Thanks
+------
