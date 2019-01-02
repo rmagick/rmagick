@@ -1535,7 +1535,7 @@ module Magick
       end
       @images.each { |f| f.delay = Integer(d) }
     end
-    
+
     # Function which will able to give time to every picture specifically according to the user.
     def delay_pre=(d)
        # Time Unit: milliseconds
@@ -1544,7 +1544,7 @@ module Magick
        end
       f = @images.last
       f.delay = Integer(d)
-    end 
+    end
 
     def delete(obj, &block)
       is_an_image obj
@@ -1597,17 +1597,16 @@ module Magick
     end
 
     # To make Image Black and White
-    def bnw()
+    def bnw
       images = @images.first
       @pixels = images.get_pixels(0, 0, images.columns, images.rows)
-         for @pixel in @pixels
-                  avg = (@pixel.red + @pixel.green + @pixel.blue) / 3
-                  @pixel.red = avg
-                  @pixel.green = avg
-                  @pixel.blue = avg
+         @pixels.each do |pixel|
+            avg = (pixel.red + pixel.green + pixel.blue) / 3
+            pixel.red = avg
+            pixel.green = avg
+            pixel.blue = avg
          end
       images.store_pixels(0, 0, images.columns, images.rows, @pixels)
-           return images
     end
 
     # Override Enumerable's find_all
@@ -1969,3 +1968,4 @@ module Magick
     end
   end
 end # Magick
+
