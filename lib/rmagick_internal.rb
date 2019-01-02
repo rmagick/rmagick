@@ -1968,4 +1968,3 @@ module Magick
     end
   end
 end # Magick
-
