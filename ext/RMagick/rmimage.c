@@ -12744,12 +12744,25 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
     argc -= 1;
 
     // A lot of the following code is based on SparseColorOption, in wand/mogrify.c
-    ncolors = count_channels(image, &channels);
+    ncolors = 0;
+    if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0) {
+        ncolors++;
+    }
+    if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0) {
+        ncolors++;
+    }
+    if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0) {
+        ncolors++;
+    }
+    if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) && (image->colorspace == CMYKColorspace)) {
+        ncolors++;
+    }
+    if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) && (image->alpha_trait != UndefinedPixelTrait)) {
+        ncolors++;
+    }
     nargs = (argc / 3) * (2 + ncolors);
 
-    // Allocate args from Ruby's memory so that GC will collect it if one of
-    // the type conversions below raises an exception.
-    args = ALLOC_N(double, nargs);
+    args = (double *)AcquireQuantumMemory(nargs, sizeof(double));
     memset(args, 0, nargs * sizeof(double));
 
     x = 0;
@@ -12769,36 +12782,29 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
             rb_raise(rb_eTypeError, "type mismatch: %s and %s given", rb_class2name(CLASS_OF(elem1)), rb_class2name(CLASS_OF(elem2)));
         }
         Color_to_PixelInfoWithImage(NULL, &pp, argv[n++]);
-        if (channels & RedChannel)
-        {
+        if ((GetPixelRedTraits(image) & UpdatePixelTrait) != 0) {
             args[x++] = pp.red / QuantumRange;
         }
-        if (channels & GreenChannel)
-        {
+        if ((GetPixelGreenTraits(image) & UpdatePixelTrait) != 0) {
             args[x++] = pp.green / QuantumRange;
         }
-        if (channels & BlueChannel)
-        {
+        if ((GetPixelBlueTraits(image) & UpdatePixelTrait) != 0) {
             args[x++] = pp.blue / QuantumRange;
         }
-        if (channels & IndexChannel)
-        {
-            args[x++] = pp.index / QuantumRange;
+        if (((GetPixelBlackTraits(image) & UpdatePixelTrait) != 0) && (image->colorspace == CMYKColorspace)) {
+            args[x++] = pp.black / QuantumRange;
         }
-        if (channels & OpacityChannel)
-        {
+        if (((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0) && (image->alpha_trait != UndefinedPixelTrait)) {
             args[x++] = pp.alpha / QuantumRange;
         }
     }
 
     exception = AcquireExceptionInfo();
     new_image = SparseColorImage(image, method, nargs, args, exception);
-    xfree(args);
+    args = (double *)RelinquishMagickMemory(args);
     CHECK_EXCEPTION();
     (void) DestroyExceptionInfo(exception);
     rm_ensure_result(new_image);
-
-    RB_GC_GUARD(args);
 
     return rm_image_new(new_image);
 }

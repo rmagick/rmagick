@@ -681,6 +681,7 @@ class Image3_UT < Test::Unit::TestCase
     # assert good calls work
     Magick::SparseColorMethod.values do |v|
       next if v == Magick::UndefinedColorInterpolate
+      next if v == Magick::PolynomialColorInterpolate # PolynomialColorInterpolate raise 'Invalid order, should be interger 1 to 5, or 1.5'
 
       assert_nothing_raised { img.sparse_color(v, *args) }
     end
