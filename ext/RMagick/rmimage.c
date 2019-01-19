@@ -1606,15 +1606,18 @@ special_composite(Image *image, Image *overlay, double image_pct, double overlay
 {
     Image *new_image;
     char geometry[20];
+    ExceptionInfo *exception;
 
     blend_geometry(geometry, sizeof(geometry), image_pct, overlay_pct);
     (void) CloneString(&overlay->geometry, geometry);
     (void) SetImageArtifact(overlay,"compose:args", geometry);
 
+    exception = AcquireExceptionInfo();
     new_image = rm_clone_image(image);
-    (void) CompositeImage(new_image, op, overlay, x_off, y_off);
+    (void) CompositeImage(new_image, overlay, op, MagickTrue, x_off, y_off, exception);
 
-    rm_check_image_exception(new_image, DestroyOnError);
+    rm_check_exception(exception, new_image, DestroyOnError);
+    (void) DestroyExceptionInfo(exception);
 
     return rm_image_new(new_image);
 }
@@ -14508,6 +14511,7 @@ Image_watermark(int argc, VALUE *argv, VALUE self)
     long x_offset = 0L, y_offset = 0L;
     char geometry[20];
     VALUE ovly;
+    ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
 
@@ -14543,10 +14547,13 @@ Image_watermark(int argc, VALUE *argv, VALUE self)
     (void) CloneString(&overlay->geometry, geometry);
     (void) SetImageArtifact(overlay,"compose:args", geometry);
 
-    new_image = rm_clone_image(image);
-    (void) CompositeImage(new_image, ModulateCompositeOp, overlay, x_offset, y_offset);
+    exception = AcquireExceptionInfo();
 
-    rm_check_image_exception(new_image, DestroyOnError);
+    new_image = rm_clone_image(image);
+    (void) CompositeImage(new_image, overlay, ModulateCompositeOp, MagickTrue, x_offset, y_offset, exception);
+
+    rm_check_exception(exception, new_image, DestroyOnError);
+    (void) DestroyExceptionInfo(exception);
 
     RB_GC_GUARD(ovly);
 
