@@ -29,4 +29,4 @@ fi
 # NoMethodError: undefined method `spec' for nil:NilClass
 # Travis uses Bundler 1.7.6 by default and it has this bug
 # https://github.com/rubygems/rubygems/issues/1419
-gem install bundler
+gem install bundler -v 1.17.3
