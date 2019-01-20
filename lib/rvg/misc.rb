@@ -133,6 +133,8 @@ module Magick
           case @ctx.text_attrs.baseline_shift
           when :baseline
             x = 0
+          when :sub
+
           when :super
             x = -x
           when /[-+]?(\d+)%/
