@@ -3163,6 +3163,7 @@ VALUE Image_combine(int argc, VALUE *argv, VALUE self)
     ReverseImageList(&images);
     new_image = CombineImages(images, channel, exception);
     rm_check_exception(exception, images, RetainOnError);
+    (void) DestroyExceptionInfo(exception);
     rm_split(images);
 
     rm_ensure_result(new_image);
@@ -7239,6 +7240,7 @@ has_attribute(VALUE self, MagickBooleanType (attr_test)(const Image *, Exception
 
     r = (attr_test)(image, exception);
     CHECK_EXCEPTION()
+    (void) DestroyExceptionInfo(exception);
 
     return r ? Qtrue : Qfalse;
 }
@@ -12813,6 +12815,7 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
     new_image = SparseColorImage(image, channels, method, nargs, args, exception);
     xfree(args);
     CHECK_EXCEPTION();
+    (void) DestroyExceptionInfo(exception);
     rm_ensure_result(new_image);
 
     RB_GC_GUARD(args);
