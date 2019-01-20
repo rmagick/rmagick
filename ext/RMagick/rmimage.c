@@ -3108,8 +3108,7 @@ DEF_ATTR_READER(Image, columns, int)
  */
 VALUE Image_combine(int argc, VALUE *argv, VALUE self)
 {
-    ChannelType channel = 0;
-    Image *image, *images = NULL, *new_image;
+    Image *image = NULL, *images = NULL, *new_image;
     ExceptionInfo *exception;
 
     self = self;        // defeat "unreferenced argument" message
@@ -3119,28 +3118,24 @@ VALUE Image_combine(int argc, VALUE *argv, VALUE self)
         case 4:
             if (argv[3] != Qnil)
             {
-                channel |= OpacityChannel;
                 image = rm_check_destroyed(argv[3]);
                 AppendImageToList(&images, image);
             }
         case 3:
             if (argv[2] != Qnil)
             {
-                channel |= BlueChannel;
                 image = rm_check_destroyed(argv[2]);
                 AppendImageToList(&images, image);
             }
         case 2:
             if (argv[1] != Qnil)
             {
-                channel |= GreenChannel;
                 image = rm_check_destroyed(argv[1]);
                 AppendImageToList(&images, image);
             }
         case 1:
             if (argv[0] != Qnil)
             {
-                channel |= RedChannel;
                 image = rm_check_destroyed(argv[0]);
                 AppendImageToList(&images, image);
             }
@@ -3149,14 +3144,14 @@ VALUE Image_combine(int argc, VALUE *argv, VALUE self)
             rb_raise(rb_eArgError, "wrong number of arguments (1 to 4 expected, got %d)", argc);
     }
 
-    if (channel == 0)
+    if (!image)
     {
         rb_raise(rb_eArgError, "no images to combine");
     }
 
     exception = AcquireExceptionInfo();
     ReverseImageList(&images);
-    new_image = CombineImages(images, channel, exception);
+    new_image = CombineImages(images, sRGBColorspace, exception);
     rm_check_exception(exception, images, RetainOnError);
     (void) DestroyExceptionInfo(exception);
     rm_split(images);
