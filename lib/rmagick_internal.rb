@@ -8,6 +8,16 @@
 #               to the classes.
 #==============================================================================
 
+if RUBY_PLATFORM =~ /mingw/i
+  begin
+    require 'ruby_installer'
+    ENV['PATH'].split(File::PATH_SEPARATOR).grep(/ImageMagick/i).each do |path|
+      RubyInstaller::Runtime.add_dll_directory(path)
+    end
+  rescue LoadError
+  end
+end
+
 require 'English'
 require 'RMagick2.so'
 
