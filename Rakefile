@@ -3,6 +3,11 @@ require './lib/rmagick/version'
 require 'fileutils'
 require 'English'
 
+desc "Open an irb session preloaded with this library"
+task :console do
+  sh "irb -r ./ext/RMagick/extconf.rb -r ./lib/rmagick.rb"
+end
+
 task :config do
   def version
     Magick::VERSION
