@@ -670,7 +670,7 @@ Draw_marshal_load(VALUE self, VALUE ddraw)
 
     Data_Get_Struct(self, Draw, draw);
 
-    draw->info = magick_malloc(sizeof(DrawInfo));
+    draw->info = AcquireDrawInfo();
     if (!draw->info)
     {
         rb_raise(rb_eNoMemError, "not enough memory to continue");
@@ -1727,7 +1727,7 @@ DrawOptions_initialize(VALUE self)
     Draw *draw_options;
 
     Data_Get_Struct(self, Draw, draw_options);
-    draw_options->info = magick_malloc(sizeof(DrawInfo));
+    draw_options->info = AcquireDrawInfo();
     if (!draw_options->info)
     {
         rb_raise(rb_eNoMemError, "not enough memory to continue");
