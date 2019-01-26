@@ -20,13 +20,4 @@ sudo make install
 cd ..
 sudo ldconfig
 
-if [[ $TRAVIS_RUBY_VERSION =~ ^1.8 ]]; then
-    echo "Set the stack size to unlimited to avoid segfault for Ruby 1.8"
-    ulimit -s unlimited
-fi
-
-# Fixes this error:
-# NoMethodError: undefined method `spec' for nil:NilClass
-# Travis uses Bundler 1.7.6 by default and it has this bug
-# https://github.com/rubygems/rubygems/issues/1419
 gem install bundler -v 1.17.3
