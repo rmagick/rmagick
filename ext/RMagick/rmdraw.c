@@ -670,13 +670,6 @@ Draw_marshal_load(VALUE self, VALUE ddraw)
 
     Data_Get_Struct(self, Draw, draw);
 
-    draw->info = AcquireDrawInfo();
-    if (!draw->info)
-    {
-        rb_raise(rb_eNoMemError, "not enough memory to continue");
-    }
-    GetDrawInfo(NULL, draw->info);
-
     OBJ_TO_MAGICK_STRING(draw->info->geometry, rb_hash_aref(ddraw, CSTR2SYM("geometry")));
 
     //val = rb_hash_aref(ddraw, CSTR2SYM("viewbox"));
