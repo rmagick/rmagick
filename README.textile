@@ -186,7 +186,7 @@ h4. 3) install ImageMagick and additional environment stuff
 
 <pre>
 cd /vagrant/rmagick
-export IMAGEMAGICK_VERSION=6.6.9-10 # the only known passing version as of this writing
+export IMAGEMAGICK_VERSION=6.8.9-10
 sh ./before_install_linux.sh
 </pre>
 

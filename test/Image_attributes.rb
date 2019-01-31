@@ -160,11 +160,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
   def test_colorspace
     assert_nothing_raised { @img.colorspace }
     assert_instance_of(Magick::ColorspaceType, @img.colorspace)
-    if IM_VERSION < Gem::Version.new('6.7.5') || (IM_VERSION == Gem::Version.new('6.7.5') && IM_REVISION < Gem::Version.new('5'))
-      assert_equal(Magick::RGBColorspace, @img.colorspace)
-    else
-      assert_equal(Magick::SRGBColorspace, @img.colorspace)
-    end
+    assert_equal(Magick::SRGBColorspace, @img.colorspace)
     img = @img.copy
     assert_nothing_raised { img.colorspace = Magick::GRAYColorspace }
     assert_equal(Magick::GRAYColorspace, img.colorspace)
@@ -394,11 +390,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
   def test_gamma
     assert_nothing_raised { @img.gamma }
     assert_instance_of(Float, @img.gamma)
-    if IM_VERSION < Gem::Version.new('6.7.5') || (IM_VERSION == Gem::Version.new('6.7.5') && IM_REVISION < Gem::Version.new('5'))
-      assert_equal(0.0, @img.gamma)
-    else
-      assert_equal(0.45454543828964233, @img.gamma)
-    end
+    assert_equal(0.45454543828964233, @img.gamma)
     assert_nothing_raised { @img.gamma = 2.0 }
     assert_equal(2.0, @img.gamma)
     assert_raise(TypeError) { @img.gamma = 'x' }
@@ -487,11 +479,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
 
   def test_number_colors
     assert_nothing_raised { @hat.number_colors }
-    if IM_VERSION < Gem::Version.new('6.7.5') || (IM_VERSION == Gem::Version.new('6.7.5') && IM_REVISION < Gem::Version.new('5'))
-      assert_equal(27_980, @hat.number_colors)
-    else
-      assert_equal(27_942, @hat.number_colors)
-    end
+    assert_equal(27_942, @hat.number_colors)
     assert_raise(NoMethodError) { @hat.number_colors = 2 }
   end
 
@@ -554,11 +542,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
   def test_rendering_intent
     assert_nothing_raised { @img.rendering_intent }
     assert_instance_of(Magick::RenderingIntent, @img.rendering_intent)
-    if IM_VERSION < Gem::Version.new('6.7.5') || (IM_VERSION == Gem::Version.new('6.7.5') && IM_REVISION < Gem::Version.new('5'))
-      assert_equal(Magick::UndefinedIntent, @img.rendering_intent)
-    else
-      assert_equal(Magick::PerceptualIntent, @img.rendering_intent)
-    end
+    assert_equal(Magick::PerceptualIntent, @img.rendering_intent)
     assert_nothing_raised { @img.rendering_intent = Magick::SaturationIntent }
     assert_nothing_raised { @img.rendering_intent = Magick::PerceptualIntent }
     assert_nothing_raised { @img.rendering_intent = Magick::AbsoluteIntent }
@@ -603,11 +587,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
 
   def test_total_colors
     assert_nothing_raised { @hat.total_colors }
-    if IM_VERSION < Gem::Version.new('6.7.5') || (IM_VERSION == Gem::Version.new('6.7.5') && IM_REVISION < Gem::Version.new('5'))
-      assert_equal(27_980, @hat.total_colors)
-    else
-      assert_equal(27_942, @hat.total_colors)
-    end
+    assert_equal(27_942, @hat.total_colors)
     assert_raise(NoMethodError) { @img.total_colors = 2 }
   end
 
