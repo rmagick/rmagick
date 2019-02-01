@@ -2,12 +2,6 @@ require 'date'
 require 'English'
 require './lib/rmagick/version'
 
-def v(version)
-  Gem::Version.new(version)
-end
-
-RUBY = v(RUBY_VERSION.dup)
-
 Gem::Specification.new do |s|
   s.name = 'rmagick'
   s.version = Magick::VERSION
@@ -40,5 +34,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec', '~> 3'
   s.add_development_dependency 'rubocop'
 
-  s.add_development_dependency 'test-unit', '~> 2' if RUBY >= v('2.2.0')
+  s.add_development_dependency 'test-unit', '~> 2'
 end
