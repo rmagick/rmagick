@@ -10,13 +10,6 @@ os:
 sudo: required
 
 env:
-  # Currently successful release
-  - IMAGEMAGICK_VERSION=6.6.9-10
-  # Ubuntu's current stable release
-  - IMAGEMAGICK_VERSION=6.7.7-10
-  # Latest 6.7 release
-  - IMAGEMAGICK_VERSION=6.7.9-10
-  # Latest 6.8 release
   - IMAGEMAGICK_VERSION=6.8.9-10
   # Try with HDRI support, we don't mind if this fails currently.
   - IMAGEMAGICK_VERSION=6.8.9-10 CONFIGURE_OPTIONS=--enable-hdri
@@ -35,8 +28,6 @@ rvm:
 
 matrix:
   allow_failures:
-    - env: IMAGEMAGICK_VERSION=6.7.7-10
-    - env: IMAGEMAGICK_VERSION=6.7.9-10
     - env: IMAGEMAGICK_VERSION=latest
 
 notifications:
