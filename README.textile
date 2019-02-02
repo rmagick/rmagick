@@ -28,7 +28,7 @@ These prerequisites are required for the latest DEVELOPMENT version of RMagick. 
 
 *O/S* Linux, &#042;BSD, OS X, Windows 2000, XP, Vista, other &#042;nix-like systems.
 
-*Ruby* 2.3.8 or later. You can get Ruby from "www.ruby-lang.org":http://www.ruby-lang.org.
+*Ruby* 2.3 or later. You can get Ruby from "www.ruby-lang.org":http://www.ruby-lang.org.
 
 Ruby must be able to build C-Extensions (e.g. MRI, Rubinius, not JRuby)
 

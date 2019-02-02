@@ -7,7 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 Breaking changes:
 
-- drop support for Ruby < 2.3.8
+- drop support for Ruby < 2.3
 - drop support for ImageMagick < 6.8
 
 ## RMagick 2.16.0
