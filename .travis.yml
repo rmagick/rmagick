@@ -11,10 +11,7 @@ sudo: required
 
 env:
   - IMAGEMAGICK_VERSION=6.8.9-10
-  # Try with HDRI support, we don't mind if this fails currently.
   - IMAGEMAGICK_VERSION=6.8.9-10 CONFIGURE_OPTIONS=--enable-hdri
-  # Latest release
-  - IMAGEMAGICK_VERSION=latest
 
 before_install:
   - source before_install_$TRAVIS_OS_NAME.sh
@@ -24,11 +21,6 @@ install: bundle install --verbose
 rvm:
   - 2.3
   - 2.4
-  - 2.5
-
-matrix:
-  allow_failures:
-    - env: IMAGEMAGICK_VERSION=latest
 
 notifications:
   webhooks:
