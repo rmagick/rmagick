@@ -1,5 +1,9 @@
 language: ruby
 
+cache:
+  directories:
+    - ~/.ccache
+
 os:
   - linux
 
