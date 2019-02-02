@@ -3,6 +3,12 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 3.0.0
+
+Breaking changes:
+
+- drop support for Ruby < 2.3.8
+
 ## RMagick 2.16.0
 
 - Support ImageMagick 6.9+ - @ZipoKing
