@@ -4220,7 +4220,7 @@ VALUE
 Image_morphology_channel(VALUE self, VALUE channel_v, VALUE method_v, VALUE iterations, VALUE kernel_v)
 {
   Image *image, *new_image;
-  ExceptionInfo exception;
+  ExceptionInfo *exception;
   MorphologyMethod method;
   ChannelType channel;
   KernelInfo *kernel;
@@ -4238,11 +4238,11 @@ Image_morphology_channel(VALUE self, VALUE channel_v, VALUE method_v, VALUE iter
   Data_Get_Struct(kernel_v, KernelInfo, kernel);
 
   image = rm_check_destroyed(self);
-  GetExceptionInfo(&exception);
+  exception = AcquireExceptionInfo();
 
-  new_image = MorphologyImageChannel(image, channel, method, NUM2LONG(iterations), kernel, &exception);
-  rm_check_exception(&exception, new_image, DestroyOnError);
-  DestroyExceptionInfo(&exception);
+  new_image = MorphologyImageChannel(image, channel, method, NUM2LONG(iterations), kernel, exception);
+  rm_check_exception(exception, new_image, DestroyOnError);
+  DestroyExceptionInfo(exception);
 
   rm_ensure_result(new_image);
   return rm_image_new(new_image);
