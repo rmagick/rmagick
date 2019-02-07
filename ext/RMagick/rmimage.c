@@ -9061,6 +9061,9 @@ Image_monitor_eq(VALUE self, VALUE monitor)
         (void) SetImageProgressMonitor(image, rm_progress_monitor, (void *)monitor);
     }
 
+#if defined(_WIN32)
+    rb_warn("Image#monitor= does not work on Windows");
+#endif
 
     return self;
 }

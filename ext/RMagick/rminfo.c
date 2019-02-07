@@ -1734,6 +1734,9 @@ Info_monitor_eq(VALUE self, VALUE monitor)
         (void) SetImageInfoProgressMonitor(info, rm_progress_monitor, (void *)monitor);
     }
 
+#if defined(_WIN32)
+    rb_warn("Info#monitor= does not work on Windows");
+#endif
 
     return self;
 }
