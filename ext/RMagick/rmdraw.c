@@ -1797,6 +1797,8 @@ PolaroidOptions_initialize(VALUE self)
     (void) QueryColorDatabase("gray75", &draw->shadow_color, exception);
     CHECK_EXCEPTION()
     (void) QueryColorDatabase("#dfdfdf", &draw->info->border_color, exception);
+    CHECK_EXCEPTION()
+    DestroyExceptionInfo(exception);
 
     if (rb_block_given_p())
     {
