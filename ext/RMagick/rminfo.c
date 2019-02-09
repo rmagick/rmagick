@@ -1839,10 +1839,12 @@ Info_origin_eq(VALUE self, VALUE origin_arg)
 
     if (IsGeometry(origin) == MagickFalse)
     {
-        rb_raise(rb_eArgError, "invalid origin geometry: %s", origin);
+        magick_free(origin);
+        rb_raise(rb_eArgError, "invalid origin geometry");
     }
 
     (void) SetImageOption(info, "origin", origin);
+    magick_free(origin);
 
     RB_GC_GUARD(origin_str);
 
