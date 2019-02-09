@@ -188,6 +188,7 @@ Magick_init_formats(VALUE class)
                             , rb_str_new2(magick_info[x]->name)
                             , MagickInfo_to_format((const MagickInfo *)magick_info[x]));
     }
+    magick_free((void *)magick_info);
     RB_GC_GUARD(formats);
     return formats;
 }
