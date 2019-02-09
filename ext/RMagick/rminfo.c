@@ -1902,7 +1902,7 @@ Info_page_eq(VALUE self, VALUE page_arg)
         info->page = NULL;
         return self;
     }
-    magick_clone_string(&info->page, geometry);
+    info->page = geometry;
 
     RB_GC_GUARD(geom_str);
 
