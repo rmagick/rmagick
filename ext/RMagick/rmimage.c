@@ -13119,6 +13119,9 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg
     long x, y;
     unsigned long cols, rows;
     unsigned int okay;
+#if defined(HAVE_SYNCAUTHENTICPIXELS) || defined(HAVE_GETAUTHENTICPIXELS)
+    ExceptionInfo *exception;
+#endif
 
     image = rm_check_destroyed(self);
 
@@ -13145,14 +13148,12 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg
     // Get a pointer to the pixels. Replace the values with the PixelPackets
     // from the pixels argument.
     {
-#if defined(HAVE_SYNCAUTHENTICPIXELS) || defined(HAVE_GETAUTHENTICPIXELS)
-        ExceptionInfo *exception;
-        exception = AcquireExceptionInfo();
-#endif
-
 #if defined(HAVE_GETAUTHENTICPIXELS)
+        exception = AcquireExceptionInfo();
+
         pixels = GetAuthenticPixels(image, x, y, cols, rows, exception);
         CHECK_EXCEPTION()
+        DestroyExceptionInfo(exception);
 #else
         pixels = GetImagePixels(image, x, y, cols, rows);
         rm_check_image_exception(image, RetainOnError);
@@ -13167,17 +13168,16 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg
                 pixels[n] = *pixel;
             }
 #if defined(HAVE_SYNCAUTHENTICPIXELS)
+            exception = AcquireExceptionInfo();
+
             SyncAuthenticPixels(image, exception);
             CHECK_EXCEPTION()
+            DestroyExceptionInfo(exception);
 #else
             SyncImagePixels(image);
             rm_check_image_exception(image, RetainOnError);
 #endif
         }
-
-#if defined(HAVE_SYNCAUTHENTICPIXELS) || defined(HAVE_GETAUTHENTICPIXELS)
-        DestroyExceptionInfo(exception);
-#endif
     }
 
     RB_GC_GUARD(new_pixel);
