@@ -1445,6 +1445,7 @@ rm_progress_monitor(
     const MagickSizeType sp,
     void *client_data)
 {
+#if !defined(_WIN32)
     VALUE rval;
     VALUE method, offset, span;
 
@@ -1468,6 +1469,9 @@ rm_progress_monitor(
     RB_GC_GUARD(span);
 
     return RTEST(rval) ? MagickTrue : MagickFalse;
+#else
+    return MagickTrue;
+#endif
 }
 
 
