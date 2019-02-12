@@ -17,6 +17,8 @@ class Image1_UT < Test::Unit::TestCase
     assert_instance_of(Array, res)
     assert_instance_of(Magick::Image, res[0])
     assert_equal(img, res[0])
+    assert_raise(ArgumentError) { Magick::Image.read(nil) }
+    assert_raise(ArgumentError) { Magick::Image.read("") }
   end
 
   def test_spaceship

@@ -10899,6 +10899,11 @@ rd_image(VALUE class, VALUE file, reader_t reader)
 
         filename = rm_str2cstr(file, &filename_l);
         filename_l = min(filename_l, MaxTextExtent-1);
+        if (filename_l == 0)
+        {
+            rb_raise(rb_eArgError, "invalid path");
+        }
+
         memcpy(info->filename, filename, (size_t)filename_l);
         info->filename[filename_l] = '\0';
         SetImageInfoFile(info, NULL);
