@@ -1,0 +1,19 @@
+environment:
+  matrix:
+    - RUBY_VERSION: "24-x64"
+
+install:
+  - appveyor DownloadFile https://ftp.icm.edu.pl/pub/graphics/ImageMagick/binaries/ImageMagick-6.8.9-10-Q16-x64-dll.exe
+  - ImageMagick-6.8.9-10-Q16-x64-dll.exe /VERYSILENT /TASKS=install_Devel
+  - SET PATH=C:\Ruby%RUBY_VERSION%\bin;C:\Program Files\ImageMagick-6.8.9-Q16;%PATH%
+  - bundle install
+
+build: off
+
+before_test:
+  - ruby -v
+  - gem -v
+  - bundle -v
+
+test_script:
+  - rake -rdevkit
