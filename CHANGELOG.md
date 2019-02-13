@@ -5,10 +5,26 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## RMagick 3.0.0
 
-Breaking changes:
+Breaking Changes:
 
-- drop support for Ruby < 2.3
-- drop support for ImageMagick < 6.8
+- Drop support for Ruby < 2.3.
+- Drop support for ImageMagick < 6.8.
+- Raise error when `nil` or empty string are passed to `Image.read`. (#351)
+- Monitor feature disabled on Windows. (#344)
+- Note: ruby versions > 2.4 and ImageMagick versions > 6.8 are not *explicitly*
+  supported, yet, but if you are using them already, they should continue to
+  work in the same fashion.
+
+Enhancements:
+
+- Add feature `Image#channel_entropy` (#300)
+- Many quality of life improvements in the codebase.
+
+Bug Fixes:
+
+- Many memory leaks fixed!
+- Fix `LoadError` on Windows. (#315)
+- fix argument count in `Image#morphology_channel` (#306)
 
 ## RMagick 2.16.0
 
