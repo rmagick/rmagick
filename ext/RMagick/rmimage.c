@@ -15525,6 +15525,23 @@ static void call_trace_proc(Image *image, const char *which)
 }
 
 
+static VALUE
+rm_trace_creation_body(VALUE img)
+{
+    Image *image = (Image *)img;
+    call_trace_proc(image, "c");
+    return Qnil;
+}
+
+static VALUE
+rm_trace_creation_handle_exception(VALUE img, VALUE exc)
+{
+    Image *image = (Image *)img;
+    DestroyImage(image);
+    rb_exc_raise(exc);
+    return Qnil; /* not reachable */
+}
+
 /**
  * Trace image creation
  *
@@ -15535,7 +15552,7 @@ static void call_trace_proc(Image *image, const char *which)
  */
 void rm_trace_creation(Image *image)
 {
-    call_trace_proc(image, "c");
+    rb_rescue(rm_trace_creation_body, (VALUE)image, rm_trace_creation_handle_exception, (VALUE)image);
 }
 
 
