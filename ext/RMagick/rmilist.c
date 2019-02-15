@@ -861,6 +861,10 @@ static long
 imagelist_length(VALUE imagelist)
 {
     VALUE images = rb_iv_get(imagelist, "@images");
+    if (!RB_TYPE_P(images, T_ARRAY))
+    {
+        rb_raise(Class_ImageMagickError, "@images is not of type Array");
+    }
 
     RB_GC_GUARD(images);
 

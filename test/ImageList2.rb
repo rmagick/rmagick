@@ -241,6 +241,12 @@ class ImageList2UT < Test::Unit::TestCase
     end
   end
 
+  def test_mosaic_with_invalid_imagelist
+    list = @ilist.copy
+    list.instance_variable_set("@images", nil)
+    assert_raise(Magick::ImageMagickError) { list.mosaic }
+  end
+
   def test_new_image
     assert_nothing_raised do
       @ilist.new_image(20, 20)
