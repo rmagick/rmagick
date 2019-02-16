@@ -452,9 +452,9 @@ module Magick
         }
 
         FONT_WEIGHT = {
-          'normal'  => Magick::NormalWeight,
-          'bold'    => Magick::BoldWeight,
-          'bolder'  => Magick::BolderWeight,
+          'normal' => Magick::NormalWeight,
+          'bold' => Magick::BoldWeight,
+          'bolder' => Magick::BolderWeight,
           'lighter' => Magick::LighterWeight
         }
 
