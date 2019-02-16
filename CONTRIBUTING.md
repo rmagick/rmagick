@@ -48,30 +48,23 @@ Useful information about RSpec:
 Committing
 ----------
 
-All work for a next release is done in the `develop` branch. Please create your branch off of it.
-
 It is better if you follow [Git Style Guide](https://github.com/agis-/git-style-guide).
 
 
 Pull Requests
 -------------
 
-Please choose the `rmagick/rmagick` repo and the `develop` branch as the destination for your pull request.
+Please choose the `rmagick/rmagick` repo as the destination for your pull
+request. GitHub may suggest `rmagick-temp/rmagick` repo by default. **This is
+incorrect.** Please switch to `rmagick/rmagick`. It should be the next repo in
+the drop-down list.
 
-NOTE: GitHub suggests `rmagick-temp/rmagick` repo by default. **This is incorrect.** Please switch to `rmagick/rmagick`. It should be the next repo in the drop-down list.
-
-Every pull request is tested:
-
-1. On [Travis CI](https://travis-ci.org/rmagick/rmagick).
-   It runs all Minitest and RSpec tests on several Ruby and ImageMagick versions.
-   See [.travis.yml](.travis.yml) for details.
-2. On [Semaphore CI](https://semaphoreci.com/rmagick/rmagick).
-   It runs [RuboCop](https://rubocop.readthedocs.io).
-   RuboCop is run on a different CI server and appears as a different check on pull request pages because this way it is easier to spot what kind of tests are failed.
-
-An ideal pull request does not fail these tests.
-If your pull request fails these tests, please improve it and push the improvements until it doesn't.
-You can ignore failures that are not caused by your changes.
+Every pull request is tested on [Travis
+CI](https://travis-ci.org/rmagick/rmagick) to cover Linux builds,
+[Appveyor](https://ci.appveyor.com/project/mockdeep/rmagick) for Windows
+builds, and [CircleCI](https://circleci.com/gh/rmagick/rmagick) for another
+Linux environment and console access for debugging builds.  It runs all
+Minitest and RSpec tests on several Ruby and ImageMagick versions.
 
 A quick way to fix formatting errors is to run `bundle exec rubocop --autocorrect path/to/file.rb`.
 
