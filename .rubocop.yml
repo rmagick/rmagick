@@ -1,13 +1,9 @@
 inherit_from:
-    - .rubocop_todo.yml
+  - .rubocop_todo.yml
 
-# Custom configuration, edit with care!
-
-# Fixing this issues cause some test to fail
-Lint/UnifiedInteger:
-  Enabled: false
-
-Metrics/ClassLength:
-  Max: 500
+AllCops:
+  DefaultFormatter: fuubar
+  EnabledByDefault: true
+  TargetRubyVersion: 2.3
   Exclude:
-  - test/**/*
+    - '**/*\.spec'
