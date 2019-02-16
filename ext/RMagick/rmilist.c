@@ -1001,8 +1001,8 @@ ImageList_quantize(int argc, VALUE *argv, VALUE self)
 
 
     // Convert image array to image sequence, clone image sequence.
-    exception = AcquireExceptionInfo();
     images = images_from_imagelist(self);
+    exception = AcquireExceptionInfo();
     new_images = CloneImageList(images, exception);
     rm_split(images);
     rm_check_exception(exception, new_images, DestroyOnError);
