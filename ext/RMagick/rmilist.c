@@ -635,7 +635,6 @@ ImageList_optimize_layers(VALUE self, VALUE method)
 
     new_images2 = NULL;     // defeat "unused variable" message
 
-    exception = AcquireExceptionInfo();
 #if defined(HAVE_TYPE_IMAGELAYERMETHOD)
     VALUE_TO_ENUM(method, mthd, ImageLayerMethod);
 #else
@@ -643,6 +642,7 @@ ImageList_optimize_layers(VALUE self, VALUE method)
 #endif
     images = images_from_imagelist(self);
 
+    exception = AcquireExceptionInfo();
     switch (mthd)
     {
         case CoalesceLayer:
