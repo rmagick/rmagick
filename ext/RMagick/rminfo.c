@@ -1401,9 +1401,9 @@ Info_format_eq(VALUE self, VALUE magick)
 
     Data_Get_Struct(self, Info, info);
 
-    exception = AcquireExceptionInfo();
-
     mgk = StringValuePtr(magick);
+
+    exception = AcquireExceptionInfo();
     m = GetMagickInfo(mgk, exception);
     CHECK_EXCEPTION()
     (void) DestroyExceptionInfo(exception);
