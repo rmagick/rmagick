@@ -3,7 +3,7 @@ RSpec.describe Magick::ImageList do
     it 'works with identical instances' do
       expect do
         img = Magick::Image.new(1, 1)
-        list = Magick::ImageList.new
+        list = described_class.new
         list << img << img
         res = list.append(false)
         expect(res.columns).to eq(2)
@@ -13,7 +13,7 @@ RSpec.describe Magick::ImageList do
       expect do
         img = Magick::Image.new(1, 1)
         img2 = Magick::Image.new(3, 3)
-        list = Magick::ImageList.new
+        list = described_class.new
         list.concat([img, img2, img, img2, img])
         res = list.append(false)
         expect(res.columns).to eq(9)

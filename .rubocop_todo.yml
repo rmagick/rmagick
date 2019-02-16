@@ -259,15 +259,6 @@ RSpec/AlignRightLetBrace:
     - 'spec/rmagick/image/properties_spec.rb'
 
 # Offense count: 6
-# Cop supports --auto-correct.
-# Configuration parameters: SkipBlocks, EnforcedStyle.
-# SupportedStyles: described_class, explicit
-RSpec/DescribedClass:
-  Exclude:
-    - 'spec/rmagick/ImageList1_spec.rb'
-    - 'spec/rmagick/draw_spec.rb'
-
-# Offense count: 6
 # Configuration parameters: Max.
 RSpec/ExampleLength:
   Exclude:

@@ -5,24 +5,24 @@ class Magick::Draw
 end
 
 RSpec.describe Magick::Draw do
-  let(:draw) { Magick::Draw.new }
+  let(:draw) { described_class.new }
 
   describe '._dummy_img_' do
     it 'works' do
       # initially this variable is not defined.
-      expect { Magick::Draw._dummy_img_ }.to raise_error(NameError)
+      expect { described_class._dummy_img_ }.to raise_error(NameError)
 
       # cause it to become defined. save the object id.
       draw.get_type_metrics('ABCDEF')
       dummy = nil
-      expect { dummy = Magick::Draw._dummy_img_ }.not_to raise_error
+      expect { dummy = described_class._dummy_img_ }.not_to raise_error
 
       expect(dummy).to be_instance_of(Magick::Image)
 
       # ensure that it is always the same object
       draw.get_type_metrics('ABCDEF')
       dummy2 = nil
-      expect { dummy2 = Magick::Draw._dummy_img_ }.not_to raise_error
+      expect { dummy2 = described_class._dummy_img_ }.not_to raise_error
       expect(dummy).to eq dummy2
     end
   end
