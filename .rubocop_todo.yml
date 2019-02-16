@@ -307,14 +307,6 @@ RSpec/MultipleExpectations:
 RSpec/Pending:
   Enabled: false
 
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: Strict, EnforcedStyle.
-# SupportedStyles: inflected, explicit
-RSpec/PredicateMatcher:
-  Exclude:
-    - 'spec/rmagick/image/read_spec.rb'
-
 RSpec/RepeatedDescription:
   Enabled: false
 
