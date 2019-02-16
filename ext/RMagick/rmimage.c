@@ -6618,9 +6618,9 @@ Image_format_eq(VALUE self, VALUE magick)
 
     image = rm_check_frozen(self);
 
-    exception = AcquireExceptionInfo();
-
     mgk = StringValuePtr(magick);
+
+    exception = AcquireExceptionInfo();
     m = GetMagickInfo(mgk, exception);
     CHECK_EXCEPTION()
 
