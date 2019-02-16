@@ -568,8 +568,8 @@ ImageList_morph(VALUE self, VALUE nimages)
         rb_raise(rb_eArgError, "number of intervening images must be > 0");
     }
 
-    exception = AcquireExceptionInfo();
     images = images_from_imagelist(self);
+    exception = AcquireExceptionInfo();
     new_images = MorphImages(images, (unsigned long)number_images, exception);
     rm_split(images);
     rm_check_exception(exception, new_images, DestroyOnError);
