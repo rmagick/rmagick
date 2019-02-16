@@ -26,6 +26,7 @@ addons:
 
 os:
   - linux
+  - osx
 
 sudo: required
 
