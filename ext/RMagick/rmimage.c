@@ -11525,11 +11525,13 @@ Image_roll(VALUE self, VALUE x_offset, VALUE y_offset)
 {
     Image *image, *new_image;
     ExceptionInfo *exception;
+    ssize_t x = NUM2LONG(x_offset);
+    ssize_t y = NUM2LONG(y_offset);
 
     image = rm_check_destroyed(self);
 
     exception = AcquireExceptionInfo();
-    new_image = RollImage(image, NUM2LONG(x_offset), NUM2LONG(y_offset), exception);
+    new_image = RollImage(image, x, y, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
