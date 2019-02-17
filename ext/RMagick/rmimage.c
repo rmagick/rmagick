@@ -4465,10 +4465,11 @@ Image_cycle_colormap(VALUE self, VALUE amount)
     Image *image, *new_image;
     int amt;
 
-    image = rm_check_destroyed(self);
-
-    new_image = rm_clone_image(image);
     amt = NUM2INT(amount);
+
+    image = rm_check_destroyed(self);
+    new_image = rm_clone_image(image);
+
     (void) CycleColormapImage(new_image, amt);
     // No need to check for an error
 
