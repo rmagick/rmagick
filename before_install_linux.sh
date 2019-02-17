@@ -1,3 +1,5 @@
+set -euo pipefail
+
 sudo apt-get update
 
 # remove all existing imagemagick related packages
@@ -20,10 +22,18 @@ case $IMAGEMAGICK_VERSION in
         cd ImageMagick-${IMAGEMAGICK_VERSION}
     ;;
 esac
-CC="ccache cc" CXX="ccache c++" ./configure --prefix=/usr $CONFIGURE_OPTIONS
+
+if [ -v CONFIGURE_OPTIONS ]; then
+  CC="ccache cc" CXX="ccache c++" ./configure --prefix=/usr $CONFIGURE_OPTIONS
+else
+  CC="ccache cc" CXX="ccache c++" ./configure --prefix=/usr
+fi
+
 make
 sudo make install
 cd ..
 sudo ldconfig
 
 gem install bundler -v 1.17.3
+
+set +u
