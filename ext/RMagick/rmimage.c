@@ -9594,11 +9594,12 @@ Image_opaque(VALUE self, VALUE target, VALUE fill)
     MagickBooleanType okay;
 
     image = rm_check_destroyed(self);
-    new_image = rm_clone_image(image);
 
     // Allow color name or Pixel
     Color_to_MagickPixelPacket(image, &target_pp, target);
     Color_to_MagickPixelPacket(image, &fill_pp, fill);
+
+    new_image = rm_clone_image(image);
 
 #if defined(HAVE_OPAQUEPAINTIMAGECHANNEL)
     okay = OpaquePaintImageChannel(new_image, DefaultChannels, &target_pp, &fill_pp, MagickFalse);
