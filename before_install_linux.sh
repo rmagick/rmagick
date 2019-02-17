@@ -10,18 +10,15 @@ sudo apt-get install -y build-essential libx11-dev libxext-dev zlib1g-dev \
   liblcms2-dev libpng-dev libjpeg-dev libfreetype6-dev libxml2-dev \
   libtiff5-dev vim ghostscript ccache
 
-case $IMAGEMAGICK_VERSION in
-    latest)
-        wget http://www.imagemagick.org/download/ImageMagick.tar.xz
-        tar -xf ImageMagick.tar.xz
-        cd ImageMagick-*
-    ;;
-    *)
-        wget http://www.imagemagick.org/download/releases/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz
-        tar -xf ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz
-        cd ImageMagick-${IMAGEMAGICK_VERSION}
-    ;;
-esac
+if [ -v IMAGEMAGICK_VERSION ]; then
+  wget http://www.imagemagick.org/download/releases/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz
+  tar -xf ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz
+  cd ImageMagick-${IMAGEMAGICK_VERSION}
+else
+  echo "you must specify an ImageMagick version."
+  echo "example: 'IMAGEMAGICK_VERSION=6.8.9-10 bash ./before_install_linux.sh'"
+  exit 1
+fi
 
 if [ -v CONFIGURE_OPTIONS ]; then
   CC="ccache cc" CXX="ccache c++" ./configure --prefix=/usr $CONFIGURE_OPTIONS
