@@ -8827,6 +8827,7 @@ Image_matte_flood_fill(VALUE self, VALUE color, VALUE opacity, VALUE x_obj, VALU
         }
 
         (void) FloodfillPaintImage(new_image, OpacityChannel, draw_info, &target_mpp, x, y, invert);
+        (void) DestroyDrawInfo(draw_info);
     }
 #else
     (void) MatteFloodfillImage(new_image, target, op, x, y, method);
