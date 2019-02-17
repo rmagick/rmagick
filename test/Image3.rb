@@ -161,6 +161,10 @@ class Image3_UT < Test::Unit::TestCase
     assert_raise(TypeError) { @img.random_threshold_channel('20%', 2) }
   end
 
+  def test_recolor
+    assert_raise(TypeError) { @img.recolor('x') }
+  end
+
   def test_reduce_noise
     assert_nothing_raised do
       res = @img.reduce_noise(0)

@@ -10949,6 +10949,8 @@ Image_recolor(VALUE self, VALUE color_matrix)
 #endif
 
     image = rm_check_destroyed(self);
+    color_matrix = rm_check_ary_type(color_matrix);
+
     exception = AcquireExceptionInfo();
 
     // Allocate color matrix from Ruby's memory
