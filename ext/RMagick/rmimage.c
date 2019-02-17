@@ -13229,15 +13229,16 @@ Image_strip_bang(VALUE self)
  * @return a new image
  */
 VALUE
-Image_swirl(VALUE self, VALUE degrees)
+Image_swirl(VALUE self, VALUE degrees_obj)
 {
     Image *image, *new_image;
     ExceptionInfo *exception;
+    double degrees = NUM2DBL(degrees_obj);
 
     image = rm_check_destroyed(self);
 
     exception = AcquireExceptionInfo();
-    new_image = SwirlImage(image, NUM2DBL(degrees), exception);
+    new_image = SwirlImage(image, degrees, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
