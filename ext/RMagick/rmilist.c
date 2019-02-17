@@ -665,6 +665,7 @@ ImageList_optimize_layers(VALUE self, VALUE method)
             break;
         case CompositeLayer:
             rm_split(images);
+            (void) DestroyExceptionInfo(exception);
             rb_raise(rb_eNotImpError, "Magick::CompositeLayer is not supported. Use the composite_layers method instead.");
             break;
             // In 6.3.4-ish, OptimizeImageLayer replaced OptimizeLayer
@@ -720,6 +721,7 @@ ImageList_optimize_layers(VALUE self, VALUE method)
 #endif
         default:
             rm_split(images);
+            (void) DestroyExceptionInfo(exception);
             rb_raise(rb_eArgError, "undefined layer method");
             break;
     }
