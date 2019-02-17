@@ -10286,10 +10286,10 @@ Image_preview(VALUE self, VALUE preview)
     PreviewType preview_type;
     ExceptionInfo *exception;
 
-    exception = AcquireExceptionInfo();
     image = rm_check_destroyed(self);
     VALUE_TO_ENUM(preview, preview_type, PreviewType);
 
+    exception = AcquireExceptionInfo();
     new_image = PreviewImage(image, preview_type, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
 
