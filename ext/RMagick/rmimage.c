@@ -13384,14 +13384,15 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj
  * @return a new image
  */
 VALUE
-Image_threshold(VALUE self, VALUE threshold)
+Image_threshold(VALUE self, VALUE threshold_obj)
 {
     Image *image, *new_image;
+    double threshold = NUM2DBL(threshold_obj);
 
     image = rm_check_destroyed(self);
     new_image = rm_clone_image(image);
 
-    (void) BilevelImageChannel(new_image, DefaultChannels, NUM2DBL(threshold));
+    (void) BilevelImageChannel(new_image, DefaultChannels, threshold);
     rm_check_image_exception(new_image, DestroyOnError);
 
     return rm_image_new(new_image);
