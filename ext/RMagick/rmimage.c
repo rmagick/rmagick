@@ -10627,18 +10627,19 @@ Image_quantize(int argc, VALUE *argv, VALUE self)
  * @return a new image
  */
 VALUE
-Image_radial_blur(VALUE self, VALUE angle)
+Image_radial_blur(VALUE self, VALUE angle_obj)
 {
     Image *image, *new_image;
     ExceptionInfo *exception;
+    double angle = NUM2DBL(angle_obj);
 
     image = rm_check_destroyed(self);
     exception = AcquireExceptionInfo();
 
 #if defined(HAVE_ROTATIONALBLURIMAGE)
-    new_image = RotationalBlurImage(image, NUM2DBL(angle), exception);
+    new_image = RotationalBlurImage(image, angle, exception);
 #else
-    new_image = RadialBlurImage(image, NUM2DBL(angle), exception);
+    new_image = RadialBlurImage(image, angle, exception);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
 
