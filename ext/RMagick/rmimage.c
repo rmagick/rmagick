@@ -1220,6 +1220,7 @@ Image_bilevel_channel(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
     ChannelType channels;
+    double threshold;
 
     image = rm_check_destroyed(self);
     channels = extract_channels(&argc, argv);
@@ -1233,9 +1234,10 @@ Image_bilevel_channel(int argc, VALUE *argv, VALUE self)
         rb_raise(rb_eArgError, "no threshold specified");
     }
 
+    threshold = NUM2DBL(argv[0]);
     new_image = rm_clone_image(image);
 
-    (void)BilevelImageChannel(new_image, channels, NUM2DBL(argv[0]));
+    (void)BilevelImageChannel(new_image, channels, threshold);
     rm_check_image_exception(new_image, DestroyOnError);
 
     return rm_image_new(new_image);
