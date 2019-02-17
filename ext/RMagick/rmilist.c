@@ -596,9 +596,9 @@ ImageList_mosaic(VALUE self)
     Image *images, *new_image;
     ExceptionInfo *exception;
 
-    exception = AcquireExceptionInfo();
     images = images_from_imagelist(self);
 
+    exception = AcquireExceptionInfo();
 #if defined(HAVE_ENUM_MOSAICLAYER)
     new_image = MergeImageLayers(images, MosaicLayer, exception);
 #else
