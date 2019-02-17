@@ -15,6 +15,20 @@
 
 
 
+static VALUE
+rm_yield_body(VALUE object)
+{
+    return rb_yield(object);
+}
+
+static VALUE
+rm_yield_handle_exception(VALUE allocated_area, VALUE exc)
+{
+    magick_free((void *)allocated_area);
+    rb_exc_raise(exc);
+    return Qnil; /* not reachable */
+}
+
 /**
  * If called with the optional block, iterates over the colors, otherwise
  * returns an array of Magick::Color objects.
@@ -48,7 +62,7 @@ Magick_colors(VALUE class)
     {
         for (x = 0; x < number_colors; x++)
         {
-            (void) rb_yield(Import_ColorInfo(color_info_list[x]));
+            rb_rescue(rm_yield_body, Import_ColorInfo(color_info_list[x]), rm_yield_handle_exception, (VALUE)color_info_list);
         }
         magick_free((void *)color_info_list);
         return class;
@@ -96,7 +110,7 @@ Magick_fonts(VALUE class)
     {
         for (x = 0; x < number_types; x++)
         {
-            (void) rb_yield(Import_TypeInfo((const TypeInfo *)type_info[x]));
+            rb_rescue(rm_yield_body, Import_TypeInfo((const TypeInfo *)type_info[x]), rm_yield_handle_exception, (VALUE)type_info);
         }
         magick_free((void *)type_info);
         return class;
