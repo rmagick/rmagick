@@ -12457,11 +12457,13 @@ Image_shear(VALUE self, VALUE x_shear, VALUE y_shear)
 {
     Image *image, *new_image;
     ExceptionInfo *exception;
+    double x = NUM2DBL(x_shear);
+    double y = NUM2DBL(y_shear);
 
     image = rm_check_destroyed(self);
 
     exception = AcquireExceptionInfo();
-    new_image = ShearImage(image, NUM2DBL(x_shear), NUM2DBL(y_shear), exception);
+    new_image = ShearImage(image, x, y, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
