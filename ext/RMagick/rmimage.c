@@ -10675,6 +10675,7 @@ Image_radial_blur_channel(int argc, VALUE *argv, VALUE self)
     Image *image, *new_image;
     ExceptionInfo *exception;
     ChannelType channels;
+    double angle;
 
     image = rm_check_destroyed(self);
     channels = extract_channels(&argc, argv);
@@ -10689,12 +10690,13 @@ Image_radial_blur_channel(int argc, VALUE *argv, VALUE self)
         raise_ChannelType_error(argv[argc-1]);
     }
 
+    angle = NUM2DBL(argv[0]);
     exception = AcquireExceptionInfo();
 
 #if defined(HAVE_ROTATIONALBLURIMAGECHANNEL)
-    new_image = RotationalBlurImageChannel(image, channels, NUM2DBL(argv[0]), exception);
+    new_image = RotationalBlurImageChannel(image, channels, angle, exception);
 #else
-    new_image = RadialBlurImageChannel(image, channels, NUM2DBL(argv[0]), exception);
+    new_image = RadialBlurImageChannel(image, channels, angle, exception);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
     (void) DestroyExceptionInfo(exception);
