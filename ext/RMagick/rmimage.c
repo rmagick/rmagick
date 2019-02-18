@@ -6925,6 +6925,7 @@ Image_gamma_channel(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
     ChannelType channels;
+    double gamma;
 
     image = rm_check_destroyed(self);
     channels = extract_channels(&argc, argv);
@@ -6939,9 +6940,10 @@ Image_gamma_channel(int argc, VALUE *argv, VALUE self)
         raise_ChannelType_error(argv[argc-1]);
     }
 
+    gamma = NUM2DBL(argv[0]);
     new_image = rm_clone_image(image);
 
-    (void)GammaImageChannel(new_image, channels, NUM2DBL(argv[0]));
+    (void)GammaImageChannel(new_image, channels, gamma);
     rm_check_image_exception(new_image, DestroyOnError);
 
     return rm_image_new(new_image);
