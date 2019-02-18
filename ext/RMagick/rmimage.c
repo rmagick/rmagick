@@ -8368,10 +8368,11 @@ Image_map(int argc, VALUE *argv, VALUE self)
             break;
     }
 
-    new_image = rm_clone_image(image);
-
     map_obj = rm_cur_image(map_arg);
     map = rm_check_destroyed(map_obj);
+
+    new_image = rm_clone_image(image);
+
 #if defined(HAVE_REMAPIMAGE)
     GetQuantizeInfo(&quantize_info);
     quantize_info.dither=dither;
