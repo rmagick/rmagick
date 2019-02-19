@@ -8194,8 +8194,6 @@ Image__load(VALUE class, VALUE str)
 
     class = class;  // Suppress "never referenced" message from icc
 
-    info = CloneImageInfo(NULL);
-
     blob = rm_str2cstr(str, &length);
 
     // Must be as least as big as the 1st 4 fields in DumpedImage
@@ -8229,6 +8227,8 @@ Image__load(VALUE class, VALUE str)
     {
         rb_raise(rb_eTypeError, "image is invalid or corrupted (too short)");
     }
+
+    info = CloneImageInfo(NULL);
 
     memcpy(info->magick, ((DumpedImage *)blob)->magick, mi.len);
     info->magick[mi.len] = '\0';
