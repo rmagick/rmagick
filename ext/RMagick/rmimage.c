@@ -12393,10 +12393,8 @@ Image_sharpen_channel(int argc, VALUE *argv, VALUE self)
             raise_ChannelType_error(argv[argc-1]);
     }
 
-    new_image = rm_clone_image(image);
-
     exception = AcquireExceptionInfo();
-    (void) SharpenImageChannel(new_image, channels, radius, sigma, exception);
+    new_image = SharpenImageChannel(image, channels, radius, sigma, exception);
 
     rm_check_exception(exception, new_image, DestroyOnError);
     (void) DestroyExceptionInfo(exception);
