@@ -3523,9 +3523,10 @@ Image_composite_affine(VALUE self, VALUE source, VALUE affine_matrix)
 
     image = rm_check_destroyed(self);
     composite_image = rm_check_destroyed(source);
-    new_image = rm_clone_image(image);
 
     Export_AffineMatrix(&affine, affine_matrix);
+    new_image = rm_clone_image(image);
+
     (void) DrawAffineImage(new_image, composite_image, &affine);
     rm_check_image_exception(new_image, DestroyOnError);
 
