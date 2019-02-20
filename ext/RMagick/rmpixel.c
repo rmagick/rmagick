@@ -533,15 +533,6 @@ Pixel_from_hsla(int argc, VALUE *argv, VALUE class)
         rb_raise(rb_eRangeError, "hue %g out of range [0.0, 360.0)", h);
     }
 
-    // Ugly way of checking for change in ImageMagick 6.5.6-5 to see whether
-    // saturation/lightness should be out of 255 or out of 100.
-    if(MagickLibVersion < 0x656 ||
-        (MagickLibVersion == 0x656 && strcmp(MagickLibSubversion,"-5") <= 0) )
-    {
-      s = s/2.55;
-      l = l/2.55;
-    }
-
     memset(name, 0, sizeof(name));
     if (alpha)
     {
