@@ -32,7 +32,7 @@ These prerequisites are required for the latest DEVELOPMENT version of RMagick. 
 
 Ruby must be able to build C-Extensions (e.g. MRI, Rubinius, not JRuby)
 
-*ImageMagick* Version 6.4.9 or later (6.x.x). Version 7 is NOT yet supported; ETA April 2019 ( https://github.com/rmagick/rmagick/pull/299 ). You can get ImageMagick from "www.imagemagick.org":http://www.imagemagick.org.
+*ImageMagick* Version 6.8.9 or later (6.x.x). Version 7 is NOT yet supported; ETA April 2019 ( https://github.com/rmagick/rmagick/pull/299 ). You can get ImageMagick from "www.imagemagick.org":http://www.imagemagick.org.
 
 On Ubuntu, you can run:
 
