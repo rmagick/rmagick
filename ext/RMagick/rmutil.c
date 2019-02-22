@@ -229,6 +229,27 @@ rm_check_ary_len(VALUE ary, long len)
 
 
 /**
+ * Raise exception if ary argument was invalid type
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param ary the array
+ * @return the array that is converted type of argument object if needed
+ * @throw TypeError
+ */
+VALUE
+rm_check_ary_type(VALUE ary)
+{
+    VALUE checked = rb_check_array_type(ary);
+    if (NIL_P(checked))
+    {
+        rb_raise(rb_eTypeError, "wrong argument type %"PRIsVALUE" was given. (must respond to :to_ary)", rb_obj_class(ary));
+    }
+    return checked;
+}
+
+
+/**
  * Raise an error if the image has been destroyed.
  *
  * No Ruby usage (internal function)
