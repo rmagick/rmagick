@@ -335,73 +335,10 @@ END_MSWIN
 
     def create_header_file
       have_func('snprintf', headers)
-      ['AcquireImage', # 6.4.1
-       'AffinityImage', # 6.4.3-6
-       'AffinityImages', # 6.4.3-6
-       'AutoGammaImageChannel', # 6.5.5-1
-       'AutoLevelImageChannel', # 6.5.5-1
-       'BlueShiftImage', # 6.5.4-3
-       'ColorMatrixImage', # 6.6.1-0
-       'ConstituteComponentTerminus', # 6.5.7-9
-       'DeskewImage', # 6.4.2-5
-       'DestroyConstitute', # 6.5.7-9(deprecated)
-       'EncipherImage', # 6.3.8-6
-       'EqualizeImageChannel', # 6.3.6-9
-       'EvaluateImages', # 6.8.6-4
-       'FloodfillPaintImage', # 6.3.7
-       'FunctionImageChannel', # 6.4.8-8
-       'GetAuthenticIndexQueue', # 6.4.5-6
-       'GetAuthenticPixels', # 6.4.5-6
-       'GetImageAlphaChannel', # 6.3.9-2
-       'GetImageChannelEntropy', # 6.9.0-0
-       'GetMagickFeatures', # 6.5.7-1
-       'GetVirtualPixels', # 6.4.5-6
-       'LevelImageColors', # 6.4.2
-       'LevelColorsImageChannel', # 6.5.6-4
-       'LevelizeImageChannel', # 6.4.2
-       'LiquidRescaleImage', # 6.3.8-2
-       'MagickLibAddendum', # 6.5.9-1
-       'OpaquePaintImageChannel', # 6.3.7-10
-       'QueueAuthenticPixels', # 6.4.5-6
-       'RemapImage', # 6.4.4-0
-       'RemapImages', # 6.4.4-0
-       'RemoveImageArtifact', # 6.3.6
-       'RotationalBlurImage', # 6.8.8-9
-       'RotationalBlurImageChannel', # 6.8.8-9
-       'SelectiveBlurImageChannel', # 6.5.0-3
-       'SetImageAlphaChannel', # 6.3.6-9
-       'SetImageArtifact', # 6.3.6
-       'SetMagickMemoryMethods', # 6.4.1
-       'SparseColorImage', # 6.3.6-?
-       'StatisticImage', # 6.6.8-6
-       'SyncAuthenticPixels', # 6.4.5-6
-       'TransformImageColorspace', # 6.5.1
-       'TransparentPaintImage', # 6.3.7-10
-       'TransparentPaintImageChroma' # 6.4.5-6
+      [
+        'GetImageChannelEntropy' # 6.9.0-0
       ].each do |func|
         have_func(func, headers)
-      end
-
-      checking_for('QueryMagickColorname() new signature') do
-        if try_compile(<<"SRC")
-#{COMMON_HEADERS}
-        #{cpp_include(headers)}
-/*top*/
-int main() {
-  MagickBooleanType okay;
-  Image *image;
-  MagickPixelPacket *color;
-  char *name;
-  ExceptionInfo *exception;
-  okay = QueryMagickColorname(image, color, SVGCompliance, name, exception);
-  return 0;
-  }
-SRC
-          $defs.push('-DHAVE_NEW_QUERYMAGICKCOLORNAME')
-          true
-        else
-          false
-        end
       end
 
       have_struct_member('Image', 'type', headers) # ???

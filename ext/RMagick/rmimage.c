@@ -591,40 +591,8 @@ Image_alpha(int argc, VALUE *argv, VALUE self)
     image = rm_check_frozen(self);
     VALUE_TO_ENUM(argv[0], alpha, AlphaChannelType);
 
-#if defined(HAVE_SETIMAGEALPHACHANNEL)
-    // Added in 6.3.6-9
     (void) SetImageAlphaChannel(image, alpha);
     rm_check_image_exception(image, RetainOnError);
-#else
-    switch (alpha)
-    {
-        case ActivateAlphaChannel:
-            image->matte = MagickTrue;
-            break;
-
-        case DeactivateAlphaChannel:
-            image->matte = MagickFalse;
-            break;
-
-        case ResetAlphaChannel:
-            if (image->matte == MagickFalse)
-            {
-                (void) SetImageOpacity(image, OpaqueOpacity);
-                rm_check_image_exception(image, RetainOnError);
-            }
-            break;
-
-        case SetAlphaChannel:
-            (void) CompositeImage(image, CopyOpacityCompositeOp, image, 0, 0);
-            rm_check_image_exception(image, RetainOnError);
-            break;
-
-        default:
-            rb_raise(rb_eArgError, "unknown AlphaChannelType value");
-            break;
-    }
-#endif
-
     return argv[0];
 }
 
@@ -646,11 +614,7 @@ VALUE
 Image_alpha_q(VALUE self)
 {
     Image *image = rm_check_destroyed(self);
-#if defined(HAVE_GETIMAGEALPHACHANNEL)
     return GetImageAlphaChannel(image) ? Qtrue : Qfalse;
-#else
-    return image->matte ? Qtrue : Qfalse;
-#endif
 }
 
 
@@ -922,15 +886,7 @@ auto_channel(int argc, VALUE *argv, VALUE self, MagickBooleanType (*fp)(Image *,
 VALUE
 Image_auto_gamma_channel(int argc, VALUE *argv, VALUE self)
 {
-#if defined(HAVE_AUTOGAMMAIMAGECHANNEL)
     return auto_channel(argc, argv, self, AutoGammaImageChannel);
-#else
-    rm_not_implemented();
-    return (VALUE) 0;
-    argc = argc;
-    argv = argv;
-    self = self;
-#endif
 }
 
 
@@ -951,15 +907,7 @@ Image_auto_gamma_channel(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_auto_level_channel(int argc, VALUE *argv, VALUE self)
 {
-#if defined(HAVE_AUTOLEVELIMAGECHANNEL)
     return auto_channel(argc, argv, self, AutoLevelImageChannel);
-#else
-    rm_not_implemented();
-    return (VALUE)0;
-    argc = argc;
-    argv = argv;
-    self = self;
-#endif
 }
 
 
@@ -1627,9 +1575,7 @@ special_composite(Image *image, Image *overlay, double image_pct, double overlay
 
     blend_geometry(geometry, sizeof(geometry), image_pct, overlay_pct);
     (void) CloneString(&overlay->geometry, geometry);
-#if defined(HAVE_SETIMAGEARTIFACT)
     (void) SetImageArtifact(overlay,"compose:args", geometry);
-#endif
 
     new_image = rm_clone_image(image);
     (void) CompositeImage(new_image, op, overlay, x_off, y_off);
@@ -1729,7 +1675,6 @@ Image_blend(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_blue_shift(int argc, VALUE *argv, VALUE self)
 {
-#if defined(HAVE_BLUESHIFTIMAGE)
     Image *image, *new_image;
     double factor = 1.5;
     ExceptionInfo *exception;
@@ -1754,13 +1699,6 @@ Image_blue_shift(int argc, VALUE *argv, VALUE self)
     DestroyExceptionInfo(exception);
 
     return rm_image_new(new_image);
-#else
-    rm_not_implemented();
-    return (VALUE)0;
-    argc = argc;
-    argv = argv;
-    self = self;
-#endif
 }
 
 
@@ -2804,6 +2742,8 @@ Image_color_flood_fill( VALUE self, VALUE target_color, VALUE fill_color
     PixelPacket fill;
     long x, y;
     int fill_method;
+    MagickPixelPacket target_mpp;
+    MagickBooleanType invert;
 
     image = rm_check_destroyed(self);
 
@@ -2836,32 +2776,24 @@ Image_color_flood_fill( VALUE self, VALUE target_color, VALUE fill_color
 
     new_image = rm_clone_image(image);
 
-#if defined(HAVE_FLOODFILLPAINTIMAGE)
+    GetMagickPixelPacket(new_image, &target_mpp);
+    if (fill_method == FillToBorderMethod)
     {
-        MagickPixelPacket target_mpp;
-        MagickBooleanType invert;
-
-        GetMagickPixelPacket(new_image, &target_mpp);
-        if (fill_method == FillToBorderMethod)
-        {
-            invert = MagickTrue;
-            target_mpp.red   = (MagickRealType) image->border_color.red;
-            target_mpp.green = (MagickRealType) image->border_color.green;
-            target_mpp.blue  = (MagickRealType) image->border_color.blue;
-        }
-        else
-        {
-            invert = MagickFalse;
-            target_mpp.red   = (MagickRealType) target.red;
-            target_mpp.green = (MagickRealType) target.green;
-            target_mpp.blue  = (MagickRealType) target.blue;
-        }
-
-        (void) FloodfillPaintImage(new_image, DefaultChannels, draw_info, &target_mpp, x, y, invert);
+        invert = MagickTrue;
+        target_mpp.red   = (MagickRealType) image->border_color.red;
+        target_mpp.green = (MagickRealType) image->border_color.green;
+        target_mpp.blue  = (MagickRealType) image->border_color.blue;
     }
-#else
-    (void) ColorFloodfillImage(new_image, draw_info, target, x, y, (PaintMethod)fill_method);
-#endif
+    else
+    {
+        invert = MagickFalse;
+        target_mpp.red   = (MagickRealType) target.red;
+        target_mpp.green = (MagickRealType) target.green;
+        target_mpp.blue  = (MagickRealType) target.blue;
+    }
+
+    (void) FloodfillPaintImage(new_image, DefaultChannels, draw_info, &target_mpp, x, y, invert);
+
     // No need to check for error
 
     (void) DestroyDrawInfo(draw_info);
@@ -3072,11 +3004,7 @@ Image_colorspace_eq(VALUE self, VALUE colorspace)
 
     image = rm_check_frozen(self);
     VALUE_TO_ENUM(colorspace, new_cs, ColorspaceType);
-#if defined(HAVE_TRANSFORMIMAGECOLORSPACE)
     (void) TransformImageColorspace(image, new_cs);
-#else
-    (void) SetImageColorspace(image, new_cs);
-#endif
 
     return self;
 }
@@ -3759,11 +3687,7 @@ composite_tiled(int bang, int argc, VALUE *argv, VALUE self)
         image = rm_clone_image(image);
     }
 
-#if defined(HAVE_SETIMAGEARTIFACT)
     (void) SetImageArtifact(comp_image,"modify-outside-overlay", "false");
-#else
-    (void) SetImageAttribute(comp_image, "[modify-outside-overlay]", "false");
-#endif
 
     status = MagickTrue;
     columns = comp_image->columns;
@@ -4018,9 +3942,6 @@ Image_constitute(VALUE class, VALUE width_arg, VALUE height_arg
     rm_check_image_exception(image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
-#if defined(HAVE_DESTROYCONSTITUTE) || defined(HAVE_CONSTITUTECOMPONENTTERMINUS)
-    DestroyConstitute();
-#endif
 
     RB_GC_GUARD(pixel);
     RB_GC_GUARD(pixel0);
@@ -4590,7 +4511,6 @@ Image_density_eq(VALUE self, VALUE density_arg)
 VALUE
 Image_decipher(VALUE self, VALUE passphrase)
 {
-#if defined(HAVE_ENCIPHERIMAGE)
     Image *image, *new_image;
     char *pf;
     ExceptionInfo *exception;
@@ -4613,12 +4533,6 @@ Image_decipher(VALUE self, VALUE passphrase)
     DestroyExceptionInfo(exception);
 
     return rm_image_new(new_image);
-#else
-    self = self;
-    passphrase = passphrase;
-    rm_not_implemented();
-    return(VALUE)0;
-#endif
 }
 
 
@@ -4642,7 +4556,6 @@ Image_decipher(VALUE self, VALUE passphrase)
 VALUE
 Image_define(VALUE self, VALUE artifact, VALUE value)
 {
-#if defined(HAVE_SETIMAGEARTIFACT)
     Image *image;
     char *key, *val;
     MagickBooleanType status;
@@ -4667,13 +4580,6 @@ Image_define(VALUE self, VALUE artifact, VALUE value)
     }
 
     return value;
-#else
-    rm_not_implemented();
-    artifact = artifact;
-    value = value;
-    self = self;
-    return(VALUE)0;
-#endif
 }
 
 
@@ -4778,7 +4684,6 @@ Image_depth(VALUE self)
 VALUE
 Image_deskew(int argc, VALUE *argv, VALUE self)
 {
-#if defined(HAVE_DESKEWIMAGE)
     Image *image, *new_image;
     double threshold = 40.0 * QuantumRange / 100.0;
     unsigned long width;
@@ -4811,13 +4716,6 @@ Image_deskew(int argc, VALUE *argv, VALUE self)
     (void) DestroyExceptionInfo(exception);
 
     return rm_image_new(new_image);
-#else
-    self = self;        // defeat "unused parameter" message
-    argv = argv;
-    argc = argc;
-    rm_not_implemented();
-    return(VALUE)0;
-#endif
 }
 
 
@@ -5668,7 +5566,6 @@ Image_emboss(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_encipher(VALUE self, VALUE passphrase)
 {
-#if defined(HAVE_ENCIPHERIMAGE)
     Image *image, *new_image;
     char *pf;
     ExceptionInfo *exception;
@@ -5691,12 +5588,6 @@ Image_encipher(VALUE self, VALUE passphrase)
     DestroyExceptionInfo(exception);
 
     return rm_image_new(new_image);
-#else
-    self = self;
-    passphrase = passphrase;
-    rm_not_implemented();
-    return(VALUE)0;
-#endif
 }
 
 
@@ -5812,7 +5703,6 @@ Image_equalize(VALUE self)
 VALUE
 Image_equalize_channel(int argc, VALUE *argv, VALUE self)
 {
-#if defined(HAVE_EQUALIZEIMAGECHANNEL)
     Image *image, *new_image;
     ExceptionInfo *exception;
     ChannelType channels;
@@ -5834,13 +5724,6 @@ Image_equalize_channel(int argc, VALUE *argv, VALUE self)
     (void) DestroyExceptionInfo(exception);
 
     return rm_image_new(new_image);
-#else
-    argc = argc;
-    argv = argv;
-    self = self;
-    rm_not_implemented();
-    return(VALUE) 0;
-#endif
 }
 
 
@@ -6791,7 +6674,6 @@ Image_from_blob(VALUE class, VALUE blob_arg)
 VALUE
 Image_function_channel(int argc, VALUE *argv, VALUE self)
 {
-#if defined(HAVE_FUNCTIONIMAGECHANNEL)
     Image *image, *new_image;
     MagickFunction function;
     unsigned long n, nparms;
@@ -6858,13 +6740,6 @@ Image_function_channel(int argc, VALUE *argv, VALUE self)
     DestroyExceptionInfo(exception);
 
     return rm_image_new(new_image);
-#else
-    rm_not_implemented();
-    return (VALUE)0;
-    argc = argc;
-    argv = argv;
-    self = self;
-#endif
 }
 
 
@@ -7196,11 +7071,7 @@ Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE row
     // Cast AcquireImagePixels to get rid of the const qualifier. We're not going
     // to change the pixels but I don't want to make "pixels" const.
     exception = AcquireExceptionInfo();
-#if defined(HAVE_GETVIRTUALPIXELS)
     pixels = GetVirtualPixels(image, x, y, columns, rows, exception);
-#else
-    pixels = AcquireImagePixels(image, x, y, columns, rows, exception);
-#endif
     CHECK_EXCEPTION()
 
     (void) DestroyExceptionInfo(exception);
@@ -7628,7 +7499,6 @@ build_inspect_string(Image *image, char *buffer, size_t len)
     }
 
 
-#if defined(HAVE_SETIMAGEARTIFACT)
     if (len-1-x > 6)
     {
         size_t value_l;
@@ -7643,7 +7513,6 @@ build_inspect_string(Image *image, char *buffer, size_t len)
             x += value_l;
         }
     }
-#endif
 
     assert(x < (int)(len-1));
     buffer[x] = '\0';
@@ -7924,7 +7793,6 @@ Image_level_channel(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_level_colors(int argc, VALUE *argv, VALUE self)
 {
-#if defined(HAVE_LEVELIMAGECOLORS) || defined(HAVE_LEVELCOLORSIMAGECHANNEL)
     Image *image, *new_image;
     MagickPixelPacket black_color, white_color;
     ChannelType channels;
@@ -7977,11 +7845,7 @@ Image_level_colors(int argc, VALUE *argv, VALUE self)
 
     new_image = rm_clone_image(image);
 
-#if defined(HAVE_LEVELCOLORSIMAGECHANNEL)      // new in 6.5.6-4
     status = LevelColorsImageChannel(new_image, channels, &black_color, &white_color, invert);
-#else
-    status = LevelImageColors(new_image, channels, &black_color, &white_color, invert);
-#endif
     rm_check_image_exception(new_image, DestroyOnError);
     if (!status)
     {
@@ -7989,14 +7853,6 @@ Image_level_colors(int argc, VALUE *argv, VALUE self)
     }
 
     return rm_image_new(new_image);
-
-#else
-    rm_not_implemented();
-    self = self;
-    argc = argc;
-    argv = argv;
-    return(VALUE)0;
-#endif
 }
 
 
@@ -8024,7 +7880,6 @@ Image_level_colors(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_levelize_channel(int argc, VALUE *argv, VALUE self)
 {
-#if defined(HAVE_LEVELIZEIMAGECHANNEL)
     Image *image, *new_image;
     ChannelType channels;
     double black_point, white_point;
@@ -8064,13 +7919,6 @@ Image_levelize_channel(int argc, VALUE *argv, VALUE self)
         rb_raise(rb_eRuntimeError, "LevelizeImageChannel failed for unknown reason.");
     }
     return rm_image_new(new_image);
-#else
-    rm_not_implemented();
-    self = self;
-    argc = argc;
-    argv = argv;
-    return(VALUE)0;
-#endif
 }
 
 
@@ -8128,7 +7976,6 @@ Image_linear_stretch(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_liquid_rescale(int argc, VALUE *argv, VALUE self)
 {
-#if defined(HAVE_LIQUIDRESCALEIMAGE)
     Image *image, *new_image;
     unsigned long cols, rows;
     double delta_x = 0.0;
@@ -8159,13 +8006,6 @@ Image_liquid_rescale(int argc, VALUE *argv, VALUE self)
     rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
-#else
-    argc = argc;    // defeat "unused parameter" messages
-    argv = argv;
-    self = self;
-    rm_not_implemented();
-    return(VALUE)0;
-#endif
 }
 
 
@@ -8350,10 +8190,8 @@ Image_map(int argc, VALUE *argv, VALUE self)
     VALUE map_obj, map_arg;
     unsigned int dither = MagickFalse;
 
-#if defined(HAVE_REMAPIMAGE)
     QuantizeInfo quantize_info;
     rb_warning("Image#map is deprecated. Use Image#remap instead");
-#endif
 
     image = rm_check_destroyed(self);
 
@@ -8374,13 +8212,9 @@ Image_map(int argc, VALUE *argv, VALUE self)
 
     new_image = rm_clone_image(image);
 
-#if defined(HAVE_REMAPIMAGE)
     GetQuantizeInfo(&quantize_info);
     quantize_info.dither=dither;
     (void) RemapImage(&quantize_info, new_image, map);
-#else
-    (void) MapImage(new_image, map, dither);
-#endif
     rm_check_image_exception(new_image, DestroyOnError);
 
     RB_GC_GUARD(map_obj);
@@ -8601,18 +8435,13 @@ Image_mask(int argc, VALUE *argv, VALUE self)
         }
 
         // The following section is copied from mogrify.c (6.2.8-8)
-#if defined(HAVE_SYNCAUTHENTICPIXELS)
         exception = AcquireExceptionInfo();
-#endif
+
         for (y = 0; y < (long) clip_mask->rows; y++)
         {
-#if defined(HAVE_GETAUTHENTICPIXELS)
             q = GetAuthenticPixels(clip_mask, 0, y, clip_mask->columns, 1, exception);
             rm_check_exception(exception, clip_mask, DestroyOnError);
-#else
-            q = GetImagePixels(clip_mask, 0, y, clip_mask->columns, 1);
-            rm_check_image_exception(clip_mask, DestroyOnError);
-#endif
+
             if (!q)
             {
                 break;
@@ -8629,17 +8458,10 @@ Image_mask(int argc, VALUE *argv, VALUE self)
                 q += 1;
             }
 
-#if defined(HAVE_SYNCAUTHENTICPIXELS)
             SyncAuthenticPixels(clip_mask, exception);
             rm_check_exception(exception, clip_mask, DestroyOnError);
-#else
-            SyncImagePixels(clip_mask);
-            rm_check_image_exception(clip_mask, DestroyOnError);
-#endif
         }
-#if defined(HAVE_SYNCAUTHENTICPIXELS)
         (void) DestroyExceptionInfo(exception);
-#endif
 
         SetImageStorageClass(clip_mask, DirectClass);
         rm_check_image_exception(clip_mask, DestroyOnError);
@@ -8702,7 +8524,6 @@ Image_matte(VALUE self)
 VALUE
 Image_matte_eq(VALUE self, VALUE matte)
 {
-#if defined(HAVE_SETIMAGEALPHACHANNEL)
     VALUE alpha_channel_type;
 
     if (RTEST(matte))
@@ -8715,11 +8536,6 @@ Image_matte_eq(VALUE self, VALUE matte)
     }
 
     return Image_alpha_eq(self, alpha_channel_type);
-#else
-    Image *image = rm_check_frozen(self);
-    image->matte = RTEST(matte) ? MagickTrue : MagickFalse;
-    return matte;
-#endif
 }
 
 
@@ -8780,6 +8596,9 @@ Image_matte_flood_fill(VALUE self, VALUE color, VALUE opacity, VALUE x_obj, VALU
     Quantum op;
     long x, y;
     PaintMethod method;
+    DrawInfo *draw_info;
+    MagickPixelPacket target_mpp;
+    MagickBooleanType invert;
 
     image = rm_check_destroyed(self);
     Color_to_PixelPacket(&target, color);
@@ -8803,41 +8622,32 @@ Image_matte_flood_fill(VALUE self, VALUE color, VALUE opacity, VALUE x_obj, VALU
 
     new_image = rm_clone_image(image);
 
-#if defined(HAVE_FLOODFILLPAINTIMAGE)
+    // FloodfillPaintImage looks for the opacity in the DrawInfo.fill field.
+    draw_info = CloneDrawInfo(NULL, NULL);
+    if (!draw_info)
     {
-        DrawInfo *draw_info;
-        MagickPixelPacket target_mpp;
-        MagickBooleanType invert;
-
-        // FloodfillPaintImage looks for the opacity in the DrawInfo.fill field.
-        draw_info = CloneDrawInfo(NULL, NULL);
-        if (!draw_info)
-        {
-            rb_raise(rb_eNoMemError, "not enough memory to continue");
-        }
-        draw_info->fill.opacity = op;
-
-        if (method == FillToBorderMethod)
-        {
-            invert = MagickTrue;
-            target_mpp.red   = (MagickRealType) image->border_color.red;
-            target_mpp.green = (MagickRealType) image->border_color.green;
-            target_mpp.blue  = (MagickRealType) image->border_color.blue;
-        }
-        else
-        {
-            invert = MagickFalse;
-            target_mpp.red   = (MagickRealType) target.red;
-            target_mpp.green = (MagickRealType) target.green;
-            target_mpp.blue  = (MagickRealType) target.blue;
-        }
-
-        (void) FloodfillPaintImage(new_image, OpacityChannel, draw_info, &target_mpp, x, y, invert);
-        (void) DestroyDrawInfo(draw_info);
+        rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
-#else
-    (void) MatteFloodfillImage(new_image, target, op, x, y, method);
-#endif
+    draw_info->fill.opacity = op;
+
+    if (method == FillToBorderMethod)
+    {
+        invert = MagickTrue;
+        target_mpp.red   = (MagickRealType) image->border_color.red;
+        target_mpp.green = (MagickRealType) image->border_color.green;
+        target_mpp.blue  = (MagickRealType) image->border_color.blue;
+    }
+    else
+    {
+        invert = MagickFalse;
+        target_mpp.red   = (MagickRealType) target.red;
+        target_mpp.green = (MagickRealType) target.green;
+        target_mpp.blue  = (MagickRealType) target.blue;
+    }
+
+    (void) FloodfillPaintImage(new_image, OpacityChannel, draw_info, &target_mpp, x, y, invert);
+    (void) DestroyDrawInfo(draw_info);
+
     rm_check_image_exception(new_image, DestroyOnError);
 
     return rm_image_new(new_image);
@@ -8881,11 +8691,7 @@ Image_median_filter(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-#if defined(HAVE_STATISTICIMAGE)
     new_image = StatisticImage(image, MedianStatistic, (size_t)radius, (size_t)radius, exception);
-#else
-    new_image = MedianFilterImage(image, radius, exception);
-#endif
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
@@ -9609,11 +9415,7 @@ Image_opaque(VALUE self, VALUE target, VALUE fill)
 
     new_image = rm_clone_image(image);
 
-#if defined(HAVE_OPAQUEPAINTIMAGECHANNEL)
     okay = OpaquePaintImageChannel(new_image, DefaultChannels, &target_pp, &fill_pp, MagickFalse);
-#else
-    okay =  PaintOpaqueImageChannel(new_image, DefaultChannels, &target_pp, &fill_pp);
-#endif
     rm_check_image_exception(new_image, DestroyOnError);
 
     if (!okay)
@@ -9651,7 +9453,6 @@ Image_opaque(VALUE self, VALUE target, VALUE fill)
 VALUE
 Image_opaque_channel(int argc, VALUE *argv, VALUE self)
 {
-#if defined(HAVE_OPAQUEPAINTIMAGECHANNEL)
     Image *image, *new_image;
     MagickPixelPacket target_pp, fill_pp;
     ChannelType channels;
@@ -9706,14 +9507,6 @@ Image_opaque_channel(int argc, VALUE *argv, VALUE self)
     }
 
     return rm_image_new(new_image);
-
-#else
-    argc = argc;    // defeat "unused parameter" messages
-    argv = argv;
-    self = self;
-    rm_not_implemented();
-    return(VALUE)0;
-#endif
 }
 
 
@@ -9901,7 +9694,6 @@ Image_page_eq(VALUE self, VALUE rect)
 VALUE
 Image_paint_transparent(int argc, VALUE *argv, VALUE self)
 {
-#if defined(HAVE_TRANSPARENTPAINTIMAGE)
     Image *image, *new_image;
     MagickPixelPacket color;
     Quantum opacity = TransparentOpacity;
@@ -9948,13 +9740,6 @@ Image_paint_transparent(int argc, VALUE *argv, VALUE self)
     }
 
     return rm_image_new(new_image);
-#else
-    argc = argc;    // defeat "unused parameter" messages
-    argv = argv;
-    self = self;
-    rm_not_implemented();
-    return(VALUE)0;
-#endif
 }
 
 
@@ -10047,11 +9832,7 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
     if (!set)
     {
         exception = AcquireExceptionInfo();
-#if defined(HAVE_GETVIRTUALPIXELS)
         old_color = *GetVirtualPixels(image, x, y, 1, 1, exception);
-#else
-        old_color = *AcquireImagePixels(image, x, y, 1, 1, exception);
-#endif
         CHECK_EXCEPTION()
 
         (void) DestroyExceptionInfo(exception);
@@ -10059,11 +9840,7 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
         // PseudoClass
         if (image->storage_class == PseudoClass)
         {
-#if defined(HAVE_GETAUTHENTICINDEXQUEUE)
             IndexPacket *indexes = GetAuthenticIndexQueue(image);
-#else
-            IndexPacket *indexes = GetIndexes(image);
-#endif
             old_color = image->colormap[(unsigned long)*indexes];
         }
         if (!image->matte)
@@ -10093,17 +9870,10 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
     }
 
 
-#if defined(HAVE_GETAUTHENTICPIXELS) || defined(HAVE_SYNCAUTHENTICPIXELS)
     exception = AcquireExceptionInfo();
-#endif
 
-#if defined(HAVE_GETAUTHENTICPIXELS)
     pixel = GetAuthenticPixels(image, x, y, 1, 1, exception);
     CHECK_EXCEPTION()
-#else
-    pixel = GetImagePixels(image, x, y, 1, 1);
-    rm_check_image_exception(image, RetainOnError);
-#endif
 
     if (pixel)
     {
@@ -10115,17 +9885,10 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
     }
     *pixel = new_color;
 
-#if defined(HAVE_SYNCAUTHENTICPIXELS)
     SyncAuthenticPixels(image, exception);
     CHECK_EXCEPTION()
-#else
-    SyncImagePixels(image);
-    rm_check_image_exception(image, RetainOnError);
-#endif
 
-#if defined(HAVE_GETAUTHENTICPIXELS) || defined(HAVE_SYNCAUTHENTICPIXELS)
     (void) DestroyExceptionInfo(exception);
-#endif
 
     return Pixel_from_PixelPacket(&old_color);
 }
@@ -10642,11 +10405,7 @@ Image_radial_blur(VALUE self, VALUE angle_obj)
     image = rm_check_destroyed(self);
     exception = AcquireExceptionInfo();
 
-#if defined(HAVE_ROTATIONALBLURIMAGE)
     new_image = RotationalBlurImage(image, angle, exception);
-#else
-    new_image = RadialBlurImage(image, angle, exception);
-#endif
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
@@ -10698,11 +10457,7 @@ Image_radial_blur_channel(int argc, VALUE *argv, VALUE self)
     angle = NUM2DBL(argv[0]);
     exception = AcquireExceptionInfo();
 
-#if defined(HAVE_ROTATIONALBLURIMAGECHANNEL)
     new_image = RotationalBlurImageChannel(image, channels, angle, exception);
-#else
-    new_image = RadialBlurImageChannel(image, channels, angle, exception);
-#endif
     rm_check_exception(exception, new_image, DestroyOnError);
     (void) DestroyExceptionInfo(exception);
     rm_ensure_result(new_image);
@@ -10952,10 +10707,7 @@ Image_recolor(VALUE self, VALUE color_matrix)
     long x, len;
     double *matrix;
     ExceptionInfo *exception;
-
-#if defined(HAVE_COLORMATRIXIMAGE)
     KernelInfo *kernel_info;
-#endif
 
     image = rm_check_destroyed(self);
     color_matrix = rm_check_ary_type(color_matrix);
@@ -10974,7 +10726,6 @@ Image_recolor(VALUE self, VALUE color_matrix)
     order = (unsigned long)sqrt((double)(len + 1.0));
 
     // RecolorImage sets the ExceptionInfo and returns a NULL image if an error occurs.
-#if defined(HAVE_COLORMATRIXIMAGE)
     kernel_info = AcquireKernelInfo("1");
     if (kernel_info == (KernelInfo *) NULL)
       return((Image *) NULL);
@@ -10984,9 +10735,6 @@ Image_recolor(VALUE self, VALUE color_matrix)
     new_image = ColorMatrixImage(image, kernel_info, exception);
     kernel_info->values = (double *) NULL;
     kernel_info = DestroyKernelInfo(kernel_info);
-#else
-    new_image = RecolorImage(image, order, matrix, exception);
-#endif
     xfree((void *)matrix);
 
     rm_check_exception(exception, new_image, DestroyOnError);
@@ -11120,11 +10868,7 @@ Image_reduce_noise(VALUE self, VALUE radius)
     image = rm_check_destroyed(self);
 
     exception = AcquireExceptionInfo();
-#if defined(HAVE_STATISTICIMAGE)
     new_image = StatisticImage(image, NonpeakStatistic, (size_t)radius, (size_t)radius, exception);
-#else
-    new_image = ReduceNoiseImage(image, NUM2DBL(radius), exception);
-#endif
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
@@ -11151,7 +10895,6 @@ Image_reduce_noise(VALUE self, VALUE radius)
 VALUE
 Image_remap(int argc, VALUE *argv, VALUE self)
 {
-#if defined(HAVE_REMAPIMAGE) || defined(HAVE_AFFINITYIMAGE)
     Image *image, *remap_image;
     QuantizeInfo quantize_info;
 
@@ -11178,21 +10921,10 @@ Image_remap(int argc, VALUE *argv, VALUE self)
             break;
     }
 
-#if defined(HAVE_REMAPIMAGE)
     (void) RemapImage(&quantize_info, image, remap_image);
-#else
-    (void) AffinityImage(&quantize_info, image, remap_image);
-#endif
     rm_check_image_exception(image, RetainOnError);
 
     return self;
-#else
-    self = self;
-    argc = argc;
-    argv = argv;
-    rm_not_implemented();
-    return(VALUE)0;
-#endif
 }
 
 
@@ -11886,7 +11618,6 @@ DEF_ATTR_READER(Image, scene, ulong)
 VALUE
 Image_selective_blur_channel(int argc, VALUE *argv, VALUE self)
 {
-#if defined(HAVE_SELECTIVEBLURIMAGECHANNEL)
     Image *image, *new_image;
     double radius, sigma, threshold;
     ExceptionInfo *exception;
@@ -11916,14 +11647,6 @@ Image_selective_blur_channel(int argc, VALUE *argv, VALUE self)
     rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
-
-#else
-    rm_not_implemented();
-    argc = argc;
-    argv = argv;
-    self = self;
-    return (VALUE)0;
-#endif
 }
 
 
@@ -12689,7 +12412,6 @@ Image_spaceship(VALUE self, VALUE other)
 }
 
 
-#if defined(HAVE_SPARSECOLORIMAGE)
 /**
  * Count the number of channels from the specified list are in an image. Note
  * that this method also removes invalid channels based on the image.
@@ -12737,7 +12459,6 @@ count_channels(Image *image, ChannelType *channels)
 
     return ncolors;
 }
-#endif
 
 
 /**
@@ -12766,7 +12487,6 @@ count_channels(Image *image, ChannelType *channels)
 VALUE
 Image_sparse_color(int argc, VALUE *argv, VALUE self)
 {
-#if defined(HAVE_SPARSECOLORIMAGE)
     Image *image, *new_image;
     unsigned long x, nargs, ncolors;
     SparseColorMethod method;
@@ -12845,14 +12565,6 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
     RB_GC_GUARD(args);
 
     return rm_image_new(new_image);
-
-#else
-    self = self;
-    argc = argc;
-    argv = argv;
-    rm_not_implemented();
-    return(VALUE)0;
-#endif
 }
 
 
@@ -13143,9 +12855,7 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg
     long x, y;
     unsigned long cols, rows;
     unsigned int okay;
-#if defined(HAVE_SYNCAUTHENTICPIXELS) || defined(HAVE_GETAUTHENTICPIXELS)
     ExceptionInfo *exception;
-#endif
 
     image = rm_check_destroyed(self);
 
@@ -13172,16 +12882,11 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg
     // Get a pointer to the pixels. Replace the values with the PixelPackets
     // from the pixels argument.
     {
-#if defined(HAVE_GETAUTHENTICPIXELS)
         exception = AcquireExceptionInfo();
 
         pixels = GetAuthenticPixels(image, x, y, cols, rows, exception);
         CHECK_EXCEPTION()
         DestroyExceptionInfo(exception);
-#else
-        pixels = GetImagePixels(image, x, y, cols, rows);
-        rm_check_image_exception(image, RetainOnError);
-#endif
 
         if (pixels)
         {
@@ -13191,16 +12896,11 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg
                 Data_Get_Struct(new_pixel, Pixel, pixel);
                 pixels[n] = *pixel;
             }
-#if defined(HAVE_SYNCAUTHENTICPIXELS)
             exception = AcquireExceptionInfo();
 
             SyncAuthenticPixels(image, exception);
             CHECK_EXCEPTION()
             DestroyExceptionInfo(exception);
-#else
-            SyncImagePixels(image);
-            rm_check_image_exception(image, RetainOnError);
-#endif
         }
     }
 
@@ -13316,6 +13016,8 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj
     DrawInfo *draw_info;
     long x, y;
     PaintMethod method;
+    MagickPixelPacket color_mpp;
+    MagickBooleanType invert;
 
     image = rm_check_destroyed(self);
 
@@ -13349,33 +13051,23 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj
     new_image = rm_clone_image(image);
 
 
-#if defined(HAVE_FLOODFILLPAINTIMAGE)
+    GetMagickPixelPacket(new_image, &color_mpp);
+    if (method == FillToBorderMethod)
     {
-        MagickPixelPacket color_mpp;
-        MagickBooleanType invert;
-
-        GetMagickPixelPacket(new_image, &color_mpp);
-        if (method == FillToBorderMethod)
-        {
-            invert = MagickTrue;
-            color_mpp.red   = (MagickRealType) image->border_color.red;
-            color_mpp.green = (MagickRealType) image->border_color.green;
-            color_mpp.blue  = (MagickRealType) image->border_color.blue;
-        }
-        else
-        {
-            invert = MagickFalse;
-            color_mpp.red   = (MagickRealType) color.red;
-            color_mpp.green = (MagickRealType) color.green;
-            color_mpp.blue  = (MagickRealType) color.blue;
-        }
-
-        (void) FloodfillPaintImage(new_image, DefaultChannels, draw_info, &color_mpp, x, y, invert);
+        invert = MagickTrue;
+        color_mpp.red   = (MagickRealType) image->border_color.red;
+        color_mpp.green = (MagickRealType) image->border_color.green;
+        color_mpp.blue  = (MagickRealType) image->border_color.blue;
+    }
+    else
+    {
+        invert = MagickFalse;
+        color_mpp.red   = (MagickRealType) color.red;
+        color_mpp.green = (MagickRealType) color.green;
+        color_mpp.blue  = (MagickRealType) color.blue;
     }
 
-#else
-    (void) ColorFloodfillImage(new_image, draw_info, color, x, y, method);
-#endif
+    (void) FloodfillPaintImage(new_image, DefaultChannels, draw_info, &color_mpp, x, y, invert);
 
     (void) DestroyDrawInfo(draw_info);
     rm_check_image_exception(new_image, DestroyOnError);
@@ -13934,11 +13626,7 @@ Image_transparent(int argc, VALUE *argv, VALUE self)
 
     new_image = rm_clone_image(image);
 
-#if defined(HAVE_TRANSPARENTPAINTIMAGE)
     okay = TransparentPaintImage(new_image, &color, opacity, MagickFalse);
-#else
-    okay = PaintTransparentImage(new_image, &color, opacity);
-#endif
     rm_check_image_exception(new_image, DestroyOnError);
     if (!okay)
     {
@@ -13972,7 +13660,6 @@ Image_transparent(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_transparent_chroma(int argc, VALUE *argv, VALUE self)
 {
-#if defined(HAVE_TRANSPARENTPAINTIMAGECHROMA)
     Image *image, *new_image;
     Quantum opacity = TransparentOpacity;
     MagickPixelPacket low, high;
@@ -14008,13 +13695,6 @@ Image_transparent_chroma(int argc, VALUE *argv, VALUE self)
     }
 
     return rm_image_new(new_image);
-#else
-    rm_not_implemented();
-    return (VALUE)0;
-    argc = argc;
-    argv = argv;
-    self = self;
-#endif
 }
 
 
@@ -14340,7 +14020,6 @@ VALUE Image_image_type_eq(VALUE self, VALUE image_type)
 VALUE
 Image_undefine(VALUE self, VALUE artifact)
 {
-#if defined(HAVE_REMOVEIMAGEARTIFACT)
     Image *image;
     char *key;
     long key_l;
@@ -14349,12 +14028,6 @@ Image_undefine(VALUE self, VALUE artifact)
     key = rm_str2cstr(artifact, &key_l);
     (void) RemoveImageArtifact(image, key);
     return self;
-#else
-    rm_not_implemented();
-    artifact = artifact;
-    self = self;
-    return(VALUE)0;
-#endif
 }
 
 
@@ -14787,9 +14460,7 @@ Image_watermark(int argc, VALUE *argv, VALUE self)
 
     blend_geometry(geometry, sizeof(geometry), src_percent, dst_percent);
     (void) CloneString(&overlay->geometry, geometry);
-#if defined(HAVE_SETIMAGEARTIFACT)
     (void) SetImageArtifact(overlay,"compose:args", geometry);
-#endif
 
     new_image = rm_clone_image(image);
     (void) CompositeImage(new_image, ModulateCompositeOp, overlay, x_offset, y_offset);
@@ -14964,12 +14635,7 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
             opacity = TransparentOpacity;
         }
 
-
-#if defined(HAVE_GETVIRTUALPIXELS)
         p = GetVirtualPixels(reflection, 0, y, image->columns, 1, exception);
-#else
-        p = AcquireImagePixels(reflection, 0, y, image->columns, 1, exception);
-#endif
         rm_check_exception(exception, reflection, DestroyOnError);
         if (!p)
         {
@@ -14977,11 +14643,8 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
             goto error;
         }
 
-#if defined(HAVE_QUEUEAUTHENTICPIXELS)
         q = QueueAuthenticPixels(reflection, 0, y, image->columns, 1, exception);
-#else
-        q = SetImagePixels(reflection, 0, y, image->columns, 1);
-#endif
+
         rm_check_exception(exception, reflection, DestroyOnError);
         if (!q)
         {
@@ -14997,13 +14660,8 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
         }
 
 
-#if defined(HAVE_SYNCAUTHENTICPIXELS)
         SyncAuthenticPixels(reflection, exception);
         rm_check_exception(exception, reflection, DestroyOnError);
-#else
-        SyncImagePixels(reflection);
-        rm_check_image_exception(reflection, DestroyOnError);
-#endif
 
         opacity += step;
     }

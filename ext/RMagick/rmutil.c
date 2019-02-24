@@ -918,7 +918,6 @@ rm_set_property(Image *image, const char *property, const char *value)
  */
 void rm_set_user_artifact(Image *images, Info *info)
 {
-#if defined(HAVE_SETIMAGEARTIFACT)
     Image *image;
     const char *value;
 
@@ -932,10 +931,6 @@ void rm_set_user_artifact(Image *images, Info *info)
             image = GetNextImageInList(image);
         }
     }
-#else
-    images = images;
-    info = info;
-#endif
 }
 
 
@@ -974,7 +969,6 @@ rm_get_optional_arguments(VALUE img)
 }
 
 
-#if defined(HAVE_SETIMAGEARTIFACT)
 /**
  * Copy image options from the Info structure to the Image structure.
  *
@@ -1000,7 +994,6 @@ static void copy_options(Image *image, Info *info)
         }
     }
 }
-#endif
 
 
 /**
@@ -1169,9 +1162,7 @@ void rm_sync_image_options(Image *image, Info *info)
         image->units = info->units;
     }
 
-#if defined(HAVE_SETIMAGEARTIFACT)
     copy_options(image, info);
-#endif
 }
 
 
