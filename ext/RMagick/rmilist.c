@@ -135,11 +135,7 @@ ImageList_average(VALUE self)
     images = images_from_imagelist(self);
 
     exception = AcquireExceptionInfo();
-#if defined(HAVE_EVALUATEIMAGES)
     new_image = EvaluateImages(images, MeanEvaluateOperator, exception);
-#else
-    new_image = AverageImages(images, exception);
-#endif
 
     rm_split(images);
     rm_check_exception(exception, new_image, DestroyOnError);
@@ -426,10 +422,8 @@ ImageList_map(int argc, VALUE *argv, VALUE self)
     VALUE scene, new_imagelist, t;
     ExceptionInfo *exception;
 
-#if defined(HAVE_REMAPIMAGES)
     QuantizeInfo quantize_info;
     rb_warning("ImageList#map is deprecated. Use ImageList#remap instead.");
-#endif
 
     switch (argc)
     {
@@ -457,13 +451,9 @@ ImageList_map(int argc, VALUE *argv, VALUE self)
     rm_ensure_result(new_images);
 
     // Call ImageMagick
-#if defined(HAVE_REMAPIMAGES)
     GetQuantizeInfo(&quantize_info);
     quantize_info.dither = dither;
     (void) RemapImages(&quantize_info, new_images, map);
-#else
-    (void) MapImages(new_images, map, dither);
-#endif
     rm_check_image_exception(new_images, DestroyOnError);
 
     // Set @scene in new ImageList object to same value as in self.
@@ -684,12 +674,8 @@ ImageList_optimize_layers(VALUE self, VALUE method)
             OptimizeImageTransparency(new_images, exception);
             rm_check_exception(exception, new_images, DestroyOnError);
             // mogrify supports -dither here. We don't.
-#if defined(HAVE_REMAPIMAGE)
             GetQuantizeInfo(&quantize_info);
             (void) RemapImages(&quantize_info, new_images, NULL);
-#else
-            (void) MapImages(new_images, NULL, 0);
-#endif
             break;
         case OptimizePlusLayer:
             new_images = OptimizePlusImageLayers(images, exception);
@@ -1060,7 +1046,6 @@ ImageList_quantize(int argc, VALUE *argv, VALUE self)
 VALUE
 ImageList_remap(int argc, VALUE *argv, VALUE self)
 {
-#if defined(HAVE_REMAPIMAGES) || defined(HAVE_AFFINITYIMAGES)
     Image *images, *remap_image = NULL;
     QuantizeInfo quantize_info;
 
@@ -1086,22 +1071,11 @@ ImageList_remap(int argc, VALUE *argv, VALUE self)
 
     images = images_from_imagelist(self);
 
-#if defined(HAVE_REMAPIMAGE)
     (void) RemapImages(&quantize_info, images, remap_image);
-#else
-    (void) AffinityImages(&quantize_info, images, remap_image);
-#endif
     rm_check_image_exception(images, RetainOnError);
     rm_split(images);
 
     return self;
-#else
-    self = self;
-    argc = argc;
-    argv = argv;
-    rm_not_implemented();
-    return(VALUE)0;
-#endif
 }
 
 
