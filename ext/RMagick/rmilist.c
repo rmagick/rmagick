@@ -45,7 +45,12 @@ ImageList_animate(int argc, VALUE *argv, VALUE self)
     Image *images;
     Info *info;
     VALUE info_obj;
+    unsigned int delay;
 
+    if (argc == 1)
+    {
+        delay = NUM2UINT(argv[0]);
+    }
     if (argc > 1)
     {
         rb_raise(rb_eArgError, "wrong number of arguments (%d for 0 or 1)", argc);
@@ -60,9 +65,7 @@ ImageList_animate(int argc, VALUE *argv, VALUE self)
     if (argc == 1)
     {
         Image *img;
-        unsigned int delay;
 
-        delay = NUM2UINT(argv[0]);
         for (img = images; img; img = GetNextImageInList(img))
         {
             img->delay = delay;
