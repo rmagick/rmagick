@@ -402,19 +402,12 @@ Draw_gravity_eq(VALUE self, VALUE grav)
 VALUE
 Draw_kerning_eq(VALUE self, VALUE kerning)
 {
-#if defined(HAVE_ST_KERNING)
     Draw *draw;
 
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
     draw->info->kerning = NUM2DBL(kerning);
     return self;
-#else
-    rm_not_implemented();
-    return (VALUE)0;
-    self = self;
-    kerning = kerning;
-#endif
 }
 
 
@@ -434,19 +427,12 @@ Draw_kerning_eq(VALUE self, VALUE kerning)
 VALUE
 Draw_interline_spacing_eq(VALUE self, VALUE spacing)
 {
-#if defined(HAVE_ST_INTERLINE_SPACING)
     Draw *draw;
 
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
     draw->info->interline_spacing = NUM2DBL(spacing);
     return self;
-#else
-    rm_not_implemented();
-    return (VALUE)0;
-    self = self;
-    spacing = spacing;
-#endif
 }
 
 
@@ -466,19 +452,12 @@ Draw_interline_spacing_eq(VALUE self, VALUE spacing)
 VALUE
 Draw_interword_spacing_eq(VALUE self, VALUE spacing)
 {
-#if defined(HAVE_ST_INTERWORD_SPACING)
     Draw *draw;
 
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
     draw->info->interword_spacing = NUM2DBL(spacing);
     return self;
-#else
-    rm_not_implemented();
-    return (VALUE)0;
-    self = self;
-    spacing = spacing;
-#endif
 }
 
 
@@ -633,12 +612,8 @@ Draw_marshal_dump(VALUE self)
     // rb_hash_aset(ddraw, CSTR2SYM("render"), draw->info->render ? Qtrue : Qfalse); internal
     // rb_hash_aset(ddraw, CSTR2SYM("element_reference"), Qnil);     // not used yet
     // rb_hash_aset(ddraw, CSTR2SYM("debug"), draw->info->debug ? Qtrue : Qfalse);
-#if defined(HAVE_ST_KERNING)
     rb_hash_aset(ddraw, CSTR2SYM("kerning"), rb_float_new(draw->info->kerning));
-#endif
-#if defined(HAVE_ST_INTERWORD_SPACING)
     rb_hash_aset(ddraw, CSTR2SYM("interword_spacing"), rb_float_new(draw->info->interword_spacing));
-#endif
 
     // Non-DrawInfo fields
     rb_hash_aset(ddraw, CSTR2SYM("primitives"), draw->primitives);
@@ -711,12 +686,8 @@ Draw_marshal_load(VALUE self, VALUE ddraw)
 
     draw->info->clip_units = FIX2INT(rb_hash_aref(ddraw, CSTR2SYM("clip_units")));
     draw->info->opacity = NUM2QUANTUM(rb_hash_aref(ddraw, CSTR2SYM("opacity")));
-#if defined(HAVE_ST_KERNING)
     draw->info->kerning = NUM2DBL(rb_hash_aref(ddraw, CSTR2SYM("kerning")));
-#endif
-#if defined(HAVE_ST_INTERWORD_SPACING)
     draw->info->interword_spacing = NUM2DBL(rb_hash_aref(ddraw, CSTR2SYM("interword_spacing")));
-#endif
 
     draw->primitives = rb_hash_aref(ddraw, CSTR2SYM("primitives"));
 
