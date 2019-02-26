@@ -63,6 +63,8 @@ class Image3_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.profile!('icc', nil) }
     assert_nothing_raised { @img.profile!('iptc', nil) }
 
+    assert_raise(ArgumentError) { @img.profile!('test', 'foobarbaz') }
+
     @img.freeze
     assert_raise(FreezeError) { @img.profile!('icc', 'xxx') }
     assert_raise(FreezeError) { @img.profile!('*', nil) }

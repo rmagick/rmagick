@@ -2611,6 +2611,11 @@ set_profile(VALUE self, const char *name, VALUE profile)
     exception = AcquireExceptionInfo();
     m = GetMagickInfo(name, exception);
     CHECK_EXCEPTION()
+    if (!m)
+    {
+        (void) DestroyExceptionInfo(exception);
+        rb_raise(rb_eArgError, "unknown name: %s", name);
+    }
 
     info = CloneImageInfo(NULL);
     if (!info)
