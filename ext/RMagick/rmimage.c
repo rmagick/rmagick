@@ -4624,7 +4624,7 @@ VALUE
 Image_delete_profile(VALUE self, VALUE name)
 {
     Image *image = rm_check_frozen(self);
-    (void) ProfileImage(image, StringValuePtr(name), NULL, 0, MagickTrue);
+    (void) DeleteImageProfile(image, StringValuePtr(name));
     rm_check_image_exception(image, RetainOnError);
 
     return self;
