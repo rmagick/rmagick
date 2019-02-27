@@ -180,6 +180,7 @@ Init_RMagick2(void)
     rb_define_module_function(Module_Magick, "set_cache_threshold", Magick_set_cache_threshold, 1);
     rb_define_module_function(Module_Magick, "set_log_event_mask", Magick_set_log_event_mask, -1);
     rb_define_module_function(Module_Magick, "set_log_format", Magick_set_log_format, 1);
+    rb_define_module_function(Module_Magick, "delegates", Magick_delegates, 0);
 
     /*-----------------------------------------------------------------------*/
     /* Class Magick::Image methods                                           */
