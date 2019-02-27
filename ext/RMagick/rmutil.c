@@ -1123,12 +1123,10 @@ void rm_sync_image_options(Image *image, Info *info)
         image->transparent_color = info->transparent_color;
     }
 
-#if defined(HAVE_ST_TYPE)
     if (info->type != UndefinedType)
     {
         image->type = info->type;
     }
-#endif
 
     if (info->units != UndefinedResolution)
     {
