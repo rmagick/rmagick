@@ -64,7 +64,7 @@ set_option(VALUE self, const char *key, VALUE string)
 
     if (NIL_P(string))
     {
-        (void) RemoveImageOption(info, key);
+        (void) DeleteImageOption(info, key);
     }
     else
     {
