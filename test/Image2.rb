@@ -765,8 +765,6 @@ class Image2_UT < Test::Unit::TestCase
 
   def test_gramma_correct
     assert_raise(ArgumentError) { @img.gamma_correct }
-    # All 4 arguments can't default to 1.0
-    assert_raise(ArgumentError) { @img.gamma_correct(1.0) }
     assert_nothing_raised do
       res = @img.gamma_correct(0.8)
       assert_instance_of(Magick::Image, res)

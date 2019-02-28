@@ -6861,13 +6861,6 @@ Image_gamma_correct(int argc, VALUE *argv, VALUE self)
     {
         case 1:
             red_gamma   = NUM2DBL(argv[0]);
-
-            // Can't have all 4 gamma values == 1.0. Also, very small values
-            // cause ImageMagick to segv.
-            if (red_gamma == 1.0 || fabs(red_gamma) < 0.003)
-            {
-                rb_raise(rb_eArgError, "invalid gamma value (%f)", red_gamma);
-            }
             green_gamma = blue_gamma = red_gamma;
             break;
         case 2:
