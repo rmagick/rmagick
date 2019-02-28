@@ -433,34 +433,27 @@ Magick_delegates(VALUE class)
     ExceptionInfo *exception;
     size_t number_delegates;
     size_t i;
-    VALUE hash;
-    VALUE ary_decode;
-    VALUE ary_encode;
+    VALUE delegates;
 
     exception = AcquireExceptionInfo();
     delegate_info = GetDelegateInfoList("*", &number_delegates, exception);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 
-    ary_decode = rb_ary_new();
-    ary_encode = rb_ary_new();
+    delegates = rb_ary_new();
 
     for (i = 0; i < number_delegates; i++) {
-        if (delegate_info[i]->decode)
+        if (delegate_info[i]->decode && delegate_info[i]->encode)
         {
-            rb_ary_push(ary_decode, rb_str_new_cstr(delegate_info[i]->decode));
-        }
-        if (delegate_info[i]->encode)
-        {
-            rb_ary_push(ary_encode, rb_str_new_cstr(delegate_info[i]->encode));
+            VALUE decode = rb_str_new_cstr(delegate_info[i]->decode);
+            if (!RTEST(rb_ary_includes(delegates, decode)))
+            {
+                rb_ary_push(delegates, decode);
+            }
         }
     }
 
     RelinquishMagickMemory((void *) delegate_info);
 
-    hash = rb_hash_new();
-    rb_hash_aset(hash, ID2SYM(rb_intern("decode")), ary_decode);
-    rb_hash_aset(hash, ID2SYM(rb_intern("encode")), ary_encode);
-
-    return hash;
+    return delegates;
 }

@@ -318,8 +318,8 @@ class MagickUT < Test::Unit::TestCase
 
   def test_delegates
     delegates = Magick.delegates
-    assert( delegates[:decode].include?('eps') )
-    assert( delegates[:encode].include?('eps') )
+    assert_instance_of(Array, delegates)
+    assert( delegates.include?('eps') )
   end
 end
 
