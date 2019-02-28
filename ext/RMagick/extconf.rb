@@ -341,16 +341,7 @@ END_MSWIN
         have_func(func, headers)
       end
 
-      have_type('DitherMethod', headers) # 6.4.2
-      have_type('MagickFunction', headers) # 6.4.8-8
-      have_type('ImageLayerMethod', headers) # 6.3.6 replaces MagickLayerMethod
       have_type('long double', headers)
-      # have_type("unsigned long long", headers)
-      # have_type("uint64_t", headers)
-      # have_type("__int64", headers)
-      # have_type("uintmax_t", headers)
-      # check_sizeof("unsigned long", headers)
-      # check_sizeof("Image *", headers)
 
       have_enum_values('AlphaChannelType', ['CopyAlphaChannel', # 6.4.3-7
                                             'BackgroundAlphaChannel', # 6.5.2-5

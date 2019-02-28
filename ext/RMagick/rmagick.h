@@ -135,18 +135,10 @@
 
 #define MagickLibSubversion MagickLibAddendum
 
-// ImageLayerMethod replaced MagickLayerMethod starting with 6.3.6
-#if defined(HAVE_TYPE_IMAGELAYERMETHOD)
 #define LAYERMETHODTYPE ImageLayerMethod /**< layer method */
 #define CLASS_LAYERMETHODTYPE Class_ImageLayerMethod /**< layer method class */
 #define LAYERMETHODTYPE_NAME ImageLayerMethod_name /**< layer method name */
 #define LAYERMETHODTYPE_NEW  ImageLayerMethod_new /**< new layer method */
-#else
-#define LAYERMETHODTYPE MagickLayerMethod /**< layer method */
-#define CLASS_LAYERMETHODTYPE Class_MagickLayerMethod /**< layer method class */
-#define LAYERMETHODTYPE_NAME MagickLayerMethod_name /**< layer method name */
-#define LAYERMETHODTYPE_NEW  MagickLayerMethod_new /**< new layer method */
-#endif
 
 
 typedef ImageInfo Info; /**< Make type name match class name */
@@ -351,9 +343,7 @@ EXTERN VALUE Class_CompressionType;
 EXTERN VALUE Class_DecorationType;
 EXTERN VALUE Class_DisposeType;
 EXTERN VALUE Class_DistortImageMethod;
-#if defined(HAVE_TYPE_DITHERMETHOD)
 EXTERN VALUE Class_DitherMethod;
-#endif
 EXTERN VALUE Class_EndianType;
 EXTERN VALUE Class_FilterTypes;
 EXTERN VALUE Class_GravityType;
