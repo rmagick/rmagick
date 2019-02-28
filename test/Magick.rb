@@ -315,12 +315,6 @@ class MagickUT < Test::Unit::TestCase
       Magick.trace_proc = nil
     end
   end
-
-  def test_delegates
-    delegates = Magick.delegates
-    assert( delegates[:decode].include?('eps') )
-    assert( delegates[:encode].include?('eps') )
-  end
 end
 
 if $PROGRAM_NAME == __FILE__
