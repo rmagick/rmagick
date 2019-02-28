@@ -628,11 +628,7 @@ ImageList_optimize_layers(VALUE self, VALUE method)
 
     new_images2 = NULL;     // defeat "unused variable" message
 
-#if defined(HAVE_TYPE_IMAGELAYERMETHOD)
     VALUE_TO_ENUM(method, mthd, ImageLayerMethod);
-#else
-    VALUE_TO_ENUM(method, mthd, MagickLayerMethod);
-#endif
     images = images_from_imagelist(self);
 
     exception = AcquireExceptionInfo();
@@ -974,7 +970,7 @@ ImageList_quantize(int argc, VALUE *argv, VALUE self)
         case 4:
             quantize_info.tree_depth = (unsigned long)NUM2INT(argv[3]);
         case 3:
-#if defined(HAVE_TYPE_DITHERMETHOD) && defined(HAVE_ENUM_NODITHERMETHOD)
+#if defined(HAVE_ENUM_NODITHERMETHOD)
             if (rb_obj_is_kind_of(argv[2], Class_DitherMethod))
             {
                 VALUE_TO_ENUM(argv[2], quantize_info.dither_method, DitherMethod);

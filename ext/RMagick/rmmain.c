@@ -1168,7 +1168,6 @@ Init_RMagick2(void)
 #endif
     END_ENUM
 
-#if defined(HAVE_TYPE_DITHERMETHOD)
     DEF_ENUM(DitherMethod)
         ENUMERATOR(UndefinedDitherMethod)
 #if defined(HAVE_ENUM_NODITHERMETHOD)
@@ -1177,7 +1176,6 @@ Init_RMagick2(void)
         ENUMERATOR(RiemersmaDitherMethod)
         ENUMERATOR(FloydSteinbergDitherMethod)
     END_ENUM
-#endif
 
     DEF_ENUM(EndianType)
         ENUMERATOR(UndefinedEndian)
@@ -1279,7 +1277,6 @@ Init_RMagick2(void)
         ENUMERATOR(SplineInterpolatePixel)
     END_ENUM
 
-#if defined(HAVE_TYPE_MAGICKFUNCTION)
     DEF_ENUM(MagickFunction)
         ENUMERATOR(UndefinedFunction)
         ENUMERATOR(PolynomialFunction)
@@ -1291,13 +1288,8 @@ Init_RMagick2(void)
         ENUMERATOR(ArctanFunction)
 #endif
     END_ENUM
-#endif
 
-#if defined(HAVE_TYPE_IMAGELAYERMETHOD)
     DEF_ENUM(ImageLayerMethod)
-#else
-    DEF_ENUM(MagickLayerMethod)
-#endif
         ENUMERATOR(UndefinedLayer)
         ENUMERATOR(CompareAnyLayer)
         ENUMERATOR(CompareClearLayer)
