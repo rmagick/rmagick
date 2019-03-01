@@ -1092,7 +1092,7 @@ Info_dispose_eq(VALUE self, VALUE disp)
 
     if (NIL_P(disp))
     {
-        (void) RemoveImageOption(info, "dispose");
+        (void) DeleteImageOption(info, "dispose");
         return self;
     }
 
