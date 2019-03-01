@@ -859,7 +859,7 @@ Info_delay_eq(VALUE self, VALUE string)
 
     if (NIL_P(string))
     {
-        (void) RemoveImageOption(info, "delay");
+        (void) DeleteImageOption(info, "delay");
     }
     else
     {
@@ -871,7 +871,6 @@ Info_delay_eq(VALUE self, VALUE string)
         }
         delay = NUM2INT(string);
         sprintf(dstr, "%d", delay);
-        (void) RemoveImageOption(info, "delay");
         (void) SetImageOption(info, "delay", dstr);
     }
     return self;
