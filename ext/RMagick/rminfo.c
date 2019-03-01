@@ -1562,7 +1562,7 @@ Info_gravity_eq(VALUE self, VALUE grav)
 
     if (NIL_P(grav))
     {
-        (void) RemoveImageOption(info, "gravity");
+        (void) DeleteImageOption(info, "gravity");
         return self;
     }
 
