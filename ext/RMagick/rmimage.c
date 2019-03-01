@@ -14024,7 +14024,7 @@ Image_undefine(VALUE self, VALUE artifact)
 
     image = rm_check_frozen(self);
     key = rm_str2cstr(artifact, &key_l);
-    (void) RemoveImageArtifact(image, key);
+    (void) DeleteImageArtifact(image, key);
     return self;
 }
 
