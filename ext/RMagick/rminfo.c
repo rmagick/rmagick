@@ -179,7 +179,7 @@ static VALUE set_dbl_option(VALUE self, const char *option, VALUE value)
 
     if (NIL_P(value))
     {
-        (void) RemoveImageOption(info, option);
+        (void) DeleteImageOption(info, option);
     }
     else
     {
@@ -194,7 +194,6 @@ static VALUE set_dbl_option(VALUE self, const char *option, VALUE value)
             len = sprintf(buff, "%-10.2f", d);
         }
         memset(buff+len, '\0', sizeof(buff)-len);
-        (void) RemoveImageOption(info, option);
         (void) SetImageOption(info, option, buff);
     }
 
