@@ -356,7 +356,7 @@ Info_aset(int argc, VALUE *argv, VALUE self)
 
     if (NIL_P(value))
     {
-        (void) RemoveImageOption(info, ckey);
+        (void) DeleteImageOption(info, ckey);
     }
     else
     {
@@ -364,7 +364,6 @@ Info_aset(int argc, VALUE *argv, VALUE self)
         value = rm_to_s(value);
         value_p = StringValuePtr(value);
 
-        (void) RemoveImageOption(info, ckey);
         okay = SetImageOption(info, ckey, value_p);
         if (!okay)
         {
