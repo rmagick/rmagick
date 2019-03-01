@@ -2377,9 +2377,7 @@ Info_undefine(VALUE self, VALUE format, VALUE key)
     sprintf(fkey, "%.60s:%.*s", format_p, (int)(MaxTextExtent-61), key_p);
 
     Data_Get_Struct(self, Info, info);
-    /* Depending on the IM version, RemoveImageOption returns either */
-    /* char * or MagickBooleanType. Ignore the return value.         */
-    (void) RemoveImageOption(info, fkey);
+    (void) DeleteImageOption(info, fkey);
 
     return self;
 }
