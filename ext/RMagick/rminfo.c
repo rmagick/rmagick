@@ -770,7 +770,7 @@ Info_define(int argc, VALUE *argv, VALUE self)
     }
     (void) sprintf(ckey, "%s:%s", format, key);
 
-    (void) RemoveImageOption(info, ckey);
+    (void) DeleteImageOption(info, ckey);
     okay = SetImageOption(info, ckey, value);
     if (!okay)
     {
