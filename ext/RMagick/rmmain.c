@@ -878,19 +878,13 @@ Init_RMagick2(void)
         ENUMERATOR(DeactivateAlphaChannel)
         ENUMERATOR(ResetAlphaChannel)  /* deprecated */
         ENUMERATOR(SetAlphaChannel)
-#if defined(HAVE_ENUM_REMOVEALPHACHANNEL)
         ENUMERATOR(RemoveAlphaChannel)
-#endif
-#if defined(HAVE_ENUM_COPYALPHACHANNEL)
         ENUMERATOR(CopyAlphaChannel)
         ENUMERATOR(ExtractAlphaChannel)
         ENUMERATOR(OpaqueAlphaChannel)
         ENUMERATOR(ShapeAlphaChannel)
         ENUMERATOR(TransparentAlphaChannel)
-#endif
-#if defined(HAVE_ENUM_BACKGROUNDALPHACHANNEL)
         ENUMERATOR(BackgroundAlphaChannel)
-#endif
     END_ENUM
 
     // AnchorType constants (for Draw#text_anchor - these are not defined by ImageMagick)
