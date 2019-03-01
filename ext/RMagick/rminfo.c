@@ -100,7 +100,7 @@ static VALUE set_color_option(VALUE self, const char *option, VALUE color)
 
     if (NIL_P(color))
     {
-        (void) RemoveImageOption(info, option);
+        (void) DeleteImageOption(info, option);
     }
     else
     {
@@ -113,7 +113,6 @@ static VALUE set_color_option(VALUE self, const char *option, VALUE color)
             rb_raise(rb_eArgError, "invalid color name `%s'", name);
         }
 
-        (void) RemoveImageOption(info, option);
         (void) SetImageOption(info, option, name);
     }
 
