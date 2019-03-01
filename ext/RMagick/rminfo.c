@@ -1833,7 +1833,7 @@ Info_origin_eq(VALUE self, VALUE origin_arg)
 
     if (NIL_P(origin_arg))
     {
-        (void) RemoveImageOption(info, "origin");
+        (void) DeleteImageOption(info, "origin");
         return self;
     }
 
