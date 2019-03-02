@@ -1809,6 +1809,7 @@ PolaroidOptions_shadow_color_eq(VALUE self, VALUE shadow)
 {
     Draw *draw;
 
+    rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
     Color_to_PixelPacket(&draw->shadow_color, shadow);
     return self;
@@ -1830,6 +1831,7 @@ PolaroidOptions_border_color_eq(VALUE self, VALUE border)
 {
     Draw *draw;
 
+    rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
     Color_to_PixelPacket(&draw->info->border_color, border);
     return self;
