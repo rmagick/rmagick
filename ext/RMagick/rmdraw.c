@@ -1094,11 +1094,9 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
             case BlendCompositeOp:
                 op = "Blend";
                 break;
-#if defined(HAVE_ENUM_BLURCOMPOSITEOP)
             case BlurCompositeOp:
                 op = "Blur";
                 break;
-#endif
             case BumpmapCompositeOp:
                 op = "Bumpmap";
                 break;
@@ -1147,11 +1145,9 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
             case DarkenCompositeOp:
                 op = "Darken";
                 break;
-#if defined(HAVE_ENUM_DISTORTCOMPOSITEOP)
             case DistortCompositeOp:
                 op = "Distort";
                 break;
-#endif
             case DivideCompositeOp:
                 op = "Divide";
                 break;
@@ -1194,16 +1190,12 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
             case LightenCompositeOp:
                 op = "Lighten";
                 break;
-#if defined(HAVE_ENUM_LINEARBURNCOMPOSITEOP)
             case LinearBurnCompositeOp:
                 op = "LinearBurn";
                 break;
-#endif
-#if defined(HAVE_ENUM_LINEARDODGECOMPOSITEOP)
             case LinearDodgeCompositeOp:
                 op = "LinearDodge";
                 break;
-#endif
             case LinearLightCompositeOp:
                 op = "LinearLight";
                 break;
@@ -1228,16 +1220,12 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
             case OverlayCompositeOp:
                 op = "Overlay";
                 break;
-#if defined(HAVE_ENUM_PEGTOPLIGHTCOMPOSITEOP)
             case PegtopLightCompositeOp:
                 op = "PegtopLight";
                 break;
-#endif
-#if defined(HAVE_ENUM_PINLIGHTCOMPOSITEOP)
             case PinLightCompositeOp:
                 op = "PinLight";
                 break;
-#endif
             case PlusCompositeOp:
                 op = "Plus";
                 break;
@@ -1274,11 +1262,9 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
             case ThresholdCompositeOp:
                 op = "Threshold";
                 break;
-#if defined(HAVE_ENUM_VIVIDLIGHTCOMPOSITEOP)
             case VividLightCompositeOp:
                 op = "VividLight";
                 break;
-#endif
             case XorCompositeOp:
                 op = "Xor";
                 break;
