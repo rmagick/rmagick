@@ -138,7 +138,7 @@ KernelInfo_scale(VALUE self, VALUE scale, VALUE flags)
   if (rb_obj_is_instance_of(flags, Class_GeometryFlags))
     VALUE_TO_ENUM(flags, geoflags, GeometryFlags);
   else
-    rb_raise(rb_eArgError, "expected Fixnum or Magick::GeometryFlags to specify flags");
+    rb_raise(rb_eArgError, "expected Integer or Magick::GeometryFlags to specify flags");
 
   ScaleKernelInfo((KernelInfo*)DATA_PTR(self), NUM2DBL(scale), geoflags);
   return Qnil;

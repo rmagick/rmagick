@@ -223,8 +223,8 @@ class InfoUT < Test::Unit::TestCase
     assert_nothing_raised { @info.monitor = -> {} }
     monitor = proc do |mth, q, s|
       assert_equal('resize!', mth)
-      assert_instance_of(Fixnum, q)
-      assert_instance_of(Fixnum, s)
+      assert_kind_of(Integer, q)
+      assert_kind_of(Integer, s)
       true
     end
     img = Magick::Image.new(2000, 2000) { self.monitor = monitor }

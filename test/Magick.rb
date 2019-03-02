@@ -81,7 +81,7 @@ class MagickUT < Test::Unit::TestCase
       assert_instance_of(String, f.family)
       assert_instance_of(Magick::StyleType, f.style)
       assert_instance_of(Magick::StretchType, f.stretch)
-      assert_instance_of(Fixnum, f.weight)
+      assert_kind_of(Integer, f.weight)
       assert_instance_of(String, f.encoding) unless f.encoding.nil?
       assert_instance_of(String, f.foundry) unless f.foundry.nil?
       assert_instance_of(String, f.format) unless f.format.nil?
