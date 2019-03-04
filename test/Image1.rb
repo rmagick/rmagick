@@ -329,7 +329,7 @@ class Image1_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.channel_depth(Magick::CyanChannel, Magick::BlackChannel) }
     assert_nothing_raised { @img.channel_depth(Magick::GrayChannel) }
     assert_raise(TypeError) { @img.channel_depth(2) }
-    assert_instance_of(Fixnum, @img.channel_depth(Magick::RedChannel))
+    assert_kind_of(Integer, @img.channel_depth(Magick::RedChannel))
   end
 
   def test_channel_extrema

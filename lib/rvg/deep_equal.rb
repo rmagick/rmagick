@@ -30,7 +30,7 @@ module Magick
               end
             else
               case itv
-              when Float, Symbol, TrueClass, FalseClass, Fixnum, NilClass
+              when Float, Symbol, TrueClass, FalseClass, Integer, NilClass
                 return false if itv != otv
               else
                 if itv.equal?(otv)

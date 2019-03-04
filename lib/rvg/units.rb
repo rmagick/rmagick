@@ -2,12 +2,12 @@
 # Copyright (C) 2009 Timothy P. Hunter
 module Magick
   class RVG
-    # Define RVG.dpi and RVG.dpi=. Add conversions to Fixnum and Float classes
+    # Define RVG.dpi and RVG.dpi=. Add conversions to Integer and Float classes
     class << self
       attr_reader :dpi
       def dpi=(n)
         unless defined?(@dpi)
-          [Float, Fixnum].each do |c|
+          [Float, Integer].each do |c|
             c.class_eval <<-END_DEFS
               # the default measurement - 1px is 1 pixel
               def px
