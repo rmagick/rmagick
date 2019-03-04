@@ -3571,7 +3571,6 @@ Image_composite_channel_bang(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_composite_mathematics(int argc, VALUE *argv, VALUE self)
 {
-#if defined(HAVE_ENUM_MATHEMATICSCOMPOSITEOP)
     Image *composite_image;
     VALUE args[5];
     signed long x_off = 0L;
@@ -3616,14 +3615,6 @@ Image_composite_mathematics(int argc, VALUE *argv, VALUE self)
     args[4] = CompositeOperator_new(MathematicsCompositeOp);
 
     return composite(False, 5, args, self, DefaultChannels);
-
-#else
-    rm_not_implemented();
-    argc = argc;
-    argv = argv;
-    self = self;
-    return (VALUE)0;
-#endif
 }
 
 
