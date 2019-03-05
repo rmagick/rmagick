@@ -343,14 +343,6 @@ END_MSWIN
 
       have_type('long double', headers)
 
-      have_enum_values('DistortImageMethod', ['BarrelDistortion', # 6.4.2-5
-                                              'BarrelInverseDistortion', # 6.4.3-8
-                                              'BilinearForwardDistortion', # 6.5.1-2
-                                              'BilinearReverseDistortion', # 6.5.1-2
-                                              'DePolarDistortion', # 6.4.2-6
-                                              'PolarDistortion', # 6.4.2-6
-                                              'PolynomialDistortion', # 6.4.2-4
-                                              'ShepardsDistortion'], headers) # 6.4.2-4
       have_enum_value('DitherMethod', 'NoDitherMethod', headers) # 6.4.3
       have_enum_values('FilterTypes', ['KaiserFilter', # 6.3.6
                                        'WelshFilter', # 6.3.6-4
