@@ -597,39 +597,23 @@ CompressionType_name(CompressionType ct)
     {
         ENUM_TO_NAME(UndefinedCompression)
         ENUM_TO_NAME(NoCompression)
-#if defined(HAVE_ENUM_B44COMPRESSION)
         ENUM_TO_NAME(B44Compression)
-#endif
-#if defined(HAVE_ENUM_B44ACOMPRESSION)
         ENUM_TO_NAME(B44ACompression)
-#endif
         ENUM_TO_NAME(BZipCompression)
-#if defined(HAVE_ENUM_DXT1COMPRESSION)
         ENUM_TO_NAME(DXT1Compression)
-#endif
-#if defined(HAVE_ENUM_DXT3COMPRESSION)
         ENUM_TO_NAME(DXT3Compression)
-#endif
-#if defined(HAVE_ENUM_DXT5COMPRESSION)
         ENUM_TO_NAME(DXT5Compression)
-#endif
         ENUM_TO_NAME(FaxCompression)
         ENUM_TO_NAME(Group4Compression)
         ENUM_TO_NAME(JPEGCompression)
         ENUM_TO_NAME(JPEG2000Compression)
         ENUM_TO_NAME(LosslessJPEGCompression)
         ENUM_TO_NAME(LZWCompression)
-#if defined(HAVE_ENUM_PIZCOMPRESSION)
         ENUM_TO_NAME(PizCompression)
-#endif
-#if defined(HAVE_ENUM_PXR24COMPRESSION)
         ENUM_TO_NAME(Pxr24Compression)
-#endif
         ENUM_TO_NAME(RLECompression)
         ENUM_TO_NAME(ZipCompression)
-#if defined(HAVE_ENUM_ZIPSCOMPRESSION)
         ENUM_TO_NAME(ZipSCompression)
-#endif
         }
 
     return "UndefinedCompression";

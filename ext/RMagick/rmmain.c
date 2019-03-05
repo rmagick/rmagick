@@ -1060,39 +1060,23 @@ Init_RMagick2(void)
     DEF_ENUM(CompressionType)
         ENUMERATOR(UndefinedCompression)
         ENUMERATOR(NoCompression)
-#if defined(HAVE_ENUM_B44COMPRESSION)
         ENUMERATOR(B44Compression)
-#endif
-#if defined(HAVE_ENUM_B44ACOMPRESSION)
         ENUMERATOR(B44ACompression)
-#endif
         ENUMERATOR(BZipCompression)
-#if defined(HAVE_ENUM_DXT1COMPRESSION)
         ENUMERATOR(DXT1Compression)
-#endif
-#if defined(HAVE_ENUM_DXT3COMPRESSION)
         ENUMERATOR(DXT3Compression)
-#endif
-#if defined(HAVE_ENUM_DXT5COMPRESSION)
         ENUMERATOR(DXT5Compression)
-#endif
         ENUMERATOR(FaxCompression)
         ENUMERATOR(Group4Compression)
         ENUMERATOR(JPEGCompression)
         ENUMERATOR(JPEG2000Compression)
         ENUMERATOR(LosslessJPEGCompression)
         ENUMERATOR(LZWCompression)
-#if defined(HAVE_ENUM_PIZCOMPRESSION)
         ENUMERATOR(PizCompression)
-#endif
-#if defined(HAVE_ENUM_PXR24COMPRESSION)
         ENUMERATOR(Pxr24Compression)
-#endif
         ENUMERATOR(RLECompression)
         ENUMERATOR(ZipCompression)
-#if defined(HAVE_ENUM_ZIPSCOMPRESSION)
         ENUMERATOR(ZipSCompression)
-#endif
     END_ENUM
 
     // DecorationType constants
