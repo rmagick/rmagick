@@ -1101,34 +1101,18 @@ Init_RMagick2(void)
         ENUMERATOR(AffineDistortion)
         ENUMERATOR(AffineProjectionDistortion)
         ENUMERATOR(ArcDistortion)
-#if defined(HAVE_ENUM_POLARDISTORTION)
         ENUMERATOR(PolarDistortion)
-#endif
-#if defined(HAVE_ENUM_DEPOLARDISTORTION)
         ENUMERATOR(DePolarDistortion)
-#endif
-#if defined(HAVE_ENUM_BARRELDISTORTION)
         ENUMERATOR(BarrelDistortion)
-#endif
         ENUMERATOR(BilinearDistortion)
-#if defined(HAVE_ENUM_BILINEARFORWARDDISTORTION)
         ENUMERATOR(BilinearForwardDistortion)
-#endif
-#if defined(HAVE_ENUM_BILINEARREVERSEDISTORTION)
         ENUMERATOR(BilinearReverseDistortion)
-#endif
         ENUMERATOR(PerspectiveDistortion)
         ENUMERATOR(PerspectiveProjectionDistortion)
-#if defined(HAVE_ENUM_POLYNOMIALDISTORTION)
         ENUMERATOR(PolynomialDistortion)
-#endif
         ENUMERATOR(ScaleRotateTranslateDistortion)
-#if defined(HAVE_ENUM_SHEPARDSDISTORTION)
         ENUMERATOR(ShepardsDistortion)
-#endif
-#if defined(HAVE_ENUM_BARRELINVERSEDISTORTION)
         ENUMERATOR(BarrelInverseDistortion)
-#endif
     END_ENUM
 
     DEF_ENUM(DitherMethod)
