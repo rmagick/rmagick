@@ -1146,24 +1146,12 @@ Init_RMagick2(void)
         ENUMERATOR(LanczosFilter)
         ENUMERATOR(BesselFilter)
         ENUMERATOR(SincFilter)
-#if defined(HAVE_ENUM_KAISERFILTER)
         ENUMERATOR(KaiserFilter)
-#endif
-#if defined(HAVE_ENUM_WELSHFILTER)
         ENUMERATOR(WelshFilter)
-#endif
-#if defined(HAVE_ENUM_PARZENFILTER)
         ENUMERATOR(ParzenFilter)
-#endif
-#if defined(HAVE_ENUM_LAGRANGEFILTER)
         ENUMERATOR(LagrangeFilter)
-#endif
-#if defined(HAVE_ENUM_BOHMANFILTER)
         ENUMERATOR(BohmanFilter)
-#endif
-#if defined(HAVE_ENUM_BARTLETTFILTER)
         ENUMERATOR(BartlettFilter)
-#endif
     END_ENUM
 
     // GravityType constants

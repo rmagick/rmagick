@@ -343,13 +343,6 @@ END_MSWIN
 
       have_type('long double', headers)
 
-      have_enum_values('FilterTypes', ['KaiserFilter', # 6.3.6
-                                       'WelshFilter', # 6.3.6-4
-                                       'ParzenFilter', # 6.3.6-4
-                                       'LagrangeFilter', # 6.3.7-2
-                                       'BohmanFilter', # 6.3.7-2
-                                       'BartlettFilter', # 6.3.7-2
-                                       'SentinelFilter'], headers) # 6.3.7-2
       have_enum_values('MagickEvaluateOperator', ['PowEvaluateOperator', # 6.4.1-9
                                                   'LogEvaluateOperator', # 6.4.2
                                                   'ThresholdEvaluateOperator', # 6.4.3

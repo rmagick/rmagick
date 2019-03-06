@@ -704,29 +704,15 @@ FilterTypes_name(FilterTypes type)
         ENUM_TO_NAME(LanczosFilter)
         ENUM_TO_NAME(BesselFilter)
         ENUM_TO_NAME(SincFilter)
-#if defined(HAVE_ENUM_KAISERFILTER)
         ENUM_TO_NAME(KaiserFilter)
-#endif
-#if defined(HAVE_ENUM_WELSHFILTER)
         ENUM_TO_NAME(WelshFilter)
-#endif
-#if defined(HAVE_ENUM_PARZENFILTER)
         ENUM_TO_NAME(ParzenFilter)
-#endif
-#if defined(HAVE_ENUM_LAGRANGEFILTER)
         ENUM_TO_NAME(LagrangeFilter)
-#endif
-#if defined(HAVE_ENUM_BOHMANFILTER)
         ENUM_TO_NAME(BohmanFilter)
-#endif
-#if defined(HAVE_ENUM_BARTLETTFILTER)
         ENUM_TO_NAME(BartlettFilter)
-#endif
-#if defined(HAVE_ENUM_SENTINELFILTER)
         // not a real filter name - defeat gcc warning message
         case SentinelFilter:
             break;
-#endif
     }
 
     return "UndefinedFilter";
