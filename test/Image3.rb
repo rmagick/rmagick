@@ -26,7 +26,20 @@ ColorspaceTypes = [
   Magick::Rec601YCbCrColorspace,
   Magick::Rec709LumaColorspace,
   Magick::Rec709YCbCrColorspace,
-  Magick::LogColorspace
+  Magick::LogColorspace,
+  Magick::CMYColorspace,
+  Magick::LuvColorspace,
+  Magick::HCLColorspace,
+  Magick::LCHColorspace,
+  Magick::LMSColorspace,
+  Magick::LCHabColorspace,
+  Magick::LCHuvColorspace,
+  Magick::ScRGBColorspace,
+  Magick::HSIColorspace,
+  Magick::HSVColorspace,
+  Magick::HCLpColorspace,
+  Magick::YDbDrColorspace,
+  Magick::XyYColorspace
 ]
 
 Filters = [

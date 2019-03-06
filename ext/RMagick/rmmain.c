@@ -974,6 +974,24 @@ Init_RMagick2(void)
         ENUMERATOR(Rec709YCbCrColorspace)
         ENUMERATOR(LogColorspace)
         ENUMERATOR(CMYColorspace)
+        ENUMERATOR(LuvColorspace)
+        ENUMERATOR(HCLColorspace)
+        ENUMERATOR(LCHColorspace)
+        ENUMERATOR(LMSColorspace)
+        ENUMERATOR(LCHabColorspace)
+        ENUMERATOR(LCHuvColorspace)
+        rb_define_const(Module_Magick, "ScRGBColorspace"
+                      , rm_enum_new(Class_ColorspaceType
+                      , ID2SYM(rb_intern("ScRGBColorspace"))
+                      , INT2FIX(scRGBColorspace)));
+        ENUMERATOR(HSIColorspace)
+        ENUMERATOR(HSVColorspace)
+        ENUMERATOR(HCLpColorspace)
+        ENUMERATOR(YDbDrColorspace)
+        rb_define_const(Module_Magick, "XyYColorspace"
+                      , rm_enum_new(Class_ColorspaceType
+                      , ID2SYM(rb_intern("XyYColorspace"))
+                      , INT2FIX(xyYColorspace)));
     END_ENUM
 
     // ComplianceType constants are defined as enums but used as bit flags
