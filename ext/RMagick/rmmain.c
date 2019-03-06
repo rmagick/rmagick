@@ -1152,6 +1152,16 @@ Init_RMagick2(void)
         ENUMERATOR(LagrangeFilter)
         ENUMERATOR(BohmanFilter)
         ENUMERATOR(BartlettFilter)
+        ENUMERATOR(JincFilter)
+        ENUMERATOR(SincFastFilter)
+        ENUMERATOR(LanczosSharpFilter)
+        ENUMERATOR(Lanczos2Filter)
+        ENUMERATOR(Lanczos2SharpFilter)
+        ENUMERATOR(RobidouxFilter)
+        ENUMERATOR(RobidouxSharpFilter)
+        ENUMERATOR(CosineFilter)
+        ENUMERATOR(SplineFilter)
+        ENUMERATOR(LanczosRadiusFilter)
     END_ENUM
 
     // GravityType constants

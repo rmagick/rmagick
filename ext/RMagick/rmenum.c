@@ -710,6 +710,16 @@ FilterTypes_name(FilterTypes type)
         ENUM_TO_NAME(LagrangeFilter)
         ENUM_TO_NAME(BohmanFilter)
         ENUM_TO_NAME(BartlettFilter)
+        // ENUM_TO_NAME(JincFilter) is alias of BesselFilter
+        ENUM_TO_NAME(SincFastFilter)
+        ENUM_TO_NAME(LanczosSharpFilter)
+        ENUM_TO_NAME(Lanczos2Filter)
+        ENUM_TO_NAME(Lanczos2SharpFilter)
+        ENUM_TO_NAME(RobidouxFilter)
+        ENUM_TO_NAME(RobidouxSharpFilter)
+        ENUM_TO_NAME(CosineFilter)
+        ENUM_TO_NAME(SplineFilter)
+        ENUM_TO_NAME(LanczosRadiusFilter)
         // not a real filter name - defeat gcc warning message
         case SentinelFilter:
             break;

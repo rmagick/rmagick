@@ -44,7 +44,17 @@ Filters = [
   Magick::MitchellFilter,
   Magick::LanczosFilter,
   Magick::BesselFilter,
-  Magick::SincFilter
+  Magick::SincFilter,
+  Magick::JincFilter,
+  Magick::SincFastFilter,
+  Magick::LanczosSharpFilter,
+  Magick::Lanczos2Filter,
+  Magick::Lanczos2SharpFilter,
+  Magick::RobidouxFilter,
+  Magick::RobidouxSharpFilter,
+  Magick::CosineFilter,
+  Magick::SplineFilter,
+  Magick::LanczosRadiusFilter
 ]
 
 class Image3_UT < Test::Unit::TestCase
