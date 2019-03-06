@@ -885,6 +885,9 @@ Init_RMagick2(void)
         ENUMERATOR(ShapeAlphaChannel)
         ENUMERATOR(TransparentAlphaChannel)
         ENUMERATOR(BackgroundAlphaChannel)
+        ENUMERATOR(FlattenAlphaChannel)
+        ENUMERATOR(AssociateAlphaChannel)
+        ENUMERATOR(DisassociateAlphaChannel)
     END_ENUM
 
     // AnchorType constants (for Draw#text_anchor - these are not defined by ImageMagick)
