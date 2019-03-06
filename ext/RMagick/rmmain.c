@@ -1113,6 +1113,10 @@ Init_RMagick2(void)
         ENUMERATOR(ScaleRotateTranslateDistortion)
         ENUMERATOR(ShepardsDistortion)
         ENUMERATOR(BarrelInverseDistortion)
+        ENUMERATOR(Cylinder2PlaneDistortion)
+        ENUMERATOR(Plane2CylinderDistortion)
+        ENUMERATOR(ResizeDistortion)
+        ENUMERATOR(SentinelDistortion)
     END_ENUM
 
     DEF_ENUM(DitherMethod)
