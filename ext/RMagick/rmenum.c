@@ -979,18 +979,10 @@ LAYERMETHODTYPE_NAME(LAYERMETHODTYPE method)
         ENUM_TO_NAME(RemoveDupsLayer)
         ENUM_TO_NAME(RemoveZeroLayer)
         ENUM_TO_NAME(CompositeLayer)
-#if defined(HAVE_ENUM_MERGELAYER)
         ENUM_TO_NAME(MergeLayer)
-#endif
-#if defined(HAVE_ENUM_MOSAICLAYER)
         ENUM_TO_NAME(MosaicLayer)
-#endif
-#if defined(HAVE_ENUM_FLATTENLAYER)
         ENUM_TO_NAME(FlattenLayer)
-#endif
-#if defined(HAVE_ENUM_TRIMBOUNDSLAYER)
         ENUM_TO_NAME(TrimBoundsLayer)
-#endif
     }
 
     return "UndefinedLayer";

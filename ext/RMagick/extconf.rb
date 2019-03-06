@@ -343,10 +343,6 @@ END_MSWIN
 
       have_type('long double', headers)
 
-      have_enum_values('ImageLayerMethod', ['FlattenLayer', # 6.3.6-2
-                                            'MergeLayer', # 6.3.6
-                                            'MosaicLayer', # 6.3.6-2
-                                            'TrimBoundsLayer'], headers) # 6.4.3-8
       have_enum_values('VirtualPixelMethod', ['HorizontalTileVirtualPixelMethod', # 6.4.2-6
                                               'VerticalTileVirtualPixelMethod', # 6.4.2-6
                                               'HorizontalTileEdgeVirtualPixelMethod', # 6.5.0-1
