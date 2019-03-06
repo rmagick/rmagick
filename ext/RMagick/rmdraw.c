@@ -1268,6 +1268,24 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
             case XorCompositeOp:
                 op = "Xor";
                 break;
+            case MathematicsCompositeOp:
+                op = "Mathematics";
+                break;
+            case DivideSrcCompositeOp:
+                op = "DivideSrc";
+                break;
+            case MinusSrcCompositeOp:
+                op = "MinusSrc";
+                break;
+            case DarkenIntensityCompositeOp:
+                op = "DarkenIntensity";
+                break;
+            case LightenIntensityCompositeOp:
+                op = "LightenIntensity";
+                break;
+            case HardMixCompositeOp:
+                op = "HardMix";
+                break;
             default:
                 rb_raise(rb_eArgError, "unknown composite operator (%d)", cop);
                 break;

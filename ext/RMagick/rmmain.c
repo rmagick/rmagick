@@ -1054,6 +1054,12 @@ Init_RMagick2(void)
         ENUMERATOR(ThresholdCompositeOp)
         ENUMERATOR(VividLightCompositeOp)
         ENUMERATOR(XorCompositeOp)
+        ENUMERATOR(MathematicsCompositeOp)
+        ENUMERATOR(DivideSrcCompositeOp)
+        ENUMERATOR(MinusSrcCompositeOp)
+        ENUMERATOR(DarkenIntensityCompositeOp)
+        ENUMERATOR(LightenIntensityCompositeOp)
+        ENUMERATOR(HardMixCompositeOp)
     END_ENUM
 
     // CompressionType constants

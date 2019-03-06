@@ -55,7 +55,13 @@ RSpec.describe Magick::Image, '#composite' do
       Magick::ColorDodgeCompositeOp,
       Magick::ExclusionCompositeOp,
       Magick::HardLightCompositeOp,
-      Magick::SoftLightCompositeOp
+      Magick::SoftLightCompositeOp,
+      Magick::MathematicsCompositeOp,
+      Magick::DivideSrcCompositeOp,
+      Magick::MinusSrcCompositeOp,
+      Magick::DarkenIntensityCompositeOp,
+      Magick::LightenIntensityCompositeOp,
+      Magick::HardMixCompositeOp
     ]
   end
   let(:gravity) do
