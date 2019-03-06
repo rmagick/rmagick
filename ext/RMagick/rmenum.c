@@ -476,6 +476,42 @@ ColorspaceType_new(ColorspaceType cs)
         case CMYColorspace:
             name = "CMYColorspace";
             break;
+        case LuvColorspace:
+            name = "LuvColorspace";
+            break;
+        case HCLColorspace:
+            name = "HCLColorspace";
+            break;
+        case LCHColorspace:
+            name = "LCHColorspace";
+            break;
+        case LMSColorspace:
+            name = "LMSColorspace";
+            break;
+        case LCHabColorspace:
+            name = "LCHabColorspace";
+            break;
+        case LCHuvColorspace:
+            name = "LCHuvColorspace";
+            break;
+        case scRGBColorspace:
+            name = "scRGBColorspace";
+            break;
+        case HSIColorspace:
+            name = "HSIColorspace";
+            break;
+        case HSVColorspace:
+            name = "HSVColorspace";
+            break;
+        case HCLpColorspace:
+            name = "HCLpColorspace";
+            break;
+        case YDbDrColorspace:
+            name = "YDbDrColorspace";
+            break;
+        case xyYColorspace:
+            name = "xyYColorspace";
+            break;
     }
 
     return rm_enum_new(Class_ColorspaceType, ID2SYM(rb_intern(name)), INT2FIX(cs));
