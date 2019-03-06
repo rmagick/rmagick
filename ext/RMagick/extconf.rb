@@ -343,13 +343,6 @@ END_MSWIN
 
       have_type('long double', headers)
 
-      have_enum_values('VirtualPixelMethod', ['HorizontalTileVirtualPixelMethod', # 6.4.2-6
-                                              'VerticalTileVirtualPixelMethod', # 6.4.2-6
-                                              'HorizontalTileEdgeVirtualPixelMethod', # 6.5.0-1
-                                              'VerticalTileEdgeVirtualPixelMethod', # 6.5.0-1
-                                              'CheckerTileVirtualPixelMethod'], # 6.5.0-1
-                       headers)
-
       headers = ['ruby.h', 'ruby/io.h']
 
       have_func('rb_frame_this_func', headers)
