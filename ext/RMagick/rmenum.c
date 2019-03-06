@@ -655,7 +655,10 @@ CompressionType_name(CompressionType ct)
         ENUM_TO_NAME(RLECompression)
         ENUM_TO_NAME(ZipCompression)
         ENUM_TO_NAME(ZipSCompression)
-        }
+        ENUM_TO_NAME(LZMACompression)
+        ENUM_TO_NAME(JBIG1Compression)
+        ENUM_TO_NAME(JBIG2Compression)
+    }
 
     return "UndefinedCompression";
 }

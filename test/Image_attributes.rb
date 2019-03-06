@@ -269,6 +269,9 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.compression = Magick::RLECompression }
     assert_nothing_raised { @img.compression = Magick::ZipCompression }
     assert_nothing_raised { @img.compression = Magick::ZipSCompression }
+    assert_nothing_raised { @img.compression = Magick::LZMACompression }
+    assert_nothing_raised { @img.compression = Magick::JBIG1Compression }
+    assert_nothing_raised { @img.compression = Magick::JBIG2Compression }
     assert_raise(TypeError) { @img.compression = 2 }
   end
 
