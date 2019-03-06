@@ -6693,23 +6693,15 @@ Image_function_channel(int argc, VALUE *argv, VALUE self)
 
     switch (function)
     {
-#if defined(HAVE_ENUM_POLYNOMIALFUNCTION)
         case PolynomialFunction:
             if (argc == 0)
             {
                 rb_raise(rb_eArgError, "PolynomialFunction requires at least one argument.");
             }
             break;
-#endif
-#if defined(HAVE_ENUM_SINUSOIDFUNCTION)
         case SinusoidFunction:
-#endif
-#if defined(HAVE_ENUM_ARCSINFUNCTION)
         case ArcsinFunction:
-#endif
-#if defined(HAVE_ENUM_ARCTANFUNCTION)
         case ArctanFunction:
-#endif
            if (argc < 1 || argc > 4)
            {
                rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 to 4)", argc);

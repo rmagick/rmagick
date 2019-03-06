@@ -1214,12 +1214,8 @@ Init_RMagick2(void)
         ENUMERATOR(UndefinedFunction)
         ENUMERATOR(PolynomialFunction)
         ENUMERATOR(SinusoidFunction)
-#if defined(HAVE_ENUM_ARCSINFUNCTION)
         ENUMERATOR(ArcsinFunction)
-#endif
-#if defined(HAVE_ENUM_ARCTANFUNCTION)
         ENUMERATOR(ArctanFunction)
-#endif
     END_ENUM
 
     DEF_ENUM(ImageLayerMethod)
