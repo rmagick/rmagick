@@ -1077,6 +1077,9 @@ Init_RMagick2(void)
         ENUMERATOR(RLECompression)
         ENUMERATOR(ZipCompression)
         ENUMERATOR(ZipSCompression)
+        ENUMERATOR(LZMACompression)
+        ENUMERATOR(JBIG1Compression)
+        ENUMERATOR(JBIG2Compression)
     END_ENUM
 
     // DecorationType constants
