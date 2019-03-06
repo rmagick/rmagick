@@ -1117,9 +1117,7 @@ Init_RMagick2(void)
 
     DEF_ENUM(DitherMethod)
         ENUMERATOR(UndefinedDitherMethod)
-#if defined(HAVE_ENUM_NODITHERMETHOD)
         ENUMERATOR(NoDitherMethod)
-#endif
         ENUMERATOR(RiemersmaDitherMethod)
         ENUMERATOR(FloydSteinbergDitherMethod)
     END_ENUM
