@@ -236,6 +236,12 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.compose = Magick::SubtractCompositeOp }
     assert_nothing_raised { @img.compose = Magick::ThresholdCompositeOp }
     assert_nothing_raised { @img.compose = Magick::XorCompositeOp }
+    assert_nothing_raised { @img.compose = Magick::MathematicsCompositeOp }
+    assert_nothing_raised { @img.compose = Magick::DivideSrcCompositeOp }
+    assert_nothing_raised { @img.compose = Magick::MinusSrcCompositeOp }
+    assert_nothing_raised { @img.compose = Magick::DarkenIntensityCompositeOp }
+    assert_nothing_raised { @img.compose = Magick::LightenIntensityCompositeOp }
+    assert_nothing_raised { @img.compose = Magick::HardMixCompositeOp }
     assert_raise(TypeError) { @img.compose = 2 }
   end
 
