@@ -332,11 +332,7 @@ ImageList_flatten_images(VALUE self)
     images = images_from_imagelist(self);
     exception = AcquireExceptionInfo();
 
-#if defined(HAVE_ENUM_FLATTENLAYER)
     new_image = MergeImageLayers(images, FlattenLayer, exception);
-#else
-    new_image = FlattenImages(images, exception);
-#endif
 
     rm_split(images);
     rm_check_exception(exception, new_image, DestroyOnError);
@@ -592,11 +588,7 @@ ImageList_mosaic(VALUE self)
     images = images_from_imagelist(self);
 
     exception = AcquireExceptionInfo();
-#if defined(HAVE_ENUM_MOSAICLAYER)
     new_image = MergeImageLayers(images, MosaicLayer, exception);
-#else
-    new_image = MosaicImages(images, exception);
-#endif
 
     rm_split(images);
     rm_check_exception(exception, new_image, DestroyOnError);
@@ -684,26 +676,18 @@ ImageList_optimize_layers(VALUE self, VALUE method)
         case CompareOverlayLayer:
             new_images = CompareImageLayers(images, mthd, exception);
             break;
-#if defined(HAVE_ENUM_MOSAICLAYER)
         case MosaicLayer:
             new_images = MergeImageLayers(images, mthd, exception);
             break;
-#endif
-#if defined(HAVE_ENUM_FLATTENLAYER)
         case FlattenLayer:
             new_images = MergeImageLayers(images, mthd, exception);
             break;
-#endif
-#if defined(HAVE_ENUM_MERGELAYER)
         case MergeLayer:
             new_images = MergeImageLayers(images, mthd, exception);
             break;
-#endif
-#if defined(HAVE_ENUM_TRIMBOUNDSLAYER)
         case TrimBoundsLayer:
             new_images = MergeImageLayers(images, mthd, exception);
             break;
-#endif
         default:
             rm_split(images);
             (void) DestroyExceptionInfo(exception);
