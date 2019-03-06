@@ -14,9 +14,20 @@ module RMagick
     attr_reader :headers
 
     def initialize
+      setup_paths_for_homebrew
       configure_compile_options
       assert_can_compile!
       configure_headers
+    end
+
+    def setup_paths_for_homebrew
+      return unless find_executable('brew')
+
+      brew_pkg_config_path = "#{`brew --prefix imagemagick@6`.strip}/lib/pkgconfig"
+      pkgconfig_paths = ENV['PKG_CONFIG_PATH'].to_s.split(':')
+      if File.exist?(brew_pkg_config_path) && !pkgconfig_paths.include?(brew_pkg_config_path)
+        ENV['PKG_CONFIG_PATH'] = [ENV['PKG_CONFIG_PATH'], brew_pkg_config_path].compact.join(':')
+      end
     end
 
     def configured_compile_options
