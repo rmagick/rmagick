@@ -343,7 +343,6 @@ END_MSWIN
 
       have_type('long double', headers)
 
-      have_enum_value('DitherMethod', 'NoDitherMethod', headers) # 6.4.3
       have_enum_values('FilterTypes', ['KaiserFilter', # 6.3.6
                                        'WelshFilter', # 6.3.6-4
                                        'ParzenFilter', # 6.3.6-4
