@@ -1180,21 +1180,11 @@ VirtualPixelMethod_name(VirtualPixelMethod method)
         ENUM_TO_NAME(BlackVirtualPixelMethod)
         ENUM_TO_NAME(GrayVirtualPixelMethod)
         ENUM_TO_NAME(WhiteVirtualPixelMethod)
-#if defined(HAVE_ENUM_HORIZONTALTILEVIRTUALPIXELMETHOD)
         ENUM_TO_NAME(HorizontalTileVirtualPixelMethod)
-#endif
-#if defined(HAVE_ENUM_VERTICALTILEVIRTUALPIXELMETHOD)
         ENUM_TO_NAME(VerticalTileVirtualPixelMethod)
-#endif
-#if defined(HAVE_ENUM_HORIZONTALTILEEDGEVIRTUALPIXELMETHOD)
         ENUM_TO_NAME(HorizontalTileEdgeVirtualPixelMethod)
-#endif
-#if defined(HAVE_ENUM_VERTICALTILEEDGEVIRTUALPIXELMETHOD)
         ENUM_TO_NAME(VerticalTileEdgeVirtualPixelMethod)
-#endif
-#if defined(HAVE_ENUM_CHECKERTILEVIRTUALPIXELMETHOD)
         ENUM_TO_NAME(CheckerTileVirtualPixelMethod)
-#endif
     }
 
     return "UndefinedVirtualPixelMethod";
