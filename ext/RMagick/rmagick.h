@@ -240,48 +240,20 @@ typedef enum _QuantumExpressionOperator
     RShiftQuantumOperator,    /**< rshift */
     SubtractQuantumOperator,  /**< subtract */
     XorQuantumOperator,       /**< xor */
-#if defined(HAVE_ENUM_POWEVALUATEOPERATOR)
     PowQuantumOperator,       /**< pow */
-#endif
-#if defined(HAVE_ENUM_LOGEVALUATEOPERATOR)
     LogQuantumOperator,       /**< log */
-#endif
-#if defined(HAVE_ENUM_THRESHOLDEVALUATEOPERATOR)
     ThresholdQuantumOperator, /**< threshold */
-#endif
-#if defined(HAVE_ENUM_THRESHOLDBLACKEVALUATEOPERATOR)
     ThresholdBlackQuantumOperator, /**< threshold black */
-#endif
-#if defined(HAVE_ENUM_THRESHOLDWHITEEVALUATEOPERATOR)
     ThresholdWhiteQuantumOperator, /**< threshold white */
-#endif
-#if defined(HAVE_ENUM_GAUSSIANNOISEEVALUATEOPERATOR)
     GaussianNoiseQuantumOperator, /**< gaussian noise */
-#endif
-#if defined(HAVE_ENUM_IMPULSENOISEEVALUATEOPERATOR)
     ImpulseNoiseQuantumOperator, /**< impulse noise */
-#endif
-#if defined(HAVE_ENUM_LAPLACIANNOISEEVALUATEOPERATOR)
     LaplacianNoiseQuantumOperator, /**< laplacian noise */
-#endif
-#if defined(HAVE_ENUM_MULTIPLICATIVENOISEEVALUATEOPERATOR)
     MultiplicativeNoiseQuantumOperator, /**< multiplicative noise */
-#endif
-#if defined(HAVE_ENUM_POISSONNOISEEVALUATEOPERATOR)
     PoissonNoiseQuantumOperator, /**< poisson noise */
-#endif
-#if defined(HAVE_ENUM_UNIFORMNOISEEVALUATEOPERATOR)
     UniformNoiseQuantumOperator, /**< uniform noise */
-#endif
-#if defined(HAVE_ENUM_COSINEEVALUATEOPERATOR)
     CosineQuantumOperator,    /**< cosine */
-#endif
-#if defined(HAVE_ENUM_SINEEVALUATEOPERATOR)
     SineQuantumOperator,      /**< sine */
-#endif
-#if defined(HAVE_ENUM_ADDMODULUSEVALUATEOPERATOR)
     AddModulusQuantumOperator /**< add modulus */
-#endif
 } QuantumExpressionOperator ;
 
 

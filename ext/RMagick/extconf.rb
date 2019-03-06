@@ -343,21 +343,6 @@ END_MSWIN
 
       have_type('long double', headers)
 
-      have_enum_values('MagickEvaluateOperator', ['PowEvaluateOperator', # 6.4.1-9
-                                                  'LogEvaluateOperator', # 6.4.2
-                                                  'ThresholdEvaluateOperator', # 6.4.3
-                                                  'ThresholdBlackEvaluateOperator', # 6.4.3
-                                                  'ThresholdWhiteEvaluateOperator', # 6.4.3
-                                                  'GaussianNoiseEvaluateOperator', # 6.4.3
-                                                  'ImpulseNoiseEvaluateOperator', # 6.4.3
-                                                  'LaplacianNoiseEvaluateOperator', # 6.4.3
-                                                  'MultiplicativeNoiseEvaluateOperator', # 6.4.3
-                                                  'PoissonNoiseEvaluateOperator', # 6.4.3
-                                                  'UniformNoiseEvaluateOperator', # 6.4.3
-                                                  'CosineEvaluateOperator', # 6.4.8-5
-                                                  'SineEvaluateOperator', # 6.4.8-5
-                                                  'AddModulusEvaluateOperator'], # 6.4.8-5
-                       headers)
       have_enum_values('MagickFunction', ['ArcsinFunction', # 6.5.2-8
                                           'ArctanFunction', # 6.5.2-8
                                           'PolynomialFunction', # 6.4.8-8
