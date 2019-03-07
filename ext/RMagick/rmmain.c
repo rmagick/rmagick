@@ -1252,6 +1252,11 @@ Init_RMagick2(void)
         ENUMERATOR(MeshInterpolatePixel)
         ENUMERATOR(NearestNeighborInterpolatePixel)
         ENUMERATOR(SplineInterpolatePixel)
+        ENUMERATOR(Average9InterpolatePixel)
+        ENUMERATOR(Average16InterpolatePixel)
+        ENUMERATOR(BlendInterpolatePixel)
+        ENUMERATOR(BackgroundInterpolatePixel)
+        ENUMERATOR(CatromInterpolatePixel)
     END_ENUM
 
     DEF_ENUM(MagickFunction)
