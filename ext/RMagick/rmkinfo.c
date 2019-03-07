@@ -224,6 +224,7 @@ KernelInfo_clone(VALUE self)
  *                      Magick::OctagonalKernel
  *                      Magick::EuclideanKernel
  *                      Magick::UserDefinedKernel
+ *                      Magick::BinomialKernel
  * @param geometry geometry to pass to default kernel
  * @return KernelInfo instance
  */
