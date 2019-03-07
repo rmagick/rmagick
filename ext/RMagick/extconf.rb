@@ -32,9 +32,7 @@ module RMagick
 
     def configured_compile_options
       {
-        magick_config: $magick_config,
         with_magick_wand: $with_magick_wand,
-        pkg_config: $pkg_config,
         magick_version: $magick_version,
         local_libs: $LOCAL_LIBS,
         cflags: $CFLAGS,
@@ -69,18 +67,12 @@ module RMagick
 
         # ugly way to handle which config tool we're going to use...
         $with_magick_wand = false
-        $magick_config = false
-        $pkg_config = false
 
         # Check for Magick-config
-        if find_executable('Magick-config') && !has_graphicsmagick_libmagick_dev_compat?
-          $magick_config = true
-          $magick_version = `Magick-config --version`[/^(\d+\.\d+\.\d+)/]
-        elsif find_executable('pkg-config')
-          $pkg_config = true
+        if find_executable('pkg-config')
           $magick_version = `pkg-config MagickCore --modversion`[/^(\d+\.\d+\.\d+)/]
         else
-          exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find Magick-config or pkg-config in #{ENV['PATH']}\n"
+          exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find pkg-config in #{ENV['PATH']}\n"
         end
 
         check_multiple_imagemagick_versions
@@ -107,37 +99,17 @@ module RMagick
 
         # either set flags using Magick-config, MagickWand-config or pkg-config (new Debian default)
         if $with_magick_wand
-          if $magick_config
-            # Save flags
-            $CFLAGS = ENV['CFLAGS'].to_s + ' ' + `MagickWand-config --cflags`.chomp
-            $CPPFLAGS = ENV['CPPFLAGS'].to_s + ' ' + `MagickWand-config --cppflags`.chomp
-            $LDFLAGS = ENV['LDFLAGS'].to_s + ' ' + `MagickWand-config --ldflags`.chomp
-            $LOCAL_LIBS = ENV['LIBS'].to_s + ' ' + `MagickWand-config --libs`.chomp
-          end
-
-          if $pkg_config
-            # Save flags
-            $CFLAGS = ENV['CFLAGS'].to_s + ' ' + `pkg-config --cflags MagickWand`.chomp
-            $CPPFLAGS = ENV['CPPFLAGS'].to_s + ' ' + `pkg-config --cflags MagickWand`.chomp
-            $LDFLAGS = ENV['LDFLAGS'].to_s + ' ' + `pkg-config --libs MagickWand`.chomp
-            $LOCAL_LIBS = ENV['LIBS'].to_s + ' ' + `pkg-config --libs MagickWand`.chomp
-          end
+          # Save flags
+          $CFLAGS = ENV['CFLAGS'].to_s + ' ' + `pkg-config --cflags MagickWand`.chomp
+          $CPPFLAGS = ENV['CPPFLAGS'].to_s + ' ' + `pkg-config --cflags MagickWand`.chomp
+          $LDFLAGS = ENV['LDFLAGS'].to_s + ' ' + `pkg-config --libs MagickWand`.chomp
+          $LOCAL_LIBS = ENV['LIBS'].to_s + ' ' + `pkg-config --libs MagickWand`.chomp
         else
-          if $magick_config
-            # Save flags
-            $CFLAGS = ENV['CFLAGS'].to_s + ' ' + `Magick-config --cflags`.chomp
-            $CPPFLAGS = ENV['CPPFLAGS'].to_s + ' ' + `Magick-config --cppflags`.chomp
-            $LDFLAGS = ENV['LDFLAGS'].to_s + ' ' + `Magick-config --ldflags`.chomp
-            $LOCAL_LIBS = ENV['LIBS'].to_s + ' ' + `Magick-config --libs`.chomp
-          end
-
-          if $pkg_config
-            # Save flags
-            $CFLAGS = ENV['CFLAGS'].to_s + ' ' + `pkg-config --cflags MagickCore`.chomp
-            $CPPFLAGS = ENV['CPPFLAGS'].to_s + ' ' + `pkg-config --cflags MagickCore`.chomp
-            $LDFLAGS = ENV['LDFLAGS'].to_s + ' ' + `pkg-config --libs MagickCore`.chomp
-            $LOCAL_LIBS = ENV['LIBS'].to_s + ' ' + `pkg-config --libs MagickCore`.chomp
-          end
+          # Save flags
+          $CFLAGS = ENV['CFLAGS'].to_s + ' ' + `pkg-config --cflags MagickCore`.chomp
+          $CPPFLAGS = ENV['CPPFLAGS'].to_s + ' ' + `pkg-config --cflags MagickCore`.chomp
+          $LDFLAGS = ENV['LDFLAGS'].to_s + ' ' + `pkg-config --libs MagickCore`.chomp
+          $LOCAL_LIBS = ENV['LIBS'].to_s + ' ' + `pkg-config --libs MagickCore`.chomp
         end
 
         set_archflags_for_osx if RUBY_PLATFORM =~ /darwin/ # osx
@@ -192,20 +164,6 @@ SRC
     def have_enum_values(enum, values, headers = nil, &b)
       values.each do |value|
         have_enum_value(enum, value, headers, &b)
-      end
-    end
-
-    def has_graphicsmagick_libmagick_dev_compat?
-      config_path = `which Magick-config`.chomp
-      if File.exist?(config_path) &&
-         File.symlink?(config_path) &&
-         File.readlink(config_path) =~ /GraphicsMagick/
-        msg = 'Found a graphicsmagick-libmagick-dev-compat installation.'
-        Logging.message msg
-        message msg + "\n"
-        true
-      else
-        false
       end
     end
 
@@ -327,10 +285,7 @@ END_MINGW
     def assert_has_dev_libs!
       return unless RUBY_PLATFORM !~ /mswin|mingw/
 
-      # check for pkg-config if Magick-config doesn't exist
-      if $magick_config && `Magick-config --libs`[/\bl\s*(MagickCore|Magick)6?\b/]
-      elsif $pkg_config && `pkg-config --libs MagickCore`[/\bl\s*(MagickCore|Magick)6?\b/]
-      else
+      unless `pkg-config --libs MagickCore`[/\bl\s*(MagickCore|Magick)6?\b/]
         exit_failure "Can't install RMagick #{RMAGICK_VERS}. " \
                    "Can't find the ImageMagick library or one of the dependent libraries. " \
                    "Check the mkmf.log file for more detailed information.\n"
