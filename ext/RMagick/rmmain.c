@@ -1517,6 +1517,7 @@ Init_RMagick2(void)
       ENUMERATOR(ThinningMorphology)
       ENUMERATOR(ThickenMorphology)
       ENUMERATOR(VoronoiMorphology)
+      ENUMERATOR(IterativeDistanceMorphology)
     END_ENUM
 
     DEF_ENUM(KernelInfoType)
