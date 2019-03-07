@@ -1588,6 +1588,7 @@ Init_RMagick2(void)
       ENUMERATOR(OctagonalKernel)
       ENUMERATOR(EuclideanKernel)
       ENUMERATOR(UserDefinedKernel)
+      ENUMERATOR(BinomialKernel)
     END_ENUM
 
     /*-----------------------------------------------------------------------*/
