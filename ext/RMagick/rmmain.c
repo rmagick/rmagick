@@ -1387,6 +1387,12 @@ Init_RMagick2(void)
         ENUMERATOR(CosineQuantumOperator)
         ENUMERATOR(SineQuantumOperator)
         ENUMERATOR(AddModulusQuantumOperator)
+        ENUMERATOR(MeanQuantumOperator)
+        ENUMERATOR(AbsQuantumOperator)
+        ENUMERATOR(ExponentialQuantumOperator)
+        ENUMERATOR(MedianQuantumOperator)
+        ENUMERATOR(SumQuantumOperator)
+        ENUMERATOR(RootMeanSquareQuantumOperator)
     END_ENUM
 
     // RenderingIntent

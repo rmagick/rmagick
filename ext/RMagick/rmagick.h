@@ -253,7 +253,13 @@ typedef enum _QuantumExpressionOperator
     UniformNoiseQuantumOperator, /**< uniform noise */
     CosineQuantumOperator,    /**< cosine */
     SineQuantumOperator,      /**< sine */
-    AddModulusQuantumOperator /**< add modulus */
+    AddModulusQuantumOperator, /**< add modulus */
+    MeanQuantumOperator, /**< mean */
+    AbsQuantumOperator, /**< abs */
+    ExponentialQuantumOperator, /**< exponential */
+    MedianQuantumOperator, /**< median */
+    SumQuantumOperator, /**< sum */
+    RootMeanSquareQuantumOperator /** root mean square */
 } QuantumExpressionOperator ;
 
 
