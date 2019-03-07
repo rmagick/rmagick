@@ -124,7 +124,27 @@ class Image3_UT < Test::Unit::TestCase
       Magick::OrQuantumOperator,
       Magick::RShiftQuantumOperator,
       Magick::SubtractQuantumOperator,
-      Magick::XorQuantumOperator
+      Magick::XorQuantumOperator,
+      Magick::PowQuantumOperator,
+      Magick::LogQuantumOperator,
+      Magick::ThresholdQuantumOperator,
+      Magick::ThresholdBlackQuantumOperator,
+      Magick::ThresholdWhiteQuantumOperator,
+      Magick::GaussianNoiseQuantumOperator,
+      Magick::ImpulseNoiseQuantumOperator,
+      Magick::LaplacianNoiseQuantumOperator,
+      Magick::MultiplicativeNoiseQuantumOperator,
+      Magick::PoissonNoiseQuantumOperator,
+      Magick::UniformNoiseQuantumOperator,
+      Magick::CosineQuantumOperator,
+      Magick::SineQuantumOperator,
+      Magick::AddModulusQuantumOperator,
+      Magick::MeanQuantumOperator,
+      Magick::AbsQuantumOperator,
+      Magick::ExponentialQuantumOperator,
+      Magick::MedianQuantumOperator,
+      Magick::SumQuantumOperator,
+      Magick::RootMeanSquareQuantumOperator
     ]
 
     assert_nothing_raised do

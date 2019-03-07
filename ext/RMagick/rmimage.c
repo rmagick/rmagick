@@ -10258,6 +10258,24 @@ Image_quantum_operator(int argc, VALUE *argv, VALUE self)
         case AddModulusQuantumOperator:
             qop = AddModulusEvaluateOperator;
             break;
+        case MeanQuantumOperator:
+            qop = MeanEvaluateOperator;
+            break;
+        case AbsQuantumOperator:
+            qop = AbsEvaluateOperator;
+            break;
+        case ExponentialQuantumOperator:
+            qop = ExponentialEvaluateOperator;
+            break;
+        case MedianQuantumOperator:
+            qop = MedianEvaluateOperator;
+            break;
+        case SumQuantumOperator:
+            qop = SumEvaluateOperator;
+            break;
+        case RootMeanSquareQuantumOperator:
+            qop = RootMeanSquareEvaluateOperator;
+            break;
     }
 
     exception = AcquireExceptionInfo();
