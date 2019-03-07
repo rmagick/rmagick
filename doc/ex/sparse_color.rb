@@ -36,6 +36,11 @@ begin
   img2['Label'] = 'Barycentric'
   imgl << draw_centers(img2, false)
 
+  img2 = img.sparse_color(Magick::InverseColorInterpolate, 30, 10, 'red',
+                          10, 80, 'blue', 70, 60, 'lime')
+  img2['Label'] = 'Barycentric'
+  imgl << draw_centers(img2, false)
+
   montage = imgl.montage do
     self.background_color = 'none'
     self.geometry = '100x100+10+10'

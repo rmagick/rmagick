@@ -1418,6 +1418,7 @@ Init_RMagick2(void)
         //ENUMERATOR(PolynomialColorInterpolate)
         ENUMERATOR(ShepardsColorInterpolate)
         ENUMERATOR(VoronoiColorInterpolate)
+        ENUMERATOR(InverseColorInterpolate)
     END_ENUM
 
     // SpreadMethod
