@@ -428,6 +428,10 @@ class Image2_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.distortion_channel(@img, Magick::PeakSignalToNoiseRatioMetric) }
     assert_nothing_raised { @img.distortion_channel(@img, Magick::RootMeanSquaredErrorMetric) }
     assert_nothing_raised { @img.distortion_channel(@img, Magick::MeanSquaredErrorMetric, Magick::RedChannel, Magick:: BlueChannel) }
+    assert_nothing_raised { @img.distortion_channel(@img, Magick::NormalizedCrossCorrelationErrorMetric) }
+    assert_nothing_raised { @img.distortion_channel(@img, Magick::FuzzErrorMetric) }
+    assert_nothing_raised { @img.distortion_channel(@img, Magick::UndefinedErrorMetric) }
+    assert_nothing_raised { @img.distortion_channel(@img, Magick::PerceptualHashErrorMetric) }
     assert_raise(TypeError) { @img.distortion_channel(@img, 2) }
     assert_raise(TypeError) { @img.distortion_channel(@img, Magick::RootMeanSquaredErrorMetric, 2) }
     assert_raise(ArgumentError) { @img.distortion_channel }

@@ -536,6 +536,10 @@ class Image1_UT < Test::Unit::TestCase
     assert_nothing_raised { img1.compare_channel(img2, Magick::PeakAbsoluteErrorMetric) }
     assert_nothing_raised { img1.compare_channel(img2, Magick::PeakSignalToNoiseRatioMetric) }
     assert_nothing_raised { img1.compare_channel(img2, Magick::RootMeanSquaredErrorMetric) }
+    assert_nothing_raised { img1.compare_channel(img2, Magick::NormalizedCrossCorrelationErrorMetric) }
+    assert_nothing_raised { img1.compare_channel(img2, Magick::FuzzErrorMetric) }
+    assert_nothing_raised { img1.compare_channel(img2, Magick::UndefinedErrorMetric) }
+    assert_nothing_raised { img1.compare_channel(img2, Magick::PerceptualHashErrorMetric) }
     assert_raise(TypeError) { img1.compare_channel(img2, 2) }
     assert_raise(ArgumentError) { img1.compare_channel }
 
