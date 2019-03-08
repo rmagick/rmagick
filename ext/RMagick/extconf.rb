@@ -3,6 +3,8 @@ $LOAD_PATH.unshift(lib_dir) unless $LOAD_PATH.include?(lib_dir)
 require 'rubygems'
 require 'mkmf'
 require 'date'
+require 'singleton'
+require 'pkg-config'
 
 module RMagick
   class Extconf
@@ -32,8 +34,8 @@ module RMagick
 
     def configured_compile_options
       {
-        with_magick_wand: $with_magick_wand,
-        magick_version: $magick_version,
+        with_magick_wand: RMagick::Config.instance.with_magick_wand?,
+        magick_version: RMagick::Config.instance.version,
         local_libs: $LOCAL_LIBS,
         cflags: $CFLAGS,
         cppflags: $CPPFLAGS,
@@ -65,60 +67,25 @@ module RMagick
         cc = (ENV['CC'] || config::CONFIG['CC'] || 'gcc').split(' ').first
         exit_failure "No C compiler found in ${ENV['PATH']}. See mkmf.log for details." unless find_executable(cc)
 
-        # ugly way to handle which config tool we're going to use...
-        $with_magick_wand = false
-
-        # Check for Magick-config
-        if find_executable('pkg-config')
-          $magick_version = `pkg-config MagickCore --modversion`[/^(\d+\.\d+\.\d+)/]
-        else
-          exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find pkg-config in #{ENV['PATH']}\n"
-        end
-
         check_multiple_imagemagick_versions
         check_partial_imagemagick_versions
 
         # Ensure minimum ImageMagick version
         # Check minimum ImageMagick version if possible
         checking_for("outdated ImageMagick version (<= #{Magick::MIN_IM_VERSION})") do
-          Logging.message("Detected ImageMagick version: #{$magick_version}\n")
+          Logging.message("Detected ImageMagick version: #{RMagick::Config.instance.version}\n")
 
-          exit_failure "Can't install RMagick #{RMAGICK_VERS}. You must have ImageMagick #{Magick::MIN_IM_VERSION} or later.\n" if Gem::Version.new($magick_version) < Gem::Version.new(Magick::MIN_IM_VERSION)
+          exit_failure "Can't install RMagick #{RMAGICK_VERS}. You must have ImageMagick #{Magick::MIN_IM_VERSION} or later.\n" if Gem::Version.new(RMagick::Config.instance.version) < Gem::Version.new(Magick::MIN_IM_VERSION)
         end
 
-        # From ImageMagick 6.9 binaries are split to two and we have to use
-        # MagickWand instead of MagickCore
-        checking_for("presence of MagickWand API (ImageMagick version >= #{Magick::MIN_WAND_VERSION})") do
-          $with_magick_wand = Gem::Version.new($magick_version) >= Gem::Version.new(Magick::MIN_WAND_VERSION)
-          if $with_magick_wand
-            Logging.message('Detected 6.9+ version, using MagickWand API')
-          else
-            Logging.message('Older version detected, using MagickCore API')
-          end
-        end
-
-        # either set flags using Magick-config, MagickWand-config or pkg-config (new Debian default)
-        if $with_magick_wand
-          # Save flags
-          $CFLAGS = ENV['CFLAGS'].to_s + ' ' + `pkg-config --cflags MagickWand`.chomp
-          $CPPFLAGS = ENV['CPPFLAGS'].to_s + ' ' + `pkg-config --cflags MagickWand`.chomp
-          $LDFLAGS = ENV['LDFLAGS'].to_s + ' ' + `pkg-config --libs MagickWand`.chomp
-          $LOCAL_LIBS = ENV['LIBS'].to_s + ' ' + `pkg-config --libs MagickWand`.chomp
-        else
-          # Save flags
-          $CFLAGS = ENV['CFLAGS'].to_s + ' ' + `pkg-config --cflags MagickCore`.chomp
-          $CPPFLAGS = ENV['CPPFLAGS'].to_s + ' ' + `pkg-config --cflags MagickCore`.chomp
-          $LDFLAGS = ENV['LDFLAGS'].to_s + ' ' + `pkg-config --libs MagickCore`.chomp
-          $LOCAL_LIBS = ENV['LIBS'].to_s + ' ' + `pkg-config --libs MagickCore`.chomp
-        end
+        $CFLAGS = ENV['CFLAGS'].to_s + ' ' + RMagick::Config.instance.cflags
+        $CPPFLAGS = ENV['CPPFLAGS'].to_s + ' ' + RMagick::Config.instance.cflags
+        $LDFLAGS = ENV['LDFLAGS'].to_s + ' ' + RMagick::Config.instance.libs
+        $LOCAL_LIBS = ENV['LIBS'].to_s + ' ' + RMagick::Config.instance.libs
 
         set_archflags_for_osx if RUBY_PLATFORM =~ /darwin/ # osx
 
       elsif RUBY_PLATFORM =~ /mingw/ # mingw
-
-        `identify -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
-        abort 'Unable to get ImageMagick version' unless Regexp.last_match(1)
-        $magick_version = Regexp.last_match(1)
 
         dir_paths = search_paths_for_library_for_windows
         $CPPFLAGS = %(-I"#{dir_paths[:include]}")
@@ -128,10 +95,6 @@ module RMagick
         have_library('X11')
 
       else # mswin
-
-        `identify -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
-        abort 'Unable to get ImageMagick version' unless Regexp.last_match(1)
-        $magick_version = Regexp.last_match(1)
 
         dir_paths = search_paths_for_library_for_windows
         $CPPFLAGS << %( -I"#{dir_paths[:include]}")
@@ -285,7 +248,7 @@ END_MINGW
     def assert_has_dev_libs!
       return unless RUBY_PLATFORM !~ /mswin|mingw/
 
-      unless `pkg-config --libs MagickCore`[/\bl\s*(MagickCore|Magick)6?\b/]
+      unless RMagick::Config.instance.libs[/\bl\s*(MagickCore|Magick)6?\b/]
         exit_failure "Can't install RMagick #{RMAGICK_VERS}. " \
                    "Can't find the ImageMagick library or one of the dependent libraries. " \
                    "Check the mkmf.log file for more detailed information.\n"
@@ -342,6 +305,76 @@ END_SUMMARY
 
       Logging.message summary
       message summary
+    end
+  end
+
+  class Config
+    include Singleton
+
+    def initialize
+      @windows = (RUBY_PLATFORM =~ /mswin|mingw/)
+
+      found = find_executable('pkg-config')
+      @use_native_pkg_config = !!found
+
+      checking_for("presence of MagickWand API (ImageMagick version >= #{Magick::MIN_WAND_VERSION})") do
+        @magick_wand = Gem::Version.new(version) >= Gem::Version.new(Magick::MIN_WAND_VERSION)
+        if @magick_wand
+          Logging.message('Detected 6.9+ version, using MagickWand API')
+        else
+          Logging.message('Older version detected, using MagickCore API')
+        end
+      end
+    end
+
+    def windows?
+      @windows
+    end
+
+    def native_pkg_config?
+      @use_native_pkg_config
+    end
+
+    def with_magick_wand?
+      @magick_wand
+    end
+
+    def module_name
+      with_magick_wand? ? 'MagickWand' : 'MagickCore'
+    end
+
+    def version
+      if windows?
+        `identify -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
+        abort 'Unable to get ImageMagick version' unless Regexp.last_match(1)
+        return Regexp.last_match(1)
+      end
+
+      if native_pkg_config?
+        `pkg-config #{module_name} --modversion`[/^(\d+\.\d+\.\d+)/]
+      else
+        PKGConfig.modversion(module_name)[/^(\d+\.\d+\.\d+)/]
+      end
+    end
+
+    def cflags
+      return if windows?
+
+      if native_pkg_config?
+        `pkg-config --cflags #{module_name}`.chomp
+      else
+        PKGConfig.cflags(module_name).chomp
+      end
+    end
+
+    def libs
+      return if windows?
+
+      if native_pkg_config?
+        `pkg-config --libs #{module_name}`.chomp
+      else
+        PKGConfig.libs(module_name).chomp
+      end
     end
   end
 end
