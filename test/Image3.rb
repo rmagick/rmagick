@@ -1070,6 +1070,11 @@ class Image3_UT < Test::Unit::TestCase
     img = Magick::Image.read('test.0')
     assert_equal('JPEG', img.first.format)
     FileUtils.rm('test.0')
+
+    @img.write('test.webp')
+    img = Magick::Image.read('test.webp')
+    assert_equal('WEBP', img.first.format)
+    FileUtils.rm('test.webp') rescue nil # Avoid failure on AppVeyor
   end
 end
 
