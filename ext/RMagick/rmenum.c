@@ -985,6 +985,11 @@ InterpolatePixelMethod_name(InterpolatePixelMethod interpolate)
         ENUM_TO_NAME(MeshInterpolatePixel)
         ENUM_TO_NAME(NearestNeighborInterpolatePixel)
         ENUM_TO_NAME(SplineInterpolatePixel)
+        ENUM_TO_NAME(Average9InterpolatePixel)
+        ENUM_TO_NAME(Average16InterpolatePixel)
+        ENUM_TO_NAME(BlendInterpolatePixel)
+        ENUM_TO_NAME(BackgroundInterpolatePixel)
+        ENUM_TO_NAME(CatromInterpolatePixel)
     }
 
     return "UndefinedInterpolatePixel";
