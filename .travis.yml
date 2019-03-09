@@ -22,6 +22,11 @@ rvm:
   - 2.3
   - 2.4
 
+matrix:
+  include:
+    - rvm: 2.3
+      env: STYLE_CHECKS=true IMAGEMAGICK_VERSION=6.8.9-10
+
 notifications:
   webhooks:
     urls:
