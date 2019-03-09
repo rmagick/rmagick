@@ -10679,15 +10679,22 @@ Image_recolor(VALUE self, VALUE color_matrix)
     image = rm_check_destroyed(self);
     color_matrix = rm_check_ary_type(color_matrix);
 
-    exception = AcquireExceptionInfo();
-
     // Allocate color matrix from Ruby's memory
     len = RARRAY_LEN(color_matrix);
     matrix = ALLOC_N(double, len);
 
     for (x = 0; x < len; x++)
     {
-        matrix[x] = NUM2DBL(rb_ary_entry(color_matrix, x));
+        VALUE element = rb_ary_entry(color_matrix, x);
+        if (rm_check_num2dbl(element))
+        {
+            matrix[x] = NUM2DBL(element);
+        }
+        else
+        {
+            xfree(matrix);
+            rb_raise(rb_eTypeError, "type mismatch: %s given", rb_class2name(CLASS_OF(element)));
+        }
     }
 
     order = (unsigned long)sqrt((double)(len + 1.0));
@@ -10699,6 +10706,8 @@ Image_recolor(VALUE self, VALUE color_matrix)
     kernel_info->width = order;
     kernel_info->height = order;
     kernel_info->values = (double *) matrix;
+
+    exception = AcquireExceptionInfo();
     new_image = ColorMatrixImage(image, kernel_info, exception);
     kernel_info->values = (double *) NULL;
     kernel_info = DestroyKernelInfo(kernel_info);
