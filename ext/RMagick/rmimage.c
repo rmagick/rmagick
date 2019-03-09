@@ -5200,13 +5200,20 @@ Image_distort(int argc, VALUE *argv, VALUE self)
     }
 
     npoints = RARRAY_LEN(pts);
-    // Allocate points array from Ruby's memory. If an error occurs Ruby will
-    // be able to clean it up.
     points = ALLOC_N(double, npoints);
 
     for (n = 0; n < npoints; n++)
     {
-        points[n] = NUM2DBL(rb_ary_entry(pts, n));
+        VALUE element = rb_ary_entry(pts, n);
+        if (rm_check_num2dbl(element))
+        {
+            points[n] = NUM2DBL(element);
+        }
+        else
+        {
+            xfree(points);
+            rb_raise(rb_eTypeError, "type mismatch: %s given", rb_class2name(CLASS_OF(element)));
+        }
     }
 
     exception = AcquireExceptionInfo();
