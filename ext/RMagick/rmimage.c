@@ -6717,7 +6717,16 @@ Image_function_channel(int argc, VALUE *argv, VALUE self)
 
     for (n = 0; n < nparms; n++)
     {
-        parms[n] = NUM2DBL(argv[n]);
+        VALUE element = argv[n];
+        if (rm_check_num2dbl(element))
+        {
+            parms[n] = NUM2DBL(element);
+        }
+        else
+        {
+            xfree(parms);
+            rb_raise(rb_eTypeError, "type mismatch: %s given", rb_class2name(CLASS_OF(element)));
+        }
     }
 
     exception = AcquireExceptionInfo();
