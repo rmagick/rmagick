@@ -4199,7 +4199,16 @@ Image_convolve(VALUE self, VALUE order_arg, VALUE kernel_arg)
     kernel = (double *)ALLOC_N(double, order*order);
     for (x = 0; x < order*order; x++)
     {
-        kernel[x] = NUM2DBL(rb_ary_entry(kernel_arg, (long)x));
+        VALUE element = rb_ary_entry(kernel_arg, (long)x);
+        if (rm_check_num2dbl(element))
+        {
+            kernel[x] = NUM2DBL(element);
+        }
+        else
+        {
+            xfree((void *)kernel);
+            rb_raise(rb_eTypeError, "type mismatch: %s given", rb_class2name(CLASS_OF(element)));
+        }
     }
 
     exception = AcquireExceptionInfo();
