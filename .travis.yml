@@ -25,7 +25,6 @@ addons:
       - ccache
 
 os:
-  - linux
   - osx
 
 sudo: required
@@ -39,7 +38,7 @@ env:
   - IMAGEMAGICK_VERSION=6.9.10-49 CONFIGURE_OPTIONS=--enable-hdri
 
 before_install:
-  - /bin/bash before_install_$TRAVIS_OS_NAME.sh
+  - ./before_install_$TRAVIS_OS_NAME.sh
 
 install: bundle install --path=vendor/bundle --verbose
 
