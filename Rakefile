@@ -190,7 +190,7 @@ task spec: :compile
 if ENV['STYLE_CHECKS']
   require 'rubocop/rake_task'
   RuboCop::RakeTask.new
-  task default: %i[spec test rubocop]
+  task default: %i[rubocop]
 else
   task default: %i[spec test]
 end
