@@ -7307,26 +7307,38 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
 
         if (stg_type == DoublePixel || stg_type == FloatPixel)
         {
-            // Get an array for double pixels. Use Ruby's memory so GC will clean up after
-            // us in case of an exception.
             fpixels = ALLOC_N(double, npixels);
             for (n = 0; n < npixels; n++)
             {
-                fpixels[n] = NUM2DBL(rb_ary_entry(pixel_ary, n));
+                VALUE element = rb_ary_entry(pixel_ary, n);
+                if (rm_check_num2dbl(element))
+                {
+                    fpixels[n] = NUM2DBL(element);
+                }
+                else
+                {
+                    xfree(fpixels);
+                    rb_raise(rb_eTypeError, "type mismatch: %s given", rb_class2name(CLASS_OF(element)));
+                }
             }
             buffer = (void *) fpixels;
             stg_type = DoublePixel;
         }
         else
         {
-            // Get array for Quantum pixels. Use Ruby's memory so GC will clean up after us
-            // in case of an exception.
             pixels = ALLOC_N(Quantum, npixels);
             for (n = 0; n < npixels; n++)
             {
-                VALUE p = rb_ary_entry(pixel_ary, n);
-                pixels[n] = NUM2QUANTUM(p);
-                RB_GC_GUARD(p);
+                VALUE element = rb_ary_entry(pixel_ary, n);
+                if (rm_check_num2dbl(element))
+                {
+                    pixels[n] = NUM2DBL(element);
+                }
+                else
+                {
+                    xfree(pixels);
+                    rb_raise(rb_eTypeError, "type mismatch: %s given", rb_class2name(CLASS_OF(element)));
+                }
             }
             buffer = (void *) pixels;
             stg_type = QuantumPixel;
