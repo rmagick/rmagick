@@ -10369,6 +10369,10 @@ Image_quantize(int argc, VALUE *argv, VALUE self)
                 VALUE_TO_ENUM(argv[2], quantize_info.dither_method, DitherMethod);
                 quantize_info.dither = quantize_info.dither_method != NoDitherMethod;
             }
+            else
+            {
+                quantize_info.dither = (MagickBooleanType) RTEST(argv[2]);
+            }
         case 2:
             VALUE_TO_ENUM(argv[1], quantize_info.colorspace, ColorspaceType);
         case 1:
