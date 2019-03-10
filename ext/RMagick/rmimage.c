@@ -7143,7 +7143,11 @@ has_attribute(VALUE self, MagickBooleanType (attr_test)(const Image *, Exception
 VALUE
 Image_gray_q(VALUE self)
 {
+#if defined(HAVE_SETIMAGEGRAY)
+    return has_attribute(self, (MagickBooleanType (*)(const Image *, ExceptionInfo *))SetImageGray);
+#else
     return has_attribute(self, (MagickBooleanType (*)(const Image *, ExceptionInfo *))IsGrayImage);
+#endif
 }
 
 
