@@ -12554,8 +12554,18 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
     n = 0;
     while (n < argc)
     {
-        args[x++] = NUM2DBL(argv[n++]);
-        args[x++] = NUM2DBL(argv[n++]);
+        VALUE elem1 = argv[n++];
+        VALUE elem2 = argv[n++];
+        if (rm_check_num2dbl(elem1) && rm_check_num2dbl(elem2))
+        {
+            args[x++] = NUM2DBL(elem1);
+            args[x++] = NUM2DBL(elem2);
+        }
+        else
+        {
+            xfree((void *)args);
+            rb_raise(rb_eTypeError, "type mismatch: %s and %s given", rb_class2name(CLASS_OF(elem1)), rb_class2name(CLASS_OF(elem2)));
+        }
         Color_to_MagickPixelPacket(NULL, &pp, argv[n++]);
         if (channels & RedChannel)
         {
