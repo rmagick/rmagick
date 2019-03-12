@@ -2,6 +2,7 @@ environment:
   matrix:
     - RUBY_VERSION: "23-x64"
     - RUBY_VERSION: "24-x64"
+    - RUBY_VERSION: "25-x64"
 
 install:
   - appveyor DownloadFile https://ftp.icm.edu.pl/pub/graphics/ImageMagick/binaries/ImageMagick-6.8.9-10-Q16-x64-dll.exe
