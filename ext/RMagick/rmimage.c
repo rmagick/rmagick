@@ -3901,6 +3901,7 @@ Image_constitute(VALUE class, VALUE width_arg, VALUE height_arg
         pixel = rb_ary_entry(pixels_arg, x);
         if (rb_obj_is_kind_of(pixel, pixel_class) != Qtrue)
         {
+            xfree(pixels.v);
             rb_raise(rb_eTypeError, "element %ld in pixel array is %s, expected %s"
                      , x, rb_class2name(CLASS_OF(pixel)),rb_class2name(CLASS_OF(pixel0)));
         }
@@ -3909,6 +3910,7 @@ Image_constitute(VALUE class, VALUE width_arg, VALUE height_arg
             pixels.f[x] = (float) NUM2DBL(pixel);
             if (pixels.f[x] < 0.0 || pixels.f[x] > 1.0)
             {
+                xfree(pixels.v);
                 rb_raise(rb_eArgError, "element %ld is out of range [0..1]: %f", x, pixels.f[x]);
             }
         }
@@ -3924,6 +3926,7 @@ Image_constitute(VALUE class, VALUE width_arg, VALUE height_arg
     image = AcquireImage(NULL);
     if (!image)
     {
+        xfree(pixels.v);
         rb_raise(rb_eNoMemError, "not enough memory to continue.");
     }
 
