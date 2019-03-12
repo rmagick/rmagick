@@ -1455,9 +1455,15 @@ rm_progress_monitor(
     const MagickSizeType sp,
     void *client_data)
 {
-#if !defined(_WIN32)
     VALUE rval;
     VALUE method, offset, span;
+
+    if (ruby_stack_check())
+    {
+        // If there is not enough stack or the using stack size shows an abnormal value in Ruby,
+        // skip the callback and continue ImageMagick process.
+        return MagickTrue;
+    }
 
     tag = tag;      // defeat gcc message
 
@@ -1479,9 +1485,6 @@ rm_progress_monitor(
     RB_GC_GUARD(span);
 
     return RTEST(rval) ? MagickTrue : MagickFalse;
-#else
-    return MagickTrue;
-#endif
 }
 
 
