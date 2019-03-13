@@ -1027,7 +1027,7 @@ void rm_sync_image_options(Image *image, Info *info)
 
     if (info->colorspace != UndefinedColorspace)
     {
-        image->colorspace = info->colorspace;
+        SetImageColorspace(image, info->colorspace);
     }
 
     if (info->compression != UndefinedCompression)

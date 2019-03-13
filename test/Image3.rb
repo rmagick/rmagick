@@ -1075,6 +1075,16 @@ class Image3_UT < Test::Unit::TestCase
     img = Magick::Image.read('test.webp')
     assert_equal('WEBP', img.first.format)
     FileUtils.rm('test.webp') rescue nil # Avoid failure on AppVeyor
+
+    f = File.new('test.0', 'w')
+    Magick::Image.new(100, 100).write(f) do
+      self.format = 'JPEG'
+      self.colorspace = Magick::CMYKColorspace
+    end
+    f.close
+    img = Magick::Image.read('test.0')
+    assert_equal('JPEG', img.first.format)
+    FileUtils.rm('test.0')
   end
 end
 
