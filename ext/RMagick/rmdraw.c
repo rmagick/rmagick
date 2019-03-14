@@ -1091,8 +1091,11 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
 
         switch (cop)
         {
-            case ModulusAddCompositeOp:
-                op = "Add";
+            case UndefinedCompositeOp:
+                op = "Undefined";
+                break;
+            case AlphaCompositeOp:
+                op = "Alpha";
                 break;
             case AtopCompositeOp:
                 op = "Atop";
@@ -1121,14 +1124,14 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
             case ColorizeCompositeOp:
                 op = "Colorize";
                 break;
-            case CopyCompositeOp:
-                op = "Copy";
-                break;
             case CopyBlackCompositeOp:
                 op = "CopyBlack";
                 break;
             case CopyBlueCompositeOp:
                 op = "CopyBlue";
+                break;
+            case CopyCompositeOp:
+                op = "Copy";
                 break;
             case CopyCyanCompositeOp:
                 op = "CopyCyan";
@@ -1151,26 +1154,8 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
             case DarkenCompositeOp:
                 op = "Darken";
                 break;
-            case DistortCompositeOp:
-                op = "Distort";
-                break;
-            case DivideDstCompositeOp:
-                op = "Divide";
-                break;
-            case DstCompositeOp:
-                op = "Dst";
-                break;
-            case DstAtopCompositeOp:
-                op = "DstAtop";
-                break;
-            case DstInCompositeOp:
-                op = "DstIn";
-                break;
-            case DstOutCompositeOp:
-                op = "DstOut";
-                break;
-            case DstOverCompositeOp:
-                op = "DstOver";
+            case DarkenIntensityCompositeOp:
+                op = "DarkenIntensity";
                 break;
             case DifferenceCompositeOp:
                 op = "Difference";
@@ -1181,11 +1166,38 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
             case DissolveCompositeOp:
                 op = "Dissolve";
                 break;
+            case DistortCompositeOp:
+                op = "Distort";
+                break;
+            case DivideDstCompositeOp:
+                op = "DivideDst";
+                break;
+            case DivideSrcCompositeOp:
+                op = "DivideSrc";
+                break;
+            case DstAtopCompositeOp:
+                op = "DstAtop";
+                break;
+            case DstCompositeOp:
+                op = "Dst";
+                break;
+            case DstInCompositeOp:
+                op = "DstIn";
+                break;
+            case DstOutCompositeOp:
+                op = "DstOut";
+                break;
+            case DstOverCompositeOp:
+                op = "DstOver";
+                break;
             case ExclusionCompositeOp:
                 op = "Exclusion";
                 break;
             case HardLightCompositeOp:
                 op = "HardLight";
+                break;
+            case HardMixCompositeOp:
+                op = "HardMix";
                 break;
             case HueCompositeOp:
                 op = "Hue";
@@ -1193,8 +1205,14 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
             case InCompositeOp:
                 op = "In";
                 break;
+            case IntensityCompositeOp:
+                op = "Intensity";
+                break;
             case LightenCompositeOp:
                 op = "Lighten";
+                break;
+            case LightenIntensityCompositeOp:
+                op = "LightenIntensity";
                 break;
             case LinearBurnCompositeOp:
                 op = "LinearBurn";
@@ -1208,14 +1226,29 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
             case LuminizeCompositeOp:
                 op = "Luminize";
                 break;
+            case MathematicsCompositeOp:
+                op = "Mathematics";
+                break;
             case MinusDstCompositeOp:
-                op = "Minus";
+                op = "MinusDst";
+                break;
+            case MinusSrcCompositeOp:
+                op = "MinusSrc";
                 break;
             case ModulateCompositeOp:
                 op = "Modulate";
                 break;
+            case ModulusAddCompositeOp:
+                op = "ModulusAdd";
+                break;
+            case ModulusSubtractCompositeOp:
+                op = "ModulusSubtract";
+                break;
             case MultiplyCompositeOp:
                 op = "Multiply";
+                break;
+            case NoCompositeOp:
+                op = "No";
                 break;
             case OutCompositeOp:
                 op = "Out";
@@ -1247,11 +1280,11 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
             case SoftLightCompositeOp:
                 op = "SoftLight";
                 break;
-            case SrcCompositeOp:
-                op = "Src";
-                break;
             case SrcAtopCompositeOp:
                 op = "SrcAtop";
+                break;
+            case SrcCompositeOp:
+                op = "Src";
                 break;
             case SrcInCompositeOp:
                 op = "SrcIn";
@@ -1262,9 +1295,6 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
             case SrcOverCompositeOp:
                 op = "SrcOver";
                 break;
-            case ModulusSubtractCompositeOp:
-                op = "Subtract";
-                break;
             case ThresholdCompositeOp:
                 op = "Threshold";
                 break;
@@ -1274,23 +1304,8 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
             case XorCompositeOp:
                 op = "Xor";
                 break;
-            case MathematicsCompositeOp:
-                op = "Mathematics";
-                break;
-            case DivideSrcCompositeOp:
-                op = "DivideSrc";
-                break;
-            case MinusSrcCompositeOp:
-                op = "MinusSrc";
-                break;
-            case DarkenIntensityCompositeOp:
-                op = "DarkenIntensity";
-                break;
-            case LightenIntensityCompositeOp:
-                op = "LightenIntensity";
-                break;
-            case HardMixCompositeOp:
-                op = "HardMix";
+            case StereoCompositeOp:
+                op = "Stereo";
                 break;
             default:
                 rb_raise(rb_eArgError, "unknown composite operator (%d)", cop);
