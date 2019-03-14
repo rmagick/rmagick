@@ -47,7 +47,7 @@ Filters = [
   Magick::BoxFilter,
   Magick::TriangleFilter,
   Magick::HermiteFilter,
-  Magick::HanningFilter,
+  Magick::HannFilter,
   Magick::HammingFilter,
   Magick::BlackmanFilter,
   Magick::GaussianFilter,
@@ -55,11 +55,16 @@ Filters = [
   Magick::CubicFilter,
   Magick::CatromFilter,
   Magick::MitchellFilter,
-  Magick::LanczosFilter,
-  Magick::BesselFilter,
-  Magick::SincFilter,
   Magick::JincFilter,
+  Magick::SincFilter,
   Magick::SincFastFilter,
+  Magick::KaiserFilter,
+  Magick::WelchFilter,
+  Magick::ParzenFilter,
+  Magick::BohmanFilter,
+  Magick::BartlettFilter,
+  Magick::LagrangeFilter,
+  Magick::LanczosFilter,
   Magick::LanczosSharpFilter,
   Magick::Lanczos2Filter,
   Magick::Lanczos2SharpFilter,
@@ -67,7 +72,8 @@ Filters = [
   Magick::RobidouxSharpFilter,
   Magick::CosineFilter,
   Magick::SplineFilter,
-  Magick::LanczosRadiusFilter
+  Magick::LanczosRadiusFilter,
+  Magick::CubicSplineFilter
 ]
 
 class Image3_UT < Test::Unit::TestCase

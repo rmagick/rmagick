@@ -371,7 +371,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.filter = Magick::BoxFilter }
     assert_nothing_raised { @img.filter = Magick::TriangleFilter }
     assert_nothing_raised { @img.filter = Magick::HermiteFilter }
-    assert_nothing_raised { @img.filter = Magick::HanningFilter }
+    assert_nothing_raised { @img.filter = Magick::HannFilter }
     assert_nothing_raised { @img.filter = Magick::HammingFilter }
     assert_nothing_raised { @img.filter = Magick::BlackmanFilter }
     assert_nothing_raised { @img.filter = Magick::GaussianFilter }
@@ -379,11 +379,16 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.filter = Magick::CubicFilter }
     assert_nothing_raised { @img.filter = Magick::CatromFilter }
     assert_nothing_raised { @img.filter = Magick::MitchellFilter }
-    assert_nothing_raised { @img.filter = Magick::LanczosFilter }
-    assert_nothing_raised { @img.filter = Magick::BesselFilter }
-    assert_nothing_raised { @img.filter = Magick::SincFilter }
     assert_nothing_raised { @img.filter = Magick::JincFilter }
+    assert_nothing_raised { @img.filter = Magick::SincFilter }
     assert_nothing_raised { @img.filter = Magick::SincFastFilter }
+    assert_nothing_raised { @img.filter = Magick::KaiserFilter }
+    assert_nothing_raised { @img.filter = Magick::WelchFilter }
+    assert_nothing_raised { @img.filter = Magick::ParzenFilter }
+    assert_nothing_raised { @img.filter = Magick::BohmanFilter }
+    assert_nothing_raised { @img.filter = Magick::BartlettFilter }
+    assert_nothing_raised { @img.filter = Magick::LagrangeFilter }
+    assert_nothing_raised { @img.filter = Magick::LanczosFilter }
     assert_nothing_raised { @img.filter = Magick::LanczosSharpFilter }
     assert_nothing_raised { @img.filter = Magick::Lanczos2Filter }
     assert_nothing_raised { @img.filter = Magick::Lanczos2SharpFilter }
@@ -392,6 +397,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.filter = Magick::CosineFilter }
     assert_nothing_raised { @img.filter = Magick::SplineFilter }
     assert_nothing_raised { @img.filter = Magick::LanczosRadiusFilter }
+    assert_nothing_raised { @img.filter = Magick::CubicSplineFilter }
     assert_raise(TypeError) { @img.filter = 2 }
   end
 
