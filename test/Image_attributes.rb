@@ -265,27 +265,29 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_equal(Magick::UndefinedCompression, @img.compression)
     assert_nothing_raised { @img.compression = Magick::BZipCompression }
     assert_equal(Magick::BZipCompression, @img.compression)
-    assert_nothing_raised { @img.compression = Magick::NoCompression }
-    assert_nothing_raised { @img.compression = Magick::BZipCompression }
-    assert_nothing_raised { @img.compression = Magick::B44Compression }
     assert_nothing_raised { @img.compression = Magick::B44ACompression }
+    assert_nothing_raised { @img.compression = Magick::B44Compression }
+    assert_nothing_raised { @img.compression = Magick::BZipCompression }
     assert_nothing_raised { @img.compression = Magick::DXT1Compression }
     assert_nothing_raised { @img.compression = Magick::DXT3Compression }
     assert_nothing_raised { @img.compression = Magick::DXT5Compression }
     assert_nothing_raised { @img.compression = Magick::FaxCompression }
     assert_nothing_raised { @img.compression = Magick::Group4Compression }
-    assert_nothing_raised { @img.compression = Magick::JPEGCompression }
+    assert_nothing_raised { @img.compression = Magick::JBIG1Compression }
+    assert_nothing_raised { @img.compression = Magick::JBIG2Compression }
     assert_nothing_raised { @img.compression = Magick::JPEG2000Compression }
+    assert_nothing_raised { @img.compression = Magick::JPEGCompression }
     assert_nothing_raised { @img.compression = Magick::LosslessJPEGCompression }
+    assert_nothing_raised { @img.compression = Magick::LZMACompression }
     assert_nothing_raised { @img.compression = Magick::LZWCompression }
+    assert_nothing_raised { @img.compression = Magick::NoCompression }
     assert_nothing_raised { @img.compression = Magick::PizCompression }
     assert_nothing_raised { @img.compression = Magick::Pxr24Compression }
     assert_nothing_raised { @img.compression = Magick::RLECompression }
     assert_nothing_raised { @img.compression = Magick::ZipCompression }
     assert_nothing_raised { @img.compression = Magick::ZipSCompression }
-    assert_nothing_raised { @img.compression = Magick::LZMACompression }
-    assert_nothing_raised { @img.compression = Magick::JBIG1Compression }
-    assert_nothing_raised { @img.compression = Magick::JBIG2Compression }
+    assert_nothing_raised { @img.compression = Magick::ZstdCompression }
+    assert_nothing_raised { @img.compression = Magick::WebPCompression }
     assert_raise(TypeError) { @img.compression = 2 }
   end
 
