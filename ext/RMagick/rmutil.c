@@ -1475,7 +1475,7 @@ rm_progress_monitor(
     span = rb_uint2big((unsigned long)sp);
 #endif
 
-    method = rb_str_new2(rb_id2name(THIS_FUNC()));
+    method = rb_id2str(THIS_FUNC());
 
     rval = rb_funcall((VALUE)client_data, rm_ID_call, 3, method, offset, span);
 
