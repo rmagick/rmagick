@@ -8365,6 +8365,7 @@ Image_map(int argc, VALUE *argv, VALUE self)
     Image *map;
     VALUE map_obj, map_arg;
     unsigned int dither = MagickFalse;
+    ExceptionInfo *exception;
 
     QuantizeInfo quantize_info;
     rb_warning("Image#map is deprecated. Use Image#remap instead");
@@ -8388,9 +8389,11 @@ Image_map(int argc, VALUE *argv, VALUE self)
 
     new_image = rm_clone_image(image);
 
+    exception = AcquireExceptionInfo();
     GetQuantizeInfo(&quantize_info);
-    (void) RemapImage(&quantize_info, new_image, map);
-    rm_check_image_exception(new_image, DestroyOnError);
+    (void) RemapImage(&quantize_info, new_image, map, exception);
+    rm_check_exception(exception, new_image, DestroyOnError);
+    (void) DestroyExceptionInfo(exception);
 
     RB_GC_GUARD(map_obj);
     RB_GC_GUARD(map_arg);
@@ -11075,6 +11078,7 @@ Image_remap(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *remap_image;
     QuantizeInfo quantize_info;
+    ExceptionInfo *exception;
 
     image = rm_check_frozen(self);
     if (argc > 0)
@@ -11098,8 +11102,10 @@ Image_remap(int argc, VALUE *argv, VALUE self)
             break;
     }
 
-    (void) RemapImage(&quantize_info, image, remap_image);
-    rm_check_image_exception(image, RetainOnError);
+    exception = AcquireExceptionInfo();
+    (void) RemapImage(&quantize_info, image, remap_image, exception);
+    rm_check_exception(exception, image, RetainOnError);
+    (void) DestroyExceptionInfo(exception);
 
     return self;
 }
