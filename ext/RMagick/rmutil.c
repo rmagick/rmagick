@@ -1039,7 +1039,10 @@ void rm_sync_image_options(Image *image, Info *info)
 
     if (info->colorspace != UndefinedColorspace)
     {
-        SetImageColorspace(image, info->colorspace);
+        ExceptionInfo *exception = AcquireExceptionInfo();
+        SetImageColorspace(image, info->colorspace, exception);
+        rm_check_exception(exception, image, RetainOnError);
+        (void) DestroyExceptionInfo(exception);
     }
 
     if (info->compression != UndefinedCompression)
