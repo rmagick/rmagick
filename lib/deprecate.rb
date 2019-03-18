@@ -1,4 +1,7 @@
 module Magick
+  # alias
+  TransparentOpacity = TransparentAlpha
+
   class Image
     def blur
       warn "Image#blur is deprecated. It is no effect now."
