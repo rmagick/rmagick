@@ -294,12 +294,6 @@ END_MINGW
 
     def create_header_file
       have_func('snprintf', headers)
-      [
-        'SetImageGray' # 6.9.1-10
-      ].each do |func|
-        have_func(func, headers)
-      end
-
       have_type('long double', headers)
 
       headers = ['ruby.h', 'ruby/io.h']
