@@ -1458,7 +1458,11 @@ rm_progress_monitor(
     VALUE rval;
     VALUE method, offset, span;
 
-    if (ruby_stack_check())
+// Default Ruby minimum stack size
+#define RUBY_VM_THREAD_MACHINE_STACK_SIZE_MIN (  16 * 1024 * sizeof(VALUE)) /*   64 KB or  128 KB */
+
+    // Check stack length manually instead of ruby_stack_check() for old Ruby.
+    if (ruby_stack_length(NULL) > RUBY_VM_THREAD_MACHINE_STACK_SIZE_MIN)
     {
         // If there is not enough stack or the using stack size shows an abnormal value in Ruby,
         // skip the callback and continue ImageMagick process.
@@ -1475,7 +1479,7 @@ rm_progress_monitor(
     span = rb_uint2big((unsigned long)sp);
 #endif
 
-    method = rb_str_new2(rb_id2name(THIS_FUNC()));
+    method = rb_id2str(THIS_FUNC());
 
     rval = rb_funcall((VALUE)client_data, rm_ID_call, 3, method, offset, span);
 

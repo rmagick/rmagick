@@ -220,6 +220,8 @@ class InfoUT < Test::Unit::TestCase
   end
 
   def test_monitor
+    GC.stress = true
+
     assert_nothing_raised { @info.monitor = -> {} }
     monitor = proc do |mth, q, s|
       assert_equal('resize!', mth)
@@ -230,6 +232,8 @@ class InfoUT < Test::Unit::TestCase
     img = Magick::Image.new(2000, 2000) { self.monitor = monitor }
     img.resize!(20, 20)
     img.monitor = nil
+  ensure
+    GC.stress = false
   end
 
   def test_monochrome
