@@ -18,6 +18,8 @@ before_install:
 
 install: bundle install --verbose
 
+script: rake test # TODO: now, run `rake test` which is a part of `rake`. need to fix `rake spec`
+
 rvm:
   - 2.3
   - 2.4
