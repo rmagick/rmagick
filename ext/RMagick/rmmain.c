@@ -1286,7 +1286,7 @@ Init_RMagick2(void)
     END_ENUM
 
     DEF_ENUM(MetricType)
-        ENUMERATOR(UndefinedMetric)
+        ENUMERATOR(UndefinedErrorMetric)
         ENUMERATOR(AbsoluteErrorMetric)
         ENUMERATOR(MeanAbsoluteErrorMetric)
         ENUMERATOR(MeanErrorPerPixelMetric)
@@ -1296,7 +1296,6 @@ Init_RMagick2(void)
         ENUMERATOR(RootMeanSquaredErrorMetric)
         ENUMERATOR(NormalizedCrossCorrelationErrorMetric)
         ENUMERATOR(FuzzErrorMetric)
-        ENUMERATOR(UndefinedErrorMetric)
         ENUMERATOR(PerceptualHashErrorMetric)
     END_ENUM
 
