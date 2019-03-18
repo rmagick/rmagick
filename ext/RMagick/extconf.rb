@@ -116,7 +116,7 @@ module RMagick
 
       elsif RUBY_PLATFORM =~ /mingw/ # mingw
 
-        `identify -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
+        `magick -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
         abort 'Unable to get ImageMagick version' unless Regexp.last_match(1)
         $magick_version = Regexp.last_match(1)
 
@@ -124,12 +124,12 @@ module RMagick
         $CPPFLAGS = %(-I"#{dir_paths[:include]}")
         $LDFLAGS = %(-L"#{dir_paths[:lib]}")
 
-        have_library('CORE_RL_magick_')
+        have_library('CORE_RL_MagickCore_')
         have_library('X11')
 
       else # mswin
 
-        `identify -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
+        `magick -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
         abort 'Unable to get ImageMagick version' unless Regexp.last_match(1)
         $magick_version = Regexp.last_match(1)
 
@@ -137,7 +137,7 @@ module RMagick
         $CPPFLAGS << %( -I"#{dir_paths[:include]}")
         $LDFLAGS << %( -libpath:"#{dir_paths[:lib]}")
 
-        $LOCAL_LIBS = 'CORE_RL_magick_.lib'
+        $LOCAL_LIBS = 'CORE_RL_MagickCore_.lib'
         have_library('X11')
 
       end
@@ -246,7 +246,7 @@ SRC
       paths = ENV['PATH'].split(File::PATH_SEPARATOR)
       paths.each do |dir|
         lib = File.join(dir, 'lib')
-        lib_file = File.join(lib, 'CORE_RL_magick_.lib')
+        lib_file = File.join(lib, 'CORE_RL_MagickCore_.lib')
         next unless File.exist?(lib_file)
 
         dir_paths[:include] = File.join(dir, 'include')
