@@ -1447,12 +1447,12 @@ rm_clone_image(Image *image)
 
     exception = AcquireExceptionInfo();
     clone = CloneImage(image, 0, 0, MagickTrue, exception);
+    rm_check_exception(exception, clone, DestroyOnError);
+    (void) DestroyExceptionInfo(exception);
     if (!clone)
     {
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
-    rm_check_exception(exception, clone, DestroyOnError);
-    (void) DestroyExceptionInfo(exception);
 
     return clone;
 }
