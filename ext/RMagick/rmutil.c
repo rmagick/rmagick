@@ -1230,6 +1230,7 @@ rm_exif_by_entry(Image *image)
 
     if (len == 0)
     {
+        (void) DestroyExceptionInfo(exception);
         return Qnil;
     }
     str = xmalloc(len);
