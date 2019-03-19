@@ -5093,15 +5093,13 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
     okay = ExportImagePixels(image, x, y, columns, rows, map, stg_type, (void *)pixels.v, exception);
+    CHECK_EXCEPTION()
+    (void) DestroyExceptionInfo(exception);
 
     if (!okay)
     {
         goto exit;
     }
-
-    CHECK_EXCEPTION()
-
-    (void) DestroyExceptionInfo(exception);
 
     // Convert the pixel data to the appropriate Ruby type
     if (stg_type == QuantumPixel)
