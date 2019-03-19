@@ -967,6 +967,13 @@ VALUE Draw_annotate(
         (void)rb_obj_instance_eval(0, NULL, self);
     }
 
+    // Create geometry string, copy to Draw structure, overriding
+    // any previously existing value.
+    width  = NUM2ULONG(width_arg);
+    height = NUM2ULONG(height_arg);
+    x      = NUM2LONG(x_arg);
+    y      = NUM2LONG(y_arg);
+
     // Translate & store in Draw structure
     exception = AcquireExceptionInfo();
     draw->info->text = InterpretImageProperties(NULL, image, StringValuePtr(text), exception);
@@ -977,13 +984,6 @@ VALUE Draw_annotate(
         (void) DestroyExceptionInfo(exception);
         rb_raise(rb_eArgError, "no text");
     }
-
-    // Create geometry string, copy to Draw structure, overriding
-    // any previously existing value.
-    width  = NUM2ULONG(width_arg);
-    height = NUM2ULONG(height_arg);
-    x      = NUM2LONG(x_arg);
-    y      = NUM2LONG(y_arg);
 
     if (width == 0 && height == 0)
     {
