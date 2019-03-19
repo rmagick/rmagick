@@ -6273,6 +6273,7 @@ Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
         // Let GC have the string buffer.
         (void) rb_str_resize(string, 0);
         CHECK_EXCEPTION()
+        (void) DestroyExceptionInfo(exception);
 
         // Should never get here...
         rm_magick_error("ExportImagePixels failed with no explanation.", NULL);
