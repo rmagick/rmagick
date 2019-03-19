@@ -2664,6 +2664,7 @@ set_profile(VALUE self, const char *name, VALUE profile)
     info = CloneImageInfo(NULL);
     if (!info)
     {
+        (void) DestroyExceptionInfo(exception);
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
 
