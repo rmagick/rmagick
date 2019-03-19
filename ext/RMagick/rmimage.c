@@ -2589,6 +2589,7 @@ Image_color_histogram(VALUE self)
         {
             (void) DestroyImage(dc_copy);
         }
+        (void) DestroyExceptionInfo(exception);
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
     if (exception->severity != UndefinedException)
