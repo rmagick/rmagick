@@ -6985,13 +6985,14 @@ Image_gamma_correct(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
-    new_image = rm_clone_image(image);
-    exception = AcquireExceptionInfo();
 
     switch (argc)
     {
         case 1:
             red_gamma   = NUM2DBL(argv[0]);
+
+            new_image = rm_clone_image(image);
+            exception = AcquireExceptionInfo();
             SetImageChannelMask(new_image, AllChannels);
             (void) GammaImage(new_image, red_gamma, exception);
             goto finished;
@@ -7007,10 +7008,12 @@ Image_gamma_correct(int argc, VALUE *argv, VALUE self)
             blue_gamma    = NUM2DBL(argv[2]);
             break;
         default:
-            (void) DestroyExceptionInfo(exception);
             rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 to 3)", argc);
             break;
     }
+
+    new_image = rm_clone_image(image);
+    exception = AcquireExceptionInfo();
 
     SetImageChannelMask(new_image, RedChannel);
     (void) GammaImage(new_image, red_gamma, exception);
