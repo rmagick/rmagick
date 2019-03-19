@@ -5703,13 +5703,13 @@ Image_encipher(VALUE self, VALUE passphrase)
 
     okay = EncipherImage(new_image, pf, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
+    DestroyExceptionInfo(exception);
     if (!okay)
     {
         new_image = DestroyImage(new_image);
         rb_raise(rb_eRuntimeError, "EncipherImage failed for unknown reason.");
     }
 
-    DestroyExceptionInfo(exception);
 
     return rm_image_new(new_image);
 }
