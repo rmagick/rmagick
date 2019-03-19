@@ -13348,6 +13348,7 @@ Image_threshold(VALUE self, VALUE threshold_obj)
     exception = AcquireExceptionInfo();
     (void) BilevelImage(new_image, threshold, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
+    (void) DestroyExceptionInfo(exception);
 
     return rm_image_new(new_image);
 }
