@@ -6063,6 +6063,7 @@ Image_export_pixels(int argc, VALUE *argv, VALUE self)
     {
         xfree((void *)pixels);
         CHECK_EXCEPTION()
+        (void) DestroyExceptionInfo(exception);
 
         // Should never get here...
         rm_magick_error("ExportImagePixels failed with no explanation.", NULL);
