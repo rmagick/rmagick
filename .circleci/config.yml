@@ -17,7 +17,7 @@ jobs:
       - run:
           name: setup linux
           command: |
-            IMAGEMAGICK_VERSION=6.8.9-10 bash before_install_linux.sh
+            IMAGEMAGICK_VERSION=7.0.8-34 bash before_install_linux.sh
 
       - run:
           name: install dependencies

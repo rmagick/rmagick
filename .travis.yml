@@ -10,8 +10,8 @@ os:
 sudo: required
 
 env:
-  - IMAGEMAGICK_VERSION=6.8.9-10
-  - IMAGEMAGICK_VERSION=6.8.9-10 CONFIGURE_OPTIONS=--enable-hdri
+  - IMAGEMAGICK_VERSION=7.0.8-34
+  - IMAGEMAGICK_VERSION=7.0.8-34 CONFIGURE_OPTIONS=--enable-hdri
 
 before_install:
   - source before_install_$TRAVIS_OS_NAME.sh
@@ -27,7 +27,7 @@ rvm:
 matrix:
   include:
     - rvm: 2.3
-      env: STYLE_CHECKS=true IMAGEMAGICK_VERSION=6.8.9-10
+      env: STYLE_CHECKS=true IMAGEMAGICK_VERSION=7.0.8-34
 
 notifications:
   webhooks:
