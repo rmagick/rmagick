@@ -33,7 +33,7 @@ class ImageList1UT < Test::Unit::TestCase
 
   def test_iterations
     assert_nothing_raised { @list.iterations }
-    assert_equal(1, @list.iterations)
+    assert_kind_of(Integer, @list.iterations)
     assert_nothing_raised { @list.iterations = 20 }
     assert_equal(20, @list.iterations)
     assert_raise(ArgumentError) { @list.iterations = 'x' }
