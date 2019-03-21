@@ -264,7 +264,6 @@ class ImageList2UT < Test::Unit::TestCase
   def test_optimize_layers
     layer_methods = [
       Magick::CompareAnyLayer,
-      Magick::CompareClearLayer,
       Magick::CompareOverlayLayer,
       Magick::OptimizeLayer,
       Magick::OptimizePlusLayer,
@@ -282,6 +281,7 @@ class ImageList2UT < Test::Unit::TestCase
         assert_equal(2, res.length)
       end
     end
+    assert_nothing_raised { @ilist.optimize_layers(Magick::CompareClearLayer) }
     assert_raise(ArgumentError) { @ilist.optimize_layers(Magick::UndefinedLayer) }
     assert_raise(TypeError) { @ilist.optimize_layers(2) }
   end
