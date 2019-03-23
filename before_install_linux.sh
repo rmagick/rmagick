@@ -27,7 +27,7 @@ else
 fi
 
 make
-sudo make install
+sudo make install -j
 cd ..
 sudo ldconfig
 
