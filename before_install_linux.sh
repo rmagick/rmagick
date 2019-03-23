@@ -26,7 +26,7 @@ else
   CC="ccache cc" CXX="ccache c++" ./configure --prefix=/usr
 fi
 
-make
+make -j
 sudo make install -j
 cd ..
 sudo ldconfig
