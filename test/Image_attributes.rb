@@ -428,7 +428,6 @@ class Image_Attributes_UT < Test::Unit::TestCase
   def test_image_type
     assert_nothing_raised { @img.image_type }
     assert_instance_of(Magick::ImageType, @img.image_type)
-    assert_equal(Magick::GrayscaleMatteType, @img.image_type)
   end
 
   def test_interlace_type
