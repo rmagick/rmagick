@@ -10,6 +10,11 @@ sudo apt-get install -y build-essential libx11-dev libxext-dev zlib1g-dev \
   liblcms2-dev libpng-dev libjpeg-dev libfreetype6-dev libxml2-dev \
   libtiff5-dev libwebp-dev vim ghostscript ccache
 
+if [ ! -d /usr/include/freetype ]; then
+  # If `/usr/include/freetype` is not existed, ImageMagick 6.7 configuration fails about Freetype.
+  sudo ln -sf /usr/include/freetype2 /usr/include/freetype
+fi
+
 if [ -v IMAGEMAGICK_VERSION ]; then
   wget http://www.imagemagick.org/download/releases/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz
   tar -xf ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz
