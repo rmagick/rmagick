@@ -7158,7 +7158,26 @@ Image_gray_q(VALUE self)
 #if defined(HAVE_SETIMAGEGRAY)
     return has_attribute(self, (MagickBooleanType (*)(const Image *, ExceptionInfo *))SetImageGray);
 #else
+#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
     return has_attribute(self, (MagickBooleanType (*)(const Image *, ExceptionInfo *))IsGrayImage);
+#else
+    // For ImageMagick 6.7
+    Image *image;
+    ColorspaceType colorspace;
+    VALUE ret;
+
+    image = rm_check_destroyed(self);
+    colorspace = image->colorspace;
+    if (image->colorspace == sRGBColorspace || image->colorspace == TransparentColorspace) {
+        // Workaround
+        //   If image colorspace has non-RGBColorspace, IsGrayImage() always return false.
+        image->colorspace = RGBColorspace;
+    }
+
+    ret = has_attribute(self, (MagickBooleanType (*)(const Image *, ExceptionInfo *))IsGrayImage);
+    image->colorspace = colorspace;
+    return ret;
+#endif
 #endif
 }
 
