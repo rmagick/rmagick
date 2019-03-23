@@ -27,19 +27,7 @@ ColorspaceTypes = [
   Magick::Rec709LumaColorspace,
   Magick::Rec709YCbCrColorspace,
   Magick::LogColorspace,
-  Magick::CMYColorspace,
-  Magick::LuvColorspace,
-  Magick::HCLColorspace,
-  Magick::LCHColorspace,
-  Magick::LMSColorspace,
-  Magick::LCHabColorspace,
-  Magick::LCHuvColorspace,
-  Magick::ScRGBColorspace,
-  Magick::HSIColorspace,
-  Magick::HSVColorspace,
-  Magick::HCLpColorspace,
-  Magick::YDbDrColorspace,
-  Magick::XyYColorspace
+  Magick::CMYColorspace
 ]
 
 Filters = [
@@ -66,8 +54,7 @@ Filters = [
   Magick::RobidouxFilter,
   Magick::RobidouxSharpFilter,
   Magick::CosineFilter,
-  Magick::SplineFilter,
-  Magick::LanczosRadiusFilter
+  Magick::SplineFilter
 ]
 
 class Image3_UT < Test::Unit::TestCase
@@ -143,8 +130,7 @@ class Image3_UT < Test::Unit::TestCase
       Magick::AbsQuantumOperator,
       Magick::ExponentialQuantumOperator,
       Magick::MedianQuantumOperator,
-      Magick::SumQuantumOperator,
-      Magick::RootMeanSquareQuantumOperator
+      Magick::SumQuantumOperator
     ]
 
     assert_nothing_raised do
