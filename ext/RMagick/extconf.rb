@@ -312,7 +312,7 @@ END_SUMMARY
     include Singleton
 
     def initialize
-      @windows = (RUBY_PLATFORM =~ /mswin|mingw/)
+      @windows = !!(RUBY_PLATFORM =~ /mswin|mingw/)
 
       found = find_executable('pkg-config')
       @use_native_pkg_config = !!found
