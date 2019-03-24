@@ -201,10 +201,6 @@ class ImageList2UT < Test::Unit::TestCase
       montage = ilist.montage { self.font = 2 }
       assert_equal(@ilist, ilist)
     end
-    assert_raise(Magick::ImageMagickError) do
-      montage = ilist.montage { self.frame = 'z' }
-      assert_equal(@ilist, ilist)
-    end
     assert_raise(TypeError) do
       montage = ilist.montage { self.matte_color = 2 }
       assert_equal(@ilist, ilist)
