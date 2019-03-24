@@ -14,6 +14,8 @@ module RMagick
     attr_reader :headers
 
     def initialize
+      @stdout = $stdout.dup
+
       setup_paths_for_homebrew
       configure_compile_options
       assert_can_compile!
@@ -52,7 +54,7 @@ module RMagick
       if have_header('wand/MagickWand.h')
         headers << 'wand/MagickWand.h'
       else
-        exit_failure "\nCan't install RMagick #{RMAGICK_VERS}. Can't find MagickWand.h."
+        exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find MagickWand.h."
       end
     end
 
@@ -168,8 +170,19 @@ SRC
     end
 
     def exit_failure(msg)
+      msg = "ERROR: #{msg}"
+
       Logging.message msg
-      message msg + "\n"
+
+      @stdout.puts "\n\n"
+      if ENV['NO_COLOR']
+        @stdout.puts msg
+      else
+        @stdout.print "\e[31m\e[1m#{msg}\e[0m"
+      end
+      @stdout.puts "\n\n"
+      @stdout.flush
+
       exit(1)
     end
 
