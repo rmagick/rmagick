@@ -166,6 +166,11 @@ SRC
 
       packages = `pkg-config --list-all`.scan(/(ImageMagick\-6[\.A-Z0-9]+) .*/).flatten
 
+      # For ancient version of ImageMagick 6 we need a different regex
+      if packages.empty?
+        packages = `pkg-config --list-all`.scan(/(ImageMagick) .*/).flatten
+      end
+
       if packages.empty?
         exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find ImageMagick with pkg-config\n"
       end
