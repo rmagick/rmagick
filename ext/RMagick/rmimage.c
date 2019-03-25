@@ -12601,8 +12601,6 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
     (void) DestroyExceptionInfo(exception);
     rm_ensure_result(new_image);
 
-    RB_GC_GUARD(args);
-
     return rm_image_new(new_image);
 }
 
