@@ -166,7 +166,7 @@ SRC
 
       packages = `pkg-config --list-all`.scan(/(ImageMagick\-6[\.A-Z0-9]+) .*/)
 
-      if packages.length.zero?
+      if packages.empty?
         exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find ImageMagick with pkg-config\n"
       end
 
