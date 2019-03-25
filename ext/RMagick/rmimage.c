@@ -7158,7 +7158,26 @@ Image_gray_q(VALUE self)
 #if defined(HAVE_SETIMAGEGRAY)
     return has_attribute(self, (MagickBooleanType (*)(const Image *, ExceptionInfo *))SetImageGray);
 #else
+#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
     return has_attribute(self, (MagickBooleanType (*)(const Image *, ExceptionInfo *))IsGrayImage);
+#else
+    // For ImageMagick 6.7
+    Image *image;
+    ColorspaceType colorspace;
+    VALUE ret;
+
+    image = rm_check_destroyed(self);
+    colorspace = image->colorspace;
+    if (image->colorspace == sRGBColorspace || image->colorspace == TransparentColorspace) {
+        // Workaround
+        //   If image colorspace has non-RGBColorspace, IsGrayImage() always return false.
+        image->colorspace = RGBColorspace;
+    }
+
+    ret = has_attribute(self, (MagickBooleanType (*)(const Image *, ExceptionInfo *))IsGrayImage);
+    image->colorspace = colorspace;
+    return ret;
+#endif
 #endif
 }
 
@@ -10322,9 +10341,11 @@ Image_quantum_operator(int argc, VALUE *argv, VALUE self)
         case SumQuantumOperator:
             qop = SumEvaluateOperator;
             break;
+#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
         case RootMeanSquareQuantumOperator:
             qop = RootMeanSquareEvaluateOperator;
             break;
+#endif
     }
 
     exception = AcquireExceptionInfo();
@@ -10425,7 +10446,11 @@ Image_radial_blur(VALUE self, VALUE angle_obj)
     image = rm_check_destroyed(self);
     exception = AcquireExceptionInfo();
 
+#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
     new_image = RotationalBlurImage(image, angle, exception);
+#else
+    new_image = RadialBlurImage(image, angle, exception);
+#endif
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
@@ -10477,7 +10502,11 @@ Image_radial_blur_channel(int argc, VALUE *argv, VALUE self)
     angle = NUM2DBL(argv[0]);
     exception = AcquireExceptionInfo();
 
+#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
     new_image = RotationalBlurImageChannel(image, channels, angle, exception);
+#else
+    new_image = RadialBlurImageChannel(image, channels, angle, exception);
+#endif
     rm_check_exception(exception, new_image, DestroyOnError);
     (void) DestroyExceptionInfo(exception);
     rm_ensure_result(new_image);

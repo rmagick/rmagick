@@ -241,7 +241,6 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.compose = Magick::MinusSrcCompositeOp }
     assert_nothing_raised { @img.compose = Magick::DarkenIntensityCompositeOp }
     assert_nothing_raised { @img.compose = Magick::LightenIntensityCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::HardMixCompositeOp }
     assert_raise(TypeError) { @img.compose = 2 }
   end
 
@@ -375,7 +374,6 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.filter = Magick::RobidouxSharpFilter }
     assert_nothing_raised { @img.filter = Magick::CosineFilter }
     assert_nothing_raised { @img.filter = Magick::SplineFilter }
-    assert_nothing_raised { @img.filter = Magick::LanczosRadiusFilter }
     assert_raise(TypeError) { @img.filter = 2 }
   end
 

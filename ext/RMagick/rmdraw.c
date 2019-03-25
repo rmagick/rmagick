@@ -1283,9 +1283,11 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
             case LightenIntensityCompositeOp:
                 op = "LightenIntensity";
                 break;
+#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
             case HardMixCompositeOp:
                 op = "HardMix";
                 break;
+#endif
             default:
                 rb_raise(rb_eArgError, "unknown composite operator (%d)", cop);
                 break;

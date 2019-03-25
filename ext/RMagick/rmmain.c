@@ -886,8 +886,10 @@ Init_RMagick2(void)
         ENUMERATOR(TransparentAlphaChannel)
         ENUMERATOR(BackgroundAlphaChannel)
         ENUMERATOR(FlattenAlphaChannel)
+#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
         ENUMERATOR(AssociateAlphaChannel)
         ENUMERATOR(DisassociateAlphaChannel)
+#endif
     END_ENUM
 
     // AnchorType constants (for Draw#text_anchor - these are not defined by ImageMagick)
@@ -974,6 +976,7 @@ Init_RMagick2(void)
         ENUMERATOR(Rec709YCbCrColorspace)
         ENUMERATOR(LogColorspace)
         ENUMERATOR(CMYColorspace)
+#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
         ENUMERATOR(LuvColorspace)
         ENUMERATOR(HCLColorspace)
         ENUMERATOR(LCHColorspace)
@@ -992,6 +995,7 @@ Init_RMagick2(void)
                       , rm_enum_new(Class_ColorspaceType
                       , ID2SYM(rb_intern("XyYColorspace"))
                       , INT2FIX(xyYColorspace)));
+#endif
     END_ENUM
 
     // ComplianceType constants are defined as enums but used as bit flags
@@ -1080,7 +1084,9 @@ Init_RMagick2(void)
         ENUMERATOR(MinusSrcCompositeOp)
         ENUMERATOR(DarkenIntensityCompositeOp)
         ENUMERATOR(LightenIntensityCompositeOp)
+#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
         ENUMERATOR(HardMixCompositeOp)
+#endif
     END_ENUM
 
     // CompressionType constants
@@ -1195,7 +1201,9 @@ Init_RMagick2(void)
         ENUMERATOR(RobidouxSharpFilter)
         ENUMERATOR(CosineFilter)
         ENUMERATOR(SplineFilter)
+#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
         ENUMERATOR(LanczosRadiusFilter)
+#endif
     END_ENUM
 
     // GravityType constants
@@ -1298,8 +1306,10 @@ Init_RMagick2(void)
         ENUMERATOR(RootMeanSquaredErrorMetric)
         ENUMERATOR(NormalizedCrossCorrelationErrorMetric)
         ENUMERATOR(FuzzErrorMetric)
+#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
         ENUMERATOR(UndefinedErrorMetric)
         ENUMERATOR(PerceptualHashErrorMetric)
+#endif
     END_ENUM
 
     // NoiseType constants
@@ -1401,7 +1411,9 @@ Init_RMagick2(void)
         ENUMERATOR(ExponentialQuantumOperator)
         ENUMERATOR(MedianQuantumOperator)
         ENUMERATOR(SumQuantumOperator)
+#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
         ENUMERATOR(RootMeanSquareQuantumOperator)
+#endif
     END_ENUM
 
     // RenderingIntent
@@ -1528,7 +1540,9 @@ Init_RMagick2(void)
         ENUMERATOR(CorrelateNormalizeValue)
         ENUMERATOR(AreaValue)
         ENUMERATOR(DecimalValue)
+#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
         ENUMERATOR(SeparatorValue)
+#endif
         ENUMERATOR(AllValues)
     END_ENUM
 
@@ -1597,7 +1611,9 @@ Init_RMagick2(void)
       ENUMERATOR(OctagonalKernel)
       ENUMERATOR(EuclideanKernel)
       ENUMERATOR(UserDefinedKernel)
+#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
       ENUMERATOR(BinomialKernel)
+#endif
     END_ENUM
 
     /*-----------------------------------------------------------------------*/

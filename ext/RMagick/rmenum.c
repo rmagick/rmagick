@@ -476,6 +476,7 @@ ColorspaceType_new(ColorspaceType cs)
         case CMYColorspace:
             name = "CMYColorspace";
             break;
+#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
         case LuvColorspace:
             name = "LuvColorspace";
             break;
@@ -512,6 +513,7 @@ ColorspaceType_new(ColorspaceType cs)
         case xyYColorspace:
             name = "xyYColorspace";
             break;
+#endif
     }
 
     return rm_enum_new(Class_ColorspaceType, ID2SYM(rb_intern(name)), INT2FIX(cs));
@@ -600,7 +602,9 @@ CompositeOperator_name(CompositeOperator op)
         ENUM_TO_NAME(MinusSrcCompositeOp)
         ENUM_TO_NAME(DarkenIntensityCompositeOp)
         ENUM_TO_NAME(LightenIntensityCompositeOp)
+#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
         ENUM_TO_NAME(HardMixCompositeOp)
+#endif
     }
 
     return "UndefinedCompositeOp";
@@ -763,7 +767,9 @@ FilterTypes_name(FilterTypes type)
         ENUM_TO_NAME(RobidouxSharpFilter)
         ENUM_TO_NAME(CosineFilter)
         ENUM_TO_NAME(SplineFilter)
+#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
         ENUM_TO_NAME(LanczosRadiusFilter)
+#endif
         // not a real filter name - defeat gcc warning message
         case SentinelFilter:
             break;

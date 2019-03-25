@@ -324,6 +324,10 @@ END_MINGW
       $defs.push("-DRUBY_VERSION_STRING=\"ruby #{RUBY_VERSION}\"")
       $defs.push("-DRMAGICK_VERSION_STRING=\"RMagick #{RMAGICK_VERS}\"")
 
+      if Gem::Version.new($magick_version) >= Gem::Version.new('6.8.9')
+        $defs.push('-DIMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9=1')
+      end
+
       create_header
     end
 
