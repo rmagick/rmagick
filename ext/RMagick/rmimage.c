@@ -10755,7 +10755,7 @@ Image_recolor(VALUE self, VALUE color_matrix)
     // RecolorImage sets the ExceptionInfo and returns a NULL image if an error occurs.
     kernel_info = AcquireKernelInfo("1");
     if (kernel_info == (KernelInfo *) NULL)
-      return((Image *) NULL);
+      return Qnil;
     kernel_info->width = order;
     kernel_info->height = order;
     kernel_info->values = (double *) matrix;
