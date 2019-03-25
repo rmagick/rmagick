@@ -295,7 +295,7 @@ Export_ColorInfo(ColorInfo *ci, VALUE st)
         Data_Get_Struct(m, Pixel, pixel);
         // For >= 6.3.0, ColorInfo.color is a MagickPixelPacket so we have to
         // convert the PixelPacket.
-        GetMagickPixelPacket(NULL, &ci->color);
+        rm_init_magickpixel(NULL, &ci->color);
         ci->color.red = (MagickRealType) pixel->red;
         ci->color.green = (MagickRealType) pixel->green;
         ci->color.blue = (MagickRealType) pixel->blue;
@@ -326,7 +326,7 @@ Color_to_MagickPixelPacket(Image *image, MagickPixelPacket *mpp, VALUE color)
     PixelPacket pp;
 
     // image can be NULL
-    GetMagickPixelPacket(image, mpp);
+    rm_init_magickpixel(image, mpp);
 
     memset(&pp, '\0', sizeof(pp));
     Color_to_PixelPacket(&pp, color);

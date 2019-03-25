@@ -2781,7 +2781,7 @@ Image_color_flood_fill( VALUE self, VALUE target_color, VALUE fill_color
 
     new_image = rm_clone_image(image);
 
-    GetMagickPixelPacket(new_image, &target_mpp);
+    rm_init_magickpixel(new_image, &target_mpp);
     if (fill_method == FillToBorderMethod)
     {
         invert = MagickTrue;
@@ -7866,7 +7866,7 @@ Image_level_colors(int argc, VALUE *argv, VALUE self)
             Color_to_MagickPixelPacket(image, &black_color, argv[0]);
             exception = AcquireExceptionInfo();
 
-            GetMagickPixelPacket(image, &white_color);
+            rm_init_magickpixel(image, &white_color);
             (void) QueryMagickColor("white", &white_color, exception);
             CHECK_EXCEPTION()
 
@@ -7875,11 +7875,11 @@ Image_level_colors(int argc, VALUE *argv, VALUE self)
         case 0:
             exception = AcquireExceptionInfo();
 
-            GetMagickPixelPacket(image, &white_color);
+            rm_init_magickpixel(image, &white_color);
             (void) QueryMagickColor("white", &white_color, exception);
             CHECK_EXCEPTION()
 
-            GetMagickPixelPacket(image, &black_color);
+            rm_init_magickpixel(image, &black_color);
             (void) QueryMagickColor("black", &black_color, exception);
             CHECK_EXCEPTION()
 
@@ -13112,7 +13112,7 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj
     new_image = rm_clone_image(image);
 
 
-    GetMagickPixelPacket(new_image, &color_mpp);
+    rm_init_magickpixel(new_image, &color_mpp);
     if (method == FillToBorderMethod)
     {
         invert = MagickTrue;

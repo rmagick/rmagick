@@ -1027,7 +1027,7 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
     image->matte = matte;
     (void) DestroyImageInfo(info);
 
-    GetMagickPixelPacket(image, &mpp);
+    rm_init_magickpixel(image, &mpp);
     rm_set_magick_pixel_packet(pixel, &mpp);
 
     exception = AcquireExceptionInfo();
