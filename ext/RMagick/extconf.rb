@@ -164,7 +164,7 @@ SRC
         exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find pkg-config in #{ENV['PATH']}\n"
       end
 
-      packages = `pkg-config --list-all`.scan(/(ImageMagick\-6[\.A-Z0-9]+) .*/)
+      packages = `pkg-config --list-all`.scan(/(ImageMagick\-6[\.A-Z0-9]+) .*/).flatten
 
       if packages.empty?
         exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find ImageMagick with pkg-config\n"
@@ -173,13 +173,13 @@ SRC
       if packages.length > 1
         msg = "\nWarning: Found more than one ImageMagick installation. This could cause problems at runtime.\n"
         packages.each do |package|
-          msg << " - #{package[0]}\n"
+          msg << " - #{package}\n"
         end
         Logging.message msg
         message msg
       end
 
-      packages[0][0]
+      packages[0]
     end
 
     # Seems like lots of people have multiple versions of ImageMagick installed.
