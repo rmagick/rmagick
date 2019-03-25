@@ -160,7 +160,9 @@ SRC
     end
 
     def determine_imagemagick_package
-      exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find pkg-config in #{ENV['PATH']}\n" unless find_executable('pkg-config')
+      unless find_executable('pkg-config')
+        exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find pkg-config in #{ENV['PATH']}\n"
+      end
 
       packages = `pkg-config --list-all`.scan(/(ImageMagick\-6[\.A-Z0-9]+) .*/)
 
