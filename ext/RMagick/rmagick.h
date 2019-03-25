@@ -143,6 +143,7 @@
 
 typedef ImageInfo Info; /**< Make type name match class name */
 typedef PixelPacket Pixel; /**< Make type name match class name */
+typedef MagickPixelPacket MagickPixel;
 
 //! Montage
 typedef struct
@@ -1153,7 +1154,7 @@ extern VALUE  rm_enum_new(VALUE, VALUE, VALUE);
 extern VALUE  ChromaticityInfo_to_s(VALUE);
 extern VALUE  ChromaticityInfo_new(ChromaticityInfo *);
 extern void   Color_to_PixelPacket(PixelPacket *, VALUE);
-extern void   Color_to_MagickPixelPacket(Image *, MagickPixelPacket *, VALUE);
+extern void   Color_to_MagickPixel(Image *, MagickPixel *, VALUE);
 extern VALUE  Color_to_s(VALUE);
 extern VALUE  Import_ColorInfo(const ColorInfo *);
 extern VALUE  ClassType_new(ClassType);
@@ -1167,7 +1168,7 @@ extern VALUE  GravityType_new(GravityType);
 extern VALUE  Font_to_s(VALUE);
 extern VALUE  ImageType_new(ImageType);
 extern VALUE  InterlaceType_new(InterlaceType);
-extern VALUE  Pixel_from_MagickPixelPacket(const MagickPixelPacket *);
+extern VALUE  Pixel_from_MagickPixel(const MagickPixel *);
 extern VALUE  Pixel_from_PixelPacket(const PixelPacket *);
 extern void   Export_PointInfo(PointInfo *, VALUE);
 extern VALUE  Import_PointInfo(PointInfo *);
@@ -1210,7 +1211,7 @@ extern void   magick_clone_string(char **, const char *);
 extern VALUE  rm_cur_image(VALUE);
 extern VALUE  rm_pixelpacket_to_color_name(Image *, PixelPacket *);
 extern VALUE  rm_pixelpacket_to_color_name_info(Info *, PixelPacket *);
-extern void   rm_init_magickpixel(const Image *, MagickPixelPacket *);
+extern void   rm_init_magickpixel(const Image *, MagickPixel *);
 extern VALUE  rm_no_freeze(VALUE);
 extern int    rm_strcasecmp(const char *, const char *);
 extern int    rm_strncasecmp(const char *, const char *, size_t);
@@ -1234,7 +1235,7 @@ extern void   rm_get_geometry(VALUE, long *, long *, unsigned long *, unsigned l
 extern const char *rm_get_property(const Image *, const char *);
 extern MagickBooleanType rm_set_property(Image *, const char *, const char *);
 extern void   rm_set_user_artifact(Image *, Info *);
-void          rm_set_magick_pixel_packet(Pixel *, MagickPixelPacket *);
+void          rm_set_magick_pixel_packet(Pixel *, MagickPixel *);
 extern void   rm_sync_image_options(Image *, Info *);
 extern void   rm_split(Image *);
 extern void   rm_magick_error(const char *, const char *);

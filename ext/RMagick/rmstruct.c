@@ -244,7 +244,7 @@ Import_ColorInfo(const ColorInfo *ci)
 
     compliance_type = ci->compliance;
     compliance = ComplianceType_new(compliance_type);
-    color      = Pixel_from_MagickPixelPacket(&(ci->color));
+    color      = Pixel_from_MagickPixel(&(ci->color));
 
     RB_GC_GUARD(name);
     RB_GC_GUARD(compliance);
@@ -309,19 +309,19 @@ Export_ColorInfo(ColorInfo *ci, VALUE st)
 
 
 /**
- * Convert either a String color name or a Magick::Pixel to a MagickPixelPacket.
+ * Convert either a String color name or a Magick::Pixel to a MagickPixel.
  *
  * No Ruby usage (internal function)
  *
  * Notes:
- *   - The channel values in a MagickPixelPacket are doubles.
+ *   - The channel values in a MagickPixel are doubles.
  *
  * @param image the Image
- * @param mpp The MagickPixelPacket to modify
+ * @param mpp The MagickPixel to modify
  * @param color the name of the color
  */
 void
-Color_to_MagickPixelPacket(Image *image, MagickPixelPacket *mpp, VALUE color)
+Color_to_MagickPixel(Image *image, MagickPixel *mpp, VALUE color)
 {
     PixelPacket pp;
 
