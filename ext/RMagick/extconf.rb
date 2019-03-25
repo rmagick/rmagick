@@ -179,7 +179,7 @@ SRC
         message msg
       end
 
-      packages[0]
+      packages.first
     end
 
     # Seems like lots of people have multiple versions of ImageMagick installed.
