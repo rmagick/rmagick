@@ -171,10 +171,8 @@ SRC
       end
 
       if packages.length > 1
-        msg = "\nWarning: Found more than one ImageMagick installation. This could cause problems at runtime.\n"
-        packages.each do |package|
-          msg << " - #{package}\n"
-        end
+        package_lines = packages.map { |package| " - #{package}" }.join("\n")
+        msg = "\nWarning: Found more than one ImageMagick installation. This could cause problems at runtime.\n#{package_lines}\n\n"
         Logging.message msg
         message msg
       end
