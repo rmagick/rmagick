@@ -81,7 +81,7 @@ set_option(VALUE self, const char *key, VALUE string)
  * No Ruby usage (internal function)
  *
  * Notes:
- *   - Call QueryColorDatabase to validate color name.
+ *   - Call QueryColorCompliance to validate color name.
  *
  * @param self this object
  * @param option the option
@@ -106,7 +106,7 @@ static VALUE set_color_option(VALUE self, const char *option, VALUE color)
     {
         name = StringValuePtr(color);
         exception = AcquireExceptionInfo();
-        okay = QueryColorDatabase(name, &pp, exception);
+        okay = QueryColorCompliance(name, AllCompliance, &pp, exception);
         (void) DestroyExceptionInfo(exception);
         if (!okay)
         {

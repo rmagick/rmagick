@@ -221,7 +221,7 @@ Color_Name_to_PixelPacket(PixelPacket *color, VALUE name_arg)
 
     exception = AcquireExceptionInfo();
     name = StringValuePtr(name_arg);
-    okay = QueryColorDatabase(name, color, exception);
+    okay = QueryColorCompliance(name, AllCompliance, color, exception);
     (void) DestroyExceptionInfo(exception);
     if (!okay)
     {
@@ -455,7 +455,7 @@ Pixel_from_color(VALUE class, VALUE name)
     class = class;      // defeat "never referenced" message from icc
 
     exception = AcquireExceptionInfo();
-    okay = QueryColorDatabase(StringValuePtr(name), &pp, exception);
+    okay = QueryColorCompliance(StringValuePtr(name), AllCompliance, &pp, exception);
     CHECK_EXCEPTION()
     (void) DestroyExceptionInfo(exception);
 

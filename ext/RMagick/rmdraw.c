@@ -1771,9 +1771,9 @@ PolaroidOptions_initialize(VALUE self)
     Data_Get_Struct(self, Draw, draw);
 
     exception = AcquireExceptionInfo();
-    (void) QueryColorDatabase("gray75", &draw->shadow_color, exception);
+    (void) QueryColorCompliance("gray75", AllCompliance, &draw->shadow_color, exception);
     CHECK_EXCEPTION()
-    (void) QueryColorDatabase("#dfdfdf", &draw->info->border_color, exception);
+    (void) QueryColorCompliance("#dfdfdf", AllCompliance, &draw->info->border_color, exception);
     CHECK_EXCEPTION()
     DestroyExceptionInfo(exception);
 
