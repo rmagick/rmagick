@@ -71,10 +71,10 @@ class Image2_UT < Test::Unit::TestCase
   end
 
   def test_compress_colormap!
-    # DirectClass images are converted to PseudoClass
+    # DirectClass images are converted to PseudoClass in older versions of ImageMagick.
     assert_equal(Magick::DirectClass, @img.class_type)
     assert_nothing_raised { @img.compress_colormap! }
-    assert_equal(Magick::PseudoClass, @img.class_type)
+    # assert_equal(Magick::PseudoClass, @img.class_type)
     @img = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
     assert_equal(Magick::PseudoClass, @img.class_type)
     assert_nothing_raised { @img.compress_colormap! }
