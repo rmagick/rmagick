@@ -3833,7 +3833,6 @@ Image_constitute(VALUE class, VALUE width_arg, VALUE height_arg
                  , VALUE map_arg, VALUE pixels_arg)
 {
     Image *image;
-    ExceptionInfo *exception;
     VALUE pixel, pixel0;
     unsigned long width, height;
     long x, npixels;
@@ -3920,8 +3919,6 @@ Image_constitute(VALUE class, VALUE width_arg, VALUE height_arg
         }
     }
 
-    exception = AcquireExceptionInfo();
-
     // This is based on ConstituteImage in IM 5.5.7
     image = AcquireImage(NULL);
     if (!image)
@@ -3939,8 +3936,6 @@ Image_constitute(VALUE class, VALUE width_arg, VALUE height_arg
     (void) ImportImagePixels(image, 0, 0, width, height, map, stg_type, (const void *)pixels.v);
     xfree(pixels.v);
     rm_check_image_exception(image, DestroyOnError);
-
-    (void) DestroyExceptionInfo(exception);
 
     RB_GC_GUARD(pixel);
     RB_GC_GUARD(pixel0);
