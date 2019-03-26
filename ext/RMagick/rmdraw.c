@@ -304,17 +304,17 @@ VALUE
 Draw_font_weight_eq(VALUE self, VALUE weight)
 {
     Draw *draw;
-    WeightType w;
+    size_t w;
 
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
 
     if (FIXNUM_P(weight))
     {
-        w = (WeightType) FIX2INT(weight);
+        w = FIX2INT(weight);
         if (w < 100 || w > 900)
         {
-            rb_raise(rb_eArgError, "invalid font weight (%d given)", w);
+            rb_raise(rb_eArgError, "invalid font weight (%ld given)", w);
         }
         draw->info->weight = w;
     }
