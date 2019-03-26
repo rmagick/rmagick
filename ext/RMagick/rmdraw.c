@@ -1868,12 +1868,13 @@ get_dummy_tm_img(VALUE klass)
         {
             rb_raise(rb_eNoMemError, "not enough memory to continue");
         }
-        image = AcquireImage(info);
+        image = rm_acquire_image(info);
+        (void) DestroyImageInfo(info);
+
         if (!image)
         {
             rb_raise(rb_eNoMemError, "not enough memory to continue");
         }
-        (void) DestroyImageInfo(info);
         dummy_img = rm_image_new(image);
 
         rb_cv_set(klass, DUMMY_IMG_CLASS_VAR, dummy_img);
