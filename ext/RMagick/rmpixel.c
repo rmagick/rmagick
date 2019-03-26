@@ -15,7 +15,7 @@
 
 
 
-static void Color_Name_to_PixelPacket(PixelPacket *, VALUE);
+static void Color_Name_to_PixelColor(PixelColor *, VALUE);
 
 
 
@@ -176,6 +176,37 @@ color_arg_rescue(VALUE arg)
 
 
 /**
+ * Convert either a String color name or a Magick::Pixel to a PixelColor.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param pp the PixelColor to modify
+ * @param color the color name or Magick::Pixel
+ */
+void
+Color_to_PixelColor(PixelColor *pp, VALUE color)
+{
+    Pixel *pixel;
+
+    // Allow color name or Pixel
+    if (CLASS_OF(color) == Class_Pixel)
+    {
+        Data_Get_Struct(color, Pixel, pixel);
+        pp->red     = pixel->red;
+        pp->green   = pixel->green;
+        pp->blue    = pixel->blue;
+        pp->opacity = pixel->opacity;
+    }
+    else
+    {
+        // require 'to_str' here instead of just 'to_s'.
+        color = rb_rescue(rb_str_to_str, color, color_arg_rescue, color);
+        Color_Name_to_PixelColor(pp, color);
+    }
+}
+
+
+/**
  * Convert either a String color name or a Magick::Pixel to a PixelPacket.
  *
  * No Ruby usage (internal function)
@@ -192,28 +223,31 @@ Color_to_PixelPacket(PixelPacket *pp, VALUE color)
     if (CLASS_OF(color) == Class_Pixel)
     {
         Data_Get_Struct(color, Pixel, pixel);
-        *pp = *pixel;
+        pp->red     = pixel->red;
+        pp->green   = pixel->green;
+        pp->blue    = pixel->blue;
+        pp->opacity = pixel->opacity;
     }
     else
     {
         // require 'to_str' here instead of just 'to_s'.
         color = rb_rescue(rb_str_to_str, color, color_arg_rescue, color);
-        Color_Name_to_PixelPacket(pp, color);
+        Color_Name_to_PixelColor(pp, color);
     }
 }
 
 
 /**
- * Convert a color name to a PixelPacket
+ * Convert a color name to a PixelColor
  *
  * No Ruby usage (internal function)
  *
- * @param color the PixelPacket to modify
+ * @param color the PixelColor to modify
  * @param name_arg the coor name
  * @throw ArgumentError
  */
 static void
-Color_Name_to_PixelPacket(PixelPacket *color, VALUE name_arg)
+Color_Name_to_PixelColor(PixelColor *color, VALUE name_arg)
 {
     MagickBooleanType okay;
     char *name;
@@ -448,7 +482,7 @@ Pixel_fcmp(int argc, VALUE *argv, VALUE self)
 VALUE
 Pixel_from_color(VALUE class, VALUE name)
 {
-    PixelPacket pp;
+    PixelColor pp;
     ExceptionInfo *exception;
     MagickBooleanType okay;
 
@@ -464,7 +498,7 @@ Pixel_from_color(VALUE class, VALUE name)
         rb_raise(rb_eArgError, "invalid color name: %s", StringValuePtr(name));
     }
 
-    return Pixel_from_PixelPacket(&pp);
+    return Pixel_from_PixelColor(&pp);
 }
 
 
@@ -568,7 +602,7 @@ Pixel_from_hsla(int argc, VALUE *argv, VALUE class)
 VALUE
 Pixel_from_HSL(VALUE class, VALUE hsl)
 {
-    PixelPacket rgb;
+    PixelColor rgb;
     double hue, saturation, luminosity;
 
     class = class;      // defeat "never referenced" message from icc
@@ -587,7 +621,7 @@ Pixel_from_HSL(VALUE class, VALUE hsl)
     rb_warning("Pixel#from_HSL is deprecated; use from_hsla");
     ConvertHSLToRGB(hue, saturation, luminosity,
                  &rgb.red, &rgb.green, &rgb.blue);
-    return Pixel_from_PixelPacket(&rgb);
+    return Pixel_from_PixelColor(&rgb);
 }
 
 
@@ -633,8 +667,38 @@ Pixel_from_PixelPacket(const PixelPacket *pp)
 {
     Pixel *pixel;
 
-    pixel = ALLOC(Pixel);
-    *pixel = *pp;
+    pixel          = ALLOC(Pixel);
+    pixel->red     = pp->red;
+    pixel->green   = pp->green;
+    pixel->blue    = pp->blue;
+    pixel->opacity = pp->opacity;
+
+    return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
+}
+
+
+/**
+ * Create a Magick::Pixel object from a PixelColor structure.
+ *
+ * No Ruby usage (internal function)
+ *
+ * Notes:
+ *   - Bypasses normal Pixel.new, Pixel#initialize methods
+ *
+ * @param pp the PixelColor
+ * @return a new Magick::Pixel object
+ */
+VALUE
+Pixel_from_PixelColor(const PixelColor *pp)
+{
+    Pixel *pixel;
+
+    pixel          = ALLOC(Pixel);
+    pixel->red     = pp->red;
+    pixel->green   = pp->green;
+    pixel->blue    = pp->blue;
+    pixel->opacity = pp->opacity;
+
     return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
 }
 
@@ -1086,7 +1150,7 @@ Pixel_to_s(VALUE self)
 
 
 /**
- * Convert a PixelPacket to a MagickPixel.
+ * Convert a PixelColor to a MagickPixel.
  *
  * No Ruby usage (internal function)
  *
@@ -1097,7 +1161,7 @@ Pixel_to_s(VALUE self)
  * @param pp the MagickPixel to be modified
  */
 void
-rm_set_magick_pixel_packet(Pixel *pixel, MagickPixel *pp)
+rm_set_magick_pixel_packet(PixelColor *pixel, MagickPixel *pp)
 {
     pp->red     = (MagickRealType) pixel->red;
     pp->green   = (MagickRealType) pixel->green;

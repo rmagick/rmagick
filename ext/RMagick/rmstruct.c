@@ -323,13 +323,13 @@ Export_ColorInfo(ColorInfo *ci, VALUE st)
 void
 Color_to_MagickPixel(Image *image, MagickPixel *mpp, VALUE color)
 {
-    PixelPacket pp;
+    PixelColor pp;
 
     // image can be NULL
     rm_init_magickpixel(image, mpp);
 
     memset(&pp, '\0', sizeof(pp));
-    Color_to_PixelPacket(&pp, color);
+    Color_to_PixelColor(&pp, color);
     mpp->red = (MagickRealType) pp.red;
     mpp->green = (MagickRealType) pp.green;
     mpp->blue = (MagickRealType) pp.blue;
