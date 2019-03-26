@@ -640,7 +640,6 @@ VALUE
 Draw_marshal_load(VALUE self, VALUE ddraw)
 {
     Draw *draw;
-    Pixel *pixel;
     VALUE val;
 
     Data_Get_Struct(self, Draw, draw);
@@ -656,12 +655,10 @@ Draw_marshal_load(VALUE self, VALUE ddraw)
     draw->info->gravity = (GravityType) FIX2INT(rb_hash_aref(ddraw, CSTR2SYM("gravity")));
 
     val = rb_hash_aref(ddraw, CSTR2SYM("fill"));
-    Data_Get_Struct(val, Pixel, pixel);
-    draw->info->fill =  *pixel;
+    Color_to_PixelColor(&draw->info->fill, val);
 
     val = rb_hash_aref(ddraw, CSTR2SYM("stroke"));
-    Data_Get_Struct(val, Pixel, pixel);
-    draw->info->stroke = *pixel;
+    Color_to_PixelColor(&draw->info->stroke, val);
 
     draw->info->stroke_width = NUM2DBL(rb_hash_aref(ddraw, CSTR2SYM("stroke_width")));
     draw->info->fill_pattern = str_to_image(rb_hash_aref(ddraw, CSTR2SYM("fill_pattern")));
@@ -681,8 +678,7 @@ Draw_marshal_load(VALUE self, VALUE ddraw)
     draw->info->align = (AlignType) FIX2INT(rb_hash_aref(ddraw, CSTR2SYM("align")));
 
     val = rb_hash_aref(ddraw, CSTR2SYM("undercolor"));
-    Data_Get_Struct(val, Pixel, pixel);
-    draw->info->undercolor = *pixel;
+    Color_to_PixelColor(&draw->info->undercolor, val);
 
     draw->info->clip_units = FIX2INT(rb_hash_aref(ddraw, CSTR2SYM("clip_units")));
     draw->info->opacity = NUM2QUANTUM(rb_hash_aref(ddraw, CSTR2SYM("opacity")));
