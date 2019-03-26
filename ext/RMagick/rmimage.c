@@ -3797,9 +3797,15 @@ Image_compression_eq(VALUE self, VALUE compression)
 VALUE
 Image_compress_colormap_bang(VALUE self)
 {
+    MagickBooleanType okay;
+
     Image *image = rm_check_frozen(self);
-    (void) CompressImageColormap(image);
+    okay = CompressImageColormap(image);
     rm_check_image_exception(image, RetainOnError);
+    if (!okay)
+    {
+        rb_warning("CompressImageColormap failed (probably DirectClass image)");
+    }
 
     return self;
 }
