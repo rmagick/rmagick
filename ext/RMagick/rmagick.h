@@ -37,14 +37,18 @@
 #undef PACKAGE_TARNAME
 #undef WORDS_BIGENDIAN
 
-#include "magick/MagickCore.h"
-#include "magick/magick-config.h"
+#include "extconf.h"
+
+#if defined(IMAGEMAGICK_7)
+    #include "MagickCore/MagickCore.h"
+    #include "MagickCore/magick-config.h"
+#else
+    #include "magick/MagickCore.h"
+    #include "magick/magick-config.h"
+#endif
 
 // Undef ImageMagick's versions of these symbols
 #undef PACKAGE_STRING
-
-
-#include "extconf.h"
 
 
 //! For quoting preprocessor symbols
@@ -115,8 +119,13 @@
 
 typedef ImageInfo Info; /**< Make type name match class name */
 typedef PixelPacket Pixel; /**< Make type name match class name */
-typedef MagickPixelPacket MagickPixel;
-typedef PixelPacket PixelColor;
+#if defined(IMAGEMAGICK_7)
+    typedef PixelInfo MagickPixel;
+    typedef PixelInfo PixelColor;
+#else
+    typedef MagickPixelPacket MagickPixel;
+    typedef PixelPacket PixelColor;
+#endif
 
 //! Montage
 typedef struct
@@ -1032,12 +1041,9 @@ extern VALUE  CompositeOperator_new(CompositeOperator);
 extern VALUE  CompressionType_new(CompressionType);
 extern VALUE  DisposeType_new(DisposeType);
 extern VALUE  EndianType_new(EndianType);
-extern VALUE  FilterTypes_new(FilterTypes);
 extern VALUE  GravityType_new(GravityType);
-extern VALUE  ImageLayerMethod_new(ImageLayerMethod);
 extern VALUE  ImageType_new(ImageType);
 extern VALUE  InterlaceType_new(InterlaceType);
-extern VALUE  InterpolatePixelMethod_new(InterpolatePixelMethod);
 extern VALUE  OrientationType_new(OrientationType);
 extern VALUE  RenderingIntent_new(RenderingIntent);
 extern VALUE  ResolutionType_new(ResolutionType);
@@ -1047,7 +1053,15 @@ extern const char *StretchType_name(StretchType);
 extern VALUE  StyleType_new(StyleType);
 extern const char *StyleType_name(StyleType);
 extern VALUE  VirtualPixelMethod_new(VirtualPixelMethod);
-
+#if defined(IMAGEMAGICK_7)
+extern VALUE  FilterType_new(FilterType);
+extern VALUE  LayerMethod_new(LayerMethod);
+extern VALUE  PixelInterpolateMethod_new(PixelInterpolateMethod);
+#else
+extern VALUE  FilterTypes_new(FilterTypes);
+extern VALUE  ImageLayerMethod_new(ImageLayerMethod);
+extern VALUE  InterpolatePixelMethod_new(InterpolatePixelMethod);
+#endif
 
 // rmstruct.c
 extern VALUE  ChromaticityInfo_to_s(VALUE);
@@ -1137,7 +1151,6 @@ typedef enum
     DestroyExceptionRetention
 } ExceptionRetention;
 
-extern void   rm_check_image_exception(Image *, ErrorRetention);
 extern void   rm_check_exception(ExceptionInfo *, Image *, ErrorRetention);
 extern void   rm_ensure_result(Image *);
 extern Image *rm_clone_image(Image *);
@@ -1150,5 +1163,9 @@ extern void   rm_error_handler(const ExceptionType, const char *, const char *);
 extern void   rm_warning_handler(const ExceptionType, const char *, const char *);
 extern MagickBooleanType rm_should_raise_exception(ExceptionInfo *, const ExceptionRetention);
 extern void   rm_raise_exception(ExceptionInfo *);
+#if !defined(IMAGEMAGICK_7)
+extern void   rm_check_image_exception(Image *, ErrorRetention);
+#endif
+
 #endif
 
