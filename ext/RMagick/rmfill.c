@@ -444,7 +444,7 @@ h_diagonal_fill(
     // If the line is entirely > image->columns, swap the start & end color
     if (steps < 0)
     {
-        PixelPacket t = *stop_color;
+        PixelColor t = *stop_color;
         *stop_color = *start_color;
         *start_color = t;
         steps = -steps;
