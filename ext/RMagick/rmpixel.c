@@ -408,7 +408,7 @@ Pixel_fcmp(int argc, VALUE *argv, VALUE self)
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
 
-    image = AcquireImage(info);
+    image = rm_acquire_image(info);
 
     // Delete Info now in case we have to raise an exception
     (void) DestroyImageInfo(info);
@@ -1022,10 +1022,16 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
     Data_Get_Struct(self, Pixel, pixel);
 
     info = CloneImageInfo(NULL);
-    image = AcquireImage(info);
+    image = rm_acquire_image(info);
+    (void) DestroyImageInfo(info);
+
+    if (!image)
+    {
+        rb_raise(rb_eNoMemError, "not enough memory to continue.");
+    }
+
     image->depth = depth;
     image->matte = matte;
-    (void) DestroyImageInfo(info);
 
     GetMagickPixelPacket(image, &mpp);
     rm_set_magick_pixel_packet(pixel, &mpp);

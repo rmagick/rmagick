@@ -3920,7 +3920,7 @@ Image_constitute(VALUE class, VALUE width_arg, VALUE height_arg
     }
 
     // This is based on ConstituteImage in IM 5.5.7
-    image = AcquireImage(NULL);
+    image = rm_acquire_image((ImageInfo *) NULL);
     if (!image)
     {
         xfree(pixels.v);
@@ -9203,7 +9203,7 @@ Image_initialize(int argc, VALUE *argv, VALUE self)
     info_obj = rm_info_new();
     Data_Get_Struct(info_obj, Info, info);
 
-    image = AcquireImage(info);
+    image = rm_acquire_image(info);
     if (!image)
     {
         rb_raise(rb_eNoMemError, "not enough memory to continue");

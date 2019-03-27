@@ -620,6 +620,21 @@ rm_app2quantum(VALUE obj)
 
 
 /**
+ * Returns a pointer to an image structure initialized to default values
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param info the info
+ * @return the created image
+ */
+Image *
+rm_acquire_image(ImageInfo *info)
+{
+    return AcquireImage(info);
+}
+
+
+/**
  * Send the "cur_image" method to the object. If 'img' is an ImageList, then
  * cur_image is self[\@scene]. If 'img' is an image, then cur_image is simply
  * 'self'.
@@ -688,7 +703,12 @@ rm_pixelpacket_to_color_name_info(Info *info, PixelPacket *color)
 
     my_info = info ? info : CloneImageInfo(NULL);
 
-    image = AcquireImage(info);
+    image = rm_acquire_image(info);
+    if (!image)
+    {
+        rb_raise(rb_eNoMemError, "not enough memory to continue.");
+    }
+
     image->matte = MagickFalse;
     color_name = rm_pixelpacket_to_color_name(image, color);
     (void) DestroyImage(image);
