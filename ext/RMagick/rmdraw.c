@@ -1231,6 +1231,9 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
             case MultiplyCompositeOp:
                 op = "Multiply";
                 break;
+            case NoCompositeOp:
+                op = "No";
+                break;
             case OutCompositeOp:
                 op = "Out";
                 break;
@@ -1281,6 +1284,9 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
                 break;
             case ThresholdCompositeOp:
                 op = "Threshold";
+                break;
+            case UndefinedCompositeOp:
+                op = "Undefined";
                 break;
             case VividLightCompositeOp:
                 op = "VividLight";
