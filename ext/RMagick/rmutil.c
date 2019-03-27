@@ -722,6 +722,19 @@ rm_pixelpacket_to_color_name_info(Info *info, PixelPacket *color)
     return color_name;
 }
 
+/**
+ * Initializes the MagickPixel structure.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param image the image
+ * @param pp the MagickPixel
+ */
+void
+rm_init_magickpixel(const Image *image, MagickPixel *pp)
+{
+    GetMagickPixelPacket(image, pp);
+}
 
 /**
  * Write a temporary copy of the image to the IM registry.

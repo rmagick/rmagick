@@ -212,9 +212,9 @@ static VALUE set_dbl_option(VALUE self, const char *option, VALUE value)
  */
 static char *pixel_packet_to_hexname(PixelPacket *pp, char *name)
 {
-    MagickPixelPacket mpp;
+    MagickPixel mpp;
 
-    GetMagickPixelPacket(NULL, &mpp);
+    rm_init_magickpixel(NULL, &mpp);
     rm_set_magick_pixel_packet(pp, &mpp);
     (void) GetColorTuple(&mpp, MagickTrue, name);
     return name;
