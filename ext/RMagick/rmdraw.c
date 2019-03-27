@@ -18,7 +18,11 @@ static void destroy_Draw(void *);
 static VALUE new_DrawOptions(void);
 
 /** Method that gets type metrics */
-typedef MagickBooleanType (get_type_metrics_func_t)(Image *, const DrawInfo *, TypeMetric *);
+#if defined(IMAGEMAGICK_7)
+    typedef MagickBooleanType (get_type_metrics_func_t)(Image *, const DrawInfo *, TypeMetric *, ExceptionInfo *);
+#else
+    typedef MagickBooleanType (get_type_metrics_func_t)(Image *, const DrawInfo *, TypeMetric *);
+#endif
 static VALUE get_type_metrics(int, VALUE *, VALUE, get_type_metrics_func_t);
 
 
@@ -608,7 +612,11 @@ Draw_marshal_dump(VALUE self)
     // rb_hash_aset(ddraw, CSTR2SYM("clip_mask"), MAGICK_STRING_TO_OBJ(draw->info->clip_mask)); internal
     // rb_hash_aset(ddraw, CSTR2SYM("bounds"), Import_SegmentInfo(&draw->info->bounds)); internal
     rb_hash_aset(ddraw, CSTR2SYM("clip_units"), INT2FIX(draw->info->clip_units));
+#if defined(IMAGEMAGICK_7)
+    rb_hash_aset(ddraw, CSTR2SYM("alpha"), QUANTUM2NUM(draw->info->alpha));
+#else
     rb_hash_aset(ddraw, CSTR2SYM("opacity"), QUANTUM2NUM(draw->info->opacity));
+#endif
     // rb_hash_aset(ddraw, CSTR2SYM("render"), draw->info->render ? Qtrue : Qfalse); internal
     // rb_hash_aset(ddraw, CSTR2SYM("element_reference"), Qnil);     // not used yet
     // rb_hash_aset(ddraw, CSTR2SYM("debug"), draw->info->debug ? Qtrue : Qfalse);
@@ -681,7 +689,11 @@ Draw_marshal_load(VALUE self, VALUE ddraw)
     Color_to_PixelColor(&draw->info->undercolor, val);
 
     draw->info->clip_units = FIX2INT(rb_hash_aref(ddraw, CSTR2SYM("clip_units")));
+#if defined(IMAGEMAGICK_7)
+    draw->info->alpha = NUM2QUANTUM(rb_hash_aref(ddraw, CSTR2SYM("alpha")));
+#else
     draw->info->opacity = NUM2QUANTUM(rb_hash_aref(ddraw, CSTR2SYM("opacity")));
+#endif
     draw->info->kerning = NUM2DBL(rb_hash_aref(ddraw, CSTR2SYM("kerning")));
     draw->info->interword_spacing = NUM2DBL(rb_hash_aref(ddraw, CSTR2SYM("interword_spacing")));
 
@@ -946,6 +958,9 @@ VALUE Draw_annotate(
     long x, y;
     AffineMatrix keep;
     char geometry_str[50];
+#if defined(IMAGEMAGICK_7)
+    ExceptionInfo *exception;
+#endif
 
     // Save the affine matrix in case it is modified by
     // Draw#rotation=
@@ -963,9 +978,18 @@ VALUE Draw_annotate(
     }
 
     // Translate & store in Draw structure
+#if defined(IMAGEMAGICK_7)
+    exception=AcquireExceptionInfo();
+    draw->info->text = InterpretImageProperties(NULL, image, StringValuePtr(text), exception);
+    CHECK_EXCEPTION()
+#else
     draw->info->text = InterpretImageProperties(NULL, image, StringValuePtr(text));
+#endif
     if (!draw->info->text)
     {
+#if defined(IMAGEMAGICK_7)
+        (void) DestroyExceptionInfo(exception);
+#endif
         rb_raise(rb_eArgError, "no text");
     }
 
@@ -989,13 +1013,22 @@ VALUE Draw_annotate(
 
     magick_clone_string(&draw->info->geometry, geometry_str);
 
+#if defined(IMAGEMAGICK_7)
+    (void) AnnotateImage(image, draw->info, exception);
+#else
     (void) AnnotateImage(image, draw->info);
+#endif
 
     magick_free(draw->info->text);
     draw->info->text = NULL;
     draw->info->affine = keep;
 
+#if defined(IMAGEMAGICK_7)
+    CHECK_EXCEPTION()
+    (void) DestroyExceptionInfo(exception);
+#else
     rm_check_image_exception(image, RetainOnError);
+#endif
 
     return self;
 }
@@ -1081,9 +1114,16 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
 
         switch (cop)
         {
+#if defined(IMAGEMAGICK_7)
+            case AlphaCompositeOp:
+                op = "Alpha";
+                break;
+#endif
+#if !defined(IMAGEMAGICK_7)
             case AddCompositeOp:
                 op = "Add";
                 break;
+#endif
             case AtopCompositeOp:
                 op = "Atop";
                 break;
@@ -1129,9 +1169,15 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
             case CopyMagentaCompositeOp:
                 op = "CopyMagenta";
                 break;
+#if defined(IMAGEMAGICK_7)
+            case CopyAlphaCompositeOp:
+                op = "CopyAlpha";
+                break;
+#else
             case CopyOpacityCompositeOp:
                 op = "CopyOpacity";
                 break;
+#endif
             case CopyRedCompositeOp:
                 op = "CopyRed";
                 break;
@@ -1147,9 +1193,15 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
             case DistortCompositeOp:
                 op = "Distort";
                 break;
+#if defined(IMAGEMAGICK_7)
+            case DivideDstCompositeOp:
+                op = "DivideDst";
+                break;
+#else
             case DivideCompositeOp:
                 op = "Divide";
                 break;
+#endif
             case DivideSrcCompositeOp:
                 op = "DivideSrc";
                 break;
@@ -1215,15 +1267,29 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
             case MathematicsCompositeOp:
                 op = "Mathematics";
                 break;
+#if defined(IMAGEMAGICK_7)
+            case MinusDstCompositeOp:
+                op = "MinusDst";
+                break;
+#else
             case MinusCompositeOp:
                 op = "Minus";
                 break;
+#endif
             case MinusSrcCompositeOp:
                 op = "MinusSrc";
                 break;
             case ModulateCompositeOp:
                 op = "Modulate";
                 break;
+#if defined(IMAGEMAGICK_7)
+            case ModulusAddCompositeOp:
+                op = "ModulusAdd";
+                break;
+            case ModulusSubtractCompositeOp:
+                op = "ModulusSubtract";
+                break;
+#endif
             case MultiplyCompositeOp:
                 op = "Multiply";
                 break;
@@ -1275,9 +1341,16 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
             case SrcOverCompositeOp:
                 op = "SrcOver";
                 break;
+#if defined(IMAGEMAGICK_7)
+            case StereoCompositeOp:
+                op = "Stereo";
+                break;
+#endif
+#if !defined(IMAGEMAGICK_7)
             case SubtractCompositeOp:
                 op = "Subtract";
                 break;
+#endif
             case ThresholdCompositeOp:
                 op = "Threshold";
                 break;
@@ -1338,6 +1411,9 @@ Draw_draw(VALUE self, VALUE image_arg)
 {
     Draw *draw;
     Image *image;
+#if defined(IMAGEMAGICK_7)
+    ExceptionInfo *exception;
+#endif
 
     image_arg = rm_cur_image(image_arg);
     image = rm_check_frozen(image_arg);
@@ -1351,11 +1427,21 @@ Draw_draw(VALUE self, VALUE image_arg)
     // Point the DrawInfo structure at the current set of primitives.
     magick_clone_string(&(draw->info->primitive), StringValuePtr(draw->primitives));
 
+#if defined(IMAGEMAGICK_7)
+    exception=AcquireExceptionInfo();
+    (void) DrawImage(image, draw->info, exception);
+#else
     (void) DrawImage(image, draw->info);
-    rm_check_image_exception(image, RetainOnError);
+#endif
 
     magick_free(draw->info->primitive);
     draw->info->primitive = NULL;
+
+#if defined(IMAGEMAGICK_7)
+    CHECK_EXCEPTION()
+#else
+    rm_check_image_exception(image, RetainOnError);
+#endif
 
     return self;
 }
@@ -1920,6 +2006,9 @@ get_type_metrics(
     long text_l;
     long x;
     unsigned int okay;
+#if defined(IMAGEMAGICK_7)
+    ExceptionInfo *exception;
+#endif
 
     switch (argc)
     {
@@ -1943,25 +2032,45 @@ get_type_metrics(
     }
 
     Data_Get_Struct(self, Draw, draw);
+#if defined(IMAGEMAGICK_7)
+    exception=AcquireExceptionInfo();
+    draw->info->text = InterpretImageProperties(NULL, image, text, exception);
+    CHECK_EXCEPTION()
+#else
     draw->info->text = InterpretImageProperties(NULL, image, text);
+#endif
     if (!draw->info->text)
     {
+#if defined(IMAGEMAGICK_7)
+        (void) DestroyExceptionInfo(exception);
+#endif
         rb_raise(rb_eArgError, "no text to measure");
     }
 
+#if defined(IMAGEMAGICK_7)
+    okay = (*getter)(image, draw->info, &metrics, exception);
+#else
     okay = (*getter)(image, draw->info, &metrics);
+#endif
 
     magick_free(draw->info->text);
     draw->info->text = NULL;
 
     if (!okay)
     {
+#if defined(IMAGEMAGICK_7)
+        CHECK_EXCEPTION()
+#else
         rm_check_image_exception(image, RetainOnError);
+#endif
 
         // Shouldn't get here...
         rb_raise(rb_eRuntimeError, "Can't measure text. Are the fonts installed? "
                  "Is the FreeType library installed?");
     }
+#if defined(IMAGEMAGICK_7)
+    (void) DestroyExceptionInfo(exception);
+#endif
 
     RB_GC_GUARD(t);
 
