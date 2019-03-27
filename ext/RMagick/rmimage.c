@@ -9904,7 +9904,7 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
     // Do what IM does and return the background color.
     if (x < 0 || y < 0 || (unsigned long)x >= image->columns || (unsigned long)y >= image->rows)
     {
-        return Pixel_from_PixelPacket(&image->background_color);
+        return Pixel_from_PixelColor(&image->background_color);
     }
 
     // Set the color of a pixel. Return previous color.
@@ -13796,7 +13796,7 @@ VALUE
 Image_transparent_color_eq(VALUE self, VALUE color)
 {
     Image *image = rm_check_frozen(self);
-    Color_to_PixelPacket(&image->transparent_color, color);
+    Color_to_PixelColor(&image->transparent_color, color);
     return self;
 }
 
