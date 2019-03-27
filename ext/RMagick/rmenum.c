@@ -602,12 +602,11 @@ CompositeOperator_name(CompositeOperator op)
         ENUM_TO_NAME(SrcOverCompositeOp)
         ENUM_TO_NAME(SubtractCompositeOp)
         ENUM_TO_NAME(ThresholdCompositeOp)
-        ENUM_TO_NAME(UndefinedCompositeOp)
         ENUM_TO_NAME(VividLightCompositeOp)
         ENUM_TO_NAME(XorCompositeOp)
+        default:
+        ENUM_TO_NAME(UndefinedCompositeOp)
     }
-
-    return "UndefinedCompositeOp";
 }
 
 
