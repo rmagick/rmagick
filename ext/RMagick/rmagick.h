@@ -34,14 +34,18 @@
 #undef PACKAGE_TARNAME
 #undef WORDS_BIGENDIAN
 
-#include "magick/MagickCore.h"
-#include "magick/magick-config.h"
+#include "extconf.h"
+
+#if defined(IMAGEMAGICK_7)
+    #include "MagickCore/MagickCore.h"
+    #include "MagickCore/magick-config.h"
+#else
+    #include "magick/MagickCore.h"
+    #include "magick/magick-config.h"
+#endif
 
 // Undef ImageMagick's versions of these symbols
 #undef PACKAGE_STRING
-
-
-#include "extconf.h"
 
 
 //! For quoting preprocessor symbols
@@ -117,14 +121,19 @@
 
 typedef ImageInfo Info; /**< Make type name match class name */
 typedef PixelPacket Pixel; /**< Make type name match class name */
-typedef MagickPixelPacket MagickPixel;
-typedef PixelPacket PixelColor;
-typedef AlphaChannelType AlphaChannelOption;
-typedef DistortImageMethod DistortMethod;
-typedef FilterTypes FilterType;
-typedef InterpolatePixelMethod PixelInterpolateMethod;
-typedef ImageLayerMethod LayerMethod;
-#define TransparentAlpha 0
+#if defined(IMAGEMAGICK_7)
+    typedef PixelInfo MagickPixel;
+    typedef PixelInfo PixelColor;
+#else
+    typedef MagickPixelPacket MagickPixel;
+    typedef PixelPacket PixelColor;
+    typedef AlphaChannelType AlphaChannelOption;
+    typedef DistortImageMethod DistortMethod;
+    typedef FilterTypes FilterType;
+    typedef InterpolatePixelMethod PixelInterpolateMethod;
+    typedef ImageLayerMethod LayerMethod;
+    #define TransparentAlpha 0
+#endif
 
 //! Montage
 typedef struct
@@ -1161,7 +1170,6 @@ typedef enum
     DestroyExceptionRetention
 } ExceptionRetention;
 
-extern void   rm_check_image_exception(Image *, ErrorRetention);
 extern void   rm_check_exception(ExceptionInfo *, Image *, ErrorRetention);
 extern void   rm_ensure_result(Image *);
 extern Image *rm_clone_image(Image *);
@@ -1174,5 +1182,9 @@ extern void   rm_error_handler(const ExceptionType, const char *, const char *);
 extern void   rm_warning_handler(const ExceptionType, const char *, const char *);
 extern MagickBooleanType rm_should_raise_exception(ExceptionInfo *, const ExceptionRetention);
 extern void   rm_raise_exception(ExceptionInfo *);
+#if !defined(IMAGEMAGICK_7)
+extern void   rm_check_image_exception(Image *, ErrorRetention);
+#endif
+
 #endif
 
