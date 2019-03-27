@@ -580,9 +580,6 @@ Pixel_##_cmyk_channel_(VALUE self) \
    e = (type)(magick_enum->val);\
    } while(0)
 
-//! create case statement, mapping enum to its name
-#define ENUM_TO_NAME(_enum) case _enum: return #_enum;
-
 
 // Method, external function declarations. These declarations are
 // grouped by the source file in which the methods are defined.
