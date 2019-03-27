@@ -1115,14 +1115,14 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
             case ColorizeCompositeOp:
                 op = "Colorize";
                 break;
-            case CopyCompositeOp:
-                op = "Copy";
-                break;
             case CopyBlackCompositeOp:
                 op = "CopyBlack";
                 break;
             case CopyBlueCompositeOp:
                 op = "CopyBlue";
+                break;
+            case CopyCompositeOp:
+                op = "Copy";
                 break;
             case CopyCyanCompositeOp:
                 op = "CopyCyan";
@@ -1145,11 +1145,17 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
             case DarkenCompositeOp:
                 op = "Darken";
                 break;
+            case DarkenIntensityCompositeOp:
+                op = "DarkenIntensity";
+                break;
             case DistortCompositeOp:
                 op = "Distort";
                 break;
             case DivideCompositeOp:
                 op = "Divide";
+                break;
+            case DivideSrcCompositeOp:
+                op = "DivideSrc";
                 break;
             case DstCompositeOp:
                 op = "Dst";
@@ -1181,6 +1187,11 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
             case HardLightCompositeOp:
                 op = "HardLight";
                 break;
+#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
+            case HardMixCompositeOp:
+                op = "HardMix";
+                break;
+#endif
             case HueCompositeOp:
                 op = "Hue";
                 break;
@@ -1189,6 +1200,9 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
                 break;
             case LightenCompositeOp:
                 op = "Lighten";
+                break;
+            case LightenIntensityCompositeOp:
+                op = "LightenIntensity";
                 break;
             case LinearBurnCompositeOp:
                 op = "LinearBurn";
@@ -1202,14 +1216,23 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
             case LuminizeCompositeOp:
                 op = "Luminize";
                 break;
+            case MathematicsCompositeOp:
+                op = "Mathematics";
+                break;
             case MinusCompositeOp:
                 op = "Minus";
+                break;
+            case MinusSrcCompositeOp:
+                op = "MinusSrc";
                 break;
             case ModulateCompositeOp:
                 op = "Modulate";
                 break;
             case MultiplyCompositeOp:
                 op = "Multiply";
+                break;
+            case NoCompositeOp:
+                op = "No";
                 break;
             case OutCompositeOp:
                 op = "Out";
@@ -1262,32 +1285,15 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
             case ThresholdCompositeOp:
                 op = "Threshold";
                 break;
+            case UndefinedCompositeOp:
+                op = "Undefined";
+                break;
             case VividLightCompositeOp:
                 op = "VividLight";
                 break;
             case XorCompositeOp:
                 op = "Xor";
                 break;
-            case MathematicsCompositeOp:
-                op = "Mathematics";
-                break;
-            case DivideSrcCompositeOp:
-                op = "DivideSrc";
-                break;
-            case MinusSrcCompositeOp:
-                op = "MinusSrc";
-                break;
-            case DarkenIntensityCompositeOp:
-                op = "DarkenIntensity";
-                break;
-            case LightenIntensityCompositeOp:
-                op = "LightenIntensity";
-                break;
-#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
-            case HardMixCompositeOp:
-                op = "HardMix";
-                break;
-#endif
             default:
                 rb_raise(rb_eArgError, "unknown composite operator (%d)", cop);
                 break;
