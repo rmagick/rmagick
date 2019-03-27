@@ -534,7 +534,7 @@ ColorspaceType_new(ColorspaceType cs)
  * @param c the ComplianceType value
  * @return the string
  */
-static const char *
+const char *
 ComplianceType_name(ComplianceType *c)
 {
     if ((*c & (SVGCompliance|X11Compliance|XPMCompliance))
@@ -578,7 +578,7 @@ ComplianceType_name(ComplianceType *c)
  * @param compliance the C ComplianceType value
  * @return the Ruby ComplianceType enum object
  */
-static VALUE
+VALUE
 ComplianceType_new(ComplianceType compliance)
 {
     const char *name;
@@ -1296,7 +1296,7 @@ StorageType_name(StorageType type)
  * @param stretch the StretchType value
  * @return the string
  */
-static const char *
+const char *
 StretchType_name(StretchType stretch)
 {
     switch (stretch)
@@ -1326,7 +1326,7 @@ StretchType_name(StretchType stretch)
  * @param stretch the C StretchType value
  * @return a Ruby StretchType enum
  */
-static VALUE
+VALUE
 StretchType_new(StretchType stretch)
 {
     const char *name = StretchType_name(stretch);
@@ -1342,7 +1342,7 @@ StretchType_new(StretchType stretch)
  * @param style the StyleType value
  * @return the string
  */
-static const char *
+const char *
 StyleType_name(StyleType style)
 {
     switch (style)
@@ -1366,7 +1366,7 @@ StyleType_name(StyleType style)
  * @param style the C StyleType value
  * @return a Ruby StyleType enum
  */
-static VALUE
+VALUE
 StyleType_new(StyleType style)
 {
     const char *name = StyleType_name(style);
