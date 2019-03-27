@@ -657,12 +657,12 @@ rm_cur_image(VALUE img)
  * No Ruby usage (internal function)
  *
  * @param image the image
- * @param color the color intensity as a PixelPacket
+ * @param color the color intensity as a PixelColor
  * @return the named color as a String
- * @see rm_pixelpacket_to_color_name_info
+ * @see rm_pixelcolor_to_color_name_info
  */
 VALUE
-rm_pixelpacket_to_color_name(Image *image, PixelPacket *color)
+rm_pixelcolor_to_color_name(Image *image, PixelColor *color)
 {
     char name[MaxTextExtent];
     ExceptionInfo *exception;
@@ -690,12 +690,12 @@ rm_pixelpacket_to_color_name(Image *image, PixelPacket *color)
  *     which means "don't use the alpha channel".
  *
  * @param info the info
- * @param color the color intensity as a PixelPacket
+ * @param color the color intensity as a PixelColor
  * @return the named color as a String
- * @see rm_pixelpacket_to_color_name
+ * @see rm_pixelcolor_to_color_name
  */
 VALUE
-rm_pixelpacket_to_color_name_info(Info *info, PixelPacket *color)
+rm_pixelcolor_to_color_name_info(Info *info, PixelColor *color)
 {
     Image *image;
     Info *my_info;
@@ -710,7 +710,7 @@ rm_pixelpacket_to_color_name_info(Info *info, PixelPacket *color)
     }
 
     image->matte = MagickFalse;
-    color_name = rm_pixelpacket_to_color_name(image, color);
+    color_name = rm_pixelcolor_to_color_name(image, color);
     (void) DestroyImage(image);
     if (!info)
     {

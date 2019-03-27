@@ -151,7 +151,7 @@ Draw_fill_eq(VALUE self, VALUE fill)
 
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
-    Color_to_PixelPacket(&draw->info->fill, fill);
+    Color_to_PixelColor(&draw->info->fill, fill);
     return self;
 }
 
@@ -573,8 +573,8 @@ Draw_marshal_dump(VALUE self)
     // rb_hash_aset(ddraw, CSTR2SYM("viewbox"), Import_RectangleInfo(&draw->info->viewbox)); internal
     rb_hash_aset(ddraw, CSTR2SYM("affine"), Import_AffineMatrix(&draw->info->affine));
     rb_hash_aset(ddraw, CSTR2SYM("gravity"), INT2FIX(draw->info->gravity));
-    rb_hash_aset(ddraw, CSTR2SYM("fill"), Pixel_from_PixelPacket(&draw->info->fill));
-    rb_hash_aset(ddraw, CSTR2SYM("stroke"), Pixel_from_PixelPacket(&draw->info->stroke));
+    rb_hash_aset(ddraw, CSTR2SYM("fill"), Pixel_from_PixelColor(&draw->info->fill));
+    rb_hash_aset(ddraw, CSTR2SYM("stroke"), Pixel_from_PixelColor(&draw->info->stroke));
     rb_hash_aset(ddraw, CSTR2SYM("stroke_width"), rb_float_new(draw->info->stroke_width));
     // rb_hash_aset(ddraw, CSTR2SYM("gradient"), Qnil);  // not used yet
     rb_hash_aset(ddraw, CSTR2SYM("fill_pattern"), image_to_str(draw->info->fill_pattern));
@@ -601,8 +601,8 @@ Draw_marshal_dump(VALUE self)
     rb_hash_aset(ddraw, CSTR2SYM("pointsize"), rb_float_new(draw->info->pointsize));
     rb_hash_aset(ddraw, CSTR2SYM("density"), MAGICK_STRING_TO_OBJ(draw->info->density));
     rb_hash_aset(ddraw, CSTR2SYM("align"), INT2FIX(draw->info->align));
-    rb_hash_aset(ddraw, CSTR2SYM("undercolor"), Pixel_from_PixelPacket(&draw->info->undercolor));
-    // rb_hash_aset(ddraw, CSTR2SYM("border_color"), Pixel_from_PixelPacket(&draw->info->border_color)); Montage and Polaroid
+    rb_hash_aset(ddraw, CSTR2SYM("undercolor"), Pixel_from_PixelColor(&draw->info->undercolor));
+    // rb_hash_aset(ddraw, CSTR2SYM("border_color"), Pixel_from_PixelColor(&draw->info->border_color)); Montage and Polaroid
     // rb_hash_aset(ddraw, CSTR2SYM("server_name"), MAGICK_STRING_TO_OBJ(draw->info->server_name));
     // rb_hash_aset(ddraw, CSTR2SYM("dash_pattern"), dash_pattern_to_array(draw->info->dash_pattern)); internal
     // rb_hash_aset(ddraw, CSTR2SYM("clip_mask"), MAGICK_STRING_TO_OBJ(draw->info->clip_mask)); internal
@@ -617,7 +617,7 @@ Draw_marshal_dump(VALUE self)
 
     // Non-DrawInfo fields
     rb_hash_aset(ddraw, CSTR2SYM("primitives"), draw->primitives);
-    // rb_hash_aset(ddraw, CSTR2SYM("shadow_color"), Pixel_from_PixelPacket(&draw->shadow_color)); Polaroid-only
+    // rb_hash_aset(ddraw, CSTR2SYM("shadow_color"), Pixel_from_PixelColor(&draw->shadow_color)); Polaroid-only
 
     return ddraw;
 }
@@ -640,7 +640,6 @@ VALUE
 Draw_marshal_load(VALUE self, VALUE ddraw)
 {
     Draw *draw;
-    Pixel *pixel;
     VALUE val;
 
     Data_Get_Struct(self, Draw, draw);
@@ -656,12 +655,10 @@ Draw_marshal_load(VALUE self, VALUE ddraw)
     draw->info->gravity = (GravityType) FIX2INT(rb_hash_aref(ddraw, CSTR2SYM("gravity")));
 
     val = rb_hash_aref(ddraw, CSTR2SYM("fill"));
-    Data_Get_Struct(val, Pixel, pixel);
-    draw->info->fill =  *pixel;
+    Color_to_PixelColor(&draw->info->fill, val);
 
     val = rb_hash_aref(ddraw, CSTR2SYM("stroke"));
-    Data_Get_Struct(val, Pixel, pixel);
-    draw->info->stroke = *pixel;
+    Color_to_PixelColor(&draw->info->stroke, val);
 
     draw->info->stroke_width = NUM2DBL(rb_hash_aref(ddraw, CSTR2SYM("stroke_width")));
     draw->info->fill_pattern = str_to_image(rb_hash_aref(ddraw, CSTR2SYM("fill_pattern")));
@@ -681,8 +678,7 @@ Draw_marshal_load(VALUE self, VALUE ddraw)
     draw->info->align = (AlignType) FIX2INT(rb_hash_aref(ddraw, CSTR2SYM("align")));
 
     val = rb_hash_aref(ddraw, CSTR2SYM("undercolor"));
-    Data_Get_Struct(val, Pixel, pixel);
-    draw->info->undercolor = *pixel;
+    Color_to_PixelColor(&draw->info->undercolor, val);
 
     draw->info->clip_units = FIX2INT(rb_hash_aref(ddraw, CSTR2SYM("clip_units")));
     draw->info->opacity = NUM2QUANTUM(rb_hash_aref(ddraw, CSTR2SYM("opacity")));
@@ -788,7 +784,7 @@ Draw_stroke_eq(VALUE self, VALUE stroke)
 
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
-    Color_to_PixelPacket(&draw->info->stroke, stroke);
+    Color_to_PixelColor(&draw->info->stroke, stroke);
     return self;
 }
 
@@ -911,7 +907,7 @@ Draw_undercolor_eq(VALUE self, VALUE undercolor)
 
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
-    Color_to_PixelPacket(&draw->info->undercolor, undercolor);
+    Color_to_PixelColor(&draw->info->undercolor, undercolor);
     return self;
 }
 
@@ -1823,7 +1819,7 @@ PolaroidOptions_shadow_color_eq(VALUE self, VALUE shadow)
 
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
-    Color_to_PixelPacket(&draw->shadow_color, shadow);
+    Color_to_PixelColor(&draw->shadow_color, shadow);
     return self;
 }
 
@@ -1845,7 +1841,7 @@ PolaroidOptions_border_color_eq(VALUE self, VALUE border)
 
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
-    Color_to_PixelPacket(&draw->info->border_color, border);
+    Color_to_PixelColor(&draw->info->border_color, border);
     return self;
 }
 
