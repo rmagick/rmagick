@@ -614,7 +614,7 @@ VALUE
 ImageList_optimize_layers(VALUE self, VALUE method)
 {
     Image *images, *new_images, *new_images2;
-    LAYERMETHODTYPE mthd;
+    ImageLayerMethod mthd;
     ExceptionInfo *exception;
     QuantizeInfo quantize_info;
 

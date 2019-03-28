@@ -1018,15 +1018,15 @@ InterpolatePixelMethod_new(InterpolatePixelMethod interpolate)
 
 
 /**
- * Return the name of a MagickLayerMethod enum as a string.
+ * Return the name of a ImageLayerMethod enum as a string.
  *
  * No Ruby usage (internal function)
  *
- * @param method the MagickLayerMethod
+ * @param method the ImageLayerMethod
  * @return the name
  */
 static const char *
-LAYERMETHODTYPE_NAME(LAYERMETHODTYPE method)
+ImageLayerMethod_name(ImageLayerMethod method)
 {
     switch(method)
     {
@@ -1054,18 +1054,18 @@ LAYERMETHODTYPE_NAME(LAYERMETHODTYPE method)
 
 
 /**
- * Construct an MagickLayerMethod enum object for the specified value.
+ * Construct an ImageLayerMethod enum object for the specified value.
  *
  * No Ruby usage (internal function)
  *
- * @param method the MagickLayerMethod
- * @return a new MagickLayerMethod enumerator
+ * @param method the ImageLayerMethod
+ * @return a new ImageLayerMethod enumerator
  */
 VALUE
-LAYERMETHODTYPE_NEW(LAYERMETHODTYPE method)
+ImageLayerMethod_new(ImageLayerMethod method)
 {
-    const char *name = LAYERMETHODTYPE_NAME(method);
-    return rm_enum_new(CLASS_LAYERMETHODTYPE, ID2SYM(rb_intern(name)), INT2FIX(method));
+    const char *name = ImageLayerMethod_name(method);
+    return rm_enum_new(Class_ImageLayerMethod, ID2SYM(rb_intern(name)), INT2FIX(method));
 }
 
 

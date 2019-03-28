@@ -135,11 +135,6 @@
 
 #define MagickLibSubversion MagickLibAddendum
 
-#define LAYERMETHODTYPE ImageLayerMethod /**< layer method */
-#define CLASS_LAYERMETHODTYPE Class_ImageLayerMethod /**< layer method class */
-#define LAYERMETHODTYPE_NAME ImageLayerMethod_name /**< layer method name */
-#define LAYERMETHODTYPE_NEW  ImageLayerMethod_new /**< new layer method */
-
 
 typedef ImageInfo Info; /**< Make type name match class name */
 typedef PixelPacket Pixel; /**< Make type name match class name */
@@ -332,7 +327,7 @@ EXTERN VALUE Class_GravityType;
 EXTERN VALUE Class_ImageType;
 EXTERN VALUE Class_InterlaceType;
 EXTERN VALUE Class_InterpolatePixelMethod;
-EXTERN VALUE CLASS_LAYERMETHODTYPE;
+EXTERN VALUE Class_ImageLayerMethod;
 EXTERN VALUE Class_MagickFunction;
 EXTERN VALUE Class_NoiseType;
 EXTERN VALUE Class_OrientationType;
@@ -1200,7 +1195,7 @@ extern void   Export_TypeInfo(TypeInfo *, VALUE);
 extern VALUE  Import_TypeMetric(TypeMetric *);
 extern const char *StorageType_name(StorageType);
 extern VALUE  VirtualPixelMethod_new(VirtualPixelMethod);
-extern VALUE  LAYERMETHODTYPE_NEW(LAYERMETHODTYPE);
+extern VALUE  ImageLayerMethod_new(ImageLayerMethod);
 
 
 // rmutil.c
