@@ -723,6 +723,43 @@ DisposeType_new(DisposeType type)
 
 
 /**
+ * Return the name of a EndianType enum as a string.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param type the EndianType
+ * @return the name
+ */
+static const char *
+EndianType_name(EndianType type)
+{
+    switch(type)
+    {
+        ENUM_TO_NAME(UndefinedEndian)
+        ENUM_TO_NAME(LSBEndian)
+        ENUM_TO_NAME(MSBEndian)
+    }
+    return "UndefinedEndian";
+}
+
+
+/**
+ * Construct an EndianType enum object.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param type the EndianType
+ * @return a new EndianType enumerator
+ */
+VALUE
+EndianType_new(EndianType type)
+{
+    const char *name = EndianType_name(type);
+    return rm_enum_new(Class_EndianType, ID2SYM(rb_intern(name)), INT2FIX(type));
+}
+
+
+/**
  * Return the name of a FilterTypes enum as a string.
  *
  * No Ruby usage (internal function)
@@ -795,43 +832,6 @@ FilterTypes_new(FilterTypes type)
 
 
 /**
- * Return the name of a EndianType enum as a string.
- *
- * No Ruby usage (internal function)
- *
- * @param type the EndianType
- * @return the name
- */
-static const char *
-EndianType_name(EndianType type)
-{
-    switch(type)
-    {
-        ENUM_TO_NAME(UndefinedEndian)
-        ENUM_TO_NAME(LSBEndian)
-        ENUM_TO_NAME(MSBEndian)
-    }
-    return "UndefinedEndian";
-}
-
-
-/**
- * Construct an EndianType enum object.
- *
- * No Ruby usage (internal function)
- *
- * @param type the EndianType
- * @return a new EndianType enumerator
- */
-VALUE
-EndianType_new(EndianType type)
-{
-    const char *name = EndianType_name(type);
-    return rm_enum_new(Class_EndianType, ID2SYM(rb_intern(name)), INT2FIX(type));
-}
-
-
-/**
  * Return the name of a GravityType enum as a string.
  *
  * No Ruby usage (internal function)
@@ -875,6 +875,58 @@ GravityType_new(GravityType type)
 {
     const char *name = GravityType_name(type);
     return rm_enum_new(Class_GravityType, ID2SYM(rb_intern(name)), INT2FIX(type));
+}
+
+
+/**
+ * Return the name of a ImageLayerMethod enum as a string.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param method the ImageLayerMethod
+ * @return the name
+ */
+static const char *
+ImageLayerMethod_name(ImageLayerMethod method)
+{
+    switch(method)
+    {
+        ENUM_TO_NAME(UndefinedLayer)
+        ENUM_TO_NAME(CompareAnyLayer)
+        ENUM_TO_NAME(CompareClearLayer)
+        ENUM_TO_NAME(CompareOverlayLayer)
+        ENUM_TO_NAME(OptimizeLayer)
+        ENUM_TO_NAME(OptimizePlusLayer)
+        ENUM_TO_NAME(CoalesceLayer)
+        ENUM_TO_NAME(DisposeLayer)
+        ENUM_TO_NAME(OptimizeTransLayer)
+        ENUM_TO_NAME(OptimizeImageLayer)
+        ENUM_TO_NAME(RemoveDupsLayer)
+        ENUM_TO_NAME(RemoveZeroLayer)
+        ENUM_TO_NAME(CompositeLayer)
+        ENUM_TO_NAME(MergeLayer)
+        ENUM_TO_NAME(MosaicLayer)
+        ENUM_TO_NAME(FlattenLayer)
+        ENUM_TO_NAME(TrimBoundsLayer)
+    }
+
+    return "UndefinedLayer";
+}
+
+
+/**
+ * Construct an ImageLayerMethod enum object for the specified value.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param method the ImageLayerMethod
+ * @return a new ImageLayerMethod enumerator
+ */
+VALUE
+ImageLayerMethod_new(ImageLayerMethod method)
+{
+    const char *name = ImageLayerMethod_name(method);
+    return rm_enum_new(Class_ImageLayerMethod, ID2SYM(rb_intern(name)), INT2FIX(method));
 }
 
 
@@ -1014,58 +1066,6 @@ InterpolatePixelMethod_new(InterpolatePixelMethod interpolate)
 {
     const char *name = InterpolatePixelMethod_name(interpolate);
     return rm_enum_new(Class_InterpolatePixelMethod, ID2SYM(rb_intern(name)), INT2FIX(interpolate));
-}
-
-
-/**
- * Return the name of a ImageLayerMethod enum as a string.
- *
- * No Ruby usage (internal function)
- *
- * @param method the ImageLayerMethod
- * @return the name
- */
-static const char *
-ImageLayerMethod_name(ImageLayerMethod method)
-{
-    switch(method)
-    {
-        ENUM_TO_NAME(UndefinedLayer)
-        ENUM_TO_NAME(CompareAnyLayer)
-        ENUM_TO_NAME(CompareClearLayer)
-        ENUM_TO_NAME(CompareOverlayLayer)
-        ENUM_TO_NAME(OptimizeLayer)
-        ENUM_TO_NAME(OptimizePlusLayer)
-        ENUM_TO_NAME(CoalesceLayer)
-        ENUM_TO_NAME(DisposeLayer)
-        ENUM_TO_NAME(OptimizeTransLayer)
-        ENUM_TO_NAME(OptimizeImageLayer)
-        ENUM_TO_NAME(RemoveDupsLayer)
-        ENUM_TO_NAME(RemoveZeroLayer)
-        ENUM_TO_NAME(CompositeLayer)
-        ENUM_TO_NAME(MergeLayer)
-        ENUM_TO_NAME(MosaicLayer)
-        ENUM_TO_NAME(FlattenLayer)
-        ENUM_TO_NAME(TrimBoundsLayer)
-    }
-
-    return "UndefinedLayer";
-}
-
-
-/**
- * Construct an ImageLayerMethod enum object for the specified value.
- *
- * No Ruby usage (internal function)
- *
- * @param method the ImageLayerMethod
- * @return a new ImageLayerMethod enumerator
- */
-VALUE
-ImageLayerMethod_new(ImageLayerMethod method)
-{
-    const char *name = ImageLayerMethod_name(method);
-    return rm_enum_new(Class_ImageLayerMethod, ID2SYM(rb_intern(name)), INT2FIX(method));
 }
 
 
