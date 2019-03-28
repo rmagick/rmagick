@@ -30,8 +30,6 @@ matrix:
     - rvm: 2.6
       env: IMAGEMAGICK_VERSION=6.7.7-10
     - rvm: 2.6
-      env: IMAGEMAGICK_VERSION=6.7.7-10 CONFIGURE_OPTIONS=--enable-hdri
-    - rvm: 2.6
       env: IMAGEMAGICK_VERSION=6.8.9-10 CONFIGURE_OPTIONS=--enable-hdri
 
 notifications:
