@@ -15259,7 +15259,7 @@ static void call_trace_proc(Image *image, const char *which)
             n = sprintf(buffer, "%p", (void *)image);
             buffer[n] = '\0';
             trace_args[2] = rb_str_new2(buffer+2);      // don't use leading 0x
-            trace_args[3] = ID2SYM(THIS_FUNC());
+            trace_args[3] = ID2SYM(rb_frame_this_func());
             (void) rb_funcall2(trace, rm_ID_call, 4, (VALUE *)trace_args);
         }
     }

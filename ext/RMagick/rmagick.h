@@ -99,13 +99,6 @@
 #define ROUND_TO_QUANTUM(value) ((Quantum) ((value) > (Quantum)QuantumRange ? QuantumRange : (value) + 0.5))
 
 
-// Ruby 1.9.0 changed the name to rb_frame_this_func
-#if defined(HAVE_RB_FRAME_THIS_FUNC)
-#define THIS_FUNC() rb_frame_this_func() /**< get the Ruby function being called */
-#else
-#define THIS_FUNC() rb_frame_last_func() /**< get the Ruby function being called */
-#endif
-
 // GetReadFile doesn't exist in Ruby 1.9.0
 #if !defined(GetReadFile)
 #define GetReadFile(fptr) rb_io_stdio_file(fptr) /**< Ruby read file pointer */
