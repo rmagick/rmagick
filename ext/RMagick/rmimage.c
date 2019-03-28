@@ -8306,14 +8306,7 @@ Image_marshal_dump(VALUE self)
     }
 
     ary = rb_ary_new2(2);
-    if (image->filename)
-    {
-        rb_ary_store(ary, 0, rb_str_new2(image->filename));
-    }
-    else
-    {
-        rb_ary_store(ary, 0, Qnil);
-    }
+    rb_ary_store(ary, 0, rb_str_new2(image->filename));
 
     exception = AcquireExceptionInfo();
     blob = ImageToBlob(info, image, &length, exception);
