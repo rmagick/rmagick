@@ -1780,3 +1780,53 @@ rm_ensure_result(Image *image)
     }
 }
 
+
+/**
+ * Checks if an error should be raised for the exception.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param exception information about the exception
+ * @param retention retention strategy for the exception in case there was no error
+ */
+MagickBooleanType
+rm_should_raise_exception(ExceptionInfo *exception, const ExceptionRetention retention)
+{
+    if (exception->severity < ErrorException)
+    {
+        if (exception->severity != UndefinedException)
+        {
+            rm_warning_handler(exception->severity, exception->reason, exception->description);
+        }
+
+        if (retention == DestroyExceptionRetention)
+        {
+            (void) DestroyExceptionInfo(exception);
+        }
+
+        return MagickFalse;
+    }
+
+    return MagickTrue;
+}
+
+
+/**
+ * Raises an exception.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param exception information about the exception
+ */
+void
+rm_raise_exception(ExceptionInfo *exception)
+{
+    char msg[ERROR_MSG_SIZE];
+
+    format_exception(exception->severity, exception->reason, exception->description, msg);
+
+    (void) DestroyExceptionInfo(exception);
+
+    rm_magick_error(msg);
+}
+
