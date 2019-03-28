@@ -25,11 +25,12 @@ else
   exit 1
 fi
 
+options="--with-magick-plus-plus=no --disable-docs"
 if [ -v CONFIGURE_OPTIONS ]; then
-  CC="ccache cc" CXX="ccache c++" ./configure --prefix=/usr $CONFIGURE_OPTIONS
-else
-  CC="ccache cc" CXX="ccache c++" ./configure --prefix=/usr
+  options="${CONFIGURE_OPTIONS} $options"
 fi
+
+CC="ccache cc" CXX="ccache c++" ./configure --prefix=/usr $options
 
 make -j
 sudo make install -j
