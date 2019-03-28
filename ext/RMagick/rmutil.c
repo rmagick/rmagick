@@ -1633,11 +1633,10 @@ rm_check_exception(ExceptionInfo *exception, Image *imglist, ErrorRetention rete
 void
 rm_warning_handler(const ExceptionType severity, const char *reason, const char *description)
 {
-    ExceptionType dummy;
-
-    rb_warning("RMagick: %s: `%s'", reason, description);
-    dummy = severity;
-    dummy = dummy;
+    rb_warning("RMagick: %s%s%s",
+        GetLocaleExceptionMessage(severity, reason),
+        description ? ": " : "",
+        description ? GetLocaleExceptionMessage(severity, description) : "");
 }
 
 
