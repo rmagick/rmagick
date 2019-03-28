@@ -17,7 +17,7 @@ environment:
       IMAGEMAGICK_PATCH: "10"
 
 install:
-  - appveyor DownloadFile https://ftp.icm.edu.pl/pub/graphics/ImageMagick/binaries/ImageMagick-%IMAGE_MAGICK_VERSION%-%IMAGEMAGICK_PATCH%-Q16-x64-dll.exe
+  - appveyor DownloadFile https://ftp.icm.edu.pl/pub/graphics/ImageMagick/binaries/ImageMagick-%IMAGEMAGICK_VERSION%-%IMAGEMAGICK_PATCH%-Q16-x64-dll.exe
   - ImageMagick-%IMAGEMAGICK_VERSION%-%IMAGEMAGICK_PATCH%-Q16-x64-dll.exe /VERYSILENT /TASKS=install_Devel
   - SET PATH=C:\Ruby%RUBY_VERSION%\bin;C:\Program Files\%IMAGEMAGICK_VERSION%-Q16;%PATH%
   - bundle install
