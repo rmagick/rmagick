@@ -5963,7 +5963,7 @@ Image_export_pixels(int argc, VALUE *argv, VALUE self)
         CHECK_EXCEPTION()
 
         // Should never get here...
-        rm_magick_error("ExportImagePixels failed with no explanation.", NULL);
+        rm_magick_error("ExportImagePixels failed with no explanation.");
     }
 
     (void) DestroyExceptionInfo(exception);
@@ -6172,7 +6172,7 @@ Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
         CHECK_EXCEPTION()
 
         // Should never get here...
-        rm_magick_error("ExportImagePixels failed with no explanation.", NULL);
+        rm_magick_error("ExportImagePixels failed with no explanation.");
     }
 
     (void) DestroyExceptionInfo(exception);
@@ -7423,7 +7423,7 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
     {
         rm_check_image_exception(image, RetainOnError);
         // Shouldn't get here...
-        rm_magick_error("ImportImagePixels failed with no explanation.", NULL);
+        rm_magick_error("ImportImagePixels failed with no explanation.");
     }
 
     RB_GC_GUARD(pixel_arg);
@@ -13699,7 +13699,7 @@ Image_transparent(int argc, VALUE *argv, VALUE self)
     {
         // Force exception
         DestroyImage(new_image);
-        rm_magick_error("TransparentPaintImage failed with no explanation", NULL);
+        rm_magick_error("TransparentPaintImage failed with no explanation");
     }
 
     return rm_image_new(new_image);
@@ -13758,7 +13758,7 @@ Image_transparent_chroma(int argc, VALUE *argv, VALUE self)
     {
         // Force exception
         DestroyImage(new_image);
-        rm_magick_error("TransparentPaintImageChroma failed with no explanation", NULL);
+        rm_magick_error("TransparentPaintImageChroma failed with no explanation");
     }
 
     return rm_image_new(new_image);
