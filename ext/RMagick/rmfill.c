@@ -117,7 +117,7 @@ point_fill(
           PixelColor *stop_color)
 {
     double steps, distance;
-    unsigned long x, y;
+    ssize_t x, y;
     MagickRealType red_step, green_step, blue_step;
     ExceptionInfo *exception;
 
@@ -130,14 +130,14 @@ point_fill(
     green_step = ((MagickRealType)stop_color->green - (MagickRealType)start_color->green) / steps;
     blue_step  = ((MagickRealType)stop_color->blue  - (MagickRealType)start_color->blue)  / steps;
 
-    for (y = 0; y < image->rows; y++)
+    for (y = 0; y < (ssize_t) image->rows; y++)
     {
         PixelPacket *row_pixels;
 
-        row_pixels = QueueAuthenticPixels(image, 0, (long int)y, image->columns, 1, exception);
+        row_pixels = QueueAuthenticPixels(image, 0, y, image->columns, 1, exception);
         CHECK_EXCEPTION()
 
-        for (x = 0; x < image->columns; x++)
+        for (x = 0; x < (ssize_t) image->columns; x++)
         {
             distance = sqrt((double)((x-x0)*(x-x0)+(y-y0)*(y-y0)));
             row_pixels[x].red     = ROUND_TO_QUANTUM(start_color->red   + (distance * red_step));
@@ -172,7 +172,7 @@ vertical_fill(
              PixelColor *stop_color)
 {
     double steps;
-    unsigned long x, y;
+    ssize_t x, y;
     PixelPacket *master;
     MagickRealType red_step, green_step, blue_step;
     ExceptionInfo *exception;
@@ -197,7 +197,7 @@ vertical_fill(
     // it to each actual row.
     master = ALLOC_N(PixelPacket, image->columns);
 
-    for (x = 0; x < image->columns; x++)
+    for (x = 0; x < (ssize_t) image->columns; x++)
     {
         double distance   = fabs(x1 - x);
         master[x].red     = ROUND_TO_QUANTUM(start_color->red   + (red_step * distance));
@@ -207,11 +207,11 @@ vertical_fill(
     }
 
     // Now copy the master row to each actual row.
-    for (y = 0; y < image->rows; y++)
+    for (y = 0; y < (ssize_t) image->rows; y++)
     {
         PixelPacket *row_pixels;
 
-        row_pixels = QueueAuthenticPixels(image, 0, (long int)y, image->columns, 1, exception);
+        row_pixels = QueueAuthenticPixels(image, 0, y, image->columns, 1, exception);
         CHECK_EXCEPTION()
 
         memcpy(row_pixels, master, image->columns * sizeof(PixelPacket));
@@ -243,7 +243,7 @@ horizontal_fill(
                PixelColor *stop_color)
 {
     double steps;
-    unsigned long x, y;
+    ssize_t x, y;
     PixelPacket *master;
     MagickRealType red_step, green_step, blue_step;
     ExceptionInfo *exception;
@@ -267,7 +267,7 @@ horizontal_fill(
     // each of the "real" columns.
     master = ALLOC_N(PixelPacket, image->rows);
 
-    for (y = 0; y < image->rows; y++)
+    for (y = 0; y < (ssize_t) image->rows; y++)
     {
         double distance   = fabs(y1 - y);
         master[y].red     = ROUND_TO_QUANTUM(start_color->red   + (distance * red_step));
@@ -276,11 +276,11 @@ horizontal_fill(
         master[y].opacity = OpaqueOpacity;
     }
 
-    for (x = 0; x < image->columns; x++)
+    for (x = 0; x < (ssize_t) image->columns; x++)
     {
         PixelPacket *col_pixels;
 
-        col_pixels = QueueAuthenticPixels(image, (long int)x, 0, 1, image->rows, exception);
+        col_pixels = QueueAuthenticPixels(image, x, 0, 1, image->rows, exception);
 
         memcpy(col_pixels, master, image->rows * sizeof(PixelPacket));
 
@@ -317,7 +317,7 @@ v_diagonal_fill(
                PixelColor *start_color,
                PixelColor *stop_color)
 {
-    unsigned long x, y;
+    ssize_t x, y;
     MagickRealType red_step, green_step, blue_step;
     double m, b, steps = 0.0;
     double d1, d2;
@@ -361,14 +361,14 @@ v_diagonal_fill(
     green_step = ((MagickRealType)stop_color->green - (MagickRealType)start_color->green) / steps;
     blue_step =  ((MagickRealType)stop_color->blue  - (MagickRealType)start_color->blue)  / steps;
 
-    for (y = 0; y < image->rows; y++)
+    for (y = 0; y < (ssize_t) image->rows; y++)
     {
         PixelPacket *row_pixels;
 
-        row_pixels = QueueAuthenticPixels(image, 0, (long int)y, image->columns, 1, exception);
+        row_pixels = QueueAuthenticPixels(image, 0, y, image->columns, 1, exception);
         CHECK_EXCEPTION()
 
-        for (x = 0; x < image->columns; x++)
+        for (x = 0; x < (ssize_t) image->columns; x++)
         {
             double distance = (double) abs((int)(y-(m * x + b)));
             row_pixels[x].red     = ROUND_TO_QUANTUM(start_color->red   + (distance * red_step));
@@ -408,7 +408,7 @@ h_diagonal_fill(
                PixelColor *start_color,
                PixelColor *stop_color)
 {
-    unsigned long x, y;
+    ssize_t x, y;
     double m, b, steps = 0.0;
     MagickRealType red_step, green_step, blue_step;
     double d1, d2;
@@ -454,14 +454,14 @@ h_diagonal_fill(
     green_step = ((MagickRealType)stop_color->green - (MagickRealType)start_color->green) / steps;
     blue_step =  ((MagickRealType)stop_color->blue  - (MagickRealType)start_color->blue)  / steps;
 
-    for (y = 0; y < image->rows; y++)
+    for (y = 0; y < (ssize_t) image->rows; y++)
     {
         PixelPacket *row_pixels;
 
-        row_pixels = QueueAuthenticPixels(image, 0, (long int)y, image->columns, 1, exception);
+        row_pixels = QueueAuthenticPixels(image, 0, y, image->columns, 1, exception);
         CHECK_EXCEPTION()
 
-        for (x = 0; x < image->columns; x++)
+        for (x = 0; x < (ssize_t) image->columns; x++)
         {
             double distance = (double) abs((int)(x-((y-b)/m)));
             row_pixels[x].red     = ROUND_TO_QUANTUM(start_color->red   + (distance * red_step));
