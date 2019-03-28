@@ -1716,16 +1716,7 @@ handle_exception(ExceptionInfo *exception, Image *imglist, ErrorRetention retent
     // Handle simple warning
     if (exception->severity < ErrorException)
     {
-#if defined(HAVE_SNPRINTF)
-        snprintf(msg, sizeof(msg)-1, "RMagick: %s%s%s",
-#else
-        sprintf(msg, "RMagick: %.500s%s%.500s",
-#endif
-            GetLocaleExceptionMessage(exception->severity, exception->reason),
-            exception->description ? ": " : "",
-            exception->description ? GetLocaleExceptionMessage(exception->severity, exception->description) : "");
-        msg[sizeof(msg)-1] = '\0';
-        rb_warning("%s", msg);
+        rm_warning_handler(exception->severity, exception->reason, exception->description);
 
         // Caller deletes ExceptionInfo...
 
