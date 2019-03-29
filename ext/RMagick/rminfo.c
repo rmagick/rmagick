@@ -441,9 +441,15 @@ VALUE
 Info_authenticate(VALUE self)
 {
     Info *info;
+    const char *authenticate;
 
     Data_Get_Struct(self, Info, info);
-    return C_str_to_R_str(info->authenticate);
+#if defined(IMAGEMAGICK_7)
+    authenticate = GetImageOption(info, "authenticate");
+#else
+    authenticate = info->authenticate;
+#endif
+    return C_str_to_R_str(authenticate);
 }
 
 
@@ -470,15 +476,29 @@ Info_authenticate_eq(VALUE self, VALUE passwd_arg)
         passwd = StringValuePtr(passwd_arg);
     }
 
+#if !defined(IMAGEMAGICK_7)
     if (info->authenticate)
     {
         magick_free(info->authenticate);
         info->authenticate = NULL;
     }
+#endif
+
+#if defined(IMAGEMAGICK_7)
+    if (passwd)
+    {
+        SetImageOption(info, "authenticate", passwd);
+    }
+    else
+    {
+        RemoveImageOption(info, "authenticate");
+    }
+#else
     if (passwd)
     {
         magick_clone_string(&info->authenticate, passwd);
     }
+#endif
 
     return passwd_arg;
 }
@@ -2461,9 +2481,15 @@ VALUE
 Info_view(VALUE self)
 {
     Info *info;
+    const char *view;
 
     Data_Get_Struct(self, Info, info);
-    return C_str_to_R_str(info->view);
+#if defined(IMAGEMAGICK_7)
+    view = GetImageOption(info, "fpx:view");
+#else
+    view = info->view;
+#endif
+    return C_str_to_R_str(view);
 }
 
 /**
@@ -2489,15 +2515,29 @@ Info_view_eq(VALUE self, VALUE view_arg)
         view = StringValuePtr(view_arg);
     }
 
+#if !defined(IMAGEMAGICK_7)
     if (info->view)
     {
         magick_free(info->view);
         info->view = NULL;
     }
+#endif
+
+#if defined(IMAGEMAGICK_7)
+    if (view)
+    {
+        SetImageOption(info, "fpx:view", view);
+    }
+    else
+    {
+        RemoveImageOption(info, "fpx:view");
+    }
+#else
     if (view)
     {
         magick_clone_string(&info->view, view);
     }
+#endif
     return view_arg;
 }
 
