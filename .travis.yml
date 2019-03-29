@@ -31,7 +31,7 @@ rvm:
 matrix:
   include:
     - rvm: 2.3
-      env: STYLE_CHECKS=true IMAGEMAGICK_VERSION=6.8.9-10
+      env: STYLE_CHECKS=true IMAGEMAGICK_VERSION=6.9.10-35
 
 notifications:
   webhooks:
