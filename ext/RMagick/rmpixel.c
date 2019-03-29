@@ -191,6 +191,7 @@ Color_to_PixelColor(PixelColor *pp, VALUE color)
     // Allow color name or Pixel
     if (CLASS_OF(color) == Class_Pixel)
     {
+        memset(pp, 0, sizeof(*pp));
         Data_Get_Struct(color, Pixel, pixel);
         pp->red     = pixel->red;
         pp->green   = pixel->green;
@@ -222,6 +223,7 @@ Color_to_PixelPacket(PixelPacket *pp, VALUE color)
     // Allow color name or Pixel
     if (CLASS_OF(color) == Class_Pixel)
     {
+        memset(pp, 0, sizeof(*pp));
         Data_Get_Struct(color, Pixel, pixel);
         pp->red     = pixel->red;
         pp->green   = pixel->green;
