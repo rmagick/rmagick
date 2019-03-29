@@ -16,8 +16,12 @@ if [ ! -d /usr/include/freetype ]; then
 fi
 
 if [ -v IMAGEMAGICK_VERSION ]; then
-  wget http://www.imagemagick.org/download/releases/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz
-  tar -xf ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz
+  if wget https://github.com/ImageMagick/ImageMagick/archive/${IMAGEMAGICK_VERSION}.tar.gz; then
+    tar -xzf ImageMagick-${IMAGEMAGICK_VERSION}.tar.gz
+  else
+    wget http://www.imagemagick.org/download/releases/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz
+    tar -xf ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz
+  fi
   cd ImageMagick-${IMAGEMAGICK_VERSION}
 else
   echo "you must specify an ImageMagick version."
