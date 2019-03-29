@@ -132,7 +132,11 @@ point_fill(
 
     for (y = 0; y < (ssize_t) image->rows; y++)
     {
+#if defined(IMAGEMAGICK_7)
+        Quantum *row_pixels;
+#else
         PixelPacket *row_pixels;
+#endif
 
         row_pixels = QueueAuthenticPixels(image, 0, y, image->columns, 1, exception);
         CHECK_EXCEPTION()
@@ -140,17 +144,27 @@ point_fill(
         for (x = 0; x < (ssize_t) image->columns; x++)
         {
             distance = sqrt((double)((x-x0)*(x-x0)+(y-y0)*(y-y0)));
+
+#if defined(IMAGEMAGICK_7)
+            SetPixelRed(image,   ROUND_TO_QUANTUM(start_color->red   + (distance * red_step)), row_pixels);
+            SetPixelGreen(image, ROUND_TO_QUANTUM(start_color->green + (distance * green_step)), row_pixels);
+            SetPixelBlue(image,  ROUND_TO_QUANTUM(start_color->blue  + (distance * blue_step)), row_pixels);
+            SetPixelAlpha(image, OpaqueAlpha, row_pixels);
+
+            row_pixels += GetPixelChannels(image);
+#else
             row_pixels[x].red     = ROUND_TO_QUANTUM(start_color->red   + (distance * red_step));
             row_pixels[x].green   = ROUND_TO_QUANTUM(start_color->green + (distance * green_step));
             row_pixels[x].blue    = ROUND_TO_QUANTUM(start_color->blue  + (distance * blue_step));
             row_pixels[x].opacity = OpaqueOpacity;
+#endif
         }
 
         SyncAuthenticPixels(image, exception);
         CHECK_EXCEPTION()
     }
 
-    DestroyExceptionInfo(exception);
+    (void) DestroyExceptionInfo(exception);
 }
 
 /**
@@ -173,9 +187,11 @@ vertical_fill(
 {
     double steps;
     ssize_t x, y;
-    PixelPacket *master;
     MagickRealType red_step, green_step, blue_step;
     ExceptionInfo *exception;
+#if !defined(IMAGEMAGICK_7)
+    PixelPacket *master;
+#endif
 
     exception = AcquireExceptionInfo();
 
@@ -193,6 +209,32 @@ vertical_fill(
     green_step = ((MagickRealType)stop_color->green - (MagickRealType)start_color->green) / steps;
     blue_step  = ((MagickRealType)stop_color->blue  - (MagickRealType)start_color->blue)  / steps;
 
+
+#if defined(IMAGEMAGICK_7)
+    for (y = 0; y < (ssize_t) image->rows; y++)
+    {
+        Quantum *row_pixels;
+
+        row_pixels = QueueAuthenticPixels(image, 0, y, image->columns, 1, exception);
+        CHECK_EXCEPTION()
+
+        for (x = 0; x < (ssize_t) image->columns; x++)
+        {
+            double distance = fabs(x1 - x);
+            SetPixelRed(image,   ROUND_TO_QUANTUM(start_color->red   + (distance * red_step)), row_pixels);
+            SetPixelGreen(image, ROUND_TO_QUANTUM(start_color->green + (distance * green_step)), row_pixels);
+            SetPixelBlue(image,  ROUND_TO_QUANTUM(start_color->blue  + (distance * blue_step)), row_pixels);
+            SetPixelAlpha(image, OpaqueAlpha, row_pixels);
+
+            row_pixels += GetPixelChannels(image);
+        }
+
+        SyncAuthenticPixels(image, exception);
+        CHECK_EXCEPTION()
+    }
+
+    (void) DestroyExceptionInfo(exception);
+#else
     // All the rows are the same. Make a "master row" and simply copy
     // it to each actual row.
     master = ALLOC_N(PixelPacket, image->columns);
@@ -228,9 +270,10 @@ vertical_fill(
         }
     }
 
-    DestroyExceptionInfo(exception);
+    (void) DestroyExceptionInfo(exception);
 
     xfree((void *)master);
+#endif
 }
 
 /**
@@ -252,9 +295,11 @@ horizontal_fill(
 {
     double steps;
     ssize_t x, y;
-    PixelPacket *master;
     MagickRealType red_step, green_step, blue_step;
     ExceptionInfo *exception;
+#if !defined(IMAGEMAGICK_7)
+    PixelPacket *master;
+#endif
 
     exception = AcquireExceptionInfo();
 
@@ -271,6 +316,31 @@ horizontal_fill(
     green_step = ((MagickRealType)stop_color->green - (MagickRealType)start_color->green) / steps;
     blue_step  = ((MagickRealType)stop_color->blue  - (MagickRealType)start_color->blue)  / steps;
 
+#if defined(IMAGEMAGICK_7)
+    for (y = 0; y < (ssize_t) image->rows; y++)
+    {
+        Quantum *row_pixels;
+
+        row_pixels = QueueAuthenticPixels(image, 0, y, image->columns, 1, exception);
+        CHECK_EXCEPTION()
+
+        double distance = fabs(y1 - y);
+        for (x = 0; x < (ssize_t) image->columns; x++)
+        {
+            SetPixelRed(image,   ROUND_TO_QUANTUM(start_color->red   + (distance * red_step)), row_pixels);
+            SetPixelGreen(image, ROUND_TO_QUANTUM(start_color->green + (distance * green_step)), row_pixels);
+            SetPixelBlue(image,  ROUND_TO_QUANTUM(start_color->blue  + (distance * blue_step)), row_pixels);
+            SetPixelAlpha(image, OpaqueAlpha, row_pixels);
+
+            row_pixels += GetPixelChannels(image);
+        }
+
+        SyncAuthenticPixels(image, exception);
+        CHECK_EXCEPTION()
+    }
+
+    (void) DestroyExceptionInfo(exception);
+#else
     // All the columns are the same, so make a master column and copy it to
     // each of the "real" columns.
     master = ALLOC_N(PixelPacket, image->rows);
@@ -305,9 +375,10 @@ horizontal_fill(
         }
     }
 
-    DestroyExceptionInfo(exception);
+    (void) DestroyExceptionInfo(exception);
 
     xfree((void *)master);
+#endif
 }
 
 /**
@@ -380,7 +451,11 @@ v_diagonal_fill(
 
     for (y = 0; y < (ssize_t) image->rows; y++)
     {
+#if defined(IMAGEMAGICK_7)
+        Quantum *row_pixels;
+#else
         PixelPacket *row_pixels;
+#endif
 
         row_pixels = QueueAuthenticPixels(image, 0, y, image->columns, 1, exception);
         CHECK_EXCEPTION()
@@ -388,10 +463,19 @@ v_diagonal_fill(
         for (x = 0; x < (ssize_t) image->columns; x++)
         {
             double distance = (double) abs((int)(y-(m * x + b)));
+#if defined(IMAGEMAGICK_7)
+            SetPixelRed(image,   ROUND_TO_QUANTUM(start_color->red   + (distance * red_step)), row_pixels);
+            SetPixelGreen(image, ROUND_TO_QUANTUM(start_color->green + (distance * green_step)), row_pixels);
+            SetPixelBlue(image,  ROUND_TO_QUANTUM(start_color->blue  + (distance * blue_step)), row_pixels);
+            SetPixelAlpha(image, OpaqueAlpha, row_pixels);
+
+            row_pixels += GetPixelChannels(image);
+#else
             row_pixels[x].red     = ROUND_TO_QUANTUM(start_color->red   + (distance * red_step));
             row_pixels[x].green   = ROUND_TO_QUANTUM(start_color->green + (distance * green_step));
             row_pixels[x].blue    = ROUND_TO_QUANTUM(start_color->blue  + (distance * blue_step));
             row_pixels[x].opacity = OpaqueOpacity;
+#endif
         }
 
         SyncAuthenticPixels(image, exception);
@@ -473,7 +557,11 @@ h_diagonal_fill(
 
     for (y = 0; y < (ssize_t) image->rows; y++)
     {
+#if defined(IMAGEMAGICK_7)
+        Quantum *row_pixels;
+#else
         PixelPacket *row_pixels;
+#endif
 
         row_pixels = QueueAuthenticPixels(image, 0, y, image->columns, 1, exception);
         CHECK_EXCEPTION()
@@ -481,10 +569,19 @@ h_diagonal_fill(
         for (x = 0; x < (ssize_t) image->columns; x++)
         {
             double distance = (double) abs((int)(x-((y-b)/m)));
+#if defined(IMAGEMAGICK_7)
+            SetPixelRed(image,   ROUND_TO_QUANTUM(start_color->red   + (distance * red_step)), row_pixels);
+            SetPixelGreen(image, ROUND_TO_QUANTUM(start_color->green + (distance * green_step)), row_pixels);
+            SetPixelBlue(image,  ROUND_TO_QUANTUM(start_color->blue  + (distance * blue_step)), row_pixels);
+            SetPixelAlpha(image, OpaqueAlpha, row_pixels);
+
+            row_pixels += GetPixelChannels(image);
+#else
             row_pixels[x].red     = ROUND_TO_QUANTUM(start_color->red   + (distance * red_step));
             row_pixels[x].green   = ROUND_TO_QUANTUM(start_color->green + (distance * green_step));
             row_pixels[x].blue    = ROUND_TO_QUANTUM(start_color->blue  + (distance * blue_step));
             row_pixels[x].opacity = OpaqueOpacity;
+#endif
         }
 
         SyncAuthenticPixels(image, exception);
@@ -658,12 +755,22 @@ TextureFill_fill(VALUE self, VALUE image_obj)
 {
     rm_TextureFill *fill;
     Image *image;
+#if defined(IMAGEMAGICK_7)
+    ExceptionInfo *exception;
+#endif
 
     image = rm_check_destroyed(image_obj);
     Data_Get_Struct(self, rm_TextureFill, fill);
 
+#if defined(IMAGEMAGICK_7)
+    exception = AcquireExceptionInfo();
+    (void) TextureImage(image, fill->texture, exception);
+    CHECK_EXCEPTION()
+    (void) DestroyExceptionInfo(exception);
+#else
     (void) TextureImage(image, fill->texture);
     rm_check_image_exception(image, RetainOnError);
+#endif
 
     return self;
 }
