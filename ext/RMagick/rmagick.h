@@ -590,6 +590,7 @@ extern VALUE ImageList_animate(int, VALUE *, VALUE);
 extern VALUE ImageList_append(VALUE, VALUE);
 extern VALUE ImageList_average(VALUE);
 extern VALUE ImageList_coalesce(VALUE);
+extern VALUE ImageList_combine(VALUE, VALUE);
 extern VALUE ImageList_composite_layers(int, VALUE *, VALUE);
 extern VALUE ImageList_deconstruct(VALUE);
 extern VALUE ImageList_display(VALUE);

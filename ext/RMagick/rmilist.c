@@ -46,6 +46,9 @@ ImageList_animate(int argc, VALUE *argv, VALUE self)
     Info *info;
     VALUE info_obj;
     unsigned int delay;
+#if defined(IMAGEMAGICK_7)
+    ExceptionInfo *exception;
+#endif
 
     if (argc == 1)
     {
@@ -73,8 +76,13 @@ ImageList_animate(int argc, VALUE *argv, VALUE self)
     }
 
     Data_Get_Struct(info_obj, Info, info);
+#if defined(IMAGEMAGICK_7)
+    (void) AnimateImages(info, images, exception);
+    CHECK_EXCEPTION()
+#else
     (void) AnimateImages(info, images);
     rm_check_image_exception(images, RetainOnError);
+#endif
     rm_split(images);
 
     RB_GC_GUARD(info_obj);
@@ -183,6 +191,42 @@ ImageList_coalesce(VALUE self)
     return rm_imagelist_from_images(new_images);
 }
 
+#if defined(IMAGEMAGICK_7)
+/**
+ * Combines the images using the specified colorspace.
+ *
+ * Ruby usage:
+ *   - @verbatim new_image = ImageList#combine(colorspace) @endverbatim
+ *
+ * Notes:
+ *   - Calls CombineImages.
+ *
+ * @param argc number of input arguments
+ * @param argv array of input arguments
+ * @param self this object
+ * @return a new image
+ */
+VALUE ImageList_combine(VALUE self, VALUE colorspace)
+{
+    ColorspaceType colorspace_type;
+    Image *images, *new_image;
+    ExceptionInfo *exception;
+
+    VALUE_TO_ENUM(colorspace, colorspace_type, ColorspaceType);
+
+    images = images_from_imagelist(self);
+
+    exception = AcquireExceptionInfo();
+    new_image = CombineImages(images, colorspace_type, exception);
+    rm_split(images);
+    rm_check_exception(exception, new_image, RetainOnError);
+    (void) DestroyExceptionInfo(exception);
+
+    rm_ensure_result(new_image);
+
+    return rm_image_new(new_image);
+}
+#endif
 
 /**
  * Equivalent to convert's -layers composite option.
@@ -267,7 +311,11 @@ ImageList_deconstruct(VALUE self)
 
     images = images_from_imagelist(self);
     exception = AcquireExceptionInfo();
+#if defined(IMAGEMAGICK_7)
+    new_images = CompareImagesLayers(images, CompareAnyLayer, exception);
+#else
     new_images = DeconstructImages(images, exception);
+#endif
     rm_split(images);
     rm_check_exception(exception, new_images, DestroyOnError);
     (void) DestroyExceptionInfo(exception);
@@ -293,6 +341,9 @@ ImageList_display(VALUE self)
     Image *images;
     Info *info;
     VALUE info_obj;
+#if defined(IMAGEMAGICK_7)
+    ExceptionInfo *exception;
+#endif
 
     // Create a new Info object to use with this call
     info_obj = rm_info_new();
@@ -300,10 +351,17 @@ ImageList_display(VALUE self)
 
     // Convert the images array to an images sequence.
     images = images_from_imagelist(self);
-
+#if defined(IMAGEMAGICK_7)
+    exception = AcquireExceptionInfo();
+    (void) DisplayImages(info, images, exception);
+    rm_split(images);
+    CHECK_EXCEPTION();
+    (void) DestroyExceptionInfo(exception);
+#else
     (void) DisplayImages(info, images);
     rm_split(images);
     rm_check_image_exception(images, RetainOnError);
+#endif
 
     RB_GC_GUARD(info_obj);
 
@@ -490,13 +548,21 @@ VALUE
 ImageList_optimize_layers(VALUE self, VALUE method)
 {
     Image *images, *new_images, *new_images2;
+#if defined(IMAGEMAGICK_7)
+    LayerMethod mthd;
+#else
     ImageLayerMethod mthd;
+#endif
     ExceptionInfo *exception;
     QuantizeInfo quantize_info;
 
     new_images2 = NULL;     // defeat "unused variable" message
 
+#if defined(IMAGEMAGICK_7)
+    VALUE_TO_ENUM(method, mthd, LayerMethod);
+#else
     VALUE_TO_ENUM(method, mthd, ImageLayerMethod);
+#endif
     images = images_from_imagelist(self);
 
     exception = AcquireExceptionInfo();
@@ -542,7 +608,11 @@ ImageList_optimize_layers(VALUE self, VALUE method)
             rm_check_exception(exception, new_images, DestroyOnError);
             // mogrify supports -dither here. We don't.
             GetQuantizeInfo(&quantize_info);
+#if defined(IMAGEMAGICK_7)
+            (void) RemapImages(&quantize_info, new_images, NULL, exception);
+#else
             (void) RemapImages(&quantize_info, new_images, NULL);
+#endif
             break;
         case OptimizePlusLayer:
             new_images = OptimizePlusImageLayers(images, exception);
@@ -550,7 +620,11 @@ ImageList_optimize_layers(VALUE self, VALUE method)
         case CompareAnyLayer:
         case CompareClearLayer:
         case CompareOverlayLayer:
+#if defined(IMAGEMAGICK_7)
+            new_images = CompareImagesLayers(images, mthd, exception);
+#else
             new_images = CompareImageLayers(images, mthd, exception);
+#endif
             break;
         case MosaicLayer:
             new_images = MergeImageLayers(images, mthd, exception);
@@ -830,6 +904,12 @@ ImageList_quantize(int argc, VALUE *argv, VALUE self)
         case 4:
             quantize_info.tree_depth = (unsigned long)NUM2INT(argv[3]);
         case 3:
+#if defined(IMAGEMAGICK_7)
+            if (rb_obj_is_kind_of(argv[2], Class_DitherMethod))
+            {
+                VALUE_TO_ENUM(argv[2], quantize_info.dither_method, DitherMethod);
+            }
+#else
             if (rb_obj_is_kind_of(argv[2], Class_DitherMethod))
             {
                 VALUE_TO_ENUM(argv[2], quantize_info.dither_method, DitherMethod);
@@ -839,6 +919,7 @@ ImageList_quantize(int argc, VALUE *argv, VALUE self)
             {
                 quantize_info.dither = (MagickBooleanType) RTEST(argv[2]);
             }
+#endif
         case 2:
             VALUE_TO_ENUM(argv[1], quantize_info.colorspace, ColorspaceType);
         case 1:
@@ -860,8 +941,11 @@ ImageList_quantize(int argc, VALUE *argv, VALUE self)
 
     rm_ensure_result(new_images);
 
-
+#if defined(IMAGEMAGICK_7)
+    (void) QuantizeImages(&quantize_info, new_images, exception);
+#else
     (void) QuantizeImages(&quantize_info, new_images);
+#endif
     rm_check_exception(exception, new_images, DestroyOnError);
     (void) DestroyExceptionInfo(exception);
 
@@ -907,7 +991,9 @@ ImageList_remap(int argc, VALUE *argv, VALUE self)
 {
     Image *images, *remap_image = NULL;
     QuantizeInfo quantize_info;
-
+#if defined(IMAGEMAGICK_7)
+    ExceptionInfo *exception;
+#endif
 
     if (argc > 0 && argv[0] != Qnil)
     {
@@ -921,7 +1007,9 @@ ImageList_remap(int argc, VALUE *argv, VALUE self)
     if (argc > 1)
     {
         VALUE_TO_ENUM(argv[1], quantize_info.dither_method, DitherMethod);
+#if !defined(IMAGEMAGICK_7)
         quantize_info.dither = MagickTrue;
+#endif
     }
     if (argc > 2)
     {
@@ -930,9 +1018,16 @@ ImageList_remap(int argc, VALUE *argv, VALUE self)
 
     images = images_from_imagelist(self);
 
-    (void) RemapImages(&quantize_info, images, remap_image);
-    rm_check_image_exception(images, RetainOnError);
+#if defined(IMAGEMAGICK_7)
+    exception = AcquireExceptionInfo();
+    (void) RemapImages(&quantize_info, images, remap_image, exception);
     rm_split(images);
+    CHECK_EXCEPTION()
+    (void) DestroyExceptionInfo(exception);
+#else
+    rm_split(images);
+    rm_check_image_exception(images, RetainOnError);
+#endif
 
     return self;
 }
@@ -1081,7 +1176,6 @@ ImageList_write(VALUE self, VALUE file)
 
     m = GetMagickInfo(info->magick, exception);
     rm_check_exception(exception, images, RetainOnError);
-    (void) DestroyExceptionInfo(exception);
 
     // Tell WriteImage if we want a multi-images file.
     if (imagelist_length(self) > 1L && GetMagickAdjoin(m))
@@ -1092,14 +1186,21 @@ ImageList_write(VALUE self, VALUE file)
     for (img = images; img; img = GetNextImageInList(img))
     {
         rm_sync_image_options(img, info);
+#if defined(IMAGEMAGICK_7)
+        (void) WriteImage(info, img, exception);
+        rm_check_exception(exception, img, RetainOnError);
+#else
         (void) WriteImage(info, img);
         // images will be split before raising an exception
         rm_check_image_exception(images, RetainOnError);
+#endif
         if (info->adjoin)
         {
             break;
         }
     }
+
+    (void) DestroyExceptionInfo(exception);
 
     rm_split(images);
 

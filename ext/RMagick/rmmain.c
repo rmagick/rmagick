@@ -534,6 +534,9 @@ Init_RMagick2(void)
     rb_define_method(Class_ImageList, "quantize", ImageList_quantize, -1);
     rb_define_method(Class_ImageList, "to_blob", ImageList_to_blob, 0);
     rb_define_method(Class_ImageList, "write", ImageList_write, 1);
+#if defined(IMAGEMAGICK_7)
+    rb_define_method(Class_ImageList, "combine", ImageList_combine, 1);
+#endif
 
     /*-----------------------------------------------------------------------*/
     /* Class Magick::Draw methods                                            */
