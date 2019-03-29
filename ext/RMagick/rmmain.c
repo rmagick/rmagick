@@ -726,7 +726,6 @@ Init_RMagick2(void)
 
     DCL_ATTR_ACCESSOR(Info, antialias)
     DCL_ATTR_ACCESSOR(Info, attenuate)
-    DCL_ATTR_ACCESSOR(Info, authenticate)
     DCL_ATTR_ACCESSOR(Info, background_color)
     DCL_ATTR_ACCESSOR(Info, border_color)
     DCL_ATTR_ACCESSOR(Info, caption)
@@ -746,7 +745,6 @@ Init_RMagick2(void)
     DCL_ATTR_ACCESSOR(Info, format)
     DCL_ATTR_ACCESSOR(Info, fuzz)
     DCL_ATTR_ACCESSOR(Info, gravity)
-    DCL_ATTR_ACCESSOR(Info, group)
     DCL_ATTR_ACCESSOR(Info, image_type)
     DCL_ATTR_ACCESSOR(Info, interlace)
     DCL_ATTR_ACCESSOR(Info, label)
@@ -770,7 +768,11 @@ Init_RMagick2(void)
     DCL_ATTR_ACCESSOR(Info, transparent_color)
     DCL_ATTR_ACCESSOR(Info, undercolor)
     DCL_ATTR_ACCESSOR(Info, units)
+#if !defined(IMAGEMAGICK_7)
+    DCL_ATTR_ACCESSOR(Info, authenticate)
+    DCL_ATTR_ACCESSOR(Info, group)
     DCL_ATTR_ACCESSOR(Info, view)
+#endif
 
     /*-----------------------------------------------------------------------*/
     /* Class Magick::KernelInfo                                              */

@@ -628,7 +628,6 @@ extern VALUE rm_imagelist_from_images(Image *);
 // rminfo.c
 ATTR_ACCESSOR(Info, antialias)
 ATTR_ACCESSOR(Info, attenuate)
-ATTR_ACCESSOR(Info, authenticate)
 ATTR_ACCESSOR(Info, background_color)
 ATTR_ACCESSOR(Info, border_color)
 ATTR_ACCESSOR(Info, caption)
@@ -649,7 +648,6 @@ ATTR_ACCESSOR(Info, font)
 ATTR_ACCESSOR(Info, format)
 ATTR_ACCESSOR(Info, fuzz)
 ATTR_ACCESSOR(Info, gravity)
-ATTR_ACCESSOR(Info, group)
 ATTR_ACCESSOR(Info, image_type)
 ATTR_ACCESSOR(Info, interlace)
 ATTR_ACCESSOR(Info, label)
@@ -661,7 +659,6 @@ ATTR_ACCESSOR(Info, orientation)
 ATTR_ACCESSOR(Info, origin)
 ATTR_ACCESSOR(Info, page)
 ATTR_ACCESSOR(Info, pen)
-// ATTR_ACCESSOR(Info, ping) obsolete
 ATTR_ACCESSOR(Info, pointsize)
 ATTR_ACCESSOR(Info, quality)
 ATTR_ACCESSOR(Info, sampling_factor)
@@ -675,8 +672,11 @@ ATTR_ACCESSOR(Info, tile_offset)
 ATTR_ACCESSOR(Info, transparent_color)
 ATTR_ACCESSOR(Info, undercolor)
 ATTR_ACCESSOR(Info, units)
+#if !defined(IMAGEMAGICK_7)
+ATTR_ACCESSOR(Info, authenticate)
+ATTR_ACCESSOR(Info, group)
 ATTR_ACCESSOR(Info, view)
-//ATTR_ACCESSOR(Info, verbose)
+#endif
 
 extern VALUE Info_alloc(VALUE);
 

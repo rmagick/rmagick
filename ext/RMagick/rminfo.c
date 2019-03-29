@@ -427,7 +427,7 @@ Info_attenuate_eq(VALUE self, VALUE value)
     return set_dbl_option(self, "attenuate", value);
 }
 
-
+#if !defined(IMAGEMAGICK_7)
 /**
  * Get the authenticate attribute.
  *
@@ -490,7 +490,7 @@ Info_authenticate_eq(VALUE self, VALUE passwd)
 
     return self;
 }
-
+#endif
 
 /**
  * Return the name of the background color as a String
@@ -1484,7 +1484,9 @@ static struct
     { "South",      "SouthGravity",     SouthGravity},
     { "SouthWest",  "SouthWestGravity", SouthWestGravity},
     { "West",       "WestGravity",      WestGravity},
+#if !defined(IMAGEMAGICK_7)
     { "Static",     "StaticGravity",    StaticGravity}
+#endif
 };
 
 /** Number of gravity options */
@@ -1597,8 +1599,9 @@ Info_gravity_eq(VALUE self, VALUE grav)
     return self;
 }
 
-
-DEF_ATTR_ACCESSOR(Info, group, long)
+#if !defined(IMAGEMAGICK_7)
+    DEF_ATTR_ACCESSOR(Info, group, long)
+#endif
 
 /**
  * Get the classification type.
@@ -2465,6 +2468,7 @@ Info_units_eq(VALUE self, VALUE units)
     return self;
 }
 
+#if !defined(IMAGEMAGICK_7)
 /**
  * Get FlashPix viewing parameters.
  *
@@ -2506,6 +2510,7 @@ Info_view_eq(VALUE self, VALUE view_arg)
     }
     return self;
 }
+#endif
 
 
 /**
