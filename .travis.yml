@@ -10,12 +10,7 @@ os:
 sudo: required
 
 env:
-  - IMAGEMAGICK_VERSION=6.7.7-10
-  - IMAGEMAGICK_VERSION=6.7.7-10 CONFIGURE_OPTIONS=--enable-hdri
-  - IMAGEMAGICK_VERSION=6.8.9-10
-  - IMAGEMAGICK_VERSION=6.8.9-10 CONFIGURE_OPTIONS=--enable-hdri
   - IMAGEMAGICK_VERSION=6.9.10-35
-  - IMAGEMAGICK_VERSION=6.9.10-35 CONFIGURE_OPTIONS=--enable-hdri
 
 before_install:
   - source before_install_$TRAVIS_OS_NAME.sh
@@ -32,6 +27,12 @@ matrix:
   include:
     - rvm: 2.3
       env: STYLE_CHECKS=true IMAGEMAGICK_VERSION=6.9.10-35
+    - rvm: 2.6
+      env: IMAGEMAGICK_VERSION=6.9.10-35 CONFIGURE_OPTIONS=--enable-hdri
+    - rvm: 2.6
+      env: IMAGEMAGICK_VERSION=6.8.9-10
+    - rvm: 2.6
+      env: IMAGEMAGICK_VERSION=6.7.7-10
 
 notifications:
   webhooks:
