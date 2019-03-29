@@ -508,7 +508,6 @@ EXTERN ID rm_ID_y;                 /**< "y" */
    e = (type)(magick_enum->val);\
    } while(0)
 
-
 // Method, external function declarations. These declarations are
 // grouped by the source file in which the methods are defined.
 
