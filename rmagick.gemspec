@@ -26,7 +26,6 @@ Gem::Specification.new do |s|
 
   s.rubyforge_project = 'rmagick'
   s.extensions = %w[ext/RMagick/extconf.rb]
-  s.has_rdoc = false
   s.required_ruby_version = ">= #{Magick::MIN_RUBY_VERSION}"
   s.requirements << "ImageMagick #{Magick::MIN_IM_VERSION} or later"
 
