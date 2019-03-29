@@ -827,7 +827,7 @@ rm_not_implemented(void)
 {
 
     rb_raise(rb_eNotImpError, "the `%s' method is not supported by ImageMagick "
-            MagickLibVersionText, rb_id2name(THIS_FUNC()));
+            MagickLibVersionText, rb_id2name(rb_frame_this_func()));
 }
 
 
@@ -1512,7 +1512,7 @@ rm_progress_monitor(
     span = rb_uint2big((unsigned long)sp);
 #endif
 
-    method = rb_id2str(THIS_FUNC());
+    method = rb_id2str(rb_frame_this_func());
 
     rval = rb_funcall((VALUE)client_data, rm_ID_call, 3, method, offset, span);
 
