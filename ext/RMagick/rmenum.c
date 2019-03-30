@@ -15,6 +15,7 @@
 
 #define ENUMERATORS_CLASS_VAR "@@enumerators"
 #define ENUM_TO_NAME(_enum) case _enum: return #_enum;
+#define ENUM_SET_NAME(_enum) case _enum: name = #_enum; break;
 
 
 static VALUE Enum_type_values(VALUE);
@@ -377,15 +378,9 @@ ClassType_new(ClassType cls)
     switch(cls)
     {
         default:
-        case UndefinedClass:
-            name = "UndefineClass";
-            break;
-        case DirectClass:
-            name = "DirectClass";
-            break;
-        case PseudoClass:
-            name = "PseudoClass";
-            break;
+        ENUM_SET_NAME(UndefinedClass)
+        ENUM_SET_NAME(DirectClass)
+        ENUM_SET_NAME(PseudoClass)
     }
 
     return rm_enum_new(Class_ClassType, ID2SYM(rb_intern(name)), INT2FIX(cls));
@@ -408,112 +403,37 @@ ColorspaceType_new(ColorspaceType cs)
     switch(cs)
     {
         default:
-        case UndefinedColorspace:
-            name = "UndefinedColorspace";
-            break;
-        case RGBColorspace:
-            name = "RGBColorspace";
-            break;
-        case GRAYColorspace:
-            name = "GRAYColorspace";
-            break;
-        case TransparentColorspace:
-            name = "TransparentColorspace";
-            break;
-        case OHTAColorspace:
-            name = "OHTAColorspace";
-            break;
-        case XYZColorspace:
-            name = "XYZColorspace";
-            break;
-        case YCbCrColorspace:
-            name = "YCbCrColorspace";
-            break;
-        case YCCColorspace:
-            name = "YCCColorspace";
-            break;
-        case YIQColorspace:
-            name = "YIQColorspace";
-            break;
-        case YPbPrColorspace:
-            name = "YPbPrColorspace";
-            break;
-        case YUVColorspace:
-            name = "YUVColorspace";
-            break;
-        case CMYKColorspace:
-            name = "CMYKColorspace";
-            break;
-        case sRGBColorspace:
-            name = "sRGBColorspace";
-            break;
-        case HSLColorspace:
-            name = "HSLColorspace";
-            break;
-        case HWBColorspace:
-            name = "HWBColorspace";
-            break;
-        case HSBColorspace:
-            name = "HSBColorspace";
-            break;
-        case LabColorspace:
-            name = "LabColorspace";
-            break;
-        case Rec601YCbCrColorspace:
-            name = "Rec601YCbCrColorspace";
-            break;
-        case Rec601LumaColorspace:
-            name = "Rec601LumaColorspace";
-            break;
-        case Rec709LumaColorspace:
-            name = "Rec709LumaColorspace";
-            break;
-        case Rec709YCbCrColorspace:
-            name = "Rec709YCbCrColorspace";
-            break;
-        case LogColorspace:
-            name = "LogColorspace";
-            break;
-        case CMYColorspace:
-            name = "CMYColorspace";
-            break;
+        ENUM_SET_NAME(UndefinedColorspace)
+        ENUM_SET_NAME(RGBColorspace)
+        ENUM_SET_NAME(GRAYColorspace)
+        ENUM_SET_NAME(TransparentColorspace)
+        ENUM_SET_NAME(OHTAColorspace)
+        ENUM_SET_NAME(XYZColorspace)
+        ENUM_SET_NAME(YCbCrColorspace)
+        ENUM_SET_NAME(YCCColorspace)
+        ENUM_SET_NAME(YIQColorspace)
+        ENUM_SET_NAME(YPbPrColorspace)
+        ENUM_SET_NAME(YUVColorspace)
+        ENUM_SET_NAME(CMYKColorspace)
+        ENUM_SET_NAME(sRGBColorspace)
+        ENUM_SET_NAME(Rec601YCbCrColorspace)
+        ENUM_SET_NAME(Rec601LumaColorspace)
+        ENUM_SET_NAME(Rec709LumaColorspace)
+        ENUM_SET_NAME(Rec709YCbCrColorspace)
+        ENUM_SET_NAME(CMYColorspace)
 #if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
-        case LuvColorspace:
-            name = "LuvColorspace";
-            break;
-        case HCLColorspace:
-            name = "HCLColorspace";
-            break;
-        case LCHColorspace:
-            name = "LCHColorspace";
-            break;
-        case LMSColorspace:
-            name = "LMSColorspace";
-            break;
-        case LCHabColorspace:
-            name = "LCHabColorspace";
-            break;
-        case LCHuvColorspace:
-            name = "LCHuvColorspace";
-            break;
-        case scRGBColorspace:
-            name = "scRGBColorspace";
-            break;
-        case HSIColorspace:
-            name = "HSIColorspace";
-            break;
-        case HSVColorspace:
-            name = "HSVColorspace";
-            break;
-        case HCLpColorspace:
-            name = "HCLpColorspace";
-            break;
-        case YDbDrColorspace:
-            name = "YDbDrColorspace";
-            break;
-        case xyYColorspace:
-            name = "xyYColorspace";
-            break;
+        ENUM_SET_NAME(LuvColorspace)
+        ENUM_SET_NAME(HCLColorspace)
+        ENUM_SET_NAME(LCHColorspace)
+        ENUM_SET_NAME(LMSColorspace)
+        ENUM_SET_NAME(LCHabColorspace)
+        ENUM_SET_NAME(LCHuvColorspace)
+        ENUM_SET_NAME(scRGBColorspace)
+        ENUM_SET_NAME(HSIColorspace)
+        ENUM_SET_NAME(HSVColorspace)
+        ENUM_SET_NAME(HCLpColorspace)
+        ENUM_SET_NAME(YDbDrColorspace)
+        ENUM_SET_NAME(xyYColorspace)
 #endif
     }
 
