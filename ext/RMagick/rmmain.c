@@ -24,7 +24,28 @@ static void version_constants(void);
 static void features_constant(void);
 
 
+/*
+ *  Enum constants - define a subclass of Enum for the specified enumeration.
+ *  Define an instance of the subclass for each member in the enumeration.
+ *  Initialize each instance with its name and value.
+ */
+//! define Ruby enum
+#define DEF_ENUM(tag) {\
+   VALUE _cls, _enum;\
+   _cls =  Class_##tag = rm_define_enum_type(#tag);
 
+//! define Ruby enumerator elements
+#define ENUMERATOR(val)\
+   _enum = rm_enum_new(_cls, ID2SYM(rb_intern(#val)), INT2NUM(val));\
+   rb_define_const(Module_Magick, #val, _enum);
+
+//! define Ruby enumerator elements when name is different from the value
+#define ENUMERATORV(name, val)\
+   _enum = rm_enum_new(_cls, ID2SYM(rb_intern(#name)), INT2NUM(val));\
+   rb_define_const(Module_Magick, #name, _enum);
+
+//! end of an enumerator
+#define END_ENUM }
 
 /*
  *  Handle transferring ImageMagick memory allocations/frees to Ruby.
@@ -908,36 +929,16 @@ Init_RMagick2(void)
         ENUMERATOR(BlueChannel)
         ENUMERATOR(YellowChannel)
         ENUMERATOR(OpacityChannel)
-
-
         ENUMERATOR(BlackChannel)
         ENUMERATOR(MatteChannel)
         ENUMERATOR(IndexChannel)
         ENUMERATOR(GrayChannel)
         ENUMERATOR(AllChannels)
-
-        // Define alternate names for ChannelType enums for Image::Info#channel=
-        // AlphaChannel == OpacityChannel
-        _enum = rm_enum_new(Class_ChannelType, ID2SYM(rb_intern("AlphaChannel")), INT2FIX(OpacityChannel));
-        rb_define_const(Module_Magick, "AlphaChannel", _enum);
-
-        // DefaultChannels
-        _enum = rm_enum_new(Class_ChannelType, ID2SYM(rb_intern("DefaultChannels")), INT2FIX(0xff & ~OpacityChannel));
-        rb_define_const(Module_Magick, "DefaultChannels", _enum);
-
-        // HueChannel == RedChannel
-        _enum = rm_enum_new(Class_ChannelType, ID2SYM(rb_intern("HueChannel")), INT2FIX(RedChannel));
-        rb_define_const(Module_Magick, "HueChannel", _enum);
-
-        // LuminosityChannel = BlueChannel
-        _enum = rm_enum_new(Class_ChannelType, ID2SYM(rb_intern("LuminosityChannel")), INT2FIX(BlueChannel));
-        rb_define_const(Module_Magick, "LuminosityChannel", _enum);
-
-        // SaturationChannel = GreenChannel
-        _enum = rm_enum_new(Class_ChannelType, ID2SYM(rb_intern("SaturationChannel")), INT2FIX(GreenChannel));
-        rb_define_const(Module_Magick, "SaturationChannel", _enum);
-
-
+        ENUMERATORV(AlphaChannel, OpacityChannel)
+        ENUMERATORV(DefaultChannels, 0xff & ~OpacityChannel)
+        ENUMERATORV(HueChannel, RedChannel)
+        ENUMERATORV(LuminosityChannel, BlueChannel)
+        ENUMERATORV(SaturationChannel, GreenChannel)
     END_ENUM
 
     // ClassType constants
@@ -961,10 +962,7 @@ Init_RMagick2(void)
         ENUMERATOR(YPbPrColorspace)
         ENUMERATOR(YUVColorspace)
         ENUMERATOR(CMYKColorspace)
-        rb_define_const(Module_Magick, "SRGBColorspace"
-                      , rm_enum_new(Class_ColorspaceType
-                      , ID2SYM(rb_intern("SRGBColorspace"))
-                      , INT2FIX(sRGBColorspace)));
+        ENUMERATORV(SRGBColorspace, sRGBColorspace)
         ENUMERATOR(HSLColorspace)
         ENUMERATOR(HWBColorspace)
         ENUMERATOR(HSBColorspace)
@@ -982,31 +980,20 @@ Init_RMagick2(void)
         ENUMERATOR(LMSColorspace)
         ENUMERATOR(LCHabColorspace)
         ENUMERATOR(LCHuvColorspace)
-        rb_define_const(Module_Magick, "ScRGBColorspace"
-                      , rm_enum_new(Class_ColorspaceType
-                      , ID2SYM(rb_intern("ScRGBColorspace"))
-                      , INT2FIX(scRGBColorspace)));
+        ENUMERATORV(ScRGBColorspace, scRGBColorspace)
         ENUMERATOR(HSIColorspace)
         ENUMERATOR(HSVColorspace)
         ENUMERATOR(HCLpColorspace)
         ENUMERATOR(YDbDrColorspace)
-        rb_define_const(Module_Magick, "XyYColorspace"
-                      , rm_enum_new(Class_ColorspaceType
-                      , ID2SYM(rb_intern("XyYColorspace"))
-                      , INT2FIX(xyYColorspace)));
+        ENUMERATORV(XyYColorspace, xyYColorspace)
 #endif
     END_ENUM
 
     // ComplianceType constants are defined as enums but used as bit flags
     DEF_ENUM(ComplianceType)
         ENUMERATOR(UndefinedCompliance)
-
         // AllCompliance is 0xffff, not too useful for us!
-        rb_define_const(Module_Magick, "AllCompliance"
-                  , rm_enum_new(Class_ComplianceType
-                  , ID2SYM(rb_intern("AllCompliance"))
-                  , INT2FIX(SVGCompliance|X11Compliance|XPMCompliance)));
-
+        ENUMERATORV(AllCompliance, SVGCompliance|X11Compliance|XPMCompliance)
         ENUMERATOR(NoCompliance)
         ENUMERATOR(SVGCompliance)
         ENUMERATOR(X11Compliance)

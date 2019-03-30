@@ -536,24 +536,6 @@ Pixel_##_cmyk_channel_(VALUE self) \
     return INT2NUM(pixel->_rgb_channel_); \
 }
 
-
-/*
- *  Enum constants - define a subclass of Enum for the specified enumeration.
- *  Define an instance of the subclass for each member in the enumeration.
- *  Initialize each instance with its name and value.
- */
-//! define Ruby enum
-#define DEF_ENUM(tag) {\
-   VALUE _cls, _enum;\
-   _cls =  Class_##tag = rm_define_enum_type(#tag);
-
-//! define Ruby enumerator elements
-#define ENUMERATOR(val)\
-   _enum = rm_enum_new(_cls, ID2SYM(rb_intern(#val)), INT2NUM(val));\
-   rb_define_const(Module_Magick, #val, _enum);
-//! end of an enumerator
-#define END_ENUM }
-
 //!  Define a Magick module constant
 #if MAGICKCORE_QUANTUM_DEPTH == 64
 #define DEF_CONST(constant) rb_define_const(Module_Magick, #constant, ULL2NUM(constant))
