@@ -3,12 +3,6 @@ cache:
 
 environment:
   matrix:
-    - RUBY_VERSION: 23-x64
-      IMAGEMAGICK_VERSION: 6.8.9
-      PATCH_VERSION: 10
-    - RUBY_VERSION: 23-x64
-      IMAGEMAGICK_VERSION: 6.9.10
-      PATCH_VERSION: 34
     - RUBY_VERSION: 24-x64
       IMAGEMAGICK_VERSION: 6.8.9
       PATCH_VERSION: 10
