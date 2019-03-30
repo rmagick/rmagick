@@ -370,7 +370,7 @@ class ImageList1UT < Test::Unit::TestCase
     @list.scene = 7
     cur = @list.cur_image
     assert_nothing_raised do
-      @list.delete_if { |img| img.filename =~ /5/ }
+      @list.delete_if { |img| File.basename(img.filename) =~ /5/ }
       assert_instance_of(Magick::ImageList, @list)
       assert_equal(9, @list.length)
       assert_same(cur, @list.cur_image)
@@ -378,7 +378,7 @@ class ImageList1UT < Test::Unit::TestCase
 
     # Delete the current image
     assert_nothing_raised do
-      @list.delete_if { |img| img.filename =~ /7/ }
+      @list.delete_if { |img| File.basename(img.filename) =~ /7/ }
       assert_instance_of(Magick::ImageList, @list)
       assert_equal(8, @list.length)
       assert_same(@list[-1], @list.cur_image)
@@ -441,7 +441,7 @@ class ImageList1UT < Test::Unit::TestCase
 
   def find_all
     assert_nothing_raised do
-      res = @list.select { |img| img.filename =~ /Button_2/ }
+      res = @list.select { |img| File.basename(img.filename) =~ /Button_2/ }
       assert_instance_of(Magick::ImageList, res)
       assert_equal(1, res.length)
       assert_same(res[0], @list[2])
@@ -552,7 +552,7 @@ class ImageList1UT < Test::Unit::TestCase
     cur = @list.cur_image
     list = @list
     assert_nothing_raised do
-      res = @list.reject { |img| img.filename =~ /Button_9/ }
+      res = @list.reject { |img| File.basename(img.filename) =~ /Button_9/ }
       assert_equal(9, res.length)
       assert_instance_of(Magick::ImageList, res)
       assert_same(cur, res.cur_image)
@@ -561,7 +561,7 @@ class ImageList1UT < Test::Unit::TestCase
     assert_same(cur, @list.cur_image)
 
     # Omit current image from result list - result cur_image s/b last image
-    res = @list.reject { |img| img.filename =~ /Button_7/ }
+    res = @list.reject { |img| File.basename(img.filename) =~ /Button_7/ }
     assert_equal(9, res.length)
     assert_same(res[-1], res.cur_image)
     assert_same(cur, @list.cur_image)
@@ -571,7 +571,7 @@ class ImageList1UT < Test::Unit::TestCase
     @list.scene = 7
     cur = @list.cur_image
     assert_nothing_raised do
-      @list.reject! { |img| img.filename =~ /5/ }
+      @list.reject! { |img| File.basename(img.filename) =~ /5/ }
       assert_instance_of(Magick::ImageList, @list)
       assert_equal(9, @list.length)
       assert_same(cur, @list.cur_image)
@@ -579,7 +579,7 @@ class ImageList1UT < Test::Unit::TestCase
 
     # Delete the current image
     assert_nothing_raised do
-      @list.reject! { |img| img.filename =~ /7/ }
+      @list.reject! { |img| File.basename(img.filename) =~ /7/ }
       assert_instance_of(Magick::ImageList, @list)
       assert_equal(8, @list.length)
       assert_same(@list[-1], @list.cur_image)
@@ -668,7 +668,7 @@ class ImageList1UT < Test::Unit::TestCase
 
   def test_select
     assert_nothing_raised do
-      res = @list.select { |img| img.filename =~ /Button_2/ }
+      res = @list.select { |img| File.basename(img.filename) =~ /Button_2/ }
       assert_instance_of(Magick::ImageList, res)
       assert_equal(1, res.length)
       assert_same(res[0], @list[2])
