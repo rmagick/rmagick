@@ -573,9 +573,6 @@ Pixel_##_cmyk_channel_(VALUE self) \
    e = (type)(magick_enum->val);\
    } while(0)
 
-//! create case statement, mapping enum to its name
-#define ENUM_TO_NAME(_enum) case _enum: return #_enum;
-
 
 // Method, external function declarations. These declarations are
 // grouped by the source file in which the methods are defined.
@@ -1137,6 +1134,29 @@ extern VALUE  Enum_case_eq(VALUE, VALUE);
 extern VALUE  Enum_type_initialize(VALUE, VALUE, VALUE);
 extern VALUE  Enum_type_each(VALUE);
 extern VALUE  rm_enum_new(VALUE, VALUE, VALUE);
+extern VALUE  ClassType_new(ClassType);
+extern VALUE  ColorspaceType_new(ColorspaceType);
+extern const char *ComplianceType_name(ComplianceType *);
+extern VALUE  ComplianceType_new(ComplianceType);
+extern VALUE  CompositeOperator_new(CompositeOperator);
+extern VALUE  CompressionType_new(CompressionType);
+extern VALUE  DisposeType_new(DisposeType);
+extern VALUE  EndianType_new(EndianType);
+extern VALUE  FilterTypes_new(FilterTypes);
+extern VALUE  GravityType_new(GravityType);
+extern VALUE  ImageLayerMethod_new(ImageLayerMethod);
+extern VALUE  ImageType_new(ImageType);
+extern VALUE  InterlaceType_new(InterlaceType);
+extern VALUE  InterpolatePixelMethod_new(InterpolatePixelMethod);
+extern VALUE  OrientationType_new(OrientationType);
+extern VALUE  RenderingIntent_new(RenderingIntent);
+extern VALUE  ResolutionType_new(ResolutionType);
+extern const char *StorageType_name(StorageType);
+extern VALUE  StretchType_new(StretchType);
+extern const char *StretchType_name(StretchType);
+extern VALUE  StyleType_new(StyleType);
+extern const char *StyleType_name(StyleType);
+extern VALUE  VirtualPixelMethod_new(VirtualPixelMethod);
 
 
 // rmstruct.c
@@ -1147,17 +1167,7 @@ extern void   Color_to_PixelPacket(PixelPacket *, VALUE);
 extern void   Color_to_MagickPixel(Image *, MagickPixel *, VALUE);
 extern VALUE  Color_to_s(VALUE);
 extern VALUE  Import_ColorInfo(const ColorInfo *);
-extern VALUE  ClassType_new(ClassType);
-extern VALUE  ColorspaceType_new(ColorspaceType);
-extern VALUE  CompositeOperator_new(CompositeOperator);
-extern VALUE  CompressionType_new(CompressionType);
-extern VALUE  DisposeType_new(DisposeType);
-extern VALUE  EndianType_new(EndianType);
-extern VALUE  FilterTypes_new(FilterTypes);
-extern VALUE  GravityType_new(GravityType);
 extern VALUE  Font_to_s(VALUE);
-extern VALUE  ImageType_new(ImageType);
-extern VALUE  InterlaceType_new(InterlaceType);
 extern VALUE  Pixel_from_MagickPixel(const MagickPixel *);
 extern VALUE  Pixel_from_PixelColor(const PixelColor *);
 extern VALUE  Pixel_from_PixelPacket(const PixelPacket *);
@@ -1167,16 +1177,12 @@ extern VALUE  PrimaryInfo_to_s(VALUE);
 extern VALUE  Import_PrimaryInfo(PrimaryInfo *);
 extern VALUE  RectangleInfo_to_s(VALUE);
 extern VALUE  Import_RectangleInfo(RectangleInfo *);
-extern VALUE  RenderingIntent_new(RenderingIntent);
-extern VALUE  ResolutionType_new(ResolutionType);
 extern VALUE  SegmentInfo_to_s(VALUE);
 extern VALUE  Import_SegmentInfo(SegmentInfo *);
 extern void   Export_AffineMatrix(AffineMatrix *, VALUE);
 extern VALUE  Import_AffineMatrix(AffineMatrix *);
 extern void   Export_ChromaticityInfo(ChromaticityInfo *, VALUE);
 extern void   Export_ColorInfo(ColorInfo *, VALUE);
-extern VALUE  InterpolatePixelMethod_new(InterpolatePixelMethod);
-extern VALUE  OrientationType_new(OrientationType);
 extern void   Export_PrimaryInfo(PrimaryInfo *, VALUE);
 extern void   Export_RectangleInfo(RectangleInfo *, VALUE);
 extern void   Export_SegmentInfo(SegmentInfo *, VALUE);
@@ -1186,9 +1192,6 @@ extern VALUE  Import_TypeInfo(const TypeInfo *);
 extern VALUE  TypeMetric_to_s(VALUE);
 extern void   Export_TypeInfo(TypeInfo *, VALUE);
 extern VALUE  Import_TypeMetric(TypeMetric *);
-extern const char *StorageType_name(StorageType);
-extern VALUE  VirtualPixelMethod_new(VirtualPixelMethod);
-extern VALUE  ImageLayerMethod_new(ImageLayerMethod);
 
 
 // rmutil.c

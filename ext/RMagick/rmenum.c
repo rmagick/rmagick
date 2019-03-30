@@ -14,6 +14,7 @@
 
 
 #define ENUMERATORS_CLASS_VAR "@@enumerators"
+#define ENUM_TO_NAME(_enum) case _enum: return #_enum;
 
 
 static VALUE Enum_type_values(VALUE);
@@ -519,6 +520,76 @@ ColorspaceType_new(ColorspaceType cs)
     return rm_enum_new(Class_ColorspaceType, ID2SYM(rb_intern(name)), INT2FIX(cs));
 
 }
+
+
+/**
+ * Return the string representation of a ComplianceType value.
+ *
+ * No Ruby usage (internal function)
+ *
+ * Notes:
+ *   - xMagick will OR multiple compliance types so we have to arbitrarily pick
+ *     one name.
+ *   - Set the compliance argument to the selected value.
+ *
+ * @param c the ComplianceType value
+ * @return the string
+ */
+const char *
+ComplianceType_name(ComplianceType *c)
+{
+    if ((*c & (SVGCompliance|X11Compliance|XPMCompliance))
+        == (SVGCompliance|X11Compliance|XPMCompliance))
+    {
+        return "AllCompliance";
+    }
+    else if (*c & SVGCompliance)
+    {
+        *c = SVGCompliance;
+        return "SVGCompliance";
+    }
+    else if (*c & X11Compliance)
+    {
+        *c = X11Compliance;
+        return "X11Compliance";
+    }
+    else if (*c & XPMCompliance)
+    {
+        *c = XPMCompliance;
+        return "XPMCompliance";
+    }
+    else if (*c == NoCompliance)
+    {
+        *c = NoCompliance;
+        return "NoCompliance";
+    }
+    else
+    {
+        *c = UndefinedCompliance;
+        return "UndefinedCompliance";
+    }
+}
+
+
+/**
+ * Construct a ComplianceType enum object for the specified value.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param compliance the C ComplianceType value
+ * @return the Ruby ComplianceType enum object
+ */
+VALUE
+ComplianceType_new(ComplianceType compliance)
+{
+    const char *name;
+
+    // Turn off undefined bits
+    compliance &= (SVGCompliance|X11Compliance|XPMCompliance);
+    name = ComplianceType_name(&compliance);
+    return rm_enum_new(Class_ComplianceType, ID2SYM(rb_intern(name)), INT2FIX(compliance));
+}
+
 
 
 /**
@@ -1215,6 +1286,92 @@ StorageType_name(StorageType type)
     }
 
     return "UndefinedPixel";
+}
+
+
+/**
+ * Return the string representation of a StretchType value.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param stretch the StretchType value
+ * @return the string
+ */
+const char *
+StretchType_name(StretchType stretch)
+{
+    switch (stretch)
+    {
+        ENUM_TO_NAME(UndefinedStretch)
+        ENUM_TO_NAME(NormalStretch)
+        ENUM_TO_NAME(UltraCondensedStretch)
+        ENUM_TO_NAME(ExtraCondensedStretch)
+        ENUM_TO_NAME(CondensedStretch)
+        ENUM_TO_NAME(SemiCondensedStretch)
+        ENUM_TO_NAME(SemiExpandedStretch)
+        ENUM_TO_NAME(ExpandedStretch)
+        ENUM_TO_NAME(ExtraExpandedStretch)
+        ENUM_TO_NAME(UltraExpandedStretch)
+        ENUM_TO_NAME(AnyStretch)
+    }
+
+    return "UndefinedStretch";
+}
+
+
+/**
+ * Construct a StretchType enum for a specified StretchType value.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param stretch the C StretchType value
+ * @return a Ruby StretchType enum
+ */
+VALUE
+StretchType_new(StretchType stretch)
+{
+    const char *name = StretchType_name(stretch);
+    return rm_enum_new(Class_StretchType, ID2SYM(rb_intern(name)), INT2FIX(stretch));
+}
+
+
+/**
+ * Return the string representation of a StyleType value.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param style the StyleType value
+ * @return the string
+ */
+const char *
+StyleType_name(StyleType style)
+{
+    switch (style)
+    {
+        ENUM_TO_NAME(UndefinedStyle)
+        ENUM_TO_NAME(NormalStyle)
+        ENUM_TO_NAME(ItalicStyle)
+        ENUM_TO_NAME(ObliqueStyle)
+        ENUM_TO_NAME(AnyStyle)
+    }
+
+    return "UndefinedStyle";
+}
+
+
+/**
+ * Construct a StyleType enum for a specified StyleType value.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param style the C StyleType value
+ * @return a Ruby StyleType enum
+ */
+VALUE
+StyleType_new(StyleType style)
+{
+    const char *name = StyleType_name(style);
+    return rm_enum_new(Class_StyleType, ID2SYM(rb_intern(name)), INT2FIX(style));
 }
 
 
