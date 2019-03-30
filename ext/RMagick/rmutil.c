@@ -841,24 +841,21 @@ rm_not_implemented(void)
  *     the ImageMagickError object in both 1.6.8 and 1.8.0.
  *
  * @param msg the error mesage
- * @param loc the location of the error
  * @throw ImageMagickError
  * @see www.ruby_talk.org/36408.
  */
 void
-rm_magick_error(const char *msg, const char *loc)
+rm_magick_error(const char *msg)
 {
-    VALUE exc, mesg, extra;
+    VALUE exc, mesg;
 
     mesg = rb_str_new2(msg);
-    extra = loc ? rb_str_new2(loc) : Qnil;
 
-    exc = rb_funcall(Class_ImageMagickError, rm_ID_new, 2, mesg, extra);
+    exc = rb_funcall(Class_ImageMagickError, rm_ID_new, 2, mesg, Qnil);
     (void) rb_funcall(rb_cObject, rb_intern("raise"), 1, exc);
 
     RB_GC_GUARD(exc);
     RB_GC_GUARD(mesg);
-    RB_GC_GUARD(extra);
 }
 
 
@@ -1668,7 +1665,7 @@ rm_error_handler(const ExceptionType severity, const char *reason, const char *d
 #endif
     msg[len] = '\0';
 
-    rm_magick_error(msg, NULL);
+    rm_magick_error(msg);
     dummy = severity;
     dummy = dummy;
 }
@@ -1784,7 +1781,7 @@ handle_exception(ExceptionInfo *exception, Image *imglist, ErrorRetention retent
     msg[sizeof(msg)-1] = '\0';
 
     (void) DestroyExceptionInfo(exception);
-    rm_magick_error(msg, NULL);
+    rm_magick_error(msg);
 
 }
 
