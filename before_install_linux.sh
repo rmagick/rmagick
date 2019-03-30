@@ -16,13 +16,16 @@ if [ ! -d /usr/include/freetype ]; then
 fi
 
 if [ -v IMAGEMAGICK_VERSION ]; then
-  if wget https://github.com/ImageMagick/ImageMagick/archive/${IMAGEMAGICK_VERSION}.tar.gz; then
-    tar -xzf ImageMagick-${IMAGEMAGICK_VERSION}.tar.gz
+  version=(${IMAGEMAGICK_VERSION//./ })
+  if (( "${version[0]}${version[1]}" >= 69 )); then
+    wget https://github.com/ImageMagick/ImageMagick6/archive/${IMAGEMAGICK_VERSION}.tar.gz
+    tar -xzf ${IMAGEMAGICK_VERSION}.tar.gz
+    cd ImageMagick6-${IMAGEMAGICK_VERSION}
   else
     wget http://www.imagemagick.org/download/releases/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz
     tar -xf ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz
+    cd ImageMagick-${IMAGEMAGICK_VERSION}
   fi
-  cd ImageMagick-${IMAGEMAGICK_VERSION}
 else
   echo "you must specify an ImageMagick version."
   echo "example: 'IMAGEMAGICK_VERSION=6.8.9-10 bash ./before_install_linux.sh'"
