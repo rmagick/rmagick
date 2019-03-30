@@ -1633,11 +1633,10 @@ rm_check_exception(ExceptionInfo *exception, Image *imglist, ErrorRetention rete
 void
 rm_warning_handler(const ExceptionType severity, const char *reason, const char *description)
 {
-    ExceptionType dummy;
-
-    rb_warning("RMagick: %s: `%s'", reason, description);
-    dummy = severity;
-    dummy = dummy;
+    rb_warning("RMagick: %s%s%s",
+        GetLocaleExceptionMessage(severity, reason),
+        description ? ": " : "",
+        description ? GetLocaleExceptionMessage(severity, description) : "");
 }
 
 
@@ -1678,14 +1677,16 @@ rm_error_handler(const ExceptionType severity, const char *reason, const char *d
  *
  * @param severity information about the severity of the error
  * @param reason the reason for the error
- * @param description description of the error (ignored)
+ * @param description description of the error
  * @throw FatalImageMagickError
  */
 void
 rm_fatal_error_handler(const ExceptionType severity, const char *reason, const char *description)
 {
-    rb_raise(Class_FatalImageMagickError, "%s", GetLocaleExceptionMessage(severity, reason));
-    description = description;
+    rb_raise(Class_FatalImageMagickError, "%s%s%s",
+        GetLocaleExceptionMessage(severity, reason),
+        description ? ": " : "",
+        description ? GetLocaleExceptionMessage(severity, description) : "");
 }
 
 
