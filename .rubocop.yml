@@ -9,4 +9,5 @@ AllCops:
   EnabledByDefault: true
   TargetRubyVersion: 2.3
   Exclude:
+    - 'vendor/bundle/**/*'
     - '**/*\.spec'

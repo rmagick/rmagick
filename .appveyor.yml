@@ -1,3 +1,6 @@
+cache:
+  - vendor/bundle -> .appveyor.yml
+
 environment:
   matrix:
     - RUBY_VERSION: 23-x64
@@ -29,7 +32,7 @@ install:
   - appveyor DownloadFile https://ftp.icm.edu.pl/pub/graphics/ImageMagick/binaries/ImageMagick-%IMAGEMAGICK_VERSION%-%PATCH_VERSION%-Q16-x64-dll.exe
   - ImageMagick-%IMAGEMAGICK_VERSION%-%PATCH_VERSION%-Q16-x64-dll.exe /VERYSILENT /TASKS=install_Devel
   - SET PATH=C:\Ruby%RUBY_VERSION%\bin;C:\Program Files\ImageMagick-%IMAGEMAGICK_VERSION%-Q16;%PATH%
-  - bundle install
+  - bundle install --path=vendor/bundle
 
 build: off
 
@@ -39,4 +42,4 @@ before_test:
   - bundle -v
 
 test_script:
-  - rake -rdevkit
+  - bundle exec rake -rdevkit

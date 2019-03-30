@@ -3,6 +3,7 @@ language: ruby
 cache:
   directories:
     - ~/.ccache
+    - vendor/bundle
 
 os:
   - linux
@@ -20,7 +21,7 @@ env:
 before_install:
   - source before_install_$TRAVIS_OS_NAME.sh
 
-install: bundle install --verbose
+install: bundle install --path=vendor/bundle --verbose
 
 rvm:
   - 2.3
