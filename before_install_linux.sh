@@ -1,7 +1,5 @@
 set -euo pipefail
 
-sudo apt-get update
-
 # remove all existing imagemagick related packages
 sudo apt-get autoremove -y imagemagick* libmagick* --purge
 
