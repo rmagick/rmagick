@@ -352,9 +352,9 @@ p Magick.formats &raquo;
       <dt>resource_type</dt>
 
       <dd>One of the symbols <code>:area</code>,
-      <code>:disk</code>, <code>:file</code>, <code>:map</code>, or
-      <code>:memory</code>. You may use a string instead of a
-      symbol.</dd>
+      <code>:disk</code>, <code>:file</code>, <code>:map</code>,
+      <code>:memory</code>, or <code>:time</code>. You may use a
+      string instead of a symbol.</dd>
 
       <dt>limit</dt>
 
@@ -367,7 +367,8 @@ p Magick.formats &raquo;
       the <span class="arg">resource_type</span> is
       <code>:area</code> the limit is the maximum width * height of
       an image in pixels that can reside in pixel cache memory. If
-      this argument is omitted the limit is not changed.</dd>
+      <code>:time</code>, the limit is measured in seconds. If this
+      argument is omitted the limit is not changed.</dd>
     </dl>
 
     <h4>Returns</h4>
@@ -378,6 +379,10 @@ p Magick.formats &raquo;
     <h4>Notes</h4>
 
     <p>This method supercedes <code>set_cache_threshold</code>.</p>
+
+    <p>Setting the <code>:time</code> limit resets the elapsed time
+    to zero in the pixel cache. Call it before any operation that
+    you need to set a time limit on.</p>
   </div>
 
   <div class="sig">

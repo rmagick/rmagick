@@ -259,6 +259,10 @@ Magick_limit_resource(int argc, VALUE *argv, VALUE class)
             {
                 res = FileResource;
             }
+            else if (id == rb_intern("time"))
+            {
+                res = TimeResource;
+            }
             else
             {
                 rb_raise(rb_eArgError, "unknown resource: `:%s'", rb_id2name(id));
@@ -290,6 +294,10 @@ Magick_limit_resource(int argc, VALUE *argv, VALUE class)
             else if (rm_strcasecmp("file", str) == 0)
             {
                 res = FileResource;
+            }
+            else if (rm_strcasecmp("time", str) == 0)
+            {
+                res = TimeResource;
             }
             else
             {

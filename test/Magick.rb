@@ -296,6 +296,13 @@ class MagickUT < Test::Unit::TestCase
     assert_equal(500, new)
     Magick.limit_resource(:file, cur)
 
+    assert_nothing_raised { cur = Magick.limit_resource(:time, 300) }
+    assert_kind_of(Integer, cur)
+    assert(cur > 300)
+    assert_nothing_raised { new = Magick.limit_resource('time') }
+    assert_equal(300, new)
+    Magick.limit_resource(:time, cur)
+
     assert_raise(ArgumentError) { Magick.limit_resource(:xxx) }
     assert_raise(ArgumentError) { Magick.limit_resource('xxx') }
     assert_raise(ArgumentError) { Magick.limit_resource('map', 3500, 2) }
