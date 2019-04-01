@@ -256,7 +256,7 @@ Import_ColorInfo(const ColorInfo *ci)
 void
 Export_ColorInfo(ColorInfo *ci, VALUE st)
 {
-    Pixel *pixel;
+    PixelColor pixel;
     VALUE members, m;
 
     if (CLASS_OF(st) != Class_Color)
@@ -282,13 +282,13 @@ Export_ColorInfo(ColorInfo *ci, VALUE st)
     m = rb_ary_entry(members, 2);
     if (m != Qnil)
     {
-        Data_Get_Struct(m, Pixel, pixel);
+        Color_to_PixelColor(&pixel, m);
         // For >= 6.3.0, ColorInfo.color is a MagickPixelPacket so we have to
         // convert the PixelPacket.
         rm_init_magickpixel(NULL, &ci->color);
-        ci->color.red = (MagickRealType) pixel->red;
-        ci->color.green = (MagickRealType) pixel->green;
-        ci->color.blue = (MagickRealType) pixel->blue;
+        ci->color.red = (MagickRealType) pixel.red;
+        ci->color.green = (MagickRealType) pixel.green;
+        ci->color.blue = (MagickRealType) pixel.blue;
         ci->color.opacity = (MagickRealType) OpaqueOpacity;
         ci->color.index = (MagickRealType) 0;
     }
@@ -318,7 +318,6 @@ Color_to_MagickPixel(Image *image, MagickPixel *mpp, VALUE color)
     // image can be NULL
     rm_init_magickpixel(image, mpp);
 
-    memset(&pp, '\0', sizeof(pp));
     Color_to_PixelColor(&pp, color);
     mpp->red = (MagickRealType) pp.red;
     mpp->green = (MagickRealType) pp.green;

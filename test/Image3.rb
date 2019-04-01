@@ -820,6 +820,26 @@ class Image3_UT < Test::Unit::TestCase
     assert_raise(FreezeError) { @img.thumbnail!(0.50) }
   end
 
+  def test_tint
+    assert_nothing_raised do
+      pixels = @img.get_pixels(0, 0, 1, 1)
+      @img.tint(pixels[0], 1.0)
+    end
+    assert_nothing_raised { @img.tint('red', 1.0) }
+    assert_nothing_raised { @img.tint('red', 1.0, 1.0) }
+    assert_nothing_raised { @img.tint('red', 1.0, 1.0, 1.0) }
+    assert_nothing_raised { @img.tint('red', 1.0, 1.0, 1.0, 1.0) }
+    assert_raise(ArgumentError) { @img.tint }
+    assert_raise(ArgumentError) { @img.tint('red') }
+    assert_raise(ArgumentError) { @img.tint('red', 1.0, 1.0, 1.0, 1.0, 1.0) }
+    assert_raise(ArgumentError) { @img.tint('x', 1.0) }
+    assert_raise(TypeError) { @img.tint(1.0, 1.0) }
+    assert_raise(TypeError) { @img.tint('red', 'green') }
+    assert_raise(TypeError) { @img.tint('red', 1.0, 'green') }
+    assert_raise(TypeError) { @img.tint('red', 1.0, 1.0, 'green') }
+    assert_raise(TypeError) { @img.tint('red', 1.0, 1.0, 1.0, 'green') }
+  end
+
   def test_to_blob
     res = nil
     assert_nothing_raised { res = @img.to_blob { self.format = 'miff' } }
