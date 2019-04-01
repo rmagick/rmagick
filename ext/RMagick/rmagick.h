@@ -930,6 +930,7 @@ extern VALUE Image_flop_bang(VALUE);
 extern VALUE Image_frame(int, VALUE *, VALUE);
 extern VALUE Image_from_blob(VALUE, VALUE);
 extern VALUE Image_function_channel(int, VALUE *, VALUE);
+extern VALUE Image_fx(int, VALUE *, VALUE);
 extern VALUE Image_gamma_channel(int, VALUE *, VALUE);
 extern VALUE Image_gamma_correct(int, VALUE *, VALUE);
 extern VALUE Image_gaussian_blur(int, VALUE *, VALUE);
