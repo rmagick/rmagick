@@ -369,6 +369,7 @@ ImageList_fx(int argc, VALUE *argv, VALUE self)
     ChannelType channels;
     ExceptionInfo *exception;
 
+    rb_warning("ImageList#fx is deprecated; use Image#fx");
 
     channels = extract_channels(&argc, argv);
 
