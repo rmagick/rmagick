@@ -1598,6 +1598,36 @@ rm_check_image_exception(Image *imglist, ErrorRetention retention)
 }
 
 
+#define ERROR_MSG_SIZE 1024
+/**
+ * Formats the exception into the message buffer
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param severity information about the severity of the error
+ * @param reason the reason for the error
+ * @param description description of the error
+ * @param msg the buffer where the exception message should be formated in
+ */
+static void
+format_exception(const ExceptionType severity, const char *reason, const char *description, char *msg)
+{
+    int len;
+    memset(msg, 0, sizeof(ERROR_MSG_SIZE));
+
+#if defined(HAVE_SNPRINTF)
+    len = snprintf(msg, ERROR_MSG_SIZE, "%s%s%s",
+#else
+    len = sprintf(msg, "%.500s%s%.500s",
+#endif
+        GetLocaleExceptionMessage(severity, reason),
+        description ? ": " : "",
+        description ? GetLocaleExceptionMessage(severity, description) : "");
+
+    msg[len] = '\0';
+}
+
+
 /**
  * Call handle_exception if there is an exception to handle.
  *
@@ -1645,28 +1675,18 @@ rm_warning_handler(const ExceptionType severity, const char *reason, const char 
  *
  * No Ruby usage (internal function)
  *
- * @param severity information about the severity of the error (ignored)
+ * @param severity information about the severity of the error
  * @param reason the reason for the error
  * @param description description of the error
  */
 void
 rm_error_handler(const ExceptionType severity, const char *reason, const char *description)
 {
-    char msg[500];
-    int len;
-    ExceptionType dummy;
+    char msg[ERROR_MSG_SIZE];
 
-    memset(msg, 0, sizeof(msg));
-#if defined(HAVE_SNPRINTF)
-    len = snprintf(msg, sizeof(msg), "%s: `%s'", reason, description);
-#else
-    len = sprintf(msg, "%.250s: `%.240s'", reason, description);
-#endif
-    msg[len] = '\0';
+    format_exception(severity, reason, description, msg);
 
     rm_magick_error(msg);
-    dummy = severity;
-    dummy = dummy;
 }
 
 
@@ -1705,27 +1725,12 @@ rm_fatal_error_handler(const ExceptionType severity, const char *reason, const c
 static void
 handle_exception(ExceptionInfo *exception, Image *imglist, ErrorRetention retention)
 {
-
-    char reason[500];
-    char desc[500];
-    char msg[sizeof(reason)+sizeof(desc)+20];
-
-    memset(msg, 0, sizeof(msg));
-
+    char msg[ERROR_MSG_SIZE];
 
     // Handle simple warning
     if (exception->severity < ErrorException)
     {
-#if defined(HAVE_SNPRINTF)
-        snprintf(msg, sizeof(msg)-1, "RMagick: %s%s%s",
-#else
-        sprintf(msg, "RMagick: %.500s%s%.500s",
-#endif
-            GetLocaleExceptionMessage(exception->severity, exception->reason),
-            exception->description ? ": " : "",
-            exception->description ? GetLocaleExceptionMessage(exception->severity, exception->description) : "");
-        msg[sizeof(msg)-1] = '\0';
-        rb_warning("%s", msg);
+        rm_warning_handler(exception->severity, exception->reason, exception->description);
 
         // Caller deletes ExceptionInfo...
 
@@ -1750,40 +1755,11 @@ handle_exception(ExceptionInfo *exception, Image *imglist, ErrorRetention retent
         }
     }
 
-
-    // Clone the ExceptionInfo with all arguments on the stack.
-    memset(reason, 0, sizeof(reason));
-    memset(desc, 0, sizeof(desc));
-
-    if (exception->reason)
-    {
-        strncpy(reason, exception->reason, sizeof(reason)-1);
-        reason[sizeof(reason)-1] = '\0';
-    }
-    if (exception->description)
-    {
-        strncpy(desc, exception->description, sizeof(desc)-1);
-        desc[sizeof(desc)-1] = '\0';
-    }
-
-
-#if defined(HAVE_SNPRINTF)
-    snprintf(msg, sizeof(msg)-1, "%s%s%s",
-        GetLocaleExceptionMessage(exception->severity, reason),
-        desc[0] ? ": " : "",
-        desc[0] ? GetLocaleExceptionMessage(exception->severity, desc) : "");
-#else
-    sprintf(msg, "%.*s%s%.*s",
-        sizeof(reason)-1, GetLocaleExceptionMessage(exception->severity, reason),
-        desc[0] ? ": " : "",
-        sizeof(desc)-1, desc[0] ? GetLocaleExceptionMessage(exception->severity, desc) : "");
-#endif
-
-    msg[sizeof(msg)-1] = '\0';
+    format_exception(exception->severity, exception->reason, exception->description, msg);
 
     (void) DestroyExceptionInfo(exception);
-    rm_magick_error(msg);
 
+    rm_magick_error(msg);
 }
 
 
