@@ -4,6 +4,7 @@ cache:
   directories:
     - ~/.ccache
     - vendor/bundle
+    - build-ImageMagick
 
 os:
   - linux

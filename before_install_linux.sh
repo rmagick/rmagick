@@ -1,4 +1,4 @@
-set -euo pipefail
+set -euox pipefail
 
 sudo apt-get update
 
@@ -10,40 +10,57 @@ sudo apt-get install -y build-essential libx11-dev libxext-dev zlib1g-dev \
   liblcms2-dev libpng-dev libjpeg-dev libfreetype6-dev libxml2-dev \
   libtiff5-dev libwebp-dev vim ghostscript ccache
 
-if [ ! -d /usr/include/freetype ]; then
-  # If `/usr/include/freetype` is not existed, ImageMagick 6.7 configuration fails about Freetype.
-  sudo ln -sf /usr/include/freetype2 /usr/include/freetype
-fi
-
-if [ -v IMAGEMAGICK_VERSION ]; then
-  version=(${IMAGEMAGICK_VERSION//./ })
-  if (( "${version[0]}${version[1]}" >= 69 )); then
-    wget https://github.com/ImageMagick/ImageMagick6/archive/${IMAGEMAGICK_VERSION}.tar.gz
-    tar -xzf ${IMAGEMAGICK_VERSION}.tar.gz
-    cd ImageMagick6-${IMAGEMAGICK_VERSION}
-  else
-    wget http://www.imagemagick.org/download/releases/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz
-    tar -xf ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz
-    cd ImageMagick-${IMAGEMAGICK_VERSION}
-  fi
-else
+if [ ! -v IMAGEMAGICK_VERSION ]; then
   echo "you must specify an ImageMagick version."
   echo "example: 'IMAGEMAGICK_VERSION=6.8.9-10 bash ./before_install_linux.sh'"
   exit 1
 fi
 
-options="--with-magick-plus-plus=no --disable-docs"
-if [ -v CONFIGURE_OPTIONS ]; then
-  options="${CONFIGURE_OPTIONS} $options"
+if [ ! -d /usr/include/freetype ]; then
+  # If `/usr/include/freetype` is not existed, ImageMagick 6.7 configuration fails about Freetype.
+  sudo ln -sf /usr/include/freetype2 /usr/include/freetype
 fi
 
-CC="ccache cc" CXX="ccache c++" ./configure --prefix=/usr $options
+project_dir=`pwd`
+build_dir=${project_dir}/build-ImageMagick/ImageMagick-${IMAGEMAGICK_VERSION}
+if [ -v CONFIGURE_OPTIONS ]; then
+  build_dir=${build_dir}-${CONFIGURE_OPTIONS}
+fi
 
-make -j
+build_imagemagick() {
+  mkdir -p build-ImageMagick
+
+  version=(${IMAGEMAGICK_VERSION//./ })
+  if (( "${version[0]}${version[1]}" >= 69 )); then
+    wget https://github.com/ImageMagick/ImageMagick6/archive/${IMAGEMAGICK_VERSION}.tar.gz
+    tar -xf ${IMAGEMAGICK_VERSION}.tar.gz
+    mv ImageMagick6-${IMAGEMAGICK_VERSION} $build_dir
+  else
+    wget http://www.imagemagick.org/download/releases/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz
+    tar -xf ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz
+    mv ImageMagick-${IMAGEMAGICK_VERSION} $build_dir
+  fi
+
+  options="--with-magick-plus-plus=no --disable-docs"
+  if [ -v CONFIGURE_OPTIONS ]; then
+    options="${CONFIGURE_OPTIONS} $options"
+  fi
+
+  cd $build_dir
+  CC="ccache cc" CXX="ccache c++" ./configure --prefix=/usr $options
+  make -j
+}
+
+if [ ! -d $build_dir ]; then
+  build_imagemagick
+fi
+
+cd $build_dir
 sudo make install -j
-cd ..
+cd $project_dir
+
 sudo ldconfig
 
 gem install bundler
 
-set +u
+set +ux
