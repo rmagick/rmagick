@@ -359,6 +359,7 @@ ImageList_flatten_images(VALUE self)
  * @param argv array of input arguments
  * @param self this object
  * @return a new image
+ * @deprecated This method has been deprecated. Please use Image_fx.
  */
 VALUE
 ImageList_fx(int argc, VALUE *argv, VALUE self)
