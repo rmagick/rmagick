@@ -73,10 +73,12 @@ KernelInfo_initialize(VALUE self, VALUE kernel_string)
  *   - @verbatim KernelInfo#zero_nans @endverbatim
  *
  * @param self this object
+ * @deprecated This method has been deprecated.
  */
 VALUE
 KernelInfo_zero_nans(VALUE self)
 {
+  rb_warning("KernelInfo#zero_nans is deprecated");
   ZeroKernelNans((KernelInfo*)DATA_PTR(self));
   return Qnil;
 }
