@@ -7159,7 +7159,7 @@ Image_gray_q(VALUE self)
     return has_attribute(self, (MagickBooleanType (*)(const Image *, ExceptionInfo *))SetImageGray);
 #else
 #if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
-    return has_attribute(self, (MagickBooleanType (*)(const Image *, ExceptionInfo *))IsGrayImage);
+    return has_attribute(self, IsGrayImage);
 #else
     // For ImageMagick 6.7
     Image *image;
@@ -7174,7 +7174,7 @@ Image_gray_q(VALUE self)
         image->colorspace = RGBColorspace;
     }
 
-    ret = has_attribute(self, (MagickBooleanType (*)(const Image *, ExceptionInfo *))IsGrayImage);
+    ret = has_attribute(self, IsGrayImage);
     image->colorspace = colorspace;
     return ret;
 #endif
@@ -8938,7 +8938,7 @@ Image_monitor_eq(VALUE self, VALUE monitor)
 VALUE
 Image_monochrome_q(VALUE self)
 {
-    return has_attribute(self, (MagickBooleanType (*)(const Image *, ExceptionInfo *))IsMonochromeImage);
+    return has_attribute(self, IsMonochromeImage);
 }
 
 
