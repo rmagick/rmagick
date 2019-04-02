@@ -212,12 +212,20 @@ vertical_fill(
         PixelPacket *row_pixels;
 
         row_pixels = QueueAuthenticPixels(image, 0, y, image->columns, 1, exception);
-        CHECK_EXCEPTION()
+        if (rm_should_raise_exception(exception, RetainExceptionRetention))
+        {
+            xfree((void *)master);
+            rm_raise_exception(exception);
+        }
 
         memcpy(row_pixels, master, image->columns * sizeof(PixelPacket));
 
         SyncAuthenticPixels(image, exception);
-        CHECK_EXCEPTION()
+        if (rm_should_raise_exception(exception, RetainExceptionRetention))
+        {
+            xfree((void *)master);
+            rm_raise_exception(exception);
+        }
     }
 
     DestroyExceptionInfo(exception);
@@ -281,16 +289,25 @@ horizontal_fill(
         PixelPacket *col_pixels;
 
         col_pixels = QueueAuthenticPixels(image, x, 0, 1, image->rows, exception);
+        if (rm_should_raise_exception(exception, RetainExceptionRetention))
+        {
+            xfree((void *)master);
+            rm_raise_exception(exception);
+        }
 
         memcpy(col_pixels, master, image->rows * sizeof(PixelPacket));
 
         SyncAuthenticPixels(image, exception);
-        CHECK_EXCEPTION()
+        if (rm_should_raise_exception(exception, RetainExceptionRetention))
+        {
+            xfree((void *)master);
+            rm_raise_exception(exception);
+        }
     }
 
     DestroyExceptionInfo(exception);
 
-    xfree((PixelPacket *)master);
+    xfree((void *)master);
 }
 
 /**

@@ -1224,6 +1224,12 @@ typedef enum
     DestroyOnError = 1 /**< do not retain on error */
 } ErrorRetention;
 
+typedef enum
+{
+    RetainExceptionRetention,
+    DestroyExceptionRetention
+} ExceptionRetention;
+
 extern void   rm_check_image_exception(Image *, ErrorRetention);
 extern void   rm_check_exception(ExceptionInfo *, Image *, ErrorRetention);
 extern void   rm_ensure_result(Image *);
@@ -1235,5 +1241,7 @@ extern void   rm_get_optional_arguments(VALUE);
 extern void   rm_fatal_error_handler(const ExceptionType, const char *, const char *);
 extern void   rm_error_handler(const ExceptionType, const char *, const char *);
 extern void   rm_warning_handler(const ExceptionType, const char *, const char *);
+extern MagickBooleanType rm_should_raise_exception(ExceptionInfo *, const ExceptionRetention);
+extern void   rm_raise_exception(ExceptionInfo *);
 #endif
 
