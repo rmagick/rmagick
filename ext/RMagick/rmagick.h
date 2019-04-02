@@ -19,9 +19,6 @@
 #include <assert.h>
 #include <stdio.h>
 #include <ctype.h>
-#if defined(HAVE_STDINT_H)
-#include <stdint.h>
-#endif
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
