@@ -1212,7 +1212,6 @@ extern void   rm_get_geometry(VALUE, long *, long *, unsigned long *, unsigned l
 extern const char *rm_get_property(const Image *, const char *);
 extern MagickBooleanType rm_set_property(Image *, const char *, const char *);
 extern void   rm_set_user_artifact(Image *, Info *);
-void          rm_set_magick_pixel_packet(Pixel *, MagickPixel *);
 extern void   rm_sync_image_options(Image *, Info *);
 extern void   rm_split(Image *);
 extern void   rm_magick_error(const char *);

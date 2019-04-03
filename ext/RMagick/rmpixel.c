@@ -1018,6 +1018,28 @@ Pixel_to_HSL(VALUE self)
 
 
 /**
+ * Convert a Pixel to a MagickPixel.
+ *
+ * No Ruby usage (internal function)
+ *
+ * Notes:
+ *   - Same code as the private function SetMagickPixelPacket in ImageMagick.
+ *
+ * @param pixel the pixel
+ * @param pp the MagickPixel to be modified
+ */
+static void
+rm_set_magick_pixel_packet(Pixel *pixel, MagickPixel *pp)
+{
+    pp->red     = (MagickRealType) pixel->red;
+    pp->green   = (MagickRealType) pixel->green;
+    pp->blue    = (MagickRealType) pixel->blue;
+    pp->opacity = (MagickRealType) pixel->opacity;
+    pp->index   = (MagickRealType) 0.0;
+}
+
+
+/**
  * Return the color name corresponding to the pixel values.
  *
  * Ruby usage:
@@ -1148,27 +1170,5 @@ Pixel_to_s(VALUE self)
     sprintf(buff, "red=" QuantumFormat ", green=" QuantumFormat ", blue=" QuantumFormat ", opacity=" QuantumFormat
           , pixel->red, pixel->green, pixel->blue, pixel->opacity);
     return rb_str_new2(buff);
-}
-
-
-/**
- * Convert a PixelColor to a MagickPixel.
- *
- * No Ruby usage (internal function)
- *
- * Notes:
- *   - Same code as the private function SetMagickPixelPacket in ImageMagick.
- *
- * @param pixel the pixel
- * @param pp the MagickPixel to be modified
- */
-void
-rm_set_magick_pixel_packet(PixelColor *pixel, MagickPixel *pp)
-{
-    pp->red     = (MagickRealType) pixel->red;
-    pp->green   = (MagickRealType) pixel->green;
-    pp->blue    = (MagickRealType) pixel->blue;
-    pp->opacity = (MagickRealType) pixel->opacity;
-    pp->index   = (MagickRealType) 0.0;
 }
 
