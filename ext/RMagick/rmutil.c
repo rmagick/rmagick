@@ -751,6 +751,8 @@ rm_set_magickpixel(MagickPixel *pp, const char *color)
 
     exception = AcquireExceptionInfo();
     (void) QueryMagickColor(color, pp, exception);
+    // This exception is ignored because the color comes from places where we control
+    // the value and it is very unlikely that an exception will be thrown.
     (void) DestroyExceptionInfo(exception);
 }
 
