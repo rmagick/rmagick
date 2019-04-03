@@ -109,10 +109,12 @@ KernelInfo_unity_add(VALUE self, VALUE scale)
  *   - @verbatim KernelInfo#show @endverbatim
  *
  * @param self this object
+ * @deprecated This method has been deprecated.
  */
 VALUE
 KernelInfo_show(VALUE self)
 {
+  rb_warning("KernelInfo#show is deprecated");
   ShowKernelInfo((KernelInfo*)DATA_PTR(self));
   return Qnil;
 }
