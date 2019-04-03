@@ -1186,6 +1186,7 @@ extern VALUE  rm_cur_image(VALUE);
 extern VALUE  rm_pixelcolor_to_color_name(Image *, PixelColor *);
 extern VALUE  rm_pixelcolor_to_color_name_info(Info *, PixelColor *);
 extern void   rm_init_magickpixel(const Image *, MagickPixel *);
+extern void   rm_set_magickpixel(MagickPixel *, const char *);
 extern VALUE  rm_no_freeze(VALUE);
 extern int    rm_strcasecmp(const char *, const char *);
 extern int    rm_strncasecmp(const char *, const char *, size_t);
