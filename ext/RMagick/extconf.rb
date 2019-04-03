@@ -311,8 +311,6 @@ END_MINGW
         have_func(func, headers)
       end
 
-      have_type('long double', headers)
-
       # Miscellaneous constants
       $defs.push("-DRUBY_VERSION_STRING=\"ruby #{RUBY_VERSION}\"")
       $defs.push("-DRMAGICK_VERSION_STRING=\"RMagick #{RMAGICK_VERS}\"")
