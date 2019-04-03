@@ -737,6 +737,24 @@ rm_init_magickpixel(const Image *image, MagickPixel *pp)
 }
 
 /**
+ * Initializes the MagickPixel structure to the specified color.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param pp the MagickPixel
+ * @param color the color
+ */
+void
+rm_set_magickpixel(MagickPixel *pp, const char *color)
+{
+    ExceptionInfo *exception;
+
+    exception = AcquireExceptionInfo();
+    (void) QueryMagickColor(color, pp, exception);
+    (void) DestroyExceptionInfo(exception);
+}
+
+/**
  * Write a temporary copy of the image to the IM registry.
  *
  * No Ruby usage (internal function)

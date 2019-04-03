@@ -7857,6 +7857,9 @@ Image_level_colors(int argc, VALUE *argv, VALUE self)
 
     channels = extract_channels(&argc, argv);
 
+    rm_init_magickpixel(image, &white_color);
+    rm_init_magickpixel(image, &black_color);
+
     switch (argc)
     {
         case 3:
@@ -7868,27 +7871,13 @@ Image_level_colors(int argc, VALUE *argv, VALUE self)
             break;
 
         case 1:
+            rm_set_magickpixel(&white_color, "white");
             Color_to_MagickPixel(image, &black_color, argv[0]);
-            exception = AcquireExceptionInfo();
-
-            rm_init_magickpixel(image, &white_color);
-            (void) QueryMagickColor("white", &white_color, exception);
-            CHECK_EXCEPTION()
-
-            DestroyExceptionInfo(exception);
+            break;
 
         case 0:
-            exception = AcquireExceptionInfo();
-
-            rm_init_magickpixel(image, &white_color);
-            (void) QueryMagickColor("white", &white_color, exception);
-            CHECK_EXCEPTION()
-
-            rm_init_magickpixel(image, &black_color);
-            (void) QueryMagickColor("black", &black_color, exception);
-            CHECK_EXCEPTION()
-
-            DestroyExceptionInfo(exception);
+            rm_set_magickpixel(&white_color, "white");
+            rm_set_magickpixel(&black_color, "black");
             break;
 
         default:
