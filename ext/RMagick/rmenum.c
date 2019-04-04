@@ -377,10 +377,10 @@ ClassType_new(ClassType cls)
 
     switch(cls)
     {
-        default:
-        ENUM_SET_NAME(UndefinedClass)
         ENUM_SET_NAME(DirectClass)
         ENUM_SET_NAME(PseudoClass)
+        default:
+        ENUM_SET_NAME(UndefinedClass)
     }
 
     return rm_enum_new(Class_ClassType, ID2SYM(rb_intern(name)), INT2FIX(cls));
@@ -402,8 +402,6 @@ ColorspaceType_new(ColorspaceType cs)
 
     switch(cs)
     {
-        default:
-        ENUM_SET_NAME(UndefinedColorspace)
         ENUM_SET_NAME(RGBColorspace)
         ENUM_SET_NAME(GRAYColorspace)
         ENUM_SET_NAME(TransparentColorspace)
@@ -435,6 +433,8 @@ ColorspaceType_new(ColorspaceType cs)
         ENUM_SET_NAME(YDbDrColorspace)
         ENUM_SET_NAME(xyYColorspace)
 #endif
+        default:
+        ENUM_SET_NAME(UndefinedColorspace)
     }
 
     return rm_enum_new(Class_ColorspaceType, ID2SYM(rb_intern(name)), INT2FIX(cs));
@@ -630,7 +630,6 @@ CompressionType_name(CompressionType ct)
 {
     switch (ct)
     {
-        ENUM_TO_NAME(UndefinedCompression)
         ENUM_TO_NAME(NoCompression)
         ENUM_TO_NAME(B44Compression)
         ENUM_TO_NAME(B44ACompression)
@@ -652,9 +651,9 @@ CompressionType_name(CompressionType ct)
         ENUM_TO_NAME(LZMACompression)
         ENUM_TO_NAME(JBIG1Compression)
         ENUM_TO_NAME(JBIG2Compression)
+        default:
+        ENUM_TO_NAME(UndefinedCompression)
     }
-
-    return "UndefinedCompression";
 }
 
 
@@ -687,13 +686,12 @@ DisposeType_name(DisposeType type)
 {
     switch(type)
     {
-        ENUM_TO_NAME(UndefinedDispose)
         ENUM_TO_NAME(BackgroundDispose)
         ENUM_TO_NAME(NoneDispose)
         ENUM_TO_NAME(PreviousDispose)
+        default:
+        ENUM_TO_NAME(UndefinedDispose)
     }
-
-    return "UndefinedDispose";
 }
 
 
@@ -726,11 +724,11 @@ EndianType_name(EndianType type)
 {
     switch(type)
     {
-        ENUM_TO_NAME(UndefinedEndian)
         ENUM_TO_NAME(LSBEndian)
         ENUM_TO_NAME(MSBEndian)
+        default:
+        ENUM_TO_NAME(UndefinedEndian)
     }
-    return "UndefinedEndian";
 }
 
 
@@ -763,7 +761,6 @@ FilterTypes_name(FilterTypes type)
 {
     switch(type)
     {
-        ENUM_TO_NAME(UndefinedFilter)
         ENUM_TO_NAME(PointFilter)
         ENUM_TO_NAME(BoxFilter)
         ENUM_TO_NAME(TriangleFilter)
@@ -797,12 +794,9 @@ FilterTypes_name(FilterTypes type)
 #if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
         ENUM_TO_NAME(LanczosRadiusFilter)
 #endif
-        // not a real filter name - defeat gcc warning message
-        case SentinelFilter:
-            break;
+        default:
+        ENUM_TO_NAME(UndefinedFilter)
     }
-
-    return "UndefinedFilter";
 }
 
 
@@ -835,7 +829,6 @@ GravityType_name(GravityType type)
 {
     switch(type)
     {
-        ENUM_TO_NAME(ForgetGravity)
         ENUM_TO_NAME(NorthWestGravity)
         ENUM_TO_NAME(NorthGravity)
         ENUM_TO_NAME(NorthEastGravity)
@@ -846,10 +839,9 @@ GravityType_name(GravityType type)
         ENUM_TO_NAME(SouthGravity)
         ENUM_TO_NAME(SouthEastGravity)
         ENUM_TO_NAME(StaticGravity)
+        default:
+        ENUM_TO_NAME(UndefinedGravity)
     }
-
-    // Defeat "duplicate case value" error.
-    return "UndefinedGravity";
 }
 
 
@@ -882,7 +874,6 @@ ImageLayerMethod_name(ImageLayerMethod method)
 {
     switch(method)
     {
-        ENUM_TO_NAME(UndefinedLayer)
         ENUM_TO_NAME(CompareAnyLayer)
         ENUM_TO_NAME(CompareClearLayer)
         ENUM_TO_NAME(CompareOverlayLayer)
@@ -899,9 +890,9 @@ ImageLayerMethod_name(ImageLayerMethod method)
         ENUM_TO_NAME(MosaicLayer)
         ENUM_TO_NAME(FlattenLayer)
         ENUM_TO_NAME(TrimBoundsLayer)
+        default:
+        ENUM_TO_NAME(UndefinedLayer)
     }
-
-    return "UndefinedLayer";
 }
 
 
@@ -934,7 +925,6 @@ ImageType_name(ImageType type)
 {
     switch(type)
     {
-        ENUM_TO_NAME(UndefinedType)
         ENUM_TO_NAME(BilevelType)
         ENUM_TO_NAME(GrayscaleType)
         ENUM_TO_NAME(GrayscaleMatteType)
@@ -946,9 +936,9 @@ ImageType_name(ImageType type)
         ENUM_TO_NAME(ColorSeparationMatteType)
         ENUM_TO_NAME(OptimizeType)
         ENUM_TO_NAME(PaletteBilevelMatteType)
+        default:
+        ENUM_TO_NAME(UndefinedType)
     }
-
-    return "UndefinedType";
 }
 
 
@@ -981,7 +971,6 @@ InterlaceType_name(InterlaceType interlace)
 {
     switch(interlace)
     {
-        ENUM_TO_NAME(UndefinedInterlace)
         ENUM_TO_NAME(GIFInterlace)
         ENUM_TO_NAME(JPEGInterlace)
         ENUM_TO_NAME(PNGInterlace)
@@ -989,9 +978,9 @@ InterlaceType_name(InterlaceType interlace)
         ENUM_TO_NAME(LineInterlace)
         ENUM_TO_NAME(PlaneInterlace)
         ENUM_TO_NAME(PartitionInterlace)
+        default:
+        ENUM_TO_NAME(UndefinedInterlace)
     }
-
-    return "UndefinedInterlace";
 }
 
 
@@ -1024,7 +1013,6 @@ InterpolatePixelMethod_name(InterpolatePixelMethod interpolate)
 {
     switch(interpolate)
     {
-        ENUM_TO_NAME(UndefinedInterpolatePixel)
         ENUM_TO_NAME(AverageInterpolatePixel)
         ENUM_TO_NAME(BicubicInterpolatePixel)
         ENUM_TO_NAME(BilinearInterpolatePixel)
@@ -1038,9 +1026,9 @@ InterpolatePixelMethod_name(InterpolatePixelMethod interpolate)
         ENUM_TO_NAME(BlendInterpolatePixel)
         ENUM_TO_NAME(BackgroundInterpolatePixel)
         ENUM_TO_NAME(CatromInterpolatePixel)
+        default:
+        ENUM_TO_NAME(UndefinedInterpolatePixel)
     }
-
-    return "UndefinedInterpolatePixel";
 }
 
 
@@ -1073,7 +1061,6 @@ OrientationType_name(OrientationType type)
 {
     switch(type)
     {
-        ENUM_TO_NAME(UndefinedOrientation)
         ENUM_TO_NAME(TopLeftOrientation)
         ENUM_TO_NAME(TopRightOrientation)
         ENUM_TO_NAME(BottomRightOrientation)
@@ -1082,9 +1069,9 @@ OrientationType_name(OrientationType type)
         ENUM_TO_NAME(RightTopOrientation)
         ENUM_TO_NAME(RightBottomOrientation)
         ENUM_TO_NAME(LeftBottomOrientation)
+        default:
+        ENUM_TO_NAME(UndefinedOrientation)
     }
-
-    return "UndefinedOrientation";
 }
 
 
@@ -1117,14 +1104,13 @@ RenderingIntent_name(RenderingIntent intent)
 {
     switch(intent)
     {
-        ENUM_TO_NAME(UndefinedIntent)
         ENUM_TO_NAME(SaturationIntent)
         ENUM_TO_NAME(PerceptualIntent)
         ENUM_TO_NAME(AbsoluteIntent)
         ENUM_TO_NAME(RelativeIntent)
+        default:
+        ENUM_TO_NAME(UndefinedIntent)
     }
-
-    return "UndefinedIntent";
 }
 
 
@@ -1157,12 +1143,11 @@ ResolutionType_name(ResolutionType type)
 {
     switch(type)
     {
-        ENUM_TO_NAME(UndefinedResolution)
         ENUM_TO_NAME(PixelsPerInchResolution)
         ENUM_TO_NAME(PixelsPerCentimeterResolution)
+        default:
+        ENUM_TO_NAME(UndefinedResolution)
     }
-
-    return "UndefinedResolution";
 }
 
 
@@ -1195,7 +1180,6 @@ StorageType_name(StorageType type)
 {
     switch (type)
     {
-        ENUM_TO_NAME(UndefinedPixel)
         ENUM_TO_NAME(CharPixel)
         ENUM_TO_NAME(DoublePixel)
         ENUM_TO_NAME(FloatPixel)
@@ -1203,9 +1187,9 @@ StorageType_name(StorageType type)
         ENUM_TO_NAME(LongPixel)
         ENUM_TO_NAME(QuantumPixel)
         ENUM_TO_NAME(ShortPixel)
+        default:
+        ENUM_TO_NAME(UndefinedPixel)
     }
-
-    return "UndefinedPixel";
 }
 
 
@@ -1222,7 +1206,6 @@ StretchType_name(StretchType stretch)
 {
     switch (stretch)
     {
-        ENUM_TO_NAME(UndefinedStretch)
         ENUM_TO_NAME(NormalStretch)
         ENUM_TO_NAME(UltraCondensedStretch)
         ENUM_TO_NAME(ExtraCondensedStretch)
@@ -1233,9 +1216,9 @@ StretchType_name(StretchType stretch)
         ENUM_TO_NAME(ExtraExpandedStretch)
         ENUM_TO_NAME(UltraExpandedStretch)
         ENUM_TO_NAME(AnyStretch)
+        default:
+        ENUM_TO_NAME(UndefinedStretch)
     }
-
-    return "UndefinedStretch";
 }
 
 
@@ -1268,14 +1251,13 @@ StyleType_name(StyleType style)
 {
     switch (style)
     {
-        ENUM_TO_NAME(UndefinedStyle)
         ENUM_TO_NAME(NormalStyle)
         ENUM_TO_NAME(ItalicStyle)
         ENUM_TO_NAME(ObliqueStyle)
         ENUM_TO_NAME(AnyStyle)
+        default:
+        ENUM_TO_NAME(UndefinedStyle)
     }
-
-    return "UndefinedStyle";
 }
 
 
@@ -1308,7 +1290,6 @@ VirtualPixelMethod_name(VirtualPixelMethod method)
 {
     switch (method)
     {
-        ENUM_TO_NAME(UndefinedVirtualPixelMethod)
         ENUM_TO_NAME(EdgeVirtualPixelMethod)
         ENUM_TO_NAME(MirrorVirtualPixelMethod)
         ENUM_TO_NAME(TileVirtualPixelMethod)
@@ -1326,9 +1307,9 @@ VirtualPixelMethod_name(VirtualPixelMethod method)
         ENUM_TO_NAME(HorizontalTileEdgeVirtualPixelMethod)
         ENUM_TO_NAME(VerticalTileEdgeVirtualPixelMethod)
         ENUM_TO_NAME(CheckerTileVirtualPixelMethod)
+        default:
+        ENUM_TO_NAME(UndefinedVirtualPixelMethod)
     }
-
-    return "UndefinedVirtualPixelMethod";
 }
 
 
