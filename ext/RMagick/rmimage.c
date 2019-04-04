@@ -2544,13 +2544,16 @@ Image_color_histogram(VALUE self)
         }
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
-    if (exception->severity != UndefinedException)
+    if (rm_should_raise_exception(exception, DestroyExceptionRetention))
     {
         (void) RelinquishMagickMemory(histogram);
-        rm_check_exception(exception, dc_copy, DestroyOnError);
-    }
+        if (dc_copy)
+        {
+            (void) DestroyImage(dc_copy);
+        }
 
-    (void) DestroyExceptionInfo(exception);
+        rm_raise_exception(exception);
+    }
 
     hash = rb_hash_new();
     for (x = 0; x < colors; x++)
