@@ -882,8 +882,11 @@ Init_RMagick2(void)
         ENUMERATOR(RightAlign)
     END_ENUM
 
-    // AlphaChannelType constants
+#if defined(IMAGEMAGICK_7)
+    DEF_ENUM(AlphaChannelOption)
+#else
     DEF_ENUM(AlphaChannelType)
+#endif
         ENUMERATOR(UndefinedAlphaChannel)
         ENUMERATOR(ActivateAlphaChannel)
         ENUMERATOR(DeactivateAlphaChannel)
@@ -1108,8 +1111,11 @@ Init_RMagick2(void)
         ENUMERATOR(PreviousDispose)
     END_ENUM
 
-    // DistortImage "method" argument values
+#if defined(IMAGEMAGICK_7)
+    DEF_ENUM(DistortMethod)
+#else
     DEF_ENUM(DistortImageMethod)
+#endif
         ENUMERATOR(UndefinedDistortion)
         ENUMERATOR(AffineDistortion)
         ENUMERATOR(AffineProjectionDistortion)
@@ -1145,8 +1151,11 @@ Init_RMagick2(void)
         ENUMERATOR(MSBEndian)
     END_ENUM
 
-    // FilterTypes constants
+#if defined(IMAGEMAGICK_7)
+    DEF_ENUM(FilterType)
+#else
     DEF_ENUM(FilterTypes)
+#endif
         ENUMERATOR(UndefinedFilter)
         ENUMERATOR(PointFilter)
         ENUMERATOR(BoxFilter)
@@ -1227,7 +1236,11 @@ Init_RMagick2(void)
         ENUMERATOR(PNGInterlace)
     END_ENUM
 
+#if defined(IMAGEMAGICK_7)
+    DEF_ENUM(PixelInterpolateMethod)
+#else
     DEF_ENUM(InterpolatePixelMethod)
+#endif
         ENUMERATOR(UndefinedInterpolatePixel)
         ENUMERATOR(AverageInterpolatePixel)
         ENUMERATOR(BicubicInterpolatePixel)
@@ -1252,7 +1265,11 @@ Init_RMagick2(void)
         ENUMERATOR(ArctanFunction)
     END_ENUM
 
+#if defined(IMAGEMAGICK_7)
+    DEF_ENUM(LayerMethod)
+#else
     DEF_ENUM(ImageLayerMethod)
+#endif
         ENUMERATOR(UndefinedLayer)
         ENUMERATOR(CompareAnyLayer)
         ENUMERATOR(CompareClearLayer)

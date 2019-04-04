@@ -415,8 +415,6 @@ ColorspaceType_new(ColorspaceType cs)
         ENUM_SET_NAME(CMYKColorspace)
         ENUM_SET_NAME(sRGBColorspace)
         ENUM_SET_NAME(Rec601YCbCrColorspace)
-        ENUM_SET_NAME(Rec601LumaColorspace)
-        ENUM_SET_NAME(Rec709LumaColorspace)
         ENUM_SET_NAME(Rec709YCbCrColorspace)
         ENUM_SET_NAME(CMYColorspace)
 #if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
@@ -433,12 +431,15 @@ ColorspaceType_new(ColorspaceType cs)
         ENUM_SET_NAME(YDbDrColorspace)
         ENUM_SET_NAME(xyYColorspace)
 #endif
+#if !defined(IMAGEMAGICK_7)
+        ENUM_SET_NAME(Rec601LumaColorspace)
+        ENUM_SET_NAME(Rec709LumaColorspace)
+#endif
         default:
         ENUM_SET_NAME(UndefinedColorspace)
     }
 
     return rm_enum_new(Class_ColorspaceType, ID2SYM(rb_intern(name)), INT2FIX(cs));
-
 }
 
 
@@ -525,7 +526,6 @@ CompositeOperator_name(CompositeOperator op)
 {
     switch (op)
     {
-        ENUM_TO_NAME(AddCompositeOp)
         ENUM_TO_NAME(AtopCompositeOp)
         ENUM_TO_NAME(BlendCompositeOp)
         ENUM_TO_NAME(BlurCompositeOp)
@@ -542,12 +542,10 @@ CompositeOperator_name(CompositeOperator op)
         ENUM_TO_NAME(CopyYellowCompositeOp)
         ENUM_TO_NAME(CopyBlackCompositeOp)
         ENUM_TO_NAME(CopyGreenCompositeOp)
-        ENUM_TO_NAME(CopyOpacityCompositeOp)
         ENUM_TO_NAME(CopyRedCompositeOp)
         ENUM_TO_NAME(DarkenCompositeOp)
         ENUM_TO_NAME(DarkenIntensityCompositeOp)
         ENUM_TO_NAME(DistortCompositeOp)
-        ENUM_TO_NAME(DivideCompositeOp)
         ENUM_TO_NAME(DivideSrcCompositeOp)
         ENUM_TO_NAME(DstAtopCompositeOp)
         ENUM_TO_NAME(DstCompositeOp)
@@ -559,9 +557,6 @@ CompositeOperator_name(CompositeOperator op)
         ENUM_TO_NAME(DissolveCompositeOp)
         ENUM_TO_NAME(ExclusionCompositeOp)
         ENUM_TO_NAME(HardLightCompositeOp)
-#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
-        ENUM_TO_NAME(HardMixCompositeOp)
-#endif
         ENUM_TO_NAME(HueCompositeOp)
         ENUM_TO_NAME(InCompositeOp)
         ENUM_TO_NAME(LightenCompositeOp)
@@ -571,7 +566,6 @@ CompositeOperator_name(CompositeOperator op)
         ENUM_TO_NAME(LinearLightCompositeOp)
         ENUM_TO_NAME(LuminizeCompositeOp)
         ENUM_TO_NAME(MathematicsCompositeOp)
-        ENUM_TO_NAME(MinusCompositeOp)
         ENUM_TO_NAME(MinusSrcCompositeOp)
         ENUM_TO_NAME(ModulateCompositeOp)
         ENUM_TO_NAME(MultiplyCompositeOp)
@@ -591,10 +585,27 @@ CompositeOperator_name(CompositeOperator op)
         ENUM_TO_NAME(SrcInCompositeOp)
         ENUM_TO_NAME(SrcOutCompositeOp)
         ENUM_TO_NAME(SrcOverCompositeOp)
-        ENUM_TO_NAME(SubtractCompositeOp)
         ENUM_TO_NAME(ThresholdCompositeOp)
         ENUM_TO_NAME(VividLightCompositeOp)
         ENUM_TO_NAME(XorCompositeOp)
+#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
+        ENUM_TO_NAME(HardMixCompositeOp)
+#endif
+#if defined(IMAGEMAGICK_7)
+        ENUM_TO_NAME(AlphaCompositeOp)
+        ENUM_TO_NAME(CopyAlphaCompositeOp)
+        ENUM_TO_NAME(DivideDstCompositeOp)
+        ENUM_TO_NAME(MinusDstCompositeOp)
+        ENUM_TO_NAME(ModulusAddCompositeOp)
+        ENUM_TO_NAME(ModulusSubtractCompositeOp)
+        ENUM_TO_NAME(StereoCompositeOp)
+#else
+        ENUM_TO_NAME(AddCompositeOp)
+        ENUM_TO_NAME(CopyOpacityCompositeOp)
+        ENUM_TO_NAME(DivideCompositeOp)
+        ENUM_TO_NAME(MinusCompositeOp)
+        ENUM_TO_NAME(SubtractCompositeOp)
+#endif
         default:
         ENUM_TO_NAME(UndefinedCompositeOp)
     }
@@ -747,7 +758,18 @@ EndianType_new(EndianType type)
     return rm_enum_new(Class_EndianType, ID2SYM(rb_intern(name)), INT2FIX(type));
 }
 
-
+#if defined(IMAGEMAGICK_7)
+/**
+ * Return the name of a FilterType enum as a string.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param type the FilterType
+ * @return the name
+ */
+static const char *
+FilterType_name(FilterType type)
+#else
 /**
  * Return the name of a FilterTypes enum as a string.
  *
@@ -758,6 +780,7 @@ EndianType_new(EndianType type)
  */
 static const char *
 FilterTypes_name(FilterTypes type)
+#endif
 {
     switch(type)
     {
@@ -800,6 +823,22 @@ FilterTypes_name(FilterTypes type)
 }
 
 
+#if defined(IMAGEMAGICK_7)
+/**
+ * Construct an FilterType enum object for the specified value.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param type the FilterType
+ * @return a new FilterType enumerator
+ */
+VALUE
+FilterType_new(FilterType type)
+{
+    const char *name = FilterType_name(type);
+    return rm_enum_new(Class_FilterType, ID2SYM(rb_intern(name)), INT2FIX(type));
+}
+#else
 /**
  * Construct an FilterTypes enum object for the specified value.
  *
@@ -814,6 +853,7 @@ FilterTypes_new(FilterTypes type)
     const char *name = FilterTypes_name(type);
     return rm_enum_new(Class_FilterTypes, ID2SYM(rb_intern(name)), INT2FIX(type));
 }
+#endif
 
 
 /**
@@ -838,7 +878,9 @@ GravityType_name(GravityType type)
         ENUM_TO_NAME(SouthWestGravity)
         ENUM_TO_NAME(SouthGravity)
         ENUM_TO_NAME(SouthEastGravity)
+#if !defined(IMAGEMAGICK_7)
         ENUM_TO_NAME(StaticGravity)
+#endif
         default:
         ENUM_TO_NAME(UndefinedGravity)
     }
@@ -861,6 +903,18 @@ GravityType_new(GravityType type)
 }
 
 
+#if defined(IMAGEMAGICK_7)
+/**
+ * Return the name of a LayerMethod enum as a string.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param method the LayerMethod
+ * @return the name
+ */
+static const char *
+LayerMethod_name(LayerMethod method)
+#else
 /**
  * Return the name of a ImageLayerMethod enum as a string.
  *
@@ -871,6 +925,7 @@ GravityType_new(GravityType type)
  */
 static const char *
 ImageLayerMethod_name(ImageLayerMethod method)
+#endif
 {
     switch(method)
     {
@@ -896,6 +951,22 @@ ImageLayerMethod_name(ImageLayerMethod method)
 }
 
 
+#if defined(IMAGEMAGICK_7)
+/**
+ * Construct an LayerMethod enum object for the specified value.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param method the LayerMethod
+ * @return a new LayerMethod enumerator
+ */
+VALUE
+LayerMethod_new(LayerMethod method)
+{
+    const char *name = LayerMethod_name(method);
+    return rm_enum_new(Class_LayerMethod, ID2SYM(rb_intern(name)), INT2FIX(method));
+}
+#else
 /**
  * Construct an ImageLayerMethod enum object for the specified value.
  *
@@ -910,6 +981,7 @@ ImageLayerMethod_new(ImageLayerMethod method)
     const char *name = ImageLayerMethod_name(method);
     return rm_enum_new(Class_ImageLayerMethod, ID2SYM(rb_intern(name)), INT2FIX(method));
 }
+#endif
 
 
 /**
@@ -926,16 +998,24 @@ ImageType_name(ImageType type)
     switch(type)
     {
         ENUM_TO_NAME(BilevelType)
-        ENUM_TO_NAME(GrayscaleType)
-        ENUM_TO_NAME(GrayscaleMatteType)
-        ENUM_TO_NAME(PaletteType)
-        ENUM_TO_NAME(PaletteMatteType)
-        ENUM_TO_NAME(TrueColorType)
-        ENUM_TO_NAME(TrueColorMatteType)
         ENUM_TO_NAME(ColorSeparationType)
-        ENUM_TO_NAME(ColorSeparationMatteType)
+        ENUM_TO_NAME(GrayscaleType)
         ENUM_TO_NAME(OptimizeType)
+        ENUM_TO_NAME(PaletteType)
+        ENUM_TO_NAME(TrueColorType)
+#if defined(IMAGEMAGICK_7)
+        ENUM_TO_NAME(ColorSeparationAlphaType)
+        ENUM_TO_NAME(GrayscaleAlphaType)
+        ENUM_TO_NAME(PaletteBilevelAlphaType)
+        ENUM_TO_NAME(PaletteAlphaType)
+        ENUM_TO_NAME(TrueColorAlphaType)
+#else
+        ENUM_TO_NAME(ColorSeparationMatteType)
+        ENUM_TO_NAME(GrayscaleMatteType)
         ENUM_TO_NAME(PaletteBilevelMatteType)
+        ENUM_TO_NAME(PaletteMatteType)
+        ENUM_TO_NAME(TrueColorMatteType)
+#endif
         default:
         ENUM_TO_NAME(UndefinedType)
     }
@@ -1000,6 +1080,7 @@ InterlaceType_new(InterlaceType interlace)
 }
 
 
+#if !defined(IMAGEMAGICK_7)
 /**
  * Return the name of a InterpolatePixelMethod enum as a string.
  *
@@ -1046,6 +1127,7 @@ InterpolatePixelMethod_new(InterpolatePixelMethod interpolate)
     const char *name = InterpolatePixelMethod_name(interpolate);
     return rm_enum_new(Class_InterpolatePixelMethod, ID2SYM(rb_intern(name)), INT2FIX(interpolate));
 }
+#endif
 
 
 /**
@@ -1089,6 +1171,54 @@ OrientationType_new(OrientationType type)
     const char *name = OrientationType_name(type);
     return rm_enum_new(Class_OrientationType, ID2SYM(rb_intern(name)), INT2FIX(type));
 }
+
+
+#if defined(IMAGEMAGICK_7)
+/**
+ * Return the name of a PixelInterpolateMethod enum as a string.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param interpolate the PixelInterpolateMethod
+ * @return the name
+ */
+static const char *
+PixelInterpolateMethod_name(PixelInterpolateMethod interpolate)
+{
+    switch(interpolate)
+    {
+        ENUM_TO_NAME(Average16InterpolatePixel)
+        ENUM_TO_NAME(Average9InterpolatePixel)
+        ENUM_TO_NAME(AverageInterpolatePixel)
+        ENUM_TO_NAME(BackgroundInterpolatePixel)
+        ENUM_TO_NAME(BilinearInterpolatePixel)
+        ENUM_TO_NAME(BlendInterpolatePixel)
+        ENUM_TO_NAME(CatromInterpolatePixel)
+        ENUM_TO_NAME(IntegerInterpolatePixel)
+        ENUM_TO_NAME(MeshInterpolatePixel)
+        ENUM_TO_NAME(NearestInterpolatePixel)
+        ENUM_TO_NAME(SplineInterpolatePixel)
+        default:
+        ENUM_TO_NAME(UndefinedInterpolatePixel)
+    }
+}
+
+
+/**
+ * Construct an PixelInterpolateMethod enum object for the specified value.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param interpolate the PixelInterpolateMethod
+ * @return a new PixelInterpolateMethod enumerator
+ */
+VALUE
+PixelInterpolateMethod_new(PixelInterpolateMethod interpolate)
+{
+    const char *name = PixelInterpolateMethod_name(interpolate);
+    return rm_enum_new(Class_PixelInterpolateMethod, ID2SYM(rb_intern(name)), INT2FIX(interpolate));
+}
+#endif
 
 
 /**
@@ -1183,10 +1313,14 @@ StorageType_name(StorageType type)
         ENUM_TO_NAME(CharPixel)
         ENUM_TO_NAME(DoublePixel)
         ENUM_TO_NAME(FloatPixel)
-        ENUM_TO_NAME(IntegerPixel)
         ENUM_TO_NAME(LongPixel)
         ENUM_TO_NAME(QuantumPixel)
         ENUM_TO_NAME(ShortPixel)
+#if defined(IMAGEMAGICK_7)
+        ENUM_TO_NAME(LongLongPixel)
+#else
+        ENUM_TO_NAME(IntegerPixel)
+#endif
         default:
         ENUM_TO_NAME(UndefinedPixel)
     }
@@ -1297,7 +1431,6 @@ VirtualPixelMethod_name(VirtualPixelMethod method)
         ENUM_TO_NAME(BackgroundVirtualPixelMethod)
         ENUM_TO_NAME(DitherVirtualPixelMethod)
         ENUM_TO_NAME(RandomVirtualPixelMethod)
-        ENUM_TO_NAME(ConstantVirtualPixelMethod)
         ENUM_TO_NAME(MaskVirtualPixelMethod)
         ENUM_TO_NAME(BlackVirtualPixelMethod)
         ENUM_TO_NAME(GrayVirtualPixelMethod)
@@ -1307,6 +1440,9 @@ VirtualPixelMethod_name(VirtualPixelMethod method)
         ENUM_TO_NAME(HorizontalTileEdgeVirtualPixelMethod)
         ENUM_TO_NAME(VerticalTileEdgeVirtualPixelMethod)
         ENUM_TO_NAME(CheckerTileVirtualPixelMethod)
+#if !defined(IMAGEMAGICK_7)
+        ENUM_TO_NAME(ConstantVirtualPixelMethod)
+#endif
         default:
         ENUM_TO_NAME(UndefinedVirtualPixelMethod)
     }

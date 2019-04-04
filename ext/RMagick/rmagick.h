@@ -295,7 +295,6 @@ EXTERN VALUE Class_QuantumExpressionOperator;
 // Enum classes
 EXTERN VALUE Class_Enum;
 EXTERN VALUE Class_AlignType;
-EXTERN VALUE Class_AlphaChannelType;
 EXTERN VALUE Class_AnchorType;
 EXTERN VALUE Class_ChannelType;
 EXTERN VALUE Class_ClassType;
@@ -305,15 +304,11 @@ EXTERN VALUE Class_CompositeOperator;
 EXTERN VALUE Class_CompressionType;
 EXTERN VALUE Class_DecorationType;
 EXTERN VALUE Class_DisposeType;
-EXTERN VALUE Class_DistortImageMethod;
 EXTERN VALUE Class_DitherMethod;
 EXTERN VALUE Class_EndianType;
-EXTERN VALUE Class_FilterTypes;
 EXTERN VALUE Class_GravityType;
 EXTERN VALUE Class_ImageType;
 EXTERN VALUE Class_InterlaceType;
-EXTERN VALUE Class_InterpolatePixelMethod;
-EXTERN VALUE Class_ImageLayerMethod;
 EXTERN VALUE Class_MagickFunction;
 EXTERN VALUE Class_NoiseType;
 EXTERN VALUE Class_OrientationType;
@@ -331,6 +326,19 @@ EXTERN VALUE Class_VirtualPixelMethod;
 EXTERN VALUE Class_GeometryFlags;
 EXTERN VALUE Class_MorphologyMethod;
 EXTERN VALUE Class_KernelInfoType;
+#if defined(IMAGEMAGICK_7)
+EXTERN VALUE Class_AlphaChannelOption;
+EXTERN VALUE Class_DistortMethod;
+EXTERN VALUE Class_FilterType;
+EXTERN VALUE Class_LayerMethod;
+EXTERN VALUE Class_PixelInterpolateMethod;
+#else
+EXTERN VALUE Class_AlphaChannelType;
+EXTERN VALUE Class_DistortImageMethod;
+EXTERN VALUE Class_FilterTypes;
+EXTERN VALUE Class_ImageLayerMethod;
+EXTERN VALUE Class_InterpolatePixelMethod;
+#endif
 
 /**
 *   Commonly-used IDs
