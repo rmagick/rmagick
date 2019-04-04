@@ -2529,10 +2529,7 @@ Image_color_histogram(VALUE self)
     if (image->storage_class != DirectClass)
     {
         dc_copy = rm_clone_image(image);
-        (void) SyncImage(dc_copy);
-        magick_free(dc_copy->colormap);
-        dc_copy->colormap = NULL;
-        dc_copy->storage_class = DirectClass;
+        (void) SetImageStorageClass(dc_copy, DirectClass);
         image = dc_copy;
     }
 
