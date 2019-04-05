@@ -67,23 +67,6 @@ KernelInfo_initialize(VALUE self, VALUE kernel_string)
 }
 
 /**
- * Zero kerne NaNs.
- *
- * Ruby usage:
- *   - @verbatim KernelInfo#zero_nans @endverbatim
- *
- * @param self this object
- * @deprecated This method has been deprecated.
- */
-VALUE
-KernelInfo_zero_nans(VALUE self)
-{
-    rb_warning("KernelInfo#zero_nans is deprecated");
-    ZeroKernelNans((KernelInfo*)DATA_PTR(self));
-    return Qnil;
-}
-
-/**
  * Adds a given amount of the 'Unity' Convolution Kernel to the given pre-scaled and normalized Kernel.
  *
  * Ruby usage:
@@ -99,23 +82,6 @@ KernelInfo_unity_add(VALUE self, VALUE scale)
         Check_Type(scale, T_FLOAT);
 
     UnityAddKernelInfo((KernelInfo*)DATA_PTR(self), NUM2DBL(scale));
-    return Qnil;
-}
-
-/**
- * Dumps KernelInfo object to stderr
- *
- * Ruby usage:
- *   - @verbatim KernelInfo#show @endverbatim
- *
- * @param self this object
- * @deprecated This method has been deprecated.
- */
-VALUE
-KernelInfo_show(VALUE self)
-{
-    rb_warning("KernelInfo#show is deprecated");
-    ShowKernelInfo((KernelInfo*)DATA_PTR(self));
     return Qnil;
 }
 

@@ -603,9 +603,6 @@ Image_alpha(int argc, VALUE *argv, VALUE self)
  * Ruby usage:
  *   - @verbatim Image#alpha? @endverbatim
  *
- * Notes:
- *   - Replaces Image#matte
- *
  * @param self this object
  * @return true if the image's alpha channel is activated
  */
@@ -614,30 +611,6 @@ Image_alpha_q(VALUE self)
 {
     Image *image = rm_check_destroyed(self);
     return GetImageAlphaChannel(image) ? Qtrue : Qfalse;
-}
-
-
-/**
- * Equivalent to -alpha option.
- *
- * Ruby usage:
- *   - @verbatim Image#alpha=(alpha) @endverbatim
- *
- * @param self this object
- * @param type the alpha type
- * @return alpha
- * @deprecated This method has been deprecated. Please use Image_alpha.
- * @see Image_alpha
- * @see mogrify.c (in ImageMagick)
- */
-VALUE
-Image_alpha_eq(VALUE self, VALUE type)
-{
-    VALUE argv[1];
-    argv[0] = type;
-    rb_warning("Image#alpha= is deprecated; use Image#alpha.");
-    Image_alpha(1, argv, self);
-    return type;
 }
 
 
@@ -8268,63 +8241,6 @@ Image_magnify_bang(VALUE self)
 
 
 /**
- * Call MapImage.
- *
- * Ruby usage:
- *   - @verbatim Image#map(map_image) @endverbatim
- *   - @verbatim Image#map(map_image, dither) @endverbatim
- *
- * Notes:
- *   - Default dither is false
- *
- * @param argc number of input arguments
- * @param argv array of input arguments
- * @param self this object
- * @return a new image
- */
-VALUE
-Image_map(int argc, VALUE *argv, VALUE self)
-{
-    Image *image, *new_image;
-    Image *map;
-    VALUE map_obj, map_arg;
-    unsigned int dither = MagickFalse;
-
-    QuantizeInfo quantize_info;
-    rb_warning("Image#map is deprecated. Use Image#remap instead");
-
-    image = rm_check_destroyed(self);
-
-    switch (argc)
-    {
-        case 2:
-            dither = RTEST(argv[1]);
-        case 1:
-            map_arg = argv[0];
-            break;
-        default:
-            rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 or 2)", argc);
-            break;
-    }
-
-    map_obj = rm_cur_image(map_arg);
-    map = rm_check_destroyed(map_obj);
-
-    new_image = rm_clone_image(image);
-
-    GetQuantizeInfo(&quantize_info);
-    quantize_info.dither=dither;
-    (void) RemapImage(&quantize_info, new_image, map);
-    rm_check_image_exception(new_image, DestroyOnError);
-
-    RB_GC_GUARD(map_obj);
-    RB_GC_GUARD(map_arg);
-
-    return rm_image_new(new_image);
-}
-
-
-/**
  * Support Marshal.dump >= 1.8.
  *
  * Ruby usage:
@@ -8444,29 +8360,6 @@ get_image_mask(Image *image)
 
 
 /**
- * Set the image mask.
- *
- * Ruby usage:
- *   - @verbatim Image#mask= @endverbatim
- *
- * @param self this object
- * @param mask the mask to use
- * @return copy of the current clip-mask or nil
- * @deprecated This method has been deprecated. Please use Image_mask(mask-image).
- * @see Image_mask(mask-image)
- * @see get_image_mask
- */
-VALUE
-Image_mask_eq(VALUE self, VALUE mask)
-{
-    VALUE v[1];
-    v[0] = mask;
-    rb_warning("Image#mask= is deprecated; use Image#mask.");
-    return Image_mask(1, v, self);
-}
-
-
-/**
  * Associate a clip mask with the image.
  *
  * Ruby usage:
@@ -8577,62 +8470,6 @@ Image_mask(int argc, VALUE *argv, VALUE self)
 
     // Always return a copy of the mask!
     return get_image_mask(image);
-}
-
-
-/**
- * Get matte attribute.
- *
- * Ruby usage:
- *   - @verbatim Image#matte @endverbatim
- *
- * @param self this object
- * @return the matte
- * @deprecated This method has been deprecated. Please use Image_alpha.
- * @see Image_alpha
- * @see Image_alpha_eq
- */
-VALUE
-Image_matte(VALUE self)
-{
-    Image *image;
-
-    image = rm_check_destroyed(self);
-    rb_warning("Image#matte is deprecated; use Image#alpha.");
-    return image->matte ? Qtrue : Qfalse;
-}
-
-
-/**
- * Set matte attribute.
- *
- * Ruby usage:
- *   - @verbatim Image#matte= @endverbatim
- *
- * @param self this object
- * @param matte the matte
- * @return the matte
- * @deprecated This method has been deprecated. Please use Image_alpha.
- * @see Image_alpha_eq
- * @see Image_alpha
- */
-VALUE
-Image_matte_eq(VALUE self, VALUE matte)
-{
-    VALUE alpha_channel_type;
-
-    if (RTEST(matte))
-    {
-        alpha_channel_type = rb_const_get(Module_Magick, rb_intern("ActivateAlphaChannel"));
-    }
-    else
-    {
-        alpha_channel_type = rb_const_get(Module_Magick, rb_intern("DeactivateAlphaChannel"));
-    }
-
-    rb_warning("Image#matte= is deprecated; use Image#alpha.");
-
-    return Image_alpha_eq(self, alpha_channel_type);
 }
 
 

@@ -915,7 +915,7 @@ module Magick
     # pixel at (x, y).
     def matte_replace(x, y)
       f = copy
-      f.opacity = OpaqueOpacity unless f.matte
+      f.opacity = OpaqueOpacity unless f.alpha?
       target = f.pixel_color(x, y)
       f.transparent(target)
     end
@@ -924,7 +924,7 @@ module Magick
     # at (x,y) and is a neighbor.
     def matte_floodfill(x, y)
       f = copy
-      f.opacity = OpaqueOpacity unless f.matte
+      f.opacity = OpaqueOpacity unless f.alpha?
       target = f.pixel_color(x, y)
       f.matte_flood_fill(target, TransparentOpacity,
                          x, y, FloodfillMethod)
@@ -933,7 +933,7 @@ module Magick
     # Make transparent any neighbor pixel that is not the border color.
     def matte_fill_to_border(x, y)
       f = copy
-      f.opacity = Magick::OpaqueOpacity unless f.matte
+      f.opacity = Magick::OpaqueOpacity unless f.alpha?
       f.matte_flood_fill(border_color, TransparentOpacity,
                          x, y, FillToBorderMethod)
     end

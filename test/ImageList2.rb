@@ -118,26 +118,6 @@ class ImageList2UT < Test::Unit::TestCase
     assert_raise(TypeError) { @ilist.fx('1/2', 1) }
   end
 
-  def test_map
-    map = Magick::Image.read('netscape:')[0]
-    @ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_1.gif')
-    assert_nothing_raised do
-      img = @ilist.map(map)
-      assert_instance_of(Magick::ImageList, img)
-    end
-    assert_nothing_raised do
-      img = @ilist.map(map, true)
-      assert_instance_of(Magick::ImageList, img)
-    end
-
-    map = Magick::ImageList.new('netscape:')
-    img = @ilist.map(map, true)
-    assert_instance_of(Magick::ImageList, img)
-
-    assert_raise(ArgumentError) { @ilist.map }
-    assert_raise(ArgumentError) { @ilist.map(map, true, 42) }
-  end
-
   def test_marshal
     ilist1 = Magick::ImageList.new(*Dir[IMAGES_DIR + '/Button_*.gif'])
     d = nil

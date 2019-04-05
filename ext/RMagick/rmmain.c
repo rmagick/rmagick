@@ -222,7 +222,6 @@ Init_RMagick2(void)
     rb_define_singleton_method(Class_Image, "read_inline", Image_read_inline, 1);
     rb_define_singleton_method(Class_Image, "from_blob", Image_from_blob, 1);
 
-    DCL_ATTR_WRITER(Image, alpha)
     DCL_ATTR_ACCESSOR(Image, background_color)
     DCL_ATTR_READER(Image, base_columns)
     DCL_ATTR_READER(Image, base_filename)
@@ -258,8 +257,6 @@ Init_RMagick2(void)
     DCL_ATTR_ACCESSOR(Image, interlace)
     DCL_ATTR_ACCESSOR(Image, iptc_profile)
     DCL_ATTR_ACCESSOR(Image, iterations)        // do not document! Only used by Image#iterations=
-    DCL_ATTR_WRITER(Image, mask)
-    DCL_ATTR_ACCESSOR(Image, matte)
     DCL_ATTR_ACCESSOR(Image, matte_color)
     DCL_ATTR_READER(Image, mean_error_per_pixel)
     DCL_ATTR_READER(Image, mime_type)
@@ -415,7 +412,6 @@ Init_RMagick2(void)
     rb_define_method(Class_Image, "liquid_rescale", Image_liquid_rescale, -1);
     rb_define_method(Class_Image, "magnify", Image_magnify, 0);
     rb_define_method(Class_Image, "magnify!", Image_magnify_bang, 0);
-    rb_define_method(Class_Image, "map", Image_map, -1);
     rb_define_method(Class_Image, "marshal_dump", Image_marshal_dump, 0);
     rb_define_method(Class_Image, "marshal_load", Image_marshal_load, 1);
     rb_define_method(Class_Image, "mask", Image_mask, -1);
@@ -531,8 +527,6 @@ Init_RMagick2(void)
     rb_define_method(Class_ImageList, "deconstruct", ImageList_deconstruct, 0);
     rb_define_method(Class_ImageList, "display", ImageList_display, 0);
     rb_define_method(Class_ImageList, "flatten_images", ImageList_flatten_images, 0);
-    rb_define_method(Class_ImageList, "fx", ImageList_fx, -1);
-    rb_define_method(Class_ImageList, "map", ImageList_map, -1);
     rb_define_method(Class_ImageList, "montage", ImageList_montage, 0);
     rb_define_method(Class_ImageList, "morph", ImageList_morph, 1);
     rb_define_method(Class_ImageList, "mosaic", ImageList_mosaic, 0);
@@ -639,7 +633,6 @@ Init_RMagick2(void)
     // and the deprecated "from_HSL".
     rb_define_alloc_func(Class_Pixel, Pixel_alloc);
     rb_define_singleton_method(Class_Pixel, "from_color", Pixel_from_color, 1);
-    rb_define_singleton_method(Class_Pixel, "from_HSL", Pixel_from_HSL, 1);
     rb_define_singleton_method(Class_Pixel, "from_hsla", Pixel_from_hsla, -1);
 
     // Define the RGBA attributes
@@ -669,7 +662,6 @@ Init_RMagick2(void)
     rb_define_method(Class_Pixel, "marshal_dump", Pixel_marshal_dump, 0);
     rb_define_method(Class_Pixel, "marshal_load", Pixel_marshal_load, 1);
     rb_define_method(Class_Pixel, "to_color", Pixel_to_color, -1);
-    rb_define_method(Class_Pixel, "to_HSL", Pixel_to_HSL, 0);   // deprecated
     rb_define_method(Class_Pixel, "to_hsla", Pixel_to_hsla, 0);
     rb_define_method(Class_Pixel, "to_s", Pixel_to_s, 0);
 
@@ -776,9 +768,7 @@ Init_RMagick2(void)
     rb_define_alloc_func(Class_KernelInfo, KernelInfo_alloc);
 
     rb_define_method(Class_KernelInfo, "initialize", KernelInfo_initialize, 1);
-    rb_define_method(Class_KernelInfo, "zero_nans", KernelInfo_zero_nans, 0);
     rb_define_method(Class_KernelInfo, "unity_add", KernelInfo_unity_add, 1);
-    rb_define_method(Class_KernelInfo, "show", KernelInfo_show, 0);
     rb_define_method(Class_KernelInfo, "scale", KernelInfo_scale, 2);
     rb_define_method(Class_KernelInfo, "scale_geometry", KernelInfo_scale_geometry, 1);
     rb_define_method(Class_KernelInfo, "clone", KernelInfo_clone, 0);

@@ -389,7 +389,7 @@ class Image2_UT < Test::Unit::TestCase
 
     unmapped = Magick::ImageList.new(IMAGES_DIR + '/Hot_Air_Balloons.jpg', IMAGES_DIR + '/Violin.jpg', IMAGES_DIR + '/Polynesia.jpg')
     map = Magick::ImageList.new 'netscape:'
-    mapped = unmapped.map map, false
+    mapped = unmapped.remap map
     unmapped.each(&:destroy!)
     map.destroy!
     mapped.each(&:destroy!)
@@ -1088,21 +1088,6 @@ class Image2_UT < Test::Unit::TestCase
 
     res = @img.magnify!
     assert_same(@img, res)
-  end
-
-  def test_map
-    map = Magick::Image.read('netscape:').first
-    assert_nothing_raised do
-      res = @img.map(map)
-      assert_instance_of(Magick::Image, res)
-      assert_not_same(@img, res)
-    end
-    assert_nothing_raised { @img.map(map, true) }
-    assert_raise(NoMethodError) { @img.map(2) }
-    assert_raise(ArgumentError) { @img.map(map, true, 2) }
-    assert_raise(ArgumentError) { @img.map }
-    map.destroy!
-    assert_raise(Magick::DestroyedImageError) { @img.map(map, true) }
   end
 
   def test_marshal

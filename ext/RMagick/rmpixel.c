@@ -528,7 +528,6 @@ Pixel_from_color(VALUE class, VALUE name)
  *   - 0 <= saturation <= 255 OR "0%" <= saturation <= "100%"
  *   - 0 <= lightness <= 255 OR "0%" <= lightness <= "100%"
  *   - 0 <= alpha <= 1 (0 is transparent, 1 is opaque) OR "0%" <= alpha <= "100%"
- *   - Replaces brain-dead Pixel_from_HSL.
  *
  * @param argc number of input arguments
  * @param argv array of input arguments
@@ -598,43 +597,6 @@ Pixel_from_hsla(int argc, VALUE *argv, VALUE class)
     (void) DestroyExceptionInfo(exception);
 
     return Pixel_from_MagickPixel(&pp);
-}
-
-
-/**
- * Construct an RGB pixel from the array [hue, saturation, luminosity].
- *
- * Ruby usage:
- *   - @verbatim Pixel.from_HSL  @endverbatim
- *
- * @param class the Ruby class to use
- * @param hsl the array
- * @return a new Magick::Pixel object
- * @deprecated This method has been deprecated. Please use Pixel_from_hsla.
- */
-VALUE
-Pixel_from_HSL(VALUE class, VALUE hsl)
-{
-    PixelColor rgb;
-    double hue, saturation, luminosity;
-
-    class = class;      // defeat "never referenced" message from icc
-    memset(&rgb, 0, sizeof(rgb));
-
-    hsl = rb_Array(hsl);    // Ensure array
-    if (RARRAY_LEN(hsl) < 3)
-    {
-        rb_raise(rb_eArgError, "array argument must have at least 3 elements");
-    }
-
-    hue        = NUM2DBL(rb_ary_entry(hsl, 0));
-    saturation = NUM2DBL(rb_ary_entry(hsl, 1));
-    luminosity = NUM2DBL(rb_ary_entry(hsl, 2));
-
-    rb_warning("Pixel#from_HSL is deprecated; use from_hsla");
-    ConvertHSLToRGB(hue, saturation, luminosity,
-                 &rgb.red, &rgb.green, &rgb.blue);
-    return Pixel_from_PixelColor(&rgb);
 }
 
 
@@ -955,9 +917,6 @@ Pixel_spaceship(VALUE self, VALUE other)
  *
  * Ruby usage:
  *   - @verbatim Pixel#to_hsla @endverbatim
- *
- * Notes:
- *   - Replace brain-dead Pixel_to_HSL.
  *
  * @param self this object
  * @return an array with hsla data
