@@ -13,7 +13,26 @@
 #include "rmagick.h"
 
 
-
+/*
+ *  Define functions to get/set attributes in Image::Info that
+ *  use the Get/SetImageOption API.
+*/
+//! Option attribute reader. For Image::Info.
+#define OPTION_ATTR_READER(opt, key) \
+    VALUE Info_##opt(VALUE self)\
+    {\
+        return get_option(self, #key);\
+    }
+//! Option attribute writer. For Image::Info.
+#define OPTION_ATTR_WRITER(opt, key) \
+    VALUE Info_##opt##_eq(VALUE self, VALUE string)\
+    {\
+        return set_option(self, #key, string);\
+    }
+//! Option attribute accessor. For Image::Info.
+#define OPTION_ATTR_ACCESSOR(opt, key)\
+    OPTION_ATTR_READER(opt, key)\
+    OPTION_ATTR_WRITER(opt, key)
 
 
 /**

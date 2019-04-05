@@ -13,11 +13,54 @@
 #include "rmagick.h"
 
 
+/*
+ *  Declare Pixel channel attribute writers
+*/
+//! Pixel channel attribute writer.
+#define DEF_PIXEL_CHANNEL_WRITER(_channel_) \
+extern VALUE \
+Pixel_##_channel_##_eq(VALUE self, VALUE v) \
+{ \
+    Pixel *pixel; \
+ \
+    rb_check_frozen(self); \
+    Data_Get_Struct(self, Pixel, pixel); \
+    pixel->_channel_ = APP2QUANTUM(v); \
+    (void) rb_funcall(self, rm_ID_changed, 0); \
+    (void) rb_funcall(self, rm_ID_notify_observers, 1, self); \
+    return QUANTUM2NUM((pixel->_channel_)); \
+}
+
+
+/*
+ *  Declare Pixel CMYK channel attribute accessors
+*/
+//! Pixel CMYK channel attribute accessor.
+#define DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(_cmyk_channel_, _rgb_channel_) \
+extern VALUE \
+Pixel_##_cmyk_channel_##_eq(VALUE self, VALUE v) \
+{ \
+    Pixel *pixel; \
+ \
+    rb_check_frozen(self); \
+    Data_Get_Struct(self, Pixel, pixel); \
+    pixel->_rgb_channel_ = APP2QUANTUM(v); \
+    (void) rb_funcall(self, rm_ID_changed, 0); \
+    (void) rb_funcall(self, rm_ID_notify_observers, 1, self); \
+    return QUANTUM2NUM(pixel->_rgb_channel_); \
+} \
+ \
+extern VALUE \
+Pixel_##_cmyk_channel_(VALUE self) \
+{ \
+    Pixel *pixel; \
+ \
+    Data_Get_Struct(self, Pixel, pixel); \
+    return INT2NUM(pixel->_rgb_channel_); \
+}
 
 
 static void Color_Name_to_PixelColor(PixelColor *, VALUE);
-
-
 
 
 /**
