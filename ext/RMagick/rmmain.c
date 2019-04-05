@@ -996,7 +996,6 @@ Init_RMagick2(void)
         ENUMERATOR(CopyCyanCompositeOp)
         ENUMERATOR(CopyGreenCompositeOp)
         ENUMERATOR(CopyMagentaCompositeOp)
-        ENUMERATORV(CopyAlphaCompositeOp, CopyOpacityCompositeOp)
         ENUMERATOR(CopyRedCompositeOp)
         ENUMERATOR(CopyYellowCompositeOp)
         ENUMERATOR(DarkenCompositeOp)
@@ -1014,9 +1013,6 @@ Init_RMagick2(void)
         ENUMERATOR(DissolveCompositeOp)
         ENUMERATOR(ExclusionCompositeOp)
         ENUMERATOR(HardLightCompositeOp)
-#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
-        ENUMERATOR(HardMixCompositeOp)
-#endif
         ENUMERATOR(HueCompositeOp)
         ENUMERATOR(InCompositeOp)
         ENUMERATOR(LightenCompositeOp)
@@ -1052,6 +1048,14 @@ Init_RMagick2(void)
         ENUMERATOR(UndefinedCompositeOp)
         ENUMERATOR(VividLightCompositeOp)
         ENUMERATOR(XorCompositeOp)
+#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
+        ENUMERATOR(HardMixCompositeOp)
+#endif
+#if defined(IMAGEMAGICK_7)
+        ENUMERATOR(CopyAlphaCompositeOp)
+#else
+        ENUMERATORV(CopyAlphaCompositeOp, CopyOpacityCompositeOp)
+#endif
     END_ENUM
 
     // CompressionType constants
@@ -1191,15 +1195,23 @@ Init_RMagick2(void)
         ENUMERATOR(UndefinedType)
         ENUMERATOR(BilevelType)
         ENUMERATOR(GrayscaleType)
-        ENUMERATORV(GrayscaleAlphaType, GrayscaleMatteType)
         ENUMERATOR(PaletteType)
-        ENUMERATORV(PaletteAlphaType, PaletteMatteType)
         ENUMERATOR(TrueColorType)
-        ENUMERATORV(TrueColorAlphaType, TrueColorMatteType)
         ENUMERATOR(ColorSeparationType)
-        ENUMERATORV(ColorSeparationAlphaType, ColorSeparationMatteType)
         ENUMERATOR(OptimizeType)
+#if defined(IMAGEMAGICK_7)
+        ENUMERATOR(GrayscaleAlphaType)
+        ENUMERATOR(PaletteAlphaType)
+        ENUMERATOR(TrueColorAlphaType)
+        ENUMERATOR(ColorSeparationAlphaType)
+        ENUMERATOR(PaletteBilevelAlphaType)
+#else
+        ENUMERATORV(GrayscaleAlphaType, GrayscaleMatteType)
+        ENUMERATORV(PaletteAlphaType, PaletteMatteType)
+        ENUMERATORV(TrueColorAlphaType, TrueColorMatteType)
+        ENUMERATORV(ColorSeparationAlphaType, ColorSeparationMatteType)
         ENUMERATORV(PaletteBilevelAlphaType, PaletteBilevelMatteType)
+#endif
     END_ENUM
 
     // InterlaceType constants
@@ -1243,18 +1255,24 @@ Init_RMagick2(void)
     END_ENUM
 
     DEF_ENUM(MetricType)
-        ENUMERATORV(UndefinedErrorMetric, UndefinedMetric)
         ENUMERATOR(AbsoluteErrorMetric)
         ENUMERATOR(MeanAbsoluteErrorMetric)
-        ENUMERATORV(MeanErrorPerPixelErrorMetric, MeanErrorPerPixelMetric)
         ENUMERATOR(MeanSquaredErrorMetric)
         ENUMERATOR(PeakAbsoluteErrorMetric)
-        ENUMERATORV(PeakSignalToNoiseRatioErrorMetric, PeakSignalToNoiseRatioMetric)
         ENUMERATOR(RootMeanSquaredErrorMetric)
         ENUMERATOR(NormalizedCrossCorrelationErrorMetric)
         ENUMERATOR(FuzzErrorMetric)
 #if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
         ENUMERATOR(PerceptualHashErrorMetric)
+#endif
+#if defined(IMAGEMAGICK_7)
+        ENUMERATOR(UndefinedErrorMetric)
+        ENUMERATOR(MeanErrorPerPixelErrorMetric)
+        ENUMERATOR(PeakSignalToNoiseRatioErrorMetric)
+#else
+        ENUMERATORV(UndefinedErrorMetric, UndefinedMetric)
+        ENUMERATORV(MeanErrorPerPixelErrorMetric, MeanErrorPerPixelMetric)
+        ENUMERATORV(PeakSignalToNoiseRatioErrorMetric, PeakSignalToNoiseRatioMetric)
 #endif
     END_ENUM
 
@@ -1298,7 +1316,11 @@ Init_RMagick2(void)
         ENUMERATOR(BilinearInterpolatePixel)
         ENUMERATOR(IntegerInterpolatePixel)
         ENUMERATOR(MeshInterpolatePixel)
+#if defined(IMAGEMAGICK_7)
+        ENUMERATOR(NearestInterpolatePixel)
+#else
         ENUMERATORV(NearestInterpolatePixel, NearestNeighborInterpolatePixel)
+#endif
         ENUMERATOR(SplineInterpolatePixel)
         ENUMERATOR(Average9InterpolatePixel)
         ENUMERATOR(Average16InterpolatePixel)
