@@ -208,38 +208,6 @@ Color_to_PixelColor(PixelColor *pp, VALUE color)
 
 
 /**
- * Convert either a String color name or a Magick::Pixel to a PixelPacket.
- *
- * No Ruby usage (internal function)
- *
- * @param pp the PixelPacket to modify
- * @param color the color name or Magick::Pixel
- */
-void
-Color_to_PixelPacket(PixelPacket *pp, VALUE color)
-{
-    Pixel *pixel;
-
-    // Allow color name or Pixel
-    if (CLASS_OF(color) == Class_Pixel)
-    {
-        memset(pp, 0, sizeof(*pp));
-        Data_Get_Struct(color, Pixel, pixel);
-        pp->red     = pixel->red;
-        pp->green   = pixel->green;
-        pp->blue    = pixel->blue;
-        pp->opacity = pixel->opacity;
-    }
-    else
-    {
-        // require 'to_str' here instead of just 'to_s'.
-        color = rb_rescue(rb_str_to_str, color, color_arg_rescue, color);
-        Color_Name_to_PixelColor(pp, color);
-    }
-}
-
-
-/**
  * Convert a color name to a PixelColor
  *
  * No Ruby usage (internal function)
