@@ -21,8 +21,8 @@
 static void
 rm_kernel_info_destroy(void *kernel)
 {
-  if (kernel)
-    DestroyKernelInfo((KernelInfo*)kernel);
+    if (kernel)
+      DestroyKernelInfo((KernelInfo*)kernel);
 }
 
 /**
@@ -36,7 +36,7 @@ rm_kernel_info_destroy(void *kernel)
 VALUE
 KernelInfo_alloc(VALUE class)
 {
-  return Data_Wrap_Struct(class, NULL, rm_kernel_info_destroy, NULL);
+    return Data_Wrap_Struct(class, NULL, rm_kernel_info_destroy, NULL);
 }
 
 /**
@@ -52,18 +52,18 @@ KernelInfo_alloc(VALUE class)
 VALUE
 KernelInfo_initialize(VALUE self, VALUE kernel_string)
 {
-  KernelInfo *kernel;
+    KernelInfo *kernel;
 
-  Check_Type(kernel_string, T_STRING);
+    Check_Type(kernel_string, T_STRING);
 
-  kernel = AcquireKernelInfo(StringValueCStr(kernel_string));
+    kernel = AcquireKernelInfo(StringValueCStr(kernel_string));
 
-  if (kernel == NULL)
-    rb_raise(rb_eRuntimeError, "failed to parse kernel string");
+    if (kernel == NULL)
+        rb_raise(rb_eRuntimeError, "failed to parse kernel string");
 
-  DATA_PTR(self) = kernel;
+    DATA_PTR(self) = kernel;
 
-  return self;
+    return self;
 }
 
 /**
@@ -78,9 +78,9 @@ KernelInfo_initialize(VALUE self, VALUE kernel_string)
 VALUE
 KernelInfo_zero_nans(VALUE self)
 {
-  rb_warning("KernelInfo#zero_nans is deprecated");
-  ZeroKernelNans((KernelInfo*)DATA_PTR(self));
-  return Qnil;
+    rb_warning("KernelInfo#zero_nans is deprecated");
+    ZeroKernelNans((KernelInfo*)DATA_PTR(self));
+    return Qnil;
 }
 
 /**
@@ -95,11 +95,11 @@ KernelInfo_zero_nans(VALUE self)
 VALUE
 KernelInfo_unity_add(VALUE self, VALUE scale)
 {
-  if (!FIXNUM_P(scale))
-    Check_Type(scale, T_FLOAT);
+    if (!FIXNUM_P(scale))
+        Check_Type(scale, T_FLOAT);
 
-  UnityAddKernelInfo((KernelInfo*)DATA_PTR(self), NUM2DBL(scale));
-  return Qnil;
+    UnityAddKernelInfo((KernelInfo*)DATA_PTR(self), NUM2DBL(scale));
+    return Qnil;
 }
 
 /**
@@ -114,9 +114,9 @@ KernelInfo_unity_add(VALUE self, VALUE scale)
 VALUE
 KernelInfo_show(VALUE self)
 {
-  rb_warning("KernelInfo#show is deprecated");
-  ShowKernelInfo((KernelInfo*)DATA_PTR(self));
-  return Qnil;
+    rb_warning("KernelInfo#show is deprecated");
+    ShowKernelInfo((KernelInfo*)DATA_PTR(self));
+    return Qnil;
 }
 
 /**
@@ -134,18 +134,18 @@ KernelInfo_show(VALUE self)
 VALUE
 KernelInfo_scale(VALUE self, VALUE scale, VALUE flags)
 {
-  GeometryFlags geoflags;
+    GeometryFlags geoflags;
 
-  if (!FIXNUM_P(scale))
-    Check_Type(scale, T_FLOAT);
+    if (!FIXNUM_P(scale))
+        Check_Type(scale, T_FLOAT);
 
-  if (rb_obj_is_instance_of(flags, Class_GeometryFlags))
-    VALUE_TO_ENUM(flags, geoflags, GeometryFlags);
-  else
-    rb_raise(rb_eArgError, "expected Integer or Magick::GeometryFlags to specify flags");
+    if (rb_obj_is_instance_of(flags, Class_GeometryFlags))
+        VALUE_TO_ENUM(flags, geoflags, GeometryFlags);
+    else
+        rb_raise(rb_eArgError, "expected Integer or Magick::GeometryFlags to specify flags");
 
-  ScaleKernelInfo((KernelInfo*)DATA_PTR(self), NUM2DBL(scale), geoflags);
-  return Qnil;
+    ScaleKernelInfo((KernelInfo*)DATA_PTR(self), NUM2DBL(scale), geoflags);
+    return Qnil;
 }
 
 /**
@@ -161,9 +161,9 @@ KernelInfo_scale(VALUE self, VALUE scale, VALUE flags)
 VALUE
 KernelInfo_scale_geometry(VALUE self, VALUE geometry)
 {
-  Check_Type(geometry, T_STRING);
-  ScaleGeometryKernelInfo((KernelInfo*)DATA_PTR(self), StringValueCStr(geometry));
-  return Qnil;
+    Check_Type(geometry, T_STRING);
+    ScaleGeometryKernelInfo((KernelInfo*)DATA_PTR(self), StringValueCStr(geometry));
+    return Qnil;
 }
 
 /**
@@ -178,8 +178,8 @@ KernelInfo_scale_geometry(VALUE self, VALUE geometry)
 VALUE
 KernelInfo_clone(VALUE self)
 {
-  KernelInfo *kernel = CloneKernelInfo((KernelInfo*)DATA_PTR(self));
-  return Data_Wrap_Struct(Class_KernelInfo, NULL, rm_kernel_info_destroy, kernel);
+    KernelInfo *kernel = CloneKernelInfo((KernelInfo*)DATA_PTR(self));
+    return Data_Wrap_Struct(Class_KernelInfo, NULL, rm_kernel_info_destroy, kernel);
 }
 
 /**
@@ -235,18 +235,18 @@ KernelInfo_clone(VALUE self)
 VALUE
 KernelInfo_builtin(VALUE self, VALUE what, VALUE geometry)
 {
-  KernelInfo *kernel;
-  KernelInfoType kernel_type;
-  GeometryInfo info;
+    KernelInfo *kernel;
+    KernelInfoType kernel_type;
+    GeometryInfo info;
 
-  Check_Type(geometry, T_STRING);
-  VALUE_TO_ENUM(what, kernel_type, KernelInfoType);
-  ParseGeometry(StringValueCStr(geometry), &info);
+    Check_Type(geometry, T_STRING);
+    VALUE_TO_ENUM(what, kernel_type, KernelInfoType);
+    ParseGeometry(StringValueCStr(geometry), &info);
 
-  kernel = AcquireKernelBuiltIn(kernel_type, &info);
+    kernel = AcquireKernelBuiltIn(kernel_type, &info);
 
-  if (!kernel)
-    rb_raise(rb_eRuntimeError, "failed to acquire builtin kernel");
+    if (!kernel)
+        rb_raise(rb_eRuntimeError, "failed to acquire builtin kernel");
 
-  return Data_Wrap_Struct(self, NULL, rm_kernel_info_destroy, kernel);
+    return Data_Wrap_Struct(self, NULL, rm_kernel_info_destroy, kernel);
 }
