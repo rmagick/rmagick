@@ -140,7 +140,9 @@ Metrics/BlockNesting:
 # Offense count: 17
 # Configuration parameters: CountComments.
 Metrics/ClassLength:
-  Max: 1110
+  Max: 500
+  Exclude:
+    - 'test/**/*.rb'
 
 # Offense count: 22
 Metrics/CyclomaticComplexity:
