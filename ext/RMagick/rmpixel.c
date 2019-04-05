@@ -110,6 +110,18 @@ DEF_ATTR_READER(Pixel, green, int)
  */
 DEF_ATTR_READER(Pixel, blue, int)
 
+#if defined(IMAGEMAGICK_7)
+/**
+ * Get Pixel alpha attribute.
+ *
+ * Ruby usage:
+ *   - @verbatim Pixel#alpha @endverbatim
+ *
+ * @param self this object
+ * @return the alpha value
+ */
+DEF_ATTR_READER(Pixel, alpha, int)
+#else
 /**
  * Get Pixel opacity attribute.
  *
@@ -120,6 +132,7 @@ DEF_ATTR_READER(Pixel, blue, int)
  * @return the opacity value
  */
 DEF_ATTR_READER(Pixel, opacity, int)
+#endif
 
 /**
  * Set Pixel red attribute.
@@ -172,6 +185,24 @@ DEF_PIXEL_CHANNEL_WRITER(green)
  */
 DEF_PIXEL_CHANNEL_WRITER(blue)
 
+#if defined(IMAGEMAGICK_7)
+/**
+ * Set Pixel alpha attribute.
+ *
+ * Ruby usage:
+ *   - @verbatim Pixel#alpha= @endverbatim
+ *
+ * Notes:
+ *   - Pixel is Observable. Setters call changed, notify_observers
+ *   - Setters return their argument values for backward compatibility to when
+ *     Pixel was a Struct class.
+ *
+ * @param self this object
+ * @param v the alpha value
+ * @return self
+ */
+DEF_PIXEL_CHANNEL_WRITER(alpha)
+#else
 /**
  * Set Pixel opacity attribute.
  *
@@ -188,6 +219,7 @@ DEF_PIXEL_CHANNEL_WRITER(blue)
  * @return self
  */
 DEF_PIXEL_CHANNEL_WRITER(opacity)
+#endif
 
 
 /*
@@ -196,7 +228,11 @@ DEF_PIXEL_CHANNEL_WRITER(opacity)
 DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(cyan, red)
 DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(magenta, green)
 DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(yellow, blue)
+#if defined(IMAGEMAGICK_7)
+DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(black, black)
+#else
 DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(black, opacity)
+#endif
 
 
 /**
@@ -239,7 +275,11 @@ Color_to_PixelColor(PixelColor *pp, VALUE color)
         pp->red     = pixel->red;
         pp->green   = pixel->green;
         pp->blue    = pixel->blue;
+#if defined(IMAGEMAGICK_7)
+        pp->alpha   = pixel->alpha;
+#else
         pp->opacity = pixel->opacity;
+#endif
     }
     else
     {
@@ -320,7 +360,11 @@ Pixel_case_eq(VALUE self, VALUE other)
         return (this->red == that->red
             && this->blue == that->blue
             && this->green == that->green
+#if defined(IMAGEMAGICK_7)
+            && this->alpha == that->alpha) ? Qtrue : Qfalse;
+#else
             && this->opacity == that->opacity) ? Qtrue : Qfalse;
+#endif
     }
 
     return Qfalse;
@@ -421,13 +465,16 @@ Pixel_eql_q(VALUE self, VALUE other)
 VALUE
 Pixel_fcmp(int argc, VALUE *argv, VALUE self)
 {
-    Image *image;
-    Info *info;
-
-    Pixel *this, *that;
-    ColorspaceType colorspace = RGBColorspace;
     double fuzz = 0.0;
     unsigned int equal;
+    ColorspaceType colorspace = RGBColorspace;
+#if defined(IMAGEMAGICK_7)
+    PixelColor this, that;
+#else
+    Image *image;
+    Info *info;
+    Pixel *this, *that;
+#endif
 
     switch (argc)
     {
@@ -439,9 +486,23 @@ Pixel_fcmp(int argc, VALUE *argv, VALUE self)
             // Allow 1 argument
             break;
         default:
+#if defined(IMAGEMAGICK_7)
+            rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 to 2)", argc);
+#else
             rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 to 3)", argc);
+#endif
             break;
     }
+
+#if defined(IMAGEMAGICK_7)
+    Color_to_PixelColor(&this, self);
+    Color_to_PixelColor(&that, argv[0]);
+    this.fuzz = fuzz;
+    this.colorspace = colorspace;
+    that.fuzz = fuzz;
+    that.colorspace = colorspace;
+    equal = IsFuzzyEquivalencePixelInfo(&this, &that);
+#else
 
     Data_Get_Struct(self, Pixel, this);
     Data_Get_Struct(argv[0], Pixel, that);
@@ -470,6 +531,7 @@ Pixel_fcmp(int argc, VALUE *argv, VALUE self)
 
     equal = IsColorSimilar(image, this, that);
     (void) DestroyImage(image);
+#endif
 
     return equal ? Qtrue : Qfalse;
 }
@@ -591,7 +653,11 @@ Pixel_from_hsla(int argc, VALUE *argv, VALUE class)
 
     exception = AcquireExceptionInfo();
 
+#if defined(IMAGEMAGICK_7)
+    (void) QueryColorCompliance(name, AllCompliance, &pp, exception);
+#else
     (void) QueryMagickColor(name, &pp, exception);
+#endif
     CHECK_EXCEPTION()
 
     (void) DestroyExceptionInfo(exception);
@@ -620,7 +686,11 @@ Pixel_from_MagickPixel(const MagickPixel *pp)
     pixel->red     = ROUND_TO_QUANTUM(pp->red);
     pixel->green   = ROUND_TO_QUANTUM(pp->green);
     pixel->blue    = ROUND_TO_QUANTUM(pp->blue);
+#if defined(IMAGEMAGICK_7)
+    pixel->alpha   = ROUND_TO_QUANTUM(pp->alpha);
+#else
     pixel->opacity = ROUND_TO_QUANTUM(pp->opacity);
+#endif
 
     return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
 }
@@ -646,7 +716,11 @@ Pixel_from_PixelPacket(const PixelPacket *pp)
     pixel->red     = pp->red;
     pixel->green   = pp->green;
     pixel->blue    = pp->blue;
+#if defined(IMAGEMAGICK_7)
+    pixel->alpha   = pp->alpha;
+#else
     pixel->opacity = pp->opacity;
+#endif
 
     return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
 }
@@ -672,7 +746,11 @@ Pixel_from_PixelColor(const PixelColor *pp)
     pixel->red     = pp->red;
     pixel->green   = pp->green;
     pixel->blue    = pp->blue;
+#if defined(IMAGEMAGICK_7)
+    pixel->alpha   = pp->alpha;
+#else
     pixel->opacity = pp->opacity;
+#endif
 
     return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
 }
@@ -700,7 +778,11 @@ Pixel_hash(VALUE self)
     hash  = ScaleQuantumToChar(pixel->red)   << 24;
     hash += ScaleQuantumToChar(pixel->green) << 16;
     hash += ScaleQuantumToChar(pixel->blue)  << 8;
+#if defined(IMAGEMAGICK_7)
+    hash += ScaleQuantumToChar(pixel->alpha);
+#else
     hash += ScaleQuantumToChar(pixel->opacity);
+#endif
 
     return UINT2NUM(hash >> 1);
 }
@@ -762,10 +844,17 @@ Pixel_initialize(int argc, VALUE *argv, VALUE self)
     switch(argc)
     {
         case 4:
+#if defined(IMAGEMAGICK_7)
+            if (argv[3] != Qnil)
+            {
+                pixel->alpha = APP2QUANTUM(argv[3]);
+            }
+#else
             if (argv[3] != Qnil)
             {
                 pixel->opacity = APP2QUANTUM(argv[3]);
             }
+#endif
         case 3:
             if (argv[2] != Qnil)
             {
@@ -836,7 +925,11 @@ Pixel_marshal_dump(VALUE self)
     rb_hash_aset(dpixel, CSTR2SYM("red"), QUANTUM2NUM(pixel->red));
     rb_hash_aset(dpixel, CSTR2SYM("green"), QUANTUM2NUM(pixel->green));
     rb_hash_aset(dpixel, CSTR2SYM("blue"), QUANTUM2NUM(pixel->blue));
+#if defined(IMAGEMAGICK_7)
+    rb_hash_aset(dpixel, CSTR2SYM("alpha"), QUANTUM2NUM(pixel->alpha));
+#else
     rb_hash_aset(dpixel, CSTR2SYM("opacity"), QUANTUM2NUM(pixel->opacity));
+#endif
 
     RB_GC_GUARD(dpixel);
 
@@ -863,7 +956,11 @@ Pixel_marshal_load(VALUE self, VALUE dpixel)
     pixel->red = NUM2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("red")));
     pixel->green = NUM2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("green")));
     pixel->blue = NUM2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("blue")));
+#if defined(IMAGEMAGICK_7)
+    pixel->alpha = NUM2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("alpha")));
+#else
     pixel->opacity = NUM2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("opacity")));
+#endif
     return self;
 }
 
@@ -898,10 +995,17 @@ Pixel_spaceship(VALUE self, VALUE other)
     {
         return INT2NUM((this->blue - that->blue)/abs(this->blue - that->blue));
     }
+#if defined(IMAGEMAGICK_7)
+    else if(this->alpha != that->alpha)
+    {
+        return INT2NUM((this->alpha - that->alpha)/abs(this->alpha - that->alpha));
+    }
+#else
     else if(this->opacity != that->opacity)
     {
         return INT2NUM((this->opacity - that->opacity)/abs(this->opacity - that->opacity));
     }
+#endif
 
     // Values are equal, check class.
 
@@ -936,6 +1040,20 @@ Pixel_to_hsla(VALUE self)
     sat *= 255.0;
     lum *= 255.0;
 
+#if defined(IMAGEMAGICK_7)
+    if (pixel->alpha == OpaqueAlpha)
+    {
+        alpha = 1.0;
+    }
+    else if (pixel->alpha == TransparentAlpha)
+    {
+        alpha = 0.0;
+    }
+    else
+    {
+        alpha = (double)(pixel->alpha) / (double)QuantumRange;
+    }
+#else
     if (pixel->opacity == OpaqueOpacity)
     {
         alpha = 1.0;
@@ -948,42 +1066,13 @@ Pixel_to_hsla(VALUE self)
     {
         alpha = (double)(QuantumRange - pixel->opacity) / (double)QuantumRange;
     }
+#endif
 
     hsla = rb_ary_new3(4, rb_float_new(hue), rb_float_new(sat), rb_float_new(lum), rb_float_new(alpha));
 
     RB_GC_GUARD(hsla);
 
     return hsla;
-}
-
-/**
- * Convert an RGB pixel to the array [hue, saturation, luminosity].
- *
- * Ruby usage:
- *   - @verbatim Pixel#to_HSL @endverbatim
- *
- * @param self this object
- * @return an array with hsl data
- * @deprecated This method has been deprecated. Please use Pixel_to_hsla.
- */
-VALUE
-Pixel_to_HSL(VALUE self)
-{
-    Pixel *pixel;
-    double hue, saturation, luminosity;
-    VALUE hsl;
-
-    Data_Get_Struct(self, Pixel, pixel);
-
-    rb_warning("Pixel#to_HSL is deprecated; use to_hsla");
-    ConvertRGBToHSL(pixel->red, pixel->green, pixel->blue, &hue, &saturation, &luminosity);
-
-    hsl = rb_ary_new3(3, rb_float_new(hue), rb_float_new(saturation),
-                      rb_float_new(luminosity));
-
-    RB_GC_GUARD(hsl);
-
-    return hsl;
 }
 
 
@@ -1004,7 +1093,11 @@ rm_set_magick_pixel_packet(Pixel *pixel, MagickPixel *pp)
     pp->red     = (MagickRealType) pixel->red;
     pp->green   = (MagickRealType) pixel->green;
     pp->blue    = (MagickRealType) pixel->blue;
+#if defined(IMAGEMAGICK_7)
+    pp->alpha   = (MagickRealType) pixel->alpha;
+#else
     pp->opacity = (MagickRealType) pixel->opacity;
+#endif
     pp->index   = (MagickRealType) 0.0;
 }
 
@@ -1015,13 +1108,13 @@ rm_set_magick_pixel_packet(Pixel *pixel, MagickPixel *pp)
  * Ruby usage:
  *   - @verbatim Magick::Pixel#to_color @endverbatim
  *   - @verbatim Magick::Pixel#to_color(compliance) @endverbatim
- *   - @verbatim Magick::Pixel#to_color(compliance, matte) @endverbatim
- *   - @verbatim Magick::Pixel#to_color(compliance, matte, depth) @endverbatim
- *   - @verbatim Magick::Pixel#to_color(compliance, matte, depth, hex) @endverbatim
+ *   - @verbatim Magick::Pixel#to_color(compliance, alpha) @endverbatim
+ *   - @verbatim Magick::Pixel#to_color(compliance, alpha, depth) @endverbatim
+ *   - @verbatim Magick::Pixel#to_color(compliance, alpha, depth, hex) @endverbatim
  *
  * Notes:
  *   - Default compliance is AllCompliance
- *   - Default matte is false
+ *   - Default alpha is false
  *   - Default depth is MAGICKCORE_QUANTUM_DEPTH
  *   - Default hex is false
  *   - The conversion respects the value of the 'opacity' field in the Pixel
@@ -1042,7 +1135,7 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
     char name[MaxTextExtent];
     ExceptionInfo *exception;
     ComplianceType compliance = AllCompliance;
-    unsigned int matte = MagickFalse;
+    unsigned int alpha = MagickFalse;
     unsigned int depth = MAGICKCORE_QUANTUM_DEPTH;
 
     switch (argc)
@@ -1068,7 +1161,7 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
                     break;
             }
        case 2:
-            matte = RTEST(argv[1]);
+            alpha = RTEST(argv[1]);
         case 1:
             VALUE_TO_ENUM(argv[0], compliance, ComplianceType);
         case 0:
@@ -1088,13 +1181,15 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
         rb_raise(rb_eNoMemError, "not enough memory to continue.");
     }
 
+    exception = AcquireExceptionInfo();
+
     image->depth = depth;
-    image->matte = matte;
+#if !defined(IMAGEMAGICK_7)
+    image->matte = alpha;
+#endif
 
     rm_init_magickpixel(image, &mpp);
     rm_set_magick_pixel_packet(pixel, &mpp);
-
-    exception = AcquireExceptionInfo();
 
     // Support for hex-format color names moved out of QueryMagickColorname
     // in 6.4.1-9. The 'hex' argument was removed as well.
@@ -1102,14 +1197,22 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
     {
         if (compliance == XPMCompliance)
         {
+#if defined(IMAGEMAGICK_7)
+            mpp.alpha_trait = UndefinedPixelTrait;
+#else
             mpp.matte = MagickFalse;
+#endif
             mpp.depth = (unsigned long) min(1.0 * image->depth, 16.0);
         }
         (void) GetColorTuple(&mpp, MagickTrue, name);
     }
     else
     {
+#if defined(IMAGEMAGICK_7)
+        (void) QueryColorname(image, &mpp, compliance, name, exception);
+#else
         (void) QueryMagickColorname(image, &mpp, compliance, name, exception);
+#endif
     }
 
     (void) DestroyImage(image);
@@ -1137,8 +1240,13 @@ Pixel_to_s(VALUE self)
     char buff[100];
 
     Data_Get_Struct(self, Pixel, pixel);
+#if defined(IMAGEMAGICK_7)
+    sprintf(buff, "red=" QuantumFormat ", green=" QuantumFormat ", blue=" QuantumFormat ", alpha=" QuantumFormat
+          , pixel->red, pixel->green, pixel->blue, pixel->alpha);
+#else
     sprintf(buff, "red=" QuantumFormat ", green=" QuantumFormat ", blue=" QuantumFormat ", opacity=" QuantumFormat
           , pixel->red, pixel->green, pixel->blue, pixel->opacity);
+#endif
     return rb_str_new2(buff);
 }
 

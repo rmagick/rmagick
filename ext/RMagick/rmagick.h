@@ -1031,7 +1031,11 @@ extern VALUE  TextureFill_fill(VALUE, VALUE);
 ATTR_ACCESSOR(Pixel, red)
 ATTR_ACCESSOR(Pixel, green)
 ATTR_ACCESSOR(Pixel, blue)
+#if defined(IMAGEMAGICK_7)
+ATTR_ACCESSOR(Pixel, alpha)
+#else
 ATTR_ACCESSOR(Pixel, opacity)
+#endif
 ATTR_ACCESSOR(Pixel, cyan)
 ATTR_ACCESSOR(Pixel, magenta)
 ATTR_ACCESSOR(Pixel, yellow)

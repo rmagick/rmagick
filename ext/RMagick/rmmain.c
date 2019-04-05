@@ -652,7 +652,11 @@ Init_RMagick2(void)
     DCL_ATTR_ACCESSOR(Pixel, red)
     DCL_ATTR_ACCESSOR(Pixel, green)
     DCL_ATTR_ACCESSOR(Pixel, blue)
+#if defined(IMAGEMAGICK_7)
+    DCL_ATTR_ACCESSOR(Pixel, alpha)
+#else
     DCL_ATTR_ACCESSOR(Pixel, opacity)
+#endif
 
     // Define the CMYK attributes
     DCL_ATTR_ACCESSOR(Pixel, cyan)
