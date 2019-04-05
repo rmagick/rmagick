@@ -95,19 +95,6 @@
 //! round to Quantum
 #define ROUND_TO_QUANTUM(value) ((Quantum) ((value) > (Quantum)QuantumRange ? QuantumRange : (value) + 0.5))
 
-
-// GetReadFile doesn't exist in Ruby 1.9.0
-#if !defined(GetReadFile)
-#define GetReadFile(fptr) rb_io_stdio_file(fptr) /**< Ruby read file pointer */
-#define GetWriteFile(fptr) rb_io_stdio_file(fptr) /**< Ruby write file pointer */
-#endif
-
-// rb_io_t replaces OpenFile in Ruby 1.9.0
-#if defined(HAVE_RB_IO_T)
-#undef OpenFile
-#define OpenFile rb_io_t /**< Ruby open file */
-#endif
-
 //! Convert a C string to a Ruby symbol. Used in marshal_dump/marshal_load methods
 #define CSTR2SYM(s) ID2SYM(rb_intern(s))
 //! Convert a C string to a Ruby String, or nil if the ptr is NULL

@@ -1170,7 +1170,7 @@ ImageList_write(VALUE self, VALUE file)
 
     if (TYPE(file) == T_FILE)
     {
-        OpenFile *fptr;
+        rb_io_t *fptr;
 
         // Ensure file is open - raise error if not
         GetOpenFile(file, fptr);
@@ -1178,7 +1178,7 @@ ImageList_write(VALUE self, VALUE file)
         add_format_prefix(info, fptr->pathv);
         SetImageInfoFile(info, NULL);
 #else
-        SetImageInfoFile(info, GetReadFile(fptr));
+        SetImageInfoFile(info, rb_io_stdio_file(fptr));
 #endif
     }
     else
