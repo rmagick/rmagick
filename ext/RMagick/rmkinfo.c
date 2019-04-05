@@ -53,13 +53,31 @@ VALUE
 KernelInfo_initialize(VALUE self, VALUE kernel_string)
 {
     KernelInfo *kernel;
+#if defined(IMAGEMAGICK_7)
+    ExceptionInfo *exception;
+#endif
 
     Check_Type(kernel_string, T_STRING);
 
+#if defined(IMAGEMAGICK_7)
+    exception = AcquireExceptionInfo();
+    kernel = AcquireKernelInfo(StringValueCStr(kernel_string), exception);
+    if (rm_should_raise_exception(exception, DestroyExceptionRetention))
+    {
+        if (kernel != (KernelInfo *) NULL)
+        {
+            (void) DestroyKernelInfo(kernel);
+        }
+        rm_raise_exception(exception);
+    }
+#else
     kernel = AcquireKernelInfo(StringValueCStr(kernel_string));
+#endif
 
-    if (kernel == NULL)
+    if (kernel == (KernelInfo *) NULL)
+    {
         rb_raise(rb_eRuntimeError, "failed to parse kernel string");
+    }
 
     DATA_PTR(self) = kernel;
 
@@ -204,15 +222,33 @@ KernelInfo_builtin(VALUE self, VALUE what, VALUE geometry)
     KernelInfo *kernel;
     KernelInfoType kernel_type;
     GeometryInfo info;
+#if defined(IMAGEMAGICK_7)
+    ExceptionInfo *exception;
+#endif
 
     Check_Type(geometry, T_STRING);
     VALUE_TO_ENUM(what, kernel_type, KernelInfoType);
     ParseGeometry(StringValueCStr(geometry), &info);
 
+#if defined(IMAGEMAGICK_7)
+    exception = AcquireExceptionInfo();
+    kernel = AcquireKernelBuiltIn(kernel_type, &info, exception);
+    if (rm_should_raise_exception(exception, DestroyExceptionRetention))
+    {
+        if (kernel != (KernelInfo *) NULL)
+        {
+            (void) DestroyKernelInfo(kernel);
+        }
+        rm_raise_exception(exception);
+    }
+#else
     kernel = AcquireKernelBuiltIn(kernel_type, &info);
+#endif
 
-    if (!kernel)
+    if (kernel != (KernelInfo *) NULL)
+    {
         rb_raise(rb_eRuntimeError, "failed to acquire builtin kernel");
+    }
 
     return Data_Wrap_Struct(self, NULL, rm_kernel_info_destroy, kernel);
 }
