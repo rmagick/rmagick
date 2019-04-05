@@ -289,7 +289,11 @@ Export_ColorInfo(ColorInfo *ci, VALUE st)
         ci->color.red = (MagickRealType) pixel.red;
         ci->color.green = (MagickRealType) pixel.green;
         ci->color.blue = (MagickRealType) pixel.blue;
+#if defined(IMAGEMAGICK_7)
+        ci->color.alpha = (MagickRealType) OpaqueAlpha;
+#else
         ci->color.opacity = (MagickRealType) OpaqueOpacity;
+#endif
         ci->color.index = (MagickRealType) 0;
     }
 
@@ -322,7 +326,11 @@ Color_to_MagickPixel(Image *image, MagickPixel *mpp, VALUE color)
     mpp->red = (MagickRealType) pp.red;
     mpp->green = (MagickRealType) pp.green;
     mpp->blue = (MagickRealType) pp.blue;
+#if defined(IMAGEMAGICK_7)
+    mpp->alpha = (MagickRealType) pp.alpha;
+#else
     mpp->opacity = (MagickRealType) pp.opacity;
+#endif
 }
 
 
@@ -361,13 +369,26 @@ Color_to_s(VALUE self)
 
     sprintf(buff, "name=%s, compliance=%s, "
 #if (MAGICKCORE_QUANTUM_DEPTH  == 32 || MAGICKCORE_QUANTUM_DEPTH  == 64) && defined(HAVE_TYPE_LONG_DOUBLE)
+    #if defined(IMAGEMAGICK_7)
+                  "color.red=%Lg, color.green=%Lg, color.blue=%Lg, color.alpha=%Lg ",
+    #else
                   "color.red=%Lg, color.green=%Lg, color.blue=%Lg, color.opacity=%Lg ",
+    #endif
 #else
+    #if defined(IMAGEMAGICK_7)
+                  "color.red=%g, color.green=%g, color.blue=%g, color.alpha=%g ",
+    #else
                   "color.red=%g, color.green=%g, color.blue=%g, color.opacity=%g ",
+    #endif
 #endif
                   ci.name,
                   ComplianceType_name(&ci.compliance),
-                  ci.color.red, ci.color.green, ci.color.blue, ci.color.opacity);
+                  ci.color.red, ci.color.green, ci.color.blue,
+#if defined(IMAGEMAGICK_7)
+                  ci.color.alpha);
+#else
+                  ci.color.opacity);
+#endif
 
     destroy_ColorInfo(&ci);
     return rb_str_new2(buff);
