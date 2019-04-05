@@ -213,7 +213,6 @@ Init_RMagick2(void)
     rb_define_alloc_func(Class_Image, Image_alloc);
     rb_define_method(Class_Image, "initialize", Image_initialize, -1);
 
-    rb_define_singleton_method(Class_Image, "combine", Image_combine, -1);
     rb_define_singleton_method(Class_Image, "constitute", Image_constitute, 4);
     rb_define_singleton_method(Class_Image, "_load", Image__load, 1);
     rb_define_singleton_method(Class_Image, "capture", Image_capture, -1);
@@ -221,14 +220,15 @@ Init_RMagick2(void)
     rb_define_singleton_method(Class_Image, "read", Image_read, 1);
     rb_define_singleton_method(Class_Image, "read_inline", Image_read_inline, 1);
     rb_define_singleton_method(Class_Image, "from_blob", Image_from_blob, 1);
+#if !defined(IMAGEMAGICK_7)
+    rb_define_singleton_method(Class_Image, "combine", Image_combine, -1);
+#endif
 
     DCL_ATTR_ACCESSOR(Image, background_color)
     DCL_ATTR_READER(Image, base_columns)
     DCL_ATTR_READER(Image, base_filename)
     DCL_ATTR_READER(Image, base_rows)
-    DCL_ATTR_ACCESSOR(Image, bias)
     DCL_ATTR_ACCESSOR(Image, black_point_compensation)
-    DCL_ATTR_ACCESSOR(Image, blur)
     DCL_ATTR_ACCESSOR(Image, border_color)
     DCL_ATTR_READER(Image, bounding_box)
     DCL_ATTR_ACCESSOR(Image, chromaticity)
@@ -285,6 +285,10 @@ Init_RMagick2(void)
     DCL_ATTR_ACCESSOR(Image, virtual_pixel_method)
     DCL_ATTR_ACCESSOR(Image, x_resolution)
     DCL_ATTR_ACCESSOR(Image, y_resolution)
+#if !defined(IMAGEMAGICK_7)
+    DCL_ATTR_ACCESSOR(Image, bias)
+    DCL_ATTR_ACCESSOR(Image, blur)
+#endif
 
     rb_define_method(Class_Image, "adaptive_blur", Image_adaptive_blur, -1);
     rb_define_method(Class_Image, "adaptive_blur_channel", Image_adaptive_blur_channel, -1);
@@ -393,7 +397,6 @@ Init_RMagick2(void)
     rb_define_method(Class_Image, "function_channel", Image_function_channel, -1);
     rb_define_method(Class_Image, "fx", Image_fx, -1);
     rb_define_method(Class_Image, "gamma_channel", Image_gamma_channel, -1);
-    rb_define_method(Class_Image, "gamma_correct", Image_gamma_correct, -1);
     rb_define_method(Class_Image, "gaussian_blur", Image_gaussian_blur, -1);
     rb_define_method(Class_Image, "gaussian_blur_channel", Image_gaussian_blur_channel, -1);
     rb_define_method(Class_Image, "get_pixels", Image_get_pixels, 4);
@@ -414,7 +417,6 @@ Init_RMagick2(void)
     rb_define_method(Class_Image, "magnify!", Image_magnify_bang, 0);
     rb_define_method(Class_Image, "marshal_dump", Image_marshal_dump, 0);
     rb_define_method(Class_Image, "marshal_load", Image_marshal_load, 1);
-    rb_define_method(Class_Image, "mask", Image_mask, -1);
     rb_define_method(Class_Image, "matte_flood_fill", Image_matte_flood_fill, 5);
     rb_define_method(Class_Image, "median_filter", Image_median_filter, -1);
     rb_define_method(Class_Image, "minify", Image_minify, 0);
@@ -483,7 +485,6 @@ Init_RMagick2(void)
     rb_define_method(Class_Image, "strip!", Image_strip_bang, 0);
     rb_define_method(Class_Image, "store_pixels", Image_store_pixels, 5);
     rb_define_method(Class_Image, "swirl", Image_swirl, 1);
-    rb_define_method(Class_Image, "sync_profiles", Image_sync_profiles, 0);
     rb_define_method(Class_Image, "texture_flood_fill", Image_texture_flood_fill, 5);
     rb_define_method(Class_Image, "threshold", Image_threshold, 1);
     rb_define_method(Class_Image, "thumbnail", Image_thumbnail, -1);
@@ -509,6 +510,15 @@ Init_RMagick2(void)
     rb_define_method(Class_Image, "wet_floor", Image_wet_floor, -1);
     rb_define_method(Class_Image, "white_threshold", Image_white_threshold, -1);
     rb_define_method(Class_Image, "write", Image_write, 1);
+#if defined(IMAGEMAGICK_7)
+    rb_define_method(Class_Image, "composite_mask", Image_composite_mask, -1);
+    rb_define_method(Class_Image, "read_mask", Image_read_mask, -1);
+    rb_define_method(Class_Image, "write_mask", Image_write_mask, -1);
+#else
+    rb_define_method(Class_Image, "gamma_correct", Image_gamma_correct, -1);
+    rb_define_method(Class_Image, "mask", Image_mask, -1);
+    rb_define_method(Class_Image, "sync_profiles", Image_sync_profiles, 0);
+#endif
 
     /*-----------------------------------------------------------------------*/
     /* Class Magick::ImageList methods (see also RMagick.rb)                 */

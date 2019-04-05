@@ -708,9 +708,7 @@ ATTR_ACCESSOR(Image, background_color)
 ATTR_READER(Image, base_columns)
 ATTR_READER(Image, base_filename)
 ATTR_READER(Image, base_rows)
-ATTR_ACCESSOR(Image, bias)
 ATTR_ACCESSOR(Image, black_point_compensation)
-ATTR_ACCESSOR(Image, blur)
 ATTR_ACCESSOR(Image, border_color)
 ATTR_READER(Image, bounding_box)
 ATTR_ACCESSOR(Image, chromaticity)
@@ -767,6 +765,10 @@ ATTR_ACCESSOR(Image, units)
 ATTR_ACCESSOR(Image, virtual_pixel_method)
 ATTR_ACCESSOR(Image, x_resolution)
 ATTR_ACCESSOR(Image, y_resolution)
+#if !defined(IMAGEMAGICK_7)
+ATTR_ACCESSOR(Image, bias)
+ATTR_ACCESSOR(Image, blur)
+#endif
 
 extern ChannelType extract_channels(int *, VALUE *);
 extern void raise_ChannelType_error(VALUE);
@@ -820,7 +822,6 @@ extern VALUE Image_color_flood_fill(VALUE, VALUE, VALUE, VALUE, VALUE, VALUE);
 extern VALUE Image_color_histogram(VALUE);
 extern VALUE Image_colorize(int, VALUE *, VALUE);
 extern VALUE Image_colormap(int, VALUE *, VALUE);
-extern VALUE Image_combine(int, VALUE *, VALUE);
 extern VALUE Image_composite(int, VALUE *, VALUE);
 extern VALUE Image_composite_affine(VALUE, VALUE, VALUE);
 extern VALUE Image_composite_bang(int, VALUE *, VALUE);
@@ -881,7 +882,6 @@ extern VALUE Image_from_blob(VALUE, VALUE);
 extern VALUE Image_function_channel(int, VALUE *, VALUE);
 extern VALUE Image_fx(int, VALUE *, VALUE);
 extern VALUE Image_gamma_channel(int, VALUE *, VALUE);
-extern VALUE Image_gamma_correct(int, VALUE *, VALUE);
 extern VALUE Image_gaussian_blur(int, VALUE *, VALUE);
 extern VALUE Image_gaussian_blur_channel(int, VALUE *, VALUE);
 extern VALUE Image_get_pixels(VALUE, VALUE, VALUE, VALUE, VALUE);
@@ -902,7 +902,6 @@ extern VALUE Image_magnify(VALUE);
 extern VALUE Image_magnify_bang(VALUE);
 extern VALUE Image_marshal_dump(VALUE);
 extern VALUE Image_marshal_load(VALUE, VALUE);
-extern VALUE Image_mask(int, VALUE *, VALUE);
 extern VALUE Image_matte_flood_fill(VALUE, VALUE, VALUE, VALUE, VALUE, VALUE);
 extern VALUE Image_median_filter(int, VALUE *, VALUE);
 extern VALUE Image_minify(VALUE);
@@ -1001,6 +1000,15 @@ extern VALUE Image_wave(int, VALUE *, VALUE);
 extern VALUE Image_wet_floor(int, VALUE *, VALUE);
 extern VALUE Image_white_threshold(int, VALUE *, VALUE);
 extern VALUE Image_write(VALUE, VALUE);
+#if defined(IMAGEMAGICK_7)
+extern VALUE Image_composite_mask(int, VALUE *, VALUE);
+extern VALUE Image_read_mask(int, VALUE *, VALUE);
+extern VALUE Image_write_mask(int, VALUE *, VALUE);
+#else
+extern VALUE Image_combine(int, VALUE *, VALUE);
+extern VALUE Image_gamma_correct(int, VALUE *, VALUE);
+extern VALUE Image_mask(int, VALUE *, VALUE);
+#endif
 
 extern VALUE rm_image_new(Image *);
 extern void  rm_image_destroy(void *);
