@@ -6802,6 +6802,56 @@ Image_fuzz_eq(VALUE self, VALUE fuzz)
 }
 
 
+/**
+ * Apply fx on the image.
+ *
+ * Ruby usage:
+ *   - @verbatim Image#fx(expression) @endverbatim
+ *   - @verbatim Image#fx(expression, channel) @endverbatim
+ *   - @verbatim Image#fx(expression, channel, ...) @endverbatim
+ *
+ * Notes:
+ *   - Default channel is AllChannels
+ *
+ * @param argc number of input arguments
+ * @param argv array of input arguments
+ * @param self this object
+ * @return a new image
+ */
+VALUE
+Image_fx(int argc, VALUE *argv, VALUE self)
+{
+    Image *image, *new_image;
+    char *expression;
+    ChannelType channels;
+    ExceptionInfo *exception;
+
+    image = rm_check_destroyed(self);
+    channels = extract_channels(&argc, argv);
+
+    // There must be exactly 1 remaining argument.
+    if (argc == 0)
+    {
+        rb_raise(rb_eArgError, "wrong number of arguments (0 for 1 or more)");
+    }
+    else if (argc > 1)
+    {
+        raise_ChannelType_error(argv[argc-1]);
+    }
+
+    expression = StringValuePtr(argv[0]);
+
+    exception = AcquireExceptionInfo();
+    new_image = FxImageChannel(image, channels, expression, exception);
+    rm_check_exception(exception, new_image, DestroyOnError);
+    (void) DestroyExceptionInfo(exception);
+
+    rm_ensure_result(new_image);
+
+    return rm_image_new(new_image);
+}
+
+
 DEF_ATTR_ACCESSOR(Image, gamma, dbl)
 
 

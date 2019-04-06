@@ -716,6 +716,16 @@ class Image2_UT < Test::Unit::TestCase
     assert_raise(TypeError) { @img.frame(50, 50, 25, 25, 6, 6, 2) }
   end
 
+  def test_fx
+    assert_nothing_raised { @img.fx('1/2') }
+    assert_nothing_raised { @img.fx('1/2', Magick::BlueChannel) }
+    assert_nothing_raised { @img.fx('1/2', Magick::BlueChannel, Magick::RedChannel) }
+    assert_raise(ArgumentError) { @img.fx }
+    assert_raise(ArgumentError) { @img.fx(Magick::BlueChannel) }
+    assert_raise(TypeError) { @img.fx(1) }
+    assert_raise(TypeError) { @img.fx('1/2', 1) }
+  end
+
   def test_gamma_channel
     assert_nothing_raised do
       res = @img.gamma_channel(0.8)
