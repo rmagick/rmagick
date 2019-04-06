@@ -685,7 +685,6 @@ rm_pixelcolor_to_color_name(Image *image, PixelColor *color)
  * Notes:
  *   - Simply create an Image from the Info, call QueryColorname, and then
  *     destroy the Image.
- *   - If the Info structure is NULL, creates a new one.
  *   - The default depth is always used, and the matte value is set to False,
  *     which means "don't use the alpha channel".
  *
@@ -698,10 +697,7 @@ VALUE
 rm_pixelcolor_to_color_name_info(Info *info, PixelColor *color)
 {
     Image *image;
-    Info *my_info;
     VALUE color_name;
-
-    my_info = info ? info : CloneImageInfo(NULL);
 
     image = rm_acquire_image(info);
     if (!image)
@@ -712,12 +708,6 @@ rm_pixelcolor_to_color_name_info(Info *info, PixelColor *color)
     image->matte = MagickFalse;
     color_name = rm_pixelcolor_to_color_name(image, color);
     (void) DestroyImage(image);
-    if (!info)
-    {
-        (void) DestroyImageInfo(my_info);
-    }
-
-    RB_GC_GUARD(color_name);
 
     return color_name;
 }
