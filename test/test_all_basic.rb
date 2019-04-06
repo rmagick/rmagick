@@ -33,6 +33,7 @@ FreezeError = if RUBY_VERSION > '2.5'
                 TypeError
               end
 
+require 'Draw.rb'
 require 'Image1.rb'
 require 'Image2.rb'
 require 'Image3.rb'
