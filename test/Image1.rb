@@ -434,6 +434,12 @@ class Image1_UT < Test::Unit::TestCase
       res = @img.color_histogram
       assert_instance_of(Hash, res)
     end
+    assert_nothing_raised do
+      @img.class_type = Magick::PseudoClass
+      res = @img.color_histogram
+      assert_equal(Magick::PseudoClass, @img.class_type)
+      assert_instance_of(Hash, res)
+    end
   end
 
   def test_colorize
