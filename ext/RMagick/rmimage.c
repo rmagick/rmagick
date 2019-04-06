@@ -635,6 +635,7 @@ Image_alpha_eq(VALUE self, VALUE type)
 {
     VALUE argv[1];
     argv[0] = type;
+    rb_warning("Image#alpha= is deprecated; use Image#alpha.");
     Image_alpha(1, argv, self);
     return type;
 }
@@ -8444,7 +8445,7 @@ get_image_mask(Image *image)
  * @param self this object
  * @param mask the mask to use
  * @return copy of the current clip-mask or nil
- * @deprecated Please use Image_mask(mask-image).
+ * @deprecated This method has been deprecated. Please use Image_mask(mask-image).
  * @see Image_mask(mask-image)
  * @see get_image_mask
  */
@@ -8453,6 +8454,7 @@ Image_mask_eq(VALUE self, VALUE mask)
 {
     VALUE v[1];
     v[0] = mask;
+    rb_warning("Image#mask= is deprecated; use Image#mask.");
     return Image_mask(1, v, self);
 }
 
@@ -8579,7 +8581,7 @@ Image_mask(int argc, VALUE *argv, VALUE self)
  *
  * @param self this object
  * @return the matte
- * @deprecated Deprecated as of ImageMagick 6.3.6. See Image_alpha
+ * @deprecated This method has been deprecated. Please use Image_alpha.
  * @see Image_alpha
  * @see Image_alpha_eq
  */
@@ -8589,6 +8591,7 @@ Image_matte(VALUE self)
     Image *image;
 
     image = rm_check_destroyed(self);
+    rb_warning("Image#matte is deprecated; use Image#alpha.");
     return image->matte ? Qtrue : Qfalse;
 }
 
@@ -8602,7 +8605,7 @@ Image_matte(VALUE self)
  * @param self this object
  * @param matte the matte
  * @return the matte
- * @deprecated Deprecated as of ImageMagick 6.3.6. See Image_alpha_eq
+ * @deprecated This method has been deprecated. Please use Image_alpha.
  * @see Image_alpha_eq
  * @see Image_alpha
  */
@@ -8619,6 +8622,8 @@ Image_matte_eq(VALUE self, VALUE matte)
     {
         alpha_channel_type = rb_const_get(Module_Magick, rb_intern("DeactivateAlphaChannel"));
     }
+
+    rb_warning("Image#matte= is deprecated; use Image#alpha.");
 
     return Image_alpha_eq(self, alpha_channel_type);
 }
