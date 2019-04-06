@@ -9886,7 +9886,8 @@ VALUE
 Image_pixel_color(int argc, VALUE *argv, VALUE self)
 {
     Image *image;
-    PixelPacket old_color, new_color, *pixel;
+    PixelColor new_color;
+    PixelPacket old_color, *pixel;
     ExceptionInfo *exception;
     long x, y;
     unsigned int set = False;
@@ -9903,7 +9904,7 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
             set = True;
             // Replace with new color? The arg can be either a color name or
             // a Magick::Pixel.
-            Color_to_PixelPacket(&new_color, argv[2]);
+            Color_to_PixelColor(&new_color, argv[2]);
         case 2:
             break;
         default:
