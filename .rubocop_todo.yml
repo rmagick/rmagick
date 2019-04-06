@@ -104,6 +104,7 @@ Lint/NumberConversion:
     - 'lib/rvg/misc.rb'
     - 'lib/rvg/to_c.rb'
     - 'test/Import_Export.rb'
+    - 'test/Enum.rb'
 
 # Offense count: 1
 Lint/RescueException:
@@ -114,6 +115,10 @@ Lint/RescueException:
 Lint/ReturnInVoidContext:
   Exclude:
     - 'lib/rmagick_internal.rb'
+
+Lint/UselessComparison:
+  Exclude:
+    - 'test/Enum.rb'
 
 # Offense count: 6
 # Configuration parameters: CheckForMethodsWithNoSideEffects.
@@ -359,6 +364,10 @@ Style/AutoResourceCleanup:
   Exclude:
     - 'lib/rvg/to_c.rb'
     - 'test/ImageList2.rb'
+
+Style/CaseEquality:
+  Exclude:
+    - 'test/Enum.rb'
 
 # Offense count: 6
 # Cop supports --auto-correct.
