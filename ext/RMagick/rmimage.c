@@ -10739,12 +10739,12 @@ rd_image(VALUE class, VALUE file, reader_t reader)
 
     if (TYPE(file) == T_FILE)
     {
-        OpenFile *fptr;
+        rb_io_t *fptr;
 
         // Ensure file is open - raise error if not
         GetOpenFile(file, fptr);
         rb_io_check_readable(fptr);
-        SetImageInfoFile(info, GetReadFile(fptr));
+        SetImageInfoFile(info, rb_io_stdio_file(fptr));
     }
     else
     {
@@ -14919,7 +14919,7 @@ Image_write(VALUE self, VALUE file)
 
     if (TYPE(file) == T_FILE)
     {
-        OpenFile *fptr;
+        rb_io_t *fptr;
 
         // Ensure file is open - raise error if not
         GetOpenFile(file, fptr);
@@ -14929,7 +14929,7 @@ Image_write(VALUE self, VALUE file)
         strcpy(image->filename, info->filename);
         SetImageInfoFile(info, NULL);
 #else
-        SetImageInfoFile(info, GetWriteFile(fptr));
+        SetImageInfoFile(info, rb_io_stdio_file(fptr));
         memset(image->filename, 0, sizeof(image->filename));
 #endif
     }
