@@ -10,6 +10,12 @@ module Magick
   end
 end
 
+class Magick::AlphaChannelOption
+  def self.enumerators
+    @@enumerators
+  end
+end
+
 class Magick::AlphaChannelType
   def self.enumerators
     @@enumerators
@@ -47,7 +53,7 @@ class MagickUT < Test::Unit::TestCase
   def test_enumerators
     ary = nil
     assert_nothing_raised do
-      ary = Magick::AlphaChannelType.enumerators
+      ary = IM_7 ? Magick::AlphaChannelOption.enumerators : Magick::AlphaChannelType.enumerators
     end
     assert_instance_of(Array, ary)
 

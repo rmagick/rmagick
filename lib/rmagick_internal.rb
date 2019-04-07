@@ -904,7 +904,7 @@ module Magick
     # Make the pixel at (x,y) transparent.
     def matte_point(x, y)
       f = copy
-      f.opacity = OpaqueOpacity unless f.matte
+      f.opacity = opaque_value unless f.matte
       pixel = f.pixel_color(x, y)
       pixel.opacity = TransparentOpacity
       f.pixel_color(x, y, pixel)
@@ -915,7 +915,7 @@ module Magick
     # pixel at (x, y).
     def matte_replace(x, y)
       f = copy
-      f.opacity = OpaqueOpacity unless f.alpha?
+      f.opacity = opaque_value unless f.alpha?
       target = f.pixel_color(x, y)
       f.transparent(target)
     end
@@ -924,23 +924,23 @@ module Magick
     # at (x,y) and is a neighbor.
     def matte_floodfill(x, y)
       f = copy
-      f.opacity = OpaqueOpacity unless f.alpha?
+      f.opacity = opaque_value unless f.alpha?
       target = f.pixel_color(x, y)
-      f.matte_flood_fill(target, TransparentOpacity,
+      f.matte_flood_fill(target, transparent_value,
                          x, y, FloodfillMethod)
     end
 
     # Make transparent any neighbor pixel that is not the border color.
     def matte_fill_to_border(x, y)
       f = copy
-      f.opacity = Magick::OpaqueOpacity unless f.alpha?
-      f.matte_flood_fill(border_color, TransparentOpacity,
+      f.opacity = opaque_value unless f.alpha?
+      f.matte_flood_fill(border_color, transparent_value,
                          x, y, FillToBorderMethod)
     end
 
     # Make all pixels transparent.
     def matte_reset!
-      self.opacity = Magick::TransparentOpacity
+      self.opacity = transparent_value
       self
     end
 
@@ -1213,6 +1213,16 @@ module Magick
         end
       end # class Magick::Image::View::Rows
     end # class Magick::Image::View
+
+    private
+
+    def opaque_value
+      Magick.const_defined?('OpaqueOpacity') ? OpaqueOpacity : OpaqueAlpha
+    end
+
+    def transparent_value
+      Magick.const_defined?('TransparentOpacity') ? TransparentOpacity : TransparentAlpha
+    end
   end # class Magick::Image
 
   class ImageList

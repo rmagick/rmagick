@@ -64,6 +64,8 @@ class Image_Attributes_UT < Test::Unit::TestCase
   end
 
   def test_bias
+    return unless IM_6
+
     assert_nothing_raised { @img.bias }
     assert_equal(0.0, @img.bias)
     assert_instance_of(Float, @img.bias)
@@ -86,6 +88,8 @@ class Image_Attributes_UT < Test::Unit::TestCase
   end
 
   def test_blur
+    return unless IM_6
+
     assert_nothing_raised { @img.blur }
     assert_equal(1.0, @img.blur)
     assert_nothing_raised { @img.blur = 2.0 }
@@ -300,12 +304,17 @@ class Image_Attributes_UT < Test::Unit::TestCase
 
   def test_filter
     assert_nothing_raised { @img.filter }
-    assert_instance_of(Magick::FilterTypes, @img.filter)
+    if IM_7
+      assert_instance_of(Magick::FilterType, @img.filter)
+    else
+      assert_instance_of(Magick::FilterTypes, @img.filter)
+    end
     assert_equal(Magick::UndefinedFilter, @img.filter)
     assert_nothing_raised { @img.filter = Magick::PointFilter }
     assert_equal(Magick::PointFilter, @img.filter)
 
-    Magick::FilterTypes.values do |filter|
+    filters = IM_7 ? Magick::FilterType : Magick::FilterTypes
+    filters.values do |filter|
       assert_nothing_raised { @img.filter = filter }
     end
     assert_raise(TypeError) { @img.filter = 2 }
@@ -490,12 +499,17 @@ class Image_Attributes_UT < Test::Unit::TestCase
 
   def test_pixel_interpolation_method
     assert_nothing_raised { @img.pixel_interpolation_method }
-    assert_instance_of(Magick::InterpolatePixelMethod, @img.pixel_interpolation_method)
+    if IM_7
+      assert_instance_of(Magick::PixelInterpolateMethod, @img.pixel_interpolation_method)
+    else
+      assert_instance_of(Magick::InterpolatePixelMethod, @img.pixel_interpolation_method)
+    end
     assert_equal(Magick::UndefinedInterpolatePixel, @img.pixel_interpolation_method)
     assert_nothing_raised { @img.pixel_interpolation_method = Magick::AverageInterpolatePixel }
     assert_equal(Magick::AverageInterpolatePixel, @img.pixel_interpolation_method)
 
-    Magick::InterpolatePixelMethod.values do |interpolate_pixel_method|
+    methods = IM_7 ? Magick::PixelInterpolateMethod : Magick::InterpolatePixelMethod
+    methods.values do |interpolate_pixel_method|
       assert_nothing_raised { @img.pixel_interpolation_method = interpolate_pixel_method }
     end
     assert_raise(TypeError) { @img.pixel_interpolation_method = 2 }
@@ -607,7 +621,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
   def test_frozen
     @img.freeze
     assert_raise(FreezeError) { @img.background_color = 'xxx' }
-    assert_raise(FreezeError) { @img.blur = 50 }
+    assert_raise(FreezeError) { @img.blur = 50 } if IM_6
     assert_raise(FreezeError) { @img.border_color = 'xxx' }
     rp = Magick::Point.new(1, 1)
     gp = Magick::Point.new(1, 1)

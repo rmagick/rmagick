@@ -183,9 +183,9 @@ class Image1_UT < Test::Unit::TestCase
     assert @img.alpha?
     assert_nothing_raised { @img.alpha Magick::DeactivateAlphaChannel }
     assert !@img.alpha?
-    assert_nothing_raised { @img.alpha Magick::ResetAlphaChannel }
+    assert_nothing_raised { @img.alpha Magick::ResetAlphaChannel } if IM_6
     assert_nothing_raised { @img.alpha Magick::SetAlphaChannel }
-    assert_raise(ArgumentError) { @img.alpha Magick::SetAlphaChannel, Magick::ResetAlphaChannel }
+    assert_raise(ArgumentError) { @img.alpha Magick::SetAlphaChannel, Magick::ActivateAlphaChannel }
     @img.freeze
     assert_raise(FreezeError) { @img.alpha Magick::SetAlphaChannel }
   end
@@ -574,6 +574,8 @@ class Image1_UT < Test::Unit::TestCase
   end
 
   def test_combine
+    return unless IM_6
+
     r = Magick::Image.new(20, 20) { self.background_color = 'red' }
     g = Magick::Image.new(20, 20) { self.background_color = 'green' }
     b = Magick::Image.new(20, 20) { self.background_color = 'blue' }

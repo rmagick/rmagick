@@ -60,6 +60,8 @@ class InfoUT < Test::Unit::TestCase
   end
 
   def test_authenticate
+    return unless IM_6
+
     assert_nothing_raised { @info.authenticate = 'string' }
     assert_equal('string', @info.authenticate)
     assert_nothing_raised { @info.authenticate = nil }
@@ -233,6 +235,8 @@ class InfoUT < Test::Unit::TestCase
   end
 
   def test_group
+    return unless IM_6
+
     assert_kind_of(Integer, @info.group)
     assert_nothing_raised { @info.group = 50 }
     assert_equal(50, @info.group)
@@ -432,6 +436,8 @@ class InfoUT < Test::Unit::TestCase
   end
 
   def test_view
+    return unless IM_6
+
     assert_nothing_raised { @info.view = 'string' }
     assert_equal('string', @info.view)
     assert_nothing_raised { @info.view = nil }

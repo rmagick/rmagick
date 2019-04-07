@@ -79,6 +79,28 @@ class Image2_UT < Test::Unit::TestCase
     assert_raise(TypeError) { img1.composite_channel(img2, Magick::NorthWestGravity, 5, 5, Magick::OverCompositeOp, 'x') }
   end
 
+  def test_composite_mask
+    return if IM_6
+
+    cimg = Magick::Image.new(10, 10)
+    assert_nothing_raised { @img.composite_mask(cimg) }
+    res = nil
+    assert_nothing_raised { res = @img.composite_mask }
+    assert_not_nil(res)
+    assert_not_same(cimg, res)
+    assert_equal(20, res.columns)
+    assert_equal(20, res.rows)
+
+    # composite_mask expects an Image and calls `cur_image'
+    assert_raise(NoMethodError) { @img.composite_mask = 2 }
+
+    img = @img.copy.freeze
+    assert_raise(FreezeError) { img.composite_mask cimg }
+
+    @img.destroy!
+    assert_raise(Magick::DestroyedImageError) { @img.composite_mask cimg }
+  end
+
   def test_composite_mathematics
     bg = Magick::Image.new(50, 50)
     fg = Magick::Image.new(50, 50) { self.background_color = 'black' }
@@ -196,7 +218,11 @@ class Image2_UT < Test::Unit::TestCase
     assert_raise(IndexError) { @img.convolve(5, kernel) }
     assert_raise(IndexError) { @img.convolve(order, 'x') }
     assert_raise(TypeError) { @img.convolve(3, [1.0, 1.0, 1.0, 1.0, 'x', 1.0, 1.0, 1.0, 1.0]) }
-    assert_raise(Magick::ImageMagickError) { @img.convolve(-1, [1.0, 1.0, 1.0, 1.0]) }
+    if IM_7
+      assert_raise(NoMemoryError) { @img.convolve(-1, [1.0, 1.0, 1.0, 1.0]) }
+    else
+      assert_raise(Magick::ImageMagickError) { @img.convolve(-1, [1.0, 1.0, 1.0, 1.0]) }
+    end
   end
 
   def test_convolve_channel
@@ -483,7 +509,11 @@ class Image2_UT < Test::Unit::TestCase
     end
     assert_nothing_raised { @img.distortion_channel(@img, Magick::MeanSquaredErrorMetric) }
     assert_nothing_raised { @img.distortion_channel(@img, Magick::PeakAbsoluteErrorMetric) }
-    assert_nothing_raised { @img.distortion_channel(@img, Magick::PeakSignalToNoiseRatioMetric) }
+    if IM_7
+      assert_nothing_raised { @img.distortion_channel(@img, Magick::PeakSignalToNoiseRatioErrorMetric) }
+    else
+      assert_nothing_raised { @img.distortion_channel(@img, Magick::PeakSignalToNoiseRatioMetric) }
+    end
     assert_nothing_raised { @img.distortion_channel(@img, Magick::RootMeanSquaredErrorMetric) }
     assert_nothing_raised { @img.distortion_channel(@img, Magick::MeanSquaredErrorMetric, Magick::RedChannel, Magick:: BlueChannel) }
     assert_nothing_raised { @img.distortion_channel(@img, Magick::NormalizedCrossCorrelationErrorMetric) }
@@ -658,12 +688,12 @@ class Image2_UT < Test::Unit::TestCase
       assert_equal(10 * 10 * 2, res.length)
     end
     assert_nothing_raised do
-      res = @img.export_pixels_to_str(0, 0, 10, 10, 'I', Magick::IntegerPixel)
+      res = @img.export_pixels_to_str(0, 0, 10, 10, 'R', IM_7 ? Magick::LongPixel : Magick::IntegerPixel)
       assert_equal(10 * 10 * 4, res.length)
     end
     assert_nothing_raised do
-      res = @img.export_pixels_to_str(0, 0, 10, 10, 'I', Magick::LongPixel)
-      assert_equal(10 * 10 * [1].pack('L!').length, res.length)
+      res = @img.export_pixels_to_str(0, 0, 10, 10, 'I', IM_7 ? Magick::LongLongPixel : Magick::LongPixel)
+      assert_equal(10 * 10 * (IM_7 ? 8 : [1].pack('L!').length), res.length)
     end
     assert_nothing_raised do
       res = @img.export_pixels_to_str(0, 0, 10, 10, 'I', Magick::FloatPixel)
@@ -850,6 +880,8 @@ class Image2_UT < Test::Unit::TestCase
   end
 
   def test_gramma_correct
+    return unless IM_6
+
     assert_raise(ArgumentError) { @img.gamma_correct }
     assert_nothing_raised do
       res = @img.gamma_correct(0.8)
@@ -1100,6 +1132,8 @@ class Image2_UT < Test::Unit::TestCase
   end
 
   def test_mask
+    return unless IM_6
+
     cimg = Magick::Image.new(10, 10)
     assert_nothing_raised { @img.mask(cimg) }
     res = nil
@@ -1142,7 +1176,11 @@ class Image2_UT < Test::Unit::TestCase
     Magick::PaintMethod.values do |method|
       next if [Magick::FillToBorderMethod, Magick::FloodfillMethod].include?(method)
 
-      assert_raise(ArgumentError) { @img.matte_flood_fill('blue', Magick::TransparentOpacity, @img.columns, @img.rows, method) }
+      if IM_7
+        assert_raise(ArgumentError) { @img.matte_flood_fill('blue', Magick::TransparentAlpha, @img.columns, @img.rows, method) }
+      else
+        assert_raise(ArgumentError) { @img.matte_flood_fill('blue', Magick::TransparentOpacity, @img.columns, @img.rows, method) }
+      end
     end
     assert_raise(ArgumentError) { @img.matte_floodfill(@img.columns + 1, @img.rows) }
     assert_raise(ArgumentError) { @img.matte_floodfill(@img.columns, @img.rows + 1) }
@@ -1265,7 +1303,12 @@ class Image2_UT < Test::Unit::TestCase
       assert_not_same(@img, res)
     end
     assert_nothing_raised { @img.oil_paint(2.0) }
-    assert_raise(ArgumentError) { @img.oil_paint(2.0, 1.0) }
+    if IM_7
+      assert_nothing_raised { @img.oil_paint(2.0, 1.0) }
+      assert_raise(ArgumentError) { @img.oil_paint(2.0, 1.0, 0.0) }
+    else
+      assert_raise(ArgumentError) { @img.oil_paint(2.0, 1.0) }
+    end
   end
 
   def test_opaque
@@ -1306,7 +1349,7 @@ class Image2_UT < Test::Unit::TestCase
     assert_nothing_raised do
       assert_block { @img.opaque? }
     end
-    @img.opacity = Magick::TransparentOpacity
+    @img.opacity = (IM_7 ? Magick::TransparentAlpha : Magick::TransparentOpacity)
     assert_block { !@img.opaque? }
   end
 
@@ -1330,15 +1373,29 @@ class Image2_UT < Test::Unit::TestCase
     assert_not_nil(res)
     assert_instance_of(Magick::Image, res)
     assert_not_same(res, @img)
-    assert_nothing_raised { @img.paint_transparent('red', Magick::TransparentOpacity) }
-    assert_nothing_raised { @img.paint_transparent('red', Magick::TransparentOpacity, true) }
-    assert_nothing_raised { @img.paint_transparent('red', Magick::TransparentOpacity, true, 50) }
+    if IM_7
+      assert_nothing_raised { @img.paint_transparent('red', Magick::TransparentAlpha) }
+      assert_nothing_raised { @img.paint_transparent('red', Magick::TransparentAlpha, true) }
+      assert_nothing_raised { @img.paint_transparent('red', Magick::TransparentAlpha, true, 50) }
+    else
+      assert_nothing_raised { @img.paint_transparent('red', Magick::TransparentOpacity) }
+      assert_nothing_raised { @img.paint_transparent('red', Magick::TransparentOpacity, true) }
+      assert_nothing_raised { @img.paint_transparent('red', Magick::TransparentOpacity, true, 50) }
+    end
 
     # Too many arguments
-    assert_raise(ArgumentError) { @img.paint_transparent('red', Magick::TransparentOpacity, true, 50, 50) }
+    if IM_7
+      assert_raise(ArgumentError) { @img.paint_transparent('red', Magick::TransparentAlpha, true, 50, 50) }
+    else
+      assert_raise(ArgumentError) { @img.paint_transparent('red', Magick::TransparentOpacity, true, 50, 50) }
+    end
     # Not enough
     assert_raise(ArgumentError) { @img.paint_transparent }
-    assert_raise(TypeError) { @img.paint_transparent('red', Magick::TransparentOpacity, true, []) }
+    if IM_7
+      assert_raise(TypeError) { @img.paint_transparent('red', Magick::TransparentAlpha, true, []) }
+    else
+      assert_raise(TypeError) { @img.paint_transparent('red', Magick::TransparentOpacity, true, []) }
+    end
     assert_raise(TypeError) { @img.paint_transparent('red', 'blue') }
     assert_raise(TypeError) { @img.paint_transparent(50) }
   end
@@ -1382,7 +1439,12 @@ class Image2_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.polaroid(5) }
     assert_instance_of(Magick::Image, @img.polaroid)
     assert_raises(TypeError) { @img.polaroid('x') }
-    assert_raises(ArgumentError) { @img.polaroid(5, 'x') }
+    if IM_7
+      assert_nothing_raised { @img.polaroid(5, 'caption') }
+      assert_raises(ArgumentError) { @img.polaroid(5, 'x', 'x') }
+    else
+      assert_raises(ArgumentError) { @img.polaroid(5, 'x') }
+    end
   end
 
   def test_posterize

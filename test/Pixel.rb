@@ -13,13 +13,21 @@ class PixelUT < Test::Unit::TestCase
     hash = nil
     assert_nothing_raised { hash = @pixel.hash }
     assert_not_nil(hash)
-    assert_equal(1_385_501_952, hash)
+    if IM_7
+      assert_equal(1_385_502_079, hash)
+    else
+      assert_equal(1_385_501_952, hash)
+    end
 
     p = Magick::Pixel.new
     assert_equal(0, p.hash)
 
     p = Magick::Pixel.from_color('red')
-    assert_equal(2_139_095_040, p.hash)
+    if IM_7
+      assert_equal(2_139_095_167, p.hash)
+    else
+      assert_equal(2_139_095_040, p.hash)
+    end
 
     # Pixel.hash sacrifices the last bit of the opacity channel
     p = Magick::Pixel.new(0, 0, 0, 72)

@@ -22,9 +22,7 @@ ColorspaceTypes = [
   Magick::HSLColorspace,
   Magick::HWBColorspace,
   Magick::HSBColorspace,
-  Magick::Rec601LumaColorspace,
   Magick::Rec601YCbCrColorspace,
-  Magick::Rec709LumaColorspace,
   Magick::Rec709YCbCrColorspace,
   Magick::LogColorspace,
   Magick::CMYColorspace
@@ -162,6 +160,28 @@ class Image3_UT < Test::Unit::TestCase
     assert_raise(TypeError) { @img.random_threshold_channel('20%', 2) }
   end
 
+  def test_read_mask
+    return if IM_6
+
+    cimg = Magick::Image.new(10, 10)
+    assert_nothing_raised { @img.read_mask(cimg) }
+    res = nil
+    assert_nothing_raised { res = @img.read_mask }
+    assert_not_nil(res)
+    assert_not_same(cimg, res)
+    assert_equal(20, res.columns)
+    assert_equal(20, res.rows)
+
+    # read_mask expects an Image and calls `cur_image'
+    assert_raise(NoMethodError) { @img.read_mask = 2 }
+
+    img = @img.copy.freeze
+    assert_raise(FreezeError) { img.read_mask cimg }
+
+    @img.destroy!
+    assert_raise(Magick::DestroyedImageError) { @img.read_mask cimg }
+  end
+
   def test_recolor
     assert_nothing_raised { @img.recolor([1, 1, 2, 1]) }
     assert_raise(TypeError) { @img.recolor('x') }
@@ -217,15 +237,20 @@ class Image3_UT < Test::Unit::TestCase
     Filters.each do |filter|
       assert_nothing_raised { @img.resample(50, 50, filter) }
     end
-    assert_nothing_raised { @img.resample(50, 50, Magick::PointFilter, 2.0) }
 
     assert_raise(TypeError) { @img.resample('x') }
     assert_raise(TypeError) { @img.resample(100, 'x') }
     assert_raise(TypeError) { @img.resample(50, 50, 2) }
-    assert_raise(TypeError) { @img.resample(50, 50, Magick::CubicFilter, 'x') }
-    assert_raise(ArgumentError) { @img.resample(50, 50, Magick::SincFilter, 2.0, 'x') }
     assert_raise(ArgumentError) { @img.resample(-100) }
     assert_raise(ArgumentError) { @img.resample(100, -100) }
+    if IM_7
+      assert_nothing_raised { @img.resample(50, 50, Magick::PointFilter) }
+      assert_raise(ArgumentError) { @img.resample(50, 50, Magick::CubicFilter, 'x') }
+    else
+      assert_nothing_raised { @img.resample(50, 50, Magick::PointFilter, 2.0) }
+      assert_raise(TypeError) { @img.resample(50, 50, Magick::CubicFilter, 'x') }
+      assert_raise(ArgumentError) { @img.resample(50, 50, Magick::SincFilter, 2.0, 'x') }
+    end
   end
 
   def test_resample!
@@ -247,16 +272,21 @@ class Image3_UT < Test::Unit::TestCase
     Filters.each do |filter|
       assert_nothing_raised { @img.resize(50, 50, filter) }
     end
-    assert_nothing_raised { @img.resize(50, 50, Magick::PointFilter, 2.0) }
     assert_raise(TypeError) { @img.resize('x') }
     assert_raise(TypeError) { @img.resize(50, 'x') }
     assert_raise(TypeError) { @img.resize(50, 50, 2) }
-    assert_raise(TypeError) { @img.resize(50, 50, Magick::CubicFilter, 'x') }
     assert_raise(ArgumentError) { @img.resize(-1.0) }
     assert_raise(ArgumentError) { @img.resize(0, 50) }
     assert_raise(ArgumentError) { @img.resize(50, 0) }
-    assert_raise(ArgumentError) { @img.resize(50, 50, Magick::SincFilter, 2.0, 'x') }
     assert_raise(ArgumentError) { @img.resize }
+    if IM_7
+      assert_nothing_raised { @img.resize(50, 50, Magick::PointFilter) }
+      assert_raise(ArgumentError) { @img.resize(50, 50, Magick::CubicFilter, 'x') }
+    else
+      assert_nothing_raised { @img.resize(50, 50, Magick::PointFilter, 2.0) }
+      assert_raise(TypeError) { @img.resize(50, 50, Magick::CubicFilter, 'x') }
+      assert_raise(ArgumentError) { @img.resize(50, 50, Magick::SincFilter, 2.0, 'x') }
+    end
   end
 
   def test_resize!
@@ -513,14 +543,13 @@ class Image3_UT < Test::Unit::TestCase
       Magick::MagentaChannel,
       Magick::BlueChannel,
       Magick::YellowChannel,
-      #     Magick::AlphaChannel,
       Magick::OpacityChannel,
-      Magick::MatteChannel,
       Magick::BlackChannel,
       Magick::IndexChannel,
       Magick::AllChannels
     ]
 
+    channels << (IM_7 ? Magick::AlphaChannel : Magick::MatteChannel)
     channels.each do |ch|
       assert_nothing_raised { @img.set_channel_depth(ch, 8) }
     end
@@ -759,7 +788,7 @@ class Image3_UT < Test::Unit::TestCase
   end
 
   def test_sync_profiles
-    assert_nothing_raised { assert(@img.sync_profiles) }
+    assert_nothing_raised { assert(@img.sync_profiles) } if IM_6
   end
 
   def test_texture_fill_to_border
@@ -868,8 +897,13 @@ class Image3_UT < Test::Unit::TestCase
     end
     pixel = Magick::Pixel.new
     assert_nothing_raised { @img.transparent(pixel) }
-    assert_nothing_raised { @img.transparent('white', Magick::TransparentOpacity) }
-    assert_raise(ArgumentError) { @img.transparent('white', Magick::TransparentOpacity, 2) }
+    if IM_7
+      assert_nothing_raised { @img.transparent('white', Magick::TransparentAlpha) }
+      assert_raise(ArgumentError) { @img.transparent('white', Magick::TransparentAlpha, 2) }
+    else
+      assert_nothing_raised { @img.transparent('white', Magick::TransparentOpacity) }
+      assert_raise(ArgumentError) { @img.transparent('white', Magick::TransparentOpacity, 2) }
+    end
     assert_nothing_raised { @img.transparent('white', Magick::QuantumRange / 2) }
     assert_raise(TypeError) { @img.transparent(2) }
   end
@@ -1129,6 +1163,28 @@ class Image3_UT < Test::Unit::TestCase
     img = Magick::Image.read('test.0')
     assert_equal('JPEG', img.first.format)
     FileUtils.rm('test.0')
+  end
+
+  def test_write_mask
+    return if IM_6
+
+    cimg = Magick::Image.new(10, 10)
+    assert_nothing_raised { @img.write_mask(cimg) }
+    res = nil
+    assert_nothing_raised { res = @img.write_mask }
+    assert_not_nil(res)
+    assert_not_same(cimg, res)
+    assert_equal(20, res.columns)
+    assert_equal(20, res.rows)
+
+    # write_mask expects an Image and calls `cur_image'
+    assert_raise(NoMethodError) { @img.write_mask = 2 }
+
+    img = @img.copy.freeze
+    assert_raise(FreezeError) { img.write_mask cimg }
+
+    @img.destroy!
+    assert_raise(Magick::DestroyedImageError) { @img.write_mask cimg }
   end
 end
 

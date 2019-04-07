@@ -119,7 +119,7 @@ class DrawUT < Test::Unit::TestCase
     assert_nothing_raised { @draw.gravity = Magick::SouthWestGravity }
     assert_nothing_raised { @draw.gravity = Magick::SouthGravity }
     assert_nothing_raised { @draw.gravity = Magick::SouthEastGravity }
-    assert_nothing_raised { @draw.gravity = Magick::StaticGravity }
+    assert_nothing_raised { @draw.gravity = Magick::StaticGravity } if IM_6
 
     assert_raise(TypeError) { @draw.gravity = 2 }
   end
@@ -232,7 +232,6 @@ class DrawUT < Test::Unit::TestCase
 
   def test_composite
     composite_operators = [
-      Magick::AddCompositeOp,
       Magick::AtopCompositeOp,
       Magick::BlendCompositeOp,
       Magick::BlurCompositeOp,
@@ -248,13 +247,11 @@ class DrawUT < Test::Unit::TestCase
       Magick::CopyCyanCompositeOp,
       Magick::CopyGreenCompositeOp,
       Magick::CopyMagentaCompositeOp,
-      Magick::CopyOpacityCompositeOp,
       Magick::CopyRedCompositeOp,
       Magick::CopyYellowCompositeOp,
       Magick::DarkenCompositeOp,
       Magick::DarkenIntensityCompositeOp,
       Magick::DistortCompositeOp,
-      Magick::DivideCompositeOp,
       Magick::DivideSrcCompositeOp,
       Magick::DstAtopCompositeOp,
       Magick::DstCompositeOp,
@@ -275,7 +272,6 @@ class DrawUT < Test::Unit::TestCase
       Magick::LinearLightCompositeOp,
       Magick::LuminizeCompositeOp,
       Magick::MathematicsCompositeOp,
-      Magick::MinusCompositeOp,
       Magick::MinusSrcCompositeOp,
       Magick::ModulateCompositeOp,
       Magick::MultiplyCompositeOp,
@@ -295,13 +291,27 @@ class DrawUT < Test::Unit::TestCase
       Magick::SrcInCompositeOp,
       Magick::SrcOutCompositeOp,
       Magick::SrcOverCompositeOp,
-      Magick::SubtractCompositeOp,
       Magick::ThresholdCompositeOp,
       Magick::UndefinedCompositeOp,
       Magick::VividLightCompositeOp,
       Magick::XorCompositeOp
     ]
-    composite_operators << Magick::HardMixCompositeOp if Gem::Version.new('6.8.9') <= Gem::Version.new(IM_VERSION)
+    composite_operators << Magick::HardMixCompositeOp if IM_689
+    if IM_7
+      composite_operators << Magick::AlphaCompositeOp
+      composite_operators << Magick::CopyAlphaCompositeOp
+      composite_operators << Magick::DivideDstCompositeOp
+      composite_operators << Magick::MinusDstCompositeOp
+      composite_operators << Magick::ModulusAddCompositeOp
+      composite_operators << Magick::ModulusSubtractCompositeOp
+      composite_operators << Magick::StereoCompositeOp
+    else
+      composite_operators << Magick::AddCompositeOp
+      composite_operators << Magick::CopyOpacityCompositeOp
+      composite_operators << Magick::DivideCompositeOp
+      composite_operators << Magick::MinusCompositeOp
+      composite_operators << Magick::SubtractCompositeOp
+    end
 
     img = Magick::Image.new(10, 10)
     assert_nothing_raised { @draw.composite(0, 0, 10, 10, img) }
@@ -317,7 +327,7 @@ class DrawUT < Test::Unit::TestCase
     assert_raise(TypeError) { @draw.composite(0, 0, 10, 10, img, Magick::CenterAlign) }
     assert_raise(NoMethodError) { @draw.composite(0, 0, 10, 10, 'image') }
     assert_raise(ArgumentError) { @draw.composite(0, 0, 10, 10) }
-    assert_raise(ArgumentError) { @draw.composite(0, 0, 10, 10, img, Magick::AddCompositeOp, 'x') }
+    assert_raise(ArgumentError) { @draw.composite(0, 0, 10, 10, img, Magick::XorCompositeOp, 'x') }
   end
 
   def test_draw
