@@ -11,12 +11,42 @@ class Image2_UT < Test::Unit::TestCase
     @img = Magick::Image.new(20, 20)
   end
 
+  def test_composite
+    img1 = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
+    img2 = Magick::Image.read(IMAGES_DIR + '/Button_1.gif').first
+    Magick::CompositeOperator.values do |op|
+      Magick::GravityType.values do |gravity|
+        assert_nothing_raised do
+          res = img1.composite(img2, gravity, 5, 5, op)
+          assert_not_same(img1, res)
+        end
+      end
+    end
+
+    assert_nothing_raised do
+      res = img1.composite(img2, 5, 5, Magick::OverCompositeOp)
+      assert_not_same(img1, res)
+    end
+
+    assert_raise(TypeError) { img1.composite(img2, 'x', 5, Magick::OverCompositeOp) }
+    assert_raise(TypeError) { img1.composite(img2, 5, 'y', Magick::OverCompositeOp) }
+    assert_raise(TypeError) { img1.composite(img2, Magick::NorthWestGravity, 'x', 5, Magick::OverCompositeOp) }
+    assert_raise(TypeError) { img1.composite(img2, Magick::NorthWestGravity, 5, 'y', Magick::OverCompositeOp) }
+
+    img1.freeze
+    assert_nothing_raised { img1.composite(img2, Magick::NorthWestGravity, Magick::OverCompositeOp) }
+  end
+
   def test_composite!
     img1 = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
     img2 = Magick::Image.read(IMAGES_DIR + '/Button_1.gif').first
-    assert_nothing_raised do
-      res = img1.composite!(img2, Magick::NorthWestGravity, Magick::OverCompositeOp)
-      assert_same(img1, res)
+    Magick::CompositeOperator.values do |op|
+      Magick::GravityType.values do |gravity|
+        assert_nothing_raised do
+          res = img1.composite!(img2, gravity, op)
+          assert_same(img1, res)
+        end
+      end
     end
     img1.freeze
     assert_raise(FreezeError) { img1.composite!(img2, Magick::NorthWestGravity, Magick::OverCompositeOp) }
@@ -31,6 +61,22 @@ class Image2_UT < Test::Unit::TestCase
       assert_instance_of(Magick::Image, res)
       assert_not_same(@img, res)
     end
+  end
+
+  def test_composite_channel
+    img1 = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
+    img2 = Magick::Image.read(IMAGES_DIR + '/Button_1.gif').first
+    Magick::CompositeOperator.values do |op|
+      Magick::GravityType.values do |gravity|
+        assert_nothing_raised do
+          res = img1.composite_channel(img2, gravity, 5, 5, op, Magick::BlueChannel)
+          assert_not_same(img1, res)
+        end
+      end
+    end
+
+    assert_raise(ArgumentError) { img1.composite_channel(img2, Magick::NorthWestGravity) }
+    assert_raise(TypeError) { img1.composite_channel(img2, Magick::NorthWestGravity, 5, 5, Magick::OverCompositeOp, 'x') }
   end
 
   def test_composite_mathematics
@@ -65,6 +111,10 @@ class Image2_UT < Test::Unit::TestCase
     assert_nothing_raised { bg.composite_tiled(fg, Magick::OverCompositeOp) }
     assert_nothing_raised { bg.composite_tiled(fg, Magick::RedChannel) }
     assert_nothing_raised { bg.composite_tiled(fg, Magick::RedChannel, Magick::GreenChannel) }
+
+    assert_raise(ArgumentError) { bg.composite_tiled }
+    assert_raise(TypeError) { bg.composite_tiled(fg, 'x') }
+    assert_raise(TypeError) { bg.composite_tiled(fg, Magick::AtopCompositeOp, Magick::RedChannel, 'x') }
 
     fg.destroy!
     assert_raise(Magick::DestroyedImageError) { bg.composite_tiled(fg) }
@@ -105,6 +155,17 @@ class Image2_UT < Test::Unit::TestCase
     assert_raise(ArgumentError) { @img.contrast_stretch_channel }
     assert_raise(ArgumentError) { @img.contrast_stretch_channel('x') }
     assert_raise(ArgumentError) { @img.contrast_stretch_channel(25, 'x') }
+  end
+
+  def test_morphology
+    kernel = Magick::KernelInfo.new('Octagon')
+    Magick::MorphologyMethod.values do |method|
+      assert_nothing_raised do
+        res = @img.morphology(method, 2, kernel)
+        assert_instance_of(Magick::Image, res)
+        assert_not_same(@img, res)
+      end
+    end
   end
 
   def test_morphology_channel
@@ -173,16 +234,9 @@ class Image2_UT < Test::Unit::TestCase
       assert_instance_of(Magick::Image, res)
       assert_not_same(@img, res)
     end
-    gravity = [
-      Magick::NorthEastGravity,
-      Magick::EastGravity,
-      Magick::SouthWestGravity,
-      Magick::SouthGravity,
-      Magick::SouthEastGravity
-    ]
 
     # 3-argument form
-    gravity.each do |grav|
+    Magick::GravityType.values do |grav|
       assert_nothing_raised { @img.crop(grav, @img.columns / 2, @img.rows / 2) }
     end
     assert_raise(TypeError) { @img.crop(2, @img.columns / 2, @img.rows / 2) }
@@ -196,7 +250,7 @@ class Image2_UT < Test::Unit::TestCase
     assert_raise(TypeError) { @img.crop(0, 0, @img.columns / 2, @img.rows / 2, 2) }
 
     # 5-argument form
-    gravity.each do |grav|
+    Magick::GravityType.values do |grav|
       assert_nothing_raised { @img.crop(grav, 0, 0, @img.columns / 2, @img.rows / 2) }
     end
 
@@ -239,6 +293,7 @@ class Image2_UT < Test::Unit::TestCase
   def test_define
     assert_nothing_raised { @img.define('deskew:auto-crop', 40) }
     assert_nothing_raised { @img.undefine('deskew:auto-crop') }
+    assert_nothing_raised { @img.define('deskew:auto-crop', nil) }
   end
 
   def test_deskew
@@ -396,6 +451,7 @@ class Image2_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.dissolve(src, 0.50, 0.10, Magick::NorthEastGravity, 10) }
     assert_nothing_raised { @img.dissolve(src, 0.50, 0.10, Magick::NorthEastGravity, 10, 10) }
 
+    assert_raise(ArgumentError) { @img.dissolve }
     assert_raise(ArgumentError) { @img.dissolve(src, 'x') }
     assert_raise(ArgumentError) { @img.dissolve(src, 0.50, 'x') }
     assert_raise(TypeError) { @img.dissolve(src, 0.50, Magick::NorthEastGravity, 'x') }
@@ -412,9 +468,11 @@ class Image2_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.distort(Magick::BilinearDistortion, [7, 40, 4, 30, 4, 124, 4, 123, 85, 122, 100, 123, 85, 2, 100, 30]) }
     assert_nothing_raised { @img.distort(Magick::PerspectiveDistortion, [7, 40, 4, 30,   4, 124, 4, 123, 85, 122, 100, 123, 85, 2, 100, 30]) }
     assert_nothing_raised { @img.distort(Magick::ScaleRotateTranslateDistortion, [28, 24, 0.4, 0.8 - 110, 37.5, 60]) }
+    assert_nothing_raised { @img.distort(Magick::ScaleRotateTranslateDistortion, [28, 24, 0.4, 0.8 - 110, 37.5, 60], true) }
     assert_raise(ArgumentError) { @img.distort }
     assert_raise(ArgumentError) { @img.distort(Magick::AffineDistortion) }
     assert_raise(TypeError) { @img.distort(1, [1]) }
+    assert_raise(TypeError) { @img.distort(Magick::AffineDistortion, [2, 60, 2, 60, 32, 60, 32, 60, 2, 30, 17, 'x']) }
   end
 
   def test_distortion_channel
@@ -438,6 +496,18 @@ class Image2_UT < Test::Unit::TestCase
     img = Magick::Image.new(20, 20)
     img.destroy!
     assert_raise(Magick::DestroyedImageError) { @img.distortion_channel(img, Magick::MeanSquaredErrorMetric) }
+  end
+
+  def test__dump
+    img = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
+    assert_instance_of(String, img._dump(10))
+  end
+
+  def test__load
+    img = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
+    res = img._dump(10)
+
+    assert_instance_of(Magick::Image, Magick::Image._load(res))
   end
 
   def test_dup
@@ -620,8 +690,11 @@ class Image2_UT < Test::Unit::TestCase
     assert_equal(40, res.rows)
     assert_nothing_raised { @img.extent(40, 40, 5) }
     assert_nothing_raised { @img.extent(40, 40, 5, 5) }
+    assert_raises(ArgumentError) { @img.extent(-40) }
     assert_raises(ArgumentError) { @img.extent(-40, 40) }
     assert_raises(ArgumentError) { @img.extent(40, -40) }
+    assert_raises(ArgumentError) { @img.extent(40, 40, 5, 5, 0) }
+    assert_raises(ArgumentError) { @img.extent(0, 0, 5, 5) }
     assert_raises(TypeError) { @img.extent('x', 40) }
     assert_raises(TypeError) { @img.extent(40, 'x') }
     assert_raises(TypeError) { @img.extent(40, 40, 'x') }
@@ -714,6 +787,7 @@ class Image2_UT < Test::Unit::TestCase
     red = Magick::Pixel.new(Magick::QuantumRange)
     assert_nothing_raised { @img.frame(50, 50, 25, 25, 6, 6, red) }
     assert_raise(TypeError) { @img.frame(50, 50, 25, 25, 6, 6, 2) }
+    assert_raise(ArgumentError) { @img.frame(50, 50, 25, 25, 6, 6, red, 2) }
   end
 
   def test_fx
@@ -862,6 +936,7 @@ class Image2_UT < Test::Unit::TestCase
       assert_instance_of(Magick::Image, res)
       assert_not_same(@img, res)
     end
+    assert_raise(ArgumentError) { @img.implode(0.5, 0.5) }
   end
 
   def test_import_pixels
@@ -917,6 +992,12 @@ class Image2_UT < Test::Unit::TestCase
     # Ensure that level2 uses new arg order
     img1 = @img.level2(10, 200, 2)
     assert_equal(img2, img1)
+
+    assert_nothing_raised { @img.level2 }
+    assert_nothing_raised { @img.level2(10) }
+    assert_nothing_raised { @img.level2(10, 10) }
+    assert_nothing_raised { @img.level2(10, 10, 10) }
+    assert_raise(ArgumentError) { @img.level2(10, 10, 10, 10) }
   end
 
   def test_level_channel
@@ -938,7 +1019,7 @@ class Image2_UT < Test::Unit::TestCase
     assert_raise(TypeError) { @img.level_channel(Magick::RedChannel, 0.0, 1.0, 'x') }
   end
 
-  def level_colors
+  def test_level_colors
     res = nil
     assert_nothing_raised do
       res = @img.level_colors
@@ -947,19 +1028,17 @@ class Image2_UT < Test::Unit::TestCase
     assert_not_same(@img, res)
 
     assert_nothing_raised { @img.level_colors('black') }
-    assert_nothing_raised { @img.level_colors('black', Pixel.new(0, 0, 0)) }
-    assert_nothing_raised { @img.level_colors(Pixel.new(0, 0, 0), Pixel.new(Magick::QuantumRange, Magick::QuantumRange, Magick::QuantumRange)) }
+    assert_nothing_raised { @img.level_colors('black', Magick::Pixel.new(0, 0, 0)) }
+    assert_nothing_raised { @img.level_colors(Magick::Pixel.new(0, 0, 0), Magick::Pixel.new(Magick::QuantumRange, Magick::QuantumRange, Magick::QuantumRange)) }
     assert_nothing_raised { @img.level_colors('black', 'white') }
     assert_nothing_raised { @img.level_colors('black', 'white', false) }
-    # too many arguments
-    assert_raises(ArgumentError) { @img.level_colors('black', 'white', false, 1) }
-    # not a pixel or a string
-    assert_raises(ArgumentError) { @img.level_colors([]) }
-    # not a color name
+
+    assert_raises(TypeError) { @img.level_colors('black', 'white', false, 1) }
+    assert_raises(TypeError) { @img.level_colors([]) }
     assert_raises(ArgumentError) { @img.level_colors('xxx') }
   end
 
-  def levelize_channel
+  def test_levelize_channel
     res = nil
     assert_nothing_raised do
       res = @img.levelize_channel(0, Magick::QuantumRange)
@@ -967,12 +1046,13 @@ class Image2_UT < Test::Unit::TestCase
     assert_instance_of(Magick::Image, res)
     assert_not_same(@img, res)
 
+    assert_nothing_raised { @img.levelize_channel(0) }
+    assert_nothing_raised { @img.levelize_channel(0, Magick::QuantumRange) }
     assert_nothing_raised { @img.levelize_channel(0, Magick::QuantumRange, 0.5) }
     assert_nothing_raised { @img.levelize_channel(0, Magick::QuantumRange, 0.5, Magick::RedChannel) }
     assert_nothing_raised { @img.levelize_channel(0, Magick::QuantumRange, 0.5, Magick::RedChannel, Magick::BlueChannel) }
-    # too many arguments
-    assert_raise(ArgumentError) { @img.levelize_channel(0, Magick::QuantumRange, 0.5, 1, Magick::RedChannel) }
-    # not enough arguments
+
+    assert_raise(TypeError) { @img.levelize_channel(0, Magick::QuantumRange, 0.5, 1, Magick::RedChannel) }
     assert_raise(ArgumentError) { @img.levelize_channel }
   end
 
@@ -1044,6 +1124,7 @@ class Image2_UT < Test::Unit::TestCase
     assert_equal(20, res.columns)
     assert_equal(20, res.rows)
 
+    assert_raise(ArgumentError) { @img.mask(cimg, 'x') }
     # mask expects an Image and calls `cur_image'
     assert_raise(NoMethodError) { @img.mask = 2 }
 
@@ -1072,6 +1153,12 @@ class Image2_UT < Test::Unit::TestCase
       assert_not_same(@img, res)
     end
     assert_nothing_raised { @img.matte_floodfill(@img.columns, @img.rows) }
+
+    Magick::PaintMethod.values do |method|
+      next if [Magick::FillToBorderMethod, Magick::FloodfillMethod].include?(method)
+
+      assert_raise(ArgumentError) { @img.matte_flood_fill('blue', Magick::TransparentOpacity, @img.columns, @img.rows, method) }
+    end
     assert_raise(ArgumentError) { @img.matte_floodfill(@img.columns + 1, @img.rows) }
     assert_raise(ArgumentError) { @img.matte_floodfill(@img.columns, @img.rows + 1) }
   end
@@ -1122,6 +1209,7 @@ class Image2_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.modulate(0.5) }
     assert_nothing_raised { @img.modulate(0.5, 0.5) }
     assert_nothing_raised { @img.modulate(0.5, 0.5, 0.5) }
+    assert_raise(ArgumentError) { @img.modulate(0.0, 0.5, 0.5) }
     assert_raise(ArgumentError) { @img.modulate(0.5, 0.5, 0.5, 0.5) }
     assert_raise(TypeError) { @img.modulate('x', 0.5, 0.5) }
     assert_raise(TypeError) { @img.modulate(0.5, 'x', 0.5) }
@@ -1225,6 +1313,7 @@ class Image2_UT < Test::Unit::TestCase
     assert_raise(TypeError) { @img.opaque_channel('red', 'blue', true, 50, 50) }
     assert_raise(TypeError) { @img.opaque_channel('red', 'blue', true, []) }
     assert_raise(ArgumentError) { @img.opaque_channel('red') }
+    assert_raise(ArgumentError) { @img.opaque_channel('red', 'blue', true, -0.1) }
     assert_raise(TypeError) { @img.opaque_channel('red', []) }
   end
 
@@ -1242,6 +1331,7 @@ class Image2_UT < Test::Unit::TestCase
       assert_instance_of(Magick::Image, res)
       assert_not_same(@img, res)
     end
+    assert_nothing_raised { @img.ordered_dither('3x3') }
     assert_nothing_raised { @img.ordered_dither(2) }
     assert_nothing_raised { @img.ordered_dither(3) }
     assert_nothing_raised { @img.ordered_dither(4) }
@@ -1294,6 +1384,12 @@ class Image2_UT < Test::Unit::TestCase
     # If args are out-of-bounds return the background color
     img = Magick::Image.new(10, 10) { self.background_color = 'blue' }
     assert_equal('blue', img.pixel_color(50, 50).to_color)
+
+    assert_nothing_raised do
+      @img.class_type = Magick::PseudoClass
+      res = @img.pixel_color(0, 0, 'red')
+      assert_equal('blue', res.to_color)
+    end
   end
 
   def test_polaroid
@@ -1301,6 +1397,7 @@ class Image2_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.polaroid(5) }
     assert_instance_of(Magick::Image, @img.polaroid)
     assert_raises(TypeError) { @img.polaroid('x') }
+    assert_raises(ArgumentError) { @img.polaroid(5, 'x') }
   end
 
   def test_posterize

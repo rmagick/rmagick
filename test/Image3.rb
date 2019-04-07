@@ -99,45 +99,15 @@ class Image3_UT < Test::Unit::TestCase
     assert_raise(TypeError) { @img.quantize('x') }
     assert_raise(TypeError) { @img.quantize(16, 2) }
     assert_raise(TypeError) { @img.quantize(16, Magick::RGBColorspace, false, 'x') }
+    assert_raise(ArgumentError) { @img.quantize(256, Magick::RGBColorspace, true, 2, true, true) }
   end
 
   def test_quantum_operator
-    quantum_ops = [
-      Magick::AddQuantumOperator,
-      Magick::AndQuantumOperator,
-      Magick::DivideQuantumOperator,
-      Magick::LShiftQuantumOperator,
-      Magick::MultiplyQuantumOperator,
-      Magick::OrQuantumOperator,
-      Magick::RShiftQuantumOperator,
-      Magick::SubtractQuantumOperator,
-      Magick::XorQuantumOperator,
-      Magick::PowQuantumOperator,
-      Magick::LogQuantumOperator,
-      Magick::ThresholdQuantumOperator,
-      Magick::ThresholdBlackQuantumOperator,
-      Magick::ThresholdWhiteQuantumOperator,
-      Magick::GaussianNoiseQuantumOperator,
-      Magick::ImpulseNoiseQuantumOperator,
-      Magick::LaplacianNoiseQuantumOperator,
-      Magick::MultiplicativeNoiseQuantumOperator,
-      Magick::PoissonNoiseQuantumOperator,
-      Magick::UniformNoiseQuantumOperator,
-      Magick::CosineQuantumOperator,
-      Magick::SineQuantumOperator,
-      Magick::AddModulusQuantumOperator,
-      Magick::MeanQuantumOperator,
-      Magick::AbsQuantumOperator,
-      Magick::ExponentialQuantumOperator,
-      Magick::MedianQuantumOperator,
-      Magick::SumQuantumOperator
-    ]
-
     assert_nothing_raised do
       res = @img.quantum_operator(Magick::AddQuantumOperator, 2)
       assert_instance_of(Magick::Image, res)
     end
-    quantum_ops.each do |op|
+    Magick::QuantumExpressionOperator.values do |op|
       assert_nothing_raised { @img.quantum_operator(op, 2) }
     end
     assert_nothing_raised { @img.quantum_operator(Magick::AddQuantumOperator, 2, Magick::RedChannel) }
@@ -193,7 +163,9 @@ class Image3_UT < Test::Unit::TestCase
   end
 
   def test_recolor
+    assert_nothing_raised { @img.recolor([1, 1, 2, 1]) }
     assert_raise(TypeError) { @img.recolor('x') }
+    assert_raise(TypeError) { @img.recolor([1, 1, 'x', 1]) }
   end
 
   def test_reduce_noise
@@ -280,6 +252,9 @@ class Image3_UT < Test::Unit::TestCase
     assert_raise(TypeError) { @img.resize(50, 'x') }
     assert_raise(TypeError) { @img.resize(50, 50, 2) }
     assert_raise(TypeError) { @img.resize(50, 50, Magick::CubicFilter, 'x') }
+    assert_raise(ArgumentError) { @img.resize(-1.0) }
+    assert_raise(ArgumentError) { @img.resize(0, 50) }
+    assert_raise(ArgumentError) { @img.resize(50, 0) }
     assert_raise(ArgumentError) { @img.resize(50, 50, Magick::SincFilter, 2.0, 'x') }
     assert_raise(ArgumentError) { @img.resize }
   end
@@ -428,6 +403,9 @@ class Image3_UT < Test::Unit::TestCase
     end
     assert_nothing_raised { @img.sample(2) }
     assert_raise(ArgumentError) { @img.sample }
+    assert_raise(ArgumentError) { @img.sample(0) }
+    assert_raise(ArgumentError) { @img.sample(0, 25) }
+    assert_raise(ArgumentError) { @img.sample(25, 0) }
     assert_raise(ArgumentError) { @img.sample(25, 25, 25) }
     assert_raise(TypeError) { @img.sample('x') }
     assert_raise(TypeError) { @img.sample(10, 'x') }
@@ -505,8 +483,15 @@ class Image3_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.selective_blur_channel(0, 1, '10%', Magick::RedChannel) }
     assert_nothing_raised { @img.selective_blur_channel(0, 1, '10%', Magick::RedChannel, Magick::BlueChannel) }
     assert_nothing_raised { @img.selective_blur_channel(0, 1, '10%', Magick::RedChannel, Magick::BlueChannel, Magick::GreenChannel) }
-    # not enough arguments
+
     assert_raise(ArgumentError) { @img.selective_blur_channel(0, 1) }
+    assert_raise(TypeError) { @img.selective_blur_channel(0, 1, 0.1, '10%') }
+  end
+
+  def test_separate
+    assert_instance_of(Magick::ImageList, @img.separate)
+    assert_instance_of(Magick::ImageList, @img.separate(Magick::BlueChannel))
+    assert_raise(TypeError) { @img.separate('x') }
   end
 
   def test_sepiatone
@@ -656,6 +641,8 @@ class Image3_UT < Test::Unit::TestCase
       assert_instance_of(Magick::Image, res)
     end
     assert_nothing_raised { @img.solarize(100) }
+    assert_raise(ArgumentError) { @img.solarize(-100) }
+    assert_raise(ArgumentError) { @img.solarize(Magick::QuantumRange + 1) }
     assert_raise(ArgumentError) { @img.solarize(100, 2) }
     assert_raise(TypeError) { @img.solarize('x') }
   end
@@ -687,6 +674,9 @@ class Image3_UT < Test::Unit::TestCase
     args.shift
     args.shift # too few
     assert_raise(ArgumentError) { img.sparse_color(Magick::VoronoiColorInterpolate, *args) }
+
+    args = [30, 10, 'red', 10, 80, 'blue', 70, 60, 'lime', 80, '20', 'yellow']
+    assert_raise(TypeError) { img.sparse_color(Magick::VoronoiColorInterpolate, *args) }
   end
 
   def test_splice
@@ -779,6 +769,14 @@ class Image3_UT < Test::Unit::TestCase
       assert_instance_of(Magick::Image, res)
     end
     assert_raise(NoMethodError) { @img.texture_fill_to_border(@img.columns / 2, @img.rows / 2, 'x') }
+    assert_raise(ArgumentError) { @img.texture_fill_to_border(@img.columns * 2, @img.rows, texture) }
+    assert_raise(ArgumentError) { @img.texture_fill_to_border(@img.columns, @img.rows * 2, texture) }
+
+    Magick::PaintMethod.values do |method|
+      next if [Magick::FillToBorderMethod, Magick::FloodfillMethod].include?(method)
+
+      assert_raise(ArgumentError) { @img.texture_flood_fill('blue', texture, @img.columns, @img.rows, method) }
+    end
   end
 
   def test_texture_floodfill
@@ -806,6 +804,9 @@ class Image3_UT < Test::Unit::TestCase
     end
     assert_nothing_raised { @img.thumbnail(2) }
     assert_raise(ArgumentError) { @img.thumbnail }
+    assert_raise(ArgumentError) { @img.thumbnail(-1.0) }
+    assert_raise(ArgumentError) { @img.thumbnail(0, 25) }
+    assert_raise(ArgumentError) { @img.thumbnail(25, 0) }
     assert_raise(ArgumentError) { @img.thumbnail(25, 25, 25) }
     assert_raise(TypeError) { @img.thumbnail('x') }
     assert_raise(TypeError) { @img.thumbnail(10, 'x') }
@@ -833,6 +834,10 @@ class Image3_UT < Test::Unit::TestCase
     assert_raise(ArgumentError) { @img.tint('red') }
     assert_raise(ArgumentError) { @img.tint('red', 1.0, 1.0, 1.0, 1.0, 1.0) }
     assert_raise(ArgumentError) { @img.tint('x', 1.0) }
+    assert_raise(ArgumentError) { @img.tint('red', -1.0, 1.0, 1.0, 1.0) }
+    assert_raise(ArgumentError) { @img.tint('red', 1.0, -1.0, 1.0, 1.0) }
+    assert_raise(ArgumentError) { @img.tint('red', 1.0, 1.0, -1.0, 1.0) }
+    assert_raise(ArgumentError) { @img.tint('red', 1.0, 1.0, 1.0, -1.0) }
     assert_raise(TypeError) { @img.tint(1.0, 1.0) }
     assert_raise(TypeError) { @img.tint('red', 'green') }
     assert_raise(TypeError) { @img.tint('red', 1.0, 'green') }
@@ -869,6 +874,14 @@ class Image3_UT < Test::Unit::TestCase
     assert_raise(TypeError) { @img.transparent(2) }
   end
 
+  def test_transparent_chroma
+    assert_instance_of(Magick::Image, @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange)))
+    assert_nothing_raised { @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange)) }
+    assert_nothing_raised { @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange), 1.0) }
+    assert_nothing_raised { @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange), 1.0, true) }
+    assert_nothing_raised { @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange), 1.0, false) }
+  end
+
   def test_transpose
     assert_nothing_raised do
       res = @img.transpose
@@ -899,13 +912,19 @@ class Image3_UT < Test::Unit::TestCase
     # Can't use the default image because it's a solid color
     hat = Magick::Image.read(IMAGES_DIR + '/Flower_Hat.jpg').first
     assert_nothing_raised do
-      res = hat.trim
-      assert_instance_of(Magick::Image, res)
+      assert_instance_of(Magick::Image, hat.trim)
+      assert_instance_of(Magick::Image, hat.trim(10))
     end
+    assert_raise(ArgumentError) { hat.trim(10, 10) }
+
     assert_nothing_raised do
       res = hat.trim!
       assert_same(hat, res)
+
+      res = hat.trim!(10)
+      assert_same(hat, res)
     end
+    assert_raise(ArgumentError) { hat.trim!(10, 10) }
   end
 
   def test_unique_colors
@@ -928,6 +947,10 @@ class Image3_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.unsharp_mask(2.0, 1.0, 0.50) }
     assert_nothing_raised { @img.unsharp_mask(2.0, 1.0, 0.50, 0.10) }
     assert_raise(ArgumentError) { @img.unsharp_mask(2.0, 1.0, 0.50, 0.10, 2) }
+    assert_raise(ArgumentError) { @img.unsharp_mask(-2.0, 1.0, 0.50, 0.10) }
+    assert_raise(ArgumentError) { @img.unsharp_mask(2.0, 0.0, 0.50, 0.10) }
+    assert_raise(ArgumentError) { @img.unsharp_mask(2.0, 1.0, 0.0, 0.10) }
+    assert_raise(ArgumentError) { @img.unsharp_mask(2.0, 1.0, 0.01, -0.10) }
     assert_raise(TypeError) { @img.unsharp_mask('x') }
     assert_raise(TypeError) { @img.unsharp_mask(2.0, 'x') }
     assert_raise(TypeError) { @img.unsharp_mask(2.0, 1.0, 'x') }
@@ -1000,8 +1023,10 @@ class Image3_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.watermark(mark, 0.50, 0.50, Magick::NorthEastGravity, 10) }
     assert_nothing_raised { @img.watermark(mark, 0.50, 0.50, Magick::NorthEastGravity, 10, 10) }
 
+    assert_raise(ArgumentError) { @img.watermark }
     assert_raise(ArgumentError) { @img.watermark(mark, 'x') }
     assert_raise(ArgumentError) { @img.watermark(mark, 0.50, 'x') }
+    assert_raise(ArgumentError) { @img.watermark(mark, 0.50, '1500%') }
     assert_raise(TypeError) { @img.watermark(mark, 0.50, 0.50, 'x') }
     assert_raise(TypeError) { @img.watermark(mark, 0.50, 0.50, Magick::NorthEastGravity, 'x') }
     assert_raise(TypeError) { @img.watermark(mark, 0.50, 0.50, Magick::NorthEastGravity, 10, 'x') }
@@ -1020,6 +1045,19 @@ class Image3_UT < Test::Unit::TestCase
     assert_raise(ArgumentError) { @img.wave(25, 200, 2) }
     assert_raise(TypeError) { @img.wave('x') }
     assert_raise(TypeError) { @img.wave(25, 'x') }
+  end
+
+  def test_wet_floor
+    assert_instance_of(Magick::Image, @img.wet_floor)
+    assert_nothing_raised { @img.wet_floor(0.0) }
+    assert_nothing_raised { @img.wet_floor(0.5) }
+    assert_nothing_raised { @img.wet_floor(0.5, 10) }
+    assert_nothing_raised { @img.wet_floor(0.5, 0.0) }
+
+    assert_raise(ArgumentError) { @img.wet_floor(2.0) }
+    assert_raise(ArgumentError) { @img.wet_floor(-2.0) }
+    assert_raise(ArgumentError) { @img.wet_floor(0.5, -1.0) }
+    assert_raise(ArgumentError) { @img.wet_floor(0.5, 10, 0.5) }
   end
 
   def test_white_threshold
