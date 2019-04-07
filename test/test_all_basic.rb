@@ -35,6 +35,7 @@ FreezeError = if RUBY_VERSION > '2.5'
 
 require 'Draw.rb'
 require 'Enum.rb'
+require 'Fill.rb'
 require 'Image1.rb'
 require 'Image2.rb'
 require 'Image3.rb'
