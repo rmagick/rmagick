@@ -36,7 +36,7 @@ build_imagemagick() {
     tar -xf ${IMAGEMAGICK_VERSION}.tar.gz
     mv ImageMagick6-${IMAGEMAGICK_VERSION} $build_dir
   else
-    wget http://www.imagemagick.org/download/releases/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz
+    wget https://www.imagemagick.org/download/releases/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz
     tar -xf ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz
     mv ImageMagick-${IMAGEMAGICK_VERSION} $build_dir
   fi
