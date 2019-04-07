@@ -133,6 +133,9 @@ class ImageList2UT < Test::Unit::TestCase
     map = Magick::ImageList.new('netscape:')
     img = @ilist.map(map, true)
     assert_instance_of(Magick::ImageList, img)
+
+    assert_raise(ArgumentError) { @ilist.map }
+    assert_raise(ArgumentError) { @ilist.map(map, true, 42) }
   end
 
   def test_marshal
@@ -259,27 +262,34 @@ class ImageList2UT < Test::Unit::TestCase
 
   def test_optimize_layers
     layer_methods = [
-      Magick::CompareAnyLayer,
-      Magick::CompareOverlayLayer,
-      Magick::OptimizeLayer,
-      Magick::OptimizePlusLayer,
       Magick::CoalesceLayer,
       Magick::DisposeLayer,
       Magick::OptimizeTransLayer,
       Magick::RemoveDupsLayer,
-      Magick::RemoveZeroLayer
+      Magick::RemoveZeroLayer,
+      Magick::OptimizeImageLayer,
+      Magick::OptimizeLayer,
+      Magick::OptimizePlusLayer,
+      Magick::CompareAnyLayer,
+      Magick::CompareClearLayer,
+      Magick::CompareOverlayLayer,
+      Magick::MosaicLayer,
+      Magick::FlattenLayer,
+      Magick::MergeLayer
     ]
     @ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_1.gif')
     layer_methods.each do |method|
       assert_nothing_raised do
         res = @ilist.optimize_layers(method)
         assert_instance_of(Magick::ImageList, res)
-        assert_equal(2, res.length)
+        assert_kind_of(Integer, res.length)
       end
     end
+
     assert_nothing_raised { @ilist.optimize_layers(Magick::CompareClearLayer) }
     assert_raise(ArgumentError) { @ilist.optimize_layers(Magick::UndefinedLayer) }
     assert_raise(TypeError) { @ilist.optimize_layers(2) }
+    assert_raise(NotImplementedError) { @ilist.optimize_layers(Magick::CompositeLayer) }
   end
 
   def test_ping
@@ -311,6 +321,9 @@ class ImageList2UT < Test::Unit::TestCase
     assert_nothing_raised { @ilist.quantize(128, Magick::RGBColorspace, Magick::NoDitherMethod) }
     assert_nothing_raised { @ilist.quantize(128, Magick::RGBColorspace, Magick::RiemersmaDitherMethod) }
     assert_nothing_raised { @ilist.quantize(128, Magick::RGBColorspace, Magick::FloydSteinbergDitherMethod) }
+    assert_nothing_raised { @ilist.quantize(128, Magick::RGBColorspace, Magick::FloydSteinbergDitherMethod, 32) }
+    assert_nothing_raised { @ilist.quantize(128, Magick::RGBColorspace, Magick::FloydSteinbergDitherMethod, 32, true) }
+    assert_nothing_raised { @ilist.quantize(128, Magick::RGBColorspace, Magick::FloydSteinbergDitherMethod, 32, false) }
     assert_raise(TypeError) { @ilist.quantize(128, Magick::RGBColorspace, true, 'x') }
     assert_raise(ArgumentError) { @ilist.quantize(128, Magick::RGBColorspace, true, 0, false, 'extra') }
   end

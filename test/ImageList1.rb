@@ -15,12 +15,25 @@ class ImageList1UT < Test::Unit::TestCase
     @list2 << @list[9]
   end
 
+  def test_composite_layers
+    assert_nothing_raised { @list.composite_layers(@list2) }
+    Magick::CompositeOperator.values do |op|
+      assert_nothing_raised { @list.composite_layers(@list2, op) }
+    end
+
+    assert_raise(ArgumentError) { @list.composite_layers(@list2, Magick::AddCompositeOp, 42) }
+  end
+
   def test_delay
     assert_nothing_raised { @list.delay }
     assert_equal(0, @list.delay)
     assert_nothing_raised { @list.delay = 20 }
     assert_equal(20, @list.delay)
     assert_raise(ArgumentError) { @list.delay = 'x' }
+  end
+
+  def test_flatten_images
+    assert_nothing_raised { @list.flatten_images }
   end
 
   def test_ticks_per_second
