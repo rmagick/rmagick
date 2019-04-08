@@ -2638,11 +2638,9 @@ set_profile(VALUE self, const char *name, VALUE profile)
         if (rm_strcasecmp(profile_name, name) == 0)
         {
             profile_data = GetImageProfile(profile_image, profile_name);
-            if (profile)
+            if (profile_data)
             {
-                (void)ProfileImage(image, profile_name, profile_data->datum
-                                   , (unsigned long)profile_data->length
-                                   , (MagickBooleanType)MagickFalse);
+                (void) ProfileImage(image, profile_name, GetStringInfoDatum(profile_data), GetStringInfoLength(profile_data), MagickFalse);
                 if (image->exception.severity >= ErrorException)
                 {
                     break;
