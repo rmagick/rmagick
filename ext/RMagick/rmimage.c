@@ -2708,10 +2708,10 @@ Image_color_profile(VALUE self)
 VALUE
 Image_color_profile_eq(VALUE self, VALUE profile)
 {
-    (void) Image_delete_profile(self, rb_str_new2("ICC"));
+    (void) Image_delete_profile(self, rb_str_new2("icc"));
     if (profile != Qnil)
     {
-        (void) set_profile(self, "ICC", profile);
+        (void) set_profile(self, "icc", profile);
     }
     return self;
 }
@@ -7736,10 +7736,10 @@ Image_iptc_profile(VALUE self)
 VALUE
 Image_iptc_profile_eq(VALUE self, VALUE profile)
 {
-    (void) Image_delete_profile(self, rb_str_new2("IPTC"));
+    (void) Image_delete_profile(self, rb_str_new2("iptc"));
     if (profile != Qnil)
     {
-        (void) set_profile(self, "IPTC", profile);
+        (void) set_profile(self, "iptc", profile);
     }
     return self;
 }
