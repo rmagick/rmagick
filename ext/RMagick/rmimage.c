@@ -2635,14 +2635,21 @@ set_profile(VALUE self, const char *name, VALUE profile)
     profile_name = GetNextImageProfile(profile_image);
     while (profile_name)
     {
-        if (rm_strcasecmp(profile_name, name) == 0)
+        /* Hack for versions of ImageMagick where the meta coder would change the iptc profile into an 8bim profile */
+        if (rm_strcasecmp("8bim", profile_name) == 0 && rm_strcasecmp("iptc", name) == 0)
+        {
+            (void) ProfileImage(image, name, profile_blob, profile_length, MagickFalse);
+            if (image->exception.severity >= ErrorException)
+            {
+                break;
+            }
+        }
+        else if (rm_strcasecmp(profile_name, name) == 0)
         {
             profile_data = GetImageProfile(profile_image, profile_name);
-            if (profile)
+            if (profile_data)
             {
-                (void)ProfileImage(image, profile_name, profile_data->datum
-                                   , (unsigned long)profile_data->length
-                                   , (MagickBooleanType)MagickFalse);
+                (void) ProfileImage(image, name, GetStringInfoDatum(profile_data), GetStringInfoLength(profile_data), MagickFalse);
                 if (image->exception.severity >= ErrorException)
                 {
                     break;
@@ -7736,10 +7743,10 @@ Image_iptc_profile(VALUE self)
 VALUE
 Image_iptc_profile_eq(VALUE self, VALUE profile)
 {
-    (void) Image_delete_profile(self, rb_str_new2("IPTC"));
+    (void) Image_delete_profile(self, rb_str_new2("iptc"));
     if (profile != Qnil)
     {
-        (void) set_profile(self, "IPTC", profile);
+        (void) set_profile(self, "iptc", profile);
     }
     return self;
 }

@@ -463,6 +463,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.iptc_profile }
     assert_nil(@img.iptc_profile)
     assert_nothing_raised { @img.iptc_profile = 'xxx' }
+    assert_equal('xxx', @img.iptc_profile)
     assert_raise(TypeError) { @img.iptc_profile = 2 }
   end
 
