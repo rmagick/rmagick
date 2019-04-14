@@ -159,6 +159,7 @@ class ImageList2UT < Test::Unit::TestCase
         self.border_color = Magick::Pixel.new(0, 0, 0)
         self.border_width = 2
         self.compose = Magick::OverCompositeOp
+        self.filename = 'test.png'
         self.fill = 'green'
         self.font = 'Arial'
         self.frame = '20x20+4+4'
@@ -167,11 +168,15 @@ class ImageList2UT < Test::Unit::TestCase
         self.geometry = Magick::Geometry.new(63, 60, 5, 5)
         self.gravity = Magick::SouthGravity
         self.matte_color = '#bdbdbd'
+        self.matte_color = Magick::Pixel.new(Magick::QuantumRange, 0, 0)
         self.pointsize = 12
         self.shadow = true
         self.stroke = 'transparent'
+        self.texture = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
+        self.texture = Magick::Image.read(IMAGES_DIR + '/Button_1.gif').first
         self.tile = '4x9'
         self.tile = Magick::Geometry.new(4, 9)
+        self.title = 'sample'
       end
       assert_instance_of(Magick::ImageList, montage)
       assert_equal(@ilist, ilist)
@@ -197,11 +202,19 @@ class ImageList2UT < Test::Unit::TestCase
       assert_equal(@ilist, ilist)
     end
     assert_raise(TypeError) do
+      montage = ilist.montage { self.filename = 2 }
+      assert_equal(@ilist, ilist)
+    end
+    assert_raise(TypeError) do
       montage = ilist.montage { self.fill = 2 }
       assert_equal(@ilist, ilist)
     end
     assert_raise(TypeError) do
       montage = ilist.montage { self.font = 2 }
+      assert_equal(@ilist, ilist)
+    end
+    assert_raise(TypeError) do
+      montage = ilist.montage { self.gravity = 2 }
       assert_equal(@ilist, ilist)
     end
     assert_raise(TypeError) do
@@ -214,6 +227,10 @@ class ImageList2UT < Test::Unit::TestCase
     end
     assert_raise(ArgumentError) do
       montage = ilist.montage { self.stroke = 'x' }
+      assert_equal(@ilist, ilist)
+    end
+    assert_raise(NoMethodError) do
+      montage = ilist.montage { self.texture = 'x' }
       assert_equal(@ilist, ilist)
     end
   end
