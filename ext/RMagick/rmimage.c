@@ -10827,9 +10827,12 @@ Image_recolor(VALUE self, VALUE color_matrix)
     order = (unsigned long)sqrt((double)(len + 1.0));
 
     // RecolorImage sets the ExceptionInfo and returns a NULL image if an error occurs.
-    kernel_info = AcquireKernelInfo("1");
+    kernel_info = AcquireKernelInfo(NULL);
     if (kernel_info == (KernelInfo *) NULL)
-      return Qnil;
+    {
+        xfree((void *)matrix);
+        return Qnil;
+    }
     kernel_info->width = order;
     kernel_info->height = order;
     kernel_info->values = (double *) matrix;
