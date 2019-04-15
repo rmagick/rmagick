@@ -3,6 +3,61 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 3.1.0
+
+Deprecations: (To be removed in RMagick 4.0)
+
+- Support for Ruby 2.3
+- `KernelInfo#zero_nans` (#531) (no replacement)
+- `KernelInfo#show` (#532) (no replacement)
+- `ImageList#fx` (#529) (use `Image#fx` instead)
+- `Image#alpha=` (#530) (use `Image#alpha` instead)
+- `Image#mask=` (#530) (use `Image#mask` instead)
+- `Image#matte` (#530) (use `Image#alpha` instead)
+- `Image#matte=` (#530) (use `Image#alpha` instead)
+
+Enhancements:
+
+- Support ruby-mswin environment on Windows (#425)
+- Add test for supporting webp format (#406)
+- Add explicit Ruby 2.5 support (#339)
+- Add explicit Ruby 2.6 support (#467)
+- Restore support for ImageMagick 6.7 (#475)
+- Add explicit ImageMagick 6.9 support (#340)
+- Work towards ImageMagick 7.0 support (#470) (#487) (#489) (#492) (#494)
+- Improve error messaging (#480) (#517)
+- Add TimeResource support (#402)
+- Add Image#fx method (#529)
+
+Bug Fixes:
+
+- Many, many memory leaks fixed
+  (#362) (#361) (#360) (#359) (#358) (#357) (#367) (#370) (#364) (#372) (#373)
+  (#374) (#375) (#376) (#385) (#384) (#383) (#382) (#381) (#380) (#379) (#378)
+  (#377) (#391) (#390) (#389) (#396) (#401) (#409) (#419) (#417) (#416) (#415)
+  (#414) (#413) (#412) (#411) (#410) (#418) (#454) (#453) (#452) (#451) (#450)
+  (#461) (#460) (#459) (#563)
+- Fix SEGV in ImageList methods with invalid image list (#356)
+- Fix SEGV in Image#recolor (#387)
+- Fix SEGV in Image#profile! (#400)
+- Fix build error on Homebrew environment (#426)
+- Fix Image#quantize and ImageList#quantize could not make dither false (#458)
+- Replace obsoleted $defout to $stdout (#463)
+- Avoid SEGV in monitor feature for Ruby 2.5+ (#462)
+- Fix SEGV in Image#write with CMYKColorspace (#465)
+- Avoid problems related to GC in monitor feature (#468)
+- Get rid of compiler warnings (#484) (#491) (#500)
+- Fix rmfill leaks (#528)
+- Removed automatic allocation of the ImageInfo that is broken. (#547)
+- Fix color histogram (#540)
+- Fix Image#iptc_profile does not work with ImageMagick 6.7 (#558)
+
+Code Quality:
+
+- Many tests written
+- CI improvements
+- Other refactors
+
 ## RMagick 3.0.0
 
 Breaking Changes:
