@@ -158,6 +158,12 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.class_type = Magick::PseudoClass }
     assert_equal(Magick::PseudoClass, @img.class_type)
     assert_raise(TypeError) { @img.class_type = 2 }
+
+    assert_nothing_raised do
+      @img.class_type = Magick::PseudoClass
+      @img.class_type = Magick::DirectClass
+      assert_equal(Magick::DirectClass, @img.class_type)
+    end
   end
 
   def test_color_profile
@@ -182,8 +188,10 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_instance_of(Magick::ColorspaceType, @img.colorspace)
     assert_equal(Magick::SRGBColorspace, @img.colorspace)
     img = @img.copy
-    assert_nothing_raised { img.colorspace = Magick::GRAYColorspace }
-    assert_equal(Magick::GRAYColorspace, img.colorspace)
+
+    Magick::ColorspaceType.values do |colorspace|
+      assert_nothing_raised { img.colorspace = colorspace }
+    end
     assert_raise(TypeError) { @img.colorspace = 2 }
     Magick::ColorspaceType.values.each do |cs|
       assert_nothing_raised { img.colorspace = cs }
@@ -204,63 +212,9 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.compose = Magick::UndefinedCompositeOp }
     assert_equal(Magick::UndefinedCompositeOp, @img.compose)
 
-    assert_nothing_raised { @img.compose = Magick::NoCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::AddCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::AtopCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::BlendCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::BumpmapCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::ClearCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::ColorBurnCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::ColorDodgeCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::ColorizeCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::CopyBlackCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::CopyBlueCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::CopyCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::CopyCyanCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::CopyGreenCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::CopyMagentaCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::CopyOpacityCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::CopyRedCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::CopyYellowCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::DarkenCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::DstAtopCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::DstCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::DstInCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::DstOutCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::DstOverCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::DifferenceCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::DisplaceCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::DissolveCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::ExclusionCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::HardLightCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::HueCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::InCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::LightenCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::LuminizeCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::MinusCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::ModulateCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::MultiplyCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::OutCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::OverCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::OverlayCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::PlusCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::ReplaceCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::SaturateCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::ScreenCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::SoftLightCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::SrcAtopCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::SrcCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::SrcInCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::SrcOutCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::SrcOverCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::SubtractCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::ThresholdCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::XorCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::MathematicsCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::DivideSrcCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::MinusSrcCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::DarkenIntensityCompositeOp }
-    assert_nothing_raised { @img.compose = Magick::LightenIntensityCompositeOp }
+    Magick::CompositeOperator.values do |composite|
+      assert_nothing_raised { @img.compose = composite }
+    end
     assert_raise(TypeError) { @img.compose = 2 }
   end
 
@@ -270,27 +224,10 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_equal(Magick::UndefinedCompression, @img.compression)
     assert_nothing_raised { @img.compression = Magick::BZipCompression }
     assert_equal(Magick::BZipCompression, @img.compression)
-    assert_nothing_raised { @img.compression = Magick::NoCompression }
-    assert_nothing_raised { @img.compression = Magick::BZipCompression }
-    assert_nothing_raised { @img.compression = Magick::B44Compression }
-    assert_nothing_raised { @img.compression = Magick::B44ACompression }
-    assert_nothing_raised { @img.compression = Magick::DXT1Compression }
-    assert_nothing_raised { @img.compression = Magick::DXT3Compression }
-    assert_nothing_raised { @img.compression = Magick::DXT5Compression }
-    assert_nothing_raised { @img.compression = Magick::FaxCompression }
-    assert_nothing_raised { @img.compression = Magick::Group4Compression }
-    assert_nothing_raised { @img.compression = Magick::JPEGCompression }
-    assert_nothing_raised { @img.compression = Magick::JPEG2000Compression }
-    assert_nothing_raised { @img.compression = Magick::LosslessJPEGCompression }
-    assert_nothing_raised { @img.compression = Magick::LZWCompression }
-    assert_nothing_raised { @img.compression = Magick::PizCompression }
-    assert_nothing_raised { @img.compression = Magick::Pxr24Compression }
-    assert_nothing_raised { @img.compression = Magick::RLECompression }
-    assert_nothing_raised { @img.compression = Magick::ZipCompression }
-    assert_nothing_raised { @img.compression = Magick::ZipSCompression }
-    assert_nothing_raised { @img.compression = Magick::LZMACompression }
-    assert_nothing_raised { @img.compression = Magick::JBIG1Compression }
-    assert_nothing_raised { @img.compression = Magick::JBIG2Compression }
+
+    Magick::CompressionType.values do |compression|
+      assert_nothing_raised { @img.compression = compression }
+    end
     assert_raise(TypeError) { @img.compression = 2 }
   end
 
@@ -307,6 +244,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.density = '90x90' }
     assert_nothing_raised { @img.density = 'x90' }
     assert_nothing_raised { @img.density = '90' }
+    assert_nothing_raised { @img.density = Magick::Geometry.new(@img.columns / 2, @img.rows / 2, 5, 5) }
     assert_raise(TypeError) { @img.density = 2 }
   end
 
@@ -327,8 +265,10 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_equal(Magick::UndefinedDispose, @img.dispose)
     assert_nothing_raised { @img.dispose = Magick::NoneDispose }
     assert_equal(Magick::NoneDispose, @img.dispose)
-    assert_nothing_raised { @img.dispose = Magick::BackgroundDispose }
-    assert_nothing_raised { @img.dispose = Magick::PreviousDispose }
+
+    Magick::DisposeType.values do |dispose|
+      assert_nothing_raised { @img.dispose = dispose }
+    end
     assert_raise(TypeError) { @img.dispose = 2 }
   end
 
@@ -371,29 +311,10 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_equal(Magick::UndefinedFilter, @img.filter)
     assert_nothing_raised { @img.filter = Magick::PointFilter }
     assert_equal(Magick::PointFilter, @img.filter)
-    assert_nothing_raised { @img.filter = Magick::BoxFilter }
-    assert_nothing_raised { @img.filter = Magick::TriangleFilter }
-    assert_nothing_raised { @img.filter = Magick::HermiteFilter }
-    assert_nothing_raised { @img.filter = Magick::HanningFilter }
-    assert_nothing_raised { @img.filter = Magick::HammingFilter }
-    assert_nothing_raised { @img.filter = Magick::BlackmanFilter }
-    assert_nothing_raised { @img.filter = Magick::GaussianFilter }
-    assert_nothing_raised { @img.filter = Magick::QuadraticFilter }
-    assert_nothing_raised { @img.filter = Magick::CubicFilter }
-    assert_nothing_raised { @img.filter = Magick::CatromFilter }
-    assert_nothing_raised { @img.filter = Magick::MitchellFilter }
-    assert_nothing_raised { @img.filter = Magick::LanczosFilter }
-    assert_nothing_raised { @img.filter = Magick::BesselFilter }
-    assert_nothing_raised { @img.filter = Magick::SincFilter }
-    assert_nothing_raised { @img.filter = Magick::JincFilter }
-    assert_nothing_raised { @img.filter = Magick::SincFastFilter }
-    assert_nothing_raised { @img.filter = Magick::LanczosSharpFilter }
-    assert_nothing_raised { @img.filter = Magick::Lanczos2Filter }
-    assert_nothing_raised { @img.filter = Magick::Lanczos2SharpFilter }
-    assert_nothing_raised { @img.filter = Magick::RobidouxFilter }
-    assert_nothing_raised { @img.filter = Magick::RobidouxSharpFilter }
-    assert_nothing_raised { @img.filter = Magick::CosineFilter }
-    assert_nothing_raised { @img.filter = Magick::SplineFilter }
+
+    Magick::FilterTypes.values do |filter|
+      assert_nothing_raised { @img.filter = filter }
+    end
     assert_raise(TypeError) { @img.filter = 2 }
   end
 
@@ -436,6 +357,7 @@ class Image_Attributes_UT < Test::Unit::TestCase
   def test_geometry
     assert_nothing_raised { @img.geometry }
     assert_nil(@img.geometry)
+    assert_nothing_raised { @img.geometry = nil }
     assert_nothing_raised { @img.geometry = '90x90' }
     assert_equal('90x90', @img.geometry)
     assert_nothing_raised { @img.geometry = Magick::Geometry.new(100, 80) }
@@ -443,9 +365,24 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_raise(TypeError) { @img.geometry = [] }
   end
 
+  def test_gravity
+    assert_instance_of(Magick::GravityType, @img.gravity)
+
+    Magick::GravityType.values do |gravity|
+      assert_nothing_raised { @img.gravity = gravity }
+    end
+    assert_raise(TypeError) { @img.gravity = nil }
+    assert_raise(TypeError) { @img.gravity = Magick::PointFilter }
+  end
+
   def test_image_type
-    assert_nothing_raised { @img.image_type }
     assert_instance_of(Magick::ImageType, @img.image_type)
+
+    Magick::ImageType.values do |image_type|
+      assert_nothing_raised { @img.image_type = image_type }
+    end
+    assert_raise(TypeError) { @img.image_type = nil }
+    assert_raise(TypeError) { @img.image_type = Magick::PointFilter }
   end
 
   def test_interlace_type
@@ -454,8 +391,10 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_equal(Magick::NoInterlace, @img.interlace)
     assert_nothing_raised { @img.interlace = Magick::LineInterlace }
     assert_equal(Magick::LineInterlace, @img.interlace)
-    assert_nothing_raised { @img.interlace = Magick::PlaneInterlace }
-    assert_nothing_raised { @img.interlace = Magick::PartitionInterlace }
+
+    Magick::InterlaceType.values do |interlace|
+      assert_nothing_raised { @img.interlace = interlace }
+    end
     assert_raise(TypeError) { @img.interlace = 2 }
   end
 
@@ -538,14 +477,13 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.orientation }
     assert_instance_of(Magick::OrientationType, @img.orientation)
     assert_equal(Magick::UndefinedOrientation, @img.orientation)
-    assert_nothing_raised { @img.orientation = Magick::UndefinedOrientation }
     assert_nothing_raised { @img.orientation = Magick::TopLeftOrientation }
-    assert_nothing_raised { @img.orientation = Magick::TopRightOrientation }
-    assert_nothing_raised { @img.orientation = Magick::BottomRightOrientation }
-    assert_nothing_raised { @img.orientation = Magick::LeftTopOrientation }
-    assert_nothing_raised { @img.orientation = Magick::RightTopOrientation }
-    assert_nothing_raised { @img.orientation = Magick::RightBottomOrientation }
-    assert_nothing_raised { @img.orientation = Magick::LeftBottomOrientation }
+    assert_equal(Magick::TopLeftOrientation, @img.orientation)
+
+    Magick::OrientationType.values do |orientation|
+      assert_nothing_raised { @img.orientation = orientation }
+    end
+    assert_raise(TypeError) { @img.orientation = 2 }
   end
 
   def test_page
@@ -564,6 +502,19 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_raise(TypeError) { @img.page = 2 }
   end
 
+  def test_pixel_interpolation_method
+    assert_nothing_raised { @img.pixel_interpolation_method }
+    assert_instance_of(Magick::InterpolatePixelMethod, @img.pixel_interpolation_method)
+    assert_equal(Magick::UndefinedInterpolatePixel, @img.pixel_interpolation_method)
+    assert_nothing_raised { @img.pixel_interpolation_method = Magick::AverageInterpolatePixel }
+    assert_equal(Magick::AverageInterpolatePixel, @img.pixel_interpolation_method)
+
+    Magick::InterpolatePixelMethod.values do |interpolate_pixel_method|
+      assert_nothing_raised { @img.pixel_interpolation_method = interpolate_pixel_method }
+    end
+    assert_raise(TypeError) { @img.pixel_interpolation_method = 2 }
+  end
+
   def test_quality
     assert_nothing_raised { @hat.quality }
     assert_equal(75, @hat.quality)
@@ -580,10 +531,10 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.rendering_intent }
     assert_instance_of(Magick::RenderingIntent, @img.rendering_intent)
     assert_equal(Magick::PerceptualIntent, @img.rendering_intent)
-    assert_nothing_raised { @img.rendering_intent = Magick::SaturationIntent }
-    assert_nothing_raised { @img.rendering_intent = Magick::PerceptualIntent }
-    assert_nothing_raised { @img.rendering_intent = Magick::AbsoluteIntent }
-    assert_nothing_raised { @img.rendering_intent = Magick::RelativeIntent }
+
+    Magick::RenderingIntent.values do |rendering_intent|
+      assert_nothing_raised { @img.rendering_intent = rendering_intent }
+    end
     assert_raise(TypeError) { @img.rendering_intent = 2 }
   end
 
@@ -634,7 +585,10 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_equal(Magick::UndefinedResolution, @img.units)
     assert_nothing_raised { @img.units = Magick::PixelsPerInchResolution }
     assert_equal(Magick::PixelsPerInchResolution, @img.units)
-    assert_nothing_raised { @img.units = Magick::PixelsPerCentimeterResolution }
+
+    Magick::ResolutionType.values do |resolution|
+      assert_nothing_raised { @img.units = resolution }
+    end
     assert_raise(TypeError) { @img.units = 2 }
   end
 
@@ -643,10 +597,10 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_equal(Magick::UndefinedVirtualPixelMethod, @img.virtual_pixel_method)
     assert_nothing_raised { @img.virtual_pixel_method = Magick::EdgeVirtualPixelMethod }
     assert_equal(Magick::EdgeVirtualPixelMethod, @img.virtual_pixel_method)
-    assert_nothing_raised { @img.virtual_pixel_method = Magick::MirrorVirtualPixelMethod }
-    assert_nothing_raised { @img.virtual_pixel_method = Magick::TileVirtualPixelMethod }
-    assert_nothing_raised { @img.virtual_pixel_method = Magick::TransparentVirtualPixelMethod }
-    assert_nothing_raised { @img.virtual_pixel_method = Magick::BackgroundVirtualPixelMethod }
+
+    Magick::VirtualPixelMethod.values do |virtual_pixel_method|
+      assert_nothing_raised { @img.virtual_pixel_method = virtual_pixel_method }
+    end
     assert_raise(TypeError) { @img.virtual_pixel_method = 2 }
   end
 
