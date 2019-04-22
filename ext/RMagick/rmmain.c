@@ -1744,6 +1744,10 @@ version_constants(void)
     rb_obj_freeze(str);
     rb_define_const(Module_Magick, "Magick_version", str);
 
+    // Hack due to mistake in the Windows distribution of ImageMagick
+    if (lib_version == 0x6910)
+        lib_version = 0x69A;
+
     nr = rb_int_new(lib_version);
     rb_define_const(Module_Magick, "Magick_lib_version", nr);
 
