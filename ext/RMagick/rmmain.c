@@ -1734,13 +1734,18 @@ version_constants(void)
 {
     const char *mgk_version;
     VALUE str;
+    VALUE nr;
     char long_version[1000];
+    size_t lib_version;
 
-    mgk_version = GetMagickVersion(NULL);
+    mgk_version = GetMagickVersion(&lib_version);
 
     str = rb_str_new2(mgk_version);
     rb_obj_freeze(str);
     rb_define_const(Module_Magick, "Magick_version", str);
+
+    nr = rb_int_new(lib_version);
+    rb_define_const(Module_Magick, "Magick_lib_version", nr);
 
     str = rb_str_new2(Q(RMAGICK_VERSION_STRING));
     rb_obj_freeze(str);
