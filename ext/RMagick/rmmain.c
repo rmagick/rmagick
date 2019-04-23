@@ -1725,7 +1725,7 @@ test_Magick_version(void)
 
 
 /**
- * Create Version, Magick_version, and Version_long constants.
+ * Create Version, Magick_version, Magick_lib_version, and Version_long constants.
  *
  * No Ruby usage (internal function)
  */
