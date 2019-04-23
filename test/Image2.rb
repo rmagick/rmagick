@@ -341,7 +341,7 @@ class Image2_UT < Test::Unit::TestCase
       elsif method == 'difference'
         other = Magick::Image.new(20, 20)
         assert_raises(Magick::DestroyedImageError) { @img.difference(other) }
-      elsif method == 'channel_entropy' && Magick::Magick_lib_version < 0x690
+      elsif method == 'channel_entropy' && Magick::Magick_lib_version < Gem::Version.new('6.9')
         assert_raises(NotImplementedError) { @img.channel_entropy }
       elsif %w[morphology morphology_channel].include?(method)
         warn "skipped testing `#destroy` against `##{method}`"

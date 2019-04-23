@@ -1733,23 +1733,26 @@ static void
 version_constants(void)
 {
     const char *mgk_version;
-    VALUE str;
-    VALUE nr;
+    VALUE str, gem_module, version_klass, version, args[1];
     char long_version[1000];
-    size_t lib_version;
+    int major, minor, patch, count;
 
-    mgk_version = GetMagickVersion(&lib_version);
+    mgk_version = GetMagickVersion(NULL);
 
     str = rb_str_new2(mgk_version);
     rb_obj_freeze(str);
     rb_define_const(Module_Magick, "Magick_version", str);
 
-    // Hack due to mistake in the Windows distribution of ImageMagick
-    if (lib_version == 0x6910)
-        lib_version = 0x69A;
-
-    nr = rb_int_new(lib_version);
-    rb_define_const(Module_Magick, "Magick_lib_version", nr);
+    count = sscanf(mgk_version, "ImageMagick %d.%d.%d", &major, &minor, &patch);
+    if (count == 3)
+    {
+        sprintf(long_version, "%d.%d.%d", major, minor, patch);
+        args[0] = rb_str_new2(long_version);
+        gem_module = rb_const_get(rb_cObject, rb_intern("Gem"));
+        version_klass = rb_const_get(gem_module, rb_intern("Version"));
+        version = rb_class_new_instance(1, args, version_klass);
+        rb_define_const(Module_Magick, "Magick_lib_version", version);
+    }
 
     str = rb_str_new2(Q(RMAGICK_VERSION_STRING));
     rb_obj_freeze(str);
@@ -1766,10 +1769,7 @@ version_constants(void)
     str = rb_str_new2(long_version);
     rb_obj_freeze(str);
     rb_define_const(Module_Magick, "Long_version", str);
-
-    RB_GC_GUARD(str);
 }
-
 
 /**
  * Create Features constant.

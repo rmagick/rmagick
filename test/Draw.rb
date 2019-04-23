@@ -301,7 +301,7 @@ class DrawUT < Test::Unit::TestCase
       Magick::VividLightCompositeOp,
       Magick::XorCompositeOp
     ]
-    composite_operators << Magick::HardMixCompositeOp if Magick::Magick_lib_version >= 0x689
+    composite_operators << Magick::HardMixCompositeOp if Gem::Version.new('6.8.9') <= Magick::Magick_lib_version
 
     img = Magick::Image.new(10, 10)
     assert_nothing_raised { @draw.composite(0, 0, 10, 10, img) }
