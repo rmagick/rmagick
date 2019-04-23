@@ -368,6 +368,7 @@ Style/AutoResourceCleanup:
 Style/CaseEquality:
   Exclude:
     - 'test/Enum.rb'
+    - 'test/Pixel.rb'
 
 # Offense count: 6
 # Cop supports --auto-correct.

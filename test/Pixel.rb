@@ -9,6 +9,95 @@ class PixelUT < Test::Unit::TestCase
     @pixel = Magick::Pixel.from_color('brown')
   end
 
+  def test_red
+    assert_nothing_raised { @pixel.red = 123 }
+    assert_nothing_raised { @pixel.red = 255.25 }
+    assert_equal(255, @pixel.red)
+    assert_raise(TypeError) { @pixel.red = 'x' }
+  end
+
+  def test_green
+    assert_nothing_raised { @pixel.green = 123 }
+    assert_nothing_raised { @pixel.green = 255.25 }
+    assert_equal(255, @pixel.green)
+    assert_raise(TypeError) { @pixel.green = 'x' }
+  end
+
+  def test_blue
+    assert_nothing_raised { @pixel.blue = 123 }
+    assert_nothing_raised { @pixel.blue = 255.25 }
+    assert_equal(255, @pixel.blue)
+    assert_raise(TypeError) { @pixel.blue = 'x' }
+  end
+
+  def test_opacity
+    assert_nothing_raised { @pixel.opacity = 123 }
+    assert_nothing_raised { @pixel.opacity = 255.25 }
+    assert_equal(255, @pixel.opacity)
+    assert_raise(TypeError) { @pixel.opacity = 'x' }
+  end
+
+  def test_cyan
+    assert_nothing_raised { @pixel.cyan = 123 }
+    assert_nothing_raised { @pixel.cyan = 255.25 }
+    assert_equal(255, @pixel.cyan)
+    assert_raise(TypeError) { @pixel.cyan = 'x' }
+  end
+
+  def test_magenta
+    assert_nothing_raised { @pixel.magenta = 123 }
+    assert_nothing_raised { @pixel.magenta = 255.25 }
+    assert_equal(255, @pixel.magenta)
+    assert_raise(TypeError) { @pixel.magenta = 'x' }
+  end
+
+  def test_yellow
+    assert_nothing_raised { @pixel.yellow = 123 }
+    assert_nothing_raised { @pixel.yellow = 255.25 }
+    assert_equal(255, @pixel.yellow)
+    assert_raise(TypeError) { @pixel.yellow = 'x' }
+  end
+
+  def test_black
+    assert_nothing_raised { @pixel.black = 123 }
+    assert_nothing_raised { @pixel.black = 255.25 }
+    assert_equal(255, @pixel.black)
+    assert_raise(TypeError) { @pixel.black = 'x' }
+  end
+
+  def test_case_eq
+    pixel = Magick::Pixel.from_color('brown')
+    assert_true(@pixel === pixel)
+    assert_false(@pixel === 'red')
+
+    pixel = Magick::Pixel.from_color('red')
+    assert_false(@pixel === pixel)
+  end
+
+  def test_clone
+    pixel = @pixel.clone
+    assert_true(@pixel === pixel)
+    assert_not_equal(@pixel.object_id, pixel.object_id)
+
+    pixel = @pixel.taint.clone
+    assert_true(pixel.tainted?)
+
+    pixel = @pixel.freeze.clone
+    assert_true(pixel.frozen?)
+  end
+
+  def test_dup
+    pixel = @pixel.dup
+    assert_true(@pixel === pixel)
+    assert_not_equal(@pixel.object_id, pixel.object_id)
+
+    pixel = @pixel.taint.dup
+    assert_true(pixel.tainted?)
+
+    pixel = @pixel.freeze.dup
+    assert_false(pixel.frozen?)
+  end
+
   def test_hash
     hash = nil
     assert_nothing_raised { hash = @pixel.hash }
@@ -46,6 +135,8 @@ class PixelUT < Test::Unit::TestCase
     assert_nothing_raised { red.fcmp(blue, 10, Magick::RGBColorspace) }
     assert_raises(TypeError) { red.fcmp(blue, 'x') }
     assert_raises(TypeError) { red.fcmp(blue, 10, 'x') }
+    assert_raises(ArgumentError) { red.fcmp }
+    assert_raises(ArgumentError) { red.fcmp(blue, 10, 'x', 'y') }
   end
 
   def test_from_hsla
@@ -56,7 +147,16 @@ class PixelUT < Test::Unit::TestCase
     assert_raise(TypeError) { Magick::Pixel.from_hsla([], 50, 50, 0) }
     assert_raise(TypeError) { Magick::Pixel.from_hsla(127, [], 50, 0) }
     assert_raise(TypeError) { Magick::Pixel.from_hsla(127, 50, [], 0) }
-    assert_raise(TypeError) { Magick::Pixel.from_hsla(127, 50, 50, []) }
+    assert_raise(ArgumentError) { Magick::Pixel.from_hsla }
+    assert_raise(ArgumentError) { Magick::Pixel.from_hsla(127, 50, 50, 50, 50) }
+    assert_raise(RangeError) { Magick::Pixel.from_hsla(127, 50, 50, 1.5) }
+    assert_raise(ArgumentError) { Magick::Pixel.from_hsla(127, 50, 50, -1.5) }
+    assert_raise(RangeError) { Magick::Pixel.from_hsla(361, 50, 50) }
+    assert_raise(ArgumentError) { Magick::Pixel.from_hsla(-90, 50, 50) }
+    assert_raise(RangeError) { Magick::Pixel.from_hsla(127, 256, 50) }
+    assert_raise(ArgumentError) { Magick::Pixel.from_hsla(127, -128, 50) }
+    assert_raise(RangeError) { Magick::Pixel.from_hsla(127, 50, 256) }
+    assert_raise(ArgumentError) { Magick::Pixel.from_hsla(127, 50, -128) }
     assert_nothing_raised { @pixel.to_hsla }
 
     18.times do |h|
@@ -94,6 +194,60 @@ class PixelUT < Test::Unit::TestCase
     assert_in_delta(hsla[3], hsla2[3], 0.005, "#{hsla.inspect} != #{hsla2.inspect} with args: #{args.inspect} and #{args2.inspect}")
   end
 
+  def test_from_hsl
+    assert_instance_of(Magick::Pixel, Magick::Pixel.from_HSL([127, 50, 50]))
+    assert_raise(ArgumentError) { Magick::Pixel.from_HSL([127, 50]) }
+  end
+
+  def test_intensity
+    assert_kind_of(Integer, @pixel.intensity)
+  end
+
+  def test_marshal
+    marshal = @pixel.marshal_dump
+
+    pixel = Magick::Pixel.new
+    assert_equal(@pixel, pixel.marshal_load(marshal))
+  end
+
+  def test_spaceship
+    @pixel.red = 100
+    pixel = @pixel.dup
+    assert_equal(0, @pixel <=> pixel)
+
+    pixel.red -= 10
+    assert_equal(1, @pixel <=> pixel)
+    pixel.red += 20
+    assert_equal(-1, @pixel <=> pixel)
+
+    @pixel.green = 100
+    pixel = @pixel.dup
+    pixel.green -= 10
+    assert_equal(1, @pixel <=> pixel)
+    pixel.green += 20
+    assert_equal(-1, @pixel <=> pixel)
+
+    @pixel.blue = 100
+    pixel = @pixel.dup
+    pixel.blue -= 10
+    assert_equal(1, @pixel <=> pixel)
+    pixel.blue += 20
+    assert_equal(-1, @pixel <=> pixel)
+
+    @pixel.opacity = 100
+    pixel = @pixel.dup
+    pixel.opacity -= 10
+    assert_equal(1, @pixel <=> pixel)
+    pixel.opacity += 20
+    assert_equal(-1, @pixel <=> pixel)
+  end
+
+  def test_to_hsl
+    hsl = @pixel.to_HSL
+    assert_instance_of(Array, hsl)
+    assert_equal(3, hsl.size)
+  end
+
   def test_to_color
     assert_nothing_raised { @pixel.to_color(Magick::AllCompliance) }
     assert_nothing_raised { @pixel.to_color(Magick::SVGCompliance) }
@@ -112,5 +266,9 @@ class PixelUT < Test::Unit::TestCase
 
     assert_raise(ArgumentError) { @pixel.to_color(Magick::AllCompliance, false, 32) }
     assert_raise(TypeError) { @pixel.to_color(1) }
+  end
+
+  def test_to_s
+    assert_match(/red=\d+, green=\d+, blue=\d+, opacity=\d+/, @pixel.to_s)
   end
 end
