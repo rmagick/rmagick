@@ -425,6 +425,10 @@ Style/EvalWithLocation:
     - 'lib/rmagick_internal.rb'
     - 'lib/rvg/units.rb'
 
+Style/FormatString:
+  Exclude:
+    - 'examples/identify.rb'
+
 # Offense count: 158
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: annotated, template, unannotated
