@@ -14,7 +14,7 @@ module Magick
       puts "\tEndianess: #{endian}\n"
       puts "\tColorspace: #{colorspace}\n"
       puts "\tChannelDepth:\n"
-      color_space = gray? ? Magick::GrayColorspace : colorspace
+      color_space = gray? ? Magick::GRAYColorspace : colorspace
       case color_space
       when Magick::RGBColorspace
         puts "\t\tRed: #{channel_depth(Magick::RedChannel)}-bits\n"
@@ -27,7 +27,7 @@ module Magick
         puts "\t\tYellow: #{channel_depth(Magick::YellowChannel)}-bits\n"
         puts "\t\tBlack: #{channel_depth(Magick::BlackChannel)}-bits\n"
         puts "\t\tOpacity: #{channel_depth(Magick::OpacityChannel)}-bits\n" if matte
-      when Magick::GrayColorspace
+      when Magick::GRAYColorspace
         puts "\t\tGray: #{channel_depth(Magick::GrayChannel)}-bits\n"
         puts "\t\tOpacity: #{channel_depth(Magick::OpacityChannel)}-bits\n" if matte
       end
@@ -71,7 +71,7 @@ module Magick
         puts "\t\t\tMax: " + format("%u (%g)\n", channel_extrema(Magick::BlackChannel)[1] / scale, channel_extrema(Magick::BlackChannel)[1] / Magick::QuantumRange)
         puts "\t\t\tMean: " + format("%g (%g)\n", channel_mean(Magick::BlackChannel)[0] / scale, channel_mean(Magick::BlackChannel)[0] / Magick::QuantumRange)
         puts "\t\t\tStandard deviation: " + format("%g (%g)\n", channel_mean(Magick::BlackChannel)[1] / scale, channel_mean(Magick::BlackChannel)[1] / Magick::QuantumRange)
-      when Magick::GrayColorspace
+      when Magick::GRAYColorspace
         puts "\t\tGray:\n"
         puts "\t\t\tMin: " + format("%u (%g)\n", channel_extrema(Magick::GrayChannel)[0] / scale, channel_extrema(Magick::GrayChannel)[0] / Magick::QuantumRange)
         puts "\t\t\tMax: " + format("%u (%g)\n", channel_extrema(Magick::GrayChannel)[1] / scale, channel_extrema(Magick::GrayChannel)[1] / Magick::QuantumRange)
