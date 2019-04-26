@@ -278,24 +278,10 @@ class ImageList2UT < Test::Unit::TestCase
   end
 
   def test_optimize_layers
-    layer_methods = [
-      Magick::CoalesceLayer,
-      Magick::DisposeLayer,
-      Magick::OptimizeTransLayer,
-      Magick::RemoveDupsLayer,
-      Magick::RemoveZeroLayer,
-      Magick::OptimizeImageLayer,
-      Magick::OptimizeLayer,
-      Magick::OptimizePlusLayer,
-      Magick::CompareAnyLayer,
-      Magick::CompareClearLayer,
-      Magick::CompareOverlayLayer,
-      Magick::MosaicLayer,
-      Magick::FlattenLayer,
-      Magick::MergeLayer
-    ]
     @ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_1.gif')
-    layer_methods.each do |method|
+    Magick::ImageLayerMethod.values do |method|
+      next if [Magick::UndefinedLayer, Magick::CompositeLayer, Magick::TrimBoundsLayer].include?(method)
+
       assert_nothing_raised do
         res = @ilist.optimize_layers(method)
         assert_instance_of(Magick::ImageList, res)
