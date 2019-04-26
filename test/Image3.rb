@@ -5,58 +5,6 @@ require 'test/unit'
 require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
 require 'fileutils'
 
-ColorspaceTypes = [
-  Magick::RGBColorspace,
-  Magick::GRAYColorspace,
-  Magick::TransparentColorspace,
-  Magick::OHTAColorspace,
-  Magick::LabColorspace,
-  Magick::XYZColorspace,
-  Magick::YCbCrColorspace,
-  Magick::YCCColorspace,
-  Magick::YIQColorspace,
-  Magick::YPbPrColorspace,
-  Magick::YUVColorspace,
-  Magick::CMYKColorspace,
-  Magick::SRGBColorspace,
-  Magick::HSLColorspace,
-  Magick::HWBColorspace,
-  Magick::HSBColorspace,
-  Magick::Rec601LumaColorspace,
-  Magick::Rec601YCbCrColorspace,
-  Magick::Rec709LumaColorspace,
-  Magick::Rec709YCbCrColorspace,
-  Magick::LogColorspace,
-  Magick::CMYColorspace
-]
-
-Filters = [
-  Magick::PointFilter,
-  Magick::BoxFilter,
-  Magick::TriangleFilter,
-  Magick::HermiteFilter,
-  Magick::HanningFilter,
-  Magick::HammingFilter,
-  Magick::BlackmanFilter,
-  Magick::GaussianFilter,
-  Magick::QuadraticFilter,
-  Magick::CubicFilter,
-  Magick::CatromFilter,
-  Magick::MitchellFilter,
-  Magick::LanczosFilter,
-  Magick::BesselFilter,
-  Magick::SincFilter,
-  Magick::JincFilter,
-  Magick::SincFastFilter,
-  Magick::LanczosSharpFilter,
-  Magick::Lanczos2Filter,
-  Magick::Lanczos2SharpFilter,
-  Magick::RobidouxFilter,
-  Magick::RobidouxSharpFilter,
-  Magick::CosineFilter,
-  Magick::SplineFilter
-]
-
 class Image3_UT < Test::Unit::TestCase
   def setup
     @img = Magick::Image.new(20, 20)
@@ -86,7 +34,7 @@ class Image3_UT < Test::Unit::TestCase
       assert_instance_of(Magick::Image, res)
     end
 
-    ColorspaceTypes.each do |cs|
+    Magick::ColorspaceType.values do |cs|
       assert_nothing_raised { @img.quantize(256, cs) }
     end
     assert_nothing_raised { @img.quantize(256, Magick::RGBColorspace, false) }
@@ -214,7 +162,7 @@ class Image3_UT < Test::Unit::TestCase
     assert_equal(240.0, girl.x_resolution)
     assert_equal(240.0, girl.y_resolution)
 
-    Filters.each do |filter|
+    Magick::FilterTypes.values do |filter|
       assert_nothing_raised { @img.resample(50, 50, filter) }
     end
     assert_nothing_raised { @img.resample(50, 50, Magick::PointFilter, 2.0) }
@@ -244,7 +192,7 @@ class Image3_UT < Test::Unit::TestCase
     end
     assert_nothing_raised { @img.resize(50, 50) }
 
-    Filters.each do |filter|
+    Magick::FilterTypes.values do |filter|
       assert_nothing_raised { @img.resize(50, 50, filter) }
     end
     assert_nothing_raised { @img.resize(50, 50, Magick::PointFilter, 2.0) }
@@ -448,17 +396,17 @@ class Image3_UT < Test::Unit::TestCase
     end
 
     # Don't test colorspaces that require PsuedoColor images
-    (ColorspaceTypes - [Magick::OHTAColorspace,
-                        Magick::LabColorspace,
-                        Magick::XYZColorspace,
-                        Magick::YCbCrColorspace,
-                        Magick::YCCColorspace,
-                        Magick::YIQColorspace,
-                        Magick::YPbPrColorspace,
-                        Magick::YUVColorspace,
-                        Magick::Rec601YCbCrColorspace,
-                        Magick::Rec709YCbCrColorspace,
-                        Magick::LogColorspace]).each do |cs|
+    (Magick::ColorspaceType.values - [Magick::OHTAColorspace,
+                                      Magick::LabColorspace,
+                                      Magick::XYZColorspace,
+                                      Magick::YCbCrColorspace,
+                                      Magick::YCCColorspace,
+                                      Magick::YIQColorspace,
+                                      Magick::YPbPrColorspace,
+                                      Magick::YUVColorspace,
+                                      Magick::Rec601YCbCrColorspace,
+                                      Magick::Rec709YCbCrColorspace,
+                                      Magick::LogColorspace]).each do |cs|
       assert_nothing_raised { @img.segment(cs) }
     end
 
@@ -505,23 +453,7 @@ class Image3_UT < Test::Unit::TestCase
   end
 
   def test_set_channel_depth
-    channels = [
-      Magick::RedChannel,
-      Magick::GrayChannel,
-      Magick::CyanChannel,
-      Magick::GreenChannel,
-      Magick::MagentaChannel,
-      Magick::BlueChannel,
-      Magick::YellowChannel,
-      #     Magick::AlphaChannel,
-      Magick::OpacityChannel,
-      Magick::MatteChannel,
-      Magick::BlackChannel,
-      Magick::IndexChannel,
-      Magick::AllChannels
-    ]
-
-    channels.each do |ch|
+    Magick::ChannelType.values do |ch|
       assert_nothing_raised { @img.set_channel_depth(ch, 8) }
     end
   end

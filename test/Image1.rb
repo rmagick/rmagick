@@ -359,20 +359,10 @@ class Image1_UT < Test::Unit::TestCase
   end
 
   def test_channel
-    assert_nothing_raised { @img.channel(Magick::RedChannel) }
-    assert_nothing_raised { @img.channel(Magick::BlueChannel) }
-    assert_nothing_raised { @img.channel(Magick::GreenChannel) }
-    assert_nothing_raised { @img.channel(Magick::OpacityChannel) }
-    assert_nothing_raised { @img.channel(Magick::MagentaChannel) }
-    assert_nothing_raised { @img.channel(Magick::CyanChannel) }
-    assert_nothing_raised { @img.channel(Magick::YellowChannel) }
-    assert_nothing_raised { @img.channel(Magick::BlackChannel) }
-    assert_nothing_raised { @img.channel(Magick::GrayChannel) }
-    assert_nothing_raised { @img.channel(Magick::AlphaChannel) }
-    assert_nothing_raised { @img.channel(Magick::DefaultChannels) }
-    assert_nothing_raised { @img.channel(Magick::HueChannel) }
-    assert_nothing_raised { @img.channel(Magick::LuminosityChannel) }
-    assert_nothing_raised { @img.channel(Magick::SaturationChannel) }
+    Magick::ChannelType.values do |channel|
+      assert_nothing_raised { @img.channel(channel) }
+    end
+
     assert_instance_of(Magick::Image, @img.channel(Magick::RedChannel))
     assert_raise(TypeError) { @img.channel(2) }
   end

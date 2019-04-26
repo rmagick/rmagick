@@ -17,17 +17,15 @@ class DrawUT < Test::Unit::TestCase
   end
 
   def test_align
-    assert_nothing_raised { @draw.align = Magick::UndefinedAlign }
-    assert_nothing_raised { @draw.align = Magick::LeftAlign }
-    assert_nothing_raised { @draw.align = Magick::CenterAlign }
-    assert_nothing_raised { @draw.align = Magick::RightAlign }
+    Magick::AlignType.values do |align|
+      assert_nothing_raised { @draw.align = align }
+    end
   end
 
   def test_decorate
-    assert_nothing_raised { @draw.decorate = Magick::NoDecoration }
-    assert_nothing_raised { @draw.decorate = Magick::UnderlineDecoration }
-    assert_nothing_raised { @draw.decorate = Magick::OverlineDecoration }
-    assert_nothing_raised { @draw.decorate = Magick::LineThroughDecoration }
+    Magick::DecorationType.values do |decoration|
+      assert_nothing_raised { @draw.decorate = decoration }
+    end
   end
 
   def test_density
@@ -72,54 +70,34 @@ class DrawUT < Test::Unit::TestCase
   end
 
   def test_font_stretch
-    assert_nothing_raised { @draw.font_stretch = Magick::NormalStretch }
-    assert_nothing_raised { @draw.font_stretch = Magick::UltraCondensedStretch }
-    assert_nothing_raised { @draw.font_stretch = Magick::ExtraCondensedStretch }
-    assert_nothing_raised { @draw.font_stretch = Magick::CondensedStretch }
-    assert_nothing_raised { @draw.font_stretch = Magick::SemiCondensedStretch }
-    assert_nothing_raised { @draw.font_stretch = Magick::SemiExpandedStretch }
-    assert_nothing_raised { @draw.font_stretch = Magick::ExpandedStretch }
-    assert_nothing_raised { @draw.font_stretch = Magick::ExtraExpandedStretch }
-    assert_nothing_raised { @draw.font_stretch = Magick::UltraExpandedStretch }
-    assert_nothing_raised { @draw.font_stretch = Magick::AnyStretch }
+    Magick::StretchType.values do |stretch|
+      assert_nothing_raised { @draw.font_stretch = stretch }
+    end
 
     assert_raise(TypeError) { @draw.font_stretch = 2 }
   end
 
   def test_font_style
-    assert_nothing_raised { @draw.font_style = Magick::NormalStyle }
-    assert_nothing_raised { @draw.font_style = Magick::ItalicStyle }
-    assert_nothing_raised { @draw.font_style = Magick::ObliqueStyle }
-    assert_nothing_raised { @draw.font_style = Magick::AnyStyle }
+    Magick::StyleType.values do |style|
+      assert_nothing_raised { @draw.font_style = style }
+    end
 
     assert_raise(TypeError) { @draw.font_style = 2 }
   end
 
   def test_font_weight
-    assert_nothing_raised { @draw.font_weight = Magick::AnyWeight }
-    assert_nothing_raised { @draw.font_weight = Magick::NormalWeight }
-    assert_nothing_raised { @draw.font_weight = Magick::BoldWeight }
-    assert_nothing_raised { @draw.font_weight = Magick::BolderWeight }
-    assert_nothing_raised { @draw.font_weight = Magick::LighterWeight }
-    assert_nothing_raised { @draw.font_weight = 200 }
+    Magick::WeightType.values do |weight|
+      assert_nothing_raised { @draw.font_weight = weight }
+    end
 
     assert_raise(ArgumentError) { @draw.font_weight = 99 }
     assert_raise(ArgumentError) { @draw.font_weight = 901 }
   end
 
   def test_gravity
-    assert_nothing_raised { @draw.gravity = Magick::UndefinedGravity }
-    assert_nothing_raised { @draw.gravity = Magick::ForgetGravity }
-    assert_nothing_raised { @draw.gravity = Magick::NorthWestGravity }
-    assert_nothing_raised { @draw.gravity = Magick::NorthGravity }
-    assert_nothing_raised { @draw.gravity = Magick::NorthEastGravity }
-    assert_nothing_raised { @draw.gravity = Magick::WestGravity }
-    assert_nothing_raised { @draw.gravity = Magick::CenterGravity }
-    assert_nothing_raised { @draw.gravity = Magick::EastGravity }
-    assert_nothing_raised { @draw.gravity = Magick::SouthWestGravity }
-    assert_nothing_raised { @draw.gravity = Magick::SouthGravity }
-    assert_nothing_raised { @draw.gravity = Magick::SouthEastGravity }
-    assert_nothing_raised { @draw.gravity = Magick::StaticGravity }
+    Magick::GravityType.values do |gravity|
+      assert_nothing_raised { @draw.gravity = gravity }
+    end
 
     assert_raise(TypeError) { @draw.gravity = 2 }
   end
@@ -231,82 +209,10 @@ class DrawUT < Test::Unit::TestCase
   end
 
   def test_composite
-    composite_operators = [
-      Magick::AddCompositeOp,
-      Magick::AtopCompositeOp,
-      Magick::BlendCompositeOp,
-      Magick::BlurCompositeOp,
-      Magick::BumpmapCompositeOp,
-      Magick::ChangeMaskCompositeOp,
-      Magick::ClearCompositeOp,
-      Magick::ColorBurnCompositeOp,
-      Magick::ColorDodgeCompositeOp,
-      Magick::ColorizeCompositeOp,
-      Magick::CopyBlackCompositeOp,
-      Magick::CopyBlueCompositeOp,
-      Magick::CopyCompositeOp,
-      Magick::CopyCyanCompositeOp,
-      Magick::CopyGreenCompositeOp,
-      Magick::CopyMagentaCompositeOp,
-      Magick::CopyOpacityCompositeOp,
-      Magick::CopyRedCompositeOp,
-      Magick::CopyYellowCompositeOp,
-      Magick::DarkenCompositeOp,
-      Magick::DarkenIntensityCompositeOp,
-      Magick::DistortCompositeOp,
-      Magick::DivideCompositeOp,
-      Magick::DivideSrcCompositeOp,
-      Magick::DstAtopCompositeOp,
-      Magick::DstCompositeOp,
-      Magick::DstInCompositeOp,
-      Magick::DstOutCompositeOp,
-      Magick::DstOverCompositeOp,
-      Magick::DifferenceCompositeOp,
-      Magick::DisplaceCompositeOp,
-      Magick::DissolveCompositeOp,
-      Magick::ExclusionCompositeOp,
-      Magick::HardLightCompositeOp,
-      Magick::HueCompositeOp,
-      Magick::InCompositeOp,
-      Magick::LightenCompositeOp,
-      Magick::LightenIntensityCompositeOp,
-      Magick::LinearBurnCompositeOp,
-      Magick::LinearDodgeCompositeOp,
-      Magick::LinearLightCompositeOp,
-      Magick::LuminizeCompositeOp,
-      Magick::MathematicsCompositeOp,
-      Magick::MinusCompositeOp,
-      Magick::MinusSrcCompositeOp,
-      Magick::ModulateCompositeOp,
-      Magick::MultiplyCompositeOp,
-      Magick::NoCompositeOp,
-      Magick::OutCompositeOp,
-      Magick::OverCompositeOp,
-      Magick::OverlayCompositeOp,
-      Magick::PegtopLightCompositeOp,
-      Magick::PinLightCompositeOp,
-      Magick::PlusCompositeOp,
-      Magick::ReplaceCompositeOp,
-      Magick::SaturateCompositeOp,
-      Magick::ScreenCompositeOp,
-      Magick::SoftLightCompositeOp,
-      Magick::SrcAtopCompositeOp,
-      Magick::SrcCompositeOp,
-      Magick::SrcInCompositeOp,
-      Magick::SrcOutCompositeOp,
-      Magick::SrcOverCompositeOp,
-      Magick::SubtractCompositeOp,
-      Magick::ThresholdCompositeOp,
-      Magick::UndefinedCompositeOp,
-      Magick::VividLightCompositeOp,
-      Magick::XorCompositeOp
-    ]
-    composite_operators << Magick::HardMixCompositeOp if Gem::Version.new('6.8.9') <= Gem::Version.new(IM_VERSION)
-
     img = Magick::Image.new(10, 10)
     assert_nothing_raised { @draw.composite(0, 0, 10, 10, img) }
 
-    composite_operators.each do |op|
+    Magick::CompositeOperator.values do |op|
       assert_nothing_raised { @draw.composite(0, 0, 10, 10, img, op) }
     end
 

@@ -1,77 +1,6 @@
 RSpec.describe Magick::Image, '#composite' do
   let(:img1) { Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first }
   let(:img2) { Magick::Image.read(IMAGES_DIR + '/Button_1.gif').first }
-  let(:composite_ops) do
-    [
-      Magick::UndefinedCompositeOp,
-      Magick::NoCompositeOp,
-      Magick::AddCompositeOp,
-      Magick::AtopCompositeOp,
-      Magick::BumpmapCompositeOp,
-      Magick::ClearCompositeOp,
-      Magick::ColorizeCompositeOp,
-      Magick::CopyBlueCompositeOp,
-      Magick::CopyCompositeOp,
-      Magick::CopyGreenCompositeOp,
-      Magick::CopyOpacityCompositeOp,
-      Magick::CopyRedCompositeOp,
-      Magick::CopyCyanCompositeOp,
-      Magick::CopyMagentaCompositeOp,
-      Magick::CopyYellowCompositeOp,
-      Magick::CopyBlackCompositeOp,
-      Magick::DarkenCompositeOp,
-      Magick::DifferenceCompositeOp,
-      Magick::DisplaceCompositeOp,
-      Magick::DissolveCompositeOp,
-      Magick::DstAtopCompositeOp,
-      Magick::DstCompositeOp,
-      Magick::DstInCompositeOp,
-      Magick::DstOutCompositeOp,
-      Magick::DstOverCompositeOp,
-      Magick::HueCompositeOp,
-      Magick::InCompositeOp,
-      Magick::LightenCompositeOp,
-      Magick::LuminizeCompositeOp,
-      Magick::MinusCompositeOp,
-      Magick::ModulateCompositeOp,
-      Magick::MultiplyCompositeOp,
-      Magick::OutCompositeOp,
-      Magick::OverCompositeOp,
-      Magick::OverlayCompositeOp,
-      Magick::PlusCompositeOp,
-      Magick::ReplaceCompositeOp,
-      Magick::SaturateCompositeOp,
-      Magick::ScreenCompositeOp,
-      Magick::SrcAtopCompositeOp,
-      Magick::SrcCompositeOp,
-      Magick::SrcInCompositeOp,
-      Magick::SrcOutCompositeOp,
-      Magick::SrcOverCompositeOp,
-      Magick::SubtractCompositeOp,
-      Magick::ThresholdCompositeOp,
-      Magick::XorCompositeOp,
-      Magick::BlendCompositeOp,
-      Magick::ColorBurnCompositeOp,
-      Magick::ColorDodgeCompositeOp,
-      Magick::ExclusionCompositeOp,
-      Magick::HardLightCompositeOp,
-      Magick::SoftLightCompositeOp,
-      Magick::MathematicsCompositeOp,
-      Magick::DivideSrcCompositeOp,
-      Magick::MinusSrcCompositeOp,
-      Magick::DarkenIntensityCompositeOp,
-      Magick::LightenIntensityCompositeOp
-    ]
-  end
-  let(:gravity) do
-    [
-      Magick::NorthEastGravity,
-      Magick::EastGravity,
-      Magick::SouthWestGravity,
-      Magick::SouthGravity,
-      Magick::SouthEastGravity
-    ]
-  end
 
   it 'raises an error given invalid arguments' do
     expect { img1.composite }.to raise_error(ArgumentError)
@@ -85,8 +14,8 @@ RSpec.describe Magick::Image, '#composite' do
 
   context 'when given 3 arguments' do
     it 'works when 2nd argument is a gravity' do
-      composite_ops.each do |op|
-        gravity.each do |grav|
+      Magick::CompositeOperator.values do |op|
+        Magick::GravityType.values do |grav|
           expect { img1.composite(img2, grav, op) }.not_to raise_error
         end
       end
@@ -103,7 +32,7 @@ RSpec.describe Magick::Image, '#composite' do
     it 'works when 4th argument is a composite operator' do
       # there are way too many CompositeOperators to test them all, so just try
       # few representative ops
-      composite_ops.each do |op|
+      Magick::CompositeOperator.values do |op|
         expect { img1.composite(img2, 0, 0, op) }.not_to raise_error
       end
     end
@@ -120,8 +49,8 @@ RSpec.describe Magick::Image, '#composite' do
 
   context 'when given 5 arguments' do
     it 'works when 2nd argument is gravity and 5th is a composite operator' do
-      composite_ops.each do |op|
-        gravity.each do |grav|
+      Magick::CompositeOperator.values do |op|
+        Magick::GravityType.values do |grav|
           expect { img1.composite(img2, grav, 0, 0, op) }.not_to raise_error
         end
       end
