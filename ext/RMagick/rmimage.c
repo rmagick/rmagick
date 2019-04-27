@@ -6926,6 +6926,7 @@ Image_gamma_channel(int argc, VALUE *argv, VALUE self)
  * @param argv array of input arguments
  * @param self this object
  * @return a new image
+ * @deprecated This method has been deprecated. Please use Image#gamma_channel.
  */
 VALUE
 Image_gamma_correct(int argc, VALUE *argv, VALUE self)
@@ -6933,6 +6934,8 @@ Image_gamma_correct(int argc, VALUE *argv, VALUE self)
     Image *image, *new_image;
     double red_gamma, green_gamma, blue_gamma;
     char gamma_arg[50];
+
+    rb_warning("Image#gamma_correct is deprecated; use Image#gamma_channel");
 
     image = rm_check_destroyed(self);
     switch (argc)
