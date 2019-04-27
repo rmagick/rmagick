@@ -1598,7 +1598,51 @@ Info_gravity_eq(VALUE self, VALUE grav)
 }
 
 
-DEF_ATTR_ACCESSOR(Info, group, long)
+/**
+ * Get the group attribute.
+ *
+ * Ruby usage:
+ *   - @verbatim Info#group @endverbatim
+ *
+ * @param self this object
+ * @return the group
+ * @deprecated This method has been deprecated.
+ */
+VALUE
+Info_group(VALUE self)
+{
+    Info *info;
+
+    rb_warning("Info#group is deprecated");
+    (void) rm_check_destroyed(self);
+    Data_Get_Struct(self, Info, info);
+    return C_long_to_R_long(info->group);
+}
+
+
+/**
+ * Set the group attribute.
+ *
+ * Ruby usage:
+ *   - @verbatim Info#group= @endverbatim
+ *
+ * @param self this object
+ * @param value the group
+ * @return self
+ * @deprecated This method has been deprecated.
+ */
+VALUE
+Info_group_eq(VALUE self, VALUE value)
+{
+    Info *info;
+
+    rb_warning("Info#group= is deprecated");
+    (void) rm_check_destroyed(self);
+    rb_check_frozen(self);
+    Data_Get_Struct(self, Info, info);
+    info->group = R_long_to_C_long(value);
+}
+
 
 /**
  * Get the classification type.
