@@ -10970,11 +10970,12 @@ Image_reduce_noise(VALUE self, VALUE radius)
 {
     Image *image, *new_image;
     ExceptionInfo *exception;
+    size_t radius_size = NUM2SIZET(radius);
 
     image = rm_check_destroyed(self);
 
     exception = AcquireExceptionInfo();
-    new_image = StatisticImage(image, NonpeakStatistic, (size_t)radius, (size_t)radius, exception);
+    new_image = StatisticImage(image, NonpeakStatistic, radius_size, radius_size, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
