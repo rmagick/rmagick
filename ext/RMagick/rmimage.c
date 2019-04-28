@@ -6974,7 +6974,6 @@ Image_gamma_correct(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
     double red_gamma, green_gamma, blue_gamma;
-    char gamma_arg[50];
 
     image = rm_check_destroyed(self);
     switch (argc)
@@ -6999,11 +6998,19 @@ Image_gamma_correct(int argc, VALUE *argv, VALUE self)
             break;
     }
 
-    sprintf(gamma_arg, "%f,%f,%f", red_gamma, green_gamma, blue_gamma);
-
     new_image = rm_clone_image(image);
 
-    (void) GammaImage(new_image, gamma_arg);
+    if ((red_gamma == green_gamma) && (green_gamma == blue_gamma))
+    {
+        (void) GammaImageChannel(new_image, (ChannelType) (RedChannel | GreenChannel | BlueChannel), red_gamma);
+    }
+    else
+    {
+        (void) GammaImageChannel(new_image, RedChannel, red_gamma);
+        (void) GammaImageChannel(new_image, GreenChannel, green_gamma);
+        (void) GammaImageChannel(new_image, BlueChannel, blue_gamma);
+    }
+
     rm_check_image_exception(new_image, DestroyOnError);
 
     return rm_image_new(new_image);
