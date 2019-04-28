@@ -1641,6 +1641,7 @@ Info_group_eq(VALUE self, VALUE value)
     rb_check_frozen(self);
     Data_Get_Struct(self, Info, info);
     info->group = R_long_to_C_long(value);
+    return self;
 }
 
 

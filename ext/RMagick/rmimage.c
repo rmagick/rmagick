@@ -1745,6 +1745,7 @@ Image_blur_eq(VALUE self, VALUE value)
     rb_check_frozen(self);
     Data_Get_Struct(self, Image, image);
     image->blur = R_dbl_to_C_dbl(value);
+    return self;
 }
 
 
