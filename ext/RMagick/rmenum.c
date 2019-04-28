@@ -361,6 +361,38 @@ Enum_type_values(VALUE class)
     return rv;
 }
 
+/**
+ * Find enum object for the specified value.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param class the class type
+ * @param value the value for enum
+ * @return a enumerator
+ */
+
+VALUE
+Enum_find(VALUE class, int val)
+{
+    VALUE enumerators;
+    MagickEnum *magick_enum;
+    int x;
+
+    enumerators = rb_cv_get(class, ENUMERATORS_CLASS_VAR);
+    enumerators = rm_check_ary_type(enumerators);
+
+    for (x = 0; x < RARRAY_LEN(enumerators); x++)
+    {
+       VALUE enumerator = rb_ary_entry(enumerators, x);
+       Data_Get_Struct(enumerator, MagickEnum, magick_enum);
+       if (magick_enum->val == val)
+       {
+           return enumerator;
+       }
+    }
+
+    return Qnil;
+}
 
 /**
  * Construct a ClassType enum object for the specified value.
@@ -510,111 +542,6 @@ ComplianceType_new(ComplianceType compliance)
     return rm_enum_new(Class_ComplianceType, ID2SYM(rb_intern(name)), INT2FIX(compliance));
 }
 
-
-
-/**
- * Return the name of a CompositeOperator enum as a string.
- *
- * No Ruby usage (internal function)
- *
- * @param op the CompositeOperator
- * @return the name
- */
-static const char *
-CompositeOperator_name(CompositeOperator op)
-{
-    switch (op)
-    {
-        ENUM_TO_NAME(AddCompositeOp)
-        ENUM_TO_NAME(AtopCompositeOp)
-        ENUM_TO_NAME(BlendCompositeOp)
-        ENUM_TO_NAME(BlurCompositeOp)
-        ENUM_TO_NAME(BumpmapCompositeOp)
-        ENUM_TO_NAME(ChangeMaskCompositeOp)
-        ENUM_TO_NAME(ClearCompositeOp)
-        ENUM_TO_NAME(ColorBurnCompositeOp)
-        ENUM_TO_NAME(ColorDodgeCompositeOp)
-        ENUM_TO_NAME(ColorizeCompositeOp)
-        ENUM_TO_NAME(CopyBlueCompositeOp)
-        ENUM_TO_NAME(CopyCompositeOp)
-        ENUM_TO_NAME(CopyCyanCompositeOp)
-        ENUM_TO_NAME(CopyMagentaCompositeOp)
-        ENUM_TO_NAME(CopyYellowCompositeOp)
-        ENUM_TO_NAME(CopyBlackCompositeOp)
-        ENUM_TO_NAME(CopyGreenCompositeOp)
-        ENUM_TO_NAME(CopyOpacityCompositeOp)
-        ENUM_TO_NAME(CopyRedCompositeOp)
-        ENUM_TO_NAME(DarkenCompositeOp)
-        ENUM_TO_NAME(DarkenIntensityCompositeOp)
-        ENUM_TO_NAME(DistortCompositeOp)
-        ENUM_TO_NAME(DivideCompositeOp)
-        ENUM_TO_NAME(DivideSrcCompositeOp)
-        ENUM_TO_NAME(DstAtopCompositeOp)
-        ENUM_TO_NAME(DstCompositeOp)
-        ENUM_TO_NAME(DstInCompositeOp)
-        ENUM_TO_NAME(DstOutCompositeOp)
-        ENUM_TO_NAME(DstOverCompositeOp)
-        ENUM_TO_NAME(DifferenceCompositeOp)
-        ENUM_TO_NAME(DisplaceCompositeOp)
-        ENUM_TO_NAME(DissolveCompositeOp)
-        ENUM_TO_NAME(ExclusionCompositeOp)
-        ENUM_TO_NAME(HardLightCompositeOp)
-#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
-        ENUM_TO_NAME(HardMixCompositeOp)
-#endif
-        ENUM_TO_NAME(HueCompositeOp)
-        ENUM_TO_NAME(InCompositeOp)
-        ENUM_TO_NAME(LightenCompositeOp)
-        ENUM_TO_NAME(LightenIntensityCompositeOp)
-        ENUM_TO_NAME(LinearBurnCompositeOp)
-        ENUM_TO_NAME(LinearDodgeCompositeOp)
-        ENUM_TO_NAME(LinearLightCompositeOp)
-        ENUM_TO_NAME(LuminizeCompositeOp)
-        ENUM_TO_NAME(MathematicsCompositeOp)
-        ENUM_TO_NAME(MinusCompositeOp)
-        ENUM_TO_NAME(MinusSrcCompositeOp)
-        ENUM_TO_NAME(ModulateCompositeOp)
-        ENUM_TO_NAME(MultiplyCompositeOp)
-        ENUM_TO_NAME(NoCompositeOp)
-        ENUM_TO_NAME(OutCompositeOp)
-        ENUM_TO_NAME(OverCompositeOp)
-        ENUM_TO_NAME(OverlayCompositeOp)
-        ENUM_TO_NAME(PegtopLightCompositeOp)
-        ENUM_TO_NAME(PinLightCompositeOp)
-        ENUM_TO_NAME(PlusCompositeOp)
-        ENUM_TO_NAME(ReplaceCompositeOp)
-        ENUM_TO_NAME(SaturateCompositeOp)
-        ENUM_TO_NAME(ScreenCompositeOp)
-        ENUM_TO_NAME(SoftLightCompositeOp)
-        ENUM_TO_NAME(SrcAtopCompositeOp)
-        ENUM_TO_NAME(SrcCompositeOp)
-        ENUM_TO_NAME(SrcInCompositeOp)
-        ENUM_TO_NAME(SrcOutCompositeOp)
-        ENUM_TO_NAME(SrcOverCompositeOp)
-        ENUM_TO_NAME(SubtractCompositeOp)
-        ENUM_TO_NAME(ThresholdCompositeOp)
-        ENUM_TO_NAME(VividLightCompositeOp)
-        ENUM_TO_NAME(XorCompositeOp)
-        default:
-        ENUM_TO_NAME(UndefinedCompositeOp)
-    }
-}
-
-
-/**
- * Construct a CompositeOperator enum object for the specified value.
- *
- * No Ruby usage (internal function)
- *
- * @param op the CompositeOperator
- * @return a new CompositeOperator enumerator
- */
-VALUE
-CompositeOperator_new(CompositeOperator op)
-{
-    const char *name = CompositeOperator_name(op);
-    return rm_enum_new(Class_CompositeOperator, ID2SYM(rb_intern(name)), INT2FIX(op));
-}
 
 
 /**
