@@ -40,7 +40,7 @@ Draw_affine_eq(VALUE self, VALUE matrix)
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
     Export_AffineMatrix(&draw->info->affine, matrix);
-    return self;
+    return matrix;
 }
 
 
@@ -62,7 +62,7 @@ Draw_align_eq(VALUE self, VALUE align)
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
     VALUE_TO_ENUM(align, draw->info->align, AlignType);
-    return self;
+    return align;
 }
 
 
@@ -84,7 +84,7 @@ Draw_decorate_eq(VALUE self, VALUE decorate)
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
     VALUE_TO_ENUM(decorate, draw->info->decorate, DecorationType);
-    return self;
+    return decorate;
 }
 
 
@@ -107,7 +107,7 @@ Draw_density_eq(VALUE self, VALUE density)
     Data_Get_Struct(self, Draw, draw);
     magick_clone_string(&draw->info->density, StringValuePtr(density));
 
-    return self;
+    return density;
 }
 
 
@@ -130,7 +130,7 @@ Draw_encoding_eq(VALUE self, VALUE encoding)
     Data_Get_Struct(self, Draw, draw);
     magick_clone_string(&draw->info->encoding, StringValuePtr(encoding));
 
-    return self;
+    return encoding;
 }
 
 
@@ -152,7 +152,7 @@ Draw_fill_eq(VALUE self, VALUE fill)
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
     Color_to_PixelColor(&draw->info->fill, fill);
-    return self;
+    return fill;
 }
 
 
@@ -192,7 +192,7 @@ Draw_fill_pattern_eq(VALUE self, VALUE pattern)
         draw->info->fill_pattern = rm_clone_image(image);
     }
 
-    return self;
+    return pattern;
 }
 
 
@@ -215,7 +215,7 @@ Draw_font_eq(VALUE self, VALUE font)
     Data_Get_Struct(self, Draw, draw);
     magick_clone_string(&draw->info->font, StringValuePtr(font));
 
-    return self;
+    return font;
 }
 
 
@@ -238,7 +238,7 @@ Draw_font_family_eq(VALUE self, VALUE family)
     Data_Get_Struct(self, Draw, draw);
     magick_clone_string(&draw->info->family, StringValuePtr(family));
 
-    return self;
+    return family;
 }
 
 
@@ -260,7 +260,7 @@ Draw_font_stretch_eq(VALUE self, VALUE stretch)
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
     VALUE_TO_ENUM(stretch, draw->info->stretch, StretchType);
-    return self;
+    return stretch;
 }
 
 
@@ -282,7 +282,7 @@ Draw_font_style_eq(VALUE self, VALUE style)
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
     VALUE_TO_ENUM(style, draw->info->style, StyleType);
-    return self;
+    return style;
 }
 
 
@@ -346,7 +346,7 @@ Draw_font_weight_eq(VALUE self, VALUE weight)
         }
     }
 
-    return self;
+    return weight;
 }
 
 
@@ -382,7 +382,7 @@ Draw_gravity_eq(VALUE self, VALUE grav)
     Data_Get_Struct(self, Draw, draw);
     VALUE_TO_ENUM(grav, draw->info->gravity, GravityType);
 
-    return self;
+    return grav;
 }
 
 
@@ -407,7 +407,7 @@ Draw_kerning_eq(VALUE self, VALUE kerning)
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
     draw->info->kerning = NUM2DBL(kerning);
-    return self;
+    return kerning;
 }
 
 
@@ -432,7 +432,7 @@ Draw_interline_spacing_eq(VALUE self, VALUE spacing)
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
     draw->info->interline_spacing = NUM2DBL(spacing);
-    return self;
+    return spacing;
 }
 
 
@@ -457,7 +457,7 @@ Draw_interword_spacing_eq(VALUE self, VALUE spacing)
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
     draw->info->interword_spacing = NUM2DBL(spacing);
-    return self;
+    return spacing;
 }
 
 
@@ -711,7 +711,7 @@ Draw_pointsize_eq(VALUE self, VALUE pointsize)
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
     draw->info->pointsize = NUM2DBL(pointsize);
-    return self;
+    return pointsize;
 }
 
 
@@ -763,7 +763,7 @@ Draw_rotation_eq(VALUE self, VALUE deg)
         draw->info->affine.tx=current.sx*affine.tx+current.ry*affine.ty+current.tx;
     }
 
-    return self;
+    return deg;
 }
 
 
@@ -785,7 +785,7 @@ Draw_stroke_eq(VALUE self, VALUE stroke)
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
     Color_to_PixelColor(&draw->info->stroke, stroke);
-    return self;
+    return stroke;
 }
 
 
@@ -825,7 +825,7 @@ Draw_stroke_pattern_eq(VALUE self, VALUE pattern)
         draw->info->stroke_pattern = rm_clone_image(image);
     }
 
-    return self;
+    return pattern;
 }
 
 
@@ -847,7 +847,7 @@ Draw_stroke_width_eq(VALUE self, VALUE stroke_width)
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
     draw->info->stroke_width = NUM2DBL(stroke_width);
-    return self;
+    return stroke_width;
 }
 
 
@@ -869,7 +869,7 @@ Draw_text_antialias_eq(VALUE self, VALUE text_antialias)
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
     draw->info->text_antialias = (MagickBooleanType) RTEST(text_antialias);
-    return self;
+    return text_antialias;
 }
 
 
@@ -908,7 +908,7 @@ Draw_undercolor_eq(VALUE self, VALUE undercolor)
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
     Color_to_PixelColor(&draw->info->undercolor, undercolor);
-    return self;
+    return undercolor;
 }
 
 
@@ -1820,7 +1820,7 @@ PolaroidOptions_shadow_color_eq(VALUE self, VALUE shadow)
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
     Color_to_PixelColor(&draw->shadow_color, shadow);
-    return self;
+    return shadow;
 }
 
 
@@ -1842,7 +1842,7 @@ PolaroidOptions_border_color_eq(VALUE self, VALUE border)
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
     Color_to_PixelColor(&draw->info->border_color, border);
-    return self;
+    return border;
 }
 
 

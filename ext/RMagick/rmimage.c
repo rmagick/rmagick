@@ -1048,7 +1048,7 @@ Image_background_color_eq(VALUE self, VALUE color)
 {
     Image *image = rm_check_frozen(self);
     Color_to_PixelColor(&image->background_color, color);
-    return self;
+    return color;
 }
 
 
@@ -1145,7 +1145,7 @@ Image_bias_eq(VALUE self, VALUE pct)
     bias = rm_percentage(pct,1.0);
     image->bias = bias * QuantumRange;
 
-    return self;
+    return pct;
 }
 
 /**
@@ -1247,7 +1247,7 @@ Image_black_point_compensation_eq(VALUE self, VALUE arg)
     value = RTEST(arg) ? "true" : "false";
     (void) rm_set_property(image, BlackPointCompensationKey, value);
 
-    return self;
+    return arg;
 }
 
 
@@ -1745,7 +1745,7 @@ Image_blur_eq(VALUE self, VALUE value)
     rb_check_frozen(self);
     Data_Get_Struct(self, Image, image);
     image->blur = R_dbl_to_C_dbl(value);
-    return self;
+    return value;
 }
 
 
@@ -1961,7 +1961,7 @@ Image_border_color_eq(VALUE self, VALUE color)
 {
     Image *image = rm_check_frozen(self);
     Color_to_PixelColor(&image->border_color, color);
-    return self;
+    return color;
 }
 
 
@@ -2467,7 +2467,7 @@ Image_chromaticity_eq(VALUE self, VALUE chroma)
 {
     Image *image = rm_check_frozen(self);
     Export_ChromaticityInfo(&image->chromaticity, chroma);
-    return self;
+    return chroma;
 }
 
 
@@ -2763,7 +2763,7 @@ Image_color_profile_eq(VALUE self, VALUE profile)
     {
         (void) set_profile(self, "ICC", profile);
     }
-    return self;
+    return profile;
 }
 
 
@@ -3061,7 +3061,7 @@ Image_colorspace_eq(VALUE self, VALUE colorspace)
     VALUE_TO_ENUM(colorspace, new_cs, ColorspaceType);
     (void) TransformImageColorspace(image, new_cs);
 
-    return self;
+    return colorspace;
 }
 
 
@@ -3270,7 +3270,7 @@ Image_compose_eq(VALUE self, VALUE compose_arg)
 {
     Image *image = rm_check_frozen(self);
     VALUE_TO_ENUM(compose_arg, image->compose, CompositeOperator);
-    return self;
+    return compose_arg;
 }
 
 /**
@@ -3829,7 +3829,7 @@ Image_compression_eq(VALUE self, VALUE compression)
 {
     Image *image = rm_check_frozen(self);
     VALUE_TO_ENUM(compression, image->compression, CompressionType);
-    return self;
+    return compression;
 }
 
 /**
@@ -4562,7 +4562,7 @@ Image_density_eq(VALUE self, VALUE density_arg)
     RB_GC_GUARD(x_val);
     RB_GC_GUARD(y_val);
 
-    return self;
+    return density_arg;
 }
 
 
@@ -5147,7 +5147,7 @@ Image_dispose_eq(VALUE self, VALUE dispose)
 {
     Image *image = rm_check_frozen(self);
     VALUE_TO_ENUM(dispose, image->dispose, DisposeType);
-    return self;
+    return dispose;
 }
 
 
@@ -5699,7 +5699,7 @@ Image_endian_eq(VALUE self, VALUE type)
 {
     Image *image = rm_check_frozen(self);
     VALUE_TO_ENUM(type, image->endian, EndianType);
-    return self;
+    return type;
 }
 
 /**
@@ -6265,7 +6265,7 @@ Image_extract_info_eq(VALUE self, VALUE rect)
 {
     Image *image = rm_check_frozen(self);
     Export_RectangleInfo(&image->extract_info, rect);
-    return self;
+    return rect;
 }
 
 
@@ -6329,7 +6329,7 @@ Image_filter_eq(VALUE self, VALUE filter)
 {
     Image *image = rm_check_frozen(self);
     VALUE_TO_ENUM(filter, image->filter, FilterTypes);
-    return self;
+    return filter;
 }
 
 
@@ -6595,7 +6595,7 @@ Image_format_eq(VALUE self, VALUE magick)
 
 
     strncpy(image->magick, m->name, MaxTextExtent-1);
-    return self;
+    return magick;
 }
 
 
@@ -6849,7 +6849,7 @@ Image_fuzz_eq(VALUE self, VALUE fuzz)
 {
     Image *image = rm_check_frozen(self);
     image->fuzz = rm_fuzz_to_dbl(fuzz);
-    return self;
+    return fuzz;
 }
 
 
@@ -7119,9 +7119,7 @@ DEF_ATTR_READER(Image, geometry, str)
  * @return self
  */
 VALUE
-Image_geometry_eq(
-                 VALUE self,
-                 VALUE geometry)
+Image_geometry_eq(VALUE self, VALUE geometry)
 {
     Image *image;
     VALUE geom_str;
@@ -7147,7 +7145,7 @@ Image_geometry_eq(
 
     RB_GC_GUARD(geom_str);
 
-    return self;
+    return geometry;
 }
 
 
@@ -7744,7 +7742,7 @@ Image_interlace_eq(VALUE self, VALUE interlace)
 {
     Image *image = rm_check_frozen(self);
     VALUE_TO_ENUM(interlace, image->interlace, InterlaceType);
-    return self;
+    return interlace;
 }
 
 
@@ -7798,7 +7796,7 @@ Image_iptc_profile_eq(VALUE self, VALUE profile)
     {
         (void) set_profile(self, "iptc", profile);
     }
-    return self;
+    return profile;
 }
 
 
@@ -8717,7 +8715,7 @@ Image_matte_color_eq(VALUE self, VALUE color)
 {
     Image *image = rm_check_frozen(self);
     Color_to_PixelColor(&image->matte_color, color);
-    return self;
+    return color;
 }
 
 
@@ -9022,7 +9020,7 @@ Image_monitor_eq(VALUE self, VALUE monitor)
         (void) SetImageProgressMonitor(image, rm_progress_monitor, (void *)monitor);
     }
 
-    return self;
+    return monitor;
 }
 
 
@@ -9775,7 +9773,7 @@ Image_orientation_eq(VALUE self, VALUE orientation)
 {
     Image *image = rm_check_frozen(self);
     VALUE_TO_ENUM(orientation, image->orientation, OrientationType);
-    return self;
+    return orientation;
 }
 
 
@@ -9811,7 +9809,7 @@ Image_page_eq(VALUE self, VALUE rect)
 {
     Image *image = rm_check_frozen(self);
     Export_RectangleInfo(&image->page, rect);
-    return self;
+    return rect;
 }
 
 
@@ -10074,7 +10072,7 @@ Image_pixel_interpolation_method_eq(VALUE self, VALUE method)
 {
     Image *image = rm_check_frozen(self);
     VALUE_TO_ENUM(method, image->interpolate, InterpolatePixelMethod);
-    return self;
+    return method;
 }
 
 
@@ -11117,7 +11115,7 @@ Image_rendering_intent_eq(VALUE self, VALUE ri)
 {
     Image *image = rm_check_frozen(self);
     VALUE_TO_ENUM(ri, image->rendering_intent, RenderingIntent);
-    return self;
+    return ri;
 }
 
 
@@ -12004,7 +12002,7 @@ Image_opacity_eq(VALUE self, VALUE opacity_arg)
     opacity = APP2QUANTUM(opacity_arg);
     (void) SetImageOpacity(image, opacity);
     rm_check_image_exception(image, RetainOnError);
-    return self;
+    return opacity_arg;
 }
 
 
@@ -12986,7 +12984,7 @@ Image_class_type_eq(VALUE self, VALUE new_class_type)
     }
 
     (void) SetImageStorageClass(image, class_type);
-    return self;
+    return new_class_type;
 }
 
 
@@ -13478,7 +13476,7 @@ Image_ticks_per_second_eq(VALUE self, VALUE tps)
 {
     Image *image = rm_check_frozen(self);
     image->ticks_per_second = NUM2ULONG(tps);
-    return self;
+    return tps;
 }
 
 
@@ -13895,7 +13893,7 @@ Image_transparent_color_eq(VALUE self, VALUE color)
 {
     Image *image = rm_check_frozen(self);
     Color_to_PixelColor(&image->transparent_color, color);
-    return self;
+    return color;
 }
 
 
@@ -14289,7 +14287,7 @@ Image_units_eq(VALUE self, VALUE restype)
         image->units = units;
     }
 
-    return self;
+    return restype;
 }
 
 
@@ -14558,7 +14556,7 @@ Image_virtual_pixel_method_eq(VALUE self, VALUE method)
     VALUE_TO_ENUM(method, vpm, VirtualPixelMethod);
     (void) SetImageVirtualPixelMethod(image, vpm);
     rm_check_image_exception(image, RetainOnError);
-    return self;
+    return method;
 }
 
 
