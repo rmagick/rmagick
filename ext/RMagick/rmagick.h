@@ -1035,7 +1035,7 @@ extern VALUE  Enum_type_initialize(VALUE, VALUE, VALUE);
 extern VALUE  Enum_find(VALUE class, int val);
 extern VALUE  Enum_type_each(VALUE);
 extern VALUE  rm_enum_new(VALUE, VALUE, VALUE);
-extern VALUE  ClassType_new(ClassType);
+extern VALUE  ClassType_find(ClassType);
 extern VALUE  ColorspaceType_new(ColorspaceType);
 extern const char *ComplianceType_name(ComplianceType *);
 extern VALUE  ComplianceType_new(ComplianceType);

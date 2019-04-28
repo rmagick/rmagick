@@ -394,8 +394,9 @@ Enum_find(VALUE class, int val)
     return Qnil;
 }
 
+
 /**
- * Construct a ClassType enum object for the specified value.
+ * Returns a ClassType enum object for the specified value.
  *
  * No Ruby usage (internal function)
  *
@@ -403,19 +404,9 @@ Enum_find(VALUE class, int val)
  * @return a new enumerator
  */
 VALUE
-ClassType_new(ClassType cls)
+ClassType_find(ClassType cls)
 {
-    const char *name;
-
-    switch(cls)
-    {
-        ENUM_SET_NAME(DirectClass)
-        ENUM_SET_NAME(PseudoClass)
-        default:
-        ENUM_SET_NAME(UndefinedClass)
-    }
-
-    return rm_enum_new(Class_ClassType, ID2SYM(rb_intern(name)), INT2FIX(cls));
+    return Enum_find(Class_ClassType, cls);
 }
 
 
