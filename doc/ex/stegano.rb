@@ -6,7 +6,7 @@ require 'rmagick'
 # Create a small watermark from the Snake image by
 # shrinking it and converting it to B&W.
 begin
-  watermark = Magick::Image.read('images/Snake.wmf').first
+  watermark = Magick::Image.read('images/Snake.png').first
   watermark.scale!(64.0 / watermark.rows)
   watermark = watermark.quantize(256, Magick::GRAYColorspace)
   wmrows = watermark.rows
