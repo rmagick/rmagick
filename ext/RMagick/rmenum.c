@@ -543,6 +543,20 @@ ComplianceType_new(ComplianceType compliance)
 }
 
 
+/**
+ * Returns a CompositeOperator enum object for the specified value.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param op the CompositeOperator
+ * @return a new CompositeOperator enumerator
+ */
+VALUE
+CompositeOperator_find(CompositeOperator op)
+{
+    return Enum_find(Class_CompositeOperator, op);
+}
+
 
 /**
  * Return the name of a CompressionType enum as a string.
