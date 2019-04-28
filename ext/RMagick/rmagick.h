@@ -1039,6 +1039,7 @@ extern VALUE  ClassType_new(ClassType);
 extern VALUE  ColorspaceType_new(ColorspaceType);
 extern const char *ComplianceType_name(ComplianceType *);
 extern VALUE  ComplianceType_new(ComplianceType);
+extern VALUE  CompositeOperator_find(CompositeOperator);
 extern VALUE  CompressionType_new(CompressionType);
 extern VALUE  DisposeType_new(DisposeType);
 extern VALUE  EndianType_new(EndianType);
