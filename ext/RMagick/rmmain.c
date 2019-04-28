@@ -527,6 +527,7 @@ Init_RMagick2(void)
     rb_define_method(Class_ImageList, "append", ImageList_append, 1);
     rb_define_method(Class_ImageList, "average", ImageList_average, 0);
     rb_define_method(Class_ImageList, "coalesce", ImageList_coalesce, 0);
+    rb_define_method(Class_ImageList, "combine", ImageList_combine, -1);
     rb_define_method(Class_ImageList, "composite_layers", ImageList_composite_layers, -1);
     rb_define_method(Class_ImageList, "deconstruct", ImageList_deconstruct, 0);
     rb_define_method(Class_ImageList, "display", ImageList_display, 0);
