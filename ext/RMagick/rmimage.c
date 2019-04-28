@@ -3251,7 +3251,7 @@ VALUE
 Image_compose(VALUE self)
 {
     Image *image = rm_check_destroyed(self);
-    return CompositeOperator_new(image->compose);
+    return Enum_find(Class_CompositeOperator, image->compose);
 }
 
 
@@ -3662,7 +3662,7 @@ Image_composite_mathematics(int argc, VALUE *argv, VALUE self)
     args[1] = GravityType_new(gravity);
     args[2] = LONG2FIX(x_off);
     args[3] = LONG2FIX(y_off);
-    args[4] = CompositeOperator_new(MathematicsCompositeOp);
+    args[4] = Enum_find(Class_CompositeOperator, MathematicsCompositeOp);
 
     return composite(False, 5, args, self, DefaultChannels);
 }

@@ -73,4 +73,12 @@ class EnumUT < Test::Unit::TestCase
   def test_type_inspect
     assert_equal('UndefinedAlign=0', Magick::AlignType.values[0].inspect)
   end
+
+  def test_issue586
+    img = Magick::Image.new(10, 10)
+    Magick::CompositeOperator.values do |op|
+      img.compose = op
+      assert_equal(op, img.compose)
+    end
+  end
 end
