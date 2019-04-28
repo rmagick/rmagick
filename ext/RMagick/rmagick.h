@@ -1057,7 +1057,7 @@ extern VALUE  StretchType_new(StretchType);
 extern const char *StretchType_name(StretchType);
 extern VALUE  StyleType_new(StyleType);
 extern const char *StyleType_name(StyleType);
-extern VALUE  VirtualPixelMethod_new(VirtualPixelMethod);
+extern VALUE  VirtualPixelMethod_find(VirtualPixelMethod);
 
 
 // rmstruct.c
