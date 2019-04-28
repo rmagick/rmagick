@@ -44,6 +44,9 @@ static void features_constant(void);
    _enum = rm_enum_new(_cls, ID2SYM(rb_intern(#name)), INT2NUM(val));\
    rb_define_const(Module_Magick, #name, _enum);
 
+//! define alias for ImageMagick 6
+#define ENUM_ALIAS(name) rb_define_const(Module_Magick, #name, _cls);
+
 //! end of an enumerator
 #define END_ENUM }
 
@@ -892,8 +895,8 @@ Init_RMagick2(void)
         ENUMERATOR(RightAlign)
     END_ENUM
 
-    // AlphaChannelType constants
-    DEF_ENUM(AlphaChannelType)
+    // AlphaChannelOption constants
+    DEF_ENUM(AlphaChannelOption)
         ENUMERATOR(UndefinedAlphaChannel)
         ENUMERATOR(ActivateAlphaChannel)
         ENUMERATOR(DeactivateAlphaChannel)
@@ -911,6 +914,7 @@ Init_RMagick2(void)
         ENUMERATOR(AssociateAlphaChannel)
         ENUMERATOR(DisassociateAlphaChannel)
 #endif
+        ENUM_ALIAS(AlphaChannelType)
     END_ENUM
 
     // AnchorType constants (for Draw#text_anchor - these are not defined by ImageMagick)
