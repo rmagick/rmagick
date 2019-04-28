@@ -310,8 +310,8 @@ begin
   # Write the result to a file
   montage_image.compression = RLECompression
   montage_image.matte = false
-  puts 'Writing image ./rm_demo_out.miff'
-  montage_image.write 'rm_demo_out.miff'
+  puts 'Writing image ./rm_demo_out.png'
+  montage_image.write 'rm_demo_out.png'
 
 # Uncomment the following lines to display image to screen
 # puts "Displaying image..."
