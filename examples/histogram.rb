@@ -291,7 +291,7 @@ image = image.first
 # Give the user something to look at while we're working.
 name = File.basename(filename).sub(/\..*?$/, '')
 $stdout.sync = true
-printf "Creating #{name}_Histogram.miff"
+printf "Creating #{name}_Histogram.png"
 
 timer = Thread.new do
   loop do
@@ -305,7 +305,7 @@ histogram = image.histogram(Magick::Pixel.from_color('white'), Magick::Pixel.fro
 
 # Write output file
 histogram.compression = Magick::ZipCompression
-histogram.write("./#{name}_Histogram.miff")
+histogram.write("./#{name}_Histogram.png")
 
 Thread.kill(timer)
 puts 'Done!'

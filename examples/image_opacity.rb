@@ -23,6 +23,6 @@ end
 
 result = balloons.composite(legend, SouthGravity, OverCompositeOp)
 
-puts '...Writing image_opacity.miff'
-result.write 'image_opacity.miff'
+puts '...Writing image_opacity.png'
+result.write 'image_opacity.png'
 exit
