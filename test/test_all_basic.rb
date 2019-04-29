@@ -9,13 +9,8 @@ IMAGE_WITH_PROFILE = IMAGES_DIR + '/image_with_profile.jpg'
 
 require 'simplecov'
 require 'test/unit'
-if RUBY_VERSION < '1.9'
-  require 'test/unit/ui/console/testrunner'
-  $LOAD_PATH.push(root_dir)
-else
-  $LOAD_PATH.unshift(File.join(root_dir, 'lib'))
-  $LOAD_PATH.unshift(File.join(root_dir, 'test'))
-end
+$LOAD_PATH.unshift(File.join(root_dir, 'lib'))
+$LOAD_PATH.unshift(File.join(root_dir, 'test'))
 
 require 'rmagick'
 
@@ -25,13 +20,7 @@ abort 'Unable to get ImageMagick version' unless Regexp.last_match(1) && Regexp.
 IM_VERSION = Gem::Version.new(Regexp.last_match(1))
 IM_REVISION = Gem::Version.new(Regexp.last_match(2))
 
-FreezeError = if RUBY_VERSION > '2.5'
-                FrozenError
-              elsif RUBY_VERSION > '1.9'
-                RuntimeError
-              else
-                TypeError
-              end
+FreezeError = RUBY_VERSION > '2.5' ? FrozenError : RuntimeError
 
 Dir.glob(File.join(__dir__, 'lib/**/*.rb')) do |file|
   require file

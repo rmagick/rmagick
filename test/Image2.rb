@@ -2,7 +2,7 @@
 
 require 'rmagick'
 require 'test/unit'
-require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
+require 'test/unit/ui/console/testrunner'
 
 # TODO: improve exif tests - need a benchmark image with EXIF data
 
@@ -325,11 +325,7 @@ class Image2_UT < Test::Unit::TestCase
   # ensure methods detect destroyed images
   def test_destroy
     methods = Magick::Image.instance_methods(false).sort
-    methods -= if RUBY_VERSION[/^1\.9|^2/]
-                 %i[__display__ destroy! destroyed? inspect cur_image marshal_load]
-               else
-                 %w[__display__ destroy! destroyed? inspect cur_image marshal_load]
-               end
+    methods -= %i[__display__ destroy! destroyed? inspect cur_image marshal_load]
 
     assert_equal(false, @img.destroyed?)
     @img.destroy!
@@ -1417,5 +1413,5 @@ end
 if $PROGRAM_NAME == __FILE__
   IMAGES_DIR = '../doc/ex/images'
   FILES = Dir[IMAGES_DIR + '/Button_*.gif']
-  Test::Unit::UI::Console::TestRunner.run(Image2UT) unless RUBY_VERSION[/^1\.9|^2/]
+  Test::Unit::UI::Console::TestRunner.run(Image2UT)
 end
