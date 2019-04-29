@@ -81,4 +81,12 @@ class EnumUT < Test::Unit::TestCase
       assert_equal(op, img.compose)
     end
   end
+
+  def test_issue593_virtual_pixel_method
+    img = Magick::Image.new(1, 1)
+    Magick::VirtualPixelMethod.values do |value|
+      img.virtual_pixel_method = value
+      assert_equal(value, img.virtual_pixel_method)
+    end
+  end
 end
