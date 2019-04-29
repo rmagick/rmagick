@@ -20,6 +20,7 @@ end
 
 require 'English'
 require 'RMagick2.so'
+require 'obsolete.rb'
 
 module Magick
   @formats = nil
