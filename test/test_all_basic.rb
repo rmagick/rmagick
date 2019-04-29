@@ -7,12 +7,12 @@ FILES = Dir[IMAGES_DIR + '/Button_*.gif'].sort
 FLOWER_HAT = IMAGES_DIR + '/Flower_Hat.jpg'
 IMAGE_WITH_PROFILE = IMAGES_DIR + '/image_with_profile.jpg'
 
+require 'simplecov'
 require 'test/unit'
 if RUBY_VERSION < '1.9'
   require 'test/unit/ui/console/testrunner'
   $LOAD_PATH.push(root_dir)
 else
-  require 'simplecov'
   $LOAD_PATH.unshift(File.join(root_dir, 'lib'))
   $LOAD_PATH.unshift(File.join(root_dir, 'test'))
 end
