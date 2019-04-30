@@ -71,7 +71,7 @@ get_option(VALUE self, const char *key)
  * @param self this object
  * @param key the option key
  * @param string the value
- * @return self
+ * @return string
  */
 static VALUE
 set_option(VALUE self, const char *key, VALUE string)
@@ -90,7 +90,7 @@ set_option(VALUE self, const char *key, VALUE string)
         value = StringValuePtr(string);
         (void) SetImageOption(info, key, value);
     }
-    return self;
+    return string;
 }
 
 
@@ -105,7 +105,7 @@ set_option(VALUE self, const char *key, VALUE string)
  * @param self this object
  * @param option the option
  * @param color the color name
- * @return self
+ * @return color
  */
 static VALUE set_color_option(VALUE self, const char *option, VALUE color)
 {
@@ -135,7 +135,7 @@ static VALUE set_color_option(VALUE self, const char *option, VALUE color)
         (void) SetImageOption(info, option, name);
     }
 
-    return self;
+    return color;
 }
 
 
@@ -183,7 +183,7 @@ static VALUE get_dbl_option(VALUE self, const char *option)
  * @param self this object
  * @param option the option name
  * @param value the value
- * @return self
+ * @return value
  */
 static VALUE set_dbl_option(VALUE self, const char *option, VALUE value)
 {
@@ -215,7 +215,7 @@ static VALUE set_dbl_option(VALUE self, const char *option, VALUE value)
         (void) SetImageOption(info, option, buff);
     }
 
-    return self;
+    return value;
 }
 
 
@@ -462,7 +462,7 @@ Info_authenticate(VALUE self)
  *
  * @param self this object
  * @param passwd the authenticating password
- * @return self
+ * @return passwd
  */
 VALUE
 Info_authenticate_eq(VALUE self, VALUE passwd)
@@ -488,7 +488,7 @@ Info_authenticate_eq(VALUE self, VALUE passwd)
         magick_clone_string(&info->authenticate, passwd_p);
     }
 
-    return self;
+    return passwd;
 }
 
 
@@ -523,7 +523,7 @@ Info_background_color(VALUE self)
  *
  * @param self this object
  * @param bc_arg the background color
- * @return self
+ * @return bc_arg
  * @throw ArgumentError
  */
 VALUE
@@ -535,7 +535,7 @@ Info_background_color_eq(VALUE self, VALUE bc_arg)
     Data_Get_Struct(self, Info, info);
     Color_to_PixelColor(&info->background_color, bc_arg);
     //SetImageOption(info, "background", pixel_packet_to_hexname(&info->background_color, colorname));
-    return self;
+    return bc_arg;
 }
 
 /**
@@ -568,7 +568,7 @@ Info_border_color(VALUE self)
  *
  * @param self this object
  * @param bc_arg the border color
- * @return self
+ * @return bc_arg
  * @throw ArgumentError
  */
 VALUE
@@ -580,7 +580,7 @@ Info_border_color_eq(VALUE self, VALUE bc_arg)
     Data_Get_Struct(self, Info, info);
     Color_to_PixelColor(&info->border_color, bc_arg);
     //SetImageOption(info, "bordercolor", pixel_packet_to_hexname(&info->border_color, colorname));
-    return self;
+    return bc_arg;
 }
 
 
@@ -683,7 +683,7 @@ Info_colorspace(VALUE self)
  *
  * @param self this object
  * @param colorspace the colorspace type
- * @return self
+ * @return colorspace
  * @throw ArgumentError
  */
 VALUE
@@ -693,7 +693,7 @@ Info_colorspace_eq(VALUE self, VALUE colorspace)
 
     Data_Get_Struct(self, Info, info);
     VALUE_TO_ENUM(colorspace, info->colorspace, ColorspaceType);
-    return self;
+    return colorspace;
 }
 
 OPTION_ATTR_ACCESSOR(comment, Comment)
@@ -724,7 +724,7 @@ Info_compression(VALUE self)
  *
  * @param self this object
  * @param type the compression type
- * @return self
+ * @return type
  * @throw ArgumentError
  */
 VALUE
@@ -734,7 +734,7 @@ Info_compression_eq(VALUE self, VALUE type)
 
     Data_Get_Struct(self, Info, info);
     VALUE_TO_ENUM(type, info->compression, CompressionType);
-    return self;
+    return type;
 }
 
 /**
@@ -861,7 +861,7 @@ arg_is_integer(VALUE arg)
  *
  * @param self this object
  * @param string the delay
- * @return self
+ * @return string
  */
 VALUE
 Info_delay_eq(VALUE self, VALUE string)
@@ -889,7 +889,7 @@ Info_delay_eq(VALUE self, VALUE string)
         sprintf(dstr, "%d", delay);
         (void) SetImageOption(info, "delay", dstr);
     }
-    return self;
+    return string;
 }
 
 /**
@@ -914,7 +914,7 @@ DEF_ATTR_READER(Info, density, str)
  *
  * @param self this object
  * @param density_arg the density
- * @return self
+ * @return density_arg
  * @throw ArgumentError
  */
 VALUE
@@ -944,7 +944,7 @@ Info_density_eq(VALUE self, VALUE density_arg)
 
     RB_GC_GUARD(density);
 
-    return self;
+    return density_arg;
 }
 
 /**
@@ -966,7 +966,7 @@ DEF_ATTR_READER(Info, depth, int)
  *
  * @param self this object
  * @param depth the depth
- * @return self
+ * @return depth
  * @throw ArgumentError
  */
 VALUE
@@ -996,7 +996,7 @@ Info_depth_eq(VALUE self, VALUE depth)
     }
 
     info->depth = d;
-    return self;
+    return depth;
 }
 
 /** A dispose option */
@@ -1093,7 +1093,7 @@ Info_dispose(VALUE self)
  *
  * @param self this object
  * @param disp the DisposeType enumerator
- * @return self
+ * @return disp
  */
 VALUE
 Info_dispose_eq(VALUE self, VALUE disp)
@@ -1124,7 +1124,7 @@ Info_dispose_eq(VALUE self, VALUE disp)
     }
 
     (void) SetImageOption(info, "dispose", option);
-    return self;
+    return disp;
 }
 
 DEF_ATTR_ACCESSOR(Info, dither, bool)
@@ -1157,7 +1157,7 @@ Info_endian(VALUE self)
  *
  * @param self this object
  * @param endian the endian (Magick::MSBEndian or Magick::LSBEndian)
- * @return self
+ * @return endian
  */
 VALUE
 Info_endian_eq(VALUE self, VALUE endian)
@@ -1172,7 +1172,7 @@ Info_endian_eq(VALUE self, VALUE endian)
 
     Data_Get_Struct(self, Info, info);
     info->endian = type;
-    return self;
+    return endian;
 }
 
 
@@ -1201,7 +1201,7 @@ DEF_ATTR_READER(Info, extract, str)
  *
  * @param self this object
  * @param extract_arg the extract string
- * @return self
+ * @return extract_arg
  * @throw ArgumentError
  */
 VALUE
@@ -1231,7 +1231,7 @@ Info_extract_eq(VALUE self, VALUE extract_arg)
 
     RB_GC_GUARD(extract);
 
-    return self;
+    return extract_arg;
 }
 
 
@@ -1268,7 +1268,7 @@ Info_filename(VALUE self)
  *
  * @param self this object
  * @param filename the filename
- * @return self
+ * @return filename
  * @see Image_capture
  */
 VALUE
@@ -1290,7 +1290,7 @@ Info_filename_eq(VALUE self, VALUE filename)
         fname = StringValuePtr(filename);
         strncpy(info->filename, fname, MaxTextExtent);
     }
-    return self;
+    return filename;
 }
 
 
@@ -1346,7 +1346,7 @@ DEF_ATTR_READER(Info, font, str)
  *
  * @param self this object
  * @param font_arg the font (as a String)
- * @return self
+ * @return font_arg
  */
 VALUE
 Info_font_eq(VALUE self, VALUE font_arg)
@@ -1365,7 +1365,7 @@ Info_font_eq(VALUE self, VALUE font_arg)
         font = StringValuePtr(font_arg);
         magick_clone_string(&info->font, font);
     }
-    return self;
+    return font_arg;
 }
 
 /**
@@ -1404,7 +1404,7 @@ VALUE Info_format(VALUE self)
  *
  * @param self this object
  * @param magick the encoding format
- * @return self
+ * @return magick
  */
 VALUE
 Info_format_eq(VALUE self, VALUE magick)
@@ -1429,7 +1429,7 @@ Info_format_eq(VALUE self, VALUE magick)
     }
 
     strncpy(info->magick, m->name, MaxTextExtent-1);
-    return self;
+    return magick;
 }
 
 /**
@@ -1453,7 +1453,7 @@ DEF_ATTR_READER(Info, fuzz, dbl)
  *
  * @param self this object
  * @param fuzz the fuzz
- * @return self
+ * @return fuzz
  * @see Image_fuzz_eq
  */
 VALUE Info_fuzz_eq(VALUE self, VALUE fuzz)
@@ -1462,7 +1462,7 @@ VALUE Info_fuzz_eq(VALUE self, VALUE fuzz)
 
     Data_Get_Struct(self, Info, info);
     info->fuzz = rm_fuzz_to_dbl(fuzz);
-    return self;
+    return fuzz;
 }
 
 /** A gravity option */
@@ -1563,7 +1563,7 @@ VALUE Info_gravity(VALUE self)
  *
  * @param self this object
  * @param grav the gravity enumerator
- * @return self
+ * @return grav
  */
 VALUE
 Info_gravity_eq(VALUE self, VALUE grav)
@@ -1594,7 +1594,7 @@ Info_gravity_eq(VALUE self, VALUE grav)
     }
 
     (void) SetImageOption(info, "gravity", option);
-    return self;
+    return grav;
 }
 
 
@@ -1628,7 +1628,7 @@ Info_group(VALUE self)
  *
  * @param self this object
  * @param value the group
- * @return self
+ * @return value
  * @deprecated This method has been deprecated.
  */
 VALUE
@@ -1641,7 +1641,7 @@ Info_group_eq(VALUE self, VALUE value)
     rb_check_frozen(self);
     Data_Get_Struct(self, Info, info);
     info->group = R_long_to_C_long(value);
-    return self;
+    return value;
 }
 
 
@@ -1671,7 +1671,7 @@ Info_image_type(VALUE self)
  *
  * @param self this object
  * @param type the classification type
- * @return self
+ * @return type
  * @throw ArgumentError
  */
 VALUE
@@ -1681,7 +1681,7 @@ Info_image_type_eq(VALUE self, VALUE type)
 
     Data_Get_Struct(self, Info, info);
     VALUE_TO_ENUM(type, info->type, ImageType);
-    return self;
+    return type;
 }
 
 /**
@@ -1710,7 +1710,7 @@ Info_interlace(VALUE self)
  *
  * @param self this object
  * @param inter the interlace type
- * @return self
+ * @return inter
  * @throw ArgumentError
  */
 VALUE
@@ -1720,7 +1720,7 @@ Info_interlace_eq(VALUE self, VALUE inter)
 
     Data_Get_Struct(self, Info, info);
     VALUE_TO_ENUM(inter, info->interlace, InterlaceType);
-    return self;
+    return inter;
 }
 
 OPTION_ATTR_ACCESSOR(label, Label)
@@ -1752,7 +1752,7 @@ Info_matte_color(VALUE self)
  *
  * @param self this object
  * @param matte_arg the name of the matte as a String
- * @return self
+ * @return matte_arg
  * @throw ArgumentError
  */
 VALUE
@@ -1764,7 +1764,7 @@ Info_matte_color_eq(VALUE self, VALUE matte_arg)
     Data_Get_Struct(self, Info, info);
     Color_to_PixelColor(&info->matte_color, matte_arg);
     //SetImageOption(info, "mattecolor", pixel_packet_to_hexname(&info->matte_color, colorname));
-    return self;
+    return matte_arg;
 }
 
 /**
@@ -1775,7 +1775,7 @@ Info_matte_color_eq(VALUE self, VALUE matte_arg)
  *
  * @param self this object
  * @param monitor the monitor
- * @return self
+ * @return monitor
  * @see Image_monitor_eq
  */
 VALUE
@@ -1794,7 +1794,7 @@ Info_monitor_eq(VALUE self, VALUE monitor)
         (void) SetImageInfoProgressMonitor(info, rm_progress_monitor, (void *)monitor);
     }
 
-    return self;
+    return monitor;
 }
 
 
@@ -1831,7 +1831,7 @@ Info_orientation(VALUE self)
  *
  * @param self this object
  * @param inter the orientation type as an OrientationType enum value
- * @return self
+ * @return inter
  * @throw ArgumentError
  */
 VALUE
@@ -1841,7 +1841,7 @@ Info_orientation_eq(VALUE self, VALUE inter)
 
     Data_Get_Struct(self, Info, info);
     VALUE_TO_ENUM(inter, info->orientation, OrientationType);
-    return self;
+    return inter;
 }
 
 
@@ -1876,7 +1876,7 @@ Info_origin(VALUE self)
  *
  * @param self this object
  * @param origin_arg the origin geometry
- * @return self
+ * @return origin_arg
  */
 VALUE
 Info_origin_eq(VALUE self, VALUE origin_arg)
@@ -1907,7 +1907,7 @@ Info_origin_eq(VALUE self, VALUE origin_arg)
 
     RB_GC_GUARD(origin_str);
 
-    return self;
+    return origin_arg;
 }
 
 
@@ -1939,7 +1939,7 @@ Info_page(VALUE self)
  *
  * @param self this object
  * @param page_arg the geometry
- * @return self
+ * @return page_arg
  */
 VALUE
 Info_page_eq(VALUE self, VALUE page_arg)
@@ -1967,7 +1967,7 @@ Info_page_eq(VALUE self, VALUE page_arg)
 
     RB_GC_GUARD(geom_str);
 
-    return self;
+    return page_arg;
 }
 
 DEF_ATTR_ACCESSOR(Info, pointsize, dbl)
@@ -2006,7 +2006,7 @@ Info_sampling_factor(VALUE self)
  *
  * @param self this object
  * @param sampling_factor the sampling factors
- * @return self
+ * @return sampling_factor
  */
 VALUE
 Info_sampling_factor_eq(VALUE self, VALUE sampling_factor)
@@ -2032,7 +2032,7 @@ Info_sampling_factor_eq(VALUE self, VALUE sampling_factor)
         magick_clone_string(&info->sampling_factor, sampling_factor_p);
     }
 
-    return self;
+    return sampling_factor;
 }
 
 
@@ -2063,7 +2063,7 @@ Info_scene(VALUE self)
  *
  * @param self this object
  * @param scene the scene number
- * @return self
+ * @return scene
  */
 VALUE
 Info_scene_eq(VALUE self, VALUE scene)
@@ -2081,7 +2081,7 @@ Info_scene_eq(VALUE self, VALUE scene)
 #endif
     (void) SetImageOption(info, "scene", buf);
 
-    return self;
+    return scene;
 }
 
 
@@ -2105,7 +2105,7 @@ DEF_ATTR_READER(Info, server_name, str)
  *
  * @param self this object
  * @param server_arg the server name as a String
- * @return self
+ * @return server_arg
  */
 VALUE
 Info_server_name_eq(VALUE self, VALUE server_arg)
@@ -2124,7 +2124,7 @@ Info_server_name_eq(VALUE self, VALUE server_arg)
         server = StringValuePtr(server_arg);
         magick_clone_string(&info->server_name, server);
     }
-    return self;
+    return server_arg;
 }
 
 /**
@@ -2147,7 +2147,7 @@ DEF_ATTR_READER(Info, size, str)
  *
  * @param self this object
  * @param size_arg the size
- * @return self
+ * @return size_arg
  * @throw ArgumentError
  */
 VALUE
@@ -2177,7 +2177,7 @@ Info_size_eq(VALUE self, VALUE size_arg)
 
     RB_GC_GUARD(size);
 
-    return self;
+    return size_arg;
 }
 
 
@@ -2261,7 +2261,7 @@ Info_stroke_width_eq(VALUE self, VALUE stroke_width)
  *
  * @param self this object
  * @param texture the name of the texture image
- * @return self
+ * @return texture
  */
 VALUE
 Info_texture_eq(VALUE self, VALUE texture)
@@ -2283,7 +2283,7 @@ Info_texture_eq(VALUE self, VALUE texture)
     // If argument is nil we're done
     if (texture == Qnil)
     {
-        return self;
+        return texture;
     }
 
     // Create a temp copy of the texture and store its name in the texture field
@@ -2292,7 +2292,7 @@ Info_texture_eq(VALUE self, VALUE texture)
 
     magick_clone_string(&info->texture, name);
 
-    return self;
+    return texture;
 }
 
 
@@ -2304,7 +2304,7 @@ Info_texture_eq(VALUE self, VALUE texture)
  *
  * @param self this object
  * @param offset the offset
- * @return self
+ * @return offset
  */
 VALUE
 Info_tile_offset_eq(VALUE self, VALUE offset)
@@ -2327,7 +2327,7 @@ Info_tile_offset_eq(VALUE self, VALUE offset)
 
     RB_GC_GUARD(offset_str);
 
-    return self;
+    return offset;
 }
 
 
@@ -2359,7 +2359,7 @@ Info_transparent_color(VALUE self)
  *
  * @param self this object
  * @param tc_arg the transparent color as a String
- * @return self
+ * @return tc_arg
  * @throw ArgumentError
  */
 VALUE
@@ -2371,7 +2371,7 @@ Info_transparent_color_eq(VALUE self, VALUE tc_arg)
     Data_Get_Struct(self, Info, info);
     Color_to_PixelColor(&info->transparent_color, tc_arg);
     //SetImageOption(info, "transparent", pixel_packet_to_hexname(&info->transparent_color, colorname));
-    return self;
+    return tc_arg;
 }
 
 
@@ -2497,7 +2497,7 @@ Info_units(VALUE self)
  *
  * @param self this object
  * @param units the resolution type
- * @return self
+ * @return units
  * @throw ArgumentError
  */
 VALUE
@@ -2507,7 +2507,7 @@ Info_units_eq(VALUE self, VALUE units)
 
     Data_Get_Struct(self, Info, info);
     VALUE_TO_ENUM(units, info->units, ResolutionType);
-    return self;
+    return units;
 }
 
 /**
@@ -2529,7 +2529,7 @@ DEF_ATTR_READER(Info, view, str)
  *
  * @param self this object
  * @param view_arg the viewing parameters
- * @return self
+ * @return view_arg
  */
 VALUE
 Info_view_eq(VALUE self, VALUE view_arg)
@@ -2549,7 +2549,7 @@ Info_view_eq(VALUE self, VALUE view_arg)
         view = StringValuePtr(view_arg);
         magick_clone_string(&info->view, view);
     }
-    return self;
+    return view_arg;
 }
 
 

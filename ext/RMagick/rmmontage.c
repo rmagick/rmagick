@@ -99,7 +99,7 @@ Montage_alloc(VALUE class)
  *
  * @param self this object
  * @param color the color name
- * @return self
+ * @return color
  */
 VALUE
 Montage_background_color_eq(VALUE self, VALUE color)
@@ -108,7 +108,7 @@ Montage_background_color_eq(VALUE self, VALUE color)
 
     Data_Get_Struct(self, Montage, montage);
     Color_to_PixelColor(&montage->info->background_color, color);
-    return self;
+    return color;
 }
 
 
@@ -120,7 +120,7 @@ Montage_background_color_eq(VALUE self, VALUE color)
  *
  * @param self this object
  * @param color the color name
- * @return self
+ * @return color
  */
 VALUE
 Montage_border_color_eq(VALUE self, VALUE color)
@@ -129,7 +129,7 @@ Montage_border_color_eq(VALUE self, VALUE color)
 
     Data_Get_Struct(self, Montage, montage);
     Color_to_PixelColor(&montage->info->border_color, color);
-    return self;
+    return color;
 }
 
 
@@ -141,7 +141,7 @@ Montage_border_color_eq(VALUE self, VALUE color)
  *
  * @param self this object
  * @param width the width
- * @return self
+ * @return width
  */
 VALUE
 Montage_border_width_eq(VALUE self, VALUE width)
@@ -150,7 +150,7 @@ Montage_border_width_eq(VALUE self, VALUE width)
 
     Data_Get_Struct(self, Montage, montage);
     montage->info->border_width = NUM2ULONG(width);
-    return self;
+    return width;
 }
 
 
@@ -162,7 +162,7 @@ Montage_border_width_eq(VALUE self, VALUE width)
  *
  * @param self this object
  * @param compose the composition operator
- * @return self
+ * @return compose
  */
 VALUE
 Montage_compose_eq(VALUE self, VALUE compose)
@@ -171,7 +171,7 @@ Montage_compose_eq(VALUE self, VALUE compose)
 
     Data_Get_Struct(self, Montage, montage);
     VALUE_TO_ENUM(compose, montage->compose, CompositeOperator);
-    return self;
+    return compose;
 }
 
 
@@ -183,7 +183,7 @@ Montage_compose_eq(VALUE self, VALUE compose)
  *
  * @param self this object
  * @param filename the filename
- * @return self
+ * @return filename
  */
 VALUE
 Montage_filename_eq(VALUE self, VALUE filename)
@@ -192,7 +192,7 @@ Montage_filename_eq(VALUE self, VALUE filename)
 
     Data_Get_Struct(self, Montage, montage);
     strncpy(montage->info->filename, StringValuePtr(filename), MaxTextExtent-1);
-    return self;
+    return filename;
 }
 
 
@@ -204,7 +204,7 @@ Montage_filename_eq(VALUE self, VALUE filename)
  *
  * @param self this object
  * @param color the color name
- * @return self
+ * @return color
  */
 VALUE
 Montage_fill_eq(VALUE self, VALUE color)
@@ -213,7 +213,7 @@ Montage_fill_eq(VALUE self, VALUE color)
 
     Data_Get_Struct(self, Montage, montage);
     Color_to_PixelColor(&montage->info->fill, color);
-    return self;
+    return color;
 }
 
 
@@ -225,7 +225,7 @@ Montage_fill_eq(VALUE self, VALUE color)
  *
  * @param self this object
  * @param font the font name
- * @return self
+ * @return font
  */
 VALUE
 Montage_font_eq(VALUE self, VALUE font)
@@ -235,7 +235,7 @@ Montage_font_eq(VALUE self, VALUE font)
     Data_Get_Struct(self, Montage, montage);
     magick_clone_string(&montage->info->font, StringValuePtr(font));
 
-    return self;
+    return font;
 }
 
 
@@ -252,7 +252,7 @@ Montage_font_eq(VALUE self, VALUE font)
  *
  * @param self this object
  * @param frame_arg the frame geometry
- * @return self
+ * @return frame_arg
  */
 VALUE
 Montage_frame_eq(VALUE self, VALUE frame_arg)
@@ -266,7 +266,7 @@ Montage_frame_eq(VALUE self, VALUE frame_arg)
 
     RB_GC_GUARD(frame);
 
-    return self;
+    return frame_arg;
 }
 
 
@@ -278,7 +278,7 @@ Montage_frame_eq(VALUE self, VALUE frame_arg)
  *
  * @param self this object
  * @param geometry_arg the geometry
- * @return self
+ * @return geometry_arg
  */
 VALUE
 Montage_geometry_eq(VALUE self, VALUE geometry_arg)
@@ -292,7 +292,7 @@ Montage_geometry_eq(VALUE self, VALUE geometry_arg)
 
     RB_GC_GUARD(geometry);
 
-    return self;
+    return geometry_arg;
 }
 
 
@@ -304,7 +304,7 @@ Montage_geometry_eq(VALUE self, VALUE geometry_arg)
  *
  * @param self this object
  * @param gravity the gravity type
- * @return self
+ * @return gravity
  */
 VALUE
 Montage_gravity_eq(VALUE self, VALUE gravity)
@@ -313,7 +313,7 @@ Montage_gravity_eq(VALUE self, VALUE gravity)
 
     Data_Get_Struct(self, Montage, montage);
     VALUE_TO_ENUM(gravity, montage->info->gravity, GravityType);
-    return self;
+    return gravity;
 }
 
 
@@ -342,7 +342,7 @@ Montage_initialize(VALUE self)
  *
  * @param self this object
  * @param color the color name
- * @return self
+ * @return color
  */
 VALUE
 Montage_matte_color_eq(VALUE self, VALUE color)
@@ -351,7 +351,7 @@ Montage_matte_color_eq(VALUE self, VALUE color)
 
     Data_Get_Struct(self, Montage, montage);
     Color_to_PixelColor(&montage->info->matte_color, color);
-    return self;
+    return color;
 }
 
 
@@ -363,7 +363,7 @@ Montage_matte_color_eq(VALUE self, VALUE color)
  *
  * @param self this object
  * @param size the point size
- * @return self
+ * @return size
  */
 VALUE
 Montage_pointsize_eq(VALUE self, VALUE size)
@@ -372,7 +372,7 @@ Montage_pointsize_eq(VALUE self, VALUE size)
 
     Data_Get_Struct(self, Montage, montage);
     montage->info->pointsize = NUM2DBL(size);
-    return self;
+    return size;
 }
 
 
@@ -384,7 +384,7 @@ Montage_pointsize_eq(VALUE self, VALUE size)
  *
  * @param self this object
  * @param shadow the shadow
- * @return self
+ * @return shadow
  */
 VALUE
 Montage_shadow_eq(VALUE self, VALUE shadow)
@@ -393,7 +393,7 @@ Montage_shadow_eq(VALUE self, VALUE shadow)
 
     Data_Get_Struct(self, Montage, montage);
     montage->info->shadow = (MagickBooleanType) RTEST(shadow);
-    return self;
+    return shadow;
 }
 
 
@@ -414,7 +414,7 @@ Montage_stroke_eq(VALUE self, VALUE color)
 
     Data_Get_Struct(self, Montage, montage);
     Color_to_PixelColor(&montage->info->stroke, color);
-    return self;
+    return color;
 }
 
 
@@ -426,7 +426,7 @@ Montage_stroke_eq(VALUE self, VALUE color)
  *
  * @param self this object
  * @param texture the texture image
- * @return self
+ * @return texture
  */
 VALUE
 Montage_texture_eq(VALUE self, VALUE texture)
@@ -453,7 +453,7 @@ Montage_texture_eq(VALUE self, VALUE texture)
     rm_write_temp_image(texture_image, temp_name);
     magick_clone_string(&montage->info->texture, temp_name);
 
-    return self;
+    return texture;
 }
 
 
@@ -465,7 +465,7 @@ Montage_texture_eq(VALUE self, VALUE texture)
  *
  * @param self this object
  * @param tile_arg the tile
- * @return self
+ * @return tile_arg
  */
 VALUE
 Montage_tile_eq(VALUE self, VALUE tile_arg)
@@ -479,7 +479,7 @@ Montage_tile_eq(VALUE self, VALUE tile_arg)
 
     RB_GC_GUARD(tile);
 
-    return self;
+    return tile_arg;
 }
 
 
@@ -491,7 +491,7 @@ Montage_tile_eq(VALUE self, VALUE tile_arg)
  *
  * @param self this object
  * @param title the title
- * @return self
+ * @return title
  */
 VALUE
 Montage_title_eq(VALUE self, VALUE title)
@@ -500,7 +500,7 @@ Montage_title_eq(VALUE self, VALUE title)
 
     Data_Get_Struct(self, Montage, montage);
     magick_clone_string(&montage->info->title, StringValuePtr(title));
-    return self;
+    return title;
 }
 
 

@@ -432,7 +432,7 @@ EXTERN ID rm_ID_y;                 /**< "y" */
         rb_check_frozen(self);\
         Data_Get_Struct(self, class, ptr);\
         ptr->attr = R_##type##_to_C_##type(val);\
-        return self;\
+        return val;\
     }
 
 //! define attribute accessor
