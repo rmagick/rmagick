@@ -1047,7 +1047,6 @@ extern VALUE  DisposeType_new(DisposeType);
 extern VALUE  EndianType_new(EndianType);
 extern VALUE  FilterTypes_find(FilterTypes);
 extern VALUE  GravityType_new(GravityType);
-extern VALUE  ImageLayerMethod_new(ImageLayerMethod);
 extern VALUE  ImageType_new(ImageType);
 extern VALUE  InterlaceType_new(InterlaceType);
 extern VALUE  InterpolatePixelMethod_new(InterpolatePixelMethod);
