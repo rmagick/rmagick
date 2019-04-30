@@ -646,6 +646,7 @@ Init_RMagick2(void)
     DCL_ATTR_ACCESSOR(Pixel, red)
     DCL_ATTR_ACCESSOR(Pixel, green)
     DCL_ATTR_ACCESSOR(Pixel, blue)
+    DCL_ATTR_ACCESSOR(Pixel, alpha)
     DCL_ATTR_ACCESSOR(Pixel, opacity)
 
     // Define the CMYK attributes

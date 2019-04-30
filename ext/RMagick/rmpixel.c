@@ -111,6 +111,24 @@ DEF_ATTR_READER(Pixel, green, int)
 DEF_ATTR_READER(Pixel, blue, int)
 
 /**
+ * Get Pixel alpha attribute.
+ *
+ * Ruby usage:
+ *   - @verbatim Pixel#alpha @endverbatim
+ *
+ * @param self this object
+ * @return the alpha value
+ */
+VALUE
+Pixel_alpha(VALUE self)
+{
+    Pixel *pixel;
+    Data_Get_Struct(self, Pixel, pixel);
+    return C_int_to_R_int(QuantumRange - pixel->opacity);
+}
+
+
+/**
  * Get Pixel opacity attribute.
  *
  * Ruby usage:
@@ -171,6 +189,35 @@ DEF_PIXEL_CHANNEL_WRITER(green)
  * @return self
  */
 DEF_PIXEL_CHANNEL_WRITER(blue)
+
+/**
+ * Set Pixel alpha attribute.
+ *
+ * Ruby usage:
+ *   - @verbatim Pixel#alpha= @endverbatim
+ *
+ * Notes:
+ *   - Pixel is Observable. Setters call changed, notify_observers
+ *   - Setters return their argument values for backward compatibility to when
+ *     Pixel was a Struct class.
+ *
+ * @param self this object
+ * @param v the alpha value
+ * @return self
+ */
+VALUE
+Pixel_alpha_eq(VALUE self, VALUE v)
+{
+    Pixel *pixel;
+ 
+    rb_check_frozen(self);
+    Data_Get_Struct(self, Pixel, pixel);
+    pixel->opacity = QuantumRange - APP2QUANTUM(v);
+    (void) rb_funcall(self, rm_ID_changed, 0);
+    (void) rb_funcall(self, rm_ID_notify_observers, 1, self);
+    return QUANTUM2NUM(QuantumRange - pixel->opacity);
+}
+
 
 /**
  * Set Pixel opacity attribute.
