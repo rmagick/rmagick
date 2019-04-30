@@ -317,4 +317,25 @@ class DrawUT < Test::Unit::TestCase
       assert_instance_of(Magick::Image::DrawOptions, yield_obj)
     end
   end
+
+  def test_issue_604
+    points = [0, 0, 1, 1, 2, 2]
+
+    pr = Magick::Draw.new
+
+    pr.define_clip_path('example') do
+      pr.polygon(*points)
+    end
+
+    pr.push
+    pr.clip_path('example')
+
+    composite = Magick::Image.new(10, 10)
+    pr.composite(0, 0, 10, 10, composite)
+
+    pr.pop
+
+    canvas = Magick::Image.new(10, 10)
+    pr.draw(canvas)
+  end
 end

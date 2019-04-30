@@ -291,7 +291,7 @@ module Magick
     # (pop) graphic-context".
     def define_clip_path(name)
       push('defs')
-      push('clip-path', name)
+      push("clip-path \"#{name}\"")
       push('graphic-context')
       yield
     ensure
