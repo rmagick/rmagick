@@ -681,17 +681,17 @@ EndianType_new(EndianType type)
 
 
 /**
- * Returns a FilterTypes enum object for the specified value.
+ * Returns a FilterType enum object for the specified value.
  *
  * No Ruby usage (internal function)
  *
- * @param type the FilterTypes
- * @return a new FilterTypes enumerator
+ * @param type the FilterType
+ * @return a new FilterType enumerator
  */
 VALUE
-FilterTypes_find(FilterTypes type)
+FilterType_find(FilterType type)
 {
-    return Enum_find(Class_FilterTypes, type);
+    return Enum_find(Class_FilterType, type);
 }
 
 

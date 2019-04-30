@@ -162,7 +162,7 @@ class Image3_UT < Test::Unit::TestCase
     assert_equal(240.0, girl.x_resolution)
     assert_equal(240.0, girl.y_resolution)
 
-    Magick::FilterTypes.values do |filter|
+    Magick::FilterType.values do |filter|
       assert_nothing_raised { @img.resample(50, 50, filter) }
     end
     assert_nothing_raised { @img.resample(50, 50, Magick::PointFilter, 2.0) }
@@ -192,7 +192,7 @@ class Image3_UT < Test::Unit::TestCase
     end
     assert_nothing_raised { @img.resize(50, 50) }
 
-    Magick::FilterTypes.values do |filter|
+    Magick::FilterType.values do |filter|
       assert_nothing_raised { @img.resize(50, 50, filter) }
     end
     assert_nothing_raised { @img.resize(50, 50, Magick::PointFilter, 2.0) }

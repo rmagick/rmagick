@@ -6310,7 +6310,7 @@ VALUE
 Image_filter(VALUE self)
 {
     Image *image = rm_check_destroyed(self);
-    return FilterTypes_find(image->filter);
+    return FilterType_find(image->filter);
 }
 
 
@@ -6328,7 +6328,7 @@ VALUE
 Image_filter_eq(VALUE self, VALUE filter)
 {
     Image *image = rm_check_frozen(self);
-    VALUE_TO_ENUM(filter, image->filter, FilterTypes);
+    VALUE_TO_ENUM(filter, image->filter, FilterType);
     return filter;
 }
 
@@ -11137,7 +11137,7 @@ static VALUE
 resample(int bang, int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
-    FilterTypes filter;
+    FilterType filter;
     double x_resolution, y_resolution, blur;
     double width, height;
     ExceptionInfo *exception;
@@ -11155,7 +11155,7 @@ resample(int bang, int argc, VALUE *argv, VALUE self)
         case 4:
             blur = NUM2DBL(argv[3]);
         case 3:
-            VALUE_TO_ENUM(argv[2], filter, FilterTypes);
+            VALUE_TO_ENUM(argv[2], filter, FilterType);
         case 2:
             y_resolution = NUM2DBL(argv[1]);
             if (y_resolution < 0.0)
@@ -11284,7 +11284,7 @@ resize(int bang, int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
     double scale_arg;
-    FilterTypes filter;
+    FilterType filter;
     unsigned long rows, columns;
     double blur, drows, dcols;
     ExceptionInfo *exception;
@@ -11302,7 +11302,7 @@ resize(int bang, int argc, VALUE *argv, VALUE self)
         case 4:
             blur = NUM2DBL(argv[3]);
         case 3:
-            VALUE_TO_ENUM(argv[2], filter, FilterTypes);
+            VALUE_TO_ENUM(argv[2], filter, FilterType);
         case 2:
             rows = NUM2ULONG(argv[1]);
             columns = NUM2ULONG(argv[0]);

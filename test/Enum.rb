@@ -92,9 +92,9 @@ class EnumUT < Test::Unit::TestCase
     end
   end
 
-  def test_issue593_filter_types
+  def test_issue593_filter_type
     img = Magick::Image.new(1, 1)
-    Magick::FilterTypes.values do |value|
+    Magick::FilterType.values do |value|
       img.filter = value
       assert_equal(value, img.filter)
     end

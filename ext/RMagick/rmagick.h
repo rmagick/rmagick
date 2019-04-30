@@ -119,6 +119,7 @@ typedef MagickPixelPacket MagickPixel;
 typedef PixelPacket PixelColor;
 typedef AlphaChannelType AlphaChannelOption;
 typedef DistortImageMethod DistortMethod;
+typedef FilterTypes FilterType;
 
 //! Montage
 typedef struct
@@ -301,7 +302,7 @@ EXTERN VALUE Class_DisposeType;
 EXTERN VALUE Class_DistortMethod;
 EXTERN VALUE Class_DitherMethod;
 EXTERN VALUE Class_EndianType;
-EXTERN VALUE Class_FilterTypes;
+EXTERN VALUE Class_FilterType;
 EXTERN VALUE Class_GravityType;
 EXTERN VALUE Class_ImageType;
 EXTERN VALUE Class_InterlaceType;
@@ -1045,7 +1046,7 @@ extern VALUE  CompositeOperator_find(CompositeOperator);
 extern VALUE  CompressionType_new(CompressionType);
 extern VALUE  DisposeType_new(DisposeType);
 extern VALUE  EndianType_new(EndianType);
-extern VALUE  FilterTypes_find(FilterTypes);
+extern VALUE  FilterType_find(FilterType);
 extern VALUE  GravityType_new(GravityType);
 extern VALUE  ImageType_new(ImageType);
 extern VALUE  InterlaceType_new(InterlaceType);

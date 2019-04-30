@@ -1155,8 +1155,8 @@ Init_RMagick2(void)
         ENUMERATOR(MSBEndian)
     END_ENUM
 
-    // FilterTypes constants
-    DEF_ENUM(FilterTypes)
+    // FilterType constants
+    DEF_ENUM(FilterType)
         ENUMERATOR(UndefinedFilter)
         ENUMERATOR(PointFilter)
         ENUMERATOR(BoxFilter)
