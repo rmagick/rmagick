@@ -1219,43 +1219,7 @@ StyleType_new(StyleType style)
 
 
 /**
- * Return the string representation of a VirtualPixelMethod value.
- *
- * No Ruby usage (internal function)
- *
- * @param method the VirtualPixelMethod
- * @return the name
- */
-static const char *
-VirtualPixelMethod_name(VirtualPixelMethod method)
-{
-    switch (method)
-    {
-        ENUM_TO_NAME(EdgeVirtualPixelMethod)
-        ENUM_TO_NAME(MirrorVirtualPixelMethod)
-        ENUM_TO_NAME(TileVirtualPixelMethod)
-        ENUM_TO_NAME(TransparentVirtualPixelMethod)
-        ENUM_TO_NAME(BackgroundVirtualPixelMethod)
-        ENUM_TO_NAME(DitherVirtualPixelMethod)
-        ENUM_TO_NAME(RandomVirtualPixelMethod)
-        ENUM_TO_NAME(ConstantVirtualPixelMethod)
-        ENUM_TO_NAME(MaskVirtualPixelMethod)
-        ENUM_TO_NAME(BlackVirtualPixelMethod)
-        ENUM_TO_NAME(GrayVirtualPixelMethod)
-        ENUM_TO_NAME(WhiteVirtualPixelMethod)
-        ENUM_TO_NAME(HorizontalTileVirtualPixelMethod)
-        ENUM_TO_NAME(VerticalTileVirtualPixelMethod)
-        ENUM_TO_NAME(HorizontalTileEdgeVirtualPixelMethod)
-        ENUM_TO_NAME(VerticalTileEdgeVirtualPixelMethod)
-        ENUM_TO_NAME(CheckerTileVirtualPixelMethod)
-        default:
-        ENUM_TO_NAME(UndefinedVirtualPixelMethod)
-    }
-}
-
-
-/**
- * Construct a VirtualPixelMethod enum for a specified VirtualPixelMethod value.
+ * Returns a VirtualPixelMethod enum for a specified VirtualPixelMethod value.
  *
  * No Ruby usage (internal function)
  *
@@ -1263,8 +1227,7 @@ VirtualPixelMethod_name(VirtualPixelMethod method)
  * @return a new VirtualPixelMethod enumerator
  */
 VALUE
-VirtualPixelMethod_new(VirtualPixelMethod style)
+VirtualPixelMethod_find(VirtualPixelMethod style)
 {
-    const char *name = VirtualPixelMethod_name(style);
-    return rm_enum_new(Class_VirtualPixelMethod, ID2SYM(rb_intern(name)), INT2FIX(style));
+    return Enum_find(Class_VirtualPixelMethod, style);
 }

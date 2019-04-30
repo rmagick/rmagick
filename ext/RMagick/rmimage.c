@@ -14534,7 +14534,7 @@ Image_virtual_pixel_method(VALUE self)
     image = rm_check_destroyed(self);
     vpm = GetImageVirtualPixelMethod(image);
     rm_check_image_exception(image, RetainOnError);
-    return VirtualPixelMethod_new(vpm);
+    return VirtualPixelMethod_find(vpm);
 }
 
 
