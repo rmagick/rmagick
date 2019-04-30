@@ -12944,7 +12944,7 @@ VALUE
 Image_class_type(VALUE self)
 {
     Image *image = rm_check_destroyed(self);
-    return ClassType_new(image->storage_class);
+    return ClassType_find(image->storage_class);
 }
 
 

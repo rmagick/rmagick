@@ -82,6 +82,16 @@ class EnumUT < Test::Unit::TestCase
     end
   end
 
+  def test_issue593_classtype
+    img = Magick::Image.new(1, 1)
+    Magick::ClassType.values do |value|
+      next if value == Magick::UndefinedClass
+
+      img.class_type = value
+      assert_equal(value, img.class_type)
+    end
+  end
+
   def test_issue593_virtual_pixel_method
     img = Magick::Image.new(1, 1)
     Magick::VirtualPixelMethod.values do |value|
