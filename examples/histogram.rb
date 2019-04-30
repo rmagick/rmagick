@@ -68,7 +68,7 @@ module Magick
       blue_histogram['Label'] = 'Blue'
       int_histogram = rgb_histogram.copy
       int_histogram['Label'] = 'Intensity'
-      int_histogram.matte = true
+      int_histogram.alpha(Magick::ActivateAlphaChannel)
 
       rgb_column   = PixelColumn.new(HISTOGRAM_ROWS)
       red_column   = PixelColumn.new(HISTOGRAM_ROWS)

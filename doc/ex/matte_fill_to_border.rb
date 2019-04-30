@@ -6,7 +6,7 @@ img = Magick::Image.new(200, 200)
 img.compression = Magick::LZWCompression
 
 bg = Magick::Image.read('plasma:fractal') { self.size = '200x200' }
-bg[0].matte = false
+bg[0].alpha(Magick::DeactivateAlphaChannel)
 
 gc = Magick::Draw.new
 gc.stroke_width(2)

@@ -15,7 +15,7 @@ implosion = 0.25
 8.times do
   frames << img.implode(implosion)
   legend.annotate(frames, 0, 0, 10, 20, format('% 4.2f', implosion))
-  frames.matte = false
+  frames.alpha(Magick::DeactivateAlphaChannel)
   implosion -= 0.10
 end
 
@@ -23,7 +23,7 @@ end
   implosion += 0.10
   frames << img.implode(implosion)
   legend.annotate(frames, 0, 0, 10, 20, format('% 4.2f', implosion))
-  frames.matte = false
+  frames.alpha(Magick::DeactivateAlphaChannel)
 end
 
 frames.delay = 10
