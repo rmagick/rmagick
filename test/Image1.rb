@@ -9,6 +9,10 @@ class Image1_UT < Test::Unit::TestCase
     @img = Magick::Image.new(20, 20)
   end
 
+  def test_class_type
+    assert_raise(ArgumentError) { @img.class_type = Magick::UndefinedClass }
+  end
+
   def test_constitute
     pixels = @img.dispatch(0, 0, @img.columns, @img.rows, 'RGBA')
     res = Magick::Image.constitute(@img.columns, @img.rows, 'RGBA', pixels)
