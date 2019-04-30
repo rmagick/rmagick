@@ -30,7 +30,7 @@ static VALUE get_type_metrics(int, VALUE *, VALUE, get_type_metrics_func_t);
  *
  * @param self this object
  * @param matrix the affine matrix to set
- * @return self
+ * @return matrix
  */
 VALUE
 Draw_affine_eq(VALUE self, VALUE matrix)
@@ -52,7 +52,7 @@ Draw_affine_eq(VALUE self, VALUE matrix)
  *
  * @param self this object
  * @param align the alignment
- * @return self
+ * @return align
  */
 VALUE
 Draw_align_eq(VALUE self, VALUE align)
@@ -74,7 +74,7 @@ Draw_align_eq(VALUE self, VALUE align)
  *
  * @param self this object
  * @param decorate the decorate
- * @return self
+ * @return decorate
  */
 VALUE
 Draw_decorate_eq(VALUE self, VALUE decorate)
@@ -96,7 +96,7 @@ Draw_decorate_eq(VALUE self, VALUE decorate)
  *
  * @param self this object
  * @param density the density
- * @return self
+ * @return density
  */
 VALUE
 Draw_density_eq(VALUE self, VALUE density)
@@ -119,7 +119,7 @@ Draw_density_eq(VALUE self, VALUE density)
  *
  * @param self this object
  * @param encoding the encoding
- * @return self
+ * @return encoding
  */
 VALUE
 Draw_encoding_eq(VALUE self, VALUE encoding)
@@ -142,7 +142,7 @@ Draw_encoding_eq(VALUE self, VALUE encoding)
  *
  * @param self this object
  * @param fill the fill
- * @return self
+ * @return fill
  */
 VALUE
 Draw_fill_eq(VALUE self, VALUE fill)
@@ -164,7 +164,7 @@ Draw_fill_eq(VALUE self, VALUE fill)
  *
  * @param self this object
  * @param pattern the fill pattern
- * @return self
+ * @return pattern
  * @see Draw_stroke_pattern_eq
  * @see Draw_tile_eq
  */
@@ -204,7 +204,7 @@ Draw_fill_pattern_eq(VALUE self, VALUE pattern)
  *
  * @param self this object
  * @param font the font
- * @return self
+ * @return font
  */
 VALUE
 Draw_font_eq(VALUE self, VALUE font)
@@ -227,7 +227,7 @@ Draw_font_eq(VALUE self, VALUE font)
  *
  * @param self this object
  * @param family the family
- * @return self
+ * @return family
  */
 VALUE
 Draw_font_family_eq(VALUE self, VALUE family)
@@ -250,7 +250,7 @@ Draw_font_family_eq(VALUE self, VALUE family)
  *
  * @param self this object
  * @param stretch the font_stretch
- * @return self
+ * @return stretch
  */
 VALUE
 Draw_font_stretch_eq(VALUE self, VALUE stretch)
@@ -272,7 +272,7 @@ Draw_font_stretch_eq(VALUE self, VALUE stretch)
  *
  * @param self this object
  * @param style the font_style
- * @return self
+ * @return style
  */
 VALUE
 Draw_font_style_eq(VALUE self, VALUE style)
@@ -298,7 +298,7 @@ Draw_font_style_eq(VALUE self, VALUE style)
  *
  * @param self this object
  * @param weight the font_weight
- * @return self
+ * @return weight
  */
 VALUE
 Draw_font_weight_eq(VALUE self, VALUE weight)
@@ -371,7 +371,7 @@ Draw_font_weight_eq(VALUE self, VALUE weight)
  *
  * @param self this object
  * @param grav the gravity
- * @return self
+ * @return grav
  */
 VALUE
 Draw_gravity_eq(VALUE self, VALUE grav)
@@ -397,7 +397,7 @@ Draw_gravity_eq(VALUE self, VALUE grav)
  *
  * @param self this object
  * @param kerning the kerning
- * @return self
+ * @return kerning
  */
 VALUE
 Draw_kerning_eq(VALUE self, VALUE kerning)
@@ -422,7 +422,7 @@ Draw_kerning_eq(VALUE self, VALUE kerning)
  *
  * @param self this object
  * @param spacing the spacing
- * @return self
+ * @return spacing
  */
 VALUE
 Draw_interline_spacing_eq(VALUE self, VALUE spacing)
@@ -447,7 +447,7 @@ Draw_interline_spacing_eq(VALUE self, VALUE spacing)
  *
  * @param self this object
  * @param spacing the spacing
- * @return self
+ * @return spacing
  */
 VALUE
 Draw_interword_spacing_eq(VALUE self, VALUE spacing)
@@ -701,7 +701,7 @@ Draw_marshal_load(VALUE self, VALUE ddraw)
  *
  * @param self this object
  * @param pointsize the pointsize
- * @return self
+ * @return pointsize
  */
 VALUE
 Draw_pointsize_eq(VALUE self, VALUE pointsize)
@@ -728,7 +728,7 @@ Draw_pointsize_eq(VALUE self, VALUE pointsize)
  *
  * @param self this object
  * @param deg the number of degrees
- * @return self
+ * @return deg
  */
 VALUE
 Draw_rotation_eq(VALUE self, VALUE deg)
@@ -775,7 +775,7 @@ Draw_rotation_eq(VALUE self, VALUE deg)
  *
  * @param self this object
  * @param stroke the stroke
- * @return self
+ * @return stroke
  */
 VALUE
 Draw_stroke_eq(VALUE self, VALUE stroke)
@@ -797,7 +797,7 @@ Draw_stroke_eq(VALUE self, VALUE stroke)
  *
  * @param self this object
  * @param pattern the pattern
- * @return self
+ * @return pattern
  * @see Draw_fill_pattern_eq
  */
 VALUE
@@ -837,7 +837,7 @@ Draw_stroke_pattern_eq(VALUE self, VALUE pattern)
  *
  * @param self this object
  * @param stroke_width the stroke_width
- * @return self
+ * @return stroke_width
  */
 VALUE
 Draw_stroke_width_eq(VALUE self, VALUE stroke_width)
@@ -859,7 +859,7 @@ Draw_stroke_width_eq(VALUE self, VALUE stroke_width)
  *
  * @param self this object
  * @param text_antialias the text_antialias
- * @return self
+ * @return text_antialias
  */
 VALUE
 Draw_text_antialias_eq(VALUE self, VALUE text_antialias)
@@ -881,7 +881,7 @@ Draw_text_antialias_eq(VALUE self, VALUE text_antialias)
  *
  * @param self this object
  * @param image the image to tile
- * @return self
+ * @return image
  */
 VALUE
 Draw_tile_eq(VALUE self, VALUE image)
@@ -898,7 +898,7 @@ Draw_tile_eq(VALUE self, VALUE image)
  *
  * @param self this object
  * @param undercolor the undercolor
- * @return self
+ * @return undercolor
  */
 VALUE
 Draw_undercolor_eq(VALUE self, VALUE undercolor)
@@ -1810,7 +1810,7 @@ rm_polaroid_new(void)
  *
  * @param self this object
  * @param shadow the shadow color
- * @return self
+ * @return shadow
  */
 VALUE
 PolaroidOptions_shadow_color_eq(VALUE self, VALUE shadow)
@@ -1832,7 +1832,7 @@ PolaroidOptions_shadow_color_eq(VALUE self, VALUE shadow)
  *
  * @param self this object
  * @param border the border color
- * @return self
+ * @return border
  */
 VALUE
 PolaroidOptions_border_color_eq(VALUE self, VALUE border)

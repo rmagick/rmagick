@@ -71,7 +71,7 @@ get_option(VALUE self, const char *key)
  * @param self this object
  * @param key the option key
  * @param string the value
- * @return self
+ * @return string
  */
 static VALUE
 set_option(VALUE self, const char *key, VALUE string)
@@ -105,7 +105,7 @@ set_option(VALUE self, const char *key, VALUE string)
  * @param self this object
  * @param option the option
  * @param color the color name
- * @return self
+ * @return color
  */
 static VALUE set_color_option(VALUE self, const char *option, VALUE color)
 {
@@ -183,7 +183,7 @@ static VALUE get_dbl_option(VALUE self, const char *option)
  * @param self this object
  * @param option the option name
  * @param value the value
- * @return self
+ * @return value
  */
 static VALUE set_dbl_option(VALUE self, const char *option, VALUE value)
 {
@@ -462,7 +462,7 @@ Info_authenticate(VALUE self)
  *
  * @param self this object
  * @param passwd the authenticating password
- * @return self
+ * @return passwd
  */
 VALUE
 Info_authenticate_eq(VALUE self, VALUE passwd)
@@ -523,7 +523,7 @@ Info_background_color(VALUE self)
  *
  * @param self this object
  * @param bc_arg the background color
- * @return self
+ * @return bc_arg
  * @throw ArgumentError
  */
 VALUE
@@ -568,7 +568,7 @@ Info_border_color(VALUE self)
  *
  * @param self this object
  * @param bc_arg the border color
- * @return self
+ * @return bc_arg
  * @throw ArgumentError
  */
 VALUE
@@ -683,7 +683,7 @@ Info_colorspace(VALUE self)
  *
  * @param self this object
  * @param colorspace the colorspace type
- * @return self
+ * @return colorspace
  * @throw ArgumentError
  */
 VALUE
@@ -724,7 +724,7 @@ Info_compression(VALUE self)
  *
  * @param self this object
  * @param type the compression type
- * @return self
+ * @return type
  * @throw ArgumentError
  */
 VALUE
@@ -861,7 +861,7 @@ arg_is_integer(VALUE arg)
  *
  * @param self this object
  * @param string the delay
- * @return self
+ * @return string
  */
 VALUE
 Info_delay_eq(VALUE self, VALUE string)
@@ -914,7 +914,7 @@ DEF_ATTR_READER(Info, density, str)
  *
  * @param self this object
  * @param density_arg the density
- * @return self
+ * @return density_arg
  * @throw ArgumentError
  */
 VALUE
@@ -966,7 +966,7 @@ DEF_ATTR_READER(Info, depth, int)
  *
  * @param self this object
  * @param depth the depth
- * @return self
+ * @return depth
  * @throw ArgumentError
  */
 VALUE
@@ -1093,7 +1093,7 @@ Info_dispose(VALUE self)
  *
  * @param self this object
  * @param disp the DisposeType enumerator
- * @return self
+ * @return disp
  */
 VALUE
 Info_dispose_eq(VALUE self, VALUE disp)
@@ -1157,7 +1157,7 @@ Info_endian(VALUE self)
  *
  * @param self this object
  * @param endian the endian (Magick::MSBEndian or Magick::LSBEndian)
- * @return self
+ * @return endian
  */
 VALUE
 Info_endian_eq(VALUE self, VALUE endian)
@@ -1201,7 +1201,7 @@ DEF_ATTR_READER(Info, extract, str)
  *
  * @param self this object
  * @param extract_arg the extract string
- * @return self
+ * @return extract_arg
  * @throw ArgumentError
  */
 VALUE
@@ -1268,7 +1268,7 @@ Info_filename(VALUE self)
  *
  * @param self this object
  * @param filename the filename
- * @return self
+ * @return filename
  * @see Image_capture
  */
 VALUE
@@ -1346,7 +1346,7 @@ DEF_ATTR_READER(Info, font, str)
  *
  * @param self this object
  * @param font_arg the font (as a String)
- * @return self
+ * @return font_arg
  */
 VALUE
 Info_font_eq(VALUE self, VALUE font_arg)
@@ -1404,7 +1404,7 @@ VALUE Info_format(VALUE self)
  *
  * @param self this object
  * @param magick the encoding format
- * @return self
+ * @return magick
  */
 VALUE
 Info_format_eq(VALUE self, VALUE magick)
@@ -1453,7 +1453,7 @@ DEF_ATTR_READER(Info, fuzz, dbl)
  *
  * @param self this object
  * @param fuzz the fuzz
- * @return self
+ * @return fuzz
  * @see Image_fuzz_eq
  */
 VALUE Info_fuzz_eq(VALUE self, VALUE fuzz)
@@ -1563,7 +1563,7 @@ VALUE Info_gravity(VALUE self)
  *
  * @param self this object
  * @param grav the gravity enumerator
- * @return self
+ * @return grav
  */
 VALUE
 Info_gravity_eq(VALUE self, VALUE grav)
@@ -1628,7 +1628,7 @@ Info_group(VALUE self)
  *
  * @param self this object
  * @param value the group
- * @return self
+ * @return value
  * @deprecated This method has been deprecated.
  */
 VALUE
@@ -1671,7 +1671,7 @@ Info_image_type(VALUE self)
  *
  * @param self this object
  * @param type the classification type
- * @return self
+ * @return type
  * @throw ArgumentError
  */
 VALUE
@@ -1710,7 +1710,7 @@ Info_interlace(VALUE self)
  *
  * @param self this object
  * @param inter the interlace type
- * @return self
+ * @return inter
  * @throw ArgumentError
  */
 VALUE
@@ -1752,7 +1752,7 @@ Info_matte_color(VALUE self)
  *
  * @param self this object
  * @param matte_arg the name of the matte as a String
- * @return self
+ * @return matte_arg
  * @throw ArgumentError
  */
 VALUE
@@ -1775,7 +1775,7 @@ Info_matte_color_eq(VALUE self, VALUE matte_arg)
  *
  * @param self this object
  * @param monitor the monitor
- * @return self
+ * @return monitor
  * @see Image_monitor_eq
  */
 VALUE
@@ -1831,7 +1831,7 @@ Info_orientation(VALUE self)
  *
  * @param self this object
  * @param inter the orientation type as an OrientationType enum value
- * @return self
+ * @return inter
  * @throw ArgumentError
  */
 VALUE
@@ -1876,7 +1876,7 @@ Info_origin(VALUE self)
  *
  * @param self this object
  * @param origin_arg the origin geometry
- * @return self
+ * @return origin_arg
  */
 VALUE
 Info_origin_eq(VALUE self, VALUE origin_arg)
@@ -1939,7 +1939,7 @@ Info_page(VALUE self)
  *
  * @param self this object
  * @param page_arg the geometry
- * @return self
+ * @return page_arg
  */
 VALUE
 Info_page_eq(VALUE self, VALUE page_arg)
@@ -2006,7 +2006,7 @@ Info_sampling_factor(VALUE self)
  *
  * @param self this object
  * @param sampling_factor the sampling factors
- * @return self
+ * @return sampling_factor
  */
 VALUE
 Info_sampling_factor_eq(VALUE self, VALUE sampling_factor)
@@ -2063,7 +2063,7 @@ Info_scene(VALUE self)
  *
  * @param self this object
  * @param scene the scene number
- * @return self
+ * @return scene
  */
 VALUE
 Info_scene_eq(VALUE self, VALUE scene)
@@ -2105,7 +2105,7 @@ DEF_ATTR_READER(Info, server_name, str)
  *
  * @param self this object
  * @param server_arg the server name as a String
- * @return self
+ * @return server_arg
  */
 VALUE
 Info_server_name_eq(VALUE self, VALUE server_arg)
@@ -2147,7 +2147,7 @@ DEF_ATTR_READER(Info, size, str)
  *
  * @param self this object
  * @param size_arg the size
- * @return self
+ * @return size_arg
  * @throw ArgumentError
  */
 VALUE
@@ -2261,7 +2261,7 @@ Info_stroke_width_eq(VALUE self, VALUE stroke_width)
  *
  * @param self this object
  * @param texture the name of the texture image
- * @return self
+ * @return texture
  */
 VALUE
 Info_texture_eq(VALUE self, VALUE texture)
@@ -2304,7 +2304,7 @@ Info_texture_eq(VALUE self, VALUE texture)
  *
  * @param self this object
  * @param offset the offset
- * @return self
+ * @return offset
  */
 VALUE
 Info_tile_offset_eq(VALUE self, VALUE offset)
@@ -2359,7 +2359,7 @@ Info_transparent_color(VALUE self)
  *
  * @param self this object
  * @param tc_arg the transparent color as a String
- * @return self
+ * @return tc_arg
  * @throw ArgumentError
  */
 VALUE
@@ -2497,7 +2497,7 @@ Info_units(VALUE self)
  *
  * @param self this object
  * @param units the resolution type
- * @return self
+ * @return units
  * @throw ArgumentError
  */
 VALUE
@@ -2529,7 +2529,7 @@ DEF_ATTR_READER(Info, view, str)
  *
  * @param self this object
  * @param view_arg the viewing parameters
- * @return self
+ * @return view_arg
  */
 VALUE
 Info_view_eq(VALUE self, VALUE view_arg)

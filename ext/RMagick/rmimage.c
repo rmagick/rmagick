@@ -1041,7 +1041,7 @@ Image_background_color(VALUE self)
  *
  * @param self this object
  * @param color the color
- * @return self
+ * @return color
  */
 VALUE
 Image_background_color_eq(VALUE self, VALUE color)
@@ -1133,7 +1133,7 @@ Image_bias(VALUE self)
  *
  * @param self this object
  * @param pct the bias
- * @return self
+ * @return pct
  */
 VALUE
 Image_bias_eq(VALUE self, VALUE pct)
@@ -1234,7 +1234,7 @@ Image_black_point_compensation(VALUE self)
  *
  * @param self this object
  * @param arg the compensation
- * @return self
+ * @return arg
  */
 VALUE
 Image_black_point_compensation_eq(VALUE self, VALUE arg)
@@ -1732,7 +1732,7 @@ Image_blur(VALUE self)
  *
  * @param self this object
  * @param value the blur
- * @return self
+ * @return value
  * @deprecated This method has been deprecated.
  */
 VALUE
@@ -1954,7 +1954,7 @@ Image_border_color(VALUE self)
  *
  * @param self this object
  * @param color the color
- * @return self
+ * @return color
  */
 VALUE
 Image_border_color_eq(VALUE self, VALUE color)
@@ -2460,7 +2460,7 @@ Image_chromaticity(VALUE self)
  *
  * @param self this object
  * @param chroma the chromaticity
- * @return self
+ * @return chroma
  */
 VALUE
 Image_chromaticity_eq(VALUE self, VALUE chroma)
@@ -2753,7 +2753,7 @@ Image_color_profile(VALUE self)
  *
  * @param self this object
  * @param profile the profile to set, as a Ruby string
- * @return self
+ * @return profile
  */
 VALUE
 Image_color_profile_eq(VALUE self, VALUE profile)
@@ -3048,7 +3048,7 @@ Image_colorspace(VALUE self)
  *
  * @param self this object
  * @param colorspace the colorspace
- * @return self
+ * @return colorspace
  * @see Magick::colorSpace in Magick++'s Magick::colorSpace
  */
 VALUE
@@ -3263,7 +3263,7 @@ Image_compose(VALUE self)
  *
  * @param self this object
  * @param compose_arg the composite operator
- * @return self
+ * @return compose_arg
  */
 VALUE
 Image_compose_eq(VALUE self, VALUE compose_arg)
@@ -3822,7 +3822,7 @@ Image_compression(VALUE self)
  *
  * @param self this object
  * @param compression the compression
- * @return self
+ * @return compression
  */
 VALUE
 Image_compression_eq(VALUE self, VALUE compression)
@@ -4508,7 +4508,7 @@ Image_density(VALUE self)
  *
  * @param self this object
  * @param density_arg The density String or Geometry
- * @return self
+ * @return density_arg
  */
 VALUE
 Image_density_eq(VALUE self, VALUE density_arg)
@@ -5140,7 +5140,7 @@ Image_dispose(VALUE self)
  *
  * @param self this object
  * @param dispose the dispose
- * @return self
+ * @return dispose
  */
 VALUE
 Image_dispose_eq(VALUE self, VALUE dispose)
@@ -5692,7 +5692,7 @@ Image_endian(VALUE self)
  *
  * @param self this object
  * @param type the endian type
- * @return self
+ * @return type
  */
 VALUE
 Image_endian_eq(VALUE self, VALUE type)
@@ -6258,7 +6258,7 @@ Image_extract_info(VALUE self)
  *
  * @param self this object
  * @param rect extract_info
- * @return self
+ * @return rect
  */
 VALUE
 Image_extract_info_eq(VALUE self, VALUE rect)
@@ -6322,7 +6322,7 @@ Image_filter(VALUE self)
  *
  * @param self this object
  * @param filter the filter
- * @return self
+ * @return filter
  */
 VALUE
 Image_filter_eq(VALUE self, VALUE filter)
@@ -6568,7 +6568,7 @@ Image_format(VALUE self)
  *
  * @param self this object
  * @param magick the encoding format
- * @return self
+ * @return magick
  */
 VALUE
 Image_format_eq(VALUE self, VALUE magick)
@@ -6841,7 +6841,7 @@ DEF_ATTR_READER(Image, fuzz, dbl)
  *
  * @param self this object
  * @param fuzz the fuzz
- * @return self
+ * @return fuzz
  * @see Info_fuzz_eq
  */
 VALUE
@@ -7116,7 +7116,7 @@ DEF_ATTR_READER(Image, geometry, str)
  *
  * @param self this object
  * @param geometry the geometry
- * @return self
+ * @return geometry
  */
 VALUE
 Image_geometry_eq(VALUE self, VALUE geometry)
@@ -7735,7 +7735,7 @@ Image_interlace(VALUE self)
  *
  * @param self this object
  * @param interlace the interlace
- * @return self
+ * @return interlace
  */
 VALUE
 Image_interlace_eq(VALUE self, VALUE interlace)
@@ -7786,7 +7786,7 @@ Image_iptc_profile(VALUE self)
  *
  * @param self
  * @param profile the IPTC profile (as a string)
- * @return self
+ * @return profile
  */
 VALUE
 Image_iptc_profile_eq(VALUE self, VALUE profile)
@@ -8708,7 +8708,7 @@ Image_matte_color(VALUE self)
  *
  * @param self this object
  * @param color the matte color
- * @return self
+ * @return color
  */
 VALUE
 Image_matte_color_eq(VALUE self, VALUE color)
@@ -9004,7 +9004,7 @@ Image_modulate(int argc, VALUE *argv, VALUE self)
  *
  * @param self this object
  * @param monitor the progress monitor
- * @return self
+ * @return monitor
  */
 VALUE
 Image_monitor_eq(VALUE self, VALUE monitor)
@@ -9766,7 +9766,7 @@ Image_orientation(VALUE self)
  *
  * @param self this object
  * @param orientation the orientation
- * @return self
+ * @return orientation
  */
 VALUE
 Image_orientation_eq(VALUE self, VALUE orientation)
@@ -9802,7 +9802,7 @@ Image_page(VALUE self)
  *
  * @param self this object
  * @param rect the page rectangle
- * @return self
+ * @return rect
  */
 VALUE
 Image_page_eq(VALUE self, VALUE rect)
@@ -10063,7 +10063,7 @@ Image_pixel_interpolation_method(VALUE self)
  *
  * @param self this object
  * @param method the interpolate field
- * @return self
+ * @return method
  * @see Image_pixel_interpolation_method
  * @see Image.interpolate_pixel_color
  */
@@ -11108,7 +11108,7 @@ Image_rendering_intent(VALUE self)
  *
  * @param self this object
  * @param ri the rendering intent
- * @return self
+ * @return ri
  */
 VALUE
 Image_rendering_intent_eq(VALUE self, VALUE ri)
@@ -11990,7 +11990,7 @@ Image_segment(int argc, VALUE *argv, VALUE self)
  *
  * @param self this object
  * @param opacity_arg the opacity
- * @return self
+ * @return opacity_arg
  */
 VALUE
 Image_opacity_eq(VALUE self, VALUE opacity_arg)
@@ -12957,7 +12957,7 @@ Image_class_type(VALUE self)
  *
  * @param self this object
  * @param new_class_type the storage class
- * @return self
+ * @return new_class_type
  */
 VALUE
 Image_class_type_eq(VALUE self, VALUE new_class_type)
@@ -13469,7 +13469,7 @@ Image_ticks_per_second(VALUE self)
  *
  * @param self this object
  * @param tps ticks per second
- * @return self
+ * @return tps
  */
 VALUE
 Image_ticks_per_second_eq(VALUE self, VALUE tps)
@@ -13886,7 +13886,7 @@ Image_transparent_color(VALUE self)
  *
  * @param self this object
  * @param color the transparent color
- * @return self
+ * @return color
  */
 VALUE
 Image_transparent_color_eq(VALUE self, VALUE color)
@@ -14247,7 +14247,7 @@ Image_units(VALUE self)
  *
  * @param self this object
  * @param restype the resolution type
- * @return self
+ * @return restype
  */
 VALUE
 Image_units_eq(VALUE self, VALUE restype)
@@ -14544,7 +14544,7 @@ Image_virtual_pixel_method(VALUE self)
  *
  * @param self this object
  * @param method the VirtualPixelMethod
- * @return self
+ * @return method
  */
 VALUE
 Image_virtual_pixel_method_eq(VALUE self, VALUE method)
