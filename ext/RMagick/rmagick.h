@@ -118,6 +118,7 @@ typedef PixelPacket Pixel; /**< Make type name match class name */
 typedef MagickPixelPacket MagickPixel;
 typedef PixelPacket PixelColor;
 typedef AlphaChannelType AlphaChannelOption;
+typedef DistortImageMethod DistortMethod;
 
 //! Montage
 typedef struct
@@ -297,7 +298,7 @@ EXTERN VALUE Class_CompositeOperator;
 EXTERN VALUE Class_CompressionType;
 EXTERN VALUE Class_DecorationType;
 EXTERN VALUE Class_DisposeType;
-EXTERN VALUE Class_DistortImageMethod;
+EXTERN VALUE Class_DistortMethod;
 EXTERN VALUE Class_DitherMethod;
 EXTERN VALUE Class_EndianType;
 EXTERN VALUE Class_FilterTypes;
