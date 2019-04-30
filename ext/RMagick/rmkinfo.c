@@ -75,6 +75,10 @@ KernelInfo_initialize(VALUE self, VALUE kernel_string)
  * @param self this object
  * @deprecated This method has been deprecated.
  */
+
+/* ZeroKernelNans() is private function in ImageMagick. */
+MagickExport void ZeroKernelNans(KernelInfo *kernel);
+
 VALUE
 KernelInfo_zero_nans(VALUE self)
 {
@@ -92,6 +96,10 @@ KernelInfo_zero_nans(VALUE self)
  * @param self this object
  * @param scale scale to add
  */
+
+/* UnityAddKernelInfo() was private function until IM 6.9 */
+MagickExport void UnityAddKernelInfo(KernelInfo *kernel, const double scale);
+
 VALUE
 KernelInfo_unity_add(VALUE self, VALUE scale)
 {
@@ -131,6 +139,10 @@ KernelInfo_show(VALUE self)
  *                     and/or Magick::PercentValue
  * @param self this object
  */
+
+/* ScaleKernelInfo() was private function until IM 6.9 */
+MagickExport void ScaleKernelInfo(KernelInfo *kernel, const double scaling_factor,const GeometryFlags normalize_flags);
+
 VALUE
 KernelInfo_scale(VALUE self, VALUE scale, VALUE flags)
 {
