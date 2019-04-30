@@ -1080,7 +1080,7 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
         VALUE_TO_ENUM(argv[5], cop, CompositeOperator);
     }
 
-    op=CommandOptionToMnemonic(MagickComposeOptions, cop);
+    op = CommandOptionToMnemonic(MagickComposeOptions, cop);
     if (rm_strcasecmp("Unrecognized", op) == 0)
     {
         rb_raise(rb_eArgError, "unknown composite operator (%d)", cop);
