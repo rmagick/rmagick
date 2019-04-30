@@ -12973,7 +12973,9 @@ Image_class_type_eq(VALUE self, VALUE new_class_type)
     VALUE_TO_ENUM(new_class_type, class_type, ClassType);
 
     if (class_type == UndefinedClass)
+    {
         rb_raise(rb_eArgError, "Invalid class type specified.");
+    }
 
     if (image->storage_class == PseudoClass && class_type == DirectClass)
     {
