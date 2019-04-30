@@ -6310,7 +6310,7 @@ VALUE
 Image_filter(VALUE self)
 {
     Image *image = rm_check_destroyed(self);
-    return FilterTypes_new(image->filter);
+    return FilterTypes_find(image->filter);
 }
 
 

@@ -1044,7 +1044,7 @@ extern VALUE  CompositeOperator_find(CompositeOperator);
 extern VALUE  CompressionType_new(CompressionType);
 extern VALUE  DisposeType_new(DisposeType);
 extern VALUE  EndianType_new(EndianType);
-extern VALUE  FilterTypes_new(FilterTypes);
+extern VALUE  FilterTypes_find(FilterTypes);
 extern VALUE  GravityType_new(GravityType);
 extern VALUE  ImageLayerMethod_new(ImageLayerMethod);
 extern VALUE  ImageType_new(ImageType);

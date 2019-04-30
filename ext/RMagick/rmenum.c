@@ -681,59 +681,7 @@ EndianType_new(EndianType type)
 
 
 /**
- * Return the name of a FilterTypes enum as a string.
- *
- * No Ruby usage (internal function)
- *
- * @param type the FilterTypes
- * @return the name
- */
-static const char *
-FilterTypes_name(FilterTypes type)
-{
-    switch(type)
-    {
-        ENUM_TO_NAME(PointFilter)
-        ENUM_TO_NAME(BoxFilter)
-        ENUM_TO_NAME(TriangleFilter)
-        ENUM_TO_NAME(HermiteFilter)
-        ENUM_TO_NAME(HanningFilter)
-        ENUM_TO_NAME(HammingFilter)
-        ENUM_TO_NAME(BlackmanFilter)
-        ENUM_TO_NAME(GaussianFilter)
-        ENUM_TO_NAME(QuadraticFilter)
-        ENUM_TO_NAME(CubicFilter)
-        ENUM_TO_NAME(CatromFilter)
-        ENUM_TO_NAME(MitchellFilter)
-        ENUM_TO_NAME(LanczosFilter)
-        ENUM_TO_NAME(BesselFilter)
-        ENUM_TO_NAME(SincFilter)
-        ENUM_TO_NAME(KaiserFilter)
-        ENUM_TO_NAME(WelshFilter)
-        ENUM_TO_NAME(ParzenFilter)
-        ENUM_TO_NAME(LagrangeFilter)
-        ENUM_TO_NAME(BohmanFilter)
-        ENUM_TO_NAME(BartlettFilter)
-        // ENUM_TO_NAME(JincFilter) is alias of BesselFilter
-        ENUM_TO_NAME(SincFastFilter)
-        ENUM_TO_NAME(LanczosSharpFilter)
-        ENUM_TO_NAME(Lanczos2Filter)
-        ENUM_TO_NAME(Lanczos2SharpFilter)
-        ENUM_TO_NAME(RobidouxFilter)
-        ENUM_TO_NAME(RobidouxSharpFilter)
-        ENUM_TO_NAME(CosineFilter)
-        ENUM_TO_NAME(SplineFilter)
-#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
-        ENUM_TO_NAME(LanczosRadiusFilter)
-#endif
-        default:
-        ENUM_TO_NAME(UndefinedFilter)
-    }
-}
-
-
-/**
- * Construct an FilterTypes enum object for the specified value.
+ * Returns a FilterTypes enum object for the specified value.
  *
  * No Ruby usage (internal function)
  *
@@ -741,10 +689,9 @@ FilterTypes_name(FilterTypes type)
  * @return a new FilterTypes enumerator
  */
 VALUE
-FilterTypes_new(FilterTypes type)
+FilterTypes_find(FilterTypes type)
 {
-    const char *name = FilterTypes_name(type);
-    return rm_enum_new(Class_FilterTypes, ID2SYM(rb_intern(name)), INT2FIX(type));
+    return Enum_find(Class_FilterTypes, type);
 }
 
 
