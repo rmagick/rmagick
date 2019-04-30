@@ -261,7 +261,7 @@ begin
   puts '   wave...'
   temp = model.copy
   temp.cur_image[:Label] = 'Wave'
-  temp.matte = true
+  temp.alpha(Magick::ActivateAlphaChannel)
   temp.background_color = '#000000ff'
   example << temp.wave(25, 150)
 
@@ -309,7 +309,7 @@ begin
 
   # Write the result to a file
   montage_image.compression = RLECompression
-  montage_image.matte = false
+  montage_image.alpha(Magick::DeactivateAlphaChannel)
   puts 'Writing image ./rm_demo_out.png'
   montage_image.write 'rm_demo_out.png'
 

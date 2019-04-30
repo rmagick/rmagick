@@ -38,7 +38,7 @@ rows.times do |y|
 end
 
 # Composite the mono version of the image over the color version.
-grayrocks.matte = true
+grayrocks.alpha(Magick::ActivateAlphaChannel)
 combine = rocks.composite(grayrocks, Magick::CenterGravity, Magick::OverCompositeOp)
 # combine.display
 combine.write 'get_pixels.jpg'

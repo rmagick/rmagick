@@ -51,8 +51,8 @@ oval = oval.blur_image(0, 20)
 # the oval remain opaque. Each gray pixel around the border of the oval has a
 # varying level of transparency depending on how dark or light it is.
 
-ballerina.matte = true  # Ensure the ballerina image's opacity channel is enabled.
-oval.matte = false      # Force the CopyOpacityCompositeOp to use pixel intensity
+ballerina.alpha(Magick::ActivateAlphaChannel)  # Ensure the ballerina image's opacity channel is enabled.
+oval.alpha(Magick::DeactivateAlphaChannel)     # Force the CopyOpacityCompositeOp to use pixel intensity
 # to determine how much transparency to add to the ballerina
 # pixels.
 

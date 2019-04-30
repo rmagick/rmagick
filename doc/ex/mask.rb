@@ -26,7 +26,7 @@ end
 # in the mask image. Assign the mask image to the mask= attribute of the image
 # being masked.
 
-q.matte = false
+q.alpha(Magick::DeactivateAlphaChannel)
 img.mask q
 
 # Use the #level method to darken the image under the black part of the mask.
