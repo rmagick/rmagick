@@ -117,6 +117,7 @@ typedef ImageInfo Info; /**< Make type name match class name */
 typedef PixelPacket Pixel; /**< Make type name match class name */
 typedef MagickPixelPacket MagickPixel;
 typedef PixelPacket PixelColor;
+typedef AlphaChannelType AlphaChannelOption;
 
 //! Montage
 typedef struct
@@ -286,7 +287,7 @@ EXTERN VALUE Class_QuantumExpressionOperator;
 // Enum classes
 EXTERN VALUE Class_Enum;
 EXTERN VALUE Class_AlignType;
-EXTERN VALUE Class_AlphaChannelType;
+EXTERN VALUE Class_AlphaChannelOption;
 EXTERN VALUE Class_AnchorType;
 EXTERN VALUE Class_ChannelType;
 EXTERN VALUE Class_ClassType;

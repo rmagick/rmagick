@@ -892,8 +892,8 @@ Init_RMagick2(void)
         ENUMERATOR(RightAlign)
     END_ENUM
 
-    // AlphaChannelType constants
-    DEF_ENUM(AlphaChannelType)
+    // AlphaChannelOption constants
+    DEF_ENUM(AlphaChannelOption)
         ENUMERATOR(UndefinedAlphaChannel)
         ENUMERATOR(ActivateAlphaChannel)
         ENUMERATOR(DeactivateAlphaChannel)
