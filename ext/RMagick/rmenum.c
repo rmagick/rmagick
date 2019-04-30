@@ -829,39 +829,7 @@ InterlaceType_new(InterlaceType interlace)
 
 
 /**
- * Return the name of a InterpolatePixelMethod enum as a string.
- *
- * No Ruby usage (internal function)
- *
- * @param interpolate the InterpolatePixelMethod
- * @return the name
- */
-static const char *
-InterpolatePixelMethod_name(InterpolatePixelMethod interpolate)
-{
-    switch(interpolate)
-    {
-        ENUM_TO_NAME(AverageInterpolatePixel)
-        ENUM_TO_NAME(BicubicInterpolatePixel)
-        ENUM_TO_NAME(BilinearInterpolatePixel)
-        ENUM_TO_NAME(FilterInterpolatePixel)
-        ENUM_TO_NAME(IntegerInterpolatePixel)
-        ENUM_TO_NAME(MeshInterpolatePixel)
-        ENUM_TO_NAME(NearestNeighborInterpolatePixel)
-        ENUM_TO_NAME(SplineInterpolatePixel)
-        ENUM_TO_NAME(Average9InterpolatePixel)
-        ENUM_TO_NAME(Average16InterpolatePixel)
-        ENUM_TO_NAME(BlendInterpolatePixel)
-        ENUM_TO_NAME(BackgroundInterpolatePixel)
-        ENUM_TO_NAME(CatromInterpolatePixel)
-        default:
-        ENUM_TO_NAME(UndefinedInterpolatePixel)
-    }
-}
-
-
-/**
- * Construct an InterpolatePixelMethod enum object for the specified value.
+ * Returns a InterpolatePixelMethod enum object for the specified value.
  *
  * No Ruby usage (internal function)
  *
@@ -869,10 +837,9 @@ InterpolatePixelMethod_name(InterpolatePixelMethod interpolate)
  * @return a new InterpolatePixelMethod enumerator
  */
 VALUE
-InterpolatePixelMethod_new(InterpolatePixelMethod interpolate)
+InterpolatePixelMethod_find(InterpolatePixelMethod interpolate)
 {
-    const char *name = InterpolatePixelMethod_name(interpolate);
-    return rm_enum_new(Class_InterpolatePixelMethod, ID2SYM(rb_intern(name)), INT2FIX(interpolate));
+    return Enum_find(Class_InterpolatePixelMethod, interpolate);
 }
 
 
