@@ -1,5 +1,18 @@
 set -euox pipefail
 
+gem install bundler
+
+if [ -v STYLE_CHECKS ]; then
+  set +ux
+  exit 0
+fi
+
+if [ ! -v IMAGEMAGICK_VERSION ]; then
+  echo "you must specify an ImageMagick version."
+  echo "example: 'IMAGEMAGICK_VERSION=6.8.9-10 bash ./before_install_linux.sh'"
+  exit 1
+fi
+
 sudo apt-get update
 
 # remove all existing imagemagick related packages
@@ -9,12 +22,6 @@ sudo apt-get autoremove -y imagemagick* libmagick* --purge
 sudo apt-get install -y build-essential libx11-dev libxext-dev zlib1g-dev \
   liblcms2-dev libpng-dev libjpeg-dev libfreetype6-dev libxml2-dev \
   libtiff5-dev libwebp-dev vim ghostscript ccache
-
-if [ ! -v IMAGEMAGICK_VERSION ]; then
-  echo "you must specify an ImageMagick version."
-  echo "example: 'IMAGEMAGICK_VERSION=6.8.9-10 bash ./before_install_linux.sh'"
-  exit 1
-fi
 
 if [ ! -d /usr/include/freetype ]; then
   # If `/usr/include/freetype` is not existed, ImageMagick 6.7 configuration fails about Freetype.
@@ -60,7 +67,5 @@ sudo make install -j
 cd $project_dir
 
 sudo ldconfig
-
-gem install bundler
 
 set +ux

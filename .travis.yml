@@ -3,6 +3,7 @@ language: ruby
 cache:
   directories:
     - ~/.ccache
+    - ~/.cache/rubocop_cache
     - vendor/bundle
     - build-ImageMagick
 
@@ -20,7 +21,7 @@ env:
   - IMAGEMAGICK_VERSION=6.9.10-40 CONFIGURE_OPTIONS=--enable-hdri
 
 before_install:
-  - source before_install_$TRAVIS_OS_NAME.sh
+  - /bin/bash before_install_$TRAVIS_OS_NAME.sh
 
 install: bundle install --path=vendor/bundle --verbose
 
@@ -33,7 +34,7 @@ rvm:
 matrix:
   include:
     - rvm: 2.3
-      env: STYLE_CHECKS=true IMAGEMAGICK_VERSION=6.8.9-10
+      env: STYLE_CHECKS=true
 
 notifications:
   webhooks:
