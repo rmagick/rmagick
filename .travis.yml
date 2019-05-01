@@ -2,7 +2,6 @@ language: ruby
 
 cache:
   directories:
-    - ~/.ccache
     - ~/.cache/rubocop_cache
     - vendor/bundle
     - build-ImageMagick
