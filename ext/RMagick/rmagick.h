@@ -120,6 +120,7 @@ typedef PixelPacket PixelColor;
 typedef AlphaChannelType AlphaChannelOption;
 typedef DistortImageMethod DistortMethod;
 typedef FilterTypes FilterType;
+typedef InterpolatePixelMethod PixelInterpolateMethod;
 
 //! Montage
 typedef struct
@@ -306,12 +307,12 @@ EXTERN VALUE Class_FilterType;
 EXTERN VALUE Class_GravityType;
 EXTERN VALUE Class_ImageType;
 EXTERN VALUE Class_InterlaceType;
-EXTERN VALUE Class_InterpolatePixelMethod;
 EXTERN VALUE Class_ImageLayerMethod;
 EXTERN VALUE Class_MagickFunction;
 EXTERN VALUE Class_NoiseType;
 EXTERN VALUE Class_OrientationType;
 EXTERN VALUE Class_PaintMethod;
+EXTERN VALUE Class_PixelInterpolateMethod;
 EXTERN VALUE Class_PreviewType;
 EXTERN VALUE Class_RenderingIntent;
 EXTERN VALUE Class_ResolutionType;
@@ -1050,8 +1051,8 @@ extern VALUE  FilterType_find(FilterType);
 extern VALUE  GravityType_new(GravityType);
 extern VALUE  ImageType_new(ImageType);
 extern VALUE  InterlaceType_new(InterlaceType);
-extern VALUE  InterpolatePixelMethod_find(InterpolatePixelMethod);
 extern VALUE  OrientationType_new(OrientationType);
+extern VALUE  PixelInterpolateMethod_find(PixelInterpolateMethod);
 extern VALUE  RenderingIntent_new(RenderingIntent);
 extern VALUE  ResolutionType_new(ResolutionType);
 extern const char *StorageType_name(StorageType);

@@ -1237,23 +1237,6 @@ Init_RMagick2(void)
         ENUMERATOR(PNGInterlace)
     END_ENUM
 
-    DEF_ENUM(InterpolatePixelMethod)
-        ENUMERATOR(UndefinedInterpolatePixel)
-        ENUMERATOR(AverageInterpolatePixel)
-        ENUMERATOR(BicubicInterpolatePixel)
-        ENUMERATOR(BilinearInterpolatePixel)
-        ENUMERATOR(FilterInterpolatePixel)
-        ENUMERATOR(IntegerInterpolatePixel)
-        ENUMERATOR(MeshInterpolatePixel)
-        ENUMERATOR(NearestNeighborInterpolatePixel)
-        ENUMERATOR(SplineInterpolatePixel)
-        ENUMERATOR(Average9InterpolatePixel)
-        ENUMERATOR(Average16InterpolatePixel)
-        ENUMERATOR(BlendInterpolatePixel)
-        ENUMERATOR(BackgroundInterpolatePixel)
-        ENUMERATOR(CatromInterpolatePixel)
-    END_ENUM
-
     DEF_ENUM(MagickFunction)
         ENUMERATOR(UndefinedFunction)
         ENUMERATOR(PolynomialFunction)
@@ -1330,6 +1313,24 @@ Init_RMagick2(void)
         ENUMERATOR(FloodfillMethod)
         ENUMERATOR(FillToBorderMethod)
         ENUMERATOR(ResetMethod)
+    END_ENUM
+
+    // PixelInterpolateMethod constants
+    DEF_ENUM(PixelInterpolateMethod)
+        ENUMERATOR(UndefinedInterpolatePixel)
+        ENUMERATOR(AverageInterpolatePixel)
+        ENUMERATOR(BicubicInterpolatePixel)
+        ENUMERATOR(BilinearInterpolatePixel)
+        ENUMERATOR(FilterInterpolatePixel)
+        ENUMERATOR(IntegerInterpolatePixel)
+        ENUMERATOR(MeshInterpolatePixel)
+        ENUMERATOR(NearestNeighborInterpolatePixel)
+        ENUMERATOR(SplineInterpolatePixel)
+        ENUMERATOR(Average9InterpolatePixel)
+        ENUMERATOR(Average16InterpolatePixel)
+        ENUMERATOR(BlendInterpolatePixel)
+        ENUMERATOR(BackgroundInterpolatePixel)
+        ENUMERATOR(CatromInterpolatePixel)
     END_ENUM
 
     // PreviewType

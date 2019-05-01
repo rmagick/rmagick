@@ -102,7 +102,7 @@ class EnumUT < Test::Unit::TestCase
 
   def test_issue593_pixel_interpolation_method
     img = Magick::Image.new(1, 1)
-    Magick::InterpolatePixelMethod.values do |value|
+    Magick::PixelInterpolateMethod.values do |value|
       img.pixel_interpolation_method = value
       assert_equal(value, img.pixel_interpolation_method)
     end

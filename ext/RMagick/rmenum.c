@@ -829,21 +829,6 @@ InterlaceType_new(InterlaceType interlace)
 
 
 /**
- * Returns a InterpolatePixelMethod enum object for the specified value.
- *
- * No Ruby usage (internal function)
- *
- * @param interpolate the InterpolatePixelMethod
- * @return a new InterpolatePixelMethod enumerator
- */
-VALUE
-InterpolatePixelMethod_find(InterpolatePixelMethod interpolate)
-{
-    return Enum_find(Class_InterpolatePixelMethod, interpolate);
-}
-
-
-/**
  * Return the name of a OrientationType enum as a string.
  *
  * No Ruby usage (internal function)
@@ -883,6 +868,21 @@ OrientationType_new(OrientationType type)
 {
     const char *name = OrientationType_name(type);
     return rm_enum_new(Class_OrientationType, ID2SYM(rb_intern(name)), INT2FIX(type));
+}
+
+
+/**
+ * Returns a PixelInterpolateMethod enum object for the specified value.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param interpolate the PixelInterpolateMethod
+ * @return a new PixelInterpolateMethod enumerator
+ */
+VALUE
+PixelInterpolateMethod_find(PixelInterpolateMethod interpolate)
+{
+    return Enum_find(Class_PixelInterpolateMethod, interpolate);
 }
 
 
