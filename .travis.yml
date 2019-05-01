@@ -7,6 +7,24 @@ cache:
     - vendor/bundle
     - build-ImageMagick
 
+dist: xenial
+addons:
+  apt:
+    packages:
+      - build-essential
+      - libx11-dev
+      - libxext-dev
+      - zlib1g-dev
+      - liblcms2-dev
+      - libpng-dev
+      - libjpeg-dev
+      - libfreetype6-dev
+      - libxml2-dev
+      - libtiff5-dev
+      - libwebp-dev
+      - ghostscript
+      - ccache
+
 os:
   - linux
 
