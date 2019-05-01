@@ -1049,7 +1049,7 @@ extern VALUE  FilterTypes_find(FilterTypes);
 extern VALUE  GravityType_new(GravityType);
 extern VALUE  ImageType_new(ImageType);
 extern VALUE  InterlaceType_new(InterlaceType);
-extern VALUE  InterpolatePixelMethod_new(InterpolatePixelMethod);
+extern VALUE  InterpolatePixelMethod_find(InterpolatePixelMethod);
 extern VALUE  OrientationType_new(OrientationType);
 extern VALUE  RenderingIntent_new(RenderingIntent);
 extern VALUE  ResolutionType_new(ResolutionType);

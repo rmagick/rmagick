@@ -10051,7 +10051,7 @@ VALUE
 Image_pixel_interpolation_method(VALUE self)
 {
     Image *image = rm_check_destroyed(self);
-    return InterpolatePixelMethod_new(image->interpolate);
+    return InterpolatePixelMethod_find(image->interpolate);
 }
 
 
