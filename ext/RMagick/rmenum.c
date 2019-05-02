@@ -411,7 +411,7 @@ ClassType_find(ClassType cls)
 
 
 /**
- * Construct a ColorspaceType enum object for the specified value.
+ * Returns a ColorspaceType enum object for the specified value.
  *
  * No Ruby usage (internal function)
  *
@@ -419,49 +419,9 @@ ClassType_find(ClassType cls)
  * @return a new ColorspaceType enumerator
  */
 VALUE
-ColorspaceType_new(ColorspaceType cs)
+ColorspaceType_find(ColorspaceType cs)
 {
-    const char *name;
-
-    switch(cs)
-    {
-        ENUM_SET_NAME(RGBColorspace)
-        ENUM_SET_NAME(GRAYColorspace)
-        ENUM_SET_NAME(TransparentColorspace)
-        ENUM_SET_NAME(OHTAColorspace)
-        ENUM_SET_NAME(XYZColorspace)
-        ENUM_SET_NAME(YCbCrColorspace)
-        ENUM_SET_NAME(YCCColorspace)
-        ENUM_SET_NAME(YIQColorspace)
-        ENUM_SET_NAME(YPbPrColorspace)
-        ENUM_SET_NAME(YUVColorspace)
-        ENUM_SET_NAME(CMYKColorspace)
-        ENUM_SET_NAME(sRGBColorspace)
-        ENUM_SET_NAME(Rec601YCbCrColorspace)
-        ENUM_SET_NAME(Rec601LumaColorspace)
-        ENUM_SET_NAME(Rec709LumaColorspace)
-        ENUM_SET_NAME(Rec709YCbCrColorspace)
-        ENUM_SET_NAME(CMYColorspace)
-#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
-        ENUM_SET_NAME(LuvColorspace)
-        ENUM_SET_NAME(HCLColorspace)
-        ENUM_SET_NAME(LCHColorspace)
-        ENUM_SET_NAME(LMSColorspace)
-        ENUM_SET_NAME(LCHabColorspace)
-        ENUM_SET_NAME(LCHuvColorspace)
-        ENUM_SET_NAME(scRGBColorspace)
-        ENUM_SET_NAME(HSIColorspace)
-        ENUM_SET_NAME(HSVColorspace)
-        ENUM_SET_NAME(HCLpColorspace)
-        ENUM_SET_NAME(YDbDrColorspace)
-        ENUM_SET_NAME(xyYColorspace)
-#endif
-        default:
-        ENUM_SET_NAME(UndefinedColorspace)
-    }
-
-    return rm_enum_new(Class_ColorspaceType, ID2SYM(rb_intern(name)), INT2FIX(cs));
-
+    return Enum_find(Class_ColorspaceType, cs);
 }
 
 

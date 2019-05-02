@@ -3036,7 +3036,7 @@ Image_colorspace(VALUE self)
     Image *image;
 
     image = rm_check_destroyed(self);
-    return ColorspaceType_new(image->colorspace);
+    return ColorspaceType_find(image->colorspace);
 }
 
 

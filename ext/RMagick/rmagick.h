@@ -1042,7 +1042,7 @@ extern VALUE  Enum_find(VALUE class, int val);
 extern VALUE  Enum_type_each(VALUE);
 extern VALUE  rm_enum_new(VALUE, VALUE, VALUE);
 extern VALUE  ClassType_find(ClassType);
-extern VALUE  ColorspaceType_new(ColorspaceType);
+extern VALUE  ColorspaceType_find(ColorspaceType);
 extern const char *ComplianceType_name(ComplianceType *);
 extern VALUE  ComplianceType_new(ComplianceType);
 extern VALUE  CompositeOperator_find(CompositeOperator);

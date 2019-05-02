@@ -92,6 +92,15 @@ class EnumUT < Test::Unit::TestCase
     end
   end
 
+  def test_using_colorspace_type_does_not_cause_endless_loop
+    img = Magick::Image.new(1, 1)
+    Magick::ColorspaceType.values do |value|
+      next if value == Magick::SRGBColorspace
+
+      assert_not_equal(value, img.colorspace)
+    end
+  end
+
   def test_using_filter_does_not_cause_endless_loop
     img = Magick::Image.new(1, 1)
     Magick::FilterType.values do |value|

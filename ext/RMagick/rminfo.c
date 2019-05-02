@@ -672,7 +672,7 @@ Info_colorspace(VALUE self)
     Info *info;
 
     Data_Get_Struct(self, Info, info);
-    return ColorspaceType_new(info->colorspace);
+    return ColorspaceType_find(info->colorspace);
 }
 
 /**
