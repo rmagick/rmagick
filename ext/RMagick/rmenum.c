@@ -580,37 +580,7 @@ GravityType_find(GravityType type)
 
 
 /**
- * Return the name of a ImageType enum as a string.
- *
- * No Ruby usage (internal function)
- *
- * @param type the ImageType
- * @return the name
- */
-static const char *
-ImageType_name(ImageType type)
-{
-    switch(type)
-    {
-        ENUM_TO_NAME(BilevelType)
-        ENUM_TO_NAME(GrayscaleType)
-        ENUM_TO_NAME(GrayscaleMatteType)
-        ENUM_TO_NAME(PaletteType)
-        ENUM_TO_NAME(PaletteMatteType)
-        ENUM_TO_NAME(TrueColorType)
-        ENUM_TO_NAME(TrueColorMatteType)
-        ENUM_TO_NAME(ColorSeparationType)
-        ENUM_TO_NAME(ColorSeparationMatteType)
-        ENUM_TO_NAME(OptimizeType)
-        ENUM_TO_NAME(PaletteBilevelMatteType)
-        default:
-        ENUM_TO_NAME(UndefinedType)
-    }
-}
-
-
-/**
- * Construct an ImageType enum object for the specified value.
+ * Returns an ImageType enum object for the specified value.
  *
  * No Ruby usage (internal function)
  *
@@ -618,10 +588,9 @@ ImageType_name(ImageType type)
  * @return a new ImageType enumerator
  */
 VALUE
-ImageType_new(ImageType type)
+ImageType_find(ImageType type)
 {
-    const char *name = ImageType_name(type);
-    return rm_enum_new(Class_ImageType, ID2SYM(rb_intern(name)), INT2FIX(type));
+    return Enum_find(Class_ImageType, type);
 }
 
 

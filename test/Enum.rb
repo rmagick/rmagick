@@ -141,6 +141,14 @@ class EnumUT < Test::Unit::TestCase
     end
   end
 
+  def test_using_image_type_does_not_cause_endless_loop
+    info = Magick::Image::Info.new
+    Magick::ImageType.values do |value|
+      info.image_type = value
+      assert_equal(value, info.image_type)
+    end
+  end
+
   def test_using_pixel_interpolation_method_does_not_cause_endless_loop
     img = Magick::Image.new(1, 1)
     Magick::PixelInterpolateMethod.values do |value|

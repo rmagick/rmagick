@@ -1660,7 +1660,7 @@ Info_image_type(VALUE self)
     Info *info;
 
     Data_Get_Struct(self, Info, info);
-    return ImageType_new(info->type);
+    return ImageType_find(info->type);
 }
 
 /**

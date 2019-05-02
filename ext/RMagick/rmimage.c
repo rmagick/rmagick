@@ -14145,7 +14145,7 @@ VALUE Image_image_type(VALUE self)
 
     (void) DestroyExceptionInfo(exception);
 
-    return ImageType_new(type);
+    return ImageType_find(type);
 }
 
 
