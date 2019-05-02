@@ -121,6 +121,7 @@ typedef AlphaChannelType AlphaChannelOption;
 typedef DistortImageMethod DistortMethod;
 typedef FilterTypes FilterType;
 typedef InterpolatePixelMethod PixelInterpolateMethod;
+typedef ImageLayerMethod LayerMethod;
 
 //! Montage
 typedef struct
@@ -307,7 +308,7 @@ EXTERN VALUE Class_FilterType;
 EXTERN VALUE Class_GravityType;
 EXTERN VALUE Class_ImageType;
 EXTERN VALUE Class_InterlaceType;
-EXTERN VALUE Class_ImageLayerMethod;
+EXTERN VALUE Class_LayerMethod;
 EXTERN VALUE Class_MagickFunction;
 EXTERN VALUE Class_NoiseType;
 EXTERN VALUE Class_OrientationType;
