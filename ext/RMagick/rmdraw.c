@@ -1052,7 +1052,7 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
     Draw *draw;
     const char *op;
     double x, y, width, height;
-    CompositeOperator cop = OverCompositeOp;
+    CompositeOperator cop;
     VALUE image;
     Image *comp_img;
     struct TmpFile_Name *tmpfile_name;
