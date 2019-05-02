@@ -565,36 +565,7 @@ FilterType_find(FilterType type)
 
 
 /**
- * Return the name of a GravityType enum as a string.
- *
- * No Ruby usage (internal function)
- *
- * @param type the GravityType
- * @return the name
- */
-static const char *
-GravityType_name(GravityType type)
-{
-    switch(type)
-    {
-        ENUM_TO_NAME(NorthWestGravity)
-        ENUM_TO_NAME(NorthGravity)
-        ENUM_TO_NAME(NorthEastGravity)
-        ENUM_TO_NAME(WestGravity)
-        ENUM_TO_NAME(CenterGravity)
-        ENUM_TO_NAME(EastGravity)
-        ENUM_TO_NAME(SouthWestGravity)
-        ENUM_TO_NAME(SouthGravity)
-        ENUM_TO_NAME(SouthEastGravity)
-        ENUM_TO_NAME(StaticGravity)
-        default:
-        ENUM_TO_NAME(UndefinedGravity)
-    }
-}
-
-
-/**
- * Construct an GravityType enum object for the specified value.
+ * Returns a GravityType enum object for the specified value.
  *
  * No Ruby usage (internal function)
  *
@@ -602,10 +573,9 @@ GravityType_name(GravityType type)
  * @return a new GravityType enumerator
  */
 VALUE
-GravityType_new(GravityType type)
+GravityType_find(GravityType type)
 {
-    const char *name = GravityType_name(type);
-    return rm_enum_new(Class_GravityType, ID2SYM(rb_intern(name)), INT2FIX(type));
+    return Enum_find(Class_GravityType, type);
 }
 
 

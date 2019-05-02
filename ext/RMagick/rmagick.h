@@ -1050,7 +1050,7 @@ extern VALUE  CompressionType_find(CompressionType);
 extern VALUE  DisposeType_find(DisposeType);
 extern VALUE  EndianType_find(EndianType);
 extern VALUE  FilterType_find(FilterType);
-extern VALUE  GravityType_new(GravityType);
+extern VALUE  GravityType_find(GravityType);
 extern VALUE  ImageType_new(ImageType);
 extern VALUE  InterlaceType_new(InterlaceType);
 extern VALUE  OrientationType_new(OrientationType);

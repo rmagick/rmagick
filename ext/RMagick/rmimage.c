@@ -3659,7 +3659,7 @@ Image_composite_mathematics(int argc, VALUE *argv, VALUE self)
 
     // Call composite(False, gravity, x_off, y_off, MathematicsCompositeOp, DefaultChannels)
     args[0] = argv[0];
-    args[1] = GravityType_new(gravity);
+    args[1] = GravityType_find(gravity);
     args[2] = LONG2FIX(x_off);
     args[3] = LONG2FIX(y_off);
     args[4] = CompositeOperator_find(MathematicsCompositeOp);
@@ -14101,7 +14101,7 @@ Image_trim_bang(int argc, VALUE *argv, VALUE self)
 VALUE Image_gravity(VALUE self)
 {
     Image *image = rm_check_destroyed(self);
-    return GravityType_new(image->gravity);
+    return GravityType_find(image->gravity);
 }
 
 

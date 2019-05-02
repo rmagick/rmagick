@@ -133,6 +133,14 @@ class EnumUT < Test::Unit::TestCase
     end
   end
 
+  def test_using_gravity_type_does_not_cause_endless_loop
+    img = Magick::Image.new(1, 1)
+    Magick::GravityType.values do |value|
+      img.gravity = value
+      assert_equal(value, img.gravity)
+    end
+  end
+
   def test_using_pixel_interpolation_method_does_not_cause_endless_loop
     img = Magick::Image.new(1, 1)
     Magick::PixelInterpolateMethod.values do |value|
