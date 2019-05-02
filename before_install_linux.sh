@@ -43,10 +43,12 @@ build_imagemagick() {
   if (( "${version[0]}${version[1]}" >= 69 )); then
     wget https://github.com/ImageMagick/ImageMagick6/archive/${IMAGEMAGICK_VERSION}.tar.gz
     tar -xf ${IMAGEMAGICK_VERSION}.tar.gz
+    rm ${IMAGEMAGICK_VERSION}.tar.gz
     mv ImageMagick6-${IMAGEMAGICK_VERSION} $build_dir
   else
     wget https://www.imagemagick.org/download/releases/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz
     tar -xf ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz
+    rm ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz
     mv ImageMagick-${IMAGEMAGICK_VERSION} $build_dir
   fi
 
