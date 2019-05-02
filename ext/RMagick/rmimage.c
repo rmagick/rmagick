@@ -14240,7 +14240,7 @@ VALUE
 Image_units(VALUE self)
 {
     Image *image = rm_check_destroyed(self);
-    return ResolutionType_new(image->units);
+    return ResolutionType_find(image->units);
 }
 
 

@@ -1056,7 +1056,7 @@ extern VALUE  InterlaceType_find(InterlaceType);
 extern VALUE  OrientationType_find(OrientationType);
 extern VALUE  PixelInterpolateMethod_find(PixelInterpolateMethod);
 extern VALUE  RenderingIntent_find(RenderingIntent);
-extern VALUE  ResolutionType_new(ResolutionType);
+extern VALUE  ResolutionType_find(ResolutionType);
 extern const char *StorageType_name(StorageType);
 extern VALUE  StretchType_new(StretchType);
 extern const char *StretchType_name(StretchType);

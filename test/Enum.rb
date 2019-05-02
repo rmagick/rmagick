@@ -181,6 +181,14 @@ class EnumUT < Test::Unit::TestCase
     end
   end
 
+  def test_using_resolution_type_does_not_cause_endless_loop
+    info = Magick::Image::Info.new
+    Magick::ResolutionType.values do |value|
+      info.units = value
+      assert_equal(value, info.units)
+    end
+  end
+
   def test_using_virtual_pixel_method_does_not_cause_endless_loop
     img = Magick::Image.new(1, 1)
     Magick::VirtualPixelMethod.values do |value|

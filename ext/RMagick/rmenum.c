@@ -655,28 +655,7 @@ RenderingIntent_find(RenderingIntent intent)
 
 
 /**
- * Return the name of a ResolutionType enum as a string.
- *
- * No Ruby usage (internal function)
- *
- * @param type the ResolutionType
- * @return the name
- */
-static const char *
-ResolutionType_name(ResolutionType type)
-{
-    switch(type)
-    {
-        ENUM_TO_NAME(PixelsPerInchResolution)
-        ENUM_TO_NAME(PixelsPerCentimeterResolution)
-        default:
-        ENUM_TO_NAME(UndefinedResolution)
-    }
-}
-
-
-/**
- * Construct an ResolutionType enum object for the specified value.
+ * Returns a ResolutionType enum object for the specified value.
  *
  * No Ruby usage (internal function)
  *
@@ -684,10 +663,9 @@ ResolutionType_name(ResolutionType type)
  * @return a new ResolutionType enumerator
  */
 VALUE
-ResolutionType_new(ResolutionType type)
+ResolutionType_find(ResolutionType type)
 {
-    const char *name = ResolutionType_name(type);
-    return rm_enum_new(Class_ResolutionType, ID2SYM(rb_intern(name)), INT2FIX(type));
+    return Enum_find(Class_ResolutionType, type);
 }
 
 

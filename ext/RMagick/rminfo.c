@@ -2486,7 +2486,7 @@ Info_units(VALUE self)
     Info *info;
 
     Data_Get_Struct(self, Info, info);
-    return ResolutionType_new(info->units);
+    return ResolutionType_find(info->units);
 }
 
 /**
