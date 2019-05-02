@@ -999,6 +999,7 @@ extern VALUE  TextureFill_fill(VALUE, VALUE);
 ATTR_ACCESSOR(Pixel, red)
 ATTR_ACCESSOR(Pixel, green)
 ATTR_ACCESSOR(Pixel, blue)
+ATTR_ACCESSOR(Pixel, alpha)
 ATTR_ACCESSOR(Pixel, opacity)
 ATTR_ACCESSOR(Pixel, cyan)
 ATTR_ACCESSOR(Pixel, magenta)

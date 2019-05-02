@@ -33,6 +33,14 @@ class PixelUT < Test::Unit::TestCase
     assert_raise(TypeError) { @pixel.blue = 'x' }
   end
 
+  def test_alpha
+    assert_nothing_raised { @pixel.alpha = 123 }
+    assert_equal(123, @pixel.alpha)
+    assert_nothing_raised { @pixel.alpha = 255.25 }
+    assert_equal(255, @pixel.alpha)
+    assert_raise(TypeError) { @pixel.alpha = 'x' }
+  end
+
   def test_opacity
     assert_nothing_raised { @pixel.opacity = 123 }
     assert_equal(123, @pixel.opacity)
