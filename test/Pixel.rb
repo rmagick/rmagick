@@ -11,6 +11,7 @@ class PixelUT < Test::Unit::TestCase
 
   def test_red
     assert_nothing_raised { @pixel.red = 123 }
+    assert_equal(123, @pixel.red)
     assert_nothing_raised { @pixel.red = 255.25 }
     assert_equal(255, @pixel.red)
     assert_raise(TypeError) { @pixel.red = 'x' }
@@ -18,6 +19,7 @@ class PixelUT < Test::Unit::TestCase
 
   def test_green
     assert_nothing_raised { @pixel.green = 123 }
+    assert_equal(123, @pixel.green)
     assert_nothing_raised { @pixel.green = 255.25 }
     assert_equal(255, @pixel.green)
     assert_raise(TypeError) { @pixel.green = 'x' }
@@ -25,6 +27,7 @@ class PixelUT < Test::Unit::TestCase
 
   def test_blue
     assert_nothing_raised { @pixel.blue = 123 }
+    assert_equal(123, @pixel.blue)
     assert_nothing_raised { @pixel.blue = 255.25 }
     assert_equal(255, @pixel.blue)
     assert_raise(TypeError) { @pixel.blue = 'x' }
@@ -32,6 +35,7 @@ class PixelUT < Test::Unit::TestCase
 
   def test_opacity
     assert_nothing_raised { @pixel.opacity = 123 }
+    assert_equal(123, @pixel.opacity)
     assert_nothing_raised { @pixel.opacity = 255.25 }
     assert_equal(255, @pixel.opacity)
     assert_raise(TypeError) { @pixel.opacity = 'x' }
@@ -39,6 +43,7 @@ class PixelUT < Test::Unit::TestCase
 
   def test_cyan
     assert_nothing_raised { @pixel.cyan = 123 }
+    assert_equal(123, @pixel.cyan)
     assert_nothing_raised { @pixel.cyan = 255.25 }
     assert_equal(255, @pixel.cyan)
     assert_raise(TypeError) { @pixel.cyan = 'x' }
@@ -46,6 +51,7 @@ class PixelUT < Test::Unit::TestCase
 
   def test_magenta
     assert_nothing_raised { @pixel.magenta = 123 }
+    assert_equal(123, @pixel.magenta)
     assert_nothing_raised { @pixel.magenta = 255.25 }
     assert_equal(255, @pixel.magenta)
     assert_raise(TypeError) { @pixel.magenta = 'x' }
@@ -53,6 +59,7 @@ class PixelUT < Test::Unit::TestCase
 
   def test_yellow
     assert_nothing_raised { @pixel.yellow = 123 }
+    assert_equal(123, @pixel.yellow)
     assert_nothing_raised { @pixel.yellow = 255.25 }
     assert_equal(255, @pixel.yellow)
     assert_raise(TypeError) { @pixel.yellow = 'x' }
@@ -60,6 +67,7 @@ class PixelUT < Test::Unit::TestCase
 
   def test_black
     assert_nothing_raised { @pixel.black = 123 }
+    assert_equal(123, @pixel.black)
     assert_nothing_raised { @pixel.black = 255.25 }
     assert_equal(255, @pixel.black)
     assert_raise(TypeError) { @pixel.black = 'x' }
