@@ -725,7 +725,7 @@ StretchType_name(StretchType stretch)
 
 
 /**
- * Construct a StretchType enum for a specified StretchType value.
+ * Returns a StretchType enum for a specified StretchType value.
  *
  * No Ruby usage (internal function)
  *
@@ -733,10 +733,9 @@ StretchType_name(StretchType stretch)
  * @return a Ruby StretchType enum
  */
 VALUE
-StretchType_new(StretchType stretch)
+StretchType_find(StretchType stretch)
 {
-    const char *name = StretchType_name(stretch);
-    return rm_enum_new(Class_StretchType, ID2SYM(rb_intern(name)), INT2FIX(stretch));
+    return Enum_find(Class_StretchType, stretch);
 }
 
 
