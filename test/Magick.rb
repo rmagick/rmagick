@@ -36,7 +36,7 @@ class MagickUT < Test::Unit::TestCase
     res.each do |c|
       assert_instance_of(Magick::Color, c)
       assert_instance_of(String, c.name)
-      assert_instance_of(Magick::ComplianceType, c.compliance)
+      assert_instance_of(Magick::ComplianceType, c.compliance) unless c.compliance.nil?
       assert_instance_of(Magick::Pixel, c.color)
     end
     Magick.colors { |c| assert_instance_of(Magick::Color, c) }

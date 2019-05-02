@@ -475,7 +475,7 @@ ComplianceType_name(ComplianceType *c)
 
 
 /**
- * Construct a ComplianceType enum object for the specified value.
+ * Returns a ComplianceType enum object for the specified value.
  *
  * No Ruby usage (internal function)
  *
@@ -483,14 +483,9 @@ ComplianceType_name(ComplianceType *c)
  * @return the Ruby ComplianceType enum object
  */
 VALUE
-ComplianceType_new(ComplianceType compliance)
+ComplianceType_find(ComplianceType compliance)
 {
-    const char *name;
-
-    // Turn off undefined bits
-    compliance &= (SVGCompliance|X11Compliance|XPMCompliance);
-    name = ComplianceType_name(&compliance);
-    return rm_enum_new(Class_ComplianceType, ID2SYM(rb_intern(name)), INT2FIX(compliance));
+    return Enum_find(Class_ComplianceType, compliance);
 }
 
 

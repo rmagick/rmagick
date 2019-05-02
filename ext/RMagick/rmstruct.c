@@ -233,7 +233,7 @@ Import_ColorInfo(const ColorInfo *ci)
     name       = rb_str_new2(ci->name);
 
     compliance_type = ci->compliance;
-    compliance = ComplianceType_new(compliance_type);
+    compliance = ComplianceType_find(compliance_type);
     color      = Pixel_from_MagickPixel(&(ci->color));
 
     RB_GC_GUARD(name);

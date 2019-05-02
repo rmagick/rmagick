@@ -1044,7 +1044,7 @@ extern VALUE  rm_enum_new(VALUE, VALUE, VALUE);
 extern VALUE  ClassType_find(ClassType);
 extern VALUE  ColorspaceType_find(ColorspaceType);
 extern const char *ComplianceType_name(ComplianceType *);
-extern VALUE  ComplianceType_new(ComplianceType);
+extern VALUE  ComplianceType_find(ComplianceType);
 extern VALUE  CompositeOperator_find(CompositeOperator);
 extern VALUE  CompressionType_new(CompressionType);
 extern VALUE  DisposeType_new(DisposeType);
