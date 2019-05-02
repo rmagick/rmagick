@@ -101,6 +101,14 @@ class EnumUT < Test::Unit::TestCase
     end
   end
 
+  def test_using_compression_type_does_not_cause_endless_loop
+    img = Magick::Image.new(1, 1)
+    Magick::CompressionType.values do |value|
+      img.compression = value
+      assert_equal(value, img.compression)
+    end
+  end
+
   def test_using_filter_does_not_cause_endless_loop
     img = Magick::Image.new(1, 1)
     Magick::FilterType.values do |value|

@@ -1046,7 +1046,7 @@ extern VALUE  ColorspaceType_find(ColorspaceType);
 extern const char *ComplianceType_name(ComplianceType *);
 extern VALUE  ComplianceType_find(ComplianceType);
 extern VALUE  CompositeOperator_find(CompositeOperator);
-extern VALUE  CompressionType_new(CompressionType);
+extern VALUE  CompressionType_find(CompressionType);
 extern VALUE  DisposeType_new(DisposeType);
 extern VALUE  EndianType_new(EndianType);
 extern VALUE  FilterType_find(FilterType);

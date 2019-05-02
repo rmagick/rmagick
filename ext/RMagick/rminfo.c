@@ -713,7 +713,7 @@ Info_compression(VALUE self)
     Info *info;
 
     Data_Get_Struct(self, Info, info);
-    return CompressionType_new(info->compression);
+    return CompressionType_find(info->compression);
 }
 
 /**

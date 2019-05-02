@@ -505,47 +505,7 @@ CompositeOperator_find(CompositeOperator op)
 
 
 /**
- * Return the name of a CompressionType enum as a string.
- *
- * No Ruby usage (internal function)
- *
- * @param ct the CompressionType
- * @return the name
- */
-static const char *
-CompressionType_name(CompressionType ct)
-{
-    switch (ct)
-    {
-        ENUM_TO_NAME(NoCompression)
-        ENUM_TO_NAME(B44Compression)
-        ENUM_TO_NAME(B44ACompression)
-        ENUM_TO_NAME(BZipCompression)
-        ENUM_TO_NAME(DXT1Compression)
-        ENUM_TO_NAME(DXT3Compression)
-        ENUM_TO_NAME(DXT5Compression)
-        ENUM_TO_NAME(FaxCompression)
-        ENUM_TO_NAME(Group4Compression)
-        ENUM_TO_NAME(JPEGCompression)
-        ENUM_TO_NAME(JPEG2000Compression)
-        ENUM_TO_NAME(LosslessJPEGCompression)
-        ENUM_TO_NAME(LZWCompression)
-        ENUM_TO_NAME(PizCompression)
-        ENUM_TO_NAME(Pxr24Compression)
-        ENUM_TO_NAME(RLECompression)
-        ENUM_TO_NAME(ZipCompression)
-        ENUM_TO_NAME(ZipSCompression)
-        ENUM_TO_NAME(LZMACompression)
-        ENUM_TO_NAME(JBIG1Compression)
-        ENUM_TO_NAME(JBIG2Compression)
-        default:
-        ENUM_TO_NAME(UndefinedCompression)
-    }
-}
-
-
-/**
- * Construct a CompressionType enum object for the specified value.
+ * Returns a CompressionType enum object for the specified value.
  *
  * No Ruby usage (internal function)
  *
@@ -553,10 +513,9 @@ CompressionType_name(CompressionType ct)
  * @return a new CompressionType enumerator
  */
 VALUE
-CompressionType_new(CompressionType ct)
+CompressionType_find(CompressionType ct)
 {
-    const char *name = CompressionType_name(ct);
-    return rm_enum_new(Class_CompressionType, ID2SYM(rb_intern(name)), INT2FIX(ct));
+    return Enum_find(Class_CompressionType, ct);
 }
 
 

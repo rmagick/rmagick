@@ -3811,7 +3811,7 @@ VALUE
 Image_compression(VALUE self)
 {
     Image *image = rm_check_destroyed(self);
-    return CompressionType_new(image->compression);
+    return CompressionType_find(image->compression);
 }
 
 /**
