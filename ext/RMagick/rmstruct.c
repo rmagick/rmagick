@@ -390,7 +390,7 @@ Import_TypeInfo(const TypeInfo *ti)
 
     name        = rb_str_new2(ti->name);
     family      = rb_str_new2(ti->family);
-    style       = StyleType_new(ti->style);
+    style       = StyleType_find(ti->style);
     stretch     = StretchType_find(ti->stretch);
     weight      = ULONG2NUM(ti->weight);
     description = ti->description ? rb_str_new2(ti->description) : Qnil;

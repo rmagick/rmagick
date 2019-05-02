@@ -763,7 +763,7 @@ StyleType_name(StyleType style)
 
 
 /**
- * Construct a StyleType enum for a specified StyleType value.
+ * Returns a StyleType enum for a specified StyleType value.
  *
  * No Ruby usage (internal function)
  *
@@ -771,10 +771,9 @@ StyleType_name(StyleType style)
  * @return a Ruby StyleType enum
  */
 VALUE
-StyleType_new(StyleType style)
+StyleType_find(StyleType style)
 {
-    const char *name = StyleType_name(style);
-    return rm_enum_new(Class_StyleType, ID2SYM(rb_intern(name)), INT2FIX(style));
+    return Enum_find(Class_StyleType, style);
 }
 
 

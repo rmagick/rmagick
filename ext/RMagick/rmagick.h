@@ -1060,7 +1060,7 @@ extern VALUE  ResolutionType_find(ResolutionType);
 extern const char *StorageType_name(StorageType);
 extern VALUE  StretchType_find(StretchType);
 extern const char *StretchType_name(StretchType);
-extern VALUE  StyleType_new(StyleType);
+extern VALUE  StyleType_find(StyleType);
 extern const char *StyleType_name(StyleType);
 extern VALUE  VirtualPixelMethod_find(VirtualPixelMethod);
 
