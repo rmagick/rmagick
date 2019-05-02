@@ -1048,7 +1048,7 @@ extern VALUE  ComplianceType_find(ComplianceType);
 extern VALUE  CompositeOperator_find(CompositeOperator);
 extern VALUE  CompressionType_find(CompressionType);
 extern VALUE  DisposeType_find(DisposeType);
-extern VALUE  EndianType_new(EndianType);
+extern VALUE  EndianType_find(EndianType);
 extern VALUE  FilterType_find(FilterType);
 extern VALUE  GravityType_new(GravityType);
 extern VALUE  ImageType_new(ImageType);

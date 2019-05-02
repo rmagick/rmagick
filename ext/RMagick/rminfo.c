@@ -1145,7 +1145,7 @@ Info_endian(VALUE self)
     Info *info;
 
     Data_Get_Struct(self, Info, info);
-    return EndianType_new(info->endian);
+    return EndianType_find(info->endian);
 }
 
 

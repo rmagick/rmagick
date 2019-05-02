@@ -117,6 +117,14 @@ class EnumUT < Test::Unit::TestCase
     end
   end
 
+  def test_using_endian_type_does_not_cause_endless_loop
+    img = Magick::Image.new(1, 1)
+    Magick::EndianType.values do |value|
+      img.endian = value
+      assert_equal(value, img.endian)
+    end
+  end
+
   def test_using_filter_does_not_cause_endless_loop
     img = Magick::Image.new(1, 1)
     Magick::FilterType.values do |value|

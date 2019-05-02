@@ -5680,7 +5680,7 @@ VALUE
 Image_endian(VALUE self)
 {
     Image *image = rm_check_destroyed(self);
-    return EndianType_new(image->endian);
+    return EndianType_find(image->endian);
 }
 
 

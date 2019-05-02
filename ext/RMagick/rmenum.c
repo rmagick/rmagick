@@ -535,28 +535,7 @@ DisposeType_find(DisposeType type)
 
 
 /**
- * Return the name of a EndianType enum as a string.
- *
- * No Ruby usage (internal function)
- *
- * @param type the EndianType
- * @return the name
- */
-static const char *
-EndianType_name(EndianType type)
-{
-    switch(type)
-    {
-        ENUM_TO_NAME(LSBEndian)
-        ENUM_TO_NAME(MSBEndian)
-        default:
-        ENUM_TO_NAME(UndefinedEndian)
-    }
-}
-
-
-/**
- * Construct an EndianType enum object.
+ * Returns an EndianType enum object.
  *
  * No Ruby usage (internal function)
  *
@@ -564,10 +543,9 @@ EndianType_name(EndianType type)
  * @return a new EndianType enumerator
  */
 VALUE
-EndianType_new(EndianType type)
+EndianType_find(EndianType type)
 {
-    const char *name = EndianType_name(type);
-    return rm_enum_new(Class_EndianType, ID2SYM(rb_intern(name)), INT2FIX(type));
+    return Enum_find(Class_EndianType, type);
 }
 
 
