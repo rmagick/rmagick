@@ -640,29 +640,6 @@ PixelInterpolateMethod_find(PixelInterpolateMethod interpolate)
 
 
 /**
- * Return the name of a RenderingIntent enum as a string.
- *
- * No Ruby usage (internal function)
- *
- * @param intent the RenderingIntent
- * @return the name
- */
-static const char *
-RenderingIntent_name(RenderingIntent intent)
-{
-    switch(intent)
-    {
-        ENUM_TO_NAME(SaturationIntent)
-        ENUM_TO_NAME(PerceptualIntent)
-        ENUM_TO_NAME(AbsoluteIntent)
-        ENUM_TO_NAME(RelativeIntent)
-        default:
-        ENUM_TO_NAME(UndefinedIntent)
-    }
-}
-
-
-/**
  * Construct an RenderingIntent enum object for the specified value.
  *
  * No Ruby usage (internal function)
@@ -671,10 +648,9 @@ RenderingIntent_name(RenderingIntent intent)
  * @return a new RenderingIntent enumerator
  */
 VALUE
-RenderingIntent_new(RenderingIntent intent)
+RenderingIntent_find(RenderingIntent intent)
 {
-    const char *name = RenderingIntent_name(intent);
-    return rm_enum_new(Class_RenderingIntent, ID2SYM(rb_intern(name)), INT2FIX(intent));
+    return Enum_find(Class_RenderingIntent, intent);
 }
 
 

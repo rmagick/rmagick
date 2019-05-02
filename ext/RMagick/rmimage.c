@@ -11096,7 +11096,7 @@ VALUE
 Image_rendering_intent(VALUE self)
 {
     Image *image = rm_check_destroyed(self);
-    return RenderingIntent_new(image->rendering_intent);
+    return RenderingIntent_find(image->rendering_intent);
 }
 
 

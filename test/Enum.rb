@@ -173,6 +173,14 @@ class EnumUT < Test::Unit::TestCase
     end
   end
 
+  def test_using_rendering_intent_does_not_cause_endless_loop
+    img = Magick::Image.new(1, 1)
+    Magick::RenderingIntent.values do |value|
+      img.rendering_intent = value
+      assert_equal(value, img.rendering_intent)
+    end
+  end
+
   def test_using_virtual_pixel_method_does_not_cause_endless_loop
     img = Magick::Image.new(1, 1)
     Magick::VirtualPixelMethod.values do |value|
