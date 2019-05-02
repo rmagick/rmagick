@@ -504,12 +504,12 @@ class Image_Attributes_UT < Test::Unit::TestCase
 
   def test_pixel_interpolation_method
     assert_nothing_raised { @img.pixel_interpolation_method }
-    assert_instance_of(Magick::InterpolatePixelMethod, @img.pixel_interpolation_method)
+    assert_instance_of(Magick::PixelInterpolateMethod, @img.pixel_interpolation_method)
     assert_equal(Magick::UndefinedInterpolatePixel, @img.pixel_interpolation_method)
     assert_nothing_raised { @img.pixel_interpolation_method = Magick::AverageInterpolatePixel }
     assert_equal(Magick::AverageInterpolatePixel, @img.pixel_interpolation_method)
 
-    Magick::InterpolatePixelMethod.values do |interpolate_pixel_method|
+    Magick::PixelInterpolateMethod.values do |interpolate_pixel_method|
       assert_nothing_raised { @img.pixel_interpolation_method = interpolate_pixel_method }
     end
     assert_raise(TypeError) { @img.pixel_interpolation_method = 2 }

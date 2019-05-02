@@ -10051,7 +10051,7 @@ VALUE
 Image_pixel_interpolation_method(VALUE self)
 {
     Image *image = rm_check_destroyed(self);
-    return InterpolatePixelMethod_find(image->interpolate);
+    return PixelInterpolateMethod_find(image->interpolate);
 }
 
 
@@ -10071,7 +10071,7 @@ VALUE
 Image_pixel_interpolation_method_eq(VALUE self, VALUE method)
 {
     Image *image = rm_check_frozen(self);
-    VALUE_TO_ENUM(method, image->interpolate, InterpolatePixelMethod);
+    VALUE_TO_ENUM(method, image->interpolate, PixelInterpolateMethod);
     return method;
 }
 
