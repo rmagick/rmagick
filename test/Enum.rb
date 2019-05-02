@@ -109,6 +109,14 @@ class EnumUT < Test::Unit::TestCase
     end
   end
 
+  def test_using_dispose_type_does_not_cause_endless_loop
+    img = Magick::Image.new(1, 1)
+    Magick::DisposeType.values do |value|
+      img.dispose = value
+      assert_equal(value, img.dispose)
+    end
+  end
+
   def test_using_filter_does_not_cause_endless_loop
     img = Magick::Image.new(1, 1)
     Magick::FilterType.values do |value|

@@ -5128,7 +5128,7 @@ VALUE
 Image_dispose(VALUE self)
 {
     Image *image = rm_check_destroyed(self);
-    return DisposeType_new(image->dispose);
+    return DisposeType_find(image->dispose);
 }
 
 

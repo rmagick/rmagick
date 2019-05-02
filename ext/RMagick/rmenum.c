@@ -520,29 +520,7 @@ CompressionType_find(CompressionType ct)
 
 
 /**
- * Return the name of a DisposeType enum as a string.
- *
- * No Ruby usage (internal function)
- *
- * @param type the DisposeType
- * @return the name
- */
-static const char *
-DisposeType_name(DisposeType type)
-{
-    switch(type)
-    {
-        ENUM_TO_NAME(BackgroundDispose)
-        ENUM_TO_NAME(NoneDispose)
-        ENUM_TO_NAME(PreviousDispose)
-        default:
-        ENUM_TO_NAME(UndefinedDispose)
-    }
-}
-
-
-/**
- * Construct a DisposeType enum object for the specified value..new.
+ * Returns a DisposeType enum object for the specified value..new.
  *
  * No Ruby usage (internal function)
  *
@@ -550,10 +528,9 @@ DisposeType_name(DisposeType type)
  * @return a new DisposeType enumerator
  */
 VALUE
-DisposeType_new(DisposeType type)
+DisposeType_find(DisposeType type)
 {
-    const char *name = DisposeType_name(type);
-    return rm_enum_new(Class_DisposeType, ID2SYM(rb_intern(name)), INT2FIX(type));
+    return Enum_find(Class_DisposeType, type);
 }
 
 
