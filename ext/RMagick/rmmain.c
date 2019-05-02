@@ -1245,7 +1245,7 @@ Init_RMagick2(void)
         ENUMERATOR(ArctanFunction)
     END_ENUM
 
-    DEF_ENUM(ImageLayerMethod)
+    DEF_ENUM(LayerMethod)
         ENUMERATOR(UndefinedLayer)
         ENUMERATOR(CompareAnyLayer)
         ENUMERATOR(CompareClearLayer)

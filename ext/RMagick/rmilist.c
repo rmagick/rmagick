@@ -616,13 +616,13 @@ VALUE
 ImageList_optimize_layers(VALUE self, VALUE method)
 {
     Image *images, *new_images, *new_images2;
-    ImageLayerMethod mthd;
+    LayerMethod mthd;
     ExceptionInfo *exception;
     QuantizeInfo quantize_info;
 
     new_images2 = NULL;     // defeat "unused variable" message
 
-    VALUE_TO_ENUM(method, mthd, ImageLayerMethod);
+    VALUE_TO_ENUM(method, mthd, LayerMethod);
     images = images_from_imagelist(self);
 
     exception = AcquireExceptionInfo();

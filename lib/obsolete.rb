@@ -8,6 +8,9 @@ module Magick
   FilterTypes = FilterType
   deprecate_constant 'FilterTypes'
 
+  ImageLayerMethod = LayerMethod
+  deprecate_constant 'ImageLayerMethod'
+
   InterpolatePixelMethod = PixelInterpolateMethod
   deprecate_constant 'InterpolatePixelMethod'
 end
