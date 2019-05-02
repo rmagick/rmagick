@@ -149,6 +149,14 @@ class EnumUT < Test::Unit::TestCase
     end
   end
 
+  def test_using_orientation_type_does_not_cause_endless_loop
+    info = Magick::Image::Info.new
+    Magick::OrientationType.values do |value|
+      info.orientation = value
+      assert_equal(value, info.orientation)
+    end
+  end
+
   def test_using_interlace_type_does_not_cause_endless_loop
     info = Magick::Image::Info.new
     Magick::InterlaceType.values do |value|

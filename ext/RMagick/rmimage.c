@@ -9754,7 +9754,7 @@ VALUE
 Image_orientation(VALUE self)
 {
     Image *image = rm_check_destroyed(self);
-    return OrientationType_new(image->orientation);
+    return OrientationType_find(image->orientation);
 }
 
 

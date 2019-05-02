@@ -1053,7 +1053,7 @@ extern VALUE  FilterType_find(FilterType);
 extern VALUE  GravityType_find(GravityType);
 extern VALUE  ImageType_find(ImageType);
 extern VALUE  InterlaceType_find(InterlaceType);
-extern VALUE  OrientationType_new(OrientationType);
+extern VALUE  OrientationType_find(OrientationType);
 extern VALUE  PixelInterpolateMethod_find(PixelInterpolateMethod);
 extern VALUE  RenderingIntent_new(RenderingIntent);
 extern VALUE  ResolutionType_new(ResolutionType);

@@ -1819,7 +1819,7 @@ Info_orientation(VALUE self)
     Info *info;
 
     Data_Get_Struct(self, Info, info);
-    return OrientationType_new(info->orientation);
+    return OrientationType_find(info->orientation);
 }
 
 

@@ -610,34 +610,7 @@ InterlaceType_find(InterlaceType interlace)
 
 
 /**
- * Return the name of a OrientationType enum as a string.
- *
- * No Ruby usage (internal function)
- *
- * @param type the OreintationType
- * @return the name
- */
-static const char *
-OrientationType_name(OrientationType type)
-{
-    switch(type)
-    {
-        ENUM_TO_NAME(TopLeftOrientation)
-        ENUM_TO_NAME(TopRightOrientation)
-        ENUM_TO_NAME(BottomRightOrientation)
-        ENUM_TO_NAME(BottomLeftOrientation)
-        ENUM_TO_NAME(LeftTopOrientation)
-        ENUM_TO_NAME(RightTopOrientation)
-        ENUM_TO_NAME(RightBottomOrientation)
-        ENUM_TO_NAME(LeftBottomOrientation)
-        default:
-        ENUM_TO_NAME(UndefinedOrientation)
-    }
-}
-
-
-/**
- * Construct an OrientationType enum object for the specified value.
+ * Returns an OrientationType enum object for the specified value.
  *
  * No Ruby usage (internal function)
  *
@@ -645,10 +618,9 @@ OrientationType_name(OrientationType type)
  * @return a new OrientationType enumerator
  */
 VALUE
-OrientationType_new(OrientationType type)
+OrientationType_find(OrientationType type)
 {
-    const char *name = OrientationType_name(type);
-    return rm_enum_new(Class_OrientationType, ID2SYM(rb_intern(name)), INT2FIX(type));
+    return Enum_find(Class_OrientationType, type);
 }
 
 
