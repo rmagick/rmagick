@@ -595,33 +595,7 @@ ImageType_find(ImageType type)
 
 
 /**
- * Return the name of a InterlaceType enum as a string.
- *
- * No Ruby usage (internal function)
- *
- * @param interlace the InterlaceType
- * @return the name
- */
-static const char *
-InterlaceType_name(InterlaceType interlace)
-{
-    switch(interlace)
-    {
-        ENUM_TO_NAME(GIFInterlace)
-        ENUM_TO_NAME(JPEGInterlace)
-        ENUM_TO_NAME(PNGInterlace)
-        ENUM_TO_NAME(NoInterlace)
-        ENUM_TO_NAME(LineInterlace)
-        ENUM_TO_NAME(PlaneInterlace)
-        ENUM_TO_NAME(PartitionInterlace)
-        default:
-        ENUM_TO_NAME(UndefinedInterlace)
-    }
-}
-
-
-/**
- * Construct an InterlaceType enum object for the specified value.
+ * Returns an InterlaceType enum object for the specified value.
  *
  * No Ruby usage (internal function)
  *
@@ -629,10 +603,9 @@ InterlaceType_name(InterlaceType interlace)
  * @return a new InterlaceType enumerator
  */
 VALUE
-InterlaceType_new(InterlaceType interlace)
+InterlaceType_find(InterlaceType interlace)
 {
-    const char *name = InterlaceType_name(interlace);
-    return rm_enum_new(Class_InterlaceType, ID2SYM(rb_intern(name)), INT2FIX(interlace));
+    return Enum_find(Class_InterlaceType, interlace);
 }
 
 

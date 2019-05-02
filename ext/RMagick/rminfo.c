@@ -1699,7 +1699,7 @@ Info_interlace(VALUE self)
     Info *info;
 
     Data_Get_Struct(self, Info, info);
-    return InterlaceType_new(info->interlace);
+    return InterlaceType_find(info->interlace);
 }
 
 /**

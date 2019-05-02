@@ -7723,7 +7723,7 @@ VALUE
 Image_interlace(VALUE self)
 {
     Image *image = rm_check_destroyed(self);
-    return InterlaceType_new(image->interlace);
+    return InterlaceType_find(image->interlace);
 }
 
 
