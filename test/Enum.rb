@@ -74,7 +74,7 @@ class EnumUT < Test::Unit::TestCase
     assert_equal('UndefinedAlign=0', Magick::AlignType.values[0].inspect)
   end
 
-  def test_issue586
+  def test_using_compose_does_not_cause_endless_loop
     img = Magick::Image.new(10, 10)
     Magick::CompositeOperator.values do |op|
       img.compose = op
@@ -82,7 +82,7 @@ class EnumUT < Test::Unit::TestCase
     end
   end
 
-  def test_issue593_classtype
+  def test_using_class_type_does_not_cause_endless_loop
     img = Magick::Image.new(1, 1)
     Magick::ClassType.values do |value|
       next if value == Magick::UndefinedClass
@@ -92,7 +92,7 @@ class EnumUT < Test::Unit::TestCase
     end
   end
 
-  def test_issue593_filter_type
+  def test_using_filter_does_not_cause_endless_loop
     img = Magick::Image.new(1, 1)
     Magick::FilterType.values do |value|
       img.filter = value
@@ -100,7 +100,7 @@ class EnumUT < Test::Unit::TestCase
     end
   end
 
-  def test_issue593_pixel_interpolation_method
+  def test_using_pixel_interpolation_method_does_not_cause_endless_loop
     img = Magick::Image.new(1, 1)
     Magick::PixelInterpolateMethod.values do |value|
       img.pixel_interpolation_method = value
@@ -108,7 +108,7 @@ class EnumUT < Test::Unit::TestCase
     end
   end
 
-  def test_issue593_virtual_pixel_method
+  def test_using_virtual_pixel_method_does_not_cause_endless_loop
     img = Magick::Image.new(1, 1)
     Magick::VirtualPixelMethod.values do |value|
       img.virtual_pixel_method = value
