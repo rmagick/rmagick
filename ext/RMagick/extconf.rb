@@ -113,6 +113,8 @@ module RMagick
         have_library('X11')
 
       end
+
+      $CFLAGS << ' -std=c99'
     end
 
     # Test for a specific value in an enum type
