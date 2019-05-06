@@ -540,13 +540,11 @@ Pixel_fcmp(int argc, VALUE *argv, VALUE self)
  * @see Pixel_to_color
  */
 VALUE
-Pixel_from_color(VALUE class, VALUE name)
+Pixel_from_color(VALUE class ATTRIBUTE_UNUSED, VALUE name)
 {
     PixelColor pp;
     ExceptionInfo *exception;
     MagickBooleanType okay;
-
-    class = class;      // defeat "never referenced" message from icc
 
     exception = AcquireExceptionInfo();
     okay = QueryColorCompliance(StringValuePtr(name), AllCompliance, &pp, exception);
@@ -583,15 +581,13 @@ Pixel_from_color(VALUE class, VALUE name)
  * @return a new Magick::Pixel object
  */
 VALUE
-Pixel_from_hsla(int argc, VALUE *argv, VALUE class)
+Pixel_from_hsla(int argc, VALUE *argv, VALUE class ATTRIBUTE_UNUSED)
 {
     double h, s, l, a = 1.0;
     MagickPixel pp;
     ExceptionInfo *exception;
     char name[50];
     MagickBooleanType alpha = MagickFalse;
-
-    class = class;          // defeat "unused parameter" message.
 
     switch (argc)
     {
@@ -660,12 +656,11 @@ Pixel_from_hsla(int argc, VALUE *argv, VALUE class)
  * @deprecated This method has been deprecated. Please use Pixel_from_hsla.
  */
 VALUE
-Pixel_from_HSL(VALUE class, VALUE hsl)
+Pixel_from_HSL(VALUE class ATTRIBUTE_UNUSED, VALUE hsl)
 {
     PixelColor rgb;
     double hue, saturation, luminosity;
 
-    class = class;      // defeat "never referenced" message from icc
     memset(&rgb, 0, sizeof(rgb));
 
     hsl = rb_Array(hsl);    // Ensure array

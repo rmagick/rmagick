@@ -845,9 +845,7 @@ Info_delay(VALUE self)
 static VALUE
 arg_is_integer(VALUE arg)
 {
-    int d = NUM2INT(arg);
-    d = d;      // satisfy icc
-    return arg;
+    return INT2NUM(NUM2INT(arg));
 }
 
 /**

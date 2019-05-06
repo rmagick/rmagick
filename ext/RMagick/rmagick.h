@@ -52,6 +52,11 @@
 //! For quoting preprocessor symbols
 #define Q(q) Q2(q)
 
+#ifdef __GNUC__
+#define ATTRIBUTE_UNUSED  __attribute__((unused))
+#else
+#define ATTRIBUTE_UNUSED
+#endif
 
 //! Trace new image creation in bang methods
 #define UPDATE_DATA_PTR(_obj_, _new_) \
