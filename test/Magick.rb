@@ -89,20 +89,6 @@ class MagickUT < Test::Unit::TestCase
     Magick.fonts { |f| assert_instance_of(Magick::Font, f) }
   end
 
-  def test_formats
-    res = nil
-    assert_nothing_raised { res = Magick.formats }
-    assert_instance_of(Hash, res)
-    res.each do |f, v|
-      assert_instance_of(String, f)
-      assert_instance_of(String, v)
-    end
-    Magick.formats.each do |f, v|
-      assert_not_nil(f)
-      assert_not_nil(v)
-    end
-  end
-
   def test_geometry
     g = nil
     gs = nil
@@ -257,6 +243,10 @@ class MagickUT < Test::Unit::TestCase
     assert_raise(ArgumentError) { Magick::Geometry.new(40, 20, 10, Magick::AreaGeometry) }
   end
 
+  def test_init_formats
+    assert_instance_of(Hash, Magick.init_formats)
+  end
+
   def test_set_log_event_mask
     assert_nothing_raised { Magick.set_log_event_mask('Module,Coder') }
   end
@@ -307,20 +297,6 @@ class MagickUT < Test::Unit::TestCase
     assert_raise(ArgumentError) { Magick.limit_resource('xxx') }
     assert_raise(ArgumentError) { Magick.limit_resource('map', 3500, 2) }
     assert_raise(ArgumentError) { Magick.limit_resource }
-  end
-
-  def test_trace_proc
-    Magick.trace_proc = proc do |which, description, id, method|
-      assert(which == :c)
-      assert_instance_of(String, description)
-      assert_instance_of(String, id)
-      assert_equal(:initialize, method)
-    end
-    begin
-      Magick::Image.new(20, 20)
-    ensure
-      Magick.trace_proc = nil
-    end
   end
 end
 
