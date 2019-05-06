@@ -1619,11 +1619,7 @@ format_exception(const ExceptionType severity, const char *reason, const char *d
     int len;
     memset(msg, 0, sizeof(ERROR_MSG_SIZE));
 
-#if defined(HAVE_SNPRINTF)
     len = snprintf(msg, ERROR_MSG_SIZE, "%s%s%s",
-#else
-    len = sprintf(msg, "%.500s%s%.500s",
-#endif
         GetLocaleExceptionMessage(severity, reason),
         description ? ": " : "",
         description ? GetLocaleExceptionMessage(severity, description) : "");

@@ -13528,11 +13528,7 @@ Image_tint(int argc, VALUE *argv, VALUE self)
         rb_raise(rb_eArgError, "opacity percentages must be non-negative.");
     }
 
-#if defined(HAVE_SNPRINTF)
     snprintf(opacity, sizeof(opacity),
-#else
-    sprintf(opacity,
-#endif
             "%g,%g,%g,%g", red_pct_opaque*100.0, green_pct_opaque*100.0
             , blue_pct_opaque*100.0, alpha_pct_opaque*100.0);
 

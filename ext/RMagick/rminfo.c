@@ -2072,11 +2072,7 @@ Info_scene_eq(VALUE self, VALUE scene)
     Data_Get_Struct(self, Info, info);
     info->scene = NUM2ULONG(scene);
 
-#if defined(HAVE_SNPRINTF)
     (void) snprintf(buf, sizeof(buf), "%-ld", info->scene);
-#else
-    (void) sprintf(buf, "%-l", info->scene);
-#endif
     (void) SetImageOption(info, "scene", buf);
 
     return scene;
