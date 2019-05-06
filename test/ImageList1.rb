@@ -15,6 +15,49 @@ class ImageList1UT < Test::Unit::TestCase
     @list2 << @list[9]
   end
 
+  def test_combine
+    red   = Magick::Image.new(20, 20) { self.background_color = 'red' }
+    green = Magick::Image.new(20, 20) { self.background_color = 'green' }
+    blue  = Magick::Image.new(20, 20) { self.background_color = 'blue' }
+    black = Magick::Image.new(20, 20) { self.background_color = 'black' }
+    alpha = Magick::Image.new(20, 20) { self.background_color = 'transparent' }
+
+    list = Magick::ImageList.new
+    assert_raise(ArgumentError) { list.combine }
+
+    list << red
+    assert_nothing_raised { list.combine }
+
+    res = list.combine
+    assert_instance_of(Magick::Image, res)
+
+    list << alpha
+    assert_nothing_raised { list.combine }
+
+    list.pop
+    list << green
+    list << blue
+    assert_nothing_raised { list.combine }
+
+    list << alpha
+    assert_nothing_raised { list.combine }
+
+    list.pop
+    list << black
+    assert_nothing_raised { list.combine(Magick::CMYKColorspace) }
+    assert_nothing_raised { list.combine(Magick::SRGBColorspace) }
+
+    list << alpha
+    assert_nothing_raised { list.combine(Magick::CMYKColorspace) }
+    assert_raise(ArgumentError) { list.combine(Magick::SRGBColorspace) }
+
+    list << alpha
+    assert_raise(ArgumentError) { Magick::Image.combine }
+
+    assert_raise(TypeError) { list.combine(nil) }
+    assert_raise(ArgumentError) { list.combine(Magick::SRGBColorspace, 1) }
+  end
+
   def test_composite_layers
     assert_nothing_raised { @list.composite_layers(@list2) }
     Magick::CompositeOperator.values do |op|

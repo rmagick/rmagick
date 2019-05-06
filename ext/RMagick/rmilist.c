@@ -185,6 +185,88 @@ ImageList_coalesce(VALUE self)
 
 
 /**
+ * Combines the images using the specified colorspace.
+ *
+ * Ruby usage:
+ *   - @verbatim new_image = ImageList#combine @endverbatim
+ *   - @verbatim new_image = ImageList#combine(colorspace) @endverbatim
+ *
+ * Notes:
+ *   - Calls CombineImages.
+ *
+ * @param argc number of input arguments
+ * @param argv array of input arguments
+ * @param self this object
+ * @return a new image
+ */
+VALUE ImageList_combine(int argc, VALUE *argv, VALUE self)
+{
+    ChannelType channel;
+    ColorspaceType colorspace, old_colorspace;
+    long len;
+    Image *images, *new_image;
+    ExceptionInfo *exception;
+
+    len = check_imagelist_length(self);
+
+    switch (argc)
+    {
+        case 1:
+            VALUE_TO_ENUM(argv[0], colorspace, ColorspaceType);
+            break;
+        case 0:
+            colorspace = sRGBColorspace;
+            break;
+        default:
+            rb_raise(rb_eArgError, "wrong number of arguments (expected 1, got %d)", argc);
+            break;
+    }
+
+    channel = RedChannel;
+    switch (len)
+    {
+        case 5:
+            if (colorspace == CMYKColorspace)
+                channel |= AlphaChannel;
+            else
+                rb_raise(rb_eArgError, "invalid number of images in this image list");
+        case 4:
+            if (colorspace == CMYKColorspace)
+                channel |= IndexChannel;
+            else
+                channel |= AlphaChannel;
+        case 3:
+            channel |= GreenChannel;
+            channel |= BlueChannel;
+            break;
+        case 2:
+            channel |= AlphaChannel;
+            break;
+        case 1:
+            break;
+        default:
+            rb_raise(rb_eArgError, "invalid number of images in this image list");
+            break;
+    }
+
+    images = images_from_imagelist(self);
+    old_colorspace = images->colorspace;
+    SetImageColorspace(images, colorspace);
+
+    exception = AcquireExceptionInfo();
+    new_image = CombineImages(images, channel, exception);
+    rm_split(images);
+    images->colorspace = old_colorspace;
+    rm_check_exception(exception, new_image, DestroyOnError);
+    (void) DestroyExceptionInfo(exception);
+
+    rm_ensure_result(new_image);
+
+    return rm_image_new(new_image);
+}
+
+
+/**
  * Equivalent to convert's -layers composite option.
  *
  * Ruby usage:
