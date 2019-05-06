@@ -1692,7 +1692,7 @@ Init_RMagick2(void)
 static void
 test_Magick_version(void)
 {
-    unsigned long version_number;
+    size_t version_number;
     const char *version_str;
     int x, n;
     ID bypass = rb_intern("RMAGICK_BYPASS_VERSION_TEST");
