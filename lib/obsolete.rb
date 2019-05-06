@@ -46,4 +46,5 @@ module Magick
 
   deprecate_constant 'Rec601LumaColorspace'
   deprecate_constant 'Rec709LumaColorspace'
+  deprecate_constant 'StaticGravity'
 end
