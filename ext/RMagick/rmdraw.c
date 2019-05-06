@@ -1100,7 +1100,7 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
     draw->tmpfile_ary = tmpfile_name;
 
     // Form the drawing primitive
-    (void) sprintf(primitive, "image %s %g,%g,%g,%g '%s'", op, x, y, width, height, name);
+    (void) snprintf(primitive, sizeof(primitive), "image %s %g,%g,%g,%g '%s'", op, x, y, width, height, name);
 
 
     // Send "primitive" to self.

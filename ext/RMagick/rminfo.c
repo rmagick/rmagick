@@ -283,7 +283,7 @@ Info_aref(int argc, VALUE *argv, VALUE self)
                 rb_raise(rb_eArgError, "can't reference %.60s:%.1024s - too long", format_p, key_p);
             }
 
-            sprintf(fkey, "%.60s:%.*s", format_p, (int)(MaxTextExtent-61), key_p);
+            snprintf(fkey, sizeof(fkey), "%.60s:%.*s", format_p, (int)(MaxTextExtent-61), key_p);
             break;
 
         case 1:
@@ -354,7 +354,7 @@ Info_aset(int argc, VALUE *argv, VALUE self)
                 rb_raise(rb_eArgError, "%.60s:%.1024s not defined - too long", format_p, key_p);
             }
 
-            (void) sprintf(ckey, "%.60s:%.*s", format_p, (int)(sizeof(ckey)-MAX_FORMAT_LEN), key_p);
+            (void) snprintf(ckey, sizeof(ckey), "%.60s:%.*s", format_p, (int)(sizeof(ckey)-MAX_FORMAT_LEN), key_p);
 
             value = argv[2];
             break;
@@ -2424,7 +2424,7 @@ Info_undefine(VALUE self, VALUE format, VALUE key)
         rb_raise(rb_eArgError, "can't undefine %.60s:%.1024s - too long", format_p, key_p);
     }
 
-    sprintf(fkey, "%.60s:%.*s", format_p, (int)(MaxTextExtent-61), key_p);
+    snprintf(fkey, sizeof(fkey), "%.60s:%.*s", format_p, (int)(MaxTextExtent-61), key_p);
 
     Data_Get_Struct(self, Info, info);
     (void) DeleteImageOption(info, fkey);
