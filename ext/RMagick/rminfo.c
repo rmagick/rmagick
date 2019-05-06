@@ -672,7 +672,7 @@ Info_colorspace(VALUE self)
     Info *info;
 
     Data_Get_Struct(self, Info, info);
-    return ColorspaceType_new(info->colorspace);
+    return ColorspaceType_find(info->colorspace);
 }
 
 /**
@@ -713,7 +713,7 @@ Info_compression(VALUE self)
     Info *info;
 
     Data_Get_Struct(self, Info, info);
-    return CompressionType_new(info->compression);
+    return CompressionType_find(info->compression);
 }
 
 /**
@@ -1143,7 +1143,7 @@ Info_endian(VALUE self)
     Info *info;
 
     Data_Get_Struct(self, Info, info);
-    return EndianType_new(info->endian);
+    return EndianType_find(info->endian);
 }
 
 
@@ -1658,7 +1658,7 @@ Info_image_type(VALUE self)
     Info *info;
 
     Data_Get_Struct(self, Info, info);
-    return ImageType_new(info->type);
+    return ImageType_find(info->type);
 }
 
 /**
@@ -1697,7 +1697,7 @@ Info_interlace(VALUE self)
     Info *info;
 
     Data_Get_Struct(self, Info, info);
-    return InterlaceType_new(info->interlace);
+    return InterlaceType_find(info->interlace);
 }
 
 /**
@@ -1817,7 +1817,7 @@ Info_orientation(VALUE self)
     Info *info;
 
     Data_Get_Struct(self, Info, info);
-    return OrientationType_new(info->orientation);
+    return OrientationType_find(info->orientation);
 }
 
 
@@ -2484,7 +2484,7 @@ Info_units(VALUE self)
     Info *info;
 
     Data_Get_Struct(self, Info, info);
-    return ResolutionType_new(info->units);
+    return ResolutionType_find(info->units);
 }
 
 /**

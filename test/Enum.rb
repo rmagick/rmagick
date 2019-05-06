@@ -92,6 +92,39 @@ class EnumUT < Test::Unit::TestCase
     end
   end
 
+  def test_using_colorspace_type_does_not_cause_endless_loop
+    img = Magick::Image.new(1, 1)
+    Magick::ColorspaceType.values do |value|
+      next if value == Magick::SRGBColorspace
+
+      assert_not_equal(value, img.colorspace)
+    end
+  end
+
+  def test_using_compression_type_does_not_cause_endless_loop
+    img = Magick::Image.new(1, 1)
+    Magick::CompressionType.values do |value|
+      img.compression = value
+      assert_equal(value, img.compression)
+    end
+  end
+
+  def test_using_dispose_type_does_not_cause_endless_loop
+    img = Magick::Image.new(1, 1)
+    Magick::DisposeType.values do |value|
+      img.dispose = value
+      assert_equal(value, img.dispose)
+    end
+  end
+
+  def test_using_endian_type_does_not_cause_endless_loop
+    img = Magick::Image.new(1, 1)
+    Magick::EndianType.values do |value|
+      img.endian = value
+      assert_equal(value, img.endian)
+    end
+  end
+
   def test_using_filter_does_not_cause_endless_loop
     img = Magick::Image.new(1, 1)
     Magick::FilterType.values do |value|
@@ -100,11 +133,59 @@ class EnumUT < Test::Unit::TestCase
     end
   end
 
+  def test_using_gravity_type_does_not_cause_endless_loop
+    img = Magick::Image.new(1, 1)
+    Magick::GravityType.values do |value|
+      img.gravity = value
+      assert_equal(value, img.gravity)
+    end
+  end
+
+  def test_using_image_type_does_not_cause_endless_loop
+    info = Magick::Image::Info.new
+    Magick::ImageType.values do |value|
+      info.image_type = value
+      assert_equal(value, info.image_type)
+    end
+  end
+
+  def test_using_orientation_type_does_not_cause_endless_loop
+    info = Magick::Image::Info.new
+    Magick::OrientationType.values do |value|
+      info.orientation = value
+      assert_equal(value, info.orientation)
+    end
+  end
+
+  def test_using_interlace_type_does_not_cause_endless_loop
+    info = Magick::Image::Info.new
+    Magick::InterlaceType.values do |value|
+      info.interlace = value
+      assert_equal(value, info.interlace)
+    end
+  end
+
   def test_using_pixel_interpolation_method_does_not_cause_endless_loop
     img = Magick::Image.new(1, 1)
     Magick::PixelInterpolateMethod.values do |value|
       img.pixel_interpolation_method = value
       assert_equal(value, img.pixel_interpolation_method)
+    end
+  end
+
+  def test_using_rendering_intent_does_not_cause_endless_loop
+    img = Magick::Image.new(1, 1)
+    Magick::RenderingIntent.values do |value|
+      img.rendering_intent = value
+      assert_equal(value, img.rendering_intent)
+    end
+  end
+
+  def test_using_resolution_type_does_not_cause_endless_loop
+    info = Magick::Image::Info.new
+    Magick::ResolutionType.values do |value|
+      info.units = value
+      assert_equal(value, info.units)
     end
   end
 

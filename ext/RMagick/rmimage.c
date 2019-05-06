@@ -3031,7 +3031,7 @@ Image_colorspace(VALUE self)
     Image *image;
 
     image = rm_check_destroyed(self);
-    return ColorspaceType_new(image->colorspace);
+    return ColorspaceType_find(image->colorspace);
 }
 
 
@@ -3652,7 +3652,7 @@ Image_composite_mathematics(int argc, VALUE *argv, VALUE self)
 
     // Call composite(False, gravity, x_off, y_off, MathematicsCompositeOp, DefaultChannels)
     args[0] = argv[0];
-    args[1] = GravityType_new(gravity);
+    args[1] = GravityType_find(gravity);
     args[2] = LONG2FIX(x_off);
     args[3] = LONG2FIX(y_off);
     args[4] = CompositeOperator_find(MathematicsCompositeOp);
@@ -3804,7 +3804,7 @@ VALUE
 Image_compression(VALUE self)
 {
     Image *image = rm_check_destroyed(self);
-    return CompressionType_new(image->compression);
+    return CompressionType_find(image->compression);
 }
 
 /**
@@ -5119,7 +5119,7 @@ VALUE
 Image_dispose(VALUE self)
 {
     Image *image = rm_check_destroyed(self);
-    return DisposeType_new(image->dispose);
+    return DisposeType_find(image->dispose);
 }
 
 
@@ -5669,7 +5669,7 @@ VALUE
 Image_endian(VALUE self)
 {
     Image *image = rm_check_destroyed(self);
-    return EndianType_new(image->endian);
+    return EndianType_find(image->endian);
 }
 
 
@@ -7708,7 +7708,7 @@ VALUE
 Image_interlace(VALUE self)
 {
     Image *image = rm_check_destroyed(self);
-    return InterlaceType_new(image->interlace);
+    return InterlaceType_find(image->interlace);
 }
 
 
@@ -9736,7 +9736,7 @@ VALUE
 Image_orientation(VALUE self)
 {
     Image *image = rm_check_destroyed(self);
-    return OrientationType_new(image->orientation);
+    return OrientationType_find(image->orientation);
 }
 
 
@@ -11074,7 +11074,7 @@ VALUE
 Image_rendering_intent(VALUE self)
 {
     Image *image = rm_check_destroyed(self);
-    return RenderingIntent_new(image->rendering_intent);
+    return RenderingIntent_find(image->rendering_intent);
 }
 
 
@@ -14079,7 +14079,7 @@ Image_trim_bang(int argc, VALUE *argv, VALUE self)
 VALUE Image_gravity(VALUE self)
 {
     Image *image = rm_check_destroyed(self);
-    return GravityType_new(image->gravity);
+    return GravityType_find(image->gravity);
 }
 
 
@@ -14123,7 +14123,7 @@ VALUE Image_image_type(VALUE self)
 
     (void) DestroyExceptionInfo(exception);
 
-    return ImageType_new(type);
+    return ImageType_find(type);
 }
 
 
@@ -14218,7 +14218,7 @@ VALUE
 Image_units(VALUE self)
 {
     Image *image = rm_check_destroyed(self);
-    return ResolutionType_new(image->units);
+    return ResolutionType_find(image->units);
 }
 
 

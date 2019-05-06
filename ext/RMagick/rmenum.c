@@ -411,7 +411,7 @@ ClassType_find(ClassType cls)
 
 
 /**
- * Construct a ColorspaceType enum object for the specified value.
+ * Returns a ColorspaceType enum object for the specified value.
  *
  * No Ruby usage (internal function)
  *
@@ -419,49 +419,9 @@ ClassType_find(ClassType cls)
  * @return a new ColorspaceType enumerator
  */
 VALUE
-ColorspaceType_new(ColorspaceType cs)
+ColorspaceType_find(ColorspaceType cs)
 {
-    const char *name;
-
-    switch(cs)
-    {
-        ENUM_SET_NAME(RGBColorspace)
-        ENUM_SET_NAME(GRAYColorspace)
-        ENUM_SET_NAME(TransparentColorspace)
-        ENUM_SET_NAME(OHTAColorspace)
-        ENUM_SET_NAME(XYZColorspace)
-        ENUM_SET_NAME(YCbCrColorspace)
-        ENUM_SET_NAME(YCCColorspace)
-        ENUM_SET_NAME(YIQColorspace)
-        ENUM_SET_NAME(YPbPrColorspace)
-        ENUM_SET_NAME(YUVColorspace)
-        ENUM_SET_NAME(CMYKColorspace)
-        ENUM_SET_NAME(sRGBColorspace)
-        ENUM_SET_NAME(Rec601YCbCrColorspace)
-        ENUM_SET_NAME(Rec601LumaColorspace)
-        ENUM_SET_NAME(Rec709LumaColorspace)
-        ENUM_SET_NAME(Rec709YCbCrColorspace)
-        ENUM_SET_NAME(CMYColorspace)
-#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
-        ENUM_SET_NAME(LuvColorspace)
-        ENUM_SET_NAME(HCLColorspace)
-        ENUM_SET_NAME(LCHColorspace)
-        ENUM_SET_NAME(LMSColorspace)
-        ENUM_SET_NAME(LCHabColorspace)
-        ENUM_SET_NAME(LCHuvColorspace)
-        ENUM_SET_NAME(scRGBColorspace)
-        ENUM_SET_NAME(HSIColorspace)
-        ENUM_SET_NAME(HSVColorspace)
-        ENUM_SET_NAME(HCLpColorspace)
-        ENUM_SET_NAME(YDbDrColorspace)
-        ENUM_SET_NAME(xyYColorspace)
-#endif
-        default:
-        ENUM_SET_NAME(UndefinedColorspace)
-    }
-
-    return rm_enum_new(Class_ColorspaceType, ID2SYM(rb_intern(name)), INT2FIX(cs));
-
+    return Enum_find(Class_ColorspaceType, cs);
 }
 
 
@@ -515,7 +475,7 @@ ComplianceType_name(ComplianceType *c)
 
 
 /**
- * Construct a ComplianceType enum object for the specified value.
+ * Returns a ComplianceType enum object for the specified value.
  *
  * No Ruby usage (internal function)
  *
@@ -523,14 +483,9 @@ ComplianceType_name(ComplianceType *c)
  * @return the Ruby ComplianceType enum object
  */
 VALUE
-ComplianceType_new(ComplianceType compliance)
+ComplianceType_find(ComplianceType compliance)
 {
-    const char *name;
-
-    // Turn off undefined bits
-    compliance &= (SVGCompliance|X11Compliance|XPMCompliance);
-    name = ComplianceType_name(&compliance);
-    return rm_enum_new(Class_ComplianceType, ID2SYM(rb_intern(name)), INT2FIX(compliance));
+    return Enum_find(Class_ComplianceType, compliance);
 }
 
 
@@ -550,47 +505,7 @@ CompositeOperator_find(CompositeOperator op)
 
 
 /**
- * Return the name of a CompressionType enum as a string.
- *
- * No Ruby usage (internal function)
- *
- * @param ct the CompressionType
- * @return the name
- */
-static const char *
-CompressionType_name(CompressionType ct)
-{
-    switch (ct)
-    {
-        ENUM_TO_NAME(NoCompression)
-        ENUM_TO_NAME(B44Compression)
-        ENUM_TO_NAME(B44ACompression)
-        ENUM_TO_NAME(BZipCompression)
-        ENUM_TO_NAME(DXT1Compression)
-        ENUM_TO_NAME(DXT3Compression)
-        ENUM_TO_NAME(DXT5Compression)
-        ENUM_TO_NAME(FaxCompression)
-        ENUM_TO_NAME(Group4Compression)
-        ENUM_TO_NAME(JPEGCompression)
-        ENUM_TO_NAME(JPEG2000Compression)
-        ENUM_TO_NAME(LosslessJPEGCompression)
-        ENUM_TO_NAME(LZWCompression)
-        ENUM_TO_NAME(PizCompression)
-        ENUM_TO_NAME(Pxr24Compression)
-        ENUM_TO_NAME(RLECompression)
-        ENUM_TO_NAME(ZipCompression)
-        ENUM_TO_NAME(ZipSCompression)
-        ENUM_TO_NAME(LZMACompression)
-        ENUM_TO_NAME(JBIG1Compression)
-        ENUM_TO_NAME(JBIG2Compression)
-        default:
-        ENUM_TO_NAME(UndefinedCompression)
-    }
-}
-
-
-/**
- * Construct a CompressionType enum object for the specified value.
+ * Returns a CompressionType enum object for the specified value.
  *
  * No Ruby usage (internal function)
  *
@@ -598,37 +513,14 @@ CompressionType_name(CompressionType ct)
  * @return a new CompressionType enumerator
  */
 VALUE
-CompressionType_new(CompressionType ct)
+CompressionType_find(CompressionType ct)
 {
-    const char *name = CompressionType_name(ct);
-    return rm_enum_new(Class_CompressionType, ID2SYM(rb_intern(name)), INT2FIX(ct));
+    return Enum_find(Class_CompressionType, ct);
 }
 
 
 /**
- * Return the name of a DisposeType enum as a string.
- *
- * No Ruby usage (internal function)
- *
- * @param type the DisposeType
- * @return the name
- */
-static const char *
-DisposeType_name(DisposeType type)
-{
-    switch(type)
-    {
-        ENUM_TO_NAME(BackgroundDispose)
-        ENUM_TO_NAME(NoneDispose)
-        ENUM_TO_NAME(PreviousDispose)
-        default:
-        ENUM_TO_NAME(UndefinedDispose)
-    }
-}
-
-
-/**
- * Construct a DisposeType enum object for the specified value..new.
+ * Returns a DisposeType enum object for the specified value..new.
  *
  * No Ruby usage (internal function)
  *
@@ -636,36 +528,14 @@ DisposeType_name(DisposeType type)
  * @return a new DisposeType enumerator
  */
 VALUE
-DisposeType_new(DisposeType type)
+DisposeType_find(DisposeType type)
 {
-    const char *name = DisposeType_name(type);
-    return rm_enum_new(Class_DisposeType, ID2SYM(rb_intern(name)), INT2FIX(type));
+    return Enum_find(Class_DisposeType, type);
 }
 
 
 /**
- * Return the name of a EndianType enum as a string.
- *
- * No Ruby usage (internal function)
- *
- * @param type the EndianType
- * @return the name
- */
-static const char *
-EndianType_name(EndianType type)
-{
-    switch(type)
-    {
-        ENUM_TO_NAME(LSBEndian)
-        ENUM_TO_NAME(MSBEndian)
-        default:
-        ENUM_TO_NAME(UndefinedEndian)
-    }
-}
-
-
-/**
- * Construct an EndianType enum object.
+ * Returns an EndianType enum object.
  *
  * No Ruby usage (internal function)
  *
@@ -673,10 +543,9 @@ EndianType_name(EndianType type)
  * @return a new EndianType enumerator
  */
 VALUE
-EndianType_new(EndianType type)
+EndianType_find(EndianType type)
 {
-    const char *name = EndianType_name(type);
-    return rm_enum_new(Class_EndianType, ID2SYM(rb_intern(name)), INT2FIX(type));
+    return Enum_find(Class_EndianType, type);
 }
 
 
@@ -696,36 +565,7 @@ FilterType_find(FilterType type)
 
 
 /**
- * Return the name of a GravityType enum as a string.
- *
- * No Ruby usage (internal function)
- *
- * @param type the GravityType
- * @return the name
- */
-static const char *
-GravityType_name(GravityType type)
-{
-    switch(type)
-    {
-        ENUM_TO_NAME(NorthWestGravity)
-        ENUM_TO_NAME(NorthGravity)
-        ENUM_TO_NAME(NorthEastGravity)
-        ENUM_TO_NAME(WestGravity)
-        ENUM_TO_NAME(CenterGravity)
-        ENUM_TO_NAME(EastGravity)
-        ENUM_TO_NAME(SouthWestGravity)
-        ENUM_TO_NAME(SouthGravity)
-        ENUM_TO_NAME(SouthEastGravity)
-        ENUM_TO_NAME(StaticGravity)
-        default:
-        ENUM_TO_NAME(UndefinedGravity)
-    }
-}
-
-
-/**
- * Construct an GravityType enum object for the specified value.
+ * Returns a GravityType enum object for the specified value.
  *
  * No Ruby usage (internal function)
  *
@@ -733,45 +573,14 @@ GravityType_name(GravityType type)
  * @return a new GravityType enumerator
  */
 VALUE
-GravityType_new(GravityType type)
+GravityType_find(GravityType type)
 {
-    const char *name = GravityType_name(type);
-    return rm_enum_new(Class_GravityType, ID2SYM(rb_intern(name)), INT2FIX(type));
+    return Enum_find(Class_GravityType, type);
 }
 
 
 /**
- * Return the name of a ImageType enum as a string.
- *
- * No Ruby usage (internal function)
- *
- * @param type the ImageType
- * @return the name
- */
-static const char *
-ImageType_name(ImageType type)
-{
-    switch(type)
-    {
-        ENUM_TO_NAME(BilevelType)
-        ENUM_TO_NAME(GrayscaleType)
-        ENUM_TO_NAME(GrayscaleMatteType)
-        ENUM_TO_NAME(PaletteType)
-        ENUM_TO_NAME(PaletteMatteType)
-        ENUM_TO_NAME(TrueColorType)
-        ENUM_TO_NAME(TrueColorMatteType)
-        ENUM_TO_NAME(ColorSeparationType)
-        ENUM_TO_NAME(ColorSeparationMatteType)
-        ENUM_TO_NAME(OptimizeType)
-        ENUM_TO_NAME(PaletteBilevelMatteType)
-        default:
-        ENUM_TO_NAME(UndefinedType)
-    }
-}
-
-
-/**
- * Construct an ImageType enum object for the specified value.
+ * Returns an ImageType enum object for the specified value.
  *
  * No Ruby usage (internal function)
  *
@@ -779,41 +588,14 @@ ImageType_name(ImageType type)
  * @return a new ImageType enumerator
  */
 VALUE
-ImageType_new(ImageType type)
+ImageType_find(ImageType type)
 {
-    const char *name = ImageType_name(type);
-    return rm_enum_new(Class_ImageType, ID2SYM(rb_intern(name)), INT2FIX(type));
+    return Enum_find(Class_ImageType, type);
 }
 
 
 /**
- * Return the name of a InterlaceType enum as a string.
- *
- * No Ruby usage (internal function)
- *
- * @param interlace the InterlaceType
- * @return the name
- */
-static const char *
-InterlaceType_name(InterlaceType interlace)
-{
-    switch(interlace)
-    {
-        ENUM_TO_NAME(GIFInterlace)
-        ENUM_TO_NAME(JPEGInterlace)
-        ENUM_TO_NAME(PNGInterlace)
-        ENUM_TO_NAME(NoInterlace)
-        ENUM_TO_NAME(LineInterlace)
-        ENUM_TO_NAME(PlaneInterlace)
-        ENUM_TO_NAME(PartitionInterlace)
-        default:
-        ENUM_TO_NAME(UndefinedInterlace)
-    }
-}
-
-
-/**
- * Construct an InterlaceType enum object for the specified value.
+ * Returns an InterlaceType enum object for the specified value.
  *
  * No Ruby usage (internal function)
  *
@@ -821,42 +603,14 @@ InterlaceType_name(InterlaceType interlace)
  * @return a new InterlaceType enumerator
  */
 VALUE
-InterlaceType_new(InterlaceType interlace)
+InterlaceType_find(InterlaceType interlace)
 {
-    const char *name = InterlaceType_name(interlace);
-    return rm_enum_new(Class_InterlaceType, ID2SYM(rb_intern(name)), INT2FIX(interlace));
+    return Enum_find(Class_InterlaceType, interlace);
 }
 
 
 /**
- * Return the name of a OrientationType enum as a string.
- *
- * No Ruby usage (internal function)
- *
- * @param type the OreintationType
- * @return the name
- */
-static const char *
-OrientationType_name(OrientationType type)
-{
-    switch(type)
-    {
-        ENUM_TO_NAME(TopLeftOrientation)
-        ENUM_TO_NAME(TopRightOrientation)
-        ENUM_TO_NAME(BottomRightOrientation)
-        ENUM_TO_NAME(BottomLeftOrientation)
-        ENUM_TO_NAME(LeftTopOrientation)
-        ENUM_TO_NAME(RightTopOrientation)
-        ENUM_TO_NAME(RightBottomOrientation)
-        ENUM_TO_NAME(LeftBottomOrientation)
-        default:
-        ENUM_TO_NAME(UndefinedOrientation)
-    }
-}
-
-
-/**
- * Construct an OrientationType enum object for the specified value.
+ * Returns an OrientationType enum object for the specified value.
  *
  * No Ruby usage (internal function)
  *
@@ -864,10 +618,9 @@ OrientationType_name(OrientationType type)
  * @return a new OrientationType enumerator
  */
 VALUE
-OrientationType_new(OrientationType type)
+OrientationType_find(OrientationType type)
 {
-    const char *name = OrientationType_name(type);
-    return rm_enum_new(Class_OrientationType, ID2SYM(rb_intern(name)), INT2FIX(type));
+    return Enum_find(Class_OrientationType, type);
 }
 
 
@@ -887,29 +640,6 @@ PixelInterpolateMethod_find(PixelInterpolateMethod interpolate)
 
 
 /**
- * Return the name of a RenderingIntent enum as a string.
- *
- * No Ruby usage (internal function)
- *
- * @param intent the RenderingIntent
- * @return the name
- */
-static const char *
-RenderingIntent_name(RenderingIntent intent)
-{
-    switch(intent)
-    {
-        ENUM_TO_NAME(SaturationIntent)
-        ENUM_TO_NAME(PerceptualIntent)
-        ENUM_TO_NAME(AbsoluteIntent)
-        ENUM_TO_NAME(RelativeIntent)
-        default:
-        ENUM_TO_NAME(UndefinedIntent)
-    }
-}
-
-
-/**
  * Construct an RenderingIntent enum object for the specified value.
  *
  * No Ruby usage (internal function)
@@ -918,36 +648,14 @@ RenderingIntent_name(RenderingIntent intent)
  * @return a new RenderingIntent enumerator
  */
 VALUE
-RenderingIntent_new(RenderingIntent intent)
+RenderingIntent_find(RenderingIntent intent)
 {
-    const char *name = RenderingIntent_name(intent);
-    return rm_enum_new(Class_RenderingIntent, ID2SYM(rb_intern(name)), INT2FIX(intent));
+    return Enum_find(Class_RenderingIntent, intent);
 }
 
 
 /**
- * Return the name of a ResolutionType enum as a string.
- *
- * No Ruby usage (internal function)
- *
- * @param type the ResolutionType
- * @return the name
- */
-static const char *
-ResolutionType_name(ResolutionType type)
-{
-    switch(type)
-    {
-        ENUM_TO_NAME(PixelsPerInchResolution)
-        ENUM_TO_NAME(PixelsPerCentimeterResolution)
-        default:
-        ENUM_TO_NAME(UndefinedResolution)
-    }
-}
-
-
-/**
- * Construct an ResolutionType enum object for the specified value.
+ * Returns a ResolutionType enum object for the specified value.
  *
  * No Ruby usage (internal function)
  *
@@ -955,10 +663,9 @@ ResolutionType_name(ResolutionType type)
  * @return a new ResolutionType enumerator
  */
 VALUE
-ResolutionType_new(ResolutionType type)
+ResolutionType_find(ResolutionType type)
 {
-    const char *name = ResolutionType_name(type);
-    return rm_enum_new(Class_ResolutionType, ID2SYM(rb_intern(name)), INT2FIX(type));
+    return Enum_find(Class_ResolutionType, type);
 }
 
 
@@ -1018,7 +725,7 @@ StretchType_name(StretchType stretch)
 
 
 /**
- * Construct a StretchType enum for a specified StretchType value.
+ * Returns a StretchType enum for a specified StretchType value.
  *
  * No Ruby usage (internal function)
  *
@@ -1026,10 +733,9 @@ StretchType_name(StretchType stretch)
  * @return a Ruby StretchType enum
  */
 VALUE
-StretchType_new(StretchType stretch)
+StretchType_find(StretchType stretch)
 {
-    const char *name = StretchType_name(stretch);
-    return rm_enum_new(Class_StretchType, ID2SYM(rb_intern(name)), INT2FIX(stretch));
+    return Enum_find(Class_StretchType, stretch);
 }
 
 
@@ -1057,7 +763,7 @@ StyleType_name(StyleType style)
 
 
 /**
- * Construct a StyleType enum for a specified StyleType value.
+ * Returns a StyleType enum for a specified StyleType value.
  *
  * No Ruby usage (internal function)
  *
@@ -1065,10 +771,9 @@ StyleType_name(StyleType style)
  * @return a Ruby StyleType enum
  */
 VALUE
-StyleType_new(StyleType style)
+StyleType_find(StyleType style)
 {
-    const char *name = StyleType_name(style);
-    return rm_enum_new(Class_StyleType, ID2SYM(rb_intern(name)), INT2FIX(style));
+    return Enum_find(Class_StyleType, style);
 }
 
 

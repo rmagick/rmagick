@@ -233,7 +233,7 @@ Import_ColorInfo(const ColorInfo *ci)
     name       = rb_str_new2(ci->name);
 
     compliance_type = ci->compliance;
-    compliance = ComplianceType_new(compliance_type);
+    compliance = ComplianceType_find(compliance_type);
     color      = Pixel_from_MagickPixel(&(ci->color));
 
     RB_GC_GUARD(name);
@@ -390,8 +390,8 @@ Import_TypeInfo(const TypeInfo *ti)
 
     name        = rb_str_new2(ti->name);
     family      = rb_str_new2(ti->family);
-    style       = StyleType_new(ti->style);
-    stretch     = StretchType_new(ti->stretch);
+    style       = StyleType_find(ti->style);
+    stretch     = StretchType_find(ti->stretch);
     weight      = ULONG2NUM(ti->weight);
     description = ti->description ? rb_str_new2(ti->description) : Qnil;
     encoding    = ti->encoding    ? rb_str_new2(ti->encoding) : Qnil;
