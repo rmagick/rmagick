@@ -303,7 +303,6 @@ END_MINGW
     end
 
     def create_header_file
-      have_func('snprintf', headers)
       [
         'GetImageChannelEntropy', # 6.9.0-0
         'SetImageGray' # 6.9.1-10
