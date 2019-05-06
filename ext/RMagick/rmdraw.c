@@ -1707,7 +1707,6 @@ get_type_metrics(
     TypeMetric metrics;
     char *text = NULL;
     long text_l;
-    long x;
     unsigned int okay;
 
     switch (argc)

@@ -6752,7 +6752,6 @@ Image_function_channel(int argc, VALUE *argv, VALUE self)
     Image *image, *new_image;
     MagickFunction function;
     unsigned long n, nparms;
-    volatile double *parameters;
     double *parms;
     ChannelType channels;
     ExceptionInfo *exception;
@@ -6792,7 +6791,7 @@ Image_function_channel(int argc, VALUE *argv, VALUE self)
     }
 
     nparms = argc;
-    parameters = parms = ALLOC_N(double, nparms);
+    parms = ALLOC_N(double, nparms);
 
     for (n = 0; n < nparms; n++)
     {
@@ -7955,7 +7954,6 @@ Image_level_colors(int argc, VALUE *argv, VALUE self)
     Image *image, *new_image;
     MagickPixel black_color, white_color;
     ChannelType channels;
-    ExceptionInfo *exception;
     MagickBooleanType invert = MagickTrue;
     MagickBooleanType status;
 
