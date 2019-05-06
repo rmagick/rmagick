@@ -33,6 +33,10 @@ FreezeError = if RUBY_VERSION > '2.5'
                 TypeError
               end
 
+Dir.glob(File.join(__dir__, 'lib/**/*.rb')) do |file|
+  require file
+end
+
 require 'Draw.rb'
 require 'Enum.rb'
 require 'Fill.rb'
