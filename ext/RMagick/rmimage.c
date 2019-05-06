@@ -1410,10 +1410,7 @@ get_offsets_from_gravity(GravityType gravity, Image *image, Image *mark
 static VALUE
 check_for_long_value(VALUE obj)
 {
-    long t;
-    t = NUM2LONG(obj);
-    t = t;      // placate gcc
-    return(VALUE)0;
+    return LONG2NUM(NUM2LONG(obj));
 }
 
 
@@ -2016,14 +2013,12 @@ Image_bounding_box(VALUE self)
  * @return a new image
  */
 VALUE
-Image_capture(int argc, VALUE *argv, VALUE self)
+Image_capture(int argc, VALUE *argv, VALUE self ATTRIBUTE_UNUSED)
 {
     Image *image;
     ImageInfo *image_info;
     VALUE info_obj;
     XImportInfo ximage_info;
-
-    self = self;  // Suppress "never referenced" message from icc
 
     XGetImportInfo(&ximage_info);
     switch (argc)
@@ -3096,13 +3091,11 @@ DEF_ATTR_READER(Image, columns, int)
  * @param self this object
  * @return a new image
  */
-VALUE Image_combine(int argc, VALUE *argv, VALUE self)
+VALUE Image_combine(int argc, VALUE *argv, VALUE self ATTRIBUTE_UNUSED)
 {
     ChannelType channel = 0;
     Image *image, *images = NULL, *new_image;
     ExceptionInfo *exception;
-
-    self = self;        // defeat "unreferenced argument" message
 
     switch (argc)
     {
@@ -3885,7 +3878,7 @@ Image_compress_colormap_bang(VALUE self)
  * @throw TypeError
  */
 VALUE
-Image_constitute(VALUE class, VALUE width_arg, VALUE height_arg
+Image_constitute(VALUE class ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
                  , VALUE map_arg, VALUE pixels_arg)
 {
     Image *image;
@@ -3903,11 +3896,9 @@ Image_constitute(VALUE class, VALUE width_arg, VALUE height_arg
     VALUE pixel_class;
     StorageType stg_type;
 
-    class = class;  // Suppress "never referenced" message from icc
-
-            // rb_Array converts objects that are not Arrays to Arrays if possible,
-            // and raises TypeError if it can't.
-            pixels_arg = rb_Array(pixels_arg);
+    // rb_Array converts objects that are not Arrays to Arrays if possible,
+    // and raises TypeError if it can't.
+    pixels_arg = rb_Array(pixels_arg);
 
     width = NUM2ULONG(width_arg);
     height = NUM2ULONG(height_arg);
@@ -5369,7 +5360,7 @@ Image_distortion_channel(int argc, VALUE *argv, VALUE self)
  * @return a string representing the dumped image
  */
 VALUE
-Image__dump(VALUE self, VALUE depth)
+Image__dump(VALUE self, VALUE depth ATTRIBUTE_UNUSED)
 {
     Image *image;
     ImageInfo *info;
@@ -5378,8 +5369,6 @@ Image__dump(VALUE self, VALUE depth)
     DumpedImage mi;
     VALUE str;
     ExceptionInfo *exception;
-
-    depth = depth;  // Suppress "never referenced" message from icc
 
     image = rm_check_destroyed(self);
 
@@ -6697,7 +6686,7 @@ Image_frame(int argc, VALUE *argv, VALUE self)
  * @return an array of new images
  */
 VALUE
-Image_from_blob(VALUE class, VALUE blob_arg)
+Image_from_blob(VALUE class ATTRIBUTE_UNUSED, VALUE blob_arg)
 {
     Image *images;
     Info *info;
@@ -6705,9 +6694,6 @@ Image_from_blob(VALUE class, VALUE blob_arg)
     ExceptionInfo *exception;
     void *blob;
     long length;
-
-    class = class;          // defeat gcc message
-            blob_arg = blob_arg;    // defeat gcc message
 
     blob = (void *) rm_str2cstr(blob_arg, &length);
 
@@ -8170,7 +8156,7 @@ Image_liquid_rescale(int argc, VALUE *argv, VALUE self)
  * @see Image__dump
  */
 VALUE
-Image__load(VALUE class, VALUE str)
+Image__load(VALUE class ATTRIBUTE_UNUSED, VALUE str)
 {
     Image *image;
     ImageInfo *info;
@@ -8178,8 +8164,6 @@ Image__load(VALUE class, VALUE str)
     ExceptionInfo *exception;
     char *blob;
     long length;
-
-    class = class;  // Suppress "never referenced" message from icc
 
     blob = rm_str2cstr(str, &length);
 
@@ -10775,7 +10759,7 @@ file_arg_rescue(VALUE arg)
  * @see array_from_images
  */
 static VALUE
-rd_image(VALUE class, VALUE file, reader_t reader)
+rd_image(VALUE class ATTRIBUTE_UNUSED, VALUE file, reader_t reader)
 {
     char *filename;
     long filename_l;
@@ -10783,8 +10767,6 @@ rd_image(VALUE class, VALUE file, reader_t reader)
     VALUE info_obj;
     Image *images;
     ExceptionInfo *exception;
-
-    class = class;  // defeat gcc message
 
     // Create a new Info structure for this read/ping
     info_obj = rm_info_new();
@@ -10913,7 +10895,7 @@ Image_recolor(VALUE self, VALUE color_matrix)
  * @see array_from_images
  */
 VALUE
-Image_read_inline(VALUE self, VALUE content)
+Image_read_inline(VALUE self ATTRIBUTE_UNUSED, VALUE content)
 {
     VALUE info_obj;
     Image *images;
@@ -10923,8 +10905,6 @@ Image_read_inline(VALUE self, VALUE content)
     unsigned char *blob;
     size_t blob_l;
     ExceptionInfo *exception;
-
-    self = self;    // defeat gcc message
 
     image_data = rm_str2cstr(content, &image_data_l);
 

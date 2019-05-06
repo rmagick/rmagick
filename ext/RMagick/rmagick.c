@@ -179,14 +179,13 @@ MagickInfo_to_format(const MagickInfo *magick_info)
  * @see MagickInfo_to_format
  */
 VALUE
-Magick_init_formats(VALUE class)
+Magick_init_formats(VALUE class ATTRIBUTE_UNUSED)
 {
     const MagickInfo **magick_info;
     size_t number_formats, x;
     VALUE formats;
     ExceptionInfo *exception;
 
-    class = class;      // defeat "never referenced" message from icc
     formats = rb_hash_new();
 
     // IM 6.1.3 added an exception argument to GetMagickInfoList

@@ -359,10 +359,7 @@ rm_str2cstr(VALUE str, long *len)
 static VALUE
 arg_is_number(VALUE arg)
 {
-    double d;
-    d = NUM2DBL(arg);
-    d = d;      // satisfy icc
-    return arg;
+    return DBL2NUM(NUM2DBL(arg));
 }
 
 
@@ -472,9 +469,8 @@ check_num2dbl(VALUE obj)
  * @return 0
  */
 static VALUE
-rescue_not_dbl(VALUE ignored)
+rescue_not_dbl(VALUE ignored ATTRIBUTE_UNUSED)
 {
-    ignored = ignored;      // defeat gcc message
     return INT2FIX(0);
 }
 
@@ -1490,7 +1486,7 @@ rm_clone_image(Image *image)
  */
 MagickBooleanType
 rm_progress_monitor(
-    const char *tag,
+    const char *tag ATTRIBUTE_UNUSED,
     const MagickOffsetType of,
     const MagickSizeType sp,
     void *client_data)
@@ -1508,8 +1504,6 @@ rm_progress_monitor(
         // skip the callback and continue ImageMagick process.
         return MagickTrue;
     }
-
-    tag = tag;      // defeat gcc message
 
 #if defined(HAVE_LONG_LONG)     // defined in Ruby's defines.h
     offset = rb_ll2inum(of);
