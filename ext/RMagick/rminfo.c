@@ -2530,13 +2530,12 @@ Info_view_eq(VALUE self, VALUE view_arg)
 {
     Info *info;
     char *view = NULL;
-    long length = 0;
 
     Data_Get_Struct(self, Info, info);
 
     if (!NIL_P(view_arg))
     {
-        view = rm_str2cstr(view_arg, &length);
+        view = StringValuePtr(view_arg);
     }
 
     if (info->view)
@@ -2544,7 +2543,7 @@ Info_view_eq(VALUE self, VALUE view_arg)
         magick_free(info->view);
         info->view = NULL;
     }
-    if (length > 0)
+    if (view)
     {
         magick_clone_string(&info->view, view);
     }
