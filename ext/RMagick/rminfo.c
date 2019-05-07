@@ -2513,7 +2513,14 @@ Info_units_eq(VALUE self, VALUE units)
  * @param self this object.
  * @return the viewing parameters
  */
-DEF_ATTR_READER(Info, view, str)
+VALUE
+Info_view(VALUE self)
+{
+    Info *info;
+
+    Data_Get_Struct(self, Info, info);
+    return C_str_to_R_str(info->view);
+}
 
 /**
  * Set FlashPix viewing parameters.
