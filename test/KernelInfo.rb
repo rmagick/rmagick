@@ -33,10 +33,6 @@ class KernelInfoUT < Test::Unit::TestCase
     assert_raise(TypeError) { @kernel.unity_add('x') }
   end
 
-  def test_show
-    assert_nil(@kernel.show)
-  end
-
   def test_scale
     Magick::GeometryFlags.values do |flag|
       assert_nil(@kernel.scale(1.0, flag))
