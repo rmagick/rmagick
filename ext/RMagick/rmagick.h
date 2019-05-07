@@ -700,7 +700,6 @@ extern VALUE KernelInfo_builtin(VALUE, VALUE, VALUE);
 
 
 // rmimage.c
-ATTR_WRITER(Image, alpha)
 ATTR_ACCESSOR(Image, background_color)
 ATTR_READER(Image, base_columns)
 ATTR_READER(Image, base_filename)
