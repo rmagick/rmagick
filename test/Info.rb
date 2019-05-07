@@ -436,5 +436,7 @@ class InfoUT < Test::Unit::TestCase
     assert_equal('string', @info.view)
     assert_nothing_raised { @info.view = nil }
     assert_nil(@info.view)
+    assert_nothing_raised { @info.view = '' }
+    assert_equal('', @info.view)
   end
 end
