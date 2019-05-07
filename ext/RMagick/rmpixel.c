@@ -142,7 +142,7 @@ VALUE
 Pixel_opacity(VALUE self)
 {
     Pixel *pixel;
-    rb_warning("Pixel#opacity is deprecated; use Pixel#opacity.");
+    rb_warning("Pixel#opacity is deprecated; use Pixel#alpha.");
     Data_Get_Struct(self, Pixel, pixel);
     return C_int_to_R_int(pixel->opacity);
 }
