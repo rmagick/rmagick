@@ -16,10 +16,13 @@ class ObsoleteUT < Test::Unit::TestCase
     assert_nothing_raised { Magick::GrayscaleMatteType }
     assert_nothing_raised { Magick::ImageLayerMethod }
     assert_nothing_raised { Magick::InterpolatePixelMethod }
+    assert_nothing_raised { Magick::MeanErrorPerPixelMetric }
     assert_nothing_raised { Magick::MinusCompositeOp }
     assert_nothing_raised { Magick::PaletteBilevelMatteType }
+    assert_nothing_raised { Magick::PeakSignalToNoiseRatioMetric }
     assert_nothing_raised { Magick::SubtractCompositeOp }
     assert_nothing_raised { Magick::TrueColorMatteType }
+    assert_nothing_raised { Magick::UndefinedMetric }
     assert_nothing_raised { Magick::Rec601LumaColorspace }
     assert_nothing_raised { Magick::Rec709LumaColorspace }
   end
