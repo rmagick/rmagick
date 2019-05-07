@@ -4158,12 +4158,14 @@ Image_contrast_stretch_channel(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_morphology(VALUE self, VALUE method_v, VALUE iterations, VALUE kernel_v)
 {
-  static VALUE default_channels_const = 0;
+    static VALUE default_channels_const = 0;
 
-  if(!default_channels_const)
-    default_channels_const = rb_const_get(Module_Magick, rb_intern("DefaultChannels"));
+    if(!default_channels_const)
+    {
+        default_channels_const = rb_const_get(Module_Magick, rb_intern("DefaultChannels"));
+    }
 
-  return Image_morphology_channel(self, default_channels_const, method_v, iterations, kernel_v);
+    return Image_morphology_channel(self, default_channels_const, method_v, iterations, kernel_v);
 }
 
 /** Apply a user supplied kernel to the image channel according to the given mophology method.
@@ -4184,33 +4186,37 @@ Image_morphology(VALUE self, VALUE method_v, VALUE iterations, VALUE kernel_v)
 VALUE
 Image_morphology_channel(VALUE self, VALUE channel_v, VALUE method_v, VALUE iterations, VALUE kernel_v)
 {
-  Image *image, *new_image;
-  ExceptionInfo *exception;
-  MorphologyMethod method;
-  ChannelType channel;
-  KernelInfo *kernel;
+    Image *image, *new_image;
+    ExceptionInfo *exception;
+    MorphologyMethod method;
+    ChannelType channel;
+    KernelInfo *kernel;
 
-  VALUE_TO_ENUM(method_v, method, MorphologyMethod);
-  VALUE_TO_ENUM(channel_v, channel, ChannelType);
-  Check_Type(iterations, T_FIXNUM);
+    VALUE_TO_ENUM(method_v, method, MorphologyMethod);
+    VALUE_TO_ENUM(channel_v, channel, ChannelType);
+    Check_Type(iterations, T_FIXNUM);
 
-  if (TYPE(kernel_v) == T_STRING)
-    kernel_v = rb_class_new_instance(1, &kernel_v, Class_KernelInfo);
+    if (TYPE(kernel_v) == T_STRING)
+    {
+        kernel_v = rb_class_new_instance(1, &kernel_v, Class_KernelInfo);
+    }
 
-  if (!rb_obj_is_kind_of(kernel_v, Class_KernelInfo))
-    rb_raise(rb_eArgError, "expected String or Magick::KernelInfo");
+    if (!rb_obj_is_kind_of(kernel_v, Class_KernelInfo))
+    {
+        rb_raise(rb_eArgError, "expected String or Magick::KernelInfo");
+    }
 
-  Data_Get_Struct(kernel_v, KernelInfo, kernel);
+    Data_Get_Struct(kernel_v, KernelInfo, kernel);
 
-  image = rm_check_destroyed(self);
-  exception = AcquireExceptionInfo();
+    image = rm_check_destroyed(self);
+    exception = AcquireExceptionInfo();
 
-  new_image = MorphologyImageChannel(image, channel, method, NUM2LONG(iterations), kernel, exception);
-  rm_check_exception(exception, new_image, DestroyOnError);
-  DestroyExceptionInfo(exception);
+    new_image = MorphologyImageChannel(image, channel, method, NUM2LONG(iterations), kernel, exception);
+    rm_check_exception(exception, new_image, DestroyOnError);
+    (void) DestroyExceptionInfo(exception);
 
-  rm_ensure_result(new_image);
-  return rm_image_new(new_image);
+    rm_ensure_result(new_image);
+    return rm_image_new(new_image);
 }
 
 /**
