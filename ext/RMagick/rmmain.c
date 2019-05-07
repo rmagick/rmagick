@@ -635,7 +635,6 @@ Init_RMagick2(void)
     // and the deprecated "from_HSL".
     rb_define_alloc_func(Class_Pixel, Pixel_alloc);
     rb_define_singleton_method(Class_Pixel, "from_color", Pixel_from_color, 1);
-    rb_define_singleton_method(Class_Pixel, "from_HSL", Pixel_from_HSL, 1);
     rb_define_singleton_method(Class_Pixel, "from_hsla", Pixel_from_hsla, -1);
 
     // Define the RGBA attributes
