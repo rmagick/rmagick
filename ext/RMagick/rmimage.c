@@ -1757,53 +1757,6 @@ Image_blue_shift(int argc, VALUE *argv, VALUE self)
 
 
 /**
- * Get the blur attribute.
- *
- * Ruby usage:
- *   - @verbatim Image#blur @endverbatim
- *
- * @param self this object
- * @return the blur
- * @deprecated This method has been deprecated.
- */
-VALUE
-Image_blur(VALUE self)
-{
-    Image *image;
-
-    rb_warning("Image#blur is deprecated");
-    (void) rm_check_destroyed(self);
-    Data_Get_Struct(self, Image, image);
-    return C_dbl_to_R_dbl(image->blur);
-}
-
-
-/**
- * Set the blur attribute.
- *
- * Ruby usage:
- *   - @verbatim Image#blur= @endverbatim
- *
- * @param self this object
- * @param value the blur
- * @return value
- * @deprecated This method has been deprecated.
- */
-VALUE
-Image_blur_eq(VALUE self, VALUE value)
-{
-    Image *image;
-
-    rb_warning("Image#blur= is deprecated");
-    (void) rm_check_destroyed(self);
-    rb_check_frozen(self);
-    Data_Get_Struct(self, Image, image);
-    image->blur = R_dbl_to_C_dbl(value);
-    return value;
-}
-
-
-/**
  * Call BlurImageChannel.
  *
  * Ruby usage:

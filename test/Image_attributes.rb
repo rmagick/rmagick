@@ -92,13 +92,6 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_equal(false, @img.black_point_compensation)
   end
 
-  def test_blur
-    assert_nothing_raised { @img.blur }
-    assert_equal(1.0, @img.blur)
-    assert_nothing_raised { @img.blur = 2.0 }
-    assert_raise(TypeError) { @img.blur = 'x' }
-  end
-
   def test_border_color
     assert_nothing_raised { @img.border_color }
     # assert_equal("rgb(223,223,223)", @img.border_color)
@@ -614,7 +607,6 @@ class Image_Attributes_UT < Test::Unit::TestCase
   def test_frozen
     @img.freeze
     assert_raise(FreezeError) { @img.background_color = 'xxx' }
-    assert_raise(FreezeError) { @img.blur = 50 }
     assert_raise(FreezeError) { @img.border_color = 'xxx' }
     rp = Magick::Point.new(1, 1)
     gp = Magick::Point.new(1, 1)
