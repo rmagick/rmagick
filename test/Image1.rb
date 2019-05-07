@@ -570,27 +570,6 @@ class Image1_UT < Test::Unit::TestCase
     assert_raise(FreezeError) { @img.color_reset!('red') }
   end
 
-  def test_combine
-    r = Magick::Image.new(20, 20) { self.background_color = 'red' }
-    g = Magick::Image.new(20, 20) { self.background_color = 'green' }
-    b = Magick::Image.new(20, 20) { self.background_color = 'blue' }
-    a = Magick::Image.new(20, 20) { self.background_color = 'transparent' }
-    assert_nothing_raised { Magick::Image.combine(r) }
-    assert_nothing_raised { Magick::Image.combine(r, g) }
-    assert_nothing_raised { Magick::Image.combine(r, g, b) }
-    assert_nothing_raised { Magick::Image.combine(r, g, b, a) }
-    assert_nothing_raised { Magick::Image.combine(nil, g) }
-    assert_nothing_raised { Magick::Image.combine(r, nil, b) }
-    assert_nothing_raised { Magick::Image.combine(r, g, nil, a) }
-    assert_nothing_raised { Magick::Image.combine(r, g, b, nil) }
-    res = Magick::Image.combine(r, g, b)
-    assert_instance_of(Magick::Image, res)
-    assert_raise(ArgumentError) { Magick::Image.combine }
-    assert_raise(ArgumentError) { Magick::Image.combine(nil) }
-    assert_raise(ArgumentError) { Magick::Image.combine(r, g, b, a, r) }
-    assert_raise(TypeError) { Magick::Image.combine(1, g, b, a) }
-  end
-
   def test_compare_channel
     img1 = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
     img2 = Magick::Image.read(IMAGES_DIR + '/Button_1.gif').first

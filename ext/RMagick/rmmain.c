@@ -210,7 +210,6 @@ Init_RMagick2(void)
     rb_define_alloc_func(Class_Image, Image_alloc);
     rb_define_method(Class_Image, "initialize", Image_initialize, -1);
 
-    rb_define_singleton_method(Class_Image, "combine", Image_combine, -1);
     rb_define_singleton_method(Class_Image, "constitute", Image_constitute, 4);
     rb_define_singleton_method(Class_Image, "_load", Image__load, 1);
     rb_define_singleton_method(Class_Image, "capture", Image_capture, -1);
