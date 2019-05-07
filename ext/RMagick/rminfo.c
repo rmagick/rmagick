@@ -443,14 +443,7 @@ Info_authenticate(VALUE self)
     Info *info;
 
     Data_Get_Struct(self, Info, info);
-    if (info->authenticate)
-    {
-        return rb_str_new2(info->authenticate);
-    }
-    else
-    {
-        return Qnil;
-    }
+    return C_str_to_R_str(info->authenticate);
 }
 
 
@@ -461,21 +454,21 @@ Info_authenticate(VALUE self)
  *   - @verbatim Info#authenticate= @endverbatim
  *
  * @param self this object
- * @param passwd the authenticating password
- * @return passwd
+ * @param passwd_arg the authenticating password
+ * @return passwd_arg
  */
 VALUE
-Info_authenticate_eq(VALUE self, VALUE passwd)
+Info_authenticate_eq(VALUE self, VALUE passwd_arg)
 {
     Info *info;
-    char *passwd_p = NULL;
-    long passwd_l = 0;
+    char *passwd = NULL;
+    long length = 0;
 
     Data_Get_Struct(self, Info, info);
 
-    if (!NIL_P(passwd))
+    if (!NIL_P(passwd_arg))
     {
-        passwd_p = rm_str2cstr(passwd, &passwd_l);
+        passwd = rm_str2cstr(passwd_arg, &length);
     }
 
     if (info->authenticate)
@@ -483,12 +476,12 @@ Info_authenticate_eq(VALUE self, VALUE passwd)
         magick_free(info->authenticate);
         info->authenticate = NULL;
     }
-    if (passwd_l > 0)
+    if (length > 0)
     {
-        magick_clone_string(&info->authenticate, passwd_p);
+        magick_clone_string(&info->authenticate, passwd);
     }
 
-    return passwd;
+    return passwd_arg;
 }
 
 
