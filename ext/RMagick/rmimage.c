@@ -8716,62 +8716,6 @@ Image_mask(int argc, VALUE *argv, VALUE self)
 
 
 /**
- * Get matte attribute.
- *
- * Ruby usage:
- *   - @verbatim Image#matte @endverbatim
- *
- * @param self this object
- * @return the matte
- * @deprecated This method has been deprecated. Please use Image_alpha.
- * @see Image_alpha
- * @see Image_alpha_eq
- */
-VALUE
-Image_matte(VALUE self)
-{
-    Image *image;
-
-    image = rm_check_destroyed(self);
-    rb_warning("Image#matte is deprecated; use Image#alpha.");
-    return image->matte ? Qtrue : Qfalse;
-}
-
-
-/**
- * Set matte attribute.
- *
- * Ruby usage:
- *   - @verbatim Image#matte= @endverbatim
- *
- * @param self this object
- * @param matte the matte
- * @return the matte
- * @deprecated This method has been deprecated. Please use Image_alpha.
- * @see Image_alpha_eq
- * @see Image_alpha
- */
-VALUE
-Image_matte_eq(VALUE self, VALUE matte)
-{
-    VALUE alpha_channel_type;
-
-    if (RTEST(matte))
-    {
-        alpha_channel_type = rb_const_get(Module_Magick, rb_intern("ActivateAlphaChannel"));
-    }
-    else
-    {
-        alpha_channel_type = rb_const_get(Module_Magick, rb_intern("DeactivateAlphaChannel"));
-    }
-
-    rb_warning("Image#matte= is deprecated; use Image#alpha.");
-
-    return Image_alpha_eq(self, alpha_channel_type);
-}
-
-
-/**
  * Return the matte color.
  *
  * Ruby usage:
