@@ -13118,30 +13118,6 @@ Image_swirl(VALUE self, VALUE degrees_obj)
 
 
 /**
- * Synchronize image properties with the image profiles.
- *
- * Ruby usage:
- *   - @verbatim Image#sync_profiles @endverbatim
- *
- * @param self this object
- * @return true if succeeded, otherwise false
- * @deprecated This method has been deprecated.
- */
-VALUE
-Image_sync_profiles(VALUE self)
-{
-    rb_warning("Image#sync_profiles is deprecated");
-    Image *image = rm_check_destroyed(self);
-    VALUE okay =  SyncImageProfiles(image) ? Qtrue : Qfalse;
-    rm_check_image_exception(image, RetainOnError);
-
-    RB_GC_GUARD(okay);
-
-    return okay;
-}
-
-
-/**
  * Emulates Magick++'s floodFillTexture.
  *
  * If the FloodfillMethod method is specified, flood-fills texture across pixels
