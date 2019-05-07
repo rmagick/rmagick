@@ -1040,7 +1040,6 @@ extern VALUE  Pixel_marshal_dump(VALUE);
 extern VALUE  Pixel_marshal_load(VALUE, VALUE);
 extern VALUE  Pixel_spaceship(VALUE, VALUE);
 extern VALUE  Pixel_to_color(int, VALUE *, VALUE);
-extern VALUE  Pixel_to_HSL(VALUE);
 extern VALUE  Pixel_to_hsla(VALUE);
 extern VALUE  Pixel_to_s(VALUE);
 
