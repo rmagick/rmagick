@@ -13116,10 +13116,12 @@ Image_swirl(VALUE self, VALUE degrees_obj)
  *
  * @param self this object
  * @return true if succeeded, otherwise false
+ * @deprecated This method has been deprecated.
  */
 VALUE
 Image_sync_profiles(VALUE self)
 {
+    rb_warning("Image#sync_profiles is deprecated");
     Image *image = rm_check_destroyed(self);
     VALUE okay =  SyncImageProfiles(image) ? Qtrue : Qfalse;
     rm_check_image_exception(image, RetainOnError);
