@@ -462,13 +462,12 @@ Info_authenticate_eq(VALUE self, VALUE passwd_arg)
 {
     Info *info;
     char *passwd = NULL;
-    long length = 0;
 
     Data_Get_Struct(self, Info, info);
 
     if (!NIL_P(passwd_arg))
     {
-        passwd = rm_str2cstr(passwd_arg, &length);
+        passwd = StringValuePtr(passwd_arg);
     }
 
     if (info->authenticate)
@@ -476,7 +475,7 @@ Info_authenticate_eq(VALUE self, VALUE passwd_arg)
         magick_free(info->authenticate);
         info->authenticate = NULL;
     }
-    if (length > 0)
+    if (passwd)
     {
         magick_clone_string(&info->authenticate, passwd);
     }
