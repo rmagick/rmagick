@@ -2529,18 +2529,22 @@ VALUE
 Info_view_eq(VALUE self, VALUE view_arg)
 {
     Info *info;
-    char *view;
+    char *view = NULL;
 
     Data_Get_Struct(self, Info, info);
 
-    if (NIL_P(view_arg) || StringValuePtr(view_arg) == NULL)
+    if (!NIL_P(view_arg))
+    {
+        view = StringValuePtr(view_arg);
+    }
+
+    if (info->view)
     {
         magick_free(info->view);
         info->view = NULL;
     }
-    else
+    if (view)
     {
-        view = StringValuePtr(view_arg);
         magick_clone_string(&info->view, view);
     }
     return view_arg;
