@@ -529,7 +529,6 @@ Init_RMagick2(void)
     rb_define_method(Class_ImageList, "deconstruct", ImageList_deconstruct, 0);
     rb_define_method(Class_ImageList, "display", ImageList_display, 0);
     rb_define_method(Class_ImageList, "flatten_images", ImageList_flatten_images, 0);
-    rb_define_method(Class_ImageList, "fx", ImageList_fx, -1);
     rb_define_method(Class_ImageList, "map", ImageList_map, -1);
     rb_define_method(Class_ImageList, "montage", ImageList_montage, 0);
     rb_define_method(Class_ImageList, "morph", ImageList_morph, 1);
