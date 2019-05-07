@@ -64,6 +64,8 @@ class InfoUT < Test::Unit::TestCase
     assert_equal('string', @info.authenticate)
     assert_nothing_raised { @info.authenticate = nil }
     assert_nil(@info.authenticate)
+    assert_nothing_raised { @info.authenticate = '' }
+    assert_equal('', @info.authenticate)
   end
 
   def test_background_color
