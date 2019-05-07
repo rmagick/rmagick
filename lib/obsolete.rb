@@ -53,6 +53,7 @@ module Magick
   UndefinedMetric = UndefinedErrorMetric
   deprecate_constant 'UndefinedMetric'
 
+  deprecate_constant 'ConstantVirtualPixelMethod'
   deprecate_constant 'FlattenAlphaChannel'
   deprecate_constant 'MatteChannel'
   deprecate_constant 'Rec601LumaColorspace'
