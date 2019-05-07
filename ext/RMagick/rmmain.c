@@ -253,7 +253,6 @@ Init_RMagick2(void)
     DCL_ATTR_ACCESSOR(Image, interlace)
     DCL_ATTR_ACCESSOR(Image, iptc_profile)
     DCL_ATTR_ACCESSOR(Image, iterations)        // do not document! Only used by Image#iterations=
-    DCL_ATTR_WRITER(Image, mask)
     DCL_ATTR_ACCESSOR(Image, matte_color)
     DCL_ATTR_READER(Image, mean_error_per_pixel)
     DCL_ATTR_READER(Image, mime_type)
