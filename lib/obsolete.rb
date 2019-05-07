@@ -55,6 +55,7 @@ module Magick
 
   deprecate_constant 'ConstantVirtualPixelMethod'
   deprecate_constant 'FlattenAlphaChannel'
+  deprecate_constant 'IntegerPixel'
   deprecate_constant 'MatteChannel'
   deprecate_constant 'Rec601LumaColorspace'
   deprecate_constant 'Rec709LumaColorspace'
