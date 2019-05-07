@@ -29,6 +29,9 @@ module Magick
   InterpolatePixelMethod = PixelInterpolateMethod
   deprecate_constant 'InterpolatePixelMethod'
 
+  MeanErrorPerPixelMetric = MeanErrorPerPixelErrorMetric
+  deprecate_constant 'MeanErrorPerPixelMetric'
+
   MinusCompositeOp = MinusDstCompositeOp
   deprecate_constant 'MinusCompositeOp'
 
@@ -38,11 +41,17 @@ module Magick
   PaletteMatteType = PaletteAlphaType
   deprecate_constant 'PaletteMatteType'
 
+  PeakSignalToNoiseRatioMetric = PeakSignalToNoiseRatioErrorMetric
+  deprecate_constant 'PeakSignalToNoiseRatioMetric'
+
   SubtractCompositeOp = ModulusSubtractCompositeOp
   deprecate_constant 'SubtractCompositeOp'
 
   TrueColorMatteType = TrueColorAlphaType
   deprecate_constant 'TrueColorMatteType'
+
+  UndefinedMetric = UndefinedErrorMetric
+  deprecate_constant 'UndefinedMetric'
 
   deprecate_constant 'Rec601LumaColorspace'
   deprecate_constant 'Rec709LumaColorspace'

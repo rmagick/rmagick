@@ -1268,18 +1268,17 @@ Init_RMagick2(void)
     END_ENUM
 
     DEF_ENUM(MetricType)
-        ENUMERATOR(UndefinedMetric)
+        ENUMERATORV(UndefinedErrorMetric, UndefinedMetric)
         ENUMERATOR(AbsoluteErrorMetric)
         ENUMERATOR(MeanAbsoluteErrorMetric)
-        ENUMERATOR(MeanErrorPerPixelMetric)
+        ENUMERATORV(MeanErrorPerPixelErrorMetric, MeanErrorPerPixelMetric)
         ENUMERATOR(MeanSquaredErrorMetric)
         ENUMERATOR(PeakAbsoluteErrorMetric)
-        ENUMERATOR(PeakSignalToNoiseRatioMetric)
+        ENUMERATORV(PeakSignalToNoiseRatioErrorMetric, PeakSignalToNoiseRatioMetric)
         ENUMERATOR(RootMeanSquaredErrorMetric)
         ENUMERATOR(NormalizedCrossCorrelationErrorMetric)
         ENUMERATOR(FuzzErrorMetric)
 #if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
-        ENUMERATOR(UndefinedErrorMetric)
         ENUMERATOR(PerceptualHashErrorMetric)
 #endif
     END_ENUM
