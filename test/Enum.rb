@@ -215,4 +215,14 @@ class EnumUT < Test::Unit::TestCase
     font = Magick::Font.new('Arial', 'font test', 'Arial family', Magick::NormalStyle, nil, 400, nil, 'test foundry', 'test format')
     assert_match(/stretch=UndefinedStretch/, font.to_s)
   end
+
+  def test_style_type_name
+    Magick::StyleType.values do |style|
+      font = Magick::Font.new('Arial', 'font test', 'Arial family', style, Magick::NormalStretch, 400, nil, 'test foundry', 'test format')
+      assert_match(/style=#{style.to_s}/, font.to_s)
+    end
+
+    font = Magick::Font.new('Arial', 'font test', 'Arial family', nil, Magick::NormalStretch, 400, nil, 'test foundry', 'test format')
+    assert_match(/style=UndefinedStyle/, font.to_s)
+  end
 end
