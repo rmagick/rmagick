@@ -196,4 +196,13 @@ class EnumUT < Test::Unit::TestCase
       assert_equal(value, img.virtual_pixel_method)
     end
   end
+
+  def test_storage_type_name
+    img = Magick::Image.new(20, 20)
+    pixels = img.export_pixels(0, 0, 20, 20, 'RGB').pack('D*')
+
+    assert_raise_message(/UndefinedPixel/) do
+      img.import_pixels(0, 0, 20, 20, 'RGB', pixels, Magick::UndefinedPixel)
+    end
+  end
 end

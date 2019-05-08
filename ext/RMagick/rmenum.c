@@ -66,6 +66,22 @@ rm_enum_new(VALUE class, VALUE sym, VALUE val)
     return rb_obj_freeze(rb_class_new_instance(2, argv, class));
 }
 
+/**
+ * Retrieve C string value of Enum.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param enum_type the Enum object
+ * @return the C string value of Enum object
+ */
+static const char *
+rm_enum_to_cstr(VALUE enum_type)
+{
+   MagickEnum *magick_enum;
+
+   Data_Get_Struct(enum_type, MagickEnum, magick_enum);
+   return rb_id2name(magick_enum->id);
+}
 
 /**
  * Enum class alloc function.
@@ -248,10 +264,7 @@ Enum_bitwise_or(VALUE self, VALUE another)
 VALUE
 Enum_to_s(VALUE self)
 {
-   MagickEnum *magick_enum;
-
-   Data_Get_Struct(self, MagickEnum, magick_enum);
-   return rb_str_new2(rb_id2name(magick_enum->id));
+   return rb_str_new2(rm_enum_to_cstr(self));
 }
 
 
@@ -679,18 +692,12 @@ ResolutionType_find(ResolutionType type)
 const char *
 StorageType_name(StorageType type)
 {
-    switch (type)
+    VALUE storage = Enum_find(Class_StorageType, type);
+    if (NIL_P(storage))
     {
-        ENUM_TO_NAME(CharPixel)
-        ENUM_TO_NAME(DoublePixel)
-        ENUM_TO_NAME(FloatPixel)
-        ENUM_TO_NAME(IntegerPixel)
-        ENUM_TO_NAME(LongPixel)
-        ENUM_TO_NAME(QuantumPixel)
-        ENUM_TO_NAME(ShortPixel)
-        default:
-        ENUM_TO_NAME(UndefinedPixel)
+        return "UndefinedPixel";
     }
+    return rm_enum_to_cstr(storage);
 }
 
 
