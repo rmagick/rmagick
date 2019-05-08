@@ -52,7 +52,7 @@ class ImageList1UT < Test::Unit::TestCase
     assert_raise(ArgumentError) { list.combine(Magick::SRGBColorspace) }
 
     list << alpha
-    assert_raise(ArgumentError) { Magick::Image.combine }
+    assert_raise(ArgumentError) { list.combine }
 
     assert_raise(TypeError) { list.combine(nil) }
     assert_raise(ArgumentError) { list.combine(Magick::SRGBColorspace, 1) }
