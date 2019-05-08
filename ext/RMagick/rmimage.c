@@ -521,7 +521,6 @@ Image_add_profile(VALUE self, VALUE name)
     profile_image = ReadImage(info, exception);
     (void) DestroyImageInfo(info);
     rm_check_exception(exception, profile_image, DestroyOnError);
-    (void) DestroyExceptionInfo(exception);
     rm_ensure_result(profile_image);
 
     ResetImageProfileIterator(profile_image);
@@ -531,9 +530,8 @@ Image_add_profile(VALUE self, VALUE name)
         profile = GetImageProfile(profile_image, profile_name);
         if (profile)
         {
-            (void)ProfileImage(image, profile_name, GetStringInfoDatum(profile)
-                               , GetStringInfoLength(profile), MagickFalse);
-            if (image->exception.severity >= ErrorException)
+            (void) ProfileImage(image, profile_name, GetStringInfoDatum(profile), GetStringInfoLength(profile), MagickFalse);
+            if (rm_should_raise_exception(&image->exception, RetainExceptionRetention))
             {
                 break;
             }
@@ -542,8 +540,8 @@ Image_add_profile(VALUE self, VALUE name)
     }
 
     (void) DestroyImage(profile_image);
+    (void) DestroyExceptionInfo(exception);
     rm_check_image_exception(image, RetainOnError);
-
 
     return self;
 }
@@ -2667,7 +2665,6 @@ set_profile(VALUE self, const char *name, VALUE profile)
     profile_image = BlobToImage(info, profile_blob, (size_t)profile_length, exception);
     (void) DestroyImageInfo(info);
     CHECK_EXCEPTION()
-    (void) DestroyExceptionInfo(exception);
 
     ResetImageProfileIterator(profile_image);
     profile_name = GetNextImageProfile(profile_image);
@@ -2677,7 +2674,7 @@ set_profile(VALUE self, const char *name, VALUE profile)
         if (rm_strcasecmp("8bim", profile_name) == 0 && rm_strcasecmp("iptc", name) == 0)
         {
             (void) ProfileImage(image, name, profile_blob, profile_length, MagickFalse);
-            if (image->exception.severity >= ErrorException)
+            if (rm_should_raise_exception(&image->exception, RetainExceptionRetention))
             {
                 break;
             }
@@ -2688,7 +2685,7 @@ set_profile(VALUE self, const char *name, VALUE profile)
             if (profile_data)
             {
                 (void) ProfileImage(image, name, GetStringInfoDatum(profile_data), GetStringInfoLength(profile_data), MagickFalse);
-                if (image->exception.severity >= ErrorException)
+                if (rm_should_raise_exception(&image->exception, RetainExceptionRetention))
                 {
                     break;
                 }
@@ -2698,6 +2695,7 @@ set_profile(VALUE self, const char *name, VALUE profile)
     }
 
     (void) DestroyImage(profile_image);
+    (void) DestroyExceptionInfo(exception);
     rm_check_image_exception(image, RetainOnError);
 
     return self;
