@@ -247,6 +247,10 @@ class MagickUT < Test::Unit::TestCase
     assert_instance_of(Hash, Magick.init_formats)
   end
 
+  def test_opaque_alpha
+    assert_equal(Magick::QuantumRange, Magick::OpaqueAlpha)
+  end
+
   def test_set_log_event_mask
     assert_nothing_raised { Magick.set_log_event_mask('Module,Coder') }
   end
@@ -297,6 +301,10 @@ class MagickUT < Test::Unit::TestCase
     assert_raise(ArgumentError) { Magick.limit_resource('xxx') }
     assert_raise(ArgumentError) { Magick.limit_resource('map', 3500, 2) }
     assert_raise(ArgumentError) { Magick.limit_resource }
+  end
+
+  def test_transparent_alpha
+    assert_equal(0, Magick::TransparentAlpha)
   end
 end
 

@@ -57,8 +57,10 @@ module Magick
   deprecate_constant 'FlattenAlphaChannel'
   deprecate_constant 'IntegerPixel'
   deprecate_constant 'MatteChannel'
+  deprecate_constant 'OpaqueOpacity'
   deprecate_constant 'Rec601LumaColorspace'
   deprecate_constant 'Rec709LumaColorspace'
   deprecate_constant 'ResetAlphaChannel'
   deprecate_constant 'StaticGravity'
+  deprecate_constant 'TransparentOpacity'
 end

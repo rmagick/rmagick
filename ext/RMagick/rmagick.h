@@ -482,8 +482,10 @@ EXTERN ID rm_ID_y;                 /**< "y" */
 //!  Define a Magick module constant
 #if MAGICKCORE_QUANTUM_DEPTH == 64
 #define DEF_CONST(constant) rb_define_const(Module_Magick, #constant, ULL2NUM(constant))
+#define DEF_CONSTV(constant, val) rb_define_const(Module_Magick, #constant, ULL2NUM(val))
 #else   // MAGICKCORE_QUANTUM_DEPTH == 8, 16, 32
 #define DEF_CONST(constant) rb_define_const(Module_Magick, #constant, UINT2NUM(constant))
+#define DEF_CONSTV(constant, val) rb_define_const(Module_Magick, #constant, UINT2NUM(val))
 #endif
 
 
