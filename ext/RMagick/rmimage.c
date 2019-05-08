@@ -3898,6 +3898,7 @@ Image_constitute(VALUE class ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
     } pixels;
     VALUE pixel_class;
     StorageType stg_type;
+    ExceptionInfo *exception;
 
     // rb_Array converts objects that are not Arrays to Arrays if possible,
     // and raises TypeError if it can't.
@@ -3978,10 +3979,22 @@ Image_constitute(VALUE class ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
     }
 
     SetImageExtent(new_image, width, height);
-    rm_check_image_exception(new_image, DestroyOnError);
+    exception = &new_image->exception;
+    if (rm_should_raise_exception(exception, RetainExceptionRetention))
+    {
+        xfree(pixels.v);
+        (void) DestroyImage(new_image);
+        rm_raise_exception(exception);
+    }
 
     (void) SetImageBackgroundColor(new_image);
-    rm_check_image_exception(new_image, DestroyOnError);
+    exception = &new_image->exception;
+    if (rm_should_raise_exception(exception, RetainExceptionRetention))
+    {
+        xfree(pixels.v);
+        (void) DestroyImage(new_image);
+        rm_raise_exception(exception);
+    }
 
     (void) ImportImagePixels(new_image, 0, 0, width, height, map, stg_type, (const void *)pixels.v);
     xfree(pixels.v);
