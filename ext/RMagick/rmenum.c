@@ -710,23 +710,14 @@ StorageType_name(StorageType type)
  * @return the string
  */
 const char *
-StretchType_name(StretchType stretch)
+StretchType_name(StretchType type)
 {
-    switch (stretch)
+    VALUE stretch = Enum_find(Class_StretchType, type);
+    if (NIL_P(stretch))
     {
-        ENUM_TO_NAME(NormalStretch)
-        ENUM_TO_NAME(UltraCondensedStretch)
-        ENUM_TO_NAME(ExtraCondensedStretch)
-        ENUM_TO_NAME(CondensedStretch)
-        ENUM_TO_NAME(SemiCondensedStretch)
-        ENUM_TO_NAME(SemiExpandedStretch)
-        ENUM_TO_NAME(ExpandedStretch)
-        ENUM_TO_NAME(ExtraExpandedStretch)
-        ENUM_TO_NAME(UltraExpandedStretch)
-        ENUM_TO_NAME(AnyStretch)
-        default:
-        ENUM_TO_NAME(UndefinedStretch)
+        return "UndefinedStretch";
     }
+    return rm_enum_to_cstr(stretch);
 }
 
 
