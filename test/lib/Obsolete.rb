@@ -19,6 +19,7 @@ class ObsoleteUT < Test::Unit::TestCase
     assert_nothing_raised { Magick::MeanErrorPerPixelMetric }
     assert_nothing_raised { Magick::MinusCompositeOp }
     assert_nothing_raised { Magick::PaletteBilevelMatteType }
+    assert_nothing_raised { Magick::PaletteMatteType }
     assert_nothing_raised { Magick::PeakSignalToNoiseRatioMetric }
     assert_nothing_raised { Magick::SubtractCompositeOp }
     assert_nothing_raised { Magick::TrueColorMatteType }
