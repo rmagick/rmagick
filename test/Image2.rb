@@ -343,8 +343,6 @@ class Image2_UT < Test::Unit::TestCase
         assert_raises(Magick::DestroyedImageError) { @img.difference(other) }
       elsif method == 'channel_entropy' && IM_VERSION < Gem::Version.new('6.9')
         assert_raises(NotImplementedError) { @img.channel_entropy }
-      elsif %w[morphology morphology_channel].include?(method)
-        warn "skipped testing `#destroy` against `##{method}`"
       elsif method == 'get_iptc_dataset'
         assert_raises(Magick::DestroyedImageError) { @img.get_iptc_dataset('x') }
       elsif method == 'profile!'

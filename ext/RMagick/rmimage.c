@@ -4193,6 +4193,8 @@ Image_morphology_channel(VALUE self, VALUE channel_v, VALUE method_v, VALUE iter
     ChannelType channel;
     KernelInfo *kernel;
 
+    image = rm_check_destroyed(self);
+
     VALUE_TO_ENUM(method_v, method, MorphologyMethod);
     VALUE_TO_ENUM(channel_v, channel, ChannelType);
     Check_Type(iterations, T_FIXNUM);
@@ -4209,7 +4211,6 @@ Image_morphology_channel(VALUE self, VALUE channel_v, VALUE method_v, VALUE iter
 
     Data_Get_Struct(kernel_v, KernelInfo, kernel);
 
-    image = rm_check_destroyed(self);
     exception = AcquireExceptionInfo();
 
     new_image = MorphologyImageChannel(image, channel, method, NUM2LONG(iterations), kernel, exception);
