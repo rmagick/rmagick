@@ -440,10 +440,29 @@ EXTERN ID rm_ID_y;                 /**< "y" */
         return val;\
     }
 
+//! define attribute writer when attribute name is different from the field name
+#define DEF_ATTR_WRITERF(class, attr, field, type) \
+    VALUE class##_##attr##_eq(VALUE self, VALUE val)\
+    {\
+        class *ptr;\
+        if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {\
+            (void) rm_check_destroyed(self); \
+        }\
+        rb_check_frozen(self);\
+        Data_Get_Struct(self, class, ptr);\
+        ptr->field = R_##type##_to_C_##type(val);\
+        return self;\
+    }
+
 //! define attribute accessor
 #define DEF_ATTR_ACCESSOR(class, attr, type)\
     DEF_ATTR_READER(class, attr, type)\
     DEF_ATTR_WRITER(class, attr, type)
+
+//! define attribute accessor when attribute name is different from the field name
+#define DEF_ATTR_ACCESSORF(class, attr, field, type)\
+    DEF_ATTR_READERF(class, attr, field, type)\
+    DEF_ATTR_WRITERF(class, attr, field, type)
 
 /*
  *  Declare attribute accessors
