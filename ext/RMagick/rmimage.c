@@ -3090,12 +3090,15 @@ DEF_ATTR_READER(Image, columns, int)
  * @param argv array of input arguments
  * @param self this object
  * @return a new image
+ * @deprecated This method has been deprecated. Please use ImageList_combine.
  */
 VALUE Image_combine(int argc, VALUE *argv, VALUE self ATTRIBUTE_UNUSED)
 {
     ChannelType channel = 0;
     Image *image, *images = NULL, *new_image;
     ExceptionInfo *exception;
+
+    rb_warning("Image#combine is deprecated; use ImageList#combine.");
 
     switch (argc)
     {
