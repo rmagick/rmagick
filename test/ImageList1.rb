@@ -64,7 +64,7 @@ class ImageList1UT < Test::Unit::TestCase
       assert_nothing_raised { @list.composite_layers(@list2, op) }
     end
 
-    assert_raise(ArgumentError) { @list.composite_layers(@list2, Magick::AddCompositeOp, 42) }
+    assert_raise(ArgumentError) { @list.composite_layers(@list2, Magick::ModulusAddCompositeOp, 42) }
   end
 
   def test_delay

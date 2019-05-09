@@ -223,7 +223,7 @@ class DrawUT < Test::Unit::TestCase
     assert_raise(TypeError) { @draw.composite(0, 0, 10, 10, img, Magick::CenterAlign) }
     assert_raise(NoMethodError) { @draw.composite(0, 0, 10, 10, 'image') }
     assert_raise(ArgumentError) { @draw.composite(0, 0, 10, 10) }
-    assert_raise(ArgumentError) { @draw.composite(0, 0, 10, 10, img, Magick::AddCompositeOp, 'x') }
+    assert_raise(ArgumentError) { @draw.composite(0, 0, 10, 10, img, Magick::ModulusAddCompositeOp, 'x') }
   end
 
   def test_draw
