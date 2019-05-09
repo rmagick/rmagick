@@ -3882,7 +3882,7 @@ VALUE
 Image_constitute(VALUE class ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
                  , VALUE map_arg, VALUE pixels_arg)
 {
-    Image *image;
+    Image *new_image;
     VALUE pixel, pixel0;
     unsigned long width, height;
     long x, npixels;
@@ -3896,6 +3896,7 @@ Image_constitute(VALUE class ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
     } pixels;
     VALUE pixel_class;
     StorageType stg_type;
+    ExceptionInfo *exception;
 
     // rb_Array converts objects that are not Arrays to Arrays if possible,
     // and raises TypeError if it can't.
@@ -3968,28 +3969,40 @@ Image_constitute(VALUE class ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
     }
 
     // This is based on ConstituteImage in IM 5.5.7
-    image = rm_acquire_image((ImageInfo *) NULL);
-    if (!image)
+    new_image = rm_acquire_image((ImageInfo *) NULL);
+    if (!new_image)
     {
         xfree(pixels.v);
         rb_raise(rb_eNoMemError, "not enough memory to continue.");
     }
 
-    SetImageExtent(image, width, height);
-    rm_check_image_exception(image, DestroyOnError);
+    SetImageExtent(new_image, width, height);
+    exception = &new_image->exception;
+    if (rm_should_raise_exception(exception, RetainExceptionRetention))
+    {
+        xfree(pixels.v);
+        (void) DestroyImage(new_image);
+        rm_raise_exception(exception);
+    }
 
-    (void) SetImageBackgroundColor(image);
-    rm_check_image_exception(image, DestroyOnError);
+    (void) SetImageBackgroundColor(new_image);
+    exception = &new_image->exception;
+    if (rm_should_raise_exception(exception, RetainExceptionRetention))
+    {
+        xfree(pixels.v);
+        (void) DestroyImage(new_image);
+        rm_raise_exception(exception);
+    }
 
-    (void) ImportImagePixels(image, 0, 0, width, height, map, stg_type, (const void *)pixels.v);
+    (void) ImportImagePixels(new_image, 0, 0, width, height, map, stg_type, (const void *)pixels.v);
     xfree(pixels.v);
-    rm_check_image_exception(image, DestroyOnError);
+    rm_check_image_exception(new_image, DestroyOnError);
 
     RB_GC_GUARD(pixel);
     RB_GC_GUARD(pixel0);
     RB_GC_GUARD(pixel_class);
 
-    return rm_image_new(image);
+    return rm_image_new(new_image);
 }
 
 /**
