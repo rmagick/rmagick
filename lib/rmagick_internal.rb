@@ -941,7 +941,7 @@ module Magick
 
     # Make all pixels transparent.
     def matte_reset!
-      self.alpha(TransparentAlphaChannel)
+      alpha(TransparentAlphaChannel)
       self
     end
 
