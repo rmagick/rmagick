@@ -9932,13 +9932,12 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
 {
     Image *image;
     PixelColor new_color;
-    PixelPacket old_color, *pixel;
+    Pixel old_color;
     ExceptionInfo *exception;
     long x, y;
     unsigned int set = False;
     MagickBooleanType okay;
-
-    memset(&old_color, 0, sizeof(old_color));
+    PixelPacket *pixel;
 
     image = rm_check_destroyed(self);
 
@@ -9960,28 +9959,6 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
     x = NUM2LONG(argv[0]);
     y = NUM2LONG(argv[1]);
 
-    // Get the color of a pixel
-    if (!set)
-    {
-        exception = AcquireExceptionInfo();
-        old_color = *GetVirtualPixels(image, x, y, 1, 1, exception);
-        CHECK_EXCEPTION()
-
-        (void) DestroyExceptionInfo(exception);
-
-        // PseudoClass
-        if (image->storage_class == PseudoClass)
-        {
-            IndexPacket *indexes = GetAuthenticIndexQueue(image);
-            old_color = image->colormap[(unsigned long)*indexes];
-        }
-        if (!image->matte)
-        {
-            old_color.opacity = OpaqueOpacity;
-        }
-        return Pixel_from_PixelPacket(&old_color);
-    }
-
     // ImageMagick segfaults if the pixel location is out of bounds.
     // Do what IM does and return the background color.
     if (x < 0 || y < 0 || (unsigned long)x >= image->columns || (unsigned long)y >= image->rows)
@@ -9989,36 +9966,59 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
         return Pixel_from_PixelColor(&image->background_color);
     }
 
-    // Set the color of a pixel. Return previous color.
-    // Convert to DirectClass
-    if (image->storage_class == PseudoClass)
+    exception = AcquireExceptionInfo();
+
+    if (set)
     {
-        okay = SetImageStorageClass(image, DirectClass);
-        rm_check_image_exception(image, RetainOnError);
-        if (!okay)
+        // Set the color of a pixel. Return previous color.
+        // Convert to DirectClass
+        if (image->storage_class == PseudoClass)
         {
-            rb_raise(Class_ImageMagickError, "SetImageStorageClass failed. Can't set pixel color.");
+            okay = SetImageStorageClass(image, DirectClass);
+            rm_check_image_exception(image, RetainOnError);
+            if (!okay)
+            {
+                (void) DestroyExceptionInfo(exception);
+                rb_raise(Class_ImageMagickError, "SetImageStorageClass failed. Can't set pixel color.");
+            }
         }
     }
-
-
-    exception = AcquireExceptionInfo();
 
     pixel = GetAuthenticPixels(image, x, y, 1, 1, exception);
     CHECK_EXCEPTION()
 
-    if (pixel)
+    if (image->storage_class == PseudoClass)
+    {
+        IndexPacket *indexes = GetAuthenticIndexQueue(image);
+        old_color = image->colormap[(unsigned long)*indexes];
+    }
+    else
     {
         old_color = *pixel;
-        if (!image->matte)
+    }
+    if (!image->matte)
+    {
+        old_color.opacity = OpaqueOpacity;
+    }
+
+    if (set)
+    {
+        *pixel = new_color;
+
+        SyncAuthenticPixels(image, exception);
+        CHECK_EXCEPTION()
+    }
+    else
+    {
+        // PseudoClass
+        if (image->storage_class == PseudoClass)
         {
-            old_color.opacity = OpaqueOpacity;
+            (void) DestroyExceptionInfo(exception);
+
+            IndexPacket *indexes = GetAuthenticIndexQueue(image);
+            return Pixel_from_PixelColor(&image->colormap[(unsigned long)*indexes]);
         }
     }
-    *pixel = new_color;
-
-    SyncAuthenticPixels(image, exception);
-    CHECK_EXCEPTION()
 
     (void) DestroyExceptionInfo(exception);
 
