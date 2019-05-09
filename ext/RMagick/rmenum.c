@@ -14,7 +14,6 @@
 
 
 #define ENUMERATORS_CLASS_VAR "@@enumerators"
-#define ENUM_TO_NAME(_enum) case _enum: return #_enum;
 
 
 static VALUE Enum_type_values(VALUE);
