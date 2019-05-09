@@ -745,17 +745,14 @@ StretchType_find(StretchType stretch)
  * @return the string
  */
 const char *
-StyleType_name(StyleType style)
+StyleType_name(StyleType type)
 {
-    switch (style)
+    VALUE style = Enum_find(Class_StyleType, type);
+    if (NIL_P(style))
     {
-        ENUM_TO_NAME(NormalStyle)
-        ENUM_TO_NAME(ItalicStyle)
-        ENUM_TO_NAME(ObliqueStyle)
-        ENUM_TO_NAME(AnyStyle)
-        default:
-        ENUM_TO_NAME(UndefinedStyle)
+        return "UndefinedStyle";
     }
+    return rm_enum_to_cstr(style);
 }
 
 
