@@ -205,4 +205,14 @@ class EnumUT < Test::Unit::TestCase
       img.import_pixels(0, 0, 20, 20, 'RGB', pixels, Magick::UndefinedPixel)
     end
   end
+
+  def test_stretch_type_name
+    Magick::StretchType.values do |stretch|
+      font = Magick::Font.new('Arial', 'font test', 'Arial family', Magick::NormalStyle, stretch, 400, nil, 'test foundry', 'test format')
+      assert_match(/stretch=#{stretch.to_s}/, font.to_s)
+    end
+
+    font = Magick::Font.new('Arial', 'font test', 'Arial family', Magick::NormalStyle, nil, 400, nil, 'test foundry', 'test format')
+    assert_match(/stretch=UndefinedStretch/, font.to_s)
+  end
 end
