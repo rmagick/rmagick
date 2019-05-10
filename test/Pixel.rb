@@ -175,11 +175,11 @@ class PixelUT < Test::Unit::TestCase
     assert_raise(ArgumentError) { Magick::Pixel.from_hsla(127, 50, -128) }
     assert_nothing_raised { @pixel.to_hsla }
 
-    18.times do |h|
-      25.times do |s|
-        25.times do |l|
+    5.times do |h|
+      5.times do |s|
+        5.times do |l|
           5.times do |a|
-            args = [20 * h, s + 25, l + 25, a / 5.0]
+            args = [50 * h, s + 50, l + 50, a / 5.0]
             px = Magick::Pixel.from_hsla(*args)
             hsla = px.to_hsla
             # puts "[#{args.join(', ')}] = [#{hsla.join(', ')}]"
