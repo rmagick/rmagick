@@ -11990,12 +11990,15 @@ Image_segment(int argc, VALUE *argv, VALUE self)
  * @param self this object
  * @param opacity_arg the opacity
  * @return opacity_arg
+ * @deprecated This method has been deprecated. Please use Image_alpha.
  */
 VALUE
 Image_opacity_eq(VALUE self, VALUE opacity_arg)
 {
     Image *image;
     Quantum opacity;
+
+    rb_warning("Image#opacity is deprecated; use Image#alpha");
 
     image = rm_check_frozen(self);
     opacity = APP2QUANTUM(opacity_arg);

@@ -1319,7 +1319,7 @@ class Image2_UT < Test::Unit::TestCase
     assert_nothing_raised do
       assert_block { @img.opaque? }
     end
-    @img.opacity = Magick::TransparentOpacity
+    @img.alpha(Magick::TransparentAlphaChannel)
     assert_block { !@img.opaque? }
   end
 
