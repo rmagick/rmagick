@@ -105,6 +105,7 @@ Lint/NumberConversion:
     - 'lib/rvg/to_c.rb'
     - 'test/Import_Export.rb'
     - 'test/Enum.rb'
+    - 'test/lib/internal/Geometry.rb'
 
 # Offense count: 1
 Lint/RescueException:
