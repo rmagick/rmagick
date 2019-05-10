@@ -242,7 +242,7 @@ module Magick
       elsif points.length.odd?
         Kernel.raise ArgumentError, 'odd number of arguments specified'
       end
-      primitive 'bezier ' + points.join(',')
+      primitive 'bezier ' + points.map! { |x| format('%g', x) }.join(',')
     end
 
     # Draw a circle
