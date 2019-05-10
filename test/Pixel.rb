@@ -158,43 +158,31 @@ class PixelUT < Test::Unit::TestCase
   def test_from_hsla
     assert_nothing_raised { Magick::Pixel.from_hsla(127, 50, 50) }
     assert_nothing_raised { Magick::Pixel.from_hsla(127, 50, 50, 0) }
-    assert_nothing_raised { Magick::Pixel.from_hsla(127, '50%', 50, 0) }
-    assert_nothing_raised { Magick::Pixel.from_hsla('10%', '50%', 50, 0) }
+    assert_nothing_raised { Magick::Pixel.from_hsla('99%', '100%', '100%', '100%') }
+    assert_nothing_raised { Magick::Pixel.from_hsla(0, 0, 0, 0) }
+    assert_nothing_raised { Magick::Pixel.from_hsla(359, 255, 255, 1.0) }
     assert_raise(TypeError) { Magick::Pixel.from_hsla([], 50, 50, 0) }
     assert_raise(TypeError) { Magick::Pixel.from_hsla(127, [], 50, 0) }
     assert_raise(TypeError) { Magick::Pixel.from_hsla(127, 50, [], 0) }
     assert_raise(ArgumentError) { Magick::Pixel.from_hsla }
     assert_raise(ArgumentError) { Magick::Pixel.from_hsla(127, 50, 50, 50, 50) }
-    assert_raise(RangeError) { Magick::Pixel.from_hsla(127, 50, 50, 1.5) }
-    assert_raise(ArgumentError) { Magick::Pixel.from_hsla(127, 50, 50, -1.5) }
-    assert_raise(RangeError) { Magick::Pixel.from_hsla(361, 50, 50) }
-    assert_raise(ArgumentError) { Magick::Pixel.from_hsla(-90, 50, 50) }
-    assert_raise(RangeError) { Magick::Pixel.from_hsla(127, 256, 50) }
-    assert_raise(ArgumentError) { Magick::Pixel.from_hsla(127, -128, 50) }
-    assert_raise(RangeError) { Magick::Pixel.from_hsla(127, 50, 256) }
-    assert_raise(ArgumentError) { Magick::Pixel.from_hsla(127, 50, -128) }
+    assert_raise(ArgumentError) { Magick::Pixel.from_hsla(-0.01, 0, 0) }
+    assert_raise(ArgumentError) { Magick::Pixel.from_hsla(0, -0.01, 0) }
+    assert_raise(ArgumentError) { Magick::Pixel.from_hsla(0, 0, -0.01) }
+    assert_raise(ArgumentError) { Magick::Pixel.from_hsla(0, 0, 0, -0.01) }
+    assert_raise(RangeError) { Magick::Pixel.from_hsla(0, 0, 0, 1.01) }
+    assert_raise(RangeError) { Magick::Pixel.from_hsla(360, 0, 0) }
+    assert_raise(RangeError) { Magick::Pixel.from_hsla(0, 256, 0) }
+    assert_raise(RangeError) { Magick::Pixel.from_hsla(0, 0, 256) }
     assert_nothing_raised { @pixel.to_hsla }
 
-    18.times do |h|
-      25.times do |s|
-        25.times do |l|
-          5.times do |a|
-            args = [20 * h, s + 25, l + 25, a / 5.0]
-            px = Magick::Pixel.from_hsla(*args)
-            hsla = px.to_hsla
-            # puts "[#{args.join(', ')}] = [#{hsla.join(', ')}]"
-            # Handle cases where the result is very near 360
-            # hsla[0] = ((hsla[0] + 0.005) % 360.0) - 0.005
-            # hsla[1] = ((hsla[1] + 0.005) % 360.0) - 0.005
-            # hsla[2] = ((hsla[2] + 0.005) % 360.0) - 0.005
-            assert_in_delta(args[0], hsla[0], 0.25, "expected #{args.inspect} got #{hsla.inspect}")
-            assert_in_delta(args[1], hsla[1], 0.25, "expected #{args.inspect} got #{hsla.inspect}")
-            assert_in_delta(args[2], hsla[2], 0.25, "expected #{args.inspect} got #{hsla.inspect}")
-            assert_in_delta(args[3], hsla[3], 0.005, "expected #{args.inspect} got #{hsla.inspect}")
-          end
-        end
-      end
-    end
+    args = [200, 125.125, 250.5, 0.6]
+    px = Magick::Pixel.from_hsla(*args)
+    hsla = px.to_hsla
+    assert_in_delta(args[0], hsla[0], 0.25, "expected #{args.inspect} got #{hsla.inspect}")
+    assert_in_delta(args[1], hsla[1], 0.25, "expected #{args.inspect} got #{hsla.inspect}")
+    assert_in_delta(args[2], hsla[2], 0.25, "expected #{args.inspect} got #{hsla.inspect}")
+    assert_in_delta(args[3], hsla[3], 0.005, "expected #{args.inspect} got #{hsla.inspect}")
 
     # test percentages
     args = ['20%', '20%', '20%', '20%']
