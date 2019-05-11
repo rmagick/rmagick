@@ -15251,10 +15251,10 @@ xform_image(int bang, VALUE self, VALUE x, VALUE y, VALUE width, VALUE height, x
     new_image = (xformer)(image, &rect, exception);
 
     // An exception can occur in either the old or the new images
-    rm_check_image_exception(image, RetainOnError);
     rm_check_exception(exception, new_image, DestroyOnError);
-
     (void) DestroyExceptionInfo(exception);
+
+    rm_check_image_exception(image, RetainOnError);
 
     rm_ensure_result(new_image);
 
