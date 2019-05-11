@@ -2086,7 +2086,6 @@ Image_change_geometry(VALUE self, VALUE geom_arg)
     memset(&rect, 0, sizeof(rect));
 
     SetGeometry(image, &rect);
-    rm_check_image_exception(image, RetainOnError);
     flags = ParseMetaGeometry(geometry, &rect.x,&rect.y, &rect.width,&rect.height);
     if (flags == NoValue)
     {
@@ -2120,7 +2119,6 @@ Image_changed_q(VALUE self)
 {
     Image *image = rm_check_destroyed(self);
     VALUE okay = IsTaintImage(image) ? Qtrue : Qfalse;
-    rm_check_image_exception(image, RetainOnError);
     return okay;
 }
 
@@ -4705,7 +4703,6 @@ Image_delete_profile(VALUE self, VALUE name)
 {
     Image *image = rm_check_frozen(self);
     (void) DeleteImageProfile(image, StringValuePtr(name));
-    rm_check_image_exception(image, RetainOnError);
 
     return self;
 }
@@ -7769,7 +7766,6 @@ Image_iptc_profile(VALUE self)
 
     image = rm_check_destroyed(self);
     profile = GetImageProfile(image, "iptc");
-    rm_check_image_exception(image, RetainOnError);
     if (!profile)
     {
         return Qnil;
@@ -10280,8 +10276,6 @@ Image_quantum_depth(VALUE self)
 
     image = rm_check_destroyed(self);
     quantum_depth = GetImageQuantumDepth(image, MagickFalse);
-
-    rm_check_image_exception(image, RetainOnError);
 
     return ULONG2NUM(quantum_depth);
 }
@@ -14536,7 +14530,6 @@ Image_virtual_pixel_method(VALUE self)
 
     image = rm_check_destroyed(self);
     vpm = GetImageVirtualPixelMethod(image);
-    rm_check_image_exception(image, RetainOnError);
     return VirtualPixelMethod_find(vpm);
 }
 
