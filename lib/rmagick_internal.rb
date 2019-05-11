@@ -907,7 +907,7 @@ module Magick
       f = copy
       f.alpha(OpaqueAlphaChannel) unless f.alpha?
       pixel = f.pixel_color(x, y)
-      pixel.opacity = TransparentOpacity
+      pixel.alpha = TransparentAlpha
       f.pixel_color(x, y, pixel)
       f
     end
