@@ -658,10 +658,6 @@ class Image2_UT < Test::Unit::TestCase
       assert_equal(10 * 10 * 2, res.length)
     end
     assert_nothing_raised do
-      res = @img.export_pixels_to_str(0, 0, 10, 10, 'I', Magick::IntegerPixel)
-      assert_equal(10 * 10 * 4, res.length)
-    end
-    assert_nothing_raised do
       res = @img.export_pixels_to_str(0, 0, 10, 10, 'I', Magick::LongPixel)
       assert_equal(10 * 10 * [1].pack('L!').length, res.length)
     end
