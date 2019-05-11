@@ -113,7 +113,7 @@ module RMagick
 
       end
 
-      $CFLAGS << ' -std=c99'
+      $CFLAGS << (have_macro('__GNUC__') ? ' -std=gnu99' : ' -std=c99')
     end
 
     # Test for a specific value in an enum type
