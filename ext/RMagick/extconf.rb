@@ -96,7 +96,6 @@ module RMagick
         $LDFLAGS = %(-L"#{dir_paths[:lib]}")
 
         have_library('CORE_RL_magick_')
-        have_library('X11')
 
       else # mswin
 
@@ -109,7 +108,6 @@ module RMagick
         $LDFLAGS << %( -libpath:"#{dir_paths[:lib]}")
 
         $LOCAL_LIBS = 'CORE_RL_magick_.lib'
-        have_library('X11')
 
       end
 
