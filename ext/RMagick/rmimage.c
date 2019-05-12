@@ -8472,6 +8472,15 @@ get_image_mask(Image *image)
     return mask ? rm_image_new(mask) : Qnil;
 }
 
+/**
+ * Sets the image's clip mask, or removes it when mask is nil.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param image the image
+ * @param mask the mask
+ * @return copy of the current clip-mask or nil
+ */
 static VALUE
 set_image_mask(Image *image, VALUE mask)
 {
