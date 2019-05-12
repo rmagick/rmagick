@@ -656,7 +656,6 @@ ATTR_ACCESSOR(Info, orientation)
 ATTR_ACCESSOR(Info, origin)
 ATTR_ACCESSOR(Info, page)
 ATTR_ACCESSOR(Info, pen)
-// ATTR_ACCESSOR(Info, ping) obsolete
 ATTR_ACCESSOR(Info, pointsize)
 ATTR_ACCESSOR(Info, quality)
 ATTR_ACCESSOR(Info, sampling_factor)
@@ -671,7 +670,6 @@ ATTR_ACCESSOR(Info, transparent_color)
 ATTR_ACCESSOR(Info, undercolor)
 ATTR_ACCESSOR(Info, units)
 ATTR_ACCESSOR(Info, view)
-//ATTR_ACCESSOR(Info, verbose)
 
 extern VALUE Info_alloc(VALUE);
 
