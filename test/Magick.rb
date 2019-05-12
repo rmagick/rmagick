@@ -79,8 +79,8 @@ class MagickUT < Test::Unit::TestCase
       assert_instance_of(String, f.name)
       assert_instance_of(String, f.description) unless f.description.nil?
       assert_instance_of(String, f.family)
-      assert_instance_of(Magick::StyleType, f.style)
-      assert_instance_of(Magick::StretchType, f.stretch)
+      assert_instance_of(Magick::StyleType, f.style) unless f.style.nil?
+      assert_instance_of(Magick::StretchType, f.stretch) unless f.stretch.nil?
       assert_kind_of(Integer, f.weight)
       assert_instance_of(String, f.encoding) unless f.encoding.nil?
       assert_instance_of(String, f.foundry) unless f.foundry.nil?
