@@ -192,15 +192,19 @@ class Image2_UT < Test::Unit::TestCase
       assert_not_same(@img, res)
     end
     assert_raise(ArgumentError) { @img.convolve }
+    assert_raise(ArgumentError) { @img.convolve(0) }
+    assert_raise(ArgumentError) { @img.convolve(-1) }
     assert_raise(ArgumentError) { @img.convolve(order) }
     assert_raise(IndexError) { @img.convolve(5, kernel) }
     assert_raise(IndexError) { @img.convolve(order, 'x') }
     assert_raise(TypeError) { @img.convolve(3, [1.0, 1.0, 1.0, 1.0, 'x', 1.0, 1.0, 1.0, 1.0]) }
-    assert_raise(Magick::ImageMagickError) { @img.convolve(-1, [1.0, 1.0, 1.0, 1.0]) }
+    assert_raise(ArgumentError) { @img.convolve(-1, [1.0, 1.0, 1.0, 1.0]) }
   end
 
   def test_convolve_channel
     assert_raise(ArgumentError) { @img.convolve_channel }
+    assert_raise(ArgumentError) { @img.convolve_channel(0) }
+    assert_raise(ArgumentError) { @img.convolve_channel(-1) }
     assert_raise(ArgumentError) { @img.convolve_channel(3) }
     kernel = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
     order = 3
