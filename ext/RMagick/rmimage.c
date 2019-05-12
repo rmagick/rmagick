@@ -8505,72 +8505,23 @@ get_image_mask(Image *image)
     return mask ? rm_image_new(mask) : Qnil;
 }
 
-
 /**
- * Set the image mask.
+ * Sets the image's clip mask, or removes it when mask is nil.
  *
- * Ruby usage:
- *   - @verbatim Image#mask= @endverbatim
+ * No Ruby usage (internal function)
  *
- * @param self this object
- * @param mask the mask to use
+ * @param image the image
+ * @param mask the mask
  * @return copy of the current clip-mask or nil
- * @deprecated This method has been deprecated. Please use Image_mask(mask-image).
- * @see Image_mask(mask-image)
- * @see get_image_mask
  */
-VALUE
-Image_mask_eq(VALUE self, VALUE mask)
+static VALUE
+set_image_mask(Image *image, VALUE mask)
 {
-    VALUE v[1];
-    v[0] = mask;
-    rb_warning("Image#mask= is deprecated; use Image#mask.");
-    return Image_mask(1, v, self);
-}
-
-
-/**
- * Associate a clip mask with the image.
- *
- * Ruby usage:
- *   - @verbatim Image#mask @endverbatim
- *   - @verbatim Image#mask(mask-image) @endverbatim
- *
- * Notes:
- *   - Omit the argument to get a copy of the current clip mask.
- *   - Pass "nil" for the mask-image to remove the current clip mask.
- *   - If the clip mask is not the same size as the target image, resizes the
- *     clip mask to match the target.
- *   - Distinguish from Image#clip_mask=
- *
- * @param argc number of input arguments
- * @param argv array of input arguments
- * @param self this object
- * @return copy of the current clip-mask or nil
- * @see get_image_mask
- */
-VALUE
-Image_mask(int argc, VALUE *argv, VALUE self)
-{
-    VALUE mask;
-    Image *image, *mask_image, *resized_image;
+    Image *mask_image, *resized_image;
     Image *clip_mask;
     long x, y;
     PixelPacket *q;
     ExceptionInfo *exception;
-
-    image = rm_check_destroyed(self);
-    if (argc == 0)
-    {
-        return get_image_mask(image);
-    }
-    if (argc > 1)
-    {
-        rb_raise(rb_eArgError, "wrong number of arguments (expected 0 or 1, got %d)", argc);
-    }
-
-    rb_check_frozen(self);
-    mask = argv[0];
 
     if (mask != Qnil)
     {
@@ -8640,6 +8591,73 @@ Image_mask(int argc, VALUE *argv, VALUE self)
 
     // Always return a copy of the mask!
     return get_image_mask(image);
+}
+
+
+/**
+ * Set the image mask.
+ *
+ * Ruby usage:
+ *   - @verbatim Image#mask= @endverbatim
+ *
+ * @param self this object
+ * @param mask the mask to use
+ * @return copy of the current clip-mask or nil
+ * @deprecated This method has been deprecated. Please use Image_mask(mask-image).
+ * @see Image_mask(mask-image)
+ * @see get_image_mask
+ */
+VALUE
+Image_mask_eq(VALUE self, VALUE mask)
+{
+    VALUE v[1];
+    v[0] = mask;
+    rb_warning("Image#mask= is deprecated; use Image#mask.");
+    return Image_mask(1, v, self);
+}
+
+
+/**
+ * Associate a clip mask with the image.
+ *
+ * Ruby usage:
+ *   - @verbatim Image#mask @endverbatim
+ *   - @verbatim Image#mask(mask-image) @endverbatim
+ *
+ * Notes:
+ *   - Omit the argument to get a copy of the current clip mask.
+ *   - Pass "nil" for the mask-image to remove the current clip mask.
+ *   - If the clip mask is not the same size as the target image, resizes the
+ *     clip mask to match the target.
+ *   - Distinguish from Image#clip_mask=
+ *
+ * @param argc number of input arguments
+ * @param argv array of input arguments
+ * @param self this object
+ * @return copy of the current clip-mask or nil
+ * @see get_image_mask
+ */
+VALUE
+Image_mask(int argc, VALUE *argv, VALUE self)
+{
+    VALUE mask;
+    Image *image;
+
+    image = rm_check_destroyed(self);
+    if (argc == 0)
+    {
+        return get_image_mask(image);
+    }
+    if (argc > 1)
+    {
+        rb_raise(rb_eArgError, "wrong number of arguments (expected 0 or 1, got %d)", argc);
+    }
+
+    rb_check_frozen(self);
+    mask = argv[0];
+
+    // Always return a copy of the mask!
+    return set_image_mask(image, mask);
 }
 
 
