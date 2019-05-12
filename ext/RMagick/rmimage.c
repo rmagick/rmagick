@@ -12696,7 +12696,7 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
         }
         else
         {
-            xfree((void *)args);
+            xfree((void *) args);
             rb_raise(rb_eTypeError, "type mismatch: %s and %s given", rb_class2name(CLASS_OF(elem1)), rb_class2name(CLASS_OF(elem2)));
         }
         Color_to_MagickPixel(NULL, &pp, argv[n++]);
@@ -12724,8 +12724,8 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
     new_image = SparseColorImage(image, channels, method, nargs, args, exception);
-    xfree(args);
-    CHECK_EXCEPTION();
+    xfree((void *) args);
+    rm_check_exception(exception, new_image, DestroyOnError);
     (void) DestroyExceptionInfo(exception);
     rm_ensure_result(new_image);
 
