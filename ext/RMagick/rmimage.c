@@ -9665,7 +9665,6 @@ Image_opaque_channel(int argc, VALUE *argv, VALUE self)
 
     okay = OpaquePaintImageChannel(new_image, channels, &target_pp, &fill_pp, invert);
 
-    // Restore saved fuzz value
     new_image->fuzz = keep;
     rm_check_image_exception(new_image, DestroyOnError);
 
@@ -9760,7 +9759,6 @@ Image_ordered_dither(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 
-    // ImageMagick >= 6.2.9
     (void) OrderedPosterizeImage(new_image, threshold_map, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
 
@@ -10899,7 +10897,6 @@ Image_recolor(VALUE self, VALUE color_matrix)
 
     order = (unsigned long)sqrt((double)(len + 1.0));
 
-    // RecolorImage sets the ExceptionInfo and returns a NULL image if an error occurs.
     kernel_info = AcquireKernelInfo(NULL);
     if (kernel_info == (KernelInfo *) NULL)
     {
