@@ -2842,9 +2842,9 @@ Image_color_flood_fill( VALUE self, VALUE target_color, VALUE fill_color
 
     (void) FloodfillPaintImage(new_image, DefaultChannels, draw_info, &target_mpp, x, y, invert);
 
-    // No need to check for error
-
     (void) DestroyDrawInfo(draw_info);
+    rm_check_image_exception(new_image, DestroyOnError);
+
     return rm_image_new(new_image);
 }
 
@@ -4475,7 +4475,7 @@ Image_cycle_colormap(VALUE self, VALUE amount)
     new_image = rm_clone_image(image);
 
     (void) CycleColormapImage(new_image, amt);
-    // No need to check for an error
+    rm_check_image_exception(new_image, DestroyOnError);
 
     return rm_image_new(new_image);
 }
@@ -4896,7 +4896,7 @@ Image_difference(VALUE self, VALUE other)
     image2 = rm_check_destroyed(other);
 
     (void) IsImagesEqual(image, image2);
-    // No need to check for error
+    rm_check_image_exception(image, RetainOnError);
 
     mean  = rb_float_new(image->error.mean_error_per_pixel);
     nmean = rb_float_new(image->error.normalized_mean_error);
