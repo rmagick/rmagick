@@ -15254,7 +15254,11 @@ xform_image(int bang, VALUE self, VALUE x, VALUE y, VALUE width, VALUE height, x
     rm_check_exception(exception, new_image, DestroyOnError);
     (void) DestroyExceptionInfo(exception);
 
-    rm_check_image_exception(image, RetainOnError);
+    if (rm_should_raise_exception(&image->exception, RetainExceptionRetention))
+    {
+        (void) DestroyImage(new_image);
+        rm_check_image_exception(image, RetainOnError);
+    }
 
     rm_ensure_result(new_image);
 
