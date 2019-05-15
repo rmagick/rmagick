@@ -10026,8 +10026,6 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
         return Pixel_from_PixelColor(&image->background_color);
     }
 
-    // Set the color of a pixel. Return previous color.
-    // Convert to DirectClass
     if (image->storage_class == PseudoClass)
     {
         okay = SetImageStorageClass(image, DirectClass);
@@ -10037,7 +10035,6 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
             rb_raise(Class_ImageMagickError, "SetImageStorageClass failed. Can't set pixel color.");
         }
     }
-
 
     exception = AcquireExceptionInfo();
 
@@ -10051,11 +10048,11 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
         {
             old_color.opacity = OpaqueOpacity;
         }
-    }
-    *pixel = new_color;
+        *pixel = new_color;
 
-    SyncAuthenticPixels(image, exception);
-    CHECK_EXCEPTION()
+        SyncAuthenticPixels(image, exception);
+        CHECK_EXCEPTION()
+    }
 
     (void) DestroyExceptionInfo(exception);
 
