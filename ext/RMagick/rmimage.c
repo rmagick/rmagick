@@ -9976,8 +9976,6 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
     MagickBooleanType okay;
     PixelPacket *pixel;
 
-    memset(&old_color, 0, sizeof(old_color));
-
     image = rm_check_destroyed(self);
 
     switch (argc)
@@ -9998,28 +9996,6 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
     x = NUM2LONG(argv[0]);
     y = NUM2LONG(argv[1]);
 
-    // Get the color of a pixel
-    if (!set)
-    {
-        exception = AcquireExceptionInfo();
-        old_color = *GetVirtualPixels(image, x, y, 1, 1, exception);
-        CHECK_EXCEPTION()
-
-        (void) DestroyExceptionInfo(exception);
-
-        // PseudoClass
-        if (image->storage_class == PseudoClass)
-        {
-            IndexPacket *indexes = GetAuthenticIndexQueue(image);
-            old_color = image->colormap[(unsigned long)*indexes];
-        }
-        if (!image->matte)
-        {
-            old_color.opacity = OpaqueOpacity;
-        }
-        return Pixel_from_PixelPacket(&old_color);
-    }
-
     // ImageMagick segfaults if the pixel location is out of bounds.
     // Do what IM does and return the background color.
     if (x < 0 || y < 0 || (unsigned long)x >= image->columns || (unsigned long)y >= image->rows)
@@ -10027,7 +10003,7 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
         return Pixel_from_PixelColor(&image->background_color);
     }
 
-    if (image->storage_class == PseudoClass)
+    if (set && image->storage_class == PseudoClass)
     {
         okay = SetImageStorageClass(image, DirectClass);
         rm_check_image_exception(image, RetainOnError);
@@ -10042,17 +10018,26 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
     pixel = GetAuthenticPixels(image, x, y, 1, 1, exception);
     CHECK_EXCEPTION()
 
+    memset(&old_color, 0, sizeof(old_color));
+
     if (pixel)
     {
         old_color = *pixel;
+        if (set)
+        {
+            *pixel = new_color;
+            SyncAuthenticPixels(image, exception);
+            CHECK_EXCEPTION()
+        }
+        else if (image->storage_class == PseudoClass)
+        {
+            IndexPacket *indexes = GetAuthenticIndexQueue(image);
+            old_color = image->colormap[(unsigned long)*indexes];
+        }
         if (!image->matte)
         {
             old_color.opacity = OpaqueOpacity;
         }
-        *pixel = new_color;
-
-        SyncAuthenticPixels(image, exception);
-        CHECK_EXCEPTION()
     }
 
     (void) DestroyExceptionInfo(exception);
