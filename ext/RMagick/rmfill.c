@@ -150,7 +150,7 @@ point_fill(
         CHECK_EXCEPTION()
     }
 
-    DestroyExceptionInfo(exception);
+    (void) DestroyExceptionInfo(exception);
 }
 
 /**
@@ -228,9 +228,9 @@ vertical_fill(
         }
     }
 
-    DestroyExceptionInfo(exception);
+    (void) DestroyExceptionInfo(exception);
 
-    xfree((void *)master);
+    xfree((void *) master);
 }
 
 /**
@@ -305,9 +305,9 @@ horizontal_fill(
         }
     }
 
-    DestroyExceptionInfo(exception);
+    (void) DestroyExceptionInfo(exception);
 
-    xfree((void *)master);
+    xfree((void *) master);
 }
 
 /**
@@ -398,7 +398,7 @@ v_diagonal_fill(
         CHECK_EXCEPTION()
     }
 
-    DestroyExceptionInfo(exception);
+    (void) DestroyExceptionInfo(exception);
 }
 
 /**
@@ -491,7 +491,7 @@ h_diagonal_fill(
         CHECK_EXCEPTION()
     }
 
-    DestroyExceptionInfo(exception);
+    (void) DestroyExceptionInfo(exception);
 }
 
 /**

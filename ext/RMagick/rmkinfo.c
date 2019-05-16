@@ -58,8 +58,10 @@ KernelInfo_initialize(VALUE self, VALUE kernel_string)
 
     kernel = AcquireKernelInfo(StringValueCStr(kernel_string));
 
-    if (kernel == NULL)
+    if (!kernel)
+    {
         rb_raise(rb_eRuntimeError, "failed to parse kernel string");
+    }
 
     DATA_PTR(self) = kernel;
 
@@ -258,7 +260,9 @@ KernelInfo_builtin(VALUE self, VALUE what, VALUE geometry)
     kernel = AcquireKernelBuiltIn(kernel_type, &info);
 
     if (!kernel)
+    {
         rb_raise(rb_eRuntimeError, "failed to acquire builtin kernel");
+    }
 
     return Data_Wrap_Struct(self, NULL, rm_kernel_info_destroy, kernel);
 }

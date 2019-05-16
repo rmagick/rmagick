@@ -488,13 +488,12 @@ Pixel_eql_q(VALUE self, VALUE other)
 VALUE
 Pixel_fcmp(int argc, VALUE *argv, VALUE self)
 {
-    Image *image;
-    Info *info;
-
-    Pixel *this, *that;
-    ColorspaceType colorspace = RGBColorspace;
     double fuzz = 0.0;
     unsigned int equal;
+    ColorspaceType colorspace = RGBColorspace;
+    Image *image;
+    Info *info;
+    Pixel *this, *that;
 
     switch (argc)
     {
