@@ -12241,7 +12241,7 @@ Image_shade(int argc, VALUE *argv, VALUE self)
 
 
 /**
- * Call ShadowImage. X- and y-offsets are the pixel offset. Opacity is either a
+ * Call ShadowImage. X- and y-offsets are the pixel offset. Alpha is either a
  * number between 0 and 1 or a string "NN%". Sigma is the std. dev. of the
  * Gaussian, in pixels.
  *
@@ -12250,14 +12250,14 @@ Image_shade(int argc, VALUE *argv, VALUE self)
  *   - @verbatim Image#shadow(x_offset) @endverbatim
  *   - @verbatim Image#shadow(x_offset, y_offset) @endverbatim
  *   - @verbatim Image#shadow(x_offset, y_offset, sigma) @endverbatim
- *   - @verbatim Image#shadow(x_offset, y_offset, sigma, opacity) @endverbatim
+ *   - @verbatim Image#shadow(x_offset, y_offset, sigma, alpha) @endverbatim
  *
  * Notes:
  *   - Default x_offset is 4
  *   - Default y_offset is 4
  *   - Default sigma is 4.0
- *   - Default opacity is 1.0
- *   - The defaults are taken from the mogrify.c source, except for opacity,
+ *   - Default alpha is 1.0
+ *   - The defaults are taken from the mogrify.c source, except for alpha,
  *     which has no default.
  *   - Introduced in ImageMagick 6.1.7
  *
@@ -12270,7 +12270,7 @@ VALUE
 Image_shadow(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
-    double opacity = 100.0;
+    double alpha = 100.0;
     double sigma = 4.0;
     long x_offset = 4L;
     long y_offset = 4L;
@@ -12280,14 +12280,14 @@ Image_shadow(int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 4:
-            opacity = rm_percentage(argv[3],1.0);   // Clamp to 1.0 < x <= 100.0
-            if (fabs(opacity) < 0.01)
+            alpha = rm_percentage(argv[3],1.0);   // Clamp to 1.0 < x <= 100.0
+            if (fabs(alpha) < 0.01)
             {
-                rb_warning("shadow will be transparent - opacity %g very small", opacity);
+                rb_warning("shadow will be transparent - alpha %g very small", alpha);
             }
-            opacity = FMIN(opacity, 1.0);
-            opacity = FMAX(opacity, 0.01);
-            opacity *= 100.0;
+            alpha = FMIN(alpha, 1.0);
+            alpha = FMAX(alpha, 0.01);
+            alpha *= 100.0;
         case 3:
             sigma = NUM2DBL(argv[2]);
         case 2:
@@ -12302,7 +12302,7 @@ Image_shadow(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    new_image = ShadowImage(image, opacity, sigma, x_offset, y_offset, exception);
+    new_image = ShadowImage(image, alpha, sigma, x_offset, y_offset, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
