@@ -13601,16 +13601,16 @@ Image_ticks_per_second_eq(VALUE self, VALUE tps)
  * Call TintImage.
  *
  * Ruby usage:
- *   - @verbatim Image#tint(tint, red_opacity) @endverbatim
- *   - @verbatim Image#tint(tint, red_opacity, green_opacity) @endverbatim
- *   - @verbatim Image#tint(tint, red_opacity, green_opacity, blue_opacity) @endverbatim
- *   - @verbatim Image#tint(tint, red_opacity, green_opacity, blue_opacity, alpha_opacity) @endverbatim
+ *   - @verbatim Image#tint(tint, red_alpha) @endverbatim
+ *   - @verbatim Image#tint(tint, red_alpha, green_alpha) @endverbatim
+ *   - @verbatim Image#tint(tint, red_alpha, green_alpha, blue_alpha) @endverbatim
+ *   - @verbatim Image#tint(tint, red_alpha, green_alpha, blue_alpha, alpha_alpha) @endverbatim
  *
  * Notes:
- *   - Default green_opacity is red_opacity
- *   - Default blue_opacity is red_opacity
- *   - Default alpha_opacity is 1.0
- *   - Opacity values are percentages: 0.10 -> 10%.
+ *   - Default green_alpha is red_alpha
+ *   - Default blue_alpha is red_alpha
+ *   - Default alpha_alpha is 1.0
+ *   - Alpha values are percentages: 0.10 -> 10%.
  *
  * @param argc number of input arguments
  * @param argv array of input arguments
@@ -13624,7 +13624,7 @@ Image_tint(int argc, VALUE *argv, VALUE self)
     PixelColor tint;
     double red_pct_opaque, green_pct_opaque, blue_pct_opaque;
     double alpha_pct_opaque = 1.0;
-    char opacity[50];
+    char alpha[50];
     ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
@@ -13659,17 +13659,17 @@ Image_tint(int argc, VALUE *argv, VALUE self)
     if (red_pct_opaque < 0.0 || green_pct_opaque < 0.0
         || blue_pct_opaque < 0.0 || alpha_pct_opaque < 0.0)
     {
-        rb_raise(rb_eArgError, "opacity percentages must be non-negative.");
+        rb_raise(rb_eArgError, "alpha percentages must be non-negative.");
     }
 
-    snprintf(opacity, sizeof(opacity),
+    snprintf(alpha, sizeof(alpha),
             "%g,%g,%g,%g", red_pct_opaque*100.0, green_pct_opaque*100.0
             , blue_pct_opaque*100.0, alpha_pct_opaque*100.0);
 
     Color_to_PixelColor(&tint, argv[0]);
     exception = AcquireExceptionInfo();
 
-    new_image = TintImage(image, opacity, tint, exception);
+    new_image = TintImage(image, alpha, tint, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
