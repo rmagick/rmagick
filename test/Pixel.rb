@@ -228,9 +228,9 @@ class PixelUT < Test::Unit::TestCase
     @pixel.alpha = 100
     pixel = @pixel.dup
     pixel.alpha -= 10
-    assert_equal(-1, @pixel <=> pixel)
-    pixel.alpha += 20
     assert_equal(1, @pixel <=> pixel)
+    pixel.alpha += 20
+    assert_equal(-1, @pixel <=> pixel)
   end
 
   def test_to_color
