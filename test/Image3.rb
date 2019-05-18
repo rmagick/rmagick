@@ -811,9 +811,13 @@ class Image3_UT < Test::Unit::TestCase
   def test_transparent_chroma
     assert_instance_of(Magick::Image, @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange)))
     assert_nothing_raised { @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange)) }
-    assert_nothing_raised { @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange), 1.0) }
-    assert_nothing_raised { @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange), 1.0, true) }
-    assert_nothing_raised { @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange), 1.0, false) }
+    assert_nothing_raised { @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange), Magick::TransparentOpacity) }
+    assert_nothing_raised { @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange), alpha: Magick::TransparentAlpha) }
+    assert_raise(ArgumentError) { @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange), wrong: Magick::TransparentAlpha) }
+    assert_nothing_raised { @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange), Magick::TransparentOpacity, true) }
+    assert_nothing_raised { @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange), Magick::TransparentOpacity, false) }
+    assert_nothing_raised { @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange), false, alpha: Magick::TransparentAlpha) }
+    assert_raise(ArgumentError) { @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange), false, wrong: Magick::TransparentAlpha) }
   end
 
   def test_transpose

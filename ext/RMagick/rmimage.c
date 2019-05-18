@@ -13919,11 +13919,11 @@ Image_transparent(int argc, VALUE *argv, VALUE self)
  *
  * Ruby usage:
  *   - @verbatim Image#transparent_chroma(low, high) @endverbatim
- *   - @verbatim Image#transparent_chroma(low, high, opacity) @endverbatim
- *   - @verbatim Image#transparent_chroma(low, high, opacity, invert) @endverbatim
+ *   - @verbatim Image#transparent_chroma(low, high, alpha: alpha) @endverbatim
+ *   - @verbatim Image#transparent_chroma(low, high, invert, alpha: alpha) @endverbatim
  *
  * Notes:
- *   - Default opacity is TransparentOpacity
+ *   - Default alpha is TransparentAlpha
  *   - Default invert is false
  *   - Available in ImageMagick >= 6.4.5-6
  *
@@ -13936,7 +13936,7 @@ VALUE
 Image_transparent_chroma(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
-    Quantum opacity = TransparentOpacity;
+    Quantum alpha = TransparentAlpha;
     MagickPixel low, high;
     MagickBooleanType invert = MagickFalse;
     MagickBooleanType okay;
@@ -13946,9 +13946,23 @@ Image_transparent_chroma(int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 4:
-            invert = RTEST(argv[3]);
+            if (TYPE(argv[argc - 1]) == T_HASH)
+            {
+                invert = RTEST(argv[3]);
+            }
+            else
+            {
+                invert = RTEST(argv[2]);
+            }
         case 3:
-            opacity = APP2QUANTUM(argv[2]);
+            if (TYPE(argv[argc - 1]) == T_HASH)
+            {
+                alpha = get_alpha_from_hash(argv[argc - 1]);
+            }
+            else
+            {
+                alpha = get_alpha_from_opacity(argv[2]);
+            }
         case 2:
             Color_to_MagickPixel(image, &high, argv[1]);
             Color_to_MagickPixel(image, &low, argv[0]);
@@ -13960,7 +13974,7 @@ Image_transparent_chroma(int argc, VALUE *argv, VALUE self)
 
     new_image = rm_clone_image(image);
 
-    okay = TransparentPaintImageChroma(new_image, &low, &high, opacity, invert);
+    okay = TransparentPaintImageChroma(new_image, &low, &high, QuantumRange - alpha, invert);
     rm_check_image_exception(new_image, DestroyOnError);
     if (!okay)
     {
