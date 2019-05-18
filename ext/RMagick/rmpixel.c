@@ -711,7 +711,7 @@ Pixel_hash(VALUE self)
     hash  = ScaleQuantumToChar(pixel->red)   << 24;
     hash += ScaleQuantumToChar(pixel->green) << 16;
     hash += ScaleQuantumToChar(pixel->blue)  << 8;
-    hash += ScaleQuantumToChar(pixel->opacity);
+    hash += ScaleQuantumToChar(QuantumRange - pixel->opacity);
 
     return UINT2NUM(hash >> 1);
 }
