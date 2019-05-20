@@ -13772,13 +13772,13 @@ Image_total_ink_density(VALUE self)
  *
  * Ruby usage:
  *   - @verbatim Image#transparent(color-name) @endverbatim
- *   - @verbatim Image#transparent(color-name, opacity) @endverbatim
+ *   - @verbatim Image#transparent(color-name, alpha) @endverbatim
  *   - @verbatim Image#transparent(pixel) @endverbatim
- *   - @verbatim Image#transparent(pixel, opacity) @endverbatim
+ *   - @verbatim Image#transparent(pixel, alpha) @endverbatim
  *
  * Notes:
- *   - Default opacity is Magick::TransparentOpacity.
- *   - Can use Magick::OpaqueOpacity or Magick::TransparentOpacity, or any
+ *   - Default alpha is Magick::TransparentAlpha.
+ *   - Can use Magick::OpaqueAlpha or Magick::TransparentAlpha, or any
  *     value >= 0 && <= QuantumRange.
  *   - Use Image#fuzz= to define the tolerance level.
  *
@@ -13792,7 +13792,7 @@ Image_transparent(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
     MagickPixel color;
-    Quantum opacity = TransparentOpacity;
+    Quantum alpha = TransparentAlpha;
     MagickBooleanType okay;
 
     image = rm_check_destroyed(self);
@@ -13800,7 +13800,7 @@ Image_transparent(int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 2:
-            opacity = APP2QUANTUM(argv[1]);
+            alpha = rm_get_named_alpha_value(argv[1], "Image#transparent", "alpha");
         case 1:
             Color_to_MagickPixel(image, &color, argv[0]);
             break;
@@ -13811,7 +13811,7 @@ Image_transparent(int argc, VALUE *argv, VALUE self)
 
     new_image = rm_clone_image(image);
 
-    okay = TransparentPaintImage(new_image, &color, opacity, MagickFalse);
+    okay = TransparentPaintImage(new_image, &color, QuantumRange - alpha, MagickFalse);
     rm_check_image_exception(new_image, DestroyOnError);
     if (!okay)
     {

@@ -124,6 +124,7 @@ typedef DistortImageMethod DistortMethod;
 typedef FilterTypes FilterType;
 typedef InterpolatePixelMethod PixelInterpolateMethod;
 typedef ImageLayerMethod LayerMethod;
+#define TransparentAlpha 0
 
 //! Montage
 typedef struct
@@ -1182,6 +1183,7 @@ extern Image *rm_clone_image(Image *);
 extern MagickBooleanType rm_progress_monitor(const char *, const MagickOffsetType, const MagickSizeType, void *);
 extern VALUE  rm_exif_by_entry(Image *);
 extern VALUE  rm_exif_by_number(Image *);
+extern Quantum rm_get_named_alpha_value(VALUE, const char *, const char *);
 extern void   rm_get_optional_arguments(VALUE);
 extern void   rm_fatal_error_handler(const ExceptionType, const char *, const char *);
 extern void   rm_error_handler(const ExceptionType, const char *, const char *);
