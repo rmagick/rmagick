@@ -399,12 +399,13 @@ class LibDrawUT < Test::Unit::TestCase
     assert_nothing_raised { @draw.opacity(1.0) }
     assert_nothing_raised { @draw.opacity('0.0') }
     assert_nothing_raised { @draw.opacity('1.0') }
+    assert_nothing_raised { @draw.opacity('20%') }
 
     assert_raise(ArgumentError) { @draw.opacity(-0.01) }
     assert_raise(ArgumentError) { @draw.opacity(1.01) }
-    # assert_raise(ArgumentError) { @draw.opacity('-0.01') }
-    # assert_raise(ArgumentError) { @draw.opacity('1.01') }
-    # assert_raise(ArgumentError) { @draw.opacity('xxx') }
+    assert_raise(ArgumentError) { @draw.opacity('-0.01') }
+    assert_raise(ArgumentError) { @draw.opacity('1.01') }
+    assert_raise(ArgumentError) { @draw.opacity('xxx') }
   end
 
   def test_path
