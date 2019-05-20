@@ -651,11 +651,21 @@ class LibDrawUT < Test::Unit::TestCase
   end
 
   def test_stroke_opacity
-    @draw.stroke_opacity(10)
-    assert_equal('stroke-opacity 10', @draw.inspect)
+    @draw.stroke_opacity(0.8)
+    assert_equal('stroke-opacity 0.8', @draw.inspect)
     assert_nothing_raised { @draw.draw(@img) }
 
-    # assert_raise(ArgumentError) { @draw.stroke_opacity('foo') }
+    assert_nothing_raised { @draw.stroke_opacity(0.0) }
+    assert_nothing_raised { @draw.stroke_opacity(1.0) }
+    assert_nothing_raised { @draw.stroke_opacity('0.0') }
+    assert_nothing_raised { @draw.stroke_opacity('1.0') }
+    assert_nothing_raised { @draw.stroke_opacity('20%') }
+
+    assert_raise(ArgumentError) { @draw.stroke_opacity(-0.01) }
+    assert_raise(ArgumentError) { @draw.stroke_opacity(1.01) }
+    assert_raise(ArgumentError) { @draw.stroke_opacity('-0.01') }
+    assert_raise(ArgumentError) { @draw.stroke_opacity('1.01') }
+    assert_raise(ArgumentError) { @draw.stroke_opacity('xxx') }
   end
 
   def test_text
