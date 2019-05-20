@@ -221,6 +221,13 @@ module Magick
       end
     end
 
+    def check_opacity(opacity)
+      return if opacity.is_a?(String) && opacity['%']
+
+      value = Float(opacity)
+      Kernel.raise ArgumentError, 'opacity must be >= 0 and <= 1.0' if value < 0 || value > 1.0
+    end
+
     public
 
     # Apply coordinate transformations to support scaling (s), rotation (r),
@@ -416,9 +423,7 @@ module Magick
     # Specify drawing fill and stroke opacities. If the value is a string
     # ending with a %, the number will be multiplied by 0.01.
     def opacity(opacity)
-      if opacity.is_a?(Numeric)
-        Kernel.raise ArgumentError, 'opacity must be >= 0 and <= 1.0' if opacity < 0 || opacity > 1.0
-      end
+      check_opacity(opacity)
       primitive "opacity #{opacity}"
     end
 
