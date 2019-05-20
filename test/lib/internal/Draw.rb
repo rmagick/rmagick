@@ -121,8 +121,8 @@ class LibDrawUT < Test::Unit::TestCase
     assert_nothing_raised { draw.draw(@img) }
 
     assert_raise(ArgumentError) { @draw.color(10, 20, 'unknown') }
-    # assert_raise(ArgumentError) { draw.color('x', 20, Magick::PointMethod) }
-    # assert_raise(ArgumentError) { draw.color(10, 'x', Magick::PointMethod) }
+    assert_raise(ArgumentError) { @draw.color('x', 20, Magick::PointMethod) }
+    assert_raise(ArgumentError) { @draw.color(10, 'x', Magick::PointMethod) }
   end
 
   def test_decorate
