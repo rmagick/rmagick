@@ -587,8 +587,9 @@ module Magick
 
     # Specify opacity of stroke drawing color
     #  (use "xx%" to indicate percentage)
-    def stroke_opacity(value)
-      primitive "stroke-opacity #{value}"
+    def stroke_opacity(opacity)
+      check_opacity(opacity)
+      primitive "stroke-opacity #{opacity}"
     end
 
     # Specify stroke (outline) width in pixels.
