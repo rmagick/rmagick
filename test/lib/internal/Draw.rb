@@ -218,7 +218,17 @@ class LibDrawUT < Test::Unit::TestCase
     draw.circle(10, '20.5', 30, 40.5)
     assert_nothing_raised { draw.draw(@img) }
 
-    # assert_raise(ArgumentError) { @draw.fill_opacity('xxx') }
+    assert_nothing_raised { @draw.fill_opacity(0.0) }
+    assert_nothing_raised { @draw.fill_opacity(1.0) }
+    assert_nothing_raised { @draw.fill_opacity('0.0') }
+    assert_nothing_raised { @draw.fill_opacity('1.0') }
+    assert_nothing_raised { @draw.fill_opacity('20%') }
+
+    assert_raise(ArgumentError) { @draw.fill_opacity(-0.01) }
+    assert_raise(ArgumentError) { @draw.fill_opacity(1.01) }
+    assert_raise(ArgumentError) { @draw.fill_opacity('-0.01') }
+    assert_raise(ArgumentError) { @draw.fill_opacity('1.01') }
+    assert_raise(ArgumentError) { @draw.fill_opacity('xxx') }
   end
 
   def test_fill_rule

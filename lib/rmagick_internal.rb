@@ -328,6 +328,7 @@ module Magick
 
     # Specify fill opacity (use "xx%" to indicate percentage)
     def fill_opacity(opacity)
+      check_opacity(opacity)
       primitive "fill-opacity #{opacity}"
     end
 
