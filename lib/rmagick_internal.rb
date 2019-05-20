@@ -271,7 +271,7 @@ module Magick
     # point, replace, floodfill, filltoborder,reset
     def color(x, y, method)
       Kernel.raise ArgumentError, "Unknown PaintMethod: #{method}" unless PAINT_METHOD_NAMES.key?(method.to_i)
-      primitive "color #{x},#{y},#{PAINT_METHOD_NAMES[method.to_i]}"
+      primitive 'color ' + format('%g,%g,%s', x, y, PAINT_METHOD_NAMES[method.to_i])
     end
 
     # Specify EITHER the text decoration (none, underline, overline,
