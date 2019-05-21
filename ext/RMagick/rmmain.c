@@ -105,6 +105,14 @@ static void rm_free(void *ptr)
  */
 static void set_managed_memory(void)
 {
+    ID disable_mm = rb_intern("RMAGICK_DISABLE_MANAGED_MEMORY");
+
+    if (RTEST(rb_const_defined(rb_cObject, disable_mm)) && RTEST(rb_const_get(rb_cObject, disable_mm)))
+    {
+        rb_define_const(Module_Magick, "MANAGED_MEMORY", Qfalse);
+        return;
+    }
+
     SetMagickMemoryMethods(rm_malloc, rm_realloc, rm_free);
     rb_define_const(Module_Magick, "MANAGED_MEMORY", Qtrue);
 }
