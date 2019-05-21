@@ -312,7 +312,7 @@ class LibDrawUT < Test::Unit::TestCase
     draw.text(50, 50, 'Hello world')
     assert_nothing_raised { draw.draw(@img) }
 
-    # assert_raise(ArgumentError) { @draw.font_weight('xxx') }
+    assert_raise(ArgumentError) { @draw.font_weight('xxx') }
   end
 
   def test_gravity
