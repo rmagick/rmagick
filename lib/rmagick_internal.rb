@@ -359,10 +359,10 @@ module Magick
     # The font weight argument can be either a font weight
     # constant or [100,200,...,900]
     def font_weight(weight)
-      if FONT_WEIGHT_NAMES.key?(weight.to_i)
+      if weight.is_a?(WeightType)
         primitive "font-weight #{FONT_WEIGHT_NAMES[weight.to_i]}"
       else
-        primitive "font-weight #{weight}"
+        primitive "font-weight #{Integer(weight)}"
       end
     end
 
