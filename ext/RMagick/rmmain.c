@@ -62,17 +62,7 @@ static void features_constant(void);
  */
 static void *rm_malloc(size_t size)
 {
-    void *p;
-//    int old_state;
-
-//    old_state = rb_gc_disable();
-    p = xmalloc((long)size);
-//    if (!RTEST(old_state))
-//    {
-//        rb_gc_enable();
-//    }
-
-    return p;
+    return xmalloc((long)size);
 }
 
 
@@ -89,17 +79,7 @@ static void *rm_malloc(size_t size)
  */
 static void *rm_realloc(void *ptr, size_t size)
 {
-    void *p;
-//    int old_state;
-
-//    old_state = rb_gc_disable();
-    p = xrealloc(ptr, (long)size);
-//    if (!RTEST(old_state))
-//    {
-//        rb_gc_enable();
-//    }
-
-    return p;
+    return xrealloc(ptr, (long)size);
 }
 
 
@@ -125,18 +105,8 @@ static void rm_free(void *ptr)
  */
 static void set_managed_memory(void)
 {
-    ID enable_mm = rb_intern("RMAGICK_ENABLE_MANAGED_MEMORY");
-
-    if (RTEST(rb_const_defined(rb_cObject, enable_mm)) && RTEST(rb_const_get(rb_cObject, enable_mm)))
-    {
-        rb_warning("RMagick: %s", "managed memory enabled. This is an experimental feature.");
-        SetMagickMemoryMethods(rm_malloc, rm_realloc, rm_free);
-        rb_define_const(Module_Magick, "MANAGED_MEMORY", Qtrue);
-    }
-    else
-    {
-        rb_define_const(Module_Magick, "MANAGED_MEMORY", Qfalse);
-    }
+    SetMagickMemoryMethods(rm_malloc, rm_realloc, rm_free);
+    rb_define_const(Module_Magick, "MANAGED_MEMORY", Qtrue);
 }
 
 
