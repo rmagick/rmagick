@@ -103,21 +103,29 @@ static void rm_free(void *ptr)
  *
  * No Ruby usage (internal function)
  */
+static inline void managed_memory_enable(VALUE enable)
+{
+    if (enable)
+    {
+        SetMagickMemoryMethods(rm_malloc, rm_realloc, rm_free);
+    }
+    rb_define_const(Module_Magick, "MANAGED_MEMORY", enable);
+}
+
 static void set_managed_memory(void)
 {
     ID disable_mm = rb_intern("RMAGICK_DISABLE_MANAGED_MEMORY");
 
     if (RTEST(rb_const_defined(rb_cObject, disable_mm)) && RTEST(rb_const_get(rb_cObject, disable_mm)))
     {
-        rb_define_const(Module_Magick, "MANAGED_MEMORY", Qfalse);
+        managed_memory_enable(Qfalse);
         return;
     }
 
 #if !defined(_WIN32)
-    SetMagickMemoryMethods(rm_malloc, rm_realloc, rm_free);
-    rb_define_const(Module_Magick, "MANAGED_MEMORY", Qtrue);
+    managed_memory_enable(Qtrue);
 #else
-    rb_define_const(Module_Magick, "MANAGED_MEMORY", Qfalse);
+    managed_memory_enable(Qfalse);
 #endif
 }
 
