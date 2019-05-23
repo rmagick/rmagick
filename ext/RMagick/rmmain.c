@@ -114,9 +114,9 @@ static inline void managed_memory_enable(VALUE enable)
 
 static void set_managed_memory(void)
 {
-    ID disable_mm = rb_intern("RMAGICK_DISABLE_MANAGED_MEMORY");
+    char *disable = getenv("RMAGICK_DISABLE_MANAGED_MEMORY");
 
-    if (RTEST(rb_const_defined(rb_cObject, disable_mm)) && RTEST(rb_const_get(rb_cObject, disable_mm)))
+    if (disable)
     {
         managed_memory_enable(Qfalse);
         return;
