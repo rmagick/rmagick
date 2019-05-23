@@ -113,8 +113,12 @@ static void set_managed_memory(void)
         return;
     }
 
+#if !defined(_WIN32)
     SetMagickMemoryMethods(rm_malloc, rm_realloc, rm_free);
     rb_define_const(Module_Magick, "MANAGED_MEMORY", Qtrue);
+#else
+    rb_define_const(Module_Magick, "MANAGED_MEMORY", Qfalse);
+#endif
 }
 
 
