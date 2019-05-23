@@ -122,10 +122,15 @@ static void set_managed_memory(void)
         return;
     }
 
-#if !defined(_WIN32)
+#if defined(_WIN32)
+#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_9_0)
     managed_memory_enable(Qtrue);
 #else
     managed_memory_enable(Qfalse);
+#endif
+#else
+    // Not Windows
+    managed_memory_enable(Qtrue);
 #endif
 }
 
