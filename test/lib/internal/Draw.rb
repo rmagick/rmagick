@@ -425,14 +425,14 @@ class LibDrawUT < Test::Unit::TestCase
   end
 
   def test_pattern
-    @draw.pattern('hat', 0, 0, 20, '20') {}
-    assert_equal("push defs\npush pattern hat 0 0 20 20\npush graphic-context\npop graphic-context\npop pattern\npop defs", @draw.inspect)
+    @draw.pattern('hat', 0, 10.5, 20, '20') {}
+    assert_equal("push defs\npush pattern hat 0 10.5 20 20\npush graphic-context\npop graphic-context\npop pattern\npop defs", @draw.inspect)
     assert_nothing_raised { @draw.draw(@img) }
 
-    # assert_raise(ArgumentError) { @draw.pattern('hat', 'x', 0, 20, 20){} }
-    # assert_raise(ArgumentError) { @draw.pattern('hat', 0, 'x', 20, 20){} }
-    # assert_raise(ArgumentError) { @draw.pattern('hat', 0, 0, 'x', 20){} }
-    # assert_raise(ArgumentError) { @draw.pattern('hat', 0, 0, 20, 'x'){} }
+    assert_raise(ArgumentError) { @draw.pattern('hat', 'x', 0, 20, 20) {} }
+    assert_raise(ArgumentError) { @draw.pattern('hat', 0, 'x', 20, 20) {} }
+    assert_raise(ArgumentError) { @draw.pattern('hat', 0, 0, 'x', 20) {} }
+    assert_raise(ArgumentError) { @draw.pattern('hat', 0, 0, 20, 'x') {} }
   end
 
   def test_point
