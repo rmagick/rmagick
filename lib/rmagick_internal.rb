@@ -440,7 +440,7 @@ module Magick
     # as the argument to the 'fill' or 'stroke' methods
     def pattern(name, x, y, width, height)
       push('defs')
-      push("pattern #{name} #{x} #{y} #{width} #{height}")
+      push("pattern #{name} " + format('%g %g %g %g', x, y, width, height))
       push('graphic-context')
       yield
     ensure
