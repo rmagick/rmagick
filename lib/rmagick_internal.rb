@@ -1384,13 +1384,6 @@ module Magick
     end
     alias size length
 
-    # Array#nitems is not available in 1.9
-    if Array.instance_methods.include?('nitems')
-      def nitems
-        @images.nitems
-      end
-    end
-
     def clear
       @scene = nil
       @images.clear

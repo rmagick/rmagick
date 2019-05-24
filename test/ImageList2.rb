@@ -3,7 +3,7 @@
 require 'fileutils'
 require 'rmagick'
 require 'test/unit'
-require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
+require 'test/unit/ui/console/testrunner'
 
 class ImageList2UT < Test::Unit::TestCase
   def setup
@@ -398,5 +398,5 @@ end
 if $PROGRAM_NAME == __FILE__
   IMAGES_DIR = '../doc/ex/images'
   FLOWER_HAT = IMAGES_DIR + '/Flower_Hat.jpg'
-  Test::Unit::UI::Console::TestRunner.run(ImageList2UT) unless RUBY_VERSION[/^1\.9|^2/]
+  Test::Unit::UI::Console::TestRunner.run(ImageList2UT)
 end

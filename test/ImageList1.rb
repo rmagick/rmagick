@@ -2,7 +2,7 @@
 
 require 'rmagick'
 require 'test/unit'
-require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
+require 'test/unit/ui/console/testrunner'
 
 class ImageList1UT < Test::Unit::TestCase
   def setup
@@ -554,14 +554,6 @@ class ImageList1UT < Test::Unit::TestCase
     assert_raise(ArgumentError) { @list.map! { 2 } }
   end
 
-  unless RUBY_VERSION[/^1\.9|^2/]
-    def test_nitems
-      n = nil
-      assert_nothing_raised { n = @list.nitems }
-      assert_equal(10, n)
-    end
-  end
-
   def test_partition
     a = nil
     n = -1
@@ -862,5 +854,5 @@ end
 if $PROGRAM_NAME == __FILE__
   IMAGES_DIR = '../doc/ex/images'
   FILES = Dir[IMAGES_DIR + '/Button_*.gif'].sort
-  Test::Unit::UI::Console::TestRunner.run(ImageList1UT) unless RUBY_VERSION[/^1\.9|^2/]
+  Test::Unit::UI::Console::TestRunner.run(ImageList1UT)
 end

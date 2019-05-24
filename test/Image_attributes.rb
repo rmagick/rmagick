@@ -3,7 +3,7 @@
 require 'fileutils'
 require 'rmagick'
 require 'test/unit'
-require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
+require 'test/unit/ui/console/testrunner'
 
 # TODO
 #   test frozen attributes!
@@ -662,5 +662,5 @@ end # class Image_Attributes_UT
 
 if $PROGRAM_NAME == __FILE__
   FLOWER_HAT = '../doc/ex/images/Flower_Hat.jpg'
-  Test::Unit::UI::Console::TestRunner.run(ImageAttributesUT) unless RUBY_VERSION[/^1\.9|^2/]
+  Test::Unit::UI::Console::TestRunner.run(ImageAttributesUT)
 end

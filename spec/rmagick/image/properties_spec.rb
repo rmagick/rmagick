@@ -1,6 +1,6 @@
 RSpec.describe Magick::Image, '#properties' do
   let(:img) { Magick::Image.new(20, 20) }
-  let(:freeze_error) { RUBY_VERSION[/^1\.9|^2/] ? RuntimeError : TypeError }
+  let(:freeze_error) { RuntimeError }
 
   before(:each) do
     img['comment'] = 'str_1'

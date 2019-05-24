@@ -1,6 +1,6 @@
 require 'rmagick'
 require 'test/unit'
-require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
+require 'test/unit/ui/console/testrunner'
 
 class ImportExportUT < Test::Unit::TestCase
   def setup
@@ -111,5 +111,5 @@ end
 
 if $PROGRAM_NAME == __FILE__
   IMAGES_DIR = '../doc/ex/images'
-  Test::Unit::UI::Console::TestRunner.run(ImportExportUT) unless RUBY_VERSION[/^1\.9|^2/]
+  Test::Unit::UI::Console::TestRunner.run(ImportExportUT)
 end

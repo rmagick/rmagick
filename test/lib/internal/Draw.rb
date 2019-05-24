@@ -1,6 +1,6 @@
 require 'rmagick'
 require 'test/unit'
-require 'test/unit/ui/console/testrunner' unless RUBY_VERSION[/^1\.9|^2/]
+require 'test/unit/ui/console/testrunner'
 
 class LibDrawUT < Test::Unit::TestCase
   def setup
