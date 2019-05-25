@@ -457,7 +457,7 @@ module Magick
     # Specify the font size in points. Yes, the primitive is "font-size" but
     # in other places this value is called the "pointsize". Give it both names.
     def pointsize(points)
-      primitive "font-size #{points}"
+      primitive 'font-size ' + format('%g', points)
     end
     alias font_size pointsize
 
