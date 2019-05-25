@@ -518,7 +518,7 @@ module Magick
 
     # Specify coordinate space rotation. "angle" is measured in degrees
     def rotate(angle)
-      primitive "rotate #{angle}"
+      primitive 'rotate ' + format('%g', angle)
     end
 
     # Draw a rectangle with rounded corners
