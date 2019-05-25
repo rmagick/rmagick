@@ -451,7 +451,7 @@ module Magick
 
     # Set point to fill color.
     def point(x, y)
-      primitive "point #{x},#{y}"
+      primitive 'point ' + format('%g,%g', x, y)
     end
 
     # Specify the font size in points. Yes, the primitive is "font-size" but

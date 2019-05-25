@@ -436,12 +436,12 @@ class LibDrawUT < Test::Unit::TestCase
   end
 
   def test_point
-    @draw.point(10, '20')
-    assert_equal('point 10,20', @draw.inspect)
+    @draw.point(10.5, '20')
+    assert_equal('point 10.5,20', @draw.inspect)
     assert_nothing_raised { @draw.draw(@img) }
 
-    # assert_raise(ArgumentError) { @draw.point('x', 20) }
-    # assert_raise(ArgumentError) { @draw.point(10, 'x') }
+    assert_raise(ArgumentError) { @draw.point('x', 20) }
+    assert_raise(ArgumentError) { @draw.point(10, 'x') }
   end
 
   def test_pointsize
