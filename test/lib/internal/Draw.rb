@@ -497,7 +497,7 @@ class LibDrawUT < Test::Unit::TestCase
     @draw.text(50, 50, 'Hello world')
     assert_nothing_raised { @draw.draw(@img) }
 
-    # assert_raise(ArgumentError) { @draw.rotate('x') }
+    assert_raise(ArgumentError) { @draw.rotate('x') }
   end
 
   def test_roundrectangle
