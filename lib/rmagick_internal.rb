@@ -468,7 +468,7 @@ module Magick
       elsif points.length.odd?
         Kernel.raise ArgumentError, 'odd number of points specified'
       end
-      primitive 'polygon ' + points.join(',')
+      primitive 'polygon ' + points.map! { |x| format('%g', x) }.join(',')
     end
 
     # Draw a polyline
