@@ -445,11 +445,11 @@ class LibDrawUT < Test::Unit::TestCase
   end
 
   def test_pointsize
-    @draw.pointsize(20)
-    assert_equal('font-size 20', @draw.inspect)
+    @draw.pointsize(20.5)
+    assert_equal('font-size 20.5', @draw.inspect)
     assert_nothing_raised { @draw.draw(@img) }
 
-    # assert_raise(ArgumentError) { @draw.pointsize('x') }
+    assert_raise(ArgumentError) { @draw.pointsize('x') }
   end
 
   def test_font_size
@@ -457,7 +457,7 @@ class LibDrawUT < Test::Unit::TestCase
     assert_equal('font-size 20', @draw.inspect)
     assert_nothing_raised { @draw.draw(@img) }
 
-    # assert_raise(ArgumentError) { @draw.font_size('x') }
+    assert_raise(ArgumentError) { @draw.font_size('x') }
   end
 
   def test_polygon
