@@ -478,7 +478,7 @@ module Magick
       elsif points.length.odd?
         Kernel.raise ArgumentError, 'odd number of points specified'
       end
-      primitive 'polyline ' + points.join(',')
+      primitive 'polyline ' + points.map! { |x| format('%g', x) }.join(',')
     end
 
     # Return to the previously-saved set of whatever

@@ -471,13 +471,13 @@ class LibDrawUT < Test::Unit::TestCase
   end
 
   def test_polyline
-    @draw.polyline(0, '0', 16, 16)
-    assert_equal('polyline 0,0,16,16', @draw.inspect)
+    @draw.polyline(0, '0.5', 16.5, 16)
+    assert_equal('polyline 0,0.5,16.5,16', @draw.inspect)
     assert_nothing_raised { @draw.draw(@img) }
 
     assert_raise(ArgumentError) { @draw.polyline }
     assert_raise(ArgumentError) { @draw.polyline(0) }
-    # assert_raise(ArgumentError) { @draw.polyline('x', 0, 16, 16) }
+    assert_raise(ArgumentError) { @draw.polyline('x', 0, 16, 16) }
   end
 
   def test_rectangle
