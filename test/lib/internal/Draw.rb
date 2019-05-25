@@ -461,13 +461,13 @@ class LibDrawUT < Test::Unit::TestCase
   end
 
   def test_polygon
-    @draw.polygon(0, '0', 8, 16, 16, 0, 0, 0)
-    assert_equal('polygon 0,0,8,16,16,0,0,0', @draw.inspect)
+    @draw.polygon(0, '0.5', 8.5, 16, 16, 0, 0, 0)
+    assert_equal('polygon 0,0.5,8.5,16,16,0,0,0', @draw.inspect)
     assert_nothing_raised { @draw.draw(@img) }
 
     assert_raise(ArgumentError) { @draw.polygon }
     assert_raise(ArgumentError) { @draw.polygon(0) }
-    # assert_raise(ArgumentError) { @draw.polygon('x', 0, 8, 16, 16, 0, 0, 0) }
+    assert_raise(ArgumentError) { @draw.polygon('x', 0, 8, 16, 16, 0, 0, 0) }
   end
 
   def test_polyline
