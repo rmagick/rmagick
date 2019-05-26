@@ -13800,7 +13800,7 @@ Image_transparent(int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 2:
-            alpha = rm_get_named_alpha_value(argv[1], "Image#transparent", "alpha");
+            alpha = rm_get_named_alpha_value(argv[1], "alpha");
         case 1:
             Color_to_MagickPixel(image, &color, argv[0]);
             break;

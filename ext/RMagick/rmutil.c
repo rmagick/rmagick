@@ -1788,17 +1788,17 @@ rm_ensure_result(Image *image)
  * No Ruby usage (internal function)
  *
  * @opacity_or_alpha an opacity or a named alpha value
- * @method_name the name of the method
  * @argument_name the name of the argument
  */
 Quantum
-rm_get_named_alpha_value(VALUE opacity_or_alpha, const char *method_name, const char *argument_name)
+rm_get_named_alpha_value(VALUE opacity_or_alpha, const char *argument_name)
 {
     VALUE alpha;
 
     if (TYPE(opacity_or_alpha) != T_HASH)
     {
-        rb_warning("%s requires a named argument for '%s' and now expects an alpha value instead of an opacity value.", method_name, argument_name);
+        VALUE method = rb_id2str(rb_frame_this_func());
+        rb_warning("#%"PRIsVALUE" requires a named argument for '%s' and now expects an alpha value instead of an opacity value.", method, argument_name);
 
         return QuantumRange - APP2QUANTUM(opacity_or_alpha);
     }
@@ -1806,7 +1806,8 @@ rm_get_named_alpha_value(VALUE opacity_or_alpha, const char *method_name, const 
     alpha = rb_hash_aref(opacity_or_alpha, ID2SYM(rb_intern(argument_name)));
     if (NIL_P(alpha))
     {
-        rb_raise(rb_eArgError, "%s expects a named argument called '%s' but got a different name.", method_name, argument_name);
+        VALUE method = rb_id2str(rb_frame_this_func());
+        rb_raise(rb_eArgError, "#%"PRIsVALUE" expects a named argument called '%s' but got a different name.", method, argument_name);
     }
 
     return APP2QUANTUM(alpha);
