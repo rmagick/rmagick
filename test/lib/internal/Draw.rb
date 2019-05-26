@@ -519,8 +519,8 @@ class LibDrawUT < Test::Unit::TestCase
     @draw.rectangle(10, '10', 100, 100)
     assert_nothing_raised { @draw.draw(@img) }
 
-    # assert_raise(ArgumentError) { @draw.scale('x', 1.5) }
-    # assert_raise(ArgumentError) { @draw.scale(0.5, 'x') }
+    assert_raise(ArgumentError) { @draw.scale('x', 1.5) }
+    assert_raise(ArgumentError) { @draw.scale(0.5, 'x') }
   end
 
   def test_skewx
