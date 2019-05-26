@@ -529,7 +529,7 @@ module Magick
 
     # Specify scaling to be applied to coordinate space on subsequent drawing commands.
     def scale(x, y)
-      primitive "scale #{x},#{y}"
+      primitive 'scale ' + format('%g,%g', x, y)
     end
 
     def skewx(angle)
