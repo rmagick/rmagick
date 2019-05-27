@@ -66,8 +66,7 @@ get_named_alpha_value(VALUE opacity_or_alpha, const char *argument_name)
     alpha = rb_hash_aref(opacity_or_alpha, ID2SYM(rb_intern(argument_name)));
     if (NIL_P(alpha))
     {
-        VALUE method = rb_id2str(rb_frame_this_func());
-        rb_raise(rb_eArgError, "Image#%"PRIsVALUE" expects a named argument called '%s' but got a different name.", method, argument_name);
+        rb_raise(rb_eArgError, "missing keyword: %s", argument_name);
     }
 
     return APP2QUANTUM(alpha);
