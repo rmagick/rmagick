@@ -1287,7 +1287,7 @@ Image_black_point_compensation_eq(VALUE self, VALUE arg)
  *   - @verbatim Image#black_threshold(red_channel) @endverbatim
  *   - @verbatim Image#black_threshold(red_channel, green_channel) @endverbatim
  *   - @verbatim Image#black_threshold(red_channel, green_channel, blue_channel) @endverbatim
- *   - @verbatim Image#black_threshold(red_channel, green_channel, blue_channel, opacity_channel) @endverbatim
+ *   - @verbatim Image#black_threshold(red_channel, green_channel, blue_channel, alpha_channel) @endverbatim
  *
  * @param argc number of input arguments
  * @param argv array of input arguments
@@ -13340,7 +13340,7 @@ static
 VALUE threshold_image(int argc, VALUE *argv, VALUE self, thresholder_t thresholder)
 {
     Image *image, *new_image;
-    double red, green, blue, opacity;
+    double red, green, blue, alpha;
     char ctarg[200];
 
     image = rm_check_destroyed(self);
@@ -13351,8 +13351,8 @@ VALUE threshold_image(int argc, VALUE *argv, VALUE self, thresholder_t threshold
             red     = NUM2DBL(argv[0]);
             green   = NUM2DBL(argv[1]);
             blue    = NUM2DBL(argv[2]);
-            opacity = NUM2DBL(argv[3]);
-            sprintf(ctarg, "%f,%f,%f,%f", red, green, blue, opacity);
+            alpha   = get_named_alpha_value(argv[3], "alpha_channel");
+            sprintf(ctarg, "%f,%f,%f,%f", red, green, blue, QuantumRange - alpha);
             break;
         case 3:
             red     = NUM2DBL(argv[0]);
@@ -14898,7 +14898,7 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
  *   - @verbatim Image#white_threshold(red_channel) @endverbatim
  *   - @verbatim Image#white_threshold(red_channel, green_channel) @endverbatim
  *   - @verbatim Image#white_threshold(red_channel, green_channel, blue_channel) @endverbatim
- *   - @verbatim Image#white_threshold(red_channel, green_channel, blue_channel, opacity_channel) @endverbatim
+ *   - @verbatim Image#white_threshold(red_channel, green_channel, blue_channel, alpha_channel) @endverbatim
  *
  * @param argc number of input arguments
  * @param argv array of input arguments
