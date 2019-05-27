@@ -41,6 +41,36 @@ static void call_trace_proc(Image *, const char *);
 static const char *BlackPointCompensationKey = "PROFILE:black-point-compensation";
 
 
+/**
+ * Checks if opacity_or_alpha is a named argument called alpha and returns the alpha value or
+ * converts the unnamed opacity value to alpha.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @opacity_or_alpha an opacity or a named alpha value
+ * @argument_name the name of the argument
+ */
+static Quantum
+get_named_alpha_value(VALUE opacity_or_alpha, const char *argument_name)
+{
+    VALUE alpha;
+
+    if (TYPE(opacity_or_alpha) != T_HASH)
+    {
+        VALUE method = rb_id2str(rb_frame_this_func());
+        rb_warning("Image#%"PRIsVALUE" requires a named argument for '%s' and now expects an alpha value instead of an opacity value.", method, argument_name);
+
+        return QuantumRange - APP2QUANTUM(opacity_or_alpha);
+    }
+
+    alpha = rb_hash_aref(opacity_or_alpha, ID2SYM(rb_intern(argument_name)));
+    if (NIL_P(alpha))
+    {
+        rb_raise(rb_eArgError, "missing keyword: %s", argument_name);
+    }
+
+    return APP2QUANTUM(alpha);
+}
 
 
 /**
@@ -13772,13 +13802,13 @@ Image_total_ink_density(VALUE self)
  *
  * Ruby usage:
  *   - @verbatim Image#transparent(color-name) @endverbatim
- *   - @verbatim Image#transparent(color-name, opacity) @endverbatim
+ *   - @verbatim Image#transparent(color-name, alpha) @endverbatim
  *   - @verbatim Image#transparent(pixel) @endverbatim
- *   - @verbatim Image#transparent(pixel, opacity) @endverbatim
+ *   - @verbatim Image#transparent(pixel, alpha) @endverbatim
  *
  * Notes:
- *   - Default opacity is Magick::TransparentOpacity.
- *   - Can use Magick::OpaqueOpacity or Magick::TransparentOpacity, or any
+ *   - Default alpha is Magick::TransparentAlpha.
+ *   - Can use Magick::OpaqueAlpha or Magick::TransparentAlpha, or any
  *     value >= 0 && <= QuantumRange.
  *   - Use Image#fuzz= to define the tolerance level.
  *
@@ -13792,7 +13822,7 @@ Image_transparent(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
     MagickPixel color;
-    Quantum opacity = TransparentOpacity;
+    Quantum alpha = TransparentAlpha;
     MagickBooleanType okay;
 
     image = rm_check_destroyed(self);
@@ -13800,7 +13830,7 @@ Image_transparent(int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 2:
-            opacity = APP2QUANTUM(argv[1]);
+            alpha = get_named_alpha_value(argv[1], "alpha");
         case 1:
             Color_to_MagickPixel(image, &color, argv[0]);
             break;
@@ -13811,7 +13841,7 @@ Image_transparent(int argc, VALUE *argv, VALUE self)
 
     new_image = rm_clone_image(image);
 
-    okay = TransparentPaintImage(new_image, &color, opacity, MagickFalse);
+    okay = TransparentPaintImage(new_image, &color, QuantumRange - alpha, MagickFalse);
     rm_check_image_exception(new_image, DestroyOnError);
     if (!okay)
     {

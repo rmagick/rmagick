@@ -124,6 +124,7 @@ typedef DistortImageMethod DistortMethod;
 typedef FilterTypes FilterType;
 typedef InterpolatePixelMethod PixelInterpolateMethod;
 typedef ImageLayerMethod LayerMethod;
+#define TransparentAlpha 0
 
 //! Montage
 typedef struct
