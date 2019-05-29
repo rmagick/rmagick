@@ -567,7 +567,7 @@ module Magick
 
     # Specify the initial offset in the dash pattern
     def stroke_dashoffset(value = 0)
-      primitive "stroke-dashoffset #{value}"
+      primitive 'stroke-dashoffset ' + format('%g', value)
     end
 
     def stroke_linecap(value)

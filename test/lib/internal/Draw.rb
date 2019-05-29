@@ -609,7 +609,7 @@ class LibDrawUT < Test::Unit::TestCase
     assert_equal('stroke-dashoffset 10', @draw.inspect)
     assert_nothing_raised { @draw.draw(@img) }
 
-    # assert_raise(ArgumentError) { @draw.stroke_dashoffset('x') }
+    assert_raise(ArgumentError) { @draw.stroke_dashoffset('x') }
   end
 
   def test_stroke_linecap
