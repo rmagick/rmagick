@@ -903,7 +903,7 @@ extern VALUE Image_map(int, VALUE *, VALUE);
 extern VALUE Image_marshal_dump(VALUE);
 extern VALUE Image_marshal_load(VALUE, VALUE);
 extern VALUE Image_mask(int, VALUE *, VALUE);
-extern VALUE Image_matte_flood_fill(VALUE, VALUE, VALUE, VALUE, VALUE, VALUE);
+extern VALUE Image_matte_flood_fill(int, VALUE *, VALUE);
 extern VALUE Image_median_filter(int, VALUE *, VALUE);
 extern VALUE Image_minify(VALUE);
 extern VALUE Image_minify_bang(VALUE);
