@@ -419,7 +419,7 @@ Init_RMagick2(void)
     rb_define_method(Class_Image, "marshal_dump", Image_marshal_dump, 0);
     rb_define_method(Class_Image, "marshal_load", Image_marshal_load, 1);
     rb_define_method(Class_Image, "mask", Image_mask, -1);
-    rb_define_method(Class_Image, "matte_flood_fill", Image_matte_flood_fill, 5);
+    rb_define_method(Class_Image, "matte_flood_fill", Image_matte_flood_fill, -1);
     rb_define_method(Class_Image, "median_filter", Image_median_filter, -1);
     rb_define_method(Class_Image, "minify", Image_minify, 0);
     rb_define_method(Class_Image, "minify!", Image_minify_bang, 0);

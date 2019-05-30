@@ -934,16 +934,14 @@ module Magick
       f = copy
       f.alpha(OpaqueAlphaChannel) unless f.alpha?
       target = f.pixel_color(x, y)
-      f.matte_flood_fill(target, TransparentOpacity,
-                         x, y, FloodfillMethod)
+      f.matte_flood_fill(target, x, y, FloodfillMethod, alpha: TransparentAlpha)
     end
 
     # Make transparent any neighbor pixel that is not the border color.
     def matte_fill_to_border(x, y)
       f = copy
       f.alpha(OpaqueAlphaChannel) unless f.alpha?
-      f.matte_flood_fill(border_color, TransparentOpacity,
-                         x, y, FillToBorderMethod)
+      f.matte_flood_fill(border_color, x, y, FillToBorderMethod, alpha: TransparentAlpha)
     end
 
     # Make all pixels transparent.

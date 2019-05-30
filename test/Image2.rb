@@ -1155,10 +1155,12 @@ class Image2_UT < Test::Unit::TestCase
     Magick::PaintMethod.values do |method|
       next if [Magick::FillToBorderMethod, Magick::FloodfillMethod].include?(method)
 
-      assert_raise(ArgumentError) { @img.matte_flood_fill('blue', Magick::TransparentOpacity, @img.columns, @img.rows, method) }
+      assert_raise(ArgumentError) { @img.matte_flood_fill('blue', Magick::TransparentAlpha, @img.columns, @img.rows, method) }
     end
     assert_raise(ArgumentError) { @img.matte_floodfill(@img.columns + 1, @img.rows) }
     assert_raise(ArgumentError) { @img.matte_floodfill(@img.columns, @img.rows + 1) }
+    assert_nothing_raised { @img.matte_flood_fill('blue', @img.columns, @img.rows, Magick::FloodfillMethod, alpha: Magick::TransparentAlpha) }
+    assert_raise(ArgumentError) { @img.matte_flood_fill('blue', @img.columns, @img.rows, Magick::FloodfillMethod, wrong: Magick::TransparentAlpha) }
   end
 
   def test_matte_replace

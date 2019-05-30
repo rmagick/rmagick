@@ -42,6 +42,43 @@ static const char *BlackPointCompensationKey = "PROFILE:black-point-compensation
 
 
 /**
+ * Converts the opacity value to alpha and raises a warning.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @opacity an opacity value
+ * @argument_name the name of the argument
+ */
+static Quantum
+get_alpha_from_opacity(VALUE opacity, const char *argument_name)
+{
+    VALUE method = rb_id2str(rb_frame_this_func());
+    rb_warning("Image#%"PRIsVALUE" requires a named argument for '%s' and now expects an alpha value instead of an opacity value.", method, argument_name);
+
+    return QuantumRange - APP2QUANTUM(opacity);
+}
+
+/**
+ * Returns the alpha value from the hash.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @hash the hash
+ * @argument_name the name of the argument
+ */
+static Quantum
+get_alpha_from_hash(VALUE hash, const char *argument_name)
+{
+    VALUE alpha = rb_hash_aref(hash, ID2SYM(rb_intern(argument_name)));
+    if (NIL_P(alpha))
+    {
+        rb_raise(rb_eArgError, "missing keyword: %s", argument_name);
+    }
+
+    return APP2QUANTUM(alpha);
+}
+
+/**
  * Checks if opacity_or_alpha is a named argument called alpha and returns the alpha value or
  * converts the unnamed opacity value to alpha.
  *
@@ -53,23 +90,12 @@ static const char *BlackPointCompensationKey = "PROFILE:black-point-compensation
 static Quantum
 get_named_alpha_value(VALUE opacity_or_alpha, const char *argument_name)
 {
-    VALUE alpha;
-
     if (TYPE(opacity_or_alpha) != T_HASH)
     {
-        VALUE method = rb_id2str(rb_frame_this_func());
-        rb_warning("Image#%"PRIsVALUE" requires a named argument for '%s' and now expects an alpha value instead of an opacity value.", method, argument_name);
-
-        return QuantumRange - APP2QUANTUM(opacity_or_alpha);
+        return get_alpha_from_opacity(opacity_or_alpha, argument_name);
     }
 
-    alpha = rb_hash_aref(opacity_or_alpha, ID2SYM(rb_intern(argument_name)));
-    if (NIL_P(alpha))
-    {
-        rb_raise(rb_eArgError, "missing keyword: %s", argument_name);
-    }
-
-    return APP2QUANTUM(alpha);
+    return get_alpha_from_hash(opacity_or_alpha, argument_name);
 }
 
 
@@ -8782,41 +8808,56 @@ Image_matte_color_eq(VALUE self, VALUE color)
  * Call MatteFloodFillImage.
  *
  * Ruby usage:
- *   - @verbatim Image#matte_flood_fill(color, opacity, x, y, method_obj) @endverbatim
+ *   - @verbatim Image#matte_flood_fill(color, alpha, x, y, method_obj) @endverbatim
  *
  * @param self this object
  * @param color the color
- * @param opacity the opacity
+ * @param alpha the alpha
  * @param x_obj x position
  * @param y_obj y position
  * @param method_obj which method to call: FloodfillMethod or FillToBorderMethod
  * @return a new image
  */
 VALUE
-Image_matte_flood_fill(VALUE self, VALUE color, VALUE opacity, VALUE x_obj, VALUE y_obj, VALUE method_obj)
+Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
     PixelColor target;
-    Quantum op;
+    Quantum alpha;
     long x, y;
     PaintMethod method;
     DrawInfo *draw_info;
     MagickPixel target_mpp;
     MagickBooleanType invert;
+    int start_index;
 
     image = rm_check_destroyed(self);
-    Color_to_PixelColor(&target, color);
 
-    op = APP2QUANTUM(opacity);
+    if (argc != 5)
+    {
+        rb_raise(rb_eArgError, "wrong number of arguments (%d for 5)", argc);
+    }
 
-    VALUE_TO_ENUM(method_obj, method, PaintMethod);
+    if (TYPE(argv[4]) == T_HASH)
+    {
+        alpha = get_alpha_from_hash(argv[4], "alpha");
+        start_index = 1;
+    }
+    else
+    {
+        alpha = get_alpha_from_opacity(argv[1], "alpha");
+        start_index = 2;
+    }
+
+    Color_to_PixelColor(&target, argv[0]);
+    VALUE_TO_ENUM(argv[start_index + 2], method, PaintMethod);
     if (!(method == FloodfillMethod || method == FillToBorderMethod))
     {
         rb_raise(rb_eArgError, "paint method_obj must be FloodfillMethod or "
                  "FillToBorderMethod (%d given)", method);
     }
-    x = NUM2LONG(x_obj);
-    y = NUM2LONG(y_obj);
+    x = NUM2LONG(argv[start_index]);
+    y = NUM2LONG(argv[start_index + 1]);
     if ((unsigned long)x > image->columns || (unsigned long)y > image->rows)
     {
         rb_raise(rb_eArgError, "target out of range. %ldx%ld given, image is %lux%lu"
@@ -8832,7 +8873,7 @@ Image_matte_flood_fill(VALUE self, VALUE color, VALUE opacity, VALUE x_obj, VALU
     {
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
-    draw_info->fill.opacity = op;
+    draw_info->fill.opacity = QuantumRange - alpha;
 
     if (method == FillToBorderMethod)
     {
