@@ -418,7 +418,7 @@ module Magick
     # colorization rule
     def matte(x, y, method)
       Kernel.raise ArgumentError, 'Unknown paint method' unless PAINT_METHOD_NAMES.key?(method.to_i)
-      primitive "matte #{x},#{y} #{PAINT_METHOD_NAMES[method.to_i]}"
+      primitive 'matte ' + format('%g,%g, %s', x, y, PAINT_METHOD_NAMES[method.to_i])
     end
 
     # Specify drawing fill and stroke opacities. If the value is a string
