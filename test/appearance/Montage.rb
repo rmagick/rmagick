@@ -17,10 +17,10 @@ class AppearanceMontageUT < Test::Unit::TestCase
       self.background_color = 'blue'
       self.matte_color = 'yellow'
       self.frame = '10x10'
-      self.gravity = Magick::StaticGravity
+      self.gravity = Magick::CenterGravity
     end
 
-    # montage ../../doc/ex/images/Flower_Hat.jpg -border 100x100 -bordercolor red -mattecolor yellow -background blue -frame 10x10 expected/montage_border_color.png
+    # montage ../../doc/ex/images/Flower_Hat.jpg -border 100x -bordercolor red -mattecolor yellow -background blue -frame 10x10 -gravity Center expected/montage_border_color.jpg
     assert_same_image('expected/montage_border_color.jpg', new_imagelist.first)
   end
 end
