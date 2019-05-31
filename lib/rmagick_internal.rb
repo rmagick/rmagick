@@ -594,7 +594,7 @@ module Magick
 
     # Specify stroke (outline) width in pixels.
     def stroke_width(pixels)
-      primitive "stroke-width #{pixels}"
+      primitive 'stroke-width ' + format('%g', pixels)
     end
 
     # Draw text at position x,y. Add quotes to text that is not already quoted.

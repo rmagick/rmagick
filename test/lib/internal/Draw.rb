@@ -678,6 +678,14 @@ class LibDrawUT < Test::Unit::TestCase
     assert_raise(ArgumentError) { @draw.stroke_opacity('xxx') }
   end
 
+  def test_stroke_width
+    @draw.stroke_width(2.5)
+    assert_equal('stroke-width 2.5', @draw.inspect)
+    assert_nothing_raised { @draw.draw(@img) }
+
+    assert_raise(ArgumentError) { @draw.stroke_width('xxx') }
+  end
+
   def test_text
     draw = Magick::Draw.new
     draw.text(50, 50, 'Hello world')
