@@ -373,6 +373,12 @@ module Magick
       primitive "gravity #{GRAVITY_NAMES[grav.to_i]}"
     end
 
+    def image(composite, x, y, width, height, image_file_path)
+      Kernel.raise ArgumentError, 'Unknown composite' unless composite.is_a?(CompositeOperator)
+      composite_name = composite.to_s.sub!('CompositeOp', '')
+      primitive 'image ' + format('%s %g,%g %g,%g %s', composite_name, x, y, width, height, enquote(image_file_path))
+    end
+
     # IM 6.5.5-8 and later
     def interline_spacing(space)
       begin
