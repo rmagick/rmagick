@@ -531,7 +531,7 @@ class LibDrawUT < Test::Unit::TestCase
     @draw.text(50, 50, 'Hello world')
     assert_nothing_raised { @draw.draw(@img) }
 
-    # assert_raise(ArgumentError) { @draw.skewx('x') }
+    assert_raise(ArgumentError) { @draw.skewx('x') }
   end
 
   def test_skewy
@@ -540,7 +540,7 @@ class LibDrawUT < Test::Unit::TestCase
     @draw.text(50, 50, 'Hello world')
     assert_nothing_raised { @draw.draw(@img) }
 
-    # assert_raise(ArgumentError) { @draw.skewy('x') }
+    assert_raise(ArgumentError) { @draw.skewy('x') }
   end
 
   def test_stroke
