@@ -641,7 +641,7 @@ module Magick
     # Specify center of coordinate space to use for subsequent drawing
     # commands.
     def translate(x, y)
-      primitive "translate #{x},#{y}"
+      primitive 'translate ' + format('%g,%g', x, y)
     end
   end # class Magick::Draw
 

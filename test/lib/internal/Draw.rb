@@ -779,7 +779,7 @@ class LibDrawUT < Test::Unit::TestCase
     assert_equal('translate 200,300', @draw.inspect)
     assert_nothing_raised { @draw.draw(@img) }
 
-    # assert_raise(ArgumentError) { @draw.translate('x', 300) }
-    # assert_raise(ArgumentError) { @draw.translate(200, 'x') }
+    assert_raise(ArgumentError) { @draw.translate('x', 300) }
+    assert_raise(ArgumentError) { @draw.translate(200, 'x') }
   end
 end
