@@ -398,6 +398,8 @@ class LibDrawUT < Test::Unit::TestCase
     end
 
     assert_raise(ArgumentError) { @draw.matte(10, '20.5', 'xxx') }
+    assert_raise(ArgumentError) { @draw.matte('x', 10, Magick::PointMethod) }
+    assert_raise(ArgumentError) { @draw.matte(10, 'x', Magick::PointMethod) }
   end
 
   def test_opacity
