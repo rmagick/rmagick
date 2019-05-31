@@ -533,11 +533,11 @@ module Magick
     end
 
     def skewx(angle)
-      primitive "skewX #{angle}"
+      primitive 'skewX ' + format('%g', angle)
     end
 
     def skewy(angle)
-      primitive "skewY #{angle}"
+      primitive 'skewY ' + format('%g', angle)
     end
 
     # Specify the object stroke, a color name or pattern name.
