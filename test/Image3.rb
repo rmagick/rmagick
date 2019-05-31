@@ -742,6 +742,15 @@ class Image3_UT < Test::Unit::TestCase
     assert_raise(ArgumentError) { @img.thumbnail(25, 25, 25) }
     assert_raise(TypeError) { @img.thumbnail('x') }
     assert_raise(TypeError) { @img.thumbnail(10, 'x') }
+
+    girl = Magick::Image.read(IMAGES_DIR + '/Flower_Hat.jpg').first
+    new_img = girl.thumbnail(200, 200)
+    assert_equal(160, new_img.columns)
+    assert_equal(200, new_img.rows)
+
+    new_img = girl.thumbnail(2)
+    assert_equal(400, new_img.columns)
+    assert_equal(500, new_img.rows)
   end
 
   def test_thumbnail!

@@ -13442,6 +13442,8 @@ thumbnail(int bang, int argc, VALUE *argv, VALUE self)
     Image *image, *new_image;
     unsigned long columns, rows;
     double scale_arg, drows, dcols;
+    char image_geometry[MaxTextExtent];
+    RectangleInfo geometry;
     ExceptionInfo *exception;
 
     Data_Get_Struct(self, Image, image);
@@ -13476,8 +13478,13 @@ thumbnail(int bang, int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    snprintf(image_geometry, sizeof(image_geometry), "%ldx%ld", columns, rows);
+
     exception = AcquireExceptionInfo();
-    new_image = ThumbnailImage(image, columns, rows, exception);
+    (void) ParseRegionGeometry(image, image_geometry, &geometry, exception);
+    rm_check_exception(exception, image, RetainOnError);
+
+    new_image = ThumbnailImage(image, geometry.width, geometry.height, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
