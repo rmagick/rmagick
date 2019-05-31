@@ -612,7 +612,7 @@ module Magick
         # escape existing braces, surround with braces
         text = '{' + text.gsub(/[}]/) { |b| '\\' + b } + '}'
       end
-      primitive "text #{x},#{y} #{text}"
+      primitive 'text ' + format('%g,%g %s', x, y, text)
     end
 
     # Specify text alignment relative to a given point

@@ -705,8 +705,8 @@ class LibDrawUT < Test::Unit::TestCase
     assert_nothing_raised { draw.draw(@img) }
 
     assert_raise(ArgumentError) { @draw.text(50, 50, '') }
-    # assert_raise(ArgumentError) { @draw.text('x', 50, 'Hello world') }
-    # assert_raise(ArgumentError) { @draw.text(50, 'x', 'Hello world') }
+    assert_raise(ArgumentError) { @draw.text('x', 50, 'Hello world') }
+    assert_raise(ArgumentError) { @draw.text(50, 'x', 'Hello world') }
   end
 
   def test_text_align
