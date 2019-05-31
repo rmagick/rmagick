@@ -1000,7 +1000,7 @@ class Image3_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.white_threshold(50, 50) }
     assert_nothing_raised { @img.white_threshold(50, 50, 50) }
     assert_nothing_raised { @img.white_threshold(50, 50, 50, 50) }
-    assert_nothing_raised { @img.white_threshold(50, 50, 50, alpha_channel: 50) }
+    assert_nothing_raised { @img.white_threshold(50, 50, 50, alpha: 50) }
     assert_raise(ArgumentError) { @img.white_threshold(50, 50, 50, wrong: 50) }
     assert_raise(ArgumentError) { @img.white_threshold(50, 50, 50, 50, 50) }
     res = @img.white_threshold(50)

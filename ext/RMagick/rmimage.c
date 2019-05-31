@@ -47,13 +47,12 @@ static const char *BlackPointCompensationKey = "PROFILE:black-point-compensation
  * No Ruby usage (internal function)
  *
  * @opacity an opacity value
- * @argument_name the name of the argument
  */
 static Quantum
-get_alpha_from_opacity(VALUE opacity, const char *argument_name)
+get_alpha_from_opacity(VALUE opacity)
 {
     VALUE method = rb_id2str(rb_frame_this_func());
-    rb_warning("Image#%"PRIsVALUE" requires a named argument for '%s' and now expects an alpha value instead of an opacity value.", method, argument_name);
+    rb_warning("Image#%"PRIsVALUE" requires a named argument for 'alpha' and now expects an alpha value instead of an opacity value.", method);
 
     return QuantumRange - APP2QUANTUM(opacity);
 }
@@ -64,15 +63,14 @@ get_alpha_from_opacity(VALUE opacity, const char *argument_name)
  * No Ruby usage (internal function)
  *
  * @hash the hash
- * @argument_name the name of the argument
  */
 static Quantum
-get_alpha_from_hash(VALUE hash, const char *argument_name)
+get_alpha_from_hash(VALUE hash)
 {
-    VALUE alpha = rb_hash_aref(hash, ID2SYM(rb_intern(argument_name)));
+    VALUE alpha = rb_hash_aref(hash, ID2SYM(rb_intern("alpha")));
     if (NIL_P(alpha))
     {
-        rb_raise(rb_eArgError, "missing keyword: %s", argument_name);
+        rb_raise(rb_eArgError, "missing keyword: alpha");
     }
 
     return APP2QUANTUM(alpha);
@@ -85,17 +83,16 @@ get_alpha_from_hash(VALUE hash, const char *argument_name)
  * No Ruby usage (internal function)
  *
  * @opacity_or_alpha an opacity or a named alpha value
- * @argument_name the name of the argument
  */
 static Quantum
-get_named_alpha_value(VALUE opacity_or_alpha, const char *argument_name)
+get_named_alpha_value(VALUE opacity_or_alpha)
 {
     if (TYPE(opacity_or_alpha) != T_HASH)
     {
-        return get_alpha_from_opacity(opacity_or_alpha, argument_name);
+        return get_alpha_from_opacity(opacity_or_alpha);
     }
 
-    return get_alpha_from_hash(opacity_or_alpha, argument_name);
+    return get_alpha_from_hash(opacity_or_alpha);
 }
 
 
@@ -1310,10 +1307,10 @@ Image_black_point_compensation_eq(VALUE self, VALUE arg)
  * Call BlackThresholdImage.
  *
  * Ruby usage:
- *   - @verbatim Image#black_threshold(red_channel) @endverbatim
- *   - @verbatim Image#black_threshold(red_channel, green_channel) @endverbatim
- *   - @verbatim Image#black_threshold(red_channel, green_channel, blue_channel) @endverbatim
- *   - @verbatim Image#black_threshold(red_channel, green_channel, blue_channel, alpha_channel) @endverbatim
+ *   - @verbatim Image#black_threshold(red) @endverbatim
+ *   - @verbatim Image#black_threshold(red, green) @endverbatim
+ *   - @verbatim Image#black_threshold(red, green, blue) @endverbatim
+ *   - @verbatim Image#black_threshold(red, green, blue, alpha) @endverbatim
  *
  * @param argc number of input arguments
  * @param argv array of input arguments
@@ -8840,12 +8837,12 @@ Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
 
     if (TYPE(argv[4]) == T_HASH)
     {
-        alpha = get_alpha_from_hash(argv[4], "alpha");
+        alpha = get_alpha_from_hash(argv[4]);
         start_index = 1;
     }
     else
     {
-        alpha = get_alpha_from_opacity(argv[1], "alpha");
+        alpha = get_alpha_from_opacity(argv[1]);
         start_index = 2;
     }
 
@@ -13392,7 +13389,7 @@ VALUE threshold_image(int argc, VALUE *argv, VALUE self, thresholder_t threshold
             red     = NUM2DBL(argv[0]);
             green   = NUM2DBL(argv[1]);
             blue    = NUM2DBL(argv[2]);
-            alpha   = get_named_alpha_value(argv[3], "alpha_channel");
+            alpha   = get_named_alpha_value(argv[3]);
             sprintf(ctarg, "%f,%f,%f,%f", red, green, blue, QuantumRange - alpha);
             break;
         case 3:
@@ -13871,7 +13868,7 @@ Image_transparent(int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 2:
-            alpha = get_named_alpha_value(argv[1], "alpha");
+            alpha = get_named_alpha_value(argv[1]);
         case 1:
             Color_to_MagickPixel(image, &color, argv[0]);
             break;
@@ -14936,10 +14933,10 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
  * Call WhiteThresholdImage.
  *
  * Ruby usage:
- *   - @verbatim Image#white_threshold(red_channel) @endverbatim
- *   - @verbatim Image#white_threshold(red_channel, green_channel) @endverbatim
- *   - @verbatim Image#white_threshold(red_channel, green_channel, blue_channel) @endverbatim
- *   - @verbatim Image#white_threshold(red_channel, green_channel, blue_channel, alpha_channel) @endverbatim
+ *   - @verbatim Image#white_threshold(red) @endverbatim
+ *   - @verbatim Image#white_threshold(red, green) @endverbatim
+ *   - @verbatim Image#white_threshold(red, green, blue) @endverbatim
+ *   - @verbatim Image#white_threshold(red, green, blue, alpha) @endverbatim
  *
  * @param argc number of input arguments
  * @param argv array of input arguments
