@@ -1346,8 +1346,14 @@ class Image2_UT < Test::Unit::TestCase
     assert_instance_of(Magick::Image, res)
     assert_not_same(res, @img)
     assert_nothing_raised { @img.paint_transparent('red', Magick::TransparentOpacity) }
+    assert_nothing_raised { @img.paint_transparent('red', alpha: Magick::TransparentAlpha) }
+    assert_raise(ArgumentError) { @img.paint_transparent('red', wrong: Magick::TransparentAlpha) }
     assert_nothing_raised { @img.paint_transparent('red', Magick::TransparentOpacity, true) }
+    assert_nothing_raised { @img.paint_transparent('red', true, alpha: Magick::TransparentAlpha) }
+    assert_raise(ArgumentError) { @img.paint_transparent('red', true, wrong: Magick::TransparentAlpha) }
     assert_nothing_raised { @img.paint_transparent('red', Magick::TransparentOpacity, true, 50) }
+    assert_nothing_raised { @img.paint_transparent('red', true, 50, alpha: Magick::TransparentAlpha) }
+    assert_raise(ArgumentError) { @img.paint_transparent('red', true, 50, wrong: Magick::TransparentAlpha) }
 
     # Too many arguments
     assert_raise(ArgumentError) { @img.paint_transparent('red', Magick::TransparentOpacity, true, 50, 50) }

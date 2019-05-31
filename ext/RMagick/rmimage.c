@@ -9913,12 +9913,12 @@ Image_page_eq(VALUE self, VALUE rect)
  *
  * Ruby usage:
  *   - @verbatim Image#paint_transparent(target) @endverbatim
- *   - @verbatim Image#paint_transparent(target, opacity) @endverbatim
- *   - @verbatim Image#paint_transparent(target, opacity, invert) @endverbatim
- *   - @verbatim Image#paint_transparent(target, opacity, invert, fuzz) @endverbatim
+ *   - @verbatim Image#paint_transparent(target, alpha) @endverbatim
+ *   - @verbatim Image#paint_transparent(target, invert, alpha) @endverbatim
+ *   - @verbatim Image#paint_transparent(target, invert, fuzz, alpha) @endverbatim
  *
  * Notes:
- *   - Default opacity is TransparentOpacity
+ *   - Default alpha is TransparentAlpha
  *   - Default invert is false
  *   - Default fuzz is the image's fuzz (see Image_fuzz_eq)
  *
@@ -9932,23 +9932,45 @@ Image_paint_transparent(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
     MagickPixel color;
-    Quantum opacity = TransparentOpacity;
+    Quantum alpha = TransparentAlpha;
     double keep, fuzz;
-    MagickBooleanType okay, invert = MagickFalse;
+    MagickBooleanType okay, invert;
 
     image = rm_check_destroyed(self);
 
     // Default fuzz value is image's fuzz attribute.
     fuzz = image->fuzz;
+    invert = MagickFalse;
 
     switch (argc)
     {
         case 4:
-            fuzz = NUM2DBL(argv[3]);
+            if (TYPE(argv[argc - 1]) == T_HASH)
+            {
+                fuzz = NUM2DBL(argv[2]);
+            }
+            else
+            {
+                fuzz = NUM2DBL(argv[3]);
+            }
         case 3:
-            invert = RTEST(argv[2]);
+            if (TYPE(argv[argc - 1]) == T_HASH)
+            {
+                invert = RTEST(argv[1]);
+            }
+            else
+            {
+                invert = RTEST(argv[2]);
+            }
         case 2:
-            opacity = APP2QUANTUM(argv[1]);
+            if (TYPE(argv[argc - 1]) == T_HASH)
+            {
+                alpha = get_alpha_from_hash(argv[argc - 1]);
+            }
+            else
+            {
+                alpha = get_alpha_from_opacity(argv[1]);
+            }
         case 1:
             Color_to_MagickPixel(image, &color, argv[0]);
             break;
@@ -9963,7 +9985,7 @@ Image_paint_transparent(int argc, VALUE *argv, VALUE self)
     keep = new_image->fuzz;
     new_image->fuzz = fuzz;
 
-    okay = TransparentPaintImage(new_image, (const MagickPixel *)&color, opacity, invert);
+    okay = TransparentPaintImage(new_image, (const MagickPixel *)&color, QuantumRange - alpha, invert);
     new_image->fuzz = keep;
 
     // Is it possible for TransparentPaintImage to silently fail?
