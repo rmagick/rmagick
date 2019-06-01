@@ -945,7 +945,7 @@ VALUE Draw_annotate(
     unsigned long width, height;
     long x, y;
     AffineMatrix keep;
-    char geometry_str[50];
+    char geometry_str[100];
 
     // Save the affine matrix in case it is modified by
     // Draw#rotation=
