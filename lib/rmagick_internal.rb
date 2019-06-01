@@ -427,14 +427,6 @@ module Magick
       primitive 'line ' + format('%g,%g %g,%g', start_x, start_y, end_x, end_y)
     end
 
-    # Set matte (make transparent) in image according to the specified
-    # colorization rule
-    def matte(x, y, method)
-      Kernel.warn 'Draw#matte is deprecated. Use Draw#alpha instead.'
-      Kernel.raise ArgumentError, 'Unknown paint method' unless PAINT_METHOD_NAMES.key?(method.to_i)
-      primitive 'matte ' + format('%g,%g, %s', x, y, PAINT_METHOD_NAMES[method.to_i])
-    end
-
     # Specify drawing fill and stroke opacities. If the value is a string
     # ending with a %, the number will be multiplied by 0.01.
     def opacity(opacity)
