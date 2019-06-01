@@ -1310,7 +1310,7 @@ Image_black_point_compensation_eq(VALUE self, VALUE arg)
  *   - @verbatim Image#black_threshold(red) @endverbatim
  *   - @verbatim Image#black_threshold(red, green) @endverbatim
  *   - @verbatim Image#black_threshold(red, green, blue) @endverbatim
- *   - @verbatim Image#black_threshold(red, green, blue, alpha) @endverbatim
+ *   - @verbatim Image#black_threshold(red, green, blue, alpha: alpha) @endverbatim
  *
  * @param argc number of input arguments
  * @param argv array of input arguments
@@ -8805,7 +8805,7 @@ Image_matte_color_eq(VALUE self, VALUE color)
  * Call MatteFloodFillImage.
  *
  * Ruby usage:
- *   - @verbatim Image#matte_flood_fill(color, alpha, x, y, method_obj) @endverbatim
+ *   - @verbatim Image#matte_flood_fill(color x, y, method_obj, alpha: alpha) @endverbatim
  *
  * @param self this object
  * @param color the color
@@ -9913,9 +9913,9 @@ Image_page_eq(VALUE self, VALUE rect)
  *
  * Ruby usage:
  *   - @verbatim Image#paint_transparent(target) @endverbatim
- *   - @verbatim Image#paint_transparent(target, alpha) @endverbatim
- *   - @verbatim Image#paint_transparent(target, invert, alpha) @endverbatim
- *   - @verbatim Image#paint_transparent(target, invert, fuzz, alpha) @endverbatim
+ *   - @verbatim Image#paint_transparent(target, alpha: alpha) @endverbatim
+ *   - @verbatim Image#paint_transparent(target, invert, alpha: alpha) @endverbatim
+ *   - @verbatim Image#paint_transparent(target, invert, fuzz, alpha: alpha) @endverbatim
  *
  * Notes:
  *   - Default alpha is TransparentAlpha
@@ -13869,9 +13869,9 @@ Image_total_ink_density(VALUE self)
  *
  * Ruby usage:
  *   - @verbatim Image#transparent(color-name) @endverbatim
- *   - @verbatim Image#transparent(color-name, alpha) @endverbatim
+ *   - @verbatim Image#transparent(color-name, alpha: alpha) @endverbatim
  *   - @verbatim Image#transparent(pixel) @endverbatim
- *   - @verbatim Image#transparent(pixel, alpha) @endverbatim
+ *   - @verbatim Image#transparent(pixel, alpha: alpha) @endverbatim
  *
  * Notes:
  *   - Default alpha is Magick::TransparentAlpha.
@@ -14965,7 +14965,7 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
  *   - @verbatim Image#white_threshold(red) @endverbatim
  *   - @verbatim Image#white_threshold(red, green) @endverbatim
  *   - @verbatim Image#white_threshold(red, green, blue) @endverbatim
- *   - @verbatim Image#white_threshold(red, green, blue, alpha) @endverbatim
+ *   - @verbatim Image#white_threshold(red, green, blue, alpha: alpha) @endverbatim
  *
  * @param argc number of input arguments
  * @param argv array of input arguments
