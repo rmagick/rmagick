@@ -12241,7 +12241,7 @@ Image_shade(int argc, VALUE *argv, VALUE self)
 
 
 /**
- * Call ShadowImage. X- and y-offsets are the pixel offset. Opacity is either a
+ * Call ShadowImage. X- and y-offsets are the pixel offset. Alpha is either a
  * number between 0 and 1 or a string "NN%". Sigma is the std. dev. of the
  * Gaussian, in pixels.
  *
@@ -12250,14 +12250,14 @@ Image_shade(int argc, VALUE *argv, VALUE self)
  *   - @verbatim Image#shadow(x_offset) @endverbatim
  *   - @verbatim Image#shadow(x_offset, y_offset) @endverbatim
  *   - @verbatim Image#shadow(x_offset, y_offset, sigma) @endverbatim
- *   - @verbatim Image#shadow(x_offset, y_offset, sigma, opacity) @endverbatim
+ *   - @verbatim Image#shadow(x_offset, y_offset, sigma, alpha) @endverbatim
  *
  * Notes:
  *   - Default x_offset is 4
  *   - Default y_offset is 4
  *   - Default sigma is 4.0
- *   - Default opacity is 1.0
- *   - The defaults are taken from the mogrify.c source, except for opacity,
+ *   - Default alpha is 1.0
+ *   - The defaults are taken from the mogrify.c source, except for alpha,
  *     which has no default.
  *   - Introduced in ImageMagick 6.1.7
  *
@@ -12270,7 +12270,7 @@ VALUE
 Image_shadow(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
-    double opacity = 100.0;
+    double alpha = 100.0;
     double sigma = 4.0;
     long x_offset = 4L;
     long y_offset = 4L;
@@ -12280,14 +12280,14 @@ Image_shadow(int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 4:
-            opacity = rm_percentage(argv[3],1.0);   // Clamp to 1.0 < x <= 100.0
-            if (fabs(opacity) < 0.01)
+            alpha = rm_percentage(argv[3],1.0);   // Clamp to 1.0 < x <= 100.0
+            if (fabs(alpha) < 0.01)
             {
-                rb_warning("shadow will be transparent - opacity %g very small", opacity);
+                rb_warning("shadow will be transparent - alpha %g very small", alpha);
             }
-            opacity = FMIN(opacity, 1.0);
-            opacity = FMAX(opacity, 0.01);
-            opacity *= 100.0;
+            alpha = FMIN(alpha, 1.0);
+            alpha = FMAX(alpha, 0.01);
+            alpha *= 100.0;
         case 3:
             sigma = NUM2DBL(argv[2]);
         case 2:
@@ -12302,7 +12302,7 @@ Image_shadow(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    new_image = ShadowImage(image, opacity, sigma, x_offset, y_offset, exception);
+    new_image = ShadowImage(image, alpha, sigma, x_offset, y_offset, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
@@ -13608,16 +13608,16 @@ Image_ticks_per_second_eq(VALUE self, VALUE tps)
  * Call TintImage.
  *
  * Ruby usage:
- *   - @verbatim Image#tint(tint, red_opacity) @endverbatim
- *   - @verbatim Image#tint(tint, red_opacity, green_opacity) @endverbatim
- *   - @verbatim Image#tint(tint, red_opacity, green_opacity, blue_opacity) @endverbatim
- *   - @verbatim Image#tint(tint, red_opacity, green_opacity, blue_opacity, alpha_opacity) @endverbatim
+ *   - @verbatim Image#tint(tint, red_alpha) @endverbatim
+ *   - @verbatim Image#tint(tint, red_alpha, green_alpha) @endverbatim
+ *   - @verbatim Image#tint(tint, red_alpha, green_alpha, blue_alpha) @endverbatim
+ *   - @verbatim Image#tint(tint, red_alpha, green_alpha, blue_alpha, alpha_alpha) @endverbatim
  *
  * Notes:
- *   - Default green_opacity is red_opacity
- *   - Default blue_opacity is red_opacity
- *   - Default alpha_opacity is 1.0
- *   - Opacity values are percentages: 0.10 -> 10%.
+ *   - Default green_alpha is red_alpha
+ *   - Default blue_alpha is red_alpha
+ *   - Default alpha_alpha is 1.0
+ *   - Alpha values are percentages: 0.10 -> 10%.
  *
  * @param argc number of input arguments
  * @param argv array of input arguments
@@ -13631,7 +13631,7 @@ Image_tint(int argc, VALUE *argv, VALUE self)
     PixelColor tint;
     double red_pct_opaque, green_pct_opaque, blue_pct_opaque;
     double alpha_pct_opaque = 1.0;
-    char opacity[50];
+    char alpha[50];
     ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
@@ -13666,17 +13666,17 @@ Image_tint(int argc, VALUE *argv, VALUE self)
     if (red_pct_opaque < 0.0 || green_pct_opaque < 0.0
         || blue_pct_opaque < 0.0 || alpha_pct_opaque < 0.0)
     {
-        rb_raise(rb_eArgError, "opacity percentages must be non-negative.");
+        rb_raise(rb_eArgError, "alpha percentages must be non-negative.");
     }
 
-    snprintf(opacity, sizeof(opacity),
+    snprintf(alpha, sizeof(alpha),
             "%g,%g,%g,%g", red_pct_opaque*100.0, green_pct_opaque*100.0
             , blue_pct_opaque*100.0, alpha_pct_opaque*100.0);
 
     Color_to_PixelColor(&tint, argv[0]);
     exception = AcquireExceptionInfo();
 
-    new_image = TintImage(image, opacity, tint, exception);
+    new_image = TintImage(image, alpha, tint, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
