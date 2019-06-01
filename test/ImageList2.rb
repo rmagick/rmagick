@@ -153,10 +153,10 @@ class ImageList2UT < Test::Unit::TestCase
     montage = nil
     assert_nothing_thrown do
       montage = ilist.montage do
-        self.background_color = 'black'
         self.background_color = Magick::Pixel.new(Magick::QuantumRange, 0, 0)
-        self.border_color = 'red'
+        self.background_color = 'blue'
         self.border_color = Magick::Pixel.new(0, 0, 0)
+        self.border_color = 'red'
         self.border_width = 2
         self.compose = Magick::OverCompositeOp
         self.filename = 'test.png'
@@ -180,6 +180,10 @@ class ImageList2UT < Test::Unit::TestCase
       end
       assert_instance_of(Magick::ImageList, montage)
       assert_equal(@ilist, ilist)
+
+      montage_image = montage.first
+      assert_equal('blue', montage_image.background_color)
+      assert_equal('red', montage_image.border_color)
     end
 
     # test illegal option arguments

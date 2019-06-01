@@ -586,14 +586,16 @@ ImageList_montage(VALUE self)
 
     images = images_from_imagelist(self);
 
-    // If app specified a non-default composition operator, use it for all images.
-    if (montage->compose != UndefinedCompositeOp)
+    for (Image *image = images; image; image = GetNextImageInList(image))
     {
-        Image *i;
-        for (i = images; i; i = GetNextImageInList(i))
+        if (montage->compose != UndefinedCompositeOp)
         {
-            i->compose = montage->compose;
+            image->compose = montage->compose;
         }
+        image->background_color = montage->info->background_color;
+        image->border_color = montage->info->border_color;
+        image->matte_color = montage->info->matte_color;
+        image->gravity = montage->info->gravity;
     }
 
     exception = AcquireExceptionInfo();
