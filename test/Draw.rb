@@ -193,6 +193,16 @@ class DrawUT < Test::Unit::TestCase
     assert_raise(NoMethodError) { @draw.annotate('x', 0, 0, 0, 20, 'Hello world') }
   end
 
+  def test_annotate_stack_buffer_overflow
+    assert_nothing_raised do
+      if 1.size == 8
+        # 64-bit environment can use larger value for Integer and it can causes stack buffer overflow.
+        img = Magick::Image.new(10, 10)
+        @draw.annotate(img, 2**63, 2**63, 2**62, 2**62, 'Hello world')
+      end
+    end
+  end
+
   def test_dup
     @draw.path('M110,100 h-75 a75,75 0 1,0 75,-75 z')
     @draw.taint
