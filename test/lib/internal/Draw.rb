@@ -21,6 +21,18 @@ class LibDrawUT < Test::Unit::TestCase
     assert_raise(ArgumentError) { @draw.affine(10, 12, 15, 20, 22, 'x') }
   end
 
+  def test_alpha
+    Magick::PaintMethod.values do |method|
+      draw = Magick::Draw.new
+      draw.alpha(10, '20.5', method)
+      assert_nothing_raised { draw.draw(@img) }
+    end
+
+    assert_raise(ArgumentError) { @draw.alpha(10, '20.5', 'xxx') }
+    assert_raise(ArgumentError) { @draw.alpha('x', 10, Magick::PointMethod) }
+    assert_raise(ArgumentError) { @draw.alpha(10, 'x', Magick::PointMethod) }
+  end
+
   def test_arc
     @draw.arc(100.5, 120.5, 200, 250, 20, 370)
     assert_equal('arc 100.5,120.5 200,250 20,370', @draw.inspect)
