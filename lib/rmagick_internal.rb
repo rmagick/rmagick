@@ -236,6 +236,13 @@ module Magick
       primitive 'affine ' + format('%g,%g,%g,%g,%g,%g', sx, rx, ry, sy, tx, ty)
     end
 
+    # Set alpha (make transparent) in image according to the specified
+    # colorization rule
+    def alpha(x, y, method)
+      Kernel.raise ArgumentError, 'Unknown paint method' unless PAINT_METHOD_NAMES.key?(method.to_i)
+      primitive 'matte ' + format('%g,%g, %s', x, y, PAINT_METHOD_NAMES[method.to_i])
+    end
+
     # Draw an arc.
     def arc(start_x, start_y, end_x, end_y, start_degrees, end_degrees)
       primitive 'arc ' + format('%g,%g %g,%g %g,%g',
