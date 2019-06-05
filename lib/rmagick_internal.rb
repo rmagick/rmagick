@@ -424,6 +424,7 @@ module Magick
     # Set matte (make transparent) in image according to the specified
     # colorization rule
     def matte(x, y, method)
+      Kernel.warn 'Draw#matte is deprecated. Use Draw#alpha instead.'
       Kernel.raise ArgumentError, 'Unknown paint method' unless PAINT_METHOD_NAMES.key?(method.to_i)
       primitive 'matte ' + format('%g,%g, %s', x, y, PAINT_METHOD_NAMES[method.to_i])
     end
