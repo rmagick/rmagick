@@ -340,6 +340,22 @@ class LibDrawUT < Test::Unit::TestCase
     assert_raise(ArgumentError) { @draw.gravity('xxx') }
   end
 
+  def test_image
+    Magick::CompositeOperator.values do |composite|
+      next if [Magick::CopyAlphaCompositeOp, Magick::NoCompositeOp].include?(composite)
+
+      draw = Magick::Draw.new
+      draw.image(composite, 10, 10, 200, 100, "#{IMAGES_DIR}/Flower_Hat.jpg")
+      assert_nothing_raised { draw.draw(@img) }
+    end
+
+    assert_raise(ArgumentError) { @draw.image('xxx', 10, 10, 200, 100, "#{IMAGES_DIR}/Flower_Hat.jpg") }
+    assert_raise(ArgumentError) { @draw.image(Magick::AtopCompositeOp, 'x', 100, 200, 100, "#{IMAGES_DIR}/Flower_Hat.jpg") }
+    assert_raise(ArgumentError) { @draw.image(Magick::AtopCompositeOp, 100, 'x', 200, 100, "#{IMAGES_DIR}/Flower_Hat.jpg") }
+    assert_raise(ArgumentError) { @draw.image(Magick::AtopCompositeOp, 100, 100, 'x', 100, "#{IMAGES_DIR}/Flower_Hat.jpg") }
+    assert_raise(ArgumentError) { @draw.image(Magick::AtopCompositeOp, 100, 100, 200, 'x', "#{IMAGES_DIR}/Flower_Hat.jpg") }
+  end
+
   def test_interline_spacing
     draw = Magick::Draw.new
     draw.interline_spacing(40.5)
