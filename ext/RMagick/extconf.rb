@@ -15,19 +15,24 @@ module RMagick
     def initialize
       @stdout = $stdout.dup
 
-      setup_paths_for_homebrew
+      setup_pkg_config_path
       configure_compile_options
       assert_can_compile!
       configure_headers
     end
 
-    def setup_paths_for_homebrew
-      return unless find_executable('brew')
+    def setup_pkg_config_path
+      if find_executable('brew')
+        pkg_config_path = "#{`brew --prefix imagemagick@6`.strip}/lib/pkgconfig"
+      elsif find_executable('pacman')
+        pkg_config_path = '/usr/lib/imagemagick6/pkgconfig'
+      else
+        return
+      end
 
-      brew_pkg_config_path = "#{`brew --prefix imagemagick@6`.strip}/lib/pkgconfig"
-      pkgconfig_paths = ENV['PKG_CONFIG_PATH'].to_s.split(':')
-      if File.exist?(brew_pkg_config_path) && !pkgconfig_paths.include?(brew_pkg_config_path)
-        ENV['PKG_CONFIG_PATH'] = [ENV['PKG_CONFIG_PATH'], brew_pkg_config_path].compact.join(':')
+      pkg_config_paths = ENV['PKG_CONFIG_PATH'].to_s.split(':')
+      if File.exist?(pkg_config_path) && !pkg_config_paths.include?(pkg_config_path)
+        ENV['PKG_CONFIG_PATH'] = [ENV['PKG_CONFIG_PATH'], pkg_config_path].compact.join(':')
       end
     end
 
