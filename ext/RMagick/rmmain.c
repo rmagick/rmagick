@@ -62,17 +62,7 @@ static void features_constant(void);
  */
 static void *rm_malloc(size_t size)
 {
-    void *p;
-//    int old_state;
-
-//    old_state = rb_gc_disable();
-    p = xmalloc((long)size);
-//    if (!RTEST(old_state))
-//    {
-//        rb_gc_enable();
-//    }
-
-    return p;
+    return xmalloc((long)size);
 }
 
 
@@ -89,17 +79,7 @@ static void *rm_malloc(size_t size)
  */
 static void *rm_realloc(void *ptr, size_t size)
 {
-    void *p;
-//    int old_state;
-
-//    old_state = rb_gc_disable();
-    p = xrealloc(ptr, (long)size);
-//    if (!RTEST(old_state))
-//    {
-//        rb_gc_enable();
-//    }
-
-    return p;
+    return xrealloc(ptr, (long)size);
 }
 
 
@@ -123,20 +103,37 @@ static void rm_free(void *ptr)
  *
  * No Ruby usage (internal function)
  */
+static inline void managed_memory_enable(VALUE enable)
+{
+    if (enable)
+    {
+        SetMagickMemoryMethods(rm_malloc, rm_realloc, rm_free);
+    }
+    rb_define_const(Module_Magick, "MANAGED_MEMORY", enable);
+}
+
 static void set_managed_memory(void)
 {
-    ID enable_mm = rb_intern("RMAGICK_ENABLE_MANAGED_MEMORY");
+    char *disable = getenv("RMAGICK_DISABLE_MANAGED_MEMORY");
 
-    if (RTEST(rb_const_defined(rb_cObject, enable_mm)) && RTEST(rb_const_get(rb_cObject, enable_mm)))
+    if (disable)
     {
-        rb_warning("RMagick: %s", "managed memory enabled. This is an experimental feature.");
-        SetMagickMemoryMethods(rm_malloc, rm_realloc, rm_free);
-        rb_define_const(Module_Magick, "MANAGED_MEMORY", Qtrue);
+        managed_memory_enable(Qfalse);
+        return;
     }
-    else
-    {
-        rb_define_const(Module_Magick, "MANAGED_MEMORY", Qfalse);
-    }
+
+#if defined(_WIN32)
+#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_9_0)
+    managed_memory_enable(Qtrue);
+#else
+    // Disable managed memory feature with ImageMagick 6.8.x or below because causes crash.
+    // Refer https://ci.appveyor.com/project/mockdeep/rmagick/builds/24706171
+    managed_memory_enable(Qfalse);
+#endif
+#else
+    // Not Windows
+    managed_memory_enable(Qtrue);
+#endif
 }
 
 
@@ -152,13 +149,13 @@ Init_RMagick2(void)
 {
     VALUE observable;
 
-    MagickCoreGenesis("RMagick", MagickFalse);
-
-    test_Magick_version();
-
     Module_Magick = rb_define_module("Magick");
 
     set_managed_memory();
+
+    MagickCoreGenesis("RMagick", MagickFalse);
+
+    test_Magick_version();
 
     /*-----------------------------------------------------------------------*/
     /* Create IDs for frequently used methods, etc.                          */

@@ -319,6 +319,9 @@ END_MINGW
       if Gem::Version.new($magick_version) >= Gem::Version.new('6.8.9')
         $defs.push('-DIMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9=1')
       end
+      if Gem::Version.new($magick_version) >= Gem::Version.new('6.9.0')
+        $defs.push('-DIMAGEMAGICK_GREATER_THAN_EQUAL_6_9_0=1')
+      end
 
       create_header
     end
