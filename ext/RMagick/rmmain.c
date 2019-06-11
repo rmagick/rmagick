@@ -126,6 +126,8 @@ static void set_managed_memory(void)
 #if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_9_0)
     managed_memory_enable(Qtrue);
 #else
+    // Disable managed memory feature with ImageMagick 6.8.x or below because causes crash.
+    // Refer https://ci.appveyor.com/project/mockdeep/rmagick/builds/24706171
     managed_memory_enable(Qfalse);
 #endif
 #else
