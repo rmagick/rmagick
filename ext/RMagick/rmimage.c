@@ -67,6 +67,11 @@ get_alpha_from_opacity(VALUE opacity)
 static Quantum
 get_alpha_from_hash(VALUE hash)
 {
+    if (FIX2ULONG(rb_hash_size(hash)) != 1)
+    {
+        rb_raise(rb_eArgError, "wrong number of arguments");
+    }
+
     VALUE alpha = rb_hash_aref(hash, ID2SYM(rb_intern("alpha")));
     if (NIL_P(alpha))
     {

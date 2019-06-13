@@ -1351,6 +1351,7 @@ class Image2_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.paint_transparent('red', Magick::TransparentOpacity, true) }
     assert_nothing_raised { @img.paint_transparent('red', true, alpha: Magick::TransparentAlpha) }
     assert_raise(ArgumentError) { @img.paint_transparent('red', true, wrong: Magick::TransparentAlpha) }
+    assert_raise(ArgumentError) { @img.paint_transparent('red', true, alpha: Magick::TransparentAlpha, extra: Magick::TransparentAlpha) }
     assert_nothing_raised { @img.paint_transparent('red', Magick::TransparentOpacity, true, 50) }
     assert_nothing_raised { @img.paint_transparent('red', true, 50, alpha: Magick::TransparentAlpha) }
     assert_raise(ArgumentError) { @img.paint_transparent('red', true, 50, wrong: Magick::TransparentAlpha) }
