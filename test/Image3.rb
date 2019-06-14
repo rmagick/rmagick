@@ -812,6 +812,7 @@ class Image3_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.transparent('white', Magick::TransparentOpacity) }
     assert_nothing_raised { @img.transparent('white', alpha: Magick::TransparentAlpha) }
     assert_raise(ArgumentError) { @img.transparent('white', wrong: Magick::TransparentAlpha) }
+    assert_raise(ArgumentError) { @img.transparent('white', alpha: Magick::TransparentAlpha, extra: Magick::TransparentAlpha) }
     assert_raise(ArgumentError) { @img.transparent('white', Magick::TransparentOpacity, 2) }
     assert_nothing_raised { @img.transparent('white', Magick::QuantumRange / 2) }
     assert_raise(TypeError) { @img.transparent(2) }
@@ -827,6 +828,7 @@ class Image3_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange), Magick::TransparentOpacity, false) }
     assert_nothing_raised { @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange), false, alpha: Magick::TransparentAlpha) }
     assert_raise(ArgumentError) { @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange), false, wrong: Magick::TransparentAlpha) }
+    assert_raise(ArgumentError) { @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange), false, alpha: Magick::TransparentAlpha, extra: Magick::TransparentAlpha) }
   end
 
   def test_transpose
@@ -1015,6 +1017,7 @@ class Image3_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.white_threshold(50, 50, 50, 50) }
     assert_nothing_raised { @img.white_threshold(50, 50, 50, alpha: 50) }
     assert_raise(ArgumentError) { @img.white_threshold(50, 50, 50, wrong: 50) }
+    assert_raise(ArgumentError) { @img.white_threshold(50, 50, 50, alpha: 50, extra: 50) }
     assert_raise(ArgumentError) { @img.white_threshold(50, 50, 50, 50, 50) }
     res = @img.white_threshold(50)
     assert_instance_of(Magick::Image, res)
