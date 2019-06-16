@@ -3,6 +3,110 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 3.2.0
+
+This is expected to be the final deprecation release before RMagick 4.0. We
+have added loads of deprecation warnings to clear the pathway for ImageMagick 7
+support. Once you've fixed all of them you should be fine to upgrade to version
+4.0 without any pain. There are a small handful of edge cases which we could
+not cleanly deprecate, though they should be extremely rare. These will be
+documented in the 4.0 release. Thanks to @dlemstra for the hard work making
+this release possible.
+
+The biggest change in moving towards RMagick 4.0 will be the fact that
+`opacity` is deprecated in favor of `alpha`.
+
+**NOTE: `opacity` is the opposite of `alpha`!!!**
+
+If you are currently passing opacity into methods, you will need to invert the
+value and use the new `alpha:` keyword argument. If you are passing an integer,
+`alpha = 255 - opacity`. An integer `opacity` of 0 is an `alpha` of 255.
+
+Also, **major kudos to @Watson1978** for enabling Ruby's memory management in
+(#697).  This should go a long way towards improving RMagick's reputation for
+memory usage.
+
+Deprecations: (To be removed in RMagick 4.0)
+
+- `Info#group` (#578) (no replacement)
+- `Image#blur` (#579) (no replacement)
+- Renamed `AlphaChannelType` to `AlphaChannelOption` (#596)
+- Renamed `DistortImageMethod` to `DistortMethod` (#605)
+- Renamed `FilterTypes` to `FilterType` (#611)
+- Renamed `InterpolatePixelMethod` to `PixelInterpolateMethod` (#613)
+- Renamed `ImageLayerMethod` to `LayerMethod` (#618)
+- Deprecate the `opacity` property of the Pixel class. (use `alpha` instead) (#619)
+- Deprecate old enum names. (use IM7 names instead) (#627)
+- `StaticGravity` (use `CenterGravity` instead) (#638)
+- `Image#sync_profiles` (no replacement) (#640)
+- Deprecate old metric type values (use IM7 names instead) (#647)
+- Deprecate `ResetAlphaChannel` (no replacement) (#644)
+- Deprecate `FlattenAlphaChannel` (no replacement) (#645)
+- Deprecate `MatteChannel` (no replacement) (#646)
+- Deprecate `ConstantVirtualPixelMethod` (no replacement) (#649)
+- Deprecate `IntegerPixel` (no replacement) (#650)
+- Deprecate `Image.combine` (use `ImageList#combine` instead) (#690)
+- Deprecate `Image#opacity` (use `Image#alpha` instead) (#669)
+- Deprecate unnamed argument for opacity in `Image#transparent` (use keyword `alpha:` instead) (#695)
+- Deprecate unnamed argument for opacity in `Image#black_threshold` and `Image#white_threshold.` (use keyword `alpha:` instead) (#709)
+- Deprecate unnamed argument for opacity in `Image#matte_flood_fill` (use keyword `alpha:` instead) (#711)
+- Deprecate unnamed argument for opacity in `Image#paint_transparent` (use keyword `alpha:` instead) (#717)
+- Deprecate unnamed argument for opacity in `Image#transparent_chroma.` (use keyword `alpha:` instead) (#722)
+- Deprecate `Draw#matte` (use `Draw#alpha` instead) (#724)
+
+Enhancements:
+
+- Many internal adjustments to prepare for ImageMagick 7 support.
+- Added alpha property to the pixel class. (#617)
+- Add combine to the ImageList class. (#589)
+- Add new alpha constants (#651)
+- Add `Image#mask=` (#660)
+- Add `Draw#alpha` to replace `Draw#matte` (#726)
+- Add Draw#image (#720)
+- Add ArchLinux support (#727)
+
+Bug Fixes:
+
+- Fix `Font#to_s` to not raise error (#569)
+- Fix a SEGV in `Image#reduce_noise` (#576)
+- Fix infinite loop in `Image#compose` (#587)
+- Fix enumeration memory leaks (#592) (#594) (#606) (#610) (#626)
+- Don't allow `Image#class_type` to be set to undefined (#599)
+- Fixed setting the name of the clip path. (#608)
+- Fix memory leak in `Info#view=` (#642)
+- Fix memory leak in `Image.constitute` (#665)
+- Raise error on invalid arguments in `Draw#bezier` (#674)
+- Fix memory leak in `Image#sparse_color` (#683)
+- Prevent negative values for `Image#convolve` (#679)
+- Several cleanups and fixes in the examples
+- Raise error on invalid arguments in `Draw#color` (#691)
+- Raise error on invalid arguments in `Draw#opacity` (#692)
+- Raise error on invalid arguments in `Draw#fill_opacity` (#693)
+- Raise error on invalid arguments in `Draw#stroke_opacity` (#694)
+- Raise error on invalid arguments in `Draw#font_weight` (#696)
+- Raise error on invalid arguments in `Draw#pattern` (#702)
+- Raise error on invalid arguments in `Draw#point` (#703)
+- Raise error on invalid arguments in `Draw#font_size` (#704)
+- Raise error on invalid arguments in `Draw#polygon` (#705)
+- Raise error on invalid arguments in `Draw#polyline` (#706)
+- Raise error on invalid arguments in `Draw#rotate` (#707)
+- Raise error on invalid arguments in `Draw#scale` (#708)
+- Raise error on invalid arguments in `Draw#stroke_dashoffset` (#710)
+- Raise error on invalid arguments in `Draw#translate` (#713)
+- Raise error on invalid arguments in `Draw#text` (#714)
+- Raise error on invalid arguments in `Draw#stroke` (#715)
+- Raise error on invalid arguments in `Draw#matte` (#716)
+- Raise error on invalid arguments in `Draw#skewx`, `Draw#skewy` (#719)
+- Fix `Image#thumbnail` to keep image aspect ratio like ImageMagick (#718)
+- Fix bug where `ImageList#montage` doesn't apply `border_color` & `matte_color` (#601)
+- Fix stack-buffer-overflow in `Draw#annotate` (#725)
+- Enable managed memory feature (#697)
+
+Code Quality:
+
+- Many tests written
+- Several fixes to reduce compiler warnings.
+
 ## RMagick 3.1.0
 
 Deprecations: (To be removed in RMagick 4.0)
