@@ -5546,7 +5546,8 @@ VALUE
 Image_each_profile(VALUE self)
 {
     Image *image;
-    VALUE ary, val;
+    VALUE ary;
+    VALUE val = Qnil;
     char *name;
     const StringInfo *profile;
 
