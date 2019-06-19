@@ -521,6 +521,8 @@ class Image2_UT < Test::Unit::TestCase
   end
 
   def test_each_profile
+    assert_nil(@img.each_profile {})
+
     @img.iptc_profile = 'test profile'
     assert_nothing_raised do
       @img.each_profile do |name, value|
