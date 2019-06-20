@@ -427,60 +427,6 @@ ImageList_flatten_images(VALUE self)
 
 
 /**
- * Apply fx on the images.
- *
- * Ruby usage:
- *   - @verbatim ImageList#fx(expression) @endverbatim
- *   - @verbatim ImageList#fx(expression, channel) @endverbatim
- *   - @verbatim ImageList#fx(expression, channel, ...) @endverbatim
- *
- * Notes:
- *   - Default channel is AllChannels
- *
- * @param argc number of input arguments
- * @param argv array of input arguments
- * @param self this object
- * @return a new image
- * @deprecated This method has been deprecated. Please use Image_fx.
- */
-VALUE
-ImageList_fx(int argc, VALUE *argv, VALUE self)
-{
-    Image *images, *new_image;
-    char *expression;
-    ChannelType channels;
-    ExceptionInfo *exception;
-
-    rb_warning("ImageList#fx is deprecated; use Image#fx");
-
-    channels = extract_channels(&argc, argv);
-
-    // There must be exactly 1 remaining argument.
-    if (argc == 0)
-    {
-        rb_raise(rb_eArgError, "wrong number of arguments (0 for 1 or more)");
-    }
-    else if (argc > 1)
-    {
-        raise_ChannelType_error(argv[argc-1]);
-    }
-
-    expression = StringValuePtr(argv[0]);
-
-    images = images_from_imagelist(self);
-    exception = AcquireExceptionInfo();
-    new_image = FxImageChannel(images, channels, expression, exception);
-    rm_split(images);
-    rm_check_exception(exception, new_image, DestroyOnError);
-    (void) DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
-
-    return rm_image_new(new_image);
-}
-
-
-/**
  * Call MapImages.
  *
  * Ruby usage:

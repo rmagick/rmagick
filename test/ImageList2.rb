@@ -107,17 +107,6 @@ class ImageList2UT < Test::Unit::TestCase
     assert_equal(@ilist, ilist2)
   end
 
-  def test_fx
-    @ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_1.gif')
-    assert_nothing_raised { @ilist.fx('1/2') }
-    assert_nothing_raised { @ilist.fx('1/2', Magick::BlueChannel) }
-    assert_nothing_raised { @ilist.fx('1/2', Magick::BlueChannel, Magick::RedChannel) }
-    assert_raise(ArgumentError) { @ilist.fx }
-    assert_raise(ArgumentError) { @ilist.fx(Magick::BlueChannel) }
-    assert_raise(TypeError) { @ilist.fx(1) }
-    assert_raise(TypeError) { @ilist.fx('1/2', 1) }
-  end
-
   def test_map
     map = Magick::Image.read('netscape:')[0]
     @ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_1.gif')
