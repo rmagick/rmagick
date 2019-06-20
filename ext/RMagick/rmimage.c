@@ -9326,8 +9326,6 @@ Image_negate_channel(int argc, VALUE *argv, VALUE self)
         grayscale = RTEST(argv[0]);
     }
 
-    Data_Get_Struct(self, Image, image);
-
     new_image = rm_clone_image(image);
 
     (void) NegateImageChannel(new_image, channels, grayscale);
