@@ -689,7 +689,6 @@ extern VALUE KernelInfo_alloc(VALUE);
 extern VALUE KernelInfo_initialize(VALUE, VALUE);
 extern VALUE KernelInfo_zero_nans(VALUE);
 extern VALUE KernelInfo_unity_add(VALUE, VALUE);
-extern VALUE KernelInfo_show(VALUE);
 extern VALUE KernelInfo_scale(VALUE, VALUE, VALUE);
 extern VALUE KernelInfo_scale_geometry(VALUE, VALUE);
 extern VALUE KernelInfo_clone(VALUE);

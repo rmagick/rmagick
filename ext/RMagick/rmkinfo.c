@@ -112,22 +112,6 @@ KernelInfo_unity_add(VALUE self, VALUE scale)
     return Qnil;
 }
 
-/**
- * Dumps KernelInfo object to stderr
- *
- * Ruby usage:
- *   - @verbatim KernelInfo#show @endverbatim
- *
- * @param self this object
- * @deprecated This method has been deprecated.
- */
-VALUE
-KernelInfo_show(VALUE self)
-{
-    rb_warning("KernelInfo#show is deprecated");
-    ShowKernelInfo((KernelInfo*)DATA_PTR(self));
-    return Qnil;
-}
 
 /**
  * Scales the given kernel list by the given amount, with or without normalization
