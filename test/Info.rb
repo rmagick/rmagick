@@ -234,14 +234,6 @@ class InfoUT < Test::Unit::TestCase
     assert_nothing_raised { @info.gravity = nil }
   end
 
-  def test_group
-    assert_kind_of(Integer, @info.group)
-    assert_nothing_raised { @info.group = 50 }
-    assert_equal(50, @info.group)
-    assert_raise(TypeError) { @info.group = nil }
-    assert_raise(TypeError) { @info.group = 'xxx' }
-  end
-
   def test_image_type
     Magick::ImageType.values.each do |v|
       assert_nothing_raised { @info.image_type = v }
