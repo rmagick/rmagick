@@ -41,14 +41,6 @@ class PixelUT < Test::Unit::TestCase
     assert_raise(TypeError) { @pixel.alpha = 'x' }
   end
 
-  def test_opacity
-    assert_nothing_raised { @pixel.opacity = 123 }
-    assert_equal(123, @pixel.opacity)
-    assert_nothing_raised { @pixel.opacity = 255.25 }
-    assert_equal(255, @pixel.opacity)
-    assert_raise(TypeError) { @pixel.opacity = 'x' }
-  end
-
   def test_cyan
     assert_nothing_raised { @pixel.cyan = 123 }
     assert_equal(123, @pixel.cyan)
@@ -236,13 +228,6 @@ class PixelUT < Test::Unit::TestCase
     pixel.blue -= 10
     assert_equal(1, @pixel <=> pixel)
     pixel.blue += 20
-    assert_equal(-1, @pixel <=> pixel)
-
-    @pixel.opacity = 100
-    pixel = @pixel.dup
-    pixel.opacity -= 10
-    assert_equal(1, @pixel <=> pixel)
-    pixel.opacity += 20
     assert_equal(-1, @pixel <=> pixel)
 
     @pixel.alpha = 100
