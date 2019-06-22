@@ -20,16 +20,16 @@ module Magick
         puts "\t\tRed: #{channel_depth(Magick::RedChannel)}-bits\n"
         puts "\t\tGreen: #{channel_depth(Magick::GreenChannel)}-bits\n"
         puts "\t\tBlue: #{channel_depth(Magick::BlueChannel)}-bits\n"
-        puts "\t\tOpacity: #{channel_depth(Magick::OpacityChannel)}-bits\n" if matte
+        puts "\t\tOpacity: #{channel_depth(Magick::OpacityChannel)}-bits\n" if alpha
       when Magick::CMYKColorspace
         puts "\t\tCyan : #{channel_depth(Magick::CyanChannel)}-bits\n"
         puts "\t\tMagenta: #{channel_depth(Magick::MagentaChannel)}-bits\n"
         puts "\t\tYellow: #{channel_depth(Magick::YellowChannel)}-bits\n"
         puts "\t\tBlack: #{channel_depth(Magick::BlackChannel)}-bits\n"
-        puts "\t\tOpacity: #{channel_depth(Magick::OpacityChannel)}-bits\n" if matte
+        puts "\t\tOpacity: #{channel_depth(Magick::OpacityChannel)}-bits\n" if alpha
       when Magick::GRAYColorspace
         puts "\t\tGray: #{channel_depth(Magick::GrayChannel)}-bits\n"
-        puts "\t\tOpacity: #{channel_depth(Magick::OpacityChannel)}-bits\n" if matte
+        puts "\t\tOpacity: #{channel_depth(Magick::OpacityChannel)}-bits\n" if alpha
       end
       scale = Magick::QuantumRange / (Magick::QuantumRange >> (Magick::MAGICKCORE_QUANTUM_DEPTH - channel_depth))
       puts "\tChannel statistics:\n"
@@ -78,7 +78,7 @@ module Magick
         puts "\t\t\tMean: " + sprintf("%g (%g)\n", channel_mean(Magick::GrayChannel)[0] / scale, channel_mean(Magick::GrayChannel)[0] / Magick::QuantumRange)
         puts "\t\t\tStandard deviation: " + sprintf("%g (%g)\n", channel_mean(Magick::GrayChannel)[1] / scale, channel_mean(Magick::GrayChannel)[1] / Magick::QuantumRange)
       end
-      if matte
+      if alpha
         puts "\t\tOpacity:\n"
         puts "\t\t\tMin: " + sprintf("%u (%g)\n", channel_extrema(Magick::OpacityChannel)[0] / scale, channel_extrema(Magick::OpacityChannel)[0] / Magick::QuantumRange)
         puts "\t\t\tMax: " + sprintf("%u (%g)\n", channel_extrema(Magick::OpacityChannel)[1] / scale, channel_extrema(Magick::OpacityChannel)[1] / Magick::QuantumRange)
