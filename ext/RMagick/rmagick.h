@@ -1030,7 +1030,6 @@ extern VALUE  Pixel_dup(VALUE);
 extern VALUE  Pixel_eql_q(VALUE, VALUE);
 extern VALUE  Pixel_fcmp(int, VALUE *, VALUE);
 extern VALUE  Pixel_from_color(VALUE, VALUE);
-extern VALUE  Pixel_from_HSL(VALUE, VALUE);
 extern VALUE  Pixel_from_hsla(int, VALUE *, VALUE);
 extern VALUE  Pixel_hash(VALUE);
 extern VALUE  Pixel_initialize(int, VALUE *, VALUE);

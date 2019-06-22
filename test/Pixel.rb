@@ -190,11 +190,6 @@ class PixelUT < Test::Unit::TestCase
     assert_in_delta(hsla[3], hsla2[3], 0.005, "#{hsla.inspect} != #{hsla2.inspect} with args: #{args.inspect} and #{args2.inspect}")
   end
 
-  def test_from_hsl
-    assert_instance_of(Magick::Pixel, Magick::Pixel.from_HSL([127, 50, 50]))
-    assert_raise(ArgumentError) { Magick::Pixel.from_HSL([127, 50]) }
-  end
-
   def test_intensity
     assert_kind_of(Integer, @pixel.intensity)
   end
