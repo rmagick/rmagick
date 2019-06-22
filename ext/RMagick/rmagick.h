@@ -607,7 +607,6 @@ extern VALUE ImageList_composite_layers(int, VALUE *, VALUE);
 extern VALUE ImageList_deconstruct(VALUE);
 extern VALUE ImageList_display(VALUE);
 extern VALUE ImageList_flatten_images(VALUE);
-extern VALUE ImageList_map(int, VALUE *, VALUE);
 extern VALUE ImageList_montage(VALUE);
 extern VALUE ImageList_morph(VALUE, VALUE);
 extern VALUE ImageList_mosaic(VALUE);
