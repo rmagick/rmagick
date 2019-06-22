@@ -68,26 +68,6 @@ KernelInfo_initialize(VALUE self, VALUE kernel_string)
     return self;
 }
 
-/**
- * Zero kerne NaNs.
- *
- * Ruby usage:
- *   - @verbatim KernelInfo#zero_nans @endverbatim
- *
- * @param self this object
- * @deprecated This method has been deprecated.
- */
-
-/* ZeroKernelNans() is private function in ImageMagick. */
-MagickExport void ZeroKernelNans(KernelInfo *kernel);
-
-VALUE
-KernelInfo_zero_nans(VALUE self)
-{
-    rb_warning("KernelInfo#zero_nans is deprecated");
-    ZeroKernelNans((KernelInfo*)DATA_PTR(self));
-    return Qnil;
-}
 
 /**
  * Adds a given amount of the 'Unity' Convolution Kernel to the given pre-scaled and normalized Kernel.

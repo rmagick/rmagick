@@ -23,10 +23,6 @@ class KernelInfoUT < Test::Unit::TestCase
     assert_raise(TypeError) { Magick::KernelInfo.new(42) }
   end
 
-  def test_zero_nans
-    assert_nil(@kernel.zero_nans)
-  end
-
   def test_unity_add
     assert_nil(@kernel.unity_add(1.0))
     assert_nil(@kernel.unity_add(12))
