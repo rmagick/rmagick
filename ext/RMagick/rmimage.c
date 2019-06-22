@@ -673,30 +673,6 @@ Image_alpha_q(VALUE self)
 
 
 /**
- * Equivalent to -alpha option.
- *
- * Ruby usage:
- *   - @verbatim Image#alpha=(alpha) @endverbatim
- *
- * @param self this object
- * @param type the alpha type
- * @return alpha
- * @deprecated This method has been deprecated. Please use Image_alpha.
- * @see Image_alpha
- * @see mogrify.c (in ImageMagick)
- */
-VALUE
-Image_alpha_eq(VALUE self, VALUE type)
-{
-    VALUE argv[1];
-    argv[0] = type;
-    rb_warning("Image#alpha= is deprecated; use Image#alpha.");
-    Image_alpha(1, argv, self);
-    return type;
-}
-
-
-/**
  * Transform an image as dictated by the affine matrix argument.
  *
  * Ruby usage:
