@@ -407,7 +407,6 @@ Init_RMagick2(void)
     rb_define_method(Class_Image, "liquid_rescale", Image_liquid_rescale, -1);
     rb_define_method(Class_Image, "magnify", Image_magnify, 0);
     rb_define_method(Class_Image, "magnify!", Image_magnify_bang, 0);
-    rb_define_method(Class_Image, "map", Image_map, -1);
     rb_define_method(Class_Image, "marshal_dump", Image_marshal_dump, 0);
     rb_define_method(Class_Image, "marshal_load", Image_marshal_load, 1);
     rb_define_method(Class_Image, "mask", Image_mask, -1);

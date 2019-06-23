@@ -8233,63 +8233,6 @@ Image_magnify_bang(VALUE self)
 
 
 /**
- * Call MapImage.
- *
- * Ruby usage:
- *   - @verbatim Image#map(map_image) @endverbatim
- *   - @verbatim Image#map(map_image, dither) @endverbatim
- *
- * Notes:
- *   - Default dither is false
- *
- * @param argc number of input arguments
- * @param argv array of input arguments
- * @param self this object
- * @return a new image
- */
-VALUE
-Image_map(int argc, VALUE *argv, VALUE self)
-{
-    Image *image, *new_image;
-    Image *map;
-    VALUE map_obj, map_arg;
-    unsigned int dither = MagickFalse;
-
-    QuantizeInfo quantize_info;
-    rb_warning("Image#map is deprecated. Use Image#remap instead");
-
-    image = rm_check_destroyed(self);
-
-    switch (argc)
-    {
-        case 2:
-            dither = RTEST(argv[1]);
-        case 1:
-            map_arg = argv[0];
-            break;
-        default:
-            rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 or 2)", argc);
-            break;
-    }
-
-    map_obj = rm_cur_image(map_arg);
-    map = rm_check_destroyed(map_obj);
-
-    new_image = rm_clone_image(image);
-
-    GetQuantizeInfo(&quantize_info);
-    quantize_info.dither=dither;
-    (void) RemapImage(&quantize_info, new_image, map);
-    rm_check_image_exception(new_image, DestroyOnError);
-
-    RB_GC_GUARD(map_obj);
-    RB_GC_GUARD(map_arg);
-
-    return rm_image_new(new_image);
-}
-
-
-/**
  * Support Marshal.dump >= 1.8.
  *
  * Ruby usage:

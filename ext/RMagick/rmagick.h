@@ -889,7 +889,6 @@ extern VALUE Image_liquid_rescale(int, VALUE *, VALUE);
 extern VALUE Image__load(VALUE, VALUE);
 extern VALUE Image_magnify(VALUE);
 extern VALUE Image_magnify_bang(VALUE);
-extern VALUE Image_map(int, VALUE *, VALUE);
 extern VALUE Image_marshal_dump(VALUE);
 extern VALUE Image_marshal_load(VALUE, VALUE);
 extern VALUE Image_mask(int, VALUE *, VALUE);

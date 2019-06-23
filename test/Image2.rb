@@ -1090,21 +1090,6 @@ class Image2_UT < Test::Unit::TestCase
     assert_same(@img, res)
   end
 
-  def test_map
-    map = Magick::Image.read('netscape:').first
-    assert_nothing_raised do
-      res = @img.map(map)
-      assert_instance_of(Magick::Image, res)
-      assert_not_same(@img, res)
-    end
-    assert_nothing_raised { @img.map(map, true) }
-    assert_raise(NoMethodError) { @img.map(2) }
-    assert_raise(ArgumentError) { @img.map(map, true, 2) }
-    assert_raise(ArgumentError) { @img.map }
-    map.destroy!
-    assert_raise(Magick::DestroyedImageError) { @img.map(map, true) }
-  end
-
   def test_marshal
     img = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
     d = nil
