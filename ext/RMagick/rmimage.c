@@ -8440,29 +8440,6 @@ set_image_mask(Image *image, VALUE mask)
 
 
 /**
- * Set the image mask.
- *
- * Ruby usage:
- *   - @verbatim Image#mask= @endverbatim
- *
- * @param self this object
- * @param mask the mask to use
- * @return copy of the current clip-mask or nil
- * @deprecated This method has been deprecated. Please use Image_mask(mask-image).
- * @see Image_mask(mask-image)
- * @see get_image_mask
- */
-VALUE
-Image_mask_eq(VALUE self, VALUE mask)
-{
-    VALUE v[1];
-    v[0] = mask;
-    rb_warning("Image#mask= is deprecated; use Image#mask.");
-    return Image_mask(1, v, self);
-}
-
-
-/**
  * Associate a clip mask with the image.
  *
  * Ruby usage:

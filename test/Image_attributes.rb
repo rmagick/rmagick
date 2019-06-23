@@ -617,7 +617,6 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_raise(FreezeError) { @img.geometry = '100x100' }
     assert_raise(FreezeError) { @img.interlace = Magick::NoInterlace }
     assert_raise(FreezeError) { @img.iptc_profile = 'xxx' }
-    assert_raise(FreezeError) { @img.mask = @img }
     assert_raise(FreezeError) { @img.monitor = proc { |name, _q, _s| puts name } }
     assert_raise(FreezeError) { @img.offset = 100 }
     assert_raise(FreezeError) { @img.page = Magick::Rectangle.new(1, 2, 3, 4) }
