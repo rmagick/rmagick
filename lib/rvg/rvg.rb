@@ -60,10 +60,10 @@ module Magick
     # else, combine it with the background_fill_opacity.
     def bgfill
       if @background_fill.nil?
-        color = Magick::Pixel.new(0, 0, 0, Magick::TransparentOpacity)
+        color = Magick::Pixel.new(0, 0, 0, Magick::OpaqueAlpha)
       else
         color = @background_fill
-        color.opacity = (1.0 - @background_fill_opacity) * Magick::TransparentOpacity
+        color.alpha = @background_fill_opacity * Magick::OpaqueAlpha
       end
       color
     end
