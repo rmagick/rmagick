@@ -662,7 +662,6 @@ Init_RMagick2(void)
     rb_define_method(Class_Pixel, "marshal_dump", Pixel_marshal_dump, 0);
     rb_define_method(Class_Pixel, "marshal_load", Pixel_marshal_load, 1);
     rb_define_method(Class_Pixel, "to_color", Pixel_to_color, -1);
-    rb_define_method(Class_Pixel, "to_HSL", Pixel_to_HSL, 0);   // deprecated
     rb_define_method(Class_Pixel, "to_hsla", Pixel_to_hsla, 0);
     rb_define_method(Class_Pixel, "to_s", Pixel_to_s, 0);
 

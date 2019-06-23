@@ -929,9 +929,6 @@ Pixel_spaceship(VALUE self, VALUE other)
  * Ruby usage:
  *   - @verbatim Pixel#to_hsla @endverbatim
  *
- * Notes:
- *   - Replace brain-dead Pixel_to_HSL.
- *
  * @param self this object
  * @return an array with hsla data
  * @see Pixel_from_hsla
@@ -968,36 +965,6 @@ Pixel_to_hsla(VALUE self)
     RB_GC_GUARD(hsla);
 
     return hsla;
-}
-
-/**
- * Convert an RGB pixel to the array [hue, saturation, luminosity].
- *
- * Ruby usage:
- *   - @verbatim Pixel#to_HSL @endverbatim
- *
- * @param self this object
- * @return an array with hsl data
- * @deprecated This method has been deprecated. Please use Pixel_to_hsla.
- */
-VALUE
-Pixel_to_HSL(VALUE self)
-{
-    Pixel *pixel;
-    double hue, saturation, luminosity;
-    VALUE hsl;
-
-    Data_Get_Struct(self, Pixel, pixel);
-
-    rb_warning("Pixel#to_HSL is deprecated; use to_hsla");
-    ConvertRGBToHSL(pixel->red, pixel->green, pixel->blue, &hue, &saturation, &luminosity);
-
-    hsl = rb_ary_new3(3, rb_float_new(hue), rb_float_new(saturation),
-                      rb_float_new(luminosity));
-
-    RB_GC_GUARD(hsl);
-
-    return hsl;
 }
 
 

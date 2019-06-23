@@ -233,12 +233,6 @@ class PixelUT < Test::Unit::TestCase
     assert_equal(1, @pixel <=> pixel)
   end
 
-  def test_to_hsl
-    hsl = @pixel.to_HSL
-    assert_instance_of(Array, hsl)
-    assert_equal(3, hsl.size)
-  end
-
   def test_to_color
     assert_nothing_raised { @pixel.to_color(Magick::AllCompliance) }
     assert_nothing_raised { @pixel.to_color(Magick::SVGCompliance) }
