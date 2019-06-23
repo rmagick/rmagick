@@ -446,12 +446,6 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_raise(TypeError) { @img.offset = 'x' }
   end
 
-  def test_opacity
-    assert_raise(NoMethodError) { @img.opacity }
-    assert_nothing_raised { @img.opacity = 50 }
-    assert_raise(TypeError) { @img.opacity = 'x' }
-  end
-
   def test_orientation
     assert_nothing_raised { @img.orientation }
     assert_instance_of(Magick::OrientationType, @img.orientation)
@@ -626,7 +620,6 @@ class Image_Attributes_UT < Test::Unit::TestCase
     assert_raise(FreezeError) { @img.mask = @img }
     assert_raise(FreezeError) { @img.monitor = proc { |name, _q, _s| puts name } }
     assert_raise(FreezeError) { @img.offset = 100 }
-    assert_raise(FreezeError) { @img.opacity = 100 }
     assert_raise(FreezeError) { @img.page = Magick::Rectangle.new(1, 2, 3, 4) }
     assert_raise(FreezeError) { @img.rendering_intent = Magick::SaturationIntent }
     assert_raise(FreezeError) { @img.start_loop = true }

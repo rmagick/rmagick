@@ -11968,33 +11968,6 @@ Image_segment(int argc, VALUE *argv, VALUE self)
 
 
 /**
- * Call SetImageOpacity.
- *
- * Ruby usage:
- *   - @verbatim Image#opacity= @endverbatim
- *
- * @param self this object
- * @param opacity_arg the opacity
- * @return opacity_arg
- * @deprecated This method has been deprecated. Please use Image_alpha.
- */
-VALUE
-Image_opacity_eq(VALUE self, VALUE opacity_arg)
-{
-    Image *image;
-    Quantum opacity;
-
-    rb_warning("Image#opacity is deprecated; use Image#alpha");
-
-    image = rm_check_frozen(self);
-    opacity = APP2QUANTUM(opacity_arg);
-    (void) SetImageOpacity(image, opacity);
-    rm_check_image_exception(image, RetainOnError);
-    return opacity_arg;
-}
-
-
-/**
  * Traverse the attributes and yield to the block. If no block, return a hash
  * of all the attribute keys & values.
  *
