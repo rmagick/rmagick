@@ -212,7 +212,12 @@ Pixel_alpha_eq(VALUE self, VALUE v)
 DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(cyan, red)
 DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(magenta, green)
 DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(yellow, blue)
-DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(black, opacity)
+
+extern VALUE
+Pixel_black(VALUE self)
+{
+    return rb_iv_get(self, "index");
+}
 
 
 /**
@@ -625,6 +630,7 @@ Pixel_from_hsla(int argc, VALUE *argv, VALUE class ATTRIBUTE_UNUSED)
 VALUE
 Pixel_from_MagickPixel(const MagickPixel *pp)
 {
+    VALUE obj;
     Pixel *pixel;
 
     pixel          = ALLOC(Pixel);
@@ -633,7 +639,10 @@ Pixel_from_MagickPixel(const MagickPixel *pp)
     pixel->blue    = ROUND_TO_QUANTUM(pp->blue);
     pixel->opacity = ROUND_TO_QUANTUM(pp->opacity);
 
-    return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
+    obj = Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
+    rb_iv_set(obj, "index", LONG2NUM((long)pp->index));
+
+    return obj;
 }
 
 

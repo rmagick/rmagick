@@ -639,7 +639,7 @@ Init_RMagick2(void)
     DCL_ATTR_ACCESSOR(Pixel, cyan)
     DCL_ATTR_ACCESSOR(Pixel, magenta)
     DCL_ATTR_ACCESSOR(Pixel, yellow)
-    DCL_ATTR_ACCESSOR(Pixel, black)
+    DCL_ATTR_READER(Pixel, black)
 
 
     // Define the instance methods
