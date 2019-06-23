@@ -10403,6 +10403,9 @@ Image_quantum_operator(int argc, VALUE *argv, VALUE self)
         case CosineQuantumOperator:
             qop = CosineEvaluateOperator;
             break;
+        case SetQuantumOperator:
+            qop = SetEvaluateOperator;
+            break;
         case SineQuantumOperator:
             qop = SineEvaluateOperator;
             break;
