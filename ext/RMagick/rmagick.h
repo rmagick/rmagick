@@ -234,6 +234,7 @@ typedef enum _QuantumExpressionOperator
     PoissonNoiseQuantumOperator, /**< poisson noise */
     UniformNoiseQuantumOperator, /**< uniform noise */
     CosineQuantumOperator,    /**< cosine */
+    SetQuantumOperator,       /**< set */
     SineQuantumOperator,      /**< sine */
     AddModulusQuantumOperator, /**< add modulus */
     MeanQuantumOperator, /**< mean */
