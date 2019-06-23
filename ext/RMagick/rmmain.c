@@ -481,7 +481,6 @@ Init_RMagick2(void)
     rb_define_method(Class_Image, "strip!", Image_strip_bang, 0);
     rb_define_method(Class_Image, "store_pixels", Image_store_pixels, 5);
     rb_define_method(Class_Image, "swirl", Image_swirl, 1);
-    rb_define_method(Class_Image, "sync_profiles", Image_sync_profiles, 0);
     rb_define_method(Class_Image, "texture_flood_fill", Image_texture_flood_fill, 5);
     rb_define_method(Class_Image, "threshold", Image_threshold, 1);
     rb_define_method(Class_Image, "thumbnail", Image_thumbnail, -1);

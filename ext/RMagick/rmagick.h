@@ -967,7 +967,6 @@ extern VALUE Image_stereo(VALUE, VALUE);
 extern VALUE Image_store_pixels(VALUE, VALUE, VALUE, VALUE, VALUE, VALUE);
 extern VALUE Image_strip_bang(VALUE);
 extern VALUE Image_swirl(VALUE, VALUE);
-extern VALUE Image_sync_profiles(VALUE);
 extern VALUE Image_texture_flood_fill(VALUE, VALUE, VALUE, VALUE, VALUE, VALUE);
 extern VALUE Image_threshold(VALUE, VALUE);
 extern VALUE Image_thumbnail(int, VALUE *, VALUE);
