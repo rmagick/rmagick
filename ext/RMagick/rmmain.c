@@ -219,6 +219,7 @@ Init_RMagick2(void)
     rb_define_singleton_method(Class_Image, "read_inline", Image_read_inline, 1);
     rb_define_singleton_method(Class_Image, "from_blob", Image_from_blob, 1);
 
+    DCL_ATTR_WRITER(Image, alpha)
     DCL_ATTR_ACCESSOR(Image, background_color)
     DCL_ATTR_READER(Image, base_columns)
     DCL_ATTR_READER(Image, base_filename)

@@ -23,6 +23,11 @@ class Image_Attributes_UT < Test::Unit::TestCase
     @p = Magick::Image.read(IMAGE_WITH_PROFILE).first.color_profile
   end
 
+  def test_alpha
+    assert_nothing_raised { @img.alpha = 50 }
+    assert_raise(TypeError) { @img.alpha = 'x' }
+  end
+
   def test_background_color
     assert_nothing_raised { @img.background_color }
     assert_equal('white', @img.background_color)

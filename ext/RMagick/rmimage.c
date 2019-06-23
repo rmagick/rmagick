@@ -673,6 +673,30 @@ Image_alpha_q(VALUE self)
 
 
 /**
+ * Call SetImageOpacity.
+ *
+ * Ruby usage:
+ *   - @verbatim Image#alpha= @endverbatim
+ *
+ * @param self this object
+ * @param alpha_arg the opacity
+ * @return alpha_arg
+ */
+VALUE
+Image_alpha_eq(VALUE self, VALUE alpha_arg)
+{
+    Image *image;
+    Quantum alpha;
+
+    image = rm_check_frozen(self);
+    alpha = QuantumRange - APP2QUANTUM(alpha_arg);
+    (void) SetImageOpacity(image, alpha);
+    rm_check_image_exception(image, RetainOnError);
+    return alpha_arg;
+}
+
+
+/**
  * Transform an image as dictated by the affine matrix argument.
  *
  * Ruby usage:
@@ -12031,7 +12055,7 @@ Image_opacity_eq(VALUE self, VALUE opacity_arg)
     Image *image;
     Quantum opacity;
 
-    rb_warning("Image#opacity is deprecated; use Image#alpha");
+    rb_warning("Image#opacity is deprecated; use Image#alpha=");
 
     image = rm_check_frozen(self);
     opacity = APP2QUANTUM(opacity_arg);
