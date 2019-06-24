@@ -443,6 +443,7 @@ Pixel_fcmp(int argc, VALUE *argv, VALUE self)
     Image *image;
     Info *info;
     Pixel *this, *that;
+    PixelPacket pp_this, pp_that;
 
     switch (argc)
     {
@@ -483,7 +484,9 @@ Pixel_fcmp(int argc, VALUE *argv, VALUE self)
     image->colorspace = colorspace;
     image->fuzz = fuzz;
 
-    equal = IsColorSimilar(image, this, that);
+    Pixel_to_PixelPacket(this, &pp_this);
+    Pixel_to_PixelPacket(that, &pp_that);
+    equal = IsColorSimilar(image, &pp_this, &pp_that);
     (void) DestroyImage(image);
 
     return equal ? Qtrue : Qfalse;
@@ -662,6 +665,24 @@ Pixel_from_PixelPacket(const PixelPacket *pp)
     pixel->index   = 0;
 
     return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
+}
+
+
+/**
+ * Convert a Magick::Pixel object to a PixelPacket structure.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param pixel the Pixel
+ * @param pp the PixelPacket
+ */
+void
+Pixel_to_PixelPacket(const Pixel *pixel, PixelPacket *pp)
+{
+    pp->red     = pixel->red;
+    pp->green   = pixel->green;
+    pp->blue    = pixel->blue;
+    pp->opacity = pixel->opacity;
 }
 
 
