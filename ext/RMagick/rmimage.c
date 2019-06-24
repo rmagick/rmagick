@@ -14082,8 +14082,10 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg
                 SetPixelAlpha(image, pixel->alpha, pixels);
                 pixels += GetPixelChannels(image);
 #else
-                *pixels = *pixel;
-                pixels++;
+                pixels[n].red = pixel->red;
+                pixels[n].green = pixel->green;
+                pixels[n].blue = pixel->blue;
+                pixels[n].opacity = pixel->opacity;
 #endif
             }
             SyncAuthenticPixels(image, exception);

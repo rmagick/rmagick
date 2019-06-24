@@ -134,7 +134,7 @@ typedef ImageInfo Info; /**< Make type name match class name */
     typedef PixelInfo MagickPixel;
     typedef PixelInfo PixelColor;
 #else
-    typedef PixelPacket Pixel;
+    typedef QuantumPixelPacket Pixel;
     typedef MagickPixelPacket MagickPixel;
     typedef PixelPacket PixelColor;
     typedef AlphaChannelType AlphaChannelOption;

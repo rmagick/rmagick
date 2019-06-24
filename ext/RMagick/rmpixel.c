@@ -675,6 +675,7 @@ Pixel_from_MagickPixel(const MagickPixel *pp)
 #else
     pixel->opacity = ROUND_TO_QUANTUM(pp->opacity);
 #endif
+    pixel->index   = ROUND_TO_QUANTUM(pp->index);
 
     return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
 }
@@ -705,6 +706,7 @@ Pixel_from_PixelPacket(const PixelPacket *pp)
 #else
     pixel->opacity = pp->opacity;
 #endif
+    pixel->index   = 0;
 
     return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
 }
@@ -735,6 +737,7 @@ Pixel_from_PixelColor(const PixelColor *pp)
 #else
     pixel->opacity = pp->opacity;
 #endif
+    pixel->index   = 0;
 
     return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
 }
