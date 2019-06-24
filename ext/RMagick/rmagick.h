@@ -116,7 +116,7 @@
 
 
 typedef ImageInfo Info; /**< Make type name match class name */
-typedef PixelPacket Pixel; /**< Make type name match class name */
+typedef QuantumPixelPacket Pixel; /**< Make type name match class name */
 typedef MagickPixelPacket MagickPixel;
 typedef PixelPacket PixelColor;
 typedef AlphaChannelType AlphaChannelOption;
@@ -1084,6 +1084,7 @@ extern VALUE  Font_to_s(VALUE);
 extern VALUE  Pixel_from_MagickPixel(const MagickPixel *);
 extern VALUE  Pixel_from_PixelColor(const PixelColor *);
 extern VALUE  Pixel_from_PixelPacket(const PixelPacket *);
+extern void   Pixel_to_PixelPacket(const Pixel *pixel, PixelPacket *pp);
 extern void   Export_PointInfo(PointInfo *, VALUE);
 extern VALUE  Import_PointInfo(PointInfo *);
 extern VALUE  PrimaryInfo_to_s(VALUE);

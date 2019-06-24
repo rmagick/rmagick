@@ -12816,7 +12816,10 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg
             {
                 new_pixel = rb_ary_entry(new_pixels, n);
                 Data_Get_Struct(new_pixel, Pixel, pixel);
-                pixels[n] = *pixel;
+                pixels[n].red = pixel->red;
+                pixels[n].green = pixel->green;
+                pixels[n].blue = pixel->blue;
+                pixels[n].opacity = pixel->opacity;
             }
             exception = AcquireExceptionInfo();
 
