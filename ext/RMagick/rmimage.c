@@ -42,22 +42,6 @@ static const char *BlackPointCompensationKey = "PROFILE:black-point-compensation
 
 
 /**
- * Converts the opacity value to alpha and raises a warning.
- *
- * No Ruby usage (internal function)
- *
- * @opacity an opacity value
- */
-static Quantum
-get_alpha_from_opacity(VALUE opacity)
-{
-    VALUE method = rb_id2str(rb_frame_this_func());
-    rb_warning("Image#%"PRIsVALUE" requires a named argument for 'alpha' and now expects an alpha value instead of an opacity value.", method);
-
-    return QuantumRange - APP2QUANTUM(opacity);
-}
-
-/**
  * Returns the alpha value from the hash.
  *
  * No Ruby usage (internal function)
@@ -65,8 +49,13 @@ get_alpha_from_opacity(VALUE opacity)
  * @hash the hash
  */
 static Quantum
-get_alpha_from_hash(VALUE hash)
+get_named_alpha_value(VALUE hash)
 {
+    if (TYPE(hash) != T_HASH)
+    {
+        rb_raise(rb_eArgError, "missing keyword: alpha");
+    }
+    
     if (FIX2ULONG(rb_hash_size(hash)) != 1)
     {
         rb_raise(rb_eArgError, "wrong number of arguments");
@@ -79,25 +68,6 @@ get_alpha_from_hash(VALUE hash)
     }
 
     return APP2QUANTUM(alpha);
-}
-
-/**
- * Checks if opacity_or_alpha is a named argument called alpha and returns the alpha value or
- * converts the unnamed opacity value to alpha.
- *
- * No Ruby usage (internal function)
- *
- * @opacity_or_alpha an opacity or a named alpha value
- */
-static Quantum
-get_named_alpha_value(VALUE opacity_or_alpha)
-{
-    if (TYPE(opacity_or_alpha) != T_HASH)
-    {
-        return get_alpha_from_opacity(opacity_or_alpha);
-    }
-
-    return get_alpha_from_hash(opacity_or_alpha);
 }
 
 
@@ -8543,7 +8513,6 @@ Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
     DrawInfo *draw_info;
     MagickPixel target_mpp;
     MagickBooleanType invert;
-    int start_index;
 
     image = rm_check_destroyed(self);
 
@@ -8552,26 +8521,17 @@ Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
         rb_raise(rb_eArgError, "wrong number of arguments (%d for 5)", argc);
     }
 
-    if (TYPE(argv[4]) == T_HASH)
-    {
-        alpha = get_alpha_from_hash(argv[4]);
-        start_index = 1;
-    }
-    else
-    {
-        alpha = get_alpha_from_opacity(argv[1]);
-        start_index = 2;
-    }
+    alpha = get_named_alpha_value(argv[4]);
 
     Color_to_PixelColor(&target, argv[0]);
-    VALUE_TO_ENUM(argv[start_index + 2], method, PaintMethod);
+    VALUE_TO_ENUM(argv[3], method, PaintMethod);
     if (!(method == FloodfillMethod || method == FillToBorderMethod))
     {
         rb_raise(rb_eArgError, "paint method_obj must be FloodfillMethod or "
                  "FillToBorderMethod (%d given)", method);
     }
-    x = NUM2LONG(argv[start_index]);
-    y = NUM2LONG(argv[start_index + 1]);
+    x = NUM2LONG(argv[1]);
+    y = NUM2LONG(argv[2]);
     if ((unsigned long)x > image->columns || (unsigned long)y > image->rows)
     {
         rb_raise(rb_eArgError, "target out of range. %ldx%ld given, image is %lux%lu"
@@ -9678,14 +9638,7 @@ Image_paint_transparent(int argc, VALUE *argv, VALUE self)
                 invert = RTEST(argv[2]);
             }
         case 2:
-            if (TYPE(argv[argc - 1]) == T_HASH)
-            {
-                alpha = get_alpha_from_hash(argv[argc - 1]);
-            }
-            else
-            {
-                alpha = get_alpha_from_opacity(argv[1]);
-            }
+            alpha = get_named_alpha_value(argv[argc - 1]);
         case 1:
             Color_to_MagickPixel(image, &color, argv[0]);
             break;
@@ -13629,14 +13582,7 @@ Image_transparent_chroma(int argc, VALUE *argv, VALUE self)
                 invert = RTEST(argv[2]);
             }
         case 3:
-            if (TYPE(argv[argc - 1]) == T_HASH)
-            {
-                alpha = get_alpha_from_hash(argv[argc - 1]);
-            }
-            else
-            {
-                alpha = get_alpha_from_opacity(argv[2]);
-            }
+            alpha = get_named_alpha_value(argv[argc - 1]);
         case 2:
             Color_to_MagickPixel(image, &high, argv[1]);
             Color_to_MagickPixel(image, &low, argv[0]);

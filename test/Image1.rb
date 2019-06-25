@@ -321,7 +321,7 @@ class Image1_UT < Test::Unit::TestCase
     assert_nothing_raised { @img.black_threshold(50) }
     assert_nothing_raised { @img.black_threshold(50, 50) }
     assert_nothing_raised { @img.black_threshold(50, 50, 50) }
-    assert_nothing_raised { @img.black_threshold(50, 50, 50, 50) }
+    assert_raise(ArgumentError) { @img.black_threshold(50, 50, 50, 50) }
     assert_nothing_raised { @img.black_threshold(50, 50, 50, alpha: 50) }
     assert_raise(ArgumentError) { @img.black_threshold(50, 50, 50, wrong: 50) }
     assert_raise(ArgumentError) { @img.black_threshold(50, 50, 50, alpha: 50, extra: 50) }

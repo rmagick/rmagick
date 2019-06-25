@@ -1332,23 +1332,22 @@ class Image2_UT < Test::Unit::TestCase
     assert_not_nil(res)
     assert_instance_of(Magick::Image, res)
     assert_not_same(res, @img)
-    assert_nothing_raised { @img.paint_transparent('red', Magick::TransparentOpacity) }
+    assert_raise(ArgumentError) { @img.paint_transparent('red', Magick::TransparentAlpha) }
     assert_nothing_raised { @img.paint_transparent('red', alpha: Magick::TransparentAlpha) }
     assert_raise(ArgumentError) { @img.paint_transparent('red', wrong: Magick::TransparentAlpha) }
-    assert_nothing_raised { @img.paint_transparent('red', Magick::TransparentOpacity, true) }
+    assert_raise(ArgumentError) { @img.paint_transparent('red', Magick::TransparentAlpha, true) }
     assert_nothing_raised { @img.paint_transparent('red', true, alpha: Magick::TransparentAlpha) }
     assert_raise(ArgumentError) { @img.paint_transparent('red', true, wrong: Magick::TransparentAlpha) }
     assert_raise(ArgumentError) { @img.paint_transparent('red', true, alpha: Magick::TransparentAlpha, extra: Magick::TransparentAlpha) }
-    assert_nothing_raised { @img.paint_transparent('red', Magick::TransparentOpacity, true, 50) }
+    assert_raise(ArgumentError) { @img.paint_transparent('red', Magick::TransparentAlpha, true, 50) }
     assert_nothing_raised { @img.paint_transparent('red', true, 50, alpha: Magick::TransparentAlpha) }
     assert_raise(ArgumentError) { @img.paint_transparent('red', true, 50, wrong: Magick::TransparentAlpha) }
 
     # Too many arguments
-    assert_raise(ArgumentError) { @img.paint_transparent('red', Magick::TransparentOpacity, true, 50, 50) }
+    assert_raise(ArgumentError) { @img.paint_transparent('red', true, 50, 50, 50) }
     # Not enough
     assert_raise(ArgumentError) { @img.paint_transparent }
-    assert_raise(TypeError) { @img.paint_transparent('red', Magick::TransparentOpacity, true, []) }
-    assert_raise(TypeError) { @img.paint_transparent('red', 'blue') }
+    assert_raise(TypeError) { @img.paint_transparent('red', true, [], alpha: Magick::TransparentAlpha) }
     assert_raise(TypeError) { @img.paint_transparent(50) }
   end
 
