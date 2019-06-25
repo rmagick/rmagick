@@ -7070,6 +7070,7 @@ Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE row
     long size, n;
     VALUE pixel_ary;
     const PixelPacket *pixels;
+    const IndexPacket *indexes;
 
     image = rm_check_destroyed(self);
     x       = NUM2LONG(x_arg);
@@ -7101,10 +7102,22 @@ Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE row
     size = (long)(columns * rows);
     pixel_ary = rb_ary_new2(size);
 
+    indexes = GetVirtualIndexQueue(image);
+
     // Convert the PixelPackets to Magick::Pixel objects
     for (n = 0; n < size; n++)
     {
-        rb_ary_store(pixel_ary, n, Pixel_from_PixelPacket(&pixels[n]));
+        MagickPixel mpp;
+        mpp.red = GetPixelRed(pixels);
+        mpp.green = GetPixelGreen(pixels);
+        mpp.blue = GetPixelBlue(pixels);
+        pixels++;
+
+        if (indexes)
+        {
+            mpp.index = GetPixelIndex(indexes + n);
+        }
+        rb_ary_store(pixel_ary, n, Pixel_from_MagickPixel(&mpp));
     }
 
     return pixel_ary;
