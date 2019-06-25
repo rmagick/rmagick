@@ -114,9 +114,18 @@
 
 #define MagickLibSubversion MagickLibAddendum
 
+typedef struct _RMagickPixelPacket
+{
+Quantum
+    red,
+    green,
+    blue,
+    opacity,
+    black;
+} RMagickPixelPacket;
 
 typedef ImageInfo Info; /**< Make type name match class name */
-typedef QuantumPixelPacket Pixel; /**< Make type name match class name */
+typedef RMagickPixelPacket Pixel; /**< Make type name match class name */
 typedef MagickPixelPacket MagickPixel;
 typedef PixelPacket PixelColor;
 typedef AlphaChannelType AlphaChannelOption;

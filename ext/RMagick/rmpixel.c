@@ -212,7 +212,7 @@ Pixel_alpha_eq(VALUE self, VALUE v)
 DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(cyan, red)
 DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(magenta, green)
 DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(yellow, blue)
-DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(black, index)
+DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(black, black)
 
 
 /**
@@ -635,7 +635,7 @@ Pixel_from_MagickPixel(const MagickPixel *pp)
     pixel->green   = ROUND_TO_QUANTUM(pp->green);
     pixel->blue    = ROUND_TO_QUANTUM(pp->blue);
     pixel->opacity = ROUND_TO_QUANTUM(pp->opacity);
-    pixel->index   = ROUND_TO_QUANTUM(pp->index);
+    pixel->black   = ROUND_TO_QUANTUM(pp->index);
 
     return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
 }
@@ -662,7 +662,7 @@ Pixel_from_PixelPacket(const PixelPacket *pp)
     pixel->green   = pp->green;
     pixel->blue    = pp->blue;
     pixel->opacity = pp->opacity;
-    pixel->index   = 0;
+    pixel->black   = 0;
 
     return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
 }
@@ -707,7 +707,7 @@ Pixel_from_PixelColor(const PixelColor *pp)
     pixel->green   = pp->green;
     pixel->blue    = pp->blue;
     pixel->opacity = pp->opacity;
-    pixel->index   = 0;
+    pixel->black   = 0;
 
     return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
 }
