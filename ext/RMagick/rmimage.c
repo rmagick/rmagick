@@ -9746,6 +9746,8 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
     unsigned int set = False;
     MagickBooleanType okay;
     PixelPacket *pixel;
+    IndexPacket *indexes;
+    MagickPixel mpp;
 
     memset(&old_color, 0, sizeof(old_color));
 
@@ -9778,17 +9780,27 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
 
         (void) DestroyExceptionInfo(exception);
 
+        indexes = GetAuthenticIndexQueue(image);
+
         // PseudoClass
         if (image->storage_class == PseudoClass)
         {
-            IndexPacket *indexes = GetAuthenticIndexQueue(image);
             old_color = image->colormap[(unsigned long)*indexes];
         }
         if (!image->matte)
         {
             old_color.opacity = OpaqueOpacity;
         }
-        return Pixel_from_PixelPacket(&old_color);
+
+        mpp.red = GetPixelRed(&old_color);
+        mpp.green = GetPixelGreen(&old_color);
+        mpp.blue = GetPixelBlue(&old_color);
+        if (indexes)
+        {
+            mpp.index = GetPixelIndex(indexes);
+        }
+
+        return Pixel_from_MagickPixel(&mpp);
     }
 
     // ImageMagick segfaults if the pixel location is out of bounds.
