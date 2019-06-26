@@ -13,7 +13,7 @@ class StructUT < Test::Unit::TestCase
   def test_export_color_info
     color = Magick.colors[0]
     assert_instance_of(Magick::Color, color)
-    assert_match(/name=.+, compliance=.+, color.red=.+, color.green=.+, color.blue=.+, color.opacity=.+/, color.to_s)
+    assert_match(/name=.+, compliance=.+, color.red=.+, color.green=.+, color.blue=.+, color.alpha=.+/, color.to_s)
   end
 
   def test_export_type_info
