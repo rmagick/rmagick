@@ -911,7 +911,7 @@ Pixel_spaceship(VALUE self, VALUE other)
     }
     else if(this->opacity != that->opacity)
     {
-        return INT2NUM((this->opacity - that->opacity)/abs(this->opacity - that->opacity));
+        return INT2NUM(((QuantumRange - this->opacity) - (QuantumRange - that->opacity))/abs((QuantumRange - this->opacity) - (QuantumRange - that->opacity)));
     }
 
     // Values are equal, check class.
