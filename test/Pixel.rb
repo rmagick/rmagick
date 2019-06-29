@@ -254,6 +254,6 @@ class PixelUT < Test::Unit::TestCase
   end
 
   def test_to_s
-    assert_match(/red=\d+, green=\d+, blue=\d+, opacity=\d+/, @pixel.to_s)
+    assert_match(/red=\d+, green=\d+, blue=\d+, alpha=\d+/, @pixel.to_s)
   end
 end

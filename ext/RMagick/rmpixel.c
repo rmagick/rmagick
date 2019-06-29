@@ -1118,8 +1118,9 @@ Pixel_to_s(VALUE self)
     char buff[100];
 
     Data_Get_Struct(self, Pixel, pixel);
-    sprintf(buff, "red=" QuantumFormat ", green=" QuantumFormat ", blue=" QuantumFormat ", opacity=" QuantumFormat
-          , pixel->red, pixel->green, pixel->blue, pixel->opacity);
+    sprintf(buff, "red=" QuantumFormat ", green=" QuantumFormat ", blue=" QuantumFormat ", alpha=" QuantumFormat,
+            pixel->red, pixel->green, pixel->blue,
+            (QuantumRange - pixel->opacity));
     return rb_str_new2(buff);
 }
 
