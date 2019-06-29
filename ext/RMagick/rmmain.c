@@ -845,9 +845,7 @@ Init_RMagick2(void)
     DEF_CONST(QuantumRange);
     DEF_CONST(MAGICKCORE_QUANTUM_DEPTH);
     DEF_CONSTV(OpaqueAlpha, QuantumRange);
-    DEF_CONST(OpaqueOpacity);
     DEF_CONSTV(TransparentAlpha, 0);
-    DEF_CONST(TransparentOpacity);
 
     version_constants();
     features_constant();
