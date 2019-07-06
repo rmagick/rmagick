@@ -329,7 +329,7 @@ class LibDrawUT < Test::Unit::TestCase
 
   def test_gravity
     Magick::GravityType.values do |gravity|
-      next if [Magick::UndefinedGravity, Magick::StaticGravity].include?(gravity)
+      next if [Magick::UndefinedGravity].include?(gravity)
 
       draw = Magick::Draw.new
       draw.gravity(gravity)

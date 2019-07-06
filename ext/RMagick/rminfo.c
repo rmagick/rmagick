@@ -1473,8 +1473,7 @@ static struct
     { "SouthEast",  "SouthEastGravity", SouthEastGravity},
     { "South",      "SouthGravity",     SouthGravity},
     { "SouthWest",  "SouthWestGravity", SouthWestGravity},
-    { "West",       "WestGravity",      WestGravity},
-    { "Static",     "StaticGravity",    StaticGravity}
+    { "West",       "WestGravity",      WestGravity}
 };
 
 /** Number of gravity options */
