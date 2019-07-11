@@ -3,6 +3,57 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 4.0.0
+
+This release removes a *lot* of deprecated functionality, so first upgrade to
+3.2 and handle any deprecation warnings you see there before upgrading to 4.0.
+There are a handful of removals that we could not, or forgot to deprecate, so
+pay special attention to those below. This clears the road for ImageMagick 7
+support in the very near future.
+
+Breaking Changes:
+
+- Removed deprecated Image#matte and Image#matte= (#731)
+- Removed deprecated Draw#matte. (#736)
+- Removed deprecated ImageList#fx. (#732)
+- Removed deprecated Info#group and Info#group=. (#733)
+- Removed deprecated KernelInfo#show. (#734)
+- Removed deprecated Pixel#opacity and Pixel#opacity=. (#735)
+- Removed deprecated KernelInfo#zero_nans. (#741)
+- Removed deprecated ImageList#map (#740)
+- Removed deprecated Pixel#from_HSL. (#742)
+- Removed deprecated Image#alpha=. (#739)
+- Removed deprecated Pixel#to_HSL. (#745)
+- Removed deprecated Image#blur and Image#blur=. (#746)
+- Removed deprecated Image#sync_profiles. (#754)
+- Removed deprecated Image#opacity=. (#753)
+- Removed deprecated Image#combine. (#752)
+- Removed deprecated Image#map. (#751)
+- Removed deprecated Image#mask=. (#750)
+- Removed deprecated opacity arguments. (#757)
+- Removed deprecated `OpaqueOpacity` and `TransparentOpacity`. (#765)
+- Removed obsolete enumerations. (#766)
+
+The following changes *did not have deprecation warnings* in 3.2, so you'll
+want to double check that you update your code if you were relying on the
+existing behavior:
+
+- Changed Color#to_s to return an string that contains alpha instead of opacity. (#760)
+- Changed Pixel#to_s to return a string that contains alpha instead of opacity. (#762)
+- Changed Pixel#hash to use alpha instead of opacity. (#763)
+- Changed Pixel#<=> to use alpha instead of opacity. (#764)
+- Removed `BicubicInterpolatePixel` (use `CatromInterpolatePixel` instead) (#768)
+- Removed `FilterInterpolatePixel` (no replacement) (#768)
+- Renamed `NearestNeighborInterpolatePixel` to `NearestInterpolatePixel` (#768)
+
+Enhancements:
+
+- Add SetQuantumOperator (#755)
+
+Bug Fixes:
+
+- Fix SEGV in Image#each_profile (#737)
+
 ## RMagick 3.2.0
 
 This is expected to be the final deprecation release before RMagick 4.0. We
