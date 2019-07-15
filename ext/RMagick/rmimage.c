@@ -1575,6 +1575,8 @@ special_composite(Image *image, Image *overlay, double image_pct, double overlay
     (void) SetImageArtifact(overlay,"compose:args", geometry);
 
     new_image = rm_clone_image(image);
+    (void) SetImageArtifact(new_image,"compose:args", geometry); // 6.9 appears to get this info from canvas (dest) image
+
     (void) CompositeImage(new_image, op, overlay, x_off, y_off);
 
     rm_check_image_exception(new_image, DestroyOnError);
