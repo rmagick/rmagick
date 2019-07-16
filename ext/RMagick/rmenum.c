@@ -83,6 +83,17 @@ rm_enum_to_cstr(VALUE enum_type)
 }
 
 /**
+ * Free Enum or Enum subclass object
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param magick_enum the enum
+ */
+static void rm_enum_free(void *magick_enum)
+{
+    xfree(magick_enum);
+}
+/**
  * Enum class alloc function.
  *
  * No Ruby usage (internal function)
@@ -96,10 +107,8 @@ Enum_alloc(VALUE class)
    MagickEnum *magick_enum;
    VALUE enumr;
 
-   enumr = Data_Make_Struct(class, MagickEnum, NULL, NULL, magick_enum);
+   enumr = Data_Make_Struct(class, MagickEnum, NULL, rm_enum_free, magick_enum);
    rb_obj_freeze(enumr);
-
-   RB_GC_GUARD(enumr);
 
    return enumr;
 }
