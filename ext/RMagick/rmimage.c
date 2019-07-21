@@ -12,6 +12,18 @@
 
 #include "rmagick.h"
 
+#define BEGIN_CHANNEL_MASK(image, channels) \
+  { \
+    ChannelType channel_mask=SetPixelChannelMask(image, (ChannelType)channels);
+
+#define END_CHANNEL_MASK(image) \
+    SetPixelChannelMask(image, channel_mask); \
+  }
+
+#define CHANGE_RESULT_CHANNEL_MASK(result) \
+    if (result != (Image *)NULL) \
+      SetPixelChannelMask(result, channel_mask);
+
 /** Method that effects an image */
 typedef Image *(effector_t)(const Image *, const double, const double, ExceptionInfo *);
 /** Method that flips an image */
