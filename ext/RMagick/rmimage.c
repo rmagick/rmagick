@@ -36,8 +36,12 @@ typedef Image *(reader_t)(const Info *, ExceptionInfo *);
 typedef Image *(scaler_t)(const Image *, const size_t, const size_t, ExceptionInfo *);
 /** Method that computes threshold on an image */
 #if defined(IMAGEMAGICK_7)
+    typedef MagickBooleanType (auto_channel_t)(Image *, ExceptionInfo *exception);
+    typedef Image *(channel_method_t)(const Image *, const double, const double, ExceptionInfo *);
     typedef MagickBooleanType (thresholder_t)(Image *, const char *, ExceptionInfo *);
 #else
+    typedef MagickBooleanType (auto_channel_t)(Image *, const ChannelType);
+    typedef Image *(channel_method_t)(const Image *, const ChannelType, const double, const double, ExceptionInfo *);
     typedef MagickBooleanType (thresholder_t)(Image *, const char *);
 #endif
 /** Method that transforms an image */
@@ -148,11 +152,7 @@ adaptive_method(int argc, VALUE *argv, VALUE self
  * @return a new image
  */
 static VALUE
-#if defined(IMAGEMAGICK_7)
-adaptive_channel_method(int argc, VALUE *argv, VALUE self, Image *fp(const Image *, const double, const double, ExceptionInfo *))
-#else
-adaptive_channel_method(int argc, VALUE *argv, VALUE self, Image *fp(const Image *, const ChannelType, const double, const double, ExceptionInfo *))
-#endif
+adaptive_channel_method(int argc, VALUE *argv, VALUE self, channel_method_t fp)
 {
     Image *image, *new_image;
     double radius = 0.0;
@@ -935,11 +935,7 @@ crisscross(int bang, VALUE self, Image *fp(const Image *, ExceptionInfo *))
  * @return a new image
  */
 static VALUE
-#if defined(IMAGEMAGICK_7)
-auto_channel(int argc, VALUE *argv, VALUE self, MagickBooleanType (*fp)(Image *, ExceptionInfo *exception))
-#else
-auto_channel(int argc, VALUE *argv, VALUE self, MagickBooleanType (*fp)(Image *, const ChannelType))
-#endif
+auto_channel(int argc, VALUE *argv, VALUE self, auto_channel_t fp)
 {
     Image *image, *new_image;
     ChannelType channels;
@@ -1243,10 +1239,10 @@ Image_bias(VALUE self)
         {
             char *q;
 
-            bias=InterpretLocaleValue(artifact,&q);
+            bias = InterpretLocaleValue(artifact,&q);
             if (*q == '%')
             {
-                bias*=((double) QuantumRange+1.0)/100.0;
+                bias * =((double) QuantumRange + 1.0) / 100.0;
             }
         }
     }
@@ -8102,6 +8098,7 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
     {
 #if defined(IMAGEMAGICK_7)
         CHECK_EXCEPTION()
+        (void) DestroyExceptionInfo(exception);
 #else
         rm_check_image_exception(image, RetainOnError);
 #endif
