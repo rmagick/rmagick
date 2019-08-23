@@ -8,25 +8,25 @@ environment:
       PATCH_VERSION: 10
     - RUBY_VERSION: 23-x64
       IMAGEMAGICK_VERSION: 6.9.10
-      PATCH_VERSION: 49
+      PATCH_VERSION: 61
     - RUBY_VERSION: 24-x64
       IMAGEMAGICK_VERSION: 6.8.9
       PATCH_VERSION: 10
     - RUBY_VERSION: 24-x64
       IMAGEMAGICK_VERSION: 6.9.10
-      PATCH_VERSION: 49
+      PATCH_VERSION: 61
     - RUBY_VERSION: 25-x64
       IMAGEMAGICK_VERSION: 6.8.9
       PATCH_VERSION: 10
     - RUBY_VERSION: 25-x64
       IMAGEMAGICK_VERSION: 6.9.10
-      PATCH_VERSION: 49
+      PATCH_VERSION: 61
     - RUBY_VERSION: 26-x64
       IMAGEMAGICK_VERSION: 6.8.9
       PATCH_VERSION: 10
     - RUBY_VERSION: 26-x64
       IMAGEMAGICK_VERSION: 6.9.10
-      PATCH_VERSION: 49
+      PATCH_VERSION: 61
 
 install:
   - appveyor-retry appveyor DownloadFile https://ftp.icm.edu.pl/pub/graphics/ImageMagick/binaries/ImageMagick-%IMAGEMAGICK_VERSION%-%PATCH_VERSION%-Q16-x64-dll.exe
