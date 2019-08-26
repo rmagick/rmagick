@@ -441,15 +441,13 @@ VALUE
 Info_authenticate(VALUE self)
 {
     Info *info;
-    const char *authenticate;
 
     Data_Get_Struct(self, Info, info);
 #if defined(IMAGEMAGICK_7)
-    authenticate = GetImageOption(info, "authenticate");
+    return C_str_to_R_str(GetImageOption(info, "authenticate"));
 #else
-    authenticate = info->authenticate;
+    return C_str_to_R_str(info->authenticate);
 #endif
-    return C_str_to_R_str(authenticate);
 }
 
 
@@ -2478,15 +2476,13 @@ VALUE
 Info_view(VALUE self)
 {
     Info *info;
-    const char *view;
 
     Data_Get_Struct(self, Info, info);
 #if defined(IMAGEMAGICK_7)
-    view = GetImageOption(info, "fpx:view");
+    return C_str_to_R_str(GetImageOption(info, "fpx:view"));
 #else
-    view = info->view;
+    return C_str_to_R_str(info->view);
 #endif
-    return C_str_to_R_str(view);
 }
 
 /**
