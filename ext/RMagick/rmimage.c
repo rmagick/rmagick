@@ -10787,12 +10787,15 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
     {
 #if defined(IMAGEMAGICK_7)
         okay = SetImageStorageClass(image, DirectClass, exception);
+        CHECK_EXCEPTION()
 #else
         okay = SetImageStorageClass(image, DirectClass);
+        (void) DestroyExceptionInfo(exception);
         rm_check_image_exception(image, RetainOnError);
 #endif
         if (!okay)
         {
+            (void) DestroyExceptionInfo(exception);
             rb_raise(Class_ImageMagickError, "SetImageStorageClass failed. Can't set pixel color.");
         }
     }
