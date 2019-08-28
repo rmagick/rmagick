@@ -4201,8 +4201,12 @@ Image_constitute(VALUE class ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
     if (rm_should_raise_exception(exception, RetainExceptionRetention))
     {
         xfree(pixels.v);
+#if defined(IMAGEMAGICK_7)
         (void) DestroyImage(new_image);
         rm_raise_exception(exception);
+#else
+        rm_check_image_exception(new_image, DestroyOnError);
+#endif
     }
 
 #if defined(IMAGEMAGICK_7)
@@ -4215,8 +4219,12 @@ Image_constitute(VALUE class ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
     if (rm_should_raise_exception(exception, RetainExceptionRetention))
     {
         xfree(pixels.v);
+#if defined(IMAGEMAGICK_7)
         (void) DestroyImage(new_image);
         rm_raise_exception(exception);
+#else
+        rm_check_image_exception(new_image, DestroyOnError);
+#endif
     }
 
 #if defined(IMAGEMAGICK_7)
