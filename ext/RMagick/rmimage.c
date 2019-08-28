@@ -2503,7 +2503,7 @@ Image_channel_entropy(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-#if IMAGEMAGICK_7
+#if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
     (void) GetImageEntropy(image, &entropy, exception);
     END_CHANNEL_MASK(image);
