@@ -43,6 +43,7 @@ typedef Image *(scaler_t)(const Image *, const size_t, const size_t, ExceptionIn
     typedef MagickBooleanType (auto_channel_t)(Image *, const ChannelType);
     typedef Image *(channel_method_t)(const Image *, const ChannelType, const double, const double, ExceptionInfo *);
     typedef MagickBooleanType (thresholder_t)(Image *, const char *);
+    #define IsEquivalentImage IsImageSimilar
 #endif
 /** Method that transforms an image */
 typedef Image *(xformer_t)(const Image *, const RectangleInfo *, ExceptionInfo *);
@@ -6837,11 +6838,7 @@ Image_find_similar_region(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-#if defined(IMAGEMAGICK_7)
     okay = IsEquivalentImage(image, target, &x, &y, exception);
-#else
-    okay = IsImageSimilar(image, target, &x, &y, exception);
-#endif
     CHECK_EXCEPTION();
     (void) DestroyExceptionInfo(exception);
 
