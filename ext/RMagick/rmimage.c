@@ -9041,8 +9041,6 @@ Image_marshal_load(VALUE self, VALUE ary)
     return self;
 }
 
-
-#if !defined(IMAGEMAGICK_7)
 /**
  * Return the image's clip mask, or nil if it doesn't have a clip mask.
  *
@@ -9063,7 +9061,11 @@ get_image_mask(Image *image)
     exception = AcquireExceptionInfo();
 
     // The returned clip mask is a clone, ours to keep.
+#if defined(IMAGEMAGICK_7)
+    mask = GetImageMask(image, WritePixelMask, exception);
+#else
     mask = GetImageClipMask(image, exception);
+#endif
     rm_check_exception(exception, mask, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
@@ -9072,14 +9074,55 @@ get_image_mask(Image *image)
 }
 
 /**
- * Sets the image's clip mask, or removes it when mask is nil.
+ * Associate a mask with the image.
  *
  * No Ruby usage (internal function)
  *
  * @param image the image
  * @param mask the mask
  * @return copy of the current clip-mask or nil
+ * @see get_image_mask
  */
+#if defined(IMAGEMAGICK_7)
+static VALUE
+set_image_mask(Image *image, VALUE mask)
+{
+    Image *mask_image, *resized_image;
+    Image *clip_mask;
+    ExceptionInfo *exception;
+
+    exception = AcquireExceptionInfo();
+
+    if (mask != Qnil)
+    {
+        mask = rm_cur_image(mask);
+        mask_image = rm_check_destroyed(mask);
+        clip_mask = rm_clone_image(mask_image);
+
+        // Resize if necessary
+        if (clip_mask->columns != image->columns || clip_mask->rows != image->rows)
+        {
+            resized_image = ResizeImage(clip_mask, image->columns, image->rows, image->filter, exception);
+            (void) DestroyImage(clip_mask);
+            rm_check_exception(exception, resized_image, DestroyOnError);
+            rm_ensure_result(resized_image);
+            clip_mask = resized_image;
+        }
+
+        (void) SetImageMask(image, WritePixelMask, clip_mask, exception);
+        (void) DestroyImage(clip_mask);
+    }
+    else
+    {
+        (void) SetImageMask(image, WritePixelMask, NULL, exception);
+    }
+    CHECK_EXCEPTION()
+    (void) DestroyExceptionInfo(exception);
+
+    // Always return a copy of the mask!
+    return get_image_mask(image);
+}
+#else
 static VALUE
 set_image_mask(Image *image, VALUE mask)
 {
@@ -9158,81 +9201,6 @@ set_image_mask(Image *image, VALUE mask)
     // Always return a copy of the mask!
     return get_image_mask(image);
 }
-#else
-/**
- * Return the mask, or nil if it doesn't have a mask.
- *
- * No Ruby usage (internal function)
- *
- * @param image the image
- * @return copy of the current mask or nil
- */
-static VALUE
-get_image_mask(Image *image, const PixelMask type)
-{
-    Image *mask;
-    ExceptionInfo *exception;
-
-    exception = AcquireExceptionInfo();
-
-    // The returned clip mask is a clone, ours to keep.
-    mask = GetImageMask(image, type, exception);
-    rm_check_exception(exception, mask, DestroyOnError);
-    (void) DestroyExceptionInfo(exception);
-
-    return mask ? rm_image_new(mask) : Qnil;
-}
-
-
-/**
- * Associate a mask with the image.
- *
- * No Ruby usage (internal function)
- *
- * @param image the image
- * @param mask the mask
- * @param type the mask type
- * @return copy of the current clip-mask or nil
- * @see get_image_mask
- */
-static VALUE
-set_image_mask(Image *image, VALUE mask, PixelMask type)
-{
-    Image *mask_image, *resized_image;
-    Image *clip_mask;
-    ExceptionInfo *exception;
-
-    exception = AcquireExceptionInfo();
-
-    if (mask != Qnil)
-    {
-        mask = rm_cur_image(mask);
-        mask_image = rm_check_destroyed(mask);
-        clip_mask = rm_clone_image(mask_image);
-
-        // Resize if necessary
-        if (clip_mask->columns != image->columns || clip_mask->rows != image->rows)
-        {
-            resized_image = ResizeImage(clip_mask, image->columns, image->rows, image->filter, exception);
-            (void) DestroyImage(clip_mask);
-            rm_check_exception(exception, resized_image, DestroyOnError);
-            rm_ensure_result(resized_image);
-            clip_mask = resized_image;
-        }
-
-        (void) SetImageMask(image, type, clip_mask, exception);
-        (void) DestroyImage(clip_mask);
-    }
-    else
-    {
-        (void) SetImageMask(image, type, NULL, exception);
-    }
-    CHECK_EXCEPTION()
-    (void) DestroyExceptionInfo(exception);
-
-    // Always return a copy of the mask!
-    return get_image_mask(image, type);
-}
 #endif
 
 
@@ -9265,11 +9233,7 @@ Image_mask(int argc, VALUE *argv, VALUE self)
     image = rm_check_destroyed(self);
     if (argc == 0)
     {
-#if defined(IMAGEMAGICK_7)
-        return get_image_mask(image, WritePixelMask);
-#else
         return get_image_mask(image);
-#endif
     }
     if (argc > 1)
     {
@@ -9278,11 +9242,7 @@ Image_mask(int argc, VALUE *argv, VALUE self)
 
     rb_check_frozen(self);
     mask = argv[0];
-#if defined(IMAGEMAGICK_7)
-    return set_image_mask(image, mask, WritePixelMask);
-#else
     return set_image_mask(image, mask);
-#endif
 }
 
 
