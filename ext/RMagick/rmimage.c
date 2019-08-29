@@ -10790,8 +10790,11 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
         CHECK_EXCEPTION()
 #else
         okay = SetImageStorageClass(image, DirectClass);
-        (void) DestroyExceptionInfo(exception);
-        rm_check_image_exception(image, RetainOnError);
+        if (rm_should_raise_exception(&image->exception, RetainExceptionRetention))
+        {
+            (void) DestroyExceptionInfo(exception);
+            rm_check_image_exception(image, RetainOnError);
+        }
 #endif
         if (!okay)
         {
