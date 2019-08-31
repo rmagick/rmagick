@@ -44,6 +44,7 @@ typedef Image *(scaler_t)(const Image *, const size_t, const size_t, ExceptionIn
     typedef Image *(channel_method_t)(const Image *, const ChannelType, const double, const double, ExceptionInfo *);
     typedef MagickBooleanType (thresholder_t)(Image *, const char *);
     #define IsEquivalentImage IsImageSimilar
+    #define OrderedDitherImage OrderedPosterizeImage
 #endif
 /** Method that transforms an image */
 typedef Image *(xformer_t)(const Image *, const RectangleInfo *, ExceptionInfo *);
@@ -10421,11 +10422,7 @@ Image_ordered_dither(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 
-#if (IMAGEMAGICK_7)
     (void) OrderedDitherImage(new_image, threshold_map, exception);
-#else
-    (void) OrderedPosterizeImage(new_image, threshold_map, exception);
-#endif
     rm_check_exception(exception, new_image, DestroyOnError);
 
     (void) DestroyExceptionInfo(exception);
