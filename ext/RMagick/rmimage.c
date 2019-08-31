@@ -10735,27 +10735,33 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
         return Pixel_from_PixelColor(&image->background_color);
     }
 
+#if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
+#endif
 
     if (image->storage_class == PseudoClass)
     {
 #if defined(IMAGEMAGICK_7)
         okay = SetImageStorageClass(image, DirectClass, exception);
         CHECK_EXCEPTION()
-#else
-        okay = SetImageStorageClass(image, DirectClass);
-        if (rm_should_raise_exception(&image->exception, RetainExceptionRetention))
-        {
-            (void) DestroyExceptionInfo(exception);
-            rm_check_image_exception(image, RetainOnError);
-        }
-#endif
         if (!okay)
         {
             (void) DestroyExceptionInfo(exception);
             rb_raise(Class_ImageMagickError, "SetImageStorageClass failed. Can't set pixel color.");
         }
+#else
+        okay = SetImageStorageClass(image, DirectClass);
+        rm_check_image_exception(image, RetainOnError);
+        if (!okay)
+        {
+            rb_raise(Class_ImageMagickError, "SetImageStorageClass failed. Can't set pixel color.");
+        }
+#endif
     }
+
+#if !defined(IMAGEMAGICK_7)
+    exception = AcquireExceptionInfo();
+#endif
 
     pixel = GetAuthenticPixels(image, x, y, 1, 1, exception);
     CHECK_EXCEPTION()
@@ -14035,19 +14041,24 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg
     size = (long)(cols * rows);
     rm_check_ary_len(new_pixels, size);
 
-    exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
+    exception = AcquireExceptionInfo();
     okay = SetImageStorageClass(image, DirectClass, exception);
     CHECK_EXCEPTION()
-#else
-    okay = SetImageStorageClass(image, DirectClass);
-    rm_check_image_exception(image, RetainOnError);
-#endif
     if (!okay)
     {
         (void) DestroyExceptionInfo(exception);
         rb_raise(Class_ImageMagickError, "SetImageStorageClass failed. Can't store pixels.");
     }
+#else
+    okay = SetImageStorageClass(image, DirectClass);
+    rm_check_image_exception(image, RetainOnError);
+    if (!okay)
+    {
+        rb_raise(Class_ImageMagickError, "SetImageStorageClass failed. Can't store pixels.");
+    }
+    exception = AcquireExceptionInfo();
+#endif
 
     // Get a pointer to the pixels. Replace the values with the PixelPackets
     // from the pixels argument.
