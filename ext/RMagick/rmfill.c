@@ -189,7 +189,7 @@ vertical_fill(
     ssize_t x, y;
     MagickRealType red_step, green_step, blue_step;
     ExceptionInfo *exception;
-#if !defined(IMAGEMAGICK_7)
+#if defined(IMAGEMAGICK_6)
     PixelPacket *master;
 #endif
 
@@ -297,7 +297,7 @@ horizontal_fill(
     ssize_t x, y;
     MagickRealType red_step, green_step, blue_step;
     ExceptionInfo *exception;
-#if !defined(IMAGEMAGICK_7)
+#if defined(IMAGEMAGICK_6)
     PixelPacket *master;
 #endif
 

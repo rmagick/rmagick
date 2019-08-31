@@ -133,6 +133,7 @@ typedef PixelPacket Pixel; /**< Make type name match class name */
     typedef InterpolatePixelMethod PixelInterpolateMethod;
     typedef ImageLayerMethod LayerMethod;
     #define TransparentAlpha 0
+    #define IMAGEMAGICK_6 1
 #endif
 
 //! Montage
@@ -1182,7 +1183,7 @@ extern void   rm_error_handler(const ExceptionType, const char *, const char *);
 extern void   rm_warning_handler(const ExceptionType, const char *, const char *);
 extern MagickBooleanType rm_should_raise_exception(ExceptionInfo *, const ExceptionRetention);
 extern void   rm_raise_exception(ExceptionInfo *);
-#if !defined(IMAGEMAGICK_7)
+#if defined(IMAGEMAGICK_6)
 extern void   rm_check_image_exception(Image *, ErrorRetention);
 #endif
 
