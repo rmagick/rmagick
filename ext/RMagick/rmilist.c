@@ -212,7 +212,7 @@ ImageList_coalesce(VALUE self)
  */
 VALUE ImageList_combine(int argc, VALUE *argv, VALUE self)
 {
-#if !defined(IMAGEMAGICK_7)
+#if defined(IMAGEMAGICK_6)
     ChannelType channel;
 #endif
     ColorspaceType colorspace, old_colorspace;
@@ -275,7 +275,7 @@ VALUE ImageList_combine(int argc, VALUE *argv, VALUE self)
 
     images = images_from_imagelist(self);
     exception = AcquireExceptionInfo();
-#if !defined(IMAGEMAGICK_7)
+#if defined(IMAGEMAGICK_6)
     old_colorspace = images->colorspace;
     SetImageColorspace(images, colorspace);
     new_image = CombineImages(images, channel, exception);
@@ -284,7 +284,7 @@ VALUE ImageList_combine(int argc, VALUE *argv, VALUE self)
 #endif
 
     rm_split(images);
-#if !defined(IMAGEMAGICK_7)
+#if defined(IMAGEMAGICK_6)
     images->colorspace = old_colorspace;
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
@@ -1069,7 +1069,7 @@ ImageList_remap(int argc, VALUE *argv, VALUE self)
     if (argc > 1)
     {
         VALUE_TO_ENUM(argv[1], quantize_info.dither_method, DitherMethod);
-#if !defined(IMAGEMAGICK_7)
+#if defined(IMAGEMAGICK_6)
         quantize_info.dither = MagickTrue;
 #endif
     }
@@ -1238,7 +1238,7 @@ ImageList_write(VALUE self, VALUE file)
 
     m = GetMagickInfo(info->magick, exception);
     rm_check_exception(exception, images, RetainOnError);
-#if !defined(IMAGEMAGICK_7)
+#if defined(IMAGEMAGICK_6)
     (void) DestroyExceptionInfo(exception);
 #endif
 

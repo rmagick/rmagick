@@ -10759,7 +10759,7 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
 #endif
     }
 
-#if !defined(IMAGEMAGICK_7)
+#if defined(IMAGEMAGICK_6)
     exception = AcquireExceptionInfo();
 #endif
 
@@ -11281,7 +11281,7 @@ Image_quantize(int argc, VALUE *argv, VALUE self)
             if (rb_obj_is_kind_of(argv[2], Class_DitherMethod))
             {
                 VALUE_TO_ENUM(argv[2], quantize_info.dither_method, DitherMethod);
-#if !defined(IMAGEMAGICK_7)
+#if defined(IMAGEMAGICK_6)
                 quantize_info.dither = quantize_info.dither_method != NoDitherMethod;
 #endif
             }
@@ -11906,7 +11906,7 @@ Image_remap(int argc, VALUE *argv, VALUE self)
     {
         case 2:
             VALUE_TO_ENUM(argv[1], quantize_info.dither_method, DitherMethod);
-#if !defined(IMAGEMAGICK_7)
+#if defined(IMAGEMAGICK_6)
             quantize_info.dither = MagickTrue;
 #endif
             break;
@@ -11994,7 +11994,7 @@ resample(int bang, int argc, VALUE *argv, VALUE self)
 
     // Set up defaults
     filter  = image->filter;
-#if !defined(IMAGEMAGICK_7)
+#if defined(IMAGEMAGICK_6)
     blur    = image->blur;
 #endif
     x_resolution = 72.0;
@@ -12154,7 +12154,7 @@ resize(int bang, int argc, VALUE *argv, VALUE self)
 
     // Set up defaults
     filter  = image->filter;
-#if !defined(IMAGEMAGICK_7)
+#if defined(IMAGEMAGICK_6)
     blur    = image->blur;
 #endif
     rows    = image->rows;
@@ -15237,7 +15237,7 @@ VALUE Image_image_type(VALUE self)
 {
     Image *image;
     ImageType type;
-#if !defined(IMAGEMAGICK_7)
+#if defined(IMAGEMAGICK_6)
     ExceptionInfo *exception;
 #endif
 
@@ -16461,7 +16461,7 @@ xform_image(int bang, VALUE self, VALUE x, VALUE y, VALUE width, VALUE height, x
     rm_check_exception(exception, new_image, DestroyOnError);
     (void) DestroyExceptionInfo(exception);
 
-#if !defined(IMAGEMAGICK_7)
+#if defined(IMAGEMAGICK_6)
     if (rm_should_raise_exception(&image->exception, RetainExceptionRetention))
     {
         (void) DestroyImage(new_image);
