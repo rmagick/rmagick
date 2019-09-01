@@ -12,6 +12,9 @@
 
 #include "rmagick.h"
 
+#if defined(IMAGEMAGICK_6)
+    #define QueryColorname QueryMagickColorname
+#endif
 
 /*
  *  Declare Pixel channel attribute writers
@@ -1198,11 +1201,7 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
     }
     else
     {
-#if defined(IMAGEMAGICK_7)
         (void) QueryColorname(image, &mpp, compliance, name, exception);
-#else
-        (void) QueryMagickColorname(image, &mpp, compliance, name, exception);
-#endif
     }
 
     (void) DestroyImage(image);
