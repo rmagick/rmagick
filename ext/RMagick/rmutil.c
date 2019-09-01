@@ -1120,8 +1120,9 @@ void rm_sync_image_options(Image *image, Info *info)
 #if defined(IMAGEMAGICK_7)
         exception = AcquireExceptionInfo();
         SetImageColorspace(image, info->colorspace, exception);
-        // We should not throw an exception in this method and that is
-        // why the exception is being ignored.
+        // We should not throw an exception in this method because we will
+        // leak memory in the place where this method is called. And that is
+        // why the exception is being ignored here.
         (void) DestroyExceptionInfo(exception);
 #else
         SetImageColorspace(image, info->colorspace);
