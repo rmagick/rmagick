@@ -118,13 +118,23 @@
 
 #define MagickLibSubversion MagickLibAddendum
 
-
 typedef ImageInfo Info; /**< Make type name match class name */
-typedef PixelPacket Pixel; /**< Make type name match class name */
 #if defined(IMAGEMAGICK_7)
+    typedef struct _QuantumPixelPacket
+    {
+    Quantum
+        red,
+        green,
+        blue,
+        alpha,
+        black;
+    } QuantumPixelPacket;
+
+    typedef QuantumPixelPacket Pixel;
     typedef PixelInfo MagickPixel;
     typedef PixelInfo PixelColor;
 #else
+    typedef PixelPacket Pixel;
     typedef MagickPixelPacket MagickPixel;
     typedef PixelPacket PixelColor;
     typedef AlphaChannelType AlphaChannelOption;
