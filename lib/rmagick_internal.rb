@@ -25,7 +25,7 @@ module Magick
   @formats = nil
   @trace_proc = nil
   @exit_block_set_up = nil
-  @lib_version = nil
+  IMAGEMAGICK_VERSION = Magick::Magick_version.split[1].split('-').first
 
   class << self
     def formats
@@ -50,11 +50,6 @@ module Magick
 
         @trace_proc = p
       end
-    end
-
-    def lib_version
-      @lib_version ||= Gem::Version.new(Magick::Magick_version.split[1].split('-').first)
-      @lib_version
     end
   end
 
@@ -245,7 +240,7 @@ module Magick
     # colorization rule
     def alpha(x, y, method)
       Kernel.raise ArgumentError, 'Unknown paint method' unless PAINT_METHOD_NAMES.key?(method.to_i)
-      name = Magick.lib_version > Gem::Version.new('7.0.0') ? 'alpha ' : 'matte '
+      name = Gem::Version.new(Magick::IMAGEMAGICK_VERSION) > Gem::Version.new('7.0.0') ? 'alpha ' : 'matte '
       primitive name + format('%g,%g, %s', x, y, PAINT_METHOD_NAMES[method.to_i])
     end
 
