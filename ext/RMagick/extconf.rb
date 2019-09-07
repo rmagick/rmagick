@@ -182,7 +182,7 @@ SRC
 
         im7_packages = packages.select { |package| package.start_with?('ImageMagick-7') }
 
-        unless im7_packages.empty?
+        if im7_packages.any?
           checking_for('forced use of ImageMagick 6') do
             if ENV['USE_IMAGEMAGICK_6']
               packages -= im7_packages
