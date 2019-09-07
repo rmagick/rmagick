@@ -356,7 +356,8 @@ END_MINGW
     end
 
     def magick_command
-      (find_executable 'magick') ? 'magick' : 'identify'
+      has_magick = find_executable 'magick'
+      has_magick ? 'magick' : 'identify'
     end
 
     def im_version_at_least?(version)
