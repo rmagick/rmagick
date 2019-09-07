@@ -1244,7 +1244,7 @@ Image_bias(VALUE self)
             bias = InterpretLocaleValue(artifact,&q);
             if (*q == '%')
             {
-                bias * =((double) QuantumRange + 1.0) / 100.0;
+                bias *= ((double) QuantumRange + 1.0) / 100.0;
             }
         }
     }
