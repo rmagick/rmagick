@@ -102,7 +102,7 @@ module RMagick
         $CPPFLAGS = %(-I"#{dir_paths[:include]}")
         $LDFLAGS = %(-L"#{dir_paths[:lib]}")
 
-        have_library(is_im7 ? 'CORE_RL_MagickCore_' : 'CORE_RL_magick_')
+        have_library(im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_' : 'CORE_RL_magick_')
 
       else # mswin
 
@@ -114,7 +114,7 @@ module RMagick
         $CPPFLAGS << %( -I"#{dir_paths[:include]}")
         $LDFLAGS << %( -libpath:"#{dir_paths[:lib]}")
 
-        $LOCAL_LIBS = is_im7 ? 'CORE_RL_MagickCore_.lib' : 'CORE_RL_magick_.lib'
+        $LOCAL_LIBS = im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_.lib' : 'CORE_RL_magick_.lib'
 
       end
 
@@ -278,7 +278,7 @@ SRC
       paths = ENV['PATH'].split(File::PATH_SEPARATOR)
       paths.each do |dir|
         lib = File.join(dir, 'lib')
-        lib_file = File.join(lib, is_im7 ? 'CORE_RL_MagickCore_.lib' : 'CORE_RL_magick_.lib')
+        lib_file = File.join(lib, im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_.lib' : 'CORE_RL_magick_.lib')
         next unless File.exist?(lib_file)
 
         dir_paths[:include] = File.join(dir, 'include')
@@ -335,14 +335,9 @@ END_MINGW
       $defs.push("-DRUBY_VERSION_STRING=\"ruby #{RUBY_VERSION}\"")
       $defs.push("-DRMAGICK_VERSION_STRING=\"RMagick #{RMAGICK_VERS}\"")
 
-      if Gem::Version.new($magick_version) >= Gem::Version.new('6.8.9')
-        $defs.push('-DIMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9=1')
-      end
-      if Gem::Version.new($magick_version) >= Gem::Version.new('6.9.0')
-        $defs.push('-DIMAGEMAGICK_GREATER_THAN_EQUAL_6_9_0=1')
-      end
-
-      $defs.push('-DIMAGEMAGICK_7=1') if is_im7
+      $defs.push('-DIMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9=1') if im_version_at_least?("6.8.9")
+      $defs.push('-DIMAGEMAGICK_GREATER_THAN_EQUAL_6_9_0=1') if im_version_at_least?("6.9.0")
+      $defs.push('-DIMAGEMAGICK_7=1') if im_version_at_least?('7.0.0')
 
       create_header
     end
@@ -360,12 +355,12 @@ END_MINGW
       print_summary
     end
 
-    def is_im7
-      Gem::Version.new($magick_version) >= Gem::Version.new('7.0.0')
-    end
-
     def magick_command
       find_executable 'magick' ? 'magick' : 'identify'
+    end
+
+    def im_version_at_least?(version)
+      Gem::Version.new($magick_version) >= Gem::Version.new(version)
     end
 
     def print_summary
