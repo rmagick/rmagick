@@ -962,6 +962,7 @@ rm_get_property(const Image *img, const char *property)
     result = GetImageProperty(img, property, exception);
     CHECK_EXCEPTION()
     (void) DestroyExceptionInfo(exception);
+    return result;
 #else
     return GetImageProperty(img, property);
 #endif
@@ -983,11 +984,13 @@ rm_set_property(Image *image, const char *property, const char *value)
 {
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
+    MagickBooleanType okay;
 
     exception = AcquireExceptionInfo();
-    (void) SetImageProperty(image, property, value, exception);
+    okay = SetImageProperty(image, property, value, exception);
     CHECK_EXCEPTION()
     (void) DestroyExceptionInfo(exception);
+    return okay;
 #else
     return SetImageProperty(image, property, value);
 #endif
