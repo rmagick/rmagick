@@ -180,7 +180,7 @@ SRC
 
       if packages.length > 1
 
-        im7_packages = packages.select { |package| package.start_with?('ImageMagick-7') }
+        im7_packages = packages.grep(/\AImageMagick-7/)
 
         if im7_packages.any?
           checking_for('forced use of ImageMagick 6') do
@@ -356,8 +356,7 @@ END_MINGW
     end
 
     def magick_command
-      has_magick = find_executable 'magick'
-      has_magick ? 'magick' : 'identify'
+      @magick_command ||= find_executable('magick') ? 'magick' : 'identify'
     end
 
     def im_version_at_least?(version)
