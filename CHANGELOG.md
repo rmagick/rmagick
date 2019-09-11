@@ -3,6 +3,15 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 4.1.0.rc1
+
+The ImageMagick 7 release is here! This adds beta support for ImageMagick 7.
+Much thanks to **@Watson1978** for getting the ball rolling on this and to
+**@dlemstra** for the extraordinary amount of work and patience that went into
+seeing it through. RMagick should currently behave the same way under IM7 as it
+did under IM6, so please open an issue if you find anything that seems out of
+the ordinary.
+
 ## RMagick 4.0.0
 
 This release removes a *lot* of deprecated functionality, so first upgrade to
