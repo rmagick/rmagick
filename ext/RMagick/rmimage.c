@@ -3932,7 +3932,7 @@ composite_tiled(int bang, int argc, VALUE *argv, VALUE self)
         {
 #if defined(IMAGEMAGICK_7)
             BEGIN_CHANNEL_MASK(image, channels);
-            status = CompositeImage(image, comp_image, MagickTrue, operator, x, y, exception);
+            status = CompositeImage(image, comp_image, operator, MagickTrue, x, y, exception);
             END_CHANNEL_MASK(image);
             rm_check_exception(exception, image, bang ? RetainOnError: DestroyOnError);
 #else
