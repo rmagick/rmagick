@@ -24,6 +24,10 @@
     if (result != (Image *)NULL) \
       SetPixelChannelMask(result, channel_mask);
 
+#ifndef magick_module
+    #define magick_module module
+#endif
+
 /** Method that effects an image */
 typedef Image *(effector_t)(const Image *, const double, const double, ExceptionInfo *);
 /** Method that flips an image */
@@ -16113,7 +16117,7 @@ void add_format_prefix(Info *info, VALUE file)
         CHECK_EXCEPTION();
         DestroyExceptionInfo(exception);
 
-        if (magick_info && magick_info->module)
+        if (magick_info && magick_info->magick_module)
         {
             // We have to compare the module names because some formats have
             // more than one name. JPG and JPEG, for example.
@@ -16122,7 +16126,7 @@ void add_format_prefix(Info *info, VALUE file)
             CHECK_EXCEPTION();
             DestroyExceptionInfo(exception);
 
-            if (magick_info2->module && strcmp(magick_info->module, magick_info2->module) != 0)
+            if (magick_info2->magick_module && strcmp(magick_info->magick_module, magick_info2->magick_module) != 0)
             {
                 rb_raise(rb_eRuntimeError
                          , "filename prefix `%s' conflicts with output format `%s'"
