@@ -10927,6 +10927,7 @@ Image_posterize(int argc, VALUE *argv, VALUE self)
     MagickBooleanType dither = MagickFalse;
     unsigned long levels = 4;
 #if defined(IMAGEMAGICK_7)
+    DitherMethod dither_method;
     ExceptionInfo *exception;
 #endif
 
@@ -10949,7 +10950,8 @@ Image_posterize(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    (void) PosterizeImage(new_image, levels, dither, exception);
+    dither_method = dither ? RiemersmaDitherMethod : NoDitherMethod;
+    (void) PosterizeImage(new_image, levels, dither_method, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
     (void) DestroyExceptionInfo(exception);
 #else
