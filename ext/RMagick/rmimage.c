@@ -3936,7 +3936,7 @@ composite_tiled(int bang, int argc, VALUE *argv, VALUE self)
         {
 #if defined(IMAGEMAGICK_7)
             BEGIN_CHANNEL_MASK(image, channels);
-            status = CompositeImage(image, comp_image, MagickTrue, operator, x, y, exception);
+            status = CompositeImage(image, comp_image, operator, MagickTrue, x, y, exception);
             END_CHANNEL_MASK(image);
             rm_check_exception(exception, image, bang ? RetainOnError: DestroyOnError);
 #else
@@ -10931,6 +10931,7 @@ Image_posterize(int argc, VALUE *argv, VALUE self)
     MagickBooleanType dither = MagickFalse;
     unsigned long levels = 4;
 #if defined(IMAGEMAGICK_7)
+    DitherMethod dither_method;
     ExceptionInfo *exception;
 #endif
 
@@ -10953,7 +10954,8 @@ Image_posterize(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    (void) PosterizeImage(new_image, levels, dither, exception);
+    dither_method = dither ? RiemersmaDitherMethod : NoDitherMethod;
+    (void) PosterizeImage(new_image, levels, dither_method, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
     (void) DestroyExceptionInfo(exception);
 #else
