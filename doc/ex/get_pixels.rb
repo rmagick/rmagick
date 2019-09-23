@@ -1,4 +1,3 @@
-#!/usr/bin/env ruby -w
 require 'rmagick'
 
 # Demonstrate partial transparency and the get_pixels and

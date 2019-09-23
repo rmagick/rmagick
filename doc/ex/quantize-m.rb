@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby -w
-
 # Demonstrate the ImageList#quantize method
 
 require 'rmagick'

@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby -w
-
 require 'rmagick'
 
 # Demonstrate the use of RMagick's Draw class

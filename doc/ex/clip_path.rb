@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby -w
-
 require 'rmagick'
 
 points = [145, 65, 174, 151, 264, 151, 192, 205,

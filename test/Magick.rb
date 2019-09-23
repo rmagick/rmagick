@@ -1,5 +1,3 @@
-# !/usr/bin/env ruby -w
-
 require 'rmagick'
 require 'test/unit'
 require 'test/unit/ui/console/testrunner'

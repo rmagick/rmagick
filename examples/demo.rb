@@ -1,4 +1,3 @@
-#!/usr/bin/env ruby -w
 #
 # Simple demo program for RMagick
 #

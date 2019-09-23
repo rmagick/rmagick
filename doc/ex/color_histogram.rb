@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby -w
-
 require 'rmagick'
 
 NUM_COLORS = 256

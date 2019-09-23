@@ -1,4 +1,3 @@
-#!/usr/bin/env ruby -w
 require 'rmagick'
 
 # Add a method for drawing braces.

@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby -w
-
 require 'rmagick'
 
 hat = Magick::Image.read('images/Flower_Hat.jpg').first

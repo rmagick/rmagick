@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby -w
-
 require 'rvg/rvg'
 
 target = Magick::RVG.new.viewbox(0, 0, 200, 200) do |targ|

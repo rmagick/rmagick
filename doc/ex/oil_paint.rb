@@ -1,4 +1,3 @@
-#!/usr/bin/env ruby -w
 require 'rmagick'
 
 # Demonstrate the Image#oil_paint method

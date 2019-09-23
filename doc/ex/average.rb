@@ -1,4 +1,3 @@
-#!/usr/bin/env ruby -w
 # Demonstrate ImageList#average method
 require 'rmagick'
 

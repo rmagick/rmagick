@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby -w
-
 #=======================================================#
 # Thanks to Robert Wagner for the idea of allowing a    #
 # GravityType instead of the x- and y-offset arguments! #

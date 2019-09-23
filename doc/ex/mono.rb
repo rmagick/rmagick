@@ -1,4 +1,3 @@
-#!/usr/bin/env ruby -w
 require 'rmagick'
 
 # Demonstrate the ImageListImage#quantize method by converting

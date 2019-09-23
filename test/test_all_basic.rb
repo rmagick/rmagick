@@ -1,4 +1,3 @@
-#!/usr/bin/env ruby -w
 puts RUBY_VERSION
 puts RUBY_VERSION.class
 root_dir = File.expand_path('..', __dir__)

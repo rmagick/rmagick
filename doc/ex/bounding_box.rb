@@ -1,4 +1,3 @@
-#!/usr/bin/env ruby -w
 require 'rmagick'
 
 img = Magick::Image.new(200, 200) { self.background_color = '#ffffcc' }
