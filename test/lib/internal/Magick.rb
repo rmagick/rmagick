@@ -37,4 +37,22 @@ class LibMagickUT < Test::Unit::TestCase
   ensure
     Magick.trace_proc = nil
   end
+
+  def test_trace_proc_segfault
+    def create_img
+      local_img = Magick::Image.new(20, 20)
+    end
+
+    create_img
+    GC.stress = true
+
+    proc1 = proc do |which, id, addr, method|
+      assert(which == :c)
+    end
+
+    Magick.trace_proc = proc1
+    Magick::Image.new(777, 777)
+  ensure
+    GC.stress = false
+  end
 end
