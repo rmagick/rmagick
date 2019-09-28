@@ -13994,6 +13994,28 @@ Image_class_type_eq(VALUE self, VALUE new_class_type)
     return new_class_type;
 }
 
+static VALUE
+get_pixel_body(VALUE pixel_obj)
+{
+    Pixel *pixel;
+
+    Data_Get_Struct(pixel_obj, Pixel, pixel);
+    return (VALUE)pixel;
+}
+
+static VALUE
+get_pixel_handle_exception(ExceptionInfo *exception, VALUE exc)
+{
+    DestroyExceptionInfo(exception);
+    rb_exc_raise(exc);
+    return Qnil; /* not reachable */
+}
+
+static Pixel *
+get_pixel(VALUE pixel_obj, ExceptionInfo *exception)
+{
+    return (Pixel *)rb_rescue(get_pixel_body, pixel_obj, get_pixel_handle_exception, (VALUE)exception);
+}
 
 /**
  * Replace the pixels in the specified rectangle.
@@ -14077,7 +14099,7 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg
             for (n = 0; n < size; n++)
             {
                 new_pixel = rb_ary_entry(new_pixels, n);
-                Data_Get_Struct(new_pixel, Pixel, pixel);
+                pixel = get_pixel(new_pixel, exception);
 #if defined(IMAGEMAGICK_7)
                 SetPixelRed(image,   pixel->red,   pixels);
                 SetPixelGreen(image, pixel->green, pixels);
