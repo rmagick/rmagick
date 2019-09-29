@@ -3,7 +3,6 @@ RSpec.describe Magick::Image, '#channel_entropy' do
 
   it 'returns a channel entropy', supported_after('6.9.0') do
     res = img.channel_entropy
-    puts "res = #{res.inspect}"
     expect(res).to eq([0.5285857222715863])
   end
 end
