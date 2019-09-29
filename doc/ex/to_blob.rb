@@ -1,4 +1,3 @@
-#!/usr/bin/env ruby -w
 require 'rmagick'
 
 before = Magick::Image.read('images/Flower_Hat.jpg').first

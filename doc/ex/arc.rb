@@ -1,4 +1,3 @@
-#!/usr/bin/env ruby -w
 require 'rmagick'
 
 i = Magick::Image.new(300, 220, Magick::HatchFill.new('white', 'lightcyan2'))

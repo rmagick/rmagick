@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby -w
-
 require 'rmagick'
 
 # This example demonstrates the mask attribute. The mask image must

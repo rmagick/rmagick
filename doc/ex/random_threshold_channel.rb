@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby -w
-
 # Demonstrate the random_channel_threshold method
 
 require 'rmagick'

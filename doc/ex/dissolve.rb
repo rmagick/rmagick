@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby -w
-
 require 'rmagick'
 
 bgnd = Magick::Image.read('images/Violin.jpg').first

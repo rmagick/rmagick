@@ -1,5 +1,3 @@
-# !/usr/bin/env ruby -w
-
 require 'fileutils'
 require 'rmagick'
 require 'test/unit'

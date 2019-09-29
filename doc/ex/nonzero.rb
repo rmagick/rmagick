@@ -1,4 +1,3 @@
-#!/usr/bin/env ruby -w
 require 'rvg/rvg'
 
 Magick::RVG.dpi = 90
