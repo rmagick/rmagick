@@ -1,5 +1,3 @@
-puts RUBY_VERSION
-puts RUBY_VERSION.class
 root_dir = File.expand_path('..', __dir__)
 IMAGES_DIR = File.join(root_dir, 'doc/ex/images')
 FILES = Dir[IMAGES_DIR + '/Button_*.gif'].sort

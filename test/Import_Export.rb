@@ -17,13 +17,11 @@ class ImportExportUT < Test::Unit::TestCase
 
   def import(pixels, type, expected = 0.0)
     diff = import_pixels(pixels, type)
-    # puts "Type=#{type} diff=#{diff}"
     assert_in_delta(expected, diff, 0.1)
   end
 
   def fimport(pixels, type)
     diff = import_pixels(pixels, type)
-    # puts "Type=#{type} diff=#{diff}"
     assert_in_delta(0.0, diff, 50.0)
   end
 

@@ -9,9 +9,7 @@ class PreviewUT < Test::Unit::TestCase
       prev = hat.preview(Magick::RotatePreview)
       assert_instance_of(Magick::Image, prev)
     end
-    puts "\n"
     Magick::PreviewType.values do |type|
-      puts "testing #{type}..."
       assert_nothing_raised { hat.preview(type) }
     end
     assert_raise(TypeError) { hat.preview(2) }
