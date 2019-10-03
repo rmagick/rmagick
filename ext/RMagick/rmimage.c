@@ -14077,6 +14077,11 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg
             for (n = 0; n < size; n++)
             {
                 new_pixel = rb_ary_entry(new_pixels, n);
+                if (CLASS_OF(new_pixel) != Class_Pixel)
+                {
+                    (void) DestroyExceptionInfo(exception);
+                    rb_raise(rb_eTypeError, "Item in array should be a Pixel.");
+                }
                 Data_Get_Struct(new_pixel, Pixel, pixel);
 #if defined(IMAGEMAGICK_7)
                 SetPixelRed(image,   pixel->red,   pixels);
