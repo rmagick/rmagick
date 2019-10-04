@@ -251,6 +251,7 @@ class MagickUT < Test::Unit::TestCase
 
   def test_set_log_event_mask
     assert_nothing_raised { Magick.set_log_event_mask('Module,Coder') }
+    assert_nothing_raised { Magick.set_log_event_mask('None') }
   end
 
   def test_set_log_format
