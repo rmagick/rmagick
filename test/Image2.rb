@@ -12,8 +12,8 @@ class Image2_UT < Test::Unit::TestCase
   def test_composite
     img1 = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
     img2 = Magick::Image.read(IMAGES_DIR + '/Button_1.gif').first
-    img1.define('compose:args', '1x1');
-    img2.define('compose:args', '1x1');
+    img1.define('compose:args', '1x1')
+    img2.define('compose:args', '1x1')
     Magick::CompositeOperator.values do |op|
       Magick::GravityType.values do |gravity|
         assert_nothing_raised do
@@ -40,8 +40,8 @@ class Image2_UT < Test::Unit::TestCase
   def test_composite!
     img1 = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
     img2 = Magick::Image.read(IMAGES_DIR + '/Button_1.gif').first
-    img1.define('compose:args', '1x1');
-    img2.define('compose:args', '1x1');
+    img1.define('compose:args', '1x1')
+    img2.define('compose:args', '1x1')
     Magick::CompositeOperator.values do |op|
       Magick::GravityType.values do |gravity|
         assert_nothing_raised do
@@ -58,8 +58,8 @@ class Image2_UT < Test::Unit::TestCase
     affine = Magick::AffineMatrix.new(1, 0, 1, 0, 0, 0)
     img1 = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
     img2 = Magick::Image.read(IMAGES_DIR + '/Button_1.gif').first
-    img1.define('compose:args', '1x1');
-    img2.define('compose:args', '1x1');
+    img1.define('compose:args', '1x1')
+    img2.define('compose:args', '1x1')
     assert_nothing_raised do
       res = img1.composite_affine(img2, affine)
       assert_instance_of(Magick::Image, res)
@@ -70,8 +70,8 @@ class Image2_UT < Test::Unit::TestCase
   def test_composite_channel
     img1 = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
     img2 = Magick::Image.read(IMAGES_DIR + '/Button_1.gif').first
-    img1.define('compose:args', '1x1');
-    img2.define('compose:args', '1x1');
+    img1.define('compose:args', '1x1')
+    img2.define('compose:args', '1x1')
     Magick::CompositeOperator.values do |op|
       Magick::GravityType.values do |gravity|
         assert_nothing_raised do
