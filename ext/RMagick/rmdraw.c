@@ -958,6 +958,7 @@ VALUE Draw_annotate(
     long x, y;
     AffineMatrix keep;
     char geometry_str[100];
+    char *embed_text;
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
 #endif
@@ -978,9 +979,10 @@ VALUE Draw_annotate(
     }
 
     // Translate & store in Draw structure
+    embed_text = StringValuePtr(text);
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    draw->info->text = InterpretImageProperties(NULL, image, StringValuePtr(text), exception);
+    draw->info->text = InterpretImageProperties(NULL, image, embed_text, exception);
     if (rm_should_raise_exception(exception, RetainExceptionRetention))
     {
         if (draw->info->text)
@@ -990,7 +992,7 @@ VALUE Draw_annotate(
         rm_raise_exception(exception);
     }
 #else
-    draw->info->text = InterpretImageProperties(NULL, image, StringValuePtr(text));
+    draw->info->text = InterpretImageProperties(NULL, image, embed_text);
 #endif
     if (!draw->info->text)
     {
