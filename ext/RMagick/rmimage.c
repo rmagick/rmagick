@@ -2290,14 +2290,13 @@ Image_channel(VALUE self, VALUE channel_arg)
 
     VALUE_TO_ENUM(channel_arg, channel, ChannelType);
 
-    new_image = rm_clone_image(image);
-
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    (void) SeparateImage(new_image, channel, exception);
+    new_image = SeparateImage(image, channel, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
     (void) DestroyExceptionInfo(exception);
 #else
+    new_image = rm_clone_image(image);
     (void) SeparateImageChannel(new_image, channel);
 
     rm_check_image_exception(new_image, DestroyOnError);
