@@ -22,6 +22,9 @@ require 'English'
 require 'RMagick2.so'
 
 module Magick
+  @formats = nil
+  @trace_proc = nil
+  @exit_block_set_up = nil
   IMAGEMAGICK_VERSION = Magick::Magick_version.split[1].split('-').first
 
   class << self
