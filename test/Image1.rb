@@ -7,18 +7,6 @@ class Image1_UT < Test::Unit::TestCase
     @img = Magick::Image.new(20, 20)
   end
 
-  def test_constitute
-    pixels = @img.dispatch(0, 0, @img.columns, @img.rows, 'RGBA')
-    res = Magick::Image.constitute(@img.columns, @img.rows, 'RGBA', pixels)
-    assert_equal(res.columns, @img.columns)
-    assert_equal(res.rows, @img.rows)
-
-    assert_nothing_raised { Magick::Image.constitute(@img.columns, @img.rows, 'RGBA', [1.0] * (4 * @img.columns * @img.rows)) }
-    assert_raise(TypeError) { Magick::Image.constitute(@img.columns, @img.rows, 'RGBA', ['x'] * (4 * @img.columns * @img.rows)) }
-    assert_raise(ArgumentError) { Magick::Image.constitute(0, @img.rows, 'RGBA', pixels) }
-    assert_raise(ArgumentError) { Magick::Image.constitute(@img.columns, 0, 'RGBA', pixels) }
-  end
-
   def test_read_inline
     img = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
     blob = img.to_blob
