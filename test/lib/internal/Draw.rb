@@ -261,8 +261,9 @@ class LibDrawUT < Test::Unit::TestCase
 
   def test_font
     draw = Magick::Draw.new
-    draw.font('Arial')
-    assert_equal("font 'Arial'", draw.inspect)
+    font_name = Magick.fonts.first.name
+    draw.font(font_name)
+    assert_equal("font '#{font_name}'", draw.inspect)
     draw.text(50, 50, 'Hello world')
     assert_nothing_raised { draw.draw(@img) }
   end
