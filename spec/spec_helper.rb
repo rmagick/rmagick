@@ -1,3 +1,4 @@
+require 'pry'
 require 'rmagick'
 
 root_dir = File.expand_path('..', __dir__)
