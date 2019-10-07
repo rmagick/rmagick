@@ -128,7 +128,7 @@ class ImageList2UT < Test::Unit::TestCase
         self.compose = Magick::OverCompositeOp
         self.filename = 'test.png'
         self.fill = 'green'
-        self.font = 'Arial'
+        self.font = Magick.fonts.first.name
         self.frame = '20x20+4+4'
         self.frame = Magick::Geometry.new(20, 20, 4, 4)
         self.geometry = '63x60+5+5'
