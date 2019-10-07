@@ -6,6 +6,7 @@ IMAGE_WITH_PROFILE = IMAGES_DIR + '/image_with_profile.jpg'
 
 require 'simplecov'
 require 'test/unit'
+require 'pry'
 $LOAD_PATH.unshift(File.join(root_dir, 'lib'))
 $LOAD_PATH.unshift(File.join(root_dir, 'test'))
 
