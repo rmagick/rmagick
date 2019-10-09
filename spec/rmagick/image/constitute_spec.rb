@@ -37,13 +37,31 @@ RSpec.describe Magick::Image, '#constitute' do
   end
 
   it 'raises an error when 0 is passed for columns' do
+    expected_message = 'width and height must be greater than zero'
+
     expect { Magick::Image.constitute(0, img.rows, 'RGBA', pixels) }
-      .to raise_error(ArgumentError, 'width and height must be non-zero')
+      .to raise_error(ArgumentError, expected_message)
+  end
+
+  it 'raises an error when a negative number is passed for columns' do
+    expected_message = 'width and height must be greater than zero'
+
+    expect { Magick::Image.constitute(-3, img.rows, 'RGBA', pixels) }
+      .to raise_error(ArgumentError, expected_message)
   end
 
   it 'raises an error when 0 is passed for rows' do
+    expected_message = 'width and height must be greater than zero'
+
     expect { Magick::Image.constitute(img.columns, 0, 'RGBA', pixels) }
-      .to raise_error(ArgumentError, 'width and height must be non-zero')
+      .to raise_error(ArgumentError, expected_message)
+  end
+
+  it 'raises an error when a negative number is passed for rows' do
+    expected_message = 'width and height must be greater than zero'
+
+    expect { Magick::Image.constitute(img.columns, -3, 'RGBA', pixels) }
+      .to raise_error(ArgumentError, expected_message)
   end
 
   it 'raises an error given the wrong number of array elements' do

@@ -4103,10 +4103,8 @@ Image_constitute(VALUE class ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
 {
     Image *new_image;
     VALUE pixel, pixel0;
-    unsigned long width, height;
-    long x, npixels;
+    long width, height, x, npixels, map_l;
     char *map;
-    long map_l;
     volatile union
     {
         double *f;
@@ -4121,17 +4119,17 @@ Image_constitute(VALUE class ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
     // and raises TypeError if it can't.
     pixels_arg = rb_Array(pixels_arg);
 
-    width = NUM2ULONG(width_arg);
-    height = NUM2ULONG(height_arg);
+    width = NUM2LONG(width_arg);
+    height = NUM2LONG(height_arg);
 
-    if (width == 0 || height == 0)
+    if (width <= 0 || height <= 0)
     {
-        rb_raise(rb_eArgError, "width and height must be non-zero");
+        rb_raise(rb_eArgError, "width and height must be greater than zero");
     }
 
     map = rm_str2cstr(map_arg, &map_l);
 
-    npixels = (long)(width * height * map_l);
+    npixels = width * height * map_l;
     if (RARRAY_LEN(pixels_arg) != npixels)
     {
         rb_raise(rb_eArgError, "wrong number of array elements (%ld for %ld)"
