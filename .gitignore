@@ -19,5 +19,7 @@ tmp
 *.so
 *.o
 *.a
-mkmf.log
+*.log
+Makefile
+extconf.h
 build-ImageMagick/
