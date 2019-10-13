@@ -13819,7 +13819,7 @@ Image_spread(int argc, VALUE *argv, VALUE self)
 }
 
 
-DEF_ATTR_ACCESSOR(Image, start_loop, bool)
+DEF_ATTR_ACCESSOR(Image, start_loop, boolean)
 
 
 /**

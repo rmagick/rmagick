@@ -241,7 +241,7 @@ static char *pixel_packet_to_hexname(PixelPacket *pp, char *name)
 #endif
 
 
-DEF_ATTR_ACCESSOR(Info, antialias, bool)
+DEF_ATTR_ACCESSOR(Info, antialias, boolean)
 
 /** Maximum length of a format (@see Info_aref) */
 #define MAX_FORMAT_LEN 60
@@ -1132,7 +1132,7 @@ Info_dispose_eq(VALUE self, VALUE disp)
     return disp;
 }
 
-DEF_ATTR_ACCESSOR(Info, dither, bool)
+DEF_ATTR_ACCESSOR(Info, dither, boolean)
 
 
 /**
@@ -1757,7 +1757,7 @@ Info_monitor_eq(VALUE self, VALUE monitor)
 
 
 
-DEF_ATTR_ACCESSOR(Info, monochrome, bool)
+DEF_ATTR_ACCESSOR(Info, monochrome, boolean)
 
 DEF_ATTR_ACCESSOR(Info, number_scenes, ulong)
 
