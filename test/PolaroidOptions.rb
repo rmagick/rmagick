@@ -1,8 +1,7 @@
 require 'rmagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner'
+require 'minitest/autorun'
 
-class PolaroidOptionsUT < Test::Unit::TestCase
+class PolaroidOptionsUT < Minitest::Test
   def setup
     @options = Magick::Image::PolaroidOptions.new
   end

@@ -1,8 +1,7 @@
 require 'rmagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner'
+require 'minitest/autorun'
 
-class LibGeometryUT < Test::Unit::TestCase
+class LibGeometryUT < Minitest::Test
   def test_constants
     assert_kind_of(Magick::GeometryValue, Magick::PercentGeometry)
     assert_equal('PercentGeometry', Magick::PercentGeometry.to_s)

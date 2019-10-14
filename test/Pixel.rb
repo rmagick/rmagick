@@ -1,8 +1,7 @@
 require 'rmagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner'
+require 'minitest/autorun'
 
-class PixelUT < Test::Unit::TestCase
+class PixelUT < Minitest::Test
   def setup
     @pixel = Magick::Pixel.from_color('brown')
   end

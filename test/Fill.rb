@@ -1,8 +1,7 @@
 require 'rmagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner'
+require 'minitest/autorun'
 
-class GradientFillUT < Test::Unit::TestCase
+class GradientFillUT < Minitest::Test
   def test_new
     assert_instance_of(Magick::GradientFill, Magick::GradientFill.new(0, 0, 0, 100, '#900', '#000'))
     assert_instance_of(Magick::GradientFill, Magick::GradientFill.new(0, 0, 0, 100, 'white', 'red'))
@@ -74,7 +73,7 @@ class GradientFillUT < Test::Unit::TestCase
   end
 end
 
-class TextureFillUT < Test::Unit::TestCase
+class TextureFillUT < Minitest::Test
   def test_new
     granite = Magick::Image.read('granite:').first
     assert_instance_of(Magick::TextureFill, Magick::TextureFill.new(granite))

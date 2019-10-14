@@ -1,8 +1,7 @@
 require 'rmagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner'
+require 'minitest/autorun'
 
-class EnumUT < Test::Unit::TestCase
+class EnumUT < Minitest::Test
   def test_new
     assert_nothing_raised { Magick::Enum.new(:foo, 42) }
     assert_nothing_raised { Magick::Enum.new('foo', 42) }
@@ -199,9 +198,10 @@ class EnumUT < Test::Unit::TestCase
     img = Magick::Image.new(20, 20)
     pixels = img.export_pixels(0, 0, 20, 20, 'RGB').pack('D*')
 
-    assert_raise_message(/UndefinedPixel/) do
+    error = assert_raise(ArgumentError) do
       img.import_pixels(0, 0, 20, 20, 'RGB', pixels, Magick::UndefinedPixel)
     end
+    assert_match(/UndefinedPixel/, error.message)
   end
 
   def test_stretch_type_name

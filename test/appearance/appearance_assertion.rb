@@ -1,8 +1,6 @@
-require 'test/unit'
+require 'minitest/autorun'
 
 module AppearanceAssertion
-  include Test::Unit::Assertions
-
   def assert_same_image(expected_image_path, image_object, delta: 0.01)
     path = File.expand_path(File.join(__dir__, expected_image_path))
 

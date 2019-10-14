@@ -1,8 +1,7 @@
 require 'rmagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner'
+require 'minitest/autorun'
 
-class LibDrawUT < Test::Unit::TestCase
+class LibDrawUT < Minitest::Test
   def setup
     @draw = Magick::Draw.new
     @img = Magick::Image.new(200, 200)

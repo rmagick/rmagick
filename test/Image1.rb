@@ -1,8 +1,7 @@
 require 'rmagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner'
+require 'minitest/autorun'
 
-class Image1_UT < Test::Unit::TestCase
+class Image1_UT < Minitest::Test
   def setup
     @img = Magick::Image.new(20, 20)
   end

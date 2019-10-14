@@ -1,8 +1,7 @@
 require 'rmagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner'
+require 'minitest/autorun'
 
-class DrawUT < Test::Unit::TestCase
+class DrawUT < Minitest::Test
   def setup
     @draw = Magick::Draw.new
   end

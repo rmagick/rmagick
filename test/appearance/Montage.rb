@@ -1,9 +1,8 @@
 require 'rmagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner'
+require 'minitest/autorun'
 require_relative 'appearance_assertion'
 
-class AppearanceMontageUT < Test::Unit::TestCase
+class AppearanceMontageUT < Minitest::Test
   include AppearanceAssertion
 
   def test_color

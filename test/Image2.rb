@@ -1,10 +1,9 @@
 require 'rmagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner'
+require 'minitest/autorun'
 
 # TODO: improve exif tests - need a benchmark image with EXIF data
 
-class Image2_UT < Test::Unit::TestCase
+class Image2_UT < Minitest::Test
   def setup
     @img = Magick::Image.new(20, 20)
   end

@@ -1,6 +1,5 @@
 require 'rmagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner'
+require 'minitest/autorun'
 
 module Magick
   def self._tmpnam_
@@ -26,7 +25,7 @@ class Magick::AnchorType
   end
 end
 
-class MagickUT < Test::Unit::TestCase
+class MagickUT < Minitest::Test
   def test_colors
     res = nil
     assert_nothing_raised { res = Magick.colors }
