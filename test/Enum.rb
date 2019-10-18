@@ -56,14 +56,14 @@ class EnumUT < Minitest::Test
   end
 
   def test_type_values
-    assert_instance_of(Array, Magick::AlignType.values)
+    expect(Magick::AlignType.values).to be_instance_of(Array)
 
     expect(Magick::AlignType.values[0].to_s).to eq('UndefinedAlign')
     expect(Magick::AlignType.values[0].to_i).to eq(0)
 
     Magick::AlignType.values do |enum|
       assert_kind_of(Magick::Enum, enum)
-      assert_instance_of(Magick::AlignType, enum)
+      expect(enum).to be_instance_of(Magick::AlignType)
     end
   end
 

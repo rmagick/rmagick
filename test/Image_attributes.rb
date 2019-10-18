@@ -63,7 +63,7 @@ class Image_Attributes_UT < Minitest::Test
   def test_bias
     expect { @img.bias }.not_to raise_error
     expect(@img.bias).to eq(0.0)
-    assert_instance_of(Float, @img.bias)
+    expect(@img.bias).to be_instance_of(Float)
 
     expect { @img.bias = 0.1 }.not_to raise_error
     assert_in_delta(Magick::QuantumRange * 0.1, @img.bias, 0.1)
@@ -117,7 +117,7 @@ class Image_Attributes_UT < Minitest::Test
   def test_chromaticity
     chrom = @img.chromaticity
     expect { @img.chromaticity }.not_to raise_error
-    assert_instance_of(Magick::Chromaticity, chrom)
+    expect(chrom).to be_instance_of(Magick::Chromaticity)
     expect(chrom.red_primary.x).to eq(0)
     expect(chrom.red_primary.y).to eq(0)
     expect(chrom.red_primary.z).to eq(0)
@@ -136,7 +136,7 @@ class Image_Attributes_UT < Minitest::Test
 
   def test_class_type
     expect { @img.class_type }.not_to raise_error
-    assert_instance_of(Magick::ClassType, @img.class_type)
+    expect(@img.class_type).to be_instance_of(Magick::ClassType)
     expect(@img.class_type).to eq(Magick::DirectClass)
     expect { @img.class_type = Magick::PseudoClass }.not_to raise_error
     expect(@img.class_type).to eq(Magick::PseudoClass)
@@ -168,7 +168,7 @@ class Image_Attributes_UT < Minitest::Test
 
   def test_colorspace
     expect { @img.colorspace }.not_to raise_error
-    assert_instance_of(Magick::ColorspaceType, @img.colorspace)
+    expect(@img.colorspace).to be_instance_of(Magick::ColorspaceType)
     expect(@img.colorspace).to eq(Magick::SRGBColorspace)
     img = @img.copy
 
@@ -189,7 +189,7 @@ class Image_Attributes_UT < Minitest::Test
 
   def test_compose
     expect { @img.compose }.not_to raise_error
-    assert_instance_of(Magick::CompositeOperator, @img.compose)
+    expect(@img.compose).to be_instance_of(Magick::CompositeOperator)
     expect(@img.compose).to eq(Magick::OverCompositeOp)
     expect { @img.compose = 2 }.to raise_error(TypeError)
     expect { @img.compose = Magick::UndefinedCompositeOp }.not_to raise_error
@@ -203,7 +203,7 @@ class Image_Attributes_UT < Minitest::Test
 
   def test_compression
     expect { @img.compression }.not_to raise_error
-    assert_instance_of(Magick::CompressionType, @img.compression)
+    expect(@img.compression).to be_instance_of(Magick::CompressionType)
     expect(@img.compression).to eq(Magick::UndefinedCompression)
     expect { @img.compression = Magick::BZipCompression }.not_to raise_error
     expect(@img.compression).to eq(Magick::BZipCompression)
@@ -244,7 +244,7 @@ class Image_Attributes_UT < Minitest::Test
 
   def test_dispose
     expect { @img.dispose }.not_to raise_error
-    assert_instance_of(Magick::DisposeType, @img.dispose)
+    expect(@img.dispose).to be_instance_of(Magick::DisposeType)
     expect(@img.dispose).to eq(Magick::UndefinedDispose)
     expect { @img.dispose = Magick::NoneDispose }.not_to raise_error
     expect(@img.dispose).to eq(Magick::NoneDispose)
@@ -257,7 +257,7 @@ class Image_Attributes_UT < Minitest::Test
 
   def test_endian
     expect { @img.endian }.not_to raise_error
-    assert_instance_of(Magick::EndianType, @img.endian)
+    expect(@img.endian).to be_instance_of(Magick::EndianType)
     expect(@img.endian).to eq(Magick::UndefinedEndian)
     expect { @img.endian = Magick::LSBEndian }.not_to raise_error
     expect(@img.endian).to eq(Magick::LSBEndian)
@@ -267,7 +267,7 @@ class Image_Attributes_UT < Minitest::Test
 
   def test_extract_info
     expect { @img.extract_info }.not_to raise_error
-    assert_instance_of(Magick::Rectangle, @img.extract_info)
+    expect(@img.extract_info).to be_instance_of(Magick::Rectangle)
     ext = @img.extract_info
     expect(ext.x).to eq(0)
     expect(ext.y).to eq(0)
@@ -290,7 +290,7 @@ class Image_Attributes_UT < Minitest::Test
 
   def test_filter
     expect { @img.filter }.not_to raise_error
-    assert_instance_of(Magick::FilterType, @img.filter)
+    expect(@img.filter).to be_instance_of(Magick::FilterType)
     expect(@img.filter).to eq(Magick::UndefinedFilter)
     expect { @img.filter = Magick::PointFilter }.not_to raise_error
     expect(@img.filter).to eq(Magick::PointFilter)
@@ -318,7 +318,7 @@ class Image_Attributes_UT < Minitest::Test
 
   def test_fuzz
     expect { @img.fuzz }.not_to raise_error
-    assert_instance_of(Float, @img.fuzz)
+    expect(@img.fuzz).to be_instance_of(Float)
     expect(@img.fuzz).to eq(0.0)
     expect { @img.fuzz = 50 }.not_to raise_error
     expect(@img.fuzz).to eq(50.0)
@@ -330,7 +330,7 @@ class Image_Attributes_UT < Minitest::Test
 
   def test_gamma
     expect { @img.gamma }.not_to raise_error
-    assert_instance_of(Float, @img.gamma)
+    expect(@img.gamma).to be_instance_of(Float)
     expect(@img.gamma).to eq(0.45454543828964233)
     expect { @img.gamma = 2.0 }.not_to raise_error
     expect(@img.gamma).to eq(2.0)
@@ -349,7 +349,7 @@ class Image_Attributes_UT < Minitest::Test
   end
 
   def test_gravity
-    assert_instance_of(Magick::GravityType, @img.gravity)
+    expect(@img.gravity).to be_instance_of(Magick::GravityType)
 
     Magick::GravityType.values do |gravity|
       expect { @img.gravity = gravity }.not_to raise_error
@@ -359,7 +359,7 @@ class Image_Attributes_UT < Minitest::Test
   end
 
   def test_image_type
-    assert_instance_of(Magick::ImageType, @img.image_type)
+    expect(@img.image_type).to be_instance_of(Magick::ImageType)
 
     Magick::ImageType.values do |image_type|
       expect { @img.image_type = image_type }.not_to raise_error
@@ -370,7 +370,7 @@ class Image_Attributes_UT < Minitest::Test
 
   def test_interlace_type
     expect { @img.interlace }.not_to raise_error
-    assert_instance_of(Magick::InterlaceType, @img.interlace)
+    expect(@img.interlace).to be_instance_of(Magick::InterlaceType)
     expect(@img.interlace).to eq(Magick::NoInterlace)
     expect { @img.interlace = Magick::LineInterlace }.not_to raise_error
     expect(@img.interlace).to eq(Magick::LineInterlace)
@@ -445,7 +445,7 @@ class Image_Attributes_UT < Minitest::Test
 
   def test_orientation
     expect { @img.orientation }.not_to raise_error
-    assert_instance_of(Magick::OrientationType, @img.orientation)
+    expect(@img.orientation).to be_instance_of(Magick::OrientationType)
     expect(@img.orientation).to eq(Magick::UndefinedOrientation)
     expect { @img.orientation = Magick::TopLeftOrientation }.not_to raise_error
     expect(@img.orientation).to eq(Magick::TopLeftOrientation)
@@ -474,7 +474,7 @@ class Image_Attributes_UT < Minitest::Test
 
   def test_pixel_interpolation_method
     expect { @img.pixel_interpolation_method }.not_to raise_error
-    assert_instance_of(Magick::PixelInterpolateMethod, @img.pixel_interpolation_method)
+    expect(@img.pixel_interpolation_method).to be_instance_of(Magick::PixelInterpolateMethod)
     expect(@img.pixel_interpolation_method).to eq(Magick::UndefinedInterpolatePixel)
     expect { @img.pixel_interpolation_method = Magick::AverageInterpolatePixel }.not_to raise_error
     expect(@img.pixel_interpolation_method).to eq(Magick::AverageInterpolatePixel)
@@ -499,7 +499,7 @@ class Image_Attributes_UT < Minitest::Test
 
   def test_rendering_intent
     expect { @img.rendering_intent }.not_to raise_error
-    assert_instance_of(Magick::RenderingIntent, @img.rendering_intent)
+    expect(@img.rendering_intent).to be_instance_of(Magick::RenderingIntent)
     expect(@img.rendering_intent).to eq(Magick::PerceptualIntent)
 
     Magick::RenderingIntent.values do |rendering_intent|
@@ -551,7 +551,7 @@ class Image_Attributes_UT < Minitest::Test
 
   def test_units
     expect { @img.units }.not_to raise_error
-    assert_instance_of(Magick::ResolutionType, @img.units)
+    expect(@img.units).to be_instance_of(Magick::ResolutionType)
     expect(@img.units).to eq(Magick::UndefinedResolution)
     expect { @img.units = Magick::PixelsPerInchResolution }.not_to raise_error
     expect(@img.units).to eq(Magick::PixelsPerInchResolution)

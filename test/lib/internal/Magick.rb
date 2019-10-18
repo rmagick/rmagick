@@ -3,14 +3,14 @@ require 'minitest/autorun'
 
 class LibMagickUT < Minitest::Test
   def test_formats
-    assert_instance_of(Hash, Magick.formats)
+    expect(Magick.formats).to be_instance_of(Hash)
     Magick.formats.each do |f, v|
-      assert_instance_of(String, f)
+      expect(f).to be_instance_of(String)
       assert_match(/[\*\+\srw]+/, v)
     end
 
     Magick.formats do |f, v|
-      assert_instance_of(String, f)
+      expect(f).to be_instance_of(String)
       assert_match(/[\*\+\srw]+/, v)
     end
   end
@@ -18,16 +18,16 @@ class LibMagickUT < Minitest::Test
   def test_trace_proc
     Magick.trace_proc = proc do |which, description, id, method|
       assert(which == :c)
-      assert_instance_of(String, description)
-      assert_instance_of(String, id)
+      expect(description).to be_instance_of(String)
+      expect(id).to be_instance_of(String)
       expect(method).to eq(:initialize)
     end
     img = Magick::Image.new(20, 20)
 
     Magick.trace_proc = proc do |which, description, id, method|
       assert(which == :d)
-      assert_instance_of(String, description)
-      assert_instance_of(String, id)
+      expect(description).to be_instance_of(String)
+      expect(id).to be_instance_of(String)
       expect(method).to eq(:"destroy!")
     end
     img.destroy!

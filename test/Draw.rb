@@ -179,7 +179,7 @@ class DrawUT < Minitest::Test
       @draw.annotate(img, 100, 100, 20, 20, 'Hello world 2') do |draw|
         yield_obj = draw
       end
-      assert_instance_of(Magick::Draw, yield_obj)
+      expect(yield_obj).to be_instance_of(Magick::Draw)
     end.not_to raise_error
 
     expect do
@@ -205,14 +205,14 @@ class DrawUT < Minitest::Test
     @draw.taint
     @draw.freeze
     dup = @draw.dup
-    assert_instance_of(Magick::Draw, dup)
+    expect(dup).to be_instance_of(Magick::Draw)
   end
 
   def test_clone
     @draw.taint
     @draw.freeze
     clone = @draw.clone
-    assert_instance_of(Magick::Draw, clone)
+    expect(clone).to be_instance_of(Magick::Draw)
   end
 
   def test_composite
@@ -321,7 +321,7 @@ class DrawUT < Minitest::Test
       Magick::Draw.new do |option|
         yield_obj = option
       end
-      assert_instance_of(Magick::Image::DrawOptions, yield_obj)
+      expect(yield_obj).to be_instance_of(Magick::Image::DrawOptions)
     end.not_to raise_error
   end
 

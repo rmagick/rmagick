@@ -13,7 +13,7 @@ class KernelInfoUT < Minitest::Test
       if kernel == Magick::UserDefinedKernel
         expect { Magick::KernelInfo.new(k) }.to raise_error(RuntimeError)
       else
-        assert_instance_of(Magick::KernelInfo, Magick::KernelInfo.new(k))
+        expect(Magick::KernelInfo.new(k)).to be_instance_of(Magick::KernelInfo)
       end
     end
     expect { Magick::KernelInfo.new('') }.to raise_error(RuntimeError)
@@ -41,16 +41,16 @@ class KernelInfoUT < Minitest::Test
   end
 
   def test_clone
-    assert_instance_of(Magick::KernelInfo, @kernel.clone)
+    expect(@kernel.clone).to be_instance_of(Magick::KernelInfo)
     assert_not_same(@kernel, @kernel.clone)
   end
 
   def test_builtin
-    assert_instance_of(Magick::KernelInfo, Magick::KernelInfo.builtin(Magick::UnityKernel, ''))
-    assert_instance_of(Magick::KernelInfo, Magick::KernelInfo.builtin(Magick::GaussianKernel, 'Gaussian:10,5'))
-    assert_instance_of(Magick::KernelInfo, Magick::KernelInfo.builtin(Magick::LoGKernel, 'LoG:10,5'))
-    assert_instance_of(Magick::KernelInfo, Magick::KernelInfo.builtin(Magick::DoGKernel, 'DoG:10,5'))
-    assert_instance_of(Magick::KernelInfo, Magick::KernelInfo.builtin(Magick::BlurKernel, 'Blur:10,5,1'))
-    assert_instance_of(Magick::KernelInfo, Magick::KernelInfo.builtin(Magick::CometKernel, 'Comet:10,5,1'))
+    expect(Magick::KernelInfo.builtin(Magick::UnityKernel, '')).to be_instance_of(Magick::KernelInfo)
+    expect(Magick::KernelInfo.builtin(Magick::GaussianKernel, 'Gaussian:10,5')).to be_instance_of(Magick::KernelInfo)
+    expect(Magick::KernelInfo.builtin(Magick::LoGKernel, 'LoG:10,5')).to be_instance_of(Magick::KernelInfo)
+    expect(Magick::KernelInfo.builtin(Magick::DoGKernel, 'DoG:10,5')).to be_instance_of(Magick::KernelInfo)
+    expect(Magick::KernelInfo.builtin(Magick::BlurKernel, 'Blur:10,5,1')).to be_instance_of(Magick::KernelInfo)
+    expect(Magick::KernelInfo.builtin(Magick::CometKernel, 'Comet:10,5,1')).to be_instance_of(Magick::KernelInfo)
   end
 end

@@ -9,7 +9,7 @@ class StructUT < Minitest::Test
 
   def test_export_color_info
     color = Magick.colors[0]
-    assert_instance_of(Magick::Color, color)
+    expect(color).to be_instance_of(Magick::Color)
     assert_match(/name=.+, compliance=.+, color.red=.+, color.green=.+, color.blue=.+, color.alpha=.+/, color.to_s)
   end
 

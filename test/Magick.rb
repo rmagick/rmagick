@@ -29,14 +29,14 @@ class MagickUT < Minitest::Test
   def test_colors
     res = nil
     expect { res = Magick.colors }.not_to raise_error
-    assert_instance_of(Array, res)
+    expect(res).to be_instance_of(Array)
     res.each do |c|
-      assert_instance_of(Magick::Color, c)
-      assert_instance_of(String, c.name)
-      assert_instance_of(Magick::ComplianceType, c.compliance) unless c.compliance.nil?
-      assert_instance_of(Magick::Pixel, c.color)
+      expect(c).to be_instance_of(Magick::Color)
+      expect(c.name).to be_instance_of(String)
+      expect(c.compliance).to be_instance_of(Magick::ComplianceType) unless c.compliance.nil?
+      expect(c.color).to be_instance_of(Magick::Pixel)
     end
-    Magick.colors { |c| assert_instance_of(Magick::Color, c) }
+    Magick.colors { |c| expect(c).to be_instance_of(Magick::Color) }
   end
 
   # Test a few of the @@enumerator arrays in the Enum subclasses.
@@ -46,44 +46,44 @@ class MagickUT < Minitest::Test
     expect do
       ary = Magick::AlphaChannelOption.enumerators
     end.not_to raise_error
-    assert_instance_of(Array, ary)
+    expect(ary).to be_instance_of(Array)
 
     expect do
       ary = Magick::AlignType.enumerators
     end.not_to raise_error
-    assert_instance_of(Array, ary)
+    expect(ary).to be_instance_of(Array)
     expect(ary.length).to eq(4)
 
     expect do
       ary = Magick::AnchorType.enumerators
     end.not_to raise_error
-    assert_instance_of(Array, ary)
+    expect(ary).to be_instance_of(Array)
     expect(ary.length).to eq(3)
   end
 
   def test_features
     res = nil
     expect { res = Magick::Magick_features }.not_to raise_error
-    assert_instance_of(String, res)
+    expect(res).to be_instance_of(String)
   end
 
   def test_fonts
     res = nil
     expect { res = Magick.fonts }.not_to raise_error
-    assert_instance_of(Array, res)
+    expect(res).to be_instance_of(Array)
     res.each do |f|
-      assert_instance_of(Magick::Font, f)
-      assert_instance_of(String, f.name)
-      assert_instance_of(String, f.description) unless f.description.nil?
-      assert_instance_of(String, f.family)
-      assert_instance_of(Magick::StyleType, f.style) unless f.style.nil?
-      assert_instance_of(Magick::StretchType, f.stretch) unless f.stretch.nil?
+      expect(f).to be_instance_of(Magick::Font)
+      expect(f.name).to be_instance_of(String)
+      expect(f.description).to be_instance_of(String) unless f.description.nil?
+      expect(f.family).to be_instance_of(String)
+      expect(f.style).to be_instance_of(Magick::StyleType) unless f.style.nil?
+      expect(f.stretch).to be_instance_of(Magick::StretchType) unless f.stretch.nil?
       assert_kind_of(Integer, f.weight)
-      assert_instance_of(String, f.encoding) unless f.encoding.nil?
-      assert_instance_of(String, f.foundry) unless f.foundry.nil?
-      assert_instance_of(String, f.format) unless f.format.nil?
+      expect(f.encoding).to be_instance_of(String) unless f.encoding.nil?
+      expect(f.foundry).to be_instance_of(String) unless f.foundry.nil?
+      expect(f.format).to be_instance_of(String) unless f.format.nil?
     end
-    Magick.fonts { |f| assert_instance_of(Magick::Font, f) }
+    Magick.fonts { |f| expect(f).to be_instance_of(Magick::Font) }
   end
 
   def test_geometry
@@ -241,7 +241,7 @@ class MagickUT < Minitest::Test
   end
 
   def test_init_formats
-    assert_instance_of(Hash, Magick.init_formats)
+    expect(Magick.init_formats).to be_instance_of(Hash)
   end
 
   def test_opaque_alpha

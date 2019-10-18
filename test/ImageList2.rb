@@ -11,11 +11,11 @@ class ImageList2UT < Minitest::Test
     @ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_0.gif')
     expect do
       img = @ilist.append(true)
-      assert_instance_of(Magick::Image, img)
+      expect(img).to be_instance_of(Magick::Image)
     end.not_to raise_error
     expect do
       img = @ilist.append(false)
-      assert_instance_of(Magick::Image, img)
+      expect(img).to be_instance_of(Magick::Image)
     end.not_to raise_error
     expect { @ilist.append }.to raise_error(ArgumentError)
     expect { @ilist.append(true, 1) }.to raise_error(ArgumentError)
@@ -25,7 +25,7 @@ class ImageList2UT < Minitest::Test
     @ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_0.gif')
     expect do
       img = @ilist.average
-      assert_instance_of(Magick::Image, img)
+      expect(img).to be_instance_of(Magick::Image)
     end.not_to raise_error
     expect { @ilist.average(1) }.to raise_error(ArgumentError)
   end
@@ -47,7 +47,7 @@ class ImageList2UT < Minitest::Test
     @ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_0.gif')
     ilist = nil
     expect { ilist = @ilist.coalesce }.not_to raise_error
-    assert_instance_of(Magick::ImageList, ilist)
+    expect(ilist).to be_instance_of(Magick::ImageList)
     expect(ilist.length).to eq(2)
     expect(ilist.scene).to eq(0)
   end
@@ -67,7 +67,7 @@ class ImageList2UT < Minitest::Test
     @ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_1.gif')
     ilist = nil
     expect { ilist = @ilist.deconstruct }.not_to raise_error
-    assert_instance_of(Magick::ImageList, ilist)
+    expect(ilist).to be_instance_of(Magick::ImageList)
     expect(ilist.length).to eq(2)
     expect(ilist.scene).to eq(0)
   end
@@ -89,7 +89,7 @@ class ImageList2UT < Minitest::Test
     @ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_1.gif')
     expect do
       img = @ilist.flatten_images
-      assert_instance_of(Magick::Image, img)
+      expect(img).to be_instance_of(Magick::Image)
     end.not_to raise_error
   end
 
@@ -97,7 +97,7 @@ class ImageList2UT < Minitest::Test
     hat = File.open(FLOWER_HAT, 'rb')
     blob = hat.read
     expect { @ilist.from_blob(blob) }.not_to raise_error
-    assert_instance_of(Magick::Image, @ilist[0])
+    expect(@ilist[0]).to be_instance_of(Magick::Image)
     expect(@ilist.scene).to eq(0)
 
     ilist2 = Magick::ImageList.new(FLOWER_HAT)
@@ -144,7 +144,7 @@ class ImageList2UT < Minitest::Test
         self.tile = Magick::Geometry.new(4, 9)
         self.title = 'sample'
       end
-      assert_instance_of(Magick::ImageList, montage)
+      expect(montage).to be_instance_of(Magick::ImageList)
       expect(ilist).to eq(@ilist)
 
       montage_image = montage.first
@@ -213,7 +213,7 @@ class ImageList2UT < Minitest::Test
     expect { @ilist.morph(-1) }.to raise_error(ArgumentError)
     expect do
       res = @ilist.morph(2)
-      assert_instance_of(Magick::ImageList, res)
+      expect(res).to be_instance_of(Magick::ImageList)
       expect(res.length).to eq(4)
       expect(res.scene).to eq(0)
     end.not_to raise_error
@@ -223,7 +223,7 @@ class ImageList2UT < Minitest::Test
     @ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_1.gif')
     expect do
       res = @ilist.mosaic
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
     end.not_to raise_error
   end
 
@@ -254,7 +254,7 @@ class ImageList2UT < Minitest::Test
 
       expect do
         res = @ilist.optimize_layers(method)
-        assert_instance_of(Magick::ImageList, res)
+        expect(res).to be_instance_of(Magick::ImageList)
         assert_kind_of(Integer, res.length)
       end.not_to raise_error
     end
@@ -281,7 +281,7 @@ class ImageList2UT < Minitest::Test
     @ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_1.gif')
     expect do
       res = @ilist.quantize
-      assert_instance_of(Magick::ImageList, res)
+      expect(res).to be_instance_of(Magick::ImageList)
       expect(res.scene).to eq(1)
     end.not_to raise_error
     expect { @ilist.quantize(128) }.not_to raise_error
