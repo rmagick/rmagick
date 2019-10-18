@@ -29,7 +29,7 @@ class Image1_UT < Minitest::Test
     expect(img0 <=> img1).to eq(sig0 <=> sig1)
     expect(img1 <=> img0).to eq(sig1 <=> sig0)
     expect(img0).to eq(img0)
-    assert_not_equal(img0, img1)
+    expect(img1).not_to eq(img0)
     expect(img0 <=> nil).to be(nil)
   end
 

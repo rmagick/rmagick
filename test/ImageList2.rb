@@ -81,7 +81,7 @@ class ImageList2UT < Minitest::Test
     @ilist.taint
     @ilist.freeze
     ilist2 = @ilist.dup
-    assert_not_equal(@ilist.frozen?, ilist2.frozen?)
+    expect(ilist2.frozen?).not_to eq(@ilist.frozen?)
     expect(ilist2.tainted?).to eq(@ilist.tainted?)
   end
 

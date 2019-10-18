@@ -94,7 +94,7 @@ class EnumUT < Minitest::Test
     Magick::ColorspaceType.values do |value|
       next if value == Magick::SRGBColorspace
 
-      assert_not_equal(value, img.colorspace)
+      expect(img.colorspace).not_to eq(value)
     end
   end
 

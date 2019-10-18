@@ -831,13 +831,13 @@ class ImageList1UT < Minitest::Test
     expect(list2.scene).to eq(@list.scene)
     expect(list2).to eq(@list)
     list2.scene = 0
-    assert_not_equal(@list, list2)
+    expect(list2).not_to eq(@list)
     list2 = @list.copy
     list2[9] = list2[0]
-    assert_not_equal(@list, list2)
+    expect(list2).not_to eq(@list)
     list2 = @list.copy
     list2 << @list[9]
-    assert_not_equal(@list, list2)
+    expect(list2).not_to eq(@list)
 
     expect { @list <=> 2 }.to raise_error(TypeError)
     list = Magick::ImageList.new

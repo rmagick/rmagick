@@ -399,9 +399,9 @@ class Image_Attributes_UT < Minitest::Test
 
     hat = @hat.quantize(16, Magick::RGBColorspace, true, 0, true)
 
-    assert_not_equal(0.0, hat.mean_error_per_pixel)
-    assert_not_equal(0.0, hat.normalized_mean_error)
-    assert_not_equal(0.0, hat.normalized_maximum_error)
+    expect(hat.mean_error_per_pixel).not_to eq(0.0)
+    expect(hat.normalized_mean_error).not_to eq(0.0)
+    expect(hat.normalized_maximum_error).not_to eq(0.0)
     expect { hat.mean_error_per_pixel = 1 }.to raise_error(NoMethodError)
     expect { hat.normalized_mean_error = 1 }.to raise_error(NoMethodError)
     expect { hat.normalized_maximum_error = 1 }.to raise_error(NoMethodError)
