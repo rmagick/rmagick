@@ -17,8 +17,8 @@ class ImageList2UT < Minitest::Test
       img = @ilist.append(false)
       assert_instance_of(Magick::Image, img)
     end
-    assert_raise(ArgumentError) { @ilist.append }
-    assert_raise(ArgumentError) { @ilist.append(true, 1) }
+    expect { @ilist.append }.to raise_error(ArgumentError)
+    expect { @ilist.append(true, 1) }.to raise_error(ArgumentError)
   end
 
   def test_average
@@ -27,7 +27,7 @@ class ImageList2UT < Minitest::Test
       img = @ilist.average
       assert_instance_of(Magick::Image, img)
     end
-    assert_raise(ArgumentError) { @ilist.average(1) }
+    expect { @ilist.average(1) }.to raise_error(ArgumentError)
   end
 
   def test_clone
@@ -155,62 +155,62 @@ class ImageList2UT < Minitest::Test
     # test illegal option arguments
     # looks like IM doesn't diagnose invalid geometry args
     # to tile= and geometry=
-    assert_raise(TypeError) do
+    expect do
       montage = ilist.montage { self.background_color = 2 }
       expect(ilist).to eq(@ilist)
-    end
-    assert_raise(TypeError) do
+    end.to raise_error(TypeError)
+    expect do
       montage = ilist.montage { self.border_color = 2 }
       expect(ilist).to eq(@ilist)
-    end
-    assert_raise(TypeError) do
+    end.to raise_error(TypeError)
+    expect do
       montage = ilist.montage { self.border_width = [2] }
       expect(ilist).to eq(@ilist)
-    end
-    assert_raise(TypeError) do
+    end.to raise_error(TypeError)
+    expect do
       montage = ilist.montage { self.compose = 2 }
       expect(ilist).to eq(@ilist)
-    end
-    assert_raise(TypeError) do
+    end.to raise_error(TypeError)
+    expect do
       montage = ilist.montage { self.filename = 2 }
       expect(ilist).to eq(@ilist)
-    end
-    assert_raise(TypeError) do
+    end.to raise_error(TypeError)
+    expect do
       montage = ilist.montage { self.fill = 2 }
       expect(ilist).to eq(@ilist)
-    end
-    assert_raise(TypeError) do
+    end.to raise_error(TypeError)
+    expect do
       montage = ilist.montage { self.font = 2 }
       expect(ilist).to eq(@ilist)
-    end
-    assert_raise(TypeError) do
+    end.to raise_error(TypeError)
+    expect do
       montage = ilist.montage { self.gravity = 2 }
       expect(ilist).to eq(@ilist)
-    end
-    assert_raise(TypeError) do
+    end.to raise_error(TypeError)
+    expect do
       montage = ilist.montage { self.matte_color = 2 }
       expect(ilist).to eq(@ilist)
-    end
-    assert_raise(TypeError) do
+    end.to raise_error(TypeError)
+    expect do
       montage = ilist.montage { self.pointsize = 'x' }
       expect(ilist).to eq(@ilist)
-    end
-    assert_raise(ArgumentError) do
+    end.to raise_error(TypeError)
+    expect do
       montage = ilist.montage { self.stroke = 'x' }
       expect(ilist).to eq(@ilist)
-    end
-    assert_raise(NoMethodError) do
+    end.to raise_error(ArgumentError)
+    expect do
       montage = ilist.montage { self.texture = 'x' }
       expect(ilist).to eq(@ilist)
-    end
+    end.to raise_error(NoMethodError)
   end
 
   def test_morph
     # can't morph an empty list
-    assert_raise(ArgumentError) { @ilist.morph(1) }
+    expect { @ilist.morph(1) }.to raise_error(ArgumentError)
     @ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_1.gif')
     # can't specify a negative argument
-    assert_raise(ArgumentError) { @ilist.morph(-1) }
+    expect { @ilist.morph(-1) }.to raise_error(ArgumentError)
     assert_nothing_raised do
       res = @ilist.morph(2)
       assert_instance_of(Magick::ImageList, res)
@@ -230,7 +230,7 @@ class ImageList2UT < Minitest::Test
   def test_mosaic_with_invalid_imagelist
     list = @ilist.copy
     list.instance_variable_set("@images", nil)
-    assert_raise(Magick::ImageMagickError) { list.mosaic }
+    expect { list.mosaic }.to raise_error(Magick::ImageMagickError)
   end
 
   def test_new_image
@@ -260,9 +260,9 @@ class ImageList2UT < Minitest::Test
     end
 
     assert_nothing_raised { @ilist.optimize_layers(Magick::CompareClearLayer) }
-    assert_raise(ArgumentError) { @ilist.optimize_layers(Magick::UndefinedLayer) }
-    assert_raise(TypeError) { @ilist.optimize_layers(2) }
-    assert_raise(NotImplementedError) { @ilist.optimize_layers(Magick::CompositeLayer) }
+    expect { @ilist.optimize_layers(Magick::UndefinedLayer) }.to raise_error(ArgumentError)
+    expect { @ilist.optimize_layers(2) }.to raise_error(TypeError)
+    expect { @ilist.optimize_layers(Magick::CompositeLayer) }.to raise_error(NotImplementedError)
   end
 
   def test_ping
@@ -285,9 +285,9 @@ class ImageList2UT < Minitest::Test
       expect(res.scene).to eq(1)
     end
     assert_nothing_raised { @ilist.quantize(128) }
-    assert_raise(TypeError) { @ilist.quantize('x') }
+    expect { @ilist.quantize('x') }.to raise_error(TypeError)
     assert_nothing_raised { @ilist.quantize(128, Magick::RGBColorspace) }
-    assert_raise(TypeError) { @ilist.quantize(128, 'x') }
+    expect { @ilist.quantize(128, 'x') }.to raise_error(TypeError)
     assert_nothing_raised { @ilist.quantize(128, Magick::RGBColorspace, true, 0) }
     assert_nothing_raised { @ilist.quantize(128, Magick::RGBColorspace, true) }
     assert_nothing_raised { @ilist.quantize(128, Magick::RGBColorspace, false) }
@@ -297,8 +297,8 @@ class ImageList2UT < Minitest::Test
     assert_nothing_raised { @ilist.quantize(128, Magick::RGBColorspace, Magick::FloydSteinbergDitherMethod, 32) }
     assert_nothing_raised { @ilist.quantize(128, Magick::RGBColorspace, Magick::FloydSteinbergDitherMethod, 32, true) }
     assert_nothing_raised { @ilist.quantize(128, Magick::RGBColorspace, Magick::FloydSteinbergDitherMethod, 32, false) }
-    assert_raise(TypeError) { @ilist.quantize(128, Magick::RGBColorspace, true, 'x') }
-    assert_raise(ArgumentError) { @ilist.quantize(128, Magick::RGBColorspace, true, 0, false, 'extra') }
+    expect { @ilist.quantize(128, Magick::RGBColorspace, true, 'x') }.to raise_error(TypeError)
+    expect { @ilist.quantize(128, Magick::RGBColorspace, true, 0, false, 'extra') }.to raise_error(ArgumentError)
   end
 
   def test_read
@@ -321,11 +321,11 @@ class ImageList2UT < Minitest::Test
     assert_nothing_raised { @ilist.remap(remap_image, Magick::NoDitherMethod) }
     assert_nothing_raised { @ilist.remap(remap_image, Magick::RiemersmaDitherMethod) }
     assert_nothing_raised { @ilist.remap(remap_image, Magick::FloydSteinbergDitherMethod) }
-    assert_raise(ArgumentError) { @ilist.remap(remap_image, Magick::NoDitherMethod, 1) }
+    expect { @ilist.remap(remap_image, Magick::NoDitherMethod, 1) }.to raise_error(ArgumentError)
 
     remap_image.destroy!
-    assert_raise(Magick::DestroyedImageError) { @ilist.remap(remap_image) }
-    # assert_raise(TypeError) { @ilist.affinity(affinity_image, 1) }
+    expect { @ilist.remap(remap_image) }.to raise_error(Magick::DestroyedImageError)
+    # expect { @ilist.affinity(affinity_image, 1) }.to raise_error(TypeError)
   end
 
   def test_to_blob

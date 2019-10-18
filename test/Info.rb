@@ -27,7 +27,7 @@ class InfoUT < Minitest::Test
 
     assert_nothing_raised { @info.undefine('tiff', 'bits-per-sample') }
     assert_nil(@info['tiff', 'bits-per-sample'])
-    assert_raise(ArgumentError) { @info.undefine('tiff', 'a' * 10_000) }
+    expect { @info.undefine('tiff', 'a' * 10_000) }.to raise_error(ArgumentError)
   end
 
   def test_antialias
@@ -41,10 +41,10 @@ class InfoUT < Minitest::Test
     expect(@info['tiff']).to eq('xxx')
     assert_nothing_raised { @info['tiff', 'bits-per-sample'] = 'abc' }
     expect(@info['tiff', 'bits-per-sample']).to eq('abc')
-    assert_raise(ArgumentError) { @info['tiff', 'a', 'b'] }
-    assert_raise(ArgumentError) { @info['tiff', 'a' * 10_000] }
-    assert_raise(ArgumentError) { @info['tiff', 'a' * 10_000] = 'abc' }
-    assert_raise(ArgumentError) { @info['tiff', 'a', 'b'] = 'abc' }
+    expect { @info['tiff', 'a', 'b'] }.to raise_error(ArgumentError)
+    expect { @info['tiff', 'a' * 10_000] }.to raise_error(ArgumentError)
+    expect { @info['tiff', 'a' * 10_000] = 'abc' }.to raise_error(ArgumentError)
+    expect { @info['tiff', 'a', 'b'] = 'abc' }.to raise_error(ArgumentError)
   end
 
   def test_attenuate
@@ -94,8 +94,8 @@ class InfoUT < Minitest::Test
   def test_channel
     assert_nothing_raised { @info.channel(Magick::RedChannel) }
     assert_nothing_raised { @info.channel(Magick::RedChannel, Magick::BlueChannel) }
-    assert_raise(TypeError) { @info.channel(1) }
-    assert_raise(TypeError) { @info.channel(Magick::RedChannel, 1) }
+    expect { @info.channel(1) }.to raise_error(TypeError)
+    expect { @info.channel(Magick::RedChannel, 1) }.to raise_error(TypeError)
   end
 
   def test_colorspace
@@ -120,8 +120,8 @@ class InfoUT < Minitest::Test
   def test_define
     assert_nothing_raised { @info.define('tiff', 'bits-per-sample', 2) }
     assert_nothing_raised { @info.undefine('tiff', 'bits-per-sample') }
-    assert_raise(ArgumentError) { @info.define('tiff', 'bits-per-sample', 2, 2) }
-    assert_raise(ArgumentError) { @info.define('tiff', 'a' * 10_000) }
+    expect { @info.define('tiff', 'bits-per-sample', 2, 2) }.to raise_error(ArgumentError)
+    expect { @info.define('tiff', 'a' * 10_000) }.to raise_error(ArgumentError)
   end
 
   def test_density
@@ -131,7 +131,7 @@ class InfoUT < Minitest::Test
     expect(@info.density).to eq('72x72')
     assert_nothing_raised { @info.density = nil }
     assert_nil(@info.density)
-    assert_raise(ArgumentError) { @info.density = 'aaa' }
+    expect { @info.density = 'aaa' }.to raise_error(ArgumentError)
   end
 
   def test_delay
@@ -139,7 +139,7 @@ class InfoUT < Minitest::Test
     expect(@info.delay).to eq(60)
     assert_nothing_raised { @info.delay = nil }
     assert_nil(@info.delay)
-    assert_raise(TypeError) { @info.delay = '60' }
+    expect { @info.delay = '60' }.to raise_error(TypeError)
   end
 
   def test_depth
@@ -147,7 +147,7 @@ class InfoUT < Minitest::Test
     expect(@info.depth).to eq(8)
     assert_nothing_raised { @info.depth = 16 }
     expect(@info.depth).to eq(16)
-    assert_raise(ArgumentError) { @info.depth = 32 }
+    expect { @info.depth = 32 }.to raise_error(ArgumentError)
   end
 
   def test_dispose
@@ -178,7 +178,7 @@ class InfoUT < Minitest::Test
     expect(@info.extract).to eq('100x100')
     assert_nothing_raised { @info.extract = nil }
     assert_nil(@info.extract)
-    assert_raise(ArgumentError) { @info.extract = 'aaa' }
+    expect { @info.extract = 'aaa' }.to raise_error(ArgumentError)
   end
 
   def test_filename
@@ -198,7 +198,7 @@ class InfoUT < Minitest::Test
     assert_nothing_raised { @info.fill = nil }
     assert_nil(@info.fill)
 
-    assert_raise(ArgumentError) { @info.fill = 'xxx' }
+    expect { @info.fill = 'xxx' }.to raise_error(ArgumentError)
   end
 
   def test_font
@@ -211,7 +211,7 @@ class InfoUT < Minitest::Test
   def test_format
     assert_nothing_raised { @info.format = 'GIF' }
     expect(@info.format).to eq('GIF')
-    assert_raise(TypeError) { @info.format = nil }
+    expect { @info.format = nil }.to raise_error(TypeError)
   end
 
   def test_fuzz
@@ -219,8 +219,8 @@ class InfoUT < Minitest::Test
     expect(@info.fuzz).to eq(50)
     assert_nothing_raised { @info.fuzz = '50%' }
     expect(@info.fuzz).to eq(Magick::QuantumRange * 0.5)
-    assert_raise(TypeError) { @info.fuzz = nil }
-    assert_raise(ArgumentError) { @info.fuzz = 'xxx' }
+    expect { @info.fuzz = nil }.to raise_error(TypeError)
+    expect { @info.fuzz = 'xxx' }.to raise_error(ArgumentError)
   end
 
   def test_gravity
@@ -236,7 +236,7 @@ class InfoUT < Minitest::Test
       assert_nothing_raised { @info.image_type = v }
       expect(@info.image_type).to eq(v)
     end
-    assert_raise(TypeError) { @info.image_type = nil }
+    expect { @info.image_type = nil }.to raise_error(TypeError)
   end
 
   def test_interlace
@@ -244,7 +244,7 @@ class InfoUT < Minitest::Test
       assert_nothing_raised { @info.interlace = v }
       expect(@info.interlace).to eq(v)
     end
-    assert_raise(TypeError) { @info.interlace = nil }
+    expect { @info.interlace = nil }.to raise_error(TypeError)
   end
 
   def test_label
@@ -261,7 +261,7 @@ class InfoUT < Minitest::Test
     expect(@info.matte_color).to eq('red')
     img = Magick::Image.new(20, 20) { self.matte_color = 'red' }
     expect(img.matte_color).to eq('red')
-    assert_raise(TypeError) { @info.matte_color = nil }
+    expect { @info.matte_color = nil }.to raise_error(TypeError)
   end
 
   def test_monitor
@@ -290,8 +290,8 @@ class InfoUT < Minitest::Test
     assert_kind_of(Integer, @info.number_scenes)
     assert_nothing_raised { @info.number_scenes = 50 }
     expect(@info.number_scenes).to eq(50)
-    assert_raise(TypeError) { @info.number_scenes = nil }
-    assert_raise(TypeError) { @info.number_scenes = 'xxx' }
+    expect { @info.number_scenes = nil }.to raise_error(TypeError)
+    expect { @info.number_scenes = 'xxx' }.to raise_error(TypeError)
   end
 
   def test_orientation
@@ -299,7 +299,7 @@ class InfoUT < Minitest::Test
       assert_nothing_raised { @info.orientation = v }
       expect(@info.orientation).to eq(v)
     end
-    assert_raise(TypeError) { @info.orientation = nil }
+    expect { @info.orientation = nil }.to raise_error(TypeError)
   end
 
   def test_origin
@@ -309,7 +309,7 @@ class InfoUT < Minitest::Test
     expect(@info.origin).to eq('+10+10')
     assert_nothing_raised { @info.origin = nil }
     assert_nil(@info.origin)
-    assert_raise(ArgumentError) { @info.origin = 'aaa' }
+    expect { @info.origin = 'aaa' }.to raise_error(ArgumentError)
   end
 
   def test_page
@@ -339,7 +339,7 @@ class InfoUT < Minitest::Test
   def test_scene
     assert_nothing_raised { @info.scene = 123 }
     expect(@info.scene).to eq(123)
-    assert_raise(TypeError) { @info.scene = 'xxx' }
+    expect { @info.scene = 'xxx' }.to raise_error(TypeError)
   end
 
   def test_server_name
@@ -356,7 +356,7 @@ class InfoUT < Minitest::Test
     expect(@info.size).to eq('100x200')
     assert_nothing_raised { @info.size = nil }
     assert_nil(@info.size)
-    assert_raise(ArgumentError) { @info.size = 'aaa' }
+    expect { @info.size = 'aaa' }.to raise_error(ArgumentError)
   end
 
   def test_stroke
@@ -369,7 +369,7 @@ class InfoUT < Minitest::Test
     assert_nothing_raised { @info.stroke = nil }
     assert_nil(@info.stroke)
 
-    assert_raise(ArgumentError) { @info.stroke = 'xxx' }
+    expect { @info.stroke = 'xxx' }.to raise_error(ArgumentError)
   end
 
   def test_stroke_width
@@ -379,7 +379,7 @@ class InfoUT < Minitest::Test
     expect(@info.stroke_width).to eq(5.25)
     assert_nothing_raised { @info.stroke_width = nil }
     assert_nil(@info.stroke_width)
-    assert_raise(TypeError) { @info.stroke_width = 'xxx' }
+    expect { @info.stroke_width = 'xxx' }.to raise_error(TypeError)
   end
 
   def test_texture
@@ -393,13 +393,13 @@ class InfoUT < Minitest::Test
     expect(@info.tile_offset).to eq('200x100')
     assert_nothing_raised { @info.tile_offset = Magick::Geometry.new(100, 200) }
     expect(@info.tile_offset).to eq('100x200')
-    assert_raise(ArgumentError) { @info.tile_offset = nil }
+    expect { @info.tile_offset = nil }.to raise_error(ArgumentError)
   end
 
   def test_transparent_color
     assert_nothing_raised { @info.transparent_color = 'white' }
     expect(@info.transparent_color).to eq('white')
-    assert_raise(TypeError) { @info.transparent_color = nil }
+    expect { @info.transparent_color = nil }.to raise_error(TypeError)
   end
 
   def test_undercolor
@@ -412,7 +412,7 @@ class InfoUT < Minitest::Test
     assert_nothing_raised { @info.undercolor = nil }
     assert_nil(@info.undercolor)
 
-    assert_raise(ArgumentError) { @info.undercolor = 'xxx' }
+    expect { @info.undercolor = 'xxx' }.to raise_error(ArgumentError)
   end
 
   def test_units

@@ -6,8 +6,8 @@ class EnumUT < Minitest::Test
     assert_nothing_raised { Magick::Enum.new(:foo, 42) }
     assert_nothing_raised { Magick::Enum.new('foo', 42) }
 
-    assert_raise(TypeError) { Magick::Enum.new(Object.new, 42) }
-    assert_raise(TypeError) { Magick::Enum.new(:foo, 'x') }
+    expect { Magick::Enum.new(Object.new, 42) }.to raise_error(TypeError)
+    expect { Magick::Enum.new(:foo, 'x') }.to raise_error(TypeError)
   end
 
   def test_to_s
@@ -52,7 +52,7 @@ class EnumUT < Minitest::Test
     expect(enum.to_i).to eq(58)
     expect(enum.to_s).to eq('foo|bar')
 
-    assert_raise(ArgumentError) { enum1 | 'x' }
+    expect { enum1 | 'x' }.to raise_error(ArgumentError)
   end
 
   def test_type_values
@@ -198,9 +198,9 @@ class EnumUT < Minitest::Test
     img = Magick::Image.new(20, 20)
     pixels = img.export_pixels(0, 0, 20, 20, 'RGB').pack('D*')
 
-    error = assert_raise(ArgumentError) do
+    error = expect do
       img.import_pixels(0, 0, 20, 20, 'RGB', pixels, Magick::UndefinedPixel)
-    end
+    end.to raise_error(ArgumentError)
     assert_match(/UndefinedPixel/, error.message)
   end
 

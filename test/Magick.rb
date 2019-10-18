@@ -234,10 +234,10 @@ class MagickUT < Minitest::Test
     assert_nothing_raised { g = Magick::Geometry.from_s('') }
     expect(g.to_s).to eq('')
 
-    assert_raise(ArgumentError) { Magick::Geometry.new(Magick::AreaGeometry) }
-    assert_raise(ArgumentError) { Magick::Geometry.new(40, Magick::AreaGeometry) }
-    assert_raise(ArgumentError) { Magick::Geometry.new(40, 20, Magick::AreaGeometry) }
-    assert_raise(ArgumentError) { Magick::Geometry.new(40, 20, 10, Magick::AreaGeometry) }
+    expect { Magick::Geometry.new(Magick::AreaGeometry) }.to raise_error(ArgumentError)
+    expect { Magick::Geometry.new(40, Magick::AreaGeometry) }.to raise_error(ArgumentError)
+    expect { Magick::Geometry.new(40, 20, Magick::AreaGeometry) }.to raise_error(ArgumentError)
+    expect { Magick::Geometry.new(40, 20, 10, Magick::AreaGeometry) }.to raise_error(ArgumentError)
   end
 
   def test_init_formats
@@ -295,10 +295,10 @@ class MagickUT < Minitest::Test
     expect(new).to eq(300)
     Magick.limit_resource(:time, cur)
 
-    assert_raise(ArgumentError) { Magick.limit_resource(:xxx) }
-    assert_raise(ArgumentError) { Magick.limit_resource('xxx') }
-    assert_raise(ArgumentError) { Magick.limit_resource('map', 3500, 2) }
-    assert_raise(ArgumentError) { Magick.limit_resource }
+    expect { Magick.limit_resource(:xxx) }.to raise_error(ArgumentError)
+    expect { Magick.limit_resource('xxx') }.to raise_error(ArgumentError)
+    expect { Magick.limit_resource('map', 3500, 2) }.to raise_error(ArgumentError)
+    expect { Magick.limit_resource }.to raise_error(ArgumentError)
   end
 
   def test_transparent_alpha

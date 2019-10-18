@@ -38,8 +38,9 @@ module Minitest
       assert(yield)
     end
 
-    def expect(actual)
+    def expect(actual = :__not_set__, &actual_block)
       @actual = actual
+      @actual_block = actual_block
       self
     end
 
@@ -47,6 +48,8 @@ module Minitest
       case matcher
       when :eq
         assert_equal(@expected, @actual)
+      when :raise_error
+        assert_raises(@expected, &@actual_block)
       else
         raise ArgumentError, "no matcher: #{matcher.inspect}"
       end
@@ -57,8 +60,12 @@ module Minitest
       :eq
     end
 
+    def raise_error(expected)
+      @expected = expected
+      :raise_error
+    end
+
     alias assert_nothing_thrown assert_nothing_raised
-    alias assert_raise assert_raises
     alias assert_not_same refute_same
     alias assert_not_equal refute_equal
     alias assert_not_nil refute_nil

@@ -11,7 +11,7 @@ class PixelUT < Minitest::Test
     expect(@pixel.red).to eq(123)
     assert_nothing_raised { @pixel.red = 255.25 }
     expect(@pixel.red).to eq(255)
-    assert_raise(TypeError) { @pixel.red = 'x' }
+    expect { @pixel.red = 'x' }.to raise_error(TypeError)
   end
 
   def test_green
@@ -19,7 +19,7 @@ class PixelUT < Minitest::Test
     expect(@pixel.green).to eq(123)
     assert_nothing_raised { @pixel.green = 255.25 }
     expect(@pixel.green).to eq(255)
-    assert_raise(TypeError) { @pixel.green = 'x' }
+    expect { @pixel.green = 'x' }.to raise_error(TypeError)
   end
 
   def test_blue
@@ -27,7 +27,7 @@ class PixelUT < Minitest::Test
     expect(@pixel.blue).to eq(123)
     assert_nothing_raised { @pixel.blue = 255.25 }
     expect(@pixel.blue).to eq(255)
-    assert_raise(TypeError) { @pixel.blue = 'x' }
+    expect { @pixel.blue = 'x' }.to raise_error(TypeError)
   end
 
   def test_alpha
@@ -35,7 +35,7 @@ class PixelUT < Minitest::Test
     expect(@pixel.alpha).to eq(123)
     assert_nothing_raised { @pixel.alpha = 255.25 }
     expect(@pixel.alpha).to eq(255)
-    assert_raise(TypeError) { @pixel.alpha = 'x' }
+    expect { @pixel.alpha = 'x' }.to raise_error(TypeError)
   end
 
   def test_cyan
@@ -43,7 +43,7 @@ class PixelUT < Minitest::Test
     expect(@pixel.cyan).to eq(123)
     assert_nothing_raised { @pixel.cyan = 255.25 }
     expect(@pixel.cyan).to eq(255)
-    assert_raise(TypeError) { @pixel.cyan = 'x' }
+    expect { @pixel.cyan = 'x' }.to raise_error(TypeError)
   end
 
   def test_magenta
@@ -51,7 +51,7 @@ class PixelUT < Minitest::Test
     expect(@pixel.magenta).to eq(123)
     assert_nothing_raised { @pixel.magenta = 255.25 }
     expect(@pixel.magenta).to eq(255)
-    assert_raise(TypeError) { @pixel.magenta = 'x' }
+    expect { @pixel.magenta = 'x' }.to raise_error(TypeError)
   end
 
   def test_yellow
@@ -59,7 +59,7 @@ class PixelUT < Minitest::Test
     expect(@pixel.yellow).to eq(123)
     assert_nothing_raised { @pixel.yellow = 255.25 }
     expect(@pixel.yellow).to eq(255)
-    assert_raise(TypeError) { @pixel.yellow = 'x' }
+    expect { @pixel.yellow = 'x' }.to raise_error(TypeError)
   end
 
   def test_black
@@ -67,7 +67,7 @@ class PixelUT < Minitest::Test
     expect(@pixel.black).to eq(123)
     assert_nothing_raised { @pixel.black = 255.25 }
     expect(@pixel.black).to eq(255)
-    assert_raise(TypeError) { @pixel.black = 'x' }
+    expect { @pixel.black = 'x' }.to raise_error(TypeError)
   end
 
   def test_case_eq
@@ -138,10 +138,10 @@ class PixelUT < Minitest::Test
 
     assert_nothing_raised { red.fcmp(blue, 10) }
     assert_nothing_raised { red.fcmp(blue, 10, Magick::RGBColorspace) }
-    assert_raises(TypeError) { red.fcmp(blue, 'x') }
-    assert_raises(TypeError) { red.fcmp(blue, 10, 'x') }
-    assert_raises(ArgumentError) { red.fcmp }
-    assert_raises(ArgumentError) { red.fcmp(blue, 10, 'x', 'y') }
+    expect { red.fcmp(blue, 'x') }.to raise_error(TypeError)
+    expect { red.fcmp(blue, 10, 'x') }.to raise_error(TypeError)
+    expect { red.fcmp }.to raise_error(ArgumentError)
+    expect { red.fcmp(blue, 10, 'x', 'y') }.to raise_error(ArgumentError)
   end
 
   def test_from_hsla
@@ -150,19 +150,19 @@ class PixelUT < Minitest::Test
     assert_nothing_raised { Magick::Pixel.from_hsla('99%', '100%', '100%', '100%') }
     assert_nothing_raised { Magick::Pixel.from_hsla(0, 0, 0, 0) }
     assert_nothing_raised { Magick::Pixel.from_hsla(359, 255, 255, 1.0) }
-    assert_raise(TypeError) { Magick::Pixel.from_hsla([], 50, 50, 0) }
-    assert_raise(TypeError) { Magick::Pixel.from_hsla(127, [], 50, 0) }
-    assert_raise(TypeError) { Magick::Pixel.from_hsla(127, 50, [], 0) }
-    assert_raise(ArgumentError) { Magick::Pixel.from_hsla }
-    assert_raise(ArgumentError) { Magick::Pixel.from_hsla(127, 50, 50, 50, 50) }
-    assert_raise(ArgumentError) { Magick::Pixel.from_hsla(-0.01, 0, 0) }
-    assert_raise(ArgumentError) { Magick::Pixel.from_hsla(0, -0.01, 0) }
-    assert_raise(ArgumentError) { Magick::Pixel.from_hsla(0, 0, -0.01) }
-    assert_raise(ArgumentError) { Magick::Pixel.from_hsla(0, 0, 0, -0.01) }
-    assert_raise(RangeError) { Magick::Pixel.from_hsla(0, 0, 0, 1.01) }
-    assert_raise(RangeError) { Magick::Pixel.from_hsla(360, 0, 0) }
-    assert_raise(RangeError) { Magick::Pixel.from_hsla(0, 256, 0) }
-    assert_raise(RangeError) { Magick::Pixel.from_hsla(0, 0, 256) }
+    expect { Magick::Pixel.from_hsla([], 50, 50, 0) }.to raise_error(TypeError)
+    expect { Magick::Pixel.from_hsla(127, [], 50, 0) }.to raise_error(TypeError)
+    expect { Magick::Pixel.from_hsla(127, 50, [], 0) }.to raise_error(TypeError)
+    expect { Magick::Pixel.from_hsla }.to raise_error(ArgumentError)
+    expect { Magick::Pixel.from_hsla(127, 50, 50, 50, 50) }.to raise_error(ArgumentError)
+    expect { Magick::Pixel.from_hsla(-0.01, 0, 0) }.to raise_error(ArgumentError)
+    expect { Magick::Pixel.from_hsla(0, -0.01, 0) }.to raise_error(ArgumentError)
+    expect { Magick::Pixel.from_hsla(0, 0, -0.01) }.to raise_error(ArgumentError)
+    expect { Magick::Pixel.from_hsla(0, 0, 0, -0.01) }.to raise_error(ArgumentError)
+    expect { Magick::Pixel.from_hsla(0, 0, 0, 1.01) }.to raise_error(RangeError)
+    expect { Magick::Pixel.from_hsla(360, 0, 0) }.to raise_error(RangeError)
+    expect { Magick::Pixel.from_hsla(0, 256, 0) }.to raise_error(RangeError)
+    expect { Magick::Pixel.from_hsla(0, 0, 256) }.to raise_error(RangeError)
     assert_nothing_raised { @pixel.to_hsla }
 
     args = [200, 125.125, 250.5, 0.6]
@@ -246,8 +246,8 @@ class PixelUT < Minitest::Test
     expect(@pixel.to_color(Magick::AllCompliance, false, 8, true)).to eq('#A52A2A')
     expect(@pixel.to_color(Magick::AllCompliance, false, 16, true)).to eq('#A5A52A2A2A2A')
 
-    assert_raise(ArgumentError) { @pixel.to_color(Magick::AllCompliance, false, 32) }
-    assert_raise(TypeError) { @pixel.to_color(1) }
+    expect { @pixel.to_color(Magick::AllCompliance, false, 32) }.to raise_error(ArgumentError)
+    expect { @pixel.to_color(1) }.to raise_error(TypeError)
   end
 
   def test_to_s
