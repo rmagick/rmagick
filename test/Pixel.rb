@@ -72,41 +72,41 @@ class PixelUT < Minitest::Test
 
   def test_case_eq
     pixel = Magick::Pixel.from_color('brown')
-    assert_true(@pixel === pixel)
-    assert_false(@pixel === 'red')
+    expect(@pixel === pixel).to be(true)
+    expect(@pixel === 'red').to be(false)
 
     pixel = Magick::Pixel.from_color('red')
-    assert_false(@pixel === pixel)
+    expect(@pixel === pixel).to be(false)
   end
 
   def test_clone
     pixel = @pixel.clone
-    assert_true(@pixel === pixel)
+    expect(pixel).to eq(@pixel)
     expect(pixel.object_id).not_to eq(@pixel.object_id)
 
     pixel = @pixel.taint.clone
-    assert_true(pixel.tainted?)
+    expect(pixel.tainted?).to be(true)
 
     pixel = @pixel.freeze.clone
-    assert_true(pixel.frozen?)
+    expect(pixel.frozen?).to be(true)
   end
 
   def test_dup
     pixel = @pixel.dup
-    assert_true(@pixel === pixel)
+    expect(@pixel === pixel).to be(true)
     expect(pixel.object_id).not_to eq(@pixel.object_id)
 
     pixel = @pixel.taint.dup
-    assert_true(pixel.tainted?)
+    expect(pixel.tainted?).to be(true)
 
     pixel = @pixel.freeze.dup
-    assert_false(pixel.frozen?)
+    expect(pixel.frozen?).to be(false)
   end
 
   def test_hash
     hash = nil
     expect { hash = @pixel.hash }.not_to raise_error
-    assert_not_nil(hash)
+    expect(hash).not_to be(nil)
     expect(hash).to eq(1_385_502_079)
 
     p = Magick::Pixel.new
@@ -124,17 +124,17 @@ class PixelUT < Minitest::Test
 
   def test_eql?
     p = @pixel
-    assert(@pixel.eql?(p))
+    expect(@pixel.eql?(p)).to be(true)
     p = Magick::Pixel.new
-    assert(!@pixel.eql?(p))
+    expect(@pixel.eql?(p)).to be(false)
   end
 
   def test_fcmp
     red = Magick::Pixel.from_color('red')
     blue = Magick::Pixel.from_color('blue')
     expect { red.fcmp(red) }.not_to raise_error
-    assert(red.fcmp(red))
-    assert(!red.fcmp(blue))
+    expect(red.fcmp(red)).to be(true)
+    expect(red.fcmp(blue)).to be(false)
 
     expect { red.fcmp(blue, 10) }.not_to raise_error
     expect { red.fcmp(blue, 10, Magick::RGBColorspace) }.not_to raise_error

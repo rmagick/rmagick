@@ -77,9 +77,9 @@ class Image_Attributes_UT < Minitest::Test
 
   def test_black_point_compensation
     expect { @img.black_point_compensation = true }.not_to raise_error
-    assert(@img.black_point_compensation)
+    expect(@img.black_point_compensation).to be(true)
     expect { @img.black_point_compensation = false }.not_to raise_error
-    expect(@img.black_point_compensation).to eq(false)
+    expect(@img.black_point_compensation).to be(false)
   end
 
   def test_border_color
@@ -530,9 +530,9 @@ class Image_Attributes_UT < Minitest::Test
 
   def test_start_loop
     expect { @img.start_loop }.not_to raise_error
-    assert(!@img.start_loop)
+    expect(@img.start_loop).to be(false)
     expect { @img.start_loop = true }.not_to raise_error
-    assert(@img.start_loop)
+    expect(@img.start_loop).to be(true)
   end
 
   def test_ticks_per_second

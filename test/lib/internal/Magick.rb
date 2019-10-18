@@ -17,7 +17,7 @@ class LibMagickUT < Minitest::Test
 
   def test_trace_proc
     Magick.trace_proc = proc do |which, description, id, method|
-      assert(which == :c)
+      expect(which).to eq(:c)
       expect(description).to be_instance_of(String)
       expect(id).to be_instance_of(String)
       expect(method).to eq(:initialize)
@@ -25,7 +25,7 @@ class LibMagickUT < Minitest::Test
     img = Magick::Image.new(20, 20)
 
     Magick.trace_proc = proc do |which, description, id, method|
-      assert(which == :d)
+      expect(which).to eq(:d)
       expect(description).to be_instance_of(String)
       expect(id).to be_instance_of(String)
       expect(method).to eq(:"destroy!")

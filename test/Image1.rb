@@ -156,18 +156,18 @@ class Image1_UT < Minitest::Test
   # test alpha backward compatibility. Image#alpha w/o arguments acts like alpha?
   def test_alpha_compat
     expect { @img.alpha }.not_to raise_error
-    assert !@img.alpha
+    expect(@img.alpha).to be(false)
     expect { @img.alpha Magick::ActivateAlphaChannel }.not_to raise_error
-    assert @img.alpha
+    expect(@img.alpha).to be(true)
   end
 
   def test_alpha
     expect { @img.alpha? }.not_to raise_error
-    assert !@img.alpha?
+    expect(@img.alpha?).to be(false)
     expect { @img.alpha Magick::ActivateAlphaChannel }.not_to raise_error
-    assert @img.alpha?
+    expect(@img.alpha?).to be(true)
     expect { @img.alpha Magick::DeactivateAlphaChannel }.not_to raise_error
-    assert !@img.alpha?
+    expect(@img.alpha?).to be(false)
     expect { @img.alpha Magick::OpaqueAlphaChannel }.not_to raise_error
     expect { @img.alpha Magick::SetAlphaChannel }.not_to raise_error
     expect { @img.alpha Magick::SetAlphaChannel, Magick::OpaqueAlphaChannel }.to raise_error(ArgumentError)

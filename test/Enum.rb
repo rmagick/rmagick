@@ -39,9 +39,9 @@ class EnumUT < Minitest::Test
     enum1 = Magick::Enum.new(:foo, 42)
     enum2 = Magick::Enum.new(:foo, 56)
 
-    assert_true(enum1 === enum1)
-    assert_false(enum1 === enum2)
-    assert_false(enum1 === 'x')
+    expect(enum1 === enum1).to be(true)
+    expect(enum1 === enum2).to be(false)
+    expect(enum1 === 'x').to be(false)
   end
 
   def test_bitwise_or

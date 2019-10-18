@@ -48,6 +48,10 @@ module Minitest
         assert_in_delta(@expected, @actual, @delta)
       when :eq
         assert_equal(@expected, @actual)
+      when :have_key
+        assert(@actual.key?(@expected))
+      when :include
+        assert(@actual.include?(@expected))
       when :match
         assert_match(@expected, @actual)
       when :raise_error
@@ -65,6 +69,8 @@ module Minitest
         refute_same(@expected, @actual)
       when :eq
         refute_equal(@expected, @actual)
+      when :have_key
+        refute(@actual.key?(@expected))
       when :raise_error
         @actual_block.call
       else
@@ -92,6 +98,16 @@ module Minitest
       self
     end
 
+    def have_key(expected) # rubocop:disable Naming/PredicateName
+      @expected = expected
+      :have_key
+    end
+
+    def include(expected)
+      @expected = expected
+      :include
+    end
+
     def match(expected)
       @expected = expected
       :match
@@ -116,10 +132,6 @@ module Minitest
       @expected = expected
       :respond_to
     end
-
-    alias assert_not_nil refute_nil
-    alias assert_true assert
-    alias assert_false refute
   end
 end
 
