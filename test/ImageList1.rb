@@ -144,7 +144,7 @@ class ImageList1UT < Minitest::Test
     expect(@list[-1]).to be_instance_of(Magick::Image)
     expect(@list[0, 1]).to be_instance_of(Magick::ImageList)
     expect(@list[0..2]).to be_instance_of(Magick::ImageList)
-    assert_nil(@list[20])
+    expect(@list[20]).to be(nil)
   end
 
   def test_aset
@@ -242,7 +242,7 @@ class ImageList1UT < Minitest::Test
       expect(@list[7]).to be(img)
       expect(@list.cur_image).to be(cur)
       img = @list.at(10)
-      assert_nil(img)
+      expect(img).to be(nil)
       expect(@list.cur_image).to be(cur)
       img = @list.at(-1)
       expect(@list[9]).to be(img)
@@ -340,7 +340,7 @@ class ImageList1UT < Minitest::Test
     expect { @list.clear }.not_to raise_error
     expect(@list).to be_instance_of(Magick::ImageList)
     expect(@list.length).to eq(0)
-    assert_nil(@list.scene)
+    expect(@list.scene).to be(nil)
   end
 
   def test_collect
@@ -631,7 +631,7 @@ class ImageList1UT < Minitest::Test
     end.not_to raise_error
 
     # returns nil if no changes are made
-    assert_nil(@list.reject! { false })
+    expect(@list.reject! { false }).to be(nil)
   end
 
   def test_replace1
@@ -640,7 +640,7 @@ class ImageList1UT < Minitest::Test
       res = @list.replace([])
       expect(@list).to be(res)
       expect(@list.length).to eq(0)
-      assert_nil(@list.scene)
+      expect(@list.scene).to be(nil)
     end.not_to raise_error
 
     # Replace empty list with non-empty list
@@ -793,7 +793,7 @@ class ImageList1UT < Minitest::Test
 
   def test_uniq!
     expect do
-      assert_nil(@list.uniq!)
+      expect(@list.uniq!).to be(nil)
     end.not_to raise_error
     @list[1] = @list[0]
     @list.scene = 7

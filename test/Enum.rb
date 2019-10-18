@@ -32,7 +32,7 @@ class EnumUT < Minitest::Test
     expect(enum1 <=> enum2).to eq(-1)
     expect(enum1 <=> enum4).to eq(0)
     expect(enum1 <=> enum3).to eq(1)
-    assert_nil(enum1 <=> 'x')
+    expect(enum1 <=> 'x').to be(nil)
   end
 
   def test_case_eq

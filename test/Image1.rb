@@ -30,7 +30,7 @@ class Image1_UT < Minitest::Test
     expect(img1 <=> img0).to eq(sig1 <=> sig0)
     expect(img0).to eq(img0)
     assert_not_equal(img0, img1)
-    assert_nil(img0 <=> nil)
+    expect(img0 <=> nil).to be(nil)
   end
 
   def test_adaptive_blur
@@ -177,8 +177,8 @@ class Image1_UT < Minitest::Test
 
   def test_aref
     img = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
-    assert_nil(img[nil])
-    assert_nil(img['label'])
+    expect(img[nil]).to be(nil)
+    expect(img['label']).to be(nil)
     assert_match(/^Creator: PolyView/, img[:comment])
   end
 
@@ -224,7 +224,7 @@ class Image1_UT < Minitest::Test
     expect do
       res = @img.auto_orient!
       # When not changed, returns nil
-      assert_nil(res)
+      expect(res).to be(nil)
     end.not_to raise_error
   end
 

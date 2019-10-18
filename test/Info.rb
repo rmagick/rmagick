@@ -9,13 +9,13 @@ class InfoUT < Minitest::Test
   def test_options
     # 1-argument form
     expect { @info['fill'] }.not_to raise_error
-    assert_nil(@info['fill'])
+    expect(@info['fill']).to be(nil)
 
     expect { @info['fill'] = 'red' }.not_to raise_error
     expect(@info['fill']).to eq('red')
 
     expect { @info['fill'] = nil }.not_to raise_error
-    assert_nil(@info['fill'])
+    expect(@info['fill']).to be(nil)
 
     # 2-argument form
     expect { @info['tiff', 'bits-per-sample'] = 2 }.not_to raise_error
@@ -26,7 +26,7 @@ class InfoUT < Minitest::Test
     expect(@info['tiff', 'bits-per-sample']).to eq('4')
 
     expect { @info.undefine('tiff', 'bits-per-sample') }.not_to raise_error
-    assert_nil(@info['tiff', 'bits-per-sample'])
+    expect(@info['tiff', 'bits-per-sample']).to be(nil)
     expect { @info.undefine('tiff', 'a' * 10_000) }.to raise_error(ArgumentError)
   end
 
@@ -53,14 +53,14 @@ class InfoUT < Minitest::Test
     expect { @info.attenuate = 5.25 }.not_to raise_error
     expect(@info.attenuate).to eq(5.25)
     expect { @info.attenuate = nil }.not_to raise_error
-    assert_nil(@info.attenuate)
+    expect(@info.attenuate).to be(nil)
   end
 
   def test_authenticate
     expect { @info.authenticate = 'string' }.not_to raise_error
     expect(@info.authenticate).to eq('string')
     expect { @info.authenticate = nil }.not_to raise_error
-    assert_nil(@info.authenticate)
+    expect(@info.authenticate).to be(nil)
     expect { @info.authenticate = '' }.not_to raise_error
     expect(@info.authenticate).to eq('')
   end
@@ -87,7 +87,7 @@ class InfoUT < Minitest::Test
     expect { @info.caption = 'string' }.not_to raise_error
     expect(@info.caption).to eq('string')
     expect { @info.caption = nil }.not_to raise_error
-    assert_nil(@info.caption)
+    expect(@info.caption).to be(nil)
     expect { Magick::Image.new(20, 20) { self.caption = 'string' } }.not_to raise_error
   end
 
@@ -130,7 +130,7 @@ class InfoUT < Minitest::Test
     expect { @info.density = Magick::Geometry.new(72, 72) }.not_to raise_error
     expect(@info.density).to eq('72x72')
     expect { @info.density = nil }.not_to raise_error
-    assert_nil(@info.density)
+    expect(@info.density).to be(nil)
     expect { @info.density = 'aaa' }.to raise_error(ArgumentError)
   end
 
@@ -138,7 +138,7 @@ class InfoUT < Minitest::Test
     expect { @info.delay = 60 }.not_to raise_error
     expect(@info.delay).to eq(60)
     expect { @info.delay = nil }.not_to raise_error
-    assert_nil(@info.delay)
+    expect(@info.delay).to be(nil)
     expect { @info.delay = '60' }.to raise_error(TypeError)
   end
 
@@ -177,7 +177,7 @@ class InfoUT < Minitest::Test
     expect { @info.extract = Magick::Geometry.new(100, 100) }.not_to raise_error
     expect(@info.extract).to eq('100x100')
     expect { @info.extract = nil }.not_to raise_error
-    assert_nil(@info.extract)
+    expect(@info.extract).to be(nil)
     expect { @info.extract = 'aaa' }.to raise_error(ArgumentError)
   end
 
@@ -190,13 +190,13 @@ class InfoUT < Minitest::Test
 
   def test_fill
     expect { @info.fill }.not_to raise_error
-    assert_nil(@info.fill)
+    expect(@info.fill).to be(nil)
 
     expect { @info.fill = 'white' }.not_to raise_error
     expect(@info.fill).to eq('white')
 
     expect { @info.fill = nil }.not_to raise_error
-    assert_nil(@info.fill)
+    expect(@info.fill).to be(nil)
 
     expect { @info.fill = 'xxx' }.to raise_error(ArgumentError)
   end
@@ -205,7 +205,7 @@ class InfoUT < Minitest::Test
     expect { @info.font = 'Arial' }.not_to raise_error
     expect(@info.font).to eq('Arial')
     expect { @info.font = nil }.not_to raise_error
-    assert_nil(@info.font)
+    expect(@info.font).to be(nil)
   end
 
   def test_format
@@ -251,7 +251,7 @@ class InfoUT < Minitest::Test
     expect { @info.label = 'string' }.not_to raise_error
     expect(@info.label).to eq('string')
     expect { @info.label = nil }.not_to raise_error
-    assert_nil(@info.label)
+    expect(@info.label).to be(nil)
   end
 
   def test_matte_color
@@ -308,7 +308,7 @@ class InfoUT < Minitest::Test
     expect { @info.origin = Magick::Geometry.new(nil, nil, 10, 10) }.not_to raise_error
     expect(@info.origin).to eq('+10+10')
     expect { @info.origin = nil }.not_to raise_error
-    assert_nil(@info.origin)
+    expect(@info.origin).to be(nil)
     expect { @info.origin = 'aaa' }.to raise_error(ArgumentError)
   end
 
@@ -316,7 +316,7 @@ class InfoUT < Minitest::Test
     expect { @info.page = '612x792>' }.not_to raise_error
     expect(@info.page).to eq('612x792>')
     expect { @info.page = nil }.not_to raise_error
-    assert_nil(@info.page)
+    expect(@info.page).to be(nil)
   end
 
   def test_pointsize
@@ -333,7 +333,7 @@ class InfoUT < Minitest::Test
     expect { @info.sampling_factor = '2x1' }.not_to raise_error
     expect(@info.sampling_factor).to eq('2x1')
     expect { @info.sampling_factor = nil }.not_to raise_error
-    assert_nil(@info.sampling_factor)
+    expect(@info.sampling_factor).to be(nil)
   end
 
   def test_scene
@@ -346,7 +346,7 @@ class InfoUT < Minitest::Test
     expect { @info.server_name = 'foo' }.not_to raise_error
     expect(@info.server_name).to eq('foo')
     expect { @info.server_name = nil }.not_to raise_error
-    assert_nil(@info.server_name)
+    expect(@info.server_name).to be(nil)
   end
 
   def test_size
@@ -355,19 +355,19 @@ class InfoUT < Minitest::Test
     expect { @info.size = Magick::Geometry.new(100, 200) }.not_to raise_error
     expect(@info.size).to eq('100x200')
     expect { @info.size = nil }.not_to raise_error
-    assert_nil(@info.size)
+    expect(@info.size).to be(nil)
     expect { @info.size = 'aaa' }.to raise_error(ArgumentError)
   end
 
   def test_stroke
     expect { @info.stroke }.not_to raise_error
-    assert_nil(@info.stroke)
+    expect(@info.stroke).to be(nil)
 
     expect { @info.stroke = 'white' }.not_to raise_error
     expect(@info.stroke).to eq('white')
 
     expect { @info.stroke = nil }.not_to raise_error
-    assert_nil(@info.stroke)
+    expect(@info.stroke).to be(nil)
 
     expect { @info.stroke = 'xxx' }.to raise_error(ArgumentError)
   end
@@ -378,7 +378,7 @@ class InfoUT < Minitest::Test
     expect { @info.stroke_width = 5.25 }.not_to raise_error
     expect(@info.stroke_width).to eq(5.25)
     expect { @info.stroke_width = nil }.not_to raise_error
-    assert_nil(@info.stroke_width)
+    expect(@info.stroke_width).to be(nil)
     expect { @info.stroke_width = 'xxx' }.to raise_error(TypeError)
   end
 
@@ -404,13 +404,13 @@ class InfoUT < Minitest::Test
 
   def test_undercolor
     expect { @info.undercolor }.not_to raise_error
-    assert_nil(@info.undercolor)
+    expect(@info.undercolor).to be(nil)
 
     expect { @info.undercolor = 'white' }.not_to raise_error
     expect(@info.undercolor).to eq('white')
 
     expect { @info.undercolor = nil }.not_to raise_error
-    assert_nil(@info.undercolor)
+    expect(@info.undercolor).to be(nil)
 
     expect { @info.undercolor = 'xxx' }.to raise_error(ArgumentError)
   end
@@ -426,7 +426,7 @@ class InfoUT < Minitest::Test
     expect { @info.view = 'string' }.not_to raise_error
     expect(@info.view).to eq('string')
     expect { @info.view = nil }.not_to raise_error
-    assert_nil(@info.view)
+    expect(@info.view).to be(nil)
     expect { @info.view = '' }.not_to raise_error
     expect(@info.view).to eq('')
   end
