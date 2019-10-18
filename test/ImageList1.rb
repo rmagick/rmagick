@@ -1,8 +1,7 @@
 require 'rmagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner'
+require 'minitest/autorun'
 
-class ImageList1UT < Test::Unit::TestCase
+class ImageList1UT < Minitest::Test
   def setup
     @list = Magick::ImageList.new(*FILES[0..9])
     @list2 = Magick::ImageList.new # intersection is 5..9
@@ -845,7 +844,7 @@ class ImageList1UT < Test::Unit::TestCase
     list2 = Magick::ImageList.new
     assert_raise(TypeError) { list2 <=> @list }
     assert_raise(TypeError) { @list <=> list2 }
-    assert_nothing_raised(TypeError) { list <=> list2 }
+    assert_nothing_raised { list <=> list2 }
   end
 end
 

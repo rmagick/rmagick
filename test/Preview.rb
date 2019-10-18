@@ -1,8 +1,7 @@
 require 'rmagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner'
+require 'minitest/autorun'
 
-class PreviewUT < Test::Unit::TestCase
+class PreviewUT < Minitest::Test
   def test_preview
     hat = Magick::Image.read(IMAGES_DIR + '/Flower_Hat.jpg').first
     assert_nothing_raised do

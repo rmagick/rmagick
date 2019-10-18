@@ -5,7 +5,7 @@ FLOWER_HAT = IMAGES_DIR + '/Flower_Hat.jpg'
 IMAGE_WITH_PROFILE = IMAGES_DIR + '/image_with_profile.jpg'
 
 require 'simplecov'
-require 'test/unit'
+require 'minitest/autorun'
 require 'pry'
 $LOAD_PATH.unshift(File.join(root_dir, 'lib'))
 $LOAD_PATH.unshift(File.join(root_dir, 'test'))
@@ -26,6 +26,26 @@ end
 
 Dir.glob(File.join(__dir__, 'appearance/**/*.rb')) do |file|
   require file
+end
+
+module Minitest
+  module Assertions
+    def assert_nothing_raised
+      yield
+    end
+
+    def assert_block
+      assert(yield)
+    end
+
+    alias assert_nothing_thrown assert_nothing_raised
+    alias assert_raise assert_raises
+    alias assert_not_same refute_same
+    alias assert_not_equal refute_equal
+    alias assert_not_nil refute_nil
+    alias assert_true assert
+    alias assert_false refute
+  end
 end
 
 require 'Draw.rb'

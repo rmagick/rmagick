@@ -1,14 +1,13 @@
 require 'fileutils'
 require 'rmagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner'
+require 'minitest/autorun'
 
 # TODO
 #   test frozen attributes!
 #   improve test_directory
 #   improve test_montage
 
-class Image_Attributes_UT < Test::Unit::TestCase
+class Image_Attributes_UT < Minitest::Test
   def setup
     @img = Magick::Image.new(100, 100)
     gc = Magick::Draw.new

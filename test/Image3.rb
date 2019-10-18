@@ -1,9 +1,8 @@
 require 'rmagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner'
+require 'minitest/autorun'
 require 'fileutils'
 
-class Image3_UT < Test::Unit::TestCase
+class Image3_UT < Minitest::Test
   def setup
     @img = Magick::Image.new(20, 20)
     @p = Magick::Image.read(IMAGE_WITH_PROFILE).first.color_profile

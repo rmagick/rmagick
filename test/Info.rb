@@ -1,8 +1,7 @@
 require 'rmagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner'
+require 'minitest/autorun'
 
-class InfoUT < Test::Unit::TestCase
+class InfoUT < Minitest::Test
   def setup
     @info = Magick::Image::Info.new
   end
@@ -379,7 +378,7 @@ class InfoUT < Test::Unit::TestCase
     assert_nothing_raised { @info.stroke_width = 5.25 }
     assert_equal(5.25, @info.stroke_width)
     assert_nothing_raised { @info.stroke_width = nil }
-    assert_equal(nil, @info.stroke_width)
+    assert_nil(@info.stroke_width)
     assert_raise(TypeError) { @info.stroke_width = 'xxx' }
   end
 

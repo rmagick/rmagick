@@ -1,8 +1,7 @@
 require 'rmagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner'
+require 'minitest/autorun'
 
-class StructUT < Test::Unit::TestCase
+class StructUT < Minitest::Test
   def test_chromaticity_to_s
     image = Magick::Image.new(10, 10)
     assert_match(/red_primary=\(x=.+,y=.+\) green_primary=\(x=.+,y=.+\) blue_primary=\(x=.+,y=.+\) white_point=\(x=.+,y=.+\)/, image.chromaticity.to_s)

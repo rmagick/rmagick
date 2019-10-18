@@ -1,9 +1,8 @@
 require 'rmagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner'
+require 'minitest/autorun'
 
-class KernelInfoUT < Test::Unit::TestCase
-  setup do
+class KernelInfoUT < Minitest::Test
+  def setup
     @kernel = Magick::KernelInfo.new('Octagon')
   end
 

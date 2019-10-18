@@ -1,8 +1,7 @@
 require 'rmagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner'
+require 'minitest/autorun'
 
-class LibMagickUT < Test::Unit::TestCase
+class LibMagickUT < Minitest::Test
   def test_formats
     assert_instance_of(Hash, Magick.formats)
     Magick.formats.each do |f, v|

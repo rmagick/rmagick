@@ -1,9 +1,8 @@
 require 'fileutils'
 require 'rmagick'
-require 'test/unit'
-require 'test/unit/ui/console/testrunner'
+require 'minitest/autorun'
 
-class ImageList2UT < Test::Unit::TestCase
+class ImageList2UT < Minitest::Test
   def setup
     @ilist = Magick::ImageList.new
   end
