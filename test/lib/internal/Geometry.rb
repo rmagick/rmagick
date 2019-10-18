@@ -3,27 +3,27 @@ require 'minitest/autorun'
 
 class LibGeometryUT < Minitest::Test
   def test_constants
-    assert_kind_of(Magick::GeometryValue, Magick::PercentGeometry)
+    expect(Magick::PercentGeometry).to be_kind_of(Magick::GeometryValue)
     expect(Magick::PercentGeometry.to_s).to eq('PercentGeometry')
     expect(Magick::PercentGeometry.to_i).to eq(1)
 
-    assert_kind_of(Magick::GeometryValue, Magick::AspectGeometry)
+    expect(Magick::AspectGeometry).to be_kind_of(Magick::GeometryValue)
     expect(Magick::AspectGeometry.to_s).to eq('AspectGeometry')
     expect(Magick::AspectGeometry.to_i).to eq(2)
 
-    assert_kind_of(Magick::GeometryValue, Magick::LessGeometry)
+    expect(Magick::LessGeometry).to be_kind_of(Magick::GeometryValue)
     expect(Magick::LessGeometry.to_s).to eq('LessGeometry')
     expect(Magick::LessGeometry.to_i).to eq(3)
 
-    assert_kind_of(Magick::GeometryValue, Magick::GreaterGeometry)
+    expect(Magick::GreaterGeometry).to be_kind_of(Magick::GeometryValue)
     expect(Magick::GreaterGeometry.to_s).to eq('GreaterGeometry')
     expect(Magick::GreaterGeometry.to_i).to eq(4)
 
-    assert_kind_of(Magick::GeometryValue, Magick::AreaGeometry)
+    expect(Magick::AreaGeometry).to be_kind_of(Magick::GeometryValue)
     expect(Magick::AreaGeometry.to_s).to eq('AreaGeometry')
     expect(Magick::AreaGeometry.to_i).to eq(5)
 
-    assert_kind_of(Magick::GeometryValue, Magick::MinimumGeometry)
+    expect(Magick::MinimumGeometry).to be_kind_of(Magick::GeometryValue)
     expect(Magick::MinimumGeometry.to_s).to eq('MinimumGeometry')
     expect(Magick::MinimumGeometry.to_i).to eq(6)
   end

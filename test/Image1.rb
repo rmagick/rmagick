@@ -364,7 +364,7 @@ class Image1_UT < Minitest::Test
     expect { @img.channel_depth(Magick::CyanChannel, Magick::BlackChannel) }.not_to raise_error
     expect { @img.channel_depth(Magick::GrayChannel) }.not_to raise_error
     expect { @img.channel_depth(2) }.to raise_error(TypeError)
-    assert_kind_of(Integer, @img.channel_depth(Magick::RedChannel))
+    expect(@img.channel_depth(Magick::RedChannel)).to be_kind_of(Integer)
   end
 
   def test_channel_extrema
@@ -372,8 +372,8 @@ class Image1_UT < Minitest::Test
       res = @img.channel_extrema
       expect(res).to be_instance_of(Array)
       expect(res.length).to eq(2)
-      assert_kind_of(Integer, res[0])
-      assert_kind_of(Integer, res[1])
+      expect(res[0]).to be_kind_of(Integer)
+      expect(res[1]).to be_kind_of(Integer)
     end.not_to raise_error
     expect { @img.channel_extrema(Magick::RedChannel) }.not_to raise_error
     expect { @img.channel_extrema(Magick::RedChannel, Magick::BlueChannel) }.not_to raise_error

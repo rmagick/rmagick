@@ -46,6 +46,8 @@ module Minitest
         assert_same(@expected, @actual)
       when :be_instance_of
         assert_instance_of(@expected, @actual)
+      when :be_kind_of
+        assert_kind_of(@expected, @actual)
       when :eq
         assert_equal(@expected, @actual)
       when :raise_error
@@ -74,6 +76,11 @@ module Minitest
     def be_instance_of(expected)
       @expected = expected
       :be_instance_of
+    end
+
+    def be_kind_of(expected)
+      @expected = expected
+      :be_kind_of
     end
 
     def eq(expected)

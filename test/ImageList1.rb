@@ -86,7 +86,7 @@ class ImageList1UT < Minitest::Test
 
   def test_iterations
     expect { @list.iterations }.not_to raise_error
-    assert_kind_of(Integer, @list.iterations)
+    expect(@list.iterations).to be_kind_of(Integer)
     expect { @list.iterations = 20 }.not_to raise_error
     expect(@list.iterations).to eq(20)
     expect { @list.iterations = 'x' }.to raise_error(ArgumentError)

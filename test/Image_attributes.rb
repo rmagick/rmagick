@@ -162,7 +162,7 @@ class Image_Attributes_UT < Minitest::Test
     expect(@img.colors).to eq(0)
     img = @img.copy
     img.class_type = Magick::PseudoClass
-    assert_kind_of(Integer, img.colors)
+    expect(img.colors).to be_kind_of(Integer)
     expect { img.colors = 2 }.to raise_error(NoMethodError)
   end
 
@@ -431,7 +431,7 @@ class Image_Attributes_UT < Minitest::Test
 
   def test_number_colors
     expect { @hat.number_colors }.not_to raise_error
-    assert_kind_of(Integer, @hat.number_colors)
+    expect(@hat.number_colors).to be_kind_of(Integer)
     expect { @hat.number_colors = 2 }.to raise_error(NoMethodError)
   end
 
@@ -545,7 +545,7 @@ class Image_Attributes_UT < Minitest::Test
 
   def test_total_colors
     expect { @hat.total_colors }.not_to raise_error
-    assert_kind_of(Integer, @hat.total_colors)
+    expect(@hat.total_colors).to be_kind_of(Integer)
     expect { @img.total_colors = 2 }.to raise_error(NoMethodError)
   end
 

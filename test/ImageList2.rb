@@ -255,7 +255,7 @@ class ImageList2UT < Minitest::Test
       expect do
         res = @ilist.optimize_layers(method)
         expect(res).to be_instance_of(Magick::ImageList)
-        assert_kind_of(Integer, res.length)
+        expect(res.length).to be_kind_of(Integer)
       end.not_to raise_error
     end
 
