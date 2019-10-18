@@ -127,11 +127,11 @@ class Image2_UT < Minitest::Test
 
   def test_compress_colormap!
     # DirectClass images are converted to PseudoClass in older versions of ImageMagick.
-    assert_equal(Magick::DirectClass, @img.class_type)
+    expect(@img.class_type).to eq(Magick::DirectClass)
     assert_nothing_raised { @img.compress_colormap! }
-    # assert_equal(Magick::PseudoClass, @img.class_type)
+    # expect(@img.class_type).to eq(Magick::PseudoClass)
     @img = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
-    assert_equal(Magick::PseudoClass, @img.class_type)
+    expect(@img.class_type).to eq(Magick::PseudoClass)
     assert_nothing_raised { @img.compress_colormap! }
   end
 
@@ -226,13 +226,13 @@ class Image2_UT < Minitest::Test
   def test_copy
     assert_nothing_raised do
       ditto = @img.copy
-      assert_equal(@img, ditto)
+      expect(ditto).to eq(@img)
     end
     ditto = @img.copy
-    assert_equal(@img.tainted?, ditto.tainted?)
+    expect(ditto.tainted?).to eq(@img.tainted?)
     @img.taint
     ditto = @img.copy
-    assert_equal(@img.tainted?, ditto.tainted?)
+    expect(ditto.tainted?).to eq(@img.tainted?)
   end
 
   def test_crop
@@ -278,7 +278,7 @@ class Image2_UT < Minitest::Test
       res = @img.cycle_colormap(5)
       assert_instance_of(Magick::Image, res)
       assert_not_same(@img, res)
-      assert_equal(Magick::PseudoClass, res.class_type)
+      expect(res.class_type).to eq(Magick::PseudoClass)
     end
   end
 
@@ -290,13 +290,13 @@ class Image2_UT < Minitest::Test
     end
     assert_instance_of(Magick::Image, res)
     assert_not_same(@img, res)
-    assert_equal(@img.columns, res.columns)
-    assert_equal(@img.rows, res.rows)
+    expect(res.columns).to eq(@img.columns)
+    expect(res.rows).to eq(@img.rows)
     assert_instance_of(Magick::Image, res2)
     assert_not_same(@img, res2)
-    assert_equal(@img.columns, res2.columns)
-    assert_equal(@img.rows, res2.rows)
-    assert_equal(@img, res2)
+    expect(res2.columns).to eq(@img.columns)
+    expect(res2.rows).to eq(@img.rows)
+    expect(res2).to eq(@img)
   end
 
   def test_define
@@ -332,9 +332,9 @@ class Image2_UT < Minitest::Test
     methods = Magick::Image.instance_methods(false).sort
     methods -= %i[__display__ destroy! destroyed? inspect cur_image marshal_load]
 
-    assert_equal(false, @img.destroyed?)
+    expect(@img.destroyed?).to eq(false)
     @img.destroy!
-    assert_equal(true, @img.destroyed?)
+    expect(@img.destroyed?).to eq(true)
     assert_raises(Magick::DestroyedImageError) { @img.check_destroyed }
 
     methods.each do |method|
@@ -379,14 +379,14 @@ class Image2_UT < Minitest::Test
       name = File.basename m[0]
 
       assert(%i[c d].include?(which), "unexpected value for which: #{which}")
-      assert_equal(:destroy!, method) if which == :d
+      expect(method).to eq(:destroy!) if which == :d
 
       if which == :c
         assert(!images.key?(addr), 'duplicate image addresses')
         images[addr] = name
       else
         assert(images.key?(addr), 'destroying image that was not created')
-        assert_equal(name, images[addr])
+        expect(images[addr]).to eq(name)
       end
     end
 
@@ -407,7 +407,7 @@ class Image2_UT < Minitest::Test
     assert_nothing_raised do
       res = img1.difference(img2)
       assert_instance_of(Array, res)
-      assert_equal(3, res.length)
+      expect(res.length).to eq(3)
       assert_instance_of(Float, res[0])
       assert_instance_of(Float, res[1])
       assert_instance_of(Float, res[2])
@@ -482,7 +482,7 @@ class Image2_UT < Minitest::Test
     assert_nothing_raised do
       metric = @img.distortion_channel(@img, Magick::MeanAbsoluteErrorMetric)
       assert_instance_of(Float, metric)
-      assert_equal(0.0, metric)
+      expect(metric).to eq(0.0)
     end
     assert_nothing_raised { @img.distortion_channel(@img, Magick::MeanSquaredErrorMetric) }
     assert_nothing_raised { @img.distortion_channel(@img, Magick::PeakAbsoluteErrorMetric) }
@@ -516,13 +516,13 @@ class Image2_UT < Minitest::Test
   def test_dup
     assert_nothing_raised do
       ditto = @img.dup
-      assert_equal(@img, ditto)
+      expect(ditto).to eq(@img)
     end
     ditto = @img.dup
-    assert_equal(@img.tainted?, ditto.tainted?)
+    expect(ditto.tainted?).to eq(@img.tainted?)
     @img.taint
     ditto = @img.dup
-    assert_equal(@img.tainted?, ditto.tainted?)
+    expect(ditto.tainted?).to eq(@img.tainted?)
   end
 
   def test_each_profile
@@ -531,8 +531,8 @@ class Image2_UT < Minitest::Test
     @img.iptc_profile = 'test profile'
     assert_nothing_raised do
       @img.each_profile do |name, value|
-        assert_equal('iptc', name)
-        assert_equal('test profile', value)
+        expect(name).to eq('iptc')
+        expect(value).to eq('test profile')
       end
     end
   end
@@ -601,19 +601,19 @@ class Image2_UT < Minitest::Test
     img = Magick::Image.new(200, 200)
     assert_nothing_raised { res = @img.excerpt(20, 20, 50, 100) }
     assert_not_same(img, res)
-    assert_equal(50, res.columns)
-    assert_equal(100, res.rows)
+    expect(res.columns).to eq(50)
+    expect(res.rows).to eq(100)
 
     assert_nothing_raised { img.excerpt!(20, 20, 50, 100) }
-    assert_equal(50, img.columns)
-    assert_equal(100, img.rows)
+    expect(img.columns).to eq(50)
+    expect(img.rows).to eq(100)
   end
 
   def test_export_pixels
     assert_nothing_raised do
       res = @img.export_pixels
       assert_instance_of(Array, res)
-      assert_equal(@img.columns * @img.rows * 'RGB'.length, res.length)
+      expect(res.length).to eq(@img.columns * @img.rows * 'RGB'.length)
       res.each do |p|
         assert_kind_of(Integer, p)
       end
@@ -624,11 +624,11 @@ class Image2_UT < Minitest::Test
     assert_nothing_raised { @img.export_pixels(0, 0, 10, 10) }
     assert_nothing_raised do
       res = @img.export_pixels(0, 0, 10, 10, 'RGBA')
-      assert_equal(10 * 10 * 'RGBA'.length, res.length)
+      expect(res.length).to eq(10 * 10 * 'RGBA'.length)
     end
     assert_nothing_raised do
       res = @img.export_pixels(0, 0, 10, 10, 'I')
-      assert_equal(10 * 10 * 'I'.length, res.length)
+      expect(res.length).to eq(10 * 10 * 'I'.length)
     end
 
     # too many arguments
@@ -639,7 +639,7 @@ class Image2_UT < Minitest::Test
     assert_nothing_raised do
       res = @img.export_pixels_to_str
       assert_instance_of(String, res)
-      assert_equal(@img.columns * @img.rows * 'RGB'.length, res.length)
+      expect(res.length).to eq(@img.columns * @img.rows * 'RGB'.length)
     end
     assert_nothing_raised { @img.export_pixels_to_str(0) }
     assert_nothing_raised { @img.export_pixels_to_str(0, 0) }
@@ -647,32 +647,32 @@ class Image2_UT < Minitest::Test
     assert_nothing_raised { @img.export_pixels_to_str(0, 0, 10, 10) }
     assert_nothing_raised do
       res = @img.export_pixels_to_str(0, 0, 10, 10, 'RGBA')
-      assert_equal(10 * 10 * 'RGBA'.length, res.length)
+      expect(res.length).to eq(10 * 10 * 'RGBA'.length)
     end
     assert_nothing_raised do
       res = @img.export_pixels_to_str(0, 0, 10, 10, 'I')
-      assert_equal(10 * 10 * 'I'.length, res.length)
+      expect(res.length).to eq(10 * 10 * 'I'.length)
     end
 
     assert_nothing_raised do
       res = @img.export_pixels_to_str(0, 0, 10, 10, 'I', Magick::CharPixel)
-      assert_equal(10 * 10 * 1, res.length)
+      expect(res.length).to eq(10 * 10 * 1)
     end
     assert_nothing_raised do
       res = @img.export_pixels_to_str(0, 0, 10, 10, 'I', Magick::ShortPixel)
-      assert_equal(10 * 10 * 2, res.length)
+      expect(res.length).to eq(10 * 10 * 2)
     end
     assert_nothing_raised do
       res = @img.export_pixels_to_str(0, 0, 10, 10, 'I', Magick::LongPixel)
-      assert_equal(10 * 10 * [1].pack('L!').length, res.length)
+      expect(res.length).to eq(10 * 10 * [1].pack('L!').length)
     end
     assert_nothing_raised do
       res = @img.export_pixels_to_str(0, 0, 10, 10, 'I', Magick::FloatPixel)
-      assert_equal(10 * 10 * 4, res.length)
+      expect(res.length).to eq(10 * 10 * 4)
     end
     assert_nothing_raised do
       res = @img.export_pixels_to_str(0, 0, 10, 10, 'I', Magick::DoublePixel)
-      assert_equal(10 * 10 * 8, res.length)
+      expect(res.length).to eq(10 * 10 * 8)
     end
     assert_nothing_raised { @img.export_pixels_to_str(0, 0, 10, 10, 'I', Magick::QuantumPixel) }
 
@@ -687,8 +687,8 @@ class Image2_UT < Minitest::Test
     res = @img.extent(40, 40)
     assert_instance_of(Magick::Image, res)
     assert_not_same(@img, res)
-    assert_equal(40, res.columns)
-    assert_equal(40, res.rows)
+    expect(res.columns).to eq(40)
+    expect(res.rows).to eq(40)
     assert_nothing_raised { @img.extent(40, 40, 5) }
     assert_nothing_raised { @img.extent(40, 40, 5, 5) }
     assert_raises(ArgumentError) { @img.extent(-40) }
@@ -709,26 +709,26 @@ class Image2_UT < Minitest::Test
       x, y = girl.find_similar_region(region)
       assert_not_nil(x)
       assert_not_nil(y)
-      assert_equal(10, x)
-      assert_equal(10, y)
+      expect(x).to eq(10)
+      expect(y).to eq(10)
     end
     assert_nothing_raised do
       x, y = girl.find_similar_region(region, 0)
-      assert_equal(10, x)
-      assert_equal(10, y)
+      expect(x).to eq(10)
+      expect(y).to eq(10)
     end
     assert_nothing_raised do
       x, y = girl.find_similar_region(region, 0, 0)
-      assert_equal(10, x)
-      assert_equal(10, y)
+      expect(x).to eq(10)
+      expect(y).to eq(10)
     end
 
     list = Magick::ImageList.new
     list << region
     assert_nothing_raised do
       x, y = girl.find_similar_region(list, 0, 0)
-      assert_equal(10, x)
-      assert_equal(10, y)
+      expect(x).to eq(10)
+      expect(y).to eq(10)
     end
 
     x = girl.find_similar_region(@img)
@@ -908,7 +908,7 @@ class Image2_UT < Minitest::Test
     assert_nothing_raised do
       pixels = @img.get_pixels(0, 0, @img.columns, 1)
       assert_instance_of(Array, pixels)
-      assert_equal(@img.columns, pixels.length)
+      expect(pixels.length).to eq(@img.columns)
       assert_block do
         pixels.all? { |p| p.is_a? Magick::Pixel }
       end
@@ -988,11 +988,11 @@ class Image2_UT < Minitest::Test
   def test_level2
     img1 = @img.level(10, 2, 200)
     img2 = @img.level(10, 200, 2)
-    assert_equal(img2, img1)
+    expect(img1).to eq(img2)
 
     # Ensure that level2 uses new arg order
     img1 = @img.level2(10, 200, 2)
-    assert_equal(img2, img1)
+    expect(img1).to eq(img2)
 
     assert_nothing_raised { @img.level2 }
     assert_nothing_raised { @img.level2(10) }
@@ -1069,8 +1069,8 @@ class Image2_UT < Minitest::Test
   #       assert_nothing_raised do
   #         res = @img.liquid_rescale(15, 15)
   #       end
-  #       assert_equal(15, res.columns)
-  #       assert_equal(15, res.rows)
+  #       expect(res.columns).to eq(15)
+  #       expect(res.rows).to eq(15)
   #       assert_nothing_raised { @img.liquid_rescale(15, 15, 0, 0) }
   #       assert_raise(ArgumentError) { @img.liquid_rescale(15) }
   #       assert_raise(ArgumentError) { @img.liquid_rescale(15, 15, 0, 0, 0) }
@@ -1097,7 +1097,7 @@ class Image2_UT < Minitest::Test
     img2 = nil
     assert_nothing_raised { d = Marshal.dump(img) }
     assert_nothing_raised { img2 = Marshal.load(d) }
-    assert_equal(img, img2)
+    expect(img2).to eq(img)
   end
 
   def test_mask
@@ -1107,8 +1107,8 @@ class Image2_UT < Minitest::Test
     assert_nothing_raised { res = @img.mask }
     assert_not_nil(res)
     assert_not_same(cimg, res)
-    assert_equal(20, res.columns)
-    assert_equal(20, res.rows)
+    expect(res.columns).to eq(20)
+    expect(res.rows).to eq(20)
 
     assert_raise(ArgumentError) { @img.mask(cimg, 'x') }
     # mask expects an Image and calls `cur_image'
@@ -1367,22 +1367,22 @@ class Image2_UT < Minitest::Test
       assert_instance_of(Magick::Pixel, res)
     end
     res = @img.pixel_color(0, 0)
-    assert_equal(@img.background_color, res.to_color)
+    expect(res.to_color).to eq(@img.background_color)
     res = @img.pixel_color(0, 0, 'red')
-    assert_equal('white', res.to_color)
+    expect(res.to_color).to eq('white')
     res = @img.pixel_color(0, 0)
-    assert_equal('red', res.to_color)
+    expect(res.to_color).to eq('red')
 
     blue = Magick::Pixel.new(0, 0, Magick::QuantumRange)
     assert_nothing_raised { @img.pixel_color(0, 0, blue) }
     # If args are out-of-bounds return the background color
     img = Magick::Image.new(10, 10) { self.background_color = 'blue' }
-    assert_equal('blue', img.pixel_color(50, 50).to_color)
+    expect(img.pixel_color(50, 50).to_color).to eq('blue')
 
     assert_nothing_raised do
       @img.class_type = Magick::PseudoClass
       res = @img.pixel_color(0, 0, 'red')
-      assert_equal('blue', res.to_color)
+      expect(res.to_color).to eq('blue')
     end
   end
 

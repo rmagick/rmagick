@@ -33,14 +33,14 @@ class ImageList2UT < Minitest::Test
   def test_clone
     @ilist.read(*Dir[IMAGES_DIR + '/Button_*.gif'])
     ilist2 = @ilist.clone
-    assert_equal(ilist2, @ilist)
-    assert_equal(@ilist.frozen?, ilist2.frozen?)
-    assert_equal(@ilist.tainted?, ilist2.tainted?)
+    expect(@ilist).to eq(ilist2)
+    expect(ilist2.frozen?).to eq(@ilist.frozen?)
+    expect(ilist2.tainted?).to eq(@ilist.tainted?)
     @ilist.taint
     @ilist.freeze
     ilist2 = @ilist.clone
-    assert_equal(@ilist.frozen?, ilist2.frozen?)
-    assert_equal(@ilist.tainted?, ilist2.tainted?)
+    expect(ilist2.frozen?).to eq(@ilist.frozen?)
+    expect(ilist2.tainted?).to eq(@ilist.tainted?)
   end
 
   def test_coalesce
@@ -48,8 +48,8 @@ class ImageList2UT < Minitest::Test
     ilist = nil
     assert_nothing_raised { ilist = @ilist.coalesce }
     assert_instance_of(Magick::ImageList, ilist)
-    assert_equal(2, ilist.length)
-    assert_equal(0, ilist.scene)
+    expect(ilist.length).to eq(2)
+    expect(ilist.scene).to eq(0)
   end
 
   def test_copy
@@ -57,9 +57,9 @@ class ImageList2UT < Minitest::Test
     @ilist.scene = 7
     ilist2 = @ilist.copy
     assert_not_same(@ilist, ilist2)
-    assert_equal(@ilist.scene, ilist2.scene)
+    expect(ilist2.scene).to eq(@ilist.scene)
     @ilist.each_with_index do |img, x|
-      assert_equal(img, ilist2[x])
+      expect(ilist2[x]).to eq(img)
     end
   end
 
@@ -68,21 +68,21 @@ class ImageList2UT < Minitest::Test
     ilist = nil
     assert_nothing_raised { ilist = @ilist.deconstruct }
     assert_instance_of(Magick::ImageList, ilist)
-    assert_equal(2, ilist.length)
-    assert_equal(0, ilist.scene)
+    expect(ilist.length).to eq(2)
+    expect(ilist.scene).to eq(0)
   end
 
   def test_dup
     @ilist.read(*Dir[IMAGES_DIR + '/Button_*.gif'])
     ilist2 = @ilist.dup
-    assert_equal(ilist2, @ilist)
-    assert_equal(@ilist.frozen?, ilist2.frozen?)
-    assert_equal(@ilist.tainted?, ilist2.tainted?)
+    expect(@ilist).to eq(ilist2)
+    expect(ilist2.frozen?).to eq(@ilist.frozen?)
+    expect(ilist2.tainted?).to eq(@ilist.tainted?)
     @ilist.taint
     @ilist.freeze
     ilist2 = @ilist.dup
     assert_not_equal(@ilist.frozen?, ilist2.frozen?)
-    assert_equal(@ilist.tainted?, ilist2.tainted?)
+    expect(ilist2.tainted?).to eq(@ilist.tainted?)
   end
 
   def flatten_images
@@ -98,10 +98,10 @@ class ImageList2UT < Minitest::Test
     blob = hat.read
     assert_nothing_raised { @ilist.from_blob(blob) }
     assert_instance_of(Magick::Image, @ilist[0])
-    assert_equal(0, @ilist.scene)
+    expect(@ilist.scene).to eq(0)
 
     ilist2 = Magick::ImageList.new(FLOWER_HAT)
-    assert_equal(@ilist, ilist2)
+    expect(ilist2).to eq(@ilist)
   end
 
   def test_marshal
@@ -110,7 +110,7 @@ class ImageList2UT < Minitest::Test
     ilist2 = nil
     assert_nothing_raised { d = Marshal.dump(ilist1) }
     assert_nothing_raised { ilist2 = Marshal.load(d) }
-    assert_equal(ilist1, ilist2)
+    expect(ilist2).to eq(ilist1)
   end
 
   def test_montage
@@ -145,11 +145,11 @@ class ImageList2UT < Minitest::Test
         self.title = 'sample'
       end
       assert_instance_of(Magick::ImageList, montage)
-      assert_equal(@ilist, ilist)
+      expect(ilist).to eq(@ilist)
 
       montage_image = montage.first
-      assert_equal('blue', montage_image.background_color)
-      assert_equal('red', montage_image.border_color)
+      expect(montage_image.background_color).to eq('blue')
+      expect(montage_image.border_color).to eq('red')
     end
 
     # test illegal option arguments
@@ -157,51 +157,51 @@ class ImageList2UT < Minitest::Test
     # to tile= and geometry=
     assert_raise(TypeError) do
       montage = ilist.montage { self.background_color = 2 }
-      assert_equal(@ilist, ilist)
+      expect(ilist).to eq(@ilist)
     end
     assert_raise(TypeError) do
       montage = ilist.montage { self.border_color = 2 }
-      assert_equal(@ilist, ilist)
+      expect(ilist).to eq(@ilist)
     end
     assert_raise(TypeError) do
       montage = ilist.montage { self.border_width = [2] }
-      assert_equal(@ilist, ilist)
+      expect(ilist).to eq(@ilist)
     end
     assert_raise(TypeError) do
       montage = ilist.montage { self.compose = 2 }
-      assert_equal(@ilist, ilist)
+      expect(ilist).to eq(@ilist)
     end
     assert_raise(TypeError) do
       montage = ilist.montage { self.filename = 2 }
-      assert_equal(@ilist, ilist)
+      expect(ilist).to eq(@ilist)
     end
     assert_raise(TypeError) do
       montage = ilist.montage { self.fill = 2 }
-      assert_equal(@ilist, ilist)
+      expect(ilist).to eq(@ilist)
     end
     assert_raise(TypeError) do
       montage = ilist.montage { self.font = 2 }
-      assert_equal(@ilist, ilist)
+      expect(ilist).to eq(@ilist)
     end
     assert_raise(TypeError) do
       montage = ilist.montage { self.gravity = 2 }
-      assert_equal(@ilist, ilist)
+      expect(ilist).to eq(@ilist)
     end
     assert_raise(TypeError) do
       montage = ilist.montage { self.matte_color = 2 }
-      assert_equal(@ilist, ilist)
+      expect(ilist).to eq(@ilist)
     end
     assert_raise(TypeError) do
       montage = ilist.montage { self.pointsize = 'x' }
-      assert_equal(@ilist, ilist)
+      expect(ilist).to eq(@ilist)
     end
     assert_raise(ArgumentError) do
       montage = ilist.montage { self.stroke = 'x' }
-      assert_equal(@ilist, ilist)
+      expect(ilist).to eq(@ilist)
     end
     assert_raise(NoMethodError) do
       montage = ilist.montage { self.texture = 'x' }
-      assert_equal(@ilist, ilist)
+      expect(ilist).to eq(@ilist)
     end
   end
 
@@ -214,8 +214,8 @@ class ImageList2UT < Minitest::Test
     assert_nothing_raised do
       res = @ilist.morph(2)
       assert_instance_of(Magick::ImageList, res)
-      assert_equal(4, res.length)
-      assert_equal(0, res.scene)
+      expect(res.length).to eq(4)
+      expect(res.scene).to eq(0)
     end
   end
 
@@ -237,14 +237,14 @@ class ImageList2UT < Minitest::Test
     assert_nothing_raised do
       @ilist.new_image(20, 20)
     end
-    assert_equal(1, @ilist.length)
-    assert_equal(0, @ilist.scene)
+    expect(@ilist.length).to eq(1)
+    expect(@ilist.scene).to eq(0)
     @ilist.new_image(20, 20, Magick::HatchFill.new('black'))
-    assert_equal(2, @ilist.length)
-    assert_equal(1, @ilist.scene)
+    expect(@ilist.length).to eq(2)
+    expect(@ilist.scene).to eq(1)
     @ilist.new_image(20, 20) { self.background_color = 'red' }
-    assert_equal(3, @ilist.length)
-    assert_equal(2, @ilist.scene)
+    expect(@ilist.length).to eq(3)
+    expect(@ilist.scene).to eq(2)
   end
 
   def test_optimize_layers
@@ -267,14 +267,14 @@ class ImageList2UT < Minitest::Test
 
   def test_ping
     assert_nothing_raised { @ilist.ping(FLOWER_HAT) }
-    assert_equal(1, @ilist.length)
-    assert_equal(0, @ilist.scene)
+    expect(@ilist.length).to eq(1)
+    expect(@ilist.scene).to eq(0)
     assert_nothing_raised { @ilist.ping(FLOWER_HAT, FLOWER_HAT) }
-    assert_equal(3, @ilist.length)
-    assert_equal(2, @ilist.scene)
+    expect(@ilist.length).to eq(3)
+    expect(@ilist.scene).to eq(2)
     assert_nothing_raised { @ilist.ping(FLOWER_HAT) { self.background_color = 'red ' } }
-    assert_equal(4, @ilist.length)
-    assert_equal(3, @ilist.scene)
+    expect(@ilist.length).to eq(4)
+    expect(@ilist.scene).to eq(3)
   end
 
   def test_quantize
@@ -282,7 +282,7 @@ class ImageList2UT < Minitest::Test
     assert_nothing_raised do
       res = @ilist.quantize
       assert_instance_of(Magick::ImageList, res)
-      assert_equal(1, res.scene)
+      expect(res.scene).to eq(1)
     end
     assert_nothing_raised { @ilist.quantize(128) }
     assert_raise(TypeError) { @ilist.quantize('x') }
@@ -303,14 +303,14 @@ class ImageList2UT < Minitest::Test
 
   def test_read
     assert_nothing_raised { @ilist.read(FLOWER_HAT) }
-    assert_equal(1, @ilist.length)
-    assert_equal(0, @ilist.scene)
+    expect(@ilist.length).to eq(1)
+    expect(@ilist.scene).to eq(0)
     assert_nothing_raised { @ilist.read(FLOWER_HAT, FLOWER_HAT) }
-    assert_equal(3, @ilist.length)
-    assert_equal(2, @ilist.scene)
+    expect(@ilist.length).to eq(3)
+    expect(@ilist.scene).to eq(2)
     assert_nothing_raised { @ilist.read(FLOWER_HAT) { self.background_color = 'red ' } }
-    assert_equal(4, @ilist.length)
-    assert_equal(3, @ilist.scene)
+    expect(@ilist.length).to eq(4)
+    expect(@ilist.scene).to eq(3)
   end
 
   def test_remap
@@ -333,8 +333,8 @@ class ImageList2UT < Minitest::Test
     blob = nil
     assert_nothing_raised { blob = @ilist.to_blob }
     img = @ilist.from_blob(blob)
-    assert_equal(@ilist[0], img[0])
-    assert_equal(1, img.scene)
+    expect(img[0]).to eq(@ilist[0])
+    expect(img.scene).to eq(1)
   end
 
   def test_write
@@ -343,24 +343,24 @@ class ImageList2UT < Minitest::Test
       @ilist.write('temp.gif')
     end
     list = Magick::ImageList.new('temp.gif')
-    assert_equal('GIF', list.format)
+    expect(list.format).to eq('GIF')
     FileUtils.rm('temp.gif')
 
     @ilist.write('jpg:temp.foo')
     list = Magick::ImageList.new('temp.foo')
-    assert_equal('JPEG', list.format)
+    expect(list.format).to eq('JPEG')
     FileUtils.rm('temp.foo')
 
     @ilist.write('temp.0') { self.format = 'JPEG' }
     list = Magick::ImageList.new('temp.0')
-    assert_equal('JPEG', list.format)
+    expect(list.format).to eq('JPEG')
     FileUtils.rm('temp.0')
 
     f = File.new('test.0', 'w')
     @ilist.write(f) { self.format = 'JPEG' }
     f.close
     list = Magick::ImageList.new('test.0')
-    assert_equal('JPEG', list.format)
+    expect(list.format).to eq('JPEG')
     FileUtils.rm('test.0')
   end
 end

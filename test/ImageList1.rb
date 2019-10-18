@@ -66,9 +66,9 @@ class ImageList1UT < Minitest::Test
 
   def test_delay
     assert_nothing_raised { @list.delay }
-    assert_equal(0, @list.delay)
+    expect(@list.delay).to eq(0)
     assert_nothing_raised { @list.delay = 20 }
-    assert_equal(20, @list.delay)
+    expect(@list.delay).to eq(20)
     assert_raise(ArgumentError) { @list.delay = 'x' }
   end
 
@@ -78,9 +78,9 @@ class ImageList1UT < Minitest::Test
 
   def test_ticks_per_second
     assert_nothing_raised { @list.ticks_per_second }
-    assert_equal(100, @list.ticks_per_second)
+    expect(@list.ticks_per_second).to eq(100)
     assert_nothing_raised { @list.ticks_per_second = 1000 }
-    assert_equal(1000, @list.ticks_per_second)
+    expect(@list.ticks_per_second).to eq(1000)
     assert_raise(ArgumentError) { @list.ticks_per_second = 'x' }
   end
 
@@ -88,24 +88,24 @@ class ImageList1UT < Minitest::Test
     assert_nothing_raised { @list.iterations }
     assert_kind_of(Integer, @list.iterations)
     assert_nothing_raised { @list.iterations = 20 }
-    assert_equal(20, @list.iterations)
+    expect(@list.iterations).to eq(20)
     assert_raise(ArgumentError) { @list.iterations = 'x' }
   end
 
   # also tests #size
   def test_length
     assert_nothing_raised { @list.length }
-    assert_equal(10, @list.length)
+    expect(@list.length).to eq(10)
     assert_raise(NoMethodError) { @list.length = 2 }
   end
 
   def test_scene
     assert_nothing_raised { @list.scene }
-    assert_equal(9, @list.scene)
+    expect(@list.scene).to eq(9)
     assert_nothing_raised { @list.scene = 0 }
-    assert_equal(0, @list.scene)
+    expect(@list.scene).to eq(0)
     assert_nothing_raised { @list.scene = 1 }
-    assert_equal(1, @list.scene)
+    expect(@list.scene).to eq(1)
     assert_raise(IndexError) { @list.scene = -1 }
     assert_raise(IndexError) { @list.scene = 1000 }
     assert_raise(IndexError) { @list.scene = nil }
@@ -153,7 +153,7 @@ class ImageList1UT < Minitest::Test
       rv = @list[0] = img
       assert_same(img, rv)
       assert_same(img, @list[0])
-      assert_equal(0, @list.scene)
+      expect(@list.scene).to eq(0)
     end
 
     # replace 2 images with 1
@@ -161,9 +161,9 @@ class ImageList1UT < Minitest::Test
       img = Magick::Image.new(5, 5)
       rv = @list[1, 2] = img
       assert_same(img, rv)
-      assert_equal(9, @list.length)
+      expect(@list.length).to eq(9)
       assert_same(img, @list[1])
-      assert_equal(1, @list.scene)
+      expect(@list.scene).to eq(1)
     end
 
     # replace 1 image with 2
@@ -173,37 +173,37 @@ class ImageList1UT < Minitest::Test
       ary = [img, img2]
       rv = @list[3, 1] = ary
       assert_same(ary, rv)
-      assert_equal(10, @list.length)
+      expect(@list.length).to eq(10)
       assert_same(img, @list[3])
       assert_same(img2, @list[4])
-      assert_equal(4, @list.scene)
+      expect(@list.scene).to eq(4)
     end
 
     assert_nothing_raised do
       img = Magick::Image.new(5, 5)
       rv = @list[5..6] = img
       assert_same(img, rv)
-      assert_equal(9, @list.length)
+      expect(@list.length).to eq(9)
       assert_same(img, @list[5])
-      assert_equal(5, @list.scene)
+      expect(@list.scene).to eq(5)
     end
 
     assert_nothing_raised do
       ary = [img, img]
       rv = @list[7..8] = ary
       assert_same(ary, rv)
-      assert_equal(9, @list.length)
+      expect(@list.length).to eq(9)
       assert_same(img, @list[7])
       assert_same(img, @list[8])
-      assert_equal(8, @list.scene)
+      expect(@list.scene).to eq(8)
     end
 
     assert_nothing_raised do
       rv = @list[-1] = img
       assert_same(img, rv)
-      assert_equal(9, @list.length)
+      expect(@list.length).to eq(9)
       assert_same(img, @list[8])
-      assert_equal(8, @list.scene)
+      expect(@list.scene).to eq(8)
     end
 
     assert_raise(ArgumentError) { @list[0] = 1 }
@@ -219,8 +219,8 @@ class ImageList1UT < Minitest::Test
       assert_instance_of(Magick::ImageList, res)
       assert_not_same(res, @list)
       assert_not_same(res, @list2)
-      assert_equal(5, res.length)
-      assert_equal(2, res.scene)
+      expect(res.length).to eq(5)
+      expect(res.scene).to eq(2)
       assert_same(cur, res.cur_image)
     end
 
@@ -229,7 +229,7 @@ class ImageList1UT < Minitest::Test
     assert_nothing_raised do
       res = @list & @list2
       assert_instance_of(Magick::ImageList, res)
-      assert_equal(4, res.scene)
+      expect(res.scene).to eq(4)
     end
 
     assert_raise(ArgumentError) { @list & 2 }
@@ -256,7 +256,7 @@ class ImageList1UT < Minitest::Test
     assert_nothing_raised do
       res = @list * 2
       assert_instance_of(Magick::ImageList, res)
-      assert_equal(20, res.length)
+      expect(res.length).to eq(20)
       assert_not_same(res, @list)
       assert_same(cur, res.cur_image)
     end
@@ -270,7 +270,7 @@ class ImageList1UT < Minitest::Test
     assert_nothing_raised do
       res = @list + @list2
       assert_instance_of(Magick::ImageList, res)
-      assert_equal(15, res.length)
+      expect(res.length).to eq(15)
       assert_not_same(res, @list)
       assert_not_same(res, @list2)
       assert_same(cur, res.cur_image)
@@ -285,7 +285,7 @@ class ImageList1UT < Minitest::Test
     assert_nothing_raised do
       res = @list - @list2
       assert_instance_of(Magick::ImageList, res)
-      assert_equal(5, res.length)
+      expect(res.length).to eq(5)
       assert_not_same(res, @list)
       assert_not_same(res, @list2)
       assert_same(cur, res.cur_image)
@@ -297,16 +297,16 @@ class ImageList1UT < Minitest::Test
     assert_nothing_raised do
       res = @list - @list2
       assert_instance_of(Magick::ImageList, res)
-      assert_equal(5, res.length)
-      assert_equal(4, res.scene)
+      expect(res.length).to eq(5)
+      expect(res.scene).to eq(4)
     end
   end
 
   def test_catenate
     assert_nothing_raised do
       @list2.each { |img| @list << img }
-      assert_equal(15, @list.length)
-      assert_equal(14, @list.scene)
+      expect(@list.length).to eq(15)
+      expect(@list.scene).to eq(14)
     end
 
     assert_raise(ArgumentError) { @list << 2 }
@@ -322,15 +322,15 @@ class ImageList1UT < Minitest::Test
       assert_instance_of(Magick::ImageList, res)
       assert_not_same(res, @list)
       assert_not_same(res, @list2)
-      assert_equal(res, @list)
+      expect(@list).to eq(res)
     end
 
     # Try or'ing disjoint lists
     temp_list = Magick::ImageList.new(*FILES[10..14])
     res = @list | temp_list
     assert_instance_of(Magick::ImageList, res)
-    assert_equal(15, res.length)
-    assert_equal(7, res.scene)
+    expect(res.length).to eq(15)
+    expect(res.scene).to eq(7)
 
     assert_raise(ArgumentError) { @list | 2 }
     assert_raise(ArgumentError) { @list | [2] }
@@ -339,7 +339,7 @@ class ImageList1UT < Minitest::Test
   def test_clear
     assert_nothing_raised { @list.clear }
     assert_instance_of(Magick::ImageList, @list)
-    assert_equal(0, @list.length)
+    expect(@list.length).to eq(0)
     assert_nil(@list.scene)
   end
 
@@ -349,13 +349,13 @@ class ImageList1UT < Minitest::Test
       res = @list.collect(&:negate)
       assert_instance_of(Magick::ImageList, res)
       assert_not_same(res, @list)
-      assert_equal(scene, res.scene)
+      expect(res.scene).to eq(scene)
     end
     assert_nothing_raised do
       scene = @list.scene
       @list.collect!(&:negate)
       assert_instance_of(Magick::ImageList, @list)
-      assert_equal(scene, @list.scene)
+      expect(@list.scene).to eq(scene)
     end
   end
 
@@ -363,13 +363,13 @@ class ImageList1UT < Minitest::Test
     assert_nothing_raised do
       res = @list.compact
       assert_not_same(res, @list)
-      assert_equal(res, @list)
+      expect(@list).to eq(res)
     end
     assert_nothing_raised do
       res = @list
       @list.compact!
       assert_instance_of(Magick::ImageList, @list)
-      assert_equal(res, @list)
+      expect(@list).to eq(res)
       assert_same(res, @list)
     end
   end
@@ -378,7 +378,7 @@ class ImageList1UT < Minitest::Test
     assert_nothing_raised do
       res = @list.concat(@list2)
       assert_instance_of(Magick::ImageList, res)
-      assert_equal(15, res.length)
+      expect(res.length).to eq(15)
       assert_same(res[14], res.cur_image)
     end
     assert_raise(ArgumentError) { @list.concat(2) }
@@ -390,7 +390,7 @@ class ImageList1UT < Minitest::Test
       cur = @list.cur_image
       img = @list[7]
       assert_same(img, @list.delete(img))
-      assert_equal(9, @list.length)
+      expect(@list.length).to eq(9)
       assert_same(cur, @list.cur_image)
 
       # Try deleting the current image.
@@ -405,7 +405,7 @@ class ImageList1UT < Minitest::Test
       assert_nothing_raised do
         img = Magick::Image.read(FILES[10]).first
         res = @list.delete(img) { 1 }
-        assert_equal(1, res)
+        expect(res).to eq(1)
       end
     end
   end
@@ -425,7 +425,7 @@ class ImageList1UT < Minitest::Test
     assert_nothing_raised do
       @list.delete_if { |img| File.basename(img.filename) =~ /5/ }
       assert_instance_of(Magick::ImageList, @list)
-      assert_equal(9, @list.length)
+      expect(@list.length).to eq(9)
       assert_same(cur, @list.cur_image)
     end
 
@@ -433,7 +433,7 @@ class ImageList1UT < Minitest::Test
     assert_nothing_raised do
       @list.delete_if { |img| File.basename(img.filename) =~ /7/ }
       assert_instance_of(Magick::ImageList, @list)
-      assert_equal(8, @list.length)
+      expect(@list.length).to eq(8)
       assert_same(@list[-1], @list.cur_image)
     end
   end
@@ -496,7 +496,7 @@ class ImageList1UT < Minitest::Test
     assert_nothing_raised do
       res = @list.select { |img| File.basename(img.filename) =~ /Button_2/ }
       assert_instance_of(Magick::ImageList, res)
-      assert_equal(1, res.length)
+      expect(res.length).to eq(1)
       assert_same(res[0], @list[2])
     end
   end
@@ -521,16 +521,16 @@ class ImageList1UT < Minitest::Test
     img2 = nil
     assert_nothing_raised { img2 = @list.last }
     assert_instance_of(Magick::Image, img2)
-    assert_equal(img2, img)
+    expect(img).to eq(img2)
     img2 = Magick::Image.new(5, 5)
     @list << img2
     ilist = nil
     assert_nothing_raised { ilist = @list.last(2) }
     assert_instance_of(Magick::ImageList, ilist)
-    assert_equal(2, ilist.length)
-    assert_equal(1, ilist.scene)
-    assert_equal(img, ilist[0])
-    assert_equal(img2, ilist[1])
+    expect(ilist.length).to eq(2)
+    expect(ilist.scene).to eq(1)
+    expect(ilist[0]).to eq(img)
+    expect(ilist[1]).to eq(img2)
   end
 
   def test___map__
@@ -561,13 +561,13 @@ class ImageList1UT < Minitest::Test
       end
     end
     assert_instance_of(Array, a)
-    assert_equal(2, a.size)
+    expect(a.size).to eq(2)
     assert_instance_of(Magick::ImageList, a[0])
     assert_instance_of(Magick::ImageList, a[1])
-    assert_equal(4, a[0].scene)
-    assert_equal(5, a[0].length)
-    assert_equal(4, a[1].scene)
-    assert_equal(5, a[1].length)
+    expect(a[0].scene).to eq(4)
+    expect(a[0].length).to eq(5)
+    expect(a[1].scene).to eq(4)
+    expect(a[1].length).to eq(5)
   end
 
   def test_pop
@@ -598,7 +598,7 @@ class ImageList1UT < Minitest::Test
     list = @list
     assert_nothing_raised do
       res = @list.reject { |img| File.basename(img.filename) =~ /Button_9/ }
-      assert_equal(9, res.length)
+      expect(res.length).to eq(9)
       assert_instance_of(Magick::ImageList, res)
       assert_same(cur, res.cur_image)
     end
@@ -607,7 +607,7 @@ class ImageList1UT < Minitest::Test
 
     # Omit current image from result list - result cur_image s/b last image
     res = @list.reject { |img| File.basename(img.filename) =~ /Button_7/ }
-    assert_equal(9, res.length)
+    expect(res.length).to eq(9)
     assert_same(res[-1], res.cur_image)
     assert_same(cur, @list.cur_image)
   end
@@ -618,7 +618,7 @@ class ImageList1UT < Minitest::Test
     assert_nothing_raised do
       @list.reject! { |img| File.basename(img.filename) =~ /5/ }
       assert_instance_of(Magick::ImageList, @list)
-      assert_equal(9, @list.length)
+      expect(@list.length).to eq(9)
       assert_same(cur, @list.cur_image)
     end
 
@@ -626,7 +626,7 @@ class ImageList1UT < Minitest::Test
     assert_nothing_raised do
       @list.reject! { |img| File.basename(img.filename) =~ /7/ }
       assert_instance_of(Magick::ImageList, @list)
-      assert_equal(8, @list.length)
+      expect(@list.length).to eq(8)
       assert_same(@list[-1], @list.cur_image)
     end
 
@@ -639,7 +639,7 @@ class ImageList1UT < Minitest::Test
     assert_nothing_raised do
       res = @list.replace([])
       assert_same(res, @list)
-      assert_equal(0, @list.length)
+      expect(@list.length).to eq(0)
       assert_nil(@list.scene)
     end
 
@@ -647,8 +647,8 @@ class ImageList1UT < Minitest::Test
     temp = Magick::ImageList.new
     assert_nothing_raised do
       temp.replace(@list2)
-      assert_equal(5, temp.length)
-      assert_equal(4, temp.scene)
+      expect(temp.length).to eq(5)
+      expect(temp.scene).to eq(4)
     end
 
     # Try to replace with illegal values
@@ -662,8 +662,8 @@ class ImageList1UT < Minitest::Test
       cur = @list.cur_image
       res = @list.replace(@list2)
       assert_same(res, @list)
-      assert_equal(5, @list.length)
-      assert_equal(2, @list.scene)
+      expect(@list.length).to eq(5)
+      expect(@list.scene).to eq(2)
       assert_same(cur, @list.cur_image)
     end
   end
@@ -675,8 +675,8 @@ class ImageList1UT < Minitest::Test
       cur = @list2.cur_image
       res = @list2.replace(@list)
       assert_same(res, @list2)
-      assert_equal(10, @list2.length)
-      assert_equal(7, @list2.scene)
+      expect(@list2.length).to eq(10)
+      expect(@list2.scene).to eq(7)
       assert_same(cur, @list2.cur_image)
     end
   end
@@ -685,7 +685,7 @@ class ImageList1UT < Minitest::Test
     list = nil
     cur = @list.cur_image
     assert_nothing_raised { list = @list.reverse }
-    assert_equal(list.length, @list.length)
+    expect(@list.length).to eq(list.length)
     assert_same(cur, @list.cur_image)
   end
 
@@ -708,14 +708,14 @@ class ImageList1UT < Minitest::Test
     img = @list.last
     n = nil
     assert_nothing_raised { n = @list.rindex(img) }
-    assert_equal(9, n)
+    expect(n).to eq(9)
   end
 
   def test_select
     assert_nothing_raised do
       res = @list.select { |img| File.basename(img.filename) =~ /Button_2/ }
       assert_instance_of(Magick::ImageList, res)
-      assert_equal(1, res.length)
+      expect(res.length).to eq(1)
       assert_same(res[0], @list[2])
     end
   end
@@ -726,12 +726,12 @@ class ImageList1UT < Minitest::Test
       res = @list[0]
       img = @list.shift
       assert_same(res, img)
-      assert_equal(8, @list.scene)
+      expect(@list.scene).to eq(8)
     end
     res = @list[0]
     img = @list.shift
     assert_same(res, img)
-    assert_equal(7, @list.scene)
+    expect(@list.scene).to eq(7)
   end
 
   def test_slice
@@ -748,14 +748,14 @@ class ImageList1UT < Minitest::Test
       img0 = @list[0]
       img = @list.slice!(0)
       assert_same(img0, img)
-      assert_equal(9, @list.length)
-      assert_equal(6, @list.scene)
+      expect(@list.length).to eq(9)
+      expect(@list.scene).to eq(6)
     end
     cur = @list.cur_image
     img = @list.slice!(6)
     assert_same(cur, img)
-    assert_equal(8, @list.length)
-    assert_equal(7, @list.scene)
+    expect(@list.length).to eq(8)
+    expect(@list.scene).to eq(7)
     assert_nothing_raised { @list.slice!(-1) }
     assert_nothing_raised { @list.slice!(0, 1) }
     assert_nothing_raised { @list.slice!(0..2) }
@@ -772,7 +772,7 @@ class ImageList1UT < Minitest::Test
     a = nil
     assert_nothing_raised { a = @list.to_a }
     assert_instance_of(Array, a)
-    assert_equal(10, a.length)
+    expect(a.length).to eq(10)
   end
 
   def test_uniq
@@ -781,14 +781,14 @@ class ImageList1UT < Minitest::Test
     @list[1] = @list[0]
     @list.scene = 7
     list = @list.uniq
-    assert_equal(9, list.length)
-    assert_equal(6, list.scene)
-    assert_equal(7, @list.scene)
+    expect(list.length).to eq(9)
+    expect(list.scene).to eq(6)
+    expect(@list.scene).to eq(7)
     @list[6] = @list[7]
     list = @list.uniq
-    assert_equal(8, list.length)
-    assert_equal(5, list.scene)
-    assert_equal(7, @list.scene)
+    expect(list.length).to eq(8)
+    expect(list.scene).to eq(5)
+    expect(@list.scene).to eq(7)
   end
 
   def test_uniq!
@@ -802,18 +802,18 @@ class ImageList1UT < Minitest::Test
     @list.uniq!
     assert_same(list, @list)
     assert_same(cur, @list.cur_image)
-    assert_equal(6, @list.scene)
+    expect(@list.scene).to eq(6)
     @list[5] = @list[6]
     @list.uniq!
     assert_same(cur, @list.cur_image)
-    assert_equal(5, @list.scene)
+    expect(@list.scene).to eq(5)
   end
 
   def test_unshift
     img = @list[9]
     @list.scene = 7
     @list.unshift(img)
-    assert_equal(0, @list.scene)
+    expect(@list.scene).to eq(0)
     assert_raise(ArgumentError) { @list.unshift(2) }
     assert_raise(ArgumentError) { @list.unshift([1, 2]) }
   end
@@ -822,14 +822,14 @@ class ImageList1UT < Minitest::Test
     ilist = nil
     assert_nothing_raised { ilist = @list.values_at(1, 3, 5) }
     assert_instance_of(Magick::ImageList, ilist)
-    assert_equal(3, ilist.length)
-    assert_equal(2, ilist.scene)
+    expect(ilist.length).to eq(3)
+    expect(ilist.scene).to eq(2)
   end
 
   def test_spaceship
     list2 = @list.copy
-    assert_equal(@list.scene, list2.scene)
-    assert_equal(@list, list2)
+    expect(list2.scene).to eq(@list.scene)
+    expect(list2).to eq(@list)
     list2.scene = 0
     assert_not_equal(@list, list2)
     list2 = @list.copy

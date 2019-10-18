@@ -32,11 +32,11 @@ class StructUT < Minitest::Test
 
   def test_rectangle_info_to_s
     rect = Magick::Rectangle.new(10, 20, 30, 40)
-    assert_equal('width=10, height=20, x=30, y=40', rect.to_s)
+    expect(rect.to_s).to eq('width=10, height=20, x=30, y=40')
   end
 
   def test_segment_info_to_s
     segment = Magick::Segment.new(10, 20, 30, 40)
-    assert_equal('x1=10, y1=20, x2=30, y2=40', segment.to_s)
+    expect(segment.to_s).to eq('x1=10, y1=20, x2=30, y2=40')
   end
 end

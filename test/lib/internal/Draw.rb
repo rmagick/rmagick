@@ -9,7 +9,7 @@ class LibDrawUT < Minitest::Test
 
   def test_affine
     @draw.affine(10.5, 12, 15, 20, 22, 25)
-    assert_equal('affine 10.5,12,15,20,22,25', @draw.inspect)
+    expect(@draw.inspect).to eq('affine 10.5,12,15,20,22,25')
     assert_nothing_raised { @draw.draw(@img) }
 
     assert_raise(ArgumentError) { @draw.affine('x', 12, 15, 20, 22, 25) }
@@ -34,7 +34,7 @@ class LibDrawUT < Minitest::Test
 
   def test_arc
     @draw.arc(100.5, 120.5, 200, 250, 20, 370)
-    assert_equal('arc 100.5,120.5 200,250 20,370', @draw.inspect)
+    expect(@draw.inspect).to eq('arc 100.5,120.5 200,250 20,370')
     assert_nothing_raised { @draw.draw(@img) }
 
     assert_raise(ArgumentError) { @draw.arc('x', 120.5, 200, 250, 20, 370) }
@@ -47,7 +47,7 @@ class LibDrawUT < Minitest::Test
 
   def test_bezier
     @draw.bezier(10, '20', '20.5', 30, 40.5, 50)
-    assert_equal('bezier 10,20,20.5,30,40.5,50', @draw.inspect)
+    expect(@draw.inspect).to eq('bezier 10,20,20.5,30,40.5,50')
     assert_nothing_raised { @draw.draw(@img) }
 
     assert_raise(ArgumentError) { @draw.bezier }
@@ -57,7 +57,7 @@ class LibDrawUT < Minitest::Test
 
   def test_circle
     @draw.circle(10, '20.5', 30, 40.5)
-    assert_equal('circle 10,20.5 30,40.5', @draw.inspect)
+    expect(@draw.inspect).to eq('circle 10,20.5 30,40.5')
     assert_nothing_raised { @draw.draw(@img) }
 
     assert_raise(ArgumentError) { @draw.circle('x', 20, 30, 40) }
@@ -68,19 +68,19 @@ class LibDrawUT < Minitest::Test
 
   def test_clip_path
     @draw.clip_path('test')
-    assert_equal('clip-path test', @draw.inspect)
+    expect(@draw.inspect).to eq('clip-path test')
     assert_nothing_raised { @draw.draw(@img) }
   end
 
   def test_clip_rule
     draw = Magick::Draw.new
     draw.clip_rule('evenodd')
-    assert_equal('clip-rule evenodd', draw.inspect)
+    expect(draw.inspect).to eq('clip-rule evenodd')
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.clip_rule('nonzero')
-    assert_equal('clip-rule nonzero', draw.inspect)
+    expect(draw.inspect).to eq('clip-rule nonzero')
     assert_nothing_raised { draw.draw(@img) }
 
     assert_raise(ArgumentError) { @draw.clip_rule('foo') }
@@ -89,17 +89,17 @@ class LibDrawUT < Minitest::Test
   def test_clip_units
     draw = Magick::Draw.new
     draw.clip_units('userspace')
-    assert_equal('clip-units userspace', draw.inspect)
+    expect(draw.inspect).to eq('clip-units userspace')
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.clip_units('userspaceonuse')
-    assert_equal('clip-units userspaceonuse', draw.inspect)
+    expect(draw.inspect).to eq('clip-units userspaceonuse')
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.clip_units('objectboundingbox')
-    assert_equal('clip-units objectboundingbox', draw.inspect)
+    expect(draw.inspect).to eq('clip-units objectboundingbox')
     assert_nothing_raised { draw.draw(@img) }
 
     assert_raise(ArgumentError) { @draw.clip_units('foo') }
@@ -108,27 +108,27 @@ class LibDrawUT < Minitest::Test
   def test_color
     draw = Magick::Draw.new
     draw.color(50.5, 50, Magick::PointMethod)
-    assert_equal('color 50.5,50,point', draw.inspect)
+    expect(draw.inspect).to eq('color 50.5,50,point')
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.color(50.5, 50, Magick::ReplaceMethod)
-    assert_equal('color 50.5,50,replace', draw.inspect)
+    expect(draw.inspect).to eq('color 50.5,50,replace')
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.color(50.5, 50, Magick::FloodfillMethod)
-    assert_equal('color 50.5,50,floodfill', draw.inspect)
+    expect(draw.inspect).to eq('color 50.5,50,floodfill')
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.color(50.5, 50, Magick::FillToBorderMethod)
-    assert_equal('color 50.5,50,filltoborder', draw.inspect)
+    expect(draw.inspect).to eq('color 50.5,50,filltoborder')
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.color(50.5, 50, Magick::ResetMethod)
-    assert_equal('color 50.5,50,reset', draw.inspect)
+    expect(draw.inspect).to eq('color 50.5,50,reset')
     assert_nothing_raised { draw.draw(@img) }
 
     assert_raise(ArgumentError) { @draw.color(10, 20, 'unknown') }
@@ -139,43 +139,43 @@ class LibDrawUT < Minitest::Test
   def test_decorate
     draw = Magick::Draw.new
     draw.decorate(Magick::NoDecoration)
-    assert_equal('decorate none', draw.inspect)
+    expect(draw.inspect).to eq('decorate none')
     draw.text(50, 50, 'Hello world')
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.decorate(Magick::UnderlineDecoration)
-    assert_equal('decorate underline', draw.inspect)
+    expect(draw.inspect).to eq('decorate underline')
     draw.text(50, 50, 'Hello world')
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.decorate(Magick::OverlineDecoration)
-    assert_equal('decorate overline', draw.inspect)
+    expect(draw.inspect).to eq('decorate overline')
     draw.text(50, 50, 'Hello world')
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.decorate(Magick::OverlineDecoration)
-    assert_equal('decorate overline', draw.inspect)
+    expect(draw.inspect).to eq('decorate overline')
     draw.text(50, 50, 'Hello world')
     assert_nothing_raised { draw.draw(@img) }
 
     # draw = Magick::Draw.new
     # draw.decorate('tomato')
-    # assert_equal('decorate "tomato"', draw.inspect)
+    # expect(draw.inspect).to eq('decorate "tomato"')
     # draw.text(50, 50, 'Hello world')
     # assert_nothing_raised { draw.draw(@img) }
   end
 
   def test_define_clip_path
     assert_nothing_raised { @draw.define_clip_path('test') { @draw } }
-    assert_equal("push defs\npush clip-path \"test\"\npush graphic-context\npop graphic-context\npop clip-path\npop defs", @draw.inspect)
+    expect(@draw.inspect).to eq("push defs\npush clip-path \"test\"\npush graphic-context\npop graphic-context\npop clip-path\npop defs")
   end
 
   def test_ellipse
     @draw.ellipse(50.5, 30, 25, 25, 60, 120)
-    assert_equal('ellipse 50.5,30 25,25 60,120', @draw.inspect)
+    expect(@draw.inspect).to eq('ellipse 50.5,30 25,25 60,120')
     assert_nothing_raised { @draw.draw(@img) }
 
     assert_raise(ArgumentError) { @draw.ellipse('x', 20, 30, 40, 50, 60) }
@@ -188,26 +188,26 @@ class LibDrawUT < Minitest::Test
 
   def test_encoding
     @draw.encoding('UTF-8')
-    assert_equal('encoding UTF-8', @draw.inspect)
+    expect(@draw.inspect).to eq('encoding UTF-8')
     assert_nothing_raised { @draw.draw(@img) }
   end
 
   def test_fill
     draw = Magick::Draw.new
     draw.fill('tomato')
-    assert_equal('fill "tomato"', draw.inspect)
+    expect(draw.inspect).to eq('fill "tomato"')
     draw.circle(10, '20.5', 30, 40.5)
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.fill_color('tomato')
-    assert_equal('fill "tomato"', draw.inspect)
+    expect(draw.inspect).to eq('fill "tomato"')
     draw.circle(10, '20.5', 30, 40.5)
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.fill_pattern('tomato')
-    assert_equal('fill "tomato"', draw.inspect)
+    expect(draw.inspect).to eq('fill "tomato"')
     draw.circle(10, '20.5', 30, 40.5)
     assert_nothing_raised { draw.draw(@img) }
 
@@ -219,13 +219,13 @@ class LibDrawUT < Minitest::Test
   def test_fill_opacity
     draw = Magick::Draw.new
     draw.fill_opacity(0.5)
-    assert_equal('fill-opacity 0.5', draw.inspect)
+    expect(draw.inspect).to eq('fill-opacity 0.5')
     draw.circle(10, '20.5', 30, 40.5)
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.fill_opacity('50%')
-    assert_equal('fill-opacity 50%', draw.inspect)
+    expect(draw.inspect).to eq('fill-opacity 50%')
     draw.circle(10, '20.5', 30, 40.5)
     assert_nothing_raised { draw.draw(@img) }
 
@@ -245,13 +245,13 @@ class LibDrawUT < Minitest::Test
   def test_fill_rule
     draw = Magick::Draw.new
     draw.fill_rule('evenodd')
-    assert_equal('fill-rule evenodd', draw.inspect)
+    expect(draw.inspect).to eq('fill-rule evenodd')
     draw.circle(10, '20.5', 30, 40.5)
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.fill_rule('nonzero')
-    assert_equal('fill-rule nonzero', draw.inspect)
+    expect(draw.inspect).to eq('fill-rule nonzero')
     draw.circle(10, '20.5', 30, 40.5)
     assert_nothing_raised { draw.draw(@img) }
 
@@ -262,7 +262,7 @@ class LibDrawUT < Minitest::Test
     draw = Magick::Draw.new
     font_name = Magick.fonts.first.name
     draw.font(font_name)
-    assert_equal("font '#{font_name}'", draw.inspect)
+    expect(draw.inspect).to eq("font '#{font_name}'")
     draw.text(50, 50, 'Hello world')
     assert_nothing_raised { draw.draw(@img) }
   end
@@ -270,7 +270,7 @@ class LibDrawUT < Minitest::Test
   def test_font_family
     draw = Magick::Draw.new
     draw.font_family('sans-serif')
-    assert_equal("font-family 'sans-serif'", draw.inspect)
+    expect(draw.inspect).to eq("font-family 'sans-serif'")
     draw.text(50, 50, 'Hello world')
     assert_nothing_raised { draw.draw(@img) }
   end
@@ -291,19 +291,19 @@ class LibDrawUT < Minitest::Test
   def test_font_style
     draw = Magick::Draw.new
     draw.font_style(Magick::NormalStyle)
-    assert_equal('font-style normal', draw.inspect)
+    expect(draw.inspect).to eq('font-style normal')
     draw.text(50, 50, 'Hello world')
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.font_style(Magick::ItalicStyle)
-    assert_equal('font-style italic', draw.inspect)
+    expect(draw.inspect).to eq('font-style italic')
     draw.text(50, 50, 'Hello world')
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.font_style(Magick::ObliqueStyle)
-    assert_equal('font-style oblique', draw.inspect)
+    expect(draw.inspect).to eq('font-style oblique')
     draw.text(50, 50, 'Hello world')
     assert_nothing_raised { draw.draw(@img) }
 
@@ -320,7 +320,7 @@ class LibDrawUT < Minitest::Test
 
     draw = Magick::Draw.new
     draw.font_weight(400)
-    assert_equal('font-weight 400', draw.inspect)
+    expect(draw.inspect).to eq('font-weight 400')
     draw.text(50, 50, 'Hello world')
     assert_nothing_raised { draw.draw(@img) }
 
@@ -359,12 +359,12 @@ class LibDrawUT < Minitest::Test
   def test_interline_spacing
     draw = Magick::Draw.new
     draw.interline_spacing(40.5)
-    assert_equal('interline-spacing 40.5', draw.inspect)
+    expect(draw.inspect).to eq('interline-spacing 40.5')
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.interline_spacing('40.5')
-    assert_equal('interline-spacing 40.5', draw.inspect)
+    expect(draw.inspect).to eq('interline-spacing 40.5')
     assert_nothing_raised { draw.draw(@img) }
 
     # assert_raise(ArgumentError) { @draw.interline_spacing(Float::NAN) }
@@ -376,12 +376,12 @@ class LibDrawUT < Minitest::Test
   def test_interword_spacing
     draw = Magick::Draw.new
     draw.interword_spacing(40.5)
-    assert_equal('interword-spacing 40.5', draw.inspect)
+    expect(draw.inspect).to eq('interword-spacing 40.5')
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.interword_spacing('40.5')
-    assert_equal('interword-spacing 40.5', draw.inspect)
+    expect(draw.inspect).to eq('interword-spacing 40.5')
     assert_nothing_raised { draw.draw(@img) }
 
     # assert_raise(ArgumentError) { @draw.interword_spacing(Float::NAN) }
@@ -393,12 +393,12 @@ class LibDrawUT < Minitest::Test
   def test_kerning
     draw = Magick::Draw.new
     draw.kerning(40.5)
-    assert_equal('kerning 40.5', draw.inspect)
+    expect(draw.inspect).to eq('kerning 40.5')
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.kerning('40.5')
-    assert_equal('kerning 40.5', draw.inspect)
+    expect(draw.inspect).to eq('kerning 40.5')
     assert_nothing_raised { draw.draw(@img) }
 
     # assert_raise(ArgumentError) { @draw.kerning(Float::NAN) }
@@ -409,7 +409,7 @@ class LibDrawUT < Minitest::Test
 
   def test_line
     @draw.line(10, '20.5', 30, 40.5)
-    assert_equal('line 10,20.5 30,40.5', @draw.inspect)
+    expect(@draw.inspect).to eq('line 10,20.5 30,40.5')
     assert_nothing_raised { @draw.draw(@img) }
 
     assert_raise(ArgumentError) { @draw.line('x', '20.5', 30, 40.5) }
@@ -420,7 +420,7 @@ class LibDrawUT < Minitest::Test
 
   def test_opacity
     @draw.opacity(0.8)
-    assert_equal('opacity 0.8', @draw.inspect)
+    expect(@draw.inspect).to eq('opacity 0.8')
     assert_nothing_raised { @draw.draw(@img) }
 
     assert_nothing_raised { @draw.opacity(0.0) }
@@ -438,13 +438,13 @@ class LibDrawUT < Minitest::Test
 
   def test_path
     @draw.path('M110,100 h-75 a75,75 0 1,0 75,-75 z')
-    assert_equal("path 'M110,100 h-75 a75,75 0 1,0 75,-75 z'", @draw.inspect)
+    expect(@draw.inspect).to eq("path 'M110,100 h-75 a75,75 0 1,0 75,-75 z'")
     assert_nothing_raised { @draw.draw(@img) }
   end
 
   def test_pattern
     @draw.pattern('hat', 0, 10.5, 20, '20') {}
-    assert_equal("push defs\npush pattern hat 0 10.5 20 20\npush graphic-context\npop graphic-context\npop pattern\npop defs", @draw.inspect)
+    expect(@draw.inspect).to eq("push defs\npush pattern hat 0 10.5 20 20\npush graphic-context\npop graphic-context\npop pattern\npop defs")
     assert_nothing_raised { @draw.draw(@img) }
 
     assert_raise(ArgumentError) { @draw.pattern('hat', 'x', 0, 20, 20) {} }
@@ -455,7 +455,7 @@ class LibDrawUT < Minitest::Test
 
   def test_point
     @draw.point(10.5, '20')
-    assert_equal('point 10.5,20', @draw.inspect)
+    expect(@draw.inspect).to eq('point 10.5,20')
     assert_nothing_raised { @draw.draw(@img) }
 
     assert_raise(ArgumentError) { @draw.point('x', 20) }
@@ -464,7 +464,7 @@ class LibDrawUT < Minitest::Test
 
   def test_pointsize
     @draw.pointsize(20.5)
-    assert_equal('font-size 20.5', @draw.inspect)
+    expect(@draw.inspect).to eq('font-size 20.5')
     assert_nothing_raised { @draw.draw(@img) }
 
     assert_raise(ArgumentError) { @draw.pointsize('x') }
@@ -472,7 +472,7 @@ class LibDrawUT < Minitest::Test
 
   def test_font_size
     @draw.font_size(20)
-    assert_equal('font-size 20', @draw.inspect)
+    expect(@draw.inspect).to eq('font-size 20')
     assert_nothing_raised { @draw.draw(@img) }
 
     assert_raise(ArgumentError) { @draw.font_size('x') }
@@ -480,7 +480,7 @@ class LibDrawUT < Minitest::Test
 
   def test_polygon
     @draw.polygon(0, '0.5', 8.5, 16, 16, 0, 0, 0)
-    assert_equal('polygon 0,0.5,8.5,16,16,0,0,0', @draw.inspect)
+    expect(@draw.inspect).to eq('polygon 0,0.5,8.5,16,16,0,0,0')
     assert_nothing_raised { @draw.draw(@img) }
 
     assert_raise(ArgumentError) { @draw.polygon }
@@ -490,7 +490,7 @@ class LibDrawUT < Minitest::Test
 
   def test_polyline
     @draw.polyline(0, '0.5', 16.5, 16)
-    assert_equal('polyline 0,0.5,16.5,16', @draw.inspect)
+    expect(@draw.inspect).to eq('polyline 0,0.5,16.5,16')
     assert_nothing_raised { @draw.draw(@img) }
 
     assert_raise(ArgumentError) { @draw.polyline }
@@ -500,7 +500,7 @@ class LibDrawUT < Minitest::Test
 
   def test_rectangle
     @draw.rectangle(10, '10', 100, 100)
-    assert_equal('rectangle 10,10 100,100', @draw.inspect)
+    expect(@draw.inspect).to eq('rectangle 10,10 100,100')
     assert_nothing_raised { @draw.draw(@img) }
 
     assert_raise(ArgumentError) { @draw.rectangle('x', 10, 20, 20) }
@@ -511,7 +511,7 @@ class LibDrawUT < Minitest::Test
 
   def test_rotate
     @draw.rotate(45)
-    assert_equal('rotate 45', @draw.inspect)
+    expect(@draw.inspect).to eq('rotate 45')
     @draw.text(50, 50, 'Hello world')
     assert_nothing_raised { @draw.draw(@img) }
 
@@ -520,7 +520,7 @@ class LibDrawUT < Minitest::Test
 
   def test_roundrectangle
     @draw.roundrectangle(10, '10', 100, 100, 20, 20)
-    assert_equal('roundrectangle 10,10,100,100,20,20', @draw.inspect)
+    expect(@draw.inspect).to eq('roundrectangle 10,10,100,100,20,20')
     assert_nothing_raised { @draw.draw(@img) }
 
     assert_raise(ArgumentError) { @draw.roundrectangle('x', '10', 100, 100, 20, 20) }
@@ -533,7 +533,7 @@ class LibDrawUT < Minitest::Test
 
   def test_scale
     @draw.scale('0.5', 1.5)
-    assert_equal('scale 0.5,1.5', @draw.inspect)
+    expect(@draw.inspect).to eq('scale 0.5,1.5')
     @draw.rectangle(10, '10', 100, 100)
     assert_nothing_raised { @draw.draw(@img) }
 
@@ -543,7 +543,7 @@ class LibDrawUT < Minitest::Test
 
   def test_skewx
     @draw.skewx(45)
-    assert_equal('skewX 45', @draw.inspect)
+    expect(@draw.inspect).to eq('skewX 45')
     @draw.text(50, 50, 'Hello world')
     assert_nothing_raised { @draw.draw(@img) }
 
@@ -552,7 +552,7 @@ class LibDrawUT < Minitest::Test
 
   def test_skewy
     @draw.skewy(45)
-    assert_equal('skewY 45', @draw.inspect)
+    expect(@draw.inspect).to eq('skewY 45')
     @draw.text(50, 50, 'Hello world')
     assert_nothing_raised { @draw.draw(@img) }
 
@@ -561,7 +561,7 @@ class LibDrawUT < Minitest::Test
 
   def test_stroke
     @draw.stroke('red')
-    assert_equal('stroke "red"', @draw.inspect)
+    expect(@draw.inspect).to eq('stroke "red"')
     @draw.rectangle(10, '10', 100, 100)
     assert_nothing_raised { @draw.draw(@img) }
 
@@ -570,7 +570,7 @@ class LibDrawUT < Minitest::Test
 
   def test_stroke_color
     @draw.stroke_color('red')
-    assert_equal('stroke "red"', @draw.inspect)
+    expect(@draw.inspect).to eq('stroke "red"')
     @draw.rectangle(10, '10', 100, 100)
     assert_nothing_raised { @draw.draw(@img) }
 
@@ -579,7 +579,7 @@ class LibDrawUT < Minitest::Test
 
   def test_stroke_pattern
     @draw.stroke_pattern('red')
-    assert_equal('stroke "red"', @draw.inspect)
+    expect(@draw.inspect).to eq('stroke "red"')
     @draw.rectangle(10, '10', 100, 100)
     assert_nothing_raised { @draw.draw(@img) }
 
@@ -589,7 +589,7 @@ class LibDrawUT < Minitest::Test
   def test_stroke_antialias
     draw = Magick::Draw.new
     draw.stroke_antialias(true)
-    assert_equal('stroke-antialias 1', draw.inspect)
+    expect(draw.inspect).to eq('stroke-antialias 1')
     draw.stroke_pattern('red')
     draw.stroke_width(5)
     draw.circle(10, '20.5', 30, 40.5)
@@ -597,7 +597,7 @@ class LibDrawUT < Minitest::Test
 
     draw = Magick::Draw.new
     draw.stroke_antialias(false)
-    assert_equal('stroke-antialias 0', draw.inspect)
+    expect(draw.inspect).to eq('stroke-antialias 0')
     draw.stroke_pattern('red')
     draw.stroke_width(5)
     draw.circle(10, '20.5', 30, 40.5)
@@ -607,7 +607,7 @@ class LibDrawUT < Minitest::Test
   def test_stroke_dasharray
     draw = Magick::Draw.new
     draw.stroke_dasharray(2, 2)
-    assert_equal('stroke-dasharray 2,2', draw.inspect)
+    expect(draw.inspect).to eq('stroke-dasharray 2,2')
     draw.stroke_pattern('red')
     draw.stroke_width(2)
     draw.rectangle(10, '10', 100, 100)
@@ -615,7 +615,7 @@ class LibDrawUT < Minitest::Test
 
     draw = Magick::Draw.new
     draw.stroke_dasharray
-    assert_equal('stroke-dasharray none', draw.inspect)
+    expect(draw.inspect).to eq('stroke-dasharray none')
     assert_nothing_raised { draw.draw(@img) }
 
     assert_raise(ArgumentError) { @draw.stroke_dasharray(-0.1) }
@@ -624,7 +624,7 @@ class LibDrawUT < Minitest::Test
 
   def test_stroke_dashoffset
     @draw.stroke_dashoffset(10)
-    assert_equal('stroke-dashoffset 10', @draw.inspect)
+    expect(@draw.inspect).to eq('stroke-dashoffset 10')
     assert_nothing_raised { @draw.draw(@img) }
 
     assert_raise(ArgumentError) { @draw.stroke_dashoffset('x') }
@@ -633,17 +633,17 @@ class LibDrawUT < Minitest::Test
   def test_stroke_linecap
     draw = Magick::Draw.new
     draw.stroke_linecap('butt')
-    assert_equal('stroke-linecap butt', draw.inspect)
+    expect(draw.inspect).to eq('stroke-linecap butt')
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.stroke_linecap('round')
-    assert_equal('stroke-linecap round', draw.inspect)
+    expect(draw.inspect).to eq('stroke-linecap round')
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.stroke_linecap('square')
-    assert_equal('stroke-linecap square', draw.inspect)
+    expect(draw.inspect).to eq('stroke-linecap square')
     assert_nothing_raised { draw.draw(@img) }
 
     assert_raise(ArgumentError) { @draw.stroke_linecap('foo') }
@@ -652,17 +652,17 @@ class LibDrawUT < Minitest::Test
   def test_stroke_linejoin
     draw = Magick::Draw.new
     draw.stroke_linejoin('round')
-    assert_equal('stroke-linejoin round', draw.inspect)
+    expect(draw.inspect).to eq('stroke-linejoin round')
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.stroke_linejoin('miter')
-    assert_equal('stroke-linejoin miter', draw.inspect)
+    expect(draw.inspect).to eq('stroke-linejoin miter')
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.stroke_linejoin('bevel')
-    assert_equal('stroke-linejoin bevel', draw.inspect)
+    expect(draw.inspect).to eq('stroke-linejoin bevel')
     assert_nothing_raised { draw.draw(@img) }
 
     assert_raise(ArgumentError) { @draw.stroke_linejoin('foo') }
@@ -671,7 +671,7 @@ class LibDrawUT < Minitest::Test
   def test_stroke_miterlimit
     draw = Magick::Draw.new
     draw.stroke_miterlimit(1.0)
-    assert_equal('stroke-miterlimit 1.0', draw.inspect)
+    expect(draw.inspect).to eq('stroke-miterlimit 1.0')
     assert_nothing_raised { draw.draw(@img) }
 
     assert_raise(ArgumentError) { @draw.stroke_miterlimit(0.9) }
@@ -680,7 +680,7 @@ class LibDrawUT < Minitest::Test
 
   def test_stroke_opacity
     @draw.stroke_opacity(0.8)
-    assert_equal('stroke-opacity 0.8', @draw.inspect)
+    expect(@draw.inspect).to eq('stroke-opacity 0.8')
     assert_nothing_raised { @draw.draw(@img) }
 
     assert_nothing_raised { @draw.stroke_opacity(0.0) }
@@ -698,7 +698,7 @@ class LibDrawUT < Minitest::Test
 
   def test_stroke_width
     @draw.stroke_width(2.5)
-    assert_equal('stroke-width 2.5', @draw.inspect)
+    expect(@draw.inspect).to eq('stroke-width 2.5')
     assert_nothing_raised { @draw.draw(@img) }
 
     assert_raise(ArgumentError) { @draw.stroke_width('xxx') }
@@ -707,27 +707,27 @@ class LibDrawUT < Minitest::Test
   def test_text
     draw = Magick::Draw.new
     draw.text(50, 50, 'Hello world')
-    assert_equal("text 50,50 'Hello world'", draw.inspect)
+    expect(draw.inspect).to eq("text 50,50 'Hello world'")
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.text(50, 50, "Hello 'world'")
-    assert_equal("text 50,50 \"Hello 'world'\"", draw.inspect)
+    expect(draw.inspect).to eq("text 50,50 \"Hello 'world'\"")
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.text(50, 50, 'Hello "world"')
-    assert_equal("text 50,50 'Hello \"world\"'", draw.inspect)
+    expect(draw.inspect).to eq("text 50,50 'Hello \"world\"'")
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.text(50, 50, "Hello 'world\"")
-    assert_equal("text 50,50 {Hello 'world\"}", draw.inspect)
+    expect(draw.inspect).to eq("text 50,50 {Hello 'world\"}")
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.text(50, 50, "Hello {'world\"")
-    assert_equal("text 50,50 {Hello {'world\"}", draw.inspect)
+    expect(draw.inspect).to eq("text 50,50 {Hello {'world\"}")
     assert_nothing_raised { draw.draw(@img) }
 
     assert_raise(ArgumentError) { @draw.text(50, 50, '') }
@@ -738,19 +738,19 @@ class LibDrawUT < Minitest::Test
   def test_text_align
     draw = Magick::Draw.new
     draw.text_align(Magick::LeftAlign)
-    assert_equal('text-align left', draw.inspect)
+    expect(draw.inspect).to eq('text-align left')
     draw.text(50, 50, 'Hello world')
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.text_align(Magick::RightAlign)
-    assert_equal('text-align right', draw.inspect)
+    expect(draw.inspect).to eq('text-align right')
     draw.text(50, 50, 'Hello world')
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.text_align(Magick::CenterAlign)
-    assert_equal('text-align center', draw.inspect)
+    expect(draw.inspect).to eq('text-align center')
     draw.text(50, 50, 'Hello world')
     assert_nothing_raised { draw.draw(@img) }
 
@@ -760,19 +760,19 @@ class LibDrawUT < Minitest::Test
   def test_text_anchor
     draw = Magick::Draw.new
     draw.text_anchor(Magick::StartAnchor)
-    assert_equal('text-anchor start', draw.inspect)
+    expect(draw.inspect).to eq('text-anchor start')
     draw.text(50, 50, 'Hello world')
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.text_anchor(Magick::MiddleAnchor)
-    assert_equal('text-anchor middle', draw.inspect)
+    expect(draw.inspect).to eq('text-anchor middle')
     draw.text(50, 50, 'Hello world')
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.text_anchor(Magick::EndAnchor)
-    assert_equal('text-anchor end', draw.inspect)
+    expect(draw.inspect).to eq('text-anchor end')
     draw.text(50, 50, 'Hello world')
     assert_nothing_raised { draw.draw(@img) }
 
@@ -782,27 +782,27 @@ class LibDrawUT < Minitest::Test
   def test_text_antialias
     draw = Magick::Draw.new
     draw.text_antialias(true)
-    assert_equal('text-antialias 1', draw.inspect)
+    expect(draw.inspect).to eq('text-antialias 1')
     draw.text(50, 50, 'Hello world')
     assert_nothing_raised { draw.draw(@img) }
 
     draw = Magick::Draw.new
     draw.text_antialias(false)
-    assert_equal('text-antialias 0', draw.inspect)
+    expect(draw.inspect).to eq('text-antialias 0')
     draw.text(50, 50, 'Hello world')
     assert_nothing_raised { draw.draw(@img) }
   end
 
   def test_text_undercolor
     @draw.text_undercolor('red')
-    assert_equal('text-undercolor "red"', @draw.inspect)
+    expect(@draw.inspect).to eq('text-undercolor "red"')
     @draw.text(50, 50, 'Hello world')
     assert_nothing_raised { @draw.draw(@img) }
   end
 
   def test_translate
     @draw.translate('200', 300)
-    assert_equal('translate 200,300', @draw.inspect)
+    expect(@draw.inspect).to eq('translate 200,300')
     assert_nothing_raised { @draw.draw(@img) }
 
     assert_raise(ArgumentError) { @draw.translate('x', 300) }

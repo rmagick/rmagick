@@ -18,24 +18,24 @@ class TmpnamTest < Minitest::Test
 
     # now it exists
     assert_nothing_raised { Magick._tmpnam_ }
-    assert_equal(1, Magick._tmpnam_)
+    expect(Magick._tmpnam_).to eq(1)
 
     info.texture = texture
-    assert_equal(2, Magick._tmpnam_)
+    expect(Magick._tmpnam_).to eq(2)
 
     mon = Magick::ImageList::Montage.new
     mon.texture = texture
-    assert_equal(3, Magick._tmpnam_)
+    expect(Magick._tmpnam_).to eq(3)
 
     mon.texture = texture
-    assert_equal(4, Magick._tmpnam_)
+    expect(Magick._tmpnam_).to eq(4)
 
     gc = Magick::Draw.new
     gc.composite(0, 0, 20, 20, texture)
-    assert_equal(5, Magick._tmpnam_)
+    expect(Magick._tmpnam_).to eq(5)
 
     gc.composite(0, 0, 20, 20, texture)
-    assert_equal(6, Magick._tmpnam_)
+    expect(Magick._tmpnam_).to eq(6)
 
     tmpfiles2 = Dir[ENV['HOME'] + '/tmp/magick*'].length
 
@@ -43,8 +43,8 @@ class TmpnamTest < Minitest::Test
     # The 2nd info texture deletes the first.
     # Both composite images are still alive.
     # Therefore only 4 tmp files are left.
-    # assert_equal(tmpfiles+4, tmpfiles2)
+    # expect(tmpfiles2).to eq(tmpfiles+4)
     # 6.4.1-5 - only 1 tmpfile?
-    assert_equal(tmpfiles, tmpfiles2)
+    expect(tmpfiles2).to eq(tmpfiles)
   end
 end

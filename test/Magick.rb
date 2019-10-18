@@ -52,13 +52,13 @@ class MagickUT < Minitest::Test
       ary = Magick::AlignType.enumerators
     end
     assert_instance_of(Array, ary)
-    assert_equal(4, ary.length)
+    expect(ary.length).to eq(4)
 
     assert_nothing_raised do
       ary = Magick::AnchorType.enumerators
     end
     assert_instance_of(Array, ary)
-    assert_equal(3, ary.length)
+    expect(ary.length).to eq(3)
   end
 
   def test_features
@@ -92,147 +92,147 @@ class MagickUT < Minitest::Test
     g2 = nil
     assert_nothing_raised { g = Magick::Geometry.new }
     assert_nothing_raised { gs = g.to_s }
-    assert_equal('', gs)
+    expect(gs).to eq('')
 
     g = Magick::Geometry.new(40)
     gs = g.to_s
-    assert_equal('40x', gs)
+    expect(gs).to eq('40x')
 
     assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
     gs2 = g2.to_s
-    assert_equal(gs, gs2)
+    expect(gs2).to eq(gs)
 
     g = Magick::Geometry.new(40, 50)
     gs = g.to_s
-    assert_equal('40x50', gs)
+    expect(gs).to eq('40x50')
 
     assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
     gs2 = g2.to_s
-    assert_equal(gs, gs2)
+    expect(gs2).to eq(gs)
 
     g = Magick::Geometry.new(40, 50, 10)
     gs = g.to_s
-    assert_equal('40x50+10+0', gs)
+    expect(gs).to eq('40x50+10+0')
 
     assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
     gs2 = g2.to_s
-    assert_equal(gs, gs2)
+    expect(gs2).to eq(gs)
 
     g = Magick::Geometry.new(40, 50, 10, -15)
     gs = g.to_s
-    assert_equal('40x50+10-15', gs)
+    expect(gs).to eq('40x50+10-15')
 
     assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
     gs2 = g2.to_s
-    assert_equal(gs, gs2)
+    expect(gs2).to eq(gs)
 
     g = Magick::Geometry.new(40, 50, 0, 0, Magick::AreaGeometry)
     gs = g.to_s
-    assert_equal('40x50@', gs)
+    expect(gs).to eq('40x50@')
 
     assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
     gs2 = g2.to_s
-    assert_equal(gs, gs2)
+    expect(gs2).to eq(gs)
 
     g = Magick::Geometry.new(40, 50, 0, 0, Magick::AspectGeometry)
     gs = g.to_s
-    assert_equal('40x50!', gs)
+    expect(gs).to eq('40x50!')
 
     assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
     gs2 = g2.to_s
-    assert_equal(gs, gs2)
+    expect(gs2).to eq(gs)
 
     g = Magick::Geometry.new(40, 50, 0, 0, Magick::LessGeometry)
     gs = g.to_s
-    assert_equal('40x50<', gs)
+    expect(gs).to eq('40x50<')
 
     assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
     gs2 = g2.to_s
-    assert_equal(gs, gs2)
+    expect(gs2).to eq(gs)
 
     g = Magick::Geometry.new(40, 50, 0, 0, Magick::GreaterGeometry)
     gs = g.to_s
-    assert_equal('40x50>', gs)
+    expect(gs).to eq('40x50>')
 
     assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
     gs2 = g2.to_s
-    assert_equal(gs, gs2)
+    expect(gs2).to eq(gs)
 
     g = Magick::Geometry.new(40, 50, 0, 0, Magick::MinimumGeometry)
     gs = g.to_s
-    assert_equal('40x50^', gs)
+    expect(gs).to eq('40x50^')
 
     assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
     gs2 = g2.to_s
-    assert_equal(gs, gs2)
+    expect(gs2).to eq(gs)
 
     g = Magick::Geometry.new(40, 0, 0, 0, Magick::PercentGeometry)
     gs = g.to_s
-    assert_equal('40%', gs)
+    expect(gs).to eq('40%')
 
     assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
     gs2 = g2.to_s
-    assert_equal(gs, gs2)
+    expect(gs2).to eq(gs)
 
     g = Magick::Geometry.new(40, 60, 0, 0, Magick::PercentGeometry)
     gs = g.to_s
-    assert_equal('40%x60%', gs)
+    expect(gs).to eq('40%x60%')
 
     assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
     gs2 = g2.to_s
-    assert_equal(gs, gs2)
+    expect(gs2).to eq(gs)
 
     g = Magick::Geometry.new(40, 60, 10, 0, Magick::PercentGeometry)
     gs = g.to_s
-    assert_equal('40%x60%+10+0', gs)
+    expect(gs).to eq('40%x60%+10+0')
 
     assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
     gs2 = g2.to_s
-    assert_equal(gs, gs2)
+    expect(gs2).to eq(gs)
 
     g = Magick::Geometry.new(40, 60, 10, 20, Magick::PercentGeometry)
     gs = g.to_s
-    assert_equal('40%x60%+10+20', gs)
+    expect(gs).to eq('40%x60%+10+20')
 
     assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
     gs2 = g2.to_s
-    assert_equal(gs, gs2)
+    expect(gs2).to eq(gs)
 
     g = Magick::Geometry.new(40.5, 60.75)
     gs = g.to_s
-    assert_equal('40.50x60.75', gs)
+    expect(gs).to eq('40.50x60.75')
 
     assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
     gs2 = g2.to_s
-    assert_equal(gs, gs2)
+    expect(gs2).to eq(gs)
 
     g = Magick::Geometry.new(40.5, 60.75, 0, 0, Magick::PercentGeometry)
     gs = g.to_s
-    assert_equal('40.50%x60.75%', gs)
+    expect(gs).to eq('40.50%x60.75%')
 
     assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
     gs2 = g2.to_s
-    assert_equal(gs, gs2)
+    expect(gs2).to eq(gs)
 
     g = Magick::Geometry.new(0, 0, 10, 20)
     gs = g.to_s
-    assert_equal('+10+20', gs)
+    expect(gs).to eq('+10+20')
 
     assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
     gs2 = g2.to_s
-    assert_equal(gs, gs2)
+    expect(gs2).to eq(gs)
 
     g = Magick::Geometry.new(0, 0, 10)
     gs = g.to_s
-    assert_equal('+10+0', gs)
+    expect(gs).to eq('+10+0')
 
     assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
     gs2 = g2.to_s
-    assert_equal(gs, gs2)
+    expect(gs2).to eq(gs)
 
     # assert behavior with empty string argument
     assert_nothing_raised { g = Magick::Geometry.from_s('') }
-    assert_equal('', g.to_s)
+    expect(g.to_s).to eq('')
 
     assert_raise(ArgumentError) { Magick::Geometry.new(Magick::AreaGeometry) }
     assert_raise(ArgumentError) { Magick::Geometry.new(40, Magick::AreaGeometry) }
@@ -245,7 +245,7 @@ class MagickUT < Minitest::Test
   end
 
   def test_opaque_alpha
-    assert_equal(Magick::QuantumRange, Magick::OpaqueAlpha)
+    expect(Magick::OpaqueAlpha).to eq(Magick::QuantumRange)
   end
 
   def test_set_log_event_mask
@@ -264,35 +264,35 @@ class MagickUT < Minitest::Test
     assert_kind_of(Integer, cur)
     assert(cur > 1024**2)
     assert_nothing_raised { new = Magick.limit_resource('memory') }
-    assert_equal(500, new)
+    expect(new).to eq(500)
     Magick.limit_resource(:memory, cur)
 
     assert_nothing_raised { cur = Magick.limit_resource(:map, 3500) }
     assert_kind_of(Integer, cur)
     assert(cur > 1024**2)
     assert_nothing_raised { new = Magick.limit_resource('map') }
-    assert_equal(3500, new)
+    expect(new).to eq(3500)
     Magick.limit_resource(:map, cur)
 
     assert_nothing_raised { cur = Magick.limit_resource(:disk, 3 * 1024 * 1024 * 1024) }
     assert_kind_of(Integer, cur)
     assert(cur > 1024**2)
     assert_nothing_raised { new = Magick.limit_resource('disk') }
-    assert_equal(3_221_225_472, new)
+    expect(new).to eq(3_221_225_472)
     Magick.limit_resource(:disk, cur)
 
     assert_nothing_raised { cur = Magick.limit_resource(:file, 500) }
     assert_kind_of(Integer, cur)
     assert(cur > 512)
     assert_nothing_raised { new = Magick.limit_resource('file') }
-    assert_equal(500, new)
+    expect(new).to eq(500)
     Magick.limit_resource(:file, cur)
 
     assert_nothing_raised { cur = Magick.limit_resource(:time, 300) }
     assert_kind_of(Integer, cur)
     assert(cur > 300)
     assert_nothing_raised { new = Magick.limit_resource('time') }
-    assert_equal(300, new)
+    expect(new).to eq(300)
     Magick.limit_resource(:time, cur)
 
     assert_raise(ArgumentError) { Magick.limit_resource(:xxx) }
@@ -302,7 +302,7 @@ class MagickUT < Minitest::Test
   end
 
   def test_transparent_alpha
-    assert_equal(0, Magick::TransparentAlpha)
+    expect(Magick::TransparentAlpha).to eq(0)
   end
 end
 

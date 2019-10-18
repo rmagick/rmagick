@@ -266,11 +266,11 @@ class DrawUT < Minitest::Test
   end
 
   def test_inspect
-    assert_equal('(no primitives defined)', @draw.inspect)
+    expect(@draw.inspect).to eq('(no primitives defined)')
 
     @draw.path('M110,100 h-75 a75,75 0 1,0 75,-75 z')
     @draw.fill('yellow')
-    assert_equal("path 'M110,100 h-75 a75,75 0 1,0 75,-75 z'\nfill \"yellow\"", @draw.inspect)
+    expect(@draw.inspect).to eq("path 'M110,100 h-75 a75,75 0 1,0 75,-75 z'\nfill \"yellow\"")
   end
 
   def test_marshal
@@ -305,7 +305,7 @@ class DrawUT < Minitest::Test
     assert_nothing_raised do
       draw2.marshal_load(dumped)
     end
-    assert_equal(draw.inspect, draw2.inspect)
+    expect(draw2.inspect).to eq(draw.inspect)
   end
 
   def test_primitive
