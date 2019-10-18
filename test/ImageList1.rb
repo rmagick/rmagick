@@ -151,8 +151,8 @@ class ImageList1UT < Minitest::Test
     img = Magick::Image.new(5, 5)
     expect do
       rv = @list[0] = img
-      assert_same(img, rv)
-      assert_same(img, @list[0])
+      expect(rv).to be(img)
+      expect(@list[0]).to be(img)
       expect(@list.scene).to eq(0)
     end.not_to raise_error
 
@@ -160,9 +160,9 @@ class ImageList1UT < Minitest::Test
     expect do
       img = Magick::Image.new(5, 5)
       rv = @list[1, 2] = img
-      assert_same(img, rv)
+      expect(rv).to be(img)
       expect(@list.length).to eq(9)
-      assert_same(img, @list[1])
+      expect(@list[1]).to be(img)
       expect(@list.scene).to eq(1)
     end.not_to raise_error
 
@@ -172,37 +172,37 @@ class ImageList1UT < Minitest::Test
       img2 = Magick::Image.new(5, 5)
       ary = [img, img2]
       rv = @list[3, 1] = ary
-      assert_same(ary, rv)
+      expect(rv).to be(ary)
       expect(@list.length).to eq(10)
-      assert_same(img, @list[3])
-      assert_same(img2, @list[4])
+      expect(@list[3]).to be(img)
+      expect(@list[4]).to be(img2)
       expect(@list.scene).to eq(4)
     end.not_to raise_error
 
     expect do
       img = Magick::Image.new(5, 5)
       rv = @list[5..6] = img
-      assert_same(img, rv)
+      expect(rv).to be(img)
       expect(@list.length).to eq(9)
-      assert_same(img, @list[5])
+      expect(@list[5]).to be(img)
       expect(@list.scene).to eq(5)
     end.not_to raise_error
 
     expect do
       ary = [img, img]
       rv = @list[7..8] = ary
-      assert_same(ary, rv)
+      expect(rv).to be(ary)
       expect(@list.length).to eq(9)
-      assert_same(img, @list[7])
-      assert_same(img, @list[8])
+      expect(@list[7]).to be(img)
+      expect(@list[8]).to be(img)
       expect(@list.scene).to eq(8)
     end.not_to raise_error
 
     expect do
       rv = @list[-1] = img
-      assert_same(img, rv)
+      expect(rv).to be(img)
       expect(@list.length).to eq(9)
-      assert_same(img, @list[8])
+      expect(@list[8]).to be(img)
       expect(@list.scene).to eq(8)
     end.not_to raise_error
 
@@ -221,7 +221,7 @@ class ImageList1UT < Minitest::Test
       assert_not_same(res, @list2)
       expect(res.length).to eq(5)
       expect(res.scene).to eq(2)
-      assert_same(cur, res.cur_image)
+      expect(res.cur_image).to be(cur)
     end.not_to raise_error
 
     # current scene not in the result, set result scene to last image in result
@@ -239,14 +239,14 @@ class ImageList1UT < Minitest::Test
     expect do
       cur = @list.cur_image
       img = @list.at(7)
-      assert_same(img, @list[7])
-      assert_same(cur, @list.cur_image)
+      expect(@list[7]).to be(img)
+      expect(@list.cur_image).to be(cur)
       img = @list.at(10)
       assert_nil(img)
-      assert_same(cur, @list.cur_image)
+      expect(@list.cur_image).to be(cur)
       img = @list.at(-1)
-      assert_same(img, @list[9])
-      assert_same(cur, @list.cur_image)
+      expect(@list[9]).to be(img)
+      expect(@list.cur_image).to be(cur)
     end.not_to raise_error
   end
 
@@ -258,7 +258,7 @@ class ImageList1UT < Minitest::Test
       expect(res).to be_instance_of(Magick::ImageList)
       expect(res.length).to eq(20)
       assert_not_same(res, @list)
-      assert_same(cur, res.cur_image)
+      expect(res.cur_image).to be(cur)
     end.not_to raise_error
 
     expect { @list * 'x' }.to raise_error(ArgumentError)
@@ -273,7 +273,7 @@ class ImageList1UT < Minitest::Test
       expect(res.length).to eq(15)
       assert_not_same(res, @list)
       assert_not_same(res, @list2)
-      assert_same(cur, res.cur_image)
+      expect(res.cur_image).to be(cur)
     end.not_to raise_error
 
     expect { @list + [2] }.to raise_error(ArgumentError)
@@ -288,7 +288,7 @@ class ImageList1UT < Minitest::Test
       expect(res.length).to eq(5)
       assert_not_same(res, @list)
       assert_not_same(res, @list2)
-      assert_same(cur, res.cur_image)
+      expect(res.cur_image).to be(cur)
     end.not_to raise_error
 
     # current scene not in result - set result scene to last image in result
@@ -370,7 +370,7 @@ class ImageList1UT < Minitest::Test
       @list.compact!
       expect(@list).to be_instance_of(Magick::ImageList)
       expect(@list).to eq(res)
-      assert_same(res, @list)
+      expect(@list).to be(res)
     end.not_to raise_error
   end
 
@@ -379,7 +379,7 @@ class ImageList1UT < Minitest::Test
       res = @list.concat(@list2)
       expect(res).to be_instance_of(Magick::ImageList)
       expect(res.length).to eq(15)
-      assert_same(res[14], res.cur_image)
+      expect(res.cur_image).to be(res[14])
     end.not_to raise_error
     expect { @list.concat(2) }.to raise_error(ArgumentError)
     expect { @list.concat([2]) }.to raise_error(ArgumentError)
@@ -389,13 +389,13 @@ class ImageList1UT < Minitest::Test
     expect do
       cur = @list.cur_image
       img = @list[7]
-      assert_same(img, @list.delete(img))
+      expect(@list.delete(img)).to be(img)
       expect(@list.length).to eq(9)
-      assert_same(cur, @list.cur_image)
+      expect(@list.cur_image).to be(cur)
 
       # Try deleting the current image.
-      assert_same(cur, @list.delete(cur))
-      assert_same(@list[-1], @list.cur_image)
+      expect(@list.delete(cur)).to be(cur)
+      expect(@list.cur_image).to be(@list[-1])
 
       expect { @list.delete(2) }.to raise_error(ArgumentError)
       expect { @list.delete([2]) }.to raise_error(ArgumentError)
@@ -414,9 +414,9 @@ class ImageList1UT < Minitest::Test
     @list.scene = 7
     cur = @list.cur_image
     expect { @list.delete_at(9) }.not_to raise_error
-    assert_same(cur, @list.cur_image)
+    expect(@list.cur_image).to be(cur)
     expect { @list.delete_at(7) }.not_to raise_error
-    assert_same(@list[-1], @list.cur_image)
+    expect(@list.cur_image).to be(@list[-1])
   end
 
   def test_delete_if
@@ -426,7 +426,7 @@ class ImageList1UT < Minitest::Test
       @list.delete_if { |img| File.basename(img.filename) =~ /5/ }
       expect(@list).to be_instance_of(Magick::ImageList)
       expect(@list.length).to eq(9)
-      assert_same(cur, @list.cur_image)
+      expect(@list.cur_image).to be(cur)
     end.not_to raise_error
 
     # Delete the current image
@@ -434,7 +434,7 @@ class ImageList1UT < Minitest::Test
       @list.delete_if { |img| File.basename(img.filename) =~ /7/ }
       expect(@list).to be_instance_of(Magick::ImageList)
       expect(@list.length).to eq(8)
-      assert_same(@list[-1], @list.cur_image)
+      expect(@list.cur_image).to be(@list[-1])
     end.not_to raise_error
   end
 
@@ -467,23 +467,23 @@ class ImageList1UT < Minitest::Test
     expect do
       expect(list.fill(img)).to be_instance_of(Magick::ImageList)
     end.not_to raise_error
-    list.each { |el| assert_same(el, img) }
+    list.each { |el| expect(img).to be(el) }
 
     list = @list.copy
     list.fill(img, 0, 3)
-    0.upto(2) { |i| assert_same(img, list[i]) }
+    0.upto(2) { |i| expect(list[i]).to be(img) }
 
     list = @list.copy
     list.fill(img, 4..7)
-    4.upto(7) { |i| assert_same(img, list[i]) }
+    4.upto(7) { |i| expect(list[i]).to be(img) }
 
     list = @list.copy
     list.fill { |i| list[i] = img }
-    list.each { |el| assert_same(el, img) }
+    list.each { |el| expect(img).to be(el) }
 
     list = @list.copy
     list.fill(0, 3) { |i| list[i] = img }
-    0.upto(2) { |i| assert_same(img, list[i]) }
+    0.upto(2) { |i| expect(list[i]).to be(img) }
 
     expect { list.fill('x', 0) }.to raise_error(ArgumentError)
   end
@@ -497,7 +497,7 @@ class ImageList1UT < Minitest::Test
       res = @list.select { |img| File.basename(img.filename) =~ /Button_2/ }
       expect(res).to be_instance_of(Magick::ImageList)
       expect(res.length).to eq(1)
-      assert_same(res[0], @list[2])
+      expect(@list[2]).to be(res[0])
     end.not_to raise_error
   end
 
@@ -506,9 +506,9 @@ class ImageList1UT < Minitest::Test
       @list.scene = 7
       cur = @list.cur_image
       expect(@list.insert(1, @list[2])).to be_instance_of(Magick::ImageList)
-      assert_same(cur, @list.cur_image)
+      expect(@list.cur_image).to be(cur)
       @list.insert(1, @list[2], @list[3], @list[4])
-      assert_same(cur, @list.cur_image)
+      expect(@list.cur_image).to be(cur)
     end.not_to raise_error
 
     expect { @list.insert(0, 'x') }.to raise_error(ArgumentError)
@@ -575,12 +575,12 @@ class ImageList1UT < Minitest::Test
     cur = @list.cur_image
     last = @list[-1]
     expect do
-      assert_same(last, @list.pop)
-      assert_same(cur, @list.cur_image)
+      expect(@list.pop).to be(last)
+      expect(@list.cur_image).to be(cur)
     end.not_to raise_error
 
-    assert_same(cur, @list.pop)
-    assert_same(@list[-1], @list.cur_image)
+    expect(@list.pop).to be(cur)
+    expect(@list.cur_image).to be(@list[-1])
   end
 
   def test_push
@@ -588,8 +588,8 @@ class ImageList1UT < Minitest::Test
     img1 = @list[0]
     img2 = @list[1]
     expect { @list.push(img1, img2) }.not_to raise_error
-    assert_same(list, @list) # push returns self
-    assert_same(img2, @list.cur_image)
+    expect(@list).to be(list) # push returns self
+    expect(@list.cur_image).to be(img2)
   end
 
   def test_reject
@@ -600,16 +600,16 @@ class ImageList1UT < Minitest::Test
       res = @list.reject { |img| File.basename(img.filename) =~ /Button_9/ }
       expect(res.length).to eq(9)
       expect(res).to be_instance_of(Magick::ImageList)
-      assert_same(cur, res.cur_image)
+      expect(res.cur_image).to be(cur)
     end.not_to raise_error
-    assert_same(list, @list)
-    assert_same(cur, @list.cur_image)
+    expect(@list).to be(list)
+    expect(@list.cur_image).to be(cur)
 
     # Omit current image from result list - result cur_image s/b last image
     res = @list.reject { |img| File.basename(img.filename) =~ /Button_7/ }
     expect(res.length).to eq(9)
-    assert_same(res[-1], res.cur_image)
-    assert_same(cur, @list.cur_image)
+    expect(res.cur_image).to be(res[-1])
+    expect(@list.cur_image).to be(cur)
   end
 
   def test_reject!
@@ -619,7 +619,7 @@ class ImageList1UT < Minitest::Test
       @list.reject! { |img| File.basename(img.filename) =~ /5/ }
       expect(@list).to be_instance_of(Magick::ImageList)
       expect(@list.length).to eq(9)
-      assert_same(cur, @list.cur_image)
+      expect(@list.cur_image).to be(cur)
     end.not_to raise_error
 
     # Delete the current image
@@ -627,7 +627,7 @@ class ImageList1UT < Minitest::Test
       @list.reject! { |img| File.basename(img.filename) =~ /7/ }
       expect(@list).to be_instance_of(Magick::ImageList)
       expect(@list.length).to eq(8)
-      assert_same(@list[-1], @list.cur_image)
+      expect(@list.cur_image).to be(@list[-1])
     end.not_to raise_error
 
     # returns nil if no changes are made
@@ -638,7 +638,7 @@ class ImageList1UT < Minitest::Test
     # Replace with empty list
     expect do
       res = @list.replace([])
-      assert_same(res, @list)
+      expect(@list).to be(res)
       expect(@list.length).to eq(0)
       assert_nil(@list.scene)
     end.not_to raise_error
@@ -661,10 +661,10 @@ class ImageList1UT < Minitest::Test
       @list.scene = 7
       cur = @list.cur_image
       res = @list.replace(@list2)
-      assert_same(res, @list)
+      expect(@list).to be(res)
       expect(@list.length).to eq(5)
       expect(@list.scene).to eq(2)
-      assert_same(cur, @list.cur_image)
+      expect(@list.cur_image).to be(cur)
     end.not_to raise_error
   end
 
@@ -674,10 +674,10 @@ class ImageList1UT < Minitest::Test
       @list2.scene = 2
       cur = @list2.cur_image
       res = @list2.replace(@list)
-      assert_same(res, @list2)
+      expect(@list2).to be(res)
       expect(@list2.length).to eq(10)
       expect(@list2.scene).to eq(7)
-      assert_same(cur, @list2.cur_image)
+      expect(@list2.cur_image).to be(cur)
     end.not_to raise_error
   end
 
@@ -686,15 +686,15 @@ class ImageList1UT < Minitest::Test
     cur = @list.cur_image
     expect { list = @list.reverse }.not_to raise_error
     expect(@list.length).to eq(list.length)
-    assert_same(cur, @list.cur_image)
+    expect(@list.cur_image).to be(cur)
   end
 
   def test_reverse!
     list = @list
     cur = @list.cur_image
     expect { @list.reverse! }.not_to raise_error
-    assert_same(list, @list)
-    assert_same(cur, @list.cur_image)
+    expect(@list).to be(list)
+    expect(@list.cur_image).to be(cur)
   end
 
   # Just validate its existence
@@ -716,7 +716,7 @@ class ImageList1UT < Minitest::Test
       res = @list.select { |img| File.basename(img.filename) =~ /Button_2/ }
       expect(res).to be_instance_of(Magick::ImageList)
       expect(res.length).to eq(1)
-      assert_same(res[0], @list[2])
+      expect(@list[2]).to be(res[0])
     end.not_to raise_error
   end
 
@@ -725,12 +725,12 @@ class ImageList1UT < Minitest::Test
       @list.scene = 0
       res = @list[0]
       img = @list.shift
-      assert_same(res, img)
+      expect(img).to be(res)
       expect(@list.scene).to eq(8)
     end.not_to raise_error
     res = @list[0]
     img = @list.shift
-    assert_same(res, img)
+    expect(img).to be(res)
     expect(@list.scene).to eq(7)
   end
 
@@ -747,13 +747,13 @@ class ImageList1UT < Minitest::Test
     expect do
       img0 = @list[0]
       img = @list.slice!(0)
-      assert_same(img0, img)
+      expect(img).to be(img0)
       expect(@list.length).to eq(9)
       expect(@list.scene).to eq(6)
     end.not_to raise_error
     cur = @list.cur_image
     img = @list.slice!(6)
-    assert_same(cur, img)
+    expect(img).to be(cur)
     expect(@list.length).to eq(8)
     expect(@list.scene).to eq(7)
     expect { @list.slice!(-1) }.not_to raise_error
@@ -800,12 +800,12 @@ class ImageList1UT < Minitest::Test
     cur = @list.cur_image
     list = @list
     @list.uniq!
-    assert_same(list, @list)
-    assert_same(cur, @list.cur_image)
+    expect(@list).to be(list)
+    expect(@list.cur_image).to be(cur)
     expect(@list.scene).to eq(6)
     @list[5] = @list[6]
     @list.uniq!
-    assert_same(cur, @list.cur_image)
+    expect(@list.cur_image).to be(cur)
     expect(@list.scene).to eq(5)
   end
 
