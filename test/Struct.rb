@@ -4,30 +4,30 @@ require 'minitest/autorun'
 class StructUT < Minitest::Test
   def test_chromaticity_to_s
     image = Magick::Image.new(10, 10)
-    assert_match(/red_primary=\(x=.+,y=.+\) green_primary=\(x=.+,y=.+\) blue_primary=\(x=.+,y=.+\) white_point=\(x=.+,y=.+\)/, image.chromaticity.to_s)
+    expect(image.chromaticity.to_s).to match(/red_primary=\(x=.+,y=.+\) green_primary=\(x=.+,y=.+\) blue_primary=\(x=.+,y=.+\) white_point=\(x=.+,y=.+\)/)
   end
 
   def test_export_color_info
     color = Magick.colors[0]
     expect(color).to be_instance_of(Magick::Color)
-    assert_match(/name=.+, compliance=.+, color.red=.+, color.green=.+, color.blue=.+, color.alpha=.+/, color.to_s)
+    expect(color.to_s).to match(/name=.+, compliance=.+, color.red=.+, color.green=.+, color.blue=.+, color.alpha=.+/)
   end
 
   def test_export_type_info
     font = Magick.fonts[0]
-    assert_match(/^name=.+, description=.+, family=.+, style=.+, stretch=.+, weight=.+, encoding=.*, foundry=.*, format=.*$/, font.to_s)
+    expect(font.to_s).to match(/^name=.+, description=.+, family=.+, style=.+, stretch=.+, weight=.+, encoding=.*, foundry=.*, format=.*$/)
   end
 
   def test_export_point_info
     draw = Magick::Draw.new
     metric = draw.get_type_metrics('ABCDEF')
-    assert_match(/^pixels_per_em=\(x=.+,y=.+\) ascent=.+ descent=.+ width=.+ height=.+ max_advance=.+ bounds.x1=.+ bounds.y1=.+ bounds.x2=.+ bounds.y2=.+ underline_position=.+ underline_thickness=.+$/, metric.to_s)
+    expect(metric.to_s).to match(/^pixels_per_em=\(x=.+,y=.+\) ascent=.+ descent=.+ width=.+ height=.+ max_advance=.+ bounds.x1=.+ bounds.y1=.+ bounds.x2=.+ bounds.y2=.+ underline_position=.+ underline_thickness=.+$/)
   end
 
   def test_primary_info_to_s
     chrom = Magick::Image.new(10, 10).chromaticity
     red_primary = chrom.red_primary
-    assert_match(/^x=.+, y=.+, z=.+$/, red_primary.to_s)
+    expect(red_primary.to_s).to match(/^x=.+, y=.+, z=.+$/)
   end
 
   def test_rectangle_info_to_s

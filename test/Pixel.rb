@@ -251,6 +251,6 @@ class PixelUT < Minitest::Test
   end
 
   def test_to_s
-    assert_match(/red=\d+, green=\d+, blue=\d+, alpha=\d+/, @pixel.to_s)
+    expect(@pixel.to_s).to match(/red=\d+, green=\d+, blue=\d+, alpha=\d+/)
   end
 end
