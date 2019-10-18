@@ -48,6 +48,8 @@ module Minitest
         assert_instance_of(@expected, @actual)
       when :be_kind_of
         assert_kind_of(@expected, @actual)
+      when :be_within
+        assert_in_delta(@expected, @actual, @delta)
       when :eq
         assert_equal(@expected, @actual)
       when :raise_error
@@ -81,6 +83,16 @@ module Minitest
     def be_kind_of(expected)
       @expected = expected
       :be_kind_of
+    end
+
+    def be_within(delta)
+      @delta = delta
+      self
+    end
+
+    def of(expected)
+      @expected = expected
+      :be_within
     end
 
     def eq(expected)

@@ -168,10 +168,10 @@ class PixelUT < Minitest::Test
     args = [200, 125.125, 250.5, 0.6]
     px = Magick::Pixel.from_hsla(*args)
     hsla = px.to_hsla
-    assert_in_delta(args[0], hsla[0], 0.25, "expected #{args.inspect} got #{hsla.inspect}")
-    assert_in_delta(args[1], hsla[1], 0.25, "expected #{args.inspect} got #{hsla.inspect}")
-    assert_in_delta(args[2], hsla[2], 0.25, "expected #{args.inspect} got #{hsla.inspect}")
-    assert_in_delta(args[3], hsla[3], 0.005, "expected #{args.inspect} got #{hsla.inspect}")
+    expect(hsla[0]).to be_within(0.25).of(args[0])
+    expect(hsla[1]).to be_within(0.25).of(args[1])
+    expect(hsla[2]).to be_within(0.25).of(args[2])
+    expect(hsla[3]).to be_within(0.005).of(args[3])
 
     # test percentages
     args = ['20%', '20%', '20%', '20%']
@@ -181,10 +181,10 @@ class PixelUT < Minitest::Test
     px2 = Magick::Pixel.from_hsla(*args2)
     hsla2 = px2.to_hsla
 
-    assert_in_delta(hsla[0], hsla2[0], 0.25, "#{hsla.inspect} != #{hsla2.inspect} with args: #{args.inspect} and #{args2.inspect}")
-    assert_in_delta(hsla[1], hsla2[1], 0.25, "#{hsla.inspect} != #{hsla2.inspect} with args: #{args.inspect} and #{args2.inspect}")
-    assert_in_delta(hsla[2], hsla2[2], 0.25, "#{hsla.inspect} != #{hsla2.inspect} with args: #{args.inspect} and #{args2.inspect}")
-    assert_in_delta(hsla[3], hsla2[3], 0.005, "#{hsla.inspect} != #{hsla2.inspect} with args: #{args.inspect} and #{args2.inspect}")
+    expect(hsla2[0]).to be_within(0.25).of(hsla[0])
+    expect(hsla2[1]).to be_within(0.25).of(hsla[1])
+    expect(hsla2[2]).to be_within(0.25).of(hsla[2])
+    expect(hsla2[3]).to be_within(0.005).of(hsla[3])
   end
 
   def test_intensity
