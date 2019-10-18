@@ -262,8 +262,8 @@ class Image3_UT < Minitest::Test
 
   # Make sure the old name is still around
   def test_resize_to_fill_7
-    assert_block { @img.respond_to? :crop_resized }
-    assert_block { @img.respond_to? :crop_resized! }
+    expect(@img).to respond_to(:crop_resized)
+    expect(@img).to respond_to(:crop_resized!)
   end
 
   # 2nd argument defaults to the same value as the 1st argument
