@@ -3,8 +3,8 @@ require 'minitest/autorun'
 
 class EnumUT < Minitest::Test
   def test_new
-    assert_nothing_raised { Magick::Enum.new(:foo, 42) }
-    assert_nothing_raised { Magick::Enum.new('foo', 42) }
+    expect { Magick::Enum.new(:foo, 42) }.not_to raise_error
+    expect { Magick::Enum.new('foo', 42) }.not_to raise_error
 
     expect { Magick::Enum.new(Object.new, 42) }.to raise_error(TypeError)
     expect { Magick::Enum.new(:foo, 'x') }.to raise_error(TypeError)

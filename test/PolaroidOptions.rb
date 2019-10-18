@@ -7,14 +7,14 @@ class PolaroidOptionsUT < Minitest::Test
   end
 
   def test_shadow_color
-    assert_nothing_raised { @options.shadow_color = "gray50" }
+    expect { @options.shadow_color = "gray50" }.not_to raise_error
 
     @options.freeze
     expect { @options.shadow_color = "gray50" }.to raise_error(FreezeError)
   end
 
   def test_border_color
-    assert_nothing_raised { @options.border_color = "gray50" }
+    expect { @options.border_color = "gray50" }.not_to raise_error
 
     @options.freeze
     expect { @options.border_color = "gray50" }.to raise_error(FreezeError)

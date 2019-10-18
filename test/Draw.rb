@@ -7,68 +7,68 @@ class DrawUT < Minitest::Test
   end
 
   def test_affine
-    assert_nothing_raised do
+    expect do
       @draw.affine = Magick::AffineMatrix.new(1, 2, 3, 4, 5, 6)
-    end
+    end.not_to raise_error
     expect { @draw.affine = [1, 2, 3, 4, 5, 6] }.to raise_error(TypeError)
   end
 
   def test_align
     Magick::AlignType.values do |align|
-      assert_nothing_raised { @draw.align = align }
+      expect { @draw.align = align }.not_to raise_error
     end
   end
 
   def test_decorate
     Magick::DecorationType.values do |decoration|
-      assert_nothing_raised { @draw.decorate = decoration }
+      expect { @draw.decorate = decoration }.not_to raise_error
     end
   end
 
   def test_density
-    assert_nothing_raised { @draw.density = '90x90' }
-    assert_nothing_raised { @draw.density = 'x90' }
-    assert_nothing_raised { @draw.density = '90' }
+    expect { @draw.density = '90x90' }.not_to raise_error
+    expect { @draw.density = 'x90' }.not_to raise_error
+    expect { @draw.density = '90' }.not_to raise_error
     expect { @draw.density = 2 }.to raise_error(TypeError)
   end
 
   def test_encoding
-    assert_nothing_raised { @draw.encoding = 'AdobeCustom' }
+    expect { @draw.encoding = 'AdobeCustom' }.not_to raise_error
     expect { @draw.encoding = 2 }.to raise_error(TypeError)
   end
 
   def test_fill
-    assert_nothing_raised { @draw.fill = 'white' }
-    assert_nothing_raised { @draw.fill = Magick::Pixel.from_color('white') }
+    expect { @draw.fill = 'white' }.not_to raise_error
+    expect { @draw.fill = Magick::Pixel.from_color('white') }.not_to raise_error
     expect { @draw.fill = 2 }.to raise_error(TypeError)
   end
 
   def test_fill_pattern
-    assert_nothing_raised { @draw.fill_pattern = nil }
-    assert_nothing_raised do
+    expect { @draw.fill_pattern = nil }.not_to raise_error
+    expect do
       img1 = Magick::Image.new(10, 10)
       img2 = Magick::Image.new(20, 20)
 
       @draw.fill_pattern = img1
       @draw.fill_pattern = img2
-    end
+    end.not_to raise_error
 
     expect { @draw.fill_pattern = 'x' }.to raise_error(NoMethodError)
   end
 
   def test_font
-    assert_nothing_raised { @draw.font = 'Arial-Bold' }
+    expect { @draw.font = 'Arial-Bold' }.not_to raise_error
     expect { @draw.font = 2 }.to raise_error(TypeError)
   end
 
   def test_font_family
-    assert_nothing_raised { @draw.font_family = 'Arial' }
+    expect { @draw.font_family = 'Arial' }.not_to raise_error
     expect { @draw.font_family = 2 }.to raise_error(TypeError)
   end
 
   def test_font_stretch
     Magick::StretchType.values do |stretch|
-      assert_nothing_raised { @draw.font_stretch = stretch }
+      expect { @draw.font_stretch = stretch }.not_to raise_error
     end
 
     expect { @draw.font_stretch = 2 }.to raise_error(TypeError)
@@ -76,7 +76,7 @@ class DrawUT < Minitest::Test
 
   def test_font_style
     Magick::StyleType.values do |style|
-      assert_nothing_raised { @draw.font_style = style }
+      expect { @draw.font_style = style }.not_to raise_error
     end
 
     expect { @draw.font_style = 2 }.to raise_error(TypeError)
@@ -84,7 +84,7 @@ class DrawUT < Minitest::Test
 
   def test_font_weight
     Magick::WeightType.values do |weight|
-      assert_nothing_raised { @draw.font_weight = weight }
+      expect { @draw.font_weight = weight }.not_to raise_error
     end
 
     expect { @draw.font_weight = 99 }.to raise_error(ArgumentError)
@@ -93,85 +93,85 @@ class DrawUT < Minitest::Test
 
   def test_gravity
     Magick::GravityType.values do |gravity|
-      assert_nothing_raised { @draw.gravity = gravity }
+      expect { @draw.gravity = gravity }.not_to raise_error
     end
 
     expect { @draw.gravity = 2 }.to raise_error(TypeError)
   end
 
   def test_interline_spacing
-    assert_nothing_raised { @draw.interline_spacing = 2 }
+    expect { @draw.interline_spacing = 2 }.not_to raise_error
     expect { @draw.interline_spacing = 'x' }.to raise_error(TypeError)
   end
 
   def test_interword_spacing
-    assert_nothing_raised { @draw.interword_spacing = 2 }
+    expect { @draw.interword_spacing = 2 }.not_to raise_error
     expect { @draw.interword_spacing = 'x' }.to raise_error(TypeError)
   end
 
   def test_kerning
-    assert_nothing_raised { @draw.kerning = 2 }
+    expect { @draw.kerning = 2 }.not_to raise_error
     expect { @draw.kerning = 'x' }.to raise_error(TypeError)
   end
 
   def test_pointsize
-    assert_nothing_raised { @draw.pointsize = 2 }
+    expect { @draw.pointsize = 2 }.not_to raise_error
     expect { @draw.pointsize = 'x' }.to raise_error(TypeError)
   end
 
   def test_rotation
-    assert_nothing_raised { @draw.rotation = 15 }
+    expect { @draw.rotation = 15 }.not_to raise_error
     expect { @draw.rotation = 'x' }.to raise_error(TypeError)
   end
 
   def test_stroke
-    assert_nothing_raised { @draw.stroke = Magick::Pixel.from_color('white') }
-    assert_nothing_raised { @draw.stroke = 'white' }
+    expect { @draw.stroke = Magick::Pixel.from_color('white') }.not_to raise_error
+    expect { @draw.stroke = 'white' }.not_to raise_error
     expect { @draw.stroke = 2 }.to raise_error(TypeError)
   end
 
   def test_stroke_pattern
-    assert_nothing_raised { @draw.stroke_pattern = nil }
-    assert_nothing_raised do
+    expect { @draw.stroke_pattern = nil }.not_to raise_error
+    expect do
       img1 = Magick::Image.new(10, 10)
       img2 = Magick::Image.new(20, 20)
 
       @draw.stroke_pattern = img1
       @draw.stroke_pattern = img2
-    end
+    end.not_to raise_error
 
     expect { @draw.stroke_pattern = 'x' }.to raise_error(NoMethodError)
   end
 
   def test_stroke_width
-    assert_nothing_raised { @draw.stroke_width = 15 }
+    expect { @draw.stroke_width = 15 }.not_to raise_error
     expect { @draw.stroke_width = 'x' }.to raise_error(TypeError)
   end
 
   def test_text_antialias
-    assert_nothing_raised { @draw.text_antialias = true }
-    assert_nothing_raised { @draw.text_antialias = false }
+    expect { @draw.text_antialias = true }.not_to raise_error
+    expect { @draw.text_antialias = false }.not_to raise_error
   end
 
   def test_tile
-    assert_nothing_raised { @draw.tile = nil }
-    assert_nothing_raised do
+    expect { @draw.tile = nil }.not_to raise_error
+    expect do
       img1 = Magick::Image.new(10, 10)
       img2 = Magick::Image.new(20, 20)
 
       @draw.tile = img1
       @draw.tile = img2
-    end
+    end.not_to raise_error
   end
 
   def test_undercolor
-    assert_nothing_raised { @draw.undercolor = Magick::Pixel.from_color('white') }
-    assert_nothing_raised { @draw.undercolor = 'white' }
+    expect { @draw.undercolor = Magick::Pixel.from_color('white') }.not_to raise_error
+    expect { @draw.undercolor = 'white' }.not_to raise_error
     expect { @draw.undercolor = 2 }.to raise_error(TypeError)
   end
 
   def test_annotate
-    assert_nothing_raised do
+    expect do
       img = Magick::Image.new(10, 10)
       @draw.annotate(img, 0, 0, 0, 20, 'Hello world')
 
@@ -180,7 +180,7 @@ class DrawUT < Minitest::Test
         yield_obj = draw
       end
       assert_instance_of(Magick::Draw, yield_obj)
-    end
+    end.not_to raise_error
 
     expect do
       img = Magick::Image.new(10, 10)
@@ -191,13 +191,13 @@ class DrawUT < Minitest::Test
   end
 
   def test_annotate_stack_buffer_overflow
-    assert_nothing_raised do
+    expect do
       if 1.size == 8
         # 64-bit environment can use larger value for Integer and it can causes stack buffer overflow.
         img = Magick::Image.new(10, 10)
         @draw.annotate(img, 2**63, 2**63, 2**62, 2**62, 'Hello world')
       end
-    end
+    end.not_to raise_error
   end
 
   def test_dup
@@ -217,10 +217,10 @@ class DrawUT < Minitest::Test
 
   def test_composite
     img = Magick::Image.new(10, 10)
-    assert_nothing_raised { @draw.composite(0, 0, 10, 10, img) }
+    expect { @draw.composite(0, 0, 10, 10, img) }.not_to raise_error
 
     Magick::CompositeOperator.values do |op|
-      assert_nothing_raised { @draw.composite(0, 0, 10, 10, img, op) }
+      expect { @draw.composite(0, 0, 10, 10, img, op) }.not_to raise_error
     end
 
     expect { @draw.composite('x', 0, 10, 10, img) }.to raise_error(TypeError)
@@ -238,7 +238,7 @@ class DrawUT < Minitest::Test
 
     img = Magick::Image.new(10, 10)
     @draw.path('M110,100 h-75 a75,75 0 1,0 75,-75 z')
-    assert_nothing_raised { @draw.draw(img) }
+    expect { @draw.draw(img) }.not_to raise_error
 
     expect { draw.draw(img) }.to raise_error(ArgumentError)
     expect { draw.draw('x') }.to raise_error(NoMethodError)
@@ -246,8 +246,8 @@ class DrawUT < Minitest::Test
 
   def test_get_type_metrics
     img = Magick::Image.new(10, 10)
-    assert_nothing_raised { @draw.get_type_metrics('ABCDEF') }
-    assert_nothing_raised { @draw.get_type_metrics(img, 'ABCDEF') }
+    expect { @draw.get_type_metrics('ABCDEF') }.not_to raise_error
+    expect { @draw.get_type_metrics(img, 'ABCDEF') }.not_to raise_error
 
     expect { @draw.get_type_metrics }.to raise_error(ArgumentError)
     expect { @draw.get_type_metrics(img, 'ABCDEF', 20) }.to raise_error(ArgumentError)
@@ -257,8 +257,8 @@ class DrawUT < Minitest::Test
 
   def test_get_multiline_type_metrics
     img = Magick::Image.new(10, 10)
-    assert_nothing_raised { @draw.get_multiline_type_metrics('ABCDEF') }
-    assert_nothing_raised { @draw.get_multiline_type_metrics(img, 'ABCDEF') }
+    expect { @draw.get_multiline_type_metrics('ABCDEF') }.not_to raise_error
+    expect { @draw.get_multiline_type_metrics(img, 'ABCDEF') }.not_to raise_error
 
     expect { @draw.get_multiline_type_metrics }.to raise_error(ArgumentError)
     expect { @draw.get_multiline_type_metrics(img, 'ABCDEF', 20) }.to raise_error(ArgumentError)
@@ -299,30 +299,30 @@ class DrawUT < Minitest::Test
     draw.circle(20, 25, 20, 28)
 
     dumped = nil
-    assert_nothing_raised { dumped = draw.marshal_dump }
+    expect { dumped = draw.marshal_dump }.not_to raise_error
 
     draw2 = @draw.dup
-    assert_nothing_raised do
+    expect do
       draw2.marshal_load(dumped)
-    end
+    end.not_to raise_error
     expect(draw2.inspect).to eq(draw.inspect)
   end
 
   def test_primitive
-    assert_nothing_raised { @draw.primitive('ABCDEF') }
-    assert_nothing_raised { @draw.primitive('12345') }
+    expect { @draw.primitive('ABCDEF') }.not_to raise_error
+    expect { @draw.primitive('12345') }.not_to raise_error
     expect { @draw.primitive(nil) }.to raise_error(TypeError)
   end
 
   def test_draw_options
-    assert_nothing_raised do
+    expect do
       yield_obj = nil
 
       Magick::Draw.new do |option|
         yield_obj = option
       end
       assert_instance_of(Magick::Image::DrawOptions, yield_obj)
-    end
+    end.not_to raise_error
   end
 
   def test_issue_604

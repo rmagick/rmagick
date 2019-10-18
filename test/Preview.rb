@@ -4,12 +4,12 @@ require 'minitest/autorun'
 class PreviewUT < Minitest::Test
   def test_preview
     hat = Magick::Image.read(IMAGES_DIR + '/Flower_Hat.jpg').first
-    assert_nothing_raised do
+    expect do
       prev = hat.preview(Magick::RotatePreview)
       assert_instance_of(Magick::Image, prev)
-    end
+    end.not_to raise_error
     Magick::PreviewType.values do |type|
-      assert_nothing_raised { hat.preview(type) }
+      expect { hat.preview(type) }.not_to raise_error
     end
     expect { hat.preview(2) }.to raise_error(TypeError)
   end
