@@ -194,7 +194,7 @@ class Image1_UT < Minitest::Test
     res = nil
     expect { res = @img.auto_gamma_channel }.not_to raise_error
     expect(res).to be_instance_of(Magick::Image)
-    assert_not_same(@img, res)
+    expect(res).not_to be(@img)
     expect { res = @img.auto_gamma_channel Magick::RedChannel }.not_to raise_error
     expect { res = @img.auto_gamma_channel Magick::RedChannel, Magick::BlueChannel }.not_to raise_error
     expect { @img.auto_gamma_channel(1) }.to raise_error(TypeError)
@@ -204,7 +204,7 @@ class Image1_UT < Minitest::Test
     res = nil
     expect { res = @img.auto_level_channel }.not_to raise_error
     expect(res).to be_instance_of(Magick::Image)
-    assert_not_same(@img, res)
+    expect(res).not_to be(@img)
     expect { res = @img.auto_level_channel Magick::RedChannel }.not_to raise_error
     expect { res = @img.auto_level_channel Magick::RedChannel, Magick::BlueChannel }.not_to raise_error
     expect { @img.auto_level_channel(1) }.to raise_error(TypeError)
@@ -217,7 +217,7 @@ class Image1_UT < Minitest::Test
         img.orientation = v
         res = img.auto_orient
         expect(res).to be_instance_of(Magick::Image)
-        assert_not_same(img, res)
+        expect(res).not_to be(img)
       end.not_to raise_error
     end
 
@@ -268,8 +268,8 @@ class Image1_UT < Minitest::Test
   end
 
   def test_blue_shift
-    assert_not_same(@img, @img.blue_shift)
-    assert_not_same(@img, @img.blue_shift(2.0))
+    expect(@img.blue_shift).not_to be(@img)
+    expect(@img.blue_shift(2.0)).not_to be(@img)
     expect { @img.blue_shift('x') }.to raise_error(TypeError)
     expect { @img.blue_shift(2, 2) }.to raise_error(ArgumentError)
   end
@@ -532,7 +532,7 @@ class Image1_UT < Minitest::Test
     expect do
       res = @img.color_point(0, 0, 'red')
       expect(res).to be_instance_of(Magick::Image)
-      assert_not_same(@img, res)
+      expect(res).not_to be(@img)
     end.not_to raise_error
     pixel = Magick::Pixel.new(Magick::QuantumRange)
     expect { @img.color_point(0, 0, pixel) }.not_to raise_error

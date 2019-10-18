@@ -217,7 +217,7 @@ class Image3_UT < Minitest::Test
     changed = @img.resize_to_fill(@img.columns, @img.rows)
     expect(changed.columns).to eq(@img.columns)
     expect(changed.rows).to eq(@img.rows)
-    assert_not_same(changed, @img)
+    expect(@img).not_to be(changed)
   end
 
   def test_resize_to_fill_1
@@ -279,7 +279,7 @@ class Image3_UT < Minitest::Test
     expect { res = img.resize_to_fit(50, 50) }.not_to raise_error
     assert_not_nil(res)
     expect(res).to be_instance_of(Magick::Image)
-    assert_not_same(img, res)
+    expect(res).not_to be(img)
     expect(res.columns).to eq(40)
     expect(res.rows).to eq(50)
   end
@@ -288,7 +288,7 @@ class Image3_UT < Minitest::Test
     img = Magick::Image.new(200, 300)
     changed = img.resize_to_fit(100)
     expect(changed).to be_instance_of(Magick::Image)
-    assert_not_same(img, changed)
+    expect(changed).not_to be(img)
     expect(changed.columns).to eq(67)
     expect(changed.rows).to eq(100)
   end
@@ -419,7 +419,7 @@ class Image3_UT < Minitest::Test
     res = nil
     expect { res = @img.selective_blur_channel(0, 1, '10%') }.not_to raise_error
     expect(res).to be_instance_of(Magick::Image)
-    assert_not_same(@img, res)
+    expect(res).not_to be(@img)
     expect([res.columns, res.rows]).to eq([@img.columns, @img.rows])
 
     expect { @img.selective_blur_channel(0, 1, 0.1) }.not_to raise_error
@@ -825,7 +825,7 @@ class Image3_UT < Minitest::Test
     expect do
       res = @img.transpose
       expect(res).to be_instance_of(Magick::Image)
-      assert_not_same(@img, res)
+      expect(res).not_to be(@img)
     end.not_to raise_error
     expect do
       res = @img.transpose!
@@ -838,7 +838,7 @@ class Image3_UT < Minitest::Test
     expect do
       res = @img.transverse
       expect(res).to be_instance_of(Magick::Image)
-      assert_not_same(@img, res)
+      expect(res).not_to be(@img)
     end.not_to raise_error
     expect do
       res = @img.transverse!
@@ -936,7 +936,7 @@ class Image3_UT < Minitest::Test
     expect do
       res = @img.vignette
       expect(res).to be_instance_of(Magick::Image)
-      assert_not_same(res, @img)
+      expect(@img).not_to be(res)
     end.not_to raise_error
     expect { @img.vignette(0) }.not_to raise_error
     expect { @img.vignette(0, 0) }.not_to raise_error

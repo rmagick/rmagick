@@ -57,6 +57,8 @@ module Minitest
 
     def not_to(matcher)
       case matcher
+      when :be
+        refute_same(@expected, @actual)
       when :raise_error
         @actual_block.call
       else
@@ -84,7 +86,6 @@ module Minitest
       :raise_error
     end
 
-    alias assert_not_same refute_same
     alias assert_not_equal refute_equal
     alias assert_not_nil refute_nil
     alias assert_true assert
