@@ -8,65 +8,65 @@ class PixelUT < Minitest::Test
 
   def test_red
     assert_nothing_raised { @pixel.red = 123 }
-    assert_equal(123, @pixel.red)
+    expect(@pixel.red).to eq(123)
     assert_nothing_raised { @pixel.red = 255.25 }
-    assert_equal(255, @pixel.red)
+    expect(@pixel.red).to eq(255)
     assert_raise(TypeError) { @pixel.red = 'x' }
   end
 
   def test_green
     assert_nothing_raised { @pixel.green = 123 }
-    assert_equal(123, @pixel.green)
+    expect(@pixel.green).to eq(123)
     assert_nothing_raised { @pixel.green = 255.25 }
-    assert_equal(255, @pixel.green)
+    expect(@pixel.green).to eq(255)
     assert_raise(TypeError) { @pixel.green = 'x' }
   end
 
   def test_blue
     assert_nothing_raised { @pixel.blue = 123 }
-    assert_equal(123, @pixel.blue)
+    expect(@pixel.blue).to eq(123)
     assert_nothing_raised { @pixel.blue = 255.25 }
-    assert_equal(255, @pixel.blue)
+    expect(@pixel.blue).to eq(255)
     assert_raise(TypeError) { @pixel.blue = 'x' }
   end
 
   def test_alpha
     assert_nothing_raised { @pixel.alpha = 123 }
-    assert_equal(123, @pixel.alpha)
+    expect(@pixel.alpha).to eq(123)
     assert_nothing_raised { @pixel.alpha = 255.25 }
-    assert_equal(255, @pixel.alpha)
+    expect(@pixel.alpha).to eq(255)
     assert_raise(TypeError) { @pixel.alpha = 'x' }
   end
 
   def test_cyan
     assert_nothing_raised { @pixel.cyan = 123 }
-    assert_equal(123, @pixel.cyan)
+    expect(@pixel.cyan).to eq(123)
     assert_nothing_raised { @pixel.cyan = 255.25 }
-    assert_equal(255, @pixel.cyan)
+    expect(@pixel.cyan).to eq(255)
     assert_raise(TypeError) { @pixel.cyan = 'x' }
   end
 
   def test_magenta
     assert_nothing_raised { @pixel.magenta = 123 }
-    assert_equal(123, @pixel.magenta)
+    expect(@pixel.magenta).to eq(123)
     assert_nothing_raised { @pixel.magenta = 255.25 }
-    assert_equal(255, @pixel.magenta)
+    expect(@pixel.magenta).to eq(255)
     assert_raise(TypeError) { @pixel.magenta = 'x' }
   end
 
   def test_yellow
     assert_nothing_raised { @pixel.yellow = 123 }
-    assert_equal(123, @pixel.yellow)
+    expect(@pixel.yellow).to eq(123)
     assert_nothing_raised { @pixel.yellow = 255.25 }
-    assert_equal(255, @pixel.yellow)
+    expect(@pixel.yellow).to eq(255)
     assert_raise(TypeError) { @pixel.yellow = 'x' }
   end
 
   def test_black
     assert_nothing_raised { @pixel.black = 123 }
-    assert_equal(123, @pixel.black)
+    expect(@pixel.black).to eq(123)
     assert_nothing_raised { @pixel.black = 255.25 }
-    assert_equal(255, @pixel.black)
+    expect(@pixel.black).to eq(255)
     assert_raise(TypeError) { @pixel.black = 'x' }
   end
 
@@ -107,19 +107,19 @@ class PixelUT < Minitest::Test
     hash = nil
     assert_nothing_raised { hash = @pixel.hash }
     assert_not_nil(hash)
-    assert_equal(1_385_502_079, hash)
+    expect(hash).to eq(1_385_502_079)
 
     p = Magick::Pixel.new
-    assert_equal(127, p.hash)
+    expect(p.hash).to eq(127)
 
     p = Magick::Pixel.from_color('red')
-    assert_equal(2_139_095_167, p.hash)
+    expect(p.hash).to eq(2_139_095_167)
 
     # Pixel.hash sacrifices the last bit of the opacity channel
     p = Magick::Pixel.new(0, 0, 0, 72)
     p2 = Magick::Pixel.new(0, 0, 0, 73)
     assert_not_equal(p, p2)
-    assert_equal(p.hash, p2.hash)
+    expect(p2.hash).to eq(p.hash)
   end
 
   def test_eql?
@@ -195,39 +195,39 @@ class PixelUT < Minitest::Test
     marshal = @pixel.marshal_dump
 
     pixel = Magick::Pixel.new
-    assert_equal(@pixel, pixel.marshal_load(marshal))
+    expect(pixel.marshal_load(marshal)).to eq(@pixel)
   end
 
   def test_spaceship
     @pixel.red = 100
     pixel = @pixel.dup
-    assert_equal(0, @pixel <=> pixel)
+    expect(@pixel <=> pixel).to eq(0)
 
     pixel.red -= 10
-    assert_equal(1, @pixel <=> pixel)
+    expect(@pixel <=> pixel).to eq(1)
     pixel.red += 20
-    assert_equal(-1, @pixel <=> pixel)
+    expect(@pixel <=> pixel).to eq(-1)
 
     @pixel.green = 100
     pixel = @pixel.dup
     pixel.green -= 10
-    assert_equal(1, @pixel <=> pixel)
+    expect(@pixel <=> pixel).to eq(1)
     pixel.green += 20
-    assert_equal(-1, @pixel <=> pixel)
+    expect(@pixel <=> pixel).to eq(-1)
 
     @pixel.blue = 100
     pixel = @pixel.dup
     pixel.blue -= 10
-    assert_equal(1, @pixel <=> pixel)
+    expect(@pixel <=> pixel).to eq(1)
     pixel.blue += 20
-    assert_equal(-1, @pixel <=> pixel)
+    expect(@pixel <=> pixel).to eq(-1)
 
     @pixel.alpha = 100
     pixel = @pixel.dup
     pixel.alpha -= 10
-    assert_equal(1, @pixel <=> pixel)
+    expect(@pixel <=> pixel).to eq(1)
     pixel.alpha += 20
-    assert_equal(-1, @pixel <=> pixel)
+    expect(@pixel <=> pixel).to eq(-1)
   end
 
   def test_to_color
@@ -243,8 +243,8 @@ class PixelUT < Minitest::Test
     assert_nothing_raised { @pixel.to_color(Magick::AllCompliance, false, 8, true) }
     assert_nothing_raised { @pixel.to_color(Magick::AllCompliance, false, 16, true) }
 
-    assert_equal('#A52A2A', @pixel.to_color(Magick::AllCompliance, false, 8, true))
-    assert_equal('#A5A52A2A2A2A', @pixel.to_color(Magick::AllCompliance, false, 16, true))
+    expect(@pixel.to_color(Magick::AllCompliance, false, 8, true)).to eq('#A52A2A')
+    expect(@pixel.to_color(Magick::AllCompliance, false, 16, true)).to eq('#A5A52A2A2A2A')
 
     assert_raise(ArgumentError) { @pixel.to_color(Magick::AllCompliance, false, 32) }
     assert_raise(TypeError) { @pixel.to_color(1) }

@@ -12,15 +12,15 @@ class EnumUT < Minitest::Test
 
   def test_to_s
     enum = Magick::Enum.new(:foo, 42)
-    assert_equal('foo', enum.to_s)
+    expect(enum.to_s).to eq('foo')
 
     enum = Magick::Enum.new('foo', 42)
-    assert_equal('foo', enum.to_s)
+    expect(enum.to_s).to eq('foo')
   end
 
   def test_to_i
     enum = Magick::Enum.new(:foo, 42)
-    assert_equal(42, enum.to_i)
+    expect(enum.to_i).to eq(42)
   end
 
   def test_spaceship
@@ -29,9 +29,9 @@ class EnumUT < Minitest::Test
     enum3 = Magick::Enum.new(:foo, 36)
     enum4 = Magick::Enum.new(:foo, 42)
 
-    assert_equal(-1, enum1 <=> enum2)
-    assert_equal(0, enum1 <=> enum4)
-    assert_equal(1, enum1 <=> enum3)
+    expect(enum1 <=> enum2).to eq(-1)
+    expect(enum1 <=> enum4).to eq(0)
+    expect(enum1 <=> enum3).to eq(1)
     assert_nil(enum1 <=> 'x')
   end
 
@@ -49,8 +49,8 @@ class EnumUT < Minitest::Test
     enum2 = Magick::Enum.new(:bar, 56)
 
     enum = enum1 | enum2
-    assert_equal(58, enum.to_i)
-    assert_equal('foo|bar', enum.to_s)
+    expect(enum.to_i).to eq(58)
+    expect(enum.to_s).to eq('foo|bar')
 
     assert_raise(ArgumentError) { enum1 | 'x' }
   end
@@ -58,8 +58,8 @@ class EnumUT < Minitest::Test
   def test_type_values
     assert_instance_of(Array, Magick::AlignType.values)
 
-    assert_equal('UndefinedAlign', Magick::AlignType.values[0].to_s)
-    assert_equal(0, Magick::AlignType.values[0].to_i)
+    expect(Magick::AlignType.values[0].to_s).to eq('UndefinedAlign')
+    expect(Magick::AlignType.values[0].to_i).to eq(0)
 
     Magick::AlignType.values do |enum|
       assert_kind_of(Magick::Enum, enum)
@@ -68,14 +68,14 @@ class EnumUT < Minitest::Test
   end
 
   def test_type_inspect
-    assert_equal('UndefinedAlign=0', Magick::AlignType.values[0].inspect)
+    expect(Magick::AlignType.values[0].inspect).to eq('UndefinedAlign=0')
   end
 
   def test_using_compose_does_not_cause_endless_loop
     img = Magick::Image.new(10, 10)
     Magick::CompositeOperator.values do |op|
       img.compose = op
-      assert_equal(op, img.compose)
+      expect(img.compose).to eq(op)
     end
   end
 
@@ -85,7 +85,7 @@ class EnumUT < Minitest::Test
       next if value == Magick::UndefinedClass
 
       img.class_type = value
-      assert_equal(value, img.class_type)
+      expect(img.class_type).to eq(value)
     end
   end
 
@@ -102,7 +102,7 @@ class EnumUT < Minitest::Test
     img = Magick::Image.new(1, 1)
     Magick::CompressionType.values do |value|
       img.compression = value
-      assert_equal(value, img.compression)
+      expect(img.compression).to eq(value)
     end
   end
 
@@ -110,7 +110,7 @@ class EnumUT < Minitest::Test
     img = Magick::Image.new(1, 1)
     Magick::DisposeType.values do |value|
       img.dispose = value
-      assert_equal(value, img.dispose)
+      expect(img.dispose).to eq(value)
     end
   end
 
@@ -118,7 +118,7 @@ class EnumUT < Minitest::Test
     img = Magick::Image.new(1, 1)
     Magick::EndianType.values do |value|
       img.endian = value
-      assert_equal(value, img.endian)
+      expect(img.endian).to eq(value)
     end
   end
 
@@ -126,7 +126,7 @@ class EnumUT < Minitest::Test
     img = Magick::Image.new(1, 1)
     Magick::FilterType.values do |value|
       img.filter = value
-      assert_equal(value, img.filter)
+      expect(img.filter).to eq(value)
     end
   end
 
@@ -134,7 +134,7 @@ class EnumUT < Minitest::Test
     img = Magick::Image.new(1, 1)
     Magick::GravityType.values do |value|
       img.gravity = value
-      assert_equal(value, img.gravity)
+      expect(img.gravity).to eq(value)
     end
   end
 
@@ -142,7 +142,7 @@ class EnumUT < Minitest::Test
     info = Magick::Image::Info.new
     Magick::ImageType.values do |value|
       info.image_type = value
-      assert_equal(value, info.image_type)
+      expect(info.image_type).to eq(value)
     end
   end
 
@@ -150,7 +150,7 @@ class EnumUT < Minitest::Test
     info = Magick::Image::Info.new
     Magick::OrientationType.values do |value|
       info.orientation = value
-      assert_equal(value, info.orientation)
+      expect(info.orientation).to eq(value)
     end
   end
 
@@ -158,7 +158,7 @@ class EnumUT < Minitest::Test
     info = Magick::Image::Info.new
     Magick::InterlaceType.values do |value|
       info.interlace = value
-      assert_equal(value, info.interlace)
+      expect(info.interlace).to eq(value)
     end
   end
 
@@ -166,7 +166,7 @@ class EnumUT < Minitest::Test
     img = Magick::Image.new(1, 1)
     Magick::PixelInterpolateMethod.values do |value|
       img.pixel_interpolation_method = value
-      assert_equal(value, img.pixel_interpolation_method)
+      expect(img.pixel_interpolation_method).to eq(value)
     end
   end
 
@@ -174,7 +174,7 @@ class EnumUT < Minitest::Test
     img = Magick::Image.new(1, 1)
     Magick::RenderingIntent.values do |value|
       img.rendering_intent = value
-      assert_equal(value, img.rendering_intent)
+      expect(img.rendering_intent).to eq(value)
     end
   end
 
@@ -182,7 +182,7 @@ class EnumUT < Minitest::Test
     info = Magick::Image::Info.new
     Magick::ResolutionType.values do |value|
       info.units = value
-      assert_equal(value, info.units)
+      expect(info.units).to eq(value)
     end
   end
 
@@ -190,7 +190,7 @@ class EnumUT < Minitest::Test
     img = Magick::Image.new(1, 1)
     Magick::VirtualPixelMethod.values do |value|
       img.virtual_pixel_method = value
-      assert_equal(value, img.virtual_pixel_method)
+      expect(img.virtual_pixel_method).to eq(value)
     end
   end
 

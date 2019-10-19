@@ -38,6 +38,25 @@ module Minitest
       assert(yield)
     end
 
+    def expect(actual)
+      @actual = actual
+      self
+    end
+
+    def to(matcher)
+      case matcher
+      when :eq
+        assert_equal(@expected, @actual)
+      else
+        raise ArgumentError, "no matcher: #{matcher.inspect}"
+      end
+    end
+
+    def eq(expected)
+      @expected = expected
+      :eq
+    end
+
     alias assert_nothing_thrown assert_nothing_raised
     alias assert_raise assert_raises
     alias assert_not_same refute_same

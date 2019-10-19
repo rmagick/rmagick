@@ -12,18 +12,18 @@ class InfoUT < Minitest::Test
     assert_nil(@info['fill'])
 
     assert_nothing_raised { @info['fill'] = 'red' }
-    assert_equal('red', @info['fill'])
+    expect(@info['fill']).to eq('red')
 
     assert_nothing_raised { @info['fill'] = nil }
     assert_nil(@info['fill'])
 
     # 2-argument form
     assert_nothing_raised { @info['tiff', 'bits-per-sample'] = 2 }
-    assert_equal('2', @info['tiff', 'bits-per-sample'])
+    expect(@info['tiff', 'bits-per-sample']).to eq('2')
 
     # define and undefine
     assert_nothing_raised { @info.define('tiff', 'bits-per-sample', 4) }
-    assert_equal('4', @info['tiff', 'bits-per-sample'])
+    expect(@info['tiff', 'bits-per-sample']).to eq('4')
 
     assert_nothing_raised { @info.undefine('tiff', 'bits-per-sample') }
     assert_nil(@info['tiff', 'bits-per-sample'])
@@ -38,9 +38,9 @@ class InfoUT < Minitest::Test
 
   def test_aref_aset
     assert_nothing_raised { @info['tiff'] = 'xxx' }
-    assert_equal('xxx', @info['tiff'])
+    expect(@info['tiff']).to eq('xxx')
     assert_nothing_raised { @info['tiff', 'bits-per-sample'] = 'abc' }
-    assert_equal('abc', @info['tiff', 'bits-per-sample'])
+    expect(@info['tiff', 'bits-per-sample']).to eq('abc')
     assert_raise(ArgumentError) { @info['tiff', 'a', 'b'] }
     assert_raise(ArgumentError) { @info['tiff', 'a' * 10_000] }
     assert_raise(ArgumentError) { @info['tiff', 'a' * 10_000] = 'abc' }
@@ -49,43 +49,43 @@ class InfoUT < Minitest::Test
 
   def test_attenuate
     assert_nothing_raised { @info.attenuate = 10 }
-    assert_equal(10, @info.attenuate)
+    expect(@info.attenuate).to eq(10)
     assert_nothing_raised { @info.attenuate = 5.25 }
-    assert_equal(5.25, @info.attenuate)
+    expect(@info.attenuate).to eq(5.25)
     assert_nothing_raised { @info.attenuate = nil }
     assert_nil(@info.attenuate)
   end
 
   def test_authenticate
     assert_nothing_raised { @info.authenticate = 'string' }
-    assert_equal('string', @info.authenticate)
+    expect(@info.authenticate).to eq('string')
     assert_nothing_raised { @info.authenticate = nil }
     assert_nil(@info.authenticate)
     assert_nothing_raised { @info.authenticate = '' }
-    assert_equal('', @info.authenticate)
+    expect(@info.authenticate).to eq('')
   end
 
   def test_background_color
     assert_nothing_raised { @info.background_color = 'red' }
     red = Magick::Pixel.new(Magick::QuantumRange)
     assert_nothing_raised { @info.background_color = red }
-    assert_equal('red', @info.background_color)
+    expect(@info.background_color).to eq('red')
     img = Magick::Image.new(20, 20) { self.background_color = 'red' }
-    assert_equal('red', img.background_color)
+    expect(img.background_color).to eq('red')
   end
 
   def test_border_color
     assert_nothing_raised { @info.border_color = 'red' }
     red = Magick::Pixel.new(Magick::QuantumRange)
     assert_nothing_raised { @info.border_color = red }
-    assert_equal('red', @info.border_color)
+    expect(@info.border_color).to eq('red')
     img = Magick::Image.new(20, 20) { self.border_color = 'red' }
-    assert_equal('red', img.border_color)
+    expect(img.border_color).to eq('red')
   end
 
   def test_caption
     assert_nothing_raised { @info.caption = 'string' }
-    assert_equal('string', @info.caption)
+    expect(@info.caption).to eq('string')
     assert_nothing_raised { @info.caption = nil }
     assert_nil(@info.caption)
     assert_nothing_raised { Magick::Image.new(20, 20) { self.caption = 'string' } }
@@ -101,19 +101,19 @@ class InfoUT < Minitest::Test
   def test_colorspace
     Magick::ColorspaceType.values.each do |cs|
       assert_nothing_raised { @info.colorspace = cs }
-      assert_equal(cs, @info.colorspace)
+      expect(@info.colorspace).to eq(cs)
     end
   end
 
   def test_comment
     assert_nothing_raised { @info.comment = 'comment' }
-    assert_equal('comment', @info.comment)
+    expect(@info.comment).to eq('comment')
   end
 
   def test_compression
     Magick::CompressionType.values.each do |v|
       assert_nothing_raised { @info.compression = v }
-      assert_equal(v, @info.compression)
+      expect(@info.compression).to eq(v)
     end
   end
 
@@ -126,9 +126,9 @@ class InfoUT < Minitest::Test
 
   def test_density
     assert_nothing_raised { @info.density = '72x72' }
-    assert_equal('72x72', @info.density)
+    expect(@info.density).to eq('72x72')
     assert_nothing_raised { @info.density = Magick::Geometry.new(72, 72) }
-    assert_equal('72x72', @info.density)
+    expect(@info.density).to eq('72x72')
     assert_nothing_raised { @info.density = nil }
     assert_nil(@info.density)
     assert_raise(ArgumentError) { @info.density = 'aaa' }
@@ -136,7 +136,7 @@ class InfoUT < Minitest::Test
 
   def test_delay
     assert_nothing_raised { @info.delay = 60 }
-    assert_equal(60, @info.delay)
+    expect(@info.delay).to eq(60)
     assert_nothing_raised { @info.delay = nil }
     assert_nil(@info.delay)
     assert_raise(TypeError) { @info.delay = '60' }
@@ -144,38 +144,38 @@ class InfoUT < Minitest::Test
 
   def test_depth
     assert_nothing_raised { @info.depth = 8 }
-    assert_equal(8, @info.depth)
+    expect(@info.depth).to eq(8)
     assert_nothing_raised { @info.depth = 16 }
-    assert_equal(16, @info.depth)
+    expect(@info.depth).to eq(16)
     assert_raise(ArgumentError) { @info.depth = 32 }
   end
 
   def test_dispose
     Magick::DisposeType.values.each do |v|
       assert_nothing_raised { @info.dispose = v }
-      assert_equal(v, @info.dispose)
+      expect(@info.dispose).to eq(v)
     end
     assert_nothing_raised { @info.dispose = nil }
   end
 
   def test_dither
     assert_nothing_raised { @info.dither = true }
-    assert_equal(true, @info.dither)
+    expect(@info.dither).to eq(true)
     assert_nothing_raised { @info.dither = false }
-    assert_equal(false, @info.dither)
+    expect(@info.dither).to eq(false)
   end
 
   def test_endian
     assert_nothing_raised { @info.endian = Magick::LSBEndian }
-    assert_equal(Magick::LSBEndian, @info.endian)
+    expect(@info.endian).to eq(Magick::LSBEndian)
     assert_nothing_raised { @info.endian = nil }
   end
 
   def test_extract
     assert_nothing_raised { @info.extract = '100x100' }
-    assert_equal('100x100', @info.extract)
+    expect(@info.extract).to eq('100x100')
     assert_nothing_raised { @info.extract = Magick::Geometry.new(100, 100) }
-    assert_equal('100x100', @info.extract)
+    expect(@info.extract).to eq('100x100')
     assert_nothing_raised { @info.extract = nil }
     assert_nil(@info.extract)
     assert_raise(ArgumentError) { @info.extract = 'aaa' }
@@ -183,9 +183,9 @@ class InfoUT < Minitest::Test
 
   def test_filename
     assert_nothing_raised { @info.filename = 'string' }
-    assert_equal('string', @info.filename)
+    expect(@info.filename).to eq('string')
     assert_nothing_raised { @info.filename = nil }
-    assert_equal('', @info.filename)
+    expect(@info.filename).to eq('')
   end
 
   def test_fill
@@ -193,7 +193,7 @@ class InfoUT < Minitest::Test
     assert_nil(@info.fill)
 
     assert_nothing_raised { @info.fill = 'white' }
-    assert_equal('white', @info.fill)
+    expect(@info.fill).to eq('white')
 
     assert_nothing_raised { @info.fill = nil }
     assert_nil(@info.fill)
@@ -203,22 +203,22 @@ class InfoUT < Minitest::Test
 
   def test_font
     assert_nothing_raised { @info.font = 'Arial' }
-    assert_equal('Arial', @info.font)
+    expect(@info.font).to eq('Arial')
     assert_nothing_raised { @info.font = nil }
     assert_nil(@info.font)
   end
 
   def test_format
     assert_nothing_raised { @info.format = 'GIF' }
-    assert_equal('GIF', @info.format)
+    expect(@info.format).to eq('GIF')
     assert_raise(TypeError) { @info.format = nil }
   end
 
   def test_fuzz
     assert_nothing_raised { @info.fuzz = 50 }
-    assert_equal(50, @info.fuzz)
+    expect(@info.fuzz).to eq(50)
     assert_nothing_raised { @info.fuzz = '50%' }
-    assert_equal(Magick::QuantumRange * 0.5, @info.fuzz)
+    expect(@info.fuzz).to eq(Magick::QuantumRange * 0.5)
     assert_raise(TypeError) { @info.fuzz = nil }
     assert_raise(ArgumentError) { @info.fuzz = 'xxx' }
   end
@@ -226,7 +226,7 @@ class InfoUT < Minitest::Test
   def test_gravity
     Magick::GravityType.values.each do |v|
       assert_nothing_raised { @info.gravity = v }
-      assert_equal(v, @info.gravity)
+      expect(@info.gravity).to eq(v)
     end
     assert_nothing_raised { @info.gravity = nil }
   end
@@ -234,7 +234,7 @@ class InfoUT < Minitest::Test
   def test_image_type
     Magick::ImageType.values.each do |v|
       assert_nothing_raised { @info.image_type = v }
-      assert_equal(v, @info.image_type)
+      expect(@info.image_type).to eq(v)
     end
     assert_raise(TypeError) { @info.image_type = nil }
   end
@@ -242,14 +242,14 @@ class InfoUT < Minitest::Test
   def test_interlace
     Magick::InterlaceType.values.each do |v|
       assert_nothing_raised { @info.interlace = v }
-      assert_equal(v, @info.interlace)
+      expect(@info.interlace).to eq(v)
     end
     assert_raise(TypeError) { @info.interlace = nil }
   end
 
   def test_label
     assert_nothing_raised { @info.label = 'string' }
-    assert_equal('string', @info.label)
+    expect(@info.label).to eq('string')
     assert_nothing_raised { @info.label = nil }
     assert_nil(@info.label)
   end
@@ -258,16 +258,16 @@ class InfoUT < Minitest::Test
     assert_nothing_raised { @info.matte_color = 'red' }
     red = Magick::Pixel.new(Magick::QuantumRange)
     assert_nothing_raised { @info.matte_color = red }
-    assert_equal('red', @info.matte_color)
+    expect(@info.matte_color).to eq('red')
     img = Magick::Image.new(20, 20) { self.matte_color = 'red' }
-    assert_equal('red', img.matte_color)
+    expect(img.matte_color).to eq('red')
     assert_raise(TypeError) { @info.matte_color = nil }
   end
 
   def test_monitor
     assert_nothing_raised { @info.monitor = -> {} }
     monitor = proc do |mth, q, s|
-      assert_equal('resize!', mth)
+      expect(mth).to eq('resize!')
       assert_kind_of(Integer, q)
       assert_kind_of(Integer, s)
       GC.start
@@ -289,7 +289,7 @@ class InfoUT < Minitest::Test
   def test_number_scenes
     assert_kind_of(Integer, @info.number_scenes)
     assert_nothing_raised { @info.number_scenes = 50 }
-    assert_equal(50, @info.number_scenes)
+    expect(@info.number_scenes).to eq(50)
     assert_raise(TypeError) { @info.number_scenes = nil }
     assert_raise(TypeError) { @info.number_scenes = 'xxx' }
   end
@@ -297,16 +297,16 @@ class InfoUT < Minitest::Test
   def test_orientation
     Magick::OrientationType.values.each do |v|
       assert_nothing_raised { @info.orientation = v }
-      assert_equal(v, @info.orientation)
+      expect(@info.orientation).to eq(v)
     end
     assert_raise(TypeError) { @info.orientation = nil }
   end
 
   def test_origin
     assert_nothing_raised { @info.origin = '+10+10' }
-    assert_equal('+10+10', @info.origin)
+    expect(@info.origin).to eq('+10+10')
     assert_nothing_raised { @info.origin = Magick::Geometry.new(nil, nil, 10, 10) }
-    assert_equal('+10+10', @info.origin)
+    expect(@info.origin).to eq('+10+10')
     assert_nothing_raised { @info.origin = nil }
     assert_nil(@info.origin)
     assert_raise(ArgumentError) { @info.origin = 'aaa' }
@@ -314,46 +314,46 @@ class InfoUT < Minitest::Test
 
   def test_page
     assert_nothing_raised { @info.page = '612x792>' }
-    assert_equal('612x792>', @info.page)
+    expect(@info.page).to eq('612x792>')
     assert_nothing_raised { @info.page = nil }
     assert_nil(@info.page)
   end
 
   def test_pointsize
     assert_nothing_raised { @info.pointsize = 12 }
-    assert_equal(12, @info.pointsize)
+    expect(@info.pointsize).to eq(12)
   end
 
   def test_quality
     assert_nothing_raised { @info.quality = 75 }
-    assert_equal(75, @info.quality)
+    expect(@info.quality).to eq(75)
   end
 
   def test_sampling_factor
     assert_nothing_raised { @info.sampling_factor = '2x1' }
-    assert_equal('2x1', @info.sampling_factor)
+    expect(@info.sampling_factor).to eq('2x1')
     assert_nothing_raised { @info.sampling_factor = nil }
     assert_nil(@info.sampling_factor)
   end
 
   def test_scene
     assert_nothing_raised { @info.scene = 123 }
-    assert_equal(123, @info.scene)
+    expect(@info.scene).to eq(123)
     assert_raise(TypeError) { @info.scene = 'xxx' }
   end
 
   def test_server_name
     assert_nothing_raised { @info.server_name = 'foo' }
-    assert_equal('foo', @info.server_name)
+    expect(@info.server_name).to eq('foo')
     assert_nothing_raised { @info.server_name = nil }
     assert_nil(@info.server_name)
   end
 
   def test_size
     assert_nothing_raised { @info.size = '200x100' }
-    assert_equal('200x100', @info.size)
+    expect(@info.size).to eq('200x100')
     assert_nothing_raised { @info.size = Magick::Geometry.new(100, 200) }
-    assert_equal('100x200', @info.size)
+    expect(@info.size).to eq('100x200')
     assert_nothing_raised { @info.size = nil }
     assert_nil(@info.size)
     assert_raise(ArgumentError) { @info.size = 'aaa' }
@@ -364,7 +364,7 @@ class InfoUT < Minitest::Test
     assert_nil(@info.stroke)
 
     assert_nothing_raised { @info.stroke = 'white' }
-    assert_equal('white', @info.stroke)
+    expect(@info.stroke).to eq('white')
 
     assert_nothing_raised { @info.stroke = nil }
     assert_nil(@info.stroke)
@@ -374,9 +374,9 @@ class InfoUT < Minitest::Test
 
   def test_stroke_width
     assert_nothing_raised { @info.stroke_width = 10 }
-    assert_equal(10, @info.stroke_width)
+    expect(@info.stroke_width).to eq(10)
     assert_nothing_raised { @info.stroke_width = 5.25 }
-    assert_equal(5.25, @info.stroke_width)
+    expect(@info.stroke_width).to eq(5.25)
     assert_nothing_raised { @info.stroke_width = nil }
     assert_nil(@info.stroke_width)
     assert_raise(TypeError) { @info.stroke_width = 'xxx' }
@@ -390,15 +390,15 @@ class InfoUT < Minitest::Test
 
   def test_tile_offset
     assert_nothing_raised { @info.tile_offset = '200x100' }
-    assert_equal('200x100', @info.tile_offset)
+    expect(@info.tile_offset).to eq('200x100')
     assert_nothing_raised { @info.tile_offset = Magick::Geometry.new(100, 200) }
-    assert_equal('100x200', @info.tile_offset)
+    expect(@info.tile_offset).to eq('100x200')
     assert_raise(ArgumentError) { @info.tile_offset = nil }
   end
 
   def test_transparent_color
     assert_nothing_raised { @info.transparent_color = 'white' }
-    assert_equal('white', @info.transparent_color)
+    expect(@info.transparent_color).to eq('white')
     assert_raise(TypeError) { @info.transparent_color = nil }
   end
 
@@ -407,7 +407,7 @@ class InfoUT < Minitest::Test
     assert_nil(@info.undercolor)
 
     assert_nothing_raised { @info.undercolor = 'white' }
-    assert_equal('white', @info.undercolor)
+    expect(@info.undercolor).to eq('white')
 
     assert_nothing_raised { @info.undercolor = nil }
     assert_nil(@info.undercolor)
@@ -418,16 +418,16 @@ class InfoUT < Minitest::Test
   def test_units
     Magick::ResolutionType.values.each do |v|
       assert_nothing_raised { @info.units = v }
-      assert_equal(v, @info.units)
+      expect(@info.units).to eq(v)
     end
   end
 
   def test_view
     assert_nothing_raised { @info.view = 'string' }
-    assert_equal('string', @info.view)
+    expect(@info.view).to eq('string')
     assert_nothing_raised { @info.view = nil }
     assert_nil(@info.view)
     assert_nothing_raised { @info.view = '' }
-    assert_equal('', @info.view)
+    expect(@info.view).to eq('')
   end
 end

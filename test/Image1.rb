@@ -13,7 +13,7 @@ class Image1_UT < Minitest::Test
     res = Magick::Image.read_inline(encoded)
     assert_instance_of(Array, res)
     assert_instance_of(Magick::Image, res[0])
-    assert_equal(img, res[0])
+    expect(res[0]).to eq(img)
     assert_raise(ArgumentError) { Magick::Image.read(nil) }
     assert_raise(ArgumentError) { Magick::Image.read("") }
   end
@@ -26,9 +26,9 @@ class Image1_UT < Minitest::Test
     # since <=> is based on the signature, the images should
     # have the same relationship to each other as their
     # signatures have to each other.
-    assert_equal(sig0 <=> sig1, img0 <=> img1)
-    assert_equal(sig1 <=> sig0, img1 <=> img0)
-    assert_equal(img0, img0)
+    expect(img0 <=> img1).to eq(sig0 <=> sig1)
+    expect(img1 <=> img0).to eq(sig1 <=> sig0)
+    expect(img0).to eq(img0)
     assert_not_equal(img0, img1)
     assert_nil(img0 <=> nil)
   end
@@ -141,7 +141,7 @@ class Image1_UT < Minitest::Test
     assert_nothing_raised { img.add_profile(File.join(__dir__, 'cmyk.icm')) }
     # assert_raise(Magick::ImageMagickError) { img.add_profile(File.join(__dir__, 'srgb.icm')) }
 
-    img.each_profile { |name, _value| assert_equal('icc', name) }
+    img.each_profile { |name, _value| expect(name).to eq('icc') }
     assert_nothing_raised { img.delete_profile('icc') }
   end
 
@@ -185,8 +185,8 @@ class Image1_UT < Minitest::Test
   def test_aset
     @img['label'] = 'foobarbaz'
     @img[:comment] = 'Hello world'
-    assert_equal('foobarbaz', @img['label'])
-    assert_equal('Hello world', @img['comment'])
+    expect(@img['label']).to eq('foobarbaz')
+    expect(@img['comment']).to eq('Hello world')
     assert_nothing_raised { @img[nil] = 'foobarbaz' }
   end
 
@@ -335,7 +335,7 @@ class Image1_UT < Minitest::Test
     assert_raise(LocalJumpError) { @img.change_geometry('100x100') }
     assert_nothing_raised do
       res = @img.change_geometry('100x100') { 1 }
-      assert_equal(1, res)
+      expect(res).to eq(1)
     end
     assert_raise(ArgumentError) { @img.change_geometry([]) }
   end
@@ -371,7 +371,7 @@ class Image1_UT < Minitest::Test
     assert_nothing_raised do
       res = @img.channel_extrema
       assert_instance_of(Array, res)
-      assert_equal(2, res.length)
+      expect(res.length).to eq(2)
       assert_kind_of(Integer, res[0])
       assert_kind_of(Integer, res[1])
     end
@@ -388,7 +388,7 @@ class Image1_UT < Minitest::Test
     assert_nothing_raised do
       res = @img.channel_mean
       assert_instance_of(Array, res)
-      assert_equal(2, res.length)
+      expect(res.length).to eq(2)
       assert_instance_of(Float, res[0])
       assert_instance_of(Float, res[1])
     end
@@ -422,13 +422,13 @@ class Image1_UT < Minitest::Test
     assert_nothing_raised do
       res = @img.clone
       assert_instance_of(Magick::Image, res)
-      assert_equal(res, @img)
+      expect(@img).to eq(res)
     end
     res = @img.clone
-    assert_equal(res.frozen?, @img.frozen?)
+    expect(@img.frozen?).to eq(res.frozen?)
     @img.freeze
     res = @img.clone
-    assert_equal(res.frozen?, @img.frozen?)
+    expect(@img.frozen?).to eq(res.frozen?)
   end
 
   def test_clut_channel
@@ -473,7 +473,7 @@ class Image1_UT < Minitest::Test
     assert_nothing_raised do
       @img.class_type = Magick::PseudoClass
       res = @img.color_histogram
-      assert_equal(Magick::PseudoClass, @img.class_type)
+      expect(@img.class_type).to eq(Magick::PseudoClass)
       assert_instance_of(Hash, res)
     end
   end
@@ -515,9 +515,9 @@ class Image1_UT < Minitest::Test
     assert_nothing_raised do
       old_color = pc_img.colormap(0)
       res = pc_img.colormap(0, 'red')
-      assert_equal(old_color, res)
+      expect(res).to eq(old_color)
       res = pc_img.colormap(0)
-      assert_equal('red', res)
+      expect(res).to eq('red')
     end
     pixel = Magick::Pixel.new(Magick::QuantumRange)
     assert_nothing_raised { pc_img.colormap(0, pixel) }

@@ -147,17 +147,17 @@ class Image3_UT < Minitest::Test
     assert_nothing_raised { @img.resample(100, 100) }
 
     girl = Magick::Image.read(IMAGES_DIR + '/Flower_Hat.jpg').first
-    assert_equal(240.0, girl.x_resolution)
-    assert_equal(240.0, girl.y_resolution)
+    expect(girl.x_resolution).to eq(240.0)
+    expect(girl.y_resolution).to eq(240.0)
     res = girl.resample(120, 120)
-    assert_equal(100, res.columns)
-    assert_equal(125, res.rows)
-    assert_equal(120.0, res.x_resolution)
-    assert_equal(120.0, res.y_resolution)
-    assert_equal(200, girl.columns)
-    assert_equal(250, girl.rows)
-    assert_equal(240.0, girl.x_resolution)
-    assert_equal(240.0, girl.y_resolution)
+    expect(res.columns).to eq(100)
+    expect(res.rows).to eq(125)
+    expect(res.x_resolution).to eq(120.0)
+    expect(res.y_resolution).to eq(120.0)
+    expect(girl.columns).to eq(200)
+    expect(girl.rows).to eq(250)
+    expect(girl.x_resolution).to eq(240.0)
+    expect(girl.y_resolution).to eq(240.0)
 
     Magick::FilterType.values do |filter|
       assert_nothing_raised { @img.resample(50, 50, filter) }
@@ -215,49 +215,49 @@ class Image3_UT < Minitest::Test
 
   def test_resize_to_fill_0
     changed = @img.resize_to_fill(@img.columns, @img.rows)
-    assert_equal(@img.columns, changed.columns)
-    assert_equal(@img.rows, changed.rows)
+    expect(changed.columns).to eq(@img.columns)
+    expect(changed.rows).to eq(@img.rows)
     assert_not_same(changed, @img)
   end
 
   def test_resize_to_fill_1
     @img = Magick::Image.new(200, 250)
     @img.resize_to_fill!(100, 100)
-    assert_equal(100, @img.columns)
-    assert_equal(100, @img.rows)
+    expect(@img.columns).to eq(100)
+    expect(@img.rows).to eq(100)
   end
 
   def test_resize_to_fill_2
     @img = Magick::Image.new(200, 250)
     changed = @img.resize_to_fill(300, 100)
-    assert_equal(300, changed.columns)
-    assert_equal(100, changed.rows)
+    expect(changed.columns).to eq(300)
+    expect(changed.rows).to eq(100)
   end
 
   def test_resize_to_fill_3
     @img = Magick::Image.new(200, 250)
     changed = @img.resize_to_fill(100, 300)
-    assert_equal(100, changed.columns)
-    assert_equal(300, changed.rows)
+    expect(changed.columns).to eq(100)
+    expect(changed.rows).to eq(300)
   end
 
   def test_resize_to_fill_4
     @img = Magick::Image.new(200, 250)
     changed = @img.resize_to_fill(300, 350)
-    assert_equal(300, changed.columns)
-    assert_equal(350, changed.rows)
+    expect(changed.columns).to eq(300)
+    expect(changed.rows).to eq(350)
   end
 
   def test_resize_to_fill_5
     changed = @img.resize_to_fill(20, 400)
-    assert_equal(20, changed.columns)
-    assert_equal(400, changed.rows)
+    expect(changed.columns).to eq(20)
+    expect(changed.rows).to eq(400)
   end
 
   def test_resize_to_fill_6
     changed = @img.resize_to_fill(3000, 400)
-    assert_equal(3000, changed.columns)
-    assert_equal(400, changed.rows)
+    expect(changed.columns).to eq(3000)
+    expect(changed.rows).to eq(400)
   end
 
   # Make sure the old name is still around
@@ -269,8 +269,8 @@ class Image3_UT < Minitest::Test
   # 2nd argument defaults to the same value as the 1st argument
   def test_resize_to_fill_8
     changed = @img.resize_to_fill(100)
-    assert_equal(100, changed.columns)
-    assert_equal(100, changed.rows)
+    expect(changed.columns).to eq(100)
+    expect(changed.rows).to eq(100)
   end
 
   def test_resize_to_fit
@@ -280,8 +280,8 @@ class Image3_UT < Minitest::Test
     assert_not_nil(res)
     assert_instance_of(Magick::Image, res)
     assert_not_same(img, res)
-    assert_equal(40, res.columns)
-    assert_equal(50, res.rows)
+    expect(res.columns).to eq(40)
+    expect(res.rows).to eq(50)
   end
 
   def test_resize_to_fit2
@@ -289,8 +289,8 @@ class Image3_UT < Minitest::Test
     changed = img.resize_to_fit(100)
     assert_instance_of(Magick::Image, changed)
     assert_not_same(img, changed)
-    assert_equal(67, changed.columns)
-    assert_equal(100, changed.rows)
+    expect(changed.columns).to eq(67)
+    expect(changed.rows).to eq(100)
   end
 
   def test_resize_to_fit3
@@ -299,8 +299,8 @@ class Image3_UT < Minitest::Test
     img.resize_to_fit!(100)
     assert_instance_of(Magick::Image, img)
     assert_same(img, keep)
-    assert_equal(67, img.columns)
-    assert_equal(100, img.rows)
+    expect(img.columns).to eq(67)
+    expect(img.rows).to eq(100)
   end
 
   def test_roll
@@ -321,8 +321,8 @@ class Image3_UT < Minitest::Test
     assert_nothing_raised do
       res = img.rotate(90, '>')
       assert_instance_of(Magick::Image, res)
-      assert_equal(50, res.columns)
-      assert_equal(100, res.rows)
+      expect(res.columns).to eq(50)
+      expect(res.rows).to eq(100)
     end
     assert_nothing_raised do
       res = img.rotate(90, '<')
@@ -422,7 +422,7 @@ class Image3_UT < Minitest::Test
     assert_nothing_raised { res = @img.selective_blur_channel(0, 1, '10%') }
     assert_instance_of(Magick::Image, res)
     assert_not_same(@img, res)
-    assert_equal([@img.columns, @img.rows], [res.columns, res.rows])
+    expect([res.columns, res.rows]).to eq([@img.columns, @img.rows])
 
     assert_nothing_raised { @img.selective_blur_channel(0, 1, 0.1) }
     assert_nothing_raised { @img.selective_blur_channel(0, 1, '10%', Magick::RedChannel) }
@@ -738,12 +738,12 @@ class Image3_UT < Minitest::Test
 
     girl = Magick::Image.read(IMAGES_DIR + '/Flower_Hat.jpg').first
     new_img = girl.thumbnail(200, 200)
-    assert_equal(160, new_img.columns)
-    assert_equal(200, new_img.rows)
+    expect(new_img.columns).to eq(160)
+    expect(new_img.rows).to eq(200)
 
     new_img = girl.thumbnail(2)
-    assert_equal(400, new_img.columns)
-    assert_equal(500, new_img.rows)
+    expect(new_img.columns).to eq(400)
+    expect(new_img.rows).to eq(500)
   end
 
   def test_thumbnail!
@@ -784,14 +784,14 @@ class Image3_UT < Minitest::Test
     assert_nothing_raised { res = @img.to_blob { self.format = 'miff' } }
     assert_instance_of(String, res)
     restored = Magick::Image.from_blob(res)
-    assert_equal(@img, restored[0])
+    expect(restored[0]).to eq(@img)
   end
 
   def test_to_color
     red = Magick::Pixel.new(Magick::QuantumRange)
     assert_nothing_raised do
       res = @img.to_color(red)
-      assert_equal('red', res)
+      expect(res).to eq('red')
     end
   end
 
@@ -872,8 +872,8 @@ class Image3_UT < Minitest::Test
     assert_nothing_raised do
       res = @img.unique_colors
       assert_instance_of(Magick::Image, res)
-      assert_equal(1, res.columns)
-      assert_equal(1, res.rows)
+      expect(res.columns).to eq(1)
+      expect(res.rows).to eq(1)
     end
   end
 
@@ -1019,34 +1019,34 @@ class Image3_UT < Minitest::Test
   def test_write
     @img.write('temp.gif')
     img = Magick::Image.read('temp.gif')
-    assert_equal('GIF', img.first.format)
+    expect(img.first.format).to eq('GIF')
     FileUtils.rm('temp.gif')
 
     @img.write('jpg:temp.foo')
     img = Magick::Image.read('temp.foo')
-    assert_equal('JPEG', img.first.format)
+    expect(img.first.format).to eq('JPEG')
     FileUtils.rm('temp.foo')
 
     @img.write('temp.0') { self.format = 'JPEG' }
     img = Magick::Image.read('temp.0')
-    assert_equal('JPEG', img.first.format)
+    expect(img.first.format).to eq('JPEG')
 
     # JPEG has two names.
     @img.write('jpeg:temp.0') { self.format = 'JPEG' }
     img = Magick::Image.read('temp.0')
-    assert_equal('JPEG', img.first.format)
+    expect(img.first.format).to eq('JPEG')
 
     @img.write('jpg:temp.0') { self.format = 'JPG' }
     img = Magick::Image.read('temp.0')
-    assert_equal('JPEG', img.first.format)
+    expect(img.first.format).to eq('JPEG')
 
     @img.write('jpg:temp.0') { self.format = 'JPEG' }
     img = Magick::Image.read('temp.0')
-    assert_equal('JPEG', img.first.format)
+    expect(img.first.format).to eq('JPEG')
 
     @img.write('jpeg:temp.0') { self.format = 'JPG' }
     img = Magick::Image.read('temp.0')
-    assert_equal('JPEG', img.first.format)
+    expect(img.first.format).to eq('JPEG')
 
     assert_raise(RuntimeError) do
       @img.write('gif:temp.0') { self.format = 'JPEG' }
@@ -1056,12 +1056,12 @@ class Image3_UT < Minitest::Test
     @img.write(f) { self.format = 'JPEG' }
     f.close
     img = Magick::Image.read('test.0')
-    assert_equal('JPEG', img.first.format)
+    expect(img.first.format).to eq('JPEG')
     FileUtils.rm('test.0')
 
     @img.write('test.webp')
     img = Magick::Image.read('test.webp')
-    assert_equal('WEBP', img.first.format)
+    expect(img.first.format).to eq('WEBP')
     FileUtils.rm('test.webp') rescue nil # Avoid failure on AppVeyor
 
     f = File.new('test.0', 'w')
@@ -1071,7 +1071,7 @@ class Image3_UT < Minitest::Test
     end
     f.close
     img = Magick::Image.read('test.0')
-    assert_equal('JPEG', img.first.format)
+    expect(img.first.format).to eq('JPEG')
     FileUtils.rm('test.0')
   end
 end

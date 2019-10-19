@@ -20,7 +20,7 @@ class LibMagickUT < Minitest::Test
       assert(which == :c)
       assert_instance_of(String, description)
       assert_instance_of(String, id)
-      assert_equal(:initialize, method)
+      expect(method).to eq(:initialize)
     end
     img = Magick::Image.new(20, 20)
 
@@ -28,7 +28,7 @@ class LibMagickUT < Minitest::Test
       assert(which == :d)
       assert_instance_of(String, description)
       assert_instance_of(String, id)
-      assert_equal(:"destroy!", method)
+      expect(method).to eq(:"destroy!")
     end
     img.destroy!
   ensure

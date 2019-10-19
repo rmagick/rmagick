@@ -20,55 +20,55 @@ class GradientFillUT < Minitest::Test
     assert_nothing_raised do
       gradient = Magick::GradientFill.new(0, 0, 0, 0, '#900', '#000')
       obj = gradient.fill(img)
-      assert_equal(gradient, obj)
+      expect(obj).to eq(gradient)
     end
 
     assert_nothing_raised do
       gradient = Magick::GradientFill.new(0, 0, 0, 10, '#900', '#000')
       obj = gradient.fill(img)
-      assert_equal(gradient, obj)
+      expect(obj).to eq(gradient)
     end
 
     assert_nothing_raised do
       gradient = Magick::GradientFill.new(0, 0, 10, 0, '#900', '#000')
       obj = gradient.fill(img)
-      assert_equal(gradient, obj)
+      expect(obj).to eq(gradient)
     end
 
     assert_nothing_raised do
       gradient = Magick::GradientFill.new(0, 0, 10, 10, '#900', '#000')
       obj = gradient.fill(img)
-      assert_equal(gradient, obj)
+      expect(obj).to eq(gradient)
     end
 
     assert_nothing_raised do
       gradient = Magick::GradientFill.new(0, 0, 5, 20, '#900', '#000')
       obj = gradient.fill(img)
-      assert_equal(gradient, obj)
+      expect(obj).to eq(gradient)
     end
 
     assert_nothing_raised do
       gradient = Magick::GradientFill.new(-10, 0, -10, 10, '#900', '#000')
       obj = gradient.fill(img)
-      assert_equal(gradient, obj)
+      expect(obj).to eq(gradient)
     end
 
     assert_nothing_raised do
       gradient = Magick::GradientFill.new(0, -10, 10, -10, '#900', '#000')
       obj = gradient.fill(img)
-      assert_equal(gradient, obj)
+      expect(obj).to eq(gradient)
     end
 
     assert_nothing_raised do
       gradient = Magick::GradientFill.new(0, -10, 10, -20, '#900', '#000')
       obj = gradient.fill(img)
-      assert_equal(gradient, obj)
+      expect(obj).to eq(gradient)
     end
 
     assert_nothing_raised do
       gradient = Magick::GradientFill.new(0, 100, 100, 200, '#900', '#000')
       obj = gradient.fill(img)
-      assert_equal(gradient, obj)
+      expect(obj).to eq(gradient)
     end
   end
 end
@@ -85,6 +85,6 @@ class TextureFillUT < Minitest::Test
 
     img = Magick::Image.new(10, 10)
     obj = texture.fill(img)
-    assert_equal(texture, obj)
+    expect(obj).to eq(texture)
   end
 end
