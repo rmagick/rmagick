@@ -12,7 +12,7 @@ class TmpnamTest < Minitest::Test
     info = Magick::Image::Info.new
 
     # does not exist at first
-    assert_raise(NameError) { Magick._tmpnam_ }
+    expect { Magick._tmpnam_ }.to raise_error(NameError)
 
     info.texture = texture
 

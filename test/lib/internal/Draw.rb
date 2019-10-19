@@ -12,12 +12,12 @@ class LibDrawUT < Minitest::Test
     expect(@draw.inspect).to eq('affine 10.5,12,15,20,22,25')
     assert_nothing_raised { @draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.affine('x', 12, 15, 20, 22, 25) }
-    assert_raise(ArgumentError) { @draw.affine(10, 'x', 15, 20, 22, 25) }
-    assert_raise(ArgumentError) { @draw.affine(10, 12, 'x', 20, 22, 25) }
-    assert_raise(ArgumentError) { @draw.affine(10, 12, 15, 'x', 22, 25) }
-    assert_raise(ArgumentError) { @draw.affine(10, 12, 15, 20, 'x', 25) }
-    assert_raise(ArgumentError) { @draw.affine(10, 12, 15, 20, 22, 'x') }
+    expect { @draw.affine('x', 12, 15, 20, 22, 25) }.to raise_error(ArgumentError)
+    expect { @draw.affine(10, 'x', 15, 20, 22, 25) }.to raise_error(ArgumentError)
+    expect { @draw.affine(10, 12, 'x', 20, 22, 25) }.to raise_error(ArgumentError)
+    expect { @draw.affine(10, 12, 15, 'x', 22, 25) }.to raise_error(ArgumentError)
+    expect { @draw.affine(10, 12, 15, 20, 'x', 25) }.to raise_error(ArgumentError)
+    expect { @draw.affine(10, 12, 15, 20, 22, 'x') }.to raise_error(ArgumentError)
   end
 
   def test_alpha
@@ -27,9 +27,9 @@ class LibDrawUT < Minitest::Test
       assert_nothing_raised { draw.draw(@img) }
     end
 
-    assert_raise(ArgumentError) { @draw.alpha(10, '20.5', 'xxx') }
-    assert_raise(ArgumentError) { @draw.alpha('x', 10, Magick::PointMethod) }
-    assert_raise(ArgumentError) { @draw.alpha(10, 'x', Magick::PointMethod) }
+    expect { @draw.alpha(10, '20.5', 'xxx') }.to raise_error(ArgumentError)
+    expect { @draw.alpha('x', 10, Magick::PointMethod) }.to raise_error(ArgumentError)
+    expect { @draw.alpha(10, 'x', Magick::PointMethod) }.to raise_error(ArgumentError)
   end
 
   def test_arc
@@ -37,12 +37,12 @@ class LibDrawUT < Minitest::Test
     expect(@draw.inspect).to eq('arc 100.5,120.5 200,250 20,370')
     assert_nothing_raised { @draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.arc('x', 120.5, 200, 250, 20, 370) }
-    assert_raise(ArgumentError) { @draw.arc(100.5, 'x', 200, 250, 20, 370) }
-    assert_raise(ArgumentError) { @draw.arc(100.5, 120.5, 'x', 250, 20, 370) }
-    assert_raise(ArgumentError) { @draw.arc(100.5, 120.5, 200, 'x', 20, 370) }
-    assert_raise(ArgumentError) { @draw.arc(100.5, 120.5, 200, 250, 'x', 370) }
-    assert_raise(ArgumentError) { @draw.arc(100.5, 120.5, 200, 250, 20, 'x') }
+    expect { @draw.arc('x', 120.5, 200, 250, 20, 370) }.to raise_error(ArgumentError)
+    expect { @draw.arc(100.5, 'x', 200, 250, 20, 370) }.to raise_error(ArgumentError)
+    expect { @draw.arc(100.5, 120.5, 'x', 250, 20, 370) }.to raise_error(ArgumentError)
+    expect { @draw.arc(100.5, 120.5, 200, 'x', 20, 370) }.to raise_error(ArgumentError)
+    expect { @draw.arc(100.5, 120.5, 200, 250, 'x', 370) }.to raise_error(ArgumentError)
+    expect { @draw.arc(100.5, 120.5, 200, 250, 20, 'x') }.to raise_error(ArgumentError)
   end
 
   def test_bezier
@@ -50,9 +50,9 @@ class LibDrawUT < Minitest::Test
     expect(@draw.inspect).to eq('bezier 10,20,20.5,30,40.5,50')
     assert_nothing_raised { @draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.bezier }
-    assert_raise(ArgumentError) { @draw.bezier(1) }
-    assert_raise(ArgumentError) { @draw.bezier('x', 20, 30, 40.5) }
+    expect { @draw.bezier }.to raise_error(ArgumentError)
+    expect { @draw.bezier(1) }.to raise_error(ArgumentError)
+    expect { @draw.bezier('x', 20, 30, 40.5) }.to raise_error(ArgumentError)
   end
 
   def test_circle
@@ -60,10 +60,10 @@ class LibDrawUT < Minitest::Test
     expect(@draw.inspect).to eq('circle 10,20.5 30,40.5')
     assert_nothing_raised { @draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.circle('x', 20, 30, 40) }
-    assert_raise(ArgumentError) { @draw.circle(10, 'x', 30, 40) }
-    assert_raise(ArgumentError) { @draw.circle(10, 20, 'x', 40) }
-    assert_raise(ArgumentError) { @draw.circle(10, 20, 30, 'x') }
+    expect { @draw.circle('x', 20, 30, 40) }.to raise_error(ArgumentError)
+    expect { @draw.circle(10, 'x', 30, 40) }.to raise_error(ArgumentError)
+    expect { @draw.circle(10, 20, 'x', 40) }.to raise_error(ArgumentError)
+    expect { @draw.circle(10, 20, 30, 'x') }.to raise_error(ArgumentError)
   end
 
   def test_clip_path
@@ -83,7 +83,7 @@ class LibDrawUT < Minitest::Test
     expect(draw.inspect).to eq('clip-rule nonzero')
     assert_nothing_raised { draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.clip_rule('foo') }
+    expect { @draw.clip_rule('foo') }.to raise_error(ArgumentError)
   end
 
   def test_clip_units
@@ -102,7 +102,7 @@ class LibDrawUT < Minitest::Test
     expect(draw.inspect).to eq('clip-units objectboundingbox')
     assert_nothing_raised { draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.clip_units('foo') }
+    expect { @draw.clip_units('foo') }.to raise_error(ArgumentError)
   end
 
   def test_color
@@ -131,9 +131,9 @@ class LibDrawUT < Minitest::Test
     expect(draw.inspect).to eq('color 50.5,50,reset')
     assert_nothing_raised { draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.color(10, 20, 'unknown') }
-    assert_raise(ArgumentError) { @draw.color('x', 20, Magick::PointMethod) }
-    assert_raise(ArgumentError) { @draw.color(10, 'x', Magick::PointMethod) }
+    expect { @draw.color(10, 20, 'unknown') }.to raise_error(ArgumentError)
+    expect { @draw.color('x', 20, Magick::PointMethod) }.to raise_error(ArgumentError)
+    expect { @draw.color(10, 'x', Magick::PointMethod) }.to raise_error(ArgumentError)
   end
 
   def test_decorate
@@ -178,12 +178,12 @@ class LibDrawUT < Minitest::Test
     expect(@draw.inspect).to eq('ellipse 50.5,30 25,25 60,120')
     assert_nothing_raised { @draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.ellipse('x', 20, 30, 40, 50, 60) }
-    assert_raise(ArgumentError) { @draw.ellipse(10, 'x', 30, 40, 50, 60) }
-    assert_raise(ArgumentError) { @draw.ellipse(10, 20, 'x', 40, 50, 60) }
-    assert_raise(ArgumentError) { @draw.ellipse(10, 20, 30, 'x', 50, 60) }
-    assert_raise(ArgumentError) { @draw.ellipse(10, 20, 30, 40, 'x', 60) }
-    assert_raise(ArgumentError) { @draw.ellipse(10, 20, 30, 40, 50, 'x') }
+    expect { @draw.ellipse('x', 20, 30, 40, 50, 60) }.to raise_error(ArgumentError)
+    expect { @draw.ellipse(10, 'x', 30, 40, 50, 60) }.to raise_error(ArgumentError)
+    expect { @draw.ellipse(10, 20, 'x', 40, 50, 60) }.to raise_error(ArgumentError)
+    expect { @draw.ellipse(10, 20, 30, 'x', 50, 60) }.to raise_error(ArgumentError)
+    expect { @draw.ellipse(10, 20, 30, 40, 'x', 60) }.to raise_error(ArgumentError)
+    expect { @draw.ellipse(10, 20, 30, 40, 50, 'x') }.to raise_error(ArgumentError)
   end
 
   def test_encoding
@@ -235,11 +235,11 @@ class LibDrawUT < Minitest::Test
     assert_nothing_raised { @draw.fill_opacity('1.0') }
     assert_nothing_raised { @draw.fill_opacity('20%') }
 
-    assert_raise(ArgumentError) { @draw.fill_opacity(-0.01) }
-    assert_raise(ArgumentError) { @draw.fill_opacity(1.01) }
-    assert_raise(ArgumentError) { @draw.fill_opacity('-0.01') }
-    assert_raise(ArgumentError) { @draw.fill_opacity('1.01') }
-    assert_raise(ArgumentError) { @draw.fill_opacity('xxx') }
+    expect { @draw.fill_opacity(-0.01) }.to raise_error(ArgumentError)
+    expect { @draw.fill_opacity(1.01) }.to raise_error(ArgumentError)
+    expect { @draw.fill_opacity('-0.01') }.to raise_error(ArgumentError)
+    expect { @draw.fill_opacity('1.01') }.to raise_error(ArgumentError)
+    expect { @draw.fill_opacity('xxx') }.to raise_error(ArgumentError)
   end
 
   def test_fill_rule
@@ -255,7 +255,7 @@ class LibDrawUT < Minitest::Test
     draw.circle(10, '20.5', 30, 40.5)
     assert_nothing_raised { draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.fill_rule('zero') }
+    expect { @draw.fill_rule('zero') }.to raise_error(ArgumentError)
   end
 
   def test_font
@@ -285,7 +285,7 @@ class LibDrawUT < Minitest::Test
       assert_nothing_raised { draw.draw(@img) }
     end
 
-    assert_raise(ArgumentError) { @draw.font_stretch('xxx') }
+    expect { @draw.font_stretch('xxx') }.to raise_error(ArgumentError)
   end
 
   def test_font_style
@@ -307,7 +307,7 @@ class LibDrawUT < Minitest::Test
     draw.text(50, 50, 'Hello world')
     assert_nothing_raised { draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.font_style('xxx') }
+    expect { @draw.font_style('xxx') }.to raise_error(ArgumentError)
   end
 
   def test_font_weight
@@ -324,7 +324,7 @@ class LibDrawUT < Minitest::Test
     draw.text(50, 50, 'Hello world')
     assert_nothing_raised { draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.font_weight('xxx') }
+    expect { @draw.font_weight('xxx') }.to raise_error(ArgumentError)
   end
 
   def test_gravity
@@ -337,7 +337,7 @@ class LibDrawUT < Minitest::Test
       assert_nothing_raised { draw.draw(@img) }
     end
 
-    assert_raise(ArgumentError) { @draw.gravity('xxx') }
+    expect { @draw.gravity('xxx') }.to raise_error(ArgumentError)
   end
 
   def test_image
@@ -349,11 +349,11 @@ class LibDrawUT < Minitest::Test
       assert_nothing_raised { draw.draw(@img) }
     end
 
-    assert_raise(ArgumentError) { @draw.image('xxx', 10, 10, 200, 100, "#{IMAGES_DIR}/Flower_Hat.jpg") }
-    assert_raise(ArgumentError) { @draw.image(Magick::AtopCompositeOp, 'x', 100, 200, 100, "#{IMAGES_DIR}/Flower_Hat.jpg") }
-    assert_raise(ArgumentError) { @draw.image(Magick::AtopCompositeOp, 100, 'x', 200, 100, "#{IMAGES_DIR}/Flower_Hat.jpg") }
-    assert_raise(ArgumentError) { @draw.image(Magick::AtopCompositeOp, 100, 100, 'x', 100, "#{IMAGES_DIR}/Flower_Hat.jpg") }
-    assert_raise(ArgumentError) { @draw.image(Magick::AtopCompositeOp, 100, 100, 200, 'x', "#{IMAGES_DIR}/Flower_Hat.jpg") }
+    expect { @draw.image('xxx', 10, 10, 200, 100, "#{IMAGES_DIR}/Flower_Hat.jpg") }.to raise_error(ArgumentError)
+    expect { @draw.image(Magick::AtopCompositeOp, 'x', 100, 200, 100, "#{IMAGES_DIR}/Flower_Hat.jpg") }.to raise_error(ArgumentError)
+    expect { @draw.image(Magick::AtopCompositeOp, 100, 'x', 200, 100, "#{IMAGES_DIR}/Flower_Hat.jpg") }.to raise_error(ArgumentError)
+    expect { @draw.image(Magick::AtopCompositeOp, 100, 100, 'x', 100, "#{IMAGES_DIR}/Flower_Hat.jpg") }.to raise_error(ArgumentError)
+    expect { @draw.image(Magick::AtopCompositeOp, 100, 100, 200, 'x', "#{IMAGES_DIR}/Flower_Hat.jpg") }.to raise_error(ArgumentError)
   end
 
   def test_interline_spacing
@@ -367,10 +367,10 @@ class LibDrawUT < Minitest::Test
     expect(draw.inspect).to eq('interline-spacing 40.5')
     assert_nothing_raised { draw.draw(@img) }
 
-    # assert_raise(ArgumentError) { @draw.interline_spacing(Float::NAN) }
-    assert_raise(ArgumentError) { @draw.interline_spacing('nan') }
-    assert_raise(ArgumentError) { @draw.interline_spacing('xxx') }
-    assert_raise(TypeError) { @draw.interline_spacing(nil) }
+    # expect { @draw.interline_spacing(Float::NAN) }.to raise_error(ArgumentError)
+    expect { @draw.interline_spacing('nan') }.to raise_error(ArgumentError)
+    expect { @draw.interline_spacing('xxx') }.to raise_error(ArgumentError)
+    expect { @draw.interline_spacing(nil) }.to raise_error(TypeError)
   end
 
   def test_interword_spacing
@@ -384,10 +384,10 @@ class LibDrawUT < Minitest::Test
     expect(draw.inspect).to eq('interword-spacing 40.5')
     assert_nothing_raised { draw.draw(@img) }
 
-    # assert_raise(ArgumentError) { @draw.interword_spacing(Float::NAN) }
-    assert_raise(ArgumentError) { @draw.interword_spacing('nan') }
-    assert_raise(ArgumentError) { @draw.interword_spacing('xxx') }
-    assert_raise(TypeError) { @draw.interword_spacing(nil) }
+    # expect { @draw.interword_spacing(Float::NAN) }.to raise_error(ArgumentError)
+    expect { @draw.interword_spacing('nan') }.to raise_error(ArgumentError)
+    expect { @draw.interword_spacing('xxx') }.to raise_error(ArgumentError)
+    expect { @draw.interword_spacing(nil) }.to raise_error(TypeError)
   end
 
   def test_kerning
@@ -401,10 +401,10 @@ class LibDrawUT < Minitest::Test
     expect(draw.inspect).to eq('kerning 40.5')
     assert_nothing_raised { draw.draw(@img) }
 
-    # assert_raise(ArgumentError) { @draw.kerning(Float::NAN) }
-    assert_raise(ArgumentError) { @draw.kerning('nan') }
-    assert_raise(ArgumentError) { @draw.kerning('xxx') }
-    assert_raise(TypeError) { @draw.kerning(nil) }
+    # expect { @draw.kerning(Float::NAN) }.to raise_error(ArgumentError)
+    expect { @draw.kerning('nan') }.to raise_error(ArgumentError)
+    expect { @draw.kerning('xxx') }.to raise_error(ArgumentError)
+    expect { @draw.kerning(nil) }.to raise_error(TypeError)
   end
 
   def test_line
@@ -412,10 +412,10 @@ class LibDrawUT < Minitest::Test
     expect(@draw.inspect).to eq('line 10,20.5 30,40.5')
     assert_nothing_raised { @draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.line('x', '20.5', 30, 40.5) }
-    assert_raise(ArgumentError) { @draw.line(10, 'x', 30, 40.5) }
-    assert_raise(ArgumentError) { @draw.line(10, '20.5', 'x', 40.5) }
-    assert_raise(ArgumentError) { @draw.line(10, '20.5', 30, 'x') }
+    expect { @draw.line('x', '20.5', 30, 40.5) }.to raise_error(ArgumentError)
+    expect { @draw.line(10, 'x', 30, 40.5) }.to raise_error(ArgumentError)
+    expect { @draw.line(10, '20.5', 'x', 40.5) }.to raise_error(ArgumentError)
+    expect { @draw.line(10, '20.5', 30, 'x') }.to raise_error(ArgumentError)
   end
 
   def test_opacity
@@ -429,11 +429,11 @@ class LibDrawUT < Minitest::Test
     assert_nothing_raised { @draw.opacity('1.0') }
     assert_nothing_raised { @draw.opacity('20%') }
 
-    assert_raise(ArgumentError) { @draw.opacity(-0.01) }
-    assert_raise(ArgumentError) { @draw.opacity(1.01) }
-    assert_raise(ArgumentError) { @draw.opacity('-0.01') }
-    assert_raise(ArgumentError) { @draw.opacity('1.01') }
-    assert_raise(ArgumentError) { @draw.opacity('xxx') }
+    expect { @draw.opacity(-0.01) }.to raise_error(ArgumentError)
+    expect { @draw.opacity(1.01) }.to raise_error(ArgumentError)
+    expect { @draw.opacity('-0.01') }.to raise_error(ArgumentError)
+    expect { @draw.opacity('1.01') }.to raise_error(ArgumentError)
+    expect { @draw.opacity('xxx') }.to raise_error(ArgumentError)
   end
 
   def test_path
@@ -447,10 +447,10 @@ class LibDrawUT < Minitest::Test
     expect(@draw.inspect).to eq("push defs\npush pattern hat 0 10.5 20 20\npush graphic-context\npop graphic-context\npop pattern\npop defs")
     assert_nothing_raised { @draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.pattern('hat', 'x', 0, 20, 20) {} }
-    assert_raise(ArgumentError) { @draw.pattern('hat', 0, 'x', 20, 20) {} }
-    assert_raise(ArgumentError) { @draw.pattern('hat', 0, 0, 'x', 20) {} }
-    assert_raise(ArgumentError) { @draw.pattern('hat', 0, 0, 20, 'x') {} }
+    expect { @draw.pattern('hat', 'x', 0, 20, 20) {} }.to raise_error(ArgumentError)
+    expect { @draw.pattern('hat', 0, 'x', 20, 20) {} }.to raise_error(ArgumentError)
+    expect { @draw.pattern('hat', 0, 0, 'x', 20) {} }.to raise_error(ArgumentError)
+    expect { @draw.pattern('hat', 0, 0, 20, 'x') {} }.to raise_error(ArgumentError)
   end
 
   def test_point
@@ -458,8 +458,8 @@ class LibDrawUT < Minitest::Test
     expect(@draw.inspect).to eq('point 10.5,20')
     assert_nothing_raised { @draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.point('x', 20) }
-    assert_raise(ArgumentError) { @draw.point(10, 'x') }
+    expect { @draw.point('x', 20) }.to raise_error(ArgumentError)
+    expect { @draw.point(10, 'x') }.to raise_error(ArgumentError)
   end
 
   def test_pointsize
@@ -467,7 +467,7 @@ class LibDrawUT < Minitest::Test
     expect(@draw.inspect).to eq('font-size 20.5')
     assert_nothing_raised { @draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.pointsize('x') }
+    expect { @draw.pointsize('x') }.to raise_error(ArgumentError)
   end
 
   def test_font_size
@@ -475,7 +475,7 @@ class LibDrawUT < Minitest::Test
     expect(@draw.inspect).to eq('font-size 20')
     assert_nothing_raised { @draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.font_size('x') }
+    expect { @draw.font_size('x') }.to raise_error(ArgumentError)
   end
 
   def test_polygon
@@ -483,9 +483,9 @@ class LibDrawUT < Minitest::Test
     expect(@draw.inspect).to eq('polygon 0,0.5,8.5,16,16,0,0,0')
     assert_nothing_raised { @draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.polygon }
-    assert_raise(ArgumentError) { @draw.polygon(0) }
-    assert_raise(ArgumentError) { @draw.polygon('x', 0, 8, 16, 16, 0, 0, 0) }
+    expect { @draw.polygon }.to raise_error(ArgumentError)
+    expect { @draw.polygon(0) }.to raise_error(ArgumentError)
+    expect { @draw.polygon('x', 0, 8, 16, 16, 0, 0, 0) }.to raise_error(ArgumentError)
   end
 
   def test_polyline
@@ -493,9 +493,9 @@ class LibDrawUT < Minitest::Test
     expect(@draw.inspect).to eq('polyline 0,0.5,16.5,16')
     assert_nothing_raised { @draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.polyline }
-    assert_raise(ArgumentError) { @draw.polyline(0) }
-    assert_raise(ArgumentError) { @draw.polyline('x', 0, 16, 16) }
+    expect { @draw.polyline }.to raise_error(ArgumentError)
+    expect { @draw.polyline(0) }.to raise_error(ArgumentError)
+    expect { @draw.polyline('x', 0, 16, 16) }.to raise_error(ArgumentError)
   end
 
   def test_rectangle
@@ -503,10 +503,10 @@ class LibDrawUT < Minitest::Test
     expect(@draw.inspect).to eq('rectangle 10,10 100,100')
     assert_nothing_raised { @draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.rectangle('x', 10, 20, 20) }
-    assert_raise(ArgumentError) { @draw.rectangle(10, 'x', 20, 20) }
-    assert_raise(ArgumentError) { @draw.rectangle(10, 10, 'x', 20) }
-    assert_raise(ArgumentError) { @draw.rectangle(10, 10, 20, 'x') }
+    expect { @draw.rectangle('x', 10, 20, 20) }.to raise_error(ArgumentError)
+    expect { @draw.rectangle(10, 'x', 20, 20) }.to raise_error(ArgumentError)
+    expect { @draw.rectangle(10, 10, 'x', 20) }.to raise_error(ArgumentError)
+    expect { @draw.rectangle(10, 10, 20, 'x') }.to raise_error(ArgumentError)
   end
 
   def test_rotate
@@ -515,7 +515,7 @@ class LibDrawUT < Minitest::Test
     @draw.text(50, 50, 'Hello world')
     assert_nothing_raised { @draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.rotate('x') }
+    expect { @draw.rotate('x') }.to raise_error(ArgumentError)
   end
 
   def test_roundrectangle
@@ -523,12 +523,12 @@ class LibDrawUT < Minitest::Test
     expect(@draw.inspect).to eq('roundrectangle 10,10,100,100,20,20')
     assert_nothing_raised { @draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.roundrectangle('x', '10', 100, 100, 20, 20) }
-    assert_raise(ArgumentError) { @draw.roundrectangle(10, 'x', 100, 100, 20, 20) }
-    assert_raise(ArgumentError) { @draw.roundrectangle(10, '10', 'x', 100, 20, 20) }
-    assert_raise(ArgumentError) { @draw.roundrectangle(10, '10', 100, 'x', 20, 20) }
-    assert_raise(ArgumentError) { @draw.roundrectangle(10, '10', 100, 100, 'x', 20) }
-    assert_raise(ArgumentError) { @draw.roundrectangle(10, '10', 100, 100, 20, 'x') }
+    expect { @draw.roundrectangle('x', '10', 100, 100, 20, 20) }.to raise_error(ArgumentError)
+    expect { @draw.roundrectangle(10, 'x', 100, 100, 20, 20) }.to raise_error(ArgumentError)
+    expect { @draw.roundrectangle(10, '10', 'x', 100, 20, 20) }.to raise_error(ArgumentError)
+    expect { @draw.roundrectangle(10, '10', 100, 'x', 20, 20) }.to raise_error(ArgumentError)
+    expect { @draw.roundrectangle(10, '10', 100, 100, 'x', 20) }.to raise_error(ArgumentError)
+    expect { @draw.roundrectangle(10, '10', 100, 100, 20, 'x') }.to raise_error(ArgumentError)
   end
 
   def test_scale
@@ -537,8 +537,8 @@ class LibDrawUT < Minitest::Test
     @draw.rectangle(10, '10', 100, 100)
     assert_nothing_raised { @draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.scale('x', 1.5) }
-    assert_raise(ArgumentError) { @draw.scale(0.5, 'x') }
+    expect { @draw.scale('x', 1.5) }.to raise_error(ArgumentError)
+    expect { @draw.scale(0.5, 'x') }.to raise_error(ArgumentError)
   end
 
   def test_skewx
@@ -547,7 +547,7 @@ class LibDrawUT < Minitest::Test
     @draw.text(50, 50, 'Hello world')
     assert_nothing_raised { @draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.skewx('x') }
+    expect { @draw.skewx('x') }.to raise_error(ArgumentError)
   end
 
   def test_skewy
@@ -556,7 +556,7 @@ class LibDrawUT < Minitest::Test
     @draw.text(50, 50, 'Hello world')
     assert_nothing_raised { @draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.skewy('x') }
+    expect { @draw.skewy('x') }.to raise_error(ArgumentError)
   end
 
   def test_stroke
@@ -565,7 +565,7 @@ class LibDrawUT < Minitest::Test
     @draw.rectangle(10, '10', 100, 100)
     assert_nothing_raised { @draw.draw(@img) }
 
-    # assert_raise(ArgumentError) { @draw.stroke(100) }
+    # expect { @draw.stroke(100) }.to raise_error(ArgumentError)
   end
 
   def test_stroke_color
@@ -574,7 +574,7 @@ class LibDrawUT < Minitest::Test
     @draw.rectangle(10, '10', 100, 100)
     assert_nothing_raised { @draw.draw(@img) }
 
-    # assert_raise(ArgumentError) { @draw.stroke_color(100) }
+    # expect { @draw.stroke_color(100) }.to raise_error(ArgumentError)
   end
 
   def test_stroke_pattern
@@ -583,7 +583,7 @@ class LibDrawUT < Minitest::Test
     @draw.rectangle(10, '10', 100, 100)
     assert_nothing_raised { @draw.draw(@img) }
 
-    # assert_raise(ArgumentError) { @draw.stroke_pattern(100) }
+    # expect { @draw.stroke_pattern(100) }.to raise_error(ArgumentError)
   end
 
   def test_stroke_antialias
@@ -618,8 +618,8 @@ class LibDrawUT < Minitest::Test
     expect(draw.inspect).to eq('stroke-dasharray none')
     assert_nothing_raised { draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.stroke_dasharray(-0.1) }
-    assert_raise(ArgumentError) { @draw.stroke_dasharray('x') }
+    expect { @draw.stroke_dasharray(-0.1) }.to raise_error(ArgumentError)
+    expect { @draw.stroke_dasharray('x') }.to raise_error(ArgumentError)
   end
 
   def test_stroke_dashoffset
@@ -627,7 +627,7 @@ class LibDrawUT < Minitest::Test
     expect(@draw.inspect).to eq('stroke-dashoffset 10')
     assert_nothing_raised { @draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.stroke_dashoffset('x') }
+    expect { @draw.stroke_dashoffset('x') }.to raise_error(ArgumentError)
   end
 
   def test_stroke_linecap
@@ -646,7 +646,7 @@ class LibDrawUT < Minitest::Test
     expect(draw.inspect).to eq('stroke-linecap square')
     assert_nothing_raised { draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.stroke_linecap('foo') }
+    expect { @draw.stroke_linecap('foo') }.to raise_error(ArgumentError)
   end
 
   def test_stroke_linejoin
@@ -665,7 +665,7 @@ class LibDrawUT < Minitest::Test
     expect(draw.inspect).to eq('stroke-linejoin bevel')
     assert_nothing_raised { draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.stroke_linejoin('foo') }
+    expect { @draw.stroke_linejoin('foo') }.to raise_error(ArgumentError)
   end
 
   def test_stroke_miterlimit
@@ -674,8 +674,8 @@ class LibDrawUT < Minitest::Test
     expect(draw.inspect).to eq('stroke-miterlimit 1.0')
     assert_nothing_raised { draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.stroke_miterlimit(0.9) }
-    assert_raise(ArgumentError) { @draw.stroke_miterlimit('foo') }
+    expect { @draw.stroke_miterlimit(0.9) }.to raise_error(ArgumentError)
+    expect { @draw.stroke_miterlimit('foo') }.to raise_error(ArgumentError)
   end
 
   def test_stroke_opacity
@@ -689,11 +689,11 @@ class LibDrawUT < Minitest::Test
     assert_nothing_raised { @draw.stroke_opacity('1.0') }
     assert_nothing_raised { @draw.stroke_opacity('20%') }
 
-    assert_raise(ArgumentError) { @draw.stroke_opacity(-0.01) }
-    assert_raise(ArgumentError) { @draw.stroke_opacity(1.01) }
-    assert_raise(ArgumentError) { @draw.stroke_opacity('-0.01') }
-    assert_raise(ArgumentError) { @draw.stroke_opacity('1.01') }
-    assert_raise(ArgumentError) { @draw.stroke_opacity('xxx') }
+    expect { @draw.stroke_opacity(-0.01) }.to raise_error(ArgumentError)
+    expect { @draw.stroke_opacity(1.01) }.to raise_error(ArgumentError)
+    expect { @draw.stroke_opacity('-0.01') }.to raise_error(ArgumentError)
+    expect { @draw.stroke_opacity('1.01') }.to raise_error(ArgumentError)
+    expect { @draw.stroke_opacity('xxx') }.to raise_error(ArgumentError)
   end
 
   def test_stroke_width
@@ -701,7 +701,7 @@ class LibDrawUT < Minitest::Test
     expect(@draw.inspect).to eq('stroke-width 2.5')
     assert_nothing_raised { @draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.stroke_width('xxx') }
+    expect { @draw.stroke_width('xxx') }.to raise_error(ArgumentError)
   end
 
   def test_text
@@ -730,9 +730,9 @@ class LibDrawUT < Minitest::Test
     expect(draw.inspect).to eq("text 50,50 {Hello {'world\"}")
     assert_nothing_raised { draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.text(50, 50, '') }
-    assert_raise(ArgumentError) { @draw.text('x', 50, 'Hello world') }
-    assert_raise(ArgumentError) { @draw.text(50, 'x', 'Hello world') }
+    expect { @draw.text(50, 50, '') }.to raise_error(ArgumentError)
+    expect { @draw.text('x', 50, 'Hello world') }.to raise_error(ArgumentError)
+    expect { @draw.text(50, 'x', 'Hello world') }.to raise_error(ArgumentError)
   end
 
   def test_text_align
@@ -754,7 +754,7 @@ class LibDrawUT < Minitest::Test
     draw.text(50, 50, 'Hello world')
     assert_nothing_raised { draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.text_align('x') }
+    expect { @draw.text_align('x') }.to raise_error(ArgumentError)
   end
 
   def test_text_anchor
@@ -776,7 +776,7 @@ class LibDrawUT < Minitest::Test
     draw.text(50, 50, 'Hello world')
     assert_nothing_raised { draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.text_anchor('x') }
+    expect { @draw.text_anchor('x') }.to raise_error(ArgumentError)
   end
 
   def test_text_antialias
@@ -805,7 +805,7 @@ class LibDrawUT < Minitest::Test
     expect(@draw.inspect).to eq('translate 200,300')
     assert_nothing_raised { @draw.draw(@img) }
 
-    assert_raise(ArgumentError) { @draw.translate('x', 300) }
-    assert_raise(ArgumentError) { @draw.translate(200, 'x') }
+    expect { @draw.translate('x', 300) }.to raise_error(ArgumentError)
+    expect { @draw.translate(200, 'x') }.to raise_error(ArgumentError)
   end
 end

@@ -39,25 +39,25 @@ class Image_Attributes_UT < Minitest::Test
     else
       expect(background_color).to eq('#FFFF7FFF7FFFFFFF')
     end
-    assert_raise(TypeError) { @img.background_color = 2 }
+    expect { @img.background_color = 2 }.to raise_error(TypeError)
   end
 
   def test_base_columns
     assert_nothing_raised { @img.base_columns }
     expect(@img.base_columns).to eq(0)
-    assert_raise(NoMethodError) { @img.base_columns = 1 }
+    expect { @img.base_columns = 1 }.to raise_error(NoMethodError)
   end
 
   def test_base_filename
     assert_nothing_raised { @img.base_filename }
     expect(@img.base_filename).to eq('')
-    assert_raise(NoMethodError) { @img.base_filename = 'xxx' }
+    expect { @img.base_filename = 'xxx' }.to raise_error(NoMethodError)
   end
 
   def test_base_rows
     assert_nothing_raised { @img.base_rows }
     expect(@img.base_rows).to eq(0)
-    assert_raise(NoMethodError) { @img.base_rows = 1 }
+    expect { @img.base_rows = 1 }.to raise_error(NoMethodError)
   end
 
   def test_bias
@@ -71,8 +71,8 @@ class Image_Attributes_UT < Minitest::Test
     assert_nothing_raised { @img.bias = '10%' }
     assert_in_delta(Magick::QuantumRange * 0.10, @img.bias, 0.1)
 
-    assert_raise(TypeError) { @img.bias = [] }
-    assert_raise(ArgumentError) { @img.bias = 'x' }
+    expect { @img.bias = [] }.to raise_error(TypeError)
+    expect { @img.bias = 'x' }.to raise_error(ArgumentError)
   end
 
   def test_black_point_compensation
@@ -101,7 +101,7 @@ class Image_Attributes_UT < Minitest::Test
     else
       expect(border_color).to eq('#FFFF7FFF7FFFFFFF')
     end
-    assert_raise(TypeError) { @img.border_color = 2 }
+    expect { @img.border_color = 2 }.to raise_error(TypeError)
   end
 
   def test_bounding_box
@@ -111,7 +111,7 @@ class Image_Attributes_UT < Minitest::Test
     expect(box.height).to eq(87)
     expect(box.x).to eq(7)
     expect(box.y).to eq(7)
-    assert_raise(NoMethodError) { @img.bounding_box = 2 }
+    expect { @img.bounding_box = 2 }.to raise_error(NoMethodError)
   end
 
   def test_chromaticity
@@ -131,7 +131,7 @@ class Image_Attributes_UT < Minitest::Test
     expect(chrom.white_point.y).to eq(0)
     expect(chrom.white_point.z).to eq(0)
     assert_nothing_raised { @img.chromaticity = chrom }
-    assert_raise(TypeError) { @img.chromaticity = 2 }
+    expect { @img.chromaticity = 2 }.to raise_error(TypeError)
   end
 
   def test_class_type
@@ -140,7 +140,7 @@ class Image_Attributes_UT < Minitest::Test
     expect(@img.class_type).to eq(Magick::DirectClass)
     assert_nothing_raised { @img.class_type = Magick::PseudoClass }
     expect(@img.class_type).to eq(Magick::PseudoClass)
-    assert_raise(TypeError) { @img.class_type = 2 }
+    expect { @img.class_type = 2 }.to raise_error(TypeError)
 
     assert_nothing_raised do
       @img.class_type = Magick::PseudoClass
@@ -154,7 +154,7 @@ class Image_Attributes_UT < Minitest::Test
     assert_nil(@img.color_profile)
     assert_nothing_raised { @img.color_profile = @p }
     expect(@img.color_profile).to eq(@p)
-    assert_raise(TypeError) { @img.color_profile = 2 }
+    expect { @img.color_profile = 2 }.to raise_error(TypeError)
   end
 
   def test_colors
@@ -163,7 +163,7 @@ class Image_Attributes_UT < Minitest::Test
     img = @img.copy
     img.class_type = Magick::PseudoClass
     assert_kind_of(Integer, img.colors)
-    assert_raise(NoMethodError) { img.colors = 2 }
+    expect { img.colors = 2 }.to raise_error(NoMethodError)
   end
 
   def test_colorspace
@@ -175,7 +175,7 @@ class Image_Attributes_UT < Minitest::Test
     Magick::ColorspaceType.values do |colorspace|
       assert_nothing_raised { img.colorspace = colorspace }
     end
-    assert_raise(TypeError) { @img.colorspace = 2 }
+    expect { @img.colorspace = 2 }.to raise_error(TypeError)
     Magick::ColorspaceType.values.each do |cs|
       assert_nothing_raised { img.colorspace = cs }
     end
@@ -184,21 +184,21 @@ class Image_Attributes_UT < Minitest::Test
   def test_columns
     assert_nothing_raised { @img.columns }
     expect(@img.columns).to eq(100)
-    assert_raise(NoMethodError) { @img.columns = 2 }
+    expect { @img.columns = 2 }.to raise_error(NoMethodError)
   end
 
   def test_compose
     assert_nothing_raised { @img.compose }
     assert_instance_of(Magick::CompositeOperator, @img.compose)
     expect(@img.compose).to eq(Magick::OverCompositeOp)
-    assert_raise(TypeError) { @img.compose = 2 }
+    expect { @img.compose = 2 }.to raise_error(TypeError)
     assert_nothing_raised { @img.compose = Magick::UndefinedCompositeOp }
     expect(@img.compose).to eq(Magick::UndefinedCompositeOp)
 
     Magick::CompositeOperator.values do |composite|
       assert_nothing_raised { @img.compose = composite }
     end
-    assert_raise(TypeError) { @img.compose = 2 }
+    expect { @img.compose = 2 }.to raise_error(TypeError)
   end
 
   def test_compression
@@ -211,7 +211,7 @@ class Image_Attributes_UT < Minitest::Test
     Magick::CompressionType.values do |compression|
       assert_nothing_raised { @img.compression = compression }
     end
-    assert_raise(TypeError) { @img.compression = 2 }
+    expect { @img.compression = 2 }.to raise_error(TypeError)
   end
 
   def test_delay
@@ -219,7 +219,7 @@ class Image_Attributes_UT < Minitest::Test
     expect(@img.delay).to eq(0)
     assert_nothing_raised { @img.delay = 10 }
     expect(@img.delay).to eq(10)
-    assert_raise(TypeError) { @img.delay = 'x' }
+    expect { @img.delay = 'x' }.to raise_error(TypeError)
   end
 
   def test_density
@@ -228,18 +228,18 @@ class Image_Attributes_UT < Minitest::Test
     assert_nothing_raised { @img.density = 'x90' }
     assert_nothing_raised { @img.density = '90' }
     assert_nothing_raised { @img.density = Magick::Geometry.new(@img.columns / 2, @img.rows / 2, 5, 5) }
-    assert_raise(TypeError) { @img.density = 2 }
+    expect { @img.density = 2 }.to raise_error(TypeError)
   end
 
   def test_depth
     expect(@img.depth).to eq(Magick::MAGICKCORE_QUANTUM_DEPTH)
-    assert_raise(NoMethodError) { @img.depth = 2 }
+    expect { @img.depth = 2 }.to raise_error(NoMethodError)
   end
 
   def test_directory
     assert_nothing_raised { @img.directory }
     assert_nil(@img.directory)
-    assert_raise(NoMethodError) { @img.directory = nil }
+    expect { @img.directory = nil }.to raise_error(NoMethodError)
   end
 
   def test_dispose
@@ -252,7 +252,7 @@ class Image_Attributes_UT < Minitest::Test
     Magick::DisposeType.values do |dispose|
       assert_nothing_raised { @img.dispose = dispose }
     end
-    assert_raise(TypeError) { @img.dispose = 2 }
+    expect { @img.dispose = 2 }.to raise_error(TypeError)
   end
 
   def test_endian
@@ -262,7 +262,7 @@ class Image_Attributes_UT < Minitest::Test
     assert_nothing_raised { @img.endian = Magick::LSBEndian }
     expect(@img.endian).to eq(Magick::LSBEndian)
     assert_nothing_raised { @img.endian = Magick::MSBEndian }
-    assert_raise(TypeError) { @img.endian = 2 }
+    expect { @img.endian = 2 }.to raise_error(TypeError)
   end
 
   def test_extract_info
@@ -279,13 +279,13 @@ class Image_Attributes_UT < Minitest::Test
     expect(ext.height).to eq(2)
     expect(ext.x).to eq(3)
     expect(ext.y).to eq(4)
-    assert_raise(TypeError) { @img.extract_info = 2 }
+    expect { @img.extract_info = 2 }.to raise_error(TypeError)
   end
 
   def test_filename
     assert_nothing_raised { @img.filename }
     expect(@img.filename).to eq('')
-    assert_raises(NoMethodError) { @img.filename = 'xxx' }
+    expect { @img.filename = 'xxx' }.to raise_error(NoMethodError)
   end
 
   def test_filter
@@ -298,7 +298,7 @@ class Image_Attributes_UT < Minitest::Test
     Magick::FilterType.values do |filter|
       assert_nothing_raised { @img.filter = filter }
     end
-    assert_raise(TypeError) { @img.filter = 2 }
+    expect { @img.filter = 2 }.to raise_error(TypeError)
   end
 
   def test_format
@@ -311,9 +311,9 @@ class Image_Attributes_UT < Minitest::Test
     assert_nothing_raised { @img.format = 'MPEG' }
     v = $VERBOSE
     $VERBOSE = nil
-    assert_raise(ArgumentError) { @img.format = 'shit' }
+    expect { @img.format = 'shit' }.to raise_error(ArgumentError)
     $VERBOSE = v
-    assert_raise(TypeError) { @img.format = 2 }
+    expect { @img.format = 2 }.to raise_error(TypeError)
   end
 
   def test_fuzz
@@ -324,8 +324,8 @@ class Image_Attributes_UT < Minitest::Test
     expect(@img.fuzz).to eq(50.0)
     assert_nothing_raised { @img.fuzz = '50%' }
     assert_in_delta(Magick::QuantumRange * 0.50, @img.fuzz, 0.1)
-    assert_raise(TypeError) { @img.fuzz = [] }
-    assert_raise(ArgumentError) { @img.fuzz = 'xxx' }
+    expect { @img.fuzz = [] }.to raise_error(TypeError)
+    expect { @img.fuzz = 'xxx' }.to raise_error(ArgumentError)
   end
 
   def test_gamma
@@ -334,7 +334,7 @@ class Image_Attributes_UT < Minitest::Test
     expect(@img.gamma).to eq(0.45454543828964233)
     assert_nothing_raised { @img.gamma = 2.0 }
     expect(@img.gamma).to eq(2.0)
-    assert_raise(TypeError) { @img.gamma = 'x' }
+    expect { @img.gamma = 'x' }.to raise_error(TypeError)
   end
 
   def test_geometry
@@ -345,7 +345,7 @@ class Image_Attributes_UT < Minitest::Test
     expect(@img.geometry).to eq('90x90')
     assert_nothing_raised { @img.geometry = Magick::Geometry.new(100, 80) }
     expect(@img.geometry).to eq('100x80')
-    assert_raise(TypeError) { @img.geometry = [] }
+    expect { @img.geometry = [] }.to raise_error(TypeError)
   end
 
   def test_gravity
@@ -354,8 +354,8 @@ class Image_Attributes_UT < Minitest::Test
     Magick::GravityType.values do |gravity|
       assert_nothing_raised { @img.gravity = gravity }
     end
-    assert_raise(TypeError) { @img.gravity = nil }
-    assert_raise(TypeError) { @img.gravity = Magick::PointFilter }
+    expect { @img.gravity = nil }.to raise_error(TypeError)
+    expect { @img.gravity = Magick::PointFilter }.to raise_error(TypeError)
   end
 
   def test_image_type
@@ -364,8 +364,8 @@ class Image_Attributes_UT < Minitest::Test
     Magick::ImageType.values do |image_type|
       assert_nothing_raised { @img.image_type = image_type }
     end
-    assert_raise(TypeError) { @img.image_type = nil }
-    assert_raise(TypeError) { @img.image_type = Magick::PointFilter }
+    expect { @img.image_type = nil }.to raise_error(TypeError)
+    expect { @img.image_type = Magick::PointFilter }.to raise_error(TypeError)
   end
 
   def test_interlace_type
@@ -378,7 +378,7 @@ class Image_Attributes_UT < Minitest::Test
     Magick::InterlaceType.values do |interlace|
       assert_nothing_raised { @img.interlace = interlace }
     end
-    assert_raise(TypeError) { @img.interlace = 2 }
+    expect { @img.interlace = 2 }.to raise_error(TypeError)
   end
 
   def test_iptc_profile
@@ -386,7 +386,7 @@ class Image_Attributes_UT < Minitest::Test
     assert_nil(@img.iptc_profile)
     assert_nothing_raised { @img.iptc_profile = 'xxx' }
     expect(@img.iptc_profile).to eq('xxx')
-    assert_raise(TypeError) { @img.iptc_profile = 2 }
+    expect { @img.iptc_profile = 2 }.to raise_error(TypeError)
   end
 
   def test_mean_error
@@ -402,9 +402,9 @@ class Image_Attributes_UT < Minitest::Test
     assert_not_equal(0.0, hat.mean_error_per_pixel)
     assert_not_equal(0.0, hat.normalized_mean_error)
     assert_not_equal(0.0, hat.normalized_maximum_error)
-    assert_raise(NoMethodError) { hat.mean_error_per_pixel = 1 }
-    assert_raise(NoMethodError) { hat.normalized_mean_error = 1 }
-    assert_raise(NoMethodError) { hat.normalized_maximum_error = 1 }
+    expect { hat.mean_error_per_pixel = 1 }.to raise_error(NoMethodError)
+    expect { hat.normalized_mean_error = 1 }.to raise_error(NoMethodError)
+    expect { hat.normalized_maximum_error = 1 }.to raise_error(NoMethodError)
   end
 
   def test_mime_type
@@ -414,11 +414,11 @@ class Image_Attributes_UT < Minitest::Test
     expect(img.mime_type).to eq('image/gif')
     img.format = 'JPG'
     expect(img.mime_type).to eq('image/jpeg')
-    assert_raise(NoMethodError) { img.mime_type = 'image/jpeg' }
+    expect { img.mime_type = 'image/jpeg' }.to raise_error(NoMethodError)
   end
 
   def test_monitor
-    assert_raise(NoMethodError) { @img.monitor }
+    expect { @img.monitor }.to raise_error(NoMethodError)
     monitor = proc { |name, _q, _s| puts name }
     assert_nothing_raised { @img.monitor = monitor }
     assert_nothing_raised { @img.monitor = nil }
@@ -432,7 +432,7 @@ class Image_Attributes_UT < Minitest::Test
   def test_number_colors
     assert_nothing_raised { @hat.number_colors }
     assert_kind_of(Integer, @hat.number_colors)
-    assert_raise(NoMethodError) { @hat.number_colors = 2 }
+    expect { @hat.number_colors = 2 }.to raise_error(NoMethodError)
   end
 
   def test_offset
@@ -440,7 +440,7 @@ class Image_Attributes_UT < Minitest::Test
     expect(@img.offset).to eq(0)
     assert_nothing_raised { @img.offset = 10 }
     expect(@img.offset).to eq(10)
-    assert_raise(TypeError) { @img.offset = 'x' }
+    expect { @img.offset = 'x' }.to raise_error(TypeError)
   end
 
   def test_orientation
@@ -453,7 +453,7 @@ class Image_Attributes_UT < Minitest::Test
     Magick::OrientationType.values do |orientation|
       assert_nothing_raised { @img.orientation = orientation }
     end
-    assert_raise(TypeError) { @img.orientation = 2 }
+    expect { @img.orientation = 2 }.to raise_error(TypeError)
   end
 
   def test_page
@@ -469,7 +469,7 @@ class Image_Attributes_UT < Minitest::Test
     expect(page.height).to eq(2)
     expect(page.x).to eq(3)
     expect(page.y).to eq(4)
-    assert_raise(TypeError) { @img.page = 2 }
+    expect { @img.page = 2 }.to raise_error(TypeError)
   end
 
   def test_pixel_interpolation_method
@@ -482,19 +482,19 @@ class Image_Attributes_UT < Minitest::Test
     Magick::PixelInterpolateMethod.values do |interpolate_pixel_method|
       assert_nothing_raised { @img.pixel_interpolation_method = interpolate_pixel_method }
     end
-    assert_raise(TypeError) { @img.pixel_interpolation_method = 2 }
+    expect { @img.pixel_interpolation_method = 2 }.to raise_error(TypeError)
   end
 
   def test_quality
     assert_nothing_raised { @hat.quality }
     expect(@hat.quality).to eq(75)
-    assert_raise(NoMethodError) { @img.quality = 80 }
+    expect { @img.quality = 80 }.to raise_error(NoMethodError)
   end
 
   def test_quantum_depth
     assert_nothing_raised { @img.quantum_depth }
     expect(@img.quantum_depth).to eq(Magick::MAGICKCORE_QUANTUM_DEPTH)
-    assert_raise(NoMethodError) { @img.quantum_depth = 8 }
+    expect { @img.quantum_depth = 8 }.to raise_error(NoMethodError)
   end
 
   def test_rendering_intent
@@ -505,13 +505,13 @@ class Image_Attributes_UT < Minitest::Test
     Magick::RenderingIntent.values do |rendering_intent|
       assert_nothing_raised { @img.rendering_intent = rendering_intent }
     end
-    assert_raise(TypeError) { @img.rendering_intent = 2 }
+    expect { @img.rendering_intent = 2 }.to raise_error(TypeError)
   end
 
   def test_rows
     assert_nothing_raised { @img.rows }
     expect(@img.rows).to eq(100)
-    assert_raise(NoMethodError) { @img.rows = 2 }
+    expect { @img.rows = 2 }.to raise_error(NoMethodError)
   end
 
   def test_scene
@@ -525,7 +525,7 @@ class Image_Attributes_UT < Minitest::Test
     assert_nothing_raised { img.scene }
     expect(@img.scene).to eq(0)
     expect(img.scene).to eq(1)
-    assert_raise(NoMethodError) { img.scene = 2 }
+    expect { img.scene = 2 }.to raise_error(NoMethodError)
   end
 
   def test_start_loop
@@ -540,13 +540,13 @@ class Image_Attributes_UT < Minitest::Test
     expect(@img.ticks_per_second).to eq(100)
     assert_nothing_raised { @img.ticks_per_second = 1000 }
     expect(@img.ticks_per_second).to eq(1000)
-    assert_raise(TypeError) { @img.ticks_per_second = 'x' }
+    expect { @img.ticks_per_second = 'x' }.to raise_error(TypeError)
   end
 
   def test_total_colors
     assert_nothing_raised { @hat.total_colors }
     assert_kind_of(Integer, @hat.total_colors)
-    assert_raise(NoMethodError) { @img.total_colors = 2 }
+    expect { @img.total_colors = 2 }.to raise_error(NoMethodError)
   end
 
   def test_units
@@ -559,7 +559,7 @@ class Image_Attributes_UT < Minitest::Test
     Magick::ResolutionType.values do |resolution|
       assert_nothing_raised { @img.units = resolution }
     end
-    assert_raise(TypeError) { @img.units = 2 }
+    expect { @img.units = 2 }.to raise_error(TypeError)
   end
 
   def test_virtual_pixel_method
@@ -571,58 +571,58 @@ class Image_Attributes_UT < Minitest::Test
     Magick::VirtualPixelMethod.values do |virtual_pixel_method|
       assert_nothing_raised { @img.virtual_pixel_method = virtual_pixel_method }
     end
-    assert_raise(TypeError) { @img.virtual_pixel_method = 2 }
+    expect { @img.virtual_pixel_method = 2 }.to raise_error(TypeError)
   end
 
   def test_x_resolution
     assert_nothing_raised { @img.x_resolution }
     assert_nothing_raised { @img.x_resolution = 90 }
     expect(@img.x_resolution).to eq(90.0)
-    assert_raise(TypeError) { @img.x_resolution = 'x' }
+    expect { @img.x_resolution = 'x' }.to raise_error(TypeError)
   end
 
   def test_y_resolution
     assert_nothing_raised { @img.y_resolution }
     assert_nothing_raised { @img.y_resolution = 90 }
     expect(@img.y_resolution).to eq(90.0)
-    assert_raise(TypeError) { @img.y_resolution = 'x' }
+    expect { @img.y_resolution = 'x' }.to raise_error(TypeError)
   end
 
   def test_frozen
     @img.freeze
-    assert_raise(FreezeError) { @img.background_color = 'xxx' }
-    assert_raise(FreezeError) { @img.border_color = 'xxx' }
+    expect { @img.background_color = 'xxx' }.to raise_error(FreezeError)
+    expect { @img.border_color = 'xxx' }.to raise_error(FreezeError)
     rp = Magick::Point.new(1, 1)
     gp = Magick::Point.new(1, 1)
     bp = Magick::Point.new(1, 1)
     wp = Magick::Point.new(1, 1)
-    assert_raise(FreezeError) { @img.chromaticity = Magick::Chromaticity.new(rp, gp, bp, wp) }
-    assert_raise(FreezeError) { @img.class_type = Magick::DirectClass }
-    assert_raise(FreezeError) { @img.color_profile = 'xxx' }
-    assert_raise(FreezeError) { @img.colorspace = Magick::RGBColorspace }
-    assert_raise(FreezeError) { @img.compose = Magick::OverCompositeOp }
-    assert_raise(FreezeError) { @img.compression = Magick::RLECompression }
-    assert_raise(FreezeError) { @img.delay = 2 }
-    assert_raise(FreezeError) { @img.density = '72.0x72.0' }
-    assert_raise(FreezeError) { @img.dispose = Magick::NoneDispose }
-    assert_raise(FreezeError) { @img.endian = Magick::MSBEndian }
-    assert_raise(FreezeError) { @img.extract_info = Magick::Rectangle.new(1, 2, 3, 4) }
-    assert_raise(FreezeError) { @img.filter = Magick::PointFilter }
-    assert_raise(FreezeError) { @img.format = 'GIF' }
-    assert_raise(FreezeError) { @img.fuzz = 50.0 }
-    assert_raise(FreezeError) { @img.gamma = 2.0 }
-    assert_raise(FreezeError) { @img.geometry = '100x100' }
-    assert_raise(FreezeError) { @img.interlace = Magick::NoInterlace }
-    assert_raise(FreezeError) { @img.iptc_profile = 'xxx' }
-    assert_raise(FreezeError) { @img.monitor = proc { |name, _q, _s| puts name } }
-    assert_raise(FreezeError) { @img.offset = 100 }
-    assert_raise(FreezeError) { @img.page = Magick::Rectangle.new(1, 2, 3, 4) }
-    assert_raise(FreezeError) { @img.rendering_intent = Magick::SaturationIntent }
-    assert_raise(FreezeError) { @img.start_loop = true }
-    assert_raise(FreezeError) { @img.ticks_per_second = 1000 }
-    assert_raise(FreezeError) { @img.units = Magick::PixelsPerInchResolution }
-    assert_raise(FreezeError) { @img.x_resolution = 72.0 }
-    assert_raise(FreezeError) { @img.y_resolution = 72.0 }
+    expect { @img.chromaticity = Magick::Chromaticity.new(rp, gp, bp, wp) }.to raise_error(FreezeError)
+    expect { @img.class_type = Magick::DirectClass }.to raise_error(FreezeError)
+    expect { @img.color_profile = 'xxx' }.to raise_error(FreezeError)
+    expect { @img.colorspace = Magick::RGBColorspace }.to raise_error(FreezeError)
+    expect { @img.compose = Magick::OverCompositeOp }.to raise_error(FreezeError)
+    expect { @img.compression = Magick::RLECompression }.to raise_error(FreezeError)
+    expect { @img.delay = 2 }.to raise_error(FreezeError)
+    expect { @img.density = '72.0x72.0' }.to raise_error(FreezeError)
+    expect { @img.dispose = Magick::NoneDispose }.to raise_error(FreezeError)
+    expect { @img.endian = Magick::MSBEndian }.to raise_error(FreezeError)
+    expect { @img.extract_info = Magick::Rectangle.new(1, 2, 3, 4) }.to raise_error(FreezeError)
+    expect { @img.filter = Magick::PointFilter }.to raise_error(FreezeError)
+    expect { @img.format = 'GIF' }.to raise_error(FreezeError)
+    expect { @img.fuzz = 50.0 }.to raise_error(FreezeError)
+    expect { @img.gamma = 2.0 }.to raise_error(FreezeError)
+    expect { @img.geometry = '100x100' }.to raise_error(FreezeError)
+    expect { @img.interlace = Magick::NoInterlace }.to raise_error(FreezeError)
+    expect { @img.iptc_profile = 'xxx' }.to raise_error(FreezeError)
+    expect { @img.monitor = proc { |name, _q, _s| puts name } }.to raise_error(FreezeError)
+    expect { @img.offset = 100 }.to raise_error(FreezeError)
+    expect { @img.page = Magick::Rectangle.new(1, 2, 3, 4) }.to raise_error(FreezeError)
+    expect { @img.rendering_intent = Magick::SaturationIntent }.to raise_error(FreezeError)
+    expect { @img.start_loop = true }.to raise_error(FreezeError)
+    expect { @img.ticks_per_second = 1000 }.to raise_error(FreezeError)
+    expect { @img.units = Magick::PixelsPerInchResolution }.to raise_error(FreezeError)
+    expect { @img.x_resolution = 72.0 }.to raise_error(FreezeError)
+    expect { @img.y_resolution = 72.0 }.to raise_error(FreezeError)
   end
 end # class Image_Attributes_UT
 

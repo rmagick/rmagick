@@ -11,7 +11,7 @@ class PreviewUT < Minitest::Test
     Magick::PreviewType.values do |type|
       assert_nothing_raised { hat.preview(type) }
     end
-    assert_raise(TypeError) { hat.preview(2) }
+    expect { hat.preview(2) }.to raise_error(TypeError)
   end
 end
 

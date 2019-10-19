@@ -10,7 +10,7 @@ class DrawUT < Minitest::Test
     assert_nothing_raised do
       @draw.affine = Magick::AffineMatrix.new(1, 2, 3, 4, 5, 6)
     end
-    assert_raise(TypeError) { @draw.affine = [1, 2, 3, 4, 5, 6] }
+    expect { @draw.affine = [1, 2, 3, 4, 5, 6] }.to raise_error(TypeError)
   end
 
   def test_align
@@ -29,18 +29,18 @@ class DrawUT < Minitest::Test
     assert_nothing_raised { @draw.density = '90x90' }
     assert_nothing_raised { @draw.density = 'x90' }
     assert_nothing_raised { @draw.density = '90' }
-    assert_raise(TypeError) { @draw.density = 2 }
+    expect { @draw.density = 2 }.to raise_error(TypeError)
   end
 
   def test_encoding
     assert_nothing_raised { @draw.encoding = 'AdobeCustom' }
-    assert_raise(TypeError) { @draw.encoding = 2 }
+    expect { @draw.encoding = 2 }.to raise_error(TypeError)
   end
 
   def test_fill
     assert_nothing_raised { @draw.fill = 'white' }
     assert_nothing_raised { @draw.fill = Magick::Pixel.from_color('white') }
-    assert_raise(TypeError) { @draw.fill = 2 }
+    expect { @draw.fill = 2 }.to raise_error(TypeError)
   end
 
   def test_fill_pattern
@@ -53,17 +53,17 @@ class DrawUT < Minitest::Test
       @draw.fill_pattern = img2
     end
 
-    assert_raise(NoMethodError) { @draw.fill_pattern = 'x' }
+    expect { @draw.fill_pattern = 'x' }.to raise_error(NoMethodError)
   end
 
   def test_font
     assert_nothing_raised { @draw.font = 'Arial-Bold' }
-    assert_raise(TypeError) { @draw.font = 2 }
+    expect { @draw.font = 2 }.to raise_error(TypeError)
   end
 
   def test_font_family
     assert_nothing_raised { @draw.font_family = 'Arial' }
-    assert_raise(TypeError) { @draw.font_family = 2 }
+    expect { @draw.font_family = 2 }.to raise_error(TypeError)
   end
 
   def test_font_stretch
@@ -71,7 +71,7 @@ class DrawUT < Minitest::Test
       assert_nothing_raised { @draw.font_stretch = stretch }
     end
 
-    assert_raise(TypeError) { @draw.font_stretch = 2 }
+    expect { @draw.font_stretch = 2 }.to raise_error(TypeError)
   end
 
   def test_font_style
@@ -79,7 +79,7 @@ class DrawUT < Minitest::Test
       assert_nothing_raised { @draw.font_style = style }
     end
 
-    assert_raise(TypeError) { @draw.font_style = 2 }
+    expect { @draw.font_style = 2 }.to raise_error(TypeError)
   end
 
   def test_font_weight
@@ -87,8 +87,8 @@ class DrawUT < Minitest::Test
       assert_nothing_raised { @draw.font_weight = weight }
     end
 
-    assert_raise(ArgumentError) { @draw.font_weight = 99 }
-    assert_raise(ArgumentError) { @draw.font_weight = 901 }
+    expect { @draw.font_weight = 99 }.to raise_error(ArgumentError)
+    expect { @draw.font_weight = 901 }.to raise_error(ArgumentError)
   end
 
   def test_gravity
@@ -96,38 +96,38 @@ class DrawUT < Minitest::Test
       assert_nothing_raised { @draw.gravity = gravity }
     end
 
-    assert_raise(TypeError) { @draw.gravity = 2 }
+    expect { @draw.gravity = 2 }.to raise_error(TypeError)
   end
 
   def test_interline_spacing
     assert_nothing_raised { @draw.interline_spacing = 2 }
-    assert_raise(TypeError) { @draw.interline_spacing = 'x' }
+    expect { @draw.interline_spacing = 'x' }.to raise_error(TypeError)
   end
 
   def test_interword_spacing
     assert_nothing_raised { @draw.interword_spacing = 2 }
-    assert_raise(TypeError) { @draw.interword_spacing = 'x' }
+    expect { @draw.interword_spacing = 'x' }.to raise_error(TypeError)
   end
 
   def test_kerning
     assert_nothing_raised { @draw.kerning = 2 }
-    assert_raise(TypeError) { @draw.kerning = 'x' }
+    expect { @draw.kerning = 'x' }.to raise_error(TypeError)
   end
 
   def test_pointsize
     assert_nothing_raised { @draw.pointsize = 2 }
-    assert_raise(TypeError) { @draw.pointsize = 'x' }
+    expect { @draw.pointsize = 'x' }.to raise_error(TypeError)
   end
 
   def test_rotation
     assert_nothing_raised { @draw.rotation = 15 }
-    assert_raise(TypeError) { @draw.rotation = 'x' }
+    expect { @draw.rotation = 'x' }.to raise_error(TypeError)
   end
 
   def test_stroke
     assert_nothing_raised { @draw.stroke = Magick::Pixel.from_color('white') }
     assert_nothing_raised { @draw.stroke = 'white' }
-    assert_raise(TypeError) { @draw.stroke = 2 }
+    expect { @draw.stroke = 2 }.to raise_error(TypeError)
   end
 
   def test_stroke_pattern
@@ -140,12 +140,12 @@ class DrawUT < Minitest::Test
       @draw.stroke_pattern = img2
     end
 
-    assert_raise(NoMethodError) { @draw.stroke_pattern = 'x' }
+    expect { @draw.stroke_pattern = 'x' }.to raise_error(NoMethodError)
   end
 
   def test_stroke_width
     assert_nothing_raised { @draw.stroke_width = 15 }
-    assert_raise(TypeError) { @draw.stroke_width = 'x' }
+    expect { @draw.stroke_width = 'x' }.to raise_error(TypeError)
   end
 
   def test_text_antialias
@@ -167,7 +167,7 @@ class DrawUT < Minitest::Test
   def test_undercolor
     assert_nothing_raised { @draw.undercolor = Magick::Pixel.from_color('white') }
     assert_nothing_raised { @draw.undercolor = 'white' }
-    assert_raise(TypeError) { @draw.undercolor = 2 }
+    expect { @draw.undercolor = 2 }.to raise_error(TypeError)
   end
 
   def test_annotate
@@ -182,12 +182,12 @@ class DrawUT < Minitest::Test
       assert_instance_of(Magick::Draw, yield_obj)
     end
 
-    assert_raise(TypeError) do
+    expect do
       img = Magick::Image.new(10, 10)
       @draw.annotate(img, 0, 0, 0, 20, nil)
-    end
+    end.to raise_error(TypeError)
 
-    assert_raise(NoMethodError) { @draw.annotate('x', 0, 0, 0, 20, 'Hello world') }
+    expect { @draw.annotate('x', 0, 0, 0, 20, 'Hello world') }.to raise_error(NoMethodError)
   end
 
   def test_annotate_stack_buffer_overflow
@@ -223,14 +223,14 @@ class DrawUT < Minitest::Test
       assert_nothing_raised { @draw.composite(0, 0, 10, 10, img, op) }
     end
 
-    assert_raise(TypeError) { @draw.composite('x', 0, 10, 10, img) }
-    assert_raise(TypeError) { @draw.composite(0, 'y', 10, 10, img) }
-    assert_raise(TypeError) { @draw.composite(0, 0, 'w', 10, img) }
-    assert_raise(TypeError) { @draw.composite(0, 0, 10, 'h', img) }
-    assert_raise(TypeError) { @draw.composite(0, 0, 10, 10, img, Magick::CenterAlign) }
-    assert_raise(NoMethodError) { @draw.composite(0, 0, 10, 10, 'image') }
-    assert_raise(ArgumentError) { @draw.composite(0, 0, 10, 10) }
-    assert_raise(ArgumentError) { @draw.composite(0, 0, 10, 10, img, Magick::ModulusAddCompositeOp, 'x') }
+    expect { @draw.composite('x', 0, 10, 10, img) }.to raise_error(TypeError)
+    expect { @draw.composite(0, 'y', 10, 10, img) }.to raise_error(TypeError)
+    expect { @draw.composite(0, 0, 'w', 10, img) }.to raise_error(TypeError)
+    expect { @draw.composite(0, 0, 10, 'h', img) }.to raise_error(TypeError)
+    expect { @draw.composite(0, 0, 10, 10, img, Magick::CenterAlign) }.to raise_error(TypeError)
+    expect { @draw.composite(0, 0, 10, 10, 'image') }.to raise_error(NoMethodError)
+    expect { @draw.composite(0, 0, 10, 10) }.to raise_error(ArgumentError)
+    expect { @draw.composite(0, 0, 10, 10, img, Magick::ModulusAddCompositeOp, 'x') }.to raise_error(ArgumentError)
   end
 
   def test_draw
@@ -240,8 +240,8 @@ class DrawUT < Minitest::Test
     @draw.path('M110,100 h-75 a75,75 0 1,0 75,-75 z')
     assert_nothing_raised { @draw.draw(img) }
 
-    assert_raise(ArgumentError) { draw.draw(img) }
-    assert_raise(NoMethodError) { draw.draw('x') }
+    expect { draw.draw(img) }.to raise_error(ArgumentError)
+    expect { draw.draw('x') }.to raise_error(NoMethodError)
   end
 
   def test_get_type_metrics
@@ -249,10 +249,10 @@ class DrawUT < Minitest::Test
     assert_nothing_raised { @draw.get_type_metrics('ABCDEF') }
     assert_nothing_raised { @draw.get_type_metrics(img, 'ABCDEF') }
 
-    assert_raise(ArgumentError) { @draw.get_type_metrics }
-    assert_raise(ArgumentError) { @draw.get_type_metrics(img, 'ABCDEF', 20) }
-    assert_raise(ArgumentError) { @draw.get_type_metrics(img, '') }
-    assert_raise(NoMethodError) { @draw.get_type_metrics('x', 'ABCDEF') }
+    expect { @draw.get_type_metrics }.to raise_error(ArgumentError)
+    expect { @draw.get_type_metrics(img, 'ABCDEF', 20) }.to raise_error(ArgumentError)
+    expect { @draw.get_type_metrics(img, '') }.to raise_error(ArgumentError)
+    expect { @draw.get_type_metrics('x', 'ABCDEF') }.to raise_error(NoMethodError)
   end
 
   def test_get_multiline_type_metrics
@@ -260,9 +260,9 @@ class DrawUT < Minitest::Test
     assert_nothing_raised { @draw.get_multiline_type_metrics('ABCDEF') }
     assert_nothing_raised { @draw.get_multiline_type_metrics(img, 'ABCDEF') }
 
-    assert_raise(ArgumentError) { @draw.get_multiline_type_metrics }
-    assert_raise(ArgumentError) { @draw.get_multiline_type_metrics(img, 'ABCDEF', 20) }
-    assert_raise(ArgumentError) { @draw.get_multiline_type_metrics(img, '') }
+    expect { @draw.get_multiline_type_metrics }.to raise_error(ArgumentError)
+    expect { @draw.get_multiline_type_metrics(img, 'ABCDEF', 20) }.to raise_error(ArgumentError)
+    expect { @draw.get_multiline_type_metrics(img, '') }.to raise_error(ArgumentError)
   end
 
   def test_inspect
@@ -311,7 +311,7 @@ class DrawUT < Minitest::Test
   def test_primitive
     assert_nothing_raised { @draw.primitive('ABCDEF') }
     assert_nothing_raised { @draw.primitive('12345') }
-    assert_raise(TypeError) { @draw.primitive(nil) }
+    expect { @draw.primitive(nil) }.to raise_error(TypeError)
   end
 
   def test_draw_options

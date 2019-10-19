@@ -29,13 +29,13 @@ class LibGeometryUT < Minitest::Test
   end
 
   def test_initialize
-    assert_raise(ArgumentError) { Magick::Geometry.new(Magick::PercentGeometry) }
-    assert_raise(ArgumentError) { Magick::Geometry.new(0, Magick::PercentGeometry) }
-    assert_raise(ArgumentError) { Magick::Geometry.new(0, 0, Magick::PercentGeometry) }
-    assert_raise(ArgumentError) { Magick::Geometry.new(0, 0, 0, Magick::PercentGeometry) }
+    expect { Magick::Geometry.new(Magick::PercentGeometry) }.to raise_error(ArgumentError)
+    expect { Magick::Geometry.new(0, Magick::PercentGeometry) }.to raise_error(ArgumentError)
+    expect { Magick::Geometry.new(0, 0, Magick::PercentGeometry) }.to raise_error(ArgumentError)
+    expect { Magick::Geometry.new(0, 0, 0, Magick::PercentGeometry) }.to raise_error(ArgumentError)
 
-    assert_raise(ArgumentError) { Magick::Geometry.new(-1) }
-    assert_raise(ArgumentError) { Magick::Geometry.new(0, -1) }
+    expect { Magick::Geometry.new(-1) }.to raise_error(ArgumentError)
+    expect { Magick::Geometry.new(0, -1) }.to raise_error(ArgumentError)
 
     geometry = Magick::Geometry.new
     expect(geometry.width).to eq(0)
@@ -86,10 +86,10 @@ class LibGeometryUT < Minitest::Test
     expect(Magick::Geometry.from_s('10.2x20.5+30+40').to_s).to eq('10.20x20.50+30+40')
     expect(Magick::Geometry.from_s('10.2%x20.500%+30+40').to_s).to eq('10.20%x20.50%+30+40')
 
-    assert_raise(ArgumentError) { Magick::Geometry.from_s('10x20+') }
-    assert_raise(ArgumentError) { Magick::Geometry.from_s('+30.000+40') }
-    assert_raise(ArgumentError) { Magick::Geometry.from_s('+30.000+40.000') }
-    assert_raise(ArgumentError) { Magick::Geometry.from_s('10x20+30.000+40') }
-    assert_raise(ArgumentError) { Magick::Geometry.from_s('10x20+30.000+40.000') }
+    expect { Magick::Geometry.from_s('10x20+') }.to raise_error(ArgumentError)
+    expect { Magick::Geometry.from_s('+30.000+40') }.to raise_error(ArgumentError)
+    expect { Magick::Geometry.from_s('+30.000+40.000') }.to raise_error(ArgumentError)
+    expect { Magick::Geometry.from_s('10x20+30.000+40') }.to raise_error(ArgumentError)
+    expect { Magick::Geometry.from_s('10x20+30.000+40.000') }.to raise_error(ArgumentError)
   end
 end

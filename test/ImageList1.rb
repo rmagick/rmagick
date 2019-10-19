@@ -20,7 +20,7 @@ class ImageList1UT < Minitest::Test
     alpha = Magick::Image.new(20, 20) { self.background_color = 'transparent' }
 
     list = Magick::ImageList.new
-    assert_raise(ArgumentError) { list.combine }
+    expect { list.combine }.to raise_error(ArgumentError)
 
     list << red
     assert_nothing_raised { list.combine }
@@ -46,13 +46,13 @@ class ImageList1UT < Minitest::Test
 
     list << alpha
     assert_nothing_raised { list.combine(Magick::CMYKColorspace) }
-    assert_raise(ArgumentError) { list.combine(Magick::SRGBColorspace) }
+    expect { list.combine(Magick::SRGBColorspace) }.to raise_error(ArgumentError)
 
     list << alpha
-    assert_raise(ArgumentError) { list.combine }
+    expect { list.combine }.to raise_error(ArgumentError)
 
-    assert_raise(TypeError) { list.combine(nil) }
-    assert_raise(ArgumentError) { list.combine(Magick::SRGBColorspace, 1) }
+    expect { list.combine(nil) }.to raise_error(TypeError)
+    expect { list.combine(Magick::SRGBColorspace, 1) }.to raise_error(ArgumentError)
   end
 
   def test_composite_layers
@@ -61,7 +61,7 @@ class ImageList1UT < Minitest::Test
       assert_nothing_raised { @list.composite_layers(@list2, op) }
     end
 
-    assert_raise(ArgumentError) { @list.composite_layers(@list2, Magick::ModulusAddCompositeOp, 42) }
+    expect { @list.composite_layers(@list2, Magick::ModulusAddCompositeOp, 42) }.to raise_error(ArgumentError)
   end
 
   def test_delay
@@ -69,7 +69,7 @@ class ImageList1UT < Minitest::Test
     expect(@list.delay).to eq(0)
     assert_nothing_raised { @list.delay = 20 }
     expect(@list.delay).to eq(20)
-    assert_raise(ArgumentError) { @list.delay = 'x' }
+    expect { @list.delay = 'x' }.to raise_error(ArgumentError)
   end
 
   def test_flatten_images
@@ -81,7 +81,7 @@ class ImageList1UT < Minitest::Test
     expect(@list.ticks_per_second).to eq(100)
     assert_nothing_raised { @list.ticks_per_second = 1000 }
     expect(@list.ticks_per_second).to eq(1000)
-    assert_raise(ArgumentError) { @list.ticks_per_second = 'x' }
+    expect { @list.ticks_per_second = 'x' }.to raise_error(ArgumentError)
   end
 
   def test_iterations
@@ -89,14 +89,14 @@ class ImageList1UT < Minitest::Test
     assert_kind_of(Integer, @list.iterations)
     assert_nothing_raised { @list.iterations = 20 }
     expect(@list.iterations).to eq(20)
-    assert_raise(ArgumentError) { @list.iterations = 'x' }
+    expect { @list.iterations = 'x' }.to raise_error(ArgumentError)
   end
 
   # also tests #size
   def test_length
     assert_nothing_raised { @list.length }
     expect(@list.length).to eq(10)
-    assert_raise(NoMethodError) { @list.length = 2 }
+    expect { @list.length = 2 }.to raise_error(NoMethodError)
   end
 
   def test_scene
@@ -106,9 +106,9 @@ class ImageList1UT < Minitest::Test
     expect(@list.scene).to eq(0)
     assert_nothing_raised { @list.scene = 1 }
     expect(@list.scene).to eq(1)
-    assert_raise(IndexError) { @list.scene = -1 }
-    assert_raise(IndexError) { @list.scene = 1000 }
-    assert_raise(IndexError) { @list.scene = nil }
+    expect { @list.scene = -1 }.to raise_error(IndexError)
+    expect { @list.scene = 1000 }.to raise_error(IndexError)
+    expect { @list.scene = nil }.to raise_error(IndexError)
 
     # allow nil on empty list
     empty_list = Magick::ImageList.new
@@ -116,12 +116,12 @@ class ImageList1UT < Minitest::Test
   end
 
   def test_undef_array_methods
-    assert_raise(NoMethodError) { @list.assoc }
-    assert_raise(NoMethodError) { @list.flatten }
-    assert_raise(NoMethodError) { @list.flatten! }
-    assert_raise(NoMethodError) { @list.join }
-    assert_raise(NoMethodError) { @list.pack }
-    assert_raise(NoMethodError) { @list.rassoc }
+    expect { @list.assoc }.to raise_error(NoMethodError)
+    expect { @list.flatten }.to raise_error(NoMethodError)
+    expect { @list.flatten! }.to raise_error(NoMethodError)
+    expect { @list.join }.to raise_error(NoMethodError)
+    expect { @list.pack }.to raise_error(NoMethodError)
+    expect { @list.rassoc }.to raise_error(NoMethodError)
   end
 
   def test_all
@@ -206,9 +206,9 @@ class ImageList1UT < Minitest::Test
       expect(@list.scene).to eq(8)
     end
 
-    assert_raise(ArgumentError) { @list[0] = 1 }
-    assert_raise(ArgumentError) { @list[0, 1] = [1, 2] }
-    assert_raise(ArgumentError) { @list[2..3] = 'x' }
+    expect { @list[0] = 1 }.to raise_error(ArgumentError)
+    expect { @list[0, 1] = [1, 2] }.to raise_error(ArgumentError)
+    expect { @list[2..3] = 'x' }.to raise_error(ArgumentError)
   end
 
   def test_and
@@ -232,7 +232,7 @@ class ImageList1UT < Minitest::Test
       expect(res.scene).to eq(4)
     end
 
-    assert_raise(ArgumentError) { @list & 2 }
+    expect { @list & 2 }.to raise_error(ArgumentError)
   end
 
   def test_at
@@ -261,7 +261,7 @@ class ImageList1UT < Minitest::Test
       assert_same(cur, res.cur_image)
     end
 
-    assert_raise(ArgumentError) { @list * 'x' }
+    expect { @list * 'x' }.to raise_error(ArgumentError)
   end
 
   def test_plus
@@ -276,7 +276,7 @@ class ImageList1UT < Minitest::Test
       assert_same(cur, res.cur_image)
     end
 
-    assert_raise(ArgumentError) { @list + [2] }
+    expect { @list + [2] }.to raise_error(ArgumentError)
   end
 
   def test_minus
@@ -309,8 +309,8 @@ class ImageList1UT < Minitest::Test
       expect(@list.scene).to eq(14)
     end
 
-    assert_raise(ArgumentError) { @list << 2 }
-    assert_raise(ArgumentError) { @list << [2] }
+    expect { @list << 2 }.to raise_error(ArgumentError)
+    expect { @list << [2] }.to raise_error(ArgumentError)
   end
 
   def test_or
@@ -332,8 +332,8 @@ class ImageList1UT < Minitest::Test
     expect(res.length).to eq(15)
     expect(res.scene).to eq(7)
 
-    assert_raise(ArgumentError) { @list | 2 }
-    assert_raise(ArgumentError) { @list | [2] }
+    expect { @list | 2 }.to raise_error(ArgumentError)
+    expect { @list | [2] }.to raise_error(ArgumentError)
   end
 
   def test_clear
@@ -381,8 +381,8 @@ class ImageList1UT < Minitest::Test
       expect(res.length).to eq(15)
       assert_same(res[14], res.cur_image)
     end
-    assert_raise(ArgumentError) { @list.concat(2) }
-    assert_raise(ArgumentError) { @list.concat([2]) }
+    expect { @list.concat(2) }.to raise_error(ArgumentError)
+    expect { @list.concat([2]) }.to raise_error(ArgumentError)
   end
 
   def test_delete
@@ -397,8 +397,8 @@ class ImageList1UT < Minitest::Test
       assert_same(cur, @list.delete(cur))
       assert_same(@list[-1], @list.cur_image)
 
-      assert_raise(ArgumentError) { @list.delete(2) }
-      assert_raise(ArgumentError) { @list.delete([2]) }
+      expect { @list.delete(2) }.to raise_error(ArgumentError)
+      expect { @list.delete([2]) }.to raise_error(ArgumentError)
 
       # Try deleting something that isn't in the list.
       # Should return the value of the block.
@@ -485,7 +485,7 @@ class ImageList1UT < Minitest::Test
     list.fill(0, 3) { |i| list[i] = img }
     0.upto(2) { |i| assert_same(img, list[i]) }
 
-    assert_raise(ArgumentError) { list.fill('x', 0) }
+    expect { list.fill('x', 0) }.to raise_error(ArgumentError)
   end
 
   def test_find
@@ -511,8 +511,8 @@ class ImageList1UT < Minitest::Test
       assert_same(cur, @list.cur_image)
     end
 
-    assert_raise(ArgumentError) { @list.insert(0, 'x') }
-    assert_raise(ArgumentError) { @list.insert(0, 'x', 'y') }
+    expect { @list.insert(0, 'x') }.to raise_error(ArgumentError)
+    expect { @list.insert(0, 'x', 'y') }.to raise_error(ArgumentError)
   end
 
   def test_last
@@ -539,7 +539,7 @@ class ImageList1UT < Minitest::Test
       @list.__map__ { |_x| img }
     end
     assert_instance_of(Magick::ImageList, @list)
-    assert_raise(ArgumentError) { @list.__map__ { 2 } }
+    expect { @list.__map__ { 2 } }.to raise_error(ArgumentError)
   end
 
   def test_map!
@@ -548,7 +548,7 @@ class ImageList1UT < Minitest::Test
       @list.map! { img }
     end
     assert_instance_of(Magick::ImageList, @list)
-    assert_raise(ArgumentError) { @list.map! { 2 } }
+    expect { @list.map! { 2 } }.to raise_error(ArgumentError)
   end
 
   def test_partition
@@ -652,7 +652,7 @@ class ImageList1UT < Minitest::Test
     end
 
     # Try to replace with illegal values
-    assert_raise(ArgumentError) { @list.replace([1, 2, 3]) }
+    expect { @list.replace([1, 2, 3]) }.to raise_error(ArgumentError)
   end
 
   def test_replace2
@@ -814,8 +814,8 @@ class ImageList1UT < Minitest::Test
     @list.scene = 7
     @list.unshift(img)
     expect(@list.scene).to eq(0)
-    assert_raise(ArgumentError) { @list.unshift(2) }
-    assert_raise(ArgumentError) { @list.unshift([1, 2]) }
+    expect { @list.unshift(2) }.to raise_error(ArgumentError)
+    expect { @list.unshift([1, 2]) }.to raise_error(ArgumentError)
   end
 
   def test_values_at
@@ -839,11 +839,11 @@ class ImageList1UT < Minitest::Test
     list2 << @list[9]
     assert_not_equal(@list, list2)
 
-    assert_raise(TypeError) { @list <=> 2 }
+    expect { @list <=> 2 }.to raise_error(TypeError)
     list = Magick::ImageList.new
     list2 = Magick::ImageList.new
-    assert_raise(TypeError) { list2 <=> @list }
-    assert_raise(TypeError) { @list <=> list2 }
+    expect { list2 <=> @list }.to raise_error(TypeError)
+    expect { @list <=> list2 }.to raise_error(TypeError)
     assert_nothing_raised { list <=> list2 }
   end
 end
