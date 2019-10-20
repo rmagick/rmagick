@@ -17,7 +17,7 @@ class TmpnamTest < Minitest::Test
     info.texture = texture
 
     # now it exists
-    assert_nothing_raised { Magick._tmpnam_ }
+    expect { Magick._tmpnam_ }.not_to raise_error
     expect(Magick._tmpnam_).to eq(1)
 
     info.texture = texture

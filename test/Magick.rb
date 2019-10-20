@@ -28,7 +28,7 @@ end
 class MagickUT < Minitest::Test
   def test_colors
     res = nil
-    assert_nothing_raised { res = Magick.colors }
+    expect { res = Magick.colors }.not_to raise_error
     assert_instance_of(Array, res)
     res.each do |c|
       assert_instance_of(Magick::Color, c)
@@ -43,33 +43,33 @@ class MagickUT < Minitest::Test
   # No need to test all of them.
   def test_enumerators
     ary = nil
-    assert_nothing_raised do
+    expect do
       ary = Magick::AlphaChannelOption.enumerators
-    end
+    end.not_to raise_error
     assert_instance_of(Array, ary)
 
-    assert_nothing_raised do
+    expect do
       ary = Magick::AlignType.enumerators
-    end
+    end.not_to raise_error
     assert_instance_of(Array, ary)
     expect(ary.length).to eq(4)
 
-    assert_nothing_raised do
+    expect do
       ary = Magick::AnchorType.enumerators
-    end
+    end.not_to raise_error
     assert_instance_of(Array, ary)
     expect(ary.length).to eq(3)
   end
 
   def test_features
     res = nil
-    assert_nothing_raised { res = Magick::Magick_features }
+    expect { res = Magick::Magick_features }.not_to raise_error
     assert_instance_of(String, res)
   end
 
   def test_fonts
     res = nil
-    assert_nothing_raised { res = Magick.fonts }
+    expect { res = Magick.fonts }.not_to raise_error
     assert_instance_of(Array, res)
     res.each do |f|
       assert_instance_of(Magick::Font, f)
@@ -90,15 +90,15 @@ class MagickUT < Minitest::Test
     g = nil
     gs = nil
     g2 = nil
-    assert_nothing_raised { g = Magick::Geometry.new }
-    assert_nothing_raised { gs = g.to_s }
+    expect { g = Magick::Geometry.new }.not_to raise_error
+    expect { gs = g.to_s }.not_to raise_error
     expect(gs).to eq('')
 
     g = Magick::Geometry.new(40)
     gs = g.to_s
     expect(gs).to eq('40x')
 
-    assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
+    expect { g2 = Magick::Geometry.from_s(gs) }.not_to raise_error
     gs2 = g2.to_s
     expect(gs2).to eq(gs)
 
@@ -106,7 +106,7 @@ class MagickUT < Minitest::Test
     gs = g.to_s
     expect(gs).to eq('40x50')
 
-    assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
+    expect { g2 = Magick::Geometry.from_s(gs) }.not_to raise_error
     gs2 = g2.to_s
     expect(gs2).to eq(gs)
 
@@ -114,7 +114,7 @@ class MagickUT < Minitest::Test
     gs = g.to_s
     expect(gs).to eq('40x50+10+0')
 
-    assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
+    expect { g2 = Magick::Geometry.from_s(gs) }.not_to raise_error
     gs2 = g2.to_s
     expect(gs2).to eq(gs)
 
@@ -122,7 +122,7 @@ class MagickUT < Minitest::Test
     gs = g.to_s
     expect(gs).to eq('40x50+10-15')
 
-    assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
+    expect { g2 = Magick::Geometry.from_s(gs) }.not_to raise_error
     gs2 = g2.to_s
     expect(gs2).to eq(gs)
 
@@ -130,7 +130,7 @@ class MagickUT < Minitest::Test
     gs = g.to_s
     expect(gs).to eq('40x50@')
 
-    assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
+    expect { g2 = Magick::Geometry.from_s(gs) }.not_to raise_error
     gs2 = g2.to_s
     expect(gs2).to eq(gs)
 
@@ -138,7 +138,7 @@ class MagickUT < Minitest::Test
     gs = g.to_s
     expect(gs).to eq('40x50!')
 
-    assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
+    expect { g2 = Magick::Geometry.from_s(gs) }.not_to raise_error
     gs2 = g2.to_s
     expect(gs2).to eq(gs)
 
@@ -146,7 +146,7 @@ class MagickUT < Minitest::Test
     gs = g.to_s
     expect(gs).to eq('40x50<')
 
-    assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
+    expect { g2 = Magick::Geometry.from_s(gs) }.not_to raise_error
     gs2 = g2.to_s
     expect(gs2).to eq(gs)
 
@@ -154,7 +154,7 @@ class MagickUT < Minitest::Test
     gs = g.to_s
     expect(gs).to eq('40x50>')
 
-    assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
+    expect { g2 = Magick::Geometry.from_s(gs) }.not_to raise_error
     gs2 = g2.to_s
     expect(gs2).to eq(gs)
 
@@ -162,7 +162,7 @@ class MagickUT < Minitest::Test
     gs = g.to_s
     expect(gs).to eq('40x50^')
 
-    assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
+    expect { g2 = Magick::Geometry.from_s(gs) }.not_to raise_error
     gs2 = g2.to_s
     expect(gs2).to eq(gs)
 
@@ -170,7 +170,7 @@ class MagickUT < Minitest::Test
     gs = g.to_s
     expect(gs).to eq('40%')
 
-    assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
+    expect { g2 = Magick::Geometry.from_s(gs) }.not_to raise_error
     gs2 = g2.to_s
     expect(gs2).to eq(gs)
 
@@ -178,7 +178,7 @@ class MagickUT < Minitest::Test
     gs = g.to_s
     expect(gs).to eq('40%x60%')
 
-    assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
+    expect { g2 = Magick::Geometry.from_s(gs) }.not_to raise_error
     gs2 = g2.to_s
     expect(gs2).to eq(gs)
 
@@ -186,7 +186,7 @@ class MagickUT < Minitest::Test
     gs = g.to_s
     expect(gs).to eq('40%x60%+10+0')
 
-    assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
+    expect { g2 = Magick::Geometry.from_s(gs) }.not_to raise_error
     gs2 = g2.to_s
     expect(gs2).to eq(gs)
 
@@ -194,7 +194,7 @@ class MagickUT < Minitest::Test
     gs = g.to_s
     expect(gs).to eq('40%x60%+10+20')
 
-    assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
+    expect { g2 = Magick::Geometry.from_s(gs) }.not_to raise_error
     gs2 = g2.to_s
     expect(gs2).to eq(gs)
 
@@ -202,7 +202,7 @@ class MagickUT < Minitest::Test
     gs = g.to_s
     expect(gs).to eq('40.50x60.75')
 
-    assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
+    expect { g2 = Magick::Geometry.from_s(gs) }.not_to raise_error
     gs2 = g2.to_s
     expect(gs2).to eq(gs)
 
@@ -210,7 +210,7 @@ class MagickUT < Minitest::Test
     gs = g.to_s
     expect(gs).to eq('40.50%x60.75%')
 
-    assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
+    expect { g2 = Magick::Geometry.from_s(gs) }.not_to raise_error
     gs2 = g2.to_s
     expect(gs2).to eq(gs)
 
@@ -218,7 +218,7 @@ class MagickUT < Minitest::Test
     gs = g.to_s
     expect(gs).to eq('+10+20')
 
-    assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
+    expect { g2 = Magick::Geometry.from_s(gs) }.not_to raise_error
     gs2 = g2.to_s
     expect(gs2).to eq(gs)
 
@@ -226,12 +226,12 @@ class MagickUT < Minitest::Test
     gs = g.to_s
     expect(gs).to eq('+10+0')
 
-    assert_nothing_raised { g2 = Magick::Geometry.from_s(gs) }
+    expect { g2 = Magick::Geometry.from_s(gs) }.not_to raise_error
     gs2 = g2.to_s
     expect(gs2).to eq(gs)
 
     # assert behavior with empty string argument
-    assert_nothing_raised { g = Magick::Geometry.from_s('') }
+    expect { g = Magick::Geometry.from_s('') }.not_to raise_error
     expect(g.to_s).to eq('')
 
     expect { Magick::Geometry.new(Magick::AreaGeometry) }.to raise_error(ArgumentError)
@@ -249,49 +249,49 @@ class MagickUT < Minitest::Test
   end
 
   def test_set_log_event_mask
-    assert_nothing_raised { Magick.set_log_event_mask('Module,Coder') }
-    assert_nothing_raised { Magick.set_log_event_mask('None') }
+    expect { Magick.set_log_event_mask('Module,Coder') }.not_to raise_error
+    expect { Magick.set_log_event_mask('None') }.not_to raise_error
   end
 
   def test_set_log_format
-    assert_nothing_raised { Magick.set_log_format('format %d%e%f') }
+    expect { Magick.set_log_format('format %d%e%f') }.not_to raise_error
   end
 
   def test_limit_resources
     cur = new = nil
 
-    assert_nothing_raised { cur = Magick.limit_resource(:memory, 500) }
+    expect { cur = Magick.limit_resource(:memory, 500) }.not_to raise_error
     assert_kind_of(Integer, cur)
     assert(cur > 1024**2)
-    assert_nothing_raised { new = Magick.limit_resource('memory') }
+    expect { new = Magick.limit_resource('memory') }.not_to raise_error
     expect(new).to eq(500)
     Magick.limit_resource(:memory, cur)
 
-    assert_nothing_raised { cur = Magick.limit_resource(:map, 3500) }
+    expect { cur = Magick.limit_resource(:map, 3500) }.not_to raise_error
     assert_kind_of(Integer, cur)
     assert(cur > 1024**2)
-    assert_nothing_raised { new = Magick.limit_resource('map') }
+    expect { new = Magick.limit_resource('map') }.not_to raise_error
     expect(new).to eq(3500)
     Magick.limit_resource(:map, cur)
 
-    assert_nothing_raised { cur = Magick.limit_resource(:disk, 3 * 1024 * 1024 * 1024) }
+    expect { cur = Magick.limit_resource(:disk, 3 * 1024 * 1024 * 1024) }.not_to raise_error
     assert_kind_of(Integer, cur)
     assert(cur > 1024**2)
-    assert_nothing_raised { new = Magick.limit_resource('disk') }
+    expect { new = Magick.limit_resource('disk') }.not_to raise_error
     expect(new).to eq(3_221_225_472)
     Magick.limit_resource(:disk, cur)
 
-    assert_nothing_raised { cur = Magick.limit_resource(:file, 500) }
+    expect { cur = Magick.limit_resource(:file, 500) }.not_to raise_error
     assert_kind_of(Integer, cur)
     assert(cur > 512)
-    assert_nothing_raised { new = Magick.limit_resource('file') }
+    expect { new = Magick.limit_resource('file') }.not_to raise_error
     expect(new).to eq(500)
     Magick.limit_resource(:file, cur)
 
-    assert_nothing_raised { cur = Magick.limit_resource(:time, 300) }
+    expect { cur = Magick.limit_resource(:time, 300) }.not_to raise_error
     assert_kind_of(Integer, cur)
     assert(cur > 300)
-    assert_nothing_raised { new = Magick.limit_resource('time') }
+    expect { new = Magick.limit_resource('time') }.not_to raise_error
     expect(new).to eq(300)
     Magick.limit_resource(:time, cur)
 

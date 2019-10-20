@@ -9,14 +9,14 @@ class Image3_UT < Minitest::Test
   end
 
   def test_profile!
-    assert_nothing_raised do
+    expect do
       res = @img.profile!('*', nil)
       assert_same(@img, res)
-    end
-    assert_nothing_raised { @img.profile!('icc', @p) }
-    assert_nothing_raised { @img.profile!('iptc', 'xxx') }
-    assert_nothing_raised { @img.profile!('icc', nil) }
-    assert_nothing_raised { @img.profile!('iptc', nil) }
+    end.not_to raise_error
+    expect { @img.profile!('icc', @p) }.not_to raise_error
+    expect { @img.profile!('iptc', 'xxx') }.not_to raise_error
+    expect { @img.profile!('icc', nil) }.not_to raise_error
+    expect { @img.profile!('iptc', nil) }.not_to raise_error
 
     expect { @img.profile!('test', 'foobarbaz') }.to raise_error(ArgumentError)
 
@@ -26,21 +26,21 @@ class Image3_UT < Minitest::Test
   end
 
   def test_quantize
-    assert_nothing_raised do
+    expect do
       res = @img.quantize
       assert_instance_of(Magick::Image, res)
-    end
+    end.not_to raise_error
 
     Magick::ColorspaceType.values do |cs|
-      assert_nothing_raised { @img.quantize(256, cs) }
+      expect { @img.quantize(256, cs) }.not_to raise_error
     end
-    assert_nothing_raised { @img.quantize(256, Magick::RGBColorspace, false) }
-    assert_nothing_raised { @img.quantize(256, Magick::RGBColorspace, true) }
-    assert_nothing_raised { @img.quantize(256, Magick::RGBColorspace, Magick::NoDitherMethod) }
-    assert_nothing_raised { @img.quantize(256, Magick::RGBColorspace, Magick::RiemersmaDitherMethod) }
-    assert_nothing_raised { @img.quantize(256, Magick::RGBColorspace, Magick::FloydSteinbergDitherMethod) }
-    assert_nothing_raised { @img.quantize(256, Magick::RGBColorspace, true, 2) }
-    assert_nothing_raised { @img.quantize(256, Magick::RGBColorspace, true, 2, true) }
+    expect { @img.quantize(256, Magick::RGBColorspace, false) }.not_to raise_error
+    expect { @img.quantize(256, Magick::RGBColorspace, true) }.not_to raise_error
+    expect { @img.quantize(256, Magick::RGBColorspace, Magick::NoDitherMethod) }.not_to raise_error
+    expect { @img.quantize(256, Magick::RGBColorspace, Magick::RiemersmaDitherMethod) }.not_to raise_error
+    expect { @img.quantize(256, Magick::RGBColorspace, Magick::FloydSteinbergDitherMethod) }.not_to raise_error
+    expect { @img.quantize(256, Magick::RGBColorspace, true, 2) }.not_to raise_error
+    expect { @img.quantize(256, Magick::RGBColorspace, true, 2, true) }.not_to raise_error
     expect { @img.quantize('x') }.to raise_error(TypeError)
     expect { @img.quantize(16, 2) }.to raise_error(TypeError)
     expect { @img.quantize(16, Magick::RGBColorspace, false, 'x') }.to raise_error(TypeError)
@@ -48,14 +48,14 @@ class Image3_UT < Minitest::Test
   end
 
   def test_quantum_operator
-    assert_nothing_raised do
+    expect do
       res = @img.quantum_operator(Magick::AddQuantumOperator, 2)
       assert_instance_of(Magick::Image, res)
-    end
+    end.not_to raise_error
     Magick::QuantumExpressionOperator.values do |op|
-      assert_nothing_raised { @img.quantum_operator(op, 2) }
+      expect { @img.quantum_operator(op, 2) }.not_to raise_error
     end
-    assert_nothing_raised { @img.quantum_operator(Magick::AddQuantumOperator, 2, Magick::RedChannel) }
+    expect { @img.quantum_operator(Magick::AddQuantumOperator, 2, Magick::RedChannel) }.not_to raise_error
     expect { @img.quantum_operator(2, 2) }.to raise_error(TypeError)
     expect { @img.quantum_operator(Magick::AddQuantumOperator, 'x') }.to raise_error(TypeError)
     expect { @img.quantum_operator(Magick::AddQuantumOperator, 2, 2) }.to raise_error(TypeError)
@@ -63,70 +63,70 @@ class Image3_UT < Minitest::Test
   end
 
   def test_radial_blur
-    assert_nothing_raised do
+    expect do
       res = @img.radial_blur(30)
       assert_instance_of(Magick::Image, res)
-    end
+    end.not_to raise_error
   end
 
   def test_radial_blur_channel
     res = nil
-    assert_nothing_raised { res = @img.radial_blur_channel(30) }
+    expect { res = @img.radial_blur_channel(30) }.not_to raise_error
     assert_not_nil(res)
     assert_instance_of(Magick::Image, res)
-    assert_nothing_raised { res = @img.radial_blur_channel(30, Magick::RedChannel) }
-    assert_nothing_raised { res = @img.radial_blur_channel(30, Magick::RedChannel, Magick::BlueChannel) }
+    expect { res = @img.radial_blur_channel(30, Magick::RedChannel) }.not_to raise_error
+    expect { res = @img.radial_blur_channel(30, Magick::RedChannel, Magick::BlueChannel) }.not_to raise_error
 
     expect { @img.radial_blur_channel }.to raise_error(ArgumentError)
     expect { @img.radial_blur_channel(30, 2) }.to raise_error(TypeError)
   end
 
   def test_raise
-    assert_nothing_raised do
+    expect do
       res = @img.raise
       assert_instance_of(Magick::Image, res)
-    end
-    assert_nothing_raised { @img.raise(4) }
-    assert_nothing_raised { @img.raise(4, 4) }
-    assert_nothing_raised { @img.raise(4, 4, false) }
+    end.not_to raise_error
+    expect { @img.raise(4) }.not_to raise_error
+    expect { @img.raise(4, 4) }.not_to raise_error
+    expect { @img.raise(4, 4, false) }.not_to raise_error
     expect { @img.raise('x') }.to raise_error(TypeError)
     expect { @img.raise(2, 'x') }.to raise_error(TypeError)
     expect { @img.raise(4, 4, false, 2) }.to raise_error(ArgumentError)
   end
 
   def test_random_threshold_channel
-    assert_nothing_raised do
+    expect do
       res = @img.random_threshold_channel('20%')
       assert_instance_of(Magick::Image, res)
-    end
+    end.not_to raise_error
     threshold = Magick::Geometry.new(20)
-    assert_nothing_raised { @img.random_threshold_channel(threshold) }
-    assert_nothing_raised { @img.random_threshold_channel(threshold, Magick::RedChannel) }
-    assert_nothing_raised { @img.random_threshold_channel(threshold, Magick::RedChannel, Magick::BlueChannel) }
+    expect { @img.random_threshold_channel(threshold) }.not_to raise_error
+    expect { @img.random_threshold_channel(threshold, Magick::RedChannel) }.not_to raise_error
+    expect { @img.random_threshold_channel(threshold, Magick::RedChannel, Magick::BlueChannel) }.not_to raise_error
     expect { @img.random_threshold_channel }.to raise_error(ArgumentError)
     expect { @img.random_threshold_channel('20%', 2) }.to raise_error(TypeError)
   end
 
   def test_recolor
-    assert_nothing_raised { @img.recolor([1, 1, 2, 1]) }
+    expect { @img.recolor([1, 1, 2, 1]) }.not_to raise_error
     expect { @img.recolor('x') }.to raise_error(TypeError)
     expect { @img.recolor([1, 1, 'x', 1]) }.to raise_error(TypeError)
   end
 
   def test_reduce_noise
-    assert_nothing_raised do
+    expect do
       res = @img.reduce_noise(0)
       assert_instance_of(Magick::Image, res)
-    end
-    assert_nothing_raised { @img.reduce_noise(4) }
+    end.not_to raise_error
+    expect { @img.reduce_noise(4) }.not_to raise_error
   end
 
   def test_remap
     remap_image = Magick::Image.new(20, 20) { self.background_color = 'green' }
-    assert_nothing_raised { @img.remap(remap_image) }
-    assert_nothing_raised { @img.remap(remap_image, Magick::NoDitherMethod) }
-    assert_nothing_raised { @img.remap(remap_image, Magick::RiemersmaDitherMethod) }
-    assert_nothing_raised { @img.remap(remap_image, Magick::FloydSteinbergDitherMethod) }
+    expect { @img.remap(remap_image) }.not_to raise_error
+    expect { @img.remap(remap_image, Magick::NoDitherMethod) }.not_to raise_error
+    expect { @img.remap(remap_image, Magick::RiemersmaDitherMethod) }.not_to raise_error
+    expect { @img.remap(remap_image, Magick::FloydSteinbergDitherMethod) }.not_to raise_error
 
     expect { @img.remap }.to raise_error(ArgumentError)
     expect { @img.remap(remap_image, Magick::NoDitherMethod, 1) }.to raise_error(ArgumentError)
@@ -136,15 +136,15 @@ class Image3_UT < Minitest::Test
   def test_resample
     @img.x_resolution = 72
     @img.y_resolution = 72
-    assert_nothing_raised { @img.resample }
-    assert_nothing_raised { @img.resample(100) }
-    assert_nothing_raised { @img.resample(100, 100) }
+    expect { @img.resample }.not_to raise_error
+    expect { @img.resample(100) }.not_to raise_error
+    expect { @img.resample(100, 100) }.not_to raise_error
 
     @img.x_resolution = 0
     @img.y_resolution = 0
-    assert_nothing_raised { @img.resample }
-    assert_nothing_raised { @img.resample(100) }
-    assert_nothing_raised { @img.resample(100, 100) }
+    expect { @img.resample }.not_to raise_error
+    expect { @img.resample(100) }.not_to raise_error
+    expect { @img.resample(100, 100) }.not_to raise_error
 
     girl = Magick::Image.read(IMAGES_DIR + '/Flower_Hat.jpg').first
     expect(girl.x_resolution).to eq(240.0)
@@ -160,9 +160,9 @@ class Image3_UT < Minitest::Test
     expect(girl.y_resolution).to eq(240.0)
 
     Magick::FilterType.values do |filter|
-      assert_nothing_raised { @img.resample(50, 50, filter) }
+      expect { @img.resample(50, 50, filter) }.not_to raise_error
     end
-    assert_nothing_raised { @img.resample(50, 50, Magick::PointFilter, 2.0) }
+    expect { @img.resample(50, 50, Magick::PointFilter, 2.0) }.not_to raise_error
 
     expect { @img.resample('x') }.to raise_error(TypeError)
     expect { @img.resample(100, 'x') }.to raise_error(TypeError)
@@ -174,25 +174,25 @@ class Image3_UT < Minitest::Test
   end
 
   def test_resample!
-    assert_nothing_raised do
+    expect do
       res = @img.resample!(50)
       assert_same(@img, res)
-    end
+    end.not_to raise_error
     @img.freeze
     expect { @img.resample!(50) }.to raise_error(FreezeError)
   end
 
   def test_resize
-    assert_nothing_raised do
+    expect do
       res = @img.resize(2)
       assert_instance_of(Magick::Image, res)
-    end
-    assert_nothing_raised { @img.resize(50, 50) }
+    end.not_to raise_error
+    expect { @img.resize(50, 50) }.not_to raise_error
 
     Magick::FilterType.values do |filter|
-      assert_nothing_raised { @img.resize(50, 50, filter) }
+      expect { @img.resize(50, 50, filter) }.not_to raise_error
     end
-    assert_nothing_raised { @img.resize(50, 50, Magick::PointFilter, 2.0) }
+    expect { @img.resize(50, 50, Magick::PointFilter, 2.0) }.not_to raise_error
     expect { @img.resize('x') }.to raise_error(TypeError)
     expect { @img.resize(50, 'x') }.to raise_error(TypeError)
     expect { @img.resize(50, 50, 2) }.to raise_error(TypeError)
@@ -205,10 +205,10 @@ class Image3_UT < Minitest::Test
   end
 
   def test_resize!
-    assert_nothing_raised do
+    expect do
       res = @img.resize!(2)
       assert_same(@img, res)
-    end
+    end.not_to raise_error
     @img.freeze
     expect { @img.resize!(0.50) }.to raise_error(FreezeError)
   end
@@ -276,7 +276,7 @@ class Image3_UT < Minitest::Test
   def test_resize_to_fit
     img = Magick::Image.new(200, 250)
     res = nil
-    assert_nothing_raised { res = img.resize_to_fit(50, 50) }
+    expect { res = img.resize_to_fit(50, 50) }.not_to raise_error
     assert_not_nil(res)
     assert_instance_of(Magick::Image, res)
     assert_not_same(img, res)
@@ -304,49 +304,49 @@ class Image3_UT < Minitest::Test
   end
 
   def test_roll
-    assert_nothing_raised do
+    expect do
       res = @img.roll(5, 5)
       assert_instance_of(Magick::Image, res)
-    end
+    end.not_to raise_error
   end
 
   def test_rotate
-    assert_nothing_raised do
+    expect do
       res = @img.rotate(45)
       assert_instance_of(Magick::Image, res)
-    end
-    assert_nothing_raised { @img.rotate(-45) }
+    end.not_to raise_error
+    expect { @img.rotate(-45) }.not_to raise_error
 
     img = Magick::Image.new(100, 50)
-    assert_nothing_raised do
+    expect do
       res = img.rotate(90, '>')
       assert_instance_of(Magick::Image, res)
       expect(res.columns).to eq(50)
       expect(res.rows).to eq(100)
-    end
-    assert_nothing_raised do
+    end.not_to raise_error
+    expect do
       res = img.rotate(90, '<')
       assert_nil(res)
-    end
+    end.not_to raise_error
     expect { img.rotate(90, 't') }.to raise_error(ArgumentError)
     expect { img.rotate(90, []) }.to raise_error(TypeError)
   end
 
   def test_rotate!
-    assert_nothing_raised do
+    expect do
       res = @img.rotate!(45)
       assert_same(@img, res)
-    end
+    end.not_to raise_error
     @img.freeze
     expect { @img.rotate!(45) }.to raise_error(FreezeError)
   end
 
   def test_sample
-    assert_nothing_raised do
+    expect do
       res = @img.sample(10, 10)
       assert_instance_of(Magick::Image, res)
-    end
-    assert_nothing_raised { @img.sample(2) }
+    end.not_to raise_error
+    expect { @img.sample(2) }.not_to raise_error
     expect { @img.sample }.to raise_error(ArgumentError)
     expect { @img.sample(0) }.to raise_error(ArgumentError)
     expect { @img.sample(0, 25) }.to raise_error(ArgumentError)
@@ -357,20 +357,20 @@ class Image3_UT < Minitest::Test
   end
 
   def test_sample!
-    assert_nothing_raised do
+    expect do
       res = @img.sample!(2)
       assert_same(@img, res)
-    end
+    end.not_to raise_error
     @img.freeze
     expect { @img.sample!(0.50) }.to raise_error(FreezeError)
   end
 
   def test_scale
-    assert_nothing_raised do
+    expect do
       res = @img.scale(10, 10)
       assert_instance_of(Magick::Image, res)
-    end
-    assert_nothing_raised { @img.scale(2) }
+    end.not_to raise_error
+    expect { @img.scale(2) }.not_to raise_error
     expect { @img.scale }.to raise_error(ArgumentError)
     expect { @img.scale(25, 25, 25) }.to raise_error(ArgumentError)
     expect { @img.scale('x') }.to raise_error(TypeError)
@@ -378,19 +378,19 @@ class Image3_UT < Minitest::Test
   end
 
   def test_scale!
-    assert_nothing_raised do
+    expect do
       res = @img.scale!(2)
       assert_same(@img, res)
-    end
+    end.not_to raise_error
     @img.freeze
     expect { @img.scale!(0.50) }.to raise_error(FreezeError)
   end
 
   def test_segment
-    assert_nothing_raised do
+    expect do
       res = @img.segment
       assert_instance_of(Magick::Image, res)
-    end
+    end.not_to raise_error
 
     # Don't test colorspaces that require PsuedoColor images
     (Magick::ColorspaceType.values - [Magick::OHTAColorspace,
@@ -404,12 +404,12 @@ class Image3_UT < Minitest::Test
                                       Magick::Rec601YCbCrColorspace,
                                       Magick::Rec709YCbCrColorspace,
                                       Magick::LogColorspace]).each do |cs|
-      assert_nothing_raised { @img.segment(cs) }
+      expect { @img.segment(cs) }.not_to raise_error
     end
 
-    assert_nothing_raised { @img.segment(Magick::RGBColorspace, 2.0) }
-    assert_nothing_raised { @img.segment(Magick::RGBColorspace, 2.0, 2.0) }
-    assert_nothing_raised { @img.segment(Magick::RGBColorspace, 2.0, 2.0, false) }
+    expect { @img.segment(Magick::RGBColorspace, 2.0) }.not_to raise_error
+    expect { @img.segment(Magick::RGBColorspace, 2.0, 2.0) }.not_to raise_error
+    expect { @img.segment(Magick::RGBColorspace, 2.0, 2.0, false) }.not_to raise_error
 
     expect { @img.segment(Magick::RGBColorspace, 2.0, 2.0, false, 2) }.to raise_error(ArgumentError)
     expect { @img.segment(2) }.to raise_error(TypeError)
@@ -419,15 +419,15 @@ class Image3_UT < Minitest::Test
 
   def test_selective_blur_channel
     res = nil
-    assert_nothing_raised { res = @img.selective_blur_channel(0, 1, '10%') }
+    expect { res = @img.selective_blur_channel(0, 1, '10%') }.not_to raise_error
     assert_instance_of(Magick::Image, res)
     assert_not_same(@img, res)
     expect([res.columns, res.rows]).to eq([@img.columns, @img.rows])
 
-    assert_nothing_raised { @img.selective_blur_channel(0, 1, 0.1) }
-    assert_nothing_raised { @img.selective_blur_channel(0, 1, '10%', Magick::RedChannel) }
-    assert_nothing_raised { @img.selective_blur_channel(0, 1, '10%', Magick::RedChannel, Magick::BlueChannel) }
-    assert_nothing_raised { @img.selective_blur_channel(0, 1, '10%', Magick::RedChannel, Magick::BlueChannel, Magick::GreenChannel) }
+    expect { @img.selective_blur_channel(0, 1, 0.1) }.not_to raise_error
+    expect { @img.selective_blur_channel(0, 1, '10%', Magick::RedChannel) }.not_to raise_error
+    expect { @img.selective_blur_channel(0, 1, '10%', Magick::RedChannel, Magick::BlueChannel) }.not_to raise_error
+    expect { @img.selective_blur_channel(0, 1, '10%', Magick::RedChannel, Magick::BlueChannel, Magick::GreenChannel) }.not_to raise_error
 
     expect { @img.selective_blur_channel(0, 1) }.to raise_error(ArgumentError)
     expect { @img.selective_blur_channel(0, 1, 0.1, '10%') }.to raise_error(TypeError)
@@ -440,44 +440,44 @@ class Image3_UT < Minitest::Test
   end
 
   def test_sepiatone
-    assert_nothing_raised do
+    expect do
       res = @img.sepiatone
       assert_instance_of(Magick::Image, res)
-    end
-    assert_nothing_raised { @img.sepiatone(Magick::QuantumRange * 0.80) }
+    end.not_to raise_error
+    expect { @img.sepiatone(Magick::QuantumRange * 0.80) }.not_to raise_error
     expect { @img.sepiatone(Magick::QuantumRange, 2) }.to raise_error(ArgumentError)
     expect { @img.sepiatone('x') }.to raise_error(TypeError)
   end
 
   def test_set_channel_depth
     Magick::ChannelType.values do |ch|
-      assert_nothing_raised { @img.set_channel_depth(ch, 8) }
+      expect { @img.set_channel_depth(ch, 8) }.not_to raise_error
     end
   end
 
   def test_shade
-    assert_nothing_raised do
+    expect do
       res = @img.shade
       assert_instance_of(Magick::Image, res)
-    end
-    assert_nothing_raised { @img.shade(true) }
-    assert_nothing_raised { @img.shade(true, 30) }
-    assert_nothing_raised { @img.shade(true, 30, 30) }
+    end.not_to raise_error
+    expect { @img.shade(true) }.not_to raise_error
+    expect { @img.shade(true, 30) }.not_to raise_error
+    expect { @img.shade(true, 30, 30) }.not_to raise_error
     expect { @img.shade(true, 30, 30, 2) }.to raise_error(ArgumentError)
     expect { @img.shade(true, 'x') }.to raise_error(TypeError)
     expect { @img.shade(true, 30, 'x') }.to raise_error(TypeError)
   end
 
   def test_shadow
-    assert_nothing_raised do
+    expect do
       res = @img.shadow
       assert_instance_of(Magick::Image, res)
-    end
-    assert_nothing_raised { @img.shadow(5) }
-    assert_nothing_raised { @img.shadow(5, 5) }
-    assert_nothing_raised { @img.shadow(5, 5, 3.0) }
-    assert_nothing_raised { @img.shadow(5, 5, 3.0, 0.50) }
-    assert_nothing_raised { @img.shadow(5, 5, 3.0, '50%') }
+    end.not_to raise_error
+    expect { @img.shadow(5) }.not_to raise_error
+    expect { @img.shadow(5, 5) }.not_to raise_error
+    expect { @img.shadow(5, 5, 3.0) }.not_to raise_error
+    expect { @img.shadow(5, 5, 3.0, 0.50) }.not_to raise_error
+    expect { @img.shadow(5, 5, 3.0, '50%') }.not_to raise_error
     expect { @img.shadow(5, 5, 3.0, 0.50, 2) }.to raise_error(ArgumentError)
     expect { @img.shadow('x') }.to raise_error(TypeError)
     expect { @img.shadow(5, 'x') }.to raise_error(TypeError)
@@ -486,78 +486,78 @@ class Image3_UT < Minitest::Test
   end
 
   def test_sharpen
-    assert_nothing_raised do
+    expect do
       res = @img.sharpen
       assert_instance_of(Magick::Image, res)
-    end
-    assert_nothing_raised { @img.sharpen(2.0) }
-    assert_nothing_raised { @img.sharpen(2.0, 1.0) }
+    end.not_to raise_error
+    expect { @img.sharpen(2.0) }.not_to raise_error
+    expect { @img.sharpen(2.0, 1.0) }.not_to raise_error
     expect { @img.sharpen(2.0, 1.0, 2) }.to raise_error(ArgumentError)
     expect { @img.sharpen('x') }.to raise_error(TypeError)
     expect { @img.sharpen(2.0, 'x') }.to raise_error(TypeError)
   end
 
   def test_sharpen_channel
-    assert_nothing_raised do
+    expect do
       res = @img.sharpen_channel
       assert_instance_of(Magick::Image, res)
-    end
-    assert_nothing_raised { @img.sharpen_channel(2.0) }
-    assert_nothing_raised { @img.sharpen_channel(2.0, 1.0) }
-    assert_nothing_raised { @img.sharpen_channel(2.0, 1.0, Magick::RedChannel) }
-    assert_nothing_raised { @img.sharpen_channel(2.0, 1.0, Magick::RedChannel, Magick::BlueChannel) }
+    end.not_to raise_error
+    expect { @img.sharpen_channel(2.0) }.not_to raise_error
+    expect { @img.sharpen_channel(2.0, 1.0) }.not_to raise_error
+    expect { @img.sharpen_channel(2.0, 1.0, Magick::RedChannel) }.not_to raise_error
+    expect { @img.sharpen_channel(2.0, 1.0, Magick::RedChannel, Magick::BlueChannel) }.not_to raise_error
     expect { @img.sharpen_channel(2.0, 1.0, Magick::RedChannel, 2) }.to raise_error(TypeError)
     expect { @img.sharpen_channel('x') }.to raise_error(TypeError)
     expect { @img.sharpen_channel(2.0, 'x') }.to raise_error(TypeError)
   end
 
   def test_shave
-    assert_nothing_raised do
+    expect do
       res = @img.shave(5, 5)
       assert_instance_of(Magick::Image, res)
-    end
-    assert_nothing_raised do
+    end.not_to raise_error
+    expect do
       res = @img.shave!(5, 5)
       assert_same(@img, res)
-    end
+    end.not_to raise_error
     @img.freeze
     expect { @img.shave!(2, 2) }.to raise_error(FreezeError)
   end
 
   def test_shear
-    assert_nothing_raised do
+    expect do
       res = @img.shear(30, 30)
       assert_instance_of(Magick::Image, res)
-    end
+    end.not_to raise_error
   end
 
   def test_sigmoidal_contrast_channel
-    assert_nothing_raised do
+    expect do
       res = @img.sigmoidal_contrast_channel
       assert_instance_of(Magick::Image, res)
-    end
-    assert_nothing_raised { @img.sigmoidal_contrast_channel(3.0) }
-    assert_nothing_raised { @img.sigmoidal_contrast_channel(3.0, 50.0) }
-    assert_nothing_raised { @img.sigmoidal_contrast_channel(3.0, 50.0, true) }
-    assert_nothing_raised { @img.sigmoidal_contrast_channel(3.0, 50.0, true, Magick::RedChannel) }
-    assert_nothing_raised { @img.sigmoidal_contrast_channel(3.0, 50.0, true, Magick::RedChannel, Magick::BlueChannel) }
+    end.not_to raise_error
+    expect { @img.sigmoidal_contrast_channel(3.0) }.not_to raise_error
+    expect { @img.sigmoidal_contrast_channel(3.0, 50.0) }.not_to raise_error
+    expect { @img.sigmoidal_contrast_channel(3.0, 50.0, true) }.not_to raise_error
+    expect { @img.sigmoidal_contrast_channel(3.0, 50.0, true, Magick::RedChannel) }.not_to raise_error
+    expect { @img.sigmoidal_contrast_channel(3.0, 50.0, true, Magick::RedChannel, Magick::BlueChannel) }.not_to raise_error
     expect { @img.sigmoidal_contrast_channel(3.0, 50.0, true, Magick::RedChannel, 2) }.to raise_error(TypeError)
     expect { @img.sigmoidal_contrast_channel('x') }.to raise_error(TypeError)
     expect { @img.sigmoidal_contrast_channel(3.0, 'x') }.to raise_error(TypeError)
   end
 
   def test_signature
-    assert_nothing_raised do
+    expect do
       res = @img.signature
       assert_instance_of(String, res)
-    end
+    end.not_to raise_error
   end
 
   def test_sketch
-    assert_nothing_raised { @img.sketch }
-    assert_nothing_raised { @img.sketch(0) }
-    assert_nothing_raised { @img.sketch(0, 1) }
-    assert_nothing_raised { @img.sketch(0, 1, 0) }
+    expect { @img.sketch }.not_to raise_error
+    expect { @img.sketch(0) }.not_to raise_error
+    expect { @img.sketch(0, 1) }.not_to raise_error
+    expect { @img.sketch(0, 1, 0) }.not_to raise_error
     expect { @img.sketch(0, 1, 0, 1) }.to raise_error(ArgumentError)
     expect { @img.sketch('x') }.to raise_error(TypeError)
     expect { @img.sketch(0, 'x') }.to raise_error(TypeError)
@@ -565,11 +565,11 @@ class Image3_UT < Minitest::Test
   end
 
   def test_solarize
-    assert_nothing_raised do
+    expect do
       res = @img.solarize
       assert_instance_of(Magick::Image, res)
-    end
-    assert_nothing_raised { @img.solarize(100) }
+    end.not_to raise_error
+    expect { @img.solarize(100) }.not_to raise_error
     expect { @img.solarize(-100) }.to raise_error(ArgumentError)
     expect { @img.solarize(Magick::QuantumRange + 1) }.to raise_error(ArgumentError)
     expect { @img.solarize(100, 2) }.to raise_error(ArgumentError)
@@ -583,14 +583,14 @@ class Image3_UT < Minitest::Test
     Magick::SparseColorMethod.values do |v|
       next if v == Magick::UndefinedColorInterpolate
 
-      assert_nothing_raised { img.sparse_color(v, *args) }
+      expect { img.sparse_color(v, *args) }.not_to raise_error
     end
     args << Magick::RedChannel
-    assert_nothing_raised { img.sparse_color(Magick::VoronoiColorInterpolate, *args) }
+    expect { img.sparse_color(Magick::VoronoiColorInterpolate, *args) }.not_to raise_error
     args << Magick::GreenChannel
-    assert_nothing_raised { img.sparse_color(Magick::VoronoiColorInterpolate, *args) }
+    expect { img.sparse_color(Magick::VoronoiColorInterpolate, *args) }.not_to raise_error
     args << Magick::BlueChannel
-    assert_nothing_raised { img.sparse_color(Magick::VoronoiColorInterpolate, *args) }
+    expect { img.sparse_color(Magick::VoronoiColorInterpolate, *args) }.not_to raise_error
 
     # bad calls
     args = [30, 10, 'red', 10, 80, 'blue', 70, 60, 'lime', 80, 20, 'yellow']
@@ -609,13 +609,13 @@ class Image3_UT < Minitest::Test
   end
 
   def test_splice
-    assert_nothing_raised do
+    expect do
       res = @img.splice(0, 0, 2, 2)
       assert_instance_of(Magick::Image, res)
-    end
-    assert_nothing_raised { @img.splice(0, 0, 2, 2, 'red') }
+    end.not_to raise_error
+    expect { @img.splice(0, 0, 2, 2, 'red') }.not_to raise_error
     red = Magick::Pixel.new(Magick::QuantumRange)
-    assert_nothing_raised { @img.splice(0, 0, 2, 2, red) }
+    expect { @img.splice(0, 0, 2, 2, red) }.not_to raise_error
     expect { @img.splice(0, 0, 2, 2, red, 'x') }.to raise_error(ArgumentError)
     expect { @img.splice([], 0, 2, 2, red) }.to raise_error(TypeError)
     expect { @img.splice(0, 'x', 2, 2, red) }.to raise_error(TypeError)
@@ -625,11 +625,11 @@ class Image3_UT < Minitest::Test
   end
 
   def test_spread
-    assert_nothing_raised do
+    expect do
       res = @img.spread
       assert_instance_of(Magick::Image, res)
-    end
-    assert_nothing_raised { @img.spread(3.0) }
+    end.not_to raise_error
+    expect { @img.spread(3.0) }.not_to raise_error
     expect { @img.spread(3.0, 2) }.to raise_error(ArgumentError)
     expect { @img.spread('x') }.to raise_error(TypeError)
   end
@@ -637,20 +637,20 @@ class Image3_UT < Minitest::Test
   def test_stegano
     @img = Magick::Image.new(100, 100) { self.background_color = 'black' }
     watermark = Magick::Image.new(10, 10) { self.background_color = 'white' }
-    assert_nothing_raised do
+    expect do
       res = @img.stegano(watermark, 0)
       assert_instance_of(Magick::Image, res)
-    end
+    end.not_to raise_error
 
     watermark.destroy!
     expect { @img.stegano(watermark, 0) }.to raise_error(Magick::DestroyedImageError)
   end
 
   def test_stereo
-    assert_nothing_raised do
+    expect do
       res = @img.stereo(@img)
       assert_instance_of(Magick::Image, res)
-    end
+    end.not_to raise_error
 
     img = Magick::Image.new(20, 20)
     img.destroy!
@@ -659,10 +659,10 @@ class Image3_UT < Minitest::Test
 
   def test_store_pixels
     pixels = @img.get_pixels(0, 0, @img.columns, 1)
-    assert_nothing_raised do
+    expect do
       res = @img.store_pixels(0, 0, @img.columns, 1, pixels)
       assert_same(@img, res)
-    end
+    end.not_to raise_error
 
     pixels[0] = 'x'
     expect { @img.store_pixels(0, 0, @img.columns, 1, pixels) }.to raise_error(TypeError)
@@ -674,25 +674,25 @@ class Image3_UT < Minitest::Test
   end
 
   def test_strip!
-    assert_nothing_raised do
+    expect do
       res = @img.strip!
       assert_same(@img, res)
-    end
+    end.not_to raise_error
   end
 
   def test_swirl
-    assert_nothing_raised do
+    expect do
       res = @img.swirl(30)
       assert_instance_of(Magick::Image, res)
-    end
+    end.not_to raise_error
   end
 
   def test_texture_fill_to_border
     texture = Magick::Image.read('granite:').first
-    assert_nothing_raised do
+    expect do
       res = @img.texture_fill_to_border(@img.columns / 2, @img.rows / 2, texture)
       assert_instance_of(Magick::Image, res)
-    end
+    end.not_to raise_error
     expect { @img.texture_fill_to_border(@img.columns / 2, @img.rows / 2, 'x') }.to raise_error(NoMethodError)
     expect { @img.texture_fill_to_border(@img.columns * 2, @img.rows, texture) }.to raise_error(ArgumentError)
     expect { @img.texture_fill_to_border(@img.columns, @img.rows * 2, texture) }.to raise_error(ArgumentError)
@@ -706,28 +706,28 @@ class Image3_UT < Minitest::Test
 
   def test_texture_floodfill
     texture = Magick::Image.read('granite:').first
-    assert_nothing_raised do
+    expect do
       res = @img.texture_floodfill(@img.columns / 2, @img.rows / 2, texture)
       assert_instance_of(Magick::Image, res)
-    end
+    end.not_to raise_error
     expect { @img.texture_floodfill(@img.columns / 2, @img.rows / 2, 'x') }.to raise_error(NoMethodError)
     texture.destroy!
     expect { @img.texture_floodfill(@img.columns / 2, @img.rows / 2, texture) }.to raise_error(Magick::DestroyedImageError)
   end
 
   def test_threshold
-    assert_nothing_raised do
+    expect do
       res = @img.threshold(100)
       assert_instance_of(Magick::Image, res)
-    end
+    end.not_to raise_error
   end
 
   def test_thumbnail
-    assert_nothing_raised do
+    expect do
       res = @img.thumbnail(10, 10)
       assert_instance_of(Magick::Image, res)
-    end
-    assert_nothing_raised { @img.thumbnail(2) }
+    end.not_to raise_error
+    expect { @img.thumbnail(2) }.not_to raise_error
     expect { @img.thumbnail }.to raise_error(ArgumentError)
     expect { @img.thumbnail(-1.0) }.to raise_error(ArgumentError)
     expect { @img.thumbnail(0, 25) }.to raise_error(ArgumentError)
@@ -747,23 +747,23 @@ class Image3_UT < Minitest::Test
   end
 
   def test_thumbnail!
-    assert_nothing_raised do
+    expect do
       res = @img.thumbnail!(2)
       assert_same(@img, res)
-    end
+    end.not_to raise_error
     @img.freeze
     expect { @img.thumbnail!(0.50) }.to raise_error(FreezeError)
   end
 
   def test_tint
-    assert_nothing_raised do
+    expect do
       pixels = @img.get_pixels(0, 0, 1, 1)
       @img.tint(pixels[0], 1.0)
-    end
-    assert_nothing_raised { @img.tint('red', 1.0) }
-    assert_nothing_raised { @img.tint('red', 1.0, 1.0) }
-    assert_nothing_raised { @img.tint('red', 1.0, 1.0, 1.0) }
-    assert_nothing_raised { @img.tint('red', 1.0, 1.0, 1.0, 1.0) }
+    end.not_to raise_error
+    expect { @img.tint('red', 1.0) }.not_to raise_error
+    expect { @img.tint('red', 1.0, 1.0) }.not_to raise_error
+    expect { @img.tint('red', 1.0, 1.0, 1.0) }.not_to raise_error
+    expect { @img.tint('red', 1.0, 1.0, 1.0, 1.0) }.not_to raise_error
     expect { @img.tint }.to raise_error(ArgumentError)
     expect { @img.tint('red') }.to raise_error(ArgumentError)
     expect { @img.tint('red', 1.0, 1.0, 1.0, 1.0, 1.0) }.to raise_error(ArgumentError)
@@ -781,7 +781,7 @@ class Image3_UT < Minitest::Test
 
   def test_to_blob
     res = nil
-    assert_nothing_raised { res = @img.to_blob { self.format = 'miff' } }
+    expect { res = @img.to_blob { self.format = 'miff' } }.not_to raise_error
     assert_instance_of(String, res)
     restored = Magick::Image.from_blob(res)
     expect(restored[0]).to eq(@img)
@@ -789,21 +789,21 @@ class Image3_UT < Minitest::Test
 
   def test_to_color
     red = Magick::Pixel.new(Magick::QuantumRange)
-    assert_nothing_raised do
+    expect do
       res = @img.to_color(red)
       expect(res).to eq('red')
-    end
+    end.not_to raise_error
   end
 
   def test_transparent
-    assert_nothing_raised do
+    expect do
       res = @img.transparent('white')
       assert_instance_of(Magick::Image, res)
-    end
+    end.not_to raise_error
     pixel = Magick::Pixel.new
-    assert_nothing_raised { @img.transparent(pixel) }
+    expect { @img.transparent(pixel) }.not_to raise_error
     expect { @img.transparent('white', Magick::TransparentAlpha) }.to raise_error(ArgumentError)
-    assert_nothing_raised { @img.transparent('white', alpha: Magick::TransparentAlpha) }
+    expect { @img.transparent('white', alpha: Magick::TransparentAlpha) }.not_to raise_error
     expect { @img.transparent('white', wrong: Magick::TransparentAlpha) }.to raise_error(ArgumentError)
     expect { @img.transparent('white', alpha: Magick::TransparentAlpha, extra: Magick::TransparentAlpha) }.to raise_error(ArgumentError)
     expect { @img.transparent('white', Magick::TransparentAlpha, 2) }.to raise_error(ArgumentError)
@@ -813,80 +813,80 @@ class Image3_UT < Minitest::Test
 
   def test_transparent_chroma
     assert_instance_of(Magick::Image, @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange)))
-    assert_nothing_raised { @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange)) }
+    expect { @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange)) }.not_to raise_error
     expect { @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange), Magick::TransparentAlpha) }.to raise_error(ArgumentError)
-    assert_nothing_raised { @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange), alpha: Magick::TransparentAlpha) }
+    expect { @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange), alpha: Magick::TransparentAlpha) }.not_to raise_error
     expect { @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange), wrong: Magick::TransparentAlpha) }.to raise_error(ArgumentError)
     expect { @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange), Magick::TransparentAlpha, true) }.to raise_error(ArgumentError)
-    assert_nothing_raised { @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange), true, alpha: Magick::TransparentAlpha) }
+    expect { @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange), true, alpha: Magick::TransparentAlpha) }.not_to raise_error
     expect { @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange), false, wrong: Magick::TransparentAlpha) }.to raise_error(ArgumentError)
     expect { @img.transparent_chroma('white', Magick::Pixel.new(Magick::QuantumRange), false, alpha: Magick::TransparentAlpha, extra: Magick::TransparentAlpha) }.to raise_error(ArgumentError)
   end
 
   def test_transpose
-    assert_nothing_raised do
+    expect do
       res = @img.transpose
       assert_instance_of(Magick::Image, res)
       assert_not_same(@img, res)
-    end
-    assert_nothing_raised do
+    end.not_to raise_error
+    expect do
       res = @img.transpose!
       assert_instance_of(Magick::Image, res)
       assert_same(@img, res)
-    end
+    end.not_to raise_error
   end
 
   def test_transverse
-    assert_nothing_raised do
+    expect do
       res = @img.transverse
       assert_instance_of(Magick::Image, res)
       assert_not_same(@img, res)
-    end
-    assert_nothing_raised do
+    end.not_to raise_error
+    expect do
       res = @img.transverse!
       assert_instance_of(Magick::Image, res)
       assert_same(@img, res)
-    end
+    end.not_to raise_error
   end
 
   def test_trim
     # Can't use the default image because it's a solid color
     hat = Magick::Image.read(IMAGES_DIR + '/Flower_Hat.jpg').first
-    assert_nothing_raised do
+    expect do
       assert_instance_of(Magick::Image, hat.trim)
       assert_instance_of(Magick::Image, hat.trim(10))
-    end
+    end.not_to raise_error
     expect { hat.trim(10, 10) }.to raise_error(ArgumentError)
 
-    assert_nothing_raised do
+    expect do
       res = hat.trim!
       assert_same(hat, res)
 
       res = hat.trim!(10)
       assert_same(hat, res)
-    end
+    end.not_to raise_error
     expect { hat.trim!(10, 10) }.to raise_error(ArgumentError)
   end
 
   def test_unique_colors
-    assert_nothing_raised do
+    expect do
       res = @img.unique_colors
       assert_instance_of(Magick::Image, res)
       expect(res.columns).to eq(1)
       expect(res.rows).to eq(1)
-    end
+    end.not_to raise_error
   end
 
   def test_unsharp_mask
-    assert_nothing_raised do
+    expect do
       res = @img.unsharp_mask
       assert_instance_of(Magick::Image, res)
-    end
+    end.not_to raise_error
 
-    assert_nothing_raised { @img.unsharp_mask(2.0) }
-    assert_nothing_raised { @img.unsharp_mask(2.0, 1.0) }
-    assert_nothing_raised { @img.unsharp_mask(2.0, 1.0, 0.50) }
-    assert_nothing_raised { @img.unsharp_mask(2.0, 1.0, 0.50, 0.10) }
+    expect { @img.unsharp_mask(2.0) }.not_to raise_error
+    expect { @img.unsharp_mask(2.0, 1.0) }.not_to raise_error
+    expect { @img.unsharp_mask(2.0, 1.0, 0.50) }.not_to raise_error
+    expect { @img.unsharp_mask(2.0, 1.0, 0.50, 0.10) }.not_to raise_error
     expect { @img.unsharp_mask(2.0, 1.0, 0.50, 0.10, 2) }.to raise_error(ArgumentError)
     expect { @img.unsharp_mask(-2.0, 1.0, 0.50, 0.10) }.to raise_error(ArgumentError)
     expect { @img.unsharp_mask(2.0, 0.0, 0.50, 0.10) }.to raise_error(ArgumentError)
@@ -899,17 +899,17 @@ class Image3_UT < Minitest::Test
   end
 
   def test_unsharp_mask_channel
-    assert_nothing_raised do
+    expect do
       res = @img.unsharp_mask_channel
       assert_instance_of(Magick::Image, res)
-    end
+    end.not_to raise_error
 
-    assert_nothing_raised { @img.unsharp_mask_channel(2.0) }
-    assert_nothing_raised { @img.unsharp_mask_channel(2.0, 1.0) }
-    assert_nothing_raised { @img.unsharp_mask_channel(2.0, 1.0, 0.50) }
-    assert_nothing_raised { @img.unsharp_mask_channel(2.0, 1.0, 0.50, 0.10) }
-    assert_nothing_raised { @img.unsharp_mask_channel(2.0, 1.0, 0.50, 0.10, Magick::RedChannel) }
-    assert_nothing_raised { @img.unsharp_mask_channel(2.0, 1.0, 0.50, 0.10, Magick::RedChannel, Magick::BlueChannel) }
+    expect { @img.unsharp_mask_channel(2.0) }.not_to raise_error
+    expect { @img.unsharp_mask_channel(2.0, 1.0) }.not_to raise_error
+    expect { @img.unsharp_mask_channel(2.0, 1.0, 0.50) }.not_to raise_error
+    expect { @img.unsharp_mask_channel(2.0, 1.0, 0.50, 0.10) }.not_to raise_error
+    expect { @img.unsharp_mask_channel(2.0, 1.0, 0.50, 0.10, Magick::RedChannel) }.not_to raise_error
+    expect { @img.unsharp_mask_channel(2.0, 1.0, 0.50, 0.10, Magick::RedChannel, Magick::BlueChannel) }.not_to raise_error
     expect { @img.unsharp_mask_channel(2.0, 1.0, 0.50, 0.10, Magick::RedChannel, 2) }.to raise_error(TypeError)
     expect { @img.unsharp_mask_channel(2.0, 1.0, 0.50, 0.10, 2) }.to raise_error(TypeError)
     expect { @img.unsharp_mask_channel('x') }.to raise_error(TypeError)
@@ -919,13 +919,13 @@ class Image3_UT < Minitest::Test
   end
 
   def test_view
-    assert_nothing_raised do
+    expect do
       res = @img.view(0, 0, 5, 5)
       assert_instance_of(Magick::Image::View, res)
-    end
-    assert_nothing_raised do
+    end.not_to raise_error
+    expect do
       @img.view(0, 0, 5, 5) { |v| assert_instance_of(Magick::Image::View, v) }
-    end
+    end.not_to raise_error
     expect { @img.view(-1, 0, 5, 5) }.to raise_error(RangeError)
     expect { @img.view(0, -1, 5, 5) }.to raise_error(RangeError)
     expect { @img.view(1, 0, @img.columns, 5) }.to raise_error(RangeError)
@@ -935,15 +935,15 @@ class Image3_UT < Minitest::Test
   end
 
   def test_vignette
-    assert_nothing_raised do
+    expect do
       res = @img.vignette
       assert_instance_of(Magick::Image, res)
       assert_not_same(res, @img)
-    end
-    assert_nothing_raised { @img.vignette(0) }
-    assert_nothing_raised { @img.vignette(0, 0) }
-    assert_nothing_raised { @img.vignette(0, 0, 0) }
-    assert_nothing_raised { @img.vignette(0, 0, 0, 1) }
+    end.not_to raise_error
+    expect { @img.vignette(0) }.not_to raise_error
+    expect { @img.vignette(0, 0) }.not_to raise_error
+    expect { @img.vignette(0, 0, 0) }.not_to raise_error
+    expect { @img.vignette(0, 0, 0, 1) }.not_to raise_error
     # too many arguments
     expect { @img.vignette(0, 0, 0, 1, 1) }.to raise_error(ArgumentError)
   end
@@ -952,17 +952,17 @@ class Image3_UT < Minitest::Test
     mark = Magick::Image.new(5, 5)
     mark_list = Magick::ImageList.new
     mark_list << mark.copy
-    assert_nothing_raised { @img.watermark(mark) }
-    assert_nothing_raised { @img.watermark(mark_list) }
-    assert_nothing_raised { @img.watermark(mark, 0.50) }
-    assert_nothing_raised { @img.watermark(mark, '50%') }
-    assert_nothing_raised { @img.watermark(mark, 0.50, 0.50) }
-    assert_nothing_raised { @img.watermark(mark, 0.50, '50%') }
-    assert_nothing_raised { @img.watermark(mark, 0.50, 0.50, 10) }
-    assert_nothing_raised { @img.watermark(mark, 0.50, 0.50, 10, 10) }
-    assert_nothing_raised { @img.watermark(mark, 0.50, 0.50, Magick::NorthEastGravity) }
-    assert_nothing_raised { @img.watermark(mark, 0.50, 0.50, Magick::NorthEastGravity, 10) }
-    assert_nothing_raised { @img.watermark(mark, 0.50, 0.50, Magick::NorthEastGravity, 10, 10) }
+    expect { @img.watermark(mark) }.not_to raise_error
+    expect { @img.watermark(mark_list) }.not_to raise_error
+    expect { @img.watermark(mark, 0.50) }.not_to raise_error
+    expect { @img.watermark(mark, '50%') }.not_to raise_error
+    expect { @img.watermark(mark, 0.50, 0.50) }.not_to raise_error
+    expect { @img.watermark(mark, 0.50, '50%') }.not_to raise_error
+    expect { @img.watermark(mark, 0.50, 0.50, 10) }.not_to raise_error
+    expect { @img.watermark(mark, 0.50, 0.50, 10, 10) }.not_to raise_error
+    expect { @img.watermark(mark, 0.50, 0.50, Magick::NorthEastGravity) }.not_to raise_error
+    expect { @img.watermark(mark, 0.50, 0.50, Magick::NorthEastGravity, 10) }.not_to raise_error
+    expect { @img.watermark(mark, 0.50, 0.50, Magick::NorthEastGravity, 10, 10) }.not_to raise_error
 
     expect { @img.watermark }.to raise_error(ArgumentError)
     expect { @img.watermark(mark, 'x') }.to raise_error(ArgumentError)
@@ -977,12 +977,12 @@ class Image3_UT < Minitest::Test
   end
 
   def test_wave
-    assert_nothing_raised do
+    expect do
       res = @img.wave
       assert_instance_of(Magick::Image, res)
-    end
-    assert_nothing_raised { @img.wave(25) }
-    assert_nothing_raised { @img.wave(25, 200) }
+    end.not_to raise_error
+    expect { @img.wave(25) }.not_to raise_error
+    expect { @img.wave(25, 200) }.not_to raise_error
     expect { @img.wave(25, 200, 2) }.to raise_error(ArgumentError)
     expect { @img.wave('x') }.to raise_error(TypeError)
     expect { @img.wave(25, 'x') }.to raise_error(TypeError)
@@ -990,10 +990,10 @@ class Image3_UT < Minitest::Test
 
   def test_wet_floor
     assert_instance_of(Magick::Image, @img.wet_floor)
-    assert_nothing_raised { @img.wet_floor(0.0) }
-    assert_nothing_raised { @img.wet_floor(0.5) }
-    assert_nothing_raised { @img.wet_floor(0.5, 10) }
-    assert_nothing_raised { @img.wet_floor(0.5, 0.0) }
+    expect { @img.wet_floor(0.0) }.not_to raise_error
+    expect { @img.wet_floor(0.5) }.not_to raise_error
+    expect { @img.wet_floor(0.5, 10) }.not_to raise_error
+    expect { @img.wet_floor(0.5, 0.0) }.not_to raise_error
 
     expect { @img.wet_floor(2.0) }.to raise_error(ArgumentError)
     expect { @img.wet_floor(-2.0) }.to raise_error(ArgumentError)
@@ -1003,11 +1003,11 @@ class Image3_UT < Minitest::Test
 
   def test_white_threshold
     expect { @img.white_threshold }.to raise_error(ArgumentError)
-    assert_nothing_raised { @img.white_threshold(50) }
-    assert_nothing_raised { @img.white_threshold(50, 50) }
-    assert_nothing_raised { @img.white_threshold(50, 50, 50) }
+    expect { @img.white_threshold(50) }.not_to raise_error
+    expect { @img.white_threshold(50, 50) }.not_to raise_error
+    expect { @img.white_threshold(50, 50, 50) }.not_to raise_error
     expect { @img.white_threshold(50, 50, 50, 50) }.to raise_error(ArgumentError)
-    assert_nothing_raised { @img.white_threshold(50, 50, 50, alpha: 50) }
+    expect { @img.white_threshold(50, 50, 50, alpha: 50) }.not_to raise_error
     expect { @img.white_threshold(50, 50, 50, wrong: 50) }.to raise_error(ArgumentError)
     expect { @img.white_threshold(50, 50, 50, alpha: 50, extra: 50) }.to raise_error(ArgumentError)
     expect { @img.white_threshold(50, 50, 50, 50, 50) }.to raise_error(ArgumentError)

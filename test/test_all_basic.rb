@@ -30,10 +30,6 @@ end
 
 module Minitest
   module Assertions
-    def assert_nothing_raised
-      yield
-    end
-
     def assert_block
       assert(yield)
     end
@@ -55,17 +51,25 @@ module Minitest
       end
     end
 
+    def not_to(matcher)
+      case matcher
+      when :raise_error
+        @actual_block.call
+      else
+        raise ArgumentError, "no negated matcher: #{matcher.inspect}"
+      end
+    end
+
     def eq(expected)
       @expected = expected
       :eq
     end
 
-    def raise_error(expected)
+    def raise_error(expected = :__not_set__)
       @expected = expected
       :raise_error
     end
 
-    alias assert_nothing_thrown assert_nothing_raised
     alias assert_not_same refute_same
     alias assert_not_equal refute_equal
     alias assert_not_nil refute_nil
