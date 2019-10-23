@@ -325,8 +325,11 @@ END_MINGW
 
     def create_header_file
       [
+        'aligned_xmalloc', # Ruby 2.7.0
+
         'GetImageChannelEntropy', # 6.9.0-0
-        'SetImageGray' # 6.9.1-10
+        'SetImageGray', # 6.9.1-10
+        'SetMagickAlignedMemoryMethods' # 7.0.9-0
       ].each do |func|
         have_func(func, headers)
       end

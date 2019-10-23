@@ -98,6 +98,38 @@ static void rm_free(void *ptr)
 }
 
 
+
+#if defined(HAVE_ALIGNED_XMALLOC) && defined(HAVE_SETMAGICKALIGNEDMEMORYMETHODS)
+/**
+ * Allocate aligned memory.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param size the size of memory to allocate
+ * @return pointer to a block of memory
+ */
+static void *rm_aligned_malloc(size_t size, size_t alignment)
+{
+   return aligned_xmalloc(alignment, size);
+}
+
+
+
+
+/**
+ * Free aligned memory.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param ptr pointer to the existing block of memory
+ */
+static void rm_aligned_free(void *ptr)
+{
+    aligned_xfree(ptr);
+}
+#endif
+
+
 /**
  * Use managed memory.
  *
@@ -108,6 +140,9 @@ static inline void managed_memory_enable(VALUE enable)
     if (enable)
     {
         SetMagickMemoryMethods(rm_malloc, rm_realloc, rm_free);
+#if defined(HAVE_ALIGNED_XMALLOC) && defined(HAVE_SETMAGICKALIGNEDMEMORYMETHODS)
+        SetMagickAlignedMemoryMethods(rm_aligned_malloc, rm_aligned_free);
+#endif
     }
     rb_define_const(Module_Magick, "MANAGED_MEMORY", enable);
 }
