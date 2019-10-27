@@ -14,6 +14,13 @@
 #define MAIN                        // Define external variables
 #include "rmagick.h"
 
+#if defined HAVE_SETMAGICKALIGNEDMEMORYMETHODS
+#if defined HAVE_RB_GC_ADJUST_MEMORY_USAGE && \
+    (defined HAVE_POSIX_MEMALIGN || defined HAVE_MEMALIGN || defined _WIN32)
+    #define USE_RM_ALIGNED_MALLOC 1
+#endif
+#endif
+
 /*----------------------------------------------------------------------------\
 | External declarations
 \----------------------------------------------------------------------------*/
@@ -98,6 +105,70 @@ static void rm_free(void *ptr)
 }
 
 
+#if USE_RM_ALIGNED_MALLOC
+
+static size_t
+rm_aligned_malloc_size(void *ptr)
+{
+#if defined HAVE_MALLOC_USABLE_SIZE
+    return malloc_usable_size(ptr);
+#elif defined HAVE_MALLOC_SIZE
+    return malloc_size(ptr);
+#elif defined _WIN32
+    return _aligned_msize(ptr, 0, 0);
+#endif
+}
+
+/**
+ * Allocate aligned memory.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param size the size of memory to allocate
+ * @return pointer to a block of memory
+ */
+static void *rm_aligned_malloc(size_t size, size_t alignment)
+{
+    void *res;
+
+#if defined HAVE_POSIX_MEMALIGN
+    if (posix_memalign(&res, alignment, size) != 0) {
+        return NULL;
+    }
+#elif defined HAVE_MEMALIGN
+    res = memalign(alignment, size);
+#elif defined _WIN32
+    res = _aligned_malloc(size, alignment);
+#endif
+
+    size = rm_aligned_malloc_size(res);
+    rb_gc_adjust_memory_usage(size);
+    return res;
+}
+
+
+/**
+ * Free aligned memory.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param ptr pointer to the existing block of memory
+ */
+static void rm_aligned_free(void *ptr)
+{
+    size_t size = rm_aligned_malloc_size(ptr);
+    rb_gc_adjust_memory_usage(-size);
+
+#if defined HAVE_POSIX_MEMALIGN || defined HAVE_MEMALIGN
+    free(ptr);
+#elif defined _WIN32
+    _aligned_free(ptr);
+#endif
+}
+#endif
+
+
+
 /**
  * Use managed memory.
  *
@@ -108,6 +179,9 @@ static inline void managed_memory_enable(VALUE enable)
     if (enable)
     {
         SetMagickMemoryMethods(rm_malloc, rm_realloc, rm_free);
+#if USE_RM_ALIGNED_MALLOC
+        SetMagickAlignedMemoryMethods(rm_aligned_malloc, rm_aligned_free);
+#endif
     }
     rb_define_const(Module_Magick, "MANAGED_MEMORY", enable);
 }

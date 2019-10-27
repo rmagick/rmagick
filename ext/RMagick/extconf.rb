@@ -325,8 +325,16 @@ END_MINGW
 
     def create_header_file
       [
+        'posix_memalign',
+        'memalign',
+        'malloc_usable_size',
+        'malloc_size',
+
+        'rb_gc_adjust_memory_usage', # Ruby 2.4.0
+
         'GetImageChannelEntropy', # 6.9.0-0
-        'SetImageGray' # 6.9.1-10
+        'SetImageGray', # 6.9.1-10
+        'SetMagickAlignedMemoryMethods' # 7.0.9-0
       ].each do |func|
         have_func(func, headers)
       end
