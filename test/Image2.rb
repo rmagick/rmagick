@@ -61,7 +61,7 @@ class Image2_UT < Minitest::Test
     img2.define('compose:args', '1x1')
     expect do
       res = img1.composite_affine(img2, affine)
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
   end
@@ -89,7 +89,7 @@ class Image2_UT < Minitest::Test
     fg = Magick::Image.new(50, 50) { self.background_color = 'black' }
     res = nil
     expect { res = bg.composite_mathematics(fg, 1, 0, 0, 0, Magick::CenterGravity) }.not_to raise_error
-    assert_instance_of(Magick::Image, res)
+    expect(res).to be_instance_of(Magick::Image)
     assert_not_same(bg, res)
     assert_not_same(fg, res)
     expect { res = bg.composite_mathematics(fg, 1, 0, 0, 0, 0.0, 0.0) }.not_to raise_error
@@ -108,7 +108,7 @@ class Image2_UT < Minitest::Test
     expect do
       res = bg.composite_tiled(fg)
     end.not_to raise_error
-    assert_instance_of(Magick::Image, res)
+    expect(res).to be_instance_of(Magick::Image)
     assert_not_same(bg, res)
     assert_not_same(fg, res)
     expect { bg.composite_tiled!(fg) }.not_to raise_error
@@ -138,7 +138,7 @@ class Image2_UT < Minitest::Test
   def test_contrast
     expect do
       res = @img.contrast
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
     expect { @img.contrast(true) }.not_to raise_error
@@ -148,7 +148,7 @@ class Image2_UT < Minitest::Test
   def test_contrast_stretch_channel
     expect do
       res = @img.contrast_stretch_channel(25)
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
     expect { @img.contrast_stretch_channel(25, 50) }.not_to raise_error
@@ -167,7 +167,7 @@ class Image2_UT < Minitest::Test
     Magick::MorphologyMethod.values do |method|
       expect do
         res = @img.morphology(method, 2, kernel)
-        assert_instance_of(Magick::Image, res)
+        expect(res).to be_instance_of(Magick::Image)
         assert_not_same(@img, res)
       end.not_to raise_error
     end
@@ -183,7 +183,7 @@ class Image2_UT < Minitest::Test
     kernel = Magick::KernelInfo.new('Octagon')
     expect do
       res = @img.morphology_channel(Magick::RedChannel, Magick::EdgeOutMorphology, 2, kernel)
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
   end
@@ -193,7 +193,7 @@ class Image2_UT < Minitest::Test
     order = 3
     expect do
       res = @img.convolve(order, kernel)
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
     expect { @img.convolve }.to raise_error(ArgumentError)
@@ -215,7 +215,7 @@ class Image2_UT < Minitest::Test
     order = 3
     expect do
       res = @img.convolve_channel(order, kernel, Magick::RedChannel)
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
 
@@ -240,7 +240,7 @@ class Image2_UT < Minitest::Test
     expect { @img.crop(0, 0) }.to raise_error(ArgumentError)
     expect do
       res = @img.crop(0, 0, @img.columns / 2, @img.rows / 2)
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
 
@@ -276,7 +276,7 @@ class Image2_UT < Minitest::Test
   def test_cycle_colormap
     expect do
       res = @img.cycle_colormap(5)
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
       expect(res.class_type).to eq(Magick::PseudoClass)
     end.not_to raise_error
@@ -288,11 +288,11 @@ class Image2_UT < Minitest::Test
       res = @img.encipher 'passphrase'
       res2 = res.decipher 'passphrase'
     end.not_to raise_error
-    assert_instance_of(Magick::Image, res)
+    expect(res).to be_instance_of(Magick::Image)
     assert_not_same(@img, res)
     expect(res.columns).to eq(@img.columns)
     expect(res.rows).to eq(@img.rows)
-    assert_instance_of(Magick::Image, res2)
+    expect(res2).to be_instance_of(Magick::Image)
     assert_not_same(@img, res2)
     expect(res2.columns).to eq(@img.columns)
     expect(res2.rows).to eq(@img.rows)
@@ -308,7 +308,7 @@ class Image2_UT < Minitest::Test
   def test_deskew
     expect do
       res = @img.deskew
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
 
@@ -322,7 +322,7 @@ class Image2_UT < Minitest::Test
   def test_despeckle
     expect do
       res = @img.despeckle
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
   end
@@ -406,11 +406,11 @@ class Image2_UT < Minitest::Test
     img2 = Magick::Image.read(IMAGES_DIR + '/Button_1.gif').first
     expect do
       res = img1.difference(img2)
-      assert_instance_of(Array, res)
+      expect(res).to be_instance_of(Array)
       expect(res.length).to eq(3)
-      assert_instance_of(Float, res[0])
-      assert_instance_of(Float, res[1])
-      assert_instance_of(Float, res[2])
+      expect(res[0]).to be_instance_of(Float)
+      expect(res[1]).to be_instance_of(Float)
+      expect(res[2]).to be_instance_of(Float)
     end.not_to raise_error
 
     expect { img1.difference(2) }.to raise_error(NoMethodError)
@@ -422,7 +422,7 @@ class Image2_UT < Minitest::Test
     @img2 = Magick::Image.new(20, 20) { self.background_color = 'black' }
     expect { @img.displace(@img2, 25) }.not_to raise_error
     res = @img.displace(@img2, 25)
-    assert_instance_of(Magick::Image, res)
+    expect(res).to be_instance_of(Magick::Image)
     assert_not_same(@img, res)
     expect { @img.displace(@img2, 25, 25) }.not_to raise_error
     expect { @img.displace(@img2, 25, 25, 10) }.not_to raise_error
@@ -481,7 +481,7 @@ class Image2_UT < Minitest::Test
   def test_distortion_channel
     expect do
       metric = @img.distortion_channel(@img, Magick::MeanAbsoluteErrorMetric)
-      assert_instance_of(Float, metric)
+      expect(metric).to be_instance_of(Float)
       expect(metric).to eq(0.0)
     end.not_to raise_error
     expect { @img.distortion_channel(@img, Magick::MeanSquaredErrorMetric) }.not_to raise_error
@@ -503,14 +503,14 @@ class Image2_UT < Minitest::Test
 
   def test__dump
     img = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
-    assert_instance_of(String, img._dump(10))
+    expect(img._dump(10)).to be_instance_of(String)
   end
 
   def test__load
     img = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
     res = img._dump(10)
 
-    assert_instance_of(Magick::Image, Magick::Image._load(res))
+    expect(Magick::Image._load(res)).to be_instance_of(Magick::Image)
   end
 
   def test_dup
@@ -540,7 +540,7 @@ class Image2_UT < Minitest::Test
   def test_edge
     expect do
       res = @img.edge
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
     expect { @img.edge(2.0) }.not_to raise_error
@@ -551,7 +551,7 @@ class Image2_UT < Minitest::Test
   def test_emboss
     expect do
       res = @img.emboss
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
     expect { @img.emboss(1.0) }.not_to raise_error
@@ -564,7 +564,7 @@ class Image2_UT < Minitest::Test
   def test_enhance
     expect do
       res = @img.enhance
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
   end
@@ -572,7 +572,7 @@ class Image2_UT < Minitest::Test
   def test_equalize
     expect do
       res = @img.equalize
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
   end
@@ -580,7 +580,7 @@ class Image2_UT < Minitest::Test
   def test_equalize_channel
     expect do
       res = @img.equalize_channel
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
     expect { @img.equalize_channel }.not_to raise_error
@@ -612,7 +612,7 @@ class Image2_UT < Minitest::Test
   def test_export_pixels
     expect do
       res = @img.export_pixels
-      assert_instance_of(Array, res)
+      expect(res).to be_instance_of(Array)
       expect(res.length).to eq(@img.columns * @img.rows * 'RGB'.length)
       res.each do |p|
         assert_kind_of(Integer, p)
@@ -638,7 +638,7 @@ class Image2_UT < Minitest::Test
   def test_export_pixels_to_str
     expect do
       res = @img.export_pixels_to_str
-      assert_instance_of(String, res)
+      expect(res).to be_instance_of(String)
       expect(res.length).to eq(@img.columns * @img.rows * 'RGB'.length)
     end.not_to raise_error
     expect { @img.export_pixels_to_str(0) }.not_to raise_error
@@ -685,7 +685,7 @@ class Image2_UT < Minitest::Test
   def test_extent
     expect { @img.extent(40, 40) }.not_to raise_error
     res = @img.extent(40, 40)
-    assert_instance_of(Magick::Image, res)
+    expect(res).to be_instance_of(Magick::Image)
     assert_not_same(@img, res)
     expect(res.columns).to eq(40)
     expect(res.rows).to eq(40)
@@ -745,7 +745,7 @@ class Image2_UT < Minitest::Test
   def test_flip
     expect do
       res = @img.flip
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
   end
@@ -760,7 +760,7 @@ class Image2_UT < Minitest::Test
   def test_flop
     expect do
       res = @img.flop
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
   end
@@ -775,7 +775,7 @@ class Image2_UT < Minitest::Test
   def test_frame
     expect do
       res = @img.frame
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
     expect { @img.frame(50) }.not_to raise_error
@@ -804,7 +804,7 @@ class Image2_UT < Minitest::Test
   def test_gamma_channel
     expect do
       res = @img.gamma_channel(0.8)
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
     expect { @img.gamma_channel }.to raise_error(ArgumentError)
@@ -854,7 +854,7 @@ class Image2_UT < Minitest::Test
     expect { @img.gamma_correct }.to raise_error(ArgumentError)
     expect do
       res = @img.gamma_correct(0.8)
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
     expect { @img.gamma_correct(0.8, 0.9) }.not_to raise_error
@@ -867,7 +867,7 @@ class Image2_UT < Minitest::Test
   def test_gaussian_blur
     expect do
       res = @img.gaussian_blur
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
     expect { @img.gaussian_blur(0.0) }.not_to raise_error
@@ -880,7 +880,7 @@ class Image2_UT < Minitest::Test
   def test_gaussian_blur_channel
     expect do
       res = @img.gaussian_blur_channel
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
     expect { @img.gaussian_blur_channel(0.0) }.not_to raise_error
@@ -893,21 +893,21 @@ class Image2_UT < Minitest::Test
   def test_get_exif_by_entry
     expect do
       res = @img.get_exif_by_entry
-      assert_instance_of(Array, res)
+      expect(res).to be_instance_of(Array)
     end.not_to raise_error
   end
 
   def test_get_exif_by_number
     expect do
       res = @img.get_exif_by_number
-      assert_instance_of(Hash, res)
+      expect(res).to be_instance_of(Hash)
     end.not_to raise_error
   end
 
   def test_get_pixels
     expect do
       pixels = @img.get_pixels(0, 0, @img.columns, 1)
-      assert_instance_of(Array, pixels)
+      expect(pixels).to be_instance_of(Array)
       expect(pixels.length).to eq(@img.columns)
       assert_block do
         pixels.all? { |p| p.is_a? Magick::Pixel }
@@ -934,7 +934,7 @@ class Image2_UT < Minitest::Test
   def test_implode
     expect do
       res = @img.implode(0.5)
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
     expect { @img.implode(0.5, 0.5) }.to raise_error(ArgumentError)
@@ -972,7 +972,7 @@ class Image2_UT < Minitest::Test
   def test_level
     expect do
       res = @img.level
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
     expect { @img.level(0.0) }.not_to raise_error
@@ -1005,7 +1005,7 @@ class Image2_UT < Minitest::Test
     expect { @img.level_channel }.to raise_error(ArgumentError)
     expect do
       res = @img.level_channel(Magick::RedChannel)
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
 
@@ -1025,7 +1025,7 @@ class Image2_UT < Minitest::Test
     expect do
       res = @img.level_colors
     end.not_to raise_error
-    assert_instance_of(Magick::Image, res)
+    expect(res).to be_instance_of(Magick::Image)
     assert_not_same(@img, res)
 
     expect { @img.level_colors('black') }.not_to raise_error
@@ -1044,7 +1044,7 @@ class Image2_UT < Minitest::Test
     expect do
       res = @img.levelize_channel(0, Magick::QuantumRange)
     end.not_to raise_error
-    assert_instance_of(Magick::Image, res)
+    expect(res).to be_instance_of(Magick::Image)
     assert_not_same(@img, res)
 
     expect { @img.levelize_channel(0) }.not_to raise_error
@@ -1083,7 +1083,7 @@ class Image2_UT < Minitest::Test
   def test_magnify
     expect do
       res = @img.magnify
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
 
@@ -1124,7 +1124,7 @@ class Image2_UT < Minitest::Test
   def test_matte_fill_to_border
     expect do
       res = @img.matte_fill_to_border(@img.columns / 2, @img.rows / 2)
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
     expect { @img.matte_fill_to_border(@img.columns, @img.rows) }.not_to raise_error
@@ -1135,7 +1135,7 @@ class Image2_UT < Minitest::Test
   def test_matte_floodfill
     expect do
       res = @img.matte_floodfill(@img.columns / 2, @img.rows / 2)
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
     expect { @img.matte_floodfill(@img.columns, @img.rows) }.not_to raise_error
@@ -1154,7 +1154,7 @@ class Image2_UT < Minitest::Test
   def test_matte_replace
     expect do
       res = @img.matte_replace(@img.columns / 2, @img.rows / 2)
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
   end
@@ -1169,7 +1169,7 @@ class Image2_UT < Minitest::Test
   def test_median_filter
     expect do
       res = @img.median_filter
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
     expect { @img.median_filter(0.5) }.not_to raise_error
@@ -1180,7 +1180,7 @@ class Image2_UT < Minitest::Test
   def test_minify
     expect do
       res = @img.minify
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
 
@@ -1191,7 +1191,7 @@ class Image2_UT < Minitest::Test
   def test_modulate
     expect do
       res = @img.modulate
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
     expect { @img.modulate(0.5) }.not_to raise_error
@@ -1213,7 +1213,7 @@ class Image2_UT < Minitest::Test
   def test_motion_blur
     expect do
       res = @img.motion_blur(1.0, 7.0, 180)
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
     expect { @img.motion_blur(1.0, 0.0, 180) }.to raise_error(ArgumentError)
@@ -1223,7 +1223,7 @@ class Image2_UT < Minitest::Test
   def test_negate
     expect do
       res = @img.negate
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
     expect { @img.negate(true) }.not_to raise_error
@@ -1233,7 +1233,7 @@ class Image2_UT < Minitest::Test
   def test_negate_channel
     expect do
       res = @img.negate_channel
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
     expect { @img.negate_channel(true) }.not_to raise_error
@@ -1245,7 +1245,7 @@ class Image2_UT < Minitest::Test
   def test_normalize
     expect do
       res = @img.normalize
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
   end
@@ -1253,7 +1253,7 @@ class Image2_UT < Minitest::Test
   def test_normalize_channel
     expect do
       res = @img.normalize_channel
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
     expect { @img.normalize_channel(Magick::RedChannel) }.not_to raise_error
@@ -1264,7 +1264,7 @@ class Image2_UT < Minitest::Test
   def test_oil_paint
     expect do
       res = @img.oil_paint
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
     expect { @img.oil_paint(2.0) }.not_to raise_error
@@ -1274,7 +1274,7 @@ class Image2_UT < Minitest::Test
   def test_opaque
     expect do
       res = @img.opaque('white', 'red')
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
     red = Magick::Pixel.new(Magick::QuantumRange)
@@ -1288,7 +1288,7 @@ class Image2_UT < Minitest::Test
     res = nil
     expect { res = @img.opaque_channel('white', 'red') }.not_to raise_error
     assert_not_nil(res)
-    assert_instance_of(Magick::Image, res)
+    expect(res).to be_instance_of(Magick::Image)
     assert_not_same(res, @img)
     expect { @img.opaque_channel('red', 'blue', true) }.not_to raise_error
     expect { @img.opaque_channel('red', 'blue', true, 50) }.not_to raise_error
@@ -1316,7 +1316,7 @@ class Image2_UT < Minitest::Test
   def test_ordered_dither
     expect do
       res = @img.ordered_dither
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
     expect { @img.ordered_dither('3x3') }.not_to raise_error
@@ -1331,7 +1331,7 @@ class Image2_UT < Minitest::Test
     res = nil
     expect { res = @img.paint_transparent('red') }.not_to raise_error
     assert_not_nil(res)
-    assert_instance_of(Magick::Image, res)
+    expect(res).to be_instance_of(Magick::Image)
     assert_not_same(res, @img)
     expect { @img.paint_transparent('red', Magick::TransparentAlpha) }.to raise_error(ArgumentError)
     expect { @img.paint_transparent('red', alpha: Magick::TransparentAlpha) }.not_to raise_error
@@ -1364,7 +1364,7 @@ class Image2_UT < Minitest::Test
   def test_pixel_color
     expect do
       res = @img.pixel_color(0, 0)
-      assert_instance_of(Magick::Pixel, res)
+      expect(res).to be_instance_of(Magick::Pixel)
     end.not_to raise_error
     res = @img.pixel_color(0, 0)
     expect(res.to_color).to eq(@img.background_color)
@@ -1389,7 +1389,7 @@ class Image2_UT < Minitest::Test
   def test_polaroid
     expect { @img.polaroid }.not_to raise_error
     expect { @img.polaroid(5) }.not_to raise_error
-    assert_instance_of(Magick::Image, @img.polaroid)
+    expect(@img.polaroid).to be_instance_of(Magick::Image)
     expect { @img.polaroid('x') }.to raise_error(TypeError)
     expect { @img.polaroid(5, 'x') }.to raise_error(ArgumentError)
   end
@@ -1397,7 +1397,7 @@ class Image2_UT < Minitest::Test
   def test_posterize
     expect do
       res = @img.posterize
-      assert_instance_of(Magick::Image, res)
+      expect(res).to be_instance_of(Magick::Image)
       assert_not_same(@img, res)
     end.not_to raise_error
     expect { @img.posterize(5) }.not_to raise_error

@@ -42,6 +42,8 @@ module Minitest
 
     def to(matcher)
       case matcher
+      when :be_instance_of
+        assert_instance_of(@expected, @actual)
       when :eq
         assert_equal(@expected, @actual)
       when :raise_error
@@ -58,6 +60,11 @@ module Minitest
       else
         raise ArgumentError, "no negated matcher: #{matcher.inspect}"
       end
+    end
+
+    def be_instance_of(expected)
+      @expected = expected
+      :be_instance_of
     end
 
     def eq(expected)

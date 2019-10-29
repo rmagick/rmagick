@@ -3,8 +3,8 @@ require 'minitest/autorun'
 
 class GradientFillUT < Minitest::Test
   def test_new
-    assert_instance_of(Magick::GradientFill, Magick::GradientFill.new(0, 0, 0, 100, '#900', '#000'))
-    assert_instance_of(Magick::GradientFill, Magick::GradientFill.new(0, 0, 0, 100, 'white', 'red'))
+    expect(Magick::GradientFill.new(0, 0, 0, 100, '#900', '#000')).to be_instance_of(Magick::GradientFill)
+    expect(Magick::GradientFill.new(0, 0, 0, 100, 'white', 'red')).to be_instance_of(Magick::GradientFill)
 
     expect { Magick::GradientFill.new(0, 0, 0, 100, 'foo', '#000') }.to raise_error(ArgumentError)
     expect { Magick::GradientFill.new(0, 0, 0, 100, '#900', 'bar') }.to raise_error(ArgumentError)
@@ -76,7 +76,7 @@ end
 class TextureFillUT < Minitest::Test
   def test_new
     granite = Magick::Image.read('granite:').first
-    assert_instance_of(Magick::TextureFill, Magick::TextureFill.new(granite))
+    expect(Magick::TextureFill.new(granite)).to be_instance_of(Magick::TextureFill)
   end
 
   def test_fill
