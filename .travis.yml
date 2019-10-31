@@ -45,6 +45,7 @@ before_install:
 install: bundle install --path=vendor/bundle --verbose
 
 rvm:
+  - 2.2.10
   - 2.3.8
   - 2.4.5
   - 2.5.3

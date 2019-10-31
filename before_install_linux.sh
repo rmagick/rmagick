@@ -1,6 +1,6 @@
 set -euox pipefail
 
-gem install bundler
+gem install bundler -v 1.16.1
 
 if [ -v STYLE_CHECKS ]; then
   set +ux
