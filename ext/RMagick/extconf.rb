@@ -100,7 +100,7 @@ module RMagick
 
         dir_paths = search_paths_for_library_for_windows
         $CPPFLAGS = %(-I"#{dir_paths[:include]}")
-        $LDFLAGS = %(-L"#{dir_paths[:lib]}")
+        $LDFLAGS = %(-L"#{dir_paths[:lib]}" -lucrt)
 
         have_library(im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_' : 'CORE_RL_magick_')
 
@@ -112,7 +112,7 @@ module RMagick
 
         dir_paths = search_paths_for_library_for_windows
         $CPPFLAGS << %( -I"#{dir_paths[:include]}")
-        $LDFLAGS << %( -libpath:"#{dir_paths[:lib]}")
+        $LDFLAGS << %( -libpath:"#{dir_paths[:lib]}" -libpath:ucrt)
 
         $LOCAL_LIBS = im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_.lib' : 'CORE_RL_magick_.lib'
 
