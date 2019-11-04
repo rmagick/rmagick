@@ -105,6 +105,7 @@ static void rm_free(void *ptr)
 }
 
 
+
 #if USE_RM_ALIGNED_MALLOC
 
 static size_t
@@ -118,6 +119,7 @@ rm_aligned_malloc_size(void *ptr)
     return _aligned_msize(ptr, 0, 0);
 #endif
 }
+
 
 /**
  * Allocate aligned memory.
@@ -147,6 +149,8 @@ static void *rm_aligned_malloc(size_t size, size_t alignment)
 }
 
 
+
+
 /**
  * Free aligned memory.
  *
@@ -165,6 +169,7 @@ static void rm_aligned_free(void *ptr)
     _aligned_free(ptr);
 #endif
 }
+
 #endif
 
 
