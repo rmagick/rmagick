@@ -45,7 +45,7 @@ class Image2_UT < Minitest::Test
       Magick::GravityType.values do |gravity|
         expect do
           res = img1.composite!(img2, gravity, op)
-          assert_same(img1, res)
+          expect(res).to be(img1)
         end.not_to raise_error
       end
     end
@@ -269,7 +269,7 @@ class Image2_UT < Minitest::Test
   def test_crop!
     expect do
       res = @img.crop!(0, 0, @img.columns / 2, @img.rows / 2)
-      assert_same(@img, res)
+      expect(res).to be(@img)
     end.not_to raise_error
   end
 
@@ -592,7 +592,7 @@ class Image2_UT < Minitest::Test
   def test_erase!
     expect do
       res = @img.erase!
-      assert_same(@img, res)
+      expect(res).to be(@img)
     end.not_to raise_error
   end
 
@@ -753,7 +753,7 @@ class Image2_UT < Minitest::Test
   def test_flip!
     expect do
       res = @img.flip!
-      assert_same(@img, res)
+      expect(res).to be(@img)
     end.not_to raise_error
   end
 
@@ -768,7 +768,7 @@ class Image2_UT < Minitest::Test
   def test_flop!
     expect do
       res = @img.flop!
-      assert_same(@img, res)
+      expect(res).to be(@img)
     end.not_to raise_error
   end
 
@@ -944,7 +944,7 @@ class Image2_UT < Minitest::Test
     pixels = @img.export_pixels(0, 0, @img.columns, 1, 'RGB')
     expect do
       res = @img.import_pixels(0, 0, @img.columns, 1, 'RGB', pixels)
-      assert_same(@img, res)
+      expect(res).to be(@img)
     end.not_to raise_error
     expect { @img.import_pixels }.to raise_error(ArgumentError)
     expect { @img.import_pixels(0) }.to raise_error(ArgumentError)
@@ -1088,7 +1088,7 @@ class Image2_UT < Minitest::Test
     end.not_to raise_error
 
     res = @img.magnify!
-    assert_same(@img, res)
+    expect(res).to be(@img)
   end
 
   def test_marshal
@@ -1162,7 +1162,7 @@ class Image2_UT < Minitest::Test
   def test_matte_reset!
     expect do
       res = @img.matte_reset!
-      assert_same(@img, res)
+      expect(res).to be(@img)
     end.not_to raise_error
   end
 
@@ -1185,7 +1185,7 @@ class Image2_UT < Minitest::Test
     end.not_to raise_error
 
     res = @img.minify!
-    assert_same(@img, res)
+    expect(res).to be(@img)
   end
 
   def test_modulate
