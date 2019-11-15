@@ -188,7 +188,7 @@ class PixelUT < Minitest::Test
   end
 
   def test_intensity
-    assert_kind_of(Integer, @pixel.intensity)
+    expect(@pixel.intensity).to be_kind_of(Integer)
   end
 
   def test_marshal

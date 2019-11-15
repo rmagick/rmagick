@@ -615,7 +615,7 @@ class Image2_UT < Minitest::Test
       expect(res).to be_instance_of(Array)
       expect(res.length).to eq(@img.columns * @img.rows * 'RGB'.length)
       res.each do |p|
-        assert_kind_of(Integer, p)
+        expect(p).to be_kind_of(Integer)
       end
     end.not_to raise_error
     expect { @img.export_pixels(0) }.not_to raise_error

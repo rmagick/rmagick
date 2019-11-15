@@ -78,7 +78,7 @@ class MagickUT < Minitest::Test
       expect(f.family).to be_instance_of(String)
       expect(f.style).to be_instance_of(Magick::StyleType) unless f.style.nil?
       expect(f.stretch).to be_instance_of(Magick::StretchType) unless f.stretch.nil?
-      assert_kind_of(Integer, f.weight)
+      expect(f.weight).to be_kind_of(Integer)
       expect(f.encoding).to be_instance_of(String) unless f.encoding.nil?
       expect(f.foundry).to be_instance_of(String) unless f.foundry.nil?
       expect(f.format).to be_instance_of(String) unless f.format.nil?
@@ -261,35 +261,35 @@ class MagickUT < Minitest::Test
     cur = new = nil
 
     expect { cur = Magick.limit_resource(:memory, 500) }.not_to raise_error
-    assert_kind_of(Integer, cur)
+    expect(cur).to be_kind_of(Integer)
     assert(cur > 1024**2)
     expect { new = Magick.limit_resource('memory') }.not_to raise_error
     expect(new).to eq(500)
     Magick.limit_resource(:memory, cur)
 
     expect { cur = Magick.limit_resource(:map, 3500) }.not_to raise_error
-    assert_kind_of(Integer, cur)
+    expect(cur).to be_kind_of(Integer)
     assert(cur > 1024**2)
     expect { new = Magick.limit_resource('map') }.not_to raise_error
     expect(new).to eq(3500)
     Magick.limit_resource(:map, cur)
 
     expect { cur = Magick.limit_resource(:disk, 3 * 1024 * 1024 * 1024) }.not_to raise_error
-    assert_kind_of(Integer, cur)
+    expect(cur).to be_kind_of(Integer)
     assert(cur > 1024**2)
     expect { new = Magick.limit_resource('disk') }.not_to raise_error
     expect(new).to eq(3_221_225_472)
     Magick.limit_resource(:disk, cur)
 
     expect { cur = Magick.limit_resource(:file, 500) }.not_to raise_error
-    assert_kind_of(Integer, cur)
+    expect(cur).to be_kind_of(Integer)
     assert(cur > 512)
     expect { new = Magick.limit_resource('file') }.not_to raise_error
     expect(new).to eq(500)
     Magick.limit_resource(:file, cur)
 
     expect { cur = Magick.limit_resource(:time, 300) }.not_to raise_error
-    assert_kind_of(Integer, cur)
+    expect(cur).to be_kind_of(Integer)
     assert(cur > 300)
     expect { new = Magick.limit_resource('time') }.not_to raise_error
     expect(new).to eq(300)

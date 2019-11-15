@@ -268,8 +268,8 @@ class InfoUT < Minitest::Test
     expect { @info.monitor = -> {} }.not_to raise_error
     monitor = proc do |mth, q, s|
       expect(mth).to eq('resize!')
-      assert_kind_of(Integer, q)
-      assert_kind_of(Integer, s)
+      expect(q).to be_kind_of(Integer)
+      expect(s).to be_kind_of(Integer)
       GC.start
       true
     end
@@ -287,7 +287,7 @@ class InfoUT < Minitest::Test
   end
 
   def test_number_scenes
-    assert_kind_of(Integer, @info.number_scenes)
+    expect(@info.number_scenes).to be_kind_of(Integer)
     expect { @info.number_scenes = 50 }.not_to raise_error
     expect(@info.number_scenes).to eq(50)
     expect { @info.number_scenes = nil }.to raise_error(TypeError)

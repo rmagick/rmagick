@@ -62,7 +62,7 @@ class EnumUT < Minitest::Test
     expect(Magick::AlignType.values[0].to_i).to eq(0)
 
     Magick::AlignType.values do |enum|
-      assert_kind_of(Magick::Enum, enum)
+      expect(enum).to be_kind_of(Magick::Enum)
       expect(enum).to be_instance_of(Magick::AlignType)
     end
   end
