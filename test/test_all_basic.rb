@@ -29,6 +29,20 @@ Dir.glob(File.join(__dir__, 'appearance/**/*.rb')) do |file|
 end
 
 module Minitest
+  class RSpecMatcher
+    attr_accessor :type, :delta, :expected
+
+    def initialize(type, expected)
+      self.type = type
+      type == :be_within ? self.delta = expected : self.expected = expected
+    end
+
+    def of(expected)
+      self.expected = expected
+      self
+    end
+  end
+
   module Assertions
     def expect(actual = :__not_set__, &actual_block)
       @actual = actual
@@ -37,40 +51,40 @@ module Minitest
     end
 
     def to(matcher)
-      case matcher
+      case matcher.type
       when :be
-        assert_same(@expected, @actual)
+        assert_same(matcher.expected, @actual)
       when :be_instance_of
-        assert_instance_of(@expected, @actual)
+        assert_instance_of(matcher.expected, @actual)
       when :be_kind_of
-        assert_kind_of(@expected, @actual)
+        assert_kind_of(matcher.expected, @actual)
       when :be_within
-        assert_in_delta(@expected, @actual, @delta)
+        assert_in_delta(matcher.expected, @actual, matcher.delta)
       when :eq
-        assert_equal(@expected, @actual)
+        assert_equal(matcher.expected, @actual)
       when :have_key
-        assert(@actual.key?(@expected))
+        assert(@actual.key?(matcher.expected))
       when :include
-        assert(@actual.include?(@expected))
+        assert(@actual.include?(matcher.expected))
       when :match
-        assert_match(@expected, @actual)
+        assert_match(matcher.expected, @actual)
       when :raise_error
-        assert_raises(@expected, &@actual_block)
+        assert_raises(matcher.expected, &@actual_block)
       when :respond_to
-        assert(@actual.respond_to?(@expected))
+        assert(@actual.respond_to?(matcher.expected))
       else
         raise ArgumentError, "no matcher: #{matcher.inspect}"
       end
     end
 
     def not_to(matcher)
-      case matcher
+      case matcher.type
       when :be
-        refute_same(@expected, @actual)
+        refute_same(matcher.expected, @actual)
       when :eq
-        refute_equal(@expected, @actual)
+        refute_equal(matcher.expected, @actual)
       when :have_key
-        refute(@actual.key?(@expected))
+        refute(@actual.key?(matcher.expected))
       when :raise_error
         @actual_block.call
       else
@@ -79,58 +93,43 @@ module Minitest
     end
 
     def be(expected)
-      @expected = expected
-      :be
+      RSpecMatcher.new(:be, expected)
     end
 
     def be_instance_of(expected)
-      @expected = expected
-      :be_instance_of
+      RSpecMatcher.new(:be_instance_of, expected)
     end
 
     def be_kind_of(expected)
-      @expected = expected
-      :be_kind_of
+      RSpecMatcher.new(:be_kind_of, expected)
     end
 
     def be_within(delta)
-      @delta = delta
-      self
+      RSpecMatcher.new(:be_within, delta)
     end
 
     def have_key(expected) # rubocop:disable Naming/PredicateName
-      @expected = expected
-      :have_key
+      RSpecMatcher.new(:have_key, expected)
     end
 
     def include(expected)
-      @expected = expected
-      :include
+      RSpecMatcher.new(:include, expected)
     end
 
     def match(expected)
-      @expected = expected
-      :match
-    end
-
-    def of(expected)
-      @expected = expected
-      :be_within
+      RSpecMatcher.new(:match, expected)
     end
 
     def eq(expected)
-      @expected = expected
-      :eq
+      RSpecMatcher.new(:eq, expected)
     end
 
     def raise_error(expected = :__not_set__)
-      @expected = expected
-      :raise_error
+      RSpecMatcher.new(:raise_error, expected)
     end
 
     def respond_to(expected)
-      @expected = expected
-      :respond_to
+      RSpecMatcher.new(:respond_to, expected)
     end
   end
 end
