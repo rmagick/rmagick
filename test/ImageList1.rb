@@ -217,8 +217,8 @@ class ImageList1UT < Minitest::Test
     expect do
       res = @list & @list2
       expect(res).to be_instance_of(Magick::ImageList)
-      assert_not_same(res, @list)
-      assert_not_same(res, @list2)
+      expect(@list).not_to be(res)
+      expect(@list2).not_to be(res)
       expect(res.length).to eq(5)
       expect(res.scene).to eq(2)
       expect(res.cur_image).to be(cur)
@@ -257,7 +257,7 @@ class ImageList1UT < Minitest::Test
       res = @list * 2
       expect(res).to be_instance_of(Magick::ImageList)
       expect(res.length).to eq(20)
-      assert_not_same(res, @list)
+      expect(@list).not_to be(res)
       expect(res.cur_image).to be(cur)
     end.not_to raise_error
 
@@ -271,8 +271,8 @@ class ImageList1UT < Minitest::Test
       res = @list + @list2
       expect(res).to be_instance_of(Magick::ImageList)
       expect(res.length).to eq(15)
-      assert_not_same(res, @list)
-      assert_not_same(res, @list2)
+      expect(@list).not_to be(res)
+      expect(@list2).not_to be(res)
       expect(res.cur_image).to be(cur)
     end.not_to raise_error
 
@@ -286,8 +286,8 @@ class ImageList1UT < Minitest::Test
       res = @list - @list2
       expect(res).to be_instance_of(Magick::ImageList)
       expect(res.length).to eq(5)
-      assert_not_same(res, @list)
-      assert_not_same(res, @list2)
+      expect(@list).not_to be(res)
+      expect(@list2).not_to be(res)
       expect(res.cur_image).to be(cur)
     end.not_to raise_error
 
@@ -320,8 +320,8 @@ class ImageList1UT < Minitest::Test
       # but not be the *same* list
       res = @list | @list2
       expect(res).to be_instance_of(Magick::ImageList)
-      assert_not_same(res, @list)
-      assert_not_same(res, @list2)
+      expect(@list).not_to be(res)
+      expect(@list2).not_to be(res)
       expect(@list).to eq(res)
     end.not_to raise_error
 
@@ -348,7 +348,7 @@ class ImageList1UT < Minitest::Test
       scene = @list.scene
       res = @list.collect(&:negate)
       expect(res).to be_instance_of(Magick::ImageList)
-      assert_not_same(res, @list)
+      expect(@list).not_to be(res)
       expect(res.scene).to eq(scene)
     end.not_to raise_error
     expect do
@@ -362,7 +362,7 @@ class ImageList1UT < Minitest::Test
   def test_compact
     expect do
       res = @list.compact
-      assert_not_same(res, @list)
+      expect(@list).not_to be(res)
       expect(@list).to eq(res)
     end.not_to raise_error
     expect do

@@ -56,7 +56,7 @@ class ImageList2UT < Minitest::Test
     @ilist.read(*Dir[IMAGES_DIR + '/Button_*.gif'])
     @ilist.scene = 7
     ilist2 = @ilist.copy
-    assert_not_same(@ilist, ilist2)
+    expect(ilist2).not_to be(@ilist)
     expect(ilist2.scene).to eq(@ilist.scene)
     @ilist.each_with_index do |img, x|
       expect(ilist2[x]).to eq(img)

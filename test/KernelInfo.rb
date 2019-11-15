@@ -42,7 +42,7 @@ class KernelInfoUT < Minitest::Test
 
   def test_clone
     expect(@kernel.clone).to be_instance_of(Magick::KernelInfo)
-    assert_not_same(@kernel, @kernel.clone)
+    expect(@kernel.clone).not_to be(@kernel)
   end
 
   def test_builtin
