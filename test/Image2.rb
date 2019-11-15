@@ -526,7 +526,7 @@ class Image2_UT < Minitest::Test
   end
 
   def test_each_profile
-    assert_nil(@img.each_profile {})
+    expect(@img.each_profile {}).to be(nil)
 
     @img.iptc_profile = 'test profile'
     expect do
@@ -732,7 +732,7 @@ class Image2_UT < Minitest::Test
     end.not_to raise_error
 
     x = girl.find_similar_region(@img)
-    assert_nil(x)
+    expect(x).to be(nil)
 
     expect { girl.find_similar_region(region, 10, 10, 10) }.to raise_error(ArgumentError)
     expect { girl.find_similar_region(region, 10, 'x') }.to raise_error(TypeError)

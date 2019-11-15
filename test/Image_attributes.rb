@@ -151,7 +151,7 @@ class Image_Attributes_UT < Minitest::Test
 
   def test_color_profile
     expect { @img.color_profile }.not_to raise_error
-    assert_nil(@img.color_profile)
+    expect(@img.color_profile).to be(nil)
     expect { @img.color_profile = @p }.not_to raise_error
     expect(@img.color_profile).to eq(@p)
     expect { @img.color_profile = 2 }.to raise_error(TypeError)
@@ -238,7 +238,7 @@ class Image_Attributes_UT < Minitest::Test
 
   def test_directory
     expect { @img.directory }.not_to raise_error
-    assert_nil(@img.directory)
+    expect(@img.directory).to be(nil)
     expect { @img.directory = nil }.to raise_error(NoMethodError)
   end
 
@@ -303,7 +303,7 @@ class Image_Attributes_UT < Minitest::Test
 
   def test_format
     expect { @img.format }.not_to raise_error
-    assert_nil(@img.format)
+    expect(@img.format).to be(nil)
     expect { @img.format = 'GIF' }.not_to raise_error
     expect { @img.format = 'JPG' }.not_to raise_error
     expect { @img.format = 'TIFF' }.not_to raise_error
@@ -339,7 +339,7 @@ class Image_Attributes_UT < Minitest::Test
 
   def test_geometry
     expect { @img.geometry }.not_to raise_error
-    assert_nil(@img.geometry)
+    expect(@img.geometry).to be(nil)
     expect { @img.geometry = nil }.not_to raise_error
     expect { @img.geometry = '90x90' }.not_to raise_error
     expect(@img.geometry).to eq('90x90')
@@ -383,7 +383,7 @@ class Image_Attributes_UT < Minitest::Test
 
   def test_iptc_profile
     expect { @img.iptc_profile }.not_to raise_error
-    assert_nil(@img.iptc_profile)
+    expect(@img.iptc_profile).to be(nil)
     expect { @img.iptc_profile = 'xxx' }.not_to raise_error
     expect(@img.iptc_profile).to eq('xxx')
     expect { @img.iptc_profile = 2 }.to raise_error(TypeError)
@@ -426,7 +426,7 @@ class Image_Attributes_UT < Minitest::Test
 
   def test_montage
     expect { @img.montage }.not_to raise_error
-    assert_nil(@img.montage)
+    expect(@img.montage).to be(nil)
   end
 
   def test_number_colors

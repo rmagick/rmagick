@@ -324,7 +324,7 @@ class Image3_UT < Minitest::Test
     end.not_to raise_error
     expect do
       res = img.rotate(90, '<')
-      assert_nil(res)
+      expect(res).to be(nil)
     end.not_to raise_error
     expect { img.rotate(90, 't') }.to raise_error(ArgumentError)
     expect { img.rotate(90, []) }.to raise_error(TypeError)

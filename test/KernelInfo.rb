@@ -21,22 +21,22 @@ class KernelInfoUT < Minitest::Test
   end
 
   def test_unity_add
-    assert_nil(@kernel.unity_add(1.0))
-    assert_nil(@kernel.unity_add(12))
+    expect(@kernel.unity_add(1.0)).to be(nil)
+    expect(@kernel.unity_add(12)).to be(nil)
     expect { @kernel.unity_add('x') }.to raise_error(TypeError)
   end
 
   def test_scale
     Magick::GeometryFlags.values do |flag|
-      assert_nil(@kernel.scale(1.0, flag))
-      assert_nil(@kernel.scale(42, flag))
+      expect(@kernel.scale(1.0, flag)).to be(nil)
+      expect(@kernel.scale(42, flag)).to be(nil)
     end
     expect { @kernel.scale(42, 'x') }.to raise_error(ArgumentError)
     expect { @kernel.scale(42, Magick::BoldWeight) }.to raise_error(ArgumentError)
   end
 
   def test_scale_geometry
-    assert_nil(@kernel.scale_geometry('-set option:convolve:scale 1.0'))
+    expect(@kernel.scale_geometry('-set option:convolve:scale 1.0')).to be(nil)
     expect { @kernel.scale_geometry(42) }.to raise_error(TypeError)
   end
 

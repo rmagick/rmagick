@@ -42,7 +42,7 @@ class LibGeometryUT < Minitest::Test
     expect(geometry.height).to eq(0)
     expect(geometry.x).to eq(0)
     expect(geometry.y).to eq(0)
-    assert_nil(geometry.flag)
+    expect(geometry.flag).to be(nil)
 
     geometry = Magick::Geometry.new(10, 20, 30, 40)
     expect(geometry.width).to eq(10)
