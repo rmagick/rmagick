@@ -6,6 +6,6 @@ module AppearanceAssertion
 
     expected = Magick::Image.read(path).first
     _, error = expected.compare_channel(image_object, Magick::MeanSquaredErrorMetric)
-    assert_in_delta(0.0, error, delta)
+    expect(error).to be_within(delta).of(0.0)
   end
 end

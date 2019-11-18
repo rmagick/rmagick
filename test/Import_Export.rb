@@ -16,12 +16,12 @@ class ImportExportUT < Minitest::Test
 
   def import(pixels, type, expected = 0.0)
     diff = import_pixels(pixels, type)
-    assert_in_delta(expected, diff, 0.1)
+    expect(diff).to be_within(0.1).of(expected)
   end
 
   def fimport(pixels, type)
     diff = import_pixels(pixels, type)
-    assert_in_delta(0.0, diff, 50.0)
+    expect(diff).to be_within(50.0).of(0.0)
   end
 
   def test_import_export_float
