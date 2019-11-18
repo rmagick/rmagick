@@ -1,2 +1,2 @@
 brew update
-brew install imagemagick
+brew install imagemagick@6
