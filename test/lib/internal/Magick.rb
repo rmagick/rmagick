@@ -6,12 +6,12 @@ class LibMagickUT < Minitest::Test
     expect(Magick.formats).to be_instance_of(Hash)
     Magick.formats.each do |f, v|
       expect(f).to be_instance_of(String)
-      assert_match(/[\*\+\srw]+/, v)
+      expect(v).to match(/[\*\+\srw]+/)
     end
 
     Magick.formats do |f, v|
       expect(f).to be_instance_of(String)
-      assert_match(/[\*\+\srw]+/, v)
+      expect(v).to match(/[\*\+\srw]+/)
     end
   end
 

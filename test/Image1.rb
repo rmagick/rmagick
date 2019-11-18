@@ -179,7 +179,7 @@ class Image1_UT < Minitest::Test
     img = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
     expect(img[nil]).to be(nil)
     expect(img['label']).to be(nil)
-    assert_match(/^Creator: PolyView/, img[:comment])
+    expect(img[:comment]).to match(/^Creator: PolyView/)
   end
 
   def test_aset

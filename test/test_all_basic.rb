@@ -52,6 +52,8 @@ module Minitest
         assert_in_delta(@expected, @actual, @delta)
       when :eq
         assert_equal(@expected, @actual)
+      when :match
+        assert_match(@expected, @actual)
       when :raise_error
         assert_raises(@expected, &@actual_block)
       else
@@ -88,6 +90,11 @@ module Minitest
     def be_within(delta)
       @delta = delta
       self
+    end
+
+    def match(expected)
+      @expected = expected
+      :match
     end
 
     def of(expected)
