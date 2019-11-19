@@ -65,6 +65,8 @@ module Minitest
       case matcher
       when :be
         refute_same(@expected, @actual)
+      when :eq
+        refute_equal(@expected, @actual)
       when :raise_error
         @actual_block.call
       else
@@ -112,7 +114,6 @@ module Minitest
       :raise_error
     end
 
-    alias assert_not_equal refute_equal
     alias assert_not_nil refute_nil
     alias assert_true assert
     alias assert_false refute

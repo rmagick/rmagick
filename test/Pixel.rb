@@ -82,7 +82,7 @@ class PixelUT < Minitest::Test
   def test_clone
     pixel = @pixel.clone
     assert_true(@pixel === pixel)
-    assert_not_equal(@pixel.object_id, pixel.object_id)
+    expect(pixel.object_id).not_to eq(@pixel.object_id)
 
     pixel = @pixel.taint.clone
     assert_true(pixel.tainted?)
@@ -94,7 +94,7 @@ class PixelUT < Minitest::Test
   def test_dup
     pixel = @pixel.dup
     assert_true(@pixel === pixel)
-    assert_not_equal(@pixel.object_id, pixel.object_id)
+    expect(pixel.object_id).not_to eq(@pixel.object_id)
 
     pixel = @pixel.taint.dup
     assert_true(pixel.tainted?)
@@ -118,7 +118,7 @@ class PixelUT < Minitest::Test
     # Pixel.hash sacrifices the last bit of the opacity channel
     p = Magick::Pixel.new(0, 0, 0, 72)
     p2 = Magick::Pixel.new(0, 0, 0, 73)
-    assert_not_equal(p, p2)
+    expect(p2).not_to eq(p)
     expect(p2.hash).to eq(p.hash)
   end
 
