@@ -909,9 +909,7 @@ class Image2_UT < Minitest::Test
       pixels = @img.get_pixels(0, 0, @img.columns, 1)
       expect(pixels).to be_instance_of(Array)
       expect(pixels.length).to eq(@img.columns)
-      assert_block do
-        pixels.all? { |p| p.is_a? Magick::Pixel }
-      end
+      expect(pixels.all? { |p| p.is_a? Magick::Pixel }).to be(true)
     end.not_to raise_error
     expect { @img.get_pixels(0,  0, -1, 1) }.to raise_error(RangeError)
     expect { @img.get_pixels(0,  0, @img.columns, -1) }.to raise_error(RangeError)
@@ -1205,9 +1203,9 @@ class Image2_UT < Minitest::Test
   end
 
   def test_monochrome?
-    #       assert_block { @img.monochrome? }
+    #       expect(@img.monochrome?).to be(true)
     @img.pixel_color(0, 0, 'red')
-    assert_block { !@img.monochrome? }
+    expect(@img.monochrome?).to be(false)
   end
 
   def test_motion_blur
@@ -1307,10 +1305,10 @@ class Image2_UT < Minitest::Test
 
   def test_opaque?
     expect do
-      assert_block { @img.opaque? }
+      expect(@img.opaque?).to be(true)
     end.not_to raise_error
     @img.alpha(Magick::TransparentAlphaChannel)
-    assert_block { !@img.opaque? }
+    expect(@img.opaque?).to be(false)
   end
 
   def test_ordered_dither
@@ -1355,10 +1353,10 @@ class Image2_UT < Minitest::Test
   def test_palette?
     img = Magick::Image.read(IMAGES_DIR + '/Flower_Hat.jpg').first
     expect do
-      assert_block { !img.palette? }
+      expect(img.palette?).to be(false)
     end.not_to raise_error
     img = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
-    assert_block { img.palette? }
+    expect(img.palette?).to be(true)
   end
 
   def test_pixel_color

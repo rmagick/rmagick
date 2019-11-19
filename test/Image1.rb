@@ -341,9 +341,9 @@ class Image1_UT < Minitest::Test
   end
 
   def test_changed?
-    #        assert_block { !@img.changed? }
+    #        expect(@img.changed?).to be(false)
     #        @img.pixel_color(0,0,'red')
-    #        assert_block { @img.changed? }
+    #        expect(@img.changed?).to be(true)
   end
 
   def test_channel
