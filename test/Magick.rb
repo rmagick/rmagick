@@ -230,7 +230,7 @@ class MagickUT < Minitest::Test
     gs2 = g2.to_s
     expect(gs2).to eq(gs)
 
-    # assert behavior with empty string argument
+    # check behavior with empty string argument
     expect { g = Magick::Geometry.from_s('') }.not_to raise_error
     expect(g.to_s).to eq('')
 
@@ -262,35 +262,35 @@ class MagickUT < Minitest::Test
 
     expect { cur = Magick.limit_resource(:memory, 500) }.not_to raise_error
     expect(cur).to be_kind_of(Integer)
-    assert(cur > 1024**2)
+    expect(cur > 1024**2).to be(true)
     expect { new = Magick.limit_resource('memory') }.not_to raise_error
     expect(new).to eq(500)
     Magick.limit_resource(:memory, cur)
 
     expect { cur = Magick.limit_resource(:map, 3500) }.not_to raise_error
     expect(cur).to be_kind_of(Integer)
-    assert(cur > 1024**2)
+    expect(cur > 1024**2).to be(true)
     expect { new = Magick.limit_resource('map') }.not_to raise_error
     expect(new).to eq(3500)
     Magick.limit_resource(:map, cur)
 
     expect { cur = Magick.limit_resource(:disk, 3 * 1024 * 1024 * 1024) }.not_to raise_error
     expect(cur).to be_kind_of(Integer)
-    assert(cur > 1024**2)
+    expect(cur > 1024**2).to be(true)
     expect { new = Magick.limit_resource('disk') }.not_to raise_error
     expect(new).to eq(3_221_225_472)
     Magick.limit_resource(:disk, cur)
 
     expect { cur = Magick.limit_resource(:file, 500) }.not_to raise_error
     expect(cur).to be_kind_of(Integer)
-    assert(cur > 512)
+    expect(cur > 512).to be(true)
     expect { new = Magick.limit_resource('file') }.not_to raise_error
     expect(new).to eq(500)
     Magick.limit_resource(:file, cur)
 
     expect { cur = Magick.limit_resource(:time, 300) }.not_to raise_error
     expect(cur).to be_kind_of(Integer)
-    assert(cur > 300)
+    expect(cur > 300).to be(true)
     expect { new = Magick.limit_resource('time') }.not_to raise_error
     expect(new).to eq(300)
     Magick.limit_resource(:time, cur)

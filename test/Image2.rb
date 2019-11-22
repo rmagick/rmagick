@@ -378,14 +378,14 @@ class Image2_UT < Minitest::Test
       m = id.split(/ /)
       name = File.basename m[0]
 
-      assert(%i[c d].include?(which), "unexpected value for which: #{which}")
+      expect(%i[c d]).to include(which)
       expect(method).to eq(:destroy!) if which == :d
 
       if which == :c
-        assert(!images.key?(addr), 'duplicate image addresses')
+        expect(images).not_to have_key(addr)
         images[addr] = name
       else
-        assert(images.key?(addr), 'destroying image that was not created')
+        expect(images).to have_key(addr)
         expect(images[addr]).to eq(name)
       end
     end
@@ -707,8 +707,8 @@ class Image2_UT < Minitest::Test
     region = girl.crop(10, 10, 50, 50)
     expect do
       x, y = girl.find_similar_region(region)
-      assert_not_nil(x)
-      assert_not_nil(y)
+      expect(x).not_to be(nil)
+      expect(y).not_to be(nil)
       expect(x).to eq(10)
       expect(y).to eq(10)
     end.not_to raise_error
@@ -919,14 +919,14 @@ class Image2_UT < Minitest::Test
 
   def test_gray?
     gray = Magick::Image.new(20, 20) { self.background_color = 'gray50' }
-    assert(gray.gray?)
+    expect(gray.gray?).to be(true)
     red = Magick::Image.new(20, 20) { self.background_color = 'red' }
-    assert(!red.gray?)
+    expect(red.gray?).to be(false)
   end
 
   def test_histogram?
     expect { @img.histogram? }.not_to raise_error
-    assert(@img.histogram?)
+    expect(@img.histogram?).to be(true)
   end
 
   def test_implode
@@ -1103,7 +1103,7 @@ class Image2_UT < Minitest::Test
     expect { @img.mask(cimg) }.not_to raise_error
     res = nil
     expect { res = @img.mask }.not_to raise_error
-    assert_not_nil(res)
+    expect(res).not_to be(nil)
     expect(res).not_to be(cimg)
     expect(res.columns).to eq(20)
     expect(res.rows).to eq(20)
@@ -1285,7 +1285,7 @@ class Image2_UT < Minitest::Test
   def test_opaque_channel
     res = nil
     expect { res = @img.opaque_channel('white', 'red') }.not_to raise_error
-    assert_not_nil(res)
+    expect(res).not_to be(nil)
     expect(res).to be_instance_of(Magick::Image)
     expect(@img).not_to be(res)
     expect { @img.opaque_channel('red', 'blue', true) }.not_to raise_error
@@ -1328,7 +1328,7 @@ class Image2_UT < Minitest::Test
   def test_paint_transparent
     res = nil
     expect { res = @img.paint_transparent('red') }.not_to raise_error
-    assert_not_nil(res)
+    expect(res).not_to be(nil)
     expect(res).to be_instance_of(Magick::Image)
     expect(@img).not_to be(res)
     expect { @img.paint_transparent('red', Magick::TransparentAlpha) }.to raise_error(ArgumentError)

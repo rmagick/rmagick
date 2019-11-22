@@ -72,7 +72,7 @@ class Image3_UT < Minitest::Test
   def test_radial_blur_channel
     res = nil
     expect { res = @img.radial_blur_channel(30) }.not_to raise_error
-    assert_not_nil(res)
+    expect(res).not_to be(nil)
     expect(res).to be_instance_of(Magick::Image)
     expect { res = @img.radial_blur_channel(30, Magick::RedChannel) }.not_to raise_error
     expect { res = @img.radial_blur_channel(30, Magick::RedChannel, Magick::BlueChannel) }.not_to raise_error
@@ -277,7 +277,7 @@ class Image3_UT < Minitest::Test
     img = Magick::Image.new(200, 250)
     res = nil
     expect { res = img.resize_to_fit(50, 50) }.not_to raise_error
-    assert_not_nil(res)
+    expect(res).not_to be(nil)
     expect(res).to be_instance_of(Magick::Image)
     expect(res).not_to be(img)
     expect(res.columns).to eq(40)
@@ -577,7 +577,7 @@ class Image3_UT < Minitest::Test
   def test_sparse_color
     img = Magick::Image.new(100, 100)
     args = [30, 10, 'red', 10, 80, 'blue', 70, 60, 'lime', 80, 20, 'yellow']
-    # assert good calls work
+    # ensure good calls work
     Magick::SparseColorMethod.values do |v|
       next if v == Magick::UndefinedColorInterpolate
 

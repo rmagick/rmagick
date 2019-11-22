@@ -31,9 +31,9 @@ class InfoUT < Minitest::Test
   end
 
   def test_antialias
-    assert @info.antialias
+    expect(@info.antialias).to be(true)
     expect { @info.antialias = false }.not_to raise_error
-    assert !@info.antialias
+    expect(@info.antialias).to be(false)
   end
 
   def test_aref_aset
@@ -282,7 +282,7 @@ class InfoUT < Minitest::Test
 
   def test_monochrome
     expect { @info.monochrome = true }.not_to raise_error
-    assert @info.monochrome
+    expect(@info.monochrome).to be(true)
     expect { @info.monochrome = nil }.not_to raise_error
   end
 

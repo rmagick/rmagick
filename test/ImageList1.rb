@@ -127,15 +127,15 @@ class ImageList1UT < Minitest::Test
   def test_all
     q = nil
     expect { q = @list.all? { |i| i.class == Magick::Image } }.not_to raise_error
-    assert(q)
+    expect(q).to be(true)
   end
 
   def test_any
     q = nil
     expect { q = @list.all? { |_i| false } }.not_to raise_error
-    assert(!q)
+    expect(q).to be(false)
     expect { q = @list.all? { |i| i.class == Magick::Image } }.not_to raise_error
-    assert(q)
+    expect(q).to be(true)
   end
 
   def test_aref
@@ -456,9 +456,9 @@ class ImageList1UT < Minitest::Test
 
   def test_eql?
     list2 = @list
-    assert(@list.eql?(list2))
+    expect(@list.eql?(list2)).to be(true)
     list2 = @list.copy
-    assert(!@list.eql?(list2))
+    expect(@list.eql?(list2)).to be(false)
   end
 
   def test_fill
