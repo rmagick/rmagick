@@ -1,7 +1,4 @@
-require 'rmagick'
-require 'minitest/autorun'
-
-describe Magick::KernelInfo do
+RSpec.describe Magick::KernelInfo do
   before do
     @kernel = Magick::KernelInfo.new('Octagon')
   end

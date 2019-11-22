@@ -1,7 +1,4 @@
-require 'rmagick'
-require 'minitest/autorun'
-
-describe Magick do
+RSpec.describe Magick do
   describe '#formats' do
     it 'works' do
       expect(Magick.formats).to be_instance_of(Hash)

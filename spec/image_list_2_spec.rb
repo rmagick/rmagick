@@ -1,8 +1,4 @@
-require 'fileutils'
-require 'rmagick'
-require 'minitest/autorun'
-
-describe Magick::ImageList do
+RSpec.describe Magick::ImageList do
   before do
     @ilist = Magick::ImageList.new
   end
@@ -407,10 +403,4 @@ describe Magick::ImageList do
       FileUtils.rm('test.0')
     end
   end
-end
-
-if $PROGRAM_NAME == __FILE__
-  IMAGES_DIR = '../doc/ex/images'
-  FLOWER_HAT = IMAGES_DIR + '/Flower_Hat.jpg'
-  Test::Unit::UI::Console::TestRunner.run(ImageList2UT)
 end

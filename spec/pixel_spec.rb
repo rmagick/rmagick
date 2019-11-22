@@ -1,7 +1,4 @@
-require 'rmagick'
-require 'minitest/autorun'
-
-describe Magick::Pixel do
+RSpec.describe Magick::Pixel do
   before do
     @pixel = Magick::Pixel.from_color('brown')
   end

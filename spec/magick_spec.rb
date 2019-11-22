@@ -1,6 +1,3 @@
-require 'rmagick'
-require 'minitest/autorun'
-
 module Magick
   def self._tmpnam_
     @@_tmpnam_
@@ -25,7 +22,7 @@ class Magick::AnchorType
   end
 end
 
-describe Magick do
+RSpec.describe Magick do
   describe '#colors' do
     it 'works' do
       res = nil
@@ -327,5 +324,3 @@ describe Magick do
     end
   end
 end
-
-Test::Unit::UI::Console::TestRunner.run(MagickUT) if $PROGRAM_NAME == __FILE__

@@ -1,7 +1,4 @@
-require 'rmagick'
-require 'minitest/autorun'
-
-describe Magick::Image do
+RSpec.describe Magick::Image do
   before do
     @img = Magick::Image.new(20, 20)
   end
@@ -161,8 +158,8 @@ describe Magick::Image do
   describe "#add_delete_profile" do
     it "works" do
       img = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
-      expect { img.add_profile(File.join(__dir__, 'cmyk.icm')) }.not_to raise_error
-      # expect { img.add_profile(File.join(__dir__, 'srgb.icm')) }.to raise_error(Magick::ImageMagickError)
+      expect { img.add_profile(File.join(FIXTURE_PATH, 'cmyk.icm')) }.not_to raise_error
+      # expect { img.add_profile(File.join(FIXTURE_PATH, 'srgb.icm')) }.to raise_error(Magick::ImageMagickError)
 
       img.each_profile { |name, _value| expect(name).to eq('icc') }
       expect { img.delete_profile('icc') }.not_to raise_error
@@ -670,10 +667,4 @@ describe Magick::Image do
       expect { img1.compare_channel(img2, Magick::MeanAbsoluteErrorMetric) }.to raise_error(Magick::DestroyedImageError)
     end
   end
-end
-
-if $PROGRAM_NAME == __FILE__
-  IMAGES_DIR = '../doc/ex/images'
-  FILES = Dir[IMAGES_DIR + '/Button_*.gif']
-  Test::Unit::UI::Console::TestRunner.run(Image1UT)
 end

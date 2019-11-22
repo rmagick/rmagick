@@ -1,7 +1,4 @@
-require 'rmagick'
-require 'minitest/autorun'
-
-describe Magick::Enum do
+RSpec.describe Magick::Enum do
   describe '#new' do
     it 'works' do
       expect { Magick::Enum.new(:foo, 42) }.not_to raise_error
@@ -245,10 +242,9 @@ describe Magick::Enum do
       img = Magick::Image.new(20, 20)
       pixels = img.export_pixels(0, 0, 20, 20, 'RGB').pack('D*')
 
-      error = expect do
+      expect do
         img.import_pixels(0, 0, 20, 20, 'RGB', pixels, Magick::UndefinedPixel)
-      end.to raise_error(ArgumentError)
-      expect(error.message).to match(/UndefinedPixel/)
+      end.to raise_error(ArgumentError, /UndefinedPixel/)
     end
   end
 

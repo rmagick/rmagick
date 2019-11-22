@@ -1,7 +1,4 @@
-require 'rmagick'
-require 'minitest/autorun'
-
-describe Magick::Image::PolaroidOptions do
+RSpec.describe Magick::Image::PolaroidOptions do
   before do
     @options = Magick::Image::PolaroidOptions.new
   end
