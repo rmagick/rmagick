@@ -12,8 +12,10 @@ AllCops:
     - 'vendor/bundle/**/*'
     - '**/*\.spec'
 
-# this can be removed after finishing transition to RSpec
+# these can be removed after finishing transition to RSpec
+Metrics/BlockLength: { Exclude: [test/**/*.rb] }
 Rails/RefuteMethods: { Enabled: false }
+RSpec/FilePath: { Enabled: false }
 # we may not need this after finishing RSpec conversion
 # seems like `rubocop-rspec` already excludes the `spec/` directory
 Style/MethodCalledOnDoEndBlock: { Exclude: [test/**/*.rb, spec/**/*.rb] }

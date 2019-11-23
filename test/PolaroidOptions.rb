@@ -1,22 +1,26 @@
 require 'rmagick'
 require 'minitest/autorun'
 
-class PolaroidOptionsUT < Minitest::Test
-  def setup
+describe Magick::Image::PolaroidOptions do
+  before do
     @options = Magick::Image::PolaroidOptions.new
   end
 
-  def test_shadow_color
-    expect { @options.shadow_color = "gray50" }.not_to raise_error
+  describe "#shadow_color" do
+    it "works" do
+      expect { @options.shadow_color = "gray50" }.not_to raise_error
 
-    @options.freeze
-    expect { @options.shadow_color = "gray50" }.to raise_error(FreezeError)
+      @options.freeze
+      expect { @options.shadow_color = "gray50" }.to raise_error(FreezeError)
+    end
   end
 
-  def test_border_color
-    expect { @options.border_color = "gray50" }.not_to raise_error
+  describe "#border_color" do
+    it "works" do
+      expect { @options.border_color = "gray50" }.not_to raise_error
 
-    @options.freeze
-    expect { @options.border_color = "gray50" }.to raise_error(FreezeError)
+      @options.freeze
+      expect { @options.border_color = "gray50" }.to raise_error(FreezeError)
+    end
   end
 end

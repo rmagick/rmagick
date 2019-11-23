@@ -43,35 +43,29 @@ module Minitest
     end
   end
 
-  module Assertions
-    def expect(actual = :__not_set__, &actual_block)
-      @actual = actual
-      @actual_block = actual_block
-      self
-    end
-
+  module Expectations
     def to(matcher)
       case matcher.type
       when :be
-        assert_same(matcher.expected, @actual)
+        ctx.assert_same(matcher.expected, target)
       when :be_instance_of
-        assert_instance_of(matcher.expected, @actual)
+        ctx.assert_instance_of(matcher.expected, target)
       when :be_kind_of
-        assert_kind_of(matcher.expected, @actual)
+        ctx.assert_kind_of(matcher.expected, target)
       when :be_within
-        assert_in_delta(matcher.expected, @actual, matcher.delta)
+        ctx.assert_in_delta(matcher.expected, target, matcher.delta)
       when :eq
-        assert_equal(matcher.expected, @actual)
+        ctx.assert_equal(matcher.expected, target)
       when :have_key
-        assert(@actual.key?(matcher.expected))
+        ctx.assert(target.key?(matcher.expected))
       when :include
-        assert(@actual.include?(matcher.expected))
+        ctx.assert(target.include?(matcher.expected))
       when :match
-        assert_match(matcher.expected, @actual)
+        ctx.assert_match(matcher.expected, target)
       when :raise_error
-        assert_raises(matcher.expected, &@actual_block)
+        ctx.assert_raises(matcher.expected, &target)
       when :respond_to
-        assert(@actual.respond_to?(matcher.expected))
+        ctx.assert(target.respond_to?(matcher.expected))
       else
         raise ArgumentError, "no matcher: #{matcher.inspect}"
       end
@@ -80,13 +74,13 @@ module Minitest
     def not_to(matcher)
       case matcher.type
       when :be
-        refute_same(matcher.expected, @actual)
+        ctx.refute_same(matcher.expected, target)
       when :eq
-        refute_equal(matcher.expected, @actual)
+        ctx.refute_equal(matcher.expected, target)
       when :have_key
-        refute(@actual.key?(matcher.expected))
+        ctx.refute(target.key?(matcher.expected))
       when :raise_error
-        @actual_block.call
+        target.call
       else
         raise ArgumentError, "no negated matcher: #{matcher.inspect}"
       end

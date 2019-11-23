@@ -1,8 +1,8 @@
 require 'rmagick'
 require 'minitest/autorun'
 
-class ImportExportUT < Minitest::Test
-  def setup
+describe Magick::Image do
+  before do
     @test = Magick::Image.read(File.join(IMAGES_DIR, 'Flower_Hat.jpg')).first
   end
 
@@ -24,80 +24,83 @@ class ImportExportUT < Minitest::Test
     expect(diff).to be_within(50.0).of(0.0)
   end
 
-  def test_import_export_float
-    pixels = @test.export_pixels(0, 0, @test.columns, @test.rows, 'RGB')
-    fpixels = pixels.collect { |p| p.to_f / Magick::QuantumRange }
-    p = fpixels.pack('F*')
-    fimport(p, Magick::FloatPixel)
+  describe '#import_export_float' do
+    it 'works' do
+      pixels = @test.export_pixels(0, 0, @test.columns, @test.rows, 'RGB')
+      fpixels = pixels.collect { |p| p.to_f / Magick::QuantumRange }
+      p = fpixels.pack('F*')
+      fimport(p, Magick::FloatPixel)
 
-    p = fpixels.pack('D*')
-    fimport(p, Magick::DoublePixel)
+      p = fpixels.pack('D*')
+      fimport(p, Magick::DoublePixel)
+    end
   end
 
-  def test_import_export
-    is_hdri_support = Magick::Magick_features =~ /HDRI/
-    pixels = @test.export_pixels(0, 0, @test.columns, @test.rows, 'RGB')
+  describe '#import_export' do
+    it 'works' do
+      is_hdri_support = Magick::Magick_features =~ /HDRI/
+      pixels = @test.export_pixels(0, 0, @test.columns, @test.rows, 'RGB')
 
-    case Magick::MAGICKCORE_QUANTUM_DEPTH
-    when 8
-      p = pixels.pack('C*')
-      import(p, Magick::CharPixel)
-      p = pixels.pack('F*') if is_hdri_support
-      import(p, Magick::QuantumPixel)
+      case Magick::MAGICKCORE_QUANTUM_DEPTH
+      when 8
+        p = pixels.pack('C*')
+        import(p, Magick::CharPixel)
+        p = pixels.pack('F*') if is_hdri_support
+        import(p, Magick::QuantumPixel)
 
-      spixels = pixels.collect { |px| px * 257 }
-      p = spixels.pack('S*')
-      import(p, Magick::ShortPixel)
+        spixels = pixels.collect { |px| px * 257 }
+        p = spixels.pack('S*')
+        import(p, Magick::ShortPixel)
 
-      ipixels = pixels.collect { |px| px * 16_843_009 }
-      p = ipixels.pack('I*')
-      import(p, Magick::LongPixel)
+        ipixels = pixels.collect { |px| px * 16_843_009 }
+        p = ipixels.pack('I*')
+        import(p, Magick::LongPixel)
 
-    when 16
-      cpixels = pixels.collect { |px| px / 257 }
-      p = cpixels.pack('C*')
-      import(p, Magick::CharPixel)
+      when 16
+        cpixels = pixels.collect { |px| px / 257 }
+        p = cpixels.pack('C*')
+        import(p, Magick::CharPixel)
 
-      p = pixels.pack('S*')
-      import(p, Magick::ShortPixel)
-      p = pixels.pack('F*') if is_hdri_support
-      import(p, Magick::QuantumPixel)
+        p = pixels.pack('S*')
+        import(p, Magick::ShortPixel)
+        p = pixels.pack('F*') if is_hdri_support
+        import(p, Magick::QuantumPixel)
 
-      ipixels = pixels.collect { |px| px * 65_537 }
-      ipixels.pack('I*')
-    # Diff s/b 0.0 but never is.
-    # import(p, Magick::LongPixel, 430.7834)
+        ipixels = pixels.collect { |px| px * 65_537 }
+        ipixels.pack('I*')
+        # Diff s/b 0.0 but never is.
+        # import(p, Magick::LongPixel, 430.7834)
 
-    when 32
-      cpixels = pixels.collect { |px| px / 16_843_009 }
-      p = cpixels.pack('C*')
-      import(p, Magick::CharPixel)
+      when 32
+        cpixels = pixels.collect { |px| px / 16_843_009 }
+        p = cpixels.pack('C*')
+        import(p, Magick::CharPixel)
 
-      spixels = pixels.collect { |px| px / 65_537 }
-      p = spixels.pack('S*')
-      import(p, Magick::ShortPixel)
+        spixels = pixels.collect { |px| px / 65_537 }
+        p = spixels.pack('S*')
+        import(p, Magick::ShortPixel)
 
-      p = pixels.pack('I*')
-      import(p, Magick::LongPixel)
-      p = pixels.pack('D*') if is_hdri_support
-      import(p, Magick::QuantumPixel)
+        p = pixels.pack('I*')
+        import(p, Magick::LongPixel)
+        p = pixels.pack('D*') if is_hdri_support
+        import(p, Magick::QuantumPixel)
 
-    when 64
-      cpixels = pixels.collect { |px| px / 72_340_172_838_076_673 }
-      p = cpixels.pack('C*')
-      import(p, Magick::CharPixel)
+      when 64
+        cpixels = pixels.collect { |px| px / 72_340_172_838_076_673 }
+        p = cpixels.pack('C*')
+        import(p, Magick::CharPixel)
 
-      spixels = pixels.collect { |px| px / 281_479_271_743_489 }
-      p = spixels.pack('S*')
-      import(p, Magick::ShortPixel)
+        spixels = pixels.collect { |px| px / 281_479_271_743_489 }
+        p = spixels.pack('S*')
+        import(p, Magick::ShortPixel)
 
-      ipixels = pixels.collect { |px| px / 4_294_967_297 }
-      p = ipixels.pack('I*')
-      import(p, Magick::LongPixel)
+        ipixels = pixels.collect { |px| px / 4_294_967_297 }
+        p = ipixels.pack('I*')
+        import(p, Magick::LongPixel)
 
-      p = pixels.pack('Q*')
-      import(p, Magick::QuantumPixel)
-
+        p = pixels.pack('Q*')
+        import(p, Magick::QuantumPixel)
+      end
     end
   end
 end
