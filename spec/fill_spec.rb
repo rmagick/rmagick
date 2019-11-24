@@ -1,7 +1,4 @@
-require 'rmagick'
-require 'minitest/autorun'
-
-describe Magick::GradientFill do
+RSpec.describe Magick::GradientFill do
   describe '#new' do
     it 'works' do
       expect(Magick::GradientFill.new(0, 0, 0, 100, '#900', '#000')).to be_instance_of(Magick::GradientFill)

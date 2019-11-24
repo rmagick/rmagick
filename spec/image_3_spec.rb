@@ -1,8 +1,4 @@
-require 'rmagick'
-require 'minitest/autorun'
-require 'fileutils'
-
-describe Magick::Image do
+RSpec.describe Magick::Image do
   before do
     @img = Magick::Image.new(20, 20)
     @p = Magick::Image.read(IMAGE_WITH_PROFILE).first.color_profile
@@ -1230,10 +1226,4 @@ describe Magick::Image do
       FileUtils.rm('test.0')
     end
   end
-end
-
-if $PROGRAM_NAME == __FILE__
-  IMAGES_DIR = '../doc/ex/images'
-  FILES = Dir[IMAGES_DIR + '/Button_*.gif']
-  Test::Unit::UI::Console::TestRunner.run(Image3UT)
 end

@@ -1,9 +1,6 @@
-require 'rmagick'
-require 'minitest/autorun'
-
 # TODO: improve exif tests - need a benchmark image with EXIF data
 
-describe Magick::Image do
+RSpec.describe Magick::Image do
   before do
     @img = Magick::Image.new(20, 20)
   end
@@ -1590,10 +1587,4 @@ describe Magick::Image do
       expect { @img.posterize(5, true, 'x') }.to raise_error(ArgumentError)
     end
   end
-end
-
-if $PROGRAM_NAME == __FILE__
-  IMAGES_DIR = '../doc/ex/images'
-  FILES = Dir[IMAGES_DIR + '/Button_*.gif']
-  Test::Unit::UI::Console::TestRunner.run(Image2UT)
 end

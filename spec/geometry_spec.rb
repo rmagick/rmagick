@@ -1,7 +1,4 @@
-require 'rmagick'
-require 'minitest/autorun'
-
-describe Magick::Geometry do
+RSpec.describe Magick::Geometry do
   describe '#constants' do
     it 'works' do
       expect(Magick::PercentGeometry).to be_kind_of(Magick::GeometryValue)

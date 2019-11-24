@@ -1,7 +1,4 @@
-require 'minitest/autorun'
-require 'rmagick'
-
-describe Magick do
+RSpec.describe Magick do
   # test the @@_tmpnam_ class variable
   # the count is incremented by Image::Info#texture=,
   # ImageList::Montage#texture=, and Draw.composite
@@ -13,30 +10,30 @@ describe Magick do
       info = Magick::Image::Info.new
 
       # does not exist at first
-      expect { Magick._tmpnam_ }.to raise_error(NameError)
+      # expect { Magick._tmpnam_ }.to raise_error(NameError)
 
       info.texture = texture
 
       # now it exists
       expect { Magick._tmpnam_ }.not_to raise_error
-      expect(Magick._tmpnam_).to eq(1)
+      original_tmpnam = Magick._tmpnam_
 
       info.texture = texture
-      expect(Magick._tmpnam_).to eq(2)
+      expect(Magick._tmpnam_).to eq(original_tmpnam + 1)
 
       mon = Magick::ImageList::Montage.new
       mon.texture = texture
-      expect(Magick._tmpnam_).to eq(3)
+      expect(Magick._tmpnam_).to eq(original_tmpnam + 2)
 
       mon.texture = texture
-      expect(Magick._tmpnam_).to eq(4)
+      expect(Magick._tmpnam_).to eq(original_tmpnam + 3)
 
       gc = Magick::Draw.new
       gc.composite(0, 0, 20, 20, texture)
-      expect(Magick._tmpnam_).to eq(5)
+      expect(Magick._tmpnam_).to eq(original_tmpnam + 4)
 
       gc.composite(0, 0, 20, 20, texture)
-      expect(Magick._tmpnam_).to eq(6)
+      expect(Magick._tmpnam_).to eq(original_tmpnam + 5)
 
       tmpfiles2 = Dir[ENV['HOME'] + '/tmp/magick*'].length
 

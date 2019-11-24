@@ -1,7 +1,4 @@
-require 'rmagick'
-require 'minitest/autorun'
-
-describe Magick::Draw do
+RSpec.describe Magick::Draw do
   before do
     @draw = Magick::Draw.new
     @img = Magick::Image.new(200, 200)

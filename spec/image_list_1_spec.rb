@@ -1,7 +1,4 @@
-require 'rmagick'
-require 'minitest/autorun'
-
-describe Magick::ImageList do
+RSpec.describe Magick::ImageList do
   before do
     @list = Magick::ImageList.new(*FILES[0..9])
     @list2 = Magick::ImageList.new # intersection is 5..9
@@ -964,10 +961,4 @@ describe Magick::ImageList do
       expect { list <=> list2 }.not_to raise_error
     end
   end
-end
-
-if $PROGRAM_NAME == __FILE__
-  IMAGES_DIR = '../doc/ex/images'
-  FILES = Dir[IMAGES_DIR + '/Button_*.gif'].sort
-  Test::Unit::UI::Console::TestRunner.run(ImageList1UT)
 end

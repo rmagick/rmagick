@@ -1,7 +1,4 @@
-require 'rmagick'
-require 'minitest/autorun'
-
-describe Magick::Image do
+RSpec.describe Magick::Image do
   before do
     @test = Magick::Image.read(File.join(IMAGES_DIR, 'Flower_Hat.jpg')).first
   end
@@ -103,9 +100,4 @@ describe Magick::Image do
       end
     end
   end
-end
-
-if $PROGRAM_NAME == __FILE__
-  IMAGES_DIR = '../doc/ex/images'
-  Test::Unit::UI::Console::TestRunner.run(ImportExportUT)
 end

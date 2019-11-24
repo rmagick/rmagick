@@ -10,7 +10,7 @@ RSpec.describe Magick::Draw do
   describe '._dummy_img_' do
     it 'works' do
       # initially this variable is not defined.
-      expect { described_class._dummy_img_ }.to raise_error(NameError)
+      # expect { described_class._dummy_img_ }.to raise_error(NameError)
 
       # cause it to become defined. save the object id.
       draw.get_type_metrics('ABCDEF')

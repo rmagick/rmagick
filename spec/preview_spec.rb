@@ -1,7 +1,4 @@
-require 'rmagick'
-require 'minitest/autorun'
-
-describe Magick::PreviewType do
+RSpec.describe Magick::PreviewType do
   describe '#preview' do
     it 'works' do
       hat = Magick::Image.read(IMAGES_DIR + '/Flower_Hat.jpg').first
@@ -15,9 +12,4 @@ describe Magick::PreviewType do
       expect { hat.preview(2) }.to raise_error(TypeError)
     end
   end
-end
-
-if $PROGRAM_NAME == __FILE__
-  IMAGES_DIR = '../doc/ex/images'
-  Test::Unit::UI::Console::TestRunner.run(PreviewUT)
 end

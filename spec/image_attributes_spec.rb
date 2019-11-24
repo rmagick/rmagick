@@ -1,13 +1,9 @@
-require 'fileutils'
-require 'rmagick'
-require 'minitest/autorun'
-
 # TODO
 #   test frozen attributes!
 #   improve test_directory
 #   improve test_montage
 
-describe Magick::Image do
+RSpec.describe Magick::Image do
   before do
     @img = Magick::Image.new(100, 100)
     gc = Magick::Draw.new
@@ -735,8 +731,3 @@ describe Magick::Image do
     end
   end
 end # class Image_Attributes_UT
-
-if $PROGRAM_NAME == __FILE__
-  FLOWER_HAT = '../doc/ex/images/Flower_Hat.jpg'
-  Test::Unit::UI::Console::TestRunner.run(ImageAttributesUT)
-end

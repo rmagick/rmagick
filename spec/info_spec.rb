@@ -1,7 +1,4 @@
-require 'rmagick'
-require 'minitest/autorun'
-
-describe Magick::Image::Info do
+RSpec.describe Magick::Image::Info do
   before do
     @info = Magick::Image::Info.new
   end

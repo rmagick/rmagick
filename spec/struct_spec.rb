@@ -1,7 +1,4 @@
-require 'rmagick'
-require 'minitest/autorun'
-
-describe Magick do
+RSpec.describe Magick do
   describe '#chromaticity_to_s' do
     it 'works' do
       image = Magick::Image.new(10, 10)
