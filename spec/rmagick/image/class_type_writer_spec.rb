@@ -1,4 +1,4 @@
-RSpec.describe Magick::Image, '#class_type' do
+RSpec.describe Magick::Image, '#class_type=' do
   it 'does not allow setting to UndefinedClass' do
     img = Magick::Image.new(20, 20)
 
