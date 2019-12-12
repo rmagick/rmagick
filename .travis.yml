@@ -21,6 +21,7 @@ addons:
       - libxml2-dev
       - libtiff5-dev
       - libwebp-dev
+      - gsfonts
       - ghostscript
       - ccache
 
