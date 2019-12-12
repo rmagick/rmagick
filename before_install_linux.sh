@@ -22,7 +22,7 @@ if [ ! -v TRAVIS ]; then
   # install build tools, ImageMagick delegates
   sudo apt-get install -y build-essential libx11-dev libxext-dev zlib1g-dev \
     liblcms2-dev libpng-dev libjpeg-dev libfreetype6-dev libxml2-dev \
-    libtiff5-dev libwebp-dev vim ghostscript ccache
+    libtiff5-dev libwebp-dev vim gsfonts ghostscript ccache
 fi
 
 if [ ! -d /usr/include/freetype ]; then
