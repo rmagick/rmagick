@@ -6,7 +6,7 @@ cache:
     - vendor/bundle
     - build-ImageMagick
 
-dist: xenial
+dist: bionic
 addons:
   apt:
     packages:
