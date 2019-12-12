@@ -18,10 +18,12 @@ addons:
       - libpng-dev
       - libjpeg-dev
       - libfreetype6-dev
+      - libfontconfig1-dev
       - libxml2-dev
       - libtiff5-dev
       - libwebp-dev
       - ghostscript
+      - fontconfig
       - ccache
 
 os:
