@@ -417,11 +417,6 @@ Pixel_dup(VALUE self)
     pixel = ALLOC(Pixel);
     memset(pixel, '\0', sizeof(Pixel));
     dup = Data_Wrap_Struct(CLASS_OF(self), NULL, destroy_Pixel, pixel);
-    if (rb_obj_tainted(self))
-    {
-        (void) rb_obj_taint(dup);
-    }
-
     RB_GC_GUARD(dup);
 
     return rb_funcall(dup, rm_ID_initialize_copy, 1, self);

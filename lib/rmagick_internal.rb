@@ -1421,7 +1421,6 @@ module Magick
       ditto = self.class.new
       @images.each { |f| ditto << f.copy }
       ditto.scene = @scene
-      ditto.taint if tainted?
       ditto
     end
 
@@ -1495,7 +1494,6 @@ module Magick
       ditto = self.class.new
       @images.each { |img| ditto << img }
       ditto.scene = @scene
-      ditto.taint if tainted?
       ditto
     end
 
