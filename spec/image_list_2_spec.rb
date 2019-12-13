@@ -36,12 +36,9 @@ RSpec.describe Magick::ImageList do
       ilist2 = @ilist.clone
       expect(@ilist).to eq(ilist2)
       expect(ilist2.frozen?).to eq(@ilist.frozen?)
-      expect(ilist2.tainted?).to eq(@ilist.tainted?)
-      @ilist.taint
       @ilist.freeze
       ilist2 = @ilist.clone
       expect(ilist2.frozen?).to eq(@ilist.frozen?)
-      expect(ilist2.tainted?).to eq(@ilist.tainted?)
     end
   end
 
@@ -86,12 +83,9 @@ RSpec.describe Magick::ImageList do
       ilist2 = @ilist.dup
       expect(@ilist).to eq(ilist2)
       expect(ilist2.frozen?).to eq(@ilist.frozen?)
-      expect(ilist2.tainted?).to eq(@ilist.tainted?)
-      @ilist.taint
       @ilist.freeze
       ilist2 = @ilist.dup
       expect(ilist2.frozen?).not_to eq(@ilist.frozen?)
-      expect(ilist2.tainted?).to eq(@ilist.tainted?)
     end
   end
 

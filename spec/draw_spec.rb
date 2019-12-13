@@ -252,7 +252,6 @@ RSpec.describe Magick::Draw do
   describe '#dup' do
     it 'works' do
       @draw.path('M110,100 h-75 a75,75 0 1,0 75,-75 z')
-      @draw.taint
       @draw.freeze
       dup = @draw.dup
       expect(dup).to be_instance_of(Magick::Draw)
@@ -261,7 +260,6 @@ RSpec.describe Magick::Draw do
 
   describe '#clone' do
     it 'works' do
-      @draw.taint
       @draw.freeze
       clone = @draw.clone
       expect(clone).to be_instance_of(Magick::Draw)

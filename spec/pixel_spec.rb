@@ -100,9 +100,6 @@ RSpec.describe Magick::Pixel do
       expect(pixel).to eq(@pixel)
       expect(pixel.object_id).not_to eq(@pixel.object_id)
 
-      pixel = @pixel.taint.clone
-      expect(pixel.tainted?).to be(true)
-
       pixel = @pixel.freeze.clone
       expect(pixel.frozen?).to be(true)
     end
@@ -113,9 +110,6 @@ RSpec.describe Magick::Pixel do
       pixel = @pixel.dup
       expect(@pixel === pixel).to be(true)
       expect(pixel.object_id).not_to eq(@pixel.object_id)
-
-      pixel = @pixel.taint.dup
-      expect(pixel.tainted?).to be(true)
 
       pixel = @pixel.freeze.dup
       expect(pixel.frozen?).to be(false)

@@ -252,11 +252,6 @@ RSpec.describe Magick::Image do
         ditto = @img.copy
         expect(ditto).to eq(@img)
       end.not_to raise_error
-      ditto = @img.copy
-      expect(ditto.tainted?).to eq(@img.tainted?)
-      @img.taint
-      ditto = @img.copy
-      expect(ditto.tainted?).to eq(@img.tainted?)
     end
   end
 
@@ -578,11 +573,6 @@ RSpec.describe Magick::Image do
         ditto = @img.dup
         expect(ditto).to eq(@img)
       end.not_to raise_error
-      ditto = @img.dup
-      expect(ditto.tainted?).to eq(@img.tainted?)
-      @img.taint
-      ditto = @img.dup
-      expect(ditto.tainted?).to eq(@img.tainted?)
     end
   end
 
