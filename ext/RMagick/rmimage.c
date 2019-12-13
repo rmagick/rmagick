@@ -5883,11 +5883,6 @@ Image_dup(VALUE self)
 
     (void) rm_check_destroyed(self);
     dup = Data_Wrap_Struct(CLASS_OF(self), NULL, rm_image_destroy, NULL);
-    if (rb_obj_tainted(self))
-    {
-        (void) rb_obj_taint(dup);
-    }
-
     RB_GC_GUARD(dup);
 
     return rb_funcall(dup, rm_ID_initialize_copy, 1, self);

@@ -1229,11 +1229,6 @@ Draw_dup(VALUE self)
     draw = ALLOC(Draw);
     memset(draw, 0, sizeof(Draw));
     dup = Data_Wrap_Struct(CLASS_OF(self), mark_Draw, destroy_Draw, draw);
-    if (rb_obj_tainted(self))
-    {
-        (void)rb_obj_taint(dup);
-    }
-
     RB_GC_GUARD(dup);
 
     return rb_funcall(dup, rm_ID_initialize_copy, 1, self);
