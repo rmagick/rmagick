@@ -373,7 +373,7 @@ arg_is_number(VALUE arg)
  * @throw TypeError
  */
 static VALUE
-rescue_not_str(VALUE arg)
+rescue_not_str(VALUE arg, VALUE raised_exc ATTRIBUTE_UNUSED)
 {
     rb_raise(rb_eTypeError, "argument must be a number or a string in the form 'NN%%' (%s given)",
             rb_class2name(CLASS_OF(arg)));
@@ -469,7 +469,7 @@ check_num2dbl(VALUE obj)
  * @return 0
  */
 static VALUE
-rescue_not_dbl(VALUE ignored ATTRIBUTE_UNUSED)
+rescue_not_dbl(VALUE ignored ATTRIBUTE_UNUSED, VALUE raised_exc ATTRIBUTE_UNUSED)
 {
     return INT2FIX(0);
 }
