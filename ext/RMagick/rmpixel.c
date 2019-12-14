@@ -244,7 +244,7 @@ DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(black, opacity)
  * @throw ArgumentError
  */
 static VALUE
-color_arg_rescue(VALUE arg)
+color_arg_rescue(VALUE arg, VALUE raised_exc ATTRIBUTE_UNUSED)
 {
     rb_raise(rb_eTypeError, "argument must be color name or pixel (%s given)",
             rb_class2name(CLASS_OF(arg)));

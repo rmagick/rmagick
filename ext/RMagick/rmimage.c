@@ -11576,7 +11576,7 @@ Image_read(VALUE class, VALUE file_arg)
  * @return 0
  */
 static VALUE
-file_arg_rescue(VALUE arg)
+file_arg_rescue(VALUE arg, VALUE raised_exc ATTRIBUTE_UNUSED)
 {
     rb_raise(rb_eTypeError, "argument must be path name or open file (%s given)",
              rb_class2name(CLASS_OF(arg)));
