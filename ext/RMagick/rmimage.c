@@ -2639,7 +2639,7 @@ Image_chromaticity_eq(VALUE self, VALUE chroma)
 
 
 /**
- * Copy an image, along with its frozen and tainted state.
+ * Copy an image, along with its frozen state.
  *
  * Ruby usage:
  *   - @verbatim Image#clone @endverbatim
