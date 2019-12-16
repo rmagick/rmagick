@@ -246,15 +246,12 @@ Performance/ChainArrayAllocation:
 
 # Offense count: 6
 Performance/FixedSize:
-  Exclude:
-    - 'spec/image_2_spec.rb'
+  Enabled: false
 
 # Offense count: 2
 # Cop supports --auto-correct.
 Performance/RedundantMatch:
-  Exclude:
-    - 'examples/demo.rb'
-    - 'spec/image_2_spec.rb'
+  Enabled: false
 
 # Offense count: 2
 # Cop supports --auto-correct.
@@ -284,9 +281,7 @@ RSpec/ExampleLength:
 
 # Offense count: 1
 RSpec/ExpectActual:
-  Exclude:
-    - 'spec/routing/**/*'
-    - 'spec/image_2_spec.rb'
+  Enabled: false
 
 # Offense count: 18
 # Configuration parameters: CustomTransform, IgnoreMethods.
@@ -303,26 +298,11 @@ RSpec/HooksBeforeExamples:
 # Offense count: 2876
 # Configuration parameters: AssignmentOnly.
 RSpec/InstanceVariable:
-  Exclude:
-    - 'spec/draw_2_spec.rb'
-    - 'spec/draw_spec.rb'
-    - 'spec/image_1_spec.rb'
-    - 'spec/image_2_spec.rb'
-    - 'spec/image_3_spec.rb'
-    - 'spec/image_attributes_spec.rb'
-    - 'spec/image_list_1_spec.rb'
-    - 'spec/image_list_2_spec.rb'
-    - 'spec/import_export_spec.rb'
-    - 'spec/info_spec.rb'
-    - 'spec/kernel_info_spec.rb'
-    - 'spec/pixel_spec.rb'
-    - 'spec/polaroid_options_spec.rb'
-    - 'spec/rmagick/image/read_spec.rb'
+  Enabled: false
 
 # Offense count: 1
 RSpec/IteratedExpectation:
-  Exclude:
-    - 'spec/image_2_spec.rb'
+  Enabled: false
 
 # Offense count: 1
 RSpec/MultipleDescribes:
@@ -565,9 +545,7 @@ Style/SafeNavigation:
 
 # Offense count: 5
 Style/Send:
-  Exclude:
-    - 'lib/rmagick_internal.rb'
-    - 'spec/image_2_spec.rb'
+  Enabled: false
 
 # Offense count: 2
 # Configuration parameters: Methods.

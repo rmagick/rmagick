@@ -1,0 +1,36 @@
+RSpec.describe Magick::Image, '#destroy!' do
+  before { @img = Magick::Image.new(20, 20) }
+
+  after do
+    GC.enable
+    Magick.trace_proc = nil
+  end
+
+  it 'works' do
+    images = {}
+    GC.disable
+
+    Magick.trace_proc = proc do |which, id, addr, method|
+      m = id.split(/ /)
+      name = File.basename m[0]
+
+      expect(%i[c d]).to include(which)
+      expect(method).to eq(:destroy!) if which == :d
+
+      if which == :c
+        expect(images).not_to have_key(addr)
+        images[addr] = name
+      else
+        expect(images).to have_key(addr)
+        expect(images[addr]).to eq(name)
+      end
+    end
+
+    unmapped = Magick::ImageList.new(IMAGES_DIR + '/Hot_Air_Balloons.jpg', IMAGES_DIR + '/Violin.jpg', IMAGES_DIR + '/Polynesia.jpg')
+    map = Magick::ImageList.new 'netscape:'
+    mapped = unmapped.remap map
+    unmapped.each(&:destroy!)
+    map.destroy!
+    mapped.each(&:destroy!)
+  end
+end
