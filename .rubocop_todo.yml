@@ -303,21 +303,7 @@ RSpec/HooksBeforeExamples:
 # Offense count: 2876
 # Configuration parameters: AssignmentOnly.
 RSpec/InstanceVariable:
-  Exclude:
-    - 'spec/draw_2_spec.rb'
-    - 'spec/draw_spec.rb'
-    - 'spec/image_1_spec.rb'
-    - 'spec/image_2_spec.rb'
-    - 'spec/image_3_spec.rb'
-    - 'spec/image_attributes_spec.rb'
-    - 'spec/image_list_1_spec.rb'
-    - 'spec/image_list_2_spec.rb'
-    - 'spec/import_export_spec.rb'
-    - 'spec/info_spec.rb'
-    - 'spec/kernel_info_spec.rb'
-    - 'spec/pixel_spec.rb'
-    - 'spec/polaroid_options_spec.rb'
-    - 'spec/rmagick/image/read_spec.rb'
+  Enabled: false
 
 # Offense count: 1
 RSpec/IteratedExpectation:
