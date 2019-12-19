@@ -973,20 +973,20 @@ Pixel_spaceship(VALUE self, VALUE other)
 
     if (this->red != that->red)
     {
-        return INT2NUM((this->red - that->red)/abs(this->red - that->red));
+        return INT2NUM((this->red - that->red)/abs((int)(this->red - that->red)));
     }
     else if(this->green != that->green)
     {
-        return INT2NUM((this->green - that->green)/abs(this->green - that->green));
+        return INT2NUM((this->green - that->green)/abs((int)(this->green - that->green)));
     }
     else if(this->blue != that->blue)
     {
-        return INT2NUM((this->blue - that->blue)/abs(this->blue - that->blue));
+        return INT2NUM((this->blue - that->blue)/abs((int)(this->blue - that->blue)));
     }
 #if defined(IMAGEMAGICK_7)
     else if(this->alpha != that->alpha)
     {
-        return INT2NUM((this->alpha - that->alpha)/abs(this->alpha - that->alpha));
+        return INT2NUM((this->alpha - that->alpha)/abs((int)(this->alpha - that->alpha)));
     }
 #else
     else if(this->opacity != that->opacity)
