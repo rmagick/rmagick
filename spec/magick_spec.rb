@@ -299,7 +299,7 @@ RSpec.describe Magick do
 
       expect { cur = Magick.limit_resource(:file, 500) }.not_to raise_error
       expect(cur).to be_kind_of(Integer)
-      expect(cur > 512).to be(true)
+      expect(cur > 100).to be(true)
       expect { new = Magick.limit_resource('file') }.not_to raise_error
       expect(new).to eq(500)
       Magick.limit_resource(:file, cur)
