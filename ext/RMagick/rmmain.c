@@ -18,6 +18,12 @@
 #if defined HAVE_RB_GC_ADJUST_MEMORY_USAGE && \
     (defined HAVE_POSIX_MEMALIGN || defined HAVE_MEMALIGN || defined _WIN32)
     #define USE_RM_ALIGNED_MALLOC 1
+
+    #if defined HAVE_MALLOC_USABLE_SIZE
+    #include <malloc.h>
+    #elif defined HAVE_MALLOC_SIZE
+    #include <malloc/malloc.h>
+    #endif
 #endif
 #endif
 
