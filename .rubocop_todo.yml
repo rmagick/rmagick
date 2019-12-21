@@ -246,15 +246,12 @@ Performance/ChainArrayAllocation:
 
 # Offense count: 6
 Performance/FixedSize:
-  Exclude:
-    - 'spec/image_2_spec.rb'
+  Enabled: false
 
 # Offense count: 2
 # Cop supports --auto-correct.
 Performance/RedundantMatch:
-  Exclude:
-    - 'examples/demo.rb'
-    - 'spec/image_2_spec.rb'
+  Enabled: false
 
 # Offense count: 2
 # Cop supports --auto-correct.
@@ -284,9 +281,7 @@ RSpec/ExampleLength:
 
 # Offense count: 1
 RSpec/ExpectActual:
-  Exclude:
-    - 'spec/routing/**/*'
-    - 'spec/image_2_spec.rb'
+  Enabled: false
 
 # Offense count: 18
 # Configuration parameters: CustomTransform, IgnoreMethods.
@@ -307,8 +302,7 @@ RSpec/InstanceVariable:
 
 # Offense count: 1
 RSpec/IteratedExpectation:
-  Exclude:
-    - 'spec/image_2_spec.rb'
+  Enabled: false
 
 # Offense count: 1
 RSpec/MultipleDescribes:
@@ -551,9 +545,7 @@ Style/SafeNavigation:
 
 # Offense count: 5
 Style/Send:
-  Exclude:
-    - 'lib/rmagick_internal.rb'
-    - 'spec/image_2_spec.rb'
+  Enabled: false
 
 # Offense count: 2
 # Configuration parameters: Methods.
