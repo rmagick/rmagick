@@ -316,9 +316,7 @@ RSpec/MultipleExpectations:
 
 # Offense count: 3
 RSpec/Pending:
-  Exclude:
-    - 'spec/rmagick/draw/marshal_dump_spec.rb'
-    - 'spec/rmagick/image/read_spec.rb'
+  Enabled: false
 
 # Offense count: 2
 # Cop supports --auto-correct.
@@ -354,11 +352,7 @@ Rails/TimeZone:
 
 # Offense count: 4
 Security/MarshalLoad:
-  Exclude:
-    - 'lib/rmagick_internal.rb'
-    - 'spec/image_2_spec.rb'
-    - 'spec/image_list_2_spec.rb'
-    - 'spec/rmagick/draw/marshal_dump_spec.rb'
+  Enabled: false
 
 # Offense count: 2
 Style/AutoResourceCleanup:
