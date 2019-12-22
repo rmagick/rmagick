@@ -668,10 +668,11 @@ Pixel_from_MagickPixel(const MagickPixel *pp)
     pixel->blue    = ROUND_TO_QUANTUM(pp->blue);
 #if defined(IMAGEMAGICK_7)
     pixel->alpha   = ROUND_TO_QUANTUM(pp->alpha);
+    pixel->black   = ROUND_TO_QUANTUM(pp->index);
 #else
     pixel->opacity = ROUND_TO_QUANTUM(pp->opacity);
-#endif
     pixel->index   = ROUND_TO_QUANTUM(pp->index);
+#endif
 
     return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
 }
@@ -699,10 +700,11 @@ Pixel_from_PixelPacket(const PixelPacket *pp)
     pixel->blue    = pp->blue;
 #if defined(IMAGEMAGICK_7)
     pixel->alpha   = pp->alpha;
+    pixel->black   = 0;
 #else
     pixel->opacity = pp->opacity;
-#endif
     pixel->index   = 0;
+#endif
 
     return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
 }
@@ -730,10 +732,11 @@ Pixel_from_PixelColor(const PixelColor *pp)
     pixel->blue    = pp->blue;
 #if defined(IMAGEMAGICK_7)
     pixel->alpha   = pp->alpha;
+    pixel->black   = 0;
 #else
     pixel->opacity = pp->opacity;
-#endif
     pixel->index   = 0;
+#endif
 
     return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
 }

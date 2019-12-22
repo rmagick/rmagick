@@ -7705,8 +7705,8 @@ Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE row
     const Quantum *pixels;
 #else
     const PixelPacket *pixels;
-#endif
     const IndexPacket *indexes;
+#endif
 
     image = rm_check_destroyed(self);
     x       = NUM2LONG(x_arg);
@@ -7738,7 +7738,9 @@ Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE row
     size = (long)(columns * rows);
     pixel_ary = rb_ary_new2(size);
 
+#if !defined(IMAGEMAGICK_7)
     indexes = GetVirtualIndexQueue(image);
+#endif
 
     // Convert the PixelPackets to Magick::Pixel objects
     for (n = 0; n < size; n++)
