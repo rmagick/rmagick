@@ -226,11 +226,7 @@ Pixel_alpha_eq(VALUE self, VALUE v)
 DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(cyan, red)
 DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(magenta, green)
 DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(yellow, blue)
-#if defined(IMAGEMAGICK_7)
 DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(black, black)
-#else
-DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(black, index)
-#endif
 
 
 /**
@@ -668,11 +664,10 @@ Pixel_from_MagickPixel(const MagickPixel *pp)
     pixel->blue    = ROUND_TO_QUANTUM(pp->blue);
 #if defined(IMAGEMAGICK_7)
     pixel->alpha   = ROUND_TO_QUANTUM(pp->alpha);
-    pixel->black   = ROUND_TO_QUANTUM(pp->index);
 #else
     pixel->opacity = ROUND_TO_QUANTUM(pp->opacity);
-    pixel->index   = ROUND_TO_QUANTUM(pp->index);
 #endif
+    pixel->black   = ROUND_TO_QUANTUM(pp->index);
 
     return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
 }
@@ -700,11 +695,10 @@ Pixel_from_PixelPacket(const PixelPacket *pp)
     pixel->blue    = pp->blue;
 #if defined(IMAGEMAGICK_7)
     pixel->alpha   = pp->alpha;
-    pixel->black   = 0;
 #else
     pixel->opacity = pp->opacity;
-    pixel->index   = 0;
 #endif
+    pixel->black   = 0;
 
     return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
 }
@@ -732,11 +726,10 @@ Pixel_from_PixelColor(const PixelColor *pp)
     pixel->blue    = pp->blue;
 #if defined(IMAGEMAGICK_7)
     pixel->alpha   = pp->alpha;
-    pixel->black   = 0;
 #else
     pixel->opacity = pp->opacity;
-    pixel->index   = 0;
 #endif
+    pixel->black   = 0;
 
     return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
 }
