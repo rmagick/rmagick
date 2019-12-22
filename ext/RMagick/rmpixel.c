@@ -461,12 +461,10 @@ Pixel_fcmp(int argc, VALUE *argv, VALUE self)
     double fuzz = 0.0;
     unsigned int equal;
     ColorspaceType colorspace = RGBColorspace;
-#if defined(IMAGEMAGICK_7)
     PixelColor this, that;
-#else
+#if !defined(IMAGEMAGICK_7)
     Image *image;
     Info *info;
-    Pixel *this, *that;
 #endif
 
     switch (argc)
@@ -483,18 +481,16 @@ Pixel_fcmp(int argc, VALUE *argv, VALUE self)
             break;
     }
 
-#if defined(IMAGEMAGICK_7)
     Color_to_PixelColor(&this, self);
     Color_to_PixelColor(&that, argv[0]);
+
+#if defined(IMAGEMAGICK_7)
     this.fuzz = fuzz;
     this.colorspace = colorspace;
     that.fuzz = fuzz;
     that.colorspace = colorspace;
     equal = IsFuzzyEquivalencePixelInfo(&this, &that);
 #else
-    Data_Get_Struct(self, Pixel, this);
-    Data_Get_Struct(argv[0], Pixel, that);
-
     // The IsColorSimilar function expects to get the
     // colorspace and fuzz parameters from an Image structure.
 
@@ -517,7 +513,7 @@ Pixel_fcmp(int argc, VALUE *argv, VALUE self)
     image->colorspace = colorspace;
     image->fuzz = fuzz;
 
-    equal = IsColorSimilar(image, this, that);
+    equal = IsColorSimilar(image, &this, &that);
     (void) DestroyImage(image);
 #endif
 
