@@ -458,7 +458,7 @@ Pixel_fcmp(int argc, VALUE *argv, VALUE self)
     unsigned int equal;
     ColorspaceType colorspace = RGBColorspace;
     PixelColor this, that;
-#if !defined(IMAGEMAGICK_7)
+#if defined(IMAGEMAGICK_6)
     Image *image;
     Info *info;
 #endif

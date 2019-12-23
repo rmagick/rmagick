@@ -7738,7 +7738,7 @@ Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE row
     size = (long)(columns * rows);
     pixel_ary = rb_ary_new2(size);
 
-#if !defined(IMAGEMAGICK_7)
+#if defined(IMAGEMAGICK_6)
     indexes = GetVirtualIndexQueue(image);
 #endif
 
