@@ -229,7 +229,7 @@ DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(yellow, blue)
 #if defined(IMAGEMAGICK_7)
 DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(black, black)
 #else
-DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(black, opacity)
+DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(black, index)
 #endif
 
 
