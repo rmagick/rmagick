@@ -695,10 +695,11 @@ Pixel_from_PixelPacket(const PixelPacket *pp)
     pixel->blue    = pp->blue;
 #if defined(IMAGEMAGICK_7)
     pixel->alpha   = pp->alpha;
+    pixel->black   = pp->black;
 #else
     pixel->opacity = pp->opacity;
-#endif
     pixel->black   = 0;
+#endif
 
     return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
 }
@@ -726,10 +727,11 @@ Pixel_from_PixelColor(const PixelColor *pp)
     pixel->blue    = pp->blue;
 #if defined(IMAGEMAGICK_7)
     pixel->alpha   = pp->alpha;
+    pixel->black   = pp->black;
 #else
     pixel->opacity = pp->opacity;
-#endif
     pixel->black   = 0;
+#endif
 
     return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
 }

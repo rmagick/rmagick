@@ -7752,6 +7752,7 @@ Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE row
         color.green = GetPixelGreen(image, pixels);
         color.blue  = GetPixelBlue(image, pixels);
         color.alpha = GetPixelAlpha(image, pixels);
+        color.black = GetPixelBlack(image, pixels);
         rb_ary_store(pixel_ary, n, Pixel_from_PixelPacket(&color));
 
         pixels += GetPixelChannels(image);
