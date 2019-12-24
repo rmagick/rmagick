@@ -7761,6 +7761,7 @@ Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE row
         mpp.red = GetPixelRed(pixels);
         mpp.green = GetPixelGreen(pixels);
         mpp.blue = GetPixelBlue(pixels);
+        mpp.opacity = GetPixelOpacity(pixels);
         if (indexes)
         {
             mpp.index = GetPixelIndex(indexes + n);
