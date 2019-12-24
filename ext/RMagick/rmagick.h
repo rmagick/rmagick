@@ -134,7 +134,16 @@ typedef ImageInfo Info; /**< Make type name match class name */
     typedef PixelInfo MagickPixel;
     typedef PixelInfo PixelColor;
 #else
-    typedef PixelPacket Pixel;
+    typedef struct _RMagickPixelPacket
+    {
+    Quantum
+        red,
+        green,
+        blue,
+        opacity,
+        black;
+    } RMagickPixelPacket;
+    typedef RMagickPixelPacket Pixel;
     typedef MagickPixelPacket MagickPixel;
     typedef PixelPacket PixelColor;
     typedef AlphaChannelType AlphaChannelOption;

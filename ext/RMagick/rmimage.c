@@ -7705,6 +7705,7 @@ Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE row
     const Quantum *pixels;
 #else
     const PixelPacket *pixels;
+    const IndexPacket *indexes;
 #endif
 
     image = rm_check_destroyed(self);
@@ -7737,6 +7738,10 @@ Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE row
     size = (long)(columns * rows);
     pixel_ary = rb_ary_new2(size);
 
+#if defined(IMAGEMAGICK_6)
+    indexes = GetVirtualIndexQueue(image);
+#endif
+
     // Convert the PixelPackets to Magick::Pixel objects
     for (n = 0; n < size; n++)
     {
@@ -7747,11 +7752,21 @@ Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE row
         color.green = GetPixelGreen(image, pixels);
         color.blue  = GetPixelBlue(image, pixels);
         color.alpha = GetPixelAlpha(image, pixels);
+        color.black = GetPixelBlack(image, pixels);
         rb_ary_store(pixel_ary, n, Pixel_from_PixelPacket(&color));
 
         pixels += GetPixelChannels(image);
 #else
-        rb_ary_store(pixel_ary, n, Pixel_from_PixelPacket(&pixels[n]));
+        MagickPixel mpp;
+        mpp.red = GetPixelRed(pixels);
+        mpp.green = GetPixelGreen(pixels);
+        mpp.blue = GetPixelBlue(pixels);
+        if (indexes)
+        {
+            mpp.index = GetPixelIndex(indexes + n);
+        }
+        rb_ary_store(pixel_ary, n, Pixel_from_MagickPixel(&mpp));
+        pixels++;
 #endif
     }
 
@@ -14082,8 +14097,10 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg
                 SetPixelAlpha(image, pixel->alpha, pixels);
                 pixels += GetPixelChannels(image);
 #else
-                *pixels = *pixel;
-                pixels++;
+                pixels[n].red = pixel->red;
+                pixels[n].green = pixel->green;
+                pixels[n].blue = pixel->blue;
+                pixels[n].opacity = pixel->opacity;
 #endif
             }
             SyncAuthenticPixels(image, exception);
