@@ -14081,6 +14081,9 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg
 
         if (pixels)
         {
+#if defined(IMAGEMAGICK_6)
+            IndexPacket *indexes = GetAuthenticIndexQueue(image);
+#endif
             for (n = 0; n < size; n++)
             {
                 new_pixel = rb_ary_entry(new_pixels, n);
@@ -14095,12 +14098,18 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg
                 SetPixelGreen(image, pixel->green, pixels);
                 SetPixelBlue(image,  pixel->blue,  pixels);
                 SetPixelAlpha(image, pixel->alpha, pixels);
+                SetPixelBlack(image, pixel->black, pixels);
                 pixels += GetPixelChannels(image);
 #else
-                pixels[n].red = pixel->red;
-                pixels[n].green = pixel->green;
-                pixels[n].blue = pixel->blue;
-                pixels[n].opacity = pixel->opacity;
+                SetPixelRed(pixels, pixel->red);
+                SetPixelGreen(pixels, pixel->green);
+                SetPixelBlue(pixels, pixel->blue);
+                SetPixelOpacity(pixels, pixel->opacity);
+                if (indexes)
+                {
+                    SetPixelIndex(indexes + n, pixel->black);
+                }
+                pixels++;
 #endif
             }
             SyncAuthenticPixels(image, exception);
