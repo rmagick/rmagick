@@ -1,3 +1,5 @@
+require 'tmpdir'
+
 RSpec.describe Magick::Image, '#store_pixels' do
   before do
     @img = Magick::Image.new(20, 20)
@@ -31,14 +33,18 @@ RSpec.describe Magick::Image, '#store_pixels' do
     pixel.black   = 183 * 257
 
     img.store_pixels(0, 0, 1, 1, [pixel])
-    img.write('/tmp/rmagick_store_pixel.jpg')
 
-    img2 = Magick::Image.read('/tmp/rmagick_store_pixel.jpg').first
+    temp_file_path = File.join(Dir.tmpdir, 'rmagick_store_pixel.jpg')
+    img.write(temp_file_path)
+
+    img2 = Magick::Image.read(temp_file_path).first
     pixel = img2.get_pixels(0, 0, 1, 1).first
 
     expect(pixel.cyan).to    equal(49  * 257)
     expect(pixel.magenta).to equal(181 * 257)
     expect(pixel.yellow).to  equal(1   * 257)
     expect(pixel.black).to   equal(183 * 257)
+
+    File.delete(temp_file_path)
   end
 end
