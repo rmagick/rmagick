@@ -1,4 +1,14 @@
 RSpec.describe Magick::ImageList, '#concat' do
+  before do
+    @list = Magick::ImageList.new(*FILES[0..9])
+    @list2 = Magick::ImageList.new # intersection is 5..9
+    @list2 << @list[5]
+    @list2 << @list[6]
+    @list2 << @list[7]
+    @list2 << @list[8]
+    @list2 << @list[9]
+  end
+
   it 'allows appending identical instances more than once' do
     img = Magick::Image.new(1, 1)
     img2 = Magick::Image.new(3, 3)
@@ -9,5 +19,16 @@ RSpec.describe Magick::ImageList, '#concat' do
     res = list.append(false)
     expect(res.columns).to eq(9)
     expect(res.rows).to eq(3)
+  end
+
+  it 'works' do
+    expect do
+      res = @list.concat(@list2)
+      expect(res).to be_instance_of(Magick::ImageList)
+      expect(res.length).to eq(15)
+      expect(res.cur_image).to be(res[14])
+    end.not_to raise_error
+    expect { @list.concat(2) }.to raise_error(ArgumentError)
+    expect { @list.concat([2]) }.to raise_error(ArgumentError)
   end
 end

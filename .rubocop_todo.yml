@@ -370,14 +370,7 @@ Style/ClassAndModuleChildren:
 # Cop supports --auto-correct.
 # Configuration parameters: PreferredMethods.
 Style/CollectionMethods:
-  Exclude:
-    - 'doc/ex/composite_layers.rb'
-    - 'lib/rmagick_internal.rb'
-    - 'lib/rvg/embellishable.rb'
-    - 'lib/rvg/misc.rb'
-    - 'lib/rvg/transformable.rb'
-    - 'spec/image_list_1_spec.rb'
-    - 'spec/import_export_spec.rb'
+  Enabled: false
 
 # Offense count: 89
 Style/CommentedKeyword:
