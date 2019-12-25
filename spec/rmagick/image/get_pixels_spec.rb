@@ -49,6 +49,6 @@ RSpec.describe Magick::Image, '#get_pixels' do
     expect(pixel.red).to   equal(12 * 257)
     expect(pixel.green).to equal(34 * 257)
     expect(pixel.blue).to  equal(56 * 257)
-    expect(pixel.alpha).to equal(78 * 257)
+    expect(pixel.alpha).to be_within(78 * 257).of(1)
   end
 end
