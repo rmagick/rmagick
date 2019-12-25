@@ -1,3 +1,5 @@
+require 'tmpdir'
+
 RSpec.describe Magick::Image, '#get_pixels' do
   before { @img = Magick::Image.new(20, 20) }
 
@@ -24,5 +26,29 @@ RSpec.describe Magick::Image, '#get_pixels' do
     expect(pixel.magenta).to equal(181 * 257)
     expect(pixel.yellow).to  equal(1   * 257)
     expect(pixel.black).to   equal(183 * 257)
+  end
+
+  it 'get proper alpha value' do
+    img = Magick::Image.new(1, 1)
+
+    pixel = Magick::Pixel.new
+    pixel.red   = 12 * 257
+    pixel.green = 34 * 257
+    pixel.blue  = 56 * 257
+    pixel.alpha = 78 * 257
+
+    img.alpha(Magick::SetAlphaChannel)
+    img.store_pixels(0, 0, 1, 1, [pixel])
+
+    temp_file_path = File.join(Dir.tmpdir, 'rmagick_get_pixels.png')
+    img.write(temp_file_path)
+
+    img2 = Magick::Image.read(temp_file_path).first
+    pixel = img2.get_pixels(0, 0, 1, 1).first
+
+    expect(pixel.red).to   equal(12 * 257)
+    expect(pixel.green).to equal(34 * 257)
+    expect(pixel.blue).to  equal(56 * 257)
+    expect(pixel.alpha).to be_within(78 * 257).of(1)
   end
 end
