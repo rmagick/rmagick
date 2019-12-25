@@ -94,17 +94,7 @@ Lint/HandleExceptions:
 
 # Offense count: 94
 Lint/NumberConversion:
-  Exclude:
-    - 'doc/ex/get_pixels.rb'
-    - 'doc/ex/stegano.rb'
-    - 'examples/describe.rb'
-    - 'examples/thumbnail.rb'
-    - 'lib/rmagick_internal.rb'
-    - 'lib/rvg/misc.rb'
-    - 'lib/rvg/to_c.rb'
-    - 'spec/enum_spec.rb'
-    - 'spec/geometry_spec.rb'
-    - 'spec/import_export_spec.rb'
+  Enabled: false
 
 # Offense count: 1
 Lint/RescueException:
@@ -118,8 +108,7 @@ Lint/ReturnInVoidContext:
 
 # Offense count: 1
 Lint/UselessComparison:
-  Exclude:
-    - 'spec/enum_spec.rb'
+  Enabled: false
 
 # Offense count: 6
 # Configuration parameters: CheckForMethodsWithNoSideEffects.
@@ -326,6 +315,9 @@ RSpec/PredicateMatcher:
   Exclude:
     - 'spec/rmagick/image/read_spec.rb'
 
+RSpec/RepeatedDescription:
+  Enabled: false
+
 # Offense count: 2
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: strict, flexible
@@ -362,9 +354,7 @@ Style/AutoResourceCleanup:
 
 # Offense count: 7
 Style/CaseEquality:
-  Exclude:
-    - 'spec/enum_spec.rb'
-    - 'spec/pixel_spec.rb'
+  Enabled: false
 
 # Offense count: 5
 # Cop supports --auto-correct.
