@@ -29,4 +29,13 @@ RSpec.describe Magick::Image, '#import_pixels' do
     pixels.shift
     expect { @img.import_pixels(0, 0, @img.columns, 1, 'RGB', pixels) }.to raise_error(ArgumentError)
   end
+
+  it 'raises an error given UndefinedPixel' do
+    img = Magick::Image.new(20, 20)
+    pixels = img.export_pixels(0, 0, 20, 20, 'RGB').pack('D*')
+
+    expect do
+      img.import_pixels(0, 0, 20, 20, 'RGB', pixels, Magick::UndefinedPixel)
+    end.to raise_error(ArgumentError, /UndefinedPixel/)
+  end
 end
