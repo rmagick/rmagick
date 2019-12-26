@@ -137,6 +137,7 @@ rm_aligned_malloc_size(void *ptr)
 static void *rm_aligned_malloc(size_t size, size_t alignment)
 {
     void *res;
+    size_t allocated_size;
 
 #if defined(HAVE_POSIX_MEMALIGN)
     if (posix_memalign(&res, alignment, size) != 0) {
@@ -148,8 +149,8 @@ static void *rm_aligned_malloc(size_t size, size_t alignment)
     res = _aligned_malloc(size, alignment);
 #endif
 
-    size = rm_aligned_malloc_size(res);
-    rb_gc_adjust_memory_usage(size);
+    allocated_size = rm_aligned_malloc_size(res);
+    rb_gc_adjust_memory_usage(allocated_size);
     return res;
 }
 
@@ -165,8 +166,8 @@ static void *rm_aligned_malloc(size_t size, size_t alignment)
  */
 static void rm_aligned_free(void *ptr)
 {
-    size_t size = rm_aligned_malloc_size(ptr);
-    rb_gc_adjust_memory_usage(-size);
+    size_t allocated_size = rm_aligned_malloc_size(ptr);
+    rb_gc_adjust_memory_usage(-allocated_size);
 
 #if defined(HAVE_POSIX_MEMALIGN) || defined(HAVE_MEMALIGN)
     free(ptr);
