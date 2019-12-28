@@ -16,7 +16,6 @@ static Image *clone_imagelist(Image *);
 static Image *images_from_imagelist(VALUE);
 static long imagelist_length(VALUE);
 static long check_imagelist_length(VALUE);
-static VALUE imagelist_scene_eq(VALUE, VALUE);
 static void imagelist_push(VALUE, VALUE);
 static VALUE ImageList_new(void);
 
@@ -811,24 +810,6 @@ images_from_imagelist(VALUE imagelist)
     RB_GC_GUARD(t);
 
     return head;
-}
-
-
-/**
- * \@scene attribute writer.
- *
- * No Ruby usage (internal function)
- *
- * @param imagelist the imagelist
- * @param scene the scene
- * @return the scene
- */
-static VALUE
-imagelist_scene_eq(VALUE imagelist, VALUE scene)
-{
-    rb_check_frozen(imagelist);
-    (void) rb_iv_set(imagelist, "@scene", scene);
-    return scene;
 }
 
 
