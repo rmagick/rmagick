@@ -26,7 +26,7 @@ RSpec.describe Magick::Image, '#pixel_color' do
     end.not_to raise_error
   end
 
-  it 'get CYMK color' do
+  it 'get CYMK color', supported_after('6.8.0') do
     img = Magick::Image.new(20, 30) { self.quality = 100 }
     img.colorspace = Magick::CMYKColorspace
 
