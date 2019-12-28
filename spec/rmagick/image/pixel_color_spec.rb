@@ -25,4 +25,30 @@ RSpec.describe Magick::Image, '#pixel_color' do
       expect(res.to_color).to eq('blue')
     end.not_to raise_error
   end
+
+  it 'get CYMK color', supported_after('6.8.0') do
+    img = Magick::Image.new(20, 30) { self.quality = 100 }
+    img.colorspace = Magick::CMYKColorspace
+
+    pixel = Magick::Pixel.new
+    pixel.cyan    = 49  * 257
+    pixel.magenta = 181 * 257
+    pixel.yellow  = 1   * 257
+    pixel.black   = 183 * 257
+
+    img.store_pixels(15, 20, 1, 1, [pixel])
+
+    temp_file_path = File.join(Dir.tmpdir, 'rmagick_pixel_color.jpg')
+    img.write(temp_file_path)
+
+    img2 = Magick::Image.read(temp_file_path).first
+    pixel = img2.pixel_color(15, 20)
+
+    expect(pixel.cyan).to    equal(49  * 257)
+    expect(pixel.magenta).to equal(181 * 257)
+    expect(pixel.yellow).to  equal(1   * 257)
+    expect(pixel.black).to   equal(183 * 257)
+
+    File.delete(temp_file_path)
+  end
 end

@@ -10686,6 +10686,8 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
 #else
     PixelPacket *pixel;
     const PixelPacket *old_pixel;
+    MagickPixel mpp;
+    IndexPacket *indexes;
 #endif
 
     memset(&old_color, 0, sizeof(old_color));
@@ -10724,20 +10726,32 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
         old_color.green = GetPixelGreen(image, old_pixel);
         old_color.blue  = GetPixelBlue(image, old_pixel);
         old_color.alpha = GetPixelAlpha(image, old_pixel);
+        old_color.black = GetPixelBlack(image, old_pixel);
+        return Pixel_from_PixelPacket(&old_color);
 #else
         old_color = *old_pixel;
+        indexes = GetAuthenticIndexQueue(image);
         // PseudoClass
         if (image->storage_class == PseudoClass)
         {
-            IndexPacket *indexes = GetAuthenticIndexQueue(image);
             old_color = image->colormap[(unsigned long)*indexes];
         }
         if (!image->matte)
         {
             old_color.opacity = OpaqueOpacity;
         }
+
+        rm_init_magickpixel(image, &mpp);
+        mpp.red = GetPixelRed(&old_color);
+        mpp.green = GetPixelGreen(&old_color);
+        mpp.blue = GetPixelBlue(&old_color);
+        mpp.opacity = GetPixelOpacity(&old_color);
+        if (indexes)
+        {
+            mpp.index = GetPixelIndex(indexes);
+        }
+        return Pixel_from_MagickPixel(&mpp);
 #endif
-        return Pixel_from_PixelPacket(&old_color);
     }
 
     // ImageMagick segfaults if the pixel location is out of bounds.

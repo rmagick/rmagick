@@ -659,15 +659,15 @@ Pixel_from_MagickPixel(const MagickPixel *pp)
     Pixel *pixel;
 
     pixel          = ALLOC(Pixel);
-    pixel->red     = ROUND_TO_QUANTUM(pp->red);
-    pixel->green   = ROUND_TO_QUANTUM(pp->green);
-    pixel->blue    = ROUND_TO_QUANTUM(pp->blue);
+    pixel->red     = pp->red;
+    pixel->green   = pp->green;
+    pixel->blue    = pp->blue;
 #if defined(IMAGEMAGICK_7)
-    pixel->alpha   = ROUND_TO_QUANTUM(pp->alpha);
+    pixel->alpha   = pp->alpha;
 #else
-    pixel->opacity = ROUND_TO_QUANTUM(pp->opacity);
+    pixel->opacity = pp->opacity;
 #endif
-    pixel->black   = ROUND_TO_QUANTUM(pp->index);
+    pixel->black   = pp->index;
 
     return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
 }
