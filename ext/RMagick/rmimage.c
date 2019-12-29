@@ -16054,14 +16054,15 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
 
         for (x = 0; x < (long) image->columns; x++)
         {
-            q[x] = p[x];
             // Never make a pixel *less* transparent than it already is.
 #if defined(IMAGEMAGICK_7)
+            *q = *p;
             SetPixelAlpha(reflection, min(GetPixelAlpha(image, q), QuantumRange - (Quantum)opacity), q);
 
             p += GetPixelChannels(reflection);
             q += GetPixelChannels(reflection);
 #else
+            q[x] = p[x];
             q[x].opacity = max(q[x].opacity, (Quantum)opacity);
 #endif
         }
