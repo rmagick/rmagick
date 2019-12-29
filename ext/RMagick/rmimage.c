@@ -10327,7 +10327,7 @@ Image_opaque_channel(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(new_image, channels);
-    okay = OpaquePaintImage(new_image, &target_pp, &fill_pp, MagickFalse, exception);
+    okay = OpaquePaintImage(new_image, &target_pp, &fill_pp, invert, exception);
     END_CHANNEL_MASK(new_image);
     new_image->fuzz = keep;
     rm_check_exception(exception, new_image, DestroyOnError);
