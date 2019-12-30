@@ -1,3 +1,11 @@
+if ENV['COVERAGE'] =~ /\Atrue\z/i
+  ## RUN SIMPLECOV
+  require 'simplecov'
+  SimpleCov.start 'rmagick'
+  puts '[COVERAGE] Running with SimpleCov HTML Formatter'
+  SimpleCov.formatters = [SimpleCov::Formatter::HTMLFormatter]
+end
+
 require 'pry'
 require 'rmagick'
 
