@@ -18,10 +18,3 @@ SimpleCov.profiles.define 'rmagick' do
   add_filter 'bundle'
   add_filter 'bin'
 end
-
-## RUN SIMPLECOV
-if ENV['COVERAGE'] =~ /\Atrue\z/i
-  SimpleCov.start 'rmagick'
-  puts '[COVERAGE] Running with SimpleCov HTML Formatter'
-  SimpleCov.formatters = [SimpleCov::Formatter::HTMLFormatter]
-end
