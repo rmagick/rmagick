@@ -9851,9 +9851,9 @@ Image_negate_channel(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    BEGIN_CHANNEL_MASK(image, channels);
+    BEGIN_CHANNEL_MASK(new_image, channels);
     (void) NegateImage(new_image, grayscale, exception);
-    END_CHANNEL_MASK(image);
+    END_CHANNEL_MASK(new_image);
     rm_check_exception(exception, new_image, DestroyOnError);
     (void) DestroyExceptionInfo(exception);
 #else
