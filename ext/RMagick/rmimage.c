@@ -12735,6 +12735,7 @@ Image_set_channel_depth(VALUE self, VALUE channel_arg, VALUE depth)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
+    channel ||= CompositeMaskChannel;
     BEGIN_CHANNEL_MASK(image, channel);
     (void) SetImageDepth(image, channel_depth, exception);
     END_CHANNEL_MASK(image);
