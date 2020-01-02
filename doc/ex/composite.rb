@@ -15,7 +15,7 @@ triangle.fill(COLOR_A)
 triangle.stroke('transparent')
 triangle.polygon(0, 0, COLS, 0, 0, ROWS, 0, 0)
 triangle.draw(img)
-image_a = img.transparent('white', TransparentOpacity)
+image_a = img.transparent('white', alpha: TransparentAlpha)
 image_a['Label'] = 'A'
 
 img = Image.new(COLS, ROWS)
@@ -24,12 +24,12 @@ triangle.fill(COLOR_B)
 triangle.stroke('transparent')
 triangle.polygon(0, 0, COLS, ROWS, COLS, 0, 0, 0)
 triangle.draw(img)
-image__b = img.transparent('white', TransparentOpacity)
+image__b = img.transparent('white', alpha: TransparentAlpha)
 image__b['Label'] = 'B'
 
 list = ImageList.new
 null = Image.read('xc:white') { self.size = Geometry.new(COLS, ROWS) }
-null = null.first.transparent('white', TransparentOpacity)
+null = null.first.transparent('white', alpha: TransparentAlpha)
 null.border_color = 'transparent'
 granite = Image.read('granite:')
 
@@ -76,13 +76,13 @@ list.cur_image['Label'] = 'A lighten B'
 list << image__b.composite(image_a, CenterGravity, PlusCompositeOp)
 list.cur_image['Label'] = 'A plus B'
 
-list << image__b.composite(image_a, CenterGravity, MinusCompositeOp)
+list << image__b.composite(image_a, CenterGravity, MinusDstCompositeOp)
 list.cur_image['Label'] = 'A minus B'
 
-list << image__b.composite(image_a, CenterGravity, AddCompositeOp)
+list << image__b.composite(image_a, CenterGravity, ModulusAddCompositeOp)
 list.cur_image['Label'] = 'A add B'
 
-list << image__b.composite(image_a, CenterGravity, SubtractCompositeOp)
+list << image__b.composite(image_a, CenterGravity, ModulusSubtractCompositeOp)
 list.cur_image['Label'] = 'A subtract B'
 
 list << image__b.composite(image_a, CenterGravity, DifferenceCompositeOp)
