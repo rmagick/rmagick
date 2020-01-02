@@ -1068,6 +1068,7 @@ ImageList_remap(int argc, VALUE *argv, VALUE self)
     CHECK_EXCEPTION()
     (void) DestroyExceptionInfo(exception);
 #else
+    (void) RemapImages(&quantize_info, images, remap_image);
     rm_split(images);
     rm_check_image_exception(images, RetainOnError);
 #endif
