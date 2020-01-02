@@ -14,7 +14,8 @@ regwidth = shorts.columns / 2
 regheight = shorts.rows / 2
 
 mask = Image.new(regwidth, regheight) { self.background_color = 'white' }
-mask.opacity = 0.50 * TransparentOpacity
+mask.alpha(Magick::ActivateAlphaChannel)
+mask.quantum_operator(SetQuantumOperator, 0.50 * QuantumRange, AlphaChannel)
 
 black = Image.new(shorts.columns, shorts.rows) { self.background_color = 'black' }
 pairs = ImageList.new
@@ -36,5 +37,5 @@ montage = pairs.montage do
   self.tile = '6x3'
   self.border_width = 1
 end
-montage.write('crop_with_gravity.miff')
+montage.write('crop_with_gravity.png')
 # montage.display
