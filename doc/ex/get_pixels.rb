@@ -18,26 +18,27 @@ cols = grayrocks.columns
 # Create an array of opacity values, proceeding from
 # transparent to opaque. The array should have as many
 # elements as there are columns in the image. The first
-# element should be TransparentOpacity and each succeeding
+# element should be QuantumRange and each succeeding
 # element slightly more opaque than its predecessor.
-step = Magick::TransparentOpacity / cols.to_f
-opacity_steps = Array.new(cols)
+step = Magick::QuantumRange / cols.to_f
+alpha_steps = Array.new(cols)
 cols.times do |x|
-  opacity_steps[x] = Magick::TransparentOpacity - Integer(x * step)
-  opacity_steps[x] = Magick::OpaqueOpacity if opacity_steps[x] < Magick::OpaqueOpacity
+  alpha_steps[x] = Integer(x * step)
+  alpha_steps[x] = Magick::QuantumRange if alpha_steps[x] > Magick::QuantumRange
 end
 
 # Get each row of pixels from the mono image.
 # Copy the pre-computed opacity values to the pixels.
 # Store the pixels back.
+grayrocks.alpha(Magick::ActivateAlphaChannel)
+
 rows.times do |y|
   pixels = grayrocks.get_pixels(0, y, cols, 1)
-  pixels.each_with_index { |p, x| p.opacity = opacity_steps[x] }
+  pixels.each_with_index { |p, x| p.alpha = alpha_steps[x] }
   grayrocks.store_pixels(0, y, cols, 1, pixels)
 end
 
 # Composite the mono version of the image over the color version.
-grayrocks.alpha(Magick::ActivateAlphaChannel)
 combine = rocks.composite(grayrocks, Magick::CenterGravity, Magick::OverCompositeOp)
 # combine.display
 combine.write 'get_pixels.jpg'
