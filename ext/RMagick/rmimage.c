@@ -10889,7 +10889,7 @@ Image_polaroid(int argc, VALUE *argv, VALUE self)
     Draw *draw;
     ExceptionInfo *exception;
 #if defined(IMAGEMAGICK_7)
-    char *caption = (char *) NULL;
+    const char *caption;
 #endif
 
     image = rm_check_destroyed(self);
@@ -10914,6 +10914,7 @@ Image_polaroid(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
+    caption = GetImageProperty(clone, "Caption", exception);
     new_image = PolaroidImage(clone, draw->info, caption, angle, image->interpolate, exception);
 #else
     new_image = PolaroidImage(clone, draw->info, angle, exception);
