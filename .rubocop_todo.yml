@@ -545,11 +545,7 @@ Style/StringHashKeys:
 # Configuration parameters: EnforcedStyle, ConsistentQuotesInMultiline.
 # SupportedStyles: single_quotes, double_quotes
 Style/StringLiterals:
-  Exclude:
-    - 'Rakefile'
-    - 'spec/image_1_spec.rb'
-    - 'spec/image_list_2_spec.rb'
-    - 'spec/polaroid_options_spec.rb'
+  Enabled: false
 
 # Offense count: 5
 # Cop supports --auto-correct.
