@@ -11,4 +11,11 @@ RSpec.describe Magick::Image, '#blue_shift' do
     expect { img.blue_shift(2) }.not_to raise_error
     expect { img.blue_shift(2, 3) }.to raise_error(ArgumentError)
   end
+
+  it "works" do
+    expect(img.blue_shift).not_to be(img)
+    expect(img.blue_shift(2.0)).not_to be(img)
+    expect { img.blue_shift('x') }.to raise_error(TypeError)
+    expect { img.blue_shift(2, 2) }.to raise_error(ArgumentError)
+  end
 end
