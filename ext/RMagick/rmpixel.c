@@ -290,7 +290,7 @@ Color_to_PixelColor(PixelColor *pp, VALUE color)
  *
  * No Ruby usage (internal function)
  *
- * @param pp the PixelColor to modify
+ * @param pp the Pixel to modify
  * @param color the color name or Magick::Pixel
  */
 void
