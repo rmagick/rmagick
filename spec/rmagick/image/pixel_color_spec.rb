@@ -26,7 +26,7 @@ RSpec.describe Magick::Image, '#pixel_color' do
     end.not_to raise_error
   end
 
-  it 'get CYMK color', supported_after('6.8.0') do
+  it 'get/set CYMK color', supported_after('6.8.0') do
     img = Magick::Image.new(20, 30) { self.quality = 100 }
     img.colorspace = Magick::CMYKColorspace
 
@@ -36,7 +36,7 @@ RSpec.describe Magick::Image, '#pixel_color' do
     pixel.yellow  = 1   * 257
     pixel.black   = 183 * 257
 
-    img.store_pixels(15, 20, 1, 1, [pixel])
+    img.pixel_color(15, 20, pixel)
 
     temp_file_path = File.join(Dir.tmpdir, 'rmagick_pixel_color.jpg')
     img.write(temp_file_path)

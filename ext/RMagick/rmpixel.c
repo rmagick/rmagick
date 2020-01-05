@@ -271,6 +271,7 @@ Color_to_PixelColor(PixelColor *pp, VALUE color)
         pp->blue    = pixel->blue;
 #if defined(IMAGEMAGICK_7)
         pp->alpha   = pixel->alpha;
+        pp->black   = pixel->black;
 #else
         pp->opacity = pixel->opacity;
 #endif
@@ -280,6 +281,43 @@ Color_to_PixelColor(PixelColor *pp, VALUE color)
         // require 'to_str' here instead of just 'to_s'.
         color = rb_rescue(rb_str_to_str, color, color_arg_rescue, color);
         Color_Name_to_PixelColor(pp, color);
+    }
+}
+
+
+/**
+ * Convert either a String color name or a Magick::Pixel to a Pixel.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param pp the Pixel to modify
+ * @param color the color name or Magick::Pixel
+ */
+void
+Color_to_Pixel(Pixel *pp, VALUE color)
+{
+    Pixel *pixel;
+    PixelColor pixel_color;
+
+    memset(pp, 0, sizeof(*pp));
+    // Allow color name or Pixel
+    if (CLASS_OF(color) == Class_Pixel)
+    {
+        Data_Get_Struct(color, Pixel, pixel);
+        memcpy(pp, pixel, sizeof(Pixel));
+    }
+    else
+    {
+        Color_to_PixelColor(&pixel_color, color);
+        pp->red   = pixel_color.red;
+        pp->green = pixel_color.green;
+        pp->blue  = pixel_color.blue;
+#if defined(IMAGEMAGICK_7)
+        pp->alpha = pixel_color.alpha;
+        pp->black = pixel_color.black;
+#else
+        pp->opacity = pixel_color.opacity;
+#endif
     }
 }
 
