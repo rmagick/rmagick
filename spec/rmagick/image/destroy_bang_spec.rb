@@ -14,15 +14,16 @@ RSpec.describe Magick::Image, '#destroy!' do
       m = id.split(/ /)
       name = File.basename m[0]
 
-      expect(%i[c d]).to include(which)
-      expect(method).to eq(:destroy!) if which == :d
-
-      if which == :c
+      case which
+      when :c
         expect(images).not_to have_key(addr)
         images[addr] = name
-      else
+      when :d
+        expect(method).to eq(:destroy!)
         expect(images).to have_key(addr)
         expect(images[addr]).to eq(name)
+      else
+        raise ArgumentError, "Unhandled `which`: #{which.inspect}"
       end
     end
 
