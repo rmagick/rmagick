@@ -206,13 +206,6 @@ Performance/FixedSize:
 Performance/RedundantMatch:
   Enabled: false
 
-# Offense count: 517
-# Cop supports --auto-correct.
-# Configuration parameters: SkipBlocks, EnforcedStyle.
-# SupportedStyles: described_class, explicit
-RSpec/DescribedClass:
-  Enabled: false
-
 # Offense count: 359
 # Configuration parameters: Max.
 RSpec/ExampleLength:
