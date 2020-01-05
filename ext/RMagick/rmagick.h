@@ -1107,6 +1107,7 @@ extern VALUE  ChromaticityInfo_to_s(VALUE);
 extern VALUE  ChromaticityInfo_new(ChromaticityInfo *);
 extern void   Color_to_PixelColor(PixelColor *, VALUE);
 extern void   Color_to_MagickPixel(Image *, MagickPixel *, VALUE);
+extern void   Color_to_Pixel(Pixel *, VALUE);
 extern VALUE  Color_to_s(VALUE);
 extern VALUE  Import_ColorInfo(const ColorInfo *);
 extern VALUE  Font_to_s(VALUE);

@@ -10674,7 +10674,7 @@ VALUE
 Image_pixel_color(int argc, VALUE *argv, VALUE self)
 {
     Image *image;
-    PixelColor new_color;
+    Pixel new_color;
     PixelPacket old_color;
     ExceptionInfo *exception;
     long x, y;
@@ -10701,7 +10701,7 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
             set = True;
             // Replace with new color? The arg can be either a color name or
             // a Magick::Pixel.
-            Color_to_PixelColor(&new_color, argv[2]);
+            Color_to_Pixel(&new_color, argv[2]);
         case 2:
             break;
         default:
@@ -10799,18 +10799,29 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
         old_color.green = GetPixelGreen(image, pixel);
         old_color.blue  = GetPixelBlue(image, pixel);
         old_color.alpha = GetPixelAlpha(image, pixel);
+        old_color.black = GetPixelBlack(image, pixel);
 
         SetPixelRed(image,   new_color.red,   pixel);
         SetPixelGreen(image, new_color.green, pixel);
         SetPixelBlue(image,  new_color.blue,  pixel);
         SetPixelAlpha(image, new_color.alpha, pixel);
+        SetPixelBlack(image, new_color.black, pixel);
 #else
         old_color = *pixel;
+        indexes = GetAuthenticIndexQueue(image);
         if (!image->matte)
         {
             old_color.opacity = OpaqueOpacity;
         }
-        *pixel = new_color;
+
+        SetPixelRed(pixel,     new_color.red);
+        SetPixelGreen(pixel,   new_color.green);
+        SetPixelBlue(pixel,    new_color.blue);
+        SetPixelOpacity(pixel, new_color.opacity);
+        if (indexes)
+        {
+            SetPixelIndex(indexes, new_color.black);
+        }
 #endif
 
         SyncAuthenticPixels(image, exception);
