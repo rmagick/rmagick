@@ -222,11 +222,6 @@ RSpec/ExampleLength:
 RSpec/ExpectActual:
   Enabled: false
 
-# Offense count: 18
-# Configuration parameters: CustomTransform, IgnoreMethods.
-RSpec/FilePath:
-  Enabled: false
-
 # Offense count: 2
 # Cop supports --auto-correct.
 RSpec/HooksBeforeExamples:
@@ -475,11 +470,7 @@ Style/SingleLineBlockParams:
 # Offense count: 20
 # Cop supports --auto-correct.
 Style/StringHashKeys:
-  Exclude:
-    - 'Rakefile'
-    - 'lib/rmagick_internal.rb'
-    - 'lib/rvg/misc.rb'
-    - 'spec/rmagick/image/properties_spec.rb'
+  Enabled: false
 
 # Offense count: 148
 # Cop supports --auto-correct.
