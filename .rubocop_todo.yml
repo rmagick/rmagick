@@ -211,26 +211,10 @@ Performance/RedundantMatch:
 RSpec/ExampleLength:
   Enabled: false
 
-# Offense count: 2
-# Cop supports --auto-correct.
-RSpec/HooksBeforeExamples:
-  Exclude:
-    - 'spec/image_2_spec.rb'
-    - 'spec/magick_2_spec.rb'
-
 # Offense count: 2876
 # Configuration parameters: AssignmentOnly.
 RSpec/InstanceVariable:
   Enabled: false
-
-# Offense count: 1
-RSpec/IteratedExpectation:
-  Enabled: false
-
-# Offense count: 1
-RSpec/MultipleDescribes:
-  Exclude:
-    - 'spec/fill_spec.rb'
 
 # Offense count: 553
 # Configuration parameters: AggregateFailuresByDefault.

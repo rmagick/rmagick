@@ -9,14 +9,11 @@ RSpec.describe Magick::Image, '#export_pixels' do
   end
 
   it 'works' do
-    expect do
-      res = @img.export_pixels
-      expect(res).to be_instance_of(Array)
-      expect(res.length).to eq(@img.columns * @img.rows * 'RGB'.length)
-      res.each do |p|
-        expect(p).to be_kind_of(Integer)
-      end
-    end.not_to raise_error
+    res = @img.export_pixels
+    expect(res).to be_instance_of(Array)
+    expect(res.length).to eq(@img.columns * @img.rows * 'RGB'.length)
+    expect(res).to all(be_kind_of(Integer))
+
     expect { @img.export_pixels(0) }.not_to raise_error
     expect { @img.export_pixels(0, 0) }.not_to raise_error
     expect { @img.export_pixels(0, 0, 10) }.not_to raise_error
