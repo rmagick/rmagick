@@ -1,6 +1,4 @@
 RSpec.describe Magick::Image, '#palette?' do
-  before { @img = described_class.new(20, 20) }
-
   it 'works' do
     img = described_class.read(IMAGES_DIR + '/Flower_Hat.jpg').first
     expect do

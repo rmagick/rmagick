@@ -1,14 +1,12 @@
 RSpec.describe Magick::Pixel, '#===' do
-  before do
-    @pixel = described_class.from_color('brown')
-  end
-
   it 'works' do
-    pixel = described_class.from_color('brown')
-    expect(@pixel === pixel).to be(true)
-    expect(@pixel === 'red').to be(false)
+    pixel1 = described_class.from_color('brown')
+    pixel2 = described_class.from_color('brown')
 
-    pixel = described_class.from_color('red')
-    expect(@pixel === pixel).to be(false)
+    expect(pixel1 === pixel2).to be(true)
+    expect(pixel1 === 'red').to be(false)
+
+    pixel2 = described_class.from_color('red')
+    expect(pixel1 === pixel2).to be(false)
   end
 end

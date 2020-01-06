@@ -1,8 +1,4 @@
 RSpec.describe Magick::Pixel, '#fcmp' do
-  before do
-    @pixel = described_class.from_color('brown')
-  end
-
   it 'works' do
     red = described_class.from_color('red')
     blue = described_class.from_color('blue')

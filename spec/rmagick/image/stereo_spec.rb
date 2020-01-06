@@ -1,17 +1,14 @@
 RSpec.describe Magick::Image, '#stereo' do
-  before do
-    @img = described_class.new(20, 20)
-    @p = described_class.read(IMAGE_WITH_PROFILE).first.color_profile
-  end
-
   it 'works' do
+    img1 = described_class.new(20, 20)
+
     expect do
-      res = @img.stereo(@img)
+      res = img1.stereo(img1)
       expect(res).to be_instance_of(described_class)
     end.not_to raise_error
 
-    img = described_class.new(20, 20)
-    img.destroy!
-    expect { @img.stereo(img) }.to raise_error(Magick::DestroyedImageError)
+    img2 = described_class.new(20, 20)
+    img2.destroy!
+    expect { img1.stereo(img2) }.to raise_error(Magick::DestroyedImageError)
   end
 end

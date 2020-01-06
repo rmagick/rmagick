@@ -1,11 +1,9 @@
 RSpec.describe Magick::Pixel, '#hash' do
-  before do
-    @pixel = described_class.from_color('brown')
-  end
-
   it 'works' do
+    pixel = described_class.from_color('brown')
+
     hash = nil
-    expect { hash = @pixel.hash }.not_to raise_error
+    expect { hash = pixel.hash }.not_to raise_error
     expect(hash).not_to be(nil)
     expect(hash).to eq(1_385_502_079)
 

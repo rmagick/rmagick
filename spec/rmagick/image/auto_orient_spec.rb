@@ -1,8 +1,4 @@
 RSpec.describe Magick::Image, "#auto_orient" do
-  before do
-    @img = described_class.new(20, 20)
-  end
-
   it "works" do
     Magick::OrientationType.values.each do |v|
       expect do
@@ -14,8 +10,10 @@ RSpec.describe Magick::Image, "#auto_orient" do
       end.not_to raise_error
     end
 
+    img = described_class.new(20, 20)
+
     expect do
-      res = @img.auto_orient!
+      res = img.auto_orient!
       # When not changed, returns nil
       expect(res).to be(nil)
     end.not_to raise_error

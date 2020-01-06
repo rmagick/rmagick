@@ -1,9 +1,4 @@
 RSpec.describe Magick::Draw, '#interline_spacing' do
-  before do
-    @draw = described_class.new
-    @img = Magick::Image.new(200, 200)
-  end
-
   it 'accepts a valid parameter without raising an error' do
     draw = described_class.new
 
@@ -19,18 +14,20 @@ RSpec.describe Magick::Draw, '#interline_spacing' do
 
   it 'works' do
     draw = described_class.new
+    img = Magick::Image.new(200, 200)
+
     draw.interline_spacing(40.5)
     expect(draw.inspect).to eq('interline-spacing 40.5')
-    expect { draw.draw(@img) }.not_to raise_error
+    expect { draw.draw(img) }.not_to raise_error
 
     draw = described_class.new
     draw.interline_spacing('40.5')
     expect(draw.inspect).to eq('interline-spacing 40.5')
-    expect { draw.draw(@img) }.not_to raise_error
+    expect { draw.draw(img) }.not_to raise_error
 
-    # expect { @draw.interline_spacing(Float::NAN) }.to raise_error(ArgumentError)
-    expect { @draw.interline_spacing('nan') }.to raise_error(ArgumentError)
-    expect { @draw.interline_spacing('xxx') }.to raise_error(ArgumentError)
-    expect { @draw.interline_spacing(nil) }.to raise_error(TypeError)
+    # expect { draw.interline_spacing(Float::NAN) }.to raise_error(ArgumentError)
+    expect { draw.interline_spacing('nan') }.to raise_error(ArgumentError)
+    expect { draw.interline_spacing('xxx') }.to raise_error(ArgumentError)
+    expect { draw.interline_spacing(nil) }.to raise_error(TypeError)
   end
 end

@@ -1,8 +1,4 @@
 RSpec.describe Magick::Draw, '#initialize' do
-  before do
-    @draw = described_class.new
-  end
-
   it 'works' do
     expect do
       yield_obj = nil

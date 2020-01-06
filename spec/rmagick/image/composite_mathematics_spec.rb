@@ -1,6 +1,4 @@
 RSpec.describe Magick::Image, '#composite_mathematics' do
-  before { @img = described_class.new(20, 20) }
-
   it 'works' do
     bg = described_class.new(50, 50)
     fg = described_class.new(50, 50) { self.background_color = 'black' }

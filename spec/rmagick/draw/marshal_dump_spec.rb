@@ -1,8 +1,4 @@
 RSpec.describe Magick::Draw, '#marshal_dump' do
-  before do
-    @draw = described_class.new
-  end
-
   it 'marshals without an error' do
     skip 'this spec fails on some versions of ImageMagick'
     draw = described_class.new
@@ -43,7 +39,8 @@ RSpec.describe Magick::Draw, '#marshal_dump' do
   end
 
   it 'works' do
-    draw2 = @draw.dup
+    draw1 = described_class.new
+    draw2 = draw1.dup
     draw2.affine = Magick::AffineMatrix.new(1, 2, 3, 4, 5, 6)
     draw2.decorate = Magick::LineThroughDecoration
     draw2.encoding = 'AdobeCustom'
@@ -70,7 +67,7 @@ RSpec.describe Magick::Draw, '#marshal_dump' do
     dumped = nil
     expect { dumped = draw2.marshal_dump }.not_to raise_error
 
-    draw3 = @draw.dup
+    draw3 = draw1.dup
     expect do
       draw3.marshal_load(dumped)
     end.not_to raise_error

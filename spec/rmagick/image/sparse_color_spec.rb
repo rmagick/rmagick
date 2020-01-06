@@ -1,9 +1,4 @@
 RSpec.describe Magick::Image, '#sparse_color' do
-  before do
-    @img = described_class.new(20, 20)
-    @p = described_class.read(IMAGE_WITH_PROFILE).first.color_profile
-  end
-
   it 'works' do
     img = described_class.new(100, 100)
     args = [30, 10, 'red', 10, 80, 'blue', 70, 60, 'lime', 80, 20, 'yellow']

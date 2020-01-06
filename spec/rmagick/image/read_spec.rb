@@ -6,22 +6,22 @@ RSpec.describe Magick::Image, '#read' do
       # pid = Process.spawn File.join(SUPPORT_DIR, 'issue_200', 'app.rb'), err: :close, out: :close
       # begin
       #   Timeout.timeout(1) do
-      #     _, @status = Process.waitpid2 pid
+      #     _, status = Process.waitpid2 pid
       #   end
       # rescue Timeout::Error
       #   Process.kill('KILL', pid)
-      #   _, @status = Process.waitpid2 pid
+      #   _, status = Process.waitpid2 pid
       # end
     end
 
     it 'not hangs with nil argument' do
       skip
-      expect(@status.signaled?).to be(false)
+      expect(status).not_to be_signaled
     end
 
     it 'raise error with nil argument' do
       skip
-      expect(@status.success?).to be(true)
+      expect(status).to be_success
       expect { described_class.read(nil) }.to raise_error(Magick::ImageMagickError, /unable to open image nil/)
     end
   end
