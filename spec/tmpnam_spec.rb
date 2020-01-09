@@ -1,3 +1,9 @@
+module Magick
+  def self._tmpnam_
+    @@_tmpnam_
+  end
+end
+
 RSpec.describe Magick do
   # test the @@_tmpnam_ class variable
   # the count is incremented by Image::Info#texture=,
