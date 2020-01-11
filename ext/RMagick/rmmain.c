@@ -124,7 +124,7 @@ rm_aligned_malloc_size(void *ptr)
 // Refered to https://github.com/ImageMagick/ImageMagick/blob/master/MagickCore/memory-private.h
 #define MAGICKCORE_SIZEOF_VOID_P 8
 #define CACHE_LINE_SIZE  (8 * MAGICKCORE_SIZEOF_VOID_P)
-
+    size_t _aligned_msize(void *memblock, size_t alignment, size_t offset);
     return _aligned_msize(ptr, CACHE_LINE_SIZE, 0);
 #endif
 }
