@@ -401,7 +401,7 @@ Montage_shadow_eq(VALUE self, VALUE shadow)
  * Set stroke value.
  *
  * Ruby usage:
- *   - @verbatim Magick::Montage#stroke(color-name) @endverbatim
+ *   - @verbatim Magick::Montage#stroke= color @endverbatim
  *
  * @param self this object
  * @param color the color name
@@ -422,7 +422,7 @@ Montage_stroke_eq(VALUE self, VALUE color)
  * Set texture value.
  *
  * Ruby usage:
- *   - @verbatim Montage#texture(texture-image) @endverbatim
+ *   - @verbatim Montage#texture= texture @endverbatim
  *
  * @param self this object
  * @param texture the texture image
@@ -461,7 +461,7 @@ Montage_texture_eq(VALUE self, VALUE texture)
  * Set tile value.
  *
  * Ruby usage:
- *   - @verbatim Magick::Montage#tile(tile) @endverbatim
+ *   - @verbatim Magick::Montage#tile= tile @endverbatim
  *
  * @param self this object
  * @param tile_arg the tile
@@ -487,7 +487,7 @@ Montage_tile_eq(VALUE self, VALUE tile_arg)
  * Set title value.
  *
  * Ruby usage:
- *   - @verbatim Magick::Montage#title(title) @endverbatim
+ *   - @verbatim Magick::Montage#title= title @endverbatim
  *
  * @param self this object
  * @param title the title

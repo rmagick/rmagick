@@ -827,8 +827,8 @@ Image_aref(VALUE self, VALUE key_arg)
  * Update or add image attribute "key".
  *
  * Ruby usage:
- *   - @verbatim Image#["key"] = attr @endverbatim
- *   - @verbatim Image#[:key] = attr @endverbatim
+ *   - @verbatim Image#["key"]= attr @endverbatim
+ *   - @verbatim Image#[:key]= attr @endverbatim
  *
  * Notes:
  *   - Specify attr=nil to remove the key from the list.  
@@ -1263,7 +1263,7 @@ Image_bias(VALUE self)
  * Set image bias (used when convolving an image).
  *
  * Ruby usage:
- *   - @verbatim Image#bias = a number between 0.0 and 1.0 or "NN%" @endverbatim
+ *   - @verbatim Image#bias= a number between 0.0 and 1.0 or "NN%" @endverbatim
  *
  * @param self this object
  * @param pct the bias
@@ -1386,7 +1386,7 @@ Image_black_point_compensation(VALUE self)
  * Set black point compensation attribute.
  *
  * Ruby usage:
- *   - @verbatim Image#black_point_compensation=true or false @endverbatim
+ *   - @verbatim Image#black_point_compensation= true or false @endverbatim
  *
  * @param self this object
  * @param arg the compensation
@@ -2729,7 +2729,7 @@ Image_clut_channel(int argc, VALUE *argv, VALUE self)
  * Call GetImageHistogram.
  *
  * Ruby usage:
- *   - @verbatim Image_color_histogram(VALUE self); @endverbatim
+ *   - @verbatim Image#color_histogram @endverbatim
  *
  * Notes:
  *   - returns hash @verbatim {aPixel=>count} @endverbatim
@@ -2953,7 +2953,7 @@ Image_color_profile(VALUE self)
  * Set the ICC color profile.
  *
  * Ruby usage:
- *   - @verbatim Image#color_profile=(String) @endverbatim
+ *   - @verbatim Image#color_profile= String @endverbatim
  *
  * Notes:
  *   - Pass nil to remove any existing profile.
@@ -3267,7 +3267,7 @@ Image_colorspace(VALUE self)
  * Set the image's colorspace.
  *
  * Ruby usage:
- *   - @verbatim Image#colorspace=Magick::ColorspaceType @endverbatim
+ *   - @verbatim Image#colorspace= Magick::ColorspaceType @endverbatim
  *
  * @param self this object
  * @param colorspace the colorspace
@@ -3414,7 +3414,7 @@ Image_compose(VALUE self)
  * Set the composite operator attribute.
  *
  * Ruby usage:
- *   - @verbatim Image#compose=composite_op @endverbatim
+ *   - @verbatim Image#compose= composite_op @endverbatim
  *
  * @param self this object
  * @param compose_arg the composite operator
@@ -4420,7 +4420,8 @@ Image_contrast_stretch_channel(int argc, VALUE *argv, VALUE self)
     return rm_image_new(new_image);
 }
 
-/** Apply a user supplied kernel to the image according to the given mophology method.
+/**
+ *  Apply a user supplied kernel to the image according to the given mophology method.
  *
  *  Ruby Usage:
  *    - @verbatim Image#morphology(method, iterations, kernel) @endverbatim
@@ -4447,7 +4448,8 @@ Image_morphology(VALUE self, VALUE method_v, VALUE iterations, VALUE kernel_v)
     return Image_morphology_channel(self, default_channels_const, method_v, iterations, kernel_v);
 }
 
-/** Apply a user supplied kernel to the image channel according to the given mophology method.
+/**
+ *  Apply a user supplied kernel to the image channel according to the given mophology method.
  *
  *  Ruby Usage:
  *    - @verbatim Image#morphology_channel(channel, method, iterations, kernel) @endverbatim
@@ -4819,7 +4821,7 @@ Image_crop_bang(int argc, VALUE *argv, VALUE self)
  * Call CycleColormapImage.
  *
  * Ruby usage:
- *   - @verbatim Image#cycle_colormap @endverbatim
+ *   - @verbatim Image#cycle_colormap(amount) @endverbatim
  *
  * @param self this object
  * @param amount amount to cycle the colormap
@@ -4883,8 +4885,8 @@ Image_density(VALUE self)
  * Set the x & y resolutions in the image.
  *
  * Ruby usage:
- *   - @verbatim Image#density="XxY" @endverbatim
- *   - @verbatim Image#density=aGeometry @endverbatim
+ *   - @verbatim Image#density= "XxY" @endverbatim
+ *   - @verbatim Image#density= aGeometry @endverbatim
  *
  * Notes:
  *   - The density is a string of the form "XresxYres" or simply "Xres".
@@ -5059,7 +5061,7 @@ DEF_ATTR_ACCESSOR(Image, delay, ulong)
  * Delete the image composite mask.
  *
  * Ruby usage:
- *   - @verbatim Image#delete_compose_mask() @endverbatim
+ *   - @verbatim Image#delete_compose_mask @endverbatim
  *
  * @param self this object
  * @return self
@@ -7300,8 +7302,8 @@ DEF_ATTR_READER(Image, fuzz, dbl)
  * Set image fuzz.
  *
  * Ruby usage:
- *   - @verbatim Image#fuzz=number @endverbatim
- *   - @verbatim Image#fuzz=NN% @endverbatim
+ *   - @verbatim Image#fuzz= number @endverbatim
+ *   - @verbatim Image#fuzz= NN% @endverbatim
  *
  * @param self this object
  * @param fuzz the fuzz
@@ -8406,10 +8408,10 @@ DEF_ATTR_ACCESSOR(Image, iterations, int)
  * Adjust the levels of an image given these points: black, mid, and white.
  *
  * Ruby usage:
- *   - @verbatim Image#level @endverbatim
- *   - @verbatim Image#level(black_point) @endverbatim
- *   - @verbatim Image#level(black_point, white_point) @endverbatim
- *   - @verbatim Image#level(black_point, white_point, gamma) @endverbatim
+ *   - @verbatim Image#level2 @endverbatim
+ *   - @verbatim Image#level2(black_point) @endverbatim
+ *   - @verbatim Image#level2(black_point, white_point) @endverbatim
+ *   - @verbatim Image#level2(black_point, white_point, gamma) @endverbatim
  *
  * Notes:
  *   - Default black_point is 0.0
@@ -8716,8 +8718,8 @@ Image_levelize_channel(int argc, VALUE *argv, VALUE self)
  * Call LinearStretchImage.
  *
  * Ruby usage:
- *   - @verbatim Image_linear_stretch(black_point) @endverbatim
- *   - @verbatim Image_linear_stretch(black_point , white_point) @endverbatim
+ *   - @verbatim Image#linear_stretch(black_point) @endverbatim
+ *   - @verbatim Image#linear_stretch(black_point, white_point) @endverbatim
  *
  * Notes:
  *   - Default white_point is pixels-black_point
@@ -10838,7 +10840,7 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
  * Get the "interpolate" field in the Image structure.
  *
  * Ruby usage:
- *   - @verbatim Image.pixel_interpolation_method @endverbatim
+ *   - @verbatim Image#pixel_interpolation_method @endverbatim
  *
  * @param self this object
  * @return the interpolate field
@@ -10857,7 +10859,7 @@ Image_pixel_interpolation_method(VALUE self)
  * Set the "interpolate" field in the Image structure.
  *
  * Ruby usage:
- *   - @verbatim Image.pixel_interpolation_method=method @endverbatim
+ *   - @verbatim Image#pixel_interpolation_method= method @endverbatim
  *
  * @param self this object
  * @param method the interpolate field
