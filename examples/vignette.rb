@@ -52,7 +52,7 @@ oval = oval.blur_image(0, 20)
 # varying level of transparency depending on how dark or light it is.
 
 ballerina.alpha(Magick::ActivateAlphaChannel)  # Ensure the ballerina image's opacity channel is enabled.
-oval.alpha(Magick::DeactivateAlphaChannel)     # Force the CopyAlphaCompositeOp to use pixel intensity
+oval.alpha(Magick::CopyAlphaChannel)           # Force the CopyAlphaCompositeOp to use pixel intensity
 # to determine how much transparency to add to the ballerina
 # pixels.
 
@@ -74,5 +74,5 @@ end
 
 checkerboard = Image.read('pattern:checkerboard') { self.size = "#{ballerina.columns}x#{ballerina.rows}" }
 vignette = checkerboard[0].composite(ballerina, CenterGravity, OverCompositeOp)
-vignette.write('vignette.png')
+vignette.write('vignette1.png')
 exit
