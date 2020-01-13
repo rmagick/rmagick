@@ -90,7 +90,7 @@ module RMagick
         $LDFLAGS = ENV['LDFLAGS'].to_s + ' ' + `pkg-config --libs #{magick_package}`.chomp
         $LOCAL_LIBS = ENV['LIBS'].to_s + ' ' + `pkg-config --libs #{magick_package}`.chomp
 
-        set_archflags_for_osx(magick_package) if RUBY_PLATFORM =~ /darwin/ # osx
+        configure_archflags_for_osx(magick_package) if RUBY_PLATFORM =~ /darwin/ # osx
 
       elsif RUBY_PLATFORM =~ /mingw/ # mingw
 
@@ -254,7 +254,7 @@ SRC
 
     # issue #169
     # set ARCHFLAGS appropriately for OSX
-    def set_archflags_for_osx(magick_package)
+    def configure_archflags_for_osx(magick_package)
       return unless `pkg-config #{magick_package} --libs-only-L`.match(%r{-L(.+)/lib})
 
       imagemagick_dir = Regexp.last_match(1)
