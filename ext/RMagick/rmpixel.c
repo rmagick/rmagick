@@ -1207,7 +1207,12 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 
     image->depth = depth;
-#if defined(IMAGEMAGICK_6)
+#if defined(IMAGEMAGICK_7)
+    if (alpha)
+    {
+        image->alpha_trait = BlendPixelTrait;
+    }
+#else
     image->matte = alpha;
 #endif
 
