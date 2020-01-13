@@ -43,7 +43,7 @@ srand 1234
   offset.x = x * button.columns
   offset.y = y * button.rows
   button.page = offset
-  button.alpha(Magick::ActivateAlphaChannel)
+  button.alpha(Magick::SetAlphaChannel)
   cells << button
 end
 
