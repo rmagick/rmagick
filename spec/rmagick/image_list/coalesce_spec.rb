@@ -5,10 +5,10 @@ RSpec.describe Magick::ImageList, "#coalesce" do
 
   it "works" do
     @ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_0.gif')
-    ilist = nil
-    expect { ilist = @ilist.coalesce }.not_to raise_error
-    expect(ilist).to be_instance_of(described_class)
-    expect(ilist.length).to eq(2)
-    expect(ilist.scene).to eq(0)
+    ilist2 = nil
+    expect { ilist2 = @ilist.coalesce }.not_to raise_error
+    expect(ilist2).to be_instance_of(described_class)
+    expect(ilist2.length).to eq(2)
+    expect(ilist2.scene).to eq(0)
   end
 end

@@ -4,9 +4,9 @@ RSpec.describe Magick::Pixel, '#eql?' do
   end
 
   it 'works' do
-    p = @pixel
-    expect(@pixel.eql?(p)).to be(true)
-    p = described_class.new
-    expect(@pixel.eql?(p)).to be(false)
+    pixel2 = @pixel
+    expect(@pixel.eql?(pixel2)).to be(true)
+    pixel2 = described_class.new
+    expect(@pixel.eql?(pixel2)).to be(false)
   end
 end

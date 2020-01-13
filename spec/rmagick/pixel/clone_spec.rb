@@ -4,11 +4,11 @@ RSpec.describe Magick::Pixel, '#clone' do
   end
 
   it 'works' do
-    pixel = @pixel.clone
-    expect(pixel).to eq(@pixel)
-    expect(pixel.object_id).not_to eq(@pixel.object_id)
+    pixel2 = @pixel.clone
+    expect(pixel2).to eq(@pixel)
+    expect(pixel2.object_id).not_to eq(@pixel.object_id)
 
-    pixel = @pixel.freeze.clone
-    expect(pixel.frozen?).to be(true)
+    pixel2 = @pixel.freeze.clone
+    expect(pixel2.frozen?).to be(true)
   end
 end

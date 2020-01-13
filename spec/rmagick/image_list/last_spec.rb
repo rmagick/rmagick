@@ -18,12 +18,12 @@ RSpec.describe Magick::ImageList, '#last' do
     expect(img).to eq(img2)
     img2 = Magick::Image.new(5, 5)
     @list << img2
-    ilist = nil
-    expect { ilist = @list.last(2) }.not_to raise_error
-    expect(ilist).to be_instance_of(described_class)
-    expect(ilist.length).to eq(2)
-    expect(ilist.scene).to eq(1)
-    expect(ilist[0]).to eq(img)
-    expect(ilist[1]).to eq(img2)
+    ilist2 = nil
+    expect { ilist2 = @list.last(2) }.not_to raise_error
+    expect(ilist2).to be_instance_of(described_class)
+    expect(ilist2.length).to eq(2)
+    expect(ilist2.scene).to eq(1)
+    expect(ilist2[0]).to eq(img)
+    expect(ilist2[1]).to eq(img2)
   end
 end

@@ -10,10 +10,10 @@ RSpec.describe Magick::ImageList, '#reverse!' do
   end
 
   it 'works' do
-    list = @list
+    list2 = @list
     cur = @list.cur_image
     expect { @list.reverse! }.not_to raise_error
-    expect(@list).to be(list)
+    expect(@list).to be(list2)
     expect(@list.cur_image).to be(cur)
   end
 end

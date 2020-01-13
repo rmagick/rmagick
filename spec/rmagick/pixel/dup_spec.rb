@@ -4,11 +4,11 @@ RSpec.describe Magick::Pixel, '#dup' do
   end
 
   it 'works' do
-    pixel = @pixel.dup
-    expect(@pixel === pixel).to be(true)
-    expect(pixel.object_id).not_to eq(@pixel.object_id)
+    pixel2 = @pixel.dup
+    expect(@pixel === pixel2).to be(true)
+    expect(pixel2.object_id).not_to eq(@pixel.object_id)
 
-    pixel = @pixel.freeze.dup
-    expect(pixel.frozen?).to be(false)
+    pixel2 = @pixel.freeze.dup
+    expect(pixel2.frozen?).to be(false)
   end
 end

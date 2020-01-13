@@ -16,9 +16,9 @@ RSpec.describe Magick::ImageList, '#uniq!' do
     @list[1] = @list[0]
     @list.scene = 7
     cur = @list.cur_image
-    list = @list
+    list2 = @list
     @list.uniq!
-    expect(@list).to be(list)
+    expect(@list).to be(list2)
     expect(@list.cur_image).to be(cur)
     expect(@list.scene).to eq(6)
     @list[5] = @list[6]
