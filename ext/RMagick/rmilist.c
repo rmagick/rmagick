@@ -952,6 +952,10 @@ ImageList_quantize(int argc, VALUE *argv, VALUE self)
             {
                 VALUE_TO_ENUM(argv[2], quantize_info.dither_method, DitherMethod);
             }
+            else
+            {
+                quantize_info.dither_method = RTEST(argv[2]) ? UndefinedDitherMethod : NoDitherMethod;
+            }
 #else
             if (rb_obj_is_kind_of(argv[2], Class_DitherMethod))
             {
