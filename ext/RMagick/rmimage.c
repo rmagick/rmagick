@@ -3812,10 +3812,6 @@ Image_composite_mathematics(int argc, VALUE *argv, VALUE self)
     char compose_args[200];
 
     rm_check_destroyed(self);
-    if (argc > 0)
-    {
-        composite_image = rm_check_destroyed(rm_cur_image(argv[0]));
-    }
 
     switch (argc)
     {
@@ -3836,6 +3832,7 @@ Image_composite_mathematics(int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    composite_image = rm_check_destroyed(rm_cur_image(argv[0]));
 
     (void) sprintf(compose_args, "%-.16g,%-.16g,%-.16g,%-.16g", NUM2DBL(argv[1]), NUM2DBL(argv[2]), NUM2DBL(argv[3]), NUM2DBL(argv[4]));
     SetImageArtifact(composite_image,"compose:args", compose_args);
@@ -3893,11 +3890,6 @@ composite_tiled(int bang, int argc, VALUE *argv, VALUE self)
         image = rm_check_destroyed(self);
     }
 
-    if (argc > 0)
-    {
-        comp_image = rm_check_destroyed(rm_cur_image(argv[0]));
-    }
-
     channels = extract_channels(&argc, argv);
 
     switch (argc)
@@ -3913,6 +3905,8 @@ composite_tiled(int bang, int argc, VALUE *argv, VALUE self)
             raise_ChannelType_error(argv[argc-1]);
             break;
     }
+
+    comp_image = rm_check_destroyed(rm_cur_image(argv[0]));
 
     if (!bang)
     {
@@ -11935,12 +11929,6 @@ Image_remap(int argc, VALUE *argv, VALUE self)
 #endif
 
     image = rm_check_frozen(self);
-    if (argc > 0)
-    {
-        VALUE t = rm_cur_image(argv[0]);
-        remap_image = rm_check_destroyed(t);
-        RB_GC_GUARD(t);
-    }
 
     GetQuantizeInfo(&quantize_info);
 
@@ -11958,6 +11946,8 @@ Image_remap(int argc, VALUE *argv, VALUE self)
             rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 or 2)", argc);
             break;
     }
+
+    remap_image = rm_check_destroyed(rm_cur_image(argv[0]));
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
