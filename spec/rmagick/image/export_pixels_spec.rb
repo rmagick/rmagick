@@ -1,6 +1,13 @@
 RSpec.describe Magick::Image, '#export_pixels' do
   before { @img = Magick::Image.new(20, 20) }
 
+  def fimport(image, pixels, type)
+    img = Magick::Image.new(image.columns, image.rows)
+    img.import_pixels(0, 0, image.columns, image.rows, 'RGB', pixels, type)
+    _, diff = img.compare_channel(image, Magick::MeanAbsoluteErrorMetric)
+    expect(diff).to be_within(50.0).of(0.0)
+  end
+
   it 'works' do
     expect do
       res = @img.export_pixels
@@ -25,5 +32,17 @@ RSpec.describe Magick::Image, '#export_pixels' do
 
     # too many arguments
     expect { @img.export_pixels(0, 0, 10, 10, 'I', 2) }.to raise_error(ArgumentError)
+  end
+
+  it 'works with float types' do
+    image = Magick::Image.read(File.join(IMAGES_DIR, 'Flower_Hat.jpg')).first
+
+    pixels = image.export_pixels(0, 0, image.columns, image.rows, 'RGB')
+    fpixels = pixels.collect { |p| p.to_f / Magick::QuantumRange }
+    p = fpixels.pack('F*')
+    fimport(image, p, Magick::FloatPixel)
+
+    p = fpixels.pack('D*')
+    fimport(image, p, Magick::DoublePixel)
   end
 end
