@@ -301,7 +301,7 @@ RSpec/MultipleDescribes:
 # Offense count: 553
 # Configuration parameters: AggregateFailuresByDefault.
 RSpec/MultipleExpectations:
-  Max: 60
+  Enabled: false
 
 # Offense count: 3
 RSpec/Pending:

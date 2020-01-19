@@ -151,5 +151,20 @@ RSpec.describe Magick::Geometry, '#to_s' do
     expect { Magick::Geometry.new(40, Magick::AreaGeometry) }.to raise_error(ArgumentError)
     expect { Magick::Geometry.new(40, 20, Magick::AreaGeometry) }.to raise_error(ArgumentError)
     expect { Magick::Geometry.new(40, 20, 10, Magick::AreaGeometry) }.to raise_error(ArgumentError)
+
+    expect(Magick::Geometry.new.to_s).to eq('')
+    expect(Magick::Geometry.new(10).to_s).to eq('10x')
+    expect(Magick::Geometry.new(10, 20).to_s).to eq('10x20')
+    expect(Magick::Geometry.new(10, 20, 30).to_s).to eq('10x20+30+0')
+    expect(Magick::Geometry.new(10, 20, 30, 40).to_s).to eq('10x20+30+40')
+    expect(Magick::Geometry.new(0, 20, 30, 40).to_s).to eq('x20+30+40')
+    expect(Magick::Geometry.new(0, 0, 30, 40).to_s).to eq('+30+40')
+    expect(Magick::Geometry.new(0, 0, 0, 40).to_s).to eq('+0+40')
+
+    expect(Magick::Geometry.new(10, 20, 30, 40, Magick::PercentGeometry).to_s).to eq('10%x20%+30+40')
+    expect(Magick::Geometry.new(0, 20, 30, 40, Magick::PercentGeometry).to_s).to eq('x20%+30+40')
+
+    expect(Magick::Geometry.new(10.2, 20.5, 30, 40).to_s).to eq('10.20x20.50+30+40')
+    expect(Magick::Geometry.new(10.2, 20.5, 30, 40, Magick::PercentGeometry).to_s).to eq('10.20%x20.50%+30+40')
   end
 end
