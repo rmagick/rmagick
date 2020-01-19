@@ -1,8 +1,8 @@
 RSpec.describe Magick::Image, '#from_blob' do
-  let(:img) { described_class.read(IMAGES_DIR + '/Button_0.gif').first }
-  let(:blob) { img.to_blob }
-
   it 'returns an image equal to the original' do
+    img = described_class.read(IMAGES_DIR + '/Button_0.gif').first
+    blob = img.to_blob
+
     expect(blob).to be_instance_of(String)
     res = described_class.from_blob(blob)
     expect(res).to be_instance_of(Array)

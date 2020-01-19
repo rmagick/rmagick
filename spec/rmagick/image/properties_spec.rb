@@ -1,7 +1,7 @@
 RSpec.describe Magick::Image, '#properties' do
-  let(:img) { described_class.new(20, 20) }
-
   it 'returns a hash of assigned properties' do
+    img = described_class.new(20, 20)
+
     img['comment'] = 'str_1'
     img['label'] = 'str_2'
     img['jpeg:sampling-factor'] = '2x1,1x1,1x1'

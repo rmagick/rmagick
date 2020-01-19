@@ -1,16 +1,18 @@
 RSpec.describe Magick::Draw, '#interline_spacing' do
-  let(:draw) { described_class.new }
-
   before do
     @draw = described_class.new
     @img = Magick::Image.new(200, 200)
   end
 
   it 'accepts a valid parameter without raising an error' do
+    draw = described_class.new
+
     expect { draw.interline_spacing(1) }.not_to raise_error
   end
 
   it 'raises an error when given an invalid parameter' do
+    draw = described_class.new
+
     expect { draw.interline_spacing('a') }.to raise_error(ArgumentError)
     expect { draw.interline_spacing([]) }.to raise_error(TypeError)
   end
