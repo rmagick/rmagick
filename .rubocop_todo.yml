@@ -20,14 +20,6 @@ Layout/ClassStructure:
     - 'lib/rvg/rvg.rb'
     - 'lib/rvg/to_c.rb'
 
-# Offense count: 5
-# Cop supports --auto-correct.
-Layout/FirstHashElementLineBreak:
-  Exclude:
-    - 'doc/ex/writing_mode01.rb'
-    - 'doc/ex/writing_mode02.rb'
-    - 'lib/rmagick_internal.rb'
-
 # Offense count: 21
 # Cop supports --auto-correct.
 Layout/FirstMethodArgumentLineBreak:
