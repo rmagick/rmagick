@@ -20,19 +20,6 @@ Layout/ClassStructure:
     - 'lib/rvg/rvg.rb'
     - 'lib/rvg/to_c.rb'
 
-# Offense count: 8
-# Cop supports --auto-correct.
-Layout/FirstArrayElementLineBreak:
-  Exclude:
-    - 'doc/ex/add_noise.rb'
-    - 'doc/ex/clip_path.rb'
-    - 'doc/ex/crop_with_gravity.rb'
-    - 'doc/ex/polyline.rb'
-    - 'examples/crop_with_gravity.rb'
-    - 'lib/rmagick_internal.rb'
-    - 'lib/rvg/stylable.rb'
-    - 'spec/image_3_spec.rb'
-
 # Offense count: 5
 # Cop supports --auto-correct.
 Layout/FirstHashElementLineBreak:
@@ -135,7 +122,7 @@ Metrics/BlockNesting:
 # Offense count: 9
 # Configuration parameters: CountComments.
 Metrics/ClassLength:
-  Max: 465
+  Enabled: false
 
 # Offense count: 21
 Metrics/CyclomaticComplexity:

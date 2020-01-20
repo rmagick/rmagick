@@ -1379,8 +1379,10 @@ module Magick
       obj
     end
 
-    %i[at each each_index empty? fetch
-       first hash include? index length rindex sort!].each do |mth|
+    %i[
+      at each each_index empty? fetch
+      first hash include? index length rindex sort!
+    ].each do |mth|
       module_eval <<-END_SIMPLE_DELEGATES
         def #{mth}(*args, &block)
           @images.#{mth}(*args, &block)

@@ -20,9 +20,11 @@ mask.quantum_operator(SetQuantumOperator, 0.50 * QuantumRange, AlphaChannel)
 black = Image.new(shorts.columns, shorts.rows) { self.background_color = 'black' }
 pairs = ImageList.new
 
-[NorthWestGravity, NorthGravity, NorthEastGravity,
- WestGravity, CenterGravity, EastGravity,
- SouthWestGravity, SouthGravity, SouthEastGravity].each do |gravity|
+[
+  NorthWestGravity, NorthGravity, NorthEastGravity,
+  WestGravity, CenterGravity, EastGravity,
+  SouthWestGravity, SouthGravity, SouthEastGravity
+].each do |gravity|
   pattern = shorts.composite(mask, gravity, OverCompositeOp)
   cropped = shorts.crop(gravity, regwidth, regheight)
   result = black.composite(cropped, gravity, OverCompositeOp)
