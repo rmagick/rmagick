@@ -16,12 +16,12 @@ RSpec.describe Magick::Image, '#read' do
 
     it 'not hangs with nil argument' do
       skip
-      expect(@status.signaled?).to be_falsey
+      expect(@status.signaled?).to be(false)
     end
 
     it 'raise error with nil argument' do
       skip
-      expect(@status.success?).to be_truthy
+      expect(@status.success?).to be(true)
       expect { Magick::Image.read(nil) }.to raise_error(Magick::ImageMagickError, /unable to open image nil/)
     end
   end

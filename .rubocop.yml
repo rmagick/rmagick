@@ -12,6 +12,12 @@ AllCops:
     - 'vendor/bundle/**/*'
     - '**/*\.spec'
 
+################################################################################
+#
+# Rules that depart from rubocop defaults
+#
+################################################################################
+
 # we may not need this after finishing RSpec conversion
 # seems like `rubocop-rspec` already excludes the `spec/` directory
 Style/MethodCalledOnDoEndBlock: { Exclude: [test/**/*.rb, spec/**/*.rb] }
