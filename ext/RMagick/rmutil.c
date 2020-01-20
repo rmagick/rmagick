@@ -1078,8 +1078,7 @@ static void copy_options(Image *image, Info *info)
         value = GetImageOption(info,option);
         if (value)
         {
-            strncpy(property, value, MaxTextExtent);
-            property[MaxTextExtent-1] = '\0';
+            strlcpy(property, value, sizeof(property));
             (void) SetImageArtifact(image, property, value);
         }
     }

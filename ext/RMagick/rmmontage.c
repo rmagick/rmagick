@@ -191,7 +191,7 @@ Montage_filename_eq(VALUE self, VALUE filename)
     Montage *montage;
 
     Data_Get_Struct(self, Montage, montage);
-    strncpy(montage->info->filename, StringValuePtr(filename), MaxTextExtent-1);
+    strlcpy(montage->info->filename, StringValuePtr(filename), sizeof(montage->info->filename));
     return filename;
 }
 
