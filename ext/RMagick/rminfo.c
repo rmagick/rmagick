@@ -287,8 +287,7 @@ Info_aref(int argc, VALUE *argv, VALUE self)
             break;
 
         case 1:
-            strncpy(fkey, StringValuePtr(argv[0]), sizeof(fkey)-1);
-            fkey[sizeof(fkey)-1] = '\0';
+            strlcpy(fkey, StringValuePtr(argv[0]), sizeof(fkey));
             break;
 
         default:
@@ -360,8 +359,7 @@ Info_aset(int argc, VALUE *argv, VALUE self)
             break;
 
         case 2:
-            strncpy(ckey, StringValuePtr(argv[0]), sizeof(ckey)-1);
-            ckey[sizeof(ckey)-1] = '\0';
+            strlcpy(ckey, StringValuePtr(argv[0]), sizeof(ckey));
 
             value = argv[1];
             break;
@@ -1293,7 +1291,7 @@ Info_filename_eq(VALUE self, VALUE filename)
     {
         // Otherwise copy in filename
         fname = StringValuePtr(filename);
-        strncpy(info->filename, fname, MaxTextExtent);
+        strlcpy(info->filename, fname, sizeof(info->filename));
     }
     return filename;
 }
@@ -1433,7 +1431,7 @@ Info_format_eq(VALUE self, VALUE magick)
         rb_raise(rb_eArgError, "unknown format: %s", mgk);
     }
 
-    strncpy(info->magick, m->name, MaxTextExtent-1);
+    strlcpy(info->magick, m->name, sizeof(info->magick));
     return magick;
 }
 

@@ -1120,7 +1120,7 @@ ImageList_to_blob(VALUE self)
         Image *img;
         for (img = images; img; img = GetNextImageInList(img))
         {
-            strncpy(img->magick, info->magick, sizeof(info->magick)-1);
+            strlcpy(img->magick, info->magick, sizeof(img->magick));
         }
     }
 

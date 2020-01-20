@@ -608,8 +608,7 @@ Image_add_profile(VALUE self, VALUE name)
     {
         info->profile = (void *)CloneStringInfo(profile);
     }
-    strncpy(info->filename, profile_filename, min((size_t)profile_filename_l, sizeof(info->filename)));
-    info->filename[MaxTextExtent-1] = '\0';
+    strlcpy(info->filename, profile_filename, sizeof(info->filename));
 
     exception = AcquireExceptionInfo();
     profile_image = ReadImage(info, exception);
@@ -2858,8 +2857,7 @@ set_profile(VALUE self, const char *name, VALUE profile)
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
 
-    strncpy(info->magick, m->name, MaxTextExtent);
-    info->magick[MaxTextExtent-1] = '\0';
+    strlcpy(info->magick, m->name, sizeof(info->magick));
 
     profile_image = BlobToImage(info, profile_blob, (size_t)profile_length, exception);
     (void) DestroyImageInfo(info);
@@ -7048,7 +7046,7 @@ Image_format_eq(VALUE self, VALUE magick)
     }
 
 
-    strncpy(image->magick, m->name, MaxTextExtent-1);
+    strlcpy(image->magick, m->name, sizeof(image->magick));
     return magick;
 }
 
@@ -14727,7 +14725,7 @@ Image_to_blob(VALUE self)
         {
             return Qnil;
         }
-        strncpy(image->magick, info->magick, sizeof(info->magick)-1);
+        strlcpy(image->magick, info->magick, sizeof(image->magick));
     }
 
     // Fix #2844 - libjpeg exits when image is 0x0
