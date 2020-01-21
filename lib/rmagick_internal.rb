@@ -67,12 +67,14 @@ module Magick
 
   class Geometry
     FLAGS = ['', '%', '!', '<', '>', '@', '^']
-    RFLAGS = { '%' => PercentGeometry,
-               '!' => AspectGeometry,
-               '<' => LessGeometry,
-               '>' => GreaterGeometry,
-               '@' => AreaGeometry,
-               '^' => MinimumGeometry }
+    RFLAGS = {
+      '%' => PercentGeometry,
+      '!' => AspectGeometry,
+      '<' => LessGeometry,
+      '>' => GreaterGeometry,
+      '@' => AreaGeometry,
+      '^' => MinimumGeometry
+    }
 
     attr_accessor :width, :height, :x, :y, :flag
 
