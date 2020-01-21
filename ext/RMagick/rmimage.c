@@ -5821,7 +5821,7 @@ Image__dump(VALUE self, VALUE depth ATTRIBUTE_UNUSED)
     {
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
-    strcpy(info->magick, image->magick);
+    strlcpy(info->magick, image->magick, sizeof(info->magick));
 
     exception = AcquireExceptionInfo();
     blob = ImageToBlob(info, image, &length, exception);
@@ -5845,7 +5845,7 @@ Image__dump(VALUE self, VALUE depth ATTRIBUTE_UNUSED)
     mi.id = DUMPED_IMAGE_ID;
     mi.mj = DUMPED_IMAGE_MAJOR_VERS;
     mi.mi = DUMPED_IMAGE_MINOR_VERS;
-    strcpy(mi.magick, image->magick);
+    strlcpy(mi.magick, image->magick, sizeof(mi.magick));
     mi.len = (unsigned char) min((size_t)UCHAR_MAX, rm_strnlen_s(mi.magick, sizeof(mi.magick)));
 
     // Concatenate the blob onto the header & return the result
@@ -9034,7 +9034,7 @@ Image_marshal_load(VALUE self, VALUE ary)
     exception = AcquireExceptionInfo();
     if (filename != Qnil)
     {
-        strcpy(info->filename, RSTRING_PTR(filename));
+        strlcpy(info->filename, RSTRING_PTR(filename), sizeof(info->filename));
     }
     image = BlobToImage(info, RSTRING_PTR(blob), RSTRING_LEN(blob), exception);
 
@@ -16235,7 +16235,7 @@ Image_write(VALUE self, VALUE file)
         rb_io_check_writable(fptr);
 #if defined(_WIN32)
         add_format_prefix(info, fptr->pathv);
-        strcpy(image->filename, info->filename);
+        strlcpy(image->filename, info->filename, sizeof(image->filename));
         SetImageInfoFile(info, NULL);
 #else
         SetImageInfoFile(info, rb_io_stdio_file(fptr));
@@ -16245,7 +16245,7 @@ Image_write(VALUE self, VALUE file)
     else
     {
         add_format_prefix(info, file);
-        strcpy(image->filename, info->filename);
+        strlcpy(image->filename, info->filename, sizeof(image->filename));
         SetImageInfoFile(info, NULL);
     }
 
