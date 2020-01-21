@@ -209,6 +209,28 @@ rm_strncasecmp(const char *s1, const char *s2, size_t n)
 
 
 /**
+ * Get string length.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param str the string
+ * @param strsz the maximum number of characters
+ * @return same as strnlen_s()
+ */
+size_t
+rm_strnlen_s(const char *str, size_t strsz)
+{
+    size_t length = 0;
+    while(*str && length < strsz)
+    {
+        str++;
+        length++;
+    }
+    return length;
+}
+
+
+/**
  * Raise exception if array too short.
  *
  * No Ruby usage (internal function)
@@ -1320,7 +1342,7 @@ rm_exif_by_entry(Image *image)
     while (property)
     {
         // ignore properties that don't start with "exif:"
-        property_l = strlen(property);
+        property_l = rm_strnlen_s(property, MaxTextExtent);
         if (property_l > 5 && rm_strncasecmp(property, "exif:", 5) == 0)
         {
             if (len > 0)
@@ -1337,7 +1359,7 @@ rm_exif_by_entry(Image *image)
             if (value)
             {
                 // add 1 for the = between property and value
-                len += 1 + strlen(value);
+                len += 1 + rm_strnlen_s(value, MaxTextExtent);
             }
         }
         property = GetNextImageProperty(image);
@@ -1360,7 +1382,7 @@ rm_exif_by_entry(Image *image)
 
     while (property)
     {
-        property_l = strlen(property);
+        property_l = rm_strnlen_s(property, MaxTextExtent);
         if (property_l > 5 && rm_strncasecmp(property, "exif:", 5) == 0)
         {
             if (len > 0)
@@ -1381,7 +1403,7 @@ rm_exif_by_entry(Image *image)
 #endif
             if (value)
             {
-                value_l = strlen(value);
+                value_l = rm_strnlen_s(value, MaxTextExtent);
                 str[len++] = '=';
                 memcpy(str+len, value, value_l);
                 len += value_l;
@@ -1438,7 +1460,7 @@ rm_exif_by_number(Image *image)
     while (property)
     {
         // ignore properties that don't start with "#"
-        property_l = strlen(property);
+        property_l = rm_strnlen_s(property, MaxTextExtent);
         if (property_l > 1 && property[0] == '#')
         {
             if (len > 0)
@@ -1455,7 +1477,7 @@ rm_exif_by_number(Image *image)
             if (value)
             {
                 // add 1 for the = between property and value
-                len += 1 + strlen(value);
+                len += 1 + rm_strnlen_s(value, MaxTextExtent);
             }
         }
         property = GetNextImageProperty(image);
@@ -1478,7 +1500,7 @@ rm_exif_by_number(Image *image)
 
     while (property)
     {
-        property_l = strlen(property);
+        property_l = rm_strnlen_s(property, MaxTextExtent);
         if (property_l > 1 && property[0] == '#')
         {
             if (len > 0)
@@ -1499,7 +1521,7 @@ rm_exif_by_number(Image *image)
 #endif
             if (value)
             {
-                value_l = strlen(value);
+                value_l = rm_strnlen_s(value, MaxTextExtent);
                 str[len++] = '=';
                 memcpy(str+len, value, value_l);
                 len += value_l;

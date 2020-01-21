@@ -1154,6 +1154,7 @@ extern void   rm_set_magickpixel(MagickPixel *, const char *);
 extern VALUE  rm_no_freeze(VALUE);
 extern int    rm_strcasecmp(const char *, const char *);
 extern int    rm_strncasecmp(const char *, const char *, size_t);
+extern size_t rm_strnlen_s(const char *, size_t);
 extern void   rm_check_ary_len(VALUE, long);
 extern VALUE  rm_check_ary_type(VALUE ary);
 extern Image *rm_check_destroyed(VALUE);

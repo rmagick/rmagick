@@ -1136,7 +1136,7 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
     // Add the temp filename to the filename array.
     // Use Magick storage since we need to keep the list around
     // until destroy_Draw is called.
-    tmpfile_name = magick_malloc(sizeof(struct TmpFile_Name)+strlen(name));
+    tmpfile_name = magick_malloc(sizeof(struct TmpFile_Name) + rm_strnlen_s(name, sizeof(name)));
     strcpy(tmpfile_name->name, name);
     tmpfile_name->next = draw->tmpfile_ary;
     draw->tmpfile_ary = tmpfile_name;
