@@ -21,14 +21,18 @@ begin
   # primitive that composites the "no" symbol over
   # the snake. Draw it.
   nosnake = Magick::Draw.new
-  nosnake.composite((snake.columns - sign.columns) / 2,
-                    (snake.rows - sign.rows) / 2, 0, 0, sign)
+  nosnake.composite(
+    (snake.columns - sign.columns) / 2,
+    (snake.rows - sign.rows) / 2, 0, 0, sign
+  )
   nosnake.draw(snake)
 
   # Repeat for the coffee cup.
   nocoffee = Magick::Draw.new
-  nocoffee.composite((coffee.columns - sign.columns) / 2,
-                     (coffee.columns - sign.columns) / 2, 0, 0, sign)
+  nocoffee.composite(
+    (coffee.columns - sign.columns) / 2,
+    (coffee.columns - sign.columns) / 2, 0, 0, sign
+  )
   nocoffee.draw(coffee)
 
   coffee.write('drawcomp1.gif')

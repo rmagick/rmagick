@@ -10,6 +10,8 @@ end
 
 # Print all fonts
 Magick.fonts do |font|
-  printf("%-*s %-*s %d %s\t%s\n", name_length, font.name,
-         family_length, font.family, font.weight, font.style, font.stretch)
+  printf(
+    "%-*s %-*s %d %s\t%s\n", name_length, font.name,
+    family_length, font.family, font.weight, font.style, font.stretch
+  )
 end
