@@ -1214,7 +1214,7 @@ ImageList_write(VALUE self, VALUE file)
     for (scene = 0, img = images; img; img = GetNextImageInList(img))
     {
         img->scene = scene++;
-        strcpy(img->filename, info->filename);
+        strlcpy(img->filename, info->filename, sizeof(img->filename));
     }
 
     // Find out if the format supports multi-images files.
