@@ -331,7 +331,6 @@ END_MINGW
     def create_header_file
       [
         'posix_memalign',
-        'memalign',
         'malloc_usable_size',
         'malloc_size',
 
