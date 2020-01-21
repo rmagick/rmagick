@@ -15,7 +15,7 @@ rvg = Magick::RVG.new(12.cm, 5.25.cm).viewbox(0, 0, 1200, 400) do |canvas|
         .styles(fill: 'red', stroke: 'blue', stroke_width: 5)
   canvas.path('M275,175 v-150 a150,150 0 0,0 -150,150 z')
         .styles(fill: 'yellow', stroke: 'blue', stroke_width: 5)
-  canvas.path(<<-END_PATH
+  canvas.path(<<-END_PATH,
            M600,350 l 50,-25
            a25,25 -30 0,1 50,-25 l 50,-25
            a25,50 -30 0,1 50,-25 l 50,-25

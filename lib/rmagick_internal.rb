@@ -250,7 +250,7 @@ module Magick
     def arc(start_x, start_y, end_x, end_y, start_degrees, end_degrees)
       primitive 'arc ' + format(
         '%g,%g %g,%g %g,%g',
-        start_x, start_y, end_x, end_y, start_degrees, end_degrees
+        start_x, start_y, end_x, end_y, start_degrees, end_degrees,
       )
     end
 
@@ -323,7 +323,7 @@ module Magick
     def ellipse(origin_x, origin_y, width, height, arc_start, arc_end)
       primitive 'ellipse ' + format(
         '%g,%g %g,%g %g,%g',
-        origin_x, origin_y, width, height, arc_start, arc_end
+        origin_x, origin_y, width, height, arc_start, arc_end,
       )
     end
 
@@ -527,7 +527,7 @@ module Magick
     def rectangle(upper_left_x, upper_left_y, lower_right_x, lower_right_y)
       primitive 'rectangle ' + format(
         '%g,%g %g,%g',
-        upper_left_x, upper_left_y, lower_right_x, lower_right_y
+        upper_left_x, upper_left_y, lower_right_x, lower_right_y,
       )
     end
 
@@ -540,7 +540,7 @@ module Magick
     def roundrectangle(center_x, center_y, width, height, corner_width, corner_height)
       primitive 'roundrectangle ' + format(
         '%g,%g,%g,%g,%g,%g',
-        center_x, center_y, width, height, corner_width, corner_height
+        center_x, center_y, width, height, corner_width, corner_height,
       )
     end
 

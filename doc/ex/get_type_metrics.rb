@@ -72,13 +72,13 @@ gc.line(-10, -metrics.ascent, metrics.width + 20, -metrics.ascent)
 # height
 gc.line(
   -10, -metrics.descent - metrics.height,
-  metrics.width + 10, -metrics.descent - metrics.height
+  metrics.width + 10, -metrics.descent - metrics.height,
 )
 
 # width
 gc.line(
   metrics.width, -metrics.descent - metrics.height - 10,
-  metrics.width, -metrics.descent + 20
+  metrics.width, -metrics.descent + 20,
 )
 
 # max_advance

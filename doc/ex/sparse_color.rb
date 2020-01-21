@@ -18,35 +18,35 @@ img = Magick::Image.new(100, 100)
 begin
   img2 = img.sparse_color(
     Magick::VoronoiColorInterpolate, 30, 10, 'red',
-    10, 80, 'blue', 70, 60, 'lime', 80, 20, 'yellow'
+    10, 80, 'blue', 70, 60, 'lime', 80, 20, 'yellow',
   )
   img2['Label'] = 'Voroni'
   imgl << draw_centers(img2)
 
   img2 = img.sparse_color(
     Magick::ShepardsColorInterpolate, 30, 10, 'red',
-    10, 80, 'blue', 70, 60, 'lime', 80, 20, 'yellow'
+    10, 80, 'blue', 70, 60, 'lime', 80, 20, 'yellow',
   )
   img2['Label'] = 'Shepards'
   imgl << draw_centers(img2)
 
   img2 = img.sparse_color(
     Magick::BilinearColorInterpolate, 30, 10, 'red',
-    10, 80, 'blue', 70, 60, 'lime', 80, 20, 'yellow'
+    10, 80, 'blue', 70, 60, 'lime', 80, 20, 'yellow',
   )
   img2['Label'] = 'Bilinear'
   imgl << draw_centers(img2)
 
   img2 = img.sparse_color(
     Magick::BarycentricColorInterpolate, 30, 10, 'red',
-    10, 80, 'blue', 70, 60, 'lime'
+    10, 80, 'blue', 70, 60, 'lime',
   )
   img2['Label'] = 'Barycentric'
   imgl << draw_centers(img2, false)
 
   img2 = img.sparse_color(
     Magick::InverseColorInterpolate, 30, 10, 'red',
-    10, 80, 'blue', 70, 60, 'lime'
+    10, 80, 'blue', 70, 60, 'lime',
   )
   img2['Label'] = 'Barycentric'
   imgl << draw_centers(img2, false)

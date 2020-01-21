@@ -35,7 +35,7 @@ gc.fill('white')
 gc.ellipse(
   ballerina.columns / 2, ballerina.rows / 2,
   ballerina.columns / 2 - (ballerina.columns * 0.10),
-  ballerina.rows / 2 - (ballerina.rows * 0.10), 0, 360
+  ballerina.rows / 2 - (ballerina.rows * 0.10), 0, 360,
 )
 gc.draw(oval)
 
