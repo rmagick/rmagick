@@ -15,7 +15,7 @@
 #include "rmagick.h"
 
 #if defined(HAVE_SETMAGICKALIGNEDMEMORYMETHODS) && defined(HAVE_RB_GC_ADJUST_MEMORY_USAGE)
-    #if defined(HAVE_POSIX_MEMALIGN) || defined(HAVE_MEMALIGN) || defined(_WIN32)
+    #if defined(HAVE_POSIX_MEMALIGN) || defined(_WIN32)
         #define USE_RM_ALIGNED_MALLOC 1
 
         #if defined(HAVE_MALLOC_USABLE_SIZE)
@@ -147,8 +147,6 @@ static void *rm_aligned_malloc(size_t size, size_t alignment)
     if (posix_memalign(&res, alignment, size) != 0) {
         return NULL;
     }
-#elif defined(HAVE_MEMALIGN)
-    res = memalign(alignment, size);
 #elif defined(_WIN32)
     res = _aligned_malloc(size, alignment);
 #endif
@@ -173,7 +171,7 @@ static void rm_aligned_free(void *ptr)
     size_t allocated_size = rm_aligned_malloc_size(ptr);
     rb_gc_adjust_memory_usage(-allocated_size);
 
-#if defined(HAVE_POSIX_MEMALIGN) || defined(HAVE_MEMALIGN)
+#if defined(HAVE_POSIX_MEMALIGN)
     free(ptr);
 #elif defined(_WIN32)
     _aligned_free(ptr);
