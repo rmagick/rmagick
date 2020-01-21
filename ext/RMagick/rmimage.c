@@ -5846,7 +5846,7 @@ Image__dump(VALUE self, VALUE depth ATTRIBUTE_UNUSED)
     mi.mj = DUMPED_IMAGE_MAJOR_VERS;
     mi.mi = DUMPED_IMAGE_MINOR_VERS;
     strcpy(mi.magick, image->magick);
-    mi.len = (unsigned char) min((size_t)UCHAR_MAX, strlen(mi.magick));
+    mi.len = (unsigned char) min((size_t)UCHAR_MAX, rm_strnlen_s(mi.magick, sizeof(mi.magick)));
 
     // Concatenate the blob onto the header & return the result
     str = rb_str_new((char *)&mi, (long)(mi.len+offsetof(DumpedImage,magick)));
@@ -7983,7 +7983,7 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
         rb_raise(rb_eArgError, "invalid import geometry");
     }
 
-    map_l = strlen(map);
+    map_l = rm_strnlen_s(map, MaxTextExtent);
     npixels = cols * rows * map_l;
 
     // Assume that any object that responds to :to_str is a string buffer containing
@@ -8257,7 +8257,7 @@ build_inspect_string(Image *image, char *buffer, size_t len)
             strcpy(buffer+x, " user:");
             x += 6;
             value_l = len - x - 1;
-            value_l = min(strlen(value), value_l);
+            value_l = min(rm_strnlen_s(value, MaxTextExtent), value_l);
             memcpy(buffer+x, value, value_l);
             x += value_l;
         }
@@ -16189,7 +16189,7 @@ void add_format_prefix(Info *info, VALUE file)
     // the image info as the filename prefix.
 
     memset(info->filename, 0, sizeof(info->filename));
-    prefix_l = min(sizeof(info->filename)-1, strlen(info->magick));
+    prefix_l = min(sizeof(info->filename)-1, rm_strnlen_s(info->magick, sizeof(info->magick)));
     memcpy(info->filename, info->magick, prefix_l);
     info->filename[prefix_l++] = ':';
 
