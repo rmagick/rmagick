@@ -4,8 +4,8 @@ RSpec.describe Magick::ImageList, "#from_blob" do
   end
 
   it "works" do
-    hat = File.open(FLOWER_HAT, 'rb')
-    blob = hat.read
+    blob = File.read(FLOWER_HAT, mode: "rb")
+
     expect { @ilist.from_blob(blob) }.not_to raise_error
     expect(@ilist[0]).to be_instance_of(Magick::Image)
     expect(@ilist.scene).to eq(0)

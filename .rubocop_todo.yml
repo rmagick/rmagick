@@ -321,7 +321,6 @@ Security/MarshalLoad:
 Style/AutoResourceCleanup:
   Exclude:
     - 'lib/rvg/to_c.rb'
-    - 'spec/rmagick/image_list/from_blob_spec.rb'
 
 # Offense count: 7
 Style/CaseEquality:
