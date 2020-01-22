@@ -1011,13 +1011,13 @@ VALUE Draw_annotate(
 
     if (width == 0 && height == 0)
     {
-        sprintf(geometry_str, "%+ld%+ld", x, y);
+        snprintf(geometry_str, sizeof(geometry_str), "%+ld%+ld", x, y);
     }
 
     // WxH is non-zero
     else
     {
-        sprintf(geometry_str, "%lux%lu%+ld%+ld", width, height, x, y);
+        snprintf(geometry_str, sizeof(geometry_str), "%lux%lu%+ld%+ld", width, height, x, y);
     }
 
     magick_clone_string(&draw->info->geometry, geometry_str);
@@ -1131,7 +1131,7 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
     Data_Get_Struct(self, Draw, draw);
 
     // Create a temp copy of the composite image
-    rm_write_temp_image(comp_img, name);
+    rm_write_temp_image(comp_img, name, sizeof(name));
 
     // Add the temp filename to the filename array.
     // Use Magick storage since we need to keep the list around

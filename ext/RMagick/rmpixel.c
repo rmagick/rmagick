@@ -658,11 +658,11 @@ Pixel_from_hsla(int argc, VALUE *argv, VALUE class ATTRIBUTE_UNUSED)
     memset(name, 0, sizeof(name));
     if (alpha)
     {
-        sprintf(name, "hsla(%-2.1f,%-2.1f,%-2.1f,%-2.1f)", h, s, l, a);
+        snprintf(name, sizeof(name), "hsla(%-2.1f,%-2.1f,%-2.1f,%-2.1f)", h, s, l, a);
     }
     else
     {
-        sprintf(name, "hsl(%-2.1f,%-2.1f,%-2.1f)", h, s, l);
+        snprintf(name, sizeof(name), "hsl(%-2.1f,%-2.1f,%-2.1f)", h, s, l);
     }
 
     exception = AcquireExceptionInfo();
@@ -1264,7 +1264,7 @@ Pixel_to_s(VALUE self)
     char buff[100];
 
     Data_Get_Struct(self, Pixel, pixel);
-    sprintf(buff, "red=" QuantumFormat ", green=" QuantumFormat ", blue=" QuantumFormat ", alpha=" QuantumFormat,
+    snprintf(buff, sizeof(buff), "red=" QuantumFormat ", green=" QuantumFormat ", blue=" QuantumFormat ", alpha=" QuantumFormat,
             pixel->red, pixel->green, pixel->blue,
 #if defined(IMAGEMAGICK_7)
             pixel->alpha);

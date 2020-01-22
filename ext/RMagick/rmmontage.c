@@ -450,7 +450,7 @@ Montage_texture_eq(VALUE self, VALUE texture)
     texture_image = rm_check_destroyed(texture);
 
     // Write a temp copy of the image & save its name.
-    rm_write_temp_image(texture_image, temp_name);
+    rm_write_temp_image(texture_image, temp_name, sizeof(temp_name));
     magick_clone_string(&montage->info->texture, temp_name);
 
     return texture;

@@ -807,10 +807,11 @@ rm_set_magickpixel(MagickPixel *pp, const char *color)
  *
  * @param image the image
  * @param temp_name the temporary name to use
+ * @param temp_name_l the length of temp_name
  * @return the "filename" of the registered image
  */
 void
-rm_write_temp_image(Image *image, char *temp_name)
+rm_write_temp_image(Image *image, char *temp_name, size_t temp_name_l)
 {
 
 #define TMPNAM_CLASS_VAR "@@_tmpnam_"
@@ -837,7 +838,7 @@ rm_write_temp_image(Image *image, char *temp_name)
 
     id += 1;
     rb_cv_set(Module_Magick, TMPNAM_CLASS_VAR, INT2FIX(id));
-    sprintf(temp_name, "mpri:%d", id);
+    snprintf(temp_name, temp_name_l, "mpri:%d", id);
 
     // Omit "mpri:" from filename to form the key
     okay = SetImageRegistry(ImageRegistryType, temp_name+5, image, exception);
