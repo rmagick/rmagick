@@ -20,21 +20,6 @@ Layout/ClassStructure:
     - 'lib/rvg/rvg.rb'
     - 'lib/rvg/to_c.rb'
 
-# Offense count: 21
-# Cop supports --auto-correct.
-Layout/FirstMethodArgumentLineBreak:
-  Exclude:
-    - 'doc/ex/axes.rb'
-    - 'doc/ex/drawcomp.rb'
-    - 'doc/ex/fonts.rb'
-    - 'doc/ex/get_type_metrics.rb'
-    - 'doc/ex/polygon.rb'
-    - 'doc/ex/polygon01.rb'
-    - 'doc/ex/polyline01.rb'
-    - 'doc/ex/sparse_color.rb'
-    - 'examples/vignette.rb'
-    - 'lib/rmagick_internal.rb'
-
 # Offense count: 16
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
