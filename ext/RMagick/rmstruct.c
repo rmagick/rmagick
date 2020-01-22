@@ -202,7 +202,8 @@ ChromaticityInfo_to_s(VALUE self)
     char buff[200];
 
     Export_ChromaticityInfo(&ci, self);
-    sprintf(buff, "red_primary=(x=%g,y=%g) "
+    snprintf(buff, sizeof(buff),
+                  "red_primary=(x=%g,y=%g) "
                   "green_primary=(x=%g,y=%g) "
                   "blue_primary=(x=%g,y=%g) "
                   "white_point=(x=%g,y=%g) ",
@@ -367,7 +368,8 @@ Color_to_s(VALUE self)
 
     Export_ColorInfo(&ci, self);
 
-    sprintf(buff, "name=%s, compliance=%s, "
+    snprintf(buff, sizeof(buff),
+                  "name=%s, compliance=%s, "
 #if (MAGICKCORE_QUANTUM_DEPTH  == 32 || MAGICKCORE_QUANTUM_DEPTH  == 64) && defined(HAVE_TYPE_LONG_DOUBLE)
                   "color.red=%Lg, color.green=%Lg, color.blue=%Lg, color.alpha=%Lg ",
 #else
@@ -535,11 +537,12 @@ Font_to_s(VALUE self)
             strcpy(weight, "BoldWeight");
             break;
         default:
-            sprintf(weight, "%lu", ti.weight);
+            snprintf(weight, sizeof(weight), "%lu", ti.weight);
             break;
     }
 
-    sprintf(buff, "name=%s, description=%s, "
+    snprintf(buff, sizeof(buff),
+                  "name=%s, description=%s, "
                   "family=%s, style=%s, stretch=%s, weight=%s, "
                   "encoding=%s, foundry=%s, format=%s",
                   ti.name,
@@ -666,7 +669,7 @@ PrimaryInfo_to_s(VALUE self)
     char buff[100];
 
     Export_PrimaryInfo(&pi, self);
-    sprintf(buff, "x=%g, y=%g, z=%g", pi.x, pi.y, pi.z);
+    snprintf(buff, sizeof(buff), "x=%g, y=%g, z=%g", pi.x, pi.y, pi.z);
     return rb_str_new2(buff);
 }
 
@@ -750,7 +753,7 @@ RectangleInfo_to_s(VALUE self)
     char buff[100];
 
     Export_RectangleInfo(&rect, self);
-    sprintf(buff, "width=%lu, height=%lu, x=%ld, y=%ld"
+    snprintf(buff, sizeof(buff), "width=%lu, height=%lu, x=%ld, y=%ld"
           , rect.width, rect.height, rect.x, rect.y);
     return rb_str_new2(buff);
 }
@@ -833,7 +836,7 @@ SegmentInfo_to_s(VALUE self)
     char buff[100];
 
     Export_SegmentInfo(&segment, self);
-    sprintf(buff, "x1=%g, y1=%g, x2=%g, y2=%g"
+    snprintf(buff, sizeof(buff), "x1=%g, y1=%g, x2=%g, y2=%g"
           , segment.x1, segment.y1, segment.x2, segment.y2);
     return rb_str_new2(buff);
 }
@@ -950,17 +953,17 @@ TypeMetric_to_s(VALUE self)
 
     Export_TypeMetric(&tm, self);
 
-    len = sprintf(temp, "pixels_per_em=(x=%g,y=%g) ", tm.pixels_per_em.x, tm.pixels_per_em.y);
+    len = snprintf(temp, sizeof(temp), "pixels_per_em=(x=%g,y=%g) ", tm.pixels_per_em.x, tm.pixels_per_em.y);
     str = rb_str_new(temp, len);
-    len = sprintf(temp, "ascent=%g descent=%g ",tm.ascent, tm.descent);
+    len = snprintf(temp, sizeof(temp), "ascent=%g descent=%g ",tm.ascent, tm.descent);
     rb_str_cat(str, temp, len);
-    len = sprintf(temp, "width=%g height=%g max_advance=%g ", tm.width, tm.height, tm.max_advance);
+    len = snprintf(temp, sizeof(temp), "width=%g height=%g max_advance=%g ", tm.width, tm.height, tm.max_advance);
     rb_str_cat(str, temp, len);
-    len = sprintf(temp, "bounds.x1=%g bounds.y1=%g ", tm.bounds.x1, tm.bounds.y1);
+    len = snprintf(temp, sizeof(temp), "bounds.x1=%g bounds.y1=%g ", tm.bounds.x1, tm.bounds.y1);
     rb_str_cat(str, temp, len);
-    len = sprintf(temp, "bounds.x2=%g bounds.y2=%g ", tm.bounds.x2, tm.bounds.y2);
+    len = snprintf(temp, sizeof(temp), "bounds.x2=%g bounds.y2=%g ", tm.bounds.x2, tm.bounds.y2);
     rb_str_cat(str, temp, len);
-    len = sprintf(temp, "underline_position=%g underline_thickness=%g", tm.underline_position, tm.underline_thickness);
+    len = snprintf(temp, sizeof(temp), "underline_position=%g underline_thickness=%g", tm.underline_position, tm.underline_thickness);
     rb_str_cat(str, temp, len);
 
     RB_GC_GUARD(str);

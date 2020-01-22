@@ -1829,7 +1829,7 @@ version_constants(void)
     rb_obj_freeze(str);
     rb_define_const(Module_Magick, "Version", str);
 
-    sprintf(long_version,
+    snprintf(long_version, sizeof(long_version),
             "This is %s ($Date: 2009/12/20 02:33:33 $) Copyright (C) 2009 by Timothy P. Hunter\n"
             "Built with %s\n"
             "Built for %s\n"

@@ -1671,7 +1671,7 @@ blend_geometry(char *geometry, size_t geometry_l, double src_percent, double dst
         fw += 3;
     }
 
-    sz = (size_t)sprintf(geometry, "%*.*f", -fw, prec, src_percent);
+    sz = (size_t)snprintf(geometry, geometry_l, "%*.*f", -fw, prec, src_percent);
     assert(sz < geometry_l);
 
     sz = strcspn(geometry, " ");
@@ -1688,7 +1688,7 @@ blend_geometry(char *geometry, size_t geometry_l, double src_percent, double dst
         }
 
 
-        sz += (size_t)sprintf(geometry+sz, "x%*.*f", -fw, prec, dst_percent);
+        sz += (size_t)snprintf(geometry+sz, geometry_l-sz, "x%*.*f", -fw, prec, dst_percent);
         assert(sz < geometry_l);
         sz = strcspn(geometry, " ");
     }
@@ -3103,7 +3103,7 @@ Image_colorize(int argc, VALUE *argv, VALUE self)
         green = floor(100*NUM2DBL(argv[1])+0.5);
         blue  = floor(100*NUM2DBL(argv[2])+0.5);
         Color_to_PixelColor(&target, argv[3]);
-        sprintf(opacity, "%f/%f/%f", red, green, blue);
+        snprintf(opacity, sizeof(opacity), "%f/%f/%f", red, green, blue);
     }
     else if (argc == 5)
     {
@@ -3112,7 +3112,7 @@ Image_colorize(int argc, VALUE *argv, VALUE self)
         blue  = floor(100*NUM2DBL(argv[2])+0.5);
         matte = floor(100*NUM2DBL(argv[3])+0.5);
         Color_to_PixelColor(&target, argv[4]);
-        sprintf(opacity, "%f/%f/%f/%f", red, green, blue, matte);
+        snprintf(opacity, sizeof(opacity), "%f/%f/%f/%f", red, green, blue, matte);
     }
     else
     {
@@ -3832,7 +3832,7 @@ Image_composite_mathematics(int argc, VALUE *argv, VALUE self)
 
     composite_image = rm_check_destroyed(rm_cur_image(argv[0]));
 
-    (void) sprintf(compose_args, "%-.16g,%-.16g,%-.16g,%-.16g", NUM2DBL(argv[1]), NUM2DBL(argv[2]), NUM2DBL(argv[3]), NUM2DBL(argv[4]));
+    (void) snprintf(compose_args, sizeof(compose_args), "%-.16g,%-.16g,%-.16g,%-.16g", NUM2DBL(argv[1]), NUM2DBL(argv[2]), NUM2DBL(argv[3]), NUM2DBL(argv[4]));
     SetImageArtifact(composite_image,"compose:args", compose_args);
 
     // Call composite(False, gravity, x_off, y_off, MathematicsCompositeOp, DefaultChannels)
@@ -4865,9 +4865,9 @@ Image_density(VALUE self)
     image = rm_check_destroyed(self);
 
 #if defined(IMAGEMAGICK_7)
-    sprintf(density, "%gx%g", image->resolution.x, image->resolution.y);
+    snprintf(density, sizeof(density), "%gx%g", image->resolution.x, image->resolution.y);
 #else
-    sprintf(density, "%gx%g", image->x_resolution, image->y_resolution);
+    snprintf(density, sizeof(density), "%gx%g", image->x_resolution, image->y_resolution);
 #endif
     return rb_str_new2(density);
 }
@@ -5170,7 +5170,7 @@ Image_deskew(int argc, VALUE *argv, VALUE self)
         case 2:
             width = NUM2ULONG(argv[1]);
             memset(auto_crop_width, 0, sizeof(auto_crop_width));
-            sprintf(auto_crop_width, "%ld", width);
+            snprintf(auto_crop_width, sizeof(auto_crop_width), "%ld", width);
             SetImageArtifact(image, "deskew:auto-crop", auto_crop_width);
         case 1:
             threshold = rm_percentage(argv[0],1.0) * QuantumRange;
@@ -8151,55 +8151,55 @@ build_inspect_string(Image *image, char *buffer, size_t len)
     // Print magick filename if different from current filename.
     if (*image->magick_filename != '\0' && strcmp(image->magick_filename, image->filename) != 0)
     {
-        x += sprintf(buffer+x, "%.1024s=>", image->magick_filename);
+        x += snprintf(buffer+x, len-x, "%.1024s=>", image->magick_filename);
     }
     // Print current filename.
-    x += sprintf(buffer+x, "%.1024s", image->filename);
+    x += snprintf(buffer+x, len-x, "%.1024s", image->filename);
     // Print scene number.
     if ((GetPreviousImageInList(image) != NULL) && (GetNextImageInList(image) != NULL) && image->scene > 0)
     {
-        x += sprintf(buffer+x, "[%lu]", image->scene);
+        x += snprintf(buffer+x, len-x, "[%lu]", image->scene);
     }
     // Print format
-    x += sprintf(buffer+x, " %s ", image->magick);
+    x += snprintf(buffer+x, len-x, " %s ", image->magick);
 
     // Print magick columnsXrows if different from current.
     if (image->magick_columns != 0 || image->magick_rows != 0)
     {
         if (image->magick_columns != image->columns || image->magick_rows != image->rows)
         {
-            x += sprintf(buffer+x, "%lux%lu=>", image->magick_columns, image->magick_rows);
+            x += snprintf(buffer+x, len-x, "%lux%lu=>", image->magick_columns, image->magick_rows);
         }
     }
 
-    x += sprintf(buffer+x, "%lux%lu ", image->columns, image->rows);
+    x += snprintf(buffer+x, len-x, "%lux%lu ", image->columns, image->rows);
 
     // Print current columnsXrows
     if (   image->page.width != 0 || image->page.height != 0
            || image->page.x != 0     || image->page.y != 0)
     {
-        x += sprintf(buffer+x, "%lux%lu%+ld%+ld ", image->page.width, image->page.height
+        x += snprintf(buffer+x, len-x, "%lux%lu%+ld%+ld ", image->page.width, image->page.height
                      , image->page.x, image->page.y);
     }
 
     if (image->storage_class == DirectClass)
     {
-        x += sprintf(buffer+x, "DirectClass ");
+        x += snprintf(buffer+x, len-x, "DirectClass ");
         if (image->total_colors != 0)
         {
             if (image->total_colors >= (unsigned long)(1 << 24))
             {
-                x += sprintf(buffer+x, "%lumc ", image->total_colors/1024/1024);
+                x += snprintf(buffer+x, len-x, "%lumc ", image->total_colors/1024/1024);
             }
             else
             {
                 if (image->total_colors >= (unsigned long)(1 << 16))
                 {
-                    x += sprintf(buffer+x, "%lukc ", image->total_colors/1024);
+                    x += snprintf(buffer+x, len-x, "%lukc ", image->total_colors/1024);
                 }
                 else
                 {
-                    x += sprintf(buffer+x, "%luc ", image->total_colors);
+                    x += snprintf(buffer+x, len-x, "%luc ", image->total_colors);
                 }
             }
         }
@@ -8210,15 +8210,15 @@ build_inspect_string(Image *image, char *buffer, size_t len)
         // building with GM. GM defines that field as an unsigned int.
         if (image->total_colors <= image->colors)
         {
-            x += sprintf(buffer+x, "PseudoClass %ldc ", (long) image->colors);
+            x += snprintf(buffer+x, len-x, "PseudoClass %ldc ", (long) image->colors);
         }
         else
         {
-            x += sprintf(buffer+x, "PseudoClass %lu=>%ldc ", image->total_colors
+            x += snprintf(buffer+x, len-x, "PseudoClass %lu=>%ldc ", image->total_colors
                          , (long)image->colors);
             if (image->error.mean_error_per_pixel != 0.0)
             {
-                x += sprintf(buffer+x, "%ld/%.6f/%.6fdb "
+                x += snprintf(buffer+x, len-x, "%ld/%.6f/%.6fdb "
                              , (long) (image->error.mean_error_per_pixel+0.5)
                              , image->error.normalized_mean_error
                              , image->error.normalized_maximum_error);
@@ -8228,22 +8228,22 @@ build_inspect_string(Image *image, char *buffer, size_t len)
 
     // Print bit depth
     quantum_depth = GetImageQuantumDepth(image, MagickTrue);
-    x += sprintf(buffer+x, "%lu-bit", quantum_depth);
+    x += snprintf(buffer+x, len-x, "%lu-bit", quantum_depth);
 
     // Print blob info if appropriate.
     if (GetBlobSize(image) != 0)
     {
         if (GetBlobSize(image) >= (1 << 24))
         {
-            x += sprintf(buffer+x, " %lumb", (unsigned long) (GetBlobSize(image)/1024/1024));
+            x += snprintf(buffer+x, len-x, " %lumb", (unsigned long) (GetBlobSize(image)/1024/1024));
         }
         else if (GetBlobSize(image) >= 1024)
         {
-            x += sprintf(buffer+x, " %lukb", (unsigned long) (GetBlobSize(image)/1024));
+            x += snprintf(buffer+x, len-x, " %lukb", (unsigned long) (GetBlobSize(image)/1024));
         }
         else
         {
-            x += sprintf(buffer+x, " %lub", (unsigned long) GetBlobSize(image));
+            x += snprintf(buffer+x, len-x, " %lub", (unsigned long) GetBlobSize(image));
         }
     }
 
@@ -8457,7 +8457,7 @@ Image_level2(int argc, VALUE *argv, VALUE self)
     rm_check_exception(exception, new_image, DestroyOnError);
     (void) DestroyExceptionInfo(exception);
 #else
-    sprintf(level, "%gx%g+%g", black_point, white_point, gamma_val);
+    snprintf(level, sizeof(level), "%gx%g+%g", black_point, white_point, gamma_val);
     (void) LevelImage(new_image, level);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
@@ -9574,7 +9574,7 @@ Image_modulate(int argc, VALUE *argv, VALUE self)
     {
         rb_raise(rb_eArgError, "brightness is %g%%, must be positive", pct_brightness);
     }
-    sprintf(modulate, "%f%%,%f%%,%f%%", pct_brightness, pct_saturation, pct_hue);
+    snprintf(modulate, sizeof(modulate), "%f%%,%f%%,%f%%", pct_brightness, pct_saturation, pct_hue);
 
     new_image = rm_clone_image(image);
 
@@ -14383,22 +14383,22 @@ VALUE threshold_image(int argc, VALUE *argv, VALUE self, thresholder_t threshold
             green   = NUM2DBL(argv[1]);
             blue    = NUM2DBL(argv[2]);
             alpha   = get_named_alpha_value(argv[3]);
-            sprintf(ctarg, "%f,%f,%f,%f", red, green, blue, QuantumRange - alpha);
+            snprintf(ctarg, sizeof(ctarg), "%f,%f,%f,%f", red, green, blue, QuantumRange - alpha);
             break;
         case 3:
             red     = NUM2DBL(argv[0]);
             green   = NUM2DBL(argv[1]);
             blue    = NUM2DBL(argv[2]);
-            sprintf(ctarg, "%f,%f,%f", red, green, blue);
+            snprintf(ctarg, sizeof(ctarg), "%f,%f,%f", red, green, blue);
             break;
         case 2:
             red     = NUM2DBL(argv[0]);
             green   = NUM2DBL(argv[1]);
-            sprintf(ctarg, "%f,%f", red, green);
+            snprintf(ctarg, sizeof(ctarg), "%f,%f", red, green);
             break;
         case 1:
             red     = NUM2DBL(argv[0]);
-            sprintf(ctarg, "%f", red);
+            snprintf(ctarg, sizeof(ctarg), "%f", red);
             break;
         default:
             rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 to 4)", argc);
@@ -16617,8 +16617,7 @@ static void call_trace_proc(Image *image, const char *which)
             build_inspect_string(image, buffer, sizeof(buffer));
             trace_args[1] = rb_str_new2(buffer);
 
-            n = sprintf(buffer, "%p", (void *)image);
-            buffer[n] = '\0';
+            n = snprintf(buffer, sizeof(buffer), "%p", (void *)image);
             trace_args[2] = rb_str_new2(buffer+2);      // don't use leading 0x
             trace_args[3] = ID2SYM(rb_frame_this_func());
             (void) rb_funcall2(trace, rm_ID_call, 4, (VALUE *)trace_args);

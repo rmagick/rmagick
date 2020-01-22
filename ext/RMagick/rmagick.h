@@ -1167,7 +1167,7 @@ extern Quantum rm_app2quantum(VALUE);
 extern double rm_percentage(VALUE,double);
 extern double rm_str_to_pct(VALUE);
 extern VALUE  rm_define_enum_type(const char *);
-extern void   rm_write_temp_image(Image *, char *);
+extern void   rm_write_temp_image(Image *, char *, size_t);
 extern void   rm_delete_temp_image(char *);
 extern void   rm_not_implemented(void);
 extern void   rm_attr_write(VALUE, VALUE);

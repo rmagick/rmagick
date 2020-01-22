@@ -327,7 +327,7 @@ Enum_type_inspect(VALUE self)
     MagickEnum *magick_enum;
 
     Data_Get_Struct(self, MagickEnum, magick_enum);
-    sprintf(str, "%.48s=%d", rb_id2name(magick_enum->id), magick_enum->val);
+    snprintf(str, sizeof(str), "%.48s=%d", rb_id2name(magick_enum->id), magick_enum->val);
 
     return rb_str_new2(str);
 }

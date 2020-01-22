@@ -205,11 +205,11 @@ static VALUE set_dbl_option(VALUE self, const char *option, VALUE value)
         n = floor(d);
         if (d == n)
         {
-            len = sprintf(buff, "%-10ld", n);
+            len = snprintf(buff, sizeof(buff), "%-10ld", n);
         }
         else
         {
-            len = sprintf(buff, "%-10.2f", d);
+            len = snprintf(buff, sizeof(buff), "%-10.2f", d);
         }
         memset(buff+len, '\0', sizeof(buff)-len);
         (void) SetImageOption(info, option, buff);
@@ -789,7 +789,7 @@ Info_define(int argc, VALUE *argv, VALUE self)
     {
         rb_raise(rb_eArgError, "%.20s:%.20s not defined - format or key too long", format, key);
     }
-    (void) sprintf(ckey, "%s:%s", format, key);
+    (void) snprintf(ckey, sizeof(ckey), "%s:%s", format, key);
 
     (void) DeleteImageOption(info, ckey);
     okay = SetImageOption(info, ckey, value);
@@ -889,7 +889,7 @@ Info_delay_eq(VALUE self, VALUE string)
             rb_raise(rb_eTypeError, "failed to convert %s into Integer", rb_class2name(CLASS_OF(string)));
         }
         delay = NUM2INT(string);
-        sprintf(dstr, "%d", delay);
+        snprintf(dstr, sizeof(dstr), "%d", delay);
         (void) SetImageOption(info, "delay", dstr);
     }
     return string;
@@ -2239,7 +2239,7 @@ Info_texture_eq(VALUE self, VALUE texture)
 
     // Create a temp copy of the texture and store its name in the texture field
     image = rm_check_destroyed(texture);
-    rm_write_temp_image(image, name);
+    rm_write_temp_image(image, name, sizeof(name));
 
     magick_clone_string(&info->texture, name);
 
