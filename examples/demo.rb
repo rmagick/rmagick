@@ -260,7 +260,6 @@ begin
   puts '   wave...'
   temp = model.copy
   temp.cur_image[:Label] = 'Wave'
-  temp.alpha(Magick::ActivateAlphaChannel)
   temp.background_color = '#000000ff'
   example << temp.wave(25, 150)
 
