@@ -94,7 +94,7 @@ module RMagick
 
       elsif RUBY_PLATFORM =~ /mingw/ # mingw
 
-        `#{magick_command} -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
+        `identify -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
         abort 'Unable to get ImageMagick version' unless Regexp.last_match(1)
         $magick_version = Regexp.last_match(1)
 
@@ -107,7 +107,7 @@ module RMagick
 
       else # mswin
 
-        `#{magick_command} -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
+        `identify -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
         abort 'Unable to get ImageMagick version' unless Regexp.last_match(1)
         $magick_version = Regexp.last_match(1)
 
@@ -365,10 +365,6 @@ END_MINGW
 
       create_makefile('RMagick2')
       print_summary
-    end
-
-    def magick_command
-      @magick_command ||= find_executable('magick') ? 'magick' : 'identify'
     end
 
     def im_version_at_least?(version)
