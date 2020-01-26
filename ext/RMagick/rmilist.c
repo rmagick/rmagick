@@ -499,7 +499,7 @@ ImageList_montage(VALUE self)
         (void) rb_obj_instance_eval(0, NULL, montage_obj);
     }
 
-    Data_Get_Struct(montage_obj, Montage, montage);
+    GetMontageStruct(montage_obj, montage);
 
     images = images_from_imagelist(self);
 
