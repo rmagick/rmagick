@@ -18,8 +18,9 @@
 
 static VALUE Enum_type_values(VALUE);
 static VALUE Enum_type_inspect(VALUE);
+static void rm_enum_free(void *);
 
-
+#define MakeMagickEnumObject(class, obj) Data_Make_Struct(class, MagickEnum, NULL, rm_enum_free, obj);
 
 
 
@@ -107,7 +108,7 @@ Enum_alloc(VALUE class)
    MagickEnum *magick_enum;
    VALUE enumr;
 
-   enumr = Data_Make_Struct(class, MagickEnum, NULL, rm_enum_free, magick_enum);
+   enumr = MakeMagickEnumObject(class, magick_enum);
    rb_obj_freeze(enumr);
 
    return enumr;
