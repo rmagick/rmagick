@@ -19,8 +19,16 @@
 static VALUE Enum_type_values(VALUE);
 static VALUE Enum_type_inspect(VALUE);
 static void rm_enum_free(void *);
+static size_t sizeof_Enum(const void *);
 
-#define MakeMagickEnumObject(class, obj) Data_Make_Struct(class, MagickEnum, NULL, rm_enum_free, obj);
+const rb_data_type_t rm_magick_enum_data_type = {
+    "Magick::Enum",
+    { NULL, rm_enum_free, sizeof_Enum, },
+    0, 0,
+    RUBY_TYPED_FREE_IMMEDIATELY
+};
+
+#define MakeMagickEnumObject(class, obj) TypedData_Make_Struct(class, MagickEnum, &rm_magick_enum_data_type, obj);
 
 
 
@@ -90,10 +98,27 @@ rm_enum_to_cstr(VALUE enum_type)
  *
  * @param magick_enum the enum
  */
-static void rm_enum_free(void *magick_enum)
+static void
+rm_enum_free(void *magick_enum)
 {
     xfree(magick_enum);
 }
+
+
+/**
+ * Get Enum object size.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param magick_enum the enum
+ */
+static size_t
+sizeof_Enum(const void *magick_enum)
+{
+    return sizeof(MagickEnum);
+}
+
+
 /**
  * Enum class alloc function.
  *
