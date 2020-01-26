@@ -905,7 +905,7 @@ crisscross(int bang, VALUE self, Image *fp(const Image *, ExceptionInfo *))
     Image *image, *new_image;
     ExceptionInfo *exception;
 
-    Data_Get_Struct(self, Image, image);
+    GetImageStruct(self, image);
     exception = AcquireExceptionInfo();
 
     new_image = (fp)(image, exception);
@@ -1042,7 +1042,7 @@ auto_orient(int bang, VALUE self)
     VALUE new_image;
     VALUE degrees[1];
 
-    Data_Get_Struct(self, Image, image);
+    GetImageStruct(self, image);
 
     switch (image->orientation)
     {
@@ -1083,7 +1083,7 @@ auto_orient(int bang, VALUE self)
     }
 
 
-    Data_Get_Struct(new_image, Image, image);
+    GetImageStruct(new_image, image);
     image->orientation = TopLeftOrientation;
 
     RB_GC_GUARD(new_image);
@@ -1975,7 +1975,7 @@ border(int bang, VALUE self, VALUE width, VALUE height, VALUE color)
     ExceptionInfo *exception;
     RectangleInfo rect;
 
-    Data_Get_Struct(self, Image, image);
+    GetImageStruct(self, image);
 
     memset(&rect, 0, sizeof(rect));
     rect.width = NUM2UINT(width);
@@ -2701,7 +2701,7 @@ Image_clut_channel(int argc, VALUE *argv, VALUE self)
         rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 or more)", argc);
     }
 
-    Data_Get_Struct(argv[0], Image, clut);
+    GetImageStruct(argv[0], clut);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -5237,7 +5237,7 @@ Image_destroy_bang(VALUE self)
     Image *image;
 
     rb_check_frozen(self);
-    Data_Get_Struct(self, Image, image);
+    GetImageStruct(self, image);
     rm_image_destroy(image);
     DATA_PTR(self) = NULL;
     return self;
@@ -5258,7 +5258,7 @@ Image_destroyed_q(VALUE self)
 {
     Image *image;
 
-    Data_Get_Struct(self, Image, image);
+    GetImageStruct(self, image);
     return image ? Qfalse : Qtrue;
 }
 
@@ -5456,7 +5456,7 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
     // Create the Ruby array for the pixels. Return this even if ExportImagePixels fails.
     pixels_ary = rb_ary_new();
 
-    Data_Get_Struct(self, Image, image);
+    GetImageStruct(self, image);
 
     exception = AcquireExceptionInfo();
     okay = ExportImagePixels(image, x, y, columns, rows, map, stg_type, (void *)pixels.v, exception);
@@ -6315,7 +6315,7 @@ excerpt(int bang, VALUE self, VALUE x, VALUE y, VALUE width, VALUE height)
     rect.width = NUM2ULONG(width);
     rect.height = NUM2ULONG(height);
 
-    Data_Get_Struct(self, Image, image);
+    GetImageStruct(self, image);
 
     exception = AcquireExceptionInfo();
     new_image = ExcerptImage(image, &rect, exception);
@@ -6547,7 +6547,7 @@ Image_extent(int argc, VALUE *argv, VALUE self)
     }
 
 
-    Data_Get_Struct(self, Image, image);
+    GetImageStruct(self, image);
     exception = AcquireExceptionInfo();
 
     new_image = ExtentImage(image, &geometry, exception);
@@ -6869,7 +6869,7 @@ flipflop(int bang, VALUE self, flipper_t flipflopper)
     Image *image, *new_image;
     ExceptionInfo *exception;
 
-    Data_Get_Struct(self, Image, image);
+    GetImageStruct(self, image);
     exception = AcquireExceptionInfo();
 
     new_image = (flipflopper)(image, exception);
@@ -8290,7 +8290,7 @@ Image_inspect(VALUE self)
     Image *image;
     char buffer[MaxTextExtent];          // image description buffer
 
-    Data_Get_Struct(self, Image, image);
+    GetImageStruct(self, image);
     if (!image)
     {
         return rb_str_new2("#<Magick::Image: (destroyed)>");
@@ -8900,7 +8900,7 @@ magnify(int bang, VALUE self, magnifier_t magnifier)
     Image *new_image;
     ExceptionInfo *exception;
 
-    Data_Get_Struct(self, Image, image);
+    GetImageStruct(self, image);
     exception = AcquireExceptionInfo();
 
     new_image = (magnifier)(image, exception);
@@ -9701,7 +9701,7 @@ motion_blur(int argc, VALUE *argv, VALUE self
         rb_raise(rb_eArgError, "sigma must be != 0.0");
     }
 
-    Data_Get_Struct(self, Image, image);
+    GetImageStruct(self, image);
 
     exception = AcquireExceptionInfo();
     new_image = (fp)(image, radius, sigma, angle, exception);
@@ -12020,7 +12020,7 @@ resample(int bang, int argc, VALUE *argv, VALUE self)
     double width, height;
     ExceptionInfo *exception;
 
-    Data_Get_Struct(self, Image, image);
+    GetImageStruct(self, image);
 
     // Set up defaults
     filter  = image->filter;
@@ -12180,7 +12180,7 @@ resize(int bang, int argc, VALUE *argv, VALUE self)
     double blur, drows, dcols;
     ExceptionInfo *exception;
 
-    Data_Get_Struct(self, Image, image);
+    GetImageStruct(self, image);
 
     // Set up defaults
     filter  = image->filter;
@@ -12359,7 +12359,7 @@ rotate(int bang, int argc, VALUE *argv, VALUE self)
     long arrow_l;
     ExceptionInfo *exception;
 
-    Data_Get_Struct(self, Image, image);
+    GetImageStruct(self, image);
 
     switch (argc)
     {
@@ -12588,7 +12588,7 @@ scale(int bang, int argc, VALUE *argv, VALUE self, scaler_t scaler)
     double scale_arg, drows, dcols;
     ExceptionInfo *exception;
 
-    Data_Get_Struct(self, Image, image);
+    GetImageStruct(self, image);
 
     switch (argc)
     {
@@ -14446,7 +14446,7 @@ thumbnail(int bang, int argc, VALUE *argv, VALUE self)
     RectangleInfo geometry;
     ExceptionInfo *exception;
 
-    Data_Get_Struct(self, Image, image);
+    GetImageStruct(self, image);
 
     switch (argc)
     {
@@ -15158,7 +15158,7 @@ trimmer(int bang, int argc, VALUE *argv, VALUE self)
             break;
     }
 
-    Data_Get_Struct(self, Image, image);
+    GetImageStruct(self, image);
 
     exception = AcquireExceptionInfo();
     new_image = TrimImage(image, exception);
@@ -16332,7 +16332,7 @@ cropper(int bang, int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 5:
-            Data_Get_Struct(self, Image, image);
+            GetImageStruct(self, image);
 
             VALUE_TO_ENUM(argv[0], gravity, GravityType);
 
@@ -16399,7 +16399,7 @@ cropper(int bang, int argc, VALUE *argv, VALUE self)
             columns = NUM2ULONG(width);
             rows    = NUM2ULONG(height);
 
-            Data_Get_Struct(self, Image, image);
+            GetImageStruct(self, image);
 
             switch (gravity)
             {
@@ -16460,7 +16460,7 @@ cropper(int bang, int argc, VALUE *argv, VALUE self)
     cropped = xform_image(bang, self, x, y, width, height, CropImage);
     if (reset_page)
     {
-        Data_Get_Struct(cropped, Image, image);
+        GetImageStruct(cropped, image);
         ResetImagePage(image, "0x0+0+0");
     }
 
@@ -16494,7 +16494,7 @@ xform_image(int bang, VALUE self, VALUE x, VALUE y, VALUE width, VALUE height, x
     RectangleInfo rect;
     ExceptionInfo *exception;
 
-    Data_Get_Struct(self, Image, image);
+    GetImageStruct(self, image);
     rect.x      = NUM2LONG(x);
     rect.y      = NUM2LONG(y);
     rect.width  = NUM2ULONG(width);

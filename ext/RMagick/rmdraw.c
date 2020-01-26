@@ -1770,7 +1770,7 @@ get_type_metrics(
     {
         case 1:                   // use default image
             text = rm_str2cstr(argv[0], &text_l);
-            Data_Get_Struct(get_dummy_tm_img(CLASS_OF(self)), Image, image);
+            GetImageStruct(get_dummy_tm_img(CLASS_OF(self)), image);
             break;
         case 2:
             t = rm_cur_image(argv[0]);

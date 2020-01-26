@@ -533,6 +533,7 @@ EXTERN ID rm_ID_y;                 /**< "y" */
 
 
 #define GetDrawStruct(obj, var) Data_Get_Struct(obj, Draw, var);
+#define GetImageStruct(obj, var) Data_Get_Struct(obj, Image, var);
 
 
 // Method, external function declarations. These declarations are
