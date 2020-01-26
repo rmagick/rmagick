@@ -17,6 +17,9 @@ static void mark_Draw(void *);
 static void destroy_Draw(void *);
 static VALUE new_DrawOptions(void);
 
+#define MakeDrawObject(class, obj) Data_Wrap_Struct(class, mark_Draw, destroy_Draw, obj);
+#define MakePolaroidOptionsObject(class, obj) Data_Wrap_Struct(class, NULL, destroy_Draw, obj);
+
 /** Method that gets type metrics */
 #if defined(IMAGEMAGICK_7)
     typedef MagickBooleanType (get_type_metrics_func_t)(Image *, const DrawInfo *, TypeMetric *, ExceptionInfo *);
@@ -1228,7 +1231,7 @@ Draw_dup(VALUE self)
 
     draw = ALLOC(Draw);
     memset(draw, 0, sizeof(Draw));
-    dup = Data_Wrap_Struct(CLASS_OF(self), mark_Draw, destroy_Draw, draw);
+    dup = MakeDrawObject(CLASS_OF(self), draw);
     RB_GC_GUARD(dup);
 
     return rb_funcall(dup, rm_ID_initialize_copy, 1, self);
@@ -1389,7 +1392,7 @@ VALUE Draw_alloc(VALUE class)
 
     draw = ALLOC(Draw);
     memset(draw, 0, sizeof(Draw));
-    draw_obj = Data_Wrap_Struct(class, mark_Draw, destroy_Draw, draw);
+    draw_obj = MakeDrawObject(class, draw);
 
     RB_GC_GUARD(draw_obj);
 
@@ -1516,7 +1519,7 @@ DrawOptions_alloc(VALUE class)
 
     draw_options = ALLOC(Draw);
     memset(draw_options, 0, sizeof(Draw));
-    draw_options_obj = Data_Wrap_Struct(class, mark_Draw, destroy_Draw, draw_options);
+    draw_options_obj = MakeDrawObject(class, draw_options);
 
     RB_GC_GUARD(draw_options_obj);
 
@@ -1586,7 +1589,7 @@ PolaroidOptions_alloc(VALUE class)
     draw->info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
     (void)(void) DestroyImageInfo(image_info);
 
-    polaroid_obj = Data_Wrap_Struct(class, NULL, destroy_Draw, draw);
+    polaroid_obj = MakePolaroidOptionsObject(class, draw);
 
     RB_GC_GUARD(polaroid_obj);
 
