@@ -13,7 +13,9 @@
 #include "rmagick.h"
 
 
+#define MakeMontageObject(class, obj) Data_Wrap_Struct(class, NULL, destroy_Montage, obj);
 
+static void destroy_Montage(void *obj);
 
 
 /**
@@ -83,7 +85,7 @@ Montage_alloc(VALUE class)
     montage = ALLOC(Montage);
     montage->info = montage_info;
     montage->compose = OverCompositeOp;
-    montage_obj = Data_Wrap_Struct(class, NULL, destroy_Montage, montage);
+    montage_obj = MakeMontageObject(class, montage);
 
     RB_GC_GUARD(montage_obj);
 
