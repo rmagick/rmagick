@@ -6,7 +6,7 @@ RSpec.describe Magick::Draw, '#image' do
 
   it 'works' do
     Magick::CompositeOperator.values do |composite|
-      next if [Magick::CopyAlphaCompositeOp, Magick::NoCompositeOp].include?(composite)
+      next if [Magick::BlurCompositeOp, Magick::CopyAlphaCompositeOp, Magick::NoCompositeOp].include?(composite)
 
       draw = Magick::Draw.new
       draw.image(composite, 10, 10, 200, 100, "#{IMAGES_DIR}/Flower_Hat.jpg")
