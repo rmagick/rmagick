@@ -12,10 +12,17 @@
 
 #include "rmagick.h"
 
-
-#define MakeMontageObject(class, obj) Data_Wrap_Struct(class, NULL, destroy_Montage, obj);
-
 static void destroy_Montage(void *obj);
+static size_t sizeof_Montage(const void *);
+
+const rb_data_type_t rm_montage_data_type = {
+    "Magick::ImageList::Montage",
+    { NULL, destroy_Montage, sizeof_Montage, },
+    0, 0,
+    RUBY_TYPED_FREE_IMMEDIATELY
+};
+
+#define MakeMontageObject(class, obj) TypedData_Wrap_Struct(class, &rm_montage_data_type, obj);
 
 
 /**
@@ -47,6 +54,20 @@ destroy_Montage(void *obj)
         montage->info = NULL;
     }
     xfree(montage);
+}
+
+
+/**
+ * Get Montage object size.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param obj the montage object
+ */
+static size_t
+sizeof_Montage(const void *obj)
+{
+    return sizeof(Montage);
 }
 
 
