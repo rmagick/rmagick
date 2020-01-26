@@ -15,10 +15,18 @@
 
 static void mark_Draw(void *);
 static void destroy_Draw(void *);
+static size_t sizeof_Draw(const void *);
 static VALUE new_DrawOptions(void);
 
-#define MakeDrawObject(class, obj) Data_Wrap_Struct(class, mark_Draw, destroy_Draw, obj);
-#define MakePolaroidOptionsObject(class, obj) Data_Wrap_Struct(class, NULL, destroy_Draw, obj);
+const rb_data_type_t rm_draw_data_type = {
+    "Magick::Draw",
+    { mark_Draw, destroy_Draw, sizeof_Draw, },
+    0, 0,
+    RUBY_TYPED_FREE_IMMEDIATELY
+};
+
+#define MakeDrawObject(class, obj) TypedData_Wrap_Struct(class, &rm_draw_data_type, obj);
+#define MakePolaroidOptionsObject(class, obj) TypedData_Wrap_Struct(class, &rm_draw_data_type, obj);
 
 /** Method that gets type metrics */
 #if defined(IMAGEMAGICK_7)
@@ -1480,6 +1488,21 @@ destroy_Draw(void *drawptr)
     }
 
     xfree(drawptr);
+}
+
+
+/**
+ * Get Draw object size.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param drawptr pointer to a Draw object
+ */
+static size_t
+sizeof_Draw(const void *drawptr)
+{
+    // TODO: add tmpfile_ary allocated size
+    return sizeof(Draw);
 }
 
 
