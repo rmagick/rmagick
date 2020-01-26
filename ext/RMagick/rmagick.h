@@ -1024,7 +1024,6 @@ extern VALUE Image_white_threshold(int, VALUE *, VALUE);
 extern VALUE Image_write(VALUE, VALUE);
 
 extern VALUE rm_image_new(Image *);
-extern void  rm_image_destroy(void *);
 extern void  rm_trace_creation(Image *);
 
 
