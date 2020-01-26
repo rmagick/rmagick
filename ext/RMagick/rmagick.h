@@ -527,14 +527,14 @@ EXTERN ID rm_ID_y;                 /**< "y" */
    if (CLASS_OF(value) != Class_##type)\
        rb_raise(rb_eTypeError, "wrong enumeration type - expected %s, got %s"\
                    , rb_class2name(Class_##type),rb_class2name(CLASS_OF(value)));\
-   Data_Get_Struct(value, MagickEnum, magick_enum);\
+   GetMagickEnumStruct(value, magick_enum);\
    e = (type)(magick_enum->val);\
    } while(0)
 
 
 #define GetDrawStruct(obj, var) Data_Get_Struct(obj, Draw, var);
 #define GetImageStruct(obj, var) Data_Get_Struct(obj, Image, var);
-
+#define GetMagickEnumStruct(obj, var) Data_Get_Struct(obj, MagickEnum, var);
 
 // Method, external function declarations. These declarations are
 // grouped by the source file in which the methods are defined.

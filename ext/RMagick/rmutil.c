@@ -1597,7 +1597,7 @@ rm_get_geometry(
             rb_raise(rb_eTypeError, "wrong enumeration type - expected %s, got %s"
                         , rb_class2name(Class_GeometryValue),rb_class2name(CLASS_OF(v)));
         }
-        Data_Get_Struct(v, MagickEnum, magick_enum);
+        GetMagickEnumStruct(v, magick_enum);
         *flag = magick_enum->val;
     }
 

@@ -78,7 +78,7 @@ rm_enum_to_cstr(VALUE enum_type)
 {
    MagickEnum *magick_enum;
 
-   Data_Get_Struct(enum_type, MagickEnum, magick_enum);
+   GetMagickEnumStruct(enum_type, magick_enum);
    return rb_id2name(magick_enum->id);
 }
 
@@ -134,8 +134,8 @@ Enum_case_eq(VALUE self, VALUE other)
 
     if (CLASS_OF(self) == CLASS_OF(other))
     {
-        Data_Get_Struct(self, MagickEnum, this);
-        Data_Get_Struct(other, MagickEnum, that);
+        GetMagickEnumStruct(self, this);
+        GetMagickEnumStruct(other, that);
         return this->val == that->val ? Qtrue : Qfalse;
     }
 
@@ -159,7 +159,7 @@ Enum_initialize(VALUE self, VALUE sym, VALUE val)
 {
    MagickEnum *magick_enum;
 
-   Data_Get_Struct(self, MagickEnum, magick_enum);
+   GetMagickEnumStruct(self, magick_enum);
    magick_enum->id = rb_to_id(sym); /* convert symbol to ID */
    magick_enum->val = NUM2INT(val);
 
@@ -181,7 +181,7 @@ Enum_to_i(VALUE self)
 {
    MagickEnum *magick_enum;
 
-   Data_Get_Struct(self, MagickEnum, magick_enum);
+   GetMagickEnumStruct(self, magick_enum);
    return INT2NUM(magick_enum->val);
 }
 
@@ -208,8 +208,8 @@ Enum_spaceship(VALUE self, VALUE other)
         return Qnil;
     }
 
-    Data_Get_Struct(self, MagickEnum, this);
-    Data_Get_Struct(other, MagickEnum, that);
+    GetMagickEnumStruct(self, this);
+    GetMagickEnumStruct(other, that);
 
     if (this->val > that->val)
     {
@@ -250,9 +250,9 @@ Enum_bitwise_or(VALUE self, VALUE another)
 
   new_enum = Enum_alloc(cls);
 
-  Data_Get_Struct(self, MagickEnum, this);
-  Data_Get_Struct(another, MagickEnum, that);
-  Data_Get_Struct(new_enum, MagickEnum, new_enum_data);
+  GetMagickEnumStruct(self, this);
+  GetMagickEnumStruct(another, that);
+  GetMagickEnumStruct(new_enum, new_enum_data);
 
   new_enum_data->id = rb_to_id(rb_sprintf("%s|%s", rb_id2name(this->id), rb_id2name(that->id)));
   new_enum_data->val = this->val | that->val;
@@ -326,7 +326,7 @@ Enum_type_inspect(VALUE self)
     char str[100];
     MagickEnum *magick_enum;
 
-    Data_Get_Struct(self, MagickEnum, magick_enum);
+    GetMagickEnumStruct(self, magick_enum);
     snprintf(str, sizeof(str), "%.48s=%d", rb_id2name(magick_enum->id), magick_enum->val);
 
     return rb_str_new2(str);
@@ -404,7 +404,7 @@ Enum_find(VALUE class, int val)
     for (x = 0; x < RARRAY_LEN(enumerators); x++)
     {
        VALUE enumerator = rb_ary_entry(enumerators, x);
-       Data_Get_Struct(enumerator, MagickEnum, magick_enum);
+       GetMagickEnumStruct(enumerator, magick_enum);
        if (magick_enum->val == val)
        {
            return enumerator;
