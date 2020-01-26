@@ -29,10 +29,28 @@ typedef struct
     Image *texture; /**< the texture */
 } rm_TextureFill;
 
-#define GetGradientFillStruct(obj, var) Data_Get_Struct(self, rm_GradientFill, var);
-#define GetTextureFillStruct(obj, var) Data_Get_Struct(self, rm_TextureFill, var);
-#define MakeGradientFillObject(class, obj) Data_Make_Struct(class, rm_GradientFill, NULL, free_Fill, obj);
-#define MakeTextureFillObject(class, obj) Data_Make_Struct(class, rm_TextureFill, NULL, free_TextureFill, obj);
+static void free_Fill(void *);
+static size_t sizeof_Fill(const void *);
+static void free_TextureFill(void *);
+static size_t sizeof_TextureFill(const void *);
+
+const rb_data_type_t rm_gradient_fill_data_type = {
+    "Magick::GradientFill",
+    { NULL, free_Fill, sizeof_Fill, },
+    0, 0,
+    RUBY_TYPED_FREE_IMMEDIATELY
+};
+const rb_data_type_t rm_texture_fill_data_type = {
+    "Magick::Texture",
+    { NULL, free_TextureFill, sizeof_TextureFill, },
+    0, 0,
+    RUBY_TYPED_FREE_IMMEDIATELY
+};
+
+#define GetGradientFillStruct(obj, var) TypedData_Get_Struct(self, rm_GradientFill, &rm_gradient_fill_data_type, var);
+#define GetTextureFillStruct(obj, var) TypedData_Get_Struct(self, rm_TextureFill, &rm_texture_fill_data_type, var);
+#define MakeGradientFillObject(class, obj) TypedData_Make_Struct(class, rm_GradientFill, &rm_gradient_fill_data_type, obj);
+#define MakeTextureFillObject(class, obj) TypedData_Make_Struct(class, rm_TextureFill, &rm_texture_fill_data_type, obj);
 
 /**
  * Free Fill or Fill subclass object (except for TextureFill).
@@ -41,9 +59,24 @@ typedef struct
  *
  * @param fill the fill
  */
-static void free_Fill(void *fill)
+static void
+free_Fill(void *fill)
 {
     xfree(fill);
+}
+
+
+/**
+ * Get Fill object size.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param fill the fill
+ */
+static size_t
+sizeof_Fill(const void *fill)
+{
+    return sizeof(rm_GradientFill);
 }
 
 /**
@@ -686,6 +719,21 @@ free_TextureFill(void *fill_obj)
     (void) DestroyImage(fill->texture);
     xfree(fill);
 }
+
+
+/**
+ * Get TextureFill object size.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param fill the fill
+ */
+static size_t
+sizeof_TextureFill(const void *fill)
+{
+    return sizeof(rm_TextureFill);
+}
+
 
 /**
  * Create new TextureFill object.
