@@ -16,9 +16,18 @@
     #define QueryColorname QueryMagickColorname
 #endif
 
-#define MakePixelObject(class, obj) Data_Wrap_Struct(class, NULL, destroy_Pixel, obj);
+static void destroy_Pixel(void *);
+static size_t sizeof_Pixel(const void *);
 
-static void destroy_Pixel(Pixel *);
+const rb_data_type_t rm_pixel_data_type = {
+    "Magick::Pixel",
+    { NULL, destroy_Pixel, sizeof_Pixel, },
+    0, 0,
+    RUBY_TYPED_FREE_IMMEDIATELY
+};
+
+#define MakePixelObject(class, obj) TypedData_Wrap_Struct(class, &rm_pixel_data_type, obj);
+
 
 /*
  *  Declare Pixel channel attribute writers
@@ -78,9 +87,23 @@ static void Color_Name_to_PixelColor(PixelColor *, VALUE);
  * @param pixel the Pixel object to destroy
  */
 static void
-destroy_Pixel(Pixel *pixel)
+destroy_Pixel(void *pixel)
 {
     xfree(pixel);
+}
+
+
+/**
+ * Get Pixel object size.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param pixel the Pixel object
+ */
+static size_t
+sizeof_Pixel(const void *pixel)
+{
+    return sizeof(Pixel);
 }
 
 

@@ -536,13 +536,14 @@ extern const rb_data_type_t rm_image_data_type;
 extern const rb_data_type_t rm_magick_enum_data_type;
 extern const rb_data_type_t rm_info_data_type;
 extern const rb_data_type_t rm_montage_data_type;
+extern const rb_data_type_t rm_pixel_data_type;
 
 #define GetDrawStruct(obj, var) TypedData_Get_Struct(obj, Draw, &rm_draw_data_type, var);
 #define GetImageStruct(obj, var) TypedData_Get_Struct(obj, Image, &rm_image_data_type, var);
 #define GetMagickEnumStruct(obj, var) TypedData_Get_Struct(obj, MagickEnum, &rm_magick_enum_data_type, var);
 #define GetInfoStruct(obj, var) TypedData_Get_Struct(obj, Info, &rm_info_data_type, var);
 #define GetMontageStruct(obj, var) TypedData_Get_Struct(obj, Montage, &rm_montage_data_type, var);
-#define GetPixelStruct(obj, var) Data_Get_Struct(obj, Pixel, var);
+#define GetPixelStruct(obj, var) TypedData_Get_Struct(obj, Pixel, &rm_pixel_data_type, var);
 #define GetKernelInfoStruct(obj, var) Data_Get_Struct(obj, KernelInfo, var);
 
 // Method, external function declarations. These declarations are
