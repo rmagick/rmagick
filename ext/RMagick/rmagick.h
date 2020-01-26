@@ -443,7 +443,7 @@ EXTERN ID rm_ID_y;                 /**< "y" */
         if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {\
             (void) rm_check_destroyed(self); \
         }\
-        Data_Get_Struct(self, class, ptr);\
+        Get##class##Struct(self, ptr);\
         return C_##type##_to_R_##type(ptr->attr);\
     }
 
@@ -453,7 +453,7 @@ EXTERN ID rm_ID_y;                 /**< "y" */
     {\
         class *ptr;\
         (void) rm_check_destroyed(self); \
-        Data_Get_Struct(self, class, ptr);\
+        Get##class##Struct(self, ptr);\
         return C_##type##_to_R_##type(ptr->field);\
     }
 
@@ -466,7 +466,7 @@ EXTERN ID rm_ID_y;                 /**< "y" */
             (void) rm_check_destroyed(self); \
         }\
         rb_check_frozen(self);\
-        Data_Get_Struct(self, class, ptr);\
+        Get##class##Struct(self, ptr);\
         ptr->attr = R_##type##_to_C_##type(val);\
         return val;\
     }
@@ -480,7 +480,7 @@ EXTERN ID rm_ID_y;                 /**< "y" */
             (void) rm_check_destroyed(self); \
         }\
         rb_check_frozen(self);\
-        Data_Get_Struct(self, class, ptr);\
+        Get##class##Struct(self, ptr);\
         ptr->field = R_##type##_to_C_##type(val);\
         return self;\
     }
