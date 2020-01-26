@@ -29,6 +29,9 @@ typedef struct
     Image *texture; /**< the texture */
 } rm_TextureFill;
 
+#define GetGradientFillStruct(obj, var) Data_Get_Struct(self, rm_GradientFill, var);
+#define GetTextureFillStruct(obj, var) Data_Get_Struct(self, rm_TextureFill, var);
+
 /**
  * Free Fill or Fill subclass object (except for TextureFill).
  *
@@ -85,7 +88,7 @@ GradientFill_initialize(
 {
     rm_GradientFill *fill;
 
-    Data_Get_Struct(self, rm_GradientFill, fill);
+    GetGradientFillStruct(self, fill);
 
     fill->x1 = NUM2DBL(x1);
     fill->y1 = NUM2DBL(y1);
@@ -610,7 +613,7 @@ GradientFill_fill(VALUE self, VALUE image_obj)
     PixelColor start_color, stop_color;
     double x1, y1, x2, y2;          // points on the line
 
-    Data_Get_Struct(self, rm_GradientFill, fill);
+    GetGradientFillStruct(self, fill);
     image = rm_check_destroyed(image_obj);
 
     x1 = fill->x1;
@@ -724,7 +727,7 @@ TextureFill_initialize(VALUE self, VALUE texture_arg)
     Image *texture;
     VALUE texture_image;
 
-    Data_Get_Struct(self, rm_TextureFill, fill);
+    GetTextureFillStruct(self, fill);
 
     texture_image = rm_cur_image(texture_arg);
 
@@ -760,7 +763,7 @@ TextureFill_fill(VALUE self, VALUE image_obj)
 #endif
 
     image = rm_check_destroyed(image_obj);
-    Data_Get_Struct(self, rm_TextureFill, fill);
+    GetTextureFillStruct(self, fill);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
