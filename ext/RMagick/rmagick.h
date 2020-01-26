@@ -532,6 +532,9 @@ EXTERN ID rm_ID_y;                 /**< "y" */
    } while(0)
 
 
+#define GetDrawStruct(obj, var) Data_Get_Struct(obj, Draw, var);
+
+
 // Method, external function declarations. These declarations are
 // grouped by the source file in which the methods are defined.
 

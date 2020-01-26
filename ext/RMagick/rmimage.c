@@ -10911,7 +10911,7 @@ Image_polaroid(int argc, VALUE *argv, VALUE self)
     }
 
     options = rm_polaroid_new();
-    Data_Get_Struct(options, Draw, draw);
+    GetDrawStruct(options, draw);
 
     clone = rm_clone_image(image);
     clone->background_color = draw->shadow_color;
