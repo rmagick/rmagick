@@ -34,6 +34,9 @@
     OPTION_ATTR_READER(opt, key)\
     OPTION_ATTR_WRITER(opt, key)
 
+#define MakeInfoObject(class, obj) Data_Wrap_Struct(class, NULL, destroy_Info, obj);
+
+static void destroy_Info(void *);
 
 /**
  * Return the value of the specified option.
@@ -2573,7 +2576,7 @@ Info_alloc(VALUE class)
     {
         rb_raise(rb_eNoMemError, "not enough memory to initialize Info object");
     }
-    info_obj = Data_Wrap_Struct(class, NULL, destroy_Info, info);
+    info_obj = MakeInfoObject(class, info);
 
     RB_GC_GUARD(info_obj);
 
