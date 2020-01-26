@@ -2180,7 +2180,7 @@ Image_capture(int argc, VALUE *argv, VALUE self ATTRIBUTE_UNUSED)
     // Set info->server_name to the server name
     // Also info->colorspace, depth, dither, interlace, type
     info_obj = rm_info_new();
-    Data_Get_Struct(info_obj, Info, image_info);
+    GetInfoStruct(info_obj, image_info);
 
     // If an error occurs, IM will call our error handler and we raise an exception.
 #if defined(IMAGEMAGICK_7)
@@ -5524,7 +5524,7 @@ Image_display(VALUE self)
     }
 
     info_obj = rm_info_new();
-    Data_Get_Struct(info_obj, Info, info);
+    GetInfoStruct(info_obj, info);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -7168,7 +7168,7 @@ Image_from_blob(VALUE class ATTRIBUTE_UNUSED, VALUE blob_arg)
 
     // Get a new Info object - run the parm block if supplied
     info_obj = rm_info_new();
-    Data_Get_Struct(info_obj, Info, info);
+    GetInfoStruct(info_obj, info);
 
     exception = AcquireExceptionInfo();
     images = BlobToImage(info,  blob, (size_t)length, exception);
@@ -9928,7 +9928,7 @@ Image_initialize(int argc, VALUE *argv, VALUE self)
 
     // Create a new Info object to use when creating this image.
     info_obj = rm_info_new();
-    Data_Get_Struct(info_obj, Info, info);
+    GetInfoStruct(info_obj, info);
 
     image = rm_acquire_image(info);
     if (!image)
@@ -11651,7 +11651,7 @@ rd_image(VALUE class ATTRIBUTE_UNUSED, VALUE file, reader_t reader)
 
     // Create a new Info structure for this read/ping
     info_obj = rm_info_new();
-    Data_Get_Struct(info_obj, Info, info);
+    GetInfoStruct(info_obj, info);
 
     if (TYPE(file) == T_FILE)
     {
@@ -11828,7 +11828,7 @@ Image_read_inline(VALUE self ATTRIBUTE_UNUSED, VALUE content)
     // Create a new Info structure for this read. About the
     // only useful attribute that can be set is `format'.
     info_obj = rm_info_new();
-    Data_Get_Struct(info_obj, Info, info);
+    GetInfoStruct(info_obj, info);
 
     images = BlobToImage(info, blob, blob_l, exception);
     magick_free((void *)blob);
@@ -14700,7 +14700,7 @@ Image_to_blob(VALUE self)
     // both) and the image format by setting the depth and format
     // values in the info parm block.
     info_obj = rm_info_new();
-    Data_Get_Struct(info_obj, Info, info);
+    GetInfoStruct(info_obj, info);
 
     image = rm_check_destroyed(self);
 
@@ -16226,7 +16226,7 @@ Image_write(VALUE self, VALUE file)
     image = rm_check_destroyed(self);
 
     info_obj = rm_info_new();
-    Data_Get_Struct(info_obj, Info, info);
+    GetInfoStruct(info_obj, info);
 
     if (TYPE(file) == T_FILE)
     {

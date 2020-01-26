@@ -51,7 +51,7 @@ get_option(VALUE self, const char *key)
     Info *info;
     const char *value;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
 
     value = GetImageOption(info, key);
     if (value)
@@ -79,7 +79,7 @@ set_option(VALUE self, const char *key, VALUE string)
     Info *info;
     char *value;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
 
     if (NIL_P(string))
     {
@@ -115,7 +115,7 @@ static VALUE set_color_option(VALUE self, const char *option, VALUE color)
     ExceptionInfo *exception;
     MagickBooleanType okay;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
 
     if (NIL_P(color))
     {
@@ -158,7 +158,7 @@ static VALUE get_dbl_option(VALUE self, const char *option)
     double d;
     long n;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
 
     value = GetImageOption(info, option);
     if (!value)
@@ -193,7 +193,7 @@ static VALUE set_dbl_option(VALUE self, const char *option, VALUE value)
     long n;
     int len;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
 
     if (NIL_P(value))
     {
@@ -296,7 +296,7 @@ Info_aref(int argc, VALUE *argv, VALUE self)
 
     }
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     value = GetImageOption(info, fkey);
     if (!value)
     {
@@ -340,7 +340,7 @@ Info_aset(int argc, VALUE *argv, VALUE self)
     unsigned int okay;
 
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
 
     switch (argc)
     {
@@ -440,7 +440,7 @@ Info_authenticate(VALUE self)
 {
     Info *info;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
 #if defined(IMAGEMAGICK_7)
     return C_str_to_R_str(GetImageOption(info, "authenticate"));
 #else
@@ -465,7 +465,7 @@ Info_authenticate_eq(VALUE self, VALUE passwd_arg)
     Info *info;
     char *passwd = NULL;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
 
     if (!NIL_P(passwd_arg))
     {
@@ -512,7 +512,7 @@ Info_background_color(VALUE self)
 {
     Info *info;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     return rm_pixelcolor_to_color_name_info(info, &info->background_color);
 }
 
@@ -537,7 +537,7 @@ Info_background_color_eq(VALUE self, VALUE bc_arg)
     Info *info;
     //char colorname[MaxTextExtent];
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     Color_to_PixelColor(&info->background_color, bc_arg);
     //SetImageOption(info, "background", pixel_packet_to_hexname(&info->background_color, colorname));
     return bc_arg;
@@ -558,7 +558,7 @@ Info_border_color(VALUE self)
 {
     Info *info;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     return rm_pixelcolor_to_color_name_info(info, &info->border_color);
 }
 
@@ -582,7 +582,7 @@ Info_border_color_eq(VALUE self, VALUE bc_arg)
     Info *info;
     //char colorname[MaxTextExtent];
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     Color_to_PixelColor(&info->border_color, bc_arg);
     //SetImageOption(info, "bordercolor", pixel_packet_to_hexname(&info->border_color, colorname));
     return bc_arg;
@@ -655,7 +655,7 @@ Info_channel(int argc, VALUE *argv, VALUE self)
         raise_ChannelType_error(argv[argc-1]);
     }
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
 
     info->channel = channels;
     return self;
@@ -676,7 +676,7 @@ Info_colorspace(VALUE self)
 {
     Info *info;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     return ColorspaceType_find(info->colorspace);
 }
 
@@ -696,7 +696,7 @@ Info_colorspace_eq(VALUE self, VALUE colorspace)
 {
     Info *info;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     VALUE_TO_ENUM(colorspace, info->colorspace, ColorspaceType);
     return colorspace;
 }
@@ -717,7 +717,7 @@ Info_compression(VALUE self)
 {
     Info *info;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     return CompressionType_find(info->compression);
 }
 
@@ -737,7 +737,7 @@ Info_compression_eq(VALUE self, VALUE type)
 {
     Info *info;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     VALUE_TO_ENUM(type, info->compression, CompressionType);
     return type;
 }
@@ -769,7 +769,7 @@ Info_define(int argc, VALUE *argv, VALUE self)
     unsigned int okay;
     VALUE fmt_arg;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
 
     switch (argc)
     {
@@ -824,7 +824,7 @@ Info_delay(VALUE self)
     char *p;
     long d;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
 
     delay = GetImageOption(info, "delay");
     if (delay)
@@ -874,7 +874,7 @@ Info_delay_eq(VALUE self, VALUE string)
     int not_num;
     char dstr[20];
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
 
     if (NIL_P(string))
     {
@@ -927,7 +927,7 @@ Info_density_eq(VALUE self, VALUE density_arg)
     VALUE density;
     char *dens;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
 
     if (NIL_P(density_arg))
     {
@@ -978,7 +978,7 @@ Info_depth_eq(VALUE self, VALUE depth)
     Info *info;
     unsigned long d;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     d = NUM2ULONG(depth);
     switch (d)
     {
@@ -1067,7 +1067,7 @@ Info_dispose(VALUE self)
     ID dispose_id;
     const char *dispose;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
 
     dispose_id = rb_intern("UndefinedDispose");
 
@@ -1106,7 +1106,7 @@ Info_dispose_eq(VALUE self, VALUE disp)
     const char *option;
     int x;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
 
     if (NIL_P(disp))
     {
@@ -1147,7 +1147,7 @@ Info_endian(VALUE self)
 {
     Info *info;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     return EndianType_find(info->endian);
 }
 
@@ -1173,7 +1173,7 @@ Info_endian_eq(VALUE self, VALUE endian)
         VALUE_TO_ENUM(endian, type, EndianType);
     }
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     info->endian = type;
     return endian;
 }
@@ -1214,7 +1214,7 @@ Info_extract_eq(VALUE self, VALUE extract_arg)
     char *extr;
     VALUE extract;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
 
     if (NIL_P(extract_arg))
     {
@@ -1256,7 +1256,7 @@ Info_filename(VALUE self)
 {
     Info *info;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     return rb_str_new2(info->filename);
 }
 
@@ -1280,7 +1280,7 @@ Info_filename_eq(VALUE self, VALUE filename)
     Info *info;
     char *fname;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
 
     // Allow "nil" - remove current filename
     if (NIL_P(filename) || StringValuePtr(filename) == NULL)
@@ -1357,7 +1357,7 @@ Info_font_eq(VALUE self, VALUE font_arg)
     Info *info;
     char *font;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     if (NIL_P(font_arg) || StringValuePtr(font_arg) == NULL)
     {
         magick_free(info->font);
@@ -1386,7 +1386,7 @@ VALUE Info_format(VALUE self)
     const MagickInfo *magick_info ;
     ExceptionInfo *exception;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     if (*info->magick)
     {
         exception = AcquireExceptionInfo();
@@ -1417,7 +1417,7 @@ Info_format_eq(VALUE self, VALUE magick)
     char *mgk;
     ExceptionInfo *exception;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
 
     mgk = StringValuePtr(magick);
 
@@ -1463,7 +1463,7 @@ VALUE Info_fuzz_eq(VALUE self, VALUE fuzz)
 {
     Info *info;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     info->fuzz = rm_fuzz_to_dbl(fuzz);
     return fuzz;
 }
@@ -1535,7 +1535,7 @@ VALUE Info_gravity(VALUE self)
     int x;
     ID gravity_id;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
 
     gravity_id = rb_intern("UndefinedGravity");
 
@@ -1575,7 +1575,7 @@ Info_gravity_eq(VALUE self, VALUE grav)
     const char *option;
     int x;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
 
     if (NIL_P(grav))
     {
@@ -1614,7 +1614,7 @@ Info_image_type(VALUE self)
 {
     Info *info;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     return ImageType_find(info->type);
 }
 
@@ -1634,7 +1634,7 @@ Info_image_type_eq(VALUE self, VALUE type)
 {
     Info *info;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     VALUE_TO_ENUM(type, info->type, ImageType);
     return type;
 }
@@ -1653,7 +1653,7 @@ Info_interlace(VALUE self)
 {
     Info *info;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     return InterlaceType_find(info->interlace);
 }
 
@@ -1673,7 +1673,7 @@ Info_interlace_eq(VALUE self, VALUE inter)
 {
     Info *info;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     VALUE_TO_ENUM(inter, info->interlace, InterlaceType);
     return inter;
 }
@@ -1695,7 +1695,7 @@ Info_matte_color(VALUE self)
 {
     Info *info;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     return rm_pixelcolor_to_color_name_info(info, &info->matte_color);
 }
 
@@ -1716,7 +1716,7 @@ Info_matte_color_eq(VALUE self, VALUE matte_arg)
     Info *info;
     //char colorname[MaxTextExtent];
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     Color_to_PixelColor(&info->matte_color, matte_arg);
     //SetImageOption(info, "mattecolor", pixel_packet_to_hexname(&info->matte_color, colorname));
     return matte_arg;
@@ -1738,7 +1738,7 @@ Info_monitor_eq(VALUE self, VALUE monitor)
 {
     Info *info;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
 
     if (NIL_P(monitor))
     {
@@ -1773,7 +1773,7 @@ Info_orientation(VALUE self)
 {
     Info *info;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     return OrientationType_find(info->orientation);
 }
 
@@ -1794,7 +1794,7 @@ Info_orientation_eq(VALUE self, VALUE inter)
 {
     Info *info;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     VALUE_TO_ENUM(inter, info->orientation, OrientationType);
     return inter;
 }
@@ -1815,7 +1815,7 @@ Info_origin(VALUE self)
     Info *info;
     const char *origin;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
 
     origin = GetImageOption(info, "origin");
     return origin ? rb_str_new2(origin) : Qnil;
@@ -1840,7 +1840,7 @@ Info_origin_eq(VALUE self, VALUE origin_arg)
     VALUE origin_str;
     char *origin;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
 
     if (NIL_P(origin_arg))
     {
@@ -1880,7 +1880,7 @@ Info_page(VALUE self)
 {
     Info *info;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     return info->page ? rb_str_new2(info->page) : Qnil;
 
 }
@@ -1903,7 +1903,7 @@ Info_page_eq(VALUE self, VALUE page_arg)
     VALUE geom_str;
     char *geometry;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     if (NIL_P(page_arg))
     {
         magick_free(info->page);
@@ -1942,7 +1942,7 @@ Info_sampling_factor(VALUE self)
 {
     Info *info;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     if (info->sampling_factor)
     {
         return rb_str_new2(info->sampling_factor);
@@ -1970,7 +1970,7 @@ Info_sampling_factor_eq(VALUE self, VALUE sampling_factor)
     char *sampling_factor_p = NULL;
     long sampling_factor_len = 0;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
 
     if (!NIL_P(sampling_factor))
     {
@@ -2005,7 +2005,7 @@ Info_scene(VALUE self)
 {
     Info *info;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     return  ULONG2NUM(info->scene);
 }
 
@@ -2026,7 +2026,7 @@ Info_scene_eq(VALUE self, VALUE scene)
     Info *info;
     char buf[25];
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     info->scene = NUM2ULONG(scene);
 
     (void) snprintf(buf, sizeof(buf), "%-ld", info->scene);
@@ -2064,7 +2064,7 @@ Info_server_name_eq(VALUE self, VALUE server_arg)
     Info *info;
     char *server;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     if (NIL_P(server_arg) || StringValuePtr(server_arg) == NULL)
     {
         magick_free(info->server_name);
@@ -2108,7 +2108,7 @@ Info_size_eq(VALUE self, VALUE size_arg)
     VALUE size;
     char *sz;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
 
     if (NIL_P(size_arg))
     {
@@ -2221,7 +2221,7 @@ Info_texture_eq(VALUE self, VALUE texture)
     Image *image;
     char name[MaxTextExtent];
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
 
     // Delete any existing texture file
     if (info->texture)
@@ -2271,7 +2271,7 @@ Info_tile_offset_eq(VALUE self, VALUE offset)
         rb_raise(rb_eArgError, "invalid tile offset geometry: %s", tile_offset);
     }
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
 
     (void) DeleteImageOption(info, "tile-offset");
     (void) SetImageOption(info, "tile-offset", tile_offset);
@@ -2297,7 +2297,7 @@ Info_transparent_color(VALUE self)
 {
     Info *info;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     return rm_pixelcolor_to_color_name_info(info, &info->transparent_color);
 }
 
@@ -2319,7 +2319,7 @@ Info_transparent_color_eq(VALUE self, VALUE tc_arg)
     Info *info;
     //char colorname[MaxTextExtent];
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     Color_to_PixelColor(&info->transparent_color, tc_arg);
     //SetImageOption(info, "transparent", pixel_packet_to_hexname(&info->transparent_color, colorname));
     return tc_arg;
@@ -2341,7 +2341,7 @@ Info_tile_offset(VALUE self)
     Info *info;
     const char *tile_offset;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
 
     tile_offset = GetImageOption(info, "tile-offset");
 
@@ -2383,7 +2383,7 @@ Info_undefine(VALUE self, VALUE format, VALUE key)
 
     snprintf(fkey, sizeof(fkey), "%.60s:%.*s", format_p, (int)(MaxTextExtent-61), key_p);
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     (void) DeleteImageOption(info, fkey);
 
     return self;
@@ -2436,7 +2436,7 @@ Info_units(VALUE self)
 {
     Info *info;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     return ResolutionType_find(info->units);
 }
 
@@ -2456,7 +2456,7 @@ Info_units_eq(VALUE self, VALUE units)
 {
     Info *info;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
     VALUE_TO_ENUM(units, info->units, ResolutionType);
     return units;
 }
@@ -2475,7 +2475,7 @@ Info_view(VALUE self)
 {
     Info *info;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
 #if defined(IMAGEMAGICK_7)
     return C_str_to_R_str(GetImageOption(info, "fpx:view"));
 #else
@@ -2499,7 +2499,7 @@ Info_view_eq(VALUE self, VALUE view_arg)
     Info *info;
     char *view = NULL;
 
-    Data_Get_Struct(self, Info, info);
+    GetInfoStruct(self, info);
 
     if (!NIL_P(view_arg))
     {

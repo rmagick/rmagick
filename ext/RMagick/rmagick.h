@@ -535,6 +535,7 @@ EXTERN ID rm_ID_y;                 /**< "y" */
 #define GetDrawStruct(obj, var) Data_Get_Struct(obj, Draw, var);
 #define GetImageStruct(obj, var) Data_Get_Struct(obj, Image, var);
 #define GetMagickEnumStruct(obj, var) Data_Get_Struct(obj, MagickEnum, var);
+#define GetInfoStruct(obj, var) Data_Get_Struct(obj, Info, var);
 
 // Method, external function declarations. These declarations are
 // grouped by the source file in which the methods are defined.
