@@ -10,6 +10,10 @@
 
 #include "rmagick.h"
 
+#define MakeKernelInfoObject(class, obj) Data_Wrap_Struct(class, NULL, rm_kernel_info_destroy, obj);
+
+static void rm_kernel_info_destroy(void *kernel);
+
 /**
  * If there's a kernel info, delete it before destroying the KernelInfo 
  *
@@ -36,7 +40,7 @@ rm_kernel_info_destroy(void *kernel)
 VALUE
 KernelInfo_alloc(VALUE class)
 {
-    return Data_Wrap_Struct(class, NULL, rm_kernel_info_destroy, NULL);
+    return MakeKernelInfoObject(class, NULL);
 }
 
 /**
@@ -173,7 +177,7 @@ VALUE
 KernelInfo_clone(VALUE self)
 {
     KernelInfo *kernel = CloneKernelInfo((KernelInfo*)DATA_PTR(self));
-    return Data_Wrap_Struct(Class_KernelInfo, NULL, rm_kernel_info_destroy, kernel);
+    return MakeKernelInfoObject(Class_KernelInfo, kernel);
 }
 
 /**
@@ -260,5 +264,5 @@ KernelInfo_builtin(VALUE self, VALUE what, VALUE geometry)
         rb_raise(rb_eRuntimeError, "failed to acquire builtin kernel");
     }
 
-    return Data_Wrap_Struct(self, NULL, rm_kernel_info_destroy, kernel);
+    return MakeKernelInfoObject(self, kernel);
 }
