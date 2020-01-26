@@ -31,6 +31,8 @@ typedef struct
 
 #define GetGradientFillStruct(obj, var) Data_Get_Struct(self, rm_GradientFill, var);
 #define GetTextureFillStruct(obj, var) Data_Get_Struct(self, rm_TextureFill, var);
+#define MakeGradientFillObject(class, obj) Data_Make_Struct(class, rm_GradientFill, NULL, free_Fill, obj);
+#define MakeTextureFillObject(class, obj) Data_Make_Struct(class, rm_TextureFill, NULL, free_TextureFill, obj);
 
 /**
  * Free Fill or Fill subclass object (except for TextureFill).
@@ -57,7 +59,7 @@ GradientFill_alloc(VALUE class)
 {
     rm_GradientFill *fill;
 
-    return Data_Make_Struct(class, rm_GradientFill, NULL, free_Fill, fill);
+    return MakeGradientFillObject(class, fill);
 }
 
 
@@ -700,11 +702,7 @@ VALUE
 TextureFill_alloc(VALUE class)
 {
     rm_TextureFill *fill;
-    return Data_Make_Struct(class
-                            , rm_TextureFill
-                            , NULL
-                            , free_TextureFill
-                            , fill);
+    return MakeTextureFillObject(class, fill);
 }
 
 /**
