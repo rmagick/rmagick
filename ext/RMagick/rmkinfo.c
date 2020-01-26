@@ -10,9 +10,19 @@
 
 #include "rmagick.h"
 
-#define MakeKernelInfoObject(class, obj) Data_Wrap_Struct(class, NULL, rm_kernel_info_destroy, obj);
 
 static void rm_kernel_info_destroy(void *kernel);
+static size_t sizeof_KernelInfo(const void *);
+
+const rb_data_type_t rm_kernel_info_data_type = {
+    "Magick::KernelInfo",
+    { NULL, rm_kernel_info_destroy, sizeof_KernelInfo, },
+    0, 0,
+    RUBY_TYPED_FREE_IMMEDIATELY
+};
+
+#define MakeKernelInfoObject(class, obj) TypedData_Wrap_Struct(class, &rm_kernel_info_data_type, obj);
+
 
 /**
  * If there's a kernel info, delete it before destroying the KernelInfo 
@@ -28,6 +38,21 @@ rm_kernel_info_destroy(void *kernel)
     if (kernel)
       DestroyKernelInfo((KernelInfo*)kernel);
 }
+
+
+/**
+ * Get KernelInfo object size.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param kernel the KernelInfo object
+ */
+static size_t
+sizeof_KernelInfo(const void *kernel)
+{
+    return sizeof(KernelInfo);
+}
+
 
 /**
  * Create a KernelInfo object.
