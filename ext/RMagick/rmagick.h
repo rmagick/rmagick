@@ -532,9 +532,10 @@ EXTERN ID rm_ID_y;                 /**< "y" */
    } while(0)
 
 extern const rb_data_type_t rm_draw_data_type;
+extern const rb_data_type_t rm_image_data_type;
 
 #define GetDrawStruct(obj, var) TypedData_Get_Struct(obj, Draw, &rm_draw_data_type, var);
-#define GetImageStruct(obj, var) Data_Get_Struct(obj, Image, var);
+#define GetImageStruct(obj, var) TypedData_Get_Struct(obj, Image, &rm_image_data_type, var);
 #define GetMagickEnumStruct(obj, var) Data_Get_Struct(obj, MagickEnum, var);
 #define GetInfoStruct(obj, var) Data_Get_Struct(obj, Info, var);
 #define GetMontageStruct(obj, var) Data_Get_Struct(obj, Montage, var);
