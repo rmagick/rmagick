@@ -22,7 +22,7 @@ const rb_data_type_t rm_draw_data_type = {
     "Magick::Draw",
     { mark_Draw, destroy_Draw, sizeof_Draw, },
     0, 0,
-    RUBY_TYPED_FREE_IMMEDIATELY
+    RUBY_TYPED_FREE_IMMEDIATELY|RUBY_TYPED_WB_PROTECTED
 };
 
 #define MakeDrawObject(class, obj) TypedData_Wrap_Struct(class, &rm_draw_data_type, obj);

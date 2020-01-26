@@ -25,7 +25,7 @@ const rb_data_type_t rm_magick_enum_data_type = {
     "Magick::Enum",
     { NULL, rm_enum_free, sizeof_Enum, },
     0, 0,
-    RUBY_TYPED_FREE_IMMEDIATELY
+    RUBY_TYPED_FREE_IMMEDIATELY|RUBY_TYPED_WB_PROTECTED
 };
 
 #define MakeMagickEnumObject(class, obj) TypedData_Make_Struct(class, MagickEnum, &rm_magick_enum_data_type, obj);

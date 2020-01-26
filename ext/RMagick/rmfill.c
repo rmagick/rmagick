@@ -38,13 +38,13 @@ const rb_data_type_t rm_gradient_fill_data_type = {
     "Magick::GradientFill",
     { NULL, free_Fill, sizeof_Fill, },
     0, 0,
-    RUBY_TYPED_FREE_IMMEDIATELY
+    RUBY_TYPED_FREE_IMMEDIATELY|RUBY_TYPED_WB_PROTECTED
 };
 const rb_data_type_t rm_texture_fill_data_type = {
     "Magick::Texture",
     { NULL, free_TextureFill, sizeof_TextureFill, },
     0, 0,
-    RUBY_TYPED_FREE_IMMEDIATELY
+    RUBY_TYPED_FREE_IMMEDIATELY|RUBY_TYPED_WB_PROTECTED
 };
 
 #define GetGradientFillStruct(obj, var) TypedData_Get_Struct(self, rm_GradientFill, &rm_gradient_fill_data_type, var);

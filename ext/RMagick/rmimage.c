@@ -72,7 +72,7 @@ const rb_data_type_t rm_image_data_type = {
     "Magick::Image",
     { NULL, rm_image_destroy, sizeof_Image, },
     0, 0,
-    RUBY_TYPED_FREE_IMMEDIATELY
+    RUBY_TYPED_FREE_IMMEDIATELY|RUBY_TYPED_WB_PROTECTED
 };
 
 #define MakeImageObject(class, obj) TypedData_Wrap_Struct(class, &rm_image_data_type, obj);

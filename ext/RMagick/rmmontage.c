@@ -19,7 +19,7 @@ const rb_data_type_t rm_montage_data_type = {
     "Magick::ImageList::Montage",
     { NULL, destroy_Montage, sizeof_Montage, },
     0, 0,
-    RUBY_TYPED_FREE_IMMEDIATELY
+    RUBY_TYPED_FREE_IMMEDIATELY|RUBY_TYPED_WB_PROTECTED
 };
 
 #define MakeMontageObject(class, obj) TypedData_Wrap_Struct(class, &rm_montage_data_type, obj);

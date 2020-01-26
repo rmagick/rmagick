@@ -18,7 +18,7 @@ const rb_data_type_t rm_kernel_info_data_type = {
     "Magick::KernelInfo",
     { NULL, rm_kernel_info_destroy, sizeof_KernelInfo, },
     0, 0,
-    RUBY_TYPED_FREE_IMMEDIATELY
+    RUBY_TYPED_FREE_IMMEDIATELY|RUBY_TYPED_WB_PROTECTED
 };
 
 #define MakeKernelInfoObject(class, obj) TypedData_Wrap_Struct(class, &rm_kernel_info_data_type, obj);

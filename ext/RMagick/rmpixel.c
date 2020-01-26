@@ -23,7 +23,7 @@ const rb_data_type_t rm_pixel_data_type = {
     "Magick::Pixel",
     { NULL, destroy_Pixel, sizeof_Pixel, },
     0, 0,
-    RUBY_TYPED_FREE_IMMEDIATELY
+    RUBY_TYPED_FREE_IMMEDIATELY|RUBY_TYPED_WB_PROTECTED
 };
 
 #define MakePixelObject(class, obj) TypedData_Wrap_Struct(class, &rm_pixel_data_type, obj);

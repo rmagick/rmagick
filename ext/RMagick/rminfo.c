@@ -41,7 +41,7 @@ const rb_data_type_t rm_info_data_type = {
     "Magick::Image::Info",
     { NULL, destroy_Info, sizeof_Info, },
     0, 0,
-    RUBY_TYPED_FREE_IMMEDIATELY
+    RUBY_TYPED_FREE_IMMEDIATELY|RUBY_TYPED_WB_PROTECTED
 };
 
 #define MakeInfoObject(class, obj) TypedData_Wrap_Struct(class, &rm_info_data_type, obj);
