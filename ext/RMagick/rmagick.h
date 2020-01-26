@@ -1051,7 +1051,6 @@ ATTR_ACCESSOR(Pixel, cyan)
 ATTR_ACCESSOR(Pixel, magenta)
 ATTR_ACCESSOR(Pixel, yellow)
 ATTR_ACCESSOR(Pixel, black)
-extern void   destroy_Pixel(Pixel *);
 extern VALUE  Pixel_alloc(VALUE);
 extern VALUE  Pixel_case_eq(VALUE, VALUE);
 extern VALUE  Pixel_clone(VALUE);

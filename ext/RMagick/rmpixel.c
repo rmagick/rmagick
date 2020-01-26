@@ -16,6 +16,10 @@
     #define QueryColorname QueryMagickColorname
 #endif
 
+#define MakePixelObject(class, obj) Data_Wrap_Struct(class, NULL, destroy_Pixel, obj);
+
+static void destroy_Pixel(Pixel *);
+
 /*
  *  Declare Pixel channel attribute writers
 */
@@ -73,7 +77,7 @@ static void Color_Name_to_PixelColor(PixelColor *, VALUE);
  *
  * @param pixel the Pixel object to destroy
  */
-void
+static void
 destroy_Pixel(Pixel *pixel)
 {
     xfree(pixel);
@@ -365,7 +369,7 @@ Pixel_alloc(VALUE class)
 
     pixel = ALLOC(Pixel);
     memset(pixel, '\0', sizeof(Pixel));
-    return Data_Wrap_Struct(class, NULL, destroy_Pixel, pixel);
+    return MakePixelObject(class, pixel);
 }
 
 
@@ -450,7 +454,7 @@ Pixel_dup(VALUE self)
 
     pixel = ALLOC(Pixel);
     memset(pixel, '\0', sizeof(Pixel));
-    dup = Data_Wrap_Struct(CLASS_OF(self), NULL, destroy_Pixel, pixel);
+    dup = MakePixelObject(CLASS_OF(self), pixel);
     RB_GC_GUARD(dup);
 
     return rb_funcall(dup, rm_ID_initialize_copy, 1, self);
@@ -707,7 +711,7 @@ Pixel_from_MagickPixel(const MagickPixel *pp)
 #endif
     pixel->black   = pp->index;
 
-    return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
+    return MakePixelObject(Class_Pixel, pixel);
 }
 
 
@@ -739,7 +743,7 @@ Pixel_from_PixelPacket(const PixelPacket *pp)
     pixel->black   = 0;
 #endif
 
-    return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
+    return MakePixelObject(Class_Pixel, pixel);
 }
 
 
@@ -771,7 +775,7 @@ Pixel_from_PixelColor(const PixelColor *pp)
     pixel->black   = 0;
 #endif
 
-    return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
+    return MakePixelObject(Class_Pixel, pixel);
 }
 
 
