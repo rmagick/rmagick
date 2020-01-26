@@ -27,7 +27,7 @@ Pixel_##_channel_##_eq(VALUE self, VALUE v) \
     Pixel *pixel; \
  \
     rb_check_frozen(self); \
-    Data_Get_Struct(self, Pixel, pixel); \
+    GetPixelStruct(self, pixel); \
     pixel->_channel_ = APP2QUANTUM(v); \
     (void) rb_funcall(self, rm_ID_changed, 0); \
     (void) rb_funcall(self, rm_ID_notify_observers, 1, self); \
@@ -46,7 +46,7 @@ Pixel_##_cmyk_channel_##_eq(VALUE self, VALUE v) \
     Pixel *pixel; \
  \
     rb_check_frozen(self); \
-    Data_Get_Struct(self, Pixel, pixel); \
+    GetPixelStruct(self, pixel); \
     pixel->_rgb_channel_ = APP2QUANTUM(v); \
     (void) rb_funcall(self, rm_ID_changed, 0); \
     (void) rb_funcall(self, rm_ID_notify_observers, 1, self); \
@@ -58,7 +58,7 @@ Pixel_##_cmyk_channel_(VALUE self) \
 { \
     Pixel *pixel; \
  \
-    Data_Get_Struct(self, Pixel, pixel); \
+    GetPixelStruct(self, pixel); \
     return INT2NUM(pixel->_rgb_channel_); \
 }
 
@@ -126,7 +126,7 @@ VALUE
 Pixel_alpha(VALUE self)
 {
     Pixel *pixel;
-    Data_Get_Struct(self, Pixel, pixel);
+    GetPixelStruct(self, pixel);
 #if defined(IMAGEMAGICK_7)
     return C_int_to_R_int(pixel->alpha);
 #else
@@ -206,7 +206,7 @@ Pixel_alpha_eq(VALUE self, VALUE v)
     Pixel *pixel;
  
     rb_check_frozen(self);
-    Data_Get_Struct(self, Pixel, pixel);
+    GetPixelStruct(self, pixel);
 #if defined(IMAGEMAGICK_7)
     pixel->alpha = APP2QUANTUM(v);
     (void) rb_funcall(self, rm_ID_changed, 0);
@@ -265,7 +265,7 @@ Color_to_PixelColor(PixelColor *pp, VALUE color)
     if (CLASS_OF(color) == Class_Pixel)
     {
         memset(pp, 0, sizeof(*pp));
-        Data_Get_Struct(color, Pixel, pixel);
+        GetPixelStruct(color, pixel);
         pp->red     = pixel->red;
         pp->green   = pixel->green;
         pp->blue    = pixel->blue;
@@ -303,7 +303,7 @@ Color_to_Pixel(Pixel *pp, VALUE color)
     // Allow color name or Pixel
     if (CLASS_OF(color) == Class_Pixel)
     {
-        Data_Get_Struct(color, Pixel, pixel);
+        GetPixelStruct(color, pixel);
         memcpy(pp, pixel, sizeof(Pixel));
     }
     else
@@ -387,8 +387,8 @@ Pixel_case_eq(VALUE self, VALUE other)
 
     if (CLASS_OF(self) == CLASS_OF(other))
     {
-        Data_Get_Struct(self, Pixel, this);
-        Data_Get_Struct(other, Pixel, that);
+        GetPixelStruct(self, this);
+        GetPixelStruct(other, that);
         return (this->red == that->red
             && this->blue == that->blue
             && this->green == that->green
@@ -792,7 +792,7 @@ Pixel_hash(VALUE self)
     Pixel *pixel;
     unsigned int hash;
 
-    Data_Get_Struct(self, Pixel, pixel);
+    GetPixelStruct(self, pixel);
 
     hash  = ScaleQuantumToChar(pixel->red)   << 24;
     hash += ScaleQuantumToChar(pixel->green) << 16;
@@ -824,8 +824,8 @@ Pixel_init_copy(VALUE self, VALUE orig)
 {
     Pixel *copy, *original;
 
-    Data_Get_Struct(orig, Pixel, original);
-    Data_Get_Struct(self, Pixel, copy);
+    GetPixelStruct(orig, original);
+    GetPixelStruct(self, copy);
 
     *copy = *original;
 
@@ -858,7 +858,7 @@ Pixel_initialize(int argc, VALUE *argv, VALUE self)
 {
     Pixel *pixel;
 
-    Data_Get_Struct(self, Pixel, pixel);
+    GetPixelStruct(self, pixel);
 
 #if defined(IMAGEMAGICK_7)
     pixel->alpha = OpaqueAlpha;
@@ -918,7 +918,7 @@ Pixel_intensity(VALUE self)
     Pixel *pixel;
     Quantum intensity;
 
-    Data_Get_Struct(self, Pixel, pixel);
+    GetPixelStruct(self, pixel);
 
     intensity = ROUND_TO_QUANTUM((0.299*pixel->red)
                                 + (0.587*pixel->green)
@@ -943,7 +943,7 @@ Pixel_marshal_dump(VALUE self)
     Pixel *pixel;
     VALUE dpixel;
 
-    Data_Get_Struct(self, Pixel, pixel);
+    GetPixelStruct(self, pixel);
     dpixel = rb_hash_new();
     rb_hash_aset(dpixel, CSTR2SYM("red"), QUANTUM2NUM(pixel->red));
     rb_hash_aset(dpixel, CSTR2SYM("green"), QUANTUM2NUM(pixel->green));
@@ -975,7 +975,7 @@ Pixel_marshal_load(VALUE self, VALUE dpixel)
 {
     Pixel *pixel;
 
-    Data_Get_Struct(self, Pixel, pixel);
+    GetPixelStruct(self, pixel);
     pixel->red = NUM2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("red")));
     pixel->green = NUM2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("green")));
     pixel->blue = NUM2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("blue")));
@@ -1003,8 +1003,8 @@ Pixel_spaceship(VALUE self, VALUE other)
 {
     Pixel *this, *that;
 
-    Data_Get_Struct(self, Pixel, this);
-    Data_Get_Struct(other, Pixel, that);
+    GetPixelStruct(self, this);
+    GetPixelStruct(other, that);
 
     if (this->red != that->red)
     {
@@ -1056,7 +1056,7 @@ Pixel_to_hsla(VALUE self)
     Pixel *pixel;
     VALUE hsla;
 
-    Data_Get_Struct(self, Pixel, pixel);
+    GetPixelStruct(self, pixel);
 
     ConvertRGBToHSL(pixel->red, pixel->green, pixel->blue, &hue, &sat, &lum);
     hue *= 360.0;
@@ -1193,7 +1193,7 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
             rb_raise(rb_eArgError, "wrong number of arguments (%d for 0 to 2)", argc);
     }
 
-    Data_Get_Struct(self, Pixel, pixel);
+    GetPixelStruct(self, pixel);
 
     info = CloneImageInfo(NULL);
     image = rm_acquire_image(info);
@@ -1263,7 +1263,7 @@ Pixel_to_s(VALUE self)
     Pixel *pixel;
     char buff[100];
 
-    Data_Get_Struct(self, Pixel, pixel);
+    GetPixelStruct(self, pixel);
     snprintf(buff, sizeof(buff), "red=" QuantumFormat ", green=" QuantumFormat ", blue=" QuantumFormat ", alpha=" QuantumFormat,
             pixel->red, pixel->green, pixel->blue,
 #if defined(IMAGEMAGICK_7)
