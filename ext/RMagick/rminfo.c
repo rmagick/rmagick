@@ -34,9 +34,17 @@
     OPTION_ATTR_READER(opt, key)\
     OPTION_ATTR_WRITER(opt, key)
 
-#define MakeInfoObject(class, obj) Data_Wrap_Struct(class, NULL, destroy_Info, obj);
-
 static void destroy_Info(void *);
+static size_t sizeof_Info(const void *);
+
+const rb_data_type_t rm_info_data_type = {
+    "Magick::Image::Info",
+    { NULL, destroy_Info, sizeof_Info, },
+    0, 0,
+    RUBY_TYPED_FREE_IMMEDIATELY
+};
+
+#define MakeInfoObject(class, obj) TypedData_Wrap_Struct(class, &rm_info_data_type, obj);
 
 /**
  * Return the value of the specified option.
@@ -2554,6 +2562,20 @@ destroy_Info(void *infoptr)
     }
 
     (void) DestroyImageInfo(info);
+}
+
+
+/**
+ * Get Info object size.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param infoptr pointer to the Info object
+ */
+static size_t
+sizeof_Info(const void *infoptr)
+{
+    return sizeof(Info);
 }
 
 
