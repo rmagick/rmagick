@@ -64,18 +64,10 @@ static VALUE xform_image(int, VALUE, VALUE, VALUE, VALUE, VALUE, xformer_t);
 static VALUE array_from_images(Image *);
 static void call_trace_proc(Image *, const char *);
 static void  rm_image_destroy(void *);
-static size_t sizeof_Image(const void *);
 
 static const char *BlackPointCompensationKey = "PROFILE:black-point-compensation";
 
-const rb_data_type_t rm_image_data_type = {
-    "Magick::Image",
-    { NULL, rm_image_destroy, sizeof_Image, },
-    0, 0,
-    RUBY_TYPED_FREE_IMMEDIATELY|RUBY_TYPED_WB_PROTECTED
-};
-
-#define MakeImageObject(class, obj) TypedData_Wrap_Struct(class, &rm_image_data_type, obj);
+#define MakeImageObject(class, obj) Data_Wrap_Struct(class, NULL, rm_image_destroy, obj);
 
 /**
  * Returns the alpha value from the hash.
@@ -16694,16 +16686,4 @@ rm_image_destroy(void *img)
     }
 }
 
-/**
- * Get Image object size.
- *
- * No Ruby usage (internal function)
- *
- * @param drawptr pointer to a Image object
- */
-static size_t
-sizeof_Image(const void *img)
-{
-    return sizeof(Image);
-}
 
