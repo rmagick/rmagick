@@ -802,6 +802,9 @@ images_from_imagelist(VALUE imagelist)
         if (head == image || GetPreviousImageInList(image) != NULL)
         {
             image = rm_clone_image(image);
+
+            // Wrap raw ImageMagick object by Ruby object to destroy using Ruby's GC.
+            rm_image_new(image);
         }
         AppendImageToList(&head, image);
     }
