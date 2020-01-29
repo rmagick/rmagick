@@ -206,20 +206,6 @@ Performance/FixedSize:
 Performance/RedundantMatch:
   Enabled: false
 
-# Offense count: 2
-# Cop supports --auto-correct.
-RSpec/AlignLeftLetBrace:
-  Exclude:
-    - 'spec/rmagick/image/constitute_spec.rb'
-    - 'spec/rmagick/image/from_blob_spec.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-RSpec/AlignRightLetBrace:
-  Exclude:
-    - 'spec/rmagick/image/constitute_spec.rb'
-    - 'spec/rmagick/image/from_blob_spec.rb'
-
 # Offense count: 517
 # Cop supports --auto-correct.
 # Configuration parameters: SkipBlocks, EnforcedStyle.
