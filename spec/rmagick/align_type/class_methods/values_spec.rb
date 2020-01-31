@@ -1,4 +1,4 @@
-RSpec.describe Magick::Enum, '.values' do
+RSpec.describe Magick::AlignType, '.values' do
   it 'works' do
     expect(Magick::AlignType.values).to be_instance_of(Array)
 
