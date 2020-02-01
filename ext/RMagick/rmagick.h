@@ -15,6 +15,7 @@
 
 //! Suppress warnings about deprecated functions on Windows
 #define _CRT_SECURE_NO_DEPRECATE 1
+#define __USE_MINGW_ANSI_STDIO 1
 
 #include <assert.h>
 #include <stdio.h>
