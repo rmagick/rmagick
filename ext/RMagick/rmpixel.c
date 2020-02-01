@@ -63,6 +63,7 @@ Pixel_##_cmyk_channel_(VALUE self) \
 }
 
 
+static VALUE color_arg_rescue(VALUE arg, VALUE raised_exc ATTRIBUTE_UNUSED) ATTRIBUTE_NORETURN;
 static void Color_Name_to_PixelColor(PixelColor *, VALUE);
 
 
@@ -244,7 +245,6 @@ color_arg_rescue(VALUE arg, VALUE raised_exc ATTRIBUTE_UNUSED)
 {
     rb_raise(rb_eTypeError, "argument must be color name or pixel (%s given)",
             rb_class2name(CLASS_OF(arg)));
-    return (VALUE)0;
 }
 
 

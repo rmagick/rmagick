@@ -63,6 +63,8 @@ static VALUE threshold_image(int, VALUE *, VALUE, thresholder_t);
 static VALUE xform_image(int, VALUE, VALUE, VALUE, VALUE, VALUE, xformer_t);
 static VALUE array_from_images(Image *);
 static void call_trace_proc(Image *, const char *);
+static VALUE file_arg_rescue(VALUE arg, VALUE raised_exc ATTRIBUTE_UNUSED) ATTRIBUTE_NORETURN;
+static VALUE rm_trace_creation_handle_exception(VALUE img, VALUE exc) ATTRIBUTE_NORETURN;
 
 static const char *BlackPointCompensationKey = "PROFILE:black-point-compensation";
 
@@ -11616,7 +11618,6 @@ file_arg_rescue(VALUE arg, VALUE raised_exc ATTRIBUTE_UNUSED)
 {
     rb_raise(rb_eTypeError, "argument must be path name or open file (%s given)",
              rb_class2name(CLASS_OF(arg)));
-    return(VALUE)0;
 }
 
 
@@ -16641,7 +16642,6 @@ rm_trace_creation_handle_exception(VALUE img, VALUE exc)
     Image *image = (Image *)img;
     DestroyImage(image);
     rb_exc_raise(exc);
-    return Qnil; /* not reachable */
 }
 
 /**
