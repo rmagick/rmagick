@@ -51,11 +51,12 @@ begin
   img2['Label'] = 'Barycentric'
   imgl << draw_centers(img2, false)
 
-  montage = imgl.montage do
-    self.background_color = 'none'
-    self.geometry = '100x100+10+10'
-    self.tile = '2x2'
-  end
+  montage =
+    imgl.montage do
+      self.background_color = 'none'
+      self.geometry = '100x100+10+10'
+      self.tile = '2x2'
+    end
 
   montage.write('sparse_color.png')
 rescue NotImplementedError, NameError

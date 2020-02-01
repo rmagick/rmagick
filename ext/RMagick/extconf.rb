@@ -239,13 +239,14 @@ SRC
     # the default Ruby installation).
     def check_partial_imagemagick_versions
       prefix = config_string('prefix') || ''
-      matches = [
-        prefix + '/lib/lib?agick*',
-        prefix + '/include/ImageMagick',
-        prefix + '/bin/Magick-config'
-      ].map do |file_glob|
-        Dir.glob(file_glob)
-      end
+      matches =
+        [
+          prefix + '/lib/lib?agick*',
+          prefix + '/include/ImageMagick',
+          prefix + '/bin/Magick-config'
+        ].map do |file_glob|
+          Dir.glob(file_glob)
+        end
       matches.delete_if(&:empty?)
       return unless !matches.empty? && matches.length < 3
 

@@ -35,10 +35,11 @@ module Magick
 
     # The alpha frequencies are shown as white dots.
     def alpha_hist(freqs, scale, fg, bg)
-      histogram = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do
-        self.background_color = bg
-        self.border_color = fg
-      end
+      histogram =
+        Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do
+          self.background_color = bg
+          self.border_color = fg
+        end
 
       gc = Draw.new
       gc.affine(1, 0, 0, -scale, 0, HISTOGRAM_ROWS)
@@ -55,10 +56,11 @@ module Magick
     end
 
     def channel_histograms(red, green, blue, int, scale, fg, bg)
-      rgb_histogram = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do
-        self.background_color = bg
-        self.border_color = fg
-      end
+      rgb_histogram =
+        Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do
+          self.background_color = bg
+          self.border_color = fg
+        end
       rgb_histogram['Label'] = 'RGB'
       red_histogram = rgb_histogram.copy
       red_histogram['Label'] = 'Red'
@@ -128,10 +130,11 @@ module Magick
         pixels = hist.keys.sort_by { |pixel| hist[pixel] }
         scale = HISTOGRAM_ROWS / (hist.values.max * AIR_FACTOR)
 
-        histogram = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do
-          self.background_color = bg
-          self.border_color = fg
-        end
+        histogram =
+          Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do
+            self.background_color = bg
+            self.border_color = fg
+          end
 
         x = 0
         pixels.each do |pixel|
@@ -160,10 +163,11 @@ Depth: #{depth} bits-per-pixel component
 Colors: #{number_colors}
       END_TEXT
 
-      info = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do
-        self.background_color = bg
-        self.border_color = fg
-      end
+      info =
+        Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do
+          self.background_color = bg
+          self.border_color = fg
+        end
 
       gc = Draw.new
 
@@ -254,14 +258,15 @@ Colors: #{number_colors}
       charts << color_hist(fg, bg)
 
       # Make a montage.
-      histogram = charts.montage do
-        self.background_color = bg
-        self.stroke = 'transparent'
-        self.fill = fg
-        self.border_width = 1
-        self.tile         = '4x2'
-        self.geometry     = "#{HISTOGRAM_COLS}x#{HISTOGRAM_ROWS}+10+10"
-      end
+      histogram =
+        charts.montage do
+          self.background_color = bg
+          self.stroke = 'transparent'
+          self.fill = fg
+          self.border_width = 1
+          self.tile         = '4x2'
+          self.geometry     = "#{HISTOGRAM_COLS}x#{HISTOGRAM_ROWS}+10+10"
+        end
 
       histogram
     end
@@ -293,12 +298,13 @@ name = File.basename(filename).sub(/\..*?$/, '')
 $stdout.sync = true
 printf "Creating #{name}_Histogram.png"
 
-timer = Thread.new do
-  loop do
-    sleep(1)
-    printf '.'
+timer =
+  Thread.new do
+    loop do
+      sleep(1)
+      printf '.'
+    end
   end
-end
 
 # Generate the histograms
 histogram = image.histogram(Magick::Pixel.from_color('white'), Magick::Pixel.from_color('black'))

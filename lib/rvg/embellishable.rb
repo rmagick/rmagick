@@ -155,23 +155,25 @@ module Magick
       private
 
       def align_to_viewport(scale)
-        tx = case @align
-             when 'none', /\AxMin/
-               0
-             when NilClass, /\AxMid/
-               (@width - @image.columns * scale) / 2.0
-             when /\AxMax/
-               @width - @image.columns * scale
-             end
+        tx =
+          case @align
+          when 'none', /\AxMin/
+            0
+          when NilClass, /\AxMid/
+            (@width - @image.columns * scale) / 2.0
+          when /\AxMax/
+            @width - @image.columns * scale
+          end
 
-        ty = case @align
-             when 'none', /YMin\z/
-               0
-             when NilClass, /YMid\z/
-               (@height - @image.rows * scale) / 2.0
-             when /YMax\z/
-               @height - @image.rows * scale
-             end
+        ty =
+          case @align
+          when 'none', /YMin\z/
+            0
+          when NilClass, /YMid\z/
+            (@height - @image.rows * scale) / 2.0
+          when /YMax\z/
+            @height - @image.rows * scale
+          end
         [tx, ty]
       end
 

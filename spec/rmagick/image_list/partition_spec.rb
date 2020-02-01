@@ -13,10 +13,11 @@ RSpec.describe Magick::ImageList, '#partition' do
     a = nil
     n = -1
     expect do
-      a = @list.partition do
-        n += 1
-        (n & 1).zero?
-      end
+      a =
+        @list.partition do
+          n += 1
+          (n & 1).zero?
+        end
     end.not_to raise_error
     expect(a).to be_instance_of(Array)
     expect(a.size).to eq(2)

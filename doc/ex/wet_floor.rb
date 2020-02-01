@@ -48,9 +48,10 @@ results << ilist.append(true)
 
 # Montage into a single demo image. Use a white background so
 # there won't be any problems with transparency in the browser.
-result = results.montage do
-  self.geometry = '270x120'
-  self.tile = '1x4'
-  self.background_color = 'black'
-end
+result =
+  results.montage do
+    self.geometry = '270x120'
+    self.tile = '1x4'
+    self.background_color = 'black'
+  end
 result.write('wet_floor.gif')

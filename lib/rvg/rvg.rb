@@ -72,28 +72,29 @@ module Magick
       if @background_pattern
         canvas = Magick::Image.new(@width, @height, @background_pattern)
       elsif @background_image
-        canvas = if @width != @background_image.columns || @height != @background_image.rows
-                   case @background_position
-                   when :scaled
-                     @background_image.resize(@width, @height)
-                   when :tiled
-                     Magick::Image.new(@width, @height, Magick::TextureFill.new(@background_image))
-                   when :fit
-                     width = @width
-                     height = @height
-                     bgcolor = bgfill
-                     @background_image.change_geometry(Magick::Geometry.new(width, height)) do |new_cols, new_rows|
-                       bg_image = @background_image.resize(new_cols, new_rows)
-                       if bg_image.columns != width || bg_image.rows != height
-                         bg = Magick::Image.new(width, height) { self.background_color = bgcolor }
-                         bg_image = bg.composite!(bg_image, Magick::CenterGravity, Magick::OverCompositeOp)
-                       end
-                       bg_image
-                     end
-                   end
-                 else
-                   @background_image.copy
-                 end
+        canvas =
+          if @width != @background_image.columns || @height != @background_image.rows
+            case @background_position
+            when :scaled
+              @background_image.resize(@width, @height)
+            when :tiled
+              Magick::Image.new(@width, @height, Magick::TextureFill.new(@background_image))
+            when :fit
+              width = @width
+              height = @height
+              bgcolor = bgfill
+              @background_image.change_geometry(Magick::Geometry.new(width, height)) do |new_cols, new_rows|
+                bg_image = @background_image.resize(new_cols, new_rows)
+                if bg_image.columns != width || bg_image.rows != height
+                  bg = Magick::Image.new(width, height) { self.background_color = bgcolor }
+                  bg_image = bg.composite!(bg_image, Magick::CenterGravity, Magick::OverCompositeOp)
+                end
+                bg_image
+              end
+            end
+          else
+            @background_image.copy
+          end
       else
         bgcolor = bgfill
         canvas = Magick::Image.new(Integer(@width), Integer(@height)) { self.background_color = bgcolor }

@@ -5,13 +5,14 @@ RSpec.describe Magick::Image::Info, '#monitor' do
 
   it 'works' do
     expect { @info.monitor = -> {} }.not_to raise_error
-    monitor = proc do |mth, q, s|
-      expect(mth).to eq('resize!')
-      expect(q).to be_kind_of(Integer)
-      expect(s).to be_kind_of(Integer)
-      GC.start
-      true
-    end
+    monitor =
+      proc do |mth, q, s|
+        expect(mth).to eq('resize!')
+        expect(q).to be_kind_of(Integer)
+        expect(s).to be_kind_of(Integer)
+        GC.start
+        true
+      end
     img = Magick::Image.new(2000, 2000) { self.monitor = monitor }
     img.resize!(20, 20)
     img.monitor = nil

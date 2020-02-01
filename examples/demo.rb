@@ -270,26 +270,27 @@ begin
 
   puts 'Montage images...'
 
-  montage = example.montage do
-    self.geometry = '130x194+10+5>'
-    self.gravity = CenterGravity
-    self.border_width = 1
-    rows = (example.size + 4) / 5
-    self.tile = Geometry.new(5, rows)
-    self.compose = OverCompositeOp
+  montage =
+    example.montage do
+      self.geometry = '130x194+10+5>'
+      self.gravity = CenterGravity
+      self.border_width = 1
+      rows = (example.size + 4) / 5
+      self.tile = Geometry.new(5, rows)
+      self.compose = OverCompositeOp
 
-    # Use the ImageMagick built-in "granite" format
-    # as the background texture.
+      # Use the ImageMagick built-in "granite" format
+      # as the background texture.
 
-    #       self.texture = Image.read("granite:").first
-    self.background_color = 'white'
-    self.font = Font
-    self.pointsize = 18
-    self.fill = '#600'
-    self.filename = 'RMagick Demo'
-    #       self.shadow = true
-    #       self.frame = "20x20+4+4"
-  end
+      #       self.texture = Image.read("granite:").first
+      self.background_color = 'white'
+      self.font = Font
+      self.pointsize = 18
+      self.fill = '#600'
+      self.filename = 'RMagick Demo'
+      #       self.shadow = true
+      #       self.frame = "20x20+4+4"
+    end
 
   # Add the ImageMagick logo to the top of the montage. The "logo:"
   # format is a fixed-size image, so I don't need to specify a size.

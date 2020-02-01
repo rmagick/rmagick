@@ -48,23 +48,25 @@ module Magick
 
       # Use align attribute to compute x- and y-offset from viewport's upper-left corner.
       def align_to_viewport(width, height, sx, sy)
-        tx = case @align
-             when /\AxMin/
-               0
-             when NilClass, /\AxMid/
-               (width - @vbx_width * sx) / 2.0
-             when /\AxMax/
-               width - @vbx_width * sx
-             end
+        tx =
+          case @align
+          when /\AxMin/
+            0
+          when NilClass, /\AxMid/
+            (width - @vbx_width * sx) / 2.0
+          when /\AxMax/
+            width - @vbx_width * sx
+          end
 
-        ty = case @align
-             when /YMin\z/
-               0
-             when NilClass, /YMid\z/
-               (height - @vbx_height * sy) / 2.0
-             when /YMax\z/
-               height - @vbx_height * sy
-             end
+        ty =
+          case @align
+          when /YMin\z/
+            0
+          when NilClass, /YMid\z/
+            (height - @vbx_height * sy) / 2.0
+          when /YMax\z/
+            height - @vbx_height * sy
+          end
         [tx, ty]
       end
 

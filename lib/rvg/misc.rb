@@ -14,15 +14,16 @@ module Magick
           ivars = instance_variables
           ivars.each do |ivar|
             ivalue = instance_variable_get(ivar)
-            cvalue = if ivalue.is_a?(NilClass) || ivalue.is_a?(Symbol) || ivalue.is_a?(Float) || ivalue.is_a?(Integer) || ivalue.is_a?(FalseClass) || ivalue.is_a?(TrueClass)
-                       ivalue
-                     elsif ivalue.respond_to?(:deep_copy)
-                       ivalue.deep_copy(h)
-                     elsif ivalue.respond_to?(:dup)
-                       ivalue.dup
-                     else
-                       ivalue
-                     end
+            cvalue =
+              if ivalue.is_a?(NilClass) || ivalue.is_a?(Symbol) || ivalue.is_a?(Float) || ivalue.is_a?(Integer) || ivalue.is_a?(FalseClass) || ivalue.is_a?(TrueClass)
+                ivalue
+              elsif ivalue.respond_to?(:deep_copy)
+                ivalue.deep_copy(h)
+              elsif ivalue.respond_to?(:dup)
+                ivalue.dup
+              else
+                ivalue
+              end
             copy.instance_variable_set(ivar, cvalue)
           end
           copy.freeze if frozen?
@@ -125,11 +126,12 @@ module Magick
 
         def shift_baseline(glyph_orientation, glyph)
           glyph_dimensions = @ctx.shadow.get_type_metrics(glyph)
-          x = if glyph_orientation.zero? || glyph_orientation == 180
-                glyph_dimensions.width
-              else
-                glyph_dimensions.ascent - glyph_dimensions.descent
-              end
+          x =
+            if glyph_orientation.zero? || glyph_orientation == 180
+              glyph_dimensions.width
+            else
+              glyph_dimensions.ascent - glyph_dimensions.descent
+            end
           case @ctx.text_attrs.baseline_shift
           when :baseline
             x = 0
@@ -294,14 +296,15 @@ module Magick
         def render(x, y, text)
           @ctx.gc.text(x, y, enquote(text))
           tm = @ctx.shadow.get_type_metrics(text)
-          dx = case @ctx.text_attrs.text_anchor
-               when :start
-                 tm.width
-               when :middle
-                 tm.width / 2
-               when :end
-                 0
-               end
+          dx =
+            case @ctx.text_attrs.text_anchor
+            when :start
+              tm.width
+            when :middle
+              tm.width / 2
+            when :end
+              0
+            end
           [dx, 0]
         end
       end # class NormalTextStrategy
@@ -667,11 +670,12 @@ module Magick
         def text(x, y, text)
           return if text.length.zero?
 
-          text_renderer = if @text_attrs.non_default?
-                            TEXT_STRATEGIES[@text_attrs.writing_mode].new(self)
-                          else
-                            DefaultTextStrategy.new(self)
-                          end
+          text_renderer =
+            if @text_attrs.non_default?
+              TEXT_STRATEGIES[@text_attrs.writing_mode].new(self)
+            else
+              DefaultTextStrategy.new(self)
+            end
 
           text_renderer.render(x, y, text)
         end

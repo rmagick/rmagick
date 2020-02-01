@@ -30,15 +30,16 @@ puts("\tCreating montage...")
 
 # Montage. Each image will have 40 tiles.
 # There will be 16 images.
-montage = colors.montage do
-  self.geometry = '200x25+10+5'
-  self.gravity = CenterGravity
-  self.tile = '4x10'
-  self.background_color = 'black'
-  self.border_width = 1
-  self.fill = 'white'
-  self.stroke = 'transparent'
-end
+montage =
+  colors.montage do
+    self.geometry = '200x25+10+5'
+    self.gravity = CenterGravity
+    self.tile = '4x10'
+    self.background_color = 'black'
+    self.border_width = 1
+    self.fill = 'white'
+    self.stroke = 'transparent'
+  end
 
 # Add the title at the top, over the 'null:'
 # tiles we added at the very beginning.
