@@ -13,6 +13,16 @@
 #ifndef _RMAGICK_H_
 #define _RMAGICK_H_
 
+#if defined(__GNUC__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeclaration-after-statement"
+#pragma GCC diagnostic ignored "-Wunknown-pragmas"
+
+#if __GNUC__ > 6
+    #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
+#endif
+#endif
+
 //! Suppress warnings about deprecated functions on Windows
 #define _CRT_SECURE_NO_DEPRECATE 1
 
