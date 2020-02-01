@@ -211,10 +211,6 @@ Performance/RedundantMatch:
 RSpec/ExampleLength:
   Enabled: false
 
-# Offense count: 1
-RSpec/ExpectActual:
-  Enabled: false
-
 # Offense count: 2
 # Cop supports --auto-correct.
 RSpec/HooksBeforeExamples:
