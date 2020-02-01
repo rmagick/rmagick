@@ -318,7 +318,7 @@ Draw_font_weight_eq(VALUE self, VALUE weight)
         w = FIX2INT(weight);
         if (w < 100 || w > 900)
         {
-            rb_raise(rb_eArgError, "invalid font weight (%zu given)", w);
+            rb_raise(rb_eArgError, "invalid font weight (%"PRIuSIZE" given)", w);
         }
         draw->info->weight = w;
     }
