@@ -16610,14 +16610,13 @@ static void call_trace_proc(Image *image, const char *which)
         {
             // Maybe the stack won't get extended until we need the space.
             char buffer[MaxTextExtent];
-            int n;
 
             trace_args[0] = ID2SYM(rb_intern(which));
 
             build_inspect_string(image, buffer, sizeof(buffer));
             trace_args[1] = rb_str_new2(buffer);
 
-            n = snprintf(buffer, sizeof(buffer), "%p", (void *)image);
+            snprintf(buffer, sizeof(buffer), "%p", (void *)image);
             trace_args[2] = rb_str_new2(buffer+2);      // don't use leading 0x
             trace_args[3] = ID2SYM(rb_frame_this_func());
             (void) rb_funcall2(trace, rm_ID_call, 4, (VALUE *)trace_args);
