@@ -2029,7 +2029,7 @@ Info_scene_eq(VALUE self, VALUE scene)
     Data_Get_Struct(self, Info, info);
     info->scene = NUM2ULONG(scene);
 
-    (void) snprintf(buf, sizeof(buf), "%-ld", info->scene);
+    (void) snprintf(buf, sizeof(buf), "%zu", info->scene);
     (void) SetImageOption(info, "scene", buf);
 
     return scene;

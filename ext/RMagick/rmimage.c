@@ -3020,7 +3020,7 @@ Image_color_flood_fill( VALUE self, VALUE target_color, VALUE fill_color
     y = NUM2LONG(yv);
     if ((unsigned long)x > image->columns || (unsigned long)y > image->rows)
     {
-        rb_raise(rb_eArgError, "target out of range. %lux%lu given, image is %lux%lu"
+        rb_raise(rb_eArgError, "target out of range. %lux%lu given, image is %zux%zu"
                  , x, y, image->columns, image->rows);
     }
 
@@ -5518,7 +5518,7 @@ Image_display(VALUE self)
 
     if (image->rows == 0 || image->columns == 0)
     {
-        rb_raise(rb_eArgError, "invalid image geometry (%lux%lu)", image->rows, image->columns);
+        rb_raise(rb_eArgError, "invalid image geometry (%zux%zu)", image->rows, image->columns);
     }
 
     info_obj = rm_info_new();
@@ -6541,7 +6541,7 @@ Image_extent(int argc, VALUE *argv, VALUE self)
         }
         else
         {
-            rb_raise(rb_eArgError, "invalid extent geometry %ldx%ld+%ld+%ld"
+            rb_raise(rb_eArgError, "invalid extent geometry %ldx%ld+%zu+%zu"
                      , width, height, geometry.x, geometry.y);
         }
     }
@@ -8026,7 +8026,7 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
         }
         if ((unsigned long)(buffer_l / type_sz) < npixels)
         {
-            rb_raise(rb_eArgError, "pixel buffer too small (need %lu channel values, got %ld)"
+            rb_raise(rb_eArgError, "pixel buffer too small (need %lu channel values, got %zu)"
                      , npixels, buffer_l/type_sz);
         }
     }
@@ -8158,7 +8158,7 @@ build_inspect_string(Image *image, char *buffer, size_t len)
     // Print scene number.
     if ((GetPreviousImageInList(image) != NULL) && (GetNextImageInList(image) != NULL) && image->scene > 0)
     {
-        x += snprintf(buffer+x, len-x, "[%lu]", image->scene);
+        x += snprintf(buffer+x, len-x, "[%zu]", image->scene);
     }
     // Print format
     x += snprintf(buffer+x, len-x, " %s ", image->magick);
@@ -8168,17 +8168,17 @@ build_inspect_string(Image *image, char *buffer, size_t len)
     {
         if (image->magick_columns != image->columns || image->magick_rows != image->rows)
         {
-            x += snprintf(buffer+x, len-x, "%lux%lu=>", image->magick_columns, image->magick_rows);
+            x += snprintf(buffer+x, len-x, "%zux%zu=>", image->magick_columns, image->magick_rows);
         }
     }
 
-    x += snprintf(buffer+x, len-x, "%lux%lu ", image->columns, image->rows);
+    x += snprintf(buffer+x, len-x, "%zux%zu ", image->columns, image->rows);
 
     // Print current columnsXrows
     if (   image->page.width != 0 || image->page.height != 0
            || image->page.x != 0     || image->page.y != 0)
     {
-        x += snprintf(buffer+x, len-x, "%lux%lu%+ld%+ld ", image->page.width, image->page.height
+        x += snprintf(buffer+x, len-x, "%zux%zu+%zu+%zu ", image->page.width, image->page.height
                      , image->page.x, image->page.y);
     }
 
@@ -8189,17 +8189,17 @@ build_inspect_string(Image *image, char *buffer, size_t len)
         {
             if (image->total_colors >= (unsigned long)(1 << 24))
             {
-                x += snprintf(buffer+x, len-x, "%lumc ", image->total_colors/1024/1024);
+                x += snprintf(buffer+x, len-x, "%zumc ", image->total_colors/1024/1024);
             }
             else
             {
                 if (image->total_colors >= (unsigned long)(1 << 16))
                 {
-                    x += snprintf(buffer+x, len-x, "%lukc ", image->total_colors/1024);
+                    x += snprintf(buffer+x, len-x, "%zukc ", image->total_colors/1024);
                 }
                 else
                 {
-                    x += snprintf(buffer+x, len-x, "%luc ", image->total_colors);
+                    x += snprintf(buffer+x, len-x, "%zuc ", image->total_colors);
                 }
             }
         }
@@ -8214,7 +8214,7 @@ build_inspect_string(Image *image, char *buffer, size_t len)
         }
         else
         {
-            x += snprintf(buffer+x, len-x, "PseudoClass %lu=>%ldc ", image->total_colors
+            x += snprintf(buffer+x, len-x, "PseudoClass %zu=>%ldc ", image->total_colors
                          , (long)image->colors);
             if (image->error.mean_error_per_pixel != 0.0)
             {
@@ -9337,7 +9337,7 @@ Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
     y = NUM2LONG(argv[2]);
     if ((unsigned long)x > image->columns || (unsigned long)y > image->rows)
     {
-        rb_raise(rb_eArgError, "target out of range. %ldx%ld given, image is %lux%lu"
+        rb_raise(rb_eArgError, "target out of range. %ldx%ld given, image is %zux%zu"
                  , x, y, image->columns, image->rows);
     }
 
@@ -14260,7 +14260,7 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj
 
     if ((unsigned long)x > image->columns || (unsigned long)y > image->rows)
     {
-        rb_raise(rb_eArgError, "target out of range. %ldx%ld given, image is %lux%lu"
+        rb_raise(rb_eArgError, "target out of range. %ldx%ld given, image is %zux%zu"
                  , x, y, image->columns, image->rows);
     }
 
@@ -14738,7 +14738,7 @@ Image_to_blob(VALUE self)
                || !rm_strcasecmp(magick_info->name, "JPG"))
               && (image->rows == 0 || image->columns == 0))
         {
-            rb_raise(rb_eRuntimeError, "Can't convert %lux%lu %.4s image to a blob"
+            rb_raise(rb_eRuntimeError, "Can't convert %zux%zu %.4s image to a blob"
                      , image->columns, image->rows, magick_info->name);
         }
     }
