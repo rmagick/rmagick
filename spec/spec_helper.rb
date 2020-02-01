@@ -1,13 +1,9 @@
-if ENV['COVERAGE'] =~ /\Atrue\z/i
-  ## RUN SIMPLECOV
-  require 'simplecov'
-  SimpleCov.start 'rmagick'
-  puts '[COVERAGE] Running with SimpleCov HTML Formatter'
-  SimpleCov.formatters = [SimpleCov::Formatter::HTMLFormatter]
-end
+require_relative 'support/simplecov' if ENV['COVERAGE'] == 'true'
 
 require 'pry'
-require 'rmagick'
+require_relative '../ext/RMagick/extconf'
+require_relative '../lib/rmagick'
+require_relative '../lib/rvg/rvg'
 
 root_dir = File.expand_path('..', __dir__)
 IMAGES_DIR = File.join(root_dir, 'doc/ex/images')
