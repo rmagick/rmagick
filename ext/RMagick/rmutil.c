@@ -13,6 +13,7 @@
 #include "rmagick.h"
 #include <errno.h>
 
+static VALUE rescue_not_str(VALUE arg, VALUE raised_exc ATTRIBUTE_UNUSED) ATTRIBUTE_NORETURN;
 static void handle_exception(ExceptionInfo *, Image *, ErrorRetention);
 
 
@@ -325,7 +326,6 @@ VALUE
 rm_no_freeze(VALUE obj)
 {
     rb_raise(rb_eTypeError, "can't freeze %s", rb_class2name(CLASS_OF(obj)));
-    return (VALUE)0;
 }
 
 
@@ -399,7 +399,6 @@ rescue_not_str(VALUE arg, VALUE raised_exc ATTRIBUTE_UNUSED)
 {
     rb_raise(rb_eTypeError, "argument must be a number or a string in the form 'NN%%' (%s given)",
             rb_class2name(CLASS_OF(arg)));
-    return (VALUE)0;
 }
 
 

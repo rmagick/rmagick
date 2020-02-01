@@ -14,6 +14,7 @@
 
 
 
+static VALUE rm_yield_handle_exception(VALUE allocated_area, VALUE exc) ATTRIBUTE_NORETURN;
 
 static VALUE
 rm_yield_body(VALUE object)
@@ -26,7 +27,6 @@ rm_yield_handle_exception(VALUE allocated_area, VALUE exc)
 {
     magick_free((void *)allocated_area);
     rb_exc_raise(exc);
-    return Qnil; /* not reachable */
 }
 
 /**

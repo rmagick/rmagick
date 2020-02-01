@@ -54,9 +54,11 @@
 #define Q(q) Q2(q)
 
 #ifdef __GNUC__
-#define ATTRIBUTE_UNUSED  __attribute__((unused))
+#define ATTRIBUTE_UNUSED   __attribute__((unused))
+#define ATTRIBUTE_NORETURN __attribute__ ((__noreturn__))
 #else
 #define ATTRIBUTE_UNUSED
+#define ATTRIBUTE_NORETURN
 #endif
 
 //! Trace new image creation in bang methods
@@ -788,7 +790,7 @@ ATTR_ACCESSOR(Image, x_resolution)
 ATTR_ACCESSOR(Image, y_resolution)
 
 extern ChannelType extract_channels(int *, VALUE *);
-extern void raise_ChannelType_error(VALUE);
+extern void raise_ChannelType_error(VALUE) ATTRIBUTE_NORETURN;
 extern void add_format_prefix(Info *, VALUE);
 
 extern VALUE Image_alloc(VALUE);
@@ -1151,7 +1153,7 @@ extern VALUE  rm_pixelcolor_to_color_name(Image *, PixelColor *);
 extern VALUE  rm_pixelcolor_to_color_name_info(Info *, PixelColor *);
 extern void   rm_init_magickpixel(const Image *, MagickPixel *);
 extern void   rm_set_magickpixel(MagickPixel *, const char *);
-extern VALUE  rm_no_freeze(VALUE);
+extern VALUE  rm_no_freeze(VALUE) ATTRIBUTE_NORETURN;
 extern int    rm_strcasecmp(const char *, const char *);
 extern int    rm_strncasecmp(const char *, const char *, size_t);
 extern size_t rm_strnlen_s(const char *, size_t);
@@ -1169,7 +1171,7 @@ extern double rm_str_to_pct(VALUE);
 extern VALUE  rm_define_enum_type(const char *);
 extern void   rm_write_temp_image(Image *, char *, size_t);
 extern void   rm_delete_temp_image(char *);
-extern void   rm_not_implemented(void);
+extern void   rm_not_implemented(void) ATTRIBUTE_NORETURN;
 extern void   rm_attr_write(VALUE, VALUE);
 extern void   rm_get_geometry(VALUE, long *, long *, unsigned long *, unsigned long *, int *);
 extern const char *rm_get_property(const Image *, const char *);
@@ -1199,7 +1201,7 @@ extern MagickBooleanType rm_progress_monitor(const char *, const MagickOffsetTyp
 extern VALUE  rm_exif_by_entry(Image *);
 extern VALUE  rm_exif_by_number(Image *);
 extern void   rm_get_optional_arguments(VALUE);
-extern void   rm_fatal_error_handler(const ExceptionType, const char *, const char *);
+extern void   rm_fatal_error_handler(const ExceptionType, const char *, const char *) ATTRIBUTE_NORETURN;
 extern void   rm_error_handler(const ExceptionType, const char *, const char *);
 extern void   rm_warning_handler(const ExceptionType, const char *, const char *);
 extern MagickBooleanType rm_should_raise_exception(ExceptionInfo *, const ExceptionRetention);
