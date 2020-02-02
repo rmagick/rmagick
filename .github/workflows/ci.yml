@@ -56,12 +56,10 @@ jobs:
       run: |
         $imagemagick_version = "${{ matrix.imagemagick-version }}"
         $imagemagick_version_without_patch = $imagemagick_version.split("-")[0]
-        $installer_name = "ImageMagick-$($imagemagick_version)-Q16-x64-dll.exe"
-        $url = "https://ftp.icm.edu.pl/pub/graphics/ImageMagick/binaries/$($installer_name)"
-        $installer_path = "$(env:Temp)\$($installer_name)"
-        Invoke-WebRequest -Uri $url -OutFile $installer_path
-        $argument_list = ("/VERYSILENT", "/TASKS=install_Devel")
-        Start-Process -FilePath $installer_path -ArgumentList $argument_list -Wait
+        $url = "https://ftp.icm.edu.pl/pub/graphics/ImageMagick/binaries/ImageMagick-$($imagemagick_version)-Q16-x64-dll.exe"
+        $client = new-object System.Net.WebClient
+        $client.DownloadFile($url, "$($(get-location).path)\imagemagick-install.exe")
+        imagemagick-install.exe /VERYSILENT /TASKS=install_Devel
         SET PATH=C:\Ruby%RUBY_VERSION%\bin;C:\Program Files\ImageMagick-$($imagemagick_version_without_patch)-Q16;%PATH%
         bundle install --path=vendor/bundle
     - name: Build and test with Rake
