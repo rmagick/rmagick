@@ -20,9 +20,13 @@ RMagick is a Ruby gem with a C extension. The extension wraps the ImageMagick C 
 Priorities
 ----------
 
-1. Green build of the gem on all operating systems. You can see the current build state on [the project page at Travis CI](https://travis-ci.org/rmagick/rmagick). You are welcome to improve it.
-2. [Open issues](https://github.com/rmagick/rmagick/issues). You are welcome to reproduce them, report current state, suggest solutions, open pull requests with fixes. If you don't know where to start, sort issues by least recently updated. You can also [subscribe to receive random issues by email](http://www.codetriage.com/rmagick/rmagick).
-3. [CodeClimate Issues](https://codeclimate.com/github/rmagick/rmagick/issues). You can install [CodeClimate Browser Extension](https://docs.codeclimate.com/docs/browser-extension) to see them right on GitHub.
+1.  [Open issues][open-issues]. You are welcome to reproduce them, report
+  current state, suggest solutions, open pull requests with fixes. If you
+  don't know where to start, sort issues by least recently updated. You can
+  also [subscribe to receive random issues by email][codetriage].
+
+2.  [CodeClimate Issues][codeclimate-issues]. You can install [CodeClimate
+  Browser Extension][codeclimate-extension] to see them right on GitHub.
 
 
 Testing
@@ -59,12 +63,9 @@ request. GitHub may suggest `rmagick-temp/rmagick` repo by default. **This is
 incorrect.** Please switch to `rmagick/rmagick`. It should be the next repo in
 the drop-down list.
 
-Every pull request is tested on [Travis
-CI](https://travis-ci.org/rmagick/rmagick) to cover Linux builds,
-[Appveyor](https://ci.appveyor.com/project/mockdeep/rmagick) for Windows
-builds, and [CircleCI](https://circleci.com/gh/rmagick/rmagick) for another
-Linux environment and console access for debugging builds.  It runs all
-Minitest and RSpec tests on several Ruby and ImageMagick versions.
+Every pull request is tested on [CircleCI][circleci] to cover Linux builds and
+[Appveyor][appveyor] for Windows builds.  It runs all tests on several Ruby and
+ImageMagick versions.
 
 A quick way to fix formatting errors is to run `bundle exec rubocop --autocorrect path/to/file.rb`.
 
@@ -72,6 +73,12 @@ If you add new classes or methods, please add tests for them as well.
 RSpec is preferred (see above).
 Tests should test all possible branches of code execution (all conditions in `if`/`case` statements, etc.) to avoid errors later.
 
-
 Thanks
 ------
+
+[circleci]: https://circleci.com/gh/rmagick/rmagick
+[appveyor]: https://ci.appveyor.com/project/mockdeep/rmagick
+[open-issues]: https://github.com/rmagick/rmagick/issues
+[codetriage]: http://www.codetriage.com/rmagick/rmagick
+[codeclimate-issues]: https://codeclimate.com/github/rmagick/rmagick/issues
+[codeclimate-extension]: https://docs.codeclimate.com/docs/browser-extension

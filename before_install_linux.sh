@@ -18,14 +18,12 @@ fi
 # remove all existing imagemagick related packages
 sudo apt-get autoremove -y imagemagick* libmagick* --purge
 
-if [ ! -v TRAVIS ]; then
-  sudo apt-get update
+sudo apt-get update
 
-  # install build tools, ImageMagick delegates
-  sudo apt-get install -y build-essential libx11-dev libxext-dev zlib1g-dev \
-    liblcms2-dev libpng-dev libjpeg-dev libfreetype6-dev libxml2-dev \
-    libtiff5-dev libwebp-dev vim gsfonts ghostscript ccache
-fi
+# install build tools, ImageMagick delegates
+sudo apt-get install -y build-essential libx11-dev libxext-dev zlib1g-dev \
+  liblcms2-dev libpng-dev libjpeg-dev libfreetype6-dev libxml2-dev \
+  libtiff5-dev libwebp-dev vim gsfonts ghostscript ccache
 
 if [ ! -d /usr/include/freetype ]; then
   # If `/usr/include/freetype` is not existed, ImageMagick 6.7 configuration fails about Freetype.

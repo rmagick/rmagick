@@ -2,7 +2,6 @@ RMagick
 =======
 
 [![GemVersion](https://img.shields.io/gem/v/rmagick.svg?style=flat)](https://rubygems.org/gems/rmagick)
-[![TravisCI](https://travis-ci.org/rmagick/rmagick.svg?branch=master)](https://travis-ci.org/rmagick/rmagick)
 [![AppVeyor](https://ci.appveyor.com/api/projects/status/xw3usp6s1ghfimb4/branch/master?svg=true)](https://ci.appveyor.com/project/mockdeep/rmagick)
 [![CircleCI](https://circleci.com/gh/rmagick/rmagick.svg?style=svg)](https://circleci.com/gh/rmagick/rmagick)
 
