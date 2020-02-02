@@ -331,17 +331,23 @@ END_MINGW
     end
 
     def create_header_file
-      [
-        'posix_memalign',
-        'malloc_usable_size',
-        'malloc_size',
-
-        'rb_gc_adjust_memory_usage', # Ruby 2.4.0
-
+      ruby_api = [
+        'rb_gc_adjust_memory_usage' # Ruby 2.4.0
+      ]
+      posix_api = %w[
+        posix_memalign
+        malloc_usable_size
+        malloc_size
+      ]
+      imagemagick_api = [
         'GetImageChannelEntropy', # 6.9.0-0
         'SetImageGray', # 6.9.1-10
         'SetMagickAlignedMemoryMethods' # 7.0.9-0
-      ].each do |func|
+      ]
+
+      check_api = ruby_api + imagemagick_api
+      check_api += posix_api unless RUBY_PLATFORM =~ /mswin|mingw/
+      check_api.each do |func|
         have_func(func, headers)
       end
 
