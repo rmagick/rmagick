@@ -3,19 +3,19 @@ name: CI
 on: [push]
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Ruby 2.3
-      uses: eregon/use-ruby-action@master
-      with:
-        ruby-version: 2.3.8
-    - name: Build and test with Rake
-      run: |
-        gem install bundler
-        bundle install --jobs 4 --retry 3
-        STYLE_CHECKS=true bundle exec rubocop
+  # lint:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - name: Set up Ruby 2.3
+  #     uses: eregon/use-ruby-action@master
+  #     with:
+  #       ruby-version: 2.3.8
+  #   - name: Build and test with Rake
+  #     run: |
+  #       gem install bundler
+  #       bundle install --jobs 4 --retry 3
+  #       STYLE_CHECKS=true bundle exec rubocop
 
   test-linux:
     runs-on: ubuntu-latest
@@ -44,8 +44,16 @@ jobs:
     strategy:
       matrix:
         ruby-version: [2.3.3, 2.4.9, 2.5.7, 2.6.5, 2.7.0]
-        imagemagick-version: [6.7.7-10, 6.8.9-10, 6.9.10-90, 7.0.9-20]
+        imagemagick-version: [6.8.9-10, 6.9.10-90, 7.0.9-20]
 
+    # https://github.com/actions/starter-workflows/issues/95
+    # https://github.com/eine/setup-msys2/blob/master/.github/workflows/test.yml
+    # https://github.com/eine/setup-msys2/blob/master/test.sh
+    # https://github.com/numworks/setup-msys2/pull/6
+    # https://github.com/acoustid/ffmpeg-build/pull/3
+    # https://github.com/actions/virtual-environments/pull/342
+    # https://github.com/actions/starter-workflows/tree/master/ci
+    # https://github.com/actions/virtual-environments
     steps:
     - uses: actions/checkout@v2
     - name: Set up Ruby ${{ matrix.ruby-version }}
@@ -56,11 +64,12 @@ jobs:
       run: |
         $imagemagick_version = "${{ matrix.imagemagick-version }}"
         $imagemagick_version_without_patch = $imagemagick_version.split("-")[0]
-        $url = "https://ftp.icm.edu.pl/pub/graphics/ImageMagick/binaries/ImageMagick-$($imagemagick_version)-Q16-x64-dll.exe"
-        $client = new-object System.Net.WebClient
-        $client.DownloadFile($url, "$($(get-location).path)\imagemagick-install.exe")
-        imagemagick-install.exe /VERYSILENT /TASKS=install_Devel
-        SET PATH=C:\Ruby%RUBY_VERSION%\bin;C:\Program Files\ImageMagick-$($imagemagick_version_without_patch)-Q16;%PATH%
+        $installer_name = "ImageMagick-$($imagemagick_version)-Q16-x64-dll.exe"
+        $url = "https://ftp.icm.edu.pl/pub/graphics/ImageMagick/binaries/$($installer_name)"
+        wget $url -nv
+        ls
+        & "./$($installer_name)" "/TASKS=install_Devel"
+        SET PATH="C:\Ruby%RUBY_VERSION%\bin;C:\Program Files\ImageMagick-$($imagemagick_version_without_patch)-Q16;%PATH%"
         bundle install --path=vendor/bundle
     - name: Build and test with Rake
       run: |
