@@ -55,7 +55,7 @@
 
 #ifdef __GNUC__
 #define ATTRIBUTE_UNUSED   __attribute__((unused))
-#define ATTRIBUTE_NORETURN __attribute__ ((__noreturn__))
+#define ATTRIBUTE_NORETURN __attribute__((__noreturn__))
 #else
 #define ATTRIBUTE_UNUSED
 #define ATTRIBUTE_NORETURN
@@ -832,7 +832,11 @@ extern VALUE Image_compare_channel(int, VALUE *, VALUE);
 extern VALUE Image_channel_depth(int, VALUE *, VALUE);
 extern VALUE Image_channel_extrema(int, VALUE *, VALUE);
 extern VALUE Image_channel_mean(int, VALUE *, VALUE);
+#if defined(HAVE_GETIMAGECHANNELENTROPY) || defined(IMAGEMAGICK_7)
 extern VALUE Image_channel_entropy(int, VALUE *, VALUE);
+#else
+extern VALUE Image_channel_entropy(int, VALUE *, VALUE) ATTRIBUTE_NORETURN;
+#endif
 extern VALUE Image_charcoal(int, VALUE *, VALUE);
 extern VALUE Image_chop(VALUE, VALUE, VALUE, VALUE, VALUE);
 extern VALUE Image_clone(VALUE);

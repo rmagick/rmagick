@@ -14,7 +14,7 @@
 
 
 
-static VALUE rm_yield_handle_exception(VALUE allocated_area, VALUE exc) ATTRIBUTE_NORETURN;
+static VALUE rm_yield_handle_exception(VALUE, VALUE) ATTRIBUTE_NORETURN;
 
 static VALUE
 rm_yield_body(VALUE object)

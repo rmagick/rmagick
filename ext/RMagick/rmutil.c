@@ -13,7 +13,7 @@
 #include "rmagick.h"
 #include <errno.h>
 
-static VALUE rescue_not_str(VALUE arg, VALUE raised_exc ATTRIBUTE_UNUSED) ATTRIBUTE_NORETURN;
+static VALUE rescue_not_str(VALUE, VALUE ATTRIBUTE_UNUSED) ATTRIBUTE_NORETURN;
 static void handle_exception(ExceptionInfo *, Image *, ErrorRetention);
 
 
