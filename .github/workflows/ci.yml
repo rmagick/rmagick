@@ -66,7 +66,7 @@ jobs:
         $imagemagick_version_without_patch = $imagemagick_version.split("-")[0]
         $installer_name = "ImageMagick-$($imagemagick_version)-Q16-x64-dll.exe"
         $url = "https://ftp.icm.edu.pl/pub/graphics/ImageMagick/binaries/$($installer_name)"
-        wget $url
+        wget $url --progress=dot
         echo "before install"
         $result = Invoke-Expression "./$($installer_name) /TASKS=install_Devel"
         echo $result

@@ -369,8 +369,10 @@ END_MINGW
 
     def magick_command
       @magick_command ||= if find_executable('magick')
+                            p find_executable('magick')
                             'magick'
                           elsif find_executable('identify')
+                            p find_executable('identify')
                             'identify'
                           else
                             raise "no executable found for ImageMagick"
