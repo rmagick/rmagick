@@ -46,8 +46,12 @@ shared: &shared
   steps:
     - checkout
 
+    - run:
+        name: Create cache control key file
+        command: echo $IMAGEMAGICK_VERSION > cache_key
+
     - restore_cache:
-        key: v1-imagemagick-{{ checksum "rmagick.gemspec" }}
+        key: v1-imagemagick-{{ arch }}-{{ checksum "cache_key" }}-{{ checksum "rmagick.gemspec" }}
 
     - run:
         name: setup linux
@@ -57,10 +61,14 @@ shared: &shared
     - save_cache:
         paths:
           - ./build-ImageMagick
-        key: v1-imagemagick-{{ checksum "rmagick.gemspec" }}
+        key: v1-imagemagick-{{ arch }}-{{ checksum "cache_key" }}-{{ checksum "rmagick.gemspec" }}
+
+    - run:
+        name: Create cache control key file for ruby dependencies
+        command: ruby -v > cache_key
 
     - restore_cache:
-        key: v1-dependencies-{{ checksum "rmagick.gemspec" }}
+        key: v1-dependencies-{{ arch }}-{{ checksum "cache_key" }}-{{ checksum "rmagick.gemspec" }}
 
     - run:
         name: install dependencies
@@ -70,7 +78,7 @@ shared: &shared
     - save_cache:
         paths:
           - ./vendor/bundle
-        key: v1-dependencies-{{ checksum "rmagick.gemspec" }}
+        key: v1-dependencies-{{ arch }}-{{ checksum "cache_key" }}-{{ checksum "rmagick.gemspec" }}
 
     - run:
         name: run tests
