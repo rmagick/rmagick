@@ -1,0 +1,63 @@
+engines:
+  cppcheck:
+    enabled: true
+    checks:
+      variableScope:
+        enabled: false
+      toomanyconfigs:
+        enabled: false
+      invalidPrintfArgType_sint:
+        enabled: false
+      redundantAssignment:
+        enabled: false
+      selfAssignment:
+        enabled: false
+      unreachableCode:
+        enabled: false
+      unsignedLessThanZero:
+        enabled: false
+      toomanyconfigs:
+        enabled: false
+      complex-definition:
+        enabled: false
+
+  markdownlint:
+    enabled: true
+    checks:
+      # Line length
+      MD013:
+        enabled: false
+      # Emphasis used instead of a header
+      MD036:
+        enabled: false
+      # Hard tabs
+      MD010:
+        enabled: false
+      # Dollar signs used before commands without showing output
+      MD014:
+        enabled: false
+      # Headers should be surrounded by blank lines
+      MD022:
+        enabled: false
+      # Multiple consecutive blank lines
+      MD012:
+        enabled: false
+      # Bare URL used
+      MD034:
+        enabled: false
+      # Ordered list item prefix
+      MD029:
+        enabled: false
+      # Lists should be surrounded by blank lines
+      MD032:
+        enabled: false
+      # Code block style
+      MD046:
+        enabled: false
+      # Header style
+      MD003:
+        enabled: false
+      # Spaces after list markers
+      MD030:
+        enabled: false
+
