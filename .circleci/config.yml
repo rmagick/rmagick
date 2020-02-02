@@ -51,6 +51,9 @@ shared: &shared
         command: |
           bash before_install_linux.sh
 
+    - restore_cache:
+        key: v1-dependencies-{{ checksum "rmagick.gemspec" }}
+
     - run:
         name: install dependencies
         command: |
@@ -60,7 +63,7 @@ shared: &shared
         paths:
           - ./vendor/bundle
           - ./ccache
-        key: v1-dependencies-{{ checksum "Gemfile.lock" }}
+        key: v1-dependencies-{{ checksum "rmagick.gemspec" }}
 
     - run:
         name: run tests
