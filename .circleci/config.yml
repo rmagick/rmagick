@@ -46,10 +46,18 @@ shared: &shared
   steps:
     - checkout
 
+    - restore_cache:
+        key: v1-imagemagick-{{ checksum "rmagick.gemspec" }}
+
     - run:
         name: setup linux
         command: |
           bash before_install_linux.sh
+
+    - save_cache:
+        paths:
+          - ./build-ImageMagick
+        key: v1-imagemagick-{{ checksum "rmagick.gemspec" }}
 
     - restore_cache:
         key: v1-dependencies-{{ checksum "rmagick.gemspec" }}
@@ -62,7 +70,6 @@ shared: &shared
     - save_cache:
         paths:
           - ./vendor/bundle
-          - ./ccache
         key: v1-dependencies-{{ checksum "rmagick.gemspec" }}
 
     - run:
