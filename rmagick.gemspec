@@ -35,6 +35,4 @@ Gem::Specification.new do |s|
   # s.add_development_dependency 'rubocop', '~> 0.64.0'
   # s.add_development_dependency 'rubocop-rspec', '~> 1.32.0'
   s.add_development_dependency 'simplecov', '~> 0.16.1'
-  # remove me!
-  s.add_development_dependency 'nokogiri', '~> 1.10.7'
 end

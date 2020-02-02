@@ -43,7 +43,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        ruby-version: [2.3.3, 2.4.9, 2.5.7, 2.6.5, 2.7.0]
+        ruby-version: [2.3.3, 2.4.9, 2.5.7, 2.6.5]
         imagemagick-version: [6.8.9-10, 6.9.10-90, 7.0.9-20]
 
     # https://github.com/actions/starter-workflows/issues/95
@@ -66,11 +66,13 @@ jobs:
         $imagemagick_version_without_patch = $imagemagick_version.split("-")[0]
         $installer_name = "ImageMagick-$($imagemagick_version)-Q16-x64-dll.exe"
         $url = "https://ftp.icm.edu.pl/pub/graphics/ImageMagick/binaries/$($installer_name)"
-        wget $url -nv
-        ls
-        & "./$($installer_name)" "/TASKS=install_Devel"
-        SET PATH="C:\Ruby%RUBY_VERSION%\bin;C:\Program Files\ImageMagick-$($imagemagick_version_without_patch)-Q16;%PATH%"
-        bundle install --path=vendor/bundle
+        wget $url
+        echo "before install"
+        $result = Invoke-Expression "./$($installer_name) /TASKS=install_Devel"
+        echo $result
+        echo "after install"
+        SET PATH="C:\Program Files\ImageMagick-$($imagemagick_version_without_patch)-Q16;%PATH%"
+        bundle install --path=vendor/bundle --retry 3
     - name: Build and test with Rake
       run: |
-        bundle exec rake -rdevkit
+        bundle exec rake
