@@ -368,7 +368,13 @@ END_MINGW
     end
 
     def magick_command
-      @magick_command ||= find_executable('magick') ? 'magick' : 'identify'
+      @magick_command ||= if find_executable('magick')
+                            'magick'
+                          elsif find_executable('identify')
+                            'identify'
+                          else
+                            raise "no executable found for ImageMagick"
+                          end
     end
 
     def im_version_at_least?(version)
