@@ -22,6 +22,8 @@ module RMagick
     end
 
     def setup_pkg_config_path
+      return if RUBY_PLATFORM =~ /mswin|mingw/
+
       if find_executable('brew')
         pkg_config_path = "#{`brew --prefix imagemagick@6`.strip}/lib/pkgconfig"
       elsif find_executable('pacman')
