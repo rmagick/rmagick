@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby-version: [2.3.8, 2.4.9, 2.5.7, 2.6.5, 2.7.0]
+        ruby-version: [2.3, 2.4, 2.5, 2.6, 2.7]
         imagemagick-version: [6.7.7-10, 6.8.9-10, 6.9.10-90, 7.0.9-20]
 
     steps:
