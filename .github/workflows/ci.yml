@@ -26,6 +26,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Cache ImageMagick
+      uses: actions/cache@v1
+      with:
+        path: ./build-ImageMagick
+        key: v1-imagemagick-${{ matrix.imagemagick-version }}
+        restore-keys: |
+          v1-imagemagick-${{ matrix.imagemagick-version }}
     - name: Set up Ruby ${{ matrix.ruby-version }}
       uses: eregon/use-ruby-action@master
       with:
