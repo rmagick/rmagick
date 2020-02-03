@@ -63,7 +63,7 @@ Pixel_##_cmyk_channel_(VALUE self) \
 }
 
 
-static VALUE color_arg_rescue(VALUE arg, VALUE raised_exc ATTRIBUTE_UNUSED) ATTRIBUTE_NORETURN;
+static VALUE color_arg_rescue(VALUE, VALUE ATTRIBUTE_UNUSED) ATTRIBUTE_NORETURN;
 static void Color_Name_to_PixelColor(PixelColor *, VALUE);
 
 

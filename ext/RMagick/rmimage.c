@@ -63,8 +63,8 @@ static VALUE threshold_image(int, VALUE *, VALUE, thresholder_t);
 static VALUE xform_image(int, VALUE, VALUE, VALUE, VALUE, VALUE, xformer_t);
 static VALUE array_from_images(Image *);
 static void call_trace_proc(Image *, const char *);
-static VALUE file_arg_rescue(VALUE arg, VALUE raised_exc ATTRIBUTE_UNUSED) ATTRIBUTE_NORETURN;
-static VALUE rm_trace_creation_handle_exception(VALUE img, VALUE exc) ATTRIBUTE_NORETURN;
+static VALUE file_arg_rescue(VALUE, VALUE ATTRIBUTE_UNUSED) ATTRIBUTE_NORETURN;
+static VALUE rm_trace_creation_handle_exception(VALUE, VALUE) ATTRIBUTE_NORETURN;
 
 static const char *BlackPointCompensationKey = "PROFILE:black-point-compensation";
 
@@ -2528,7 +2528,6 @@ Image_channel_entropy(int argc, VALUE *argv, VALUE self)
     return ary;
 #else
     rm_not_implemented();
-    return (VALUE) 0;
     argc = argc;
     argv = argv;
     self = self;
