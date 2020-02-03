@@ -1,7 +1,6 @@
 require_relative 'support/simplecov' if ENV['COVERAGE'] == 'true'
 
 require 'pry'
-require_relative '../ext/RMagick/extconf'
 require_relative '../lib/rmagick'
 require_relative '../lib/rvg/rvg'
 
