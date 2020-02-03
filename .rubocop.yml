@@ -22,6 +22,7 @@ AllCops:
 # we may not need this after finishing RSpec conversion
 # seems like `rubocop-rspec` already excludes the `spec/` directory
 Style/MethodCalledOnDoEndBlock: { Exclude: [test/**/*.rb, spec/**/*.rb] }
+Style/NumericLiterals: { MinDigits: 6 }
 
 ################################################################################
 #
