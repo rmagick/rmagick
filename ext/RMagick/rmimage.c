@@ -4591,7 +4591,7 @@ Image_convolve(VALUE self, VALUE order_arg, VALUE kernel_arg)
     // Convert the kernel array argument to an array of doubles
 
     kernel = (double *)ALLOC_N(double, order*order);
-    for (x = 0; x < order*order; x++)
+    for (x = 0; x < (unsigned)(order * order); x++)
     {
         VALUE element = rb_ary_entry(kernel_arg, (long)x);
         if (rm_check_num2dbl(element))
@@ -4684,7 +4684,7 @@ Image_convolve_channel(int argc, VALUE *argv, VALUE self)
     kernel = ALLOC_N(double, (long)(order*order));
 
     // Convert the kernel array argument to an array of doubles
-    for (x = 0; x < order*order; x++)
+    for (x = 0; x < (unsigned)(order * order); x++)
     {
         VALUE element = rb_ary_entry(ary, (long)x);
         if (rm_check_num2dbl(element))
