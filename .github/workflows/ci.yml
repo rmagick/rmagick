@@ -68,7 +68,7 @@ jobs:
         $url = "https://ftp.icm.edu.pl/pub/graphics/ImageMagick/binaries/$($installer_name)"
         wget $url --progress=dot
         echo "before install"
-        $result = Invoke-Expression "./$($installer_name) /TASKS=install_Devel"
+        $result = Invoke-Expression "./$($installer_name) /VERYSILENT /TASKS=install_Devel"
         echo $result
         echo "after install"
         SET PATH="C:\Program Files\ImageMagick-$($imagemagick_version_without_patch)-Q16;%PATH%"
