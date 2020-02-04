@@ -537,7 +537,7 @@ Font_to_s(VALUE self)
             strcpy(weight, "BoldWeight");
             break;
         default:
-            snprintf(weight, sizeof(weight), "%lu", ti.weight);
+            snprintf(weight, sizeof(weight), "%"PRIuSIZE"", ti.weight);
             break;
     }
 
@@ -753,7 +753,7 @@ RectangleInfo_to_s(VALUE self)
     char buff[100];
 
     Export_RectangleInfo(&rect, self);
-    snprintf(buff, sizeof(buff), "width=%lu, height=%lu, x=%ld, y=%ld"
+    snprintf(buff, sizeof(buff), "width=%"PRIuSIZE", height=%"PRIuSIZE", x=%"PRIdSIZE", y=%"PRIdSIZE""
           , rect.width, rect.height, rect.x, rect.y);
     return rb_str_new2(buff);
 }
