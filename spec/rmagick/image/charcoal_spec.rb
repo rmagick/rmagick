@@ -13,7 +13,7 @@ RSpec.describe Magick::Image, "#charcoal" do
     expect { @img.charcoal(1.0, 2.0, 3.0) }.to raise_error(ArgumentError)
   end
 
-  it "applies a charcoal effect" do
+  it "applies a charcoal effect", supported_after('6.8.0') do
     pixels = [45, 98, 156, 209, 171, 11, 239, 236, 2, 8, 65, 247]
     image = described_class.new(2, 2)
     image.import_pixels(0, 0, 2, 2, "RGB", pixels)
