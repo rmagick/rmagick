@@ -1,4 +1,5 @@
 require_relative 'support/simplecov' if ENV['COVERAGE'] == 'true'
+require_relative 'support/matchers'
 
 require 'pry'
 require_relative '../lib/rmagick'
