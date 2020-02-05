@@ -16439,6 +16439,11 @@ cropper(int bang, int argc, VALUE *argv, VALUE self)
                     nx = (image->columns - columns) / 2;
                     ny = (image->rows - rows) / 2;
                     break;
+#if defined(IMAGEMAGICK_6)
+                case StaticGravity:
+                    rb_raise(rb_eNotImpError, "`StaticGravity' is not supported");
+                    break;
+#endif
             }
 
             x = ULONG2NUM(nx);
