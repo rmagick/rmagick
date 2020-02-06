@@ -3021,7 +3021,7 @@ Image_color_flood_fill( VALUE self, VALUE target_color, VALUE fill_color
     y = NUM2LONG(yv);
     if ((unsigned long)x > image->columns || (unsigned long)y > image->rows)
     {
-        rb_raise(rb_eArgError, "target out of range. %lux%lu given, image is %"PRIuSIZE"x%"PRIuSIZE""
+        rb_raise(rb_eArgError, "target out of range. %lux%lu given, image is %"RMIuSIZE"x%"RMIuSIZE""
                  , x, y, image->columns, image->rows);
     }
 
@@ -5519,7 +5519,7 @@ Image_display(VALUE self)
 
     if (image->rows == 0 || image->columns == 0)
     {
-        rb_raise(rb_eArgError, "invalid image geometry (%"PRIuSIZE"x%"PRIuSIZE")", image->rows, image->columns);
+        rb_raise(rb_eArgError, "invalid image geometry (%"RMIuSIZE"x%"RMIuSIZE")", image->rows, image->columns);
     }
 
     info_obj = rm_info_new();
@@ -6542,7 +6542,7 @@ Image_extent(int argc, VALUE *argv, VALUE self)
         }
         else
         {
-            rb_raise(rb_eArgError, "invalid extent geometry %ldx%ld+%"PRIdSIZE"+%"PRIdSIZE""
+            rb_raise(rb_eArgError, "invalid extent geometry %ldx%ld+%"RMIdSIZE"+%"RMIdSIZE""
                      , width, height, geometry.x, geometry.y);
         }
     }
@@ -8027,7 +8027,7 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
         }
         if ((unsigned long)(buffer_l / type_sz) < npixels)
         {
-            rb_raise(rb_eArgError, "pixel buffer too small (need %lu channel values, got %"PRIuSIZE")"
+            rb_raise(rb_eArgError, "pixel buffer too small (need %lu channel values, got %"RMIuSIZE")"
                      , npixels, buffer_l/type_sz);
         }
     }
@@ -8159,7 +8159,7 @@ build_inspect_string(Image *image, char *buffer, size_t len)
     // Print scene number.
     if ((GetPreviousImageInList(image) != NULL) && (GetNextImageInList(image) != NULL) && image->scene > 0)
     {
-        x += snprintf(buffer+x, len-x, "[%"PRIuSIZE"]", image->scene);
+        x += snprintf(buffer+x, len-x, "[%"RMIuSIZE"]", image->scene);
     }
     // Print format
     x += snprintf(buffer+x, len-x, " %s ", image->magick);
@@ -8169,17 +8169,17 @@ build_inspect_string(Image *image, char *buffer, size_t len)
     {
         if (image->magick_columns != image->columns || image->magick_rows != image->rows)
         {
-            x += snprintf(buffer+x, len-x, "%"PRIuSIZE"x%"PRIuSIZE"=>", image->magick_columns, image->magick_rows);
+            x += snprintf(buffer+x, len-x, "%"RMIuSIZE"x%"RMIuSIZE"=>", image->magick_columns, image->magick_rows);
         }
     }
 
-    x += snprintf(buffer+x, len-x, "%"PRIuSIZE"x%"PRIuSIZE" ", image->columns, image->rows);
+    x += snprintf(buffer+x, len-x, "%"RMIuSIZE"x%"RMIuSIZE" ", image->columns, image->rows);
 
     // Print current columnsXrows
     if (   image->page.width != 0 || image->page.height != 0
            || image->page.x != 0     || image->page.y != 0)
     {
-        x += snprintf(buffer+x, len-x, "%"PRIuSIZE"x%"PRIuSIZE"+%"PRIdSIZE"+%"PRIdSIZE" ", image->page.width, image->page.height
+        x += snprintf(buffer+x, len-x, "%"RMIuSIZE"x%"RMIuSIZE"+%"RMIdSIZE"+%"RMIdSIZE" ", image->page.width, image->page.height
                      , image->page.x, image->page.y);
     }
 
@@ -8190,17 +8190,17 @@ build_inspect_string(Image *image, char *buffer, size_t len)
         {
             if (image->total_colors >= (unsigned long)(1 << 24))
             {
-                x += snprintf(buffer+x, len-x, "%"PRIuSIZE"mc ", image->total_colors/1024/1024);
+                x += snprintf(buffer+x, len-x, "%"RMIuSIZE"mc ", image->total_colors/1024/1024);
             }
             else
             {
                 if (image->total_colors >= (unsigned long)(1 << 16))
                 {
-                    x += snprintf(buffer+x, len-x, "%"PRIuSIZE"kc ", image->total_colors/1024);
+                    x += snprintf(buffer+x, len-x, "%"RMIuSIZE"kc ", image->total_colors/1024);
                 }
                 else
                 {
-                    x += snprintf(buffer+x, len-x, "%"PRIuSIZE"c ", image->total_colors);
+                    x += snprintf(buffer+x, len-x, "%"RMIuSIZE"c ", image->total_colors);
                 }
             }
         }
@@ -8215,7 +8215,7 @@ build_inspect_string(Image *image, char *buffer, size_t len)
         }
         else
         {
-            x += snprintf(buffer+x, len-x, "PseudoClass %"PRIuSIZE"=>%"PRIuSIZE"c ", image->total_colors, image->colors);
+            x += snprintf(buffer+x, len-x, "PseudoClass %"RMIuSIZE"=>%"RMIuSIZE"c ", image->total_colors, image->colors);
             if (image->error.mean_error_per_pixel != 0.0)
             {
                 x += snprintf(buffer+x, len-x, "%ld/%.6f/%.6fdb "
@@ -9337,7 +9337,7 @@ Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
     y = NUM2LONG(argv[2]);
     if ((unsigned long)x > image->columns || (unsigned long)y > image->rows)
     {
-        rb_raise(rb_eArgError, "target out of range. %ldx%ld given, image is %"PRIuSIZE"x%"PRIuSIZE""
+        rb_raise(rb_eArgError, "target out of range. %ldx%ld given, image is %"RMIuSIZE"x%"RMIuSIZE""
                  , x, y, image->columns, image->rows);
     }
 
@@ -14259,7 +14259,7 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj
 
     if ((unsigned long)x > image->columns || (unsigned long)y > image->rows)
     {
-        rb_raise(rb_eArgError, "target out of range. %ldx%ld given, image is %"PRIuSIZE"x%"PRIuSIZE""
+        rb_raise(rb_eArgError, "target out of range. %ldx%ld given, image is %"RMIuSIZE"x%"RMIuSIZE""
                  , x, y, image->columns, image->rows);
     }
 
@@ -14737,7 +14737,7 @@ Image_to_blob(VALUE self)
                || !rm_strcasecmp(magick_info->name, "JPG"))
               && (image->rows == 0 || image->columns == 0))
         {
-            rb_raise(rb_eRuntimeError, "Can't convert %"PRIuSIZE"x%"PRIuSIZE" %.4s image to a blob"
+            rb_raise(rb_eRuntimeError, "Can't convert %"RMIuSIZE"x%"RMIuSIZE" %.4s image to a blob"
                      , image->columns, image->rows, magick_info->name);
         }
     }
