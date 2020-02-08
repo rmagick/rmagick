@@ -43,6 +43,16 @@
     #define RMIsVALUE PRIsVALUE
 #endif
 
+#if defined(__GNUC__)
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Wdeclaration-after-statement"
+    #pragma GCC diagnostic ignored "-Wunknown-pragmas"
+
+    #if __GNUC__ > 6
+        #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
+    #endif
+#endif
+
 // Undef Ruby's versions of these symbols
 #undef PACKAGE_VERSION
 #undef PACKAGE_NAME
