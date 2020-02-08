@@ -8,7 +8,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Set up Ruby 2.3
-      uses: eregon/use-ruby-action@master
+      uses: ruby/setup-ruby@master
       with:
         ruby-version: 2.3.8
     - name: Build and test with Rake
@@ -34,7 +34,7 @@ jobs:
         restore-keys: |
           v1-imagemagick-${{ matrix.imagemagick-version }}
     - name: Set up Ruby ${{ matrix.ruby-version }}
-      uses: eregon/use-ruby-action@master
+      uses: ruby/setup-ruby@master
       with:
         ruby-version: ${{ matrix.ruby-version }}
     - name: Update/Install packages
