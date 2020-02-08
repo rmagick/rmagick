@@ -17,7 +17,7 @@ jobs:
         bundle install --jobs 4 --retry 3
         STYLE_CHECKS=true bundle exec rubocop
 
-  test:
+  test-linux:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -45,3 +45,27 @@ jobs:
         gem install bundler
         bundle install --jobs 4 --retry 3
         bundle exec rake
+
+  test-windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        ruby-version: [2.3.3, 2.4.9, 2.5.7, 2.6.5]
+        imagemagick-version: [6.8.9-10, 6.9.10-90, 7.0.9-20]
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Ruby ${{ matrix.ruby-version }}
+      uses: ruby/setup-ruby@master
+      with:
+        ruby-version: ${{ matrix.ruby-version }}
+    - name: Install ImageMagick
+      run: |
+        $imagemagick_version = "${{ matrix.imagemagick-version }}"
+        $imagemagick_version_without_patch = $imagemagick_version.split("-")[0]
+        $installer_name = "ImageMagick-$($imagemagick_version)-Q16-x64-dll.exe"
+        $url = "https://ftp.icm.edu.pl/pub/graphics/ImageMagick/binaries/$($installer_name)"
+        wget $url --progress=dot
+        cmd.exe /D /S /C "$($installer_name) /DIR=D:\ImageMagick /VERYSILENT /TASKS=install_Devel"
+    - name: Build and test with Rake
+      run: |
+        cmd.exe /D /S /C "SET PATH=D:\ImageMagick;%PATH% & bundle install --path=vendor/bundle --retry 3 & bundle exec rake"

@@ -32,7 +32,9 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rake-compiler', '~> 1.0'
   s.add_development_dependency 'rspec', '~> 3.8'
   s.add_development_dependency 'rspec_junit_formatter', '~> 0.4.1'
-  s.add_development_dependency 'rubocop', '~> 0.64.0'
-  s.add_development_dependency 'rubocop-rspec', '~> 1.32.0'
+  if RUBY_PLATFORM !~ /mswin|mingw/
+    s.add_development_dependency 'rubocop', '~> 0.64.0'
+    s.add_development_dependency 'rubocop-rspec', '~> 1.32.0'
+  end
   s.add_development_dependency 'simplecov', '~> 0.16.1'
 end
