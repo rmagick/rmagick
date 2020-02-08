@@ -63,9 +63,8 @@ request. GitHub may suggest `rmagick-temp/rmagick` repo by default. **This is
 incorrect.** Please switch to `rmagick/rmagick`. It should be the next repo in
 the drop-down list.
 
-Every pull request is tested on [CircleCI][circleci] to cover Linux builds and
-[Appveyor][appveyor] for Windows builds.  It runs all tests on several Ruby and
-ImageMagick versions.
+Every pull request is tested on GitHub Actions to cover Linux builds and Windows builds.
+It runs all tests on several Ruby and ImageMagick versions.
 
 A quick way to fix formatting errors is to run `bundle exec rubocop --autocorrect path/to/file.rb`.
 
@@ -76,8 +75,6 @@ Tests should test all possible branches of code execution (all conditions in `if
 Thanks
 ------
 
-[circleci]: https://circleci.com/gh/rmagick/rmagick
-[appveyor]: https://ci.appveyor.com/project/mockdeep/rmagick
 [open-issues]: https://github.com/rmagick/rmagick/issues
 [codetriage]: http://www.codetriage.com/rmagick/rmagick
 [codeclimate-issues]: https://codeclimate.com/github/rmagick/rmagick/issues
