@@ -13,9 +13,7 @@ jobs:
         ruby-version: 2.3.8
     - name: Build and test with Rake
       run: |
-        gem install bundler
-        bundle install --jobs 4 --retry 3
-        STYLE_CHECKS=true bundle exec rubocop
+        gem install bundler && bundle install --jobs 4 --retry 3 && STYLE_CHECKS=true bundle exec rubocop
 
   test:
     runs-on: ubuntu-latest
@@ -42,6 +40,4 @@ jobs:
         IMAGEMAGICK_VERSION=${{ matrix.imagemagick-version }} ./before_install_linux.sh
     - name: Build and test with Rake
       run: |
-        gem install bundler
-        bundle install --jobs 4 --retry 3
-        bundle exec rake
+        gem install bundler && bundle install --jobs 4 --retry 3 && bundle exec rake
