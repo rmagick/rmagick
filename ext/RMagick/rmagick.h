@@ -25,6 +25,23 @@
 #include "ruby.h"
 #include "ruby/io.h"
 
+#if defined(__MINGW32__)
+    // Ruby defines wrong format specifiers for MinGW. So this defines original macro in here.
+    #if SIZEOF_SIZE_T == SIZEOF_LONG
+        #define RMIuSIZE  "lu"
+        #define RMIdSIZE  "ld"
+        #define RMIsVALUE "li\v"
+    #elif SIZEOF_SIZE_T == SIZEOF_LONG_LONG
+        #define RMIuSIZE  "I64u"
+        #define RMIdSIZE  "I64d"
+        #define RMIsVALUE "I64i\v"
+    #endif
+#else
+    // Use constants defined in Ruby
+    #define RMIuSIZE  PRIuSIZE
+    #define RMIdSIZE  PRIdSIZE
+    #define RMIsVALUE PRIsVALUE
+#endif
 
 // Undef Ruby's versions of these symbols
 #undef PACKAGE_VERSION

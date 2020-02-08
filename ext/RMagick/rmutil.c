@@ -266,7 +266,7 @@ rm_check_ary_type(VALUE ary)
     VALUE checked = rb_check_array_type(ary);
     if (NIL_P(checked))
     {
-        rb_raise(rb_eTypeError, "wrong argument type %"PRIsVALUE" was given. (must respond to :to_ary)", rb_obj_class(ary));
+        rb_raise(rb_eTypeError, "wrong argument type %"RMIsVALUE" was given. (must respond to :to_ary)", rb_obj_class(ary));
     }
     return checked;
 }
