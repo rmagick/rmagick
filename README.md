@@ -1,6 +1,7 @@
 RMagick
 =======
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/901780ea1a244a8584b18033b2e03866)](https://app.codacy.com/gh/rmagick/rmagick?utm_source=github.com&utm_medium=referral&utm_content=rmagick/rmagick&utm_campaign=Badge_Grade_Settings)
 [![GemVersion](https://img.shields.io/gem/v/rmagick.svg?style=flat)](https://rubygems.org/gems/rmagick)
 ![CI](https://github.com/rmagick/rmagick/workflows/CI/badge.svg)
 
