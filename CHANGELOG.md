@@ -325,7 +325,6 @@ Bug Fixes:
   ImageMagick 6.5.6-5 and higher). Also added ability to specify all
   arguments to these functions as percentages (bug report by Arthur Chan).
 
-
 ## RMagick 2.12.2
 
 - Add feature tests for `SinusoidFunction` and `PolynomialFunction` enum
@@ -453,7 +452,7 @@ Bug Fixes:
 - Fix bug #21897, `ImageList#from_blob` abends when certain corrupt JPEG
   images are used (bug report by Peter Szabo)
 - Add `Image#composite_tiled`, `Image#composite_tiled!` (ref:
-  http://rubyforge.org/forum/forum.php?thread_id=27347&forum_id=33)
+  [http://rubyforge.org/forum/forum.php?thread_id=27347&forum_id=33](http://rubyforge.org/forum/forum.php?thread_id=27347&forum_id=33))
 - Add `Image#deskew` (available with ImageMagick 6.4.2-5)
 - Add `Image#define`, `Image#undefine` (available in ImageMagick 6.3.6)
 - Add `Image#level_colors` (available in ImageMagick 6.4.2-1)

@@ -8,7 +8,6 @@ Thank you for considering contributing to RMagick. Your contribution is always w
 
 Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
 
-
 Background
 ----------
 
@@ -16,18 +15,15 @@ RMagick is a Ruby gem with a C extension. The extension wraps the ImageMagick C 
 
 [Running C in Ruby](http://silverhammermba.github.io/emberb/extend/)
 
-
 Priorities
 ----------
 
-1.  [Open issues][open-issues]. You are welcome to reproduce them, report
-  current state, suggest solutions, open pull requests with fixes. If you
-  don't know where to start, sort issues by least recently updated. You can
-  also [subscribe to receive random issues by email][codetriage].
-
-2.  [CodeClimate Issues][codeclimate-issues]. You can install [CodeClimate
-  Browser Extension][codeclimate-extension] to see them right on GitHub.
-
+ 1. [Open issues][open-issues]. You are welcome to reproduce them, report
+    current state, suggest solutions, open pull requests with fixes. If you
+    don't know where to start, sort issues by least recently updated. You can
+    also [subscribe to receive random issues by email][codetriage].
+ 2. [CodeClimate Issues][codeclimate-issues]. You can install [CodeClimate
+    Browser Extension][codeclimate-extension] to see them right on GitHub.
 
 Testing
 -------
@@ -45,15 +41,14 @@ Run all tests:
 It will run RSpec and Minitest tests.
 
 Useful information about RSpec:
+
 * [Better Specs](http://www.betterspecs.org/) — how to write RSpec tests better
 * [RSpec matchers cheat sheet](http://cheatrags.com/rspec-matchers) - how to use RSpec matchers to test different things
-
 
 Committing
 ----------
 
 It is better if you follow [Git Style Guide](https://github.com/agis-/git-style-guide).
-
 
 Pull Requests
 -------------

@@ -1,34 +1,30 @@
-RMagick
-=======
+# RMagick
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/901780ea1a244a8584b18033b2e03866)](https://app.codacy.com/gh/rmagick/rmagick?utm_source=github.com&utm_medium=referral&utm_content=rmagick/rmagick&utm_campaign=Badge_Grade_Settings)
 [![GemVersion](https://img.shields.io/gem/v/rmagick.svg?style=flat)](https://rubygems.org/gems/rmagick)
 ![CI](https://github.com/rmagick/rmagick/workflows/CI/badge.svg)
 
-Table of Contents
------------------
+## Table of Contents
 
--   [Introduction](#introduction)
--   [Prerequisites](#prerequisites)
--   [Installing RMagick](#installing-rmagick)
--   [Using RMagick](#using-rmagick)
--   [Things that can go wrong](#things-that-can-go-wrong)
--   [Upgrading](#upgrading)
--   [More samples](#more-samples)
--   [Reporting Bugs](#reporting-bugs)
--   [Development Setup](#development-setup)
--   [Credits](#credits)
--   [License](#mit-license)
--   [Releasing](#releasing)
+* [Introduction](#introduction)
+* [Prerequisites](#prerequisites)
+* [Installing RMagick](#installing-rmagick)
+* [Using RMagick](#using-rmagick)
+* [Things that can go wrong](#things-that-can-go-wrong)
+* [Upgrading](#upgrading)
+* [More samples](#more-samples)
+* [Reporting Bugs](#reporting-bugs)
+* [Development Setup](#development-setup)
+* [Credits](#credits)
+* [License](#mit-license)
+* [Releasing](#releasing)
 
-Introduction
-------------
+## Introduction
 
 RMagick is an interface between the Ruby programming language and the
 ImageMagick image processing library.
 
-Prerequisites
--------------
+## Prerequisites
 
 These prerequisites are required for the latest DEVELOPMENT version of RMagick.
 To see prerequisites for the latest RELEASED version of the gem, switch to the
@@ -59,8 +55,7 @@ sudo yum install gcc ImageMagick-devel make which
 **Note to Windows users:** Please make sure that you choose an ImageMagick
 version that matches the bitness of your Ruby version.
 
-Installing RMagick
-------------------
+## Installing RMagick
 
 ### Installing via Bundler
 
@@ -90,8 +85,7 @@ RMagick is versioned according to Semantic Versioning. For stable version
 compatible with Ruby 1.8+, use `~> 2.0`. Versions >= 3 work on Ruby >= 2.x
 only.
 
-Using RMagick
--------------
+## Using RMagick
 
 Require RMagick in your project as follows:
 
@@ -101,8 +95,7 @@ require 'rmagick'
 
 See <https://rmagick.github.io/usage.html> for links to more information.
 
-Things that can go wrong
-------------------------
+## Things that can go wrong
 
 The [RMagick installation FAQ][faq] has answers to the most commonly reported
 problems, though may be out of date.
@@ -157,21 +150,18 @@ the limit with this command:
 ulimit -s unlimited
 ```
 
-Upgrading
----------
+## Upgrading
 
 If you upgrade to a newer release of ImageMagick, make sure you're using a
 release of RMagick that supports that release. It's safe to install a new
 release of RMagick over an earlier release.
 
-More samples
-------------
+## More samples
 
 You can find more sample RMagick programs in the `/examples` directory. These
 programs are not installed in the RMagick documentation tree.
 
-Reporting bugs
---------------
+## Reporting bugs
 
 Please report bugs in RMagick, its documentation, or its installation programs
 via the bug tracker on the [RMagick issues page][issues].
@@ -181,8 +171,7 @@ installation and configuration. Information about reporting problems and
 getting help for ImageMagick is available at the [ImageMagick
 website][imagemagick] or the [ImageMagick Forum][imagemagick-forum].
 
-Development Setup
------------------
+## Development Setup
 
 In order to minimize issues on your local machine, we recommend that you make
 use of a [Vagrant installation][dev-box].
@@ -243,28 +232,25 @@ Vagrant session is the same as the one in the `rake-compiler-dev-box` directory
 on your machine. You can make changes locally and run tests within your `ssh`
 session.
 
-Credits
--------
+## Credits
 
 **Authors:** Tim Hunter, Omer Bar-or, Benjamin Thomas
 
 Thanks to [ImageMagick Studio LLC][imagemagick] for ImageMagick and for hosting
 the RMagick documentation.
 
-License
------------
+## License
 
 [MIT License](LICENSE)
 
-Releasing
----------
+## Releasing
 
 See <https://github.com/rmagick/rmagick/wiki/Release-Process>
 
-1.  Update ChangeLog
-2.  Edit `lib/rmagick/version.rb`
-3.  Are the tests passing? Run `rake` again just to be sure.
-4.  `rake release`
+1. Update ChangeLog
+2. Edit `lib/rmagick/version.rb`
+3. Are the tests passing? Run `rake` again just to be sure.
+4. `rake release`
 
 [issues]: https://github.com/rmagick/rmagick/issues
 [libmagick-faq]: https://web.archive.org/web/20140512193354/https://rmagick.rubyforge.org/install-faq.html#libmagick
