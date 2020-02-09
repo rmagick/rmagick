@@ -755,18 +755,13 @@ Draw_rotation_eq(VALUE self, VALUE deg)
     degrees = NUM2DBL(deg);
     if (fabs(degrees) > DBL_EPSILON)
     {
-        affine.sx=1.0;
-        affine.rx=0.0;
-        affine.ry=0.0;
-        affine.sy=1.0;
-        affine.tx=0.0;
-        affine.ty=0.0;
-
         current = draw->info->affine;
         affine.sx=cos(DegreesToRadians(fmod(degrees,360.0)));
         affine.rx=sin(DegreesToRadians(fmod(degrees,360.0)));
+        affine.tx=0.0;
         affine.ry=(-sin(DegreesToRadians(fmod(degrees,360.0))));
         affine.sy=cos(DegreesToRadians(fmod(degrees,360.0)));
+        affine.ty=0.0;
 
         draw->info->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
         draw->info->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
