@@ -114,28 +114,6 @@ magick_safe_realloc(void *memory, const size_t count, const size_t quantum)
 
 
 /**
- * ImageMagick version of realloc.
- *
- * No Ruby usage (internal function)
- *
- * @param ptr pointer to the existing block of memory
- * @param size the new size of memory to allocate
- * @return pointer to a block of memory
- */
-void *
-magick_realloc(void *ptr, const size_t size)
-{
-    void *v;
-    v = ResizeMagickMemory(ptr, size);
-    if (!v)
-    {
-        rb_raise(rb_eNoMemError, "not enough memory to continue");
-    }
-    return v;
-}
-
-
-/**
  * Make a copy of a string in malloc'd memory.
  *
  * No Ruby usage (internal function)
@@ -1540,66 +1518,6 @@ rm_exif_by_number(Image *image)
     RB_GC_GUARD(v);
 
     return v;
-}
-
-
-/**
- * Get the values from a Geometry object and return them in C variables.
- *
- * No Ruby usage (internal function)
- *
- * Notes:
- *   - No return value: modifies x, y, width, height, and flag
- *
- * @param geom the Geometry object
- * @param x pointer to the x position of the start of the rectangle
- * @param y pointer to the y position of the start of the rectangle
- * @param width pointer to the width of the rectangle
- * @param height pointer to the height of the rectangle
- * @param flag pointer to the Geometry's flag
- */
-void
-rm_get_geometry(
-    VALUE geom,
-    long *x,
-    long *y,
-    unsigned long *width,
-    unsigned long *height,
-    int *flag)
-{
-    VALUE v;
-
-    v = rb_funcall(geom, rm_ID_x, 0);
-    *x = NUM2LONG(v);
-    v = rb_funcall(geom, rm_ID_y, 0);
-    *y = NUM2LONG(v);
-    v = rb_funcall(geom, rm_ID_width, 0);
-    *width = NUM2ULONG(v);
-    v = rb_funcall(geom, rm_ID_height, 0);
-    *height = NUM2ULONG(v);
-
-    // Getting the flag field is a bit more difficult since it's
-    // supposed to be an instance of the GeometryValue Enum class. We
-    // may not know the VALUE for the GeometryValue class, and we
-    // need to check that the flag field is an instance of that class.
-    if (flag)
-    {
-        MagickEnum *magick_enum;
-
-        v = rb_funcall(geom, rm_ID_flag, 0);
-        if (!Class_GeometryValue)
-        {
-            Class_GeometryValue = rb_const_get(Module_Magick, rm_ID_GeometryValue);
-        }
-        if (CLASS_OF(v) != Class_GeometryValue)
-        {
-            rb_raise(rb_eTypeError, "wrong enumeration type - expected %s, got %s"
-                        , rb_class2name(Class_GeometryValue),rb_class2name(CLASS_OF(v)));
-        }
-        Data_Get_Struct(v, MagickEnum, magick_enum);
-        *flag = magick_enum->val;
-    }
-
 }
 
 
