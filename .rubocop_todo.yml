@@ -504,12 +504,6 @@ Style/SingleLineBlockParams:
   Exclude:
     - 'lib/rvg/misc.rb'
 
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/StderrPuts:
-  Exclude:
-    - 'Rakefile'
-
 # Offense count: 20
 # Cop supports --auto-correct.
 Style/StringHashKeys:
