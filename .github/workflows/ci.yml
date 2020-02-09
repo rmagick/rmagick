@@ -21,9 +21,9 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ./vendor/bundle
-        key: v1-linux-2.3
+        key: v1-linux-2.3-{{ checksum rmagick.gemspec }}
         restore-keys: |
-          v1-linux-2.3
+          v1-linux-2.3-{{ checksum rmagick.gemspec }}
     - name: Build and test with Rake
       run: |
         gem install bundler
@@ -57,9 +57,9 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ./vendor/bundle
-        key: v1-linux-${{ matrix.ruby-version }}
+        key: v1-linux-${{ matrix.ruby-version }}-{{ checksum rmagick.gemspec }}
         restore-keys: |
-          v1-linux-${{ matrix.ruby-version }}
+          v1-linux-${{ matrix.ruby-version }}-{{ checksum rmagick.gemspec }}
     - name: Build and test with Rake
       run: |
         gem install bundler
@@ -90,9 +90,9 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ./vendor/bundle
-        key: v1-windows-${{ matrix.ruby-version }}
+        key: v1-windows-${{ matrix.ruby-version }}-{{ checksum rmagick.gemspec }}
         restore-keys: |
-          v1-windows-${{ matrix.ruby-version }}
+          v1-windows-${{ matrix.ruby-version }}-{{ checksum rmagick.gemspec }}
     - name: Build and test with Rake
       run: |
         cmd.exe /D /S /C "SET PATH=D:\ImageMagick;%PATH% & bundle install --path=vendor/bundle --retry 3 & bundle exec rake"
