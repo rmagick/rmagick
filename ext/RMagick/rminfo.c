@@ -77,7 +77,6 @@ static VALUE
 set_option(VALUE self, const char *key, VALUE string)
 {
     Info *info;
-    char *value;
 
     Data_Get_Struct(self, Info, info);
 
@@ -87,6 +86,8 @@ set_option(VALUE self, const char *key, VALUE string)
     }
     else
     {
+        char *value;
+
         value = StringValuePtr(string);
         (void) SetImageOption(info, key, value);
     }
@@ -110,7 +111,6 @@ set_option(VALUE self, const char *key, VALUE string)
 static VALUE set_color_option(VALUE self, const char *option, VALUE color)
 {
     Info *info;
-    char *name;
     PixelColor pp;
     ExceptionInfo *exception;
     MagickBooleanType okay;
@@ -123,6 +123,8 @@ static VALUE set_color_option(VALUE self, const char *option, VALUE color)
     }
     else
     {
+        char *name;
+
         name = StringValuePtr(color);
         exception = AcquireExceptionInfo();
         okay = QueryColorCompliance(name, AllCompliance, &pp, exception);
@@ -190,8 +192,6 @@ static VALUE set_dbl_option(VALUE self, const char *option, VALUE value)
     Info *info;
     char buff[50];
     double d;
-    long n;
-    int len;
 
     Data_Get_Struct(self, Info, info);
 
@@ -201,6 +201,9 @@ static VALUE set_dbl_option(VALUE self, const char *option, VALUE value)
     }
     else
     {
+        int len;
+        long n;
+
         d = NUM2DBL(value);
         n = floor(d);
         if (d == n)
@@ -337,8 +340,6 @@ Info_aset(int argc, VALUE *argv, VALUE self)
     char *format_p, *key_p, *value_p = NULL;
     long format_l, key_l;
     char ckey[MaxTextExtent];
-    unsigned int okay;
-
 
     Data_Get_Struct(self, Info, info);
 
@@ -375,6 +376,8 @@ Info_aset(int argc, VALUE *argv, VALUE self)
     }
     else
     {
+        unsigned int okay;
+
         /* Allow any argument that supports to_s */
         value = rm_to_s(value);
         value_p = StringValuePtr(value);
@@ -822,13 +825,14 @@ Info_delay(VALUE self)
     Info *info;
     const char *delay;
     char *p;
-    long d;
 
     Data_Get_Struct(self, Info, info);
 
     delay = GetImageOption(info, "delay");
     if (delay)
     {
+        long d;
+
         d = strtol(delay, &p, 10);
         if (*p != '\0')
         {
@@ -872,7 +876,6 @@ Info_delay_eq(VALUE self, VALUE string)
     Info *info;
     int delay;
     int not_num;
-    char dstr[20];
 
     Data_Get_Struct(self, Info, info);
 
@@ -882,6 +885,8 @@ Info_delay_eq(VALUE self, VALUE string)
     }
     else
     {
+        char dstr[20];
+
         not_num = 0;
         (void) rb_protect(arg_is_integer, string, &not_num);
         if (not_num)
@@ -1532,7 +1537,6 @@ VALUE Info_gravity(VALUE self)
 {
     Info *info;
     const char *gravity;
-    int x;
     ID gravity_id;
 
     Data_Get_Struct(self, Info, info);
@@ -1543,7 +1547,7 @@ VALUE Info_gravity(VALUE self)
     gravity=GetImageOption(info, "gravity");
     if (gravity)
     {
-        for (x = 0; x < N_GRAVITY_OPTIONS; x++)
+        for (int x = 0; x < N_GRAVITY_OPTIONS; x++)
         {
             if (strcmp(gravity, Gravity_Option[x].string) == 0)
             {
@@ -2062,7 +2066,6 @@ VALUE
 Info_server_name_eq(VALUE self, VALUE server_arg)
 {
     Info *info;
-    char *server;
 
     Data_Get_Struct(self, Info, info);
     if (NIL_P(server_arg) || StringValuePtr(server_arg) == NULL)
@@ -2072,6 +2075,8 @@ Info_server_name_eq(VALUE self, VALUE server_arg)
     }
     else
     {
+        char *server;
+
         server = StringValuePtr(server_arg);
         magick_clone_string(&info->server_name, server);
     }

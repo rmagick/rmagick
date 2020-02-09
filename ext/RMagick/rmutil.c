@@ -396,7 +396,7 @@ rm_percentage(VALUE arg, double max)
 {
     double pct;
     long pct_long;
-    char *pct_str, *end;
+    char *end;
     int not_num;
 
     // Try to convert the argument to a number. If failure, sets not_num to non-zero.
@@ -404,6 +404,8 @@ rm_percentage(VALUE arg, double max)
 
     if (not_num)
     {
+        char *pct_str;
+
         arg = rb_rescue(rb_str_to_str, arg, rescue_not_str, arg);
         pct_str = StringValuePtr(arg);
         errno = 0;
@@ -1008,12 +1010,13 @@ rm_set_property(Image *image, const char *property, const char *value)
  */
 void rm_set_user_artifact(Image *images, Info *info)
 {
-    Image *image;
     const char *value;
 
     value = GetImageOption(info, "user");
     if (value)
     {
+        Image *image;
+
         image = GetFirstImageInList(images);
         while (image)
         {
