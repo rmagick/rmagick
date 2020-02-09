@@ -14,14 +14,14 @@ RSpec.describe Magick::Image, '#scene' do
   it 'works' do
     ilist = Magick::ImageList.new
     ilist << @img
-    img = @img.copy
-    ilist << img
+    img2 = @img.copy
+    ilist << img2
     ilist.write('temp.gif')
     FileUtils.rm('temp.gif')
 
-    expect { img.scene }.not_to raise_error
+    expect { img2.scene }.not_to raise_error
     expect(@img.scene).to eq(0)
-    expect(img.scene).to eq(1)
-    expect { img.scene = 2 }.to raise_error(NoMethodError)
+    expect(img2.scene).to eq(1)
+    expect { img2.scene = 2 }.to raise_error(NoMethodError)
   end
 end

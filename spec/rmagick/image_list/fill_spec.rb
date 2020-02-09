@@ -10,29 +10,29 @@ RSpec.describe Magick::ImageList, '#fill' do
   end
 
   it 'works' do
-    list = @list.copy
-    img = list[0].copy
+    list2 = @list.copy
+    img = list2[0].copy
     expect do
-      expect(list.fill(img)).to be_instance_of(described_class)
+      expect(list2.fill(img)).to be_instance_of(described_class)
     end.not_to raise_error
-    list.each { |el| expect(img).to be(el) }
+    list2.each { |el| expect(img).to be(el) }
 
-    list = @list.copy
-    list.fill(img, 0, 3)
-    0.upto(2) { |i| expect(list[i]).to be(img) }
+    list2 = @list.copy
+    list2.fill(img, 0, 3)
+    0.upto(2) { |i| expect(list2[i]).to be(img) }
 
-    list = @list.copy
-    list.fill(img, 4..7)
-    4.upto(7) { |i| expect(list[i]).to be(img) }
+    list2 = @list.copy
+    list2.fill(img, 4..7)
+    4.upto(7) { |i| expect(list2[i]).to be(img) }
 
-    list = @list.copy
-    list.fill { |i| list[i] = img }
-    list.each { |el| expect(img).to be(el) }
+    list2 = @list.copy
+    list2.fill { |i| list2[i] = img }
+    list2.each { |el| expect(img).to be(el) }
 
-    list = @list.copy
-    list.fill(0, 3) { |i| list[i] = img }
-    0.upto(2) { |i| expect(list[i]).to be(img) }
+    list2 = @list.copy
+    list2.fill(0, 3) { |i| list2[i] = img }
+    0.upto(2) { |i| expect(list2[i]).to be(img) }
 
-    expect { list.fill('x', 0) }.to raise_error(ArgumentError)
+    expect { list2.fill('x', 0) }.to raise_error(ArgumentError)
   end
 end

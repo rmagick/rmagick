@@ -43,37 +43,37 @@ RSpec.describe Magick::Draw, '#marshal_dump' do
   end
 
   it 'works' do
-    draw = @draw.dup
-    draw.affine = Magick::AffineMatrix.new(1, 2, 3, 4, 5, 6)
-    draw.decorate = Magick::LineThroughDecoration
-    draw.encoding = 'AdobeCustom'
-    draw.gravity = Magick::CenterGravity
-    draw.fill = Magick::Pixel.from_color('red')
-    draw.fill_pattern = Magick::Image.new(10, 10) { self.format = 'miff' }
-    draw.stroke = Magick::Pixel.from_color('blue')
-    draw.stroke_width = 5
-    draw.text_antialias = true
-    draw.font = 'Arial-Bold'
-    draw.font_family = 'arial'
-    draw.font_style = Magick::ItalicStyle
-    draw.font_stretch = Magick::CondensedStretch
-    draw.font_weight = Magick::BoldWeight
-    draw.pointsize = 12
-    draw.density = '72x72'
-    draw.align = Magick::CenterAlign
-    draw.undercolor = Magick::Pixel.from_color('green')
-    draw.kerning = 10.5
-    draw.interword_spacing = 3.75
+    draw2 = @draw.dup
+    draw2.affine = Magick::AffineMatrix.new(1, 2, 3, 4, 5, 6)
+    draw2.decorate = Magick::LineThroughDecoration
+    draw2.encoding = 'AdobeCustom'
+    draw2.gravity = Magick::CenterGravity
+    draw2.fill = Magick::Pixel.from_color('red')
+    draw2.fill_pattern = Magick::Image.new(10, 10) { self.format = 'miff' }
+    draw2.stroke = Magick::Pixel.from_color('blue')
+    draw2.stroke_width = 5
+    draw2.text_antialias = true
+    draw2.font = 'Arial-Bold'
+    draw2.font_family = 'arial'
+    draw2.font_style = Magick::ItalicStyle
+    draw2.font_stretch = Magick::CondensedStretch
+    draw2.font_weight = Magick::BoldWeight
+    draw2.pointsize = 12
+    draw2.density = '72x72'
+    draw2.align = Magick::CenterAlign
+    draw2.undercolor = Magick::Pixel.from_color('green')
+    draw2.kerning = 10.5
+    draw2.interword_spacing = 3.75
 
-    draw.circle(20, 25, 20, 28)
+    draw2.circle(20, 25, 20, 28)
 
     dumped = nil
-    expect { dumped = draw.marshal_dump }.not_to raise_error
+    expect { dumped = draw2.marshal_dump }.not_to raise_error
 
-    draw2 = @draw.dup
+    draw3 = @draw.dup
     expect do
-      draw2.marshal_load(dumped)
+      draw3.marshal_load(dumped)
     end.not_to raise_error
-    expect(draw2.inspect).to eq(draw.inspect)
+    expect(draw3.inspect).to eq(draw2.inspect)
   end
 end

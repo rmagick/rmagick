@@ -14,9 +14,9 @@ RSpec.describe Magick::Image, '#colors' do
   it 'works' do
     expect { @img.colors }.not_to raise_error
     expect(@img.colors).to eq(0)
-    img = @img.copy
-    img.class_type = Magick::PseudoClass
-    expect(img.colors).to be_kind_of(Integer)
-    expect { img.colors = 2 }.to raise_error(NoMethodError)
+    img2 = @img.copy
+    img2.class_type = Magick::PseudoClass
+    expect(img2.colors).to be_kind_of(Integer)
+    expect { img2.colors = 2 }.to raise_error(NoMethodError)
   end
 end
