@@ -2,7 +2,7 @@ RSpec.describe Magick::Draw, '#marshal_dump' do
   let(:draw) { described_class.new }
 
   before do
-    @draw = Magick::Draw.new
+    @draw = described_class.new
   end
 
   it 'marshals without an error' do

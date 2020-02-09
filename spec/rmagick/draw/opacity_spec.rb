@@ -1,6 +1,6 @@
 RSpec.describe Magick::Draw, '#opacity' do
   before do
-    @draw = Magick::Draw.new
+    @draw = described_class.new
     @img = Magick::Image.new(200, 200)
   end
 

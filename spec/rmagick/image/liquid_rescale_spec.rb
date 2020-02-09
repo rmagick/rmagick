@@ -1,5 +1,5 @@
 describe Magick::Image, '#liquid_rescale' do
-  before { @img = Magick::Image.new(20, 20) }
+  before { @img = described_class.new(20, 20) }
 
   it 'works' do
     skip "delegate library support not built-in ''"

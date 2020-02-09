@@ -1,6 +1,6 @@
 RSpec.describe Magick::Image::Info, '#border_color' do
   before do
-    @info = Magick::Image::Info.new
+    @info = described_class.new
   end
 
   it 'works' do

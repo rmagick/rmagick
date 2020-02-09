@@ -1,6 +1,6 @@
 RSpec.describe Magick::ImageList, "#morph" do
   before do
-    @ilist = Magick::ImageList.new
+    @ilist = described_class.new
   end
 
   it "works" do
@@ -11,7 +11,7 @@ RSpec.describe Magick::ImageList, "#morph" do
     expect { @ilist.morph(-1) }.to raise_error(ArgumentError)
     expect do
       res = @ilist.morph(2)
-      expect(res).to be_instance_of(Magick::ImageList)
+      expect(res).to be_instance_of(described_class)
       expect(res.length).to eq(4)
       expect(res.scene).to eq(0)
     end.not_to raise_error

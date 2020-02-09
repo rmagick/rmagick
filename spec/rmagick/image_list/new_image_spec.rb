@@ -1,6 +1,6 @@
 RSpec.describe Magick::ImageList, "#new_image" do
   before do
-    @ilist = Magick::ImageList.new
+    @ilist = described_class.new
   end
 
   it "works" do

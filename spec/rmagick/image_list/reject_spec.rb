@@ -1,7 +1,7 @@
 RSpec.describe Magick::ImageList, '#reject' do
   before do
-    @list = Magick::ImageList.new(*FILES[0..9])
-    @list2 = Magick::ImageList.new # intersection is 5..9
+    @list = described_class.new(*FILES[0..9])
+    @list2 = described_class.new # intersection is 5..9
     @list2 << @list[5]
     @list2 << @list[6]
     @list2 << @list[7]
@@ -16,7 +16,7 @@ RSpec.describe Magick::ImageList, '#reject' do
     expect do
       res = @list.reject { |img| File.basename(img.filename) =~ /Button_9/ }
       expect(res.length).to eq(9)
-      expect(res).to be_instance_of(Magick::ImageList)
+      expect(res).to be_instance_of(described_class)
       expect(res.cur_image).to be(cur)
     end.not_to raise_error
     expect(@list).to be(list)

@@ -1,6 +1,6 @@
 RSpec.describe Magick::Image, "#bilevel_channel" do
   before do
-    @img = Magick::Image.new(20, 20)
+    @img = described_class.new(20, 20)
   end
 
   it "works" do
@@ -13,6 +13,6 @@ RSpec.describe Magick::Image, "#bilevel_channel" do
     expect { @img.bilevel_channel(100, Magick::AllChannels) }.not_to raise_error
     expect { @img.bilevel_channel(100, 2) }.to raise_error(TypeError)
     res = @img.bilevel_channel(100)
-    expect(res).to be_instance_of(Magick::Image)
+    expect(res).to be_instance_of(described_class)
   end
 end

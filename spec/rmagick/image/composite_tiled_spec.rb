@@ -1,14 +1,14 @@
 RSpec.describe Magick::Image, '#composite_tiled' do
-  before { @img = Magick::Image.new(20, 20) }
+  before { @img = described_class.new(20, 20) }
 
   it 'works' do
-    bg = Magick::Image.new(200, 200)
-    fg = Magick::Image.new(50, 100) { self.background_color = 'black' }
+    bg = described_class.new(200, 200)
+    fg = described_class.new(50, 100) { self.background_color = 'black' }
     res = nil
     expect do
       res = bg.composite_tiled(fg)
     end.not_to raise_error
-    expect(res).to be_instance_of(Magick::Image)
+    expect(res).to be_instance_of(described_class)
     expect(res).not_to be(bg)
     expect(res).not_to be(fg)
     expect { bg.composite_tiled!(fg) }.not_to raise_error

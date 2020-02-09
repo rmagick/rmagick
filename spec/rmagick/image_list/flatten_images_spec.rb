@@ -1,7 +1,7 @@
 RSpec.describe Magick::ImageList, '#flatten_images' do
   before do
-    @list = Magick::ImageList.new(*FILES[0..9])
-    @list2 = Magick::ImageList.new # intersection is 5..9
+    @list = described_class.new(*FILES[0..9])
+    @list2 = described_class.new # intersection is 5..9
     @list2 << @list[5]
     @list2 << @list[6]
     @list2 << @list[7]
@@ -14,7 +14,7 @@ RSpec.describe Magick::ImageList, '#flatten_images' do
   end
 
   it "still works" do
-    ilist = Magick::ImageList.new
+    ilist = described_class.new
     ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_1.gif')
     expect do
       img = ilist.flatten_images

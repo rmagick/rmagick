@@ -1,5 +1,5 @@
 RSpec.describe Magick::Image, '#erase!' do
-  before { @img = Magick::Image.new(20, 20) }
+  before { @img = described_class.new(20, 20) }
 
   it 'works' do
     expect do

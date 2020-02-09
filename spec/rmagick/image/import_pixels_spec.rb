@@ -1,5 +1,5 @@
 RSpec.describe Magick::Image, '#import_pixels' do
-  before { @img = Magick::Image.new(20, 20) }
+  before { @img = described_class.new(20, 20) }
 
   def import(image, pixels, type, expected = 0.0)
     img = Magick::Image.new(image.columns, image.rows)
@@ -38,7 +38,7 @@ RSpec.describe Magick::Image, '#import_pixels' do
   end
 
   it 'raises an error given UndefinedPixel' do
-    img = Magick::Image.new(20, 20)
+    img = described_class.new(20, 20)
     pixels = img.export_pixels(0, 0, 20, 20, 'RGB').pack('D*')
 
     expect do
@@ -47,7 +47,7 @@ RSpec.describe Magick::Image, '#import_pixels' do
   end
 
   it 'works with different pixel types' do
-    image = Magick::Image.read(File.join(IMAGES_DIR, 'Flower_Hat.jpg')).first
+    image = described_class.read(File.join(IMAGES_DIR, 'Flower_Hat.jpg')).first
     is_hdri_support = Magick::Magick_features =~ /HDRI/
     pixels = image.export_pixels(0, 0, image.columns, image.rows, 'RGB')
 

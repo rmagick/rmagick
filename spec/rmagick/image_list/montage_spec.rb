@@ -1,6 +1,6 @@
 RSpec.describe Magick::ImageList, "#montage" do
   before do
-    @ilist = Magick::ImageList.new
+    @ilist = described_class.new
   end
 
   def assert_same_image(expected_image_path, image_object, delta: 0.01)
@@ -40,7 +40,7 @@ RSpec.describe Magick::ImageList, "#montage" do
         self.tile = Magick::Geometry.new(4, 9)
         self.title = 'sample'
       end
-      expect(montage).to be_instance_of(Magick::ImageList)
+      expect(montage).to be_instance_of(described_class)
       expect(ilist).to eq(@ilist)
 
       montage_image = montage.first
@@ -102,7 +102,7 @@ RSpec.describe Magick::ImageList, "#montage" do
   end
 
   it 'montages the image' do
-    imagelist = Magick::ImageList.new(IMAGES_DIR + '/Flower_Hat.jpg')
+    imagelist = described_class.new(IMAGES_DIR + '/Flower_Hat.jpg')
 
     new_imagelist = imagelist.montage do
       self.border_width = 100

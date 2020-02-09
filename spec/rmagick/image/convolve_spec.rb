@@ -1,12 +1,12 @@
 RSpec.describe Magick::Image, '#convolve' do
-  before { @img = Magick::Image.new(20, 20) }
+  before { @img = described_class.new(20, 20) }
 
   it 'works' do
     kernel = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
     order = 3
     expect do
       res = @img.convolve(order, kernel)
-      expect(res).to be_instance_of(Magick::Image)
+      expect(res).to be_instance_of(described_class)
       expect(res).not_to be(@img)
     end.not_to raise_error
     expect { @img.convolve }.to raise_error(ArgumentError)

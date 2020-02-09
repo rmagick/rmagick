@@ -1,11 +1,11 @@
 RSpec.describe Magick::Image, '#level_channel' do
-  before { @img = Magick::Image.new(20, 20) }
+  before { @img = described_class.new(20, 20) }
 
   it 'works' do
     expect { @img.level_channel }.to raise_error(ArgumentError)
     expect do
       res = @img.level_channel(Magick::RedChannel)
-      expect(res).to be_instance_of(Magick::Image)
+      expect(res).to be_instance_of(described_class)
       expect(res).not_to be(@img)
     end.not_to raise_error
 

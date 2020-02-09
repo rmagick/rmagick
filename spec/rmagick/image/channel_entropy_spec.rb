@@ -1,5 +1,5 @@
 RSpec.describe Magick::Image, '#channel_entropy' do
-  let(:img) { Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first }
+  let(:img) { described_class.read(IMAGES_DIR + '/Button_0.gif').first }
 
   it 'returns a channel entropy', supported_after('6.9.0') do
     res = img.channel_entropy

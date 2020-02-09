@@ -1,10 +1,10 @@
 RSpec.describe Magick::Image, '#extent' do
-  before { @img = Magick::Image.new(20, 20) }
+  before { @img = described_class.new(20, 20) }
 
   it 'works' do
     expect { @img.extent(40, 40) }.not_to raise_error
     res = @img.extent(40, 40)
-    expect(res).to be_instance_of(Magick::Image)
+    expect(res).to be_instance_of(described_class)
     expect(res).not_to be(@img)
     expect(res.columns).to eq(40)
     expect(res.rows).to eq(40)

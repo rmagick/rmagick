@@ -1,6 +1,6 @@
 RSpec.describe Magick::Image, '#composite' do
-  let(:img1) { Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first }
-  let(:img2) { Magick::Image.read(IMAGES_DIR + '/Button_1.gif').first }
+  let(:img1) { described_class.read(IMAGES_DIR + '/Button_0.gif').first }
+  let(:img2) { described_class.read(IMAGES_DIR + '/Button_1.gif').first }
 
   it 'raises an error given invalid arguments' do
     expect { img1.composite }.to raise_error(ArgumentError)
@@ -39,7 +39,7 @@ RSpec.describe Magick::Image, '#composite' do
 
     it 'returns a new Magick::Image object' do
       res = img1.composite(img2, 0, 0, Magick::OverCompositeOp)
-      expect(res).to be_instance_of(Magick::Image)
+      expect(res).to be_instance_of(described_class)
     end
 
     it 'raises an error when 4th argument is not a composite operator' do

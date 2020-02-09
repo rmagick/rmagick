@@ -1,9 +1,9 @@
 RSpec.describe Magick::Image, '#excerpt' do
-  before { @img = Magick::Image.new(20, 20) }
+  before { @img = described_class.new(20, 20) }
 
   it 'works' do
     res = nil
-    img = Magick::Image.new(200, 200)
+    img = described_class.new(200, 200)
     expect { res = @img.excerpt(20, 20, 50, 100) }.not_to raise_error
     expect(res).not_to be(img)
     expect(res.columns).to eq(50)

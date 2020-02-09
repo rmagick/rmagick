@@ -22,7 +22,7 @@ RSpec.describe Magick::Image, '#read' do
     it 'raise error with nil argument' do
       skip
       expect(@status.success?).to be(true)
-      expect { Magick::Image.read(nil) }.to raise_error(Magick::ImageMagickError, /unable to open image nil/)
+      expect { described_class.read(nil) }.to raise_error(Magick::ImageMagickError, /unable to open image nil/)
     end
   end
 end

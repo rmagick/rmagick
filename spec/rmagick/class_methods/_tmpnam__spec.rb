@@ -17,25 +17,25 @@ RSpec.describe Magick, '._tmpnam_' do
     info.texture = texture
 
     # now it exists
-    expect { Magick._tmpnam_ }.not_to raise_error
-    original_tmpnam = Magick._tmpnam_
+    expect { described_class._tmpnam_ }.not_to raise_error
+    original_tmpnam = described_class._tmpnam_
 
     info.texture = texture
-    expect(Magick._tmpnam_).to eq(original_tmpnam + 1)
+    expect(described_class._tmpnam_).to eq(original_tmpnam + 1)
 
     mon = Magick::ImageList::Montage.new
     mon.texture = texture
-    expect(Magick._tmpnam_).to eq(original_tmpnam + 2)
+    expect(described_class._tmpnam_).to eq(original_tmpnam + 2)
 
     mon.texture = texture
-    expect(Magick._tmpnam_).to eq(original_tmpnam + 3)
+    expect(described_class._tmpnam_).to eq(original_tmpnam + 3)
 
     gc = Magick::Draw.new
     gc.composite(0, 0, 20, 20, texture)
-    expect(Magick._tmpnam_).to eq(original_tmpnam + 4)
+    expect(described_class._tmpnam_).to eq(original_tmpnam + 4)
 
     gc.composite(0, 0, 20, 20, texture)
-    expect(Magick._tmpnam_).to eq(original_tmpnam + 5)
+    expect(described_class._tmpnam_).to eq(original_tmpnam + 5)
 
     tmpfiles2 = Dir[ENV['HOME'] + '/tmp/magick*'].length
 

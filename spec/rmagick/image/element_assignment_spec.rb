@@ -1,5 +1,5 @@
 RSpec.describe Magick::Image, '#[]=' do
-  let(:img) { Magick::Image.new(20, 20) }
+  let(:img) { described_class.new(20, 20) }
 
   it 'allows assignment of arbitrary properties' do
     img['comment'] = 'str_1'

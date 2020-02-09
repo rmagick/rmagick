@@ -1,6 +1,6 @@
 RSpec.describe Magick::Image, "#alpha" do
   before do
-    @img = Magick::Image.new(20, 20)
+    @img = described_class.new(20, 20)
   end
 
   it "works" do

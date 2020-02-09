@@ -2,8 +2,8 @@ require 'tmpdir'
 
 RSpec.describe Magick::Image, '#store_pixels' do
   before do
-    @img = Magick::Image.new(20, 20)
-    @p = Magick::Image.read(IMAGE_WITH_PROFILE).first.color_profile
+    @img = described_class.new(20, 20)
+    @p = described_class.read(IMAGE_WITH_PROFILE).first.color_profile
   end
 
   it 'works' do
@@ -23,7 +23,7 @@ RSpec.describe Magick::Image, '#store_pixels' do
   end
 
   it 'supports CMYK color' do
-    img = Magick::Image.new(1, 1)
+    img = described_class.new(1, 1)
     img.colorspace = Magick::CMYKColorspace
 
     pixel = Magick::Pixel.new
@@ -37,7 +37,7 @@ RSpec.describe Magick::Image, '#store_pixels' do
     temp_file_path = File.join(Dir.tmpdir, 'rmagick_store_pixel.jpg')
     img.write(temp_file_path)
 
-    img2 = Magick::Image.read(temp_file_path).first
+    img2 = described_class.read(temp_file_path).first
     pixel = img2.get_pixels(0, 0, 1, 1).first
 
     expect(pixel.cyan).to    equal(49  * 257)

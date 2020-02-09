@@ -1,6 +1,6 @@
 RSpec.describe Magick::Image, "#blur_channel" do
   before do
-    @img = Magick::Image.new(20, 20)
+    @img = described_class.new(20, 20)
   end
 
   it "works" do
@@ -14,6 +14,6 @@ RSpec.describe Magick::Image, "#blur_channel" do
     expect { @img.blur_channel(1, 2, Magick::AllChannels) }.not_to raise_error
     expect { @img.blur_channel(1, 2, 2) }.to raise_error(TypeError)
     res = @img.blur_channel
-    expect(res).to be_instance_of(Magick::Image)
+    expect(res).to be_instance_of(described_class)
   end
 end

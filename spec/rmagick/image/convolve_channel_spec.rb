@@ -1,5 +1,5 @@
 RSpec.describe Magick::Image, '#convolve_channel' do
-  before { @img = Magick::Image.new(20, 20) }
+  before { @img = described_class.new(20, 20) }
 
   it 'works' do
     expect { @img.convolve_channel }.to raise_error(ArgumentError)
@@ -10,7 +10,7 @@ RSpec.describe Magick::Image, '#convolve_channel' do
     order = 3
     expect do
       res = @img.convolve_channel(order, kernel, Magick::RedChannel)
-      expect(res).to be_instance_of(Magick::Image)
+      expect(res).to be_instance_of(described_class)
       expect(res).not_to be(@img)
     end.not_to raise_error
 

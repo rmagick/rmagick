@@ -1,13 +1,13 @@
 RSpec.describe Magick::Draw, '#initialize' do
   before do
-    @draw = Magick::Draw.new
+    @draw = described_class.new
   end
 
   it 'works' do
     expect do
       yield_obj = nil
 
-      Magick::Draw.new do |option|
+      described_class.new do |option|
         yield_obj = option
       end
       expect(yield_obj).to be_instance_of(Magick::Image::DrawOptions)

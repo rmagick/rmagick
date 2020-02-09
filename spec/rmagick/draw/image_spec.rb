@@ -1,6 +1,6 @@
 RSpec.describe Magick::Draw, '#image' do
   before do
-    @draw = Magick::Draw.new
+    @draw = described_class.new
     @img = Magick::Image.new(200, 200)
   end
 
@@ -8,7 +8,7 @@ RSpec.describe Magick::Draw, '#image' do
     Magick::CompositeOperator.values do |composite|
       next if [Magick::BlurCompositeOp, Magick::CopyAlphaCompositeOp, Magick::NoCompositeOp].include?(composite)
 
-      draw = Magick::Draw.new
+      draw = described_class.new
       draw.image(composite, 10, 10, 200, 100, "#{IMAGES_DIR}/Flower_Hat.jpg")
       expect { draw.draw(@img) }.not_to raise_error
     end

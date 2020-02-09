@@ -1,6 +1,6 @@
 RSpec.describe Magick::ImageList, "#from_blob" do
   before do
-    @ilist = Magick::ImageList.new
+    @ilist = described_class.new
   end
 
   it "works" do
@@ -10,7 +10,7 @@ RSpec.describe Magick::ImageList, "#from_blob" do
     expect(@ilist[0]).to be_instance_of(Magick::Image)
     expect(@ilist.scene).to eq(0)
 
-    ilist2 = Magick::ImageList.new(FLOWER_HAT)
+    ilist2 = described_class.new(FLOWER_HAT)
     expect(ilist2).to eq(@ilist)
   end
 end

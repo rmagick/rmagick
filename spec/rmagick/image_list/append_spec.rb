@@ -11,7 +11,7 @@ RSpec.describe Magick::ImageList, '#<<' do
   end
 
   it "works" do
-    ilist = Magick::ImageList.new
+    ilist = described_class.new
     ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_0.gif')
     expect do
       img = ilist.append(true)

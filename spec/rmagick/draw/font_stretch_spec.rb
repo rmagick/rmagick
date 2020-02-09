@@ -1,6 +1,6 @@
 RSpec.describe Magick::Draw, '#font_stretch' do
   before do
-    @draw = Magick::Draw.new
+    @draw = described_class.new
     @img = Magick::Image.new(200, 200)
   end
 
@@ -8,7 +8,7 @@ RSpec.describe Magick::Draw, '#font_stretch' do
     Magick::StretchType.values do |stretch|
       next if stretch == Magick::AnyStretch
 
-      draw = Magick::Draw.new
+      draw = described_class.new
       draw.font_stretch(stretch)
       draw.text(50, 50, 'Hello world')
       expect { draw.draw(@img) }.not_to raise_error

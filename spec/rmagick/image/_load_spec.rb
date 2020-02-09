@@ -1,10 +1,10 @@
 RSpec.describe Magick::Image, '#_load' do
-  before { @img = Magick::Image.new(20, 20) }
+  before { @img = described_class.new(20, 20) }
 
   it 'works' do
-    img = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
+    img = described_class.read(IMAGES_DIR + '/Button_0.gif').first
     res = img._dump(10)
 
-    expect(Magick::Image._load(res)).to be_instance_of(Magick::Image)
+    expect(described_class._load(res)).to be_instance_of(described_class)
   end
 end
