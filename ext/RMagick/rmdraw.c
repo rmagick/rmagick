@@ -176,7 +176,6 @@ VALUE
 Draw_fill_pattern_eq(VALUE self, VALUE pattern)
 {
     Draw *draw;
-    Image *image;
 
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
@@ -190,6 +189,8 @@ Draw_fill_pattern_eq(VALUE self, VALUE pattern)
 
     if (!NIL_P(pattern))
     {
+        Image *image;
+
         pattern = rm_cur_image(pattern);
         image = rm_check_destroyed(pattern);
         // Do not trace creation
@@ -481,13 +482,14 @@ static VALUE
 image_to_str(Image *image)
 {
     VALUE dimg = Qnil;
-    unsigned char *blob;
-    size_t length;
-    Info *info;
-    ExceptionInfo *exception;
 
     if (image)
     {
+        unsigned char *blob;
+        size_t length;
+        Info *info;
+        ExceptionInfo *exception;
+
         info = CloneImageInfo(NULL);
         exception = AcquireExceptionInfo();
         blob = ImageToBlob(info, image, &length, exception);
@@ -520,11 +522,12 @@ static
 Image *str_to_image(VALUE str)
 {
     Image *image = NULL;
-    Info *info;
-    ExceptionInfo *exception;
 
     if (str != Qnil)
     {
+        Info *info;
+        ExceptionInfo *exception;
+
         info = CloneImageInfo(NULL);
         exception = AcquireExceptionInfo();
         image = BlobToImage(info, RSTRING_PTR(str), RSTRING_LEN(str), exception);
@@ -811,7 +814,6 @@ VALUE
 Draw_stroke_pattern_eq(VALUE self, VALUE pattern)
 {
     Draw *draw;
-    Image *image;
 
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
@@ -825,6 +827,8 @@ Draw_stroke_pattern_eq(VALUE self, VALUE pattern)
 
     if (!NIL_P(pattern))
     {
+        Image *image;
+
         // DestroyDrawInfo destroys the clone
         pattern = rm_cur_image(pattern);
         image = rm_check_destroyed(pattern);
@@ -1454,7 +1458,6 @@ static void
 destroy_Draw(void *drawptr)
 {
     Draw *draw = (Draw *)drawptr;
-    struct TmpFile_Name *tmpfile_name;
 
     if (draw->info)
     {
@@ -1465,6 +1468,8 @@ destroy_Draw(void *drawptr)
     // Erase any temporary image files.
     while (draw->tmpfile_ary)
     {
+        struct TmpFile_Name *tmpfile_name;
+
         tmpfile_name = draw->tmpfile_ary;
         draw->tmpfile_ary = draw->tmpfile_ary->next;
         rm_delete_temp_image(tmpfile_name->name);
@@ -1694,11 +1699,11 @@ get_dummy_tm_img(VALUE klass)
 {
 #define DUMMY_IMG_CLASS_VAR "@@_dummy_img_"
     VALUE dummy_img = 0;
-    Info *info;
-    Image *image;
 
     if (rb_cvar_defined(klass, rb_intern(DUMMY_IMG_CLASS_VAR)) != Qtrue)
     {
+        Info *info;
+        Image *image;
 
         info = CloneImageInfo(NULL);
         if (!info)
