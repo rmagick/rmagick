@@ -59,14 +59,6 @@ Layout/MultilineArrayLineBreaks:
     - 'lib/rmagick_internal.rb'
     - 'lib/rvg/stylable.rb'
 
-# Offense count: 94
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedTypes: block, case, class, if, kwbegin, module
-# SupportedStyles: same_line, new_line
-Layout/MultilineAssignmentLayout:
-  Enabled: false
-
 # Offense count: 3
 # Cop supports --auto-correct.
 Layout/MultilineHashKeyLineBreaks:
