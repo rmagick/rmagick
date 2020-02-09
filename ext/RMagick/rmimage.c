@@ -13648,7 +13648,6 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
     // (method) argument, the number of arguments should be a multiple of 3.
     if (argc < 4 || argc % 3 != 1)
     {
-        exp = argc - 1;
         exp = (argc + 2) / 3 * 3;
         exp = max(exp, 3);
         rb_raise(rb_eArgError, "wrong number of arguments (expected at least %d, got %d)", n+exp+1,  n+argc);
