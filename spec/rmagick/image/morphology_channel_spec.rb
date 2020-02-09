@@ -1,5 +1,5 @@
 RSpec.describe Magick::Image, '#morphology_channel' do
-  before { @img = Magick::Image.new(20, 20) }
+  before { @img = described_class.new(20, 20) }
 
   it 'works' do
     expect { @img.morphology_channel }.to raise_error(ArgumentError)
@@ -11,7 +11,7 @@ RSpec.describe Magick::Image, '#morphology_channel' do
     kernel = Magick::KernelInfo.new('Octagon')
     expect do
       res = @img.morphology_channel(Magick::RedChannel, Magick::EdgeOutMorphology, 2, kernel)
-      expect(res).to be_instance_of(Magick::Image)
+      expect(res).to be_instance_of(described_class)
       expect(res).not_to be(@img)
     end.not_to raise_error
   end

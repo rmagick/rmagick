@@ -1,7 +1,7 @@
 RSpec.describe Magick, '.fonts' do
   it 'works' do
     res = nil
-    expect { res = Magick.fonts }.not_to raise_error
+    expect { res = described_class.fonts }.not_to raise_error
     expect(res).to be_instance_of(Array)
     res.each do |f|
       expect(f).to be_instance_of(Magick::Font)
@@ -15,6 +15,6 @@ RSpec.describe Magick, '.fonts' do
       expect(f.foundry).to be_instance_of(String) unless f.foundry.nil?
       expect(f.format).to be_instance_of(String) unless f.format.nil?
     end
-    Magick.fonts { |f| expect(f).to be_instance_of(Magick::Font) }
+    described_class.fonts { |f| expect(f).to be_instance_of(Magick::Font) }
   end
 end

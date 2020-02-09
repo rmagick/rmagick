@@ -1,11 +1,11 @@
 RSpec.describe Magick::Image, "#spaceship" do
   before do
-    @img = Magick::Image.new(20, 20)
+    @img = described_class.new(20, 20)
   end
 
   it "works" do
-    img0 = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
-    img1 = Magick::Image.read(IMAGES_DIR + '/Button_1.gif').first
+    img0 = described_class.read(IMAGES_DIR + '/Button_0.gif').first
+    img1 = described_class.read(IMAGES_DIR + '/Button_1.gif').first
     sig0 = img0.signature
     sig1 = img1.signature
     # since <=> is based on the signature, the images should

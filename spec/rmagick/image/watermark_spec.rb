@@ -1,11 +1,11 @@
 RSpec.describe Magick::Image, '#watermark' do
   before do
-    @img = Magick::Image.new(20, 20)
-    @p = Magick::Image.read(IMAGE_WITH_PROFILE).first.color_profile
+    @img = described_class.new(20, 20)
+    @p = described_class.read(IMAGE_WITH_PROFILE).first.color_profile
   end
 
   it 'works' do
-    mark = Magick::Image.new(5, 5)
+    mark = described_class.new(5, 5)
     mark_list = Magick::ImageList.new
     mark_list << mark.copy
     expect { @img.watermark(mark) }.not_to raise_error

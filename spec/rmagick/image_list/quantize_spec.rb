@@ -1,13 +1,13 @@
 RSpec.describe Magick::ImageList, "#quantize" do
   before do
-    @ilist = Magick::ImageList.new
+    @ilist = described_class.new
   end
 
   it "works" do
     @ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_1.gif')
     expect do
       res = @ilist.quantize
-      expect(res).to be_instance_of(Magick::ImageList)
+      expect(res).to be_instance_of(described_class)
       expect(res.scene).to eq(1)
     end.not_to raise_error
     expect { @ilist.quantize(128) }.not_to raise_error

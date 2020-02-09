@@ -1,6 +1,6 @@
 RSpec.describe Magick::Draw, '#annotate' do
   before do
-    @draw = Magick::Draw.new
+    @draw = described_class.new
   end
 
   it 'works' do
@@ -12,7 +12,7 @@ RSpec.describe Magick::Draw, '#annotate' do
       @draw.annotate(img, 100, 100, 20, 20, 'Hello world 2') do |draw|
         yield_obj = draw
       end
-      expect(yield_obj).to be_instance_of(Magick::Draw)
+      expect(yield_obj).to be_instance_of(described_class)
     end.not_to raise_error
 
     expect do

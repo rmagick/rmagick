@@ -1,7 +1,7 @@
 RSpec.describe Magick::ImageList, '#scene' do
   before do
-    @list = Magick::ImageList.new(*FILES[0..9])
-    @list2 = Magick::ImageList.new # intersection is 5..9
+    @list = described_class.new(*FILES[0..9])
+    @list2 = described_class.new # intersection is 5..9
     @list2 << @list[5]
     @list2 << @list[6]
     @list2 << @list[7]
@@ -21,7 +21,7 @@ RSpec.describe Magick::ImageList, '#scene' do
     expect { @list.scene = nil }.to raise_error(IndexError)
 
     # allow nil on empty list
-    empty_list = Magick::ImageList.new
+    empty_list = described_class.new
     expect { empty_list.scene = nil }.not_to raise_error
   end
 end

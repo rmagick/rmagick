@@ -1,11 +1,11 @@
 RSpec.describe Magick::Draw, '#font' do
   before do
-    @draw = Magick::Draw.new
+    @draw = described_class.new
     @img = Magick::Image.new(200, 200)
   end
 
   it 'works' do
-    draw = Magick::Draw.new
+    draw = described_class.new
     font_name = Magick.fonts.first.name
     draw.font(font_name)
     expect(draw.inspect).to eq("font '#{font_name}'")

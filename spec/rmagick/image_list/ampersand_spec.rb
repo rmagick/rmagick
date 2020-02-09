@@ -1,7 +1,7 @@
 RSpec.describe Magick::ImageList, '#&' do
   before do
-    @list = Magick::ImageList.new(*FILES[0..9])
-    @list2 = Magick::ImageList.new # intersection is 5..9
+    @list = described_class.new(*FILES[0..9])
+    @list2 = described_class.new # intersection is 5..9
     @list2 << @list[5]
     @list2 << @list[6]
     @list2 << @list[7]
@@ -14,7 +14,7 @@ RSpec.describe Magick::ImageList, '#&' do
     cur = @list.cur_image
     expect do
       res = @list & @list2
-      expect(res).to be_instance_of(Magick::ImageList)
+      expect(res).to be_instance_of(described_class)
       expect(@list).not_to be(res)
       expect(@list2).not_to be(res)
       expect(res.length).to eq(5)
@@ -26,7 +26,7 @@ RSpec.describe Magick::ImageList, '#&' do
     @list.scene = 2
     expect do
       res = @list & @list2
-      expect(res).to be_instance_of(Magick::ImageList)
+      expect(res).to be_instance_of(described_class)
       expect(res.scene).to eq(4)
     end.not_to raise_error
 

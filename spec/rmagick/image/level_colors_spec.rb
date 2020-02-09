@@ -1,12 +1,12 @@
 RSpec.describe Magick::Image, '#level_colors' do
-  before { @img = Magick::Image.new(20, 20) }
+  before { @img = described_class.new(20, 20) }
 
   it 'works' do
     res = nil
     expect do
       res = @img.level_colors
     end.not_to raise_error
-    expect(res).to be_instance_of(Magick::Image)
+    expect(res).to be_instance_of(described_class)
     expect(res).not_to be(@img)
 
     expect { @img.level_colors('black') }.not_to raise_error

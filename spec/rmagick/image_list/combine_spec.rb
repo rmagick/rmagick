@@ -6,7 +6,7 @@ RSpec.describe Magick::ImageList, '#combine' do
     black = Magick::Image.new(20, 20) { self.background_color = 'black' }
     alpha = Magick::Image.new(20, 20) { self.background_color = 'transparent' }
 
-    list = Magick::ImageList.new
+    list = described_class.new
     expect { list.combine }.to raise_error(ArgumentError)
 
     list << red

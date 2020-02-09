@@ -1,10 +1,10 @@
 RSpec.describe Magick::Image, "#blend" do
   before do
-    @img = Magick::Image.new(20, 20)
+    @img = described_class.new(20, 20)
   end
 
   it "works" do
-    @img2 = Magick::Image.new(20, 20) { self.background_color = 'black' }
+    @img2 = described_class.new(20, 20) { self.background_color = 'black' }
     expect { @img.blend(@img2, 0.25) }.not_to raise_error
     res = @img.blend(@img2, 0.25)
 
@@ -14,7 +14,7 @@ RSpec.describe Magick::Image, "#blend" do
       expect { @img.blend(@img2, 0.25, 0.75, gravity, 10, 10) }.not_to raise_error
     end
 
-    expect(res).to be_instance_of(Magick::Image)
+    expect(res).to be_instance_of(described_class)
     expect { @img.blend(@img2, '25%') }.not_to raise_error
     expect { @img.blend(@img2, 0.25, 0.75) }.not_to raise_error
     expect { @img.blend(@img2, '25%', '75%') }.not_to raise_error

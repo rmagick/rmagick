@@ -4,12 +4,12 @@ RSpec.describe Magick::KernelInfo, '#initialize' do
       k = kernel.to_s.sub('Kernel', '')
 
       if kernel == Magick::UserDefinedKernel
-        expect { Magick::KernelInfo.new(k) }.to raise_error(RuntimeError)
+        expect { described_class.new(k) }.to raise_error(RuntimeError)
       else
-        expect(Magick::KernelInfo.new(k)).to be_instance_of(Magick::KernelInfo)
+        expect(described_class.new(k)).to be_instance_of(described_class)
       end
     end
-    expect { Magick::KernelInfo.new('') }.to raise_error(RuntimeError)
-    expect { Magick::KernelInfo.new(42) }.to raise_error(TypeError)
+    expect { described_class.new('') }.to raise_error(RuntimeError)
+    expect { described_class.new(42) }.to raise_error(TypeError)
   end
 end

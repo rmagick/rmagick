@@ -1,11 +1,11 @@
 RSpec.describe Magick::Pixel, '#fcmp' do
   before do
-    @pixel = Magick::Pixel.from_color('brown')
+    @pixel = described_class.from_color('brown')
   end
 
   it 'works' do
-    red = Magick::Pixel.from_color('red')
-    blue = Magick::Pixel.from_color('blue')
+    red = described_class.from_color('red')
+    blue = described_class.from_color('blue')
     expect { red.fcmp(red) }.not_to raise_error
     expect(red.fcmp(red)).to be(true)
     expect(red.fcmp(blue)).to be(false)

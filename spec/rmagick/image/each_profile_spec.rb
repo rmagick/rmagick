@@ -1,5 +1,5 @@
 RSpec.describe Magick::Image, '#each_profile' do
-  before { @img = Magick::Image.new(20, 20) }
+  before { @img = described_class.new(20, 20) }
 
   it 'works' do
     expect(@img.each_profile {}).to be(nil)

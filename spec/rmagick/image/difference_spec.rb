@@ -1,9 +1,9 @@
 RSpec.describe Magick::Image, '#difference' do
-  before { @img = Magick::Image.new(20, 20) }
+  before { @img = described_class.new(20, 20) }
 
   it 'works' do
-    img1 = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
-    img2 = Magick::Image.read(IMAGES_DIR + '/Button_1.gif').first
+    img1 = described_class.read(IMAGES_DIR + '/Button_0.gif').first
+    img2 = described_class.read(IMAGES_DIR + '/Button_1.gif').first
     expect do
       res = img1.difference(img2)
       expect(res).to be_instance_of(Array)

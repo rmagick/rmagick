@@ -1,5 +1,5 @@
 RSpec.describe Magick::Image, '#properties' do
-  let(:img) { Magick::Image.new(20, 20) }
+  let(:img) { described_class.new(20, 20) }
 
   it 'returns a hash of assigned properties' do
     img['comment'] = 'str_1'

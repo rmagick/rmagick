@@ -1,6 +1,6 @@
 describe Magick::Image::PolaroidOptions, "#shadow_color" do
   before do
-    @options = Magick::Image::PolaroidOptions.new
+    @options = described_class.new
   end
 
   it "works" do

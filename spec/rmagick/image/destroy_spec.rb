@@ -1,9 +1,9 @@
 # ensure methods detect destroyed images
 RSpec.describe Magick::Image, '#destroy' do
-  before { @img = Magick::Image.new(20, 20) }
+  before { @img = described_class.new(20, 20) }
 
   it 'works' do
-    methods = Magick::Image.instance_methods(false).sort
+    methods = described_class.instance_methods(false).sort
     methods -= %i[__display__ destroy! destroyed? inspect cur_image marshal_load]
 
     expect(@img.destroyed?).to eq(false)
@@ -18,7 +18,7 @@ RSpec.describe Magick::Image, '#destroy' do
       if method == '[]='
         expect { @img['foo'] = 1 }.to raise_error(Magick::DestroyedImageError)
       elsif method == 'difference'
-        other = Magick::Image.new(20, 20)
+        other = described_class.new(20, 20)
         expect { @img.difference(other) }.to raise_error(Magick::DestroyedImageError)
       elsif method == 'channel_entropy' && IM_VERSION < Gem::Version.new('6.9')
         expect { @img.channel_entropy }.to raise_error(NotImplementedError)

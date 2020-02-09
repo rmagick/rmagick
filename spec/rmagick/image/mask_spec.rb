@@ -1,8 +1,8 @@
 RSpec.describe Magick::Image, '#mask' do
-  before { @img = Magick::Image.new(20, 20) }
+  before { @img = described_class.new(20, 20) }
 
   it 'works' do
-    cimg = Magick::Image.new(10, 10)
+    cimg = described_class.new(10, 10)
     expect { @img.mask(cimg) }.not_to raise_error
     res = nil
     expect { res = @img.mask }.not_to raise_error

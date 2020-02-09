@@ -1,6 +1,6 @@
 RSpec.describe Magick::Draw, '#composite' do
   before do
-    @draw = Magick::Draw.new
+    @draw = described_class.new
   end
 
   it 'works' do

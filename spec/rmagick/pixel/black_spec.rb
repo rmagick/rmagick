@@ -1,6 +1,6 @@
 RSpec.describe Magick::Pixel, '#black' do
   before do
-    @pixel = Magick::Pixel.from_color('brown')
+    @pixel = described_class.from_color('brown')
   end
 
   it 'works' do

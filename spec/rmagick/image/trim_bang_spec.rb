@@ -1,6 +1,6 @@
 RSpec.describe Magick::Image, '#trim!' do
   it 'works' do
-    hat = Magick::Image.read(IMAGES_DIR + '/Flower_Hat.jpg').first
+    hat = described_class.read(IMAGES_DIR + '/Flower_Hat.jpg').first
     expect do
       res = hat.trim!
       expect(res).to be(hat)

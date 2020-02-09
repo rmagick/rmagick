@@ -1,6 +1,6 @@
 RSpec.describe Magick::Image, "#affine_transform" do
   before do
-    @img = Magick::Image.new(20, 20)
+    @img = described_class.new(20, 20)
   end
 
   it "works" do
@@ -8,6 +8,6 @@ RSpec.describe Magick::Image, "#affine_transform" do
     expect { @img.affine_transform(affine) }.not_to raise_error
     expect { @img.affine_transform(0) }.to raise_error(TypeError)
     res = @img.affine_transform(affine)
-    expect(res).to be_instance_of(Magick::Image)
+    expect(res).to be_instance_of(described_class)
   end
 end

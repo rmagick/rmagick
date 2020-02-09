@@ -1,7 +1,7 @@
 require 'tmpdir'
 
 RSpec.describe Magick::Image, '#get_pixels' do
-  before { @img = Magick::Image.new(20, 20) }
+  before { @img = described_class.new(20, 20) }
 
   it 'works' do
     expect do
@@ -17,7 +17,7 @@ RSpec.describe Magick::Image, '#get_pixels' do
   end
 
   it 'supports CMYK color' do
-    img = Magick::Image.read(File.join(FIXTURE_PATH, 'cmyk.jpg')).first
+    img = described_class.read(File.join(FIXTURE_PATH, 'cmyk.jpg')).first
     pixel = img.get_pixels(0, 0, 1, 1).first
 
     # convert cmyk.jpg -format '%[pixel:p{1,1}]' info:-
@@ -29,7 +29,7 @@ RSpec.describe Magick::Image, '#get_pixels' do
   end
 
   it 'get proper alpha value' do
-    img = Magick::Image.new(1, 1)
+    img = described_class.new(1, 1)
 
     pixel = Magick::Pixel.new
     pixel.red   = 12 * 257
@@ -43,7 +43,7 @@ RSpec.describe Magick::Image, '#get_pixels' do
     temp_file_path = File.join(Dir.tmpdir, 'rmagick_get_pixels.png')
     img.write(temp_file_path)
 
-    img2 = Magick::Image.read(temp_file_path).first
+    img2 = described_class.read(temp_file_path).first
     pixel = img2.get_pixels(0, 0, 1, 1).first
 
     expect(pixel.red).to   equal(12 * 257)

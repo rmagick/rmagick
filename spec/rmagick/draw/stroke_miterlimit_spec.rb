@@ -1,11 +1,11 @@
 RSpec.describe Magick::Draw, '#stroke_miterlimit' do
   before do
-    @draw = Magick::Draw.new
+    @draw = described_class.new
     @img = Magick::Image.new(200, 200)
   end
 
   it 'works' do
-    draw = Magick::Draw.new
+    draw = described_class.new
     draw.stroke_miterlimit(1.0)
     expect(draw.inspect).to eq('stroke-miterlimit 1.0')
     expect { draw.draw(@img) }.not_to raise_error

@@ -1,5 +1,5 @@
 RSpec.describe Magick::Image, '#export_pixels' do
-  before { @img = Magick::Image.new(20, 20) }
+  before { @img = described_class.new(20, 20) }
 
   def fimport(image, pixels, type)
     img = Magick::Image.new(image.columns, image.rows)
@@ -32,7 +32,7 @@ RSpec.describe Magick::Image, '#export_pixels' do
   end
 
   it 'works with float types' do
-    image = Magick::Image.read(File.join(IMAGES_DIR, 'Flower_Hat.jpg')).first
+    image = described_class.read(File.join(IMAGES_DIR, 'Flower_Hat.jpg')).first
 
     pixels = image.export_pixels(0, 0, image.columns, image.rows, 'RGB')
     fpixels = pixels.collect { |p| p.to_f / Magick::QuantumRange }

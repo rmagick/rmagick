@@ -1,6 +1,6 @@
 RSpec.describe Magick::Draw, '#clip_path' do
   before do
-    @draw = Magick::Draw.new
+    @draw = described_class.new
     @img = Magick::Image.new(200, 200)
   end
 
@@ -13,7 +13,7 @@ RSpec.describe Magick::Draw, '#clip_path' do
   it 'works' do
     points = [0, 0, 1, 1, 2, 2]
 
-    pr = Magick::Draw.new
+    pr = described_class.new
 
     pr.define_clip_path('example') do
       pr.polygon(*points)

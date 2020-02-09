@@ -1,5 +1,5 @@
 RSpec.describe Magick::Image, '#distortion_channel' do
-  before { @img = Magick::Image.new(20, 20) }
+  before { @img = described_class.new(20, 20) }
 
   it 'works' do
     expect do
@@ -19,7 +19,7 @@ RSpec.describe Magick::Image, '#distortion_channel' do
     expect { @img.distortion_channel }.to raise_error(ArgumentError)
     expect { @img.distortion_channel(@img) }.to raise_error(ArgumentError)
 
-    img = Magick::Image.new(20, 20)
+    img = described_class.new(20, 20)
     img.destroy!
     expect { @img.distortion_channel(img, Magick::MeanSquaredErrorMetric) }.to raise_error(Magick::DestroyedImageError)
   end

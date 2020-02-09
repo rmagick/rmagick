@@ -1,8 +1,8 @@
 RSpec.describe Magick::Image, '#find_similar_region' do
-  before { @img = Magick::Image.new(20, 20) }
+  before { @img = described_class.new(20, 20) }
 
   it 'works' do
-    girl = Magick::Image.read(IMAGES_DIR + '/Flower_Hat.jpg').first
+    girl = described_class.read(IMAGES_DIR + '/Flower_Hat.jpg').first
     region = girl.crop(10, 10, 50, 50)
     expect do
       x, y = girl.find_similar_region(region)

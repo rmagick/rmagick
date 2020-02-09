@@ -1,6 +1,6 @@
 RSpec.describe Magick::KernelInfo, '#unity_add' do
   before do
-    @kernel = Magick::KernelInfo.new('Octagon')
+    @kernel = described_class.new('Octagon')
   end
 
   it 'works' do

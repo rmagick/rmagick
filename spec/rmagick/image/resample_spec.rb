@@ -1,7 +1,7 @@
 RSpec.describe Magick::Image, '#resample' do
   before do
-    @img = Magick::Image.new(20, 20)
-    @p = Magick::Image.read(IMAGE_WITH_PROFILE).first.color_profile
+    @img = described_class.new(20, 20)
+    @p = described_class.read(IMAGE_WITH_PROFILE).first.color_profile
   end
 
   it 'works' do
@@ -17,7 +17,7 @@ RSpec.describe Magick::Image, '#resample' do
     expect { @img.resample(100) }.not_to raise_error
     expect { @img.resample(100, 100) }.not_to raise_error
 
-    girl = Magick::Image.read(IMAGES_DIR + '/Flower_Hat.jpg').first
+    girl = described_class.read(IMAGES_DIR + '/Flower_Hat.jpg').first
     expect(girl.x_resolution).to eq(240.0)
     expect(girl.y_resolution).to eq(240.0)
     res = girl.resample(120, 120)

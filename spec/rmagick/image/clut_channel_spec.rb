@@ -1,11 +1,11 @@
 RSpec.describe Magick::Image, "#clut_channel" do
   before do
-    @img = Magick::Image.new(20, 20)
+    @img = described_class.new(20, 20)
   end
 
   it "works" do
-    img = Magick::Image.new(20, 20) { self.colorspace = Magick::GRAYColorspace }
-    clut = Magick::Image.new(20, 1) { self.background_color = 'red' }
+    img = described_class.new(20, 20) { self.colorspace = Magick::GRAYColorspace }
+    clut = described_class.new(20, 1) { self.background_color = 'red' }
     res = nil
     expect { res = img.clut_channel(clut) }.not_to raise_error
     expect(res).to be(img)

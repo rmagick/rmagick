@@ -1,6 +1,6 @@
 RSpec.describe Magick::ImageList, "#optimize_layers" do
   before do
-    @ilist = Magick::ImageList.new
+    @ilist = described_class.new
   end
 
   it "works" do
@@ -10,7 +10,7 @@ RSpec.describe Magick::ImageList, "#optimize_layers" do
 
       expect do
         res = @ilist.optimize_layers(method)
-        expect(res).to be_instance_of(Magick::ImageList)
+        expect(res).to be_instance_of(described_class)
         expect(res.length).to be_kind_of(Integer)
       end.not_to raise_error
     end

@@ -1,7 +1,7 @@
 RSpec.describe Magick::TextureFill, '#fill' do
   it 'works' do
     granite = Magick::Image.read('granite:').first
-    texture = Magick::TextureFill.new(granite)
+    texture = described_class.new(granite)
 
     img = Magick::Image.new(10, 10)
     obj = texture.fill(img)
