@@ -6,9 +6,6 @@ RSpec.describe Magick::Image, '#bounding_box' do
     gc.stroke_width(5)
     gc.circle(50, 50, 80, 80)
     gc.draw(@img)
-
-    @hat = described_class.read(FLOWER_HAT).first
-    @p = described_class.read(IMAGE_WITH_PROFILE).first.color_profile
   end
 
   it 'works' do
