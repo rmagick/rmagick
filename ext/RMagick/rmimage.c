@@ -5171,7 +5171,7 @@ Image_deskew(int argc, VALUE *argv, VALUE self)
         case 2:
             width = NUM2ULONG(argv[1]);
             memset(auto_crop_width, 0, sizeof(auto_crop_width));
-            snprintf(auto_crop_width, sizeof(auto_crop_width), "%ld", width);
+            snprintf(auto_crop_width, sizeof(auto_crop_width), "%lu", width);
             SetImageArtifact(image, "deskew:auto-crop", auto_crop_width);
         case 1:
             threshold = rm_percentage(argv[0],1.0) * QuantumRange;
@@ -14477,7 +14477,7 @@ thumbnail(int bang, int argc, VALUE *argv, VALUE self)
             break;
     }
 
-    snprintf(image_geometry, sizeof(image_geometry), "%ldx%ld", columns, rows);
+    snprintf(image_geometry, sizeof(image_geometry), "%lux%lu", columns, rows);
 
     exception = AcquireExceptionInfo();
     (void) ParseRegionGeometry(image, image_geometry, &geometry, exception);
