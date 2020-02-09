@@ -2488,10 +2488,10 @@ Image_channel_mean(int argc, VALUE *argv, VALUE self)
  * @param self this object
  * @return an array [mean, std. deviation]
  */
+#if defined(HAVE_GETIMAGECHANNELENTROPY) || defined(IMAGEMAGICK_7)
 VALUE
 Image_channel_entropy(int argc, VALUE *argv, VALUE self)
 {
-#if defined(HAVE_GETIMAGECHANNELENTROPY) || defined(IMAGEMAGICK_7)
     Image *image;
     ChannelType channels;
     ExceptionInfo *exception;
@@ -2526,14 +2526,14 @@ Image_channel_entropy(int argc, VALUE *argv, VALUE self)
     RB_GC_GUARD(ary);
 
     return ary;
-#else
-    rm_not_implemented();
-    argc = argc;
-    argv = argv;
-    self = self;
-#endif
 }
-
+#else
+VALUE
+Image_channel_entropy(int argc ATTRIBUTE_UNUSED, VALUE *argv ATTRIBUTE_UNUSED, VALUE self ATTRIBUTE_UNUSED)
+{
+    rm_not_implemented();
+}
+#endif
 
 /**
  * Return a new image that is a copy of the input image with the edges
