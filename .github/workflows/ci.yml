@@ -16,11 +16,18 @@ jobs:
     - name: Set up Ruby 2.3
       uses: ruby/setup-ruby@master
       with:
-        ruby-version: 2.3.8
+        ruby-version: 2.3
+    - name: Cache Ruby dependencies
+      uses: actions/cache@v1
+      with:
+        path: ./vendor/bundle
+        key: v1-linux-2.3
+        restore-keys: |
+          v1-linux-2.3
     - name: Build and test with Rake
       run: |
         gem install bundler
-        bundle install --jobs 4 --retry 3
+        bundle install --path=vendor/bundle --jobs 4 --retry 3
         STYLE_CHECKS=true bundle exec rubocop
 
   test-linux:
@@ -46,10 +53,17 @@ jobs:
     - name: Update/Install packages
       run: |
         IMAGEMAGICK_VERSION=${{ matrix.imagemagick-version }} ./before_install_linux.sh
+    - name: Cache Ruby dependencies
+      uses: actions/cache@v1
+      with:
+        path: ./vendor/bundle
+        key: v1-linux-${{ matrix.ruby-version }}
+        restore-keys: |
+          v1-linux-${{ matrix.ruby-version }}
     - name: Build and test with Rake
       run: |
         gem install bundler
-        bundle install --jobs 4 --retry 3
+        bundle install --path=vendor/bundle --jobs 4 --retry 3
         bundle exec rake
 
   test-windows:
@@ -72,6 +86,13 @@ jobs:
         $url = "https://ftp.icm.edu.pl/pub/graphics/ImageMagick/binaries/$($installer_name)"
         wget $url --progress=dot
         cmd.exe /D /S /C "$($installer_name) /DIR=D:\ImageMagick /VERYSILENT /TASKS=install_Devel"
+    - name: Cache Ruby dependencies
+      uses: actions/cache@v1
+      with:
+        path: ./vendor/bundle
+        key: v1-windows-${{ matrix.ruby-version }}
+        restore-keys: |
+          v1-windows-${{ matrix.ruby-version }}
     - name: Build and test with Rake
       run: |
         cmd.exe /D /S /C "SET PATH=D:\ImageMagick;%PATH% & bundle install --path=vendor/bundle --retry 3 & bundle exec rake"
