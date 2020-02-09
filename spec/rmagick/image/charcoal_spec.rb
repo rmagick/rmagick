@@ -3,11 +3,20 @@ RSpec.describe Magick::Image, "#charcoal" do
     im_major_minor = Magick::IMAGEMAGICK_VERSION.split('.').take(2).join('.')
 
     hash.each do |key, value|
-      return value if key == im_major_minor
+      return value if key == im_major_minor.to_sym
       return value if key.is_a?(Range) && key.include?(im_major_minor)
     end
 
     raise ArgumentError, "no value specified for version: #{im_major_minor}"
+  end
+
+  def build_image(width:, height:, pixels:)
+    image = Magick::Image.new(width, height)
+    image.import_pixels(0, 0, width, height, "RGB", pixels.flatten)
+  end
+
+  def gray(pixel_value)
+    [pixel_value, pixel_value, pixel_value]
   end
 
   it "works" do
@@ -22,19 +31,17 @@ RSpec.describe Magick::Image, "#charcoal" do
   end
 
   it "applies a charcoal effect" do
-    pixels = [45, 98, 156, 209, 171, 11, 239, 236, 2, 8, 65, 247]
-
-    image = described_class.new(2, 2)
-    image.import_pixels(0, 0, 2, 2, "RGB", pixels)
-
-    new_image = image.charcoal
-
-    new_pixels = new_image.export_pixels(0, 0, 2, 2, "RGB")
-    expected_pixels = expect_im_version(
-      '6.7' => [65535, 65535, 65535, 0, 0, 0, 0, 0, 0, 65535, 65535, 65535],
-      ('6.8'..'7.0') => [53736, 53736, 53736, 48703, 48703, 48703, 9953, 9953, 9953, 51857, 51857, 51857]
+    image = build_image(
+      width: 2,
+      height: 2,
+      pixels: [[45, 98, 156], [209, 171, 11], [239, 236, 2], [8, 65, 247]]
     )
 
-    expect(new_pixels).to match_pixels(expected_pixels, delta: 1)
+    expected_pixels = expect_im_version(
+      '6.7' => [gray(65535), gray(0), gray(0), gray(65535)],
+      ('6.8'..'7.0') => [gray(53736), gray(48703), gray(9953), gray(51857)]
+    )
+
+    expect(image.charcoal).to match_pixels(expected_pixels, delta: 1)
   end
 end
