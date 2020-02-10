@@ -12023,7 +12023,9 @@ resample(int bang, int argc, VALUE *argv, VALUE self)
 
     // Set up defaults
     filter  = image->filter;
-#if defined(IMAGEMAGICK_6)
+#if defined(IMAGEMAGICK_7)
+    blur    = 1.0;
+#else
     blur    = image->blur;
 #endif
     x_resolution = 72.0;
@@ -12076,15 +12078,20 @@ resample(int bang, int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
+    Image *preprocess = NULL;
     if (blur > 1.0)
     {
-        image = BlurImage(image, blur, blur, exception);
+        preprocess = BlurImage(image, blur, blur, exception);
     }
     else if (blur < 1.0)
     {
-        image = SharpenImage(image, blur, blur, exception);
+        preprocess = SharpenImage(image, blur, blur, exception);
     }
-    new_image = ResampleImage(image, x_resolution, y_resolution, filter, exception);
+    new_image = ResampleImage((preprocess ? preprocess : image), x_resolution, y_resolution, filter, exception);
+    if (preprocess != NULL)
+    {
+        DestroyImage(preprocess);
+    }
 #else
     new_image = ResampleImage(image, x_resolution, y_resolution, filter, blur, exception);
 #endif
