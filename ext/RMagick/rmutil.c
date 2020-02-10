@@ -395,7 +395,6 @@ double
 rm_percentage(VALUE arg, double max)
 {
     double pct;
-    long pct_long;
     char *end;
     int not_num;
 
@@ -405,6 +404,7 @@ rm_percentage(VALUE arg, double max)
     if (not_num)
     {
         char *pct_str;
+        long pct_long;
 
         arg = rb_rescue(rb_str_to_str, arg, rescue_not_str, arg);
         pct_str = StringValuePtr(arg);
@@ -542,7 +542,7 @@ double
 rm_fuzz_to_dbl(VALUE fuzz_arg)
 {
     double fuzz;
-    char *fuzz_str, *end;
+    char *end;
     int not_num;
 
     // Try to convert the argument to a number. If failure, sets not_num to non-zero.
@@ -550,6 +550,8 @@ rm_fuzz_to_dbl(VALUE fuzz_arg)
 
     if (not_num)
     {
+        char *fuzz_str;
+
         // Convert to string, issue error message if failure.
         fuzz_arg = rb_rescue(rb_str_to_str, fuzz_arg, rescue_not_str, fuzz_arg);
         fuzz_str = StringValuePtr(fuzz_arg);
@@ -1073,11 +1075,13 @@ rm_get_optional_arguments(VALUE img)
 static void copy_options(Image *image, Info *info)
 {
     char property[MaxTextExtent];
-    const char *value, *option;
+    const char *option;
 
     ResetImageOptionIterator(info);
     for (option = GetNextImageOption(info); option; option = GetNextImageOption(info))
     {
+        const char *value;
+
         value = GetImageOption(info,option);
         if (value)
         {

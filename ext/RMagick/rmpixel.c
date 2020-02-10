@@ -383,10 +383,10 @@ Pixel_alloc(VALUE class)
 VALUE
 Pixel_case_eq(VALUE self, VALUE other)
 {
-    Pixel *this, *that;
-
     if (CLASS_OF(self) == CLASS_OF(other))
     {
+        Pixel *this, *that;
+
         Data_Get_Struct(self, Pixel, this);
         Data_Get_Struct(other, Pixel, that);
         return (this->red == that->red
