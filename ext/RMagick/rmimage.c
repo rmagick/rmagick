@@ -12076,6 +12076,14 @@ resample(int bang, int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
+    if (blur > 1.0)
+    {
+        image = BlurImage(image, blur, blur, exception);
+    }
+    else if (blur < 1.0)
+    {
+        image = SharpenImage(image, blur, blur, exception);
+    }
     new_image = ResampleImage(image, x_resolution, y_resolution, filter, exception);
 #else
     new_image = ResampleImage(image, x_resolution, y_resolution, filter, blur, exception);
