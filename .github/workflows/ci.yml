@@ -107,4 +107,4 @@ jobs:
       run: |
         cmd.exe /D /S /C "echo %PATH%"
         cmd.exe /D /S /C "dir C:\msys64\usr\bin"
-        cmd.exe /D /S /C "SET PATH=D:\ImageMagick;%PATH% & bundle install --path=vendor/bundle --retry 3 & bundle exec rake"
+        cmd.exe /D /S /C "SET PATH=C:\msys64\usr\bin;D:\ImageMagick;%PATH% & bundle install --path=vendor/bundle --retry 3 & bundle exec rake"
