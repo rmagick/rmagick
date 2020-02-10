@@ -105,4 +105,6 @@ jobs:
           v1-windows-${{ matrix.ruby-version }}-{{ checksum rmagick.gemspec }}
     - name: Build and test with Rake
       run: |
+        cmd.exe /D /S /C "echo %PATH%"
+        cmd.exe /D /S /C "dir C:\msys64\usr\bin"
         cmd.exe /D /S /C "SET PATH=D:\ImageMagick;%PATH% & bundle install --path=vendor/bundle --retry 3 & bundle exec rake"
