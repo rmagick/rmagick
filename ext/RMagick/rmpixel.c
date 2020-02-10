@@ -296,13 +296,14 @@ Color_to_PixelColor(PixelColor *pp, VALUE color)
 void
 Color_to_Pixel(Pixel *pp, VALUE color)
 {
-    Pixel *pixel;
     PixelColor pixel_color;
 
     memset(pp, 0, sizeof(*pp));
     // Allow color name or Pixel
     if (CLASS_OF(color) == Class_Pixel)
     {
+        Pixel *pixel;
+
         Data_Get_Struct(color, Pixel, pixel);
         memcpy(pp, pixel, sizeof(Pixel));
     }
