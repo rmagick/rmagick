@@ -43,7 +43,7 @@ task build: [:config] do
     FileUtils.mkdir_p(File.join(base, 'pkg'))
     FileUtils.mv(File.join(base, gem_name), 'pkg')
   else
-    STDERR.puts 'Could not build gem'
+    warn 'Could not build gem'
     exit $CHILD_STATUS.exitstatus
   end
 end
