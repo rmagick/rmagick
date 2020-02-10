@@ -749,7 +749,6 @@ VALUE
 rm_imagelist_from_images(Image *images)
 {
     VALUE new_imagelist;
-    Image *image;
 
     if (!images)
     {
@@ -760,6 +759,8 @@ rm_imagelist_from_images(Image *images)
 
     while (images)
     {
+        Image *image;
+
         image = RemoveFirstImageFromList(&images);
         imagelist_push(new_imagelist, rm_image_new(image));
     }
