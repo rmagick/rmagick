@@ -1775,7 +1775,6 @@ test_Magick_version(void)
 {
     size_t version_number;
     const char *version_str;
-    int x;
     ID bypass = rb_intern("RMAGICK_BYPASS_VERSION_TEST");
 
     if (RTEST(rb_const_defined(rb_cObject, bypass)) && RTEST(rb_const_get(rb_cObject, bypass)))
@@ -1786,7 +1785,7 @@ test_Magick_version(void)
     version_str = GetMagickVersion(&version_number);
     if (version_number != MagickLibVersion)
     {
-        int n;
+        int n, x;
 
         // Extract the string "ImageMagick X.Y.Z"
         n = 0;

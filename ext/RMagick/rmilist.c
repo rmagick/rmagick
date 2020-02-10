@@ -890,7 +890,7 @@ imagelist_push(VALUE imagelist, VALUE image)
 static Image *
 clone_imagelist(Image *images)
 {
-    Image *new_imagelist = NULL, *image, *clone;
+    Image *new_imagelist = NULL, *image;
     ExceptionInfo *exception;
 
     exception = AcquireExceptionInfo();
@@ -898,6 +898,8 @@ clone_imagelist(Image *images)
     image = GetFirstImageInList(images);
     while (image)
     {
+        Image *clone;
+
         clone = CloneImage(image, 0, 0, MagickTrue, exception);
         rm_check_exception(exception, new_imagelist, DestroyOnError);
         AppendImageToList(&new_imagelist, clone);

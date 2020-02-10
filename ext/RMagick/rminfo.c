@@ -190,8 +190,6 @@ static VALUE get_dbl_option(VALUE self, const char *option)
 static VALUE set_dbl_option(VALUE self, const char *option, VALUE value)
 {
     Info *info;
-    char buff[50];
-    double d;
 
     Data_Get_Struct(self, Info, info);
 
@@ -201,6 +199,8 @@ static VALUE set_dbl_option(VALUE self, const char *option, VALUE value)
     }
     else
     {
+        char buff[50];
+        double d;
         int len;
         long n;
 
@@ -874,7 +874,6 @@ VALUE
 Info_delay_eq(VALUE self, VALUE string)
 {
     Info *info;
-    int delay;
     int not_num;
 
     Data_Get_Struct(self, Info, info);
@@ -886,6 +885,7 @@ Info_delay_eq(VALUE self, VALUE string)
     else
     {
         char dstr[20];
+        int delay;
 
         not_num = 0;
         (void) rb_protect(arg_is_integer, string, &not_num);
@@ -1068,7 +1068,6 @@ VALUE
 Info_dispose(VALUE self)
 {
     Info *info;
-    int x;
     ID dispose_id;
     const char *dispose;
 
@@ -1080,7 +1079,7 @@ Info_dispose(VALUE self)
     dispose=GetImageOption(info, "dispose");
     if (dispose)
     {
-        for (x = 0; x < N_DISPOSE_OPTIONS; x++)
+        for (int x = 0; x < N_DISPOSE_OPTIONS; x++)
         {
             if (strcmp(dispose, Dispose_Option[x].string) == 0)
             {
@@ -1283,7 +1282,6 @@ VALUE
 Info_filename_eq(VALUE self, VALUE filename)
 {
     Info *info;
-    char *fname;
 
     Data_Get_Struct(self, Info, info);
 
@@ -1294,6 +1292,8 @@ Info_filename_eq(VALUE self, VALUE filename)
     }
     else
     {
+        char *fname;
+
         // Otherwise copy in filename
         fname = StringValuePtr(filename);
         strlcpy(info->filename, fname, sizeof(info->filename));
@@ -1360,7 +1360,6 @@ VALUE
 Info_font_eq(VALUE self, VALUE font_arg)
 {
     Info *info;
-    char *font;
 
     Data_Get_Struct(self, Info, info);
     if (NIL_P(font_arg) || StringValuePtr(font_arg) == NULL)
@@ -1370,6 +1369,8 @@ Info_font_eq(VALUE self, VALUE font_arg)
     }
     else
     {
+        char *font;
+
         font = StringValuePtr(font_arg);
         magick_clone_string(&info->font, font);
     }
@@ -1388,12 +1389,13 @@ Info_font_eq(VALUE self, VALUE font_arg)
 VALUE Info_format(VALUE self)
 {
     Info *info;
-    const MagickInfo *magick_info ;
-    ExceptionInfo *exception;
 
     Data_Get_Struct(self, Info, info);
     if (*info->magick)
     {
+        const MagickInfo *magick_info;
+        ExceptionInfo *exception;
+
         exception = AcquireExceptionInfo();
         magick_info = GetMagickInfo(info->magick, exception);
         (void) DestroyExceptionInfo(exception);

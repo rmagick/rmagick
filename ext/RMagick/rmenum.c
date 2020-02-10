@@ -130,10 +130,10 @@ Enum_alloc(VALUE class)
 VALUE
 Enum_case_eq(VALUE self, VALUE other)
 {
-    MagickEnum *this, *that;
-
     if (CLASS_OF(self) == CLASS_OF(other))
     {
+        MagickEnum *this, *that;
+
         Data_Get_Struct(self, MagickEnum, this);
         Data_Get_Struct(other, MagickEnum, that);
         return this->val == that->val ? Qtrue : Qfalse;
