@@ -26,7 +26,6 @@ jobs:
           v1-linux-2.3-{{ checksum rmagick.gemspec }}
     - name: Build and test with Rake
       run: |
-        gem install bundler
         bundle install --path=vendor/bundle --jobs 4 --retry 3
         STYLE_CHECKS=true bundle exec rubocop
 
@@ -68,7 +67,6 @@ jobs:
           v1-linux-${{ matrix.ruby-version }}-{{ checksum rmagick.gemspec }}
     - name: Build and test with Rake
       run: |
-        gem install bundler
         bundle install --path=vendor/bundle --jobs 4 --retry 3
         bundle exec rake
 
