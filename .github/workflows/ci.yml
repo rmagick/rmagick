@@ -10,7 +10,7 @@ on:
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
     steps:
     - uses: actions/checkout@v2
     - name: Set up Ruby 2.3
@@ -21,9 +21,9 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ./vendor/bundle
-        key: v1-linux-2.3-{{ checksum rmagick.gemspec }}
+        key: v2-linux-2.3-{{ checksum rmagick.gemspec }}
         restore-keys: |
-          v1-linux-2.3-{{ checksum rmagick.gemspec }}
+          v2-linux-2.3-{{ checksum rmagick.gemspec }}
     - name: Build and test with Rake
       run: |
         gem install bundler
@@ -31,7 +31,7 @@ jobs:
         STYLE_CHECKS=true bundle exec rubocop
 
   test-linux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
     strategy:
       matrix:
         ruby-version: [2.3, 2.4, 2.5, 2.6, 2.7]
@@ -48,9 +48,9 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ./build-ImageMagick
-        key: v1-imagemagick-${{ matrix.imagemagick-version.full }}
+        key: v2-imagemagick-${{ matrix.imagemagick-version.full }}
         restore-keys: |
-          v1-imagemagick-${{ matrix.imagemagick-version.full }}
+          v2-imagemagick-${{ matrix.imagemagick-version.full }}
     - name: Set up Ruby ${{ matrix.ruby-version }}
       uses: ruby/setup-ruby@master
       with:
@@ -63,9 +63,9 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ./vendor/bundle
-        key: v1-linux-${{ matrix.ruby-version }}-{{ checksum rmagick.gemspec }}
+        key: v2-linux-${{ matrix.ruby-version }}-{{ checksum rmagick.gemspec }}
         restore-keys: |
-          v1-linux-${{ matrix.ruby-version }}-{{ checksum rmagick.gemspec }}
+          v2-linux-${{ matrix.ruby-version }}-{{ checksum rmagick.gemspec }}
     - name: Build and test with Rake
       run: |
         gem install bundler
