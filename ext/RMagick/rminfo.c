@@ -112,7 +112,6 @@ static VALUE set_color_option(VALUE self, const char *option, VALUE color)
 {
     Info *info;
     PixelColor pp;
-    ExceptionInfo *exception;
     MagickBooleanType okay;
 
     Data_Get_Struct(self, Info, info);
@@ -124,6 +123,7 @@ static VALUE set_color_option(VALUE self, const char *option, VALUE color)
     else
     {
         char *name;
+        ExceptionInfo *exception;
 
         name = StringValuePtr(color);
         exception = AcquireExceptionInfo();
