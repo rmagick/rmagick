@@ -16,8 +16,8 @@ module RMagick
       @stdout = $stdout.dup
 
       setup_pkg_config_path
-      configure_compile_options
       assert_can_compile!
+      configure_compile_options
       configure_headers
     end
 
@@ -167,10 +167,6 @@ SRC
     end
 
     def determine_imagemagick_package
-      unless find_executable('pkg-config')
-        exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find pkg-config in #{ENV['PATH']}\n"
-      end
-
       packages = `pkg-config --list-all`.scan(/(ImageMagick\-[\.A-Z0-9]+) .*/).flatten
 
       # For ancient version of ImageMagick 6 we need a different regex
@@ -322,6 +318,10 @@ END_MINGW
 
     def assert_has_dev_libs!
       return unless RUBY_PLATFORM !~ /mswin|mingw/
+
+      unless find_executable('pkg-config')
+        exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find pkg-config in #{ENV['PATH']}\n"
+      end
 
       unless `pkg-config --libs MagickCore`[/\bl\s*(MagickCore|Magick)6?\b/]
         exit_failure "Can't install RMagick #{RMAGICK_VERS}. " \
