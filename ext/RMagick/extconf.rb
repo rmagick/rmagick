@@ -131,7 +131,6 @@ module RMagick
         if try_compile(<<"SRC", &b)
 #{COMMON_HEADERS}
         #{cpp_include(headers)}
-/*top*/
 int main() { #{enum} t = #{value}; t = t; return 0; }
 SRC
           $defs.push(format('-DHAVE_ENUM_%s', value.upcase))
