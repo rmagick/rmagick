@@ -21,9 +21,9 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ./vendor/bundle
-        key: v1-linux-2.3-{{ checksum rmagick.gemspec }}
+        key: v1-linux-2.3-${{ hashFiles('rmagick.gemspec') }}
         restore-keys: |
-          v1-linux-2.3-{{ checksum rmagick.gemspec }}
+          v1-linux-2.3-${{ hashFiles('rmagick.gemspec') }}
     - name: Build and test with Rake
       run: |
         bundle install --path=vendor/bundle --jobs 4 --retry 3
@@ -62,9 +62,9 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ./vendor/bundle
-        key: v1-linux-${{ matrix.ruby-version }}-{{ checksum rmagick.gemspec }}
+        key: v1-linux-${{ matrix.ruby-version }}-${{ hashFiles('rmagick.gemspec') }}
         restore-keys: |
-          v1-linux-${{ matrix.ruby-version }}-{{ checksum rmagick.gemspec }}
+          v1-linux-${{ matrix.ruby-version }}-${{ hashFiles('rmagick.gemspec') }}
     - name: Build and test with Rake
       run: |
         bundle install --path=vendor/bundle --jobs 4 --retry 3
@@ -98,9 +98,9 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ./vendor/bundle
-        key: v1-windows-${{ matrix.ruby-version }}-{{ checksum rmagick.gemspec }}
+        key: v1-windows-${{ matrix.ruby-version }}-${{ hashFiles('rmagick.gemspec') }}
         restore-keys: |
-          v1-windows-${{ matrix.ruby-version }}-{{ checksum rmagick.gemspec }}
+          v1-windows-${{ matrix.ruby-version }}-${{ hashFiles('rmagick.gemspec') }}
     - name: Build and test with Rake
       run: |
         cmd.exe /D /S /C "SET MAKE=make & SET PATH=D:\ImageMagick;%PATH% & bundle install --path=vendor/bundle --retry 3 & bundle exec rake"
