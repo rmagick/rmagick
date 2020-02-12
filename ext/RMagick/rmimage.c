@@ -12220,7 +12220,9 @@ resize(int bang, int argc, VALUE *argv, VALUE self)
 
     // Set up defaults
     filter  = image->filter;
-#if defined(IMAGEMAGICK_6)
+#if defined(IMAGEMAGICK_7)
+    blur    = 1.0;
+#else
     blur    = image->blur;
 #endif
     rows    = image->rows;
@@ -12262,7 +12264,9 @@ resize(int bang, int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    new_image = ResizeImage(image, columns, rows, filter, exception);
+    Image *preprocess = blurred_image(image, blur);
+    new_image = ResizeImage(preprocess, columns, rows, filter, exception);
+    DestroyImage(preprocess);
 #else
     new_image = ResizeImage(image, columns, rows, filter, blur, exception);
 #endif
