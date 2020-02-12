@@ -11996,6 +11996,39 @@ Image_rendering_intent_eq(VALUE self, VALUE ri)
 }
 
 
+#if defined(IMAGEMAGICK_7)
+/**
+ * Create new blurred image.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param image the image
+ * @param blur the blur
+ * @return NULL if not apply blur, otherwise a new image
+ */
+static Image*
+blurred_image(Image* image, double blur)
+{
+    ExceptionInfo *exception;
+    Image *new_image;
+
+    exception = AcquireExceptionInfo();
+    if (blur > 1.0)
+    {
+        new_image = BlurImage(image, blur, blur, exception);
+    }
+    else
+    {
+        new_image = SharpenImage(image, blur, blur, exception);
+    }
+    rm_check_exception(exception, new_image, DestroyOnError);
+    DestroyExceptionInfo(exception);
+
+    return new_image;
+}
+#endif
+
+
 /**
  * Resample image to specified horizontal resolution, vertical resolution,
  * filter and blur factor.
@@ -12078,20 +12111,9 @@ resample(int bang, int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    Image *preprocess = NULL;
-    if (blur > 1.0)
-    {
-        preprocess = BlurImage(image, blur, blur, exception);
-    }
-    else if (blur < 1.0)
-    {
-        preprocess = SharpenImage(image, blur, blur, exception);
-    }
-    new_image = ResampleImage((preprocess ? preprocess : image), x_resolution, y_resolution, filter, exception);
-    if (preprocess != NULL)
-    {
-        DestroyImage(preprocess);
-    }
+    Image *preprocess = blurred_image(image, blur);
+    new_image = ResampleImage(preprocess, x_resolution, y_resolution, filter, exception);
+    DestroyImage(preprocess);
 #else
     new_image = ResampleImage(image, x_resolution, y_resolution, filter, blur, exception);
 #endif
