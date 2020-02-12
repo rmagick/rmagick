@@ -128,11 +128,13 @@ module RMagick
     # Test for a specific value in an enum type
     def have_enum_value(enum, value, headers = nil, &b)
       checking_for "#{enum}.#{value}" do
-        if try_compile(<<"SRC", &b)
-#{COMMON_HEADERS}
+        source = <<~"SRC"
+        #{COMMON_HEADERS}
         #{cpp_include(headers)}
-int main() { #{enum} t = #{value}; t = t; return 0; }
-SRC
+        int main() { #{enum} t = #{value}; t = t; return 0; }
+        SRC
+
+        if try_compile(source, &b)
           $defs.push(format('-DHAVE_ENUM_%s', value.upcase))
           true
         else
@@ -292,14 +294,14 @@ SRC
 
       return dir_paths if found_lib
 
-      exit_failure <<END_MINGW
-Can't install RMagick #{RMAGICK_VERS}.
-Can't find the ImageMagick library.
-Retry with '--with-opt-dir' option.
-Usage: gem install rmagick -- '--with-opt-dir=\"[path to ImageMagick]\"'
-e.g.
-  gem install rmagick -- '--with-opt-dir=\"C:\Program Files\ImageMagick-6.9.1-Q16\"'
-END_MINGW
+      exit_failure <<~END_MINGW
+      Can't install RMagick #{RMAGICK_VERS}.
+      Can't find the ImageMagick library.
+      Retry with '--with-opt-dir' option.
+      Usage: gem install rmagick -- '--with-opt-dir=\"[path to ImageMagick]\"'
+      e.g.
+        gem install rmagick -- '--with-opt-dir=\"C:\Program Files\ImageMagick-6.9.1-Q16\"'
+      END_MINGW
     end
 
     def assert_can_compile!
@@ -383,17 +385,17 @@ END_MINGW
     end
 
     def print_summary
-      summary = <<"END_SUMMARY"
+      summary = <<~"END_SUMMARY"
 
 
-#{'=' * 70}
-#{DateTime.now.strftime('%a %d %b %y %T')}
-This installation of RMagick #{RMAGICK_VERS} is configured for
-Ruby #{RUBY_VERSION} (#{RUBY_PLATFORM}) and ImageMagick #{$magick_version}
-#{'=' * 70}
+      #{'=' * 70}
+      #{DateTime.now.strftime('%a %d %b %y %T')}
+      This installation of RMagick #{RMAGICK_VERS} is configured for
+      Ruby #{RUBY_VERSION} (#{RUBY_PLATFORM}) and ImageMagick #{$magick_version}
+      #{'=' * 70}
 
 
-END_SUMMARY
+      END_SUMMARY
 
       Logging.message summary
       message summary
