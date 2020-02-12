@@ -67,8 +67,7 @@ module RMagick
       if RUBY_PLATFORM !~ /mswin|mingw/
 
         # Check for compiler. Extract first word so ENV['CC'] can be a program name with arguments.
-        config = defined?(RbConfig) ? ::RbConfig : ::Config
-        cc = (ENV['CC'] || config::CONFIG['CC'] || 'gcc').split(' ').first
+        cc = (ENV['CC'] || RbConfig::CONFIG['CC'] || 'gcc').split(' ').first
         exit_failure "No C compiler found in ${ENV['PATH']}. See mkmf.log for details." unless find_executable(cc)
 
         magick_package = determine_imagemagick_package
