@@ -65,11 +65,6 @@ module RMagick
     def configure_compile_options
       # Magick-config is not available on Windows
       if RUBY_PLATFORM !~ /mswin|mingw/
-
-        # Check for compiler. Extract first word so ENV['CC'] can be a program name with arguments.
-        cc = (ENV['CC'] || RbConfig::CONFIG['CC'] || 'gcc').split(' ').first
-        exit_failure "No C compiler found in ${ENV['PATH']}. See mkmf.log for details." unless find_executable(cc)
-
         magick_package = determine_imagemagick_package
 
         $magick_version = `pkg-config #{magick_package} --modversion`[/^(\d+\.\d+\.\d+)/]
@@ -306,6 +301,10 @@ module RMagick
     def assert_can_compile!
       assert_minimum_ruby_version!
       assert_has_dev_libs!
+
+      # Check for compiler. Extract first word so ENV['CC'] can be a program name with arguments.
+      cc = (ENV['CC'] || RbConfig::CONFIG['CC'] || 'gcc').split(' ').first
+      exit_failure "No C compiler found in ${ENV['PATH']}. See mkmf.log for details." unless find_executable(cc)
     end
 
     def assert_minimum_ruby_version!
