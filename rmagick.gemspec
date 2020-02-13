@@ -32,7 +32,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rake-compiler', '~> 1.0'
   s.add_development_dependency 'rspec', '~> 3.8'
   s.add_development_dependency 'rspec_junit_formatter', '~> 0.4.1'
-  if RUBY_PLATFORM !~ /mswin|mingw/
+  if RUBY_PLATFORM !~ /mswin/
     s.add_development_dependency 'rubocop', '~> 0.68.0'
     s.add_development_dependency 'rubocop-rspec', '~> 1.37.0'
   end

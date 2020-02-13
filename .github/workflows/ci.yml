@@ -12,95 +12,100 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Ruby 2.3
-      uses: ruby/setup-ruby@master
-      with:
-        ruby-version: 2.3
-    - name: Cache Ruby dependencies
-      uses: actions/cache@v1
-      with:
-        path: ./vendor/bundle
-        key: v1-linux-2.3-${{ hashFiles('rmagick.gemspec') }}
-        restore-keys: |
-          v1-linux-2.3-${{ hashFiles('rmagick.gemspec') }}
-    - name: Build and test with Rake
-      run: |
-        bundle install --path=vendor/bundle --jobs 4 --retry 3
-        STYLE_CHECKS=true bundle exec rubocop
+      - uses: actions/checkout@v2
+      - name: Set up Ruby 2.3
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.3
+      - name: Cache Ruby dependencies
+        uses: actions/cache@v1
+        with:
+          path: ./vendor/bundle
+          key: v1-linux-2.3-${{ hashFiles('rmagick.gemspec') }}
+          restore-keys: |
+            v1-linux-2.3-${{ hashFiles('rmagick.gemspec') }}
+      - name: Build and test with Rake
+        run: |
+          bundle install --path=vendor/bundle --jobs 4 --retry 3
+          STYLE_CHECKS=true bundle exec rubocop
 
   test-linux:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ruby-version: [2.3, 2.4, 2.5, 2.6, 2.7]
+        ruby-version: [ 2.3, 2.4, 2.5, 2.6, 2.7, ruby-head ]
         imagemagick-version:
           - { full: 6.7.7-10, major-minor: '6.7' }
           - { full: 6.8.9-10, major-minor: '6.8' }
           - { full: 6.9.10-90, major-minor: '6.9' }
           - { full: 7.0.9-20, major-minor: '7.0' }
-
+        exclude:
+          - ruby-version: 2.6
+            imagemagick-version: { full: 6.8.9-10, major-minor: '6.8' }
     name: Linux, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
     steps:
-    - uses: actions/checkout@v2
-    - name: Cache ImageMagick
-      uses: actions/cache@v1
-      with:
-        path: ./build-ImageMagick
-        key: v1-imagemagick-${{ matrix.imagemagick-version.full }}
-        restore-keys: |
-          v1-imagemagick-${{ matrix.imagemagick-version.full }}
-    - name: Set up Ruby ${{ matrix.ruby-version }}
-      uses: ruby/setup-ruby@master
-      with:
-        ruby-version: ${{ matrix.ruby-version }}
-    - name: Update/Install packages
-      run: |
-        export IMAGEMAGICK_VERSION=${{ matrix.imagemagick-version.full }}
-        ./before_install_linux.sh
-    - name: Cache Ruby dependencies
-      uses: actions/cache@v1
-      with:
-        path: ./vendor/bundle
-        key: v1-linux-${{ matrix.ruby-version }}-${{ hashFiles('rmagick.gemspec') }}
-        restore-keys: |
-          v1-linux-${{ matrix.ruby-version }}-${{ hashFiles('rmagick.gemspec') }}
-    - name: Build and test with Rake
-      run: |
-        bundle install --path=vendor/bundle --jobs 4 --retry 3
-        bundle exec rake
+      - uses: actions/checkout@v2
+      - name: Cache ImageMagick
+        uses: actions/cache@v1
+        with:
+          path: ./build-ImageMagick
+          key: v1-imagemagick-${{ matrix.imagemagick-version.full }}
+          restore-keys: |
+            v1-imagemagick-${{ matrix.imagemagick-version.full }}
+      - name: Set up Ruby ${{ matrix.ruby-version }}
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
+      - name: Update/Install packages
+        run: |
+          export IMAGEMAGICK_VERSION=${{ matrix.imagemagick-version.full }}
+          ./before_install_linux.sh
+      - name: Cache Ruby dependencies
+        uses: actions/cache@v1
+        with:
+          path: ./vendor/bundle
+          key: v1-linux-${{ matrix.ruby-version }}-${{ hashFiles('rmagick.gemspec') }}
+          restore-keys: |
+            v1-linux-${{ matrix.ruby-version }}-${{ hashFiles('rmagick.gemspec') }}
+      - name: Build and test with Rake
+        timeout-minutes: 15
+        run: |
+          bundle install --path=vendor/bundle --jobs 4 --retry 3
+          bundle exec rake
 
   test-windows:
     runs-on: windows-latest
     strategy:
       matrix:
-        ruby-version: [2.3, 2.4, 2.5, 2.6]
+        ruby-version: [ 2.3, 2.4, 2.5, 2.6, 2.7, ruby-head ]
         imagemagick-version:
           - { full: 6.8.9-10, major-minor: '6.8' }
           - { full: 6.9.10-90, major-minor: '6.9' }
           - { full: 7.0.9-20, major-minor: '7.0' }
     name: MSWin, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Ruby ${{ matrix.ruby-version }}
-      uses: ruby/setup-ruby@master
-      with:
-        ruby-version: ${{ matrix.ruby-version }}
-    - name: Install ImageMagick
-      run: |
-        $imagemagick_version = "${{ matrix.imagemagick-version.full }}"
-        $imagemagick_version_without_patch = $imagemagick_version.split("-")[0]
-        $installer_name = "ImageMagick-$($imagemagick_version)-Q16-x64-dll.exe"
-        $url = "https://ftp.icm.edu.pl/pub/graphics/ImageMagick/binaries/$($installer_name)"
-        wget $url --progress=dot
-        cmd.exe /D /S /C "$($installer_name) /DIR=D:\ImageMagick /VERYSILENT /TASKS=install_Devel"
-    - name: Cache Ruby dependencies
-      uses: actions/cache@v1
-      with:
-        path: ./vendor/bundle
-        key: v1-windows-${{ matrix.ruby-version }}-${{ hashFiles('rmagick.gemspec') }}
-        restore-keys: |
-          v1-windows-${{ matrix.ruby-version }}-${{ hashFiles('rmagick.gemspec') }}
-    - name: Build and test with Rake
-      run: |
-        cmd.exe /D /S /C "SET MAKE=make & SET PATH=D:\ImageMagick;%PATH% & bundle install --path=vendor/bundle --retry 3 & bundle exec rake"
+      - uses: actions/checkout@v2
+      - name: setup Ruby ${{ matrix.ruby-version }}, update gcc
+        uses: MSP-Greg/actions-ruby@v1
+        with:
+          base: update
+          ruby-version: ${{ matrix.ruby-version }}
+      - name: Install ImageMagick
+        run: |
+          $imagemagick_version = "${{ matrix.imagemagick-version.full }}"
+          $imagemagick_version_without_patch = $imagemagick_version.split("-")[0]
+          $installer_name = "ImageMagick-$($imagemagick_version)-Q16-x64-dll.exe"
+          $url = "https://ftp.icm.edu.pl/pub/graphics/ImageMagick/binaries/$($installer_name)"
+          wget $url --progress=dot
+          cmd.exe /D /S /C "$($installer_name) /DIR=D:\ImageMagick /VERYSILENT /TASKS=install_Devel"
+      - name: Cache Ruby dependencies
+        uses: actions/cache@v1
+        with:
+          path: ./vendor/bundle
+          key: v1-windows-${{ matrix.ruby-version }}-${{ hashFiles('rmagick.gemspec') }}
+          restore-keys: |
+            v1-windows-${{ matrix.ruby-version }}-${{ hashFiles('rmagick.gemspec') }}
+      - name: Build and test with Rake
+        timeout-minutes: 10
+        run: |
+          cmd.exe /D /S /C "SET MAKE=make & SET PATH=D:\ImageMagick;%PATH% & bundle install --path=vendor/bundle --retry 3 & bundle exec rake"
