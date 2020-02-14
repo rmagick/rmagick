@@ -81,10 +81,10 @@ module RMagick
         end
 
         # Save flags
-        $CFLAGS = ENV['CFLAGS'].to_s + ' ' + `pkg-config --cflags #{magick_package}`.chomp
-        $CPPFLAGS = ENV['CPPFLAGS'].to_s + ' ' + `pkg-config --cflags #{magick_package}`.chomp
-        $LDFLAGS = ENV['LDFLAGS'].to_s + ' ' + `pkg-config --libs #{magick_package}`.chomp
-        $LOCAL_LIBS = ENV['LIBS'].to_s + ' ' + `pkg-config --libs #{magick_package}`.chomp
+        $CFLAGS     = "#{ENV['CFLAGS']} "   + `pkg-config --cflags #{magick_package}`.chomp
+        $CPPFLAGS   = "#{ENV['CPPFLAGS']} " + `pkg-config --cflags #{magick_package}`.chomp
+        $LDFLAGS    = "#{ENV['LDFLAGS']} "  + `pkg-config --libs #{magick_package}`.chomp
+        $LOCAL_LIBS = "#{ENV['LIBS']} "     + `pkg-config --libs #{magick_package}`.chomp
 
         configure_archflags_for_osx(magick_package) if RUBY_PLATFORM =~ /darwin/ # osx
 
@@ -308,11 +308,11 @@ module RMagick
     end
 
     def assert_minimum_ruby_version!
-      unless checking_for("Ruby version >= #{MIN_RUBY_VERS}") do
+      supported = checking_for("Ruby version >= #{MIN_RUBY_VERS}") do
         Gem::Version.new(RUBY_VERSION) >= Gem::Version.new(MIN_RUBY_VERS)
       end
-        exit_failure "Can't install RMagick #{RMAGICK_VERS}. Ruby #{MIN_RUBY_VERS} or later required.\n"
-      end
+
+      exit_failure "Can't install RMagick #{RMAGICK_VERS}. Ruby #{MIN_RUBY_VERS} or later required.\n" unless supported
     end
 
     def assert_has_dev_libs!
