@@ -65,34 +65,19 @@ module RMagick
     def configure_compile_options
       # Magick-config is not available on Windows
       if RUBY_PLATFORM !~ /mswin|mingw/
-        magick_package = determine_imagemagick_package
-
-        $magick_version = `pkg-config #{magick_package} --modversion`[/^(\d+\.\d+\.\d+)/]
 
         check_multiple_imagemagick_versions
         check_partial_imagemagick_versions
 
-        # Ensure minimum ImageMagick version
-        # Check minimum ImageMagick version if possible
-        checking_for("outdated ImageMagick version (<= #{Magick::MIN_IM_VERSION})") do
-          Logging.message("Detected ImageMagick version: #{$magick_version}\n")
-
-          exit_failure "Can't install RMagick #{RMAGICK_VERS}. You must have ImageMagick #{Magick::MIN_IM_VERSION} or later.\n" if Gem::Version.new($magick_version) < Gem::Version.new(Magick::MIN_IM_VERSION)
-        end
-
         # Save flags
-        $CFLAGS     = "#{ENV['CFLAGS']} "   + `pkg-config --cflags #{magick_package}`.chomp
-        $CPPFLAGS   = "#{ENV['CPPFLAGS']} " + `pkg-config --cflags #{magick_package}`.chomp
-        $LDFLAGS    = "#{ENV['LDFLAGS']} "  + `pkg-config --libs #{magick_package}`.chomp
-        $LOCAL_LIBS = "#{ENV['LIBS']} "     + `pkg-config --libs #{magick_package}`.chomp
+        $CFLAGS     = "#{ENV['CFLAGS']} "   + `pkg-config --cflags #{$magick_package}`.chomp
+        $CPPFLAGS   = "#{ENV['CPPFLAGS']} " + `pkg-config --cflags #{$magick_package}`.chomp
+        $LDFLAGS    = "#{ENV['LDFLAGS']} "  + `pkg-config --libs #{$magick_package}`.chomp
+        $LOCAL_LIBS = "#{ENV['LIBS']} "     + `pkg-config --libs #{$magick_package}`.chomp
 
-        configure_archflags_for_osx(magick_package) if RUBY_PLATFORM =~ /darwin/ # osx
+        configure_archflags_for_osx($magick_package) if RUBY_PLATFORM =~ /darwin/ # osx
 
       elsif RUBY_PLATFORM =~ /mingw/ # mingw
-
-        `#{magick_command} -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
-        abort 'Unable to get ImageMagick version' unless Regexp.last_match(1)
-        $magick_version = Regexp.last_match(1)
 
         dir_paths = search_paths_for_library_for_windows
         $CPPFLAGS = %(-I"#{dir_paths[:include]}")
@@ -102,10 +87,6 @@ module RMagick
         have_library(im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_' : 'CORE_RL_magick_')
 
       else # mswin
-
-        `#{magick_command} -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
-        abort 'Unable to get ImageMagick version' unless Regexp.last_match(1)
-        $magick_version = Regexp.last_match(1)
 
         dir_paths = search_paths_for_library_for_windows
         $CPPFLAGS << %( -I"#{dir_paths[:include]}")
@@ -316,18 +297,35 @@ module RMagick
     end
 
     def assert_has_dev_libs!
-      return unless RUBY_PLATFORM !~ /mswin|mingw/
+      failure_message = <<~END_FAILURE
+      Can't install RMagick #{RMAGICK_VERS}.
+      Can't find the ImageMagick library or one of the dependent libraries.
+      Check the mkmf.log file for more detailed information.
+      END_FAILURE
 
-      unless find_executable('pkg-config')
-        exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find pkg-config in #{ENV['PATH']}\n"
+      if RUBY_PLATFORM !~ /mswin|mingw/
+        unless find_executable('pkg-config')
+          exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find pkg-config in #{ENV['PATH']}\n"
+        end
+
+        unless `pkg-config --libs MagickCore`[/\bl\s*(MagickCore|Magick)6?\b/]
+          exit_failure failure_message
+        end
+
+        $magick_package = determine_imagemagick_package
+        $magick_version = `pkg-config #{$magick_package} --modversion`[/^(\d+\.\d+\.\d+)/]
+      else
+        `#{magick_command} -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
+        $magick_version = Regexp.last_match(1)
+        exit_failure failure_message unless $magick_version
       end
 
-      unless `pkg-config --libs MagickCore`[/\bl\s*(MagickCore|Magick)6?\b/]
-        exit_failure <<~END_FAILURE
-        Can't install RMagick #{RMAGICK_VERS}.
-        Can't find the ImageMagick library or one of the dependent libraries.
-        Check the mkmf.log file for more detailed information.
-        END_FAILURE
+      # Ensure minimum ImageMagick version
+      # Check minimum ImageMagick version if possible
+      checking_for("outdated ImageMagick version (<= #{Magick::MIN_IM_VERSION})") do
+        Logging.message("Detected ImageMagick version: #{$magick_version}\n")
+
+        exit_failure "Can't install RMagick #{RMAGICK_VERS}. You must have ImageMagick #{Magick::MIN_IM_VERSION} or later.\n" if Gem::Version.new($magick_version) < Gem::Version.new(Magick::MIN_IM_VERSION)
       end
     end
 
