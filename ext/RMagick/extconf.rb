@@ -371,7 +371,7 @@ module RMagick
       $config_h = 'Makefile rmagick.h'
 
       # Strict build on CI. The warning in compiling will make error.
-      $CFLAGS << ' -Wall -Wextra -Werror -Wno-unused-parameter' if ENV['GITHUB_ACTION']
+      $CFLAGS << ' -Wall -Wextra -Wstrict-aliasing=2 -Wcast-align -Wpointer-arith -Werror -Wno-sign-compare -Wno-pointer-sign -Wno-unused-parameter' if ENV['GITHUB_ACTION']
 
       create_makefile('RMagick2')
       print_summary
