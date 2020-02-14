@@ -100,7 +100,7 @@ module RMagick
       $CFLAGS << (have_macro('__GNUC__') ? ' -std=gnu99' : ' -std=c99')
 
       # Strict build on CI. The warning in compiling will make error.
-      $CFLAGS << ' -Wall -Wextra -Werror' if ENV['GITHUB_ACTION']
+      $CFLAGS << ' -Wall -Wextra -Werror -Wno-unused-parameter' if ENV['GITHUB_ACTION']
     end
 
     # Test for a specific value in an enum type
