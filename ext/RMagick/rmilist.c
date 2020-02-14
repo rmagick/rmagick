@@ -213,8 +213,9 @@ VALUE ImageList_combine(int argc, VALUE *argv, VALUE self)
 {
 #if defined(IMAGEMAGICK_6)
     ChannelType channel;
+    ColorspaceType old_colorspace;
 #endif
-    ColorspaceType colorspace, old_colorspace;
+    ColorspaceType colorspace;
     long len;
     Image *images, *new_image;
     ExceptionInfo *exception;
