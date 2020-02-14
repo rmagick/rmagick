@@ -76,10 +76,10 @@ rm_enum_new(VALUE class, VALUE sym, VALUE val)
 static const char *
 rm_enum_to_cstr(VALUE enum_type)
 {
-   MagickEnum *magick_enum;
+    MagickEnum *magick_enum;
 
-   Data_Get_Struct(enum_type, MagickEnum, magick_enum);
-   return rb_id2name(magick_enum->id);
+    Data_Get_Struct(enum_type, MagickEnum, magick_enum);
+    return rb_id2name(magick_enum->id);
 }
 
 /**
@@ -104,13 +104,13 @@ static void rm_enum_free(void *magick_enum)
 VALUE
 Enum_alloc(VALUE class)
 {
-   MagickEnum *magick_enum;
-   VALUE enumr;
+    MagickEnum *magick_enum;
+    VALUE enumr;
 
-   enumr = Data_Make_Struct(class, MagickEnum, NULL, rm_enum_free, magick_enum);
-   rb_obj_freeze(enumr);
+    enumr = Data_Make_Struct(class, MagickEnum, NULL, rm_enum_free, magick_enum);
+    rb_obj_freeze(enumr);
 
-   return enumr;
+    return enumr;
 }
 
 
@@ -157,13 +157,13 @@ Enum_case_eq(VALUE self, VALUE other)
 VALUE
 Enum_initialize(VALUE self, VALUE sym, VALUE val)
 {
-   MagickEnum *magick_enum;
+    MagickEnum *magick_enum;
 
-   Data_Get_Struct(self, MagickEnum, magick_enum);
-   magick_enum->id = rb_to_id(sym); /* convert symbol to ID */
-   magick_enum->val = NUM2INT(val);
+    Data_Get_Struct(self, MagickEnum, magick_enum);
+    magick_enum->id = rb_to_id(sym); /* convert symbol to ID */
+    magick_enum->val = NUM2INT(val);
 
-   return self;
+    return self;
 }
 
 
@@ -179,10 +179,10 @@ Enum_initialize(VALUE self, VALUE sym, VALUE val)
 VALUE
 Enum_to_i(VALUE self)
 {
-   MagickEnum *magick_enum;
+    MagickEnum *magick_enum;
 
-   Data_Get_Struct(self, MagickEnum, magick_enum);
-   return INT2NUM(magick_enum->val);
+    Data_Get_Struct(self, MagickEnum, magick_enum);
+    return INT2NUM(magick_enum->val);
 }
 
 
@@ -239,25 +239,25 @@ Enum_spaceship(VALUE self, VALUE other)
 VALUE
 Enum_bitwise_or(VALUE self, VALUE another)
 {
-  VALUE new_enum, cls;
-  MagickEnum *this, *that, *new_enum_data;
+    VALUE new_enum, cls;
+    MagickEnum *this, *that, *new_enum_data;
 
-  cls = CLASS_OF(self);
-  if (CLASS_OF(another) != cls)
-  {
-    rb_raise(rb_eArgError, "Expected class %s but got %s", rb_class2name(cls), rb_class2name(CLASS_OF(another)));
-  }
+    cls = CLASS_OF(self);
+    if (CLASS_OF(another) != cls)
+    {
+        rb_raise(rb_eArgError, "Expected class %s but got %s", rb_class2name(cls), rb_class2name(CLASS_OF(another)));
+    }
 
-  new_enum = Enum_alloc(cls);
+    new_enum = Enum_alloc(cls);
 
-  Data_Get_Struct(self, MagickEnum, this);
-  Data_Get_Struct(another, MagickEnum, that);
-  Data_Get_Struct(new_enum, MagickEnum, new_enum_data);
+    Data_Get_Struct(self, MagickEnum, this);
+    Data_Get_Struct(another, MagickEnum, that);
+    Data_Get_Struct(new_enum, MagickEnum, new_enum_data);
 
-  new_enum_data->id = rb_to_id(rb_sprintf("%s|%s", rb_id2name(this->id), rb_id2name(that->id)));
-  new_enum_data->val = this->val | that->val;
+    new_enum_data->id = rb_to_id(rb_sprintf("%s|%s", rb_id2name(this->id), rb_id2name(that->id)));
+    new_enum_data->val = this->val | that->val;
 
-  return new_enum;
+    return new_enum;
 }
 
 /**
@@ -272,7 +272,7 @@ Enum_bitwise_or(VALUE self, VALUE another)
 VALUE
 Enum_to_s(VALUE self)
 {
-   return rb_str_new2(rm_enum_to_cstr(self));
+    return rb_str_new2(rm_enum_to_cstr(self));
 }
 
 
@@ -403,12 +403,12 @@ Enum_find(VALUE class, int val)
 
     for (x = 0; x < RARRAY_LEN(enumerators); x++)
     {
-       VALUE enumerator = rb_ary_entry(enumerators, x);
-       Data_Get_Struct(enumerator, MagickEnum, magick_enum);
-       if (magick_enum->val == val)
-       {
-           return enumerator;
-       }
+        VALUE enumerator = rb_ary_entry(enumerators, x);
+        Data_Get_Struct(enumerator, MagickEnum, magick_enum);
+        if (magick_enum->val == val)
+        {
+            return enumerator;
+        }
     }
 
     return Qnil;
