@@ -505,7 +505,35 @@ ComplianceType_name(ComplianceType *c)
 VALUE
 ComplianceType_find(ComplianceType compliance)
 {
-    return Enum_find(Class_ComplianceType, compliance);
+    ComplianceType c;
+
+    // Turn off undefined bits
+    if ((compliance & (SVGCompliance|X11Compliance|XPMCompliance))
+        == (SVGCompliance|X11Compliance|XPMCompliance))
+    {
+        c = SVGCompliance|X11Compliance|XPMCompliance;
+    }
+    else if (compliance & SVGCompliance)
+    {
+        c = SVGCompliance;
+    }
+    else if (compliance & X11Compliance)
+    {
+        c = X11Compliance;
+    }
+    else if (compliance & XPMCompliance)
+    {
+        c = XPMCompliance;
+    }
+    else if (compliance == NoCompliance)
+    {
+        c = NoCompliance;
+    }
+    else
+    {
+        c = UndefinedCompliance;
+    }
+    return Enum_find(Class_ComplianceType, c);
 }
 
 
