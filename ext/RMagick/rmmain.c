@@ -15,7 +15,7 @@
 #include "rmagick.h"
 
 #if defined(HAVE_SETMAGICKALIGNEDMEMORYMETHODS) && defined(HAVE_RB_GC_ADJUST_MEMORY_USAGE)
-    #if defined(HAVE_POSIX_MEMALIGN) || defined(_WIN32)
+    #if defined(HAVE_POSIX_MEMALIGN) || defined(HAVE__ALIGNED_MSIZE)
         #define USE_RM_ALIGNED_MALLOC 1
 
         #if defined(HAVE_MALLOC_USABLE_SIZE)
@@ -120,7 +120,7 @@ rm_aligned_malloc_size(void *ptr)
     return malloc_usable_size(ptr);
 #elif defined(HAVE_MALLOC_SIZE)
     return malloc_size(ptr);
-#elif defined(_WIN32)
+#elif defined(HAVE__ALIGNED_MSIZE)
 // Refered to https://github.com/ImageMagick/ImageMagick/blob/master/MagickCore/memory-private.h
 #define MAGICKCORE_SIZEOF_VOID_P 8
 #define CACHE_LINE_SIZE  (8 * MAGICKCORE_SIZEOF_VOID_P)
@@ -147,7 +147,7 @@ static void *rm_aligned_malloc(size_t size, size_t alignment)
     if (posix_memalign(&res, alignment, size) != 0) {
         return NULL;
     }
-#elif defined(_WIN32)
+#elif defined(HAVE__ALIGNED_MSIZE)
     res = _aligned_malloc(size, alignment);
 #endif
 
@@ -173,7 +173,7 @@ static void rm_aligned_free(void *ptr)
 
 #if defined(HAVE_POSIX_MEMALIGN)
     free(ptr);
-#elif defined(_WIN32)
+#elif defined(HAVE__ALIGNED_MSIZE)
     _aligned_free(ptr);
 #endif
 }

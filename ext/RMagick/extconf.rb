@@ -333,10 +333,11 @@ module RMagick
       ruby_api = [
         'rb_gc_adjust_memory_usage' # Ruby 2.4.0
       ]
-      posix_api = %w[
+      memory_api = %w[
         posix_memalign
         malloc_usable_size
         malloc_size
+        _aligned_msize
       ]
       imagemagick_api = [
         'GetImageChannelEntropy', # 6.9.0-0
@@ -344,8 +345,7 @@ module RMagick
         'SetMagickAlignedMemoryMethods' # 7.0.9-0
       ]
 
-      check_api = ruby_api + imagemagick_api
-      check_api += posix_api unless RUBY_PLATFORM =~ /mswin|mingw/
+      check_api = ruby_api + memory_api + imagemagick_api
       check_api.each do |func|
         have_func(func, headers)
       end
