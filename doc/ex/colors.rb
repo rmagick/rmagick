@@ -20,7 +20,7 @@ colors do |c|
       self.border_color = 'gray50'
     end
     rgb  = format('#%02x%02x%02x', c.color.red & 0xff, c.color.green & 0xff, c.color.blue & 0xff)
-    rgb += format('%02x', c.color.opacity & 0xff) if c.color.opacity != 0
+    rgb += format('%02x', c.color.alpha & 0xff) if c.color.alpha != Magick::QuantumRange
     m = /(.*?)Compliance/.match c.compliance.to_s
     colors.cur_image['Label'] = "#{c.name} (#{rgb}) #{m[1]}"
   end
