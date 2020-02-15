@@ -172,14 +172,32 @@ END_HTML_TAIL
 end
 
 require 'rake/extensiontask'
-require 'rspec/core/rake_task'
-RSpec::Core::RakeTask.new(:spec)
 
 Rake::ExtensionTask.new('RMagick2') do |ext|
   ext.ext_dir = 'ext/RMagick'
 end
 
-task spec: :compile
+task spec: :compile do
+  require 'timeout'
+
+  pid = nil
+  try_count = 0
+  begin
+    puts "\e[33mStart running spec\e[0m"
+
+    try_count += 1
+    Timeout.timeout(180) do
+      pid = Process.spawn("bundle exec rspec")
+      Process.wait(pid)
+    end
+  rescue Timeout::Error
+    puts "\e[31mTimeout error\e[0m"
+
+    # As safe retry, it need to kill a process which is running "bundle exec rspec" because it may not be dead.
+    Process.kill(:SIGKILL, pid)
+    retry if try_count < 3
+  end
+end
 
 if ENV['STYLE_CHECKS']
   require 'rubocop/rake_task'
