@@ -20,12 +20,6 @@ Layout/ClassStructure:
     - 'lib/rvg/rvg.rb'
     - 'lib/rvg/to_c.rb'
 
-# Offense count: 1
-# Cop supports --auto-correct.
-Layout/HeredocArgumentClosingParenthesis:
-  Exclude:
-    - 'doc/ex/arcs01.rb'
-
 # Offense count: 16
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
