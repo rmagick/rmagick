@@ -5,11 +5,11 @@
 require 'rmagick'
 include Magick
 
-puts <<END_INFO
+puts <<~END_INFO
 
-This example demonstrates the export_pixels and import_pixels methods
-by copying an image one row at a time. The result is an copy that
-is identical to the original.
+  This example demonstrates the export_pixels and import_pixels methods
+  by copying an image one row at a time. The result is an copy that
+  is identical to the original.
 
 END_INFO
 

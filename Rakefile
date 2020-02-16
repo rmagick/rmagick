@@ -121,21 +121,21 @@ namespace :legacy do
   task README => 'README.txt' do
     puts "writing #{README}"
     File.open(README, 'w') do |html|
-      html.write <<END_HTML_HEAD
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-  <head>
-    <title>RMagick #{Magick::VERSION} README</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-    <meta name="GENERATOR" content="RedCloth">
-  </head>
-  <body>
-END_HTML_HEAD
+      html.write <<~END_HTML_HEAD
+        <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+        <html>
+          <head>
+            <title>RMagick #{Magick::VERSION} README</title>
+            <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+            <meta name="GENERATOR" content="RedCloth">
+          </head>
+          <body>
+      END_HTML_HEAD
       html.write File.readlines('README.txt')
-      html.write <<END_HTML_TAIL
-  </body>
-</html>
-END_HTML_TAIL
+      html.write <<~END_HTML_TAIL
+          </body>
+        </html>
+      END_HTML_TAIL
     end
   end
 

@@ -4,10 +4,10 @@
 require 'rmagick'
 include Magick
 
-puts <<END_INFO
-Demonstrate the rotation= attribute in the Draw class
-by producing an animated image. View the output image
-by entering the command: animate rotating_text.miff
+puts <<~END_INFO
+  Demonstrate the rotation= attribute in the Draw class
+  by producing an animated image. View the output image
+  by entering the command: animate rotating_text.miff
 END_INFO
 
 text = Draw.new

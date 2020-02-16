@@ -7,11 +7,11 @@
 require 'rmagick'
 include Magick
 
-puts <<END_INFO
+puts <<~END_INFO
 
-This example demonstrates the PATTERN: image format, which is
-new in ImageMagick 5.5.7. Specify the name of any of the
-supported patterns as an argument. For example, try "checkerboard".
+  This example demonstrates the PATTERN: image format, which is
+  new in ImageMagick 5.5.7. Specify the name of any of the
+  supported patterns as an argument. For example, try "checkerboard".
 
 END_INFO
 
