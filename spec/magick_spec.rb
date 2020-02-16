@@ -1,9 +1,7 @@
 RSpec.describe Magick do
   describe '::Magick_features' do
     it 'works' do
-      res = nil
-      expect { res = Magick::Magick_features }.not_to raise_error
-      expect(res).to be_instance_of(String)
+      expect(Magick::Magick_features).to be_instance_of(String)
     end
   end
 

@@ -3,9 +3,9 @@ RSpec.describe Magick::Image, '#mask' do
     img1 = described_class.new(20, 20)
     cimg = described_class.new(10, 10)
 
-    expect { img1.mask(cimg) }.not_to raise_error
-    res = nil
-    expect { res = img1.mask }.not_to raise_error
+    img1.mask(cimg)
+
+    res = img1.mask
     expect(res).not_to be(nil)
     expect(res).not_to be(cimg)
     expect(res.columns).to eq(20)
