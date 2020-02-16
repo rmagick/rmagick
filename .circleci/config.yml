@@ -1,0 +1,223 @@
+# Ruby CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-ruby/ for more details
+#
+version: 2
+
+ruby-2.3: &ruby-23
+  docker:
+    - image: circleci/ruby:2.3.8-stretch
+
+ruby-2.4: &ruby-24
+  docker:
+    - image: circleci/ruby:2.4.9-stretch
+
+ruby-2.5: &ruby-25
+  docker:
+    - image: circleci/ruby:2.5.7-stretch
+
+ruby-2.6: &ruby-26
+  docker:
+    - image: circleci/ruby:2.6.5-stretch
+
+ruby-2.7: &ruby-27
+  docker:
+    - image: circleci/ruby:2.7.0-stretch
+
+imagemagick-6.7: &imagemagick-67
+  environment:
+    IMAGEMAGICK_VERSION: 6.7.7-10
+
+imagemagick-6.8: &imagemagick-68
+  environment:
+    IMAGEMAGICK_VERSION: 6.8.9-10
+
+imagemagick-6.9: &imagemagick-69
+  environment:
+    IMAGEMAGICK_VERSION: 6.9.10-90
+
+imagemagick-7.0: &imagemagick-70
+  environment:
+    IMAGEMAGICK_VERSION: 7.0.9-20
+
+shared: &shared
+  working_directory: ~/repo
+
+  steps:
+    - checkout
+
+    - run:
+        name: setup linux
+        command: |
+          bash before_install_linux.sh
+
+    - run:
+        name: install dependencies
+        command: |
+          bundle install --jobs=4 --retry=3 --path vendor/bundle
+
+    - save_cache:
+        paths:
+          - ./vendor/bundle
+          - ./ccache
+        key: v1-dependencies-{{ checksum "Gemfile.lock" }}
+
+    - run:
+        name: run specs
+        command: |
+          bundle exec rake
+
+    - run:
+        name: run specs
+        command: |
+          mkdir /tmp/test-results
+          TEST_FILES="$(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)"
+
+          bundle exec rspec --format progress \
+                          --format RspecJunitFormatter \
+                          --out /tmp/test-results/rspec.xml \
+                          --format progress \
+                          $TEST_FILES
+
+    # collect reports
+    - store_test_results:
+        path: /tmp/test-results
+    - store_artifacts:
+        path: /tmp/test-results
+        destination: test-results
+
+lints: &lints
+  environment:
+    STYLE_CHECKS: true
+
+  working_directory: ~/repo
+
+  steps:
+    - checkout
+
+    - run:
+        name: install dependencies
+        command: |
+          bundle install --jobs=4 --retry=3 --path vendor/bundle
+
+    - save_cache:
+        paths:
+          - ./vendor/bundle
+          - ./ccache
+        key: v1-dependencies-{{ checksum "Gemfile.lock" }}
+
+    - run:
+        name: run linters
+        command: |
+          bundle exec rake
+
+jobs:
+  build_23_lints:
+    <<: *ruby-23
+    <<: *lints
+  build_23_67:
+    <<: *ruby-23
+    <<: *imagemagick-67
+    <<: *shared
+  build_23_68:
+    <<: *ruby-23
+    <<: *imagemagick-68
+    <<: *shared
+  build_23_69:
+    <<: *ruby-23
+    <<: *imagemagick-69
+    <<: *shared
+  build_23_70:
+    <<: *ruby-23
+    <<: *imagemagick-70
+    <<: *shared
+  build_24_67:
+    <<: *ruby-23
+    <<: *imagemagick-67
+    <<: *shared
+  build_24_68:
+    <<: *ruby-23
+    <<: *imagemagick-68
+    <<: *shared
+  build_24_69:
+    <<: *ruby-23
+    <<: *imagemagick-69
+    <<: *shared
+  build_24_70:
+    <<: *ruby-23
+    <<: *imagemagick-70
+    <<: *shared
+  build_25_67:
+    <<: *ruby-23
+    <<: *imagemagick-67
+    <<: *shared
+  build_25_68:
+    <<: *ruby-23
+    <<: *imagemagick-68
+    <<: *shared
+  build_25_69:
+    <<: *ruby-23
+    <<: *imagemagick-69
+    <<: *shared
+  build_25_70:
+    <<: *ruby-23
+    <<: *imagemagick-70
+    <<: *shared
+  build_26_67:
+    <<: *ruby-23
+    <<: *imagemagick-67
+    <<: *shared
+  build_26_68:
+    <<: *ruby-23
+    <<: *imagemagick-68
+    <<: *shared
+  build_26_69:
+    <<: *ruby-23
+    <<: *imagemagick-69
+    <<: *shared
+  build_26_70:
+    <<: *ruby-23
+    <<: *imagemagick-70
+    <<: *shared
+  build_27_67:
+    <<: *ruby-23
+    <<: *imagemagick-67
+    <<: *shared
+  build_27_68:
+    <<: *ruby-23
+    <<: *imagemagick-68
+    <<: *shared
+  build_27_69:
+    <<: *ruby-23
+    <<: *imagemagick-69
+    <<: *shared
+  build_27_70:
+    <<: *ruby-23
+    <<: *imagemagick-70
+    <<: *shared
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build_23_lints
+      - build_23_67
+      - build_23_68
+      - build_23_69
+      - build_23_70
+      - build_24_67
+      - build_24_68
+      - build_24_69
+      - build_24_70
+      - build_25_67
+      - build_25_68
+      - build_25_69
+      - build_25_70
+      - build_26_67
+      - build_26_68
+      - build_26_69
+      - build_26_70
+      - build_27_67
+      - build_27_68
+      - build_27_69
+      - build_27_70
