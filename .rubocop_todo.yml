@@ -80,11 +80,6 @@ Lint/RescueException:
     - 'lib/rmagick_internal.rb'
 
 # Offense count: 1
-Lint/ReturnInVoidContext:
-  Exclude:
-    - 'lib/rmagick_internal.rb'
-
-# Offense count: 1
 Lint/UselessComparison:
   Exclude:
     - 'spec/rmagick/enum/case_equality_spec.rb'

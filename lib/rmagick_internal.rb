@@ -1294,7 +1294,7 @@ module Magick
       if n.nil?
         Kernel.raise IndexError, 'scene number out of bounds' unless @images.length.zero?
         @scene = nil
-        return @scene
+        return
       elsif @images.length.zero?
         Kernel.raise IndexError, 'scene number out of bounds'
       end
