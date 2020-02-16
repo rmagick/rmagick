@@ -30,7 +30,6 @@ module Magick
 
         @primitive = :circle
         @args = [cx, cy, cx + r, cy]
-        self
       end
     end # class Circle
 
