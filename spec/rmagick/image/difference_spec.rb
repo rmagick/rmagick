@@ -1,6 +1,4 @@
 RSpec.describe Magick::Image, '#difference' do
-  before { @img = described_class.new(20, 20) }
-
   it 'works' do
     img1 = described_class.read(IMAGES_DIR + '/Button_0.gif').first
     img2 = described_class.read(IMAGES_DIR + '/Button_1.gif').first

@@ -1,19 +1,17 @@
 RSpec.describe Magick::Draw, '#font_stretch' do
-  before do
-    @draw = described_class.new
-    @img = Magick::Image.new(200, 200)
-  end
-
   it 'works' do
+    draw1 = described_class.new
+    img = Magick::Image.new(200, 200)
+
     Magick::StretchType.values do |stretch|
       next if stretch == Magick::AnyStretch
 
-      draw = described_class.new
-      draw.font_stretch(stretch)
-      draw.text(50, 50, 'Hello world')
-      expect { draw.draw(@img) }.not_to raise_error
+      draw2 = described_class.new
+      draw2.font_stretch(stretch)
+      draw2.text(50, 50, 'Hello world')
+      expect { draw2.draw(img) }.not_to raise_error
     end
 
-    expect { @draw.font_stretch('xxx') }.to raise_error(ArgumentError)
+    expect { draw1.font_stretch('xxx') }.to raise_error(ArgumentError)
   end
 end

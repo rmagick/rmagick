@@ -1,11 +1,9 @@
 RSpec.describe Magick::Image, "#colormap" do
-  before do
-    @img = described_class.new(20, 20)
-  end
-
   it "works" do
-    # IndexError b/c @img is DirectClass
-    expect { @img.colormap(0) }.to raise_error(IndexError)
+    img = described_class.new(20, 20)
+
+    # IndexError b/c img is DirectClass
+    expect { img.colormap(0) }.to raise_error(IndexError)
     # Read PseudoClass image
     pc_img = described_class.read(IMAGES_DIR + '/Button_0.gif').first
     expect { pc_img.colormap(0) }.not_to raise_error

@@ -1,13 +1,11 @@
 RSpec.describe Magick::ImageList, '#reverse!' do
-  before do
-    @list = described_class.new(*FILES[0..9])
-  end
-
   it 'works' do
-    list2 = @list
-    cur = @list.cur_image
-    expect { @list.reverse! }.not_to raise_error
-    expect(@list).to be(list2)
-    expect(@list.cur_image).to be(cur)
+    list = described_class.new(*FILES[0..9])
+
+    cur = list.cur_image
+    list2 = nil
+    expect { list2 = list.reverse! }.not_to raise_error
+    expect(list2).to be(list)
+    expect(list.cur_image).to be(cur)
   end
 end

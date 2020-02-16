@@ -1,6 +1,4 @@
 RSpec.describe Magick::Image, '#function_channel' do
-  before { @img = described_class.new(20, 20) }
-
   it 'works' do
     img = described_class.read('gradient:') { self.size = '20x600' }
     img = img.first

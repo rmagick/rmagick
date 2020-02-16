@@ -1,9 +1,7 @@
 RSpec.describe Magick::Pixel, '#from_hsla' do
-  before do
-    @pixel = described_class.from_color('brown')
-  end
-
   it 'works' do
+    pixel = described_class.from_color('brown')
+
     expect { described_class.from_hsla(127, 50, 50) }.not_to raise_error
     expect { described_class.from_hsla(127, 50, 50, 0) }.not_to raise_error
     expect { described_class.from_hsla('99%', '100%', '100%', '100%') }.not_to raise_error
@@ -22,7 +20,7 @@ RSpec.describe Magick::Pixel, '#from_hsla' do
     expect { described_class.from_hsla(360, 0, 0) }.to raise_error(RangeError)
     expect { described_class.from_hsla(0, 256, 0) }.to raise_error(RangeError)
     expect { described_class.from_hsla(0, 0, 256) }.to raise_error(RangeError)
-    expect { @pixel.to_hsla }.not_to raise_error
+    expect { pixel.to_hsla }.not_to raise_error
 
     args = [200, 125.125, 250.5, 0.6]
     px = described_class.from_hsla(*args)

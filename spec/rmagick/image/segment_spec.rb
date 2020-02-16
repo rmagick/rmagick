@@ -1,12 +1,9 @@
 RSpec.describe Magick::Image, '#segment' do
-  before do
-    @img = described_class.new(20, 20)
-    @p = described_class.read(IMAGE_WITH_PROFILE).first.color_profile
-  end
-
   it 'works' do
+    img = described_class.new(20, 20)
+
     expect do
-      res = @img.segment
+      res = img.segment
       expect(res).to be_instance_of(described_class)
     end.not_to raise_error
 
@@ -24,16 +21,16 @@ RSpec.describe Magick::Image, '#segment' do
       Magick::Rec709YCbCrColorspace,
       Magick::LogColorspace
     ]).each do |cs|
-      expect { @img.segment(cs) }.not_to raise_error
+      expect { img.segment(cs) }.not_to raise_error
     end
 
-    expect { @img.segment(Magick::RGBColorspace, 2.0) }.not_to raise_error
-    expect { @img.segment(Magick::RGBColorspace, 2.0, 2.0) }.not_to raise_error
-    expect { @img.segment(Magick::RGBColorspace, 2.0, 2.0, false) }.not_to raise_error
+    expect { img.segment(Magick::RGBColorspace, 2.0) }.not_to raise_error
+    expect { img.segment(Magick::RGBColorspace, 2.0, 2.0) }.not_to raise_error
+    expect { img.segment(Magick::RGBColorspace, 2.0, 2.0, false) }.not_to raise_error
 
-    expect { @img.segment(Magick::RGBColorspace, 2.0, 2.0, false, 2) }.to raise_error(ArgumentError)
-    expect { @img.segment(2) }.to raise_error(TypeError)
-    expect { @img.segment(Magick::RGBColorspace, 'x') }.to raise_error(TypeError)
-    expect { @img.segment(Magick::RGBColorspace, 2.0, 'x') }.to raise_error(TypeError)
+    expect { img.segment(Magick::RGBColorspace, 2.0, 2.0, false, 2) }.to raise_error(ArgumentError)
+    expect { img.segment(2) }.to raise_error(TypeError)
+    expect { img.segment(Magick::RGBColorspace, 'x') }.to raise_error(TypeError)
+    expect { img.segment(Magick::RGBColorspace, 2.0, 'x') }.to raise_error(TypeError)
   end
 end

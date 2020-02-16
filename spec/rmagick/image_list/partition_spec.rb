@@ -1,13 +1,11 @@
 RSpec.describe Magick::ImageList, '#partition' do
-  before do
-    @list = described_class.new(*FILES[0..9])
-  end
-
   it 'works' do
+    list = described_class.new(*FILES[0..9])
+
     a = nil
     n = -1
     expect do
-      a = @list.partition do
+      a = list.partition do
         n += 1
         (n & 1).zero?
       end

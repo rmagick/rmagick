@@ -1,12 +1,12 @@
 RSpec.describe Magick::Image, '#each_profile' do
-  before { @img = described_class.new(20, 20) }
-
   it 'works' do
-    expect(@img.each_profile {}).to be(nil)
+    img = described_class.new(20, 20)
 
-    @img.iptc_profile = 'test profile'
+    expect(img.each_profile {}).to be(nil)
+
+    img.iptc_profile = 'test profile'
     expect do
-      @img.each_profile do |name, value|
+      img.each_profile do |name, value|
         expect(name).to eq('iptc')
         expect(value).to eq('test profile')
       end

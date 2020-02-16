@@ -1,13 +1,11 @@
 RSpec.describe Magick::Draw, '#clip_path' do
-  before do
-    @draw = described_class.new
-    @img = Magick::Image.new(200, 200)
-  end
-
   it 'works' do
-    @draw.clip_path('test')
-    expect(@draw.inspect).to eq('clip-path test')
-    expect { @draw.draw(@img) }.not_to raise_error
+    draw = described_class.new
+    img = Magick::Image.new(200, 200)
+
+    draw.clip_path('test')
+    expect(draw.inspect).to eq('clip-path test')
+    expect { draw.draw(img) }.not_to raise_error
   end
 
   it 'works' do

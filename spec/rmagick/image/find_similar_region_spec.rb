@@ -1,9 +1,9 @@
 RSpec.describe Magick::Image, '#find_similar_region' do
-  before { @img = described_class.new(20, 20) }
-
   it 'works' do
+    img = described_class.new(20, 20)
     girl = described_class.read(IMAGES_DIR + '/Flower_Hat.jpg').first
     region = girl.crop(10, 10, 50, 50)
+
     expect do
       x, y = girl.find_similar_region(region)
       expect(x).not_to be(nil)
@@ -30,7 +30,7 @@ RSpec.describe Magick::Image, '#find_similar_region' do
       expect(y).to eq(10)
     end.not_to raise_error
 
-    x = girl.find_similar_region(@img)
+    x = girl.find_similar_region(img)
     expect(x).to be(nil)
 
     expect { girl.find_similar_region(region, 10, 10, 10) }.to raise_error(ArgumentError)

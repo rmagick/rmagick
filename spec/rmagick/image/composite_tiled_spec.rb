@@ -1,6 +1,4 @@
 RSpec.describe Magick::Image, '#composite_tiled' do
-  before { @img = described_class.new(20, 20) }
-
   it 'works' do
     bg = described_class.new(200, 200)
     fg = described_class.new(50, 100) { self.background_color = 'black' }

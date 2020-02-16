@@ -1,6 +1,4 @@
 RSpec.describe Magick::Image, '#destroy!' do
-  before { @img = described_class.new(20, 20) }
-
   after do
     GC.enable
     Magick.trace_proc = nil
