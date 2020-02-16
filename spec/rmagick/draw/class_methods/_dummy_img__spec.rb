@@ -7,9 +7,9 @@ module Magick
 end
 
 RSpec.describe Magick::Draw, '._dummy_img_' do
-  let(:draw) { described_class.new }
-
   it 'works' do
+    draw = described_class.new
+
     # cause it to become defined. save the object id.
     draw.get_type_metrics('ABCDEF')
     dummy = nil

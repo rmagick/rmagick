@@ -1,14 +1,15 @@
 RSpec.describe Magick::Image, '#constitute' do
-  let(:img) { described_class.read(IMAGES_DIR + '/Button_0.gif').first }
-  let(:pixels) { img.export_pixels(0, 0, img.columns, img.rows, 'RGBA') }
-
   it 'returns an equivalent image to the given pixels' do
+    img = described_class.read(IMAGES_DIR + '/Button_0.gif').first
+    pixels = img.export_pixels(0, 0, img.columns, img.rows, 'RGBA')
+
     result = described_class.constitute(img.columns, img.rows, 'RGBA', pixels)
 
     expect(result.export_pixels).to eq(img.export_pixels)
   end
 
   it 'allows constituting with RGBA quantum (integer) pixel values' do
+    img = described_class.read(IMAGES_DIR + '/Button_0.gif').first
     # [R, G, B, A, R, G, B, A, ...]
     pixels = [1] * 4 * img.columns * img.rows
 
@@ -19,6 +20,7 @@ RSpec.describe Magick::Image, '#constitute' do
   end
 
   it 'allows constituting with RGBA scale (float) pixel values' do
+    img = described_class.read(IMAGES_DIR + '/Button_0.gif').first
     # [R, G, B, A, R, G, B, A, ...]
     pixels = [1.0] * 4 * img.columns * img.rows
 
@@ -29,6 +31,7 @@ RSpec.describe Magick::Image, '#constitute' do
   end
 
   it 'raises an error when invalid RGBA pixel values are given' do
+    img = described_class.read(IMAGES_DIR + '/Button_0.gif').first
     pixels = ['x'] * (4 * img.columns * img.rows)
     expected_message = 'element 0 in pixel array is String, must be numeric'
 
@@ -37,6 +40,8 @@ RSpec.describe Magick::Image, '#constitute' do
   end
 
   it 'raises an error when 0 is passed for columns' do
+    img = described_class.read(IMAGES_DIR + '/Button_0.gif').first
+    pixels = img.export_pixels(0, 0, img.columns, img.rows, 'RGBA')
     expected_message = 'width and height must be greater than zero'
 
     expect { described_class.constitute(0, img.rows, 'RGBA', pixels) }
@@ -44,6 +49,8 @@ RSpec.describe Magick::Image, '#constitute' do
   end
 
   it 'raises an error when a negative number is passed for columns' do
+    img = described_class.read(IMAGES_DIR + '/Button_0.gif').first
+    pixels = img.export_pixels(0, 0, img.columns, img.rows, 'RGBA')
     expected_message = 'width and height must be greater than zero'
 
     expect { described_class.constitute(-3, img.rows, 'RGBA', pixels) }
@@ -51,6 +58,8 @@ RSpec.describe Magick::Image, '#constitute' do
   end
 
   it 'raises an error when 0 is passed for rows' do
+    img = described_class.read(IMAGES_DIR + '/Button_0.gif').first
+    pixels = img.export_pixels(0, 0, img.columns, img.rows, 'RGBA')
     expected_message = 'width and height must be greater than zero'
 
     expect { described_class.constitute(img.columns, 0, 'RGBA', pixels) }
@@ -58,6 +67,8 @@ RSpec.describe Magick::Image, '#constitute' do
   end
 
   it 'raises an error when a negative number is passed for rows' do
+    img = described_class.read(IMAGES_DIR + '/Button_0.gif').first
+    pixels = img.export_pixels(0, 0, img.columns, img.rows, 'RGBA')
     expected_message = 'width and height must be greater than zero'
 
     expect { described_class.constitute(img.columns, -3, 'RGBA', pixels) }
@@ -65,6 +76,8 @@ RSpec.describe Magick::Image, '#constitute' do
   end
 
   it 'raises an error given the wrong number of array elements' do
+    img = described_class.read(IMAGES_DIR + '/Button_0.gif').first
+    pixels = img.export_pixels(0, 0, img.columns, img.rows, 'RGBA')
     expected_message = 'wrong number of array elements (60960 for 72)'
 
     expect { described_class.constitute(3, 6, 'RGBA', pixels) }

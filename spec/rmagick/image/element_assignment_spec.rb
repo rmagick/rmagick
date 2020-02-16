@@ -1,7 +1,7 @@
 RSpec.describe Magick::Image, '#[]=' do
-  let(:img) { described_class.new(20, 20) }
-
   it 'allows assignment of arbitrary properties' do
+    img = described_class.new(20, 20)
+
     img['comment'] = 'str_1'
     img['label'] = 'str_2'
     img['jpeg:sampling-factor'] = '2x1,1x1,1x1'
@@ -12,6 +12,8 @@ RSpec.describe Magick::Image, '#[]=' do
   end
 
   it 'raises an error when trying to assign properties to a frozen image' do
+    img = described_class.new(20, 20)
+
     img.freeze
 
     expect { img['comment'] = 'str_4' }.to raise_error(RuntimeError)
