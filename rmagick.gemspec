@@ -17,11 +17,9 @@ Gem::Specification.new do |s|
   file_exclusion_regex = %r{\A(doc|benchmarks|examples|spec|lib/rvg/to_c.rb)}
   files         = tracked_files.reject { |file| file[file_exclusion_regex] }
   test_files    = files.grep(%r{^(test|spec|features)/})
-  executables   = files.grep(%r{^bin/}).map { |f| File.basename(f) }
 
   s.files                       = files
   s.test_files                  = test_files
-  s.executables                 = executables
   s.require_paths << 'ext' << 'deprecated'
 
   s.extensions = %w[ext/RMagick/extconf.rb]
