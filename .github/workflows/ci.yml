@@ -75,6 +75,7 @@ jobs:
   test-windows:
     runs-on: windows-latest
     timeout-minutes: 10
+    needs: [test-linux]
     strategy:
       matrix:
         ruby-version: [2.3, 2.4, 2.5, 2.6]
