@@ -28,6 +28,7 @@ RSpec.describe Magick::Image, '#read' do
 
   describe 'issue #483' do
     it 'can read PDF file' do
+      skip if RUBY_PLATFORM =~ /mswin|mingw/
       expect { described_class.read(File.join(FIXTURE_PATH, 'sample.pdf')) }.not_to raise_error
     end
   end
