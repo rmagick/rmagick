@@ -8,7 +8,7 @@ RSpec.describe Magick::ImageList, '#<<' do
     list2 << list[8]
     list2 << list[9]
 
-    list2.each { |img| list << img }
+    list2.each { |image| list << image }
     expect(list.length).to eq(15)
     expect(list.scene).to eq(14)
 

@@ -1,11 +1,11 @@
 RSpec.describe Magick::Image, '#rotate!' do
   it 'works' do
-    img = described_class.new(20, 20)
+    image = described_class.new(20, 20)
 
-    res = img.rotate!(45)
-    expect(res).to be(img)
+    res = image.rotate!(45)
+    expect(res).to be(image)
 
-    img.freeze
-    expect { img.rotate!(45) }.to raise_error(FreezeError)
+    image.freeze
+    expect { image.rotate!(45) }.to raise_error(FreezeError)
   end
 end

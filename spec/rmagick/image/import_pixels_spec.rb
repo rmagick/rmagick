@@ -1,47 +1,47 @@
 RSpec.describe Magick::Image, '#import_pixels' do
   def import(image, pixels, type, expected = 0.0)
-    img = Magick::Image.new(image.columns, image.rows)
-    img.import_pixels(0, 0, image.columns, image.rows, 'RGB', pixels, type)
-    _, diff = img.compare_channel(image, Magick::MeanAbsoluteErrorMetric)
+    image = Magick::Image.new(image.columns, image.rows)
+    image.import_pixels(0, 0, image.columns, image.rows, 'RGB', pixels, type)
+    _, diff = image.compare_channel(image, Magick::MeanAbsoluteErrorMetric)
     expect(diff).to be_within(0.1).of(expected)
   end
 
   it 'works' do
-    img = described_class.new(20, 20)
-    pixels = img.export_pixels(0, 0, img.columns, 1, 'RGB')
+    image = described_class.new(20, 20)
+    pixels = image.export_pixels(0, 0, image.columns, 1, 'RGB')
 
-    res = img.import_pixels(0, 0, img.columns, 1, 'RGB', pixels)
-    expect(res).to be(img)
+    res = image.import_pixels(0, 0, image.columns, 1, 'RGB', pixels)
+    expect(res).to be(image)
 
-    expect { img.import_pixels }.to raise_error(ArgumentError)
-    expect { img.import_pixels(0) }.to raise_error(ArgumentError)
-    expect { img.import_pixels(0, 0) }.to raise_error(ArgumentError)
-    expect { img.import_pixels(0, 0, img.columns) }.to raise_error(ArgumentError)
-    expect { img.import_pixels(0, 0, img.columns, 1) }.to raise_error(ArgumentError)
-    expect { img.import_pixels(0, 0, img.columns, 1, 'RGB') }.to raise_error(ArgumentError)
-    expect { img.import_pixels('x', 0, img.columns, 1, 'RGB', pixels) }.to raise_error(TypeError)
-    expect { img.import_pixels(0, 'x', img.columns, 1, 'RGB', pixels) }.to raise_error(TypeError)
-    expect { img.import_pixels(0, 0, 'x', 1, 'RGB', pixels) }.to raise_error(TypeError)
-    expect { img.import_pixels(0, 0, img.columns, 'x', 'RGB', pixels) }.to raise_error(TypeError)
-    expect { img.import_pixels(0, 0, img.columns, 1, [2], pixels) }.to raise_error(TypeError)
-    expect { img.import_pixels(-1, 0, img.columns, 1, 'RGB', pixels) }.to raise_error(ArgumentError)
-    expect { img.import_pixels(0, -1, img.columns, 1, 'RGB', pixels) }.to raise_error(ArgumentError)
-    expect { img.import_pixels(0, 0, -1, 1, 'RGB', pixels) }.to raise_error(ArgumentError)
-    expect { img.import_pixels(0, 0, img.columns, -1, 'RGB', pixels) }.to raise_error(ArgumentError)
+    expect { image.import_pixels }.to raise_error(ArgumentError)
+    expect { image.import_pixels(0) }.to raise_error(ArgumentError)
+    expect { image.import_pixels(0, 0) }.to raise_error(ArgumentError)
+    expect { image.import_pixels(0, 0, image.columns) }.to raise_error(ArgumentError)
+    expect { image.import_pixels(0, 0, image.columns, 1) }.to raise_error(ArgumentError)
+    expect { image.import_pixels(0, 0, image.columns, 1, 'RGB') }.to raise_error(ArgumentError)
+    expect { image.import_pixels('x', 0, image.columns, 1, 'RGB', pixels) }.to raise_error(TypeError)
+    expect { image.import_pixels(0, 'x', image.columns, 1, 'RGB', pixels) }.to raise_error(TypeError)
+    expect { image.import_pixels(0, 0, 'x', 1, 'RGB', pixels) }.to raise_error(TypeError)
+    expect { image.import_pixels(0, 0, image.columns, 'x', 'RGB', pixels) }.to raise_error(TypeError)
+    expect { image.import_pixels(0, 0, image.columns, 1, [2], pixels) }.to raise_error(TypeError)
+    expect { image.import_pixels(-1, 0, image.columns, 1, 'RGB', pixels) }.to raise_error(ArgumentError)
+    expect { image.import_pixels(0, -1, image.columns, 1, 'RGB', pixels) }.to raise_error(ArgumentError)
+    expect { image.import_pixels(0, 0, -1, 1, 'RGB', pixels) }.to raise_error(ArgumentError)
+    expect { image.import_pixels(0, 0, image.columns, -1, 'RGB', pixels) }.to raise_error(ArgumentError)
 
     # pixel array is too small
-    expect { img.import_pixels(0, 0, img.columns, 2, 'RGB', pixels) }.to raise_error(ArgumentError)
+    expect { image.import_pixels(0, 0, image.columns, 2, 'RGB', pixels) }.to raise_error(ArgumentError)
     # pixel array doesn't contain a multiple of the map length
     pixels.shift
-    expect { img.import_pixels(0, 0, img.columns, 1, 'RGB', pixels) }.to raise_error(ArgumentError)
+    expect { image.import_pixels(0, 0, image.columns, 1, 'RGB', pixels) }.to raise_error(ArgumentError)
   end
 
   it 'raises an error given UndefinedPixel' do
-    img = described_class.new(20, 20)
-    pixels = img.export_pixels(0, 0, 20, 20, 'RGB').pack('D*')
+    image = described_class.new(20, 20)
+    pixels = image.export_pixels(0, 0, 20, 20, 'RGB').pack('D*')
 
     expect do
-      img.import_pixels(0, 0, 20, 20, 'RGB', pixels, Magick::UndefinedPixel)
+      image.import_pixels(0, 0, 20, 20, 'RGB', pixels, Magick::UndefinedPixel)
     end.to raise_error(ArgumentError, /UndefinedPixel/)
   end
 

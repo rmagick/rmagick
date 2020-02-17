@@ -1,11 +1,11 @@
 RSpec.describe Magick::Image, '#shave' do
   it 'works' do
-    img = described_class.new(20, 20)
+    image = described_class.new(20, 20)
 
-    res = img.shave!(5, 5)
-    expect(res).to be(img)
+    res = image.shave!(5, 5)
+    expect(res).to be(image)
 
-    img.freeze
-    expect { img.shave!(2, 2) }.to raise_error(FreezeError)
+    image.freeze
+    expect { image.shave!(2, 2) }.to raise_error(FreezeError)
   end
 end

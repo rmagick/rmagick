@@ -1,19 +1,19 @@
 RSpec.describe Magick::Image, '#shadow' do
   it 'works' do
-    img = described_class.new(20, 20)
+    image = described_class.new(20, 20)
 
-    res = img.shadow
+    res = image.shadow
     expect(res).to be_instance_of(described_class)
 
-    expect { img.shadow(5) }.not_to raise_error
-    expect { img.shadow(5, 5) }.not_to raise_error
-    expect { img.shadow(5, 5, 3.0) }.not_to raise_error
-    expect { img.shadow(5, 5, 3.0, 0.50) }.not_to raise_error
-    expect { img.shadow(5, 5, 3.0, '50%') }.not_to raise_error
-    expect { img.shadow(5, 5, 3.0, 0.50, 2) }.to raise_error(ArgumentError)
-    expect { img.shadow('x') }.to raise_error(TypeError)
-    expect { img.shadow(5, 'x') }.to raise_error(TypeError)
-    expect { img.shadow(5, 5, 'x') }.to raise_error(TypeError)
-    expect { img.shadow(5, 5, 3.0, 'x') }.to raise_error(ArgumentError)
+    expect { image.shadow(5) }.not_to raise_error
+    expect { image.shadow(5, 5) }.not_to raise_error
+    expect { image.shadow(5, 5, 3.0) }.not_to raise_error
+    expect { image.shadow(5, 5, 3.0, 0.50) }.not_to raise_error
+    expect { image.shadow(5, 5, 3.0, '50%') }.not_to raise_error
+    expect { image.shadow(5, 5, 3.0, 0.50, 2) }.to raise_error(ArgumentError)
+    expect { image.shadow('x') }.to raise_error(TypeError)
+    expect { image.shadow(5, 'x') }.to raise_error(TypeError)
+    expect { image.shadow(5, 5, 'x') }.to raise_error(TypeError)
+    expect { image.shadow(5, 5, 3.0, 'x') }.to raise_error(ArgumentError)
   end
 end

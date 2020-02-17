@@ -1,8 +1,8 @@
 RSpec.describe Magick::Image, '#histogram?' do
   it 'works' do
-    img = described_class.new(20, 20)
+    image = described_class.new(20, 20)
 
-    expect { img.histogram? }.not_to raise_error
-    expect(img.histogram?).to be(true)
+    expect { image.histogram? }.not_to raise_error
+    expect(image.histogram?).to be(true)
   end
 end

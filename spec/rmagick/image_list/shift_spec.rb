@@ -4,13 +4,13 @@ RSpec.describe Magick::ImageList, '#shift' do
 
     list.scene = 0
     res = list[0]
-    img = list.shift
-    expect(img).to be(res)
+    image = list.shift
+    expect(image).to be(res)
     expect(list.scene).to eq(8)
 
     res = list[0]
-    img = list.shift
-    expect(img).to be(res)
+    image = list.shift
+    expect(image).to be(res)
     expect(list.scene).to eq(7)
   end
 end

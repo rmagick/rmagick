@@ -1,33 +1,33 @@
 RSpec.describe Magick::Image, '#crop' do
   it 'works' do
-    img = described_class.new(20, 20)
+    image = described_class.new(20, 20)
 
-    expect { img.crop }.to raise_error(ArgumentError)
-    expect { img.crop(0, 0) }.to raise_error(ArgumentError)
+    expect { image.crop }.to raise_error(ArgumentError)
+    expect { image.crop(0, 0) }.to raise_error(ArgumentError)
 
-    res = img.crop(0, 0, img.columns / 2, img.rows / 2)
+    res = image.crop(0, 0, image.columns / 2, image.rows / 2)
     expect(res).to be_instance_of(described_class)
-    expect(res).not_to be(img)
+    expect(res).not_to be(image)
 
     # 3-argument form
     Magick::GravityType.values do |grav|
-      expect { img.crop(grav, img.columns / 2, img.rows / 2) }.not_to raise_error
+      expect { image.crop(grav, image.columns / 2, image.rows / 2) }.not_to raise_error
     end
-    expect { img.crop(2, img.columns / 2, img.rows / 2) }.to raise_error(TypeError)
-    expect { img.crop(Magick::NorthWestGravity, img.columns / 2, img.rows / 2, 2) }.to raise_error(TypeError)
+    expect { image.crop(2, image.columns / 2, image.rows / 2) }.to raise_error(TypeError)
+    expect { image.crop(Magick::NorthWestGravity, image.columns / 2, image.rows / 2, 2) }.to raise_error(TypeError)
 
     # 4-argument form
-    expect { img.crop(0, 0, img.columns / 2, 'x') }.to raise_error(TypeError)
-    expect { img.crop(0, 0, 'x', img.rows / 2) }.to raise_error(TypeError)
-    expect { img.crop(0, 'x', img.columns / 2, img.rows / 2) }.to raise_error(TypeError)
-    expect { img.crop('x', 0, img.columns / 2, img.rows / 2) }.to raise_error(TypeError)
-    expect { img.crop(0, 0, img.columns / 2, img.rows / 2, 2) }.to raise_error(TypeError)
+    expect { image.crop(0, 0, image.columns / 2, 'x') }.to raise_error(TypeError)
+    expect { image.crop(0, 0, 'x', image.rows / 2) }.to raise_error(TypeError)
+    expect { image.crop(0, 'x', image.columns / 2, image.rows / 2) }.to raise_error(TypeError)
+    expect { image.crop('x', 0, image.columns / 2, image.rows / 2) }.to raise_error(TypeError)
+    expect { image.crop(0, 0, image.columns / 2, image.rows / 2, 2) }.to raise_error(TypeError)
 
     # 5-argument form
     Magick::GravityType.values do |grav|
-      expect { img.crop(grav, 0, 0, img.columns / 2, img.rows / 2) }.not_to raise_error
+      expect { image.crop(grav, 0, 0, image.columns / 2, image.rows / 2) }.not_to raise_error
     end
 
-    expect { img.crop(Magick::NorthWestGravity, 0, 0, img.columns / 2, img.rows / 2, 2) }.to raise_error(ArgumentError)
+    expect { image.crop(Magick::NorthWestGravity, 0, 0, image.columns / 2, image.rows / 2, 2) }.to raise_error(ArgumentError)
   end
 end

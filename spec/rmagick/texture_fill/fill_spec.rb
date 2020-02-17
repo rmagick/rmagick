@@ -3,8 +3,8 @@ RSpec.describe Magick::TextureFill, '#fill' do
     granite = Magick::Image.read('granite:').first
     texture = described_class.new(granite)
 
-    img = Magick::Image.new(10, 10)
-    obj = texture.fill(img)
+    image = Magick::Image.new(10, 10)
+    obj = texture.fill(image)
     expect(obj).to eq(texture)
   end
 end

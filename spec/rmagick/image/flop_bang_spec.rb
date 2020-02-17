@@ -1,8 +1,8 @@
 RSpec.describe Magick::Image, '#flop!' do
   it 'works' do
-    img = described_class.new(20, 20)
+    image = described_class.new(20, 20)
 
-    res = img.flop!
-    expect(res).to be(img)
+    res = image.flop!
+    expect(res).to be(image)
   end
 end

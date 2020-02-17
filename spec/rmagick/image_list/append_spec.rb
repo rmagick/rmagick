@@ -1,9 +1,9 @@
 RSpec.describe Magick::ImageList, '#<<' do
   it 'allows appending identical instances more than once' do
-    img = Magick::Image.new(1, 1)
+    image = Magick::Image.new(1, 1)
     list = described_class.new
 
-    list << img << img
+    list << image << image
 
     res = list.append(false)
     expect(res.columns).to eq(2)
@@ -14,11 +14,11 @@ RSpec.describe Magick::ImageList, '#<<' do
     ilist = described_class.new
     ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_0.gif')
 
-    img = ilist.append(true)
-    expect(img).to be_instance_of(Magick::Image)
+    image = ilist.append(true)
+    expect(image).to be_instance_of(Magick::Image)
 
-    img = ilist.append(false)
-    expect(img).to be_instance_of(Magick::Image)
+    image = ilist.append(false)
+    expect(image).to be_instance_of(Magick::Image)
 
     expect { ilist.append }.to raise_error(ArgumentError)
     expect { ilist.append(true, 1) }.to raise_error(ArgumentError)

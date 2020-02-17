@@ -1,10 +1,10 @@
 RSpec.describe Magick::Image, "#alpha" do
   it "works" do
-    img = described_class.new(20, 20)
+    image = described_class.new(20, 20)
 
-    expect { img.alpha }.not_to raise_error
-    expect(img.alpha).to be(false)
-    expect { img.alpha Magick::ActivateAlphaChannel }.not_to raise_error
-    expect(img.alpha).to be(true)
+    expect { image.alpha }.not_to raise_error
+    expect(image.alpha).to be(false)
+    expect { image.alpha Magick::ActivateAlphaChannel }.not_to raise_error
+    expect(image.alpha).to be(true)
   end
 end

@@ -2,24 +2,24 @@ require 'tmpdir'
 
 RSpec.describe Magick::Image, '#store_pixels' do
   it 'works' do
-    img = described_class.new(20, 20)
-    pixels = img.get_pixels(0, 0, img.columns, 1)
+    image = described_class.new(20, 20)
+    pixels = image.get_pixels(0, 0, image.columns, 1)
 
-    res = img.store_pixels(0, 0, img.columns, 1, pixels)
-    expect(res).to be(img)
+    res = image.store_pixels(0, 0, image.columns, 1, pixels)
+    expect(res).to be(image)
 
     pixels[0] = 'x'
-    expect { img.store_pixels(0, 0, img.columns, 1, pixels) }.to raise_error(TypeError)
-    expect { img.store_pixels(-1, 0, img.columns, 1, pixels) }.to raise_error(RangeError)
-    expect { img.store_pixels(0, -1, img.columns, 1, pixels) }.to raise_error(RangeError)
-    expect { img.store_pixels(0, 0, 1 + img.columns, 1, pixels) }.to raise_error(RangeError)
-    expect { img.store_pixels(-1, 0, 1, 1 + img.rows, pixels) }.to raise_error(RangeError)
-    expect { img.store_pixels(0, 0, img.columns, 1, ['x']) }.to raise_error(IndexError)
+    expect { image.store_pixels(0, 0, image.columns, 1, pixels) }.to raise_error(TypeError)
+    expect { image.store_pixels(-1, 0, image.columns, 1, pixels) }.to raise_error(RangeError)
+    expect { image.store_pixels(0, -1, image.columns, 1, pixels) }.to raise_error(RangeError)
+    expect { image.store_pixels(0, 0, 1 + image.columns, 1, pixels) }.to raise_error(RangeError)
+    expect { image.store_pixels(-1, 0, 1, 1 + image.rows, pixels) }.to raise_error(RangeError)
+    expect { image.store_pixels(0, 0, image.columns, 1, ['x']) }.to raise_error(IndexError)
   end
 
   it 'supports CMYK color' do
-    img = described_class.new(1, 1)
-    img.colorspace = Magick::CMYKColorspace
+    image = described_class.new(1, 1)
+    image.colorspace = Magick::CMYKColorspace
 
     pixel = Magick::Pixel.new
     pixel.cyan    = 49  * 257
@@ -27,13 +27,13 @@ RSpec.describe Magick::Image, '#store_pixels' do
     pixel.yellow  = 1   * 257
     pixel.black   = 183 * 257
 
-    img.store_pixels(0, 0, 1, 1, [pixel])
+    image.store_pixels(0, 0, 1, 1, [pixel])
 
     temp_file_path = File.join(Dir.tmpdir, 'rmagick_store_pixel.jpg')
-    img.write(temp_file_path)
+    image.write(temp_file_path)
 
-    img2 = described_class.read(temp_file_path).first
-    pixel = img2.get_pixels(0, 0, 1, 1).first
+    image2 = described_class.read(temp_file_path).first
+    pixel = image2.get_pixels(0, 0, 1, 1).first
 
     expect(pixel.cyan).to    equal(49  * 257)
     expect(pixel.magenta).to equal(181 * 257)

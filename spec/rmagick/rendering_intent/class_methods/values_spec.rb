@@ -1,9 +1,9 @@
 RSpec.describe Magick::RenderingIntent, '.values' do
   it 'does not cause an infinite loop' do
-    img = Magick::Image.new(1, 1)
+    image = Magick::Image.new(1, 1)
     described_class.values do |value|
-      img.rendering_intent = value
-      expect(img.rendering_intent).to eq(value)
+      image.rendering_intent = value
+      expect(image.rendering_intent).to eq(value)
     end
   end
 end
