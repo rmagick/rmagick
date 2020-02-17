@@ -1252,16 +1252,14 @@ module Magick
 
     protected
 
-    def is_an_image(obj)
+    def assert_image(obj)
       Kernel.raise ArgumentError, "Magick::Image required (#{obj.class} given)" unless obj.is_a? Magick::Image
-      true
     end
 
     # Ensure array is always an array of Magick::Image objects
-    def is_an_image_array(ary)
+    def assert_image_array(ary)
       Kernel.raise ArgumentError, "Magick::ImageList or array of Magick::Images required (#{ary.class} given)" unless ary.respond_to? :each
-      ary.each { |obj| is_an_image obj }
-      true
+      ary.each { |obj| assert_image obj }
     end
 
     # Find old current image, update scene number
@@ -1316,7 +1314,7 @@ module Magick
           end
           current = get_current()
           a.each do |image|
-            is_an_image image
+            assert_image image
             ilist << image
           end
           ilist.set_current current
@@ -1335,7 +1333,7 @@ module Magick
     end
 
     def <<(obj)
-      is_an_image obj
+      assert_image obj
       @images << obj
       @scene = @images.length - 1
       self
@@ -1376,10 +1374,10 @@ module Magick
     def []=(*args)
       obj = @images.[]=(*args)
       if obj && obj.respond_to?(:each)
-        is_an_image_array(obj)
+        assert_image_array(obj)
         set_current obj.last.__id__
       elsif obj
-        is_an_image(obj)
+        assert_image(obj)
         set_current obj.__id__
       else
         set_current nil
@@ -1421,7 +1419,7 @@ module Magick
 
     def collect!(&block)
       @images.collect!(&block)
-      is_an_image_array @images
+      assert_image_array @images
       self
     end
 
@@ -1464,7 +1462,7 @@ module Magick
     end
 
     def concat(other)
-      is_an_image_array other
+      assert_image_array other
       other.each { |image| @images << image }
       @scene = length - 1
       self
@@ -1478,7 +1476,7 @@ module Magick
     end
 
     def delete(obj, &block)
-      is_an_image obj
+      assert_image obj
       current = get_current
       a = @images.delete(obj, &block)
       set_current current
@@ -1507,7 +1505,7 @@ module Magick
     end
 
     def eql?(other)
-      is_an_image_array other
+      assert_image_array other
       eql = other.eql?(@images)
       begin # "other" is another ImageList
         eql &&= @scene == other.scene
@@ -1518,10 +1516,10 @@ module Magick
     end
 
     def fill(*args, &block)
-      is_an_image args[0] unless block_given?
+      assert_image args[0] unless block_given?
       current = get_current
       @images.fill(*args, &block)
-      is_an_image_array self
+      assert_image_array self
       set_current current
       self
     end
@@ -1558,7 +1556,7 @@ module Magick
     end
 
     def insert(index, *args)
-      args.each { |image| is_an_image image }
+      args.each { |image| assert_image image }
       current = get_current
       @images.insert(index, *args)
       set_current current
@@ -1657,7 +1655,7 @@ module Magick
 
     def push(*objs)
       objs.each do |image|
-        is_an_image image
+        assert_image image
         @images << image
       end
       @scene = length - 1
@@ -1693,7 +1691,7 @@ module Magick
     end
 
     def replace(other)
-      is_an_image_array other
+      assert_image_array other
       current = get_current
       @images.clear
       other.each { |image| @images << image }
@@ -1791,7 +1789,7 @@ module Magick
 
     # @scene -> new object
     def unshift(obj)
-      is_an_image obj
+      assert_image obj
       @images.unshift(obj)
       @scene = 0
       self
