@@ -84,13 +84,6 @@ Lint/UselessComparison:
   Exclude:
     - 'spec/rmagick/enum/case_equality_spec.rb'
 
-# Offense count: 6
-# Configuration parameters: CheckForMethodsWithNoSideEffects.
-Lint/Void:
-  Exclude:
-    - 'lib/rmagick_internal.rb'
-    - 'lib/rvg/embellishable.rb'
-
 # Offense count: 44
 Metrics/AbcSize:
   Max: 537
