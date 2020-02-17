@@ -10,8 +10,8 @@ RSpec.describe Magick::Image, '#morphology_channel' do
 
     kernel = Magick::KernelInfo.new('Octagon')
 
-    res = image.morphology_channel(Magick::RedChannel, Magick::EdgeOutMorphology, 2, kernel)
-    expect(res).to be_instance_of(described_class)
-    expect(res).not_to be(image)
+    result = image.morphology_channel(Magick::RedChannel, Magick::EdgeOutMorphology, 2, kernel)
+    expect(result).to be_instance_of(described_class)
+    expect(result).not_to be(image)
   end
 end

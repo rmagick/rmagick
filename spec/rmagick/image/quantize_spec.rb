@@ -2,8 +2,8 @@ RSpec.describe Magick::Image, '#quantize' do
   it 'works' do
     image = described_class.new(20, 20)
 
-    res = image.quantize
-    expect(res).to be_instance_of(described_class)
+    result = image.quantize
+    expect(result).to be_instance_of(described_class)
 
     Magick::ColorspaceType.values do |cs|
       expect { image.quantize(256, cs) }.not_to raise_error

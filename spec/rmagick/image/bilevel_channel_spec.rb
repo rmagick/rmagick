@@ -10,7 +10,7 @@ RSpec.describe Magick::Image, "#bilevel_channel" do
     expect { image.bilevel_channel(100, Magick::GrayChannel) }.not_to raise_error
     expect { image.bilevel_channel(100, Magick::AllChannels) }.not_to raise_error
     expect { image.bilevel_channel(100, 2) }.to raise_error(TypeError)
-    res = image.bilevel_channel(100)
-    expect(res).to be_instance_of(described_class)
+    result = image.bilevel_channel(100)
+    expect(result).to be_instance_of(described_class)
   end
 end

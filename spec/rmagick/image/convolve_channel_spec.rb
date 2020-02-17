@@ -9,9 +9,9 @@ RSpec.describe Magick::Image, '#convolve_channel' do
     kernel = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
     order = 3
 
-    res = image.convolve_channel(order, kernel, Magick::RedChannel)
-    expect(res).to be_instance_of(described_class)
-    expect(res).not_to be(image)
+    result = image.convolve_channel(order, kernel, Magick::RedChannel)
+    expect(result).to be_instance_of(described_class)
+    expect(result).not_to be(image)
 
     expect { image.convolve_channel(order, kernel, Magick::RedChannel, Magick:: BlueChannel) }.not_to raise_error
     expect { image.convolve_channel(order, kernel, Magick::RedChannel, 2) }.to raise_error(TypeError)

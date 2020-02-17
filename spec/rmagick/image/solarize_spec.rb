@@ -2,8 +2,8 @@ RSpec.describe Magick::Image, '#solarize' do
   it 'works' do
     image = described_class.new(20, 20)
 
-    res = image.solarize
-    expect(res).to be_instance_of(described_class)
+    result = image.solarize
+    expect(result).to be_instance_of(described_class)
 
     expect { image.solarize(100) }.not_to raise_error
     expect { image.solarize(-100) }.to raise_error(ArgumentError)

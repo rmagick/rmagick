@@ -4,9 +4,9 @@ RSpec.describe Magick::Image, '#level_channel' do
 
     expect { image.level_channel }.to raise_error(ArgumentError)
 
-    res = image.level_channel(Magick::RedChannel)
-    expect(res).to be_instance_of(described_class)
-    expect(res).not_to be(image)
+    result = image.level_channel(Magick::RedChannel)
+    expect(result).to be_instance_of(described_class)
+    expect(result).not_to be(image)
 
     expect { image.level_channel(Magick::RedChannel, 0.0) }.not_to raise_error
     expect { image.level_channel(Magick::RedChannel, 0.0, 1.0) }.not_to raise_error

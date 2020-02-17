@@ -2,8 +2,8 @@ RSpec.describe Magick::Image, '#resize' do
   it 'works' do
     image = described_class.new(20, 20)
 
-    res = image.resize(2)
-    expect(res).to be_instance_of(described_class)
+    result = image.resize(2)
+    expect(result).to be_instance_of(described_class)
 
     expect { image.resize(50, 50) }.not_to raise_error
 

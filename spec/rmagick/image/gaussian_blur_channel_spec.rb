@@ -2,9 +2,9 @@ RSpec.describe Magick::Image, '#gaussian_blur_channel' do
   it 'works' do
     image = described_class.new(20, 20)
 
-    res = image.gaussian_blur_channel
-    expect(res).to be_instance_of(described_class)
-    expect(res).not_to be(image)
+    result = image.gaussian_blur_channel
+    expect(result).to be_instance_of(described_class)
+    expect(result).not_to be(image)
 
     expect { image.gaussian_blur_channel(0.0) }.not_to raise_error
     expect { image.gaussian_blur_channel(0.0, 3.0) }.not_to raise_error

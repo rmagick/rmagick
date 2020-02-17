@@ -3,10 +3,10 @@ RSpec.describe Magick::Image, '#composite_mathematics' do
     bg = described_class.new(50, 50)
     fg = described_class.new(50, 50) { self.background_color = 'black' }
 
-    res = bg.composite_mathematics(fg, 1, 0, 0, 0, Magick::CenterGravity)
-    expect(res).to be_instance_of(described_class)
-    expect(res).not_to be(bg)
-    expect(res).not_to be(fg)
+    result = bg.composite_mathematics(fg, 1, 0, 0, 0, Magick::CenterGravity)
+    expect(result).to be_instance_of(described_class)
+    expect(result).not_to be(bg)
+    expect(result).not_to be(fg)
 
     expect { bg.composite_mathematics(fg, 1, 0, 0, 0, 0.0, 0.0) }.not_to raise_error
     expect { bg.composite_mathematics(fg, 1, 0, 0, 0, Magick::CenterGravity, 0.0, 0.0) }.not_to raise_error

@@ -6,9 +6,9 @@ RSpec.describe Magick::ImageList, '#concat' do
 
     list.concat([image, image2, image, image2, image])
 
-    res = list.append(false)
-    expect(res.columns).to eq(9)
-    expect(res.rows).to eq(3)
+    result = list.append(false)
+    expect(result.columns).to eq(9)
+    expect(result.rows).to eq(3)
   end
 
   it 'works' do
@@ -20,10 +20,10 @@ RSpec.describe Magick::ImageList, '#concat' do
     list2 << list[8]
     list2 << list[9]
 
-    res = list.concat(list2)
-    expect(res).to be_instance_of(described_class)
-    expect(res.length).to eq(15)
-    expect(res.cur_image).to be(res[14])
+    result = list.concat(list2)
+    expect(result).to be_instance_of(described_class)
+    expect(result.length).to eq(15)
+    expect(result.cur_image).to be(result[14])
 
     expect { list.concat(2) }.to raise_error(ArgumentError)
     expect { list.concat([2]) }.to raise_error(ArgumentError)

@@ -1,12 +1,12 @@
 RSpec.describe Magick::Image, '#resize_to_fit' do
   it 'works with two arguments' do
     image = described_class.new(200, 250)
-    res = image.resize_to_fit(50, 50)
-    expect(res).not_to be(nil)
-    expect(res).to be_instance_of(described_class)
-    expect(res).not_to be(image)
-    expect(res.columns).to eq(40)
-    expect(res.rows).to eq(50)
+    result = image.resize_to_fit(50, 50)
+    expect(result).not_to be(nil)
+    expect(result).to be_instance_of(described_class)
+    expect(result).not_to be(image)
+    expect(result.columns).to eq(40)
+    expect(result.rows).to eq(50)
   end
 
   it 'works with one argument' do

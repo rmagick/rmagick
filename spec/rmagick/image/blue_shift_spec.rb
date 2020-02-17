@@ -2,9 +2,9 @@ RSpec.describe Magick::Image, '#blue_shift' do
   it 'returns a new Image' do
     image = described_class.read(IMAGES_DIR + '/Button_0.gif').first
 
-    res = image.blue_shift
-    expect(res).to be_instance_of(described_class)
-    expect(res).not_to eq image
+    result = image.blue_shift
+    expect(result).to be_instance_of(described_class)
+    expect(result).not_to eq image
   end
 
   it 'accepts one argument' do

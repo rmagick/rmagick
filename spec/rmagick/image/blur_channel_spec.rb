@@ -11,7 +11,7 @@ RSpec.describe Magick::Image, "#blur_channel" do
     expect { image.blur_channel(1, 2, Magick::GrayChannel) }.not_to raise_error
     expect { image.blur_channel(1, 2, Magick::AllChannels) }.not_to raise_error
     expect { image.blur_channel(1, 2, 2) }.to raise_error(TypeError)
-    res = image.blur_channel
-    expect(res).to be_instance_of(described_class)
+    result = image.blur_channel
+    expect(result).to be_instance_of(described_class)
   end
 end

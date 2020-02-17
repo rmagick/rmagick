@@ -2,9 +2,9 @@ RSpec.describe Magick::Image, '#frame' do
   it 'works' do
     image = described_class.new(20, 20)
 
-    res = image.frame
-    expect(res).to be_instance_of(described_class)
-    expect(res).not_to be(image)
+    result = image.frame
+    expect(result).to be_instance_of(described_class)
+    expect(result).not_to be(image)
 
     expect { image.frame(50) }.not_to raise_error
     expect { image.frame(50, 50) }.not_to raise_error

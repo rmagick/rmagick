@@ -2,8 +2,8 @@ RSpec.describe Magick::Image, '#sigmoidal_contrast_channel' do
   it 'works' do
     image = described_class.new(20, 20)
 
-    res = image.sigmoidal_contrast_channel
-    expect(res).to be_instance_of(described_class)
+    result = image.sigmoidal_contrast_channel
+    expect(result).to be_instance_of(described_class)
 
     expect { image.sigmoidal_contrast_channel(3.0) }.not_to raise_error
     expect { image.sigmoidal_contrast_channel(3.0, 50.0) }.not_to raise_error

@@ -2,9 +2,9 @@ RSpec.describe Magick::Image, '#deskew' do
   it 'works' do
     image = described_class.new(20, 20)
 
-    res = image.deskew
-    expect(res).to be_instance_of(described_class)
-    expect(res).not_to be(image)
+    result = image.deskew
+    expect(result).to be_instance_of(described_class)
+    expect(result).not_to be(image)
 
     expect { image.deskew(0.10) }.not_to raise_error
     expect { image.deskew('95%') }.not_to raise_error

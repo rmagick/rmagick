@@ -2,8 +2,8 @@ RSpec.describe Magick::Image, '#transparent' do
   it 'works' do
     image = described_class.new(20, 20)
 
-    res = image.transparent('white')
-    expect(res).to be_instance_of(described_class)
+    result = image.transparent('white')
+    expect(result).to be_instance_of(described_class)
 
     pixel = Magick::Pixel.new
     expect { image.transparent(pixel) }.not_to raise_error

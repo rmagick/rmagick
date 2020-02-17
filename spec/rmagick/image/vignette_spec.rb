@@ -2,9 +2,9 @@ RSpec.describe Magick::Image, '#vignette' do
   it 'works' do
     image = described_class.new(20, 20)
 
-    res = image.vignette
-    expect(res).to be_instance_of(described_class)
-    expect(image).not_to be(res)
+    result = image.vignette
+    expect(result).to be_instance_of(described_class)
+    expect(image).not_to be(result)
 
     expect { image.vignette(0) }.not_to raise_error
     expect { image.vignette(0, 0) }.not_to raise_error

@@ -4,9 +4,9 @@ RSpec.describe Magick::Image, '#from_blob' do
     blob = image.to_blob
 
     expect(blob).to be_instance_of(String)
-    res = described_class.from_blob(blob)
-    expect(res).to be_instance_of(Array)
-    expect(res.first).to be_instance_of(described_class)
-    expect(res.first).to eq image
+    result = described_class.from_blob(blob)
+    expect(result).to be_instance_of(Array)
+    expect(result.first).to be_instance_of(described_class)
+    expect(result.first).to eq image
   end
 end

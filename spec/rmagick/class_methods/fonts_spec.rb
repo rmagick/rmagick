@@ -1,8 +1,8 @@
 RSpec.describe Magick, '.fonts' do
   it 'works' do
-    res = described_class.fonts
-    expect(res).to be_instance_of(Array)
-    res.each do |f|
+    result = described_class.fonts
+    expect(result).to be_instance_of(Array)
+    result.each do |f|
       expect(f).to be_instance_of(Magick::Font)
       expect(f.name).to be_instance_of(String)
       expect(f.description).to be_instance_of(String) unless f.description.nil?

@@ -5,9 +5,9 @@ RSpec.describe Magick::ImageList, '#<<' do
 
     list << image << image
 
-    res = list.append(false)
-    expect(res.columns).to eq(2)
-    expect(res.rows).to eq(1)
+    result = list.append(false)
+    expect(result.columns).to eq(2)
+    expect(result.rows).to eq(1)
   end
 
   it "works" do

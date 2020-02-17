@@ -4,7 +4,7 @@ RSpec.describe Magick::Image, "#blend" do
     image2 = described_class.new(20, 20) { self.background_color = 'black' }
 
     expect { image.blend(image2, 0.25) }.not_to raise_error
-    res = image.blend(image2, 0.25)
+    result = image.blend(image2, 0.25)
 
     Magick::GravityType.values do |gravity|
       expect { image.blend(image2, 0.25, 0.75, gravity) }.not_to raise_error
@@ -12,7 +12,7 @@ RSpec.describe Magick::Image, "#blend" do
       expect { image.blend(image2, 0.25, 0.75, gravity, 10, 10) }.not_to raise_error
     end
 
-    expect(res).to be_instance_of(described_class)
+    expect(result).to be_instance_of(described_class)
     expect { image.blend(image2, '25%') }.not_to raise_error
     expect { image.blend(image2, 0.25, 0.75) }.not_to raise_error
     expect { image.blend(image2, '25%', '75%') }.not_to raise_error
