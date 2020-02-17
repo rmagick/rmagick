@@ -48,11 +48,11 @@ build_imagemagick() {
 
   options="--with-magick-plus-plus=no --disable-docs"
   if [ -v CONFIGURE_OPTIONS ]; then
-    options="${CONFIGURE_OPTIONS} $options"
+    options="${CONFIGURE_OPTIONS} ${options}"
   fi
 
   cd "${build_dir}"
-  ./configure --prefix=/usr/local $options
+  ./configure --prefix=/usr/local "${options}"
   make -j
 }
 
