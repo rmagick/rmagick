@@ -11654,10 +11654,6 @@ rd_image(VALUE class ATTRIBUTE_UNUSED, VALUE file, reader_t reader)
     Image *images;
     ExceptionInfo *exception;
 
-#if !defined(_WIN32)
-    signal(SIGCHLD, sig_handler);
-#endif
-
     // Create a new Info structure for this read/ping
     info_obj = rm_info_new();
     Data_Get_Struct(info_obj, Info, info);
@@ -11690,7 +11686,16 @@ rd_image(VALUE class ATTRIBUTE_UNUSED, VALUE file, reader_t reader)
 
     exception = AcquireExceptionInfo();
 
+#if !defined(_WIN32)
+    signal(SIGCHLD, sig_handler);
+#endif
+
     images = (reader)(info, exception);
+
+#if !defined(_WIN32)
+    signal(SIGCHLD, SIG_DFL);
+#endif
+
     rm_check_exception(exception, images, DestroyOnError);
     rm_set_user_artifact(images, info);
     (void) DestroyExceptionInfo(exception);
