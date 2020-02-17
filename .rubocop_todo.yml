@@ -182,13 +182,6 @@ Naming/MethodName:
 Naming/UncommunicativeMethodParamName:
   Enabled: false
 
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: AllowConsecutiveOneLiners.
-RSpec/EmptyLineAfterExample:
-  Exclude:
-    - 'spec/rmagick/image/dissolve_spec.rb'
-
 # Offense count: 439
 # Configuration parameters: Max.
 RSpec/ExampleLength:
