@@ -4,11 +4,10 @@ RSpec.describe Magick::Image, '#crop' do
 
     expect { img.crop }.to raise_error(ArgumentError)
     expect { img.crop(0, 0) }.to raise_error(ArgumentError)
-    expect do
-      res = img.crop(0, 0, img.columns / 2, img.rows / 2)
-      expect(res).to be_instance_of(described_class)
-      expect(res).not_to be(img)
-    end.not_to raise_error
+
+    res = img.crop(0, 0, img.columns / 2, img.rows / 2)
+    expect(res).to be_instance_of(described_class)
+    expect(res).not_to be(img)
 
     # 3-argument form
     Magick::GravityType.values do |grav|

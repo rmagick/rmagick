@@ -4,11 +4,9 @@ RSpec.describe Magick::Image, '#morphology' do
     kernel = Magick::KernelInfo.new('Octagon')
 
     Magick::MorphologyMethod.values do |method|
-      expect do
-        res = img.morphology(method, 2, kernel)
-        expect(res).to be_instance_of(described_class)
-        expect(res).not_to be(img)
-      end.not_to raise_error
+      res = img.morphology(method, 2, kernel)
+      expect(res).to be_instance_of(described_class)
+      expect(res).not_to be(img)
     end
   end
 end

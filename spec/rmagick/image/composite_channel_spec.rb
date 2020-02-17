@@ -6,10 +6,8 @@ RSpec.describe Magick::Image, '#composite_channel' do
     img2.define('compose:args', '1x1')
     Magick::CompositeOperator.values do |op|
       Magick::GravityType.values do |gravity|
-        expect do
-          res = img1.composite_channel(img2, gravity, 5, 5, op, Magick::BlueChannel)
-          expect(res).not_to be(img1)
-        end.not_to raise_error
+        res = img1.composite_channel(img2, gravity, 5, 5, op, Magick::BlueChannel)
+        expect(res).not_to be(img1)
       end
     end
 

@@ -18,14 +18,12 @@ RSpec.describe Magick::Image, '#export_pixels' do
     expect { img.export_pixels(0, 0) }.not_to raise_error
     expect { img.export_pixels(0, 0, 10) }.not_to raise_error
     expect { img.export_pixels(0, 0, 10, 10) }.not_to raise_error
-    expect do
-      res = img.export_pixels(0, 0, 10, 10, 'RGBA')
-      expect(res.length).to eq(10 * 10 * 'RGBA'.length)
-    end.not_to raise_error
-    expect do
-      res = img.export_pixels(0, 0, 10, 10, 'I')
-      expect(res.length).to eq(10 * 10 * 'I'.length)
-    end.not_to raise_error
+
+    res = img.export_pixels(0, 0, 10, 10, 'RGBA')
+    expect(res.length).to eq(10 * 10 * 'RGBA'.length)
+
+    res = img.export_pixels(0, 0, 10, 10, 'I')
+    expect(res.length).to eq(10 * 10 * 'I'.length)
 
     # too many arguments
     expect { img.export_pixels(0, 0, 10, 10, 'I', 2) }.to raise_error(ArgumentError)

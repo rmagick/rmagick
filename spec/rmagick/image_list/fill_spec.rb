@@ -4,9 +4,9 @@ RSpec.describe Magick::ImageList, '#fill' do
 
     list2 = list.copy
     img = list[0].copy
-    expect do
-      expect(list2.fill(img)).to be_instance_of(described_class)
-    end.not_to raise_error
+
+    expect(list2.fill(img)).to be_instance_of(described_class)
+
     list2.each { |el| expect(img).to be(el) }
 
     list2 = list.copy

@@ -2,11 +2,9 @@ RSpec.describe Magick::Image, '#decipher' do
   it 'works' do
     img = described_class.new(20, 20)
 
-    res = res2 = nil
-    expect do
-      res = img.encipher 'passphrase'
-      res2 = res.decipher 'passphrase'
-    end.not_to raise_error
+    res = img.encipher 'passphrase'
+    res2 = res.decipher 'passphrase'
+
     expect(res).to be_instance_of(described_class)
     expect(res).not_to be(img)
     expect(res.columns).to eq(img.columns)

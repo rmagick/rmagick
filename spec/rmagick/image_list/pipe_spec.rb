@@ -8,16 +8,14 @@ RSpec.describe Magick::ImageList, '#|' do
     list2 << list[8]
     list2 << list[9]
 
-    expect do
-      list.scene = 7
-      # The or of these two lists should be the same as list
-      # but not be the *same* list
-      res = list | list2
-      expect(res).to be_instance_of(described_class)
-      expect(list).not_to be(res)
-      expect(list2).not_to be(res)
-      expect(list).to eq(res)
-    end.not_to raise_error
+    list.scene = 7
+    # The or of these two lists should be the same as list
+    # but not be the *same* list
+    res = list | list2
+    expect(res).to be_instance_of(described_class)
+    expect(list).not_to be(res)
+    expect(list2).not_to be(res)
+    expect(list).to eq(res)
 
     # Try or'ing disjoint lists
     temp_list = described_class.new(*FILES[10..14])

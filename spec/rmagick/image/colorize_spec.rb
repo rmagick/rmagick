@@ -2,10 +2,9 @@ RSpec.describe Magick::Image, "#colorize" do
   it "works" do
     img = described_class.new(20, 20)
 
-    expect do
-      res = img.colorize(0.25, 0.25, 0.25, 'red')
-      expect(res).to be_instance_of(described_class)
-    end.not_to raise_error
+    res = img.colorize(0.25, 0.25, 0.25, 'red')
+    expect(res).to be_instance_of(described_class)
+
     expect { img.colorize(0.25, 0.25, 0.25, 0.25, 'red') }.not_to raise_error
     pixel = Magick::Pixel.new(Magick::QuantumRange)
     expect { img.colorize(0.25, 0.25, 0.25, pixel) }.not_to raise_error

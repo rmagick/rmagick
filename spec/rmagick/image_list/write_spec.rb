@@ -3,9 +3,9 @@ RSpec.describe Magick::ImageList, "#write" do
     ilist = described_class.new
 
     ilist.read(IMAGES_DIR + '/Button_0.gif')
-    expect do
-      ilist.write('temp.gif')
-    end.not_to raise_error
+
+    ilist.write('temp.gif')
+
     list = described_class.new('temp.gif')
     expect(list.format).to eq('GIF')
     FileUtils.rm('temp.gif')

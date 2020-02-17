@@ -2,10 +2,9 @@ RSpec.describe Magick::Image, '#splice' do
   it 'works' do
     img = described_class.new(20, 20)
 
-    expect do
-      res = img.splice(0, 0, 2, 2)
-      expect(res).to be_instance_of(described_class)
-    end.not_to raise_error
+    res = img.splice(0, 0, 2, 2)
+    expect(res).to be_instance_of(described_class)
+
     expect { img.splice(0, 0, 2, 2, 'red') }.not_to raise_error
     red = Magick::Pixel.new(Magick::QuantumRange)
     expect { img.splice(0, 0, 2, 2, red) }.not_to raise_error

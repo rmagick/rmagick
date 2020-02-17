@@ -68,9 +68,7 @@ RSpec.describe Magick::Draw, '#marshal_dump' do
     expect { dumped = draw2.marshal_dump }.not_to raise_error
 
     draw3 = draw1.dup
-    expect do
-      draw3.marshal_load(dumped)
-    end.not_to raise_error
+    draw3.marshal_load(dumped)
     expect(draw3.inspect).to eq(draw2.inspect)
   end
 end

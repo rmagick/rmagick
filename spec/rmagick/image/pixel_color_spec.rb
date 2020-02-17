@@ -2,10 +2,9 @@ RSpec.describe Magick::Image, '#pixel_color' do
   it 'works' do
     img = described_class.new(20, 20)
 
-    expect do
-      res = img.pixel_color(0, 0)
-      expect(res).to be_instance_of(Magick::Pixel)
-    end.not_to raise_error
+    res = img.pixel_color(0, 0)
+    expect(res).to be_instance_of(Magick::Pixel)
+
     res = img.pixel_color(0, 0)
     expect(res.to_color).to eq(img.background_color)
     res = img.pixel_color(0, 0, 'red')
@@ -19,11 +18,9 @@ RSpec.describe Magick::Image, '#pixel_color' do
     img = described_class.new(10, 10) { self.background_color = 'blue' }
     expect(img.pixel_color(50, 50).to_color).to eq('blue')
 
-    expect do
-      img.class_type = Magick::PseudoClass
-      res = img.pixel_color(0, 0, 'red')
-      expect(res.to_color).to eq('blue')
-    end.not_to raise_error
+    img.class_type = Magick::PseudoClass
+    res = img.pixel_color(0, 0, 'red')
+    expect(res.to_color).to eq('blue')
   end
 
   it 'get/set CYMK color', supported_after('6.8.0') do

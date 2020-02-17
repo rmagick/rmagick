@@ -8,11 +8,9 @@ RSpec.describe Magick::ImageList, '#<<' do
     list2 << list[8]
     list2 << list[9]
 
-    expect do
-      list2.each { |img| list << img }
-      expect(list.length).to eq(15)
-      expect(list.scene).to eq(14)
-    end.not_to raise_error
+    list2.each { |img| list << img }
+    expect(list.length).to eq(15)
+    expect(list.scene).to eq(14)
 
     expect { list << 2 }.to raise_error(ArgumentError)
     expect { list << [2] }.to raise_error(ArgumentError)
