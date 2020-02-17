@@ -33,11 +33,11 @@ RSpec.describe Magick::Image, '#export_pixels' do
     image = described_class.read(File.join(IMAGES_DIR, 'Flower_Hat.jpg')).first
 
     pixels = image.export_pixels(0, 0, image.columns, image.rows, 'RGB')
-    fpixels = pixels.collect { |p| p.to_f / Magick::QuantumRange }
-    p = fpixels.pack('F*')
-    fimport(image, p, Magick::FloatPixel)
+    fpixels = pixels.collect { |pixel| pixel.to_f / Magick::QuantumRange }
+    packed_pixels = fpixels.pack('F*')
+    fimport(image, packed_pixels, Magick::FloatPixel)
 
-    p = fpixels.pack('D*')
-    fimport(image, p, Magick::DoublePixel)
+    packed_pixels = fpixels.pack('D*')
+    fimport(image, packed_pixels, Magick::DoublePixel)
   end
 end
