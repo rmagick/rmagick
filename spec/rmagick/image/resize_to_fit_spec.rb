@@ -1,8 +1,7 @@
 RSpec.describe Magick::Image, '#resize_to_fit' do
   it 'works with two arguments' do
     img = described_class.new(200, 250)
-    res = nil
-    expect { res = img.resize_to_fit(50, 50) }.not_to raise_error
+    res = img.resize_to_fit(50, 50)
     expect(res).not_to be(nil)
     expect(res).to be_instance_of(described_class)
     expect(res).not_to be(img)

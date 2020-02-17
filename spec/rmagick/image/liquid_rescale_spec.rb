@@ -10,12 +10,10 @@ describe Magick::Image, '#liquid_rescale' do
       return
     end
 
-    res = nil
-    expect do
-      res = img.liquid_rescale(15, 15)
-    end.not_to raise_error
+    res = img.liquid_rescale(15, 15)
     expect(res.columns).to eq(15)
     expect(res.rows).to eq(15)
+
     expect { img.liquid_rescale(15, 15, 0, 0) }.not_to raise_error
     expect { img.liquid_rescale(15) }.to raise_error(ArgumentError)
     expect { img.liquid_rescale(15, 15, 0, 0, 0) }.to raise_error(ArgumentError)

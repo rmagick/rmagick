@@ -1,7 +1,6 @@
 RSpec.describe Magick, '.colors' do
   it 'works' do
-    res = nil
-    expect { res = described_class.colors }.not_to raise_error
+    res = described_class.colors
     expect(res).to be_instance_of(Array)
     res.each do |c|
       expect(c).to be_instance_of(Magick::Color)
