@@ -1,12 +1,12 @@
 RSpec.describe Magick::ImageList, "#average" do
   it "works" do
-    ilist = described_class.new
+    image_list = described_class.new
 
-    ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_0.gif')
+    image_list.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_0.gif')
 
-    image = ilist.average
+    image = image_list.average
     expect(image).to be_instance_of(Magick::Image)
 
-    expect { ilist.average(1) }.to raise_error(ArgumentError)
+    expect { image_list.average(1) }.to raise_error(ArgumentError)
   end
 end

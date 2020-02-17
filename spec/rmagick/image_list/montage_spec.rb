@@ -6,12 +6,12 @@ RSpec.describe Magick::ImageList, "#montage" do
   end
 
   it "works" do
-    ilist1 = described_class.new
+    image_list1 = described_class.new
 
-    ilist1.read(*Dir[IMAGES_DIR + '/Button_*.gif'])
-    ilist2 = ilist1.copy
+    image_list1.read(*Dir[IMAGES_DIR + '/Button_*.gif'])
+    image_list2 = image_list1.copy
 
-    montage = ilist2.montage do
+    montage = image_list2.montage do
       self.background_color = Magick::Pixel.new(Magick::QuantumRange, 0, 0)
       self.background_color = 'blue'
       self.border_color = Magick::Pixel.new(0, 0, 0)
@@ -38,7 +38,7 @@ RSpec.describe Magick::ImageList, "#montage" do
       self.title = 'sample'
     end
     expect(montage).to be_instance_of(described_class)
-    expect(ilist2).to eq(ilist1)
+    expect(image_list2).to eq(image_list1)
 
     montage_image = montage.first
     expect(montage_image.background_color).to eq('blue')
@@ -48,52 +48,52 @@ RSpec.describe Magick::ImageList, "#montage" do
     # looks like IM doesn't diagnose invalid geometry args
     # to tile= and geometry=
     expect do
-      montage = ilist2.montage { self.background_color = 2 }
-      expect(ilist2).to eq(ilist1)
+      montage = image_list2.montage { self.background_color = 2 }
+      expect(image_list2).to eq(image_list1)
     end.to raise_error(TypeError)
     expect do
-      montage = ilist2.montage { self.border_color = 2 }
-      expect(ilist2).to eq(ilist1)
+      montage = image_list2.montage { self.border_color = 2 }
+      expect(image_list2).to eq(image_list1)
     end.to raise_error(TypeError)
     expect do
-      montage = ilist2.montage { self.border_width = [2] }
-      expect(ilist2).to eq(ilist1)
+      montage = image_list2.montage { self.border_width = [2] }
+      expect(image_list2).to eq(image_list1)
     end.to raise_error(TypeError)
     expect do
-      montage = ilist2.montage { self.compose = 2 }
-      expect(ilist2).to eq(ilist1)
+      montage = image_list2.montage { self.compose = 2 }
+      expect(image_list2).to eq(image_list1)
     end.to raise_error(TypeError)
     expect do
-      montage = ilist2.montage { self.filename = 2 }
-      expect(ilist2).to eq(ilist1)
+      montage = image_list2.montage { self.filename = 2 }
+      expect(image_list2).to eq(image_list1)
     end.to raise_error(TypeError)
     expect do
-      montage = ilist2.montage { self.fill = 2 }
-      expect(ilist2).to eq(ilist1)
+      montage = image_list2.montage { self.fill = 2 }
+      expect(image_list2).to eq(image_list1)
     end.to raise_error(TypeError)
     expect do
-      montage = ilist2.montage { self.font = 2 }
-      expect(ilist2).to eq(ilist1)
+      montage = image_list2.montage { self.font = 2 }
+      expect(image_list2).to eq(image_list1)
     end.to raise_error(TypeError)
     expect do
-      montage = ilist2.montage { self.gravity = 2 }
-      expect(ilist2).to eq(ilist1)
+      montage = image_list2.montage { self.gravity = 2 }
+      expect(image_list2).to eq(image_list1)
     end.to raise_error(TypeError)
     expect do
-      montage = ilist2.montage { self.matte_color = 2 }
-      expect(ilist2).to eq(ilist1)
+      montage = image_list2.montage { self.matte_color = 2 }
+      expect(image_list2).to eq(image_list1)
     end.to raise_error(TypeError)
     expect do
-      montage = ilist2.montage { self.pointsize = 'x' }
-      expect(ilist2).to eq(ilist1)
+      montage = image_list2.montage { self.pointsize = 'x' }
+      expect(image_list2).to eq(image_list1)
     end.to raise_error(TypeError)
     expect do
-      montage = ilist2.montage { self.stroke = 'x' }
-      expect(ilist2).to eq(ilist1)
+      montage = image_list2.montage { self.stroke = 'x' }
+      expect(image_list2).to eq(image_list1)
     end.to raise_error(ArgumentError)
     expect do
-      montage = ilist2.montage { self.texture = 'x' }
-      expect(ilist2).to eq(ilist1)
+      montage = image_list2.montage { self.texture = 'x' }
+      expect(image_list2).to eq(image_list1)
     end.to raise_error(NoMethodError)
   end
 

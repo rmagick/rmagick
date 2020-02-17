@@ -9,9 +9,9 @@ RSpec.describe Magick::Image, "#compare_channel" do
     expect { image1.compare_channel(image2, 2) }.to raise_error(TypeError)
     expect { image1.compare_channel }.to raise_error(ArgumentError)
 
-    ilist = Magick::ImageList.new
-    ilist << image2
-    expect { image1.compare_channel(ilist, Magick::MeanAbsoluteErrorMetric) }.not_to raise_error
+    image_list = Magick::ImageList.new
+    image_list << image2
+    expect { image1.compare_channel(image_list, Magick::MeanAbsoluteErrorMetric) }.not_to raise_error
 
     expect { image1.compare_channel(image2, Magick::MeanAbsoluteErrorMetric, Magick::RedChannel) }.not_to raise_error
     expect { image1.compare_channel(image2, Magick::MeanAbsoluteErrorMetric, Magick::RedChannel, Magick::BlueChannel) }.not_to raise_error

@@ -11,16 +11,16 @@ RSpec.describe Magick::ImageList, '#<<' do
   end
 
   it "works" do
-    ilist = described_class.new
-    ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_0.gif')
+    image_list = described_class.new
+    image_list.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_0.gif')
 
-    image = ilist.append(true)
+    image = image_list.append(true)
     expect(image).to be_instance_of(Magick::Image)
 
-    image = ilist.append(false)
+    image = image_list.append(false)
     expect(image).to be_instance_of(Magick::Image)
 
-    expect { ilist.append }.to raise_error(ArgumentError)
-    expect { ilist.append(true, 1) }.to raise_error(ArgumentError)
+    expect { image_list.append }.to raise_error(ArgumentError)
+    expect { image_list.append(true, 1) }.to raise_error(ArgumentError)
   end
 end

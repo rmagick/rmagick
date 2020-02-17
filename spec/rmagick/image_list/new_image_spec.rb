@@ -1,16 +1,16 @@
 RSpec.describe Magick::ImageList, "#new_image" do
   it "works" do
-    ilist = described_class.new
+    image_list = described_class.new
 
-    ilist.new_image(20, 20)
+    image_list.new_image(20, 20)
 
-    expect(ilist.length).to eq(1)
-    expect(ilist.scene).to eq(0)
-    ilist.new_image(20, 20, Magick::HatchFill.new('black'))
-    expect(ilist.length).to eq(2)
-    expect(ilist.scene).to eq(1)
-    ilist.new_image(20, 20) { self.background_color = 'red' }
-    expect(ilist.length).to eq(3)
-    expect(ilist.scene).to eq(2)
+    expect(image_list.length).to eq(1)
+    expect(image_list.scene).to eq(0)
+    image_list.new_image(20, 20, Magick::HatchFill.new('black'))
+    expect(image_list.length).to eq(2)
+    expect(image_list.scene).to eq(1)
+    image_list.new_image(20, 20) { self.background_color = 'red' }
+    expect(image_list.length).to eq(3)
+    expect(image_list.scene).to eq(2)
   end
 end
