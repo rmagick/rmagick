@@ -201,11 +201,6 @@ RSpec/Pending:
     - 'spec/rmagick/image/read_spec.rb'
 
 # Offense count: 2
-RSpec/RepeatedDescription:
-  Exclude:
-    - 'spec/rmagick/draw/clip_path_spec.rb'
-
-# Offense count: 2
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: strict, flexible
 Rails/Date:
