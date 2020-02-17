@@ -100,31 +100,6 @@ module RMagick
       $CFLAGS << (have_macro('__GNUC__') ? ' -std=gnu99' : ' -std=c99')
     end
 
-    # Test for a specific value in an enum type
-    def have_enum_value(enum, value, headers = nil, &b)
-      checking_for "#{enum}.#{value}" do
-        source = <<~"SRC"
-          #{COMMON_HEADERS}
-          #{cpp_include(headers)}
-          int main() { #{enum} t = #{value}; t = t; return 0; }
-        SRC
-
-        if try_compile(source, &b)
-          $defs.push(format('-DHAVE_ENUM_%s', value.upcase))
-          true
-        else
-          false
-        end
-      end
-    end
-
-    # Test for multiple values of the same enum type
-    def have_enum_values(enum, values, headers = nil, &b)
-      values.each do |value|
-        have_enum_value(enum, value, headers, &b)
-      end
-    end
-
     def exit_failure(msg)
       msg = "ERROR: #{msg}"
 
