@@ -2,8 +2,8 @@ RSpec.describe Magick::Image, '#sharpen_channel' do
   it 'works' do
     image = described_class.new(20, 20)
 
-    res = image.sharpen_channel
-    expect(res).to be_instance_of(described_class)
+    result = image.sharpen_channel
+    expect(result).to be_instance_of(described_class)
 
     expect { image.sharpen_channel(2.0) }.not_to raise_error
     expect { image.sharpen_channel(2.0, 1.0) }.not_to raise_error

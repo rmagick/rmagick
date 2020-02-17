@@ -11,19 +11,19 @@ RSpec.describe Magick::ImageList, '#-' do
     list.scene = 0
     cur = list.cur_image
 
-    res = list - list2
-    expect(res).to be_instance_of(described_class)
-    expect(res.length).to eq(5)
-    expect(list).not_to be(res)
-    expect(list2).not_to be(res)
-    expect(res.cur_image).to be(cur)
+    result = list - list2
+    expect(result).to be_instance_of(described_class)
+    expect(result.length).to eq(5)
+    expect(list).not_to be(result)
+    expect(list2).not_to be(result)
+    expect(result.cur_image).to be(cur)
 
     # current scene not in result - set result scene to last image in result
     list.scene = 7
 
-    res = list - list2
-    expect(res).to be_instance_of(described_class)
-    expect(res.length).to eq(5)
-    expect(res.scene).to eq(4)
+    result = list - list2
+    expect(result).to be_instance_of(described_class)
+    expect(result.length).to eq(5)
+    expect(result.scene).to eq(4)
   end
 end

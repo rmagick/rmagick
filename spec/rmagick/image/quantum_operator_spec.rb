@@ -2,8 +2,8 @@ RSpec.describe Magick::Image, '#quantum_operator' do
   it 'works' do
     image = described_class.new(20, 20)
 
-    res = image.quantum_operator(Magick::AddQuantumOperator, 2)
-    expect(res).to be_instance_of(described_class)
+    result = image.quantum_operator(Magick::AddQuantumOperator, 2)
+    expect(result).to be_instance_of(described_class)
 
     Magick::QuantumExpressionOperator.values do |op|
       expect { image.quantum_operator(op, 2) }.not_to raise_error

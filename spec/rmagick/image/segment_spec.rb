@@ -2,8 +2,8 @@ RSpec.describe Magick::Image, '#segment' do
   it 'works' do
     image = described_class.new(20, 20)
 
-    res = image.segment
-    expect(res).to be_instance_of(described_class)
+    result = image.segment
+    expect(result).to be_instance_of(described_class)
 
     # Don't test colorspaces that require PsuedoColor images
     (Magick::ColorspaceType.values - [

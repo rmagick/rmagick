@@ -12,8 +12,8 @@ RSpec.describe Magick::ImageList, '#combine' do
     list << red
     expect { list.combine }.not_to raise_error
 
-    res = list.combine
-    expect(res).to be_instance_of(Magick::Image)
+    result = list.combine
+    expect(result).to be_instance_of(Magick::Image)
 
     list << alpha
     expect { list.combine }.not_to raise_error

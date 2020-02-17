@@ -4,9 +4,9 @@ RSpec.describe Magick::Image, '#displace' do
     image2 = described_class.new(20, 20) { self.background_color = 'black' }
 
     expect { image.displace(image2, 25) }.not_to raise_error
-    res = image.displace(image2, 25)
-    expect(res).to be_instance_of(described_class)
-    expect(res).not_to be(image)
+    result = image.displace(image2, 25)
+    expect(result).to be_instance_of(described_class)
+    expect(result).not_to be(image)
     expect { image.displace(image2, 25, 25) }.not_to raise_error
     expect { image.displace(image2, 25, 25, 10) }.not_to raise_error
     expect { image.displace(image2, 25, 25, 10, 10) }.not_to raise_error

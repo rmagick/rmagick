@@ -18,7 +18,7 @@ RSpec.describe Magick::ImageList, '#delete' do
     # Try deleting something that isn't in the list.
     # Should return the value of the block.
     image = Magick::Image.read(FILES[10]).first
-    res = list.delete(image) { 1 }
-    expect(res).to eq(1)
+    result = list.delete(image) { 1 }
+    expect(result).to eq(1)
   end
 end

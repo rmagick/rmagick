@@ -2,9 +2,9 @@ RSpec.describe Magick::Image, '#levelize_channel' do
   it 'works' do
     image = described_class.new(20, 20)
 
-    res = image.levelize_channel(0, Magick::QuantumRange)
-    expect(res).to be_instance_of(described_class)
-    expect(res).not_to be(image)
+    result = image.levelize_channel(0, Magick::QuantumRange)
+    expect(result).to be_instance_of(described_class)
+    expect(result).not_to be(image)
 
     expect { image.levelize_channel(0) }.not_to raise_error
     expect { image.levelize_channel(0, Magick::QuantumRange) }.not_to raise_error

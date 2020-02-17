@@ -14,8 +14,8 @@ RSpec.describe Magick::ImageList, '#replace' do
     list, list2 = make_lists
 
     # Replace with empty list
-    res = list.replace([])
-    expect(list).to be(res)
+    result = list.replace([])
+    expect(list).to be(result)
     expect(list.length).to eq(0)
     expect(list.scene).to be(nil)
 
@@ -35,8 +35,8 @@ RSpec.describe Magick::ImageList, '#replace' do
 
     list.scene = 7
     cur = list.cur_image
-    res = list.replace(list2)
-    expect(list).to be(res)
+    result = list.replace(list2)
+    expect(list).to be(result)
     expect(list.length).to eq(5)
     expect(list.scene).to eq(2)
     expect(list.cur_image).to be(cur)
@@ -48,8 +48,8 @@ RSpec.describe Magick::ImageList, '#replace' do
     # Replace with longer list
     list2.scene = 2
     cur = list2.cur_image
-    res = list2.replace(list)
-    expect(list2).to be(res)
+    result = list2.replace(list)
+    expect(list2).to be(result)
     expect(list2.length).to eq(10)
     expect(list2.scene).to eq(7)
     expect(list2.cur_image).to be(cur)

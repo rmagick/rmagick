@@ -3,8 +3,8 @@ RSpec.describe Magick::Image, '#profile!' do
     image = described_class.new(20, 20)
     profile = described_class.read(IMAGE_WITH_PROFILE).first.color_profile
 
-    res = image.profile!('*', nil)
-    expect(res).to be(image)
+    result = image.profile!('*', nil)
+    expect(result).to be(image)
 
     expect { image.profile!('icc', profile) }.not_to raise_error
     expect { image.profile!('iptc', 'xxx') }.not_to raise_error

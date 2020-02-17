@@ -5,11 +5,11 @@ RSpec.describe Magick::Image, '#mask' do
 
     image1.mask(cimage)
 
-    res = image1.mask
-    expect(res).not_to be(nil)
-    expect(res).not_to be(cimage)
-    expect(res.columns).to eq(20)
-    expect(res.rows).to eq(20)
+    result = image1.mask
+    expect(result).not_to be(nil)
+    expect(result).not_to be(cimage)
+    expect(result.columns).to eq(20)
+    expect(result.rows).to eq(20)
 
     expect { image1.mask(cimage, 'x') }.to raise_error(ArgumentError)
     # mask expects an Image and calls `cur_image'

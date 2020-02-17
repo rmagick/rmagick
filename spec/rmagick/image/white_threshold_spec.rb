@@ -11,7 +11,7 @@ RSpec.describe Magick::Image, '#white_threshold' do
     expect { image1.white_threshold(50, 50, 50, wrong: 50) }.to raise_error(ArgumentError)
     expect { image1.white_threshold(50, 50, 50, alpha: 50, extra: 50) }.to raise_error(ArgumentError)
     expect { image1.white_threshold(50, 50, 50, 50, 50) }.to raise_error(ArgumentError)
-    res = image1.white_threshold(50)
-    expect(res).to be_instance_of(described_class)
+    result = image1.white_threshold(50)
+    expect(result).to be_instance_of(described_class)
   end
 end

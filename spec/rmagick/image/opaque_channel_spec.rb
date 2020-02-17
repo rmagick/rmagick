@@ -2,10 +2,10 @@ RSpec.describe Magick::Image, '#opaque_channel' do
   it 'works' do
     image = described_class.new(20, 20)
 
-    res = image.opaque_channel('white', 'red')
-    expect(res).not_to be(nil)
-    expect(res).to be_instance_of(described_class)
-    expect(image).not_to be(res)
+    result = image.opaque_channel('white', 'red')
+    expect(result).not_to be(nil)
+    expect(result).to be_instance_of(described_class)
+    expect(image).not_to be(result)
 
     expect { image.opaque_channel('red', 'blue', true) }.not_to raise_error
     expect { image.opaque_channel('red', 'blue', true, 50) }.not_to raise_error

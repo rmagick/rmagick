@@ -18,10 +18,10 @@ RSpec.describe Magick::Image, "#compare_channel" do
     expect { image1.compare_channel(image2, Magick::MeanAbsoluteErrorMetric, 2) }.to raise_error(TypeError)
     expect { image1.compare_channel(image2, Magick::MeanAbsoluteErrorMetric, Magick::RedChannel, 2) }.to raise_error(TypeError)
 
-    res = image1.compare_channel(image2, Magick::MeanAbsoluteErrorMetric)
-    expect(res).to be_instance_of(Array)
-    expect(res[0]).to be_instance_of(described_class)
-    expect(res[1]).to be_instance_of(Float)
+    result = image1.compare_channel(image2, Magick::MeanAbsoluteErrorMetric)
+    expect(result).to be_instance_of(Array)
+    expect(result[0]).to be_instance_of(described_class)
+    expect(result[1]).to be_instance_of(Float)
 
     image2.destroy!
     expect { image1.compare_channel(image2, Magick::MeanAbsoluteErrorMetric) }.to raise_error(Magick::DestroyedImageError)

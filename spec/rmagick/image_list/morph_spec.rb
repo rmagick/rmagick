@@ -8,9 +8,9 @@ RSpec.describe Magick::ImageList, "#morph" do
     # can't specify a negative argument
     expect { ilist.morph(-1) }.to raise_error(ArgumentError)
 
-    res = ilist.morph(2)
-    expect(res).to be_instance_of(described_class)
-    expect(res.length).to eq(4)
-    expect(res.scene).to eq(0)
+    result = ilist.morph(2)
+    expect(result).to be_instance_of(described_class)
+    expect(result.length).to eq(4)
+    expect(result.scene).to eq(0)
   end
 end

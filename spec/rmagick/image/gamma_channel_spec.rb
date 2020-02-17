@@ -2,9 +2,9 @@ RSpec.describe Magick::Image, '#gamma_channel' do
   it 'works' do
     image = described_class.new(20, 20)
 
-    res = image.gamma_channel(0.8)
-    expect(res).to be_instance_of(described_class)
-    expect(res).not_to be(image)
+    result = image.gamma_channel(0.8)
+    expect(result).to be_instance_of(described_class)
+    expect(result).not_to be(image)
 
     expect { image.gamma_channel }.to raise_error(ArgumentError)
     expect { image.gamma_channel(0.8, Magick::RedChannel) }.not_to raise_error

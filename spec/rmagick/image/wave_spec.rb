@@ -2,8 +2,8 @@ RSpec.describe Magick::Image, '#wave' do
   it 'works' do
     image = described_class.new(20, 20)
 
-    res = image.wave
-    expect(res).to be_instance_of(described_class)
+    result = image.wave
+    expect(result).to be_instance_of(described_class)
 
     expect { image.wave(25) }.not_to raise_error
     expect { image.wave(25, 200) }.not_to raise_error

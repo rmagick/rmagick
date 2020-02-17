@@ -11,15 +11,15 @@ RSpec.describe Magick::Image, "#colormap" do
     expect { pc_image.colormap(ncolors + 1) }.to raise_error(IndexError)
     expect { pc_image.colormap(-1) }.to raise_error(IndexError)
     expect { pc_image.colormap(ncolors - 1) }.not_to raise_error
-    res = pc_image.colormap(0)
-    expect(res).to be_instance_of(String)
+    result = pc_image.colormap(0)
+    expect(result).to be_instance_of(String)
 
     # test 'set' operation
     old_color = pc_image.colormap(0)
-    res = pc_image.colormap(0, 'red')
-    expect(res).to eq(old_color)
-    res = pc_image.colormap(0)
-    expect(res).to eq('red')
+    result = pc_image.colormap(0, 'red')
+    expect(result).to eq(old_color)
+    result = pc_image.colormap(0)
+    expect(result).to eq('red')
 
     pixel = Magick::Pixel.new(Magick::QuantumRange)
     expect { pc_image.colormap(0, pixel) }.not_to raise_error

@@ -2,8 +2,8 @@ RSpec.describe Magick::Image, "#color_reset!" do
   it "works" do
     image = described_class.new(20, 20)
 
-    res = image.color_reset!('red')
-    expect(res).to be(image)
+    result = image.color_reset!('red')
+    expect(result).to be(image)
 
     pixel = Magick::Pixel.new(Magick::QuantumRange)
     expect { image.color_reset!(pixel) }.not_to raise_error

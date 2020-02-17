@@ -11,7 +11,7 @@ RSpec.describe Magick::Image, "#black_threshold" do
     expect { image.black_threshold(50, 50, 50, wrong: 50) }.to raise_error(ArgumentError)
     expect { image.black_threshold(50, 50, 50, alpha: 50, extra: 50) }.to raise_error(ArgumentError)
     expect { image.black_threshold(50, 50, 50, 50, 50) }.to raise_error(ArgumentError)
-    res = image.black_threshold(50)
-    expect(res).to be_instance_of(described_class)
+    result = image.black_threshold(50)
+    expect(result).to be_instance_of(described_class)
   end
 end

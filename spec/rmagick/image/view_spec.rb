@@ -2,8 +2,8 @@ RSpec.describe Magick::Image, '#view' do
   it 'works' do
     image = described_class.new(20, 20)
 
-    res = image.view(0, 0, 5, 5)
-    expect(res).to be_instance_of(Magick::Image::View)
+    result = image.view(0, 0, 5, 5)
+    expect(result).to be_instance_of(Magick::Image::View)
 
     image.view(0, 0, 5, 5) { |v| expect(v).to be_instance_of(Magick::Image::View) }
 

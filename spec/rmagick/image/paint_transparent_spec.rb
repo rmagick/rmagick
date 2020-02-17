@@ -2,10 +2,10 @@ RSpec.describe Magick::Image, '#paint_transparent' do
   it 'works' do
     image = described_class.new(20, 20)
 
-    res = image.paint_transparent('red')
-    expect(res).not_to be(nil)
-    expect(res).to be_instance_of(described_class)
-    expect(image).not_to be(res)
+    result = image.paint_transparent('red')
+    expect(result).not_to be(nil)
+    expect(result).to be_instance_of(described_class)
+    expect(image).not_to be(result)
 
     expect { image.paint_transparent('red', Magick::TransparentAlpha) }.to raise_error(ArgumentError)
     expect { image.paint_transparent('red', alpha: Magick::TransparentAlpha) }.not_to raise_error

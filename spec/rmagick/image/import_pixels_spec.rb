@@ -10,8 +10,8 @@ RSpec.describe Magick::Image, '#import_pixels' do
     image = described_class.new(20, 20)
     pixels = image.export_pixels(0, 0, image.columns, 1, 'RGB')
 
-    res = image.import_pixels(0, 0, image.columns, 1, 'RGB', pixels)
-    expect(res).to be(image)
+    result = image.import_pixels(0, 0, image.columns, 1, 'RGB', pixels)
+    expect(result).to be(image)
 
     expect { image.import_pixels }.to raise_error(ArgumentError)
     expect { image.import_pixels(0) }.to raise_error(ArgumentError)
