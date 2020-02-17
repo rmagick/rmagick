@@ -11636,6 +11636,11 @@ file_arg_rescue(VALUE arg, VALUE raised_exc ATTRIBUTE_UNUSED)
  * @see Image_ping
  * @see array_from_images
  */
+
+void sig_handler(int sig ATTRIBUTE_UNUSED)
+{
+}
+
 static VALUE
 rd_image(VALUE class ATTRIBUTE_UNUSED, VALUE file, reader_t reader)
 {
@@ -11645,6 +11650,8 @@ rd_image(VALUE class ATTRIBUTE_UNUSED, VALUE file, reader_t reader)
     VALUE info_obj;
     Image *images;
     ExceptionInfo *exception;
+
+    signal(SIGCHLD, sig_handler);
 
     // Create a new Info structure for this read/ping
     info_obj = rm_info_new();
