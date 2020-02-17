@@ -10,7 +10,7 @@ describe Magick, '.trace_proc' do
       expect(id).to be_instance_of(String)
       expect(method).to eq(:initialize)
     end
-    img = Magick::Image.new(20, 20)
+    image = Magick::Image.new(20, 20)
 
     described_class.trace_proc = proc do |which, description, id, method|
       expect(which).to eq(:d)
@@ -18,6 +18,6 @@ describe Magick, '.trace_proc' do
       expect(id).to be_instance_of(String)
       expect(method).to eq(:"destroy!")
     end
-    img.destroy!
+    image.destroy!
   end
 end

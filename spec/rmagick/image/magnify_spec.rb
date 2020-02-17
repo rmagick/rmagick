@@ -1,12 +1,12 @@
 RSpec.describe Magick::Image, '#magnify' do
   it 'works' do
-    img = described_class.new(20, 20)
+    image = described_class.new(20, 20)
 
-    res = img.magnify
+    res = image.magnify
     expect(res).to be_instance_of(described_class)
-    expect(res).not_to be(img)
+    expect(res).not_to be(image)
 
-    res = img.magnify!
-    expect(res).to be(img)
+    res = image.magnify!
+    expect(res).to be(image)
   end
 end

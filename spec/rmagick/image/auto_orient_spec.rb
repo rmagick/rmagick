@@ -1,16 +1,16 @@
 RSpec.describe Magick::Image, "#auto_orient" do
   it "works" do
     Magick::OrientationType.values.each do |v|
-      img = described_class.new(10, 10)
-      img.orientation = v
-      res = img.auto_orient
+      image = described_class.new(10, 10)
+      image.orientation = v
+      res = image.auto_orient
       expect(res).to be_instance_of(described_class)
-      expect(res).not_to be(img)
+      expect(res).not_to be(image)
     end
 
-    img = described_class.new(20, 20)
+    image = described_class.new(20, 20)
 
-    res = img.auto_orient!
+    res = image.auto_orient!
     # When not changed, returns nil
     expect(res).to be(nil)
   end

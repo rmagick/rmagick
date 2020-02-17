@@ -1,24 +1,24 @@
 RSpec.describe Magick::Image, '#mask' do
   it 'works' do
-    img1 = described_class.new(20, 20)
-    cimg = described_class.new(10, 10)
+    image1 = described_class.new(20, 20)
+    cimage = described_class.new(10, 10)
 
-    img1.mask(cimg)
+    image1.mask(cimage)
 
-    res = img1.mask
+    res = image1.mask
     expect(res).not_to be(nil)
-    expect(res).not_to be(cimg)
+    expect(res).not_to be(cimage)
     expect(res.columns).to eq(20)
     expect(res.rows).to eq(20)
 
-    expect { img1.mask(cimg, 'x') }.to raise_error(ArgumentError)
+    expect { image1.mask(cimage, 'x') }.to raise_error(ArgumentError)
     # mask expects an Image and calls `cur_image'
-    expect { img1.mask = 2 }.to raise_error(NoMethodError)
+    expect { image1.mask = 2 }.to raise_error(NoMethodError)
 
-    img2 = img1.copy.freeze
-    expect { img2.mask cimg }.to raise_error(FreezeError)
+    image2 = image1.copy.freeze
+    expect { image2.mask cimage }.to raise_error(FreezeError)
 
-    img1.destroy!
-    expect { img1.mask cimg }.to raise_error(Magick::DestroyedImageError)
+    image1.destroy!
+    expect { image1.mask cimage }.to raise_error(Magick::DestroyedImageError)
   end
 end

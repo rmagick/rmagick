@@ -1,12 +1,12 @@
 RSpec.describe Magick::Image, '#stereo' do
   it 'works' do
-    img1 = described_class.new(20, 20)
+    image1 = described_class.new(20, 20)
 
-    res = img1.stereo(img1)
+    res = image1.stereo(image1)
     expect(res).to be_instance_of(described_class)
 
-    img2 = described_class.new(20, 20)
-    img2.destroy!
-    expect { img1.stereo(img2) }.to raise_error(Magick::DestroyedImageError)
+    image2 = described_class.new(20, 20)
+    image2.destroy!
+    expect { image1.stereo(image2) }.to raise_error(Magick::DestroyedImageError)
   end
 end

@@ -1,11 +1,11 @@
 RSpec.describe Magick::Draw, '#translate' do
   it 'works' do
     draw = described_class.new
-    img = Magick::Image.new(200, 200)
+    image = Magick::Image.new(200, 200)
 
     draw.translate('200', 300)
     expect(draw.inspect).to eq('translate 200,300')
-    expect { draw.draw(img) }.not_to raise_error
+    expect { draw.draw(image) }.not_to raise_error
 
     expect { draw.translate('x', 300) }.to raise_error(ArgumentError)
     expect { draw.translate(200, 'x') }.to raise_error(ArgumentError)

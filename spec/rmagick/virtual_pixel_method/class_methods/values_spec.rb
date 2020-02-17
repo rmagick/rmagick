@@ -1,9 +1,9 @@
 RSpec.describe Magick::VirtualPixelMethod, '.values' do
   it 'does not cause an infinite loop' do
-    img = Magick::Image.new(1, 1)
+    image = Magick::Image.new(1, 1)
     described_class.values do |value|
-      img.virtual_pixel_method = value
-      expect(img.virtual_pixel_method).to eq(value)
+      image.virtual_pixel_method = value
+      expect(image.virtual_pixel_method).to eq(value)
     end
   end
 end

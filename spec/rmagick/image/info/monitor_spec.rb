@@ -10,9 +10,9 @@ RSpec.describe Magick::Image::Info, '#monitor' do
       GC.start
       true
     end
-    img = Magick::Image.new(2000, 2000) { self.monitor = monitor }
-    img.resize!(20, 20)
-    img.monitor = nil
+    image = Magick::Image.new(2000, 2000) { self.monitor = monitor }
+    image.resize!(20, 20)
+    image.monitor = nil
 
     expect { info.monitor = nil }.not_to raise_error
   end

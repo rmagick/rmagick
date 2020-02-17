@@ -1,8 +1,8 @@
 RSpec.describe Magick::Image, '#strip!' do
   it 'works' do
-    img = described_class.new(20, 20)
+    image = described_class.new(20, 20)
 
-    res = img.strip!
-    expect(res).to be(img)
+    res = image.strip!
+    expect(res).to be(image)
   end
 end

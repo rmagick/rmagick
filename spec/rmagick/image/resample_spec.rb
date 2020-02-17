@@ -1,18 +1,18 @@
 RSpec.describe Magick::Image, '#resample' do
   it 'works' do
-    img = described_class.new(20, 20)
-    img.x_resolution = 72
-    img.y_resolution = 72
+    image = described_class.new(20, 20)
+    image.x_resolution = 72
+    image.y_resolution = 72
 
-    expect { img.resample }.not_to raise_error
-    expect { img.resample(100) }.not_to raise_error
-    expect { img.resample(100, 100) }.not_to raise_error
+    expect { image.resample }.not_to raise_error
+    expect { image.resample(100) }.not_to raise_error
+    expect { image.resample(100, 100) }.not_to raise_error
 
-    img.x_resolution = 0
-    img.y_resolution = 0
-    expect { img.resample }.not_to raise_error
-    expect { img.resample(100) }.not_to raise_error
-    expect { img.resample(100, 100) }.not_to raise_error
+    image.x_resolution = 0
+    image.y_resolution = 0
+    expect { image.resample }.not_to raise_error
+    expect { image.resample(100) }.not_to raise_error
+    expect { image.resample(100, 100) }.not_to raise_error
 
     girl = described_class.read(IMAGES_DIR + '/Flower_Hat.jpg').first
     expect(girl.x_resolution).to eq(240.0)
@@ -28,16 +28,16 @@ RSpec.describe Magick::Image, '#resample' do
     expect(girl.y_resolution).to eq(240.0)
 
     Magick::FilterType.values do |filter|
-      expect { img.resample(50, 50, filter) }.not_to raise_error
+      expect { image.resample(50, 50, filter) }.not_to raise_error
     end
-    expect { img.resample(50, 50, Magick::PointFilter, 2.0) }.not_to raise_error
+    expect { image.resample(50, 50, Magick::PointFilter, 2.0) }.not_to raise_error
 
-    expect { img.resample('x') }.to raise_error(TypeError)
-    expect { img.resample(100, 'x') }.to raise_error(TypeError)
-    expect { img.resample(50, 50, 2) }.to raise_error(TypeError)
-    expect { img.resample(50, 50, Magick::CubicFilter, 'x') }.to raise_error(TypeError)
-    expect { img.resample(50, 50, Magick::SincFilter, 2.0, 'x') }.to raise_error(ArgumentError)
-    expect { img.resample(-100) }.to raise_error(ArgumentError)
-    expect { img.resample(100, -100) }.to raise_error(ArgumentError)
+    expect { image.resample('x') }.to raise_error(TypeError)
+    expect { image.resample(100, 'x') }.to raise_error(TypeError)
+    expect { image.resample(50, 50, 2) }.to raise_error(TypeError)
+    expect { image.resample(50, 50, Magick::CubicFilter, 'x') }.to raise_error(TypeError)
+    expect { image.resample(50, 50, Magick::SincFilter, 2.0, 'x') }.to raise_error(ArgumentError)
+    expect { image.resample(-100) }.to raise_error(ArgumentError)
+    expect { image.resample(100, -100) }.to raise_error(ArgumentError)
   end
 end

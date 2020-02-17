@@ -1,18 +1,18 @@
 RSpec.describe Magick::Image, '#bias' do
   it 'works' do
-    img = described_class.new(100, 100)
+    image = described_class.new(100, 100)
 
-    expect { img.bias }.not_to raise_error
-    expect(img.bias).to eq(0.0)
-    expect(img.bias).to be_instance_of(Float)
+    expect { image.bias }.not_to raise_error
+    expect(image.bias).to eq(0.0)
+    expect(image.bias).to be_instance_of(Float)
 
-    expect { img.bias = 0.1 }.not_to raise_error
-    expect(img.bias).to be_within(0.1).of(Magick::QuantumRange * 0.1)
+    expect { image.bias = 0.1 }.not_to raise_error
+    expect(image.bias).to be_within(0.1).of(Magick::QuantumRange * 0.1)
 
-    expect { img.bias = '10%' }.not_to raise_error
-    expect(img.bias).to be_within(0.1).of(Magick::QuantumRange * 0.10)
+    expect { image.bias = '10%' }.not_to raise_error
+    expect(image.bias).to be_within(0.1).of(Magick::QuantumRange * 0.10)
 
-    expect { img.bias = [] }.to raise_error(TypeError)
-    expect { img.bias = 'x' }.to raise_error(ArgumentError)
+    expect { image.bias = [] }.to raise_error(TypeError)
+    expect { image.bias = 'x' }.to raise_error(ArgumentError)
   end
 end

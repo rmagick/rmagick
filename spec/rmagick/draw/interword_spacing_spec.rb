@@ -14,16 +14,16 @@ RSpec.describe Magick::Draw, '#interword_spacing' do
 
   it 'works' do
     draw = described_class.new
-    img = Magick::Image.new(200, 200)
+    image = Magick::Image.new(200, 200)
 
     draw.interword_spacing(40.5)
     expect(draw.inspect).to eq('interword-spacing 40.5')
-    expect { draw.draw(img) }.not_to raise_error
+    expect { draw.draw(image) }.not_to raise_error
 
     draw = described_class.new
     draw.interword_spacing('40.5')
     expect(draw.inspect).to eq('interword-spacing 40.5')
-    expect { draw.draw(img) }.not_to raise_error
+    expect { draw.draw(image) }.not_to raise_error
 
     # expect { draw.interword_spacing(Float::NAN) }.to raise_error(ArgumentError)
     expect { draw.interword_spacing('nan') }.to raise_error(ArgumentError)

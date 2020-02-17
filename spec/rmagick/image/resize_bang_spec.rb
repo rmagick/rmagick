@@ -1,11 +1,11 @@
 RSpec.describe Magick::Image, '#resize!' do
   it 'works' do
-    img = described_class.new(20, 20)
+    image = described_class.new(20, 20)
 
-    res = img.resize!(2)
-    expect(res).to be(img)
+    res = image.resize!(2)
+    expect(res).to be(image)
 
-    img.freeze
-    expect { img.resize!(0.50) }.to raise_error(FreezeError)
+    image.freeze
+    expect { image.resize!(0.50) }.to raise_error(FreezeError)
   end
 end

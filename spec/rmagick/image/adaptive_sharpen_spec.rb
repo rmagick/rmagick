@@ -1,12 +1,12 @@
 RSpec.describe Magick::Image, "#adaptive_sharpen" do
   it "works" do
-    img = described_class.new(20, 20)
+    image = described_class.new(20, 20)
 
-    res = img.adaptive_sharpen
+    res = image.adaptive_sharpen
     expect(res).to be_instance_of(described_class)
 
-    expect { img.adaptive_sharpen(2) }.not_to raise_error
-    expect { img.adaptive_sharpen(3, 2) }.not_to raise_error
-    expect { img.adaptive_sharpen(3, 2, 2) }.to raise_error(ArgumentError)
+    expect { image.adaptive_sharpen(2) }.not_to raise_error
+    expect { image.adaptive_sharpen(3, 2) }.not_to raise_error
+    expect { image.adaptive_sharpen(3, 2, 2) }.to raise_error(ArgumentError)
   end
 end

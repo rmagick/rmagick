@@ -1,10 +1,10 @@
 RSpec.describe Magick::ImageList, '#concat' do
   it 'allows appending identical instances more than once' do
-    img = Magick::Image.new(1, 1)
-    img2 = Magick::Image.new(3, 3)
+    image = Magick::Image.new(1, 1)
+    image2 = Magick::Image.new(3, 3)
     list = described_class.new
 
-    list.concat([img, img2, img, img2, img])
+    list.concat([image, image2, image, image2, image])
 
     res = list.append(false)
     expect(res.columns).to eq(9)

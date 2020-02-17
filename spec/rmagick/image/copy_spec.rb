@@ -1,8 +1,8 @@
 RSpec.describe Magick::Image, '#copy' do
   it 'works' do
-    img = described_class.new(20, 20)
+    image = described_class.new(20, 20)
 
-    ditto = img.copy
-    expect(ditto).to eq(img)
+    ditto = image.copy
+    expect(ditto).to eq(image)
   end
 end
