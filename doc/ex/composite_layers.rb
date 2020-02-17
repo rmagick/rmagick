@@ -1,9 +1,11 @@
 require 'rmagick'
 
-class Magick::ImageList
-  # Create a shadow image for each image in the list
-  def shadow(x_offset = 4, y_offset = 4, sigma = 4.0, opacity = 1.0)
-    collect { |frame| frame.shadow(x_offset, y_offset, sigma, opacity) }
+module Magick
+  class ImageList
+    # Create a shadow image for each image in the list
+    def shadow(x_offset = 4, y_offset = 4, sigma = 4.0, opacity = 1.0)
+      collect { |frame| frame.shadow(x_offset, y_offset, sigma, opacity) }
+    end
   end
 end
 
