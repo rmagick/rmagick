@@ -478,9 +478,12 @@ module Magick
         }
 
         TEXT_STRATEGIES = {
-          'lr-tb' => LRTextStrategy, 'lr' => LRTextStrategy,
-          'rt-tb' => RLTextStrategy, 'rl' => RLTextStrategy,
-          'tb-rl' => TBTextStrategy, 'tb' => TBTextStrategy
+          'lr-tb' => LRTextStrategy,
+          'lr' => LRTextStrategy,
+          'rt-tb' => RLTextStrategy,
+          'rl' => RLTextStrategy,
+          'tb-rl' => TBTextStrategy,
+          'tb' => TBTextStrategy
         }
 
         def self.degrees_to_radians(deg)

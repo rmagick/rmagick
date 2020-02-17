@@ -33,12 +33,6 @@ Layout/MultilineArrayLineBreaks:
     - 'lib/rmagick_internal.rb'
     - 'lib/rvg/stylable.rb'
 
-# Offense count: 3
-# Cop supports --auto-correct.
-Layout/MultilineHashKeyLineBreaks:
-  Exclude:
-    - 'lib/rvg/misc.rb'
-
 # Offense count: 192
 # Cop supports --auto-correct.
 Layout/MultilineMethodArgumentLineBreaks:
