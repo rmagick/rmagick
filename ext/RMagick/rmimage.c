@@ -11,6 +11,7 @@
  ******************************************************************************/
 
 #include "rmagick.h"
+#include <signal.h>
 
 #define BEGIN_CHANNEL_MASK(image, channels) \
   { \
