@@ -104,9 +104,9 @@ module RMagick
     def have_enum_value(enum, value, headers = nil, &b)
       checking_for "#{enum}.#{value}" do
         source = <<~"SRC"
-        #{COMMON_HEADERS}
-        #{cpp_include(headers)}
-        int main() { #{enum} t = #{value}; t = t; return 0; }
+          #{COMMON_HEADERS}
+          #{cpp_include(headers)}
+          int main() { #{enum} t = #{value}; t = t; return 0; }
         SRC
 
         if try_compile(source, &b)
@@ -270,12 +270,12 @@ module RMagick
       return dir_paths if found_lib
 
       exit_failure <<~END_MINGW
-      Can't install RMagick #{RMAGICK_VERS}.
-      Can't find the ImageMagick library.
-      Retry with '--with-opt-dir' option.
-      Usage: gem install rmagick -- '--with-opt-dir=\"[path to ImageMagick]\"'
-      e.g.
-        gem install rmagick -- '--with-opt-dir=\"C:\Program Files\ImageMagick-6.9.1-Q16\"'
+        Can't install RMagick #{RMAGICK_VERS}.
+        Can't find the ImageMagick library.
+        Retry with '--with-opt-dir' option.
+        Usage: gem install rmagick -- '--with-opt-dir=\"[path to ImageMagick]\"'
+        e.g.
+          gem install rmagick -- '--with-opt-dir=\"C:\Program Files\ImageMagick-6.9.1-Q16\"'
       END_MINGW
     end
 
@@ -298,9 +298,9 @@ module RMagick
 
     def assert_has_dev_libs!
       failure_message = <<~END_FAILURE
-      Can't install RMagick #{RMAGICK_VERS}.
-      Can't find the ImageMagick library or one of the dependent libraries.
-      Check the mkmf.log file for more detailed information.
+        Can't install RMagick #{RMAGICK_VERS}.
+        Can't find the ImageMagick library or one of the dependent libraries.
+        Check the mkmf.log file for more detailed information.
       END_FAILURE
 
       if RUBY_PLATFORM !~ /mswin|mingw/
@@ -390,13 +390,11 @@ module RMagick
 
     def print_summary
       summary = <<~"END_SUMMARY"
-
-
-      #{'=' * 70}
-      #{DateTime.now.strftime('%a %d %b %y %T')}
-      This installation of RMagick #{RMAGICK_VERS} is configured for
-      Ruby #{RUBY_VERSION} (#{RUBY_PLATFORM}) and ImageMagick #{$magick_version}
-      #{'=' * 70}
+          #{'=' * 70}
+        #{DateTime.now.strftime('%a %d %b %y %T')}
+        This installation of RMagick #{RMAGICK_VERS} is configured for
+        Ruby #{RUBY_VERSION} (#{RUBY_PLATFORM}) and ImageMagick #{$magick_version}
+        #{'=' * 70}
 
 
       END_SUMMARY

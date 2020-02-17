@@ -3,10 +3,10 @@
 require 'rmagick'
 include Magick
 
-puts <<END_INFO
+puts <<~END_INFO
 
-This example uses a semi-transparent background color to create a title.
-View the resulting image by entering the command: display image_opacity.miff
+  This example uses a semi-transparent background color to create a title.
+  View the resulting image by entering the command: display image_opacity.miff
 
 END_INFO
 

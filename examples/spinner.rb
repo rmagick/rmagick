@@ -3,11 +3,11 @@
 
 require 'rmagick'
 
-puts <<END_INFO
-This example creates an animated GIF that resembles the OS X "waiting" icon.
-You can view the GIF with the command
+puts <<~END_INFO
+  This example creates an animated GIF that resembles the OS X "waiting" icon.
+  You can view the GIF with the command
 
-    animate spinner.gif
+      animate spinner.gif
 END_INFO
 
 NFRAMES = 12                    # number of frames in the animation

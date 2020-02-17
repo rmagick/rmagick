@@ -1,21 +1,21 @@
 require 'rmagick'
 include Magick
 
-puts <<END_INFO
+puts <<~END_INFO
 
-This example demonstrates how to make a thumbnail of an image.
-An image is resized to the target size (retaining its original
-aspect ratio, of course) and then "mounted" on a square background
-with raised edges.
+  This example demonstrates how to make a thumbnail of an image.
+  An image is resized to the target size (retaining its original
+  aspect ratio, of course) and then "mounted" on a square background
+  with raised edges.
 
-Usage:
+  Usage:
 
-    ruby thumbnail.rb <filename <size>>
+      ruby thumbnail.rb <filename <size>>
 
-where `filename' is the name of an image file and `size' is the
-size of the thumbnail in pixels. The default size is 120 pixels.
-If you don't specify any arguments this script uses a default
-image.
+  where `filename' is the name of an image file and `size' is the
+  size of the thumbnail in pixels. The default size is 120 pixels.
+  If you don't specify any arguments this script uses a default
+  image.
 
 END_INFO
 

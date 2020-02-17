@@ -20,24 +20,6 @@ Layout/ClassStructure:
     - 'lib/rvg/rvg.rb'
     - 'lib/rvg/to_c.rb'
 
-# Offense count: 16
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: auto_detection, squiggly, active_support, powerpack, unindent
-Layout/IndentHeredoc:
-  Exclude:
-    - 'Rakefile'
-    - 'examples/describe.rb'
-    - 'examples/histogram.rb'
-    - 'examples/image_opacity.rb'
-    - 'examples/import_export.rb'
-    - 'examples/pattern_fill.rb'
-    - 'examples/rotating_text.rb'
-    - 'examples/spinner.rb'
-    - 'examples/thumbnail.rb'
-    - 'ext/RMagick/extconf.rb'
-    - 'lib/rvg/to_c.rb'
-
 # Offense count: 2312
 # Cop supports --auto-correct.
 Layout/MultilineArrayLineBreaks:

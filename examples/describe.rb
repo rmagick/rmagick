@@ -4,9 +4,9 @@
 
 require 'rmagick'
 
-puts <<END_INFO
+puts <<~END_INFO
 
-This example shows how to extract attributes from an image.
+  This example shows how to extract attributes from an image.
 
 END_INFO
 

@@ -152,12 +152,12 @@ module Magick
     def info_text(fg, bg)
       klass = class_type == DirectClass ? 'DirectClass' : 'PsuedoClass'
 
-      text = <<-END_TEXT
-Format: #{format}
-Geometry: #{columns}x#{rows}
-Class: #{klass}
-Depth: #{depth} bits-per-pixel component
-Colors: #{number_colors}
+      text = <<~END_TEXT
+        Format: #{format}
+        Geometry: #{columns}x#{rows}
+        Class: #{klass}
+        Depth: #{depth} bits-per-pixel component
+        Colors: #{number_colors}
       END_TEXT
 
       info = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do
@@ -268,10 +268,10 @@ Colors: #{number_colors}
   end
 end
 
-puts <<END_INFO
+puts <<~END_INFO
 
-This example shows how to get pixel-level access to an image.
-Usage: histogram.rb <image-filename>
+  This example shows how to get pixel-level access to an image.
+  Usage: histogram.rb <image-filename>
 
 END_INFO
 
