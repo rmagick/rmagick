@@ -5,10 +5,8 @@ RSpec.describe Magick::Image, '#store_pixels' do
     img = described_class.new(20, 20)
     pixels = img.get_pixels(0, 0, img.columns, 1)
 
-    expect do
-      res = img.store_pixels(0, 0, img.columns, 1, pixels)
-      expect(res).to be(img)
-    end.not_to raise_error
+    res = img.store_pixels(0, 0, img.columns, 1, pixels)
+    expect(res).to be(img)
 
     pixels[0] = 'x'
     expect { img.store_pixels(0, 0, img.columns, 1, pixels) }.to raise_error(TypeError)

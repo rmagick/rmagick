@@ -2,16 +2,14 @@ RSpec.describe Magick::Draw, '#annotate' do
   it 'works' do
     draw = described_class.new
 
-    expect do
-      img = Magick::Image.new(10, 10)
-      draw.annotate(img, 0, 0, 0, 20, 'Hello world')
+    img = Magick::Image.new(10, 10)
+    draw.annotate(img, 0, 0, 0, 20, 'Hello world')
 
-      yield_obj = nil
-      draw.annotate(img, 100, 100, 20, 20, 'Hello world 2') do |draw2|
-        yield_obj = draw2
-      end
-      expect(yield_obj).to be_instance_of(described_class)
-    end.not_to raise_error
+    yield_obj = nil
+    draw.annotate(img, 100, 100, 20, 20, 'Hello world 2') do |draw2|
+      yield_obj = draw2
+    end
+    expect(yield_obj).to be_instance_of(described_class)
 
     expect do
       img = Magick::Image.new(10, 10)

@@ -2,11 +2,10 @@ RSpec.describe Magick::Image, '#contrast_stretch_channel' do
   it 'works' do
     img = described_class.new(20, 20)
 
-    expect do
-      res = img.contrast_stretch_channel(25)
-      expect(res).to be_instance_of(described_class)
-      expect(res).not_to be(img)
-    end.not_to raise_error
+    res = img.contrast_stretch_channel(25)
+    expect(res).to be_instance_of(described_class)
+    expect(res).not_to be(img)
+
     expect { img.contrast_stretch_channel(25, 50) }.not_to raise_error
     expect { img.contrast_stretch_channel('10%') }.not_to raise_error
     expect { img.contrast_stretch_channel('10%', '50%') }.not_to raise_error

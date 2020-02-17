@@ -8,9 +8,8 @@ RSpec.describe Magick::ImageList, '#flatten_images' do
   it "still works" do
     ilist = described_class.new
     ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_1.gif')
-    expect do
-      img = ilist.flatten_images
-      expect(img).to be_instance_of(Magick::Image)
-    end.not_to raise_error
+
+    img = ilist.flatten_images
+    expect(img).to be_instance_of(Magick::Image)
   end
 end

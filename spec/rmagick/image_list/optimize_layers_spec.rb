@@ -6,11 +6,9 @@ RSpec.describe Magick::ImageList, "#optimize_layers" do
     Magick::LayerMethod.values do |method|
       next if [Magick::UndefinedLayer, Magick::CompositeLayer, Magick::TrimBoundsLayer].include?(method)
 
-      expect do
-        res = ilist.optimize_layers(method)
-        expect(res).to be_instance_of(described_class)
-        expect(res.length).to be_kind_of(Integer)
-      end.not_to raise_error
+      res = ilist.optimize_layers(method)
+      expect(res).to be_instance_of(described_class)
+      expect(res.length).to be_kind_of(Integer)
     end
 
     expect { ilist.optimize_layers(Magick::CompareClearLayer) }.not_to raise_error

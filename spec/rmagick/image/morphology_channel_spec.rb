@@ -9,10 +9,9 @@ RSpec.describe Magick::Image, '#morphology_channel' do
     expect { img.morphology_channel(Magick::RedChannel, Magick::EdgeOutMorphology, 2, :not_kernel_info) }.to raise_error(ArgumentError)
 
     kernel = Magick::KernelInfo.new('Octagon')
-    expect do
-      res = img.morphology_channel(Magick::RedChannel, Magick::EdgeOutMorphology, 2, kernel)
-      expect(res).to be_instance_of(described_class)
-      expect(res).not_to be(img)
-    end.not_to raise_error
+
+    res = img.morphology_channel(Magick::RedChannel, Magick::EdgeOutMorphology, 2, kernel)
+    expect(res).to be_instance_of(described_class)
+    expect(res).not_to be(img)
   end
 end

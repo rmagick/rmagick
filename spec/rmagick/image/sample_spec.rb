@@ -2,10 +2,9 @@ RSpec.describe Magick::Image, '#sample' do
   it 'works' do
     img = described_class.new(20, 20)
 
-    expect do
-      res = img.sample(10, 10)
-      expect(res).to be_instance_of(described_class)
-    end.not_to raise_error
+    res = img.sample(10, 10)
+    expect(res).to be_instance_of(described_class)
+
     expect { img.sample(2) }.not_to raise_error
     expect { img.sample }.to raise_error(ArgumentError)
     expect { img.sample(0) }.to raise_error(ArgumentError)

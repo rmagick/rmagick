@@ -10,14 +10,13 @@ RSpec.describe Magick::ImageList, '#+' do
 
     list.scene = 7
     cur = list.cur_image
-    expect do
-      res = list + list2
-      expect(res).to be_instance_of(described_class)
-      expect(res.length).to eq(15)
-      expect(list).not_to be(res)
-      expect(list2).not_to be(res)
-      expect(res.cur_image).to be(cur)
-    end.not_to raise_error
+
+    res = list + list2
+    expect(res).to be_instance_of(described_class)
+    expect(res.length).to eq(15)
+    expect(list).not_to be(res)
+    expect(list2).not_to be(res)
+    expect(res.cur_image).to be(cur)
 
     expect { list + [2] }.to raise_error(ArgumentError)
   end

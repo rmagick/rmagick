@@ -14,9 +14,9 @@ RSpec.describe Magick::ImageList do
     list = described_class.new(*FILES[0..9])
 
     expect { list.detect { true } }.not_to raise_error
-    expect do
-      list.each_with_index { |img, _n| expect(img).to be_instance_of(Magick::Image) }
-    end.not_to raise_error
+
+    list.each_with_index { |img, _n| expect(img).to be_instance_of(Magick::Image) }
+
     expect { list.entries }.not_to raise_error
     expect { list.include?(list[0]) }.not_to raise_error
     expect { list.inject(0) { 0 } }.not_to raise_error

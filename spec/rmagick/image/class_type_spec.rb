@@ -9,10 +9,8 @@ RSpec.describe Magick::Image, '#class_type' do
     expect(img.class_type).to eq(Magick::PseudoClass)
     expect { img.class_type = 2 }.to raise_error(TypeError)
 
-    expect do
-      img.class_type = Magick::PseudoClass
-      img.class_type = Magick::DirectClass
-      expect(img.class_type).to eq(Magick::DirectClass)
-    end.not_to raise_error
+    img.class_type = Magick::PseudoClass
+    img.class_type = Magick::DirectClass
+    expect(img.class_type).to eq(Magick::DirectClass)
   end
 end

@@ -4,11 +4,10 @@ RSpec.describe Magick::Image, '#convolve' do
     kernel = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
     order = 3
 
-    expect do
-      res = img.convolve(order, kernel)
-      expect(res).to be_instance_of(described_class)
-      expect(res).not_to be(img)
-    end.not_to raise_error
+    res = img.convolve(order, kernel)
+    expect(res).to be_instance_of(described_class)
+    expect(res).not_to be(img)
+
     expect { img.convolve }.to raise_error(ArgumentError)
     expect { img.convolve(0) }.to raise_error(ArgumentError)
     expect { img.convolve(-1) }.to raise_error(ArgumentError)

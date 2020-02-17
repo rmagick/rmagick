@@ -2,11 +2,10 @@ RSpec.describe Magick::Image, '#distortion_channel' do
   it 'works' do
     img1 = described_class.new(20, 20)
 
-    expect do
-      metric = img1.distortion_channel(img1, Magick::MeanAbsoluteErrorMetric)
-      expect(metric).to be_instance_of(Float)
-      expect(metric).to eq(0.0)
-    end.not_to raise_error
+    metric = img1.distortion_channel(img1, Magick::MeanAbsoluteErrorMetric)
+    expect(metric).to be_instance_of(Float)
+    expect(metric).to eq(0.0)
+
     expect { img1.distortion_channel(img1, Magick::MeanSquaredErrorMetric) }.not_to raise_error
     expect { img1.distortion_channel(img1, Magick::PeakAbsoluteErrorMetric) }.not_to raise_error
     expect { img1.distortion_channel(img1, Magick::PeakSignalToNoiseRatioErrorMetric) }.not_to raise_error

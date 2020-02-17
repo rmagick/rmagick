@@ -3,10 +3,8 @@ RSpec.describe Magick::ImageList, "#mosaic" do
     ilist = described_class.new
     ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_1.gif')
 
-    expect do
-      res = ilist.mosaic
-      expect(res).to be_instance_of(Magick::Image)
-    end.not_to raise_error
+    res = ilist.mosaic
+    expect(res).to be_instance_of(Magick::Image)
   end
 
   it "raises an error when images is not set" do

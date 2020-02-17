@@ -5,12 +5,12 @@ RSpec.describe Magick::ImageList, '#reject' do
     list.scene = 7
     cur = list.cur_image
     list2 = list
-    expect do
-      res = list.reject { |img| File.basename(img.filename) =~ /Button_9/ }
-      expect(res.length).to eq(9)
-      expect(res).to be_instance_of(described_class)
-      expect(res.cur_image).to be(cur)
-    end.not_to raise_error
+
+    res = list.reject { |img| File.basename(img.filename) =~ /Button_9/ }
+    expect(res.length).to eq(9)
+    expect(res).to be_instance_of(described_class)
+    expect(res.cur_image).to be(cur)
+
     expect(list).to be(list2)
     expect(list.cur_image).to be(cur)
 

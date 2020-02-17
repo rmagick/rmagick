@@ -6,10 +6,8 @@ RSpec.describe Magick::Image, '#composite!' do
     img2.define('compose:args', '1x1')
     Magick::CompositeOperator.values do |op|
       Magick::GravityType.values do |gravity|
-        expect do
-          res = img1.composite!(img2, gravity, op)
-          expect(res).to be(img1)
-        end.not_to raise_error
+        res = img1.composite!(img2, gravity, op)
+        expect(res).to be(img1)
       end
     end
     img1.freeze

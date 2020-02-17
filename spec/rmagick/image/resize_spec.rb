@@ -2,10 +2,9 @@ RSpec.describe Magick::Image, '#resize' do
   it 'works' do
     img = described_class.new(20, 20)
 
-    expect do
-      res = img.resize(2)
-      expect(res).to be_instance_of(described_class)
-    end.not_to raise_error
+    res = img.resize(2)
+    expect(res).to be_instance_of(described_class)
+
     expect { img.resize(50, 50) }.not_to raise_error
 
     Magick::FilterType.values do |filter|

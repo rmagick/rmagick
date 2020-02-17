@@ -2,10 +2,8 @@ RSpec.describe Magick::Image, '#unsharp_mask' do
   it 'works' do
     img = described_class.new(20, 20)
 
-    expect do
-      res = img.unsharp_mask
-      expect(res).to be_instance_of(described_class)
-    end.not_to raise_error
+    res = img.unsharp_mask
+    expect(res).to be_instance_of(described_class)
 
     expect { img.unsharp_mask(2.0) }.not_to raise_error
     expect { img.unsharp_mask(2.0, 1.0) }.not_to raise_error

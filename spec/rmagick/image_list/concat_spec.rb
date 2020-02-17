@@ -20,12 +20,11 @@ RSpec.describe Magick::ImageList, '#concat' do
     list2 << list[8]
     list2 << list[9]
 
-    expect do
-      res = list.concat(list2)
-      expect(res).to be_instance_of(described_class)
-      expect(res.length).to eq(15)
-      expect(res.cur_image).to be(res[14])
-    end.not_to raise_error
+    res = list.concat(list2)
+    expect(res).to be_instance_of(described_class)
+    expect(res.length).to eq(15)
+    expect(res.cur_image).to be(res[14])
+
     expect { list.concat(2) }.to raise_error(ArgumentError)
     expect { list.concat([2]) }.to raise_error(ArgumentError)
   end

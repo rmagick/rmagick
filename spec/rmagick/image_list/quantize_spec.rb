@@ -3,11 +3,11 @@ RSpec.describe Magick::ImageList, "#quantize" do
     ilist = described_class.new
 
     ilist.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_1.gif')
-    expect do
-      res = ilist.quantize
-      expect(res).to be_instance_of(described_class)
-      expect(res.scene).to eq(1)
-    end.not_to raise_error
+
+    res = ilist.quantize
+    expect(res).to be_instance_of(described_class)
+    expect(res.scene).to eq(1)
+
     expect { ilist.quantize(128) }.not_to raise_error
     expect { ilist.quantize('x') }.to raise_error(TypeError)
     expect { ilist.quantize(128, Magick::RGBColorspace) }.not_to raise_error

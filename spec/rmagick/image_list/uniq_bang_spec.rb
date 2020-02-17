@@ -2,9 +2,8 @@ RSpec.describe Magick::ImageList, '#uniq!' do
   it 'works' do
     list = described_class.new(*FILES[0..9])
 
-    expect do
-      expect(list.uniq!).to be(nil)
-    end.not_to raise_error
+    expect(list.uniq!).to be(nil)
+
     list[1] = list[0]
     list.scene = 7
     cur = list.cur_image

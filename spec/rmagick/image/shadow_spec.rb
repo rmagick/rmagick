@@ -2,10 +2,9 @@ RSpec.describe Magick::Image, '#shadow' do
   it 'works' do
     img = described_class.new(20, 20)
 
-    expect do
-      res = img.shadow
-      expect(res).to be_instance_of(described_class)
-    end.not_to raise_error
+    res = img.shadow
+    expect(res).to be_instance_of(described_class)
+
     expect { img.shadow(5) }.not_to raise_error
     expect { img.shadow(5, 5) }.not_to raise_error
     expect { img.shadow(5, 5, 3.0) }.not_to raise_error

@@ -4,31 +4,26 @@ RSpec.describe Magick::Image, '#find_similar_region' do
     girl = described_class.read(IMAGES_DIR + '/Flower_Hat.jpg').first
     region = girl.crop(10, 10, 50, 50)
 
-    expect do
-      x, y = girl.find_similar_region(region)
-      expect(x).not_to be(nil)
-      expect(y).not_to be(nil)
-      expect(x).to eq(10)
-      expect(y).to eq(10)
-    end.not_to raise_error
-    expect do
-      x, y = girl.find_similar_region(region, 0)
-      expect(x).to eq(10)
-      expect(y).to eq(10)
-    end.not_to raise_error
-    expect do
-      x, y = girl.find_similar_region(region, 0, 0)
-      expect(x).to eq(10)
-      expect(y).to eq(10)
-    end.not_to raise_error
+    x, y = girl.find_similar_region(region)
+    expect(x).not_to be(nil)
+    expect(y).not_to be(nil)
+    expect(x).to eq(10)
+    expect(y).to eq(10)
+
+    x, y = girl.find_similar_region(region, 0)
+    expect(x).to eq(10)
+    expect(y).to eq(10)
+
+    x, y = girl.find_similar_region(region, 0, 0)
+    expect(x).to eq(10)
+    expect(y).to eq(10)
 
     list = Magick::ImageList.new
     list << region
-    expect do
-      x, y = girl.find_similar_region(list, 0, 0)
-      expect(x).to eq(10)
-      expect(y).to eq(10)
-    end.not_to raise_error
+
+    x, y = girl.find_similar_region(list, 0, 0)
+    expect(x).to eq(10)
+    expect(y).to eq(10)
 
     x = girl.find_similar_region(img)
     expect(x).to be(nil)
