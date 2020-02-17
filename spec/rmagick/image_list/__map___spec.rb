@@ -1,12 +1,12 @@
 RSpec.describe Magick::ImageList, '#__map__' do
   it 'works' do
-    list = described_class.new(*FILES[0..9])
-    image = list[0]
+    image_list = described_class.new(*FILES[0..9])
+    image = image_list[0]
 
     expect do
-      list.__map__ { |_x| image }
+      image_list.__map__ { |_x| image }
     end.not_to raise_error
-    expect(list).to be_instance_of(described_class)
-    expect { list.__map__ { 2 } }.to raise_error(ArgumentError)
+    expect(image_list).to be_instance_of(described_class)
+    expect { image_list.__map__ { 2 } }.to raise_error(ArgumentError)
   end
 end

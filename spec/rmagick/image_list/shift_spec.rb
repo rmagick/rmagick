@@ -1,16 +1,16 @@
 RSpec.describe Magick::ImageList, '#shift' do
   it 'works' do
-    list = described_class.new(*FILES[0..9])
+    image_list = described_class.new(*FILES[0..9])
 
-    list.scene = 0
-    result = list[0]
-    image = list.shift
+    image_list.scene = 0
+    result = image_list[0]
+    image = image_list.shift
     expect(image).to be(result)
-    expect(list.scene).to eq(8)
+    expect(image_list.scene).to eq(8)
 
-    result = list[0]
-    image = list.shift
+    result = image_list[0]
+    image = image_list.shift
     expect(image).to be(result)
-    expect(list.scene).to eq(7)
+    expect(image_list.scene).to eq(7)
   end
 end

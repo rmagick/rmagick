@@ -18,10 +18,10 @@ RSpec.describe Magick::Image, '#find_similar_region' do
     expect(x).to eq(10)
     expect(y).to eq(10)
 
-    list = Magick::ImageList.new
-    list << region
+    image_list = Magick::ImageList.new
+    image_list << region
 
-    x, y = girl.find_similar_region(list, 0, 0)
+    x, y = girl.find_similar_region(image_list, 0, 0)
     expect(x).to eq(10)
     expect(y).to eq(10)
 

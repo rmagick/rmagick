@@ -6,39 +6,39 @@ RSpec.describe Magick::ImageList, '#combine' do
     black = Magick::Image.new(20, 20) { self.background_color = 'black' }
     alpha = Magick::Image.new(20, 20) { self.background_color = 'transparent' }
 
-    list = described_class.new
-    expect { list.combine }.to raise_error(ArgumentError)
+    image_list = described_class.new
+    expect { image_list.combine }.to raise_error(ArgumentError)
 
-    list << red
-    expect { list.combine }.not_to raise_error
+    image_list << red
+    expect { image_list.combine }.not_to raise_error
 
-    result = list.combine
+    result = image_list.combine
     expect(result).to be_instance_of(Magick::Image)
 
-    list << alpha
-    expect { list.combine }.not_to raise_error
+    image_list << alpha
+    expect { image_list.combine }.not_to raise_error
 
-    list.pop
-    list << green
-    list << blue
-    expect { list.combine }.not_to raise_error
+    image_list.pop
+    image_list << green
+    image_list << blue
+    expect { image_list.combine }.not_to raise_error
 
-    list << alpha
-    expect { list.combine }.not_to raise_error
+    image_list << alpha
+    expect { image_list.combine }.not_to raise_error
 
-    list.pop
-    list << black
-    expect { list.combine(Magick::CMYKColorspace) }.not_to raise_error
-    expect { list.combine(Magick::SRGBColorspace) }.not_to raise_error
+    image_list.pop
+    image_list << black
+    expect { image_list.combine(Magick::CMYKColorspace) }.not_to raise_error
+    expect { image_list.combine(Magick::SRGBColorspace) }.not_to raise_error
 
-    list << alpha
-    expect { list.combine(Magick::CMYKColorspace) }.not_to raise_error
-    expect { list.combine(Magick::SRGBColorspace) }.to raise_error(ArgumentError)
+    image_list << alpha
+    expect { image_list.combine(Magick::CMYKColorspace) }.not_to raise_error
+    expect { image_list.combine(Magick::SRGBColorspace) }.to raise_error(ArgumentError)
 
-    list << alpha
-    expect { list.combine }.to raise_error(ArgumentError)
+    image_list << alpha
+    expect { image_list.combine }.to raise_error(ArgumentError)
 
-    expect { list.combine(nil) }.to raise_error(TypeError)
-    expect { list.combine(Magick::SRGBColorspace, 1) }.to raise_error(ArgumentError)
+    expect { image_list.combine(nil) }.to raise_error(TypeError)
+    expect { image_list.combine(Magick::SRGBColorspace, 1) }.to raise_error(ArgumentError)
   end
 end

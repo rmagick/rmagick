@@ -1,10 +1,10 @@
 RSpec.describe Magick::ImageList, '#partition' do
   it 'works' do
-    list = described_class.new(*FILES[0..9])
+    image_list = described_class.new(*FILES[0..9])
 
     n = -1
 
-    a = list.partition do
+    a = image_list.partition do
       n += 1
       (n & 1).zero?
     end

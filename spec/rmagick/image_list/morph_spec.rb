@@ -2,7 +2,7 @@ RSpec.describe Magick::ImageList, "#morph" do
   it "works" do
     image_list = described_class.new
 
-    # can't morph an empty list
+    # can't morph an empty image_list
     expect { image_list.morph(1) }.to raise_error(ArgumentError)
     image_list.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_1.gif')
     # can't specify a negative argument

@@ -1,8 +1,8 @@
 RSpec.describe Magick::ImageList, '#flatten_images' do
   it 'works' do
-    list = described_class.new(*FILES[0..9])
+    image_list = described_class.new(*FILES[0..9])
 
-    expect { list.flatten_images }.not_to raise_error
+    expect { image_list.flatten_images }.not_to raise_error
   end
 
   it "still works" do

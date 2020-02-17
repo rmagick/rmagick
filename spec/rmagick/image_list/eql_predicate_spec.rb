@@ -1,10 +1,10 @@
 RSpec.describe Magick::ImageList, '#eql?' do
   it 'works' do
-    list = described_class.new(*FILES[0..9])
+    image_list = described_class.new(*FILES[0..9])
 
-    list2 = list
-    expect(list.eql?(list2)).to be(true)
-    list2 = list.copy
-    expect(list.eql?(list2)).to be(false)
+    image_list2 = image_list
+    expect(image_list.eql?(image_list2)).to be(true)
+    image_list2 = image_list.copy
+    expect(image_list.eql?(image_list2)).to be(false)
   end
 end
