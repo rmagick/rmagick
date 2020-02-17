@@ -21,6 +21,7 @@ RSpec.describe Magick::Image, '#dissolve' do
       dissolved = image1.dissolve(image2, 0.20)
       expect(Float(dissolved.pixel_color(2, 2).alpha) / Magick::QuantumRange).to be_between(0.15, 0.25)
     end
+
     it 'works when alpha is string percentage' do
       image1 = described_class.new(100, 100) { self.background_color = 'transparent' }
       image2 = described_class.new(100, 100) { self.background_color = 'green' }
