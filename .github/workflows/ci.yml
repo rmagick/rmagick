@@ -72,6 +72,36 @@ jobs:
         bundle install --path=vendor/bundle --jobs 4 --retry 3
         bundle exec rake
 
+  test-macos:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        ruby-version: [2.6, 2.7]
+        imagemagick-version: [6.9.10-90, 7.0.9-20]
+
+    name: macOS, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Cache ImageMagick
+      uses: actions/cache@v1
+      with:
+        path: ./build-ImageMagick
+        key: v1-macos-imagemagick-${{ matrix.imagemagick-version }}
+        restore-keys: |
+          v1-macos-imagemagick-${{ matrix.imagemagick-version }}
+    - name: Set up Ruby ${{ matrix.ruby-version }}
+      uses: eregon/use-ruby-action@master
+      with:
+        ruby-version: ${{ matrix.ruby-version }}
+    - name: Update/Install packages
+      run: |
+        IMAGEMAGICK_VERSION=${{ matrix.imagemagick-version }} ./before_install_osx.sh
+    - name: Build and test with Rake
+      run: |
+        gem install bundler
+        bundle install --jobs 4 --retry 3
+        bundle exec rake
+
   test-windows:
     runs-on: windows-latest
     timeout-minutes: 10
@@ -97,6 +127,7 @@ jobs:
         $url = "https://ftp.icm.edu.pl/pub/graphics/ImageMagick/binaries/$($installer_name)"
         wget $url --progress=dot
         cmd.exe /D /S /C "$($installer_name) /DIR=D:\ImageMagick /VERYSILENT /TASKS=install_Devel"
+        cmd.exe /D /S /C "choco install ghostscript"
     - name: Cache Ruby dependencies
       uses: actions/cache@v1
       with:

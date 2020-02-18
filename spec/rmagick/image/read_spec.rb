@@ -25,4 +25,11 @@ RSpec.describe Magick::Image, '#read' do
       expect { described_class.read(nil) }.to raise_error(Magick::ImageMagickError, /unable to open image nil/)
     end
   end
+
+  describe 'issue #483', supported_after('6.9.0') do
+    # On Windows platform, it causes SEGV with ImageMagick 6.8.x
+    it 'can read PDF file' do
+      expect { described_class.read(File.join(FIXTURE_PATH, 'sample.pdf')) }.not_to raise_error
+    end
+  end
 end

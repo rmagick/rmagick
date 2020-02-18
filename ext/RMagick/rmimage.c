@@ -11,6 +11,7 @@
  ******************************************************************************/
 
 #include "rmagick.h"
+#include <signal.h>
 
 #define BEGIN_CHANNEL_MASK(image, channels) \
   { \
@@ -11636,6 +11637,13 @@ file_arg_rescue(VALUE arg, VALUE raised_exc ATTRIBUTE_UNUSED)
  * @see Image_ping
  * @see array_from_images
  */
+
+#if !defined(_WIN32)
+void sig_handler(int sig ATTRIBUTE_UNUSED)
+{
+}
+#endif
+
 static VALUE
 rd_image(VALUE class ATTRIBUTE_UNUSED, VALUE file, reader_t reader)
 {
@@ -11678,7 +11686,16 @@ rd_image(VALUE class ATTRIBUTE_UNUSED, VALUE file, reader_t reader)
 
     exception = AcquireExceptionInfo();
 
+#if !defined(_WIN32)
+    signal(SIGCHLD, sig_handler);
+#endif
+
     images = (reader)(info, exception);
+
+#if !defined(_WIN32)
+    signal(SIGCHLD, SIG_DFL);
+#endif
+
     rm_check_exception(exception, images, DestroyOnError);
     rm_set_user_artifact(images, info);
     (void) DestroyExceptionInfo(exception);
