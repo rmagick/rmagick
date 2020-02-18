@@ -76,9 +76,10 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        ruby-version: [2.7]
+        ruby-version: [2.6, 2.7]
         imagemagick-version: [6.9.10-90, 7.0.9-20]
 
+    name: macOS, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
     steps:
     - uses: actions/checkout@v2
     - name: Cache ImageMagick
