@@ -94,7 +94,7 @@ module Magick
             raise ArgumentError, "wrong number of arguments (#{args.length} for 1 or 3)"
           end
         rescue ArgumentError
-          raise ArgumentError, "arguments must be convertable to float (got #{[angle, *args].collect(&:class).join(', ')})"
+          raise ArgumentError, "arguments must be convertable to float (got #{[angle, *args].map(&:class).join(', ')})"
         end
         yield(self) if block_given?
         self

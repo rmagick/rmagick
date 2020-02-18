@@ -245,22 +245,6 @@ Style/CaseEquality:
     - 'spec/rmagick/pixel/dup_spec.rb'
     - 'spec/rmagick/pixel/threequals_spec.rb'
 
-# Offense count: 25
-# Cop supports --auto-correct.
-# Configuration parameters: PreferredMethods.
-Style/CollectionMethods:
-  Exclude:
-    - 'doc/ex/composite_layers.rb'
-    - 'lib/rmagick_internal.rb'
-    - 'lib/rvg/embellishable.rb'
-    - 'lib/rvg/misc.rb'
-    - 'lib/rvg/transformable.rb'
-    - 'spec/rmagick/image/export_pixels_spec.rb'
-    - 'spec/rmagick/image/import_pixels_spec.rb'
-    - 'spec/rmagick/image_list/collect_spec.rb'
-    - 'spec/rmagick/image_list/find_all_spec.rb'
-    - 'spec/rmagick/image_list_spec.rb'
-
 # Offense count: 89
 Style/CommentedKeyword:
   Enabled: false

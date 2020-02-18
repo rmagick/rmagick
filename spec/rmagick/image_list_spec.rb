@@ -1,3 +1,4 @@
+# rubocop:disable Style/CollectionMethods
 RSpec.describe Magick::ImageList do
   it 'does not have certain array methods' do
     image_list = described_class.new(*FILES[0..9])
@@ -27,3 +28,4 @@ RSpec.describe Magick::ImageList do
     expect { image_list.zip }.not_to raise_error
   end
 end
+# rubocop:enable Style/CollectionMethods

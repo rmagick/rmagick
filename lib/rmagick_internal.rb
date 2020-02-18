@@ -1410,7 +1410,7 @@ module Magick
     # override Enumerable#collect
     def collect(&block)
       current = get_current
-      a = @images.collect(&block)
+      a = @images.map(&block)
       ilist = self.class.new
       a.each { |image| ilist << image }
       ilist.set_current current
@@ -1418,7 +1418,7 @@ module Magick
     end
 
     def collect!(&block)
-      @images.collect!(&block)
+      @images.map!(&block)
       assert_image_array @images
       self
     end
@@ -1527,7 +1527,7 @@ module Magick
     # Override Enumerable's find_all
     def find_all(&block)
       current = get_current
-      a = @images.find_all(&block)
+      a = @images.select(&block)
       ilist = self.class.new
       a.each { |image| ilist << image }
       ilist.set_current current
