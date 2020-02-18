@@ -26,9 +26,9 @@ RSpec.describe Magick::Image, '#read' do
     end
   end
 
-  describe 'issue #483' do
+  describe 'issue #483', supported_after('6.9.0') do
+    # On Windows platform, it causes SEGV with ImageMagick 6.8.x
     it 'can read PDF file' do
-      skip if RUBY_PLATFORM =~ /mswin|mingw/
       expect { described_class.read(File.join(FIXTURE_PATH, 'sample.pdf')) }.not_to raise_error
     end
   end

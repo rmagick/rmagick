@@ -127,6 +127,7 @@ jobs:
         $url = "https://ftp.icm.edu.pl/pub/graphics/ImageMagick/binaries/$($installer_name)"
         wget $url --progress=dot
         cmd.exe /D /S /C "$($installer_name) /DIR=D:\ImageMagick /VERYSILENT /TASKS=install_Devel"
+        cmd.exe /D /S /C "choco install ghostscript"
     - name: Cache Ruby dependencies
       uses: actions/cache@v1
       with:
