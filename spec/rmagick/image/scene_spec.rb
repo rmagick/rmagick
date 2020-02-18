@@ -1,11 +1,11 @@
 RSpec.describe Magick::Image, '#scene' do
   it 'works' do
     image1 = described_class.new(100, 100)
-    ilist = Magick::ImageList.new
-    ilist << image1
+    image_list = Magick::ImageList.new
+    image_list << image1
     image2 = image1.copy
-    ilist << image2
-    ilist.write('temp.gif')
+    image_list << image2
+    image_list.write('temp.gif')
     FileUtils.rm('temp.gif')
 
     expect { image2.scene }.not_to raise_error

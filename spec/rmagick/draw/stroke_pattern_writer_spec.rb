@@ -9,10 +9,10 @@ RSpec.describe Magick::Draw, '#stroke_pattern' do
   it 'accepts an ImageList argument' do
     draw = described_class.new
     image = Magick::Image.new(20, 20)
-    ilist = Magick::ImageList.new
-    ilist << image
+    image_list = Magick::ImageList.new
+    image_list << image
 
-    expect { draw.stroke_pattern = ilist }.not_to raise_error
+    expect { draw.stroke_pattern = image_list }.not_to raise_error
   end
 
   it 'does not accept arbitrary arguments' do

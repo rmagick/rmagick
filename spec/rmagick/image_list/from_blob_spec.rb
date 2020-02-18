@@ -1,13 +1,13 @@
 RSpec.describe Magick::ImageList, "#from_blob" do
   it "works" do
-    ilist = described_class.new
+    image_list = described_class.new
     blob = File.read(FLOWER_HAT, mode: "rb")
 
-    expect { ilist.from_blob(blob) }.not_to raise_error
-    expect(ilist[0]).to be_instance_of(Magick::Image)
-    expect(ilist.scene).to eq(0)
+    expect { image_list.from_blob(blob) }.not_to raise_error
+    expect(image_list[0]).to be_instance_of(Magick::Image)
+    expect(image_list.scene).to eq(0)
 
-    ilist2 = described_class.new(FLOWER_HAT)
-    expect(ilist2).to eq(ilist)
+    image_list2 = described_class.new(FLOWER_HAT)
+    expect(image_list2).to eq(image_list)
   end
 end
