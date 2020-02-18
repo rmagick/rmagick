@@ -269,12 +269,6 @@ Style/Documentation:
 Style/DocumentationMethod:
   Enabled: false
 
-# Offense count: 4
-Style/EvalWithLocation:
-  Exclude:
-    - 'lib/rmagick_internal.rb'
-    - 'lib/rvg/units.rb'
-
 # Offense count: 43
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.

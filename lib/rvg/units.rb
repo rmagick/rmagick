@@ -8,7 +8,7 @@ module Magick
       def dpi=(n)
         unless defined?(@dpi)
           [Float, Integer].each do |c|
-            c.class_eval <<-END_DEFS
+            c.class_eval <<-END_DEFS, __FILE__, __LINE__ + 1
               # the default measurement - 1px is 1 pixel
               def px
                 self

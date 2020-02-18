@@ -1074,7 +1074,7 @@ module Magick
 
         # Define a getter and a setter for each channel.
         %i[red green blue opacity].each do |c|
-          module_eval <<-END_EVAL
+          module_eval <<-END_EVAL, __FILE__, __LINE__ + 1
             def #{c}
                 return collect { |p| p.#{c} }
             end
@@ -1304,7 +1304,7 @@ module Magick
     # All the binary operators work the same way.
     # 'other' should be either an ImageList or an Array
     %w[& + - |].each do |op|
-      module_eval <<-END_BINOPS
+      module_eval <<-END_BINOPS, __FILE__, __LINE__ + 1
         def #{op}(other)
           ilist = self.class.new
           begin
@@ -1388,7 +1388,7 @@ module Magick
       at each each_index empty? fetch
       first hash include? index length rindex sort!
     ].each do |mth|
-      module_eval <<-END_SIMPLE_DELEGATES
+      module_eval <<-END_SIMPLE_DELEGATES, __FILE__, __LINE__ + 1
         def #{mth}(*args, &block)
           @images.#{mth}(*args, &block)
         end
