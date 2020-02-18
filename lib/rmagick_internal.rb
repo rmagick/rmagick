@@ -133,7 +133,7 @@ module Magick
       str = ''
       if @width > 0
         fmt = @width.truncate == @width ? '%d' : '%.2f'
-        str << format(fmt, @width)
+        str << sprintf(fmt, @width)
         str << '%' if @flag == PercentGeometry
       end
 
@@ -141,10 +141,10 @@ module Magick
 
       if @height > 0
         fmt = @height.truncate == @height ? '%d' : '%.2f'
-        str << format(fmt, @height)
+        str << sprintf(fmt, @height)
         str << '%' if @flag == PercentGeometry
       end
-      str << format('%+d%+d', @x, @y) if @x != 0 || @y != 0
+      str << sprintf('%+d%+d', @x, @y) if @x != 0 || @y != 0
       str << FLAGS[@flag.to_i] if @flag != PercentGeometry
       str
     end
@@ -235,7 +235,7 @@ module Magick
     # Apply coordinate transformations to support scaling (s), rotation (r),
     # and translation (t). Angles are specified in radians.
     def affine(sx, rx, ry, sy, tx, ty)
-      primitive 'affine ' + format('%g,%g,%g,%g,%g,%g', sx, rx, ry, sy, tx, ty)
+      primitive 'affine ' + sprintf('%g,%g,%g,%g,%g,%g', sx, rx, ry, sy, tx, ty)
     end
 
     # Set alpha (make transparent) in image according to the specified
@@ -243,12 +243,12 @@ module Magick
     def alpha(x, y, method)
       Kernel.raise ArgumentError, 'Unknown paint method' unless PAINT_METHOD_NAMES.key?(method.to_i)
       name = Gem::Version.new(Magick::IMAGEMAGICK_VERSION) > Gem::Version.new('7.0.0') ? 'alpha ' : 'matte '
-      primitive name + format('%g,%g, %s', x, y, PAINT_METHOD_NAMES[method.to_i])
+      primitive name + sprintf('%g,%g, %s', x, y, PAINT_METHOD_NAMES[method.to_i])
     end
 
     # Draw an arc.
     def arc(start_x, start_y, end_x, end_y, start_degrees, end_degrees)
-      primitive 'arc ' + format(
+      primitive 'arc ' + sprintf(
         '%g,%g %g,%g %g,%g',
         start_x, start_y, end_x, end_y, start_degrees, end_degrees
       )
@@ -261,12 +261,12 @@ module Magick
       elsif points.length.odd?
         Kernel.raise ArgumentError, 'odd number of arguments specified'
       end
-      primitive 'bezier ' + points.map! { |x| format('%g', x) }.join(',')
+      primitive 'bezier ' + points.map! { |x| sprintf('%g', x) }.join(',')
     end
 
     # Draw a circle
     def circle(origin_x, origin_y, perim_x, perim_y)
-      primitive 'circle ' + format('%g,%g %g,%g', origin_x, origin_y, perim_x, perim_y)
+      primitive 'circle ' + sprintf('%g,%g %g,%g', origin_x, origin_y, perim_x, perim_y)
     end
 
     # Invoke a clip-path defined by def_clip_path.
@@ -290,7 +290,7 @@ module Magick
     # point, replace, floodfill, filltoborder,reset
     def color(x, y, method)
       Kernel.raise ArgumentError, "Unknown PaintMethod: #{method}" unless PAINT_METHOD_NAMES.key?(method.to_i)
-      primitive 'color ' + format('%g,%g,%s', x, y, PAINT_METHOD_NAMES[method.to_i])
+      primitive 'color ' + sprintf('%g,%g,%s', x, y, PAINT_METHOD_NAMES[method.to_i])
     end
 
     # Specify EITHER the text decoration (none, underline, overline,
@@ -321,7 +321,7 @@ module Magick
 
     # Draw an ellipse
     def ellipse(origin_x, origin_y, width, height, arc_start, arc_end)
-      primitive 'ellipse ' + format(
+      primitive 'ellipse ' + sprintf(
         '%g,%g %g,%g %g,%g',
         origin_x, origin_y, width, height, arc_start, arc_end
       )
@@ -390,7 +390,7 @@ module Magick
     def image(composite, x, y, width, height, image_file_path)
       Kernel.raise ArgumentError, 'Unknown composite' unless composite.is_a?(CompositeOperator)
       composite_name = composite.to_s.sub!('CompositeOp', '')
-      primitive 'image ' + format('%s %g,%g %g,%g %s', composite_name, x, y, width, height, enquote(image_file_path))
+      primitive 'image ' + sprintf('%s %g,%g %g,%g %s', composite_name, x, y, width, height, enquote(image_file_path))
     end
 
     # IM 6.5.5-8 and later
@@ -431,7 +431,7 @@ module Magick
 
     # Draw a line
     def line(start_x, start_y, end_x, end_y)
-      primitive 'line ' + format('%g,%g %g,%g', start_x, start_y, end_x, end_y)
+      primitive 'line ' + sprintf('%g,%g %g,%g', start_x, start_y, end_x, end_y)
     end
 
     # Specify drawing fill and stroke opacities. If the value is a string
@@ -453,7 +453,7 @@ module Magick
     # as the argument to the 'fill' or 'stroke' methods
     def pattern(name, x, y, width, height)
       push('defs')
-      push("pattern #{name} " + format('%g %g %g %g', x, y, width, height))
+      push("pattern #{name} " + sprintf('%g %g %g %g', x, y, width, height))
       push('graphic-context')
       yield
     ensure
@@ -464,13 +464,13 @@ module Magick
 
     # Set point to fill color.
     def point(x, y)
-      primitive 'point ' + format('%g,%g', x, y)
+      primitive 'point ' + sprintf('%g,%g', x, y)
     end
 
     # Specify the font size in points. Yes, the primitive is "font-size" but
     # in other places this value is called the "pointsize". Give it both names.
     def pointsize(points)
-      primitive 'font-size ' + format('%g', points)
+      primitive 'font-size ' + sprintf('%g', points)
     end
     alias font_size pointsize
 
@@ -481,7 +481,7 @@ module Magick
       elsif points.length.odd?
         Kernel.raise ArgumentError, 'odd number of points specified'
       end
-      primitive 'polygon ' + points.map! { |x| format('%g', x) }.join(',')
+      primitive 'polygon ' + points.map! { |x| sprintf('%g', x) }.join(',')
     end
 
     # Draw a polyline
@@ -491,7 +491,7 @@ module Magick
       elsif points.length.odd?
         Kernel.raise ArgumentError, 'odd number of points specified'
       end
-      primitive 'polyline ' + points.map! { |x| format('%g', x) }.join(',')
+      primitive 'polyline ' + points.map! { |x| sprintf('%g', x) }.join(',')
     end
 
     # Return to the previously-saved set of whatever
@@ -525,7 +525,7 @@ module Magick
 
     # Draw a rectangle
     def rectangle(upper_left_x, upper_left_y, lower_right_x, lower_right_y)
-      primitive 'rectangle ' + format(
+      primitive 'rectangle ' + sprintf(
         '%g,%g %g,%g',
         upper_left_x, upper_left_y, lower_right_x, lower_right_y
       )
@@ -533,12 +533,12 @@ module Magick
 
     # Specify coordinate space rotation. "angle" is measured in degrees
     def rotate(angle)
-      primitive 'rotate ' + format('%g', angle)
+      primitive 'rotate ' + sprintf('%g', angle)
     end
 
     # Draw a rectangle with rounded corners
     def roundrectangle(center_x, center_y, width, height, corner_width, corner_height)
-      primitive 'roundrectangle ' + format(
+      primitive 'roundrectangle ' + sprintf(
         '%g,%g,%g,%g,%g,%g',
         center_x, center_y, width, height, corner_width, corner_height
       )
@@ -546,15 +546,15 @@ module Magick
 
     # Specify scaling to be applied to coordinate space on subsequent drawing commands.
     def scale(x, y)
-      primitive 'scale ' + format('%g,%g', x, y)
+      primitive 'scale ' + sprintf('%g,%g', x, y)
     end
 
     def skewx(angle)
-      primitive 'skewX ' + format('%g', angle)
+      primitive 'skewX ' + sprintf('%g', angle)
     end
 
     def skewy(angle)
-      primitive 'skewY ' + format('%g', angle)
+      primitive 'skewY ' + sprintf('%g', angle)
     end
 
     # Specify the object stroke, a color name or pattern name.
@@ -584,7 +584,7 @@ module Magick
 
     # Specify the initial offset in the dash pattern
     def stroke_dashoffset(value = 0)
-      primitive 'stroke-dashoffset ' + format('%g', value)
+      primitive 'stroke-dashoffset ' + sprintf('%g', value)
     end
 
     def stroke_linecap(value)
@@ -611,7 +611,7 @@ module Magick
 
     # Specify stroke (outline) width in pixels.
     def stroke_width(pixels)
-      primitive 'stroke-width ' + format('%g', pixels)
+      primitive 'stroke-width ' + sprintf('%g', pixels)
     end
 
     # Draw text at position x,y. Add quotes to text that is not already quoted.
@@ -629,7 +629,7 @@ module Magick
         # escape existing braces, surround with braces
         text = '{' + text.gsub(/[}]/) { |b| '\\' + b } + '}'
       end
-      primitive 'text ' + format('%g,%g %s', x, y, text)
+      primitive 'text ' + sprintf('%g,%g %s', x, y, text)
     end
 
     # Specify text alignment relative to a given point
@@ -658,7 +658,7 @@ module Magick
     # Specify center of coordinate space to use for subsequent drawing
     # commands.
     def translate(x, y)
-      primitive 'translate ' + format('%g,%g', x, y)
+      primitive 'translate ' + sprintf('%g,%g', x, y)
     end
   end # class Magick::Draw
 
@@ -866,7 +866,7 @@ module Magick
       else
         get_exif_by_number # ensure properties is populated with exif data
         tag.each do |num|
-          rval = self[format('#%04X', num.to_i)]
+          rval = self[sprintf('#%04X', num.to_i)]
           hash[num] = rval == 'unknown' ? nil : rval
         end
       end
