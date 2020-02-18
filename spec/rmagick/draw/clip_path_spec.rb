@@ -1,5 +1,5 @@
 RSpec.describe Magick::Draw, '#clip_path' do
-  it 'works' do
+  it 'updates the inspect output' do
     draw = described_class.new
     image = Magick::Image.new(200, 200)
 
