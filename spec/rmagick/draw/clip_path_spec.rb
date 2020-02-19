@@ -11,21 +11,21 @@ RSpec.describe Magick::Draw, '#clip_path' do
   it 'works' do
     points = [0, 0, 1, 1, 2, 2]
 
-    pr = described_class.new
+    draw = described_class.new
 
-    pr.define_clip_path('example') do
-      pr.polygon(*points)
+    draw.define_clip_path('example') do
+      draw.polygon(*points)
     end
 
-    pr.push
-    pr.clip_path('example')
+    draw.push
+    draw.clip_path('example')
 
     composite = Magick::Image.new(10, 10)
-    pr.composite(0, 0, 10, 10, composite)
+    draw.composite(0, 0, 10, 10, composite)
 
-    pr.pop
+    draw.pop
 
     canvas = Magick::Image.new(10, 10)
-    pr.draw(canvas)
+    draw.draw(canvas)
   end
 end
