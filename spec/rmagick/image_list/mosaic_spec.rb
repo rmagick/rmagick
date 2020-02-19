@@ -9,9 +9,9 @@ RSpec.describe Magick::ImageList, "#mosaic" do
 
   it "raises an error when images is not set" do
     image_list = described_class.new
-    list = image_list.copy
+    image_list = image_list.copy
 
-    list.instance_variable_set("@images", nil)
-    expect { list.mosaic }.to raise_error(Magick::ImageMagickError)
+    image_list.instance_variable_set("@images", nil)
+    expect { image_list.mosaic }.to raise_error(Magick::ImageMagickError)
   end
 end

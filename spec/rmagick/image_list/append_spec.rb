@@ -1,11 +1,11 @@
 RSpec.describe Magick::ImageList, '#<<' do
   it 'allows appending identical instances more than once' do
     image = Magick::Image.new(1, 1)
-    list = described_class.new
+    image_list = described_class.new
 
-    list << image << image
+    image_list << image << image
 
-    result = list.append(false)
+    result = image_list.append(false)
     expect(result.columns).to eq(2)
     expect(result.rows).to eq(1)
   end

@@ -1,9 +1,9 @@
 RSpec.describe Magick::ImageList, '#length' do
   it 'works' do
-    list = described_class.new(*FILES[0..9])
+    image_list = described_class.new(*FILES[0..9])
 
-    expect { list.length }.not_to raise_error
-    expect(list.length).to eq(10)
-    expect { list.length = 2 }.to raise_error(NoMethodError)
+    expect { image_list.length }.not_to raise_error
+    expect(image_list.length).to eq(10)
+    expect { image_list.length = 2 }.to raise_error(NoMethodError)
   end
 end

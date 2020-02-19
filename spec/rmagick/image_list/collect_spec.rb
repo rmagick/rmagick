@@ -1,16 +1,16 @@
 RSpec.describe Magick::ImageList, '#collect' do
   it 'works' do
-    list = described_class.new(*FILES[0..9])
+    image_list = described_class.new(*FILES[0..9])
 
-    scene = list.scene
-    result = list.collect(&:negate)
+    scene = image_list.scene
+    result = image_list.collect(&:negate)
     expect(result).to be_instance_of(described_class)
-    expect(list).not_to be(result)
+    expect(image_list).not_to be(result)
     expect(result.scene).to eq(scene)
 
-    scene = list.scene
-    list.collect!(&:negate)
-    expect(list).to be_instance_of(described_class)
-    expect(list.scene).to eq(scene)
+    scene = image_list.scene
+    image_list.collect!(&:negate)
+    expect(image_list).to be_instance_of(described_class)
+    expect(image_list.scene).to eq(scene)
   end
 end
