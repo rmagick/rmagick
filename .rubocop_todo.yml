@@ -397,13 +397,6 @@ Style/StringHashKeys:
 Style/StringLiterals:
   Enabled: false
 
-# Offense count: 5
-# Cop supports --auto-correct.
-# Configuration parameters: PreferredMethods.
-Style/StringMethods:
-  Exclude:
-    - 'lib/rvg/misc.rb'
-
 # Offense count: 884
 # Cop supports --auto-correct.
 # Configuration parameters: AutoCorrect, AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.

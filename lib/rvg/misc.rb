@@ -536,7 +536,7 @@ module Magick
         def baseline_shift(value)
           @text_attrs.baseline_shift = case value
                                        when 'baseline', 'sub', 'super'
-                                         value.intern
+                                         value.to_sym
                                        when /[-+]?\d+%/, Numeric
                                          value
                                        else
@@ -564,14 +564,14 @@ module Magick
         end
 
         def font_stretch(stretch)
-          stretch = FONT_STRETCH.fetch(stretch.intern, Magick::NormalStretch)
+          stretch = FONT_STRETCH.fetch(stretch.to_sym, Magick::NormalStretch)
           @gc.font_stretch(stretch)
           @shadow[-1].font_stretch = stretch
           nil
         end
 
         def font_style(style)
-          style = FONT_STYLE.fetch(style.intern, Magick::NormalStyle)
+          style = FONT_STYLE.fetch(style.to_sym, Magick::NormalStyle)
           @gc.font_style(style)
           @shadow[-1].font_style = style
           nil
@@ -680,7 +680,7 @@ module Magick
         end
 
         def text_anchor(anchor)
-          anchor = anchor.intern
+          anchor = anchor.to_sym
           anchor_enum = TEXT_ANCHOR.fetch(anchor, Magick::StartAnchor)
           @gc.text_anchor(anchor_enum)
           align = ANCHOR_TO_ALIGN.fetch(anchor, Magick::LeftAlign)
@@ -690,7 +690,7 @@ module Magick
         end
 
         def text_decoration(decoration)
-          decoration = TEXT_DECORATION.fetch(decoration.intern, Magick::NoDecoration)
+          decoration = TEXT_DECORATION.fetch(decoration.to_sym, Magick::NoDecoration)
           @gc.decorate(decoration)
           @shadow[-1].decorate = decoration
           nil
