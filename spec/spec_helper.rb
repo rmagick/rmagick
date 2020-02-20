@@ -18,6 +18,7 @@ IM_VERSION = Gem::Version.new(Regexp.last_match(1))
 
 FreezeError = RUBY_VERSION > '2.5' ? FrozenError : RuntimeError
 
-def supported_after(version)
-  :skip if Gem::Version.new(Magick::IMAGEMAGICK_VERSION) < Gem::Version.new(version)
+def supported_after(version, condition = {})
+  cond = condition[:if] || true
+  :skip if cond && Gem::Version.new(Magick::IMAGEMAGICK_VERSION) < Gem::Version.new(version)
 end
