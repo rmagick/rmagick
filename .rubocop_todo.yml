@@ -245,15 +245,6 @@ Style/CaseEquality:
     - 'spec/rmagick/pixel/dup_spec.rb'
     - 'spec/rmagick/pixel/threequals_spec.rb'
 
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: AutoCorrect, EnforcedStyle.
-# SupportedStyles: nested, compact
-Style/ClassAndModuleChildren:
-  Exclude:
-    - 'doc/ex/composite_layers.rb'
-    - 'lib/rvg/to_c.rb'
-
 # Offense count: 25
 # Cop supports --auto-correct.
 # Configuration parameters: PreferredMethods.
