@@ -305,67 +305,106 @@ Init_RMagick2(void)
     rb_define_singleton_method(Class_Image, "read_inline", Image_read_inline, 1);
     rb_define_singleton_method(Class_Image, "from_blob", Image_from_blob, 1);
 
-    DCL_ATTR_ACCESSOR(Image, background_color)
-    DCL_ATTR_READER(Image, base_columns)
-    DCL_ATTR_READER(Image, base_filename)
-    DCL_ATTR_READER(Image, base_rows)
-    DCL_ATTR_ACCESSOR(Image, bias)
-    DCL_ATTR_ACCESSOR(Image, black_point_compensation)
-    DCL_ATTR_ACCESSOR(Image, border_color)
-    DCL_ATTR_READER(Image, bounding_box)
-    DCL_ATTR_ACCESSOR(Image, chromaticity)
-    DCL_ATTR_ACCESSOR(Image, color_profile)
-    DCL_ATTR_READER(Image, colors)
-    DCL_ATTR_ACCESSOR(Image, colorspace)
-    DCL_ATTR_READER(Image, columns)
-    DCL_ATTR_ACCESSOR(Image, compose)
-    DCL_ATTR_ACCESSOR(Image, compression)
-    DCL_ATTR_ACCESSOR(Image, delay)
-    DCL_ATTR_ACCESSOR(Image, density)
-    DCL_ATTR_READER(Image, depth)
-    DCL_ATTR_READER(Image, directory)
-    DCL_ATTR_ACCESSOR(Image, dispose)
-    DCL_ATTR_ACCESSOR(Image, endian)
-    DCL_ATTR_ACCESSOR(Image, extract_info)
-    DCL_ATTR_READER(Image, filename)
-    DCL_ATTR_READER(Image, filesize)
-    DCL_ATTR_ACCESSOR(Image, filter)
-    DCL_ATTR_ACCESSOR(Image, format)
-    DCL_ATTR_ACCESSOR(Image, fuzz)
-    DCL_ATTR_ACCESSOR(Image, gamma)
-    DCL_ATTR_ACCESSOR(Image, geometry)
-    DCL_ATTR_ACCESSOR(Image, gravity)
-    DCL_ATTR_ACCESSOR(Image, image_type)
-    DCL_ATTR_ACCESSOR(Image, interlace)
-    DCL_ATTR_ACCESSOR(Image, iptc_profile)
-    DCL_ATTR_ACCESSOR(Image, iterations)        // do not document! Only used by Image#iterations=
-    DCL_ATTR_ACCESSOR(Image, matte_color)
-    DCL_ATTR_READER(Image, mean_error_per_pixel)
-    DCL_ATTR_READER(Image, mime_type)
-    DCL_ATTR_WRITER(Image, monitor)
-    DCL_ATTR_READER(Image, montage)
-    DCL_ATTR_READER(Image, normalized_mean_error)
-    DCL_ATTR_READER(Image, normalized_maximum_error)
-    DCL_ATTR_READER(Image, number_colors)
-    DCL_ATTR_ACCESSOR(Image, offset)
-    DCL_ATTR_ACCESSOR(Image, orientation)
-    DCL_ATTR_ACCESSOR(Image, page)
-    DCL_ATTR_ACCESSOR(Image, pixel_interpolation_method)
-    DCL_ATTR_READER(Image, quality)
-    DCL_ATTR_READER(Image, quantum_depth)
-    DCL_ATTR_ACCESSOR(Image, rendering_intent)
-    DCL_ATTR_READER(Image, rows)
-    DCL_ATTR_READER(Image, scene)
-    DCL_ATTR_ACCESSOR(Image, start_loop)
-    DCL_ATTR_ACCESSOR(Image, class_type)
-    DCL_ATTR_ACCESSOR(Image, ticks_per_second)
-    DCL_ATTR_READER(Image, total_colors)
-    DCL_ATTR_READER(Image, total_ink_density)
-    DCL_ATTR_ACCESSOR(Image, transparent_color)
-    DCL_ATTR_ACCESSOR(Image, units)
-    DCL_ATTR_ACCESSOR(Image, virtual_pixel_method)
-    DCL_ATTR_ACCESSOR(Image, x_resolution)
-    DCL_ATTR_ACCESSOR(Image, y_resolution)
+    // Define the attributes
+    rb_define_method(Class_Image, "background_color", Image_background_color, 0);
+    rb_define_method(Class_Image, "background_color=", Image_background_color_eq, 1);
+    rb_define_method(Class_Image, "base_columns", Image_base_columns, 0);
+    rb_define_method(Class_Image, "base_filename", Image_base_filename, 0);
+    rb_define_method(Class_Image, "base_rows", Image_base_rows, 0);
+    rb_define_method(Class_Image, "bias", Image_bias, 0);
+    rb_define_method(Class_Image, "bias=", Image_bias_eq, 1);
+    rb_define_method(Class_Image, "black_point_compensation", Image_black_point_compensation, 0);
+    rb_define_method(Class_Image, "black_point_compensation=", Image_black_point_compensation_eq, 1);
+    rb_define_method(Class_Image, "border_color", Image_border_color, 0);
+    rb_define_method(Class_Image, "border_color=", Image_border_color_eq, 1);
+    rb_define_method(Class_Image, "bounding_box", Image_bounding_box, 0);
+    rb_define_method(Class_Image, "chromaticity", Image_chromaticity, 0);
+    rb_define_method(Class_Image, "chromaticity=", Image_chromaticity_eq, 1);
+    rb_define_method(Class_Image, "color_profile", Image_color_profile, 0);
+    rb_define_method(Class_Image, "color_profile=", Image_color_profile_eq, 1);
+    rb_define_method(Class_Image, "colors", Image_colors, 0);
+    rb_define_method(Class_Image, "colorspace", Image_colorspace, 0);
+    rb_define_method(Class_Image, "colorspace=", Image_colorspace_eq, 1);
+    rb_define_method(Class_Image, "columns", Image_columns, 0);
+    rb_define_method(Class_Image, "compose", Image_compose, 0);
+    rb_define_method(Class_Image, "compose=", Image_compose_eq, 1);
+    rb_define_method(Class_Image, "compression", Image_compression, 0);
+    rb_define_method(Class_Image, "compression=", Image_compression_eq, 1);
+    rb_define_method(Class_Image, "delay", Image_delay, 0);
+    rb_define_method(Class_Image, "delay=", Image_delay_eq, 1);
+    rb_define_method(Class_Image, "density", Image_density, 0);
+    rb_define_method(Class_Image, "density=", Image_density_eq, 1);
+    rb_define_method(Class_Image, "depth", Image_depth, 0);
+    rb_define_method(Class_Image, "directory", Image_directory, 0);
+    rb_define_method(Class_Image, "dispose", Image_dispose, 0);
+    rb_define_method(Class_Image, "dispose=", Image_dispose_eq, 1);
+    rb_define_method(Class_Image, "endian", Image_endian, 0);
+    rb_define_method(Class_Image, "endian=", Image_endian_eq, 1);
+    rb_define_method(Class_Image, "extract_info", Image_extract_info, 0);
+    rb_define_method(Class_Image, "extract_info=", Image_extract_info_eq, 1);
+    rb_define_method(Class_Image, "filename", Image_filename, 0);
+    rb_define_method(Class_Image, "filesize", Image_filesize, 0);
+    rb_define_method(Class_Image, "filter", Image_filter, 0);
+    rb_define_method(Class_Image, "filter=", Image_filter_eq, 1);
+    rb_define_method(Class_Image, "format", Image_format, 0);
+    rb_define_method(Class_Image, "format=", Image_format_eq, 1);
+    rb_define_method(Class_Image, "fuzz", Image_fuzz, 0);
+    rb_define_method(Class_Image, "fuzz=", Image_fuzz_eq, 1);
+    rb_define_method(Class_Image, "gamma", Image_gamma, 0);
+    rb_define_method(Class_Image, "gamma=", Image_gamma_eq, 1);
+    rb_define_method(Class_Image, "geometry", Image_geometry, 0);
+    rb_define_method(Class_Image, "geometry=", Image_geometry_eq, 1);
+    rb_define_method(Class_Image, "gravity", Image_gravity, 0);
+    rb_define_method(Class_Image, "gravity=", Image_gravity_eq, 1);
+    rb_define_method(Class_Image, "image_type", Image_image_type, 0);
+    rb_define_method(Class_Image, "image_type=", Image_image_type_eq, 1);
+    rb_define_method(Class_Image, "interlace", Image_interlace, 0);
+    rb_define_method(Class_Image, "interlace=", Image_interlace_eq, 1);
+    rb_define_method(Class_Image, "iptc_profile", Image_iptc_profile, 0);
+    rb_define_method(Class_Image, "iptc_profile=", Image_iptc_profile_eq, 1);
+    rb_define_method(Class_Image, "iterations", Image_iterations, 0);        // do not document! Only used by Image#iterations=
+    rb_define_method(Class_Image, "iterations=", Image_iterations_eq, 1);        // do not document! Only used by Image#iterations=
+    rb_define_method(Class_Image, "matte_color", Image_matte_color, 0);
+    rb_define_method(Class_Image, "matte_color=", Image_matte_color_eq, 1);
+    rb_define_method(Class_Image, "mean_error_per_pixel", Image_mean_error_per_pixel, 0);
+    rb_define_method(Class_Image, "mime_type", Image_mime_type, 0);
+    rb_define_method(Class_Image, "monitor=", Image_monitor_eq, 1);
+    rb_define_method(Class_Image, "montage", Image_montage, 0);
+    rb_define_method(Class_Image, "normalized_mean_error", Image_normalized_mean_error, 0);
+    rb_define_method(Class_Image, "normalized_maximum_error", Image_normalized_maximum_error, 0);
+    rb_define_method(Class_Image, "number_colors", Image_number_colors, 0);
+    rb_define_method(Class_Image, "offset", Image_offset, 0);
+    rb_define_method(Class_Image, "offset=", Image_offset_eq, 1);
+    rb_define_method(Class_Image, "orientation", Image_orientation, 0);
+    rb_define_method(Class_Image, "orientation=", Image_orientation_eq, 1);
+    rb_define_method(Class_Image, "page", Image_page, 0);
+    rb_define_method(Class_Image, "page=", Image_page_eq, 1);
+    rb_define_method(Class_Image, "pixel_interpolation_method", Image_pixel_interpolation_method, 0);
+    rb_define_method(Class_Image, "pixel_interpolation_method=", Image_pixel_interpolation_method_eq, 1);
+    rb_define_method(Class_Image, "quality", Image_quality, 0);
+    rb_define_method(Class_Image, "quantum_depth", Image_quantum_depth, 0);
+    rb_define_method(Class_Image, "rendering_intent", Image_rendering_intent, 0);
+    rb_define_method(Class_Image, "rendering_intent=", Image_rendering_intent_eq, 1);
+    rb_define_method(Class_Image, "rows", Image_rows, 0);
+    rb_define_method(Class_Image, "scene", Image_scene, 0);
+    rb_define_method(Class_Image, "start_loop", Image_start_loop, 0);
+    rb_define_method(Class_Image, "start_loop=", Image_start_loop_eq, 1);
+    rb_define_method(Class_Image, "class_type", Image_class_type, 0);
+    rb_define_method(Class_Image, "class_type=", Image_class_type_eq, 1);
+    rb_define_method(Class_Image, "ticks_per_second", Image_ticks_per_second, 0);
+    rb_define_method(Class_Image, "ticks_per_second=", Image_ticks_per_second_eq, 1);
+    rb_define_method(Class_Image, "total_colors", Image_total_colors, 0);
+    rb_define_method(Class_Image, "total_ink_density", Image_total_ink_density, 0);
+    rb_define_method(Class_Image, "transparent_color", Image_transparent_color, 0);
+    rb_define_method(Class_Image, "transparent_color=", Image_transparent_color_eq, 1);
+    rb_define_method(Class_Image, "units", Image_units, 0);
+    rb_define_method(Class_Image, "units=", Image_units_eq, 1);
+    rb_define_method(Class_Image, "virtual_pixel_method", Image_virtual_pixel_method, 0);
+    rb_define_method(Class_Image, "virtual_pixel_method=", Image_virtual_pixel_method_eq, 1);
+    rb_define_method(Class_Image, "x_resolution", Image_x_resolution, 0);
+    rb_define_method(Class_Image, "x_resolution=", Image_x_resolution_eq, 1);
+    rb_define_method(Class_Image, "y_resolution", Image_y_resolution, 0);
+    rb_define_method(Class_Image, "y_resolution=", Image_y_resolution_eq, 1);
 
     rb_define_method(Class_Image, "adaptive_blur", Image_adaptive_blur, -1);
     rb_define_method(Class_Image, "adaptive_blur_channel", Image_adaptive_blur_channel, -1);
@@ -623,30 +662,31 @@ Init_RMagick2(void)
     Class_Draw = rb_define_class_under(Module_Magick, "Draw", rb_cObject);
     rb_define_alloc_func(Class_Draw, Draw_alloc);
 
-    DCL_ATTR_WRITER(Draw, affine)
-    DCL_ATTR_WRITER(Draw, align)
-    DCL_ATTR_WRITER(Draw, decorate)
-    DCL_ATTR_WRITER(Draw, density)
-    DCL_ATTR_WRITER(Draw, encoding)
-    DCL_ATTR_WRITER(Draw, fill)
-    DCL_ATTR_WRITER(Draw, fill_pattern)
-    DCL_ATTR_WRITER(Draw, font)
-    DCL_ATTR_WRITER(Draw, font_family)
-    DCL_ATTR_WRITER(Draw, font_stretch)
-    DCL_ATTR_WRITER(Draw, font_style)
-    DCL_ATTR_WRITER(Draw, font_weight)
-    DCL_ATTR_WRITER(Draw, gravity)
-    DCL_ATTR_WRITER(Draw, interline_spacing)
-    DCL_ATTR_WRITER(Draw, interword_spacing)
-    DCL_ATTR_WRITER(Draw, kerning)
-    DCL_ATTR_WRITER(Draw, pointsize)
-    DCL_ATTR_WRITER(Draw, rotation)
-    DCL_ATTR_WRITER(Draw, stroke)
-    DCL_ATTR_WRITER(Draw, stroke_pattern)
-    DCL_ATTR_WRITER(Draw, stroke_width)
-    DCL_ATTR_WRITER(Draw, text_antialias)
-    DCL_ATTR_WRITER(Draw, tile)
-    DCL_ATTR_WRITER(Draw, undercolor)
+    // Define the attributes
+    rb_define_method(Class_Draw, "affine=", Draw_affine_eq, 1);
+    rb_define_method(Class_Draw, "align=", Draw_align_eq, 1);
+    rb_define_method(Class_Draw, "decorate=", Draw_decorate_eq, 1);
+    rb_define_method(Class_Draw, "density=", Draw_density_eq, 1);
+    rb_define_method(Class_Draw, "encoding=", Draw_encoding_eq, 1);
+    rb_define_method(Class_Draw, "fill=", Draw_fill_eq, 1);
+    rb_define_method(Class_Draw, "fill_pattern=", Draw_fill_pattern_eq, 1);
+    rb_define_method(Class_Draw, "font=", Draw_font_eq, 1);
+    rb_define_method(Class_Draw, "font_family=", Draw_font_family_eq, 1);
+    rb_define_method(Class_Draw, "font_stretch=", Draw_font_stretch_eq, 1);
+    rb_define_method(Class_Draw, "font_style=", Draw_font_style_eq, 1);
+    rb_define_method(Class_Draw, "font_weight=", Draw_font_weight_eq, 1);
+    rb_define_method(Class_Draw, "gravity=", Draw_gravity_eq, 1);
+    rb_define_method(Class_Draw, "interline_spacing=", Draw_interline_spacing_eq, 1);
+    rb_define_method(Class_Draw, "interword_spacing=", Draw_interword_spacing_eq, 1);
+    rb_define_method(Class_Draw, "kerning=", Draw_kerning_eq, 1);
+    rb_define_method(Class_Draw, "pointsize=", Draw_pointsize_eq, 1);
+    rb_define_method(Class_Draw, "rotation=", Draw_rotation_eq, 1);
+    rb_define_method(Class_Draw, "stroke=", Draw_stroke_eq, 1);
+    rb_define_method(Class_Draw, "stroke_pattern=", Draw_stroke_pattern_eq, 1);
+    rb_define_method(Class_Draw, "stroke_width=", Draw_stroke_width_eq, 1);
+    rb_define_method(Class_Draw, "text_antialias=", Draw_text_antialias_eq, 1);
+    rb_define_method(Class_Draw, "tile=", Draw_tile_eq, 1);
+    rb_define_method(Class_Draw, "undercolor=", Draw_undercolor_eq, 1);
 
     rb_define_method(Class_Draw, "annotate", Draw_annotate, 6);
     rb_define_method(Class_Draw, "clone", Draw_clone, 0);
@@ -674,27 +714,27 @@ Init_RMagick2(void)
 
     rb_define_method(Class_DrawOptions, "initialize", DrawOptions_initialize, 0);
 
-    SHARE_ATTR_WRITER(DrawOptions, Draw, affine)
-    SHARE_ATTR_WRITER(DrawOptions, Draw, align)
-    SHARE_ATTR_WRITER(DrawOptions, Draw, decorate)
-    SHARE_ATTR_WRITER(DrawOptions, Draw, density)
-    SHARE_ATTR_WRITER(DrawOptions, Draw, encoding)
-    SHARE_ATTR_WRITER(DrawOptions, Draw, fill)
-    SHARE_ATTR_WRITER(DrawOptions, Draw, fill_pattern)
-    SHARE_ATTR_WRITER(DrawOptions, Draw, font)
-    SHARE_ATTR_WRITER(DrawOptions, Draw, font_family)
-    SHARE_ATTR_WRITER(DrawOptions, Draw, font_stretch)
-    SHARE_ATTR_WRITER(DrawOptions, Draw, font_style)
-    SHARE_ATTR_WRITER(DrawOptions, Draw, font_weight)
-    SHARE_ATTR_WRITER(DrawOptions, Draw, gravity)
-    SHARE_ATTR_WRITER(DrawOptions, Draw, pointsize)
-    SHARE_ATTR_WRITER(DrawOptions, Draw, rotation)
-    SHARE_ATTR_WRITER(DrawOptions, Draw, stroke)
-    SHARE_ATTR_WRITER(DrawOptions, Draw, stroke_pattern)
-    SHARE_ATTR_WRITER(DrawOptions, Draw, stroke_width)
-    SHARE_ATTR_WRITER(DrawOptions, Draw, text_antialias)
-    SHARE_ATTR_WRITER(DrawOptions, Draw, tile)
-    SHARE_ATTR_WRITER(DrawOptions, Draw, undercolor)
+    rb_define_method(Class_DrawOptions, "affine=", Draw_affine_eq, 1);
+    rb_define_method(Class_DrawOptions, "align=", Draw_align_eq, 1);
+    rb_define_method(Class_DrawOptions, "decorate=", Draw_decorate_eq, 1);
+    rb_define_method(Class_DrawOptions, "density=", Draw_density_eq, 1);
+    rb_define_method(Class_DrawOptions, "encoding=", Draw_encoding_eq, 1);
+    rb_define_method(Class_DrawOptions, "fill=", Draw_fill_eq, 1);
+    rb_define_method(Class_DrawOptions, "fill_pattern=", Draw_fill_pattern_eq, 1);
+    rb_define_method(Class_DrawOptions, "font=", Draw_font_eq, 1);
+    rb_define_method(Class_DrawOptions, "font_family=", Draw_font_family_eq, 1);
+    rb_define_method(Class_DrawOptions, "font_stretch=", Draw_font_stretch_eq, 1);
+    rb_define_method(Class_DrawOptions, "font_style=", Draw_font_style_eq, 1);
+    rb_define_method(Class_DrawOptions, "font_weight=", Draw_font_weight_eq, 1);
+    rb_define_method(Class_DrawOptions, "gravity=", Draw_gravity_eq, 1);
+    rb_define_method(Class_DrawOptions, "pointsize=", Draw_pointsize_eq, 1);
+    rb_define_method(Class_DrawOptions, "rotation=", Draw_rotation_eq, 1);
+    rb_define_method(Class_DrawOptions, "stroke=", Draw_stroke_eq, 1);
+    rb_define_method(Class_DrawOptions, "stroke_pattern=", Draw_stroke_pattern_eq, 1);
+    rb_define_method(Class_DrawOptions, "stroke_width=", Draw_stroke_width_eq, 1);
+    rb_define_method(Class_DrawOptions, "text_antialias=", Draw_text_antialias_eq, 1);
+    rb_define_method(Class_DrawOptions, "tile=", Draw_tile_eq, 1);
+    rb_define_method(Class_DrawOptions, "undercolor=", Draw_undercolor_eq, 1);
 
     /*-----------------------------------------------------------------------*/
     /* Class Magick::Pixel                                                   */
@@ -717,16 +757,24 @@ Init_RMagick2(void)
     rb_define_singleton_method(Class_Pixel, "from_hsla", Pixel_from_hsla, -1);
 
     // Define the RGBA attributes
-    DCL_ATTR_ACCESSOR(Pixel, red)
-    DCL_ATTR_ACCESSOR(Pixel, green)
-    DCL_ATTR_ACCESSOR(Pixel, blue)
-    DCL_ATTR_ACCESSOR(Pixel, alpha)
+    rb_define_method(Class_Pixel, "red", Pixel_red, 0);
+    rb_define_method(Class_Pixel, "red=", Pixel_red_eq, 1);
+    rb_define_method(Class_Pixel, "green", Pixel_green, 0);
+    rb_define_method(Class_Pixel, "green=", Pixel_green_eq, 1);
+    rb_define_method(Class_Pixel, "blue", Pixel_blue, 0);
+    rb_define_method(Class_Pixel, "blue=", Pixel_blue_eq, 1);
+    rb_define_method(Class_Pixel, "alpha", Pixel_alpha, 0);
+    rb_define_method(Class_Pixel, "alpha=", Pixel_alpha_eq, 1);
 
     // Define the CMYK attributes
-    DCL_ATTR_ACCESSOR(Pixel, cyan)
-    DCL_ATTR_ACCESSOR(Pixel, magenta)
-    DCL_ATTR_ACCESSOR(Pixel, yellow)
-    DCL_ATTR_ACCESSOR(Pixel, black)
+    rb_define_method(Class_Pixel, "cyan", Pixel_cyan, 0);
+    rb_define_method(Class_Pixel, "cyan=", Pixel_cyan_eq, 1);
+    rb_define_method(Class_Pixel, "magenta", Pixel_magenta, 0);
+    rb_define_method(Class_Pixel, "magenta=", Pixel_magenta_eq, 1);
+    rb_define_method(Class_Pixel, "yellow", Pixel_yellow, 0);
+    rb_define_method(Class_Pixel, "yellow=", Pixel_yellow_eq, 1);
+    rb_define_method(Class_Pixel, "black", Pixel_black, 0);
+    rb_define_method(Class_Pixel, "black=", Pixel_black_eq, 1);
 
 
     // Define the instance methods
@@ -758,23 +806,23 @@ Init_RMagick2(void)
     rb_define_method(Class_Montage, "freeze", rm_no_freeze, 0);
 
     // These accessors supply optional arguments for Magick::ImageList::Montage.new
-    DCL_ATTR_WRITER(Montage, background_color)
-    DCL_ATTR_WRITER(Montage, border_color)
-    DCL_ATTR_WRITER(Montage, border_width)
-    DCL_ATTR_WRITER(Montage, compose)
-    DCL_ATTR_WRITER(Montage, filename)
-    DCL_ATTR_WRITER(Montage, fill)
-    DCL_ATTR_WRITER(Montage, font)
-    DCL_ATTR_WRITER(Montage, frame)
-    DCL_ATTR_WRITER(Montage, geometry)
-    DCL_ATTR_WRITER(Montage, gravity)
-    DCL_ATTR_WRITER(Montage, matte_color)
-    DCL_ATTR_WRITER(Montage, pointsize)
-    DCL_ATTR_WRITER(Montage, shadow)
-    DCL_ATTR_WRITER(Montage, stroke)
-    DCL_ATTR_WRITER(Montage, texture)
-    DCL_ATTR_WRITER(Montage, tile)
-    DCL_ATTR_WRITER(Montage, title)
+    rb_define_method(Class_Montage, "background_color=", Montage_background_color_eq, 1);
+    rb_define_method(Class_Montage, "border_color=", Montage_border_color_eq, 1);
+    rb_define_method(Class_Montage, "border_width=", Montage_border_width_eq, 1);
+    rb_define_method(Class_Montage, "compose=", Montage_compose_eq, 1);
+    rb_define_method(Class_Montage, "filename=", Montage_filename_eq, 1);
+    rb_define_method(Class_Montage, "fill=", Montage_fill_eq, 1);
+    rb_define_method(Class_Montage, "font=", Montage_font_eq, 1);
+    rb_define_method(Class_Montage, "frame=", Montage_frame_eq, 1);
+    rb_define_method(Class_Montage, "geometry=", Montage_geometry_eq, 1);
+    rb_define_method(Class_Montage, "gravity=", Montage_gravity_eq, 1);
+    rb_define_method(Class_Montage, "matte_color=", Montage_matte_color_eq, 1);
+    rb_define_method(Class_Montage, "pointsize=", Montage_pointsize_eq, 1);
+    rb_define_method(Class_Montage, "shadow=", Montage_shadow_eq, 1);
+    rb_define_method(Class_Montage, "stroke=", Montage_stroke_eq, 1);
+    rb_define_method(Class_Montage, "texture=", Montage_texture_eq, 1);
+    rb_define_method(Class_Montage, "tile=", Montage_tile_eq, 1);
+    rb_define_method(Class_Montage, "title=", Montage_title_eq, 1);
 
     /*-----------------------------------------------------------------------*/
     /* Class Magick::Image::Info                                             */
@@ -792,52 +840,97 @@ Init_RMagick2(void)
     rb_define_method(Class_Info, "[]", Info_aref, -1);
     rb_define_method(Class_Info, "undefine", Info_undefine, 2);
 
-    DCL_ATTR_ACCESSOR(Info, antialias)
-    DCL_ATTR_ACCESSOR(Info, attenuate)
-    DCL_ATTR_ACCESSOR(Info, authenticate)
-    DCL_ATTR_ACCESSOR(Info, background_color)
-    DCL_ATTR_ACCESSOR(Info, border_color)
-    DCL_ATTR_ACCESSOR(Info, caption)
-    DCL_ATTR_ACCESSOR(Info, colorspace)
-    DCL_ATTR_ACCESSOR(Info, comment)
-    DCL_ATTR_ACCESSOR(Info, compression)
-    DCL_ATTR_ACCESSOR(Info, delay)
-    DCL_ATTR_ACCESSOR(Info, density)
-    DCL_ATTR_ACCESSOR(Info, depth)
-    DCL_ATTR_ACCESSOR(Info, dispose)
-    DCL_ATTR_ACCESSOR(Info, dither)
-    DCL_ATTR_ACCESSOR(Info, endian)
-    DCL_ATTR_ACCESSOR(Info, extract)
-    DCL_ATTR_ACCESSOR(Info, filename)
-    DCL_ATTR_ACCESSOR(Info, fill)
-    DCL_ATTR_ACCESSOR(Info, font)
-    DCL_ATTR_ACCESSOR(Info, format)
-    DCL_ATTR_ACCESSOR(Info, fuzz)
-    DCL_ATTR_ACCESSOR(Info, gravity)
-    DCL_ATTR_ACCESSOR(Info, image_type)
-    DCL_ATTR_ACCESSOR(Info, interlace)
-    DCL_ATTR_ACCESSOR(Info, label)
-    DCL_ATTR_ACCESSOR(Info, matte_color)
-    DCL_ATTR_WRITER(Info, monitor)
-    DCL_ATTR_ACCESSOR(Info, monochrome)
-    DCL_ATTR_ACCESSOR(Info, number_scenes)
-    DCL_ATTR_ACCESSOR(Info, orientation)
-    DCL_ATTR_ACCESSOR(Info, origin)         // new in 6.3.1
-    DCL_ATTR_ACCESSOR(Info, page)
-    DCL_ATTR_ACCESSOR(Info, pointsize)
-    DCL_ATTR_ACCESSOR(Info, quality)
-    DCL_ATTR_ACCESSOR(Info, sampling_factor)
-    DCL_ATTR_ACCESSOR(Info, scene)
-    DCL_ATTR_ACCESSOR(Info, server_name)
-    DCL_ATTR_ACCESSOR(Info, size)
-    DCL_ATTR_ACCESSOR(Info, stroke)
-    DCL_ATTR_ACCESSOR(Info, stroke_width)
-    DCL_ATTR_WRITER(Info, texture)
-    DCL_ATTR_ACCESSOR(Info, tile_offset)
-    DCL_ATTR_ACCESSOR(Info, transparent_color)
-    DCL_ATTR_ACCESSOR(Info, undercolor)
-    DCL_ATTR_ACCESSOR(Info, units)
-    DCL_ATTR_ACCESSOR(Info, view)
+    // Define the attributes
+    rb_define_method(Class_Info, "antialias", Info_antialias, 0);
+    rb_define_method(Class_Info, "antialias=", Info_antialias_eq, 1);
+    rb_define_method(Class_Info, "attenuate", Info_attenuate, 0);
+    rb_define_method(Class_Info, "attenuate=", Info_attenuate_eq, 1);
+    rb_define_method(Class_Info, "authenticate", Info_authenticate, 0);
+    rb_define_method(Class_Info, "authenticate=", Info_authenticate_eq, 1);
+    rb_define_method(Class_Info, "background_color", Info_background_color, 0);
+    rb_define_method(Class_Info, "background_color=", Info_background_color_eq, 1);
+    rb_define_method(Class_Info, "border_color", Info_border_color, 0);
+    rb_define_method(Class_Info, "border_color=", Info_border_color_eq, 1);
+    rb_define_method(Class_Info, "caption", Info_caption, 0);
+    rb_define_method(Class_Info, "caption=", Info_caption_eq, 1);
+    rb_define_method(Class_Info, "colorspace", Info_colorspace, 0);
+    rb_define_method(Class_Info, "colorspace=", Info_colorspace_eq, 1);
+    rb_define_method(Class_Info, "comment", Info_comment, 0);
+    rb_define_method(Class_Info, "comment=", Info_comment_eq, 1);
+    rb_define_method(Class_Info, "compression", Info_compression, 0);
+    rb_define_method(Class_Info, "compression=", Info_compression_eq, 1);
+    rb_define_method(Class_Info, "delay", Info_delay, 0);
+    rb_define_method(Class_Info, "delay=", Info_delay_eq, 1);
+    rb_define_method(Class_Info, "density", Info_density, 0);
+    rb_define_method(Class_Info, "density=", Info_density_eq, 1);
+    rb_define_method(Class_Info, "depth", Info_depth, 0);
+    rb_define_method(Class_Info, "depth=", Info_depth_eq, 1);
+    rb_define_method(Class_Info, "dispose", Info_dispose, 0);
+    rb_define_method(Class_Info, "dispose=", Info_dispose_eq, 1);
+    rb_define_method(Class_Info, "dither", Info_dither, 0);
+    rb_define_method(Class_Info, "dither=", Info_dither_eq, 1);
+    rb_define_method(Class_Info, "endian", Info_endian, 0);
+    rb_define_method(Class_Info, "endian=", Info_endian_eq, 1);
+    rb_define_method(Class_Info, "extract", Info_extract, 0);
+    rb_define_method(Class_Info, "extract=", Info_extract_eq, 1);
+    rb_define_method(Class_Info, "filename", Info_filename, 0);
+    rb_define_method(Class_Info, "filename=", Info_filename_eq, 1);
+    rb_define_method(Class_Info, "fill", Info_fill, 0);
+    rb_define_method(Class_Info, "fill=", Info_fill_eq, 1);
+    rb_define_method(Class_Info, "font", Info_font, 0);
+    rb_define_method(Class_Info, "font=", Info_font_eq, 1);
+    rb_define_method(Class_Info, "format", Info_format, 0);
+    rb_define_method(Class_Info, "format=", Info_format_eq, 1);
+    rb_define_method(Class_Info, "fuzz", Info_fuzz, 0);
+    rb_define_method(Class_Info, "fuzz=", Info_fuzz_eq, 1);
+    rb_define_method(Class_Info, "gravity", Info_gravity, 0);
+    rb_define_method(Class_Info, "gravity=", Info_gravity_eq, 1);
+    rb_define_method(Class_Info, "image_type", Info_image_type, 0);
+    rb_define_method(Class_Info, "image_type=", Info_image_type_eq, 1);
+    rb_define_method(Class_Info, "interlace", Info_interlace, 0);
+    rb_define_method(Class_Info, "interlace=", Info_interlace_eq, 1);
+    rb_define_method(Class_Info, "label", Info_label, 0);
+    rb_define_method(Class_Info, "label=", Info_label_eq, 1);
+    rb_define_method(Class_Info, "matte_color", Info_matte_color, 0);
+    rb_define_method(Class_Info, "matte_color=", Info_matte_color_eq, 1);
+    rb_define_method(Class_Info, "monitor=", Info_monitor_eq, 1);
+    rb_define_method(Class_Info, "monochrome", Info_monochrome, 0);
+    rb_define_method(Class_Info, "monochrome=", Info_monochrome_eq, 1);
+    rb_define_method(Class_Info, "number_scenes", Info_number_scenes, 0);
+    rb_define_method(Class_Info, "number_scenes=", Info_number_scenes_eq, 1);
+    rb_define_method(Class_Info, "orientation", Info_orientation, 0);
+    rb_define_method(Class_Info, "orientation=", Info_orientation_eq, 1);
+    rb_define_method(Class_Info, "origin", Info_origin, 0);         // new in 6.3.1
+    rb_define_method(Class_Info, "origin=", Info_origin_eq, 1);         // new in 6.3.1
+    rb_define_method(Class_Info, "page", Info_page, 0);
+    rb_define_method(Class_Info, "page=", Info_page_eq, 1);
+    rb_define_method(Class_Info, "pointsize", Info_pointsize, 0);
+    rb_define_method(Class_Info, "pointsize=", Info_pointsize_eq, 1);
+    rb_define_method(Class_Info, "quality", Info_quality, 0);
+    rb_define_method(Class_Info, "quality=", Info_quality_eq, 1);
+    rb_define_method(Class_Info, "sampling_factor", Info_sampling_factor, 0);
+    rb_define_method(Class_Info, "sampling_factor=", Info_sampling_factor_eq, 1);
+    rb_define_method(Class_Info, "scene", Info_scene, 0);
+    rb_define_method(Class_Info, "scene=", Info_scene_eq, 1);
+    rb_define_method(Class_Info, "server_name", Info_server_name, 0);
+    rb_define_method(Class_Info, "server_name=", Info_server_name_eq, 1);
+    rb_define_method(Class_Info, "size", Info_size, 0);
+    rb_define_method(Class_Info, "size=", Info_size_eq, 1);
+    rb_define_method(Class_Info, "stroke", Info_stroke, 0);
+    rb_define_method(Class_Info, "stroke=", Info_stroke_eq, 1);
+    rb_define_method(Class_Info, "stroke_width", Info_stroke_width, 0);
+    rb_define_method(Class_Info, "stroke_width=", Info_stroke_width_eq, 1);
+    rb_define_method(Class_Info, "texture=", Info_texture_eq, 1);
+    rb_define_method(Class_Info, "tile_offset", Info_tile_offset, 0);
+    rb_define_method(Class_Info, "tile_offset=", Info_tile_offset_eq, 1);
+    rb_define_method(Class_Info, "transparent_color", Info_transparent_color, 0);
+    rb_define_method(Class_Info, "transparent_color=", Info_transparent_color_eq, 1);
+    rb_define_method(Class_Info, "undercolor", Info_undercolor, 0);
+    rb_define_method(Class_Info, "undercolor=", Info_undercolor_eq, 1);
+    rb_define_method(Class_Info, "units", Info_units, 0);
+    rb_define_method(Class_Info, "units=", Info_units_eq, 1);
+    rb_define_method(Class_Info, "view", Info_view, 0);
+    rb_define_method(Class_Info, "view=", Info_view_eq, 1);
 
     /*-----------------------------------------------------------------------*/
     /* Class Magick::KernelInfo                                              */
@@ -867,27 +960,29 @@ Init_RMagick2(void)
 
     rb_define_method(Class_PolaroidOptions, "initialize", PolaroidOptions_initialize, 0);
 
-    DCL_ATTR_WRITER(PolaroidOptions, shadow_color)
-    DCL_ATTR_WRITER(PolaroidOptions, border_color)
+    // Define the attributes
+    rb_define_method(Class_PolaroidOptions, "shadow_color=", PolaroidOptions_shadow_color_eq, 1);
+    rb_define_method(Class_PolaroidOptions, "border_color=", PolaroidOptions_border_color_eq, 1);
+
     // The other attribute writer methods are implemented by Draw's functions
-    SHARE_ATTR_WRITER(PolaroidOptions, Draw, align)
-    SHARE_ATTR_WRITER(PolaroidOptions, Draw, decorate)
-    SHARE_ATTR_WRITER(PolaroidOptions, Draw, density)
-    SHARE_ATTR_WRITER(PolaroidOptions, Draw, encoding)
-    SHARE_ATTR_WRITER(PolaroidOptions, Draw, fill)
-    SHARE_ATTR_WRITER(PolaroidOptions, Draw, fill_pattern)
-    SHARE_ATTR_WRITER(PolaroidOptions, Draw, font)
-    SHARE_ATTR_WRITER(PolaroidOptions, Draw, font_family)
-    SHARE_ATTR_WRITER(PolaroidOptions, Draw, font_stretch)
-    SHARE_ATTR_WRITER(PolaroidOptions, Draw, font_style)
-    SHARE_ATTR_WRITER(PolaroidOptions, Draw, font_weight)
-    SHARE_ATTR_WRITER(PolaroidOptions, Draw, gravity)
-    SHARE_ATTR_WRITER(PolaroidOptions, Draw, pointsize)
-    SHARE_ATTR_WRITER(PolaroidOptions, Draw, stroke)
-    SHARE_ATTR_WRITER(PolaroidOptions, Draw, stroke_pattern)
-    SHARE_ATTR_WRITER(PolaroidOptions, Draw, stroke_width)
-    SHARE_ATTR_WRITER(PolaroidOptions, Draw, text_antialias)
-    SHARE_ATTR_WRITER(PolaroidOptions, Draw, undercolor)
+    rb_define_method(Class_PolaroidOptions, "align=", Draw_align_eq, 1);
+    rb_define_method(Class_PolaroidOptions, "decorate=", Draw_decorate_eq, 1);
+    rb_define_method(Class_PolaroidOptions, "density=", Draw_density_eq, 1);
+    rb_define_method(Class_PolaroidOptions, "encoding=", Draw_encoding_eq, 1);
+    rb_define_method(Class_PolaroidOptions, "fill=", Draw_fill_eq, 1);
+    rb_define_method(Class_PolaroidOptions, "fill_pattern=", Draw_fill_pattern_eq, 1);
+    rb_define_method(Class_PolaroidOptions, "font=", Draw_font_eq, 1);
+    rb_define_method(Class_PolaroidOptions, "font_family=", Draw_font_family_eq, 1);
+    rb_define_method(Class_PolaroidOptions, "font_stretch=", Draw_font_stretch_eq, 1);
+    rb_define_method(Class_PolaroidOptions, "font_style=", Draw_font_style_eq, 1);
+    rb_define_method(Class_PolaroidOptions, "font_weight=", Draw_font_weight_eq, 1);
+    rb_define_method(Class_PolaroidOptions, "gravity=", Draw_gravity_eq, 1);
+    rb_define_method(Class_PolaroidOptions, "pointsize=", Draw_pointsize_eq, 1);
+    rb_define_method(Class_PolaroidOptions, "stroke=", Draw_stroke_eq, 1);
+    rb_define_method(Class_PolaroidOptions, "stroke_pattern=", Draw_stroke_pattern_eq, 1);
+    rb_define_method(Class_PolaroidOptions, "stroke_width=", Draw_stroke_width_eq, 1);
+    rb_define_method(Class_PolaroidOptions, "text_antialias=", Draw_text_antialias_eq, 1);
+    rb_define_method(Class_PolaroidOptions, "undercolor=", Draw_undercolor_eq, 1);
 
 
     /*-----------------------------------------------------------------------*/

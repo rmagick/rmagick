@@ -433,23 +433,6 @@ EXTERN ID rm_ID_y;                 /**< "y" */
 
 
 /*
-    Call rb_define_method for an attribute accessor method
-*/
-//! attribute reader
-#define DCL_ATTR_READER(class, attr) \
-    rb_define_method(Class_##class, #attr, class##_##attr, 0);
-//! attribute writer
-#define DCL_ATTR_WRITER(class, attr) \
-    rb_define_method(Class_##class, #attr "=", class##_##attr##_eq, 1);
-//! attribute accessor
-#define DCL_ATTR_ACCESSOR(class, attr) \
-    DCL_ATTR_READER(class, attr) \
-    DCL_ATTR_WRITER(class, attr)
-//! Borrow another class' attribute writer definition
-#define SHARE_ATTR_WRITER(to, from, attr) \
-    rb_define_method(Class_##to, #attr "=", from##_##attr##_eq, 1);
-
-/*
     Define simple attribute accessor methods (boolean, int, string, and double types)
 */
 #define C_boolean_to_R_boolean(attr) (attr) ? Qtrue : Qfalse /**< C boolean -> Ruby boolean */
