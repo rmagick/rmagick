@@ -57,16 +57,16 @@ RSpec.describe Magick::Image, '#import_pixels' do
       packed_pixels = pixels.pack('F*') if is_hdri_support
       import(image, packed_pixels, Magick::QuantumPixel)
 
-      spixels = pixels.collect { |px| px * 257 }
+      spixels = pixels.map { |px| px * 257 }
       packed_pixels = spixels.pack('S*')
       import(image, packed_pixels, Magick::ShortPixel)
 
-      ipixels = pixels.collect { |px| px * 16_843_009 }
+      ipixels = pixels.map { |px| px * 16_843_009 }
       packed_pixels = ipixels.pack('I*')
       import(image, packed_pixels, Magick::LongPixel)
 
     when 16
-      cpixels = pixels.collect { |px| px / 257 }
+      cpixels = pixels.map { |px| px / 257 }
       packed_pixels = cpixels.pack('C*')
       import(image, packed_pixels, Magick::CharPixel)
 
@@ -75,17 +75,17 @@ RSpec.describe Magick::Image, '#import_pixels' do
       packed_pixels = pixels.pack('F*') if is_hdri_support
       import(image, packed_pixels, Magick::QuantumPixel)
 
-      ipixels = pixels.collect { |px| px * 65_537 }
+      ipixels = pixels.map { |px| px * 65_537 }
       ipixels.pack('I*')
       # Diff s/b 0.0 but never is.
       # import(image, packed_pixels, Magick::LongPixel, 430.7834)
 
     when 32
-      cpixels = pixels.collect { |px| px / 16_843_009 }
+      cpixels = pixels.map { |px| px / 16_843_009 }
       packed_pixels = cpixels.pack('C*')
       import(image, packed_pixels, Magick::CharPixel)
 
-      spixels = pixels.collect { |px| px / 65_537 }
+      spixels = pixels.map { |px| px / 65_537 }
       packed_pixels = spixels.pack('S*')
       import(image, packed_pixels, Magick::ShortPixel)
 
@@ -95,15 +95,15 @@ RSpec.describe Magick::Image, '#import_pixels' do
       import(image, packed_pixels, Magick::QuantumPixel)
 
     when 64
-      cpixels = pixels.collect { |px| px / 72_340_172_838_076_673 }
+      cpixels = pixels.map { |px| px / 72_340_172_838_076_673 }
       packed_pixels = cpixels.pack('C*')
       import(image, packed_pixels, Magick::CharPixel)
 
-      spixels = pixels.collect { |px| px / 281_479_271_743_489 }
+      spixels = pixels.map { |px| px / 281_479_271_743_489 }
       packed_pixels = spixels.pack('S*')
       import(image, packed_pixels, Magick::ShortPixel)
 
-      ipixels = pixels.collect { |px| px / 4_294_967_297 }
+      ipixels = pixels.map { |px| px / 4_294_967_297 }
       packed_pixels = ipixels.pack('I*')
       import(image, packed_pixels, Magick::LongPixel)
 

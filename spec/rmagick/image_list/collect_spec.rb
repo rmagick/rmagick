@@ -1,3 +1,4 @@
+# rubocop:disable Style/CollectionMethods
 RSpec.describe Magick::ImageList, '#collect' do
   it 'works' do
     image_list = described_class.new(*FILES[0..9])
@@ -14,3 +15,4 @@ RSpec.describe Magick::ImageList, '#collect' do
     expect(image_list.scene).to eq(scene)
   end
 end
+# rubocop:enable Style/CollectionMethods

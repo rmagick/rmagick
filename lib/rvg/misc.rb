@@ -34,7 +34,7 @@ module Magick
     # Convert an array of method arguments to Float objects. If any
     # cannot be converted, raise ArgumentError and issue a message.
     def self.fmsg(*args)
-      "at least one argument cannot be converted to Float (got #{args.collect(&:class).join(', ')})"
+      "at least one argument cannot be converted to Float (got #{args.map(&:class).join(', ')})"
     end
 
     def self.convert_to_float(*args)
@@ -44,7 +44,7 @@ module Magick
         args.pop
       end
       begin
-        fargs = args.collect { |a| allow_nil && a.nil? ? a : Float(a) }
+        fargs = args.map { |a| allow_nil && a.nil? ? a : Float(a) }
       rescue ArgumentError, TypeError
         raise ArgumentError, fmsg(*args)
       end
@@ -173,7 +173,7 @@ module Magick
 
         def render(x, y, text)
           x_rel_coords, y_rel_coords = text_rel_coords(text)
-          dx = x_rel_coords.inject(0) { |sum, a| sum + a }
+          dx = x_rel_coords.reduce(0) { |sum, a| sum + a }
           dy = y_rel_coords.max
 
           # We're handling the anchoring.
@@ -234,7 +234,7 @@ module Magick
         def render(x, y, text)
           x_rel_coords, y_rel_coords = text_rel_coords(text)
           dx = x_rel_coords.max
-          dy = y_rel_coords.inject(0) { |sum, a| sum + a }
+          dy = y_rel_coords.reduce(0) { |sum, a| sum + a }
 
           # We're handling the anchoring.
           @ctx.gc.push
