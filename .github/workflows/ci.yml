@@ -39,8 +39,8 @@ jobs:
         imagemagick-version:
           - { full: 6.7.7-10, major-minor: '6.7' }
           - { full: 6.8.9-10, major-minor: '6.8' }
-          - { full: 6.9.10-93, major-minor: '6.9' }
-          - { full: 7.0.9-23, major-minor: '7.0' }
+          - { full: 6.9.10-94, major-minor: '6.9' }
+          - { full: 7.0.9-24, major-minor: '7.0' }
 
     name: Linux, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
     steps:
@@ -78,8 +78,8 @@ jobs:
       matrix:
         ruby-version: [2.6, 2.7]
         imagemagick-version:
-          - { full: 6.9.10-90, major-minor: '6.9' }
-          - { full: 7.0.9-20, major-minor: '7.0' }
+          - { full: 6.9.10-94, major-minor: '6.9' }
+          - { full: 7.0.9-24, major-minor: '7.0' }
 
     name: macOS, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
     steps:
@@ -118,8 +118,8 @@ jobs:
         ruby-version: [2.3, 2.4, 2.5, 2.6]
         imagemagick-version:
           - { full: 6.8.9-10, major-minor: '6.8' }
-          - { full: 6.9.10-93, major-minor: '6.9' }
-          - { full: 7.0.9-23, major-minor: '7.0' }
+          - { full: 6.9.10-94, major-minor: '6.9' }
+          - { full: 7.0.9-24, major-minor: '7.0' }
     name: MSWin, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
     steps:
     - uses: actions/checkout@v2
