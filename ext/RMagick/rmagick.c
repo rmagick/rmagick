@@ -31,17 +31,15 @@ rm_yield_handle_exception(VALUE allocated_area, VALUE exc)
 
 /**
  * If called with the optional block, iterates over the colors, otherwise
- * returns an array of Magick::Color objects.
+ * returns an array of {Magick::Color} objects.
  *
- * Ruby usage:
- *   - @verbatim Magick::colors @endverbatim
- *   - @verbatim Magick::colors { |colorinfo| } @endverbatim
+ * @overload colors
+ *   @return [Array] the array of {Magick::Color}
  *
- * Notes:
- *   - There are 3 implementations.
+ * @overload colors
+ *   @yield [colorinfo]
+ *   @yieldparam colorinfo [Array] the array of {Magick::Color}
  *
- * @param class the class on which the method is run.
- * @return either the input class (if a block was given) or the array of colors.
  */
 VALUE
 Magick_colors(VALUE class)
@@ -86,12 +84,13 @@ Magick_colors(VALUE class)
  * If called with the optional block, iterates over the fonts, otherwise returns
  * an array of Magick::Font objects.
  *
- * Ruby usage:
- *   - @verbatim Magick::fonts @endverbatim
- *   - @verbatim Magick::fonts { |fontinfo| } @endverbatim
+ * @overload fonts
+ *   @return [Array] the array of {Magick::Font}
  *
- * @param class the class on which the method is run.
- * @return either the input class (if a block was given) or the array of fonts.
+ * @overload fonts
+ *   @yield [fontinfo]
+ *   @yieldparam fontinfo [Array] the array of {Magick::Font}
+ *
  */
 VALUE
 Magick_fonts(VALUE class)
@@ -138,7 +137,7 @@ Magick_fonts(VALUE class)
  *   - "R" is "r" if ImageMagick can read that format, or "-" otherwise.
  *   - "W" is "w" if ImageMagick can write that format, or "-" otherwise.
  *   - "A" is "+" if the format supports multi-image files, or "-" otherwise.
- * 
+ *
  * No Ruby usage (internal function)
  *
  * @param magick_info a MagickInfo object.
@@ -162,21 +161,13 @@ MagickInfo_to_format(const MagickInfo *magick_info)
  * Build the @@formats hash. The hash keys are image formats. The hash values
  * specify the format "mode string", i.e. a description of what ImageMagick can
  * do with that format. The mode string is in the form "BRWA", where
- *   - "B" is "*" if the format has native blob support, or " " otherwise.
- *   - "R" is "r" if ImageMagick can read that format, or "-" otherwise.
- *   - "W" is "w" if ImageMagick can write that format, or "-" otherwise.
- *   - "A" is "+" if the format supports multi-image files, or "-" otherwise.
- * 
- * Ruby usage:
- *   - @verbatim Magick.init_formats @endverbatim
  *
- * Notes:
- *   - Only called once.
- *   - There are 3 implementations.
+ * - "B" is "*" if the format has native blob support, or " " otherwise.
+ * - "R" is "r" if ImageMagick can read that format, or "-" otherwise.
+ * - "W" is "w" if ImageMagick can write that format, or "-" otherwise.
+ * - "A" is "+" if the format supports multi-image files, or "-" otherwise.
  *
- * @param class the class on which the method is run.
- * @return the formats hash.
- * @see MagickInfo_to_format
+ * @return [Hash] the formats hash.
  */
 VALUE
 Magick_init_formats(VALUE class ATTRIBUTE_UNUSED)
@@ -211,14 +202,16 @@ Magick_init_formats(VALUE class ATTRIBUTE_UNUSED)
  * Get/set resource limits. If a limit is specified the old limit is set to the
  * new value. Either way the current/old limit is returned.
  *
- * Ruby usage:
- *   - @verbatim Magick.limit_resource(resource) @endverbatim
- *   - @verbatim Magick.limit_resource(resource, limit) @endverbatim
+ * @overload limit_resource(resource)
+ *   Get resource limits.
+ *   @param resource [String, Symbol] the type of resource
+ *   @return [Numeric] the current limit.
  *
- * @param argc number of input arguments.
- * @param argv array of input arguments.
- * @param class the class on which the method is run.
- * @return the current/old limit.
+ * @overload limit_resource(resource, limit)
+ *   Set resource limits.
+ *   @param resource [String, Symbol] the type of resource
+ *   @param limit [Numeric] the new limit number
+ *   @return [Numeric] the old limit.
  */
 VALUE
 Magick_limit_resource(int argc, VALUE *argv, VALUE class)
@@ -325,15 +318,7 @@ Magick_limit_resource(int argc, VALUE *argv, VALUE class)
  * threshold is exceeded, all subsequent pixels cache operations are to/from
  * disk.
  *
- * Ruby usage:
- *   - @verbatim Magick.set_cache_threshold(megabytes) @endverbatim
- *
- * Notes:
- *   - singleton method
- *
- * @param class the class on which the method is run.
- * @param threshold the number of megabytes to set.
- * @return the class.
+ * @param threshold [Numeric] the number of megabytes to set.
  */
 VALUE
 Magick_set_cache_threshold(VALUE class, VALUE threshold)
@@ -348,32 +333,25 @@ Magick_set_cache_threshold(VALUE class, VALUE threshold)
 /**
  * Set the log event mask.
  *
- * Ruby usage:
- *   - @verbatim Magick.set_log_event_mask(event) @endverbatim
- *   - @verbatim Magick.set_log_event_mask(event,...) @endverbatim
+ * The arguments are one of:
  *
- * Notes:
- *   - "event" is one of
- *     - "all"
- *     - "annotate"
- *     - "blob"
- *     - "cache"
- *     - "coder"
- *     - "configure"
- *     - "deprecate"
- *     - "locale"
- *     - "none"
- *     - "render"
- *     - "transform"
- *     - "user"
- *     - "x11"
- *   - Multiple events can be specified.
- *   - Event names may be capitalized.
+ * - "all"
+ * - "annotate"
+ * - "blob"
+ * - "cache"
+ * - "coder"
+ * - "configure"
+ * - "deprecate"
+ * - "locale"
+ * - "none"
+ * - "render"
+ * - "transform"
+ * - "user"
+ * - "x11"
  *
- * @param argc number of input arguments.
- * @param argv array of input arguments.
- * @param class the class on which the method is run.
- * @return the class.
+ * Multiple events can be specified as the aruments. Event names may be capitalized.
+ *
+ * @param args [String] the mask of log event.
  */
 VALUE
 Magick_set_log_event_mask(int argc, VALUE *argv, VALUE class)
@@ -393,26 +371,21 @@ Magick_set_log_event_mask(int argc, VALUE *argv, VALUE class)
 
 /**
  * Set the format for log messages.
- * 
- * Ruby usage:
- *   - @verbatim Magick.set_log_format(format) @endverbatim
  *
- * Notes:
- *   - Format is a string containing one or more of:
- *     - %t  - current time
- *     - %r  - elapsed time
- *     - %u  - user time
- *     - %p  - pid
- *     - %m  - module (source file name)
- *     - %f  - function name
- *     - %l  - line number
- *     - %d  - event domain (one of the events listed above)
- *     - %e  - event name
- *     - Plus other characters, including \\n, etc.
+ * Format is a string containing one or more of:
  *
- * @param class the class on which the method is run.
- * @param format the format to set.
- * @return the class.
+ * - %t  - current time
+ * - %r  - elapsed time
+ * - %u  - user time
+ * - %p  - pid
+ * - %m  - module (source file name)
+ * - %f  - function name
+ * - %l  - line number
+ * - %d  - event domain (one of the events listed above)
+ * - %e  - event name
+ * - Plus other characters, including \\n, etc.
+ *
+ * @param format [String] the format to set.
  */
 VALUE
 Magick_set_log_format(VALUE class, VALUE format)
