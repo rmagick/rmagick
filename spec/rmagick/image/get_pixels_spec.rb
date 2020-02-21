@@ -7,7 +7,7 @@ RSpec.describe Magick::Image, '#get_pixels' do
     pixels = image.get_pixels(0, 0, image.columns, 1)
     expect(pixels).to be_instance_of(Array)
     expect(pixels.length).to eq(image.columns)
-    expect(pixels.all? { |p| p.is_a? Magick::Pixel }).to be(true)
+    expect(pixels.all? { |pixel| pixel.is_a? Magick::Pixel }).to be(true)
 
     expect { image.get_pixels(0,  0, -1, 1) }.to raise_error(RangeError)
     expect { image.get_pixels(0,  0, image.columns, -1) }.to raise_error(RangeError)
