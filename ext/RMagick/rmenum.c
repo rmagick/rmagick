@@ -96,10 +96,7 @@ static void rm_enum_free(void *magick_enum)
 /**
  * Enum class alloc function.
  *
- * No Ruby usage (internal function)
- *
- * @param class the Ruby class to use
- * @return a new enumerator
+ * @return [Magick::Enum] a new enumerator
  */
 VALUE
 Enum_alloc(VALUE class)
@@ -117,15 +114,8 @@ Enum_alloc(VALUE class)
 /**
  * "Case equal" operator for Enum.
  *
- * Ruby usage:
- *   - @verbatim Enum#=== @endverbatim
- *
- * Notes:
- *   - Yes, I know "case equal" is a misnomer.
- *
- * @param self this object
- * @param other the other object
- * @return true or false
+ * @param other [Object] the other object
+ * @return [Boolean] true or false
  */
 VALUE
 Enum_case_eq(VALUE self, VALUE other)
@@ -146,13 +136,9 @@ Enum_case_eq(VALUE self, VALUE other)
 /**
  * Initialize a new Enum instance.
  *
- * Ruby usage:
- *   - @verbatim Enum#initialize(sym,val) @endverbatim
- *
- * @param self this object
- * @param sym the symbol
- * @param val the value for the symbol
- * @return self
+ * @param sym [Symbol] the symbol as enum name
+ * @param val [Numeric] the value for enum
+ * @return [Magick::Enum] self
  */
 VALUE
 Enum_initialize(VALUE self, VALUE sym, VALUE val)
@@ -170,11 +156,7 @@ Enum_initialize(VALUE self, VALUE sym, VALUE val)
 /**
  * Return the value of an enum.
  *
- * Ruby usage:
- *   - @verbatim Enum#to_i @endverbatim
- *
- * @param self this object
- * @return this object's value
+ * @return [Numeric] this object's value
  */
 VALUE
 Enum_to_i(VALUE self)
@@ -189,15 +171,8 @@ Enum_to_i(VALUE self)
 /**
  * Support Comparable module in Enum.
  *
- * Ruby usage:
- *   - @verbatim Enum#<=> @endverbatim
- *
- * Notes:
- *   - Enums must be instances of the same class to be equal.
- *
- * @param self this object
- * @param other the other object
- * @return -1, 0, 1, or nil
+ * @param other [Object] the other object
+ * @return [-1, 0, 1, nil] the result of compare
  */
 VALUE
 Enum_spaceship(VALUE self, VALUE other)
@@ -225,16 +200,9 @@ Enum_spaceship(VALUE self, VALUE other)
 
 /**
  * Bitwise OR for enums
- * 
- * Ruby usage:
- *   - @verbatim Enum1 | Enum2 @endverbatim
- * 
- * Notes:
- *   - Enums must be instances of the same class.
  *
- * @param Enum1 this object
- * @param Enum2 another enum
- * @return new Enum instance
+ * @param another [Magick::Enum] the another enum
+ * @return [Magick::Enum] new Enum instance
  */
 VALUE
 Enum_bitwise_or(VALUE self, VALUE another)
@@ -263,11 +231,7 @@ Enum_bitwise_or(VALUE self, VALUE another)
 /**
  * Return the name of an enum.
  *
- * Ruby usage:
- *   - @verbatim Enum#to_s @endverbatim
- *
- * @param self this object
- * @return the name
+ * @return [String] the name of an enum
  */
 VALUE
 Enum_to_s(VALUE self)
@@ -279,13 +243,9 @@ Enum_to_s(VALUE self)
 /**
  * Initialize method for all Enum subclasses.
  *
- * Ruby usage:
- *   - @verbatim xxx#initialize(sym,val) @endverbatim
- *
- * @param self this object
- * @param sym the symbol
- * @param val the value of the symbol
- * @return self
+ * @param sym [Symbol] the symbol as enum name
+ * @param val [Numeric] the value for enum
+ * @return [Magick::Enum] self
  */
 VALUE
 Enum_type_initialize(VALUE self, VALUE sym, VALUE val)
@@ -314,11 +274,7 @@ Enum_type_initialize(VALUE self, VALUE sym, VALUE val)
 /**
  * Enum subclass #inspect.
  *
- * Ruby usage:
- *   - @verbatim xxx#inspect @endverbatim
- *
- * @param self this object
- * @return string representation of self
+ * @return [String] representation of self
  */
 static VALUE
 Enum_type_inspect(VALUE self)
@@ -336,15 +292,14 @@ Enum_type_inspect(VALUE self)
 /**
  * Behaves like #each if a block is present, otherwise like #to_a.
  *
- * Ruby usage:
- *   - @verbatim xxx.values @endverbatim
- *   - @verbatim xxx.values {|v| } @endverbatim
+ * @overload values
+ *   @return [Array] the enum values
  *
- * Notes:
- *   - Defined for each Enum subclass
- *
- * @param class the subclass
- * @return iterator over values if given block, a copy of the values otherwise
+ * @overload values
+ *   iterator over values if given block
+ *   @yield [val]
+ *   @yieldparam val [Magick::enum] an enum
+ *   @return [Magick::Enum] self
  */
 static VALUE
 Enum_type_values(VALUE class)
