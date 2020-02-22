@@ -260,12 +260,6 @@ Style/ConstantVisibility:
 Style/Copyright:
   Enabled: false
 
-# Offense count: 1
-# Configuration parameters: AllowCoercion.
-Style/DateTime:
-  Exclude:
-    - 'ext/RMagick/extconf.rb'
-
 # Offense count: 36
 Style/Documentation:
   Enabled: false

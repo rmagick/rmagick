@@ -2,7 +2,6 @@ lib_dir = File.expand_path('../../lib', File.dirname(__FILE__))
 $LOAD_PATH.unshift(lib_dir) unless $LOAD_PATH.include?(lib_dir)
 require 'rubygems'
 require 'mkmf'
-require 'date'
 
 module RMagick
   class Extconf
@@ -366,7 +365,7 @@ module RMagick
     def print_summary
       summary = <<~"END_SUMMARY"
         #{'=' * 70}
-        #{DateTime.now.strftime('%a %d %b %y %T')}
+        #{Time.now.strftime('%a %d %b %y %T')}
         This installation of RMagick #{RMAGICK_VERS} is configured for
         Ruby #{RUBY_VERSION} (#{RUBY_PLATFORM}) and ImageMagick #{$magick_version}
         #{'=' * 70}
