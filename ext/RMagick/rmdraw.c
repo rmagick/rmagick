@@ -27,14 +27,11 @@ static VALUE get_type_metrics(int, VALUE *, VALUE, get_type_metrics_func_t);
 
 
 /**
- * Set the affine matrix from an Magick::AffineMatrix.
+ * Set the affine matrix from an {Magick::AffineMatrix}.
  *
- * Ruby usage:
- *   - @verbatim Draw#affine= @endverbatim
- *
- * @param self this object
- * @param matrix the affine matrix to set
- * @return matrix
+ * @!attribute [w] affine
+ * @param matrix [Magick::AffineMatrix] the affine matrix
+ * @return [Magick::AffineMatrix] the given matrix
  */
 VALUE
 Draw_affine_eq(VALUE self, VALUE matrix)
@@ -49,14 +46,11 @@ Draw_affine_eq(VALUE self, VALUE matrix)
 
 
 /**
- * Set the text alignment.
+ * Set the text alignment from an {Magick::AlignType}.
  *
- * Ruby usage:
- *   - @verbatim Draw#align= @endverbatim
- *
- * @param self this object
- * @param align the alignment
- * @return align
+ * @!attribute [w] align
+ * @param align [Magick::AlignType] the text alignment
+ * @return [Magick::AlignType] the given align
  */
 VALUE
 Draw_align_eq(VALUE self, VALUE align)
@@ -71,14 +65,11 @@ Draw_align_eq(VALUE self, VALUE align)
 
 
 /**
- * Decorate attribute writer.
+ * Set text decorate from an {Magick::DecorationType}.
  *
- * Ruby usage:
- *   - @verbatim Draw#decorate= @endverbatim
- *
- * @param self this object
- * @param decorate the decorate
- * @return decorate
+ * @!attribute [w] decorate
+ * @param decorate [Magick::DecorationType] the decorate type
+ * @return [Magick::DecorationType] the given decorate
  */
 VALUE
 Draw_decorate_eq(VALUE self, VALUE decorate)
@@ -93,14 +84,11 @@ Draw_decorate_eq(VALUE self, VALUE decorate)
 
 
 /**
- * Density attribute writer.
+ * Set density.
  *
- * Ruby usage:
- *   - @verbatim Draw#density= @endverbatim
- *
- * @param self this object
- * @param density the density
- * @return density
+ * @!attribute [w] density
+ * @param density [String] the density
+ * @return [String] the given density
  */
 VALUE
 Draw_density_eq(VALUE self, VALUE density)
@@ -116,14 +104,11 @@ Draw_density_eq(VALUE self, VALUE density)
 
 
 /**
- * Encoding attribute writer.
+ * Set text encoding.
  *
- * Ruby usage:
- *   - @verbatim Draw#encoding= @endverbatim
- *
- * @param self this object
- * @param encoding the encoding
- * @return encoding
+ * @!attribute [w] encoding
+ * @param encoding [String] the encoding name
+ * @return [String] the given encoding name
  */
 VALUE
 Draw_encoding_eq(VALUE self, VALUE encoding)
@@ -139,14 +124,11 @@ Draw_encoding_eq(VALUE self, VALUE encoding)
 
 
 /**
- * Fill attribute writer.
+ * Set fill color.
  *
- * Ruby usage:
- *   - @verbatim Draw#fill= @endverbatim
- *
- * @param self this object
- * @param fill the fill
- * @return fill
+ * @!attribute [w] fill
+ * @param fill [Magick::Pixel, String] the fill color
+ * @return [Magick::Pixel, String] the given fill color
  */
 VALUE
 Draw_fill_eq(VALUE self, VALUE fill)
@@ -163,14 +145,11 @@ Draw_fill_eq(VALUE self, VALUE fill)
 /**
  * Accept an image as a fill pattern.
  *
- * Ruby usage:
- *   - @verbatim Draw#fill_pattern= @endverbatim
- *
- * @param self this object
- * @param pattern the fill pattern
- * @return pattern
- * @see Draw_stroke_pattern_eq
- * @see Draw_tile_eq
+ * @!attribute [w] fill_pattern
+ * @param pattern [Magick::Image] the pattern image
+ * @return [Magick::Image] the given pattern image
+ * @see #stroke_pattern=
+ * @see #tile=
  */
 VALUE
 Draw_fill_pattern_eq(VALUE self, VALUE pattern)
@@ -202,14 +181,11 @@ Draw_fill_pattern_eq(VALUE self, VALUE pattern)
 
 
 /**
- * Font attribute writer.
+ * Set the font name.
  *
- * Ruby usage:
- *   - @verbatim Draw#font= @endverbatim
- *
- * @param self this object
- * @param font the font
- * @return font
+ * @!attribute [w] font
+ * @param font [String] the font name
+ * @return [String] the given font name
  */
 VALUE
 Draw_font_eq(VALUE self, VALUE font)
@@ -225,14 +201,11 @@ Draw_font_eq(VALUE self, VALUE font)
 
 
 /**
- * Font family attribute writer.
+ * Set the font family name.
  *
- * Ruby usage:
- *   - @verbatim Draw#family= @endverbatim
- *
- * @param self this object
- * @param family the family
- * @return family
+ * @!attribute [w] family
+ * @param family [String] the font family name
+ * @return [String] the given family name
  */
 VALUE
 Draw_font_family_eq(VALUE self, VALUE family)
@@ -248,14 +221,11 @@ Draw_font_family_eq(VALUE self, VALUE family)
 
 
 /**
- * Font_stretch attribute writer.
+ * Set the stretch as spacing between text characters.
  *
- * Ruby usage:
- *   - @verbatim Draw#font_stretch= @endverbatim
- *
- * @param self this object
- * @param stretch the font_stretch
- * @return stretch
+ * @!attribute [w] font_stretch
+ * @param stretch [Magick::StretchType] the stretch type
+ * @return [Magick::StretchType] the given stretch type
  */
 VALUE
 Draw_font_stretch_eq(VALUE self, VALUE stretch)
@@ -270,14 +240,12 @@ Draw_font_stretch_eq(VALUE self, VALUE stretch)
 
 
 /**
- * Font_style attribute writer.
+ * Set font style.
  *
- * Ruby usage:
- *   - @verbatim Draw#font_style= @endverbatim
+ * @!attribute [w] font_style
  *
- * @param self this object
- * @param style the font_style
- * @return style
+ * @param style [Magick::StyleType] the font style
+ * @return [Magick::StyleType] the given font style
  */
 VALUE
 Draw_font_style_eq(VALUE self, VALUE style)
@@ -294,16 +262,11 @@ Draw_font_style_eq(VALUE self, VALUE style)
 /**
  * Font_weight attribute writer.
  *
- * Ruby usage:
- *   - @verbatim Draw#font_weight= @endverbatim
+ * @!attribute [w] font_weight
  *
- * Notes:
- *   - The font weight can be one of the font weight constants or a number
- *     between 100 and 900
- *
- * @param self this object
- * @param weight the font_weight
- * @return weight
+ * @param weight [Magick::WeightType, Numeric] the font weight
+ * @return [Magick::WeightType, Numeric] the given font weight
+ * @note The font weight can be one of the font weight constants or a number between 100 and 900
  */
 VALUE
 Draw_font_weight_eq(VALUE self, VALUE weight)
@@ -356,27 +319,22 @@ Draw_font_weight_eq(VALUE self, VALUE weight)
 
 
 /**
- * Gravity attribute writer.
+ * Set gravity to draw text.
+ * Gravity affects text placement in bounding area according to rules:
  *
- * Ruby usage:
- *   - @verbatim Draw#gravity= @endverbatim
+ * - NorthWestGravity  - text bottom-left corner placed at top-left
+ * - NorthGravity      - text bottom-center placed at top-center
+ * - NorthEastGravity  - text bottom-right corner placed at top-right
+ * - WestGravity       - text left-center placed at left-center
+ * - CenterGravity     - text center placed at center
+ * - EastGravity       - text right-center placed at right-center
+ * - SouthWestGravity  - text top-left placed at bottom-left
+ * - SouthGravity      - text top-center placed at bottom-center
+ * - SouthEastGravity  - text top-right placed at bottom-right
  *
- * Notes:
- *   - From Magick++'s Image.h header file:
- *     Gravity affects text placement in bounding area according to rules:
- *     - NorthWestGravity  text bottom-left corner placed at top-left
- *     - NorthGravity      text bottom-center placed at top-center
- *     - NorthEastGravity  text bottom-right corner placed at top-right
- *     - WestGravity       text left-center placed at left-center
- *     - CenterGravity     text center placed at center
- *     - EastGravity       text right-center placed at right-center
- *     - SouthWestGravity  text top-left placed at bottom-left
- *     - SouthGravity      text top-center placed at bottom-center
- *     - SouthEastGravity  text top-right placed at bottom-right
- *
- * @param self this object
- * @param grav the gravity
- * @return grav
+ * @!attribute [w] gravity
+ * @param grav [Magick::GravityType] this gravity type
+ * @return [Magick::GravityType] the given gravity type
  */
 VALUE
 Draw_gravity_eq(VALUE self, VALUE grav)
@@ -392,17 +350,11 @@ Draw_gravity_eq(VALUE self, VALUE grav)
 
 
 /**
- * Space between two letters.
+ * Set kerning as spacing between two letters.
  *
- * Ruby usage:
- *   - @verbatim Draw#gravity=float @endverbatim
- *
- * Notes:
- *   - New for ImageMagick 6.4.7-8
- *
- * @param self this object
- * @param kerning the kerning
- * @return kerning
+ * @!attribute [w] kerning
+ * @param kerning [Float] the kerning
+ * @return [Float] the given kerning
  */
 VALUE
 Draw_kerning_eq(VALUE self, VALUE kerning)
@@ -417,17 +369,11 @@ Draw_kerning_eq(VALUE self, VALUE kerning)
 
 
 /**
- * Space between two lines.
+ * Set spacing between two lines.
  *
- * Ruby usage:
- *   - @verbatim Draw#interline_spacing= @endverbatim
- *
- * Notes:
- *   - New for ImageMagick 6.5.5-8
- *
- * @param self this object
- * @param spacing the spacing
- * @return spacing
+ * @!attribute [w] interline_spacing
+ * @param spacing [Float] the spacing
+ * @return [Float] the given spacing
  */
 VALUE
 Draw_interline_spacing_eq(VALUE self, VALUE spacing)
@@ -442,17 +388,11 @@ Draw_interline_spacing_eq(VALUE self, VALUE spacing)
 
 
 /**
- * Space between two words.
+ * Set spacing between two words.
  *
- * Ruby usage:
- *   - @verbatim Draw#interword_spacing= @endverbatim
- *
- * Notes:
- *   - New for ImageMagick 6.4.8-0
- *
- * @param self this object
- * @param spacing the spacing
- * @return spacing
+ * @!attribute [w] interword_spacing
+ * @param spacing [Float] the spacing
+ * @return [Float] the given spacing
  */
 VALUE
 Draw_interword_spacing_eq(VALUE self, VALUE spacing)
@@ -541,21 +481,16 @@ Image *str_to_image(VALUE str)
 
 
 /**
- * Custom marshal for Draw objects.
+ * Dump custom marshal for Draw objects.
  *
- * Ruby usage:
- *   - @verbatim Draw#marshal_dump @endverbatim
+ * - Instead of trying to replicate Ruby's support for cross-system
+ *   marshalling, exploit it. Convert the Draw fields to Ruby objects and
+ *   store them in a hash. Let Ruby marshal the hash.
+ * - Commented out code that dumps/loads fields that are used internally by
+ *   ImageMagick and shouldn't be marshaled. I left the code as placeholders
+ *   so I'll know which fields have been deliberately omitted.
  *
- * Notes:
- *   - Instead of trying to replicate Ruby's support for cross-system
- *     marshalling, exploit it. Convert the Draw fields to Ruby objects and
- *     store them in a hash. Let Ruby marshal the hash.
- *   - Commented out code that dumps/loads fields that are used internally by
- *     ImageMagick and shouldn't be marshaled. I left the code as placeholders
- *     so I'll know which fields have been deliberately omitted.
- *
- * @param self this object
- * @return the marshalled object (as a Ruby hash)
+ * @return [Hash] the marshalled object
  * @todo Handle gradients when christy gets the new gradient support added (23Dec08)
  */
 VALUE
@@ -635,17 +570,10 @@ Draw_marshal_dump(VALUE self)
 
 
 /**
- * Support Marsal.load.
+ * Load the marshalled object
  *
- * Ruby usage:
- *   - @verbatim Draw#marshal_load @endverbatim
- *
- * Notes:
- *   - On entry all fields are all-bits-0
- *
- * @param self this object
- * @param ddraw the marshalled object
- * @return self, once marshalled
+ * @param ddraw [Hash] the marshalled object
+ * @return [Magick::Draw] self, once marshalled
  */
 VALUE
 Draw_marshal_load(VALUE self, VALUE ddraw)
@@ -709,14 +637,11 @@ Draw_marshal_load(VALUE self, VALUE ddraw)
 
 
 /**
- * Pointsize attribute writer.
+ * Set point size to draw text.
  *
- * Ruby usage:
- *   - @verbatim Draw#pointsize= @endverbatim
- *
- * @param self this object
- * @param pointsize the pointsize
- * @return pointsize
+ * @!attribute [w] pointsize
+ * @param pointsize [Float] the pointsize
+ * @return [Float] the given pointsize
  */
 VALUE
 Draw_pointsize_eq(VALUE self, VALUE pointsize)
@@ -731,19 +656,10 @@ Draw_pointsize_eq(VALUE self, VALUE pointsize)
 
 
 /**
- * Set rotation attribute value.
+ * Set rotation. The argument should be in degrees.
  *
- * Ruby usage:
- *   - @verbatim Magick::Draw#rotation= @endverbatim
- *
- * Notes:
- *   - Argument should be in degrees
- *   - Taken from Magick++'s Magick::Image::annotate method.
- *     Copyright Bob Friesenhahn, 1999, 2000, 2001, 2002
- *
- * @param self this object
- * @param deg the number of degrees
- * @return deg
+ * @param deg [Float] the number of degrees
+ * @return [Float] the given degrees
  */
 VALUE
 Draw_rotation_eq(VALUE self, VALUE deg)
@@ -778,14 +694,12 @@ Draw_rotation_eq(VALUE self, VALUE deg)
 
 
 /**
- * Stroke attribute writer.
+ * Set stroke.
  *
- * Ruby usage:
- *   - @verbatim Draw#stroke= @endverbatim
+ * @!attribute [w] stroke
  *
- * @param self this object
- * @param stroke the stroke
- * @return stroke
+ * @param stroke [Magick::Pixel, String] the stroke
+ * @return [Magick::Pixel, String] the given stroke
  */
 VALUE
 Draw_stroke_eq(VALUE self, VALUE stroke)
@@ -802,13 +716,10 @@ Draw_stroke_eq(VALUE self, VALUE stroke)
 /**
  * Accept an image as a stroke pattern.
  *
- * Ruby usage:
- *   - @verbatim Draw#stroke_pattern= @endverbatim
- *
- * @param self this object
- * @param pattern the pattern
- * @return pattern
- * @see Draw_fill_pattern_eq
+ * @!attribute [w] stroke_pattern
+ * @param pattern [Magick::Image] the stroke pattern
+ * @return pattern [Magick::Image] the given pattern
+ * @see #fill_pattern
  */
 VALUE
 Draw_stroke_pattern_eq(VALUE self, VALUE pattern)
@@ -841,14 +752,11 @@ Draw_stroke_pattern_eq(VALUE self, VALUE pattern)
 
 
 /**
- * Stroke_width attribute writer.
+ * Set stroke width.
  *
- * Ruby usage:
- *   - @verbatim Draw#stroke_width= @endverbatim
- *
- * @param self this object
- * @param stroke_width the stroke_width
- * @return stroke_width
+ * @!attribute [w] stroke_width
+ * @param stroke_width [Float] the stroke width
+ * @return [Float] the given stroke width
  */
 VALUE
 Draw_stroke_width_eq(VALUE self, VALUE stroke_width)
@@ -863,14 +771,11 @@ Draw_stroke_width_eq(VALUE self, VALUE stroke_width)
 
 
 /**
- * Text_antialias attribute writer.
+ * Set whether to enable text antialias.
  *
- * Ruby usage:
- *   - @verbatim Draw#text_antialias= @endverbatim
- *
- * @param self this object
- * @param text_antialias the text_antialias
- * @return text_antialias
+ * @!attribute [w] text_antialias
+ * @param text_antialias [Boolean] true if enable text antialias
+ * @return [Boolean] the given value
  */
 VALUE
 Draw_text_antialias_eq(VALUE self, VALUE text_antialias)
@@ -885,14 +790,11 @@ Draw_text_antialias_eq(VALUE self, VALUE text_antialias)
 
 
 /**
- * Tile attribute writer.
+ * Accept an image as a fill pattern. This is alias of {Draw#fill_pattern=}.
  *
- * Ruby usage:
- *   - @verbatim Draw#tile= @endverbatim
- *
- * @param self this object
- * @param image the image to tile
- * @return image
+ * @!attribute [w] tile
+ * @param image [Magick::Image] the image to tile
+ * @return [Magick::Image] the given image
  */
 VALUE
 Draw_tile_eq(VALUE self, VALUE image)
@@ -902,14 +804,11 @@ Draw_tile_eq(VALUE self, VALUE image)
 
 
 /**
- * Undercolor attribute writer.
+ * Set undercolor.
  *
- * Ruby usage:
- *   - @verbatim Draw#undercolor= @endverbatim
- *
- * @param self this object
- * @param undercolor the undercolor
- * @return undercolor
+ * @!attribute [w] undercolor
+ * @param undercolor [Magick::Pixel, String] the undercolor
+ * @return [Magick::Pixel, String] the given undercolor
  */
 VALUE
 Draw_undercolor_eq(VALUE self, VALUE undercolor)
@@ -926,21 +825,16 @@ Draw_undercolor_eq(VALUE self, VALUE undercolor)
 /**
  * Annotates an image with text.
  *
- * Ruby usage:
- *   - @verbatim Draw#annotate(img, w, h, x, y, text) <{optional parms}> @endverbatim
+ * - Additional Draw attribute methods may be called in the optional block,
+ *   which is executed in the context of an Draw object.
  *
- * Notes:
- *   - Additional Draw attribute methods may be called in the optional block,
- *     which is executed in the context of an Draw object.
- *
- * @param self this object
- * @param image_arg the image
- * @param width_arg the width
- * @param height_arg the height
- * @param x_arg x position
- * @param y_arg y position
- * @param text the annotation text
- * @return self
+ * @param image_arg [Magick::Image] the image
+ * @param width_arg [Numeric] the width
+ * @param height_arg [Numeric] the height
+ * @param x_arg [Numeric] x position
+ * @param y_arg [Numeric] y position
+ * @param text [String] the annotation text
+ * @return [Magick::Draw] self
  */
 VALUE Draw_annotate(
                    VALUE self,
@@ -1045,13 +939,7 @@ VALUE Draw_annotate(
 /**
  * Clones this object.
  *
- * Ruby usage:
- *   - @verbatim Draw#clone @endverbatim
- *
- * @param self this object
- * @return the clone
- * @see Draw_dup
- * @see Draw_init_copy
+ * @return [Magick::Draw] the cloned object
  */
 VALUE
 Draw_clone(VALUE self)
@@ -1071,21 +959,27 @@ Draw_clone(VALUE self)
 
 
 /**
- * Implement the "image" drawing primitive.
+ * Draw the image.
  *
- * Ruby usage:
- *   - @verbatim Draw#composite(x,y,width,height,img) @endverbatim
- *   - @verbatim Draw#composite(x,y,width,height,img,operator) @endverbatim
+ * @overload composite(x, y, width, height, image)
+ *   @param x [Float] x position
+ *   @param y [Float] y position
+ *   @param width [Float] the width
+ *   @param height [Float] the height
+ *   @param image [Magick::Image] the image
+ *   @return [Magick::Draw] self
  *
- * Notes:
- *   - Default operator is overComposite
- *   - The "img" argument can be either an ImageList object or an Image
+ * @overload composite(x, y, width, height, image, operator)
+ *   - Default operator is {Magick::OverCompositeOp}.
+ *   - The "image" argument can be either an ImageList object or an Image
  *     argument.
- *
- * @param argc number of input arguments
- * @param argv array of input arguments
- * @param self this object
- * @return self
+ *   @param x [Float] x position
+ *   @param y [Float] y position
+ *   @param width [Float] the width
+ *   @param height [Float] the height
+ *   @param image [Magick::Image] the image
+ *   @param operator [Magick::CompositeOperator] the operator
+ *   @return [Magick::Draw] self
  */
 VALUE
 Draw_composite(int argc, VALUE *argv, VALUE self)
@@ -1156,12 +1050,8 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
 /**
  * Execute the stored drawing primitives on the current image.
  *
- * Ruby usage:
- *   - @verbatim Draw#draw(i) @endverbatim
- *
- * @param self this object
- * @param image_arg the image argument
- * @return self
+ * @param image_arg [Magick::Image] the image
+ * @return [Magick::Draw] self
  */
 VALUE
 Draw_draw(VALUE self, VALUE image_arg)
@@ -1206,18 +1096,11 @@ Draw_draw(VALUE self, VALUE image_arg)
 
 
 /**
- * Copy a Draw object.
+ * Duplicate a Draw object.
  *
- * Ruby usage:
- *   - @verbatim Draw#dup @endverbatim
+ * - Constructs a new Draw object, then calls initialize_copy.
  *
- * Notes:
- *   - Constructs a new Draw object, then calls initialize_copy.
- *
- * @param self this object
- * @return the duplicate
- * @see Draw_clone
- * @see Draw_init_copy
+ * @return [Magick::Draw] the duplicated object
  */
 VALUE
 Draw_dup(VALUE self)
@@ -1237,19 +1120,18 @@ Draw_dup(VALUE self)
 /**
  * Returns measurements for a given font and text string.
  *
- * Ruby usage:
- *   - @verbatim Draw#get_type_metrics(text) @endverbatim
- *   - @verbatim Draw#get_type_metrics(image, text) @endverbatim
+ * - If the image argument has been omitted, use a dummy image, but make sure
+ *   the text has none of the special characters that refer to image
+ *   attributes.
  *
- * Notes:
- *   - If the image argument has been omitted, use a dummy image, but make sure
- *     the text has none of the special characters that refer to image
- *     attributes.
+ * @overload get_type_metrics(text)
+ *   @param text [String] The string to be rendered.
+ *   @return [Magick::TypeMetric] The information for a specific string if rendered on a image.
  *
- * @param argc number of input arguments
- * @param argv array of input arguments
- * @param self this object
- * @return the duplicate
+ * @overload get_type_metrics(image, text)
+ *   @param image [Magick::Image] The image on which the string will be rendered.
+ *   @param text [String] The string to be rendered.
+ *   @return [Magick::TypeMetric] The information for a specific string if rendered on a image.
  */
 VALUE
 Draw_get_type_metrics(
@@ -1264,19 +1146,18 @@ Draw_get_type_metrics(
 /**
  * Returns measurements for a given font and text string.
  *
- * Ruby usage:
- *   - @verbatim Draw#get_multiline_type_metrics(text) @endverbatim
- *   - @verbatim Draw#get_multiline_type_metrics(image, text) @endverbatim
+ * - If the image argument has been omitted, use a dummy image, but make sure
+ *   the text has none of the special characters that refer to image
+ *   attributes.
  *
- * Notes:
- *   - If the image argument has been omitted, use a dummy image, but make sure
- *     the text has none of the special characters that refer to image
- *     attributes.
+ * @overload get_multiline_type_metrics(text)
+ *   @param text [String] The string to be rendered.
+ *   @return [Magick::TypeMetric] The information for a specific string if rendered on a image.
  *
- * @param argc number of input arguments
- * @param argv array of input arguments
- * @param self this object
- * @return the duplicate
+ * @overload Draw#get_multiline_type_metrics(image, text)
+ *   @param image [Magick::Image] The image on which the string will be rendered.
+ *   @param text [String] The string to be rendered.
+ *   @return [Magick::TypeMetric] The information for a specific string if rendered on a image.
  */
 VALUE
 Draw_get_multiline_type_metrics(
@@ -1291,14 +1172,8 @@ Draw_get_multiline_type_metrics(
 /**
  * Initialize clone, dup methods.
  *
- * Ruby usage:
- *   - @verbatim Draw#initialize_copy @endverbatim
- *
- * @param self this object
  * @param orig the original object
- * @return self
- * @see Draw_clone
- * @see Draw_dup
+ * @return [Magick::Draw] self
  */
 VALUE Draw_init_copy(VALUE self, VALUE orig)
 {
@@ -1325,11 +1200,7 @@ VALUE Draw_init_copy(VALUE self, VALUE orig)
 /**
  * Initialize Draw object.
  *
- * Ruby usage:
- *   - @verbatim Draw#initialize <{ info initializers }> @endverbatim
- *
- * @param self this object
- * @return self
+ * @return [Magick::Draw] self
  */
 VALUE
 Draw_initialize(VALUE self)
@@ -1353,12 +1224,8 @@ Draw_initialize(VALUE self)
 /**
  * Display the primitives.
  *
- * Ruby usage:
- *   - @verbatim Draw#inspect @endverbatim
- *
- * @param self this object
- * @return the draw primitives or the Ruby string "(no primitives defined)" if
- * they are not defined
+ * @return [String] the draw primitives or the Ruby string "(no primitives defined)"
+ *   if they are not defined
  */
 VALUE
 Draw_inspect(VALUE self)
@@ -1373,13 +1240,7 @@ Draw_inspect(VALUE self)
 /**
  * Create a new Draw object.
  *
- * Ruby usage:
- *   - @verbatim Draw.new @endverbatim
- *   - @verbatim Draw.allocate @endverbatim
- *
- * @param class the Ruby Draw class
- * @return a new Draw object
- * @throw ImageMagickError if no memory
+ * @return [Magick::Draw] a new Draw object
  */
 VALUE Draw_alloc(VALUE class)
 {
@@ -1399,12 +1260,8 @@ VALUE Draw_alloc(VALUE class)
 /**
  * Add a drawing primitive to the list of primitives in the Draw object.
  *
- * Ruby usage:
- *   - @verbatim Draw#primitive @endverbatim
- *
- * @param self this object
- * @param primitive the primitive to add
- * @return self
+ * @param primitive [String] the primitive to add
+ * @return [Magick::Draw] self
  */
 VALUE
 Draw_primitive(VALUE self, VALUE primitive)
@@ -1497,16 +1354,10 @@ new_DrawOptions(void)
 /**
  * Create a DrawOptions object.
  *
- * Ruby usage:
- *   - @verbatim DrawOptions#allocate @endverbatim
- *   - @verbatim DrawOptions#new @endverbatim
+ * - The DrawOptions class is the same as the Draw class except is has only
+ *   the attribute writer functions
  *
- * Notes:
- *   - The DrawOptions class is the same as the Draw class except is has only
- *     the attribute writer functions
- *
- * @param class the Ruby DrawOptions class
- * @return a new DrawOptions object
+ * @return [Magick::Image::DrawOptions] a new DrawOptions object
  */
 VALUE
 DrawOptions_alloc(VALUE class)
@@ -1527,11 +1378,7 @@ DrawOptions_alloc(VALUE class)
 /**
  * Initialize a DrawOptions object.
  *
- * Ruby usage:
- *   - @verbatim DrawOptions#initialize @endverbatim
- *
- * @param self this object
- * @return self
+ * @return [Magick::Image::DrawOptions] self
  */
 VALUE
 DrawOptions_initialize(VALUE self)
@@ -1558,18 +1405,12 @@ DrawOptions_initialize(VALUE self)
 
 
 /**
- * Allocate a new Magick::PolaroidOptions object.
+ * Allocate a new Magick::Image::PolaroidOptions object.
  *
- * Ruby usage:
- *   - @verbatim Magick::PolaroidOptions#allocate @endverbatim
- *   - @verbatim Magick::PolaroidOptions#new @endverbatim
+ * - Internally a PolaroidOptions object is the same as a Draw object. The
+ *   methods are implemented by Draw methods in rmdraw.c.
  *
- * Notes:
- *   - Internally a PolaroidOptions object is the same as a Draw object. The
- *     methods are implemented by Draw methods in rmdraw.c.
- *
- * @param class the Ruby PoloradoidOptions class
- * @return a new DrawOptions object
+ * @return [Magick::Image::PolaroidOptions] a new PolaroidOptions object
  */
 VALUE
 PolaroidOptions_alloc(VALUE class)
@@ -1595,13 +1436,11 @@ PolaroidOptions_alloc(VALUE class)
 
 
 /**
- * Yield to an optional block.
+ * Initialize a PolaroidOptions object.
  *
- * Ruby usage:
- *   - @verbatim Magick::PolaroidOptions#initialize @endverbatim
- *
- * @param self this object
- * @return self
+ * @yield [self]
+ * @yieldparam self [Magick::Image::PolaroidOptions] self
+ * @return [Magick::Image::PolaroidOptions] self
  */
 VALUE
 PolaroidOptions_initialize(VALUE self)
@@ -1645,12 +1484,9 @@ rm_polaroid_new(void)
 /**
  * Set the shadow color attribute.
  *
- * Ruby usage:
- *   - @verbatim PolaroidOptions#shadow_color= @endverbatim
- *
- * @param self this object
- * @param shadow the shadow color
- * @return shadow
+ * @!attribute [w] shadow_color
+ * @param shadow [Magick::Pixel, String] the shadow color
+ * @return [Magick::Pixel, String] the given shadow color
  */
 VALUE
 PolaroidOptions_shadow_color_eq(VALUE self, VALUE shadow)
@@ -1665,14 +1501,12 @@ PolaroidOptions_shadow_color_eq(VALUE self, VALUE shadow)
 
 
 /**
- * Set the border color attribute.
+ * Set the border color.
  *
- * Ruby usage:
- *   - @verbatim PolaroidOptions#border_color= @endverbatim
+ * @!attribute [w] border_color
  *
- * @param self this object
- * @param border the border color
- * @return border
+ * @param border [Magick::Pixel, String] the border color
+ * @return [Magick::Pixel, String] the given border color
  */
 VALUE
 PolaroidOptions_border_color_eq(VALUE self, VALUE border)
