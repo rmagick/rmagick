@@ -28,14 +28,12 @@ static VALUE ImageList_new(void);
  * "delay" argument is the number of 1/100ths of a second (0 to 65535) to delay
  * between images.
  *
- * Ruby usage:
- *   - @verbatim ImageList#animate @endverbatim
- *   - @verbatim ImageList#animate(delay) @endverbatim
+ * @overload animate
+ *   @return [Magick::ImageList] self
  *
- * @param argc number of input arguments
- * @param argv array of input arguments
- * @param self this object
- * @return self
+ * @overload animate(delay)
+ *   @param delay [Numeric] the length of time between each image in an animation
+ *   @return [Magick::ImageList] self
  */
 
 VALUE
@@ -94,14 +92,10 @@ ImageList_animate(int argc, VALUE *argv, VALUE self)
 
 
 /**
- * Append all the images by calling ImageAppend.
+ * Append all the images
  *
- * Ruby usage:
- *   - @verbatim ImageList#append(stack) @endverbatim
- *
- * @param self this object
- * @param stack_arg the stack of images
- * @return a Frame object for the result
+ * @param stack_arg [Magick::ImageList] the stack of images
+ * @return [Magick::Image] a frame object for the result
  */
 VALUE
 ImageList_append(VALUE self, VALUE stack_arg)
@@ -130,13 +124,9 @@ ImageList_append(VALUE self, VALUE stack_arg)
 
 
 /**
- * Average all images together by calling AverageImages.
+ * Average all images together
  *
- * Ruby usage:
- *   - @verbatim ImageList#average @endverbatim
- *
- * @param self this object
- * @return a Frame object for the averaged image
+ * @return [Magick::Image] a frame object for the averaged image
  */
 VALUE
 ImageList_average(VALUE self)
@@ -161,17 +151,12 @@ ImageList_average(VALUE self)
 
 
 /**
- * Call CoalesceImages.
+ * Composites a set of images while respecting any page offsets and disposal methods.
  *
- * Ruby usage:
- *   - @verbatim ImageList#coalesce @endverbatim
+ * - Respects the delay, matte, and start_loop fields in each image.
  *
- * Notes:
- *   - Respects the delay, matte, and start_loop fields in each image.
- *
- * @param self this object
- * @return a new Image with the coalesced image sequence return stored in the
- * images array
+ * @return [Magick::ImageList] a new image with the coalesced image sequence return stored in the
+ *   images array
  */
 VALUE
 ImageList_coalesce(VALUE self)
@@ -197,17 +182,12 @@ ImageList_coalesce(VALUE self)
 /**
  * Combines the images using the specified colorspace.
  *
- * Ruby usage:
- *   - @verbatim new_image = ImageList#combine @endverbatim
- *   - @verbatim new_image = ImageList#combine(colorspace) @endverbatim
+ * @overload combine
+ *   @return [Magick::Image] a new image
  *
- * Notes:
- *   - Calls CombineImages.
- *
- * @param argc number of input arguments
- * @param argv array of input arguments
- * @param self this object
- * @return a new image
+ * @overload combine(colorspace)
+ *   @param colorspace [Magick::ColorspaceType] the colorspace
+ *   @return [Magick::Image] a new image
  */
 VALUE ImageList_combine(int argc, VALUE *argv, VALUE self)
 {
@@ -297,20 +277,17 @@ VALUE ImageList_combine(int argc, VALUE *argv, VALUE self)
 
 
 /**
- * Equivalent to convert's -layers composite option.
+ * An image from source images is composited over an image from receiver's list until one list is finished.
  *
- * Ruby usage:
- *   - @verbatim ImageList#composite_layers(images) @endverbatim
- *   - @verbatim ImageList#composite_layers(images,operator) @endverbatim
+ * @overload composite_layers(images)
+ *   @param images [Magick::ImageList] the source images
+ *   @return [Magick::ImageList] a new imagelist
  *
- * Notes:
- *   - Default operator is OverCompositeOp
- *
- * @param argc number of input arguments
- * @param argv array of input arguments
- * @param self this object
- * @return a new imagelist
- * @see mogrify.c in ImageMagick
+ * @overload composite_layers(images, operator)
+ *   - Default operator is {Magick::OverCompositeOp}
+ *   @param images [Magick::ImageList] the source images
+ *   @param operator [Magick::CompositeOperator] the operator
+ *   @return [Magick::ImageList] a new imagelist
  */
 VALUE
 ImageList_composite_layers(int argc, VALUE *argv, VALUE self)
@@ -365,11 +342,7 @@ ImageList_composite_layers(int argc, VALUE *argv, VALUE self)
  * Compare each image with the next in a sequence and returns the maximum
  * bounding region of any pixel differences it discovers.
  *
- * Ruby usage:
- *   - @verbatim ImageList#deconstruct @endverbatim
- *
- * @param self this object
- * @return a new imagelist
+ * @return [Magick::ImageList] a new imagelist
  */
 VALUE
 ImageList_deconstruct(VALUE self)
@@ -397,11 +370,7 @@ ImageList_deconstruct(VALUE self)
 /**
  * Display all the images to an X window screen.
  *
- * Ruby usage:
- *   - @verbatim ImageList#display @endverbatim
- *
- * @param self this object
- * @return self
+ * @return [Magick::ImageList] self
  */
 VALUE
 ImageList_display(VALUE self)
@@ -440,14 +409,7 @@ ImageList_display(VALUE self)
 /**
  * Merge all the images into a single image.
  *
- * Ruby usage:
- *   - @verbatim ImageList#flatten_images @endverbatim
- *
- * Notes:
- *   - Can't use "flatten" because that's an Array method
- *
- * @param self this object
- * @return the new image
+ * @return [Magick::ImageList] the new image
  */
 VALUE
 ImageList_flatten_images(VALUE self)
@@ -471,17 +433,16 @@ ImageList_flatten_images(VALUE self)
 
 
 /**
- * Call MontageImages.
+ * Tile one or more thumbnails across an image canvas.
  *
- * Ruby usage:
- *   - @verbatim ImageList#montage <{parm block}> @endverbatim
+ * @overload montage
+ *   @return [Magick::ImageList] a new image list
  *
- * Notes:
- *   - Creates Montage object, yields to block if present in Montage object's
- *     scope.
- *
- * @param self this object
- * @return a new image list
+ * @overload montage
+ *   Creates {Magick::ImageList::Montage} object, yields to block
+ *   if present in {Magick::ImageList::Montage} object's scope.
+ *   @yield []
+ *   @return [Magick::ImageList] a new image list
  */
 VALUE
 ImageList_montage(VALUE self)
@@ -534,17 +495,11 @@ ImageList_montage(VALUE self)
 
 /**
  * Requires a minimum of two images. The first image is transformed into the
- * second by a number of intervening images as specified by "number_images".
+ * second by a number of intervening images as specified by "nimages".
  *
- * Ruby usage:
- *   - @verbatim ImageList#morph(number_images) @endverbatim
- *
- * Notes:
- *   - Sets \@scenes to 0
- *
- * @param self this object
- * @param nimages the number of images
- * @return a new image list with the images array set to the morph sequence.
+ * @note Sets @scenes to 0
+ * @param nimages [Numeric] the number of images
+ * @return [Magick::ImageList] a new image list with the images array set to the morph sequence.
  */
 VALUE
 ImageList_morph(VALUE self, VALUE nimages)
@@ -577,11 +532,7 @@ ImageList_morph(VALUE self, VALUE nimages)
 /**
  * Merge all the images into a single image.
  *
- * Ruby usage:
- *   - @verbatim ImageList#mosaic @endverbatim
- *
- * @param self this object
- * @return the new image
+ * @return [Magick::Image] the new image
  */
 VALUE
 ImageList_mosaic(VALUE self)
@@ -605,14 +556,11 @@ ImageList_mosaic(VALUE self)
 
 
 /**
- * Equivalent to -layers option in ImageMagick 6.2.6.
+ * Optimizes or compares the images in the list.
+ * Equivalent to the -layers option in ImageMagick's mogrify command.
  *
- * Ruby usage:
- *   - @verbatim ImageList#optimize_layers(method) @endverbatim
- *
- * @param self this object
- * @param method the method to use
- * @return a new imagelist
+ * @param method [Magick::LayerMethod] the method to use
+ * @return [Magick::ImageList] a new imagelist
  */
 VALUE
 ImageList_optimize_layers(VALUE self, VALUE method)
@@ -913,28 +861,17 @@ clone_imagelist(Image *images)
 
 
 /**
- * Call QuantizeImages.
+ * Analyzes the colors within a set of reference images and chooses a fixed number of colors to represent the set.
+ * The goal of the algorithm is to minimize the difference between the input and output images while minimizing the processing time.
  *
- * Ruby usage:
- *   - @verbatim ImageList#quantize @endverbatim
- *   - @verbatim ImageList#quantize(number_colors) @endverbatim
- *   - @verbatim ImageList#quantize(number_colors, colorspace) @endverbatim
- *   - @verbatim ImageList#quantize(number_colors, colorspace, dither) @endverbatim
- *   - @verbatim ImageList#quantize(number_colors, colorspace, dither, tree_depth) @endverbatim
- *   - @verbatim ImageList#quantize(number_colors, colorspace, dither, tree_depth, measure_error) @endverbatim
- *
- * Notes:
- *   - Default number_colors is 256
- *   - Default coorspace is Magick::RGBColorsapce
- *   - Default dither is true
- *   - Default tree_depth is 0
- *   - Default measure_error is false
- *   - Sets \@scene to the same value as self.scene
- *
- * @param argc number of input arguments
- * @param argv array of input arguments
- * @param self this object
- * @return a new ImageList with quantized images
+ * @overload quantize(number_colors = 256, colorspace = Magick::RGBColorsapce, dither = true, tree_depth = 0, measure_error = false)
+ *   @param number_colors [Numeric] the maximum number of colors to use in the output images.
+ *   @param colorspace [Magick::ColorspaceType] the colorspace to quantize in.
+ *   @param dither [Magick::DitherMethod, Boolean] a DitherMethod value or true if you want apply dither.
+ *   @param tree_depth [Numeric] specify the tree depth to use while quantizing.
+ *   @param measure_error [Boolean] calculate quantization errors when quantizing the image.
+ *   @return [Magick::ImageList] a new ImageList with quantized images
+ *   @note Sets @scene to the same value as self.scene
  */
 VALUE
 ImageList_quantize(int argc, VALUE *argv, VALUE self)
@@ -1023,22 +960,13 @@ ImageList_quantize(int argc, VALUE *argv, VALUE self)
 
 
 /**
- * Call RemapImages.
+ * Reduce the colors used in the image list to the set of colors in remap_image.
  *
- * Ruby usage:
- *   - @verbatim ImageList#remap @endverbatim
- *   - @verbatim ImageList#remap(remap_image) @endverbatim
- *   - @verbatim ImageList#remap(remap_image, dither_method) @endverbatim
- *
- * Notes:
- *   - Default remap_image is nil
- *   - Default dither_method is RiemersmaDitherMethod
- *   - Modifies images in-place.
- *
- * @param argc number of input arguments
- * @param argv array of input arguments
- * @param self this object
- * @see Image_remap
+ * @overload remap(remap_image = nil, dither_method = Magick::RiemersmaDitherMethod)
+ *   @param remap_image [Magick::Image] the reference image
+ *   @param dither_method [Magick::DitherMethod] a DitherMethod value.
+ *   @return [Magick::ImageList] self
+ *   @note Modifies images in-place.
  */
 VALUE
 ImageList_remap(int argc, VALUE *argv, VALUE self)
@@ -1091,15 +1019,13 @@ ImageList_remap(int argc, VALUE *argv, VALUE self)
 /**
  * Return the imagelist as a blob (a String).
  *
- * Ruby usage:
- *   - @verbatim ImageList#to_blob @endverbatim
+ * @overload to_blob
+ *   @return [String] the blob
  *
- * Notes:
- *   - Runs an info parm block if present - the user can specify the image
- *     format and depth
- *
- * @param self this object
- * @return the blob
+ * @overload to_blob
+ *   Runs an info parm block if present - the user can specify the image format and depth
+ *   @yield []
+ *   @return [String] the blob
  */
 VALUE
 ImageList_to_blob(VALUE self)
@@ -1173,12 +1099,7 @@ ImageList_to_blob(VALUE self)
  * the images will be written as a single multi-image file. Otherwise each image
  * will be written to a separate file.
  *
- * Ruby usage:
- *   - @verbatim ImageList#write(file) @endverbatim
- *
- * @param self this object
- * @param file the file
- * @return self
+ * @param file [File, String] the file
  */
 VALUE
 ImageList_write(VALUE self, VALUE file)
