@@ -90,7 +90,11 @@ destroy_Pixel(Pixel *pixel)
  * @param self this object
  * @return the red value
  */
-DEF_ATTR_READER(Pixel, red, int)
+VALUE
+Pixel_red(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Pixel, red, int);
+}
 
 /**
  * Get Pixel green attribute.
@@ -101,7 +105,11 @@ DEF_ATTR_READER(Pixel, red, int)
  * @param self this object
  * @return the green value
  */
-DEF_ATTR_READER(Pixel, green, int)
+VALUE
+Pixel_green(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Pixel, green, int);
+}
 
 /**
  * Get Pixel blue attribute.
@@ -112,7 +120,11 @@ DEF_ATTR_READER(Pixel, green, int)
  * @param self this object
  * @return the blue value
  */
-DEF_ATTR_READER(Pixel, blue, int)
+VALUE
+Pixel_blue(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Pixel, blue, int);
+}
 
 /**
  * Get Pixel alpha attribute.

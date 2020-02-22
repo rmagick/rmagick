@@ -244,7 +244,16 @@ static char *pixel_packet_to_hexname(PixelPacket *pp, char *name)
 #endif
 
 
-DEF_ATTR_ACCESSOR(Info, antialias, boolean)
+VALUE
+Info_antialias(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Info, antialias, boolean);
+}
+VALUE
+Info_antialias_eq(VALUE self, VALUE val)
+{
+    IMPLEMENT_ATTR_WRITER(Info, antialias, boolean);
+}
 
 /** Maximum length of a format (@see Info_aref) */
 #define MAX_FORMAT_LEN 60
@@ -909,7 +918,11 @@ Info_delay_eq(VALUE self, VALUE string)
  * @param self this object
  * @return the density
  */
-DEF_ATTR_READER(Info, density, str)
+VALUE
+Info_density(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Info, density, str);
+}
 
 /**
  * Set the text rendering density
@@ -964,7 +977,11 @@ Info_density_eq(VALUE self, VALUE density_arg)
  * @param self this object
  * @return the depth
  */
-DEF_ATTR_READER(Info, depth, int)
+VALUE
+Info_depth(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Info, depth, int);
+}
 
 /**
  * Set the depth (8, 16, 32).
@@ -1134,7 +1151,16 @@ Info_dispose_eq(VALUE self, VALUE disp)
     return disp;
 }
 
-DEF_ATTR_ACCESSOR(Info, dither, boolean)
+VALUE
+Info_dither(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Info, dither, boolean);
+}
+VALUE
+Info_dither_eq(VALUE self, VALUE val)
+{
+    IMPLEMENT_ATTR_WRITER(Info, dither, boolean);
+}
 
 
 /**
@@ -1195,7 +1221,11 @@ Info_endian_eq(VALUE self, VALUE endian)
  * @param self this object
  * @return the extract string
  */
-DEF_ATTR_READER(Info, extract, str)
+VALUE
+Info_extract(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Info, extract, str);
+}
 
 /**
  * Set the extract string, e.g. "200x200+100+100"
@@ -1344,7 +1374,11 @@ Info_fill_eq(VALUE self, VALUE color)
  * @param self this object
  * @return the font
  */
-DEF_ATTR_READER(Info, font, str)
+VALUE
+Info_font(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Info, font, str);
+}
 
 /**
  * Set the text font.
@@ -1452,7 +1486,11 @@ Info_format_eq(VALUE self, VALUE magick)
  * @return the fuzz
  * @see Image_fuzz
  */
-DEF_ATTR_READER(Info, fuzz, dbl)
+VALUE
+Info_fuzz(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Info, fuzz, dbl);
+}
 
 /**
  * Set the fuzz.
@@ -1761,9 +1799,27 @@ Info_monitor_eq(VALUE self, VALUE monitor)
 
 
 
-DEF_ATTR_ACCESSOR(Info, monochrome, boolean)
+VALUE
+Info_monochrome(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Info, monochrome, boolean);
+}
+VALUE
+Info_monochrome_eq(VALUE self, VALUE val)
+{
+    IMPLEMENT_ATTR_WRITER(Info, monochrome, boolean);
+}
 
-DEF_ATTR_ACCESSOR(Info, number_scenes, ulong)
+VALUE
+Info_number_scenes(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Info, number_scenes, ulong);
+}
+VALUE
+Info_number_scenes_eq(VALUE self, VALUE val)
+{
+    IMPLEMENT_ATTR_WRITER(Info, number_scenes, ulong);
+}
 
 /**
  * Return the orientation attribute as an OrientationType enum value.
@@ -1931,8 +1987,26 @@ Info_page_eq(VALUE self, VALUE page_arg)
     return page_arg;
 }
 
-DEF_ATTR_ACCESSOR(Info, pointsize, dbl)
-DEF_ATTR_ACCESSOR(Info, quality, ulong)
+VALUE
+Info_pointsize(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Info, pointsize, dbl);
+}
+VALUE
+Info_pointsize_eq(VALUE self, VALUE val)
+{
+    IMPLEMENT_ATTR_WRITER(Info, pointsize, dbl);
+}
+VALUE
+Info_quality(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Info, quality, ulong);
+}
+VALUE
+Info_quality_eq(VALUE self, VALUE val)
+{
+    IMPLEMENT_ATTR_WRITER(Info, quality, ulong);
+}
 
 /**
  * Get sampling factors used by JPEG or MPEG-2 encoder and YUV decoder/encoder.
@@ -2051,7 +2125,11 @@ Info_scene_eq(VALUE self, VALUE scene)
  * @param self this object
  * @return the server name
  */
-DEF_ATTR_READER(Info, server_name, str)
+VALUE
+Info_server_name(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Info, server_name, str);
+}
 
 
 /**
@@ -2094,7 +2172,11 @@ Info_server_name_eq(VALUE self, VALUE server_arg)
  * @param self this object
  * @return the size as a Geometry object
  */
-DEF_ATTR_READER(Info, size, str)
+VALUE
+Info_size(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Info, size, str);
+}
 
 /**
  * Set the size (either as a Geometry object or a Geometry string, i.e.
