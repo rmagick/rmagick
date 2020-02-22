@@ -969,8 +969,7 @@ Draw_clone(VALUE self)
  *   @param image [Magick::Image] the image
  *   @return [Magick::Draw] self
  *
- * @overload composite(x, y, width, height, image, operator)
- *   - Default operator is {Magick::OverCompositeOp}.
+ * @overload composite(x, y, width, height, image, operator = Magick::OverCompositeOp)
  *   - The "image" argument can be either an ImageList object or an Image
  *     argument.
  *   @param x [Float] x position
