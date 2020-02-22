@@ -44,10 +44,7 @@ static void free_Fill(void *fill)
 /**
  * Create new GradientFill object.
  *
- * No Ruby usage (internal function)
- *
- * @param class the Ruby class to use
- * @return a new GradientFill object
+ * @return [Magick::GradientFill] a new GradientFill object
  */
 VALUE
 GradientFill_alloc(VALUE class)
@@ -59,19 +56,15 @@ GradientFill_alloc(VALUE class)
 
 
 /**
- * Store the vector points and the start and stop colors.
+ * Initialize GradientFill object.
  *
- * Ruby usage:
- *   - @verbatim GradientFill#initialize(x1,y1,x2,y2,start_color,stop_color) @endverbatim
- *
- * @param self this object
- * @param x1 x position of first point
- * @param y1 y position of first point
- * @param x2 x position of second point
- * @param y2 y position of second point
- * @param start_color the start color
- * @param stop_color the stop color
- * @return self
+ * @param x1 [Float] x position of first point
+ * @param y1 [Float] y position of first point
+ * @param x2 [Float] x position of second point
+ * @param y2 [Float] y position of second point
+ * @param start_color [Magick::Pixel, String] the start color
+ * @param stop_color [Magick::Pixel, String] the stop color
+ * @return [Magick::GradientFill] self
  */
 VALUE
 GradientFill_initialize(
@@ -595,12 +588,8 @@ h_diagonal_fill(
  * Call GradientFill with the start and stop colors specified when this fill
  * object was created.
  *
- * Ruby usage:
- *   - @verbatim GradientFill#fill(image) @endverbatim
- *
- * @param self this object
- * @param image_obj the image
- * @return self
+ * @param image_obj [Magick::Image] the image to fill
+ * @return [Magick::GradientFill] self
  */
 VALUE
 GradientFill_fill(VALUE self, VALUE image_obj)
@@ -685,13 +674,7 @@ free_TextureFill(void *fill_obj)
 /**
  * Create new TextureFill object.
  *
- * No Ruby usage (internal function)
- *
- * Notes:
- *   - The texture is an Image or Image *object
- *
- * @param class the Ruby class to use
- * @return a new TextureFill object
+ * @return [Magick::TextureFill] a new TextureFill object
  */
 VALUE
 TextureFill_alloc(VALUE class)
@@ -705,17 +688,10 @@ TextureFill_alloc(VALUE class)
 }
 
 /**
- * Store the texture image.
+ * Initialize TextureFill object.
  *
- * Ruby usage:
- *   - @verbatim TextureFill#initialize(texture) @endverbatim
- *
- * Notes:
- *   - The texture is an Image or Image *object
- *
- * @param self this object
- * @param texture_arg the texture
- * @return self
+ * @param texture_arg [Magick::Image] the texture
+ * @return [Magick::TextureFill] self
  */
 VALUE
 TextureFill_initialize(VALUE self, VALUE texture_arg)
@@ -743,12 +719,8 @@ TextureFill_initialize(VALUE self, VALUE texture_arg)
  * Call TextureFill with the texture specified when this fill object was
  * created.
  *
- * Ruby usage:
- *   - @verbatim TextureFill#fill(image) @endverbatim
- *
- * @param self this object
- * @param image_obj the image
- * @return self
+ * @param image_obj [Magick::Image] the image to fill
+ * @return [Magick::TextureFill] self
  */
 VALUE
 TextureFill_fill(VALUE self, VALUE image_obj)
