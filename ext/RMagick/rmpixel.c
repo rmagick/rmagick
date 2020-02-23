@@ -16,52 +16,6 @@
     #define QueryColorname QueryMagickColorname
 #endif
 
-/*
- *  Declare Pixel channel attribute writers
-*/
-//! Pixel channel attribute writer.
-#define DEF_PIXEL_CHANNEL_WRITER(_channel_) \
-extern VALUE \
-Pixel_##_channel_##_eq(VALUE self, VALUE v) \
-{ \
-    Pixel *pixel; \
- \
-    rb_check_frozen(self); \
-    Data_Get_Struct(self, Pixel, pixel); \
-    pixel->_channel_ = APP2QUANTUM(v); \
-    (void) rb_funcall(self, rm_ID_changed, 0); \
-    (void) rb_funcall(self, rm_ID_notify_observers, 1, self); \
-    return QUANTUM2NUM((pixel->_channel_)); \
-}
-
-
-/*
- *  Declare Pixel CMYK channel attribute accessors
-*/
-//! Pixel CMYK channel attribute accessor.
-#define DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(_cmyk_channel_, _rgb_channel_) \
-extern VALUE \
-Pixel_##_cmyk_channel_##_eq(VALUE self, VALUE v) \
-{ \
-    Pixel *pixel; \
- \
-    rb_check_frozen(self); \
-    Data_Get_Struct(self, Pixel, pixel); \
-    pixel->_rgb_channel_ = APP2QUANTUM(v); \
-    (void) rb_funcall(self, rm_ID_changed, 0); \
-    (void) rb_funcall(self, rm_ID_notify_observers, 1, self); \
-    return QUANTUM2NUM(pixel->_rgb_channel_); \
-} \
- \
-extern VALUE \
-Pixel_##_cmyk_channel_(VALUE self) \
-{ \
-    Pixel *pixel; \
- \
-    Data_Get_Struct(self, Pixel, pixel); \
-    return INT2NUM(pixel->_rgb_channel_); \
-}
-
 
 static VALUE color_arg_rescue(VALUE, VALUE ATTRIBUTE_UNUSED) ATTRIBUTE_NORETURN;
 static void Color_Name_to_PixelColor(PixelColor *, VALUE);
@@ -162,7 +116,18 @@ Pixel_alpha(VALUE self)
  * @param v the red value
  * @return self
  */
-DEF_PIXEL_CHANNEL_WRITER(red)
+VALUE
+Pixel_red_eq(VALUE self, VALUE v)
+{
+    Pixel *pixel;
+
+    rb_check_frozen(self);
+    Data_Get_Struct(self, Pixel, pixel);
+    pixel->red = APP2QUANTUM(v);
+    (void) rb_funcall(self, rm_ID_changed, 0);
+    (void) rb_funcall(self, rm_ID_notify_observers, 1, self);
+    return QUANTUM2NUM((pixel->red));
+}
 
 /**
  * Set Pixel green attribute.
@@ -179,7 +144,18 @@ DEF_PIXEL_CHANNEL_WRITER(red)
  * @param v the green value
  * @return self
  */
-DEF_PIXEL_CHANNEL_WRITER(green)
+VALUE
+Pixel_green_eq(VALUE self, VALUE v)
+{
+    Pixel *pixel;
+
+    rb_check_frozen(self);
+    Data_Get_Struct(self, Pixel, pixel);
+    pixel->green = APP2QUANTUM(v);
+    (void) rb_funcall(self, rm_ID_changed, 0);
+    (void) rb_funcall(self, rm_ID_notify_observers, 1, self);
+    return QUANTUM2NUM((pixel->green));
+}
 
 /**
  * Set Pixel blue attribute.
@@ -196,7 +172,18 @@ DEF_PIXEL_CHANNEL_WRITER(green)
  * @param v the blue value
  * @return self
  */
-DEF_PIXEL_CHANNEL_WRITER(blue)
+VALUE
+Pixel_blue_eq(VALUE self, VALUE v)
+{
+    Pixel *pixel;
+
+    rb_check_frozen(self);
+    Data_Get_Struct(self, Pixel, pixel);
+    pixel->blue = APP2QUANTUM(v);
+    (void) rb_funcall(self, rm_ID_changed, 0);
+    (void) rb_funcall(self, rm_ID_notify_observers, 1, self);
+    return QUANTUM2NUM((pixel->blue));
+}
 
 /**
  * Set Pixel alpha attribute.
@@ -236,10 +223,86 @@ Pixel_alpha_eq(VALUE self, VALUE v)
 /*
  * Get/set Pixel CMYK attributes.
  */
-DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(cyan, red)
-DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(magenta, green)
-DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(yellow, blue)
-DEF_PIXEL_CMYK_CHANNEL_ACCESSOR(black, black)
+VALUE
+Pixel_cyan(VALUE self)
+{
+    Pixel *pixel;
+
+    Data_Get_Struct(self, Pixel, pixel);
+    return INT2NUM(pixel->red);
+}
+VALUE
+Pixel_cyan_eq(VALUE self, VALUE v)
+{
+    Pixel *pixel;
+
+    rb_check_frozen(self);
+    Data_Get_Struct(self, Pixel, pixel);
+    pixel->red = APP2QUANTUM(v);
+    (void) rb_funcall(self, rm_ID_changed, 0);
+    (void) rb_funcall(self, rm_ID_notify_observers, 1, self);
+    return QUANTUM2NUM(pixel->red);
+}
+VALUE
+Pixel_magenta(VALUE self)
+{
+    Pixel *pixel;
+
+    Data_Get_Struct(self, Pixel, pixel);
+    return INT2NUM(pixel->green);
+}
+VALUE
+Pixel_magenta_eq(VALUE self, VALUE v)
+{
+    Pixel *pixel;
+
+    rb_check_frozen(self);
+    Data_Get_Struct(self, Pixel, pixel);
+    pixel->green = APP2QUANTUM(v);
+    (void) rb_funcall(self, rm_ID_changed, 0);
+    (void) rb_funcall(self, rm_ID_notify_observers, 1, self);
+    return QUANTUM2NUM(pixel->green);
+}
+VALUE
+Pixel_yellow(VALUE self)
+{
+    Pixel *pixel;
+
+    Data_Get_Struct(self, Pixel, pixel);
+    return INT2NUM(pixel->blue);
+}
+VALUE
+Pixel_yellow_eq(VALUE self, VALUE v)
+{
+    Pixel *pixel;
+
+    rb_check_frozen(self);
+    Data_Get_Struct(self, Pixel, pixel);
+    pixel->blue = APP2QUANTUM(v);
+    (void) rb_funcall(self, rm_ID_changed, 0);
+    (void) rb_funcall(self, rm_ID_notify_observers, 1, self);
+    return QUANTUM2NUM(pixel->blue);
+}
+VALUE
+Pixel_black(VALUE self)
+{
+    Pixel *pixel;
+
+    Data_Get_Struct(self, Pixel, pixel);
+    return INT2NUM(pixel->black);
+}
+VALUE
+Pixel_black_eq(VALUE self, VALUE v)
+{
+    Pixel *pixel;
+
+    rb_check_frozen(self);
+    Data_Get_Struct(self, Pixel, pixel);
+    pixel->black = APP2QUANTUM(v);
+    (void) rb_funcall(self, rm_ID_changed, 0);
+    (void) rb_funcall(self, rm_ID_notify_observers, 1, self);
+    return QUANTUM2NUM(pixel->black);
+}
 
 
 /**
