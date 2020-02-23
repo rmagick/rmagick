@@ -3239,7 +3239,11 @@ Image_colormap(int argc, VALUE *argv, VALUE self)
  * @param self this object
  * @return the colors
  */
-DEF_ATTR_READER(Image, colors, ulong)
+VALUE
+Image_colors(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Image, colors, ulong);
+}
 
 /**
  * Return the Image pixel interpretation. If the colorspace is RGB the pixels
@@ -3309,7 +3313,11 @@ Image_colorspace_eq(VALUE self, VALUE colorspace)
  * @param self this object
  * @return the columns
  */
-DEF_ATTR_READER(Image, columns, int)
+VALUE
+Image_columns(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Image, columns, int);
+}
 
 
 /**
@@ -5048,7 +5056,16 @@ Image_define(VALUE self, VALUE artifact, VALUE value)
 }
 
 
-DEF_ATTR_ACCESSOR(Image, delay, ulong)
+VALUE
+Image_delay(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Image, delay, ulong);
+}
+VALUE
+Image_delay_eq(VALUE self, VALUE val)
+{
+    IMPLEMENT_ATTR_WRITER(Image, delay, ulong);
+}
 
 
 /**
@@ -5324,7 +5341,11 @@ Image_difference(VALUE self, VALUE other)
  * @param self this object
  * @return the directory
  */
-DEF_ATTR_READER(Image, directory, str)
+VALUE
+Image_directory(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Image, directory, str);
+}
 
 
 /**
@@ -6732,7 +6753,11 @@ Image_extract_info_eq(VALUE self, VALUE rect)
  * @param self this object
  * @return the filename
  */
-DEF_ATTR_READER(Image, filename, str)
+VALUE
+Image_filename(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Image, filename, str);
+}
 
 
 /**
@@ -7289,7 +7314,11 @@ Image_function_channel(int argc, VALUE *argv, VALUE self)
  * @return the fuzz
  * @see Info_fuzz
  */
-DEF_ATTR_READER(Image, fuzz, dbl)
+VALUE
+Image_fuzz(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Image, fuzz, dbl);
+}
 
 
 /**
@@ -7370,7 +7399,16 @@ Image_fx(int argc, VALUE *argv, VALUE self)
 }
 
 
-DEF_ATTR_ACCESSOR(Image, gamma, dbl)
+VALUE
+Image_gamma(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Image, gamma, dbl);
+}
+VALUE
+Image_gamma_eq(VALUE self, VALUE val)
+{
+    IMPLEMENT_ATTR_WRITER(Image, gamma, dbl);
+}
 
 
 /**
@@ -7624,7 +7662,11 @@ Image_gaussian_blur_channel(int argc, VALUE *argv, VALUE self)
  * @param self this object
  * @return the geometry
  */
-DEF_ATTR_READER(Image, geometry, str)
+VALUE
+Image_geometry(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Image, geometry, str);
+}
 
 
 /**
@@ -8395,7 +8437,16 @@ Image_iptc_profile_eq(VALUE self, VALUE profile)
  *  called only by Image#iterations=.
  *  The reader is only used by the unit tests!
  */
-DEF_ATTR_ACCESSOR(Image, iterations, int)
+VALUE
+Image_iterations(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Image, iterations, int);
+}
+VALUE
+Image_iterations_eq(VALUE self, VALUE val)
+{
+    IMPLEMENT_ATTR_WRITER(Image, iterations, int);
+}
 
 /**
  * Adjust the levels of an image given these points: black, mid, and white.
@@ -9448,7 +9499,11 @@ Image_median_filter(int argc, VALUE *argv, VALUE self)
  * @param self this object
  * @return the mean error per pixel
  */
-DEF_ATTR_READERF(Image, mean_error_per_pixel, error.mean_error_per_pixel, dbl)
+VALUE
+Image_mean_error_per_pixel(VALUE self)
+{
+    IMPLEMENT_ATTR_READERF(Image, mean_error_per_pixel, error.mean_error_per_pixel, dbl);
+}
 
 
 /**
@@ -9656,7 +9711,11 @@ Image_monochrome_q(VALUE self)
  * @param self this object
  * @return the tile size and offset
  */
-DEF_ATTR_READER(Image, montage, str)
+VALUE
+Image_montage(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Image, montage, str);
+}
 
 
 /**
@@ -10096,7 +10155,11 @@ Image_normalize_channel(int argc, VALUE *argv, VALUE self)
  * @param self this object
  * @return the normalized mean error
  */
-DEF_ATTR_READERF(Image, normalized_mean_error, error.normalized_mean_error, dbl)
+VALUE
+Image_normalized_mean_error(VALUE self)
+{
+    IMPLEMENT_ATTR_READERF(Image, normalized_mean_error, error.normalized_mean_error, dbl);
+}
 
 /**
  * Get image normalized maximum error
@@ -10107,7 +10170,11 @@ DEF_ATTR_READERF(Image, normalized_mean_error, error.normalized_mean_error, dbl)
  * @param self this object
  * @return the normalized maximum error
  */
-DEF_ATTR_READERF(Image, normalized_maximum_error, error.normalized_maximum_error, dbl)
+VALUE
+Image_normalized_maximum_error(VALUE self)
+{
+    IMPLEMENT_ATTR_READERF(Image, normalized_maximum_error, error.normalized_maximum_error, dbl);
+}
 
 
 /**
@@ -10138,7 +10205,16 @@ Image_number_colors(VALUE self)
 }
 
 
-DEF_ATTR_ACCESSOR(Image, offset, long)
+VALUE
+Image_offset(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Image, offset, long);
+}
+VALUE
+Image_offset_eq(VALUE self, VALUE val)
+{
+    IMPLEMENT_ATTR_WRITER(Image, offset, long);
+}
 
 
 /**
@@ -11065,7 +11141,11 @@ Image_profile_bang(VALUE self, VALUE name, VALUE profile)
  * @param self this object
  * @return the quality
  */
-DEF_ATTR_READER(Image, quality, ulong)
+VALUE
+Image_quality(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Image, quality, ulong);
+}
 
 
 /**
@@ -12526,7 +12606,11 @@ Image_rotate_bang(int argc, VALUE *argv, VALUE self)
  * @param self this object
  * @return the image rows
  */
-DEF_ATTR_READER(Image, rows, int)
+VALUE
+Image_rows(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Image, rows, int);
+}
 
 
 /**
@@ -12705,7 +12789,11 @@ scale(int bang, int argc, VALUE *argv, VALUE self, scaler_t scaler)
  * @param self this object
  * @return the image scene
  */
-DEF_ATTR_READER(Image, scene, ulong)
+VALUE
+Image_scene(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Image, scene, ulong);
+}
 
 
 /**
@@ -13902,7 +13990,16 @@ Image_spread(int argc, VALUE *argv, VALUE self)
 }
 
 
-DEF_ATTR_ACCESSOR(Image, start_loop, boolean)
+VALUE
+Image_start_loop(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Image, start_loop, boolean);
+}
+VALUE
+Image_start_loop_eq(VALUE self, VALUE val)
+{
+    IMPLEMENT_ATTR_WRITER(Image, start_loop, boolean);
+}
 
 
 /**
@@ -16324,13 +16421,49 @@ Image_write(VALUE self, VALUE file)
 }
 
 #if defined(IMAGEMAGICK_7)
-DEF_ATTR_ACCESSORF(Image, x_resolution, resolution.x, dbl)
+VALUE
+Image_x_resolution(VALUE self)
+{
+    IMPLEMENT_ATTR_READERF(Image, x_resolution, resolution.x, dbl);
+}
+VALUE
+Image_x_resolution_eq(VALUE self, VALUE val)
+{
+    IMPLEMENT_ATTR_WRITERF(Image, x_resolution, resolution.x, dbl);
+}
 
-DEF_ATTR_ACCESSORF(Image, y_resolution, resolution.y, dbl)
+VALUE
+Image_y_resolution(VALUE self)
+{
+    IMPLEMENT_ATTR_READERF(Image, y_resolution, resolution.y, dbl);
+}
+VALUE
+Image_y_resolution_eq(VALUE self, VALUE val)
+{
+    IMPLEMENT_ATTR_WRITERF(Image, y_resolution, resolution.y, dbl);
+}
 #else
-DEF_ATTR_ACCESSOR(Image, x_resolution, dbl)
+VALUE
+Image_x_resolution(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Image, x_resolution, dbl);
+}
+VALUE
+Image_x_resolution_eq(VALUE self, VALUE val)
+{
+    IMPLEMENT_ATTR_WRITER(Image, x_resolution, dbl);
+}
 
-DEF_ATTR_ACCESSOR(Image, y_resolution, dbl)
+VALUE
+Image_y_resolution(VALUE self)
+{
+    IMPLEMENT_ATTR_READER(Image, y_resolution, dbl);
+}
+VALUE
+Image_y_resolution_eq(VALUE self, VALUE val)
+{
+    IMPLEMENT_ATTR_WRITER(Image, y_resolution, dbl);
+}
 #endif
 
 

@@ -448,8 +448,7 @@ EXTERN ID rm_ID_y;                 /**< "y" */
 #define R_dbl_to_C_dbl(attr) NUM2DBL(attr) /**< C double <- Ruby double */
 
 //! define attribute reader
-#define DEF_ATTR_READER(class, attr, type) \
-    VALUE class##_##attr(VALUE self)\
+#define IMPLEMENT_ATTR_READER(class, attr, type) \
     {\
         class *ptr;\
         if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {\
@@ -460,8 +459,7 @@ EXTERN ID rm_ID_y;                 /**< "y" */
     }
 
 //! define attribute reader when attribute name is different from the field name
-#define DEF_ATTR_READERF(class, attr, field, type) \
-    VALUE class##_##attr(VALUE self)\
+#define IMPLEMENT_ATTR_READERF(class, attr, field, type) \
     {\
         class *ptr;\
         (void) rm_check_destroyed(self); \
@@ -470,8 +468,7 @@ EXTERN ID rm_ID_y;                 /**< "y" */
     }
 
 //! define attribute writer
-#define DEF_ATTR_WRITER(class, attr, type) \
-    VALUE class##_##attr##_eq(VALUE self, VALUE val)\
+#define IMPLEMENT_ATTR_WRITER(class, attr, type) \
     {\
         class *ptr;\
         if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {\
@@ -484,8 +481,7 @@ EXTERN ID rm_ID_y;                 /**< "y" */
     }
 
 //! define attribute writer when attribute name is different from the field name
-#define DEF_ATTR_WRITERF(class, attr, field, type) \
-    VALUE class##_##attr##_eq(VALUE self, VALUE val)\
+#define IMPLEMENT_ATTR_WRITERF(class, attr, field, type) \
     {\
         class *ptr;\
         if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {\
@@ -497,15 +493,6 @@ EXTERN ID rm_ID_y;                 /**< "y" */
         return self;\
     }
 
-//! define attribute accessor
-#define DEF_ATTR_ACCESSOR(class, attr, type)\
-    DEF_ATTR_READER(class, attr, type)\
-    DEF_ATTR_WRITER(class, attr, type)
-
-//! define attribute accessor when attribute name is different from the field name
-#define DEF_ATTR_ACCESSORF(class, attr, field, type)\
-    DEF_ATTR_READERF(class, attr, field, type)\
-    DEF_ATTR_WRITERF(class, attr, field, type)
 
 /*
  *  Declare attribute accessors
