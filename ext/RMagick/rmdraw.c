@@ -718,7 +718,7 @@ Draw_stroke_eq(VALUE self, VALUE stroke)
  *
  * @!attribute [w] stroke_pattern
  * @param pattern [Magick::Image] the stroke pattern
- * @return pattern [Magick::Image] the given pattern
+ * @return [Magick::Image] the given pattern
  * @see #fill_pattern
  */
 VALUE
