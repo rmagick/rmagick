@@ -28,10 +28,7 @@ rm_kernel_info_destroy(void *kernel)
 /**
  * Create a KernelInfo object.
  *
- * No Ruby usage (internal function)
- *
- * @param class the Ruby class to use
- * @return a new KernelInfo object
+ * @return [Magick::KernelInfo] a new KernelInfo object
  */
 VALUE
 KernelInfo_alloc(VALUE class)
@@ -42,12 +39,8 @@ KernelInfo_alloc(VALUE class)
 /**
  * KernelInfo object constructor
  *
- * Ruby usage:
- *   - @verbatim KernelInfo#initialize @endverbatim
- *
- * @param self this object
- * @param kernel_string kernel info string representation to be parsed
- * @return self
+ * @param kernel_string [String] kernel info string representation to be parsed
+ * @return [Magick::KernelInfo] self
  */
 VALUE
 KernelInfo_initialize(VALUE self, VALUE kernel_string)
@@ -88,16 +81,8 @@ KernelInfo_initialize(VALUE self, VALUE kernel_string)
 /**
  * Adds a given amount of the 'Unity' Convolution Kernel to the given pre-scaled and normalized Kernel.
  *
- * Ruby usage:
- *   - @verbatim KernelInfo#unity_add(scale) @endverbatim
- *
- * @param self this object
- * @param scale scale to add
+ * @param scale [Numeric] scale to add
  */
-
-/* UnityAddKernelInfo() was private function until IM 6.9 */
-MagickExport void UnityAddKernelInfo(KernelInfo *kernel, const double scale);
-
 VALUE
 KernelInfo_unity_add(VALUE self, VALUE scale)
 {
@@ -109,22 +94,17 @@ KernelInfo_unity_add(VALUE self, VALUE scale)
 }
 
 
+/* ScaleKernelInfo() was private function until IM 6.9 */
+MagickExport void ScaleKernelInfo(KernelInfo *kernel, const double scaling_factor,const GeometryFlags normalize_flags);
+
 /**
  * Scales the given kernel list by the given amount, with or without normalization
  * of the sum of the kernel values (as per given flags).
  *
- * Ruby usage:
- *   - @verbatim KernelInfo#scale(scale, flags) @endverbatim
- *
- * @param scale scale to use
- * @param flags one of Magick::NormalizeValue, Magick::CorrelateNormalizeValue,
- *                     and/or Magick::PercentValue
- * @param self this object
+ * @param scale [Numeric] scale to use
+ * @param flags [Magick::GeometryFlags] one of Magick::NormalizeValue, Magick::CorrelateNormalizeValue,
+ *   and/or Magick::PercentValue
  */
-
-/* ScaleKernelInfo() was private function until IM 6.9 */
-MagickExport void ScaleKernelInfo(KernelInfo *kernel, const double scaling_factor,const GeometryFlags normalize_flags);
-
 VALUE
 KernelInfo_scale(VALUE self, VALUE scale, VALUE flags)
 {
@@ -146,11 +126,7 @@ KernelInfo_scale(VALUE self, VALUE scale, VALUE flags)
  * Takes a geometry argument string, typically provided as a "-set option:convolve:scale {geometry}" user setting,
  * and modifies the kernel according to the parsed arguments of that setting.
  *
- * Ruby usage:
- *   - @verbatim KernelInfo#scale_geometry(geometry) @endverbatim
- *
- * @param geometry geometry string to parse and apply
- * @param self this object
+ * @param geometry [String] geometry string to parse and apply
  */
 VALUE
 KernelInfo_scale_geometry(VALUE self, VALUE geometry)
@@ -163,11 +139,7 @@ KernelInfo_scale_geometry(VALUE self, VALUE geometry)
 /**
  * Creates a new clone of the object so that its can be modified without effecting the original.
  *
- * Ruby usage:
- *   - @verbatim KernelInfo#clone @endverbatim
- *
- * @param self this object
- * @return new KernelInfo instance
+ * @return [Magick::KernelInfo] new KernelInfo object
  */
 VALUE
 KernelInfo_clone(VALUE self)
@@ -181,50 +153,9 @@ KernelInfo_clone(VALUE self)
  * kernels used for special purposes such as gaussian blurring, skeleton
  * pruning, and edge distance determination.
  *
- * Ruby usage:
- *   - @verbatim KernelInfo.builtin(kernel, geometry = nil) @endverbatim
- *
- * @parms kernel one of Magick::KernelInfoType enums:
- *                      Magick::UndefinedKernel
- *                      Magick::UnityKernel
- *                      Magick::GaussianKernel
- *                      Magick::DoGKernel
- *                      Magick::LoGKernel
- *                      Magick::BlurKernel
- *                      Magick::CometKernel
- *                      Magick::LaplacianKernel
- *                      Magick::SobelKernel
- *                      Magick::FreiChenKernel
- *                      Magick::RobertsKernel
- *                      Magick::PrewittKernel
- *                      Magick::CompassKernel
- *                      Magick::KirschKernel
- *                      Magick::DiamondKernel
- *                      Magick::SquareKernel
- *                      Magick::RectangleKernel
- *                      Magick::OctagonKernel
- *                      Magick::DiskKernel
- *                      Magick::PlusKernel
- *                      Magick::CrossKernel
- *                      Magick::RingKernel
- *                      Magick::PeaksKernel
- *                      Magick::EdgesKernel
- *                      Magick::CornersKernel
- *                      Magick::DiagonalsKernel
- *                      Magick::LineEndsKernel
- *                      Magick::LineJunctionsKernel
- *                      Magick::RidgesKernel
- *                      Magick::ConvexHullKernel
- *                      Magick::ThinSEKernel
- *                      Magick::SkeletonKernel
- *                      Magick::ChebyshevKernel
- *                      Magick::ManhattanKernel
- *                      Magick::OctagonalKernel
- *                      Magick::EuclideanKernel
- *                      Magick::UserDefinedKernel
- *                      Magick::BinomialKernel
- * @param geometry geometry to pass to default kernel
- * @return KernelInfo instance
+ * @param what [Magick::KernelInfoType] kernel one of Magick::KernelInfoType enums
+ * @param geometry [String] geometry to pass to default kernel
+ * @return [Magick::KernelInfo] a new KernelInfo object
  */
 VALUE
 KernelInfo_builtin(VALUE self, VALUE what, VALUE geometry)
