@@ -296,9 +296,7 @@ rm_check_frozen(VALUE obj)
  *
  * No Ruby usage (internal function)
  *
- * @param obj the object of the class to override
- * @return 0
- * @throw TypeError
+ * @raise [TypeError]
  */
 VALUE
 rm_no_freeze(VALUE obj)
@@ -903,19 +901,12 @@ rm_magick_error(const char *msg)
 
 /**
  * Initialize a new ImageMagickError object - store the "loc" string in the
- * \@magick_location instance variable.
+ * magick_location instance variable.
  *
- * Ruby usage:
- *   - @verbatim ImageMagickError#initialize(msg) @endverbatim
- *   - @verbatim ImageMagickError#initialize(msg, loc) @endverbatim
- *
- * Notes:
- *   - Default loc is nil
- *
- * @param argc number of input arguments
- * @param argv array of input arguments
- * @param self this object
- * @return self
+ * @overload initialize(msg, loc = nil)
+ *   @param msg [String] the exception message
+ *   @param loc [String] the location stored in the magick_location instance variable
+ *   @return [Magick::ImageMagickError] self
  */
 VALUE
 ImageMagickError_initialize(int argc, VALUE *argv, VALUE self)
