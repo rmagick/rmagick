@@ -36,13 +36,10 @@ destroy_Pixel(Pixel *pixel)
 
 
 /**
- * Get Pixel red attribute.
+ * Get Pixel red value.
  *
- * Ruby usage:
- *   - @verbatim Pixel#red @endverbatim
- *
- * @param self this object
- * @return the red value
+ * @!attribute [r] red
+ * @return [Numeric] the red value
  */
 VALUE
 Pixel_red(VALUE self)
@@ -51,13 +48,10 @@ Pixel_red(VALUE self)
 }
 
 /**
- * Get Pixel green attribute.
+ * Get Pixel green value.
  *
- * Ruby usage:
- *   - @verbatim Pixel#green @endverbatim
- *
- * @param self this object
- * @return the green value
+ * @!attribute [r] green
+ * @return [Numeric] the green value
  */
 VALUE
 Pixel_green(VALUE self)
@@ -66,13 +60,10 @@ Pixel_green(VALUE self)
 }
 
 /**
- * Get Pixel blue attribute.
+ * Get Pixel blue value.
  *
- * Ruby usage:
- *   - @verbatim Pixel#blue @endverbatim
- *
- * @param self this object
- * @return the blue value
+ * @!attribute [r] blue
+ * @return [Numeric] the blue value
  */
 VALUE
 Pixel_blue(VALUE self)
@@ -81,13 +72,10 @@ Pixel_blue(VALUE self)
 }
 
 /**
- * Get Pixel alpha attribute.
+ * Get Pixel alpha value.
  *
- * Ruby usage:
- *   - @verbatim Pixel#alpha @endverbatim
- *
- * @param self this object
- * @return the alpha value
+ * @!attribute [r] alpha
+ * @return [Numeric] the alpha value
  */
 VALUE
 Pixel_alpha(VALUE self)
@@ -102,19 +90,15 @@ Pixel_alpha(VALUE self)
 }
 
 /**
- * Set Pixel red attribute.
+ * Set Pixel red value.
  *
- * Ruby usage:
- *   - @verbatim Pixel#red= @endverbatim
+ * - Pixel is Observable. Setters call changed, notify_observers
+ * - Setters return their argument values for backward compatibility to when
+ *   Pixel was a Struct class.
  *
- * Notes:
- *   - Pixel is Observable. Setters call changed, notify_observers
- *   - Setters return their argument values for backward compatibility to when
- *     Pixel was a Struct class.
- *
- * @param self this object
- * @param v the red value
- * @return self
+ * @!attribute [w] red
+ * @param v [Numeric] the red value
+ * @return [Numeric] the given red value
  */
 VALUE
 Pixel_red_eq(VALUE self, VALUE v)
@@ -130,19 +114,15 @@ Pixel_red_eq(VALUE self, VALUE v)
 }
 
 /**
- * Set Pixel green attribute.
+ * Set Pixel green value.
  *
- * Ruby usage:
- *   - @verbatim Pixel#green= @endverbatim
+ * - Pixel is Observable. Setters call changed, notify_observers
+ * - Setters return their argument values for backward compatibility to when
+ *   Pixel was a Struct class.
  *
- * Notes:
- *   - Pixel is Observable. Setters call changed, notify_observers
- *   - Setters return their argument values for backward compatibility to when
- *     Pixel was a Struct class.
- *
- * @param self this object
- * @param v the green value
- * @return self
+ * @!attribute [w] green
+ * @param v [Numeric] the green value
+ * @return [Numeric] the given green value
  */
 VALUE
 Pixel_green_eq(VALUE self, VALUE v)
@@ -158,19 +138,15 @@ Pixel_green_eq(VALUE self, VALUE v)
 }
 
 /**
- * Set Pixel blue attribute.
+ * Set Pixel blue value.
  *
- * Ruby usage:
- *   - @verbatim Pixel#blue= @endverbatim
+ * - Pixel is Observable. Setters call changed, notify_observers
+ * - Setters return their argument values for backward compatibility to when
+ *   Pixel was a Struct class.
  *
- * Notes:
- *   - Pixel is Observable. Setters call changed, notify_observers
- *   - Setters return their argument values for backward compatibility to when
- *     Pixel was a Struct class.
- *
- * @param self this object
- * @param v the blue value
- * @return self
+ * @!attribute [w] blue
+ * @param v [Numeric] the blue value
+ * @return [Numeric] the given blue value
  */
 VALUE
 Pixel_blue_eq(VALUE self, VALUE v)
@@ -186,19 +162,15 @@ Pixel_blue_eq(VALUE self, VALUE v)
 }
 
 /**
- * Set Pixel alpha attribute.
+ * Set Pixel alpha value.
  *
- * Ruby usage:
- *   - @verbatim Pixel#alpha= @endverbatim
+ * - Pixel is Observable. Setters call changed, notify_observers
+ * - Setters return their argument values for backward compatibility to when
+ *   Pixel was a Struct class.
  *
- * Notes:
- *   - Pixel is Observable. Setters call changed, notify_observers
- *   - Setters return their argument values for backward compatibility to when
- *     Pixel was a Struct class.
- *
- * @param self this object
- * @param v the alpha value
- * @return self
+ * @!attribute [w] alpha
+ * @param v [Numeric] the alpha value
+ * @return [Numeric] the given alpha value
  */
 VALUE
 Pixel_alpha_eq(VALUE self, VALUE v)
@@ -220,8 +192,11 @@ Pixel_alpha_eq(VALUE self, VALUE v)
 #endif
 }
 
-/*
- * Get/set Pixel CMYK attributes.
+/**
+ * Get Pixel cyan value.
+ *
+ * @!attribute [r] cyan
+ * @return [Numeric] the cyan value
  */
 VALUE
 Pixel_cyan(VALUE self)
@@ -231,6 +206,18 @@ Pixel_cyan(VALUE self)
     Data_Get_Struct(self, Pixel, pixel);
     return INT2NUM(pixel->red);
 }
+
+/**
+ * Set Pixel cyan value.
+ *
+ * - Pixel is Observable. Setters call changed, notify_observers
+ * - Setters return their argument values for backward compatibility to when
+ *   Pixel was a Struct class.
+ *
+ * @!attribute [w] cyan
+ * @param v [Numeric] the cyan value
+ * @return [Numeric] the given cyan value
+ */
 VALUE
 Pixel_cyan_eq(VALUE self, VALUE v)
 {
@@ -243,6 +230,13 @@ Pixel_cyan_eq(VALUE self, VALUE v)
     (void) rb_funcall(self, rm_ID_notify_observers, 1, self);
     return QUANTUM2NUM(pixel->red);
 }
+
+/**
+ * Get Pixel magenta value.
+ *
+ * @!attribute [r] magenta
+ * @return [Numeric] the magenta value
+ */
 VALUE
 Pixel_magenta(VALUE self)
 {
@@ -251,6 +245,18 @@ Pixel_magenta(VALUE self)
     Data_Get_Struct(self, Pixel, pixel);
     return INT2NUM(pixel->green);
 }
+
+/**
+ * Set Pixel magenta value.
+ *
+ * - Pixel is Observable. Setters call changed, notify_observers
+ * - Setters return their argument values for backward compatibility to when
+ *   Pixel was a Struct class.
+ *
+ * @!attribute [w] magenta
+ * @param v [Numeric] the magenta value
+ * @return [Numeric] the given magenta value
+ */
 VALUE
 Pixel_magenta_eq(VALUE self, VALUE v)
 {
@@ -263,6 +269,13 @@ Pixel_magenta_eq(VALUE self, VALUE v)
     (void) rb_funcall(self, rm_ID_notify_observers, 1, self);
     return QUANTUM2NUM(pixel->green);
 }
+
+/**
+ * Get Pixel yellow value.
+ *
+ * @!attribute [r] yellow
+ * @return [Numeric] the yellow value
+ */
 VALUE
 Pixel_yellow(VALUE self)
 {
@@ -271,6 +284,18 @@ Pixel_yellow(VALUE self)
     Data_Get_Struct(self, Pixel, pixel);
     return INT2NUM(pixel->blue);
 }
+
+/**
+ * Set Pixel yellow value.
+ *
+ * - Pixel is Observable. Setters call changed, notify_observers
+ * - Setters return their argument values for backward compatibility to when
+ *   Pixel was a Struct class.
+ *
+ * @!attribute [w] yellow
+ * @param v [Numeric] the yellow value
+ * @return [Numeric] the given yellow value
+ */
 VALUE
 Pixel_yellow_eq(VALUE self, VALUE v)
 {
@@ -283,6 +308,13 @@ Pixel_yellow_eq(VALUE self, VALUE v)
     (void) rb_funcall(self, rm_ID_notify_observers, 1, self);
     return QUANTUM2NUM(pixel->blue);
 }
+
+/**
+ * Get Pixel black value.
+ *
+ * @!attribute [r] black
+ * @return [Numeric] the black value
+ */
 VALUE
 Pixel_black(VALUE self)
 {
@@ -291,6 +323,18 @@ Pixel_black(VALUE self)
     Data_Get_Struct(self, Pixel, pixel);
     return INT2NUM(pixel->black);
 }
+
+/**
+ * Set Pixel black value.
+ *
+ * - Pixel is Observable. Setters call changed, notify_observers
+ * - Setters return their argument values for backward compatibility to when
+ *   Pixel was a Struct class.
+ *
+ * @!attribute [w] black
+ * @param v [Numeric] the black value
+ * @return [Numeric] the given black value
+ */
 VALUE
 Pixel_black_eq(VALUE self, VALUE v)
 {
@@ -429,10 +473,7 @@ Color_Name_to_PixelColor(PixelColor *color, VALUE name_arg)
 /**
  * Allocate a Pixel object.
  *
- * No Ruby usage (internal function)
- *
- * @param class the Ruby class to use
- * @return a new Magick::Pixel object
+ * @return [Magick::Pixel] a new Magick::Pixel object
  */
 VALUE
 Pixel_alloc(VALUE class)
@@ -448,12 +489,8 @@ Pixel_alloc(VALUE class)
 /**
  * "Case equal" operator for Pixel.
  *
- * Ruby usage:
- *   - @verbatim Pixel#=== @endverbatim
- *
- * @param self this object
- * @param other the other object
- * @return true or false
+ * @param other [Object] the other object
+ * @return [Boolean] true or false
  */
 
 VALUE
@@ -482,13 +519,9 @@ Pixel_case_eq(VALUE self, VALUE other)
 /**
  * Clone a Pixel.
  *
- * Ruby usage:
- *   - @verbatim Pixel#clone @endverbatim
- *
- * @param self this object
- * @return a clone
- * @see Pixel_dup
- * @see Pixel_init_copy
+ * @return [Magick::Pixel] a clone object
+ * @see #dup
+ * @see #initialize_copy
  */
 VALUE
 Pixel_clone(VALUE self)
@@ -510,13 +543,9 @@ Pixel_clone(VALUE self)
 /**
  * Duplicate a Pixel.
  *
- * Ruby usage:
- *   - @verbatim Pixel#dup @endverbatim
- *
- * @param self this object
- * @return a clone
- * @see Pixel_clone
- * @see Pixel_init_copy
+ * @return [Magick::Pixel] a duplicated object
+ * @see #clone
+ * @see #initialize_copy
  */
 VALUE
 Pixel_dup(VALUE self)
@@ -534,14 +563,10 @@ Pixel_dup(VALUE self)
 
 
 /**
- * For use with Hash.
+ * Equality. Returns true only if receiver and other are the same object.
  *
- * Ruby usage:
- *   - @verbatim Pixel#eql? @endverbatim
- *
- * @param self this object
- * @param other the other object
- * @return true if hash to the same value, otherwise false
+ * @param other [Object] the other object
+ * @return [Boolean] true if other is the same value, otherwise false
  */
 VALUE
 Pixel_eql_q(VALUE self, VALUE other)
@@ -553,17 +578,11 @@ Pixel_eql_q(VALUE self, VALUE other)
 /**
  * Compare pixel values for equality.
  *
- * Ruby usage:
- *   - @verbatim Pixel#fcmp(other, fuzz, colorspace) @endverbatim
- *
- * Notes:
- *   - Default fuzz is 0.0
- *   - Default colorspace is RGBColorspace
- *
- * @param argc number of input arguments
- * @param argv array of input arguments
- * @param self this object
- * @return true if equal, otherwise false
+ * @overload fcmp(other, fuzz = 0.0, colorspace = Magick::RGBColorspace)
+ *   @param other [Magick::Pixel] The pixel to which the receiver is compared
+ *   @param fuzz [Float] The amount of fuzz to allow before the colors are considered to be different
+ *   @param colorspace [Magick::ColorspaceType] The colorspace
+ *   @return [Boolean] true if equal, otherwise false
  */
 VALUE
 Pixel_fcmp(int argc, VALUE *argv, VALUE self)
@@ -632,21 +651,16 @@ Pixel_fcmp(int argc, VALUE *argv, VALUE self)
 
 
 /**
- * Construct an Magick::Pixel corresponding to the given color name.
+ * Construct an {Magick::Pixel} corresponding to the given color name.
  *
- * Ruby usage:
- *   - @verbatim Magick::Pixel.from_color(string) @endverbatim
+ * - The "inverse" is Image_to_color, b/c the conversion of a pixel to a
+ *   color name requires both a color depth and if the opacity value has
+ *   meaning.
  *
- * Notes:
- *   - The "inverse" is Image_to_color, b/c the conversion of a pixel to a
- *     color name requires both a color depth and if the opacity value has
- *     meaning (i.e. whether image->matte == True or not).
- *
- * @param class the Ruby class to use
- * @param name the color name
- * @return a new Magic::Pixel object
- * @see Image_to_color
- * @see Pixel_to_color
+ * @param name [String] the color name
+ * @return [Magick::Pixel] a new Magic::Pixel object
+ * @see Magick::Image#to_color
+ * @see Magick::Pixel#to_color
  */
 VALUE
 Pixel_from_color(VALUE class ATTRIBUTE_UNUSED, VALUE name)
@@ -672,21 +686,17 @@ Pixel_from_color(VALUE class ATTRIBUTE_UNUSED, VALUE name)
 /**
  * Construct an RGB pixel.
  *
- * Ruby usage:
- *   - @verbatim Pixel#from_hsla(hue, saturation, lightness) @endverbatim
- *   - @verbatim Pixel#from_hsla(hue, saturation, lightness, alpha) @endverbatim
+ * - 0 <= hue < 360 OR "0%" <= hue < "100%"
+ * - 0 <= saturation <= 255 OR "0%" <= saturation <= "100%"
+ * - 0 <= lightness <= 255 OR "0%" <= lightness <= "100%"
+ * - 0 <= alpha <= 1 (0 is transparent, 1 is opaque) OR "0%" <= alpha <= "100%"
  *
- * Notes:
- *   - Default alpha is 1.0
- *   - 0 <= hue < 360 OR "0%" <= hue < "100%"
- *   - 0 <= saturation <= 255 OR "0%" <= saturation <= "100%"
- *   - 0 <= lightness <= 255 OR "0%" <= lightness <= "100%"
- *   - 0 <= alpha <= 1 (0 is transparent, 1 is opaque) OR "0%" <= alpha <= "100%"
- *
- * @param argc number of input arguments
- * @param argv array of input arguments
- * @param class the Ruby class to use
- * @return a new Magick::Pixel object
+ * @overload from_hsla(hue, saturation, lightness, alpha = 1.0)
+ *   @param hue [Numeric, String] A value in the range.
+ *   @param saturation [Numeric, String] A value in the range.
+ *   @param lightness [Numeric, String] A value in the range.
+ *   @param alpha [Numeric] The alpha value.
+ *   @return [Magick::Pixel] a new Magick::Pixel object
  */
 VALUE
 Pixel_from_hsla(int argc, VALUE *argv, VALUE class ATTRIBUTE_UNUSED)
@@ -852,15 +862,9 @@ Pixel_from_PixelColor(const PixelColor *pp)
 
 
 /**
- * Ruby usage:
- *   - @verbatim Pixel#hash @endverbatim
+ * Compute a hash-code.
  *
- * Notes:
- *   - INT2FIX left-shifts 1 bit. Sacrifice 1 bit from the opacity attribute to
- *     the FIXNUM_FLAG.
- *
- * @param self this object
- * @return the hash of self
+ * @return [Numeric] the hash of self
  */
 VALUE
 Pixel_hash(VALUE self)
@@ -886,14 +890,10 @@ Pixel_hash(VALUE self)
 /**
  * Initialize clone, dup methods.
  *
- * Ruby usage:
- *   - @verbatim Pixel#initialize_copy @endverbatim
- *
- * @param self this object
- * @param orig the original Pixel
- * @return self
- * @see Pixel_clone
- * @see Pixel_dup
+ * @param orig [Magick::Pixel] the original Pixel
+ * @return [Magick::Pixel] self
+ * @see #clone
+ * @see #dup
  */
 VALUE
 Pixel_init_copy(VALUE self, VALUE orig)
@@ -910,24 +910,14 @@ Pixel_init_copy(VALUE self, VALUE orig)
 
 
 /**
- * Ruby usage:
- *   - @verbatim Pixel#initialize @endverbatim
- *   - @verbatim Pixel#initialize(red) @endverbatim
- *   - @verbatim Pixel#initialize(red,green) @endverbatim
- *   - @verbatim Pixel#initialize(red,green,blue) @endverbatim
- *   - @verbatim Pixel#initialize(red,green,blue,opacity) @endverbatim
+ * Initialize Pixel object.
  *
- * Notes:
- *   - Default red is 0.0
- *   - Default green is 0.0
- *   - Default blue is 0.0
- *   - Default opacity is 0.0
- *   - For backward compatibility, arguments may be nil.
- *
- * @param argc number of input arguments
- * @param argv array of input arguments
- * @param self this object
- * @return self
+ * @overload initialize(red = 0, green = 0, blue = 0, opacity = 0)
+ *   @param red [Numeric] The red value
+ *   @param green [Numeric] The green value
+ *   @param blue [Numeric] The blue value
+ *   @param opacity [Numeric] The opacity value
+ *   @return [Magick::Pixel] self
  */
 VALUE
 Pixel_initialize(int argc, VALUE *argv, VALUE self)
@@ -982,11 +972,7 @@ Pixel_initialize(int argc, VALUE *argv, VALUE self)
 /**
  * Return the "intensity" of a pixel.
  *
- * Ruby usage:
- *   - @verbatim Pixel#intensity @endverbatim
- *
- * @param self this object
- * @return the intensity
+ * @return [Numeric] the intensity
  */
 VALUE
 Pixel_intensity(VALUE self)
@@ -1007,11 +993,7 @@ Pixel_intensity(VALUE self)
 /**
  * Support Marshal.dump.
  *
- * Ruby usage:
- *   - @verbatim Pixel#marshal_dump @endverbatim
- *
- * @param self this object
- * @return a string representing the dumped pixel
+ * @return [Hash] a representing the dumped pixel
  */
 VALUE
 Pixel_marshal_dump(VALUE self)
@@ -1039,11 +1021,7 @@ Pixel_marshal_dump(VALUE self)
 /**
  * Support Marshal.load.
  *
- * Ruby usage:
- *   - @verbatim Pixel#marshal_load @endverbatim
- *
- * @param self this object
- * @param dpixel the dumped pixel
+ * @param dpixel [Hash] the dumped pixel
  * @return self
  */
 VALUE
@@ -1067,12 +1045,8 @@ Pixel_marshal_load(VALUE self, VALUE dpixel)
 /**
  * Support Comparable mixin.
  *
- * Ruby usage:
- *   - @verbatim Pixel#<=> @endverbatim
- *
- * @param self this object
- * @param other the other Pixel
- * @return -1, 0, 1
+ * @param other [Object] the other Pixel
+ * @return [-1, 0, 1, nil] the result of compare
  */
 VALUE
 Pixel_spaceship(VALUE self, VALUE other)
@@ -1115,15 +1089,10 @@ Pixel_spaceship(VALUE self, VALUE other)
 
 /**
  * Return [hue, saturation, lightness, alpha] in the same ranges as
- * Pixel_from_hsla.
+ * {Magick::Pixel.from_hsla}.
  *
- *
- * Ruby usage:
- *   - @verbatim Pixel#to_hsla @endverbatim
- *
- * @param self this object
- * @return an array with hsla data
- * @see Pixel_from_hsla
+ * @return [Array] an array with hsla data
+ * @see .from_hsla
  */
 VALUE
 Pixel_to_hsla(VALUE self)
@@ -1204,24 +1173,12 @@ rm_set_magick_pixel_packet(Pixel *pixel, MagickPixel *pp)
 /**
  * Return the color name corresponding to the pixel values.
  *
- * Ruby usage:
- *   - @verbatim Magick::Pixel#to_color @endverbatim
- *   - @verbatim Magick::Pixel#to_color(compliance) @endverbatim
- *   - @verbatim Magick::Pixel#to_color(compliance, alpha) @endverbatim
- *   - @verbatim Magick::Pixel#to_color(compliance, alpha, depth) @endverbatim
- *   - @verbatim Magick::Pixel#to_color(compliance, alpha, depth, hex) @endverbatim
- *
- * Notes:
- *   - Default compliance is AllCompliance
- *   - Default alpha is false
- *   - Default depth is MAGICKCORE_QUANTUM_DEPTH
- *   - Default hex is false
- *   - The conversion respects the value of the 'opacity' field in the Pixel
- *
- * @param argc number of input arguments
- * @param argv array of input arguments
- * @param self this object
- * @return the color name as a String
+ * @overload to_color(compliance = Magick::AllCompliance, alpha = false, depth = Magick::MAGICKCORE_QUANTUM_DEPTH, hex = false)
+ *   @param compliance [Magick::ComplianceType] A ComplianceType constant
+ *   @param alpha [Boolean] If false, the pixel's alpha attribute is ignored
+ *   @param depth [Numeric] An image depth
+ *   @param hex [Boolean] If true, represent the color name in hex format
+ *   @return [String] the color name as a String
  */
 VALUE
 Pixel_to_color(int argc, VALUE *argv, VALUE self)
@@ -1325,13 +1282,9 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
 
 
 /**
- * Create a string representation of a Magick::Pixel.
+ * Return a string representation of a {Magick::Pixel} object.
  *
- * Ruby usage:
- *   - @verbatim Magick::Pixel#to_s @endverbatim
- *
- * @param self this object
- * @return the string
+ * @return [String] the string
  */
 VALUE
 Pixel_to_s(VALUE self)
