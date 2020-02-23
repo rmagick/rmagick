@@ -51,11 +51,7 @@ destroy_Montage(void *obj)
 /**
  * Create a new Montage object.
  *
- * Ruby usage:
- *   - @verbatim Montage.new @endverbatim
- *
- * @param class the Ruby class to use
- * @return a new Montage object
+ * @return [Magick::ImageList::Montage] a new Montage object
  */
 VALUE
 Montage_alloc(VALUE class)
@@ -94,12 +90,9 @@ Montage_alloc(VALUE class)
 /**
  * Set background_color value.
  *
- * Ruby usage:
- *   - @verbatim Magick::Montage#background_color(color-name) @endverbatim
- *
- * @param self this object
- * @param color the color name
- * @return color
+ * @!attribute [w] background_color
+ * @param color [Magick::Pixel, String] the color name
+ * @return [Magick::Pixel, String] the given color name
  */
 VALUE
 Montage_background_color_eq(VALUE self, VALUE color)
@@ -115,12 +108,9 @@ Montage_background_color_eq(VALUE self, VALUE color)
 /**
  * Set border_color value.
  *
- * Ruby usage:
- *   - @verbatim Magick::Montage#border_color(color-name) @endverbatim
- *
- * @param self this object
- * @param color the color name
- * @return color
+ * @!attribute [w] border_color
+ * @param color [Magick::Pixel, String] the color name
+ * @return [Magick::Pixel, String] the given color name
  */
 VALUE
 Montage_border_color_eq(VALUE self, VALUE color)
@@ -136,12 +126,9 @@ Montage_border_color_eq(VALUE self, VALUE color)
 /**
  * Set border_width value.
  *
- * Ruby usage:
- *   - @verbatim Magick::Montage#border_width(width) @endverbatim
- *
- * @param self this object
- * @param width the width
- * @return width
+ * @!attribute [w] border_width
+ * @param width [Numeric] the width
+ * @return [Numeric] the given width
  */
 VALUE
 Montage_border_width_eq(VALUE self, VALUE width)
@@ -157,12 +144,9 @@ Montage_border_width_eq(VALUE self, VALUE width)
 /**
  * Set a composition operator.
  *
- * Ruby usage:
- *   - @verbatim Magick::Montage#compose(width) @endverbatim
- *
- * @param self this object
- * @param compose the composition operator
- * @return compose
+ * @!attribute [w] compose
+ * @param compose [Magick::CompositeOperator] the composition operator
+ * @return [Magick::CompositeOperator] the given compose operator
  */
 VALUE
 Montage_compose_eq(VALUE self, VALUE compose)
@@ -178,12 +162,9 @@ Montage_compose_eq(VALUE self, VALUE compose)
 /**
  * Set filename value.
  *
- * Ruby usage:
- *   - @verbatim Magick::Montage#filename(name) @endverbatim
- *
- * @param self this object
- * @param filename the filename
- * @return filename
+ * @!attribute [w] filename
+ * @param filename [String] the filename
+ * @return [String] filename
  */
 VALUE
 Montage_filename_eq(VALUE self, VALUE filename)
@@ -199,12 +180,9 @@ Montage_filename_eq(VALUE self, VALUE filename)
 /**
  * Set fill value.
  *
- * Ruby usage:
- *   - @verbatim Magick::Montage#fill(color-name) @endverbatim
- *
- * @param self this object
- * @param color the color name
- * @return color
+ * @!attribute [w] fill
+ * @param color [Magick::Pixel, String] the color name
+ * @return [Magick::Pixel, String] the given color name
  */
 VALUE
 Montage_fill_eq(VALUE self, VALUE color)
@@ -220,12 +198,9 @@ Montage_fill_eq(VALUE self, VALUE color)
 /**
  * Set font value.
  *
- * Ruby usage:
- *   - @verbatim Magick::Montage#font(font-name) @endverbatim
- *
- * @param self this object
- * @param font the font name
- * @return font
+ * @!attribute [w] font
+ * @param font [String] the font name
+ * @return [String] the given font name
  */
 VALUE
 Montage_font_eq(VALUE self, VALUE font)
@@ -242,17 +217,13 @@ Montage_font_eq(VALUE self, VALUE font)
 /**
  * Set frame value.
  *
- * Ruby usage:
- *   - @verbatim Magick::Montage#frame(frame-geometry) @endverbatim
+ * - The geometry is a string in the form:
+ *      <width>x<height>+<outer-bevel-width>+<inner-bevel-width>
+ *   or a Geometry object
  *
- * Notes:
- *   - The geometry is a string in the form:
- *     @verbatim <width>x<height>+<outer-bevel-width>+<inner-bevel-width> @endverbatim
- *     or a Geometry object
- *
- * @param self this object
- * @param frame_arg the frame geometry
- * @return frame_arg
+ * @!attribute [w] frame
+ * @param frame_arg [String] the frame geometry
+ * @return [String] the given frame geometry
  */
 VALUE
 Montage_frame_eq(VALUE self, VALUE frame_arg)
@@ -273,12 +244,13 @@ Montage_frame_eq(VALUE self, VALUE frame_arg)
 /**
  * Set geometry value.
  *
- * Ruby usage:
- *   - @verbatim Magick::Montage#geometry(geometry) @endverbatim
+ * - The geometry is a string in the form:
+ *      <width>x<height>+<outer-bevel-width>+<inner-bevel-width>
+ *   or a Geometry object
  *
- * @param self this object
- * @param geometry_arg the geometry
- * @return geometry_arg
+ * @!attribute [w] geometry
+ * @param geometry_arg [String] the geometry
+ * @return [String] the given geometry
  */
 VALUE
 Montage_geometry_eq(VALUE self, VALUE geometry_arg)
@@ -299,12 +271,9 @@ Montage_geometry_eq(VALUE self, VALUE geometry_arg)
 /**
  * Set gravity value.
  *
- * Ruby usage:
- *   - @verbatim Magick::Montage#gravity(gravity-type) @endverbatim
- *
- * @param self this object
- * @param gravity the gravity type
- * @return gravity
+ * @!attribute [w] gravity
+ * @param gravity [Magick::GravityType] the gravity type
+ * @return [Magick::GravityType] the given gravity
  */
 VALUE
 Montage_gravity_eq(VALUE self, VALUE gravity)
@@ -320,11 +289,7 @@ Montage_gravity_eq(VALUE self, VALUE gravity)
 /**
  * Initialize a Montage object. Does nothing currently.
  *
- * Ruby usage:
- *   - @verbatim Magick::Montage#initialize @endverbatim
- *
- * @param self this object
- * @return self
+ * @return [Magick::ImageList::Montage] self
  */
 VALUE
 Montage_initialize(VALUE self)
@@ -337,12 +302,9 @@ Montage_initialize(VALUE self)
 /**
  * Set matte_color value.
  *
- * Ruby usage:
- *   - @verbatim Magick::Montage#matte_color(color-name) @endverbatim
- *
- * @param self this object
- * @param color the color name
- * @return color
+ * @!attribute [w] matte_color
+ * @param color [Magick::Pixel, String] the color name
+ * @return [Magick::Pixel, String] the given color name
  */
 VALUE
 Montage_matte_color_eq(VALUE self, VALUE color)
@@ -358,12 +320,9 @@ Montage_matte_color_eq(VALUE self, VALUE color)
 /**
  * Set pointsize value.
  *
- * Ruby usage:
- *   - @verbatim Magick::Montage#pointsize= @endverbatim
- *
- * @param self this object
- * @param size the point size
- * @return size
+ * @!attribute [w] pointsize
+ * @param size [Numeric] the point size
+ * @return [Numeric] the given point size
  */
 VALUE
 Montage_pointsize_eq(VALUE self, VALUE size)
@@ -379,12 +338,9 @@ Montage_pointsize_eq(VALUE self, VALUE size)
 /**
  * Set shadow value.
  *
- * Ruby usage:
- *   - @verbatim Magick::Montage#shadow= @endverbatim
- *
- * @param self this object
- * @param shadow the shadow
- * @return shadow
+ * @!attribute [w] shadow
+ * @param shadow [Bool] true if the shadow will be enabled
+ * @return [Bool] the given value
  */
 VALUE
 Montage_shadow_eq(VALUE self, VALUE shadow)
@@ -400,12 +356,9 @@ Montage_shadow_eq(VALUE self, VALUE shadow)
 /**
  * Set stroke value.
  *
- * Ruby usage:
- *   - @verbatim Magick::Montage#stroke= color @endverbatim
- *
- * @param self this object
- * @param color the color name
- * @return self
+ * @!attribute [w] stroke
+ * @param color [Magick::Pixel, String] the color name
+ * @return [Magick::Pixel, String] the given color name
  */
 VALUE
 Montage_stroke_eq(VALUE self, VALUE color)
@@ -421,12 +374,9 @@ Montage_stroke_eq(VALUE self, VALUE color)
 /**
  * Set texture value.
  *
- * Ruby usage:
- *   - @verbatim Montage#texture= texture @endverbatim
- *
- * @param self this object
- * @param texture the texture image
- * @return texture
+ * @!attribute [w] texture
+ * @param texture [Magick::Image] the texture image
+ * @return [Magick::Image] the given texture image
  */
 VALUE
 Montage_texture_eq(VALUE self, VALUE texture)
@@ -460,12 +410,13 @@ Montage_texture_eq(VALUE self, VALUE texture)
 /**
  * Set tile value.
  *
- * Ruby usage:
- *   - @verbatim Magick::Montage#tile= tile @endverbatim
+ * - The geometry is a string in the form:
+ *      <width>x<height>+<outer-bevel-width>+<inner-bevel-width>
+ *   or a Geometry object
  *
- * @param self this object
- * @param tile_arg the tile
- * @return tile_arg
+ * @!attribute [w] tile
+ * @param tile_arg [String] the tile geometry
+ * @return [String] the given tile geometry
  */
 VALUE
 Montage_tile_eq(VALUE self, VALUE tile_arg)
@@ -486,12 +437,9 @@ Montage_tile_eq(VALUE self, VALUE tile_arg)
 /**
  * Set title value.
  *
- * Ruby usage:
- *   - @verbatim Magick::Montage#title= title @endverbatim
- *
- * @param self this object
- * @param title the title
- * @return title
+ * @!attribute [w] title
+ * @param title [String] the title
+ * @return [String] the given title
  */
 VALUE
 Montage_title_eq(VALUE self, VALUE title)
