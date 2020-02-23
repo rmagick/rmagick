@@ -13,28 +13,6 @@
 #include "rmagick.h"
 
 
-/*
- *  Define functions to get/set attributes in Image::Info that
- *  use the Get/SetImageOption API.
-*/
-//! Option attribute reader. For Image::Info.
-#define OPTION_ATTR_READER(opt, key) \
-    VALUE Info_##opt(VALUE self)\
-    {\
-        return get_option(self, #key);\
-    }
-//! Option attribute writer. For Image::Info.
-#define OPTION_ATTR_WRITER(opt, key) \
-    VALUE Info_##opt##_eq(VALUE self, VALUE string)\
-    {\
-        return set_option(self, #key, string);\
-    }
-//! Option attribute accessor. For Image::Info.
-#define OPTION_ATTR_ACCESSOR(opt, key)\
-    OPTION_ATTR_READER(opt, key)\
-    OPTION_ATTR_WRITER(opt, key)
-
-
 /**
  * Return the value of the specified option.
  *
@@ -713,7 +691,14 @@ Info_colorspace_eq(VALUE self, VALUE colorspace)
     return colorspace;
 }
 
-OPTION_ATTR_ACCESSOR(comment, Comment)
+VALUE Info_comment(VALUE self)
+{
+    return get_option(self, "Comment");
+}
+VALUE Info_comment_eq(VALUE self, VALUE string)
+{
+    return set_option(self, "Comment", string);
+}
 
 /**
  * Get the compression type.
@@ -1722,7 +1707,14 @@ Info_interlace_eq(VALUE self, VALUE inter)
     return inter;
 }
 
-OPTION_ATTR_ACCESSOR(label, Label)
+VALUE Info_label(VALUE self)
+{
+    return get_option(self, "Label");
+}
+VALUE Info_label_eq(VALUE self, VALUE string)
+{
+    return set_option(self, "Label", string);
+}
 
 /**
  * Return the name of the matte color as a String.
