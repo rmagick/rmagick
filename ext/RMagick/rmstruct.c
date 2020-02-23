@@ -187,13 +187,9 @@ Export_ChromaticityInfo(ChromaticityInfo *ci, VALUE chrom)
 
 
 /**
- * Create a string representation of a Magick::Chromaticity.
+ * Return a string representation of a {Magick::Chromaticity} object.
  *
- * Ruby usage:
- *   - @verbatim Magick::Chromaticity#to_s @endverbatim
- *
- * @param self this object
- * @return the string
+ * @return [String] the string
  */
 VALUE
 ChromaticityInfo_to_s(VALUE self)
@@ -352,13 +348,9 @@ destroy_ColorInfo(ColorInfo *ci)
 
 
 /**
- * Return a string representation of a Magick::Color object.
+ * Return a string representation of a {Magick::Color} object.
  *
- * Ruby usage:
- *   - @verbatim Color#to_s @endverbatim
- *
- * @param self this object
- * @return the string
+ * @return [String] the string
  */
 VALUE
 Color_to_s(VALUE self)
@@ -512,12 +504,9 @@ destroy_TypeInfo(TypeInfo *ti)
 
 
 /**
- * Implement the Font#to_s method.
+ * Return a string representation of a {Magick::Font} object.
  *
- * No Ruby usage (internal function)
- *
- * @param self this object
- * @return the string
+ * @return [String] the string
  */
 VALUE
 Font_to_s(VALUE self)
@@ -654,13 +643,9 @@ Export_PrimaryInfo(PrimaryInfo *pi, VALUE sp)
 
 
 /**
- * Create a string representation of a Magick::PrimaryInfo.
+ * Return a string representation of a {Magick::PrimaryInfo} object.
  *
- * Ruby usage:
- *   - @verbatim Magick::PrimaryInfo#to_s @endverbatim
- *
- * @param self this object
- * @return the string
+ * @return [String] the string
  */
 VALUE
 PrimaryInfo_to_s(VALUE self)
@@ -738,13 +723,9 @@ Export_RectangleInfo(RectangleInfo *rect, VALUE sr)
 
 
 /**
- * Create a string representation of a Magick::Rectangle.
+ * Return a string representation of a {Magick::Rectangle} object.
  *
- * Ruby usage:
- *   - @verbatim Magick::Rectangle#to_s @endverbatim
- *
- * @param self this object
- * @return the string
+ * @return [String] the string
  */
 VALUE
 RectangleInfo_to_s(VALUE self)
@@ -821,13 +802,9 @@ Export_SegmentInfo(SegmentInfo *segment, VALUE s)
 
 
 /**
- * Create a string representation of a Magick::Segment.
+ * Return a string representation of a {Magick::Segment} object.
  *
- * Ruby usage:
- *   - @verbatim Magick::SegmentInfo#to_s @endverbatim
- *
- * @param self this object
- * @return the string
+ * @return [String] the string
  */
 VALUE
 SegmentInfo_to_s(VALUE self)
@@ -935,13 +912,9 @@ Export_TypeMetric(TypeMetric *tm, VALUE st)
 
 
 /**
- * Create a string representation of a Magick::TypeMetric.
+ * Return a string representation of a {Magick::TypeMetric} object.
  *
- * Ruby usage:
- *   - @verbatim Magick::TypeMetric#to_s @endverbatim
- *
- * @param self this object
- * @return the string
+ * @return [String] the string
  */
 VALUE
 TypeMetric_to_s(VALUE self)
