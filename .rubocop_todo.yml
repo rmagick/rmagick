@@ -292,12 +292,6 @@ Style/GlobalVars:
   Exclude:
     - 'ext/RMagick/extconf.rb'
 
-# Offense count: 2
-# Configuration parameters: MinBodyLength.
-Style/GuardClause:
-  Exclude:
-    - 'ext/RMagick/extconf.rb'
-
 # Offense count: 4
 # Cop supports --auto-correct.
 Style/IfUnlessModifier:

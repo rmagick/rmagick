@@ -21,6 +21,7 @@ AllCops:
 Layout/MultilineAssignmentLayout: { EnforcedStyle: same_line }
 RSpec/FilePath: { CustomTransform: { Magick: rmagick } }
 Style/FormatString: { EnforcedStyle: sprintf }
+Style/GuardClause: { MinBodyLength: 3 }
 # we may not need this after finishing RSpec conversion
 # seems like `rubocop-rspec` already excludes the `spec/` directory
 Style/MethodCalledOnDoEndBlock: { Exclude: [test/**/*.rb, spec/**/*.rb] }
