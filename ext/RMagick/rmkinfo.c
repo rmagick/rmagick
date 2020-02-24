@@ -89,13 +89,13 @@ KernelInfo_unity_add(VALUE self, VALUE scale)
     if (!FIXNUM_P(scale))
         Check_Type(scale, T_FLOAT);
 
+    /* UnityAddKernelInfo() was private function until IM 6.9 */
+    MagickExport void UnityAddKernelInfo(KernelInfo *kernel, const double scale);
+
     UnityAddKernelInfo((KernelInfo*)DATA_PTR(self), NUM2DBL(scale));
     return Qnil;
 }
 
-
-/* ScaleKernelInfo() was private function until IM 6.9 */
-MagickExport void ScaleKernelInfo(KernelInfo *kernel, const double scaling_factor,const GeometryFlags normalize_flags);
 
 /**
  * Scales the given kernel list by the given amount, with or without normalization
@@ -117,6 +117,9 @@ KernelInfo_scale(VALUE self, VALUE scale, VALUE flags)
         VALUE_TO_ENUM(flags, geoflags, GeometryFlags);
     else
         rb_raise(rb_eArgError, "expected Integer or Magick::GeometryFlags to specify flags");
+
+    /* ScaleKernelInfo() was private function until IM 6.9 */
+    MagickExport void ScaleKernelInfo(KernelInfo *kernel, const double scaling_factor,const GeometryFlags normalize_flags);
 
     ScaleKernelInfo((KernelInfo*)DATA_PTR(self), NUM2DBL(scale), geoflags);
     return Qnil;
