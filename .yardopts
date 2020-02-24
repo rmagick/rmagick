@@ -1,0 +1,5 @@
+--use-cache .yardoc
+lib/**/*.rb
+ext/**/*.c
+*.md
+LICENSE
