@@ -16,8 +16,7 @@
 /**
  * Return the value of the specified option.
  *
- * Ruby usage:
- *   - @verbatim Info#get_option(key) @endverbatim
+ * No Ruby usage (internal function)
  *
  * @param self this object
  * @param key the option key
@@ -43,8 +42,7 @@ get_option(VALUE self, const char *key)
  * Set the specified option to this value. If the value is nil just unset any
  * current value.
  *
- * Ruby usage:
- *   - @verbatim Info#set_option(key,string) @endverbatim
+ * No Ruby usage (internal function)
  *
  * @param self this object
  * @param key the option key
@@ -222,11 +220,25 @@ static char *pixel_packet_to_hexname(PixelPacket *pp, char *name)
 #endif
 
 
+/**
+ * Get antialias value
+ *
+ * @!attribute [r] antialias
+ * @return [Boolean] true if antialias is enabled
+ */
 VALUE
 Info_antialias(VALUE self)
 {
     IMPLEMENT_ATTR_READER(Info, antialias, boolean);
 }
+
+/**
+ * Set antialias value
+ *
+ * @!attribute [w] antialias
+ * @param val [Boolean] true or false
+ * @return [Boolean] the given value
+ */
 VALUE
 Info_antialias_eq(VALUE self, VALUE val)
 {
@@ -237,22 +249,20 @@ Info_antialias_eq(VALUE self, VALUE val)
 #define MAX_FORMAT_LEN 60
 
 /**
- * Get the value of an option set by Info[]=
+ * Get the value of the specified option for the specified format.
  *
- * Ruby usage:
- *   - @verbatim Info[format, key] @endverbatim
- *   - @verbatim Info[key] @endverbatim
+ * - The 2 argument form is the original form. Added support for a single
+ *   argument after ImageMagick started using Set/GetImageOption for options
+ *   that aren't represented by fields in the ImageInfo structure.
  *
- * Notes:
- *   - The 2 argument form is the original form. Added support for a single
- *     argument after ImageMagick started using Set/GetImageOption for options
- *     that aren't represented by fields in the ImageInfo structure.
+ * @overload [](format, key)
+ *   @param format [String] An image format name such as "ps" or "tiff".
+ *   @param key [String] A string that identifies the option.
  *
- * @param argc number of input arguments
- * @param argv array of input arguments
- * @param self this object
- * @return the option value
- * @see Info_aset
+ * @overload [](key)
+ *   @param key [String] A string that identifies the option.
+ *
+ * @return [String] The value of the option.
  */
 VALUE
 Info_aref(int argc, VALUE *argv, VALUE self)
@@ -298,26 +308,23 @@ Info_aref(int argc, VALUE *argv, VALUE self)
 
 
 /**
- * Call SetImageOption
+ * Define an option. An alternative to {Info#define}.
+ * Use this method to set options for reading or writing certain image formats.
  *
- * Ruby usage:
- *   - @verbatim Info[format, key]= @endverbatim
- *   - @verbatim Info[key]= @endverbatim
+ * - Essentially the same function as {Info#define} but paired with {Info#[]}
+ * - If the value is nil it is equivalent to {Info#undefine}.
  *
- * Notes:
- *   - Essentially the same function as Info_define but paired with Info_aref
- *   - If the value is nil it is equivalent to Info_undefine. 
- *   - The 2 argument form is the original form. Added support for a single
- *     argument after ImageMagick started using Set/GetImageOption for options
- *     that aren't represented by fields in the ImageInfo structure.
+ * @overload []=(format, key)
+ *   @param format [String] An image format name such as "ps" or "tiff".
+ *   @param key [String] A string that identifies the option.
  *
- * @param argc number of input arguments
- * @param argv array of input arguments
- * @param self this object
- * @return self
- * @see Info_aref
- * @see Info_define
- * @see Info_undefine
+ * @overload []=(key)
+ *   @param key [String] A string that identifies the option.
+ *
+ * @return [Magick::Image::Info] self
+ * @see #[]
+ * @see #define
+ * @see #undefine
  */
 VALUE
 Info_aset(int argc, VALUE *argv, VALUE self)
@@ -384,13 +391,10 @@ Info_aset(int argc, VALUE *argv, VALUE self)
 
 
 /**
- * Get the attenuate attribute.
+ * Get the attenuate value.
  *
- * Ruby usage:
- *   - @verbatim Info#attenuate @endverbatim
- *
- * @param self this object
- * @return the attenuate
+ * @!attribute [r] attenuate
+ * @return [Float] the attenuate
  */
 VALUE
 Info_attenuate(VALUE self)
@@ -400,14 +404,11 @@ Info_attenuate(VALUE self)
 
 
 /**
- * Set the attenuate attribute.
+ * Set the attenuate value.
  *
- * Ruby usage:
- *   - @verbatim Info#attenuate= @endverbatim
- *
- * @param self this object
- * @param value the attenuate
- * @return self
+ * @!attribute [w] attenuate
+ * @param value [Float] the attenuate
+ * @return [Float] the attenuate
  */
 VALUE
 Info_attenuate_eq(VALUE self, VALUE value)
@@ -417,13 +418,10 @@ Info_attenuate_eq(VALUE self, VALUE value)
 
 
 /**
- * Get the authenticate attribute.
+ * Get the authenticate value.
  *
- * Ruby usage:
- *   - @verbatim Info#authenticate @endverbatim
- *
- * @param self this object
- * @return the authenticate
+ * @!attribute [r] authenticate
+ * @return [String] the authenticate
  */
 VALUE
 Info_authenticate(VALUE self)
@@ -440,14 +438,11 @@ Info_authenticate(VALUE self)
 
 
 /**
- * Set the authenticate attribute.
+ * Set the authenticate value.
  *
- * Ruby usage:
- *   - @verbatim Info#authenticate= @endverbatim
- *
- * @param self this object
- * @param passwd_arg the authenticating password
- * @return passwd_arg
+ * @!attribute [w] authenticate
+ * @param passwd_arg [String] the authenticating password
+ * @return [String] the given value
  */
 VALUE
 Info_authenticate_eq(VALUE self, VALUE passwd_arg)
@@ -490,12 +485,9 @@ Info_authenticate_eq(VALUE self, VALUE passwd_arg)
 /**
  * Return the name of the background color as a String
  *
- * Ruby usage:
- *   - @verbatim Info#background_color @endverbatim
- *
- * @param self this object
- * @return the name of the background color
- * @see Image_background_color
+ * @!attribute [r] background_color
+ * @return [String] the name of the background color
+ * @see Image#background_color
  */
 VALUE
 Info_background_color(VALUE self)
@@ -510,16 +502,9 @@ Info_background_color(VALUE self)
 /**
  * Set the background color.
  *
- * Ruby usage:
- *   - @verbatim Info#background_color= @endverbatim
- *
- * Notes:
- *   - Color should be a string
- *
- * @param self this object
- * @param bc_arg the background color
- * @return bc_arg
- * @throw ArgumentError
+ * @!attribute [w] background_color
+ * @param bc_arg [Magick::Pixel, String] the background color
+ * @return [Magick::Pixel, String] the given color
  */
 VALUE
 Info_background_color_eq(VALUE self, VALUE bc_arg)
@@ -536,12 +521,9 @@ Info_background_color_eq(VALUE self, VALUE bc_arg)
 /**
  * Return the name of the border color as a String.
  *
- * Ruby usage:
- *   - @verbatim Info#border_color @endverbatim
- *
- * @param self this object
- * @return the border color
- * @see Image_border_color
+ * @!attribute [r] border_color
+ * @return [String] the border color name
+ * @see Image#border_color
  */
 VALUE
 Info_border_color(VALUE self)
@@ -555,16 +537,9 @@ Info_border_color(VALUE self)
 /**
  * set the border color
  *
- * Ruby usage:
- *   - @verbatim Info#border_color= @endverbatim
- *
- * Notes:
- *   - Color should be a string
- *
- * @param self this object
- * @param bc_arg the border color
- * @return bc_arg
- * @throw ArgumentError
+ * @!attribute [w] border_color
+ * @param bc_arg [Magick::Pixel, String] the border color
+ * @return [Magick::Pixel, String] the given color
  */
 VALUE
 Info_border_color_eq(VALUE self, VALUE bc_arg)
@@ -581,13 +556,10 @@ Info_border_color_eq(VALUE self, VALUE bc_arg)
 
 
 /**
- * Emulate the -caption option.
+ * Get a caption of image
  *
- * Ruby usage:
- *   - @verbatim Info#caption @endverbatim
- *
- * @param self this object
- * @return the caption
+ * @!attribute [r] caption
+ * @return [String] the caption
  */
 VALUE
 Info_caption(VALUE self)
@@ -598,14 +570,11 @@ Info_caption(VALUE self)
 
 
 /**
- * Emulate the -caption option.
+ * Assigns a caption to an image.
  *
- * Ruby usage:
- *   - @verbatim Info#caption= @endverbatim
- *
- * @param self this object
- * @param caption the caption
- * @return self
+ * @!attribute [w] caption
+ * @param caption [String] the caption
+ * @return [String] the given value
  */
 VALUE
 Info_caption_eq(VALUE self, VALUE caption)
@@ -617,19 +586,13 @@ Info_caption_eq(VALUE self, VALUE caption)
 /**
  * Set the channels
  *
- * Ruby usage:
- *   - @verbatim Info#channel @endverbatim
- *   - @verbatim Info#channel(channel) @endverbatim
- *   - @verbatim Info#channel(channel, ...) @endverbatim
+ * @overload channel(channel = Magick::AllChannels)
+ *   @param channel [Magick::ChannelType] the channel
  *
- * Notes:
- *   - Default channel is AllChannels
- *   - Thanks to Douglas Sellers.
+ * @overload channel(*channels)
+ *   @param channels [Magick::ChannelType] the multiple arguments of channel
  *
- * @param argc number of input arguments
- * @param argv array of input arguments
- * @param self this object
- * @return self
+ * @return [Magick::Image::Info] self
  */
 VALUE
 Info_channel(int argc, VALUE *argv, VALUE self)
@@ -655,11 +618,8 @@ Info_channel(int argc, VALUE *argv, VALUE self)
 /**
  * Get the colorspace type.
  *
- * Ruby usage:
- *   - @verbatim Info#colorspace @endverbatim
- *
- * @param self this object
- * @return the colorspace type
+ * @!attribute [r] colorspace
+ * @return [Magick::ColorspaceType] the colorspace type
  */
 VALUE
 Info_colorspace(VALUE self)
@@ -673,13 +633,9 @@ Info_colorspace(VALUE self)
 /**
  * Set the colorspace type
  *
- * Ruby usage:
- *   - @verbatim Info#colorspace= @endverbatim
- *
- * @param self this object
- * @param colorspace the colorspace type
- * @return colorspace
- * @throw ArgumentError
+ * @!attribute [w] colorspace
+ * @param colorspace [Magick::ColorspaceType] the colorspace type
+ * @return [Magick::ColorspaceType] the given colorspace
  */
 VALUE
 Info_colorspace_eq(VALUE self, VALUE colorspace)
@@ -691,10 +647,24 @@ Info_colorspace_eq(VALUE self, VALUE colorspace)
     return colorspace;
 }
 
+/**
+ * Get the comment.
+ *
+ * @!attribute [r] comment
+ * @return [String] the comment
+ */
 VALUE Info_comment(VALUE self)
 {
     return get_option(self, "Comment");
 }
+
+/**
+ * Set the comment
+ *
+ * @!attribute [w] comment
+ * @param string [String] the comment
+ * @return [String] the given comment
+ */
 VALUE Info_comment_eq(VALUE self, VALUE string)
 {
     return set_option(self, "Comment", string);
@@ -703,11 +673,8 @@ VALUE Info_comment_eq(VALUE self, VALUE string)
 /**
  * Get the compression type.
  *
- * Ruby usage:
- *   - @verbatim Info#compression @endverbatim
- *
- * @param self this object
- * @return the compression type
+ * @!attribute [r] compression
+ * @return [Magick::CompressionType] the compression type
  */
 VALUE
 Info_compression(VALUE self)
@@ -721,13 +688,9 @@ Info_compression(VALUE self)
 /**
  * Set the compression type
  *
- * Ruby usage:
- *   - @verbatim Info#compression= @endverbatim
- *
- * @param self this object
- * @param type the compression type
- * @return type
- * @throw ArgumentError
+ * @!attribute [r] compression
+ * @param type [Magick::CompressionType] the compression type
+ * @return [Magick::CompressionType] the given type
  */
 VALUE
 Info_compression_eq(VALUE self, VALUE type)
@@ -740,20 +703,14 @@ Info_compression_eq(VALUE self, VALUE type)
 }
 
 /**
- * Call SetImageOption
+ * Define an option.
  *
- * Ruby usage:
- *   - @verbatim Info#define(format, key) @endverbatim
- *   - @verbatim Info#define(format, key, value) @endverbatim
+ * @overload Info#define(format, key, value = "")
+ *   @param format [String] An image format name such as "ps" or "tiff".
+ *   @param key [String] A string that identifies the option.
+ *   @param value [String] A value of option
  *
- * Notes:
- *   - Default value is the empty string
- *   - This is the only method in Info that is not an attribute accessor.
- *
- * @param argc number of input arguments
- * @param argv array of input arguments
- * @param self this object
- * @return self
+ * @return [Magick::Image::Info] self
  */
 VALUE
 Info_define(int argc, VALUE *argv, VALUE self)
@@ -802,16 +759,10 @@ Info_define(int argc, VALUE *argv, VALUE self)
 }
 
 /**
- * Get the delay attribute.
+ * Get the delay value.
  *
- * Ruby usage:
- *   - @verbatim Info#delay @endverbatim
- *
- * Notes:
- *   - Convert from string to numeric
- *
- * @param self this object
- * @return the delay
+ * @!attribute [r] delay
+ * @return [Numeric] the delay
  */
 VALUE
 Info_delay(VALUE self)
@@ -852,17 +803,11 @@ arg_is_integer(VALUE arg)
 }
 
 /**
- * Set the delay attribute.
+ * Set the delay value.
  *
- * Ruby usage:
- *   - @verbatim Info#delay= @endverbatim
- *
- * Notes:
- *   - Convert from numeric value to string.
- *
- * @param self this object
- * @param string the delay
- * @return string
+ * @!attribute [w] delay
+ * @param string [String] the delay
+ * @return [String] the given value
  */
 VALUE
 Info_delay_eq(VALUE self, VALUE string)
@@ -895,13 +840,10 @@ Info_delay_eq(VALUE self, VALUE string)
 }
 
 /**
- * Get the density attribute
+ * Get the density value
  *
- * Ruby usage:
- *   - @verbatim Info#density @endverbatim
- *
- * @param self this object
- * @return the density
+ * @!attribute [r] density
+ * @return [String] the density
  */
 VALUE
 Info_density(VALUE self)
@@ -910,18 +852,12 @@ Info_density(VALUE self)
 }
 
 /**
- * Set the text rendering density
+ * Set the text rendering density geometry
  *
- * Ruby usage:
- *   - @verbatim Info#density= @endverbatim
- *
- * Notes:
- *   - density should be a string, e.g., "72x72"
- *
- * @param self this object
- * @param density_arg the density
- * @return density_arg
- * @throw ArgumentError
+ * @!attribute [w] density
+ * @param density_arg [String] the density
+ * @return [String] the given value
+ * @see https://www.imagemagick.org/Magick++/Geometry.html
  */
 VALUE
 Info_density_eq(VALUE self, VALUE density_arg)
@@ -954,13 +890,10 @@ Info_density_eq(VALUE self, VALUE density_arg)
 }
 
 /**
- * Get the depth attribute
+ * Get the depth value
  *
- * Ruby usage:
- *   - @verbatim Info#depth @endverbatim
- *
- * @param self this object
- * @return the depth
+ * @!attribute [r] depth
+ * @return [Numeric] the depth
  */
 VALUE
 Info_depth(VALUE self)
@@ -969,15 +902,11 @@ Info_depth(VALUE self)
 }
 
 /**
- * Set the depth (8, 16, 32).
+ * Set the depth (8, 16, 32, 64).
  *
- * Ruby usage:
- *   - @verbatim Info#depth= @endverbatim
- *
- * @param self this object
- * @param depth the depth
- * @return depth
- * @throw ArgumentError
+ * @!attribute [w] depth
+ * @param depth [Numeric] the depth
+ * @return [Numeric] the given depth
  */
 VALUE
 Info_depth_eq(VALUE self, VALUE depth)
@@ -1060,11 +989,8 @@ DisposeType rm_dispose_to_enum(const char *name)
  * Retrieve the dispose option string and convert it to a DisposeType
  * enumerator.
  *
- * Ruby usage:
- *   - @verbatim Info#dispose @endverbatim
- *
- * @param self this object
- * @return a DisposeType enumerator
+ * @!attribute [r] dispose
+ * @return [Magick::DisposeType] a DisposeType enumerator
  */
 VALUE
 Info_dispose(VALUE self)
@@ -1097,12 +1023,9 @@ Info_dispose(VALUE self)
 /**
  * Convert a DisposeType enumerator into the equivalent dispose option string.
  *
- * Ruby usage:
- *   - @verbatim Info#dispose= @endverbatim
- *
- * @param self this object
- * @param disp the DisposeType enumerator
- * @return disp
+ * @!attribute [w] dispose
+ * @param disp [Magic::DisposeType] the DisposeType enumerator
+ * @return [Magic::DisposeType] the given value
  */
 VALUE
 Info_dispose_eq(VALUE self, VALUE disp)
@@ -1136,11 +1059,25 @@ Info_dispose_eq(VALUE self, VALUE disp)
     return disp;
 }
 
+/**
+ * Get dither value
+ *
+ * @!attribute [r] dither
+ * @return [Boolean] true if dither is enabled
+ */
 VALUE
 Info_dither(VALUE self)
 {
     IMPLEMENT_ATTR_READER(Info, dither, boolean);
 }
+
+/**
+ * Set dither value
+ *
+ * @!attribute [w] dither
+ * @param val [Boolean] true if dither will be enabled
+ * @return [Boolean] true if dither is enabled
+ */
 VALUE
 Info_dither_eq(VALUE self, VALUE val)
 {
@@ -1149,13 +1086,10 @@ Info_dither_eq(VALUE self, VALUE val)
 
 
 /**
- * Get the endian attribute.
+ * Get the endian value.
  *
- * Ruby usage:
- *   - @verbatim Info#endian @endverbatim
- *
- * @param self this object
- * @return the endian (Magick::MSBEndian or Magick::LSBEndian)
+ * @!attribute [r] endian
+ * @return [Magick::EndianType] the endian
  */
 VALUE
 Info_endian(VALUE self)
@@ -1168,14 +1102,11 @@ Info_endian(VALUE self)
 
 
 /**
- * Set the endian attribute.
+ * Set the endian value.
  *
- * Ruby usage:
- *   - @verbatim Info#endian= @endverbatim
- *
- * @param self this object
- * @param endian the endian (Magick::MSBEndian or Magick::LSBEndian)
- * @return endian
+ * @!attribute [w] endian
+ * @param endian [Magick::EndianType] the endian
+ * @return [Magick::EndianType] the given endian
  */
 VALUE
 Info_endian_eq(VALUE self, VALUE endian)
@@ -1195,16 +1126,11 @@ Info_endian_eq(VALUE self, VALUE endian)
 
 
 /**
- * Get the extract string, e.g. "200x200+100+100"
+ * Get the extract geometry, e.g. "200x200+100+100"
  *
- * Ruby usage:
- *   - @verbatim Info#extract @endverbatim
- *
- * Notes:
- *   - Defined for ImageMagick 5.5.6 and later
- *
- * @param self this object
- * @return the extract string
+ * @!attribute [r] extract
+ * @return [String] the extract string
+ * @see https://www.imagemagick.org/Magick++/Geometry.html
  */
 VALUE
 Info_extract(VALUE self)
@@ -1213,18 +1139,12 @@ Info_extract(VALUE self)
 }
 
 /**
- * Set the extract string, e.g. "200x200+100+100"
+ * Set the extract geometry.
  *
- * Ruby usage:
- *   - @verbatim Info#extract= @endverbatim
- *
- * Notes:
- *   - Defined for ImageMagick 5.5.6 and later
- *
- * @param self this object
- * @param extract_arg the extract string
- * @return extract_arg
- * @throw ArgumentError
+ * @!attribute [w] extract
+ * @param extract_arg [String] the extract string
+ * @return [String] the given value
+ * @see https://www.imagemagick.org/Magick++/Geometry.html
  */
 VALUE
 Info_extract_eq(VALUE self, VALUE extract_arg)
@@ -1258,17 +1178,12 @@ Info_extract_eq(VALUE self, VALUE extract_arg)
 
 
 /**
- * Get the "filename".
+ * Get the "filename" value.
  *
- * Ruby usage:
- *   - @verbatim Info#filename @endverbatim
- *
- * Notes:
- *   - Only used for Image_capture
- *
- * @param self this object
- * @return the filename ("" if filename not set)
- * @see Image_capture
+ * @!attribute [r] filename
+ * @return [String] the file name ("" if filename not set)
+ * @note Only used for Image#capture
+ * @see Image#capture
  */
 VALUE
 Info_filename(VALUE self)
@@ -1280,18 +1195,13 @@ Info_filename(VALUE self)
 }
 
 /**
- * Set the "filename".
+ * Set the "filename" value.
  *
- * Ruby usage:
- *   - @verbatim Info#filename= @endverbatim
- *
- * Notes:
- *   - Only used for Image_capture
- *
- * @param self this object
- * @param filename the filename
- * @return filename
- * @see Image_capture
+ * @!attribute [w] filename
+ * @param filename [String] the file name
+ * @return [String] the given file name
+ * @note Only used for Image#capture
+ * @see Image#capture
  */
 VALUE
 Info_filename_eq(VALUE self, VALUE filename)
@@ -1320,11 +1230,8 @@ Info_filename_eq(VALUE self, VALUE filename)
 /**
  * Return the fill color as a String.
  *
- * Ruby usage:
- *   - @verbatim Info#fill @endverbatim
- *
- * @param self this object
- * @return the fill color
+ * @!attribute [r] fill
+ * @return [String] the fill color
  */
 VALUE
 Info_fill(VALUE self)
@@ -1335,13 +1242,9 @@ Info_fill(VALUE self)
 /**
  * Set the fill color
  *
- * Ruby usage:
- *   - @verbatim Info#fill= @endverbatim
- *
- * @param self this object
- * @param color the fill color (as a String)
- * @return self
- * @throw ArgumentError
+ * @!attribute [w] fill
+ * @param color [String] the fill color
+ * @return [String] the given value
  */
 VALUE
 Info_fill_eq(VALUE self, VALUE color)
@@ -1353,11 +1256,8 @@ Info_fill_eq(VALUE self, VALUE color)
 /**
  * Get the text font.
  *
- * Ruby usage:
- *   - @verbatim Info#font @endverbatim
- *
- * @param self this object
- * @return the font
+ * @!attribute [r] font
+ * @return [String] the font
  */
 VALUE
 Info_font(VALUE self)
@@ -1368,12 +1268,9 @@ Info_font(VALUE self)
 /**
  * Set the text font.
  *
- * Ruby usage:
- *   - @verbatim Info#font= @endverbatim
- *
- * @param self this object
- * @param font_arg the font (as a String)
- * @return font_arg
+ * @!attribute [w] font
+ * @param font_arg [String] the font
+ * @return [String] the given font
  */
 VALUE
 Info_font_eq(VALUE self, VALUE font_arg)
@@ -1399,11 +1296,8 @@ Info_font_eq(VALUE self, VALUE font_arg)
 /**
  * Return the image encoding format.
  *
- * Ruby usage:
- *   - @verbatim Info#format @endverbatim
- *
- * @param self this object
- * @return the encoding format
+ * @!attribute [r] format
+ * @return [String] the encoding format
  */
 VALUE Info_format(VALUE self)
 {
@@ -1428,12 +1322,9 @@ VALUE Info_format(VALUE self)
 /**
  * Set the image encoding format.
  *
- * Ruby usage:
- *   - @verbatim Info#format= @endverbatim
- *
- * @param self this object
- * @param magick the encoding format
- * @return magick
+ * @!attribute [w] format
+ * @param magick [String] the encoding format
+ * @return [String] the given format
  */
 VALUE
 Info_format_eq(VALUE self, VALUE magick)
@@ -1464,12 +1355,9 @@ Info_format_eq(VALUE self, VALUE magick)
 /**
  * Get the fuzz.
  *
- * Ruby usage:
- *   - @verbatim Info#fuzz @endverbatim
- *
- * @param self this object
- * @return the fuzz
- * @see Image_fuzz
+ * @!attribute [r] fuzz
+ * @return [Float] the fuzz
+ * @see Image#fuzz
  */
 VALUE
 Info_fuzz(VALUE self)
@@ -1480,16 +1368,14 @@ Info_fuzz(VALUE self)
 /**
  * Set the fuzz.
  *
- * Ruby usage:
- *   - @verbatim Info#fuzz=number @endverbatim
- *   - @verbatim Info#fuzz=NN% @endverbatim
- *
- * @param self this object
- * @param fuzz the fuzz
- * @return fuzz
- * @see Image_fuzz_eq
+ * @!attribute [w] fuzz
+ * @param fuzz [Float, String] the fuzz with Float or
+ *   percent format "xx%" with String
+ * @return [Float, String] the given value
+ * @see Image#fuzz=
  */
-VALUE Info_fuzz_eq(VALUE self, VALUE fuzz)
+VALUE
+Info_fuzz_eq(VALUE self, VALUE fuzz)
 {
     Info *info;
 
@@ -1552,11 +1438,8 @@ GravityType rm_gravity_to_enum(const char *name)
 /**
  * Return the value of the gravity option as a GravityType enumerator.
  *
- * Ruby usage:
- *   - @verbatim Info#gravity @endverbatim
- *
- * @param self this object
- * @return the gravity enumerator
+ * @!attribute [r] gravity
+ * @return [Magick::GravityType] the gravity enumerator
  */
 VALUE Info_gravity(VALUE self)
 {
@@ -1589,12 +1472,9 @@ VALUE Info_gravity(VALUE self)
  * Convert a GravityType enum to a gravity option name and store in the Info
  * structure.
  *
- * Ruby usage:
- *   - @verbatim Info#gravity= @endverbatim
- *
- * @param self this object
- * @param grav the gravity enumerator
- * @return grav
+ * @!attribute [w] gravity
+ * @param grav [Magick::GravityType] the gravity enumerator
+ * @return [Magick::GravityType] the given gravity
  */
 VALUE
 Info_gravity_eq(VALUE self, VALUE grav)
@@ -1632,11 +1512,8 @@ Info_gravity_eq(VALUE self, VALUE grav)
 /**
  * Get the classification type.
  *
- * Ruby usage:
- *   - @verbatim Info#image_type @endverbatim
- *
- * @param self this object
- * @return the classification type
+ * @!attribute [r] image_type
+ * @return [Magick::ImageType] the classification type
  */
 VALUE
 Info_image_type(VALUE self)
@@ -1650,13 +1527,9 @@ Info_image_type(VALUE self)
 /**
  * Set the classification type.
  *
- * Ruby usage:
- *   - @verbatim Info#image_type= @endverbatim
- *
- * @param self this object
- * @param type the classification type
- * @return type
- * @throw ArgumentError
+ * @!attribute [w] image_type
+ * @param type [Magick::ImageType] the classification type
+ * @return [Magick::ImageType] the given type
  */
 VALUE
 Info_image_type_eq(VALUE self, VALUE type)
@@ -1671,11 +1544,8 @@ Info_image_type_eq(VALUE self, VALUE type)
 /**
  * Get the interlace type.
  *
- * Ruby usage:
- *   - @verbatim Info#interlace @endverbatim
- *
- * @param self this object
- * @return the interlace type
+ * @!attribute [r] interlace
+ * @return [Magick::InterlaceType] the interlace type
  */
 VALUE
 Info_interlace(VALUE self)
@@ -1689,13 +1559,9 @@ Info_interlace(VALUE self)
 /**
  * Set the interlace type
  *
- * Ruby usage:
- *   - @verbatim Info#interlace= @endverbatim
- *
- * @param self this object
- * @param inter the interlace type
- * @return inter
- * @throw ArgumentError
+ * @!attribute [w] interlace
+ * @param inter [Magick::InterlaceType] the interlace type
+ * @return [Magick::InterlaceType] the given interlace
  */
 VALUE
 Info_interlace_eq(VALUE self, VALUE inter)
@@ -1707,10 +1573,24 @@ Info_interlace_eq(VALUE self, VALUE inter)
     return inter;
 }
 
+/**
+ * Get the label.
+ *
+ * @!attribute [r] label
+ * @return [String] the label
+ */
 VALUE Info_label(VALUE self)
 {
     return get_option(self, "Label");
 }
+
+/**
+ * Set the label.
+ *
+ * @!attribute [w] label
+ * @param string [String] the label
+ * @return [String] the given label
+ */
 VALUE Info_label_eq(VALUE self, VALUE string)
 {
     return set_option(self, "Label", string);
@@ -1719,12 +1599,9 @@ VALUE Info_label_eq(VALUE self, VALUE string)
 /**
  * Return the name of the matte color as a String.
  *
- * Ruby usage:
- *   - @verbatim Info#matte_color @endverbatim
- *
- * @param self this object
- * @return the name of the matte color
- * @see Image_matte_color
+ * @!attribute [r] matte_color
+ * @return [String] the name of the matte color
+ * @see Image#matte_color
  */
 VALUE
 Info_matte_color(VALUE self)
@@ -1738,13 +1615,9 @@ Info_matte_color(VALUE self)
 /**
  * Set the matte color.
  *
- * Ruby usage:
- *   - @verbatim Info#matte_color= @endverbatim
- *
- * @param self this object
- * @param matte_arg the name of the matte as a String
- * @return matte_arg
- * @throw ArgumentError
+ * @!attribute [w] matte_color
+ * @param matte_arg [Magick::Pixel, String] the name of the matte as a String
+ * @return [Magick::Pixel, String] the given value
  */
 VALUE
 Info_matte_color_eq(VALUE self, VALUE matte_arg)
@@ -1761,13 +1634,10 @@ Info_matte_color_eq(VALUE self, VALUE matte_arg)
 /**
  * Establish a progress monitor.
  *
- * Ruby usage:
- *   - @verbatim Info#monitor= @endverbatim
- *
- * @param self this object
- * @param monitor the monitor
- * @return monitor
- * @see Image_monitor_eq
+ * @!attribute [w] monitor
+ * @param monitor [Proc] the monitor
+ * @return [Proc] monitor
+ * @see Image#monitor=
  */
 VALUE
 Info_monitor_eq(VALUE self, VALUE monitor)
@@ -1788,25 +1658,50 @@ Info_monitor_eq(VALUE self, VALUE monitor)
     return monitor;
 }
 
-
-
-
+/**
+ * Get the monochrome value.
+ *
+ * @!attribute [r] monochrome
+ * @return [Boolean] true or false
+ */
 VALUE
 Info_monochrome(VALUE self)
 {
     IMPLEMENT_ATTR_READER(Info, monochrome, boolean);
 }
+
+/**
+ * Set the monochrome value.
+ *
+ * @!attribute [w] monochrome
+ * @param val [Boolean] true or false
+ * @return [Boolean] the given value
+ */
 VALUE
 Info_monochrome_eq(VALUE self, VALUE val)
 {
     IMPLEMENT_ATTR_WRITER(Info, monochrome, boolean);
 }
 
+/**
+ * Get the scene number of an image or the first image in a sequence.
+ *
+ * @!attribute [r] number_scenes
+ * @return [Numeric] the scene number
+ */
 VALUE
 Info_number_scenes(VALUE self)
 {
     IMPLEMENT_ATTR_READER(Info, number_scenes, ulong);
 }
+
+/**
+ * Set the scene number of an image or the first image in a sequence.
+ *
+ * @!attribute [w] number_scenes
+ * @param val [Numeric] the scene number
+ * @return [Numeric] the given value
+ */
 VALUE
 Info_number_scenes_eq(VALUE self, VALUE val)
 {
@@ -1816,11 +1711,8 @@ Info_number_scenes_eq(VALUE self, VALUE val)
 /**
  * Return the orientation attribute as an OrientationType enum value.
  *
- * Ruby usage:
- *   - @verbatim Info#orientation @endverbatim
- *
- * @param self this object
- * @return the orientation
+ * @!attribute [r] orientation
+ * @return [Magick::OrientationType] the orientation
  */
 VALUE
 Info_orientation(VALUE self)
@@ -1835,13 +1727,9 @@ Info_orientation(VALUE self)
 /**
  * Set the Orientation type.
  *
- * Ruby usage:
- *   - @verbatim Info#Orientation= @endverbatim
- *
- * @param self this object
- * @param inter the orientation type as an OrientationType enum value
- * @return inter
- * @throw ArgumentError
+ * @!attribute [w] orientation
+ * @param inter [Magick::OrientationType] the orientation type as an OrientationType enum value
+ * @return [Magick::OrientationType] the given value
  */
 VALUE
 Info_orientation_eq(VALUE self, VALUE inter)
@@ -1857,11 +1745,9 @@ Info_orientation_eq(VALUE self, VALUE inter)
 /**
  * Return origin geometry.
  *
- * Ruby usage:
- *   - @verbatim Info#origin @endverbatim
- *
- * @param self this object
- * @return the origin geometry
+ * @!attribute [r] origin
+ * @return [String] the origin geometry
+ * @see https://www.imagemagick.org/Magick++/Geometry.html
  */
 VALUE
 Info_origin(VALUE self)
@@ -1880,12 +1766,13 @@ Info_origin(VALUE self)
  * Set origin geometry. Argument may be a Geometry object as well as a geometry
  * string.
  *
- * Ruby usage:
- *   - @verbatim Info#origin=+-x+-y @endverbatim
+ * The geometry format is
+ *     +-x+-y
  *
- * @param self this object
- * @param origin_arg the origin geometry
- * @return origin_arg
+ * @!attribute [w] origin
+ * @param origin_arg [String] the origin geometry
+ * @return [String] the given value
+ * @see https://www.imagemagick.org/Magick++/Geometry.html
  */
 VALUE
 Info_origin_eq(VALUE self, VALUE origin_arg)
@@ -1923,11 +1810,8 @@ Info_origin_eq(VALUE self, VALUE origin_arg)
 /**
  * Get the Postscript page geometry.
  *
- * Ruby usage:
- *   - @verbatim Info_page @endverbatim
- *
- * @param self this object
- * @return the page geometry
+ * @!attribute [r] page
+ * @return [String] the page geometry
  */
 VALUE
 Info_page(VALUE self)
@@ -1943,12 +1827,10 @@ Info_page(VALUE self)
  * Store the Postscript page geometry. Argument may be a Geometry object as well
  * as a geometry string.
  *
- * Ruby usage:
- *   - @verbatim Info#page= @endverbatim
- *
- * @param self this object
- * @param page_arg the geometry
- * @return page_arg
+ * @!attribute [w] page
+ * @param page_arg [String] the geometry
+ * @return [String] the given value
+ * @see https://www.imagemagick.org/Magick++/Geometry.html
  */
 VALUE
 Info_page_eq(VALUE self, VALUE page_arg)
@@ -1979,21 +1861,50 @@ Info_page_eq(VALUE self, VALUE page_arg)
     return page_arg;
 }
 
+/**
+ * Get the point size.
+ *
+ * @!attribute [r] pointsize
+ * @return [Float] the point size
+ */
 VALUE
 Info_pointsize(VALUE self)
 {
     IMPLEMENT_ATTR_READER(Info, pointsize, dbl);
 }
+
+/**
+ * Set the point size.
+ *
+ * @!attribute [w] pointsize
+ * @param val [Float] the point size
+ * @return [Float] the given value
+ */
 VALUE
 Info_pointsize_eq(VALUE self, VALUE val)
 {
     IMPLEMENT_ATTR_WRITER(Info, pointsize, dbl);
 }
+
+/**
+ * Get the compression level for JPEG, etc.
+ *
+ * @!attribute [r] quality
+ * @return [Numeric] the compression level
+ */
 VALUE
 Info_quality(VALUE self)
 {
     IMPLEMENT_ATTR_READER(Info, quality, ulong);
 }
+
+/**
+ * Get the compression level for JPEG, etc.
+ *
+ * @!attribute [w] quality
+ * @param val [Numeric] the compression level
+ * @return [Numeric] the given value
+ */
 VALUE
 Info_quality_eq(VALUE self, VALUE val)
 {
@@ -2003,11 +1914,8 @@ Info_quality_eq(VALUE self, VALUE val)
 /**
  * Get sampling factors used by JPEG or MPEG-2 encoder and YUV decoder/encoder.
  *
- * Ruby usage:
- *   - @verbatim Info#sampling_factor @endverbatim
- *
- * @param self this object
- * @return the sampling factors
+ * @!attribute [r] sampling_factor
+ * @return [String] the sampling factors
  */
 VALUE
 Info_sampling_factor(VALUE self)
@@ -2028,12 +1936,9 @@ Info_sampling_factor(VALUE self)
 /**
  * Set sampling factors used by JPEG or MPEG-2 encoder and YUV decoder/encoder.
  *
- * Ruby usage:
- *   - @verbatim Info#sampling_factor= @endverbatim
- *
- * @param self this object
- * @param sampling_factor the sampling factors
- * @return sampling_factor
+ * @!attribute [w] sampling_factor
+ * @param sampling_factor [String] the sampling factors
+ * @return [String] the given value
  */
 VALUE
 Info_sampling_factor_eq(VALUE self, VALUE sampling_factor)
@@ -2066,11 +1971,8 @@ Info_sampling_factor_eq(VALUE self, VALUE sampling_factor)
 /**
  * Get the scene number.
  *
- * Ruby usage:
- *   - @verbatim Info#scene @endverbatim
- *
- * @param self this object
- * @return the scene number
+ * @!attribute [r] scene
+ * @return [Numeric] the scene number
  */
 VALUE
 Info_scene(VALUE self)
@@ -2085,12 +1987,9 @@ Info_scene(VALUE self)
 /**
  * Set the scene number.
  *
- * Ruby usage:
- *   - @verbatim Info#scene= @endverbatim
- *
- * @param self this object
- * @param scene the scene number
- * @return scene
+ * @!attribute [w] scene
+ * @param scene [Numeric] the scene number
+ * @return [Numeric] the given value
  */
 VALUE
 Info_scene_eq(VALUE self, VALUE scene)
@@ -2111,11 +2010,8 @@ Info_scene_eq(VALUE self, VALUE scene)
 /**
  * Get the server name.
  *
- * Ruby usage:
- *   - @verbatim Info#server_name @endverbatim
- *
- * @param self this object
- * @return the server name
+ * @!attribute [r] server_name
+ * @return [String] the server name
  */
 VALUE
 Info_server_name(VALUE self)
@@ -2127,12 +2023,9 @@ Info_server_name(VALUE self)
 /**
  * Set the server name.
  *
- * Ruby usage:
- *   - @verbatim Info#server_name= @endverbatim
- *
- * @param self this object
- * @param server_arg the server name as a String
- * @return server_arg
+ * @!attribute [w] server_name
+ * @param server_arg [String] the server name
+ * @return [String] the given value
  */
 VALUE
 Info_server_name_eq(VALUE self, VALUE server_arg)
@@ -2158,11 +2051,9 @@ Info_server_name_eq(VALUE self, VALUE server_arg)
 /**
  * Get ths size
  *
- * Ruby usage:
- *   - @verbatim Info#size @endverbatim
- *
- * @param self this object
- * @return the size as a Geometry object
+ * @!attribute [r] size
+ * @return [String] the size as a Geometry object
+ * @see https://www.imagemagick.org/Magick++/Geometry.html
  */
 VALUE
 Info_size(VALUE self)
@@ -2171,16 +2062,12 @@ Info_size(VALUE self)
 }
 
 /**
- * Set the size (either as a Geometry object or a Geometry string, i.e.
- * WxH{+-}x{+-}y)
+ * Set the size (either as a Geometry object or a Geometry string
  *
- * Ruby usage:
- *   - @verbatim Info#size= @endverbatim
- *
- * @param self this object
- * @param size_arg the size
- * @return size_arg
- * @throw ArgumentError
+ * @!attribute [w] size
+ * @param size_arg [String] the size
+ * @return [String] the given value
+ * @see https://www.imagemagick.org/Magick++/Geometry.html
  */
 VALUE
 Info_size_eq(VALUE self, VALUE size_arg)
@@ -2216,11 +2103,8 @@ Info_size_eq(VALUE self, VALUE size_arg)
 /**
  * Return the stroke color as a String.
  *
- * Ruby usage:
- *   - @verbatim Info#stroke @endverbatim
- *
- * @param self this object
- * @return the stroke color
+ * @!attribute [r] stroke
+ * @return [String] the stroke color
  */
 VALUE
 Info_stroke(VALUE self)
@@ -2231,13 +2115,9 @@ Info_stroke(VALUE self)
 /**
  * Set the stroke color
  *
- * Ruby usage:
- *   - @verbatim Info#stroke= @endverbatim
- *
- * @param self this object
- * @param color the stroke color as a String
- * @return self
- * @throw ArgumentError
+ * @!attribute [w] stroke
+ * @param color [String] the stroke color
+ * @return [String] the given value
  */
 VALUE
 Info_stroke_eq(VALUE self, VALUE color)
@@ -2247,16 +2127,10 @@ Info_stroke_eq(VALUE self, VALUE color)
 
 
 /**
- * Support for caption: format.
+ * Get stroke width.
  *
- * Ruby usage:
- *   - @verbatim Info#stroke_width @endverbatim
- *
- * Notes:
- *   - Supported in ImageMagick >= 6.3.2-6
- *
- * @param self this object
- * @return the stroke width
+ * @!attribute [r] stroke_width
+ * @return [Float] the stroke width
  */
 VALUE
 Info_stroke_width(VALUE self)
@@ -2266,17 +2140,11 @@ Info_stroke_width(VALUE self)
 
 
 /**
- * Support for caption: format.
+ * Set stroke width.
  *
- * Ruby usage:
- *   - @verbatim Info#stroke_width= @endverbatim
- *
- * Notes:
- *   - Supported in ImageMagick >= 6.3.2-6
- *
- * @param self this object
- * @param stroke_width the stroke width
- * @return self
+ * @!attribute [w] stroke_width
+ * @param stroke_width [Float] the stroke width
+ * @return [Float] the given value
  */
 VALUE
 Info_stroke_width_eq(VALUE self, VALUE stroke_width)
@@ -2288,12 +2156,9 @@ Info_stroke_width_eq(VALUE self, VALUE stroke_width)
 /**
  * Set name of texture to tile onto the image background.
  *
- * Ruby usage:
- *   - @verbatim Image::Info#texture= @endverbatim
- *
- * @param self this object
- * @param texture the name of the texture image
- * @return texture
+ * @!attribute [w] texture
+ * @param texture [Magick::Image] the texture image
+ * @return [Magick::Image] the given image
  */
 VALUE
 Info_texture_eq(VALUE self, VALUE texture)
@@ -2329,14 +2194,38 @@ Info_texture_eq(VALUE self, VALUE texture)
 
 
 /**
- * info.tile_offset = [+/-]x[+/-]y.
+ * Return tile_offset geometry.
  *
- * Ruby usage:
- *   - @verbatim Image::Info#tile_offset= @endverbatim
+ * @!attribute [r] tile_offset
+ * @return [String] the tile offset
+ * @see https://www.imagemagick.org/Magick++/Geometry.html
+ */
+VALUE
+Info_tile_offset(VALUE self)
+{
+    Info *info;
+    const char *tile_offset;
+
+    Data_Get_Struct(self, Info, info);
+
+    tile_offset = GetImageOption(info, "tile-offset");
+
+    if (!tile_offset)
+    {
+        return Qnil;
+    }
+
+    return rb_str_new2(tile_offset);
+}
+
+
+/**
+ * Set tile offset geometry.
  *
- * @param self this object
- * @param offset the offset
- * @return offset
+ * @!attribute [w] tile_offset
+ * @param offset [String] the offset geometry
+ * @return [String] the given value
+ * @see https://www.imagemagick.org/Magick++/Geometry.html
  */
 VALUE
 Info_tile_offset_eq(VALUE self, VALUE offset)
@@ -2364,14 +2253,11 @@ Info_tile_offset_eq(VALUE self, VALUE offset)
 
 
 /**
- * Return the name of the transparent color as a String.
+ * Return the name of the transparent color.
  *
- * Ruby usage:
- *   - @verbatim Info#transparent_color @endverbatim
- *
- * @param self this object
- * @return the name of the transparent color
- * @see Image_transparent_color
+ * @!attribute [r] transparent_color
+ * @return [String] the name of the transparent color
+ * @see Image#transparent_color
  */
 VALUE
 Info_transparent_color(VALUE self)
@@ -2386,13 +2272,9 @@ Info_transparent_color(VALUE self)
 /**
  * Set the transparent color.
  *
- * Ruby usage:
- *   - @verbatim Info#transparent_color= @endverbatim
- *
- * @param self this object
- * @param tc_arg the transparent color as a String
- * @return tc_arg
- * @throw ArgumentError
+ * @!attribute [w] transparent_color
+ * @param tc_arg [String] the transparent color
+ * @return [Magick::Pixel, String] the given value
  */
 VALUE
 Info_transparent_color_eq(VALUE self, VALUE tc_arg)
@@ -2408,43 +2290,11 @@ Info_transparent_color_eq(VALUE self, VALUE tc_arg)
 
 
 /**
- * Return tile_offset attribute values.
- *
- * Ruby usage:
- *   - @verbatim Image::Info#tile_offset @endverbatim
- *
- * @param self this object
- * @return the tile offset
- */
-VALUE
-Info_tile_offset(VALUE self)
-{
-    Info *info;
-    const char *tile_offset;
-
-    Data_Get_Struct(self, Info, info);
-
-    tile_offset = GetImageOption(info, "tile-offset");
-
-    if (!tile_offset)
-    {
-        return Qnil;
-    }
-
-    return rb_str_new2(tile_offset);
-}
-
-
-/**
  * Undefine image option.
  *
- * Ruby usage:
- *   - @verbatim Info#undefine(format,key) @endverbatim
- *
- * @param self this object
- * @param format the format
- * @param key the key
- * @return self
+ * @param format [String] the format
+ * @param key [String] the key
+ * @return [Magick::Info] self
  */
 VALUE
 Info_undefine(VALUE self, VALUE format, VALUE key)
@@ -2472,13 +2322,10 @@ Info_undefine(VALUE self, VALUE format, VALUE key)
 
 
 /**
- * Return the undercolor color as a String.
+ * Return the undercolor color.
  *
- * Ruby usage:
- *   - @verbatim Info#undercolor @endverbatim
- *
- * @param self this object
- * @return the undercolor
+ * @!attribute [r] undercolor
+ * @return [String] the undercolor
  */
 VALUE
 Info_undercolor(VALUE self)
@@ -2489,13 +2336,9 @@ Info_undercolor(VALUE self)
 /**
  * Set the undercolor color.
  *
- * Ruby usage:
- *   - @verbatim Info#undercolor= @endverbatim
- *
- * @param self this object
- * @param color the undercolor color as a String
- * @return self
- * @throw ArgumentError
+ * @!attribute [w] undercolor
+ * @param color [String] the undercolor color
+ * @return [String] the given value
  */
 VALUE
 Info_undercolor_eq(VALUE self, VALUE color)
@@ -2506,11 +2349,8 @@ Info_undercolor_eq(VALUE self, VALUE color)
 /**
  * Get the resolution type.
  *
- * Ruby usage:
- *   - @verbatim Info#units @endverbatim
- *
- * @param self this object
- * @return the resolution type
+ * @!attribute [r] units
+ * @return [Magick::ResolutionType] the resolution type
  */
 VALUE
 Info_units(VALUE self)
@@ -2524,13 +2364,9 @@ Info_units(VALUE self)
 /**
  * Set the resolution type
  *
- * Ruby usage:
- *   - @verbatim Info#units= @endverbatim
- *
- * @param self this object
- * @param units the resolution type
- * @return units
- * @throw ArgumentError
+ * @!attribute [w] units
+ * @param units [Magick::ResolutionType] the resolution type
+ * @return [Magick::ResolutionType] the given value
  */
 VALUE
 Info_units_eq(VALUE self, VALUE units)
@@ -2545,11 +2381,8 @@ Info_units_eq(VALUE self, VALUE units)
 /**
  * Get FlashPix viewing parameters.
  *
- * Ruby usage:
- *   - @verbatim Info#view @endverbatim
- *
- * @param self this object.
- * @return the viewing parameters
+ * @!attribute [r] view
+ * @return [String] the viewing parameters
  */
 VALUE
 Info_view(VALUE self)
@@ -2567,12 +2400,9 @@ Info_view(VALUE self)
 /**
  * Set FlashPix viewing parameters.
  *
- * Ruby usage:
- *   - @verbatim Info#view= @endverbatim
- *
- * @param self this object
- * @param view_arg the viewing parameters
- * @return view_arg
+ * @!attribute [w] view
+ * @param view_arg [String] the viewing parameters
+ * @return [String] the given value
  */
 VALUE
 Info_view_eq(VALUE self, VALUE view_arg)
@@ -2688,10 +2518,11 @@ rm_info_new(void)
 /**
  * If an initializer block is present, run it.
  *
- * Ruby usage:
- *   - @verbatim Info#initialize @endverbatim
+ * @overload initialize
  *
- * @param self this object
+ * @overload initialize
+ *   @yield []
+ *
  * @return self
  */
 VALUE
