@@ -9962,7 +9962,7 @@ Image_alloc(VALUE class)
 VALUE
 Image_initialize(int argc, VALUE *argv, VALUE self)
 {
-    VALUE fill = 0;
+    VALUE fill = Qnil;
     Info *info;
     VALUE info_obj;
     Image *image;
@@ -10011,7 +10011,7 @@ Image_initialize(int argc, VALUE *argv, VALUE self)
     // If the caller did not supply a fill argument, call SetImageBackgroundColor
     // to fill the image using the background color. The background color can
     // be set by specifying it when creating the Info parm block.
-    if (!fill)
+    if (NIL_P(fill))
     {
 #if defined(IMAGEMAGICK_7)
         exception = AcquireExceptionInfo();
