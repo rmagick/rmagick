@@ -6463,7 +6463,7 @@ Image_export_pixels(int argc, VALUE *argv, VALUE self)
         case 0:
             break;
         default:
-            rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 to 5)", argc);
+            rb_raise(rb_eArgError, "wrong number of arguments (%d for 0 to 5)", argc);
             break;
     }
 
