@@ -12,5 +12,7 @@ RSpec.describe Magick::ImageList, "#new_image" do
     image_list.new_image(20, 20) { self.background_color = 'red' }
     expect(image_list.length).to eq(3)
     expect(image_list.scene).to eq(2)
+
+    expect { image_list.new_image(20, 20, nil) }.not_to raise_error
   end
 end
