@@ -1079,7 +1079,6 @@ Image_auto_orient_bang(VALUE self)
 /**
  * Return the name of the background color as a String.
  *
- * @!attribute [r] background_color
  * @return [String] the background color
  */
 VALUE
@@ -1093,7 +1092,6 @@ Image_background_color(VALUE self)
 /**
  * Set the the background color to the specified color spec.
  *
- * @!attribute [w] background_color
  * @param color [Magick::Pixel, String] the color
  * @return [Magick::Pixel, String] the given color
  */
@@ -1109,7 +1107,6 @@ Image_background_color_eq(VALUE self, VALUE color)
 /**
  * Return the number of rows (before transformations).
  *
- * @!attribute [r] base_columns
  * @return [Numeric]the number of rows
  */
 VALUE
@@ -1122,7 +1119,6 @@ Image_base_columns(VALUE self)
 /**
  * Return the image filename (before transformations).
  *
- * @!attribute [r] base_filename
  * @return [String] the base image filename (or the current filename if there is no base)
  */
 VALUE
@@ -1142,7 +1138,6 @@ Image_base_filename(VALUE self)
 /**
  * Return the number of rows (before transformations).
  *
- * @!attribute [r] base_rows
  * @return [Numeric] the number of rows
  */
 VALUE
@@ -1156,7 +1151,6 @@ Image_base_rows(VALUE self)
 /**
  * Get image bias (used when convolving an image).
  *
- * @!attribute [r] bias
  * @return [Float] the image bias
  */
 VALUE
@@ -1190,7 +1184,6 @@ Image_bias(VALUE self)
 /**
  * Set image bias (used when convolving an image).
  *
- * @!attribute [w] bias
  * @param pct [Float, String] Either a number between 0.0 and 1.0 or a string in the form "NN%"
  * @return [Float, String] the given value
  */
@@ -1274,7 +1267,6 @@ Image_bilevel_channel(int argc, VALUE *argv, VALUE self)
 /**
  * Return current black point compensation attribute.
  *
- * @!attribute [r] black_point_compensation
  * @return [Boolean] true or false
  */
 VALUE
@@ -1305,7 +1297,6 @@ Image_black_point_compensation(VALUE self)
 /**
  * Set black point compensation attribute.
  *
- * @!attribute [w] black_point_compensation
  * @param arg [Boolean] true or false
  * @return [Boolean] the given value
  */
@@ -1948,7 +1939,6 @@ Image_border(VALUE self, VALUE width, VALUE height, VALUE color)
 /**
  * Return the name of the border color as a String.
  *
- * @!attribute [r] border_color
  * @return [String] the name of the border color
  */
 VALUE
@@ -1962,7 +1952,6 @@ Image_border_color(VALUE self)
 /**
  * Set the the border color.
  *
- * @!attribute [w] border_color
  * @param [Magick::Pixel, String] color the color
  * @return [Magick::Pixel, String] the given color
  */
@@ -1978,7 +1967,6 @@ Image_border_color_eq(VALUE self, VALUE color)
 /**
  * Returns the bounding box of an image canvas.
  *
- * @!attribute [r] bounding_box
  * @return [Magick::Rectangle] the bounding box
  */
 VALUE
@@ -2456,7 +2444,6 @@ Image_chop(VALUE self, VALUE x, VALUE y, VALUE width, VALUE height)
 /**
  * Return the red, green, blue, and white-point chromaticity values as a {Magick::Chromaticity}.
  *
- * @!attribute [r] chromaticity
  * @return [Magick::Chromaticity] the chromaticity values
  */
 VALUE
@@ -2470,7 +2457,6 @@ Image_chromaticity(VALUE self)
 /**
  * Set the red, green, blue, and white-point chromaticity values from a {Magick::Chromaticity}.
  *
- * @!attribute [w] chromaticity
  * @param [Magick::Chromaticity] chroma the chromaticity
  * @return [Magick::Chromaticity] the given value
  */
@@ -2771,7 +2757,6 @@ set_profile(VALUE self, const char *name, VALUE profile)
  * - This method has no real use but is retained for compatibility with earlier releases of RMagick,
  *   where it had no real use either.
  *
- * @!attribute [r] color_profile
  * @return [String] the ICC color profile
  */
 VALUE
@@ -2798,7 +2783,6 @@ Image_color_profile(VALUE self)
  * - Pass nil to remove any existing profile.
  * - Removes any existing profile before adding the new one.
  *
- * @!attribute [w] color_profile
  * @param profile [String] the profile to set
  * @return [String] the given profile
  */
@@ -3070,7 +3054,6 @@ Image_colormap(int argc, VALUE *argv, VALUE self)
 /**
  * Get the number of colors in the colormap.
  *
- * @!attribute [r] color
  * @return [Numeric] the number of colors
  */
 VALUE
@@ -3084,7 +3067,6 @@ Image_colors(VALUE self)
  * blue. If matte is true, then red, green, blue, and index. If it is CMYK, the pixels are cyan,
  * yellow, magenta, black. Otherwise the colorspace is ignored.
  *
- * @!attribute [r] colorspace
  * @return [Magick::ColorspaceType] the colorspace
  */
 VALUE
@@ -3100,7 +3082,6 @@ Image_colorspace(VALUE self)
 /**
  * Set the image's colorspace.
  *
- * @!attribute [w] colorspace
  * @param colorspace [Magick::ColorspaceType] the colorspace
  * @return [Magick::ColorspaceType] the given colorspace
  */
@@ -3133,7 +3114,6 @@ Image_colorspace_eq(VALUE self, VALUE colorspace)
 /**
  * Get image columns.
  *
- * @!attribute [r] columns
  * @return [Numeric] the columns
  */
 VALUE
@@ -3248,7 +3228,6 @@ Image_compare_channel(int argc, VALUE *argv, VALUE self)
 /**
  * Return the composite operator attribute.
  *
- * @!attribute [r] compose
  * @return [Magick::CompositeOperator] the composite operator
  */
 VALUE
@@ -3262,7 +3241,6 @@ Image_compose(VALUE self)
 /**
  * Set the composite operator attribute.
  *
- * @!attribute [w] compose
  * @param compose_arg [Magick::CompositeOperator] the composite operator
  * @return [Magick::CompositeOperator] the given value
  */
@@ -4004,7 +3982,6 @@ Image_composite_tiled_bang(int argc, VALUE *argv, VALUE self)
 /**
  * Get the compression attribute.
  *
- * @!attribute [r] compression
  * @return [Magick::CompressionType] the compression
  */
 VALUE
@@ -4017,7 +3994,6 @@ Image_compression(VALUE self)
 /**
  * Set the compression attribute.
  *
- * @!attribute [r] compression
  * @param compression [Magick::CompressionType] the compression
  * @return [Magick::CompressionType] the given compression
  */
@@ -4851,7 +4827,6 @@ Image_cycle_colormap(VALUE self, VALUE amount)
  * Get the vertical and horizontal resolution in pixels of the image.
  * The default is "72x72".
  *
- * @!attribute [r] density
  * @return [String] a string of geometry in the form "XresxYres"
  * @see https://www.imagemagick.org/Magick++/Geometry.html
  */
@@ -5037,7 +5012,6 @@ Image_define(VALUE self, VALUE artifact, VALUE value)
  * sequence. The default number of ticks is 0. By default there are 100 ticks per second but this
  * number can be changed via the ticks_per_second attribute.
  *
- * @!attribute [r] delay
  * @return [Numeric] The current delay value.
  */
 VALUE
@@ -5050,7 +5024,6 @@ Image_delay(VALUE self)
  * Set the Number of ticks which must expire before displaying the next image in an animated
  * sequence.
  *
- * @!attribute [w] delay
  * @param val [Numeric] the delay value
  * @return [Numeric] the given value
  */
@@ -5115,7 +5088,6 @@ Image_delete_profile(VALUE self, VALUE name)
  * - If all pixels have lower-order bytes equal to higher-order bytes, the depth will be reported as
  *   8 even if the depth field in the Image structure says 16.
  *
- * @!attribute [r] depth
  * @return [Numeric] the depth
  */
 VALUE
@@ -5299,7 +5271,6 @@ Image_difference(VALUE self, VALUE other)
 /**
  * Get image directory.
  *
- * @!attribute [r] directory
  * @return [String] the directory
  */
 VALUE
@@ -5513,7 +5484,6 @@ Image_display(VALUE self)
 /**
  * Return the dispose attribute as a DisposeType enum.
  *
- * @!attribute [r] dispose
  * @return [Magick::DisposeType] the dispose
  */
 VALUE
@@ -5527,7 +5497,6 @@ Image_dispose(VALUE self)
 /**
  * Set the dispose attribute.
  *
- * @!attribute [w] dispose
  * @param dispose [Magick::DisposeType] the dispose
  * @return [Magick::DisposeType] the given dispose
  */
@@ -6046,7 +6015,6 @@ Image_encipher(VALUE self, VALUE passphrase)
 /**
  * Return endian option for images that support it.
  *
- * @!attribute [r] endian
  * @return [Magick::EndianType] the endian option
  */
 VALUE
@@ -6060,7 +6028,6 @@ Image_endian(VALUE self)
 /**
  * Set endian option for images that support it.
  *
- * @!attribute [w] endian
  * @param type [Magick::EndianType] the endian type
  * @return [Magick::EndianType] the given type
  */
@@ -6588,7 +6555,6 @@ Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
 /**
  * The extract_info attribute reader.
  *
- * @!attribute [r] extract_info
  * @return [Magick::Rectangle] the Rectangle object
  */
 VALUE
@@ -6602,7 +6568,6 @@ Image_extract_info(VALUE self)
 /**
  * Set the extract_info attribute.
  *
- * @!attribute [w] extract_info
  * @param rect [Magick::Rectangle] the Rectangle object
  * @return [Magick::Rectangle] the given value
  */
@@ -6618,7 +6583,6 @@ Image_extract_info_eq(VALUE self, VALUE rect)
 /**
  * Get image filename.
  *
- * @!attribute [r] filename
  * @return [String] the filename
  */
 VALUE
@@ -6631,7 +6595,6 @@ Image_filename(VALUE self)
 /**
  * Return the image file size.
  *
- * @!attribute [r] filesize
  * @return [Numeric] the file size
  */
 VALUE Image_filesize(VALUE self)
@@ -6644,7 +6607,6 @@ VALUE Image_filesize(VALUE self)
 /**
  * Get filter type.
  *
- * @!attribute [r] filter
  * @return [Magick::FilterType] the filter
  */
 VALUE
@@ -6658,7 +6620,6 @@ Image_filter(VALUE self)
 /**
  * Set filter type.
  *
- * @!attribute [w] filter
  * @param filter [Magick::FilterType] the filter
  * @return [Magick::FilterType] the given filter
  */
@@ -6844,7 +6805,6 @@ Image_flop_bang(VALUE self)
 /**
  * Return the image encoding format. For example, "GIF" or "PNG".
  *
- * @!attribute [r] format
  * @return [String] the encoding format
  */
 VALUE
@@ -6872,7 +6832,6 @@ Image_format(VALUE self)
 /**
  * Set the image encoding format. For example, "GIF" or "PNG".
  *
- * @!attribute [w] format
  * @param magick [String] the encoding format
  * @return [String] the given value
  */
@@ -7122,7 +7081,6 @@ Image_function_channel(int argc, VALUE *argv, VALUE self)
  * By default the color must be exact.
  * Use this attribute to match colors that are close to the target color in RGB space.
  *
- * @!attribute [r] fuzz
  * @return [Float] the fuzz
  * @see Info#fuzz
  */
@@ -7136,7 +7094,6 @@ Image_fuzz(VALUE self)
 /**
  * Set the number of algorithms search for a target color.
  *
- * @!attribute [w] fuzz
  * @param fuzz [String, Float] The argument may be a floating-point numeric value or a string in the
  *   form "NN%".
  * @return [String, Float] the given value
@@ -7207,7 +7164,6 @@ Image_fx(int argc, VALUE *argv, VALUE self)
 /**
  * Get the gamma level of the image.
  *
- * @!attribute [r] gamma
  * @return [Float] the gamma level
  */
 VALUE
@@ -7219,7 +7175,6 @@ Image_gamma(VALUE self)
 /**
  * Set the gamma level of the image.
  *
- * @!attribute [w] gamma
  * @param val [Float] the gamma level
  * @return [Float] the gamma level
  */
@@ -7450,7 +7405,6 @@ Image_gaussian_blur_channel(int argc, VALUE *argv, VALUE self)
 /**
  * Get the preferred size of the image when encoding.
  *
- * @!attribute [r] geometry
  * @return [String] the geometry
  * @see https://www.imagemagick.org/Magick++/Geometry.html
  */
@@ -7464,7 +7418,6 @@ Image_geometry(VALUE self)
 /**
  * Set the preferred size of the image when encoding.
  *
- * @!attribute [w] geometry
  * @param geometry [String] the geometry
  * @return [String] the given geometry
  * @see https://www.imagemagick.org/Magick++/Geometry.html
@@ -8107,7 +8060,6 @@ Image_inspect(VALUE self)
  * uses plane interlacing. PartitionInterlace is like PlaneInterlace except the different planes are
  * saved to individual files (e.g. image.R, image.G, and image.B).
  *
- * @!attribute [r] interlace
  * @return [Magick::InterlaceType] the interlace
  */
 VALUE
@@ -8121,7 +8073,6 @@ Image_interlace(VALUE self)
 /**
  * Set the type of interlacing scheme.
  *
- * @!attribute [w] interlace
  * @param interlace [Magick::InterlaceType] the interlace
  * @return [Magick::InterlaceType] the given value
  */
@@ -8137,7 +8088,6 @@ Image_interlace_eq(VALUE self, VALUE interlace)
 /**
  * Return the IPTC profile as a String.
  *
- * @!attribute [r] iptc_profile
  * @return [String] the IPTC profile if it exists, otherwise nil
  */
 VALUE
@@ -8162,7 +8112,6 @@ Image_iptc_profile(VALUE self)
 /**
  * Set the IPTC profile. The argument is a string.
  *
- * @!attribute [r] iptc_profile
  * @param profile [String] the IPTC profile
  * @return [String] the given profile
  */
@@ -8997,7 +8946,6 @@ Image_mask(int argc, VALUE *argv, VALUE self)
 /**
  * Return the matte color.
  *
- * @!attribute [r] matte_color
  * @return [String] the matte color
  */
 VALUE
@@ -9010,7 +8958,6 @@ Image_matte_color(VALUE self)
 /**
  * Set the matte color.
  *
- * @!attribute [w] matte_color
  * @param color [Magick::Pixel, String] the matte color
  * @return [Magick::Pixel, String] the given color
  */
@@ -9164,7 +9111,6 @@ Image_median_filter(int argc, VALUE *argv, VALUE self)
 /**
  * Get the mean error per pixel computed when a image is color reduced.
  *
- * @!attribute [r] matte_color
  * @return [Float] the mean error per pixel
  */
 VALUE
@@ -9177,7 +9123,6 @@ Image_mean_error_per_pixel(VALUE self)
 /**
  * Return the officially registered (or de facto) MIME media-type corresponding to the image format.
  *
- * @!attribute [r] mime_type
  * @return [String] the mime type
  */
 VALUE
@@ -9299,7 +9244,6 @@ Image_modulate(int argc, VALUE *argv, VALUE self)
  *   `progress_monitor' as the monitor exit. When `progress_monitor' is called, retrieve the proc
  *   and call it.
  *
- * @!attribute [w] monitor
  * @param monitor [Proc] the progress monitor
  * @return [Proc] the given value
  * @example
@@ -9346,7 +9290,6 @@ Image_monochrome_q(VALUE self)
 /**
  * Tile size and offset within an image montage. Only valid for montage images.
  *
- * @!attribute [r] montage
  * @return [String] the tile size and offset
  */
 VALUE
@@ -9740,7 +9683,6 @@ Image_normalize_channel(int argc, VALUE *argv, VALUE self)
 /**
  * Get the normalized mean error per pixel computed when an image is color reduced.
  *
- * @!attribute [r] normalized_mean_error
  * @return [Float] the normalized mean error
  */
 VALUE
@@ -9752,7 +9694,6 @@ Image_normalized_mean_error(VALUE self)
 /**
  * Get The normalized maximum error per pixel computed when an image is color reduced.
  *
- * @!attribute [r] normalized_maximum_error
  * @return [Float] the normalized maximum error
  */
 VALUE
@@ -9765,7 +9706,6 @@ Image_normalized_maximum_error(VALUE self)
 /**
  * Return the number of unique colors in the image.
  *
- * @!attribute [r] number_colors
  * @return [Numeric] number of unique colors
  */
 VALUE
@@ -9790,7 +9730,6 @@ Image_number_colors(VALUE self)
 /**
  * Get the number of bytes to skip over when reading raw image.
  *
- * @!attribute [r] offset
  * @return [Number] the offset
  */
 VALUE
@@ -9802,7 +9741,6 @@ Image_offset(VALUE self)
 /**
  * Set the number of bytes to skip over when reading raw image.
  *
- * @!attribute [w] offset
  * @param val [Number] the offset
  * @return [Number] the given offset
  */
@@ -10085,7 +10023,6 @@ Image_ordered_dither(int argc, VALUE *argv, VALUE self)
 /**
  * Get the value of the Exif Orientation Tag.
  *
- * @!attribute [r] orientation
  * @return [Magick::OrientationType] the orientation
  */
 VALUE
@@ -10099,7 +10036,6 @@ Image_orientation(VALUE self)
 /**
  * Set the orientation attribute.
  *
- * @!attribute [w] orientation
  * @param orientation [Magick::OrientationType] the orientation
  * @return [Magick::OrientationType] the given value
  */
@@ -10115,7 +10051,6 @@ Image_orientation_eq(VALUE self, VALUE orientation)
 /**
  * The page attribute getter.
  *
- * @!attribute [r] page
  * @return [Magick::Rectang] the page rectangle
  */
 VALUE
@@ -10129,7 +10064,6 @@ Image_page(VALUE self)
 /**
  * The page attribute setter.
  *
- * @!attribute [w] page
  * @param rect [Magick::Rectang] the page rectangle
  * @return [Magick::Rectang] the given value
  */
@@ -10447,7 +10381,6 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
 /**
  * Get the "interpolate" field.
  *
- * @!attribute [r] pixel_interpolation_method
  * @return [Magick::PixelInterpolateMethod] the interpolate field
  * @see Image#pixel_interpolation_method=
  */
@@ -10462,7 +10395,6 @@ Image_pixel_interpolation_method(VALUE self)
 /**
  * Set the "interpolate" field.
  *
- * @!attribute [w] pixel_interpolation_method
  * @param method [Magick::PixelInterpolateMethod] the interpolate field
  * @return [Magick::PixelInterpolateMethod] the given method
  * @see Image#pixel_interpolation_method
@@ -10658,7 +10590,6 @@ Image_profile_bang(VALUE self, VALUE name, VALUE profile)
 /**
  * Get image quality.
  *
- * @!attribute [r] quality
  * @return [Numeric] the quality
  */
 VALUE
@@ -10671,7 +10602,6 @@ Image_quality(VALUE self)
 /**
  * Return the image depth to the nearest Quantum (8, 16, or 32).
  *
- * @!attribute [r] quantum_depth
  * @return [Numeric] image depth
  */
 VALUE
@@ -11524,7 +11454,6 @@ Image_remap(int argc, VALUE *argv, VALUE self)
 /**
  * Get the type of rendering intent.
  *
- * @!attribute [r] rendering_intent
  * @return [Magick::RenderingIntent] the rendering intent
  */
 VALUE
@@ -11538,7 +11467,6 @@ Image_rendering_intent(VALUE self)
 /**
  * Set the type of rendering intent..
  *
- * @!attribute [w] rendering_intent
  * @param ri [Magick::RenderingIntent] the rendering intent
  * @return [Magick::RenderingIntent] the given value
  */
@@ -12028,7 +11956,6 @@ Image_rotate_bang(int argc, VALUE *argv, VALUE self)
 /**
  * Return image rows.
  *
- * @!attribute [r] rows
  * @return [Numeric] the image rows
  */
 VALUE
@@ -12217,7 +12144,6 @@ scale(int bang, int argc, VALUE *argv, VALUE self, scaler_t scaler)
  * Return the scene number assigned to the image the last time the image was written to a
  * multi-image image file.
  *
- * @!attribute [r] scene
  * @return [Numeric] the image scene
  */
 VALUE
@@ -13326,7 +13252,6 @@ Image_spread(int argc, VALUE *argv, VALUE self)
 /**
  * Get the Boolean value that indicates the first image in an animation.
  *
- * @!attribute [r] start_loop
  * @return [Boolean] true or false
  */
 VALUE
@@ -13338,7 +13263,6 @@ Image_start_loop(VALUE self)
 /**
  * Set the Boolean value that indicates the first image in an animation.
  *
- * @!attribute [w] start_loop
  * @param val [Boolean] true or false
  * @return [Boolean] the given value
  */
@@ -13429,7 +13353,6 @@ Image_stereo(VALUE self, VALUE offset_image_arg)
  * pixels contain valid RGB or CMYK colors.  If PseudoClass then the image has a colormap referenced
  * by the pixel's index member.
  *
- * @!attribute [r] class_type
  * @return [Magick::ClassType] the storage class
  */
 VALUE
@@ -13443,7 +13366,6 @@ Image_class_type(VALUE self)
 /**
  * Change the image's storage class.
  *
- * @!attribute [w] class_type
  * @param new_class_type [Magick::ClassType] the storage class
  * @return [Magick::ClassType] the given value
  */
@@ -14013,7 +13935,6 @@ Image_thumbnail_bang(int argc, VALUE *argv, VALUE self)
  * This attribute is used in conjunction with the delay attribute to establish the amount of time
  * that must elapse between frames in an animation.The default is 100.
  *
- * @!attribute [r] ticks_per_second
  * @return [Numeric] ticks per second
  */
 VALUE
@@ -14029,7 +13950,6 @@ Image_ticks_per_second(VALUE self)
  * This attribute is used in conjunction with the delay attribute to establish the amount of time
  * that must elapse between frames in an animation.The default is 100.
  *
- * @!attribute [w] ticks_per_second
  * @param tps [Numeric] ticks per second
  * @return [Numeric] the given value
  */
@@ -14255,7 +14175,6 @@ Image_to_color(VALUE self, VALUE pixel_arg)
 /**
  * Alias for {Image#number_colors}.
  *
- * @!attribute [r] total_colors
  * @return [Numeric] number of unique colors
  * @see Image#number_colors
  */
@@ -14269,7 +14188,6 @@ Image_total_colors(VALUE self)
 /**
  * Return the total ink density for a CMYK image.
  *
- * @!attribute [r] total_ink_density
  * @return [Float] the total ink density
  */
 VALUE
@@ -14437,7 +14355,6 @@ Image_transparent_chroma(int argc, VALUE *argv, VALUE self)
 /**
  * Return the name of the transparent color as a String.
  *
- * @!attribute [r] transparent_color
  * @return [String] the name of the transparent color
  */
 VALUE
@@ -14451,7 +14368,6 @@ Image_transparent_color(VALUE self)
 /**
  * Set the the transparent color to the specified color spec.
  *
- * @!attribute [w] transparent_color
  * @param color [Magick::Pixel, String] the transparent color
  * @return [Magick::Pixel, String] the given color
  */
@@ -14628,7 +14544,6 @@ Image_trim_bang(int argc, VALUE *argv, VALUE self)
 /**
  * Get the direction that the image gravitates within the composite.
  *
- * @!attribute [r] gravity
  * @return [Magick::GravityType] the image gravity
  */
 VALUE Image_gravity(VALUE self)
@@ -14641,7 +14556,6 @@ VALUE Image_gravity(VALUE self)
 /**
  * Set the direction that the image gravitates within the composite.
  *
- * @!attribute [w] gravity
  * @param gravity [Magick::GravityType] the image gravity
  * @return [Magick::GravityType] the given value
  */
@@ -14658,7 +14572,6 @@ VALUE Image_gravity_eq(VALUE self, VALUE gravity)
  * For example, GrayscaleType.
  * Don't confuse this attribute with the format, that is "GIF" or "JPG".
  *
- * @!attribute [r] image_type
  * @return [Magick::ImageType] the image type
  */
 VALUE Image_image_type(VALUE self)
@@ -14687,7 +14600,6 @@ VALUE Image_image_type(VALUE self)
 /**
  * Set the image type classification.
  *
- * @!attribute [w] image_type
  * @param image_type [Magick::ImageType] the image type
  * @return [Magick::ImageType] the given type
  */
@@ -14762,7 +14674,6 @@ Image_unique_colors(VALUE self)
 /**
  * Get the units of image resolution.
  *
- * @!attribute [r] units
  * @return [Magick::ResolutionType] the resolution type
  */
 VALUE
@@ -14776,7 +14687,6 @@ Image_units(VALUE self)
 /**
  * Set the units of image resolution.
  *
- * @!attribute [r] units
  * @param restype [Magick::ResolutionType] the resolution type
  * @return [Magick::ResolutionType] the given value
  */
@@ -15050,7 +14960,6 @@ Image_vignette(int argc, VALUE *argv, VALUE self)
  * Get the "virtual pixels" behave.
  * Virtual pixels are pixels that are outside the boundaries of the image.
  *
- * @!attribute [r] virtual_pixel_method
  * @return [Magick::VirtualPixelMethod] the VirtualPixelMethod
  */
 VALUE
@@ -15069,7 +14978,6 @@ Image_virtual_pixel_method(VALUE self)
  * Specify how "virtual pixels" behave.
  * Virtual pixels are pixels that are outside the boundaries of the image.
  *
- * @!attribute [r] virtual_pixel_method
  * @param method [Magick::VirtualPixelMethod] the VirtualPixelMethod
  * @return [Magick::VirtualPixelMethod] the given method
  */
@@ -15602,7 +15510,6 @@ Image_write(VALUE self, VALUE file)
 /**
  * Get the horizontal resolution of the image.
  *
- * @!attribute [r] x_resolution
  * @return [Float] the resolution
  */
 VALUE
@@ -15614,7 +15521,6 @@ Image_x_resolution(VALUE self)
 /**
  * Set the horizontal resolution of the image.
  *
- * @!attribute [w] x_resolution
  * @param val [Float] the resolution
  * @return [Float] the given resolution
  */
@@ -15627,7 +15533,6 @@ Image_x_resolution_eq(VALUE self, VALUE val)
 /**
  * Get the vertical resolution of the image.
  *
- * @!attribute [r] y_resolution
  * @return [Float] the resolution
  */
 VALUE
@@ -15639,7 +15544,6 @@ Image_y_resolution(VALUE self)
 /**
  * Set the vertical resolution of the image.
  *
- * @!attribute [w] y_resolution
  * @param val [Float] the resolution
  * @return [Float] the given resolution
  */
@@ -15652,7 +15556,6 @@ Image_y_resolution_eq(VALUE self, VALUE val)
 /**
  * Get the horizontal resolution of the image.
  *
- * @!attribute [r] x_resolution
  * @return [Float] the resolution
  */
 VALUE
@@ -15664,7 +15567,6 @@ Image_x_resolution(VALUE self)
 /**
  * Set the horizontal resolution of the image.
  *
- * @!attribute [w] x_resolution
  * @param val [Float] the resolution
  * @return [Float] the given resolution
  */
@@ -15677,7 +15579,6 @@ Image_x_resolution_eq(VALUE self, VALUE val)
 /**
  * Get the vertical resolution of the image.
  *
- * @!attribute [r] y_resolution
  * @return [Float] the resolution
  */
 VALUE
@@ -15689,7 +15590,6 @@ Image_y_resolution(VALUE self)
 /**
  * Set the vertical resolution of the image.
  *
- * @!attribute [w] y_resolution
  * @param val [Float] the resolution
  * @return [Float] the given resolution
  */

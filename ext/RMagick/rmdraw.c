@@ -29,7 +29,6 @@ static VALUE get_type_metrics(int, VALUE *, VALUE, get_type_metrics_func_t);
 /**
  * Set the affine matrix from an {Magick::AffineMatrix}.
  *
- * @!attribute [w] affine
  * @param matrix [Magick::AffineMatrix] the affine matrix
  * @return [Magick::AffineMatrix] the given matrix
  */
@@ -48,7 +47,6 @@ Draw_affine_eq(VALUE self, VALUE matrix)
 /**
  * Set the text alignment from an {Magick::AlignType}.
  *
- * @!attribute [w] align
  * @param align [Magick::AlignType] the text alignment
  * @return [Magick::AlignType] the given align
  */
@@ -67,7 +65,6 @@ Draw_align_eq(VALUE self, VALUE align)
 /**
  * Set text decorate from an {Magick::DecorationType}.
  *
- * @!attribute [w] decorate
  * @param decorate [Magick::DecorationType] the decorate type
  * @return [Magick::DecorationType] the given decorate
  */
@@ -86,7 +83,6 @@ Draw_decorate_eq(VALUE self, VALUE decorate)
 /**
  * Set density.
  *
- * @!attribute [w] density
  * @param density [String] the density
  * @return [String] the given density
  */
@@ -106,7 +102,6 @@ Draw_density_eq(VALUE self, VALUE density)
 /**
  * Set text encoding.
  *
- * @!attribute [w] encoding
  * @param encoding [String] the encoding name
  * @return [String] the given encoding name
  */
@@ -126,7 +121,6 @@ Draw_encoding_eq(VALUE self, VALUE encoding)
 /**
  * Set fill color.
  *
- * @!attribute [w] fill
  * @param fill [Magick::Pixel, String] the fill color
  * @return [Magick::Pixel, String] the given fill color
  */
@@ -145,7 +139,6 @@ Draw_fill_eq(VALUE self, VALUE fill)
 /**
  * Accept an image as a fill pattern.
  *
- * @!attribute [w] fill_pattern
  * @param pattern [Magick::Image] the pattern image
  * @return [Magick::Image] the given pattern image
  * @see #stroke_pattern=
@@ -183,7 +176,6 @@ Draw_fill_pattern_eq(VALUE self, VALUE pattern)
 /**
  * Set the font name.
  *
- * @!attribute [w] font
  * @param font [String] the font name
  * @return [String] the given font name
  */
@@ -203,7 +195,6 @@ Draw_font_eq(VALUE self, VALUE font)
 /**
  * Set the font family name.
  *
- * @!attribute [w] family
  * @param family [String] the font family name
  * @return [String] the given family name
  */
@@ -223,7 +214,6 @@ Draw_font_family_eq(VALUE self, VALUE family)
 /**
  * Set the stretch as spacing between text characters.
  *
- * @!attribute [w] font_stretch
  * @param stretch [Magick::StretchType] the stretch type
  * @return [Magick::StretchType] the given stretch type
  */
@@ -242,7 +232,6 @@ Draw_font_stretch_eq(VALUE self, VALUE stretch)
 /**
  * Set font style.
  *
- * @!attribute [w] font_style
  *
  * @param style [Magick::StyleType] the font style
  * @return [Magick::StyleType] the given font style
@@ -262,7 +251,6 @@ Draw_font_style_eq(VALUE self, VALUE style)
 /**
  * Font_weight attribute writer.
  *
- * @!attribute [w] font_weight
  *
  * @param weight [Magick::WeightType, Numeric] the font weight
  * @return [Magick::WeightType, Numeric] the given font weight
@@ -332,7 +320,6 @@ Draw_font_weight_eq(VALUE self, VALUE weight)
  * - SouthGravity      - text top-center placed at bottom-center
  * - SouthEastGravity  - text top-right placed at bottom-right
  *
- * @!attribute [w] gravity
  * @param grav [Magick::GravityType] this gravity type
  * @return [Magick::GravityType] the given gravity type
  */
@@ -352,7 +339,6 @@ Draw_gravity_eq(VALUE self, VALUE grav)
 /**
  * Set kerning as spacing between two letters.
  *
- * @!attribute [w] kerning
  * @param kerning [Float] the kerning
  * @return [Float] the given kerning
  */
@@ -371,7 +357,6 @@ Draw_kerning_eq(VALUE self, VALUE kerning)
 /**
  * Set spacing between two lines.
  *
- * @!attribute [w] interline_spacing
  * @param spacing [Float] the spacing
  * @return [Float] the given spacing
  */
@@ -390,7 +375,6 @@ Draw_interline_spacing_eq(VALUE self, VALUE spacing)
 /**
  * Set spacing between two words.
  *
- * @!attribute [w] interword_spacing
  * @param spacing [Float] the spacing
  * @return [Float] the given spacing
  */
@@ -639,7 +623,6 @@ Draw_marshal_load(VALUE self, VALUE ddraw)
 /**
  * Set point size to draw text.
  *
- * @!attribute [w] pointsize
  * @param pointsize [Float] the pointsize
  * @return [Float] the given pointsize
  */
@@ -696,7 +679,6 @@ Draw_rotation_eq(VALUE self, VALUE deg)
 /**
  * Set stroke.
  *
- * @!attribute [w] stroke
  *
  * @param stroke [Magick::Pixel, String] the stroke
  * @return [Magick::Pixel, String] the given stroke
@@ -716,7 +698,6 @@ Draw_stroke_eq(VALUE self, VALUE stroke)
 /**
  * Accept an image as a stroke pattern.
  *
- * @!attribute [w] stroke_pattern
  * @param pattern [Magick::Image] the stroke pattern
  * @return [Magick::Image] the given pattern
  * @see #fill_pattern
@@ -754,7 +735,6 @@ Draw_stroke_pattern_eq(VALUE self, VALUE pattern)
 /**
  * Set stroke width.
  *
- * @!attribute [w] stroke_width
  * @param stroke_width [Float] the stroke width
  * @return [Float] the given stroke width
  */
@@ -773,7 +753,6 @@ Draw_stroke_width_eq(VALUE self, VALUE stroke_width)
 /**
  * Set whether to enable text antialias.
  *
- * @!attribute [w] text_antialias
  * @param text_antialias [Boolean] true if enable text antialias
  * @return [Boolean] the given value
  */
@@ -792,7 +771,6 @@ Draw_text_antialias_eq(VALUE self, VALUE text_antialias)
 /**
  * Accept an image as a fill pattern. This is alias of {Draw#fill_pattern=}.
  *
- * @!attribute [w] tile
  * @param image [Magick::Image] the image to tile
  * @return [Magick::Image] the given image
  */
@@ -806,7 +784,6 @@ Draw_tile_eq(VALUE self, VALUE image)
 /**
  * Set undercolor.
  *
- * @!attribute [w] undercolor
  * @param undercolor [Magick::Pixel, String] the undercolor
  * @return [Magick::Pixel, String] the given undercolor
  */
@@ -1483,7 +1460,6 @@ rm_polaroid_new(void)
 /**
  * Set the shadow color attribute.
  *
- * @!attribute [w] shadow_color
  * @param shadow [Magick::Pixel, String] the shadow color
  * @return [Magick::Pixel, String] the given shadow color
  */
@@ -1501,8 +1477,6 @@ PolaroidOptions_shadow_color_eq(VALUE self, VALUE shadow)
 
 /**
  * Set the border color.
- *
- * @!attribute [w] border_color
  *
  * @param border [Magick::Pixel, String] the border color
  * @return [Magick::Pixel, String] the given border color
