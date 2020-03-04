@@ -90,7 +90,6 @@ Montage_alloc(VALUE class)
 /**
  * Set background_color value.
  *
- * @!attribute [w] background_color
  * @param color [Magick::Pixel, String] the color name
  * @return [Magick::Pixel, String] the given color name
  */
@@ -108,7 +107,6 @@ Montage_background_color_eq(VALUE self, VALUE color)
 /**
  * Set border_color value.
  *
- * @!attribute [w] border_color
  * @param color [Magick::Pixel, String] the color name
  * @return [Magick::Pixel, String] the given color name
  */
@@ -126,7 +124,6 @@ Montage_border_color_eq(VALUE self, VALUE color)
 /**
  * Set border_width value.
  *
- * @!attribute [w] border_width
  * @param width [Numeric] the width
  * @return [Numeric] the given width
  */
@@ -144,7 +141,6 @@ Montage_border_width_eq(VALUE self, VALUE width)
 /**
  * Set a composition operator.
  *
- * @!attribute [w] compose
  * @param compose [Magick::CompositeOperator] the composition operator
  * @return [Magick::CompositeOperator] the given compose operator
  */
@@ -162,7 +158,6 @@ Montage_compose_eq(VALUE self, VALUE compose)
 /**
  * Set filename value.
  *
- * @!attribute [w] filename
  * @param filename [String] the filename
  * @return [String] filename
  */
@@ -180,7 +175,6 @@ Montage_filename_eq(VALUE self, VALUE filename)
 /**
  * Set fill value.
  *
- * @!attribute [w] fill
  * @param color [Magick::Pixel, String] the color name
  * @return [Magick::Pixel, String] the given color name
  */
@@ -198,7 +192,6 @@ Montage_fill_eq(VALUE self, VALUE color)
 /**
  * Set font value.
  *
- * @!attribute [w] font
  * @param font [String] the font name
  * @return [String] the given font name
  */
@@ -221,7 +214,6 @@ Montage_font_eq(VALUE self, VALUE font)
  *      <width>x<height>+<outer-bevel-width>+<inner-bevel-width>
  *   or a Geometry object
  *
- * @!attribute [w] frame
  * @param frame_arg [String] the frame geometry
  * @return [String] the given frame geometry
  */
@@ -248,7 +240,6 @@ Montage_frame_eq(VALUE self, VALUE frame_arg)
  *      <width>x<height>+<outer-bevel-width>+<inner-bevel-width>
  *   or a Geometry object
  *
- * @!attribute [w] geometry
  * @param geometry_arg [String] the geometry
  * @return [String] the given geometry
  */
@@ -271,7 +262,6 @@ Montage_geometry_eq(VALUE self, VALUE geometry_arg)
 /**
  * Set gravity value.
  *
- * @!attribute [w] gravity
  * @param gravity [Magick::GravityType] the gravity type
  * @return [Magick::GravityType] the given gravity
  */
@@ -302,7 +292,6 @@ Montage_initialize(VALUE self)
 /**
  * Set matte_color value.
  *
- * @!attribute [w] matte_color
  * @param color [Magick::Pixel, String] the color name
  * @return [Magick::Pixel, String] the given color name
  */
@@ -320,7 +309,6 @@ Montage_matte_color_eq(VALUE self, VALUE color)
 /**
  * Set pointsize value.
  *
- * @!attribute [w] pointsize
  * @param size [Numeric] the point size
  * @return [Numeric] the given point size
  */
@@ -338,7 +326,6 @@ Montage_pointsize_eq(VALUE self, VALUE size)
 /**
  * Set shadow value.
  *
- * @!attribute [w] shadow
  * @param shadow [Bool] true if the shadow will be enabled
  * @return [Bool] the given value
  */
@@ -356,7 +343,6 @@ Montage_shadow_eq(VALUE self, VALUE shadow)
 /**
  * Set stroke value.
  *
- * @!attribute [w] stroke
  * @param color [Magick::Pixel, String] the color name
  * @return [Magick::Pixel, String] the given color name
  */
@@ -374,7 +360,6 @@ Montage_stroke_eq(VALUE self, VALUE color)
 /**
  * Set texture value.
  *
- * @!attribute [w] texture
  * @param texture [Magick::Image] the texture image
  * @return [Magick::Image] the given texture image
  */
@@ -414,7 +399,6 @@ Montage_texture_eq(VALUE self, VALUE texture)
  *      <width>x<height>+<outer-bevel-width>+<inner-bevel-width>
  *   or a Geometry object
  *
- * @!attribute [w] tile
  * @param tile_arg [String] the tile geometry
  * @return [String] the given tile geometry
  */
@@ -437,7 +421,6 @@ Montage_tile_eq(VALUE self, VALUE tile_arg)
 /**
  * Set title value.
  *
- * @!attribute [w] title
  * @param title [String] the title
  * @return [String] the given title
  */

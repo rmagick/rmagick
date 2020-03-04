@@ -223,7 +223,6 @@ static char *pixel_packet_to_hexname(PixelPacket *pp, char *name)
 /**
  * Get antialias value
  *
- * @!attribute [r] antialias
  * @return [Boolean] true if antialias is enabled
  */
 VALUE
@@ -235,7 +234,6 @@ Info_antialias(VALUE self)
 /**
  * Set antialias value
  *
- * @!attribute [w] antialias
  * @param val [Boolean] true or false
  * @return [Boolean] the given value
  */
@@ -393,7 +391,6 @@ Info_aset(int argc, VALUE *argv, VALUE self)
 /**
  * Get the attenuate value.
  *
- * @!attribute [r] attenuate
  * @return [Float] the attenuate
  */
 VALUE
@@ -406,7 +403,6 @@ Info_attenuate(VALUE self)
 /**
  * Set the attenuate value.
  *
- * @!attribute [w] attenuate
  * @param value [Float] the attenuate
  * @return [Float] the attenuate
  */
@@ -420,7 +416,6 @@ Info_attenuate_eq(VALUE self, VALUE value)
 /**
  * Get the authenticate value.
  *
- * @!attribute [r] authenticate
  * @return [String] the authenticate
  */
 VALUE
@@ -440,7 +435,6 @@ Info_authenticate(VALUE self)
 /**
  * Set the authenticate value.
  *
- * @!attribute [w] authenticate
  * @param passwd_arg [String] the authenticating password
  * @return [String] the given value
  */
@@ -485,7 +479,6 @@ Info_authenticate_eq(VALUE self, VALUE passwd_arg)
 /**
  * Return the name of the background color as a String
  *
- * @!attribute [r] background_color
  * @return [String] the name of the background color
  * @see Image#background_color
  */
@@ -502,7 +495,6 @@ Info_background_color(VALUE self)
 /**
  * Set the background color.
  *
- * @!attribute [w] background_color
  * @param bc_arg [Magick::Pixel, String] the background color
  * @return [Magick::Pixel, String] the given color
  */
@@ -521,7 +513,6 @@ Info_background_color_eq(VALUE self, VALUE bc_arg)
 /**
  * Return the name of the border color as a String.
  *
- * @!attribute [r] border_color
  * @return [String] the border color name
  * @see Image#border_color
  */
@@ -537,7 +528,6 @@ Info_border_color(VALUE self)
 /**
  * set the border color
  *
- * @!attribute [w] border_color
  * @param bc_arg [Magick::Pixel, String] the border color
  * @return [Magick::Pixel, String] the given color
  */
@@ -558,7 +548,6 @@ Info_border_color_eq(VALUE self, VALUE bc_arg)
 /**
  * Get a caption of image
  *
- * @!attribute [r] caption
  * @return [String] the caption
  */
 VALUE
@@ -572,7 +561,6 @@ Info_caption(VALUE self)
 /**
  * Assigns a caption to an image.
  *
- * @!attribute [w] caption
  * @param caption [String] the caption
  * @return [String] the given value
  */
@@ -618,7 +606,6 @@ Info_channel(int argc, VALUE *argv, VALUE self)
 /**
  * Get the colorspace type.
  *
- * @!attribute [r] colorspace
  * @return [Magick::ColorspaceType] the colorspace type
  */
 VALUE
@@ -633,7 +620,6 @@ Info_colorspace(VALUE self)
 /**
  * Set the colorspace type
  *
- * @!attribute [w] colorspace
  * @param colorspace [Magick::ColorspaceType] the colorspace type
  * @return [Magick::ColorspaceType] the given colorspace
  */
@@ -650,7 +636,6 @@ Info_colorspace_eq(VALUE self, VALUE colorspace)
 /**
  * Get the comment.
  *
- * @!attribute [r] comment
  * @return [String] the comment
  */
 VALUE Info_comment(VALUE self)
@@ -661,7 +646,6 @@ VALUE Info_comment(VALUE self)
 /**
  * Set the comment
  *
- * @!attribute [w] comment
  * @param string [String] the comment
  * @return [String] the given comment
  */
@@ -673,7 +657,6 @@ VALUE Info_comment_eq(VALUE self, VALUE string)
 /**
  * Get the compression type.
  *
- * @!attribute [r] compression
  * @return [Magick::CompressionType] the compression type
  */
 VALUE
@@ -688,7 +671,6 @@ Info_compression(VALUE self)
 /**
  * Set the compression type
  *
- * @!attribute [r] compression
  * @param type [Magick::CompressionType] the compression type
  * @return [Magick::CompressionType] the given type
  */
@@ -761,7 +743,6 @@ Info_define(int argc, VALUE *argv, VALUE self)
 /**
  * Get the delay value.
  *
- * @!attribute [r] delay
  * @return [Numeric] the delay
  */
 VALUE
@@ -805,7 +786,6 @@ arg_is_integer(VALUE arg)
 /**
  * Set the delay value.
  *
- * @!attribute [w] delay
  * @param string [String] the delay
  * @return [String] the given value
  */
@@ -842,7 +822,6 @@ Info_delay_eq(VALUE self, VALUE string)
 /**
  * Get the density value
  *
- * @!attribute [r] density
  * @return [String] the density
  */
 VALUE
@@ -854,7 +833,6 @@ Info_density(VALUE self)
 /**
  * Set the text rendering density geometry
  *
- * @!attribute [w] density
  * @param density_arg [String] the density
  * @return [String] the given value
  * @see https://www.imagemagick.org/Magick++/Geometry.html
@@ -892,7 +870,6 @@ Info_density_eq(VALUE self, VALUE density_arg)
 /**
  * Get the depth value
  *
- * @!attribute [r] depth
  * @return [Numeric] the depth
  */
 VALUE
@@ -904,7 +881,6 @@ Info_depth(VALUE self)
 /**
  * Set the depth (8, 16, 32, 64).
  *
- * @!attribute [w] depth
  * @param depth [Numeric] the depth
  * @return [Numeric] the given depth
  */
@@ -989,7 +965,6 @@ DisposeType rm_dispose_to_enum(const char *name)
  * Retrieve the dispose option string and convert it to a DisposeType
  * enumerator.
  *
- * @!attribute [r] dispose
  * @return [Magick::DisposeType] a DisposeType enumerator
  */
 VALUE
@@ -1023,7 +998,6 @@ Info_dispose(VALUE self)
 /**
  * Convert a DisposeType enumerator into the equivalent dispose option string.
  *
- * @!attribute [w] dispose
  * @param disp [Magic::DisposeType] the DisposeType enumerator
  * @return [Magic::DisposeType] the given value
  */
@@ -1062,7 +1036,6 @@ Info_dispose_eq(VALUE self, VALUE disp)
 /**
  * Get dither value
  *
- * @!attribute [r] dither
  * @return [Boolean] true if dither is enabled
  */
 VALUE
@@ -1074,7 +1047,6 @@ Info_dither(VALUE self)
 /**
  * Set dither value
  *
- * @!attribute [w] dither
  * @param val [Boolean] true if dither will be enabled
  * @return [Boolean] true if dither is enabled
  */
@@ -1088,7 +1060,6 @@ Info_dither_eq(VALUE self, VALUE val)
 /**
  * Get the endian value.
  *
- * @!attribute [r] endian
  * @return [Magick::EndianType] the endian
  */
 VALUE
@@ -1104,7 +1075,6 @@ Info_endian(VALUE self)
 /**
  * Set the endian value.
  *
- * @!attribute [w] endian
  * @param endian [Magick::EndianType] the endian
  * @return [Magick::EndianType] the given endian
  */
@@ -1128,7 +1098,6 @@ Info_endian_eq(VALUE self, VALUE endian)
 /**
  * Get the extract geometry, e.g. "200x200+100+100"
  *
- * @!attribute [r] extract
  * @return [String] the extract string
  * @see https://www.imagemagick.org/Magick++/Geometry.html
  */
@@ -1141,7 +1110,6 @@ Info_extract(VALUE self)
 /**
  * Set the extract geometry.
  *
- * @!attribute [w] extract
  * @param extract_arg [String] the extract string
  * @return [String] the given value
  * @see https://www.imagemagick.org/Magick++/Geometry.html
@@ -1180,7 +1148,6 @@ Info_extract_eq(VALUE self, VALUE extract_arg)
 /**
  * Get the "filename" value.
  *
- * @!attribute [r] filename
  * @return [String] the file name ("" if filename not set)
  * @note Only used for Image#capture
  * @see Image#capture
@@ -1197,7 +1164,6 @@ Info_filename(VALUE self)
 /**
  * Set the "filename" value.
  *
- * @!attribute [w] filename
  * @param filename [String] the file name
  * @return [String] the given file name
  * @note Only used for Image#capture
@@ -1230,7 +1196,6 @@ Info_filename_eq(VALUE self, VALUE filename)
 /**
  * Return the fill color as a String.
  *
- * @!attribute [r] fill
  * @return [String] the fill color
  */
 VALUE
@@ -1242,7 +1207,6 @@ Info_fill(VALUE self)
 /**
  * Set the fill color
  *
- * @!attribute [w] fill
  * @param color [String] the fill color
  * @return [String] the given value
  */
@@ -1256,7 +1220,6 @@ Info_fill_eq(VALUE self, VALUE color)
 /**
  * Get the text font.
  *
- * @!attribute [r] font
  * @return [String] the font
  */
 VALUE
@@ -1268,7 +1231,6 @@ Info_font(VALUE self)
 /**
  * Set the text font.
  *
- * @!attribute [w] font
  * @param font_arg [String] the font
  * @return [String] the given font
  */
@@ -1296,7 +1258,6 @@ Info_font_eq(VALUE self, VALUE font_arg)
 /**
  * Return the image encoding format.
  *
- * @!attribute [r] format
  * @return [String] the encoding format
  */
 VALUE Info_format(VALUE self)
@@ -1322,7 +1283,6 @@ VALUE Info_format(VALUE self)
 /**
  * Set the image encoding format.
  *
- * @!attribute [w] format
  * @param magick [String] the encoding format
  * @return [String] the given format
  */
@@ -1355,7 +1315,6 @@ Info_format_eq(VALUE self, VALUE magick)
 /**
  * Get the fuzz.
  *
- * @!attribute [r] fuzz
  * @return [Float] the fuzz
  * @see Image#fuzz
  */
@@ -1368,7 +1327,6 @@ Info_fuzz(VALUE self)
 /**
  * Set the fuzz.
  *
- * @!attribute [w] fuzz
  * @param fuzz [Float, String] the fuzz with Float or
  *   percent format "xx%" with String
  * @return [Float, String] the given value
@@ -1438,7 +1396,6 @@ GravityType rm_gravity_to_enum(const char *name)
 /**
  * Return the value of the gravity option as a GravityType enumerator.
  *
- * @!attribute [r] gravity
  * @return [Magick::GravityType] the gravity enumerator
  */
 VALUE Info_gravity(VALUE self)
@@ -1472,7 +1429,6 @@ VALUE Info_gravity(VALUE self)
  * Convert a GravityType enum to a gravity option name and store in the Info
  * structure.
  *
- * @!attribute [w] gravity
  * @param grav [Magick::GravityType] the gravity enumerator
  * @return [Magick::GravityType] the given gravity
  */
@@ -1512,7 +1468,6 @@ Info_gravity_eq(VALUE self, VALUE grav)
 /**
  * Get the classification type.
  *
- * @!attribute [r] image_type
  * @return [Magick::ImageType] the classification type
  */
 VALUE
@@ -1527,7 +1482,6 @@ Info_image_type(VALUE self)
 /**
  * Set the classification type.
  *
- * @!attribute [w] image_type
  * @param type [Magick::ImageType] the classification type
  * @return [Magick::ImageType] the given type
  */
@@ -1544,7 +1498,6 @@ Info_image_type_eq(VALUE self, VALUE type)
 /**
  * Get the interlace type.
  *
- * @!attribute [r] interlace
  * @return [Magick::InterlaceType] the interlace type
  */
 VALUE
@@ -1559,7 +1512,6 @@ Info_interlace(VALUE self)
 /**
  * Set the interlace type
  *
- * @!attribute [w] interlace
  * @param inter [Magick::InterlaceType] the interlace type
  * @return [Magick::InterlaceType] the given interlace
  */
@@ -1576,7 +1528,6 @@ Info_interlace_eq(VALUE self, VALUE inter)
 /**
  * Get the label.
  *
- * @!attribute [r] label
  * @return [String] the label
  */
 VALUE Info_label(VALUE self)
@@ -1587,7 +1538,6 @@ VALUE Info_label(VALUE self)
 /**
  * Set the label.
  *
- * @!attribute [w] label
  * @param string [String] the label
  * @return [String] the given label
  */
@@ -1599,7 +1549,6 @@ VALUE Info_label_eq(VALUE self, VALUE string)
 /**
  * Return the name of the matte color as a String.
  *
- * @!attribute [r] matte_color
  * @return [String] the name of the matte color
  * @see Image#matte_color
  */
@@ -1615,7 +1564,6 @@ Info_matte_color(VALUE self)
 /**
  * Set the matte color.
  *
- * @!attribute [w] matte_color
  * @param matte_arg [Magick::Pixel, String] the name of the matte as a String
  * @return [Magick::Pixel, String] the given value
  */
@@ -1634,7 +1582,6 @@ Info_matte_color_eq(VALUE self, VALUE matte_arg)
 /**
  * Establish a progress monitor.
  *
- * @!attribute [w] monitor
  * @param monitor [Proc] the monitor
  * @return [Proc] monitor
  * @see Image#monitor=
@@ -1661,7 +1608,6 @@ Info_monitor_eq(VALUE self, VALUE monitor)
 /**
  * Get the monochrome value.
  *
- * @!attribute [r] monochrome
  * @return [Boolean] true or false
  */
 VALUE
@@ -1673,7 +1619,6 @@ Info_monochrome(VALUE self)
 /**
  * Set the monochrome value.
  *
- * @!attribute [w] monochrome
  * @param val [Boolean] true or false
  * @return [Boolean] the given value
  */
@@ -1686,7 +1631,6 @@ Info_monochrome_eq(VALUE self, VALUE val)
 /**
  * Get the scene number of an image or the first image in a sequence.
  *
- * @!attribute [r] number_scenes
  * @return [Numeric] the scene number
  */
 VALUE
@@ -1698,7 +1642,6 @@ Info_number_scenes(VALUE self)
 /**
  * Set the scene number of an image or the first image in a sequence.
  *
- * @!attribute [w] number_scenes
  * @param val [Numeric] the scene number
  * @return [Numeric] the given value
  */
@@ -1711,7 +1654,6 @@ Info_number_scenes_eq(VALUE self, VALUE val)
 /**
  * Return the orientation attribute as an OrientationType enum value.
  *
- * @!attribute [r] orientation
  * @return [Magick::OrientationType] the orientation
  */
 VALUE
@@ -1727,7 +1669,6 @@ Info_orientation(VALUE self)
 /**
  * Set the Orientation type.
  *
- * @!attribute [w] orientation
  * @param inter [Magick::OrientationType] the orientation type as an OrientationType enum value
  * @return [Magick::OrientationType] the given value
  */
@@ -1745,7 +1686,6 @@ Info_orientation_eq(VALUE self, VALUE inter)
 /**
  * Return origin geometry.
  *
- * @!attribute [r] origin
  * @return [String] the origin geometry
  * @see https://www.imagemagick.org/Magick++/Geometry.html
  */
@@ -1769,7 +1709,6 @@ Info_origin(VALUE self)
  * The geometry format is
  *     +-x+-y
  *
- * @!attribute [w] origin
  * @param origin_arg [String] the origin geometry
  * @return [String] the given value
  * @see https://www.imagemagick.org/Magick++/Geometry.html
@@ -1810,7 +1749,6 @@ Info_origin_eq(VALUE self, VALUE origin_arg)
 /**
  * Get the Postscript page geometry.
  *
- * @!attribute [r] page
  * @return [String] the page geometry
  */
 VALUE
@@ -1827,7 +1765,6 @@ Info_page(VALUE self)
  * Store the Postscript page geometry. Argument may be a Geometry object as well
  * as a geometry string.
  *
- * @!attribute [w] page
  * @param page_arg [String] the geometry
  * @return [String] the given value
  * @see https://www.imagemagick.org/Magick++/Geometry.html
@@ -1864,7 +1801,6 @@ Info_page_eq(VALUE self, VALUE page_arg)
 /**
  * Get the point size.
  *
- * @!attribute [r] pointsize
  * @return [Float] the point size
  */
 VALUE
@@ -1876,7 +1812,6 @@ Info_pointsize(VALUE self)
 /**
  * Set the point size.
  *
- * @!attribute [w] pointsize
  * @param val [Float] the point size
  * @return [Float] the given value
  */
@@ -1889,7 +1824,6 @@ Info_pointsize_eq(VALUE self, VALUE val)
 /**
  * Get the compression level for JPEG, etc.
  *
- * @!attribute [r] quality
  * @return [Numeric] the compression level
  */
 VALUE
@@ -1901,7 +1835,6 @@ Info_quality(VALUE self)
 /**
  * Get the compression level for JPEG, etc.
  *
- * @!attribute [w] quality
  * @param val [Numeric] the compression level
  * @return [Numeric] the given value
  */
@@ -1914,7 +1847,6 @@ Info_quality_eq(VALUE self, VALUE val)
 /**
  * Get sampling factors used by JPEG or MPEG-2 encoder and YUV decoder/encoder.
  *
- * @!attribute [r] sampling_factor
  * @return [String] the sampling factors
  */
 VALUE
@@ -1936,7 +1868,6 @@ Info_sampling_factor(VALUE self)
 /**
  * Set sampling factors used by JPEG or MPEG-2 encoder and YUV decoder/encoder.
  *
- * @!attribute [w] sampling_factor
  * @param sampling_factor [String] the sampling factors
  * @return [String] the given value
  */
@@ -1971,7 +1902,6 @@ Info_sampling_factor_eq(VALUE self, VALUE sampling_factor)
 /**
  * Get the scene number.
  *
- * @!attribute [r] scene
  * @return [Numeric] the scene number
  */
 VALUE
@@ -1987,7 +1917,6 @@ Info_scene(VALUE self)
 /**
  * Set the scene number.
  *
- * @!attribute [w] scene
  * @param scene [Numeric] the scene number
  * @return [Numeric] the given value
  */
@@ -2010,7 +1939,6 @@ Info_scene_eq(VALUE self, VALUE scene)
 /**
  * Get the server name.
  *
- * @!attribute [r] server_name
  * @return [String] the server name
  */
 VALUE
@@ -2023,7 +1951,6 @@ Info_server_name(VALUE self)
 /**
  * Set the server name.
  *
- * @!attribute [w] server_name
  * @param server_arg [String] the server name
  * @return [String] the given value
  */
@@ -2051,7 +1978,6 @@ Info_server_name_eq(VALUE self, VALUE server_arg)
 /**
  * Get ths size
  *
- * @!attribute [r] size
  * @return [String] the size as a Geometry object
  * @see https://www.imagemagick.org/Magick++/Geometry.html
  */
@@ -2064,7 +1990,6 @@ Info_size(VALUE self)
 /**
  * Set the size (either as a Geometry object or a Geometry string
  *
- * @!attribute [w] size
  * @param size_arg [String] the size
  * @return [String] the given value
  * @see https://www.imagemagick.org/Magick++/Geometry.html
@@ -2103,7 +2028,6 @@ Info_size_eq(VALUE self, VALUE size_arg)
 /**
  * Return the stroke color as a String.
  *
- * @!attribute [r] stroke
  * @return [String] the stroke color
  */
 VALUE
@@ -2115,7 +2039,6 @@ Info_stroke(VALUE self)
 /**
  * Set the stroke color
  *
- * @!attribute [w] stroke
  * @param color [String] the stroke color
  * @return [String] the given value
  */
@@ -2129,7 +2052,6 @@ Info_stroke_eq(VALUE self, VALUE color)
 /**
  * Get stroke width.
  *
- * @!attribute [r] stroke_width
  * @return [Float] the stroke width
  */
 VALUE
@@ -2142,7 +2064,6 @@ Info_stroke_width(VALUE self)
 /**
  * Set stroke width.
  *
- * @!attribute [w] stroke_width
  * @param stroke_width [Float] the stroke width
  * @return [Float] the given value
  */
@@ -2156,7 +2077,6 @@ Info_stroke_width_eq(VALUE self, VALUE stroke_width)
 /**
  * Set name of texture to tile onto the image background.
  *
- * @!attribute [w] texture
  * @param texture [Magick::Image] the texture image
  * @return [Magick::Image] the given image
  */
@@ -2196,7 +2116,6 @@ Info_texture_eq(VALUE self, VALUE texture)
 /**
  * Return tile_offset geometry.
  *
- * @!attribute [r] tile_offset
  * @return [String] the tile offset
  * @see https://www.imagemagick.org/Magick++/Geometry.html
  */
@@ -2222,7 +2141,6 @@ Info_tile_offset(VALUE self)
 /**
  * Set tile offset geometry.
  *
- * @!attribute [w] tile_offset
  * @param offset [String] the offset geometry
  * @return [String] the given value
  * @see https://www.imagemagick.org/Magick++/Geometry.html
@@ -2255,7 +2173,6 @@ Info_tile_offset_eq(VALUE self, VALUE offset)
 /**
  * Return the name of the transparent color.
  *
- * @!attribute [r] transparent_color
  * @return [String] the name of the transparent color
  * @see Image#transparent_color
  */
@@ -2272,7 +2189,6 @@ Info_transparent_color(VALUE self)
 /**
  * Set the transparent color.
  *
- * @!attribute [w] transparent_color
  * @param tc_arg [String] the transparent color
  * @return [Magick::Pixel, String] the given value
  */
@@ -2324,7 +2240,6 @@ Info_undefine(VALUE self, VALUE format, VALUE key)
 /**
  * Return the undercolor color.
  *
- * @!attribute [r] undercolor
  * @return [String] the undercolor
  */
 VALUE
@@ -2336,7 +2251,6 @@ Info_undercolor(VALUE self)
 /**
  * Set the undercolor color.
  *
- * @!attribute [w] undercolor
  * @param color [String] the undercolor color
  * @return [String] the given value
  */
@@ -2349,7 +2263,6 @@ Info_undercolor_eq(VALUE self, VALUE color)
 /**
  * Get the resolution type.
  *
- * @!attribute [r] units
  * @return [Magick::ResolutionType] the resolution type
  */
 VALUE
@@ -2364,7 +2277,6 @@ Info_units(VALUE self)
 /**
  * Set the resolution type
  *
- * @!attribute [w] units
  * @param units [Magick::ResolutionType] the resolution type
  * @return [Magick::ResolutionType] the given value
  */
@@ -2381,7 +2293,6 @@ Info_units_eq(VALUE self, VALUE units)
 /**
  * Get FlashPix viewing parameters.
  *
- * @!attribute [r] view
  * @return [String] the viewing parameters
  */
 VALUE
@@ -2400,7 +2311,6 @@ Info_view(VALUE self)
 /**
  * Set FlashPix viewing parameters.
  *
- * @!attribute [w] view
  * @param view_arg [String] the viewing parameters
  * @return [String] the given value
  */

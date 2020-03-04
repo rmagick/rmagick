@@ -38,7 +38,6 @@ destroy_Pixel(Pixel *pixel)
 /**
  * Get Pixel red value.
  *
- * @!attribute [r] red
  * @return [Numeric] the red value
  */
 VALUE
@@ -50,7 +49,6 @@ Pixel_red(VALUE self)
 /**
  * Get Pixel green value.
  *
- * @!attribute [r] green
  * @return [Numeric] the green value
  */
 VALUE
@@ -62,7 +60,6 @@ Pixel_green(VALUE self)
 /**
  * Get Pixel blue value.
  *
- * @!attribute [r] blue
  * @return [Numeric] the blue value
  */
 VALUE
@@ -74,7 +71,6 @@ Pixel_blue(VALUE self)
 /**
  * Get Pixel alpha value.
  *
- * @!attribute [r] alpha
  * @return [Numeric] the alpha value
  */
 VALUE
@@ -96,7 +92,6 @@ Pixel_alpha(VALUE self)
  * - Setters return their argument values for backward compatibility to when
  *   Pixel was a Struct class.
  *
- * @!attribute [w] red
  * @param v [Numeric] the red value
  * @return [Numeric] the given red value
  */
@@ -120,7 +115,6 @@ Pixel_red_eq(VALUE self, VALUE v)
  * - Setters return their argument values for backward compatibility to when
  *   Pixel was a Struct class.
  *
- * @!attribute [w] green
  * @param v [Numeric] the green value
  * @return [Numeric] the given green value
  */
@@ -144,7 +138,6 @@ Pixel_green_eq(VALUE self, VALUE v)
  * - Setters return their argument values for backward compatibility to when
  *   Pixel was a Struct class.
  *
- * @!attribute [w] blue
  * @param v [Numeric] the blue value
  * @return [Numeric] the given blue value
  */
@@ -168,7 +161,6 @@ Pixel_blue_eq(VALUE self, VALUE v)
  * - Setters return their argument values for backward compatibility to when
  *   Pixel was a Struct class.
  *
- * @!attribute [w] alpha
  * @param v [Numeric] the alpha value
  * @return [Numeric] the given alpha value
  */
@@ -195,7 +187,6 @@ Pixel_alpha_eq(VALUE self, VALUE v)
 /**
  * Get Pixel cyan value.
  *
- * @!attribute [r] cyan
  * @return [Numeric] the cyan value
  */
 VALUE
@@ -214,7 +205,6 @@ Pixel_cyan(VALUE self)
  * - Setters return their argument values for backward compatibility to when
  *   Pixel was a Struct class.
  *
- * @!attribute [w] cyan
  * @param v [Numeric] the cyan value
  * @return [Numeric] the given cyan value
  */
@@ -234,7 +224,6 @@ Pixel_cyan_eq(VALUE self, VALUE v)
 /**
  * Get Pixel magenta value.
  *
- * @!attribute [r] magenta
  * @return [Numeric] the magenta value
  */
 VALUE
@@ -253,7 +242,6 @@ Pixel_magenta(VALUE self)
  * - Setters return their argument values for backward compatibility to when
  *   Pixel was a Struct class.
  *
- * @!attribute [w] magenta
  * @param v [Numeric] the magenta value
  * @return [Numeric] the given magenta value
  */
@@ -273,7 +261,6 @@ Pixel_magenta_eq(VALUE self, VALUE v)
 /**
  * Get Pixel yellow value.
  *
- * @!attribute [r] yellow
  * @return [Numeric] the yellow value
  */
 VALUE
@@ -292,7 +279,6 @@ Pixel_yellow(VALUE self)
  * - Setters return their argument values for backward compatibility to when
  *   Pixel was a Struct class.
  *
- * @!attribute [w] yellow
  * @param v [Numeric] the yellow value
  * @return [Numeric] the given yellow value
  */
@@ -312,7 +298,6 @@ Pixel_yellow_eq(VALUE self, VALUE v)
 /**
  * Get Pixel black value.
  *
- * @!attribute [r] black
  * @return [Numeric] the black value
  */
 VALUE
@@ -331,7 +316,6 @@ Pixel_black(VALUE self)
  * - Setters return their argument values for backward compatibility to when
  *   Pixel was a Struct class.
  *
- * @!attribute [w] black
  * @param v [Numeric] the black value
  * @return [Numeric] the given black value
  */
