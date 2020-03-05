@@ -19,6 +19,7 @@ if RUBY_PLATFORM =~ /mingw/i
 end
 
 require 'English'
+require 'observer'
 require 'RMagick2.so'
 
 module Magick
@@ -1805,6 +1806,11 @@ module Magick
     alias indexes values_at
     alias indices values_at
   end # Magick::ImageList
+
+  class Pixel
+    # include Observable for Image::View class
+    include Observable
+  end
 
   #  Collects non-specific optional method arguments
   class OptionalMethodArguments
