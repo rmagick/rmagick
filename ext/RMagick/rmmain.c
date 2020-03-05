@@ -742,11 +742,6 @@ Init_RMagick2(void)
 
     Class_Pixel = rb_define_class_under(Module_Magick, "Pixel", rb_cObject);
 
-    // include Observable in Pixel for Image::View class
-    (void) rb_require("observer");
-    observable = rb_const_get(rb_cObject, rb_intern("Observable"));
-    rb_include_module(Class_Pixel, observable);
-
     // include Comparable
     rb_include_module(Class_Pixel, rb_mComparable);
 
