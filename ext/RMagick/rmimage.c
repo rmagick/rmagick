@@ -2241,7 +2241,7 @@ Image_channel_depth(int argc, VALUE *argv, VALUE self)
  * @overload channel_extrema(*channels)
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
- * @return [Array] The first element in the array is the minimum value. The second element is the
+ * @return [Array<Numeric>] The first element in the array is the minimum value. The second element is the
  *   maximum value.
  */
 VALUE
@@ -2294,7 +2294,7 @@ Image_channel_extrema(int argc, VALUE *argv, VALUE self)
  * @overload channel_mean(*channels)
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
- * @return [Array] The first element in the array is the mean value. The second element is the
+ * @return [Array<Float>] The first element in the array is the mean value. The second element is the
  *   standard deviation.
  */
 VALUE
@@ -2346,7 +2346,7 @@ Image_channel_mean(int argc, VALUE *argv, VALUE self)
  * @overload channel_entropy(*channels)
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
- * @return [Array] The first element in the array is the average entropy of the selected channels.
+ * @return [Array<Float>] The first element in the array is the average entropy of the selected channels.
  */
 #if defined(HAVE_GETIMAGECHANNELENTROPY) || defined(IMAGEMAGICK_7)
 VALUE
@@ -4055,7 +4055,7 @@ Image_compress_colormap_bang(VALUE self)
  * @param map_arg [String] A string describing the expected ordering of the pixel array.
  *   It can be any combination or order of R = red, G = green, B = blue, A = alpha, C = cyan, Y =
  *   yellow, M = magenta, K = black, or I = intensity (for grayscale).
- * @param pixels_arg [Array] The pixel data in the array must be stored in scanline order,
+ * @param pixels_arg [Array<Magick::Pixel>] The pixel data in the array must be stored in scanline order,
  *   left-to-right and top-to-bottom. The elements in the array must be either all Integers or all
  *   Floats. If the elements are Integers, the Integers must be in the range [0..QuantumRange]. If
  *   the elements are Floats, they must be in the range [0..1].
@@ -4512,7 +4512,7 @@ convolve_create_kernel_info(unsigned int order, VALUE kernel_arg)
  * Apply a custom convolution kernel to the image.
  *
  * @param order_arg [Numeric] the number of rows and columns in the kernel
- * @param kernel_arg [Array] An `order*order` matrix of {Float} values.
+ * @param kernel_arg [Array<Float>] An `order*order` matrix of {Float} values.
  * @return [Magick::Image] a new image
  */
 VALUE
@@ -4586,12 +4586,12 @@ Image_convolve(VALUE self, VALUE order_arg, VALUE kernel_arg)
  *
  * @overload convolve_channel(order, kernel, channel = Magick::AllChannels)
  *   @param order_arg [Numeric] the number of rows and columns in the kernel
- *   @param kernel_arg [Array] An `order*order` matrix of {Float} values.
+ *   @param kernel_arg [Array<Float>] An `order*order` matrix of {Float} values.
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *
  * @overload convolve_channel(order, kernel, *channels)
  *   @param order_arg [Numeric] the number of rows and columns in the kernel
- *   @param kernel_arg [Array] An `order*order` matrix of {Float} values.
+ *   @param kernel_arg [Array<Float>] An `order*order` matrix of {Float} values.
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
  * @return [Magick::Image] a new image
@@ -5220,7 +5220,7 @@ Image_destroyed_q(VALUE self)
  *
  * @param other [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an imagelist,
  *   uses the current image.
- * @return [Array] An array of three {Float} values:
+ * @return [Array<Float>] An array of three {Float} values:
  *   - mean error per pixel
  *     - The mean error for any single pixel in the image.
  *   - normalized mean error
@@ -5355,7 +5355,7 @@ Image_displace(int argc, VALUE *argv, VALUE self)
  *   @param rows [Numeric] The height of the rectangle.
  *   @param map [String]
  *   @param float [Boolean]
- *   @return [Array] an Array of pixel data
+ *   @return [Array<Numeric>] an Array of pixel data
  */
 VALUE
 Image_dispatch(int argc, VALUE *argv, VALUE self)
@@ -5585,7 +5585,7 @@ Image_dissolve(int argc, VALUE *argv, VALUE self)
  *
  * @overload distort(type, points, bestfit = false)
  *   @param type [Magick::DistortMethod] a DistortMethod value
- *   @param points [Array] an Array of Numeric values. The size of the array depends on the
+ *   @param points [Array<Numeric>] an Array of Numeric values. The size of the array depends on the
  *     distortion type.
  *   @param bestfit [Boolean] If bestfit is enabled, and the distortion allows it, the destination
  *     image is adjusted to ensure the whole source image will just fit within the final destination
@@ -5607,7 +5607,7 @@ Image_dissolve(int argc, VALUE *argv, VALUE self)
  *     - Attempt to output the internal coefficients, and the -fx equivalent to the distortion, for
          expert study, and debugging purposes. This many not be available for all distorts.
  *   @param type [Magick::DistortMethod] a DistortMethod value
- *   @param points [Array] an Array of Numeric values. The size of the array depends on the distortion type.
+ *   @param points [Array<Numeric>] an Array of Numeric values. The size of the array depends on the distortion type.
  *   @param bestfit [Boolean] If bestfit is enabled, and the distortion allows it, the destination
  *     image is adjusted to ensure the whole source image will just fit within the final destination
  *     image, which will be sized and offset accordingly.  Also in many cases the virtual offset of
@@ -6285,7 +6285,7 @@ Image_excerpt_bang(VALUE self, VALUE x, VALUE y, VALUE width, VALUE height)
  *     in which it should be stored. It can be any combination or order of R = red, G = green, B =
  *     blue, A = alpha, C = cyan, Y = yellow, M = magenta, K = black, I = intensity (for grayscale),
  *     or P = pad.
- *   @return [Array] array of pixels
+ *   @return [Array<Numeric>] array of pixels
  */
 VALUE
 Image_export_pixels(int argc, VALUE *argv, VALUE self)
@@ -6448,7 +6448,7 @@ Image_extent(int argc, VALUE *argv, VALUE self)
  *     or P = pad.
  *   @param type [Magick::StorageType] A StorageType value that specifies the C datatype to which
  *     the pixel data will be converted.
- *   @return [Array] array of pixels
+ *   @return [String] the pixel data
  */
 VALUE
 Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
@@ -6644,7 +6644,7 @@ Image_filter_eq(VALUE self, VALUE filter)
  *     the current image.
  *   @param x [Numeric] The starting x-offsets for the search.
  *   @param y [Numeric] The starting y-offsets for the search.
- *   @return [Array] If the search succeeds, the return value is an array with 2 elements.
+ *   @return [Array<Numeric>] If the search succeeds, the return value is an array with 2 elements.
  *     These elements are the x- and y-offsets of the matching rectangle.
  *     If the search fails the return value is nil.
  */
@@ -6943,7 +6943,7 @@ Image_frame(int argc, VALUE *argv, VALUE self)
  *   @param blob [String] the blob data
  *   @yield []
  *
- * @return [Array] an array of new images
+ * @return [Array<Magick::Image>] an array of new images
  * @see Image#to_blob
  */
 VALUE
@@ -7460,7 +7460,7 @@ Image_geometry_eq(VALUE self, VALUE geometry)
  * @param y_arg [Numeric] y position of start of region
  * @param cols_arg [Numeric] width of region
  * @param rows_arg [Numeric] height of region
- * @return [Array] An array of Magick::Pixel objects corresponding to the pixels in the rectangle
+ * @return [Array<Magick::Pixel>] An array of Magick::Pixel objects corresponding to the pixels in the rectangle
  *   defined by the geometry parameters.
  * @see Image#store_pixels
  */
@@ -7688,11 +7688,12 @@ Image_implode(int argc, VALUE *argv, VALUE self)
 /**
  * Store image pixel data from an array.
  *
- * @overload store_pixels(x, y, columns, rows, pixels, type = Magick::CharPixel)
+ * @overload store_pixels(x, y, columns, rows, map, pixels, type = Magick::CharPixel)
  *   @param x [Numeric] The x-offset of the rectangle to be replaced.
  *   @param y [Numeric] The y-offset of the rectangle to be replaced.
  *   @param columns [Numeric] The number of columns in the rectangle.
  *   @param rows [Numeric] The number of rows in the rectangle.
+ *   @param map [String] his string reflects the expected ordering of the pixel array.
  *   @param pixels [Array] An array of pixels.
  *     The number of pixels in the array must be the same as the number
  *     of pixels in the rectangle, that is, rows*columns.
@@ -8659,7 +8660,7 @@ Image_magnify_bang(VALUE self)
 /**
  * Support Marshal.dump.
  *
- * @return [Array] The first element in the array is the file name. The second element is the string
+ * @return [Array<String>] The first element in the array is the file name. The second element is the string
  *   of blob.
  */
 VALUE
@@ -8701,7 +8702,7 @@ Image_marshal_dump(VALUE self)
 /**
  * Support Marshal.load.
  *
- * @param ary [Array] the array returned from {Image#marshal_dump}
+ * @param ary [Array<String>] the array returned from {Image#marshal_dump}
  * @return self
  */
 VALUE
@@ -10188,7 +10189,7 @@ Image_palette_q(VALUE self)
 /**
  * Returns all the properties of an image or image sequence except for the pixels.
  *
- * @return [Array] an array of 1 or more new image objects (without pixel data)
+ * @return [Array<Magick::Image>] an array of 1 or more new image objects (without pixel data)
  * @see Image#read
  */
 VALUE
@@ -11088,7 +11089,7 @@ Image_raise(int argc, VALUE *argv, VALUE self)
  * Call ReadImage.
  *
  * @param file_arg [File, String] the file containing image data or file name
- * @return [Array] an array of 1 or more new image objects
+ * @return [Array<Magick::Image>] an array of 1 or more new image objects
  */
 VALUE
 Image_read(VALUE class, VALUE file_arg)
@@ -11204,7 +11205,7 @@ rd_image(VALUE class ATTRIBUTE_UNUSED, VALUE file, reader_t reader)
  * sized matrices, typically you use a 5x5 for an RGBA image and a 6x6 for CMYKA. Populate the last
  * row with normalized values to translate.
  *
- * @param color_matrix [Array] An array of Float values representing the recolor matrix.
+ * @param color_matrix [Array<Float>] An array of Float values representing the recolor matrix.
  * @return [Magick::Image] a new image
  */
 VALUE
@@ -11281,7 +11282,7 @@ Image_recolor(VALUE self, VALUE color_matrix)
  * Read a Base64-encoded image.
  *
  * @param content [String] the content
- * @return [Array] an array of new images
+ * @return [Array<Magick::Image>] an array of new images
  */
 VALUE
 Image_read_inline(VALUE self ATTRIBUTE_UNUSED, VALUE content)
@@ -13436,7 +13437,7 @@ Image_class_type_eq(VALUE self, VALUE new_class_type)
  * @param y_arg [Numeric] y position of start of region
  * @param cols_arg [Numeric] width of region
  * @param rows_arg [Numeric] height of region
- * @param new_pixels [Array] the replacing pixels
+ * @param new_pixels [Array<Magick::Pixel>] the replacing pixels
  * @return [Magick::Image] self
  */
 VALUE
