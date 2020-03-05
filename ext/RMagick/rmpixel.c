@@ -1075,7 +1075,7 @@ Pixel_spaceship(VALUE self, VALUE other)
  * Return [hue, saturation, lightness, alpha] in the same ranges as
  * {Magick::Pixel.from_hsla}.
  *
- * @return [Array] an array with hsla data
+ * @return [Array<Float>] an array with hsla data
  * @see .from_hsla
  */
 VALUE

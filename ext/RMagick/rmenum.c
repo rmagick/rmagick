@@ -293,12 +293,12 @@ Enum_type_inspect(VALUE self)
  * Behaves like #each if a block is present, otherwise like #to_a.
  *
  * @overload values
- *   @return [Array] the enum values
+ *   @return [Array<Magick::Enum>] the enum values
  *
  * @overload values
  *   iterator over values if given block
  *   @yield [val]
- *   @yieldparam val [Magick::enum] an enum
+ *   @yieldparam val [Magick::Enum] an enum
  *   @return [Magick::Enum] self
  */
 static VALUE

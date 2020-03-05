@@ -34,11 +34,11 @@ rm_yield_handle_exception(VALUE allocated_area, VALUE exc)
  * returns an array of {Magick::Color} objects.
  *
  * @overload colors
- *   @return [Array] the array of {Magick::Color}
+ *   @return [Array<Magick::Color>] the array of {Magick::Color}
  *
  * @overload colors
  *   @yield [colorinfo]
- *   @yieldparam colorinfo [Array] the array of {Magick::Color}
+ *   @yieldparam colorinfo [Magick::Color] the color
  *
  */
 VALUE
@@ -85,11 +85,11 @@ Magick_colors(VALUE class)
  * an array of Magick::Font objects.
  *
  * @overload fonts
- *   @return [Array] the array of {Magick::Font}
+ *   @return [Array<Magick::Font>] the array of {Magick::Font}
  *
  * @overload fonts
  *   @yield [fontinfo]
- *   @yieldparam fontinfo [Array] the array of {Magick::Font}
+ *   @yieldparam fontinfo [Magick::Font] the font
  *
  */
 VALUE
