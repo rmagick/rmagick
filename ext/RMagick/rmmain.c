@@ -1784,56 +1784,52 @@ Init_RMagick2(void)
     // namespace. The only way to use these classes is via the Magick:: namespace.
 
     // Magick::AffineMatrix
-    Class_AffineMatrix = rb_struct_define(NULL, "sx", "rx", "ry", "sy", "tx", "ty", NULL);
-    rb_define_const(Module_Magick, "AffineMatrix", Class_AffineMatrix);
+    Class_AffineMatrix = rb_struct_define_under(Module_Magick, "AffineMatrix",
+                                                "sx", "rx", "ry", "sy", "tx", "ty", NULL);
 
     // Magick::Primary
-    Class_Primary = rb_struct_define(NULL, "x", "y", "z", NULL);
+    Class_Primary = rb_struct_define_under(Module_Magick, "Primary",
+                                           "x", "y", "z", NULL);
     rb_define_method(Class_Primary, "to_s", PrimaryInfo_to_s, 0);
-    rb_define_const(Module_Magick, "Primary", Class_Primary);
 
     // Magick::Chromaticity
-    Class_Chromaticity = rb_struct_define(NULL
-                                          , "red_primary"
-                                          , "green_primary"
-                                          , "blue_primary"
-                                          , "white_point"
-                                          , NULL);
+    Class_Chromaticity = rb_struct_define_under(Module_Magick, "Chromaticity",
+                                                "red_primary", "green_primary",
+                                                "blue_primary", "white_point", NULL);
     rb_define_method(Class_Chromaticity, "to_s", ChromaticityInfo_to_s, 0);
-    rb_define_const(Module_Magick, "Chromaticity", Class_Chromaticity);
 
     // Magick::Color
-    Class_Color = rb_struct_define(NULL, "name", "compliance", "color", NULL);
+    Class_Color = rb_struct_define_under(Module_Magick, "Color",
+                                         "name", "compliance", "color", NULL);
     rb_define_method(Class_Color, "to_s", Color_to_s, 0);
-    rb_define_const(Module_Magick, "Color", Class_Color);
 
     // Magick::Point
-    Class_Point = rb_struct_define(NULL, "x", "y", NULL);
-    rb_define_const(Module_Magick, "Point", Class_Point);
+    Class_Point = rb_struct_define_under(Module_Magick, "Point",
+                                         "x", "y", NULL);
 
     // Magick::Rectangle
-    Class_Rectangle = rb_struct_define(NULL, "width", "height", "x", "y", NULL);
+    Class_Rectangle = rb_struct_define_under(Module_Magick, "Rectangle",
+                                             "width", "height", "x", "y", NULL);
     rb_define_method(Class_Rectangle, "to_s", RectangleInfo_to_s, 0);
-    rb_define_const(Module_Magick, "Rectangle", Class_Rectangle);
 
     // Magick::Segment
-    Class_Segment = rb_struct_define(NULL, "x1", "y1", "x2", "y2", NULL);
+    Class_Segment = rb_struct_define_under(Module_Magick, "Segment",
+                                           "x1", "y1", "x2", "y2", NULL);
     rb_define_method(Class_Segment, "to_s", SegmentInfo_to_s, 0);
-    rb_define_const(Module_Magick, "Segment", Class_Segment);
 
     // Magick::Font
-    Class_Font = rb_struct_define(NULL, "name", "description",
-                                  "family", "style", "stretch", "weight",
-                                  "encoding", "foundry", "format", NULL);
+    Class_Font = rb_struct_define_under(Module_Magick, "Font",
+                                        "name", "description",
+                                        "family", "style", "stretch", "weight",
+                                        "encoding", "foundry", "format", NULL);
     rb_define_method(Class_Font, "to_s", Font_to_s, 0);
-    rb_define_const(Module_Magick, "Font", Class_Font);
 
     // Magick::TypeMetric
-    Class_TypeMetric = rb_struct_define(NULL, "pixels_per_em", "ascent", "descent",
-                                        "width", "height", "max_advance", "bounds",
-                                        "underline_position", "underline_thickness", NULL);
+    Class_TypeMetric = rb_struct_define_under(Module_Magick, "TypeMetric",
+                                              "pixels_per_em", "ascent", "descent",
+                                              "width", "height", "max_advance", "bounds",
+                                              "underline_position", "underline_thickness", NULL);
     rb_define_method(Class_TypeMetric, "to_s", TypeMetric_to_s, 0);
-    rb_define_const(Module_Magick, "TypeMetric", Class_TypeMetric);
 
 
     /*-----------------------------------------------------------------------*/
