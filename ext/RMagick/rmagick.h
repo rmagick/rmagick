@@ -399,24 +399,16 @@ EXTERN ID rm_ID_changed;           /**< "changed" */
 EXTERN ID rm_ID_cur_image;         /**< "cur_image" */
 EXTERN ID rm_ID_dup;               /**< "dup" */
 EXTERN ID rm_ID_fill;              /**< "fill" */
-EXTERN ID rm_ID_flag;              /**< "flag" */
-EXTERN ID rm_ID_from_s;            /**< "from_s" */
 EXTERN ID rm_ID_Geometry;          /**< "Geometry" */
-EXTERN ID rm_ID_GeometryValue;     /**< "GeometryValue" */
-EXTERN ID rm_ID_has_key_q;         /**< "has_key?" */
 EXTERN ID rm_ID_height;            /**< "height" */
 EXTERN ID rm_ID_initialize_copy;   /**< "initialize_copy" */
-EXTERN ID rm_ID_length;            /**< "length" */
 EXTERN ID rm_ID_notify_observers;  /**< "notify_observers" */
 EXTERN ID rm_ID_new;               /**< "new" */
 EXTERN ID rm_ID_push;              /**< "push" */
-EXTERN ID rm_ID_spaceship;         /**< "<=>" */
 EXTERN ID rm_ID_to_i;              /**< "to_i" */
 EXTERN ID rm_ID_to_s;              /**< "to_s" */
 EXTERN ID rm_ID_values;            /**< "values" */
 EXTERN ID rm_ID_width;             /**< "width" */
-EXTERN ID rm_ID_x;                 /**< "x" */
-EXTERN ID rm_ID_y;                 /**< "y" */
 
 #if !defined(min)
 #define min(a,b) ((a)<(b)?(a):(b)) /**< min of two values */

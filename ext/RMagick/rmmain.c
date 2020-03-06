@@ -254,24 +254,16 @@ Init_RMagick2(void)
     rm_ID_cur_image        = rb_intern("cur_image");
     rm_ID_dup              = rb_intern("dup");
     rm_ID_fill             = rb_intern("fill");
-    rm_ID_flag             = rb_intern("flag");
-    rm_ID_from_s           = rb_intern("from_s");
     rm_ID_Geometry         = rb_intern("Geometry");
-    rm_ID_GeometryValue    = rb_intern("GeometryValue");
-    rm_ID_has_key_q        = rb_intern("has_key?");
     rm_ID_height           = rb_intern("height");
     rm_ID_initialize_copy  = rb_intern("initialize_copy");
-    rm_ID_length           = rb_intern("length");
     rm_ID_notify_observers = rb_intern("notify_observers");
     rm_ID_new              = rb_intern("new");
     rm_ID_push             = rb_intern("push");
-    rm_ID_spaceship        = rb_intern("<=>");
     rm_ID_to_i             = rb_intern("to_i");
     rm_ID_to_s             = rb_intern("to_s");
     rm_ID_values           = rb_intern("values");
     rm_ID_width            = rb_intern("width");
-    rm_ID_x                = rb_intern("x");
-    rm_ID_y                = rb_intern("y");
 
     /*-----------------------------------------------------------------------*/
     /* Module Magick methods                                                 */
