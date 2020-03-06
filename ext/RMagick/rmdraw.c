@@ -249,7 +249,7 @@ Draw_font_style_eq(VALUE self, VALUE style)
 
 
 /**
- * Font_weight attribute writer.
+ * Set font weight.
  *
  *
  * @param weight [Magick::WeightType, Numeric] the font weight
