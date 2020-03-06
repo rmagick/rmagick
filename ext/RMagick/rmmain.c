@@ -234,8 +234,6 @@ static void set_managed_memory(void)
 void
 Init_RMagick2(void)
 {
-    VALUE observable;
-
     Module_Magick = rb_define_module("Magick");
 
     set_managed_memory();
@@ -1831,8 +1829,6 @@ Init_RMagick2(void)
     SetFatalErrorHandler(rm_fatal_error_handler);
     SetErrorHandler(rm_error_handler);
     SetWarningHandler(rm_warning_handler);
-
-    RB_GC_GUARD(observable);
 }
 
 
