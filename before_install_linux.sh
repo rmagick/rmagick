@@ -40,21 +40,10 @@ build_imagemagick() {
   mkdir -p build-ImageMagick
 
   version=(${IMAGEMAGICK_VERSION//./ })
-  if (( "${version[0]}" >= 7 )); then
-    wget "https://github.com/ImageMagick/ImageMagick/archive/${IMAGEMAGICK_VERSION}.tar.gz"
-    tar -xf "${IMAGEMAGICK_VERSION}.tar.gz"
-    mv "ImageMagick-${IMAGEMAGICK_VERSION}" "${build_dir}"
-  elif (( "${version[0]}${version[1]}" >= 69 )); then
-    wget "https://github.com/ImageMagick/ImageMagick6/archive/${IMAGEMAGICK_VERSION}.tar.gz"
-    tar -xf "${IMAGEMAGICK_VERSION}.tar.gz"
-    rm "${IMAGEMAGICK_VERSION}.tar.gz"
-    mv "ImageMagick6-${IMAGEMAGICK_VERSION}" "${build_dir}"
-  else
-    wget "https://imagemagick.org/download/releases/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz"
-    tar -xf "ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz"
-    rm "ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz"
-    mv "ImageMagick-${IMAGEMAGICK_VERSION}" "${build_dir}"
-  fi
+  wget "https://imagemagick.org/download/releases/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz"
+  tar -xf "ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz"
+  rm "ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz"
+  mv "ImageMagick-${IMAGEMAGICK_VERSION}" "${build_dir}"
 
   options="--with-magick-plus-plus=no --disable-docs"
   if [ -v CONFIGURE_OPTIONS ]; then
