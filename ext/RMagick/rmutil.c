@@ -633,7 +633,7 @@ rm_acquire_image(ImageInfo *info)
 
     exception = AcquireExceptionInfo();
     new_image = AcquireImage(info, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
     return new_image;
 #else
@@ -685,7 +685,7 @@ rm_pixelcolor_to_color_name(Image *image, PixelColor *color)
 #endif
 
     QueryColorname(image, &pp, X11Compliance, name, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 
     return rb_str_new2(name);
@@ -821,7 +821,7 @@ rm_write_temp_image(Image *image, char *temp_name, size_t temp_name_l)
 
     // Omit "mpri:" from filename to form the key
     okay = SetImageRegistry(ImageRegistryType, temp_name+5, image, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
     if (!okay)
     {
@@ -955,7 +955,7 @@ rm_get_property(const Image *img, const char *property)
 
     exception = AcquireExceptionInfo();
     result = GetImageProperty(img, property, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
     return result;
 #else
@@ -983,7 +983,7 @@ rm_set_property(Image *image, const char *property, const char *value)
 
     exception = AcquireExceptionInfo();
     okay = SetImageProperty(image, property, value, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
     return okay;
 #else
@@ -1306,7 +1306,7 @@ rm_exif_by_entry(Image *image)
 
     exception = AcquireExceptionInfo();
     GetImageProperty(image, "exif:*", exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
 #else
     GetImageProperty(image, "exif:*");
 #endif
@@ -1328,7 +1328,7 @@ rm_exif_by_entry(Image *image)
             len += property_l - 5;
 #if defined(IMAGEMAGICK_7)
             value = GetImageProperty(image, property, exception);
-            CHECK_EXCEPTION()
+            CHECK_EXCEPTION();
 #else
             value = GetImageProperty(image, property);
 #endif
@@ -1425,7 +1425,7 @@ rm_exif_by_number(Image *image)
 
     exception = AcquireExceptionInfo();
     GetImageProperty(image, "exif:!", exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
 #else
     GetImageProperty(image, "exif:!");
 #endif
@@ -1446,7 +1446,7 @@ rm_exif_by_number(Image *image)
             len += property_l;
 #if defined(IMAGEMAGICK_7)
             value = GetImageProperty(image, property, exception);
-            CHECK_EXCEPTION()
+            CHECK_EXCEPTION();
 #else
             value = GetImageProperty(image, property);
 #endif

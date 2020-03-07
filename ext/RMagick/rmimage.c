@@ -445,7 +445,7 @@ Image_add_compose_mask(VALUE self, VALUE mask)
     rm_check_exception(exception, clip_mask, DestroyOnError);
     SetImageMask(image, CompositePixelMask, clip_mask, exception);
     DestroyImage(clip_mask);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     // Delete any previously-existing mask image.
@@ -613,7 +613,7 @@ Image_add_profile(VALUE self, VALUE name)
 
     DestroyImage(profile_image);
 #if defined(IMAGEMAGICK_7)
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     DestroyExceptionInfo(exception);
@@ -673,7 +673,7 @@ Image_alpha(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     SetImageAlphaChannel(image, alpha, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     SetImageAlphaChannel(image, alpha);
@@ -1981,7 +1981,7 @@ Image_bounding_box(VALUE self)
     image = rm_check_destroyed(self);
     exception = AcquireExceptionInfo();
     box = GetImageBoundingBox(image, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
 
     DestroyExceptionInfo(exception);
 
@@ -2226,7 +2226,7 @@ Image_channel_depth(int argc, VALUE *argv, VALUE self)
 #else
     channel_depth = GetImageChannelDepth(image, channels, exception);
 #endif
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
 
     DestroyExceptionInfo(exception);
 
@@ -2273,7 +2273,7 @@ Image_channel_extrema(int argc, VALUE *argv, VALUE self)
 #else
     GetImageChannelExtrema(image, channels, &min, &max, exception);
 #endif
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
 
     DestroyExceptionInfo(exception);
 
@@ -2326,7 +2326,7 @@ Image_channel_mean(int argc, VALUE *argv, VALUE self)
 #else
     GetImageChannelMean(image, channels, &mean, &stddev, exception);
 #endif
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
 
     DestroyExceptionInfo(exception);
 
@@ -2378,7 +2378,7 @@ Image_channel_entropy(int argc, VALUE *argv, VALUE self)
 #else
     GetImageChannelEntropy(image, channels, &entropy, exception);
 #endif
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
 
     DestroyExceptionInfo(exception);
 
@@ -2551,7 +2551,7 @@ Image_clut_channel(int argc, VALUE *argv, VALUE self)
     BEGIN_CHANNEL_MASK(image, channels);
     okay = ClutImage(image, clut, image->interpolate, exception);
     END_CHANNEL_MASK(image);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     okay = ClutImageChannel(image, channels, clut);
@@ -2681,7 +2681,7 @@ set_profile(VALUE self, const char *name, VALUE profile)
 
     exception = AcquireExceptionInfo();
     m = GetMagickInfo(name, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     if (!m)
     {
         DestroyExceptionInfo(exception);
@@ -2698,7 +2698,7 @@ set_profile(VALUE self, const char *name, VALUE profile)
 
     profile_image = BlobToImage(info, profile_blob, (size_t)profile_length, exception);
     DestroyImageInfo(info);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
 
     ResetImageProfileIterator(profile_image);
     profile_name = GetNextImageProfile(profile_image);
@@ -2741,7 +2741,7 @@ set_profile(VALUE self, const char *name, VALUE profile)
     DestroyImage(profile_image);
 
 #if defined(IMAGEMAGICK_7)
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     DestroyExceptionInfo(exception);
@@ -3102,7 +3102,7 @@ Image_colorspace_eq(VALUE self, VALUE colorspace)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     TransformImageColorspace(image, new_cs, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     TransformImageColorspace(image, new_cs);
@@ -3411,7 +3411,7 @@ composite(int bang, int argc, VALUE *argv, VALUE self, ChannelType channels)
         BEGIN_CHANNEL_MASK(image, channels);
         CompositeImage(image, comp_image, operator, MagickTrue, x_offset, y_offset, exception);
         END_CHANNEL_MASK(image);
-        CHECK_EXCEPTION()
+        CHECK_EXCEPTION();
         DestroyExceptionInfo(exception);
 #else
         CompositeImageChannel(image, channels, operator, comp_image, x_offset, y_offset);
@@ -4028,7 +4028,7 @@ Image_compress_colormap_bang(VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     okay = CompressImageColormap(image, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     okay = CompressImageColormap(image);
@@ -4371,7 +4371,7 @@ Image_contrast_stretch_channel(int argc, VALUE *argv, VALUE self)
     BEGIN_CHANNEL_MASK(new_image, channels);
     ContrastStretchImage(new_image, black_point, white_point, exception);
     END_CHANNEL_MASK(new_image);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     ContrastStretchImageChannel(new_image, channels, black_point, white_point);
@@ -4474,7 +4474,7 @@ convolve_create_kernel_info(unsigned int order, VALUE kernel_arg)
 
     exception = AcquireExceptionInfo();
     kernel = AcquireKernelInfo((const char *) NULL, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
     if (!kernel)
     {
@@ -5055,7 +5055,7 @@ Image_delete_compose_mask(VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     SetImageMask(image, CompositePixelMask, NULL, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     SetImageMask(image, NULL);
@@ -5103,7 +5103,7 @@ Image_depth(VALUE self)
     exception = AcquireExceptionInfo();
 
     depth = GetImageDepth(image, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
 
     DestroyExceptionInfo(exception);
 
@@ -5150,7 +5150,7 @@ Image_deskew(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
     new_image = DeskewImage(image, threshold, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     rm_ensure_result(new_image);
 
     DestroyExceptionInfo(exception);
@@ -5251,7 +5251,7 @@ Image_difference(VALUE self, VALUE other)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     IsImagesEqual(image, image2, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     IsImagesEqual(image, image2);
@@ -5413,7 +5413,7 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
         goto exit;
     }
 
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
 
     DestroyExceptionInfo(exception);
 
@@ -5470,7 +5470,7 @@ Image_display(VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     DisplayImages(info, image, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     DisplayImages(info, image);
@@ -5736,7 +5736,7 @@ Image_distortion_channel(int argc, VALUE *argv, VALUE self)
     GetImageChannelDistortion(image, reconstruct, channels, metric, &distortion, exception);
 #endif
 
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
 
     DestroyExceptionInfo(exception);
 
@@ -5778,7 +5778,7 @@ Image__dump(VALUE self, VALUE depth ATTRIBUTE_UNUSED)
     // Free ImageInfo first - error handling may raise an exception
     DestroyImageInfo(info);
 
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
 
     DestroyExceptionInfo(exception);
 
@@ -6160,7 +6160,7 @@ Image_erase_bang(VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     SetImageBackgroundColor(image, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     SetImageBackgroundColor(image);
@@ -6347,7 +6347,7 @@ Image_export_pixels(int argc, VALUE *argv, VALUE self)
     if (!okay)
     {
         xfree((void *)pixels);
-        CHECK_EXCEPTION()
+        CHECK_EXCEPTION();
 
         // Should never get here...
         rm_magick_error("ExportImagePixels failed with no explanation.");
@@ -6540,7 +6540,7 @@ Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
     {
         // Let GC have the string buffer.
         rb_str_resize(string, 0);
-        CHECK_EXCEPTION()
+        CHECK_EXCEPTION();
 
         // Should never get here...
         rm_magick_error("ExportImagePixels failed with no explanation.");
@@ -6851,7 +6851,7 @@ Image_format_eq(VALUE self, VALUE magick)
 
     exception = AcquireExceptionInfo();
     m = GetMagickInfo(mgk, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
 
     DestroyExceptionInfo(exception);
 
@@ -7320,7 +7320,7 @@ Image_gamma_correct(int argc, VALUE *argv, VALUE self)
     }
 
 #if defined(IMAGEMAGICK_7)
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     rm_check_image_exception(new_image, DestroyOnError);
@@ -7498,7 +7498,7 @@ Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE row
     // to change the pixels but I don't want to make "pixels" const.
     exception = AcquireExceptionInfo();
     pixels = GetVirtualPixels(image, x, y, columns, rows, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
 
     DestroyExceptionInfo(exception);
 
@@ -7569,7 +7569,7 @@ has_attribute(VALUE self, MagickBooleanType (attr_test)(const Image *, Exception
     exception = AcquireExceptionInfo();
 
     r = (attr_test)(image, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 
     return r ? Qtrue : Qfalse;
@@ -7874,7 +7874,7 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
     if (!okay)
     {
 #if defined(IMAGEMAGICK_7)
-        CHECK_EXCEPTION()
+        CHECK_EXCEPTION();
         DestroyExceptionInfo(exception);
 #else
         rm_check_image_exception(image, RetainOnError);
@@ -8691,7 +8691,7 @@ Image_marshal_dump(VALUE self)
 
     // Destroy info before raising an exception
     DestroyImageInfo(info);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 
     rb_ary_store(ary, 1, rb_str_new((char *)blob, (long)length));
@@ -8816,7 +8816,7 @@ set_image_mask(Image *image, VALUE mask)
     {
         SetImageMask(image, WritePixelMask, NULL, exception);
     }
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 
     // Always return a copy of the mask!
@@ -9550,7 +9550,7 @@ Image_initialize(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     SetImageExtent(image, cols, rows, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     SetImageExtent(image, cols, rows);
@@ -9564,7 +9564,7 @@ Image_initialize(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
         exception = AcquireExceptionInfo();
         SetImageBackgroundColor(image, exception);
-        CHECK_EXCEPTION()
+        CHECK_EXCEPTION();
         DestroyExceptionInfo(exception);
 #else
         SetImageBackgroundColor(image);
@@ -9722,7 +9722,7 @@ Image_number_colors(VALUE self)
     exception = AcquireExceptionInfo();
 
     n = (unsigned long) GetNumberColors(image, NULL, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
 
     DestroyExceptionInfo(exception);
 
@@ -10264,7 +10264,7 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
     {
         exception = AcquireExceptionInfo();
         old_pixel = GetVirtualPixels(image, x, y, 1, 1, exception);
-        CHECK_EXCEPTION()
+        CHECK_EXCEPTION();
 
         DestroyExceptionInfo(exception);
 
@@ -10316,7 +10316,7 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
     {
 #if defined(IMAGEMAGICK_7)
         okay = SetImageStorageClass(image, DirectClass, exception);
-        CHECK_EXCEPTION()
+        CHECK_EXCEPTION();
         if (!okay)
         {
             DestroyExceptionInfo(exception);
@@ -10337,7 +10337,7 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
 #endif
 
     pixel = GetAuthenticPixels(image, x, y, 1, 1, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
 
     if (pixel)
     {
@@ -10372,7 +10372,7 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
 #endif
 
         SyncAuthenticPixels(image, exception);
-        CHECK_EXCEPTION()
+        CHECK_EXCEPTION();
     }
 
     DestroyExceptionInfo(exception);
@@ -10789,7 +10789,7 @@ Image_quantum_operator(int argc, VALUE *argv, VALUE self)
 #else
     EvaluateImageChannel(image, channel, qop, rvalue, exception);
 #endif
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
 
     DestroyExceptionInfo(exception);
 
@@ -11443,7 +11443,7 @@ Image_remap(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     RemapImage(&quantize_info, image, remap_image, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     RemapImage(&quantize_info, image, remap_image);
@@ -12244,7 +12244,7 @@ Image_set_channel_depth(VALUE self, VALUE channel_arg, VALUE depth)
     BEGIN_CHANNEL_MASK(image, channel);
     SetImageDepth(image, channel_depth, exception);
     END_CHANNEL_MASK(image);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     SetImageChannelDepth(image, channel, channel_depth);
@@ -12451,7 +12451,7 @@ Image_properties(VALUE self)
             property = GetNextImageProperty(image);
         }
 #if defined(IMAGEMAGICK_7)
-        CHECK_EXCEPTION()
+        CHECK_EXCEPTION();
         DestroyExceptionInfo(exception);
 #else
         rm_check_image_exception(image, RetainOnError);
@@ -12479,7 +12479,7 @@ Image_properties(VALUE self)
             property = GetNextImageProperty(image);
         }
 #if defined(IMAGEMAGICK_7)
-        CHECK_EXCEPTION()
+        CHECK_EXCEPTION();
         DestroyExceptionInfo(exception);
 #else
         rm_check_image_exception(image, RetainOnError);
@@ -12838,7 +12838,7 @@ Image_signature(VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     SignatureImage(image, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     SignatureImage(image);
@@ -13399,7 +13399,7 @@ Image_class_type_eq(VALUE self, VALUE new_class_type)
     {
 #if defined(IMAGEMAGICK_7)
         SyncImage(image, exception);
-        CHECK_EXCEPTION()
+        CHECK_EXCEPTION();
 #else
         SyncImage(image);
 #endif
@@ -13412,7 +13412,7 @@ Image_class_type_eq(VALUE self, VALUE new_class_type)
         qinfo.number_colors = QuantumRange+1;
 #if defined(IMAGEMAGICK_7)
         QuantizeImage(&qinfo, image, exception);
-        CHECK_EXCEPTION()
+        CHECK_EXCEPTION();
 #else
         QuantizeImage(&qinfo, image);
 #endif
@@ -13420,7 +13420,7 @@ Image_class_type_eq(VALUE self, VALUE new_class_type)
 
 #if defined(IMAGEMAGICK_7)
     SetImageStorageClass(image, class_type, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     SetImageStorageClass(image, class_type);
@@ -13478,7 +13478,7 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     okay = SetImageStorageClass(image, DirectClass, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     if (!okay)
     {
         DestroyExceptionInfo(exception);
@@ -13498,7 +13498,7 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg
     // from the pixels argument.
     {
         pixels = GetAuthenticPixels(image, x, y, cols, rows, exception);
-        CHECK_EXCEPTION()
+        CHECK_EXCEPTION();
 
         if (pixels)
         {
@@ -13534,7 +13534,7 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg
 #endif
             }
             SyncAuthenticPixels(image, exception);
-            CHECK_EXCEPTION()
+            CHECK_EXCEPTION();
         }
 
         DestroyExceptionInfo(exception);
@@ -13563,7 +13563,7 @@ Image_strip_bang(VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     StripImage(image, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     StripImage(image);
@@ -14081,7 +14081,7 @@ Image_to_blob(VALUE self)
     {
 #if defined(IMAGEMAGICK_7)
         SetImageDepth(image, info->depth, exception);
-        CHECK_EXCEPTION()
+        CHECK_EXCEPTION();
 #else
         SetImageDepth(image, info->depth);
         rm_check_image_exception(image, RetainOnError);
@@ -14091,7 +14091,7 @@ Image_to_blob(VALUE self)
     if (*info->magick)
     {
         SetImageInfo(info, MagickTrue, exception);
-        CHECK_EXCEPTION()
+        CHECK_EXCEPTION();
 
         if (*info->magick == '\0')
         {
@@ -14102,7 +14102,7 @@ Image_to_blob(VALUE self)
 
     // Fix #2844 - libjpeg exits when image is 0x0
     magick_info = GetMagickInfo(image->magick, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
 
     if (magick_info)
     {
@@ -14118,7 +14118,7 @@ Image_to_blob(VALUE self)
     rm_sync_image_options(image, info);
 
     blob = ImageToBlob(info, image, &length, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
 
     DestroyExceptionInfo(exception);
 
@@ -14166,7 +14166,7 @@ Image_to_color(VALUE self, VALUE pixel_arg)
     // about that.
 
     QueryColorname(image, &pixel, AllCompliance, name, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
 
     DestroyExceptionInfo(exception);
 
@@ -14207,7 +14207,7 @@ Image_total_ink_density(VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     density = GetImageTotalInkDensity(image, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     density = GetImageTotalInkDensity(image);
@@ -14591,7 +14591,7 @@ VALUE Image_image_type(VALUE self)
 #else
     exception = AcquireExceptionInfo();
     type = GetImageType(image, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
 
     DestroyExceptionInfo(exception);
 #endif
@@ -14619,7 +14619,7 @@ VALUE Image_image_type_eq(VALUE self, VALUE image_type)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     SetImageType(image, type, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     SetImageType(image, type);
@@ -14998,7 +14998,7 @@ Image_virtual_pixel_method_eq(VALUE self, VALUE method)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     SetImageVirtualPixelMethod(image, vpm, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     SetImageVirtualPixelMethod(image, vpm);
@@ -15497,7 +15497,7 @@ Image_write(VALUE self, VALUE file)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     WriteImage(info, image, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     WriteImage(info, image);

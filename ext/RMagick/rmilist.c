@@ -77,7 +77,7 @@ ImageList_animate(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
     AnimateImages(info, images, exception);
     rm_split(images);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     AnimateImages(info, images);
@@ -1004,7 +1004,7 @@ ImageList_remap(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
     RemapImages(&quantize_info, images, remap_image, exception);
     rm_split(images);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     RemapImages(&quantize_info, images, remap_image);
@@ -1074,7 +1074,7 @@ ImageList_to_blob(VALUE self)
         length = 0;
     }
     rm_split(images);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 
 

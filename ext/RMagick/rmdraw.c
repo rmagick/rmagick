@@ -901,7 +901,7 @@ VALUE Draw_annotate(
     draw->info->affine = keep;
 
 #if defined(IMAGEMAGICK_7)
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     rm_check_image_exception(image, RetainOnError);
@@ -1059,7 +1059,7 @@ Draw_draw(VALUE self, VALUE image_arg)
     draw->info->primitive = NULL;
 
 #if defined(IMAGEMAGICK_7)
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     rm_check_image_exception(image, RetainOnError);
@@ -1427,9 +1427,9 @@ PolaroidOptions_initialize(VALUE self)
 
     exception = AcquireExceptionInfo();
     QueryColorCompliance("gray75", AllCompliance, &draw->shadow_color, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     QueryColorCompliance("#dfdfdf", AllCompliance, &draw->info->border_color, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 
     if (rb_block_given_p())
@@ -1624,7 +1624,7 @@ get_type_metrics(
     if (!okay)
     {
 #if defined(IMAGEMAGICK_7)
-        CHECK_EXCEPTION()
+        CHECK_EXCEPTION();
         DestroyExceptionInfo(exception);
 #else
         rm_check_image_exception(image, RetainOnError);

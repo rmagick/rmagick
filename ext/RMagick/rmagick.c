@@ -52,7 +52,7 @@ Magick_colors(VALUE class)
     exception = AcquireExceptionInfo();
 
     color_info_list = GetColorInfoList("*", &number_colors, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 
 
@@ -102,7 +102,7 @@ Magick_fonts(VALUE class)
 
     exception = AcquireExceptionInfo();
     type_info = GetTypeInfoList("*", &number_types, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 
     if (rb_block_given_p())
@@ -182,7 +182,7 @@ Magick_init_formats(VALUE class ATTRIBUTE_UNUSED)
     // IM 6.1.3 added an exception argument to GetMagickInfoList
     exception = AcquireExceptionInfo();
     magick_info = GetMagickInfoList("*", &number_formats, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 
 
