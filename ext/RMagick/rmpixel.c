@@ -88,7 +88,8 @@ Pixel_alpha(VALUE self)
 /**
  * Set Pixel red value.
  *
- * - Pixel is Observable. Setters call changed, notify_observers
+ * - Pixel is Observable. Setters call {Magick::Pixel#changed},
+ *   {Magick::Pixel#notify_observers}
  * - Setters return their argument values for backward compatibility to when
  *   Pixel was a Struct class.
  *
@@ -111,7 +112,8 @@ Pixel_red_eq(VALUE self, VALUE v)
 /**
  * Set Pixel green value.
  *
- * - Pixel is Observable. Setters call changed, notify_observers
+ * - Pixel is Observable. Setters call {Magick::Pixel#changed},
+ *   {Magick::Pixel#notify_observers}
  * - Setters return their argument values for backward compatibility to when
  *   Pixel was a Struct class.
  *
@@ -134,7 +136,8 @@ Pixel_green_eq(VALUE self, VALUE v)
 /**
  * Set Pixel blue value.
  *
- * - Pixel is Observable. Setters call changed, notify_observers
+ * - Pixel is Observable. Setters call {Magick::Pixel#changed},
+ *   {Magick::Pixel#notify_observers}
  * - Setters return their argument values for backward compatibility to when
  *   Pixel was a Struct class.
  *
@@ -157,7 +160,8 @@ Pixel_blue_eq(VALUE self, VALUE v)
 /**
  * Set Pixel alpha value.
  *
- * - Pixel is Observable. Setters call changed, notify_observers
+ * - Pixel is Observable. Setters call {Magick::Pixel#changed},
+ *   {Magick::Pixel#notify_observers}
  * - Setters return their argument values for backward compatibility to when
  *   Pixel was a Struct class.
  *
@@ -201,7 +205,8 @@ Pixel_cyan(VALUE self)
 /**
  * Set Pixel cyan value.
  *
- * - Pixel is Observable. Setters call changed, notify_observers
+ * - Pixel is Observable. Setters call {Magick::Pixel#changed},
+ *   {Magick::Pixel#notify_observers}
  * - Setters return their argument values for backward compatibility to when
  *   Pixel was a Struct class.
  *
@@ -238,7 +243,8 @@ Pixel_magenta(VALUE self)
 /**
  * Set Pixel magenta value.
  *
- * - Pixel is Observable. Setters call changed, notify_observers
+ * - Pixel is Observable. Setters call {Magick::Pixel#changed},
+ *   {Magick::Pixel#notify_observers}
  * - Setters return their argument values for backward compatibility to when
  *   Pixel was a Struct class.
  *
@@ -275,7 +281,8 @@ Pixel_yellow(VALUE self)
 /**
  * Set Pixel yellow value.
  *
- * - Pixel is Observable. Setters call changed, notify_observers
+ * - Pixel is Observable. Setters call {Magick::Pixel#changed},
+ *   {Magick::Pixel#notify_observers}
  * - Setters return their argument values for backward compatibility to when
  *   Pixel was a Struct class.
  *
@@ -312,7 +319,8 @@ Pixel_black(VALUE self)
 /**
  * Set Pixel black value.
  *
- * - Pixel is Observable. Setters call changed, notify_observers
+ * - Pixel is Observable. Setters call {Magick::Pixel#changed},
+ *   {Magick::Pixel#notify_observers}
  * - Setters return their argument values for backward compatibility to when
  *   Pixel was a Struct class.
  *
@@ -389,7 +397,7 @@ Color_to_PixelColor(PixelColor *pp, VALUE color)
 
 
 /**
- * Convert either a String color name or a Magick::Pixel to a Pixel.
+ * Convert either a String color name or a {Magick::Pixel} to a Pixel.
  *
  * No Ruby usage (internal function)
  *
@@ -637,7 +645,7 @@ Pixel_fcmp(int argc, VALUE *argv, VALUE self)
 /**
  * Construct an {Magick::Pixel} corresponding to the given color name.
  *
- * - The "inverse" is Image_to_color, b/c the conversion of a pixel to a
+ * - The "inverse" is {Image#to_color}, b/c the conversion of a pixel to a
  *   color name requires both a color depth and if the opacity value has
  *   meaning.
  *
@@ -1076,7 +1084,7 @@ Pixel_spaceship(VALUE self, VALUE other)
  * {Magick::Pixel.from_hsla}.
  *
  * @return [Array<Float>] an array with hsla data
- * @see .from_hsla
+ * @see Pixel.from_hsla
  */
 VALUE
 Pixel_to_hsla(VALUE self)

@@ -82,7 +82,7 @@ Export_AffineMatrix(AffineMatrix *am, VALUE st)
 
 
 /**
- * Create a Magick::ChromaticityInfo object from a ChromaticityInfo structure.
+ * Create a {Magick::ChromaticityInfo} object from a ChromaticityInfo structure.
  *
  * No Ruby usage (internal function)
  *

@@ -261,7 +261,7 @@ Image_adaptive_blur_channel(int argc, VALUE *argv, VALUE self)
  *
  * @overload adaptive_resize(cols, rows)
  *   @param cols [Numeric] The desired column size
- *   @param rows [Numerick] The desired row size.
+ *   @param rows [Numeric] The desired row size.
  *
  * @return [Magick::Image] a new image
  */
@@ -549,7 +549,7 @@ Image_add_noise_channel(int argc, VALUE *argv, VALUE self)
 
 
 /**
- * Adds an ICC (a.k.a. ICM), IPTC, or generic profile.  If the file contains more than one profile
+ * Adds an ICC (a.k.a. ICM), IPTC, or generic profile. If the file contains more than one profile
  * all the profiles are added.
  *
  * @param name [String] The filename of a file containing the profile.
@@ -626,6 +626,8 @@ Image_add_profile(VALUE self, VALUE name)
 
 
 /**
+ * Get/Set alpha channel.
+ *
  * @overload alpha()
  *   Returns true if the alpha channel will be used, false otherwise.
  *   This calling is same as {Magick::Image#alpha?}.
@@ -637,7 +639,7 @@ Image_add_profile(VALUE self, VALUE name)
  *   @param value [Magick::AlphaChannelOption] An AlphaChannelOption value
  *   @return [Magick::AlphaChannelOption] the given value
  *
- * - Replaces matte=, alpha=
+ * - Replaces {Magick::Image#matte=}, {Magick::Image#alpha=}
  * - Originally there was an alpha attribute getter and setter. These are replaced with alpha? and
  *   alpha(type). We still define (but don't document) alpha=. For backward compatibility, if this
  *   method is called without an argument, make it act like the old alpha getter and return true if
@@ -730,7 +732,7 @@ Image_affine_transform(VALUE self, VALUE affine)
 }
 
 /**
- * Returns the value of the image property identified by key.  An image may have any number of
+ * Returns the value of the image property identified by key. An image may have any number of
  * properties.
  *
  * Each property is identified by a string (or symbol) key.
@@ -787,7 +789,7 @@ Image_aref(VALUE self, VALUE key_arg)
  * Sets the value of an image property. An image may have any number of properties.
  *
  * - Specify attr=nil to remove the key from the list.
- * - SetImageProperty normally APPENDS the new value to any existing value.  Since this usage is
+ * - SetImageProperty normally APPENDS the new value to any existing value. Since this usage is
  *   tremendously counter-intuitive, this function always deletes the existing value before setting
  *   the new value.
  * - There's no use checking the return value since SetImageProperty returns "False" for many
@@ -1107,7 +1109,7 @@ Image_background_color_eq(VALUE self, VALUE color)
 /**
  * Return the number of rows (before transformations).
  *
- * @return [Numeric]the number of rows
+ * @return [Numeric] the number of rows
  */
 VALUE
 Image_base_columns(VALUE self)
@@ -1211,7 +1213,7 @@ Image_bias_eq(VALUE self, VALUE pct)
 }
 
 /**
- * Changes the value of individual pixels based on the intensity of each pixel channel.  The result
+ * Changes the value of individual pixels based on the intensity of each pixel channel. The result
  * is a high-contrast image.
  *
  * @overload bilevel_channel(threshold, channel = Magick::AllChannels)
@@ -1990,7 +1992,7 @@ Image_bounding_box(VALUE self)
 /**
  * Reads an image from an X window.
  * Unless you identify a window to capture via the optional arguments block, when capture is invoked
- * the cursor will turn into a cross.  Click the cursor on the window to be captured.
+ * the cursor will turn into a cross. Click the cursor on the window to be captured.
  *
  * @overload capture(silent = false, frame = false, descend = false, screen = false, borders = false)
  *   @param silent [Boolean] If true, suppress the beeps that signal the start and finish of the
@@ -2757,7 +2759,7 @@ set_profile(VALUE self, const char *name, VALUE profile)
  * - This method has no real use but is retained for compatibility with earlier releases of RMagick,
  *   where it had no real use either.
  *
- * @return [String] the ICC color profile
+ * @return [String, nil] the ICC color profile
  */
 VALUE
 Image_color_profile(VALUE self)
@@ -6644,7 +6646,7 @@ Image_filter_eq(VALUE self, VALUE filter)
  *     the current image.
  *   @param x [Numeric] The starting x-offsets for the search.
  *   @param y [Numeric] The starting y-offsets for the search.
- *   @return [Array<Numeric>] If the search succeeds, the return value is an array with 2 elements.
+ *   @return [Array<Numeric>, nil] If the search succeeds, the return value is an array with 2 elements.
  *     These elements are the x- and y-offsets of the matching rectangle.
  *     If the search fails the return value is nil.
  */
@@ -6805,7 +6807,7 @@ Image_flop_bang(VALUE self)
 /**
  * Return the image encoding format. For example, "GIF" or "PNG".
  *
- * @return [String] the encoding format
+ * @return [String, nil] the encoding format
  */
 VALUE
 Image_format(VALUE self)
@@ -8089,7 +8091,7 @@ Image_interlace_eq(VALUE self, VALUE interlace)
 /**
  * Return the IPTC profile as a String.
  *
- * @return [String] the IPTC profile if it exists, otherwise nil
+ * @return [String, nil] the IPTC profile if it exists, otherwise nil
  */
 VALUE
 Image_iptc_profile(VALUE self)
@@ -9124,7 +9126,7 @@ Image_mean_error_per_pixel(VALUE self)
 /**
  * Return the officially registered (or de facto) MIME media-type corresponding to the image format.
  *
- * @return [String] the mime type
+ * @return [String, nil] the mime type
  */
 VALUE
 Image_mime_type(VALUE self)
@@ -12820,7 +12822,7 @@ Image_sigmoidal_contrast_channel(int argc, VALUE *argv, VALUE self)
  * Compute a message digest from an image pixel stream with an implementation of the NIST SHA-256
  * Message Digest algorithm.
  *
- * @return [String] the message digest
+ * @return [String, nil] the message digest
  */
 VALUE
 Image_signature(VALUE self)
