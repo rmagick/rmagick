@@ -444,7 +444,7 @@ EXTERN ID rm_ID_width;             /**< "width" */
     {\
         class *ptr;\
         if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {\
-            (void) rm_check_destroyed(self); \
+            rm_check_destroyed(self); \
         }\
         Data_Get_Struct(self, class, ptr);\
         return C_##type##_to_R_##type(ptr->attr);\
@@ -454,7 +454,7 @@ EXTERN ID rm_ID_width;             /**< "width" */
 #define IMPLEMENT_ATTR_READERF(class, attr, field, type) \
     {\
         class *ptr;\
-        (void) rm_check_destroyed(self); \
+        rm_check_destroyed(self); \
         Data_Get_Struct(self, class, ptr);\
         return C_##type##_to_R_##type(ptr->field);\
     }
@@ -464,7 +464,7 @@ EXTERN ID rm_ID_width;             /**< "width" */
     {\
         class *ptr;\
         if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {\
-            (void) rm_check_destroyed(self); \
+            rm_check_destroyed(self); \
         }\
         rb_check_frozen(self);\
         Data_Get_Struct(self, class, ptr);\
@@ -477,7 +477,7 @@ EXTERN ID rm_ID_width;             /**< "width" */
     {\
         class *ptr;\
         if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {\
-            (void) rm_check_destroyed(self); \
+            rm_check_destroyed(self); \
         }\
         rb_check_frozen(self);\
         Data_Get_Struct(self, class, ptr);\

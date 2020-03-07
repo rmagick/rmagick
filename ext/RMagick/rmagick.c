@@ -53,7 +53,7 @@ Magick_colors(VALUE class)
 
     color_info_list = GetColorInfoList("*", &number_colors, exception);
     CHECK_EXCEPTION()
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 
 
     if (rb_block_given_p())
@@ -70,7 +70,7 @@ Magick_colors(VALUE class)
         ary = rb_ary_new2((long) number_colors);
         for (x = 0; x < number_colors; x++)
         {
-            (void) rb_ary_push(ary, Import_ColorInfo(color_info_list[x]));
+            rb_ary_push(ary, Import_ColorInfo(color_info_list[x]));
         }
 
         magick_free((void *)color_info_list);
@@ -103,7 +103,7 @@ Magick_fonts(VALUE class)
     exception = AcquireExceptionInfo();
     type_info = GetTypeInfoList("*", &number_types, exception);
     CHECK_EXCEPTION()
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 
     if (rb_block_given_p())
     {
@@ -119,7 +119,7 @@ Magick_fonts(VALUE class)
         ary = rb_ary_new2((long)number_types);
         for (x = 0; x < number_types; x++)
         {
-            (void) rb_ary_push(ary, Import_TypeInfo((const TypeInfo *)type_info[x]));
+            rb_ary_push(ary, Import_TypeInfo((const TypeInfo *)type_info[x]));
         }
         magick_free((void *)type_info);
         RB_GC_GUARD(ary);
@@ -183,14 +183,14 @@ Magick_init_formats(VALUE class ATTRIBUTE_UNUSED)
     exception = AcquireExceptionInfo();
     magick_info = GetMagickInfoList("*", &number_formats, exception);
     CHECK_EXCEPTION()
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 
 
     for (x = 0; x < number_formats; x++)
     {
-        (void) rb_hash_aset(formats
-                            , rb_str_new2(magick_info[x]->name)
-                            , MagickInfo_to_format((const MagickInfo *)magick_info[x]));
+        rb_hash_aset(formats,
+                     rb_str_new2(magick_info[x]->name),
+                     MagickInfo_to_format((const MagickInfo *)magick_info[x]));
     }
     magick_free((void *)magick_info);
     RB_GC_GUARD(formats);
@@ -304,7 +304,7 @@ Magick_limit_resource(int argc, VALUE *argv, VALUE class)
 
     if (argc > 1)
     {
-        (void) SetMagickResourceLimit(res, (MagickSizeType)NUM2ULONG(limit));
+        SetMagickResourceLimit(res, (MagickSizeType)NUM2ULONG(limit));
     }
 
     RB_GC_GUARD(limit);
@@ -324,8 +324,8 @@ VALUE
 Magick_set_cache_threshold(VALUE class, VALUE threshold)
 {
     unsigned long thrshld = NUM2ULONG(threshold);
-    (void) SetMagickResourceLimit(MemoryResource, (MagickSizeType)thrshld);
-    (void) SetMagickResourceLimit(MapResource, (MagickSizeType)(2*thrshld));
+    SetMagickResourceLimit(MemoryResource, (MagickSizeType)thrshld);
+    SetMagickResourceLimit(MapResource, (MagickSizeType)(2*thrshld));
     return class;
 }
 
@@ -364,7 +364,7 @@ Magick_set_log_event_mask(int argc, VALUE *argv, VALUE class)
     }
     for (x = 0; x < argc; x++)
     {
-        (void) SetLogEventMask(StringValuePtr(argv[x]));
+        SetLogEventMask(StringValuePtr(argv[x]));
     }
     return class;
 }

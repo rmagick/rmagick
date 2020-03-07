@@ -58,14 +58,14 @@ set_option(VALUE self, const char *key, VALUE string)
 
     if (NIL_P(string))
     {
-        (void) DeleteImageOption(info, key);
+        DeleteImageOption(info, key);
     }
     else
     {
         char *value;
 
         value = StringValuePtr(string);
-        (void) SetImageOption(info, key, value);
+        SetImageOption(info, key, value);
     }
     return string;
 }
@@ -94,7 +94,7 @@ static VALUE set_color_option(VALUE self, const char *option, VALUE color)
 
     if (NIL_P(color))
     {
-        (void) DeleteImageOption(info, option);
+        DeleteImageOption(info, option);
     }
     else
     {
@@ -104,13 +104,13 @@ static VALUE set_color_option(VALUE self, const char *option, VALUE color)
         name = StringValuePtr(color);
         exception = AcquireExceptionInfo();
         okay = QueryColorCompliance(name, AllCompliance, &pp, exception);
-        (void) DestroyExceptionInfo(exception);
+        DestroyExceptionInfo(exception);
         if (!okay)
         {
             rb_raise(rb_eArgError, "invalid color name `%s'", name);
         }
 
-        (void) SetImageOption(info, option, name);
+        SetImageOption(info, option, name);
     }
 
     return color;
@@ -171,7 +171,7 @@ static VALUE set_dbl_option(VALUE self, const char *option, VALUE value)
 
     if (NIL_P(value))
     {
-        (void) DeleteImageOption(info, option);
+        DeleteImageOption(info, option);
     }
     else
     {
@@ -191,7 +191,7 @@ static VALUE set_dbl_option(VALUE self, const char *option, VALUE value)
             len = snprintf(buff, sizeof(buff), "%-10.2f", d);
         }
         memset(buff+len, '\0', sizeof(buff)-len);
-        (void) SetImageOption(info, option, buff);
+        SetImageOption(info, option, buff);
     }
 
     return value;
@@ -214,7 +214,7 @@ static char *pixel_packet_to_hexname(PixelPacket *pp, char *name)
 
     rm_init_magickpixel(NULL, &mpp);
     rm_set_magick_pixel_packet(pp, &mpp);
-    (void) GetColorTuple(&mpp, MagickTrue, name);
+    GetColorTuple(&mpp, MagickTrue, name);
     return name;
 }
 #endif
@@ -346,7 +346,7 @@ Info_aset(int argc, VALUE *argv, VALUE self)
                 rb_raise(rb_eArgError, "%.60s:%.1024s not defined - too long", format_p, key_p);
             }
 
-            (void) snprintf(ckey, sizeof(ckey), "%.60s:%.*s", format_p, (int)(sizeof(ckey)-MAX_FORMAT_LEN), key_p);
+            snprintf(ckey, sizeof(ckey), "%.60s:%.*s", format_p, (int)(sizeof(ckey)-MAX_FORMAT_LEN), key_p);
 
             value = argv[2];
             break;
@@ -364,7 +364,7 @@ Info_aset(int argc, VALUE *argv, VALUE self)
 
     if (NIL_P(value))
     {
-        (void) DeleteImageOption(info, ckey);
+        DeleteImageOption(info, ckey);
     }
     else
     {
@@ -725,9 +725,9 @@ Info_define(int argc, VALUE *argv, VALUE self)
     {
         rb_raise(rb_eArgError, "%.20s:%.20s not defined - format or key too long", format, key);
     }
-    (void) snprintf(ckey, sizeof(ckey), "%s:%s", format, key);
+    snprintf(ckey, sizeof(ckey), "%s:%s", format, key);
 
-    (void) DeleteImageOption(info, ckey);
+    DeleteImageOption(info, ckey);
     okay = SetImageOption(info, ckey, value);
     if (!okay)
     {
@@ -799,7 +799,7 @@ Info_delay_eq(VALUE self, VALUE string)
 
     if (NIL_P(string))
     {
-        (void) DeleteImageOption(info, "delay");
+        DeleteImageOption(info, "delay");
     }
     else
     {
@@ -807,14 +807,14 @@ Info_delay_eq(VALUE self, VALUE string)
         int delay;
 
         not_num = 0;
-        (void) rb_protect(arg_is_integer, string, &not_num);
+        rb_protect(arg_is_integer, string, &not_num);
         if (not_num)
         {
             rb_raise(rb_eTypeError, "failed to convert %s into Integer", rb_class2name(CLASS_OF(string)));
         }
         delay = NUM2INT(string);
         snprintf(dstr, sizeof(dstr), "%d", delay);
-        (void) SetImageOption(info, "delay", dstr);
+        SetImageOption(info, "delay", dstr);
     }
     return string;
 }
@@ -1013,7 +1013,7 @@ Info_dispose_eq(VALUE self, VALUE disp)
 
     if (NIL_P(disp))
     {
-        (void) DeleteImageOption(info, "dispose");
+        DeleteImageOption(info, "dispose");
         return self;
     }
 
@@ -1029,7 +1029,7 @@ Info_dispose_eq(VALUE self, VALUE disp)
         }
     }
 
-    (void) SetImageOption(info, "dispose", option);
+    SetImageOption(info, "dispose", option);
     return disp;
 }
 
@@ -1272,7 +1272,7 @@ VALUE Info_format(VALUE self)
 
         exception = AcquireExceptionInfo();
         magick_info = GetMagickInfo(info->magick, exception);
-        (void) DestroyExceptionInfo(exception);
+        DestroyExceptionInfo(exception);
 
         return magick_info ? rb_str_new2(magick_info->name) : Qnil;
     }
@@ -1301,7 +1301,7 @@ Info_format_eq(VALUE self, VALUE magick)
     exception = AcquireExceptionInfo();
     m = GetMagickInfo(mgk, exception);
     CHECK_EXCEPTION()
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 
     if (!m)
     {
@@ -1444,7 +1444,7 @@ Info_gravity_eq(VALUE self, VALUE grav)
 
     if (NIL_P(grav))
     {
-        (void) DeleteImageOption(info, "gravity");
+        DeleteImageOption(info, "gravity");
         return self;
     }
 
@@ -1460,7 +1460,7 @@ Info_gravity_eq(VALUE self, VALUE grav)
         }
     }
 
-    (void) SetImageOption(info, "gravity", option);
+    SetImageOption(info, "gravity", option);
     return grav;
 }
 
@@ -1599,7 +1599,7 @@ Info_monitor_eq(VALUE self, VALUE monitor)
     }
     else
     {
-        (void) SetImageInfoProgressMonitor(info, rm_progress_monitor, (void *)monitor);
+        SetImageInfoProgressMonitor(info, rm_progress_monitor, (void *)monitor);
     }
 
     return monitor;
@@ -1724,7 +1724,7 @@ Info_origin_eq(VALUE self, VALUE origin_arg)
 
     if (NIL_P(origin_arg))
     {
-        (void) DeleteImageOption(info, "origin");
+        DeleteImageOption(info, "origin");
         return self;
     }
 
@@ -1737,7 +1737,7 @@ Info_origin_eq(VALUE self, VALUE origin_arg)
         rb_raise(rb_eArgError, "invalid origin geometry");
     }
 
-    (void) SetImageOption(info, "origin", origin);
+    SetImageOption(info, "origin", origin);
     magick_free(origin);
 
     RB_GC_GUARD(origin_str);
@@ -1929,8 +1929,8 @@ Info_scene_eq(VALUE self, VALUE scene)
     Data_Get_Struct(self, Info, info);
     info->scene = NUM2ULONG(scene);
 
-    (void) snprintf(buf, sizeof(buf), "%"RMIuSIZE"", info->scene);
-    (void) SetImageOption(info, "scene", buf);
+    snprintf(buf, sizeof(buf), "%"RMIuSIZE"", info->scene);
+    SetImageOption(info, "scene", buf);
 
     return scene;
 }
@@ -2161,8 +2161,8 @@ Info_tile_offset_eq(VALUE self, VALUE offset)
 
     Data_Get_Struct(self, Info, info);
 
-    (void) DeleteImageOption(info, "tile-offset");
-    (void) SetImageOption(info, "tile-offset", tile_offset);
+    DeleteImageOption(info, "tile-offset");
+    SetImageOption(info, "tile-offset", tile_offset);
 
     RB_GC_GUARD(offset_str);
 
@@ -2231,7 +2231,7 @@ Info_undefine(VALUE self, VALUE format, VALUE key)
     snprintf(fkey, sizeof(fkey), "%.60s:%.*s", format_p, (int)(MaxTextExtent-61), key_p);
 
     Data_Get_Struct(self, Info, info);
-    (void) DeleteImageOption(info, fkey);
+    DeleteImageOption(info, fkey);
 
     return self;
 }
@@ -2371,7 +2371,7 @@ destroy_Info(void *infoptr)
         info->texture = NULL;
     }
 
-    (void) DestroyImageInfo(info);
+    DestroyImageInfo(info);
 }
 
 
@@ -2441,7 +2441,7 @@ Info_initialize(VALUE self)
     if (rb_block_given_p())
     {
         // Run the block in self's context
-        (void) rb_obj_instance_eval(0, NULL, self);
+        rb_obj_instance_eval(0, NULL, self);
     }
     return self;
 }

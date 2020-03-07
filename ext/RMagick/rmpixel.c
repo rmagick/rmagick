@@ -104,8 +104,8 @@ Pixel_red_eq(VALUE self, VALUE v)
     rb_check_frozen(self);
     Data_Get_Struct(self, Pixel, pixel);
     pixel->red = APP2QUANTUM(v);
-    (void) rb_funcall(self, rm_ID_changed, 0);
-    (void) rb_funcall(self, rm_ID_notify_observers, 1, self);
+    rb_funcall(self, rm_ID_changed, 0);
+    rb_funcall(self, rm_ID_notify_observers, 1, self);
     return QUANTUM2NUM((pixel->red));
 }
 
@@ -128,8 +128,8 @@ Pixel_green_eq(VALUE self, VALUE v)
     rb_check_frozen(self);
     Data_Get_Struct(self, Pixel, pixel);
     pixel->green = APP2QUANTUM(v);
-    (void) rb_funcall(self, rm_ID_changed, 0);
-    (void) rb_funcall(self, rm_ID_notify_observers, 1, self);
+    rb_funcall(self, rm_ID_changed, 0);
+    rb_funcall(self, rm_ID_notify_observers, 1, self);
     return QUANTUM2NUM((pixel->green));
 }
 
@@ -152,8 +152,8 @@ Pixel_blue_eq(VALUE self, VALUE v)
     rb_check_frozen(self);
     Data_Get_Struct(self, Pixel, pixel);
     pixel->blue = APP2QUANTUM(v);
-    (void) rb_funcall(self, rm_ID_changed, 0);
-    (void) rb_funcall(self, rm_ID_notify_observers, 1, self);
+    rb_funcall(self, rm_ID_changed, 0);
+    rb_funcall(self, rm_ID_notify_observers, 1, self);
     return QUANTUM2NUM((pixel->blue));
 }
 
@@ -177,13 +177,13 @@ Pixel_alpha_eq(VALUE self, VALUE v)
     Data_Get_Struct(self, Pixel, pixel);
 #if defined(IMAGEMAGICK_7)
     pixel->alpha = APP2QUANTUM(v);
-    (void) rb_funcall(self, rm_ID_changed, 0);
-    (void) rb_funcall(self, rm_ID_notify_observers, 1, self);
+    rb_funcall(self, rm_ID_changed, 0);
+    rb_funcall(self, rm_ID_notify_observers, 1, self);
     return QUANTUM2NUM(pixel->alpha);
 #else
     pixel->opacity = QuantumRange - APP2QUANTUM(v);
-    (void) rb_funcall(self, rm_ID_changed, 0);
-    (void) rb_funcall(self, rm_ID_notify_observers, 1, self);
+    rb_funcall(self, rm_ID_changed, 0);
+    rb_funcall(self, rm_ID_notify_observers, 1, self);
     return QUANTUM2NUM(QuantumRange - pixel->opacity);
 #endif
 }
@@ -221,8 +221,8 @@ Pixel_cyan_eq(VALUE self, VALUE v)
     rb_check_frozen(self);
     Data_Get_Struct(self, Pixel, pixel);
     pixel->red = APP2QUANTUM(v);
-    (void) rb_funcall(self, rm_ID_changed, 0);
-    (void) rb_funcall(self, rm_ID_notify_observers, 1, self);
+    rb_funcall(self, rm_ID_changed, 0);
+    rb_funcall(self, rm_ID_notify_observers, 1, self);
     return QUANTUM2NUM(pixel->red);
 }
 
@@ -259,8 +259,8 @@ Pixel_magenta_eq(VALUE self, VALUE v)
     rb_check_frozen(self);
     Data_Get_Struct(self, Pixel, pixel);
     pixel->green = APP2QUANTUM(v);
-    (void) rb_funcall(self, rm_ID_changed, 0);
-    (void) rb_funcall(self, rm_ID_notify_observers, 1, self);
+    rb_funcall(self, rm_ID_changed, 0);
+    rb_funcall(self, rm_ID_notify_observers, 1, self);
     return QUANTUM2NUM(pixel->green);
 }
 
@@ -297,8 +297,8 @@ Pixel_yellow_eq(VALUE self, VALUE v)
     rb_check_frozen(self);
     Data_Get_Struct(self, Pixel, pixel);
     pixel->blue = APP2QUANTUM(v);
-    (void) rb_funcall(self, rm_ID_changed, 0);
-    (void) rb_funcall(self, rm_ID_notify_observers, 1, self);
+    rb_funcall(self, rm_ID_changed, 0);
+    rb_funcall(self, rm_ID_notify_observers, 1, self);
     return QUANTUM2NUM(pixel->blue);
 }
 
@@ -335,8 +335,8 @@ Pixel_black_eq(VALUE self, VALUE v)
     rb_check_frozen(self);
     Data_Get_Struct(self, Pixel, pixel);
     pixel->black = APP2QUANTUM(v);
-    (void) rb_funcall(self, rm_ID_changed, 0);
-    (void) rb_funcall(self, rm_ID_notify_observers, 1, self);
+    rb_funcall(self, rm_ID_changed, 0);
+    rb_funcall(self, rm_ID_notify_observers, 1, self);
     return QUANTUM2NUM(pixel->black);
 }
 
@@ -453,7 +453,7 @@ Color_Name_to_PixelColor(PixelColor *color, VALUE name_arg)
     exception = AcquireExceptionInfo();
     name = StringValuePtr(name_arg);
     okay = QueryColorCompliance(name, AllCompliance, color, exception);
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
     if (!okay)
     {
         rb_raise(rb_eArgError, "invalid color name %s", name);
@@ -624,7 +624,7 @@ Pixel_fcmp(int argc, VALUE *argv, VALUE self)
     image = rm_acquire_image(info);
 
     // Delete Info now in case we have to raise an exception
-    (void) DestroyImageInfo(info);
+    DestroyImageInfo(info);
 
     if (!image)
     {
@@ -635,7 +635,7 @@ Pixel_fcmp(int argc, VALUE *argv, VALUE self)
     image->fuzz = fuzz;
 
     equal = IsColorSimilar(image, &this, &that);
-    (void) DestroyImage(image);
+    DestroyImage(image);
 #endif
 
     return equal ? Qtrue : Qfalse;
@@ -664,7 +664,7 @@ Pixel_from_color(VALUE class ATTRIBUTE_UNUSED, VALUE name)
     exception = AcquireExceptionInfo();
     okay = QueryColorCompliance(StringValuePtr(name), AllCompliance, &pp, exception);
     CHECK_EXCEPTION()
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 
     if (!okay)
     {
@@ -746,13 +746,13 @@ Pixel_from_hsla(int argc, VALUE *argv, VALUE class ATTRIBUTE_UNUSED)
     exception = AcquireExceptionInfo();
 
 #if defined(IMAGEMAGICK_7)
-    (void) QueryColorCompliance(name, AllCompliance, &pp, exception);
+    QueryColorCompliance(name, AllCompliance, &pp, exception);
 #else
-    (void) QueryMagickColor(name, &pp, exception);
+    QueryMagickColor(name, &pp, exception);
 #endif
     CHECK_EXCEPTION()
 
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 
     return Pixel_from_MagickPixel(&pp);
 }
@@ -1222,7 +1222,7 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
 
     info = CloneImageInfo(NULL);
     image = rm_acquire_image(info);
-    (void) DestroyImageInfo(info);
+    DestroyImageInfo(info);
 
     if (!image)
     {
@@ -1257,16 +1257,16 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
 #endif
             mpp.depth = (unsigned long) min(1.0 * image->depth, 16.0);
         }
-        (void) GetColorTuple(&mpp, MagickTrue, name);
+        GetColorTuple(&mpp, MagickTrue, name);
     }
     else
     {
-        (void) QueryColorname(image, &mpp, compliance, name, exception);
+        QueryColorname(image, &mpp, compliance, name, exception);
     }
 
-    (void) DestroyImage(image);
+    DestroyImage(image);
     CHECK_EXCEPTION()
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 
     // Always return a string, even if it's ""
     return rb_str_new2(name);

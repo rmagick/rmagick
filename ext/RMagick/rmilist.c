@@ -75,12 +75,12 @@ ImageList_animate(int argc, VALUE *argv, VALUE self)
     Data_Get_Struct(info_obj, Info, info);
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    (void) AnimateImages(info, images, exception);
+    AnimateImages(info, images, exception);
     rm_split(images);
     CHECK_EXCEPTION()
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 #else
-    (void) AnimateImages(info, images);
+    AnimateImages(info, images);
     rm_split(images);
     rm_check_image_exception(images, RetainOnError);
 #endif
@@ -115,7 +115,7 @@ ImageList_append(VALUE self, VALUE stack_arg)
     new_image = AppendImages(images, stack, exception);
     rm_split(images);
     rm_check_exception(exception, new_image, DestroyOnError);
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 
     rm_ensure_result(new_image);
 
@@ -142,7 +142,7 @@ ImageList_average(VALUE self)
 
     rm_split(images);
     rm_check_exception(exception, new_image, DestroyOnError);
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 
     rm_ensure_result(new_image);
 
@@ -171,7 +171,7 @@ ImageList_coalesce(VALUE self)
     new_images = CoalesceImages(images, exception);
     rm_split(images);
     rm_check_exception(exception, new_images, DestroyOnError);
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 
     rm_ensure_result(new_images);
 
@@ -268,7 +268,7 @@ VALUE ImageList_combine(int argc, VALUE *argv, VALUE self)
     images->colorspace = old_colorspace;
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 
     rm_ensure_result(new_image);
 
@@ -318,7 +318,7 @@ ImageList_composite_layers(int argc, VALUE *argv, VALUE self)
     source = images_from_imagelist(source_images);
 
     SetGeometry(new_images,&geometry);
-    (void) ParseAbsoluteGeometry(new_images->geometry, &geometry);
+    ParseAbsoluteGeometry(new_images->geometry, &geometry);
 
     geometry.width  = source->page.width != 0 ? source->page.width : source->columns;
     geometry.height = source->page.height != 0 ? source->page.height : source->rows;
@@ -330,7 +330,7 @@ ImageList_composite_layers(int argc, VALUE *argv, VALUE self)
     CompositeLayers(new_images, operator, source, geometry.x, geometry.y, exception);
     rm_split(source);
     rm_check_exception(exception, new_images, DestroyOnError);
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 
     RB_GC_GUARD(source_images);
 
@@ -359,7 +359,7 @@ ImageList_deconstruct(VALUE self)
 #endif
     rm_split(images);
     rm_check_exception(exception, new_images, DestroyOnError);
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 
     rm_ensure_result(new_images);
 
@@ -390,12 +390,12 @@ ImageList_display(VALUE self)
     images = images_from_imagelist(self);
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    (void) DisplayImages(info, images, exception);
+    DisplayImages(info, images, exception);
     rm_split(images);
     CHECK_EXCEPTION();
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 #else
-    (void) DisplayImages(info, images);
+    DisplayImages(info, images);
     rm_split(images);
     rm_check_image_exception(images, RetainOnError);
 #endif
@@ -424,7 +424,7 @@ ImageList_flatten_images(VALUE self)
 
     rm_split(images);
     rm_check_exception(exception, new_image, DestroyOnError);
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 
     rm_ensure_result(new_image);
 
@@ -458,7 +458,7 @@ ImageList_montage(VALUE self)
     {
         // Run the block in the instance's context, allowing the app to modify the
         // object's attributes.
-        (void) rb_obj_instance_eval(0, NULL, montage_obj);
+        rb_obj_instance_eval(0, NULL, montage_obj);
     }
 
     Data_Get_Struct(montage_obj, Montage, montage);
@@ -483,7 +483,7 @@ ImageList_montage(VALUE self)
     new_images = MontageImages(images, montage->info, exception);
     rm_split(images);
     rm_check_exception(exception, new_images, DestroyOnError);
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 
     rm_ensure_result(new_images);
 
@@ -521,7 +521,7 @@ ImageList_morph(VALUE self, VALUE nimages)
     new_images = MorphImages(images, (unsigned long)number_images, exception);
     rm_split(images);
     rm_check_exception(exception, new_images, DestroyOnError);
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 
     rm_ensure_result(new_images);
 
@@ -547,7 +547,7 @@ ImageList_mosaic(VALUE self)
 
     rm_split(images);
     rm_check_exception(exception, new_image, DestroyOnError);
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 
     rm_ensure_result(new_image);
 
@@ -598,7 +598,7 @@ ImageList_optimize_layers(VALUE self, VALUE method)
             break;
         case CompositeLayer:
             rm_split(images);
-            (void) DestroyExceptionInfo(exception);
+            DestroyExceptionInfo(exception);
             rb_raise(rb_eNotImpError, "Magick::CompositeLayer is not supported. Use the composite_layers method instead.");
             break;
             // In 6.3.4-ish, OptimizeImageLayer replaced OptimizeLayer
@@ -619,9 +619,9 @@ ImageList_optimize_layers(VALUE self, VALUE method)
             // mogrify supports -dither here. We don't.
             GetQuantizeInfo(&quantize_info);
 #if defined(IMAGEMAGICK_7)
-            (void) RemapImages(&quantize_info, new_images, NULL, exception);
+            RemapImages(&quantize_info, new_images, NULL, exception);
 #else
-            (void) RemapImages(&quantize_info, new_images, NULL);
+            RemapImages(&quantize_info, new_images, NULL);
 #endif
             break;
         case OptimizePlusLayer:
@@ -650,14 +650,14 @@ ImageList_optimize_layers(VALUE self, VALUE method)
             break;
         default:
             rm_split(images);
-            (void) DestroyExceptionInfo(exception);
+            DestroyExceptionInfo(exception);
             rb_raise(rb_eArgError, "undefined layer method");
             break;
     }
 
     rm_split(images);
     rm_check_exception(exception, new_images, DestroyOnError);
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 
     rm_ensure_result(new_images);
 
@@ -714,7 +714,7 @@ rm_imagelist_from_images(Image *images)
         imagelist_push(new_imagelist, rm_image_new(image));
     }
 
-    (void) rb_iv_set(new_imagelist, "@scene", INT2FIX(0));
+    rb_iv_set(new_imagelist, "@scene", INT2FIX(0));
 
     RB_GC_GUARD(new_imagelist);
 
@@ -824,7 +824,7 @@ static void
 imagelist_push(VALUE imagelist, VALUE image)
 {
     rb_check_frozen(imagelist);
-    (void) rb_funcall(imagelist, rm_ID_push, 1, image);
+    rb_funcall(imagelist, rm_ID_push, 1, image);
 }
 
 
@@ -855,7 +855,7 @@ clone_imagelist(Image *images)
         image = GetNextImageInList(image);
     }
 
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
     return new_imagelist;
 }
 
@@ -933,12 +933,12 @@ ImageList_quantize(int argc, VALUE *argv, VALUE self)
     rm_ensure_result(new_images);
 
 #if defined(IMAGEMAGICK_7)
-    (void) QuantizeImages(&quantize_info, new_images, exception);
+    QuantizeImages(&quantize_info, new_images, exception);
 #else
-    (void) QuantizeImages(&quantize_info, new_images);
+    QuantizeImages(&quantize_info, new_images);
 #endif
     rm_check_exception(exception, new_images, DestroyOnError);
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 
     // Create new ImageList object, convert mapped image sequence to images,
     // append to images array.
@@ -950,7 +950,7 @@ ImageList_quantize(int argc, VALUE *argv, VALUE self)
 
     // Set @scene in new ImageList object to same value as in self.
     scene = rb_iv_get(self, "@scene");
-    (void) rb_iv_set(new_imagelist, "@scene", scene);
+    rb_iv_set(new_imagelist, "@scene", scene);
 
     RB_GC_GUARD(new_imagelist);
     RB_GC_GUARD(scene);
@@ -1002,12 +1002,12 @@ ImageList_remap(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    (void) RemapImages(&quantize_info, images, remap_image, exception);
+    RemapImages(&quantize_info, images, remap_image, exception);
     rm_split(images);
     CHECK_EXCEPTION()
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 #else
-    (void) RemapImages(&quantize_info, images, remap_image);
+    RemapImages(&quantize_info, images, remap_image);
     rm_split(images);
     rm_check_image_exception(images, RetainOnError);
 #endif
@@ -1045,7 +1045,7 @@ ImageList_to_blob(VALUE self)
     images = images_from_imagelist(self);
 
     exception = AcquireExceptionInfo();
-    (void) SetImageInfo(info, MagickTrue, exception);
+    SetImageInfo(info, MagickTrue, exception);
     rm_check_exception(exception, images, RetainOnError);
 
     if (*info->magick != '\0')
@@ -1075,7 +1075,7 @@ ImageList_to_blob(VALUE self)
     }
     rm_split(images);
     CHECK_EXCEPTION()
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 
 
     if (length == 0 || !blob)
@@ -1147,13 +1147,13 @@ ImageList_write(VALUE self, VALUE file)
 
     // Find out if the format supports multi-images files.
     exception = AcquireExceptionInfo();
-    (void) SetImageInfo(info, MagickTrue, exception);
+    SetImageInfo(info, MagickTrue, exception);
     rm_check_exception(exception, images, RetainOnError);
 
     m = GetMagickInfo(info->magick, exception);
     rm_check_exception(exception, images, RetainOnError);
 #if defined(IMAGEMAGICK_6)
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 #endif
 
     // Tell WriteImage if we want a multi-images file.
@@ -1166,10 +1166,10 @@ ImageList_write(VALUE self, VALUE file)
     {
         rm_sync_image_options(img, info);
 #if defined(IMAGEMAGICK_7)
-        (void) WriteImage(info, img, exception);
+        WriteImage(info, img, exception);
         rm_check_exception(exception, img, RetainOnError);
 #else
-        (void) WriteImage(info, img);
+        WriteImage(info, img);
         // images will be split before raising an exception
         rm_check_image_exception(images, RetainOnError);
 #endif
@@ -1180,7 +1180,7 @@ ImageList_write(VALUE self, VALUE file)
     }
 
 #if defined(IMAGEMAGICK_7)
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 #endif
 
     rm_split(images);
