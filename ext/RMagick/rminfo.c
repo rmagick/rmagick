@@ -979,7 +979,7 @@ Info_dispose(VALUE self)
     dispose_id = rb_intern("UndefinedDispose");
 
     // Map the dispose option string to a DisposeType enumerator.
-    dispose=GetImageOption(info, "dispose");
+    dispose = GetImageOption(info, "dispose");
     if (dispose)
     {
         for (int x = 0; x < N_DISPOSE_OPTIONS; x++)
@@ -1409,7 +1409,7 @@ VALUE Info_gravity(VALUE self)
     gravity_id = rb_intern("UndefinedGravity");
 
     // Map the gravity option string to a GravityType enumerator.
-    gravity=GetImageOption(info, "gravity");
+    gravity = GetImageOption(info, "gravity");
     if (gravity)
     {
         for (int x = 0; x < N_GRAVITY_OPTIONS; x++)
@@ -1784,7 +1784,7 @@ Info_page_eq(VALUE self, VALUE page_arg)
         return self;
     }
     geom_str = rm_to_s(page_arg);
-    geometry=GetPageGeometry(StringValuePtr(geom_str));
+    geometry = GetPageGeometry(StringValuePtr(geom_str));
     if (*geometry == '\0')
     {
         magick_free(info->page);
