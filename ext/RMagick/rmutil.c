@@ -79,7 +79,7 @@ magick_malloc(const size_t size)
 void
 magick_free(void *ptr)
 {
-    (void) RelinquishMagickMemory(ptr);
+    RelinquishMagickMemory(ptr);
 }
 
 
@@ -128,7 +128,7 @@ magick_safe_realloc(void *memory, const size_t count, const size_t quantum)
 void
  magick_clone_string(char **new_str, const char *str)
 {
-    (void) CloneString(new_str, str);
+    CloneString(new_str, str);
 }
 
 
@@ -397,7 +397,7 @@ rm_percentage(VALUE arg, double max)
     int not_num;
 
     // Try to convert the argument to a number. If failure, sets not_num to non-zero.
-    (void) rb_protect(arg_is_number, arg, &not_num);
+    rb_protect(arg_is_number, arg, &not_num);
 
     if (not_num)
     {
@@ -454,7 +454,7 @@ rm_percentage(VALUE arg, double max)
 static VALUE
 check_num2dbl(VALUE obj)
 {
-    (void) rb_num2dbl(obj);
+    rb_num2dbl(obj);
     return INT2FIX(1);
 }
 
@@ -544,7 +544,7 @@ rm_fuzz_to_dbl(VALUE fuzz_arg)
     int not_num;
 
     // Try to convert the argument to a number. If failure, sets not_num to non-zero.
-    (void) rb_protect(arg_is_number, fuzz_arg, &not_num);
+    rb_protect(arg_is_number, fuzz_arg, &not_num);
 
     if (not_num)
     {
@@ -634,7 +634,7 @@ rm_acquire_image(ImageInfo *info)
     exception = AcquireExceptionInfo();
     new_image = AcquireImage(info, exception);
     CHECK_EXCEPTION()
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
     return new_image;
 #else
     return AcquireImage(info);
@@ -684,9 +684,9 @@ rm_pixelcolor_to_color_name(Image *image, PixelColor *color)
     pp.colorspace = image->colorspace;
 #endif
 
-    (void) QueryColorname(image, &pp, X11Compliance, name, exception);
+    QueryColorname(image, &pp, X11Compliance, name, exception);
     CHECK_EXCEPTION()
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 
     return rb_str_new2(name);
 }
@@ -727,7 +727,7 @@ rm_pixelcolor_to_color_name_info(Info *info, PixelColor *color)
 #endif
 
     color_name = rm_pixelcolor_to_color_name(image, color);
-    (void) DestroyImage(image);
+    DestroyImage(image);
 
     return color_name;
 }
@@ -766,13 +766,13 @@ rm_set_magickpixel(MagickPixel *pp, const char *color)
     exception = AcquireExceptionInfo();
 
 #if defined(IMAGEMAGICK_7)
-    (void) QueryColorCompliance(color, AllCompliance, pp, exception);
+    QueryColorCompliance(color, AllCompliance, pp, exception);
 #else
-    (void) QueryMagickColor(color, pp, exception);
+    QueryMagickColor(color, pp, exception);
 #endif
     // This exception is ignored because the color comes from places where we control
     // the value and it is very unlikely that an exception will be thrown.
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 }
 
 /**
@@ -892,7 +892,7 @@ rm_magick_error(const char *msg)
     mesg = rb_str_new2(msg);
 
     exc = rb_funcall(Class_ImageMagickError, rm_ID_new, 2, mesg, Qnil);
-    (void) rb_funcall(rb_cObject, rb_intern("raise"), 1, exc);
+    rb_funcall(rb_cObject, rb_intern("raise"), 1, exc);
 
     RB_GC_GUARD(exc);
     RB_GC_GUARD(mesg);
@@ -928,8 +928,8 @@ ImageMagickError_initialize(int argc, VALUE *argv, VALUE self)
             rb_raise(rb_eArgError, "wrong number of arguments (%d for 0 to 2)", argc);
     }
 
-    (void) rb_call_super(super_argc, (const VALUE *)super_argv);
-    (void) rb_iv_set(self, "@"MAGICK_LOC, extra);
+    rb_call_super(super_argc, (const VALUE *)super_argv);
+    rb_iv_set(self, "@"MAGICK_LOC, extra);
 
     RB_GC_GUARD(extra);
 
@@ -956,7 +956,7 @@ rm_get_property(const Image *img, const char *property)
     exception = AcquireExceptionInfo();
     result = GetImageProperty(img, property, exception);
     CHECK_EXCEPTION()
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
     return result;
 #else
     return GetImageProperty(img, property);
@@ -984,7 +984,7 @@ rm_set_property(Image *image, const char *property, const char *value)
     exception = AcquireExceptionInfo();
     okay = SetImageProperty(image, property, value, exception);
     CHECK_EXCEPTION()
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
     return okay;
 #else
     return SetImageProperty(image, property, value);
@@ -1013,7 +1013,7 @@ void rm_set_user_artifact(Image *images, Info *info)
         image = GetFirstImageInList(images);
         while (image)
         {
-            (void) SetImageArtifact(image, "user", value);
+            SetImageArtifact(image, "user", value);
             image = GetNextImageInList(image);
         }
     }
@@ -1045,7 +1045,7 @@ rm_get_optional_arguments(VALUE img)
         optional_method_arguments = rb_const_get_from(Module_Magick, rb_intern("OptionalMethodArguments"));
         argv[0] = img;
         opt_args = rb_class_new_instance(1, argv, optional_method_arguments);
-        (void) rb_obj_instance_eval(0, NULL, opt_args);
+        rb_obj_instance_eval(0, NULL, opt_args);
     }
 
     RB_GC_GUARD(optional_method_arguments);
@@ -1077,7 +1077,7 @@ static void copy_options(Image *image, Info *info)
         if (value)
         {
             strlcpy(property, value, sizeof(property));
-            (void) SetImageArtifact(image, property, value);
+            SetImageArtifact(image, property, value);
         }
     }
 }
@@ -1123,7 +1123,7 @@ void rm_sync_image_options(Image *image, Info *info)
         // We should not throw an exception in this method because we will
         // leak memory in the place where this method is called. And that is
         // why the exception is being ignored here.
-        (void) DestroyExceptionInfo(exception);
+        DestroyExceptionInfo(exception);
 #else
         SetImageColorspace(image, info->colorspace);
 #endif
@@ -1205,7 +1205,7 @@ void rm_sync_image_options(Image *image, Info *info)
 
     if (info->page)
     {
-        (void)ParseAbsoluteGeometry(info->page, &image->page);
+        ParseAbsoluteGeometry(info->page, &image->page);
     }
 
     if (info->quality != 0UL)
@@ -1222,7 +1222,7 @@ void rm_sync_image_options(Image *image, Info *info)
     option = GetImageOption(info, "tile-offset");
     if (option)
     {
-        (void)ParseAbsoluteGeometry(option, &image->tile_offset);
+        ParseAbsoluteGeometry(option, &image->tile_offset);
     }
 
     option = GetImageOption(info, "transparent");
@@ -1305,10 +1305,10 @@ rm_exif_by_entry(Image *image)
     ExceptionInfo *exception;
 
     exception = AcquireExceptionInfo();
-    (void) GetImageProperty(image, "exif:*", exception);
+    GetImageProperty(image, "exif:*", exception);
     CHECK_EXCEPTION()
 #else
-    (void) GetImageProperty(image, "exif:*");
+    GetImageProperty(image, "exif:*");
 #endif
 
     ResetImagePropertyIterator(image);
@@ -1344,7 +1344,7 @@ rm_exif_by_entry(Image *image)
     if (len == 0)
     {
 #if defined(IMAGEMAGICK_7)
-        (void) DestroyExceptionInfo(exception);
+        DestroyExceptionInfo(exception);
 #endif
         return Qnil;
     }
@@ -1389,7 +1389,7 @@ rm_exif_by_entry(Image *image)
     }
 
 #if defined(IMAGEMAGICK_7)
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 #endif
 
     v = rb_str_new(str, len);
@@ -1424,10 +1424,10 @@ rm_exif_by_number(Image *image)
     ExceptionInfo *exception;
 
     exception = AcquireExceptionInfo();
-    (void) GetImageProperty(image, "exif:!", exception);
+    GetImageProperty(image, "exif:!", exception);
     CHECK_EXCEPTION()
 #else
-    (void) GetImageProperty(image, "exif:!");
+    GetImageProperty(image, "exif:!");
 #endif
     ResetImagePropertyIterator(image);
     property = GetNextImageProperty(image);
@@ -1462,7 +1462,7 @@ rm_exif_by_number(Image *image)
     if (len == 0)
     {
 #if defined(IMAGEMAGICK_7)
-        (void) DestroyExceptionInfo(exception);
+        DestroyExceptionInfo(exception);
 #endif
         return Qnil;
     }
@@ -1507,7 +1507,7 @@ rm_exif_by_number(Image *image)
     }
 
 #if defined(IMAGEMAGICK_7)
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 #endif
 
     v = rb_str_new(str, len);
@@ -1544,7 +1544,7 @@ rm_clone_image(Image *image)
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
     rm_check_exception(exception, clone, DestroyOnError);
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 
     return clone;
 }
@@ -1627,7 +1627,7 @@ rm_split(Image *image)
     }
     while (image)
     {
-        (void) RemoveFirstImageFromList(&image);
+        RemoveFirstImageFromList(&image);
     }
 }
 
@@ -1680,7 +1680,7 @@ rm_check_image_exception(Image *imglist, ErrorRetention retention)
         rm_check_exception(exception, imglist, retention);
     }
 
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 }
 #endif
 
@@ -1829,7 +1829,7 @@ handle_exception(ExceptionInfo *exception, Image *imglist, ErrorRetention retent
     {
         if (retention == DestroyOnError)
         {
-            (void) DestroyImageList(imglist);
+            DestroyImageList(imglist);
             imglist = NULL;
         }
         else
@@ -1840,7 +1840,7 @@ handle_exception(ExceptionInfo *exception, Image *imglist, ErrorRetention retent
 
     format_exception(exception->severity, exception->reason, exception->description, msg);
 
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 
     rm_magick_error(msg);
 }
@@ -1884,7 +1884,7 @@ rm_should_raise_exception(ExceptionInfo *exception, const ExceptionRetention ret
 
         if (retention == DestroyExceptionRetention)
         {
-            (void) DestroyExceptionInfo(exception);
+            DestroyExceptionInfo(exception);
         }
 
         return MagickFalse;
@@ -1908,7 +1908,7 @@ rm_raise_exception(ExceptionInfo *exception)
 
     format_exception(exception->severity, exception->reason, exception->description, msg);
 
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 
     rm_magick_error(msg);
 }

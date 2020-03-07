@@ -843,7 +843,7 @@ VALUE Draw_annotate(
     // allowing the app a chance to modify the object's attributes
     if (rb_block_given_p())
     {
-        (void)rb_obj_instance_eval(0, NULL, self);
+        rb_obj_instance_eval(0, NULL, self);
     }
 
     // Translate & store in Draw structure
@@ -865,7 +865,7 @@ VALUE Draw_annotate(
     if (!draw->info->text)
     {
 #if defined(IMAGEMAGICK_7)
-        (void) DestroyExceptionInfo(exception);
+        DestroyExceptionInfo(exception);
 #endif
         rb_raise(rb_eArgError, "no text");
     }
@@ -891,9 +891,9 @@ VALUE Draw_annotate(
     magick_clone_string(&draw->info->geometry, geometry_str);
 
 #if defined(IMAGEMAGICK_7)
-    (void) AnnotateImage(image, draw->info, exception);
+    AnnotateImage(image, draw->info, exception);
 #else
-    (void) AnnotateImage(image, draw->info);
+    AnnotateImage(image, draw->info);
 #endif
 
     magick_free(draw->info->text);
@@ -902,7 +902,7 @@ VALUE Draw_annotate(
 
 #if defined(IMAGEMAGICK_7)
     CHECK_EXCEPTION()
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 #else
     rm_check_image_exception(image, RetainOnError);
 #endif
@@ -1009,11 +1009,11 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
     draw->tmpfile_ary = tmpfile_name;
 
     // Form the drawing primitive
-    (void) snprintf(primitive, sizeof(primitive), "image %s %g,%g,%g,%g '%s'", op, x, y, width, height, name);
+    snprintf(primitive, sizeof(primitive), "image %s %g,%g,%g,%g '%s'", op, x, y, width, height, name);
 
 
     // Send "primitive" to self.
-    (void) rb_funcall(self, rb_intern("primitive"), 1, rb_str_new2(primitive));
+    rb_funcall(self, rb_intern("primitive"), 1, rb_str_new2(primitive));
 
     RB_GC_GUARD(image);
 
@@ -1050,9 +1050,9 @@ Draw_draw(VALUE self, VALUE image_arg)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    (void) DrawImage(image, draw->info, exception);
+    DrawImage(image, draw->info, exception);
 #else
-    (void) DrawImage(image, draw->info);
+    DrawImage(image, draw->info);
 #endif
 
     magick_free(draw->info->primitive);
@@ -1060,7 +1060,7 @@ Draw_draw(VALUE self, VALUE image_arg)
 
 #if defined(IMAGEMAGICK_7)
     CHECK_EXCEPTION()
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 #else
     rm_check_image_exception(image, RetainOnError);
 #endif
@@ -1292,7 +1292,7 @@ destroy_Draw(void *drawptr)
 
     if (draw->info)
     {
-        (void) DestroyDrawInfo(draw->info);
+        DestroyDrawInfo(draw->info);
         draw->info = NULL;
     }
 
@@ -1371,7 +1371,7 @@ DrawOptions_initialize(VALUE self)
     if (rb_block_given_p())
     {
         // Run the block in self's context
-        (void) rb_obj_instance_eval(0, NULL, self);
+        rb_obj_instance_eval(0, NULL, self);
     }
 
     return self;
@@ -1399,7 +1399,7 @@ PolaroidOptions_alloc(VALUE class)
     memset(draw, 0, sizeof(*draw));
 
     draw->info=CloneDrawInfo(image_info,(DrawInfo *) NULL);
-    (void)(void) DestroyImageInfo(image_info);
+    (void) DestroyImageInfo(image_info);
 
     polaroid_obj = Data_Wrap_Struct(class, NULL, destroy_Draw, draw);
 
@@ -1426,16 +1426,16 @@ PolaroidOptions_initialize(VALUE self)
     Data_Get_Struct(self, Draw, draw);
 
     exception = AcquireExceptionInfo();
-    (void) QueryColorCompliance("gray75", AllCompliance, &draw->shadow_color, exception);
+    QueryColorCompliance("gray75", AllCompliance, &draw->shadow_color, exception);
     CHECK_EXCEPTION()
-    (void) QueryColorCompliance("#dfdfdf", AllCompliance, &draw->info->border_color, exception);
+    QueryColorCompliance("#dfdfdf", AllCompliance, &draw->info->border_color, exception);
     CHECK_EXCEPTION()
     DestroyExceptionInfo(exception);
 
     if (rb_block_given_p())
     {
         // Run the block in self's context
-        (void) rb_obj_instance_eval(0, NULL, self);
+        rb_obj_instance_eval(0, NULL, self);
     }
     return self;
 }
@@ -1516,7 +1516,7 @@ get_dummy_tm_img(VALUE klass)
             rb_raise(rb_eNoMemError, "not enough memory to continue");
         }
         image = rm_acquire_image(info);
-        (void) DestroyImageInfo(info);
+        DestroyImageInfo(info);
 
         if (!image)
         {
@@ -1607,7 +1607,7 @@ get_type_metrics(
     if (!draw->info->text)
     {
 #if defined(IMAGEMAGICK_7)
-        (void) DestroyExceptionInfo(exception);
+        DestroyExceptionInfo(exception);
 #endif
         rb_raise(rb_eArgError, "no text to measure");
     }
@@ -1625,7 +1625,7 @@ get_type_metrics(
     {
 #if defined(IMAGEMAGICK_7)
         CHECK_EXCEPTION()
-        (void) DestroyExceptionInfo(exception);
+        DestroyExceptionInfo(exception);
 #else
         rm_check_image_exception(image, RetainOnError);
 #endif
@@ -1635,7 +1635,7 @@ get_type_metrics(
                  "Is the FreeType library installed?");
     }
 #if defined(IMAGEMAGICK_7)
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 #endif
 
     RB_GC_GUARD(t);

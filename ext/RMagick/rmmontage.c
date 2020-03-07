@@ -41,7 +41,7 @@ destroy_Montage(void *obj)
     }
     if (montage->info)
     {
-        (void) DestroyMontageInfo(montage->info);
+        DestroyMontageInfo(montage->info);
         montage->info = NULL;
     }
     xfree(montage);
@@ -69,7 +69,7 @@ Montage_alloc(VALUE class)
     }
 
     montage_info = CloneMontageInfo(image_info, NULL);
-    (void) (void) DestroyImageInfo(image_info);
+    (void) DestroyImageInfo(image_info);
 
     if (!montage_info)
     {

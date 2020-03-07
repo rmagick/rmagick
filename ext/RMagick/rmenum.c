@@ -255,7 +255,7 @@ Enum_type_initialize(VALUE self, VALUE sym, VALUE val)
 
     super_argv[0] = sym;
     super_argv[1] = val;
-    (void) rb_call_super(2, (const VALUE *)super_argv);
+    rb_call_super(2, (const VALUE *)super_argv);
 
     if (rb_cvar_defined(CLASS_OF(self), rb_intern(ENUMERATORS_CLASS_VAR)) != Qtrue)
     {
@@ -263,7 +263,7 @@ Enum_type_initialize(VALUE self, VALUE sym, VALUE val)
     }
 
     enumerators = rb_cv_get(CLASS_OF(self), ENUMERATORS_CLASS_VAR);
-    (void) rb_ary_push(enumerators, self);
+    rb_ary_push(enumerators, self);
 
     RB_GC_GUARD(enumerators);
 
@@ -314,7 +314,7 @@ Enum_type_values(VALUE class)
     {
         for (x = 0; x < RARRAY_LEN(enumerators); x++)
         {
-            (void) rb_yield(rb_ary_entry(enumerators, x));
+            rb_yield(rb_ary_entry(enumerators, x));
         }
         rv = class;
     }
@@ -323,7 +323,7 @@ Enum_type_values(VALUE class)
         copy = rb_ary_new2(RARRAY_LEN(enumerators));
         for (x = 0; x < RARRAY_LEN(enumerators); x++)
         {
-            (void) rb_ary_push(copy, rb_ary_entry(enumerators, x));
+            rb_ary_push(copy, rb_ary_entry(enumerators, x));
         }
         rb_obj_freeze(copy);
         rv = copy;

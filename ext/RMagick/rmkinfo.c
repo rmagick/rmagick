@@ -59,7 +59,7 @@ KernelInfo_initialize(VALUE self, VALUE kernel_string)
     {
         if (kernel != (KernelInfo *) NULL)
         {
-            (void) DestroyKernelInfo(kernel);
+            DestroyKernelInfo(kernel);
         }
         rm_raise_exception(exception);
     }
@@ -181,7 +181,7 @@ KernelInfo_builtin(VALUE self, VALUE what, VALUE geometry)
     {
         if (kernel != (KernelInfo *) NULL)
         {
-            (void) DestroyKernelInfo(kernel);
+            DestroyKernelInfo(kernel);
         }
         rm_raise_exception(exception);
     }

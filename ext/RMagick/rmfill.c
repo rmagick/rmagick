@@ -157,7 +157,7 @@ point_fill(
         CHECK_EXCEPTION()
     }
 
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 }
 
 /**
@@ -226,7 +226,7 @@ vertical_fill(
         CHECK_EXCEPTION()
     }
 
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 #else
     // All the rows are the same. Make a "master row" and simply copy
     // it to each actual row.
@@ -263,7 +263,7 @@ vertical_fill(
         }
     }
 
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 
     xfree((void *) master);
 #endif
@@ -332,7 +332,7 @@ horizontal_fill(
         CHECK_EXCEPTION()
     }
 
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 #else
     // All the columns are the same, so make a master column and copy it to
     // each of the "real" columns.
@@ -368,7 +368,7 @@ horizontal_fill(
         }
     }
 
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 
     xfree((void *) master);
 #endif
@@ -475,7 +475,7 @@ v_diagonal_fill(
         CHECK_EXCEPTION()
     }
 
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 }
 
 /**
@@ -581,7 +581,7 @@ h_diagonal_fill(
         CHECK_EXCEPTION()
     }
 
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 }
 
 /**
@@ -667,7 +667,7 @@ free_TextureFill(void *fill_obj)
     rm_TextureFill *fill = (rm_TextureFill *)fill_obj;
 
     // Do not trace destruction
-    (void) DestroyImage(fill->texture);
+    DestroyImage(fill->texture);
     xfree(fill);
 }
 
@@ -706,7 +706,7 @@ TextureFill_initialize(VALUE self, VALUE texture_arg)
 
     // Bump the reference count on the texture image.
     texture = rm_check_destroyed(texture_image);
-    (void) ReferenceImage(texture);
+    ReferenceImage(texture);
 
     fill->texture = texture;
 
@@ -736,11 +736,11 @@ TextureFill_fill(VALUE self, VALUE image_obj)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    (void) TextureImage(image, fill->texture, exception);
+    TextureImage(image, fill->texture, exception);
     CHECK_EXCEPTION()
-    (void) DestroyExceptionInfo(exception);
+    DestroyExceptionInfo(exception);
 #else
-    (void) TextureImage(image, fill->texture);
+    TextureImage(image, fill->texture);
     rm_check_image_exception(image, RetainOnError);
 #endif
 
