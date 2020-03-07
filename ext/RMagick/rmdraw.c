@@ -232,7 +232,6 @@ Draw_font_stretch_eq(VALUE self, VALUE stretch)
 /**
  * Set font style.
  *
- *
  * @param style [Magick::StyleType] the font style
  * @return [Magick::StyleType] the given font style
  */
@@ -250,7 +249,6 @@ Draw_font_style_eq(VALUE self, VALUE style)
 
 /**
  * Set font weight.
- *
  *
  * @param weight [Magick::WeightType, Numeric] the font weight
  * @return [Magick::WeightType, Numeric] the given font weight

@@ -215,7 +215,6 @@ Montage_font_eq(VALUE self, VALUE font)
  *   or a Geometry object
  *
  * @param frame_arg [String] the frame geometry
- * @return [String] the given frame geometry
  */
 VALUE
 Montage_frame_eq(VALUE self, VALUE frame_arg)
@@ -242,6 +241,7 @@ Montage_frame_eq(VALUE self, VALUE frame_arg)
  *
  * @param geometry_arg [String] the geometry
  * @return [String] the given geometry
+ * @see https://www.imagemagick.org/Magick++/Geometry.html
  */
 VALUE
 Montage_geometry_eq(VALUE self, VALUE geometry_arg)
@@ -401,6 +401,7 @@ Montage_texture_eq(VALUE self, VALUE texture)
  *
  * @param tile_arg [String] the tile geometry
  * @return [String] the given tile geometry
+ * @see https://www.imagemagick.org/Magick++/Geometry.html
  */
 VALUE
 Montage_tile_eq(VALUE self, VALUE tile_arg)

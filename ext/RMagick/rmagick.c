@@ -82,7 +82,7 @@ Magick_colors(VALUE class)
 
 /**
  * If called with the optional block, iterates over the fonts, otherwise returns
- * an array of Magick::Font objects.
+ * an array of {Magick::Font} objects.
  *
  * @overload fonts
  *   @return [Array<Magick::Font>] the array of {Magick::Font}

@@ -743,7 +743,7 @@ Info_define(int argc, VALUE *argv, VALUE self)
 /**
  * Get the delay value.
  *
- * @return [Numeric] the delay
+ * @return [Numeric, nil] the delay
  */
 VALUE
 Info_delay(VALUE self)
@@ -1258,7 +1258,7 @@ Info_font_eq(VALUE self, VALUE font_arg)
 /**
  * Return the image encoding format.
  *
- * @return [String] the encoding format
+ * @return [String, nil] the encoding format
  */
 VALUE Info_format(VALUE self)
 {
@@ -1847,7 +1847,7 @@ Info_quality_eq(VALUE self, VALUE val)
 /**
  * Get sampling factors used by JPEG or MPEG-2 encoder and YUV decoder/encoder.
  *
- * @return [String] the sampling factors
+ * @return [String, nil] the sampling factors
  */
 VALUE
 Info_sampling_factor(VALUE self)
@@ -2116,7 +2116,7 @@ Info_texture_eq(VALUE self, VALUE texture)
 /**
  * Return tile_offset geometry.
  *
- * @return [String] the tile offset
+ * @return [String, nil] the tile offset
  * @see https://www.imagemagick.org/Magick++/Geometry.html
  */
 VALUE
@@ -2352,7 +2352,7 @@ Info_view_eq(VALUE self, VALUE view_arg)
 
 
 /**
- * If there is a texture image, delete it before destroying the ImageInfo
+ * If there is a texture image, delete it before destroying the Image::Info
  * structure.
  *
  * No Ruby usage (internal function)
@@ -2376,7 +2376,7 @@ destroy_Info(void *infoptr)
 
 
 /**
- * Create an ImageInfo object.
+ * Create an Image::Info object.
  *
  * No Ruby usage (internal function)
  *
