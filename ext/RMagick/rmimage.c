@@ -1169,7 +1169,7 @@ Image_bias(VALUE self)
         {
             char *q;
 
-            bias = InterpretLocaleValue(artifact,&q);
+            bias = InterpretLocaleValue(artifact, &q);
             if (*q == '%')
             {
                 bias *= ((double) QuantumRange + 1.0) / 100.0;
@@ -1647,10 +1647,10 @@ special_composite(Image *image, Image *overlay, double image_pct, double overlay
 
     blend_geometry(geometry, sizeof(geometry), image_pct, overlay_pct);
     CloneString(&overlay->geometry, geometry);
-    SetImageArtifact(overlay,"compose:args", geometry);
+    SetImageArtifact(overlay, "compose:args", geometry);
 
     new_image = rm_clone_image(image);
-    SetImageArtifact(new_image,"compose:args", geometry); // 6.9 appears to get this info from canvas (dest) image
+    SetImageArtifact(new_image, "compose:args", geometry); // 6.9 appears to get this info from canvas (dest) image
 
 
 #if defined(IMAGEMAGICK_7)
@@ -1716,11 +1716,11 @@ Image_blend(int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 3:
-            dst_percent = rm_percentage(argv[2],1.0) * 100.0;
-            src_percent = rm_percentage(argv[1],1.0) * 100.0;
+            dst_percent = rm_percentage(argv[2], 1.0) * 100.0;
+            src_percent = rm_percentage(argv[1], 1.0) * 100.0;
             break;
         case 2:
-            src_percent = rm_percentage(argv[1],1.0) * 100.0;
+            src_percent = rm_percentage(argv[1], 1.0) * 100.0;
             dst_percent = FMAX(100.0 - src_percent, 0);
             break;
         default:
@@ -2120,7 +2120,7 @@ Image_change_geometry(VALUE self, VALUE geom_arg)
     memset(&rect, 0, sizeof(rect));
 
     SetGeometry(image, &rect);
-    flags = ParseMetaGeometry(geometry, &rect.x,&rect.y, &rect.width,&rect.height);
+    flags = ParseMetaGeometry(geometry, &rect.x, &rect.y, &rect.width, &rect.height);
     if (flags == NoValue)
     {
         rb_raise(rb_eArgError, "invalid geometry string `%s'", geometry);
@@ -3820,7 +3820,7 @@ Image_composite_mathematics(int argc, VALUE *argv, VALUE self)
     composite_image = rm_check_destroyed(rm_cur_image(argv[0]));
 
     snprintf(compose_args, sizeof(compose_args), "%-.16g,%-.16g,%-.16g,%-.16g", NUM2DBL(argv[1]), NUM2DBL(argv[2]), NUM2DBL(argv[3]), NUM2DBL(argv[4]));
-    SetImageArtifact(composite_image,"compose:args", compose_args);
+    SetImageArtifact(composite_image, "compose:args", compose_args);
 
     // Call composite(False, gravity, x_off, y_off, MathematicsCompositeOp, DefaultChannels)
     args[0] = argv[0];
@@ -3898,7 +3898,7 @@ composite_tiled(int bang, int argc, VALUE *argv, VALUE self)
         image = rm_clone_image(image);
     }
 
-    SetImageArtifact(comp_image,"modify-outside-overlay", "false");
+    SetImageArtifact(comp_image, "modify-outside-overlay", "false");
 
     status = MagickTrue;
     columns = comp_image->columns;
@@ -4134,7 +4134,7 @@ Image_constitute(VALUE class ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
         {
             xfree(pixels.v);
             rb_raise(rb_eTypeError, "element %ld in pixel array is %s, expected %s"
-                     , x, rb_class2name(CLASS_OF(pixel)),rb_class2name(CLASS_OF(pixel0)));
+                     , x, rb_class2name(CLASS_OF(pixel)), rb_class2name(CLASS_OF(pixel0)));
         }
         if (pixel_class == rb_cFloat)
         {
@@ -5140,7 +5140,7 @@ Image_deskew(int argc, VALUE *argv, VALUE self)
             snprintf(auto_crop_width, sizeof(auto_crop_width), "%lu", width);
             SetImageArtifact(image, "deskew:auto-crop", auto_crop_width);
         case 1:
-            threshold = rm_percentage(argv[0],1.0) * QuantumRange;
+            threshold = rm_percentage(argv[0], 1.0) * QuantumRange;
         case 0:
             break;
         default:
@@ -5562,9 +5562,9 @@ Image_dissolve(int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 3:
-            dst_percent = rm_percentage(argv[2],1.0) * 100.0;
+            dst_percent = rm_percentage(argv[2], 1.0) * 100.0;
         case 2:
-            src_percent = rm_percentage(argv[1],1.0) * 100.0;
+            src_percent = rm_percentage(argv[1], 1.0) * 100.0;
             break;
         default:
             rb_raise(rb_eArgError, "wrong number of arguments (%d for 2 to 6)", argc);
@@ -5798,7 +5798,7 @@ Image__dump(VALUE self, VALUE depth ATTRIBUTE_UNUSED)
     mi.len = (unsigned char) min((size_t)UCHAR_MAX, rm_strnlen_s(mi.magick, sizeof(mi.magick)));
 
     // Concatenate the blob onto the header & return the result
-    str = rb_str_new((char *)&mi, (long)(mi.len+offsetof(DumpedImage,magick)));
+    str = rb_str_new((char *)&mi, (long)(mi.len+offsetof(DumpedImage, magick)));
     str = rb_str_buf_cat(str, (char *)blob, (long)length);
     magick_free((void*)blob);
 
@@ -6199,7 +6199,7 @@ excerpt(int bang, VALUE self, VALUE x, VALUE y, VALUE width, VALUE height)
     RectangleInfo rect;
     ExceptionInfo *exception;
 
-    memset(&rect,'\0', sizeof(rect));
+    memset(&rect, '\0', sizeof(rect));
     rect.x = NUM2LONG(x);
     rect.y = NUM2LONG(y);
     rect.width = NUM2ULONG(width);
@@ -8577,8 +8577,8 @@ Image__load(VALUE class ATTRIBUTE_UNUSED, VALUE str)
 
     exception = AcquireExceptionInfo();
 
-    blob += offsetof(DumpedImage,magick) + mi.len;
-    length -= offsetof(DumpedImage,magick) + mi.len;
+    blob += offsetof(DumpedImage, magick) + mi.len;
+    length -= offsetof(DumpedImage, magick) + mi.len;
     image = BlobToImage(info, blob, (size_t) length, exception);
     DestroyImageInfo(info);
 
@@ -11013,7 +11013,7 @@ Image_random_threshold_channel(int argc, VALUE *argv, VALUE self)
     {
         GeometryInfo geometry_info;
 
-        ParseGeometry(thresholds,&geometry_info);
+        ParseGeometry(thresholds, &geometry_info);
         RandomThresholdImage(new_image, geometry_info.rho, geometry_info.sigma, exception);
     }
     END_CHANNEL_MASK(new_image);
@@ -12198,7 +12198,7 @@ Image_selective_blur_channel(int argc, VALUE *argv, VALUE self)
 
     // threshold is either a floating-point number or a string in the form "NN%".
     // Either way it's supposed to represent a percentage of the QuantumRange.
-    threshold = rm_percentage(argv[2],1.0) * QuantumRange;
+    threshold = rm_percentage(argv[2], 1.0) * QuantumRange;
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
@@ -12569,7 +12569,7 @@ Image_shadow(int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 4:
-            alpha = rm_percentage(argv[3],1.0);   // Clamp to 1.0 < x <= 100.0
+            alpha = rm_percentage(argv[3], 1.0);   // Clamp to 1.0 < x <= 100.0
             if (fabs(alpha) < 0.01)
             {
                 rb_warning("shadow will be transparent - alpha %g very small", alpha);
@@ -15080,9 +15080,9 @@ Image_watermark(int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 3:
-            dst_percent = rm_percentage(argv[2],1.0) * 100.0;
+            dst_percent = rm_percentage(argv[2], 1.0) * 100.0;
         case 2:
-            src_percent = rm_percentage(argv[1],1.0) * 100.0;
+            src_percent = rm_percentage(argv[1], 1.0) * 100.0;
         case 1:
             break;
         default:
@@ -15092,7 +15092,7 @@ Image_watermark(int argc, VALUE *argv, VALUE self)
 
     blend_geometry(geometry, sizeof(geometry), src_percent, dst_percent);
     CloneString(&overlay->geometry, geometry);
-    SetImageArtifact(overlay,"compose:args", geometry);
+    SetImageArtifact(overlay, "compose:args", geometry);
 
     new_image = rm_clone_image(image);
 #if defined(IMAGEMAGICK_7)

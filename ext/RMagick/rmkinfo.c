@@ -119,7 +119,7 @@ KernelInfo_scale(VALUE self, VALUE scale, VALUE flags)
         rb_raise(rb_eArgError, "expected Integer or Magick::GeometryFlags to specify flags");
 
     /* ScaleKernelInfo() was private function until IM 6.9 */
-    MagickExport void ScaleKernelInfo(KernelInfo *kernel, const double scaling_factor,const GeometryFlags normalize_flags);
+    MagickExport void ScaleKernelInfo(KernelInfo *kernel, const double scaling_factor, const GeometryFlags normalize_flags);
 
     ScaleKernelInfo((KernelInfo*)DATA_PTR(self), NUM2DBL(scale), geoflags);
     return Qnil;
