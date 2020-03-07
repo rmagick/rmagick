@@ -1300,7 +1300,7 @@ Info_format_eq(VALUE self, VALUE magick)
 
     exception = AcquireExceptionInfo();
     m = GetMagickInfo(mgk, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 
     if (!m)

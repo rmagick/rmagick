@@ -663,7 +663,7 @@ Pixel_from_color(VALUE class ATTRIBUTE_UNUSED, VALUE name)
 
     exception = AcquireExceptionInfo();
     okay = QueryColorCompliance(StringValuePtr(name), AllCompliance, &pp, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 
     if (!okay)
@@ -750,7 +750,7 @@ Pixel_from_hsla(int argc, VALUE *argv, VALUE class ATTRIBUTE_UNUSED)
 #else
     QueryMagickColor(name, &pp, exception);
 #endif
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
 
     DestroyExceptionInfo(exception);
 
@@ -1265,7 +1265,7 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
     }
 
     DestroyImage(image);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 
     // Always return a string, even if it's ""

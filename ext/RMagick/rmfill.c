@@ -132,7 +132,7 @@ point_fill(
 #endif
 
         row_pixels = QueueAuthenticPixels(image, 0, y, image->columns, 1, exception);
-        CHECK_EXCEPTION()
+        CHECK_EXCEPTION();
 
         for (x = 0; x < (ssize_t) image->columns; x++)
         {
@@ -154,7 +154,7 @@ point_fill(
         }
 
         SyncAuthenticPixels(image, exception);
-        CHECK_EXCEPTION()
+        CHECK_EXCEPTION();
     }
 
     DestroyExceptionInfo(exception);
@@ -209,7 +209,7 @@ vertical_fill(
         Quantum *row_pixels;
 
         row_pixels = QueueAuthenticPixels(image, 0, y, image->columns, 1, exception);
-        CHECK_EXCEPTION()
+        CHECK_EXCEPTION();
 
         for (x = 0; x < (ssize_t) image->columns; x++)
         {
@@ -223,7 +223,7 @@ vertical_fill(
         }
 
         SyncAuthenticPixels(image, exception);
-        CHECK_EXCEPTION()
+        CHECK_EXCEPTION();
     }
 
     DestroyExceptionInfo(exception);
@@ -315,7 +315,7 @@ horizontal_fill(
         Quantum *row_pixels;
 
         row_pixels = QueueAuthenticPixels(image, 0, y, image->columns, 1, exception);
-        CHECK_EXCEPTION()
+        CHECK_EXCEPTION();
 
         double distance = fabs(y1 - y);
         for (x = 0; x < (ssize_t) image->columns; x++)
@@ -329,7 +329,7 @@ horizontal_fill(
         }
 
         SyncAuthenticPixels(image, exception);
-        CHECK_EXCEPTION()
+        CHECK_EXCEPTION();
     }
 
     DestroyExceptionInfo(exception);
@@ -451,7 +451,7 @@ v_diagonal_fill(
 #endif
 
         row_pixels = QueueAuthenticPixels(image, 0, y, image->columns, 1, exception);
-        CHECK_EXCEPTION()
+        CHECK_EXCEPTION();
 
         for (x = 0; x < (ssize_t) image->columns; x++)
         {
@@ -472,7 +472,7 @@ v_diagonal_fill(
         }
 
         SyncAuthenticPixels(image, exception);
-        CHECK_EXCEPTION()
+        CHECK_EXCEPTION();
     }
 
     DestroyExceptionInfo(exception);
@@ -557,7 +557,7 @@ h_diagonal_fill(
 #endif
 
         row_pixels = QueueAuthenticPixels(image, 0, y, image->columns, 1, exception);
-        CHECK_EXCEPTION()
+        CHECK_EXCEPTION();
 
         for (x = 0; x < (ssize_t) image->columns; x++)
         {
@@ -578,7 +578,7 @@ h_diagonal_fill(
         }
 
         SyncAuthenticPixels(image, exception);
-        CHECK_EXCEPTION()
+        CHECK_EXCEPTION();
     }
 
     DestroyExceptionInfo(exception);
@@ -737,7 +737,7 @@ TextureFill_fill(VALUE self, VALUE image_obj)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     TextureImage(image, fill->texture, exception);
-    CHECK_EXCEPTION()
+    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     TextureImage(image, fill->texture);
