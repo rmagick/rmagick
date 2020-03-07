@@ -702,14 +702,14 @@ Pixel_from_hsla(int argc, VALUE *argv, VALUE class ATTRIBUTE_UNUSED)
     switch (argc)
     {
         case 4:
-            a = rm_percentage(argv[3],1.0);
+            a = rm_percentage(argv[3], 1.0);
             alpha = MagickTrue;
         case 3:
             // saturation and lightness are out of 255 in new ImageMagicks and
             // out of 100 in old ImageMagicks. Compromise: always use %.
-            l = rm_percentage(argv[2],255.0);
-            s = rm_percentage(argv[1],255.0);
-            h = rm_percentage(argv[0],360.0);
+            l = rm_percentage(argv[2], 255.0);
+            s = rm_percentage(argv[1], 255.0);
+            h = rm_percentage(argv[0], 360.0);
             break;
         default:
             rb_raise(rb_eArgError, "wrong number of arguments (%d for 3 or 4)", argc);

@@ -317,7 +317,7 @@ ImageList_composite_layers(int argc, VALUE *argv, VALUE self)
 
     source = images_from_imagelist(source_images);
 
-    SetGeometry(new_images,&geometry);
+    SetGeometry(new_images, &geometry);
     ParseAbsoluteGeometry(new_images->geometry, &geometry);
 
     geometry.width  = source->page.width != 0 ? source->page.width : source->columns;

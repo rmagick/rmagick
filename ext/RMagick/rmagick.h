@@ -119,11 +119,11 @@
 #define PIXEL_INTENSITY(q) ((Quantum)(0.299*(q)->red + 0.587*(q)->green + 0.114*(q)->blue + 0.5))
 
 //! find maximum of longs
-#define LMAX(a,b) ((((long)(a))>((long)(b)))?((long)(a)):((long)(b)))
+#define LMAX(a, b) ((((long)(a))>((long)(b)))?((long)(a)):((long)(b)))
 //! find maximum of floats
-#define FMAX(a,b) ((((double)(a))>((double)(b)))?((double)(a)):((double)(b)))
+#define FMAX(a, b) ((((double)(a))>((double)(b)))?((double)(a)):((double)(b)))
 //! find minimum of floats
-#define FMIN(a,b) ((((double)(a))<=((double)(b)))?((double)(a)):((double)(b)))
+#define FMIN(a, b) ((((double)(a))<=((double)(b)))?((double)(a)):((double)(b)))
 
 #define RMAGICK_PI 3.14159265358979  /**< pi */
 
@@ -411,10 +411,10 @@ EXTERN ID rm_ID_values;            /**< "values" */
 EXTERN ID rm_ID_width;             /**< "width" */
 
 #if !defined(min)
-#define min(a,b) ((a)<(b)?(a):(b)) /**< min of two values */
+#define min(a, b) ((a)<(b)?(a):(b)) /**< min of two values */
 #endif
 #if !defined(max)
-#define max(a,b) ((a)>(b)?(a):(b)) /**< max of two values */
+#define max(a, b) ((a)>(b)?(a):(b)) /**< max of two values */
 #endif
 
 /**
@@ -517,7 +517,7 @@ EXTERN ID rm_ID_width;             /**< "width" */
    MagickEnum *magick_enum;\
    if (CLASS_OF(value) != Class_##type)\
        rb_raise(rb_eTypeError, "wrong enumeration type - expected %s, got %s"\
-                   , rb_class2name(Class_##type),rb_class2name(CLASS_OF(value)));\
+                   , rb_class2name(Class_##type), rb_class2name(CLASS_OF(value)));\
    Data_Get_Struct(value, MagickEnum, magick_enum);\
    e = (type)(magick_enum->val);\
    } while(0)
@@ -1158,7 +1158,7 @@ extern char  *rm_str2cstr(VALUE, long *);
 extern int    rm_check_num2dbl(VALUE);
 extern double rm_fuzz_to_dbl(VALUE);
 extern Quantum rm_app2quantum(VALUE);
-extern double rm_percentage(VALUE,double);
+extern double rm_percentage(VALUE, double);
 extern double rm_str_to_pct(VALUE);
 extern VALUE  rm_define_enum_type(const char *);
 extern void   rm_write_temp_image(Image *, char *, size_t);

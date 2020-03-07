@@ -1073,7 +1073,7 @@ static void copy_options(Image *image, Info *info)
     {
         const char *value;
 
-        value = GetImageOption(info,option);
+        value = GetImageOption(info, option);
         if (value)
         {
             strlcpy(property, value, sizeof(property));
@@ -1103,13 +1103,13 @@ void rm_sync_image_options(Image *image, Info *info)
 
     // The option strings will be set only when their attribute values were
     // set in the optional argument block.
-    option = GetImageOption(info,"background");
+    option = GetImageOption(info, "background");
     if (option)
     {
         image->background_color = info->background_color;
     }
 
-    option = GetImageOption(info,"bordercolor");
+    option = GetImageOption(info, "bordercolor");
     if (option)
     {
         image->border_color = info->border_color;
@@ -1192,7 +1192,7 @@ void rm_sync_image_options(Image *image, Info *info)
         image->interlace = info->interlace;
     }
 
-    option = GetImageOption(info,"mattecolor");
+    option = GetImageOption(info, "mattecolor");
     if (option)
     {
         image->matte_color = info->matte_color;

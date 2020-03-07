@@ -418,7 +418,7 @@ v_diagonal_fill(
 
     if (d1 < 0 && d2 < 0)
     {
-        steps += FMAX(fabs(d1),fabs(d2));
+        steps += FMAX(fabs(d1), fabs(d2));
     }
     else if (d1 > (double)image->rows && d2 > (double)image->rows)
     {
@@ -524,11 +524,11 @@ h_diagonal_fill(
     // the number of steps.
     if (d1 < 0 && d2 < 0)
     {
-        steps += FMAX(fabs(d1),fabs(d2));
+        steps += FMAX(fabs(d1), fabs(d2));
     }
     else if (d1 > (double)image->columns && d2 > (double)image->columns)
     {
-        steps += FMAX(abs((int)(image->columns-d1)),abs((int)(image->columns-d2)));
+        steps += FMAX(abs((int)(image->columns-d1)), abs((int)(image->columns-d2)));
     }
 
     d1 = FMAX(d1, image->columns-d1);
