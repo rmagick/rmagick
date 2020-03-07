@@ -15,7 +15,7 @@
 
 #define BEGIN_CHANNEL_MASK(image, channels) \
   { \
-    ChannelType channel_mask=SetPixelChannelMask(image, (ChannelType)channels);
+    ChannelType channel_mask = SetPixelChannelMask(image, (ChannelType)channels);
 
 #define END_CHANNEL_MASK(image) \
     SetPixelChannelMask(image, channel_mask); \
@@ -3270,7 +3270,7 @@ Image_compose_eq(VALUE self, VALUE compose_arg)
  * @param argc number of input arguments
  * @param argv array of input arguments
  * @param self this object
- * @param channels 
+ * @param channels
  * @return self if bang, otherwise new composited image
  * @see Image_composite
  * @see Image_composite_bang
@@ -12512,7 +12512,7 @@ Image_shade(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
     double azimuth = 30.0, elevation = 30.0;
-    unsigned int shading=MagickFalse;
+    unsigned int shading = MagickFalse;
     ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);

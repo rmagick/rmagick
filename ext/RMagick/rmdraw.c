@@ -655,19 +655,19 @@ Draw_rotation_eq(VALUE self, VALUE deg)
     degrees = NUM2DBL(deg);
     if (fabs(degrees) > DBL_EPSILON)
     {
-        current = draw->info->affine;
-        affine.sx=cos(DegreesToRadians(fmod(degrees, 360.0)));
-        affine.rx=sin(DegreesToRadians(fmod(degrees, 360.0)));
-        affine.tx=0.0;
-        affine.ry=(-sin(DegreesToRadians(fmod(degrees, 360.0))));
-        affine.sy=cos(DegreesToRadians(fmod(degrees, 360.0)));
-        affine.ty=0.0;
+        current   = draw->info->affine;
+        affine.sx = cos(DegreesToRadians(fmod(degrees, 360.0)));
+        affine.rx = sin(DegreesToRadians(fmod(degrees, 360.0)));
+        affine.tx = 0.0;
+        affine.ry = (-sin(DegreesToRadians(fmod(degrees, 360.0))));
+        affine.sy = cos(DegreesToRadians(fmod(degrees, 360.0)));
+        affine.ty = 0.0;
 
-        draw->info->affine.sx=current.sx*affine.sx+current.ry*affine.rx;
-        draw->info->affine.rx=current.rx*affine.sx+current.sy*affine.rx;
-        draw->info->affine.ry=current.sx*affine.ry+current.ry*affine.sy;
-        draw->info->affine.sy=current.rx*affine.ry+current.sy*affine.sy;
-        draw->info->affine.tx=current.sx*affine.tx+current.ry*affine.ty+current.tx;
+        draw->info->affine.sx = current.sx*affine.sx+current.ry*affine.rx;
+        draw->info->affine.rx = current.rx*affine.sx+current.sy*affine.rx;
+        draw->info->affine.ry = current.sx*affine.ry+current.ry*affine.sy;
+        draw->info->affine.sy = current.rx*affine.ry+current.sy*affine.sy;
+        draw->info->affine.tx = current.sx*affine.tx+current.ry*affine.ty+current.tx;
     }
 
     return deg;
@@ -1398,7 +1398,7 @@ PolaroidOptions_alloc(VALUE class)
     draw = ALLOC(Draw);
     memset(draw, 0, sizeof(*draw));
 
-    draw->info=CloneDrawInfo(image_info, (DrawInfo *) NULL);
+    draw->info = CloneDrawInfo(image_info, (DrawInfo *) NULL);
     (void) DestroyImageInfo(image_info);
 
     polaroid_obj = Data_Wrap_Struct(class, NULL, destroy_Draw, draw);
