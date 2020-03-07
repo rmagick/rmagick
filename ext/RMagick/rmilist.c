@@ -322,9 +322,9 @@ ImageList_composite_layers(int argc, VALUE *argv, VALUE self)
 
     geometry.width  = source->page.width != 0 ? source->page.width : source->columns;
     geometry.height = source->page.height != 0 ? source->page.height : source->rows;
-    GravityAdjustGeometry(new_images->page.width  != 0 ? new_images->page.width  : new_images->columns
-                        , new_images->page.height != 0 ? new_images->page.height : new_images->rows
-                        , new_images->gravity, &geometry);
+    GravityAdjustGeometry(new_images->page.width  != 0 ? new_images->page.width  : new_images->columns,
+                          new_images->page.height != 0 ? new_images->page.height : new_images->rows,
+                          new_images->gravity, &geometry);
 
     exception = AcquireExceptionInfo();
     CompositeLayers(new_images, operator, source, geometry.x, geometry.y, exception);

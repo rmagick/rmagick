@@ -107,8 +107,8 @@ ChromaticityInfo_new(ChromaticityInfo *ci)
     RB_GC_GUARD(blue_primary);
     RB_GC_GUARD(white_point);
 
-    return rb_funcall(Class_Chromaticity, rm_ID_new, 4
-                    , red_primary, green_primary, blue_primary, white_point);
+    return rb_funcall(Class_Chromaticity, rm_ID_new, 4,
+                      red_primary, green_primary, blue_primary, white_point);
 }
 
 
@@ -237,8 +237,8 @@ Import_ColorInfo(const ColorInfo *ci)
     RB_GC_GUARD(compliance);
     RB_GC_GUARD(color);
 
-    return rb_funcall(Class_Color, rm_ID_new, 3
-                    , name, compliance, color);
+    return rb_funcall(Class_Color, rm_ID_new, 3,
+                      name, compliance, color);
 }
 
 
@@ -415,9 +415,9 @@ Import_TypeInfo(const TypeInfo *ti)
     RB_GC_GUARD(foundry);
     RB_GC_GUARD(format);
 
-    return rb_funcall(Class_Font, rm_ID_new, 9
-                    , name, description, family, style
-                    , stretch, weight, encoding, foundry, format);
+    return rb_funcall(Class_Font, rm_ID_new, 9,
+                      name, description, family, style,
+                      stretch, weight, encoding, foundry, format);
 }
 
 
@@ -561,8 +561,8 @@ Font_to_s(VALUE self)
 VALUE
 Import_PointInfo(PointInfo *p)
 {
-    return rb_funcall(Class_Point, rm_ID_new, 2
-                    , INT2FIX(p->x), INT2FIX(p->y));
+    return rb_funcall(Class_Point, rm_ID_new, 2,
+                      INT2FIX(p->x), INT2FIX(p->y));
 }
 
 
@@ -606,8 +606,8 @@ Export_PointInfo(PointInfo *pi, VALUE sp)
 VALUE
 Import_PrimaryInfo(PrimaryInfo *p)
 {
-    return rb_funcall(Class_Primary, rm_ID_new, 3
-                    , INT2FIX(p->x), INT2FIX(p->y), INT2FIX(p->z));
+    return rb_funcall(Class_Primary, rm_ID_new, 3,
+                      INT2FIX(p->x), INT2FIX(p->y), INT2FIX(p->z));
 }
 
 
@@ -684,8 +684,8 @@ Import_RectangleInfo(RectangleInfo *rect)
     RB_GC_GUARD(x);
     RB_GC_GUARD(y);
 
-    return rb_funcall(Class_Rectangle, rm_ID_new, 4
-                    , width, height, x, y);
+    return rb_funcall(Class_Rectangle, rm_ID_new, 4,
+                      width, height, x, y);
 }
 
 
@@ -734,8 +734,8 @@ RectangleInfo_to_s(VALUE self)
     char buff[100];
 
     Export_RectangleInfo(&rect, self);
-    snprintf(buff, sizeof(buff), "width=%"RMIuSIZE", height=%"RMIuSIZE", x=%"RMIdSIZE", y=%"RMIdSIZE""
-          , rect.width, rect.height, rect.x, rect.y);
+    snprintf(buff, sizeof(buff), "width=%"RMIuSIZE", height=%"RMIuSIZE", x=%"RMIdSIZE", y=%"RMIdSIZE"",
+             rect.width, rect.height, rect.x, rect.y);
     return rb_str_new2(buff);
 }
 
@@ -813,8 +813,8 @@ SegmentInfo_to_s(VALUE self)
     char buff[100];
 
     Export_SegmentInfo(&segment, self);
-    snprintf(buff, sizeof(buff), "x1=%g, y1=%g, x2=%g, y2=%g"
-          , segment.x1, segment.y1, segment.x2, segment.y2);
+    snprintf(buff, sizeof(buff), "x1=%g, y1=%g, x2=%g, y2=%g",
+             segment.x1, segment.y1, segment.x2, segment.y2);
     return rb_str_new2(buff);
 }
 
@@ -855,10 +855,10 @@ Import_TypeMetric(TypeMetric *tm)
     RB_GC_GUARD(underline_position);
     RB_GC_GUARD(underline_thickness);
 
-    return rb_funcall(Class_TypeMetric, rm_ID_new, 9
-                    , pixels_per_em, ascent, descent, width
-                    , height, max_advance, bounds
-                    , underline_position, underline_thickness);
+    return rb_funcall(Class_TypeMetric, rm_ID_new, 9,
+                      pixels_per_em, ascent, descent, width,
+                      height, max_advance, bounds,
+                      underline_position, underline_thickness);
 }
 
 

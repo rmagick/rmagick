@@ -680,11 +680,7 @@ VALUE
 TextureFill_alloc(VALUE class)
 {
     rm_TextureFill *fill;
-    return Data_Make_Struct(class
-                            , rm_TextureFill
-                            , NULL
-                            , free_TextureFill
-                            , fill);
+    return Data_Make_Struct(class, rm_TextureFill, NULL, free_TextureFill, fill);
 }
 
 /**

@@ -112,8 +112,8 @@ get_named_alpha_value(VALUE hash)
  * @return a new image
  */
 static VALUE
-adaptive_method(int argc, VALUE *argv, VALUE self
-                , Image *fp(const Image *, const double, const double, ExceptionInfo *))
+adaptive_method(int argc, VALUE *argv, VALUE self,
+                Image *fp(const Image *, const double, const double, ExceptionInfo *))
 {
     Image *image, *new_image;
     double radius = 0.0;
@@ -1422,8 +1422,8 @@ get_relative_offsets(VALUE grav, Image *image, Image *mark, long *x_offset, long
  * @param y_offset pointer to y offset
  */
 static void
-get_offsets_from_gravity(GravityType gravity, Image *image, Image *mark
-                         , long *x_offset, long *y_offset)
+get_offsets_from_gravity(GravityType gravity, Image *image, Image *mark,
+                         long *x_offset, long *y_offset)
 {
 
     switch (gravity)
@@ -1502,8 +1502,8 @@ check_for_long_value(VALUE obj)
  * @param y_offset pointer to y offset
  */
 static void
-get_composite_offsets(int argc, VALUE *argv, Image *dest, Image *src
-                      , long *x_offset, long *y_offset)
+get_composite_offsets(int argc, VALUE *argv, Image *dest, Image *src,
+                      long *x_offset, long *y_offset)
 {
     GravityType gravity;
     int exc = 0;
@@ -1535,8 +1535,8 @@ get_composite_offsets(int argc, VALUE *argv, Image *dest, Image *src
         rb_protect(check_for_long_value, argv[0], &exc);
         if (exc)
         {
-            rb_raise(rb_eTypeError, "expected GravityType, got %s"
-                     , rb_class2name(CLASS_OF(argv[0])));
+            rb_raise(rb_eTypeError, "expected GravityType, got %s",
+                     rb_class2name(CLASS_OF(argv[0])));
         }
         *x_offset = NUM2LONG(argv[0]);
         if (argc > 1)
@@ -1636,8 +1636,8 @@ blend_geometry(char *geometry, size_t geometry_l, double src_percent, double dst
  * @return a new image
  */
 static VALUE
-special_composite(Image *image, Image *overlay, double image_pct, double overlay_pct
-                  , long x_off, long y_off, CompositeOperator op)
+special_composite(Image *image, Image *overlay, double image_pct, double overlay_pct,
+                  long x_off, long y_off, CompositeOperator op)
 {
     Image *new_image;
     char geometry[20];
@@ -1730,8 +1730,8 @@ Image_blend(int argc, VALUE *argv, VALUE self)
 
     RB_GC_GUARD(ovly);
 
-    return special_composite(image, overlay, src_percent, dst_percent
-                             , x_offset, y_offset, BlendCompositeOp);
+    return special_composite(image, overlay, src_percent, dst_percent,
+                             x_offset, y_offset, BlendCompositeOp);
 
 }
 
@@ -2812,8 +2812,8 @@ Image_color_profile_eq(VALUE self, VALUE profile)
  * @see Image#opaque
  */
 VALUE
-Image_color_flood_fill( VALUE self, VALUE target_color, VALUE fill_color
-                        , VALUE xv, VALUE yv, VALUE method)
+Image_color_flood_fill(VALUE self, VALUE target_color, VALUE fill_color,
+                       VALUE xv, VALUE yv, VALUE method)
 {
     Image *image, *new_image;
     PixelColor target;
@@ -2838,8 +2838,8 @@ Image_color_flood_fill( VALUE self, VALUE target_color, VALUE fill_color
     y = NUM2LONG(yv);
     if ((unsigned long)x > image->columns || (unsigned long)y > image->rows)
     {
-        rb_raise(rb_eArgError, "target out of range. %lux%lu given, image is %"RMIuSIZE"x%"RMIuSIZE""
-                 , x, y, image->columns, image->rows);
+        rb_raise(rb_eArgError, "target out of range. %lux%lu given, image is %"RMIuSIZE"x%"RMIuSIZE"",
+                 x, y, image->columns, image->rows);
     }
 
     VALUE_TO_ENUM(method, fill_method, PaintMethod);
@@ -4064,8 +4064,8 @@ Image_compress_colormap_bang(VALUE self)
  * @return [Magick::Image] a new image
  */
 VALUE
-Image_constitute(VALUE class ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
-                 , VALUE map_arg, VALUE pixels_arg)
+Image_constitute(VALUE class ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg,
+                 VALUE map_arg, VALUE pixels_arg)
 {
     Image *new_image;
     VALUE pixel, pixel0;
@@ -4098,8 +4098,8 @@ Image_constitute(VALUE class ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
     npixels = width * height * map_l;
     if (RARRAY_LEN(pixels_arg) != npixels)
     {
-        rb_raise(rb_eArgError, "wrong number of array elements (%ld for %ld)"
-                 , RARRAY_LEN(pixels_arg), npixels);
+        rb_raise(rb_eArgError, "wrong number of array elements (%ld for %ld)",
+                 RARRAY_LEN(pixels_arg), npixels);
     }
 
     // Inspect the first element in the pixels array to determine the expected
@@ -4119,8 +4119,8 @@ Image_constitute(VALUE class ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
     }
     else
     {
-        rb_raise(rb_eTypeError, "element 0 in pixel array is %s, must be numeric"
-                 , rb_class2name(CLASS_OF(pixel0)));
+        rb_raise(rb_eTypeError, "element 0 in pixel array is %s, must be numeric",
+                 rb_class2name(CLASS_OF(pixel0)));
     }
 
 
@@ -4133,8 +4133,8 @@ Image_constitute(VALUE class ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
         if (rb_obj_is_kind_of(pixel, pixel_class) != Qtrue)
         {
             xfree(pixels.v);
-            rb_raise(rb_eTypeError, "element %ld in pixel array is %s, expected %s"
-                     , x, rb_class2name(CLASS_OF(pixel)), rb_class2name(CLASS_OF(pixel0)));
+            rb_raise(rb_eTypeError, "element %ld in pixel array is %s, expected %s",
+                     x, rb_class2name(CLASS_OF(pixel)), rb_class2name(CLASS_OF(pixel0)));
         }
         if (pixel_class == rb_cFloat)
         {
@@ -5336,8 +5336,8 @@ Image_displace(int argc, VALUE *argv, VALUE self)
 
     RB_GC_GUARD(dmap);
 
-    return special_composite(image, displacement_map, x_amplitude, y_amplitude
-                             , x_offset, y_offset, DisplaceCompositeOp);
+    return special_composite(image, displacement_map, x_amplitude, y_amplitude,
+                             x_offset, y_offset, DisplaceCompositeOp);
 }
 
 
@@ -5571,8 +5571,8 @@ Image_dissolve(int argc, VALUE *argv, VALUE self)
             break;
     }
 
-    composite_image =  special_composite(image, overlay, src_percent, dst_percent
-                                         , x_offset, y_offset, DissolveCompositeOp);
+    composite_image =  special_composite(image, overlay, src_percent, dst_percent,
+                                         x_offset, y_offset, DissolveCompositeOp);
 
     RB_GC_GUARD(composite_image);
     RB_GC_GUARD(ovly);
@@ -6419,8 +6419,8 @@ Image_extent(int argc, VALUE *argv, VALUE self)
         }
         else
         {
-            rb_raise(rb_eArgError, "invalid extent geometry %ldx%ld+%"RMIdSIZE"+%"RMIdSIZE""
-                     , width, height, geometry.x, geometry.y);
+            rb_raise(rb_eArgError, "invalid extent geometry %ldx%ld+%"RMIdSIZE"+%"RMIdSIZE"",
+                     width, height, geometry.x, geometry.y);
         }
     }
 
@@ -7490,8 +7490,8 @@ Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE row
 
     if ((x+columns) > image->columns || (y+rows) > image->rows)
     {
-        rb_raise(rb_eRangeError, "geometry (%lux%lu%+ld%+ld) exceeds image bounds"
-                 , columns, rows, x, y);
+        rb_raise(rb_eRangeError, "geometry (%lux%lu%+ld%+ld) exceeds image bounds",
+                 columns, rows, x, y);
     }
 
     // Cast AcquireImagePixels to get rid of the const qualifier. We're not going
@@ -7791,8 +7791,8 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
         }
         if ((unsigned long)(buffer_l / type_sz) < npixels)
         {
-            rb_raise(rb_eArgError, "pixel buffer too small (need %lu channel values, got %"RMIuSIZE")"
-                     , npixels, buffer_l/type_sz);
+            rb_raise(rb_eArgError, "pixel buffer too small (need %lu channel values, got %"RMIuSIZE")",
+                     npixels, buffer_l/type_sz);
         }
     }
     // Otherwise convert the argument to an array and convert the array elements
@@ -7809,8 +7809,8 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
         }
         if ((unsigned long)RARRAY_LEN(pixel_ary) < npixels)
         {
-            rb_raise(rb_eArgError, "pixel array too small (need %lu elements, got %ld)"
-                     , npixels, RARRAY_LEN(pixel_ary));
+            rb_raise(rb_eArgError, "pixel array too small (need %lu elements, got %ld)",
+                     npixels, RARRAY_LEN(pixel_ary));
         }
 
         if (stg_type == DoublePixel || stg_type == FloatPixel)
@@ -7943,8 +7943,9 @@ build_inspect_string(Image *image, char *buffer, size_t len)
     if (   image->page.width != 0 || image->page.height != 0
            || image->page.x != 0     || image->page.y != 0)
     {
-        x += snprintf(buffer+x, len-x, "%"RMIuSIZE"x%"RMIuSIZE"+%"RMIdSIZE"+%"RMIdSIZE" ", image->page.width, image->page.height
-                     , image->page.x, image->page.y);
+        x += snprintf(buffer+x, len-x, "%"RMIuSIZE"x%"RMIuSIZE"+%"RMIdSIZE"+%"RMIdSIZE" ",
+                      image->page.width, image->page.height,
+                      image->page.x, image->page.y);
     }
 
     if (image->storage_class == DirectClass)
@@ -7982,10 +7983,10 @@ build_inspect_string(Image *image, char *buffer, size_t len)
             x += snprintf(buffer+x, len-x, "PseudoClass %"RMIuSIZE"=>%"RMIuSIZE"c ", image->total_colors, image->colors);
             if (image->error.mean_error_per_pixel != 0.0)
             {
-                x += snprintf(buffer+x, len-x, "%ld/%.6f/%.6fdb "
-                             , (long) (image->error.mean_error_per_pixel+0.5)
-                             , image->error.normalized_mean_error
-                             , image->error.normalized_maximum_error);
+                x += snprintf(buffer+x, len-x, "%ld/%.6f/%.6fdb ",
+                              (long) (image->error.mean_error_per_pixel+0.5),
+                              image->error.normalized_mean_error,
+                              image->error.normalized_maximum_error);
             }
         }
     }
@@ -8557,9 +8558,9 @@ Image__load(VALUE class ATTRIBUTE_UNUSED, VALUE str)
            || mi.mi > DUMPED_IMAGE_MINOR_VERS)
     {
         rb_raise(rb_eTypeError, "incompatible image format (can't be read)\n"
-                 "\tformat version %d.%d required; %d.%d given"
-                 , DUMPED_IMAGE_MAJOR_VERS, DUMPED_IMAGE_MINOR_VERS
-                 , mi.mj, mi.mi);
+                 "\tformat version %d.%d required; %d.%d given",
+                 DUMPED_IMAGE_MAJOR_VERS, DUMPED_IMAGE_MINOR_VERS,
+                 mi.mj, mi.mi);
     }
 
     mi.len = ((DumpedImage *)blob)->len;
@@ -8842,8 +8843,8 @@ set_image_mask(Image *image, VALUE mask)
         if (clip_mask->columns != image->columns || clip_mask->rows != image->rows)
         {
             exception = AcquireExceptionInfo();
-            resized_image = ResizeImage(clip_mask, image->columns, image->rows
-                                        , UndefinedFilter, 0.0, exception);
+            resized_image = ResizeImage(clip_mask, image->columns, image->rows,
+                                        UndefinedFilter, 0.0, exception);
             rm_check_exception(exception, resized_image, DestroyOnError);
             DestroyExceptionInfo(exception);
             rm_ensure_result(resized_image);
@@ -9019,8 +9020,8 @@ Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
     y = NUM2LONG(argv[2]);
     if ((unsigned long)x > image->columns || (unsigned long)y > image->rows)
     {
-        rb_raise(rb_eArgError, "target out of range. %ldx%ld given, image is %"RMIuSIZE"x%"RMIuSIZE""
-                 , x, y, image->columns, image->rows);
+        rb_raise(rb_eArgError, "target out of range. %ldx%ld given, image is %"RMIuSIZE"x%"RMIuSIZE"",
+                 x, y, image->columns, image->rows);
     }
 
 
@@ -9316,8 +9317,8 @@ Image_montage(VALUE self)
  * @see Image_sketch
  */
 static VALUE
-motion_blur(int argc, VALUE *argv, VALUE self
-            , Image *fp(const Image *, const double, const double, const double, ExceptionInfo *))
+motion_blur(int argc, VALUE *argv, VALUE self,
+            Image *fp(const Image *, const double, const double, const double, ExceptionInfo *))
 {
     Image *image, *new_image;
     double radius = 0.0;
@@ -13443,8 +13444,8 @@ Image_class_type_eq(VALUE self, VALUE new_class_type)
  * @return [Magick::Image] self
  */
 VALUE
-Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg
-                   , VALUE rows_arg, VALUE new_pixels)
+Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg,
+                   VALUE rows_arg, VALUE new_pixels)
 {
     Image *image;
     Pixel *pixel;
@@ -13468,8 +13469,8 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg
     rows = NUM2ULONG(rows_arg);
     if (x < 0 || y < 0 || x+cols > image->columns || y+rows > image->rows)
     {
-        rb_raise(rb_eRangeError, "geometry (%lux%lu%+ld%+ld) exceeds image bounds"
-                 , cols, rows, x, y);
+        rb_raise(rb_eRangeError, "geometry (%lux%lu%+ld%+ld) exceeds image bounds",
+                 cols, rows, x, y);
     }
 
     size = (long)(cols * rows);
@@ -13624,8 +13625,8 @@ Image_swirl(VALUE self, VALUE degrees_obj)
  * @return [Magick::Image] a new image
  */
 VALUE
-Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj
-                         , VALUE x_obj, VALUE y_obj, VALUE method_obj)
+Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj,
+                         VALUE x_obj, VALUE y_obj, VALUE method_obj)
 {
     Image *image, *new_image;
     Image *texture_image;
@@ -13651,8 +13652,8 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj
 
     if ((unsigned long)x > image->columns || (unsigned long)y > image->rows)
     {
-        rb_raise(rb_eArgError, "target out of range. %ldx%ld given, image is %"RMIuSIZE"x%"RMIuSIZE""
-                 , x, y, image->columns, image->rows);
+        rb_raise(rb_eArgError, "target out of range. %ldx%ld given, image is %"RMIuSIZE"x%"RMIuSIZE"",
+                 x, y, image->columns, image->rows);
     }
 
     VALUE_TO_ENUM(method_obj, method, PaintMethod);
@@ -14024,8 +14025,8 @@ Image_tint(int argc, VALUE *argv, VALUE self)
     }
 
     snprintf(alpha, sizeof(alpha),
-            "%g,%g,%g,%g", red_pct_opaque*100.0, green_pct_opaque*100.0
-            , blue_pct_opaque*100.0, alpha_pct_opaque*100.0);
+            "%g,%g,%g,%g", red_pct_opaque*100.0, green_pct_opaque*100.0,
+            blue_pct_opaque*100.0, alpha_pct_opaque*100.0);
 
     Color_to_PixelColor(&tint, argv[0]);
     exception = AcquireExceptionInfo();
@@ -14110,8 +14111,8 @@ Image_to_blob(VALUE self)
                || !rm_strcasecmp(magick_info->name, "JPG"))
               && (image->rows == 0 || image->columns == 0))
         {
-            rb_raise(rb_eRuntimeError, "Can't convert %"RMIuSIZE"x%"RMIuSIZE" %.4s image to a blob"
-                     , image->columns, image->rows, magick_info->name);
+            rb_raise(rb_eRuntimeError, "Can't convert %"RMIuSIZE"x%"RMIuSIZE" %.4s image to a blob",
+                     image->columns, image->rows, magick_info->name);
         }
     }
 
@@ -14766,8 +14767,8 @@ Image_units_eq(VALUE self, VALUE restype)
  * @see Image_unsharp_mask
  */
 static void
-unsharp_mask_args(int argc, VALUE *argv, double *radius, double *sigma
-                  , double *amount, double *threshold)
+unsharp_mask_args(int argc, VALUE *argv, double *radius, double *sigma,
+                  double *amount, double *threshold)
 {
     switch (argc)
     {
@@ -15417,9 +15418,9 @@ void add_format_prefix(Info *info, VALUE file)
 
             if (magick_info2->magick_module && strcmp(magick_info->magick_module, magick_info2->magick_module) != 0)
             {
-                rb_raise(rb_eRuntimeError
-                         , "filename prefix `%s' conflicts with output format `%s'"
-                         , magick_info->name, info->magick);
+                rb_raise(rb_eRuntimeError,
+                         "filename prefix `%s' conflicts with output format `%s'",
+                         magick_info->name, info->magick);
             }
 
             // The filename prefix already matches the specified format.
@@ -15915,8 +15916,8 @@ ChannelType extract_channels(int *argc, VALUE *argv)
 void
 raise_ChannelType_error(VALUE arg)
 {
-    rb_raise(rb_eTypeError, "argument must be a ChannelType value (%s given)"
-             , rb_class2name(CLASS_OF(arg)));
+    rb_raise(rb_eTypeError, "argument must be a ChannelType value (%s given)",
+             rb_class2name(CLASS_OF(arg)));
 }
 
 
