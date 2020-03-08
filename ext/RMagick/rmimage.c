@@ -1652,7 +1652,7 @@ special_composite(Image *image, Image *overlay, double image_pct, double overlay
  * - The default value for dst_percent is 100%-src_percent
  *
  * @overload blend(overlay, src_percent, dst_percent, gravity = Magick::NorthWestGravity, x_offset = 0, y_offset = 0)
- *   @param overlay [Magick::Image] The source image for the composite operation.
+ *   @param overlay [Magick::Image, Magick::ImageList] The source image for the composite operation.
  *     Either an imagelist or an image. If an imagelist, uses the current image.
  *   @param src_percent [Float, String] Either a non-negative number a string in the form "NN%".
  *     If src_percentage is a number it is interpreted as a percentage.
@@ -3901,12 +3901,14 @@ composite_tiled(int bang, int argc, VALUE *argv, VALUE self)
  * producing the same results as ImageMagick's composite command with the -tile option.
  *
  * @overload composite_tiled(src, composite_op = Magick::OverCompositeOp, channel = Magick::AllChannels)
- *   @param src [Magick::Image] The source image
+ *   @param src [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
+ *     imagelist, uses the current image.
  *   @param composite_op [Magick::CompositeOperator] the composite operator
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *
  * @overload composite_tiled(src, composite_op = Magick::OverCompositeOp, *channels)
- *   @param src [Magick::Image] The source image
+ *   @param src [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
+ *     imagelist, uses the current image.
  *   @param composite_op [Magick::CompositeOperator] the composite operator
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
@@ -3926,12 +3928,14 @@ Image_composite_tiled(int argc, VALUE *argv, VALUE self)
  * In-place form of {Magick::Image#composite_tiled}.
  *
  * @overload composite_tiled!(src, composite_op = Magick::OverCompositeOp, channel = Magick::AllChannels)
- *   @param src [Magick::Image] The source image
+ *   @param src [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
+ *     imagelist, uses the current image.
  *   @param composite_op [Magick::CompositeOperator] the composite operator
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *
  * @overload composite_tiled!(src, composite_op = Magick::OverCompositeOp, *channels)
- *   @param src [Magick::Image] The source image
+ *   @param src [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
+ *     imagelist, uses the current image.
  *   @param composite_op [Magick::CompositeOperator] the composite operator
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
@@ -5471,7 +5475,7 @@ Image_dispose_eq(VALUE self, VALUE dispose)
  * This method corresponds to the -dissolve option of ImageMagick's composite command.
  *
  * @overload dissolve(overlay, src_percent, dst_percent = -1.0, gravity = Magick::NorthWestGravity, x_offset = 0, y_offset = 0)
- *   @param overlay [Magick::Image] The source image for the composite operation.
+ *   @param overlay [Magick::Image, Magick::ImageList] The source image for the composite operation.
  *     Either an imagelist or an image. If an imagelist, uses the current image.
  *   @param src_percent [Float, String] Either a non-negative number a string in the form "NN%".
  *     If src_percentage is a number it is interpreted as a percentage.
@@ -8847,7 +8851,8 @@ set_image_mask(Image *image, VALUE mask)
  *
  * @overload mask(image)
  *   Set an image clip mask.
- *   @param image [Magick::Image] the mask image
+ *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
+ *     imagelist, uses the current image.
  *
  * @return [Magick::Image] the mask image
  */

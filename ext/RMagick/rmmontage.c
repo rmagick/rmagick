@@ -360,7 +360,8 @@ Montage_stroke_eq(VALUE self, VALUE color)
 /**
  * Set texture value.
  *
- * @param texture [Magick::Image] the texture image
+ * @param texture [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
+ *   imagelist, uses the current image.
  * @return [Magick::Image] the given texture image
  */
 VALUE

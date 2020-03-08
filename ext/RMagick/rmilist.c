@@ -940,7 +940,8 @@ ImageList_quantize(int argc, VALUE *argv, VALUE self)
  * Reduce the colors used in the image list to the set of colors in remap_image.
  *
  * @overload remap(remap_image = nil, dither_method = Magick::RiemersmaDitherMethod)
- *   @param remap_image [Magick::Image] the reference image
+ *   @param remap_image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
+ *     imagelist, uses the current image.
  *   @param dither_method [Magick::DitherMethod] a DitherMethod value.
  *   @return [Magick::ImageList] self
  *   @note Modifies images in-place.
