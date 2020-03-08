@@ -84,7 +84,7 @@ get_named_alpha_value(VALUE hash)
     {
         rb_raise(rb_eArgError, "missing keyword: alpha");
     }
-    
+
     if (FIX2ULONG(rb_hash_size(hash)) != 1)
     {
         rb_raise(rb_eArgError, "wrong number of arguments");
@@ -139,10 +139,7 @@ adaptive_method(int argc, VALUE *argv, VALUE self,
 
     new_image = (fp)(image, radius, sigma, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -197,10 +194,7 @@ adaptive_channel_method(int argc, VALUE *argv, VALUE self, channel_method_t fp)
 #endif
 
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -304,9 +298,7 @@ Image_adaptive_resize(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
     new_image = AdaptiveResizeImage(image, columns, rows, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -401,10 +393,7 @@ Image_adaptive_threshold(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
     new_image = AdaptiveThresholdImage(image, width, height, offset, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -485,10 +474,7 @@ Image_add_noise(VALUE self, VALUE noise)
     new_image = AddNoiseImage(image, noise_type, exception);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -539,10 +525,7 @@ Image_add_noise_channel(int argc, VALUE *argv, VALUE self)
     new_image = AddNoiseImageChannel(image, channels, noise_type, exception);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -723,10 +706,7 @@ Image_affine_transform(VALUE self, VALUE affine)
     exception = AcquireExceptionInfo();
     new_image = AffineTransformImage(image, &matrix, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -867,13 +847,11 @@ crisscross(int bang, VALUE self, Image *fp(const Image *, ExceptionInfo *))
 
     new_image = (fp)(image, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     if (bang)
     {
+        rm_ensure_result(new_image);
         UPDATE_DATA_PTR(self, new_image);
         rm_image_destroy(image);
         return self;
@@ -1825,10 +1803,7 @@ Image_blur_channel(int argc, VALUE *argv, VALUE self)
     new_image = BlurImageChannel(image, channels, radius, sigma, exception);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -1889,13 +1864,11 @@ border(int bang, VALUE self, VALUE width, VALUE height, VALUE color)
     new_image = BorderImage(image, &rect, exception);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     if (bang)
     {
+        rm_ensure_result(new_image);
         new_image->border_color = old_border;
         UPDATE_DATA_PTR(self, new_image);
         rm_image_destroy(image);
@@ -2183,7 +2156,6 @@ Image_channel(VALUE self, VALUE channel_arg)
 
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -2657,7 +2629,7 @@ Image_color_histogram(VALUE self)
  * Image_color_profile_eq and Image_iptc_profile_eq.
  *
  * No Ruby usage (internal function)
- * 
+ *
  * @param self this object
  * @param name profile name
  * @param profile an IPTC or ICC profile
@@ -2950,10 +2922,7 @@ Image_colorize(int argc, VALUE *argv, VALUE self)
     new_image = ColorizeImage(image, opacity, target, exception);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -3211,10 +3180,7 @@ Image_compare_channel(int argc, VALUE *argv, VALUE self)
     difference_image = CompareImageChannels(image, r_image, channels, metric_type, &distortion, exception);
 #endif
     rm_check_exception(exception, difference_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(difference_image);
 
     ary = rb_ary_new2(2);
     rb_ary_store(ary, 0, rm_image_new(difference_image));
@@ -4459,7 +4425,6 @@ Image_morphology_channel(VALUE self, VALUE channel_v, VALUE method_v, VALUE iter
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
-    rm_ensure_result(new_image);
     return rm_image_new(new_image);
 }
 
@@ -4574,10 +4539,7 @@ Image_convolve(VALUE self, VALUE order_arg, VALUE kernel_arg)
 #endif
 
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -4672,10 +4634,7 @@ Image_convolve_channel(int argc, VALUE *argv, VALUE self)
 #endif
 
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     RB_GC_GUARD(ary);
 
@@ -5151,8 +5110,6 @@ Image_deskew(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
     new_image = DeskewImage(image, threshold, exception);
     CHECK_EXCEPTION();
-    rm_ensure_result(new_image);
-
     DestroyExceptionInfo(exception);
 
     return rm_image_new(new_image);
@@ -5175,10 +5132,7 @@ Image_despeckle(VALUE self)
 
     new_image = DespeckleImage(image, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -5673,7 +5627,6 @@ Image_distort(int argc, VALUE *argv, VALUE self)
     xfree(points);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
-    rm_ensure_result(new_image);
 
     RB_GC_GUARD(pts);
 
@@ -5903,10 +5856,7 @@ Image_edge(int argc, VALUE *argv, VALUE self)
 
     new_image = EdgeImage(image, radius, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -5953,10 +5903,7 @@ effect_image(VALUE self, int argc, VALUE *argv, effector_t effector)
     exception = AcquireExceptionInfo();
     new_image = (effector)(image, radius, sigma, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -6057,10 +6004,7 @@ Image_enhance(VALUE self)
 
     new_image = EnhanceImage(image, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -6211,10 +6155,10 @@ excerpt(int bang, VALUE self, VALUE x, VALUE y, VALUE width, VALUE height)
     new_image = ExcerptImage(image, &rect, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
-    rm_ensure_result(new_image);
 
     if (bang)
     {
+        rm_ensure_result(new_image);
         UPDATE_DATA_PTR(self, new_image);
         rm_image_destroy(image);
         return self;
@@ -6431,7 +6375,7 @@ Image_extent(int argc, VALUE *argv, VALUE self)
     new_image = ExtentImage(image, &geometry, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
-    rm_ensure_result(new_image);
+
     return rm_image_new(new_image);
 }
 
@@ -6722,13 +6666,11 @@ flipflop(int bang, VALUE self, flipper_t flipflopper)
 
     new_image = (flipflopper)(image, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     if (bang)
     {
+        rm_ensure_result(new_image);
         UPDATE_DATA_PTR(self, new_image);
         rm_image_destroy(image);
         return self;
@@ -6925,10 +6867,7 @@ Image_frame(int argc, VALUE *argv, VALUE self)
     new_image = FrameImage(image, &frame_info, exception);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -7157,8 +7096,6 @@ Image_fx(int argc, VALUE *argv, VALUE self)
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -7680,8 +7617,6 @@ Image_implode(int argc, VALUE *argv, VALUE self)
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -8514,7 +8449,6 @@ Image_liquid_rescale(int argc, VALUE *argv, VALUE self)
     new_image = LiquidRescaleImage(image, cols, rows, delta_x, rigidity, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -8584,10 +8518,7 @@ Image__load(VALUE class ATTRIBUTE_UNUSED, VALUE str)
     DestroyImageInfo(info);
 
     rm_check_exception(exception, image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(image);
 
     return rm_image_new(image);
 }
@@ -8618,10 +8549,9 @@ magnify(int bang, VALUE self, magnifier_t magnifier)
 
     DestroyExceptionInfo(exception);
 
-    rm_ensure_result(new_image);
-
     if (bang)
     {
+        rm_ensure_result(new_image);
         UPDATE_DATA_PTR(self, new_image);
         rm_image_destroy(image);
         return self;
@@ -9103,10 +9033,7 @@ Image_median_filter(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
     new_image = StatisticImage(image, MedianStatistic, (size_t)radius, (size_t)radius, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -9351,10 +9278,7 @@ motion_blur(int argc, VALUE *argv, VALUE self,
     exception = AcquireExceptionInfo();
     new_image = (fp)(image, radius, sigma, angle, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -9599,10 +9523,7 @@ Image_initialize(int argc, VALUE *argv, VALUE self)
 VALUE
 rm_image_new(Image *image)
 {
-    if (!image)
-    {
-        rb_bug("rm_image_new called with NULL argument");
-    }
+    rm_ensure_result(image);
 
     rm_trace_creation(image);
 
@@ -9792,10 +9713,7 @@ Image_oil_paint(int argc, VALUE *argv, VALUE self)
     new_image = OilPaintImage(image, radius, exception);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -10479,8 +10397,6 @@ Image_polaroid(int argc, VALUE *argv, VALUE self)
     DestroyImage(clone);
     DestroyExceptionInfo(exception);
 
-    rm_ensure_result(new_image);
-
     RB_GC_GUARD(options);
 
     return rm_image_new(new_image);
@@ -10560,8 +10476,6 @@ Image_preview(VALUE self, VALUE preview)
     rm_check_exception(exception, new_image, DestroyOnError);
 
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -10899,10 +10813,7 @@ Image_radial_blur(VALUE self, VALUE angle_obj)
     new_image = RadialBlurImage(image, angle, exception);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -10957,7 +10868,6 @@ Image_radial_blur_channel(int argc, VALUE *argv, VALUE self)
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -11608,10 +11518,9 @@ resample(int bang, int argc, VALUE *argv, VALUE self)
 
     DestroyExceptionInfo(exception);
 
-    rm_ensure_result(new_image);
-
     if (bang)
     {
+        rm_ensure_result(new_image);
         UPDATE_DATA_PTR(self, new_image);
         rm_image_destroy(image);
         return self;
@@ -11748,10 +11657,9 @@ resize(int bang, int argc, VALUE *argv, VALUE self)
 
     DestroyExceptionInfo(exception);
 
-    rm_ensure_result(new_image);
-
     if (bang)
     {
+        rm_ensure_result(new_image);
         UPDATE_DATA_PTR(self, new_image);
         rm_image_destroy(image);
         return self;
@@ -11831,10 +11739,7 @@ Image_roll(VALUE self, VALUE x_offset, VALUE y_offset)
     exception = AcquireExceptionInfo();
     new_image = RollImage(image, x, y, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -11892,13 +11797,11 @@ rotate(int bang, int argc, VALUE *argv, VALUE self)
 
     new_image = RotateImage(image, degrees, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     if (bang)
     {
+        rm_ensure_result(new_image);
         UPDATE_DATA_PTR(self, new_image);
         rm_image_destroy(image);
         return self;
@@ -12128,13 +12031,11 @@ scale(int bang, int argc, VALUE *argv, VALUE self, scaler_t scaler)
     exception = AcquireExceptionInfo();
     new_image = (scaler)(image, columns, rows, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     if (bang)
     {
+        rm_ensure_result(new_image);
         UPDATE_DATA_PTR(self, new_image);
         rm_image_destroy(image);
         return self;
@@ -12212,7 +12113,6 @@ Image_selective_blur_channel(int argc, VALUE *argv, VALUE self)
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -12294,7 +12194,6 @@ Image_separate(int argc, VALUE *argv, VALUE self)
 #endif
     rm_check_exception(exception, new_images, DestroyOnError);
     DestroyExceptionInfo(exception);
-    rm_ensure_result(new_images);
 
     return rm_imagelist_from_images(new_images);
 }
@@ -12332,9 +12231,7 @@ Image_sepiatone(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
     new_image = SepiaToneImage(image, threshold, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -12397,8 +12294,6 @@ Image_segment(int argc, VALUE *argv, VALUE self)
     SegmentImage(new_image, colorspace, verbose, cluster_threshold, smoothing_threshold);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -12534,9 +12429,7 @@ Image_shade(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
     new_image = ShadeImage(image, shading, azimuth, elevation, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -12594,9 +12487,7 @@ Image_shadow(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
     new_image = ShadowImage(image, alpha, sigma, x_offset, y_offset, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -12735,9 +12626,7 @@ Image_shear(VALUE self, VALUE x_shear, VALUE y_shear)
     exception = AcquireExceptionInfo();
     new_image = ShearImage(image, x, y, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -13144,7 +13033,6 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
     xfree((void *) args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -13203,10 +13091,7 @@ Image_splice(int argc, VALUE *argv, VALUE self)
     image->background_color = old_color;
 
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -13245,8 +13130,6 @@ Image_spread(int argc, VALUE *argv, VALUE self)
     new_image = SpreadImage(image, radius, exception);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
-    rm_ensure_result(new_image);
-
     DestroyExceptionInfo(exception);
 
     return rm_image_new(new_image);
@@ -13310,8 +13193,6 @@ Image_stegano(VALUE self, VALUE watermark_image, VALUE offset)
 
     DestroyExceptionInfo(exception);
 
-    rm_ensure_result(new_image);
-
     RB_GC_GUARD(wm_image);
 
     return rm_image_new(new_image);
@@ -13343,8 +13224,6 @@ Image_stereo(VALUE self, VALUE offset_image_arg)
     rm_check_exception(exception, new_image, DestroyOnError);
 
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     RB_GC_GUARD(offset_image);
 
@@ -13599,10 +13478,7 @@ Image_swirl(VALUE self, VALUE degrees_obj)
     new_image = SwirlImage(image, degrees, exception);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -13874,13 +13750,11 @@ thumbnail(int bang, int argc, VALUE *argv, VALUE self)
 
     new_image = ThumbnailImage(image, geometry.width, geometry.height, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     if (bang)
     {
+        rm_ensure_result(new_image);
         UPDATE_DATA_PTR(self, new_image);
         rm_image_destroy(image);
         return self;
@@ -14037,10 +13911,7 @@ Image_tint(int argc, VALUE *argv, VALUE self)
     new_image = TintImage(image, alpha, tint, exception);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -14484,7 +14355,6 @@ trimmer(int bang, int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
     new_image = TrimImage(image, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
 
     rm_ensure_result(new_image);
@@ -14669,8 +14539,6 @@ Image_unique_colors(VALUE self)
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
-    rm_ensure_result(new_image);
-
     return rm_image_new(new_image);
 }
 
@@ -14835,10 +14703,7 @@ Image_unsharp_mask(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
     new_image = UnsharpMaskImage(image, radius, sigma, amount, threshold, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -14898,10 +14763,7 @@ Image_unsharp_mask_channel(int argc, VALUE *argv, VALUE self)
     new_image = UnsharpMaskImageChannel(image, channels, radius, sigma, amount, threshold, exception);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -14951,10 +14813,7 @@ Image_vignette(int argc, VALUE *argv, VALUE self)
 
     new_image = VignetteImage(image, radius, sigma, horz_radius, vert_radius, exception);
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -15150,10 +15009,7 @@ Image_wave(int argc, VALUE *argv, VALUE self)
     new_image = WaveImage(image, amplitude, wavelength, exception);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
-
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -15848,10 +15704,9 @@ xform_image(int bang, VALUE self, VALUE x, VALUE y, VALUE width, VALUE height, x
     }
 #endif
 
-    rm_ensure_result(new_image);
-
     if (bang)
     {
+        rm_ensure_result(new_image);
         UPDATE_DATA_PTR(self, new_image);
         rm_image_destroy(image);
         return self;

@@ -117,8 +117,6 @@ ImageList_append(VALUE self, VALUE stack_arg)
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
-    rm_ensure_result(new_image);
-
     return rm_image_new(new_image);
 }
 
@@ -143,8 +141,6 @@ ImageList_average(VALUE self)
     rm_split(images);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -172,8 +168,6 @@ ImageList_coalesce(VALUE self)
     rm_split(images);
     rm_check_exception(exception, new_images, DestroyOnError);
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_images);
 
     return rm_imagelist_from_images(new_images);
 }
@@ -270,8 +264,6 @@ VALUE ImageList_combine(int argc, VALUE *argv, VALUE self)
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
-    rm_ensure_result(new_image);
-
     return rm_image_new(new_image);
 }
 
@@ -361,8 +353,6 @@ ImageList_deconstruct(VALUE self)
     rm_check_exception(exception, new_images, DestroyOnError);
     DestroyExceptionInfo(exception);
 
-    rm_ensure_result(new_images);
-
     return rm_imagelist_from_images(new_images);
 }
 
@@ -426,8 +416,6 @@ ImageList_flatten_images(VALUE self)
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
-    rm_ensure_result(new_image);
-
     return rm_image_new(new_image);
 }
 
@@ -485,8 +473,6 @@ ImageList_montage(VALUE self)
     rm_check_exception(exception, new_images, DestroyOnError);
     DestroyExceptionInfo(exception);
 
-    rm_ensure_result(new_images);
-
     RB_GC_GUARD(montage_obj);
 
     return rm_imagelist_from_images(new_images);
@@ -523,8 +509,6 @@ ImageList_morph(VALUE self, VALUE nimages)
     rm_check_exception(exception, new_images, DestroyOnError);
     DestroyExceptionInfo(exception);
 
-    rm_ensure_result(new_images);
-
     return rm_imagelist_from_images(new_images);
 }
 
@@ -548,8 +532,6 @@ ImageList_mosaic(VALUE self)
     rm_split(images);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
-
-    rm_ensure_result(new_image);
 
     return rm_image_new(new_image);
 }
@@ -659,8 +641,6 @@ ImageList_optimize_layers(VALUE self, VALUE method)
     rm_check_exception(exception, new_images, DestroyOnError);
     DestroyExceptionInfo(exception);
 
-    rm_ensure_result(new_images);
-
     return rm_imagelist_from_images(new_images);
 }
 
@@ -699,10 +679,7 @@ rm_imagelist_from_images(Image *images)
 {
     VALUE new_imagelist;
 
-    if (!images)
-    {
-        rb_bug("rm_imagelist_from_images called with NULL argument");
-    }
+    rm_ensure_result(images);
 
     new_imagelist = ImageList_new();
 
