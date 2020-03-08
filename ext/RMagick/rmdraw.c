@@ -139,7 +139,8 @@ Draw_fill_eq(VALUE self, VALUE fill)
 /**
  * Accept an image as a fill pattern.
  *
- * @param pattern [Magick::Image] the pattern image
+ * @param pattern [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
+ *   imagelist, uses the current image.
  * @return [Magick::Image] the given pattern image
  * @see #stroke_pattern=
  * @see #tile=
@@ -696,7 +697,8 @@ Draw_stroke_eq(VALUE self, VALUE stroke)
 /**
  * Accept an image as a stroke pattern.
  *
- * @param pattern [Magick::Image] the stroke pattern
+ * @param pattern [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
+ *   imagelist, uses the current image.
  * @return [Magick::Image] the given pattern
  * @see #fill_pattern
  */
@@ -803,7 +805,8 @@ Draw_undercolor_eq(VALUE self, VALUE undercolor)
  * - Additional Draw attribute methods may be called in the optional block,
  *   which is executed in the context of an Draw object.
  *
- * @param image_arg [Magick::Image] the image
+ * @param image_arg [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
+ *   imagelist, uses the current image.
  * @param width_arg [Numeric] the width
  * @param height_arg [Numeric] the height
  * @param x_arg [Numeric] x position
@@ -941,7 +944,8 @@ Draw_clone(VALUE self)
  *   @param y [Float] y position
  *   @param width [Float] the width
  *   @param height [Float] the height
- *   @param image [Magick::Image] the image
+ *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
+ *     imagelist, uses the current image.
  *   @return [Magick::Draw] self
  *
  * @overload composite(x, y, width, height, image, operator = Magick::OverCompositeOp)
@@ -951,7 +955,8 @@ Draw_clone(VALUE self)
  *   @param y [Float] y position
  *   @param width [Float] the width
  *   @param height [Float] the height
- *   @param image [Magick::Image] the image
+ *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
+ *     imagelist, uses the current image.
  *   @param operator [Magick::CompositeOperator] the operator
  *   @return [Magick::Draw] self
  */
@@ -1024,7 +1029,8 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
 /**
  * Execute the stored drawing primitives on the current image.
  *
- * @param image_arg [Magick::Image] the image
+ * @param image_arg [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
+ *   imagelist, uses the current image.
  * @return [Magick::Draw] self
  */
 VALUE
@@ -1103,7 +1109,8 @@ Draw_dup(VALUE self)
  *   @return [Magick::TypeMetric] The information for a specific string if rendered on a image.
  *
  * @overload get_type_metrics(image, text)
- *   @param image [Magick::Image] The image on which the string will be rendered.
+ *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
+ *     imagelist, uses the current image.
  *   @param text [String] The string to be rendered.
  *   @return [Magick::TypeMetric] The information for a specific string if rendered on a image.
  */
@@ -1129,7 +1136,8 @@ Draw_get_type_metrics(
  *   @return [Magick::TypeMetric] The information for a specific string if rendered on a image.
  *
  * @overload Draw#get_multiline_type_metrics(image, text)
- *   @param image [Magick::Image] The image on which the string will be rendered.
+ *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
+ *     imagelist, uses the current image.
  *   @param text [String] The string to be rendered.
  *   @return [Magick::TypeMetric] The information for a specific string if rendered on a image.
  */

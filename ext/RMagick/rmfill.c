@@ -686,7 +686,8 @@ TextureFill_alloc(VALUE class)
 /**
  * Initialize TextureFill object.
  *
- * @param texture_arg [Magick::Image] the texture
+ * @param texture_arg [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
+ *   imagelist, uses the current image.
  * @return [Magick::TextureFill] self
  */
 VALUE
