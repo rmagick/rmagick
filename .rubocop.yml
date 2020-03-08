@@ -27,6 +27,10 @@ Style/GuardClause: { MinBodyLength: 3 }
 Style/MethodCalledOnDoEndBlock: { Exclude: [test/**/*.rb, spec/**/*.rb] }
 Style/NumericLiterals: { MinDigits: 6 }
 
+Style/CollectionMethods:
+  Exclude:
+    - 'doc/ex/composite_layers.rb'
+
 ################################################################################
 #
 # Rules we don't want to enable
