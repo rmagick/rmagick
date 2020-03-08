@@ -195,7 +195,16 @@ module RMagick
       matches.delete_if(&:empty?)
       return unless !matches.empty? && matches.length < 3
 
-      msg = "\nWarning: Found a partial ImageMagick installation. Your operating system likely has some built-in ImageMagick libraries but not all of ImageMagick. This will most likely cause problems at both compile and runtime.\nFound partial installation at: " + prefix + "\n"
+      msg = <<~MESSAGE
+
+        Warning: Found a partial ImageMagick installation. Your operating
+        system likely has some built-in ImageMagick libraries but not all of
+        ImageMagick. This will most likely cause problems at both compile and
+        runtime.
+        Found partial installation at: #{prefix}
+
+      MESSAGE
+
       Logging.message msg
       message msg
     end
