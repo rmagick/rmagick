@@ -15,6 +15,7 @@ if [ ! -v IMAGEMAGICK_VERSION ]; then
   exit 1
 fi
 
+sudo apt-get clean
 sudo apt-get update
 
 # remove all existing imagemagick related packages
