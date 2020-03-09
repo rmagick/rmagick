@@ -970,7 +970,7 @@ rm_get_property(const Image *img, const char *property)
  * No Ruby usage (internal function)
  *
  * @param image the image
- * @param property the property name
+ * @param property the property name 
  * @param value the property value
  * @return true if successful, otherwise false
  */
@@ -1004,8 +1004,6 @@ rm_set_property(Image *image, const char *property, const char *value)
 void rm_set_user_artifact(Image *images, Info *info)
 {
     const char *value;
-
-    rm_ensure_result(images);
 
     value = GetImageOption(info, "user");
     if (value)

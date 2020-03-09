@@ -2049,6 +2049,8 @@ Image_capture(int argc, VALUE *argv, VALUE self ATTRIBUTE_UNUSED)
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
+    rm_ensure_result(new_image);
+
     rm_set_user_artifact(new_image, image_info);
 
     RB_GC_GUARD(info_obj);
@@ -6908,8 +6910,10 @@ Image_from_blob(VALUE class ATTRIBUTE_UNUSED, VALUE blob_arg)
     exception = AcquireExceptionInfo();
     images = BlobToImage(info,  blob, (size_t)length, exception);
     rm_check_exception(exception, images, DestroyOnError);
+
     DestroyExceptionInfo(exception);
 
+    rm_ensure_result(images);
     rm_set_user_artifact(images, info);
 
     RB_GC_GUARD(info_obj);
@@ -11105,9 +11109,8 @@ rd_image(VALUE class ATTRIBUTE_UNUSED, VALUE file, reader_t reader)
 #endif
 
     rm_check_exception(exception, images, DestroyOnError);
-    DestroyExceptionInfo(exception);
-
     rm_set_user_artifact(images, info);
+    DestroyExceptionInfo(exception);
 
     RB_GC_GUARD(info_obj);
 
@@ -11245,8 +11248,8 @@ Image_read_inline(VALUE self ATTRIBUTE_UNUSED, VALUE content)
     magick_free((void *)blob);
 
     rm_check_exception(exception, images, DestroyOnError);
-    DestroyExceptionInfo(exception);
 
+    DestroyExceptionInfo(exception);
     rm_set_user_artifact(images, info);
 
     RB_GC_GUARD(info_obj);
