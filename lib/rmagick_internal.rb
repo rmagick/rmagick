@@ -1439,6 +1439,7 @@ module Magick
     end
 
     # ImageList#map took over the "map" name. Use alternatives.
+    alias map collect
     alias __map__ collect
     alias map! collect!
     alias __map__! collect!
