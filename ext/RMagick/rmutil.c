@@ -347,21 +347,6 @@ rm_str2cstr(VALUE str, long *len)
 
 
 /**
- * Try to convert the argument to a double, raise an exception if fail.
- *
- * No Ruby usage (internal function)
- *
- * @param arg the argument
- * @return arg
- */
-static VALUE
-arg_is_number(VALUE arg)
-{
-    return DBL2NUM(NUM2DBL(arg));
-}
-
-
-/**
  * Called when `rb_str_to_str' raises an exception.
  *
  * No Ruby usage (internal function)
@@ -396,10 +381,7 @@ rm_percentage(VALUE arg, double max)
     char *end;
     int not_num;
 
-    // Try to convert the argument to a number. If failure, sets not_num to non-zero.
-    rb_protect(arg_is_number, arg, &not_num);
-
-    if (not_num)
+    if (!rm_check_num2dbl(arg))
     {
         char *pct_str;
         long pct_long;
@@ -543,10 +525,7 @@ rm_fuzz_to_dbl(VALUE fuzz_arg)
     char *end;
     int not_num;
 
-    // Try to convert the argument to a number. If failure, sets not_num to non-zero.
-    rb_protect(arg_is_number, fuzz_arg, &not_num);
-
-    if (not_num)
+    if (!rm_check_num2dbl(fuzz_arg))
     {
         char *fuzz_str;
 
