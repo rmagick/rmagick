@@ -6412,7 +6412,6 @@ Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
     const char *map = "RGB";
     StorageType type = CharPixel;
     VALUE string;
-    char *str;
     ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
@@ -6479,11 +6478,10 @@ Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
     // Get a pointer to the buffer.
     string = rb_str_new2("");
     rb_str_resize(string, (long)(sz * npixels));
-    str = StringValuePtr(string);
 
     exception = AcquireExceptionInfo();
 
-    okay = ExportImagePixels(image, x_off, y_off, cols, rows, map, type, (void *)str, exception);
+    okay = ExportImagePixels(image, x_off, y_off, cols, rows, map, type, (void *)RSTRING_PTR(string), exception);
     if (!okay)
     {
         // Let GC have the string buffer.
