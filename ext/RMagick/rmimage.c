@@ -743,7 +743,7 @@ Image_aref(VALUE self, VALUE key_arg)
             break;
 
         default:
-            key = StringValuePtr(key_arg);
+            key = StringValueCStr(key_arg);
             if (*key == '\0')
             {
                 return Qnil;
@@ -789,7 +789,7 @@ Image_aset(VALUE self, VALUE key_arg, VALUE attr_arg)
 
     image = rm_check_frozen(self);
 
-    attr = attr_arg == Qnil ? NULL : StringValuePtr(attr_arg);
+    attr = attr_arg == Qnil ? NULL : StringValueCStr(attr_arg);
 
     switch (TYPE(key_arg))
     {
@@ -801,7 +801,7 @@ Image_aset(VALUE self, VALUE key_arg, VALUE attr_arg)
             break;
 
         default:
-            key = StringValuePtr(key_arg);
+            key = StringValueCStr(key_arg);
             if (*key == '\0')
             {
                 return self;
@@ -2088,7 +2088,7 @@ Image_change_geometry(VALUE self, VALUE geom_arg)
 
     image = rm_check_destroyed(self);
     geom_str = rm_to_s(geom_arg);
-    geometry = StringValuePtr(geom_str);
+    geometry = StringValueCStr(geom_str);
 
     memset(&rect, 0, sizeof(rect));
 
@@ -4866,7 +4866,7 @@ Image_density_eq(VALUE self, VALUE density_arg)
     // Convert the argument to a string
     else
     {
-        density = StringValuePtr(density_arg);
+        density = StringValueCStr(density_arg);
         if (!IsGeometry(density))
         {
             rb_raise(rb_eArgError, "invalid density geometry %s", density);
@@ -4910,7 +4910,7 @@ Image_decipher(VALUE self, VALUE passphrase)
     MagickBooleanType okay;
 
     image = rm_check_destroyed(self);
-    pf = StringValuePtr(passphrase);      // ensure passphrase is a string
+    pf = StringValueCStr(passphrase);      // ensure passphrase is a string
     exception = AcquireExceptionInfo();
 
     new_image = rm_clone_image(image);
@@ -4951,7 +4951,7 @@ Image_define(VALUE self, VALUE artifact, VALUE value)
 
     image = rm_check_frozen(self);
     artifact = rb_String(artifact);
-    key = StringValuePtr(artifact);
+    key = StringValueCStr(artifact);
 
     if (value == Qnil)
     {
@@ -4960,7 +4960,7 @@ Image_define(VALUE self, VALUE artifact, VALUE value)
     else
     {
         value = rb_String(value);
-        val = StringValuePtr(value);
+        val = StringValueCStr(value);
         status = SetImageArtifact(image, key, val);
         if (!status)
         {
@@ -5041,7 +5041,7 @@ VALUE
 Image_delete_profile(VALUE self, VALUE name)
 {
     Image *image = rm_check_frozen(self);
-    DeleteImageProfile(image, StringValuePtr(name));
+    DeleteImageProfile(image, StringValueCStr(name));
 
     return self;
 }
@@ -5945,7 +5945,7 @@ Image_encipher(VALUE self, VALUE passphrase)
     MagickBooleanType okay;
 
     image = rm_check_destroyed(self);
-    pf = StringValuePtr(passphrase);      // ensure passphrase is a string
+    pf = StringValueCStr(passphrase);      // ensure passphrase is a string
     exception = AcquireExceptionInfo();
 
     new_image = rm_clone_image(image);
@@ -6258,7 +6258,7 @@ Image_export_pixels(int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 5:
-            map   = StringValuePtr(argv[4]);
+            map   = StringValueCStr(argv[4]);
         case 4:
             rows  = NUM2ULONG(argv[3]);
         case 3:
@@ -6424,7 +6424,7 @@ Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
         case 6:
             VALUE_TO_ENUM(argv[5], type, StorageType);
         case 5:
-            map   = StringValuePtr(argv[4]);
+            map   = StringValueCStr(argv[4]);
         case 4:
             rows  = NUM2ULONG(argv[3]);
         case 3:
@@ -6793,7 +6793,7 @@ Image_format_eq(VALUE self, VALUE magick)
 
     image = rm_check_frozen(self);
 
-    mgk = StringValuePtr(magick);
+    mgk = StringValueCStr(magick);
 
     exception = AcquireExceptionInfo();
     m = GetMagickInfo(mgk, exception);
@@ -7087,7 +7087,7 @@ Image_fx(int argc, VALUE *argv, VALUE self)
         raise_ChannelType_error(argv[argc-1]);
     }
 
-    expression = StringValuePtr(argv[0]);
+    expression = StringValueCStr(argv[0]);
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
@@ -7383,7 +7383,7 @@ Image_geometry_eq(VALUE self, VALUE geometry)
 
 
     geom_str = rm_to_s(geometry);
-    geom = StringValuePtr(geom_str);
+    geom = StringValueCStr(geom_str);
     if (!IsGeometry(geom))
     {
         rb_raise(rb_eTypeError, "invalid geometry: %s", geom);
@@ -7674,7 +7674,7 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
             y_off = NUM2LONG(argv[1]);
             cols = NUM2ULONG(argv[2]);
             rows = NUM2ULONG(argv[3]);
-            map = StringValuePtr(argv[4]);
+            map = StringValueCStr(argv[4]);
             pixel_arg = argv[5];
             break;
         default:
@@ -9914,7 +9914,7 @@ Image_ordered_dither(int argc, VALUE *argv, VALUE self)
     {
         if (TYPE(argv[0]) == T_STRING)
         {
-            threshold_map = StringValuePtr(argv[0]);
+            threshold_map = StringValueCStr(argv[0]);
         }
         else
         {
@@ -10504,7 +10504,7 @@ Image_profile_bang(VALUE self, VALUE name, VALUE profile)
     }
     else
     {
-        return set_profile(self, StringValuePtr(name), profile);
+        return set_profile(self, StringValueCStr(name), profile);
     }
 
 }
@@ -10918,7 +10918,7 @@ Image_random_threshold_channel(int argc, VALUE *argv, VALUE self)
 
     // Accept any argument that has a to_s method.
     geom_str = rm_to_s(argv[0]);
-    thresholds = StringValuePtr(geom_str);
+    thresholds = StringValueCStr(geom_str);
 
     new_image = rm_clone_image(image);
 

@@ -269,7 +269,7 @@ Export_ColorInfo(ColorInfo *ci, VALUE st)
     m = rb_ary_entry(members, 0);
     if (m != Qnil)
     {
-        CloneString((char **)&(ci->name), StringValuePtr(m));
+        CloneString((char **)&(ci->name), StringValueCStr(m));
     }
     m = rb_ary_entry(members, 1);
     if (m != Qnil)
@@ -446,17 +446,17 @@ Export_TypeInfo(TypeInfo *ti, VALUE st)
     m = rb_ary_entry(members, 0);
     if (m != Qnil)
     {
-        CloneString((char **)&(ti->name), StringValuePtr(m));
+        CloneString((char **)&(ti->name), StringValueCStr(m));
     }
     m = rb_ary_entry(members, 1);
     if (m != Qnil)
     {
-        CloneString((char **)&(ti->description), StringValuePtr(m));
+        CloneString((char **)&(ti->description), StringValueCStr(m));
     }
     m = rb_ary_entry(members, 2);
     if (m != Qnil)
     {
-        CloneString((char **)&(ti->family), StringValuePtr(m));
+        CloneString((char **)&(ti->family), StringValueCStr(m));
     }
     m = rb_ary_entry(members, 3); ti->style   = m == Qnil ? 0 : FIX2INT(Enum_to_i(m));
     m = rb_ary_entry(members, 4); ti->stretch = m == Qnil ? 0 : FIX2INT(Enum_to_i(m));
@@ -464,13 +464,13 @@ Export_TypeInfo(TypeInfo *ti, VALUE st)
 
     m = rb_ary_entry(members, 6);
     if (m != Qnil)
-        CloneString((char **)&(ti->encoding), StringValuePtr(m));
+        CloneString((char **)&(ti->encoding), StringValueCStr(m));
     m = rb_ary_entry(members, 7);
     if (m != Qnil)
-        CloneString((char **)&(ti->foundry), StringValuePtr(m));
+        CloneString((char **)&(ti->foundry), StringValueCStr(m));
     m = rb_ary_entry(members, 8);
     if (m != Qnil)
-        CloneString((char **)&(ti->format), StringValuePtr(m));
+        CloneString((char **)&(ti->format), StringValueCStr(m));
 
     RB_GC_GUARD(members);
     RB_GC_GUARD(m);

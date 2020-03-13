@@ -64,7 +64,7 @@ set_option(VALUE self, const char *key, VALUE string)
     {
         char *value;
 
-        value = StringValuePtr(string);
+        value = StringValueCStr(string);
         SetImageOption(info, key, value);
     }
     return string;
@@ -101,7 +101,7 @@ static VALUE set_color_option(VALUE self, const char *option, VALUE color)
         char *name;
         ExceptionInfo *exception;
 
-        name = StringValuePtr(color);
+        name = StringValueCStr(color);
         exception = AcquireExceptionInfo();
         okay = QueryColorCompliance(name, AllCompliance, &pp, exception);
         DestroyExceptionInfo(exception);
@@ -285,7 +285,7 @@ Info_aref(int argc, VALUE *argv, VALUE self)
             break;
 
         case 1:
-            strlcpy(fkey, StringValuePtr(argv[0]), sizeof(fkey));
+            strlcpy(fkey, StringValueCStr(argv[0]), sizeof(fkey));
             break;
 
         default:
@@ -352,7 +352,7 @@ Info_aset(int argc, VALUE *argv, VALUE self)
             break;
 
         case 2:
-            strlcpy(ckey, StringValuePtr(argv[0]), sizeof(ckey));
+            strlcpy(ckey, StringValueCStr(argv[0]), sizeof(ckey));
 
             value = argv[1];
             break;
@@ -372,7 +372,7 @@ Info_aset(int argc, VALUE *argv, VALUE self)
 
         /* Allow any argument that supports to_s */
         value = rm_to_s(value);
-        value_p = StringValuePtr(value);
+        value_p = StringValueCStr(value);
 
         okay = SetImageOption(info, ckey, value_p);
         if (!okay)
@@ -448,7 +448,7 @@ Info_authenticate_eq(VALUE self, VALUE passwd_arg)
 
     if (!NIL_P(passwd_arg))
     {
-        passwd = StringValuePtr(passwd_arg);
+        passwd = StringValueCStr(passwd_arg);
     }
 
 #if defined(IMAGEMAGICK_7)
@@ -712,7 +712,7 @@ Info_define(int argc, VALUE *argv, VALUE self)
         case 3:
             /* Allow any argument that supports to_s */
             fmt_arg = rb_String(argv[2]);
-            value = (const char *)StringValuePtr(fmt_arg);
+            value = (const char *)StringValueCStr(fmt_arg);
         case 2:
             key = rm_str2cstr(argv[1], &key_l);
             format = rm_str2cstr(argv[0], &format_l);
@@ -854,7 +854,7 @@ Info_density_eq(VALUE self, VALUE density_arg)
     }
 
     density = rm_to_s(density_arg);
-    dens = StringValuePtr(density);
+    dens = StringValueCStr(density);
     if (!IsGeometry(dens))
     {
         rb_raise(rb_eArgError, "invalid density geometry: %s", dens);
@@ -1131,7 +1131,7 @@ Info_extract_eq(VALUE self, VALUE extract_arg)
     }
 
     extract = rm_to_s(extract_arg);
-    extr = StringValuePtr(extract);
+    extr = StringValueCStr(extract);
     if (!IsGeometry(extr))
     {
         rb_raise(rb_eArgError, "invalid extract geometry: %s", extr);
@@ -1177,7 +1177,7 @@ Info_filename_eq(VALUE self, VALUE filename)
     Data_Get_Struct(self, Info, info);
 
     // Allow "nil" - remove current filename
-    if (NIL_P(filename) || StringValuePtr(filename) == NULL)
+    if (NIL_P(filename) || StringValueCStr(filename) == NULL)
     {
         info->filename[0] = '\0';
     }
@@ -1186,7 +1186,7 @@ Info_filename_eq(VALUE self, VALUE filename)
         char *fname;
 
         // Otherwise copy in filename
-        fname = StringValuePtr(filename);
+        fname = StringValueCStr(filename);
         strlcpy(info->filename, fname, sizeof(info->filename));
     }
     return filename;
@@ -1240,7 +1240,7 @@ Info_font_eq(VALUE self, VALUE font_arg)
     Info *info;
 
     Data_Get_Struct(self, Info, info);
-    if (NIL_P(font_arg) || StringValuePtr(font_arg) == NULL)
+    if (NIL_P(font_arg) || StringValueCStr(font_arg) == NULL)
     {
         magick_free(info->font);
         info->font = NULL;
@@ -1249,7 +1249,7 @@ Info_font_eq(VALUE self, VALUE font_arg)
     {
         char *font;
 
-        font = StringValuePtr(font_arg);
+        font = StringValueCStr(font_arg);
         magick_clone_string(&info->font, font);
     }
     return font_arg;
@@ -1296,7 +1296,7 @@ Info_format_eq(VALUE self, VALUE magick)
 
     Data_Get_Struct(self, Info, info);
 
-    mgk = StringValuePtr(magick);
+    mgk = StringValueCStr(magick);
 
     exception = AcquireExceptionInfo();
     m = GetMagickInfo(mgk, exception);
@@ -1729,7 +1729,7 @@ Info_origin_eq(VALUE self, VALUE origin_arg)
     }
 
     origin_str = rm_to_s(origin_arg);
-    origin = GetPageGeometry(StringValuePtr(origin_str));
+    origin = GetPageGeometry(StringValueCStr(origin_str));
 
     if (IsGeometry(origin) == MagickFalse)
     {
@@ -1784,7 +1784,7 @@ Info_page_eq(VALUE self, VALUE page_arg)
         return self;
     }
     geom_str = rm_to_s(page_arg);
-    geometry = GetPageGeometry(StringValuePtr(geom_str));
+    geometry = GetPageGeometry(StringValueCStr(geom_str));
     if (*geometry == '\0')
     {
         magick_free(info->page);
@@ -1960,7 +1960,7 @@ Info_server_name_eq(VALUE self, VALUE server_arg)
     Info *info;
 
     Data_Get_Struct(self, Info, info);
-    if (NIL_P(server_arg) || StringValuePtr(server_arg) == NULL)
+    if (NIL_P(server_arg) || StringValueCStr(server_arg) == NULL)
     {
         magick_free(info->server_name);
         info->server_name = NULL;
@@ -1969,7 +1969,7 @@ Info_server_name_eq(VALUE self, VALUE server_arg)
     {
         char *server;
 
-        server = StringValuePtr(server_arg);
+        server = StringValueCStr(server_arg);
         magick_clone_string(&info->server_name, server);
     }
     return server_arg;
@@ -2011,7 +2011,7 @@ Info_size_eq(VALUE self, VALUE size_arg)
     }
 
     size = rm_to_s(size_arg);
-    sz = StringValuePtr(size);
+    sz = StringValueCStr(size);
     if (!IsGeometry(sz))
     {
         rb_raise(rb_eArgError, "invalid size geometry: %s", sz);
@@ -2153,7 +2153,7 @@ Info_tile_offset_eq(VALUE self, VALUE offset)
     char *tile_offset;
 
     offset_str = rm_to_s(offset);
-    tile_offset = StringValuePtr(offset_str);
+    tile_offset = StringValueCStr(offset_str);
     if (!IsGeometry(tile_offset))
     {
         rb_raise(rb_eArgError, "invalid tile offset geometry: %s", tile_offset);
@@ -2324,7 +2324,7 @@ Info_view_eq(VALUE self, VALUE view_arg)
 
     if (!NIL_P(view_arg))
     {
-        view = StringValuePtr(view_arg);
+        view = StringValueCStr(view_arg);
     }
 
 #if defined(IMAGEMAGICK_7)

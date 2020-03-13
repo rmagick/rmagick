@@ -262,7 +262,7 @@ Magick_limit_resource(int argc, VALUE *argv, VALUE class)
             break;
 
         default:
-            str = StringValuePtr(resource);
+            str = StringValueCStr(resource);
             if (*str == '\0')
             {
                 return class;
@@ -364,7 +364,7 @@ Magick_set_log_event_mask(int argc, VALUE *argv, VALUE class)
     }
     for (x = 0; x < argc; x++)
     {
-        SetLogEventMask(StringValuePtr(argv[x]));
+        SetLogEventMask(StringValueCStr(argv[x]));
     }
     return class;
 }
@@ -390,7 +390,7 @@ Magick_set_log_event_mask(int argc, VALUE *argv, VALUE class)
 VALUE
 Magick_set_log_format(VALUE class, VALUE format)
 {
-    SetLogFormat(StringValuePtr(format));
+    SetLogFormat(StringValueCStr(format));
     return class;
 }
 

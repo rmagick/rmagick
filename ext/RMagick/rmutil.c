@@ -387,7 +387,7 @@ rm_percentage(VALUE arg, double max)
         long pct_long;
 
         arg = rb_rescue(rb_str_to_str, arg, rescue_not_str, arg);
-        pct_str = StringValuePtr(arg);
+        pct_str = StringValueCStr(arg);
         errno = 0;
         pct_long = strtol(pct_str, &end, 10);
         if (errno == ERANGE)
@@ -486,7 +486,7 @@ rm_str_to_pct(VALUE str)
     char *pct_str, *end;
 
     str = rb_rescue(rb_str_to_str, str, rescue_not_str, str);
-    pct_str = StringValuePtr(str);
+    pct_str = StringValueCStr(str);
     errno = 0;
     pct = strtol(pct_str, &end, 10);
 
@@ -531,7 +531,7 @@ rm_fuzz_to_dbl(VALUE fuzz_arg)
 
         // Convert to string, issue error message if failure.
         fuzz_arg = rb_rescue(rb_str_to_str, fuzz_arg, rescue_not_str, fuzz_arg);
-        fuzz_str = StringValuePtr(fuzz_arg);
+        fuzz_str = StringValueCStr(fuzz_arg);
         errno = 0;
         fuzz = strtod(fuzz_str, &end);
         if (errno == ERANGE)
