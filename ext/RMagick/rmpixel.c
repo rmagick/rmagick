@@ -451,7 +451,7 @@ Color_Name_to_PixelColor(PixelColor *color, VALUE name_arg)
     ExceptionInfo *exception;
 
     exception = AcquireExceptionInfo();
-    name = StringValuePtr(name_arg);
+    name = StringValueCStr(name_arg);
     okay = QueryColorCompliance(name, AllCompliance, color, exception);
     DestroyExceptionInfo(exception);
     if (!okay)
@@ -662,13 +662,13 @@ Pixel_from_color(VALUE class ATTRIBUTE_UNUSED, VALUE name)
     MagickBooleanType okay;
 
     exception = AcquireExceptionInfo();
-    okay = QueryColorCompliance(StringValuePtr(name), AllCompliance, &pp, exception);
+    okay = QueryColorCompliance(StringValueCStr(name), AllCompliance, &pp, exception);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 
     if (!okay)
     {
-        rb_raise(rb_eArgError, "invalid color name: %s", StringValuePtr(name));
+        rb_raise(rb_eArgError, "invalid color name: %s", StringValueCStr(name));
     }
 
     return Pixel_from_PixelColor(&pp);

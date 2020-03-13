@@ -93,7 +93,7 @@ Draw_density_eq(VALUE self, VALUE density)
 
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
-    magick_clone_string(&draw->info->density, StringValuePtr(density));
+    magick_clone_string(&draw->info->density, StringValueCStr(density));
 
     return density;
 }
@@ -112,7 +112,7 @@ Draw_encoding_eq(VALUE self, VALUE encoding)
 
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
-    magick_clone_string(&draw->info->encoding, StringValuePtr(encoding));
+    magick_clone_string(&draw->info->encoding, StringValueCStr(encoding));
 
     return encoding;
 }
@@ -187,7 +187,7 @@ Draw_font_eq(VALUE self, VALUE font)
 
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
-    magick_clone_string(&draw->info->font, StringValuePtr(font));
+    magick_clone_string(&draw->info->font, StringValueCStr(font));
 
     return font;
 }
@@ -206,7 +206,7 @@ Draw_font_family_eq(VALUE self, VALUE family)
 
     rb_check_frozen(self);
     Data_Get_Struct(self, Draw, draw);
-    magick_clone_string(&draw->info->family, StringValuePtr(family));
+    magick_clone_string(&draw->info->family, StringValueCStr(family));
 
     return family;
 }
@@ -850,7 +850,7 @@ VALUE Draw_annotate(
     }
 
     // Translate & store in Draw structure
-    embed_text = StringValuePtr(text);
+    embed_text = StringValueCStr(text);
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     draw->info->text = InterpretImageProperties(NULL, image, embed_text, exception);
@@ -1052,7 +1052,7 @@ Draw_draw(VALUE self, VALUE image_arg)
     }
 
     // Point the DrawInfo structure at the current set of primitives.
-    magick_clone_string(&(draw->info->primitive), StringValuePtr(draw->primitives));
+    magick_clone_string(&(draw->info->primitive), StringValueCStr(draw->primitives));
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();

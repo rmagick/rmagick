@@ -167,7 +167,7 @@ Montage_filename_eq(VALUE self, VALUE filename)
     Montage *montage;
 
     Data_Get_Struct(self, Montage, montage);
-    strlcpy(montage->info->filename, StringValuePtr(filename), sizeof(montage->info->filename));
+    strlcpy(montage->info->filename, StringValueCStr(filename), sizeof(montage->info->filename));
     return filename;
 }
 
@@ -201,7 +201,7 @@ Montage_font_eq(VALUE self, VALUE font)
     Montage *montage;
 
     Data_Get_Struct(self, Montage, montage);
-    magick_clone_string(&montage->info->font, StringValuePtr(font));
+    magick_clone_string(&montage->info->font, StringValueCStr(font));
 
     return font;
 }
@@ -224,7 +224,7 @@ Montage_frame_eq(VALUE self, VALUE frame_arg)
 
     Data_Get_Struct(self, Montage, montage);
     frame = rm_to_s(frame_arg);
-    magick_clone_string(&montage->info->frame, StringValuePtr(frame));
+    magick_clone_string(&montage->info->frame, StringValueCStr(frame));
 
     RB_GC_GUARD(frame);
 
@@ -251,7 +251,7 @@ Montage_geometry_eq(VALUE self, VALUE geometry_arg)
 
     Data_Get_Struct(self, Montage, montage);
     geometry = rm_to_s(geometry_arg);
-    magick_clone_string(&montage->info->geometry, StringValuePtr(geometry));
+    magick_clone_string(&montage->info->geometry, StringValueCStr(geometry));
 
     RB_GC_GUARD(geometry);
 
@@ -412,7 +412,7 @@ Montage_tile_eq(VALUE self, VALUE tile_arg)
 
     Data_Get_Struct(self, Montage, montage);
     tile = rm_to_s(tile_arg);
-    magick_clone_string(&montage->info->tile, StringValuePtr(tile));
+    magick_clone_string(&montage->info->tile, StringValueCStr(tile));
 
     RB_GC_GUARD(tile);
 
@@ -432,7 +432,7 @@ Montage_title_eq(VALUE self, VALUE title)
     Montage *montage;
 
     Data_Get_Struct(self, Montage, montage);
-    magick_clone_string(&montage->info->title, StringValuePtr(title));
+    magick_clone_string(&montage->info->title, StringValueCStr(title));
     return title;
 }
 
