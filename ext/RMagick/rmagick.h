@@ -140,7 +140,7 @@
  */
 #define OBJ_TO_MAGICK_STRING(f, obj) \
     if ((obj) != Qnil)\
-        magick_clone_string(&f, RSTRING_PTR(obj));\
+        magick_clone_string(&f, StringValueCStr(obj));\
     else\
         f = NULL;
 
