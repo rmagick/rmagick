@@ -946,7 +946,6 @@ Draw_clone(VALUE self)
  *   @param height [Float] the height
  *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
  *     imagelist, uses the current image.
- *   @return [Magick::Draw] self
  *
  * @overload composite(x, y, width, height, image, operator = Magick::OverCompositeOp)
  *   - The "image" argument can be either an ImageList object or an Image
@@ -958,7 +957,8 @@ Draw_clone(VALUE self)
  *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
  *     imagelist, uses the current image.
  *   @param operator [Magick::CompositeOperator] the operator
- *   @return [Magick::Draw] self
+ * 
+ * @return [Magick::Draw] self
  */
 VALUE
 Draw_composite(int argc, VALUE *argv, VALUE self)
@@ -1106,13 +1106,13 @@ Draw_dup(VALUE self)
  *
  * @overload get_type_metrics(text)
  *   @param text [String] The string to be rendered.
- *   @return [Magick::TypeMetric] The information for a specific string if rendered on a image.
  *
  * @overload get_type_metrics(image, text)
  *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
  *     imagelist, uses the current image.
  *   @param text [String] The string to be rendered.
- *   @return [Magick::TypeMetric] The information for a specific string if rendered on a image.
+ *
+ * @return [Magick::TypeMetric] The information for a specific string if rendered on a image.
  */
 VALUE
 Draw_get_type_metrics(
@@ -1133,13 +1133,13 @@ Draw_get_type_metrics(
  *
  * @overload get_multiline_type_metrics(text)
  *   @param text [String] The string to be rendered.
- *   @return [Magick::TypeMetric] The information for a specific string if rendered on a image.
  *
  * @overload Draw#get_multiline_type_metrics(image, text)
  *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
  *     imagelist, uses the current image.
  *   @param text [String] The string to be rendered.
- *   @return [Magick::TypeMetric] The information for a specific string if rendered on a image.
+ *
+ * @return [Magick::TypeMetric] The information for a specific string if rendered on a image.
  */
 VALUE
 Draw_get_multiline_type_metrics(
