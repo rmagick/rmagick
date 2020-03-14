@@ -29,11 +29,11 @@ static VALUE ImageList_new(void);
  * between images.
  *
  * @overload animate
- *   @return [Magick::ImageList] self
  *
  * @overload animate(delay)
  *   @param delay [Numeric] the length of time between each image in an animation
- *   @return [Magick::ImageList] self
+ *
+ * @return [Magick::ImageList] self
  */
 
 VALUE
@@ -177,11 +177,11 @@ ImageList_coalesce(VALUE self)
  * Combines the images using the specified colorspace.
  *
  * @overload combine
- *   @return [Magick::Image] a new image
  *
  * @overload combine(colorspace)
  *   @param colorspace [Magick::ColorspaceType] the colorspace
- *   @return [Magick::Image] a new image
+ *
+ * @return [Magick::Image] a new image
  */
 VALUE ImageList_combine(int argc, VALUE *argv, VALUE self)
 {
@@ -273,13 +273,13 @@ VALUE ImageList_combine(int argc, VALUE *argv, VALUE self)
  *
  * @overload composite_layers(images)
  *   @param images [Magick::ImageList] the source images
- *   @return [Magick::ImageList] a new imagelist
  *
  * @overload composite_layers(images, operator)
  *   - Default operator is {Magick::OverCompositeOp}
  *   @param images [Magick::ImageList] the source images
  *   @param operator [Magick::CompositeOperator] the operator
- *   @return [Magick::ImageList] a new imagelist
+ *
+ * @return [Magick::ImageList] a new imagelist
  */
 VALUE
 ImageList_composite_layers(int argc, VALUE *argv, VALUE self)
@@ -424,13 +424,13 @@ ImageList_flatten_images(VALUE self)
  * Tile one or more thumbnails across an image canvas.
  *
  * @overload montage
- *   @return [Magick::ImageList] a new image list
  *
  * @overload montage
  *   Creates {Magick::ImageList::Montage} object, yields to block
  *   if present in {Magick::ImageList::Montage} object's scope.
  *   @yield []
- *   @return [Magick::ImageList] a new image list
+ * 
+ * @return [Magick::ImageList] a new image list
  */
 VALUE
 ImageList_montage(VALUE self)
@@ -998,12 +998,12 @@ ImageList_remap(int argc, VALUE *argv, VALUE self)
  * Return the imagelist as a blob (a String).
  *
  * @overload to_blob
- *   @return [String] the blob
  *
  * @overload to_blob
  *   Runs an info parm block if present - the user can specify the image format and depth
  *   @yield []
- *   @return [String] the blob
+ *
+ * @return [String] the blob
  */
 VALUE
 ImageList_to_blob(VALUE self)

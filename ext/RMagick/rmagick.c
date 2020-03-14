@@ -205,13 +205,13 @@ Magick_init_formats(VALUE class ATTRIBUTE_UNUSED)
  * @overload limit_resource(resource)
  *   Get resource limits.
  *   @param resource [String, Symbol] the type of resource
- *   @return [Numeric] the current limit.
  *
  * @overload limit_resource(resource, limit)
  *   Set resource limits.
  *   @param resource [String, Symbol] the type of resource
  *   @param limit [Numeric] the new limit number
- *   @return [Numeric] the old limit.
+ * 
+ * @return [Numeric] the old limit.
  */
 VALUE
 Magick_limit_resource(int argc, VALUE *argv, VALUE class)
