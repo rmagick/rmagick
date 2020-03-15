@@ -565,7 +565,15 @@ Draw_marshal_load(VALUE self, VALUE ddraw)
     VALUE val;
 
     Data_Get_Struct(self, Draw, draw);
+    
+    if (draw->info == NULL)
+    {
+        ImageInfo *image_info;
 
+        image_info = CloneImageInfo(NULL);
+        draw->info = CloneDrawInfo(image_info, (DrawInfo *) NULL);
+        DestroyImageInfo(image_info);        
+    }
     OBJ_TO_MAGICK_STRING(draw->info->geometry, rb_hash_aref(ddraw, CSTR2SYM("geometry")));
 
     //val = rb_hash_aref(ddraw, CSTR2SYM("viewbox"));
