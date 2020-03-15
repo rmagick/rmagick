@@ -19,6 +19,19 @@ RSpec.describe Magick::Draw, '#annotate' do
     expect { draw.annotate('x', 0, 0, 0, 20, 'Hello world') }.to raise_error(NoMethodError)
   end
 
+  it 'works with string started with @ (issue 38)', unsupported_before('6.9.0') do
+    draw = described_class.new
+
+    image = Magick::Image.new(10, 10)
+    expect { draw.annotate(image, 0, 0, 0, 20, '@Hello world') }.not_to raise_error
+
+    yield_obj = nil
+    draw.annotate(image, 100, 100, 20, 20, '@Hello world 2') do |draw2|
+      yield_obj = draw2
+    end
+    expect(yield_obj).to be_instance_of(described_class)
+  end
+
   it 'does not trigger a buffer overflow' do
     draw = described_class.new
 
