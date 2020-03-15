@@ -1,6 +1,5 @@
 RSpec.describe Magick::Draw, '#marshal_dump' do
   it 'marshals without an error' do
-    skip 'this spec fails on some versions of ImageMagick'
     draw = described_class.new
 
     granite = Magick::Image.read('granite:').first
