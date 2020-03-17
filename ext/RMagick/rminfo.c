@@ -198,28 +198,6 @@ static VALUE set_dbl_option(VALUE self, const char *option, VALUE value)
 }
 
 
-#if 0
-/**
- * Convert a PixelPacket to a hex-format color name.
- *
- * No Ruby usage (internal function)
- *
- * @param pp the pixel packet
- * @param name pointer to the name
- * @return the name
- */
-static char *pixel_packet_to_hexname(PixelPacket *pp, char *name)
-{
-    MagickPixel mpp;
-
-    rm_init_magickpixel(NULL, &mpp);
-    rm_set_magick_pixel_packet(pp, &mpp);
-    GetColorTuple(&mpp, MagickTrue, name);
-    return name;
-}
-#endif
-
-
 /**
  * Get antialias value
  *
@@ -502,11 +480,10 @@ VALUE
 Info_background_color_eq(VALUE self, VALUE bc_arg)
 {
     Info *info;
-    //char colorname[MaxTextExtent];
 
     Data_Get_Struct(self, Info, info);
     Color_to_PixelColor(&info->background_color, bc_arg);
-    //SetImageOption(info, "background", pixel_packet_to_hexname(&info->background_color, colorname));
+
     return bc_arg;
 }
 
@@ -535,11 +512,10 @@ VALUE
 Info_border_color_eq(VALUE self, VALUE bc_arg)
 {
     Info *info;
-    //char colorname[MaxTextExtent];
 
     Data_Get_Struct(self, Info, info);
     Color_to_PixelColor(&info->border_color, bc_arg);
-    //SetImageOption(info, "bordercolor", pixel_packet_to_hexname(&info->border_color, colorname));
+
     return bc_arg;
 }
 
@@ -1571,11 +1547,10 @@ VALUE
 Info_matte_color_eq(VALUE self, VALUE matte_arg)
 {
     Info *info;
-    //char colorname[MaxTextExtent];
 
     Data_Get_Struct(self, Info, info);
     Color_to_PixelColor(&info->matte_color, matte_arg);
-    //SetImageOption(info, "mattecolor", pixel_packet_to_hexname(&info->matte_color, colorname));
+
     return matte_arg;
 }
 
@@ -2196,11 +2171,10 @@ VALUE
 Info_transparent_color_eq(VALUE self, VALUE tc_arg)
 {
     Info *info;
-    //char colorname[MaxTextExtent];
 
     Data_Get_Struct(self, Info, info);
     Color_to_PixelColor(&info->transparent_color, tc_arg);
-    //SetImageOption(info, "transparent", pixel_packet_to_hexname(&info->transparent_color, colorname));
+
     return tc_arg;
 }
 
