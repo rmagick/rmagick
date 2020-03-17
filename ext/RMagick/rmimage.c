@@ -2087,7 +2087,7 @@ Image_change_geometry(VALUE self, VALUE geom_arg)
     VALUE ary;
 
     image = rm_check_destroyed(self);
-    geom_str = rm_to_s(geom_arg);
+    geom_str = rb_String(geom_arg);
     geometry = StringValueCStr(geom_str);
 
     memset(&rect, 0, sizeof(rect));
@@ -7380,7 +7380,7 @@ Image_geometry_eq(VALUE self, VALUE geometry)
     }
 
 
-    geom_str = rm_to_s(geometry);
+    geom_str = rb_String(geometry);
     geom = StringValueCStr(geom_str);
     if (!IsGeometry(geom))
     {
@@ -10915,7 +10915,7 @@ Image_random_threshold_channel(int argc, VALUE *argv, VALUE self)
     }
 
     // Accept any argument that has a to_s method.
-    geom_str = rm_to_s(argv[0]);
+    geom_str = rb_String(argv[0]);
     thresholds = StringValueCStr(geom_str);
 
     new_image = rm_clone_image(image);
