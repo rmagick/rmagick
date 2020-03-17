@@ -259,7 +259,6 @@ Init_RMagick2(void)
     rm_ID_new              = rb_intern("new");
     rm_ID_push             = rb_intern("push");
     rm_ID_to_i             = rb_intern("to_i");
-    rm_ID_to_s             = rb_intern("to_s");
     rm_ID_values           = rb_intern("values");
     rm_ID_width            = rb_intern("width");
 

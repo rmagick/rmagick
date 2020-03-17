@@ -306,26 +306,6 @@ rm_no_freeze(VALUE obj)
 
 
 /**
- * Return obj.to_s, or obj if obj is already a string.
- *
- * No Ruby usage (internal function)
- *
- * @param obj a Ruby object
- * @return a String representation of obj
- */
-VALUE
-rm_to_s(VALUE obj)
-{
-
-    if (TYPE(obj) != T_STRING)
-    {
-        return rb_funcall(obj, rm_ID_to_s, 0);
-    }
-    return obj;
-}
-
-
-/**
  * Supply our own version of the "obsolete" rb_str2cstr.
  *
  * No Ruby usage (internal function)

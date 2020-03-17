@@ -409,7 +409,6 @@ EXTERN ID rm_ID_notify_observers;  /**< "notify_observers" */
 EXTERN ID rm_ID_new;               /**< "new" */
 EXTERN ID rm_ID_push;              /**< "push" */
 EXTERN ID rm_ID_to_i;              /**< "to_i" */
-EXTERN ID rm_ID_to_s;              /**< "to_s" */
 EXTERN ID rm_ID_values;            /**< "values" */
 EXTERN ID rm_ID_width;             /**< "width" */
 
@@ -1156,7 +1155,6 @@ extern void   rm_check_ary_len(VALUE, long);
 extern VALUE  rm_check_ary_type(VALUE ary);
 extern Image *rm_check_destroyed(VALUE);
 extern Image *rm_check_frozen(VALUE);
-extern VALUE  rm_to_s(VALUE);
 extern char  *rm_str2cstr(VALUE, long *);
 extern int    rm_check_num2dbl(VALUE);
 extern double rm_fuzz_to_dbl(VALUE);

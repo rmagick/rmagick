@@ -223,7 +223,7 @@ Montage_frame_eq(VALUE self, VALUE frame_arg)
     VALUE frame;
 
     Data_Get_Struct(self, Montage, montage);
-    frame = rm_to_s(frame_arg);
+    frame = rb_String(frame_arg);
     magick_clone_string(&montage->info->frame, StringValueCStr(frame));
 
     RB_GC_GUARD(frame);
@@ -250,7 +250,7 @@ Montage_geometry_eq(VALUE self, VALUE geometry_arg)
     VALUE geometry;
 
     Data_Get_Struct(self, Montage, montage);
-    geometry = rm_to_s(geometry_arg);
+    geometry = rb_String(geometry_arg);
     magick_clone_string(&montage->info->geometry, StringValueCStr(geometry));
 
     RB_GC_GUARD(geometry);
@@ -411,7 +411,7 @@ Montage_tile_eq(VALUE self, VALUE tile_arg)
     VALUE tile;
 
     Data_Get_Struct(self, Montage, montage);
-    tile = rm_to_s(tile_arg);
+    tile = rb_String(tile_arg);
     magick_clone_string(&montage->info->tile, StringValueCStr(tile));
 
     RB_GC_GUARD(tile);

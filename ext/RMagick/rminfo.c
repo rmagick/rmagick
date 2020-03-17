@@ -349,7 +349,7 @@ Info_aset(int argc, VALUE *argv, VALUE self)
         unsigned int okay;
 
         /* Allow any argument that supports to_s */
-        value = rm_to_s(value);
+        value = rb_String(value);
         value_p = StringValueCStr(value);
 
         okay = SetImageOption(info, ckey, value_p);
@@ -829,7 +829,7 @@ Info_density_eq(VALUE self, VALUE density_arg)
         return self;
     }
 
-    density = rm_to_s(density_arg);
+    density = rb_String(density_arg);
     dens = StringValueCStr(density);
     if (!IsGeometry(dens))
     {
@@ -1106,7 +1106,7 @@ Info_extract_eq(VALUE self, VALUE extract_arg)
         return self;
     }
 
-    extract = rm_to_s(extract_arg);
+    extract = rb_String(extract_arg);
     extr = StringValueCStr(extract);
     if (!IsGeometry(extr))
     {
@@ -1703,7 +1703,7 @@ Info_origin_eq(VALUE self, VALUE origin_arg)
         return self;
     }
 
-    origin_str = rm_to_s(origin_arg);
+    origin_str = rb_String(origin_arg);
     origin = GetPageGeometry(StringValueCStr(origin_str));
 
     if (IsGeometry(origin) == MagickFalse)
@@ -1758,7 +1758,7 @@ Info_page_eq(VALUE self, VALUE page_arg)
         info->page = NULL;
         return self;
     }
-    geom_str = rm_to_s(page_arg);
+    geom_str = rb_String(page_arg);
     geometry = GetPageGeometry(StringValueCStr(geom_str));
     if (*geometry == '\0')
     {
@@ -1985,7 +1985,7 @@ Info_size_eq(VALUE self, VALUE size_arg)
         return self;
     }
 
-    size = rm_to_s(size_arg);
+    size = rb_String(size_arg);
     sz = StringValueCStr(size);
     if (!IsGeometry(sz))
     {
@@ -2127,7 +2127,7 @@ Info_tile_offset_eq(VALUE self, VALUE offset)
     VALUE offset_str;
     char *tile_offset;
 
-    offset_str = rm_to_s(offset);
+    offset_str = rb_String(offset);
     tile_offset = StringValueCStr(offset_str);
     if (!IsGeometry(tile_offset))
     {
