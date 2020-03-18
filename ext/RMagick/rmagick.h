@@ -408,7 +408,6 @@ EXTERN ID rm_ID_initialize_copy;   /**< "initialize_copy" */
 EXTERN ID rm_ID_notify_observers;  /**< "notify_observers" */
 EXTERN ID rm_ID_new;               /**< "new" */
 EXTERN ID rm_ID_push;              /**< "push" */
-EXTERN ID rm_ID_to_i;              /**< "to_i" */
 EXTERN ID rm_ID_values;            /**< "values" */
 EXTERN ID rm_ID_width;             /**< "width" */
 

@@ -566,10 +566,8 @@ rm_app2quantum(VALUE obj)
 
     if (TYPE(obj) == T_FLOAT)
     {
-        v = rb_funcall(obj, rm_ID_to_i, 0);
+        v = rb_Integer(obj);
     }
-
-    RB_GC_GUARD(v);
 
     return NUM2QUANTUM(v);
 }
