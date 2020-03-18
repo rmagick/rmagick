@@ -15,6 +15,7 @@ RSpec.describe Magick::Image, '#store_pixels' do
     expect { image.store_pixels(0, 0, 1 + image.columns, 1, pixels) }.to raise_error(RangeError)
     expect { image.store_pixels(-1, 0, 1, 1 + image.rows, pixels) }.to raise_error(RangeError)
     expect { image.store_pixels(0, 0, image.columns, 1, ['x']) }.to raise_error(IndexError)
+    expect { image.store_pixels(0, 0, image.columns, 1, 1234) }.to raise_error(IndexError)
   end
 
   it 'supports CMYK color' do
