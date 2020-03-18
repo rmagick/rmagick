@@ -8656,6 +8656,9 @@ Image_marshal_load(VALUE self, VALUE ary)
     filename = rb_ary_shift(ary);
     blob = rb_ary_shift(ary);
 
+    filename = StringValue(filename);
+    blob = StringValue(blob);
+
     exception = AcquireExceptionInfo();
     if (filename != Qnil)
     {
