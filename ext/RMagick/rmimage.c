@@ -4599,8 +4599,7 @@ Image_convolve_channel(int argc, VALUE *argv, VALUE self)
         rb_raise(rb_eArgError, "order must be non-zero and positive");
     }
 
-    ary = argv[1];
-
+    ary = rb_Array(argv[1]);
     rm_check_ary_len(ary, (long)(order*order));
 
 #if defined(IMAGEMAGICK_7)
@@ -13356,6 +13355,7 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg,
     }
 
     size = (long)(cols * rows);
+    new_pixels = rb_Array(new_pixels);
     rm_check_ary_len(new_pixels, size);
 
 #if defined(IMAGEMAGICK_7)

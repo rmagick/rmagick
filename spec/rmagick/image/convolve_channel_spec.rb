@@ -15,5 +15,6 @@ RSpec.describe Magick::Image, '#convolve_channel' do
 
     expect { image.convolve_channel(order, kernel, Magick::RedChannel, Magick:: BlueChannel) }.not_to raise_error
     expect { image.convolve_channel(order, kernel, Magick::RedChannel, 2) }.to raise_error(TypeError)
+    expect { image.convolve_channel(order, 1234) }.to raise_error(IndexError)
   end
 end
