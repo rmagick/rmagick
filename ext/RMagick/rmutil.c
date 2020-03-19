@@ -322,7 +322,7 @@ rm_str2cstr(VALUE str, long *len)
     {
         *len = RSTRING_LEN(str);
     }
-    return RSTRING_PTR(str);
+    return StringValueCStr(str);
 }
 
 
