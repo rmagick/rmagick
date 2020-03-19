@@ -547,13 +547,12 @@ Image_add_profile(VALUE self, VALUE name)
     ExceptionInfo *exception;
     char *profile_name;
     char *profile_filename = NULL;
-    long profile_filename_l = 0;
     const StringInfo *profile;
 
     image = rm_check_frozen(self);
 
     // ProfileImage issues a warning if something goes wrong.
-    profile_filename = rm_str2cstr(name, &profile_filename_l);
+    profile_filename = StringValueCStr(name);
 
     info = CloneImageInfo(NULL);
     if (!info)
@@ -14517,10 +14516,9 @@ Image_undefine(VALUE self, VALUE artifact)
 {
     Image *image;
     char *key;
-    long key_l;
 
     image = rm_check_frozen(self);
-    key = rm_str2cstr(artifact, &key_l);
+    key = StringValueCStr(artifact);
     DeleteImageArtifact(image, key);
     return self;
 }
