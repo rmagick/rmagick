@@ -158,36 +158,6 @@ rm_strcasecmp(const char *s1, const char *s2)
 
 
 /**
- * Compare s1 and s2 ignoring case.
- *
- * No Ruby usage (internal function)
- *
- * @param s1 the first string
- * @param s2 the second string
- * @param n number of characters to compare
- * @return same as strcmp(3)
- */
-int
-rm_strncasecmp(const char *s1, const char *s2, size_t n)
-{
-    if (n == 0)
-    {
-        return 0;
-    }
-    while (toupper(*s1) == toupper(*s2))
-    {
-        if (--n == 0 || *s1 == '\0')
-        {
-            return 0;
-        }
-        s1 += 1;
-        s2 += 1;
-    }
-    return (int)(*s1 - *s2);
-}
-
-
-/**
  * Get string length.
  *
  * No Ruby usage (internal function)
@@ -1276,7 +1246,7 @@ rm_exif_by_entry(Image *image)
     {
         // ignore properties that don't start with "exif:"
         property_l = rm_strnlen_s(property, MaxTextExtent);
-        if (property_l > 5 && rm_strncasecmp(property, "exif:", 5) == 0)
+        if (property_l > 5 && rm_strcasecmp(property, "exif:") == 0)
         {
             if (len > 0)
             {
@@ -1316,7 +1286,7 @@ rm_exif_by_entry(Image *image)
     while (property)
     {
         property_l = rm_strnlen_s(property, MaxTextExtent);
-        if (property_l > 5 && rm_strncasecmp(property, "exif:", 5) == 0)
+        if (property_l > 5 && rm_strcasecmp(property, "exif:") == 0)
         {
             if (len > 0)
             {
