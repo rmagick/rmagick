@@ -11,7 +11,7 @@ module Magick
     module Describable
       private
 
-      def initialize(*args, &block) #:nodoc:
+      def initialize(*args, &block)
         super
         @title, @desc, @metadata = nil
       end

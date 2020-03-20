@@ -6,7 +6,8 @@ module Magick
   class RVG
     # Content is simply an Array with a deep_copy method.
     # When unit-testing, it also has a deep_equal method.
-    class Content < Array #:nodoc:
+    # @private
+    class Content < Array
       def deep_copy(h = {})
         me = __id__
         copy = h[me]
@@ -64,7 +65,8 @@ module Magick
         yield(self) if block_given?
       end
 
-      def add_primitives(gc) #:nodoc:
+      # @private
+      def add_primitives(gc)
         gc.push
         add_transform_primitives(gc)
         add_style_primitives(gc)
@@ -73,13 +75,15 @@ module Magick
       end
 
       # Translate container according to #use arguments
-      def ref(x, y, _width, _height) #:nodoc:
+      # @private
+      def ref(x, y, _width, _height)
         translate(x, y) if x != 0 || y != 0
       end
 
       # Append an arbitrary object to the group's content. Called
       # by #use to insert a non-container object into a group.
-      def <<(obj) #:nodoc:
+      # @private
+      def <<(obj)
         @content << obj
       end
     end # class Group
@@ -113,7 +117,8 @@ module Magick
         @element.ref(x, y, width, height)
       end
 
-      def add_primitives(gc) #:nodoc:
+      # @private
+      def add_primitives(gc)
         gc.push
         add_transform_primitives(gc)
         add_style_primitives(gc)

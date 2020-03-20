@@ -1,3 +1,4 @@
+--no-private
 lib/**/*.rb
 ext/**/*.c
 *.md

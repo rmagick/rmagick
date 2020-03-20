@@ -37,7 +37,8 @@ module Magick
         yield(self) if block_given?
       end
 
-      def add_primitives(gc, style) #:nodoc:
+      # @private
+      def add_primitives(gc, style)
         name = __id__.to_s
         gc.pattern(name, @x, @y, @width, @height) do
           add_viewbox_primitives(@width, @height, gc)

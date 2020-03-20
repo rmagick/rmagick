@@ -5,7 +5,8 @@
 module Magick
   class RVG
     # Parent class of Circle, Ellipse, Text, etc.
-    class Shape #:nodoc:
+    # @private
+    class Shape
       include Stylable
       include Transformable
       include Duplicatable
@@ -221,7 +222,8 @@ module Magick
         init_viewbox
       end
 
-      def add_primitives(gc) #:nodoc:
+      # @private
+      def add_primitives(gc)
         # Do not render if width or height is 0
         return if @width.zero? || @height.zero?
 

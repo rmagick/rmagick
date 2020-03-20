@@ -12,7 +12,7 @@ module Magick
 
       private
 
-      def initialize(text) #:nodoc:
+      def initialize(text)
         super()
         @text = text.to_s if text
         @dx = @dy = 0
@@ -48,7 +48,8 @@ module Magick
       end
 
       # We do our own transformations.
-      def add_primitives(gc) #:nodoc:
+      # @private
+      def add_primitives(gc)
         return if !@text && @tspans.empty?
 
         gc.push
@@ -73,7 +74,8 @@ module Magick
     end # class TextBase
 
     # Tspan and Tref shared methods - read/update @cx, @cy in parent Text object.
-    module TextLink #:nodoc:
+    # @private
+    module TextLink
       def add_primitives(gc)
         @parent.cx = @x if @x
         @parent.cy = @y if @y
@@ -97,7 +99,8 @@ module Magick
       end
     end # module TextLink
 
-    class Tref < TextBase #:nodoc:
+    # @private
+    class Tref < TextBase
       include TextLink
 
       def initialize(obj, x, y, parent)
@@ -108,7 +111,8 @@ module Magick
       end
     end # class Tref
 
-    class Tspan < TextBase #:nodoc:
+    # @private
+    class Tspan < TextBase
       include TextLink
 
       attr_accessor :parent
@@ -125,7 +129,8 @@ module Magick
     end # class Tspan
 
     class Text < TextBase
-      attr_accessor :cx, :cy #:nodoc:
+      # @private
+      attr_accessor :cx, :cy
 
       # Define a text string starting at [<tt>x</tt>, <tt>y</tt>].
       # Use the RVG::TextConstructors#text method to create Text objects in a container.
