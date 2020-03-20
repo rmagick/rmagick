@@ -29,6 +29,29 @@ module Magick
   IMAGEMAGICK_VERSION = Magick::Magick_version.split[1].split('-').first
 
   class << self
+    # Describes the image formats supported by ImageMagick.
+    # If the optional block is present, calls the block once for each image format.
+    # The first argument, +k+, is the format name. The second argument, +v+, is the
+    # properties string described below.
+    #
+    # - +B+ is "*" if the format has native blob support, or " " otherwise.
+    # - +R+ is "r" if ImageMagick can read that format, or "-" otherwise.
+    # - +W+ is "w" if ImageMagick can write that format, or "-" otherwise.
+    # - +A+ is "+" if the format supports multi-image files, or "-" otherwise.
+    #
+    # @overload formats
+    #   @return [Hash] the formats hash
+    #
+    # @overload formats
+    #   @yield [k, v]
+    #   @yieldparam k [String] the format name
+    #   @yieldparam v [String] the properties string
+    #   @return [Magick]
+    #
+    # @example
+    #   p Magick.formats
+    #   => {"3FR"=>" r-+", "3G2"=>" r-+", "3GP"=>" r-+", "A"=>"*rw+",
+    #   ...
     def formats
       @formats ||= init_formats
 
@@ -40,7 +63,26 @@ module Magick
       end
     end
 
-    # remove reference to the proc at exit
+    # If the Magick module attribute +trace_proc+ is set to a Proc object,
+    # RMagick calls the proc whenever an image is created or destroyed.
+    #
+    # You can use this proc to keep track of which images your program has created
+    # and which have been destroyed.
+    #
+    # @param p [Proc] The proc object.
+    #   The following value will be passed into the proc object.
+    #   - +which+ - A symbol that indicates which operation the proc is being called for.
+    #     If the proc is called for an image creation, the value is +:c+.
+    #     If called for an image destruction, the value is +:d+.
+    #   - +description+ - A string describing the image. This is the same string that
+    #     would be returned by calling the image's inspect method.
+    #   - +id+ - A unique identifier for the image. This identifier is not the same as the object's +object_id+.
+    #   - +method+ - The name of the method responsible for creating or destroying the image.
+    #
+    # @example
+    #   Magick.trace_proc = proc do |which, description, id, method|
+    #     ...
+    #   end
     def trace_proc=(p)
       m = Mutex.new
       m.synchronize do
