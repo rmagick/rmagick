@@ -127,24 +127,22 @@ Export_ChromaticityInfo(ChromaticityInfo *ci, VALUE chrom)
     VALUE chrom_members;
     VALUE red_primary, green_primary, blue_primary, white_point;
     VALUE entry_members, x, y;
-    ID values_id;
 
     if (CLASS_OF(chrom) != Class_Chromaticity)
     {
         rb_raise(rb_eTypeError, "type mismatch: %s given",
                  rb_class2name(CLASS_OF(chrom)));
     }
-    values_id = rm_ID_values;
 
     // Get the struct members in an array
-    chrom_members = rb_funcall(chrom, values_id, 0);
+    chrom_members = rb_funcall(chrom, rm_ID_values, 0);
     red_primary   = rb_ary_entry(chrom_members, 0);
     green_primary = rb_ary_entry(chrom_members, 1);
     blue_primary  = rb_ary_entry(chrom_members, 2);
     white_point = rb_ary_entry(chrom_members, 3);
 
     // Get the red_primary PrimaryInfo members in an array
-    entry_members = rb_funcall(red_primary, values_id, 0);
+    entry_members = rb_funcall(red_primary, rm_ID_values, 0);
     x = rb_ary_entry(entry_members, 0);         // red_primary.x
     ci->red_primary.x = x == Qnil ? 0.0 : NUM2DBL(x);
     y = rb_ary_entry(entry_members, 1);         // red_primary.y
@@ -152,7 +150,7 @@ Export_ChromaticityInfo(ChromaticityInfo *ci, VALUE chrom)
     ci->red_primary.z = 0.0;
 
     // Get the green_primary PrimaryInfo members in an array
-    entry_members = rb_funcall(green_primary, values_id, 0);
+    entry_members = rb_funcall(green_primary, rm_ID_values, 0);
     x = rb_ary_entry(entry_members, 0);         // green_primary.x
     ci->green_primary.x = x == Qnil ? 0.0 : NUM2DBL(x);
     y = rb_ary_entry(entry_members, 1);         // green_primary.y
@@ -160,7 +158,7 @@ Export_ChromaticityInfo(ChromaticityInfo *ci, VALUE chrom)
     ci->green_primary.z = 0.0;
 
     // Get the blue_primary PrimaryInfo members in an array
-    entry_members = rb_funcall(blue_primary, values_id, 0);
+    entry_members = rb_funcall(blue_primary, rm_ID_values, 0);
     x = rb_ary_entry(entry_members, 0);         // blue_primary.x
     ci->blue_primary.x = x == Qnil ? 0.0 : NUM2DBL(x);
     y = rb_ary_entry(entry_members, 1);         // blue_primary.y
@@ -168,7 +166,7 @@ Export_ChromaticityInfo(ChromaticityInfo *ci, VALUE chrom)
     ci->blue_primary.z = 0.0;
 
     // Get the white_point PrimaryInfo members in an array
-    entry_members = rb_funcall(white_point, values_id, 0);
+    entry_members = rb_funcall(white_point, rm_ID_values, 0);
     x = rb_ary_entry(entry_members, 0);         // white_point.x
     ci->white_point.x = x == Qnil ? 0.0 : NUM2DBL(x);
     y = rb_ary_entry(entry_members, 1);         // white_point.y
