@@ -74,8 +74,7 @@ brew install pkg-config imagemagick@6
 1. Install latest Ruby+Devkit package which you can get from [RubyInstaller for Windows](https://rubyinstaller.org).
 2. Download `ImageMagick-7.XXXX-Q16-x64-dll.exe` (not, `ImageMagick-7.XXXX-Q16-x64-static.exe`) binary from [Windows Binary Release](https://imagemagick.org/script/download.php#windows), or you can download ImageMagick 6 from https://legacy.imagemagick.org/script/download.php#windows
 3. Install ImageMagick. You need to turn on checkboxes `Add application directory to your system path` and `Install development headers and librarries for C and C++` in an installer for RMagick.
-<img width="50%" src="https://user-images.githubusercontent.com/199156/76685895-7688fb80-665a-11ea-9944-562dcd9badd0.png">
-
+<img width="50%" src="https://user-images.githubusercontent.com/199156/77183472-b72cbd00-6b11-11ea-8b9a-247bc1f9d8b1.png" />
 
 Installing RMagick
 ------------------
