@@ -3,6 +3,69 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 4.1.0
+
+Improvements:
+
+- reduce package size by more than 1.5mb (#849)
+- improve memory usage (#836)
+- add support for Ruby 2.7 (#853)
+- *many* documentation fixes and cleanups
+- *many* testing fixes and cleanups
+- Support CMYK color in Image#get_pixels (#871)
+- Support to get CMYK color in Image#pixel_color (#875)
+- Support to set CMYK color in Image#pixel_color (#908)
+- Add ImageList#map (#1154)
+
+Bug Fixes:
+
+- fixed memory leaks (#809, #815, #816, #960, #1024)
+- eliminate compiler warnings (#855, #864, #878, #917, #969, #981, #996, #1000, #1044)
+- Recognize invert option in Image#opaque_channel with ImageMagick 7 (#882)
+- Fix heap-buffer-overflow in Image#wet_floor with ImageMagick 7 (#883)
+- Handle channel value with new image in Image#opaque_channel with ImageMagick 7 (#886)
+- Pass caption value into ImageMagick 7 API in Image#polaroid (#898)
+- Example: Fix “uninitialized constant Magick::TransparentOpacity” error (#899)
+- Example: Fix error of constant usage (#900)
+- Example: Fix error in doc/ex/composite.rb (#901)
+- Example: Fix error in doc/ex/crop_with_gravity.rb (#902)
+- Revert removed RemapImages() calling in ImageList#remap for ImageMagick 6 (#904)
+- Example: Fix alpha channel in examples/vignette.rb (#918)
+- Example: Fix alpha channel in doc/ex/coalesce.rb (#920)
+- Handle alpha value in Pixel#to_color (#922)
+- Detect the proper ARCHFLAGS on macOS (#923)
+- Handle boolean value as dither option in ImageList#quantize (#926)
+- Use strlcpy instead of strncpy to ensure null terminating. (#933)
+- Remove memalign() (#939)
+- Add safe strlen() to ensure avoiding buffer overrun (#940)
+- Use strlcpy() instead of strcpy() to ensure avoiding buffer overflow (#941)
+- Use snprintf() instead of sprintf() to ensure avoiding buffer overflow (#945)
+- Example: Remove unnecessary alpha setting (#950)
+- Replace to correct format specifiers for size_t/ssize_t value (#978)
+- Use proper format specifiers within MinGW (#997)
+- Fix snprintf() format specifiers for unsigned value (#1006)
+- Fix warning of “Variable is reassigned a value before the old one has been use” (#1008)
+- Fix warning of “warning: explicitly assigning value of variable of type 'int' to itself” (#1013)
+- Fix Image#resample to use blur option properly with ImageMagick 7 (#1023)
+- Fix Image#resize to use blur option properly with ImageMagick 7 (#1032)
+- Fix that Color#compliance returns nil with undefined bit (#1049)
+- Check memory API properly on Windows (#1050)
+- Example: Fix “undefined method `opacity’” (#1051)
+- Add workaround to pdf problem (#1072)
+- Fix exception message because #export_pixels accept 0 argument (#1121)
+- Fix default value of `fill` argument in Image#initialize (#1122)
+- Call rm_ensure_result() in creating Image object (#1144)
+- Use StringValueCStr() instead of StringValuePtr() (#1156)
+- Use RSTRING_PTR() to retrieve a pointer of String object for buffer (#1157)
+- Use StringValueCStr() to get null-terminated C-lang string (#1158)
+- Fix SEGV in Magick::Draw#marshal_load (#1162)
+- Fix SEGV in rm_check_ary_len() with unexpected argument value (#1168)
+- Fix SEGV in Image#marshal_load (#1169)
+
+Breaking Changes:
+
+- remove `tainted?` logic (#854)
+
 ## RMagick 4.1.0.rc2
 
 - fix a couple of compilation bugs (#796, #797)
