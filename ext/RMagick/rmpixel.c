@@ -678,10 +678,10 @@ Pixel_from_color(VALUE class ATTRIBUTE_UNUSED, VALUE name)
 /**
  * Construct an RGB pixel.
  *
- * - 0 <= hue < 360 OR "0%" <= hue < "100%"
- * - 0 <= saturation <= 255 OR "0%" <= saturation <= "100%"
- * - 0 <= lightness <= 255 OR "0%" <= lightness <= "100%"
- * - 0 <= alpha <= 1 (0 is transparent, 1 is opaque) OR "0%" <= alpha <= "100%"
+ * - 0 <= +hue+ < 360 OR "0%" <= +hue+ < "100%"
+ * - 0 <= +saturation+ <= 255 OR "0%" <= +saturation+ <= "100%"
+ * - 0 <= +lightness+ <= 255 OR "0%" <= +lightness+ <= "100%"
+ * - 0 <= +alpha+ <= 1 (0 is transparent, 1 is opaque) OR "0%" <= +alpha+ <= "100%"
  *
  * @overload from_hsla(hue, saturation, lightness, alpha = 1.0)
  *   @param hue [Numeric, String] A value in the range.
@@ -1080,7 +1080,7 @@ Pixel_spaceship(VALUE self, VALUE other)
 
 
 /**
- * Return [hue, saturation, lightness, alpha] in the same ranges as
+ * Return [+hue+, +saturation+, +lightness+, +alpha+] in the same ranges as
  * {Magick::Pixel.from_hsla}.
  *
  * @return [Array<Float>] an array with hsla data

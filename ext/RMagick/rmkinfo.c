@@ -126,7 +126,7 @@ KernelInfo_scale(VALUE self, VALUE scale, VALUE flags)
 }
 
 /**
- * Takes a geometry argument string, typically provided as a "-set option:convolve:scale {geometry}" user setting,
+ * Takes a geometry argument string, typically provided as a +-set option:convolve:scale {geometry}+ user setting,
  * and modifies the kernel according to the parsed arguments of that setting.
  *
  * @param geometry [String] geometry string to parse and apply

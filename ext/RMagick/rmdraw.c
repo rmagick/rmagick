@@ -309,15 +309,15 @@ Draw_font_weight_eq(VALUE self, VALUE weight)
  * Set gravity to draw text.
  * Gravity affects text placement in bounding area according to rules:
  *
- * - NorthWestGravity  - text bottom-left corner placed at top-left
- * - NorthGravity      - text bottom-center placed at top-center
- * - NorthEastGravity  - text bottom-right corner placed at top-right
- * - WestGravity       - text left-center placed at left-center
- * - CenterGravity     - text center placed at center
- * - EastGravity       - text right-center placed at right-center
- * - SouthWestGravity  - text top-left placed at bottom-left
- * - SouthGravity      - text top-center placed at bottom-center
- * - SouthEastGravity  - text top-right placed at bottom-right
+ * - +NorthWestGravity+  - text bottom-left corner placed at top-left
+ * - +NorthGravity+      - text bottom-center placed at top-center
+ * - +NorthEastGravity+  - text bottom-right corner placed at top-right
+ * - +WestGravity+       - text left-center placed at left-center
+ * - +CenterGravity+     - text center placed at center
+ * - +EastGravity+       - text right-center placed at right-center
+ * - +SouthWestGravity+  - text top-left placed at bottom-left
+ * - +SouthGravity+      - text top-center placed at bottom-center
+ * - +SouthEastGravity+  - text top-right placed at bottom-right
  *
  * @param grav [Magick::GravityType] this gravity type
  * @return [Magick::GravityType] the given gravity type
@@ -685,7 +685,6 @@ Draw_rotation_eq(VALUE self, VALUE deg)
 
 /**
  * Set stroke.
- *
  *
  * @param stroke [Magick::Pixel, String] the stroke
  * @return [Magick::Pixel, String] the given stroke
