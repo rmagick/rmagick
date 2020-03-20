@@ -5300,13 +5300,13 @@ Image_displace(int argc, VALUE *argv, VALUE self)
 /**
  * Extract pixel data from the image and returns it as an array of pixels. The "x", "y", "width" and
  * "height" parameters specify the rectangle to be extracted. The "map" parameter reflects the
- * expected ordering of the pixel array. It can be any combination or order of R = red, G = green, B
- * = blue, A = alpha, C = cyan, Y = yellow, M = magenta, K = black, or I = intensity (for
+ * expected ordering of the pixel array. It can be any combination or order of R = red, G = green,
+ * B = blue, A = alpha, C = cyan, Y = yellow, M = magenta, K = black, or I = intensity (for
  * grayscale). If the "float" parameter is specified and true, the pixel data is returned as
  * floating-point numbers in the range [0..1]. By default the pixel data is returned as integers in
  * the range [0..QuantumRange].
  *
- * @overload Image#dispatch(x, y, columns, rows, map, float = false)
+ * @overload dispatch(x, y, columns, rows, map, float = false)
  *   @param x [Numeric] The offset of the rectangle from the upper-left corner of the image.
  *   @param y [Numeric] The offset of the rectangle from the upper-left corner of the image.
  *   @param columns [Numeric] The width of the rectangle.

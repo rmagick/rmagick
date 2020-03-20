@@ -25,7 +25,7 @@ static VALUE ImageList_new(void);
 
 /**
  * Repeatedly display the images in the images array to an XWindow screen. The
- * "delay" argument is the number of 1/100ths of a second (0 to 65535) to delay
+ * +delay+ argument is the number of 1/100ths of a second (0 to 65535) to delay
  * between images.
  *
  * @overload animate
@@ -483,7 +483,7 @@ ImageList_montage(VALUE self)
  * Requires a minimum of two images. The first image is transformed into the
  * second by a number of intervening images as specified by "nimages".
  *
- * @note Sets @scenes to 0
+ * @note Sets +@scenes+ to 0
  * @param nimages [Numeric] the number of images
  * @return [Magick::ImageList] a new image list with the images array set to the morph sequence.
  */
@@ -848,7 +848,7 @@ clone_imagelist(Image *images)
  *   @param tree_depth [Numeric] specify the tree depth to use while quantizing.
  *   @param measure_error [Boolean] calculate quantization errors when quantizing the image.
  *   @return [Magick::ImageList] a new ImageList with quantized images
- *   @note Sets @scene to the same value as self.scene
+ *   @note Sets +@scene+ to the same value as +self.scene+
  */
 VALUE
 ImageList_quantize(int argc, VALUE *argv, VALUE self)
@@ -937,7 +937,7 @@ ImageList_quantize(int argc, VALUE *argv, VALUE self)
 
 
 /**
- * Reduce the colors used in the image list to the set of colors in remap_image.
+ * Reduce the colors used in the image list to the set of colors in +remap_image+.
  *
  * @overload remap(remap_image = nil, dither_method = Magick::RiemersmaDitherMethod)
  *   @param remap_image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
