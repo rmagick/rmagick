@@ -6,7 +6,8 @@ module Magick
   class RVG
     # Transforms is an Array with a deep_copy method.
     # During unit-testing it also has a deep_equal method.
-    class Transforms < Array #:nodoc:
+    # @private
+    class Transforms < Array
       def deep_copy(_h = nil)
         copy = self.class.new
         each { |transform| copy << [transform[0], transform[1].dup] }

@@ -242,14 +242,16 @@ module Magick
 
     # Accept #use arguments. Use (x,y) to generate an additional translate.
     # Override @width and @height if new values are supplied.
-    def ref(x, y, rw, rh) #:nodoc:
+    # @private
+    def ref(x, y, rw, rh)
       translate(x, y) if x != 0 || y != 0
       @width = rw if rw
       @height = rh if rh
     end
 
     # Used by Magick::Embellishable.rvg to set non-0 x- and y-coordinates
-    def corner(x, y) #:nodoc:
+    # @private
+    def corner(x, y)
       @nested = true
       @x = Float(x)
       @y = Float(y)
@@ -257,7 +259,8 @@ module Magick
     end
 
     # Primitives for the outermost RVG object
-    def add_outermost_primitives(gc) #:nodoc:
+    # @private
+    def add_outermost_primitives(gc)
       add_transform_primitives(gc)
       gc.push
       add_viewbox_primitives(@width, @height, gc)
@@ -268,7 +271,8 @@ module Magick
     end
 
     # Primitives for nested RVG objects
-    def add_primitives(gc) #:nodoc:
+    # @private
+    def add_primitives(gc)
       raise ArgumentError, 'RVG width or height undefined' if @width.nil? || @height.nil?
       return self if @width.zero? || @height.zero?
 

@@ -30,7 +30,8 @@ module Magick
         @path
       end
 
-      def deep_copy(_h = nil) #:nodoc:
+      # @private
+      def deep_copy(_h = nil)
         @path.dup
       end
 
