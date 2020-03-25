@@ -92,7 +92,7 @@ jobs:
         restore-keys: |
           v1-macos-imagemagick-${{ matrix.imagemagick-version.full }}
     - name: Set up Ruby ${{ matrix.ruby-version }}
-      uses: eregon/use-ruby-action@master
+      uses: ruby/setup-ruby@master
       with:
         ruby-version: ${{ matrix.ruby-version }}
     - name: Update/Install packages
