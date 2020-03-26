@@ -359,7 +359,6 @@ rm_percentage(VALUE arg, double max)
 {
     double pct;
     char *end;
-    int not_num;
 
     if (!rm_check_num2dbl(arg))
     {
@@ -503,7 +502,6 @@ rm_fuzz_to_dbl(VALUE fuzz_arg)
 {
     double fuzz;
     char *end;
-    int not_num;
 
     if (!rm_check_num2dbl(fuzz_arg))
     {
@@ -927,7 +925,7 @@ rm_get_property(const Image *img, const char *property)
  * No Ruby usage (internal function)
  *
  * @param image the image
- * @param property the property name 
+ * @param property the property name
  * @param value the property value
  * @return true if successful, otherwise false
  */
