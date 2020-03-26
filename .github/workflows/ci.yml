@@ -49,9 +49,9 @@ jobs:
       uses: actions/cache@v1
       with:
         path: ./build-ImageMagick
-        key: v1-imagemagick-${{ matrix.imagemagick-version.full }}
+        key: v1-linux-imagemagick-${{ matrix.imagemagick-version.full }}
         restore-keys: |
-          v1-imagemagick-${{ matrix.imagemagick-version.full }}
+          v1-linux-imagemagick-${{ matrix.imagemagick-version.full }}
     - name: Set up Ruby ${{ matrix.ruby-version }}
       uses: ruby/setup-ruby@master
       with:
