@@ -11049,7 +11049,7 @@ file_arg_rescue(VALUE arg, VALUE raised_exc ATTRIBUTE_UNUSED)
  * @see array_from_images
  */
 
-#if !defined(_WIN32)
+#if defined(__APPLE__)
 void sig_handler(int sig ATTRIBUTE_UNUSED)
 {
 }
@@ -11097,14 +11097,23 @@ rd_image(VALUE class ATTRIBUTE_UNUSED, VALUE file, reader_t reader)
 
     exception = AcquireExceptionInfo();
 
-#if !defined(_WIN32)
-    signal(SIGCHLD, sig_handler);
+#if defined(__APPLE__)
+    struct sigaction act, oldact;
+    act.sa_handler = sig_handler;
+    act.sa_flags = SA_RESTART;
+    if (sigaction(SIGCHLD, &act, &oldact) < 0)
+    {
+        rb_sys_fail("sigaction");
+    }
 #endif
 
     images = (reader)(info, exception);
 
-#if !defined(_WIN32)
-    signal(SIGCHLD, SIG_DFL);
+#if defined(__APPLE__)
+    if (sigaction(SIGCHLD, &oldact, NULL) < 0)
+    {
+        rb_sys_fail("sigaction");
+    }
 #endif
 
     rm_check_exception(exception, images, DestroyOnError);
