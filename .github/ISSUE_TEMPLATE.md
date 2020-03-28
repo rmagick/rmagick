@@ -10,6 +10,7 @@
 
 - ImageMagick version:
 - RMagick version:
+- Ruby version:
 - Environment (Operating system, version and so on):
 - Additional information:
 
