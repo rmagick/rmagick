@@ -133,9 +133,9 @@ jobs:
         $imagemagick_version_without_patch = $imagemagick_version.split("-")[0]
         $installer_name = "ImageMagick-$($imagemagick_version)-Q16-x64-dll.exe"
         $url = "https://ftp.icm.edu.pl/pub/graphics/ImageMagick/binaries/$($installer_name)"
+        choco install wget ghostscript
         wget $url --progress=dot
         cmd.exe /D /S /C "$($installer_name) /DIR=D:\ImageMagick /VERYSILENT /TASKS=install_Devel"
-        cmd.exe /D /S /C "choco install ghostscript"
     - name: Cache Ruby dependencies
       uses: actions/cache@v1
       with:
