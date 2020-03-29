@@ -44,17 +44,39 @@ Ruby must be able to build C-Extensions (e.g. MRI, Rubinius, not JRuby)
 version 4.1.0.rc2 (#256). You can get ImageMagick from
 <https://imagemagick.org>.
 
-### Ubuntu
+### Linux
+#### Ubuntu
 On Ubuntu, you can run:
 
 ```sh
 sudo apt-get install libmagickwand-dev
 ```
 
+#### Centos
 On Centos, you can run:
 
 ```sh
 sudo yum install gcc ImageMagick-devel make which
+```
+
+#### Arch Linux
+On Arch Linux, you can run:
+
+```sh
+pacman -Syy pkg-config imagemagick
+```
+
+#### Alpine Linux
+On Alpine Linux, you can run:
+
+```
+apk add pkgconfig imagemagick imagemagick-dev imagemagick-libs
+```
+
+or you can run if you would like to use ImageMagick 6:
+
+```
+apk add pkgconfig imagemagick6 imagemagick6-dev imagemagick6-libs
 ```
 
 ### macOS
