@@ -136,13 +136,6 @@ jobs:
         choco install wget ghostscript
         wget $url --progress=dot
         cmd.exe /D /S /C "$($installer_name) /DIR=D:\ImageMagick /VERYSILENT /TASKS=install_Devel"
-    - name: Cache Ruby dependencies
-      uses: actions/cache@v1
-      with:
-        path: ./vendor/bundle
-        key: v1-windows-${{ matrix.ruby-version }}-${{ hashFiles('rmagick.gemspec') }}
-        restore-keys: |
-          v1-windows-${{ matrix.ruby-version }}-${{ hashFiles('rmagick.gemspec') }}
     - name: Build and test with Rake
       run: |
         cmd.exe /D /S /C "SET MAKE=make & SET PATH=D:\ImageMagick;%PATH% & bundle install --path=vendor/bundle --retry 3 & bundle exec rake"
