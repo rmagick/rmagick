@@ -333,6 +333,10 @@ module RMagick
         have_func(func, headers)
       end
 
+      unless have_header('malloc.h')
+        have_header('malloc/malloc.h')
+      end
+
       # Miscellaneous constants
       $defs.push("-DRUBY_VERSION_STRING=\"ruby #{RUBY_VERSION}\"")
       $defs.push("-DRMAGICK_VERSION_STRING=\"RMagick #{RMAGICK_VERS}\"")

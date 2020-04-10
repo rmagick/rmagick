@@ -18,9 +18,9 @@
     #if defined(HAVE_POSIX_MEMALIGN) || defined(HAVE__ALIGNED_MSIZE)
         #define USE_RM_ALIGNED_MALLOC 1
 
-        #if defined(HAVE_MALLOC_USABLE_SIZE)
+        #if defined(HAVE_MALLOC_H)
             #include <malloc.h>
-        #elif defined(HAVE_MALLOC_SIZE)
+        #elif defined(HAVE_MALLOC_MALLOC_H)
             #include <malloc/malloc.h>
         #endif
     #endif
