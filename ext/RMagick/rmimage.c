@@ -11049,7 +11049,7 @@ file_arg_rescue(VALUE arg, VALUE raised_exc ATTRIBUTE_UNUSED)
  * @see array_from_images
  */
 
-#if defined(__APPLE__)
+#if defined(__APPLE__) || defined(__FreeBSD__)
 void sig_handler(int sig ATTRIBUTE_UNUSED)
 {
 }
@@ -11097,7 +11097,7 @@ rd_image(VALUE class ATTRIBUTE_UNUSED, VALUE file, reader_t reader)
 
     exception = AcquireExceptionInfo();
 
-#if defined(__APPLE__)
+#if defined(__APPLE__) || defined(__FreeBSD__)
     struct sigaction act, oldact;
     act.sa_handler = sig_handler;
     act.sa_flags = SA_RESTART;
@@ -11109,7 +11109,7 @@ rd_image(VALUE class ATTRIBUTE_UNUSED, VALUE file, reader_t reader)
 
     images = (reader)(info, exception);
 
-#if defined(__APPLE__)
+#if defined(__APPLE__) || defined(__FreeBSD__)
     if (sigaction(SIGCHLD, &oldact, NULL) < 0)
     {
         rb_sys_fail("sigaction");
