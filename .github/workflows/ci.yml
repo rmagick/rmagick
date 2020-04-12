@@ -70,7 +70,8 @@ jobs:
     - name: Build and test with Rake
       run: |
         bundle install --path=vendor/bundle --jobs 4 --retry 3
-        bundle exec rake
+        bundle exec rake compile
+        bundle exec rspec --format documentation
 
   test-macos:
     runs-on: macos-latest
@@ -108,7 +109,8 @@ jobs:
     - name: Build and test with Rake
       run: |
         bundle install --path=vendor/bundle --jobs 4 --retry 3
-        bundle exec rake
+        bundle exec rake compile
+        bundle exec rspec --format documentation
 
   test-windows:
     runs-on: windows-latest
@@ -138,4 +140,4 @@ jobs:
         cmd.exe /D /S /C "$($installer_name) /DIR=D:\ImageMagick /VERYSILENT /TASKS=install_Devel"
     - name: Build and test with Rake
       run: |
-        cmd.exe /D /S /C "SET MAKE=make & SET PATH=D:\ImageMagick;%PATH% & bundle install --path=vendor/bundle --retry 3 & bundle exec rake"
+        cmd.exe /D /S /C "SET MAKE=make & SET PATH=D:\ImageMagick;%PATH% & bundle install --path=vendor/bundle --retry 3 & bundle exec rake compile & bundle exec rspec --format documentation"
