@@ -1,5 +1,6 @@
 require_relative 'support/simplecov' if ENV['COVERAGE'] == 'true'
 require_relative 'support/matchers'
+require_relative 'support/helpers'
 
 require 'pry'
 require_relative '../lib/rmagick'
@@ -22,4 +23,8 @@ FreezeError = RUBY_VERSION > '2.5' ? FrozenError : RuntimeError
 def unsupported_before(version, condition = {})
   cond = condition.key?(:if) ? condition[:if] : true
   :skip if cond && Gem::Version.new(Magick::IMAGEMAGICK_VERSION) < Gem::Version.new(version)
+end
+
+RSpec.configure do |config|
+  config.include(TestHelpers)
 end

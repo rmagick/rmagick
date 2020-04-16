@@ -1,14 +1,4 @@
 RSpec.describe Magick::Image, "#charcoal" do
-  def build_image
-    image = Magick::Image.new(2, 2)
-    pixels = [[45, 98, 156], [209, 171, 11], [239, 236, 2], [8, 65, 247]]
-    image.import_pixels(0, 0, 2, 2, "RGB", pixels.flatten)
-  end
-
-  def gray(pixel_value)
-    [pixel_value, pixel_value, pixel_value]
-  end
-
   it "applies a charcoal effect", unsupported_before('6.8') do
     image = build_image
     expected_pixels = [gray(53736), gray(48703), gray(9953), gray(51857)]
