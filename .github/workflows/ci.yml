@@ -53,6 +53,7 @@ jobs:
 
   test-macos:
     runs-on: macos-latest
+    timeout-minutes: 10
     strategy:
       matrix:
         ruby-version: [2.6, 2.7]
