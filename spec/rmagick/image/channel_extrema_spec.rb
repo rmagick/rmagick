@@ -1,19 +1,40 @@
 RSpec.describe Magick::Image, "#channel_extrema" do
-  it "works" do
-    image = described_class.new(20, 20)
+  it "returns the min and max intensity values for all channels when no arguments are passed" do
+    image = build_image
 
-    result = image.channel_extrema
-    expect(result).to be_instance_of(Array)
-    expect(result.length).to eq(2)
-    expect(result[0]).to be_kind_of(Integer)
-    expect(result[1]).to be_kind_of(Integer)
+    extrema = image.channel_extrema
 
-    expect { image.channel_extrema(Magick::RedChannel) }.not_to raise_error
-    expect { image.channel_extrema(Magick::RedChannel, Magick::BlueChannel) }.not_to raise_error
-    expect { image.channel_extrema(Magick::GreenChannel, Magick::OpacityChannel) }.not_to raise_error
-    expect { image.channel_extrema(Magick::MagentaChannel, Magick::CyanChannel) }.not_to raise_error
-    expect { image.channel_extrema(Magick::CyanChannel, Magick::BlackChannel) }.not_to raise_error
-    expect { image.channel_extrema(Magick::GrayChannel) }.not_to raise_error
-    expect { image.channel_extrema(2) }.to raise_error(TypeError)
+    expect(extrema).to eq([2, 247])
+  end
+
+  it "returns the min and max intensity values for one channel" do
+    image = build_image
+
+    extrema = image.channel_extrema(Magick::GreenChannel)
+
+    expect(extrema).to eq([65, 236])
+  end
+
+  it "returns the min and max intensity values for two channels" do
+    image = build_image
+
+    extrema = image.channel_extrema(Magick::RedChannel, Magick::GreenChannel)
+
+    expect(extrema).to eq([8, 239])
+  end
+
+  it "returns the min and max intensity values for three channels" do
+    image = build_image
+
+    extrema = image.channel_extrema(Magick::RedChannel, Magick::GreenChannel, Magick::BlueChannel)
+
+    expect(extrema).to eq([2, 247])
+  end
+
+  it "raises an error when the wrong type of argument is passed" do
+    image = build_image
+
+    expect { image.channel_extrema("test") }
+      .to raise_error(TypeError, "argument must be a ChannelType value (String given)")
   end
 end
