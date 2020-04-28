@@ -32,6 +32,15 @@ RSpec.describe Magick::Image, '#dissolve' do
       dissolved = image1.dissolve(image2, '20%')
       expect(Float(dissolved.pixel_color(2, 2).alpha) / Magick::QuantumRange).to be_between(0.15, 0.25)
     end
+
+    it 'accepts an ImageList argument' do
+      image = described_class.new(20, 20)
+
+      image_list = Magick::ImageList.new
+      image_list.new_image(10, 10)
+      expect { image.dissolve(image_list, 0.50) }.not_to raise_error
+      expect { image.dissolve(image_list, '50%') }.not_to raise_error
+    end
   end
 
   context 'when given gravity' do
@@ -51,6 +60,14 @@ RSpec.describe Magick::Image, '#dissolve' do
       expect(dissolved.pixel_color(10, 10)).to eq(image.pixel_color(10, 10))
       expect(Float(dissolved.pixel_color(50, 50).blue) / Magick::QuantumRange).to be_between(0.45, 0.55)
       expect(Float(dissolved.pixel_color(50, 50).green)).to be_between(0, image.pixel_color(2, 2).green).exclusive
+    end
+
+    it 'accepts an ImageList argument' do
+      image = described_class.new(20, 20)
+
+      image_list = Magick::ImageList.new
+      image_list.new_image(10, 10)
+      expect { image.dissolve(image_list, 0.50, 1.0, Magick::CenterGravity) }.not_to raise_error
     end
   end
 

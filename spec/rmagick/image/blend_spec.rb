@@ -26,4 +26,15 @@ RSpec.describe Magick::Image, "#blend" do
     image2.destroy!
     expect { image.blend(image2, '25%') }.to raise_error(Magick::DestroyedImageError)
   end
+
+  it 'accepts an ImageList argument' do
+    image = described_class.new(20, 20)
+
+    image_list = Magick::ImageList.new
+    image_list.new_image(10, 10)
+    expect { image.blend(image_list, 0.25) }.not_to raise_error
+    expect { image.blend(image_list, 0.25, 0.75, Magick::NorthWestGravity) }.not_to raise_error
+    expect { image.blend(image_list, 0.25, 0.75, Magick::NorthWestGravity, 10) }.not_to raise_error
+    expect { image.blend(image_list, 0.25, 0.75, Magick::NorthWestGravity, 10, 10) }.not_to raise_error
+  end
 end

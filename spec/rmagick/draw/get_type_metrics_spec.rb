@@ -11,4 +11,12 @@ RSpec.describe Magick::Draw, '#get_type_metrics' do
     expect { draw.get_type_metrics(image, '') }.to raise_error(ArgumentError)
     expect { draw.get_type_metrics('x', 'ABCDEF') }.to raise_error(NoMethodError)
   end
+
+  it 'accepts an ImageList argument' do
+    draw = described_class.new
+
+    image_list = Magick::ImageList.new
+    image_list.new_image(10, 10)
+    expect { draw.get_type_metrics(image_list, 'ABCDEF') }.not_to raise_error
+  end
 end

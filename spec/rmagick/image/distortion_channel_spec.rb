@@ -22,4 +22,13 @@ RSpec.describe Magick::Image, '#distortion_channel' do
     image2.destroy!
     expect { image1.distortion_channel(image2, Magick::MeanSquaredErrorMetric) }.to raise_error(Magick::DestroyedImageError)
   end
+
+  it 'accepts an ImageList argument' do
+    image = described_class.new(20, 20)
+
+    image_list = Magick::ImageList.new
+    image_list.new_image(10, 10)
+    expect { image.distortion_channel(image_list, Magick::MeanAbsoluteErrorMetric) }.not_to raise_error
+    expect { image.distortion_channel(image_list, Magick::MeanSquaredErrorMetric, Magick::RedChannel, Magick:: BlueChannel) }.not_to raise_error
+  end
 end

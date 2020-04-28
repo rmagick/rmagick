@@ -16,4 +16,13 @@ RSpec.describe Magick::Image, '#composite_mathematics' do
     # too many arguments
     expect { bg.composite_mathematics(fg, 1, 0, 0, 0, Magick::CenterGravity, 0.0, 0.0, 'x') }.to raise_error(ArgumentError)
   end
+
+  it 'accepts an ImageList argument' do
+    image = described_class.new(20, 20)
+
+    image_list = Magick::ImageList.new
+    image_list.new_image(10, 10)
+    expect { image.composite_mathematics(image_list, 1, 0, 0, 0, Magick::CenterGravity) }.not_to raise_error
+    expect { image.composite_mathematics(image_list, 1, 0, 0, 0, 0.0, 0.0) }.not_to raise_error
+  end
 end

@@ -9,4 +9,12 @@ RSpec.describe Magick::Image, '#stereo' do
     image2.destroy!
     expect { image1.stereo(image2) }.to raise_error(Magick::DestroyedImageError)
   end
+
+  it 'accepts an ImageList argument' do
+    image = described_class.new(20, 20)
+
+    image_list = Magick::ImageList.new
+    image_list.new_image(20, 20)
+    expect { image.stereo(image_list) }.not_to raise_error
+  end
 end

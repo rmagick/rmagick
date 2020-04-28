@@ -32,6 +32,14 @@ RSpec.describe Magick::Draw, '#annotate' do
     expect(yield_obj).to be_instance_of(described_class)
   end
 
+  it 'accepts an ImageList argument' do
+    draw = described_class.new
+
+    image_list = Magick::ImageList.new
+    image_list.new_image(10, 10)
+    expect { draw.annotate(image_list, 0, 0, 0, 20, 'Hello world') }.not_to raise_error
+  end
+
   it 'does not trigger a buffer overflow' do
     draw = described_class.new
 

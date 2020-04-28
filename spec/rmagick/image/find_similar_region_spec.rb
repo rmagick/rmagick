@@ -35,4 +35,14 @@ RSpec.describe Magick::Image, '#find_similar_region' do
     region.destroy!
     expect { girl.find_similar_region(region) }.to raise_error(Magick::DestroyedImageError)
   end
+
+  it 'accepts an ImageList argument' do
+    image = described_class.new(20, 20)
+
+    image_list = Magick::ImageList.new
+    image_list.new_image(10, 10)
+    expect { image.find_similar_region(image_list) }.not_to raise_error
+    expect { image.find_similar_region(image_list, 0) }.not_to raise_error
+    expect { image.find_similar_region(image_list, 0, 0) }.not_to raise_error
+  end
 end
