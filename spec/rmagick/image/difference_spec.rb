@@ -19,7 +19,7 @@ RSpec.describe Magick::Image, '#difference' do
     image = described_class.new(20, 20)
 
     image_list = Magick::ImageList.new
-    image_list.new_image(10, 10)
+    image_list.new_image(20, 20)
     expect { image.difference(image_list) }.not_to raise_error
   end
 end
