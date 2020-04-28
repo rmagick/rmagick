@@ -10,4 +10,12 @@ RSpec.describe Magick::Draw, '#get_multiline_type_metrics' do
     expect { draw.get_multiline_type_metrics(image, 'ABCDEF', 20) }.to raise_error(ArgumentError)
     expect { draw.get_multiline_type_metrics(image, '') }.to raise_error(ArgumentError)
   end
+
+  it 'accepts an ImageList argument' do
+    draw = described_class.new
+
+    image_list = Magick::ImageList.new
+    image_list.new_image(10, 10)
+    expect { draw.get_multiline_type_metrics(image_list, 'ABCDEF') }.not_to raise_error
+  end
 end
