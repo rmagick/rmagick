@@ -1870,7 +1870,8 @@ test_Magick_version(void)
         }
 
         rb_raise(rb_eRuntimeError,
-                 "This installation of RMagick was configured with %s %s but %.*s is in use.\n" ,
+                 "This installation of RMagick was configured with %s %s but %.*s is in use.\n"
+                 "Please re-install RMagick to correct the issue.\n",
                  MagickPackageName, MagickLibVersionText, x, version_str);
     }
 
