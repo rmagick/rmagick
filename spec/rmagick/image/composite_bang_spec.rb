@@ -13,4 +13,12 @@ RSpec.describe Magick::Image, '#composite!' do
     image1.freeze
     expect { image1.composite!(image2, Magick::NorthWestGravity, Magick::OverCompositeOp) }.to raise_error(FreezeError)
   end
+
+  it 'accepts an ImageList argument' do
+    image = described_class.new(20, 20)
+
+    image_list = Magick::ImageList.new
+    image_list.new_image(10, 10)
+    expect { image.composite!(image_list, Magick::NorthWestGravity, Magick::OverCompositeOp) }.not_to raise_error
+  end
 end

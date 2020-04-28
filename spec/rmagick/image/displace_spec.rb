@@ -23,4 +23,18 @@ RSpec.describe Magick::Image, '#displace' do
     image2.destroy!
     expect { image.displace(image2, 25, 25) }.to raise_error(Magick::DestroyedImageError)
   end
+
+  it 'accepts an ImageList argument' do
+    image = described_class.new(20, 20)
+
+    image_list = Magick::ImageList.new
+    image_list.new_image(10, 10)
+    expect { image.displace(image_list, 25) }.not_to raise_error
+    expect { image.displace(image_list, 25, 25) }.not_to raise_error
+    expect { image.displace(image_list, 25, 25, 10) }.not_to raise_error
+    expect { image.displace(image_list, 25, 25, 10, 10) }.not_to raise_error
+    expect { image.displace(image_list, 25, 25, Magick::CenterGravity) }.not_to raise_error
+    expect { image.displace(image_list, 25, 25, Magick::CenterGravity, 10) }.not_to raise_error
+    expect { image.displace(image_list, 25, 25, Magick::CenterGravity, 10, 10) }.not_to raise_error
+  end
 end

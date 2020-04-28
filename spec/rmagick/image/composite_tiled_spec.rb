@@ -21,4 +21,15 @@ RSpec.describe Magick::Image, '#composite_tiled' do
     fg.destroy!
     expect { bg.composite_tiled(fg) }.to raise_error(Magick::DestroyedImageError)
   end
+
+  it 'accepts an ImageList argument' do
+    image = described_class.new(20, 20)
+
+    image_list = Magick::ImageList.new
+    image_list.new_image(10, 10)
+    expect { image.composite_tiled(image_list) }.not_to raise_error
+    expect { image.composite_tiled(image_list, Magick::AtopCompositeOp) }.not_to raise_error
+    expect { image.composite_tiled(image_list, Magick::RedChannel) }.not_to raise_error
+    expect { image.composite_tiled(image_list, Magick::RedChannel, Magick::GreenChannel) }.not_to raise_error
+  end
 end

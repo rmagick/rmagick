@@ -24,6 +24,14 @@ RSpec.describe Magick::Image, '#composite' do
       end
     end
 
+    it 'accepts an ImageList argument' do
+      image = described_class.new(20, 20)
+
+      image_list = Magick::ImageList.new
+      image_list.new_image(10, 10)
+      expect { image.composite(image_list, Magick::NorthWestGravity, Magick::OverCompositeOp) }.not_to raise_error
+    end
+
     it 'raises an error when 2nd argument is not a gravity' do
       image1 = described_class.read(IMAGES_DIR + '/Button_0.gif').first
       image2 = described_class.read(IMAGES_DIR + '/Button_1.gif').first
@@ -44,6 +52,14 @@ RSpec.describe Magick::Image, '#composite' do
       Magick::CompositeOperator.values do |op|
         expect { image1.composite(image2, 0, 0, op) }.not_to raise_error
       end
+    end
+
+    it 'accepts an ImageList argument' do
+      image = described_class.new(20, 20)
+
+      image_list = Magick::ImageList.new
+      image_list.new_image(10, 10)
+      expect { image.composite(image_list, 0, 0, Magick::OverCompositeOp) }.not_to raise_error
     end
 
     it 'returns a new Magick::Image object' do
@@ -72,6 +88,14 @@ RSpec.describe Magick::Image, '#composite' do
           expect { image1.composite(image2, grav, 0, 0, op) }.not_to raise_error
         end
       end
+    end
+
+    it 'accepts an ImageList argument' do
+      image = described_class.new(20, 20)
+
+      image_list = Magick::ImageList.new
+      image_list.new_image(10, 10)
+      expect { image.composite(image_list, Magick::NorthWestGravity, 0, 0, Magick::OverCompositeOp) }.not_to raise_error
     end
 
     it 'raises an error when 2nd argument is not a gravity' do

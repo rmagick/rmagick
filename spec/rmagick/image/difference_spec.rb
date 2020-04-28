@@ -14,4 +14,12 @@ RSpec.describe Magick::Image, '#difference' do
     image2.destroy!
     expect { image1.difference(image2) }.to raise_error(Magick::DestroyedImageError)
   end
+
+  it 'accepts an ImageList argument' do
+    image = described_class.new(20, 20)
+
+    image_list = Magick::ImageList.new
+    image_list.new_image(10, 10)
+    expect { image.difference(image_list) }.not_to raise_error
+  end
 end

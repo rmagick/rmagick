@@ -2,11 +2,8 @@ RSpec.describe Magick::Image, '#watermark' do
   it 'works' do
     image = described_class.new(20, 20)
     mark = described_class.new(5, 5)
-    mark_list = Magick::ImageList.new
-    mark_list << mark.copy
 
     expect { image.watermark(mark) }.not_to raise_error
-    expect { image.watermark(mark_list) }.not_to raise_error
     expect { image.watermark(mark, 0.50) }.not_to raise_error
     expect { image.watermark(mark, '50%') }.not_to raise_error
     expect { image.watermark(mark, 0.50, 0.50) }.not_to raise_error
@@ -27,5 +24,23 @@ RSpec.describe Magick::Image, '#watermark' do
 
     mark.destroy!
     expect { image.watermark(mark) }.to raise_error(Magick::DestroyedImageError)
+  end
+
+  it 'accepts an ImageList argument' do
+    image = described_class.new(20, 20)
+
+    image_list = Magick::ImageList.new
+    image_list.new_image(10, 10)
+    expect { image.watermark(image_list) }.not_to raise_error
+    expect { image.watermark(image_list) }.not_to raise_error
+    expect { image.watermark(image_list, 0.50) }.not_to raise_error
+    expect { image.watermark(image_list, '50%') }.not_to raise_error
+    expect { image.watermark(image_list, 0.50, 0.50) }.not_to raise_error
+    expect { image.watermark(image_list, 0.50, '50%') }.not_to raise_error
+    expect { image.watermark(image_list, 0.50, 0.50, 10) }.not_to raise_error
+    expect { image.watermark(image_list, 0.50, 0.50, 10, 10) }.not_to raise_error
+    expect { image.watermark(image_list, 0.50, 0.50, Magick::NorthEastGravity) }.not_to raise_error
+    expect { image.watermark(image_list, 0.50, 0.50, Magick::NorthEastGravity, 10) }.not_to raise_error
+    expect { image.watermark(image_list, 0.50, 0.50, Magick::NorthEastGravity, 10, 10) }.not_to raise_error
   end
 end
