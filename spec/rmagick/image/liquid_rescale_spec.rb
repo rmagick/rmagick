@@ -1,6 +1,5 @@
 describe Magick::Image, '#liquid_rescale' do
   it 'works' do
-    skip "delegate library support not built-in ''"
     image = described_class.new(20, 20)
 
     begin
