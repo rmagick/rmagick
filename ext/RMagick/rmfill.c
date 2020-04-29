@@ -667,7 +667,10 @@ free_TextureFill(void *fill_obj)
     rm_TextureFill *fill = (rm_TextureFill *)fill_obj;
 
     // Do not trace destruction
-    DestroyImage(fill->texture);
+    if (fill->texture)
+    {
+        DestroyImage(fill->texture);
+    }
     xfree(fill);
 }
 
