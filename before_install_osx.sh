@@ -16,7 +16,7 @@ if [ ! -v IMAGEMAGICK_VERSION ]; then
 fi
 
 export HOMEBREW_NO_AUTO_UPDATE=true
-brew install wget pkg-config ghostscript freetype jpeg little-cms2 libomp libpng libtiff libtool libxml2 zlib webp
+brew install wget pkg-config ghostscript freetype jpeg little-cms2 libomp libpng libtiff liblqr libtool libxml2 zlib webp
 
 export LDFLAGS="-L/usr/local/opt/libxml2/lib -L/usr/local/opt/zlib/li"
 export CPPFLAGS="-I/usr/local/opt/libxml2/include/libxml2 -I/usr/local/opt/zlib/include"
