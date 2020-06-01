@@ -25,6 +25,11 @@ def unsupported_before(version, condition = {})
   :skip if cond && Gem::Version.new(Magick::IMAGEMAGICK_VERSION) < Gem::Version.new(version)
 end
 
+def supported_before(version, condition = {})
+  cond = condition.key?(:if) ? condition[:if] : true
+  :skip if cond && Gem::Version.new(Magick::IMAGEMAGICK_VERSION) >= Gem::Version.new(version)
+end
+
 RSpec.configure do |config|
   config.include(TestHelpers)
 end
