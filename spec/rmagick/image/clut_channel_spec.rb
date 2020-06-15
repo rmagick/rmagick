@@ -11,4 +11,14 @@ RSpec.describe Magick::Image, "#clut_channel" do
     expect { image.clut_channel }.to raise_error(ArgumentError)
     expect { image.clut_channel(clut, 1, Magick::RedChannel) }.to raise_error(ArgumentError)
   end
+
+  it 'accepts an ImageList argument' do
+    image = described_class.new(20, 20) { self.colorspace = Magick::GRAYColorspace }
+
+    image_list = Magick::ImageList.new
+    image_list.new_image(20, 1)
+
+    result = image.clut_channel(image_list)
+    expect(result).to be(image)
+  end
 end
