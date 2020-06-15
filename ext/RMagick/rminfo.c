@@ -2052,7 +2052,8 @@ Info_stroke_width_eq(VALUE self, VALUE stroke_width)
 /**
  * Set name of texture to tile onto the image background.
  *
- * @param texture [Magick::Image] the texture image
+ * @param texture [Magick::Image, Magick::ImageList] Either an imagelist or an image for the texture image.
+ *   If an imagelist, uses the current image.
  * @return [Magick::Image] the given image
  */
 VALUE
@@ -2079,7 +2080,7 @@ Info_texture_eq(VALUE self, VALUE texture)
     }
 
     // Create a temp copy of the texture and store its name in the texture field
-    image = rm_check_destroyed(texture);
+    image = rm_check_destroyed(rm_cur_image(texture));
     rm_write_temp_image(image, name, sizeof(name));
 
     magick_clone_string(&info->texture, name);
