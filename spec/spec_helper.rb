@@ -22,12 +22,14 @@ FreezeError = RUBY_VERSION > '2.5' ? FrozenError : RuntimeError
 
 def unsupported_before(version, condition = {})
   cond = condition.key?(:if) ? condition[:if] : true
-  :skip if cond && Gem::Version.new(Magick::IMAGEMAGICK_VERSION) < Gem::Version.new(version)
+  message = "Unsupported before #{version}; running #{Magick::IMAGEMAGICK_VERSION}"
+  { skip: message } if cond && Gem::Version.new(Magick::IMAGEMAGICK_VERSION) < Gem::Version.new(version)
 end
 
 def supported_before(version, condition = {})
   cond = condition.key?(:if) ? condition[:if] : true
-  :skip if cond && Gem::Version.new(Magick::IMAGEMAGICK_VERSION) >= Gem::Version.new(version)
+  message = "Supported before #{version}; running #{Magick::IMAGEMAGICK_VERSION}"
+  { skip: message } if cond && Gem::Version.new(Magick::IMAGEMAGICK_VERSION) >= Gem::Version.new(version)
 end
 
 RSpec.configure do |config|
