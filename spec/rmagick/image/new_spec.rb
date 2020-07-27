@@ -18,8 +18,9 @@ RSpec.describe Magick::Image, '#new' do
     expect(self_obj).to eq(self)
 
     # Able to write in the following manner by calling in yield
-    @background_color = 'red'
-    image = described_class.new(20, 20) { |e| e.background_color = @background_color }
-    expect(image.background_color).to eq('red')
+    #
+    # @background_color = 'red'
+    # image = described_class.new(20, 20) { |e| e.background_color = @background_color }
+    # expect(image.background_color).to eq('red')
   end
 end
