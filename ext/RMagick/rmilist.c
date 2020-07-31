@@ -448,7 +448,7 @@ ImageList_montage(VALUE self)
         // object's attributes.
         if (rb_proc_arity(rb_block_proc()) == 0)
         {
-            rb_warning("passing a block without an image argument is deprecated");
+            rb_warn("passing a block without an image argument is deprecated");
             rb_obj_instance_eval(0, NULL, montage_obj);
         }
         else

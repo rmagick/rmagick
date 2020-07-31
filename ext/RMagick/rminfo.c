@@ -2417,7 +2417,7 @@ Info_initialize(VALUE self)
         if (rb_proc_arity(rb_block_proc()) == 0)
         {
             // Run the block in self's context
-            rb_warning("passing a block without an image argument is deprecated");
+            rb_warn("passing a block without an image argument is deprecated");
             rb_obj_instance_eval(0, NULL, self);
         }
         else
