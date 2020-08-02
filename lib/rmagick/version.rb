@@ -1,5 +1,5 @@
 module Magick
-  VERSION = '4.1.2'
+  VERSION = '4.1.3'
   MIN_RUBY_VERSION = '2.3.0'
   MIN_IM_VERSION = '6.7.7'
 end

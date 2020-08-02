@@ -3,6 +3,12 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 4.1.3
+
+Bug Fixes:
+
+- Call with yield when there is a block arguments (#701)
+
 ## RMagick 4.1.2
 
 Bug Fixes:
