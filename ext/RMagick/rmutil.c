@@ -1000,7 +1000,16 @@ rm_get_optional_arguments(VALUE img)
         optional_method_arguments = rb_const_get_from(Module_Magick, rb_intern("OptionalMethodArguments"));
         argv[0] = img;
         opt_args = rb_class_new_instance(1, argv, optional_method_arguments);
-        rb_obj_instance_eval(0, NULL, opt_args);
+
+        if (rb_proc_arity(rb_block_proc()) == 0)
+        {
+            rb_warn("passing a block without an image argument is deprecated");
+            rb_obj_instance_eval(0, NULL, opt_args);
+        }
+        else
+        {
+            rb_yield(opt_args);
+        }
     }
 
     RB_GC_GUARD(optional_method_arguments);

@@ -446,7 +446,15 @@ ImageList_montage(VALUE self)
     {
         // Run the block in the instance's context, allowing the app to modify the
         // object's attributes.
-        rb_obj_instance_eval(0, NULL, montage_obj);
+        if (rb_proc_arity(rb_block_proc()) == 0)
+        {
+            rb_warn("passing a block without an image argument is deprecated");
+            rb_obj_instance_eval(0, NULL, montage_obj);
+        }
+        else
+        {
+            rb_yield(montage_obj);
+        }
     }
 
     Data_Get_Struct(montage_obj, Montage, montage);
