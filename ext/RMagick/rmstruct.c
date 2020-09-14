@@ -97,10 +97,16 @@ ChromaticityInfo_new(ChromaticityInfo *ci)
     VALUE blue_primary;
     VALUE white_point;
 
+    printf("!!!!!!!!!!!!!!!!!\n");
+    printf("info: %g\n", ci->red_primary.y);
+    printf("!!!!!!!!!!!!!!!!!\n");
     red_primary   = Import_PrimaryInfo(&ci->red_primary);
     green_primary = Import_PrimaryInfo(&ci->green_primary);
     blue_primary  = Import_PrimaryInfo(&ci->blue_primary);
     white_point   = Import_PrimaryInfo(&ci->white_point);
+    /* printf("!!!!!!!!!!!!!!!!!\n"); */
+    /* printf("info red: %g\n", &red_primary->y); */
+    /* printf("!!!!!!!!!!!!!!!!!\n"); */
 
     RB_GC_GUARD(red_primary);
     RB_GC_GUARD(green_primary);
@@ -147,6 +153,7 @@ Export_ChromaticityInfo(ChromaticityInfo *ci, VALUE chrom)
     ci->red_primary.x = x == Qnil ? 0.0 : NUM2DBL(x);
     y = rb_ary_entry(entry_members, 1);         // red_primary.y
     ci->red_primary.y = y == Qnil ? 0.0 : NUM2DBL(y);
+    printf("nil? %g\n", ci->red_primary.y);
     ci->red_primary.z = 0.0;
 
     // Get the green_primary PrimaryInfo members in an array
@@ -161,6 +168,9 @@ Export_ChromaticityInfo(ChromaticityInfo *ci, VALUE chrom)
     entry_members = rb_funcall(blue_primary, rm_ID_values, 0);
     x = rb_ary_entry(entry_members, 0);         // blue_primary.x
     ci->blue_primary.x = x == Qnil ? 0.0 : NUM2DBL(x);
+    printf("*******************\n");
+    printf("export %f\n", ci->blue_primary.x);
+    printf("*******************\n");
     y = rb_ary_entry(entry_members, 1);         // blue_primary.y
     ci->blue_primary.y = y == Qnil ? 0.0 : NUM2DBL(y);
     ci->blue_primary.z = 0.0;

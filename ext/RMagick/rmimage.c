@@ -2423,6 +2423,10 @@ VALUE
 Image_chromaticity(VALUE self)
 {
     Image *image = rm_check_destroyed(self);
+    /* VALUE ci_value = ChromaticityInfo_new(&image->chromaticity); */
+    /* ChromaticityInfo *ci; */
+    /* Data_Get_Struct(ci_value, ChromaticityInfo, ci); */
+    /* printf("chromaticity: %g\n", ci->red_primary.y); */
     return ChromaticityInfo_new(&image->chromaticity);
 }
 

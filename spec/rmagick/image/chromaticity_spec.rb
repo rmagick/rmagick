@@ -20,4 +20,17 @@ RSpec.describe Magick::Image, '#chromaticity' do
     expect { image.chromaticity = chrom }.not_to raise_error
     expect { image.chromaticity = 2 }.to raise_error(TypeError)
   end
+
+  it 'still works' do
+    image = described_class.new(100, 100)
+
+    chromaticity = Magick::Chromaticity.new(
+      Magick::Primary.new(0.5, 0.5, 0),
+      Magick::Primary.new(0.5, 0.5, 0),
+      Magick::Primary.new(0.5, 0.5, 0),
+      Magick::Primary.new(0.5, 0.5, 0),
+    )
+    image.chromaticity = chromaticity
+    expect(image.chromaticity).to eq chromaticity
+  end
 end
