@@ -8,7 +8,6 @@ RSpec.describe Magick::Image, '#format' do
     expect { image.format = 'JPG' }.not_to raise_error
     expect { image.format = 'TIFF' }.not_to raise_error
     expect { image.format = 'MIFF' }.not_to raise_error
-    expect { image.format = 'MPEG' }.not_to raise_error
     v = $VERBOSE
     $VERBOSE = nil
     expect { image.format = 'shit' }.to raise_error(ArgumentError)
