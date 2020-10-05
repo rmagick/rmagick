@@ -605,7 +605,7 @@ VALUE
 Import_PrimaryInfo(PrimaryInfo *p)
 {
     return rb_funcall(Class_Primary, rm_ID_new, 3,
-                      INT2FIX(p->x), INT2FIX(p->y), INT2FIX(p->z));
+                      rb_float_new(p->x), rb_float_new(p->y), rb_float_new(p->z));
 }
 
 
