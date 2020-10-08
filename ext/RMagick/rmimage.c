@@ -11660,9 +11660,12 @@ resize(int bang, int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    Image *preprocess = blurred_image(image, blur);
+    Image *preprocess = (argc == 4) ? blurred_image(image, blur) : image;
     new_image = ResizeImage(preprocess, columns, rows, filter, exception);
-    DestroyImage(preprocess);
+    if (argc == 4)
+    {
+        DestroyImage(preprocess);
+    }
 #else
     new_image = ResizeImage(image, columns, rows, filter, blur, exception);
 #endif
