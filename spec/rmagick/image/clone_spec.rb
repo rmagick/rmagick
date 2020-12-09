@@ -1,15 +1,28 @@
 RSpec.describe Magick::Image, "#clone" do
-  it "works" do
-    image = described_class.new(20, 20)
+  it "returns a new copy of the image" do
+    image = build_image
 
-    result = image.clone
-    expect(result).to be_instance_of(described_class)
-    expect(image).to eq(result)
+    new_image = image.clone
 
-    result = image.clone
-    expect(image.frozen?).to eq(result.frozen?)
+    expect(new_image).to eq(image)
+    expect(new_image).not_to be(image)
+    expect(new_image.export_pixels).to eq(image.export_pixels)
+  end
+
+  it "returns a non-frozen copy of the image when it is not frozen" do
+    image = build_image
+
+    new_image = image.clone
+
+    expect(new_image.frozen?).to be(false)
+  end
+
+  it "returns a frozen copy of the image when it is frozen" do
+    image = build_image
+
     image.freeze
-    result = image.clone
-    expect(image.frozen?).to eq(result.frozen?)
+    new_image = image.clone
+
+    expect(new_image.frozen?).to be(true)
   end
 end
