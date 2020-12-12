@@ -343,7 +343,10 @@ module RMagick
 
       $defs.push('-DIMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9=1') if im_version_at_least?('6.8.9')
       $defs.push('-DIMAGEMAGICK_GREATER_THAN_EQUAL_6_9_0=1') if im_version_at_least?('6.9.0')
+      $defs.push('-DIMAGEMAGICK_GREATER_THAN_EQUAL_6_9_10=1') if im_version_at_least?('6.9.10')
       $defs.push('-DIMAGEMAGICK_7=1') if im_version_at_least?('7.0.0')
+      $defs.push('-DIMAGEMAGICK_GREATER_THAN_EQUAL_7_0_8=1') if im_version_at_least?('7.0.8')
+      $defs.push('-DIMAGEMAGICK_GREATER_THAN_EQUAL_7_0_10=1') if im_version_at_least?('7.0.10')
 
       create_header
     end
