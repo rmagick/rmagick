@@ -411,6 +411,8 @@ EXTERN ID rm_ID_push;              /**< "push" */
 EXTERN ID rm_ID_values;            /**< "values" */
 EXTERN ID rm_ID_width;             /**< "width" */
 
+EXTERN unsigned long long rm_main_thread_id;
+
 #if !defined(min)
 #define min(a, b) ((a)<(b)?(a):(b)) /**< min of two values */
 #endif
@@ -1197,6 +1199,7 @@ extern void   rm_error_handler(const ExceptionType, const char *, const char *);
 extern void   rm_warning_handler(const ExceptionType, const char *, const char *);
 extern MagickBooleanType rm_should_raise_exception(ExceptionInfo *, const ExceptionRetention);
 extern void   rm_raise_exception(ExceptionInfo *);
+extern unsigned long long rm_current_thread_id();
 #if defined(IMAGEMAGICK_6)
 extern void   rm_check_image_exception(Image *, ErrorRetention);
 #endif
