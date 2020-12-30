@@ -1539,14 +1539,15 @@ rm_progress_monitor(
     VALUE rval;
     VALUE method, offset, span;
 
-// Default Ruby minimum stack size
-#define RUBY_VM_THREAD_MACHINE_STACK_SIZE_MIN (  16 * 1024 * sizeof(VALUE)) /*   64 KB or  128 KB */
-
-    // Check stack length manually instead of ruby_stack_check() for old Ruby.
-    if (ruby_stack_length(NULL) > RUBY_VM_THREAD_MACHINE_STACK_SIZE_MIN)
+    // Check running thread.
+    if (rm_current_thread_id() != rm_main_thread_id)
     {
-        // If there is not enough stack or the using stack size shows an abnormal value in Ruby,
-        // skip the callback and continue ImageMagick process.
+        // ImageMagick might call back in a different thread than Ruby is running in.
+        // If it is a different thread, it would not have a Ruby GVL and
+        // it could not retrieve properly Ruby stack.
+
+        // Unfortunately, there is no API available to check if the current thread has a GVL,
+        // so the thread id was checked in here.
         return MagickTrue;
     }
 
@@ -1877,3 +1878,21 @@ rm_raise_exception(ExceptionInfo *exception)
     rm_magick_error(msg);
 }
 
+/**
+ * Get current thread id.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @return thread id
+ */
+unsigned long long
+rm_current_thread_id()
+{
+#if defined(_WIN32)
+#include <Windows.h>
+    return (unsigned long long)GetCurrentThreadId();
+#else
+#include <pthread.h>
+    return (unsigned long long)pthread_self();
+#endif
+}
