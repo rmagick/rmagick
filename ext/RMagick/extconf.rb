@@ -358,7 +358,7 @@ module RMagick
       $defs = []
 
       # Force re-compilation if the generated Makefile changed.
-      $config_h = 'Makefile rmagick.h'
+      $config_h = 'Makefile'
 
       create_makefile('RMagick2')
       print_summary
