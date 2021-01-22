@@ -30,9 +30,7 @@ ImageMagick image processing library.
 Prerequisites
 -------------
 
-These prerequisites are required for the latest DEVELOPMENT version of RMagick.
-To see prerequisites for the latest RELEASED version of the gem, switch to the
-master branch.
+These prerequisites are required for the latest version of RMagick.
 
 **OS**
 - Linux
