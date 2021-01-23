@@ -30,19 +30,27 @@ ImageMagick image processing library.
 Prerequisites
 -------------
 
-These prerequisites are required for the latest DEVELOPMENT version of RMagick.
-To see prerequisites for the latest RELEASED version of the gem, switch to the
-master branch.
+These prerequisites are required for the latest version of RMagick.
 
-**O/S** Linux, \*BSD, OS X, Windows 2000, XP, Vista, other \*nix-like systems.
+**OS**
+- Linux
+- \*BSD
+- macOS
+- Windows
+- Other \*nix-like systems
 
-**Ruby** 2.3 or later. You can get Ruby from <https://www.ruby-lang.org>.
+**Ruby**
+- Version 2.3 or later.
+
+You can get Ruby from <https://www.ruby-lang.org>.
 
 Ruby must be able to build C-Extensions (e.g. MRI, Rubinius, not JRuby)
 
-**ImageMagick** Version 6.7.7 or later (6.x.x). Version 7 has beta support in
-version 4.1.0.rc2 (#256). You can get ImageMagick from
-<https://imagemagick.org>.
+**ImageMagick**
+- Version 6.7.7 or later (6.x.x).
+- Version 7.0.8 or later (7.x.x). Require RMagick 4.1.0 or later.
+
+You can get ImageMagick from <https://imagemagick.org>.
 
 ### Linux
 #### Ubuntu
