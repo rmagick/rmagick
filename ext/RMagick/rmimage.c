@@ -406,7 +406,8 @@ Image_adaptive_threshold(int argc, VALUE *argv, VALUE self)
  * The areas of the destination image that are masked by white pixels will be modified by the
  * {Magick::Image#composite} method, while areas masked by black pixels are unchanged.
  *
- * @param mask [Magick::Image] the composite mask
+ * @param mask [Magick::Image, Magick::ImageList] Either an imagelist or an image for composite mask.
+ *   If an imagelist, uses the current image.
  * @see Image#mask
  * @see Image#delete_compose_mask
  */
@@ -420,7 +421,7 @@ Image_add_compose_mask(VALUE self, VALUE mask)
 #endif
 
     image = rm_check_frozen(self);
-    mask_image = rm_check_destroyed(mask);
+    mask_image = rm_check_destroyed(rm_cur_image(mask));
     if (image->columns != mask_image->columns || image->rows != mask_image->rows)
     {
         rb_raise(rb_eArgError, "mask must be the same size as image");
@@ -2479,11 +2480,13 @@ Image_clone(VALUE self)
  * the CLUT image.
  *
  * @overload clut_channel(clut_image, channel = Magick::AllChannels)
- *   @param clut_image [Magick::Image] The LUT gradient image.
+ *   @param clut_image [Magick::Image, Magick::ImageList] Either an imagelist or an image for the LUT gradient image.
+ *     If an imagelist, uses the current image.
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *
  * @overload clut_channel(clut_image, *channels)
- *   @param clut_image [Magick::Image] The LUT gradient image.
+ *   @param clut_image [Magick::Image, Magick::ImageList] Either an imagelist or an image for the LUT gradient image.
+ *     If an imagelist, uses the current image.
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
  * @return [Magick::Image] self
@@ -2503,7 +2506,7 @@ Image_clut_channel(int argc, VALUE *argv, VALUE self)
     // check_destroyed before confirming the arguments
     if (argc >= 1)
     {
-        rm_check_destroyed(argv[0]);
+        clut = rm_check_destroyed(rm_cur_image(argv[0]));
         channels = extract_channels(&argc, argv);
         if (argc != 1)
         {
@@ -2514,8 +2517,6 @@ Image_clut_channel(int argc, VALUE *argv, VALUE self)
     {
         rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 or more)", argc);
     }
-
-    Data_Get_Struct(argv[0], Image, clut);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -3490,7 +3491,8 @@ Image_composite(int argc, VALUE *argv, VALUE self)
 /**
  * Composite the source over the destination image as dictated by the affine transform.
  *
- * @param source [Magick::Image] the source image
+ * @param source [Magick::Image, Magick::ImageList] Either an imagelist or an image for the source image.
+ *   If an imagelist, uses the current image.
  * @param affine_matrix [Magick::AffineMatrix] affine transform matrix
  * @return [Magick::Image] a new image
  */
@@ -3504,7 +3506,7 @@ Image_composite_affine(VALUE self, VALUE source, VALUE affine_matrix)
 #endif
 
     image = rm_check_destroyed(self);
-    composite_image = rm_check_destroyed(source);
+    composite_image = rm_check_destroyed(rm_cur_image(source));
 
     Export_AffineMatrix(&affine, affine_matrix);
     new_image = rm_clone_image(image);
