@@ -12,6 +12,11 @@
 
 #include "rmagick.h"
 #include <errno.h>
+#if defined(_WIN32)
+#include <Windows.h>
+#else
+#include <pthread.h>
+#endif
 
 static VALUE rescue_not_str(VALUE, VALUE ATTRIBUTE_UNUSED) ATTRIBUTE_NORETURN;
 static void handle_exception(ExceptionInfo *, Image *, ErrorRetention);
@@ -1889,10 +1894,8 @@ unsigned long long
 rm_current_thread_id()
 {
 #if defined(_WIN32)
-#include <Windows.h>
     return (unsigned long long)GetCurrentThreadId();
 #else
-#include <pthread.h>
     return (unsigned long long)pthread_self();
 #endif
 }
