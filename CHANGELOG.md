@@ -11,6 +11,16 @@ Bug Fixes:
 
 ## RMagick 4.2.0
 
+This adds a deprecation warning when using a block for image operations.
+Instead of setting properties on `self`, you should accept a block argument and
+modify that instead. In a future version we we no longer be binding the block
+to the image.
+
+```diff
+- img.to_blob { self.quality = 75 }
++ img.to_blob { |image| image.quality = 75 }
+```
+
 Improvements:
 
 - Updated error messages if runtime ImageMagick version was not matched with when installed rmagick (#1213)
