@@ -3,6 +3,36 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 4.2.1
+
+Bug Fixes:
+
+- Fix compilation with optimization on glibc (#1263)
+
+## RMagick 4.2.0
+
+This adds a deprecation warning when using a block for image operations.
+Instead of setting properties on `self`, you should accept a block argument and
+modify that instead. In a future version we we no longer be binding the block
+to the image.
+
+```diff
+- img.to_blob { self.quality = 75 }
++ img.to_blob { |image| image.quality = 75 }
+```
+
+Improvements:
+
+- Updated error messages if runtime ImageMagick version was not matched with when installed rmagick (#1213)
+- Improve Image#resize performance with ImageMagick 7 (#1240)
+- Added new colorspaces (#1252)
+
+Bug Fixes:
+
+- Fix assertion failed in Magick::TextureFill.new with with unexpected argument (#1216)
+- Call with yield when there is a block arguments (#701)
+- Avoid crash with monitor feature on Ruby 3.0  (#1253)
+
 ## RMagick 4.1.2
 
 Bug Fixes:
