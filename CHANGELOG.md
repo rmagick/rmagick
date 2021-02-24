@@ -3,6 +3,16 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 4.2.2
+
+Bug Fixes:
+
+- Remove deprecation warning about block syntax (#1272)
+
+You are still recommended to use the block parameter instead of `self.` but
+we're silencing the deprecation warning until we can get RMagick's code up to
+that standard.
+
 ## RMagick 4.2.1
 
 Bug Fixes:
