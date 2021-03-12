@@ -6,17 +6,17 @@ img = Magick::Image.new(270, 60) { |e| e.background_color = 'black' }
 
 gc = Magick::Draw.new
 gc.annotate(img, 0, 0, 0, -15, 'RUBY!') do |e|
-  gc.fill = '#a00'
-  gc.stroke = '#f00'
-  gc.stroke_width = 2
-  gc.font_weight = Magick::BoldWeight
-  gc.gravity = Magick::SouthGravity
+  e.fill = '#a00'
+  e.stroke = '#f00'
+  e.stroke_width = 2
+  e.font_weight = Magick::BoldWeight
+  e.gravity = Magick::SouthGravity
   if RUBY_PLATFORM =~ /mswin32/
-    gc.font_family = 'Georgia'
-    gc.pointsize = 76
+    e.font_family = 'Georgia'
+    e.pointsize = 76
   else
-    gc.font_family = 'times'
-    gc.pointsize = 80
+    e.font_family = 'times'
+    e.pointsize = 80
   end
 end
 

@@ -7,12 +7,12 @@ mask = Magick::Image.new(background.columns, background.rows) { |e| e.background
 # Make a mask
 gc = Magick::Draw.new
 gc.annotate(mask, 0, 0, 0, 0, 'Ruby') do |e|
-  gc.gravity = Magick::CenterGravity
-  gc.pointsize = 100
-  gc.rotation = 90
-  gc.font_weight = Magick::BoldWeight
-  gc.fill = 'white'
-  gc.stroke = 'none'
+  e.gravity = Magick::CenterGravity
+  e.pointsize = 100
+  e.rotation = 90
+  e.font_weight = Magick::BoldWeight
+  e.fill = 'white'
+  e.stroke = 'none'
 end
 
 background.add_compose_mask(mask)

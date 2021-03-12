@@ -33,11 +33,11 @@ canvas = Magick::Image.new(410, 320, Magick::HatchFill.new('white', 'lightcyan2'
 # the labels. Use 'undercolor' to set off the glyph.
 glyph = Magick::Draw.new
 glyph.annotate(canvas, 0, 0, Origin_x, Origin_y, Glyph) do |e|
-  glyph.pointsize = 124
-  glyph.stroke = 'none'
-  glyph.fill = 'black'
-  glyph.font_family = Face
-  glyph.undercolor = '#ffff00c0'
+  e.pointsize = 124
+  e.stroke = 'none'
+  e.fill = 'black'
+  e.font_family = Face
+  e.undercolor = '#ffff00c0'
 end
 
 # Call get_type_metrics. This is what this example's all about.
