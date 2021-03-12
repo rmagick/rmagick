@@ -24,45 +24,45 @@ begin
 
   0.step(330, 30) do |angle|
     puts "angle #{angle}"
-    pic.new_image(600, 600) { self.background_color = 'white' }
+    pic.new_image(600, 600) { |e| e.background_color = 'white' }
 
     lines.draw pic
 
-    draw.annotate(pic, 0, 0, x, y, 'NorthWest') do
-      self.gravity = Magick::NorthWestGravity
-      self.rotation = angle
+    draw.annotate(pic, 0, 0, x, y, 'NorthWest') do |e|
+      e.gravity = Magick::NorthWestGravity
+      e.rotation = angle
     end
-    draw.annotate(pic, 0, 0, 0, y, 'North') do
-      self.gravity = Magick::NorthGravity
-      self.rotation = angle
+    draw.annotate(pic, 0, 0, 0, y, 'North') do |e|
+      e.gravity = Magick::NorthGravity
+      e.rotation = angle
     end
-    draw.annotate(pic, 0, 0, x, y, 'NorthEast') do
-      self.gravity = Magick::NorthEastGravity
-      self.rotation = angle
+    draw.annotate(pic, 0, 0, x, y, 'NorthEast') do |e|
+      e.gravity = Magick::NorthEastGravity
+      e.rotation = angle
     end
-    draw.annotate(pic, 0, 0, x, 0, 'East') do
-      self.gravity = Magick::EastGravity
-      self.rotation = angle
+    draw.annotate(pic, 0, 0, x, 0, 'East') do |e|
+      e.gravity = Magick::EastGravity
+      e.rotation = angle
     end
-    draw.annotate(pic, 0, 0, 0, 0, 'Center') do
-      self.gravity = Magick::CenterGravity
-      self.rotation = angle
+    draw.annotate(pic, 0, 0, 0, 0, 'Center') do |e|
+      e.gravity = Magick::CenterGravity
+      e.rotation = angle
     end
-    draw.annotate(pic, 0, 0, x, y, 'SouthEast') do
-      self.gravity = Magick::SouthEastGravity
-      self.rotation = angle
+    draw.annotate(pic, 0, 0, x, y, 'SouthEast') do |e|
+      e.gravity = Magick::SouthEastGravity
+      e.rotation = angle
     end
-    draw.annotate(pic, 0, 0, 0, y, 'South') do
-      self.gravity = Magick::SouthGravity
-      self.rotation = angle
+    draw.annotate(pic, 0, 0, 0, y, 'South') do |e|
+      e.gravity = Magick::SouthGravity
+      e.rotation = angle
     end
-    draw.annotate(pic, 0, 0, x, y, 'SouthWest') do
-      self.gravity = Magick::SouthWestGravity
-      self.rotation = angle
+    draw.annotate(pic, 0, 0, x, y, 'SouthWest') do |e|
+      e.gravity = Magick::SouthWestGravity
+      e.rotation = angle
     end
-    draw.annotate(pic, 0, 0, x, 0, 'West') do
-      self.gravity = Magick::WestGravity
-      self.rotation = angle
+    draw.annotate(pic, 0, 0, x, 0, 'West') do |e|
+      e.gravity = Magick::WestGravity
+      e.rotation = angle
     end
   end
 

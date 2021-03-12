@@ -1,7 +1,7 @@
 require 'rmagick'
 
 imgl = Magick::ImageList.new
-imgl.new_image(275, 170) { self.background_color = 'white' }
+imgl.new_image(275, 170) { |e| e.background_color = 'white' }
 
 gc = Magick::Draw.new
 gc.fill('black')

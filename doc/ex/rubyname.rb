@@ -12,16 +12,16 @@ text = Magick::Draw.new
 text.pointsize = 52
 text.gravity = Magick::CenterGravity
 
-text.annotate(canvas, 0, 0, 2, 2, Text) do
-  self.fill = 'gray83'
+text.annotate(canvas, 0, 0, 2, 2, Text) do |e|
+  e.fill = 'gray83'
 end
 
-text.annotate(canvas, 0, 0, -1.5, -1.5, Text) do
-  self.fill = 'gray40'
+text.annotate(canvas, 0, 0, -1.5, -1.5, Text) do |e|
+  e.fill = 'gray40'
 end
 
-text.annotate(canvas, 0, 0, 0, 0, Text) do
-  self.fill = 'darkred'
+text.annotate(canvas, 0, 0, 0, 0, Text) do |e|
+  e.fill = 'darkred'
 end
 
 # canvas.display

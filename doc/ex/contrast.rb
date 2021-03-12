@@ -25,9 +25,9 @@ end
 legend.annotate(img, 0, 0, 7, 10, f.to_s)
 
 # Montage into a single image
-imgs = img.montage do
-  self.geometry = Magick::Geometry.new(img.columns, img.rows)
-  self.tile = '2x2'
+imgs = img.montage do |e|
+  e.geometry = Magick::Geometry.new(img.columns, img.rows)
+  e.tile = '2x2'
 end
 
 imgs.write('contrast.jpg')

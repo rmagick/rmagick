@@ -11,31 +11,31 @@ RSpec.describe Magick::ImageList, "#montage" do
     image_list1.read(*Dir[IMAGES_DIR + '/Button_*.gif'])
     image_list2 = image_list1.copy
 
-    montage = image_list2.montage do
-      self.background_color = Magick::Pixel.new(Magick::QuantumRange, 0, 0)
-      self.background_color = 'blue'
-      self.border_color = Magick::Pixel.new(0, 0, 0)
-      self.border_color = 'red'
-      self.border_width = 2
-      self.compose = Magick::OverCompositeOp
-      self.filename = 'test.png'
-      self.fill = 'green'
-      self.font = Magick.fonts.first.name
-      self.frame = '20x20+4+4'
-      self.frame = Magick::Geometry.new(20, 20, 4, 4)
-      self.geometry = '63x60+5+5'
-      self.geometry = Magick::Geometry.new(63, 60, 5, 5)
-      self.gravity = Magick::SouthGravity
-      self.matte_color = '#bdbdbd'
-      self.matte_color = Magick::Pixel.new(Magick::QuantumRange, 0, 0)
-      self.pointsize = 12
-      self.shadow = true
-      self.stroke = 'transparent'
-      self.texture = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
-      self.texture = Magick::Image.read(IMAGES_DIR + '/Button_1.gif').first
-      self.tile = '4x9'
-      self.tile = Magick::Geometry.new(4, 9)
-      self.title = 'sample'
+    montage = image_list2.montage do |e|
+      e.background_color = Magick::Pixel.new(Magick::QuantumRange, 0, 0)
+      e.background_color = 'blue'
+      e.border_color = Magick::Pixel.new(0, 0, 0)
+      e.border_color = 'red'
+      e.border_width = 2
+      e.compose = Magick::OverCompositeOp
+      e.filename = 'test.png'
+      e.fill = 'green'
+      e.font = Magick.fonts.first.name
+      e.frame = '20x20+4+4'
+      e.frame = Magick::Geometry.new(20, 20, 4, 4)
+      e.geometry = '63x60+5+5'
+      e.geometry = Magick::Geometry.new(63, 60, 5, 5)
+      e.gravity = Magick::SouthGravity
+      e.matte_color = '#bdbdbd'
+      e.matte_color = Magick::Pixel.new(Magick::QuantumRange, 0, 0)
+      e.pointsize = 12
+      e.shadow = true
+      e.stroke = 'transparent'
+      e.texture = Magick::Image.read(IMAGES_DIR + '/Button_0.gif').first
+      e.texture = Magick::Image.read(IMAGES_DIR + '/Button_1.gif').first
+      e.tile = '4x9'
+      e.tile = Magick::Geometry.new(4, 9)
+      e.title = 'sample'
     end
     expect(montage).to be_instance_of(described_class)
     expect(image_list2).to eq(image_list1)
@@ -48,51 +48,51 @@ RSpec.describe Magick::ImageList, "#montage" do
     # looks like IM doesn't diagnose invalid geometry args
     # to tile= and geometry=
     expect do
-      montage = image_list2.montage { self.background_color = 2 }
+      montage = image_list2.montage { |e| e.background_color = 2 }
       expect(image_list2).to eq(image_list1)
     end.to raise_error(TypeError)
     expect do
-      montage = image_list2.montage { self.border_color = 2 }
+      montage = image_list2.montage { |e| e.border_color = 2 }
       expect(image_list2).to eq(image_list1)
     end.to raise_error(TypeError)
     expect do
-      montage = image_list2.montage { self.border_width = [2] }
+      montage = image_list2.montage { |e| e.border_width = [2] }
       expect(image_list2).to eq(image_list1)
     end.to raise_error(TypeError)
     expect do
-      montage = image_list2.montage { self.compose = 2 }
+      montage = image_list2.montage { |e| e.compose = 2 }
       expect(image_list2).to eq(image_list1)
     end.to raise_error(TypeError)
     expect do
-      montage = image_list2.montage { self.filename = 2 }
+      montage = image_list2.montage { |e| e.filename = 2 }
       expect(image_list2).to eq(image_list1)
     end.to raise_error(TypeError)
     expect do
-      montage = image_list2.montage { self.fill = 2 }
+      montage = image_list2.montage { |e| e.fill = 2 }
       expect(image_list2).to eq(image_list1)
     end.to raise_error(TypeError)
     expect do
-      montage = image_list2.montage { self.font = 2 }
+      montage = image_list2.montage { |e| e.font = 2 }
       expect(image_list2).to eq(image_list1)
     end.to raise_error(TypeError)
     expect do
-      montage = image_list2.montage { self.gravity = 2 }
+      montage = image_list2.montage { |e| e.gravity = 2 }
       expect(image_list2).to eq(image_list1)
     end.to raise_error(TypeError)
     expect do
-      montage = image_list2.montage { self.matte_color = 2 }
+      montage = image_list2.montage { |e| e.matte_color = 2 }
       expect(image_list2).to eq(image_list1)
     end.to raise_error(TypeError)
     expect do
-      montage = image_list2.montage { self.pointsize = 'x' }
+      montage = image_list2.montage { |e| e.pointsize = 'x' }
       expect(image_list2).to eq(image_list1)
     end.to raise_error(TypeError)
     expect do
-      montage = image_list2.montage { self.stroke = 'x' }
+      montage = image_list2.montage { |e| e.stroke = 'x' }
       expect(image_list2).to eq(image_list1)
     end.to raise_error(ArgumentError)
     expect do
-      montage = image_list2.montage { self.texture = 'x' }
+      montage = image_list2.montage { |e| e.texture = 'x' }
       expect(image_list2).to eq(image_list1)
     end.to raise_error(NoMethodError)
   end
@@ -100,13 +100,13 @@ RSpec.describe Magick::ImageList, "#montage" do
   it 'montages the image' do
     imagelist = described_class.new(IMAGES_DIR + '/Flower_Hat.jpg')
 
-    new_imagelist = imagelist.montage do
-      self.border_width = 100
-      self.border_color = 'red'
-      self.background_color = 'blue'
-      self.matte_color = 'yellow'
-      self.frame = '10x10'
-      self.gravity = Magick::CenterGravity
+    new_imagelist = imagelist.montage do |e|
+      e.border_width = 100
+      e.border_color = 'red'
+      e.background_color = 'blue'
+      e.matte_color = 'yellow'
+      e.frame = '10x10'
+      e.gravity = Magick::CenterGravity
     end
 
     # montage ../../doc/ex/images/Flower_Hat.jpg -border 100x -bordercolor red -mattecolor yellow -background blue -frame 10x10 -gravity Center expected/montage_border_color.jpg

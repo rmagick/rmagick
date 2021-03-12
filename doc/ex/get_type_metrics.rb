@@ -32,7 +32,7 @@ canvas = Magick::Image.new(410, 320, Magick::HatchFill.new('white', 'lightcyan2'
 # Draw a big lowercase 'g' on the canvas. Leave room on all sides for
 # the labels. Use 'undercolor' to set off the glyph.
 glyph = Magick::Draw.new
-glyph.annotate(canvas, 0, 0, Origin_x, Origin_y, Glyph) do
+glyph.annotate(canvas, 0, 0, Origin_x, Origin_y, Glyph) do |e|
   glyph.pointsize = 124
   glyph.stroke = 'none'
   glyph.fill = 'black'

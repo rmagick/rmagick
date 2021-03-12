@@ -11,13 +11,13 @@ imgs.cur_image['Label'] = 'GreenChannel'
 imgs << img.channel(Magick::BlueChannel)
 imgs.cur_image['Label'] = 'BlueChannel'
 
-result = imgs.montage do
-  self.tile = '2x2'
-  self.background_color = 'black'
-  self.stroke = 'transparent'
-  self.fill = 'white'
-  self.pointsize = 9
-  self.geometry = Magick::Geometry.new(img.columns / 2, img.rows / 2, 5, 5)
+result = imgs.montage do |e|
+  e.tile = '2x2'
+  e.background_color = 'black'
+  e.stroke = 'transparent'
+  e.fill = 'white'
+  e.pointsize = 9
+  e.geometry = Magick::Geometry.new(img.columns / 2, img.rows / 2, 5, 5)
 end
 
 result.write('channel.jpg')

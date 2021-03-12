@@ -10,22 +10,22 @@ i = Magick::ImageList.new
 i.new_image(200, 100, Magick::GradientFill.new(100, 50, 100, 50, 'khaki1', 'turquoise'))
 
 # Create a transparent image for the text shadow
-i.new_image(200, 100) { self.background_color = 'transparent' }
+i.new_image(200, 100) { |e| e.background_color = 'transparent' }
 primitives = Magick::Draw.new
-primitives.annotate i, 0, 0, 2, 2, RMagick do
-  self.pointsize = 32
-  self.fill = 'gray50'
-  self.gravity = Magick::CenterGravity
+primitives.annotate i, 0, 0, 2, 2, RMagick do |e|
+  e.pointsize = 32
+  e.fill = 'gray50'
+  e.gravity = Magick::CenterGravity
 end
 
 # Create another transparent image for the text itself
-i.new_image(200, 100) { self.background_color = 'transparent' }
+i.new_image(200, 100) { |e| e.background_color = 'transparent' }
 primitives = Magick::Draw.new
-primitives.annotate i, 0, 0, -2, -2, RMagick do
-  self.pointsize = 32
-  self.fill = 'red'
-  self.stroke = 'black'
-  self.gravity = Magick::CenterGravity
+primitives.annotate i, 0, 0, -2, -2, RMagick do |e|
+  e.pointsize = 32
+  e.fill = 'red'
+  e.stroke = 'black'
+  e.gravity = Magick::CenterGravity
 end
 
 # Flatten all 3 into a single image.

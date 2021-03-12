@@ -15,8 +15,8 @@ end
 
 # Create a image that will hold the alphabet images in 5 rows and 5 columns.
 cells = Magick::ImageList.new
-cells.new_image buttons.columns * 5, buttons.rows * 5 do
-  self.background_color = '#000000ff' # transparent
+cells.new_image buttons.columns * 5, buttons.rows * 5 do |e|
+  e.background_color = '#000000ff' # transparent
 end
 cells.alpha(Magick::ActivateAlphaChannel)
 

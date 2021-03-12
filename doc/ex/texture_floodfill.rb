@@ -3,7 +3,7 @@ require 'rmagick'
 # Demonstrate the Image#texture_floodfill method
 # This example is nearly identical to the color_floodfill example.
 
-before = Magick::Image.new(200, 200) { self.background_color = 'white' }
+before = Magick::Image.new(200, 200) { |e| e.background_color = 'white' }
 before.border!(1, 1, 'black')
 
 circle = Magick::Draw.new

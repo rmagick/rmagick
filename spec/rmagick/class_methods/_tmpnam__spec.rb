@@ -8,7 +8,7 @@ RSpec.describe Magick, '._tmpnam_' do
   it 'works' do
     tmpfiles = Dir[ENV['HOME'] + '/tmp/magick*'].length
 
-    texture = Magick::Image.read('granite:') { self.size = '20x20' }.first
+    texture = Magick::Image.read('granite:') { |e| e.size = '20x20' }.first
     info = Magick::Image::Info.new
 
     # does not exist at first

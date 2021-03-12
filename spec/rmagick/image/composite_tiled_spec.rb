@@ -1,7 +1,7 @@
 RSpec.describe Magick::Image, '#composite_tiled' do
   it 'works' do
     bg = described_class.new(200, 200)
-    fg = described_class.new(50, 100) { self.background_color = 'black' }
+    fg = described_class.new(50, 100) { |e| e.background_color = 'black' }
 
     result = bg.composite_tiled(fg)
     expect(result).to be_instance_of(described_class)

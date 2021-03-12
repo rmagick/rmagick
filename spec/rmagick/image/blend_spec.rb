@@ -1,7 +1,7 @@
 RSpec.describe Magick::Image, "#blend" do
   it "works" do
     image = described_class.new(20, 20)
-    image2 = described_class.new(20, 20) { self.background_color = 'black' }
+    image2 = described_class.new(20, 20) { |e| e.background_color = 'black' }
 
     expect { image.blend(image2, 0.25) }.not_to raise_error
     result = image.blend(image2, 0.25)

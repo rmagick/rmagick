@@ -14,7 +14,7 @@ img = Magick::Image.read('images/Flower_Hat.jpg').first
 q = Magick::Image.new(img.columns, img.rows)
 
 gc = Magick::Draw.new
-gc.annotate(q, 0, 0, 0, 0, 'Flower Hat') do
+gc.annotate(q, 0, 0, 0, 0, 'Flower Hat') do |e|
   gc.gravity = Magick::SouthGravity
   gc.pointsize = 36
   gc.font_weight = Magick::BoldWeight

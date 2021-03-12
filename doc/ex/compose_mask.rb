@@ -1,12 +1,12 @@
 require 'rmagick'
 
 background = Magick::Image.read('images/Flower_Hat.jpg').first
-source = Magick::Image.read('pattern:checkerboard') { self.size = "#{background.columns}x#{background.rows}" }.first
-mask = Magick::Image.new(background.columns, background.rows) { self.background_color = 'black' }
+source = Magick::Image.read('pattern:checkerboard') { |e| e.size = "#{background.columns}x#{background.rows}" }.first
+mask = Magick::Image.new(background.columns, background.rows) { |e| e.background_color = 'black' }
 
 # Make a mask
 gc = Magick::Draw.new
-gc.annotate(mask, 0, 0, 0, 0, 'Ruby') do
+gc.annotate(mask, 0, 0, 0, 0, 'Ruby') do |e|
   gc.gravity = Magick::CenterGravity
   gc.pointsize = 100
   gc.rotation = 90

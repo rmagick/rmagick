@@ -1995,7 +1995,7 @@ Image_bounding_box(VALUE self)
  * @return [Magick::Image] a new image
  * @example
  *   img = Image.capture {
- *     self.filename = "root"
+ *     e.filename = "root"
  *   }
  */
 VALUE
@@ -3106,9 +3106,9 @@ Image_columns(VALUE self)
  * @overload compare_channel(image, metric, channel = Magick::AllChannels)
  *   If present a block, compare_channel yields to a block in which you can set optional arguments
  *   by setting attributes on self.
- *   - self.highlight_color = color
+ *   - e.highlight_color = color
  *     - Emphasize pixel differences with this color. The default is partially transparent red.
- *   - self.lowlight_color = color
+ *   - e.lowlight_color = color
  *     - Demphasize pixel differences with this color. The default is partially transparent white.
  *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
  *     imagelist, uses the current image.
@@ -3126,9 +3126,9 @@ Image_columns(VALUE self)
  * @overload compare_channel(image, metric, *channels)
  *   If present a block, compare_channel yields to a block in which you can set optional arguments
  *   by setting attributes on self.
- *   - self.highlight_color = color
+ *   - e.highlight_color = color
  *     - Emphasize pixel differences with this color. The default is partially transparent red.
- *   - self.lowlight_color = color
+ *   - e.lowlight_color = color
  *     - Demphasize pixel differences with this color. The default is partially transparent white.
  *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
  *     imagelist, uses the current image.

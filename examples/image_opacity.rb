@@ -11,14 +11,14 @@ puts <<~END_INFO
 END_INFO
 
 balloons = Image.read('../doc/ex/images/Hot_Air_Balloons_H.jpg').first
-legend = Image.new(160, 50) { self.background_color = '#ffffffc0' }
+legend = Image.new(160, 50) { |e| e.background_color = '#ffffffc0' }
 
 gc = Draw.new
-gc.annotate(legend, 0, 0, 0, 0, 'Balloon Day!\\nFri May 2 2003') do
-  self.gravity = CenterGravity
-  self.stroke = 'transparent'
-  self.fill = 'white'
-  self.pointsize = 18
+gc.annotate(legend, 0, 0, 0, 0, 'Balloon Day!\\nFri May 2 2003') do |e|
+  e.gravity = CenterGravity
+  e.stroke = 'transparent'
+  e.fill = 'white'
+  e.pointsize = 18
 end
 
 result = balloons.composite(legend, SouthGravity, OverCompositeOp)

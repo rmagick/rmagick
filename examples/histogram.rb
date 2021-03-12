@@ -35,9 +35,9 @@ module Magick
 
     # The alpha frequencies are shown as white dots.
     def alpha_hist(freqs, scale, fg, bg)
-      histogram = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do
-        self.background_color = bg
-        self.border_color = fg
+      histogram = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do |e|
+        e.background_color = bg
+        e.border_color = fg
       end
 
       gc = Draw.new
@@ -55,9 +55,9 @@ module Magick
     end
 
     def channel_histograms(red, green, blue, int, scale, fg, bg)
-      rgb_histogram = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do
-        self.background_color = bg
-        self.border_color = fg
+      rgb_histogram = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do |e|
+        e.background_color = bg
+        e.border_color = fg
       end
       rgb_histogram['Label'] = 'RGB'
       red_histogram = rgb_histogram.copy
@@ -128,9 +128,9 @@ module Magick
         pixels = hist.keys.sort_by { |pixel| hist[pixel] }
         scale = HISTOGRAM_ROWS / (hist.values.max * AIR_FACTOR)
 
-        histogram = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do
-          self.background_color = bg
-          self.border_color = fg
+        histogram = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do |e|
+          e.background_color = bg
+          e.border_color = fg
         end
 
         x = 0
@@ -160,17 +160,17 @@ module Magick
         Colors: #{number_colors}
       END_TEXT
 
-      info = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do
-        self.background_color = bg
-        self.border_color = fg
+      info = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do |e|
+        e.background_color = bg
+        e.border_color = fg
       end
 
       gc = Draw.new
 
-      gc.annotate(info, 0, 0, 0, 0, text) do
-        self.stroke = 'transparent'
-        self.fill = fg
-        self.gravity = CenterGravity
+      gc.annotate(info, 0, 0, 0, 0, text) do |e|
+        e.stroke = 'transparent'
+        e.fill = fg
+        e.gravity = CenterGravity
       end
       info['Label'] = 'Info'
 
@@ -178,7 +178,7 @@ module Magick
     end
 
     def intensity_hist(int_histogram)
-      gradient = (Image.read('gradient:#ffff80-#ff9000') { self.size = "#{HISTOGRAM_COLS}x#{HISTOGRAM_ROWS}" }).first
+      gradient = (Image.read('gradient:#ffff80-#ff9000') { |e| e.size = "#{HISTOGRAM_COLS}x#{HISTOGRAM_ROWS}" }).first
       int_histogram = gradient.composite(int_histogram, CenterGravity, OverCompositeOp)
 
       int_histogram['Label'] = 'Intensity'
@@ -254,13 +254,13 @@ module Magick
       charts << color_hist(fg, bg)
 
       # Make a montage.
-      histogram = charts.montage do
-        self.background_color = bg
-        self.stroke = 'transparent'
-        self.fill = fg
-        self.border_width = 1
-        self.tile         = '4x2'
-        self.geometry     = "#{HISTOGRAM_COLS}x#{HISTOGRAM_ROWS}+10+10"
+      histogram = charts.montage do |e|
+        e.background_color = bg
+        e.stroke = 'transparent'
+        e.fill = fg
+        e.border_width = 1
+        e.tile = '4x2'
+        e.geometry = "#{HISTOGRAM_COLS}x#{HISTOGRAM_ROWS}+10+10"
       end
 
       histogram

@@ -1,7 +1,7 @@
 RSpec.describe Magick::Image, '#stegano' do
   it 'works' do
-    image = described_class.new(100, 100) { self.background_color = 'black' }
-    watermark = described_class.new(10, 10) { self.background_color = 'white' }
+    image = described_class.new(100, 100) { |e| e.background_color = 'black' }
+    watermark = described_class.new(10, 10) { |e| e.background_color = 'white' }
 
     result = image.stegano(watermark, 0)
     expect(result).to be_instance_of(described_class)
