@@ -35,9 +35,9 @@ module Magick
 
     # The alpha frequencies are shown as white dots.
     def alpha_hist(freqs, scale, fg, bg)
-      histogram = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do |e|
-        e.background_color = bg
-        e.border_color = fg
+      histogram = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do |info|
+        info.background_color = bg
+        info.border_color = fg
       end
 
       gc = Draw.new
@@ -55,9 +55,9 @@ module Magick
     end
 
     def channel_histograms(red, green, blue, int, scale, fg, bg)
-      rgb_histogram = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do |e|
-        e.background_color = bg
-        e.border_color = fg
+      rgb_histogram = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do |info|
+        info.background_color = bg
+        info.border_color = fg
       end
       rgb_histogram['Label'] = 'RGB'
       red_histogram = rgb_histogram.copy
@@ -128,9 +128,9 @@ module Magick
         pixels = hist.keys.sort_by { |pixel| hist[pixel] }
         scale = HISTOGRAM_ROWS / (hist.values.max * AIR_FACTOR)
 
-        histogram = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do |e|
-          e.background_color = bg
-          e.border_color = fg
+        histogram = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do |info|
+          info.background_color = bg
+          info.border_color = fg
         end
 
         x = 0
@@ -160,9 +160,9 @@ module Magick
         Colors: #{number_colors}
       END_TEXT
 
-      info = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do |e|
-        e.background_color = bg
-        e.border_color = fg
+      info = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do |info|
+        info.background_color = bg
+        info.border_color = fg
       end
 
       gc = Draw.new
