@@ -28,7 +28,7 @@ ballerina = Image.read('../doc/ex/images/Ballerina3.jpg')[0]
 # The size of the oval is arbitrary - in this case it's 90% of the
 # size of the image.
 
-oval = Image.new(ballerina.columns, ballerina.rows) { |e| e.background_color = 'black' }
+oval = Image.new(ballerina.columns, ballerina.rows) { |info| info.background_color = 'black' }
 gc = Draw.new
 gc.stroke('white')
 gc.fill('white')

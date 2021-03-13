@@ -23,7 +23,7 @@ fill = GradientFill.new(100, 100, 100, 100, 'yellow', 'red')
 bg = Image.new(200, 200, fill)
 
 # The "none" color is transparent.
-fg = Image.new(bg.columns, bg.rows) { |e| e.background_color = 'none' }
+fg = Image.new(bg.columns, bg.rows) { |info| info.background_color = 'none' }
 
 # Here's where we'll collect the individual frames.
 animation = ImageList.new

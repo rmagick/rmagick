@@ -13,11 +13,11 @@ shorts = Image.read('images/Shorts.jpg').first
 regwidth = shorts.columns / 2
 regheight = shorts.rows / 2
 
-mask = Image.new(regwidth, regheight) { |e| e.background_color = 'white' }
+mask = Image.new(regwidth, regheight) { |info| info.background_color = 'white' }
 mask.alpha(Magick::ActivateAlphaChannel)
 mask.quantum_operator(SetQuantumOperator, 0.50 * QuantumRange, AlphaChannel)
 
-black = Image.new(shorts.columns, shorts.rows) { |e| e.background_color = 'black' }
+black = Image.new(shorts.columns, shorts.rows) { |info| info.background_color = 'black' }
 pairs = ImageList.new
 
 [

@@ -3,7 +3,7 @@ require 'rmagick'
 img = Magick::Image.read('images/Flower_Hat.jpg').first
 
 # Make a watermark from the word "RMagick"
-mark = Magick::Image.new(140, 40) { |e| e.background_color = 'none' }
+mark = Magick::Image.new(140, 40) { |info| info.background_color = 'none' }
 gc = Magick::Draw.new
 
 gc.annotate(mark, 0, 0, 0, -5, 'RMagick') do |e|

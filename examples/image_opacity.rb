@@ -11,7 +11,7 @@ puts <<~END_INFO
 END_INFO
 
 balloons = Image.read('../doc/ex/images/Hot_Air_Balloons_H.jpg').first
-legend = Image.new(160, 50) { |e| e.background_color = '#ffffffc0' }
+legend = Image.new(160, 50) { |info| info.background_color = '#ffffffc0' }
 
 gc = Draw.new
 gc.annotate(legend, 0, 0, 0, 0, 'Balloon Day!\\nFri May 2 2003') do |e|

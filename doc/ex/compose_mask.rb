@@ -2,7 +2,7 @@ require 'rmagick'
 
 background = Magick::Image.read('images/Flower_Hat.jpg').first
 source = Magick::Image.read('pattern:checkerboard') { |e| e.size = "#{background.columns}x#{background.rows}" }.first
-mask = Magick::Image.new(background.columns, background.rows) { |e| e.background_color = 'black' }
+mask = Magick::Image.new(background.columns, background.rows) { |info| info.background_color = 'black' }
 
 # Make a mask
 gc = Magick::Draw.new

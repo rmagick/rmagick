@@ -10,7 +10,7 @@ RSpec.describe Magick::Image::Info, '#monitor' do
       GC.start
       true
     end
-    image = Magick::Image.new(2000, 2000) { |e| e.monitor = monitor }
+    image = Magick::Image.new(2000, 2000) { |info| info.monitor = monitor }
     image.resize!(20, 20)
     image.monitor = nil
 
