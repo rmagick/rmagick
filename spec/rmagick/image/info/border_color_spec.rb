@@ -6,7 +6,7 @@ RSpec.describe Magick::Image::Info, '#border_color' do
     red = Magick::Pixel.new(Magick::QuantumRange)
     expect { info.border_color = red }.not_to raise_error
     expect(info.border_color).to eq('red')
-    image = Magick::Image.new(20, 20) { |info| info.border_color = 'red' }
+    image = Magick::Image.new(20, 20) { |inner_info| inner_info.border_color = 'red' }
     expect(image.border_color).to eq('red')
   end
 end

@@ -6,7 +6,7 @@ RSpec.describe Magick::Image::Info, '#matte_color' do
     red = Magick::Pixel.new(Magick::QuantumRange)
     expect { info.matte_color = red }.not_to raise_error
     expect(info.matte_color).to eq('red')
-    image = Magick::Image.new(20, 20) { |info| info.matte_color = 'red' }
+    image = Magick::Image.new(20, 20) { |inner_info| inner_info.matte_color = 'red' }
     expect(image.matte_color).to eq('red')
     expect { info.matte_color = nil }.to raise_error(TypeError)
   end

@@ -160,9 +160,9 @@ module Magick
         Colors: #{number_colors}
       END_TEXT
 
-      info = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do |info|
-        info.background_color = bg
-        info.border_color = fg
+      info = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do |inner_info|
+        inner_info.background_color = bg
+        inner_info.border_color = fg
       end
 
       gc = Draw.new

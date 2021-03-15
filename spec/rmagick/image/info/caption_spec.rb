@@ -6,6 +6,6 @@ RSpec.describe Magick::Image::Info, '#caption' do
     expect(info.caption).to eq('string')
     expect { info.caption = nil }.not_to raise_error
     expect(info.caption).to be(nil)
-    expect { Magick::Image.new(20, 20) { |info| info.caption = 'string' } }.not_to raise_error
+    expect { Magick::Image.new(20, 20) { |inner_info| inner_info.caption = 'string' } }.not_to raise_error
   end
 end
