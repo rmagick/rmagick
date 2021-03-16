@@ -1994,8 +1994,8 @@ Image_bounding_box(VALUE self)
  *
  * @return [Magick::Image] a new image
  * @example
- *   img = Image.capture {
- *     e.filename = "root"
+ *   img = Image.capture { |info|
+ *     info.filename = "root"
  *   }
  */
 VALUE
@@ -5573,9 +5573,9 @@ Image_dissolve(int argc, VALUE *argv, VALUE self)
  *
  * @return [Magick::Image] a new image
  * @example
- *   img.distort(Magick::ScaleRotateTranslateDistortion, [0]) do
- *     self.define "distort:viewport", "44x44+15+0"
- *     self.define "distort:scale", 2
+ *   img.distort(Magick::ScaleRotateTranslateDistortion, [0]) do |opts|
+ *     opts.define "distort:viewport", "44x44+15+0"
+ *     opts.define "distort:scale", 2
  *   end
  */
 VALUE
