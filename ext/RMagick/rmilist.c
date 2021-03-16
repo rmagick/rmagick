@@ -428,7 +428,7 @@ ImageList_flatten_images(VALUE self)
  * @overload montage
  *   Creates {Magick::ImageList::Montage} object, yields to block
  *   if present in {Magick::ImageList::Montage} object's scope.
- *   @yield []
+ *   @yield [Magick::ImageList::Montage]
  * 
  * @return [Magick::ImageList] a new image list
  */
@@ -1009,7 +1009,7 @@ ImageList_remap(int argc, VALUE *argv, VALUE self)
  *
  * @overload to_blob
  *   Runs an info parm block if present - the user can specify the image format and depth
- *   @yield []
+ *   @yield [Magick::Image::Info]
  *
  * @return [String] the blob
  */

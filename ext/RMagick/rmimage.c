@@ -1990,7 +1990,7 @@ Image_bounding_box(VALUE self)
  *     importantly, you can capture menus or other popups that are independent windows but appear
  *     over the specified window.
  *   @param borders [Boolean] If true, include the border in the image.
- *   @yield []
+ *   @yield [Magick::Image::Info]
  *
  * @return [Magick::Image] a new image
  * @example
@@ -3114,7 +3114,7 @@ Image_columns(VALUE self)
  *     imagelist, uses the current image.
  *   @param metric [Magick::MetricType] The desired distortion metric.
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
- *   @yield []
+ *   @yield [Magick::OptionalMethodArguments]
  *
  * @overload compare_channel(image, metric, *channels)
  *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
@@ -3135,7 +3135,7 @@ Image_columns(VALUE self)
  *   @param metric [Magick::MetricType] The desired distortion metric.
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
- *   @yield []
+ *   @yield [Magick::OptionalMethodArguments]
  *
  * @return [Array] The first element is a difference image, the second is a the value of the
  *   computed distortion represented as a Float.
@@ -5569,7 +5569,7 @@ Image_dissolve(int argc, VALUE *argv, VALUE self)
  *     image is adjusted to ensure the whole source image will just fit within the final destination
  *     image, which will be sized and offset accordingly.  Also in many cases the virtual offset of
  *     the source image will be taken into account in the mapping.
- *   @yield []
+ *   @yield [Magick::OptionalMethodArguments]
  *
  * @return [Magick::Image] a new image
  * @example
@@ -6881,7 +6881,7 @@ Image_frame(int argc, VALUE *argv, VALUE self)
  * @overload from_blob(blob)
  *   This yields {Magick::Image::Info} to block with its object's scope.
  *   @param blob [String] the blob data
- *   @yield []
+ *   @yield [Magick::Image::Info]
  *
  * @return [Array<Magick::Image>] an array of new images
  * @see Image#to_blob
@@ -10352,7 +10352,7 @@ Image_pixel_interpolation_method_eq(VALUE self, VALUE method)
  *   To specify a different border color (that is, the color of the image border) use info.border_color.
  *   Both of these methods accept either a color name or a Pixel argument.
  *   @param angle [Float] The resulting image is rotated by this amount, measured in degrees.
- *   @yield []
+ *   @yield [Magick::Image::Info]
  *
  * @return [Magick::Image] a new image
  */
@@ -12324,7 +12324,7 @@ Image_segment(int argc, VALUE *argv, VALUE self)
  *   @return [Hash] the properties
  *
  * @overload properties
- *   @yield []
+ *   @yield [Magick::Image::Info]
  *   @return [Magick::Image] self
  */
 VALUE
