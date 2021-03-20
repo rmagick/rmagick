@@ -24,7 +24,7 @@ begin
 
   0.step(330, 30) do |angle|
     puts "angle #{angle}"
-    pic.new_image(600, 600) { |e| e.background_color = 'white' }
+    pic.new_image(600, 600) { |info| info.background_color = 'white' }
 
     lines.draw pic
 
