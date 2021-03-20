@@ -3,8 +3,8 @@ RSpec.describe Magick::Image, '#new' do
     self_obj = nil
     yield_obj = nil
 
-    described_class.new(20, 20) do |e|
-      yield_obj = e
+    described_class.new(20, 20) do |options|
+      yield_obj = options
       self_obj = self
     end
 

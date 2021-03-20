@@ -31,10 +31,10 @@ canvas = Magick::Image.new(NUM_COLORS, HIST_HEIGHT, hatch)
 gc.draw(canvas)
 
 text = Magick::Draw.new
-text.annotate(canvas, 0, 0, 0, 20, "Color Frequency\nHistogram") do |e|
-  e.pointsize = 10
-  e.gravity = Magick::NorthGravity
-  e.stroke = 'transparent'
+text.annotate(canvas, 0, 0, 0, 20, "Color Frequency\nHistogram") do |options|
+  options.pointsize = 10
+  options.gravity = Magick::NorthGravity
+  options.stroke = 'transparent'
 end
 
 canvas.border!(1, 1, 'white')

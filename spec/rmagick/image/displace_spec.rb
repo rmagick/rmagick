@@ -1,7 +1,7 @@
 RSpec.describe Magick::Image, '#displace' do
   it 'works' do
     image = described_class.new(20, 20)
-    image2 = described_class.new(20, 20) { |e| e.background_color = 'black' }
+    image2 = described_class.new(20, 20) { |options| options.background_color = 'black' }
 
     expect { image.displace(image2, 25) }.not_to raise_error
     result = image.displace(image2, 25)

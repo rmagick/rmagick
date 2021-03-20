@@ -34,10 +34,10 @@ pairs = ImageList.new
 end
 
 # Montage into a single image
-montage = pairs.montage do |e|
-  e.geometry = "#{pairs.columns}x#{pairs.rows}+0+0"
-  e.tile = '6x3'
-  e.border_width = 1
+montage = pairs.montage do |options|
+  options.geometry = "#{pairs.columns}x#{pairs.rows}+0+0"
+  options.tile = '6x3'
+  options.border_width = 1
 end
 montage.write('crop_with_gravity.png')
 # montage.display

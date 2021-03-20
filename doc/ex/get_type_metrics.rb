@@ -32,12 +32,12 @@ canvas = Magick::Image.new(410, 320, Magick::HatchFill.new('white', 'lightcyan2'
 # Draw a big lowercase 'g' on the canvas. Leave room on all sides for
 # the labels. Use 'undercolor' to set off the glyph.
 glyph = Magick::Draw.new
-glyph.annotate(canvas, 0, 0, Origin_x, Origin_y, Glyph) do |e|
-  e.pointsize = 124
-  e.stroke = 'none'
-  e.fill = 'black'
-  e.font_family = Face
-  e.undercolor = '#ffff00c0'
+glyph.annotate(canvas, 0, 0, Origin_x, Origin_y, Glyph) do |options|
+  options.pointsize = 124
+  options.stroke = 'none'
+  options.fill = 'black'
+  options.font_family = Face
+  options.undercolor = '#ffff00c0'
 end
 
 # Call get_type_metrics. This is what this example's all about.

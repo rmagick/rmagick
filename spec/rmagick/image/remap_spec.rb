@@ -1,7 +1,7 @@
 RSpec.describe Magick::Image, '#remap' do
   it 'works' do
     image = described_class.new(20, 20)
-    remap_image = described_class.new(20, 20) { |e| e.background_color = 'green' }
+    remap_image = described_class.new(20, 20) { |options| options.background_color = 'green' }
 
     expect { image.remap(remap_image) }.not_to raise_error
     expect { image.remap(remap_image, Magick::NoDitherMethod) }.not_to raise_error

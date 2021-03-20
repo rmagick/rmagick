@@ -13,11 +13,11 @@ shorts = Image.read('../doc/ex/images/Shorts.jpg').first
 regwidth = shorts.columns / 2
 regheight = shorts.rows / 2
 
-mask = Image.new(regwidth, regheight) { |info| info.background_color = 'white' }
+mask = Image.new(regwidth, regheight) { |options| options.background_color = 'white' }
 mask.alpha(Magick::ActivateAlphaChannel)
 mask.quantum_operator(SetQuantumOperator, 0.50 * QuantumRange, AlphaChannel)
 
-black = Image.new(shorts.columns, shorts.rows) { |info| info.background_color = 'black' }
+black = Image.new(shorts.columns, shorts.rows) { |options| options.background_color = 'black' }
 pairs = ImageList.new
 
 [
@@ -34,10 +34,10 @@ pairs = ImageList.new
 end
 
 # Montage into a single image
-montage = pairs.montage do |e|
-  e.geometry = "#{pairs.columns}x#{pairs.rows}+0+0"
-  e.tile = '6x3'
-  e.border_width = 1
+montage = pairs.montage do |options|
+  options.geometry = "#{pairs.columns}x#{pairs.rows}+0+0"
+  options.tile = '6x3'
+  options.border_width = 1
 end
 montage.write('crop_with_gravity.png')
 # montage.display

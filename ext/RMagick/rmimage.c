@@ -1994,8 +1994,8 @@ Image_bounding_box(VALUE self)
  *
  * @return [Magick::Image] a new image
  * @example
- *   img = Image.capture { |info|
- *     info.filename = "root"
+ *   img = Image.capture { |options|
+ *     options.filename = "root"
  *   }
  */
 VALUE
@@ -3106,9 +3106,9 @@ Image_columns(VALUE self)
  * @overload compare_channel(image, metric, channel = Magick::AllChannels)
  *   When a block is given, compare_channel yields with a block argument you can optionally use to
  *   set attributes.
- *   - info.highlight_color = color
+ *   - options.highlight_color = color
  *     - Emphasize pixel differences with this color. The default is partially transparent red.
- *   - info.lowlight_color = color
+ *   - options.lowlight_color = color
  *     - Demphasize pixel differences with this color. The default is partially transparent white.
  *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
  *     imagelist, uses the current image.
@@ -3126,9 +3126,9 @@ Image_columns(VALUE self)
  * @overload compare_channel(image, metric, *channels)
  *   When a block is given, compare_channel yields with a block argument you can optionally use to
  *   set attributes.
- *   - info.highlight_color = color
+ *   - options.highlight_color = color
  *     - Emphasize pixel differences with this color. The default is partially transparent red.
- *   - info.lowlight_color = color
+ *   - options.lowlight_color = color
  *     - Demphasize pixel differences with this color. The default is partially transparent white.
  *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
  *     imagelist, uses the current image.
@@ -5552,15 +5552,15 @@ Image_dissolve(int argc, VALUE *argv, VALUE self)
  *
  * @overload distort(type, points, bestfit = false)
  *   When a block is given, distort yields with a block argument you can optionally use to set attributes.
- *   - opts.define("distort:viewport", "WxH+X+Y")
+ *   - options.define("distort:viewport", "WxH+X+Y")
  *     - Specify the size and offset of the generated viewport image of the distorted image space. W and
  *       H are the width and height, and X and Y are the offset.
- *   - opts.define("distort:scale", N)
+ *   - options.define("distort:scale", N)
  *     - N is an integer factor. Scale the output image (viewport or otherwise) by that factor without
  *       changing the viewed contents of the distorted image. This can be used either for
  *       'super-sampling' the image for a higher quality result, or for panning and zooming around
  *       the image (with appropriate viewport changes, or post-distort cropping and resizing).
- *   - opts.verbose(true)
+ *   - options.verbose(true)
  *     - Attempt to output the internal coefficients, and the -fx equivalent to the distortion, for
          expert study, and debugging purposes. This many not be available for all distorts.
  *   @param type [Magick::DistortMethod] a DistortMethod value
@@ -5573,9 +5573,9 @@ Image_dissolve(int argc, VALUE *argv, VALUE self)
  *
  * @return [Magick::Image] a new image
  * @example
- *   img.distort(Magick::ScaleRotateTranslateDistortion, [0]) do |opts|
- *     opts.define "distort:viewport", "44x44+15+0"
- *     opts.define "distort:scale", 2
+ *   img.distort(Magick::ScaleRotateTranslateDistortion, [0]) do |options|
+ *     options.define "distort:viewport", "44x44+15+0"
+ *     options.define "distort:scale", 2
  *   end
  */
 VALUE
@@ -10348,8 +10348,8 @@ Image_pixel_interpolation_method_eq(VALUE self, VALUE method)
  *   If present a block, optional arguments may be specified in a block associated with the method.
  *   These arguments control the shadow color and how the label is rendered.
  *   By default the shadow color is gray75. To specify a different shadow color,
- *   use info.shadow_color.
- *   To specify a different border color (that is, the color of the image border) use info.border_color.
+ *   use options.shadow_color.
+ *   To specify a different border color (that is, the color of the image border) use options.border_color.
  *   Both of these methods accept either a color name or a Pixel argument.
  *   @param angle [Float] The resulting image is rotated by this amount, measured in degrees.
  *   @yield [Magick::Image::Info]

@@ -1,7 +1,7 @@
 require 'rmagick'
 
 # Create a transparent image to tile over the background image.
-wm = Magick::Image.read('xc:none') { |e| e.size = '100x50' }.first
+wm = Magick::Image.read('xc:none') { |options| options.size = '100x50' }.first
 
 # Draw "RMagick" in semi-transparent text on the transparent image.
 gc = Magick::Draw.new

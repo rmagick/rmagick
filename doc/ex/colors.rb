@@ -15,9 +15,9 @@ puts("\tCreating color swatches...")
 # Label with the name, RGB values, and compliance type.
 colors do |c|
   if c.name !~ /grey/ # omit SVG 'grays'
-    colors.new_image(200, 25) do |e|
-      e.background_color = c.color
-      e.border_color = 'gray50'
+    colors.new_image(200, 25) do |options|
+      options.background_color = c.color
+      options.border_color = 'gray50'
     end
     rgb  = sprintf('#%02x%02x%02x', c.color.red & 0xff, c.color.green & 0xff, c.color.blue & 0xff)
     rgb += sprintf('%02x', c.color.alpha & 0xff) if c.color.alpha != Magick::QuantumRange
@@ -30,25 +30,25 @@ puts("\tCreating montage...")
 
 # Montage. Each image will have 40 tiles.
 # There will be 16 images.
-montage = colors.montage do |e|
-  e.geometry = '200x25+10+5'
-  e.gravity = CenterGravity
-  e.tile = '4x10'
-  e.background_color = 'black'
-  e.border_width = 1
-  e.fill = 'white'
-  e.stroke = 'transparent'
+montage = colors.montage do |options|
+  options.geometry = '200x25+10+5'
+  options.gravity = CenterGravity
+  options.tile = '4x10'
+  options.background_color = 'black'
+  options.border_width = 1
+  options.fill = 'white'
+  options.stroke = 'transparent'
 end
 
 # Add the title at the top, over the 'null:'
 # tiles we added at the very beginning.
 title = Draw.new
-title.annotate(montage, 0, 0, 0, 20, 'Named Colors') do |e|
-  e.fill = 'white'
-  e.stroke = 'transparent'
-  e.pointsize = 32
-  e.font_weight = BoldWeight
-  e.gravity = NorthGravity
+title.annotate(montage, 0, 0, 0, 20, 'Named Colors') do |options|
+  options.fill = 'white'
+  options.stroke = 'transparent'
+  options.pointsize = 32
+  options.font_weight = BoldWeight
+  options.gravity = NorthGravity
 end
 
 puts("\tWriting ./colors.miff")

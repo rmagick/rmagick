@@ -5,18 +5,18 @@ results = Magick::ImageList.new
 img = Magick::Image.new(270, 60) { |info| info.background_color = 'black' }
 
 gc = Magick::Draw.new
-gc.annotate(img, 0, 0, 0, -15, 'RUBY!') do |e|
-  e.fill = '#a00'
-  e.stroke = '#f00'
-  e.stroke_width = 2
-  e.font_weight = Magick::BoldWeight
-  e.gravity = Magick::SouthGravity
+gc.annotate(img, 0, 0, 0, -15, 'RUBY!') do |options|
+  options.fill = '#a00'
+  options.stroke = '#f00'
+  options.stroke_width = 2
+  options.font_weight = Magick::BoldWeight
+  options.gravity = Magick::SouthGravity
   if RUBY_PLATFORM =~ /mswin32/
-    e.font_family = 'Georgia'
-    e.pointsize = 76
+    options.font_family = 'Georgia'
+    options.pointsize = 76
   else
-    e.font_family = 'times'
-    e.pointsize = 80
+    options.font_family = 'times'
+    options.pointsize = 80
   end
 end
 
@@ -48,9 +48,9 @@ results << ilist.append(true)
 
 # Montage into a single demo image. Use a white background so
 # there won't be any problems with transparency in the browser.
-result = results.montage do |e|
-  e.geometry = '270x120'
-  e.tile = '1x4'
-  e.background_color = 'black'
+result = results.montage do |options|
+  options.geometry = '270x120'
+  options.tile = '1x4'
+  options.background_color = 'black'
 end
 result.write('wet_floor.gif')

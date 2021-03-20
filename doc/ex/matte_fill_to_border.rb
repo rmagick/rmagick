@@ -3,7 +3,7 @@ require 'rmagick'
 img = Magick::Image.new(200, 200)
 img.compression = Magick::LZWCompression
 
-bg = Magick::Image.read('plasma:fractal') { |e| e.size = '200x200' }
+bg = Magick::Image.read('plasma:fractal') { |options| options.size = '200x200' }
 bg[0].alpha(Magick::DeactivateAlphaChannel)
 
 gc = Magick::Draw.new

@@ -6,16 +6,16 @@ img = Magick::Image.read('images/Flower_Hat.jpg').first
 mark = Magick::Image.new(140, 40) { |info| info.background_color = 'none' }
 gc = Magick::Draw.new
 
-gc.annotate(mark, 0, 0, 0, -5, 'RMagick') do |e|
-  e.gravity = Magick::CenterGravity
-  e.pointsize = 32
-  e.font_family = if RUBY_PLATFORM =~ /mswin32/
-                    'Georgia'
-                  else
-                    'Times'
-                  end
-  e.fill = 'white'
-  e.stroke = 'none'
+gc.annotate(mark, 0, 0, 0, -5, 'RMagick') do |options|
+  options.gravity = Magick::CenterGravity
+  options.pointsize = 32
+  options.font_family = if RUBY_PLATFORM =~ /mswin32/
+                          'Georgia'
+                        else
+                          'Times'
+                        end
+  options.fill = 'white'
+  options.stroke = 'none'
 end
 
 mark = mark.wave(2.5, 70).rotate(-90)

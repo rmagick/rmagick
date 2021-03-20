@@ -1,10 +1,10 @@
 RSpec.describe Magick::ImageList, '#combine' do
   it 'works' do
-    red   = Magick::Image.new(20, 20) { |info| info.background_color = 'red' }
-    green = Magick::Image.new(20, 20) { |info| info.background_color = 'green' }
-    blue  = Magick::Image.new(20, 20) { |info| info.background_color = 'blue' }
-    black = Magick::Image.new(20, 20) { |info| info.background_color = 'black' }
-    alpha = Magick::Image.new(20, 20) { |info| info.background_color = 'transparent' }
+    red   = Magick::Image.new(20, 20) { |options| options.background_color = 'red' }
+    green = Magick::Image.new(20, 20) { |options| options.background_color = 'green' }
+    blue  = Magick::Image.new(20, 20) { |options| options.background_color = 'blue' }
+    black = Magick::Image.new(20, 20) { |options| options.background_color = 'black' }
+    alpha = Magick::Image.new(20, 20) { |options| options.background_color = 'transparent' }
 
     image_list = described_class.new
     expect { image_list.combine }.to raise_error(ArgumentError)

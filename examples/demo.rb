@@ -36,7 +36,7 @@ begin
   # optional "size" attribute in the parm block associated with
   # the read method. There are two more examples of this, below.
   example = ImageList.new
-  5.times { example.read('NULL:black') { |e| e.size = '70x70' } }
+  5.times { example.read('NULL:black') { |options| options.size = '70x70' } }
 
   puts '   add noise...'
   example << model.add_noise(LaplacianNoise)
@@ -46,12 +46,12 @@ begin
   example << model.cur_image.copy
   example.cur_image[:Label] = 'Annotate'
   draw = Draw.new
-  draw.annotate(example, 0, 0, 0, 20, 'RMagick') do |e|
-    e.pointsize = 18
-    e.font = Font
-    e.stroke = 'gold'
-    e.fill = 'gold'
-    e.gravity = NorthGravity
+  draw.annotate(example, 0, 0, 0, 20, 'RMagick') do |options|
+    options.pointsize = 18
+    options.font = Font
+    options.stroke = 'gold'
+    options.fill = 'gold'
+    options.gravity = NorthGravity
   end
 
   puts '   blur...'
@@ -147,8 +147,8 @@ begin
   # with the read method. Here we create a gradient image that is
   # the same size as the model image.
   puts '   gradient...'
-  example.read('gradient:#20a0ff-#ffff00') do |e|
-    e.size = Geometry.new(model.columns, model.rows)
+  example.read('gradient:#20a0ff-#ffff00') do |options|
+    options.size = Geometry.new(model.columns, model.rows)
   end
   example.cur_image[:Label] = 'Gradient'
 
@@ -186,8 +186,8 @@ begin
 
   # The plasma format is very similar to the gradient format, above.
   puts '   plasma...'
-  example.read('plasma:fractal') do |e|
-    e.size = Geometry.new(model.columns, model.rows)
+  example.read('plasma:fractal') do |options|
+    options.size = Geometry.new(model.columns, model.rows)
   end
   example.cur_image[:Label] = 'Plasma'
 
@@ -270,25 +270,25 @@ begin
 
   puts 'Montage images...'
 
-  montage = example.montage do |e|
-    e.geometry = '130x194+10+5>'
-    e.gravity = CenterGravity
-    e.border_width = 1
+  montage = example.montage do |options|
+    options.geometry = '130x194+10+5>'
+    options.gravity = CenterGravity
+    options.border_width = 1
     rows = (example.size + 4) / 5
-    e.tile = Geometry.new(5, rows)
-    e.compose = OverCompositeOp
+    options.tile = Geometry.new(5, rows)
+    options.compose = OverCompositeOp
 
     # Use the ImageMagick built-in "granite" format
     # as the background texture.
 
-    #       e.texture = Image.read("granite:").first
-    e.background_color = 'white'
-    e.font = Font
-    e.pointsize = 18
-    e.fill = '#600'
-    e.filename = 'RMagick Demo'
-    #       e.shadow = true
-    #       e.frame = "20x20+4+4"
+    #       options.texture = Image.read("granite:").first
+    options.background_color = 'white'
+    options.font = Font
+    options.pointsize = 18
+    options.fill = '#600'
+    options.filename = 'RMagick Demo'
+    #       options.shadow = true
+    #       options.frame = "20x20+4+4"
   end
 
   # Add the ImageMagick logo to the top of the montage. The "logo:"

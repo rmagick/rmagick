@@ -10,13 +10,13 @@ stroke_pattern = temp.append(false)
 img = Magick::Image.new(280, 250) { |info| info.background_color = 'none' }
 
 gc = Magick::Draw.new
-gc.annotate(img, 0, 0, 0, 0, "PATT\nERNS") do |e|
-  e.gravity = Magick::CenterGravity
-  e.font_weight = Magick::BoldWeight
-  e.pointsize = 100
-  e.fill_pattern = Magick::Image.read('images/Flower_Hat.jpg').first
-  e.stroke_width = 5
-  e.stroke_pattern = stroke_pattern
+gc.annotate(img, 0, 0, 0, 0, "PATT\nERNS") do |options|
+  options.gravity = Magick::CenterGravity
+  options.font_weight = Magick::BoldWeight
+  options.pointsize = 100
+  options.fill_pattern = Magick::Image.read('images/Flower_Hat.jpg').first
+  options.stroke_width = 5
+  options.stroke_pattern = stroke_pattern
 end
 
 img.write('fill_pattern.gif')
