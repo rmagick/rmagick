@@ -1,7 +1,7 @@
 RSpec.describe Magick::Image, '#dissolve' do
   it 'raises an error given invalid arguments' do
-    image1 = described_class.new(100, 100) { self.background_color = 'transparent' }
-    image2 = described_class.new(100, 100) { self.background_color = 'green' }
+    image1 = described_class.new(100, 100) { |options| options.background_color = 'transparent' }
+    image2 = described_class.new(100, 100) { |options| options.background_color = 'green' }
 
     expect { image1.dissolve }.to raise_error(ArgumentError)
     expect { image1.dissolve(image2, 'x') }.to raise_error(ArgumentError)
@@ -12,8 +12,8 @@ RSpec.describe Magick::Image, '#dissolve' do
 
   context 'when given 2 arguments' do
     it 'works when alpha is float 0.0 to 1.0' do
-      image1 = described_class.new(100, 100) { self.background_color = 'transparent' }
-      image2 = described_class.new(100, 100) { self.background_color = 'green' }
+      image1 = described_class.new(100, 100) { |options| options.background_color = 'transparent' }
+      image2 = described_class.new(100, 100) { |options| options.background_color = 'green' }
 
       dissolved = image1.dissolve(image2, 0.50)
       expect(dissolved).to be_instance_of(described_class)
@@ -23,8 +23,8 @@ RSpec.describe Magick::Image, '#dissolve' do
     end
 
     it 'works when alpha is string percentage' do
-      image1 = described_class.new(100, 100) { self.background_color = 'transparent' }
-      image2 = described_class.new(100, 100) { self.background_color = 'green' }
+      image1 = described_class.new(100, 100) { |options| options.background_color = 'transparent' }
+      image2 = described_class.new(100, 100) { |options| options.background_color = 'green' }
 
       dissolved = image1.dissolve(image2, '50%')
       expect(dissolved).to be_instance_of(described_class)
@@ -45,14 +45,14 @@ RSpec.describe Magick::Image, '#dissolve' do
 
   context 'when given gravity' do
     # generate an image to use with gravity
-    wk = described_class.new(40, 40) { self.background_color = 'transparent' }
+    wk = described_class.new(40, 40) { |options| options.background_color = 'transparent' }
     d = Magick::Draw.new
     d.stroke('none').fill('blue')
     d.circle(wk.columns / 2, wk.rows / 2, 4, wk.rows / 2)
     d.draw(wk)
 
     it 'works on colored background' do
-      image = described_class.new(100, 100) { self.background_color = 'green' }
+      image = described_class.new(100, 100) { |options| options.background_color = 'green' }
 
       # generate an image to use with gravity
       dissolved = image.dissolve(wk, 0.50, 1.0, Magick::CenterGravity)
@@ -74,8 +74,8 @@ RSpec.describe Magick::Image, '#dissolve' do
   # still need to test with destination percentage, offsets
 
   it 'raises an error when the image has been destroyed' do
-    image1 = described_class.new(100, 100) { self.background_color = 'transparent' }
-    image2 = described_class.new(100, 100) { self.background_color = 'green' }
+    image1 = described_class.new(100, 100) { |options| options.background_color = 'transparent' }
+    image2 = described_class.new(100, 100) { |options| options.background_color = 'green' }
 
     image1.destroy!
     expect { image1.dissolve(image2, 0.50) }.to raise_error(Magick::DestroyedImageError)

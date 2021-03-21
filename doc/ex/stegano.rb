@@ -35,9 +35,9 @@ begin
     true
   end
 
-  stegano = Magick::Image.read('stegano:img.miff') do
-    self.size = Magick::Geometry.new(wmcols, wmrows, 91)
-    self.monitor = monitor
+  stegano = Magick::Image.read('stegano:img.miff') do |options|
+    options.size = Magick::Geometry.new(wmcols, wmrows, 91)
+    options.monitor = monitor
   end
 
   stegano[0].monitor = nil

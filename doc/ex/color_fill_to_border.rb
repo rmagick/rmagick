@@ -2,9 +2,9 @@ require 'rmagick'
 
 # Demonstrate the Image#color_fill_to_border method
 
-before = Magick::Image.new(200, 200) do
-  self.background_color = 'white'
-  self.border_color = 'black'
+before = Magick::Image.new(200, 200) do |options|
+  options.background_color = 'white'
+  options.border_color = 'black'
 end
 before.border!(1, 1, 'black')
 

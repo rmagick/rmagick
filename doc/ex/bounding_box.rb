@@ -1,6 +1,6 @@
 require 'rmagick'
 
-img = Magick::Image.new(200, 200) { self.background_color = '#ffffcc' }
+img = Magick::Image.new(200, 200) { |info| info.background_color = '#ffffcc' }
 
 # Draw a blue circle.
 gc = Magick::Draw.new

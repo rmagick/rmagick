@@ -28,7 +28,7 @@ image__b = img.transparent('white', alpha: TransparentAlpha)
 image__b['Label'] = 'B'
 
 list = ImageList.new
-null = Image.read('xc:white') { self.size = Geometry.new(COLS, ROWS) }
+null = Image.read('xc:white') { |options| options.size = Geometry.new(COLS, ROWS) }
 null = null.first.transparent('white', alpha: TransparentAlpha)
 null.border_color = 'transparent'
 granite = Image.read('granite:')
@@ -118,13 +118,13 @@ list.cur_image['Label'] = 'B modulate A'
 list << image__b.composite(image_a, CenterGravity, OverlayCompositeOp)
 list.cur_image['Label'] = 'A overlay B'
 
-montage = list.montage do
-  self.geometry = Geometry.new(COLS, ROWS, 3, 3)
+montage = list.montage do |options|
+  options.geometry = Geometry.new(COLS, ROWS, 3, 3)
   rows = (list.size + 3) / 4
-  self.tile = Geometry.new(4, rows)
-  self.texture = granite[0]
-  self.fill = 'white'
-  self.stroke = 'transparent'
+  options.tile = Geometry.new(4, rows)
+  options.texture = granite[0]
+  options.fill = 'white'
+  options.stroke = 'transparent'
 end
 
 montage.write('composite.gif')

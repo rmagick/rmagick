@@ -1,7 +1,7 @@
 RSpec.describe Magick::Image, '#composite_mathematics' do
   it 'works' do
     bg = described_class.new(50, 50)
-    fg = described_class.new(50, 50) { self.background_color = 'black' }
+    fg = described_class.new(50, 50) { |options| options.background_color = 'black' }
 
     result = bg.composite_mathematics(fg, 1, 0, 0, 0, Magick::CenterGravity)
     expect(result).to be_instance_of(described_class)

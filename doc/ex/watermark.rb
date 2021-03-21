@@ -3,19 +3,19 @@ require 'rmagick'
 img = Magick::Image.read('images/Flower_Hat.jpg').first
 
 # Make a watermark from the word "RMagick"
-mark = Magick::Image.new(140, 40) { self.background_color = 'none' }
+mark = Magick::Image.new(140, 40) { |info| info.background_color = 'none' }
 gc = Magick::Draw.new
 
-gc.annotate(mark, 0, 0, 0, -5, 'RMagick') do
-  gc.gravity = Magick::CenterGravity
-  gc.pointsize = 32
-  gc.font_family = if RUBY_PLATFORM =~ /mswin32/
-                     'Georgia'
-                   else
-                     'Times'
-                   end
-  gc.fill = 'white'
-  gc.stroke = 'none'
+gc.annotate(mark, 0, 0, 0, -5, 'RMagick') do |options|
+  options.gravity = Magick::CenterGravity
+  options.pointsize = 32
+  options.font_family = if RUBY_PLATFORM =~ /mswin32/
+                          'Georgia'
+                        else
+                          'Times'
+                        end
+  options.fill = 'white'
+  options.stroke = 'none'
 end
 
 mark = mark.wave(2.5, 70).rotate(-90)
