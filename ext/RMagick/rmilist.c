@@ -440,7 +440,7 @@ ImageList_montage(VALUE self)
     Image *new_images, *images;
     ExceptionInfo *exception;
 
-    // Create a new instance of the Magick::Montage class
+    // Create a new instance of the Magick::ImageList::Montage class
     montage_obj = rm_montage_new();
     if (rb_block_given_p())
     {
