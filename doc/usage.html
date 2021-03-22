@@ -1509,16 +1509,16 @@ exit
 14.   text.pointsize = 52
 15.   text.gravity = Magick::CenterGravity
 16.
-17.   text.annotate(canvas, 0,0,2,2, Text) {
-18.      self.fill = 'gray83'
+17.   text.annotate(canvas, 0,0,2,2, Text) { |options|
+18.      options.fill = 'gray83'
 19.   }
 20.
-21.   text.annotate(canvas, 0,0,-1.5,-1.5, Text) {
-22.      self.fill = 'gray40'
+21.   text.annotate(canvas, 0,0,-1.5,-1.5, Text) { |options|
+22.      options.fill = 'gray40'
 23.   }
 24.
-25.   text.annotate(canvas, 0,0,0,0, Text) {
-26.      self.fill = 'darkred'
+25.   text.annotate(canvas, 0,0,0,0, Text) { |options|
+26.      options.fill = 'darkred'
 27.   }
 28.
 29.   canvas.write('rubyname.gif')
@@ -1553,7 +1553,7 @@ exit
 
   <p>The first call to <code>annotate</code>, on lines 17-19, draws
   the text 2 pixels to the right and down from the center. The
-  <code>self.fill = 'gray83'</code> statement sets the text color
+  <code>options.fill = 'gray83'</code> statement sets the text color
   to light gray. The second call to <code>annotate</code>, on lines
   21-22, draws dark gray text 1.5 pixels to the left and up from
   the center. The last call, on lines 25-27, draws the text a third

@@ -370,13 +370,13 @@ gc = Draw.new
     "Click to see the example script">colors.rb</a>. Many other
     examples also use <code>annotate</code>.</p>
     <pre>
-title.annotate(montage, 0,0,0,40, 'Named Colors') {
-    self.font_family = 'Helvetica'
-    self.fill = 'white'
-    self.stroke = 'transparent'
-    self.pointsize = 32
-    self.font_weight = BoldWeight
-    self.gravity = NorthGravity
+title.annotate(montage, 0,0,0,40, 'Named Colors') { |options|
+    options.font_family = 'Helvetica'
+    options.fill = 'white'
+    options.stroke = 'transparent'
+    options.pointsize = 32
+    options.font_weight = BoldWeight
+    options.gravity = NorthGravity
 }
 </pre>
 
