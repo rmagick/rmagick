@@ -468,7 +468,7 @@ example &lt;&lt; model.add_noise Magick::LaplacisanNoise
     <h4>Example</h4>
     <pre>
 ilist.animate
-ilist.animate { self.server_name = "other:0.0" }
+ilist.animate { |options| options.server_name = "other:0.0" }
 </pre>
 
     <h4>See also</h4>
@@ -1000,7 +1000,7 @@ ilist.display
     <pre>
 # Produce a navy blue image from a black image
 imgl = Magick::ImageList.new
-imgl &lt;&lt; Magick::Image.new(64, 64) {self.background_color = 'black'}
+imgl &lt;&lt; Magick::Image.new(64, 64) { |options| options.background_color = 'black'}
 
 res = imgl.fx('1/2', Magick::BlueChannel)
 </pre>
@@ -1429,7 +1429,7 @@ img[2]['Label'] = "Mom's Birthday"
     <p>Create a square red image.</p>
     <pre>
 ilist = Magick::ImageList.new
-ilist.new_image(100, 100) { self.background_color = "red" }
+ilist.new_image(100, 100) { |options| options.background_color = "red" }
 </pre>
   </div>
 

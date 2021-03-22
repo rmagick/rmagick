@@ -4009,7 +4009,7 @@ img.to_color(pixel)
     "ex/viewex.gif" title="Click to see the example script" alt=
     "view example" /></a></p>
     <pre>
-img = Image.new(40, 40) {self.background_color = 'lightcyan2'}
+img = Image.new(40, 40) { |options| options.background_color = 'lightcyan2'}
 
 # The view is 400 pixels square, starting at
 # column 10, row 5 from the top of the image.
