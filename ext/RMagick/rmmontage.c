@@ -22,7 +22,7 @@
  * No Ruby usage (internal function)
  *
  * Notes:
- *   - If the Magick::Montage#texture method wrote a texture file, the file is
+ *   - If the Magick::ImageList::Montage#texture method wrote a texture file, the file is
  *     deleted here.
  *
  * @param obj the montage object
@@ -73,7 +73,7 @@ Montage_alloc(VALUE class)
 
     if (!montage_info)
     {
-        rb_raise(rb_eNoMemError, "not enough memory to initialize Magick::Montage object");
+        rb_raise(rb_eNoMemError, "not enough memory to initialize Magick::ImageList::Montage object");
     }
 
     montage = ALLOC(Montage);
@@ -439,11 +439,11 @@ Montage_title_eq(VALUE self, VALUE title)
 
 
 /**
- * Return a new Magick::Montage object.
+ * Return a new Magick::ImageList::Montage object.
  *
  * No Ruby usage (internal function)
  *
- * @return a new Magick::Montage object
+ * @return a new Magick::ImageList::Montage object
  */
 VALUE
 rm_montage_new(void)
