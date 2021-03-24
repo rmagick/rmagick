@@ -309,9 +309,9 @@
     a cross. Click the cursor on the window to be captured.</p>
 
     <p>Within the optional arguments block, specify
-    <code>self.filename = "root"</code> to capture the entire
+    <code>options.filename = "root"</code> to capture the entire
     desktop. To programatically specify the window to be captured,
-    use <code>self.filename = window_id</code>, where window_id is
+    use <code>options.filename = window_id</code>, where window_id is
     the id displayed by xwininfo(1).</p>
 
     <h4>Arguments</h4>
@@ -366,9 +366,9 @@
 
     <h4>Example</h4>
     <pre>
-img = Image.capture {
- self.filename = "root"
- }
+img = Image.capture { |options|
+  options.filename = "root"
+}
 </pre>
   </div>
 
@@ -564,9 +564,9 @@ image = Image.constitute(width, height, "RGB", pixels)
 
     <h4>Example</h4>
     <pre>
-img = Image.new(256, 64) {
- self.background_color = 'red'
- }
+img = Image.new(256, 64) { |options|
+  options.background_color = 'red'
+}
 </pre>
 
     <h4>See also</h4>
@@ -2972,12 +2972,12 @@ f.color_reset!(red)
         "struct.html#Pixel">pixel</a>.
 
         <dl>
-          <dt>self.highlight_color = color</dt>
+          <dt>options.highlight_color = color</dt>
 
           <dd>Emphasize pixel differences with this color. The
           default is partially transparent red.</dd>
 
-          <dt>self.lowlight_color = color</dt>
+          <dt>options.lowlight_color = color</dt>
 
           <dd>Demphasize pixel differences with this color. The
           default is partially transparent white.</dd>
@@ -4547,13 +4547,13 @@ pixels = f.dispatch(0, 0, f.columns, f.rows, "RGB")
         <em>self</em>.
 
         <dl>
-          <dt>self.define("distort:viewport", "WxH+X+Y")</dt>
+          <dt>options.define("distort:viewport", "WxH+X+Y")</dt>
 
           <dd>Specify the size and offset of the generated viewport
           image of the distorted image space. W and H are the width
           and height, and X and Y are the offset.</dd>
 
-          <dt>self.define("distort:scale", N)</dt>
+          <dt>options.define("distort:scale", N)</dt>
 
           <dd>N is an integer factor. <span class="imquote">Scale
           the output image (viewport or otherwise) by that factor
@@ -4564,7 +4564,7 @@ pixels = f.dispatch(0, 0, f.columns, f.rows, "RGB")
           changes, or post-distort cropping and
           resizing).</span></dd>
 
-          <dt>self.verbose(true)</dt>
+          <dt>options.verbose(true)</dt>
 
           <dd class="imquote">Attempt to output the internal
           coefficients, and the -fx equivalent to the distortion,
@@ -4580,10 +4580,10 @@ pixels = f.dispatch(0, 0, f.columns, f.rows, "RGB")
 
     <h4>Example</h4>
     <pre>
-result = img.distort(Magick::ScaleRotateTranslateDistortion, [0]) do
-                     self.define "distort:viewport", "44x44+15+0"
-                     self.define "distort:scale", 2
-                  end
+result = img.distort(Magick::ScaleRotateTranslateDistortion, [0]) do |options|
+  options.define "distort:viewport", "44x44+15+0"
+  options.define "distort:scale", 2
+end
 </pre>
 
     <h4>Note</h4>

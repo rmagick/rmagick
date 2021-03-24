@@ -407,9 +407,9 @@ old = image.pixel_color(20,40,"white")
     with the method. These arguments control the shadow color and
     how the label is rendered. By default the shadow color is
     gray75. To specify a different shadow color, use
-    <code>self.shadow_color</code>. To specify a different border
+    <code>options.shadow_color</code>. To specify a different border
     color (that is, the color of the image border) use
-    <code>self.border_color</code>. Both of these methods accept
+    <code>options.border_color</code>. Both of these methods accept
     either a <a href="imusage.html#color_names">color name</a> or a
     <a href="struct.html#Pixel">Pixel</a> argument.</p>
 
@@ -432,9 +432,9 @@ old = image.pixel_color(20,40,"white")
     "draw.html#text_antialias_eq">text_antialias</a>, <a href=
     "draw.html#undercolor_eq">undercolor</a>.</p>
     <pre>
-img.polaroid do
-   self.shadow_color = "gray40"
-   self.pointsize = 12
+img.polaroid do |options|
+  options.shadow_color = "gray40"
+  options.pointsize = 12
 end
 </pre>
 
@@ -4009,7 +4009,7 @@ img.to_color(pixel)
     "ex/viewex.gif" title="Click to see the example script" alt=
     "view example" /></a></p>
     <pre>
-img = Image.new(40, 40) {self.background_color = 'lightcyan2'}
+img = Image.new(40, 40) { |options| options.background_color = 'lightcyan2'}
 
 # The view is 400 pixels square, starting at
 # column 10, row 5 from the top of the image.

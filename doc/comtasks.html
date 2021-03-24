@@ -255,7 +255,7 @@ thumb = img.resize_to_fit(75, 75)
   <p>For more information, see the ImageMagick documentation for
   the <code>-quality</code> option to the utility commands.</p>
   <pre class="example">
-img.write("myimage.jpg") { self.quality = 50 }
+img.write("myimage.jpg") { |options| options.quality = 50 }
 </pre>
 
   <h2 id="shadow">Making a drop shadow</h2>
