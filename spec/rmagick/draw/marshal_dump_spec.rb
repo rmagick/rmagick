@@ -3,10 +3,10 @@ RSpec.describe Magick::Draw, '#marshal_dump' do
     draw = described_class.new
 
     granite = Magick::Image.read('granite:').first
-    s = granite.to_blob { self.format = 'miff' }
+    s = granite.to_blob { |options| options.format = 'miff' }
     granite = Magick::Image.from_blob(s).first
-    blue_stroke = Magick::Image.new(20, 20) { self.background_color = 'blue' }
-    s = blue_stroke.to_blob { self.format = 'miff' }
+    blue_stroke = Magick::Image.new(20, 20) { |options| options.background_color = 'blue' }
+    s = blue_stroke.to_blob { |options| options.format = 'miff' }
     blue_stroke = Magick::Image.from_blob(s).first
 
     draw.affine = Magick::AffineMatrix.new(1, 2, 3, 4, 5, 6)
@@ -45,7 +45,7 @@ RSpec.describe Magick::Draw, '#marshal_dump' do
     draw2.encoding = 'AdobeCustom'
     draw2.gravity = Magick::CenterGravity
     draw2.fill = Magick::Pixel.from_color('red')
-    draw2.fill_pattern = Magick::Image.new(10, 10) { self.format = 'miff' }
+    draw2.fill_pattern = Magick::Image.new(10, 10) { |options| options.format = 'miff' }
     draw2.stroke = Magick::Pixel.from_color('blue')
     draw2.stroke_width = 5
     draw2.text_antialias = true

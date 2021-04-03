@@ -399,7 +399,7 @@ self["tiff", "bits-per-sample"] &raquo; 2
 
     <h4>Example</h4>
     <pre>
-self.define("tiff", "bits-per-sample", 2)
+options.define("tiff", "bits-per-sample", 2)
 </pre>
 
     <h4>Magick API</h4>
@@ -441,8 +441,7 @@ self.define("tiff", "bits-per-sample", 2)
 
     <h4>Example</h4>
     <pre>
-self.undefine("tiff", "bits-per-sample")
-
+options.undefine("tiff", "bits-per-sample")
 </pre>
   </div>
 
@@ -545,9 +544,9 @@ self.undefine("tiff", "bits-per-sample")
     assigns a caption to an image. The caption is an image
     property:</p>
     <pre>
-img = Magick::Image.read("xc:white") do
-  self.caption = "a new caption"
-  self.size = "20x20"
+img = Magick::Image.read("xc:white") do |options|
+  options.caption = "a new caption"
+  options.size = "20x20"
 end
 p img.first.properties &raquo; {"caption"=&gt;"a new caption"}
 p img.first['caption'] &raquo; "a new caption"
@@ -917,7 +916,7 @@ p img.first['caption'] &raquo; "a new caption"
 
     <p>Either a geometry string or a <a href=
     "struct.html#Geometry">Geometry</a> object. For example:
-    <code>self.extract = "200x200+100+100"</code>.</p>
+    <code>options.extract = "200x200+100+100"</code>.</p>
   </div>
 
   <div class="sig">
@@ -1141,7 +1140,7 @@ p img.first['caption'] &raquo; "a new caption"
     information about the proc. This attribute is set-only.</p>
 
     <p>If you assign a monitor to an image with
-    <code>self.monitor=</code> when the image is created, the image
+    <code>options.monitor=</code> when the image is created, the image
     object inherits the monitor. Any methods applied to the new
     image will be monitored as well.</p>
 

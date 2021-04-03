@@ -402,7 +402,7 @@
   example, to create a image in the gradient format that is 100
   pixels wide and 200 pixels high, use:</p>
   <pre class="example">
-i = Image.read("gradient:red-blue") { self.size = "100x200" }
+i = Image.read("gradient:red-blue") { |options| options.size = "100x200" }
 </pre>
 
   <p>See <a href="javascript:popup('demo.rb.html')">demo.rb</a> for

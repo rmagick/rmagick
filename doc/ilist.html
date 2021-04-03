@@ -468,7 +468,7 @@ example &lt;&lt; model.add_noise Magick::LaplacisanNoise
     <h4>Example</h4>
     <pre>
 ilist.animate
-ilist.animate { self.server_name = "other:0.0" }
+ilist.animate { |options| options.server_name = "other:0.0" }
 </pre>
 
     <h4>See also</h4>
@@ -1000,7 +1000,7 @@ ilist.display
     <pre>
 # Produce a navy blue image from a black image
 imgl = Magick::ImageList.new
-imgl &lt;&lt; Magick::Image.new(64, 64) {self.background_color = 'black'}
+imgl &lt;&lt; Magick::Image.new(64, 64) { |options| options.background_color = 'black'}
 
 res = imgl.fx('1/2', Magick::BlueChannel)
 </pre>
@@ -1181,10 +1181,10 @@ scene=1
         surround each tile with a frame 20 pixels wide by 20 pixels
         high and a 4-pixel inner and outer bevel, use:
         <pre>
-self.frame = "20x20+4+4"
+options.frame = "20x20+4+4"
 </pre>or
         <pre>
-self.frame = Magick::Geometry.new(20,20,4,4)
+options.frame = Magick::Geometry.new(20,20,4,4)
 </pre>
       </dd>
 
@@ -1210,10 +1210,10 @@ self.frame = Magick::Geometry.new(20,20,4,4)
         194 pixels tall, with 10 pixels between each column of
         tiles and 5 between each row, use:
         <pre>
-self.geometry = "130x194+10+5"
+options.geometry = "130x194+10+5"
 </pre>or
         <pre>
-self.geometry = Magick::Geometry.new(130, 194, 10, 5)
+options.geometry = Magick::Geometry.new(130, 194, 10, 5)
 </pre>Both the geometry string and the <code>Geometry</code> object
 support flags that specify additional constraints. The default
 geometry is "120x120+4+3&gt;".
@@ -1252,7 +1252,7 @@ geometry is "120x120+4+3&gt;".
         color. For example, to use ImageMagick's built-in "granite"
         texture as the background, use:
         <pre>
-self.texture = Magick::Image.read("granite:").first
+options.texture = Magick::Image.read("granite:").first
 </pre>
 
         <p>The default is no texture.</p>
@@ -1272,10 +1272,10 @@ self.texture = Magick::Image.read("granite:").first
         generates all the rows, leaving empty cells if necessary.
         To arrange the tiles 4 across and 10 down, use:
         <pre>
-self.tile = "4x10"
+options.tile = "4x10"
 </pre>or
         <pre>
-self.tile = Magick::Geometry.new(4,10)
+options.tile = Magick::Geometry.new(4,10)
 </pre>
 
         <p>The default is "6x4". If there are too many tiles to fit
@@ -1429,7 +1429,7 @@ img[2]['Label'] = "Mom's Birthday"
     <p>Create a square red image.</p>
     <pre>
 ilist = Magick::ImageList.new
-ilist.new_image(100, 100) { self.background_color = "red" }
+ilist.new_image(100, 100) { |options| options.background_color = "red" }
 </pre>
   </div>
 

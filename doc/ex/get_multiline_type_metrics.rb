@@ -6,11 +6,11 @@ background = Magick::Image.new(200, 200)
 gc = Magick::Draw.new
 
 # Draw the text centered on the background
-gc.annotate(background, 0, 0, 0, 0, TEXT) do
-  gc.font_family = 'Verdana'
-  gc.pointsize = 36
-  gc.gravity = Magick::CenterGravity
-  gc.stroke = 'none'
+gc.annotate(background, 0, 0, 0, 0, TEXT) do |options|
+  options.font_family = 'Verdana'
+  options.pointsize = 36
+  options.gravity = Magick::CenterGravity
+  options.stroke = 'none'
 end
 
 # Get the metrics

@@ -85,7 +85,7 @@ module Magick
                      @background_image.change_geometry(Magick::Geometry.new(width, height)) do |new_cols, new_rows|
                        bg_image = @background_image.resize(new_cols, new_rows)
                        if bg_image.columns != width || bg_image.rows != height
-                         bg = Magick::Image.new(width, height) { self.background_color = bgcolor }
+                         bg = Magick::Image.new(width, height) { |options| options.background_color = bgcolor }
                          bg_image = bg.composite!(bg_image, Magick::CenterGravity, Magick::OverCompositeOp)
                        end
                        bg_image
@@ -96,7 +96,7 @@ module Magick
                  end
       else
         bgcolor = bgfill
-        canvas = Magick::Image.new(Integer(@width), Integer(@height)) { self.background_color = bgcolor }
+        canvas = Magick::Image.new(Integer(@width), Integer(@height)) { |options| options.background_color = bgcolor }
       end
       canvas[:desc] = @desc if @desc
       canvas[:title] = @title if @title

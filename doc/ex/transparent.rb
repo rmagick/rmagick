@@ -3,8 +3,8 @@ require 'rmagick'
 # Demonstrate the Image#transparent method.
 # Change all black pixels in the image to transparent.
 
-before = Magick::Image.new(200, 200) do
-  self.background_color = 'black'
+before = Magick::Image.new(200, 200) do |options|
+  options.background_color = 'black'
 end
 
 circle = Magick::Draw.new
@@ -30,7 +30,7 @@ after = before.transparent('black', alpha: Magick::TransparentAlpha)
 # Use the plasma image as a background so we can see that
 # the black pixels have been made transparent.
 bg = Magick::ImageList.new
-bg.read('plasma:purple-gold') { self.size = '200x200' }
+bg.read('plasma:purple-gold') { |options| options.size = '200x200' }
 
 after = bg.composite(after, Magick::CenterGravity, Magick::OverCompositeOp)
 after.write('transparent_after.gif')

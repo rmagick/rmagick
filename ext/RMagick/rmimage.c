@@ -1990,12 +1990,12 @@ Image_bounding_box(VALUE self)
  *     importantly, you can capture menus or other popups that are independent windows but appear
  *     over the specified window.
  *   @param borders [Boolean] If true, include the border in the image.
- *   @yield []
+ *   @yield [Magick::Image::Info]
  *
  * @return [Magick::Image] a new image
  * @example
- *   img = Image.capture {
- *     self.filename = "root"
+ *   img = Image.capture { |options|
+ *     options.filename = "root"
  *   }
  */
 VALUE
@@ -3104,17 +3104,17 @@ Image_columns(VALUE self)
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *
  * @overload compare_channel(image, metric, channel = Magick::AllChannels)
- *   If present a block, compare_channel yields to a block in which you can set optional arguments
- *   by setting attributes on self.
- *   - self.highlight_color = color
+ *   When a block is given, compare_channel yields with a block argument you can optionally use to
+ *   set attributes.
+ *   - options.highlight_color = color
  *     - Emphasize pixel differences with this color. The default is partially transparent red.
- *   - self.lowlight_color = color
+ *   - options.lowlight_color = color
  *     - Demphasize pixel differences with this color. The default is partially transparent white.
  *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
  *     imagelist, uses the current image.
  *   @param metric [Magick::MetricType] The desired distortion metric.
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
- *   @yield []
+ *   @yield [Magick::OptionalMethodArguments]
  *
  * @overload compare_channel(image, metric, *channels)
  *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
@@ -3124,18 +3124,18 @@ Image_columns(VALUE self)
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
  * @overload compare_channel(image, metric, *channels)
- *   If present a block, compare_channel yields to a block in which you can set optional arguments
- *   by setting attributes on self.
- *   - self.highlight_color = color
+ *   When a block is given, compare_channel yields with a block argument you can optionally use to
+ *   set attributes.
+ *   - options.highlight_color = color
  *     - Emphasize pixel differences with this color. The default is partially transparent red.
- *   - self.lowlight_color = color
+ *   - options.lowlight_color = color
  *     - Demphasize pixel differences with this color. The default is partially transparent white.
  *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
  *     imagelist, uses the current image.
  *   @param metric [Magick::MetricType] The desired distortion metric.
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
- *   @yield []
+ *   @yield [Magick::OptionalMethodArguments]
  *
  * @return [Array] The first element is a difference image, the second is a the value of the
  *   computed distortion represented as a Float.
@@ -5551,17 +5551,16 @@ Image_dissolve(int argc, VALUE *argv, VALUE self)
  *     the source image will be taken into account in the mapping.
  *
  * @overload distort(type, points, bestfit = false)
- *   If present a block, distort yields to a block in which you can set optional arguments by
- *   setting attributes on self.
- *   - self.define("distort:viewport", "WxH+X+Y")
+ *   When a block is given, distort yields with a block argument you can optionally use to set attributes.
+ *   - options.define("distort:viewport", "WxH+X+Y")
  *     - Specify the size and offset of the generated viewport image of the distorted image space. W and
  *       H are the width and height, and X and Y are the offset.
- *   - self.define("distort:scale", N)
+ *   - options.define("distort:scale", N)
  *     - N is an integer factor. Scale the output image (viewport or otherwise) by that factor without
  *       changing the viewed contents of the distorted image. This can be used either for
  *       'super-sampling' the image for a higher quality result, or for panning and zooming around
  *       the image (with appropriate viewport changes, or post-distort cropping and resizing).
- *   - self.verbose(true)
+ *   - options.verbose(true)
  *     - Attempt to output the internal coefficients, and the -fx equivalent to the distortion, for
          expert study, and debugging purposes. This many not be available for all distorts.
  *   @param type [Magick::DistortMethod] a DistortMethod value
@@ -5570,13 +5569,13 @@ Image_dissolve(int argc, VALUE *argv, VALUE self)
  *     image is adjusted to ensure the whole source image will just fit within the final destination
  *     image, which will be sized and offset accordingly.  Also in many cases the virtual offset of
  *     the source image will be taken into account in the mapping.
- *   @yield []
+ *   @yield [Magick::OptionalMethodArguments]
  *
  * @return [Magick::Image] a new image
  * @example
- *   img.distort(Magick::ScaleRotateTranslateDistortion, [0]) do
- *     self.define "distort:viewport", "44x44+15+0"
- *     self.define "distort:scale", 2
+ *   img.distort(Magick::ScaleRotateTranslateDistortion, [0]) do |options|
+ *     options.define "distort:viewport", "44x44+15+0"
+ *     options.define "distort:scale", 2
  *   end
  */
 VALUE
@@ -6882,7 +6881,7 @@ Image_frame(int argc, VALUE *argv, VALUE self)
  * @overload from_blob(blob)
  *   This yields {Magick::Image::Info} to block with its object's scope.
  *   @param blob [String] the blob data
- *   @yield []
+ *   @yield [Magick::Image::Info]
  *
  * @return [Array<Magick::Image>] an array of new images
  * @see Image#to_blob
@@ -10349,11 +10348,11 @@ Image_pixel_interpolation_method_eq(VALUE self, VALUE method)
  *   If present a block, optional arguments may be specified in a block associated with the method.
  *   These arguments control the shadow color and how the label is rendered.
  *   By default the shadow color is gray75. To specify a different shadow color,
- *   use self.shadow_color.
- *   To specify a different border color (that is, the color of the image border) use self.border_color.
+ *   use options.shadow_color.
+ *   To specify a different border color (that is, the color of the image border) use options.border_color.
  *   Both of these methods accept either a color name or a Pixel argument.
  *   @param angle [Float] The resulting image is rotated by this amount, measured in degrees.
- *   @yield []
+ *   @yield [Magick::Image::Info]
  *
  * @return [Magick::Image] a new image
  */
@@ -12325,7 +12324,7 @@ Image_segment(int argc, VALUE *argv, VALUE self)
  *   @return [Hash] the properties
  *
  * @overload properties
- *   @yield []
+ *   @yield [Magick::Image::Info]
  *   @return [Magick::Image] self
  */
 VALUE
