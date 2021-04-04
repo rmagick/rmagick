@@ -74,33 +74,3 @@ jobs:
       run: |
         bundle install --path=vendor/bundle --jobs 4 --retry 3
         bundle exec rake
-
-  test-windows:
-    runs-on: windows-latest
-    timeout-minutes: 10
-    strategy:
-      matrix:
-        ruby-version: ['2.3', '2.4', '2.5', '2.6', '2.7', '3.0']
-        imagemagick-version:
-          - { full: 6.8.9-10, major-minor: '6.8' }
-          - { full: 6.9.11-29, major-minor: '6.9' } # seems that binary file mirroring have stopped.
-          - { full: 7.0.10-29, major-minor: '7.0' } # seems that binary file mirroring have stopped.
-    name: MSWin, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Ruby ${{ matrix.ruby-version }}
-      uses: ruby/setup-ruby@master
-      with:
-        ruby-version: ${{ matrix.ruby-version }}
-    - name: Install ImageMagick
-      run: |
-        $imagemagick_version = "${{ matrix.imagemagick-version.full }}"
-        $installer_name = "ImageMagick-$($imagemagick_version)-Q16-x64-dll.exe"
-        $url = "https://ftp.icm.edu.pl/pub/graphics/ImageMagick/binaries/$($installer_name)"
-        choco install wget
-        choco install ghostscript -Version 9.50
-        wget $url --progress=dot
-        cmd.exe /D /S /C "$($installer_name) /DIR=D:\ImageMagick /VERYSILENT /TASKS=install_Devel"
-    - name: Build and test with Rake
-      run: |
-        cmd.exe /D /S /C "SET MAKE=make & SET PATH=D:\ImageMagick;%PATH% & bundle install --path=vendor/bundle --retry 3 & bundle exec rake"
