@@ -8979,7 +8979,7 @@ Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
         target_mpp.red   = (MagickRealType) image->border_color.red;
         target_mpp.green = (MagickRealType) image->border_color.green;
         target_mpp.blue  = (MagickRealType) image->border_color.blue;
-        target_mpp.alpha = (MagickRealType) target.alpha;
+        target_mpp.alpha = (MagickRealType) image->border_color.alpha;
     }
     else
     {
