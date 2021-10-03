@@ -18,4 +18,14 @@ RSpec.describe Magick::Image, '#matte_floodfill' do
     expect { image.matte_flood_fill('blue', image.columns, image.rows, Magick::FloodfillMethod, alpha: Magick::TransparentAlpha) }.not_to raise_error
     expect { image.matte_flood_fill('blue', image.columns, image.rows, Magick::FloodfillMethod, wrong: Magick::TransparentAlpha) }.to raise_error(ArgumentError)
   end
+  it 'changes the specified color to transparent' do
+    image = described_class.new(1, 1)
+    color = image.pixel_color(0, 0)
+    expect(color.alpha).to eq(Magick::OpaqueAlpha)
+
+    result = image.matte_floodfill(0, 0)
+
+    color = result.pixel_color(0, 0)
+    expect(color.alpha).to eq(Magick::TransparentAlpha)
+  end
 end

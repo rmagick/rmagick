@@ -8968,6 +8968,7 @@ Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
     }
 #if defined(IMAGEMAGICK_7)
     draw_info->fill.alpha = alpha;
+    draw_info->fill.alpha_trait = BlendPixelTrait;
 #else
     draw_info->fill.opacity = QuantumRange - alpha;
 #endif
@@ -8978,6 +8979,7 @@ Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
         target_mpp.red   = (MagickRealType) image->border_color.red;
         target_mpp.green = (MagickRealType) image->border_color.green;
         target_mpp.blue  = (MagickRealType) image->border_color.blue;
+        target_mpp.alpha = (MagickRealType) target.alpha;
     }
     else
     {
@@ -8985,6 +8987,7 @@ Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
         target_mpp.red   = (MagickRealType) target.red;
         target_mpp.green = (MagickRealType) target.green;
         target_mpp.blue  = (MagickRealType) target.blue;
+        target_mpp.alpha = (MagickRealType) target.alpha;
     }
 
 #if defined(IMAGEMAGICK_7)
