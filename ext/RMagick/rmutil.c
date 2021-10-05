@@ -858,6 +858,25 @@ rm_magick_error(const char *msg)
     RB_GC_GUARD(mesg);
 }
 
+#if defined(IMAGEMAGICK_7)
+/**
+ * Sets the alpha channel of a pixel color
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param pixel the Pixel
+ * @param value the value
+ */
+void
+rm_set_pixelinfo_alpha(PixelInfo *pixel, const MagickRealType value)
+{
+    pixel->alpha = value;
+    if (value != (MagickRealType) OpaqueAlpha)
+    {
+        pixel->alpha_trait = BlendPixelTrait;
+    }
+}
+#endif
 
 /**
  * Initialize a new ImageMagickError object - store the "loc" string in the

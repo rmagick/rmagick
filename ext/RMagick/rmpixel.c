@@ -381,12 +381,8 @@ Color_to_PixelColor(PixelColor *pp, VALUE color)
         pp->green   = pixel->green;
         pp->blue    = pixel->blue;
 #if defined(IMAGEMAGICK_7)
-        pp->alpha   = pixel->alpha;
-        if (pixel->alpha != OpaqueAlpha)
-        {
-            pp->alpha_trait = BlendPixelTrait;
-        }
         pp->black   = pixel->black;
+        rm_set_pixelinfo_alpha(pp, pixel->alpha);
 #else
         pp->opacity = pixel->opacity;
 #endif
