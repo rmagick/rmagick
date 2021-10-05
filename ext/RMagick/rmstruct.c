@@ -285,7 +285,7 @@ Export_ColorInfo(ColorInfo *ci, VALUE st)
         ci->color.green = (MagickRealType) pixel.green;
         ci->color.blue = (MagickRealType) pixel.blue;
 #if defined(IMAGEMAGICK_7)
-        ci->color.alpha = (MagickRealType) OpaqueAlpha;
+        rm_set_pixelinfo_alpha(&ci->color, (MagickRealType) OpaqueAlpha);
 #else
         ci->color.opacity = (MagickRealType) OpaqueOpacity;
 #endif
@@ -760,7 +760,7 @@ Import_SegmentInfo(SegmentInfo *segment)
     RB_GC_GUARD(y1);
     RB_GC_GUARD(x2);
     RB_GC_GUARD(y2);
-    
+
     return rb_funcall(Class_Segment, rm_ID_new, 4, x1, y1, x2, y2);
 }
 
