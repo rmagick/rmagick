@@ -3,6 +3,17 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 4.2.3
+
+Bug Fixes
+
+- Re-add block syntax deprecation warning and fix in RMagick source (#1279) (#1280)
+- Doc: Replace Magick::Montage with Magick::ImageList::Montage (#1281)
+- Update shadow example (#1297)
+- Escape the backslashes in windows error message (#1298)
+- Also set the alpha value of the target pixel (#1299)
+- Set alpha_trait to BlendPixelTrait when the alpha value of the pixel is not opaque. (#1300)
+
 ## RMagick 4.2.2
 
 Bug Fixes:
