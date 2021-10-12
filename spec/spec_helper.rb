@@ -3,8 +3,8 @@ require_relative 'support/matchers'
 require_relative 'support/helpers'
 
 require 'pry'
-require_relative '../lib/rmagick'
-require_relative '../lib/rvg/rvg'
+require 'rmagick'
+require 'rvg/rvg'
 
 root_dir = File.expand_path('..', __dir__)
 IMAGES_DIR = File.join(root_dir, 'doc/ex/images')
