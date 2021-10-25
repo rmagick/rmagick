@@ -11,4 +11,11 @@ RSpec.describe Magick::Image, '#new' do
     expect(yield_obj).to be_instance_of(Magick::Image::Info)
     expect(self_obj).to eq(self)
   end
+
+  it 'persists configuration from block argument' do
+    image = described_class.new(100, 100) do |info|
+      info.colorspace = Magick::LabColorspace
+    end
+    expect(image.colorspace).to eq(Magick::LabColorspace)
+  end
 end

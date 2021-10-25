@@ -9481,6 +9481,7 @@ Image_initialize(int argc, VALUE *argv, VALUE self)
     }
 
     rm_set_user_artifact(image, info);
+    rm_sync_image_options(image, info);
 
     // NOW store a real image in the image object.
     UPDATE_DATA_PTR(self, image);
