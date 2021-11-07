@@ -172,7 +172,7 @@ VALUE
 Pixel_alpha_eq(VALUE self, VALUE v)
 {
     Pixel *pixel;
- 
+
     rb_check_frozen(self);
     Data_Get_Struct(self, Pixel, pixel);
 #if defined(IMAGEMAGICK_7)
@@ -381,8 +381,8 @@ Color_to_PixelColor(PixelColor *pp, VALUE color)
         pp->green   = pixel->green;
         pp->blue    = pixel->blue;
 #if defined(IMAGEMAGICK_7)
-        pp->alpha   = pixel->alpha;
         pp->black   = pixel->black;
+        rm_set_pixelinfo_alpha(pp, pixel->alpha);
 #else
         pp->opacity = pixel->opacity;
 #endif

@@ -258,7 +258,7 @@ module RMagick
         Retry with '--with-opt-dir' option.
         Usage: gem install rmagick -- '--with-opt-dir=\"[path to ImageMagick]\"'
         e.g.
-          gem install rmagick -- '--with-opt-dir=\"C:\Program Files\ImageMagick-6.9.1-Q16\"'
+          gem install rmagick -- '--with-opt-dir=\"C:\\Program Files\\ImageMagick-6.9.1-Q16\"'
       END_MINGW
     end
 

@@ -84,15 +84,12 @@ module Magick
     #     ...
     #   end
     def trace_proc=(p)
-      m = Mutex.new
-      m.synchronize do
-        if @trace_proc.nil? && !p.nil? && !@exit_block_set_up
-          at_exit { @trace_proc = nil }
-          @exit_block_set_up = true
-        end
-
-        @trace_proc = p
+      if @trace_proc.nil? && !p.nil? && !@exit_block_set_up
+        at_exit { @trace_proc = nil }
+        @exit_block_set_up = true
       end
+
+      @trace_proc = p
     end
   end
 

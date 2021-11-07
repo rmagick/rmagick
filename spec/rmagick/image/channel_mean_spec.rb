@@ -11,7 +11,8 @@ RSpec.describe Magick::Image, "#channel_mean" do
       "7.1": 115.6730305646048
     )
 
-    expect(mean_and_stddev).to eq([125.25, expected_stddev])
+    expect(mean_and_stddev[0]).to be_within(0.0000001).of(125.25)
+    expect(mean_and_stddev[1]).to be_within(0.0000001).of(expected_stddev)
   end
 
   it "returns the mean and std. dev for the GreenChannel" do
@@ -26,7 +27,8 @@ RSpec.describe Magick::Image, "#channel_mean" do
       "7.1": 76.46567857542362
     )
 
-    expect(mean_and_stddev).to eq([142.5, expected_stddev])
+    expect(mean_and_stddev[0]).to be_within(0.0000001).of(142.5)
+    expect(mean_and_stddev[1]).to be_within(0.0000001).of(expected_stddev)
   end
 
   it "returns the mean and std. dev for the RedChannel and GreenChannel" do
@@ -41,7 +43,8 @@ RSpec.describe Magick::Image, "#channel_mean" do
       "7.1": 96.06935457001421
     )
 
-    expect(mean_and_stddev).to eq([133.875, expected_stddev])
+    expect(mean_and_stddev[0]).to be_within(0.0000001).of(133.875)
+    expect(mean_and_stddev[1]).to be_within(0.0000001).of(expected_stddev)
   end
 
   it "returns the mean and std. dev for all channels when no arguments are passed" do
@@ -56,7 +59,8 @@ RSpec.describe Magick::Image, "#channel_mean" do
       "7.1": 103.58337316538109
     )
 
-    expect(mean_and_stddev).to eq([123.91666666666667, expected_stddev])
+    expect(mean_and_stddev[0]).to be_within(0.0000001).of(123.91666666666667)
+    expect(mean_and_stddev[1]).to be_within(0.0000001).of(expected_stddev)
   end
 
   it "raises an error when the wrong type of argument is passed" do

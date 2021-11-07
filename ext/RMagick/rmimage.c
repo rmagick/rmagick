@@ -8967,7 +8967,7 @@ Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
 #if defined(IMAGEMAGICK_7)
-    draw_info->fill.alpha = alpha;
+    rm_set_pixelinfo_alpha(&draw_info->fill, alpha);
 #else
     draw_info->fill.opacity = QuantumRange - alpha;
 #endif
@@ -8978,6 +8978,11 @@ Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
         target_mpp.red   = (MagickRealType) image->border_color.red;
         target_mpp.green = (MagickRealType) image->border_color.green;
         target_mpp.blue  = (MagickRealType) image->border_color.blue;
+#if defined(IMAGEMAGICK_7)
+        rm_set_pixelinfo_alpha(&target_mpp, (MagickRealType) image->border_color.alpha);
+#else
+        target_mpp.opacity = (MagickRealType) image->border_color.opacity;
+#endif
     }
     else
     {
@@ -8985,6 +8990,11 @@ Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
         target_mpp.red   = (MagickRealType) target.red;
         target_mpp.green = (MagickRealType) target.green;
         target_mpp.blue  = (MagickRealType) target.blue;
+#if defined(IMAGEMAGICK_7)
+        rm_set_pixelinfo_alpha(&target_mpp, (MagickRealType) target.alpha);
+#else
+        target_mpp.opacity = (MagickRealType) target.opacity;
+#endif
     }
 
 #if defined(IMAGEMAGICK_7)

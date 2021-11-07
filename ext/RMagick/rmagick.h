@@ -1173,6 +1173,9 @@ extern void   rm_set_user_artifact(Image *, Info *);
 extern void   rm_sync_image_options(Image *, Info *);
 extern void   rm_split(Image *);
 extern void   rm_magick_error(const char *);
+#if defined(IMAGEMAGICK_7)
+extern void   rm_set_pixelinfo_alpha(PixelInfo *, const MagickRealType);
+#endif
 
 //! whether to retain on errors
 typedef enum
