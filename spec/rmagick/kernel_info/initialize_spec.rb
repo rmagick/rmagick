@@ -3,7 +3,7 @@ RSpec.describe Magick::KernelInfo, '#initialize' do
     Magick::KernelInfoType.values do |kernel|
       k = kernel.to_s.sub('Kernel', '')
 
-      if kernel == Magick::UserDefinedKernel || kernel == Magick::UndefinedKernel
+      if [Magick::UserDefinedKernel, Magick::UndefinedKernel].include?(kernel)
         expect { described_class.new(k) }.to raise_error(RuntimeError)
       else
         expect(described_class.new(k)).to be_instance_of(described_class)
