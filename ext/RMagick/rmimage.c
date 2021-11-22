@@ -4681,26 +4681,26 @@ Image_init_copy(VALUE copy, VALUE orig)
 /**
  * Extract a region of the image defined by width, height, x, y.
  *
- * @overload crop(reset = false, x, y, width, height)
- *   @param reset [Boolean] true if reset the cropped image page canvas and position
+ * @overload crop(x, y, width, height, reset = false)
  *   @param x [Numeric] x position of start of region
  *   @param y [Numeric] y position of start of region
  *   @param width [Numeric] width of region
  *   @param height [Numeric] height of region
+ *   @param reset [Boolean] true if reset the cropped image page canvas and position
  *
- * @overload crop(reset = false, gravity, width, height)
- *   @param reset [Boolean] true if reset the cropped image page canvas and position
+ * @overload crop(gravity, width, height, reset = false)
  *   @param gravity [Magick::GravityType] the gravity type
  *   @param width [Numeric] width of region
  *   @param height [Numeric] height of region
-
- * @overload crop(reset = false, gravity, x, y, width, height)
  *   @param reset [Boolean] true if reset the cropped image page canvas and position
+
+ * @overload crop(gravity, x, y, width, height, reset = false)
  *   @param gravity [Magick::GravityType] the gravity type
  *   @param x [Numeric] x position of start of region
  *   @param y [Numeric] y position of start of region
  *   @param width [Numeric] width of region
  *   @param height [Numeric] height of region
+ *   @param reset [Boolean] true if reset the cropped image page canvas and position
  *
  * @return [Magick::Image] a new image
  * @see Image#crop!
