@@ -41,7 +41,6 @@ module RMagick
       {
         magick_version: $magick_version,
         local_libs: $LOCAL_LIBS,
-        cflags: $CFLAGS,
         cppflags: $CPPFLAGS,
         ldflags: $LDFLAGS,
         defs: $defs,
@@ -69,7 +68,6 @@ module RMagick
         check_partial_imagemagick_versions
 
         # Save flags
-        $CFLAGS     = "#{ENV['CFLAGS']} "   + `pkg-config --cflags #{$magick_package}`.chomp
         $CPPFLAGS   = "#{ENV['CPPFLAGS']} " + `pkg-config --cflags #{$magick_package}`.chomp
         $LDFLAGS    = "#{ENV['LDFLAGS']} "  + `pkg-config --libs #{$magick_package}`.chomp
         $LOCAL_LIBS = "#{ENV['LIBS']} "     + `pkg-config --libs #{$magick_package}`.chomp
@@ -96,7 +94,7 @@ module RMagick
 
       end
 
-      $CFLAGS << (have_macro('__GNUC__') ? ' -std=gnu99' : ' -std=c99')
+      $CPPFLAGS << (have_macro('__GNUC__') ? ' -std=gnu99' : ' -std=c99')
     end
 
     def exit_failure(msg)
