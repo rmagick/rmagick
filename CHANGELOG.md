@@ -3,6 +3,21 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 4.2.4
+
+Improvements
+
+- spec_helper: drop require_relative to lib directory (#1306)
+- Fix build error with Ruby 3.1 on macOS (#1313)
+
+Bug Fixes
+
+- remove Mutex in trace_proc= (#1303)
+- channel_mean_spec: fix floating point comparison (#1307)
+- changed_predicate_spec: ensure target directory exists (#1305)
+- Doc: Fix documentation of Magick::Image#crop (#1311)
+- Magick::UndefinedKernel should also not be used when creating a new KernelInfo. (#1312)
+
 ## RMagick 4.2.3
 
 Bug Fixes
