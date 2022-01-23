@@ -434,9 +434,9 @@ EXTERN unsigned long long rm_main_thread_id;
 #define R_boolean_to_C_boolean(attr) RTEST(attr) /**<  C boolean <- Ruby boolean */
 #define C_int_to_R_int(attr) INT2FIX(attr) /**< C int -> Ruby int */
 #define R_int_to_C_int(attr) NUM2INT(attr) /**< C int <- Ruby int */
-#define C_long_to_R_long(attr) INT2NUM(attr) /**< C long -> Ruby long */
+#define C_long_to_R_long(attr) LONG2NUM(attr) /**< C long -> Ruby long */
 #define R_long_to_C_long(attr) NUM2LONG(attr) /**< C long <- Ruby long */
-#define C_ulong_to_R_ulong(attr) UINT2NUM(attr) /**< C unsigned long -> Ruby unsigned long */
+#define C_ulong_to_R_ulong(attr) ULONG2NUM(attr) /**< C unsigned long -> Ruby unsigned long */
 #define R_ulong_to_C_ulong(attr) NUM2ULONG(attr) /**< C unsigned long <- Ruby unsigned long */
 #define C_str_to_R_str(attr) attr ? rb_str_new2(attr) : Qnil /**< C string -> Ruby string */
 #define C_dbl_to_R_dbl(attr) rb_float_new(attr) /**< C double -> Ruby double */
