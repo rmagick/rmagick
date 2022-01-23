@@ -672,10 +672,10 @@ Import_RectangleInfo(RectangleInfo *rect)
     VALUE height;
     VALUE x, y;
 
-    width  = UINT2NUM(rect->width);
-    height = UINT2NUM(rect->height);
-    x      = INT2NUM(rect->x);
-    y      = INT2NUM(rect->y);
+    width  = ULONG2NUM(rect->width);
+    height = ULONG2NUM(rect->height);
+    x      = LONG2NUM(rect->x);
+    y      = LONG2NUM(rect->y);
 
     RB_GC_GUARD(width);
     RB_GC_GUARD(height);
