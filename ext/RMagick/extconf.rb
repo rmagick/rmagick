@@ -67,10 +67,18 @@ module RMagick
         check_multiple_imagemagick_versions
         check_partial_imagemagick_versions
 
+        libdir  = `pkg-config --libs-only-L #{$magick_package}`.chomp.sub('-L', '')
+        ldflags = "#{ENV['LDFLAGS']} " + `pkg-config --libs #{$magick_package}`.chomp
+
         # Save flags
         $CPPFLAGS   = "#{ENV['CPPFLAGS']} " + `pkg-config --cflags #{$magick_package}`.chomp
-        $LDFLAGS    = "#{ENV['LDFLAGS']} "  + `pkg-config --libs #{$magick_package}`.chomp
         $LOCAL_LIBS = "#{ENV['LIBS']} "     + `pkg-config --libs #{$magick_package}`.chomp
+        $LDFLAGS    = "#{ldflags} -Wl,-rpath,#{libdir}"
+
+        unless try_link("int main() { }")
+          # if linker does not recognizes '-Wl,-rpath,somewhere' option, it revert to original option
+          $LDFLAGS = ldflags
+        end
 
         configure_archflags_for_osx($magick_package) if RUBY_PLATFORM =~ /darwin/ # osx
 
