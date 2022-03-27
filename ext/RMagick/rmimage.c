@@ -5039,8 +5039,16 @@ VALUE
 Image_delete_profile(VALUE self, VALUE name)
 {
     Image *image = rm_check_frozen(self);
-    DeleteImageProfile(image, StringValueCStr(name));
 
+#if defined(IMAGEMAGICK_7)
+    ExceptionInfo *exception = AcquireExceptionInfo();
+
+    ProfileImage(image, StringValueCStr(name), NULL, 0, exception);
+    CHECK_EXCEPTION();
+    DestroyExceptionInfo(exception);
+#else
+    ProfileImage(image, StringValueCStr(name), NULL, 0, MagickTrue);
+#endif
     return self;
 }
 

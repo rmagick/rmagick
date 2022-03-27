@@ -17,4 +17,16 @@ RSpec.describe Magick::Image, '#profile!' do
     expect { image.profile!('icc', 'xxx') }.to raise_error(FreezeError)
     expect { image.profile!('*', nil) }.to raise_error(FreezeError)
   end
+
+  it 'delete exif when nil given as profile' do
+    image = described_class.read(IMAGE_WITH_PROFILE).first
+    expect(image.get_exif_by_number).to be_kind_of(Hash)
+    expect(image.get_exif_by_number(305)).to eq({ 305 => "Adobe Photoshop CS Macintosh" })
+
+    image.profile!('*', nil)
+    blob = image.to_blob
+
+    new_image = described_class.from_blob(blob).first
+    expect(new_image.get_exif_by_number).to eq({})
+  end
 end
