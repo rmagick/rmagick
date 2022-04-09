@@ -197,6 +197,8 @@ export LD_LIBRARY_PATH=/usr/local/lib
 On Linux, see `ld(1)` and `ld.so(8)` for more information. On other operating
 systems, see the documentation for the dynamic loading facility.
 
+This operation might not be required when you can use 4.2.5 or later.
+
 ### Segmentation fault
 
 Default stack size of your operating system might be too small. Try removing
