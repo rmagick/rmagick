@@ -3,6 +3,13 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 4.2.5
+
+Bug Fixes
+
+- Specify rpath linker option to fix dynamic lib lookup failure on Linux (#1325)
+- Fix Image#profile! that can't delete exif data (#1326)
+
 ## RMagick 4.2.4
 
 Improvements
