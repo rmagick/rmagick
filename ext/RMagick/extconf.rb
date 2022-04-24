@@ -69,11 +69,12 @@ module RMagick
 
         libdir  = `pkg-config --libs-only-L #{$magick_package}`.chomp.sub('-L', '')
         ldflags = "#{ENV['LDFLAGS']} " + `pkg-config --libs #{$magick_package}`.chomp
+        rpath   = libdir.empty? ? '' : "-Wl,-rpath,#{libdir}"
 
         # Save flags
         $CPPFLAGS   = "#{ENV['CPPFLAGS']} " + `pkg-config --cflags #{$magick_package}`.chomp
         $LOCAL_LIBS = "#{ENV['LIBS']} "     + `pkg-config --libs #{$magick_package}`.chomp
-        $LDFLAGS    = "#{ldflags} -Wl,-rpath,#{libdir}"
+        $LDFLAGS    = "#{ldflags} #{rpath}"
 
         unless try_link("int main() { }")
           # if linker does not recognizes '-Wl,-rpath,somewhere' option, it revert to original option
