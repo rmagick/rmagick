@@ -15,11 +15,9 @@ Gem::Specification.new do |s|
 
   tracked_files = `git ls-files`.split($OUTPUT_RECORD_SEPARATOR)
   file_exclusion_regex = %r{\A(doc|benchmarks|examples|spec|lib/rvg/to_c.rb)}
-  files         = tracked_files.reject { |file| file[file_exclusion_regex] }
-  test_files    = files.grep(%r{^(test|spec|features)/})
+  files = tracked_files.reject { |file| file[file_exclusion_regex] }
 
-  s.files                       = files
-  s.test_files                  = test_files
+  s.files = files
   s.require_paths << 'ext' << 'deprecated'
 
   s.extensions = %w[ext/RMagick/extconf.rb]
