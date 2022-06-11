@@ -34,8 +34,8 @@ jobs:
         imagemagick-version:
           - { full: 6.7.7-10, major-minor: '6.7' }
           - { full: 6.8.9-10, major-minor: '6.8' }
-          - { full: 6.9.12-51, major-minor: '6.9' }
-          - { full: 7.1.0-36, major-minor: '7.0' }
+          - { full: 6.9.12-52, major-minor: '6.9' }
+          - { full: 7.1.0-37, major-minor: '7.0' }
 
     name: Linux, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
     steps:
@@ -60,8 +60,8 @@ jobs:
       matrix:
         ruby-version: ['2.6', '2.7', '3.0', '3.1']
         imagemagick-version:
-          - { full: 6.9.12-51, major-minor: '6.9' }
-          - { full: 7.1.0-36, major-minor: '7.0' }
+          - { full: 6.9.12-52, major-minor: '6.9' }
+          - { full: 7.1.0-37, major-minor: '7.0' }
 
     name: macOS, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
     steps:
