@@ -3,6 +3,17 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 4.2.6
+
+Improvements
+
+- Remove test_files to reduce gem package size (#1338)
+
+Bug Fixes
+
+- Guard against an empty rpath (#1333)
+- Call GetImageDistortion instead of IsImagesEqual to fix the issue reported in #1342 (#1343)
+
 ## RMagick 4.2.5
 
 Bug Fixes
