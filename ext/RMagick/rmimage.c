@@ -5205,6 +5205,7 @@ Image_difference(VALUE self, VALUE other)
     Image *image2;
     VALUE mean, nmean, nmax;
 #if defined(IMAGEMAGICK_7)
+    double distortion;
     ExceptionInfo *exception;
 #endif
 
@@ -5214,7 +5215,7 @@ Image_difference(VALUE self, VALUE other)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    IsImagesEqual(image, image2, exception);
+    GetImageDistortion(image, image2, MeanErrorPerPixelErrorMetric, &distortion, exception);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
