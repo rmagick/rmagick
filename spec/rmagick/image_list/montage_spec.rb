@@ -5,7 +5,7 @@ RSpec.describe Magick::ImageList, "#montage" do
     expect(error).to be_within(delta).of(0.0)
   end
 
-  it "works" do
+  it "works", unsupported_before('6.8.0') do
     image_list1 = described_class.new
 
     image_list1.read(*Dir[IMAGES_DIR + '/Button_*.gif'])
