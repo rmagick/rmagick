@@ -75,7 +75,7 @@ module Magick
   MinimumGeometry  = GeometryValue.new(:MinimumGeometry, 6).freeze
 
   class Geometry
-    FLAGS = ['', '%', '!', '<', '>', '@', '^']
+    FLAGS = ['', '%', '!', '<', '>', '@', '^'].map(&:freeze).freeze
     RFLAGS = {
       '%' => PercentGeometry,
       '!' => AspectGeometry,
@@ -83,7 +83,7 @@ module Magick
       '>' => GreaterGeometry,
       '@' => AreaGeometry,
       '^' => MinimumGeometry
-    }
+    }.freeze
 
     attr_accessor :width, :height, :x, :y, :flag
 
