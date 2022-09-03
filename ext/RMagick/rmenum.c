@@ -18,9 +18,20 @@
 
 static VALUE Enum_type_values(VALUE);
 static VALUE Enum_type_inspect(VALUE);
+static void rm_enum_free(void *magick_enum);
+static size_t rm_enum_memsize(const void *magick_enum);
 
+#ifndef HAVE_RB_EXT_RACTOR_SAFE
+#undef RUBY_TYPED_FROZEN_SHAREABLE
+#define RUBY_TYPED_FROZEN_SHAREABLE 0
+#endif
 
-
+const rb_data_type_t rm_enum_data_type = {
+    "Magick::Enum",
+    { NULL, rm_enum_free, rm_enum_memsize, },
+    0, 0,
+    RUBY_TYPED_FROZEN_SHAREABLE,
+};
 
 
 /**
@@ -78,7 +89,7 @@ rm_enum_to_cstr(VALUE enum_type)
 {
     MagickEnum *magick_enum;
 
-    Data_Get_Struct(enum_type, MagickEnum, magick_enum);
+    TypedData_Get_Struct(enum_type, MagickEnum, &rm_enum_data_type, magick_enum);
     return rb_id2name(magick_enum->id);
 }
 
@@ -93,6 +104,19 @@ static void rm_enum_free(void *magick_enum)
 {
     xfree(magick_enum);
 }
+
+/**
+  * Get Enum object size.
+  *
+  * No Ruby usage (internal function)
+  *
+  * @param magick_enum the enum
+  */
+ static size_t rm_enum_memsize(const void *magick_enum)
+ {
+     return sizeof(MagickEnum);
+ }
+
 /**
  * Enum class alloc function.
  *
@@ -104,7 +128,7 @@ Enum_alloc(VALUE class)
     MagickEnum *magick_enum;
     VALUE enumr;
 
-    enumr = Data_Make_Struct(class, MagickEnum, NULL, rm_enum_free, magick_enum);
+    enumr = TypedData_Make_Struct(class, MagickEnum, &rm_enum_data_type, magick_enum);
     rb_obj_freeze(enumr);
 
     return enumr;
@@ -124,8 +148,8 @@ Enum_case_eq(VALUE self, VALUE other)
     {
         MagickEnum *this, *that;
 
-        Data_Get_Struct(self, MagickEnum, this);
-        Data_Get_Struct(other, MagickEnum, that);
+        TypedData_Get_Struct(self, MagickEnum, &rm_enum_data_type, this);
+        TypedData_Get_Struct(other, MagickEnum, &rm_enum_data_type, that);
         return this->val == that->val ? Qtrue : Qfalse;
     }
 
@@ -145,7 +169,7 @@ Enum_initialize(VALUE self, VALUE sym, VALUE val)
 {
     MagickEnum *magick_enum;
 
-    Data_Get_Struct(self, MagickEnum, magick_enum);
+    TypedData_Get_Struct(self, MagickEnum, &rm_enum_data_type, magick_enum);
     magick_enum->id = rb_to_id(sym); /* convert symbol to ID */
     magick_enum->val = NUM2INT(val);
 
@@ -163,7 +187,7 @@ Enum_to_i(VALUE self)
 {
     MagickEnum *magick_enum;
 
-    Data_Get_Struct(self, MagickEnum, magick_enum);
+    TypedData_Get_Struct(self, MagickEnum, &rm_enum_data_type, magick_enum);
     return INT2NUM(magick_enum->val);
 }
 
@@ -183,8 +207,8 @@ Enum_spaceship(VALUE self, VALUE other)
         return Qnil;
     }
 
-    Data_Get_Struct(self, MagickEnum, this);
-    Data_Get_Struct(other, MagickEnum, that);
+    TypedData_Get_Struct(self, MagickEnum, &rm_enum_data_type, this);
+    TypedData_Get_Struct(other, MagickEnum, &rm_enum_data_type, that);
 
     if (this->val > that->val)
     {
@@ -218,9 +242,9 @@ Enum_bitwise_or(VALUE self, VALUE another)
 
     new_enum = Enum_alloc(cls);
 
-    Data_Get_Struct(self, MagickEnum, this);
-    Data_Get_Struct(another, MagickEnum, that);
-    Data_Get_Struct(new_enum, MagickEnum, new_enum_data);
+    TypedData_Get_Struct(self, MagickEnum, &rm_enum_data_type, this);
+    TypedData_Get_Struct(another, MagickEnum, &rm_enum_data_type, that);
+    TypedData_Get_Struct(new_enum, MagickEnum, &rm_enum_data_type, new_enum_data);
 
     new_enum_data->id = rb_to_id(rb_sprintf("%s|%s", rb_id2name(this->id), rb_id2name(that->id)));
     new_enum_data->val = this->val | that->val;
@@ -282,7 +306,7 @@ Enum_type_inspect(VALUE self)
     char str[100];
     MagickEnum *magick_enum;
 
-    Data_Get_Struct(self, MagickEnum, magick_enum);
+    TypedData_Get_Struct(self, MagickEnum, &rm_enum_data_type, magick_enum);
     snprintf(str, sizeof(str), "%.48s=%d", rb_id2name(magick_enum->id), magick_enum->val);
 
     return rb_str_new2(str);
@@ -359,7 +383,7 @@ Enum_find(VALUE class, int val)
     for (x = 0; x < RARRAY_LEN(enumerators); x++)
     {
         VALUE enumerator = rb_ary_entry(enumerators, x);
-        Data_Get_Struct(enumerator, MagickEnum, magick_enum);
+        TypedData_Get_Struct(enumerator, MagickEnum, &rm_enum_data_type, magick_enum);
         if (magick_enum->val == val)
         {
             return enumerator;

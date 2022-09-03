@@ -512,6 +512,7 @@ EXTERN ID rm_ID_width;             /**< "width" */
 #endif
 
 
+extern const rb_data_type_t rm_enum_data_type;
 //! Convert a Ruby enum constant back to a C enum member.
 #define VALUE_TO_ENUM(value, e, type) \
    do {\
@@ -519,7 +520,7 @@ EXTERN ID rm_ID_width;             /**< "width" */
    if (CLASS_OF(value) != Class_##type)\
        rb_raise(rb_eTypeError, "wrong enumeration type - expected %s, got %s", \
                 rb_class2name(Class_##type), rb_class2name(CLASS_OF(value)));\
-   Data_Get_Struct(value, MagickEnum, magick_enum);\
+   TypedData_Get_Struct(value, MagickEnum, &rm_enum_data_type, magick_enum);\
    e = (type)(magick_enum->val);\
    } while(0)
 
