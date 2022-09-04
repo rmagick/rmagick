@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # $Id: RMagick.rb,v 1.84 2009/09/15 22:08:41 rmagick Exp $
 #==============================================================================
 #                  Copyright (C) 2009 by Timothy P. Hunter
@@ -75,7 +77,7 @@ module Magick
   MinimumGeometry  = GeometryValue.new(:MinimumGeometry, 6).freeze
 
   class Geometry
-    FLAGS = ['', '%', '!', '<', '>', '@', '^'].map(&:freeze).freeze
+    FLAGS = ['', '%', '!', '<', '>', '@', '^'].freeze
     RFLAGS = {
       '%' => PercentGeometry,
       '!' => AspectGeometry,
@@ -139,7 +141,7 @@ module Magick
 
     # Convert object to a geometry string
     def to_s
-      str = ''
+      str = String.new
       if @width > 0
         fmt = @width.truncate == @width ? '%d' : '%.2f'
         str << sprintf(fmt, @width)
