@@ -21,11 +21,6 @@ static VALUE Enum_type_inspect(VALUE);
 static void rm_enum_free(void *magick_enum);
 static size_t rm_enum_memsize(const void *magick_enum);
 
-#ifndef HAVE_RB_EXT_RACTOR_SAFE
-#undef RUBY_TYPED_FROZEN_SHAREABLE
-#define RUBY_TYPED_FROZEN_SHAREABLE 0
-#endif
-
 const rb_data_type_t rm_enum_data_type = {
     "Magick::Enum",
     { NULL, rm_enum_free, rm_enum_memsize, },

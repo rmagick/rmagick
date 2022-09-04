@@ -62,6 +62,11 @@
 #undef PACKAGE_TARNAME
 #undef WORDS_BIGENDIAN
 
+#ifndef HAVE_RB_EXT_RACTOR_SAFE
+#undef RUBY_TYPED_FROZEN_SHAREABLE
+#define RUBY_TYPED_FROZEN_SHAREABLE 0
+#endif
+
 #include "extconf.h"
 
 #if defined(IMAGEMAGICK_7)
@@ -411,6 +416,9 @@ EXTERN ID rm_ID_push;              /**< "push" */
 EXTERN ID rm_ID_values;            /**< "values" */
 EXTERN ID rm_ID_width;             /**< "width" */
 
+extern const rb_data_type_t rm_enum_data_type;
+extern const rb_data_type_t rm_info_data_type;
+
 #if !defined(min)
 #define min(a, b) ((a)<(b)?(a):(b)) /**< min of two values */
 #endif
@@ -486,6 +494,29 @@ EXTERN ID rm_ID_width;             /**< "width" */
         return self;\
     }
 
+#define IMPLEMENT_TYPED_ATTR_READER(class, attr, type, data_type) \
+    {\
+        class *ptr;\
+        if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {\
+            rm_check_destroyed(self); \
+        }\
+        TypedData_Get_Struct(self, class, data_type, ptr);\
+        return C_##type##_to_R_##type(ptr->attr);\
+    }
+
+#define IMPLEMENT_TYPED_ATTR_WRITER(class, attr, type, data_type) \
+    {\
+        class *ptr;\
+        if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {\
+            rm_check_destroyed(self); \
+        }\
+        rb_check_frozen(self);\
+        TypedData_Get_Struct(self, class, data_type, ptr);\
+        ptr->attr = R_##type##_to_C_##type(val);\
+        return val;\
+    }
+
+
 
 /*
  *  Declare attribute accessors
@@ -511,8 +542,6 @@ EXTERN ID rm_ID_width;             /**< "width" */
 #define DEF_CONSTV(constant, val) rb_define_const(Module_Magick, #constant, UINT2NUM(val))
 #endif
 
-
-extern const rb_data_type_t rm_enum_data_type;
 //! Convert a Ruby enum constant back to a C enum member.
 #define VALUE_TO_ENUM(value, e, type) \
    do {\

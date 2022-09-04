@@ -104,7 +104,7 @@ ImageList_animate(int argc, VALUE *argv, VALUE self)
         }
     }
 
-    Data_Get_Struct(info_obj, Info, info);
+    TypedData_Get_Struct(info_obj, Info, &rm_info_data_type, info);
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     GVL_STRUCT_TYPE(AnimateImages) args = { info, images, exception };
@@ -414,7 +414,7 @@ ImageList_display(VALUE self)
 
     // Create a new Info object to use with this call
     info_obj = rm_info_new();
-    Data_Get_Struct(info_obj, Info, info);
+    TypedData_Get_Struct(info_obj, Info, &rm_info_data_type, info);
 
     // Convert the images array to an images sequence.
     images = images_from_imagelist(self);
@@ -1110,7 +1110,7 @@ ImageList_to_blob(VALUE self)
     ExceptionInfo *exception;
 
     info_obj = rm_info_new();
-    Data_Get_Struct(info_obj, Info, info);
+    TypedData_Get_Struct(info_obj, Info, &rm_info_data_type, info);
 
     // Convert the images array to an images sequence.
     images = images_from_imagelist(self);
@@ -1184,7 +1184,7 @@ ImageList_write(VALUE self, VALUE file)
     ExceptionInfo *exception;
 
     info_obj = rm_info_new();
-    Data_Get_Struct(info_obj, Info, info);
+    TypedData_Get_Struct(info_obj, Info, &rm_info_data_type, info);
 
 
     if (TYPE(file) == T_FILE)
