@@ -39,6 +39,14 @@ static VALUE threshold_image(int, VALUE *, VALUE, gvl_function_t);
 static VALUE xform_image(int, VALUE, VALUE, VALUE, VALUE, VALUE, gvl_function_t);
 static VALUE array_from_images(Image *);
 static VALUE file_arg_rescue(VALUE, VALUE ATTRIBUTE_UNUSED) ATTRIBUTE_NORETURN;
+static size_t rm_image_memsize(const void *img);
+
+const rb_data_type_t rm_image_data_type = {
+    "Magick::Image",
+    { NULL, rm_image_destroy, rm_image_memsize, },
+    0, 0,
+    RUBY_TYPED_FROZEN_SHAREABLE,
+};
 
 static const char *BlackPointCompensationKey = "PROFILE:black-point-compensation";
 
@@ -1086,7 +1094,7 @@ crisscross(int bang, VALUE self, gvl_function_t fp)
     Image *image, *new_image;
     ExceptionInfo *exception;
 
-    Data_Get_Struct(self, Image, image);
+    TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
     exception = AcquireExceptionInfo();
 
     GVL_STRUCT_TYPE(crisscross) args = { image, exception };
@@ -1224,7 +1232,7 @@ auto_orient(int bang, VALUE self)
     VALUE new_image;
     VALUE degrees[1];
 
-    Data_Get_Struct(self, Image, image);
+    TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
 
     switch (image->orientation)
     {
@@ -1265,7 +1273,7 @@ auto_orient(int bang, VALUE self)
     }
 
 
-    Data_Get_Struct(new_image, Image, image);
+    TypedData_Get_Struct(new_image, Image, &rm_image_data_type, image);
     image->orientation = TopLeftOrientation;
 
     RB_GC_GUARD(new_image);
@@ -2107,7 +2115,7 @@ border(int bang, VALUE self, VALUE width, VALUE height, VALUE color)
     ExceptionInfo *exception;
     RectangleInfo rect;
 
-    Data_Get_Struct(self, Image, image);
+    TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
 
     memset(&rect, 0, sizeof(rect));
     rect.width = NUM2UINT(width);
@@ -2787,7 +2795,7 @@ Image_clut_channel(int argc, VALUE *argv, VALUE self)
         rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 or more)", argc);
     }
 
-    Data_Get_Struct(argv[0], Image, clut);
+    TypedData_Get_Struct(argv[0], Image, &rm_image_data_type, clut);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -3313,7 +3321,7 @@ Image_colormap(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_colors(VALUE self)
 {
-    IMPLEMENT_ATTR_READER(Image, colors, ulong);
+    IMPLEMENT_TYPED_ATTR_READER(Image, colors, ulong, &rm_image_data_type);
 }
 
 /**
@@ -3375,7 +3383,7 @@ Image_colorspace_eq(VALUE self, VALUE colorspace)
 VALUE
 Image_columns(VALUE self)
 {
-    IMPLEMENT_ATTR_READER(Image, columns, int);
+    IMPLEMENT_TYPED_ATTR_READER(Image, columns, int, &rm_image_data_type);
 }
 
 
@@ -5295,7 +5303,7 @@ Image_define(VALUE self, VALUE artifact, VALUE value)
 VALUE
 Image_delay(VALUE self)
 {
-    IMPLEMENT_ATTR_READER(Image, delay, ulong);
+    IMPLEMENT_TYPED_ATTR_READER(Image, delay, ulong, &rm_image_data_type);
 }
 
 /**
@@ -5308,7 +5316,7 @@ Image_delay(VALUE self)
 VALUE
 Image_delay_eq(VALUE self, VALUE val)
 {
-    IMPLEMENT_ATTR_WRITER(Image, delay, ulong);
+    IMPLEMENT_TYPED_ATTR_WRITER(Image, delay, ulong, &rm_image_data_type);
 }
 
 
@@ -5481,7 +5489,7 @@ Image_destroy_bang(VALUE self)
     Image *image;
 
     rb_check_frozen(self);
-    Data_Get_Struct(self, Image, image);
+    TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
     rm_image_destroy(image);
     DATA_PTR(self) = NULL;
     return self;
@@ -5498,7 +5506,7 @@ Image_destroyed_q(VALUE self)
 {
     Image *image;
 
-    Data_Get_Struct(self, Image, image);
+    TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
     return image ? Qfalse : Qtrue;
 }
 
@@ -5567,7 +5575,7 @@ Image_difference(VALUE self, VALUE other)
 VALUE
 Image_directory(VALUE self)
 {
-    IMPLEMENT_ATTR_READER(Image, directory, str);
+    IMPLEMENT_TYPED_ATTR_READER(Image, directory, str, &rm_image_data_type);
 }
 
 
@@ -5692,7 +5700,7 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
     // Create the Ruby array for the pixels. Return this even if ExportImagePixels fails.
     pixels_ary = rb_ary_new();
 
-    Data_Get_Struct(self, Image, image);
+    TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
 
     exception = AcquireExceptionInfo();
     GVL_STRUCT_TYPE(ExportImagePixels) args = { image, x, y, columns, rows, map, stg_type, (void *)pixels.v, exception };
@@ -6111,7 +6119,7 @@ Image_dup(VALUE self)
     VALUE dup;
 
     rm_check_destroyed(self);
-    dup = Data_Wrap_Struct(CLASS_OF(self), NULL, rm_image_destroy, NULL);
+    dup = TypedData_Wrap_Struct(CLASS_OF(self), &rm_image_data_type, NULL);
     RB_GC_GUARD(dup);
 
     return rb_funcall(dup, rm_ID_initialize_copy, 1, self);
@@ -6501,7 +6509,7 @@ excerpt(int bang, VALUE self, VALUE x, VALUE y, VALUE width, VALUE height)
     rect.width = NUM2ULONG(width);
     rect.height = NUM2ULONG(height);
 
-    Data_Get_Struct(self, Image, image);
+    TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
 
     exception = AcquireExceptionInfo();
     GVL_STRUCT_TYPE(ExcerptImage) args = { image, &rect, exception };
@@ -6723,7 +6731,7 @@ Image_extent(int argc, VALUE *argv, VALUE self)
     }
 
 
-    Data_Get_Struct(self, Image, image);
+    TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
     exception = AcquireExceptionInfo();
 
     GVL_STRUCT_TYPE(ExtentImage) args = { image, &geometry, exception };
@@ -6888,7 +6896,7 @@ Image_extract_info_eq(VALUE self, VALUE rect)
 VALUE
 Image_filename(VALUE self)
 {
-    IMPLEMENT_ATTR_READER(Image, filename, str);
+    IMPLEMENT_TYPED_ATTR_READER(Image, filename, str, &rm_image_data_type);
 }
 
 
@@ -7024,7 +7032,7 @@ flipflop(int bang, VALUE self, gvl_function_t fp)
     Image *image, *new_image;
     ExceptionInfo *exception;
 
-    Data_Get_Struct(self, Image, image);
+    TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
     exception = AcquireExceptionInfo();
 
     GVL_STRUCT_TYPE(flipflop) args = { image, exception };
@@ -7396,7 +7404,7 @@ Image_function_channel(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_fuzz(VALUE self)
 {
-    IMPLEMENT_ATTR_READER(Image, fuzz, dbl);
+    IMPLEMENT_TYPED_ATTR_READER(Image, fuzz, dbl, &rm_image_data_type);
 }
 
 
@@ -7478,7 +7486,7 @@ Image_fx(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_gamma(VALUE self)
 {
-    IMPLEMENT_ATTR_READER(Image, gamma, dbl);
+    IMPLEMENT_TYPED_ATTR_READER(Image, gamma, dbl, &rm_image_data_type);
 }
 
 /**
@@ -7490,7 +7498,7 @@ Image_gamma(VALUE self)
 VALUE
 Image_gamma_eq(VALUE self, VALUE val)
 {
-    IMPLEMENT_ATTR_WRITER(Image, gamma, dbl);
+    IMPLEMENT_TYPED_ATTR_WRITER(Image, gamma, dbl, &rm_image_data_type);
 }
 
 
@@ -7734,7 +7742,7 @@ Image_gaussian_blur_channel(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_geometry(VALUE self)
 {
-    IMPLEMENT_ATTR_READER(Image, geometry, str);
+    IMPLEMENT_TYPED_ATTR_READER(Image, geometry, str, &rm_image_data_type);
 }
 
 
@@ -8368,7 +8376,7 @@ Image_inspect(VALUE self)
     Image *image;
     char buffer[MaxTextExtent];          // image description buffer
 
-    Data_Get_Struct(self, Image, image);
+    TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
     if (!image)
     {
         return rb_str_new2("#<Magick::Image: (destroyed)>");
@@ -8461,12 +8469,12 @@ Image_iptc_profile_eq(VALUE self, VALUE profile)
 VALUE
 Image_iterations(VALUE self)
 {
-    IMPLEMENT_ATTR_READER(Image, iterations, int);
+    IMPLEMENT_TYPED_ATTR_READER(Image, iterations, int, &rm_image_data_type);
 }
 VALUE
 Image_iterations_eq(VALUE self, VALUE val)
 {
-    IMPLEMENT_ATTR_WRITER(Image, iterations, int);
+    IMPLEMENT_TYPED_ATTR_WRITER(Image, iterations, int, &rm_image_data_type);
 }
 
 /**
@@ -8943,7 +8951,7 @@ magnify(int bang, VALUE self, gvl_function_t fp)
     Image *new_image;
     ExceptionInfo *exception;
 
-    Data_Get_Struct(self, Image, image);
+    TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
     exception = AcquireExceptionInfo();
 
     GVL_STRUCT_TYPE(magnify) args = { image, exception };
@@ -9479,7 +9487,7 @@ Image_median_filter(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_mean_error_per_pixel(VALUE self)
 {
-    IMPLEMENT_ATTR_READERF(Image, mean_error_per_pixel, error.mean_error_per_pixel, dbl);
+    IMPLEMENT_TYPED_ATTR_READERF(Image, mean_error_per_pixel, error.mean_error_per_pixel, dbl, &rm_image_data_type);
 }
 
 
@@ -9627,7 +9635,7 @@ Image_monochrome_q(VALUE self)
 VALUE
 Image_montage(VALUE self)
 {
-    IMPLEMENT_ATTR_READER(Image, montage, str);
+    IMPLEMENT_TYPED_ATTR_READER(Image, montage, str, &rm_image_data_type);
 }
 
 
@@ -9676,7 +9684,7 @@ motion_blur(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
         rb_raise(rb_eArgError, "sigma must be != 0.0");
     }
 
-    Data_Get_Struct(self, Image, image);
+    TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
 
     exception = AcquireExceptionInfo();
     GVL_STRUCT_TYPE(motion_blur) args = { image, radius, sigma, angle, exception };
@@ -9823,7 +9831,7 @@ Image_alloc(VALUE class)
 {
     VALUE image_obj;
 
-    image_obj = Data_Wrap_Struct(class, NULL, rm_image_destroy, NULL);
+    image_obj = TypedData_Wrap_Struct(class, &rm_image_data_type, NULL);
 
     RB_GC_GUARD(image_obj);
 
@@ -9937,7 +9945,7 @@ rm_image_new(Image *image)
 {
     rm_ensure_result(image);
 
-    return Data_Wrap_Struct(Class_Image, NULL, rm_image_destroy, image);
+    return TypedData_Wrap_Struct(Class_Image, &rm_image_data_type, image);
 }
 
 
@@ -10027,7 +10035,7 @@ Image_normalize_channel(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_normalized_mean_error(VALUE self)
 {
-    IMPLEMENT_ATTR_READERF(Image, normalized_mean_error, error.normalized_mean_error, dbl);
+    IMPLEMENT_TYPED_ATTR_READERF(Image, normalized_mean_error, error.normalized_mean_error, dbl, &rm_image_data_type);
 }
 
 /**
@@ -10038,7 +10046,7 @@ Image_normalized_mean_error(VALUE self)
 VALUE
 Image_normalized_maximum_error(VALUE self)
 {
-    IMPLEMENT_ATTR_READERF(Image, normalized_maximum_error, error.normalized_maximum_error, dbl);
+    IMPLEMENT_TYPED_ATTR_READERF(Image, normalized_maximum_error, error.normalized_maximum_error, dbl, &rm_image_data_type);
 }
 
 
@@ -10075,7 +10083,7 @@ Image_number_colors(VALUE self)
 VALUE
 Image_offset(VALUE self)
 {
-    IMPLEMENT_ATTR_READER(Image, offset, long);
+    IMPLEMENT_TYPED_ATTR_READER(Image, offset, long, &rm_image_data_type);
 }
 
 /**
@@ -10087,7 +10095,7 @@ Image_offset(VALUE self)
 VALUE
 Image_offset_eq(VALUE self, VALUE val)
 {
-    IMPLEMENT_ATTR_WRITER(Image, offset, long);
+    IMPLEMENT_TYPED_ATTR_WRITER(Image, offset, long, &rm_image_data_type);
 }
 
 
@@ -10951,7 +10959,7 @@ Image_profile_bang(VALUE self, VALUE name, VALUE profile)
 VALUE
 Image_quality(VALUE self)
 {
-    IMPLEMENT_ATTR_READER(Image, quality, ulong);
+    IMPLEMENT_TYPED_ATTR_READER(Image, quality, ulong, &rm_image_data_type);
 }
 
 
@@ -11921,7 +11929,7 @@ resample(int bang, int argc, VALUE *argv, VALUE self)
     double width, height;
     ExceptionInfo *exception;
 
-    Data_Get_Struct(self, Image, image);
+    TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
 
     // Set up defaults
     filter  = image->filter;
@@ -12073,7 +12081,7 @@ resize(int bang, int argc, VALUE *argv, VALUE self)
     double blur, drows, dcols;
     ExceptionInfo *exception;
 
-    Data_Get_Struct(self, Image, image);
+    TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
 
     // Set up defaults
     filter  = image->filter;
@@ -12247,7 +12255,7 @@ rotate(int bang, int argc, VALUE *argv, VALUE self)
     long arrow_l;
     ExceptionInfo *exception;
 
-    Data_Get_Struct(self, Image, image);
+    TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
 
     switch (argc)
     {
@@ -12349,7 +12357,7 @@ Image_rotate_bang(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_rows(VALUE self)
 {
-    IMPLEMENT_ATTR_READER(Image, rows, int);
+    IMPLEMENT_TYPED_ATTR_READER(Image, rows, int, &rm_image_data_type);
 }
 
 
@@ -12480,7 +12488,7 @@ scale(int bang, int argc, VALUE *argv, VALUE self, gvl_function_t fp)
     double scale_arg, drows, dcols;
     ExceptionInfo *exception;
 
-    Data_Get_Struct(self, Image, image);
+    TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
 
     switch (argc)
     {
@@ -12539,7 +12547,7 @@ scale(int bang, int argc, VALUE *argv, VALUE self, gvl_function_t fp)
 VALUE
 Image_scene(VALUE self)
 {
-    IMPLEMENT_ATTR_READER(Image, scene, ulong);
+    IMPLEMENT_TYPED_ATTR_READER(Image, scene, ulong, &rm_image_data_type);
 }
 
 
@@ -13657,7 +13665,7 @@ Image_spread(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_start_loop(VALUE self)
 {
-    IMPLEMENT_ATTR_READER(Image, start_loop, boolean);
+    IMPLEMENT_TYPED_ATTR_READER(Image, start_loop, boolean, &rm_image_data_type);
 }
 
 /**
@@ -13669,7 +13677,7 @@ Image_start_loop(VALUE self)
 VALUE
 Image_start_loop_eq(VALUE self, VALUE val)
 {
-    IMPLEMENT_ATTR_WRITER(Image, start_loop, boolean);
+    IMPLEMENT_TYPED_ATTR_WRITER(Image, start_loop, boolean, &rm_image_data_type);
 }
 
 
@@ -14246,7 +14254,7 @@ thumbnail(int bang, int argc, VALUE *argv, VALUE self)
     RectangleInfo geometry;
     ExceptionInfo *exception;
 
-    Data_Get_Struct(self, Image, image);
+    TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
 
     switch (argc)
     {
@@ -14895,7 +14903,7 @@ trimmer(int bang, int argc, VALUE *argv, VALUE self)
             break;
     }
 
-    Data_Get_Struct(self, Image, image);
+    TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
 
     exception = AcquireExceptionInfo();
     GVL_STRUCT_TYPE(TrimImage) args = { image, exception };
@@ -15936,7 +15944,7 @@ Image_write(VALUE self, VALUE file)
 VALUE
 Image_x_resolution(VALUE self)
 {
-    IMPLEMENT_ATTR_READERF(Image, x_resolution, resolution.x, dbl);
+    IMPLEMENT_TYPED_ATTR_READERF(Image, x_resolution, resolution.x, dbl, &rm_image_data_type);
 }
 
 /**
@@ -15948,7 +15956,7 @@ Image_x_resolution(VALUE self)
 VALUE
 Image_x_resolution_eq(VALUE self, VALUE val)
 {
-    IMPLEMENT_ATTR_WRITERF(Image, x_resolution, resolution.x, dbl);
+    IMPLEMENT_TYPED_ATTR_WRITERF(Image, x_resolution, resolution.x, dbl, &rm_image_data_type);
 }
 
 /**
@@ -15959,7 +15967,7 @@ Image_x_resolution_eq(VALUE self, VALUE val)
 VALUE
 Image_y_resolution(VALUE self)
 {
-    IMPLEMENT_ATTR_READERF(Image, y_resolution, resolution.y, dbl);
+    IMPLEMENT_TYPED_ATTR_READERF(Image, y_resolution, resolution.y, dbl, &rm_image_data_type);
 }
 
 /**
@@ -15971,7 +15979,7 @@ Image_y_resolution(VALUE self)
 VALUE
 Image_y_resolution_eq(VALUE self, VALUE val)
 {
-    IMPLEMENT_ATTR_WRITERF(Image, y_resolution, resolution.y, dbl);
+    IMPLEMENT_TYPED_ATTR_WRITERF(Image, y_resolution, resolution.y, dbl, &rm_image_data_type);
 }
 #else
 /**
@@ -15982,7 +15990,7 @@ Image_y_resolution_eq(VALUE self, VALUE val)
 VALUE
 Image_x_resolution(VALUE self)
 {
-    IMPLEMENT_ATTR_READER(Image, x_resolution, dbl);
+    IMPLEMENT_TYPED_ATTR_READER(Image, x_resolution, dbl, &rm_image_data_type);
 }
 
 /**
@@ -15994,7 +16002,7 @@ Image_x_resolution(VALUE self)
 VALUE
 Image_x_resolution_eq(VALUE self, VALUE val)
 {
-    IMPLEMENT_ATTR_WRITER(Image, x_resolution, dbl);
+    IMPLEMENT_TYPED_ATTR_WRITER(Image, x_resolution, dbl, &rm_image_data_type);
 }
 
 /**
@@ -16005,7 +16013,7 @@ Image_x_resolution_eq(VALUE self, VALUE val)
 VALUE
 Image_y_resolution(VALUE self)
 {
-    IMPLEMENT_ATTR_READER(Image, y_resolution, dbl);
+    IMPLEMENT_TYPED_ATTR_READER(Image, y_resolution, dbl, &rm_image_data_type);
 }
 
 /**
@@ -16017,7 +16025,7 @@ Image_y_resolution(VALUE self)
 VALUE
 Image_y_resolution_eq(VALUE self, VALUE val)
 {
-    IMPLEMENT_ATTR_WRITER(Image, y_resolution, dbl);
+    IMPLEMENT_TYPED_ATTR_WRITER(Image, y_resolution, dbl, &rm_image_data_type);
 }
 #endif
 
@@ -16076,7 +16084,7 @@ cropper(int bang, int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 5:
-            Data_Get_Struct(self, Image, image);
+            TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
 
             VALUE_TO_ENUM(argv[0], gravity, GravityType);
 
@@ -16143,7 +16151,7 @@ cropper(int bang, int argc, VALUE *argv, VALUE self)
             columns = NUM2ULONG(width);
             rows    = NUM2ULONG(height);
 
-            Data_Get_Struct(self, Image, image);
+            TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
 
             switch (gravity)
             {
@@ -16209,7 +16217,7 @@ cropper(int bang, int argc, VALUE *argv, VALUE self)
     cropped = xform_image(bang, self, x, y, width, height, GVL_FUNC(CropImage));
     if (reset_page)
     {
-        Data_Get_Struct(cropped, Image, image);
+        TypedData_Get_Struct(cropped, Image, &rm_image_data_type, image);
         ResetImagePage(image, "0x0+0+0");
     }
 
@@ -16246,7 +16254,7 @@ xform_image(int bang, VALUE self, VALUE x, VALUE y, VALUE width, VALUE height, g
     RectangleInfo rect;
     ExceptionInfo *exception;
 
-    Data_Get_Struct(self, Image, image);
+    TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
     rect.x      = NUM2LONG(x);
     rect.y      = NUM2LONG(y);
     rect.width  = NUM2ULONG(width);
@@ -16363,4 +16371,15 @@ void rm_image_destroy(void *img)
     }
 }
 
-
+/**
+  * Get Image object size.
+  *
+  * No Ruby usage (internal function)
+  *
+  * @param ptr pointer to the Image object
+  */
+static size_t
+rm_image_memsize(const void *ptr)
+{
+    return sizeof(Image);
+}

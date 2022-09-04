@@ -418,6 +418,7 @@ EXTERN ID rm_ID_width;             /**< "width" */
 
 extern const rb_data_type_t rm_enum_data_type;
 extern const rb_data_type_t rm_info_data_type;
+extern const rb_data_type_t rm_image_data_type;
 
 #if !defined(min)
 #define min(a, b) ((a)<(b)?(a):(b)) /**< min of two values */
@@ -504,6 +505,14 @@ extern const rb_data_type_t rm_info_data_type;
         return C_##type##_to_R_##type(ptr->attr);\
     }
 
+#define IMPLEMENT_TYPED_ATTR_READERF(class, attr, field, type, data_type) \
+    {\
+        class *ptr;\
+        rm_check_destroyed(self); \
+        TypedData_Get_Struct(self, class, data_type, ptr);\
+        return C_##type##_to_R_##type(ptr->field);\
+    }
+
 #define IMPLEMENT_TYPED_ATTR_WRITER(class, attr, type, data_type) \
     {\
         class *ptr;\
@@ -516,6 +525,17 @@ extern const rb_data_type_t rm_info_data_type;
         return val;\
     }
 
+#define IMPLEMENT_TYPED_ATTR_WRITERF(class, attr, field, type, data_type) \
+    {\
+        class *ptr;\
+        if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {\
+            rm_check_destroyed(self); \
+        }\
+        rb_check_frozen(self);\
+        TypedData_Get_Struct(self, class, data_type, ptr);\
+        ptr->field = R_##type##_to_C_##type(val);\
+        return self;\
+    }
 
 
 /*
