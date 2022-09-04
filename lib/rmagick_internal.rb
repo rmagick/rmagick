@@ -772,12 +772,6 @@ module Magick
     module Post_ObjectData_Descriptor
       Confirmed_ObjectData_Size              = '9:10'
     end
-
-    # Make all constants above immutable
-    constants.each do |record|
-      rec = const_get(record)
-      rec.constants.each { |ds| rec.const_get(ds).freeze }
-    end
   end # module Magick::IPTC
 
   # Ruby-level Magick::Image methods
