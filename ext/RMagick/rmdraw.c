@@ -1253,7 +1253,7 @@ Draw_primitive(VALUE self, VALUE primitive)
     }
     else
     {
-        draw->primitives = rb_str_concat(draw->primitives, rb_str_new2("\n"));
+        draw->primitives = rb_str_plus(draw->primitives, rb_str_new2("\n"));
         draw->primitives = rb_str_concat(draw->primitives, primitive);
     }
 
