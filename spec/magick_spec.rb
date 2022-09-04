@@ -64,4 +64,33 @@ RSpec.describe Magick do
       expect(Magick::MinimumGeometry.to_i).to eq(6)
     end
   end
+
+  if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.0.0')
+    describe 'Ractor' do
+      it 'is supported' do
+        expect do
+          r = Ractor.new do
+            img = Magick::ImageList.new
+            img.new_image(200, 200, Magick::GradientFill.new(100, 50, 100, 50, 'khaki1', 'turquoise'))
+            img.resize(20, 20)
+          end
+          r.take
+        end.not_to raise_error
+
+        expect do
+          r = Ractor.new do
+            img = Magick::ImageList.new
+            img.new_image(40, 40, Magick::HatchFill.new('white', 'lightcyan2'))
+            gc = Magick::Draw.new
+
+            gc.font_weight(Magick::NormalWeight)
+            gc.font_style(Magick::NormalStyle)
+            gc.text(5, 20, "'20,20'")
+            gc.draw(img)
+          end
+          r.take
+        end.not_to raise_error
+      end
+    end
+  end
 end
