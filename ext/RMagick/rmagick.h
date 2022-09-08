@@ -420,6 +420,7 @@ extern const rb_data_type_t rm_enum_data_type;
 extern const rb_data_type_t rm_info_data_type;
 extern const rb_data_type_t rm_image_data_type;
 extern const rb_data_type_t rm_draw_data_type;
+extern const rb_data_type_t rm_pixel_data_type;
 
 #if !defined(min)
 #define min(a, b) ((a)<(b)?(a):(b)) /**< min of two values */
@@ -1091,7 +1092,6 @@ ATTR_ACCESSOR(Pixel, cyan)
 ATTR_ACCESSOR(Pixel, magenta)
 ATTR_ACCESSOR(Pixel, yellow)
 ATTR_ACCESSOR(Pixel, black)
-extern void   destroy_Pixel(Pixel *);
 extern VALUE  Pixel_alloc(VALUE);
 extern VALUE  Pixel_case_eq(VALUE, VALUE);
 extern VALUE  Pixel_clone(VALUE);

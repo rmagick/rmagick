@@ -19,6 +19,15 @@
 
 static VALUE color_arg_rescue(VALUE, VALUE ATTRIBUTE_UNUSED) ATTRIBUTE_NORETURN;
 static void Color_Name_to_PixelColor(PixelColor *, VALUE);
+static void Pixel_destroy(void *);
+static size_t Pixel_memsize(const void *);
+
+const rb_data_type_t rm_pixel_data_type = {
+    "Magick::Pixel",
+    { NULL, Pixel_destroy, Pixel_memsize, },
+    0, 0,
+    RUBY_TYPED_FROZEN_SHAREABLE,
+};
 
 
 /**
@@ -26,12 +35,27 @@ static void Color_Name_to_PixelColor(PixelColor *, VALUE);
  *
  * No Ruby usage (internal function)
  *
- * @param pixel the Pixel object to destroy
+ * @param ptr the Pixel object to destroy
  */
-void
-destroy_Pixel(Pixel *pixel)
+static void
+Pixel_destroy(void *ptr)
 {
+    Pixel *pixel = (Pixel *)ptr;
     xfree(pixel);
+}
+
+
+/**
+  * Get Pixel object size.
+  *
+  * No Ruby usage (internal function)
+  *
+  * @param ptr pointer to the Pixel object
+  */
+static size_t
+Pixel_memsize(const void *ptr)
+{
+    return sizeof(Pixel);
 }
 
 
@@ -43,7 +67,7 @@ destroy_Pixel(Pixel *pixel)
 VALUE
 Pixel_red(VALUE self)
 {
-    IMPLEMENT_ATTR_READER(Pixel, red, int);
+    IMPLEMENT_TYPED_ATTR_READER(Pixel, red, int, &rm_pixel_data_type);
 }
 
 /**
@@ -54,7 +78,7 @@ Pixel_red(VALUE self)
 VALUE
 Pixel_green(VALUE self)
 {
-    IMPLEMENT_ATTR_READER(Pixel, green, int);
+    IMPLEMENT_TYPED_ATTR_READER(Pixel, green, int, &rm_pixel_data_type);
 }
 
 /**
@@ -65,7 +89,7 @@ Pixel_green(VALUE self)
 VALUE
 Pixel_blue(VALUE self)
 {
-    IMPLEMENT_ATTR_READER(Pixel, blue, int);
+    IMPLEMENT_TYPED_ATTR_READER(Pixel, blue, int, &rm_pixel_data_type);
 }
 
 /**
@@ -77,7 +101,7 @@ VALUE
 Pixel_alpha(VALUE self)
 {
     Pixel *pixel;
-    Data_Get_Struct(self, Pixel, pixel);
+    TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
 #if defined(IMAGEMAGICK_7)
     return C_int_to_R_int(pixel->alpha);
 #else
@@ -102,7 +126,7 @@ Pixel_red_eq(VALUE self, VALUE v)
     Pixel *pixel;
 
     rb_check_frozen(self);
-    Data_Get_Struct(self, Pixel, pixel);
+    TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
     pixel->red = APP2QUANTUM(v);
     rb_funcall(self, rm_ID_changed, 0);
     rb_funcall(self, rm_ID_notify_observers, 1, self);
@@ -126,7 +150,7 @@ Pixel_green_eq(VALUE self, VALUE v)
     Pixel *pixel;
 
     rb_check_frozen(self);
-    Data_Get_Struct(self, Pixel, pixel);
+    TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
     pixel->green = APP2QUANTUM(v);
     rb_funcall(self, rm_ID_changed, 0);
     rb_funcall(self, rm_ID_notify_observers, 1, self);
@@ -150,7 +174,7 @@ Pixel_blue_eq(VALUE self, VALUE v)
     Pixel *pixel;
 
     rb_check_frozen(self);
-    Data_Get_Struct(self, Pixel, pixel);
+    TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
     pixel->blue = APP2QUANTUM(v);
     rb_funcall(self, rm_ID_changed, 0);
     rb_funcall(self, rm_ID_notify_observers, 1, self);
@@ -174,7 +198,7 @@ Pixel_alpha_eq(VALUE self, VALUE v)
     Pixel *pixel;
 
     rb_check_frozen(self);
-    Data_Get_Struct(self, Pixel, pixel);
+    TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
 #if defined(IMAGEMAGICK_7)
     pixel->alpha = APP2QUANTUM(v);
     rb_funcall(self, rm_ID_changed, 0);
@@ -198,7 +222,7 @@ Pixel_cyan(VALUE self)
 {
     Pixel *pixel;
 
-    Data_Get_Struct(self, Pixel, pixel);
+    TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
     return INT2NUM(pixel->red);
 }
 
@@ -219,7 +243,7 @@ Pixel_cyan_eq(VALUE self, VALUE v)
     Pixel *pixel;
 
     rb_check_frozen(self);
-    Data_Get_Struct(self, Pixel, pixel);
+    TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
     pixel->red = APP2QUANTUM(v);
     rb_funcall(self, rm_ID_changed, 0);
     rb_funcall(self, rm_ID_notify_observers, 1, self);
@@ -236,7 +260,7 @@ Pixel_magenta(VALUE self)
 {
     Pixel *pixel;
 
-    Data_Get_Struct(self, Pixel, pixel);
+    TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
     return INT2NUM(pixel->green);
 }
 
@@ -257,7 +281,7 @@ Pixel_magenta_eq(VALUE self, VALUE v)
     Pixel *pixel;
 
     rb_check_frozen(self);
-    Data_Get_Struct(self, Pixel, pixel);
+    TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
     pixel->green = APP2QUANTUM(v);
     rb_funcall(self, rm_ID_changed, 0);
     rb_funcall(self, rm_ID_notify_observers, 1, self);
@@ -274,7 +298,7 @@ Pixel_yellow(VALUE self)
 {
     Pixel *pixel;
 
-    Data_Get_Struct(self, Pixel, pixel);
+    TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
     return INT2NUM(pixel->blue);
 }
 
@@ -295,7 +319,7 @@ Pixel_yellow_eq(VALUE self, VALUE v)
     Pixel *pixel;
 
     rb_check_frozen(self);
-    Data_Get_Struct(self, Pixel, pixel);
+    TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
     pixel->blue = APP2QUANTUM(v);
     rb_funcall(self, rm_ID_changed, 0);
     rb_funcall(self, rm_ID_notify_observers, 1, self);
@@ -312,7 +336,7 @@ Pixel_black(VALUE self)
 {
     Pixel *pixel;
 
-    Data_Get_Struct(self, Pixel, pixel);
+    TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
     return INT2NUM(pixel->black);
 }
 
@@ -333,7 +357,7 @@ Pixel_black_eq(VALUE self, VALUE v)
     Pixel *pixel;
 
     rb_check_frozen(self);
-    Data_Get_Struct(self, Pixel, pixel);
+    TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
     pixel->black = APP2QUANTUM(v);
     rb_funcall(self, rm_ID_changed, 0);
     rb_funcall(self, rm_ID_notify_observers, 1, self);
@@ -376,7 +400,7 @@ Color_to_PixelColor(PixelColor *pp, VALUE color)
     if (CLASS_OF(color) == Class_Pixel)
     {
         memset(pp, 0, sizeof(*pp));
-        Data_Get_Struct(color, Pixel, pixel);
+        TypedData_Get_Struct(color, Pixel, &rm_pixel_data_type, pixel);
         pp->red     = pixel->red;
         pp->green   = pixel->green;
         pp->blue    = pixel->blue;
@@ -415,7 +439,7 @@ Color_to_Pixel(Pixel *pp, VALUE color)
     {
         Pixel *pixel;
 
-        Data_Get_Struct(color, Pixel, pixel);
+        TypedData_Get_Struct(color, Pixel, &rm_pixel_data_type, pixel);
         memcpy(pp, pixel, sizeof(Pixel));
     }
     else
@@ -474,7 +498,7 @@ Pixel_alloc(VALUE class)
 
     pixel = ALLOC(Pixel);
     memset(pixel, '\0', sizeof(Pixel));
-    return Data_Wrap_Struct(class, NULL, destroy_Pixel, pixel);
+    return TypedData_Wrap_Struct(class, &rm_pixel_data_type, pixel);
 }
 
 
@@ -492,8 +516,8 @@ Pixel_case_eq(VALUE self, VALUE other)
     {
         Pixel *this, *that;
 
-        Data_Get_Struct(self, Pixel, this);
-        Data_Get_Struct(other, Pixel, that);
+        TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, this);
+        TypedData_Get_Struct(other, Pixel, &rm_pixel_data_type, that);
         return (this->red == that->red
             && this->blue == that->blue
             && this->green == that->green
@@ -547,7 +571,7 @@ Pixel_dup(VALUE self)
 
     pixel = ALLOC(Pixel);
     memset(pixel, '\0', sizeof(Pixel));
-    dup = Data_Wrap_Struct(CLASS_OF(self), NULL, destroy_Pixel, pixel);
+    dup = TypedData_Wrap_Struct(CLASS_OF(self), &rm_pixel_data_type, pixel);
     RB_GC_GUARD(dup);
 
     return rb_funcall(dup, rm_ID_initialize_copy, 1, self);
@@ -785,7 +809,7 @@ Pixel_from_MagickPixel(const MagickPixel *pp)
 #endif
     pixel->black   = pp->index;
 
-    return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
+    return TypedData_Wrap_Struct(Class_Pixel, &rm_pixel_data_type, pixel);
 }
 
 
@@ -817,7 +841,7 @@ Pixel_from_PixelPacket(const PixelPacket *pp)
     pixel->black   = 0;
 #endif
 
-    return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
+    return TypedData_Wrap_Struct(Class_Pixel, &rm_pixel_data_type, pixel);
 }
 
 
@@ -849,7 +873,7 @@ Pixel_from_PixelColor(const PixelColor *pp)
     pixel->black   = 0;
 #endif
 
-    return Data_Wrap_Struct(Class_Pixel, NULL, destroy_Pixel, pixel);
+    return TypedData_Wrap_Struct(Class_Pixel, &rm_pixel_data_type, pixel);
 }
 
 
@@ -864,7 +888,7 @@ Pixel_hash(VALUE self)
     Pixel *pixel;
     unsigned int hash;
 
-    Data_Get_Struct(self, Pixel, pixel);
+    TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
 
     hash  = ScaleQuantumToChar(pixel->red)   << 24;
     hash += ScaleQuantumToChar(pixel->green) << 16;
@@ -892,8 +916,8 @@ Pixel_init_copy(VALUE self, VALUE orig)
 {
     Pixel *copy, *original;
 
-    Data_Get_Struct(orig, Pixel, original);
-    Data_Get_Struct(self, Pixel, copy);
+    TypedData_Get_Struct(orig, Pixel, &rm_pixel_data_type, original);
+    TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, copy);
 
     *copy = *original;
 
@@ -916,7 +940,7 @@ Pixel_initialize(int argc, VALUE *argv, VALUE self)
 {
     Pixel *pixel;
 
-    Data_Get_Struct(self, Pixel, pixel);
+    TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
 
 #if defined(IMAGEMAGICK_7)
     pixel->alpha = OpaqueAlpha;
@@ -972,7 +996,7 @@ Pixel_intensity(VALUE self)
     Pixel *pixel;
     Quantum intensity;
 
-    Data_Get_Struct(self, Pixel, pixel);
+    TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
 
     intensity = ROUND_TO_QUANTUM((0.299*pixel->red)
                                 + (0.587*pixel->green)
@@ -993,7 +1017,7 @@ Pixel_marshal_dump(VALUE self)
     Pixel *pixel;
     VALUE dpixel;
 
-    Data_Get_Struct(self, Pixel, pixel);
+    TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
     dpixel = rb_hash_new();
     rb_hash_aset(dpixel, CSTR2SYM("red"), QUANTUM2NUM(pixel->red));
     rb_hash_aset(dpixel, CSTR2SYM("green"), QUANTUM2NUM(pixel->green));
@@ -1021,7 +1045,7 @@ Pixel_marshal_load(VALUE self, VALUE dpixel)
 {
     Pixel *pixel;
 
-    Data_Get_Struct(self, Pixel, pixel);
+    TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
     pixel->red = NUM2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("red")));
     pixel->green = NUM2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("green")));
     pixel->blue = NUM2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("blue")));
@@ -1045,8 +1069,8 @@ Pixel_spaceship(VALUE self, VALUE other)
 {
     Pixel *this, *that;
 
-    Data_Get_Struct(self, Pixel, this);
-    Data_Get_Struct(other, Pixel, that);
+    TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, this);
+    TypedData_Get_Struct(other, Pixel, &rm_pixel_data_type, that);
 
     if (this->red != that->red)
     {
@@ -1093,7 +1117,7 @@ Pixel_to_hsla(VALUE self)
     Pixel *pixel;
     VALUE hsla;
 
-    Data_Get_Struct(self, Pixel, pixel);
+    TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
 
     ConvertRGBToHSL(pixel->red, pixel->green, pixel->blue, &hue, &sat, &lum);
     hue *= 360.0;
@@ -1218,7 +1242,7 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
             rb_raise(rb_eArgError, "wrong number of arguments (%d for 0 to 2)", argc);
     }
 
-    Data_Get_Struct(self, Pixel, pixel);
+    TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
 
     info = CloneImageInfo(NULL);
     image = rm_acquire_image(info);
@@ -1284,7 +1308,7 @@ Pixel_to_s(VALUE self)
     Pixel *pixel;
     char buff[100];
 
-    Data_Get_Struct(self, Pixel, pixel);
+    TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
     snprintf(buff, sizeof(buff), "red=" QuantumFormat ", green=" QuantumFormat ", blue=" QuantumFormat ", alpha=" QuantumFormat,
             pixel->red, pixel->green, pixel->blue,
 #if defined(IMAGEMAGICK_7)
