@@ -419,6 +419,7 @@ EXTERN ID rm_ID_width;             /**< "width" */
 extern const rb_data_type_t rm_enum_data_type;
 extern const rb_data_type_t rm_info_data_type;
 extern const rb_data_type_t rm_image_data_type;
+extern const rb_data_type_t rm_draw_data_type;
 
 #if !defined(min)
 #define min(a, b) ((a)<(b)?(a):(b)) /**< min of two values */
