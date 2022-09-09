@@ -488,7 +488,7 @@ ImageList_montage(VALUE self)
         rb_yield(montage_obj);
     }
 
-    Data_Get_Struct(montage_obj, Montage, montage);
+    TypedData_Get_Struct(montage_obj, Montage, &rm_montage_data_type, montage);
 
     images = images_from_imagelist(self);
 
