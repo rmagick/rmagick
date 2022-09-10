@@ -90,6 +90,13 @@ RSpec.describe Magick do
           end
           r.take
         end.not_to raise_error
+
+        expect do
+          r = Ractor.new do
+            Magick.formats # rubocop:disable RSpec/DescribedClass
+          end
+          r.take
+        end.not_to raise_error
       end
     end
   end

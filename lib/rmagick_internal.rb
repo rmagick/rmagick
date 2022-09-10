@@ -25,7 +25,6 @@ require 'observer'
 require 'RMagick2.so'
 
 module Magick
-  @formats = nil
   IMAGEMAGICK_VERSION = Magick::Magick_version.split[1].split('-').first
 
   class << self
@@ -53,13 +52,13 @@ module Magick
     #   => {"3FR"=>" r-+", "3G2"=>" r-+", "3GP"=>" r-+", "A"=>"*rw+",
     #   ...
     def formats
-      @formats ||= init_formats
+      formats = init_formats
 
       if block_given?
-        @formats.each { |k, v| yield k, v }
+        formats.each { |k, v| yield k, v }
         self
       else
-        @formats
+        formats
       end
     end
   end
