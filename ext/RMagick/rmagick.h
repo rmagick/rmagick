@@ -454,51 +454,6 @@ extern const rb_data_type_t rm_kernel_info_data_type;
 #define R_dbl_to_C_dbl(attr) NUM2DBL(attr) /**< C double <- Ruby double */
 
 //! define attribute reader
-#define IMPLEMENT_ATTR_READER(class, attr, type) \
-    {\
-        class *ptr;\
-        if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {\
-            rm_check_destroyed(self); \
-        }\
-        Data_Get_Struct(self, class, ptr);\
-        return C_##type##_to_R_##type(ptr->attr);\
-    }
-
-//! define attribute reader when attribute name is different from the field name
-#define IMPLEMENT_ATTR_READERF(class, attr, field, type) \
-    {\
-        class *ptr;\
-        rm_check_destroyed(self); \
-        Data_Get_Struct(self, class, ptr);\
-        return C_##type##_to_R_##type(ptr->field);\
-    }
-
-//! define attribute writer
-#define IMPLEMENT_ATTR_WRITER(class, attr, type) \
-    {\
-        class *ptr;\
-        if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {\
-            rm_check_destroyed(self); \
-        }\
-        rb_check_frozen(self);\
-        Data_Get_Struct(self, class, ptr);\
-        ptr->attr = R_##type##_to_C_##type(val);\
-        return val;\
-    }
-
-//! define attribute writer when attribute name is different from the field name
-#define IMPLEMENT_ATTR_WRITERF(class, attr, field, type) \
-    {\
-        class *ptr;\
-        if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {\
-            rm_check_destroyed(self); \
-        }\
-        rb_check_frozen(self);\
-        Data_Get_Struct(self, class, ptr);\
-        ptr->field = R_##type##_to_C_##type(val);\
-        return self;\
-    }
-
 #define IMPLEMENT_TYPED_ATTR_READER(class, attr, type, data_type) \
     {\
         class *ptr;\
@@ -509,6 +464,7 @@ extern const rb_data_type_t rm_kernel_info_data_type;
         return C_##type##_to_R_##type(ptr->attr);\
     }
 
+//! define attribute reader when attribute name is different from the field name
 #define IMPLEMENT_TYPED_ATTR_READERF(class, attr, field, type, data_type) \
     {\
         class *ptr;\
@@ -517,6 +473,7 @@ extern const rb_data_type_t rm_kernel_info_data_type;
         return C_##type##_to_R_##type(ptr->field);\
     }
 
+//! define attribute writer
 #define IMPLEMENT_TYPED_ATTR_WRITER(class, attr, type, data_type) \
     {\
         class *ptr;\
@@ -529,6 +486,7 @@ extern const rb_data_type_t rm_kernel_info_data_type;
         return val;\
     }
 
+//! define attribute writer when attribute name is different from the field name
 #define IMPLEMENT_TYPED_ATTR_WRITERF(class, attr, field, type, data_type) \
     {\
         class *ptr;\
