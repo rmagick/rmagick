@@ -4727,7 +4727,7 @@ Image_morphology_channel(VALUE self, VALUE channel_v, VALUE method_v, VALUE iter
         rb_raise(rb_eArgError, "expected String or Magick::KernelInfo");
     }
 
-    Data_Get_Struct(kernel_v, KernelInfo, kernel);
+    TypedData_Get_Struct(kernel_v, KernelInfo, &rm_kernel_info_data_type, kernel);
 
     exception = AcquireExceptionInfo();
 

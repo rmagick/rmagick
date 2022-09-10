@@ -422,6 +422,7 @@ extern const rb_data_type_t rm_image_data_type;
 extern const rb_data_type_t rm_draw_data_type;
 extern const rb_data_type_t rm_pixel_data_type;
 extern const rb_data_type_t rm_montage_data_type;
+extern const rb_data_type_t rm_kernel_info_data_type;
 
 #if !defined(min)
 #define min(a, b) ((a)<(b)?(a):(b)) /**< min of two values */
