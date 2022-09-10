@@ -12,6 +12,9 @@
 
 #include "rmagick.h"
 
+static void GradientFill_free(void *fill);
+static size_t GradientFill_memsize(const void *ptr);
+
 /** Data associated with a GradientFill */
 typedef struct
 {
@@ -29,21 +32,44 @@ typedef struct
     Image *texture; /**< the texture */
 } rm_TextureFill;
 
+const rb_data_type_t rm_gradient_fill_data_type = {
+    "Magick::GradientFill",
+    { NULL, GradientFill_free, GradientFill_memsize, },
+    0, 0,
+    RUBY_TYPED_FROZEN_SHAREABLE,
+};
+
 
 DEFINE_GVL_STUB2(SyncAuthenticPixels, Image *, ExceptionInfo *);
 
 
 /**
- * Free Fill or Fill subclass object (except for TextureFill).
+ * Free GradientFill or GradientFill subclass object (except for TextureFill).
  *
  * No Ruby usage (internal function)
  *
  * @param fill the fill
  */
-static void free_Fill(void *fill)
+static void
+GradientFill_free(void *fill)
 {
     xfree(fill);
 }
+
+
+/**
+  * Get GradientFill object size.
+  *
+  * No Ruby usage (internal function)
+  *
+  * @param ptr pointer to the GradientFill object
+  */
+static size_t
+GradientFill_memsize(const void *ptr)
+{
+    return sizeof(rm_GradientFill);
+}
+
 
 /**
  * Create new GradientFill object.
@@ -55,7 +81,7 @@ GradientFill_alloc(VALUE class)
 {
     rm_GradientFill *fill;
 
-    return Data_Make_Struct(class, rm_GradientFill, NULL, free_Fill, fill);
+    return TypedData_Make_Struct(class, rm_GradientFill, &rm_gradient_fill_data_type, fill);
 }
 
 
@@ -82,7 +108,7 @@ GradientFill_initialize(
 {
     rm_GradientFill *fill;
 
-    Data_Get_Struct(self, rm_GradientFill, fill);
+    TypedData_Get_Struct(self, rm_GradientFill, &rm_gradient_fill_data_type, fill);
 
     fill->x1 = NUM2DBL(x1);
     fill->y1 = NUM2DBL(y1);
@@ -610,7 +636,7 @@ GradientFill_fill(VALUE self, VALUE image_obj)
     PixelColor start_color, stop_color;
     double x1, y1, x2, y2;          // points on the line
 
-    Data_Get_Struct(self, rm_GradientFill, fill);
+    TypedData_Get_Struct(self, rm_GradientFill, &rm_gradient_fill_data_type, fill);
     image = rm_check_destroyed(image_obj);
 
     x1 = fill->x1;
