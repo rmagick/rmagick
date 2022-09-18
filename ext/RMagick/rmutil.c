@@ -22,6 +22,11 @@ static VALUE rescue_not_str(VALUE, VALUE ATTRIBUTE_UNUSED) ATTRIBUTE_NORETURN;
 static void handle_exception(ExceptionInfo *, Image *, ErrorRetention);
 
 
+DEFINE_GVL_STUB5(CloneImage, const Image *, const size_t, const size_t, const MagickBooleanType, ExceptionInfo *);
+DEFINE_GVL_STUB1(DeleteImageRegistry, const char *);
+DEFINE_GVL_STUB4(SetImageRegistry, const RegistryType, const char *, const void *, ExceptionInfo *);
+
+
 /**
  * ImageMagick safe version of malloc.
  *
@@ -780,7 +785,8 @@ rm_write_temp_image(Image *image, char *temp_name, size_t temp_name_l)
     snprintf(temp_name, temp_name_l, "mpri:%d", id);
 
     // Omit "mpri:" from filename to form the key
-    okay = SetImageRegistry(ImageRegistryType, temp_name+5, image, exception);
+    GVL_STRUCT_TYPE(SetImageRegistry) args = { ImageRegistryType, temp_name+5, image, exception };
+    okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageRegistry), &args);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
     if (!okay)
@@ -802,7 +808,8 @@ rm_write_temp_image(Image *image, char *temp_name, size_t temp_name_l)
 void
 rm_delete_temp_image(char *temp_name)
 {
-    MagickBooleanType okay = DeleteImageRegistry(temp_name+5);
+    GVL_STRUCT_TYPE(DeleteImageRegistry) args = { temp_name+5 };
+    MagickBooleanType okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(DeleteImageRegistry), &args);
 
     if (!okay)
     {
@@ -1518,7 +1525,8 @@ rm_clone_image(Image *image)
     ExceptionInfo *exception;
 
     exception = AcquireExceptionInfo();
-    clone = CloneImage(image, 0, 0, MagickTrue, exception);
+    GVL_STRUCT_TYPE(CloneImage) args = { image, 0, 0, MagickTrue, exception };
+    clone = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CloneImage), &args);
     if (!clone)
     {
         rb_raise(rb_eNoMemError, "not enough memory to continue");
