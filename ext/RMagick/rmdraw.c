@@ -17,13 +17,22 @@ static void mark_Draw(void *);
 static void destroy_Draw(void *);
 static VALUE new_DrawOptions(void);
 
-/** Method that gets type metrics */
+static VALUE get_type_metrics(int, VALUE *, VALUE, gvl_function_t);
+
+
+DEFINE_GVL_STUB4(BlobToImage, const ImageInfo *, const void *, const size_t, ExceptionInfo *);
+DEFINE_GVL_STUB4(ImageToBlob, const ImageInfo *, Image *, size_t *, ExceptionInfo *);
 #if defined(IMAGEMAGICK_7)
-    typedef MagickBooleanType (get_type_metrics_func_t)(Image *, const DrawInfo *, TypeMetric *, ExceptionInfo *);
+DEFINE_GVL_STUB3(AnnotateImage, Image *, const DrawInfo *, ExceptionInfo *);
+DEFINE_GVL_STUB3(DrawImage, Image *, const DrawInfo *, ExceptionInfo *);
+DEFINE_GVL_STUB4(GetMultilineTypeMetrics, Image *, const DrawInfo *, TypeMetric *, ExceptionInfo *);
+DEFINE_GVL_STUB4(GetTypeMetrics, Image *, const DrawInfo *, TypeMetric *, ExceptionInfo *);
 #else
-    typedef MagickBooleanType (get_type_metrics_func_t)(Image *, const DrawInfo *, TypeMetric *);
+DEFINE_GVL_STUB2(AnnotateImage, Image *, const DrawInfo *);
+DEFINE_GVL_STUB2(DrawImage, Image *, const DrawInfo *);
+DEFINE_GVL_STUB3(GetMultilineTypeMetrics, Image *, const DrawInfo *, TypeMetric *);
+DEFINE_GVL_STUB3(GetTypeMetrics, Image *, const DrawInfo *, TypeMetric *);
 #endif
-static VALUE get_type_metrics(int, VALUE *, VALUE, get_type_metrics_func_t);
 
 
 /**
@@ -415,7 +424,8 @@ image_to_str(Image *image)
 
         info = CloneImageInfo(NULL);
         exception = AcquireExceptionInfo();
-        blob = ImageToBlob(info, image, &length, exception);
+        GVL_STRUCT_TYPE(ImageToBlob) args = { info, image, &length, exception };
+        blob = (unsigned char *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ImageToBlob), &args);
         DestroyImageInfo(info);
         CHECK_EXCEPTION();
         DestroyExceptionInfo(exception);
@@ -453,7 +463,8 @@ Image *str_to_image(VALUE str)
 
         info = CloneImageInfo(NULL);
         exception = AcquireExceptionInfo();
-        image = BlobToImage(info, RSTRING_PTR(str), RSTRING_LEN(str), exception);
+        GVL_STRUCT_TYPE(BlobToImage) args = { info, RSTRING_PTR(str), RSTRING_LEN(str), exception };
+        image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BlobToImage), &args);
         DestroyImageInfo(info);
         CHECK_EXCEPTION();
         DestroyExceptionInfo(exception);
@@ -875,10 +886,11 @@ VALUE Draw_annotate(
     magick_clone_string(&draw->info->geometry, geometry_str);
 
 #if defined(IMAGEMAGICK_7)
-    AnnotateImage(image, draw->info, exception);
+    GVL_STRUCT_TYPE(AnnotateImage) args = { image, draw->info, exception };
 #else
-    AnnotateImage(image, draw->info);
+    GVL_STRUCT_TYPE(AnnotateImage) args = { image, draw->info };
 #endif
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(AnnotateImage), &args);
 
     magick_free(draw->info->text);
     draw->info->text = NULL;
@@ -1037,10 +1049,11 @@ Draw_draw(VALUE self, VALUE image_arg)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    DrawImage(image, draw->info, exception);
+    GVL_STRUCT_TYPE(DrawImage) args = { image, draw->info, exception };
 #else
-    DrawImage(image, draw->info);
+    GVL_STRUCT_TYPE(DrawImage) args = { image, draw->info };
 #endif
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(DrawImage), &args);
 
     magick_free(draw->info->primitive);
     draw->info->primitive = NULL;
@@ -1101,7 +1114,7 @@ Draw_get_type_metrics(
                      VALUE *argv,
                      VALUE self)
 {
-    return get_type_metrics(argc, argv, self, GetTypeMetrics);
+    return get_type_metrics(argc, argv, self, GVL_FUNC(GetTypeMetrics));
 }
 
 
@@ -1128,7 +1141,7 @@ Draw_get_multiline_type_metrics(
                                VALUE *argv,
                                VALUE self)
 {
-    return get_type_metrics(argc, argv, self, GetMultilineTypeMetrics);
+    return get_type_metrics(argc, argv, self, GVL_FUNC(GetMultilineTypeMetrics));
 }
 
 
@@ -1522,6 +1535,9 @@ get_dummy_tm_img(VALUE klass)
 }
 
 
+// aliases for common use of structure types; GetMultilineTypeMetrics, GetTypeMetrics
+typedef GVL_STRUCT_TYPE(GetTypeMetrics) GVL_STRUCT_TYPE(get_type_metrics);
+
 /**
  * Call a get-type-metrics function.
  *
@@ -1539,11 +1555,7 @@ get_dummy_tm_img(VALUE klass)
  * @see Draw_get_multiline_type_metrics
  */
 static VALUE
-get_type_metrics(
-                int argc,
-                VALUE *argv,
-                VALUE self,
-                get_type_metrics_func_t getter)
+get_type_metrics(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
 {
     Image *image;
     Draw *draw;
@@ -1551,7 +1563,7 @@ get_type_metrics(
     TypeMetric metrics;
     char *text = NULL;
     long text_l;
-    unsigned int okay;
+    MagickBooleanType okay;
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
 #endif
@@ -1601,10 +1613,11 @@ get_type_metrics(
     }
 
 #if defined(IMAGEMAGICK_7)
-    okay = (*getter)(image, draw->info, &metrics, exception);
+    GVL_STRUCT_TYPE(get_type_metrics) args = { image, draw->info, &metrics, exception };
 #else
-    okay = (*getter)(image, draw->info, &metrics);
+    GVL_STRUCT_TYPE(get_type_metrics) args = { image, draw->info, &metrics };
 #endif
+    okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(fp, &args);
 
     magick_free(draw->info->text);
     draw->info->text = NULL;
