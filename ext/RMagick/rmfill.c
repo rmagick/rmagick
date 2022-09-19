@@ -29,6 +29,10 @@ typedef struct
     Image *texture; /**< the texture */
 } rm_TextureFill;
 
+
+DEFINE_GVL_STUB2(SyncAuthenticPixels, Image *, ExceptionInfo *);
+
+
 /**
  * Free Fill or Fill subclass object (except for TextureFill).
  *
@@ -153,7 +157,8 @@ point_fill(
 #endif
         }
 
-        SyncAuthenticPixels(image, exception);
+        GVL_STRUCT_TYPE(SyncAuthenticPixels) args = { image, exception };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SyncAuthenticPixels), &args);
         CHECK_EXCEPTION();
     }
 
@@ -222,7 +227,8 @@ vertical_fill(
             row_pixels += GetPixelChannels(image);
         }
 
-        SyncAuthenticPixels(image, exception);
+        GVL_STRUCT_TYPE(SyncAuthenticPixels) args = { image, exception };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SyncAuthenticPixels), &args);
         CHECK_EXCEPTION();
     }
 
@@ -255,7 +261,8 @@ vertical_fill(
 
         memcpy(row_pixels, master, image->columns * sizeof(PixelPacket));
 
-        SyncAuthenticPixels(image, exception);
+        GVL_STRUCT_TYPE(SyncAuthenticPixels) args = { image, exception };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SyncAuthenticPixels), &args);
         if (rm_should_raise_exception(exception, RetainExceptionRetention))
         {
             xfree((void *)master);
@@ -328,7 +335,8 @@ horizontal_fill(
             row_pixels += GetPixelChannels(image);
         }
 
-        SyncAuthenticPixels(image, exception);
+        GVL_STRUCT_TYPE(SyncAuthenticPixels) args = { image, exception };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SyncAuthenticPixels), &args);
         CHECK_EXCEPTION();
     }
 
@@ -360,7 +368,8 @@ horizontal_fill(
 
         memcpy(col_pixels, master, image->rows * sizeof(PixelPacket));
 
-        SyncAuthenticPixels(image, exception);
+        GVL_STRUCT_TYPE(SyncAuthenticPixels) args = { image, exception };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SyncAuthenticPixels), &args);
         if (rm_should_raise_exception(exception, RetainExceptionRetention))
         {
             xfree((void *)master);
@@ -471,7 +480,8 @@ v_diagonal_fill(
 #endif
         }
 
-        SyncAuthenticPixels(image, exception);
+        GVL_STRUCT_TYPE(SyncAuthenticPixels) args = { image, exception };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SyncAuthenticPixels), &args);
         CHECK_EXCEPTION();
     }
 
@@ -577,7 +587,8 @@ h_diagonal_fill(
 #endif
         }
 
-        SyncAuthenticPixels(image, exception);
+        GVL_STRUCT_TYPE(SyncAuthenticPixels) args = { image, exception };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SyncAuthenticPixels), &args);
         CHECK_EXCEPTION();
     }
 
