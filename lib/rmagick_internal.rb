@@ -83,7 +83,11 @@ module Magick
     #   Magick.trace_proc = proc do |which, description, id, method|
     #     ...
     #   end
+    #
+    # @deprecated Magick.trace_proc= is deprecated. This method will be removed since next major release.
     def trace_proc=(p)
+      warn 'Magick.trace_proc= is deprecated. This method will be removed since next major release.'
+
       if @trace_proc.nil? && !p.nil? && !@exit_block_set_up
         at_exit { @trace_proc = nil }
         @exit_block_set_up = true
