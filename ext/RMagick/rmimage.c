@@ -9204,14 +9204,14 @@ Image_modulate(int argc, VALUE *argv, VALUE self)
  *     print "%s is %3.0f%% complete.\n", method, (offset.to_f/span)*100)
  *     true
  *   end
- * @deprecated Magick::Image#monitor= is deprecated. This method will be removed since next major release.
+ * @deprecated Magick::Image#monitor= is deprecated. This method will be removed in RMagick 5.0.
  */
 VALUE
 Image_monitor_eq(VALUE self, VALUE monitor)
 {
     Image *image = rm_check_frozen(self);
 
-    rb_warning("Magick::Image#monitor= is deprecated. This method will be removed since next major release.");
+    rb_warning("Magick::Image#monitor= is deprecated. This method will be removed in RMagick 5.0.");
 
     if (NIL_P(monitor))
     {

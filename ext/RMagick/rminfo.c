@@ -1560,7 +1560,7 @@ Info_matte_color_eq(VALUE self, VALUE matte_arg)
  * @param monitor [Proc] the monitor
  * @return [Proc] monitor
  * @see Image#monitor=
- * @deprecated Magick::Image::Info#monitor= is deprecated. This method will be removed since next major release.
+ * @deprecated Magick::Image::Info#monitor= is deprecated. This method will be removed in RMagick 5.0.
  */
 VALUE
 Info_monitor_eq(VALUE self, VALUE monitor)
@@ -1569,7 +1569,7 @@ Info_monitor_eq(VALUE self, VALUE monitor)
 
     Data_Get_Struct(self, Info, info);
 
-    rb_warning("Magick::Image::Info#monitor= is deprecated. This method will be removed since next major release.");
+    rb_warning("Magick::Image::Info#monitor= is deprecated. This method will be removed in RMagick 5.0.");
 
     if (NIL_P(monitor))
     {
