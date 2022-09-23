@@ -3,6 +3,15 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 4.3.0
+
+Deprecates
+
+- Mark Magick.trace_proc= as deprecated (#1354)
+- Mark Magick::{Image, Image::Info}#monitor= as deprecated (#1353)
+
+These methods will be removed in RMagick 5.0 and no alternative.
+
 ## RMagick 4.2.6
 
 Improvements
