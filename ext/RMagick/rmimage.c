@@ -63,9 +63,7 @@ static VALUE scale(int, int, VALUE *, VALUE, scaler_t);
 static VALUE threshold_image(int, VALUE *, VALUE, thresholder_t);
 static VALUE xform_image(int, VALUE, VALUE, VALUE, VALUE, VALUE, xformer_t);
 static VALUE array_from_images(Image *);
-static void call_trace_proc(Image *, const char *);
 static VALUE file_arg_rescue(VALUE, VALUE ATTRIBUTE_UNUSED) ATTRIBUTE_NORETURN;
-static VALUE rm_trace_creation_handle_exception(VALUE, VALUE) ATTRIBUTE_NORETURN;
 
 static const char *BlackPointCompensationKey = "PROFILE:black-point-compensation";
 
@@ -9550,8 +9548,6 @@ rm_image_new(Image *image)
 {
     rm_ensure_result(image);
 
-    rm_trace_creation(image);
-
     return Data_Wrap_Struct(Class_Image, NULL, rm_image_destroy, image);
 }
 
@@ -15813,75 +15809,6 @@ raise_ChannelType_error(VALUE arg)
 }
 
 
-
-/**
- * If Magick.trace_proc is not nil, build an argument list and call the proc.
- *
- * No Ruby usage (internal function)
- *
- * @param image the image
- * @param which which operation the proc is being called for
- */
-static void call_trace_proc(Image *image, const char *which)
-{
-    VALUE trace;
-    VALUE trace_args[4];
-
-    if (rb_ivar_defined(Module_Magick, rm_ID_trace_proc) == Qtrue)
-    {
-        trace = rb_ivar_get(Module_Magick, rm_ID_trace_proc);
-        if (!NIL_P(trace))
-        {
-            // Maybe the stack won't get extended until we need the space.
-            char buffer[MaxTextExtent];
-
-            trace_args[0] = ID2SYM(rb_intern(which));
-
-            build_inspect_string(image, buffer, sizeof(buffer));
-            trace_args[1] = rb_str_new2(buffer);
-
-            snprintf(buffer, sizeof(buffer), "%p", (void *)image);
-            trace_args[2] = rb_str_new2(buffer+2);      // don't use leading 0x
-            trace_args[3] = ID2SYM(rb_frame_this_func());
-            rb_funcall2(trace, rm_ID_call, 4, (VALUE *)trace_args);
-        }
-    }
-
-    RB_GC_GUARD(trace);
-}
-
-
-static VALUE
-rm_trace_creation_body(VALUE img)
-{
-    Image *image = (Image *)img;
-    call_trace_proc(image, "c");
-    return Qnil;
-}
-
-static VALUE
-rm_trace_creation_handle_exception(VALUE img, VALUE exc)
-{
-    Image *image = (Image *)img;
-    DestroyImage(image);
-    rb_exc_raise(exc);
-}
-
-/**
- * Trace image creation
- *
- * No Ruby usage (internal function)
- *
- * @param image the image
- * @see call_trace_proc
- */
-void rm_trace_creation(Image *image)
-{
-    rb_rescue(rm_trace_creation_body, (VALUE)image, rm_trace_creation_handle_exception, (VALUE)image);
-}
-
-
-
 /**
  * Destroy an image. Called from GC when all references to the image have gone
  * out of scope.
@@ -15900,7 +15827,6 @@ void rm_image_destroy(void *img)
 
     if (img != NULL)
     {
-        call_trace_proc(image, "d");
         DestroyImage(image);
     }
 }
