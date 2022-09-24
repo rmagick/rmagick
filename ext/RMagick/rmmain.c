@@ -242,8 +242,6 @@ Init_RMagick2(void)
 
     test_Magick_version();
 
-    rm_main_thread_id = rm_current_thread_id();
-
     /*-----------------------------------------------------------------------*/
     /* Create IDs for frequently used methods, etc.                          */
     /*-----------------------------------------------------------------------*/
