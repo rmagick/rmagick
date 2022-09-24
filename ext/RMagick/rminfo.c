@@ -1555,35 +1555,6 @@ Info_matte_color_eq(VALUE self, VALUE matte_arg)
 }
 
 /**
- * Establish a progress monitor.
- *
- * @param monitor [Proc] the monitor
- * @return [Proc] monitor
- * @see Image#monitor=
- * @deprecated Magick::Image::Info#monitor= is deprecated. This method will be removed in RMagick 5.0.
- */
-VALUE
-Info_monitor_eq(VALUE self, VALUE monitor)
-{
-    Info *info;
-
-    Data_Get_Struct(self, Info, info);
-
-    rb_warning("Magick::Image::Info#monitor= is deprecated. This method will be removed in RMagick 5.0.");
-
-    if (NIL_P(monitor))
-    {
-        info->progress_monitor = NULL;
-    }
-    else
-    {
-        SetImageInfoProgressMonitor(info, rm_progress_monitor, (void *)monitor);
-    }
-
-    return monitor;
-}
-
-/**
  * Get the monochrome value.
  *
  * @return [Boolean] true or false

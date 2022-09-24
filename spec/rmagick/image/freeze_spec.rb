@@ -28,7 +28,6 @@ RSpec.describe Magick::Image, '#freeze' do
     expect { image.geometry = '100x100' }.to raise_error(FreezeError)
     expect { image.interlace = Magick::NoInterlace }.to raise_error(FreezeError)
     expect { image.iptc_profile = 'xxx' }.to raise_error(FreezeError)
-    expect { image.monitor = proc { |name, _q, _s| puts name } }.to raise_error(FreezeError)
     expect { image.offset = 100 }.to raise_error(FreezeError)
     expect { image.page = Magick::Rectangle.new(1, 2, 3, 4) }.to raise_error(FreezeError)
     expect { image.rendering_intent = Magick::SaturationIntent }.to raise_error(FreezeError)
