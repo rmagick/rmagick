@@ -242,8 +242,6 @@ Init_RMagick2(void)
 
     test_Magick_version();
 
-    rm_main_thread_id = rm_current_thread_id();
-
     /*-----------------------------------------------------------------------*/
     /* Create IDs for frequently used methods, etc.                          */
     /*-----------------------------------------------------------------------*/
@@ -358,7 +356,6 @@ Init_RMagick2(void)
     rb_define_method(Class_Image, "matte_color=", Image_matte_color_eq, 1);
     rb_define_method(Class_Image, "mean_error_per_pixel", Image_mean_error_per_pixel, 0);
     rb_define_method(Class_Image, "mime_type", Image_mime_type, 0);
-    rb_define_method(Class_Image, "monitor=", Image_monitor_eq, 1);
     rb_define_method(Class_Image, "montage", Image_montage, 0);
     rb_define_method(Class_Image, "normalized_mean_error", Image_normalized_mean_error, 0);
     rb_define_method(Class_Image, "normalized_maximum_error", Image_normalized_maximum_error, 0);
@@ -878,7 +875,6 @@ Init_RMagick2(void)
     rb_define_method(Class_Info, "label=", Info_label_eq, 1);
     rb_define_method(Class_Info, "matte_color", Info_matte_color, 0);
     rb_define_method(Class_Info, "matte_color=", Info_matte_color_eq, 1);
-    rb_define_method(Class_Info, "monitor=", Info_monitor_eq, 1);
     rb_define_method(Class_Info, "monochrome", Info_monochrome, 0);
     rb_define_method(Class_Info, "monochrome=", Info_monochrome_eq, 1);
     rb_define_method(Class_Info, "number_scenes", Info_number_scenes, 0);

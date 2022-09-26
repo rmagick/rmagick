@@ -9191,42 +9191,6 @@ Image_modulate(int argc, VALUE *argv, VALUE self)
 
 
 /**
- * Establish a progress monitor.
- *
- * - A progress monitor is a callable object. Save the monitor proc as the client_data and establish
- *   `progress_monitor' as the monitor exit. When `progress_monitor' is called, retrieve the proc
- *   and call it.
- *
- * @param monitor [Proc] the progress monitor
- * @return [Proc] the given value
- * @example
- *   img.monitor = Proc.new do |method, offset, span|
- *     print "%s is %3.0f%% complete.\n", method, (offset.to_f/span)*100)
- *     true
- *   end
- * @deprecated Magick::Image#monitor= is deprecated. This method will be removed in RMagick 5.0.
- */
-VALUE
-Image_monitor_eq(VALUE self, VALUE monitor)
-{
-    Image *image = rm_check_frozen(self);
-
-    rb_warning("Magick::Image#monitor= is deprecated. This method will be removed in RMagick 5.0.");
-
-    if (NIL_P(monitor))
-    {
-        image->progress_monitor = NULL;
-    }
-    else
-    {
-        SetImageProgressMonitor(image, rm_progress_monitor, (void *)monitor);
-    }
-
-    return monitor;
-}
-
-
-/**
  * Return true if all the pixels in the image have the same red, green, and blue intensities and the
  * intensity is either 0 or {Magick::QuantumRange}.
  *

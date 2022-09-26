@@ -1539,64 +1539,6 @@ rm_clone_image(Image *image)
 
 
 /**
- * SetImage(Info)ProgressMonitor exit.
- *
- * No Ruby usage (internal function)
- *
- * Notes:
- *   - ImageMagick's "tag" argument is unused. We pass along the method name
- *     instead.
- *
- * @param tag ImageMagick argument (unused)
- * @param of the offset type
- * @param sp the size type
- * @param client_data pointer to the progress method to call
- * @return true if calling client_data returns a non-nil value, otherwise false
- */
-MagickBooleanType
-rm_progress_monitor(
-    const char *tag ATTRIBUTE_UNUSED,
-    const MagickOffsetType of,
-    const MagickSizeType sp,
-    void *client_data)
-{
-    VALUE rval;
-    VALUE method, offset, span;
-
-    // Check running thread.
-    if (rm_current_thread_id() != rm_main_thread_id)
-    {
-        // ImageMagick might call back in a different thread than Ruby is running in.
-        // If it is a different thread, it would not have a Ruby GVL and
-        // it could not retrieve properly Ruby stack.
-
-        // Unfortunately, there is no API available to check if the current thread has a GVL,
-        // so the thread id was checked in here.
-        return MagickTrue;
-    }
-
-#if defined(HAVE_LONG_LONG)     // defined in Ruby's defines.h
-    offset = rb_ll2inum(of);
-    span = rb_ull2inum(sp);
-#else
-    offset = rb_int2big((long)of);
-    span = rb_uint2big((unsigned long)sp);
-#endif
-
-    method = rb_id2str(rb_frame_this_func());
-
-    rval = rb_funcall((VALUE)client_data, rm_ID_call, 3, method, offset, span);
-
-    RB_GC_GUARD(rval);
-    RB_GC_GUARD(method);
-    RB_GC_GUARD(offset);
-    RB_GC_GUARD(span);
-
-    return RTEST(rval) ? MagickTrue : MagickFalse;
-}
-
-
-/**
  * Remove the ImageMagick links between images in an scene sequence.
  *
  * No Ruby usage (internal function)
@@ -1900,21 +1842,4 @@ rm_raise_exception(ExceptionInfo *exception)
     DestroyExceptionInfo(exception);
 
     rm_magick_error(msg);
-}
-
-/**
- * Get current thread id.
- *
- * No Ruby usage (internal function)
- *
- * @return thread id
- */
-unsigned long long
-rm_current_thread_id()
-{
-#if defined(_WIN32)
-    return (unsigned long long)GetCurrentThreadId();
-#else
-    return (unsigned long long)pthread_self();
-#endif
 }

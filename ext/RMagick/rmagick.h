@@ -411,8 +411,6 @@ EXTERN ID rm_ID_push;              /**< "push" */
 EXTERN ID rm_ID_values;            /**< "values" */
 EXTERN ID rm_ID_width;             /**< "width" */
 
-EXTERN unsigned long long rm_main_thread_id;
-
 #if !defined(min)
 #define min(a, b) ((a)<(b)?(a):(b)) /**< min of two values */
 #endif
@@ -1193,7 +1191,6 @@ typedef enum
 extern void   rm_check_exception(ExceptionInfo *, Image *, ErrorRetention);
 extern void   rm_ensure_result(Image *);
 extern Image *rm_clone_image(Image *);
-extern MagickBooleanType rm_progress_monitor(const char *, const MagickOffsetType, const MagickSizeType, void *);
 extern VALUE  rm_exif_by_entry(Image *);
 extern VALUE  rm_exif_by_number(Image *);
 extern void   rm_get_optional_arguments(VALUE);
@@ -1202,7 +1199,6 @@ extern void   rm_error_handler(const ExceptionType, const char *, const char *);
 extern void   rm_warning_handler(const ExceptionType, const char *, const char *);
 extern MagickBooleanType rm_should_raise_exception(ExceptionInfo *, const ExceptionRetention);
 extern void   rm_raise_exception(ExceptionInfo *);
-extern unsigned long long rm_current_thread_id();
 #if defined(IMAGEMAGICK_6)
 extern void   rm_check_image_exception(Image *, ErrorRetention);
 #endif
