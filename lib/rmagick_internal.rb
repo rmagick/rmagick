@@ -24,8 +24,6 @@ require 'RMagick2.so'
 
 module Magick
   @formats = nil
-  @trace_proc = nil
-  @exit_block_set_up = nil
   IMAGEMAGICK_VERSION = Magick::Magick_version.split[1].split('-').first
 
   class << self
@@ -61,39 +59,6 @@ module Magick
       else
         @formats
       end
-    end
-
-    # If the Magick module attribute +trace_proc+ is set to a Proc object,
-    # RMagick calls the proc whenever an image is created or destroyed.
-    #
-    # You can use this proc to keep track of which images your program has created
-    # and which have been destroyed.
-    #
-    # @param p [Proc] The proc object.
-    #   The following value will be passed into the proc object.
-    #   - +which+ - A symbol that indicates which operation the proc is being called for.
-    #     If the proc is called for an image creation, the value is +:c+.
-    #     If called for an image destruction, the value is +:d+.
-    #   - +description+ - A string describing the image. This is the same string that
-    #     would be returned by calling the image's inspect method.
-    #   - +id+ - A unique identifier for the image. This identifier is not the same as the object's +object_id+.
-    #   - +method+ - The name of the method responsible for creating or destroying the image.
-    #
-    # @example
-    #   Magick.trace_proc = proc do |which, description, id, method|
-    #     ...
-    #   end
-    #
-    # @deprecated Magick.trace_proc= is deprecated. This method will be removed in RMagick 5.0.
-    def trace_proc=(p)
-      warn 'Magick.trace_proc= is deprecated. This method will be removed in RMagick 5.0.'
-
-      if @trace_proc.nil? && !p.nil? && !@exit_block_set_up
-        at_exit { @trace_proc = nil }
-        @exit_block_set_up = true
-      end
-
-      @trace_proc = p
     end
   end
 

@@ -246,7 +246,6 @@ Init_RMagick2(void)
     /* Create IDs for frequently used methods, etc.                          */
     /*-----------------------------------------------------------------------*/
 
-    rm_ID_trace_proc       = rb_intern("@trace_proc");
     rm_ID_call             = rb_intern("call");
     rm_ID_changed          = rb_intern("changed");
     rm_ID_cur_image        = rb_intern("cur_image");

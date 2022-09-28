@@ -90,8 +90,8 @@
 
 //! Trace new image creation in bang methods
 #define UPDATE_DATA_PTR(_obj_, _new_) \
-    do { (void) rm_trace_creation(_new_);\
-    DATA_PTR(_obj_) = (void *)(_new_);\
+    do { \
+        DATA_PTR(_obj_) = (void *)(_new_); \
     } while(0)
 
 
@@ -396,7 +396,6 @@ EXTERN VALUE Class_KernelInfoType;
 /**
 *   Commonly-used IDs
 */
-EXTERN ID rm_ID_trace_proc;        /**< "@trace_proc" */
 EXTERN ID rm_ID_call;              /**< "call" */
 EXTERN ID rm_ID_changed;           /**< "changed" */
 EXTERN ID rm_ID_cur_image;         /**< "cur_image" */
@@ -1017,7 +1016,6 @@ extern VALUE Image_write(VALUE, VALUE);
 
 extern VALUE rm_image_new(Image *);
 extern void  rm_image_destroy(void *);
-extern void  rm_trace_creation(Image *);
 
 
 // rmfill.c
