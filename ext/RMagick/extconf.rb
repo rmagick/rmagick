@@ -9,6 +9,33 @@ module RMagick
     RMAGICK_VERS = ::Magick::VERSION
     MIN_RUBY_VERS = ::Magick::MIN_RUBY_VERSION
 
+    # ImageMagick 6.7 package
+    IM6_7_PACKAGES = ['ImageMagick'].freeze
+
+    # ImageMagick 6.8+ packages
+    IM6_PACKAGES = %w[
+      ImageMagick-6.Q64HDRI
+      ImageMagick-6.Q32HDRI
+      ImageMagick-6.Q16HDRI
+      ImageMagick-6.Q8HDRI
+      ImageMagick-6.Q64
+      ImageMagick-6.Q32
+      ImageMagick-6.Q16
+      ImageMagick-6.Q8
+    ].freeze
+
+    # ImageMagick 7 packages
+    IM7_PACKAGES = %w[
+      ImageMagick-7.Q64HDRI
+      ImageMagick-7.Q32HDRI
+      ImageMagick-7.Q16HDRI
+      ImageMagick-7.Q8HDRI
+      ImageMagick-7.Q64
+      ImageMagick-7.Q32
+      ImageMagick-7.Q16
+      ImageMagick-7.Q8
+    ].freeze
+
     attr_reader :headers
 
     def initialize
@@ -123,31 +150,40 @@ module RMagick
       exit(1)
     end
 
-    def determine_imagemagick_package
-      packages = `pkg-config --list-all`.scan(/(ImageMagick\-[\.A-Z0-9]+) .*/).flatten
+    def detect_imagemagick_packages(packages)
+      packages.select do |package|
+        system "pkg-config --exists #{package}"
+      end
+    end
 
-      # For ancient version of ImageMagick 6 we need a different regex
+    def installed_im6_packages
+      @installed_im6_packages ||= detect_imagemagick_packages(IM6_PACKAGES)
+    end
+
+    def installed_im7_packages
+      @installed_im7_packages ||= detect_imagemagick_packages(IM7_PACKAGES)
+    end
+
+    def determine_imagemagick_package
+      packages = [installed_im7_packages, installed_im6_packages].flatten
+
       if packages.empty?
-        packages = `pkg-config --list-all`.scan(/(ImageMagick) .*/).flatten
+        # ImageMagick 6.7 does not have package file like ImageMagick-6.Q16.pc
+        packages = detect_imagemagick_packages(IM6_7_PACKAGES)
       end
 
       if packages.empty?
         exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find ImageMagick with pkg-config\n"
       end
 
-      if packages.length > 1
-
-        im7_packages = packages.grep(/\AImageMagick-7/)
-
-        if im7_packages.any?
-          checking_for('forced use of ImageMagick 6') do
-            if ENV['USE_IMAGEMAGICK_6']
-              packages -= im7_packages
-              true
-            else
-              packages = im7_packages
-              false
-            end
+      if installed_im6_packages.any? && installed_im7_packages.any?
+        checking_for('forced use of ImageMagick 6') do
+          if ENV['USE_IMAGEMAGICK_6']
+            packages = installed_im6_packages
+            true
+          else
+            packages = installed_im7_packages
+            false
           end
         end
       end
