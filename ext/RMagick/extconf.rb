@@ -9,6 +9,33 @@ module RMagick
     RMAGICK_VERS = ::Magick::VERSION
     MIN_RUBY_VERS = ::Magick::MIN_RUBY_VERSION
 
+    # ImageMagick 6.7 package
+    IM6_7_PACKAGES = ['ImageMagick'].freeze
+
+    # ImageMagick 6.8+ packages
+    IM6_PACKAGES = %w[
+      ImageMagick-6.Q64HDRI
+      ImageMagick-6.Q32HDRI
+      ImageMagick-6.Q16HDRI
+      ImageMagick-6.Q8HDRI
+      ImageMagick-6.Q64
+      ImageMagick-6.Q32
+      ImageMagick-6.Q16
+      ImageMagick-6.Q8
+    ].freeze
+
+    # ImageMagick 7 packages
+    IM7_PACKAGES = %w[
+      ImageMagick-7.Q64HDRI
+      ImageMagick-7.Q32HDRI
+      ImageMagick-7.Q16HDRI
+      ImageMagick-7.Q8HDRI
+      ImageMagick-7.Q64
+      ImageMagick-7.Q32
+      ImageMagick-7.Q16
+      ImageMagick-7.Q8
+    ].freeze
+
     attr_reader :headers
 
     def initialize
@@ -129,63 +156,33 @@ module RMagick
       end
     end
 
-    def detect_im6_packages
-      packages = %w[
-        ImageMagick-6.Q64HDRI
-        ImageMagick-6.Q32HDRI
-        ImageMagick-6.Q16HDRI
-        ImageMagick-6.Q8HDRI
-        ImageMagick-6.Q64
-        ImageMagick-6.Q32
-        ImageMagick-6.Q16
-        ImageMagick-6.Q8
-      ]
-      @detect_im6_packages ||= detect_imagemagick_packages(packages)
+    def installed_im6_packages
+      @installed_im6_packages ||= detect_imagemagick_packages(IM6_PACKAGES)
     end
 
-    def detect_im7_packages
-      packages = %w[
-        ImageMagick-7.Q64HDRI
-        ImageMagick-7.Q32HDRI
-        ImageMagick-7.Q16HDRI
-        ImageMagick-7.Q8HDRI
-        ImageMagick-7.Q64
-        ImageMagick-7.Q32
-        ImageMagick-7.Q16
-        ImageMagick-7.Q8
-      ]
-      @detect_im7_packages ||= detect_imagemagick_packages(packages)
-    end
-
-    def im6_package_exists?
-      package = detect_im6_packages
-      package.empty? ? false : true
-    end
-
-    def im7_package_exists?
-      package = detect_im7_packages
-      package.empty? ? false : true
+    def installed_im7_packages
+      @installed_im7_packages ||= detect_imagemagick_packages(IM7_PACKAGES)
     end
 
     def determine_imagemagick_package
-      packages = [detect_im7_packages, detect_im6_packages].flatten
+      packages = [installed_im7_packages, installed_im6_packages].flatten
 
       if packages.empty?
         # ImageMagick 6.7 does not have package file like ImageMagick-6.Q16.pc
-        packages = detect_imagemagick_packages(['ImageMagick'])
+        packages = detect_imagemagick_packages(IM6_7_PACKAGES)
       end
 
       if packages.empty?
         exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find ImageMagick with pkg-config\n"
       end
 
-      if im6_package_exists? && im7_package_exists?
+      if installed_im6_packages.any? && installed_im7_packages.any?
         checking_for('forced use of ImageMagick 6') do
           if ENV['USE_IMAGEMAGICK_6']
-            packages = detect_im6_packages
+            packages = installed_im6_packages
             true
           else
-            packages = detect_im7_packages
+            packages = installed_im7_packages
             false
           end
         end
