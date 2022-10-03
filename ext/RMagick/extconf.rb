@@ -124,12 +124,9 @@ module RMagick
     end
 
     def detect_imagemagick_packages(packages)
-      existed_packages = packages.map do |package|
-        if system "pkg-config --exists #{package}"
-          package
-        end
+      packages.select do |package|
+        system "pkg-config --exists #{package}"
       end
-      existed_packages.compact
     end
 
     def detect_im6_packages
