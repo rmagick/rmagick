@@ -3,6 +3,18 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 5.0.0
+
+Improvements
+
+- Improve installer in order to avoid SEGV within pkg-config command (#1359)
+- Clean up the documents and comment in source code referring to something that no longer exist (#1363)
+- Remove deprecated 'tile' attribute in Draw#marshal_dump (#1364)
+- Remove deprecated #instance_eval calling when block was given with Magick::ImageList#montage, Magick::Image::Info.new and more (#1362)
+- Remove deprecated RMagick.rb file (#1361)
+- Remove deprecated Magick.trace_proc= (#1351)
+- Remove deprecated Magick::{Image, Image::Info}#monitor= (#1356)
+
 ## RMagick 4.3.0
 
 Deprecates
