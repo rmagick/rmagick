@@ -565,14 +565,14 @@ Draw_marshal_load(VALUE self, VALUE ddraw)
     VALUE val;
 
     Data_Get_Struct(self, Draw, draw);
-    
+
     if (draw->info == NULL)
     {
         ImageInfo *image_info;
 
         image_info = CloneImageInfo(NULL);
         draw->info = CloneDrawInfo(image_info, (DrawInfo *) NULL);
-        DestroyImageInfo(image_info);        
+        DestroyImageInfo(image_info);
     }
     OBJ_TO_MAGICK_STRING(draw->info->geometry, rb_hash_aref(ddraw, CSTR2SYM("geometry")));
 
@@ -853,16 +853,7 @@ VALUE Draw_annotate(
     // allowing the app a chance to modify the object's attributes
     if (rb_block_given_p())
     {
-        if (rb_proc_arity(rb_block_proc()) == 0)
-        {
-            // Run the block in self's context
-            rb_warn("passing a block without an image argument is deprecated");
-            rb_obj_instance_eval(0, NULL, self);
-        }
-        else
-        {
-            rb_yield(self);
-        }
+        rb_yield(self);
     }
 
     // Translate & store in Draw structure
@@ -973,7 +964,7 @@ Draw_clone(VALUE self)
  *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
  *     imagelist, uses the current image.
  *   @param operator [Magick::CompositeOperator] the operator
- * 
+ *
  * @return [Magick::Draw] self
  */
 VALUE
@@ -1394,16 +1385,7 @@ DrawOptions_initialize(VALUE self)
 
     if (rb_block_given_p())
     {
-        if (rb_proc_arity(rb_block_proc()) == 0)
-        {
-            // Run the block in self's context
-            rb_warn("passing a block without an image argument is deprecated");
-            rb_obj_instance_eval(0, NULL, self);
-        }
-        else
-        {
-            rb_yield(self);
-        }
+        rb_yield(self);
     }
 
     return self;
@@ -1466,16 +1448,7 @@ PolaroidOptions_initialize(VALUE self)
 
     if (rb_block_given_p())
     {
-        if (rb_proc_arity(rb_block_proc()) == 0)
-        {
-            // Run the block in self's context
-            rb_warn("passing a block without an image argument is deprecated");
-            rb_obj_instance_eval(0, NULL, self);
-        }
-        else
-        {
-            rb_yield(self);
-        }
+        rb_yield(self);
     }
 
     return self;
