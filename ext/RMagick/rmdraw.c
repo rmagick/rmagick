@@ -493,31 +493,17 @@ Draw_marshal_dump(VALUE self)
 
     ddraw = rb_hash_new();
 
-    // rb_hash_aset(ddraw, CSTR2SYM("primitive"), MAGICK_STRING_TO_OBJ(draw->info->primitive)); internal
-    // rb_hash_aset(ddraw, CSTR2SYM("geometry"), MAGICK_STRING_TO_OBJ(draw->info->geometry)); set by "text" primitive
-    // rb_hash_aset(ddraw, CSTR2SYM("viewbox"), Import_RectangleInfo(&draw->info->viewbox)); internal
     rb_hash_aset(ddraw, CSTR2SYM("affine"), Import_AffineMatrix(&draw->info->affine));
     rb_hash_aset(ddraw, CSTR2SYM("gravity"), INT2FIX(draw->info->gravity));
     rb_hash_aset(ddraw, CSTR2SYM("fill"), Pixel_from_PixelColor(&draw->info->fill));
     rb_hash_aset(ddraw, CSTR2SYM("stroke"), Pixel_from_PixelColor(&draw->info->stroke));
     rb_hash_aset(ddraw, CSTR2SYM("stroke_width"), rb_float_new(draw->info->stroke_width));
-    // rb_hash_aset(ddraw, CSTR2SYM("gradient"), Qnil);  // not used yet
     rb_hash_aset(ddraw, CSTR2SYM("fill_pattern"), image_to_str(draw->info->fill_pattern));
-    rb_hash_aset(ddraw, CSTR2SYM("tile"), Qnil); // deprecated
     rb_hash_aset(ddraw, CSTR2SYM("stroke_pattern"), image_to_str(draw->info->stroke_pattern));
     rb_hash_aset(ddraw, CSTR2SYM("stroke_antialias"), draw->info->stroke_antialias ? Qtrue : Qfalse);
     rb_hash_aset(ddraw, CSTR2SYM("text_antialias"), draw->info->text_antialias ? Qtrue : Qfalse);
-    // rb_hash_aset(ddraw, CSTR2SYM("fill_rule"), INT2FIX(draw->info->fill_rule)); internal
-    // rb_hash_aset(ddraw, CSTR2SYM("linecap"), INT2FIX(draw->info->linecap));
-    // rb_hash_aset(ddraw, CSTR2SYM("linejoin"), INT2FIX(draw->info->linejoin));
-    // rb_hash_aset(ddraw, CSTR2SYM("miterlimit"), ULONG2NUM(draw->info->miterlimit));
-    // rb_hash_aset(ddraw, CSTR2SYM("dash_offset"), rb_float_new(draw->info->dash_offset));
     rb_hash_aset(ddraw, CSTR2SYM("decorate"), INT2FIX(draw->info->decorate));
-    // rb_hash_aset(ddraw, CSTR2SYM("compose"), INT2FIX(draw->info->compose)); set via "image" primitive
-    // rb_hash_aset(ddraw, CSTR2SYM("text"), MAGICK_STRING_TO_OBJ(draw->info->text)); set via "text" primitive
-    // rb_hash_aset(ddraw, CSTR2SYM("face"), Qnil);  internal
     rb_hash_aset(ddraw, CSTR2SYM("font"), MAGICK_STRING_TO_OBJ(draw->info->font));
-    // rb_hash_aset(ddraw, CSTR2SYM("metrics"), Qnil);   internal
     rb_hash_aset(ddraw, CSTR2SYM("family"), MAGICK_STRING_TO_OBJ(draw->info->family));
     rb_hash_aset(ddraw, CSTR2SYM("style"), INT2FIX(draw->info->style));
     rb_hash_aset(ddraw, CSTR2SYM("stretch"), INT2FIX(draw->info->stretch));
@@ -527,26 +513,17 @@ Draw_marshal_dump(VALUE self)
     rb_hash_aset(ddraw, CSTR2SYM("density"), MAGICK_STRING_TO_OBJ(draw->info->density));
     rb_hash_aset(ddraw, CSTR2SYM("align"), INT2FIX(draw->info->align));
     rb_hash_aset(ddraw, CSTR2SYM("undercolor"), Pixel_from_PixelColor(&draw->info->undercolor));
-    // rb_hash_aset(ddraw, CSTR2SYM("border_color"), Pixel_from_PixelColor(&draw->info->border_color)); Montage and Polaroid
-    // rb_hash_aset(ddraw, CSTR2SYM("server_name"), MAGICK_STRING_TO_OBJ(draw->info->server_name));
-    // rb_hash_aset(ddraw, CSTR2SYM("dash_pattern"), dash_pattern_to_array(draw->info->dash_pattern)); internal
-    // rb_hash_aset(ddraw, CSTR2SYM("clip_mask"), MAGICK_STRING_TO_OBJ(draw->info->clip_mask)); internal
-    // rb_hash_aset(ddraw, CSTR2SYM("bounds"), Import_SegmentInfo(&draw->info->bounds)); internal
     rb_hash_aset(ddraw, CSTR2SYM("clip_units"), INT2FIX(draw->info->clip_units));
 #if defined(IMAGEMAGICK_7)
     rb_hash_aset(ddraw, CSTR2SYM("alpha"), QUANTUM2NUM(draw->info->alpha));
 #else
     rb_hash_aset(ddraw, CSTR2SYM("opacity"), QUANTUM2NUM(draw->info->opacity));
 #endif
-    // rb_hash_aset(ddraw, CSTR2SYM("render"), draw->info->render ? Qtrue : Qfalse); internal
-    // rb_hash_aset(ddraw, CSTR2SYM("element_reference"), Qnil);     // not used yet
-    // rb_hash_aset(ddraw, CSTR2SYM("debug"), draw->info->debug ? Qtrue : Qfalse);
     rb_hash_aset(ddraw, CSTR2SYM("kerning"), rb_float_new(draw->info->kerning));
     rb_hash_aset(ddraw, CSTR2SYM("interword_spacing"), rb_float_new(draw->info->interword_spacing));
 
     // Non-DrawInfo fields
     rb_hash_aset(ddraw, CSTR2SYM("primitives"), draw->primitives);
-    // rb_hash_aset(ddraw, CSTR2SYM("shadow_color"), Pixel_from_PixelColor(&draw->shadow_color)); Polaroid-only
 
     return ddraw;
 }
@@ -565,19 +542,16 @@ Draw_marshal_load(VALUE self, VALUE ddraw)
     VALUE val;
 
     Data_Get_Struct(self, Draw, draw);
-    
+
     if (draw->info == NULL)
     {
         ImageInfo *image_info;
 
         image_info = CloneImageInfo(NULL);
         draw->info = CloneDrawInfo(image_info, (DrawInfo *) NULL);
-        DestroyImageInfo(image_info);        
+        DestroyImageInfo(image_info);
     }
     OBJ_TO_MAGICK_STRING(draw->info->geometry, rb_hash_aref(ddraw, CSTR2SYM("geometry")));
-
-    //val = rb_hash_aref(ddraw, CSTR2SYM("viewbox"));
-    //Export_RectangleInfo(&draw->info->viewbox, val);
 
     val = rb_hash_aref(ddraw, CSTR2SYM("affine"));
     Export_AffineMatrix(&draw->info->affine, val);
@@ -973,7 +947,7 @@ Draw_clone(VALUE self)
  *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
  *     imagelist, uses the current image.
  *   @param operator [Magick::CompositeOperator] the operator
- * 
+ *
  * @return [Magick::Draw] self
  */
 VALUE
