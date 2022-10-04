@@ -429,7 +429,7 @@ ImageList_flatten_images(VALUE self)
  *   Creates {Magick::ImageList::Montage} object, yields to block
  *   if present in {Magick::ImageList::Montage} object's scope.
  *   @yield [Magick::ImageList::Montage]
- * 
+ *
  * @return [Magick::ImageList] a new image list
  */
 VALUE
@@ -444,17 +444,7 @@ ImageList_montage(VALUE self)
     montage_obj = rm_montage_new();
     if (rb_block_given_p())
     {
-        // Run the block in the instance's context, allowing the app to modify the
-        // object's attributes.
-        if (rb_proc_arity(rb_block_proc()) == 0)
-        {
-            rb_warn("passing a block without an image argument is deprecated");
-            rb_obj_instance_eval(0, NULL, montage_obj);
-        }
-        else
-        {
-            rb_yield(montage_obj);
-        }
+        rb_yield(montage_obj);
     }
 
     Data_Get_Struct(montage_obj, Montage, montage);
