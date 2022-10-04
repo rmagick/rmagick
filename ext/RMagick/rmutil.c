@@ -1273,7 +1273,7 @@ void rm_sync_image_options(Image *image, Info *info)
 /**
  * Replicate old (ImageMagick < 6.3.2) EXIF:* functionality using
  * GetImageProperty by returning the exif entries as a single string, separated
- * by \n's.  Do this so that RMagick.rb works no matter which version of
+ * by \n's.  Do this so that RMagick works no matter which version of
  * ImageMagick is in use.
  *
  * No Ruby usage (internal function)
@@ -1392,7 +1392,7 @@ rm_exif_by_entry(Image *image)
 /**
  * Replicate old (ImageMagick < 6.3.2) EXIF:! functionality using
  * GetImageProperty by returning the exif entries as a single string, separated
- * by \n's. Do this so that RMagick.rb works no matter which version of
+ * by \n's. Do this so that RMagick works no matter which version of
  * ImageMagick is in use.
  *
  * No Ruby usage (internal function)
