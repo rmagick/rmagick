@@ -173,8 +173,6 @@
         <ul>
           <li><a href="#mask">mask</a></li>
 
-          <li><a href="#map">map</a></li>
-
           <li><a href=
           "#matte_fill_to_border">matte_fill_to_border</a></li>
 
@@ -1041,7 +1039,7 @@ scanline = img.export_pixels(0, r, img.columns, 1, "RGB");
      <img style="padding:25px; display:none" id="frameless"
     onmouseout="this.style.display='none';framed.style.display='';"
     src="ex/images/Flower_Hat.jpg" alt="frame example" title=
-    "Click to see the example script" /> 
+    "Click to see the example script" />
     <!-- This img tag displays the framed image when the mouse is not over -->
      <img onmouseover=
     "this.style.display='none';frameless.style.display='';" src=
@@ -2730,51 +2728,6 @@ img.level(white_point, gamma, black_point) -&gt; image # wrong!
     <p>In-place form of <a href="#magnify">magnify</a></p>
 
     <h4>Returns</h4>self
-  </div>
-
-  <div class="sig">
-    <h3 id="map">map</h3>
-
-    <p><span class="arg">img</span>.map(<span class=
-    "arg">img</span>, <span class="arg">dither</span>=false) -&gt;
-    <em>image</em></p>
-  </div>
-
-  <div class="desc">
-    <h4>Description</h4>
-
-    <p class="imquote">Replaces the colors of an image with the
-    closest color from a reference image.</p>
-
-    <h4>Arguments</h4>
-
-    <dl>
-      <dt>img</dt>
-
-      <dd>The reference image. May be either another image or an
-      Image object.</dd>
-
-      <dt>dither</dt>
-
-      <dd>If true, dithers the mapped image.</dd>
-    </dl>
-
-    <h4>Returns</h4>
-
-    <p>A new image</p>
-
-    <h4>Notes</h4>
-
-    <p>This method is deprecated when using ImageMagick 6.4.3-6 and
-    later. Use <a href="image3.html#remap">remap</a> instead.</p>
-
-    <h4>See also</h4>
-
-    <p><a href="ilist.html#map">ImageList#map</a></p>
-
-    <h4>Magick API</h4>
-
-    <p>MapImage</p>
   </div>
 
   <div class="sig">
