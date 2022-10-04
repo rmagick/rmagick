@@ -731,8 +731,7 @@ Init_RMagick2(void)
     // include Comparable
     rb_include_module(Class_Pixel, rb_mComparable);
 
-    // Magick::Pixel has 4 constructors: "new" "from_color", "from_hsla",
-    // and the deprecated "from_HSL".
+    // Magick::Pixel has 3 constructors: "new" "from_color", "from_hsla"
     rb_define_alloc_func(Class_Pixel, Pixel_alloc);
     rb_define_singleton_method(Class_Pixel, "from_color", Pixel_from_color, 1);
     rb_define_singleton_method(Class_Pixel, "from_hsla", Pixel_from_hsla, -1);
