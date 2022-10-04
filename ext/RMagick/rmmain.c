@@ -616,7 +616,7 @@ Init_RMagick2(void)
     rb_define_method(Class_Image, "write", Image_write, 1);
 
     /*-----------------------------------------------------------------------*/
-    /* Class Magick::ImageList methods (see also RMagick.rb)                 */
+    /* Class Magick::ImageList methods                                       */
     /*-----------------------------------------------------------------------*/
 
     Class_ImageList = rb_define_class_under(Module_Magick, "ImageList", rb_cObject);
@@ -1847,7 +1847,7 @@ Init_RMagick2(void)
  *
  * Notes:
  *   - Bypass the test by defining the constant RMAGICK_BYPASS_VERSION_TEST to
- *     'true' at the top level, before requiring 'RMagick'
+ *     'true' at the top level, before requiring 'rmagick'
  */
 static void
 test_Magick_version(void)

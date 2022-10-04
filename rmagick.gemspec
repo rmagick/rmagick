@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   files = tracked_files.reject { |file| file[file_exclusion_regex] }
 
   s.files = files
-  s.require_paths << 'ext' << 'deprecated'
+  s.require_paths << 'ext'
 
   s.extensions = %w[ext/RMagick/extconf.rb]
   s.required_ruby_version = ">= #{Magick::MIN_RUBY_VERSION}"
