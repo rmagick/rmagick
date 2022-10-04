@@ -96,8 +96,6 @@
 
         <li><a href="#inspect">inspect</a></li>
 
-        <li><a href="#map">map</a></li>
-
         <li><a href="#montage">montage</a></li>
 
         <li><a href="#morph">morph</a></li>
@@ -1047,53 +1045,6 @@ scene=1
     <h4>See also</h4>
 
     <p><a href="image2.html#inspect">Image#inspect</a></p>
-  </div>
-
-  <div class="sig">
-    <h3 id="map">map</h3>
-
-    <p><span class="arg">ilist</span>.map(<span class=
-    "arg">reference</span>, <span class="arg">dither</span>) -&gt;
-    <em>imagelist</em></p>
-  </div>
-
-  <div class="desc">
-    <h4>Description</h4>
-
-    <p>Reduces the colors in the imagelist images to the set of
-    colors in the <span class="arg">reference</span> image.</p>
-
-    <h4>Arguments</h4>
-
-    <dl>
-      <dt>reference</dt>
-
-      <dd>An image or a imagelist. If an imagelist,
-      <code>map</code> uses the current image as the reference
-      image.</dd>
-
-      <dt>dither</dt>
-
-      <dd>if <code>true</code>, dither the mapped images.</dd>
-    </dl>
-
-    <h4>Returns</h4>
-
-    <p>A new imagelist the same length as the receiver.</p>
-
-    <h4>Notes</h4>
-
-    <p>This method is deprecated when using ImageMagick 6.4.3-6 and
-    later. Use <a href="#remap">remap</a> instead.</p>
-
-    <h4>See also</h4>
-
-    <p><a href="image2.html#map">Image#map</a>, <a href=
-    "#quantize">quantize</a></p>
-
-    <h4>Magick API</h4>
-
-    <p>MapImages</p>
   </div>
 
   <div class="sig">
