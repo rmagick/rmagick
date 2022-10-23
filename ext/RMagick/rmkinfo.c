@@ -10,8 +10,19 @@
 
 #include "rmagick.h"
 
+
+/* UnityAddKernelInfo() was private function until IM 6.9 */
+MagickExport void UnityAddKernelInfo(KernelInfo *kernel, const double scale);
+/* ScaleKernelInfo() was private function until IM 6.9 */
+MagickExport void ScaleKernelInfo(KernelInfo *kernel, const double scaling_factor, const GeometryFlags normalize_flags);
+
+DEFINE_GVL_VOID_STUB2(UnityAddKernelInfo, KernelInfo *, const double);
+DEFINE_GVL_VOID_STUB3(ScaleKernelInfo, KernelInfo *, const double, const GeometryFlags);
+DEFINE_GVL_VOID_STUB2(ScaleGeometryKernelInfo, KernelInfo *, const char *);
+
+
 /**
- * If there's a kernel info, delete it before destroying the KernelInfo 
+ * If there's a kernel info, delete it before destroying the KernelInfo
  *
  * No Ruby usage (internal function)
  *
@@ -89,10 +100,8 @@ KernelInfo_unity_add(VALUE self, VALUE scale)
     if (!FIXNUM_P(scale))
         Check_Type(scale, T_FLOAT);
 
-    /* UnityAddKernelInfo() was private function until IM 6.9 */
-    MagickExport void UnityAddKernelInfo(KernelInfo *kernel, const double scale);
-
-    UnityAddKernelInfo((KernelInfo*)DATA_PTR(self), NUM2DBL(scale));
+    GVL_STRUCT_TYPE(UnityAddKernelInfo) args = { (KernelInfo*)DATA_PTR(self), NUM2DBL(scale) };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(UnityAddKernelInfo), &args);
     return Qnil;
 }
 
@@ -118,10 +127,8 @@ KernelInfo_scale(VALUE self, VALUE scale, VALUE flags)
     else
         rb_raise(rb_eArgError, "expected Integer or Magick::GeometryFlags to specify flags");
 
-    /* ScaleKernelInfo() was private function until IM 6.9 */
-    MagickExport void ScaleKernelInfo(KernelInfo *kernel, const double scaling_factor, const GeometryFlags normalize_flags);
-
-    ScaleKernelInfo((KernelInfo*)DATA_PTR(self), NUM2DBL(scale), geoflags);
+    GVL_STRUCT_TYPE(ScaleKernelInfo) args = { (KernelInfo*)DATA_PTR(self), NUM2DBL(scale), geoflags };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ScaleKernelInfo), &args);
     return Qnil;
 }
 
@@ -135,7 +142,8 @@ VALUE
 KernelInfo_scale_geometry(VALUE self, VALUE geometry)
 {
     Check_Type(geometry, T_STRING);
-    ScaleGeometryKernelInfo((KernelInfo*)DATA_PTR(self), StringValueCStr(geometry));
+    GVL_STRUCT_TYPE(ScaleGeometryKernelInfo) args = { (KernelInfo*)DATA_PTR(self), StringValueCStr(geometry) };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ScaleGeometryKernelInfo), &args);
     return Qnil;
 }
 
