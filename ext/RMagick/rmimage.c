@@ -29,44 +29,267 @@
     #define magick_module module
 #endif
 
-/** Method that effects an image */
-typedef Image *(effector_t)(const Image *, const double, const double, ExceptionInfo *);
-/** Method that flips an image */
-typedef Image *(flipper_t)(const Image *, ExceptionInfo *);
-/** Method that magnifies an image */
-typedef Image *(magnifier_t)(const Image *, ExceptionInfo *);
-/** Method that reads an image */
-typedef Image *(reader_t)(const Info *, ExceptionInfo *);
-/** Method that scales an image */
-typedef Image *(scaler_t)(const Image *, const size_t, const size_t, ExceptionInfo *);
-/** Method that computes threshold on an image */
-#if defined(IMAGEMAGICK_7)
-    typedef MagickBooleanType (auto_channel_t)(Image *, ExceptionInfo *exception);
-    typedef Image *(channel_method_t)(const Image *, const double, const double, ExceptionInfo *);
-    typedef MagickBooleanType (thresholder_t)(Image *, const char *, ExceptionInfo *);
-#else
-    typedef MagickBooleanType (auto_channel_t)(Image *, const ChannelType);
-    typedef Image *(channel_method_t)(const Image *, const ChannelType, const double, const double, ExceptionInfo *);
-    typedef MagickBooleanType (thresholder_t)(Image *, const char *);
-    #define IsEquivalentImage IsImageSimilar
-    #define OrderedDitherImage OrderedPosterizeImage
-#endif
-/** Method that transforms an image */
-typedef Image *(xformer_t)(const Image *, const RectangleInfo *, ExceptionInfo *);
-
 static VALUE cropper(int, int, VALUE *, VALUE);
-static VALUE effect_image(VALUE, int, VALUE *, effector_t);
-static VALUE flipflop(int, VALUE, flipper_t);
-static VALUE rd_image(VALUE, VALUE, reader_t);
+static VALUE effect_image(VALUE, int, VALUE *, gvl_function_t);
+static VALUE flipflop(int, VALUE, gvl_function_t);
+static VALUE rd_image(VALUE, VALUE, gvl_function_t);
 static VALUE rotate(int, int, VALUE *, VALUE);
-static VALUE scale(int, int, VALUE *, VALUE, scaler_t);
-static VALUE threshold_image(int, VALUE *, VALUE, thresholder_t);
-static VALUE xform_image(int, VALUE, VALUE, VALUE, VALUE, VALUE, xformer_t);
+static VALUE scale(int, int, VALUE *, VALUE, gvl_function_t);
+static VALUE threshold_image(int, VALUE *, VALUE, gvl_function_t);
+static VALUE xform_image(int, VALUE, VALUE, VALUE, VALUE, VALUE, gvl_function_t);
 static VALUE array_from_images(Image *);
 static VALUE file_arg_rescue(VALUE, VALUE ATTRIBUTE_UNUSED) ATTRIBUTE_NORETURN;
 
 static const char *BlackPointCompensationKey = "PROFILE:black-point-compensation";
 
+
+DEFINE_GVL_STUB4(AdaptiveBlurImage, const Image *, const double, const double, ExceptionInfo *);
+DEFINE_GVL_STUB4(AdaptiveResizeImage, const Image *, const size_t, const size_t, ExceptionInfo *);
+DEFINE_GVL_STUB4(AdaptiveSharpenImage, const Image *, const double, const double, ExceptionInfo *);
+DEFINE_GVL_STUB5(AdaptiveThresholdImage, const Image *, const size_t, const size_t, const double, ExceptionInfo *);
+DEFINE_GVL_STUB3(AffineTransformImage, const Image *, const AffineMatrix *, ExceptionInfo *);
+DEFINE_GVL_STUB2(Base64Decode, const char *, size_t *);
+DEFINE_GVL_STUB4(BlobToImage, const ImageInfo *, const void *, const size_t, ExceptionInfo *);
+DEFINE_GVL_STUB3(BlueShiftImage, const Image *, const double, ExceptionInfo *);
+DEFINE_GVL_STUB4(BlurImage, const Image *, const double, const double, ExceptionInfo *);
+DEFINE_GVL_STUB4(CharcoalImage, const Image *, const double, const double, ExceptionInfo *);
+DEFINE_GVL_STUB3(ChopImage, const Image *, const RectangleInfo *, ExceptionInfo *);
+DEFINE_GVL_STUB3(ColorMatrixImage, const Image *, const KernelInfo *, ExceptionInfo *);
+DEFINE_GVL_STUB3(CropImage, const Image *, const RectangleInfo *, ExceptionInfo *);
+DEFINE_GVL_STUB3(DecipherImage, Image *, const char *, ExceptionInfo *);
+DEFINE_GVL_STUB3(DeskewImage, const Image *, const double, ExceptionInfo *);
+DEFINE_GVL_STUB2(DespeckleImage, const Image *, ExceptionInfo *);
+DEFINE_GVL_STUB6(DistortImage, const Image *, DistortMethod, const size_t, const double *, MagickBooleanType, ExceptionInfo *);
+DEFINE_GVL_STUB3(EdgeImage, const Image *, const double, ExceptionInfo *);
+DEFINE_GVL_STUB4(EmbossImage, const Image *, const double, const double, ExceptionInfo *);
+DEFINE_GVL_STUB3(EncipherImage, Image *, const char *, ExceptionInfo *);
+DEFINE_GVL_STUB2(EnhanceImage, const Image *, ExceptionInfo *);
+DEFINE_GVL_STUB3(ExcerptImage, const Image *, const RectangleInfo *, ExceptionInfo *);
+DEFINE_GVL_STUB9(ExportImagePixels, const Image *, const ssize_t, const ssize_t, const size_t, const size_t, const char *, const StorageType, void *, ExceptionInfo *);
+DEFINE_GVL_STUB3(ExtentImage, const Image *, const RectangleInfo *, ExceptionInfo *);
+DEFINE_GVL_STUB2(FlipImage, const Image *, ExceptionInfo *);
+DEFINE_GVL_STUB2(FlopImage, const Image *, ExceptionInfo *);
+DEFINE_GVL_STUB4(GaussianBlurImage, const Image *, const double, const double, ExceptionInfo *);
+DEFINE_GVL_STUB6(GetAuthenticPixels, Image *, const ssize_t, const ssize_t, const size_t, const size_t, ExceptionInfo *);
+DEFINE_GVL_STUB2(GetImageDepth, const Image *, ExceptionInfo *);
+DEFINE_GVL_STUB3(GetImageHistogram, const Image *, size_t *, ExceptionInfo *);
+DEFINE_GVL_STUB3(GetNumberColors, const Image *, FILE *, ExceptionInfo *);
+DEFINE_GVL_STUB6(GetVirtualPixels, const Image *, const ssize_t, const ssize_t, const size_t, const size_t, ExceptionInfo *);
+DEFINE_GVL_STUB4(ImageToBlob, const ImageInfo *, Image *, size_t *, ExceptionInfo *);
+DEFINE_GVL_STUB6(LiquidRescaleImage, const Image *, const size_t, const size_t, const double, const double, ExceptionInfo *);
+DEFINE_GVL_STUB2(MagnifyImage, const Image *, ExceptionInfo *);
+DEFINE_GVL_STUB2(MinifyImage, const Image *, ExceptionInfo *);
+DEFINE_GVL_STUB5(MotionBlurImage, const Image *, const double, const double, const double, ExceptionInfo *);
+DEFINE_GVL_STUB2(PingImage, const ImageInfo *, ExceptionInfo *);
+DEFINE_GVL_STUB3(PreviewImage, const Image *, const PreviewType, ExceptionInfo *);
+DEFINE_GVL_STUB2(ReadImage, const ImageInfo *, ExceptionInfo *);
+DEFINE_GVL_STUB4(RollImage, const Image *, const ssize_t, const ssize_t, ExceptionInfo *);
+DEFINE_GVL_STUB3(RotateImage, const Image *, const double, ExceptionInfo *);
+DEFINE_GVL_STUB4(SampleImage, const Image *, const size_t, const size_t, ExceptionInfo *);
+DEFINE_GVL_STUB4(ScaleImage, const Image *, const size_t, const size_t, ExceptionInfo *);
+DEFINE_GVL_STUB3(SepiaToneImage, const Image *, const double, ExceptionInfo *);
+DEFINE_GVL_STUB5(ShadeImage, const Image *, const MagickBooleanType, const double, const double,ExceptionInfo *);
+DEFINE_GVL_STUB6(ShadowImage, const Image *, const double, const double, const ssize_t, const ssize_t,  ExceptionInfo *);
+DEFINE_GVL_STUB4(SharpenImage, const Image *, const double, const double, ExceptionInfo *);
+DEFINE_GVL_STUB3(ShaveImage, const Image *, const RectangleInfo *, ExceptionInfo *);
+DEFINE_GVL_STUB4(ShearImage, const Image *, const double, const double, ExceptionInfo *);
+DEFINE_GVL_STUB5(SketchImage, const Image *, const double, const double, const double, ExceptionInfo *);
+DEFINE_GVL_STUB3(SpliceImage, const Image *, const RectangleInfo *, ExceptionInfo *);
+DEFINE_GVL_STUB5(StatisticImage, const Image *, const StatisticType, const size_t, const size_t, ExceptionInfo *);
+DEFINE_GVL_STUB3(SteganoImage, const Image *, const Image *, ExceptionInfo *);
+DEFINE_GVL_STUB3(StereoImage, const Image *, const Image *, ExceptionInfo *);
+DEFINE_GVL_STUB2(SyncAuthenticPixels, Image *, ExceptionInfo *);
+DEFINE_GVL_STUB4(ThumbnailImage, const Image *, const size_t, const size_t, ExceptionInfo *);
+DEFINE_GVL_STUB2(TransposeImage, const Image *, ExceptionInfo *);
+DEFINE_GVL_STUB2(TransverseImage, const Image *, ExceptionInfo *);
+DEFINE_GVL_STUB2(TrimImage, const Image *, ExceptionInfo *);
+DEFINE_GVL_STUB2(UniqueImageColors, const Image *, ExceptionInfo *);
+DEFINE_GVL_STUB6(UnsharpMaskImage, const Image *, const double, const double, const double, const double,  ExceptionInfo *);
+DEFINE_GVL_STUB6(VignetteImage, const Image *, const double, const double, const ssize_t, const ssize_t, ExceptionInfo *);
+#if defined(IMAGEMAGICK_7)
+DEFINE_GVL_STUB4(AddNoiseImage, const Image *, const NoiseType, const double, ExceptionInfo *);
+DEFINE_GVL_STUB2(AutoGammaImage, Image *, ExceptionInfo *);
+DEFINE_GVL_STUB2(AutoLevelImage, Image *, ExceptionInfo *);
+DEFINE_GVL_STUB3(BilevelImage, Image *, const double, ExceptionInfo *);
+DEFINE_GVL_STUB3(BlackThresholdImage, Image *, const char *, ExceptionInfo *);
+DEFINE_GVL_STUB4(BorderImage, const Image *, const RectangleInfo *, const CompositeOperator, ExceptionInfo *);
+DEFINE_GVL_STUB4(ClutImage, Image *, const Image *, const PixelInterpolateMethod, ExceptionInfo *);
+DEFINE_GVL_STUB4(ColorizeImage, const Image *, const char *, const PixelInfo *, ExceptionInfo *);
+DEFINE_GVL_STUB5(CompareImages, Image *, const Image *, const MetricType, double *, ExceptionInfo *);
+DEFINE_GVL_STUB7(CompositeImage, Image *, const Image *, const CompositeOperator, const MagickBooleanType, const ssize_t, const ssize_t, ExceptionInfo *);
+DEFINE_GVL_STUB2(CompressImageColormap, Image *, ExceptionInfo *);
+DEFINE_GVL_STUB4(ContrastStretchImage, Image *, const double, const double, ExceptionInfo *);
+DEFINE_GVL_STUB3(ConvolveImage, const Image *, const KernelInfo *, ExceptionInfo *);
+DEFINE_GVL_STUB3(CycleColormapImage, Image *, const ssize_t, ExceptionInfo *);
+DEFINE_GVL_STUB4(DrawAffineImage, Image *, const Image *, const AffineMatrix *, ExceptionInfo *);
+DEFINE_GVL_STUB2(EqualizeImage, Image *, ExceptionInfo *);
+DEFINE_GVL_STUB4(EvaluateImage, Image *, const MagickEvaluateOperator, const double, ExceptionInfo *);
+DEFINE_GVL_STUB7(FloodfillPaintImage, Image *, const DrawInfo *, const PixelInfo *, const ssize_t, const ssize_t, const MagickBooleanType, ExceptionInfo *);
+DEFINE_GVL_STUB4(FrameImage, const Image *, const FrameInfo *, const CompositeOperator, ExceptionInfo *);
+DEFINE_GVL_STUB5(FunctionImage, Image *, const MagickFunction, const size_t, const double *, ExceptionInfo *);
+DEFINE_GVL_STUB3(FxImage, const Image *, const char *, ExceptionInfo *);
+DEFINE_GVL_STUB3(GammaImage, Image *, const double, ExceptionInfo *);
+DEFINE_GVL_STUB5(GetImageDistortion, Image *, const Image *, const MetricType, double *, ExceptionInfo *);
+DEFINE_GVL_STUB3(GetImageEntropy, const Image *, double *, ExceptionInfo *);
+DEFINE_GVL_STUB4(GetImageExtrema, const Image *, size_t *, size_t *, ExceptionInfo *);
+DEFINE_GVL_STUB3(GetImageMask, const Image *, const PixelMask, ExceptionInfo *);
+DEFINE_GVL_STUB4(GetImageMean, const Image *, double *, double *, ExceptionInfo *);
+DEFINE_GVL_STUB4(ImplodeImage, const Image *, const double, const PixelInterpolateMethod, ExceptionInfo *);
+DEFINE_GVL_STUB9(ImportImagePixels, Image *, const ssize_t, const ssize_t, const size_t, const size_t, const char *, const StorageType, const void *, ExceptionInfo *);
+DEFINE_GVL_STUB5(IsEquivalentImage, const Image *, const Image *, ssize_t *, ssize_t *, ExceptionInfo *);
+DEFINE_GVL_STUB5(LevelImage, Image *, const double, const double, const double, ExceptionInfo *);
+DEFINE_GVL_STUB5(LevelImageColors, Image *, const PixelInfo *, const PixelInfo *, const MagickBooleanType, ExceptionInfo *);
+DEFINE_GVL_STUB5(LevelizeImage, Image *, const double, const double, const double, ExceptionInfo *);
+DEFINE_GVL_STUB4(LinearStretchImage, Image *, const double, const double, ExceptionInfo *);
+DEFINE_GVL_STUB3(ModulateImage, Image *, const char *, ExceptionInfo *);
+DEFINE_GVL_STUB5(MorphologyImage, const Image *, const MorphologyMethod, const ssize_t, const KernelInfo *, ExceptionInfo *);
+DEFINE_GVL_STUB3(NegateImage, Image *, const MagickBooleanType, ExceptionInfo *);
+DEFINE_GVL_STUB2(NormalizeImage, Image *, ExceptionInfo *);
+DEFINE_GVL_STUB4(OilPaintImage, const Image *, const double, const double, ExceptionInfo *);
+DEFINE_GVL_STUB5(OpaquePaintImage, Image *, const PixelInfo *, const PixelInfo *, const MagickBooleanType, ExceptionInfo *);
+DEFINE_GVL_STUB3(OrderedDitherImage, Image *, const char *, ExceptionInfo *);
+DEFINE_GVL_STUB6(PolaroidImage, const Image *, const DrawInfo *, const char *, const double, const PixelInterpolateMethod, ExceptionInfo *);
+DEFINE_GVL_STUB4(PosterizeImage, Image *, const size_t, const DitherMethod, ExceptionInfo *);
+DEFINE_GVL_STUB5(ProfileImage, Image *, const char *, const void *, const size_t, ExceptionInfo *);
+DEFINE_GVL_STUB3(QuantizeImage, const QuantizeInfo *, Image *, ExceptionInfo *);
+DEFINE_GVL_STUB4(RaiseImage, Image *, const RectangleInfo *, const MagickBooleanType, ExceptionInfo *);
+DEFINE_GVL_STUB4(RandomThresholdImage, Image *, const double, const double, ExceptionInfo *);
+DEFINE_GVL_STUB4(RemapImage, const QuantizeInfo *, Image *, const Image *, ExceptionInfo *);
+DEFINE_GVL_STUB5(ResampleImage, const Image *, const double, const double, const FilterType, ExceptionInfo *);
+DEFINE_GVL_STUB5(ResizeImage, const Image *, const size_t, const size_t, const FilterType, ExceptionInfo *);
+DEFINE_GVL_STUB6(SegmentImage, Image *, const ColorspaceType, const MagickBooleanType, const double, const double, ExceptionInfo *);
+DEFINE_GVL_STUB5(SelectiveBlurImage, const Image *, const double, const double, const double, ExceptionInfo *);
+DEFINE_GVL_STUB3(SeparateImage, const Image *, const ChannelType, ExceptionInfo *);
+DEFINE_GVL_STUB2(SeparateImages, const Image *, ExceptionInfo *);
+DEFINE_GVL_STUB3(SetImageAlphaChannel, Image *, const AlphaChannelOption, ExceptionInfo *);
+DEFINE_GVL_STUB2(SetImageBackgroundColor, Image *, ExceptionInfo *);
+DEFINE_GVL_STUB3(SetImageDepth, Image *, const size_t, ExceptionInfo *);
+DEFINE_GVL_STUB4(SetImageExtent, Image *, const size_t, const size_t, ExceptionInfo *);
+DEFINE_GVL_STUB4(SetImageMask, Image *, const PixelMask, const Image *, ExceptionInfo *);
+DEFINE_GVL_STUB3(SetImageStorageClass, Image *, const ClassType, ExceptionInfo *);
+DEFINE_GVL_STUB5(SigmoidalContrastImage, Image *, const MagickBooleanType, const double, const double, ExceptionInfo *);
+DEFINE_GVL_STUB2(SignatureImage, Image *, ExceptionInfo *);
+DEFINE_GVL_STUB3(SolarizeImage, Image *, const double, ExceptionInfo *);
+DEFINE_GVL_STUB5(SparseColorImage, const Image *, const SparseColorMethod, const size_t, const double *, ExceptionInfo *);
+DEFINE_GVL_STUB4(SpreadImage, const Image *, const PixelInterpolateMethod, const double, ExceptionInfo *);
+DEFINE_GVL_STUB4(SwirlImage, const Image *, double, const PixelInterpolateMethod, ExceptionInfo *);
+DEFINE_GVL_STUB2(SyncImage, Image *, ExceptionInfo *);
+DEFINE_GVL_STUB4(TintImage, const Image *, const char *, const PixelInfo *, ExceptionInfo *);
+DEFINE_GVL_STUB3(TransformImageColorspace, Image *, const ColorspaceType, ExceptionInfo *);
+DEFINE_GVL_STUB5(TransparentPaintImage, Image *, const PixelInfo *, const Quantum, const MagickBooleanType, ExceptionInfo *);
+DEFINE_GVL_STUB6(TransparentPaintImageChroma, Image *, const PixelInfo *, const PixelInfo *, const Quantum, const MagickBooleanType, ExceptionInfo *);
+DEFINE_GVL_STUB5(WaveImage, const Image *, const double, const double, const PixelInterpolateMethod, ExceptionInfo *);
+DEFINE_GVL_STUB3(WhiteThresholdImage, Image *, const char *, ExceptionInfo *);
+DEFINE_GVL_STUB3(WriteImage, const ImageInfo *, Image *, ExceptionInfo *);
+#else
+DEFINE_GVL_STUB5(AdaptiveBlurImageChannel, const Image *, const ChannelType, const double, const double, ExceptionInfo *);
+DEFINE_GVL_STUB5(AdaptiveSharpenImageChannel, const Image *, const ChannelType, const double, const double, ExceptionInfo *);
+DEFINE_GVL_STUB3(AddNoiseImage, const Image *, const NoiseType, ExceptionInfo *);
+DEFINE_GVL_STUB4(AddNoiseImageChannel, const Image *, const ChannelType, const NoiseType, ExceptionInfo *);
+DEFINE_GVL_STUB2(AutoGammaImageChannel, Image *, const ChannelType);
+DEFINE_GVL_STUB2(AutoLevelImageChannel,Image *, const ChannelType);
+DEFINE_GVL_STUB3(BilevelImageChannel, Image *, const ChannelType,const double);
+DEFINE_GVL_STUB2(BlackThresholdImage, Image *, const char *);
+DEFINE_GVL_STUB5(BlurImageChannel, const Image *, const ChannelType, const double, const double, ExceptionInfo *);
+DEFINE_GVL_STUB3(BorderImage, const Image *, const RectangleInfo *, ExceptionInfo *);
+DEFINE_GVL_STUB3(ClutImageChannel, Image *, const ChannelType, const Image *);
+DEFINE_GVL_STUB4(ColorizeImage, const Image *, const char *, const PixelPacket, ExceptionInfo *);
+DEFINE_GVL_STUB6(CompareImageChannels, Image *, const Image *, const ChannelType, const MetricType, double *, ExceptionInfo *);
+DEFINE_GVL_STUB5(CompositeImage, Image *, const CompositeOperator, const Image *, const ssize_t, const ssize_t);
+DEFINE_GVL_STUB6(CompositeImageChannel, Image *, const ChannelType, const CompositeOperator, const Image *, const ssize_t, const ssize_t);
+DEFINE_GVL_STUB1(CompressImageColormap, Image *);
+DEFINE_GVL_STUB4(ContrastStretchImageChannel, Image *, const ChannelType, const double, const double);
+DEFINE_GVL_STUB4(ConvolveImage, const Image *, const size_t, const double *, ExceptionInfo *);
+DEFINE_GVL_STUB5(ConvolveImageChannel, const Image *, const ChannelType, const size_t, const double *, ExceptionInfo *);
+DEFINE_GVL_STUB2(CycleColormapImage, Image *, const ssize_t);
+DEFINE_GVL_STUB3(DrawAffineImage, Image *, const Image *, const AffineMatrix *);
+DEFINE_GVL_STUB1(EqualizeImage, Image *);
+DEFINE_GVL_STUB2(EqualizeImageChannel, Image *, const ChannelType);
+DEFINE_GVL_STUB5(EvaluateImageChannel, Image *, const ChannelType, const MagickEvaluateOperator, const double, ExceptionInfo *);
+DEFINE_GVL_STUB7(FloodfillPaintImage, Image *, const ChannelType, const DrawInfo *, const MagickPixelPacket *, const ssize_t, const ssize_t, const MagickBooleanType);
+DEFINE_GVL_STUB3(FrameImage, const Image *, const FrameInfo *, ExceptionInfo *);
+DEFINE_GVL_STUB6(FunctionImageChannel, Image *, const ChannelType, const MagickFunction, const size_t, const double *, ExceptionInfo *);
+DEFINE_GVL_STUB4(FxImageChannel, const Image *, const ChannelType, const char *, ExceptionInfo *);
+DEFINE_GVL_STUB3(GammaImageChannel, Image *, const ChannelType, const double);
+DEFINE_GVL_STUB5(GaussianBlurImageChannel, const Image *, const ChannelType, const double, const double, ExceptionInfo *);
+DEFINE_GVL_STUB3(GetImageChannelDepth, const Image *, const ChannelType, ExceptionInfo *);
+DEFINE_GVL_STUB6(GetImageChannelDistortion, Image *, const Image *, const ChannelType, const MetricType, double *, ExceptionInfo *);
+DEFINE_GVL_STUB5(GetImageChannelExtrema, const Image *, const ChannelType, size_t *, size_t *, ExceptionInfo *);
+DEFINE_GVL_STUB5(GetImageChannelMean, const Image *, const ChannelType, double *, double *, ExceptionInfo *);
+DEFINE_GVL_STUB2(GetImageClipMask, const Image *, ExceptionInfo *);
+DEFINE_GVL_STUB3(ImplodeImage, const Image *, const double, ExceptionInfo *);
+DEFINE_GVL_STUB8(ImportImagePixels, Image *, const ssize_t, const ssize_t, const size_t,const size_t,const char *, const StorageType, const void *);
+DEFINE_GVL_STUB5(IsImageSimilar, const Image *, const Image *, ssize_t *, ssize_t *, ExceptionInfo *);
+DEFINE_GVL_STUB2(IsImagesEqual, Image *, const Image *);
+DEFINE_GVL_STUB5(LevelColorsImageChannel, Image *, const ChannelType, const MagickPixelPacket *, const MagickPixelPacket *, const MagickBooleanType);
+DEFINE_GVL_STUB2(LevelImage, Image *, const char *);
+DEFINE_GVL_STUB5(LevelImageChannel, Image *, const ChannelType, const double, const double, const double);
+DEFINE_GVL_STUB5(LevelizeImageChannel, Image *, const ChannelType, const double, const double, const double);
+DEFINE_GVL_STUB3(LinearStretchImage, Image *, const double, const double);
+DEFINE_GVL_STUB2(ModulateImage, Image *, const char *);
+DEFINE_GVL_STUB6(MorphologyImageChannel, const Image *, const ChannelType, const MorphologyMethod, const ssize_t, const KernelInfo *, ExceptionInfo *);
+DEFINE_GVL_STUB2(NegateImage, Image *, const MagickBooleanType);
+DEFINE_GVL_STUB3(NegateImageChannel, Image *, const ChannelType, const MagickBooleanType);
+DEFINE_GVL_STUB1(NormalizeImage, Image *);
+DEFINE_GVL_STUB2(NormalizeImageChannel, Image *, const ChannelType);
+DEFINE_GVL_STUB3(OilPaintImage, const Image *, const double, ExceptionInfo *);
+DEFINE_GVL_STUB5(OpaquePaintImageChannel, Image *, const ChannelType, const MagickPixelPacket *, const MagickPixelPacket *, const MagickBooleanType);
+DEFINE_GVL_STUB3(OrderedPosterizeImage, Image *, const char *, ExceptionInfo *);
+DEFINE_GVL_STUB4(PolaroidImage, const Image *, const DrawInfo *, const double, ExceptionInfo *);
+DEFINE_GVL_STUB3(PosterizeImage, Image *, const size_t, const MagickBooleanType);
+DEFINE_GVL_STUB5(ProfileImage, Image *, const char *, const void *, const size_t, const MagickBooleanType);
+DEFINE_GVL_STUB2(QuantizeImage, const QuantizeInfo *, Image *);
+DEFINE_GVL_STUB3(RaiseImage, Image *, const RectangleInfo *, const MagickBooleanType);
+DEFINE_GVL_STUB4(RandomThresholdImageChannel, Image *, const ChannelType, const char *, ExceptionInfo *);
+DEFINE_GVL_STUB3(RemapImage, const QuantizeInfo *, Image *, const Image *);
+DEFINE_GVL_STUB6(ResampleImage, const Image *, const double, const double, const FilterTypes, const double, ExceptionInfo *);
+DEFINE_GVL_STUB6(ResizeImage, const Image *, const size_t, const size_t, const FilterTypes, const double, ExceptionInfo *);
+DEFINE_GVL_STUB5(SegmentImage, Image *, const ColorspaceType, const MagickBooleanType, const double, const double);
+DEFINE_GVL_STUB6(SelectiveBlurImageChannel, const Image *, const ChannelType, const double, const double,  const double, ExceptionInfo *);
+DEFINE_GVL_STUB2(SeparateImageChannel, Image *, const ChannelType);
+DEFINE_GVL_STUB3(SeparateImages, const Image *, const ChannelType, ExceptionInfo *);
+DEFINE_GVL_STUB2(SetImageAlphaChannel, Image *, const AlphaChannelType);
+DEFINE_GVL_STUB1(SetImageBackgroundColor, Image *);
+DEFINE_GVL_STUB3(SetImageChannelDepth, Image *, const ChannelType, const size_t);
+DEFINE_GVL_STUB2(SetImageClipMask, Image *, const Image *);
+DEFINE_GVL_STUB2(SetImageDepth, Image *, const size_t);
+DEFINE_GVL_STUB3(SetImageExtent, Image *, const size_t, const size_t);
+DEFINE_GVL_STUB2(SetImageMask, Image *, const Image *);
+DEFINE_GVL_STUB2(SetImageStorageClass, Image *, const ClassType);
+DEFINE_GVL_STUB5(SharpenImageChannel, const Image *, const ChannelType, const double, const double,  ExceptionInfo *);
+DEFINE_GVL_STUB5(SigmoidalContrastImageChannel, Image *, const ChannelType, const MagickBooleanType, const double, const double);
+DEFINE_GVL_STUB1(SignatureImage, Image *);
+DEFINE_GVL_STUB2(SolarizeImage, Image *, const double);
+DEFINE_GVL_STUB6(SparseColorImage, const Image *, const ChannelType, const SparseColorMethod, const size_t, const double *, ExceptionInfo *);
+DEFINE_GVL_STUB3(SpreadImage, const Image *, const double, ExceptionInfo *);
+DEFINE_GVL_STUB3(SwirlImage, const Image *, double, ExceptionInfo *);
+DEFINE_GVL_STUB1(SyncImage, Image *);
+DEFINE_GVL_STUB4(TintImage, const Image *, const char *, const PixelPacket, ExceptionInfo *);
+DEFINE_GVL_STUB2(TransformImageColorspace, Image *, const ColorspaceType);
+DEFINE_GVL_STUB4(TransparentPaintImage, Image *, const MagickPixelPacket *, const Quantum, const MagickBooleanType);
+DEFINE_GVL_STUB5(TransparentPaintImageChroma, Image *, const MagickPixelPacket *, const MagickPixelPacket *, const Quantum, const MagickBooleanType);
+DEFINE_GVL_STUB7(UnsharpMaskImageChannel, const Image *, const ChannelType, const double, const double,  const double, const double, ExceptionInfo *);
+DEFINE_GVL_STUB4(WaveImage, const Image *, const double, const double, ExceptionInfo *);
+DEFINE_GVL_STUB2(WhiteThresholdImage, Image *, const char *);
+DEFINE_GVL_STUB2(WriteImage, const ImageInfo *, Image *);
+#endif
+
+#if defined(HAVE_GETIMAGECHANNELENTROPY)
+DEFINE_GVL_STUB4(GetImageChannelEntropy, const Image *, const ChannelType, double *, ExceptionInfo *);
+#endif
+
+#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
+DEFINE_GVL_STUB3(RotationalBlurImage, const Image *, const double, ExceptionInfo *);
+#else
+DEFINE_GVL_STUB3(RadialBlurImage, const Image *, const double, ExceptionInfo *);
+#endif
+
+#if defined(IMAGEMAGICK_7)
+#elif defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
+DEFINE_GVL_STUB4(RotationalBlurImageChannel, const Image *, const ChannelType, const double, ExceptionInfo *);
+#else
+DEFINE_GVL_STUB4(RadialBlurImageChannel, const Image *, const ChannelType, const double, ExceptionInfo *);
+#endif
 
 /**
  * Returns the alpha value from the hash.
@@ -98,6 +321,9 @@ get_named_alpha_value(VALUE hash)
 }
 
 
+// aliases for common use of structure types; AdaptiveBlurImage, AdaptiveSharpenImage
+typedef GVL_STRUCT_TYPE(AdaptiveBlurImage) GVL_STRUCT_TYPE(adaptive_method);
+
 /**
  * Call Adaptive(Blur|Sharpen)Image.
  *
@@ -110,8 +336,7 @@ get_named_alpha_value(VALUE hash)
  * @return a new image
  */
 static VALUE
-adaptive_method(int argc, VALUE *argv, VALUE self,
-                Image *fp(const Image *, const double, const double, ExceptionInfo *))
+adaptive_method(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
 {
     Image *image, *new_image;
     double radius = 0.0;
@@ -135,7 +360,8 @@ adaptive_method(int argc, VALUE *argv, VALUE self,
 
     exception = AcquireExceptionInfo();
 
-    new_image = (fp)(image, radius, sigma, exception);
+    GVL_STRUCT_TYPE(adaptive_method) args = { image, radius, sigma, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(fp, &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -143,6 +369,12 @@ adaptive_method(int argc, VALUE *argv, VALUE self,
 }
 
 
+// aliases for common use of structure types; AdaptiveBlurImage, AdaptiveSharpenImage, AdaptiveBlurImageChannel, AdaptiveSharpenImageChannel
+#if defined(IMAGEMAGICK_7)
+typedef GVL_STRUCT_TYPE(AdaptiveBlurImage) GVL_STRUCT_TYPE(adaptive_channel_method);
+#else
+typedef GVL_STRUCT_TYPE(AdaptiveBlurImageChannel) GVL_STRUCT_TYPE(adaptive_channel_method);
+#endif
 
 /**
  * Call Adaptive(Blur|Sharpen)ImageChannel.
@@ -156,7 +388,7 @@ adaptive_method(int argc, VALUE *argv, VALUE self,
  * @return a new image
  */
 static VALUE
-adaptive_channel_method(int argc, VALUE *argv, VALUE self, channel_method_t fp)
+adaptive_channel_method(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
 {
     Image *image, *new_image;
     double radius = 0.0;
@@ -184,11 +416,13 @@ adaptive_channel_method(int argc, VALUE *argv, VALUE self, channel_method_t fp)
 
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    new_image = (fp)(image, radius, sigma, exception);
+    GVL_STRUCT_TYPE(adaptive_channel_method) args = { image, radius, sigma, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(fp, &args);
     CHANGE_RESULT_CHANNEL_MASK(new_image);
     END_CHANNEL_MASK(image);
 #else
-    new_image = (fp)(image, channels, radius, sigma, exception);
+    GVL_STRUCT_TYPE(adaptive_channel_method) args = { image, channels, radius, sigma, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(fp, &args);
 #endif
 
     rm_check_exception(exception, new_image, DestroyOnError);
@@ -212,9 +446,8 @@ adaptive_channel_method(int argc, VALUE *argv, VALUE self, channel_method_t fp)
 VALUE
 Image_adaptive_blur(int argc, VALUE *argv, VALUE self)
 {
-    return adaptive_method(argc, argv, self, AdaptiveBlurImage);
+    return adaptive_method(argc, argv, self, GVL_FUNC(AdaptiveBlurImage));
 }
-
 
 
 /**
@@ -236,9 +469,9 @@ VALUE
 Image_adaptive_blur_channel(int argc, VALUE *argv, VALUE self)
 {
 #if defined(IMAGEMAGICK_7)
-    return adaptive_channel_method(argc, argv, self, AdaptiveBlurImage);
+    return adaptive_channel_method(argc, argv, self, GVL_FUNC(AdaptiveBlurImage));
 #else
-    return adaptive_channel_method(argc, argv, self, AdaptiveBlurImageChannel);
+    return adaptive_channel_method(argc, argv, self, GVL_FUNC(AdaptiveBlurImageChannel));
 #endif
 }
 
@@ -294,13 +527,13 @@ Image_adaptive_resize(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    new_image = AdaptiveResizeImage(image, columns, rows, exception);
+    GVL_STRUCT_TYPE(AdaptiveResizeImage) args = { image, columns, rows, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(AdaptiveResizeImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
     return rm_image_new(new_image);
 }
-
 
 
 /**
@@ -321,9 +554,8 @@ Image_adaptive_resize(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_adaptive_sharpen(int argc, VALUE *argv, VALUE self)
 {
-    return adaptive_method(argc, argv, self, AdaptiveSharpenImage);
+    return adaptive_method(argc, argv, self, GVL_FUNC(AdaptiveSharpenImage));
 }
-
 
 
 /**
@@ -345,12 +577,11 @@ VALUE
 Image_adaptive_sharpen_channel(int argc, VALUE *argv, VALUE self)
 {
 #if defined(IMAGEMAGICK_7)
-    return adaptive_channel_method(argc, argv, self, AdaptiveSharpenImage);
+    return adaptive_channel_method(argc, argv, self, GVL_FUNC(AdaptiveSharpenImage));
 #else
-    return adaptive_channel_method(argc, argv, self, AdaptiveSharpenImageChannel);
+    return adaptive_channel_method(argc, argv, self, GVL_FUNC(AdaptiveSharpenImageChannel));
 #endif
 }
-
 
 
 /**
@@ -389,7 +620,8 @@ Image_adaptive_threshold(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    new_image = AdaptiveThresholdImage(image, width, height, offset, exception);
+    GVL_STRUCT_TYPE(AdaptiveThresholdImage) args = { image, width, height, offset, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(AdaptiveThresholdImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -428,17 +660,21 @@ Image_add_compose_mask(VALUE self, VALUE mask)
     clip_mask = rm_clone_image(mask_image);
 
     exception = AcquireExceptionInfo();
-    NegateImage(clip_mask, MagickFalse, exception);
+    GVL_STRUCT_TYPE(NegateImage) args_NegateImage = { clip_mask, MagickFalse, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(NegateImage), &args_NegateImage);
     rm_check_exception(exception, clip_mask, DestroyOnError);
-    SetImageMask(image, CompositePixelMask, clip_mask, exception);
+    GVL_STRUCT_TYPE(SetImageMask) args_SetImageMask = { image, CompositePixelMask, clip_mask, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageMask), &args_SetImageMask);
     DestroyImage(clip_mask);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     // Delete any previously-existing mask image.
     // Store a clone of the new mask image.
-    SetImageMask(image, mask_image);
-    NegateImage(image->mask, MagickFalse);
+    GVL_STRUCT_TYPE(SetImageMask) args_SetImageMask = { image, mask_image };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageMask), &args_SetImageMask);
+    GVL_STRUCT_TYPE(NegateImage) args_NegateImage = { image->mask, MagickFalse };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(NegateImage), &args_NegateImage);
 
     // Since both Set and GetImageMask clone the mask image I don't see any
     // way to negate the mask without referencing it directly. Sigh.
@@ -467,10 +703,11 @@ Image_add_noise(VALUE self, VALUE noise)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    new_image = AddNoiseImage(image, noise_type, 1.0, exception);
+    GVL_STRUCT_TYPE(AddNoiseImage) args = { image, noise_type, 1.0, exception };
 #else
-    new_image = AddNoiseImage(image, noise_type, exception);
+    GVL_STRUCT_TYPE(AddNoiseImage) args = { image, noise_type, exception };
 #endif
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(AddNoiseImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -517,10 +754,12 @@ Image_add_noise_channel(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    new_image = AddNoiseImage(image, noise_type, 1.0, exception);
+    GVL_STRUCT_TYPE(AddNoiseImage) args = { image, noise_type, 1.0, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(AddNoiseImage), &args);
     END_CHANNEL_MASK(new_image);
 #else
-    new_image = AddNoiseImageChannel(image, channels, noise_type, exception);
+    GVL_STRUCT_TYPE(AddNoiseImageChannel) args = { image, channels, noise_type, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(AddNoiseImageChannel), &args);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -578,10 +817,12 @@ Image_add_profile(VALUE self, VALUE name)
         if (profile)
         {
 #if defined(IMAGEMAGICK_7)
-            ProfileImage(image, profile_name, GetStringInfoDatum(profile), GetStringInfoLength(profile), exception);
+            GVL_STRUCT_TYPE(ProfileImage) args = { image, profile_name, GetStringInfoDatum(profile), GetStringInfoLength(profile), exception };
+            CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ProfileImage), &args);
             if (rm_should_raise_exception(exception, RetainExceptionRetention))
 #else
-            ProfileImage(image, profile_name, GetStringInfoDatum(profile), GetStringInfoLength(profile), MagickFalse);
+            GVL_STRUCT_TYPE(ProfileImage) args = { image, profile_name, GetStringInfoDatum(profile), GetStringInfoLength(profile), MagickFalse };
+            CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ProfileImage), &args);
             if (rm_should_raise_exception(&image->exception, RetainExceptionRetention))
 #endif
             {
@@ -652,11 +893,13 @@ Image_alpha(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    SetImageAlphaChannel(image, alpha, exception);
+    GVL_STRUCT_TYPE(SetImageAlphaChannel) args = { image, alpha, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageAlphaChannel), &args);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    SetImageAlphaChannel(image, alpha);
+    GVL_STRUCT_TYPE(SetImageAlphaChannel) args = { image, alpha };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageAlphaChannel), &args);
     rm_check_image_exception(image, RetainOnError);
 #endif
 
@@ -701,7 +944,8 @@ Image_affine_transform(VALUE self, VALUE affine)
     Export_AffineMatrix(&matrix, affine);
 
     exception = AcquireExceptionInfo();
-    new_image = AffineTransformImage(image, &matrix, exception);
+    GVL_STRUCT_TYPE(AffineTransformImage) args = { image, &matrix, exception };
+    new_image = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(AffineTransformImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -823,6 +1067,9 @@ Image_aset(VALUE self, VALUE key_arg, VALUE attr_arg)
 }
 
 
+// aliases for common use of structure types; TransposeImage, TransverseImage
+typedef GVL_STRUCT_TYPE(TransposeImage) GVL_STRUCT_TYPE(crisscross);
+
 /**
  * Handle #transverse, #transform methods.
  *
@@ -834,7 +1081,7 @@ Image_aset(VALUE self, VALUE key_arg, VALUE attr_arg)
  * @return self if bang, otherwise a new image
  */
 static VALUE
-crisscross(int bang, VALUE self, Image *fp(const Image *, ExceptionInfo *))
+crisscross(int bang, VALUE self, gvl_function_t fp)
 {
     Image *image, *new_image;
     ExceptionInfo *exception;
@@ -842,7 +1089,8 @@ crisscross(int bang, VALUE self, Image *fp(const Image *, ExceptionInfo *))
     Data_Get_Struct(self, Image, image);
     exception = AcquireExceptionInfo();
 
-    new_image = (fp)(image, exception);
+    GVL_STRUCT_TYPE(crisscross) args = { image, exception };
+    new_image = CALL_FUNC_WITHOUT_GVL(fp, &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -859,6 +1107,12 @@ crisscross(int bang, VALUE self, Image *fp(const Image *, ExceptionInfo *))
 }
 
 
+// aliases for common use of structure types; AutoGammaImage, AutoLevelImage, AutoGammaImageChannel, AutoLevelImageChannel
+#if defined(IMAGEMAGICK_7)
+typedef GVL_STRUCT_TYPE(AutoGammaImage) GVL_STRUCT_TYPE(auto_channel);
+#else
+typedef GVL_STRUCT_TYPE(AutoGammaImageChannel) GVL_STRUCT_TYPE(auto_channel);
+#endif
 
 /**
  * Handle #auto_gamma_channel, #auto_level_channel methods.
@@ -872,7 +1126,7 @@ crisscross(int bang, VALUE self, Image *fp(const Image *, ExceptionInfo *))
  * @return a new image
  */
 static VALUE
-auto_channel(int argc, VALUE *argv, VALUE self, auto_channel_t fp)
+auto_channel(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
 {
     Image *image, *new_image;
     ChannelType channels;
@@ -893,12 +1147,14 @@ auto_channel(int argc, VALUE *argv, VALUE self, auto_channel_t fp)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(new_image, channels);
-    (fp)(new_image, exception);
+    GVL_STRUCT_TYPE(auto_channel) args = { new_image, exception };
+    CALL_FUNC_WITHOUT_GVL(fp, &args);
     END_CHANNEL_MASK(new_image);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    (fp)(new_image, channels);
+    GVL_STRUCT_TYPE(auto_channel) args = { new_image, channels };
+    CALL_FUNC_WITHOUT_GVL(fp, &args);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -921,9 +1177,9 @@ VALUE
 Image_auto_gamma_channel(int argc, VALUE *argv, VALUE self)
 {
 #if defined(IMAGEMAGICK_7)
-    return auto_channel(argc, argv, self, AutoGammaImage);
+    return auto_channel(argc, argv, self, GVL_FUNC(AutoGammaImage));
 #else
-    return auto_channel(argc, argv, self, AutoGammaImageChannel);
+    return auto_channel(argc, argv, self, GVL_FUNC(AutoGammaImageChannel));
 #endif
 }
 
@@ -943,9 +1199,9 @@ VALUE
 Image_auto_level_channel(int argc, VALUE *argv, VALUE self)
 {
 #if defined(IMAGEMAGICK_7)
-    return auto_channel(argc, argv, self, AutoLevelImage);
+    return auto_channel(argc, argv, self, GVL_FUNC(AutoLevelImage));
 #else
-    return auto_channel(argc, argv, self, AutoLevelImageChannel);
+    return auto_channel(argc, argv, self, GVL_FUNC(AutoLevelImageChannel));
 #endif
 }
 
@@ -973,7 +1229,7 @@ auto_orient(int bang, VALUE self)
     switch (image->orientation)
     {
         case TopRightOrientation:
-            new_image = flipflop(bang, self, FlopImage);
+            new_image = flipflop(bang, self, GVL_FUNC(FlopImage));
             break;
 
         case BottomRightOrientation:
@@ -982,11 +1238,11 @@ auto_orient(int bang, VALUE self)
             break;
 
         case BottomLeftOrientation:
-            new_image = flipflop(bang, self, FlipImage);
+            new_image = flipflop(bang, self, GVL_FUNC(FlipImage));
             break;
 
         case LeftTopOrientation:
-            new_image = crisscross(bang, self, TransposeImage);
+            new_image = crisscross(bang, self, GVL_FUNC(TransposeImage));
             break;
 
         case RightTopOrientation:
@@ -995,7 +1251,7 @@ auto_orient(int bang, VALUE self)
             break;
 
         case RightBottomOrientation:
-            new_image = crisscross(bang, self, TransverseImage);
+            new_image = crisscross(bang, self, GVL_FUNC(TransverseImage));
             break;
 
         case LeftBottomOrientation:
@@ -1228,12 +1484,14 @@ Image_bilevel_channel(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(new_image, channels);
-    BilevelImage(new_image, threshold, exception);
+    GVL_STRUCT_TYPE(BilevelImage) args = { new_image, threshold, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BilevelImage), &args);
     END_CHANNEL_MASK(new_image);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    BilevelImageChannel(new_image, channels, threshold);
+    GVL_STRUCT_TYPE(BilevelImageChannel) args = { new_image, channels, threshold };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BilevelImageChannel), &args);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -1320,7 +1578,7 @@ Image_black_point_compensation_eq(VALUE self, VALUE arg)
 VALUE
 Image_black_threshold(int argc, VALUE *argv, VALUE self)
 {
-    return threshold_image(argc, argv, self, BlackThresholdImage);
+    return threshold_image(argc, argv, self, GVL_FUNC(BlackThresholdImage));
 }
 
 
@@ -1630,11 +1888,13 @@ special_composite(Image *image, Image *overlay, double image_pct, double overlay
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    CompositeImage(new_image, overlay, op, MagickTrue, x_off, y_off, exception);
+    GVL_STRUCT_TYPE(CompositeImage) args = { new_image, overlay, op, MagickTrue, x_off, y_off, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompositeImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    CompositeImage(new_image, op, overlay, x_off, y_off);
+    GVL_STRUCT_TYPE(CompositeImage) args = { new_image, op, overlay, x_off, y_off };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompositeImage), &args);
 
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
@@ -1741,7 +2001,8 @@ Image_blue_shift(int argc, VALUE *argv, VALUE self)
 
 
     exception = AcquireExceptionInfo();
-    new_image = BlueShiftImage(image, factor, exception);
+    GVL_STRUCT_TYPE(BlueShiftImage) args = { image, factor, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BlueShiftImage), &args);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 
@@ -1793,11 +2054,13 @@ Image_blur_channel(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    new_image = BlurImage(image, radius, sigma, exception);
+    GVL_STRUCT_TYPE(BlurImage) args = { image, radius, sigma, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BlurImage), &args);
     CHANGE_RESULT_CHANNEL_MASK(new_image);
     END_CHANNEL_MASK(image);
 #else
-    new_image = BlurImageChannel(image, channels, radius, sigma, exception);
+    GVL_STRUCT_TYPE(BlurImageChannel) args = { image, channels, radius, sigma, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BlurImageChannel), &args);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -1817,7 +2080,7 @@ Image_blur_channel(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_blur_image(int argc, VALUE *argv, VALUE self)
 {
-    return effect_image(self, argc, argv, BlurImage);
+    return effect_image(self, argc, argv, GVL_FUNC(BlurImage));
 }
 
 
@@ -1856,10 +2119,11 @@ border(int bang, VALUE self, VALUE width, VALUE height, VALUE color)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    new_image = BorderImage(image, &rect, image->compose, exception);
+    GVL_STRUCT_TYPE(BorderImage) args = { image, &rect, image->compose, exception };
 #else
-    new_image = BorderImage(image, &rect, exception);
+    GVL_STRUCT_TYPE(BorderImage) args = { image, &rect, exception };
 #endif
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BorderImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -2144,12 +2408,14 @@ Image_channel(VALUE self, VALUE channel_arg)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    new_image = SeparateImage(image, channel, exception);
+    GVL_STRUCT_TYPE(SeparateImage) args = { image, channel, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SeparateImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
     new_image = rm_clone_image(image);
-    SeparateImageChannel(new_image, channel);
+    GVL_STRUCT_TYPE(SeparateImageChannel) args = { new_image, channel };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SeparateImageChannel), &args);
 
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
@@ -2174,7 +2440,7 @@ Image_channel_depth(int argc, VALUE *argv, VALUE self)
 {
     Image *image;
     ChannelType channels;
-    unsigned long channel_depth;
+    size_t channel_depth;
     ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
@@ -2190,10 +2456,12 @@ Image_channel_depth(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    channel_depth = GetImageDepth(image, exception);
+    GVL_STRUCT_TYPE(GetImageDepth) args = { image, exception };
+    channel_depth = (size_t)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetImageDepth), &args);
     END_CHANNEL_MASK(image);
 #else
-    channel_depth = GetImageChannelDepth(image, channels, exception);
+    GVL_STRUCT_TYPE(GetImageChannelDepth) args = { image, channels, exception };
+    channel_depth = (size_t)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetImageChannelDepth), &args);
 #endif
     CHECK_EXCEPTION();
 
@@ -2237,10 +2505,12 @@ Image_channel_extrema(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    GetImageExtrema(image, &min, &max, exception);
+    GVL_STRUCT_TYPE(GetImageExtrema) args = { image, &min, &max, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetImageExtrema), &args);
     END_CHANNEL_MASK(image);
 #else
-    GetImageChannelExtrema(image, channels, &min, &max, exception);
+    GVL_STRUCT_TYPE(GetImageChannelExtrema) args = { image, channels, &min, &max, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetImageChannelExtrema), &args);
 #endif
     CHECK_EXCEPTION();
 
@@ -2290,10 +2560,12 @@ Image_channel_mean(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    GetImageMean(image, &mean, &stddev, exception);
+    GVL_STRUCT_TYPE(GetImageMean) args = { image, &mean, &stddev, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetImageMean), &args);
     END_CHANNEL_MASK(image);
 #else
-    GetImageChannelMean(image, channels, &mean, &stddev, exception);
+    GVL_STRUCT_TYPE(GetImageChannelMean) args = { image, channels, &mean, &stddev, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetImageChannelMean), &args);
 #endif
     CHECK_EXCEPTION();
 
@@ -2342,10 +2614,12 @@ Image_channel_entropy(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    GetImageEntropy(image, &entropy, exception);
+    GVL_STRUCT_TYPE(GetImageEntropy) args = { image, &entropy, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetImageEntropy), &args);
     END_CHANNEL_MASK(image);
 #else
-    GetImageChannelEntropy(image, channels, &entropy, exception);
+    GVL_STRUCT_TYPE(GetImageChannelEntropy) args = { image, channels, &entropy, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetImageChannelEntropy), &args);
 #endif
     CHECK_EXCEPTION();
 
@@ -2377,7 +2651,7 @@ Image_channel_entropy(int argc ATTRIBUTE_UNUSED, VALUE *argv ATTRIBUTE_UNUSED, V
 VALUE
 Image_charcoal(int argc, VALUE *argv, VALUE self)
 {
-    return effect_image(self, argc, argv, CharcoalImage);
+    return effect_image(self, argc, argv, GVL_FUNC(CharcoalImage));
 }
 
 
@@ -2408,7 +2682,7 @@ VALUE
 Image_chop(VALUE self, VALUE x, VALUE y, VALUE width, VALUE height)
 {
     rm_check_destroyed(self);
-    return xform_image(False, self, x, y, width, height, ChopImage);
+    return xform_image(False, self, x, y, width, height, GVL_FUNC(ChopImage));
 }
 
 
@@ -2518,12 +2792,14 @@ Image_clut_channel(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(image, channels);
-    okay = ClutImage(image, clut, image->interpolate, exception);
+    GVL_STRUCT_TYPE(ClutImage) args = { image, clut, image->interpolate, exception };
+    okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ClutImage), &args);
     END_CHANNEL_MASK(image);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    okay = ClutImageChannel(image, channels, clut);
+    GVL_STRUCT_TYPE(ClutImageChannel) args = { image, channels, clut };
+    okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ClutImageChannel), &args);
     rm_check_image_exception(image, RetainOnError);
     rm_check_image_exception(clut, RetainOnError);
 #endif
@@ -2564,14 +2840,16 @@ Image_color_histogram(VALUE self)
     {
         dc_copy = rm_clone_image(image);
 #if defined(IMAGEMAGICK_7)
-        SetImageStorageClass(dc_copy, DirectClass, exception);
+        GVL_STRUCT_TYPE(SetImageStorageClass) args = { dc_copy, DirectClass, exception };
 #else
-        SetImageStorageClass(dc_copy, DirectClass);
+        GVL_STRUCT_TYPE(SetImageStorageClass) args = { dc_copy, DirectClass };
 #endif
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageStorageClass), &args);
         image = dc_copy;
     }
 
-    histogram = GetImageHistogram(image, &colors, exception);
+    GVL_STRUCT_TYPE(GetImageHistogram) args = { image, &colors, exception };
+    histogram = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetImageHistogram), &args);
 
     if (histogram == NULL)
     {
@@ -2665,7 +2943,8 @@ set_profile(VALUE self, const char *name, VALUE profile)
 
     strlcpy(info->magick, m->name, sizeof(info->magick));
 
-    profile_image = BlobToImage(info, profile_blob, (size_t)profile_length, exception);
+    GVL_STRUCT_TYPE(BlobToImage) args = { info, profile_blob, (size_t)profile_length, exception };
+    profile_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BlobToImage), &args);
     DestroyImageInfo(info);
     CHECK_EXCEPTION();
 
@@ -2677,10 +2956,12 @@ set_profile(VALUE self, const char *name, VALUE profile)
         if (rm_strcasecmp("8bim", profile_name) == 0 && rm_strcasecmp("iptc", name) == 0)
         {
 #if defined(IMAGEMAGICK_7)
-            ProfileImage(image, name, profile_blob, profile_length, exception);
+            GVL_STRUCT_TYPE(ProfileImage) args = { image, name, profile_blob, profile_length, exception };
+            CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ProfileImage), &args);
             if (rm_should_raise_exception(exception, RetainExceptionRetention))
 #else
-            ProfileImage(image, name, profile_blob, profile_length, MagickFalse);
+            GVL_STRUCT_TYPE(ProfileImage) args = { image, name, profile_blob, profile_length, MagickFalse };
+            CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ProfileImage), &args);
             if (rm_should_raise_exception(&image->exception, RetainExceptionRetention))
 #endif
             {
@@ -2693,10 +2974,12 @@ set_profile(VALUE self, const char *name, VALUE profile)
             if (profile_data)
             {
 #if defined(IMAGEMAGICK_7)
-                ProfileImage(image, name, GetStringInfoDatum(profile_data), GetStringInfoLength(profile_data), exception);
+                GVL_STRUCT_TYPE(ProfileImage) args = { image, name, GetStringInfoDatum(profile_data), GetStringInfoLength(profile_data), exception };
+                CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ProfileImage), &args);
                 if (rm_should_raise_exception(exception, RetainExceptionRetention))
 #else
-                ProfileImage(image, name, GetStringInfoDatum(profile_data), GetStringInfoLength(profile_data), MagickFalse);
+                GVL_STRUCT_TYPE(ProfileImage) args = { image, name, GetStringInfoDatum(profile_data), GetStringInfoLength(profile_data), MagickFalse };
+                CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ProfileImage), &args);
                 if (rm_should_raise_exception(&image->exception, RetainExceptionRetention))
 #endif
                 {
@@ -2845,12 +3128,14 @@ Image_color_flood_fill(VALUE self, VALUE target_color, VALUE fill_color,
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    FloodfillPaintImage(new_image, draw_info, &target_mpp, x, y, invert, exception);
+    GVL_STRUCT_TYPE(FloodfillPaintImage) args = { new_image, draw_info, &target_mpp, x, y, invert, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(FloodfillPaintImage), &args);
     DestroyDrawInfo(draw_info);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    FloodfillPaintImage(new_image, DefaultChannels, draw_info, &target_mpp, x, y, invert);
+    GVL_STRUCT_TYPE(FloodfillPaintImage) args = { new_image, DefaultChannels, draw_info, &target_mpp, x, y, invert };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(FloodfillPaintImage), &args);
 
     DestroyDrawInfo(draw_info);
     rm_check_image_exception(new_image, DestroyOnError);
@@ -2914,10 +3199,11 @@ Image_colorize(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    new_image = ColorizeImage(image, opacity, &target, exception);
+    GVL_STRUCT_TYPE(ColorizeImage) args = { image, opacity, &target, exception };
 #else
-    new_image = ColorizeImage(image, opacity, target, exception);
+    GVL_STRUCT_TYPE(ColorizeImage) args = { image, opacity, target, exception };
 #endif
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ColorizeImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -3067,11 +3353,13 @@ Image_colorspace_eq(VALUE self, VALUE colorspace)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    TransformImageColorspace(image, new_cs, exception);
+    GVL_STRUCT_TYPE(TransformImageColorspace) args = { image, new_cs, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TransformImageColorspace), &args);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    TransformImageColorspace(image, new_cs);
+    GVL_STRUCT_TYPE(TransformImageColorspace) args = { image, new_cs };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TransformImageColorspace), &args);
     rm_check_image_exception(image, RetainOnError);
 #endif
 
@@ -3171,10 +3459,12 @@ Image_compare_channel(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    difference_image = CompareImages(image, r_image, metric_type, &distortion, exception);
+    GVL_STRUCT_TYPE(CompareImages) args = { image, r_image, metric_type, &distortion, exception };
+    difference_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompareImages), &args);
     END_CHANNEL_MASK(image);
 #else
-    difference_image = CompareImageChannels(image, r_image, channels, metric_type, &distortion, exception);
+    GVL_STRUCT_TYPE(CompareImageChannels) args = { image, r_image, channels, metric_type, &distortion, exception };
+    difference_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompareImageChannels), &args);
 #endif
     rm_check_exception(exception, difference_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -3372,12 +3662,14 @@ composite(int bang, int argc, VALUE *argv, VALUE self, ChannelType channels)
 #if defined(IMAGEMAGICK_7)
         exception = AcquireExceptionInfo();
         BEGIN_CHANNEL_MASK(image, channels);
-        CompositeImage(image, comp_image, operator, MagickTrue, x_offset, y_offset, exception);
+        GVL_STRUCT_TYPE(CompositeImage) args = { image, comp_image, operator, MagickTrue, x_offset, y_offset, exception };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompositeImage), &args);
         END_CHANNEL_MASK(image);
         CHECK_EXCEPTION();
         DestroyExceptionInfo(exception);
 #else
-        CompositeImageChannel(image, channels, operator, comp_image, x_offset, y_offset);
+        GVL_STRUCT_TYPE(CompositeImageChannel) args = { image, channels, operator, comp_image, x_offset, y_offset };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompositeImageChannel), &args);
         rm_check_image_exception(image, RetainOnError);
 #endif
 
@@ -3390,12 +3682,14 @@ composite(int bang, int argc, VALUE *argv, VALUE self, ChannelType channels)
 #if defined(IMAGEMAGICK_7)
         exception = AcquireExceptionInfo();
         BEGIN_CHANNEL_MASK(new_image, channels);
-        CompositeImage(new_image, comp_image, operator, MagickTrue, x_offset, y_offset, exception);
+        GVL_STRUCT_TYPE(CompositeImage) args = { new_image, comp_image, operator, MagickTrue, x_offset, y_offset, exception };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompositeImage), &args);
         END_CHANNEL_MASK(new_image);
         rm_check_exception(exception, new_image, DestroyOnError);
         DestroyExceptionInfo(exception);
 #else
-        CompositeImageChannel(new_image, channels, operator, comp_image, x_offset, y_offset);
+        GVL_STRUCT_TYPE(CompositeImageChannel) args = { new_image, channels, operator, comp_image, x_offset, y_offset };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompositeImageChannel), &args);
         rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -3509,11 +3803,13 @@ Image_composite_affine(VALUE self, VALUE source, VALUE affine_matrix)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    DrawAffineImage(new_image, composite_image, &affine, exception);
+    GVL_STRUCT_TYPE(DrawAffineImage) args = { new_image, composite_image, &affine, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(DrawAffineImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    DrawAffineImage(new_image, composite_image, &affine);
+    GVL_STRUCT_TYPE(DrawAffineImage) args = { new_image, composite_image, &affine };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(DrawAffineImage), &args);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -3877,11 +4173,13 @@ composite_tiled(int bang, int argc, VALUE *argv, VALUE self)
         {
 #if defined(IMAGEMAGICK_7)
             BEGIN_CHANNEL_MASK(image, channels);
-            status = CompositeImage(image, comp_image, operator, MagickTrue, x, y, exception);
+            GVL_STRUCT_TYPE(CompositeImage) args = { image, comp_image, operator, MagickTrue, x, y, exception };
+            status = (MagickStatusType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompositeImage), &args);
             END_CHANNEL_MASK(image);
             rm_check_exception(exception, image, bang ? RetainOnError: DestroyOnError);
 #else
-            status = CompositeImageChannel(image, channels, operator, comp_image, x, y);
+            GVL_STRUCT_TYPE(CompositeImageChannel) args = { image, channels, operator, comp_image, x, y };
+            status = (MagickStatusType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompositeImageChannel), &args);
             rm_check_image_exception(image, bang ? RetainOnError: DestroyOnError);
 #endif
         }
@@ -3994,11 +4292,13 @@ Image_compress_colormap_bang(VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    okay = CompressImageColormap(image, exception);
+    GVL_STRUCT_TYPE(CompressImageColormap) args = { image, exception };
+    okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompressImageColormap), &args);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    okay = CompressImageColormap(image);
+    GVL_STRUCT_TYPE(CompressImageColormap) args = { image };
+    okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompressImageColormap), &args);
     rm_check_image_exception(image, RetainOnError);
 #endif
     if (!okay)
@@ -4128,9 +4428,11 @@ Image_constitute(VALUE class ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    SetImageExtent(new_image, width, height, exception);
+    GVL_STRUCT_TYPE(SetImageExtent) args_SetImageExtent = { new_image, width, height, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageExtent), &args_SetImageExtent);
 #else
-    SetImageExtent(new_image, width, height);
+    GVL_STRUCT_TYPE(SetImageExtent) args_SetImageExtent = { new_image, width, height };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageExtent), &args_SetImageExtent);
     exception = &new_image->exception;
 #endif
 
@@ -4146,9 +4448,11 @@ Image_constitute(VALUE class ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
     }
 
 #if defined(IMAGEMAGICK_7)
-    SetImageBackgroundColor(new_image, exception);
+    GVL_STRUCT_TYPE(SetImageBackgroundColor) args_SetImageBackgroundColor = { new_image, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageBackgroundColor), &args_SetImageBackgroundColor);
 #else
-    SetImageBackgroundColor(new_image);
+    GVL_STRUCT_TYPE(SetImageBackgroundColor) args_SetImageBackgroundColor = { new_image };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageBackgroundColor), &args_SetImageBackgroundColor);
     exception = &new_image->exception;
 #endif
 
@@ -4164,12 +4468,14 @@ Image_constitute(VALUE class ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
     }
 
 #if defined(IMAGEMAGICK_7)
-    ImportImagePixels(new_image, 0, 0, width, height, map, stg_type, (const void *)pixels.v, exception);
+    GVL_STRUCT_TYPE(ImportImagePixels) args_ImportImagePixels = { new_image, 0, 0, width, height, map, stg_type, (const void *)pixels.v, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ImportImagePixels), &args_ImportImagePixels);
     xfree(pixels.v);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    ImportImagePixels(new_image, 0, 0, width, height, map, stg_type, (const void *)pixels.v);
+    GVL_STRUCT_TYPE(ImportImagePixels) args_ImportImagePixels = { new_image, 0, 0, width, height, map, stg_type, (const void *)pixels.v };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ImportImagePixels), &args_ImportImagePixels);
     xfree(pixels.v);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
@@ -4336,12 +4642,14 @@ Image_contrast_stretch_channel(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(new_image, channels);
-    ContrastStretchImage(new_image, black_point, white_point, exception);
+    GVL_STRUCT_TYPE(ContrastStretchImage) args = { new_image, black_point, white_point, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ContrastStretchImage), &args);
     END_CHANNEL_MASK(new_image);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    ContrastStretchImageChannel(new_image, channels, black_point, white_point);
+    GVL_STRUCT_TYPE(ContrastStretchImageChannel) args = { new_image, channels, black_point, white_point };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ContrastStretchImageChannel), &args);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -4417,11 +4725,13 @@ Image_morphology_channel(VALUE self, VALUE channel_v, VALUE method_v, VALUE iter
 
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channel);
-    new_image = MorphologyImage(image, method, NUM2LONG(iterations), kernel, exception);
+    GVL_STRUCT_TYPE(MorphologyImage) args = { image, method, NUM2LONG(iterations), kernel, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(MorphologyImage), &args);
     CHANGE_RESULT_CHANNEL_MASK(new_image);
     END_CHANNEL_MASK(image);
 #else
-    new_image = MorphologyImageChannel(image, channel, method, NUM2LONG(iterations), kernel, exception);
+    GVL_STRUCT_TYPE(MorphologyImageChannel) args = { image, channel, method, NUM2LONG(iterations), kernel, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(MorphologyImageChannel), &args);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -4532,10 +4842,12 @@ Image_convolve(VALUE self, VALUE order_arg, VALUE kernel_arg)
     exception = AcquireExceptionInfo();
 
 #if defined(IMAGEMAGICK_7)
-    new_image = ConvolveImage(image, kernel, exception);
+    GVL_STRUCT_TYPE(ConvolveImage) args = { image, kernel, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ConvolveImage), &args);
     DestroyKernelInfo(kernel);
 #else
-    new_image = ConvolveImage(image, order, kernel, exception);
+    GVL_STRUCT_TYPE(ConvolveImage) args = { image, order, kernel, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ConvolveImage), &args);
     xfree((void *)kernel);
 #endif
 
@@ -4624,12 +4936,14 @@ Image_convolve_channel(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    new_image = ConvolveImage(image, kernel, exception);
+    GVL_STRUCT_TYPE(ConvolveImage) args = { image, kernel, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ConvolveImage), &args);
     CHANGE_RESULT_CHANNEL_MASK(new_image);
     END_CHANNEL_MASK(image);
     DestroyKernelInfo(kernel);
 #else
-    new_image = ConvolveImageChannel(image, channels, order, kernel, exception);
+    GVL_STRUCT_TYPE(ConvolveImageChannel) args = { image, channels, order, kernel, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ConvolveImageChannel), &args);
     xfree((void *)kernel);
 #endif
 
@@ -4772,11 +5086,13 @@ Image_cycle_colormap(VALUE self, VALUE amount)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    CycleColormapImage(new_image, amt, exception);
+    GVL_STRUCT_TYPE(CycleColormapImage) args = { new_image, amt, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CycleColormapImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    CycleColormapImage(new_image, amt);
+    GVL_STRUCT_TYPE(CycleColormapImage) args = { new_image, amt };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CycleColormapImage), &args);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -4911,7 +5227,8 @@ Image_decipher(VALUE self, VALUE passphrase)
 
     new_image = rm_clone_image(image);
 
-    okay = DecipherImage(new_image, pf, exception);
+    GVL_STRUCT_TYPE(DecipherImage) args = { new_image, pf, exception };
+    okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(DecipherImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     if (!okay)
     {
@@ -5013,11 +5330,13 @@ Image_delete_compose_mask(VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    SetImageMask(image, CompositePixelMask, NULL, exception);
+    GVL_STRUCT_TYPE(SetImageMask) args = { image, CompositePixelMask, NULL, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageMask), &args);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    SetImageMask(image, NULL);
+    GVL_STRUCT_TYPE(SetImageMask) args = { image, NULL };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageMask), &args);
     rm_check_image_exception(image, RetainOnError);
 #endif
 
@@ -5041,11 +5360,13 @@ Image_delete_profile(VALUE self, VALUE name)
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception = AcquireExceptionInfo();
 
-    ProfileImage(image, StringValueCStr(name), NULL, 0, exception);
+    GVL_STRUCT_TYPE(ProfileImage) args = { image, StringValueCStr(name), NULL, 0, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ProfileImage), &args);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    ProfileImage(image, StringValueCStr(name), NULL, 0, MagickTrue);
+    GVL_STRUCT_TYPE(ProfileImage) args = { image, StringValueCStr(name), NULL, 0, MagickTrue };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ProfileImage), &args);
 #endif
     return self;
 }
@@ -5063,13 +5384,14 @@ VALUE
 Image_depth(VALUE self)
 {
     Image *image;
-    unsigned long depth = 0;
+    size_t depth = 0;
     ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
     exception = AcquireExceptionInfo();
 
-    depth = GetImageDepth(image, exception);
+    GVL_STRUCT_TYPE(GetImageDepth) args = { image, exception };
+    depth = (size_t)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetImageDepth), &args);
     CHECK_EXCEPTION();
 
     DestroyExceptionInfo(exception);
@@ -5116,7 +5438,8 @@ Image_deskew(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    new_image = DeskewImage(image, threshold, exception);
+    GVL_STRUCT_TYPE(DeskewImage) args = { image, threshold, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(DeskewImage), &args);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 
@@ -5138,7 +5461,8 @@ Image_despeckle(VALUE self)
     image = rm_check_destroyed(self);
     exception = AcquireExceptionInfo();
 
-    new_image = DespeckleImage(image, exception);
+    GVL_STRUCT_TYPE(DespeckleImage) args = { image, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(DespeckleImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -5213,11 +5537,13 @@ Image_difference(VALUE self, VALUE other)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GetImageDistortion(image, image2, MeanErrorPerPixelErrorMetric, &distortion, exception);
+    GVL_STRUCT_TYPE(GetImageDistortion) args = { image, image2, MeanErrorPerPixelErrorMetric, &distortion, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetImageDistortion), &args);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    IsImagesEqual(image, image2);
+    GVL_STRUCT_TYPE(IsImagesEqual) args = { image, image2 };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(IsImagesEqual), &args);
     rm_check_image_exception(image, RetainOnError);
 #endif
 
@@ -5369,7 +5695,8 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
     Data_Get_Struct(self, Image, image);
 
     exception = AcquireExceptionInfo();
-    okay = ExportImagePixels(image, x, y, columns, rows, map, stg_type, (void *)pixels.v, exception);
+    GVL_STRUCT_TYPE(ExportImagePixels) args = { image, x, y, columns, rows, map, stg_type, (void *)pixels.v, exception };
+    okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ExportImagePixels), &args);
 
     if (!okay)
     {
@@ -5631,7 +5958,8 @@ Image_distort(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    new_image = DistortImage(image, distortion_method, npoints, points, bestfit, exception);
+    GVL_STRUCT_TYPE(DistortImage) args = { image, distortion_method, npoints, points, bestfit, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(DistortImage), &args);
     xfree(points);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -5690,11 +6018,13 @@ Image_distortion_channel(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    difference_image = CompareImages(image, reconstruct, metric, &distortion, exception);
+    GVL_STRUCT_TYPE(CompareImages) args = { image, reconstruct, metric, &distortion, exception };
+    difference_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompareImages), &args);
     END_CHANNEL_MASK(image);
     DestroyImage(difference_image);
 #else
-    GetImageChannelDistortion(image, reconstruct, channels, metric, &distortion, exception);
+    GVL_STRUCT_TYPE(GetImageChannelDistortion) args = { image, reconstruct, channels, metric, &distortion, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetImageChannelDistortion), &args);
 #endif
 
     CHECK_EXCEPTION();
@@ -5734,7 +6064,8 @@ Image__dump(VALUE self, VALUE depth ATTRIBUTE_UNUSED)
     strlcpy(info->magick, image->magick, sizeof(info->magick));
 
     exception = AcquireExceptionInfo();
-    blob = ImageToBlob(info, image, &length, exception);
+    GVL_STRUCT_TYPE(ImageToBlob) args = { info, image, &length, exception };
+    blob = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ImageToBlob), &args);
 
     // Free ImageInfo first - error handling may raise an exception
     DestroyImageInfo(info);
@@ -5862,13 +6193,17 @@ Image_edge(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 
-    new_image = EdgeImage(image, radius, exception);
+    GVL_STRUCT_TYPE(EdgeImage) args = { image, radius, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(EdgeImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
     return rm_image_new(new_image);
 }
 
+
+// aliases for common use of structure types; BlurImage, CharcoalImage, EmbossImage, GaussianBlurImage, SharpenImage
+typedef GVL_STRUCT_TYPE(BlurImage) GVL_STRUCT_TYPE(effect_image);
 
 /**
  * Call one of the effects methods.
@@ -5882,7 +6217,7 @@ Image_edge(int argc, VALUE *argv, VALUE self)
  * @return a new image
  */
 static VALUE
-effect_image(VALUE self, int argc, VALUE *argv, effector_t effector)
+effect_image(VALUE self, int argc, VALUE *argv, gvl_function_t fp)
 {
     Image *image, *new_image;
     ExceptionInfo *exception;
@@ -5909,7 +6244,8 @@ effect_image(VALUE self, int argc, VALUE *argv, effector_t effector)
     }
 
     exception = AcquireExceptionInfo();
-    new_image = (effector)(image, radius, sigma, exception);
+    GVL_STRUCT_TYPE(effect_image) args = { image, radius, sigma, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(fp, &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -5928,7 +6264,7 @@ effect_image(VALUE self, int argc, VALUE *argv, effector_t effector)
 VALUE
 Image_emboss(int argc, VALUE *argv, VALUE self)
 {
-    return effect_image(self, argc, argv, EmbossImage);
+    return effect_image(self, argc, argv, GVL_FUNC(EmbossImage));
 }
 
 
@@ -5954,7 +6290,8 @@ Image_encipher(VALUE self, VALUE passphrase)
 
     new_image = rm_clone_image(image);
 
-    okay = EncipherImage(new_image, pf, exception);
+    GVL_STRUCT_TYPE(EncipherImage) args = { new_image, pf, exception };
+    okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(EncipherImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     if (!okay)
     {
@@ -6010,7 +6347,8 @@ Image_enhance(VALUE self)
     image = rm_check_destroyed(self);
     exception = AcquireExceptionInfo();
 
-    new_image = EnhanceImage(image, exception);
+    GVL_STRUCT_TYPE(EnhanceImage) args = { image, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(EnhanceImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -6036,11 +6374,13 @@ Image_equalize(VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    EqualizeImage(new_image, exception);
+    GVL_STRUCT_TYPE(EqualizeImage) args = { new_image, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(EqualizeImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    EqualizeImage(new_image);
+    GVL_STRUCT_TYPE(EqualizeImage) args = { new_image };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(EqualizeImage), &args);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -6080,12 +6420,14 @@ Image_equalize_channel(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(new_image, channels);
-    EqualizeImage(new_image, exception);
+    GVL_STRUCT_TYPE(EqualizeImage) args = { new_image, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(EqualizeImage), &args);
     END_CHANNEL_MASK(new_image);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    EqualizeImageChannel(new_image, channels);
+    GVL_STRUCT_TYPE(EqualizeImageChannel) args = { new_image, channels };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(EqualizeImageChannel), &args);
 
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
@@ -6111,11 +6453,13 @@ Image_erase_bang(VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    SetImageBackgroundColor(image, exception);
+    GVL_STRUCT_TYPE(SetImageBackgroundColor) args = { image, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageBackgroundColor), &args);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    SetImageBackgroundColor(image);
+    GVL_STRUCT_TYPE(SetImageBackgroundColor) args = { image };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageBackgroundColor), &args);
     rm_check_image_exception(image, RetainOnError);
 #endif
 
@@ -6160,7 +6504,8 @@ excerpt(int bang, VALUE self, VALUE x, VALUE y, VALUE width, VALUE height)
     Data_Get_Struct(self, Image, image);
 
     exception = AcquireExceptionInfo();
-    new_image = ExcerptImage(image, &rect, exception);
+    GVL_STRUCT_TYPE(ExcerptImage) args = { image, &rect, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ExcerptImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -6248,7 +6593,7 @@ Image_export_pixels(int argc, VALUE *argv, VALUE self)
     long x_off = 0L, y_off = 0L;
     unsigned long cols, rows;
     long n, npixels;
-    unsigned int okay;
+    MagickBooleanType okay;
     const char *map = "RGB";
     Quantum *pixels;
     VALUE ary;
@@ -6295,7 +6640,8 @@ Image_export_pixels(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 
-    okay = ExportImagePixels(image, x_off, y_off, cols, rows, map, QuantumPixel, (void *)pixels, exception);
+    GVL_STRUCT_TYPE(ExportImagePixels) args = { image, x_off, y_off, cols, rows, map, QuantumPixel, (void *)pixels, exception };
+    okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ExportImagePixels), &args);
     if (!okay)
     {
         xfree((void *)pixels);
@@ -6380,7 +6726,8 @@ Image_extent(int argc, VALUE *argv, VALUE self)
     Data_Get_Struct(self, Image, image);
     exception = AcquireExceptionInfo();
 
-    new_image = ExtentImage(image, &geometry, exception);
+    GVL_STRUCT_TYPE(ExtentImage) args = { image, &geometry, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ExtentImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -6412,7 +6759,7 @@ Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
     unsigned long cols, rows;
     unsigned long npixels;
     size_t sz;
-    unsigned int okay;
+    MagickBooleanType okay;
     const char *map = "RGB";
     StorageType type = CharPixel;
     VALUE string;
@@ -6485,7 +6832,8 @@ Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 
-    okay = ExportImagePixels(image, x_off, y_off, cols, rows, map, type, (void *)RSTRING_PTR(string), exception);
+    GVL_STRUCT_TYPE(ExportImagePixels) args = { image, x_off, y_off, cols, rows, map, type, (void *)RSTRING_PTR(string), exception };
+    okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ExportImagePixels), &args);
     if (!okay)
     {
         // Let GC have the string buffer.
@@ -6607,7 +6955,7 @@ Image_find_similar_region(int argc, VALUE *argv, VALUE self)
     VALUE region, targ;
     ssize_t x = 0L, y = 0L;
     ExceptionInfo *exception;
-    unsigned int okay;
+    MagickBooleanType okay;
 
     image = rm_check_destroyed(self);
 
@@ -6627,7 +6975,13 @@ Image_find_similar_region(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    okay = IsEquivalentImage(image, target, &x, &y, exception);
+#if defined(IMAGEMAGICK_7)
+    GVL_STRUCT_TYPE(IsEquivalentImage) args = { image, target, &x, &y, exception };
+    okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(IsEquivalentImage), &args);
+#else
+    GVL_STRUCT_TYPE(IsImageSimilar) args = { image, target, &x, &y, exception };
+    okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(IsImageSimilar), &args);
+#endif
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 
@@ -6647,6 +7001,9 @@ Image_find_similar_region(int argc, VALUE *argv, VALUE self)
 }
 
 
+// aliases for common use of structure types; FlopImage, FlipImage
+typedef GVL_STRUCT_TYPE(FlipImage) GVL_STRUCT_TYPE(flipflop);
+
 /**
  * Call a flipflopper (a function that either flips or flops the image).
  *
@@ -6662,7 +7019,7 @@ Image_find_similar_region(int argc, VALUE *argv, VALUE self)
  * @see Image_flop_bang
  */
 static VALUE
-flipflop(int bang, VALUE self, flipper_t flipflopper)
+flipflop(int bang, VALUE self, gvl_function_t fp)
 {
     Image *image, *new_image;
     ExceptionInfo *exception;
@@ -6670,7 +7027,8 @@ flipflop(int bang, VALUE self, flipper_t flipflopper)
     Data_Get_Struct(self, Image, image);
     exception = AcquireExceptionInfo();
 
-    new_image = (flipflopper)(image, exception);
+    GVL_STRUCT_TYPE(flipflop) args = { image, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(fp, &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -6698,7 +7056,7 @@ VALUE
 Image_flip(VALUE self)
 {
     rm_check_destroyed(self);
-    return flipflop(False, self, FlipImage);
+    return flipflop(False, self, GVL_FUNC(FlipImage));
 }
 
 
@@ -6715,7 +7073,7 @@ VALUE
 Image_flip_bang(VALUE self)
 {
     rm_check_frozen(self);
-    return flipflop(True, self, FlipImage);
+    return flipflop(True, self, GVL_FUNC(FlipImage));
 }
 
 
@@ -6731,7 +7089,7 @@ VALUE
 Image_flop(VALUE self)
 {
     rm_check_destroyed(self);
-    return flipflop(False, self, FlopImage);
+    return flipflop(False, self, GVL_FUNC(FlopImage));
 }
 
 
@@ -6748,7 +7106,7 @@ VALUE
 Image_flop_bang(VALUE self)
 {
     rm_check_frozen(self);
-    return flipflop(True, self, FlopImage);
+    return flipflop(True, self, GVL_FUNC(FlopImage));
 }
 
 
@@ -6868,10 +7226,11 @@ Image_frame(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    new_image = FrameImage(image, &frame_info, image->compose, exception);
+    GVL_STRUCT_TYPE(FrameImage) args = { image, &frame_info, image->compose, exception };
 #else
-    new_image = FrameImage(image, &frame_info, exception);
+    GVL_STRUCT_TYPE(FrameImage) args = { image, &frame_info, exception };
 #endif
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(FrameImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -6910,7 +7269,8 @@ Image_from_blob(VALUE class ATTRIBUTE_UNUSED, VALUE blob_arg)
     Data_Get_Struct(info_obj, Info, info);
 
     exception = AcquireExceptionInfo();
-    images = BlobToImage(info,  blob, (size_t)length, exception);
+    GVL_STRUCT_TYPE(BlobToImage) args = { info,  blob, (size_t)length, exception };
+    images = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BlobToImage), &args);
     rm_check_exception(exception, images, DestroyOnError);
 
     DestroyExceptionInfo(exception);
@@ -7010,10 +7370,12 @@ Image_function_channel(int argc, VALUE *argv, VALUE self)
     new_image = rm_clone_image(image);
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(new_image, channels);
-    FunctionImage(new_image, function, nparms, parms, exception);
+    GVL_STRUCT_TYPE(FunctionImage) args = { new_image, function, nparms, parms, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(FunctionImage), &args);
     END_CHANNEL_MASK(new_image);
 #else
-    FunctionImageChannel(new_image, channels, function, nparms, parms, exception);
+    GVL_STRUCT_TYPE(FunctionImageChannel) args = { new_image, channels, function, nparms, parms, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(FunctionImageChannel), &args);
 #endif
     xfree(parms);
     rm_check_exception(exception, new_image, DestroyOnError);
@@ -7094,11 +7456,13 @@ Image_fx(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    new_image = FxImage(image, expression, exception);
+    GVL_STRUCT_TYPE(FxImage) args = { image, expression, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(FxImage), &args);
     CHANGE_RESULT_CHANNEL_MASK(new_image);
     END_CHANNEL_MASK(image);
 #else
-    new_image = FxImageChannel(image, channels, expression, exception);
+    GVL_STRUCT_TYPE(FxImageChannel) args = { image, channels, expression, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(FxImageChannel), &args);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -7174,12 +7538,14 @@ Image_gamma_channel(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(new_image, channels);
-    GammaImage(new_image, gamma, exception);
+    GVL_STRUCT_TYPE(GammaImage) args = { new_image, gamma, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GammaImage), &args);
     END_CHANNEL_MASK(new_image);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GammaImageChannel(new_image, channels, gamma);
+    GVL_STRUCT_TYPE(GammaImageChannel) args = { new_image, channels, gamma };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GammaImageChannel), &args);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -7235,30 +7601,40 @@ Image_gamma_correct(int argc, VALUE *argv, VALUE self)
     {
 #if defined(IMAGEMAGICK_7)
         BEGIN_CHANNEL_MASK(new_image, (ChannelType) (RedChannel | GreenChannel | BlueChannel));
-        GammaImage(new_image, red_gamma, exception);
+        GVL_STRUCT_TYPE(GammaImage) args = { new_image, red_gamma, exception };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GammaImage), &args);
         END_CHANNEL_MASK(new_image);
 #else
-        GammaImageChannel(new_image, (ChannelType) (RedChannel | GreenChannel | BlueChannel), red_gamma);
+        GVL_STRUCT_TYPE(GammaImageChannel) args = { new_image, (ChannelType) (RedChannel | GreenChannel | BlueChannel), red_gamma };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GammaImageChannel), &args);
 #endif
     }
     else
     {
 #if defined(IMAGEMAGICK_7)
         BEGIN_CHANNEL_MASK(new_image, RedChannel);
-        GammaImage(new_image, red_gamma, exception);
+        GVL_STRUCT_TYPE(GammaImage) args1 = { new_image, red_gamma, exception };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GammaImage), &args1);
         END_CHANNEL_MASK(new_image);
 
         BEGIN_CHANNEL_MASK(new_image, GreenChannel);
-        GammaImage(new_image, green_gamma, exception);
+        GVL_STRUCT_TYPE(GammaImage) args2 = { new_image, green_gamma, exception };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GammaImage), &args2);
         END_CHANNEL_MASK(new_image);
 
         BEGIN_CHANNEL_MASK(new_image, BlueChannel);
-        GammaImage(new_image, blue_gamma, exception);
+        GVL_STRUCT_TYPE(GammaImage) args3 = { new_image, blue_gamma, exception };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GammaImage), &args3);
         END_CHANNEL_MASK(new_image);
 #else
-        GammaImageChannel(new_image, RedChannel, red_gamma);
-        GammaImageChannel(new_image, GreenChannel, green_gamma);
-        GammaImageChannel(new_image, BlueChannel, blue_gamma);
+        GVL_STRUCT_TYPE(GammaImageChannel) args1 = { new_image, RedChannel, red_gamma };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GammaImageChannel), &args1);
+
+        GVL_STRUCT_TYPE(GammaImageChannel) args2 = { new_image, GreenChannel, green_gamma };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GammaImageChannel), &args2);
+
+        GVL_STRUCT_TYPE(GammaImageChannel) args3 = { new_image, BlueChannel, blue_gamma };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GammaImageChannel), &args3);
 #endif
     }
 
@@ -7284,7 +7660,7 @@ Image_gamma_correct(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_gaussian_blur(int argc, VALUE *argv, VALUE self)
 {
-    return effect_image(self, argc, argv, GaussianBlurImage);
+    return effect_image(self, argc, argv, GVL_FUNC(GaussianBlurImage));
 }
 
 
@@ -7332,12 +7708,14 @@ Image_gaussian_blur_channel(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    new_image = GaussianBlurImage(image, radius, sigma, exception);
+    GVL_STRUCT_TYPE(GaussianBlurImage) args = { image, radius, sigma, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GaussianBlurImage), &args);
     CHANGE_RESULT_CHANNEL_MASK(new_image);
     END_CHANNEL_MASK(image);
     rm_check_exception(exception, new_image, DestroyOnError);
 #else
-    new_image = GaussianBlurImageChannel(image, channels, radius, sigma, exception);
+    GVL_STRUCT_TYPE(GaussianBlurImageChannel) args = { image, channels, radius, sigma, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GaussianBlurImageChannel), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
 #endif
 
@@ -7440,7 +7818,8 @@ Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE row
     // Cast AcquireImagePixels to get rid of the const qualifier. We're not going
     // to change the pixels but I don't want to make "pixels" const.
     exception = AcquireExceptionInfo();
-    pixels = GetVirtualPixels(image, x, y, columns, rows, exception);
+    GVL_STRUCT_TYPE(GetVirtualPixels) args = { image, x, y, columns, rows, exception };
+    pixels = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetVirtualPixels), &args);
     CHECK_EXCEPTION();
 
     DestroyExceptionInfo(exception);
@@ -7617,10 +7996,11 @@ Image_implode(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 
 #if defined(IMAGEMAGICK_7)
-    new_image = ImplodeImage(image, amount, image->interpolate, exception);
+    GVL_STRUCT_TYPE(ImplodeImage) args = { image, amount, image->interpolate, exception };
 #else
-    new_image = ImplodeImage(image, amount, exception);
+    GVL_STRUCT_TYPE(ImplodeImage) args = { image, amount, exception };
 #endif
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ImplodeImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -7660,7 +8040,7 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
     Quantum *pixels = NULL;
     double *fpixels = NULL;
     void *buffer;
-    unsigned int okay;
+    MagickBooleanType okay;
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
 #endif
@@ -7797,10 +8177,11 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    okay = ImportImagePixels(image, x_off, y_off, cols, rows, map, stg_type, buffer, exception);
+    GVL_STRUCT_TYPE(ImportImagePixels) args = { image, x_off, y_off, cols, rows, map, stg_type, buffer, exception };
 #else
-    okay = ImportImagePixels(image, x_off, y_off, cols, rows, map, stg_type, buffer);
+    GVL_STRUCT_TYPE(ImportImagePixels) args = { image, x_off, y_off, cols, rows, map, stg_type, buffer };
 #endif
+    okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ImportImagePixels), &args);
 
     // Free pixel array before checking for errors.
     if (pixels)
@@ -8136,12 +8517,14 @@ Image_level2(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    LevelImage(new_image, black_point, white_point, gamma_val, exception);
+    GVL_STRUCT_TYPE(LevelImage) args = { new_image, black_point, white_point, gamma_val, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(LevelImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
     snprintf(level, sizeof(level), "%gx%g+%g", black_point, white_point, gamma_val);
-    LevelImage(new_image, level);
+    GVL_STRUCT_TYPE(LevelImage) args = { new_image, level };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(LevelImage), &args);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -8200,12 +8583,14 @@ Image_level_channel(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(new_image, channel);
-    LevelImage(new_image, black_point, white_point, gamma_val, exception);
+    GVL_STRUCT_TYPE(LevelImage) args = { new_image, black_point, white_point, gamma_val, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(LevelImage), &args);
     END_CHANNEL_MASK(new_image);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    LevelImageChannel(new_image, channel, black_point, white_point, gamma_val);
+    GVL_STRUCT_TYPE(LevelImageChannel) args = { new_image, channel, black_point, white_point, gamma_val };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(LevelImageChannel), &args);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -8281,12 +8666,14 @@ Image_level_colors(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(new_image, channels);
-    status = LevelImageColors(new_image, &black_color, &white_color, invert, exception);
+    GVL_STRUCT_TYPE(LevelImageColors) args = { new_image, &black_color, &white_color, invert, exception };
+    status = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(LevelImageColors), &args);
     END_CHANNEL_MASK(new_image);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    status = LevelColorsImageChannel(new_image, channels, &black_color, &white_color, invert);
+    GVL_STRUCT_TYPE(LevelColorsImageChannel) args = { new_image, channels, &black_color, &white_color, invert };
+    status = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(LevelColorsImageChannel), &args);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
     if (!status)
@@ -8356,12 +8743,14 @@ Image_levelize_channel(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(new_image, channels);
-    status = LevelizeImage(new_image, black_point, white_point, gamma, exception);
+    GVL_STRUCT_TYPE(LevelizeImage) args = { new_image, black_point, white_point, gamma, exception };
+    status = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(LevelizeImage), &args);
     END_CHANNEL_MASK(new_image);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    status = LevelizeImageChannel(new_image, channels, black_point, white_point, gamma);
+    GVL_STRUCT_TYPE(LevelizeImageChannel) args = { new_image, channels, black_point, white_point, gamma };
+    status = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(LevelizeImageChannel), &args);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -8402,11 +8791,13 @@ Image_linear_stretch(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    LinearStretchImage(new_image, black_point, white_point, exception);
+    GVL_STRUCT_TYPE(LinearStretchImage) args = { new_image, black_point, white_point, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(LinearStretchImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    LinearStretchImage(new_image, black_point, white_point);
+    GVL_STRUCT_TYPE(LinearStretchImage) args = { new_image, black_point, white_point };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(LinearStretchImage), &args);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -8452,7 +8843,8 @@ Image_liquid_rescale(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    new_image = LiquidRescaleImage(image, cols, rows, delta_x, rigidity, exception);
+    GVL_STRUCT_TYPE(LiquidRescaleImage) args = { image, cols, rows, delta_x, rigidity, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(LiquidRescaleImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -8520,7 +8912,8 @@ Image__load(VALUE class ATTRIBUTE_UNUSED, VALUE str)
 
     blob += offsetof(DumpedImage, magick) + mi.len;
     length -= offsetof(DumpedImage, magick) + mi.len;
-    image = BlobToImage(info, blob, (size_t) length, exception);
+    GVL_STRUCT_TYPE(BlobToImage) args = { info, blob, (size_t)length, exception };
+    image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BlobToImage), &args);
     DestroyImageInfo(info);
 
     rm_check_exception(exception, image, DestroyOnError);
@@ -8529,6 +8922,9 @@ Image__load(VALUE class ATTRIBUTE_UNUSED, VALUE str)
     return rm_image_new(image);
 }
 
+
+// aliases for common use of structure types; MagnifyImage, MinifyImage
+typedef GVL_STRUCT_TYPE(MagnifyImage) GVL_STRUCT_TYPE(magnify);
 
 /**
  * Scale an image proportionally to twice its size.
@@ -8541,7 +8937,7 @@ Image__load(VALUE class ATTRIBUTE_UNUSED, VALUE str)
  * @return self if bang, otherwise a new image
  */
 static VALUE
-magnify(int bang, VALUE self, magnifier_t magnifier)
+magnify(int bang, VALUE self, gvl_function_t fp)
 {
     Image *image;
     Image *new_image;
@@ -8550,7 +8946,8 @@ magnify(int bang, VALUE self, magnifier_t magnifier)
     Data_Get_Struct(self, Image, image);
     exception = AcquireExceptionInfo();
 
-    new_image = (magnifier)(image, exception);
+    GVL_STRUCT_TYPE(magnify) args = { image, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(fp, &args);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     DestroyExceptionInfo(exception);
@@ -8577,7 +8974,7 @@ VALUE
 Image_magnify(VALUE self)
 {
     rm_check_destroyed(self);
-    return magnify(False, self, MagnifyImage);
+    return magnify(False, self, GVL_FUNC(MagnifyImage));
 }
 
 
@@ -8592,7 +8989,7 @@ VALUE
 Image_magnify_bang(VALUE self)
 {
     rm_check_frozen(self);
-    return magnify(True, self, MagnifyImage);
+    return magnify(True, self, GVL_FUNC(MagnifyImage));
 }
 
 
@@ -8624,7 +9021,8 @@ Image_marshal_dump(VALUE self)
     rb_ary_store(ary, 0, rb_str_new2(image->filename));
 
     exception = AcquireExceptionInfo();
-    blob = ImageToBlob(info, image, &length, exception);
+    GVL_STRUCT_TYPE(ImageToBlob) args = { info, image, &length, exception };
+    blob = (unsigned char *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ImageToBlob), &args);
 
     // Destroy info before raising an exception
     DestroyImageInfo(info);
@@ -8669,7 +9067,8 @@ Image_marshal_load(VALUE self, VALUE ary)
     {
         strlcpy(info->filename, RSTRING_PTR(filename), sizeof(info->filename));
     }
-    image = BlobToImage(info, RSTRING_PTR(blob), RSTRING_LEN(blob), exception);
+    GVL_STRUCT_TYPE(BlobToImage) args = { info, RSTRING_PTR(blob), RSTRING_LEN(blob), exception };
+    image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BlobToImage), &args);
 
     // Destroy info before raising an exception
     DestroyImageInfo(info);
@@ -8702,9 +9101,11 @@ get_image_mask(Image *image)
 
     // The returned clip mask is a clone, ours to keep.
 #if defined(IMAGEMAGICK_7)
-    mask = GetImageMask(image, WritePixelMask, exception);
+    GVL_STRUCT_TYPE(GetImageMask) args = { image, WritePixelMask, exception };
+    mask = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetImageMask), &args);
 #else
-    mask = GetImageClipMask(image, exception);
+    GVL_STRUCT_TYPE(GetImageClipMask) args = { image, exception };
+    mask = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetImageClipMask), &args);
 #endif
     rm_check_exception(exception, mask, DestroyOnError);
 
@@ -8742,19 +9143,22 @@ set_image_mask(Image *image, VALUE mask)
         // Resize if necessary
         if (clip_mask->columns != image->columns || clip_mask->rows != image->rows)
         {
-            resized_image = ResizeImage(clip_mask, image->columns, image->rows, image->filter, exception);
+            GVL_STRUCT_TYPE(ResizeImage) args = { clip_mask, image->columns, image->rows, image->filter, exception };
+            resized_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ResizeImage), &args);
             DestroyImage(clip_mask);
             rm_check_exception(exception, resized_image, DestroyOnError);
             rm_ensure_result(resized_image);
             clip_mask = resized_image;
         }
 
-        SetImageMask(image, WritePixelMask, clip_mask, exception);
+        GVL_STRUCT_TYPE(SetImageMask) args = { image, WritePixelMask, clip_mask, exception };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageMask), &args);
         DestroyImage(clip_mask);
     }
     else
     {
-        SetImageMask(image, WritePixelMask, NULL, exception);
+        GVL_STRUCT_TYPE(SetImageMask) args = { image, WritePixelMask, NULL, exception };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageMask), &args);
     }
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
@@ -8782,8 +9186,8 @@ set_image_mask(Image *image, VALUE mask)
         if (clip_mask->columns != image->columns || clip_mask->rows != image->rows)
         {
             exception = AcquireExceptionInfo();
-            resized_image = ResizeImage(clip_mask, image->columns, image->rows,
-                                        UndefinedFilter, 0.0, exception);
+            GVL_STRUCT_TYPE(ResizeImage) args = { clip_mask, image->columns, image->rows, UndefinedFilter, 0.0, exception };
+            resized_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ResizeImage), &args);
             rm_check_exception(exception, resized_image, DestroyOnError);
             DestroyExceptionInfo(exception);
             rm_ensure_result(resized_image);
@@ -8796,7 +9200,8 @@ set_image_mask(Image *image, VALUE mask)
 
         for (y = 0; y < (long) clip_mask->rows; y++)
         {
-            q = GetAuthenticPixels(clip_mask, 0, y, clip_mask->columns, 1, exception);
+            GVL_STRUCT_TYPE(GetAuthenticPixels) args_GetAuthenticPixels = { clip_mask, 0, y, clip_mask->columns, 1, exception };
+            q = (PixelPacket *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetAuthenticPixels), &args_GetAuthenticPixels);
             rm_check_exception(exception, clip_mask, DestroyOnError);
 
             if (!q)
@@ -8815,12 +9220,14 @@ set_image_mask(Image *image, VALUE mask)
                 q += 1;
             }
 
-            SyncAuthenticPixels(clip_mask, exception);
+            GVL_STRUCT_TYPE(SyncAuthenticPixels) args_SyncAuthenticPixels = { clip_mask, exception };
+            CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SyncAuthenticPixels), &args_SyncAuthenticPixels);
             rm_check_exception(exception, clip_mask, DestroyOnError);
         }
         DestroyExceptionInfo(exception);
 
-        SetImageStorageClass(clip_mask, DirectClass);
+        GVL_STRUCT_TYPE(SetImageStorageClass) args_SetImageStorageClass = { clip_mask, DirectClass };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageStorageClass), &args_SetImageStorageClass);
         rm_check_image_exception(clip_mask, DestroyOnError);
 
         clip_mask->matte = MagickTrue;
@@ -8828,12 +9235,14 @@ set_image_mask(Image *image, VALUE mask)
         // SetImageClipMask clones the clip_mask image. We can
         // destroy our copy after SetImageClipMask is done with it.
 
-        SetImageClipMask(image, clip_mask);
+        GVL_STRUCT_TYPE(SetImageClipMask) args_SetImageClipMask = { image, clip_mask };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageClipMask), &args_SetImageClipMask);
         DestroyImage(clip_mask);
     }
     else
     {
-        SetImageClipMask(image, NULL);
+        GVL_STRUCT_TYPE(SetImageClipMask) args_SetImageClipMask = { image, NULL };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageClipMask), &args_SetImageClipMask);
     }
 
     RB_GC_GUARD(mask);
@@ -9007,13 +9416,15 @@ Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(new_image, OpacityChannel);
-    FloodfillPaintImage(new_image, draw_info, &target_mpp, x, y, invert, exception);
+    GVL_STRUCT_TYPE(FloodfillPaintImage) args = { new_image, draw_info, &target_mpp, x, y, invert, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(FloodfillPaintImage), &args);
     END_CHANNEL_MASK(new_image);
     DestroyDrawInfo(draw_info);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    FloodfillPaintImage(new_image, OpacityChannel, draw_info, &target_mpp, x, y, invert);
+    GVL_STRUCT_TYPE(FloodfillPaintImage) args = { new_image, OpacityChannel, draw_info, &target_mpp, x, y, invert };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(FloodfillPaintImage), &args);
     DestroyDrawInfo(draw_info);
 
     rm_check_image_exception(new_image, DestroyOnError);
@@ -9051,7 +9462,8 @@ Image_median_filter(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    new_image = StatisticImage(image, MedianStatistic, (size_t)radius, (size_t)radius, exception);
+    GVL_STRUCT_TYPE(StatisticImage) args = { image, MedianStatistic, (size_t)radius, (size_t)radius, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(StatisticImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -9110,7 +9522,7 @@ VALUE
 Image_minify(VALUE self)
 {
     rm_check_destroyed(self);
-    return magnify(False, self, MinifyImage);
+    return magnify(False, self, GVL_FUNC(MinifyImage));
 }
 
 
@@ -9124,7 +9536,7 @@ VALUE
 Image_minify_bang(VALUE self)
 {
     rm_check_frozen(self);
-    return magnify(True, self, MinifyImage);
+    return magnify(True, self, GVL_FUNC(MinifyImage));
 }
 
 
@@ -9176,11 +9588,13 @@ Image_modulate(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    ModulateImage(new_image, modulate, exception);
+    GVL_STRUCT_TYPE(ModulateImage) args = { new_image, modulate, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ModulateImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    ModulateImage(new_image, modulate);
+    GVL_STRUCT_TYPE(ModulateImage) args = { new_image, modulate };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ModulateImage), &args);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -9217,6 +9631,9 @@ Image_montage(VALUE self)
 }
 
 
+// aliases for common use of structure types; MotionBlurImage, SketchImage
+typedef GVL_STRUCT_TYPE(MotionBlurImage) GVL_STRUCT_TYPE(motion_blur);
+
 /**
  * Called from Image_motion_blur and Image_sketch.
  *
@@ -9231,8 +9648,7 @@ Image_montage(VALUE self)
  * @see Image_sketch
  */
 static VALUE
-motion_blur(int argc, VALUE *argv, VALUE self,
-            Image *fp(const Image *, const double, const double, const double, ExceptionInfo *))
+motion_blur(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
 {
     Image *image, *new_image;
     double radius = 0.0;
@@ -9263,7 +9679,8 @@ motion_blur(int argc, VALUE *argv, VALUE self,
     Data_Get_Struct(self, Image, image);
 
     exception = AcquireExceptionInfo();
-    new_image = (fp)(image, radius, sigma, angle, exception);
+    GVL_STRUCT_TYPE(motion_blur) args = { image, radius, sigma, angle, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(fp, &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -9287,7 +9704,7 @@ VALUE
 Image_motion_blur(int argc, VALUE *argv, VALUE self)
 {
     rm_check_destroyed(self);
-    return motion_blur(argc, argv, self, MotionBlurImage);
+    return motion_blur(argc, argv, self, GVL_FUNC(MotionBlurImage));
 }
 
 
@@ -9322,11 +9739,13 @@ Image_negate(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    NegateImage(new_image, grayscale, exception);
+    GVL_STRUCT_TYPE(NegateImage) args = { new_image, grayscale, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(NegateImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    NegateImage(new_image, grayscale);
+    GVL_STRUCT_TYPE(NegateImage) args = { new_image, grayscale };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(NegateImage), &args);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -9379,12 +9798,14 @@ Image_negate_channel(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(new_image, channels);
-    NegateImage(new_image, grayscale, exception);
+    GVL_STRUCT_TYPE(NegateImage) args = { new_image, grayscale, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(NegateImage), &args);
     END_CHANNEL_MASK(new_image);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    NegateImageChannel(new_image, channels, grayscale);
+    GVL_STRUCT_TYPE(NegateImageChannel) args = { new_image, channels, grayscale };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(NegateImageChannel), &args);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -9461,11 +9882,13 @@ Image_initialize(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    SetImageExtent(image, cols, rows, exception);
+    GVL_STRUCT_TYPE(SetImageExtent) args = { image, cols, rows, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageExtent), &args);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    SetImageExtent(image, cols, rows);
+    GVL_STRUCT_TYPE(SetImageExtent) args = { image, cols, rows };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageExtent), &args);
 #endif
 
     // If the caller did not supply a fill argument, call SetImageBackgroundColor
@@ -9475,11 +9898,13 @@ Image_initialize(int argc, VALUE *argv, VALUE self)
     {
 #if defined(IMAGEMAGICK_7)
         exception = AcquireExceptionInfo();
-        SetImageBackgroundColor(image, exception);
+        GVL_STRUCT_TYPE(SetImageBackgroundColor) args = { image, exception };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageBackgroundColor), &args);
         CHECK_EXCEPTION();
         DestroyExceptionInfo(exception);
 #else
-        SetImageBackgroundColor(image);
+        GVL_STRUCT_TYPE(SetImageBackgroundColor) args = { image };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageBackgroundColor), &args);
 #endif
     }
     // fillobj.fill(self)
@@ -9535,11 +9960,13 @@ Image_normalize(VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    NormalizeImage(new_image, exception);
+    GVL_STRUCT_TYPE(NormalizeImage) args = { new_image, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(NormalizeImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    NormalizeImage(new_image);
+    GVL_STRUCT_TYPE(NormalizeImage) args = { new_image };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(NormalizeImage), &args);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -9577,12 +10004,14 @@ Image_normalize_channel(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(new_image, channels);
-    NormalizeImage(new_image, exception);
+    GVL_STRUCT_TYPE(NormalizeImage) args = { new_image, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(NormalizeImage), &args);
     END_CHANNEL_MASK(new_image);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    NormalizeImageChannel(new_image, channels);
+    GVL_STRUCT_TYPE(NormalizeImageChannel) args = { new_image, channels };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(NormalizeImageChannel), &args);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -9623,12 +10052,13 @@ Image_number_colors(VALUE self)
 {
     Image *image;
     ExceptionInfo *exception;
-    unsigned long n = 0;
+    size_t n = 0;
 
     image = rm_check_destroyed(self);
     exception = AcquireExceptionInfo();
 
-    n = (unsigned long) GetNumberColors(image, NULL, exception);
+    GVL_STRUCT_TYPE(GetNumberColors) args = { image, NULL, exception };
+    n = (size_t)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetNumberColors), &args);
     CHECK_EXCEPTION();
 
     DestroyExceptionInfo(exception);
@@ -9693,10 +10123,11 @@ Image_oil_paint(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 
 #if defined(IMAGEMAGICK_7)
-    new_image = OilPaintImage(image, radius, sigma, exception);
+    GVL_STRUCT_TYPE(OilPaintImage) args = { image, radius, sigma, exception };
 #else
-    new_image = OilPaintImage(image, radius, exception);
+    GVL_STRUCT_TYPE(OilPaintImage) args = { image, radius, exception };
 #endif
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(OilPaintImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -9737,11 +10168,13 @@ Image_opaque(VALUE self, VALUE target, VALUE fill)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    okay = OpaquePaintImage(new_image, &target_pp, &fill_pp, MagickFalse, exception);
+    GVL_STRUCT_TYPE(OpaquePaintImage) args = { new_image, &target_pp, &fill_pp, MagickFalse, exception };
+    okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(OpaquePaintImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    okay = OpaquePaintImageChannel(new_image, DefaultChannels, &target_pp, &fill_pp, MagickFalse);
+    GVL_STRUCT_TYPE(OpaquePaintImageChannel) args = { new_image, DefaultChannels, &target_pp, &fill_pp, MagickFalse };
+    okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(OpaquePaintImageChannel), &args);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -9827,13 +10260,15 @@ Image_opaque_channel(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(new_image, channels);
-    okay = OpaquePaintImage(new_image, &target_pp, &fill_pp, invert, exception);
+    GVL_STRUCT_TYPE(OpaquePaintImage) args = { new_image, &target_pp, &fill_pp, invert, exception };
+    okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(OpaquePaintImage), &args);
     END_CHANNEL_MASK(new_image);
     new_image->fuzz = keep;
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    okay = OpaquePaintImageChannel(new_image, channels, &target_pp, &fill_pp, invert);
+    GVL_STRUCT_TYPE(OpaquePaintImageChannel) args = { new_image, channels, &target_pp, &fill_pp, invert };
+    okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(OpaquePaintImageChannel), &args);
 
     new_image->fuzz = keep;
     rm_check_image_exception(new_image, DestroyOnError);
@@ -9918,7 +10353,13 @@ Image_ordered_dither(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 
-    OrderedDitherImage(new_image, threshold_map, exception);
+#if defined(IMAGEMAGICK_7)
+    GVL_STRUCT_TYPE(OrderedDitherImage) args = { new_image, threshold_map, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(OrderedDitherImage), &args);
+#else
+    GVL_STRUCT_TYPE(OrderedPosterizeImage) args = { new_image, threshold_map, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(OrderedPosterizeImage), &args);
+#endif
     rm_check_exception(exception, new_image, DestroyOnError);
 
     DestroyExceptionInfo(exception);
@@ -10053,12 +10494,14 @@ Image_paint_transparent(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    okay = TransparentPaintImage(new_image, (const MagickPixel *)&color, alpha, invert, exception);
+    GVL_STRUCT_TYPE(TransparentPaintImage) args = { new_image, (const MagickPixel *)&color, alpha, invert, exception };
+    okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TransparentPaintImage), &args);
     new_image->fuzz = keep;
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    okay = TransparentPaintImage(new_image, (const MagickPixel *)&color, QuantumRange - alpha, invert);
+    GVL_STRUCT_TYPE(TransparentPaintImage) args = { new_image, (const MagickPixel *)&color, QuantumRange - alpha, invert };
+    okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TransparentPaintImage), &args);
     new_image->fuzz = keep;
 
     // Is it possible for TransparentPaintImage to silently fail?
@@ -10101,7 +10544,7 @@ Image_palette_q(VALUE self)
 VALUE
 Image_ping(VALUE class, VALUE file_arg)
 {
-    return rd_image(class, file_arg, PingImage);
+    return rd_image(class, file_arg, GVL_FUNC(PingImage));
 }
 
 
@@ -10167,7 +10610,8 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
     if (!set)
     {
         exception = AcquireExceptionInfo();
-        old_pixel = GetVirtualPixels(image, x, y, 1, 1, exception);
+        GVL_STRUCT_TYPE(GetVirtualPixels) args = { image, x, y, 1, 1, exception };
+        old_pixel = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetVirtualPixels), &args);
         CHECK_EXCEPTION();
 
         DestroyExceptionInfo(exception);
@@ -10219,7 +10663,8 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
     if (image->storage_class == PseudoClass)
     {
 #if defined(IMAGEMAGICK_7)
-        okay = SetImageStorageClass(image, DirectClass, exception);
+        GVL_STRUCT_TYPE(SetImageStorageClass) args = { image, DirectClass, exception };
+        okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageStorageClass), &args);
         CHECK_EXCEPTION();
         if (!okay)
         {
@@ -10227,7 +10672,8 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
             rb_raise(Class_ImageMagickError, "SetImageStorageClass failed. Can't set pixel color.");
         }
 #else
-        okay = SetImageStorageClass(image, DirectClass);
+        GVL_STRUCT_TYPE(SetImageStorageClass) args = { image, DirectClass };
+        okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageStorageClass), &args);
         rm_check_image_exception(image, RetainOnError);
         if (!okay)
         {
@@ -10240,7 +10686,8 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #endif
 
-    pixel = GetAuthenticPixels(image, x, y, 1, 1, exception);
+    GVL_STRUCT_TYPE(GetAuthenticPixels) args = { image, x, y, 1, 1, exception };
+    pixel = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetAuthenticPixels), &args);
     CHECK_EXCEPTION();
 
     if (pixel)
@@ -10275,7 +10722,8 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
         }
 #endif
 
-        SyncAuthenticPixels(image, exception);
+        GVL_STRUCT_TYPE(SyncAuthenticPixels) args = { image, exception };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SyncAuthenticPixels), &args);
         CHECK_EXCEPTION();
     }
 
@@ -10373,9 +10821,11 @@ Image_polaroid(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     caption = GetImageProperty(clone, "Caption", exception);
-    new_image = PolaroidImage(clone, draw->info, caption, angle, image->interpolate, exception);
+    GVL_STRUCT_TYPE(PolaroidImage) args = { clone, draw->info, caption, angle, image->interpolate, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(PolaroidImage), &args);
 #else
-    new_image = PolaroidImage(clone, draw->info, angle, exception);
+    GVL_STRUCT_TYPE(PolaroidImage) args = { clone, draw->info, angle, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(PolaroidImage), &args);
 #endif
     rm_check_exception(exception, clone, DestroyOnError);
 
@@ -10427,11 +10877,13 @@ Image_posterize(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     dither_method = dither ? RiemersmaDitherMethod : NoDitherMethod;
-    PosterizeImage(new_image, levels, dither_method, exception);
+    GVL_STRUCT_TYPE(PosterizeImage) args = { new_image, levels, dither_method, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(PosterizeImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    PosterizeImage(new_image, levels, dither);
+    GVL_STRUCT_TYPE(PosterizeImage) args = { new_image, levels, dither };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(PosterizeImage), &args);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -10457,7 +10909,8 @@ Image_preview(VALUE self, VALUE preview)
     VALUE_TO_ENUM(preview, preview_type, PreviewType);
 
     exception = AcquireExceptionInfo();
-    new_image = PreviewImage(image, preview_type, exception);
+    GVL_STRUCT_TYPE(PreviewImage) args = { image, preview_type, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(PreviewImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     DestroyExceptionInfo(exception);
@@ -10684,10 +11137,12 @@ Image_quantum_operator(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channel);
-    EvaluateImage(image, qop, rvalue, exception);
+    GVL_STRUCT_TYPE(EvaluateImage) args = { image, qop, rvalue, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(EvaluateImage), &args);
     END_CHANNEL_MASK(image);
 #else
-    EvaluateImageChannel(image, channel, qop, rvalue, exception);
+    GVL_STRUCT_TYPE(EvaluateImageChannel) args = { image, channel, qop, rvalue, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(EvaluateImageChannel), &args);
 #endif
     CHECK_EXCEPTION();
 
@@ -10764,11 +11219,13 @@ Image_quantize(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    QuantizeImage(&quantize_info, new_image, exception);
+    GVL_STRUCT_TYPE(QuantizeImage) args = { &quantize_info, new_image, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(QuantizeImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    QuantizeImage(&quantize_info, new_image);
+    GVL_STRUCT_TYPE(QuantizeImage) args = { &quantize_info, new_image };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(QuantizeImage), &args);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -10793,9 +11250,11 @@ Image_radial_blur(VALUE self, VALUE angle_obj)
     exception = AcquireExceptionInfo();
 
 #if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
-    new_image = RotationalBlurImage(image, angle, exception);
+    GVL_STRUCT_TYPE(RotationalBlurImage) args = { image, angle, exception };
+    new_image = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RotationalBlurImage), &args);
 #else
-    new_image = RadialBlurImage(image, angle, exception);
+    GVL_STRUCT_TYPE(RadialBlurImage) args = { image, angle, exception };
+    new_image = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RadialBlurImage), &args);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -10843,13 +11302,16 @@ Image_radial_blur_channel(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    new_image = RotationalBlurImage(image, angle, exception);
+    GVL_STRUCT_TYPE(RotationalBlurImage) args = { image, angle, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RotationalBlurImage), &args);
     CHANGE_RESULT_CHANNEL_MASK(new_image);
     END_CHANNEL_MASK(image);
 #elif defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
-    new_image = RotationalBlurImageChannel(image, channels, angle, exception);
+    GVL_STRUCT_TYPE(RotationalBlurImageChannel) args = { image, channels, angle, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RotationalBlurImageChannel), &args);
 #else
-    new_image = RadialBlurImageChannel(image, channels, angle, exception);
+    GVL_STRUCT_TYPE(RadialBlurImageChannel) args = { image, channels, angle, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RadialBlurImageChannel), &args);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -10910,11 +11372,13 @@ Image_random_threshold_channel(int argc, VALUE *argv, VALUE self)
         GeometryInfo geometry_info;
 
         ParseGeometry(thresholds, &geometry_info);
-        RandomThresholdImage(new_image, geometry_info.rho, geometry_info.sigma, exception);
+        GVL_STRUCT_TYPE(RandomThresholdImage) args = { new_image, geometry_info.rho, geometry_info.sigma, exception };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RandomThresholdImage), &args);
     }
     END_CHANNEL_MASK(new_image);
 #else
-    RandomThresholdImageChannel(new_image, channels, thresholds, exception);
+    GVL_STRUCT_TYPE(RandomThresholdImageChannel) args = { new_image, channels, thresholds, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RandomThresholdImageChannel), &args);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
 
@@ -10971,11 +11435,13 @@ Image_raise(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    RaiseImage(new_image, &rect, raised, exception);
+    GVL_STRUCT_TYPE(RaiseImage) args = { new_image, &rect, raised, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RaiseImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    RaiseImage(new_image, &rect, raised);
+    GVL_STRUCT_TYPE(RaiseImage) args = { new_image, &rect, raised };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RaiseImage), &args);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -10992,7 +11458,7 @@ Image_raise(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_read(VALUE class, VALUE file_arg)
 {
-    return rd_image(class, file_arg, ReadImage);
+    return rd_image(class, file_arg, GVL_FUNC(ReadImage));
 }
 
 
@@ -11011,6 +11477,9 @@ file_arg_rescue(VALUE arg, VALUE raised_exc ATTRIBUTE_UNUSED)
              rb_class2name(CLASS_OF(arg)));
 }
 
+
+// aliases for common use of structure types; PingImage, ReadImage
+typedef GVL_STRUCT_TYPE(PingImage) GVL_STRUCT_TYPE(rd_image);
 
 /**
  * Transform arguments, call either ReadImage or PingImage.
@@ -11037,7 +11506,7 @@ void sig_handler(int sig ATTRIBUTE_UNUSED)
 #endif
 
 static VALUE
-rd_image(VALUE class ATTRIBUTE_UNUSED, VALUE file, reader_t reader)
+rd_image(VALUE class ATTRIBUTE_UNUSED, VALUE file, gvl_function_t fp)
 {
     char *filename;
     long filename_l;
@@ -11088,7 +11557,8 @@ rd_image(VALUE class ATTRIBUTE_UNUSED, VALUE file, reader_t reader)
     }
 #endif
 
-    images = (reader)(info, exception);
+    GVL_STRUCT_TYPE(rd_image) args = { info, exception };
+    images = (Image *)CALL_FUNC_WITHOUT_GVL(fp, &args);
 
 #if defined(__APPLE__) || defined(__FreeBSD__)
     if (sigaction(SIGCHLD, &oldact, NULL) < 0)
@@ -11173,7 +11643,8 @@ Image_recolor(VALUE self, VALUE color_matrix)
     kernel_info->height = order;
     kernel_info->values = (double *) matrix;
 
-    new_image = ColorMatrixImage(image, kernel_info, exception);
+    GVL_STRUCT_TYPE(ColorMatrixImage) args = { image, kernel_info, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ColorMatrixImage), &args);
     kernel_info->values = (double *) NULL;
     DestroyKernelInfo(kernel_info);
     xfree((void *) matrix);
@@ -11220,7 +11691,8 @@ Image_read_inline(VALUE self ATTRIBUTE_UNUSED, VALUE content)
         image_data += x + 1;
     }
 
-    blob = Base64Decode(image_data, &blob_l);
+    GVL_STRUCT_TYPE(Base64Decode) args_Base64Decode = { image_data, &blob_l };
+    blob = (unsigned char *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(Base64Decode), &args_Base64Decode);
     if (blob_l == 0)
     {
         rb_raise(rb_eArgError, "can't decode image");
@@ -11233,7 +11705,8 @@ Image_read_inline(VALUE self ATTRIBUTE_UNUSED, VALUE content)
     info_obj = rm_info_new();
     Data_Get_Struct(info_obj, Info, info);
 
-    images = BlobToImage(info, blob, blob_l, exception);
+    GVL_STRUCT_TYPE(BlobToImage) args_BlobToImage = { info, blob, blob_l, exception };
+    images = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BlobToImage), &args_BlobToImage);
     magick_free((void *)blob);
 
     rm_check_exception(exception, images, DestroyOnError);
@@ -11295,7 +11768,8 @@ Image_reduce_noise(VALUE self, VALUE radius)
     image = rm_check_destroyed(self);
 
     exception = AcquireExceptionInfo();
-    new_image = StatisticImage(image, NonpeakStatistic, radius_size, radius_size, exception);
+    GVL_STRUCT_TYPE(StatisticImage) args = { image, NonpeakStatistic, radius_size, radius_size, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(StatisticImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     DestroyExceptionInfo(exception);
@@ -11347,11 +11821,13 @@ Image_remap(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    RemapImage(&quantize_info, image, remap_image, exception);
+    GVL_STRUCT_TYPE(RemapImage) args = { &quantize_info, image, remap_image, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RemapImage), &args);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    RemapImage(&quantize_info, image, remap_image);
+    GVL_STRUCT_TYPE(RemapImage) args = { &quantize_info, image, remap_image };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RemapImage), &args);
     rm_check_image_exception(image, RetainOnError);
 #endif
 
@@ -11406,11 +11882,13 @@ blurred_image(Image* image, double blur)
     exception = AcquireExceptionInfo();
     if (blur > 1.0)
     {
-        new_image = BlurImage(image, blur, blur, exception);
+        GVL_STRUCT_TYPE(BlurImage) args = { image, blur, blur, exception };
+        new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BlurImage), &args);
     }
     else
     {
-        new_image = SharpenImage(image, blur, blur, exception);
+        GVL_STRUCT_TYPE(SharpenImage) args = { image, blur, blur, exception };
+        new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SharpenImage), &args);
     }
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -11503,10 +11981,12 @@ resample(int bang, int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     Image *preprocess = blurred_image(image, blur);
-    new_image = ResampleImage(preprocess, x_resolution, y_resolution, filter, exception);
+    GVL_STRUCT_TYPE(ResampleImage) args = { preprocess, x_resolution, y_resolution, filter, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ResampleImage), &args);
     DestroyImage(preprocess);
 #else
-    new_image = ResampleImage(image, x_resolution, y_resolution, filter, blur, exception);
+    GVL_STRUCT_TYPE(ResampleImage) args = { image, x_resolution, y_resolution, filter, blur, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ResampleImage), &args);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
 
@@ -11642,13 +12122,15 @@ resize(int bang, int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     Image *preprocess = (argc == 4) ? blurred_image(image, blur) : image;
-    new_image = ResizeImage(preprocess, columns, rows, filter, exception);
+    GVL_STRUCT_TYPE(ResizeImage) args = { preprocess, columns, rows, filter, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ResizeImage), &args);
     if (argc == 4)
     {
         DestroyImage(preprocess);
     }
 #else
-    new_image = ResizeImage(image, columns, rows, filter, blur, exception);
+    GVL_STRUCT_TYPE(ResizeImage) args = { image, columns, rows, filter, blur, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ResizeImage), &args);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
 
@@ -11734,7 +12216,8 @@ Image_roll(VALUE self, VALUE x_offset, VALUE y_offset)
     image = rm_check_destroyed(self);
 
     exception = AcquireExceptionInfo();
-    new_image = RollImage(image, x, y, exception);
+    GVL_STRUCT_TYPE(RollImage) args = { image, x, y, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RollImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -11792,7 +12275,8 @@ rotate(int bang, int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 
-    new_image = RotateImage(image, degrees, exception);
+    GVL_STRUCT_TYPE(RotateImage) args = { image, degrees, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RotateImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -11889,7 +12373,7 @@ VALUE
 Image_sample(int argc, VALUE *argv, VALUE self)
 {
     rm_check_destroyed(self);
-    return scale(False, argc, argv, self, SampleImage);
+    return scale(False, argc, argv, self, GVL_FUNC(SampleImage));
 }
 
 
@@ -11913,7 +12397,7 @@ VALUE
 Image_sample_bang(int argc, VALUE *argv, VALUE self)
 {
     rm_check_frozen(self);
-    return scale(True, argc, argv, self, SampleImage);
+    return scale(True, argc, argv, self, GVL_FUNC(SampleImage));
 }
 
 
@@ -11937,7 +12421,7 @@ VALUE
 Image_scale(int argc, VALUE *argv, VALUE self)
 {
     rm_check_destroyed(self);
-    return scale(False, argc, argv, self, ScaleImage);
+    return scale(False, argc, argv, self, GVL_FUNC(ScaleImage));
 }
 
 
@@ -11961,9 +12445,12 @@ VALUE
 Image_scale_bang(int argc, VALUE *argv, VALUE self)
 {
     rm_check_frozen(self);
-    return scale(True, argc, argv, self, ScaleImage);
+    return scale(True, argc, argv, self, GVL_FUNC(ScaleImage));
 }
 
+
+// aliases for common use of structure types; SampleImage, ScaleImage,
+typedef GVL_STRUCT_TYPE(SampleImage) GVL_STRUCT_TYPE(scale);
 
 /**
  * Call ScaleImage or SampleImage
@@ -11986,7 +12473,7 @@ Image_scale_bang(int argc, VALUE *argv, VALUE self)
  * @see Image_scale_bang
  */
 static VALUE
-scale(int bang, int argc, VALUE *argv, VALUE self, scaler_t scaler)
+scale(int bang, int argc, VALUE *argv, VALUE self, gvl_function_t fp)
 {
     Image *image, *new_image;
     unsigned long columns, rows;
@@ -12026,7 +12513,8 @@ scale(int bang, int argc, VALUE *argv, VALUE self, scaler_t scaler)
     }
 
     exception = AcquireExceptionInfo();
-    new_image = (scaler)(image, columns, rows, exception);
+    GVL_STRUCT_TYPE(scale) args = { image, columns, rows, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(fp, &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -12102,11 +12590,13 @@ Image_selective_blur_channel(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    new_image = SelectiveBlurImage(image, radius, sigma, threshold, exception);
+    GVL_STRUCT_TYPE(SelectiveBlurImage) args = { image, radius, sigma, threshold, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SelectiveBlurImage), &args);
     CHANGE_RESULT_CHANNEL_MASK(new_image);
     END_CHANNEL_MASK(image);
 #else
-    new_image = SelectiveBlurImageChannel(image, channels, radius, sigma, threshold, exception);
+    GVL_STRUCT_TYPE(SelectiveBlurImageChannel) args = { image, channels, radius, sigma, threshold, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SelectiveBlurImageChannel), &args);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -12140,12 +12630,14 @@ Image_set_channel_depth(VALUE self, VALUE channel_arg, VALUE depth)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(image, channel);
-    SetImageDepth(image, channel_depth, exception);
+    GVL_STRUCT_TYPE(SetImageDepth) args = { image, channel_depth, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageDepth), &args);
     END_CHANNEL_MASK(image);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    SetImageChannelDepth(image, channel, channel_depth);
+    GVL_STRUCT_TYPE(SetImageChannelDepth) args = { image, channel, channel_depth };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageChannelDepth), &args);
     rm_check_image_exception(image, RetainOnError);
 #endif
 
@@ -12183,11 +12675,13 @@ Image_separate(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    new_images = SeparateImages(image, exception);
+    GVL_STRUCT_TYPE(SeparateImages) args = { image, exception };
+    new_images = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SeparateImages), &args);
     CHANGE_RESULT_CHANNEL_MASK(new_images);
     END_CHANNEL_MASK(image);
 #else
-    new_images = SeparateImages(image, channels, exception);
+    GVL_STRUCT_TYPE(SeparateImages) args = { image, channels, exception };
+    new_images = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SeparateImages), &args);
 #endif
     rm_check_exception(exception, new_images, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -12226,7 +12720,8 @@ Image_sepiatone(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    new_image = SepiaToneImage(image, threshold, exception);
+    GVL_STRUCT_TYPE(SepiaToneImage) args = { image, threshold, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SepiaToneImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -12284,11 +12779,13 @@ Image_segment(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    SegmentImage(new_image, colorspace, verbose, cluster_threshold, smoothing_threshold, exception);
+    GVL_STRUCT_TYPE(SegmentImage) args = { new_image, colorspace, verbose, cluster_threshold, smoothing_threshold, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SegmentImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    SegmentImage(new_image, colorspace, verbose, cluster_threshold, smoothing_threshold);
+    GVL_STRUCT_TYPE(SegmentImage) args = { new_image, colorspace, verbose, cluster_threshold, smoothing_threshold };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SegmentImage), &args);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -12424,7 +12921,8 @@ Image_shade(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    new_image = ShadeImage(image, shading, azimuth, elevation, exception);
+    GVL_STRUCT_TYPE(ShadeImage) args = { image, shading, azimuth, elevation, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ShadeImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -12482,7 +12980,8 @@ Image_shadow(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    new_image = ShadowImage(image, alpha, sigma, x_offset, y_offset, exception);
+    GVL_STRUCT_TYPE(ShadowImage) args = { image, alpha, sigma, x_offset, y_offset, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ShadowImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -12501,7 +13000,7 @@ Image_shadow(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_sharpen(int argc, VALUE *argv, VALUE self)
 {
-    return effect_image(self, argc, argv, SharpenImage);
+    return effect_image(self, argc, argv, GVL_FUNC(SharpenImage));
 }
 
 
@@ -12549,11 +13048,13 @@ Image_sharpen_channel(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    new_image = SharpenImage(image, radius, sigma, exception);
+    GVL_STRUCT_TYPE(SharpenImage) args = { image, radius, sigma, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SharpenImage), &args);
     CHANGE_RESULT_CHANNEL_MASK(new_image);
     END_CHANNEL_MASK(image);
 #else
-    new_image = SharpenImageChannel(image, channels, radius, sigma, exception);
+    GVL_STRUCT_TYPE(SharpenImageChannel) args = { image, channels, radius, sigma, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SharpenImageChannel), &args);
 #endif
 
     rm_check_exception(exception, new_image, DestroyOnError);
@@ -12576,7 +13077,7 @@ VALUE
 Image_shave(VALUE self, VALUE width, VALUE height)
 {
     rm_check_destroyed(self);
-    return xform_image(False, self, INT2FIX(0), INT2FIX(0), width, height, ShaveImage);
+    return xform_image(False, self, INT2FIX(0), INT2FIX(0), width, height, GVL_FUNC(ShaveImage));
 }
 
 
@@ -12594,7 +13095,7 @@ VALUE
 Image_shave_bang(VALUE self, VALUE width, VALUE height)
 {
     rm_check_frozen(self);
-    return xform_image(True, self, INT2FIX(0), INT2FIX(0), width, height, ShaveImage);
+    return xform_image(True, self, INT2FIX(0), INT2FIX(0), width, height, GVL_FUNC(ShaveImage));
 }
 
 
@@ -12621,7 +13122,8 @@ Image_shear(VALUE self, VALUE x_shear, VALUE y_shear)
     image = rm_check_destroyed(self);
 
     exception = AcquireExceptionInfo();
-    new_image = ShearImage(image, x, y, exception);
+    GVL_STRUCT_TYPE(ShearImage) args = { image, x, y, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ShearImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -12692,12 +13194,14 @@ Image_sigmoidal_contrast_channel(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(new_image, channels);
-    SigmoidalContrastImage(new_image, sharpen, contrast, midpoint, exception);
+    GVL_STRUCT_TYPE(SigmoidalContrastImage) args = { new_image, sharpen, contrast, midpoint, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SigmoidalContrastImage), &args);
     END_CHANNEL_MASK(new_image);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    SigmoidalContrastImageChannel(new_image, channels, sharpen, contrast, midpoint);
+    GVL_STRUCT_TYPE(SigmoidalContrastImageChannel) args = { new_image, channels, sharpen, contrast, midpoint };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SigmoidalContrastImageChannel), &args);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -12724,11 +13228,13 @@ Image_signature(VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    SignatureImage(image, exception);
+    GVL_STRUCT_TYPE(SignatureImage) args = { image, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SignatureImage), &args);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    SignatureImage(image);
+    GVL_STRUCT_TYPE(SignatureImage) args = { image };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SignatureImage), &args);
     rm_check_image_exception(image, RetainOnError);
 #endif
     signature = rm_get_property(image, "signature");
@@ -12754,7 +13260,7 @@ VALUE
 Image_sketch(int argc, VALUE *argv, VALUE self)
 {
     rm_check_destroyed(self);
-    return motion_blur(argc, argv, self, SketchImage);
+    return motion_blur(argc, argv, self, GVL_FUNC(SketchImage));
 }
 
 
@@ -12797,11 +13303,13 @@ Image_solarize(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    SolarizeImage(new_image, threshold, exception);
+    GVL_STRUCT_TYPE(SolarizeImage) args = { new_image, threshold, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SolarizeImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    SolarizeImage(new_image, threshold);
+    GVL_STRUCT_TYPE(SolarizeImage) args = { new_image, threshold };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SolarizeImage), &args);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -12837,14 +13345,18 @@ Image_spaceship(VALUE self, VALUE other)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    SignatureImage(imageA, exception);
+    GVL_STRUCT_TYPE(SignatureImage) args1 = { imageA, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SignatureImage), &args1);
     CHECK_EXCEPTION();
-    SignatureImage(imageB, exception);
+    GVL_STRUCT_TYPE(SignatureImage) args2 = { imageB, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SignatureImage), &args2);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    SignatureImage(imageA);
-    SignatureImage(imageB);
+    GVL_STRUCT_TYPE(SignatureImage) args1 = { imageA };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SignatureImage), &args1);
+    GVL_STRUCT_TYPE(SignatureImage) args2 = { imageB };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SignatureImage), &args2);
 #endif
     sigA = rm_get_property(imageA, "signature");
     sigB = rm_get_property(imageB, "signature");
@@ -13021,11 +13533,13 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    new_image = SparseColorImage(image, method, nargs, args, exception);
+    GVL_STRUCT_TYPE(SparseColorImage) args_SparseColorImage = { image, method, nargs, args, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SparseColorImage), &args_SparseColorImage);
     CHANGE_RESULT_CHANNEL_MASK(new_image);
     END_CHANNEL_MASK(image);
 #else
-    new_image = SparseColorImage(image, channels, method, nargs, args, exception);
+    GVL_STRUCT_TYPE(SparseColorImage) args_SparseColorImage = { image, channels, method, nargs, args, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SparseColorImage), &args_SparseColorImage);
 #endif
     xfree((void *) args);
     rm_check_exception(exception, new_image, DestroyOnError);
@@ -13084,7 +13598,8 @@ Image_splice(int argc, VALUE *argv, VALUE self)
     // Swap in color for the duration of this call.
     old_color = image->background_color;
     image->background_color = color;
-    new_image = SpliceImage(image, &rectangle, exception);
+    GVL_STRUCT_TYPE(SpliceImage) args = { image, &rectangle, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SpliceImage), &args);
     image->background_color = old_color;
 
     rm_check_exception(exception, new_image, DestroyOnError);
@@ -13122,10 +13637,11 @@ Image_spread(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    new_image = SpreadImage(image, image->interpolate, radius, exception);
+    GVL_STRUCT_TYPE(SpreadImage) args = { image, image->interpolate, radius, exception };
 #else
-    new_image = SpreadImage(image, radius, exception);
+    GVL_STRUCT_TYPE(SpreadImage) args = { image, radius, exception };
 #endif
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SpreadImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -13185,7 +13701,8 @@ Image_stegano(VALUE self, VALUE watermark_image, VALUE offset)
     image->offset = NUM2LONG(offset);
 
     exception = AcquireExceptionInfo();
-    new_image = SteganoImage(image, watermark, exception);
+    GVL_STRUCT_TYPE(SteganoImage) args = { image, watermark, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SteganoImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     DestroyExceptionInfo(exception);
@@ -13217,7 +13734,8 @@ Image_stereo(VALUE self, VALUE offset_image_arg)
     offset = rm_check_destroyed(offset_image);
 
     exception = AcquireExceptionInfo();
-    new_image = StereoImage(image, offset, exception);
+    GVL_STRUCT_TYPE(StereoImage) args = { image, offset, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(StereoImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     DestroyExceptionInfo(exception);
@@ -13275,10 +13793,12 @@ Image_class_type_eq(VALUE self, VALUE new_class_type)
     if (image->storage_class == PseudoClass && class_type == DirectClass)
     {
 #if defined(IMAGEMAGICK_7)
-        SyncImage(image, exception);
+        GVL_STRUCT_TYPE(SyncImage) args = { image, exception };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SyncImage), &args);
         CHECK_EXCEPTION();
 #else
-        SyncImage(image);
+        GVL_STRUCT_TYPE(SyncImage) args = { image };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SyncImage), &args);
 #endif
         magick_free(image->colormap);
         image->colormap = NULL;
@@ -13288,19 +13808,23 @@ Image_class_type_eq(VALUE self, VALUE new_class_type)
         GetQuantizeInfo(&qinfo);
         qinfo.number_colors = QuantumRange+1;
 #if defined(IMAGEMAGICK_7)
-        QuantizeImage(&qinfo, image, exception);
+        GVL_STRUCT_TYPE(QuantizeImage) args = { &qinfo, image, exception };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(QuantizeImage), &args);
         CHECK_EXCEPTION();
 #else
-        QuantizeImage(&qinfo, image);
+        GVL_STRUCT_TYPE(QuantizeImage) args = { &qinfo, image };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(QuantizeImage), &args);
 #endif
     }
 
 #if defined(IMAGEMAGICK_7)
-    SetImageStorageClass(image, class_type, exception);
+    GVL_STRUCT_TYPE(SetImageStorageClass) args = { image, class_type, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageStorageClass), &args);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    SetImageStorageClass(image, class_type);
+    GVL_STRUCT_TYPE(SetImageStorageClass) args = { image, class_type };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageStorageClass), &args);
 #endif
     return new_class_type;
 }
@@ -13329,7 +13853,7 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg,
     long n, size;
     long x, y;
     unsigned long cols, rows;
-    unsigned int okay;
+    MagickBooleanType okay;
     ExceptionInfo *exception;
 #if defined(IMAGEMAGICK_7)
     Quantum *pixels;
@@ -13355,7 +13879,8 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg,
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    okay = SetImageStorageClass(image, DirectClass, exception);
+    GVL_STRUCT_TYPE(SetImageStorageClass) args = { image, DirectClass, exception };
+    okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageStorageClass), &args);
     CHECK_EXCEPTION();
     if (!okay)
     {
@@ -13363,7 +13888,8 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg,
         rb_raise(Class_ImageMagickError, "SetImageStorageClass failed. Can't store pixels.");
     }
 #else
-    okay = SetImageStorageClass(image, DirectClass);
+    GVL_STRUCT_TYPE(SetImageStorageClass) args = { image, DirectClass };
+    okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageStorageClass), &args);
     rm_check_image_exception(image, RetainOnError);
     if (!okay)
     {
@@ -13375,7 +13901,8 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg,
     // Get a pointer to the pixels. Replace the values with the PixelPackets
     // from the pixels argument.
     {
-        pixels = GetAuthenticPixels(image, x, y, cols, rows, exception);
+        GVL_STRUCT_TYPE(GetAuthenticPixels) args = { image, x, y, cols, rows, exception };
+        pixels = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetAuthenticPixels), &args);
         CHECK_EXCEPTION();
 
         if (pixels)
@@ -13411,7 +13938,8 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg,
                 pixels++;
 #endif
             }
-            SyncAuthenticPixels(image, exception);
+            GVL_STRUCT_TYPE(SyncAuthenticPixels) args = { image, exception };
+            CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SyncAuthenticPixels), &args);
             CHECK_EXCEPTION();
         }
 
@@ -13471,10 +13999,11 @@ Image_swirl(VALUE self, VALUE degrees_obj)
     exception = AcquireExceptionInfo();
 
 #if defined(IMAGEMAGICK_7)
-    new_image = SwirlImage(image, degrees, image->interpolate, exception);
+    GVL_STRUCT_TYPE(SwirlImage) args = { image, degrees, image->interpolate, exception };
 #else
-    new_image = SwirlImage(image, degrees, exception);
+    GVL_STRUCT_TYPE(SwirlImage) args = { image, degrees, exception };
 #endif
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SwirlImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -13565,12 +14094,14 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj,
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    FloodfillPaintImage(new_image, draw_info, &color_mpp, x, y, invert, exception);
+    GVL_STRUCT_TYPE(FloodfillPaintImage) args = { new_image, draw_info, &color_mpp, x, y, invert, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(FloodfillPaintImage), &args);
     DestroyDrawInfo(draw_info);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    FloodfillPaintImage(new_image, DefaultChannels, draw_info, &color_mpp, x, y, invert);
+    GVL_STRUCT_TYPE(FloodfillPaintImage) args = { new_image, DefaultChannels, draw_info, &color_mpp, x, y, invert };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(FloodfillPaintImage), &args);
 
     DestroyDrawInfo(draw_info);
     rm_check_image_exception(new_image, DestroyOnError);
@@ -13603,17 +14134,22 @@ Image_threshold(VALUE self, VALUE threshold_obj)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    BilevelImage(new_image, threshold, exception);
+    GVL_STRUCT_TYPE(BilevelImage) args = { new_image, threshold, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BilevelImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    BilevelImageChannel(new_image, DefaultChannels, threshold);
+    GVL_STRUCT_TYPE(BilevelImageChannel) args = { new_image, DefaultChannels, threshold };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BilevelImageChannel), &args);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
     return rm_image_new(new_image);
 }
 
+
+// aliases for common use of structure types; WhiteThresholdImage
+typedef GVL_STRUCT_TYPE(WhiteThresholdImage) GVL_STRUCT_TYPE(threshold_image);
 
 /**
  * Call one of the xxxxThresholdImage methods.
@@ -13626,8 +14162,8 @@ Image_threshold(VALUE self, VALUE threshold_obj)
  * @param thresholder which xxxxThresholdImage method to call
  * @return a new image
  */
-static
-VALUE threshold_image(int argc, VALUE *argv, VALUE self, thresholder_t thresholder)
+static VALUE
+threshold_image(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
 {
     Image *image, *new_image;
     double red, green, blue, alpha;
@@ -13670,11 +14206,13 @@ VALUE threshold_image(int argc, VALUE *argv, VALUE self, thresholder_t threshold
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    (thresholder)(new_image, ctarg, exception);
+    GVL_STRUCT_TYPE(threshold_image) args = { new_image, ctarg, exception };
+    CALL_FUNC_WITHOUT_GVL(fp, &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    (thresholder)(new_image, ctarg);
+    GVL_STRUCT_TYPE(threshold_image) args = { new_image, ctarg };
+    CALL_FUNC_WITHOUT_GVL(fp, &args);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -13746,7 +14284,8 @@ thumbnail(int bang, int argc, VALUE *argv, VALUE self)
     ParseRegionGeometry(image, image_geometry, &geometry, exception);
     rm_check_exception(exception, image, RetainOnError);
 
-    new_image = ThumbnailImage(image, geometry.width, geometry.height, exception);
+    GVL_STRUCT_TYPE(ThumbnailImage) args = { image, geometry.width, geometry.height, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ThumbnailImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -13904,10 +14443,11 @@ Image_tint(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 
 #if defined(IMAGEMAGICK_7)
-    new_image = TintImage(image, alpha, &tint, exception);
+    GVL_STRUCT_TYPE(TintImage) args = { image, alpha, &tint, exception };
 #else
-    new_image = TintImage(image, alpha, tint, exception);
+    GVL_STRUCT_TYPE(TintImage) args = { image, alpha, tint, exception };
 #endif
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TintImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -13950,10 +14490,12 @@ Image_to_blob(VALUE self)
     if (info->depth != 0)
     {
 #if defined(IMAGEMAGICK_7)
-        SetImageDepth(image, info->depth, exception);
+        GVL_STRUCT_TYPE(SetImageDepth) args = { image, info->depth, exception };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageDepth), &args);
         CHECK_EXCEPTION();
 #else
-        SetImageDepth(image, info->depth);
+        GVL_STRUCT_TYPE(SetImageDepth) args = { image, info->depth };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageDepth), &args);
         rm_check_image_exception(image, RetainOnError);
 #endif
     }
@@ -13987,7 +14529,8 @@ Image_to_blob(VALUE self)
 
     rm_sync_image_options(image, info);
 
-    blob = ImageToBlob(info, image, &length, exception);
+    GVL_STRUCT_TYPE(ImageToBlob) args = { info, image, &length, exception };
+    blob = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ImageToBlob), &args);
     CHECK_EXCEPTION();
 
     DestroyExceptionInfo(exception);
@@ -14133,11 +14676,13 @@ Image_transparent(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    okay = TransparentPaintImage(new_image, &color, alpha, MagickFalse, exception);
+    GVL_STRUCT_TYPE(TransparentPaintImage) args = { new_image, &color, alpha, MagickFalse, exception };
+    okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TransparentPaintImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    okay = TransparentPaintImage(new_image, &color, QuantumRange - alpha, MagickFalse);
+    GVL_STRUCT_TYPE(TransparentPaintImage) args = { new_image, &color, QuantumRange - alpha, MagickFalse };
+    okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TransparentPaintImage), &args);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
     if (!okay)
@@ -14207,11 +14752,13 @@ Image_transparent_chroma(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    okay = TransparentPaintImageChroma(new_image, &low, &high, alpha, invert, exception);
+    GVL_STRUCT_TYPE(TransparentPaintImageChroma) args = { new_image, &low, &high, alpha, invert, exception };
+    okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TransparentPaintImageChroma), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    okay = TransparentPaintImageChroma(new_image, &low, &high, QuantumRange - alpha, invert);
+    GVL_STRUCT_TYPE(TransparentPaintImageChroma) args = { new_image, &low, &high, QuantumRange - alpha, invert };
+    okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TransparentPaintImageChroma), &args);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
     if (!okay)
@@ -14264,7 +14811,7 @@ VALUE
 Image_transpose(VALUE self)
 {
     rm_check_destroyed(self);
-    return crisscross(False, self, TransposeImage);
+    return crisscross(False, self, GVL_FUNC(TransposeImage));
 }
 
 
@@ -14280,7 +14827,7 @@ VALUE
 Image_transpose_bang(VALUE self)
 {
     rm_check_frozen(self);
-    return crisscross(True, self, TransposeImage);
+    return crisscross(True, self, GVL_FUNC(TransposeImage));
 }
 
 
@@ -14295,7 +14842,7 @@ VALUE
 Image_transverse(VALUE self)
 {
     rm_check_destroyed(self);
-    return crisscross(False, self, TransverseImage);
+    return crisscross(False, self, GVL_FUNC(TransverseImage));
 }
 
 /**
@@ -14310,7 +14857,7 @@ VALUE
 Image_transverse_bang(VALUE self)
 {
     rm_check_frozen(self);
-    return crisscross(True, self, TransverseImage);
+    return crisscross(True, self, GVL_FUNC(TransverseImage));
 }
 
 
@@ -14351,7 +14898,8 @@ trimmer(int bang, int argc, VALUE *argv, VALUE self)
     Data_Get_Struct(self, Image, image);
 
     exception = AcquireExceptionInfo();
-    new_image = TrimImage(image, exception);
+    GVL_STRUCT_TYPE(TrimImage) args = { image, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TrimImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -14532,7 +15080,8 @@ Image_unique_colors(VALUE self)
     image = rm_check_destroyed(self);
     exception = AcquireExceptionInfo();
 
-    new_image = UniqueImageColors(image, exception);
+    GVL_STRUCT_TYPE(UniqueImageColors) args = { image, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(UniqueImageColors), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -14698,7 +15247,8 @@ Image_unsharp_mask(int argc, VALUE *argv, VALUE self)
     unsharp_mask_args(argc, argv, &radius, &sigma, &amount, &threshold);
 
     exception = AcquireExceptionInfo();
-    new_image = UnsharpMaskImage(image, radius, sigma, amount, threshold, exception);
+    GVL_STRUCT_TYPE(UnsharpMaskImage) args = { image, radius, sigma, amount, threshold, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(UnsharpMaskImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -14753,11 +15303,13 @@ Image_unsharp_mask_channel(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    new_image = UnsharpMaskImage(image, radius, sigma, amount, threshold, exception);
+    GVL_STRUCT_TYPE(UnsharpMaskImage) args = { image, radius, sigma, amount, threshold, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(UnsharpMaskImage), &args);
     CHANGE_RESULT_CHANNEL_MASK(new_image);
     END_CHANNEL_MASK(image);
 #else
-    new_image = UnsharpMaskImageChannel(image, channels, radius, sigma, amount, threshold, exception);
+    GVL_STRUCT_TYPE(UnsharpMaskImageChannel) args = { image, channels, radius, sigma, amount, threshold, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(UnsharpMaskImageChannel), &args);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -14808,7 +15360,8 @@ Image_vignette(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 
-    new_image = VignetteImage(image, radius, sigma, horz_radius, vert_radius, exception);
+    GVL_STRUCT_TYPE(VignetteImage) args = { image, radius, sigma, horz_radius, vert_radius, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(VignetteImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -14954,11 +15507,13 @@ Image_watermark(int argc, VALUE *argv, VALUE self)
     new_image = rm_clone_image(image);
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    CompositeImage(new_image, overlay, ModulateCompositeOp, MagickTrue, x_offset, y_offset, exception);
+    GVL_STRUCT_TYPE(CompositeImage) args = { new_image, overlay, ModulateCompositeOp, MagickTrue, x_offset, y_offset, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompositeImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    CompositeImage(new_image, ModulateCompositeOp, overlay, x_offset, y_offset);
+    GVL_STRUCT_TYPE(CompositeImage) args = { new_image, ModulateCompositeOp, overlay, x_offset, y_offset };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompositeImage), &args);
 
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
@@ -15001,10 +15556,11 @@ Image_wave(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    new_image = WaveImage(image, amplitude, wavelength, image->interpolate, exception);
+    GVL_STRUCT_TYPE(WaveImage) args = { image, amplitude, wavelength, image->interpolate, exception };
 #else
-    new_image = WaveImage(image, amplitude, wavelength, exception);
+    GVL_STRUCT_TYPE(WaveImage) args = { image, amplitude, wavelength, exception };
 #endif
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(WaveImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -15100,7 +15656,8 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
 
 
     exception = AcquireExceptionInfo();
-    flip_image = FlipImage(image, exception);
+    GVL_STRUCT_TYPE(FlipImage) args_FlipImage = { image, exception };
+    flip_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(FlipImage), &args_FlipImage);
     CHECK_EXCEPTION();
 
 
@@ -15108,18 +15665,22 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
     geometry.y = 0;
     geometry.width = image->columns;
     geometry.height = max_rows;
-    reflection = CropImage(flip_image, &geometry, exception);
+    GVL_STRUCT_TYPE(CropImage) args_CropImage = { flip_image, &geometry, exception };
+    reflection = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CropImage), &args_CropImage);
     DestroyImage(flip_image);
     CHECK_EXCEPTION();
 
 
 #if defined(IMAGEMAGICK_7)
-    SetImageStorageClass(reflection, DirectClass, exception);
+    GVL_STRUCT_TYPE(SetImageStorageClass) args_SetImageStorageClass = { reflection, DirectClass, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageStorageClass), &args_SetImageStorageClass);
     rm_check_exception(exception, reflection, DestroyOnError);
-    SetImageAlphaChannel(reflection, ActivateAlphaChannel, exception);
+    GVL_STRUCT_TYPE(SetImageAlphaChannel) args_SetImageAlphaChannel = { reflection, ActivateAlphaChannel, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageAlphaChannel), &args_SetImageAlphaChannel);
     rm_check_exception(exception, reflection, DestroyOnError);
 #else
-    SetImageStorageClass(reflection, DirectClass);
+    GVL_STRUCT_TYPE(SetImageStorageClass) args_SetImageStorageClass = { reflection, DirectClass };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageStorageClass), &args_SetImageStorageClass);
     rm_check_image_exception(reflection, DestroyOnError);
 
 
@@ -15141,7 +15702,8 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
         }
 #endif
 
-        p = GetVirtualPixels(reflection, 0, y, image->columns, 1, exception);
+        GVL_STRUCT_TYPE(GetVirtualPixels) args_GetVirtualPixels = { reflection, 0, y, image->columns, 1, exception };
+        p = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetVirtualPixels), &args_GetVirtualPixels);
         rm_check_exception(exception, reflection, DestroyOnError);
         if (!p)
         {
@@ -15173,8 +15735,8 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
 #endif
         }
 
-
-        SyncAuthenticPixels(reflection, exception);
+        GVL_STRUCT_TYPE(SyncAuthenticPixels) args_SyncAuthenticPixels = { reflection, exception };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SyncAuthenticPixels), &args_SyncAuthenticPixels);
         rm_check_exception(exception, reflection, DestroyOnError);
 
         opacity += step;
@@ -15207,7 +15769,7 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_white_threshold(int argc, VALUE *argv, VALUE self)
 {
-    return threshold_image(argc, argv, self, WhiteThresholdImage);
+    return threshold_image(argc, argv, self, GVL_FUNC(WhiteThresholdImage));
 }
 
 
@@ -15350,11 +15912,13 @@ Image_write(VALUE self, VALUE file)
     info->adjoin = MagickFalse;
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    WriteImage(info, image, exception);
+    GVL_STRUCT_TYPE(WriteImage) args = { info, image, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(WriteImage), &args);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    WriteImage(info, image);
+    GVL_STRUCT_TYPE(WriteImage) args = { info, image };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(WriteImage), &args);
     rm_check_image_exception(image, RetainOnError);
 #endif
 
@@ -15642,7 +16206,7 @@ cropper(int bang, int argc, VALUE *argv, VALUE self)
             break;
     }
 
-    cropped = xform_image(bang, self, x, y, width, height, CropImage);
+    cropped = xform_image(bang, self, x, y, width, height, GVL_FUNC(CropImage));
     if (reset_page)
     {
         Data_Get_Struct(cropped, Image, image);
@@ -15657,6 +16221,9 @@ cropper(int bang, int argc, VALUE *argv, VALUE self)
     return cropped;
 }
 
+
+// aliases for common use of structure types; ChopImage, CropImage, ShaveImage
+typedef GVL_STRUCT_TYPE(ChopImage) GVL_STRUCT_TYPE(xform_image);
 
 /**
  * Call one of the image transformation functions.
@@ -15673,7 +16240,7 @@ cropper(int bang, int argc, VALUE *argv, VALUE self)
  * @return self if bang, otherwise a new image
  */
 static VALUE
-xform_image(int bang, VALUE self, VALUE x, VALUE y, VALUE width, VALUE height, xformer_t xformer)
+xform_image(int bang, VALUE self, VALUE x, VALUE y, VALUE width, VALUE height, gvl_function_t fp)
 {
     Image *image, *new_image;
     RectangleInfo rect;
@@ -15687,7 +16254,8 @@ xform_image(int bang, VALUE self, VALUE x, VALUE y, VALUE width, VALUE height, x
 
     exception = AcquireExceptionInfo();
 
-    new_image = (xformer)(image, &rect, exception);
+    GVL_STRUCT_TYPE(xform_image) args = { image, &rect, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(fp, &args);
 
     // An exception can occur in either the old or the new images
     rm_check_exception(exception, new_image, DestroyOnError);

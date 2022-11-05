@@ -130,7 +130,11 @@ module RMagick
 
       end
 
-      $CPPFLAGS << (have_macro('__GNUC__') ? ' -std=gnu99' : ' -std=c99')
+      $CPPFLAGS << if have_macro('__GNUC__')
+                     ' -std=gnu99 -Wno-void-pointer-to-int-cast -Wno-void-pointer-to-enum-cast -Wno-pointer-to-int-cast'
+                   else
+                     ' -std=c99'
+                   end
     end
 
     def exit_failure(msg)

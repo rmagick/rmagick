@@ -20,7 +20,39 @@ static void imagelist_push(VALUE, VALUE);
 static VALUE ImageList_new(void);
 
 
+DEFINE_GVL_STUB3(AppendImages, const Image *, const MagickBooleanType, ExceptionInfo *);
+DEFINE_GVL_STUB5(CloneImage, const Image *, const size_t, const size_t, const MagickBooleanType, ExceptionInfo *);
+DEFINE_GVL_STUB2(CloneImageList, const Image *, ExceptionInfo *);
+DEFINE_GVL_STUB2(CoalesceImages, const Image *, ExceptionInfo *);
+DEFINE_GVL_STUB2(DisposeImages, const Image *, ExceptionInfo *);
+DEFINE_GVL_STUB3(EvaluateImages, const Image *, const MagickEvaluateOperator, ExceptionInfo *);
+DEFINE_GVL_STUB4(ImagesToBlob, const ImageInfo *, Image *, size_t *, ExceptionInfo *);
+DEFINE_GVL_STUB3(MergeImageLayers, Image *, const LayerMethod, ExceptionInfo *);
+DEFINE_GVL_STUB3(MontageImages, const Image *, const MontageInfo *, ExceptionInfo *);
+DEFINE_GVL_STUB3(MorphImages, const Image *, const size_t, ExceptionInfo *);
+DEFINE_GVL_STUB2(OptimizeImageLayers, const Image *, ExceptionInfo *);
+DEFINE_GVL_STUB2(OptimizePlusImageLayers, const Image *, ExceptionInfo *);
+#if defined(IMAGEMAGICK_7)
+DEFINE_GVL_STUB3(AnimateImages, const ImageInfo *, Image *, ExceptionInfo *);
+DEFINE_GVL_STUB3(CombineImages, const Image *, const ColorspaceType, ExceptionInfo *);
+DEFINE_GVL_STUB3(CompareImagesLayers, const Image *, const LayerMethod, ExceptionInfo *);
+DEFINE_GVL_STUB3(QuantizeImages, const QuantizeInfo *, Image *, ExceptionInfo *);
+DEFINE_GVL_STUB4(RemapImages, const QuantizeInfo *, Image *, const Image *, ExceptionInfo *);
+DEFINE_GVL_STUB3(WriteImage, const ImageInfo *, Image *, ExceptionInfo *);
+#else
+DEFINE_GVL_STUB2(AnimateImages, const ImageInfo *, Image *);
+DEFINE_GVL_STUB3(CombineImages, const Image *, const ChannelType, ExceptionInfo *);
+DEFINE_GVL_STUB3(CompareImageLayers, const Image *, const ImageLayerMethod, ExceptionInfo *);
+DEFINE_GVL_STUB2(DeconstructImages, const Image *, ExceptionInfo *);
+DEFINE_GVL_STUB2(QuantizeImages, const QuantizeInfo *, Image *);
+DEFINE_GVL_STUB3(RemapImages, const QuantizeInfo *, Image *, const Image *);
+DEFINE_GVL_STUB2(WriteImage, const ImageInfo *, Image *);
+#endif
 
+DEFINE_GVL_VOID_STUB6(CompositeLayers, Image *, const CompositeOperator, Image *, const ssize_t, const ssize_t, ExceptionInfo *);
+DEFINE_GVL_VOID_STUB2(OptimizeImageTransparency, const Image *, ExceptionInfo *);
+DEFINE_GVL_VOID_STUB2(RemoveDuplicateLayers, Image **, ExceptionInfo *);
+DEFINE_GVL_VOID_STUB2(RemoveZeroDelayLayers, Image **, ExceptionInfo *);
 
 
 /**
@@ -75,12 +107,14 @@ ImageList_animate(int argc, VALUE *argv, VALUE self)
     Data_Get_Struct(info_obj, Info, info);
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    AnimateImages(info, images, exception);
+    GVL_STRUCT_TYPE(AnimateImages) args = { info, images, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(AnimateImages), &args);
     rm_split(images);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    AnimateImages(info, images);
+    GVL_STRUCT_TYPE(AnimateImages) args = { info, images };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(AnimateImages), &args);
     rm_split(images);
     rm_check_image_exception(images, RetainOnError);
 #endif
@@ -112,7 +146,8 @@ ImageList_append(VALUE self, VALUE stack_arg)
     stack = RTEST(stack_arg);
 
     exception = AcquireExceptionInfo();
-    new_image = AppendImages(images, stack, exception);
+    GVL_STRUCT_TYPE(AppendImages) args = { images, stack, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(AppendImages), &args);
     rm_split(images);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -136,8 +171,8 @@ ImageList_average(VALUE self)
     images = images_from_imagelist(self);
 
     exception = AcquireExceptionInfo();
-    new_image = EvaluateImages(images, MeanEvaluateOperator, exception);
-
+    GVL_STRUCT_TYPE(EvaluateImages) args = { images, MeanEvaluateOperator, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(EvaluateImages), &args);
     rm_split(images);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -164,7 +199,8 @@ ImageList_coalesce(VALUE self)
     images = images_from_imagelist(self);
 
     exception = AcquireExceptionInfo();
-    new_images = CoalesceImages(images, exception);
+    GVL_STRUCT_TYPE(CoalesceImages) args = { images, exception };
+    new_images = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CoalesceImages), &args);
     rm_split(images);
     rm_check_exception(exception, new_images, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -252,10 +288,11 @@ VALUE ImageList_combine(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_6)
     old_colorspace = images->colorspace;
     SetImageColorspace(images, colorspace);
-    new_image = CombineImages(images, channel, exception);
+    GVL_STRUCT_TYPE(CombineImages) args = { images, channel, exception };
 #else
-    new_image = CombineImages(images, colorspace, exception);
+    GVL_STRUCT_TYPE(CombineImages) args = { images, colorspace, exception };
 #endif
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CombineImages), &args);
 
     rm_split(images);
 #if defined(IMAGEMAGICK_6)
@@ -319,7 +356,8 @@ ImageList_composite_layers(int argc, VALUE *argv, VALUE self)
                           new_images->gravity, &geometry);
 
     exception = AcquireExceptionInfo();
-    CompositeLayers(new_images, operator, source, geometry.x, geometry.y, exception);
+    GVL_STRUCT_TYPE(CompositeLayers) args = { new_images, operator, source, geometry.x, geometry.y, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompositeLayers), &args);
     rm_split(source);
     rm_check_exception(exception, new_images, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -345,9 +383,11 @@ ImageList_deconstruct(VALUE self)
     images = images_from_imagelist(self);
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    new_images = CompareImagesLayers(images, CompareAnyLayer, exception);
+    GVL_STRUCT_TYPE(CompareImagesLayers) args = { images, CompareAnyLayer, exception };
+    new_images = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompareImagesLayers), &args);
 #else
-    new_images = DeconstructImages(images, exception);
+    GVL_STRUCT_TYPE(DeconstructImages) args = { images, exception };
+    new_images = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(DeconstructImages), &args);
 #endif
     rm_split(images);
     rm_check_exception(exception, new_images, DestroyOnError);
@@ -410,7 +450,8 @@ ImageList_flatten_images(VALUE self)
     images = images_from_imagelist(self);
     exception = AcquireExceptionInfo();
 
-    new_image = MergeImageLayers(images, FlattenLayer, exception);
+    GVL_STRUCT_TYPE(MergeImageLayers) args = { images, FlattenLayer, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(MergeImageLayers), &args);
 
     rm_split(images);
     rm_check_exception(exception, new_image, DestroyOnError);
@@ -466,7 +507,8 @@ ImageList_montage(VALUE self)
     exception = AcquireExceptionInfo();
 
     // MontageImage can return more than one image.
-    new_images = MontageImages(images, montage->info, exception);
+    GVL_STRUCT_TYPE(MontageImages) args = { images, montage->info, exception };
+    new_images = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(MontageImages), &args);
     rm_split(images);
     rm_check_exception(exception, new_images, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -502,7 +544,8 @@ ImageList_morph(VALUE self, VALUE nimages)
 
     images = images_from_imagelist(self);
     exception = AcquireExceptionInfo();
-    new_images = MorphImages(images, (unsigned long)number_images, exception);
+    GVL_STRUCT_TYPE(MorphImages) args = { images, number_images, exception };
+    new_images = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(MorphImages), &args);
     rm_split(images);
     rm_check_exception(exception, new_images, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -525,7 +568,8 @@ ImageList_mosaic(VALUE self)
     images = images_from_imagelist(self);
 
     exception = AcquireExceptionInfo();
-    new_image = MergeImageLayers(images, MosaicLayer, exception);
+    GVL_STRUCT_TYPE(MergeImageLayers) args = { images, MosaicLayer, exception };
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(MergeImageLayers), &args);
 
     rm_split(images);
     rm_check_exception(exception, new_image, DestroyOnError);
@@ -559,22 +603,37 @@ ImageList_optimize_layers(VALUE self, VALUE method)
     switch (mthd)
     {
         case CoalesceLayer:
-            new_images = CoalesceImages(images, exception);
+            {
+                GVL_STRUCT_TYPE(CoalesceImages) args = { images, exception };
+                new_images = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CoalesceImages), &args);
+            }
             break;
         case DisposeLayer:
-            new_images = DisposeImages(images, exception);
+            {
+                GVL_STRUCT_TYPE(DisposeImages) args = { images, exception };
+                new_images = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(DisposeImages), &args);
+            }
             break;
         case OptimizeTransLayer:
-            new_images = clone_imagelist(images);
-            OptimizeImageTransparency(new_images, exception);
+            {
+                new_images = clone_imagelist(images);
+                GVL_STRUCT_TYPE(OptimizeImageTransparency) args = { new_images, exception };
+                CALL_FUNC_WITHOUT_GVL(GVL_FUNC(OptimizeImageTransparency), &args);
+            }
             break;
         case RemoveDupsLayer:
-            new_images = clone_imagelist(images);
-            RemoveDuplicateLayers(&new_images, exception);
+            {
+                new_images = clone_imagelist(images);
+                GVL_STRUCT_TYPE(RemoveDuplicateLayers) args = { &new_images, exception };
+                CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RemoveDuplicateLayers), &args);
+            }
             break;
         case RemoveZeroLayer:
-            new_images = clone_imagelist(images);
-            RemoveZeroDelayLayers(&new_images, exception);
+            {
+                new_images = clone_imagelist(images);
+                GVL_STRUCT_TYPE(RemoveZeroDelayLayers) args = { &new_images, exception };
+                CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RemoveZeroDelayLayers), &args);
+            }
             break;
         case CompositeLayer:
             rm_split(images);
@@ -583,50 +642,81 @@ ImageList_optimize_layers(VALUE self, VALUE method)
             break;
             // In 6.3.4-ish, OptimizeImageLayer replaced OptimizeLayer
         case OptimizeImageLayer:
-            new_images = OptimizeImageLayers(images, exception);
+            {
+                GVL_STRUCT_TYPE(OptimizeImageLayers) args = { images, exception };
+                new_images = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(OptimizeImageLayers), &args);
+            }
             break;
             // and OptimizeLayer became a "General Purpose, GIF Animation Optimizer" (ref. mogrify.c)
         case OptimizeLayer:
-            new_images = CoalesceImages(images, exception);
-            rm_split(images);
-            rm_check_exception(exception, new_images, DestroyOnError);
-            new_images2 = OptimizeImageLayers(new_images, exception);
-            DestroyImageList(new_images);
-            rm_check_exception(exception, new_images2, DestroyOnError);
-            new_images = new_images2;
-            OptimizeImageTransparency(new_images, exception);
-            rm_check_exception(exception, new_images, DestroyOnError);
-            // mogrify supports -dither here. We don't.
-            GetQuantizeInfo(&quantize_info);
+            {
+                GVL_STRUCT_TYPE(CoalesceImages) args_CoalesceImages = { images, exception };
+                new_images = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CoalesceImages), &args_CoalesceImages);
+                rm_split(images);
+                rm_check_exception(exception, new_images, DestroyOnError);
+
+                GVL_STRUCT_TYPE(OptimizeImageLayers) args_OptimizeImageLayers = { new_images, exception };
+                new_images2 = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(OptimizeImageLayers), &args_OptimizeImageLayers);
+                DestroyImageList(new_images);
+                rm_check_exception(exception, new_images2, DestroyOnError);
+
+                new_images = new_images2;
+                GVL_STRUCT_TYPE(OptimizeImageTransparency) args_OptimizeImageTransparency = { new_images, exception };
+                CALL_FUNC_WITHOUT_GVL(GVL_FUNC(OptimizeImageTransparency), &args_OptimizeImageTransparency);
+                rm_check_exception(exception, new_images, DestroyOnError);
+                // mogrify supports -dither here. We don't.
+                GetQuantizeInfo(&quantize_info);
 #if defined(IMAGEMAGICK_7)
-            RemapImages(&quantize_info, new_images, NULL, exception);
+                GVL_STRUCT_TYPE(RemapImages) args_RemapImages = { &quantize_info, new_images, NULL, exception };
 #else
-            RemapImages(&quantize_info, new_images, NULL);
+                GVL_STRUCT_TYPE(RemapImages) args_RemapImages = { &quantize_info, new_images, NULL };
 #endif
+                CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RemapImages), &args_RemapImages);
+
+            }
             break;
         case OptimizePlusLayer:
-            new_images = OptimizePlusImageLayers(images, exception);
+            {
+                GVL_STRUCT_TYPE(OptimizePlusImageLayers) args = { images, exception };
+                new_images = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(OptimizePlusImageLayers), &args);
+            }
             break;
         case CompareAnyLayer:
         case CompareClearLayer:
         case CompareOverlayLayer:
+            {
 #if defined(IMAGEMAGICK_7)
-            new_images = CompareImagesLayers(images, mthd, exception);
+                GVL_STRUCT_TYPE(CompareImagesLayers) args = { images, mthd, exception };
+                new_images = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompareImagesLayers), &args);
 #else
-            new_images = CompareImageLayers(images, mthd, exception);
+                GVL_STRUCT_TYPE(CompareImageLayers) args = { images, mthd, exception };
+                new_images = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompareImageLayers), &args);
 #endif
+            }
             break;
         case MosaicLayer:
-            new_images = MergeImageLayers(images, mthd, exception);
+            {
+                GVL_STRUCT_TYPE(MergeImageLayers) args = { images, mthd, exception };
+                new_images = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(MergeImageLayers), &args);
+            }
             break;
         case FlattenLayer:
-            new_images = MergeImageLayers(images, mthd, exception);
+            {
+                GVL_STRUCT_TYPE(MergeImageLayers) args = { images, mthd, exception };
+                new_images = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(MergeImageLayers), &args);
+            }
             break;
         case MergeLayer:
-            new_images = MergeImageLayers(images, mthd, exception);
+            {
+                GVL_STRUCT_TYPE(MergeImageLayers) args = { images, mthd, exception };
+                new_images = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(MergeImageLayers), &args);
+            }
             break;
         case TrimBoundsLayer:
-            new_images = MergeImageLayers(images, mthd, exception);
+            {
+                GVL_STRUCT_TYPE(MergeImageLayers) args = { images, mthd, exception };
+                new_images = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(MergeImageLayers), &args);
+            }
             break;
         default:
             rm_split(images);
@@ -824,7 +914,8 @@ clone_imagelist(Image *images)
     {
         Image *clone;
 
-        clone = CloneImage(image, 0, 0, MagickTrue, exception);
+        GVL_STRUCT_TYPE(CloneImage) args = { image, 0, 0, MagickTrue, exception };
+        clone = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CloneImage), &args);
         rm_check_exception(exception, new_imagelist, DestroyOnError);
         AppendImageToList(&new_imagelist, clone);
         image = GetNextImageInList(image);
@@ -901,17 +992,19 @@ ImageList_quantize(int argc, VALUE *argv, VALUE self)
     // Convert image array to image sequence, clone image sequence.
     images = images_from_imagelist(self);
     exception = AcquireExceptionInfo();
-    new_images = CloneImageList(images, exception);
+    GVL_STRUCT_TYPE(CloneImageList) args_CloneImageList = { images, exception };
+    new_images = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CloneImageList), &args_CloneImageList);
     rm_split(images);
     rm_check_exception(exception, new_images, DestroyOnError);
 
     rm_ensure_result(new_images);
 
 #if defined(IMAGEMAGICK_7)
-    QuantizeImages(&quantize_info, new_images, exception);
+    GVL_STRUCT_TYPE(QuantizeImages) args_QuantizeImages = { &quantize_info, new_images, exception };
 #else
-    QuantizeImages(&quantize_info, new_images);
+    GVL_STRUCT_TYPE(QuantizeImages) args_QuantizeImages = { &quantize_info, new_images };
 #endif
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(QuantizeImages), &args_QuantizeImages);
     rm_check_exception(exception, new_images, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -978,12 +1071,14 @@ ImageList_remap(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    RemapImages(&quantize_info, images, remap_image, exception);
+    GVL_STRUCT_TYPE(RemapImages) args = { &quantize_info, images, remap_image, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RemapImages), &args);
     rm_split(images);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    RemapImages(&quantize_info, images, remap_image);
+    GVL_STRUCT_TYPE(RemapImages) args = { &quantize_info, images, remap_image };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RemapImages), &args);
     rm_split(images);
     rm_check_image_exception(images, RetainOnError);
 #endif
@@ -1042,7 +1137,8 @@ ImageList_to_blob(VALUE self)
     // can happen is that there's only one image or the format
     // doesn't support multi-image files.
     info->adjoin = MagickTrue;
-    blob = ImagesToBlob(info, images, &length, exception);
+    GVL_STRUCT_TYPE(ImagesToBlob) args = { info, images, &length, exception };
+    blob = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ImagesToBlob), &args);
     if (blob && exception->severity >= ErrorException)
     {
         magick_free((void*)blob);
@@ -1142,10 +1238,12 @@ ImageList_write(VALUE self, VALUE file)
     {
         rm_sync_image_options(img, info);
 #if defined(IMAGEMAGICK_7)
-        WriteImage(info, img, exception);
+        GVL_STRUCT_TYPE(WriteImage) args = { info, img, exception };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(WriteImage), &args);
         rm_check_exception(exception, img, RetainOnError);
 #else
-        WriteImage(info, img);
+        GVL_STRUCT_TYPE(WriteImage) args = { info, img };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(WriteImage), &args);
         // images will be split before raising an exception
         rm_check_image_exception(images, RetainOnError);
 #endif

@@ -24,6 +24,7 @@
 #include <sys/types.h>
 #include "ruby.h"
 #include "ruby/io.h"
+#include "rmagick_gvl.h"
 
 #if defined(__MINGW32__)
     // Ruby defines wrong format specifiers for MinGW. So this defines original macro in here.
