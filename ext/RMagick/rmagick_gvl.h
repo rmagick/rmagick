@@ -184,7 +184,6 @@ typedef void *(gvl_function_t)(void *);
 #define DEFINE_GVL_STUB9(name, type1, type2, type3, type4, type5, type6, type7, type8, type9) \
     DEFINE_GVL_STRUCT9(name, type1, type2, type3, type4, type5, type6, type7, type8, type9); \
     DEFINE_GVL_FUNC9(name, name)
-#endif
 
 
 #define DEFINE_GVL_VOID_FUNC2(func_name, struct_name) \
@@ -222,3 +221,4 @@ typedef void *(gvl_function_t)(void *);
     DEFINE_GVL_STRUCT6(name, type1, type2, type3, type4, type5, type6); \
     DEFINE_GVL_VOID_FUNC6(name, name)
 
+#endif
