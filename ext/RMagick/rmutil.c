@@ -23,8 +23,6 @@ static void handle_exception(ExceptionInfo *, Image *, ErrorRetention);
 
 
 DEFINE_GVL_STUB5(CloneImage, const Image *, const size_t, const size_t, const MagickBooleanType, ExceptionInfo *);
-DEFINE_GVL_STUB1(DeleteImageRegistry, const char *);
-DEFINE_GVL_STUB4(SetImageRegistry, const RegistryType, const char *, const void *, ExceptionInfo *);
 
 
 /**
@@ -785,8 +783,7 @@ rm_write_temp_image(Image *image, char *temp_name, size_t temp_name_l)
     snprintf(temp_name, temp_name_l, "mpri:%d", id);
 
     // Omit "mpri:" from filename to form the key
-    GVL_STRUCT_TYPE(SetImageRegistry) args = { ImageRegistryType, temp_name+5, image, exception };
-    okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageRegistry), &args);
+    okay = (MagickBooleanType)SetImageRegistry(ImageRegistryType, temp_name+5, image, exception);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
     if (!okay)
@@ -808,8 +805,7 @@ rm_write_temp_image(Image *image, char *temp_name, size_t temp_name_l)
 void
 rm_delete_temp_image(char *temp_name)
 {
-    GVL_STRUCT_TYPE(DeleteImageRegistry) args = { temp_name+5 };
-    MagickBooleanType okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(DeleteImageRegistry), &args);
+    MagickBooleanType okay = DeleteImageRegistry(temp_name+5);
 
     if (!okay)
     {
