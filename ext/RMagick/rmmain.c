@@ -234,6 +234,10 @@ static void set_managed_memory(void)
 void
 Init_RMagick2(void)
 {
+#ifdef HAVE_RB_EXT_RACTOR_SAFE
+    rb_ext_ractor_safe(true);
+#endif
+
     Module_Magick = rb_define_module("Magick");
 
     set_managed_memory();

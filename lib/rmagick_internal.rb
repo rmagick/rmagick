@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # $Id: RMagick.rb,v 1.84 2009/09/15 22:08:41 rmagick Exp $
 #==============================================================================
 #                  Copyright (C) 2009 by Timothy P. Hunter
@@ -23,7 +25,6 @@ require 'observer'
 require 'RMagick2.so'
 
 module Magick
-  @formats = nil
   IMAGEMAGICK_VERSION = Magick::Magick_version.split[1].split('-').first
 
   class << self
@@ -51,13 +52,13 @@ module Magick
     #   => {"3FR"=>" r-+", "3G2"=>" r-+", "3GP"=>" r-+", "A"=>"*rw+",
     #   ...
     def formats
-      @formats ||= init_formats
+      formats = init_formats
 
       if block_given?
-        @formats.each { |k, v| yield k, v }
+        formats.each { |k, v| yield k, v }
         self
       else
-        @formats
+        formats
       end
     end
   end
@@ -75,7 +76,7 @@ module Magick
   MinimumGeometry  = GeometryValue.new(:MinimumGeometry, 6).freeze
 
   class Geometry
-    FLAGS = ['', '%', '!', '<', '>', '@', '^']
+    FLAGS = ['', '%', '!', '<', '>', '@', '^'].freeze
     RFLAGS = {
       '%' => PercentGeometry,
       '!' => AspectGeometry,
@@ -83,7 +84,7 @@ module Magick
       '>' => GreaterGeometry,
       '@' => AreaGeometry,
       '^' => MinimumGeometry
-    }
+    }.freeze
 
     attr_accessor :width, :height, :x, :y, :flag
 
@@ -139,7 +140,7 @@ module Magick
 
     # Convert object to a geometry string
     def to_s
-      str = ''
+      str = String.new
       if @width > 0
         fmt = @width.truncate == @width ? '%d' : '%.2f'
         str << sprintf(fmt, @width)
@@ -769,12 +770,6 @@ module Magick
 
     module Post_ObjectData_Descriptor
       Confirmed_ObjectData_Size              = '9:10'
-    end
-
-    # Make all constants above immutable
-    constants.each do |record|
-      rec = const_get(record)
-      rec.constants.each { |ds| rec.const_get(ds).freeze }
     end
   end # module Magick::IPTC
 

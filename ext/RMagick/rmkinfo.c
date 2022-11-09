@@ -10,6 +10,15 @@
 
 #include "rmagick.h"
 
+static void rm_kernel_info_destroy(void *kernel);
+static size_t rm_kernel_info_memsize(const void *ptr);
+
+const rb_data_type_t rm_kernel_info_data_type = {
+    "Magick::KernelInfo",
+    { NULL, rm_kernel_info_destroy, rm_kernel_info_memsize, },
+    0, 0,
+    RUBY_TYPED_FROZEN_SHAREABLE,
+};
 
 /* UnityAddKernelInfo() was private function until IM 6.9 */
 MagickExport void UnityAddKernelInfo(KernelInfo *kernel, const double scale);
@@ -37,6 +46,19 @@ rm_kernel_info_destroy(void *kernel)
 }
 
 /**
+  * Get KernelInfo object size.
+  *
+  * No Ruby usage (internal function)
+  *
+  * @param ptr pointer to the KernelInfo object
+  */
+static size_t
+rm_kernel_info_memsize(const void *ptr)
+{
+    return sizeof(KernelInfo);
+}
+
+/**
  * Create a KernelInfo object.
  *
  * @return [Magick::KernelInfo] a new KernelInfo object
@@ -44,7 +66,7 @@ rm_kernel_info_destroy(void *kernel)
 VALUE
 KernelInfo_alloc(VALUE class)
 {
-    return Data_Wrap_Struct(class, NULL, rm_kernel_info_destroy, NULL);
+    return TypedData_Wrap_Struct(class, &rm_kernel_info_data_type, NULL);
 }
 
 /**
@@ -156,7 +178,7 @@ VALUE
 KernelInfo_clone(VALUE self)
 {
     KernelInfo *kernel = CloneKernelInfo((KernelInfo*)DATA_PTR(self));
-    return Data_Wrap_Struct(Class_KernelInfo, NULL, rm_kernel_info_destroy, kernel);
+    return TypedData_Wrap_Struct(Class_KernelInfo, &rm_kernel_info_data_type, kernel);
 }
 
 /**
@@ -202,5 +224,5 @@ KernelInfo_builtin(VALUE self, VALUE what, VALUE geometry)
         rb_raise(rb_eRuntimeError, "failed to acquire builtin kernel");
     }
 
-    return Data_Wrap_Struct(self, NULL, rm_kernel_info_destroy, kernel);
+    return TypedData_Wrap_Struct(self, &rm_kernel_info_data_type, kernel);
 }

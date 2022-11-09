@@ -12,8 +12,15 @@
 
 #include "rmagick.h"
 
+static void Montage_destroy(void *obj);
+static size_t Montage_memsize(const void *obj);
 
-
+const rb_data_type_t rm_montage_data_type = {
+    "Magick::ImageList::Montage",
+    { NULL, Montage_destroy, Montage_memsize, },
+    0, 0,
+    RUBY_TYPED_FROZEN_SHAREABLE,
+};
 
 
 /**
@@ -28,7 +35,7 @@
  * @param obj the montage object
  */
 static void
-destroy_Montage(void *obj)
+Montage_destroy(void *obj)
 {
     Montage *montage = obj;
 
@@ -45,6 +52,20 @@ destroy_Montage(void *obj)
         montage->info = NULL;
     }
     xfree(montage);
+}
+
+
+/**
+  * Get Montage object size.
+  *
+  * No Ruby usage (internal function)
+  *
+  * @param ptr pointer to the Montage object
+  */
+static size_t
+Montage_memsize(const void *ptr)
+{
+    return sizeof(Montage);
 }
 
 
@@ -79,7 +100,7 @@ Montage_alloc(VALUE class)
     montage = ALLOC(Montage);
     montage->info = montage_info;
     montage->compose = OverCompositeOp;
-    montage_obj = Data_Wrap_Struct(class, NULL, destroy_Montage, montage);
+    montage_obj = TypedData_Wrap_Struct(class, &rm_montage_data_type, montage);
 
     RB_GC_GUARD(montage_obj);
 
@@ -98,7 +119,7 @@ Montage_background_color_eq(VALUE self, VALUE color)
 {
     Montage *montage;
 
-    Data_Get_Struct(self, Montage, montage);
+    TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
     Color_to_PixelColor(&montage->info->background_color, color);
     return color;
 }
@@ -115,7 +136,7 @@ Montage_border_color_eq(VALUE self, VALUE color)
 {
     Montage *montage;
 
-    Data_Get_Struct(self, Montage, montage);
+    TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
     Color_to_PixelColor(&montage->info->border_color, color);
     return color;
 }
@@ -132,7 +153,7 @@ Montage_border_width_eq(VALUE self, VALUE width)
 {
     Montage *montage;
 
-    Data_Get_Struct(self, Montage, montage);
+    TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
     montage->info->border_width = NUM2ULONG(width);
     return width;
 }
@@ -149,7 +170,7 @@ Montage_compose_eq(VALUE self, VALUE compose)
 {
     Montage *montage;
 
-    Data_Get_Struct(self, Montage, montage);
+    TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
     VALUE_TO_ENUM(compose, montage->compose, CompositeOperator);
     return compose;
 }
@@ -166,7 +187,7 @@ Montage_filename_eq(VALUE self, VALUE filename)
 {
     Montage *montage;
 
-    Data_Get_Struct(self, Montage, montage);
+    TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
     strlcpy(montage->info->filename, StringValueCStr(filename), sizeof(montage->info->filename));
     return filename;
 }
@@ -183,7 +204,7 @@ Montage_fill_eq(VALUE self, VALUE color)
 {
     Montage *montage;
 
-    Data_Get_Struct(self, Montage, montage);
+    TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
     Color_to_PixelColor(&montage->info->fill, color);
     return color;
 }
@@ -200,7 +221,7 @@ Montage_font_eq(VALUE self, VALUE font)
 {
     Montage *montage;
 
-    Data_Get_Struct(self, Montage, montage);
+    TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
     magick_clone_string(&montage->info->font, StringValueCStr(font));
 
     return font;
@@ -223,7 +244,7 @@ Montage_frame_eq(VALUE self, VALUE frame_arg)
     Montage *montage;
     VALUE frame;
 
-    Data_Get_Struct(self, Montage, montage);
+    TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
     frame = rb_String(frame_arg);
     magick_clone_string(&montage->info->frame, StringValueCStr(frame));
 
@@ -250,7 +271,7 @@ Montage_geometry_eq(VALUE self, VALUE geometry_arg)
     Montage *montage;
     VALUE geometry;
 
-    Data_Get_Struct(self, Montage, montage);
+    TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
     geometry = rb_String(geometry_arg);
     magick_clone_string(&montage->info->geometry, StringValueCStr(geometry));
 
@@ -271,7 +292,7 @@ Montage_gravity_eq(VALUE self, VALUE gravity)
 {
     Montage *montage;
 
-    Data_Get_Struct(self, Montage, montage);
+    TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
     VALUE_TO_ENUM(gravity, montage->info->gravity, GravityType);
     return gravity;
 }
@@ -301,7 +322,7 @@ Montage_matte_color_eq(VALUE self, VALUE color)
 {
     Montage *montage;
 
-    Data_Get_Struct(self, Montage, montage);
+    TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
     Color_to_PixelColor(&montage->info->matte_color, color);
     return color;
 }
@@ -318,7 +339,7 @@ Montage_pointsize_eq(VALUE self, VALUE size)
 {
     Montage *montage;
 
-    Data_Get_Struct(self, Montage, montage);
+    TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
     montage->info->pointsize = NUM2DBL(size);
     return size;
 }
@@ -335,7 +356,7 @@ Montage_shadow_eq(VALUE self, VALUE shadow)
 {
     Montage *montage;
 
-    Data_Get_Struct(self, Montage, montage);
+    TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
     montage->info->shadow = (MagickBooleanType) RTEST(shadow);
     return shadow;
 }
@@ -352,7 +373,7 @@ Montage_stroke_eq(VALUE self, VALUE color)
 {
     Montage *montage;
 
-    Data_Get_Struct(self, Montage, montage);
+    TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
     Color_to_PixelColor(&montage->info->stroke, color);
     return color;
 }
@@ -372,7 +393,7 @@ Montage_texture_eq(VALUE self, VALUE texture)
     Image *texture_image;
     char temp_name[MaxTextExtent];
 
-    Data_Get_Struct(self, Montage, montage);
+    TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
 
     // If we had a previously defined temp texture image,
     // remove it now in preparation for this new one.
@@ -411,7 +432,7 @@ Montage_tile_eq(VALUE self, VALUE tile_arg)
     Montage *montage;
     VALUE tile;
 
-    Data_Get_Struct(self, Montage, montage);
+    TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
     tile = rb_String(tile_arg);
     magick_clone_string(&montage->info->tile, StringValueCStr(tile));
 
@@ -432,7 +453,7 @@ Montage_title_eq(VALUE self, VALUE title)
 {
     Montage *montage;
 
-    Data_Get_Struct(self, Montage, montage);
+    TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
     magick_clone_string(&montage->info->title, StringValueCStr(title));
     return title;
 }

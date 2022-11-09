@@ -12,6 +12,11 @@
 
 #include "rmagick.h"
 
+static void GradientFill_free(void *fill);
+static size_t GradientFill_memsize(const void *ptr);
+static void TextureFill_free(void *fill_obj);
+static size_t TextureFill_memsize(const void *ptr);
+
 /** Data associated with a GradientFill */
 typedef struct
 {
@@ -29,21 +34,51 @@ typedef struct
     Image *texture; /**< the texture */
 } rm_TextureFill;
 
+const rb_data_type_t rm_gradient_fill_data_type = {
+    "Magick::GradientFill",
+    { NULL, GradientFill_free, GradientFill_memsize, },
+    0, 0,
+    RUBY_TYPED_FROZEN_SHAREABLE,
+};
+
+const rb_data_type_t rm_texture_fill_data_type = {
+    "Magick::TextureFill",
+    { NULL, TextureFill_free, TextureFill_memsize, },
+    0, 0,
+    RUBY_TYPED_FROZEN_SHAREABLE,
+};
+
 
 DEFINE_GVL_STUB2(SyncAuthenticPixels, Image *, ExceptionInfo *);
 
 
 /**
- * Free Fill or Fill subclass object (except for TextureFill).
+ * Free GradientFill or GradientFill subclass object (except for TextureFill).
  *
  * No Ruby usage (internal function)
  *
  * @param fill the fill
  */
-static void free_Fill(void *fill)
+static void
+GradientFill_free(void *fill)
 {
     xfree(fill);
 }
+
+
+/**
+  * Get GradientFill object size.
+  *
+  * No Ruby usage (internal function)
+  *
+  * @param ptr pointer to the GradientFill object
+  */
+static size_t
+GradientFill_memsize(const void *ptr)
+{
+    return sizeof(rm_GradientFill);
+}
+
 
 /**
  * Create new GradientFill object.
@@ -55,7 +90,7 @@ GradientFill_alloc(VALUE class)
 {
     rm_GradientFill *fill;
 
-    return Data_Make_Struct(class, rm_GradientFill, NULL, free_Fill, fill);
+    return TypedData_Make_Struct(class, rm_GradientFill, &rm_gradient_fill_data_type, fill);
 }
 
 
@@ -82,7 +117,7 @@ GradientFill_initialize(
 {
     rm_GradientFill *fill;
 
-    Data_Get_Struct(self, rm_GradientFill, fill);
+    TypedData_Get_Struct(self, rm_GradientFill, &rm_gradient_fill_data_type, fill);
 
     fill->x1 = NUM2DBL(x1);
     fill->y1 = NUM2DBL(y1);
@@ -610,7 +645,7 @@ GradientFill_fill(VALUE self, VALUE image_obj)
     PixelColor start_color, stop_color;
     double x1, y1, x2, y2;          // points on the line
 
-    Data_Get_Struct(self, rm_GradientFill, fill);
+    TypedData_Get_Struct(self, rm_GradientFill, &rm_gradient_fill_data_type, fill);
     image = rm_check_destroyed(image_obj);
 
     x1 = fill->x1;
@@ -673,7 +708,7 @@ GradientFill_fill(VALUE self, VALUE image_obj)
  * @param fill_obj the TextureFill
  */
 static void
-free_TextureFill(void *fill_obj)
+TextureFill_free(void *fill_obj)
 {
     rm_TextureFill *fill = (rm_TextureFill *)fill_obj;
 
@@ -685,6 +720,21 @@ free_TextureFill(void *fill_obj)
     xfree(fill);
 }
 
+
+/**
+  * Get TextureFill object size.
+  *
+  * No Ruby usage (internal function)
+  *
+  * @param ptr pointer to the TextureFill object
+  */
+static size_t
+TextureFill_memsize(const void *ptr)
+{
+    return sizeof(rm_TextureFill);
+}
+
+
 /**
  * Create new TextureFill object.
  *
@@ -694,7 +744,7 @@ VALUE
 TextureFill_alloc(VALUE class)
 {
     rm_TextureFill *fill;
-    return Data_Make_Struct(class, rm_TextureFill, NULL, free_TextureFill, fill);
+    return TypedData_Make_Struct(class, rm_TextureFill, &rm_texture_fill_data_type, fill);
 }
 
 /**
@@ -711,7 +761,7 @@ TextureFill_initialize(VALUE self, VALUE texture_arg)
     Image *texture;
     VALUE texture_image;
 
-    Data_Get_Struct(self, rm_TextureFill, fill);
+    TypedData_Get_Struct(self, rm_TextureFill, &rm_texture_fill_data_type, fill);
 
     texture_image = rm_cur_image(texture_arg);
 
@@ -743,7 +793,7 @@ TextureFill_fill(VALUE self, VALUE image_obj)
 #endif
 
     image = rm_check_destroyed(image_obj);
-    Data_Get_Struct(self, rm_TextureFill, fill);
+    TypedData_Get_Struct(self, rm_TextureFill, &rm_texture_fill_data_type, fill);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
