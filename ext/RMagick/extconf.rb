@@ -95,6 +95,7 @@ module RMagick
         check_partial_imagemagick_versions
 
         original_ldflags = $LDFLAGS.dup
+
         libdir  = `pkg-config --libs-only-L #{$magick_package}`.chomp.sub('-L', '')
         ldflags = "#{ENV['LDFLAGS']} " + `pkg-config --libs #{$magick_package}`.chomp
         rpath   = libdir.empty? ? '' : "-Wl,-rpath,#{libdir}"
