@@ -94,18 +94,19 @@ module RMagick
         check_multiple_imagemagick_versions
         check_partial_imagemagick_versions
 
+        original_ldflags = $LDFLAGS.dup
         libdir  = `pkg-config --libs-only-L #{$magick_package}`.chomp.sub('-L', '')
         ldflags = "#{ENV['LDFLAGS']} " + `pkg-config --libs #{$magick_package}`.chomp
         rpath   = libdir.empty? ? '' : "-Wl,-rpath,#{libdir}"
 
         # Save flags
-        $CPPFLAGS   = "#{ENV['CPPFLAGS']} " + `pkg-config --cflags #{$magick_package}`.chomp
-        $LOCAL_LIBS = "#{ENV['LIBS']} "     + `pkg-config --libs #{$magick_package}`.chomp
-        $LDFLAGS    = "#{ldflags} #{rpath}"
+        $CPPFLAGS   += " #{ENV['CPPFLAGS']} " + `pkg-config --cflags #{$magick_package}`.chomp
+        $LOCAL_LIBS += " #{ENV['LIBS']} "     + `pkg-config --libs #{$magick_package}`.chomp
+        $LDFLAGS    += " #{ldflags} #{rpath}"
 
         unless try_link("int main() { }")
           # if linker does not recognizes '-Wl,-rpath,somewhere' option, it revert to original option
-          $LDFLAGS = ldflags
+          $LDFLAGS = "#{original_ldflags} #{ldflags}"
         end
 
         configure_archflags_for_osx($magick_package) if RUBY_PLATFORM =~ /darwin/ # osx
@@ -113,8 +114,8 @@ module RMagick
       elsif RUBY_PLATFORM =~ /mingw/ # mingw
 
         dir_paths = search_paths_for_library_for_windows
-        $CPPFLAGS = %(-I"#{dir_paths[:include]}")
-        $LDFLAGS = %(-L"#{dir_paths[:lib]}")
+        $CPPFLAGS += %( -I"#{dir_paths[:include]}")
+        $LDFLAGS += %( -L"#{dir_paths[:lib]}")
         $LDFLAGS << ' -lucrt' if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.4.0')
 
         have_library(im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_' : 'CORE_RL_magick_')
@@ -126,7 +127,7 @@ module RMagick
         $LDFLAGS << %( -libpath:"#{dir_paths[:lib]}")
         $LDFLAGS << ' -libpath:ucrt' if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.4.0')
 
-        $LOCAL_LIBS = im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_.lib' : 'CORE_RL_magick_.lib'
+        $LOCAL_LIBS += ' ' + (im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_.lib' : 'CORE_RL_magick_.lib')
 
       end
 
@@ -400,9 +401,6 @@ module RMagick
 
     def create_makefile_file
       create_header_file
-      # Prior to 1.8.5 mkmf duplicated the symbols on the command line and in the
-      # extconf.h header. Suppress that behavior by removing the symbol array.
-      $defs = []
 
       # Force re-compilation if the generated Makefile changed.
       $config_h = 'Makefile'
