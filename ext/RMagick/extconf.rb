@@ -2,6 +2,7 @@ lib_dir = File.expand_path('../../lib', File.dirname(__FILE__))
 $LOAD_PATH.unshift(lib_dir) unless $LOAD_PATH.include?(lib_dir)
 require 'rubygems'
 require 'mkmf'
+require 'pkg-config'
 
 module RMagick
   class Extconf
@@ -96,13 +97,13 @@ module RMagick
 
         original_ldflags = $LDFLAGS.dup
 
-        libdir  = `pkg-config --libs-only-L #{$magick_package}`.chomp.sub('-L', '')
-        ldflags = "#{ENV['LDFLAGS']} " + `pkg-config --libs #{$magick_package}`.chomp
+        libdir  = PKGConfig.libs_only_L($magick_package).chomp.sub('-L', '')
+        ldflags = "#{ENV['LDFLAGS']} " + PKGConfig.libs($magick_package).chomp
         rpath   = libdir.empty? ? '' : "-Wl,-rpath,#{libdir}"
 
         # Save flags
-        $CPPFLAGS   += " #{ENV['CPPFLAGS']} " + `pkg-config --cflags #{$magick_package}`.chomp
-        $LOCAL_LIBS += " #{ENV['LIBS']} "     + `pkg-config --libs #{$magick_package}`.chomp
+        $CPPFLAGS   += " #{ENV['CPPFLAGS']} " + PKGConfig.cflags($magick_package).chomp
+        $LOCAL_LIBS += " #{ENV['LIBS']} "     + PKGConfig.libs($magick_package).chomp
         $LDFLAGS    += " #{ldflags} #{rpath}"
 
         unless try_link("int main() { }")
@@ -158,7 +159,7 @@ module RMagick
 
     def detect_imagemagick_packages(packages)
       packages.select do |package|
-        system "pkg-config --exists #{package}"
+        PKGConfig.exist?(package)
       end
     end
 
@@ -261,7 +262,7 @@ module RMagick
     # issue #169
     # set ARCHFLAGS appropriately for OSX
     def configure_archflags_for_osx(magick_package)
-      return unless `pkg-config #{magick_package} --libs-only-L`.match(%r{-L(.+)/lib})
+      return unless PKGConfig.libs_only_L(magick_package).match(%r{-L(.+)/lib})
 
       imagemagick_dir = Regexp.last_match(1)
       command = Dir.glob(File.join(imagemagick_dir, "bin/*")).select { |file| File.executable? file }.first
@@ -336,16 +337,12 @@ module RMagick
       END_FAILURE
 
       if RUBY_PLATFORM !~ /mswin|mingw/
-        unless find_executable('pkg-config')
-          exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find pkg-config in #{ENV['PATH']}\n"
-        end
-
-        unless `pkg-config --libs MagickCore`[/\bl\s*(MagickCore|Magick)6?\b/]
+        unless PKGConfig.libs('MagickCore')[/\bl\s*(MagickCore|Magick)6?\b/]
           exit_failure failure_message
         end
 
         $magick_package = determine_imagemagick_package
-        $magick_version = `pkg-config #{$magick_package} --modversion`[/^(\d+\.\d+\.\d+)/]
+        $magick_version = PKGConfig.modversion($magick_package)[/^(\d+\.\d+\.\d+)/]
       else
         `#{magick_command} -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
         $magick_version = Regexp.last_match(1)

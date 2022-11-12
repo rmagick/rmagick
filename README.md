@@ -71,33 +71,33 @@ sudo yum install gcc ImageMagick-devel make which
 On Arch Linux, you can run:
 
 ```sh
-pacman -Syy pkg-config imagemagick
+pacman -Syy imagemagick
 ```
 
 #### Alpine Linux
 On Alpine Linux, you can run:
 
 ```
-apk add pkgconfig imagemagick imagemagick-dev imagemagick-libs
+apk add imagemagick imagemagick-dev imagemagick-libs
 ```
 
 or you can run if you would like to use ImageMagick 6:
 
 ```
-apk add pkgconfig imagemagick6 imagemagick6-dev imagemagick6-libs
+apk add imagemagick6 imagemagick6-dev imagemagick6-libs
 ```
 
 ### macOS
 On macOS, you can run:
 
 ```sh
-brew install pkg-config imagemagick
+brew install imagemagick
 ```
 
 or you can run if you would like to use ImageMagick 6:
 
 ```sh
-brew install pkg-config imagemagick@6
+brew install imagemagick@6
 ```
 
 ### Windows
@@ -163,15 +163,6 @@ depends on hasn't been installed. Examine the mkmf.log file in the ext/RMagick
 subdirectory of the installation directory for any error messages. These
 messages typically contain enough additional information for you to be able to
 diagnose the problem. Also see [this FAQ][libmagick-faq].
-
-On OS X with Homebrew, try (re)installing pkg-config:
-
-```sh
-brew uninstall pkg-config
-brew install pkg-config
-brew unlink pkg-config
-brew link pkg-config
-```
 
 ### Cannot open shared object file
 
