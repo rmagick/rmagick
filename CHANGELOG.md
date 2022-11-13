@@ -3,6 +3,14 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 5.1.0
+
+Improvements
+- Improve multi-thread performance by releasing GVL (#1352)
+- Add Ractor support (#1349)
+- Avoid overriding compilation variables (#1365)
+- Remove pkg-config command dependency (#1366)
+
 ## RMagick 5.0.0
 
 Improvements
