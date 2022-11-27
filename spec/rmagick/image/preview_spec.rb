@@ -1,5 +1,5 @@
 describe Magick::Image, '#preview' do
-  it 'works' do
+  it 'works', unsupported_before('6.8.0') do
     hat = described_class.read(IMAGES_DIR + '/Flower_Hat.jpg').first
 
     prev = hat.preview(Magick::RotatePreview)
