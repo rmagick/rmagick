@@ -1480,11 +1480,11 @@ img = Image.read_inline(content)
 
     <h4>Arguments</h4>
 
-    <p>One of the following values of the AlphaChannelType
+    <p>One of the following values of the AlphaChannelOption
     enumeration:</p>
 
     <dl>
-      <dt>ActivateAlphaChannel</dt>
+      <dt>OnAlphaChannel</dt>
 
       <dd class="imquote">Enable the images use of transparency. If
       transparency data did not exist, allocate the data and set to
@@ -1505,7 +1505,7 @@ img = Image.read_inline(content)
       into a transparent shaped image ready to be colored
       appropriately. The color channels are not modified.</dd>
 
-      <dt>DeactivateAlphaChannel</dt>
+      <dt>OffAlphaChannel</dt>
 
       <dd class="imquote">Disables the image's transparency
       channel. Does not delete or change the existing data, just

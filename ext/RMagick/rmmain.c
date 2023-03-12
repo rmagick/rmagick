@@ -1057,6 +1057,13 @@ Init_RMagick2(void)
         ENUMERATOR(AssociateAlphaChannel)
         ENUMERATOR(DisassociateAlphaChannel)
 #endif
+#if defined(IMAGEMAGICK_7)
+        ENUMERATOR(OnAlphaChannel)
+        ENUMERATOR(OffAlphaChannel)
+#else
+        ENUMERATORV(OnAlphaChannel, ActivateAlphaChannel)
+        ENUMERATORV(OffAlphaChannel, DeactivateAlphaChannel)
+#endif
     END_ENUM
 
     // AnchorType constants (for Draw#text_anchor - these are not defined by ImageMagick)
