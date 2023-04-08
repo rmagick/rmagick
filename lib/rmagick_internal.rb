@@ -14,7 +14,7 @@ if RUBY_PLATFORM =~ /mingw/i
   begin
     require 'ruby_installer'
     ENV['PATH'].split(File::PATH_SEPARATOR).grep(/ImageMagick/i).each do |path|
-      RubyInstaller::Runtime.add_dll_directory(path)
+      RubyInstaller::Runtime.add_dll_directory(path) if File.exist?(File.join(path, 'CORE_RL_magick_.dll')) || File.exist?(File.join(path, 'CORE_RL_MagickCore_.dll'))
     end
   rescue LoadError
   end
