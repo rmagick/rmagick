@@ -41,6 +41,13 @@ jobs:
     name: Linux, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
     steps:
     - uses: actions/checkout@v3
+    - name: Cache Ruby dependencies
+      uses: actions/cache@v3
+      with:
+        path: ./vendor/bundle
+        key: v1-linux-${{ matrix.ruby-version }}-${{ hashFiles('rmagick.gemspec') }}
+        restore-keys: |
+          v1-linux-${{ matrix.ruby-version }}-${{ hashFiles('rmagick.gemspec') }}
     - name: Set up Ruby ${{ matrix.ruby-version }}
       uses: ruby/setup-ruby@master
       with:
@@ -68,6 +75,13 @@ jobs:
     name: macOS, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
     steps:
     - uses: actions/checkout@v3
+    - name: Cache Ruby dependencies
+      uses: actions/cache@v3
+      with:
+        path: ./vendor/bundle
+        key: v1-macos-${{ matrix.ruby-version }}-${{ hashFiles('rmagick.gemspec') }}
+        restore-keys: |
+          v1-macos-${{ matrix.ruby-version }}-${{ hashFiles('rmagick.gemspec') }}
     - name: Set up Ruby ${{ matrix.ruby-version }}
       uses: ruby/setup-ruby@master
       with:
