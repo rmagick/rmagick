@@ -41,6 +41,13 @@ jobs:
     name: Linux, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
     steps:
     - uses: actions/checkout@v3
+    - name: Cache ImageMagick built objects
+      uses: actions/cache@v3
+      with:
+        path: ./build-ImageMagick
+        key: v1-${{ runner.os }}-imagemagick-${{ matrix.imagemagick-version.full }}
+        restore-keys: |
+          v1-${{ runner.os }}-imagemagick-${{ matrix.imagemagick-version.full }}
     - name: Set up Ruby ${{ matrix.ruby-version }}
       uses: ruby/setup-ruby@master
       with:
@@ -68,6 +75,13 @@ jobs:
     name: macOS, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
     steps:
     - uses: actions/checkout@v3
+    - name: Cache ImageMagick built objects
+      uses: actions/cache@v3
+      with:
+        path: ./build-ImageMagick
+        key: v1-${{ runner.os }}-imagemagick-${{ matrix.imagemagick-version.full }}
+        restore-keys: |
+          v1-${{ runner.os }}-imagemagick-${{ matrix.imagemagick-version.full }}
     - name: Set up Ruby ${{ matrix.ruby-version }}
       uses: ruby/setup-ruby@master
       with:
