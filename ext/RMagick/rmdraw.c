@@ -1279,7 +1279,7 @@ Draw_primitive(VALUE self, VALUE primitive)
 
 #ifdef HAVE_RB_GC_MARK_MOVABLE
 /**
- * Mark referenced objects.
+ * Compact the objects.
  *
  * No Ruby usage (internal function)
  *
@@ -1292,7 +1292,7 @@ Draw_compact(void *drawptr)
 
     if (draw->primitives != (VALUE)0)
     {
-        rb_gc_location(draw->primitives);
+        draw->primitives = rb_gc_location(draw->primitives);
     }
 }
 #endif
