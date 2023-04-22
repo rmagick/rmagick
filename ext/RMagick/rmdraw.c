@@ -13,6 +13,9 @@
 #include "rmagick.h"
 #include "float.h"
 
+#ifdef HAVE_RB_GC_MARK_MOVABLE
+static void Draw_compact(void *drawptr);
+#endif
 static void Draw_mark(void *);
 static void Draw_destroy(void *);
 static size_t Draw_memsize(const void *);
@@ -21,7 +24,14 @@ static VALUE get_type_metrics(int, VALUE *, VALUE, gvl_function_t);
 
 const rb_data_type_t rm_draw_data_type = {
     "Magick::Draw",
-    { Draw_mark, Draw_destroy, Draw_memsize, },
+    {
+        Draw_mark,
+        Draw_destroy,
+        Draw_memsize,
+#ifdef HAVE_RB_GC_MARK_MOVABLE
+        Draw_compact,
+#endif
+    },
     0, 0,
     RUBY_TYPED_FROZEN_SHAREABLE,
 };
@@ -1267,6 +1277,25 @@ Draw_primitive(VALUE self, VALUE primitive)
     return self;
 }
 
+#ifdef HAVE_RB_GC_MARK_MOVABLE
+/**
+ * Mark referenced objects.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param drawptr pointer to a Draw object
+ */
+static void
+Draw_compact(void *drawptr)
+{
+    Draw *draw = (Draw *)drawptr;
+
+    if (draw->primitives != (VALUE)0)
+    {
+        rb_gc_location(draw->primitives);
+    }
+}
+#endif
 
 /**
  * Mark referenced objects.
@@ -1282,7 +1311,11 @@ Draw_mark(void *drawptr)
 
     if (draw->primitives != (VALUE)0)
     {
+#ifdef HAVE_RB_GC_MARK_MOVABLE
+        rb_gc_mark_movable(draw->primitives);
+#else
         rb_gc_mark(draw->primitives);
+#endif
     }
 }
 
