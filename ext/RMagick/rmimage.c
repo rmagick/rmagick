@@ -15804,6 +15804,10 @@ void add_format_prefix(Info *info, VALUE file)
     char *p;
 
     // Convert arg to string. If an exception occurs raise an error condition.
+    if (rb_respond_to(file, rb_intern("path")))
+    {
+        FilePathStringValue(file);
+    }
     file = rb_rescue(rb_String, file, file_arg_rescue, file);
 
     filename = rm_str2cstr(file, &filename_l);
@@ -15899,21 +15903,19 @@ Image_write(VALUE self, VALUE file)
         // Ensure file is open - raise error if not
         GetOpenFile(file, fptr);
         rb_io_check_writable(fptr);
-#if defined(_WIN32)
         add_format_prefix(info, fptr->pathv);
-        strlcpy(image->filename, info->filename, sizeof(image->filename));
+#if defined(_WIN32)
         SetImageInfoFile(info, NULL);
 #else
         SetImageInfoFile(info, rb_io_stdio_file(fptr));
-        memset(image->filename, 0, sizeof(image->filename));
 #endif
     }
     else
     {
         add_format_prefix(info, file);
-        strlcpy(image->filename, info->filename, sizeof(image->filename));
         SetImageInfoFile(info, NULL);
     }
+    strlcpy(image->filename, info->filename, sizeof(image->filename));
 
     rm_sync_image_options(image, info);
 

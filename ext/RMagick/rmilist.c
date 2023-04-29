@@ -1193,8 +1193,8 @@ ImageList_write(VALUE self, VALUE file)
 
         // Ensure file is open - raise error if not
         GetOpenFile(file, fptr);
-#if defined(_WIN32)
         add_format_prefix(info, fptr->pathv);
+#if defined(_WIN32)
         SetImageInfoFile(info, NULL);
 #else
         SetImageInfoFile(info, rb_io_stdio_file(fptr));
@@ -1229,7 +1229,7 @@ ImageList_write(VALUE self, VALUE file)
 #endif
 
     // Tell WriteImage if we want a multi-images file.
-    if (imagelist_length(self) > 1L && GetMagickAdjoin(m))
+    if (imagelist_length(self) > 1L && m && GetMagickAdjoin(m))
     {
         info->adjoin = MagickTrue;
     }
