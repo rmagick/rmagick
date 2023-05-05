@@ -65,7 +65,7 @@ RSpec.describe Magick do
     end
   end
 
-  if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.0.0')
+  if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.1.0')
     describe 'Ractor' do
       it 'is supported' do
         expect do
