@@ -35,3 +35,16 @@ end
 RSpec.configure do |config|
   config.include(TestHelpers)
 end
+
+if GC.respond_to?(:verify_compaction_references)
+  at_exit do
+    # Verify to move objects around, helping to find GC compaction bugs.
+    # Run last, because it may consider more effective if the object
+    # has been generated to some extent.
+    if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.2.0')
+      GC.verify_compaction_references(expand_heap: true, toward: :empty)
+    else
+      GC.verify_compaction_references(double_heap: true, toward: :empty)
+    end
+  end
+end
