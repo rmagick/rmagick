@@ -456,12 +456,6 @@ end
 
     <p>PolaroidImage</p>
 
-    <h4>See also</h4>
-
-    <p><a href=
-    "http://rmagick.rubyforge.org/Polaroid/polaroid.html">The
-    Polaroid Effect</a></p>
-
     <h4>Notes</h4>
 
     <p>"Polaroid" and the other names of products of Polaroid
@@ -765,7 +759,7 @@ end
       <dd>A <a href="constants.html#DitherMethod">DitherMethod</a>
       value. Set to <code>NoDitherMethod</code> to disable
       dithering. See the documentation for the <a href=
-      "http://redux.imagemagick.org/script/command-line-options.php#dither">
+      "https://imagemagick.org/script/command-line-options.php#dither">
       ImageMagick -dither option</a> for more information.</dd>
 
       <dt>tree_depth</dt>
@@ -777,7 +771,7 @@ end
       characteristics of the input image, and may be determined
       through experimentation.</span> See the documentation for the
       <a href=
-      "http://redux.imagemagick.org/script/command-line-options.php#treedepth">
+      "https://imagemagick.org/script/command-line-options.php#treedepth">
       ImageMagick -treedepth option</a> for more information.</dd>
 
       <dt>measure_error</dt>
@@ -1203,7 +1197,7 @@ random_threshold_channel(geom, RedChannel)
     <h4>Example</h4>
 
     <p>The left side of the image has been modified by <a href=
-    "#Image.add_noise"><code>add_noise</code></a>. The right side
+    "image1.html#add_noise"><code>add_noise</code></a>. The right side
     has been filtered by <code>reduce_noise(0)</code>.</p>
 
     <p><a href="javascript:popup('reduce_noise.rb.html')"><img src=
@@ -1360,7 +1354,7 @@ random_threshold_channel(geom, RedChannel)
       <dd>The <a href="constants.html#FilterTypes">filter</a> to
       use when resizing. If you do not specify a filter argument,
       resize uses the value of the receiver's <a href=
-      "imageattrs.html#Image.filter">filter attribute</a>.
+      "imageattrs.html#filter">filter attribute</a>.
       <span class="imquote">Most of the filters are FIR (finite
       impulse response), however, Bessel, Gaussian, and Sinc are
       IIR (infinite impulse response). Bessel and Sinc are windowed
@@ -1371,7 +1365,7 @@ random_threshold_channel(geom, RedChannel)
       <dd>Values &gt; 1 increase the blurriness. Values &lt; 1
       increase the sharpness. If this argument is not specified,
       <code>resize</code> uses the value of the receiver's <a href=
-      "imageattrs.html#Image.blur">blur</a> attribute.</dd>
+      "imageattrs.html#blur">blur</a> attribute.</dd>
 
       <dt>scale_factor</dt>
 
@@ -1393,7 +1387,7 @@ random_threshold_channel(geom, RedChannel)
     "image2.html#magnify">magnify</a>, <a href=
     "image2.html#minify">minify</a>, <a href="#sample">sample</a>,
     <a href="#scale">scale</a>, <a href=
-    "thumbnail">thumbnail</a></p>
+    "#thumbnail">thumbnail</a></p>
 
     <h4>Magick API</h4>
 
@@ -2927,7 +2921,7 @@ img.properties &raquo;
       watermark will be hidden. When you retrieve the watermark
       from the file, you must supply this value, along with the
       width and height of the watermark, in the <a href=
-      "info.html#Info.size_eq">size</a> optional parameter to the
+      "info.html#size">size</a> optional parameter to the
       <a href="image1.html#read">read</a> method.</dd>
     </dl>
 
@@ -3407,7 +3401,7 @@ thumbnail = img.thumbnail(img.columns*0.09, img.rows*0.09)
     <p>No required arguments, however you can specify the image
     format (such as JPEG, PNG, etc.) and depth by calling the
     <a href="imageattrs.html#format">format</a> and <a href=
-    "imageattrs.html#Image.depth">depth</a> attributes, as well as
+    "imageattrs.html#depth">depth</a> attributes, as well as
     other <a href="info.html">Image::Info</a> attributes as
     appropriate, in a block associated with the method.</p>
 
@@ -3443,8 +3437,8 @@ thumbnail = img.thumbnail(img.columns*0.09, img.rows*0.09)
 
     <p>Returns the color name for a pixel. Unlike the
     <code>Pixel#to_color</code> method, to_color uses the <a href=
-    "imageattrs.html#Image.depth">depth</a> and <a href=
-    "imageattrs.html#Image.matte">matte</a> attributes of the image
+    "imageattrs.html#depth">depth</a> and <a href=
+    "imageattrs.html#matte">matte</a> attributes of the image
     to determine the color name.</p>
 
     <h4>Arguments</h4>
@@ -4269,10 +4263,8 @@ end
     <h4>Example</h4>
 
     <p>See <a href=
-    "http://www.cit.gu.edu.au/~anthony/graphics/imagick6/annotating/#wmark_image">
-    "Watermarking with Images"</a> in Anthony Thyssen's <a href=
-    "http://www.cit.gu.edu.au/~anthony/graphics/imagick6/"><cite>Examples
-    of ImageMagick Usage</cite></a>.</p>
+    "https://imagemagick.org/Usage/annotating/#watermarking">
+    "Water Marking"</a>.</p>
 
     <p class="rollover"><a href=
     "javascript:popup('watermark.rb.html')"><img src=
