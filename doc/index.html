@@ -347,18 +347,12 @@
 
   <p>If you have a question that is not answered by these pages,
   you can post it at the <a href=
-  "http://rubyforge.org/projects/rmagick">Support Request
-  Tracker</a> or the <a href=
-  "http://rubyforge.org/projects/rmagick">Feature Request
-  Tracker</a> on RubyForge, or email me at <code>rmagick at
-  rubyforge dot org</code>.</p>
+  "https://github.com/rmagick/rmagick/issues">Issues</a> on GitHub.</p>
 
   <h3><a name="bugs" id="bugs">Reporting bugs</a></h3>
 
   <p>Please report problems with RMagick installation and usage to
-  the <a href="http://rubyforge.org/projects/rmagick/">Bug
-  Tracker</a> at RubyForge, or email me at <code>rmagick at
-  rubyforge dot org</code>.</p>
+  the <a href="https://github.com/rmagick/rmagick/issues">Issues</a> at GitHub.</p>
 
   <p>For quickest results, include the RMagick, ImageMagick and
   Ruby version numbers, along with a thorough description of the
@@ -366,18 +360,17 @@
   ImageMagick's version number. Simply bring up irb and run this
   command:</p>
   <pre class="example" id="version">
-$ ruby -rRMagick -e "puts Magick::Long_version"
-This is RMagick 2.0.0 ($Date: 2009/02/28 23:50:16 $) Copyright (C) 2007 by Timothy P. Hunter
-Built with ImageMagick 6.3.7 12/20/07 Q16 http://www.imagemagick.org
-Built for ruby 1.8.6
-Web page: http://rmagick.rubyforge.org
-Email: rmagick@rubyforge.org
+$ ruby -rrmagick -e "puts Magick::Long_version"
+This is RMagick 5.2.0 ($Date: 2009/12/20 02:33:33 $) Copyright (C) 2009 by Timothy P. Hunter
+Built with ImageMagick 7.1.1-8 Q16-HDRI x86_64 21129 https://imagemagick.org
+Built for ruby 3.2.2
+Web page: https://rmagick.github.io/
 </pre>
 
   <p>(Using RubyGems?&nbsp;&nbsp;If you haven't added
   <code>rubygems</code> to your RUBYOPT environment variable you
-  may need to use this command instead: <code>ruby -rubygems -r
-  RMagick -e "puts Magick::Long_version"</code>.)</p>
+  may need to use this command instead: <code>ruby -rrmagick -e
+  "puts Magick::Long_version"</code>.)</p>
 
   <p>It will help a lot if you supply a small Ruby program that
   reproduces the problem. Don't forget to include any input image

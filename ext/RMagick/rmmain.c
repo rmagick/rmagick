@@ -1924,8 +1924,7 @@ version_constants(void)
             "This is %s ($Date: 2009/12/20 02:33:33 $) Copyright (C) 2009 by Timothy P. Hunter\n"
             "Built with %s\n"
             "Built for %s\n"
-            "Web page: http://rmagick.rubyforge.org\n"
-            "Email: rmagick@rubyforge.org\n",
+            "Web page: https://rmagick.github.io/\n",
             Q(RMAGICK_VERSION_STRING), mgk_version, Q(RUBY_VERSION_STRING));
 
     str = rb_str_new2(long_version);
