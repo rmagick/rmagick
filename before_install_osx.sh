@@ -17,10 +17,10 @@ fi
 
 export HOMEBREW_NO_AUTO_UPDATE=true
 brew uninstall --force imagemagick imagemagick@6
-brew install wget ghostscript freetype jpeg little-cms2 libomp libpng libtiff liblqr libtool zlib webp
+brew install wget ghostscript freetype jpeg little-cms2 openexr libomp libpng libtiff liblqr libtool zlib webp
 
-export LDFLAGS="-L$(brew --prefix libxml2)/lib -L$(brew --prefix zlib)/lib -L$(brew --prefix glib)/lib"
-export CPPFLAGS="-I$(brew --prefix libxml2)/include -I$(brew --prefix zlib)/include -I$(brew --prefix glib)/include/glib-2.0 -I$(brew --prefix glib)/lib/glib-2.0/include"
+export LDFLAGS="-L$(brew --prefix libxml2)/lib -L$(brew --prefix zlib)/lib -L$(brew --prefix glib)/lib -L$(brew --prefix openexr)/lib"
+export CPPFLAGS="-I$(brew --prefix libxml2)/include -I$(brew --prefix zlib)/include -I$(brew --prefix glib)/include/glib-2.0 -I$(brew --prefix glib)/lib/glib-2.0/include -I$(brew --prefix openexr)/include/OpenEXR"
 
 project_dir=$(pwd)
 build_dir="${project_dir}/build-ImageMagick/ImageMagick-${IMAGEMAGICK_VERSION}"
