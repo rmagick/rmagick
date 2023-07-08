@@ -1,135 +1,125 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-  <meta name="generator" content=
-  "HTML Tidy for Linux/x86 (vers 7 December 2008), see www.w3.org" />
+  <head>
+    <meta name="generator" content="HTML Tidy for Linux/x86 (vers 7 December 2008), see www.w3.org" />
 
-  <title>RMagick 0.0.0: How to use RMagick</title>
-  <meta http-equiv="Content-Type" content=
-  "text/html; charset=us-ascii" />
-  <meta name="GENERATOR" content="Quanta Plus" />
-  <meta name="Copyright" content=
-  "Copyright (C) 2006 by Timothy P. Hunter" />
-  <link rel="stylesheet" type="text/css" href="css/doc.css" />
-  <script type="text/javascript" src="scripts/doc.js">
-</script>
-  <style type="text/css">
-/*<![CDATA[*/
+    <title>RMagick 0.0.0: How to use RMagick</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+    <meta name="GENERATOR" content="Quanta Plus" />
+    <meta name="Copyright" content="Copyright (C) 2006 by Timothy P. Hunter" />
+    <link rel="stylesheet" type="text/css" href="css/doc.css" />
+    <script type="text/javascript" src="scripts/doc.js"></script>
+    <style type="text/css">
+      /*<![CDATA[*/
 
-  /* Styles local to this page. */
+        /* Styles local to this page. */
 
-  #index {
-    margin-left: 100px;
-    margin-right: 100px;
-  }
-  #index h4 {
-    position: relative;
-    left: -100px;
-    padding-left: 5px;
-    background-image: url(ex/images/graydient230x6.gif);
-    background-repeat: repeat-y;
-    color: black;
-  }
+        #index {
+          margin-left: 100px;
+          margin-right: 100px;
+        }
+        #index h4 {
+          position: relative;
+          left: -100px;
+          padding-left: 5px;
+          background-image: url(ex/images/graydient230x6.gif);
+          background-repeat: repeat-y;
+          color: black;
+        }
 
-  /*
-   *  The "ilist" class identifies ImageList methods in the index.
-   */
-  .ilist {
-    font-weight: bold;
-  }
-  .ilist a:link {
-    font-weight: bold;
-    text-decoration: none;
-  }
-  .ilist a:visited {
-    font-weight: bold;
-    color: #7f7fff;
-  }
-  .ilist a:hover {
-    text-decoration: underline;
-  }
-  .ilist a:active {
-    background-color: blue;
-    color: white;
-    text-decoration: underline;
-  }
+        /*
+         *  The "ilist" class identifies ImageList methods in the index.
+         */
+        .ilist {
+          font-weight: bold;
+        }
+        .ilist a:link {
+          font-weight: bold;
+          text-decoration: none;
+        }
+        .ilist a:visited {
+          font-weight: bold;
+          color: #7f7fff;
+        }
+        .ilist a:hover {
+          text-decoration: underline;
+        }
+        .ilist a:active {
+          background-color: blue;
+          color: white;
+          text-decoration: underline;
+        }
 
-  #axes {
-    margin-left:100px;
-    margin-right:100px;
-    margin-bottom: 1em;
-    position:relative;
-  }
-  #axes div {
-    position:absolute;
-    top:0;
-    left: 260px;
-  }
-  #rubyname {
-    margin-left: auto;
-    margin-right:auto;
-    width:300px;
-    margin-bottom:1em;
-  }
-  #footnotes {
-    border-top: thin solid black;
-    padding-top: 1em;????
-  }
-  #footnotes h5 {
-    display: none;
-  }
-  .sup {
-    vertical-align: super;
-    font-size: x-small;
-  }
+        #axes {
+          margin-left:100px;
+          margin-right:100px;
+          margin-bottom: 1em;
+          position:relative;
+        }
+        #axes div {
+          position:absolute;
+          top:0;
+          left: 260px;
+        }
+        #rubyname {
+          margin-left: auto;
+          margin-right:auto;
+          width:300px;
+          margin-bottom:1em;
+        }
+        #footnotes {
+          border-top: thin solid black;
+          padding-top: 1em;????
+        }
+        #footnotes h5 {
+          display: none;
+        }
+        .sup {
+          vertical-align: super;
+          font-size: x-small;
+        }
 
-  /*]]>*/
-  </style>
-</head>
+        /*]]>*/
+    </style>
+  </head>
 
-<body>
-  <h6 id="header">RMagick 0.0.0 User's Guide and Reference</h6>
+  <body>
+    <h6 id="header">RMagick 0.0.0 User's Guide and Reference</h6>
 
-  <div class="nav">
-    &laquo;&nbsp;<a href="index.html">Prev</a> | <a href=
-    "index.html">Contents</a> | <a href=
-    "imusage.html">Next</a>&nbsp;&raquo;
-  </div>
+    <div class="nav">&laquo;&nbsp;<a href="index.html">Prev</a> | <a href="index.html">Contents</a> | <a href="imusage.html">Next</a>&nbsp;&raquo;</div>
 
-  <h1>How to use RMagick</h1>
+    <h1>How to use RMagick</h1>
 
-  <div id="toc">
-    <h2>Table of Contents</h2>
+    <div id="toc">
+      <h2>Table of Contents</h2>
 
-    <ul style="margin-left: 15px; padding-top: 1em">
-      <li><a href="#basics">Basic concepts</a></li>
+      <ul style="margin-left: 15px; padding-top: 1em">
+        <li><a href="#basics">Basic concepts</a></li>
 
-      <li><a href="#reading">Reading, writing, and creating
-      images</a></li>
+        <li><a href="#reading">Reading, writing, and creating images</a></li>
 
-      <li><a href="#displaying">Displaying images</a></li>
+        <li><a href="#displaying">Displaying images</a></li>
 
-      <li><a href="#modifying">Examining and modifying
-      images</a></li>
+        <li><a href="#modifying">Examining and modifying images</a></li>
 
-      <li><a href="#marshaling">Marshaling images</a></li>
+        <li><a href="#marshaling">Marshaling images</a></li>
 
-      <li><a href="#drawing_on">Drawing on and adding text to
-      images</a></li>
+        <li><a href="#drawing_on">Drawing on and adding text to images</a></li>
 
-      <li><a href="#more">Where to go from here</a></li>
-    </ul>
-  </div>
+        <li><a href="#more">Where to go from here</a></li>
+      </ul>
+    </div>
 
-  <h2 id="basics">Basic concepts</h2>
+    <h2 id="basics">Basic concepts</h2>
 
-  <p>Let's look at the RMagick equivalent of "Hello, world". This
-  program reads an image file named "Cheetah.jpg" and
-  displays<span class="sup"><a href="#display">1</a></span> it on
-  your monitor</p>
-  <pre class="example">
+    <p>
+      Let's look at the RMagick equivalent of "Hello, world". This program reads an image file named "Cheetah.jpg" and displays<span class="sup"
+        ><a href="#display">1</a></span
+      >
+      it on your monitor
+    </p>
+    <pre class="example">
 1. require "rmagick"
 2. include Magick
 3.
@@ -137,63 +127,55 @@
 5. cat.display
 6. exit
 
-</pre>
+</pre
+    >
 
-  <p class="example_cutline">MS Windows users note: The
-  <span style="font-style:normal">display</span> method does not
-  work on native MS Windows. You must use an external viewer to
-  view the images you create.</p>
+    <p class="example_cutline">
+      MS Windows users note: The
+      <span style="font-style: normal">display</span> method does not work on native MS Windows. You must use an external viewer to view the images you create.
+    </p>
 
-  <p>Line 1 requires <span class="sup"><a href=
-  "#rubygems">2</a></span> the RMagick.rb file, which defines the
-  <b>Magick</b> module. The Magick module contains 3 major classes,
-  <b>ImageList</b>, <b>Image</b>, and <b>Draw</b>. This section -
-  <em>Basic Concepts</em> - describes the ImageList and Image
-  classes. The Draw class is explained in the <em><a href=
-  "#drawing">Drawing on and adding text to images</a></em> section,
-  below.</p>
+    <p>
+      Line 1 requires <span class="sup"><a href="#rubygems">2</a></span> the RMagick.rb file, which defines the <b>Magick</b> module. The Magick module contains
+      3 major classes, <b>ImageList</b>, <b>Image</b>, and <b>Draw</b>. This section - <em>Basic Concepts</em> - describes the ImageList and Image classes. The
+      Draw class is explained in the
+      <em><a href="#drawing">Drawing on and adding text to images</a></em>
+      section, below.
+    </p>
 
-  <p>The statement on line 5 creates an <em>imagelist</em> object
-  and initializes it by reading the <code>Cheetah.jpg</code> file
-  in the current directory. Line 6 sends the <code>display</code>
-  method to the object. When you send <code>display</code> to an
-  imagelist, it causes all the images in the imagelist to be
-  displayed on the default X Window screen. In this case, the
-  <code>display</code> method makes a picture of a cheetah appear
-  on your monitor.</p>
+    <p>
+      The statement on line 5 creates an <em>imagelist</em> object and initializes it by reading the <code>Cheetah.jpg</code> file in the current directory.
+      Line 6 sends the <code>display</code> method to the object. When you send <code>display</code> to an imagelist, it causes all the images in the imagelist
+      to be displayed on the default X Window screen. In this case, the <code>display</code> method makes a picture of a cheetah appear on your monitor.
+    </p>
 
-  <p>Type this program in and try running it now. The
-  <code>Cheetah.jpg</code> file is in the <code>ex/images</code>
-  subdirectory where you installed the RMagick documentation.</p>
+    <p>
+      Type this program in and try running it now. The
+      <code>Cheetah.jpg</code> file is in the <code>ex/images</code> subdirectory where you installed the RMagick documentation.
+    </p>
 
-  <p>The Image and ImageList classes are closely related. An
-  <em>Image</em> object describes one image or one frame in an
-  image with multiple frames. (An animated GIF or a Photoshop image
-  with multiple layers are examples of images with multiple
-  frames.) You can create a image object from an image file such as
-  a GIF, PNG, or JPEG. You can create a image from scratch by
-  specifying its dimensions. You can write an image to disk,
-  display it on a screen, change its size or orientation, convert
-  it to another format, or otherwise modify it using one of over
-  100 methods.</p>
+    <p>
+      The Image and ImageList classes are closely related. An
+      <em>Image</em> object describes one image or one frame in an image with multiple frames. (An animated GIF or a Photoshop image with multiple layers are
+      examples of images with multiple frames.) You can create a image object from an image file such as a GIF, PNG, or JPEG. You can create a image from
+      scratch by specifying its dimensions. You can write an image to disk, display it on a screen, change its size or orientation, convert it to another
+      format, or otherwise modify it using one of over 100 methods.
+    </p>
 
-  <p>An <em>ImageList</em> object is a <em>list</em> of images. It
-  contains zero or more images and a <em>scene number</em>. The
-  scene number indicates the <em>current image</em>. The ImageList
-  class includes methods that operate on all the images in the
-  list. Also, with a very few exceptions, any method defined in the
-  Image class can be used as well. Since Image methods always
-  operate on a single image, when an Image method is sent to an
-  imagelist, the ImageList class sends the method to the current
-  image, that is, the image specified by the scene number.</p>
+    <p>
+      An <em>ImageList</em> object is a <em>list</em> of images. It contains zero or more images and a <em>scene number</em>. The scene number indicates the
+      <em>current image</em>. The ImageList class includes methods that operate on all the images in the list. Also, with a very few exceptions, any method
+      defined in the Image class can be used as well. Since Image methods always operate on a single image, when an Image method is sent to an imagelist, the
+      ImageList class sends the method to the current image, that is, the image specified by the scene number.
+    </p>
 
-  <p>The ImageList class is a subclass of the Array class, so you
-  can use most Array methods to change the images in the imagelist.
-  For example, you can use the <code>&lt;&lt;</code> method to add
-  an image to the list.</p>
+    <p>
+      The ImageList class is a subclass of the Array class, so you can use most Array methods to change the images in the imagelist. For example, you can use
+      the <code>&lt;&lt;</code> method to add an image to the list.
+    </p>
 
-  <p>Going back to the example, let's make one modification.</p>
-  <pre class="example">
+    <p>Going back to the example, let's make one modification.</p>
+    <pre class="example">
 1. require "rmagick"
 2. include Magick
 3.
@@ -201,24 +183,24 @@
 5. smallcat = cat.minify
 6. smallcat.display
 7. exit
-</pre>
+</pre
+    >
 
-  <p>The difference is the statement on line 5. This statement
-  sends the <code>minify</code> method to the imagelist. The
-  <code>minify</code> method is an Image method that reduces the
-  size of an image to half its original size. Remember, since
-  <code>minify</code> is an Image method, the ImageList class sends
-  <code>minify</code> to the current (and only) image. The return
-  value is a new image, half the size of the original.</p>
+    <p>
+      The difference is the statement on line 5. This statement sends the
+      <code>minify</code> method to the imagelist. The <code>minify</code> method is an Image method that reduces the size of an image to half its original
+      size. Remember, since <code>minify</code> is an Image method, the ImageList class sends <code>minify</code> to the current (and only) image. The return
+      value is a new image, half the size of the original.
+    </p>
 
-  <p>Line 6 demonstrates the Image class's <code>display</code>
-  method, which displays a single image on the X Window screen.
-  <code>Image#display</code> makes a picture of a (in this case,
-  small) cheetah appear on your monitor.</p>
+    <p>
+      Line 6 demonstrates the Image class's <code>display</code>
+      method, which displays a single image on the X Window screen.
+      <code>Image#display</code> makes a picture of a (in this case, small) cheetah appear on your monitor.
+    </p>
 
-  <p>Here's how to write the small cheetah to a file in GIF
-  format.</p>
-  <pre class="example">
+    <p>Here's how to write the small cheetah to a file in GIF format.</p>
+    <pre class="example">
 1. require "rmagick"
 2. include Magick
 3.
@@ -227,1201 +209,1068 @@
 6. smallcat.display
 7. smallcat.write("Small-Cheetah.gif")
 8. exit
-</pre>
+</pre
+    >
 
-  <p>The statement on line 7 writes the image to a file. Notice
-  that the filename extension is <code>gif</code>. When writing
-  images, ImageMagick uses the filename extension to determine what
-  image format to write. In this example, the
-  <code>Small-Cheetah.gif</code> file will be in the GIF format.
-  Notice how easy it is to covert an image from one format to
-  another? (For more details, see <a href=
-  "imusage.html#formats">Image formats and filenames</a>.)</p>
+    <p>
+      The statement on line 7 writes the image to a file. Notice that the filename extension is <code>gif</code>. When writing images, ImageMagick uses the
+      filename extension to determine what image format to write. In this example, the <code>Small-Cheetah.gif</code> file will be in the GIF format. Notice how
+      easy it is to covert an image from one format to another? (For more details, see <a href="imusage.html#formats">Image formats and filenames</a>.)
+    </p>
 
-  <p>So why, in the previous example, did I create <code>cat</code>
-  as an ImageList object containing just one image, instead of
-  creating an Image object? No reason, really. When you only have
-  one image to deal with, imagelists and images are pretty much
-  interchangeable.</p>
+    <p>
+      So why, in the previous example, did I create <code>cat</code> as an ImageList object containing just one image, instead of creating an Image object? No
+      reason, really. When you only have one image to deal with, imagelists and images are pretty much interchangeable.
+    </p>
 
-  <p><em><b>Note:</b></em> In most cases, an Image method does not
-  modify the image to which it is sent. Instead, the method returns
-  a new image, suitably modified. For example, the <a href=
-  "image3.html#resize"><code>resize</code></a> method returns a new
-  image, sized as specified. The receiver image is unaltered.
-  (Following the Ruby convention, when a method alters the receiver
-  object, the method name ends with "!". For example, the <a href=
-  "image3.html#resize_bang"><code>resize!</code></a> method resizes
-  the receiver in place.)</p>
+    <p>
+      <em><b>Note:</b></em> In most cases, an Image method does not modify the image to which it is sent. Instead, the method returns a new image, suitably
+      modified. For example, the <a href="image3.html#resize"><code>resize</code></a> method returns a new image, sized as specified. The receiver image is
+      unaltered. (Following the Ruby convention, when a method alters the receiver object, the method name ends with "!". For example, the
+      <a href="image3.html#resize_bang"><code>resize!</code></a> method resizes the receiver in place.)
+    </p>
 
-  <h2 id="reading">Reading, writing, and creating images</h2>
+    <h2 id="reading">Reading, writing, and creating images</h2>
 
-  <p>You've already seen that you can create an imagelist and
-  initialize it by specifying the name of an image file as the
-  argument to <a href=
-  "ilist.html#new"><code>ImageList.new</code></a>. In fact,
-  <code>new</code> can take any number of file name arguments. If
-  the file contains a single image, <code>new</code> reads the
-  file, creates an image, and adds it to the imagelist. If the file
-  is a multi-frame image file, <code>new</code> adds an image for
-  each frame or layer in the file. Lastly, <code>new</code> changes
-  the scene number to point to the last image in the imagelist. In
-  the simple case, <code>new</code> reads a single image from a
-  file and sets the scene number to 0.</p>
+    <p>
+      You've already seen that you can create an imagelist and initialize it by specifying the name of an image file as the argument to
+      <a href="ilist.html#new"><code>ImageList.new</code></a
+      >. In fact, <code>new</code> can take any number of file name arguments. If the file contains a single image, <code>new</code> reads the file, creates an
+      image, and adds it to the imagelist. If the file is a multi-frame image file, <code>new</code> adds an image for each frame or layer in the file. Lastly,
+      <code>new</code> changes the scene number to point to the last image in the imagelist. In the simple case, <code>new</code> reads a single image from a
+      file and sets the scene number to 0.
+    </p>
 
-  <p>You can also create an image from scratch by calling <a href=
-  "image1.html#new"><code>Image.new</code></a>. This method takes 2
-  or 3 arguments. The first argument is the number of columns in
-  the new image (its width). The second argument is the number of
-  rows (its height). If present, the 3rd argument is a <a href=
-  "struct.html#fill"><code>Fill</code></a> object. To add a
-  "scratch" image to an imagelist, call <a href=
-  "ilist.html#new_image"><code>ImageList#new_image</code></a>. This
-  method calls <code>Image.new</code>, adds the new image to the
-  imagelist, and sets the scene number to point to the new image.
-  Scratch images are good for <a href="#drawing">drawing</a> on or
-  creating images by <a href=
-  "image1.html#composite">compositing</a>.</p>
+    <p>
+      You can also create an image from scratch by calling
+      <a href="image1.html#new"><code>Image.new</code></a
+      >. This method takes 2 or 3 arguments. The first argument is the number of columns in the new image (its width). The second argument is the number of rows
+      (its height). If present, the 3rd argument is a <a href="struct.html#fill"><code>Fill</code></a> object. To add a "scratch" image to an imagelist, call
+      <a href="ilist.html#new_image"><code>ImageList#new_image</code></a
+      >. This method calls <code>Image.new</code>, adds the new image to the imagelist, and sets the scene number to point to the new image. Scratch images are
+      good for <a href="#drawing">drawing</a> on or creating images by <a href="image1.html#composite">compositing</a>.
+    </p>
 
-  <p>Like many other methods in the Image and ImageList classes,
-  <code>Image.new</code> accepts an optional block that can be used
-  to set additional optional parameters. If the block is present,
-  <code>Image.new</code> creates a <a href="info.html">parameter
-  object</a> and yields to the block in the scope of that object.
-  You set the parameters by calling attribute setter methods
-  defined in the parameter object's class. For example, you can set
-  the background color of a new image to red with the
-  <code>background_color=</code> method, as shown here:</p>
-  <pre class="example">
+    <p>
+      Like many other methods in the Image and ImageList classes,
+      <code>Image.new</code> accepts an optional block that can be used to set additional optional parameters. If the block is present,
+      <code>Image.new</code> creates a <a href="info.html">parameter object</a> and yields to the block in the scope of that object. You set the parameters by
+      calling attribute setter methods defined in the parameter object's class. For example, you can set the background color of a new image to red with the
+      <code>background_color=</code> method, as shown here:
+    </p>
+    <pre class="example">
 require "rmagick"
 include Magick
 # Create a 100x100 red image.
 f = Image.new(100,100) { |options| options.background_color = "red" }
 f.display
 exit
-</pre>
+</pre
+    >
 
-  <p>Within the parameter block you must use <code>self</code> so
-  that Ruby knows that this statement is a method call, not an
-  assignment to a variable.</p>
+    <p>Within the parameter block you must use <code>self</code> so that Ruby knows that this statement is a method call, not an assignment to a variable.</p>
 
-  <p>You can create an image by capturing it from the XWindow
-  screen using <a href=
-  "image1.html#capture"><code>Image.capture</code></a>. This method
-  can capture the root window, a window identified by name or ID
-  number, or perform an interactive capture whereby you designate
-  the desired window by clicking it or by drawing a rectangle on
-  the screen with your mouse.</p>
+    <p>
+      You can create an image by capturing it from the XWindow screen using
+      <a href="image1.html#capture"><code>Image.capture</code></a
+      >. This method can capture the root window, a window identified by name or ID number, or perform an interactive capture whereby you designate the desired
+      window by clicking it or by drawing a rectangle on the screen with your mouse.
+    </p>
 
-  <p>Both the Image class and the ImageList class have
-  <code>write</code> methods. Both accept a single argument, the
-  name of the file to be written. <a href=
-  "image3.html#write"><code>Image#write</code></a> simply writes
-  the image to a file. Like the <code>Image#read</code> method,
-  <code>write</code> yields to an optional block that you can use
-  to set parameters that control how the image is written.</p>
+    <p>
+      Both the Image class and the ImageList class have
+      <code>write</code> methods. Both accept a single argument, the name of the file to be written.
+      <a href="image3.html#write"><code>Image#write</code></a> simply writes the image to a file. Like the <code>Image#read</code> method,
+      <code>write</code> yields to an optional block that you can use to set parameters that control how the image is written.
+    </p>
 
-  <p>If an ImageList object contains only one image, then <a href=
-  "ilist.html#write"><code>ImageList#write</code></a> is the same
-  as <code>Image#write</code>. However, if the imagelist contains
-  multiple images and the file format (determined by the file name
-  extension, as I mentioned earlier) supports multi-frame images,
-  <code>Image#write</code> will automatically create a multi-frame
-  image file.</p>
+    <p>
+      If an ImageList object contains only one image, then
+      <a href="ilist.html#write"><code>ImageList#write</code></a> is the same as <code>Image#write</code>. However, if the imagelist contains multiple images
+      and the file format (determined by the file name extension, as I mentioned earlier) supports multi-frame images, <code>Image#write</code> will
+      automatically create a multi-frame image file.
+    </p>
 
-  <p>For example, the following program reads three GIF files and
-  then uses <code>ImageList#write</code> to combine all the images
-  in those files (remember, each input file can contain multiple
-  images) into one animated GIF file.</p>
-  <pre class="example">
+    <p>
+      For example, the following program reads three GIF files and then uses
+      <code>ImageList#write</code> to combine all the images in those files (remember, each input file can contain multiple images) into one animated GIF file.
+    </p>
+    <pre class="example">
 #!/usr/bin/env ruby -w
 require "rmagick"
 anim = ImageList.new("start.gif", "middle.gif", "finish.gif")
 anim.write("animated.gif")
 exit
-</pre>
+</pre
+    >
 
-  <h2 id="displaying">Displaying images</h2>
+    <h2 id="displaying">Displaying images</h2>
 
-  <p>RMagick defines 3 methods for displaying images and
-  imagelists. Both the Image class and the ImageList class have a
-  <code>display</code> method. The <a href=
-  "image1.html#display"><code>Image#display</code></a> method
-  displays the image on the default X Window screen. For imagelists
-  with just one image, <a href=
-  "ilist.html#display"><code>ImageList#display</code></a> is
-  identical to <code>Image#display</code>. However, if the
-  imagelist contains multiple images,
-  <code>ImageList#display</code> displays each of the images in
-  turn. With both methods, right-clicking the display window will
-  produce a menu of other options.</p>
+    <p>
+      RMagick defines 3 methods for displaying images and imagelists. Both the Image class and the ImageList class have a <code>display</code> method. The
+      <a href="image1.html#display"><code>Image#display</code></a> method displays the image on the default X Window screen. For imagelists with just one image,
+      <a href="ilist.html#display"><code>ImageList#display</code></a> is identical to <code>Image#display</code>. However, if the imagelist contains multiple
+      images, <code>ImageList#display</code> displays each of the images in turn. With both methods, right-clicking the display window will produce a menu of
+      other options.
+    </p>
 
-  <p>The <a href=
-  "ilist.html#animate"><code>ImageList#animate</code></a> method
-  repeatedly cycles through all the images in an imagelist,
-  displaying each one in turn. You can control the speed of the
-  animation with the <a href=
-  "ilist.html#delay_eq"><code>ImageList#delay=</code></a>
-  method.</p>
+    <p>
+      The <a href="ilist.html#animate"><code>ImageList#animate</code></a> method repeatedly cycles through all the images in an imagelist, displaying each one
+      in turn. You can control the speed of the animation with the <a href="ilist.html#delay_eq"><code>ImageList#delay=</code></a> method.
+    </p>
 
-  <h2 id="modifying">Examining and modifying images</h2>
+    <h2 id="modifying">Examining and modifying images</h2>
 
-  <p>Once you've created an image or imagelist, what can you do
-  with it? The Image and ImageList classes define over 100 methods
-  for examining and modifying images, both individually and in
-  groups. Remember, unless the ImageList class defines a method
-  with the same name, you can send any method defined in the Image
-  class to an instance of the ImageList class. The ImageList class
-  sends the method to the current image and returns the result.</p>
+    <p>
+      Once you've created an image or imagelist, what can you do with it? The Image and ImageList classes define over 100 methods for examining and modifying
+      images, both individually and in groups. Remember, unless the ImageList class defines a method with the same name, you can send any method defined in the
+      Image class to an instance of the ImageList class. The ImageList class sends the method to the current image and returns the result.
+    </p>
 
-  <p>The methods can be classified into the following broad groups.
-  ImageList method descriptions look like <span class=
-  "ilist">this</span>. Some of the listed methods are not available
-  in some releases of ImageMagick. See the method documentation for
-  details.</p>
+    <p>
+      The methods can be classified into the following broad groups. ImageList method descriptions look like <span class="ilist">this</span>. Some of the listed
+      methods are not available in some releases of ImageMagick. See the method documentation for details.
+    </p>
 
-  <div id="index">
-    <h4>Utility methods</h4>
+    <div id="index">
+      <h4>Utility methods</h4>
 
-    <dl>
-      <dt><a href="image1.html#spaceship">&lt;=&gt;</a></dt>
+      <dl>
+        <dt><a href="image1.html#spaceship">&lt;=&gt;</a></dt>
 
-      <dd>Compare 2 images</dd>
+        <dd>Compare 2 images</dd>
 
-      <dt class="ilist"><a href=
-      "ilist.html#spaceship">&lt;=&gt;</a></dt>
+        <dt class="ilist"><a href="ilist.html#spaceship">&lt;=&gt;</a></dt>
 
-      <dd class="ilist">Compare 2 imagelists</dd>
+        <dd class="ilist">Compare 2 imagelists</dd>
 
-      <dt><a href="image1.html#aref">[ ]</a></dt>
+        <dt><a href="image1.html#aref">[ ]</a></dt>
 
-      <dd>Reference an image property</dd>
+        <dd>Reference an image property</dd>
 
-      <dt><a href="image1.html#aset">[ ]=</a></dt>
+        <dt><a href="image1.html#aset">[ ]=</a></dt>
 
-      <dd>Set an image property</dd>
+        <dd>Set an image property</dd>
 
-      <dt><a href="image1.html#add_profile">add_profile</a></dt>
+        <dt><a href="image1.html#add_profile">add_profile</a></dt>
 
-      <dd>Add an ICC, IPTC, or generic profile</dd>
+        <dd>Add an ICC, IPTC, or generic profile</dd>
 
-      <dt><a href="image1.html#changed_q">changed?</a></dt>
+        <dt><a href="image1.html#changed_q">changed?</a></dt>
 
-      <dd>Has the image been changed?</dd>
+        <dd>Has the image been changed?</dd>
 
-      <dt><a href="image1.html#channel">channel</a></dt>
+        <dt><a href="image1.html#channel">channel</a></dt>
 
-      <dd>Extract a color channel from the image</dd>
+        <dd>Extract a color channel from the image</dd>
 
-      <dt><a href=
-      "image1.html#compare_channel">compare_channel</a></dt>
+        <dt><a href="image1.html#compare_channel">compare_channel</a></dt>
 
-      <dd>Compare one or more channels between two images</dd>
+        <dd>Compare one or more channels between two images</dd>
 
-      <dt><a href=
-      "image1.html#channel_depth">channel_depth</a></dt>
+        <dt><a href="image1.html#channel_depth">channel_depth</a></dt>
 
-      <dd>Return the depth of the specified channel or
-      channels</dd>
+        <dd>Return the depth of the specified channel or channels</dd>
 
-      <dt><a href=
-      "image1.html#channel_extrema">channel_extrema</a></dt>
+        <dt><a href="image1.html#channel_extrema">channel_extrema</a></dt>
 
-      <dd>Return the maximum and minimum intensity values for one
-      or more channels in the image</dd>
+        <dd>Return the maximum and minimum intensity values for one or more channels in the image</dd>
 
-      <dt><a href=
-      "image1.html#check_destroyed">check_destroyed</a></dt>
+        <dt><a href="image1.html#check_destroyed">check_destroyed</a></dt>
 
-      <dd>Raise an exception if the image has been destroyed</dd>
+        <dd>Raise an exception if the image has been destroyed</dd>
 
-      <dt><a href="image1.html#clone">clone</a></dt>
+        <dt><a href="image1.html#clone">clone</a></dt>
 
-      <dd>Return a shallow copy of the image</dd>
+        <dd>Return a shallow copy of the image</dd>
 
-      <dt class="ilist"><a href="ilist.html#clone">clone</a></dt>
+        <dt class="ilist"><a href="ilist.html#clone">clone</a></dt>
 
-      <dd class="ilist">Return a shallow copy of the imagelist</dd>
+        <dd class="ilist">Return a shallow copy of the imagelist</dd>
 
-      <dt><a href=
-      "image1.html#color_histogram">color_histogram</a></dt>
+        <dt><a href="image1.html#color_histogram">color_histogram</a></dt>
 
-      <dd>Count the number of times each unique color appears in
-      the image</dd>
+        <dd>Count the number of times each unique color appears in the image</dd>
 
-      <dt><a href="image1.html#combine">combine</a></dt>
+        <dt><a href="image1.html#combine">combine</a></dt>
 
-      <dd>Combines the grayscale value of the pixels in each image
-      to form a new image.</dd>
+        <dd>Combines the grayscale value of the pixels in each image to form a new image.</dd>
 
-      <dt><a href="image1.html#copy">copy</a></dt>
+        <dt><a href="image1.html#copy">copy</a></dt>
 
-      <dd>Return a deep copy of the image</dd>
+        <dd>Return a deep copy of the image</dd>
 
-      <dt class="ilist"><a href="ilist.html#copy">copy</a></dt>
+        <dt class="ilist"><a href="ilist.html#copy">copy</a></dt>
 
-      <dd class="ilist">Return a deep copy of the imagelist</dd>
+        <dd class="ilist">Return a deep copy of the imagelist</dd>
 
-      <dt><a href=
-      "image1.html#delete_profile">delete_profile</a></dt>
+        <dt><a href="image1.html#delete_profile">delete_profile</a></dt>
 
-      <dd>Delete an ICC, IPTC, or generic profile</dd>
+        <dd>Delete an ICC, IPTC, or generic profile</dd>
 
-      <dt><a href="image1.html#destroy_bang">destroy!</a></dt>
+        <dt><a href="image1.html#destroy_bang">destroy!</a></dt>
 
-      <dd>Return all memory associated with the image to the
-      system</dd>
+        <dd>Return all memory associated with the image to the system</dd>
 
-      <dt><a href="image1.html#destroyed_q">destroyed?</a></dt>
+        <dt><a href="image1.html#destroyed_q">destroyed?</a></dt>
 
-      <dd>Has the image has been destroyed?</dd>
+        <dd>Has the image has been destroyed?</dd>
 
-      <dt><a href="image1.html#difference">difference</a></dt>
+        <dt><a href="image1.html#difference">difference</a></dt>
 
-      <dd>Compute the difference between two images</dd>
+        <dd>Compute the difference between two images</dd>
 
-      <dt><a href=
-      "image1.html#distortion_channel">distortion_channel</a></dt>
+        <dt><a href="image1.html#distortion_channel">distortion_channel</a></dt>
 
-      <dd>Compare one or more channels to a reconstructed
-      image</dd>
+        <dd>Compare one or more channels to a reconstructed image</dd>
 
-      <dt><a href="image1.html#dup">dup</a></dt>
+        <dt><a href="image1.html#dup">dup</a></dt>
 
-      <dd>Return a shallow copy of the image</dd>
+        <dd>Return a shallow copy of the image</dd>
 
-      <dt class="ilist"><a href="ilist.html#dup">dup</a></dt>
+        <dt class="ilist"><a href="ilist.html#dup">dup</a></dt>
 
-      <dd class="ilist">Return a shallow copy of the imagelist</dd>
+        <dd class="ilist">Return a shallow copy of the imagelist</dd>
 
-      <dt><a href="image2.html#each_pixel">each_pixel</a></dt>
+        <dt><a href="image2.html#each_pixel">each_pixel</a></dt>
 
-      <dd>Iterate over all the pixels in the image</dd>
+        <dd>Iterate over all the pixels in the image</dd>
 
-      <dt><a href="image2.html#each_profile">each_profile</a></dt>
+        <dt><a href="image2.html#each_profile">each_profile</a></dt>
 
-      <dd>Iterate over all the profiles associated with the
-      image</dd>
+        <dd>Iterate over all the profiles associated with the image</dd>
 
-      <dt><a href=
-      "image2.html#export_pixels">export_pixels</a></dt>
+        <dt><a href="image2.html#export_pixels">export_pixels</a></dt>
 
-      <dd>Extract pixel data from the image into an array</dd>
+        <dd>Extract pixel data from the image into an array</dd>
 
-      <dt><a href=
-      "image2.html#export_pixels_to_str">export_pixels_to_str</a></dt>
+        <dt>
+          <a href="image2.html#export_pixels_to_str">export_pixels_to_str</a>
+        </dt>
 
-      <dd>Extract pixel data from the image into a string</dd>
+        <dd>Extract pixel data from the image into a string</dd>
 
-      <dt><a href=
-      "image2.html#find_similar_region">find_similar_region</a></dt>
+        <dt>
+          <a href="image2.html#find_similar_region">find_similar_region</a>
+        </dt>
 
-      <dd>Search for a rectangle matching the target</dd>
+        <dd>Search for a rectangle matching the target</dd>
 
-      <dt><a href=
-      "image2.html#get_exif_by_entry">get_exif_by_entry</a>,
-      <a href=
-      "image2.html#get_exif_by_number">get_exif_by_number</a></dt>
+        <dt>
+          <a href="image2.html#get_exif_by_entry">get_exif_by_entry</a>,
+          <a href="image2.html#get_exif_by_number">get_exif_by_number</a>
+        </dt>
 
-      <dd>Get one or more EXIF property values for the image</dd>
+        <dd>Get one or more EXIF property values for the image</dd>
 
-      <dt><a href="image2.html#get_pixels">get_pixels</a></dt>
+        <dt><a href="image2.html#get_pixels">get_pixels</a></dt>
 
-      <dd>Copy a region of pixels from the image</dd>
+        <dd>Copy a region of pixels from the image</dd>
 
-      <dt><a href="image2.html#gray_q">gray?</a></dt>
+        <dt><a href="image2.html#gray_q">gray?</a></dt>
 
-      <dd>Are all the pixels in the image gray?</dd>
+        <dd>Are all the pixels in the image gray?</dd>
 
-      <dt><a href="image2.html#histogram_q">histogram?</a></dt>
+        <dt><a href="image2.html#histogram_q">histogram?</a></dt>
 
-      <dd>Does the image have &lt;= 1024 unique colors??</dd>
+        <dd>Does the image have &lt;= 1024 unique colors??</dd>
 
-      <dt><a href=
-      "image2.html#import_pixels">import_pixels</a></dt>
+        <dt><a href="image2.html#import_pixels">import_pixels</a></dt>
 
-      <dd>Replace pixels in the image with pixel data from an
-      array</dd>
+        <dd>Replace pixels in the image with pixel data from an array</dd>
 
-      <dt><a href="image2.html#monochrome_q">monochrome?</a></dt>
+        <dt><a href="image2.html#monochrome_q">monochrome?</a></dt>
 
-      <dd>Are all the pixels in the image either black or
-      white?</dd>
+        <dd>Are all the pixels in the image either black or white?</dd>
 
-      <dt><a href="image2.html#opaque_q">opaque?</a></dt>
+        <dt><a href="image2.html#opaque_q">opaque?</a></dt>
 
-      <dd>Are all the pixels in the image opaque?</dd>
+        <dd>Are all the pixels in the image opaque?</dd>
 
-      <dt><a href="image3.html#palette_q">palette?</a></dt>
+        <dt><a href="image3.html#palette_q">palette?</a></dt>
 
-      <dd>Is the image a PseudoClass type image with 256 colors or
-      less?</dd>
+        <dd>Is the image a PseudoClass type image with 256 colors or less?</dd>
 
-      <dt><a href="image3.html#preview">preview</a></dt>
+        <dt><a href="image3.html#preview">preview</a></dt>
 
-      <dd>Show the effect of a transformation method on the
-      image</dd>
+        <dd>Show the effect of a transformation method on the image</dd>
 
-      <dt><a href="image3.html#profile_bang">profile!</a></dt>
+        <dt><a href="image3.html#profile_bang">profile!</a></dt>
 
-      <dd>Add or remove an ICM, IPTC, or generic profile from the
-      image</dd>
+        <dd>Add or remove an ICM, IPTC, or generic profile from the image</dd>
 
-      <dt><a href="image3.html#properties">properties</a></dt>
+        <dt><a href="image3.html#properties">properties</a></dt>
 
-      <dd>Iterate over all the properties associated with the
-      image</dd>
+        <dd>Iterate over all the properties associated with the image</dd>
 
-      <dt><a href="image3.html#separate">separate</a></dt>
+        <dt><a href="image3.html#separate">separate</a></dt>
 
-      <dd>Construct a grayscale image for each channel
-      specified</dd>
+        <dd>Construct a grayscale image for each channel specified</dd>
 
-      <dt><a href=
-      "image3.html#set_channel_depth">set_channel_depth</a></dt>
+        <dt><a href="image3.html#set_channel_depth">set_channel_depth</a></dt>
 
-      <dd>Set the specified channel's depth</dd>
+        <dd>Set the specified channel's depth</dd>
 
-      <dt><a href="image3.html#signature">signature</a></dt>
+        <dt><a href="image3.html#signature">signature</a></dt>
 
-      <dd>Compute the 64-byte message signature for the image</dd>
+        <dd>Compute the 64-byte message signature for the image</dd>
 
-      <dt><a href="image3.html#store_pixels">store_pixels</a></dt>
+        <dt><a href="image3.html#store_pixels">store_pixels</a></dt>
 
-      <dd>Replace a region of pixels in the image</dd>
+        <dd>Replace a region of pixels in the image</dd>
 
-      <dt><a href="image3.html#strip_bang">strip!</a></dt>
+        <dt><a href="image3.html#strip_bang">strip!</a></dt>
 
-      <dd>Strip the image of all comments and profiles</dd>
+        <dd>Strip the image of all comments and profiles</dd>
 
-      <dt><a href=
-      "image3.html#sync_profiles">sync_profiles</a></dt>
+        <dt><a href="image3.html#sync_profiles">sync_profiles</a></dt>
 
-      <dd>Synchronize the image properties with the image
-      profiles</dd>
+        <dd>Synchronize the image properties with the image profiles</dd>
 
-      <dt><a href=
-      "image3.html#unique_colors">unique_colors</a></dt>
+        <dt><a href="image3.html#unique_colors">unique_colors</a></dt>
 
-      <dd>Construct an image from the unique colors</dd>
+        <dd>Construct an image from the unique colors</dd>
 
-      <dt><a href="image3.html#view">view</a></dt>
+        <dt><a href="image3.html#view">view</a></dt>
 
-      <dd>Access pixels by their coordinates.</dd>
-    </dl>
+        <dd>Access pixels by their coordinates.</dd>
+      </dl>
 
-    <h4>Reduce the number of colors</h4>
+      <h4>Reduce the number of colors</h4>
 
-    <dl>
-      <dt><a href=
-      "image1.html#compress_colormap_bang">compress_colormap!</a></dt>
+      <dl>
+        <dt>
+          <a href="image1.html#compress_colormap_bang">compress_colormap!</a>
+        </dt>
 
-      <dd>Remove duplicate or unused entries in the image's
-      colormap</dd>
+        <dd>Remove duplicate or unused entries in the image's colormap</dd>
 
-      <dt><a href=
-      "image2.html#ordered_dither">ordered_dither</a></dt>
+        <dt><a href="image2.html#ordered_dither">ordered_dither</a></dt>
 
-      <dd>Dither the image to a predefined pattern</dd>
+        <dd>Dither the image to a predefined pattern</dd>
 
-      <dt><a href="image3.html#posterize">posterize</a></dt>
+        <dt><a href="image3.html#posterize">posterize</a></dt>
 
-      <dd>Reduce the number of colors for a "poster" effect</dd>
+        <dd>Reduce the number of colors for a "poster" effect</dd>
 
-      <dt><a href="image3.html#quantize">quantize</a></dt>
+        <dt><a href="image3.html#quantize">quantize</a></dt>
 
-      <dd>Choose a fixed number of colors to represent the
-      image</dd>
+        <dd>Choose a fixed number of colors to represent the image</dd>
 
-      <dt class="ilist"><a href=
-      "ilist.html#quantize">quantize</a></dt>
+        <dt class="ilist"><a href="ilist.html#quantize">quantize</a></dt>
 
-      <dd class="ilist">Choose a fixed number of colors to
-      represent all the images in the imagelist</dd>
+        <dd class="ilist">Choose a fixed number of colors to represent all the images in the imagelist</dd>
 
-      <dt><a href="image3.html#remap">remap</a></dt>
+        <dt><a href="image3.html#remap">remap</a></dt>
 
-      <dd>Change the colors in the image to the colors in a
-      reference image.</dd>
+        <dd>Change the colors in the image to the colors in a reference image.</dd>
 
-      <dt class="ilist"><a href="ilist.html#remap">remap</a></dt>
+        <dt class="ilist"><a href="ilist.html#remap">remap</a></dt>
 
-      <dd class="ilist">Change the images in the imagelist to use a
-      common color map.</dd>
-    </dl>
+        <dd class="ilist">Change the images in the imagelist to use a common color map.</dd>
+      </dl>
 
-    <h4>Resize</h4>
+      <h4>Resize</h4>
 
-    <dl>
-      <dt><a href=
-      "image1.html#change_geometry">change_geometry</a></dt>
+      <dl>
+        <dt><a href="image1.html#change_geometry">change_geometry</a></dt>
 
-      <dd>Compute a new constrained size for the image</dd>
+        <dd>Compute a new constrained size for the image</dd>
 
-      <dt><a href=
-      "image2.html#liquid_rescale">liquid_rescale</a></dt>
+        <dt><a href="image2.html#liquid_rescale">liquid_rescale</a></dt>
 
-      <dd>Rescale image with seam-carving</dd>
+        <dd>Rescale image with seam-carving</dd>
 
-      <dt><a href="image2.html#magnify">magnify</a></dt>
+        <dt><a href="image2.html#magnify">magnify</a></dt>
 
-      <dd>Double the size of the image</dd>
+        <dd>Double the size of the image</dd>
 
-      <dt><a href="image2.html#minify">minify</a></dt>
+        <dt><a href="image2.html#minify">minify</a></dt>
 
-      <dd>Halve the size of the image</dd>
+        <dd>Halve the size of the image</dd>
 
-      <dt><a href="image3.html#resample">resample</a></dt>
+        <dt><a href="image3.html#resample">resample</a></dt>
 
-      <dd>Resample the image to the specified horizontal and
-      vertical resolution</dd>
+        <dd>Resample the image to the specified horizontal and vertical resolution</dd>
 
-      <dt><a href="image3.html#resize">resize</a></dt>
+        <dt><a href="image3.html#resize">resize</a></dt>
 
-      <dd>Resize the image using a filter</dd>
+        <dd>Resize the image using a filter</dd>
 
-      <dt><a href=
-      "image1.html#resize_to_fill">resize_to_fill</a></dt>
+        <dt><a href="image1.html#resize_to_fill">resize_to_fill</a></dt>
 
-      <dd>Resize and crop while retaining the aspect ratio</dd>
+        <dd>Resize and crop while retaining the aspect ratio</dd>
 
-      <dt><a href=
-      "image3.html#resize_to_fit">resize_to_fit</a></dt>
+        <dt><a href="image3.html#resize_to_fit">resize_to_fit</a></dt>
 
-      <dd>Resize the image retaining the aspect ratio</dd>
+        <dd>Resize the image retaining the aspect ratio</dd>
 
-      <dt><a href="image3.html#sample">sample</a></dt>
+        <dt><a href="image3.html#sample">sample</a></dt>
 
-      <dd>Resize the image using pixel sampling</dd>
+        <dd>Resize the image using pixel sampling</dd>
 
-      <dt><a href="image3.html#scale">scale</a></dt>
+        <dt><a href="image3.html#scale">scale</a></dt>
 
-      <dd>Resize the image</dd>
+        <dd>Resize the image</dd>
 
-      <dt><a href="image3.html#thumbnail">thumbnail</a></dt>
+        <dt><a href="image3.html#thumbnail">thumbnail</a></dt>
 
-      <dd>Quickly create a thumbnail of the image</dd>
-    </dl>
+        <dd>Quickly create a thumbnail of the image</dd>
+      </dl>
 
-    <h4>Change colors or opacity</h4>
+      <h4>Change colors or opacity</h4>
 
-    <dl>
-      <dt><a href=
-      "image1.html#color_fill_to_border">color_fill_to_border</a></dt>
+      <dl>
+        <dt>
+          <a href="image1.html#color_fill_to_border">color_fill_to_border</a>
+        </dt>
 
-      <dd>Change the color of neighboring pixels. Stop at the
-      image's border color.</dd>
+        <dd>Change the color of neighboring pixels. Stop at the image's border color.</dd>
 
-      <dt><a href=
-      "image1.html#color_floodfill">color_floodfill</a></dt>
+        <dt><a href="image1.html#color_floodfill">color_floodfill</a></dt>
 
-      <dd>Change the color of neighboring pixels that are the same
-      color</dd>
+        <dd>Change the color of neighboring pixels that are the same color</dd>
 
-      <dt><a href="image1.html#colormap">colormap</a></dt>
+        <dt><a href="image1.html#colormap">colormap</a></dt>
 
-      <dd>Get or set a color in the image's colormap</dd>
+        <dd>Get or set a color in the image's colormap</dd>
 
-      <dt><a href="image1.html#color_point">color_point</a></dt>
+        <dt><a href="image1.html#color_point">color_point</a></dt>
 
-      <dd>Change the color of a single pixel in the image</dd>
+        <dd>Change the color of a single pixel in the image</dd>
 
-      <dt><a href=
-      "image1.html#color_reset_bang">color_reset!</a></dt>
+        <dt><a href="image1.html#color_reset_bang">color_reset!</a></dt>
 
-      <dd>Set the entire image to a single color</dd>
+        <dd>Set the entire image to a single color</dd>
 
-      <dt><a href=
-      "image1.html#cycle_colormap">cycle_colormap</a></dt>
+        <dt><a href="image1.html#cycle_colormap">cycle_colormap</a></dt>
 
-      <dd>Displace the image's colormap</dd>
+        <dd>Displace the image's colormap</dd>
 
-      <dt><a href="image2.html#erase_bang">erase!</a></dt>
+        <dt><a href="image2.html#erase_bang">erase!</a></dt>
 
-      <dd>Set the entire image to a single color</dd>
+        <dd>Set the entire image to a single color</dd>
 
-      <dt><a href=
-      "image2.html#matte_fill_to_border">matte_fill_to_border</a></dt>
+        <dt>
+          <a href="image2.html#matte_fill_to_border">matte_fill_to_border</a>
+        </dt>
 
-      <dd>Make transparent neighboring pixels. Stop at the image's
-      border color.</dd>
+        <dd>Make transparent neighboring pixels. Stop at the image's border color.</dd>
 
-      <dt><a href=
-      "image2.html#matte_floodfill">matte_floodfill</a></dt>
+        <dt><a href="image2.html#matte_floodfill">matte_floodfill</a></dt>
 
-      <dd>Make transparent neighboring pixels that are the same
-      color</dd>
+        <dd>Make transparent neighboring pixels that are the same color</dd>
 
-      <dt><a href="image2.html#matte_point">matte_point</a></dt>
+        <dt><a href="image2.html#matte_point">matte_point</a></dt>
 
-      <dd>Make a single pixel transparent</dd>
+        <dd>Make a single pixel transparent</dd>
 
-      <dt><a href=
-      "image2.html#matte_reset_bang">matte_reset!</a></dt>
+        <dt><a href="image2.html#matte_reset_bang">matte_reset!</a></dt>
 
-      <dd>Make the entire image transparent</dd>
+        <dd>Make the entire image transparent</dd>
 
-      <dt><a href="image2.html#opaque">opaque</a>, <a href=
-      "image2.html#opaque_channel">opaque_channel</a></dt>
+        <dt>
+          <a href="image2.html#opaque">opaque</a>,
+          <a href="image2.html#opaque_channel">opaque_channel</a>
+        </dt>
 
-      <dd>Change all pixels from the specified color to a new
-      color</dd>
+        <dd>Change all pixels from the specified color to a new color</dd>
 
-      <dt><a href="image3.html#pixel_color">pixel_color</a></dt>
+        <dt><a href="image3.html#pixel_color">pixel_color</a></dt>
 
-      <dd>Get or set the color of a single pixel</dd>
+        <dd>Get or set the color of a single pixel</dd>
 
-      <dt><a href="image3.html#splice">splice</a></dt>
+        <dt><a href="image3.html#splice">splice</a></dt>
 
-      <dd>Splice a solid color into the image.</dd>
+        <dd>Splice a solid color into the image.</dd>
 
-      <dt><a href=
-      "image3.html#texture_fill_to_border">texture_fill_to_border</a></dt>
+        <dt>
+          <a href="image3.html#texture_fill_to_border">texture_fill_to_border</a>
+        </dt>
 
-      <dd>Replace neighbor pixels with pixels from a texture image.
-      Stop at the image's border color.</dd>
+        <dd>Replace neighbor pixels with pixels from a texture image. Stop at the image's border color.</dd>
 
-      <dt><a href=
-      "image3.html#texture_floodfill">texture_floodfill</a></dt>
+        <dt><a href="image3.html#texture_floodfill">texture_floodfill</a></dt>
 
-      <dd>Replace neighboring pixels that are the same color with
-      pixels from a texture image</dd>
+        <dd>Replace neighboring pixels that are the same color with pixels from a texture image</dd>
 
-      <dt><a href=
-      "image3.html#paint_transparent">paint_transparent</a>,
-      <a href="image3.html#transparent">transparent</a></dt>
+        <dt>
+          <a href="image3.html#paint_transparent">paint_transparent</a>,
+          <a href="image3.html#transparent">transparent</a>
+        </dt>
 
-      <dd>Change the opacity value of pixels having the specified
-      color</dd>
+        <dd>Change the opacity value of pixels having the specified color</dd>
 
-      <dt><a href=
-      "image3.html#transparent_chroma">transparent_chroma</a></dt>
+        <dt><a href="image3.html#transparent_chroma">transparent_chroma</a></dt>
 
-      <dd>Change the opacity value of pixels within the specified
-      range</dd>
-    </dl>
+        <dd>Change the opacity value of pixels within the specified range</dd>
+      </dl>
 
-    <h4>Rotate, flip, or shear</h4>
+      <h4>Rotate, flip, or shear</h4>
 
-    <dl>
-      <dt><a href=
-      "image1.html#affine_transform">affine_transform</a></dt>
+      <dl>
+        <dt><a href="image1.html#affine_transform">affine_transform</a></dt>
 
-      <dd>Transform the image as dictated by an affine matrix</dd>
+        <dd>Transform the image as dictated by an affine matrix</dd>
 
-      <dt><a href="image1.html#auto_orient">auto_orient</a></dt>
+        <dt><a href="image1.html#auto_orient">auto_orient</a></dt>
 
-      <dd>Rotate or flip the image using the EXIF orientation
-      tag</dd>
+        <dd>Rotate or flip the image using the EXIF orientation tag</dd>
 
-      <dt><a href="image1.html#deskew">deskew</a></dt>
+        <dt><a href="image1.html#deskew">deskew</a></dt>
 
-      <dd>Straighten the image</dd>
+        <dd>Straighten the image</dd>
 
-      <dt><a href="image2.html#flip">flip</a></dt>
+        <dt><a href="image2.html#flip">flip</a></dt>
 
-      <dd>Create a vertical mirror image</dd>
+        <dd>Create a vertical mirror image</dd>
 
-      <dt><a href="image2.html#flop">flop</a></dt>
+        <dt><a href="image2.html#flop">flop</a></dt>
 
-      <dd>Create a horizontal mirror image</dd>
+        <dd>Create a horizontal mirror image</dd>
 
-      <dt><a href="image3.html#rotate">rotate</a></dt>
+        <dt><a href="image3.html#rotate">rotate</a></dt>
 
-      <dd>Rotate the image by the specified angle</dd>
+        <dd>Rotate the image by the specified angle</dd>
 
-      <dt><a href="image3.html#shear">shear</a></dt>
+        <dt><a href="image3.html#shear">shear</a></dt>
 
-      <dd>Shear the image along the X or Y axis, creating a
-      parallelogram</dd>
+        <dd>Shear the image along the X or Y axis, creating a parallelogram</dd>
 
-      <dt><a href="image3.html#transpose">transpose</a></dt>
+        <dt><a href="image3.html#transpose">transpose</a></dt>
 
-      <dd>Create a horizontal mirror image</dd>
+        <dd>Create a horizontal mirror image</dd>
 
-      <dt><a href="image3.html#transverse">transverse</a></dt>
+        <dt><a href="image3.html#transverse">transverse</a></dt>
 
-      <dd>Create a vertical mirror image</dd>
-    </dl>
+        <dd>Create a vertical mirror image</dd>
+      </dl>
 
-    <h4>Composite</h4>
+      <h4>Composite</h4>
 
-    <dl>
-      <dt><a href=
-      "image1.html#add_compose_mask">add_compose_mask</a></dt>
+      <dl>
+        <dt><a href="image1.html#add_compose_mask">add_compose_mask</a></dt>
 
-      <dd>Add a mask to the background image in a composite
-      operation</dd>
+        <dd>Add a mask to the background image in a composite operation</dd>
 
-      <dt class="ilist"><a href=
-      "ilist.html#average">average</a></dt>
+        <dt class="ilist"><a href="ilist.html#average">average</a></dt>
 
-      <dd class="ilist">Average all the images in the imagelist
-      into a single image</dd>
+        <dd class="ilist">Average all the images in the imagelist into a single image</dd>
 
-      <dt><a href="image1.html#blend">blend</a></dt>
+        <dt><a href="image1.html#blend">blend</a></dt>
 
-      <dd>Blend two images together</dd>
+        <dd>Blend two images together</dd>
 
-      <dt><a href="image1.html#composite">composite</a></dt>
+        <dt><a href="image1.html#composite">composite</a></dt>
 
-      <dd>Composite a source image onto the image</dd>
+        <dd>Composite a source image onto the image</dd>
 
-      <dt><a href=
-      "image1.html#composite_affine">composite_affine</a></dt>
+        <dt><a href="image1.html#composite_affine">composite_affine</a></dt>
 
-      <dd>Composite a source image onto the image as dictated by an
-      affine matrix</dd>
+        <dd>Composite a source image onto the image as dictated by an affine matrix</dd>
 
-      <dt class="ilist"><a href=
-      "ilist.html#composite_layers">composite_layers</a></dt>
+        <dt class="ilist">
+          <a href="ilist.html#composite_layers">composite_layers</a>
+        </dt>
 
-      <dd class="ilist">Composite two imagelists</dd>
+        <dd class="ilist">Composite two imagelists</dd>
 
-      <dt><a href=
-      "image1.html#composite_mathematics">composite_mathematics</a></dt>
+        <dt>
+          <a href="image1.html#composite_mathematics">composite_mathematics</a>
+        </dt>
 
-      <dd>Merge a source image onto the image according to a
-      formula.</dd>
+        <dd>Merge a source image onto the image according to a formula.</dd>
 
-      <dt><a href=
-      "image1.html#composite_tiled">composite_tiled</a></dt>
+        <dt><a href="image1.html#composite_tiled">composite_tiled</a></dt>
 
-      <dd>Composite multiple copies of an image over another
-      image</dd>
+        <dd>Composite multiple copies of an image over another image</dd>
 
-      <dt><a href=
-      "image1.html#delete_compose_mask">delete_compose_mask</a></dt>
+        <dt>
+          <a href="image1.html#delete_compose_mask">delete_compose_mask</a>
+        </dt>
 
-      <dd>Delete a compose mask</dd>
+        <dd>Delete a compose mask</dd>
 
-      <dt><a href="image1.html#displace">displace</a></dt>
+        <dt><a href="image1.html#displace">displace</a></dt>
 
-      <dd>Distort the image using a displacement map</dd>
+        <dd>Distort the image using a displacement map</dd>
 
-      <dt><a href="image1.html#dissolve">dissolve</a></dt>
+        <dt><a href="image1.html#dissolve">dissolve</a></dt>
 
-      <dd>Dissolve two images into each other</dd>
+        <dd>Dissolve two images into each other</dd>
 
-      <dt><a href="image2.html#extent">extent</a></dt>
+        <dt><a href="image2.html#extent">extent</a></dt>
 
-      <dd>Extend or crop the image over the background color.</dd>
+        <dd>Extend or crop the image over the background color.</dd>
 
-      <dt><a href="image3.html#watermark">watermark</a></dt>
+        <dt><a href="image3.html#watermark">watermark</a></dt>
 
-      <dd>Composite a watermark onto the image</dd>
-    </dl>
+        <dd>Composite a watermark onto the image</dd>
+      </dl>
 
-    <h4>Transform</h4>
+      <h4>Transform</h4>
 
-    <dl>
-      <dt class="ilist"><a href="ilist.html#append">append</a></dt>
+      <dl>
+        <dt class="ilist"><a href="ilist.html#append">append</a></dt>
 
-      <dd class="ilist">Append all the images in the imagelist into
-      a single image</dd>
+        <dd class="ilist">Append all the images in the imagelist into a single image</dd>
 
-      <dt><a href="image1.html#chop">chop</a></dt>
+        <dt><a href="image1.html#chop">chop</a></dt>
 
-      <dd>Chop a region from the image</dd>
+        <dd>Chop a region from the image</dd>
 
-      <dt class="ilist"><a href=
-      "ilist.html#coalesce">coalesce</a></dt>
+        <dt class="ilist"><a href="ilist.html#coalesce">coalesce</a></dt>
 
-      <dd class="ilist">Merge successive images in the imagelist
-      into a new imagelist</dd>
+        <dd class="ilist">Merge successive images in the imagelist into a new imagelist</dd>
 
-      <dt><a href="image1.html#crop">crop</a></dt>
+        <dt><a href="image1.html#crop">crop</a></dt>
 
-      <dd>Extract a region from the image</dd>
+        <dd>Extract a region from the image</dd>
 
-      <dt><a href="image1.html#decipher">decipher</a></dt>
+        <dt><a href="image1.html#decipher">decipher</a></dt>
 
-      <dd>Convert enciphered pixels to plain pixels</dd>
+        <dd>Convert enciphered pixels to plain pixels</dd>
 
-      <dt class="ilist"><a href=
-      "ilist.html#deconstruct">deconstruct</a></dt>
+        <dt class="ilist"><a href="ilist.html#deconstruct">deconstruct</a></dt>
 
-      <dd class="ilist">Construct a new imagelist containing images
-      that include only the changed pixels between each image and
-      its successor</dd>
+        <dd class="ilist">Construct a new imagelist containing images that include only the changed pixels between each image and its successor</dd>
 
-      <dt><a href="image1.html#distort">distort</a></dt>
+        <dt><a href="image1.html#distort">distort</a></dt>
 
-      <dd>Distort the image</dd>
+        <dd>Distort the image</dd>
 
-      <dt><a href="image2.html#encipher">encipher</a></dt>
+        <dt><a href="image2.html#encipher">encipher</a></dt>
 
-      <dd>Encipher plain pixels</dd>
+        <dd>Encipher plain pixels</dd>
 
-      <dt><a href="image2.html#excerpt">excerpt</a></dt>
+        <dt><a href="image2.html#excerpt">excerpt</a></dt>
 
-      <dd>Excerpt a rectangle from the image</dd>
+        <dd>Excerpt a rectangle from the image</dd>
 
-      <dt class="ilist"><a href=
-      "ilist.html#flatten_images">flatten_images</a></dt>
+        <dt class="ilist">
+          <a href="ilist.html#flatten_images">flatten_images</a>
+        </dt>
 
-      <dd class="ilist">Merge all the images in the imagelist into
-      a single image</dd>
+        <dd class="ilist">Merge all the images in the imagelist into a single image</dd>
 
-      <dt class="ilist"><a href="ilist.html#mosaic">mosaic</a></dt>
+        <dt class="ilist"><a href="ilist.html#mosaic">mosaic</a></dt>
 
-      <dd class="ilist">Inlay all the images in the imagelist into
-      a single image</dd>
+        <dd class="ilist">Inlay all the images in the imagelist into a single image</dd>
 
-      <dt class="ilist"><a href=
-      "ilist.html#optimize_layers">optimize_layers</a></dt>
+        <dt class="ilist">
+          <a href="ilist.html#optimize_layers">optimize_layers</a>
+        </dt>
 
-      <dd class="ilist">Optimize or compare image layers</dd>
+        <dd class="ilist">Optimize or compare image layers</dd>
 
-      <dt><a href=
-      "image1.html#resize_to_fill">resize_to_fill</a></dt>
+        <dt><a href="image1.html#resize_to_fill">resize_to_fill</a></dt>
 
-      <dd>Resize and crop while retaining the aspect ratio</dd>
+        <dd>Resize and crop while retaining the aspect ratio</dd>
 
-      <dt><a href="image3.html#roll">roll</a></dt>
+        <dt><a href="image3.html#roll">roll</a></dt>
 
-      <dd>Offset the image</dd>
+        <dd>Offset the image</dd>
 
-      <dt><a href="image3.html#shave">shave</a></dt>
+        <dt><a href="image3.html#shave">shave</a></dt>
 
-      <dd>Shave regions from the edges of the image</dd>
+        <dd>Shave regions from the edges of the image</dd>
 
-      <dt><a href="image3.html#trim">trim</a></dt>
+        <dt><a href="image3.html#trim">trim</a></dt>
 
-      <dd>Remove borders from the edges of the image</dd>
-    </dl>
+        <dd>Remove borders from the edges of the image</dd>
+      </dl>
 
-    <h4>Enhance</h4>
+      <h4>Enhance</h4>
 
-    <dl>
-      <dt><a href="image1.html#clut_channel">clut_channel</a></dt>
+      <dl>
+        <dt><a href="image1.html#clut_channel">clut_channel</a></dt>
 
-      <dd>Replace the channel values in the image with a lookup of
-      its replacement value in an LUT gradient image.</dd>
+        <dd>Replace the channel values in the image with a lookup of its replacement value in an LUT gradient image.</dd>
 
-      <dt><a href="image1.html#contrast">contrast</a></dt>
+        <dt><a href="image1.html#contrast">contrast</a></dt>
 
-      <dd>Enhance the intensity differences between the lighter and
-      darker elements in the image</dd>
+        <dd>Enhance the intensity differences between the lighter and darker elements in the image</dd>
 
-      <dt><a href=
-      "image1.html#contrast_stretch_channel">contrast_stretch_channel</a></dt>
+        <dt>
+          <a href="image1.html#contrast_stretch_channel">contrast_stretch_channel</a>
+        </dt>
 
-      <dd>Improve the contrast in the image by stretching the range
-      of intensity values</dd>
+        <dd>Improve the contrast in the image by stretching the range of intensity values</dd>
 
-      <dt><a href="image1.html#despeckle">despeckle</a></dt>
+        <dt><a href="image1.html#despeckle">despeckle</a></dt>
 
-      <dd>Reduce the speckle noise in the image</dd>
+        <dd>Reduce the speckle noise in the image</dd>
 
-      <dt><a href="image2.html#enhance">enhance</a></dt>
+        <dt><a href="image2.html#enhance">enhance</a></dt>
 
-      <dd>Apply a digital filter that improves the quality of a
-      noisy image</dd>
+        <dd>Apply a digital filter that improves the quality of a noisy image</dd>
 
-      <dt><a href="image2.html#equalize">equalize</a>, <a href=
-      "image2.html#equalize_channel">equalize_channel</a></dt>
+        <dt>
+          <a href="image2.html#equalize">equalize</a>,
+          <a href="image2.html#equalize_channel">equalize_channel</a>
+        </dt>
 
-      <dd>Apply a histogram equalization to the image</dd>
+        <dd>Apply a histogram equalization to the image</dd>
 
-      <dt><a href=
-      "image2.html#function_channel">function_channel</a></dt>
+        <dt><a href="image2.html#function_channel">function_channel</a></dt>
 
-      <dd>Apply a function to selected channel values</dd>
+        <dd>Apply a function to selected channel values</dd>
 
-      <dt class="ilist"><a href="ilist.html#fx">fx</a></dt>
+        <dt class="ilist"><a href="ilist.html#fx">fx</a></dt>
 
-      <dd class="ilist">Apply a mathematical expression to an
-      image</dd>
+        <dd class="ilist">Apply a mathematical expression to an image</dd>
 
-      <dt><a href=
-      "image1.html#auto_gamma_channel">auto_gamma_channel</a>,
-      <a href="image2.html#gamma_correct">gamma_correct</a>,
-      <a href="image2.html#gamma_channel">gamma_channel</a></dt>
+        <dt>
+          <a href="image1.html#auto_gamma_channel">auto_gamma_channel</a>, <a href="image2.html#gamma_correct">gamma_correct</a>,
+          <a href="image2.html#gamma_channel">gamma_channel</a>
+        </dt>
 
-      <dd>Gamma correct the image</dd>
+        <dd>Gamma correct the image</dd>
 
-      <dt><a href=
-      "image1.html#auto_level_channel">auto_level_channel</a>,
-      <a href="image2.html#level">level,</a> <a href=
-      "image2.html#level_channel">level_channel</a>, <a href=
-      "image2.html#level_colors">level_colors</a>, <a href=
-      "image2.html#levelize_channel">levelize_channel</a></dt>
+        <dt>
+          <a href="image1.html#auto_level_channel">auto_level_channel</a>,
+          <a href="image2.html#level">level,</a>
+          <a href="image2.html#level_channel">level_channel</a>, <a href="image2.html#level_colors">level_colors</a>,
+          <a href="image2.html#levelize_channel">levelize_channel</a>
+        </dt>
 
-      <dd>Adjust the levels of one or more channels in the
-      image</dd>
+        <dd>Adjust the levels of one or more channels in the image</dd>
 
-      <dt><a href=
-      "image2.html#linear_stretch">linear_stretch</a></dt>
+        <dt><a href="image2.html#linear_stretch">linear_stretch</a></dt>
 
-      <dd>Stretch with saturation the image contrast</dd>
+        <dd>Stretch with saturation the image contrast</dd>
 
-      <dt><a href=
-      "image2.html#median_filter">median_filter</a></dt>
+        <dt><a href="image2.html#median_filter">median_filter</a></dt>
 
-      <dd>Apply a digital filter that improves the quality of a
-      noisy image</dd>
+        <dd>Apply a digital filter that improves the quality of a noisy image</dd>
 
-      <dt><a href="image2.html#modulate">modulate</a></dt>
+        <dt><a href="image2.html#modulate">modulate</a></dt>
 
-      <dd>Change the brightness, saturation, or hue of the
-      image</dd>
+        <dd>Change the brightness, saturation, or hue of the image</dd>
 
-      <dt><a href="image2.html#negate">negate</a>, <a href=
-      "image2.html#negate_channel">negate_channel</a></dt>
+        <dt>
+          <a href="image2.html#negate">negate</a>,
+          <a href="image2.html#negate_channel">negate_channel</a>
+        </dt>
 
-      <dd>Negate the colors of the image</dd>
+        <dd>Negate the colors of the image</dd>
 
-      <dt><a href="image2.html#normalize">normalize</a>, <a href=
-      "image2.html#normalize_channel">normalize_channel</a></dt>
+        <dt>
+          <a href="image2.html#normalize">normalize</a>,
+          <a href="image2.html#normalize_channel">normalize_channel</a>
+        </dt>
 
-      <dd>Enhance the contrast of the image</dd>
+        <dd>Enhance the contrast of the image</dd>
 
-      <dt><a href=
-      "image3.html#quantum_operator">quantum_operator</a></dt>
+        <dt><a href="image3.html#quantum_operator">quantum_operator</a></dt>
 
-      <dd>Performs an integer arithmetic operation on selected
-      channels values</dd>
+        <dd>Performs an integer arithmetic operation on selected channels values</dd>
 
-      <dt><a href="image3.html#reduce_noise">reduce_noise</a></dt>
+        <dt><a href="image3.html#reduce_noise">reduce_noise</a></dt>
 
-      <dd>Smooth the contours of an image while still preserving
-      edge information</dd>
+        <dd>Smooth the contours of an image while still preserving edge information</dd>
 
-      <dt><a href=
-      "image1.html#adaptive_sharpen">adaptive_sharpen</a>, <a href=
-      "image1.html#adaptive_sharpen_channel">adaptive_sharpen_channel</a>,
-      <a href="image3.html#sharpen">sharpen</a>, <a href=
-      "image3.html#sharpen_channel">sharpen_channel</a>, <a href=
-      "image3.html#unsharp_mask">unsharp_mask</a>, <a href=
-      "image3.html#unsharp_mask_channel">unsharp_mask_channel</a></dt>
+        <dt>
+          <a href="image1.html#adaptive_sharpen">adaptive_sharpen</a>, <a href="image1.html#adaptive_sharpen_channel">adaptive_sharpen_channel</a>,
+          <a href="image3.html#sharpen">sharpen</a>, <a href="image3.html#sharpen_channel">sharpen_channel</a>,
+          <a href="image3.html#unsharp_mask">unsharp_mask</a>,
+          <a href="image3.html#unsharp_mask_channel">unsharp_mask_channel</a>
+        </dt>
 
-      <dd>Sharpen the image</dd>
+        <dd>Sharpen the image</dd>
 
-      <dt><a href=
-      "image3.html#sigmoidal_contrast_channel">sigmoidal_contrast_channel</a></dt>
+        <dt>
+          <a href="image3.html#sigmoidal_contrast_channel">sigmoidal_contrast_channel</a>
+        </dt>
 
-      <dd>Adjusts the contrast of an image channel with a
-      non-linear sigmoidal contrast algorithm</dd>
-    </dl>
+        <dd>Adjusts the contrast of an image channel with a non-linear sigmoidal contrast algorithm</dd>
+      </dl>
 
-    <h4>Add effects</h4>
+      <h4>Add effects</h4>
 
-    <dl>
-      <dt><a href=
-      "image1.html#adaptive_threshold">adaptive_threshold</a></dt>
+      <dl>
+        <dt><a href="image1.html#adaptive_threshold">adaptive_threshold</a></dt>
 
-      <dd>Threshold an image whose global intensity histogram
-      doesn't contain distinctive peaks</dd>
+        <dd>Threshold an image whose global intensity histogram doesn't contain distinctive peaks</dd>
 
-      <dt><a href="image1.html#add_noise">add_noise</a>, <a href=
-      "image1.html#add_noise_channel">add_noise_channel</a></dt>
+        <dt>
+          <a href="image1.html#add_noise">add_noise</a>,
+          <a href="image1.html#add_noise_channel">add_noise_channel</a>
+        </dt>
 
-      <dd>Add random noise</dd>
+        <dd>Add random noise</dd>
 
-      <dt><a href=
-      "image1.html#bilevel_channel">bilevel_channel</a></dt>
+        <dt><a href="image1.html#bilevel_channel">bilevel_channel</a></dt>
 
-      <dd class="imquote">Change the value of individual image
-      pixels based on the intensity of each pixel channel</dd>
+        <dd class="imquote">Change the value of individual image pixels based on the intensity of each pixel channel</dd>
 
-      <dt><a href=
-      "image1.html#black_threshold">black_threshold</a></dt>
+        <dt><a href="image1.html#black_threshold">black_threshold</a></dt>
 
-      <dd>Force all pixels below the threshold into black</dd>
+        <dd>Force all pixels below the threshold into black</dd>
 
-      <dt><a href="image1.html#blue_shift">blue_shift</a></dt>
+        <dt><a href="image1.html#blue_shift">blue_shift</a></dt>
 
-      <dd class="imquote">Simulate a scene at nighttime in the
-      moonlight</dd>
+        <dd class="imquote">Simulate a scene at nighttime in the moonlight</dd>
 
-      <dt><a href="image1.html#adaptive_blur">adaptive_blur</a>,
-      <a href=
-      "image1.html#adaptive_blur_channel">adaptive_blur_channel</a>,
-      <a href="image1.html#blur_image">blur_image</a>, <a href=
-      "image1.html#blur_channel">blur_channel</a>, <a href=
-      "image2.html#gaussian_blur">gaussian_blur</a>, <a href=
-      "image2.html#gaussian_blur_channel">gaussian_blur_channel</a>,
-      <a href="image2.html#motion_blur">motion_blur</a>, <a href=
-      "image3.html#radial_blur">radial_blur</a>, <a href=
-      "image3.html#radial_blur_channel">radial_blur_channel</a>,
-      <a href=
-      "image3.html#selective_blur_channel">selective_blur_channel</a></dt>
+        <dt>
+          <a href="image1.html#adaptive_blur">adaptive_blur</a>, <a href="image1.html#adaptive_blur_channel">adaptive_blur_channel</a>,
+          <a href="image1.html#blur_image">blur_image</a>, <a href="image1.html#blur_channel">blur_channel</a>,
+          <a href="image2.html#gaussian_blur">gaussian_blur</a>, <a href="image2.html#gaussian_blur_channel">gaussian_blur_channel</a>,
+          <a href="image2.html#motion_blur">motion_blur</a>, <a href="image3.html#radial_blur">radial_blur</a>,
+          <a href="image3.html#radial_blur_channel">radial_blur_channel</a>,
+          <a href="image3.html#selective_blur_channel">selective_blur_channel</a>
+        </dt>
 
-      <dd>Blur the image</dd>
+        <dd>Blur the image</dd>
 
-      <dt><a href="image1.html#colorize">colorize</a></dt>
+        <dt><a href="image1.html#colorize">colorize</a></dt>
 
-      <dd>Blend the fill color with each pixel in the image</dd>
+        <dd>Blend the fill color with each pixel in the image</dd>
 
-      <dt><a href="image1.html#convolve">convolve</a>, <a href=
-      "image1.html#convolve_channel">convolve_channel</a></dt>
+        <dt>
+          <a href="image1.html#convolve">convolve</a>,
+          <a href="image1.html#convolve_channel">convolve_channel</a>
+        </dt>
 
-      <dd>Apply a custom convolution kernel to the image</dd>
+        <dd>Apply a custom convolution kernel to the image</dd>
 
-      <dt><a href="image3.html#segment">segment</a></dt>
+        <dt><a href="image3.html#segment">segment</a></dt>
 
-      <dd>Segment an image by analyzing the histograms of the color
-      components and identifying units that are homogeneous with
-      the fuzzy c-means technique</dd>
+        <dd>
+          Segment an image by analyzing the histograms of the color components and identifying units that are homogeneous with the fuzzy c-means technique
+        </dd>
 
-      <dt><a href=
-      "image3.html#random_threshold_channel">random_threshold_channel</a></dt>
+        <dt>
+          <a href="image3.html#random_threshold_channel">random_threshold_channel</a>
+        </dt>
 
-      <dd>Change the value of individual pixels based on the
-      intensity of each pixel compared to a random threshold.</dd>
+        <dd>Change the value of individual pixels based on the intensity of each pixel compared to a random threshold.</dd>
 
-      <dt><a href="image3.html#recolor">recolor</a></dt>
+        <dt><a href="image3.html#recolor">recolor</a></dt>
 
-      <dd>translate, scale, shear, or rotate the image colors</dd>
+        <dd>translate, scale, shear, or rotate the image colors</dd>
 
-      <dt><a href="image3.html#threshold">threshold</a></dt>
+        <dt><a href="image3.html#threshold">threshold</a></dt>
 
-      <dd>Change the value of individual pixels based on the
-      intensity of each pixel compared to threshold</dd>
+        <dd>Change the value of individual pixels based on the intensity of each pixel compared to threshold</dd>
 
-      <dt><a href=
-      "image3.html#white_threshold">white_threshold</a></dt>
+        <dt><a href="image3.html#white_threshold">white_threshold</a></dt>
 
-      <dd>Force all pixels above the threshold into white</dd>
-    </dl>
+        <dd>Force all pixels above the threshold into white</dd>
+      </dl>
 
-    <h4>Add special effects</h4>
+      <h4>Add special effects</h4>
 
-    <dl>
-      <dt><a href="image1.html#charcoal">charcoal</a></dt>
+      <dl>
+        <dt><a href="image1.html#charcoal">charcoal</a></dt>
 
-      <dd>Add a charcoal effect</dd>
+        <dd>Add a charcoal effect</dd>
 
-      <dt><a href="image2.html#edge">edge</a></dt>
+        <dt><a href="image2.html#edge">edge</a></dt>
 
-      <dd>Find edges in the image</dd>
+        <dd>Find edges in the image</dd>
 
-      <dt><a href="image2.html#emboss">emboss</a></dt>
+        <dt><a href="image2.html#emboss">emboss</a></dt>
 
-      <dd>Add a three-dimensional effect</dd>
+        <dd>Add a three-dimensional effect</dd>
 
-      <dt><a href="image2.html#implode">implode</a></dt>
+        <dt><a href="image2.html#implode">implode</a></dt>
 
-      <dd>Implode or explode the center pixels in the image</dd>
+        <dd>Implode or explode the center pixels in the image</dd>
 
-      <dt class="ilist"><a href="ilist.html#morph">morph</a></dt>
+        <dt class="ilist"><a href="ilist.html#morph">morph</a></dt>
 
-      <dd class="ilist">Transform each image in the imagelist to
-      the next in sequence by creating intermediate images</dd>
+        <dd class="ilist">Transform each image in the imagelist to the next in sequence by creating intermediate images</dd>
 
-      <dt><a href="image2.html#oil_paint">oil_paint</a></dt>
+        <dt><a href="image2.html#oil_paint">oil_paint</a></dt>
 
-      <dd>Add an oil paint effect</dd>
+        <dd>Add an oil paint effect</dd>
 
-      <dt><a href="image3.html#polaroid">polaroid</a></dt>
+        <dt><a href="image3.html#polaroid">polaroid</a></dt>
 
-      <dd>Simulate a Polaroid&reg; instant picture</dd>
+        <dd>Simulate a Polaroid&reg; instant picture</dd>
 
-      <dt><a href="image3.html#sepiatone">sepiatone</a></dt>
+        <dt><a href="image3.html#sepiatone">sepiatone</a></dt>
 
-      <dd>Applies an effect similar to the effect achieved in a
-      photo darkroom by sepia toning.</dd>
+        <dd>Applies an effect similar to the effect achieved in a photo darkroom by sepia toning.</dd>
 
-      <dt><a href="image3.html#shade">shade</a></dt>
+        <dt><a href="image3.html#shade">shade</a></dt>
 
-      <dd>Shine a distant light on an image to create a
-      three-dimensional effect</dd>
+        <dd>Shine a distant light on an image to create a three-dimensional effect</dd>
 
-      <dt><a href="image3.html#shadow">shadow</a></dt>
+        <dt><a href="image3.html#shadow">shadow</a></dt>
 
-      <dd>Add a shadow to an image</dd>
+        <dd>Add a shadow to an image</dd>
 
-      <dt><a href="image3.html#sketch">sketch</a></dt>
+        <dt><a href="image3.html#sketch">sketch</a></dt>
 
-      <dd>Simulate a pencil sketch</dd>
+        <dd>Simulate a pencil sketch</dd>
 
-      <dt><a href="image3.html#solarize">solarize</a></dt>
+        <dt><a href="image3.html#solarize">solarize</a></dt>
 
-      <dd>Apply a special effect to the image, similar to the
-      effect achieved in a photo darkroom by selectively exposing
-      areas of photo sensitive paper to light</dd>
+        <dd>
+          Apply a special effect to the image, similar to the effect achieved in a photo darkroom by selectively exposing areas of photo sensitive paper to
+          light
+        </dd>
 
-      <dt><a href="image3.html#spread">spread</a></dt>
+        <dt><a href="image3.html#spread">spread</a></dt>
 
-      <dd>Randomly displace each pixel in a block</dd>
+        <dd>Randomly displace each pixel in a block</dd>
 
-      <dt><a href="image3.html#stegano">stegano</a></dt>
+        <dt><a href="image3.html#stegano">stegano</a></dt>
 
-      <dd>Hide a digital watermark within the image</dd>
+        <dd>Hide a digital watermark within the image</dd>
 
-      <dt><a href="image3.html#stereo">stereo</a></dt>
+        <dt><a href="image3.html#stereo">stereo</a></dt>
 
-      <dd>Combine two images into a single image that is the
-      composite of a left and right image of a stereo pair</dd>
+        <dd>Combine two images into a single image that is the composite of a left and right image of a stereo pair</dd>
 
-      <dt><a href="image3.html#swirl">swirl</a></dt>
+        <dt><a href="image3.html#swirl">swirl</a></dt>
 
-      <dd>Swirl the pixels about the center of the image</dd>
+        <dd>Swirl the pixels about the center of the image</dd>
 
-      <dt><a href="image3.html#vignette">vignette</a></dt>
+        <dt><a href="image3.html#vignette">vignette</a></dt>
 
-      <dd>Soften the edges of the image to create a vignette</dd>
+        <dd>Soften the edges of the image to create a vignette</dd>
 
-      <dt><a href="image3.html#wave">wave</a></dt>
+        <dt><a href="image3.html#wave">wave</a></dt>
 
-      <dd>Add a ripple effect to the image</dd>
+        <dd>Add a ripple effect to the image</dd>
 
-      <dt><a href="image3.html#wet_floor">wet_floor</a></dt>
+        <dt><a href="image3.html#wet_floor">wet_floor</a></dt>
 
-      <dd>Create a "wet floor" reflection of the image</dd>
-    </dl>
+        <dd>Create a "wet floor" reflection of the image</dd>
+      </dl>
 
-    <h4>Decorate</h4>
+      <h4>Decorate</h4>
 
-    <dl>
-      <dt><a href="image1.html#border">border</a></dt>
+      <dl>
+        <dt><a href="image1.html#border">border</a></dt>
 
-      <dd>Surround the image with a solid-colored border</dd>
+        <dd>Surround the image with a solid-colored border</dd>
 
-      <dt><a href="image2.html#frame">frame</a></dt>
+        <dt><a href="image2.html#frame">frame</a></dt>
 
-      <dd>Add a simulated three-dimensional border around the
-      image</dd>
+        <dd>Add a simulated three-dimensional border around the image</dd>
 
-      <dt><a href="image3.html#raise">raise</a></dt>
+        <dt><a href="image3.html#raise">raise</a></dt>
 
-      <dd>Create a simulated three-dimensional button-like effect
-      by lightening and darkening the edges of the image</dd>
-    </dl>
+        <dd>Create a simulated three-dimensional button-like effect by lightening and darkening the edges of the image</dd>
+      </dl>
 
-    <h4>Create thumbnail montages</h4>
+      <h4>Create thumbnail montages</h4>
 
-    <dl>
-      <dt class="ilist"><a href=
-      "ilist.html#montage">montage</a></dt>
+      <dl>
+        <dt class="ilist"><a href="ilist.html#montage">montage</a></dt>
 
-      <dd class="ilist">Tile image thumbnails across a canvas</dd>
-    </dl>
+        <dd class="ilist">Tile image thumbnails across a canvas</dd>
+      </dl>
 
-    <h4>Create image blobs</h4>
+      <h4>Create image blobs</h4>
 
-    <dl>
-      <dt><a href="image1.html#from_blob">from_blob</a></dt>
+      <dl>
+        <dt><a href="image1.html#from_blob">from_blob</a></dt>
 
-      <dd>Create an image from a BLOB</dd>
+        <dd>Create an image from a BLOB</dd>
 
-      <dt class="ilist"><a href=
-      "ilist.html#from_blob">from_blob</a></dt>
+        <dt class="ilist"><a href="ilist.html#from_blob">from_blob</a></dt>
 
-      <dd class="ilist">Create an imagelist from one or more
-      BLOBs</dd>
+        <dd class="ilist">Create an imagelist from one or more BLOBs</dd>
 
-      <dt><a href="image3.html#to_blob">to_blob</a></dt>
+        <dt><a href="image3.html#to_blob">to_blob</a></dt>
 
-      <dd>Construct a BLOB from an image</dd>
+        <dd>Construct a BLOB from an image</dd>
 
-      <dt class="ilist"><a href=
-      "ilist.html#to_blob">to_blob</a></dt>
+        <dt class="ilist"><a href="ilist.html#to_blob">to_blob</a></dt>
 
-      <dd class="ilist">Construct a BLOB from all the images in the
-      imagelist</dd>
-    </dl>
-  </div>
-
-  <h2 id="marshaling">Marshaling images</h2>
-
-  <p>ImageList, Image, Draw, and Pixel objects are marshaled using
-  custom serialization methods. Images are marshaled with
-  ImageMagick's Binary Large OBject functions
-  <code>ImageToBlob</code> (for dumping) and
-  <code>BlobToImage</code> (for loading).</p>
-
-  <h4>Notes</h4>
-
-  <ol>
-    <li>Some image formats cannot be dumped. The only way to be
-    sure it will work is to try it.</li>
-
-    <li>Images in lossy formats, such as JPEG, will have a
-    different signature after being reconstituted and therefore
-    will not compare equal (using <a href=
-    "image1.html#spaceship">&lt;=&gt;</a>) to the original
-    image.</li>
-
-    <li>Image metadata may be changed by marshaling.</li>
-  </ol>
-
-  <h2 id="drawing_on">Drawing on and adding text to images</h2>
-
-  <p>The <strong>Draw</strong> class is the third major class in
-  the Magick module. This class defines two kinds of methods,
-  <a href="#drawing">drawing</a> methods and <a href=
-  "#annotation">annotation</a> methods.</p>
-
-  <h3 id="drawing">Drawing</h3>
-
-  <p>ImageMagick supports a set of 2D drawing commands that are
-  very similar to the commands and elements defined by the W3C's
-  <a href="http://www.w3.org/TR/SVG/index.html#minitoc">Scalable
-  Vector Graphics (SVG) 1.1 Specification</a>. In RMagick, each
-  command (called a <em>primitive</em>) is implemented as a method
-  in the <code>Draw</code> class. To draw on an image, simply</p>
-
-  <ol>
-    <li>Create an instance of the <code>Draw</code> class.</li>
-
-    <li>Call one or more primitive methods with the appropriate
-    arguments.</li>
-
-    <li>Call the <a href="draw.html#draw"><code>draw</code></a>
-    method.</li>
-  </ol>
-
-  <p>The primitive methods do <em>not</em> draw anything directly.
-  When you call a primitive method, you are simply adding the
-  primitive and its arguments to a list of primitives stored in the
-  <code>Draw</code> object. To "execute" the primitive list, call
-  <code>draw</code>. Drawing the primitives does not destroy them.
-  You can draw on another image by calling <code>draw</code> again,
-  specifying a different image as the "canvas." Of course you can
-  also draw on an image with multiple <code>Draw</code> objects,
-  too. The canvas can be any image or imagelist, created by reading
-  an image file or from scratch using
-  <code>ImageList#new_image</code> or <code>Image.new</code>. (If
-  you pass an imagelist object to <code>draw</code>, it draws on
-  the current image.)</p>
-
-  <div id="axes">
-    <a href="javascript:popup('axes.rb.html')"><img src=
-    "ex/axes.gif" alt="Drawing coordinate system" title=
-    "Click to see the example script" /></a>
-
-    <div>
-      <p>Here's an illustration of the default drawing coordinate
-      system. The origin is in the top left corner. The x axis
-      extends to the right. The y axis extends downward. The units
-      are pixels. 0&deg; is at 3 o'clock and rotation is clockwise.
-      The units of rotation are usually degrees.<sup><a href=
-      "#degrees">3</a></sup></p>
-
-      <p>You can change the default coordinate system by specifying
-      a <em>scaling</em>, <em>rotation</em>, or
-      <em>translation</em> transformation.</p>
-
-      <p><em>(Click the image to see the Ruby program that created
-      it.)</em></p>
+        <dd class="ilist">Construct a BLOB from all the images in the imagelist</dd>
+      </dl>
     </div>
-  </div>
 
-  <p>RMagick's primitive methods include methods for drawing
-  points, lines, Bezier curves, shapes such as ellipses and
-  rectangles, and text. Shapes and lines have a fill color and a
-  stroke color. Shapes are filled with the fill color unless the
-  fill opacity is 0. Similarly, shapes are stroked with the stroke
-  color unless the stroke opacity is 0. Text is considered a shape
-  and is stroked and filled. Other rendering properties you can set
-  include the stroke width, antialiasing, stroke patterns, and fill
-  patterns.</p>
+    <h2 id="marshaling">Marshaling images</h2>
 
-  <p>As an example, here's the section of the Ruby program that
-  created the circle in the center of the above image.</p>
-  <pre class="example">
+    <p>
+      ImageList, Image, Draw, and Pixel objects are marshaled using custom serialization methods. Images are marshaled with ImageMagick's Binary Large OBject
+      functions <code>ImageToBlob</code> (for dumping) and <code>BlobToImage</code> (for loading).
+    </p>
+
+    <h4>Notes</h4>
+
+    <ol>
+      <li>Some image formats cannot be dumped. The only way to be sure it will work is to try it.</li>
+
+      <li>
+        Images in lossy formats, such as JPEG, will have a different signature after being reconstituted and therefore will not compare equal (using
+        <a href="image1.html#spaceship">&lt;=&gt;</a>) to the original image.
+      </li>
+
+      <li>Image metadata may be changed by marshaling.</li>
+    </ol>
+
+    <h2 id="drawing_on">Drawing on and adding text to images</h2>
+
+    <p>
+      The <strong>Draw</strong> class is the third major class in the Magick module. This class defines two kinds of methods,
+      <a href="#drawing">drawing</a> methods and <a href="#annotation">annotation</a> methods.
+    </p>
+
+    <h3 id="drawing">Drawing</h3>
+
+    <p>
+      ImageMagick supports a set of 2D drawing commands that are very similar to the commands and elements defined by the W3C's
+      <a href="http://www.w3.org/TR/SVG/index.html#minitoc">Scalable Vector Graphics (SVG) 1.1 Specification</a>. In RMagick, each command (called a
+      <em>primitive</em>) is implemented as a method in the <code>Draw</code> class. To draw on an image, simply
+    </p>
+
+    <ol>
+      <li>Create an instance of the <code>Draw</code> class.</li>
+
+      <li>Call one or more primitive methods with the appropriate arguments.</li>
+
+      <li>
+        Call the <a href="draw.html#draw"><code>draw</code></a> method.
+      </li>
+    </ol>
+
+    <p>
+      The primitive methods do <em>not</em> draw anything directly. When you call a primitive method, you are simply adding the primitive and its arguments to a
+      list of primitives stored in the <code>Draw</code> object. To "execute" the primitive list, call <code>draw</code>. Drawing the primitives does not
+      destroy them. You can draw on another image by calling <code>draw</code> again, specifying a different image as the "canvas." Of course you can also draw
+      on an image with multiple <code>Draw</code> objects, too. The canvas can be any image or imagelist, created by reading an image file or from scratch using
+      <code>ImageList#new_image</code> or <code>Image.new</code>. (If you pass an imagelist object to <code>draw</code>, it draws on the current image.)
+    </p>
+
+    <div id="axes">
+      <a href="javascript:popup('axes.rb.html')"><img src="ex/axes.gif" alt="Drawing coordinate system" title="Click to see the example script" /></a>
+
+      <div>
+        <p>
+          Here's an illustration of the default drawing coordinate system. The origin is in the top left corner. The x axis extends to the right. The y axis
+          extends downward. The units are pixels. 0&deg; is at 3 o'clock and rotation is clockwise. The units of rotation are usually degrees.<sup
+            ><a href="#degrees">3</a></sup
+          >
+        </p>
+
+        <p>
+          You can change the default coordinate system by specifying a
+          <em>scaling</em>, <em>rotation</em>, or <em>translation</em> transformation.
+        </p>
+
+        <p>
+          <em>(Click the image to see the Ruby program that created it.)</em>
+        </p>
+      </div>
+    </div>
+
+    <p>
+      RMagick's primitive methods include methods for drawing points, lines, Bezier curves, shapes such as ellipses and rectangles, and text. Shapes and lines
+      have a fill color and a stroke color. Shapes are filled with the fill color unless the fill opacity is 0. Similarly, shapes are stroked with the stroke
+      color unless the stroke opacity is 0. Text is considered a shape and is stroked and filled. Other rendering properties you can set include the stroke
+      width, antialiasing, stroke patterns, and fill patterns.
+    </p>
+
+    <p>As an example, here's the section of the Ruby program that created the circle in the center of the above image.</p>
+    <pre class="example">
  1. !# /usr/local/bin/ruby -w
  2. require "rmagick"
  3.
@@ -1438,61 +1287,51 @@ exit
 14. circle.ellipse(canvas.rows/2,canvas.columns/2, 80, 80, 0, 315)
 15. circle.polyline(180,70, 173,78, 190,78, 191,62)
 16. circle.draw(canvas)
-</pre>
+</pre
+    >
 
-  <p>The statements on lines 4 and 5 create the drawing canvas with
-  a single 250x250 image. The <code>HatchFill</code> object fills
-  the image with light-gray lines 10 pixels apart. The statement on
-  line 7 creates a Draw object. The method calls on lines 8-15
-  construct a list of primitives that are "executed" by the
-  <code>draw</code> method call on line 16.</p>
+    <p>
+      The statements on lines 4 and 5 create the drawing canvas with a single 250x250 image. The <code>HatchFill</code> object fills the image with light-gray
+      lines 10 pixels apart. The statement on line 7 creates a Draw object. The method calls on lines 8-15 construct a list of primitives that are "executed" by
+      the <code>draw</code> method call on line 16.
+    </p>
 
-  <p>The <code>stroke</code> method sets the stroke color, as seen
-  on line 8. Normally, shapes are filled (opacity = 1.0), but the
-  call to <code>fill_opacity</code> on line 9 sets the opacity to
-  0, so the background will show through the circle. Similarly, the
-  stroke lines are normally opaque, but the tomato-colored stroke
-  line in this example is made slightly transparent by the call to
-  <code>stroke_opacity</code> on line 10. The method calls on lines
-  11 through 13 set the stroke width and specify the appearance of
-  the line ends and corners.</p>
+    <p>
+      The <code>stroke</code> method sets the stroke color, as seen on line 8. Normally, shapes are filled (opacity = 1.0), but the call to
+      <code>fill_opacity</code> on line 9 sets the opacity to 0, so the background will show through the circle. Similarly, the stroke lines are normally
+      opaque, but the tomato-colored stroke line in this example is made slightly transparent by the call to <code>stroke_opacity</code> on line 10. The method
+      calls on lines 11 through 13 set the stroke width and specify the appearance of the line ends and corners.
+    </p>
 
-  <p>The <code>ellipse</code> method call on line 14 describes an
-  circle in the center of the canvas with a radius of 80 pixels.
-  The ellipse occupies 315&deg; of a circle, starting at 0&deg;
-  (that is, 3 o'clock). The <code>polyline</code> call on line 15
-  adds the arrowhead to the circle. The arguments (always an even
-  number) are the x- and y-coordinates of the points the line
-  passes through.</p>
+    <p>
+      The <code>ellipse</code> method call on line 14 describes an circle in the center of the canvas with a radius of 80 pixels. The ellipse occupies 315&deg;
+      of a circle, starting at 0&deg; (that is, 3 o'clock). The <code>polyline</code> call on line 15 adds the arrowhead to the circle. The arguments (always an
+      even number) are the x- and y-coordinates of the points the line passes through.
+    </p>
 
-  <p>Finally, the <code>draw</code> method on line 16 identifies
-  the canvas to be drawn on and executes the stored primitives.</p>
+    <p>Finally, the <code>draw</code> method on line 16 identifies the canvas to be drawn on and executes the stored primitives.</p>
 
-  <h3 id="annotation">Annotation</h3>
+    <h3 id="annotation">Annotation</h3>
 
-  <p>The <a href="draw.html#annotate"><code>annotate</code></a>
-  method draws text on an image. In its simplest form,
-  <code>annotate</code> requires only arguments that describe where
-  to draw the text and the text string.</p>
+    <p>
+      The <a href="draw.html#annotate"><code>annotate</code></a>
+      method draws text on an image. In its simplest form,
+      <code>annotate</code> requires only arguments that describe where to draw the text and the text string.
+    </p>
 
-  <p>Most of the time, you'll want to specify text properties such
-  as the font, its size, font styles such as italic, font weights
-  such as bold, the fill and stroke color, etc. The Draw class
-  defines <a href="draw.html">attribute writers</a> for this
-  purpose. You can set the desired text properties by calling the
-  attribute writers before calling <code>annotate</code>, or you
-  can call them in an image block associated with the
-  <code>annotate</code> call.</p>
+    <p>
+      Most of the time, you'll want to specify text properties such as the font, its size, font styles such as italic, font weights such as bold, the fill and
+      stroke color, etc. The Draw class defines
+      <a href="draw.html">attribute writers</a> for this purpose. You can set the desired text properties by calling the attribute writers before calling
+      <code>annotate</code>, or you can call them in an image block associated with the <code>annotate</code> call.
+    </p>
 
-  <p>The following example shows how to use <code>annotate</code>
-  to produce this image.</p>
+    <p>The following example shows how to use <code>annotate</code> to produce this image.</p>
 
-  <div id="rubyname">
-    <a href="javascript:popup('rubyname.rb.html')"><img src=
-    "ex/rubyname.gif" alt="annotate example" title=
-    "Click to see the example script" /></a>
-  </div>
-  <pre class="example">
+    <div id="rubyname">
+      <a href="javascript:popup('rubyname.rb.html')"><img src="ex/rubyname.gif" alt="annotate example" title="Click to see the example script" /></a>
+    </div>
+    <pre class="example">
  1.   #! /usr/local/bin/ruby -w
  2.   require "rmagick"
  3.
@@ -1523,95 +1362,81 @@ exit
 28.
 29.   canvas.write('rubyname.gif')
 30.   exit
-</pre>
+</pre
+    >
 
-  <p>This program uses three calls to <code>annotate</code> to
-  produce the "etched" appearance. All three calls have some
-  parameters in common but the fill color and location are
-  different.</p>
+    <p>
+      This program uses three calls to <code>annotate</code> to produce the "etched" appearance. All three calls have some parameters in common but the fill
+      color and location are different.
+    </p>
 
-  <p>First, the statements in lines 8-10 create the background. See
-  <a href="struct.html#fill"><code>Fill classes</code></a> for
-  information about the <code>TextureFill</code> class. The
-  "granite:" image format is one of ImageMagick's built-in image
-  formats. See <a href="imusage.html#builtin_formats">"Built-in
-  image formats"</a> for more information. The statement on line 12
-  creates the Draw object that does the annotation. The next 3
-  lines set the values of the attributes that are common to all 3
-  <code>annotate</code> calls.</p>
+    <p>
+      First, the statements in lines 8-10 create the background. See
+      <a href="struct.html#fill"><code>Fill classes</code></a> for information about the <code>TextureFill</code> class. The "granite:" image format is one of
+      ImageMagick's built-in image formats. See <a href="imusage.html#builtin_formats">"Built-in image formats"</a> for more information. The statement on line
+      12 creates the Draw object that does the annotation. The next 3 lines set the values of the attributes that are common to all 3
+      <code>annotate</code> calls.
+    </p>
 
-  <p>The first <code>annotate</code> argument is the image on which
-  the text will be drawn. Arguments 2-5, <code>width</code>,
-  <code>height</code>, <code>x</code>, and <code>y</code>, describe
-  a rectangle about which the text is drawn. This rectangle,
-  combined with the value of <code>gravity</code>, define the
-  position of the text. When the <code>gravity</code> value is
-  <a href=
-  "constants.html#GravityType"><code>CenterGravity</code></a> the
-  values of <code>width</code> and <code>height</code> are
-  unused.</p>
+    <p>
+      The first <code>annotate</code> argument is the image on which the text will be drawn. Arguments 2-5, <code>width</code>, <code>height</code>,
+      <code>x</code>, and <code>y</code>, describe a rectangle about which the text is drawn. This rectangle, combined with the value of <code>gravity</code>,
+      define the position of the text. When the <code>gravity</code> value is <a href="constants.html#GravityType"><code>CenterGravity</code></a> the values of
+      <code>width</code> and <code>height</code> are unused.
+    </p>
 
-  <p>The first call to <code>annotate</code>, on lines 17-19, draws
-  the text 2 pixels to the right and down from the center. The
-  <code>options.fill = 'gray83'</code> statement sets the text color
-  to light gray. The second call to <code>annotate</code>, on lines
-  21-22, draws dark gray text 1.5 pixels to the left and up from
-  the center. The last call, on lines 25-27, draws the text a third
-  time, in dark red, exactly in the center of the image.</p>
+    <p>
+      The first call to <code>annotate</code>, on lines 17-19, draws the text 2 pixels to the right and down from the center. The
+      <code>options.fill = 'gray83'</code> statement sets the text color to light gray. The second call to <code>annotate</code>, on lines 21-22, draws dark
+      gray text 1.5 pixels to the left and up from the center. The last call, on lines 25-27, draws the text a third time, in dark red, exactly in the center of
+      the image.
+    </p>
 
-  <h2 id="more">Where to go from here</h2>
+    <h2 id="more">Where to go from here</h2>
 
-  <p>The next section, <a href="imusage.html">"ImageMagick
-  Conventions,"</a> describes some conventions that you need to
-  know, such as how ImageMagick determines the graphic format of an
-  image file, etc. The ImageMagick (www.imagemagick.org) web site
-  (from which much of the information in these pages has been
-  taken) offers a lot of detail about ImageMagick. While this web
-  sites doesn't describe RMagick, you can often use the
-  documentation to learn more about a RMagick method by reading
-  about the Magick API the method calls. (In the Reference section
-  of this document, most of the method descriptions include the
-  name of the Magick API that the method calls.) Check out the
-  example programs. Almost every one of the methods is demonstrated
-  in one of the examples.</p>
+    <p>
+      The next section,
+      <a href="imusage.html">"ImageMagick Conventions,"</a> describes some conventions that you need to know, such as how ImageMagick determines the graphic
+      format of an image file, etc. The ImageMagick (www.imagemagick.org) web site (from which much of the information in these pages has been taken) offers a
+      lot of detail about ImageMagick. While this web sites doesn't describe RMagick, you can often use the documentation to learn more about a RMagick method
+      by reading about the Magick API the method calls. (In the Reference section of this document, most of the method descriptions include the name of the
+      Magick API that the method calls.) Check out the example programs. Almost every one of the methods is demonstrated in one of the examples.
+    </p>
 
-  <p>Good luck!</p>
+    <p>Good luck!</p>
 
-  <div>
-    <h5 id="footnotes">Footnotes</h5>
+    <div>
+      <h5 id="footnotes">Footnotes</h5>
 
-    <p id="display"><span class="sup">1</span>The
-    <code>display</code> and <code>animate</code> methods do not
-    work on MS Windows. You will have to write the image to a file
-    and view it with a separate image viewer.</p>
+      <p id="display">
+        <span class="sup">1</span>The <code>display</code> and <code>animate</code> methods do not work on MS Windows. You will have to write the image to a
+        file and view it with a separate image viewer.
+      </p>
 
-    <p id="rubygems"><span class="sup">2</span>If you installed
-    RMagick using <a href="https://rubygems.org/">Rubygems</a>
-    you must set up the RubyGems environment before using RMagick.
-    You can do one of</p>
+      <p id="rubygems">
+        <span class="sup">2</span>If you installed RMagick using <a href="https://rubygems.org/">Rubygems</a> you must set up the RubyGems environment before
+        using RMagick. You can do one of
+      </p>
 
-    <ol>
-      <li>add the <code>require 'rubygems'</code> statement to your
-      program</li>
+      <ol>
+        <li>add the <code>require 'rubygems'</code> statement to your program</li>
 
-      <li>use the -rubygems command line option</li>
+        <li>use the -rubygems command line option</li>
 
-      <li>add <code>rubygems</code> to the RUBYOPT environment
-      variable</li>
-    </ol>
+        <li>add <code>rubygems</code> to the RUBYOPT environment variable</li>
+      </ol>
 
-    <p id="degrees"><span class="sup">3</span>The rotation
-    attributes <code>rx</code> and <code>ry</code> in the <a href=
-    "struct.html#AffineMatrix"><code>AffineMatrix</code></a> class
-    use radians instead of degrees.</p>
-  </div>
+      <p id="degrees">
+        <span class="sup">3</span>The rotation attributes <code>rx</code> and <code>ry</code> in the
+        <a href="struct.html#AffineMatrix"><code>AffineMatrix</code></a> class use radians instead of degrees.
+      </p>
+    </div>
 
-  <p class="spacer"></p>
+    <p class="spacer"></p>
 
-  <div class="nav">
-    &laquo; <a href="index.html">Prev</a> | <a href=
-    "index.html">Contents</a> | <a href="imusage.html">Next</a>
-    &raquo;
-  </div>
-</body>
+    <div class="nav">
+      &laquo; <a href="index.html">Prev</a> | <a href="index.html">Contents</a> | <a href="imusage.html">Next</a>
+      &raquo;
+    </div>
+  </body>
 </html>

@@ -1,1498 +1,1410 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-  <meta name="generator" content=
-  "HTML Tidy for Linux/x86 (vers 6 November 2007), see www.w3.org" />
+  <head>
+    <meta name="generator" content="HTML Tidy for Linux/x86 (vers 6 November 2007), see www.w3.org" />
 
-  <title>RMagick 0.0.0: class Image::Info - Optional method
-  arguments</title>
-  <meta http-equiv="Content-Type" content=
-  "text/html; charset=us-ascii" />
-  <meta name="GENERATOR" content="Quanta Plus" />
-  <meta name="Copyright" content=
-  "Copyright (C) 2006 by Timothy P. Hunter" />
-  <link rel="stylesheet" type="text/css" href="css/doc.css" />
-  <script type="text/javascript" src="scripts/doc.js">
-</script>
-  <style type="text/css">
-/*<![CDATA[*/
+    <title>RMagick 0.0.0: class Image::Info - Optional method arguments</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+    <meta name="GENERATOR" content="Quanta Plus" />
+    <meta name="Copyright" content="Copyright (C) 2006 by Timothy P. Hunter" />
+    <link rel="stylesheet" type="text/css" href="css/doc.css" />
+    <script type="text/javascript" src="scripts/doc.js"></script>
+    <style type="text/css">
+      /*<![CDATA[*/
 
-  /* Styles local to this page. */
+      /* Styles local to this page. */
 
-  h2 {
-      margin-top: 1em;
-      margin-bottom: 1em;
-      padding-left: .3em;
-      padding-right: .3em;
-      padding-bottom: .5em;
-      padding-top: .5em;
-      background-color: #545454;
-      color: white;
-    }
+      h2 {
+        margin-top: 1em;
+        margin-bottom: 1em;
+        padding-left: 0.3em;
+        padding-right: 0.3em;
+        padding-bottom: 0.5em;
+        padding-top: 0.5em;
+        background-color: #545454;
+        color: white;
+      }
 
-  #intro h2 {
-    clear: both;
-  }
-  #compression_notes li {
-    font-style: italic;
-  }
+      #intro h2 {
+        clear: both;
+      }
+      #compression_notes li {
+        font-style: italic;
+      }
 
-  /*]]>*/
-  </style>
-</head>
+      /*]]>*/
+    </style>
+  </head>
 
-<body>
-  <h6 id="header">RMagick 0.0.0 User's Guide and Reference</h6>
+  <body>
+    <h6 id="header">RMagick 0.0.0 User's Guide and Reference</h6>
 
-  <div class="nav">
-    &laquo;&nbsp;<a href="struct.html">Prev</a> | <a href=
-    "index.html">Contents</a> | <a href=
-    "constants.html">Next</a>&nbsp;&raquo;
-  </div>
+    <div class="nav">&laquo;&nbsp;<a href="struct.html">Prev</a> | <a href="index.html">Contents</a> | <a href="constants.html">Next</a>&nbsp;&raquo;</div>
 
-  <h1>class Image::Info - Optional method arguments</h1>
+    <h1>class Image::Info - Optional method arguments</h1>
 
-  <div id="toc">
-    <h2>Table of Contents</h2>
+    <div id="toc">
+      <h2>Table of Contents</h2>
 
-    <h3>instance methods</h3>
+      <h3>instance methods</h3>
 
-    <ul>
-      <li><a href="#aset">[]=</a></li>
-
-      <li><a href="#aref">[]</a></li>
-
-      <li><a href="#channel">channel</a></li>
-
-      <li><a href="#define">define</a></li>
-
-      <li><a href="#undefine">undefine</a></li>
-    </ul>
-
-    <h3>attribute methods</h3>
-
-    <div class="toccol">
       <ul>
-        <li><a href="#antialias">antialias</a></li>
+        <li><a href="#aset">[]=</a></li>
 
-        <li><a href="#attenuate">attenuate</a></li>
+        <li><a href="#aref">[]</a></li>
 
-        <li><a href="#authenticate">authenticate</a></li>
+        <li><a href="#channel">channel</a></li>
 
-        <li><a href="#background_color">background_color</a></li>
+        <li><a href="#define">define</a></li>
 
-        <li><a href="#border_color">border_color</a></li>
-
-        <li><a href="#caption">caption</a></li>
-
-        <li><a href="#colorspace">colorspace</a></li>
-
-        <li><a href="#comment">comment</a></li>
-
-        <li><a href="#compression">compression</a></li>
-
-        <li><a href="#delay">delay</a></li>
-
-        <li><a href="#density">density</a></li>
-
-        <li><a href="#depth">depth</a></li>
-
-        <li><a href="#dispose">dispose</a></li>
-
-        <li><a href="#dither">dither</a></li>
-
-        <li><a href="#endian">endian</a></li>
+        <li><a href="#undefine">undefine</a></li>
       </ul>
+
+      <h3>attribute methods</h3>
+
+      <div class="toccol">
+        <ul>
+          <li><a href="#antialias">antialias</a></li>
+
+          <li><a href="#attenuate">attenuate</a></li>
+
+          <li><a href="#authenticate">authenticate</a></li>
+
+          <li><a href="#background_color">background_color</a></li>
+
+          <li><a href="#border_color">border_color</a></li>
+
+          <li><a href="#caption">caption</a></li>
+
+          <li><a href="#colorspace">colorspace</a></li>
+
+          <li><a href="#comment">comment</a></li>
+
+          <li><a href="#compression">compression</a></li>
+
+          <li><a href="#delay">delay</a></li>
+
+          <li><a href="#density">density</a></li>
+
+          <li><a href="#depth">depth</a></li>
+
+          <li><a href="#dispose">dispose</a></li>
+
+          <li><a href="#dither">dither</a></li>
+
+          <li><a href="#endian">endian</a></li>
+        </ul>
+      </div>
+
+      <div class="toccol">
+        <ul>
+          <li><a href="#extract">extract</a></li>
+
+          <li><a href="#filename">filename</a></li>
+
+          <li><a href="#fill">fill</a></li>
+
+          <li><a href="#font">font</a></li>
+
+          <li><a href="#format">format</a></li>
+
+          <li><a href="#fuzz">fuzz</a></li>
+
+          <li><a href="#gravity">gravity</a></li>
+
+          <li><a href="#image_type">image_type</a></li>
+
+          <li><a href="#interlace">interlace</a></li>
+
+          <li><a href="#label">label</a></li>
+
+          <li><a href="#matte_color">matte_color</a></li>
+
+          <li><a href="#monitor">monitor</a></li>
+
+          <li><a href="#monochrome">monochrome</a></li>
+
+          <li><a href="#orientation">orientation</a></li>
+
+          <li><a href="#origin">origin</a></li>
+        </ul>
+      </div>
+
+      <div class="toccol">
+        <ul>
+          <li><a href="#page">page</a></li>
+
+          <li><a href="#pointsize">pointsize</a></li>
+
+          <li><a href="#quality">quality</a></li>
+
+          <li><a href="#sampling_factor">sampling_factor</a></li>
+
+          <li><a href="#scene">scene</a></li>
+
+          <li><a href="#server_name">server_name</a></li>
+
+          <li><a href="#size">size</a></li>
+
+          <li><a href="#stroke">stroke</a></li>
+
+          <li><a href="#stroke_width">stroke_width</a></li>
+
+          <li><a href="#tile_offset">tile_offset</a></li>
+
+          <li><a href="#texture">texture</a></li>
+
+          <li><a href="#transparent_color">transparent_color</a></li>
+
+          <li><a href="#undercolor">undercolor</a></li>
+
+          <li><a href="#units">units</a></li>
+
+          <li><a href="#view">view</a></li>
+        </ul>
+      </div>
     </div>
 
-    <div class="toccol">
-      <ul>
-        <li><a href="#extract">extract</a></li>
+    <div id="intro">
+      <h2>The Image::Info class</h2>
 
-        <li><a href="#filename">filename</a></li>
+      <p>
+        Some <code>Image</code> and <code>ImageList</code> methods, such as <code>read</code> and <code>write</code>, accept an "optional arguments" block in
+        which you can set attributes that modify the method's output. These attributes belong to the <code>Image::Info</code> class. The
+        <code>Image::Info</code>
+        class exists only to accept optional arguments for those
+        <code>Image</code> and <code>ImageList</code> methods.
+      </p>
 
-        <li><a href="#fill">fill</a></li>
+      <p>
+        This page explains the methods defined in the
+        <code>Image::Info</code> class. Generally, each <code>Image</code> or <code>ImageList</code> method that uses the <code>Image::Info</code> class to get
+        optional arguments will only accept some of the attributes listed on this page, that is, only those attributes that are meaningful for the particular
+        method. Any other attributes that you set are ignored. Also, some attributes are only used by a subset of the image formats. See the ImageMagick
+        documentation for more information.
+      </p>
 
-        <li><a href="#font">font</a></li>
+      <p>
+        Remember, you do not ever need to create an
+        <code>Image::Info</code> object. The object is created for you before the optional arguments block is entered and destroyed after the block is exited.
+      </p>
 
-        <li><a href="#format">format</a></li>
-
-        <li><a href="#fuzz">fuzz</a></li>
-
-        <li><a href="#gravity">gravity</a></li>
-
-        <li><a href="#image_type">image_type</a></li>
-
-        <li><a href="#interlace">interlace</a></li>
-
-        <li><a href="#label">label</a></li>
-
-        <li><a href="#matte_color">matte_color</a></li>
-
-        <li><a href="#monitor">monitor</a></li>
-
-        <li><a href="#monochrome">monochrome</a></li>
-
-        <li><a href="#orientation">orientation</a></li>
-
-        <li><a href="#origin">origin</a></li>
-      </ul>
+      <p>
+        All the attributes in the <code>Image::Info</code> class are read/write. For simplicity, and because usually you only set these attributes, this page
+        only describes the setter version of each attribute method.
+      </p>
     </div>
 
-    <div class="toccol">
-      <ul>
-        <li><a href="#page">page</a></li>
+    <h2 class="methods">instance methods</h2>
 
-        <li><a href="#pointsize">pointsize</a></li>
+    <div class="sig">
+      <h3 id="aset">[]=</h3>
 
-        <li><a href="#quality">quality</a></li>
-
-        <li><a href="#sampling_factor">sampling_factor</a></li>
-
-        <li><a href="#scene">scene</a></li>
-
-        <li><a href="#server_name">server_name</a></li>
-
-        <li><a href="#size">size</a></li>
-
-        <li><a href="#stroke">stroke</a></li>
-
-        <li><a href="#stroke_width">stroke_width</a></li>
-
-        <li><a href="#tile_offset">tile_offset</a></li>
-
-        <li><a href="#texture">texture</a></li>
-
-        <li><a href="#transparent_color">transparent_color</a></li>
-
-        <li><a href="#undercolor">undercolor</a></li>
-
-        <li><a href="#units">units</a></li>
-
-        <li><a href="#view">view</a></li>
-      </ul>
+      <p>
+        <span class="arg">self</span>[<span class="arg">format</span>, <span class="arg">key</span>] = <span class="arg">value</span> -&gt;
+        <span class="arg">self</span><br />
+        <span class="arg">self</span>[<span class="arg">key</span>] = <span class="arg">value</span> -&gt; <span class="arg">self</span>
+      </p>
     </div>
-  </div>
 
-  <div id="intro">
-    <h2>The Image::Info class</h2>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Some <code>Image</code> and <code>ImageList</code> methods,
-    such as <code>read</code> and <code>write</code>, accept an
-    "optional arguments" block in which you can set attributes that
-    modify the method's output. These attributes belong to the
-    <code>Image::Info</code> class. The <code>Image::Info</code>
-    class exists only to accept optional arguments for those
-    <code>Image</code> and <code>ImageList</code> methods.</p>
+      <p>
+        Define an option. An alternative to <a href="#define">define</a>, below. Use this method to set options for reading or writing certain image formats.
+        The list of supported options changes from release to release. For a list of the valid image formats, keys, and values, refer to the documentation for
+        the -define option for the release of ImageMagick installed on your system.
+      </p>
 
-    <p>This page explains the methods defined in the
-    <code>Image::Info</code> class. Generally, each
-    <code>Image</code> or <code>ImageList</code> method that uses
-    the <code>Image::Info</code> class to get optional arguments
-    will only accept some of the attributes listed on this page,
-    that is, only those attributes that are meaningful for the
-    particular method. Any other attributes that you set are
-    ignored. Also, some attributes are only used by a subset of the
-    image formats. See the ImageMagick documentation for more
-    information.</p>
+      <h4>Arguments</h4>
 
-    <p>Remember, you do not ever need to create an
-    <code>Image::Info</code> object. The object is created for you
-    before the optional arguments block is entered and destroyed
-    after the block is exited.</p>
+      <dl>
+        <dt>format</dt>
 
-    <p>All the attributes in the <code>Image::Info</code> class are
-    read/write. For simplicity, and because usually you only set
-    these attributes, this page only describes the setter version
-    of each attribute method.</p>
-  </div>
+        <dd>An image format name such as "ps" or "tiff". (Depending on the key, this argument may be omitted.)</dd>
 
-  <h2 class="methods">instance methods</h2>
+        <dt>key</dt>
 
-  <div class="sig">
-    <h3 id="aset">[]=</h3>
+        <dd>A string that identifies the option.</dd>
 
-    <p><span class="arg">self</span>[<span class=
-    "arg">format</span>, <span class="arg">key</span>] =
-    <span class="arg">value</span> -&gt; <span class=
-    "arg">self</span><br />
-    <span class="arg">self</span>[<span class="arg">key</span>] =
-    <span class="arg">value</span> -&gt; <span class=
-    "arg">self</span></p>
-  </div>
+        <dt>value</dt>
 
-  <div class="desc">
-    <h4>Description</h4>
+        <dd>
+          The value of the option. <span class="arg">Value</span> can be any object that responds to <code>to_s</code>. Use <code>nil</code> to set the key to a
+          null value.
+        </dd>
+      </dl>
 
-    <p>Define an option. An alternative to <a href=
-    "#define">define</a>, below. Use this method to set options for
-    reading or writing certain image formats. The list of supported
-    options changes from release to release. For a list of the
-    valid image formats, keys, and values, refer to the
-    documentation for the -define option for the release of
-    ImageMagick installed on your system.</p>
+      <h4 id="user_option">The "user" option</h4>
 
-    <h4>Arguments</h4>
+      <p>
+        The "user" option is unique to RMagick. It may be set to any string. If this option is used when creating an image via one of the methods listed below
+        then the new image gets the value assigned as a property as if
+        <code>img["user"]</code> had been used. In addition, the value is displayed in the string returned by <code>Image#inspect</code>. The "user" property
+        can be used to help distinguish otherwise similar images when debugging.
+      </p>
 
-    <dl>
-      <dt>format</dt>
-
-      <dd>An image format name such as "ps" or "tiff". (Depending
-      on the key, this argument may be omitted.)</dd>
-
-      <dt>key</dt>
-
-      <dd>A string that identifies the option.</dd>
-
-      <dt>value</dt>
-
-      <dd>The value of the option. <span class="arg">Value</span>
-      can be any object that responds to <code>to_s</code>. Use
-      <code>nil</code> to set the key to a null value.</dd>
-    </dl>
-
-    <h4 id="user_option">The "user" option</h4>
-
-    <p>The "user" option is unique to RMagick. It may be set to any
-    string. If this option is used when creating an image via one
-    of the methods listed below then the new image gets the value
-    assigned as a property as if <code>img["user"]</code> had been
-    used. In addition, the value is displayed in the string
-    returned by <code>Image#inspect</code>. The "user" property can
-    be used to help distinguish otherwise similar images when
-    debugging.</p>
-
-    <p>For example,</p>
-    <pre>
+      <p>For example,</p>
+      <pre>
 img = Magick::Image.new(10,10) do
    self['user'] = __FILE__ + ':' + __LINE__.to_s
 end &raquo; 10x10 DirectClass 16-bit user:test.rb:3
-</pre>
+</pre
+      >
 
-    <p>These methods propogate the value of the "user" option to
-    new image(s): <code>Image.new, ImageList.new,
-    ImageList.new_image, Image.capture, Image.from_blob,
-    ImageList.from_blob, Image.read, ImageList.read,
-    Image.read_inline, and Image.ping</code>.</p>
+      <p>
+        These methods propogate the value of the "user" option to new image(s):
+        <code
+          >Image.new, ImageList.new, ImageList.new_image, Image.capture, Image.from_blob, ImageList.from_blob, Image.read, ImageList.read, Image.read_inline,
+          and Image.ping</code
+        >.
+      </p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>self</p>
+      <p>self</p>
 
-    <h4>Example</h4>
-    <pre>
+      <h4>Example</h4>
+      <pre>
 self["tiff", "bits-per-sample"] = 2
-</pre>
+</pre
+      >
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>SetImageOption</p>
-  </div>
+      <p>SetImageOption</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="aref">[]</h3>
+    <div class="sig">
+      <h3 id="aref">[]</h3>
 
-    <p><span class="arg">self</span>[<span class=
-    "arg">format</span>, <span class="arg">key</span>] -&gt;
-    <em>value</em><br />
-    <span class="arg">self</span>[<span class="arg">key</span>]
-    -&gt; <em>value</em></p>
-  </div>
+      <p>
+        <span class="arg">self</span>[<span class="arg">format</span>, <span class="arg">key</span>] -&gt; <em>value</em><br />
+        <span class="arg">self</span>[<span class="arg">key</span>] -&gt;
+        <em>value</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Returns the value of the specified option for the specified
-    format.</p>
+      <p>Returns the value of the specified option for the specified format.</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>format</dt>
+      <dl>
+        <dt>format</dt>
 
-      <dd>An image format name such as "ps" or "tiff". (Depending
-      on the key, this argument may be omitted.)</dd>
+        <dd>An image format name such as "ps" or "tiff". (Depending on the key, this argument may be omitted.)</dd>
 
-      <dt>key</dt>
+        <dt>key</dt>
 
-      <dd>A string that identifies the option.</dd>
-    </dl>
+        <dd>A string that identifies the option.</dd>
+      </dl>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>The value of the option. Always a string.</p>
+      <p>The value of the option. Always a string.</p>
 
-    <h4>Example</h4>
-    <pre>
+      <h4>Example</h4>
+      <pre>
 self["tiff", "bits-per-sample"] &raquo; 2
-</pre>
+</pre
+      >
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>GetImageOption</p>
-  </div>
+      <p>GetImageOption</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="channel">channel</h3>
+    <div class="sig">
+      <h3 id="channel">channel</h3>
 
-    <p><span class="arg">self</span>.channel([<span class=
-    "arg">channel</span> [, <span class=
-    "arg">channel</span>...]])</p>
-  </div>
+      <p><span class="arg">self</span>.channel([<span class="arg">channel</span> [, <span class="arg">channel</span>...]])</p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Restrict the method to the specified channel(s). This
-    attribute is set-only.</p>
+      <p>Restrict the method to the specified channel(s). This attribute is set-only.</p>
 
-    <h4>Argument</h4>
+      <h4>Argument</h4>
 
-    <p>The arguments may be any <a href=
-    "constants.html#ChannelType">ChannelType</a> values.</p>
+      <p>
+        The arguments may be any
+        <a href="constants.html#ChannelType">ChannelType</a> values.
+      </p>
 
-    <h4>Notes</h4>
+      <h4>Notes</h4>
 
-    <p>If you call <code>channel</code> with no arguments,
-    <em>all</em> channels are included. If you do not call
-    <code>channel</code> at all, the channels used do not include
-    the alpha channel.</p>
-  </div>
+      <p>
+        If you call <code>channel</code> with no arguments, <em>all</em> channels are included. If you do not call <code>channel</code> at all, the channels
+        used do not include the alpha channel.
+      </p>
+    </div>
 
-  <div class="sig">
-    <h3 id="define">define</h3>
+    <div class="sig">
+      <h3 id="define">define</h3>
 
-    <p><span class="arg">self</span>.define(<span class=
-    "arg">format</span>, <span class="arg">key</span>[,
-    <span class="arg">value</span>])</p>
-  </div>
+      <p><span class="arg">self</span>.define(<span class="arg">format</span>, <span class="arg">key</span>[, <span class="arg">value</span>])</p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Define a format-specific option. See <a href=
-    "#aset">[]=</a>, above.</p>
+      <p>Define a format-specific option. See <a href="#aset">[]=</a>, above.</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>format</dt>
+      <dl>
+        <dt>format</dt>
 
-      <dd>An image format name such as "ps" or "tiff".</dd>
+        <dd>An image format name such as "ps" or "tiff".</dd>
 
-      <dt>key</dt>
+        <dt>key</dt>
 
-      <dd>A string that identifies the option.</dd>
+        <dd>A string that identifies the option.</dd>
 
-      <dt>value</dt>
+        <dt>value</dt>
 
-      <dd>The value of the option. <span class="arg">Value</span>
-      can be any object that responds to <code>to_s</code>. If
-      omitted, the key is simply defined to an null value.</dd>
-    </dl>
+        <dd>
+          The value of the option. <span class="arg">Value</span> can be any object that responds to <code>to_s</code>. If omitted, the key is simply defined to
+          an null value.
+        </dd>
+      </dl>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>self</p>
+      <p>self</p>
 
-    <h4>Example</h4>
-    <pre>
+      <h4>Example</h4>
+      <pre>
 options.define("tiff", "bits-per-sample", 2)
-</pre>
+</pre
+      >
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>SetImageOption</p>
-  </div>
+      <p>SetImageOption</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="undefine">undefine</h3>
+    <div class="sig">
+      <h3 id="undefine">undefine</h3>
 
-    <p><span class="arg">self</span>.undefine(<span class=
-    "arg">format</span>, <span class="arg">key</span>)</p>
-  </div>
+      <p><span class="arg">self</span>.undefine(<span class="arg">format</span>, <span class="arg">key</span>)</p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Delete an option definition set by <a href="#aset">[]=</a>
-    or <a href="#define">define</a>. This is not the same as
-    setting the option to a null value. The <code>undefine</code>
-    method removes the option name from the list of options for the
-    specified format.</p>
+      <p>
+        Delete an option definition set by <a href="#aset">[]=</a> or <a href="#define">define</a>. This is not the same as setting the option to a null value.
+        The <code>undefine</code> method removes the option name from the list of options for the specified format.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>format</dt>
+      <dl>
+        <dt>format</dt>
 
-      <dd>An image format name such as "ps" or "tiff".</dd>
+        <dd>An image format name such as "ps" or "tiff".</dd>
 
-      <dt>key</dt>
+        <dt>key</dt>
 
-      <dd>A string that identifies the option.</dd>
-    </dl>
+        <dd>A string that identifies the option.</dd>
+      </dl>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>self</p>
+      <p>self</p>
 
-    <h4>Example</h4>
-    <pre>
+      <h4>Example</h4>
+      <pre>
 options.undefine("tiff", "bits-per-sample")
-</pre>
-  </div>
+</pre
+      >
+    </div>
 
-  <h2 class="methods">attribute methods</h2>
+    <h2 class="methods">attribute methods</h2>
 
-  <div class="sig">
-    <h3 id="antialias">antialias</h3>
+    <div class="sig">
+      <h3 id="antialias">antialias</h3>
 
-    <p><span class="arg">self.</span>antialias= <span class=
-    "arg"><code>true</code></span> or <span class=
-    "arg"><code>false</code></span></p>
-  </div>
+      <p>
+        <span class="arg">self.</span>antialias= <span class="arg"><code>true</code></span> or
+        <span class="arg"><code>false</code></span>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p><span class="imquote">Control antialiasing of rendered
-    Postscript and Postscript or TrueType fonts.</span> The default
-    is <code>true</code>.</p>
-  </div>
+      <p>
+        <span class="imquote">Control antialiasing of rendered Postscript and Postscript or TrueType fonts.</span>
+        The default is <code>true</code>.
+      </p>
+    </div>
 
-  <div class="sig">
-    <h3 id="attenuate">attenuate</h3>
+    <div class="sig">
+      <h3 id="attenuate">attenuate</h3>
 
-    <p><span class="arg">self</span>.attenuate= <span class=
-    "arg">number</span></p>
-  </div>
+      <p><span class="arg">self</span>.attenuate= <span class="arg">number</span></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p class="imquote">Lessen (or intensify) when adding noise to
-    an image.</p>
-  </div>
+      <p class="imquote">Lessen (or intensify) when adding noise to an image.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="authenticate">authenticate</h3>
+    <div class="sig">
+      <h3 id="authenticate">authenticate</h3>
 
-    <p><span class="arg">self.</span>authenticate= <span class=
-    "arg">string</span></p>
-  </div>
+      <p>
+        <span class="arg">self.</span>authenticate=
+        <span class="arg">string</span>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p class="imquote">Decrypt an image with this password.</p>
+      <p class="imquote">Decrypt an image with this password.</p>
 
-    <p>This attribute can be used to specify the password to be
-    used when reading an image or image sequence that is in an
-    encrypted format, such as PDF.</p>
-  </div>
+      <p>This attribute can be used to specify the password to be used when reading an image or image sequence that is in an encrypted format, such as PDF.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="background_color">background_color</h3>
+    <div class="sig">
+      <h3 id="background_color">background_color</h3>
 
-    <p><span class="arg">self.</span>background_color= <span class=
-    "arg">string</span> or <span class="arg">pixel</span></p>
-  </div>
+      <p><span class="arg">self.</span>background_color= <span class="arg">string</span> or <span class="arg">pixel</span></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Set the image background color. The default is "white".</p>
+      <p>Set the image background color. The default is "white".</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>A <a href="imusage.html#color_names">color name</a> or a
-    <a href="struct.html#Pixel">Pixel</a>.</p>
-  </div>
+      <p>A <a href="imusage.html#color_names">color name</a> or a <a href="struct.html#Pixel">Pixel</a>.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="border_color">border_color</h3>
+    <div class="sig">
+      <h3 id="border_color">border_color</h3>
 
-    <p><span class="arg">self.</span>border_color= <span class=
-    "arg">string</span> or <span class="arg">pixel</span></p>
-  </div>
+      <p><span class="arg">self.</span>border_color= <span class="arg">string</span> or <span class="arg">pixel</span></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Set the image border color. The default is "#dfdfdf".</p>
+      <p>Set the image border color. The default is "#dfdfdf".</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>A <a href="imusage.html#color_names">color name</a> or a
-    <a href="struct.html#Pixel">Pixel</a>.</p>
-  </div>
+      <p>A <a href="imusage.html#color_names">color name</a> or a <a href="struct.html#Pixel">Pixel</a>.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="caption">caption</h3>
+    <div class="sig">
+      <h3 id="caption">caption</h3>
 
-    <p><span class="arg">self.</span>caption= <span class=
-    "arg">string</span></p>
-  </div>
+      <p><span class="arg">self.</span>caption= <span class="arg">string</span></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>When used with <a href="image1.html#read">Image.read</a>,
-    assigns a caption to an image. The caption is an image
-    property:</p>
-    <pre>
+      <p>When used with <a href="image1.html#read">Image.read</a>, assigns a caption to an image. The caption is an image property:</p>
+      <pre>
 img = Magick::Image.read("xc:white") do |options|
   options.caption = "a new caption"
   options.size = "20x20"
 end
 p img.first.properties &raquo; {"caption"=&gt;"a new caption"}
 p img.first['caption'] &raquo; "a new caption"
-</pre>
+</pre
+      >
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>A string.</p>
-  </div>
+      <p>A string.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="colorspace">colorspace</h3>
+    <div class="sig">
+      <h3 id="colorspace">colorspace</h3>
 
-    <p><span class="arg">self.</span>colorspace= <span class=
-    "arg">colorspace</span></p>
-  </div>
+      <p>
+        <span class="arg">self.</span>colorspace=
+        <span class="arg">colorspace</span>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Specifies the image pixel interpretation.</p>
+      <p>Specifies the image pixel interpretation.</p>
 
-    <h4>Arguments</h4>A <a href=
-    "constants.html#ColorspaceType">ColorspaceType</a> constant.
-  </div>
+      <h4>Arguments</h4>
+      A <a href="constants.html#ColorspaceType">ColorspaceType</a> constant.
+    </div>
 
-  <div class="sig">
-    <h3 id="comment">comment</h3>
+    <div class="sig">
+      <h3 id="comment">comment</h3>
 
-    <p><span class="arg">self.</span>comment= <span class=
-    "arg">string</span></p>
-  </div>
+      <p><span class="arg">self.</span>comment= <span class="arg">string</span></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p class="imquote">Use this option to assign a specific comment
-    to the image, when writing to an image format that supports
-    comments.</p>
+      <p class="imquote">Use this option to assign a specific comment to the image, when writing to an image format that supports comments.</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p class="imquote">You can include the image filename, type,
-    width, height, or other image attribute by embedding special
-    format characters listed under the <a href=
-    "draw.html#annotate">annotate</a> method.</p>
-  </div>
+      <p class="imquote">
+        You can include the image filename, type, width, height, or other image attribute by embedding special format characters listed under the
+        <a href="draw.html#annotate">annotate</a> method.
+      </p>
+    </div>
 
-  <div class="sig">
-    <h3 id="compression">compression</h3>
+    <div class="sig">
+      <h3 id="compression">compression</h3>
 
-    <p><span class="arg">self.</span>compression= <span class=
-    "arg">type</span></p>
-  </div>
+      <p><span class="arg">self.</span>compression= <span class="arg">type</span></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Specifies the type of compression used when writing the
-    image. Only some image formats support compression. For those
-    that do, only some compression types are supported. If you
-    specify an compression type that is not supported, the default
-    compression type (usually NoCompression) is used instead.</p>
+      <p>
+        Specifies the type of compression used when writing the image. Only some image formats support compression. For those that do, only some compression
+        types are supported. If you specify an compression type that is not supported, the default compression type (usually NoCompression) is used instead.
+      </p>
 
-    <p>Some compression types support varying levels of
-    compression. See the <a href=
-    "#quality"><code>quality</code></a> attribute.</p>
+      <p>
+        Some compression types support varying levels of compression. See the
+        <a href="#quality"><code>quality</code></a> attribute.
+      </p>
 
-    <p>The following table shows the image formats that support
-    compression. For each format, the right-hand column shows the
-    supported compression types. The default compression type is
-    shown in <strong>bold</strong>.</p>
+      <p>
+        The following table shows the image formats that support compression. For each format, the right-hand column shows the supported compression types. The
+        default compression type is shown in <strong>bold</strong>.
+      </p>
 
-    <table class="simple_table" summary=
-    "supported compression types by image format">
-      <caption>
-        Supported Compression Types
-      </caption>
+      <table class="simple_table" summary="supported compression types by image format">
+        <caption>
+          Supported Compression Types
+        </caption>
 
-      <tr>
-        <th>Format</th>
+        <tr>
+          <th>Format</th>
 
-        <th>Compression Types</th>
-      </tr>
+          <th>Compression Types</th>
+        </tr>
 
-      <tr>
-        <td>BMP</td>
+        <tr>
+          <td>BMP</td>
 
-        <td><strong>NoCompression</strong>, RLECompression</td>
-      </tr>
+          <td><strong>NoCompression</strong>, RLECompression</td>
+        </tr>
 
-      <tr>
-        <td>DIB</td>
+        <tr>
+          <td>DIB</td>
 
-        <td><strong>NoCompression</strong>, RLECompression</td>
-      </tr>
+          <td><strong>NoCompression</strong>, RLECompression</td>
+        </tr>
 
-      <tr>
-        <td>FPX</td>
+        <tr>
+          <td>FPX</td>
 
-        <td><strong>NoCompression</strong>, JPEGCompression</td>
-      </tr>
+          <td><strong>NoCompression</strong>, JPEGCompression</td>
+        </tr>
 
-      <tr>
-        <td>GIF</td>
+        <tr>
+          <td>GIF</td>
 
-        <td><strong>LZWCompression</strong></td>
-      </tr>
+          <td><strong>LZWCompression</strong></td>
+        </tr>
 
-      <tr>
-        <td>JNG</td>
+        <tr>
+          <td>JNG</td>
 
-        <td><strong>NoCompression</strong>, JPEGCompression</td>
-      </tr>
+          <td><strong>NoCompression</strong>, JPEGCompression</td>
+        </tr>
 
-      <tr>
-        <td>JP2</td>
+        <tr>
+          <td>JP2</td>
 
-        <td><strong>JPEGCompression</strong>,
-        LosslessJPEGCompression</td>
-      </tr>
+          <td><strong>JPEGCompression</strong>, LosslessJPEGCompression</td>
+        </tr>
 
-      <tr>
-        <td>JPG</td>
+        <tr>
+          <td>JPG</td>
 
-        <td><strong>JPEGCompression</strong>,
-        LosslessJPEGCompression</td>
-      </tr>
+          <td><strong>JPEGCompression</strong>, LosslessJPEGCompression</td>
+        </tr>
 
-      <tr>
-        <td>MIFF</td>
+        <tr>
+          <td>MIFF</td>
 
-        <td><strong>NoCompression</strong>, RLECompression</td>
-      </tr>
+          <td><strong>NoCompression</strong>, RLECompression</td>
+        </tr>
 
-      <tr>
-        <td>MNG</td>
+        <tr>
+          <td>MNG</td>
 
-        <td><strong>NoCompression</strong>, JPEGCompression</td>
-      </tr>
+          <td><strong>NoCompression</strong>, JPEGCompression</td>
+        </tr>
 
-      <tr>
-        <td>PALM</td>
+        <tr>
+          <td>PALM</td>
 
-        <td><strong>NoCompression</strong>, FaxCompression,
-        RLECompression</td>
-      </tr>
+          <td><strong>NoCompression</strong>, FaxCompression, RLECompression</td>
+        </tr>
 
-      <tr>
-        <td>PDB</td>
+        <tr>
+          <td>PDB</td>
 
-        <td><strong>NoCompression</strong>, RLECompression</td>
-      </tr>
+          <td><strong>NoCompression</strong>, RLECompression</td>
+        </tr>
 
-      <tr>
-        <td>PDF</td>
+        <tr>
+          <td>PDF</td>
 
-        <td><strong>NoCompression</strong>, JPEGCompression,
-        LZWCompression, ZipCompression</td>
-      </tr>
+          <td><strong>NoCompression</strong>, JPEGCompression, LZWCompression, ZipCompression</td>
+        </tr>
 
-      <tr>
-        <td>PICT</td>
+        <tr>
+          <td>PICT</td>
 
-        <td><strong>NoCompression</strong>, JPEGCompression</td>
-      </tr>
+          <td><strong>NoCompression</strong>, JPEGCompression</td>
+        </tr>
 
-      <tr>
-        <td>PNG</td>
+        <tr>
+          <td>PNG</td>
 
-        <td><strong>NoCompression</strong>, ZIPCompression</td>
-      </tr>
+          <td><strong>NoCompression</strong>, ZIPCompression</td>
+        </tr>
 
-      <tr>
-        <td>PS</td>
+        <tr>
+          <td>PS</td>
 
-        <td><strong>NoCompression</strong>, RLECompression</td>
-      </tr>
+          <td><strong>NoCompression</strong>, RLECompression</td>
+        </tr>
 
-      <tr>
-        <td>PS2</td>
+        <tr>
+          <td>PS2</td>
 
-        <td><strong>RLECompression</strong>, FaxCompression,
-        JPEGCompression, LZWCompression, NoCompression</td>
-      </tr>
+          <td><strong>RLECompression</strong>, FaxCompression, JPEGCompression, LZWCompression, NoCompression</td>
+        </tr>
 
-      <tr>
-        <td>PS3</td>
+        <tr>
+          <td>PS3</td>
 
-        <td><strong>FaxCompression</strong>, JPEGCompression,
-        LZWCompression, NoCompression, RLECompression,
-        ZipCompression</td>
-      </tr>
+          <td><strong>FaxCompression</strong>, JPEGCompression, LZWCompression, NoCompression, RLECompression, ZipCompression</td>
+        </tr>
 
-      <tr>
-        <td>TIFF</td>
+        <tr>
+          <td>TIFF</td>
 
-        <td><strong>NoCompression</strong>, FaxCompression,
-        Group4Compression, JPEGCompression, LZWCompression,
-        RLECompression, ZipCompression</td>
-      </tr>
-    </table>
+          <td><strong>NoCompression</strong>, FaxCompression, Group4Compression, JPEGCompression, LZWCompression, RLECompression, ZipCompression</td>
+        </tr>
+      </table>
 
-    <h5>Notes</h5>
+      <h5>Notes</h5>
 
-    <ol id="compression_notes">
-      <li>NoCompression is accepted for all image formats. Except
-      as noted in the table, it is the default.</li>
+      <ol id="compression_notes">
+        <li>NoCompression is accepted for all image formats. Except as noted in the table, it is the default.</li>
 
-      <li>This table is based on my examination of the ImageMagick
-      source code. It is not necessarily complete and it may
-      contain mistakes. If you need an authoritative list, you
-      should consult the ImageMagick developers.</li>
-    </ol>
+        <li>
+          This table is based on my examination of the ImageMagick source code. It is not necessarily complete and it may contain mistakes. If you need an
+          authoritative list, you should consult the ImageMagick developers.
+        </li>
+      </ol>
 
-    <h4>Arguments</h4>A <a href=
-    "constants.html#CompressionType">CompressionType</a> constant.
-  </div>
+      <h4>Arguments</h4>
+      A <a href="constants.html#CompressionType">CompressionType</a> constant.
+    </div>
 
-  <div class="sig">
-    <h3 id="density">density</h3>
+    <div class="sig">
+      <h3 id="density">density</h3>
 
-    <p><span class="arg">self.</span>density= <span class=
-    "arg">string</span> or <span class="arg">geometry</span></p>
-  </div>
+      <p><span class="arg">self.</span>density= <span class="arg">string</span> or <span class="arg">geometry</span></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Specifies the vertical and horizontal resolution in pixels.
-    The default density is "72.0x72.0". This attribute can be used
-    when writing JBIG, PCL, PS, PS2, and PS3 format images.</p>
+      <p>
+        Specifies the vertical and horizontal resolution in pixels. The default density is "72.0x72.0". This attribute can be used when writing JBIG, PCL, PS,
+        PS2, and PS3 format images.
+      </p>
 
-    <p>This attribute can also be used to specify the width and
-    height of HISTOGRAM format images. For HISTOGRAM, the default
-    is 256x200.</p>
+      <p>This attribute can also be used to specify the width and height of HISTOGRAM format images. For HISTOGRAM, the default is 256x200.</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>The argument can be either a string in the form "XxY" where
-    "X" is the horizontal resolution and "Y" is the vertical
-    resolution, or a <a href="struct.html#Geometry">Geometry</a>
-    object where <code>width</code> is the horizontal resolution
-    and <code>height</code> is the vertical resolution.</p>
-  </div>
+      <p>
+        The argument can be either a string in the form "XxY" where "X" is the horizontal resolution and "Y" is the vertical resolution, or a
+        <a href="struct.html#Geometry">Geometry</a> object where <code>width</code> is the horizontal resolution and <code>height</code> is the vertical
+        resolution.
+      </p>
+    </div>
 
-  <div class="sig">
-    <h3 id="delay">delay</h3>
+    <div class="sig">
+      <h3 id="delay">delay</h3>
 
-    <p><span class="arg">self.</span>delay= <span class=
-    "arg">integer</span></p>
-  </div>
+      <p><span class="arg">self.</span>delay= <span class="arg">integer</span></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p class="imquote">This attribute is useful for regulating the
-    animation of image sequences. <em>delay</em>/100 seconds must
-    expire before the display of the next image. The default is no
-    delay between each showing of the image sequence. The maximum
-    delay is 65535.</p>
-  </div>
+      <p class="imquote">
+        This attribute is useful for regulating the animation of image sequences. <em>delay</em>/100 seconds must expire before the display of the next image.
+        The default is no delay between each showing of the image sequence. The maximum delay is 65535.
+      </p>
+    </div>
 
-  <div class="sig">
-    <h3 id="depth">depth</h3>
+    <div class="sig">
+      <h3 id="depth">depth</h3>
 
-    <p><span class="arg">self.</span>depth= <span class=
-    "arg">integer</span></p>
-  </div>
+      <p><span class="arg">self.</span>depth= <span class="arg">integer</span></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Specifies the image depth.</p>
+      <p>Specifies the image depth.</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>Either 8, 16, or 32. You can specify 16 and 32 only when
-    ImageMagick was compiled with a QuantumDepth that allows these
-    depth values.</p>
+      <p>Either 8, 16, or 32. You can specify 16 and 32 only when ImageMagick was compiled with a QuantumDepth that allows these depth values.</p>
 
-    <p>Use <code>depth</code> to specify the depth of CMYK, GRAY,
-    RGB, RGBA, MAP, and XC format images. See also <a href=
-    "#size"><code>size</code></a>.</p>
-  </div>
+      <p>
+        Use <code>depth</code> to specify the depth of CMYK, GRAY, RGB, RGBA, MAP, and XC format images. See also <a href="#size"><code>size</code></a
+        >.
+      </p>
+    </div>
 
-  <div class="sig">
-    <h3 id="dispose">dispose</h3>
+    <div class="sig">
+      <h3 id="dispose">dispose</h3>
 
-    <p><span class="arg">self.</span>dispose= <span class=
-    "arg">type</span></p>
-  </div>
+      <p><span class="arg">self.</span>dispose= <span class="arg">type</span></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p class="imquote">The argument indicates the way in which the
-    graphic is to be treated after being displayed.</p>
+      <p class="imquote">The argument indicates the way in which the graphic is to be treated after being displayed.</p>
 
-    <h4>Argument</h4>
+      <h4>Argument</h4>
 
-    <p>A <a href="constants.html#DisposeType">DisposeType</a>
-    constant.</p>
-  </div>
+      <p>A <a href="constants.html#DisposeType">DisposeType</a> constant.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="dither">dither</h3>
+    <div class="sig">
+      <h3 id="dither">dither</h3>
 
-    <p><span class="arg">self.</span>dither= <span class=
-    "arg"><code>true</code></span> or <span class=
-    "arg"><code>false</code></span></p>
-  </div>
+      <p>
+        <span class="arg">self.</span>dither= <span class="arg"><code>true</code></span> or
+        <span class="arg"><code>false</code></span>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>This attribute can be used when writing GIF images.</p>
+      <p>This attribute can be used when writing GIF images.</p>
 
-    <p class="imquote">Apply Floyd/Steinberg error diffusion to the
-    image. The basic strategy of dithering is to trade intensity
-    resolution for spatial resolution by averaging the intensities
-    of several neighboring pixels. Images which suffer from severe
-    contouring when reducing colors can be improved with this
-    option.</p>
-  </div>
+      <p class="imquote">
+        Apply Floyd/Steinberg error diffusion to the image. The basic strategy of dithering is to trade intensity resolution for spatial resolution by averaging
+        the intensities of several neighboring pixels. Images which suffer from severe contouring when reducing colors can be improved with this option.
+      </p>
+    </div>
 
-  <div class="sig">
-    <h3 id="endian">endian</h3>
+    <div class="sig">
+      <h3 id="endian">endian</h3>
 
-    <p><span class="arg">self</span>.endian= <span class=
-    "arg">type</span></p>
-  </div>
+      <p><span class="arg">self</span>.endian= <span class="arg">type</span></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Specify the endianess of the image when reading the image
-    file.</p>
+      <p>Specify the endianess of the image when reading the image file.</p>
 
-    <h4>Argument</h4>
+      <h4>Argument</h4>
 
-    <p>One of the following Magick::EndianType enum values:</p>
+      <p>One of the following Magick::EndianType enum values:</p>
 
-    <ul>
-      <li>MSBEndian</li>
+      <ul>
+        <li>MSBEndian</li>
 
-      <li>LSBEndian</li>
-    </ul>
-  </div>
+        <li>LSBEndian</li>
+      </ul>
+    </div>
 
-  <div class="sig">
-    <h3 id="extract">extract</h3>
+    <div class="sig">
+      <h3 id="extract">extract</h3>
 
-    <p><span class="arg"><em>self.</em></span>extract= <span class=
-    "arg">string</span> or <span class="arg">geometry</span></p>
-  </div>
+      <p>
+        <span class="arg"><em>self.</em></span
+        >extract= <span class="arg">string</span> or
+        <span class="arg">geometry</span>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Specifies a portion of an image to be extracted when the
-    image is constituted. This attribute can be used to identify a
-    subset of an image that is otherwise too large to keep in
-    memory.</p>
+      <p>
+        Specifies a portion of an image to be extracted when the image is constituted. This attribute can be used to identify a subset of an image that is
+        otherwise too large to keep in memory.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>Either a geometry string or a <a href=
-    "struct.html#Geometry">Geometry</a> object. For example:
-    <code>options.extract = "200x200+100+100"</code>.</p>
-  </div>
+      <p>
+        Either a geometry string or a
+        <a href="struct.html#Geometry">Geometry</a> object. For example: <code>options.extract = "200x200+100+100"</code>.
+      </p>
+    </div>
 
-  <div class="sig">
-    <h3 id="filename">filename</h3>
+    <div class="sig">
+      <h3 id="filename">filename</h3>
 
-    <p><span class="arg">self.</span>filename= <span class=
-    "arg">string</span></p>
-  </div>
+      <p><span class="arg">self.</span>filename= <span class="arg">string</span></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>See <a href="image1.html#capture">capture</a>.</p>
-  </div>
+      <p>See <a href="image1.html#capture">capture</a>.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="fill">fill</h3>
+    <div class="sig">
+      <h3 id="fill">fill</h3>
 
-    <p><span class="arg">self.</span>fill= <span class=
-    "arg">string</span> or <span class="arg">pixel</span></p>
-  </div>
+      <p>
+        <span class="arg">self.</span>fill= <span class="arg">string</span> or
+        <span class="arg">pixel</span>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Specifies the fill color to use when creating an image with
-    the "caption:" format..</p>
+      <p>Specifies the fill color to use when creating an image with the "caption:" format..</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>A <a href="imusage.html#color_names">color name</a> or a
-    <a href="struct.html#Pixel">pixel</a>.</p>
-  </div>
+      <p>A <a href="imusage.html#color_names">color name</a> or a <a href="struct.html#Pixel">pixel</a>.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="font">font</h3>
+    <div class="sig">
+      <h3 id="font">font</h3>
 
-    <p><span class="arg">self.</span>font= <span class=
-    "arg">string</span></p>
-  </div>
+      <p><span class="arg">self.</span>font= <span class="arg">string</span></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Set the text rendering font.</p>
-  </div>
+      <p>Set the text rendering font.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="format">format</h3>
+    <div class="sig">
+      <h3 id="format">format</h3>
 
-    <p><span class="arg">self.</span>format= <span class=
-    "arg">string</span></p>
-  </div>
+      <p><span class="arg">self.</span>format= <span class="arg">string</span></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Set the image format, "GIF" or "JPG" for example.</p>
+      <p>Set the image format, "GIF" or "JPG" for example.</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>See <a href=
-    "http://www.imagemagick.org/script/formats.php">File
-    Formats</a>.</p>
-  </div>
+      <p>
+        See
+        <a href="http://www.imagemagick.org/script/formats.php">File Formats</a>.
+      </p>
+    </div>
 
-  <div class="sig">
-    <h3 id="fuzz">fuzz</h3>
+    <div class="sig">
+      <h3 id="fuzz">fuzz</h3>
 
-    <p><span class="arg">self.</span>fuzz= <span class=
-    "arg">number</span> or <span class="arg">string</span></p>
-  </div>
+      <p>
+        <span class="arg">self.</span>fuzz= <span class="arg">number</span> or
+        <span class="arg">string</span>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Set the level of "fuzziness" for comparing pixels. By
-    default the pixels must be identical to be considered equal.
-    The larger the <code>fuzz</code> value the more difference is
-    tolerated. See <a href=
-    "imageattrs.html#fuzz">Image#fuzz</a>.</p>
+      <p>
+        Set the level of "fuzziness" for comparing pixels. By default the pixels must be identical to be considered equal. The larger the
+        <code>fuzz</code> value the more difference is tolerated. See <a href="imageattrs.html#fuzz">Image#fuzz</a>.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>The argument may be a numeric value or a string in the form
-    "NN%". In the second case, the argument is computed as a
-    percentage of <a href=
-    "constants.html#Miscellaneous_constants">QuantumRange</a>. For
-    example, a value of '5%' sets <code>fuzz</code> to
-    0.05*QuantumRange.</p>
-  </div>
+      <p>
+        The argument may be a numeric value or a string in the form "NN%". In the second case, the argument is computed as a percentage of
+        <a href="constants.html#Miscellaneous_constants">QuantumRange</a>. For example, a value of '5%' sets <code>fuzz</code> to 0.05*QuantumRange.
+      </p>
+    </div>
 
-  <div class="sig">
-    <h3 id="gravity">gravity</h3>
+    <div class="sig">
+      <h3 id="gravity">gravity</h3>
 
-    <p><span class="arg">self.</span>gravity= <span class=
-    "arg">gravity</span></p>
-  </div>
+      <p><span class="arg">self.</span>gravity= <span class="arg">gravity</span></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p class="imquote">The direction text gravitates to when
-    annotating the image.</p>
+      <p class="imquote">The direction text gravitates to when annotating the image.</p>
 
-    <p class="imquote">The direction you choose specifies where to
-    position the text when annotating the image. For example, a
-    gravity of <code>CenterGravity</code> forces the text to be
-    centered within the image. By default, the image gravity is
-    <code>NorthWestGravity</code>.</p>
+      <p class="imquote">
+        The direction you choose specifies where to position the text when annotating the image. For example, a gravity of
+        <code>CenterGravity</code> forces the text to be centered within the image. By default, the image gravity is <code>NorthWestGravity</code>.
+      </p>
 
-    <p>This attribute can be used to position the text when
-    creating an image with the "caption:" format.</p>
+      <p>This attribute can be used to position the text when creating an image with the "caption:" format.</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>A <a href="constants.html#GravityType">GravityType</a>
-    constant.</p>
-  </div>
+      <p>A <a href="constants.html#GravityType">GravityType</a> constant.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="image_type">image_type</h3>
+    <div class="sig">
+      <h3 id="image_type">image_type</h3>
 
-    <p><span class="arg">self.</span>image_type= <span class=
-    "arg">image_type</span></p>
-  </div>
+      <p>
+        <span class="arg">self.</span>image_type=
+        <span class="arg">image_type</span>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>The image type classification. For example, GrayscaleType.
-    Don't confuse this attribute with the <a href=
-    "#format">format</a> such as "GIF" or "JPG".</p>
+      <p>
+        The image type classification. For example, GrayscaleType. Don't confuse this attribute with the <a href="#format">format</a> such as "GIF" or "JPG".
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>An <a href="constants.html#ImageType">ImageType</a>
-    constant.</p>
-  </div>
+      <p>An <a href="constants.html#ImageType">ImageType</a> constant.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="interlace">interlace</h3>
+    <div class="sig">
+      <h3 id="interlace">interlace</h3>
 
-    <p><span class="arg">self.</span>interlace= <span class=
-    "arg">type</span></p>
-  </div>
+      <p><span class="arg">self.</span>interlace= <span class="arg">type</span></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p><span class="imquote">[S]pecify the type of interlacing
-    scheme for raw image formats such as RGB or YUV. NoInterlace
-    means do not interlace, LineInterlace uses scanline
-    interlacing, and PlaneInterlace uses plane interlacing.
-    PartitionInterlace is like PlaneInterlace except the different
-    planes are saved to individual files (e.g. image.R, image.G,
-    and image.B). Use LineInterlace or PlaneInterlace to create an
-    interlaced GIF or progressive JPEG image.</span> The default is
-    NoInterlace.</p>
+      <p>
+        <span class="imquote"
+          >[S]pecify the type of interlacing scheme for raw image formats such as RGB or YUV. NoInterlace means do not interlace, LineInterlace uses scanline
+          interlacing, and PlaneInterlace uses plane interlacing. PartitionInterlace is like PlaneInterlace except the different planes are saved to individual
+          files (e.g. image.R, image.G, and image.B). Use LineInterlace or PlaneInterlace to create an interlaced GIF or progressive JPEG image.</span
+        >
+        The default is NoInterlace.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>An <a href="constants.html#InterlaceType">InterlaceType</a>
-    constant.</p>
-  </div>
+      <p>An <a href="constants.html#InterlaceType">InterlaceType</a> constant.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="label">label</h3>
+    <div class="sig">
+      <h3 id="label">label</h3>
 
-    <p><span class="arg">self.</span>label= <span class=
-    "arg">string</span></p>
-  </div>
+      <p><span class="arg">self.</span>label= <span class="arg">string</span></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p><span class="imquote">Use this option to assign a specific
-    label to the image, when writing to an image format that
-    supports labels, such as TIFF, PNG, MIFF, or PostScript. You
-    can include the the image filename, type, width, height, or
-    other image attribute by embedding special format
-    characters.</span> See <a href=
-    "draw.html#annotate">annotate</a> for details.</p>
-  </div>
+      <p>
+        <span class="imquote"
+          >Use this option to assign a specific label to the image, when writing to an image format that supports labels, such as TIFF, PNG, MIFF, or
+          PostScript. You can include the the image filename, type, width, height, or other image attribute by embedding special format characters.</span
+        >
+        See <a href="draw.html#annotate">annotate</a> for details.
+      </p>
+    </div>
 
-  <div class="sig">
-    <h3 id="matte_color">matte_color</h3>
+    <div class="sig">
+      <h3 id="matte_color">matte_color</h3>
 
-    <p><span class="arg">self.</span>matte_color= <span class=
-    "arg">string</span> or <span class="arg">pixel</span></p>
-  </div>
+      <p><span class="arg">self.</span>matte_color= <span class="arg">string</span> or <span class="arg">pixel</span></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Set the image transparent color. The default is
-    "#bdbdbd".</p>
+      <p>Set the image transparent color. The default is "#bdbdbd".</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>A <a href="imusage.html#color_names">color name</a> or a
-    <a href="struct.html#Pixel">pixel</a>.</p>
-  </div>
+      <p>A <a href="imusage.html#color_names">color name</a> or a <a href="struct.html#Pixel">pixel</a>.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="monitor">monitor</h3>
+    <div class="sig">
+      <h3 id="monitor">monitor</h3>
 
-    <p><span class="arg">self.</span>monitor= <span class=
-    "arg">proc</span></p>
-  </div>
+      <p><span class="arg">self.</span>monitor= <span class="arg">proc</span></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Set a <code>Proc</code> object as a progress monitor. This
-    proc can be used to monitor the progress of methods that accept
-    optional arguments such as <code>read</code> and
-    <code>write</code>. To stop monitoring, set the monitor to
-    <code>nil</code>. See <a href=
-    "imageattrs.html#monitor">Image#monitor</a> for more
-    information about the proc. This attribute is set-only.</p>
+      <p>
+        Set a <code>Proc</code> object as a progress monitor. This proc can be used to monitor the progress of methods that accept optional arguments such as
+        <code>read</code> and <code>write</code>. To stop monitoring, set the monitor to <code>nil</code>. See
+        <a href="imageattrs.html#monitor">Image#monitor</a> for more information about the proc. This attribute is set-only.
+      </p>
 
-    <p>If you assign a monitor to an image with
-    <code>options.monitor=</code> when the image is created, the image
-    object inherits the monitor. Any methods applied to the new
-    image will be monitored as well.</p>
+      <p>
+        If you assign a monitor to an image with
+        <code>options.monitor=</code> when the image is created, the image object inherits the monitor. Any methods applied to the new image will be monitored
+        as well.
+      </p>
 
-    <p>This method supercedes the <code>Magick.set_monitor</code>
-    method.</p>
-  </div>
+      <p>This method supercedes the <code>Magick.set_monitor</code> method.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="monochrome">monochrome</h3>
+    <div class="sig">
+      <h3 id="monochrome">monochrome</h3>
 
-    <p><span class="arg">self.</span>monochrome= <span class=
-    "arg"><code>true</code></span> or <span class=
-    "arg"><code>false</code></span></p>
-  </div>
+      <p>
+        <span class="arg">self.</span>monochrome= <span class="arg"><code>true</code></span> or
+        <span class="arg"><code>false</code></span>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Transform the image to black and white on input. Only the
-    EPT, PDF, and PS formats respect this attribute.</p>
-  </div>
+      <p>Transform the image to black and white on input. Only the EPT, PDF, and PS formats respect this attribute.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="orientation">orientation</h3>
+    <div class="sig">
+      <h3 id="orientation">orientation</h3>
 
-    <p><span class="arg">self</span>.orientation=<span class=
-    "arg">type</span></p>
-  </div>
+      <p><span class="arg">self</span>.orientation=<span class="arg">type</span></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Specifies the orientation of the image pixels.</p>
+      <p>Specifies the orientation of the image pixels.</p>
 
-    <h4>Argument</h4>
+      <h4>Argument</h4>
 
-    <p>An <a href=
-    "constants.html#OrientationType">OrientationType</a> value.</p>
-  </div>
+      <p>An <a href="constants.html#OrientationType">OrientationType</a> value.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="origin">origin</h3>
+    <div class="sig">
+      <h3 id="origin">origin</h3>
 
-    <p><span class="arg">self</span>.origin=<span class=
-    "arg">string</span> or <span class="arg">geometry</span></p>
-  </div>
+      <p>
+        <span class="arg">self</span>.origin=<span class="arg">string</span> or
+        <span class="arg">geometry</span>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Set the image origin.</p>
+      <p>Set the image origin.</p>
 
-    <h4>Argument</h4>
+      <h4>Argument</h4>
 
-    <p>A <a href="imusage.html#geometry">geometry string</a> of the
-    form <code>+x+y</code> (a "-" may be used instead of "+" to
-    indicate a negative offset) or a <a href=
-    "struct.html#Geometry">Geometry</a> object.</p>
-  </div>
+      <p>
+        A <a href="imusage.html#geometry">geometry string</a> of the form <code>+x+y</code> (a "-" may be used instead of "+" to indicate a negative offset) or
+        a <a href="struct.html#Geometry">Geometry</a> object.
+      </p>
+    </div>
 
-  <div class="sig">
-    <h3 id="page">page</h3>
+    <div class="sig">
+      <h3 id="page">page</h3>
 
-    <p><span class="arg">self.</span>page= <span class=
-    "arg">string</span> or <span class="arg">geometry</span></p>
-  </div>
+      <p>
+        <span class="arg">self.</span>page= <span class="arg">string</span> or
+        <span class="arg">geometry</span>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Set the equivalent size of the Postscript page. The default
-    is "612x792&gt;".</p>
+      <p>Set the equivalent size of the Postscript page. The default is "612x792&gt;".</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>A <a href="imusage.html#geometry">geometry string</a> or a
-    <a href="struct.html#Geometry">Geometry</a> object.</p>
-  </div>
+      <p>A <a href="imusage.html#geometry">geometry string</a> or a <a href="struct.html#Geometry">Geometry</a> object.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="pointsize">pointsize</h3>
+    <div class="sig">
+      <h3 id="pointsize">pointsize</h3>
 
-    <p><span class="arg">self.</span>pointsize= <span class=
-    "arg">number</span></p>
-  </div>
+      <p><span class="arg">self.</span>pointsize= <span class="arg">number</span></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Set the font size in points. Useful when creating "caption:"
-    format images, for example.</p>
-  </div>
+      <p>Set the font size in points. Useful when creating "caption:" format images, for example.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="quality">quality</h3>
+    <div class="sig">
+      <h3 id="quality">quality</h3>
 
-    <p><span class="arg">self.</span>quality= <span class=
-    "arg">integer</span></p>
-  </div>
+      <p><span class="arg">self.</span>quality= <span class="arg">integer</span></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>The compression level for JPEG, MPEG, JPEG-2000, MIFF, MNG,
-    and PNG image format. Corresponds to ImageMagick's -quality
-    option. The default is 75. See <em><a href=
-    "comtasks.html#compressing">Compressing image
-    files</a></em>.</p>
-  </div>
+      <p>
+        The compression level for JPEG, MPEG, JPEG-2000, MIFF, MNG, and PNG image format. Corresponds to ImageMagick's -quality option. The default is 75. See
+        <em><a href="comtasks.html#compressing">Compressing image files</a></em
+        >.
+      </p>
+    </div>
 
-  <div class="sig">
-    <h3 id="sampling_factor">sampling_factor</h3>
+    <div class="sig">
+      <h3 id="sampling_factor">sampling_factor</h3>
 
-    <p><span class="arg">self.</span>sampling_factor= <span class=
-    "arg">string</span></p>
-  </div>
+      <p>
+        <span class="arg">self.</span>sampling_factor=
+        <span class="arg">string</span>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p class="imquote">sampling factors used by JPEG or MPEG-2
-    encoder and YUV decoder/encoder.</p>
+      <p class="imquote">sampling factors used by JPEG or MPEG-2 encoder and YUV decoder/encoder.</p>
 
-    <p class="imquote">This attribute specifies the sampling
-    factors to be used by the JPEG encoder for chroma downsampling.
-    If this attribute is omitted, the JPEG library will use its own
-    default values. When reading or writing the YUV format and when
-    writing the M2V (MPEG-2) format, use sampling-factor="2x1" to
-    specify the 4:2:2 downsampling method.</p>
+      <p class="imquote">
+        This attribute specifies the sampling factors to be used by the JPEG encoder for chroma downsampling. If this attribute is omitted, the JPEG library
+        will use its own default values. When reading or writing the YUV format and when writing the M2V (MPEG-2) format, use sampling-factor="2x1" to specify
+        the 4:2:2 downsampling method.
+      </p>
 
-    <h4>Argument</h4>
+      <h4>Argument</h4>
 
-    <p>A string in the form
-    "<em>horizontal-factor</em><strong>x</strong><em>vertical-factor</em>"</p>
-  </div>
+      <p>A string in the form "<em>horizontal-factor</em><strong>x</strong><em>vertical-factor</em>"</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="scene">scene</h3>
+    <div class="sig">
+      <h3 id="scene">scene</h3>
 
-    <p><span class="arg">self</span>.scene= <span class=
-    "arg">number</span></p>
-  </div>
+      <p><span class="arg">self</span>.scene= <span class="arg">number</span></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Set the scene number of an image or the first image in a
-    sequence.</p>
-  </div>
+      <p>Set the scene number of an image or the first image in a sequence.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="server_name">server_name</h3>
+    <div class="sig">
+      <h3 id="server_name">server_name</h3>
 
-    <p><span class="arg">self.</span>server_name= <span class=
-    "arg">string</span></p>
-  </div>
+      <p>
+        <span class="arg">self.</span>server_name=
+        <span class="arg">string</span>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Set the X11 display to obtain fonts from.</p>
-  </div>
+      <p>Set the X11 display to obtain fonts from.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="size">size</h3>
+    <div class="sig">
+      <h3 id="size">size</h3>
 
-    <p><span class="arg"><em>self.</em>size= <em>string</em></span>
-    or <span class="arg">geometry</span></p>
-  </div>
+      <p>
+        <span class="arg"><em>self.</em>size= <em>string</em></span> or
+        <span class="arg">geometry</span>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Set the width and height of the image when reading a
-    <a href="imusage.html#builtin_formats">built-in image
-    format</a> that does not have an inherent size, or when reading
-    an image from a multi-resolution file format such as Photo CD,
-    JBIG, or JPEG.</p>
+      <p>
+        Set the width and height of the image when reading a
+        <a href="imusage.html#builtin_formats">built-in image format</a> that does not have an inherent size, or when reading an image from a multi-resolution
+        file format such as Photo CD, JBIG, or JPEG.
+      </p>
 
-    <p>Use <code>size</code> to specify the width and height of
-    images in the CMYK, DIB, EMF, GRAY, RGB, RGBA, UYVY, YUV, or XC
-    formats, the width and height of some <a href=
-    "imusage.html#builtin_formats">built in formats</a>, or the
-    subimage size of PTIF-format images.</p>
+      <p>
+        Use <code>size</code> to specify the width and height of images in the CMYK, DIB, EMF, GRAY, RGB, RGBA, UYVY, YUV, or XC formats, the width and height
+        of some <a href="imusage.html#builtin_formats">built in formats</a>, or the subimage size of PTIF-format images.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>A <a href="imusage.html#geometry">geometry string</a> or a
-    <a href="struct.html#Geometry">Geometry</a> object.</p>
-  </div>
+      <p>A <a href="imusage.html#geometry">geometry string</a> or a <a href="struct.html#Geometry">Geometry</a> object.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="stroke">stroke</h3>
+    <div class="sig">
+      <h3 id="stroke">stroke</h3>
 
-    <p><span class="arg">self.</span>stroke= <span class=
-    "arg">string</span> or <span class="arg">pixel</span></p>
-  </div>
+      <p>
+        <span class="arg">self.</span>stroke= <span class="arg">string</span> or
+        <span class="arg">pixel</span>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Specifies the stroke color to use when creating an image
-    with the "caption:" format..</p>
+      <p>Specifies the stroke color to use when creating an image with the "caption:" format..</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>A <a href="imusage.html#color_names">color name</a> or a
-    <a href="struct.html#Pixel">pixel</a>.</p>
-  </div>
+      <p>A <a href="imusage.html#color_names">color name</a> or a <a href="struct.html#Pixel">pixel</a>.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="stroke_width">stroke_width</h3>
+    <div class="sig">
+      <h3 id="stroke_width">stroke_width</h3>
 
-    <p><span class="arg">self.</span>stroke_width=
-    <em>number</em></p>
-  </div>
+      <p><span class="arg">self.</span>stroke_width= <em>number</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Specifies the stroke width to use when creating an image
-    with the "caption:" format..</p>
+      <p>Specifies the stroke width to use when creating an image with the "caption:" format..</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>The stroke width.</p>
-  </div>
+      <p>The stroke width.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="texture">texture</h3>
+    <div class="sig">
+      <h3 id="texture">texture</h3>
 
-    <p><span class="arg">self</span>.texture= <span class=
-    "arg">image</span></p>
-  </div>
+      <p><span class="arg">self</span>.texture= <span class="arg">image</span></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Set a texture to tile onto the image background. Corresponds
-    to the -texture option to ImageMagick's convert and mogrify
-    commands. This attribute is set-only.</p>
+      <p>
+        Set a texture to tile onto the image background. Corresponds to the -texture option to ImageMagick's convert and mogrify commands. This attribute is
+        set-only.
+      </p>
 
-    <h4>Argument</h4>
+      <h4>Argument</h4>
 
-    <p>An image</p>
-  </div>
+      <p>An image</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="transparent_color">transparent_color</h3>
+    <div class="sig">
+      <h3 id="transparent_color">transparent_color</h3>
 
-    <p><span class="arg">self</span>.transparent_color=
-    <span class="arg">string</span> or <span class=
-    "arg">pixel</span></p>
-  </div>
+      <p><span class="arg">self</span>.transparent_color= <span class="arg">string</span> or <span class="arg">pixel</span></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p class="imquote">The transparent color. Sometimes used for
-    saving to image formats such as GIF and PNG8 which uses this
-    color to represent boolean transparency. This does not make a
-    color transparent, just defines what color the transparent
-    color will be in the color pallette of the saved image.</p>
+      <p class="imquote">
+        The transparent color. Sometimes used for saving to image formats such as GIF and PNG8 which uses this color to represent boolean transparency. This
+        does not make a color transparent, just defines what color the transparent color will be in the color pallette of the saved image.
+      </p>
 
-    <p class="imquote">This attribute allows you to have both a
-    opaque visible color as well as a transparent color of the same
-    color value without conflict. That is you can use the same
-    color for both the transparent and opaque color areas within an
-    image. This in turn frees to you to select a transparenct color
-    that is appropriate when a image is displayed by application
-    that does not handle a transparent color index, while allowing
-    RMagick to correctly handle images of this type.</p>
-  </div>
+      <p class="imquote">
+        This attribute allows you to have both a opaque visible color as well as a transparent color of the same color value without conflict. That is you can
+        use the same color for both the transparent and opaque color areas within an image. This in turn frees to you to select a transparenct color that is
+        appropriate when a image is displayed by application that does not handle a transparent color index, while allowing RMagick to correctly handle images
+        of this type.
+      </p>
+    </div>
 
-  <div class="sig">
-    <h3 id="tile_offset">tile_offset</h3>
+    <div class="sig">
+      <h3 id="tile_offset">tile_offset</h3>
 
-    <p><span class="arg">self</span>.tile_offset= <span class=
-    "arg">string</span> or <span class="arg">geometry</span></p>
-  </div>
+      <p><span class="arg">self</span>.tile_offset= <span class="arg">string</span> or <span class="arg">geometry</span></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p class="imquote">Specifies the offset for tile images,
-    relative to the background image it will be tiled on.</p>
+      <p class="imquote">Specifies the offset for tile images, relative to the background image it will be tiled on.</p>
 
-    <p>This attribute is useful with the "tile:" and "pattern:"
-    image formats.</p>
+      <p>This attribute is useful with the "tile:" and "pattern:" image formats.</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>A <a href="imusage.html#geometry">geometry string</a> or a
-    <a href="struct.html#Geometry">Geometry</a> object.</p>
-  </div>
+      <p>A <a href="imusage.html#geometry">geometry string</a> or a <a href="struct.html#Geometry">Geometry</a> object.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="undercolor">undercolor</h3>
+    <div class="sig">
+      <h3 id="undercolor">undercolor</h3>
 
-    <p><span class="arg">self.</span>undercolor= <span class=
-    "arg">string</span> or <span class="arg">pixel</span></p>
-  </div>
+      <p><span class="arg">self.</span>undercolor= <span class="arg">string</span> or <span class="arg">pixel</span></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Specifies the undercolor color to use when creating an image
-    with the "caption:" format..</p>
+      <p>Specifies the undercolor color to use when creating an image with the "caption:" format..</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>A <a href="imusage.html#color_names">color name</a> or a
-    <a href="struct.html#Pixel">pixel</a>.</p>
-  </div>
+      <p>A <a href="imusage.html#color_names">color name</a> or a <a href="struct.html#Pixel">pixel</a>.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="units">units</h3>
+    <div class="sig">
+      <h3 id="units">units</h3>
 
-    <p><span class="arg">self.</span>units= <span class=
-    "arg">unit</span></p>
-  </div>
+      <p><span class="arg">self.</span>units= <span class="arg">unit</span></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Specifies the units of image resolution.</p>
+      <p>Specifies the units of image resolution.</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>A <a href="constants.html#ResolutionType">ResolutionType</a>
-    constant.</p>
-  </div>
+      <p>A <a href="constants.html#ResolutionType">ResolutionType</a> constant.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="view">view</h3>
+    <div class="sig">
+      <h3 id="view">view</h3>
 
-    <p><span class="arg">self.</span>view= <span class=
-    "arg">string</span></p>
-  </div>
+      <p><span class="arg">self.</span>view= <span class="arg">string</span></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>FlashPix viewing parameters.</p>
-  </div>
+      <p>FlashPix viewing parameters.</p>
+    </div>
 
-  <p class="spacer">&nbsp;</p>
+    <p class="spacer">&nbsp;</p>
 
-  <div class="nav">
-    &laquo;&nbsp;<a href="struct.html">Prev</a> | <a href=
-    "index.html">Contents</a> | <a href=
-    "constants.html">Next</a>&nbsp;&raquo;
-  </div>
-</body>
+    <div class="nav">&laquo;&nbsp;<a href="struct.html">Prev</a> | <a href="index.html">Contents</a> | <a href="constants.html">Next</a>&nbsp;&raquo;</div>
+  </body>
 </html>

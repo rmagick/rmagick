@@ -1,4 +1,3 @@
-
 /* Global styles. */
 
 a:link {
@@ -6,7 +5,7 @@ a:link {
 }
 
 a:visited {
-  color: #7F7FFF;
+  color: #7f7fff;
   text-decoration: none;
 }
 
@@ -21,9 +20,9 @@ a:active {
 }
 
 body {
-    background-color: white;
-    color: black;
-    font-size: 100.01%;
+  background-color: white;
+  color: black;
+  font-size: 100.01%;
 }
 
 img {
@@ -36,18 +35,18 @@ h1 {
   font-size: x-large;
   font-weight: bold;
   color: #ebebeb;
-  padding: .3em 5px .5em 5px;
+  padding: 0.3em 5px 0.5em 5px;
   margin: 0 0;
 }
 
 h6#header {
-    padding-top: 0.5em;
-    font-size: small;
-    font-weight: bold;
-    color: #545454;
-    letter-spacing: .5em;
-    text-align: center;
-    margin: 0 0;
+  padding-top: 0.5em;
+  font-size: small;
+  font-weight: bold;
+  color: #545454;
+  letter-spacing: 0.5em;
+  text-align: center;
+  margin: 0 0;
 }
 
 /*
@@ -56,7 +55,7 @@ h6#header {
 #toc h2 {
   background-color: #545454;
   color: white;
-  padding: 5px .3em .3em .3em;
+  padding: 5px 0.3em 0.3em 0.3em;
   margin: 0 0;
 }
 
@@ -87,8 +86,8 @@ div.nav {
   font-family: sans-serif;
   font-weight: bold;
   margin-bottom: 0;
-  margin-top: 1em;    /* Separate from header at the top and  */
-                      /* from the last element at the bottom  */
+  margin-top: 1em; /* Separate from header at the top and  */
+  /* from the last element at the bottom  */
   padding: 2px;
   padding-left: 8px;
   padding-right: 8px;
@@ -123,16 +122,17 @@ span.superclass {
 span.mixin {
   font-size: smaller;
   padding-left: 1em;
-  }
+}
 
 /*
  * Method signatures, descriptions
  */
 
-h2.methods  {           /* "class methods" */
+h2.methods {
+  /* "class methods" */
   margin-top: 2em;
   margin-bottom: 0;
-  padding: .5em 5px .5em 5px;
+  padding: 0.5em 5px 0.5em 5px;
   background-color: #663;
   color: white;
   clear: both;
@@ -143,10 +143,11 @@ h2.methods  {           /* "class methods" */
  */
 
 div.sig {
-  margin-bottom: .5em;
+  margin-bottom: 0.5em;
 }
 
-.sig h3 {   /* method name: total width 210px */
+.sig h3 {
+  /* method name: total width 210px */
   background-color: #c0c0c0;
   color: #000;
   width: 225px;
@@ -187,13 +188,17 @@ div.sig {
   margin-top: 0;
 }
 
-.desc dl,p,pre,img,ul {
+.desc dl,
+p,
+pre,
+img,
+ul {
   margin-top: 0;
 }
 
 .desc dt {
   font-style: italic;
-/*  display: compact; */
+  /*  display: compact; */
 }
 
 .arg {
@@ -203,27 +208,28 @@ div.sig {
 /*
  * The next 2 styles are for example scripts.
  */
-.example, .desc pre {
-  padding: 0 .5em 1em .5em;   /* Tell Konq to not pad at the top. */
-  padd\ing-top: 1em;          /* Tell everybody else to use 1em padding at the top. */
+.example,
+.desc pre {
+  padding: 0 0.5em 1em 0.5em; /* Tell Konq to not pad at the top. */
+  padd\ing-top: 1em; /* Tell everybody else to use 1em padding at the top. */
   background-color: #f8f8f8;
   border-left: thin dotted black;
   border-top: thin dotted black;
   border-bottom: 4px solid #c0c0c0;
-  border-right: 4px solid #c0c0c0
+  border-right: 4px solid #c0c0c0;
 }
 
 .example {
-    margin-left: 100px;
-    margin-right: 100px;
-    margin-bottom: 1em;
-  }
+  margin-left: 100px;
+  margin-right: 100px;
+  margin-bottom: 1em;
+}
 
-  .example_cutline {
-     margin-left: 100px;
-     margin-right: 100px;
-     font-style: italic;
-  }
+.example_cutline {
+  margin-left: 100px;
+  margin-right: 100px;
+  font-style: italic;
+}
 
 /*
  *  The following three styles govern the display of example
@@ -290,10 +296,9 @@ p.spacer {
 .imquote {
   color: #545454;
 }
-.imquote p, .imquote ul {
-    margin-left: 100px;
-    margin-right: 100px;
-    padding-bottom: 1em;
-  }
-
-
+.imquote p,
+.imquote ul {
+  margin-left: 100px;
+  margin-right: 100px;
+  padding-bottom: 1em;
+}

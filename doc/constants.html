@@ -1,1574 +1,1473 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-  <meta name="generator" content=
-  "HTML Tidy for Linux/x86 (vers 7 December 2008), see www.w3.org" />
+  <head>
+    <meta name="generator" content="HTML Tidy for Linux/x86 (vers 7 December 2008), see www.w3.org" />
 
-  <title>RMagick 0.0.0: Constants</title>
-  <meta http-equiv="Content-Type" content=
-  "text/html; charset=us-ascii" />
-  <meta name="GENERATOR" content="Quanta Plus" />
-  <meta name="Copyright" content=
-  "Copyright (C) 2006 by Timothy P. Hunter" />
-  <link rel="stylesheet" type="text/css" href="css/doc.css" />
-  <script type="text/javascript" src="scripts/doc.js">
-</script>
-  <style type="text/css">
-/*<![CDATA[*/
+    <title>RMagick 0.0.0: Constants</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+    <meta name="GENERATOR" content="Quanta Plus" />
+    <meta name="Copyright" content="Copyright (C) 2006 by Timothy P. Hunter" />
+    <link rel="stylesheet" type="text/css" href="css/doc.css" />
+    <script type="text/javascript" src="scripts/doc.js"></script>
+    <style type="text/css">
+      /*<![CDATA[*/
 
-  /* Styles local to this page. */
-  dl, p {
-    margin-left: 100px;
-    margin-right:100px;
-  }
-  dt {
-    font-family: monospace;
-  }
+      /* Styles local to this page. */
+      dl,
+      p {
+        margin-left: 100px;
+        margin-right: 100px;
+      }
+      dt {
+        font-family: monospace;
+      }
 
-  /*
+      /*
    *  Deliberately similar styling to the .sig h3
    */
-  h3.const {
-    background-color: #c0c0c0;
-    color: #000;
-    padding-left: 5px;
-    margin-top: 2em;
-  }
+      h3.const {
+        background-color: #c0c0c0;
+        color: #000;
+        padding-left: 5px;
+        margin-top: 2em;
+      }
 
-  /*
+      /*
    *  Modify .simple_table for the QuantumRange/QuantumDepth table.
    *  The major differences are the centered text and the auto width.
    */
-  #maxrgb {
-    border-collapse: collapse;
-    border: thin solid black;
-    background-color: #f8f8f8;
-    margin-top: 1em;
-    margin-right: auto;
-    margin-bottom: 1em;
-    margin-left: auto;
-    text-align: center;
-    width: auto;
-  }
-  #maxrgb caption {
-    font-weight: bold;
-  }
+      #maxrgb {
+        border-collapse: collapse;
+        border: thin solid black;
+        background-color: #f8f8f8;
+        margin-top: 1em;
+        margin-right: auto;
+        margin-bottom: 1em;
+        margin-left: auto;
+        text-align: center;
+        width: auto;
+      }
+      #maxrgb caption {
+        font-weight: bold;
+      }
 
-  /*]]>*/
-  </style>
-</head>
+      /*]]>*/
+    </style>
+  </head>
 
-<body>
-  <h6 id="header">RMagick 0.0.0 User's Guide and Reference</h6>
+  <body>
+    <h6 id="header">RMagick 0.0.0 User's Guide and Reference</h6>
 
-  <div class="nav">
-    &laquo;&nbsp;<a href="info.html">Prev</a> | <a href=
-    "index.html">Contents</a> | <a href=
-    "rvgtut.html">Next</a>&nbsp;&raquo;
-  </div>
+    <div class="nav">&laquo;&nbsp;<a href="info.html">Prev</a> | <a href="index.html">Contents</a> | <a href="rvgtut.html">Next</a>&nbsp;&raquo;</div>
 
-  <h1>Constants</h1>
+    <h1>Constants</h1>
 
-  <div id="toc">
-    <h2>Table of Contents</h2>
+    <div id="toc">
+      <h2>Table of Contents</h2>
 
-    <h3>Constants</h3>
+      <h3>Constants</h3>
 
-    <div class="toccol">
-      <ul>
-        <li><a href="#Miscellaneous_constants">Miscellaneous
-        constants</a></li>
+      <div class="toccol">
+        <ul>
+          <li>
+            <a href="#Miscellaneous_constants">Miscellaneous constants</a>
+          </li>
 
-        <li><a href="#AlignType">AlignType</a></li>
+          <li><a href="#AlignType">AlignType</a></li>
 
-        <li><a href="#ChannelType">ChannelType</a></li>
+          <li><a href="#ChannelType">ChannelType</a></li>
 
-        <li><a href="#ClassType">ClassType</a></li>
+          <li><a href="#ClassType">ClassType</a></li>
 
-        <li><a href="#ColorspaceType">ColorspaceType</a></li>
+          <li><a href="#ColorspaceType">ColorspaceType</a></li>
 
-        <li><a href="#ComplianceType">ComplianceType</a></li>
+          <li><a href="#ComplianceType">ComplianceType</a></li>
 
-        <li><a href="#CompositeOperator">CompositeOperator</a></li>
+          <li><a href="#CompositeOperator">CompositeOperator</a></li>
 
-        <li><a href="#CompressionType">CompressionType</a></li>
+          <li><a href="#CompressionType">CompressionType</a></li>
 
-        <li><a href="#DecorationType">DecorationType</a></li>
-      </ul>
+          <li><a href="#DecorationType">DecorationType</a></li>
+        </ul>
+      </div>
+
+      <div class="toccol">
+        <ul>
+          <li><a href="#DisposeType">DisposeType</a></li>
+
+          <li><a href="#DitherMethod">DitherMethod</a></li>
+
+          <li><a href="#EndianType">EndianType</a></li>
+
+          <li><a href="#FilterTypes">FilterTypes</a></li>
+
+          <li><a href="#GravityType">GravityType</a></li>
+
+          <li><a href="#ImageType">ImageType</a></li>
+
+          <li><a href="#InterlaceType">InterlaceType</a></li>
+
+          <li><a href="#InterpolatePixelMethod">InterpolatePixelMethod</a></li>
+
+          <li><a href="#MetricType">MetricType</a></li>
+        </ul>
+      </div>
+
+      <div class="toccol">
+        <ul>
+          <li><a href="#NoiseType">NoiseType</a></li>
+
+          <li><a href="#Opacity">Opacity</a></li>
+
+          <li><a href="#OrientationType">OrientationType</a></li>
+
+          <li><a href="#PaintMethod">PaintMethod</a></li>
+
+          <li><a href="#RenderingIntent">RenderingIntent</a></li>
+
+          <li><a href="#ResolutionType">ResolutionType</a></li>
+
+          <li><a href="#StretchType">StretchType</a></li>
+
+          <li><a href="#StorageType">StorageType</a></li>
+
+          <li><a href="#StyleType">StyleType</a></li>
+
+          <li><a href="#WeightType">WeightType</a></li>
+        </ul>
+      </div>
     </div>
 
-    <div class="toccol">
-      <ul>
-        <li><a href="#DisposeType">DisposeType</a></li>
+    <h2 class="methods">Constants</h2>
 
-        <li><a href="#DitherMethod">DitherMethod</a></li>
+    <h3 class="const" style="margin-top: 0" id="Miscellaneous_constants">Miscellaneous constants</h3>
 
-        <li><a href="#EndianType">EndianType</a></li>
+    <dl>
+      <dt>Long_version</dt>
 
-        <li><a href="#FilterTypes">FilterTypes</a></li>
+      <dd>
+        An extended form of the <code>Version</code> constant with the format shown here:<br />
+        <code
+          >This is RMagick 5.2.0 ($Date: 2009/12/20 02:33:33 $) Copyright (C) 2009 by Timothy P. Hunter<br />
+          Built with ImageMagick 7.1.1-8 Q16-HDRI x86_64 21129 https://imagemagick.org<br />
+          Built for ruby 3.2.2<br />
+          Web page: https://rmagick.github.io/</code
+        >
+      </dd>
 
-        <li><a href="#GravityType">GravityType</a></li>
+      <dt>Magick_version</dt>
 
-        <li><a href="#ImageType">ImageType</a></li>
+      <dd>
+        The ImageMagick version string. This has the form:<br />
+        <code>@(#)ImageMagick X.Y.Z MM/DD/YY Q:16 http://www.imagemagick.org</code>
+      </dd>
 
-        <li><a href="#InterlaceType">InterlaceType</a></li>
+      <dt>MANAGED_MEMORY</dt>
 
-        <li><a href=
-        "#InterpolatePixelMethod">InterpolatePixelMethod</a></li>
-
-        <li><a href="#MetricType">MetricType</a></li>
-      </ul>
-    </div>
-
-    <div class="toccol">
-      <ul>
-        <li><a href="#NoiseType">NoiseType</a></li>
-
-        <li><a href="#Opacity">Opacity</a></li>
-
-        <li><a href="#OrientationType">OrientationType</a></li>
-
-        <li><a href="#PaintMethod">PaintMethod</a></li>
-
-        <li><a href="#RenderingIntent">RenderingIntent</a></li>
-
-        <li><a href="#ResolutionType">ResolutionType</a></li>
-
-        <li><a href="#StretchType">StretchType</a></li>
-
-        <li><a href="#StorageType">StorageType</a></li>
-
-        <li><a href="#StyleType">StyleType</a></li>
-
-        <li><a href="#WeightType">WeightType</a></li>
-      </ul>
-    </div>
-  </div>
-
-  <h2 class="methods">Constants</h2>
-
-  <h3 class="const" style="margin-top:0" id=
-  "Miscellaneous_constants">Miscellaneous constants</h3>
-
-  <dl>
-    <dt>Long_version</dt>
-
-    <dd>An extended form of the <code>Version</code> constant with
-    the format shown here:<br />
-    <code>This is RMagick 5.2.0 ($Date: 2009/12/20 02:33:33 $) Copyright (C) 2009 by Timothy P. Hunter<br />
-    Built with ImageMagick 7.1.1-8 Q16-HDRI x86_64 21129 https://imagemagick.org<br />
-    Built for ruby 3.2.2<br />
-    Web page: https://rmagick.github.io/</code></dd>
-
-    <dt>Magick_version</dt>
-
-    <dd>The ImageMagick version string. This has the form:<br />
-    <code>@(#)ImageMagick X.Y.Z MM/DD/YY Q:16
-    http://www.imagemagick.org</code></dd>
-
-    <dt>MANAGED_MEMORY</dt>
-
-    <dd>
-      If <code>true</code>, RMagick is using Ruby managed memory
-      for all allocations. If <code>false</code>, RMagick allocates
-      memory for objects directly from the operating system. You
-      can enable RMagick to use Ruby managed memory (when built
-      with ImageMagick 6.4.0-11 and later) by setting
-      <pre>
+      <dd>
+        If <code>true</code>, RMagick is using Ruby managed memory for all allocations. If <code>false</code>, RMagick allocates memory for objects directly
+        from the operating system. You can enable RMagick to use Ruby managed memory (when built with ImageMagick 6.4.0-11 and later) by setting
+        <pre>
 
 RMAGICK_ENABLE_MANAGED_MEMORY = true
-</pre><em>before</em> requiring RMagick.
-    </dd>
+</pre
+        >
+        <em>before</em> requiring RMagick.
+      </dd>
 
-    <dt>QuantumRange</dt>
+      <dt>QuantumRange</dt>
 
-    <dd>The maximum value of a <em>Quantum</em>. A quantum is one
-    of the red, green, blue, or opacity elements of a pixel in the
-    RGB colorspace, or cyan, yellow, magenta, or black elements in
-    the CYMK colorspace.</dd>
+      <dd>
+        The maximum value of a <em>Quantum</em>. A quantum is one of the red, green, blue, or opacity elements of a pixel in the RGB colorspace, or cyan,
+        yellow, magenta, or black elements in the CYMK colorspace.
+      </dd>
 
-    <dt>QuantumDepth</dt>
+      <dt>QuantumDepth</dt>
 
-    <dd>
-      The number of bits in a quantum. The relationship between
-      QuantumDepth and QuantumRange is summarized in this table.
+      <dd>
+        The number of bits in a quantum. The relationship between QuantumDepth and QuantumRange is summarized in this table.
 
-      <table summary="number of bits in a quantum" id="maxrgb">
-        <tr>
-          <th>QuantumDepth</th>
+        <table summary="number of bits in a quantum" id="maxrgb">
+          <tr>
+            <th>QuantumDepth</th>
 
-          <th>QuantumRange</th>
-        </tr>
+            <th>QuantumRange</th>
+          </tr>
 
-        <tr>
-          <td>8</td>
+          <tr>
+            <td>8</td>
 
-          <td>255</td>
-        </tr>
+            <td>255</td>
+          </tr>
 
-        <tr>
-          <td>16</td>
+          <tr>
+            <td>16</td>
 
-          <td>65535</td>
-        </tr>
+            <td>65535</td>
+          </tr>
 
-        <tr>
-          <td>32</td>
+          <tr>
+            <td>32</td>
 
-          <td>4294967295</td>
-        </tr>
-      </table>
-    </dd>
+            <td>4294967295</td>
+          </tr>
+        </table>
+      </dd>
 
-    <dt>Version</dt>
+      <dt>Version</dt>
 
-    <dd>The RMagick version string. This has the form:<br />
-    <code>RMagick 2.0.0</code></dd>
-  </dl>
+      <dd>
+        The RMagick version string. This has the form:<br />
+        <code>RMagick 2.0.0</code>
+      </dd>
+    </dl>
 
-  <h3 class="const" id="AlignType">AlignType</h3>
+    <h3 class="const" id="AlignType">AlignType</h3>
 
-  <p>Specify text alignment. See <a href=
-  "draw.html#Draw.align_eq">align=</a>, <a href=
-  "draw.html#Draw.text_align">text_align</a>.</p>
+    <p>Specify text alignment. See <a href="draw.html#Draw.align_eq">align=</a>, <a href="draw.html#Draw.text_align">text_align</a>.</p>
 
-  <dl>
-    <dt>UndefinedAlign</dt>
+    <dl>
+      <dt>UndefinedAlign</dt>
 
-    <dd>No alignment specified. Equivalent to LeftAlign.</dd>
+      <dd>No alignment specified. Equivalent to LeftAlign.</dd>
 
-    <dt>LeftAlign</dt>
+      <dt>LeftAlign</dt>
 
-    <dd>Align the leftmost part of the text to the starting
-    point.</dd>
+      <dd>Align the leftmost part of the text to the starting point.</dd>
 
-    <dt>CenterAlign</dt>
+      <dt>CenterAlign</dt>
 
-    <dd>Center the text around the starting point.</dd>
+      <dd>Center the text around the starting point.</dd>
 
-    <dt>RightAlign</dt>
+      <dt>RightAlign</dt>
 
-    <dd>Align the rightmost part of the text to the starting
-    point.</dd>
-  </dl>
+      <dd>Align the rightmost part of the text to the starting point.</dd>
+    </dl>
 
-  <h3 class="const" id="ChannelType">ChannelType</h3>
+    <h3 class="const" id="ChannelType">ChannelType</h3>
 
-  <p>Specify an image channel. A channel is a color component of a
-  pixel. In the RGB colorspace the channels are red, green, and
-  blue. There may also be an alpha (transparency/opacity) channel.
-  In the CMYK colorspace the channels area cyan, magenta, yellow,
-  and black. In the HSL colorspace the channels are hue,
-  saturation, and lightness. In the Gray colorspace the only
-  channel is gray. See <a href=
-  "image1.html#channel">Image#channel</a> and <a href=
-  "info.html#channel">Image::Info#channel=</a>.</p>
+    <p>
+      Specify an image channel. A channel is a color component of a pixel. In the RGB colorspace the channels are red, green, and blue. There may also be an
+      alpha (transparency/opacity) channel. In the CMYK colorspace the channels area cyan, magenta, yellow, and black. In the HSL colorspace the channels are
+      hue, saturation, and lightness. In the Gray colorspace the only channel is gray. See
+      <a href="image1.html#channel">Image#channel</a> and <a href="info.html#channel">Image::Info#channel=</a>.
+    </p>
 
-  <dl>
-    <dt>UndefinedChannel</dt>
+    <dl>
+      <dt>UndefinedChannel</dt>
 
-    <dt>RedChannel</dt>
+      <dt>RedChannel</dt>
 
-    <dt>GreenChannel</dt>
+      <dt>GreenChannel</dt>
 
-    <dt>BlueChannel</dt>
+      <dt>BlueChannel</dt>
 
-    <dt>CyanChannel</dt>
+      <dt>CyanChannel</dt>
 
-    <dt>MagentaChannel</dt>
+      <dt>MagentaChannel</dt>
 
-    <dt>YellowChannel</dt>
+      <dt>YellowChannel</dt>
 
-    <dt>BlackChannel</dt>
+      <dt>BlackChannel</dt>
 
-    <dt>OpacityChannel</dt>
+      <dt>OpacityChannel</dt>
 
-    <dt>AllChannels</dt>
+      <dt>AllChannels</dt>
 
-    <dd>In the RGB colorspace, the red, blue, green, and alpha
-    channels. In the CMYK colorspace, the cyan, magenta, yellow,
-    and black channels.</dd>
+      <dd>In the RGB colorspace, the red, blue, green, and alpha channels. In the CMYK colorspace, the cyan, magenta, yellow, and black channels.</dd>
 
-    <dt>GrayChannel</dt>
+      <dt>GrayChannel</dt>
 
-    <dt>AlphaChannel</dt>
+      <dt>AlphaChannel</dt>
 
-    <dd>Same as OpacityChannel</dd>
+      <dd>Same as OpacityChannel</dd>
 
-    <dt>DefaultChannels</dt>
+      <dt>DefaultChannels</dt>
 
-    <dd>Same as AllChannels, excluding OpacityChannel</dd>
+      <dd>Same as AllChannels, excluding OpacityChannel</dd>
 
-    <dt>HueChannel</dt>
+      <dt>HueChannel</dt>
 
-    <dt>LuminosityChannel</dt>
+      <dt>LuminosityChannel</dt>
 
-    <dt>SaturationChannel</dt>
-  </dl>
+      <dt>SaturationChannel</dt>
+    </dl>
 
-  <h3 class="const" id="ClassType">ClassType</h3>
+    <h3 class="const" id="ClassType">ClassType</h3>
 
-  <p>Specify the image storage class. See <a href=
-  "imageattrs.html#class_type">class_type</a>.</p>
+    <p>
+      Specify the image storage class. See
+      <a href="imageattrs.html#class_type">class_type</a>.
+    </p>
 
-  <dl>
-    <dt>UndefinedClass</dt>
+    <dl>
+      <dt>UndefinedClass</dt>
 
-    <dd>No storage class has been specified.</dd>
+      <dd>No storage class has been specified.</dd>
 
-    <dt>DirectClass</dt>
+      <dt>DirectClass</dt>
 
-    <dd class="imquote">Image is composed of pixels which represent
-    literal color values.</dd>
+      <dd class="imquote">Image is composed of pixels which represent literal color values.</dd>
 
-    <dt>PseudoClass</dt>
+      <dt>PseudoClass</dt>
 
-    <dd class="imquote">Image is composed of pixels which specify
-    an index in a color palette.</dd>
-  </dl>
+      <dd class="imquote">Image is composed of pixels which specify an index in a color palette.</dd>
+    </dl>
 
-  <h3 class="const" id="ColorspaceType">ColorspaceType</h3>
+    <h3 class="const" id="ColorspaceType">ColorspaceType</h3>
 
-  <p class="imquote">Specify the colorspace that quantization
-  (color reduction and mapping) is done under or to specify the
-  colorspace when encoding an output image. Colorspaces are ways of
-  describing colors to fit the requirements of a particular
-  application (e.g. Television, offset printing, color
-  monitors).&nbsp; Color reduction, by default, takes place in the
-  RGBColorspace. Empirical evidence suggests that distances in
-  color spaces such as YUVColorspace or YIQColorspace correspond to
-  perceptual color differences more closely than do distances in
-  RGB space. These color spaces may give better results when color
-  reducing an image.</p>
+    <p class="imquote">
+      Specify the colorspace that quantization (color reduction and mapping) is done under or to specify the colorspace when encoding an output image.
+      Colorspaces are ways of describing colors to fit the requirements of a particular application (e.g. Television, offset printing, color monitors).&nbsp;
+      Color reduction, by default, takes place in the RGBColorspace. Empirical evidence suggests that distances in color spaces such as YUVColorspace or
+      YIQColorspace correspond to perceptual color differences more closely than do distances in RGB space. These color spaces may give better results when
+      color reducing an image.
+    </p>
 
-  <p><span class="imquote">When encoding an output image, the
-  colorspaces RGBColorspace, CMYKColorspace, and GRAYColorspace may
-  be specified. The CMYKColorspace option is only applicable when
-  writing TIFF, JPEG, and Adobe Photoshop bitmap (PSD)
-  files.</span> See <a href=
-  "imageattrs.html#colorspace">colorspace</a>.</p>
+    <p>
+      <span class="imquote"
+        >When encoding an output image, the colorspaces RGBColorspace, CMYKColorspace, and GRAYColorspace may be specified. The CMYKColorspace option is only
+        applicable when writing TIFF, JPEG, and Adobe Photoshop bitmap (PSD) files.</span
+      >
+      See <a href="imageattrs.html#colorspace">colorspace</a>.
+    </p>
 
-  <p>Each version of ImageMagick defines a subset of the
-  colorspaces listed below. To list the subset supported by your
-  version, issue the command:</p>
-  <pre class="example">
+    <p>Each version of ImageMagick defines a subset of the colorspaces listed below. To list the subset supported by your version, issue the command:</p>
+    <pre class="example">
 ruby -rRMagick -e"Magick::ColorspaceType.values {|cs| puts cs}"
-</pre>
+</pre
+    >
 
-  <dl>
-    <dt>UndefinedColorspace</dt>
+    <dl>
+      <dt>UndefinedColorspace</dt>
 
-    <dd>No colorspace has been specified.</dd>
+      <dd>No colorspace has been specified.</dd>
 
-    <dt>CMYColorspace</dt>
+      <dt>CMYColorspace</dt>
 
-    <dt>CMYKColorspace</dt>
+      <dt>CMYKColorspace</dt>
 
-    <dd class="imquote">Cyan-Magenta-Yellow-Black colorspace. CYMK
-    is a subtractive color system used by printers and
-    photographers for the rendering of colors with ink or emulsion,
-    normally on a white surface.</dd>
+      <dd class="imquote">
+        Cyan-Magenta-Yellow-Black colorspace. CYMK is a subtractive color system used by printers and photographers for the rendering of colors with ink or
+        emulsion, normally on a white surface.
+      </dd>
 
-    <dt>GRAYColorspace</dt>
+      <dt>GRAYColorspace</dt>
 
-    <dd>Full-range grayscale</dd>
+      <dd>Full-range grayscale</dd>
 
-    <dt>HSBColorspace</dt>
+      <dt>HSBColorspace</dt>
 
-    <dt>HSLColorspace</dt>
+      <dt>HSLColorspace</dt>
 
-    <dd>Hue, saturation, luminosity</dd>
+      <dd>Hue, saturation, luminosity</dd>
 
-    <dt>HWBColorspace</dt>
+      <dt>HWBColorspace</dt>
 
-    <dd>Hue, whiteness, blackness</dd>
+      <dd>Hue, whiteness, blackness</dd>
 
-    <dt>LABColorspace</dt>
+      <dt>LABColorspace</dt>
 
-    <dt>LogColorspace</dt>
+      <dt>LogColorspace</dt>
 
-    <dt>OHTAColorspace</dt>
+      <dt>OHTAColorspace</dt>
 
-    <dt>RGBColorspace</dt>
+      <dt>RGBColorspace</dt>
 
-    <dd class="imquote">Red-Green-Blue colorspace</dd>
+      <dd class="imquote">Red-Green-Blue colorspace</dd>
 
-    <dt>SRGBColorspace</dt>
+      <dt>SRGBColorspace</dt>
 
-    <dd>Kodak PhotoCD sRGB. In ImageMagick, this constant is named
-    sRGBColorspace, but since Ruby constants must start with an
-    uppercase letter, I had to change it.</dd>
+      <dd>
+        Kodak PhotoCD sRGB. In ImageMagick, this constant is named sRGBColorspace, but since Ruby constants must start with an uppercase letter, I had to change
+        it.
+      </dd>
 
-    <dt>TransparentColorspace</dt>
+      <dt>TransparentColorspace</dt>
 
-    <dd class="imquote">The Transparent color space behaves
-    uniquely in that it preserves the matte channel of the image if
-    it exists.</dd>
+      <dd class="imquote">The Transparent color space behaves uniquely in that it preserves the matte channel of the image if it exists.</dd>
 
-    <dt>XYZColorspace</dt>
+      <dt>XYZColorspace</dt>
 
-    <dd>CIE XYZ</dd>
+      <dd>CIE XYZ</dd>
 
-    <dt>YCbCrColorspace</dt>
+      <dt>YCbCrColorspace</dt>
 
-    <dt>YCCColorspace</dt>
+      <dt>YCCColorspace</dt>
 
-    <dd>Kodak PhotoCD PhotoYCC</dd>
+      <dd>Kodak PhotoCD PhotoYCC</dd>
 
-    <dt>YIQColorspace</dt>
+      <dt>YIQColorspace</dt>
 
-    <dt>YPbPrColorspace</dt>
+      <dt>YPbPrColorspace</dt>
 
-    <dt>YUVColorspace</dt>
+      <dt>YUVColorspace</dt>
 
-    <dd class="imquote">Y-signal, U-signal, and V-signal
-    colorspace. YUV is most widely used to encode color for use in
-    television transmission.</dd>
-  </dl>
+      <dd class="imquote">Y-signal, U-signal, and V-signal colorspace. YUV is most widely used to encode color for use in television transmission.</dd>
+    </dl>
 
-  <p>The colorspaces in this group are typically associated with
-  the DPX and Cineon image formats used in the motion picture
-  industry.</p>
+    <p>The colorspaces in this group are typically associated with the DPX and Cineon image formats used in the motion picture industry.</p>
 
-  <dl>
-    <dt>Rec601LumaColorspace</dt>
+    <dl>
+      <dt>Rec601LumaColorspace</dt>
 
-    <dd>Luma (Y) according to ITU-R 601</dd>
+      <dd>Luma (Y) according to ITU-R 601</dd>
 
-    <dt>Rec601YCbCrColorspace</dt>
+      <dt>Rec601YCbCrColorspace</dt>
 
-    <dd>YCbCr according to ITU-R 601</dd>
+      <dd>YCbCr according to ITU-R 601</dd>
 
-    <dt>Rec709LumaColorspace</dt>
+      <dt>Rec709LumaColorspace</dt>
 
-    <dd>Luma (Y) according to ITU-R 709</dd>
+      <dd>Luma (Y) according to ITU-R 709</dd>
 
-    <dt>Rec709YCbCrColorspace</dt>
+      <dt>Rec709YCbCrColorspace</dt>
 
-    <dd>YCbCr according to ITU-R 709</dd>
-  </dl>
+      <dd>YCbCr according to ITU-R 709</dd>
+    </dl>
 
-  <h3 class="const" id="ComplianceType">ComplianceType</h3>
+    <h3 class="const" id="ComplianceType">ComplianceType</h3>
 
-  <p>Specify the color standard from which color names are chosen.
-  See <a href="struct.html#Pixel">to_color</a>.</p>
+    <p>
+      Specify the color standard from which color names are chosen. See
+      <a href="struct.html#Pixel">to_color</a>.
+    </p>
 
-  <dl>
-    <dt>SVGCompliance</dt>
+    <dl>
+      <dt>SVGCompliance</dt>
 
-    <dd>Adhere to SVG color standard.</dd>
+      <dd>Adhere to SVG color standard.</dd>
 
-    <dt>X11Compliance</dt>
+      <dt>X11Compliance</dt>
 
-    <dd>Adhere to X11 color standard.</dd>
+      <dd>Adhere to X11 color standard.</dd>
 
-    <dt>XPMCompliance</dt>
+      <dt>XPMCompliance</dt>
 
-    <dd>Adhere to XPM color standard.</dd>
+      <dd>Adhere to XPM color standard.</dd>
 
-    <dt>AllCompliance</dt>
+      <dt>AllCompliance</dt>
 
-    <dd>The union of the 3 color standards.</dd>
-  </dl>
+      <dd>The union of the 3 color standards.</dd>
+    </dl>
 
-  <h3 class="const" id="CompositeOperator">CompositeOperator</h3>
+    <h3 class="const" id="CompositeOperator">CompositeOperator</h3>
 
-  <p><span class="imquote">Select the image composition algorithm
-  used to compose a <code>composite image</code> with a
-  <code>image</code>. By default, each of the <code>composite
-  image</code> pixels are replaced by the corresponding
-  <code>image</code> tile pixel. Specify
-  <code>CompositeOperator</code> to select a different
-  algorithm.</span> See <a href=
-  "image1.html#composite">composite</a>.</p>
+    <p>
+      <span class="imquote"
+        >Select the image composition algorithm used to compose a <code>composite image</code> with a <code>image</code>. By default, each of the
+        <code>composite image</code> pixels are replaced by the corresponding <code>image</code> tile pixel. Specify <code>CompositeOperator</code> to select a
+        different algorithm.</span
+      >
+      See <a href="image1.html#composite">composite</a>.
+    </p>
 
-  <dl>
-    <dt>UndefinedCompositeOp</dt>
+    <dl>
+      <dt>UndefinedCompositeOp</dt>
 
-    <dd>No composite operator has been specified.</dd>
+      <dd>No composite operator has been specified.</dd>
 
-    <dt>AddCompositeOp</dt>
+      <dt>AddCompositeOp</dt>
 
-    <dd class="imquote">The result of <code>composite image</code>
-    + <code>image</code>, with overflow wrapping around (mod
-    256).</dd>
+      <dd class="imquote">The result of <code>composite image</code> + <code>image</code>, with overflow wrapping around (mod 256).</dd>
 
-    <dt>AtopCompositeOp</dt>
+      <dt>AtopCompositeOp</dt>
 
-    <dd class="imquote">The result is the same shape as
-    <code>image</code>, with <code>composite image</code> obscuring
-    <code>image</code> where the image shapes overlap. Note that
-    this differs from OverCompositeOp because the portion of
-    <code>composite image</code> outside of <code>image</code>'s
-    shape does not appear in the result.</dd>
+      <dd class="imquote">
+        The result is the same shape as <code>image</code>, with <code>composite image</code> obscuring <code>image</code> where the image shapes overlap. Note
+        that this differs from OverCompositeOp because the portion of <code>composite image</code> outside of <code>image</code>'s shape does not appear in the
+        result.
+      </dd>
 
-    <dt>BlurCompositeOp</dt>
+      <dt>BlurCompositeOp</dt>
 
-    <dd>?</dd>
+      <dd>?</dd>
 
-    <dt>BumpmapCompositeOp</dt>
+      <dt>BumpmapCompositeOp</dt>
 
-    <dd class="imquote">The result <code>image</code> shaded by
-    <code>composite image</code>.</dd>
+      <dd class="imquote">The result <code>image</code> shaded by <code>composite image</code>.</dd>
 
-    <dt>ChangeMaskCompositeOp</dt>
+      <dt>ChangeMaskCompositeOp</dt>
 
-    <dd class="imquote">Replace any destination pixel that is the
-    similar to the source image's pixel (as defined by the current
-    fuzz factor), with transparency.</dd>
+      <dd class="imquote">
+        Replace any destination pixel that is the similar to the source image's pixel (as defined by the current fuzz factor), with transparency.
+      </dd>
 
-    <dt>ClearCompositeOp</dt>
+      <dt>ClearCompositeOp</dt>
 
-    <dd>Make the target image transparent. The composite image is
-    ignored.</dd>
+      <dd>Make the target image transparent. The composite image is ignored.</dd>
 
-    <dt>ColorBurnCompositeOp</dt>
+      <dt>ColorBurnCompositeOp</dt>
 
-    <dd class="imquote">Darkens the destination color to reflect
-    the source color. Painting with white produces no change.</dd>
+      <dd class="imquote">Darkens the destination color to reflect the source color. Painting with white produces no change.</dd>
 
-    <dt>ColorDodgeCompositeOp</dt>
+      <dt>ColorDodgeCompositeOp</dt>
 
-    <dd class="imquote">Brightens the destination color to reflect
-    the source color. Painting with black produces no change.</dd>
+      <dd class="imquote">Brightens the destination color to reflect the source color. Painting with black produces no change.</dd>
 
-    <dt>ColorizeCompositeOp</dt>
+      <dt>ColorizeCompositeOp</dt>
 
-    <dd class="imquote">Each pixel in the result image is the
-    combination of the brightness of the target image and the
-    saturation and hue of the composite image. This is the
-    <em>opposite</em> of LuminizeCompositeOp.</dd>
+      <dd class="imquote">
+        Each pixel in the result image is the combination of the brightness of the target image and the saturation and hue of the composite image. This is the
+        <em>opposite</em> of LuminizeCompositeOp.
+      </dd>
 
-    <dt>CopyCompositeOp</dt>
+      <dt>CopyCompositeOp</dt>
 
-    <dd>Replace the target image with the composite image.</dd>
+      <dd>Replace the target image with the composite image.</dd>
 
-    <dt>CopyBlackCompositeOp</dt>
+      <dt>CopyBlackCompositeOp</dt>
 
-    <dd>Copy the black channel from the composite image to the
-    target image.</dd>
+      <dd>Copy the black channel from the composite image to the target image.</dd>
 
-    <dt>CopyBlueCompositeOp</dt>
+      <dt>CopyBlueCompositeOp</dt>
 
-    <dd>Copy the blue channel from the composite image to the
-    target image.</dd>
+      <dd>Copy the blue channel from the composite image to the target image.</dd>
 
-    <dt>CopyCyanCompositeOp</dt>
+      <dt>CopyCyanCompositeOp</dt>
 
-    <dd>Copy the cyan channel from the composite image to the
-    target image.</dd>
+      <dd>Copy the cyan channel from the composite image to the target image.</dd>
 
-    <dt>CopyGreenCompositeOp</dt>
+      <dt>CopyGreenCompositeOp</dt>
 
-    <dd>Copy the green channel from the composite image to the
-    target image.</dd>
+      <dd>Copy the green channel from the composite image to the target image.</dd>
 
-    <dt>CopyMagentaCompositeOp</dt>
+      <dt>CopyMagentaCompositeOp</dt>
 
-    <dd>Copy the magenta channel from the composite image to the
-    target image.</dd>
+      <dd>Copy the magenta channel from the composite image to the target image.</dd>
 
-    <dt>CopyOpacityCompositeOp</dt>
+      <dt>CopyOpacityCompositeOp</dt>
 
-    <dd>If the composite image's <a href=
-    "imageattrs.html#matte">matte</a> attribute is
-    <code>true</code>, copy the opacity channel from the composite
-    image to the target image. Otherwise, set the target image
-    pixel's opacity to the intensity of the corresponding pixel in
-    the composite image.</dd>
+      <dd>
+        If the composite image's
+        <a href="imageattrs.html#matte">matte</a> attribute is <code>true</code>, copy the opacity channel from the composite image to the target image.
+        Otherwise, set the target image pixel's opacity to the intensity of the corresponding pixel in the composite image.
+      </dd>
 
-    <dt>CopyRedCompositeOp</dt>
+      <dt>CopyRedCompositeOp</dt>
 
-    <dd>Copy the red channel from the composite image to the target
-    image.</dd>
+      <dd>Copy the red channel from the composite image to the target image.</dd>
 
-    <dt>CopyYellowCompositeOp</dt>
+      <dt>CopyYellowCompositeOp</dt>
 
-    <dd>Copy the yellow channel from the composite image to the
-    target image.</dd>
+      <dd>Copy the yellow channel from the composite image to the target image.</dd>
 
-    <dt>DarkenCompositeOp</dt>
+      <dt>DarkenCompositeOp</dt>
 
-    <dd>Replace target image pixels with darker pixels from the
-    composite image.</dd>
+      <dd>Replace target image pixels with darker pixels from the composite image.</dd>
 
-    <dt>DifferenceCompositeOp</dt>
+      <dt>DifferenceCompositeOp</dt>
 
-    <dd class="imquote">The result of abs(<code>composite
-    image</code> - <code>image</code>). This is useful for
-    comparing two very similar images.</dd>
+      <dd class="imquote">The result of abs(<code>composite image</code> - <code>image</code>). This is useful for comparing two very similar images.</dd>
 
-    <dt>DisplaceCompositeOp</dt>
+      <dt>DisplaceCompositeOp</dt>
 
-    <dd>Displace target image pixels as defined by a displacement
-    map. The operator used by the <a href=
-    "image1.html#displace">displace</a> method.</dd>
+      <dd>Displace target image pixels as defined by a displacement map. The operator used by the <a href="image1.html#displace">displace</a> method.</dd>
 
-    <dt>DissolveCompositeOp</dt>
+      <dt>DissolveCompositeOp</dt>
 
-    <dd>The operator used in the <a href=
-    "image1.html#dissolve">dissolve</a> method.</dd>
+      <dd>
+        The operator used in the
+        <a href="image1.html#dissolve">dissolve</a> method.
+      </dd>
 
-    <dt>DistortCompositeOp</dt>
+      <dt>DistortCompositeOp</dt>
 
-    <dd>?</dd>
+      <dd>?</dd>
 
-    <dt>DivideCompositeOp</dt>
+      <dt>DivideCompositeOp</dt>
 
-    <dd>?</dd>
+      <dd>?</dd>
 
-    <dt>DstCompositeOp</dt>
+      <dt>DstCompositeOp</dt>
 
-    <dd class="imquote">The destination is left untouched.</dd>
+      <dd class="imquote">The destination is left untouched.</dd>
 
-    <dt>DstAtopCompositeOp</dt>
+      <dt>DstAtopCompositeOp</dt>
 
-    <dd class="imquote">The part of the destination lying inside of
-    the source is composited over the source and replaces the
-    destination.</dd>
+      <dd class="imquote">The part of the destination lying inside of the source is composited over the source and replaces the destination.</dd>
 
-    <dt>DstInCompositeOp</dt>
+      <dt>DstInCompositeOp</dt>
 
-    <dd class="imquote">The part of the destination lying inside of
-    the source replaces the destination.</dd>
+      <dd class="imquote">The part of the destination lying inside of the source replaces the destination.</dd>
 
-    <dt>DstOutCompositeOp</dt>
+      <dt>DstOutCompositeOp</dt>
 
-    <dd class="imquote">The part of the destination lying outside
-    of the source replaces the destination.</dd>
+      <dd class="imquote">The part of the destination lying outside of the source replaces the destination.</dd>
 
-    <dt>DstOverCompositeOp</dt>
+      <dt>DstOverCompositeOp</dt>
 
-    <dd class="imquote">The destination is composited over the
-    source and the result replaces the destination.</dd>
+      <dd class="imquote">The destination is composited over the source and the result replaces the destination.</dd>
 
-    <dt>ExclusionCompositeOp</dt>
+      <dt>ExclusionCompositeOp</dt>
 
-    <dd class="imquote">Produces an effect similar to that of
-    'difference', but appears as lower contrast. Painting with
-    white inverts the destination color. Painting with black
-    produces no change.</dd>
+      <dd class="imquote">
+        Produces an effect similar to that of 'difference', but appears as lower contrast. Painting with white inverts the destination color. Painting with
+        black produces no change.
+      </dd>
 
-    <dt>HardLightCompositeOp</dt>
+      <dt>HardLightCompositeOp</dt>
 
-    <dd class="imquote">Multiplies or screens the colors, dependent
-    on the source color value. If the source color is lighter than
-    0.5, the destination is lightened as if it were screened. If
-    the source color is darker than 0.5, the destination is
-    darkened, as if it were multiplied. The degree of lightening or
-    darkening is proportional to the difference between the source
-    color and 0.5. If it is equal to 0.5 the destination is
-    unchanged. Painting with pure black or white produces black or
-    white.</dd>
+      <dd class="imquote">
+        Multiplies or screens the colors, dependent on the source color value. If the source color is lighter than 0.5, the destination is lightened as if it
+        were screened. If the source color is darker than 0.5, the destination is darkened, as if it were multiplied. The degree of lightening or darkening is
+        proportional to the difference between the source color and 0.5. If it is equal to 0.5 the destination is unchanged. Painting with pure black or white
+        produces black or white.
+      </dd>
 
-    <dt>HueCompositeOp</dt>
+      <dt>HueCompositeOp</dt>
 
-    <dd class="imquote">Each pixel in the result image is the
-    combination of the hue of the target image and the saturation
-    and brightness of the composite image.</dd>
+      <dd class="imquote">
+        Each pixel in the result image is the combination of the hue of the target image and the saturation and brightness of the composite image.
+      </dd>
 
-    <dt>InCompositeOp</dt>
+      <dt>InCompositeOp</dt>
 
-    <dd class="imquote">The result is simply <code>composite
-    image</code> cut by the shape of <code>image</code>. None of
-    the image data of <code>image</code> is included in the
-    result.</dd>
+      <dd class="imquote">
+        The result is simply <code>composite image</code> cut by the shape of <code>image</code>. None of the image data of <code>image</code> is included in
+        the result.
+      </dd>
 
-    <dt>LightenCompositeOp</dt>
+      <dt>LightenCompositeOp</dt>
 
-    <dd>Replace target image pixels with lighter pixels from the
-    composite image.</dd>
+      <dd>Replace target image pixels with lighter pixels from the composite image.</dd>
 
-    <dt>LinearBurnCompositeOp</dt>
+      <dt>LinearBurnCompositeOp</dt>
 
-    <dd>Same as <code>LinearDodgeCompositeOp</code>, but also
-    subtract one from the result. Sort of a additive 'Screen' of
-    the images.</dd>
+      <dd>Same as <code>LinearDodgeCompositeOp</code>, but also subtract one from the result. Sort of a additive 'Screen' of the images.</dd>
 
-    <dt>LinearDodgeCompositeOp</dt>
+      <dt>LinearDodgeCompositeOp</dt>
 
-    <dd class="imquote">This is equivelent to
-    <code>PlusCompositeOp</code> in that the color channels are
-    simply added, however it does not "plus" the alpha channel, but
-    uses the normal <code>OverCompositeOp</code> alpha blending,
-    which transparencies are involved. Produces a sort of additive
-    multiply-like result.</dd>
+      <dd class="imquote">
+        This is equivelent to <code>PlusCompositeOp</code> in that the color channels are simply added, however it does not "plus" the alpha channel, but uses
+        the normal <code>OverCompositeOp</code> alpha blending, which transparencies are involved. Produces a sort of additive multiply-like result.
+      </dd>
 
-    <dt>LinearLightCompositeOp</dt>
+      <dt>LinearLightCompositeOp</dt>
 
-    <dd class="imquote">Increase contrast slightly with an impact
-    on the foreground's tonal values.</dd>
+      <dd class="imquote">Increase contrast slightly with an impact on the foreground's tonal values.</dd>
 
-    <dt>LuminizeCompositeOp</dt>
+      <dt>LuminizeCompositeOp</dt>
 
-    <dd class="imquote">Each pixel in the result image is the
-    combination of the brightness of the composite image and the
-    saturation and hue of the target image. This is the
-    <em>opposite</em> of ColorizeCompositeOp.</dd>
+      <dd class="imquote">
+        Each pixel in the result image is the combination of the brightness of the composite image and the saturation and hue of the target image. This is the
+        <em>opposite</em> of ColorizeCompositeOp.
+      </dd>
 
-    <dt>MinusCompositeOp</dt>
+      <dt>MinusCompositeOp</dt>
 
-    <dd class="imquote">The result of composite image - image, with
-    overflow cropped to zero. The matte chanel is ignored (set to
-    255, full coverage).</dd>
+      <dd class="imquote">The result of composite image - image, with overflow cropped to zero. The matte chanel is ignored (set to 255, full coverage).</dd>
 
-    <dt>ModulateCompositeOp</dt>
+      <dt>ModulateCompositeOp</dt>
 
-    <dd>Used by the <a href="image3.html#watermark">watermark</a>
-    method.</dd>
+      <dd>Used by the <a href="image3.html#watermark">watermark</a> method.</dd>
 
-    <dt>MultiplyCompositeOp</dt>
+      <dt>MultiplyCompositeOp</dt>
 
-    <dd class="imquote">Multiplies the color of each target image
-    pixel by the color of the corresponding composite image pixel.
-    The result color is always darker.</dd>
+      <dd class="imquote">
+        Multiplies the color of each target image pixel by the color of the corresponding composite image pixel. The result color is always darker.
+      </dd>
 
-    <dt>NoCompositeOp</dt>
+      <dt>NoCompositeOp</dt>
 
-    <dd>No composite operator has been specified.</dd>
+      <dd>No composite operator has been specified.</dd>
 
-    <dt>OutCompositeOp</dt>
+      <dt>OutCompositeOp</dt>
 
-    <dd class="imquote">The resulting image is <code>composite
-    image</code> with the shape of <code>image</code> cut out.</dd>
+      <dd class="imquote">The resulting image is <code>composite image</code> with the shape of <code>image</code> cut out.</dd>
 
-    <dt>OverCompositeOp</dt>
+      <dt>OverCompositeOp</dt>
 
-    <dd><span class="imquote">The result is the union of the the
-    two image shapes with <code>composite image</code> obscuring
-    <code>image</code> in the region of overlap.</span> The matte
-    channel of the composite image is respected, so that if the
-    composite pixel is part or all transparent, the corresponding
-    image pixel will show through.</dd>
+      <dd>
+        <span class="imquote"
+          >The result is the union of the the two image shapes with <code>composite image</code> obscuring <code>image</code> in the region of overlap.</span
+        >
+        The matte channel of the composite image is respected, so that if the composite pixel is part or all transparent, the corresponding image pixel will
+        show through.
+      </dd>
 
-    <dt>OverlayCompositeOp</dt>
+      <dt>OverlayCompositeOp</dt>
 
-    <dd class="imquote">Multiplies or screens the colors, dependent
-    on the destination color. Source colors overlay the destination
-    whilst preserving its highlights and shadows. The destination
-    color is not replaced, but is mixed with the source color to
-    reflect the lightness or darkness of the destination.</dd>
+      <dd class="imquote">
+        Multiplies or screens the colors, dependent on the destination color. Source colors overlay the destination whilst preserving its highlights and
+        shadows. The destination color is not replaced, but is mixed with the source color to reflect the lightness or darkness of the destination.
+      </dd>
 
-    <dt>PegtopLightCompositeOp</dt>
+      <dt>PegtopLightCompositeOp</dt>
 
-    <dd class="imquote">Almost equivalent to
-    <code>SoftLightCompositeOp</code>, but using a continuious
-    mathematical formula rather than two conditionally selected
-    formulae.</dd>
+      <dd class="imquote">
+        Almost equivalent to <code>SoftLightCompositeOp</code>, but using a continuious mathematical formula rather than two conditionally selected formulae.
+      </dd>
 
-    <dt>PinLightCompositeOp</dt>
+      <dt>PinLightCompositeOp</dt>
 
-    <dd class="imquote">Similar to
-    <code>HardLightCompositeOp</code>, but using sharp linear
-    shadings, to similate the effects of a strong 'pinhole' light
-    source.</dd>
+      <dd class="imquote">
+        Similar to <code>HardLightCompositeOp</code>, but using sharp linear shadings, to similate the effects of a strong 'pinhole' light source.
+      </dd>
 
-    <dt>PlusCompositeOp</dt>
+      <dt>PlusCompositeOp</dt>
 
-    <dd class="imquote">The result is just the sum of the image
-    data. Output values are cropped to 255 (no overflow). This
-    operation is independent of the matte channels.</dd>
+      <dd class="imquote">
+        The result is just the sum of the image data. Output values are cropped to 255 (no overflow). This operation is independent of the matte channels.
+      </dd>
 
-    <dt>ReplaceCompositeOp</dt>
+      <dt>ReplaceCompositeOp</dt>
 
-    <dd class="imquote">The resulting image is image replaced with
-    composite image. Here the matte information is ignored.</dd>
+      <dd class="imquote">The resulting image is image replaced with composite image. Here the matte information is ignored.</dd>
 
-    <dt>SaturateCompositeOp</dt>
+      <dt>SaturateCompositeOp</dt>
 
-    <dd>Each pixel in the result image is the combination of the
-    saturation of the target image and the hue and brightness of
-    the composite image.</dd>
+      <dd>Each pixel in the result image is the combination of the saturation of the target image and the hue and brightness of the composite image.</dd>
 
-    <dt>ScreenCompositeOp</dt>
+      <dt>ScreenCompositeOp</dt>
 
-    <dd>Multiplies the inverse of each image's color
-    information.</dd>
+      <dd>Multiplies the inverse of each image's color information.</dd>
 
-    <dt>SoftLightCompositeOp</dt>
+      <dt>SoftLightCompositeOp</dt>
 
-    <dd class="imquote">Darkens or lightens the colors, dependent
-    on the source color value. If the source color is lighter than
-    0.5, the destination is lightened. If the source color is
-    darker than 0.5, the destination is darkened, as if it were
-    burned in. The degree of darkening or lightening is
-    proportional to the difference between the source color and
-    0.5. If it is equal to 0.5, the destination is unchanged.
-    Painting with pure black or white produces a distinctly darker
-    or lighter area, but does not result in pure black or
-    white.</dd>
+      <dd class="imquote">
+        Darkens or lightens the colors, dependent on the source color value. If the source color is lighter than 0.5, the destination is lightened. If the
+        source color is darker than 0.5, the destination is darkened, as if it were burned in. The degree of darkening or lightening is proportional to the
+        difference between the source color and 0.5. If it is equal to 0.5, the destination is unchanged. Painting with pure black or white produces a
+        distinctly darker or lighter area, but does not result in pure black or white.
+      </dd>
 
-    <dt>SrcAtopCompositeOp</dt>
+      <dt>SrcAtopCompositeOp</dt>
 
-    <dd class="imquote">The part of the source lying inside of the
-    destination is composited onto the destination.</dd>
+      <dd class="imquote">The part of the source lying inside of the destination is composited onto the destination.</dd>
 
-    <dt>SrcCompositeOp</dt>
+      <dt>SrcCompositeOp</dt>
 
-    <dd class="imquote">The source is copied to the destination.
-    The destination is not used as input.</dd>
+      <dd class="imquote">The source is copied to the destination. The destination is not used as input.</dd>
 
-    <dt>SrcInCompositeOp</dt>
+      <dt>SrcInCompositeOp</dt>
 
-    <dd class="imquote">he part of the source lying inside of the
-    destination replaces the destination.</dd>
+      <dd class="imquote">he part of the source lying inside of the destination replaces the destination.</dd>
 
-    <dt>SrcOutCompositeOp</dt>
+      <dt>SrcOutCompositeOp</dt>
 
-    <dd class="imquote">The part of the source lying outside of the
-    destination replaces the destination.</dd>
+      <dd class="imquote">The part of the source lying outside of the destination replaces the destination.</dd>
 
-    <dt>SrcOverCompositeOp</dt>
+      <dt>SrcOverCompositeOp</dt>
 
-    <dd class="imquote">The source is composited over the
-    destination.</dd>
+      <dd class="imquote">The source is composited over the destination.</dd>
 
-    <dt>SubtractCompositeOp</dt>
+      <dt>SubtractCompositeOp</dt>
 
-    <dd class="imquote">The result of <code>composite image</code>
-    - <code>image</code>, with underflow wrapping around (mod 256).
-    The add and subtract operators can be used to perform
-    reversable transformations.</dd>
+      <dd class="imquote">
+        The result of <code>composite image</code> - <code>image</code>, with underflow wrapping around (mod 256). The add and subtract operators can be used to
+        perform reversable transformations.
+      </dd>
 
-    <dt>ThresholdCompositeOp</dt>
+      <dt>ThresholdCompositeOp</dt>
 
-    <dd>?</dd>
+      <dd>?</dd>
 
-    <dt>VividLightCompositeOp</dt>
+      <dt>VividLightCompositeOp</dt>
 
-    <dd class="imquote">A modified
-    <code>LinearLightCompositeOp</code> designed to preserve very
-    stong primary and secondary colors in the image.</dd>
+      <dd class="imquote">A modified <code>LinearLightCompositeOp</code> designed to preserve very stong primary and secondary colors in the image.</dd>
 
-    <dt>XorCompositeOp</dt>
+      <dt>XorCompositeOp</dt>
 
-    <dd class="imquote">The result is the image data from both
-    <code>composite image</code> and <code>image</code> that is
-    outside the overlap region. The overlap region will be
-    blank.</dd>
-  </dl>
+      <dd class="imquote">
+        The result is the image data from both <code>composite image</code> and <code>image</code> that is outside the overlap region. The overlap region will
+        be blank.
+      </dd>
+    </dl>
 
-  <h3 class="const" id="CompressionType">CompressionType</h3>
+    <h3 class="const" id="CompressionType">CompressionType</h3>
 
-  <p><span class="imquote">Express the desired compression type
-  when encoding an image. Be aware that most image types only
-  support a sub-set of the available compression types. If the
-  compression type specified is incompatible with the image,
-  ImageMagick selects a compression type compatible with the image
-  type.</span> See <a href=
-  "imageattrs.html#compression">compression</a>.</p>
+    <p>
+      <span class="imquote"
+        >Express the desired compression type when encoding an image. Be aware that most image types only support a sub-set of the available compression types.
+        If the compression type specified is incompatible with the image, ImageMagick selects a compression type compatible with the image type.</span
+      >
+      See <a href="imageattrs.html#compression">compression</a>.
+    </p>
 
-  <dl>
-    <dt>UndefinedCompression</dt>
+    <dl>
+      <dt>UndefinedCompression</dt>
 
-    <dd>No compression type has been specified.</dd>
+      <dd>No compression type has been specified.</dd>
 
-    <dt>NoCompression</dt>
+      <dt>NoCompression</dt>
 
-    <dd>The default for most formats.</dd>
+      <dd>The default for most formats.</dd>
 
-    <dt>B44Compression</dt>
+      <dt>B44Compression</dt>
 
-    <dd>Available in ImageMagick 6.5.5-4 and later.</dd>
+      <dd>Available in ImageMagick 6.5.5-4 and later.</dd>
 
-    <dt>B44ACompression</dt>
+      <dt>B44ACompression</dt>
 
-    <dd>Available in ImageMagick 6.5.5-4 and later.</dd>
+      <dd>Available in ImageMagick 6.5.5-4 and later.</dd>
 
-    <dt>BZipCompression</dt>
+      <dt>BZipCompression</dt>
 
-    <dd class="imquote">BZip (Burrows-Wheeler block-sorting text
-    compression algorithm and Huffman coding) as used by bzip2
-    utilities</dd>
+      <dd class="imquote">BZip (Burrows-Wheeler block-sorting text compression algorithm and Huffman coding) as used by bzip2 utilities</dd>
 
-    <dt>DXT1Compression</dt>
+      <dt>DXT1Compression</dt>
 
-    <dd>Available in ImageMagick 6.3.9-3 and later.</dd>
+      <dd>Available in ImageMagick 6.3.9-3 and later.</dd>
 
-    <dt>DXT3Compression</dt>
+      <dt>DXT3Compression</dt>
 
-    <dd>Available in ImageMagick 6.3.9-3 and later.</dd>
+      <dd>Available in ImageMagick 6.3.9-3 and later.</dd>
 
-    <dt>DXT5Compression</dt>
+      <dt>DXT5Compression</dt>
 
-    <dd>Available in ImageMagick 6.3.9-3 and later.</dd>
+      <dd>Available in ImageMagick 6.3.9-3 and later.</dd>
 
-    <dt>FaxCompression</dt>
+      <dt>FaxCompression</dt>
 
-    <dd class="imquote">CCITT Group 3 FAX compression</dd>
+      <dd class="imquote">CCITT Group 3 FAX compression</dd>
 
-    <dt>Group4Compression</dt>
+      <dt>Group4Compression</dt>
 
-    <dd class="imquote">CCITT Group 4 FAX compression (used only
-    for TIFF)</dd>
+      <dd class="imquote">CCITT Group 4 FAX compression (used only for TIFF)</dd>
 
-    <dt>JPEGCompression</dt>
+      <dt>JPEGCompression</dt>
 
-    <dd>JPEG compression. See <a href=
-    "http://www.faqs.org/faqs/jpeg-faq/part1/">The JPEG image
-    compression FAQ</a>.</dd>
+      <dd>
+        JPEG compression. See
+        <a href="http://www.faqs.org/faqs/jpeg-faq/part1/">The JPEG image compression FAQ</a>.
+      </dd>
 
-    <dt>JPEG2000Compression</dt>
+      <dt>JPEG2000Compression</dt>
 
-    <dd>JPEG2000 compression for compressed PDF images.</dd>
+      <dd>JPEG2000 compression for compressed PDF images.</dd>
 
-    <dt>LosslessJPEGCompression</dt>
+      <dt>LosslessJPEGCompression</dt>
 
-    <dd>This compression format is almost never used.</dd>
+      <dd>This compression format is almost never used.</dd>
 
-    <dt>LZWCompression</dt>
+      <dt>LZWCompression</dt>
 
-    <dd class="imquote">Lempel-Ziv-Welch (LZW) compression</dd>
+      <dd class="imquote">Lempel-Ziv-Welch (LZW) compression</dd>
 
-    <dt>PizCompression</dt>
+      <dt>PizCompression</dt>
 
-    <dd>Available in ImageMagick 6.5.5-4 and later.</dd>
+      <dd>Available in ImageMagick 6.5.5-4 and later.</dd>
 
-    <dt>Pxr24Compression</dt>
+      <dt>Pxr24Compression</dt>
 
-    <dd>Available in ImageMagick 6.5.5-4 and later.</dd>
+      <dd>Available in ImageMagick 6.5.5-4 and later.</dd>
 
-    <dt>RLECompression</dt>
+      <dt>RLECompression</dt>
 
-    <dd>See the Wikipedia page for <a href=
-    "http://en.wikipedia.org/wiki/Run_length_encoding">Run-length
-    encoding</a>.</dd>
+      <dd>
+        See the Wikipedia page for
+        <a href="http://en.wikipedia.org/wiki/Run_length_encoding">Run-length encoding</a>.
+      </dd>
 
-    <dt>ZipCompression</dt>
+      <dt>ZipCompression</dt>
 
-    <dd class="imquote">Lempel-Ziv compression (LZ77) as used in
-    PKZIP and GNU gzip.</dd>
+      <dd class="imquote">Lempel-Ziv compression (LZ77) as used in PKZIP and GNU gzip.</dd>
 
-    <dt>ZipSCompression</dt>
+      <dt>ZipSCompression</dt>
 
-    <dd>Available in ImageMagick 6.5.5-4 and later.</dd>
-  </dl>
+      <dd>Available in ImageMagick 6.5.5-4 and later.</dd>
+    </dl>
 
-  <h3 class="const" id="DecorationType">DecorationType</h3>
+    <h3 class="const" id="DecorationType">DecorationType</h3>
 
-  <p>Use with the <a href="draw.html#decorate">decorate=</a> method
-  in the Draw class to specify the text decoration for the <a href=
-  "draw.html#annotate">annotate</a> method.</p>
+    <p>
+      Use with the <a href="draw.html#decorate">decorate=</a> method in the Draw class to specify the text decoration for the
+      <a href="draw.html#annotate">annotate</a> method.
+    </p>
 
-  <dl>
-    <dt>NoDecoration</dt>
+    <dl>
+      <dt>NoDecoration</dt>
 
-    <dd>Don't decorate the text.</dd>
+      <dd>Don't decorate the text.</dd>
 
-    <dt>UnderlineDecoration</dt>
+      <dt>UnderlineDecoration</dt>
 
-    <dd>Underline the text.</dd>
+      <dd>Underline the text.</dd>
 
-    <dt>OverlineDecoration</dt>
+      <dt>OverlineDecoration</dt>
 
-    <dd>Overline the text.</dd>
+      <dd>Overline the text.</dd>
 
-    <dt>LineThroughDecoration</dt>
+      <dt>LineThroughDecoration</dt>
 
-    <dd>Draw a horizontal line through the middle of the text.</dd>
-  </dl>
+      <dd>Draw a horizontal line through the middle of the text.</dd>
+    </dl>
 
-  <h3 class="const" id="DisposeType">DisposeType</h3>
+    <h3 class="const" id="DisposeType">DisposeType</h3>
 
-  <p>The value of the <a href="imageattrs.html#dispose">dispose</a>
-  attribute.</p>
+    <p>The value of the <a href="imageattrs.html#dispose">dispose</a> attribute.</p>
 
-  <dl>
-    <dt>UndefinedDispose</dt>
+    <dl>
+      <dt>UndefinedDispose</dt>
 
-    <dd>No disposal specified.</dd>
+      <dd>No disposal specified.</dd>
 
-    <dt>NoneDispose</dt>
+      <dt>NoneDispose</dt>
 
-    <dd>Do not dispose between frames.</dd>
+      <dd>Do not dispose between frames.</dd>
 
-    <dt>BackgroundDispose</dt>
+      <dt>BackgroundDispose</dt>
 
-    <dd>Overwrite the image area with the background color.</dd>
+      <dd>Overwrite the image area with the background color.</dd>
 
-    <dt>PreviousDispose</dt>
+      <dt>PreviousDispose</dt>
 
-    <dd>Overwrite the image area with what was there prior to
-    rendering the image.</dd>
-  </dl>
+      <dd>Overwrite the image area with what was there prior to rendering the image.</dd>
+    </dl>
 
-  <h3 class="const" id="DitherMethod">DitherMethod</h3>
+    <h3 class="const" id="DitherMethod">DitherMethod</h3>
 
-  <p>Specify the method of dithering for <a href=
-  "image1.html#remap">remap</a>, <a href=
-  "image3.html#quantize">quantize</a>, <a href=
-  "image3.html#posterize">posterize</a>, etc.</p>
+    <p>
+      Specify the method of dithering for <a href="image1.html#remap">remap</a>, <a href="image3.html#quantize">quantize</a>,
+      <a href="image3.html#posterize">posterize</a>, etc.
+    </p>
 
-  <dl>
-    <dt>NoDitherMethod</dt>
+    <dl>
+      <dt>NoDitherMethod</dt>
 
-    <dt>RiemersmaDitherMethod</dt>
+      <dt>RiemersmaDitherMethod</dt>
 
-    <dt>FloydSteinbergDitherMethod</dt>
-  </dl>
+      <dt>FloydSteinbergDitherMethod</dt>
+    </dl>
 
-  <h3 class="const" id="EndianType">EndianType</h3>
+    <h3 class="const" id="EndianType">EndianType</h3>
 
-  <p>The value of the <a href="info.html#endian">endian</a>
-  attribute.</p>
+    <p>The value of the <a href="info.html#endian">endian</a> attribute.</p>
 
-  <dl>
-    <dt>UndefinedEndian</dt>
+    <dl>
+      <dt>UndefinedEndian</dt>
 
-    <dt>LSBEndian</dt>
+      <dt>LSBEndian</dt>
 
-    <dt>MSBEndian</dt>
-  </dl>
+      <dt>MSBEndian</dt>
+    </dl>
 
-  <h3 class="const" id="FilterTypes">FilterTypes</h3>
+    <h3 class="const" id="FilterTypes">FilterTypes</h3>
 
-  <p><span class="imquote">Used to adjust the filter algorithm used
-  when resizing images. Different filters experience varying
-  degrees of success with various images and can take significantly
-  different amounts of processing time. ImageMagick uses the
-  LanczosFilter by default since this filter has been shown to
-  provide the best results for most images in a reasonable amount
-  of time. Other filter types (e.g. TriangleFilter) may execute
-  much faster but may show artifacts when the image is re-sized or
-  around diagonal lines. The only way to be sure is to test the
-  filter with sample images.</span> See <a href=
-  "image3.html#resize">resize</a>.</p>
+    <p>
+      <span class="imquote"
+        >Used to adjust the filter algorithm used when resizing images. Different filters experience varying degrees of success with various images and can take
+        significantly different amounts of processing time. ImageMagick uses the LanczosFilter by default since this filter has been shown to provide the best
+        results for most images in a reasonable amount of time. Other filter types (e.g. TriangleFilter) may execute much faster but may show artifacts when the
+        image is re-sized or around diagonal lines. The only way to be sure is to test the filter with sample images.</span
+      >
+      See <a href="image3.html#resize">resize</a>.
+    </p>
 
-  <dl>
-    <dt>UndefinedFilter</dt>
+    <dl>
+      <dt>UndefinedFilter</dt>
 
-    <dt>Bartlett</dt>
+      <dt>Bartlett</dt>
 
-    <dt>BesselFilter</dt>
+      <dt>BesselFilter</dt>
 
-    <dt>BlackmanFilter</dt>
+      <dt>BlackmanFilter</dt>
 
-    <dt>Bohman</dt>
+      <dt>Bohman</dt>
 
-    <dt>BoxFilter</dt>
+      <dt>BoxFilter</dt>
 
-    <dt>CatromFilter</dt>
+      <dt>CatromFilter</dt>
 
-    <dt>CubicFilter</dt>
+      <dt>CubicFilter</dt>
 
-    <dt>GaussianFilter</dt>
+      <dt>GaussianFilter</dt>
 
-    <dt>HammingFilter</dt>
+      <dt>HammingFilter</dt>
 
-    <dt>HanningFilter</dt>
+      <dt>HanningFilter</dt>
 
-    <dt>HermiteFilter</dt>
+      <dt>HermiteFilter</dt>
 
-    <dt>KaiserFilter</dt>
+      <dt>KaiserFilter</dt>
 
-    <dt>LagrangianFilter</dt>
+      <dt>LagrangianFilter</dt>
 
-    <dt>LanczosFilter</dt>
+      <dt>LanczosFilter</dt>
 
-    <dt>MitchellFilter</dt>
+      <dt>MitchellFilter</dt>
 
-    <dt>ParzenFilter</dt>
+      <dt>ParzenFilter</dt>
 
-    <dt>PointFilter</dt>
+      <dt>PointFilter</dt>
 
-    <dt>QuadraticFilter</dt>
+      <dt>QuadraticFilter</dt>
 
-    <dt>SincFilter</dt>
+      <dt>SincFilter</dt>
 
-    <dt>TriangleFilter</dt>
+      <dt>TriangleFilter</dt>
 
-    <dt>WelshFilter</dt>
-  </dl>
+      <dt>WelshFilter</dt>
+    </dl>
 
-  <h3 class="const" id="GravityType">GravityType</h3>
+    <h3 class="const" id="GravityType">GravityType</h3>
 
-  <p><span class="imquote">Specify positioning of an object (e.g.
-  text, image) within a bounding region (e.g. an image). Gravity
-  provides a convenient way to locate objects irrespective of the
-  size of the bounding region, in other words, you don't need to
-  provide absolute coordinates in order to position an object. A
-  common default for gravity is <em>NorthWestGravity</em>.</span>
-  See <a href="draw.html#annotate">annotate</a> and <a href=
-  "image1.html#composite">composite</a>.</p>
+    <p>
+      <span class="imquote"
+        >Specify positioning of an object (e.g. text, image) within a bounding region (e.g. an image). Gravity provides a convenient way to locate objects
+        irrespective of the size of the bounding region, in other words, you don't need to provide absolute coordinates in order to position an object. A common
+        default for gravity is <em>NorthWestGravity</em>.</span
+      >
+      See <a href="draw.html#annotate">annotate</a> and <a href="image1.html#composite">composite</a>.
+    </p>
 
-  <dl>
-    <dt>ForgetGravity</dt>
+    <dl>
+      <dt>ForgetGravity</dt>
 
-    <dd class="imquote">Don't use gravity.</dd>
+      <dd class="imquote">Don't use gravity.</dd>
 
-    <dt>NorthWestGravity</dt>
+      <dt>NorthWestGravity</dt>
 
-    <dd class="imquote">Position object at top-left of region</dd>
+      <dd class="imquote">Position object at top-left of region</dd>
 
-    <dt>NorthGravity</dt>
+      <dt>NorthGravity</dt>
 
-    <dd class="imquote">Position object at top-center of
-    region</dd>
+      <dd class="imquote">Position object at top-center of region</dd>
 
-    <dt>NorthEastGravity</dt>
+      <dt>NorthEastGravity</dt>
 
-    <dd class="imquote">Position object at top-right of region</dd>
+      <dd class="imquote">Position object at top-right of region</dd>
 
-    <dt>WestGravity</dt>
+      <dt>WestGravity</dt>
 
-    <dd class="imquote">Position object at left-center of
-    region</dd>
+      <dd class="imquote">Position object at left-center of region</dd>
 
-    <dt>CenterGravity</dt>
+      <dt>CenterGravity</dt>
 
-    <dd class="imquote">Position object at center of region</dd>
+      <dd class="imquote">Position object at center of region</dd>
 
-    <dt>EastGravity</dt>
+      <dt>EastGravity</dt>
 
-    <dd class="imquote">Position object at right-center of
-    region</dd>
+      <dd class="imquote">Position object at right-center of region</dd>
 
-    <dt>SouthWestGravity</dt>
+      <dt>SouthWestGravity</dt>
 
-    <dd class="imquote">Position object at left-bottom of
-    region</dd>
+      <dd class="imquote">Position object at left-bottom of region</dd>
 
-    <dt>SouthGravity</dt>
+      <dt>SouthGravity</dt>
 
-    <dd class="imquote">Position object at bottom-center of
-    region</dd>
+      <dd class="imquote">Position object at bottom-center of region</dd>
 
-    <dt>SouthEastGravity</dt>
+      <dt>SouthEastGravity</dt>
 
-    <dd class="imquote">Position object at bottom-right of
-    region</dd>
-  </dl>
+      <dd class="imquote">Position object at bottom-right of region</dd>
+    </dl>
 
-  <h3 class="const" id="ImageType">ImageType</h3>
+    <h3 class="const" id="ImageType">ImageType</h3>
 
-  <p>Indicate <span class="imquote">the type classification of the
-  image.</span> See <a href=
-  "imageattrs.html#image_type">image_type</a> and <a href=
-  "info.html#image_type_eq">image_type=</a>.</p>
+    <p>
+      Indicate
+      <span class="imquote">the type classification of the image.</span> See <a href="imageattrs.html#image_type">image_type</a> and
+      <a href="info.html#image_type_eq">image_type=</a>.
+    </p>
 
-  <dl>
-    <dt>UndefinedType</dt>
+    <dl>
+      <dt>UndefinedType</dt>
 
-    <dd>No type has been specified.</dd>
+      <dd>No type has been specified.</dd>
 
-    <dt>BilevelType</dt>
+      <dt>BilevelType</dt>
 
-    <dd class="imquote">Monochrome image</dd>
+      <dd class="imquote">Monochrome image</dd>
 
-    <dt>GrayscaleType</dt>
+      <dt>GrayscaleType</dt>
 
-    <dd class="imquote">Grayscale image</dd>
+      <dd class="imquote">Grayscale image</dd>
 
-    <dt>PaletteType</dt>
+      <dt>PaletteType</dt>
 
-    <dd class="imquote">Indexed color (palette) image</dd>
+      <dd class="imquote">Indexed color (palette) image</dd>
 
-    <dt>PaletteMatteType</dt>
+      <dt>PaletteMatteType</dt>
 
-    <dd class="imquote">Indexed color (palette) image with
-    opacity</dd>
+      <dd class="imquote">Indexed color (palette) image with opacity</dd>
 
-    <dt>TrueColorType</dt>
+      <dt>TrueColorType</dt>
 
-    <dd class="imquote">Truecolor image</dd>
+      <dd class="imquote">Truecolor image</dd>
 
-    <dt>TrueColorMatteType</dt>
+      <dt>TrueColorMatteType</dt>
 
-    <dd class="imquote">Truecolor image with opacity</dd>
+      <dd class="imquote">Truecolor image with opacity</dd>
 
-    <dt>ColorSeparationType</dt>
+      <dt>ColorSeparationType</dt>
 
-    <dd class="imquote">Cyan/Yellow/Magenta/Black (CYMK) image</dd>
+      <dd class="imquote">Cyan/Yellow/Magenta/Black (CYMK) image</dd>
 
-    <dt>ColorSeparationMatteType</dt>
+      <dt>ColorSeparationMatteType</dt>
 
-    <dt>OptimizeType</dt>
+      <dt>OptimizeType</dt>
 
-    <dt>PaletteBilevelMatteType</dt>
-  </dl>
+      <dt>PaletteBilevelMatteType</dt>
+    </dl>
 
-  <h3 class="const" id="InterlaceType">InterlaceType</h3>
+    <h3 class="const" id="InterlaceType">InterlaceType</h3>
 
-  <p>Specify <span class="imquote">the ordering of the red, green,
-  and blue pixel information in the image. Interlacing is usually
-  used to make image information available to the user faster by
-  taking advantage of the space vs time tradeoff. For example,
-  interlacing allows images on the Web to be recognizable sooner
-  and satellite images to accumulate/render with image resolution
-  increasing over time. Use <code>LineInterlace</code> or
-  <code>PlaneInterlace</code> to create an interlaced GIF or
-  progressive JPEG image.</span> See <a href=
-  "imageattrs.html#interlace">interlace</a>.</p>
+    <p>
+      Specify
+      <span class="imquote"
+        >the ordering of the red, green, and blue pixel information in the image. Interlacing is usually used to make image information available to the user
+        faster by taking advantage of the space vs time tradeoff. For example, interlacing allows images on the Web to be recognizable sooner and satellite
+        images to accumulate/render with image resolution increasing over time. Use <code>LineInterlace</code> or <code>PlaneInterlace</code> to create an
+        interlaced GIF or progressive JPEG image.</span
+      >
+      See <a href="imageattrs.html#interlace">interlace</a>.
+    </p>
 
-  <dl>
-    <dt>UndefinedInterlace</dt>
+    <dl>
+      <dt>UndefinedInterlace</dt>
 
-    <dd>No interlace type has been specified.</dd>
+      <dd>No interlace type has been specified.</dd>
 
-    <dt>NoInterlace</dt>
+      <dt>NoInterlace</dt>
 
-    <dd class="imquote">Don't interlace image
-    (RGBRGBRGBRGBRGBRGB...)</dd>
+      <dd class="imquote">Don't interlace image (RGBRGBRGBRGBRGBRGB...)</dd>
 
-    <dt>LineInterlace</dt>
+      <dt>LineInterlace</dt>
 
-    <dd class="imquote">Use scanline interlacing
-    (RRR...GGG...BBB...RRR...GGG...BBB...)</dd>
+      <dd class="imquote">Use scanline interlacing (RRR...GGG...BBB...RRR...GGG...BBB...)</dd>
 
-    <dt>PlaneInterlace</dt>
+      <dt>PlaneInterlace</dt>
 
-    <dd class="imquote">Use plane interlacing
-    (RRRRRR...GGGGGG...BBBBBB...)</dd>
+      <dd class="imquote">Use plane interlacing (RRRRRR...GGGGGG...BBBBBB...)</dd>
 
-    <dt>PartitionInterlace</dt>
+      <dt>PartitionInterlace</dt>
 
-    <dd class="imquote">Similar to plane interlacing except that
-    the different planes are saved to individual files (e.g.
-    image.R, image.G, and image.B)</dd>
+      <dd class="imquote">Similar to plane interlacing except that the different planes are saved to individual files (e.g. image.R, image.G, and image.B)</dd>
 
-    <dt>GIFInterlace</dt>
+      <dt>GIFInterlace</dt>
 
-    <dt>JPEGInterlace</dt>
+      <dt>JPEGInterlace</dt>
 
-    <dt>PNGInterlace</dt>
+      <dt>PNGInterlace</dt>
 
-    <dd>See the ImageMagick documentation for the -interlace
-    option.</dd>
-  </dl>
+      <dd>See the ImageMagick documentation for the -interlace option.</dd>
+    </dl>
 
-  <h3 class="const" id="InterpolatePixelMethod">
-  InterpolatePixelMethod</h3>
+    <h3 class="const" id="InterpolatePixelMethod">InterpolatePixelMethod</h3>
 
-  <p>The pixel color interpolation method. See <a href=
-  "imageattrs.html#pixel_interpolation_method">pixel_interpolation_method</a>.</p>
+    <p>
+      The pixel color interpolation method. See
+      <a href="imageattrs.html#pixel_interpolation_method">pixel_interpolation_method</a>.
+    </p>
 
-  <dl>
-    <dt>AverageInterpolatePixel</dt>
+    <dl>
+      <dt>AverageInterpolatePixel</dt>
 
-    <dt>BicubicInterpolatePixel</dt>
+      <dt>BicubicInterpolatePixel</dt>
 
-    <dt>BilinearInterpolatePixel</dt>
+      <dt>BilinearInterpolatePixel</dt>
 
-    <dt>FilterInterpolatePixel</dt>
+      <dt>FilterInterpolatePixel</dt>
 
-    <dt>IntegerInterpolatePixel</dt>
+      <dt>IntegerInterpolatePixel</dt>
 
-    <dt>MeshInterpolatePixel</dt>
+      <dt>MeshInterpolatePixel</dt>
 
-    <dt>NearestNeighborInterpolatePixel</dt>
+      <dt>NearestNeighborInterpolatePixel</dt>
 
-    <dt>SplineInterpolatePixel</dt>
-  </dl>
+      <dt>SplineInterpolatePixel</dt>
+    </dl>
 
-  <p>For FilterInterpolatePixel, specify the filter with the
-  <a href="imageattrs.html#filter">filter</a> attribute. Specify
-  the sharpness with the <a href="imageattrs.html#blur">blur</a>
-  attribute.</p>
+    <p>
+      For FilterInterpolatePixel, specify the filter with the
+      <a href="imageattrs.html#filter">filter</a> attribute. Specify the sharpness with the <a href="imageattrs.html#blur">blur</a> attribute.
+    </p>
 
-  <h3 class="const" id="MetricType">MetricType</h3>
+    <h3 class="const" id="MetricType">MetricType</h3>
 
-  <p>The distortion metric type. See <a href=
-  "image1.html#compare_channel">compare_channel</a>, <a href=
-  "image1.html#distortion_channel">distortion_channel</a>.</p>
+    <p>
+      The distortion metric type. See
+      <a href="image1.html#compare_channel">compare_channel</a>, <a href="image1.html#distortion_channel">distortion_channel</a>.
+    </p>
 
-  <dl>
-    <dt>MeanAbsoluteErrorMetric</dt>
+    <dl>
+      <dt>MeanAbsoluteErrorMetric</dt>
 
-    <dt>MeanSquaredErrorMetric</dt>
+      <dt>MeanSquaredErrorMetric</dt>
 
-    <dt>PeakAbsoluteErrorMetric</dt>
+      <dt>PeakAbsoluteErrorMetric</dt>
 
-    <dt>PeakSignalToNoiseRatioMetric</dt>
+      <dt>PeakSignalToNoiseRatioMetric</dt>
 
-    <dt>RootMeanSquaredErrorMetric</dt>
-  </dl>
+      <dt>RootMeanSquaredErrorMetric</dt>
+    </dl>
 
-  <h3 class="const" id="NoiseType">NoiseType</h3>
+    <h3 class="const" id="NoiseType">NoiseType</h3>
 
-  <p><span class="imquote">Select the type of noise to be added to
-  the image.</span> See <a href=
-  "image1.html#add_noise">add_noise</a>.</p>
+    <p>
+      <span class="imquote">Select the type of noise to be added to the image.</span>
+      See <a href="image1.html#add_noise">add_noise</a>.
+    </p>
 
-  <dl>
-    <dt>UniformNoise</dt>
+    <dl>
+      <dt>UniformNoise</dt>
 
-    <dt>GaussianNoise</dt>
+      <dt>GaussianNoise</dt>
 
-    <dt>MultiplicativeGaussianNoise</dt>
+      <dt>MultiplicativeGaussianNoise</dt>
 
-    <dt>ImpulseNoise</dt>
+      <dt>ImpulseNoise</dt>
 
-    <dt>LaplacianNoise</dt>
+      <dt>LaplacianNoise</dt>
 
-    <dt>PoissonNoise</dt>
+      <dt>PoissonNoise</dt>
 
-    <dt>RandomNoise</dt>
-  </dl>
+      <dt>RandomNoise</dt>
+    </dl>
 
-  <h3 class="const" id="Opacity">Opacity</h3>
+    <h3 class="const" id="Opacity">Opacity</h3>
 
-  <p>represent the maximum and minimum levels of opacity. You can
-  specify a partial level of opacity by choosing a number between
-  OpaqueOpacity and TransparentOpacity. For example, 25% opacity is
-  <code>abs(Magick::TransparentOpacity-Magick::OpaqueOpacity) *
-  0.25</code></p>
+    <p>
+      represent the maximum and minimum levels of opacity. You can specify a partial level of opacity by choosing a number between OpaqueOpacity and
+      TransparentOpacity. For example, 25% opacity is
+      <code>abs(Magick::TransparentOpacity-Magick::OpaqueOpacity) * 0.25</code>
+    </p>
 
-  <dl>
-    <dt>TransparentOpacity</dt>
+    <dl>
+      <dt>TransparentOpacity</dt>
 
-    <dd>The minimum amount of opacity.</dd>
+      <dd>The minimum amount of opacity.</dd>
 
-    <dt>OpaqueOpacity</dt>
+      <dt>OpaqueOpacity</dt>
 
-    <dd>The maximum amount of opacity.</dd>
-  </dl>
+      <dd>The maximum amount of opacity.</dd>
+    </dl>
 
-  <h3 class="const" id="OrientationType">OrientationType</h3>
+    <h3 class="const" id="OrientationType">OrientationType</h3>
 
-  <p>Specify the orientation of the image pixels. See <a href=
-  "imageattrs.html#orientation">Image#orientation</a> and <a href=
-  "info.html#orientation">Info#orientation</a>. See <a href=
-  "http://jpegclub.org/exif_orientation.html">http://jpegclub.org/exif_orientation.html</a>
-  for an explanation of these values.</p>
+    <p>
+      Specify the orientation of the image pixels. See
+      <a href="imageattrs.html#orientation">Image#orientation</a> and <a href="info.html#orientation">Info#orientation</a>. See
+      <a href="http://jpegclub.org/exif_orientation.html">http://jpegclub.org/exif_orientation.html</a>
+      for an explanation of these values.
+    </p>
 
-  <dl>
-    <dt>UndefinedOrientation</dt>
+    <dl>
+      <dt>UndefinedOrientation</dt>
 
-    <dt>TopLeftOrientation</dt>
+      <dt>TopLeftOrientation</dt>
 
-    <dt>TopRightOrientation</dt>
+      <dt>TopRightOrientation</dt>
 
-    <dt>BottomRightOrientation</dt>
+      <dt>BottomRightOrientation</dt>
 
-    <dt>BottomLeftOrientation</dt>
+      <dt>BottomLeftOrientation</dt>
 
-    <dt>LeftTopOrientation</dt>
+      <dt>LeftTopOrientation</dt>
 
-    <dt>RightTopOrientation</dt>
+      <dt>RightTopOrientation</dt>
 
-    <dt>RightBottomOrientation</dt>
+      <dt>RightBottomOrientation</dt>
 
-    <dt>LeftBottomOrientation</dt>
-  </dl>
+      <dt>LeftBottomOrientation</dt>
+    </dl>
 
-  <h3 class="const" id="PaintMethod">PaintMethod</h3>
+    <h3 class="const" id="PaintMethod">PaintMethod</h3>
 
-  <p class="imquote">Specify how pixel colors are to be replaced in
-  the image. See <a href=
-  "image2.html#matte_floodfill">matte_floodfill</a> and <a href=
-  "image3.html#texture_floodfill">texture_floodfill</a>.</p>
+    <p class="imquote">
+      Specify how pixel colors are to be replaced in the image. See
+      <a href="image2.html#matte_floodfill">matte_floodfill</a> and <a href="image3.html#texture_floodfill">texture_floodfill</a>.
+    </p>
 
-  <dl>
-    <dt>PointMethod</dt>
+    <dl>
+      <dt>PointMethod</dt>
 
-    <dd class="imquote">Replace pixel color at point.</dd>
+      <dd class="imquote">Replace pixel color at point.</dd>
 
-    <dt>ReplaceMethod</dt>
+      <dt>ReplaceMethod</dt>
 
-    <dd class="imquote">Replace color for all image pixels matching
-    color at point.</dd>
+      <dd class="imquote">Replace color for all image pixels matching color at point.</dd>
 
-    <dt>FloodfillMethod</dt>
+      <dt>FloodfillMethod</dt>
 
-    <dd class="imquote">Replace color for pixels surrounding point
-    until encountering pixel that fails to match color at
-    point.</dd>
+      <dd class="imquote">Replace color for pixels surrounding point until encountering pixel that fails to match color at point.</dd>
 
-    <dt>FillToBorderMethod</dt>
+      <dt>FillToBorderMethod</dt>
 
-    <dd class="imquote">Replace color for pixels surrounding point
-    until encountering pixels matching border color.</dd>
+      <dd class="imquote">Replace color for pixels surrounding point until encountering pixels matching border color.</dd>
 
-    <dt>ResetMethod</dt>
+      <dt>ResetMethod</dt>
 
-    <dd class="imquote">Replace colors for <strong>all</strong>
-    pixels in image with fill color.</dd>
-  </dl>
+      <dd class="imquote">Replace colors for <strong>all</strong> pixels in image with fill color.</dd>
+    </dl>
 
-  <h3 class="const" id="RenderingIntent">RenderingIntent</h3>
+    <h3 class="const" id="RenderingIntent">RenderingIntent</h3>
 
-  <p><span class="imquote">Rendering intent is a concept defined by
-  ICC Spec ICC.1:1998-09, "File Format for Color Profiles".
-  ImageMagick uses RenderingIntent in order to support ICC Color
-  Profiles.</span></p>
+    <p>
+      <span class="imquote"
+        >Rendering intent is a concept defined by ICC Spec ICC.1:1998-09, "File Format for Color Profiles". ImageMagick uses RenderingIntent in order to support
+        ICC Color Profiles.</span
+      >
+    </p>
 
-  <p class="imquote">From the specification: "Rendering intent
-  specifies the style of reproduction to be used during the
-  evaluation of this profile in a sequence of profiles. It applies
-  specifically to that profile in the sequence and not to the
-  entire sequence. Typically, the user or application will set the
-  rendering intent dynamically at runtime or embedding time."</p>
+    <p class="imquote">
+      From the specification: "Rendering intent specifies the style of reproduction to be used during the evaluation of this profile in a sequence of profiles.
+      It applies specifically to that profile in the sequence and not to the entire sequence. Typically, the user or application will set the rendering intent
+      dynamically at runtime or embedding time."
+    </p>
 
-  <p>See <a href=
-  "imageattrs.html#rendering_intent">rendering_intent</a>.</p>
+    <p>See <a href="imageattrs.html#rendering_intent">rendering_intent</a>.</p>
 
-  <dl>
-    <dt>UndefinedIntent</dt>
+    <dl>
+      <dt>UndefinedIntent</dt>
 
-    <dd>No intent has been specified.</dd>
+      <dd>No intent has been specified.</dd>
 
-    <dt>SaturationIntent</dt>
+      <dt>SaturationIntent</dt>
 
-    <dd class="imquote">A rendering intent that specifies the
-    saturation of the pixels in the image is preserved perhaps at
-    the expense of accuracy in hue and lightness.</dd>
+      <dd class="imquote">
+        A rendering intent that specifies the saturation of the pixels in the image is preserved perhaps at the expense of accuracy in hue and lightness.
+      </dd>
 
-    <dt>PerceptualIntent</dt>
+      <dt>PerceptualIntent</dt>
 
-    <dd class="imquote">A rendering intent that specifies the full
-    gamut of the image is compressed or expanded to fill the gamut
-    of the destination device. Gray balance is preserved but
-    colorimetric accuracy might not be preserved.</dd>
+      <dd class="imquote">
+        A rendering intent that specifies the full gamut of the image is compressed or expanded to fill the gamut of the destination device. Gray balance is
+        preserved but colorimetric accuracy might not be preserved.
+      </dd>
 
-    <dt>AbsoluteIntent</dt>
+      <dt>AbsoluteIntent</dt>
 
-    <dd class="imquote">Absolute colorimetric</dd>
+      <dd class="imquote">Absolute colorimetric</dd>
 
-    <dt>RelativeIntent</dt>
+      <dt>RelativeIntent</dt>
 
-    <dd class="imquote">Relative colorimetric</dd>
-  </dl>
+      <dd class="imquote">Relative colorimetric</dd>
+    </dl>
 
-  <h3 class="const" id="ResolutionType">ResolutionType</h3>
+    <h3 class="const" id="ResolutionType">ResolutionType</h3>
 
-  <p><span class="imquote">By default, ImageMagick defines
-  resolutions in pixels per inch. ResolutionType provides a means
-  to adjust this.</span> See <a href=
-  "imageattrs.html#units">units</a>.</p>
+    <p>
+      <span class="imquote">By default, ImageMagick defines resolutions in pixels per inch. ResolutionType provides a means to adjust this.</span>
+      See <a href="imageattrs.html#units">units</a>.
+    </p>
 
-  <dl>
-    <dt>UndefinedResolution</dt>
+    <dl>
+      <dt>UndefinedResolution</dt>
 
-    <dd>No resolution has been specified.</dd>
+      <dd>No resolution has been specified.</dd>
 
-    <dt>PixelsPerInchResolution</dt>
+      <dt>PixelsPerInchResolution</dt>
 
-    <dd class="imquote">Density specifications are specified in
-    units of pixels per inch (English units).</dd>
+      <dd class="imquote">Density specifications are specified in units of pixels per inch (English units).</dd>
 
-    <dt>PixelsPerCentimeterResolution</dt>
+      <dt>PixelsPerCentimeterResolution</dt>
 
-    <dd class="imquote">Density specifications are specified in
-    units of pixels per centimeter (metric units).</dd>
-  </dl>
+      <dd class="imquote">Density specifications are specified in units of pixels per centimeter (metric units).</dd>
+    </dl>
 
-  <h3 class="const" id="StretchType">StretchType</h3>
+    <h3 class="const" id="StretchType">StretchType</h3>
 
-  <p>See <a href="draw.html#font_stretch_eq">font_stretch=</a>.</p>
+    <p>See <a href="draw.html#font_stretch_eq">font_stretch=</a>.</p>
 
-  <dl>
-    <dt>NormalStretch</dt>
+    <dl>
+      <dt>NormalStretch</dt>
 
-    <dt>UltraCondensedStretch</dt>
+      <dt>UltraCondensedStretch</dt>
 
-    <dt>ExtraCondensedStretch</dt>
+      <dt>ExtraCondensedStretch</dt>
 
-    <dt>CondensedStretch</dt>
+      <dt>CondensedStretch</dt>
 
-    <dt>SemiCondensedStretch</dt>
+      <dt>SemiCondensedStretch</dt>
 
-    <dt>SemiExpandedStretch</dt>
+      <dt>SemiExpandedStretch</dt>
 
-    <dt>ExpandedStretch</dt>
+      <dt>ExpandedStretch</dt>
 
-    <dt>ExtraExpandedStretch</dt>
+      <dt>ExtraExpandedStretch</dt>
 
-    <dt>UltraExpandedStretch</dt>
+      <dt>UltraExpandedStretch</dt>
 
-    <dt>AnyStretch</dt>
-  </dl>
+      <dt>AnyStretch</dt>
+    </dl>
 
-  <h3 class="const" id="StorageType">StorageType</h3>
+    <h3 class="const" id="StorageType">StorageType</h3>
 
-  <p>See <a href="image2.html#import_pixels">import_pixels</a> and
-  <a href=
-  "image2.html#export_pixels_to_str">export_pixels_to_str</a>.</p>
+    <p>See <a href="image2.html#import_pixels">import_pixels</a> and <a href="image2.html#export_pixels_to_str">export_pixels_to_str</a>.</p>
 
-  <dl>
-    <dt>CharPixel</dt>
+    <dl>
+      <dt>CharPixel</dt>
 
-    <dd>corresponds to a C <code>unsigned char</code>, range
-    0-255.</dd>
+      <dd>corresponds to a C <code>unsigned char</code>, range 0-255.</dd>
 
-    <dt>ShortPixel</dt>
+      <dt>ShortPixel</dt>
 
-    <dd>corresponds to a C <code>unsigned short</code>, range
-    0-65535.</dd>
+      <dd>corresponds to a C <code>unsigned short</code>, range 0-65535.</dd>
 
-    <dt>IntegerPixel</dt>
+      <dt>IntegerPixel</dt>
 
-    <dd>corresponds to a C <code>unsigned int</code>, range
-    0-4294967295.</dd>
+      <dd>corresponds to a C <code>unsigned int</code>, range 0-4294967295.</dd>
 
-    <dt>LongPixel</dt>
+      <dt>LongPixel</dt>
 
-    <dd>corresponds to a C <code>unsigned long</code>, range
-    0-4294967295 (for 32-bit longs).</dd>
+      <dd>corresponds to a C <code>unsigned long</code>, range 0-4294967295 (for 32-bit longs).</dd>
 
-    <dt>FloatPixel</dt>
+      <dt>FloatPixel</dt>
 
-    <dd>corresponds to a C <code>float</code>, range 0.0-1.0.</dd>
+      <dd>corresponds to a C <code>float</code>, range 0.0-1.0.</dd>
 
-    <dt>DoublePixel</dt>
+      <dt>DoublePixel</dt>
 
-    <dd>corresponds to a C <code>double</code>, range 0.0-1.0.</dd>
+      <dd>corresponds to a C <code>double</code>, range 0.0-1.0.</dd>
 
-    <dt>QuantumPixel</dt>
+      <dt>QuantumPixel</dt>
 
-    <dd>corresponds to the Quantum type used by ImageMagick, range
-    0-QuantumRange.</dd>
-  </dl>
+      <dd>corresponds to the Quantum type used by ImageMagick, range 0-QuantumRange.</dd>
+    </dl>
 
-  <h3 class="const" id="StyleType">StyleType</h3>
+    <h3 class="const" id="StyleType">StyleType</h3>
 
-  <p>See <a href="draw.html#font_style_eq">font_style=</a>.</p>
+    <p>See <a href="draw.html#font_style_eq">font_style=</a>.</p>
 
-  <dl>
-    <dt>NormalStyle</dt>
+    <dl>
+      <dt>NormalStyle</dt>
 
-    <dt>ItalicStyle</dt>
+      <dt>ItalicStyle</dt>
 
-    <dt>ObliqueStyle</dt>
+      <dt>ObliqueStyle</dt>
 
-    <dt>AnyStyle</dt>
-  </dl>
+      <dt>AnyStyle</dt>
+    </dl>
 
-  <h3 class="const" id="WeightType">WeightType</h3>
+    <h3 class="const" id="WeightType">WeightType</h3>
 
-  <p>The font weight can be specified as one of 100, 200, 300, 400,
-  500, 600, 700, 800, or 900, or one of the following constants.
-  See <a href="draw.html#font_weight_eq">font_weight=</a>.</p>
+    <p>
+      The font weight can be specified as one of 100, 200, 300, 400, 500, 600, 700, 800, or 900, or one of the following constants. See
+      <a href="draw.html#font_weight_eq">font_weight=</a>.
+    </p>
 
-  <dl>
-    <dt>AnyWeight</dt>
+    <dl>
+      <dt>AnyWeight</dt>
 
-    <dd>No weight specified.</dd>
+      <dd>No weight specified.</dd>
 
-    <dt>NormalWeight</dt>
+      <dt>NormalWeight</dt>
 
-    <dd>Equivalent to 400</dd>
+      <dd>Equivalent to 400</dd>
 
-    <dt>BoldWeight</dt>
+      <dt>BoldWeight</dt>
 
-    <dd>Equivalent to 700</dd>
+      <dd>Equivalent to 700</dd>
 
-    <dt>BolderWeight</dt>
+      <dt>BolderWeight</dt>
 
-    <dd>Increases weight by 100</dd>
+      <dd>Increases weight by 100</dd>
 
-    <dt>LighterWeight</dt>
+      <dt>LighterWeight</dt>
 
-    <dd>Decreases weight by 100</dd>
-  </dl>
+      <dd>Decreases weight by 100</dd>
+    </dl>
 
-  <p class="spacer"></p>
+    <p class="spacer"></p>
 
-  <div class="nav">
-    &laquo; <a href="info.html">Prev</a> | <a href=
-    "index.html">Contents</a> | <a href="rvgtut.html">Next</a>
-    &raquo;
-  </div>
-</body>
+    <div class="nav">
+      &laquo; <a href="info.html">Prev</a> | <a href="index.html">Contents</a> |
+      <a href="rvgtut.html">Next</a>
+      &raquo;
+    </div>
+  </body>
 </html>

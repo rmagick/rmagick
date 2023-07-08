@@ -1,3618 +1,3611 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-  <meta name="generator" content=
-  "HTML Tidy for Linux/x86 (vers 7 December 2008), see www.w3.org" />
-
-  <title>RMagick 0.0.0: class Image (instance methods e-o)</title>
-  <meta http-equiv="Content-Type" content=
-  "text/html; charset=us-ascii" />
-  <meta name="GENERATOR" content="Quanta Plus" />
-  <meta name="Copyright" content=
-  "Copyright (C) 2006 by Timothy P. Hunter" />
-  <link rel="stylesheet" type="text/css" href="css/doc.css" />
-  <script type="text/javascript" src="scripts/doc.js">
-</script>
-  <script type="text/javascript" src="scripts/stripeTables.js">
-</script>
-  <script type="text/javascript">
-//<![CDATA[
-    addLoadEvent(stripeTables);
-  //]]>
-  </script>
-  <script type="text/javascript">
-//<![CDATA[
-    <!-- Pre-load this image so that the browser knows how big it is. -->
-    <!-- Begin
-    flower_hat = new Image();
-    flower_hat.src = "ex/images/Flower_Hat.jpg";
-    // End -->
-  //]]>
-  </script>
-  <style type="text/css">
-/*<![CDATA[*/
-  #iptc  {
-    border: thin solid black;
-  }
-  #iptc th {
-    background-color: #c0c0c0;
-  }
-  td.ds {
-    text-align: right;
-  }
-  /*]]>*/
-  </style>
-</head>
+  <head>
+    <meta name="generator" content="HTML Tidy for Linux/x86 (vers 7 December 2008), see www.w3.org" />
 
-<body>
-  <h6 id="header">RMagick 0.0.0 User's Guide and Reference</h6>
+    <title>RMagick 0.0.0: class Image (instance methods e-o)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+    <meta name="GENERATOR" content="Quanta Plus" />
+    <meta name="Copyright" content="Copyright (C) 2006 by Timothy P. Hunter" />
+    <link rel="stylesheet" type="text/css" href="css/doc.css" />
+    <script type="text/javascript" src="scripts/doc.js"></script>
+    <script type="text/javascript" src="scripts/stripeTables.js"></script>
+    <script type="text/javascript">
+      //<![CDATA[
+      addLoadEvent(stripeTables);
+      //]]>
+    </script>
+    <script type="text/javascript">
+      //<![CDATA[
+      <!-- Pre-load this image so that the browser knows how big it is. -->
+      <!-- Begin
+      flower_hat = new Image();
+      flower_hat.src = "ex/images/Flower_Hat.jpg";
+      // End -->
+      //]]>
+    </script>
+    <style type="text/css">
+      /*<![CDATA[*/
+      #iptc {
+        border: thin solid black;
+      }
+      #iptc th {
+        background-color: #c0c0c0;
+      }
+      td.ds {
+        text-align: right;
+      }
+      /*]]>*/
+    </style>
+  </head>
 
-  <div class="nav">
-    &laquo;&nbsp;<a href="image1.html">Prev</a> | <a href=
-    "index.html">Contents</a> | <a href=
-    "image3.html">Next</a>&nbsp;&raquo;
-  </div>
+  <body>
+    <h6 id="header">RMagick 0.0.0 User's Guide and Reference</h6>
 
-  <h1>class Image <span class="superclass">&lt; Object</span>
-  (instance methods e-o)<br />
-  <span class="mixin">mixes in Comparable</span></h1>
+    <div class="nav">&laquo;&nbsp;<a href="image1.html">Prev</a> | <a href="index.html">Contents</a> | <a href="image3.html">Next</a>&nbsp;&raquo;</div>
 
-  <div id="toc">
-    <h2>Table of Contents</h2>
+    <h1>
+      class Image <span class="superclass">&lt; Object</span> (instance methods e-o)<br />
+      <span class="mixin">mixes in Comparable</span>
+    </h1>
 
-    <h3>instance methods</h3>
+    <div id="toc">
+      <h2>Table of Contents</h2>
 
-    <div>
-      <div class="toccol">
-        <ul>
-          <li><a href=
-          "#each_iptc_dataset">each_iptc_dataset</a></li>
+      <h3>instance methods</h3>
 
-          <li><a href="#each_pixel">each_pixel</a></li>
+      <div>
+        <div class="toccol">
+          <ul>
+            <li><a href="#each_iptc_dataset">each_iptc_dataset</a></li>
 
-          <li><a href="#each_profile">each_profile</a></li>
+            <li><a href="#each_pixel">each_pixel</a></li>
 
-          <li><a href="#edge">edge</a></li>
+            <li><a href="#each_profile">each_profile</a></li>
 
-          <li><a href="#emboss">emboss</a></li>
+            <li><a href="#edge">edge</a></li>
 
-          <li><a href="#encipher">encipher</a></li>
+            <li><a href="#emboss">emboss</a></li>
 
-          <li><a href="#enhance">enhance</a></li>
+            <li><a href="#encipher">encipher</a></li>
 
-          <li><a href="#equalize">equalize</a></li>
+            <li><a href="#enhance">enhance</a></li>
 
-          <li><a href="#equalize_channel">equalize_channel</a></li>
+            <li><a href="#equalize">equalize</a></li>
 
-          <li><a href="#erase_bang">erase!</a></li>
+            <li><a href="#equalize_channel">equalize_channel</a></li>
 
-          <li><a href="#excerpt">excerpt</a></li>
+            <li><a href="#erase_bang">erase!</a></li>
 
-          <li><a href="#excerpt_bang">excerpt!</a></li>
+            <li><a href="#excerpt">excerpt</a></li>
 
-          <li><a href="#export_pixels">export_pixels</a></li>
+            <li><a href="#excerpt_bang">excerpt!</a></li>
 
-          <li><a href=
-          "#export_pixels_to_str">export_pixels_to_str</a></li>
+            <li><a href="#export_pixels">export_pixels</a></li>
 
-          <li><a href="#extent">extent</a></li>
+            <li><a href="#export_pixels_to_str">export_pixels_to_str</a></li>
 
-          <li><a href=
-          "#find_similar_region">find_similar_region</a></li>
+            <li><a href="#extent">extent</a></li>
 
-          <li><a href="#flip">flip</a></li>
+            <li><a href="#find_similar_region">find_similar_region</a></li>
 
-          <li><a href="#flip_bang">flip!</a></li>
+            <li><a href="#flip">flip</a></li>
 
-          <li><a href="#flop">flop</a></li>
+            <li><a href="#flip_bang">flip!</a></li>
 
-          <li><a href="#flop_bang">flop!</a></li>
+            <li><a href="#flop">flop</a></li>
 
-          <li><a href="#frame">frame</a></li>
+            <li><a href="#flop_bang">flop!</a></li>
 
-          <li><a href="#freeze">freeze</a></li>
+            <li><a href="#frame">frame</a></li>
 
-          <li><a href="#function_channel">function_channel</a></li>
-        </ul>
-      </div>
+            <li><a href="#freeze">freeze</a></li>
 
-      <div class="toccol">
-        <ul>
-          <li><a href="#gamma_channel">gamma_channel</a></li>
+            <li><a href="#function_channel">function_channel</a></li>
+          </ul>
+        </div>
 
-          <li><a href="#gamma_correct">gamma_correct</a></li>
+        <div class="toccol">
+          <ul>
+            <li><a href="#gamma_channel">gamma_channel</a></li>
 
-          <li><a href="#gaussian_blur">gaussian_blur</a></li>
+            <li><a href="#gamma_correct">gamma_correct</a></li>
 
-          <li><a href=
-          "#gaussian_blur_channel">gaussian_blur_channel</a></li>
+            <li><a href="#gaussian_blur">gaussian_blur</a></li>
 
-          <li><a href=
-          "#get_exif_by_entry">get_exif_by_entry</a></li>
+            <li><a href="#gaussian_blur_channel">gaussian_blur_channel</a></li>
 
-          <li><a href=
-          "#get_exif_by_number">get_exif_by_number</a></li>
+            <li><a href="#get_exif_by_entry">get_exif_by_entry</a></li>
 
-          <li><a href="#get_iptc_dataset">get_iptc_dataset</a></li>
+            <li><a href="#get_exif_by_number">get_exif_by_number</a></li>
 
-          <li><a href="#get_pixels">get_pixels</a></li>
+            <li><a href="#get_iptc_dataset">get_iptc_dataset</a></li>
 
-          <li><a href="#gray_q">gray?</a></li>
+            <li><a href="#get_pixels">get_pixels</a></li>
 
-          <li><a href="#grey_q">grey?</a></li>
+            <li><a href="#gray_q">gray?</a></li>
 
-          <li><a href="#histogram_q">histogram?</a></li>
+            <li><a href="#grey_q">grey?</a></li>
 
-          <li><a href="#implode">implode</a></li>
+            <li><a href="#histogram_q">histogram?</a></li>
 
-          <li><a href="#import_pixels">import_pixels</a></li>
+            <li><a href="#implode">implode</a></li>
 
-          <li><a href="#inspect">inspect</a></li>
+            <li><a href="#import_pixels">import_pixels</a></li>
 
-          <li><a href="#level">level</a></li>
+            <li><a href="#inspect">inspect</a></li>
 
-          <li><a href="#level_channel">level_channel</a></li>
+            <li><a href="#level">level</a></li>
 
-          <li><a href="#level_colors">level_colors</a></li>
+            <li><a href="#level_channel">level_channel</a></li>
 
-          <li><a href="#levelize_channel">levelize_channel</a></li>
+            <li><a href="#level_colors">level_colors</a></li>
 
-          <li><a href="#linear_stretch">linear_stretch</a></li>
+            <li><a href="#levelize_channel">levelize_channel</a></li>
 
-          <li><a href="#liquid_rescale">liquid_rescale</a></li>
+            <li><a href="#linear_stretch">linear_stretch</a></li>
 
-          <li><a href="#magnify">magnify</a></li>
+            <li><a href="#liquid_rescale">liquid_rescale</a></li>
 
-          <li><a href="#magnify_bang">magnify!</a></li>
-        </ul>
-      </div>
+            <li><a href="#magnify">magnify</a></li>
 
-      <div class="toccol">
-        <ul>
-          <li><a href="#mask">mask</a></li>
+            <li><a href="#magnify_bang">magnify!</a></li>
+          </ul>
+        </div>
 
-          <li><a href=
-          "#matte_fill_to_border">matte_fill_to_border</a></li>
+        <div class="toccol">
+          <ul>
+            <li><a href="#mask">mask</a></li>
 
-          <li><a href="#matte_floodfill">matte_floodfill</a></li>
+            <li><a href="#matte_fill_to_border">matte_fill_to_border</a></li>
 
-          <li><a href="#matte_point">matte_point</a></li>
+            <li><a href="#matte_floodfill">matte_floodfill</a></li>
 
-          <li><a href="#matte_replace">matte_replace</a></li>
+            <li><a href="#matte_point">matte_point</a></li>
 
-          <li><a href="#matte_reset_bang">matte_reset!</a></li>
+            <li><a href="#matte_replace">matte_replace</a></li>
 
-          <li><a href="#median_filter">median_filter</a></li>
+            <li><a href="#matte_reset_bang">matte_reset!</a></li>
 
-          <li><a href="#minify">minify</a></li>
+            <li><a href="#median_filter">median_filter</a></li>
 
-          <li><a href="#minify_bang">minify!</a></li>
+            <li><a href="#minify">minify</a></li>
 
-          <li><a href="#modulate">modulate</a></li>
+            <li><a href="#minify_bang">minify!</a></li>
 
-          <li><a href="#monochrome_q">monochrome?</a></li>
+            <li><a href="#modulate">modulate</a></li>
 
-          <li><a href="#motion_blur">motion_blur</a></li>
+            <li><a href="#monochrome_q">monochrome?</a></li>
 
-          <li><a href="#negate">negate</a></li>
+            <li><a href="#motion_blur">motion_blur</a></li>
 
-          <li><a href="#negate_channel">negate_channel</a></li>
+            <li><a href="#negate">negate</a></li>
 
-          <li><a href="#normalize">normalize</a></li>
+            <li><a href="#negate_channel">negate_channel</a></li>
 
-          <li><a href=
-          "#normalize_channel">normalize_channel</a></li>
+            <li><a href="#normalize">normalize</a></li>
 
-          <li><a href="#oil_paint">oil_paint</a></li>
+            <li><a href="#normalize_channel">normalize_channel</a></li>
 
-          <li><a href="#opaque">opaque</a></li>
+            <li><a href="#oil_paint">oil_paint</a></li>
 
-          <li><a href="#opaque_channel">opaque_channel</a></li>
+            <li><a href="#opaque">opaque</a></li>
 
-          <li><a href="#opaque_q">opaque?</a></li>
+            <li><a href="#opaque_channel">opaque_channel</a></li>
 
-          <li><a href="#ordered_dither">ordered_dither</a></li>
-        </ul>
+            <li><a href="#opaque_q">opaque?</a></li>
+
+            <li><a href="#ordered_dither">ordered_dither</a></li>
+          </ul>
+        </div>
       </div>
     </div>
-  </div>
 
-  <h2 class="methods">instance methods</h2>
+    <h2 class="methods">instance methods</h2>
 
-  <div class="sig">
-    <h3 id="each_iptc_dataset">each_iptc_dataset</h3>
+    <div class="sig">
+      <h3 id="each_iptc_dataset">each_iptc_dataset</h3>
 
-    <p><span class="arg">img</span>.each_iptc_dataset {
-    |<span class="arg">dataset</span>, <span class=
-    "arg">data_field</span>| <span class="arg">block</span>} -&gt;
-    <code>nil</code></p>
-  </div>
+      <p>
+        <span class="arg">img</span>.each_iptc_dataset { |<span class="arg">dataset</span>, <span class="arg">data_field</span>| <span class="arg">block</span>}
+        -&gt; <code>nil</code>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Iterates over the IPTC DataSet constants in Magick::IPTC. If
-    the image's IPTC profile has the DataSet and the data field has
-    non-0 length, yields to the block. The IPTC DataSet constants
-    are listed <a href="image2.html#get_iptc_dataset">here</a>.</p>
+      <p>
+        Iterates over the IPTC DataSet constants in Magick::IPTC. If the image's IPTC profile has the DataSet and the data field has non-0 length, yields to the
+        block. The IPTC DataSet constants are listed
+        <a href="image2.html#get_iptc_dataset">here</a>.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>The block arguments are:</p>
+      <p>The block arguments are:</p>
 
-    <dl>
-      <dt>dataset</dt>
+      <dl>
+        <dt>dataset</dt>
 
-      <dd>The DataSet name</dd>
+        <dd>The DataSet name</dd>
 
-      <dt>data_field</dt>
+        <dt>data_field</dt>
 
-      <dd>The data field</dd>
-    </dl>
+        <dd>The data field</dd>
+      </dl>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href=
-    "image2.html#get_iptc_dataset">get_iptc_dataset</a></p>
-  </div>
+      <p><a href="image2.html#get_iptc_dataset">get_iptc_dataset</a></p>
+    </div>
 
-  <div class="sig">
-    <h3 id="each_pixel">each_pixel</h3>
+    <div class="sig">
+      <h3 id="each_pixel">each_pixel</h3>
 
-    <p><span class="arg">img</span>.each_pixel {|<span class=
-    "arg">pixel</span>, <span class="arg">c</span>, <span class=
-    "arg">r</span>| <span class="arg">block</span> } -&gt;
-    <em>self</em></p>
-  </div>
+      <p>
+        <span class="arg">img</span>.each_pixel {|<span class="arg">pixel</span>, <span class="arg">c</span>, <span class="arg">r</span>|
+        <span class="arg">block</span> } -&gt; <em>self</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Calls <span class="arg">block</span> with 3 arguments, a
-    <span class="arg">pixel</span> from <span class=
-    "arg">img</span>, its column number <span class="arg">c</span>,
-    and its row number <span class="arg">r</span>, for all the
-    pixels in the image. The pixels are enumerated from
-    top-to-bottom and left-to-right.</p>
+      <p>
+        Calls <span class="arg">block</span> with 3 arguments, a <span class="arg">pixel</span> from <span class="arg">img</span>, its column number
+        <span class="arg">c</span>, and its row number <span class="arg">r</span>, for all the pixels in the image. The pixels are enumerated from top-to-bottom
+        and left-to-right.
+      </p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>self</p>
+      <p>self</p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="image2.html#get_pixels">get_pixels</a></p>
-  </div>
+      <p><a href="image2.html#get_pixels">get_pixels</a></p>
+    </div>
 
-  <div class="sig">
-    <h3 id="each_profile">each_profile</h3>
+    <div class="sig">
+      <h3 id="each_profile">each_profile</h3>
 
-    <p><span class="arg">img</span>.each_profile {|<span class=
-    "arg">name</span>, <span class="arg">value</span>| <span class=
-    "arg">block</span>} -&gt; <em>???</em> (see Returns)</p>
-  </div>
+      <p>
+        <span class="arg">img</span>.each_profile {|<span class="arg">name</span>, <span class="arg">value</span>| <span class="arg">block</span>} -&gt;
+        <em>???</em> (see Returns)
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>Calls <span class="arg">block</span> once
-    for each profile in the image, passing the profile name and
-    value as parameters.
+    <div class="desc">
+      <h4>Description</h4>
+      Calls <span class="arg">block</span> once for each profile in the image, passing the profile name and value as parameters.
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>the last value returned by the block</p>
+      <p>the last value returned by the block</p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p>The <a href=
-    "imageattrs.html#color_profile">color_profile</a> and <a href=
-    "imageattrs.html#iptc_profile">iptc_profile</a> attributes
-    return the ICC and IPTC profiles, respectively.</p>
+      <p>
+        The <a href="imageattrs.html#color_profile">color_profile</a> and <a href="imageattrs.html#iptc_profile">iptc_profile</a> attributes return the ICC and
+        IPTC profiles, respectively.
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>GetNextImageProfile</p>
-  </div>
+      <p>GetNextImageProfile</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="edge">edge</h3>
+    <div class="sig">
+      <h3 id="edge">edge</h3>
 
-    <p><span class="arg">img</span>.edge(<span class=
-    "arg">radius</span>=0.0) -&gt; <em>image</em></p>
-  </div>
+      <p><span class="arg">img</span>.edge(<span class="arg">radius</span>=0.0) -&gt; <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>Finds edges in the image.
+    <div class="desc">
+      <h4>Description</h4>
+      Finds edges in the image.
 
-    <h4>Arguments</h4>The radius of the convolution filter. If the
-    radius is 0, <code>edge</code> selects a suitable default.
+      <h4>Arguments</h4>
+      The radius of the convolution filter. If the radius is 0,
+      <code>edge</code> selects a suitable default.
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p class="rollover"><a href=
-    "javascript:popup('edge.rb.html')"><img onmouseover=
-    "this.src='ex/images/Flower_Hat.jpg'" onmouseout=
-    "this.src='ex/edge.jpg'" src="ex/edge.jpg" alt="edge example"
-    title="Click the image to see the example script" /></a>
-    <img src="ex/images/spin.gif" alt="" class="spin" title=
-    "Mouse over the example to see the original image" /></p>
+      <p class="rollover">
+        <a href="javascript:popup('edge.rb.html')"
+          ><img
+            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src='ex/edge.jpg'"
+            src="ex/edge.jpg"
+            alt="edge example"
+            title="Click the image to see the example script"
+        /></a>
+        <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>EdgeImage</p>
-  </div>
+      <p>EdgeImage</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="emboss">emboss</h3>
+    <div class="sig">
+      <h3 id="emboss">emboss</h3>
 
-    <p><span class="arg">img</span>.emboss(<span class=
-    "arg">radius</span>=0.0, <span class="arg">sigma</span>=1.0)
-    -&gt; <em>image</em></p>
-  </div>
+      <p><span class="arg">img</span>.emboss(<span class="arg">radius</span>=0.0, <span class="arg">sigma</span>=1.0) -&gt; <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>Adds a 3-dimensional effect.
+    <div class="desc">
+      <h4>Description</h4>
+      Adds a 3-dimensional effect.
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>radius</dt>
+      <dl>
+        <dt>radius</dt>
 
-      <dd>The radius of the Gaussian operator.</dd>
+        <dd>The radius of the Gaussian operator.</dd>
 
-      <dt>sigma</dt>
+        <dt>sigma</dt>
 
-      <dd>The sigma (standard deviation) of the Gaussian operator.
-      This value cannot be 0.0.</dd>
-    </dl>
+        <dd>The sigma (standard deviation) of the Gaussian operator. This value cannot be 0.0.</dd>
+      </dl>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p class="rollover"><a href=
-    "javascript:popup('emboss.rb.html')"><img onmouseover=
-    "this.src='ex/images/Flower_Hat.jpg'" onmouseout=
-    "this.src='ex/emboss.jpg'" src="ex/emboss.jpg" alt=
-    "emboss example" title=
-    "Click the image to see the example script" /></a><img src=
-    "ex/images/spin.gif" alt="" class="spin" title=
-    "Mouse over the example to see the original image" /></p>
+      <p class="rollover">
+        <a href="javascript:popup('emboss.rb.html')"
+          ><img
+            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src='ex/emboss.jpg'"
+            src="ex/emboss.jpg"
+            alt="emboss example"
+            title="Click the image to see the example script" /></a
+        ><img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>EmbossImage</p>
-  </div>
+      <p>EmbossImage</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="encipher">encipher</h3>
+    <div class="sig">
+      <h3 id="encipher">encipher</h3>
 
-    <p><span class="arg">img</span>.encipher(<span class=
-    "arg">passphrase</span>) -&gt; <em>image</em></p>
-  </div>
+      <p><span class="arg">img</span>.encipher(<span class="arg">passphrase</span>) -&gt; <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Encipher an image.</p>
+      <p>Encipher an image.</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>The passphrase.</p>
+      <p>The passphrase.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>Example</h4>
-    <pre>
+      <h4>Example</h4>
+      <pre>
 enciphered_img = img.encipher("magic word")
-</pre>
+</pre
+      >
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>EncipherImage</p>
+      <p>EncipherImage</p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="image1.html#decipher">decipher</a></p>
-  </div>
+      <p><a href="image1.html#decipher">decipher</a></p>
+    </div>
 
-  <div class="sig">
-    <h3 id="enhance">enhance</h3>
+    <div class="sig">
+      <h3 id="enhance">enhance</h3>
 
-    <p><span class="arg">img</span>.enhance -&gt;
-    <em>image</em></p>
-  </div>
+      <p><span class="arg">img</span>.enhance -&gt; <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p class="imquote">Applies a digital filter that improves the
-    quality of a noisy image.</p>
+      <p class="imquote">Applies a digital filter that improves the quality of a noisy image.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p>The left-hand side has had noise added by <code><a href=
-    "image1.html#add_noise">add_noise</a></code>. The right-hand side is the
-    result after using <code>enhance</code>.</p>
+      <p>
+        The left-hand side has had noise added by
+        <code><a href="image1.html#add_noise">add_noise</a></code
+        >. The right-hand side is the result after using <code>enhance</code>.
+      </p>
 
-    <p><a href="javascript:popup('enhance.rb.html')"><img src=
-    "ex/enhance.jpg" alt="enhance example" title=
-    "Click to see the example script" /></a></p>
+      <p>
+        <a href="javascript:popup('enhance.rb.html')"><img src="ex/enhance.jpg" alt="enhance example" title="Click to see the example script" /></a>
+      </p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="image2.html#median_filter">median_filter</a>,
-    <a href="image3.html#reduce_noise">reduce_noise</a>, <a href=
-    "image3.html#unsharp_mask">unsharp_mask</a></p>
+      <p>
+        <a href="image2.html#median_filter">median_filter</a>, <a href="image3.html#reduce_noise">reduce_noise</a>,
+        <a href="image3.html#unsharp_mask">unsharp_mask</a>
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>EnhanceImage</p>
-  </div>
+      <p>EnhanceImage</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="equalize">equalize</h3>
+    <div class="sig">
+      <h3 id="equalize">equalize</h3>
 
-    <p><span class="arg">img</span>.equalize -&gt;
-    <em>image</em></p>
-  </div>
+      <p><span class="arg">img</span>.equalize -&gt; <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p class="imquote">Applies a histogram equalization to the
-    image.</p>
+      <p class="imquote">Applies a histogram equalization to the image.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p class="rollover"><a href=
-    "javascript:popup('equalize.rb.html')"><img onmouseover=
-    "this.src='ex/images/Flower_Hat.jpg'" onmouseout=
-    "this.src='ex/equalize.jpg'" src="ex/equalize.jpg" alt=
-    "equalize example" title=
-    "Click to see the example script" /></a> <img src=
-    "ex/images/spin.gif" alt="" class="spin" title=
-    "Mouse over the example to see the original image" /></p>
+      <p class="rollover">
+        <a href="javascript:popup('equalize.rb.html')"
+          ><img
+            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src='ex/equalize.jpg'"
+            src="ex/equalize.jpg"
+            alt="equalize example"
+            title="Click to see the example script"
+        /></a>
+        <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>EqualizeImage</p>
+      <p>EqualizeImage</p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#equalize_channel">equalize_channel</a></p>
-  </div>
+      <p><a href="#equalize_channel">equalize_channel</a></p>
+    </div>
 
-  <div class="sig">
-    <h3 id="equalize_channel">equalize_chanel</h3>
+    <div class="sig">
+      <h3 id="equalize_channel">equalize_chanel</h3>
 
-    <p><span class="arg">img</span>.equalize_channel(<span class=
-    "arg">[channel...]</span>) -&gt; <em>image</em></p>
-  </div>
+      <p><span class="arg">img</span>.equalize_channel(<span class="arg">[channel...]</span>) -&gt; <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p><span class="imquote">Applies a histogram equalization to
-    the image.</span> Only the specified channels are
-    equalized.</p>
+      <p>
+        <span class="imquote">Applies a histogram equalization to the image.</span>
+        Only the specified channels are equalized.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>channel...</dt>
+      <dl>
+        <dt>channel...</dt>
 
-      <dd>0 or more <a href=
-      "constants.html#ChannelType">ChannelType</a> arguments. If no
-      channels are specified, all the channels are normalized.
-      Specifying no channel arguments has the same effect as the
-      equalize method, above.</dd>
-    </dl>
+        <dd>
+          0 or more
+          <a href="constants.html#ChannelType">ChannelType</a> arguments. If no channels are specified, all the channels are normalized. Specifying no channel
+          arguments has the same effect as the equalize method, above.
+        </dd>
+      </dl>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>EqualizeImageChannel</p>
+      <p>EqualizeImageChannel</p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#equalize">equalize</a></p>
-  </div>
+      <p><a href="#equalize">equalize</a></p>
+    </div>
 
-  <div class="sig">
-    <h3 id="erase_bang">erase!</h3>
+    <div class="sig">
+      <h3 id="erase_bang">erase!</h3>
 
-    <p><span class="arg">img</span>.erase! -&gt; <em>self</em></p>
-  </div>
+      <p><span class="arg">img</span>.erase! -&gt; <em>self</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Sets the entire image to the <a href=
-    "imageattrs.html#background_color">background color</a>.</p>
+      <p>
+        Sets the entire image to the
+        <a href="imageattrs.html#background_color">background color</a>.
+      </p>
 
-    <h4>Returns</h4>self
+      <h4>Returns</h4>
+      self
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="image1.html#color_reset_bang">color_reset!</a></p>
+      <p><a href="image1.html#color_reset_bang">color_reset!</a></p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>SetImage</p>
-  </div>
+      <p>SetImage</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="excerpt">excerpt</h3>
+    <div class="sig">
+      <h3 id="excerpt">excerpt</h3>
 
-    <p><span class="arg">img</span>.excerpt(<span class=
-    "arg">x</span>, <span class="arg">y</span>, <span class=
-    "arg">width</span>, <span class="arg">height</span>) -&gt;
-    image</p>
-  </div>
+      <p>
+        <span class="arg">img</span>.excerpt(<span class="arg">x</span>, <span class="arg">y</span>, <span class="arg">width</span>,
+        <span class="arg">height</span>) -&gt; image
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>This method is very similar to <a href=
-    "image1.html#crop">crop</a>. It extracts the rectangle
-    specified by its arguments from the image and returns it as a
-    new image. However, excerpt <span class="imquote">does not
-    respect the virtual page offset and does not update the page
-    offset and is more efficient than cropping.</span></p>
+      <p>
+        This method is very similar to <a href="image1.html#crop">crop</a>. It extracts the rectangle specified by its arguments from the image and returns it
+        as a new image. However, excerpt
+        <span class="imquote">does not respect the virtual page offset and does not update the page offset and is more efficient than cropping.</span>
+      </p>
 
-    <p>It is the caller's responsibility to ensure that the
-    rectangle lies entirely within the original image.</p>
+      <p>It is the caller's responsibility to ensure that the rectangle lies entirely within the original image.</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>x, y</dt>
+      <dl>
+        <dt>x, y</dt>
 
-      <dd>The position of the upper-left corner of the excerpted
-      rectangle.</dd>
+        <dd>The position of the upper-left corner of the excerpted rectangle.</dd>
 
-      <dt>width, height</dt>
+        <dt>width, height</dt>
 
-      <dd>The width and height of the excerpted rectangle. The
-      resulting image will always be <span class=
-      "arg">width</span>x<span class="arg">height</span> in
-      size.</dd>
-    </dl>
+        <dd>
+          The width and height of the excerpted rectangle. The resulting image will always be <span class="arg">width</span>x<span class="arg">height</span>
+          in size.
+        </dd>
+      </dl>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>See Also</h4>
+      <h4>See Also</h4>
 
-    <p><a href="image1.html#crop">crop</a>, <a href=
-    "#excerpt_bang">excerpt!</a></p>
+      <p>
+        <a href="image1.html#crop">crop</a>,
+        <a href="#excerpt_bang">excerpt!</a>
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>ExcerptImage</p>
-  </div>
+      <p>ExcerptImage</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="excerpt_bang">excerpt!</h3>
+    <div class="sig">
+      <h3 id="excerpt_bang">excerpt!</h3>
 
-    <p><span class="arg">img</span>.excerpt!(<span class=
-    "arg">x</span>, <span class="arg">y</span>, <span class=
-    "arg">width</span>, <span class="arg">height</span>) -&gt;
-    <span class="arg">img</span></p>
-  </div>
+      <p>
+        <span class="arg">img</span>.excerpt!(<span class="arg">x</span>, <span class="arg">y</span>, <span class="arg">width</span>,
+        <span class="arg">height</span>) -&gt; <span class="arg">img</span>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>In-place form of <a href="#excerpt">excerpt</a>.</p>
-  </div>
+      <p>In-place form of <a href="#excerpt">excerpt</a>.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="export_pixels">export_pixels</h3>
+    <div class="sig">
+      <h3 id="export_pixels">export_pixels</h3>
 
-    <p><span class="arg">img</span>.export_pixels(<span class=
-    "arg">x</span>=0, <span class="arg">y</span>=0, <span class=
-    "arg">columns</span>=<span class="arg">img</span>.columns,
-    <span class="arg">rows</span>=<span class=
-    "arg">img</span>.rows, <span class="arg">map</span>="RGB")
-    -&gt; <em>array</em></p>
-  </div>
+      <p>
+        <span class="arg">img</span>.export_pixels(<span class="arg">x</span>=0, <span class="arg">y</span>=0, <span class="arg">columns</span>=<span
+          class="arg"
+          >img</span
+        >.columns, <span class="arg">rows</span>=<span class="arg">img</span>.rows, <span class="arg">map</span>="RGB") -&gt; <em>array</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Extracts the pixel data from the specified rectangle and
-    returns it as an array of <code>Integer</code> values.</p>
+      <p>Extracts the pixel data from the specified rectangle and returns it as an array of <code>Integer</code> values.</p>
 
-    <p>The array returned by <code>export_pixels</code> is suitable
-    for use as an argument to <code>import_pixels</code>.</p>
+      <p>The array returned by <code>export_pixels</code> is suitable for use as an argument to <code>import_pixels</code>.</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>x, y</dt>
+      <dl>
+        <dt>x, y</dt>
 
-      <dd>The offset of the rectangle from the upper-left corner of
-      the image.</dd>
+        <dd>The offset of the rectangle from the upper-left corner of the image.</dd>
 
-      <dt>columns, rows</dt>
+        <dt>columns, rows</dt>
 
-      <dd>The width and height of the rectangle.</dd>
+        <dd>The width and height of the rectangle.</dd>
 
-      <dt>map</dt>
+        <dt>map</dt>
 
-      <dd>A string that describes which pixel channel data is
-      desired and the order in which it should be stored.
-      <span class="imquote">It can be any combination or order of R
-      = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow,
-      M = magenta, K = black, I = intensity (for grayscale), or P =
-      pad.</span></dd>
-    </dl>
+        <dd>
+          A string that describes which pixel channel data is desired and the order in which it should be stored.
+          <span class="imquote"
+            >It can be any combination or order of R = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow, M = magenta, K = black, I = intensity (for
+            grayscale), or P = pad.</span
+          >
+        </dd>
+      </dl>
 
-    <h4>Returns</h4>An array
+      <h4>Returns</h4>
+      An array
 
-    <h4>Example</h4>
-    <pre>
+      <h4>Example</h4>
+      <pre>
 # Export the r'th scanline from an image in red-green-blue order
 scanline = img.export_pixels(0, r, img.columns, 1, "RGB");
-</pre>
+</pre
+      >
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="image1.html#dispatch">dispatch</a>, <a href=
-    "#export_pixels_to_str">export_pixels_to_str</a>, <a href=
-    "#import_pixels">import_pixels</a>, <a href=
-    "#get_pixels">get_pixels</a></p>
+      <p>
+        <a href="image1.html#dispatch">dispatch</a>, <a href="#export_pixels_to_str">export_pixels_to_str</a>, <a href="#import_pixels">import_pixels</a>,
+        <a href="#get_pixels">get_pixels</a>
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>ExportImagePixels</p>
+      <p>ExportImagePixels</p>
 
-    <h4>Note</h4>
+      <h4>Note</h4>
 
-    <p>This method replaces the <code>dispatch</code> method.</p>
-  </div>
+      <p>This method replaces the <code>dispatch</code> method.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="export_pixels_to_str">export_pixels_to_str</h3>
+    <div class="sig">
+      <h3 id="export_pixels_to_str">export_pixels_to_str</h3>
 
-    <p><span class=
-    "arg">img</span>.export_pixels_to_str(<span class=
-    "arg">x</span>=0, <span class="arg">y</span>=0, <span class=
-    "arg">columns</span>=<span class="arg">img</span>.columns,
-    <span class="arg">rows</span>=<span class=
-    "arg">img</span>.rows, <span class="arg">map</span>="RGB",
-    <span class="arg">type</span>=<code>CharPixel</code>) -&gt;
-    <em>string</em></p>
-  </div>
+      <p>
+        <span class="arg">img</span>.export_pixels_to_str(<span class="arg">x</span>=0, <span class="arg">y</span>=0, <span class="arg">columns</span>=<span
+          class="arg"
+          >img</span
+        >.columns, <span class="arg">rows</span>=<span class="arg">img</span>.rows, <span class="arg">map</span>="RGB",
+        <span class="arg">type</span>=<code>CharPixel</code>) -&gt;
+        <em>string</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Extracts the pixel data from the specified rectangle and
-    returns it as a string. If you need to get the pixel data in a
-    memory buffer (as input to another application, for example),
-    this method is much, much faster than <a href=
-    "#export_pixels">export_pixels</a> or <a href=
-    "#get_pixels">get_pixels</a>.</p>
+      <p>
+        Extracts the pixel data from the specified rectangle and returns it as a string. If you need to get the pixel data in a memory buffer (as input to
+        another application, for example), this method is much, much faster than <a href="#export_pixels">export_pixels</a> or
+        <a href="#get_pixels">get_pixels</a>.
+      </p>
 
-    <p>The string returned by <code>export_pixels_to_str</code> is
-    suitable for use as an argument to
-    <code>import_pixels</code>.</p>
+      <p>The string returned by <code>export_pixels_to_str</code> is suitable for use as an argument to <code>import_pixels</code>.</p>
 
-    <p><strong>Note:</strong> You can also use <a href=
-    "image3.html#to_blob">to_blob</a> to convert an image into a
-    string.</p>
+      <p><strong>Note:</strong> You can also use <a href="image3.html#to_blob">to_blob</a> to convert an image into a string.</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>x, y</dt>
+      <dl>
+        <dt>x, y</dt>
 
-      <dd>The offset of the rectangle from the upper-left corner of
-      the image.</dd>
+        <dd>The offset of the rectangle from the upper-left corner of the image.</dd>
 
-      <dt>columns, rows</dt>
+        <dt>columns, rows</dt>
 
-      <dd>The width and height of the rectangle.</dd>
+        <dd>The width and height of the rectangle.</dd>
 
-      <dt>map</dt>
+        <dt>map</dt>
 
-      <dd>A string that describes which pixel channel data is
-      desired and the order in which it should be stored.
-      <span class="imquote">It can be any combination or order of R
-      = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow,
-      M = magenta, K = black, I = intensity (for grayscale), or P =
-      pad.</span></dd>
+        <dd>
+          A string that describes which pixel channel data is desired and the order in which it should be stored.
+          <span class="imquote"
+            >It can be any combination or order of R = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow, M = magenta, K = black, I = intensity (for
+            grayscale), or P = pad.</span
+          >
+        </dd>
 
-      <dt>type</dt>
+        <dt>type</dt>
 
-      <dd>A <a href="constants.html#StorageType">StorageType</a>
-      value that specifies the C datatype to which the pixel data
-      will be converted. The default is <code>CharPixel</code>,
-      which means that the pixel values will be stored as C
-      <code>unsigned char</code>s.</dd>
-    </dl>
+        <dd>
+          A <a href="constants.html#StorageType">StorageType</a> value that specifies the C datatype to which the pixel data will be converted. The default is
+          <code>CharPixel</code>, which means that the pixel values will be stored as C <code>unsigned char</code>s.
+        </dd>
+      </dl>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>a string</p>
+      <p>a string</p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="image1.html#dispatch">dispatch</a>, <a href=
-    "#export_pixels">export_pixels</a>, <a href=
-    "#import_pixels">import_pixels</a>, <a href=
-    "#get_pixels">get_pixels</a></p>
+      <p>
+        <a href="image1.html#dispatch">dispatch</a>, <a href="#export_pixels">export_pixels</a>, <a href="#import_pixels">import_pixels</a>,
+        <a href="#get_pixels">get_pixels</a>
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>ExportImagePixels</p>
-  </div>
+      <p>ExportImagePixels</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="extent">extent</h3>
+    <div class="sig">
+      <h3 id="extent">extent</h3>
 
-    <p><span class="arg">img</span>.extent(<span class=
-    "arg">width</span>, <span class="arg">height</span>,
-    <span class="arg">x</span>=0, <span class="arg">y</span>=0)
-    -&gt; <em>image</em></p>
-  </div>
+      <p>
+        <span class="arg">img</span>.extent(<span class="arg">width</span>, <span class="arg">height</span>, <span class="arg">x</span>=0,
+        <span class="arg">y</span>=0) -&gt; <em>image</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>If <span class="arg">width</span> or <span class=
-    "arg">height</span> is greater than the target image's width or
-    height, extends the width and height of the target image to the
-    specified values. The new pixels are set to the background
-    color. If <span class="arg">width</span> or <span class=
-    "arg">height</span> is less than the target image's width or
-    height, crops the target image.</p>
+      <p>
+        If <span class="arg">width</span> or <span class="arg">height</span> is greater than the target image's width or height, extends the width and height of
+        the target image to the specified values. The new pixels are set to the background color. If <span class="arg">width</span> or
+        <span class="arg">height</span> is less than the target image's width or height, crops the target image.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>width</dt>
+      <dl>
+        <dt>width</dt>
 
-      <dd>The width of the new image</dd>
+        <dd>The width of the new image</dd>
 
-      <dt>height</dt>
+        <dt>height</dt>
 
-      <dd>The height of the new image</dd>
+        <dd>The height of the new image</dd>
 
-      <dt>x, y</dt>
+        <dt>x, y</dt>
 
-      <dd>The upper-left corner of the new image is positioned at
-      -<span class="arg">x</span>, -<span class=
-      "arg">y</span>.</dd>
-    </dl>
+        <dd>The upper-left corner of the new image is positioned at -<span class="arg">x</span>, -<span class="arg">y</span>.</dd>
+      </dl>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>Notes</h4>
+      <h4>Notes</h4>
 
-    <p>The new image is composed over the background using the
-    composite operator specified by target image's <a href=
-    "imageattrs.html#compose">compose</a> attribute.</p>
+      <p>
+        The new image is composed over the background using the composite operator specified by target image's
+        <a href="imageattrs.html#compose">compose</a> attribute.
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>ExtentImage</p>
-  </div>
+      <p>ExtentImage</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="find_similar_region">find_similar_region</h3>
+    <div class="sig">
+      <h3 id="find_similar_region">find_similar_region</h3>
 
-    <p><span class=
-    "arg">img</span>.find_similar_region(<span class="arg">target</span>,
-    <span class="arg">x</span>=0, <span class="arg">y</span>=0)
-    -&gt; <em>[rx, ry]</em></p>
-  </div>
+      <p>
+        <span class="arg">img</span>.find_similar_region(<span class="arg">target</span>, <span class="arg">x</span>=0, <span class="arg">y</span>=0) -&gt;
+        <em>[rx, ry]</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>This interesting method searches for a rectangle in the
-    image that is <em>similar</em> to the target. For the rectangle
-    to be <em>similar</em> each pixel in the rectangle must match
-    the corresponding pixel in the target image within the range
-    specified by the <code>fuzz</code> attributes of the image and
-    the target image.</p>
+      <p>
+        This interesting method searches for a rectangle in the image that is
+        <em>similar</em> to the target. For the rectangle to be <em>similar</em> each pixel in the rectangle must match the corresponding pixel in the target
+        image within the range specified by the <code>fuzz</code> attributes of the image and the target image.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>target</dt>
+      <dl>
+        <dt>target</dt>
 
-      <dd>An image that forms the target of the search. This image
-      can be any size.</dd>
+        <dd>An image that forms the target of the search. This image can be any size.</dd>
 
-      <dt>x, y</dt>
+        <dt>x, y</dt>
 
-      <dd>The starting <em>x-</em> and <em>y-</em>offsets for the
-      search. If omitted both <span class="arg">x</span> and
-      <span class="arg">y</span> default to 0.</dd>
-    </dl>
+        <dd>
+          The starting <em>x-</em> and <em>y-</em>offsets for the search. If omitted both <span class="arg">x</span> and <span class="arg">y</span> default to
+          0.
+        </dd>
+      </dl>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>If the search succeeds, the return value is an array with 2
-    elements. These elements are the <em>x-</em> and
-    <em>y-</em>offsets of the matching rectangle. If the search
-    fails the return value is <code>nil</code>.</p>
+      <p>
+        If the search succeeds, the return value is an array with 2 elements. These elements are the <em>x-</em> and <em>y-</em>offsets of the matching
+        rectangle. If the search fails the return value is <code>nil</code>.
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>IsImageSimilar</p>
-  </div>
+      <p>IsImageSimilar</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="flip">flip</h3>
+    <div class="sig">
+      <h3 id="flip">flip</h3>
 
-    <p><span class="arg">img</span>.flip -&gt; <em>image</em></p>
-  </div>
+      <p><span class="arg">img</span>.flip -&gt; <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Create a vertical mirror image of the receiver.</p>
+      <p>Create a vertical mirror image of the receiver.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p class="rollover"><a href=
-    "javascript:popup('flip.rb.html')"><img onmouseover=
-    "this.src='ex/images/Flower_Hat.jpg'" onmouseout=
-    "this.src='ex/flip.jpg'" src="ex/flip.jpg" alt="flip example"
-    title="Click to see the example script" /></a> <img src=
-    "ex/images/spin.gif" alt="" class="spin" title=
-    "Mouse over the example to see the original image" /></p>
+      <p class="rollover">
+        <a href="javascript:popup('flip.rb.html')"
+          ><img
+            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src='ex/flip.jpg'"
+            src="ex/flip.jpg"
+            alt="flip example"
+            title="Click to see the example script"
+        /></a>
+        <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
+      </p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="image1.html#affine_transform">affine_transform</a>,
-    <a href="#flip_bang">flip!</a>, <a href="#flop">flop</a>,
-    <a href="image3.html#rotate">rotate</a>, <a href=
-    "image3.html#transpose">transpose</a>, <a href=
-    "image3.html#transverse">transverse</a></p>
+      <p>
+        <a href="image1.html#affine_transform">affine_transform</a>, <a href="#flip_bang">flip!</a>, <a href="#flop">flop</a>,
+        <a href="image3.html#rotate">rotate</a>, <a href="image3.html#transpose">transpose</a>,
+        <a href="image3.html#transverse">transverse</a>
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>FlipImage</p>
-  </div>
+      <p>FlipImage</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="flip_bang">flip!</h3>
+    <div class="sig">
+      <h3 id="flip_bang">flip!</h3>
 
-    <p><span class="arg">img</span>.flip! -&gt; <em>self</em></p>
-  </div>
+      <p><span class="arg">img</span>.flip! -&gt; <em>self</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>In-place form of <a href="#flip">flip</a>.</p>
+      <p>In-place form of <a href="#flip">flip</a>.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>self</p>
-  </div>
+      <p>self</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="flop">flop</h3>
+    <div class="sig">
+      <h3 id="flop">flop</h3>
 
-    <p><span class="arg">img</span>.flop -&gt; <em>image</em></p>
-  </div>
+      <p><span class="arg">img</span>.flop -&gt; <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Create a horizontal mirror image of the receiver.</p>
+      <p>Create a horizontal mirror image of the receiver.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p class="rollover"><a href=
-    "javascript:popup('flop.rb.html')"><img onmouseover=
-    "this.src='ex/images/Flower_Hat.jpg'" onmouseout=
-    "this.src='ex/flop.jpg'" src="ex/flop.jpg" alt="flop example"
-    title="Click to see the example script" /></a> <img src=
-    "ex/images/spin.gif" alt="" class="spin" title=
-    "Mouse over the example to see the original image" /></p>
+      <p class="rollover">
+        <a href="javascript:popup('flop.rb.html')"
+          ><img
+            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src='ex/flop.jpg'"
+            src="ex/flop.jpg"
+            alt="flop example"
+            title="Click to see the example script"
+        /></a>
+        <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
+      </p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="image1.html#affine_transform">affine_transform</a>,
-    <a href="#flip">flip</a>, <a href="#flop_bang">flop!</a>,
-    <a href="image3.html#rotate">rotate</a>, <a href=
-    "image3.html#transpose">transpose</a>, <a href=
-    "image3.html#transverse">transverse</a></p>
+      <p>
+        <a href="image1.html#affine_transform">affine_transform</a>, <a href="#flip">flip</a>, <a href="#flop_bang">flop!</a>,
+        <a href="image3.html#rotate">rotate</a>, <a href="image3.html#transpose">transpose</a>,
+        <a href="image3.html#transverse">transverse</a>
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>FlopImage</p>
-  </div>
+      <p>FlopImage</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="flop_bang">flop!</h3>
+    <div class="sig">
+      <h3 id="flop_bang">flop!</h3>
 
-    <p><span class="arg">img</span>.flop! -&gt; <em>self</em></p>
-  </div>
+      <p><span class="arg">img</span>.flop! -&gt; <em>self</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>In-place form of <a href="#flop">flop</a>.</p>
+      <p>In-place form of <a href="#flop">flop</a>.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>self</p>
-  </div>
+      <p>self</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="frame">frame</h3>
+    <div class="sig">
+      <h3 id="frame">frame</h3>
 
-    <p><span class="arg">img</span>.frame(<span class=
-    "arg">width</span>=25, <span class="arg">height</span>=25,
-    <span class="arg">x</span>=25, <span class="arg">y</span>=25,
-    <span class="arg">inner_bevel</span>=6, <span class=
-    "arg">outer_bevel</span>=6, <span class=
-    "arg">color</span>=<code><a href=
-    "imageattrs.html#matte_color">matte_color</a></code>) -&gt;
-    <em>image</em></p>
-  </div>
+      <p>
+        <span class="arg">img</span>.frame(<span class="arg">width</span>=25, <span class="arg">height</span>=25, <span class="arg">x</span>=25,
+        <span class="arg">y</span>=25, <span class="arg">inner_bevel</span>=6, <span class="arg">outer_bevel</span>=6, <span class="arg">color</span>=<code
+          ><a href="imageattrs.html#matte_color">matte_color</a></code
+        >) -&gt; <em>image</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Adds a simulated 3D border.</p>
+      <p>Adds a simulated 3D border.</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>width</dt>
+      <dl>
+        <dt>width</dt>
 
-      <dd>The width of the left and right sides.</dd>
+        <dd>The width of the left and right sides.</dd>
 
-      <dt>height</dt>
+        <dt>height</dt>
 
-      <dd>The height of the top and bottom sides.</dd>
+        <dd>The height of the top and bottom sides.</dd>
 
-      <dt>x, y</dt>
+        <dt>x, y</dt>
 
-      <dd>The image does not have to be centered in the border.
-      These two arguments specify the offset of the image from the
-      upper-left outside corner of the border.</dd>
+        <dd>
+          The image does not have to be centered in the border. These two arguments specify the offset of the image from the upper-left outside corner of the
+          border.
+        </dd>
 
-      <dt>inner_bevel, outer_bevel</dt>
+        <dt>inner_bevel, outer_bevel</dt>
 
-      <dd>The width of the inner and outer shadows of the border.
-      These values should be much smaller than the width and height
-      and cannot be greater than 1/2 the lesser of the width or
-      height.</dd>
+        <dd>
+          The width of the inner and outer shadows of the border. These values should be much smaller than the width and height and cannot be greater than 1/2
+          the lesser of the width or height.
+        </dd>
 
-      <dt>color</dt>
+        <dt>color</dt>
 
-      <dd>The border color. By default the color is the <a href=
-      "imageattrs.html#matte_color">matte color</a>.</dd>
-    </dl>
+        <dd>
+          The border color. By default the color is the
+          <a href="imageattrs.html#matte_color">matte color</a>.
+        </dd>
+      </dl>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p class="rollover"><a href=
-    "javascript:popup('frame.rb.html')">
-    <!-- This img tag displays the original image when moused over -->
-     <img style="padding:25px; display:none" id="frameless"
-    onmouseout="this.style.display='none';framed.style.display='';"
-    src="ex/images/Flower_Hat.jpg" alt="frame example" title=
-    "Click to see the example script" />
-    <!-- This img tag displays the framed image when the mouse is not over -->
-     <img onmouseover=
-    "this.style.display='none';frameless.style.display='';" src=
-    "ex/frame.jpg" alt="frame example" /></a> <img src=
-    "ex/images/spin.gif" alt="" style="margin-bottom: 280px" title=
-    "Mouse over the example to see the original image" /></p>
+      <p class="rollover">
+        <a href="javascript:popup('frame.rb.html')">
+          <!-- This img tag displays the original image when moused over -->
+          <img
+            style="padding: 25px; display: none"
+            id="frameless"
+            onmouseout="this.style.display='none';framed.style.display='';"
+            src="ex/images/Flower_Hat.jpg"
+            alt="frame example"
+            title="Click to see the example script" />
+          <!-- This img tag displays the framed image when the mouse is not over -->
+          <img onmouseover="this.style.display='none';frameless.style.display='';" src="ex/frame.jpg" alt="frame example"
+        /></a>
+        <img src="ex/images/spin.gif" alt="" style="margin-bottom: 280px" title="Mouse over the example to see the original image" />
+      </p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="image1.html#border">border</a></p>
+      <p><a href="image1.html#border">border</a></p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>FrameImage</p>
-  </div>
+      <p>FrameImage</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="freeze">freeze</h3>
+    <div class="sig">
+      <h3 id="freeze">freeze</h3>
 
-    <p><span class="arg">img</span>.freeze -&gt; <em>self</em></p>
-  </div>
+      <p><span class="arg">img</span>.freeze -&gt; <em>self</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Prevent further modifications to the image.</p>
+      <p>Prevent further modifications to the image.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>self</p>
-  </div>
+      <p>self</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="function_channel">function_channel</h3>
+    <div class="sig">
+      <h3 id="function_channel">function_channel</h3>
 
-    <p><span class="arg">img</span>.function_channel(<span class=
-    "arg">function</span> [, <span class=
-    "arg">parameters</span>...][, <span class=
-    "arg">channel</span>...]) -&lt; <em>image</em></p>
-  </div>
+      <p>
+        <span class="arg">img</span>.function_channel(<span class="arg">function</span> [, <span class="arg">parameters</span>...][,
+        <span class="arg">channel</span>...]) -&lt; <em>image</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p><span class="imquote">Apply a function to channel
-    values.</span> This method is equivalent to the <a href=
-    "http://www.imagemagick.org/script/command-line-options.php#function">
-    convert -function</a> option. See the ImageMagick documentation
-    for more information.</p>
+      <p>
+        <span class="imquote">Apply a function to channel values.</span> This method is equivalent to the
+        <a href="http://www.imagemagick.org/script/command-line-options.php#function"> convert -function</a>
+        option. See the ImageMagick documentation for more information.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>function</dt>
+      <dl>
+        <dt>function</dt>
 
-      <dd>
-        One of the following values.
+        <dd>
+          One of the following values.
 
-        <ul>
-          <li><code>PolynomialFunction</code></li>
+          <ul>
+            <li><code>PolynomialFunction</code></li>
 
-          <li><code>SinusoidFunction</code></li>
+            <li><code>SinusoidFunction</code></li>
 
-          <li><code>ArcsinFunction</code></li>
+            <li><code>ArcsinFunction</code></li>
 
-          <li><code>ArctanFunction</code></li>
-        </ul>Some of these values are not available in earlier
-        versions of ImageMagick. To find out which values are
-        available, enter the following statement in irb:
-        <pre>
+            <li><code>ArctanFunction</code></li>
+          </ul>
+          Some of these values are not available in earlier versions of ImageMagick. To find out which values are available, enter the following statement in
+          irb:
+          <pre>
 Magick::MagickFunction.values {|value| p value}
-</pre>
-      </dd>
+</pre
+          >
+        </dd>
 
-      <dt>parameters</dt>
+        <dt>parameters</dt>
 
-      <dd>One or more floating-point numbers. The number of
-      parameters depends on the function. See the ImageMagick
-      documentation for details.</dd>
+        <dd>One or more floating-point numbers. The number of parameters depends on the function. See the ImageMagick documentation for details.</dd>
 
-      <dt>channel...</dt>
+        <dt>channel...</dt>
 
-      <dd>0 or more <a href=
-      "constants.html#ChannelType">ChannelType</a> arguments. If no
-      channels are specified, the red, green, and blue channels are
-      used.</dd>
-    </dl>
+        <dd>
+          0 or more
+          <a href="constants.html#ChannelType">ChannelType</a> arguments. If no channels are specified, the red, green, and blue channels are used.
+        </dd>
+      </dl>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>Example</h4>
-    <pre>
+      <h4>Example</h4>
+      <pre>
 img2 = img.function_channel(Magick::PolynomialFunction,
                             -25, 53, -36, 8.3, 0.2)
-</pre>
+</pre
+      >
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href=
-    "image3.html#quantum_operator">quantum_operator</a></p>
-  </div>
+      <p><a href="image3.html#quantum_operator">quantum_operator</a></p>
+    </div>
 
-  <div class="sig">
-    <h3 id="gamma_channel">gamma_channel</h3>
+    <div class="sig">
+      <h3 id="gamma_channel">gamma_channel</h3>
 
-    <p><span class="arg">img</span>.gamma_channel(<span class=
-    "arg">gamma</span>, [<span class="arg">channel</span>...]) =
-    <em>image</em></p>
-  </div>
+      <p><span class="arg">img</span>.gamma_channel(<span class="arg">gamma</span>, [<span class="arg">channel</span>...]) = <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p class="imquote">Gamma-correct a particular image channel.
-    The same image viewed on different devices will have perceptual
-    differences in the way the image's intensities are represented
-    on the screen.</p>
+      <p class="imquote">
+        Gamma-correct a particular image channel. The same image viewed on different devices will have perceptual differences in the way the image's intensities
+        are represented on the screen.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>gamma</dt>
+      <dl>
+        <dt>gamma</dt>
 
-      <dd class="imquote">Values typically range from 0.8 to 2.3.
-      You can also reduce the influence of a particular channel
-      with a gamma value of 0.</dd>
+        <dd class="imquote">Values typically range from 0.8 to 2.3. You can also reduce the influence of a particular channel with a gamma value of 0.</dd>
 
-      <dt>channel...</dt>
+        <dt>channel...</dt>
 
-      <dd>0 or more <a href=
-      "constants.html#ChannelType">ChannelType</a> arguments. If no
-      channels are specified, all the channels are corrected using
-      the <span class="arg">gamma</span> value.</dd>
-    </dl>
+        <dd>
+          0 or more
+          <a href="constants.html#ChannelType">ChannelType</a> arguments. If no channels are specified, all the channels are corrected using the
+          <span class="arg">gamma</span> value.
+        </dd>
+      </dl>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p>The older <a href="#gamma_correct">gamma_correct</a> method
-    is implemented in terms of <code>gamma_channel</code>.</p>
+      <p>The older <a href="#gamma_correct">gamma_correct</a> method is implemented in terms of <code>gamma_channel</code>.</p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>GammaImageChannel</p>
-  </div>
+      <p>GammaImageChannel</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="gamma_correct">gamma_correct</h3>
+    <div class="sig">
+      <h3 id="gamma_correct">gamma_correct</h3>
 
-    <p><span class="arg">img</span>.gamma_correct(<span class=
-    "arg">red_gamma</span>[,<span class="arg">green_gamma</span>[,
-    <span class="arg">blue_gamma</span>]]) -&gt; <em>image</em></p>
-  </div>
+      <p>
+        <span class="arg">img</span>.gamma_correct(<span class="arg">red_gamma</span>[,<span class="arg">green_gamma</span>[,
+        <span class="arg">blue_gamma</span>]]) -&gt; <em>image</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Gamma-correct an image. The same image viewed on different
-    devices will have perceptual differences in the way the image's
-    intensities are represented on the screen.</p>
+      <p>
+        Gamma-correct an image. The same image viewed on different devices will have perceptual differences in the way the image's intensities are represented
+        on the screen.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>You must specify at least <code>red_gamma</code>. Omitted
-    arguments take on the value of the last specified argument.
-    <span class="imquote">Values typically range from 0.8 to
-    2.3.</span></p>
+      <p>
+        You must specify at least <code>red_gamma</code>. Omitted arguments take on the value of the last specified argument.
+        <span class="imquote">Values typically range from 0.8 to 2.3.</span>
+      </p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#gamma_channel">gamma_channel</a></p>
+      <p><a href="#gamma_channel">gamma_channel</a></p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>GammaImage</p>
-  </div>
+      <p>GammaImage</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="gaussian_blur">gaussian_blur</h3>
+    <div class="sig">
+      <h3 id="gaussian_blur">gaussian_blur</h3>
 
-    <p><span class="arg">img</span>.gaussian_blur(<span class=
-    "arg">radius</span>=0.0, <span class="arg">sigma</span>=1.0)
-    -&gt; <em>image</em></p>
-  </div>
+      <p><span class="arg">img</span>.gaussian_blur(<span class="arg">radius</span>=0.0, <span class="arg">sigma</span>=1.0) -&gt; <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p class="imquote">Blurs an image. We convolve the image with a
-    Gaussian operator of the given radius and standard deviation
-    (sigma).</p>
+      <p class="imquote">Blurs an image. We convolve the image with a Gaussian operator of the given radius and standard deviation (sigma).</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>radius</dt>
+      <dl>
+        <dt>radius</dt>
 
-      <dd>A <code>Float</code> value representing <span class=
-      "imquote">the radius of the Gaussian, in pixels, not counting
-      the center pixel.</span></dd>
+        <dd>
+          A <code>Float</code> value representing
+          <span class="imquote">the radius of the Gaussian, in pixels, not counting the center pixel.</span>
+        </dd>
 
-      <dt>sigma</dt>
+        <dt>sigma</dt>
 
-      <dd>A <code>Float</code> value representing the standard
-      deviation of the Gaussian operator, in pixels. This argument
-      must be &gt; 0.0.</dd>
-    </dl>
+        <dd>A <code>Float</code> value representing the standard deviation of the Gaussian operator, in pixels. This argument must be &gt; 0.0.</dd>
+      </dl>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p><code>gaussian_blur(0.0, 3.0)</code></p>
+      <p><code>gaussian_blur(0.0, 3.0)</code></p>
 
-    <p class="rollover"><a href=
-    "javascript:popup('gaussian_blur.rb.html')"><img onmouseover=
-    "this.src='ex/images/Flower_Hat.jpg'" onmouseout=
-    "this.src='ex/gaussian_blur.jpg'" src="ex/gaussian_blur.jpg"
-    alt="gaussian_blur example" title=
-    "Click to see the example script" /></a> <img src=
-    "ex/images/spin.gif" alt="" class="spin" title=
-    "Mouse over the example to see the original image" /></p>
+      <p class="rollover">
+        <a href="javascript:popup('gaussian_blur.rb.html')"
+          ><img
+            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src='ex/gaussian_blur.jpg'"
+            src="ex/gaussian_blur.jpg"
+            alt="gaussian_blur example"
+            title="Click to see the example script"
+        /></a>
+        <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
+      </p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="image1.html#blur_image">blur_image</a>, <a href=
-    "#motion_blur">motion_blur</a>, <a href=
-    "image3.html#radial_blur">radial_blur</a>, <a href=
-    "image3.html#selective_blur_channel">selective_blur_channel</a></p>
+      <p>
+        <a href="image1.html#blur_image">blur_image</a>, <a href="#motion_blur">motion_blur</a>, <a href="image3.html#radial_blur">radial_blur</a>,
+        <a href="image3.html#selective_blur_channel">selective_blur_channel</a>
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>GaussianBlurImage</p>
-  </div>
+      <p>GaussianBlurImage</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="gaussian_blur_channel">gaussian_blur_channel</h3>
+    <div class="sig">
+      <h3 id="gaussian_blur_channel">gaussian_blur_channel</h3>
 
-    <p><span class=
-    "arg">img</span>.gaussian_blur_channel(<span class=
-    "arg">radius</span>=0.0, <span class="arg">sigma</span>=1.0[,
-    <span class="arg">channel</span>...]) -&gt; <em>image</em></p>
-  </div>
+      <p>
+        <span class="arg">img</span>.gaussian_blur_channel(<span class="arg">radius</span>=0.0, <span class="arg">sigma</span>=1.0[,
+        <span class="arg">channel</span>...]) -&gt; <em>image</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Blurs the selected channel or channels using a Gaussian
-    operator of the specified radius and standard deviation.</p>
+      <p>Blurs the selected channel or channels using a Gaussian operator of the specified radius and standard deviation.</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>radius</dt>
+      <dl>
+        <dt>radius</dt>
 
-      <dd>A <code>Float</code> value representing <span class=
-      "imquote">the radius of the Gaussian, in pixels, not counting
-      the center pixel.</span></dd>
+        <dd>
+          A <code>Float</code> value representing
+          <span class="imquote">the radius of the Gaussian, in pixels, not counting the center pixel.</span>
+        </dd>
 
-      <dt>sigma</dt>
+        <dt>sigma</dt>
 
-      <dd>A <code>Float</code> value representing the standard
-      deviation of the Gaussian operator, in pixels. This argument
-      must be &gt; 0.0.</dd>
+        <dd>A <code>Float</code> value representing the standard deviation of the Gaussian operator, in pixels. This argument must be &gt; 0.0.</dd>
 
-      <dt>channel...</dt>
+        <dt>channel...</dt>
 
-      <dd>0 or more <a href=
-      "constants.html#ChannelType">ChannelType</a> arguments. If no
-      channels are specified, all the channels are blurred. This is
-      the same as using <a href=
-      "#gaussian_blur">gaussian_blur</a>.</dd>
-    </dl>
+        <dd>
+          0 or more
+          <a href="constants.html#ChannelType">ChannelType</a> arguments. If no channels are specified, all the channels are blurred. This is the same as using
+          <a href="#gaussian_blur">gaussian_blur</a>.
+        </dd>
+      </dl>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="image1.html#blur_channel">blur_channel</a>,
-    <a href="#motion_blur">motion_blur</a>, <a href=
-    "image3.html#radial_blur">radial_blur</a>, <a href=
-    "image3.html#selective_blur_channel">selective_blur_channel</a></p>
+      <p>
+        <a href="image1.html#blur_channel">blur_channel</a>, <a href="#motion_blur">motion_blur</a>, <a href="image3.html#radial_blur">radial_blur</a>,
+        <a href="image3.html#selective_blur_channel">selective_blur_channel</a>
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>GaussianBlurImageChannel</p>
-  </div>
+      <p>GaussianBlurImageChannel</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="get_exif_by_entry">get_exif_by_entry</h3>
+    <div class="sig">
+      <h3 id="get_exif_by_entry">get_exif_by_entry</h3>
 
-    <p><span class="arg">img</span>.get_exif_by_entry(<span class=
-    "arg">[name]*</span>) -&gt; <em>array</em></p>
-  </div>
+      <p><span class="arg">img</span>.get_exif_by_entry(<span class="arg">[name]*</span>) -&gt; <em>array</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Returns the value associated with the specified EXIF entry
-    name or names. If no names are specified, returns all the
-    entries. The return value is an array containing one or more
-    [name, value] elements.</p>
+      <p>
+        Returns the value associated with the specified EXIF entry name or names. If no names are specified, returns all the entries. The return value is an
+        array containing one or more [name, value] elements.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>Zero or more EXIF entry names.</p>
+      <p>Zero or more EXIF entry names.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>The elements in the returned array are 2-element arrays in
-    the form [name, value]. If ImageMagick does not know the name
-    for an entry it uses "unknown." There may be more than one
-    entry for "unknown" in the returned array. If there is no entry
-    with the specified name the value is set to
-    <code>nil</code>.</p>
+      <p>
+        The elements in the returned array are 2-element arrays in the form [name, value]. If ImageMagick does not know the name for an entry it uses "unknown."
+        There may be more than one entry for "unknown" in the returned array. If there is no entry with the specified name the value is set to <code>nil</code>.
+      </p>
 
-    <h4>Example</h4>
-    <pre>
+      <h4>Example</h4>
+      <pre>
 image.get_exif_by_entry('Make') &raquo; [["Make", "Canon"]]
 image.get_exif_by_entry("ShutterSpeedValue") &raquo;
     [["ShutterSpeedValue", "189/32"]]
 image.get_exif_by_entry() &raquo;
     [["Make", "Canon"], ["ShutterSpeedValue", "189/32"] ...]
-</pre>
+</pre
+      >
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#get_exif_by_number">get_exif_by_number</a></p>
-  </div>
+      <p><a href="#get_exif_by_number">get_exif_by_number</a></p>
+    </div>
 
-  <div class="sig">
-    <h3 id="get_exif_by_number">get_exif_by_number</h3>
+    <div class="sig">
+      <h3 id="get_exif_by_number">get_exif_by_number</h3>
 
-    <p><span class="arg">img</span>.get_exif_by_number(<span class=
-    "arg">[tag]*</span>) -&gt; <em>hash</em></p>
-  </div>
+      <p><span class="arg">img</span>.get_exif_by_number(<span class="arg">[tag]*</span>) -&gt; <em>hash</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Returns the value associated with the specified EXIF tag
-    number or numbers. If no numbers are specified, returns all the
-    tags. The return value is a hash. The hash keys are EXIF tag
-    numbers. The values are the values associated with the
-    tags.</p>
+      <p>
+        Returns the value associated with the specified EXIF tag number or numbers. If no numbers are specified, returns all the tags. The return value is a
+        hash. The hash keys are EXIF tag numbers. The values are the values associated with the tags.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>Zero or more EXIF tag numbers.</p>
+      <p>Zero or more EXIF tag numbers.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A hash. If there is no tag with the specified number the
-    value is set to <code>nil</code>.</p>
+      <p>
+        A hash. If there is no tag with the specified number the value is set to
+        <code>nil</code>.
+      </p>
 
-    <h4>Example</h4>
-    <pre>
+      <h4>Example</h4>
+      <pre>
 image.get_exif_by_number(271) &raquo; {271=&gt;"Canon"}
 image.get_exif_by_number(37377) &raquo; {37377=&gt;"189/32"}
 image.get_exif_by_number() &raquo;
     {271=&gt;"Canon", 37377=&gt;"189/32" ...}
-</pre>
+</pre
+      >
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#get_exif_by_entry">get_exif_by_entry</a></p>
-  </div>
+      <p><a href="#get_exif_by_entry">get_exif_by_entry</a></p>
+    </div>
 
-  <div class="sig">
-    <h3 id="get_iptc_dataset">get_iptc_dataset</h3>
+    <div class="sig">
+      <h3 id="get_iptc_dataset">get_iptc_dataset</h3>
 
-    <p><span class="arg">img</span>.get_iptc_dataset(<span class=
-    "arg">ds</span>) -&gt; <em>string</em></p>
-  </div>
+      <p><span class="arg">img</span>.get_iptc_dataset(<span class="arg">ds</span>) -&gt; <em>string</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Retrieves the data field for the specified DataSet, or
-    <code>nil</code> if the DataSet is not used or the data field
-    has length 0.</p>
+      <p>
+        Retrieves the data field for the specified DataSet, or
+        <code>nil</code> if the DataSet is not used or the data field has length 0.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>RMagick defines the following constants for use as arguments
-    to this method. All the constants are in the Magick::IPTC
-    namespace. Notice that some DataSets have two names.</p>
+      <p>
+        RMagick defines the following constants for use as arguments to this method. All the constants are in the Magick::IPTC namespace. Notice that some
+        DataSets have two names.
+      </p>
 
-    <table id="iptc" class="striped" summary=
-    "IPTC dataset constants">
-      <tr>
-        <th>Constant</th>
+      <table id="iptc" class="striped" summary="IPTC dataset constants">
+        <tr>
+          <th>Constant</th>
 
-        <th>Record:DataSet</th>
-      </tr>
+          <th>Record:DataSet</th>
+        </tr>
 
-      <tr>
-        <td>Envelope::Model_Version</td>
+        <tr>
+          <td>Envelope::Model_Version</td>
 
-        <td class="ds">1:00</td>
-      </tr>
+          <td class="ds">1:00</td>
+        </tr>
 
-      <tr>
-        <td>Envelope::Destination</td>
+        <tr>
+          <td>Envelope::Destination</td>
 
-        <td class="ds">1:05</td>
-      </tr>
+          <td class="ds">1:05</td>
+        </tr>
 
-      <tr>
-        <td>Envelope::UNO</td>
+        <tr>
+          <td>Envelope::UNO</td>
 
-        <td class="ds">1:100</td>
-      </tr>
+          <td class="ds">1:100</td>
+        </tr>
 
-      <tr>
-        <td>Envelope::Unique_Name_of_Object</td>
+        <tr>
+          <td>Envelope::Unique_Name_of_Object</td>
 
-        <td class="ds">1:100</td>
-      </tr>
+          <td class="ds">1:100</td>
+        </tr>
 
-      <tr>
-        <td>Envelope::ARM_Identifier</td>
+        <tr>
+          <td>Envelope::ARM_Identifier</td>
 
-        <td class="ds">1:120</td>
-      </tr>
+          <td class="ds">1:120</td>
+        </tr>
 
-      <tr>
-        <td>Envelope::ARM_Version</td>
+        <tr>
+          <td>Envelope::ARM_Version</td>
 
-        <td class="ds">1:122</td>
-      </tr>
+          <td class="ds">1:122</td>
+        </tr>
 
-      <tr>
-        <td>Envelope::File_Format</td>
+        <tr>
+          <td>Envelope::File_Format</td>
 
-        <td class="ds">1:20</td>
-      </tr>
+          <td class="ds">1:20</td>
+        </tr>
 
-      <tr>
-        <td>Envelope::File_Format_Version</td>
+        <tr>
+          <td>Envelope::File_Format_Version</td>
 
-        <td class="ds">1:22</td>
-      </tr>
+          <td class="ds">1:22</td>
+        </tr>
 
-      <tr>
-        <td>Envelope::Service_Identifier</td>
+        <tr>
+          <td>Envelope::Service_Identifier</td>
 
-        <td class="ds">1:30</td>
-      </tr>
+          <td class="ds">1:30</td>
+        </tr>
 
-      <tr>
-        <td>Envelope::Envelope_Number</td>
+        <tr>
+          <td>Envelope::Envelope_Number</td>
 
-        <td class="ds">1:40</td>
-      </tr>
+          <td class="ds">1:40</td>
+        </tr>
 
-      <tr>
-        <td>Envelope::Product_ID</td>
+        <tr>
+          <td>Envelope::Product_ID</td>
 
-        <td class="ds">1:50</td>
-      </tr>
+          <td class="ds">1:50</td>
+        </tr>
 
-      <tr>
-        <td>Envelope::Envelope_Priority</td>
+        <tr>
+          <td>Envelope::Envelope_Priority</td>
 
-        <td class="ds">1:60</td>
-      </tr>
+          <td class="ds">1:60</td>
+        </tr>
 
-      <tr>
-        <td>Envelope::Date_Sent</td>
+        <tr>
+          <td>Envelope::Date_Sent</td>
 
-        <td class="ds">1:70</td>
-      </tr>
+          <td class="ds">1:70</td>
+        </tr>
 
-      <tr>
-        <td>Envelope::Time_Sent</td>
+        <tr>
+          <td>Envelope::Time_Sent</td>
 
-        <td class="ds">1:80</td>
-      </tr>
+          <td class="ds">1:80</td>
+        </tr>
 
-      <tr>
-        <td>Envelope::Coded_Character_Set</td>
+        <tr>
+          <td>Envelope::Coded_Character_Set</td>
 
-        <td class="ds">1:90</td>
-      </tr>
+          <td class="ds">1:90</td>
+        </tr>
 
-      <tr>
-        <td>Application::Object_Type_Reference</td>
+        <tr>
+          <td>Application::Object_Type_Reference</td>
 
-        <td class="ds">2:03</td>
-      </tr>
+          <td class="ds">2:03</td>
+        </tr>
 
-      <tr>
-        <td>Application::Object_Name</td>
+        <tr>
+          <td>Application::Object_Name</td>
 
-        <td class="ds">2:05</td>
-      </tr>
+          <td class="ds">2:05</td>
+        </tr>
 
-      <tr>
-        <td>Application::Title</td>
+        <tr>
+          <td>Application::Title</td>
 
-        <td class="ds">2:05</td>
-      </tr>
+          <td class="ds">2:05</td>
+        </tr>
 
-      <tr>
-        <td>Application::Edit_Status</td>
+        <tr>
+          <td>Application::Edit_Status</td>
 
-        <td class="ds">2:07</td>
-      </tr>
+          <td class="ds">2:07</td>
+        </tr>
 
-      <tr>
-        <td>Application::Editorial_Update</td>
+        <tr>
+          <td>Application::Editorial_Update</td>
 
-        <td class="ds">2:08</td>
-      </tr>
+          <td class="ds">2:08</td>
+        </tr>
 
-      <tr>
-        <td>Application::Urgency</td>
+        <tr>
+          <td>Application::Urgency</td>
 
-        <td class="ds">2:10</td>
-      </tr>
+          <td class="ds">2:10</td>
+        </tr>
 
-      <tr>
-        <td>Application::Country_Primary_Location_Code</td>
+        <tr>
+          <td>Application::Country_Primary_Location_Code</td>
 
-        <td class="ds">2:100</td>
-      </tr>
+          <td class="ds">2:100</td>
+        </tr>
 
-      <tr>
-        <td>Application::Country_Primary_Location_Name</td>
+        <tr>
+          <td>Application::Country_Primary_Location_Name</td>
 
-        <td class="ds">2:101</td>
-      </tr>
+          <td class="ds">2:101</td>
+        </tr>
 
-      <tr>
-        <td>Application::Original_Transmission_Reference</td>
+        <tr>
+          <td>Application::Original_Transmission_Reference</td>
 
-        <td class="ds">2:103</td>
-      </tr>
+          <td class="ds">2:103</td>
+        </tr>
 
-      <tr>
-        <td>Application::Headline</td>
+        <tr>
+          <td>Application::Headline</td>
 
-        <td class="ds">2:105</td>
-      </tr>
+          <td class="ds">2:105</td>
+        </tr>
 
-      <tr>
-        <td>Application::Credit</td>
+        <tr>
+          <td>Application::Credit</td>
 
-        <td class="ds">2:110</td>
-      </tr>
+          <td class="ds">2:110</td>
+        </tr>
 
-      <tr>
-        <td>Application::Source</td>
+        <tr>
+          <td>Application::Source</td>
 
-        <td class="ds">2:115</td>
-      </tr>
+          <td class="ds">2:115</td>
+        </tr>
 
-      <tr>
-        <td>Application::Copyright_Notice</td>
+        <tr>
+          <td>Application::Copyright_Notice</td>
 
-        <td class="ds">2:116</td>
-      </tr>
+          <td class="ds">2:116</td>
+        </tr>
 
-      <tr>
-        <td>Application::Contact</td>
+        <tr>
+          <td>Application::Contact</td>
 
-        <td class="ds">2:118</td>
-      </tr>
+          <td class="ds">2:118</td>
+        </tr>
 
-      <tr>
-        <td>Application::Subject_Reference</td>
+        <tr>
+          <td>Application::Subject_Reference</td>
 
-        <td class="ds">2:12</td>
-      </tr>
+          <td class="ds">2:12</td>
+        </tr>
 
-      <tr>
-        <td>Application::Abstract</td>
+        <tr>
+          <td>Application::Abstract</td>
 
-        <td class="ds">2:120</td>
-      </tr>
+          <td class="ds">2:120</td>
+        </tr>
 
-      <tr>
-        <td>Application::Caption</td>
+        <tr>
+          <td>Application::Caption</td>
 
-        <td class="ds">2:120</td>
-      </tr>
+          <td class="ds">2:120</td>
+        </tr>
 
-      <tr>
-        <td>Application::Caption_Writer</td>
+        <tr>
+          <td>Application::Caption_Writer</td>
 
-        <td class="ds">2:122</td>
-      </tr>
+          <td class="ds">2:122</td>
+        </tr>
 
-      <tr>
-        <td>Application::Editor</td>
+        <tr>
+          <td>Application::Editor</td>
 
-        <td class="ds">2:122</td>
-      </tr>
+          <td class="ds">2:122</td>
+        </tr>
 
-      <tr>
-        <td>Application::Rasterized_Caption</td>
+        <tr>
+          <td>Application::Rasterized_Caption</td>
 
-        <td class="ds">2:125</td>
-      </tr>
+          <td class="ds">2:125</td>
+        </tr>
 
-      <tr>
-        <td>Application::Image_Type</td>
+        <tr>
+          <td>Application::Image_Type</td>
 
-        <td class="ds">2:130</td>
-      </tr>
+          <td class="ds">2:130</td>
+        </tr>
 
-      <tr>
-        <td>Application::Image_Orientation</td>
+        <tr>
+          <td>Application::Image_Orientation</td>
 
-        <td class="ds">2:131</td>
-      </tr>
+          <td class="ds">2:131</td>
+        </tr>
 
-      <tr>
-        <td>Application::Language_Identifier</td>
+        <tr>
+          <td>Application::Language_Identifier</td>
 
-        <td class="ds">2:135</td>
-      </tr>
+          <td class="ds">2:135</td>
+        </tr>
 
-      <tr>
-        <td>Application::Category</td>
+        <tr>
+          <td>Application::Category</td>
 
-        <td class="ds">2:15</td>
-      </tr>
+          <td class="ds">2:15</td>
+        </tr>
 
-      <tr>
-        <td>Application::Audio_Type</td>
+        <tr>
+          <td>Application::Audio_Type</td>
 
-        <td class="ds">2:150</td>
-      </tr>
+          <td class="ds">2:150</td>
+        </tr>
 
-      <tr>
-        <td>Application::Audio_Sampling_Rate</td>
+        <tr>
+          <td>Application::Audio_Sampling_Rate</td>
 
-        <td class="ds">2:151</td>
-      </tr>
+          <td class="ds">2:151</td>
+        </tr>
 
-      <tr>
-        <td>Application::Audio_Sampling_Resolution</td>
+        <tr>
+          <td>Application::Audio_Sampling_Resolution</td>
 
-        <td class="ds">2:152</td>
-      </tr>
+          <td class="ds">2:152</td>
+        </tr>
 
-      <tr>
-        <td>Application::Audio_Duration</td>
+        <tr>
+          <td>Application::Audio_Duration</td>
 
-        <td class="ds">2:153</td>
-      </tr>
+          <td class="ds">2:153</td>
+        </tr>
 
-      <tr>
-        <td>Application::Audio_Outcue</td>
+        <tr>
+          <td>Application::Audio_Outcue</td>
 
-        <td class="ds">2:154</td>
-      </tr>
+          <td class="ds">2:154</td>
+        </tr>
 
-      <tr>
-        <td>Application::Supplemental_Category</td>
+        <tr>
+          <td>Application::Supplemental_Category</td>
 
-        <td class="ds">2:20</td>
-      </tr>
+          <td class="ds">2:20</td>
+        </tr>
 
-      <tr>
-        <td>Application::ObjectData_Preview_File_Format</td>
+        <tr>
+          <td>Application::ObjectData_Preview_File_Format</td>
 
-        <td class="ds">2:200</td>
-      </tr>
+          <td class="ds">2:200</td>
+        </tr>
 
-      <tr>
-        <td>
-        Application::ObjectData_Preview_File_Format_Version</td>
+        <tr>
+          <td>Application::ObjectData_Preview_File_Format_Version</td>
 
-        <td class="ds">2:201</td>
-      </tr>
+          <td class="ds">2:201</td>
+        </tr>
 
-      <tr>
-        <td>Application::ObjectData_Preview_Data</td>
+        <tr>
+          <td>Application::ObjectData_Preview_Data</td>
 
-        <td class="ds">2:202</td>
-      </tr>
+          <td class="ds">2:202</td>
+        </tr>
 
-      <tr>
-        <td>Application::Fixture_Identifier</td>
+        <tr>
+          <td>Application::Fixture_Identifier</td>
 
-        <td class="ds">2:22</td>
-      </tr>
+          <td class="ds">2:22</td>
+        </tr>
 
-      <tr>
-        <td>Application::Keywords</td>
+        <tr>
+          <td>Application::Keywords</td>
 
-        <td class="ds">2:25</td>
-      </tr>
+          <td class="ds">2:25</td>
+        </tr>
 
-      <tr>
-        <td>Application::Content_Location_Code</td>
+        <tr>
+          <td>Application::Content_Location_Code</td>
 
-        <td class="ds">2:26</td>
-      </tr>
+          <td class="ds">2:26</td>
+        </tr>
 
-      <tr>
-        <td>Application::Content_Location_Name</td>
+        <tr>
+          <td>Application::Content_Location_Name</td>
 
-        <td class="ds">2:27</td>
-      </tr>
+          <td class="ds">2:27</td>
+        </tr>
 
-      <tr>
-        <td>Application::Release_Date</td>
+        <tr>
+          <td>Application::Release_Date</td>
 
-        <td class="ds">2:30</td>
-      </tr>
+          <td class="ds">2:30</td>
+        </tr>
 
-      <tr>
-        <td>Application::Release_Time</td>
+        <tr>
+          <td>Application::Release_Time</td>
 
-        <td class="ds">2:35</td>
-      </tr>
+          <td class="ds">2:35</td>
+        </tr>
 
-      <tr>
-        <td>Application::Expiration_Time</td>
+        <tr>
+          <td>Application::Expiration_Time</td>
 
-        <td class="ds">2:35</td>
-      </tr>
+          <td class="ds">2:35</td>
+        </tr>
 
-      <tr>
-        <td>Application::Expiration_Date</td>
+        <tr>
+          <td>Application::Expiration_Date</td>
 
-        <td class="ds">2:37</td>
-      </tr>
+          <td class="ds">2:37</td>
+        </tr>
 
-      <tr>
-        <td>Application::Special_Instructions</td>
+        <tr>
+          <td>Application::Special_Instructions</td>
 
-        <td class="ds">2:40</td>
-      </tr>
+          <td class="ds">2:40</td>
+        </tr>
 
-      <tr>
-        <td>Application::Action_Advised</td>
+        <tr>
+          <td>Application::Action_Advised</td>
 
-        <td class="ds">2:42</td>
-      </tr>
+          <td class="ds">2:42</td>
+        </tr>
 
-      <tr>
-        <td>Application::Reference_Service</td>
+        <tr>
+          <td>Application::Reference_Service</td>
 
-        <td class="ds">2:45</td>
-      </tr>
+          <td class="ds">2:45</td>
+        </tr>
 
-      <tr>
-        <td>Application::Reference_Date</td>
+        <tr>
+          <td>Application::Reference_Date</td>
 
-        <td class="ds">2:47</td>
-      </tr>
+          <td class="ds">2:47</td>
+        </tr>
 
-      <tr>
-        <td>Application::Reference_Number</td>
+        <tr>
+          <td>Application::Reference_Number</td>
 
-        <td class="ds">2:50</td>
-      </tr>
+          <td class="ds">2:50</td>
+        </tr>
 
-      <tr>
-        <td>Application::Date_Created</td>
+        <tr>
+          <td>Application::Date_Created</td>
 
-        <td class="ds">2:55</td>
-      </tr>
+          <td class="ds">2:55</td>
+        </tr>
 
-      <tr>
-        <td>Application::Time_Created</td>
+        <tr>
+          <td>Application::Time_Created</td>
 
-        <td class="ds">2:60</td>
-      </tr>
+          <td class="ds">2:60</td>
+        </tr>
 
-      <tr>
-        <td>Application::Digital_Creation_Date</td>
+        <tr>
+          <td>Application::Digital_Creation_Date</td>
 
-        <td class="ds">2:62</td>
-      </tr>
+          <td class="ds">2:62</td>
+        </tr>
 
-      <tr>
-        <td>Application::Digital_Creation_Time</td>
+        <tr>
+          <td>Application::Digital_Creation_Time</td>
 
-        <td class="ds">2:63</td>
-      </tr>
+          <td class="ds">2:63</td>
+        </tr>
 
-      <tr>
-        <td>Application::Originating_Program</td>
+        <tr>
+          <td>Application::Originating_Program</td>
 
-        <td class="ds">2:65</td>
-      </tr>
+          <td class="ds">2:65</td>
+        </tr>
 
-      <tr>
-        <td>Application::Program_Version</td>
+        <tr>
+          <td>Application::Program_Version</td>
 
-        <td class="ds">2:70</td>
-      </tr>
+          <td class="ds">2:70</td>
+        </tr>
 
-      <tr>
-        <td>Application::Object_Cycle</td>
+        <tr>
+          <td>Application::Object_Cycle</td>
 
-        <td class="ds">2:75</td>
-      </tr>
+          <td class="ds">2:75</td>
+        </tr>
 
-      <tr>
-        <td>Application::Author</td>
+        <tr>
+          <td>Application::Author</td>
 
-        <td class="ds">2:80</td>
-      </tr>
+          <td class="ds">2:80</td>
+        </tr>
 
-      <tr>
-        <td>Application::By_Line</td>
+        <tr>
+          <td>Application::By_Line</td>
 
-        <td class="ds">2:80</td>
-      </tr>
+          <td class="ds">2:80</td>
+        </tr>
 
-      <tr>
-        <td>Application::Author_Position</td>
+        <tr>
+          <td>Application::Author_Position</td>
 
-        <td class="ds">2:85</td>
-      </tr>
+          <td class="ds">2:85</td>
+        </tr>
 
-      <tr>
-        <td>Application::By_Line_Title</td>
+        <tr>
+          <td>Application::By_Line_Title</td>
 
-        <td class="ds">2:85</td>
-      </tr>
+          <td class="ds">2:85</td>
+        </tr>
 
-      <tr>
-        <td>Application::City</td>
+        <tr>
+          <td>Application::City</td>
 
-        <td class="ds">2:90</td>
-      </tr>
+          <td class="ds">2:90</td>
+        </tr>
 
-      <tr>
-        <td>Application::Sub_Location</td>
+        <tr>
+          <td>Application::Sub_Location</td>
 
-        <td class="ds">2:92</td>
-      </tr>
+          <td class="ds">2:92</td>
+        </tr>
 
-      <tr>
-        <td>Application::Province</td>
+        <tr>
+          <td>Application::Province</td>
 
-        <td class="ds">2:95</td>
-      </tr>
+          <td class="ds">2:95</td>
+        </tr>
 
-      <tr>
-        <td>Application::State</td>
+        <tr>
+          <td>Application::State</td>
 
-        <td class="ds">2:95</td>
-      </tr>
+          <td class="ds">2:95</td>
+        </tr>
 
-      <tr>
-        <td>Pre_ObjectData_Descriptor::Size_Mode</td>
+        <tr>
+          <td>Pre_ObjectData_Descriptor::Size_Mode</td>
 
-        <td class="ds">7:10</td>
-      </tr>
+          <td class="ds">7:10</td>
+        </tr>
 
-      <tr>
-        <td>Pre_ObjectData_Descriptor::Max_Subfile_Size</td>
+        <tr>
+          <td>Pre_ObjectData_Descriptor::Max_Subfile_Size</td>
 
-        <td class="ds">7:20</td>
-      </tr>
+          <td class="ds">7:20</td>
+        </tr>
 
-      <tr>
-        <td>
-        Pre_ObjectData_Descriptor::ObjectData_Size_Announced</td>
+        <tr>
+          <td>Pre_ObjectData_Descriptor::ObjectData_Size_Announced</td>
 
-        <td class="ds">7:90</td>
-      </tr>
+          <td class="ds">7:90</td>
+        </tr>
 
-      <tr>
-        <td>Pre_ObjectData_Descriptor::Maximum_ObjectData_Size</td>
+        <tr>
+          <td>Pre_ObjectData_Descriptor::Maximum_ObjectData_Size</td>
 
-        <td class="ds">7:95</td>
-      </tr>
+          <td class="ds">7:95</td>
+        </tr>
 
-      <tr>
-        <td>ObjectData::Subfile</td>
+        <tr>
+          <td>ObjectData::Subfile</td>
 
-        <td class="ds">8:10</td>
-      </tr>
+          <td class="ds">8:10</td>
+        </tr>
 
-      <tr>
-        <td>
-        Post_ObjectData_Descriptor::Confirmed_ObjectData_Size</td>
+        <tr>
+          <td>Post_ObjectData_Descriptor::Confirmed_ObjectData_Size</td>
 
-        <td class="ds">9:10</td>
-      </tr>
-    </table>
+          <td class="ds">9:10</td>
+        </tr>
+      </table>
 
-    <h4>Example</h4>
-    <pre>
+      <h4>Example</h4>
+      <pre>
 img.get_iptc_dataset(Magick::IPTC::Application::Keywords)
-</pre>
+</pre
+      >
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>The data field or nil</p>
+      <p>The data field or nil</p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href=
-    "#each_iptc_dataset">each_iptc_dataset</a>, <a href=
-    "imageattrs.html#iptc_profile">iptc_profile</a></p>
-  </div>
+      <p>
+        <a href="#each_iptc_dataset">each_iptc_dataset</a>,
+        <a href="imageattrs.html#iptc_profile">iptc_profile</a>
+      </p>
+    </div>
 
-  <div class="sig">
-    <h3 id="get_pixels">get_pixels</h3>
+    <div class="sig">
+      <h3 id="get_pixels">get_pixels</h3>
 
-    <p><span class="arg">img</span>.get_pixels(<span class=
-    "arg">x</span>, <span class="arg">y</span>, <span class=
-    "arg">columns</span>, <span class="arg">rows</span>) -&gt;
-    <em>array</em></p>
-  </div>
+      <p>
+        <span class="arg">img</span>.get_pixels(<span class="arg">x</span>, <span class="arg">y</span>, <span class="arg">columns</span>,
+        <span class="arg">rows</span>) -&gt; <em>array</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Gets the pixels from the specified rectangle within the
-    image.</p>
+      <p>Gets the pixels from the specified rectangle within the image.</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>x, y</dt>
+      <dl>
+        <dt>x, y</dt>
 
-      <dd>The x- and y-offset of the rectangle within the
-      image.</dd>
+        <dd>The x- and y-offset of the rectangle within the image.</dd>
 
-      <dt>columns, rows</dt>
+        <dt>columns, rows</dt>
 
-      <dd>The width and height of the rectangle.</dd>
-    </dl>
+        <dd>The width and height of the rectangle.</dd>
+      </dl>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>An array of <a href="struct.html#Pixel">pixels</a>. There
-    will be <code>columns*rows</code> elements in the array.</p>
+      <p>An array of <a href="struct.html#Pixel">pixels</a>. There will be <code>columns*rows</code> elements in the array.</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p>This example <a href="image1.html#composite">composites</a>
-    a black-and-white version of an image over the same image in
-    its original colors. It uses <code>get_pixels</code> and
-    <a href="image3.html#store_pixels">store_pixels</a> to make
-    each column of pixels in the black-and-white image slightly
-    more opaque than the column on its left, so that the resulting
-    composite changes smoothly from color on the left to
-    black-and-white on the right.</p><!--
+      <p>
+        This example <a href="image1.html#composite">composites</a> a black-and-white version of an image over the same image in its original colors. It uses
+        <code>get_pixels</code> and <a href="image3.html#store_pixels">store_pixels</a> to make each column of pixels in the black-and-white image slightly more
+        opaque than the column on its left, so that the resulting composite changes smoothly from color on the left to black-and-white on the right.
+      </p>
+      <!--
                                                                 Reduce the size of the original image by specifying
                                                                 the size of the example image.
                                                                 -->
 
-    <p class="rollover"><a href=
-    "javascript:popup('get_pixels.rb.html')"><img width="384"
-    height="249" onmouseover="this.src='ex/images/Red_Rocks.jpg'"
-    onmouseout="this.src='ex/get_pixels.jpg'" src=
-    "ex/get_pixels.jpg" title="Click to see the example script"
-    alt="get_pixels example" /></a> <img src="ex/images/spin.gif"
-    alt="" class="spin" style="left:388px" title=
-    "Mouse over the example to see the original image" /></p>
+      <p class="rollover">
+        <a href="javascript:popup('get_pixels.rb.html')"
+          ><img
+            width="384"
+            height="249"
+            onmouseover="this.src='ex/images/Red_Rocks.jpg'"
+            onmouseout="this.src='ex/get_pixels.jpg'"
+            src="ex/get_pixels.jpg"
+            title="Click to see the example script"
+            alt="get_pixels example"
+        /></a>
+        <img src="ex/images/spin.gif" alt="" class="spin" style="left: 388px" title="Mouse over the example to see the original image" />
+      </p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="image3.html#store_pixels">store_pixels</a>,
-    <a href="image3.html#view">view</a></p>
+      <p>
+        <a href="image3.html#store_pixels">store_pixels</a>,
+        <a href="image3.html#view">view</a>
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>AcquireImagePixels</p>
-  </div>
+      <p>AcquireImagePixels</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="gray_q">gray?</h3>
+    <div class="sig">
+      <h3 id="gray_q">gray?</h3>
 
-    <p><span class="arg">img</span>.gray? -&gt; <code>true</code>
-    or <code>false</code></p>
-  </div>
+      <p>
+        <span class="arg">img</span>.gray? -&gt; <code>true</code> or
+        <code>false</code>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Returns <code>true</code> if all the pixels in the image
-    have the same red, green, and blue intensities.</p>
+      <p>Returns <code>true</code> if all the pixels in the image have the same red, green, and blue intensities.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p><code>true</code> or <code>false</code></p>
+      <p><code>true</code> or <code>false</code></p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#monochrome_q">monochrome?</a></p>
+      <p><a href="#monochrome_q">monochrome?</a></p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>IsGrayImage</p>
-  </div>
+      <p>IsGrayImage</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="grey_q">grey?</h3>
+    <div class="sig">
+      <h3 id="grey_q">grey?</h3>
 
-    <p><span class="arg">img</span>.grey? -&gt; <code>true</code>
-    or <code>false</code></p>
-  </div>
+      <p>
+        <span class="arg">img</span>.grey? -&gt; <code>true</code> or
+        <code>false</code>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Synonym for <a href="#gray_q">gray?</a></p>
-  </div>
+      <p>Synonym for <a href="#gray_q">gray?</a></p>
+    </div>
 
-  <div class="sig">
-    <h3 id="histogram_q">histogram?</h3>
+    <div class="sig">
+      <h3 id="histogram_q">histogram?</h3>
 
-    <p><span class="arg">img</span>.histogram? -&gt;
-    <code>true</code> or <code>false</code></p>
-  </div>
+      <p>
+        <span class="arg">img</span>.histogram? -&gt; <code>true</code> or
+        <code>false</code>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Returns <code>true</code> if the image has 1024 unique
-    colors or less.</p>
+      <p>Returns <code>true</code> if the image has 1024 unique colors or less.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p><code>true</code> or <code>false</code></p>
+      <p><code>true</code> or <code>false</code></p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>IsHistogramImage</p>
-  </div>
+      <p>IsHistogramImage</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="implode">implode</h3>
+    <div class="sig">
+      <h3 id="implode">implode</h3>
 
-    <p><span class="arg">img</span>.implode(<span class=
-    "arg">amount</span>=0.50) -&gt; <em>image</em></p>
-  </div>
+      <p><span class="arg">img</span>.implode(<span class="arg">amount</span>=0.50) -&gt; <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>A funhouse mirror effect. See the example below.</p>
+      <p>A funhouse mirror effect. See the example below.</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>A <code>Float</code> value. Increasing the absolute value of
-    the argument increases the effect. The value may be positive
-    for implosion, or negative for explosion. The default is
-    0.50.</p>
+      <p>
+        A <code>Float</code> value. Increasing the absolute value of the argument increases the effect. The value may be positive for implosion, or negative for
+        explosion. The default is 0.50.
+      </p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p>This example is an animated image. Mouse over the image to
-    start the animation.</p>
+      <p>This example is an animated image. Mouse over the image to start the animation.</p>
 
-    <p class="rollover"><a href=
-    "javascript:popup('implode.rb.html')"><img onmouseover=
-    "this.src='ex/implode.gif'" onmouseout=
-    "this.src='ex/images/Flower_Hat.jpg'" src=
-    "ex/images/Flower_Hat.jpg" alt="implode example" title=
-    "Click the image to see the example script" /></a><img src=
-    "ex/images/spin.gif" alt="" class="spin" title=
-    "Mouse over the example to see the animation" /></p>
+      <p class="rollover">
+        <a href="javascript:popup('implode.rb.html')"
+          ><img
+            onmouseover="this.src='ex/implode.gif'"
+            onmouseout="this.src='ex/images/Flower_Hat.jpg'"
+            src="ex/images/Flower_Hat.jpg"
+            alt="implode example"
+            title="Click the image to see the example script" /></a
+        ><img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the animation" />
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>ImplodeImage</p>
-  </div>
+      <p>ImplodeImage</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="import_pixels">import_pixels</h3>
+    <div class="sig">
+      <h3 id="import_pixels">import_pixels</h3>
 
-    <p><span class="arg">img</span>.import_pixels(<span class=
-    "arg">x</span>, <span class="arg">y</span>, <span class=
-    "arg">columns</span>, <span class="arg">rows</span>,
-    <span class="arg">map</span>, <span class="arg">pixels</span>,
-    <span class="arg">type</span>=CharPixel) -&gt;
-    <em>image</em></p>
-  </div>
+      <p>
+        <span class="arg">img</span>.import_pixels(<span class="arg">x</span>, <span class="arg">y</span>, <span class="arg">columns</span>,
+        <span class="arg">rows</span>, <span class="arg">map</span>, <span class="arg">pixels</span>, <span class="arg">type</span>=CharPixel) -&gt;
+        <em>image</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Replaces the pixels in the specified rectangle with pixel
-    data from the supplied array or string. When the <span class=
-    "arg">pixels</span> argument is an array of pixel data, this
-    method is the reverse of <code>export_pixels</code>. When the
-    <span class="arg">pixels</span> argument is a string,
-    <code>import_pixels</code> is ideal for loading very large
-    amounts of binary pixel data.</p>
+      <p>
+        Replaces the pixels in the specified rectangle with pixel data from the supplied array or string. When the
+        <span class="arg">pixels</span> argument is an array of pixel data, this method is the reverse of <code>export_pixels</code>. When the
+        <span class="arg">pixels</span> argument is a string, <code>import_pixels</code> is ideal for loading very large amounts of binary pixel data.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>x, y</dt>
+      <dl>
+        <dt>x, y</dt>
 
-      <dd>The offset of the rectangle from the upper-left corner of
-      the image</dd>
+        <dd>The offset of the rectangle from the upper-left corner of the image</dd>
 
-      <dt>columns, rows</dt>
+        <dt>columns, rows</dt>
 
-      <dd>The width and height of the rectangle</dd>
+        <dd>The width and height of the rectangle</dd>
 
-      <dt>map</dt>
+        <dt>map</dt>
 
-      <dd>A string describing <span class="imquote">the expected
-      ordering of the pixel array. It can be any combination or
-      order of R = red, G = green, B = blue, A = alpha, C = cyan, Y
-      = yellow, M = magenta, K = black, or I = intensity (for
-      grayscale).</span></dd>
+        <dd>
+          A string describing
+          <span class="imquote"
+            >the expected ordering of the pixel array. It can be any combination or order of R = red, G = green, B = blue, A = alpha, C = cyan, Y = yellow, M =
+            magenta, K = black, or I = intensity (for grayscale).</span
+          >
+        </dd>
 
-      <dt>pixels</dt>
+        <dt>pixels</dt>
 
-      <dd>
-        The pixel data. Pixel data can be supplied as an array or
-        as a string.
+        <dd>
+          The pixel data. Pixel data can be supplied as an array or as a string.
 
-        <dl>
-          <dt>If <span class="arg">pixels</span> responds to
-          <code>:to_str</code></dt>
+          <dl>
+            <dt>
+              If <span class="arg">pixels</span> responds to
+              <code>:to_str</code>
+            </dt>
 
-          <dd><code>import_pixels</code> assumes that <span class=
-          "arg">pixels</span> can be converted to a string by
-          <code>to_str</code> and that the result is a C array of
-          the type specified by <span class="arg">type</span>
-          containing binary pixel data in the order specified by
-          <span class="arg">map</span>. The elements in the buffer
-          must be in the range specified by <span class=
-          "arg">type</span>.</dd>
+            <dd>
+              <code>import_pixels</code> assumes that <span class="arg">pixels</span> can be converted to a string by <code>to_str</code> and that the result is
+              a C array of the type specified by <span class="arg">type</span>
+              containing binary pixel data in the order specified by
+              <span class="arg">map</span>. The elements in the buffer must be in the range specified by <span class="arg">type</span>.
+            </dd>
 
-          <dt>Otherwise</dt>
+            <dt>Otherwise</dt>
 
-          <dd><code>import_pixels</code> assumes that <span class=
-          "arg">pixels</span> is an array or an object that can be
-          converted to an array by the <code>Kernel::Array</code>
-          method. The elements in the array must be
-          <code>Numeric</code> values in the range
-          [0..QuantumRange]. In either case, the pixel data must be
-          stored in scanline order: left-to-right and
-          top-to-bottom.</dd>
-        </dl>
-      </dd>
+            <dd>
+              <code>import_pixels</code> assumes that <span class="arg">pixels</span> is an array or an object that can be converted to an array by the
+              <code>Kernel::Array</code>
+              method. The elements in the array must be
+              <code>Numeric</code> values in the range [0..QuantumRange]. In either case, the pixel data must be stored in scanline order: left-to-right and
+              top-to-bottom.
+            </dd>
+          </dl>
+        </dd>
 
-      <dt>type</dt>
+        <dt>type</dt>
 
-      <dd>A <a href="constants.html#StorageType">StorageType</a>
-      value that specifies the type and range of the pixel data
-      when <span class="arg">pixels</span> is a string.</dd>
-    </dl>
+        <dd>
+          A <a href="constants.html#StorageType">StorageType</a> value that specifies the type and range of the pixel data when
+          <span class="arg">pixels</span> is a string.
+        </dd>
+      </dl>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>The image as transformed by the pixel data.</p>
+      <p>The image as transformed by the pixel data.</p>
 
-    <h4>Example</h4>
-    <pre>
+      <h4>Example</h4>
+      <pre>
 # Replace the r'th scanline of the image using
 # pixel data stored in red-green-blue order.
 img.import_pixels(0, r, img.columns, 1, "RGB", scanline);
-</pre>
+</pre
+      >
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p>This example is contrived since there's no need to convert
-    the <code>pixels</code> array into a string by calling
-    <code>pack</code>, but it does demonstrate the use of a string
-    <span class="arg">pixels</span> argument. Note that this
-    example assumes that ImageMagick is configured with
-    QuantumDepth=8.</p>
-    <pre>
+      <p>
+        This example is contrived since there's no need to convert the
+        <code>pixels</code> array into a string by calling <code>pack</code>, but it does demonstrate the use of a string
+        <span class="arg">pixels</span> argument. Note that this example assumes that ImageMagick is configured with QuantumDepth=8.
+      </p>
+      <pre>
 hat = Image.read("Flower_Hat.jpg").first
 pixels = hat.export_pixels(0, 0, hat.columns, hat.rows, "RGB")
 char_buffer = pixels.pack("C*")
 img = Image.new(hat.columns, hat.rows)
 img.import_pixels(0, 0, hat.columns, hat.rows, "RGB", char_buffer, CharPixel)
-</pre>
+</pre
+      >
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="image1.html#constitute">constitute</a>, <a href=
-    "image2.html#export_pixels">export_pixels</a>, <a href=
-    "image3.html#store_pixels">store_pixels</a></p>
+      <p>
+        <a href="image1.html#constitute">constitute</a>, <a href="image2.html#export_pixels">export_pixels</a>,
+        <a href="image3.html#store_pixels">store_pixels</a>
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>ImportImagePixels</p>
+      <p>ImportImagePixels</p>
 
-    <h4>Note</h4>
+      <h4>Note</h4>
 
-    <p>This method replaces the <code>constitute</code> method.</p>
-  </div>
+      <p>This method replaces the <code>constitute</code> method.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="inspect">inspect</h3>
+    <div class="sig">
+      <h3 id="inspect">inspect</h3>
 
-    <p><span class="arg">img</span>.inspect -&gt;
-    <em>string</em></p>
-  </div>
+      <p><span class="arg">img</span>.inspect -&gt; <em>string</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Constructs a description of the image as a string. The
-    string contains some or all of the following fields:</p>
+      <p>Constructs a description of the image as a string. The string contains some or all of the following fields:</p>
 
-    <dl>
-      <dt>original_filename=&gt;</dt>
+      <dl>
+        <dt>original_filename=&gt;</dt>
 
-      <dd>if different from the current filename.</dd>
+        <dd>if different from the current filename.</dd>
 
-      <dt>filename</dt>
+        <dt>filename</dt>
 
-      <dd>the current filename</dd>
+        <dd>the current filename</dd>
 
-      <dt>[scene]</dt>
+        <dt>[scene]</dt>
 
-      <dd>the scene number, if the image is part of an image
-      sequence</dd>
+        <dd>the scene number, if the image is part of an image sequence</dd>
 
-      <dt>format</dt>
+        <dt>format</dt>
 
-      <dd>the image format (GIF or JPEG, for example)</dd>
+        <dd>the image format (GIF or JPEG, for example)</dd>
 
-      <dt>original width x height</dt>
+        <dt>original width x height</dt>
 
-      <dd>if different from the current width x height</dd>
+        <dd>if different from the current width x height</dd>
 
-      <dt>page width x height + x-offset + y-offset</dt>
+        <dt>page width x height + x-offset + y-offset</dt>
 
-      <dd>if any of these fields is non-zero</dd>
+        <dd>if any of these fields is non-zero</dd>
 
-      <dt>storage class</dt>
+        <dt>storage class</dt>
 
-      <dd><em>DirectClass</em> or <em>PseudoClass</em></dd>
+        <dd><em>DirectClass</em> or <em>PseudoClass</em></dd>
 
-      <dt>number of colors</dt>
+        <dt>number of colors</dt>
 
-      <dd>total number of colors used in the image</dd>
+        <dd>total number of colors used in the image</dd>
 
-      <dt>mean error per pixel/normalized mean error/normalized
-      maximum error</dt>
+        <dt>mean error per pixel/normalized mean error/normalized maximum error</dt>
 
-      <dd>for PseudoClass images, if present</dd>
+        <dd>for PseudoClass images, if present</dd>
 
-      <dt><em>N</em>-bit</dt>
+        <dt><em>N</em>-bit</dt>
 
-      <dd>bit depth</dd>
+        <dd>bit depth</dd>
 
-      <dt>blob size</dt>
+        <dt>blob size</dt>
 
-      <dd>if present</dd>
-    </dl>
+        <dd>if present</dd>
+      </dl>
 
-    <h4>Example</h4>
-    <pre>
+      <h4>Example</h4>
+      <pre>
 f.inspect &raquo; "images/Flower_Hat.jpg JPEG 200x250 DirectClass 8-bit 9kb"
-</pre>
-  </div>
+</pre
+      >
+    </div>
 
-  <div class="sig">
-    <h3 id="level">level</h3>
+    <div class="sig">
+      <h3 id="level">level</h3>
 
-    <p><span class="arg">img</span>.level(<span class=
-    "arg">black_point</span>=<code>0.0</code>, <span class=
-    "arg">white_point</span>=<code>QuantumRange</code>,
-    <span class="arg">gamma</span>=<code>1.0</code>) -&gt;
-    <em>image</em></p>
-  </div>
+      <p>
+        <span class="arg">img</span>.level(<span class="arg">black_point</span>=<code>0.0</code>,
+        <span class="arg">white_point</span>=<code>QuantumRange</code>, <span class="arg">gamma</span>=<code>1.0</code>) -&gt; <em>image</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p class="imquote">Adjusts the levels of an image by scaling
-    the colors falling between specified white and black points to
-    the full available quantum range. The parameters provided
-    represent the black, mid, and white points. The black point
-    specifies the darkest color in the image. Colors darker than
-    the black point are set to zero. Gamma specifies a gamma
-    correction to apply to the image. White point specifies the
-    lightest color in the image. Colors brighter than the white
-    point are set to the maximum quantum value</p>
+      <p class="imquote">
+        Adjusts the levels of an image by scaling the colors falling between specified white and black points to the full available quantum range. The
+        parameters provided represent the black, mid, and white points. The black point specifies the darkest color in the image. Colors darker than the black
+        point are set to zero. Gamma specifies a gamma correction to apply to the image. White point specifies the lightest color in the image. Colors brighter
+        than the white point are set to the maximum quantum value
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>black_point</dt>
+      <dl>
+        <dt>black_point</dt>
 
-      <dd>A black point level in the range 0-<a href=
-      "constants.html#Miscellaneous_constants">QuantumRange</a>.
-      The default is 0.0.</dd>
+        <dd>A black point level in the range 0-<a href="constants.html#Miscellaneous_constants">QuantumRange</a>. The default is 0.0.</dd>
 
-      <dt>mid_point</dt>
+        <dt>mid_point</dt>
 
-      <dd>A white point level in the range 0..QuantumRange. The
-      default is <a href=
-      "constants.html#Miscellaneous_constants">QuantumRange</a> -
-      <span class="arg">black_point</span>.</dd>
+        <dd>
+          A white point level in the range 0..QuantumRange. The default is
+          <a href="constants.html#Miscellaneous_constants">QuantumRange</a> - <span class="arg">black_point</span>.
+        </dd>
 
-      <dt>gamma</dt>
+        <dt>gamma</dt>
 
-      <dd>A gamma correction in the range 0.0-10.0 The default is
-      1.0.</dd>
-    </dl>
+        <dd>A gamma correction in the range 0.0-10.0 The default is 1.0.</dd>
+      </dl>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p><code>level(0,1.50)</code></p>
+      <p><code>level(0,1.50)</code></p>
 
-    <p class="rollover"><a href=
-    "javascript:popup('level.rb.html')"><img onmouseover=
-    "this.src='ex/images/Flower_Hat.jpg'" onmouseout=
-    "this.src='ex/level.jpg'" src="ex/level.jpg" title=
-    "Click to see the example script" alt="level example" /></a>
-    <img src="ex/images/spin.gif" alt="" class="spin" title=
-    "Mouse over the image to see the original image" /></p>
+      <p class="rollover">
+        <a href="javascript:popup('level.rb.html')"
+          ><img
+            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src='ex/level.jpg'"
+            src="ex/level.jpg"
+            title="Click to see the example script"
+            alt="level example"
+        /></a>
+        <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the image to see the original image" />
+      </p>
 
-    <h4>Compatibility notes</h4>
+      <h4>Compatibility notes</h4>
 
-    <p>Prior to version 1.11.0 RMagick defined the signature for
-    <code>level</code> incorrectly:</p>
-    <pre>
+      <p>
+        Prior to version 1.11.0 RMagick defined the signature for
+        <code>level</code> incorrectly:
+      </p>
+      <pre>
 img.level(white_point, gamma, black_point) -&gt; image # wrong!
-</pre>
+</pre
+      >
 
-    <p>That is, the <code>gamma</code> and <code>white_point</code>
-    arguments were swapped. In an effort to maintain compatibility
-    with older scripts that expect that signature,
-    <code>level</code> inspects its arguments and will interchange
-    <code>white_point</code> and gamma if they "look" incorrect.
-    That is, if <code>gamma</code> is &gt; 10.0, or if
-    <code>white_point</code> is &lt; 10.0, or if <code>gamma</code>
-    &gt; <code>white_point</code>, then <code>level</code> will
-    swap them.</p>
+      <p>
+        That is, the <code>gamma</code> and <code>white_point</code>
+        arguments were swapped. In an effort to maintain compatibility with older scripts that expect that signature,
+        <code>level</code> inspects its arguments and will interchange <code>white_point</code> and gamma if they "look" incorrect. That is, if
+        <code>gamma</code> is &gt; 10.0, or if <code>white_point</code> is &lt; 10.0, or if <code>gamma</code> &gt; <code>white_point</code>, then
+        <code>level</code> will swap them.
+      </p>
 
-    <p>If you want to avoid this behavior, use the
-    <code>level2</code> method instead. The <code>level2</code>
-    method is exactly the same as <code>level</code> except that it
-    never swaps the arguments.</p>
+      <p>
+        If you want to avoid this behavior, use the <code>level2</code> method instead. The <code>level2</code> method is exactly the same as
+        <code>level</code> except that it never swaps the arguments.
+      </p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#level_channel">level_channel</a></p>
+      <p><a href="#level_channel">level_channel</a></p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>LevelImage</p>
-  </div>
+      <p>LevelImage</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="level_channel">level_channel</h3>
+    <div class="sig">
+      <h3 id="level_channel">level_channel</h3>
 
-    <p><span class="arg">img</span>.level_channel(<span class=
-    "arg">channel</span>, <span class="arg">black_point</span>=0,
-    <span class="arg">white_point</span>=QuantumRange -
-    black_point, <span class="arg">gamma</span>=1.0) -&gt;
-    <em>image</em></p>
-  </div>
+      <p>
+        <span class="arg">img</span>.level_channel(<span class="arg">channel</span>, <span class="arg">black_point</span>=0,
+        <span class="arg">white_point</span>=QuantumRange - black_point, <span class="arg">gamma</span>=1.0) -&gt; <em>image</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>Same as level but operates only on the
-    specified channel.
+    <div class="desc">
+      <h4>Description</h4>
+      Same as level but operates only on the specified channel.
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>channel</dt>
+      <dl>
+        <dt>channel</dt>
 
-      <dd>A <a href="constants.html#ChannelType">ChannelType</a>
-      value.</dd>
+        <dd>A <a href="constants.html#ChannelType">ChannelType</a> value.</dd>
 
-      <dt>black_point</dt>
+        <dt>black_point</dt>
 
-      <dd>A black point level in the range 0-<a href=
-      "constants.html#Miscellaneous_constants">QuantumRange</a>.
-      The default is 0.0.</dd>
+        <dd>A black point level in the range 0-<a href="constants.html#Miscellaneous_constants">QuantumRange</a>. The default is 0.0.</dd>
 
-      <dt>white_point</dt>
+        <dt>white_point</dt>
 
-      <dd>A white point level in the range 0..QuantumRange. The
-      default is <a href=
-      "constants.html#Miscellaneous_constants">QuantumRange</a> -
-      <span class="arg">black_point</span>.</dd>
+        <dd>
+          A white point level in the range 0..QuantumRange. The default is
+          <a href="constants.html#Miscellaneous_constants">QuantumRange</a> - <span class="arg">black_point</span>.
+        </dd>
 
-      <dt>gamma</dt>
+        <dt>gamma</dt>
 
-      <dd>A gamma correction in the range 0.0-10.0 The default is
-      1.0.</dd>
-    </dl>
+        <dd>A gamma correction in the range 0.0-10.0 The default is 1.0.</dd>
+      </dl>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#level">level</a>, <a href=
-    "#levelize_channel">levelize_channel</a></p>
+      <p>
+        <a href="#level">level</a>,
+        <a href="#levelize_channel">levelize_channel</a>
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>LevelImageChannel</p>
-  </div>
+      <p>LevelImageChannel</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="level_colors">level_colors</h3>
+    <div class="sig">
+      <h3 id="level_colors">level_colors</h3>
 
-    <p><span class="arg">img</span>.level_colors(<span class=
-    "arg">black_color</span>="black", <span class=
-    "arg">white_color</span>="white", <span class=
-    "arg">invert</span>=<code>true</code>) -&gt; <em>image</em></p>
-  </div>
+      <p>
+        <span class="arg">img</span>.level_colors(<span class="arg">black_color</span>="black", <span class="arg">white_color</span>="white",
+        <span class="arg">invert</span>=<code>true</code>) -&gt; <em>image</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>When <span class="arg">invert</span> is true, black and
-    white will be mapped to the <span class=
-    "arg">black_color</span> and <span class=
-    "arg">white_color</span> colors, compressing all other colors
-    linearly. When <span class="arg">invert</span> is false, black
-    and white will be mapped to the <span class=
-    "arg">black_color</span> and <span class=
-    "arg">white_color</span> colors, stretching all other colors
-    linearly. The default is <code>true</code>.</p>
+      <p>
+        When <span class="arg">invert</span> is true, black and white will be mapped to the <span class="arg">black_color</span> and
+        <span class="arg">white_color</span> colors, compressing all other colors linearly. When <span class="arg">invert</span> is false, black and white will
+        be mapped to the <span class="arg">black_color</span> and <span class="arg">white_color</span> colors, stretching all other colors linearly. The default
+        is <code>true</code>.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>black_color</dt>
+      <dl>
+        <dt>black_color</dt>
 
-      <dd>The color to be mapped to black. The default is
-      "black".</dd>
+        <dd>The color to be mapped to black. The default is "black".</dd>
 
-      <dt>white_color</dt>
+        <dt>white_color</dt>
 
-      <dd>The color to be mapped to white. The default is
-      "white".</dd>
+        <dd>The color to be mapped to white. The default is "white".</dd>
 
-      <dt>invert</dt>
+        <dt>invert</dt>
 
-      <dd>See the description above.</dd>
-    </dl>
+        <dd>See the description above.</dd>
+      </dl>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p class="rollover"><a href=
-    "javascript:popup('level_colors.rb.html')"><img onmouseover=
-    "this.src='ex/images/Flower_Hat.jpg'" onmouseout=
-    "this.src='ex/level_colors.jpg'" src="ex/level_colors.jpg"
-    title="Click to see the example script" alt=
-    "level_colors example" /></a> <img src="ex/images/spin.gif"
-    alt="" class="spin" title=
-    "Mouse over the image to see the original image" /></p>
+      <p class="rollover">
+        <a href="javascript:popup('level_colors.rb.html')"
+          ><img
+            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src='ex/level_colors.jpg'"
+            src="ex/level_colors.jpg"
+            title="Click to see the example script"
+            alt="level_colors example"
+        /></a>
+        <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the image to see the original image" />
+      </p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p>This method corresponds to the +level-colors option. See
-    <a href=
-    "https://imagemagick.org/script/command-line-options.php#level-colors">Examples
-    of ImageMagick Usage</a> for more information.</p>
+      <p>
+        This method corresponds to the +level-colors option. See
+        <a href="https://imagemagick.org/script/command-line-options.php#level-colors">Examples of ImageMagick Usage</a>
+        for more information.
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>LevelImageColors</p>
-  </div>
+      <p>LevelImageColors</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="levelize_channel">levelize_channel</h3>
+    <div class="sig">
+      <h3 id="levelize_channel">levelize_channel</h3>
 
-    <p><span class="arg">img</span>.levelize_channel(<span class=
-    "arg">black_point</span>, <span class="arg">white_point</span>,
-    <span class="arg">gamma</span>=1.0 [, <span class=
-    "arg">channel</span>...]) -&gt; <em>image</em></p>
-  </div>
+      <p>
+        <span class="arg">img</span>.levelize_channel(<span class="arg">black_point</span>, <span class="arg">white_point</span>,
+        <span class="arg">gamma</span>=1.0 [, <span class="arg">channel</span>...]) -&gt; <em>image</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Maps black and white to the specified points. The reverse of
-    <a href="#level_channel">level_channel</a>.</p>
+      <p>
+        Maps black and white to the specified points. The reverse of
+        <a href="#level_channel">level_channel</a>.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>black_point</dt>
+      <dl>
+        <dt>black_point</dt>
 
-      <dd>A black point level in the range 0..<a href=
-      "constants.html#Miscellaneous_constants">QuantumRange</a>.
-      This argument is required.</dd>
+        <dd>A black point level in the range 0..<a href="constants.html#Miscellaneous_constants">QuantumRange</a>. This argument is required.</dd>
 
-      <dt>white_point</dt>
+        <dt>white_point</dt>
 
-      <dd>A white point level in the range 0..QuantumRange. The
-      default is QuantumRange - <span class=
-      "arg">black_point</span>.</dd>
+        <dd>A white point level in the range 0..QuantumRange. The default is QuantumRange - <span class="arg">black_point</span>.</dd>
 
-      <dt>gamma</dt>
+        <dt>gamma</dt>
 
-      <dd>A gamma correction in the range 0.0-10.0 The default is
-      1.0.</dd>
+        <dd>A gamma correction in the range 0.0-10.0 The default is 1.0.</dd>
 
-      <dt>channel...</dt>
+        <dt>channel...</dt>
 
-      <dd>0 or more <a href=
-      "constants.html#ChannelType">ChannelType</a> arguments. If no
-      channels are specified, the default channels are the red,
-      green, and blue channels.</dd>
-    </dl>
+        <dd>
+          0 or more
+          <a href="constants.html#ChannelType">ChannelType</a> arguments. If no channels are specified, the default channels are the red, green, and blue
+          channels.
+        </dd>
+      </dl>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#level">level</a>, <a href=
-    "#level_channel">level_channel</a></p>
+      <p><a href="#level">level</a>, <a href="#level_channel">level_channel</a></p>
 
-    <p>This method corresponds to the +level option. See <a href=
-    "https://imagemagick.org/script/command-line-options.php#level">Examples
-    of ImageMagick Usage</a> for more information.</p>
+      <p>
+        This method corresponds to the +level option. See
+        <a href="https://imagemagick.org/script/command-line-options.php#level">Examples of ImageMagick Usage</a>
+        for more information.
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>LevelizeImageChannel</p>
-  </div>
+      <p>LevelizeImageChannel</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="linear_stretch">linear_stretch</h3>
+    <div class="sig">
+      <h3 id="linear_stretch">linear_stretch</h3>
 
-    <p><span class="arg">img</span>.linear_stretch(<span class=
-    "arg">black_point</span>[, <span class=
-    "arg">white_point</span>]) -&gt; <em>image</em></p>
-  </div>
+      <p><span class="arg">img</span>.linear_stretch(<span class="arg">black_point</span>[, <span class="arg">white_point</span>]) -&gt; <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p class="imquote">Linear with saturation stretch.</p>
+      <p class="imquote">Linear with saturation stretch.</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>black_point</dt>
+      <dl>
+        <dt>black_point</dt>
 
-      <dd>black out at most this many pixels. Specify an absolute
-      number of pixels as a numeric value, or a percentage as a
-      string in the form 'NN%'.</dd>
+        <dd>black out at most this many pixels. Specify an absolute number of pixels as a numeric value, or a percentage as a string in the form 'NN%'.</dd>
 
-      <dt>white_point</dt>
+        <dt>white_point</dt>
 
-      <dd>burn at most this many pixels. Specify an absolute number
-      of pixels as a numeric value, or a percentage as a string in
-      the form 'NN%'. This argument is optional. If not specified
-      the default is <code>all pixels - black_point
-      pixels</code>.</dd>
-    </dl>
+        <dd>
+          burn at most this many pixels. Specify an absolute number of pixels as a numeric value, or a percentage as a string in the form 'NN%'. This argument
+          is optional. If not specified the default is
+          <code>all pixels - black_point pixels</code>.
+        </dd>
+      </dl>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>LinearStretchImage</p>
-  </div>
+      <p>LinearStretchImage</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="liquid_rescale">liquid_rescale</h3>
+    <div class="sig">
+      <h3 id="liquid_rescale">liquid_rescale</h3>
 
-    <p><span class="arg">img</span>.liquid_rescale(<span class=
-    "arg">new_width</span>, <span class="arg">new_height</span>,
-    <span class="arg">delta_x</span>=0.0, <span class=
-    "arg">rigidity</span>=0.0) -&gt; <em>image</em></p>
-  </div>
+      <p>
+        <span class="arg">img</span>.liquid_rescale(<span class="arg">new_width</span>, <span class="arg">new_height</span>,
+        <span class="arg">delta_x</span>=0.0, <span class="arg">rigidity</span>=0.0) -&gt; <em>image</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p><span class="imquote">Rescale image with seam
-    carving.</span> To use this method, you must have installed and
-    configured ImageMagick to use the <a href=
-    "http://liblqr.wikidot.com/">Liquid Rescale Library</a>.</p>
+      <p>
+        <span class="imquote">Rescale image with seam carving.</span> To use this method, you must have installed and configured ImageMagick to use the
+        <a href="http://liblqr.wikidot.com/">Liquid Rescale Library</a>.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>new_width, new_height</dt>
+      <dl>
+        <dt>new_width, new_height</dt>
 
-      <dd>
-        <p>The desired width and height. Should not exceed 200% of
-        the original dimension.</p>
-      </dd>
+        <dd>
+          <p>The desired width and height. Should not exceed 200% of the original dimension.</p>
+        </dd>
 
-      <dt>delta_x</dt>
+        <dt>delta_x</dt>
 
-      <dd>
-        <p class="imquote">Maximum seam transversal step (0 means
-        straight seams).</p>
-      </dd>
+        <dd>
+          <p class="imquote">Maximum seam transversal step (0 means straight seams).</p>
+        </dd>
 
-      <dt>rigidity</dt>
+        <dt>rigidity</dt>
 
-      <dd>
-        <p class="imquote">Introduce a bias for non-straight seams
-        (typically 0).</p>
-      </dd>
-    </dl>
+        <dd>
+          <p class="imquote">Introduce a bias for non-straight seams (typically 0).</p>
+        </dd>
+      </dl>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>LiquidRescaleImage</p>
-  </div>
+      <p>LiquidRescaleImage</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="magnify">magnify</h3>
+    <div class="sig">
+      <h3 id="magnify">magnify</h3>
 
-    <p><span class="arg">img</span>.magnify -&gt;
-    <em>image</em></p>
-  </div>
+      <p><span class="arg">img</span>.magnify -&gt; <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>A convenience method that scales the receiver to twice its
-    size.</p>
+      <p>A convenience method that scales the receiver to twice its size.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#magnify_bang">magnify!</a>, <a href=
-    "#minify">minify</a>, <a href="image3.html#resize">resize</a>,
-    <a href="image3.html#scale">scale</a></p>
+      <p>
+        <a href="#magnify_bang">magnify!</a>, <a href="#minify">minify</a>, <a href="image3.html#resize">resize</a>,
+        <a href="image3.html#scale">scale</a>
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>MagnifyImage</p>
-  </div>
+      <p>MagnifyImage</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="magnify_bang">magnify!</h3>
+    <div class="sig">
+      <h3 id="magnify_bang">magnify!</h3>
 
-    <p><span class="arg">img</span>.magnify! -&gt;
-    <em>self</em></p>
-  </div>
+      <p><span class="arg">img</span>.magnify! -&gt; <em>self</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>In-place form of <a href="#magnify">magnify</a></p>
+      <p>In-place form of <a href="#magnify">magnify</a></p>
 
-    <h4>Returns</h4>self
-  </div>
+      <h4>Returns</h4>
+      self
+    </div>
 
-  <div class="sig">
-    <h3 id="mask">mask</h3>
+    <div class="sig">
+      <h3 id="mask">mask</h3>
 
-    <p><span class="arg">img</span>.mask([<span class=
-    "arg">image</span> or <code>nil</code>]) -&gt;
-    <em>mask_image</em></p>
-  </div>
+      <p><span class="arg">img</span>.mask([<span class="arg">image</span> or <code>nil</code>]) -&gt; <em>mask_image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Sets an image clip mask created from the specified mask
-    image. <span class="imquote">The mask image must have the same
-    dimensions as the image being masked.</span> If not, the mask
-    image is resized to match. <span class="imquote">If the mask
-    image has an alpha channel the opacity of each pixel is used to
-    define the mask. Otherwise, the intensity (gray level) of each
-    pixel is used.</span></p>
+      <p>
+        Sets an image clip mask created from the specified mask image.
+        <span class="imquote">The mask image must have the same dimensions as the image being masked.</span>
+        If not, the mask image is resized to match.
+        <span class="imquote"
+          >If the mask image has an alpha channel the opacity of each pixel is used to define the mask. Otherwise, the intensity (gray level) of each pixel is
+          used.</span
+        >
+      </p>
 
-    <p>In general, if the mask image does not have an alpha
-    channel, a white pixel in the mask prevents changes to the
-    corresponding pixel in the image being masked, while a black
-    pixel allows changes. A pixel that is neither black nor white
-    will allow partial changes depending on its intensity.</p>
+      <p>
+        In general, if the mask image does not have an alpha channel, a white pixel in the mask prevents changes to the corresponding pixel in the image being
+        masked, while a black pixel allows changes. A pixel that is neither black nor white will allow partial changes depending on its intensity.
+      </p>
 
-    <p>Use <a href="image1.html#alpha">alpha</a> to specify whether
-    or not the mask image has an alpha channel.</p>
+      <p>Use <a href="image1.html#alpha">alpha</a> to specify whether or not the mask image has an alpha channel.</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>If the value is an imagelist, uses the current image as the
-    mask image. To remove the mask, pass <code>nil</code> instead
-    of an image.</p>
+      <p>If the value is an imagelist, uses the current image as the mask image. To remove the mask, pass <code>nil</code> instead of an image.</p>
 
-    <p>To get a copy of the current mask, omit the argument
-    entirely.</p>
+      <p>To get a copy of the current mask, omit the argument entirely.</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p class="rollover"><a href=
-    "javascript:popup('mask.rb.html')"><img src="ex/mask.jpg" alt=
-    "mask example" title="Click to see the example script"
-    onmouseover="this.src='ex/images/Flower_Hat.jpg'" onmouseout=
-    "this.src='ex/mask.jpg'" /></a> <img src="ex/images/spin.gif"
-    alt="" class="spin" title=
-    "Mouse over the example to see the original image" /></p>
+      <p class="rollover">
+        <a href="javascript:popup('mask.rb.html')"
+          ><img
+            src="ex/mask.jpg"
+            alt="mask example"
+            title="Click to see the example script"
+            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src='ex/mask.jpg'"
+        /></a>
+        <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
+      </p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A copy of the current mask, or <code>nil</code> if no mask
-    is defined.</p>
+      <p>A copy of the current mask, or <code>nil</code> if no mask is defined.</p>
 
-    <h4>Notes</h4>
+      <h4>Notes</h4>
 
-    <p>This method makes a copy of the image to use as the mask.
-    This means that if you want to change the mask you must call
-    this method to establish the changed image as the mask.</p>
-  </div>
+      <p>
+        This method makes a copy of the image to use as the mask. This means that if you want to change the mask you must call this method to establish the
+        changed image as the mask.
+      </p>
+    </div>
 
-  <div class="sig">
-    <h3 id="matte_fill_to_border">matte_fill_to_border</h3>
+    <div class="sig">
+      <h3 id="matte_fill_to_border">matte_fill_to_border</h3>
 
-    <p><span class=
-    "arg">img</span>.matte_fill_to_border(<span class=
-    "arg">x</span>, <span class="arg">y</span>) -&gt;
-    <em>image</em></p>
-  </div>
+      <p><span class="arg">img</span>.matte_fill_to_border(<span class="arg">x</span>, <span class="arg">y</span>) -&gt; <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Makes transparent all the pixels that are neighbors of the
-    pixel at <span class="arg">x</span>,<span class="arg">y</span>
-    and are not the border color.</p>
+      <p>
+        Makes transparent all the pixels that are neighbors of the pixel at
+        <span class="arg">x</span>,<span class="arg">y</span> and are not the border color.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>The x- and y- coordinates of the target pixel.</p>
+      <p>The x- and y- coordinates of the target pixel.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p>In this example the border color is black. The fill starts
-    in the center and makes all the pixels transparent until it
-    reaches a black pixel. The resulting image has been composited
-    over a plasma background, which shows through the transparent
-    pixels.</p>
+      <p>
+        In this example the border color is black. The fill starts in the center and makes all the pixels transparent until it reaches a black pixel. The
+        resulting image has been composited over a plasma background, which shows through the transparent pixels.
+      </p>
 
-    <p class="rollover"><a href=
-    "javascript:popup('matte_fill_to_border.rb.html')"><img src=
-    "ex/matte_fill_to_border_after.gif" onmouseover=
-    "this.src='ex/matte_fill_to_border_before.gif'" onmouseout=
-    "this.src='ex/matte_fill_to_border_after.gif'" alt=
-    "matte_fill_to_border example" title=
-    "Click to see the example script" /></a> <img src=
-    "ex/images/spin.gif" alt="" class="spin" title=
-    "Mouse over the image to see the original image" /></p>
+      <p class="rollover">
+        <a href="javascript:popup('matte_fill_to_border.rb.html')"
+          ><img
+            src="ex/matte_fill_to_border_after.gif"
+            onmouseover="this.src='ex/matte_fill_to_border_before.gif'"
+            onmouseout="this.src='ex/matte_fill_to_border_after.gif'"
+            alt="matte_fill_to_border example"
+            title="Click to see the example script"
+        /></a>
+        <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the image to see the original image" />
+      </p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#matte_floodfill">matte_floodfill</a>, <a href=
-    "draw.html#matte">Draw#matte</a></p>
+      <p>
+        <a href="#matte_floodfill">matte_floodfill</a>,
+        <a href="draw.html#matte">Draw#matte</a>
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>MatteFloodfillImage</p>
-  </div>
+      <p>MatteFloodfillImage</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="matte_floodfill">matte_floodfill</h3>
+    <div class="sig">
+      <h3 id="matte_floodfill">matte_floodfill</h3>
 
-    <p><span class="arg">img</span>.matte_floodfill(<span class=
-    "arg">x</span>, <span class="arg">y</span>) -&gt;
-    <em>image</em></p>
-  </div>
+      <p><span class="arg">img</span>.matte_floodfill(<span class="arg">x</span>, <span class="arg">y</span>) -&gt; <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Makes transparent all the pixels that are the same color as
-    the pixel at <span class="arg">x</span>, <span class=
-    "arg">y</span>, and are neighbors.</p>
+      <p>
+        Makes transparent all the pixels that are the same color as the pixel at
+        <span class="arg">x</span>, <span class="arg">y</span>, and are neighbors.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>The x- and y-coordinates of the target pixel.</p>
+      <p>The x- and y-coordinates of the target pixel.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p>In this example the fill starts at the center pixel and
-    replaces all the yellow pixels - the color of the center pixel.
-    The resulting image has been composited over a plasma
-    background, which shows through the transparent pixels.</p>
+      <p>
+        In this example the fill starts at the center pixel and replaces all the yellow pixels - the color of the center pixel. The resulting image has been
+        composited over a plasma background, which shows through the transparent pixels.
+      </p>
 
-    <p class="rollover"><a href=
-    "javascript:popup('matte_floodfill.rb.html')"><img src=
-    "ex/matte_floodfill_after.gif" onmouseover=
-    "this.src='ex/matte_floodfill_before.gif'" onmouseout=
-    "this.src='ex/matte_floodfill_after.gif'" alt=
-    "matte_floodfill example" title=
-    "Click to see the example script" /></a> <img src=
-    "ex/images/spin.gif" alt="" class="spin" title=
-    "Mouse over the image to see the original image" /></p>
+      <p class="rollover">
+        <a href="javascript:popup('matte_floodfill.rb.html')"
+          ><img
+            src="ex/matte_floodfill_after.gif"
+            onmouseover="this.src='ex/matte_floodfill_before.gif'"
+            onmouseout="this.src='ex/matte_floodfill_after.gif'"
+            alt="matte_floodfill example"
+            title="Click to see the example script"
+        /></a>
+        <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the image to see the original image" />
+      </p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#matte_replace">matte_replace</a>, <a href=
-    "draw.html#matte">Draw#matte</a></p>
+      <p>
+        <a href="#matte_replace">matte_replace</a>,
+        <a href="draw.html#matte">Draw#matte</a>
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>MatteFloodfilImage</p>
-  </div>
+      <p>MatteFloodfilImage</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="matte_point">matte_point</h3>
+    <div class="sig">
+      <h3 id="matte_point">matte_point</h3>
 
-    <p><span class="arg">img</span>.matte_point(<span class=
-    "arg">x</span>, <span class="arg">y</span>) -&gt;
-    <em>image</em></p>
-  </div>
+      <p><span class="arg">img</span>.matte_point(<span class="arg">x</span>, <span class="arg">y</span>) -&gt; <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Makes the pixel at <span class="arg">x</span>, <span class=
-    "arg">y</span> transparent. This method makes a copy of the
-    image, just to make one pixel transparent. I recommend using
-    the Draw#matte method instead.</p>
+      <p>
+        Makes the pixel at <span class="arg">x</span>, <span class="arg">y</span> transparent. This method makes a copy of the image, just to make one pixel
+        transparent. I recommend using the Draw#matte method instead.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>The x- and y-coordinates of the target pixel.</p>
+      <p>The x- and y-coordinates of the target pixel.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="draw.html#matte">Draw#matte</a></p>
-  </div>
+      <p><a href="draw.html#matte">Draw#matte</a></p>
+    </div>
 
-  <div class="sig">
-    <h3 id="matte_replace">matte_replace</h3>
+    <div class="sig">
+      <h3 id="matte_replace">matte_replace</h3>
 
-    <p><span class="arg">img</span>.matte_replace(<span class=
-    "arg">x</span>, <span class="arg">y</span>) -&gt;
-    <em>image</em></p>
-  </div>
+      <p><span class="arg">img</span>.matte_replace(<span class="arg">x</span>, <span class="arg">y</span>) -&gt; <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Makes transparent all the pixels that are the same color as
-    the pixel at <span class="arg">x</span>, <span class=
-    "arg">y</span>.</p>
+      <p>
+        Makes transparent all the pixels that are the same color as the pixel at
+        <span class="arg">x</span>, <span class="arg">y</span>.
+      </p>
 
-    <h4>Arguments</h4>The x- and y-coordinates of the target pixel.
+      <h4>Arguments</h4>
+      The x- and y-coordinates of the target pixel.
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p>In this example the target pixel is a black pixel in the
-    center of the uppermost circle. The matte_replace method makes
-    all the black pixels in the image transparent. The resulting
-    image has been composited over a plasma background, which shows
-    through the transparent pixels.</p>
+      <p>
+        In this example the target pixel is a black pixel in the center of the uppermost circle. The matte_replace method makes all the black pixels in the
+        image transparent. The resulting image has been composited over a plasma background, which shows through the transparent pixels.
+      </p>
 
-    <p class="rollover"><a href=
-    "javascript:popup('matte_replace.rb.html')"><img onmouseover=
-    "this.src='ex/matte_replace_before.gif'" onmouseout=
-    "this.src='ex/matte_replace_after.gif'" src=
-    "ex/matte_replace_after.gif" alt="matte_replace example" title=
-    "Click to see the example script" /></a> <img src=
-    "ex/images/spin.gif" alt="" class="spin" title=
-    "Mouse over the image to see the original image" /></p>
+      <p class="rollover">
+        <a href="javascript:popup('matte_replace.rb.html')"
+          ><img
+            onmouseover="this.src='ex/matte_replace_before.gif'"
+            onmouseout="this.src='ex/matte_replace_after.gif'"
+            src="ex/matte_replace_after.gif"
+            alt="matte_replace example"
+            title="Click to see the example script"
+        /></a>
+        <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the image to see the original image" />
+      </p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="image3.html#transparent">transparent</a>, <a href=
-    "draw.html#matte">Draw#matte</a></p>
+      <p>
+        <a href="image3.html#transparent">transparent</a>,
+        <a href="draw.html#matte">Draw#matte</a>
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>TransparentImage</p>
-  </div>
+      <p>TransparentImage</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="matte_reset_bang">matte_reset!</h3>
+    <div class="sig">
+      <h3 id="matte_reset_bang">matte_reset!</h3>
 
-    <p><span class="arg">img</span>.matte_reset! -&gt;
-    <em>self</em></p>
-  </div>
+      <p><span class="arg">img</span>.matte_reset! -&gt; <em>self</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Makes all the pixels in the image transparent.</p>
+      <p>Makes all the pixels in the image transparent.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>self</p>
+      <p>self</p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="imageattrs.html#opacity">opacity=</a></p>
+      <p><a href="imageattrs.html#opacity">opacity=</a></p>
 
-    <h4>Magick API</h4>SetImageOpacity
-  </div>
+      <h4>Magick API</h4>
+      SetImageOpacity
+    </div>
 
-  <div class="sig">
-    <h3 id="median_filter">median_filter</h3>
+    <div class="sig">
+      <h3 id="median_filter">median_filter</h3>
 
-    <p><span class="arg">img</span>.median_filter(<span class=
-    "arg">radius</span>=1.0) -&gt; <em>image</em></p>
-  </div>
+      <p><span class="arg">img</span>.median_filter(<span class="arg">radius</span>=1.0) -&gt; <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p class="imquote">Applies a digital filter that improves the
-    quality of a noisy image. Each pixel is replaced by the median
-    in a set of neighboring pixels as defined by radius.</p>
+      <p class="imquote">
+        Applies a digital filter that improves the quality of a noisy image. Each pixel is replaced by the median in a set of neighboring pixels as defined by
+        radius.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>The filter radius. The larger the value, the longer it takes
-    to render. Values larger than 8 or 9 may take longer than you
-    want to wait, and will not have significantly better results
-    than much smaller values.</p>
+      <p>
+        The filter radius. The larger the value, the longer it takes to render. Values larger than 8 or 9 may take longer than you want to wait, and will not
+        have significantly better results than much smaller values.
+      </p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p>The left side of the image has been modified by <a href=
-    "image1.html#add_noise">add_noise</a>. The right side has been
-    filtered by median_filter(0.05).</p>
+      <p>
+        The left side of the image has been modified by
+        <a href="image1.html#add_noise">add_noise</a>. The right side has been filtered by median_filter(0.05).
+      </p>
 
-    <p><a href=
-    "javascript:popup('median_filter.rb.html')"><img src="ex/median_filter.jpg"
-    alt="median_filter example" /></a></p>
+      <p>
+        <a href="javascript:popup('median_filter.rb.html')"><img src="ex/median_filter.jpg" alt="median_filter example" /></a>
+      </p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#enhance">enhance</a>, <a href=
-    "image3.html#reduce_noise">reduce_noise</a>, <a href=
-    "image3.html#unsharp_mask">unsharp_mask</a></p>
+      <p>
+        <a href="#enhance">enhance</a>, <a href="image3.html#reduce_noise">reduce_noise</a>,
+        <a href="image3.html#unsharp_mask">unsharp_mask</a>
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>MedianFilterImage</p>
-  </div>
+      <p>MedianFilterImage</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="minify">minify</h3>
+    <div class="sig">
+      <h3 id="minify">minify</h3>
 
-    <p><span class="arg">img</span>.minify -&gt; <em>image</em></p>
-  </div>
+      <p><span class="arg">img</span>.minify -&gt; <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>A convenience method that scales the receiver to half its
-    size.</p>
+      <p>A convenience method that scales the receiver to half its size.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#minify_bang">minify!</a> <a href=
-    "#magnify">magnify</a>, <a href=
-    "image3.html#resize">resize</a>, <a href=
-    "image3.html#sample">sample</a>, <a href=
-    "image3.html#scale">scale</a>, <a href=
-    "image3.html#thumbnail">thumbnail</a></p>
+      <p>
+        <a href="#minify_bang">minify!</a> <a href="#magnify">magnify</a>, <a href="image3.html#resize">resize</a>, <a href="image3.html#sample">sample</a>,
+        <a href="image3.html#scale">scale</a>,
+        <a href="image3.html#thumbnail">thumbnail</a>
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>MinifyImage</p>
-  </div>
+      <p>MinifyImage</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="minify_bang">minify!</h3>
+    <div class="sig">
+      <h3 id="minify_bang">minify!</h3>
 
-    <p><span class="arg">img</span>.minify! -&gt; <em>self</em></p>
-  </div>
+      <p><span class="arg">img</span>.minify! -&gt; <em>self</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>In-place form of <a href="#minify">minify</a>.</p>
+      <p>In-place form of <a href="#minify">minify</a>.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>self</p>
-  </div>
+      <p>self</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="modulate">modulate</h3>
+    <div class="sig">
+      <h3 id="modulate">modulate</h3>
 
-    <p><span class="arg">img</span>.modulate(<span class=
-    "arg">brightness</span>=1.0, <span class=
-    "arg">saturation</span>=1.0, <span class="arg">hue</span>=1.0)
-    -&gt; <em>image</em></p>
-  </div>
+      <p>
+        <span class="arg">img</span>.modulate(<span class="arg">brightness</span>=1.0, <span class="arg">saturation</span>=1.0,
+        <span class="arg">hue</span>=1.0) -&gt; <em>image</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Changes the brightness, saturation, and hue.</p>
+      <p>Changes the brightness, saturation, and hue.</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>The percent change in the brightness, saturation, and hue,
-    represented as Float numbers. For example, 0.25 means "25%".
-    All three arguments may be omitted. The default value of each
-    argument is 1.0, that is, 100%.</p>
+      <p>
+        The percent change in the brightness, saturation, and hue, represented as Float numbers. For example, 0.25 means "25%". All three arguments may be
+        omitted. The default value of each argument is 1.0, that is, 100%.
+      </p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p>modulate(0.85)</p>
+      <p>modulate(0.85)</p>
 
-    <p class="rollover"><a href=
-    "javascript:popup('modulate.rb.html')"><img src=
-    "ex/modulate.jpg" alt="modulate example" onmouseover=
-    "this.src='ex/images/Flower_Hat.jpg'" onmouseout=
-    "this.src='ex/modulate.jpg'" title=
-    "Click to see the example script" /></a> <img src=
-    "ex/images/spin.gif" alt="" class="spin" title=
-    "Mouse over the example to see the original image" /></p>
+      <p class="rollover">
+        <a href="javascript:popup('modulate.rb.html')"
+          ><img
+            src="ex/modulate.jpg"
+            alt="modulate example"
+            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src='ex/modulate.jpg'"
+            title="Click to see the example script"
+        /></a>
+        <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>ModulateImage</p>
-  </div>
+      <p>ModulateImage</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="monochrome_q">monochrome?</h3>
+    <div class="sig">
+      <h3 id="monochrome_q">monochrome?</h3>
 
-    <p><span class="arg">img</span>.monochrome? -&gt; true or
-    false</p>
-  </div>
+      <p><span class="arg">img</span>.monochrome? -&gt; true or false</p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Returns true if all the pixels have the same red, green, and
-    blue values and the values are either 0 or QuantumRange. That
-    is, the image is black-and-white.</p>
+      <p>
+        Returns true if all the pixels have the same red, green, and blue values and the values are either 0 or QuantumRange. That is, the image is
+        black-and-white.
+      </p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#gray_q">gray?</a></p>
+      <p><a href="#gray_q">gray?</a></p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>IsMonochromeImage</p>
-  </div>
+      <p>IsMonochromeImage</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="motion_blur">motion_blur</h3>
+    <div class="sig">
+      <h3 id="motion_blur">motion_blur</h3>
 
-    <p><span class="arg">img</span>.motion_blur(<span class=
-    "arg">radius</span>=0.0, <span class="arg">sigma</span>=1.0,
-    <span class="arg">angle</span>=0.0) -&gt; <em>image</em></p>
-  </div>
+      <p>
+        <span class="arg">img</span>.motion_blur(<span class="arg">radius</span>=0.0, <span class="arg">sigma</span>=1.0, <span class="arg">angle</span>=0.0)
+        -&gt; <em>image</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p class="imquote">Simulates motion blur. We convolve the image
-    with a Gaussian operator of the given <span class=
-    "arg">radius</span> and standard deviation (<span class=
-    "arg">sigma</span>). Use a radius of 0 and motion_blur selects
-    a suitable radius for you. <span class="arg">Angle</span> gives
-    the angle of the blurring motion.</p>
+      <p class="imquote">
+        Simulates motion blur. We convolve the image with a Gaussian operator of the given <span class="arg">radius</span> and standard deviation (<span
+          class="arg"
+          >sigma</span
+        >). Use a radius of 0 and motion_blur selects a suitable radius for you. <span class="arg">Angle</span> gives the angle of the blurring motion.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>radius</dt>
+      <dl>
+        <dt>radius</dt>
 
-      <dd>The radius of the Gaussian operator.</dd>
+        <dd>The radius of the Gaussian operator.</dd>
 
-      <dt>sigma</dt>
+        <dt>sigma</dt>
 
-      <dd>The standard deviation of the Gaussian operator. Must be
-      non-0.</dd>
+        <dd>The standard deviation of the Gaussian operator. Must be non-0.</dd>
 
-      <dt>angle</dt>
+        <dt>angle</dt>
 
-      <dd>The angle (in degrees) of the blurring motion.</dd>
-    </dl>
+        <dd>The angle (in degrees) of the blurring motion.</dd>
+      </dl>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p class="rollover"><a href=
-    "javascript:popup('motion_blur.rb.html')"><img src=
-    "ex/motion_blur.jpg" alt="motion_blur example" title=
-    "Click to see the example script" onmouseover=
-    "this.src='ex/images/Flower_Hat.jpg'" onmouseout=
-    "this.src='ex/motion_blur.jpg'" /></a> <img src=
-    "ex/images/spin.gif" alt="" class="spin" title=
-    "Mouse over the example to see the original image" /></p>
+      <p class="rollover">
+        <a href="javascript:popup('motion_blur.rb.html')"
+          ><img
+            src="ex/motion_blur.jpg"
+            alt="motion_blur example"
+            title="Click to see the example script"
+            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src='ex/motion_blur.jpg'"
+        /></a>
+        <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
+      </p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="image1.html#blur_image">blur_image</a>, <a href=
-    "#gaussian_blur">gaussian_blur</a>, <a href=
-    "image3.html#radial_blur">radial_blur</a>, <a href=
-    "image3.html#selective_blur_channel">selective_blur_channel</a></p>
+      <p>
+        <a href="image1.html#blur_image">blur_image</a>, <a href="#gaussian_blur">gaussian_blur</a>, <a href="image3.html#radial_blur">radial_blur</a>,
+        <a href="image3.html#selective_blur_channel">selective_blur_channel</a>
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>MotionBlurImage</p>
-  </div>
+      <p>MotionBlurImage</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="negate">negate</h3>
+    <div class="sig">
+      <h3 id="negate">negate</h3>
 
-    <p><span class="arg">img</span>.negate(<span class=
-    "arg">grayscale</span>=false) -&gt; <em>image</em></p>
-  </div>
+      <p><span class="arg">img</span>.negate(<span class="arg">grayscale</span>=false) -&gt; <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Negates the colors in the receiver.</p>
+      <p>Negates the colors in the receiver.</p>
 
-    <h4>Arguments</h4>If the <span class="arg">grayscale</span>
-    argument is true, only the grayscale values are negated.
+      <h4>Arguments</h4>
+      If the <span class="arg">grayscale</span>
+      argument is true, only the grayscale values are negated.
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p class="rollover"><a href=
-    "javascript:popup('negate.rb.html')"><img src="ex/negate.jpg"
-    alt="negate example" onmouseover=
-    "this.src='ex/images/Flower_Hat.jpg'" onmouseout=
-    "this.src='ex/negate.jpg'" title=
-    "Click to see the example script" /></a> <img src=
-    "ex/images/spin.gif" alt="" class="spin" title=
-    "Mouse over the example to see the original image" /></p>
+      <p class="rollover">
+        <a href="javascript:popup('negate.rb.html')"
+          ><img
+            src="ex/negate.jpg"
+            alt="negate example"
+            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src='ex/negate.jpg'"
+            title="Click to see the example script"
+        /></a>
+        <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
+      </p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#negate_channel">negate_channel</a></p>
+      <p><a href="#negate_channel">negate_channel</a></p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>NegateImage</p>
-  </div>
+      <p>NegateImage</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="negate_channel">negate_channel</h3>
+    <div class="sig">
+      <h3 id="negate_channel">negate_channel</h3>
 
-    <p><span class="arg">img</span>.negate_channel(<span class=
-    "arg">grayscale</span>=false, [<span class=
-    "arg">channel</span>...]) = <em>image</em></p>
-  </div>
+      <p><span class="arg">img</span>.negate_channel(<span class="arg">grayscale</span>=false, [<span class="arg">channel</span>...]) = <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Negate a particular image channel or channels.</p>
+      <p>Negate a particular image channel or channels.</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>grayscale</dt>
+      <dl>
+        <dt>grayscale</dt>
 
-      <dd class="imquote">if true, only negate grayscale pixels
-      within the image</dd>
+        <dd class="imquote">if true, only negate grayscale pixels within the image</dd>
 
-      <dt>channel...</dt>
+        <dt>channel...</dt>
 
-      <dd>0 or more <a href=
-      "constants.html#ChannelType">ChannelType</a> arguments. If no
-      channels are specified, all the channels are negated.
-      Specifying no channel arguments has the same effect as the
-      negate method, above.</dd>
-    </dl>
+        <dd>
+          0 or more
+          <a href="constants.html#ChannelType">ChannelType</a> arguments. If no channels are specified, all the channels are negated. Specifying no channel
+          arguments has the same effect as the negate method, above.
+        </dd>
+      </dl>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p>negate_channel(false, GreenChannel)</p>
+      <p>negate_channel(false, GreenChannel)</p>
 
-    <p class="rollover"><a href=
-    "javascript:popup('negate_channel.rb.html')"><img src=
-    "ex/negate_channel.jpg" alt="negate_channel example"
-    onmouseover="this.src='ex/images/Flower_Hat.jpg'" onmouseout=
-    "this.src='ex/negate_channel.jpg'" title=
-    "Click to see the example script" /></a> <img src=
-    "ex/images/spin.gif" alt="" class="spin" title=
-    "Mouse over the example to see the original image" /></p>
+      <p class="rollover">
+        <a href="javascript:popup('negate_channel.rb.html')"
+          ><img
+            src="ex/negate_channel.jpg"
+            alt="negate_channel example"
+            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src='ex/negate_channel.jpg'"
+            title="Click to see the example script"
+        /></a>
+        <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
+      </p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#negate">negate</a></p>.
+      <p><a href="#negate">negate</a></p>
+      .
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>NegateImageChannel</p>
-  </div>
+      <p>NegateImageChannel</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="normalize">normalize</h3>
+    <div class="sig">
+      <h3 id="normalize">normalize</h3>
 
-    <p><span class="arg">img</span>.normalize -&gt;
-    <em>image</em></p>
-  </div>
+      <p><span class="arg">img</span>.normalize -&gt; <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p class="imquote">Enhances the contrast of a color image by
-    adjusting the pixel color to span the entire range of colors
-    available.</p>
+      <p class="imquote">Enhances the contrast of a color image by adjusting the pixel color to span the entire range of colors available.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p class="rollover"><a href=
-    "javascript:popup('normalize.rb.html')"><img src=
-    "ex/normalize.jpg" alt="normalize example" title=
-    "Click to see the example script" onmouseover=
-    "this.src='ex/images/Hot_Air_Balloons.jpg'" onmouseout=
-    "this.src='ex/normalize.jpg'" /></a> <img src=
-    "ex/images/spin.gif" alt="" class="spin" style="left: 191px;"
-    title="Mouse over the example to see the original image" /></p>
+      <p class="rollover">
+        <a href="javascript:popup('normalize.rb.html')"
+          ><img
+            src="ex/normalize.jpg"
+            alt="normalize example"
+            title="Click to see the example script"
+            onmouseover="this.src='ex/images/Hot_Air_Balloons.jpg'"
+            onmouseout="this.src='ex/normalize.jpg'"
+        /></a>
+        <img src="ex/images/spin.gif" alt="" class="spin" style="left: 191px" title="Mouse over the example to see the original image" />
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>NormalizeImage</p>
+      <p>NormalizeImage</p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#normalize_channel">normalize_channel</a></p>
-  </div>
+      <p><a href="#normalize_channel">normalize_channel</a></p>
+    </div>
 
-  <div class="sig">
-    <h3 id="normalize_channel">normalize_channel</h3>
+    <div class="sig">
+      <h3 id="normalize_channel">normalize_channel</h3>
 
-    <p><span class="arg">img</span>.normalize_channel([<span class=
-    "arg">channel</span>...]) = <em>image</em></p>
-  </div>
+      <p><span class="arg">img</span>.normalize_channel([<span class="arg">channel</span>...]) = <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p><span class="imquote">Enhances the contrast of a color image
-    by adjusting the pixel color to span the entire range of colors
-    available.</span> Only the specified channels are
-    normalized.</p>
+      <p>
+        <span class="imquote">Enhances the contrast of a color image by adjusting the pixel color to span the entire range of colors available.</span>
+        Only the specified channels are normalized.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>channel...</dt>
+      <dl>
+        <dt>channel...</dt>
 
-      <dd>0 or more <a href=
-      "constants.html#ChannelType">ChannelType</a> arguments. If no
-      channels are specified, all the channels are normalized.
-      Specifying no channel arguments has the same effect as the
-      normalize method, above.</dd>
-    </dl>
+        <dd>
+          0 or more
+          <a href="constants.html#ChannelType">ChannelType</a> arguments. If no channels are specified, all the channels are normalized. Specifying no channel
+          arguments has the same effect as the normalize method, above.
+        </dd>
+      </dl>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>NormalizeImageChannel</p>
+      <p>NormalizeImageChannel</p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#normalize">normalize</a></p>
-  </div>
+      <p><a href="#normalize">normalize</a></p>
+    </div>
 
-  <div class="sig">
-    <h3 id="oil_paint">oil_paint</h3>
+    <div class="sig">
+      <h3 id="oil_paint">oil_paint</h3>
 
-    <p><span class="arg">img</span>.oil_paint(<span class=
-    "arg">radius</span>=3.0) -&gt; <em>image</em></p>
-  </div>
+      <p><span class="arg">img</span>.oil_paint(<span class="arg">radius</span>=3.0) -&gt; <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p class="imquote">Applies a special effect filter that
-    simulates an oil painting. Each pixel is replaced by the most
-    frequent color occurring in a circular region defined by
-    <span class="arg">radius</span>.</p>
+      <p class="imquote">
+        Applies a special effect filter that simulates an oil painting. Each pixel is replaced by the most frequent color occurring in a circular region defined
+        by <span class="arg">radius</span>.
+      </p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p class="rollover"><a href=
-    "javascript:('oil_paint.rb.html')"><img src="ex/oil_paint.jpg"
-    title="Click to see the example script" onmouseover=
-    "this.src='ex/images/Flower_Hat.jpg'" onmouseout=
-    "this.src='ex/oil_paint.jpg'" alt="oil_paint example" /></a>
-    <img src="ex/images/spin.gif" alt="" class="spin" title=
-    "Mouse over the example to see the original image" /></p>
+      <p class="rollover">
+        <a href="javascript:('oil_paint.rb.html')"
+          ><img
+            src="ex/oil_paint.jpg"
+            title="Click to see the example script"
+            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src='ex/oil_paint.jpg'"
+            alt="oil_paint example"
+        /></a>
+        <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>OilPaintImage</p>
-  </div>
+      <p>OilPaintImage</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="opaque">opaque</h3>
+    <div class="sig">
+      <h3 id="opaque">opaque</h3>
 
-    <p><span class="arg">img</span>.opaque(<span class=
-    "arg">target</span>, <span class="arg">fill</span>) -&gt;
-    <em>image</em></p>
-  </div>
+      <p><span class="arg">img</span>.opaque(<span class="arg">target</span>, <span class="arg">fill</span>) -&gt; <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Changes all pixels having the target color to the fill
-    color.</p>
+      <p>Changes all pixels having the target color to the fill color.</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>target</dt>
+      <dl>
+        <dt>target</dt>
 
-      <dd>The color to be replaced. May be a color name or a
-      <a href="struct.html#Pixel">Pixel</a></dd>
+        <dd>
+          The color to be replaced. May be a color name or a
+          <a href="struct.html#Pixel">Pixel</a>
+        </dd>
 
-      <dt>fill</dt>
+        <dt>fill</dt>
 
-      <dd>The replacement color. May be a color name or a <a href=
-      "struct.html#Pixel">Pixel</a></dd>
-    </dl>
+        <dd>
+          The replacement color. May be a color name or a
+          <a href="struct.html#Pixel">Pixel</a>
+        </dd>
+      </dl>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>Example</h4>
-    <pre>
+      <h4>Example</h4>
+      <pre>
 img.fuzz = 25
 img = img.opaque('white', 'red')
-</pre>
+</pre
+      >
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="image1.html#color_floodfill">color_floodfill</a>,
-    <a href="#opaque_channel">opaque_channel</a></p>
+      <p>
+        <a href="image1.html#color_floodfill">color_floodfill</a>,
+        <a href="#opaque_channel">opaque_channel</a>
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>OpaquePaintImageChannel</p>
-  </div>
+      <p>OpaquePaintImageChannel</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="opaque_channel">opaque_channel</h3>
+    <div class="sig">
+      <h3 id="opaque_channel">opaque_channel</h3>
 
-    <p><span class="arg">img</span>.opaque_channel(<span class=
-    "arg">target</span>, <span class="arg">fill</span>,
-    <span class="arg">invert</span>=false, <span class=
-    "arg">fuzz</span>=<span class="arg">img</span>.fuzz [,
-    <span class="arg">channel</span>...]) -&gt; <em>image</em></p>
-  </div>
+      <p>
+        <span class="arg">img</span>.opaque_channel(<span class="arg">target</span>, <span class="arg">fill</span>, <span class="arg">invert</span>=false,
+        <span class="arg">fuzz</span>=<span class="arg">img</span>.fuzz [, <span class="arg">channel</span>...]) -&gt; <em>image</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Changes all pixels having the target color to the fill
-    color. If <span class="arg">invert</span> is true, changes all
-    the pixels that are <em>not</em> the target color to the fill
-    color.</p>
+      <p>
+        Changes all pixels having the target color to the fill color. If
+        <span class="arg">invert</span> is true, changes all the pixels that are <em>not</em> the target color to the fill color.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>target</dt>
+      <dl>
+        <dt>target</dt>
 
-      <dd>The color to be replaced. May be a color name or a
-      <a href="struct.html#Pixel">Pixel</a></dd>
+        <dd>
+          The color to be replaced. May be a color name or a
+          <a href="struct.html#Pixel">Pixel</a>
+        </dd>
 
-      <dt>fill</dt>
+        <dt>fill</dt>
 
-      <dd>The replacement color. May be a color name or a <a href=
-      "struct.html#Pixel">Pixel</a></dd>
+        <dd>
+          The replacement color. May be a color name or a
+          <a href="struct.html#Pixel">Pixel</a>
+        </dd>
 
-      <dt>invert</dt>
+        <dt>invert</dt>
 
-      <dd>If true, the target pixels are all the pixels that are
-      not the target color. The default is the value of the target
-      image's <code>fuzz</code> attribute</dd>
+        <dd>
+          If true, the target pixels are all the pixels that are not the target color. The default is the value of the target image's
+          <code>fuzz</code> attribute
+        </dd>
 
-      <dt>fuzz</dt>
+        <dt>fuzz</dt>
 
-      <dd>Colors within this distance are considered equal to the
-      target color.</dd>
+        <dd>Colors within this distance are considered equal to the target color.</dd>
 
-      <dt>channel...</dt>
+        <dt>channel...</dt>
 
-      <dd>0 or more <a href=
-      "constants.html#ChannelType">ChannelType</a> arguments. If no
-      channels are specified, the default is <a href=
-      "constants.html#ChannelType">DefaultChannels</a>.</dd>
-    </dl>
+        <dd>
+          0 or more
+          <a href="constants.html#ChannelType">ChannelType</a> arguments. If no channels are specified, the default is
+          <a href="constants.html#ChannelType">DefaultChannels</a>.
+        </dd>
+      </dl>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#opaque">opaque</a></p>
+      <p><a href="#opaque">opaque</a></p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>OpaquePaintImageChannel</p>
-  </div>
+      <p>OpaquePaintImageChannel</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="opaque_q">opaque?</h3>
+    <div class="sig">
+      <h3 id="opaque_q">opaque?</h3>
 
-    <p><span class="arg">img</span>.opaque? -&gt; true or false</p>
-  </div>
+      <p><span class="arg">img</span>.opaque? -&gt; true or false</p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Returns true if all of the pixels in the receiver have an
-    opacity value of <a href=
-    "constants.html#Opacity">OpaqueOpacity</a>.</p>
+      <p>Returns true if all of the pixels in the receiver have an opacity value of <a href="constants.html#Opacity">OpaqueOpacity</a>.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>true or false</p>
+      <p>true or false</p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>IsOpaqueImage</p>
-  </div>
+      <p>IsOpaqueImage</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="ordered_dither">ordered_dither</h3>
+    <div class="sig">
+      <h3 id="ordered_dither">ordered_dither</h3>
 
-    <p><span class="arg">img</span>.ordered_dither(<span class=
-    "arg">threshold_map</span>='2x2') -&gt; <em>image</em></p>
-  </div>
+      <p><span class="arg">img</span>.ordered_dither(<span class="arg">threshold_map</span>='2x2') -&gt; <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Dithers the image to a predefined pattern. The <span class=
-    "arg">threshold_map</span> argument defines the pattern to
-    use.</p>
+      <p>
+        Dithers the image to a predefined pattern. The
+        <span class="arg">threshold_map</span> argument defines the pattern to use.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>The <span class="arg">threshold_map</span> argument can be
-    any of the strings listed by this command:</p>
-    <pre>
+      <p>The <span class="arg">threshold_map</span> argument can be any of the strings listed by this command:</p>
+      <pre>
 convert -list Thresholds
-</pre>
+</pre
+      >
 
-    <p>If you have a sufficiently new version of ImageMagick, you
-    can add a <span class="imquote">a uniform color map with the
-    number of levels per color channel</span> immediately following
-    the <span class="arg">threshold_map</span>, separated by a
-    comma. See the documentation for <a href=
-    "https://imagemagick.org/script/command-line-options.php#ordered-dither">
-    ImageMagick's -ordered-dither option</a> for more
-    information.</p>
+      <p>
+        If you have a sufficiently new version of ImageMagick, you can add a
+        <span class="imquote">a uniform color map with the number of levels per color channel</span>
+        immediately following the <span class="arg">threshold_map</span>, separated by a comma. See the documentation for
+        <a href="https://imagemagick.org/script/command-line-options.php#ordered-dither"> ImageMagick's -ordered-dither option</a>
+        for more information.
+      </p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new image</p>
+      <p>A new image</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p class="rollover"><a href=
-    "javascript:popup('ordered_dither.rb.html')"><img src=
-    "ex/ordered_dither.jpg" alt="ordered_dither example"
-    onmouseover="this.src='ex/images/Flower_Hat.jpg'" onmouseout=
-    "this.src='ex/ordered_dither.jpg'" title=
-    "Click to see the example script" /></a> <img src=
-    "ex/images/spin.gif" alt="" class="spin" title=
-    "Mouse over the example to see the original image" /></p>
+      <p class="rollover">
+        <a href="javascript:popup('ordered_dither.rb.html')"
+          ><img
+            src="ex/ordered_dither.jpg"
+            alt="ordered_dither example"
+            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src='ex/ordered_dither.jpg'"
+            title="Click to see the example script"
+        /></a>
+        <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
+      </p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="image3.html#posterize">posterize</a>, <a href=
-    "image3.html#quantize">quantize</a></p>
+      <p>
+        <a href="image3.html#posterize">posterize</a>,
+        <a href="image3.html#quantize">quantize</a>
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>OrderedPosterizeImage</p>
-  </div>
+      <p>OrderedPosterizeImage</p>
+    </div>
 
-  <p class="spacer">&nbsp;</p>
+    <p class="spacer">&nbsp;</p>
 
-  <div class="nav">
-    &laquo;&nbsp;<a href="image1.html">Prev</a> | <a href=
-    "index.html">Contents</a> | <a href=
-    "image3.html">Next</a>&nbsp;&raquo;
-  </div>
-</body>
+    <div class="nav">&laquo;&nbsp;<a href="image1.html">Prev</a> | <a href="index.html">Contents</a> | <a href="image3.html">Next</a>&nbsp;&raquo;</div>
+  </body>
 </html>
