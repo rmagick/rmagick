@@ -1,294 +1,284 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-  <meta name="generator" content=
-  "HTML Tidy for Linux/x86 (vers 1 September 2005), see www.w3.org" />
-
-  <title>RMagick 0.0.0: RVG Reference: Transforms</title>
-  <meta http-equiv="Content-Type" content=
-  "text/html; charset=us-ascii" />
-  <meta name="GENERATOR" content="Quanta Plus" />
-  <meta name="Copyright" content=
-  "Copyright (C) 2006 by Timothy P. Hunter" />
-  <link rel="stylesheet" type="text/css" href="css/doc.css" />
-  <link rel="stylesheet" type="text/css" href="css/ref.css" />
-<script type="text/javascript" src="scripts/doc.js">
-</script>
-<script type="text/javascript">
-  //<![CDATA[
-  //]]>
-</script>
-<style type="text/css">
-  /*<![CDATA[*/
-    }
-  /*]]>*/
-</style>
-</head>
-
-<body>
-  <h6 id="header">RMagick 0.0.0 User's Guide and Reference</h6>
-
-  <div class="nav">
-    &laquo;&nbsp;<a href="rvgshape.html">Prev</a> | <a href=
-    "index.html">Contents</a> | <a href=
-    "index.html">Next</a>&nbsp;&raquo;
-  </div>
-
-  <h1>The transform methods</h1>
-
-  <div id="toc">
-    <h2>Table of Contents</h2>
-
-    <h3>About the transform methods</h3>
-
-    <h3>Transform methods</h3>
-
-    <ul>
-      <li><a href="#matrix">matrix</a></li>
-
-      <li><a href="#rotate">rotate</a></li>
+  <head>
+    <meta name="generator" content="HTML Tidy for Linux/x86 (vers 1 September 2005), see www.w3.org" />
+
+    <title>RMagick 0.0.0: RVG Reference: Transforms</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+    <meta name="GENERATOR" content="Quanta Plus" />
+    <meta name="Copyright" content="Copyright (C) 2006 by Timothy P. Hunter" />
+    <link rel="stylesheet" type="text/css" href="css/doc.css" />
+    <link rel="stylesheet" type="text/css" href="css/ref.css" />
+    <script type="text/javascript" src="scripts/doc.js"></script>
+    <script type="text/javascript">
+      //<![CDATA[
+      //]]>
+    </script>
+    <style type="text/css">
+      /*<![CDATA[*/
+        }
+      /*]]>*/
+    </style>
+  </head>
 
-      <li><a href="#scale">scale</a></li>
-
-      <li><a href="#skewX">skewX</a></li>
+  <body>
+    <h6 id="header">RMagick 0.0.0 User's Guide and Reference</h6>
 
-      <li><a href="#skewY">skewY</a></li>
+    <div class="nav">&laquo;&nbsp;<a href="rvgshape.html">Prev</a> | <a href="index.html">Contents</a> | <a href="index.html">Next</a>&nbsp;&raquo;</div>
 
-      <li><a href="#translate">translate</a></li>
-    </ul>
-  </div>
+    <h1>The transform methods</h1>
 
-  <div class="subhd">
-    <h2>About the transform methods</h2>
-  </div>
+    <div id="toc">
+      <h2>Table of Contents</h2>
 
-  <div class="intro">
-    <p>The default coordinate system has its origin in the
-    upper-left corner. The positive x-axis extends to the right.
-    The positive y-axis extends downward. You can change this
-    coordinate system by using one or more of the transform methods
-    described on this page. This image shows the default coordinate
-    system.</p>
+      <h3>About the transform methods</h3>
 
-    <p><a href=
-    "javascript:popup('InitialCoords.rb.html')"><img src="ex/InitialCoords.gif"
-    title="Click to see the example script" alt=
-    "initial coordinates example" /></a></p>
+      <h3>Transform methods</h3>
 
-    <p>This image shows a drawing without transformations.</p>
+      <ul>
+        <li><a href="#matrix">matrix</a></li>
 
-    <p><a href="javascript:popup('OrigCoordSys.rb.html')"><img src=
-    "ex/OrigCoordSys.gif" title="Click to see the example script"
-    alt="a drawing without transformations" /></a></p>
+        <li><a href="#rotate">rotate</a></li>
 
-    <p>The transform methods are defined in the <a href=
-    "rvg.html">RVG</a>, <a href="rvggroup.html">RVG::Group</a>, and
-    <a href="rvguse.html">RVG::Use</a> classes. You can also chain
-    these methods to the <a href="rvgshape.html">shape methods</a>
-    and to the <a href="rvgimage.html">image</a> method.</p>
-  </div>
+        <li><a href="#scale">scale</a></li>
 
-  <div class="subhd">
-    <h2>Transform methods</h2>
-  </div>
+        <li><a href="#skewX">skewX</a></li>
 
-  <div class='sig'>
-    <h4 id='matrix'>matrix</h4>
+        <li><a href="#skewY">skewY</a></li>
 
-    <p><span class="arg">obj</span>.matrix(<span class=
-    "arg">sx</span>, <span class="arg">rx</span>, <span class=
-    "arg">ry</span>, <span class="arg">sy</span>, <span class=
-    "arg">tx</span>, <span class="arg">ty</span>) -&gt;
-    <em>obj</em></p>
-  </div>
+        <li><a href="#translate">translate</a></li>
+      </ul>
+    </div>
 
-  <div class="desc">
-    <h5>Description</h5>
+    <div class="subhd">
+      <h2>About the transform methods</h2>
+    </div>
 
-    <p>Replaces the current transformation matrix with a new matrix
-    having the specified values. See the <a href=
-    "http://www.w3.org/TR/SVG11/coords.html#TransformAttribute">SVG
-    standard</a> for more information.</p>
+    <div class="intro">
+      <p>
+        The default coordinate system has its origin in the upper-left corner. The positive x-axis extends to the right. The positive y-axis extends downward.
+        You can change this coordinate system by using one or more of the transform methods described on this page. This image shows the default coordinate
+        system.
+      </p>
 
-    <h5>Arguments</h5>
+      <p>
+        <a href="javascript:popup('InitialCoords.rb.html')"
+          ><img src="ex/InitialCoords.gif" title="Click to see the example script" alt="initial coordinates example"
+        /></a>
+      </p>
 
-    <dl>
-      <dt>sx, sy</dt>
+      <p>This image shows a drawing without transformations.</p>
 
-      <dd>The scale factor in the <em>x</em>-dimension and
-      <em>y</em>-dimension, measured in user coordinates.</dd>
+      <p>
+        <a href="javascript:popup('OrigCoordSys.rb.html')"
+          ><img src="ex/OrigCoordSys.gif" title="Click to see the example script" alt="a drawing without transformations"
+        /></a>
+      </p>
 
-      <dt>rx, ry</dt>
+      <p>
+        The transform methods are defined in the <a href="rvg.html">RVG</a>, <a href="rvggroup.html">RVG::Group</a>, and
+        <a href="rvguse.html">RVG::Use</a> classes. You can also chain these methods to the <a href="rvgshape.html">shape methods</a> and to the
+        <a href="rvgimage.html">image</a> method.
+      </p>
+    </div>
 
-      <dd>The amount of rotation about the x-axis and y-axis,
-      measured in degrees.</dd>
+    <div class="subhd">
+      <h2>Transform methods</h2>
+    </div>
 
-      <dt>tx, ty</dt>
+    <div class="sig">
+      <h4 id="matrix">matrix</h4>
 
-      <dd>The translation on the <em>x</em>-axis and the
-      <em>y</em>-axis, measured in user coordinates.</dd>
-    </dl>
-  </div>
+      <p>
+        <span class="arg">obj</span>.matrix(<span class="arg">sx</span>, <span class="arg">rx</span>, <span class="arg">ry</span>, <span class="arg">sy</span>,
+        <span class="arg">tx</span>, <span class="arg">ty</span>) -&gt; <em>obj</em>
+      </p>
+    </div>
 
-  <div class='sig'>
-    <h4 id='rotate'>rotate</h4>
+    <div class="desc">
+      <h5>Description</h5>
 
-    <p><span class="arg">obj</span>.rotate(<span class=
-    "arg">angle</span>[, <span class="arg">cx</span>, <span class=
-    "arg">cy</span>]) -&gt; <em>obj</em></p>
-  </div>
+      <p>
+        Replaces the current transformation matrix with a new matrix having the specified values. See the
+        <a href="http://www.w3.org/TR/SVG11/coords.html#TransformAttribute">SVG standard</a>
+        for more information.
+      </p>
 
-  <div class="desc">
-    <h5>Description</h5>
+      <h5>Arguments</h5>
 
-    <p>Rotates the axes about the origin or, if <span class=
-    "arg">cx</span> and <span class="arg">cy</span> are present,
-    about the specified point.</p>
+      <dl>
+        <dt>sx, sy</dt>
 
-    <h5>Arguments</h5>
+        <dd>The scale factor in the <em>x</em>-dimension and <em>y</em>-dimension, measured in user coordinates.</dd>
 
-    <dl>
-      <dt>angle</dt>
+        <dt>rx, ry</dt>
 
-      <dd>The amount of rotation. Positive angles rotate clockwise,
-      negative angles rotate counter-clockwise.</dd>
+        <dd>The amount of rotation about the x-axis and y-axis, measured in degrees.</dd>
 
-      <dt>cx, cy</dt>
+        <dt>tx, ty</dt>
 
-      <dd>If present, the point to rotate about.</dd>
-    </dl>
+        <dd>The translation on the <em>x</em>-axis and the <em>y</em>-axis, measured in user coordinates.</dd>
+      </dl>
+    </div>
 
-    <h5>Example</h5>
+    <div class="sig">
+      <h4 id="rotate">rotate</h4>
 
-    <p>See <a href="#scale">scale</a>.</p>
-  </div>
+      <p>
+        <span class="arg">obj</span>.rotate(<span class="arg">angle</span>[, <span class="arg">cx</span>, <span class="arg">cy</span>]) -&gt;
+        <em>obj</em>
+      </p>
+    </div>
 
-  <div class='sig'>
-    <h4 id='scale'>scale</h4>
+    <div class="desc">
+      <h5>Description</h5>
 
-    <p><span class="arg">obj</span>.scale(<span class=
-    "arg">sx</span>[, <span class="arg">sy</span>]) -&gt;
-    <em>obj</em></p>
-  </div>
+      <p>Rotates the axes about the origin or, if <span class="arg">cx</span> and <span class="arg">cy</span> are present, about the specified point.</p>
 
-  <div class="desc">
-    <h5>Description</h5>
+      <h5>Arguments</h5>
 
-    <p>Scales the axes.</p>
+      <dl>
+        <dt>angle</dt>
 
-    <h5>Arguments</h5>
+        <dd>The amount of rotation. Positive angles rotate clockwise, negative angles rotate counter-clockwise.</dd>
 
-    <dl>
-      <dt>sx</dt>
+        <dt>cx, cy</dt>
 
-      <dd>The amount of scaling on the <em>x</em>-axis.</dd>
+        <dd>If present, the point to rotate about.</dd>
+      </dl>
 
-      <dt>sy</dt>
+      <h5>Example</h5>
 
-      <dd>If present, the amount of scaling on the <em>y</em>-axis.
-      Otherwise defaults to <span class="arg">sx</span>.</dd>
-    </dl>
+      <p>See <a href="#scale">scale</a>.</p>
+    </div>
 
-    <h5>Example</h5>
+    <div class="sig">
+      <h4 id="scale">scale</h4>
 
-    <p><a href="javascript:popup('RotateScale.rb.html')"><img src=
-    "ex/RotateScale.gif" title="Click to see the example script"
-    alt="rotate and scale example" /></a></p>
-  </div>
+      <p><span class="arg">obj</span>.scale(<span class="arg">sx</span>[, <span class="arg">sy</span>]) -&gt; <em>obj</em></p>
+    </div>
 
-  <div class='sig'>
-    <h4 id='skewX'>skewX</h4>
+    <div class="desc">
+      <h5>Description</h5>
 
-    <p><span class="arg">obj</span>.skewX(<span class=
-    "arg">angle</span>) -&gt; <em>obj</em></p>
-  </div>
+      <p>Scales the axes.</p>
 
-  <div class="desc">
-    <h5>Description</h5>
+      <h5>Arguments</h5>
 
-    <p>Skews the <em>x</em>-axis.</p>
+      <dl>
+        <dt>sx</dt>
 
-    <h5>Arguments</h5>
+        <dd>The amount of scaling on the <em>x</em>-axis.</dd>
 
-    <dl>
-      <dt>angle</dt>
+        <dt>sy</dt>
 
-      <dd>The skew amount, measured in degrees.</dd>
-    </dl>
+        <dd>If present, the amount of scaling on the <em>y</em>-axis. Otherwise defaults to <span class="arg">sx</span>.</dd>
+      </dl>
 
-    <h5>Example</h5>
+      <h5>Example</h5>
 
-    <p>See <a href="#skewY">skewY</a></p>
-  </div>
+      <p>
+        <a href="javascript:popup('RotateScale.rb.html')"
+          ><img src="ex/RotateScale.gif" title="Click to see the example script" alt="rotate and scale example"
+        /></a>
+      </p>
+    </div>
 
-  <div class='sig'>
-    <h4 id='skewY'>skewY</h4>
+    <div class="sig">
+      <h4 id="skewX">skewX</h4>
 
-    <p><span class="arg">obj</span>.skewY(<span class=
-    "arg">angle</span>) -&gt; <em>obj</em></p>
-  </div>
+      <p>
+        <span class="arg">obj</span>.skewX(<span class="arg">angle</span>) -&gt;
+        <em>obj</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h5>Description</h5>
+    <div class="desc">
+      <h5>Description</h5>
 
-    <p>Skews the <em>y</em>-axis.</p>
+      <p>Skews the <em>x</em>-axis.</p>
 
-    <h5>Arguments</h5>
+      <h5>Arguments</h5>
 
-    <dl>
-      <dt>angle</dt>
+      <dl>
+        <dt>angle</dt>
 
-      <dd>The skew amount, measured in degrees.</dd>
-    </dl>
+        <dd>The skew amount, measured in degrees.</dd>
+      </dl>
 
-    <h5>Example</h5>
+      <h5>Example</h5>
 
-    <p><a href="javascript:popup('Skew.rb.html')"><img src=
-    "ex/Skew.gif" title="Click to see the example script" alt=
-    "skewX and skewY example" /></a></p>
-  </div>
+      <p>See <a href="#skewY">skewY</a></p>
+    </div>
 
-  <div class='sig'>
-    <h4 id='translate'>translate</h4>
+    <div class="sig">
+      <h4 id="skewY">skewY</h4>
 
-    <p><span class="arg">obj</span>.translate(<span class=
-    "arg">tx</span>[, <span class="arg">ty</span>]) -&gt;
-    <em>obj</em></p>
-  </div>
+      <p>
+        <span class="arg">obj</span>.skewY(<span class="arg">angle</span>) -&gt;
+        <em>obj</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h5>Description</h5>
+    <div class="desc">
+      <h5>Description</h5>
 
-    <p>Moves the origin.</p>
+      <p>Skews the <em>y</em>-axis.</p>
 
-    <h5>Arguments</h5>
+      <h5>Arguments</h5>
 
-    <dl>
-      <dt>tx</dt>
+      <dl>
+        <dt>angle</dt>
 
-      <dd>The location of the new origin on the x-axis.</dd>
+        <dd>The skew amount, measured in degrees.</dd>
+      </dl>
 
-      <dt>ty</dt>
+      <h5>Example</h5>
 
-      <dd>The location of the new origin on the y-axis. If omitted,
-      defaults to <span class="arg">tx</span>.</dd>
-    </dl>
+      <p>
+        <a href="javascript:popup('Skew.rb.html')"><img src="ex/Skew.gif" title="Click to see the example script" alt="skewX and skewY example" /></a>
+      </p>
+    </div>
 
-    <h5>Example</h5>
+    <div class="sig">
+      <h4 id="translate">translate</h4>
 
-    <p><a href="javascript:popup('NewCoordSys.rb.html')"><img src=
-    "ex/NewCoordSys.gif" title="Click to see the example script"
-    alt="translate example" /></a></p>
-  </div>
+      <p><span class="arg">obj</span>.translate(<span class="arg">tx</span>[, <span class="arg">ty</span>]) -&gt; <em>obj</em></p>
+    </div>
 
-  <p class="spacer">&nbsp;</p>
+    <div class="desc">
+      <h5>Description</h5>
 
-  <div class="nav">
-    &laquo; <a href="rvgshape.html">Prev</a> | <a href=
-    "index.html">Contents</a> | <a href="index.html">Next</a>
-    &raquo;
-  </div>
-</body>
+      <p>Moves the origin.</p>
+
+      <h5>Arguments</h5>
+
+      <dl>
+        <dt>tx</dt>
+
+        <dd>The location of the new origin on the x-axis.</dd>
+
+        <dt>ty</dt>
+
+        <dd>
+          The location of the new origin on the y-axis. If omitted, defaults to
+          <span class="arg">tx</span>.
+        </dd>
+      </dl>
+
+      <h5>Example</h5>
+
+      <p>
+        <a href="javascript:popup('NewCoordSys.rb.html')"><img src="ex/NewCoordSys.gif" title="Click to see the example script" alt="translate example" /></a>
+      </p>
+    </div>
+
+    <p class="spacer">&nbsp;</p>
+
+    <div class="nav">
+      &laquo; <a href="rvgshape.html">Prev</a> | <a href="index.html">Contents</a> | <a href="index.html">Next</a>
+      &raquo;
+    </div>
+  </body>
 </html>

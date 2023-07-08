@@ -1,465 +1,436 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-  <meta name="generator" content=
-  "HTML Tidy for Linux/x86 (vers 1 September 2005), see www.w3.org" />
+  <head>
+    <meta name="generator" content="HTML Tidy for Linux/x86 (vers 1 September 2005), see www.w3.org" />
 
-  <title>RMagick 0.0.0: RVG Reference: RVG::Text Class</title>
-  <meta http-equiv="Content-Type" content=
-  "text/html; charset=us-ascii" />
-  <meta name="GENERATOR" content="Quanta Plus" />
-  <meta name="Copyright" content=
-  "Copyright (C) 2006 by Timothy P. Hunter" />
-  <link rel="stylesheet" type="text/css" href="css/doc.css" />
-<script type="text/javascript" src="scripts/doc.js">
-</script>
-<script type="text/javascript">
-  //<![CDATA[
-  //]]>
-</script>
-<style type="text/css">
-  /*<![CDATA[*/
-  .styles_header h3 {
-    background-color: #c0c0c0;
-    width:100%;
-    color: #000;
-    margin-top: 0;
-  }
+    <title>RMagick 0.0.0: RVG Reference: RVG::Text Class</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+    <meta name="GENERATOR" content="Quanta Plus" />
+    <meta name="Copyright" content="Copyright (C) 2006 by Timothy P. Hunter" />
+    <link rel="stylesheet" type="text/css" href="css/doc.css" />
+    <script type="text/javascript" src="scripts/doc.js"></script>
+    <script type="text/javascript">
+      //<![CDATA[
+      //]]>
+    </script>
+    <style type="text/css">
+      /*<![CDATA[*/
+      .styles_header h3 {
+        background-color: #c0c0c0;
+        width: 100%;
+        color: #000;
+        margin-top: 0;
+      }
 
-  /*]]>*/
-</style>
-</head>
+      /*]]>*/
+    </style>
+  </head>
 
-<body>
-  <h6 id="header">RMagick 0.0.0 User's Guide and Reference</h6>
+  <body>
+    <h6 id="header">RMagick 0.0.0 User's Guide and Reference</h6>
 
-  <div class="nav">
-    &laquo;&nbsp;<a href="rvgclip.html">Prev</a> | <a href=
-    "index.html">Contents</a> | <a href=
-    "rvgtspan.html">Next</a>&nbsp;&raquo;
-  </div>
+    <div class="nav">&laquo;&nbsp;<a href="rvgclip.html">Prev</a> | <a href="index.html">Contents</a> | <a href="rvgtspan.html">Next</a>&nbsp;&raquo;</div>
 
-  <h1>class RVG::Text <span class="superclass">&lt;
-  Object</span></h1>
+    <h1>class RVG::Text <span class="superclass">&lt; Object</span></h1>
 
-  <div id="toc">
-    <h2>Table of Contents</h2>
+    <div id="toc">
+      <h2>Table of Contents</h2>
 
-    <h3>class methods</h3>
+      <h3>class methods</h3>
 
-    <ul>
-      <li><a href="#new">new</a></li>
-    </ul>
+      <ul>
+        <li><a href="#new">new</a></li>
+      </ul>
 
-    <h3>instance methods</h3>
+      <h3>instance methods</h3>
 
-    <div>
-      <div class="toccol">
-        <ul>
-          <li><a href="#d">d</a></li>
+      <div>
+        <div class="toccol">
+          <ul>
+            <li><a href="#d">d</a></li>
 
-          <li><a href="#rotate">rotate</a></li>
+            <li><a href="#rotate">rotate</a></li>
 
-          <li><a href="#tref">tref</a></li>
+            <li><a href="#tref">tref</a></li>
 
-          <li><a href="#tspan">tspan</a></li>
-        </ul>
-      </div>
+            <li><a href="#tspan">tspan</a></li>
+          </ul>
+        </div>
 
-      <h3>shared methods</h3>
+        <h3>shared methods</h3>
 
-      <p>In addition to the methods listed above, <code>class
-      RVG::Text</code> also implements the <a href=
-      "rvgstyle.html">styles</a> method.</p>
+        <p>
+          In addition to the methods listed above,
+          <code>class RVG::Text</code> also implements the <a href="rvgstyle.html">styles</a> method.
+        </p>
 
-      <h3>text styles</h3>
+        <h3>text styles</h3>
 
-      <div class="toccol">
-        <ul>
-          <li><a href="#basic">basic styles</a></li>
+        <div class="toccol">
+          <ul>
+            <li><a href="#basic">basic styles</a></li>
 
-          <li><a href="#advanced">advanced styles</a></li>
-        </ul>
+            <li><a href="#advanced">advanced styles</a></li>
+          </ul>
+        </div>
       </div>
     </div>
-  </div>
 
-  <h2 class="methods">class methods</h2>
+    <h2 class="methods">class methods</h2>
 
-  <div class="sig">
-    <h3 id="new">new</h3>
+    <div class="sig">
+      <h3 id="new">new</h3>
 
-    <p>RVG::Text.new(<span class="arg">x</span>=0, <span class=
-    "arg">y</span>=0, <span class="arg">text</span>=nil) [
-    <span class="arg">{ |text| ...}</span> ] -&gt;
-    <em>text</em></p>
-  </div>
-
-  <div class="desc">
-    <h4>Description</h4>
-
-    <p>This method is usually invoked indirectly via the text
-    method in the <a href="rvgclip.html#new">RVG::ClipPath</a>,
-    <a href="rvggroup.html#new">RVG::Group</a>, <a href=
-    "rvgpattern.html#new">RVG::Pattern</a>, and <a href=
-    "rvg.html#new">RVG</a> classes.</p>
-
-    <p>Text objects are containers, so this method yields to a
-    block if one is present. A text object can contain <a href=
-    "rvgtspan.html#new">RVG::Tspan</a> objects that are added
-    directly via <a href="#tspan">tspan</a>, or indirectly via
-    <a href="#tref">tref</a>.</p>
-
-    <h4>Arguments</h4>
-
-    <p>All arguments are optional. You can omit all the arguments
-    when you just want to use the <code>text</code> object as a
-    container for <code>tspans</code>.</p>
-
-    <dl>
-      <dt>x, y</dt>
-
-      <dd>The [x, y] coordinate of the initial text position within
-      the current user coordinate system. If omitted the default is
-      [0, 0].</dd>
-
-      <dt>text</dt>
-
-      <dd>A string. If present, this string is drawn at the initial
-      text position. If omitted, only the initial text position is
-      established. By default the string is positioned with the
-      lower-left corner of the first glyph at [x, y]. Use the
-      <a href="#text_anchor">:text_anchor</a> style to override
-      this behavior. After the string is rendered, the current text
-      position is moved to the end of the string.</dd>
-    </dl>
-
-    <h4>Example</h4>
-
-    <p><a href="javascript:popup('text01.rb.html')"><img src=
-    "ex/text01.gif" title="Click to see the example script" alt=
-    "text example" /></a></p>
-  </div>
-
-  <h2 class="methods">instance methods</h2>
-
-  <div class='sig'>
-    <h3 id='d'>d</h3>
-
-    <p><span class="arg">text</span>.d(<span class=
-    "arg">dx</span>[, <span class="arg">dy</span>=0]) [
-    <span class="arg">{ |self| ...}</span> ] -&gt;
-    <em>self</em></p>
-  </div>
-
-  <div class="desc">
-    <h4>Description</h4>
-
-    <p>The <span class="arg">dx</span> and <span class=
-    "arg">dy</span> arguments are added to the <span class=
-    "arg">x</span> and <span class="arg">y</span> <code>text</code>
-    arguments to form the initial text position. Yields to a block
-    if one is present.</p>
-
-    <h4>Arguments</h4>
-
-    <dl>
-      <dt>dx, dy</dt>
-
-      <dd>The distance, in the user coordinate system, to be added
-      to the <em>x</em> and <em>y</em> coordinates of the initial
-      text position.</dd>
-    </dl>
-
-    <h4>Returns</h4>
-
-    <p>self</p>
-  </div>
-
-  <div class='sig'>
-    <h3 id='rotate'>rotate</h3>
-
-    <p><span class="arg">text</span>.rotate(<span class=
-    "arg">degrees</span>) [ <span class="arg">{ |text| ...}</span>
-    ] -&gt; <em>self</em></p>
-  </div>
-
-  <div class="desc">
-    <h4>Description</h4>
-
-    <p>Rotates the text about the initial text position by the
-    specified number of <span class="arg">degrees</span>. Yields to
-    a block if one is present.</p>
-
-    <h4>Arguments</h4>
-
-    <dl>
-      <dt>degrees</dt>
-
-      <dd>The amount of rotation</dd>
-    </dl>
-
-    <h4>Returns</h4>
-
-    <p>self</p>
-  </div>
-
-  <div class='sig'>
-    <h3 id='tref'>tref</h3>
-
-    <p><span class="arg">text</span>.tref(<span class=
-    "arg">tspan</span>, <span class="arg">x</span>=0, <span class=
-    "arg">y</span>=0) -&gt; <em>self</em></p>
-  </div>
-
-  <div class="desc">
-    <h4>Description</h4>
-
-    <p>Adds the referenced <a href="rvgtspan.html#new">Tspan</a>
-    object to the text container.</p>
-
-    <h4>Arguments</h4>
-
-    <dl>
-      <dt>tspan</dt>
-
-      <dd>A <code>Tspan</code> object.</dd>
-
-      <dt>x, y</dt>
-
-      <dd>The absolute text position</dd>
-    </dl>
-
-    <h4>Example</h4>
-
-    <p><a href="javascript:popup('tref01.rb.html')"><img src=
-    "ex/tref01.gif" title="Click to see the example script" alt=
-    "tref example" /></a></p>
-  </div>
-
-  <div class='sig'>
-    <h3 id='tspan'>tspan</h3>
-
-    <p><span class="arg">text</span>.tspan(<span class=
-    "arg">string</span>=nil, <span class="arg">x</span>=nil,
-    <span class="arg">y</span>=nil) [ <span class="arg">{ |tspan|
-    ...}</span> ] -&gt; <em>tspan</em></p>
-  </div>
-
-  <div class="desc">
-    <h4>Description</h4>
-
-    <p>Calls <a href="rvgtspan.html#new">RVG::Tspan.new</a> to
-    construct a tspan and adds it to the enclosing RVG::Text
-    object. Yields to a block if one is present, passing the new
-    tspan as an argument.</p>
-
-    <p><em>Although <code>tspan</code> has the same arguments as
-    <code>RVG::Text.new</code> they are not in the same order. The
-    <code>tspan</code> method has the <span class=
-    "arg">string</span> argument first followed by the
-    [<span class="arg">x</span>, <span class="arg">y</span>]
-    arguments. The <code>RVG::Text.new</code> arguments are just
-    the opposite.</em></p>
-
-    <h4>Arguments</h4>
-
-    <dl>
-      <dt>string</dt>
-
-      <dd>A text string.</dd>
-
-      <dt>x, y</dt>
-
-      <dd>The absolute text position</dd>
-    </dl>
-
-    <h4>Returns</h4>
-
-    <p>The new tspan, so other <code>RVG::Tspan</code> methods can
-    be chained to it.</p>
-  </div>
-
-  <h2 class="methods">text styles</h2>
-
-  <div class="styles_header">
-    <h3 id="basic">basic styles</h3>
-  </div>
-
-  <div class="desc">
-    <h4>Description</h4>
-
-    <p>The basic styles include font styles and text styles. Note
-    that ImageMagick uses the font styles to select a font from
-    the available fonts. If it cannot find a font that exactly
-    matches it will use the closest matching font. Unlike MS
-    Windows, ImageMagick will <em>not</em> alter a font - by
-    artificially slanting it to to simulate italics, for example -
-    to produce a match.</p>
-
-    <h4>Styles</h4>
-
-    <dl>
-      <dt>:font</dt>
-
-      <dd>font name or font file name, such as
-      "C:/Windows/Fonts/Arial.ttf" or
-      "pfb:-urw-helvetica-medium-o-condensed--0-0-0-0-p-0-iso10646-1"</dd>
-
-      <dt>:font_family</dt>
-
-      <dd>font family name, such as "serif" or "courier"</dd>
-
-      <dt>:font_size</dt>
-
-      <dd>the font size in points</dd>
-
-      <dt>:font_stretch</dt>
-
-      <dd>one of the following strings: 'normal',
-      'ultra_condensed', 'extra_condensed', 'condensed',
-      'semi_condensed', 'semi_expanded', 'expanded',
-      'extra_expanded', 'ultra_expanded'</dd>
-
-      <dt>:font_style</dt>
-
-      <dd>one of the following strings: 'normal', 'italic',
-      'oblique'</dd>
-
-      <dt>:font_weight</dt>
-
-      <dd>one of the following strings: 'normal', 'bold', 'bolder',
-      'lighter', or a multiple of 100 between 100 and 900</dd>
-
-      <dt id='text_anchor'>:text_anchor</dt>
-
-      <dd>one of the following strings: 'start', 'middle',
-      'end'</dd>
-
-      <dt>:text_decoration</dt>
-
-      <dd>one of the following strings: 'none', 'underline',
-      'overline', 'line_through'</dd>
-    </dl>
-
-    <h4>Examples</h4>
-
-    <p><strong>font styles</strong><a href=
-    "javascript:popup('font_styles.rb.html')"><img src=
-    "ex/font_styles.gif" title="Click to see the example script"
-    alt="font styles example" /></a><em>Depending on the fonts that
-    ImageMagick is configured with you may not see the effect of
-    some of the styles used in this example.</em></p>
-
-    <p><strong>text styles</strong><a href=
-    "javascript:popup('text_styles.rb.html')"><img src=
-    "ex/text_styles.gif" title="Click to see the example script"
-    alt="text styles example" /></a></p>
-  </div>
-
-  <div class="styles_header">
-    <h3 id="advanced">advanced styles</h3>
+      <p>
+        RVG::Text.new(<span class="arg">x</span>=0, <span class="arg">y</span>=0, <span class="arg">text</span>=nil) [ <span class="arg">{ |text| ...}</span> ]
+        -&gt; <em>text</em>
+      </p>
+    </div>
 
     <div class="desc">
       <h4>Description</h4>
 
-      <p>These styles are emulated by RVG by orienting and
-      positioning each glyph individually. Consequently any use of
-      a non-default value for one of these styles will probably
-      cause your script to dramatically slow down. If you specify
-      an invalid value for any of these styles RVG ignores the
-      value and uses the default. RVG frequently uses approximate
-      measurements to emulate these styles so the results will not
-      be as precise as when ImageMagick is doing the work.</p>
+      <p>
+        This method is usually invoked indirectly via the text method in the
+        <a href="rvgclip.html#new">RVG::ClipPath</a>, <a href="rvggroup.html#new">RVG::Group</a>, <a href="rvgpattern.html#new">RVG::Pattern</a>, and
+        <a href="rvg.html#new">RVG</a> classes.
+      </p>
+
+      <p>
+        Text objects are containers, so this method yields to a block if one is present. A text object can contain
+        <a href="rvgtspan.html#new">RVG::Tspan</a> objects that are added directly via <a href="#tspan">tspan</a>, or indirectly via <a href="#tref">tref</a>.
+      </p>
+
+      <h4>Arguments</h4>
+
+      <p>
+        All arguments are optional. You can omit all the arguments when you just want to use the <code>text</code> object as a container for
+        <code>tspans</code>.
+      </p>
+
+      <dl>
+        <dt>x, y</dt>
+
+        <dd>The [x, y] coordinate of the initial text position within the current user coordinate system. If omitted the default is [0, 0].</dd>
+
+        <dt>text</dt>
+
+        <dd>
+          A string. If present, this string is drawn at the initial text position. If omitted, only the initial text position is established. By default the
+          string is positioned with the lower-left corner of the first glyph at [x, y]. Use the
+          <a href="#text_anchor">:text_anchor</a> style to override this behavior. After the string is rendered, the current text position is moved to the end
+          of the string.
+        </dd>
+      </dl>
+
+      <h4>Example</h4>
+
+      <p>
+        <a href="javascript:popup('text01.rb.html')"><img src="ex/text01.gif" title="Click to see the example script" alt="text example" /></a>
+      </p>
+    </div>
+
+    <h2 class="methods">instance methods</h2>
+
+    <div class="sig">
+      <h3 id="d">d</h3>
+
+      <p>
+        <span class="arg">text</span>.d(<span class="arg">dx</span>[, <span class="arg">dy</span>=0]) [ <span class="arg">{ |self| ...}</span> ] -&gt;
+        <em>self</em>
+      </p>
+    </div>
+
+    <div class="desc">
+      <h4>Description</h4>
+
+      <p>
+        The <span class="arg">dx</span> and <span class="arg">dy</span> arguments are added to the <span class="arg">x</span> and <span class="arg">y</span>
+        <code>text</code> arguments to form the initial text position. Yields to a block if one is present.
+      </p>
+
+      <h4>Arguments</h4>
+
+      <dl>
+        <dt>dx, dy</dt>
+
+        <dd>
+          The distance, in the user coordinate system, to be added to the
+          <em>x</em> and <em>y</em> coordinates of the initial text position.
+        </dd>
+      </dl>
+
+      <h4>Returns</h4>
+
+      <p>self</p>
+    </div>
+
+    <div class="sig">
+      <h3 id="rotate">rotate</h3>
+
+      <p><span class="arg">text</span>.rotate(<span class="arg">degrees</span>) [ <span class="arg">{ |text| ...}</span> ] -&gt; <em>self</em></p>
+    </div>
+
+    <div class="desc">
+      <h4>Description</h4>
+
+      <p>Rotates the text about the initial text position by the specified number of <span class="arg">degrees</span>. Yields to a block if one is present.</p>
+
+      <h4>Arguments</h4>
+
+      <dl>
+        <dt>degrees</dt>
+
+        <dd>The amount of rotation</dd>
+      </dl>
+
+      <h4>Returns</h4>
+
+      <p>self</p>
+    </div>
+
+    <div class="sig">
+      <h3 id="tref">tref</h3>
+
+      <p>
+        <span class="arg">text</span>.tref(<span class="arg">tspan</span>, <span class="arg">x</span>=0, <span class="arg">y</span>=0) -&gt;
+        <em>self</em>
+      </p>
+    </div>
+
+    <div class="desc">
+      <h4>Description</h4>
+
+      <p>Adds the referenced <a href="rvgtspan.html#new">Tspan</a> object to the text container.</p>
+
+      <h4>Arguments</h4>
+
+      <dl>
+        <dt>tspan</dt>
+
+        <dd>A <code>Tspan</code> object.</dd>
+
+        <dt>x, y</dt>
+
+        <dd>The absolute text position</dd>
+      </dl>
+
+      <h4>Example</h4>
+
+      <p>
+        <a href="javascript:popup('tref01.rb.html')"><img src="ex/tref01.gif" title="Click to see the example script" alt="tref example" /></a>
+      </p>
+    </div>
+
+    <div class="sig">
+      <h3 id="tspan">tspan</h3>
+
+      <p>
+        <span class="arg">text</span>.tspan(<span class="arg">string</span>=nil, <span class="arg">x</span>=nil, <span class="arg">y</span>=nil) [
+        <span class="arg">{ |tspan| ...}</span> ] -&gt; <em>tspan</em>
+      </p>
+    </div>
+
+    <div class="desc">
+      <h4>Description</h4>
+
+      <p>
+        Calls <a href="rvgtspan.html#new">RVG::Tspan.new</a> to construct a tspan and adds it to the enclosing RVG::Text object. Yields to a block if one is
+        present, passing the new tspan as an argument.
+      </p>
+
+      <p>
+        <em
+          >Although <code>tspan</code> has the same arguments as <code>RVG::Text.new</code> they are not in the same order. The <code>tspan</code> method has
+          the <span class="arg">string</span> argument first followed by the [<span class="arg">x</span>, <span class="arg">y</span>] arguments. The
+          <code>RVG::Text.new</code> arguments are just the opposite.</em
+        >
+      </p>
+
+      <h4>Arguments</h4>
+
+      <dl>
+        <dt>string</dt>
+
+        <dd>A text string.</dd>
+
+        <dt>x, y</dt>
+
+        <dd>The absolute text position</dd>
+      </dl>
+
+      <h4>Returns</h4>
+
+      <p>The new tspan, so other <code>RVG::Tspan</code> methods can be chained to it.</p>
+    </div>
+
+    <h2 class="methods">text styles</h2>
+
+    <div class="styles_header">
+      <h3 id="basic">basic styles</h3>
+    </div>
+
+    <div class="desc">
+      <h4>Description</h4>
+
+      <p>
+        The basic styles include font styles and text styles. Note that ImageMagick uses the font styles to select a font from the available fonts. If it cannot
+        find a font that exactly matches it will use the closest matching font. Unlike MS Windows, ImageMagick will
+        <em>not</em> alter a font - by artificially slanting it to to simulate italics, for example - to produce a match.
+      </p>
 
       <h4>Styles</h4>
 
       <dl>
-        <dt>:writing_mode</dt>
+        <dt>:font</dt>
 
-        <dd>There are two possible values for :writing_mode, 'lr'
-        for left-to-right (most Latin-based documents) and 'tb' for
-        top-to-bottom (or vertical) text such as for column labels.
-        The default is 'lr'.</dd>
+        <dd>font name or font file name, such as "C:/Windows/Fonts/Arial.ttf" or "pfb:-urw-helvetica-medium-o-condensed--0-0-0-0-p-0-iso10646-1"</dd>
 
-        <dt>:baseline_shift</dt>
+        <dt>:font_family</dt>
 
-        <dd>Adjusts the baseline. There are five possible values:
-        'baseline' (the default), 'super', 'sub', a percentage
-        specified as 'NN%', or a number. For the last two choices,
-        positive numbers move the baseline upward. The percentage
-        is a percentage of the line height.</dd>
+        <dd>font family name, such as "serif" or "courier"</dd>
 
-        <dt>:letter_spacing</dt>
+        <dt>:font_size</dt>
 
-        <dd>Specifies an amount of space to be added between each
-        letter. The default is 0.</dd>
+        <dd>the font size in points</dd>
 
-        <dt>:word_spacing</dt>
+        <dt>:font_stretch</dt>
 
-        <dd>Specifies an amount of space to be added between each
-        word. This amount is added for each blank between words, so
-        if the words are separated by two blanks, for example, then
-        twice the additional space is added. The default is 0.</dd>
+        <dd>
+          one of the following strings: 'normal', 'ultra_condensed', 'extra_condensed', 'condensed', 'semi_condensed', 'semi_expanded', 'expanded',
+          'extra_expanded', 'ultra_expanded'
+        </dd>
 
-        <dd>RVG uses this statement to separate words:
-        <strong>words =
-        text.split(::Magick::RVG::WORD_SEP)</strong> You can change
-        the regular expression that RVG uses to determine word
-        breaks by assigning a new regular expression to the
-        <code>::Magick::RVG::WORD_SEP</code> constant. By default
-        the value of <code>::Magick::RVG::WORD_SEP</code> is
-        <code>/ /</code>.</dd>
+        <dt>:font_style</dt>
 
-        <dt>:glyph_orientation_vertical</dt>
+        <dd>one of the following strings: 'normal', 'italic', 'oblique'</dd>
 
-        <dd>Applies only when :writing_mode='tb'. This style can
-        have one of four values: 0, 90, 180, 270. The default is
-        90. This style specifies a rotation on each glyph. With the
-        default value, each glyph is rotated 90 degrees. When
-        :glyph_orientation_vertical=0 each glyph appears in its
-        "normal" (upright) orientation.</dd>
+        <dt>:font_weight</dt>
 
-        <dt>:glyph_orientation_horizontal</dt>
+        <dd>one of the following strings: 'normal', 'bold', 'bolder', 'lighter', or a multiple of 100 between 100 and 900</dd>
 
-        <dd>Applies only when :writing_mode='lr'. This style can
-        have one of four values: 0, 90, 180, 270. The default is 0.
-        This style specifies a rotation on each glyph. With the
-        default value, each glyph appears in its "normal" (upright)
-        orientation.</dd>
+        <dt id="text_anchor">:text_anchor</dt>
+
+        <dd>one of the following strings: 'start', 'middle', 'end'</dd>
+
+        <dt>:text_decoration</dt>
+
+        <dd>one of the following strings: 'none', 'underline', 'overline', 'line_through'</dd>
       </dl>
 
       <h4>Examples</h4>
 
-      <p><strong>:writing_mode='tb'</strong><a href=
-      "javascript:popup('writing_mode01.rb.html')"><img src=
-      "ex/writing_mode01.gif" title=
-      "Click to see the example script" alt=
-      "writing mode 'tb' style example" /></a></p>
+      <p>
+        <strong>font styles</strong
+        ><a href="javascript:popup('font_styles.rb.html')"><img src="ex/font_styles.gif" title="Click to see the example script" alt="font styles example" /></a
+        ><em>Depending on the fonts that ImageMagick is configured with you may not see the effect of some of the styles used in this example.</em>
+      </p>
 
-      <p><strong>:writing_mode='lr'</strong><a href=
-      "javascript:popup('writing_mode02.rb.html')"><img src=
-      "ex/writing_mode02.gif" title=
-      "Click to see the example script" alt=
-      "writing mode 'lr' style example" /></a></p>
-
-      <p><strong>:baseline_shift=&gt;'sub'<br />
-      :baseline_shift=&gt;'super'</strong><a href=
-      "javascript:popup('baseline_shift01.rb.html')"><img src=
-      "ex/baseline_shift01.gif" title=
-      "Click to see the example script" alt=
-      "baseline shift style example" /></a></p>
+      <p>
+        <strong>text styles</strong
+        ><a href="javascript:popup('text_styles.rb.html')"
+          ><img src="ex/text_styles.gif" title="Click to see the example script" alt="text styles example"
+        /></a>
+      </p>
     </div>
-  </div>
 
-  <p class="spacer">&nbsp;</p>
+    <div class="styles_header">
+      <h3 id="advanced">advanced styles</h3>
 
-  <div class="nav">
-    &laquo; <a href="rvgclip.html">Prev</a> | <a href=
-    "index.html">Contents</a> | <a href="rvgtspan.html">Next</a>
-    &raquo;
-  </div>
-</body>
+      <div class="desc">
+        <h4>Description</h4>
+
+        <p>
+          These styles are emulated by RVG by orienting and positioning each glyph individually. Consequently any use of a non-default value for one of these
+          styles will probably cause your script to dramatically slow down. If you specify an invalid value for any of these styles RVG ignores the value and
+          uses the default. RVG frequently uses approximate measurements to emulate these styles so the results will not be as precise as when ImageMagick is
+          doing the work.
+        </p>
+
+        <h4>Styles</h4>
+
+        <dl>
+          <dt>:writing_mode</dt>
+
+          <dd>
+            There are two possible values for :writing_mode, 'lr' for left-to-right (most Latin-based documents) and 'tb' for top-to-bottom (or vertical) text
+            such as for column labels. The default is 'lr'.
+          </dd>
+
+          <dt>:baseline_shift</dt>
+
+          <dd>
+            Adjusts the baseline. There are five possible values: 'baseline' (the default), 'super', 'sub', a percentage specified as 'NN%', or a number. For
+            the last two choices, positive numbers move the baseline upward. The percentage is a percentage of the line height.
+          </dd>
+
+          <dt>:letter_spacing</dt>
+
+          <dd>Specifies an amount of space to be added between each letter. The default is 0.</dd>
+
+          <dt>:word_spacing</dt>
+
+          <dd>
+            Specifies an amount of space to be added between each word. This amount is added for each blank between words, so if the words are separated by two
+            blanks, for example, then twice the additional space is added. The default is 0.
+          </dd>
+
+          <dd>
+            RVG uses this statement to separate words:
+            <strong>words = text.split(::Magick::RVG::WORD_SEP)</strong> You can change the regular expression that RVG uses to determine word breaks by
+            assigning a new regular expression to the <code>::Magick::RVG::WORD_SEP</code> constant. By default the value of
+            <code>::Magick::RVG::WORD_SEP</code> is <code>/ /</code>.
+          </dd>
+
+          <dt>:glyph_orientation_vertical</dt>
+
+          <dd>
+            Applies only when :writing_mode='tb'. This style can have one of four values: 0, 90, 180, 270. The default is 90. This style specifies a rotation on
+            each glyph. With the default value, each glyph is rotated 90 degrees. When :glyph_orientation_vertical=0 each glyph appears in its "normal"
+            (upright) orientation.
+          </dd>
+
+          <dt>:glyph_orientation_horizontal</dt>
+
+          <dd>
+            Applies only when :writing_mode='lr'. This style can have one of four values: 0, 90, 180, 270. The default is 0. This style specifies a rotation on
+            each glyph. With the default value, each glyph appears in its "normal" (upright) orientation.
+          </dd>
+        </dl>
+
+        <h4>Examples</h4>
+
+        <p>
+          <strong>:writing_mode='tb'</strong
+          ><a href="javascript:popup('writing_mode01.rb.html')"
+            ><img src="ex/writing_mode01.gif" title="Click to see the example script" alt="writing mode 'tb' style example"
+          /></a>
+        </p>
+
+        <p>
+          <strong>:writing_mode='lr'</strong
+          ><a href="javascript:popup('writing_mode02.rb.html')"
+            ><img src="ex/writing_mode02.gif" title="Click to see the example script" alt="writing mode 'lr' style example"
+          /></a>
+        </p>
+
+        <p>
+          <strong
+            >:baseline_shift=&gt;'sub'<br />
+            :baseline_shift=&gt;'super'</strong
+          ><a href="javascript:popup('baseline_shift01.rb.html')"
+            ><img src="ex/baseline_shift01.gif" title="Click to see the example script" alt="baseline shift style example"
+          /></a>
+        </p>
+      </div>
+    </div>
+
+    <p class="spacer">&nbsp;</p>
+
+    <div class="nav">
+      &laquo; <a href="rvgclip.html">Prev</a> | <a href="index.html">Contents</a> | <a href="rvgtspan.html">Next</a>
+      &raquo;
+    </div>
+  </body>
 </html>

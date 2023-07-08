@@ -1,83 +1,68 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-  <meta name="generator" content=
-  "HTML Tidy for Linux/x86 (vers 1 September 2005), see www.w3.org" />
+  <head>
+    <meta name="generator" content="HTML Tidy for Linux/x86 (vers 1 September 2005), see www.w3.org" />
 
-  <title>RMagick 0.0.0: Common Tasks</title>
-  <meta http-equiv="Content-Type" content=
-  "text/html; charset=us-ascii" />
-  <meta name="GENERATOR" content="Quanta Plus" />
-  <meta name="Copyright" content=
-  "Copyright (C) 2006 by Timothy P. Hunter" />
-  <link rel="stylesheet" type="text/css" href="css/doc.css" />
-<script type="text/javascript" src="scripts/doc.js">
-</script>
-<style type="text/css">
-  /*<![CDATA[*/
+    <title>RMagick 0.0.0: Common Tasks</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+    <meta name="GENERATOR" content="Quanta Plus" />
+    <meta name="Copyright" content="Copyright (C) 2006 by Timothy P. Hunter" />
+    <link rel="stylesheet" type="text/css" href="css/doc.css" />
+    <script type="text/javascript" src="scripts/doc.js"></script>
+    <style type="text/css">
+      /*<![CDATA[*/
 
-  /* Styles local to this page. */
-  #drop_shadow {
-    margin-left: auto;
-    margin-right: auto;
-    width: 250px;
-  }
+      /* Styles local to this page. */
+      #drop_shadow {
+        margin-left: auto;
+        margin-right: auto;
+        width: 250px;
+      }
 
+      /*]]>*/
+    </style>
+  </head>
 
-  /*]]>*/
-</style>
-</head>
+  <body>
+    <h6 id="header">RMagick 0.0.0 User's Guide and Reference</h6>
 
-<body>
-  <h6 id="header">RMagick 0.0.0 User's Guide and Reference</h6>
+    <div class="nav">&laquo;&nbsp;<a href="optequiv.html">Prev</a> | <a href="index.html">Contents</a> | <a href="magick.html">Next</a>&nbsp;&raquo;</div>
 
-  <div class="nav">
-    &laquo;&nbsp;<a href="optequiv.html">Prev</a> | <a href=
-    "index.html">Contents</a> | <a href=
-    "magick.html">Next</a>&nbsp;&raquo;
-  </div>
+    <h1>Common Tasks</h1>
 
-  <h1>Common Tasks</h1>
+    <div id="toc">
+      <h2>Table of Contents</h2>
 
-  <div id="toc">
-    <h2>Table of Contents</h2>
+      <ul style="margin-left: 15px; padding-top: 1em">
+        <li><a href="#info">Getting information about an image</a></li>
 
-    <ul style="margin-left: 15px; padding-top: 1em;">
-      <li><a href="#info">Getting information about an
-      image</a></li>
+        <li><a href="#convert">Converting an image to another format</a></li>
 
-      <li><a href="#convert">Converting an image to another
-      format</a></li>
+        <li><a href="#thumb">Making thumbnails</a></li>
 
-      <li><a href="#thumb">Making thumbnails</a></li>
+        <li><a href="#resizing">Resizing to a maximum (or minimum) size</a></li>
 
-      <li><a href="#resizing">Resizing to a maximum (or minimum)
-      size</a></li>
+        <li>
+          <a href="#blob">Writing to or reading from a string instead of a file</a>
+        </li>
 
-      <li><a href="#blob">Writing to or reading from a string
-      instead of a file</a></li>
+        <li><a href="#gray">Converting a color image to grayscale</a></li>
 
-      <li><a href="#gray">Converting a color image to
-      grayscale</a></li>
+        <li><a href="#compressing">Compressing image files</a></li>
 
-      <li><a href="#compressing">Compressing image files</a></li>
+        <li><a href="#shadow">Making a drop shadow</a></li>
+      </ul>
+    </div>
 
-      <li><a href="#shadow">Making a drop shadow</a></li>
-    </ul>
-  </div>
+    <h2 id="info">Getting information about an image</h2>
 
-  <h2 id="info">Getting information about an image</h2>
-
-  <p>One of the most fundamental operations on an image is simply
-  getting basic information about the image. RMagick assigns dozens
-  of <a href="imageattrs.html">attributes</a> to an image. All you
-  have to do is read the image and then call the attribute methods.
-  Here's a Ruby program that takes image filenames from the command
-  line and then prints a variety of information about each image to
-  the terminal.</p>
-  <pre class="example">
+    <p>
+      One of the most fundamental operations on an image is simply getting basic information about the image. RMagick assigns dozens of
+      <a href="imageattrs.html">attributes</a> to an image. All you have to do is read the image and then call the attribute methods. Here's a Ruby program that
+      takes image filenames from the command line and then prints a variety of information about each image to the terminal.
+    </p>
+    <pre class="example">
 require "rmagick"
 ARGV.each { |file|
     puts file
@@ -103,185 +88,175 @@ ARGV.each { |file|
         }
     end
     }
-</pre>
+</pre
+    >
 
-  <h2 id="convert">Converting an image to another format</h2>
+    <h2 id="convert">Converting an image to another format</h2>
 
-  <p>Converting an image to another format is as simple as writing
-  the image to a file. ImageMagick uses the output filename
-  suffix (".jpg" for JPEG, ".gif" for GIF, for example) or prefix
-  ("ps:" for PostScript, for example) to determine the format of
-  the output image.</p>
+    <p>
+      Converting an image to another format is as simple as writing the image to a file. ImageMagick uses the output filename suffix (".jpg" for JPEG, ".gif"
+      for GIF, for example) or prefix ("ps:" for PostScript, for example) to determine the format of the output image.
+    </p>
 
-  <h2 id="thumb">Making thumbnails</h2>
+    <h2 id="thumb">Making thumbnails</h2>
 
-  <p>RMagick gives you four different methods for resizing an
-  image: <a href="image3.html#resize"><code>resize</code></a>,
-  <a href="image3.html#sample"><code>sample</code></a>, <a href=
-  "image3.html#scale"><code>scale</code></a>, and <a href=
-  "image3.html#thumbnail"><code>thumbnail</code></a>. All four are
-  equally easy to use. Specify the number of columns and rows you
-  want the thumbnail to have, like this:</p>
-  <pre class="example">
+    <p>
+      RMagick gives you four different methods for resizing an image:
+      <a href="image3.html#resize"><code>resize</code></a
+      >, <a href="image3.html#sample"><code>sample</code></a
+      >, <a href="image3.html#scale"><code>scale</code></a
+      >, and <a href="image3.html#thumbnail"><code>thumbnail</code></a
+      >. All four are equally easy to use. Specify the number of columns and rows you want the thumbnail to have, like this:
+    </p>
+    <pre class="example">
 img = Image.new "bigimage.gif"
 thumb = img.scale(125, 125)
 thumb.write "thumb.gif"
-</pre>
+</pre
+    >
 
-  <p>Alternatively, just pass a single <code>Float</code> argument
-  that represents the change in size. For example, to
-  proportionally reduce the size of an image to 25% of its original
-  size, do this:</p>
-  <pre class="example">
+    <p>
+      Alternatively, just pass a single <code>Float</code> argument that represents the change in size. For example, to proportionally reduce the size of an
+      image to 25% of its original size, do this:
+    </p>
+    <pre class="example">
 img = Image.new "bigimage.gif"
 thumb = img.scale(0.25)
 thumb.write "thumb.gif"
-</pre>
+</pre
+    >
 
-  <p>The <code>resize</code> method gives you more control by
-  allowing you to specify a <a href=
-  "constants.html#FilterType">filter</a> to use when scaling the
-  image. Some filters produce a better-looking thumbnail at the
-  expense of extra processing time. You can also use a
-  <code>blur</code> argument, which specifies how much blurriness
-  or sharpness the resize method should introduce.</p>
+    <p>
+      The <code>resize</code> method gives you more control by allowing you to specify a <a href="constants.html#FilterType">filter</a> to use when scaling the
+      image. Some filters produce a better-looking thumbnail at the expense of extra processing time. You can also use a <code>blur</code> argument, which
+      specifies how much blurriness or sharpness the resize method should introduce.
+    </p>
 
-  <p>The <code>sample</code> method, unlike the other two, does not
-  do any color interpolation when resizing.</p>
+    <p>The <code>sample</code> method, unlike the other two, does not do any color interpolation when resizing.</p>
 
-  <p>The <code>thumbnail</code> method is faster than
-  <code>resize</code> if the thumbnail is less than 10% of the size
-  of the original image.</p>
+    <p>The <code>thumbnail</code> method is faster than <code>resize</code> if the thumbnail is less than 10% of the size of the original image.</p>
 
-  <h3>flickr-style thumbnails</h3>
+    <h3>flickr-style thumbnails</h3>
 
-  <p><a href="http://www.flickr.com">flickr</a> thumbnails are 75
-  pixels wide and 75 pixels tall. If the original image isn't
-  square, the thumbnail is cropped in its larger dimension so that
-  the image isn't distorted. You can get make this kind of
-  thumbnail with the <a href=
-  "image3.html#resize_to_fill">resize_to_fill</a> method.</p>
-  <pre class="example">
+    <p>
+      <a href="http://www.flickr.com">flickr</a> thumbnails are 75 pixels wide and 75 pixels tall. If the original image isn't square, the thumbnail is cropped
+      in its larger dimension so that the image isn't distorted. You can get make this kind of thumbnail with the
+      <a href="image3.html#resize_to_fill">resize_to_fill</a> method.
+    </p>
+    <pre class="example">
 thumb = img.resize_to_fill(75, 75)
-</pre>
+</pre
+    >
 
-  <h2 id="resizing">Resizing to a maximum (or minimum) size</h2>
+    <h2 id="resizing">Resizing to a maximum (or minimum) size</h2>
 
-  <p>Say you need to make all your thumbnails no bigger than 64x64
-  but with the same aspect ratio as the original. Or, you don't
-  want to resize the image if it's already smaller than 64x64. The
-  <a href=
-  "image1.html#change_geometry"><code>change_geometry</code></a>
-  method can help.</p>
+    <p>
+      Say you need to make all your thumbnails no bigger than 64x64 but with the same aspect ratio as the original. Or, you don't want to resize the image if
+      it's already smaller than 64x64. The
+      <a href="image1.html#change_geometry"><code>change_geometry</code></a>
+      method can help.
+    </p>
 
-  <p>The <code>change_geometry</code> method accepts an
-  ImageMagick <a href="imusage.html#geometry">geometry string</a>
-  argument and a block. The geometry string specifies how to change
-  the image's size: one or two numbers to specify the new size and
-  optional flags to describe any constraints. The
-  <code>change_geometry</code> method parses the geometry string
-  and computes new width and height values. Then it calls the
-  block, passing the values it computed.</p>
+    <p>
+      The <code>change_geometry</code> method accepts an ImageMagick
+      <a href="imusage.html#geometry">geometry string</a>
+      argument and a block. The geometry string specifies how to change the image's size: one or two numbers to specify the new size and optional flags to
+      describe any constraints. The
+      <code>change_geometry</code> method parses the geometry string and computes new width and height values. Then it calls the block, passing the values it
+      computed.
+    </p>
 
-  <p>Within the block you can do whatever you want with the new
-  values. Typically you'll call one of the resize methods mentioned
-  in the previous section and make the resized image the return
-  value from the block. The <code>change_geometry</code> method
-  then returns that value to its caller.</p>
+    <p>
+      Within the block you can do whatever you want with the new values. Typically you'll call one of the resize methods mentioned in the previous section and
+      make the resized image the return value from the block. The
+      <code>change_geometry</code> method then returns that value to its caller.
+    </p>
 
-  <h3>Simple thumbnails</h3>
+    <h3>Simple thumbnails</h3>
 
-  <p>If you just want to make sure your thumbnail is no bigger than
-  a certain width and height, use the <a href=
-  "image3.html#resize_to_fit">resize_to_fit</a> method.</p>
-  <pre class="example">
+    <p>
+      If you just want to make sure your thumbnail is no bigger than a certain width and height, use the
+      <a href="image3.html#resize_to_fit">resize_to_fit</a> method.
+    </p>
+    <pre class="example">
 thumb = img.resize_to_fit(75, 75)
-</pre>
+</pre
+    >
 
-  <h2><a id="blob" name="blob">Writing to or reading from a string
-  instead of a file</a></h2>
+    <h2>
+      <a id="blob" name="blob">Writing to or reading from a string instead of a file</a>
+    </h2>
 
-  <p>Use the <a href="image1.html#from_blob">Image.from_blob</a>
-  method to construct an Image object from a string. Use the
-  <a href="image3.html#to_blob">Image#to_blob</a> method to convert
-  an image to a string. A blob is simply an in-memory version of an
-  image file. That is, you could use <code>File.read</code> to read
-  an JPEG file into a string, then create an image by using that
-  string as an argument to <code>from_blob</code>. Similarly, if
-  you create a string version of an image with
-  <code>to_blob</code>, then write the string to a file, any image
-  viewer will be able to display it just as if you had written the
-  image directly to a file. Blobs are very useful in web
-  applications when you want to modify an image and then stream it
-  back to the client.</p>
+    <p>
+      Use the <a href="image1.html#from_blob">Image.from_blob</a>
+      method to construct an Image object from a string. Use the
+      <a href="image3.html#to_blob">Image#to_blob</a> method to convert an image to a string. A blob is simply an in-memory version of an image file. That is,
+      you could use <code>File.read</code> to read an JPEG file into a string, then create an image by using that string as an argument to
+      <code>from_blob</code>. Similarly, if you create a string version of an image with <code>to_blob</code>, then write the string to a file, any image viewer
+      will be able to display it just as if you had written the image directly to a file. Blobs are very useful in web applications when you want to modify an
+      image and then stream it back to the client.
+    </p>
 
-  <p>Use <a href=
-  "image2.html#import_pixels">Image#import_pixels</a> to load pixel
-  data from a string buffer into an image. The pixel data must be
-  in scanline order, right-to-left and top-to-bottom. The data can
-  be packed as 8-bit bytes, 16-bit halfwords, 32-bit fullwords, or
-  as C floats or doubles. The reciprocal method is <a href=
-  "image3.html#export_pixels_to_str">Image#export_pixels_to_str</a>.</p>
+    <p>
+      Use <a href="image2.html#import_pixels">Image#import_pixels</a> to load pixel data from a string buffer into an image. The pixel data must be in scanline
+      order, right-to-left and top-to-bottom. The data can be packed as 8-bit bytes, 16-bit halfwords, 32-bit fullwords, or as C floats or doubles. The
+      reciprocal method is <a href="image3.html#export_pixels_to_str">Image#export_pixels_to_str</a>.
+    </p>
 
-  <h2 id="gray">Converting a color image to grayscale</h2>
+    <h2 id="gray">Converting a color image to grayscale</h2>
 
-  <p>Use the <a href=
-  "image3.html#quantize"><code>quantize</code></a> method with the
-  <a href=
-  "constants.html#ColorspaceType">Magick::GRAYColorspace</a>
-  argument. If you want real "grayscale," quantize the image to 256
-  colors. If you want to convert a color image to black-and-white,
-  use 2 colors. (See the <code>demo.rb</code> example.)</p>
+    <p>
+      Use the <a href="image3.html#quantize"><code>quantize</code></a> method with the
+      <a href="constants.html#ColorspaceType">Magick::GRAYColorspace</a>
+      argument. If you want real "grayscale," quantize the image to 256 colors. If you want to convert a color image to black-and-white, use 2 colors. (See the
+      <code>demo.rb</code> example.)
+    </p>
 
-  <h2 id="compressing">Compressing image files</h2>
+    <h2 id="compressing">Compressing image files</h2>
 
-  <p>Many image formats, including JPEG, PDF, and BMP, support
-  compressed image files. The type of compression used depends on
-  the format. Specify the compression type by assigning a <a href=
-  "constants.html#CompressionType">CompressionType</a> value to the
-  <a href="info.html#compression">compression</a> optional argument
-  to the <a href="image3.html#write">write</a> method.</p>
+    <p>
+      Many image formats, including JPEG, PDF, and BMP, support compressed image files. The type of compression used depends on the format. Specify the
+      compression type by assigning a
+      <a href="constants.html#CompressionType">CompressionType</a> value to the <a href="info.html#compression">compression</a> optional argument to the
+      <a href="image3.html#write">write</a> method.
+    </p>
 
-  <p>The JPEGCompression and ZipCompression types support multiple
-  levels of compression. Use the <a href=
-  "info.html#quality">quality</a> optional argument to the
-  <code>write</code> method. The quality attribute is a number
-  between 0 and 100, with 100 representing the least compression.
-  When you compress an image using JPEGCompression, more
-  compression usually results in a lower-quality image. When you
-  compress an image using ZipCompression, more compression usually
-  takes longer.</p>
+    <p>
+      The JPEGCompression and ZipCompression types support multiple levels of compression. Use the <a href="info.html#quality">quality</a> optional argument to
+      the <code>write</code> method. The quality attribute is a number between 0 and 100, with 100 representing the least compression. When you compress an
+      image using JPEGCompression, more compression usually results in a lower-quality image. When you compress an image using ZipCompression, more compression
+      usually takes longer.
+    </p>
 
-  <p>For more information, see the ImageMagick documentation for
-  the <code>-quality</code> option to the utility commands.</p>
-  <pre class="example">
+    <p>
+      For more information, see the ImageMagick documentation for the
+      <code>-quality</code> option to the utility commands.
+    </p>
+    <pre class="example">
 img.write("myimage.jpg") { |options| options.quality = 50 }
-</pre>
+</pre
+    >
 
-  <h2 id="shadow">Making a drop shadow</h2>
+    <h2 id="shadow">Making a drop shadow</h2>
 
-  <p>Here's one way to make a drop shadow behind text. Make the
-  shadow first by drawing the text in a light gray color. Position
-  the text slightly to the right and down from where the real text
-  will be. Then use the <a href=
-  "image1.html#blur_image"><code>blur_image</code></a> method to
-  make the shadow by blurring the text. Finally, draw the text
-  again in whatever color you want. <em>(Click the image to see the
-  Ruby program that created it.)</em></p>
+    <p>
+      Here's one way to make a drop shadow behind text. Make the shadow first by drawing the text in a light gray color. Position the text slightly to the right
+      and down from where the real text will be. Then use the
+      <a href="image1.html#blur_image"><code>blur_image</code></a> method to make the shadow by blurring the text. Finally, draw the text again in whatever
+      color you want.
+      <em>(Click the image to see the Ruby program that created it.)</em>
+    </p>
 
-  <div id="drop_shadow">
-    <a href="javascript:popup('drop_shadow.rb.html')"><img src=
-    "ex/drop_shadow.gif" title="Click to see the example script"
-    alt="drop shadow example" /></a>
-  </div>
-  <hr />
+    <div id="drop_shadow">
+      <a href="javascript:popup('drop_shadow.rb.html')"><img src="ex/drop_shadow.gif" title="Click to see the example script" alt="drop shadow example" /></a>
+    </div>
+    <hr />
 
-  <p class="spacer"></p>
+    <p class="spacer"></p>
 
-  <div class="nav">
-    &laquo; <a href="optequiv.html">Prev</a> | <a href=
-    "index.html">Contents</a> | <a href="magick.html">Next</a>
-    &raquo;
-  </div>
-</body>
+    <div class="nav">
+      &laquo; <a href="optequiv.html">Prev</a> | <a href="index.html">Contents</a> | <a href="magick.html">Next</a>
+      &raquo;
+    </div>
+  </body>
 </html>

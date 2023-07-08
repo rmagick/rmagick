@@ -1,224 +1,198 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-  <meta name="generator" content=
-  "HTML Tidy for Linux/x86 (vers 6 November 2007), see www.w3.org" />
+  <head>
+    <meta name="generator" content="HTML Tidy for Linux/x86 (vers 6 November 2007), see www.w3.org" />
 
-  <title>RMagick 0.0.0: Miscellaneous classes</title>
-  <meta http-equiv="Content-Type" content=
-  "text/html; charset=us-ascii" />
-  <meta name="GENERATOR" content="Quanta Plus" />
-  <meta name="Copyright" content=
-  "Copyright (C) 2006 by Timothy P. Hunter" />
-  <link rel="stylesheet" type="text/css" href="css/doc.css" />
-  <link rel="stylesheet" type="text/css" href="css/ref.css" />
-  <script type="text/javascript" src="scripts/doc.js">
-</script>
-  <style type="text/css">
-/*<![CDATA[*/
+    <title>RMagick 0.0.0: Miscellaneous classes</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+    <meta name="GENERATOR" content="Quanta Plus" />
+    <meta name="Copyright" content="Copyright (C) 2006 by Timothy P. Hunter" />
+    <link rel="stylesheet" type="text/css" href="css/doc.css" />
+    <link rel="stylesheet" type="text/css" href="css/ref.css" />
+    <script type="text/javascript" src="scripts/doc.js"></script>
+    <style type="text/css">
+      /*<![CDATA[*/
 
-  /* Styles local to this page. */
+      /* Styles local to this page. */
 
+      /*]]>*/
+    </style>
+  </head>
 
-  /*]]>*/
-  </style>
-</head>
+  <body>
+    <h6 id="header">RMagick 0.0.0 User's Guide and Reference</h6>
 
-<body>
-  <h6 id="header">RMagick 0.0.0 User's Guide and Reference</h6>
+    <div class="nav">&laquo;&nbsp;<a href="draw.html">Prev</a> | <a href="index.html">Contents</a> | <a href="info.html">Next</a>&nbsp;&raquo;</div>
 
-  <div class="nav">
-    &laquo;&nbsp;<a href="draw.html">Prev</a> | <a href=
-    "index.html">Contents</a> | <a href=
-    "info.html">Next</a>&nbsp;&raquo;
-  </div>
+    <h1>Miscellaneous classes</h1>
 
-  <h1>Miscellaneous classes</h1>
+    <div id="toc">
+      <h2>Table of Contents</h2>
 
-  <div id="toc">
-    <h2>Table of Contents</h2>
+      <h3><a href="#view">The Image::View class</a></h3>
 
-    <h3><a href="#view">The Image::View class</a></h3>
+      <ul>
+        <li><a href="#view">Image::View</a></li>
+      </ul>
 
-    <ul>
-      <li><a href="#view">Image::View</a></li>
-    </ul>
+      <h3><a href="#Geometry">The Geometry class</a></h3>
 
-    <h3><a href="#Geometry">The Geometry class</a></h3>
+      <ul>
+        <li><a href="#Geometry">Geometry</a></li>
+      </ul>
 
-    <ul>
-      <li><a href="#Geometry">Geometry</a></li>
-    </ul>
+      <h3><a href="#Pixel">The Pixel class</a></h3>
 
-    <h3><a href="#Pixel">The Pixel class</a></h3>
+      <ul>
+        <li><a href="#Pixel">Pixel</a></li>
+      </ul>
 
-    <ul>
-      <li><a href="#Pixel">Pixel</a></li>
-    </ul>
+      <h3><a href="#struct">Struct classes</a></h3>
 
-    <h3><a href="#struct">Struct classes</a></h3>
+      <ul>
+        <li><a href="#AffineMatrix">AffineMatrix</a></li>
 
-    <ul>
-      <li><a href="#AffineMatrix">AffineMatrix</a></li>
+        <li><a href="#Chromaticity">Chromaticity</a></li>
 
-      <li><a href="#Chromaticity">Chromaticity</a></li>
+        <li><a href="#Pixel">Pixel</a></li>
 
-      <li><a href="#Pixel">Pixel</a></li>
+        <li><a href="#Point">Point</a></li>
 
-      <li><a href="#Point">Point</a></li>
+        <li><a href="#Primary">Primary</a></li>
 
-      <li><a href="#Primary">Primary</a></li>
+        <li><a href="#Rectangle">Rectangle</a></li>
 
-      <li><a href="#Rectangle">Rectangle</a></li>
+        <li><a href="#Segment">Segment</a></li>
+      </ul>
 
-      <li><a href="#Segment">Segment</a></li>
-    </ul>
+      <h3><a href="#fill">Fill classes</a></h3>
 
-    <h3><a href="#fill">Fill classes</a></h3>
+      <ul>
+        <li><a href="#GradientFill">GradientFill</a></li>
 
-    <ul>
-      <li><a href="#GradientFill">GradientFill</a></li>
+        <li><a href="#HatchFill">HatchFill</a></li>
 
-      <li><a href="#HatchFill">HatchFill</a></li>
+        <li><a href="#TextureFill">TextureFill</a></li>
+      </ul>
 
-      <li><a href="#TextureFill">TextureFill</a></li>
-    </ul>
+      <h3><a href="#exception">Exception classes</a></h3>
 
-    <h3><a href="#exception">Exception classes</a></h3>
+      <ul>
+        <li><a href="#MagickError">ImageMagickError</a></li>
 
-    <ul>
-      <li><a href="#MagickError">ImageMagickError</a></li>
+        <li><a href="#FatalImageMagickError">FatalImageMagickError</a></li>
 
-      <li><a href=
-      "#FatalImageMagickError">FatalImageMagickError</a></li>
-
-      <li><a href=
-      "#DestroyedImageError">DestroyedImageError</a></li>
-    </ul>
-  </div>
-
-  <div class="subhd">
-    <h2 id="view">The Image::View class</h2>
-
-    <div class="intro">
-      <h3>Introduction</h3>
-
-      <p>A view is a rectangle in an image. Within the view pixels
-      can be addressed by specifying their <code>[i][j]</code>
-      coordinates. The <span class="arg">i</span>, <span class=
-      "arg">j</span> index values can identify a single pixel or
-      multiple pixels. Pixels can be accessed or modified
-      individually or collectively. Pixel <em>channels</em> (that
-      is, the red, green, blue, and opacity components) can be
-      accessed or modified individually or collectively. The
-      <a href="#view_sync">sync</a> method stores modified pixels
-      back into the image.</p>
+        <li><a href="#DestroyedImageError">DestroyedImageError</a></li>
+      </ul>
     </div>
 
-    <h3>class Image::View <span class="superclass">&lt;
-    Object</span></h3>
+    <div class="subhd">
+      <h2 id="view">The Image::View class</h2>
 
-    <div class="sig">
-      <h4>new</h4>
+      <div class="intro">
+        <h3>Introduction</h3>
 
-      <p>Image::View.new(<span class="arg">img</span>, <span class=
-      "arg">x</span>, <span class="arg">y</span>, <span class=
-      "arg">width</span>, <span class="arg">height</span>) -&gt;
-      <em>view</em></p>
-    </div>
+        <p>
+          A view is a rectangle in an image. Within the view pixels can be addressed by specifying their <code>[i][j]</code> coordinates. The
+          <span class="arg">i</span>, <span class="arg">j</span> index values can identify a single pixel or multiple pixels. Pixels can be accessed or modified
+          individually or collectively. Pixel <em>channels</em> (that is, the red, green, blue, and opacity components) can be accessed or modified individually
+          or collectively. The <a href="#view_sync">sync</a> method stores modified pixels back into the image.
+        </p>
+      </div>
 
-    <div class="desc">
-      <h5>Description</h5>
+      <h3>class Image::View <span class="superclass">&lt; Object</span></h3>
 
-      <p>The easiest way to use an <code>Image::View</code> object
-      is to create it with the <a href=
-      "image3.html#view">Image#view</a> method, which provides a
-      block-scoped view and automatic syncing. You probably won't
-      want to create a view by calling <code>new</code>.</p>
+      <div class="sig">
+        <h4>new</h4>
 
-      <h5>Arguments</h5>
+        <p>
+          Image::View.new(<span class="arg">img</span>, <span class="arg">x</span>, <span class="arg">y</span>, <span class="arg">width</span>,
+          <span class="arg">height</span>) -&gt;
+          <em>view</em>
+        </p>
+      </div>
 
-      <dl>
-        <dt>img</dt>
+      <div class="desc">
+        <h5>Description</h5>
 
-        <dd>The image from which the view is taken.</dd>
+        <p>
+          The easiest way to use an <code>Image::View</code> object is to create it with the <a href="image3.html#view">Image#view</a> method, which provides a
+          block-scoped view and automatic syncing. You probably won't want to create a view by calling <code>new</code>.
+        </p>
 
-        <dt>x, y</dt>
+        <h5>Arguments</h5>
 
-        <dd>The x- and y-offsets of the view relative to the
-        top-left corner of the image. Within the view, pixel
-        addresses are relative to the top-left corner of the
-        view.</dd>
+        <dl>
+          <dt>img</dt>
 
-        <dt>width, height</dt>
+          <dd>The image from which the view is taken.</dd>
 
-        <dd>The number of columns and the number of rows in the
-        view.</dd>
-      </dl>
+          <dt>x, y</dt>
 
-      <p>It is an error to specify a view that exceeds the
-      boundaries of the image.</p>
-    </div>
+          <dd>
+            The x- and y-offsets of the view relative to the top-left corner of the image. Within the view, pixel addresses are relative to the top-left corner
+            of the view.
+          </dd>
 
-    <div class="sig">
-      <h4>[][]</h4>
+          <dt>width, height</dt>
 
-      <p><span class="arg">view</span>[<span class=
-      "arg">i</span>][<span class="arg">j</span>] -&gt;
-      <em>pixel</em> or <em>array</em></p>
-    </div>
+          <dd>The number of columns and the number of rows in the view.</dd>
+        </dl>
 
-    <div class="desc">
-      <h5>Description</h5>
+        <p>It is an error to specify a view that exceeds the boundaries of the image.</p>
+      </div>
 
-      <p>Return one or more pixels in the view. If i and j are each
-      a single integer value, returns a single pixel. For any other
-      indexes, returns an array of one or more pixels. If any index
-      exceeds the boundaries of the view, raises
-      <code>IndexError</code>.</p>
+      <div class="sig">
+        <h4>[][]</h4>
 
-      <h5>Arguments</h5>
+        <p><span class="arg">view</span>[<span class="arg">i</span>][<span class="arg">j</span>] -&gt; <em>pixel</em> or <em>array</em></p>
+      </div>
 
-      <p>The <span class="arg">i</span> index identifies a set of
-      rows in the view. The <span class="arg">j</span> index
-      identifies a set of columns in the view. The pixels that are
-      returned are the intersection of these two sets. The indexes
-      can be:</p>
+      <div class="desc">
+        <h5>Description</h5>
 
-      <dl>
-        <dt>omitted</dt>
+        <p>
+          Return one or more pixels in the view. If i and j are each a single integer value, returns a single pixel. For any other indexes, returns an array of
+          one or more pixels. If any index exceeds the boundaries of the view, raises <code>IndexError</code>.
+        </p>
 
-        <dd>If <span class="arg">i</span> is omitted, all the rows
-        are used. If <code>j</code> is omitted, all the columns are
-        used.</dd>
+        <h5>Arguments</h5>
 
-        <dt>an integer</dt>
+        <p>
+          The <span class="arg">i</span> index identifies a set of rows in the view. The <span class="arg">j</span> index identifies a set of columns in the
+          view. The pixels that are returned are the intersection of these two sets. The indexes can be:
+        </p>
 
-        <dd>or an object that can be converted to an integer. A
-        single integer identifies a single row or column. Identify
-        a single pixel by specifying integers for both indexes. If
-        the index is negative, counts from the bottom row or right
-        column of the view.</dd>
+        <dl>
+          <dt>omitted</dt>
 
-        <dt>start, length</dt>
+          <dd>If <span class="arg">i</span> is omitted, all the rows are used. If <code>j</code> is omitted, all the columns are used.</dd>
 
-        <dd>Identifies the set of <code>length</code> rows or
-        columns starting with <code>start</code>. If
-        <code>start</code> is negative, starts at the bottom row or
-        right column of the view.</dd>
+          <dt>an integer</dt>
 
-        <dt>an object that responds to <code>each</code></dt>
+          <dd>
+            or an object that can be converted to an integer. A single integer identifies a single row or column. Identify a single pixel by specifying integers
+            for both indexes. If the index is negative, counts from the bottom row or right column of the view.
+          </dd>
 
-        <dd>The index may be any object that responds to
-        <code>each</code> by returning a sequence of objects that
-        can be converted to integers. An array with integer values
-        or a range of integers are two examples.</dd>
-      </dl>
+          <dt>start, length</dt>
 
-      <h5>Examples</h5>
-      <pre>
+          <dd>
+            Identifies the set of <code>length</code> rows or columns starting with <code>start</code>. If <code>start</code> is negative, starts at the bottom
+            row or right column of the view.
+          </dd>
+
+          <dt>an object that responds to <code>each</code></dt>
+
+          <dd>
+            The index may be any object that responds to <code>each</code> by returning a sequence of objects that can be converted to integers. An array with
+            integer values or a range of integers are two examples.
+          </dd>
+        </dl>
+
+        <h5>Examples</h5>
+        <pre>
   # Get the 2nd pixel in the 4th row of the view.
   pixel = view[3][1]  # returns a pixel
   # Returns an array with only one value
@@ -229,40 +203,36 @@
   pixels = view[[1,3,5]][[2,4,6]]
   # Use ranges to specify a contiguous set of rows and columns
   pixels = view[1..5][2..6]
-</pre>
-    </div>
+</pre
+        >
+      </div>
 
-    <div class="sig">
-      <h4>[][].red<br />
-      [][].green<br />
-      [][].blue<br />
-      [][].opacity</h4>
+      <div class="sig">
+        <h4>
+          [][].red<br />
+          [][].green<br />
+          [][].blue<br />
+          [][].opacity
+        </h4>
 
-      <p>[<span class="arg">i</span>][<span class=
-      "arg">j</span>].red -&gt; <em>integer</em> or
-      <em>array</em><br />
-      [<span class="arg">i</span>][<span class=
-      "arg">j</span>].green -&gt; <em>integer</em> or
-      <em>array</em><br />
-      [<span class="arg">i</span>][<span class="arg">j</span>].blue
-      -&gt; <em>integer</em> or <em>array</em><br />
-      [<span class="arg">i</span>][<span class=
-      "arg">j</span>].opacity -&gt; <em>integer</em> or
-      <em>array</em></p>
-    </div>
+        <p>
+          [<span class="arg">i</span>][<span class="arg">j</span>].red -&gt; <em>integer</em> or <em>array</em><br />
+          [<span class="arg">i</span>][<span class="arg">j</span>].green -&gt; <em>integer</em> or <em>array</em><br />
+          [<span class="arg">i</span>][<span class="arg">j</span>].blue -&gt; <em>integer</em> or <em>array</em><br />
+          [<span class="arg">i</span>][<span class="arg">j</span>].opacity -&gt; <em>integer</em> or <em>array</em>
+        </p>
+      </div>
 
-    <div class="desc">
-      <h5>Description</h5>
+      <div class="desc">
+        <h5>Description</h5>
 
-      <p>If the indexes identify a single pixel, these methods
-      return the value of the red, green, blue, or opacity channel
-      of that pixel. If the indexes identify more than one pixel,
-      these methods return an array of values. See
-      <code>[][]</code> for a description of possible index
-      arguments.</p>
+        <p>
+          If the indexes identify a single pixel, these methods return the value of the red, green, blue, or opacity channel of that pixel. If the indexes
+          identify more than one pixel, these methods return an array of values. See <code>[][]</code> for a description of possible index arguments.
+        </p>
 
-      <h5>Examples</h5>
-      <pre>
+        <h5>Examples</h5>
+        <pre>
   # Get the value of the green channel of
   # the top-left pixel in the view.
   view[0][0] = Pixel(0,128,255)
@@ -271,1069 +241,1035 @@
   # Get the maximum value of the red channel
   # for all the pixels in the top row of the view.
   m = view[0][].red.max
-</pre>
-    </div>
+</pre
+        >
+      </div>
 
-    <div class="sig">
-      <h4>[][]=</h4>
+      <div class="sig">
+        <h4>[][]=</h4>
 
-      <p><span class="arg">view</span>[<span class=
-      "arg">i</span>][<span class="arg">j</span>] =
-      <em>rvalue</em></p>
-    </div>
+        <p><span class="arg">view</span>[<span class="arg">i</span>][<span class="arg">j</span>] = <em>rvalue</em></p>
+      </div>
 
-    <div class="desc">
-      <h5>Description</h5>
+      <div class="desc">
+        <h5>Description</h5>
 
-      <p>Replaces each pixel identified by the indexes with a
-      duplicate of <span class="arg">rvalue</span>. The rvalue is
-      either a <a href="#Pixel">Pixel</a> object or a <a href=
-      "imusage.html#color_name">color name</a>. If
-      <code>rvalue</code> is a color name, calls
-      <code>Pixel.from_color</code> to create a pixel.</p>
+        <p>
+          Replaces each pixel identified by the indexes with a duplicate of
+          <span class="arg">rvalue</span>. The rvalue is either a <a href="#Pixel">Pixel</a> object or a <a href="imusage.html#color_name">color name</a>. If
+          <code>rvalue</code> is a color name, calls <code>Pixel.from_color</code> to create a pixel.
+        </p>
 
-      <h5>Arguments</h5>
+        <h5>Arguments</h5>
 
-      <p>The indexes are the same as <code>[][]</code>, above.</p>
+        <p>The indexes are the same as <code>[][]</code>, above.</p>
 
-      <dl>
-        <dt>rvalue</dt>
+        <dl>
+          <dt>rvalue</dt>
 
-        <dd>Either a pixel or a color name.</dd>
-      </dl>
-    </div>
+          <dd>Either a pixel or a color name.</dd>
+        </dl>
+      </div>
 
-    <div class="sig">
-      <h4>[][].red=<br />
-      [][].green=<br />
-      [][].blue=<br />
-      [][].opacity=</h4>
+      <div class="sig">
+        <h4>
+          [][].red=<br />
+          [][].green=<br />
+          [][].blue=<br />
+          [][].opacity=
+        </h4>
 
-      <p>[<span class="arg">i</span>][<span class=
-      "arg">j</span>].red = <em>integer</em><br />
-      [<span class="arg">i</span>][<span class=
-      "arg">j</span>].green = <em>integer</em><br />
-      [<span class="arg">i</span>][<span class="arg">j</span>].blue
-      = <em>integer</em><br />
-      [<span class="arg">i</span>][<span class=
-      "arg">j</span>].opacity = <em>integer</em></p>
-    </div>
+        <p>
+          [<span class="arg">i</span>][<span class="arg">j</span>].red = <em>integer</em><br />
+          [<span class="arg">i</span>][<span class="arg">j</span>].green = <em>integer</em><br />
+          [<span class="arg">i</span>][<span class="arg">j</span>].blue = <em>integer</em><br />
+          [<span class="arg">i</span>][<span class="arg">j</span>].opacity =
+          <em>integer</em>
+        </p>
+      </div>
 
-    <div class="desc">
-      <h5>Description</h5>
+      <div class="desc">
+        <h5>Description</h5>
 
-      <p>Assigns <em>integer</em> to the red, green, blue, or
-      opacity channel of the pixel or pixels identified by the
-      indexes.</p>
+        <p>Assigns <em>integer</em> to the red, green, blue, or opacity channel of the pixel or pixels identified by the indexes.</p>
 
-      <h5>Examples</h5>
-      <pre>
+        <h5>Examples</h5>
+        <pre>
   # Set the red channel of all the pixels in the 2nd
   # row of the view to QuantumRange
   view[1][].red = QuantumRange
   # Set the green channel of the pixel at [20][30] to
   # half that of its left-hand neighbor.
   view[20][30].green = view[20][29].green * 0.5
-</pre>
+</pre
+        >
+      </div>
+
+      <div id="view_sync" class="sig">
+        <h4>sync</h4>
+
+        <p><span class="arg">view</span>.sync(<span class="arg">force</span>=<code>false</code>) -&gt; <code>true</code> or <code>false</code></p>
+      </div>
+
+      <div class="desc">
+        <h5>Description</h5>
+
+        <p>
+          If any of the pixels in the view have been modified, this method stores them in the image. If no pixels have been modified, this method has no effect.
+        </p>
+
+        <h5>Arguments</h5>
+
+        <dl>
+          <dt>force</dt>
+
+          <dd>If <code>true</code>, forces the view pixels to be stored in the image even if none have been modified.</dd>
+        </dl>
+
+        <h5>Returns</h5>
+        Returns <code>true</code> if the pixels were stored in the image either because the <code>dirty</code> flag was <code>true</code> or
+        <code>force</code> was <code>true</code>, <code>false</code> otherwise.
+      </div>
+
+      <div class="sig">
+        <h4>
+          dirty<br />
+          dirty=
+        </h4>
+
+        <p>
+          view.dirty -&gt; <code>true</code> or <code>false</code><br />
+          view.dirty = <code>true</code> or <code>false</code>
+        </p>
+      </div>
+
+      <div class="desc">
+        <h5>Description</h5>
+
+        <p>
+          Any modification to a pixel in the view causes the
+          <code>dirty</code> attribute to be set to <code>true</code>. You can (although normally you don't need to) set <code>dirty=true</code> to force
+          <code>sync</code> to store the pixels in the image, or set <code>dirty=false</code> to keep <code>sync</code> from storing the pixels.
+        </p>
+      </div>
+
+      <div class="sig">
+        <h4>
+          x<br />
+          y<br />
+          width<br />
+          height
+        </h4>
+
+        <p>
+          x -&gt; integer<br />
+          y -&gt; integer<br />
+          width -&gt; integer<br />
+          height -&gt; integer
+        </p>
+      </div>
+
+      <div class="desc">
+        <h5>Description</h5>
+
+        <p>
+          The <span class="arg">x</span>, <span class="arg">y</span>, <span class="arg">width</span>, and <span class="arg">height</span> arguments specified
+          when the view was created.
+        </p>
+      </div>
     </div>
 
-    <div id="view_sync" class="sig">
-      <h4>sync</h4>
+    <div class="subhd" id="Geometry">
+      <h2>The Geometry class</h2>
 
-      <p><span class="arg">view</span>.sync(<span class=
-      "arg">force</span>=<code>false</code>) -&gt;
-      <code>true</code> or <code>false</code></p>
-    </div>
+      <div class="intro">
+        <h3>Introduction</h3>
 
-    <div class="desc">
-      <h5>Description</h5>
+        <p>
+          The Geometry class contains the same information as an ImageMagick
+          <a href="imusage.html#geometry">geometry string</a>. Geometry objects are interchangeable with geometry strings.
+        </p>
+      </div>
 
-      <p>If any of the pixels in the view have been modified, this
-      method stores them in the image. If no pixels have been
-      modified, this method has no effect.</p>
+      <h3>class Geometry <span class="superclass">&lt; Object</span></h3>
 
-      <h5>Arguments</h5>
+      <div class="sig">
+        <h4>new</h4>
 
-      <dl>
-        <dt>force</dt>
+        <p>
+          Geometry.new(<span class="arg">width</span>=nil, <span class="arg">height</span>=nil, <span class="arg">x</span>=nil, <span class="arg">y</span>=nil,
+          <span class="arg">flag</span>=nil) -&gt; <em>geometry</em>
+        </p>
+      </div>
 
-        <dd>If <code>true</code>, forces the view pixels to be
-        stored in the image even if none have been modified.</dd>
-      </dl>
+      <div class="desc">
+        <h5>Description</h5>
 
-      <h5>Returns</h5>Returns <code>true</code> if the pixels were
-      stored in the image either because the <code>dirty</code>
-      flag was <code>true</code> or <code>force</code> was
-      <code>true</code>, <code>false</code> otherwise.
+        <p>Constructs a new <code>Geometry</code> object.</p>
+
+        <h5>Attributes</h5>
+
+        <p>
+          A geometry string has the general form "WxH+x+y[!@%&lt;&gt;]. In a
+          <code>Geometry</code> object,
+        </p>
+
+        <dl>
+          <dt>width</dt>
+
+          <dd>specifies the W value</dd>
+
+          <dt>height</dt>
+
+          <dd>specifies the H value</dd>
+
+          <dt>x, y</dt>
+
+          <dd>specify the x and y values, respectively</dd>
+
+          <dt>flag</dt>
+
+          <dd>one of the constants shown in this table:</dd>
+        </dl>
+
+        <table summary="geometry flag constants" class="simple_table">
+          <caption>
+            <strong>Geometry flag constants</strong>
+          </caption>
+
+          <tr>
+            <td align="center">
+              <strong
+                >Constant<br />
+                name</strong
+              >
+            </td>
+
+            <td align="center">
+              <strong
+                >Geometry<br />
+                string flag</strong
+              >
+            </td>
+
+            <td align="center"><strong>Explanation</strong></td>
+          </tr>
+
+          <tr>
+            <td valign="top">PercentGeometry</td>
+
+            <td valign="top" align="center">%</td>
+
+            <td>
+              Normally the attributes are treated as pixels. Use this flag when the <code>width</code> and <code>height</code> attributes represent
+              <em>percentages</em>. For example, 125x75 means 125% of the height and 75% of the width. The <code>x</code> and <code>y</code> attributes are not
+              affected by this flag.
+            </td>
+          </tr>
+
+          <tr>
+            <td valign="top">AspectGeometry</td>
+
+            <td valign="top" align="center">!</td>
+
+            <td>
+              Use this flag when you want to force the new image to have exactly the size specified by the the <code>width</code> and
+              <code>height</code> attributes.
+            </td>
+          </tr>
+
+          <tr>
+            <td valign="top">LessGeometry</td>
+
+            <td valign="top" align="center">&lt;</td>
+
+            <td>
+              Use this flag when you want to change the size of the image only if both its width and height are smaller the values specified by those
+              attributes. The image size is changed proportionally.
+            </td>
+          </tr>
+
+          <tr>
+            <td valign="top">GreaterGeometry</td>
+
+            <td valign="top" align="center">&gt;</td>
+
+            <td>
+              Use this flag when you want to change the size of the image if either its width and height exceed the values specified by those attributes. The
+              image size is changed proportionally.
+            </td>
+          </tr>
+
+          <tr>
+            <td valign="top">AreaGeometry</td>
+
+            <td valign="top" align="center">@</td>
+
+            <td>
+              This flag is useful only with a single
+              <code>width</code> attribute. When present, it means the <code>width</code> attribute represents the total area of the image in pixels.
+            </td>
+          </tr>
+
+          <tr>
+            <td valign="top">MinimumGeometry</td>
+
+            <td valign="top" align="center">^</td>
+
+            <td class="imquote">
+              Use ^ to set a minimum image size limit. The geometry 640x480^, for example, means the image width will not be less than 640 and the image height
+              will not be less than 480 pixels after the resize. One of those dimensions will match the requested size, but the image will likely overflow the
+              space requested to preserve its aspect ratio.
+            </td>
+          </tr>
+        </table>
+
+        <p>If any attribute is omitted the default is nil or 0.</p>
+
+        <h5>Example</h5>
+        <pre>
+g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
+</pre
+        >
+      </div>
     </div>
 
     <div class="sig">
-      <h4>dirty<br />
-      dirty=</h4>
+      <h4>from_s</h4>
 
-      <p>view.dirty -&gt; <code>true</code> or
-      <code>false</code><br />
-      view.dirty = <code>true</code> or <code>false</code></p>
+      <p>Geometry.<span class="arg">from_s</span>(<span class="arg">string</span>) -&gt; <em>geometry</em></p>
     </div>
 
     <div class="desc">
       <h5>Description</h5>
 
-      <p>Any modification to a pixel in the view causes the
-      <code>dirty</code> attribute to be set to <code>true</code>.
-      You can (although normally you don't need to) set
-      <code>dirty=true</code> to force <code>sync</code> to store
-      the pixels in the image, or set <code>dirty=false</code> to
-      keep <code>sync</code> from storing the pixels.</p>
+      <p>Constructs a new <code>Geometry</code> object from a <a href="imusage.html#geometry">geometry string</a>.</p>
     </div>
 
     <div class="sig">
-      <h4>x<br />
-      y<br />
-      width<br />
-      height</h4>
+      <h4>to_s</h4>
 
-      <p>x -&gt; integer<br />
-      y -&gt; integer<br />
-      width -&gt; integer<br />
-      height -&gt; integer</p>
+      <p><span class="arg">geom.</span>to_s() -&gt; <em>string</em></p>
     </div>
 
     <div class="desc">
       <h5>Description</h5>
 
-      <p>The <span class="arg">x</span>, <span class=
-      "arg">y</span>, <span class="arg">width</span>, and
-      <span class="arg">height</span> arguments specified when the
-      view was created.</p>
+      <p>Returns the string equivalent of the <code>Geometry</code> object..</p>
     </div>
-  </div>
 
-  <div class="subhd" id="Geometry">
-    <h2>The Geometry class</h2>
+    <div class="subhd" id="Pixel">
+      <h2>The Pixel class</h2>
+
+      <div class="intro">
+        <h3>Introduction</h3>
+
+        <p>
+          A pixel describes the smallest individually addressable part of an image. In the RGB
+          <a href="constants.html#ColorspaceType">colorspace</a>, a pixel's color is described by its intensity in the red, green, and blue channels. Its
+          opacity is described by its intensity in the opacity (also called alpha, or matte) channel. In the CMYK colorspace a pixel's color is described by its
+          intensity in the cyan, magenta, yellow and black (K) channels. Intensity is a value between 0 and
+          <a href="constants.html#QuantumRange">QuantumRange</a>.
+        </p>
+
+        <p>
+          Usually, RMagick methods operate on entire images or on groups of pixels that have been selected by their position or color. Some methods, such as
+          <a href="image2.html#pixel_color">pixel_color</a> and <a href="image3.html#view">view</a>, operate on individual pixels or even on the RGBA (or CMYK)
+          components thereof.
+        </p>
+      </div>
+
+      <h3>
+        class Pixel <span class="superclass">&lt; Object</span><br />
+        <span class="mixin">mixes in Comparable, Observable</span>
+      </h3>
+
+      <div class="sig">
+        <h4>new</h4>
+
+        <p>
+          Pixel.new(<span class="arg">red</span>, <span class="arg">green</span>, <span class="arg">blue</span>, <span class="arg">opacity</span>) -&gt;
+          <em>pixel</em>
+        </p>
+      </div>
+
+      <div class="desc">
+        <h5>Description</h5>
+
+        <p>
+          Constructs a pixel object from the specified red, green, blue, and opacity intensities. The intensity is a number between 0 and
+          <a href="constants.html#Miscellaneous_constants">QuantumRange</a>.
+        </p>
+
+        <h5>Attributes</h5>
+
+        <dl>
+          <dt>red, green, blue</dt>
+
+          <dd>
+            The red, green, and blue intensities of the pixel, respectively. If the colorspace is
+            <a href="constants.html#ColorspaceType">CMYKColorspace</a>, these attributes are interpreted as the cyan, magenta, and yellow intensities.
+          </dd>
+
+          <dt>opacity</dt>
+
+          <dd>
+            The opacity level. Higher intensities are more transparent. If the colorspace is CMYKColorspace, this attribute is interpreted as the black
+            intensity.
+          </dd>
+
+          <dt>cyan, magenta, yellow, black</dt>
+
+          <dd>These attributes are aliases for <code>red</code>, <code>green</code>, <code>blue</code>, and <code>opacity</code>, respectively.</dd>
+        </dl>
+      </div>
+
+      <div class="sig">
+        <h4>from_color</h4>
+
+        <p>
+          Pixel.from_color(<span class="arg">color_name</span>) -&gt;
+          <em>pixel</em>
+        </p>
+      </div>
+
+      <div class="desc">
+        <h5>Description</h5>
+
+        <p>
+          Constructs a new Pixel object from the
+          <a href="imusage.html#color_names">color name</a>. Raises ArgumentError if the name is unknown.
+        </p>
+      </div>
+
+      <div class="sig">
+        <h4 id="from_hsla">from_hsla</h4>
+
+        <p>
+          Pixel.from_hsla(<span class="arg">hue</span>, <span class="arg">saturation</span>, <span class="arg">lightness</span>,
+          <span class="arg">alpha</span>=1.0) -&gt; <em>pixel</em>
+        </p>
+      </div>
+
+      <div class="desc">
+        <h5>Description</h5>
+
+        <p>Constructs a pixel object from the specified arguments.</p>
+
+        <h5>Arguments</h5>
+
+        <dl>
+          <dt>hue</dt>
+
+          <dd>Either a String percentage (e.g., "25%") or a value in the range [0.0, 360.0).</dd>
+
+          <dt>saturation</dt>
+
+          <dd>Either a String percentage (e.g., "25%") or a value in the range [0.0, 255.0].</dd>
+
+          <dt>lightness</dt>
+
+          <dd>Either a String percentage (e.g., "25%") or a value in the range [0.0, 255.0].</dd>
+
+          <dt>alpha</dt>
+
+          <dd>
+            Either a String percentage (e.g., "25%") or a value in the range [0.0, 1.0], where 1.0 is fully opaque and 0.0 is fully transparent. This argument
+            may be omitted. The default is 1.0.
+          </dd>
+        </dl>
+
+        <h5>See also</h5>
+
+        <p><a href="#to_hsla">to_hsla</a></p>
+      </div>
+
+      <div class="sig">
+        <h4 id="spaceship">&lt;=&gt;</h4>
+
+        <p><span class="arg">pixel1</span> &lt;=&gt; <span class="arg">pixel2</span> -&gt; -1, 0, <em>or</em> 1</p>
+      </div>
+
+      <div class="desc">
+        <h5>Description</h5>
+
+        <p>Returns -1, 0, or 1 depending on if <span class="arg">pixel1</span> is "less than," equal, or "greater than" the <span class="arg">pixel2</span>.</p>
+
+        <p>
+          Since there is no way to rank order pixels, and thus determine if one pixel is "greater than" or "less than" another, this method uses an arbitrary
+          algorithm that ensures these two conditions:
+        </p>
+
+        <ol>
+          <li>pixels with equal RGBA (or CMYK) values compare equal, and</li>
+
+          <li>comparing the same two unequal pixels always returns the same result.</li>
+        </ol>
+
+        <h5>Returns</h5>
+
+        <p>-1, 0, or 1</p>
+
+        <h5>See also</h5>
+
+        <p><a href="#fcmp">fcmp</a></p>
+      </div>
+
+      <div class="sig">
+        <h4 id="fcmp">fcmp</h4>
+
+        <p>
+          <span class="arg">pixel</span>.fcmp(<span class="arg">pixel</span>, <span class="arg">fuzz</span>=0.0,
+          <span class="arg">colorspace</span>=RGBColorspace) -&gt; <code>true</code> <em>or</em> <code>false</code>
+        </p>
+      </div>
+
+      <div class="desc">
+        <h5>Description</h5>
+
+        <p>
+          Returns true if the argument is the same color as
+          <span class="arg">pixel</span>.
+        </p>
+
+        <h5>Arguments</h5>
+
+        <dl>
+          <dt>pixel</dt>
+
+          <dd>The pixel to which the receiver is compared.</dd>
+
+          <dt>fuzz</dt>
+
+          <dd>The amount of fuzz to allow before the colors are considered to be different.</dd>
+
+          <dt>colorspace</dt>
+
+          <dd>
+            If the pixels are in the CMYK colorspace, specify
+            <a href="constants.html#ColorspaceType">Magick::CMYKColorspace</a>.
+          </dd>
+        </dl>
+
+        <h5>Returns</h5>
+
+        <p><code>true</code> or <code>false</code></p>
+
+        <h5>See also</h5>
+
+        <p><a href="#spaceship">&lt;=&gt;</a></p>
+      </div>
+
+      <div class="sig">
+        <h4>intensity</h4>
+
+        <p><span class="arg">pixel</span>.intensity() -&gt; integer</p>
+      </div>
+
+      <div class="desc">
+        <h5>Description</h5>
+
+        <p>Returns the intensity of the pixel. The intensity is computed as 0.299*R+0.587*G+0.114*B.</p>
+      </div>
+
+      <div class="sig">
+        <h4>to_color</h4>
+
+        <p>
+          <span class="arg">pixel</span>.to_color(<span class="arg">compliance</span>=AllCompliance, <span class="arg">matte</span>=<code>false</code>,
+          <span class="arg">depth</span>=<code>QuantumDepth</code>, <span class="arg">hex</span>=<code>false</code>) -&gt; <em>string</em>
+        </p>
+      </div>
+
+      <div class="desc">
+        <h5>Description</h5>
+
+        <p>
+          Returns the
+          <a href="imusage.html#color_names">color name</a> corresponding the the pixel values. If there is no such named color in the specified color standard,
+          returns a string in the form "rgb(r,g,b,a)".
+        </p>
+
+        <h5>Arguments</h5>
+
+        <dl>
+          <dt>compliance</dt>
+
+          <dd>
+            A <a href="constants.html#ComplianceType">ComplianceType</a>
+            constant. The default value of AllCompliance causes
+            <code>to_color</code> to search for a color name in any of the 3 defined color standards.
+          </dd>
+
+          <dt>matte</dt>
+
+          <dd>If false, the pixel's opacity attribute is ignored.</dd>
+
+          <dt>depth</dt>
+
+          <dd>
+            An image depth. The default is the quantum depth used when ImageMagick was compiled. The values 16 and 32 can be used only when ImageMagick was
+            compiled with the appropriate QuantumDepth.
+          </dd>
+
+          <dt>hex</dt>
+
+          <dd>
+            If true, represent the color name in hex (#rrggbbaa or #rrrrggggbbbbaaaa) format. In this case
+            <span class="arg">compliance</span> is meaningless.
+          </dd>
+        </dl>
+
+        <h5>See also</h5>
+
+        <p>
+          Compare this method to
+          <a href="image3.html#to_color">Image#to_color</a>, in which the <span class="arg">matte</span> and <span class="arg">depth</span> values are taken
+          from an image.
+        </p>
+      </div>
+
+      <div class="sig">
+        <h4 id="to_hsla">to_hsla</h4>
+
+        <p><span class="arg">pixel</span>.to_HSL -&gt; <em>array</em></p>
+      </div>
+
+      <div class="desc">
+        <h5>Description</h5>
+
+        <p>Converts the RGB representation of the pixel to hue, saturation, lightness, and alpha values.</p>
+
+        <h5>Returns</h5>
+
+        <p>
+          An array of the form <code>[hue, saturation, lightness, alpha]</code>. Each value is in the range specified for it, as described in
+          <a href="#from_hsla">from_hsla</a>, above.
+        </p>
+      </div>
+    </div>
+
+    <div class="subhd">
+      <h2 id="struct">Struct classes</h2>
+
+      <div class="intro">
+        <h3>Introduction</h3>
+
+        <p>
+          These classes are created by the Struct class and are used to create objects used as attribute and argument values in other RMagick classes. Like all
+          the classes created by Struct, these classes define both getter and setter methods for their attributes. That is, for an attribute <em>x</em> both the
+          <code>x</code> and <code>x=</code> methods are defined.
+        </p>
+
+        <p>The <code>Pixel</code> and <code>Geometry</code> classes define additional constructors and conversion methods.</p>
+      </div>
+
+      <h3 id="AffineMatrix">class AffineMatrix <span class="superclass">&lt; Struct</span></h3>
+
+      <div class="sig">
+        <h4>new</h4>
+
+        <p>
+          AffineMatrix.new(<span class="arg">sx</span>, <span class="arg">rx</span>, <span class="arg">ry</span>, <span class="arg">sy</span>,
+          <span class="arg">tx</span>, <span class="arg">ty</span>) -&gt; <em>matrix</em>
+        </p>
+      </div>
+
+      <div class="desc">
+        <h5>Description</h5>
+
+        <p>
+          An AffineMatrix object describes a coordinate transformation. This object is used as an argument to the
+          <a href="image1.html#affine_transform">Image#affine_transform</a>, <a href="image1.html#composite_affine">Image#composite_affine</a>, and
+          <a href="draw.html#affine_eq">Draw#affine</a> methods.
+        </p>
+
+        <h5>Attributes</h5>
+
+        <dl>
+          <dt>sx, sy</dt>
+
+          <dd>The amount of scaling on the x- and y- axes.</dd>
+
+          <dt>rx, ry</dt>
+
+          <dd>The amount of rotation on the x- and y-axes, in radians.</dd>
+
+          <dt>tx, ty</dt>
+
+          <dd>The amount of translation on the x- and y-axes, in pixels.</dd>
+        </dl>
+      </div>
+
+      <h3 id="Chromaticity">class Chromaticity <span class="superclass">&lt; Struct</span></h3>
+
+      <div class="sig">
+        <h4>new</h4>
+
+        <p>
+          Chromaticity.new(<span class="arg">red_primary</span>, <span class="arg">green_primary</span>, <span class="arg">blue_primary</span>,
+          <span class="arg">white_point</span>) -&gt; <em>chromaticity</em>
+        </p>
+      </div>
+
+      <div class="desc">
+        <h5>Description</h5>
+
+        <p>
+          A Chromaticity object represents chromaticity values for the
+          <a href="imageattrs.html#chromaticity">Image#chromaticity</a>
+          attribute.
+        </p>
+
+        <h5>Attributes</h5>
+
+        <p>The attribute values are <a href="#Primary">Primary</a> objects.</p>
+
+        <dl>
+          <dt>red_primary</dt>
+
+          <dd>Red primary point (e.g. red_primary.x=0.64, red_primary.y=0.33)</dd>
+
+          <dt>green_primary</dt>
+
+          <dd>Green primary point (e.g. green_primary.x=0.3, green_primary.y=0.6)</dd>
+
+          <dt>blue_primary</dt>
+
+          <dd>Blue primary point (e.g. blue_primary.x=0.15, blue_primary.y=0.06)</dd>
+
+          <dt>white_point</dt>
+
+          <dd>White point (e.g. white_point.x=0.3127, white_point.y=0.329)</dd>
+        </dl>
+      </div>
+
+      <h3 id="Point">class Point <span class="superclass">&lt; Struct</span></h3>
+
+      <div class="sig">
+        <h4>new</h4>
+
+        <p>Point.new(<span class="arg">x</span>, <span class="arg">y</span>) -&gt; <em>point</em></p>
+      </div>
+
+      <div class="desc">
+        <h5>Description</h5>
+
+        <p>
+          The value of the <code>pixels_per_em</code> attribute in the TypeMetric struct returned by
+          <a href="draw.html#get_type_metrics">Draw#get_type_metrics</a> is a <code>Point</code> object..
+        </p>
+
+        <h5>Attributes</h5>
+
+        <dl>
+          <dt>x</dt>
+
+          <dd>Character width</dd>
+
+          <dt>y</dt>
+
+          <dd>Character height</dd>
+        </dl>
+      </div>
+
+      <h3 id="Primary">class Primary <span class="superclass">&lt; Struct</span></h3>
+
+      <div class="sig">
+        <h4>new</h4>
+
+        <p>Primary.new(<span class="arg">x</span>, <span class="arg">y</span>, <span class="arg">z</span>) -&gt; <em>primary</em></p>
+      </div>
+
+      <div class="desc">
+        <h5>Description</h5>
+
+        <p>See <a href="#Chromaticity">class Chromaticity</a>.</p>
+
+        <h5>Attributes</h5>
+
+        <dl>
+          <dt>x</dt>
+
+          <dd>X ordinate</dd>
+
+          <dt>y</dt>
+
+          <dd>Y ordinate</dd>
+
+          <dt>z</dt>
+
+          <dd>Z ordinate. This attribute is always ignored.</dd>
+        </dl>
+      </div>
+
+      <h3 id="Rectangle">class Rectangle <span class="superclass">&lt; Struct</span></h3>
+
+      <div class="sig">
+        <h4>new</h4>
+
+        <p>
+          Rectangle.new(<span class="arg">width</span>, <span class="arg">height</span>, <span class="arg">x</span>, <span class="arg">y</span>) -&gt;
+          <em>rectangle</em>
+        </p>
+      </div>
+
+      <div class="desc">
+        <h5>Description</h5>
+
+        <p>
+          The value of the
+          <a href="imageattrs.html#tile_info">Image#tile_info</a> and
+          <a href="imageattrs.html#bounding_box">Image#bounding_box</a>
+          attributes.
+        </p>
+
+        <h5>Attributes</h5>
+
+        <dl>
+          <dt>width</dt>
+
+          <dd>Rectangle width</dd>
+
+          <dt>height</dt>
+
+          <dd>Rectangle height</dd>
+
+          <dt>x</dt>
+
+          <dd>Offset from the left edge of the image</dd>
+
+          <dt>y</dt>
+
+          <dd>Offset from the top edge of the image</dd>
+        </dl>
+      </div>
+
+      <h3 id="Segment">class Segment <span class="superclass">&lt; Struct</span></h3>
+
+      <div class="sig">
+        <h4>new</h4>
+
+        <p>
+          Segment.new(<span class="arg">x1</span>, <span class="arg">y1</span>, <span class="arg">x2</span>, <span class="arg">y2</span>) -&gt;
+          <em>segment</em>
+        </p>
+      </div>
+
+      <div class="desc">
+        <h5>Description</h5>
+
+        <p>
+          The value of the <code>bounds</code> attribute in the
+          <a href="draw.html#get_type_metrics">TypeMetric</a>
+          class.
+        </p>
+
+        <h5>Attributes</h5>
+
+        <p><em>x1</em>, <em>y1</em>, <em>x2</em>, <em>y2</em></p>
+      </div>
+    </div>
+
+    <div class="subhd">
+      <h2 id="fill">Fill classes</h2>
+    </div>
 
     <div class="intro">
       <h3>Introduction</h3>
 
-      <p>The Geometry class contains the same information as an
-      ImageMagick <a href="imusage.html#geometry">geometry
-      string</a>. Geometry objects are interchangeable with
-      geometry strings.</p>
+      <p>
+        The <a href="image1.html#new">Image#new</a> and <a href="ilist.html#new_image">ImageList#new_image</a> methods accept a <code>Fill</code> object as an
+        optional third argument. A <code>Fill</code> object is an instance of a <em>Fill class</em>. Fill classes are designed to support custom background
+        fills. Each <code>Fill</code> class defines only two methods, <code>initialize</code> and <code>fill</code>. The <code>initialize</code> method is
+        called from the application to create an instance of the fill class. It accepts any arguments and does whatever is necessary to create the fill. The
+        <code>fill</code> method is called from the initialize method of the new image object, after the image is completely initialized. The
+        <code>fill</code> method gets the image as its only argument and sends whatever methods are necessary to the image to fill the image's background.
+      </p>
+
+      <p>
+        RMagick supplies three Fill classes,
+        <code><strong>HatchFill</strong></code
+        >, <code><strong>GradientFill</strong></code
+        >, and <code><strong>TextureFill</strong></code
+        >. These classes are explained below. The <code>HatchFill</code> class is intended as an example of how to write a <code>Fill</code> class and is
+        written in pure Ruby. You can read it in RMagick.rb.
+      </p>
     </div>
 
-    <h3>class Geometry <span class="superclass">&lt;
-    Object</span></h3>
+    <h3 id="GradientFill">class GradientFill <span class="superclass">&lt; Object</span></h3>
 
     <div class="sig">
       <h4>new</h4>
 
-      <p>Geometry.new(<span class="arg">width</span>=nil,
-      <span class="arg">height</span>=nil, <span class=
-      "arg">x</span>=nil, <span class="arg">y</span>=nil,
-      <span class="arg">flag</span>=nil) -&gt;
-      <em>geometry</em></p>
+      <p>
+        GradientFill.new(<span class="arg">x1</span>, <span class="arg">y1</span>, <span class="arg">x2</span>, <span class="arg">y2</span>,
+        <span class="arg">start_color</span>, <span class="arg">end_color</span>) -&gt; <em>gradient_fill</em>
+      </p>
     </div>
 
     <div class="desc">
       <h5>Description</h5>
 
-      <p>Constructs a new <code>Geometry</code> object.</p>
+      <p>
+        Creates a gradient fill. The <span class="arg">x1</span>, <span class="arg">y1</span>, and <span class="arg">x2</span>,
+        <span class="arg">y2</span> arguments describe either a line or a point. If <span class="arg">x1</span> != <span class="arg">x2</span> or
+        <span class="arg">y1</span> != <span class="arg">y2</span>, then the arguments describe the starting line for the gradient. The gradient will start with
+        <span class="arg">start_color</span> at the starting line and gradually transform to <span class="arg">end_color</span> as the distance increases from
+        the starting line.
+      </p>
 
-      <h5>Attributes</h5>
+      <p>
+        If <span class="arg">x1</span> == <span class="arg">x2</span> and <span class="arg">y1</span> == <span class="arg">y2</span>, the gradient radiates from
+        the specified point, gradually transforming from <span class="arg">start_color</span> to <span class="arg">end_color</span>.
+      </p>
 
-      <p>A geometry string has the general form
-      "WxH+x+y[!@%&lt;&gt;]. In a <code>Geometry</code> object,</p>
+      <p>The line or point does not have to lie within the image bounds.</p>
+
+      <h5>Arguments</h5>
 
       <dl>
-        <dt>width</dt>
+        <dt>x1, y1</dt>
 
-        <dd>specifies the W value</dd>
+        <dd>One of the starting line end-points.</dd>
 
-        <dt>height</dt>
+        <dt>x2, y2</dt>
 
-        <dd>specifies the H value</dd>
+        <dd>The other end-point on the starting line.</dd>
 
-        <dt>x, y</dt>
+        <dt>start_color</dt>
 
-        <dd>specify the x and y values, respectively</dd>
+        <dd>The color at the starting line.</dd>
 
-        <dt>flag</dt>
+        <dt>end_color</dt>
 
-        <dd>one of the constants shown in this table:</dd>
+        <dd>The color to which the gradient transforms.</dd>
       </dl>
-
-      <table summary="geometry flag constants" class=
-      "simple_table">
-        <caption>
-          <strong>Geometry flag constants</strong>
-        </caption>
-
-        <tr>
-          <td align="center"><strong>Constant<br />
-          name</strong></td>
-
-          <td align="center"><strong>Geometry<br />
-          string flag</strong></td>
-
-          <td align="center"><strong>Explanation</strong></td>
-        </tr>
-
-        <tr>
-          <td valign="top">PercentGeometry</td>
-
-          <td valign="top" align="center">%</td>
-
-          <td>Normally the attributes are treated as pixels. Use
-          this flag when the <code>width</code> and
-          <code>height</code> attributes represent
-          <em>percentages</em>. For example, 125x75 means 125% of
-          the height and 75% of the width. The <code>x</code> and
-          <code>y</code> attributes are not affected by this
-          flag.</td>
-        </tr>
-
-        <tr>
-          <td valign="top">AspectGeometry</td>
-
-          <td valign="top" align="center">!</td>
-
-          <td>Use this flag when you want to force the new image to
-          have exactly the size specified by the the
-          <code>width</code> and <code>height</code>
-          attributes.</td>
-        </tr>
-
-        <tr>
-          <td valign="top">LessGeometry</td>
-
-          <td valign="top" align="center">&lt;</td>
-
-          <td>Use this flag when you want to change the size of the
-          image only if both its width and height are smaller the
-          values specified by those attributes. The image size is
-          changed proportionally.</td>
-        </tr>
-
-        <tr>
-          <td valign="top">GreaterGeometry</td>
-
-          <td valign="top" align="center">&gt;</td>
-
-          <td>Use this flag when you want to change the size of the
-          image if either its width and height exceed the values
-          specified by those attributes. The image size is changed
-          proportionally.</td>
-        </tr>
-
-        <tr>
-          <td valign="top">AreaGeometry</td>
-
-          <td valign="top" align="center">@</td>
-
-          <td>This flag is useful only with a single
-          <code>width</code> attribute. When present, it means the
-          <code>width</code> attribute represents the total area of
-          the image in pixels.</td>
-        </tr>
-
-        <tr>
-          <td valign="top">MinimumGeometry</td>
-
-          <td valign="top" align="center">^</td>
-
-          <td class="imquote">Use ^ to set a minimum image size
-          limit. The geometry 640x480^, for example, means the
-          image width will not be less than 640 and the image
-          height will not be less than 480 pixels after the resize.
-          One of those dimensions will match the requested size,
-          but the image will likely overflow the space requested to
-          preserve its aspect ratio.</td>
-        </tr>
-      </table>
-
-      <p>If any attribute is omitted the default is nil or 0.</p>
 
       <h5>Example</h5>
-      <pre>
-g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
-</pre>
-    </div>
-  </div>
 
-  <div class="sig">
-    <h4>from_s</h4>
-
-    <p>Geometry.<span class="arg">from_s</span>(<span class=
-    "arg">string</span>) -&gt; <em>geometry</em></p>
-  </div>
-
-  <div class="desc">
-    <h5>Description</h5>
-
-    <p>Constructs a new <code>Geometry</code> object from a
-    <a href="imusage.html#geometry">geometry string</a>.</p>
-  </div>
-
-  <div class="sig">
-    <h4>to_s</h4>
-
-    <p><span class="arg">geom.</span>to_s() -&gt;
-    <em>string</em></p>
-  </div>
-
-  <div class="desc">
-    <h5>Description</h5>
-
-    <p>Returns the string equivalent of the <code>Geometry</code>
-    object..</p>
-  </div>
-
-  <div class="subhd" id="Pixel">
-    <h2>The Pixel class</h2>
-
-    <div class="intro">
-      <h3>Introduction</h3>
-
-      <p>A pixel describes the smallest individually addressable
-      part of an image. In the RGB <a href=
-      "constants.html#ColorspaceType">colorspace</a>, a pixel's
-      color is described by its intensity in the red, green, and
-      blue channels. Its opacity is described by its intensity in
-      the opacity (also called alpha, or matte) channel. In the
-      CMYK colorspace a pixel's color is described by its intensity
-      in the cyan, magenta, yellow and black (K) channels.
-      Intensity is a value between 0 and <a href=
-      "constants.html#QuantumRange">QuantumRange</a>.</p>
-
-      <p>Usually, RMagick methods operate on entire images or on
-      groups of pixels that have been selected by their position or
-      color. Some methods, such as <a href=
-      "image2.html#pixel_color">pixel_color</a> and <a href=
-      "image3.html#view">view</a>, operate on individual pixels or
-      even on the RGBA (or CMYK) components thereof.</p>
+      <p>
+        <a href="javascript:popup('gradientfill.rb.html')"
+          ><img src="ex/gradientfill.gif" alt="GradientFill example" title="Click to see the example script"
+        /></a>
+      </p>
     </div>
 
-    <h3>class Pixel <span class="superclass">&lt;
-    Object</span><br />
-    <span class="mixin">mixes in Comparable, Observable</span></h3>
+    <h3 id="HatchFill">class HatchFill <span class="superclass">&lt; Object</span></h3>
 
     <div class="sig">
       <h4>new</h4>
 
-      <p>Pixel.new(<span class="arg">red</span>, <span class=
-      "arg">green</span>, <span class="arg">blue</span>,
-      <span class="arg">opacity</span>) -&gt; <em>pixel</em></p>
+      <p>
+        HatchFill.new(<span class="arg">background_color</span>, <span class="arg">hatch_color</span>='white', <span class="arg">dist</span>=10) -&gt;
+        <em>hatch_fill</em>
+      </p>
     </div>
-
-    <div class="desc">
-      <h5>Description</h5>
-
-      <p>Constructs a pixel object from the specified red, green,
-      blue, and opacity intensities. The intensity is a number
-      between 0 and <a href=
-      "constants.html#Miscellaneous_constants">QuantumRange</a>.</p>
-
-      <h5>Attributes</h5>
-
-      <dl>
-        <dt>red, green, blue</dt>
-
-        <dd>The red, green, and blue intensities of the pixel,
-        respectively. If the colorspace is <a href=
-        "constants.html#ColorspaceType">CMYKColorspace</a>, these
-        attributes are interpreted as the cyan, magenta, and yellow
-        intensities.</dd>
-
-        <dt>opacity</dt>
-
-        <dd>The opacity level. Higher intensities are more
-        transparent. If the colorspace is CMYKColorspace, this
-        attribute is interpreted as the black intensity.</dd>
-
-        <dt>cyan, magenta, yellow, black</dt>
-
-        <dd>These attributes are aliases for <code>red</code>,
-        <code>green</code>, <code>blue</code>, and
-        <code>opacity</code>, respectively.</dd>
-      </dl>
-    </div>
-
-    <div class="sig">
-      <h4>from_color</h4>
-
-      <p>Pixel.from_color(<span class="arg">color_name</span>)
-      -&gt; <em>pixel</em></p>
-    </div>
-
-    <div class="desc">
-      <h5>Description</h5>
-
-      <p>Constructs a new Pixel object from the <a href=
-      "imusage.html#color_names">color name</a>. Raises
-      ArgumentError if the name is unknown.</p>
-    </div>
-
-    <div class="sig">
-      <h4 id="from_hsla">from_hsla</h4>
-
-      <p>Pixel.from_hsla(<span class="arg">hue</span>, <span class=
-      "arg">saturation</span>, <span class="arg">lightness</span>,
-      <span class="arg">alpha</span>=1.0) -&gt; <em>pixel</em></p>
-    </div>
-
-    <div class="desc">
-      <h5>Description</h5>
-
-      <p>Constructs a pixel object from the specified
-      arguments.</p>
-
-      <h5>Arguments</h5>
-
-      <dl>
-        <dt>hue</dt>
-
-        <dd>Either a String percentage (e.g., "25%") or a value in
-        the range [0.0, 360.0).</dd>
-
-        <dt>saturation</dt>
-
-        <dd>Either a String percentage (e.g., "25%") or a value in
-        the range [0.0, 255.0].</dd>
-
-        <dt>lightness</dt>
-
-        <dd>Either a String percentage (e.g., "25%") or a value in
-        the range [0.0, 255.0].</dd>
-
-        <dt>alpha</dt>
-
-        <dd>Either a String percentage (e.g., "25%") or a value in
-        the range [0.0, 1.0], where 1.0 is fully opaque and 0.0 is
-        fully transparent. This argument may be omitted. The default
-        is 1.0.</dd>
-      </dl>
-
-      <h5>See also</h5>
-
-      <p><a href="#to_hsla">to_hsla</a></p>
-    </div>
-
-    <div class="sig">
-      <h4 id="spaceship">&lt;=&gt;</h4>
-
-      <p><span class="arg">pixel1</span> &lt;=&gt; <span class=
-      "arg">pixel2</span> -&gt; -1, 0, <em>or</em> 1</p>
-    </div>
-
-    <div class="desc">
-      <h5>Description</h5>
-
-      <p>Returns -1, 0, or 1 depending on if <span class=
-      "arg">pixel1</span> is "less than," equal, or "greater than"
-      the <span class="arg">pixel2</span>.</p>
-
-      <p>Since there is no way to rank order pixels, and thus
-      determine if one pixel is "greater than" or "less than"
-      another, this method uses an arbitrary algorithm that ensures
-      these two conditions:</p>
-
-      <ol>
-        <li>pixels with equal RGBA (or CMYK) values compare equal,
-        and</li>
-
-        <li>comparing the same two unequal pixels always returns
-        the same result.</li>
-      </ol>
-
-      <h5>Returns</h5>
-
-      <p>-1, 0, or 1</p>
-
-      <h5>See also</h5>
-
-      <p><a href="#fcmp">fcmp</a></p>
-    </div>
-
-    <div class="sig">
-      <h4 id="fcmp">fcmp</h4>
-
-      <p><span class="arg">pixel</span>.fcmp(<span class=
-      "arg">pixel</span>, <span class="arg">fuzz</span>=0.0,
-      <span class="arg">colorspace</span>=RGBColorspace) -&gt;
-      <code>true</code> <em>or</em> <code>false</code></p>
-    </div>
-
-    <div class="desc">
-      <h5>Description</h5>
-
-      <p>Returns true if the argument is the same color as
-      <span class="arg">pixel</span>.</p>
-
-      <h5>Arguments</h5>
-
-      <dl>
-        <dt>pixel</dt>
-
-        <dd>The pixel to which the receiver is compared.</dd>
-
-        <dt>fuzz</dt>
-
-        <dd>The amount of fuzz to allow before the colors are
-        considered to be different.</dd>
-
-        <dt>colorspace</dt>
-
-        <dd>If the pixels are in the CMYK colorspace, specify
-        <a href=
-        "constants.html#ColorspaceType">Magick::CMYKColorspace</a>.</dd>
-      </dl>
-
-      <h5>Returns</h5>
-
-      <p><code>true</code> or <code>false</code></p>
-
-      <h5>See also</h5>
-
-      <p><a href="#spaceship">&lt;=&gt;</a></p>
-    </div>
-
-    <div class="sig">
-      <h4>intensity</h4>
-
-      <p><span class="arg">pixel</span>.intensity() -&gt;
-      integer</p>
-    </div>
-
-    <div class="desc">
-      <h5>Description</h5>
-
-      <p>Returns the intensity of the pixel. The intensity is
-      computed as 0.299*R+0.587*G+0.114*B.</p>
-    </div>
-
-    <div class="sig">
-      <h4>to_color</h4>
-
-      <p><span class="arg">pixel</span>.to_color(<span class=
-      "arg">compliance</span>=AllCompliance, <span class=
-      "arg">matte</span>=<code>false</code>, <span class=
-      "arg">depth</span>=<code>QuantumDepth</code>, <span class=
-      "arg">hex</span>=<code>false</code>) -&gt;
-      <em>string</em></p>
-    </div>
-
-    <div class="desc">
-      <h5>Description</h5>
-
-      <p>Returns the <a href="imusage.html#color_names">color
-      name</a> corresponding the the pixel values. If there is no
-      such named color in the specified color standard, returns a
-      string in the form "rgb(r,g,b,a)".</p>
-
-      <h5>Arguments</h5>
-
-      <dl>
-        <dt>compliance</dt>
-
-        <dd>A <a href=
-        "constants.html#ComplianceType">ComplianceType</a>
-        constant. The default value of AllCompliance causes
-        <code>to_color</code> to search for a color name in any of
-        the 3 defined color standards.</dd>
-
-        <dt>matte</dt>
-
-        <dd>If false, the pixel's opacity attribute is
-        ignored.</dd>
-
-        <dt>depth</dt>
-
-        <dd>An image depth. The default is the quantum depth used
-        when ImageMagick was compiled. The values 16 and 32 can be
-        used only when ImageMagick was compiled with the
-        appropriate QuantumDepth.</dd>
-
-        <dt>hex</dt>
-
-        <dd>If true, represent the color name in hex (#rrggbbaa or
-        #rrrrggggbbbbaaaa) format. In this case <span class=
-        "arg">compliance</span> is meaningless.</dd>
-      </dl>
-
-      <h5>See also</h5>
-
-      <p>Compare this method to <a href=
-      "image3.html#to_color">Image#to_color</a>, in which the
-      <span class="arg">matte</span> and <span class=
-      "arg">depth</span> values are taken from an image.</p>
-    </div>
-
-    <div class="sig">
-      <h4 id="to_hsla">to_hsla</h4>
-
-      <p><span class="arg">pixel</span>.to_HSL -&gt;
-      <em>array</em></p>
-    </div>
-
-    <div class="desc">
-      <h5>Description</h5>
-
-      <p>Converts the RGB representation of the pixel to hue,
-      saturation, lightness, and alpha values.</p>
-
-      <h5>Returns</h5>
-
-      <p>An array of the form <code>[hue, saturation, lightness,
-      alpha]</code>. Each value is in the range specified for it,
-      as described in <a href="#from_hsla">from_hsla</a>,
-      above.</p>
-    </div>
-  </div>
-
-  <div class="subhd">
-    <h2 id="struct">Struct classes</h2>
-
-    <div class="intro">
-      <h3>Introduction</h3>
-
-      <p>These classes are created by the Struct class and are used
-      to create objects used as attribute and argument values in
-      other RMagick classes. Like all the classes created by
-      Struct, these classes define both getter and setter methods
-      for their attributes. That is, for an attribute <em>x</em>
-      both the <code>x</code> and <code>x=</code> methods are
-      defined.</p>
-
-      <p>The <code>Pixel</code> and <code>Geometry</code> classes
-      define additional constructors and conversion methods.</p>
-    </div>
-
-    <h3 id="AffineMatrix">class AffineMatrix <span class=
-    "superclass">&lt; Struct</span></h3>
-
-    <div class="sig">
-      <h4>new</h4>
-
-      <p>AffineMatrix.new(<span class="arg">sx</span>, <span class=
-      "arg">rx</span>, <span class="arg">ry</span>, <span class=
-      "arg">sy</span>, <span class="arg">tx</span>, <span class=
-      "arg">ty</span>) -&gt; <em>matrix</em></p>
-    </div>
-
-    <div class="desc">
-      <h5>Description</h5>
-
-      <p>An AffineMatrix object describes a coordinate
-      transformation. This object is used as an argument to the
-      <a href=
-      "image1.html#affine_transform">Image#affine_transform</a>,
-      <a href=
-      "image1.html#composite_affine">Image#composite_affine</a>,
-      and <a href="draw.html#affine_eq">Draw#affine</a>
-      methods.</p>
-
-      <h5>Attributes</h5>
-
-      <dl>
-        <dt>sx, sy</dt>
-
-        <dd>The amount of scaling on the x- and y- axes.</dd>
-
-        <dt>rx, ry</dt>
-
-        <dd>The amount of rotation on the x- and y-axes, in
-        radians.</dd>
-
-        <dt>tx, ty</dt>
-
-        <dd>The amount of translation on the x- and y-axes, in
-        pixels.</dd>
-      </dl>
-    </div>
-
-    <h3 id="Chromaticity">class Chromaticity <span class=
-    "superclass">&lt; Struct</span></h3>
-
-    <div class="sig">
-      <h4>new</h4>
-
-      <p>Chromaticity.new(<span class="arg">red_primary</span>,
-      <span class="arg">green_primary</span>, <span class=
-      "arg">blue_primary</span>, <span class=
-      "arg">white_point</span>) -&gt; <em>chromaticity</em></p>
-    </div>
-
-    <div class="desc">
-      <h5>Description</h5>
-
-      <p>A Chromaticity object represents chromaticity values for
-      the <a href=
-      "imageattrs.html#chromaticity">Image#chromaticity</a>
-      attribute.</p>
-
-      <h5>Attributes</h5>
-
-      <p>The attribute values are <a href="#Primary">Primary</a>
-      objects.</p>
-
-      <dl>
-        <dt>red_primary</dt>
-
-        <dd>Red primary point (e.g. red_primary.x=0.64,
-        red_primary.y=0.33)</dd>
-
-        <dt>green_primary</dt>
-
-        <dd>Green primary point (e.g. green_primary.x=0.3,
-        green_primary.y=0.6)</dd>
-
-        <dt>blue_primary</dt>
-
-        <dd>Blue primary point (e.g. blue_primary.x=0.15,
-        blue_primary.y=0.06)</dd>
-
-        <dt>white_point</dt>
-
-        <dd>White point (e.g. white_point.x=0.3127,
-        white_point.y=0.329)</dd>
-      </dl>
-    </div>
-
-    <h3 id="Point">class Point <span class="superclass">&lt;
-    Struct</span></h3>
-
-    <div class="sig">
-      <h4>new</h4>
-
-      <p>Point.new(<span class="arg">x</span>, <span class=
-      "arg">y</span>) -&gt; <em>point</em></p>
-    </div>
-
-    <div class="desc">
-      <h5>Description</h5>
-
-      <p>The value of the <code>pixels_per_em</code> attribute in
-      the TypeMetric struct returned by <a href=
-      "draw.html#get_type_metrics">Draw#get_type_metrics</a> is a
-      <code>Point</code> object..</p>
-
-      <h5>Attributes</h5>
-
-      <dl>
-        <dt>x</dt>
-
-        <dd>Character width</dd>
-
-        <dt>y</dt>
-
-        <dd>Character height</dd>
-      </dl>
-    </div>
-
-    <h3 id="Primary">class Primary <span class="superclass">&lt;
-    Struct</span></h3>
-
-    <div class="sig">
-      <h4>new</h4>
-
-      <p>Primary.new(<span class="arg">x</span>, <span class=
-      "arg">y</span>, <span class="arg">z</span>) -&gt;
-      <em>primary</em></p>
-    </div>
-
-    <div class="desc">
-      <h5>Description</h5>
-
-      <p>See <a href="#Chromaticity">class Chromaticity</a>.</p>
-
-      <h5>Attributes</h5>
-
-      <dl>
-        <dt>x</dt>
-
-        <dd>X ordinate</dd>
-
-        <dt>y</dt>
-
-        <dd>Y ordinate</dd>
-
-        <dt>z</dt>
-
-        <dd>Z ordinate. This attribute is always ignored.</dd>
-      </dl>
-    </div>
-
-    <h3 id="Rectangle">class Rectangle <span class=
-    "superclass">&lt; Struct</span></h3>
-
-    <div class="sig">
-      <h4>new</h4>
-
-      <p>Rectangle.new(<span class="arg">width</span>, <span class=
-      "arg">height</span>, <span class="arg">x</span>, <span class=
-      "arg">y</span>) -&gt; <em>rectangle</em></p>
-    </div>
-
-    <div class="desc">
-      <h5>Description</h5>
-
-      <p>The value of the <a href=
-      "imageattrs.html#tile_info">Image#tile_info</a> and <a href=
-      "imageattrs.html#bounding_box">Image#bounding_box</a>
-      attributes.</p>
-
-      <h5>Attributes</h5>
-
-      <dl>
-        <dt>width</dt>
-
-        <dd>Rectangle width</dd>
-
-        <dt>height</dt>
-
-        <dd>Rectangle height</dd>
-
-        <dt>x</dt>
-
-        <dd>Offset from the left edge of the image</dd>
-
-        <dt>y</dt>
-
-        <dd>Offset from the top edge of the image</dd>
-      </dl>
-    </div>
-
-    <h3 id="Segment">class Segment <span class="superclass">&lt;
-    Struct</span></h3>
-
-    <div class="sig">
-      <h4>new</h4>
-
-      <p>Segment.new(<span class="arg">x1</span>, <span class=
-      "arg">y1</span>, <span class="arg">x2</span>, <span class=
-      "arg">y2</span>) -&gt; <em>segment</em></p>
-    </div>
-
-    <div class="desc">
-      <h5>Description</h5>
-
-      <p>The value of the <code>bounds</code> attribute in the
-      <a href="draw.html#get_type_metrics">TypeMetric</a>
-      class.</p>
-
-      <h5>Attributes</h5>
-
-      <p><em>x1</em>, <em>y1</em>, <em>x2</em>, <em>y2</em></p>
-    </div>
-  </div>
-
-  <div class="subhd">
-    <h2 id="fill">Fill classes</h2>
-  </div>
-
-  <div class="intro">
-    <h3>Introduction</h3>
-
-    <p>The <a href="image1.html#new">Image#new</a> and <a href=
-    "ilist.html#new_image">ImageList#new_image</a> methods accept a
-    <code>Fill</code> object as an optional third argument. A
-    <code>Fill</code> object is an instance of a <em>Fill
-    class</em>. Fill classes are designed to support custom
-    background fills. Each <code>Fill</code> class defines only two
-    methods, <code>initialize</code> and <code>fill</code>. The
-    <code>initialize</code> method is called from the application
-    to create an instance of the fill class. It accepts any
-    arguments and does whatever is necessary to create the fill.
-    The <code>fill</code> method is called from the initialize
-    method of the new image object, after the image is completely
-    initialized. The <code>fill</code> method gets the image as its
-    only argument and sends whatever methods are necessary to the
-    image to fill the image's background.</p>
-
-    <p>RMagick supplies three Fill classes,
-    <code><strong>HatchFill</strong></code>,
-    <code><strong>GradientFill</strong></code>, and
-    <code><strong>TextureFill</strong></code>. These classes are
-    explained below. The <code>HatchFill</code> class is intended
-    as an example of how to write a <code>Fill</code> class and is
-    written in pure Ruby. You can read it in RMagick.rb.</p>
-  </div>
-
-  <h3 id="GradientFill">class GradientFill <span class=
-  "superclass">&lt; Object</span></h3>
-
-  <div class="sig">
-    <h4>new</h4>
-
-    <p>GradientFill.new(<span class="arg">x1</span>, <span class=
-    "arg">y1</span>, <span class="arg">x2</span>, <span class=
-    "arg">y2</span>, <span class="arg">start_color</span>,
-    <span class="arg">end_color</span>) -&gt;
-    <em>gradient_fill</em></p>
-  </div>
-
-  <div class="desc">
-    <h5>Description</h5>
-
-    <p>Creates a gradient fill. The <span class="arg">x1</span>,
-    <span class="arg">y1</span>, and <span class="arg">x2</span>,
-    <span class="arg">y2</span> arguments describe either a line or
-    a point. If <span class="arg">x1</span> != <span class=
-    "arg">x2</span> or <span class="arg">y1</span> != <span class=
-    "arg">y2</span>, then the arguments describe the starting line
-    for the gradient. The gradient will start with <span class=
-    "arg">start_color</span> at the starting line and gradually
-    transform to <span class="arg">end_color</span> as the distance
-    increases from the starting line.</p>
-
-    <p>If <span class="arg">x1</span> == <span class=
-    "arg">x2</span> and <span class="arg">y1</span> == <span class=
-    "arg">y2</span>, the gradient radiates from the specified
-    point, gradually transforming from <span class=
-    "arg">start_color</span> to <span class=
-    "arg">end_color</span>.</p>
-
-    <p>The line or point does not have to lie within the image
-    bounds.</p>
-
-    <h5>Arguments</h5>
-
-    <dl>
-      <dt>x1, y1</dt>
-
-      <dd>One of the starting line end-points.</dd>
-
-      <dt>x2, y2</dt>
-
-      <dd>The other end-point on the starting line.</dd>
-
-      <dt>start_color</dt>
-
-      <dd>The color at the starting line.</dd>
-
-      <dt>end_color</dt>
-
-      <dd>The color to which the gradient transforms.</dd>
-    </dl>
-
-    <h5>Example</h5>
-
-    <p><a href="javascript:popup('gradientfill.rb.html')"><img src=
-    "ex/gradientfill.gif" alt="GradientFill example" title=
-    "Click to see the example script" /></a></p>
-  </div>
-
-  <h3 id="HatchFill">class HatchFill <span class="superclass">&lt;
-  Object</span></h3>
-
-  <div class="sig">
-    <h4>new</h4>
-
-    <p>HatchFill.new(<span class="arg">background_color</span>,
-    <span class="arg">hatch_color</span>='white', <span class=
-    "arg">dist</span>=10) -&gt; <em>hatch_fill</em></p>
-  </div>
-
-  <div class="desc">
-    <h4>Description</h4>
-
-    <p>Creates a cross-hatched fill.</p>
-
-    <h4>Arguments</h4>
-
-    <dl>
-      <dt>background_color</dt>
-
-      <dd>The image background color.</dd>
-
-      <dt>hatch_color</dt>
-
-      <dd>The color of the cross-hatch lines.</dd>
-
-      <dt>dist</dt>
-
-      <dd>The distance between cross-hatch lines, in pixels.</dd>
-    </dl>
-
-    <h4>Example</h4>
-
-    <p><a href="javascript:popup('hatchfill.rb.html')"><img src=
-    "ex/hatchfill.gif" alt="HatchFill example" title=
-    "Click to see the example script" /></a></p>
-  </div>
-
-  <h3 id="TextureFill">class TextureFill <span class=
-  "superclass">&lt; Object</span></h3>
-
-  <div class="sig">
-    <h4>new</h4>
-
-    <p>TextureFill.new(<span class="arg">texture_image</span>)
-    -&gt; <em>texture_fill</em></p>
-  </div>
-
-  <div class="desc">
-    <h5>Description</h5>
-
-    <p>Creates a texture fill by tiling the <span class=
-    "arg">texture_image</span> to fill the image.</p>
-
-    <h5>Arguments</h5>
-
-    <p>The texture to be used as the background. May be an image or
-    imagelist. If <span class="arg">texture_image</span> is an
-    imagelist, uses the current image.</p>
-
-    <h5>Example</h5>
-
-    <p><a href="javascript:popup('texturefill.rb.html')"><img src=
-    "ex/texturefill.gif" alt="TextureFill example" title=
-    "Click to see the example script" /></a></p>
-  </div>
-
-  <div class="subhd">
-    <h2 id="exception">Exception classes</h2>
-
-    <h3 id="MagickError">class ImageMagickError <span class=
-    "superclass">&lt; StandardError</span></h3>
 
     <div class="desc">
       <h4>Description</h4>
 
-      <p>RMagick raises this exception when an ImageMagick function
-      returns an error condition.</p>
+      <p>Creates a cross-hatched fill.</p>
+
+      <h4>Arguments</h4>
+
+      <dl>
+        <dt>background_color</dt>
+
+        <dd>The image background color.</dd>
+
+        <dt>hatch_color</dt>
+
+        <dd>The color of the cross-hatch lines.</dd>
+
+        <dt>dist</dt>
+
+        <dd>The distance between cross-hatch lines, in pixels.</dd>
+      </dl>
+
+      <h4>Example</h4>
+
+      <p>
+        <a href="javascript:popup('hatchfill.rb.html')"><img src="ex/hatchfill.gif" alt="HatchFill example" title="Click to see the example script" /></a>
+      </p>
     </div>
 
-    <h3 id="FatalImageMagickError">class FatalImageMagickError
-    <span class="superclass">&lt; StandardError</span></h3>
+    <h3 id="TextureFill">class TextureFill <span class="superclass">&lt; Object</span></h3>
+
+    <div class="sig">
+      <h4>new</h4>
+
+      <p>
+        TextureFill.new(<span class="arg">texture_image</span>) -&gt;
+        <em>texture_fill</em>
+      </p>
+    </div>
 
     <div class="desc">
-      <h4>Description</h4>
+      <h5>Description</h5>
 
-      <p>RMagick raises this exception when ImageMagick raises a
-      fatal (unrecoverable) error condition.</p>
+      <p>
+        Creates a texture fill by tiling the
+        <span class="arg">texture_image</span> to fill the image.
+      </p>
+
+      <h5>Arguments</h5>
+
+      <p>
+        The texture to be used as the background. May be an image or imagelist. If <span class="arg">texture_image</span> is an imagelist, uses the current
+        image.
+      </p>
+
+      <h5>Example</h5>
+
+      <p>
+        <a href="javascript:popup('texturefill.rb.html')"><img src="ex/texturefill.gif" alt="TextureFill example" title="Click to see the example script" /></a>
+      </p>
     </div>
 
-    <h3 id="DestroyedImageError">class DestroyedImageError
-    <span class="superclass">&lt; StandardError</span></h3>
+    <div class="subhd">
+      <h2 id="exception">Exception classes</h2>
 
-    <div class="desc">
-      <h4>Description</h4>
+      <h3 id="MagickError">
+        class ImageMagickError
+        <span class="superclass">&lt; StandardError</span>
+      </h3>
 
-      <p>RMagick raises this exception when any Image method
-      (except <a href="image1.html#destroyed_q">destroyed?</a> and
-      <a href="image2.html#inspect">inspect</a>) is called after an
-      image has been <a href=
-      "image1.html#destroy_bang">destroyed</a>.</p>
+      <div class="desc">
+        <h4>Description</h4>
+
+        <p>RMagick raises this exception when an ImageMagick function returns an error condition.</p>
+      </div>
+
+      <h3 id="FatalImageMagickError">
+        class FatalImageMagickError
+        <span class="superclass">&lt; StandardError</span>
+      </h3>
+
+      <div class="desc">
+        <h4>Description</h4>
+
+        <p>RMagick raises this exception when ImageMagick raises a fatal (unrecoverable) error condition.</p>
+      </div>
+
+      <h3 id="DestroyedImageError">
+        class DestroyedImageError
+        <span class="superclass">&lt; StandardError</span>
+      </h3>
+
+      <div class="desc">
+        <h4>Description</h4>
+
+        <p>
+          RMagick raises this exception when any Image method (except
+          <a href="image1.html#destroyed_q">destroyed?</a> and <a href="image2.html#inspect">inspect</a>) is called after an image has been
+          <a href="image1.html#destroy_bang">destroyed</a>.
+        </p>
+      </div>
     </div>
-  </div>
 
-  <p class="spacer">&nbsp;</p>
+    <p class="spacer">&nbsp;</p>
 
-  <div class="nav">
-    &laquo;&nbsp;<a href="draw.html">Prev</a> | <a href=
-    "index.html">Contents</a> | <a href=
-    "info.html">Next</a>&nbsp;&raquo;
-  </div>
-</body>
+    <div class="nav">&laquo;&nbsp;<a href="draw.html">Prev</a> | <a href="index.html">Contents</a> | <a href="info.html">Next</a>&nbsp;&raquo;</div>
+  </body>
 </html>

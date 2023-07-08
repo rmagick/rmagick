@@ -1,9 +1,9 @@
 /* Styles for the example script popup */
 
 body {
-  background:#fffff0;
-  margin:10px;
-  }
+  background: #fffff0;
+  margin: 10px;
+}
 
 h1 {
   color: #663;
@@ -12,15 +12,15 @@ h1 {
 }
 
 .bodybox {
-  background-color:white;
-  border:1px solid black;
-  text-align:left;
+  background-color: white;
+  border: 1px solid black;
+  text-align: left;
 }
 
-.bodyfloat  {
-  padding:10px;
-  color:black;
-  text-align:left;
+.bodyfloat {
+  padding: 10px;
+  color: black;
+  text-align: left;
 }
 
 #close {
@@ -29,6 +29,6 @@ h1 {
 }
 
 a:link {
-  color:#663;
-  font-weight:bold;
+  color: #663;
+  font-weight: bold;
 }

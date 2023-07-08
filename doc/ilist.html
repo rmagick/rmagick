@@ -1,920 +1,894 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-  <meta name="generator" content=
-  "HTML Tidy for Linux/x86 (vers 6 November 2007), see www.w3.org" />
+  <head>
+    <meta name="generator" content="HTML Tidy for Linux/x86 (vers 6 November 2007), see www.w3.org" />
 
-  <title>RMagick 0.0.0: class ImageList</title>
-  <meta http-equiv="Content-Type" content=
-  "text/html; charset=us-ascii" />
-  <meta name="GENERATOR" content="Quanta Plus" />
-  <meta name="Copyright" content=
-  "Copyright (C) 2005 by Timothy P. Hunter" />
-  <link rel="stylesheet" type="text/css" href="css/doc.css" />
-  <script type="text/javascript" src="scripts/doc.js">
-</script>
-  <script type="text/javascript" src="scripts/doc.js">
-</script>
-</head>
+    <title>RMagick 0.0.0: class ImageList</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+    <meta name="GENERATOR" content="Quanta Plus" />
+    <meta name="Copyright" content="Copyright (C) 2005 by Timothy P. Hunter" />
+    <link rel="stylesheet" type="text/css" href="css/doc.css" />
+    <script type="text/javascript" src="scripts/doc.js"></script>
+    <script type="text/javascript" src="scripts/doc.js"></script>
+  </head>
 
-<body>
-  <h6 id="header">RMagick 0.0.0 User's Guide and Reference</h6>
+  <body>
+    <h6 id="header">RMagick 0.0.0 User's Guide and Reference</h6>
 
-  <div class="nav">
-    &laquo;&nbsp;<a href="magick.html">Prev</a> | <a href=
-    "index.html">Contents</a> | <a href=
-    "imageattrs.html">Next</a>&nbsp;&raquo;
-  </div>
+    <div class="nav">&laquo;&nbsp;<a href="magick.html">Prev</a> | <a href="index.html">Contents</a> | <a href="imageattrs.html">Next</a>&nbsp;&raquo;</div>
 
-  <h1>class ImageList<br />
-  <span class="mixin">mixes in Comparable, Enumerable</span></h1>
+    <h1>
+      class ImageList<br />
+      <span class="mixin">mixes in Comparable, Enumerable</span>
+    </h1>
 
-  <div id="toc">
-    <h2>Table of Contents</h2>
+    <div id="toc">
+      <h2>Table of Contents</h2>
 
-    <h3>class methods</h3>
+      <h3>class methods</h3>
 
-    <ul>
-      <li><a href="#new">new</a></li>
-    </ul>
-
-    <h3>attributes</h3>
-
-    <ul>
-      <li><a href="#delay_eq">delay=</a></li>
-
-      <li><a href="#iterations_eq">iterations=</a></li>
-
-      <li><a href="#length">length</a></li>
-
-      <li><a href="#scene">scene, scene=</a></li>
-
-      <li><a href="#ticks_per_second_eq">ticks_per_second=</a></li>
-    </ul>
-
-    <h3>instance methods</h3>
-
-    <div class="toccol">
       <ul>
-        <li><a href="#array_methods">Array methods</a></li>
-
-        <li><a href="#spaceship">&lt;=&gt;</a></li>
-
-        <li><a href="#animate">animate</a></li>
-
-        <li><a href="#append">append</a></li>
-
-        <li><a href="#average">average</a></li>
-
-        <li><a href="#clone">clone</a></li>
-
-        <li><a href="#coalesce">coalesce</a></li>
-
-        <li><a href="#composite_layers">composite_layers</a></li>
-
-        <li><a href="#copy">copy</a></li>
-
-        <li><a href="#cur_image">cur_image</a></li>
+        <li><a href="#new">new</a></li>
       </ul>
+
+      <h3>attributes</h3>
+
+      <ul>
+        <li><a href="#delay_eq">delay=</a></li>
+
+        <li><a href="#iterations_eq">iterations=</a></li>
+
+        <li><a href="#length">length</a></li>
+
+        <li><a href="#scene">scene, scene=</a></li>
+
+        <li><a href="#ticks_per_second_eq">ticks_per_second=</a></li>
+      </ul>
+
+      <h3>instance methods</h3>
+
+      <div class="toccol">
+        <ul>
+          <li><a href="#array_methods">Array methods</a></li>
+
+          <li><a href="#spaceship">&lt;=&gt;</a></li>
+
+          <li><a href="#animate">animate</a></li>
+
+          <li><a href="#append">append</a></li>
+
+          <li><a href="#average">average</a></li>
+
+          <li><a href="#clone">clone</a></li>
+
+          <li><a href="#coalesce">coalesce</a></li>
+
+          <li><a href="#composite_layers">composite_layers</a></li>
+
+          <li><a href="#copy">copy</a></li>
+
+          <li><a href="#cur_image">cur_image</a></li>
+        </ul>
+      </div>
+
+      <div class="toccol">
+        <ul>
+          <li><a href="#deconstruct">deconstruct</a></li>
+
+          <li><a href="#dup">dup</a></li>
+
+          <li><a href="#display">display</a></li>
+
+          <li><a href="#flatten_images">flatten_images</a></li>
+
+          <li><a href="#from_blob">from_blob</a></li>
+
+          <li><a href="#fx">fx</a></li>
+
+          <li><a href="#inspect">inspect</a></li>
+
+          <li><a href="#montage">montage</a></li>
+
+          <li><a href="#morph">morph</a></li>
+        </ul>
+      </div>
+
+      <div class="toccol">
+        <ul>
+          <li><a href="#mosaic">mosaic</a></li>
+
+          <li><a href="#new_image">new_image</a></li>
+
+          <li><a href="#optimize_layers">optimize_layers</a></li>
+
+          <li><a href="#ping">ping</a></li>
+
+          <li><a href="#quantize">quantize</a></li>
+
+          <li><a href="#read">read</a></li>
+
+          <li><a href="#remap">remap</a></li>
+
+          <li><a href="#to_a">to_a</a></li>
+
+          <li><a href="#to_blob">to_blob</a></li>
+
+          <li><a href="#write">write</a></li>
+        </ul>
+      </div>
     </div>
 
-    <div class="toccol">
-      <ul>
-        <li><a href="#deconstruct">deconstruct</a></li>
+    <h2 class="methods">class methods</h2>
 
-        <li><a href="#dup">dup</a></li>
+    <div class="sig">
+      <h3 id="new">new</h3>
 
-        <li><a href="#display">display</a></li>
-
-        <li><a href="#flatten_images">flatten_images</a></li>
-
-        <li><a href="#from_blob">from_blob</a></li>
-
-        <li><a href="#fx">fx</a></li>
-
-        <li><a href="#inspect">inspect</a></li>
-
-        <li><a href="#montage">montage</a></li>
-
-        <li><a href="#morph">morph</a></li>
-      </ul>
+      <p>
+        Magick::ImageList.new
+        <span class="arg">[&nbsp;{ optional arguments }&nbsp;]</span> -&gt; <em>imagelist</em><br />
+        Magick::ImageList.new(<span class="arg">filename[, filename...]]</span>) <span class="arg">[&nbsp;{ optional arguments }&nbsp;]</span> -&gt;
+        <em>imagelist</em>
+      </p>
     </div>
 
-    <div class="toccol">
-      <ul>
-        <li><a href="#mosaic">mosaic</a></li>
+    <div class="desc">
+      <h4>Description</h4>
 
-        <li><a href="#new_image">new_image</a></li>
+      <p>
+        Creates a new imagelist. If one or more image filenames are specified, opens and reads the files, adding a new image for each image in the image
+        file(s). Sets the scene number to the index of the last image, or
+        <code>nil</code> if no filenames are specified.
+      </p>
 
-        <li><a href="#optimize_layers">optimize_layers</a></li>
+      <h4>Arguments</h4>
 
-        <li><a href="#ping">ping</a></li>
+      <p>
+        Zero or more image file names. You can also specify optional arguments to be used when reading the file(s) by setting
+        <a href="info.html">Image::Info</a> attributes in the optional block.
+      </p>
 
-        <li><a href="#quantize">quantize</a></li>
+      <h4>Returns</h4>
 
-        <li><a href="#read">read</a></li>
+      <p>
+        A new imagelist. The imagelist contains an Image object for each image in the specified files. A file can contain more than one image. For example, new
+        will create an image for each frame in an animated GIF or each layer in a multi-layer Photoshop file.
+      </p>
 
-        <li><a href="#remap">remap</a></li>
-
-        <li><a href="#to_a">to_a</a></li>
-
-        <li><a href="#to_blob">to_blob</a></li>
-
-        <li><a href="#write">write</a></li>
-      </ul>
-    </div>
-  </div>
-
-  <h2 class="methods">class methods</h2>
-
-  <div class="sig">
-    <h3 id="new">new</h3>
-
-    <p>Magick::ImageList.new <span class="arg">[&nbsp;{ optional
-    arguments }&nbsp;]</span> -&gt; <em>imagelist</em><br />
-    Magick::ImageList.new(<span class="arg">filename[,
-    filename...]]</span>) <span class="arg">[&nbsp;{ optional
-    arguments }&nbsp;]</span> -&gt; <em>imagelist</em></p>
-  </div>
-
-  <div class="desc">
-    <h4>Description</h4>
-
-    <p>Creates a new imagelist. If one or more image filenames are
-    specified, opens and reads the files, adding a new image for
-    each image in the image file(s). Sets the scene number to the
-    index of the last image, or <code>nil</code> if no filenames
-    are specified.</p>
-
-    <h4>Arguments</h4>
-
-    <p>Zero or more image file names. You can also specify optional
-    arguments to be used when reading the file(s) by setting
-    <a href="info.html">Image::Info</a> attributes in the optional
-    block.</p>
-
-    <h4>Returns</h4>
-
-    <p>A new imagelist. The imagelist contains an Image object for
-    each image in the specified files. A file can contain more than
-    one image. For example, new will create an image for each frame
-    in an animated GIF or each layer in a multi-layer Photoshop
-    file.</p>
-
-    <h4>Example</h4>
-    <pre>
+      <h4>Example</h4>
+      <pre>
 i = Magick::ImageList.new
 i = Magick::ImageList.new("Button_A.gif", "Cheetah.jpg")
-</pre>
-  </div>
+</pre
+      >
+    </div>
 
-  <h2 class="methods">attributes</h2>
+    <h2 class="methods">attributes</h2>
 
-  <div class="sig">
-    <h3 id="delay_eq">delay=</h3>
+    <div class="sig">
+      <h3 id="delay_eq">delay=</h3>
 
-    <p><span class="arg">ilist.</span>delay=<em>n</em></p>
-  </div>
+      <p><span class="arg">ilist.</span>delay=<em>n</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>In conjunction with <a href=
-    "#ticks_per_second_eq">ticks_per_second</a> sets the length of
-    time between each image in an animation. The
-    <code>delay=</code> attribute assigns the same delay to all the
-    images in the ilist. Use <a href=
-    "imageattrs.html#delay">Image#delay=</a> to set different delay
-    values on individual images.</p>
+      <p>
+        In conjunction with
+        <a href="#ticks_per_second_eq">ticks_per_second</a> sets the length of time between each image in an animation. The <code>delay=</code> attribute
+        assigns the same delay to all the images in the ilist. Use <a href="imageattrs.html#delay">Image#delay=</a> to set different delay values on individual
+        images.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>An integer value representing the number of ticks that must
-    elapse between each image in an animation.</p>
+      <p>An integer value representing the number of ticks that must elapse between each image in an animation.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>self</p>
+      <p>self</p>
 
-    <h4>Example</h4>
-    <pre>
+      <h4>Example</h4>
+      <pre>
 ilist.delay = 20 # delay 1/5 of a second between images.
-</pre>
+</pre
+      >
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="imageattrs.html#delay">Image#delay=</a></p>
-  </div>
+      <p><a href="imageattrs.html#delay">Image#delay=</a></p>
+    </div>
 
-  <div class="sig">
-    <h3 id="iterations_eq">iterations=</h3>
+    <div class="sig">
+      <h3 id="iterations_eq">iterations=</h3>
 
-    <p><span class="arg">ilist.</span>iterations=<em>n</em></p>
-  </div>
+      <p><span class="arg">ilist.</span>iterations=<em>n</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Sets the number of times an animated image should loop.</p>
+      <p>Sets the number of times an animated image should loop.</p>
 
-    <p>The <a href="#animate">animate</a> method and the
-    ImageMagick animate command does not respect this number. Both
-    will repeat the animation until you stop them. Mozilla (and
-    presumably Netscape) do respect the value..</p>
+      <p>
+        The <a href="#animate">animate</a> method and the ImageMagick animate command does not respect this number. Both will repeat the animation until you
+        stop them. Mozilla (and presumably Netscape) do respect the value..
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>The number of iterations.</p>
+      <p>The number of iterations.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>self</p>
+      <p>self</p>
 
-    <h4>Example</h4>
-    <pre>
+      <h4>Example</h4>
+      <pre>
 ilist.iterations = 10
-</pre>
-  </div>
+</pre
+      >
+    </div>
 
-  <div class="sig">
-    <h3 id="length">length</h3>
+    <div class="sig">
+      <h3 id="length">length</h3>
 
-    <p><span class="arg">ilist.</span>length -&gt;
-    <em>integer</em></p>
-  </div>
+      <p><span class="arg">ilist.</span>length -&gt; <em>integer</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Returns the number of images in the imagelist.</p>
+      <p>Returns the number of images in the imagelist.</p>
 
-    <h4>Example</h4>
-    <pre>
+      <h4>Example</h4>
+      <pre>
 i = Magick::ImageList.new("images/Button_A.gif", "images/Button_B.gif")
 i.length &raquo; 2
-</pre>
-  </div>
+</pre
+      >
+    </div>
 
-  <div class="sig">
-    <h3 id="scene">scene, scene=</h3>
+    <div class="sig">
+      <h3 id="scene">scene, scene=</h3>
 
-    <p><span class="arg">ilist</span>.scene -&gt;
-    <em>integer</em><br />
-    <span class="arg">ilist</span>.scene = <em>integer</em></p>
-  </div>
+      <p>
+        <span class="arg">ilist</span>.scene -&gt; <em>integer</em><br />
+        <span class="arg">ilist</span>.scene = <em>integer</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Get/set the current <em>scene number</em>. The scene number
-    indicates the image to which <a href="image1.html">Image</a>
-    methods are sent.</p>
+      <p>Get/set the current <em>scene number</em>. The scene number indicates the image to which <a href="image1.html">Image</a> methods are sent.</p>
 
-    <h4>Example</h4>
-    <pre>
+      <h4>Example</h4>
+      <pre>
 ilist.scene = 10
 ilist.scene &raquo; 10
-</pre>
-  </div>
+</pre
+      >
+    </div>
 
-  <div class="sig">
-    <h3 id="ticks_per_second_eq">ticks_per_second=</h3>
+    <div class="sig">
+      <h3 id="ticks_per_second_eq">ticks_per_second=</h3>
 
-    <p><span class="arg">ilist</span>.ticks_per_second =
-    <em>integer</em></p>
-  </div>
+      <p><span class="arg">ilist</span>.ticks_per_second = <em>integer</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Used in conjunction with <a href="#delay_eq">delay</a> to
-    establish the elapsed time between frames in an animation. By
-    default the number of ticks per second is 100.</p>
+      <p>
+        Used in conjunction with <a href="#delay_eq">delay</a> to establish the elapsed time between frames in an animation. By default the number of ticks per
+        second is 100.
+      </p>
 
-    <h4>Example</h4>
-    <pre>
+      <h4>Example</h4>
+      <pre>
 ilist.ticks_per_second = 1000
-</pre>
-  </div>
+</pre
+      >
+    </div>
 
-  <h2 class="methods">instance methods</h2>
+    <h2 class="methods">instance methods</h2>
 
-  <div class="sig">
-    <h3 id="array_methods">Array methods</h3>
+    <div class="sig">
+      <h3 id="array_methods">Array methods</h3>
 
-    <p>&nbsp;</p>
-  </div>
+      <p>&nbsp;</p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p><code>ImageList</code> delegates many methods to
-    <code>Array</code>, so you can manipulate the images in an
-    imagelist using almost all of the methods defined in
-    <code>Array</code>. Typically these methods also update the
-    scene number. The scene number will never exceed the number of
-    images in the list, and if the imagelist contains no images the
-    scene number will be <code>nil</code>.</p>
+      <p>
+        <code>ImageList</code> delegates many methods to <code>Array</code>, so you can manipulate the images in an imagelist using almost all of the methods
+        defined in <code>Array</code>. Typically these methods also update the scene number. The scene number will never exceed the number of images in the
+        list, and if the imagelist contains no images the scene number will be <code>nil</code>.
+      </p>
 
-    <p>Array methods that would normally return an array return an
-    ImageList.</p>
+      <p>Array methods that would normally return an array return an ImageList.</p>
 
-    <p>Most array methods keep the current image current. If the
-    method moves the current image to a new position, the method
-    updates the scene number to the new index. If the method
-    deletes the current image, the scene number is set to the last
-    image in the list. The following table lists the methods that
-    do not follow these rules.</p>
+      <p>
+        Most array methods keep the current image current. If the method moves the current image to a new position, the method updates the scene number to the
+        new index. If the method deletes the current image, the scene number is set to the last image in the list. The following table lists the methods that do
+        not follow these rules.
+      </p>
 
-    <table summary="array method affect on scene number" class=
-    "simple_table">
-      <caption>
-        Array method behavior
-      </caption>
+      <table summary="array method affect on scene number" class="simple_table">
+        <caption>
+          Array method behavior
+        </caption>
 
-      <thead>
-        <tr>
-          <th>Array method</th>
+        <thead>
+          <tr>
+            <th>Array method</th>
 
-          <th>scene number will be...</th>
-        </tr>
-      </thead>
+            <th>scene number will be...</th>
+          </tr>
+        </thead>
 
-      <tbody>
-        <tr>
-          <td>&lt;&lt;</td>
+        <tbody>
+          <tr>
+            <td>&lt;&lt;</td>
 
-          <td>set to index the last image in the list</td>
-        </tr>
+            <td>set to index the last image in the list</td>
+          </tr>
 
-        <tr>
-          <td>clear</td>
+          <tr>
+            <td>clear</td>
 
-          <td>set to <code>nil</code></td>
-        </tr>
+            <td>set to <code>nil</code></td>
+          </tr>
 
-        <tr>
-          <td>concat</td>
+          <tr>
+            <td>concat</td>
 
-          <td>set to index the last image in the list</td>
-        </tr>
+            <td>set to index the last image in the list</td>
+          </tr>
 
-        <tr>
-          <td>push</td>
+          <tr>
+            <td>push</td>
 
-          <td>set to index the last image in the list</td>
-        </tr>
+            <td>set to index the last image in the list</td>
+          </tr>
 
-        <tr>
-          <td>unshift</td>
+          <tr>
+            <td>unshift</td>
 
-          <td>set to 0</td>
-        </tr>
-      </tbody>
-    </table>
+            <td>set to 0</td>
+          </tr>
+        </tbody>
+      </table>
 
-    <p>Adding anything other than a image to an imagelist has
-    undefined results. Most of the time RMagick will raise an
-    ArgumentError exception. For example, if you call
-    <code>collect!</code> on an imagelist you should make sure that
-    the members of the imagelist remain images. If you need to
-    replace images in an imagelist with non-image objects, convert
-    the imagelist to an array with the <code>to_a</code> method,
-    then modify the array.</p>
+      <p>
+        Adding anything other than a image to an imagelist has undefined results. Most of the time RMagick will raise an ArgumentError exception. For example,
+        if you call <code>collect!</code> on an imagelist you should make sure that the members of the imagelist remain images. If you need to replace images in
+        an imagelist with non-image objects, convert the imagelist to an array with the <code>to_a</code> method, then modify the array.
+      </p>
 
-    <p>The <code>assoc</code>, <code>flatten</code>,
-    <code>flatten!</code>, <code>join</code>, <code>pack</code>,
-    and <code>rassoc</code> methods are not defined in the
-    ImageList class.</p>
+      <p>
+        The <code>assoc</code>, <code>flatten</code>, <code>flatten!</code>, <code>join</code>, <code>pack</code>, and <code>rassoc</code> methods are not
+        defined in the ImageList class.
+      </p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p>Add noise to a model image. Append the resulting image to
-    the imagelist in "example". (See the <code>demo.rb</code>
-    example.)</p>
-    <pre>
+      <p>Add noise to a model image. Append the resulting image to the imagelist in "example". (See the <code>demo.rb</code> example.)</p>
+      <pre>
 example = Magick::ImageList.new
 model = Magick::ImageList.new "model.miff"
 example &lt;&lt; model.add_noise Magick::LaplacisanNoise
-</pre>
+</pre
+      >
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#scene">scene</a>, <a href="#scene">scene=</a></p>
-  </div>
+      <p><a href="#scene">scene</a>, <a href="#scene">scene=</a></p>
+    </div>
 
-  <div class="sig">
-    <h3 id="spaceship">&lt;=&gt;</h3>
+    <div class="sig">
+      <h3 id="spaceship">&lt;=&gt;</h3>
 
-    <p><span class="arg">ilist</span> &lt;=&gt; <span class=
-    "arg">other_imagelist</span> -&gt; -1, 0, 1</p>
-  </div>
+      <p><span class="arg">ilist</span> &lt;=&gt; <span class="arg">other_imagelist</span> -&gt; -1, 0, 1</p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Compares two imagelists and returns -1, 0, or 1 if the
-    receiver is less than, equal to, or greater than the other
-    imagelist. The comparison between the receiver (a) and the
-    other (b) is performed this way:</p>
+      <p>
+        Compares two imagelists and returns -1, 0, or 1 if the receiver is less than, equal to, or greater than the other imagelist. The comparison between the
+        receiver (a) and the other (b) is performed this way:
+      </p>
 
-    <ol>
-      <li>For all images <code>n</code>, if the result of
-      <code>a[n]&nbsp;&lt;=&gt;&nbsp;b[n]</code> is not 0 then that
-      is the result of a&nbsp;&lt;=&gt;&nbsp;b. Individual images
-      are compared by comparing their <a href=
-      "image3.html#signature">signatures</a>.</li>
+      <ol>
+        <li>
+          For all images <code>n</code>, if the result of <code>a[n]&nbsp;&lt;=&gt;&nbsp;b[n]</code> is not 0 then that is the result of
+          a&nbsp;&lt;=&gt;&nbsp;b. Individual images are compared by comparing their <a href="image3.html#signature">signatures</a>.
+        </li>
 
-      <li>If <code>a.scene&nbsp;&lt;=&gt;&nbsp;b.scene</code> is
-      not 0, returns the result</li>
+        <li>If <code>a.scene&nbsp;&lt;=&gt;&nbsp;b.scene</code> is not 0, returns the result</li>
 
-      <li>Returns
-      <code>a.length&nbsp;&lt;=&gt;&nbsp;b.length</code></li>
-    </ol>
+        <li>Returns <code>a.length&nbsp;&lt;=&gt;&nbsp;b.length</code></li>
+      </ol>
 
-    <p><code>ImageList</code> mixes in the <code>Comparable</code>
-    module.</p>
+      <p><code>ImageList</code> mixes in the <code>Comparable</code> module.</p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="image1.html#spaceship">Image#&lt;=&gt;</a>,
-    <a href="image3.html#signature">signature</a></p>
-  </div>
+      <p>
+        <a href="image1.html#spaceship">Image#&lt;=&gt;</a>,
+        <a href="image3.html#signature">signature</a>
+      </p>
+    </div>
 
-  <div class="sig">
-    <h3 id="animate">animate</h3>
+    <div class="sig">
+      <h3 id="animate">animate</h3>
 
-    <p><span class="arg">ilist.</span>animate(<span class=
-    "arg">[delay]</span>) <span class="arg">[&nbsp;{ optional
-    arguments }&nbsp;]</span> -&gt; <em>self</em></p>
-  </div>
+      <p>
+        <span class="arg">ilist.</span>animate(<span class="arg">[delay]</span>) <span class="arg">[&nbsp;{ optional arguments }&nbsp;]</span> -&gt;
+        <em>self</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Animate the images to an X Window screen. By default
-    displays to the local screen. You can specify a different
-    screen by assigning the name to the <code>server_name</code>
-    attribute in the optional arguments block.</p>
+      <p>
+        Animate the images to an X Window screen. By default displays to the local screen. You can specify a different screen by assigning the name to the
+        <code>server_name</code> attribute in the optional arguments block.
+      </p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>self</p>
+      <p>self</p>
 
-    <h4>Example</h4>
-    <pre>
+      <h4>Example</h4>
+      <pre>
 ilist.animate
 ilist.animate { |options| options.server_name = "other:0.0" }
-</pre>
+</pre
+      >
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#display">display</a></p>
+      <p><a href="#display">display</a></p>
 
-    <h4>Note</h4>
+      <h4>Note</h4>
 
-    <p>The animate method is not supported on native MS
-    Windows.</p>
+      <p>The animate method is not supported on native MS Windows.</p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>AnimateImages</p>
-  </div>
+      <p>AnimateImages</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="append">append</h3>
+    <div class="sig">
+      <h3 id="append">append</h3>
 
-    <p><span class="arg">ilist.</span>append(<code>true</code> or
-    <code>false</code>) -&gt; <em>image</em></p>
-  </div>
+      <p><span class="arg">ilist.</span>append(<code>true</code> or <code>false</code>) -&gt; <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Append all the images in the imagelist, either vertically or
-    horizontally. If the images are not of the same width, any
-    narrow images will be expanded to fit using the background
-    color.</p>
+      <p>
+        Append all the images in the imagelist, either vertically or horizontally. If the images are not of the same width, any narrow images will be expanded
+        to fit using the background color.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>If <code>true</code>, rectangular images are stacked
-    top-to-bottom, otherwise left-to-right.</p>
+      <p>If <code>true</code>, rectangular images are stacked top-to-bottom, otherwise left-to-right.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A image composed of all the images in the imagelist.</p>
+      <p>A image composed of all the images in the imagelist.</p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>AppendImages</p>
-  </div>
+      <p>AppendImages</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="average">average</h3>
+    <div class="sig">
+      <h3 id="average">average</h3>
 
-    <p><span class="arg">ilist.</span>average -&gt;
-    <em>image</em></p>
-  </div>
+      <p><span class="arg">ilist.</span>average -&gt; <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Averages all the images together. Each image in the image
-    must have the same width and height.</p>
+      <p>Averages all the images together. Each image in the image must have the same width and height.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A single image representing the average of all the images in
-    the imagelist.</p>
+      <p>A single image representing the average of all the images in the imagelist.</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p class="rollover"><a href=
-    "javascript:popup('average.rb.html')">
-    <!-- This img tag displays the original image when the mouse is over -->
-     <img style="display:none" id="notaveraged" onmouseout=
-    "this.style.display='none'; averaged.style.display=''; averagedspin.style.display='';"
-    title="Click to see the example script" src=
-    "ex/average_before.gif" alt="average example" /><!--
+      <p class="rollover">
+        <a href="javascript:popup('average.rb.html')">
+          <!-- This img tag displays the original image when the mouse is over -->
+          <img
+            style="display: none"
+            id="notaveraged"
+            onmouseout="this.style.display='none'; averaged.style.display=''; averagedspin.style.display='';"
+            title="Click to see the example script"
+            src="ex/average_before.gif"
+            alt="average example" /><!--
                                   This img tag displays the averaged image when the mouse is not over
-                                  --><img style="display:" id=
-"averaged" onmouseover=
-"this.style.display='none'; notaveraged.style.display=''; averagedspin.style.display='none';"
-    src="ex/average_after.gif" alt="average example" /></a>
-    <img src="ex/images/spin.gif" alt="" class="spin" style=
-    "left:131px; display:" id="averagedspin" title=
-    "Mouse over the example to see the 3 original images" /></p>
+                                  --><img
+            style="display:"
+            id="averaged"
+            onmouseover="this.style.display='none'; notaveraged.style.display=''; averagedspin.style.display='none';"
+            src="ex/average_after.gif"
+            alt="average example"
+        /></a>
+        <img
+          src="ex/images/spin.gif"
+          alt=""
+          class="spin"
+          style="left: 131px; display:"
+          id="averagedspin"
+          title="Mouse over the example to see the 3 original images"
+        />
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>AverageImages</p>
-  </div>
+      <p>AverageImages</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="clone">clone</h3>
+    <div class="sig">
+      <h3 id="clone">clone</h3>
 
-    <p><span class="arg">ilist</span>.clone -&gt;
-    <em>other_imagelist</em></p>
-  </div>
+      <p><span class="arg">ilist</span>.clone -&gt; <em>other_imagelist</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Same as <a href="#dup">dup</a>, but the frozen state of the
-    original is propagated to the copy.</p>
+      <p>Same as <a href="#dup">dup</a>, but the frozen state of the original is propagated to the copy.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new imagelist</p>
+      <p>A new imagelist</p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#copy">copy</a></p>
-  </div>
+      <p><a href="#copy">copy</a></p>
+    </div>
 
-  <div class="sig">
-    <h3 id="coalesce">coalesce</h3>
+    <div class="sig">
+      <h3 id="coalesce">coalesce</h3>
 
-    <p><span class="arg">ilist.</span>coalesce -&gt;
-    <em>imagelist</em></p>
-  </div>
+      <p><span class="arg">ilist.</span>coalesce -&gt; <em>imagelist</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Merges all the images in the imagelist into a new imagelist.
-    Each image in the new imagelist is formed by flattening all the
-    previous images.</p>
+      <p>Merges all the images in the imagelist into a new imagelist. Each image in the new imagelist is formed by flattening all the previous images.</p>
 
-    <p>The length of time between images in the new image is
-    specified by the <a href="imageattrs.html#delay">delay</a>
-    attribute of the input image. The position of the image on the
-    merged images is specified by the <a href=
-    "imageattrs.html#page">page</a> attribute of the input
-    image.</p>
+      <p>
+        The length of time between images in the new image is specified by the
+        <a href="imageattrs.html#delay">delay</a> attribute of the input image. The position of the image on the merged images is specified by the
+        <a href="imageattrs.html#page">page</a> attribute of the input image.
+      </p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new imagelist</p>
+      <p>A new imagelist</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p>This example is an animated GIF created by coalescing 25
-    small images in a grid. Mouse over the image to start the
-    animation.</p>
+      <p>This example is an animated GIF created by coalescing 25 small images in a grid. Mouse over the image to start the animation.</p>
 
-    <p class="rollover"><a href=
-    "javascript:popup('coalesce.rb.html')"><img onmouseover=
-    "this.src='ex/coalesce_anim.gif'" onmouseout=
-    "this.src='ex/coalesce.gif'" src="ex/coalesce.gif" alt=
-    "coalesce example" title=
-    "Click the image to see the example script" /></a><img src=
-    "ex/images/spin.gif" alt="" class="spin" style="left:165px"
-    title="Mouse over the example to see the animation" /></p>
+      <p class="rollover">
+        <a href="javascript:popup('coalesce.rb.html')"
+          ><img
+            onmouseover="this.src='ex/coalesce_anim.gif'"
+            onmouseout="this.src='ex/coalesce.gif'"
+            src="ex/coalesce.gif"
+            alt="coalesce example"
+            title="Click the image to see the example script" /></a
+        ><img src="ex/images/spin.gif" alt="" class="spin" style="left: 165px" title="Mouse over the example to see the animation" />
+      </p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#flatten_images">flatten_images</a>, <a href=
-    "#optimize_layers">optimize_layers</a></p>
+      <p>
+        <a href="#flatten_images">flatten_images</a>,
+        <a href="#optimize_layers">optimize_layers</a>
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>CoalesceImages</p>
-  </div>
+      <p>CoalesceImages</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="composite_layers">composite_layers</h3>
+    <div class="sig">
+      <h3 id="composite_layers">composite_layers</h3>
 
-    <p><span class=
-    "arg">destination_list</span>.composite_layers(<span class=
-    "arg">source_list</span>, <span class=
-    "arg">operator</span>=<code>OverCompositeOp</code>) -&gt;
-    <em>imagelist</em></p>
-  </div>
+      <p>
+        <span class="arg">destination_list</span>.composite_layers(<span class="arg">source_list</span>,
+        <span class="arg">operator</span>=<code>OverCompositeOp</code>) -&gt;
+        <em>imagelist</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>An image from <span class="arg">source_list</span> is
-    composited over an image from <span class=
-    "arg">destination_list</span> until one list is finished. Use
-    the <a href="imageattrs.html#geometry">geometry</a> and
-    <a href="imageattrs.html#gravity">gravity</a> attributes of the
-    first image in <span class="arg">destination_list</span> to
-    position the source images over the destination images.
-    <span class="imquote">Unlike a normal composite operation, the
-    canvas offset is also included to the composite positioning. If
-    one of the image lists only contains one image, that image is
-    applied to all the images in the other image list, regardless
-    of which list it is. In this case it is the image meta-data of
-    the list which preserved.</span></p>
+      <p>
+        An image from <span class="arg">source_list</span> is composited over an image from <span class="arg">destination_list</span> until one list is
+        finished. Use the <a href="imageattrs.html#geometry">geometry</a> and <a href="imageattrs.html#gravity">gravity</a> attributes of the first image in
+        <span class="arg">destination_list</span> to position the source images over the destination images.
+        <span class="imquote"
+          >Unlike a normal composite operation, the canvas offset is also included to the composite positioning. If one of the image lists only contains one
+          image, that image is applied to all the images in the other image list, regardless of which list it is. In this case it is the image meta-data of the
+          list which preserved.</span
+        >
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>The optional <span class="arg">operator</span> argument
-    specifies a <a href=
-    "constants.html#CompositeOperator">CompositeOperator</a> to use
-    for the compositing operations.</p>
+      <p>
+        The optional <span class="arg">operator</span> argument specifies a <a href="constants.html#CompositeOperator">CompositeOperator</a> to use for the
+        compositing operations.
+      </p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>An imagelist</p>
+      <p>An imagelist</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p>This example is an animated GIF. Mouse over the image to
-    start the animation.</p>
+      <p>This example is an animated GIF. Mouse over the image to start the animation.</p>
 
-    <p class="rollover"><a href=
-    "javascript:popup('composite_layers.rb.html')"><img onmouseover="this.src='ex/composite_layers.gif'"
-    onmouseout="this.src='ex/composite_layers1.gif'" src=
-    "ex/composite_layers1.gif" alt="composite_layers example"
-    title="Click the image to see the example script" /></a><img src="ex/images/spin.gif"
-    alt="" class="spin" style="left:105px" title=
-    "Mouse over the example to see the animation" /></p>
+      <p class="rollover">
+        <a href="javascript:popup('composite_layers.rb.html')"
+          ><img
+            onmouseover="this.src='ex/composite_layers.gif'"
+            onmouseout="this.src='ex/composite_layers1.gif'"
+            src="ex/composite_layers1.gif"
+            alt="composite_layers example"
+            title="Click the image to see the example script" /></a
+        ><img src="ex/images/spin.gif" alt="" class="spin" style="left: 105px" title="Mouse over the example to see the animation" />
+      </p>
 
-    <h4>Notes</h4>
+      <h4>Notes</h4>
 
-    <p>This method is equivalent to the <code>-layers
-    Composite</code> option of ImageMagick's <code>convert</code>
-    command. See the <a href=
-    "http://www.imagemagick.org/Usage/anim_mods/#composite">Layers
-    Composition</a> section in <a href=
-    "http://www.imagemagick.org/Usage/">Examples of ImageMagick
-    Usage</a> for more information.</p>
+      <p>
+        This method is equivalent to the <code>-layers Composite</code> option of ImageMagick's <code>convert</code> command. See the
+        <a href="http://www.imagemagick.org/Usage/anim_mods/#composite">Layers Composition</a>
+        section in
+        <a href="http://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>
+        for more information.
+      </p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#optimize_layers">optimize_layers</a></p>
-  </div>
+      <p><a href="#optimize_layers">optimize_layers</a></p>
+    </div>
 
-  <div class="sig">
-    <h3 id="copy">copy</h3>
+    <div class="sig">
+      <h3 id="copy">copy</h3>
 
-    <p><span class="arg">ilist.</span>copy -&gt;
-    <em>other_imagelist</em></p>
-  </div>
+      <p><span class="arg">ilist.</span>copy -&gt; <em>other_imagelist</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Creates a deep copy of the imagelist. The new imagelist
-    contains a copy of all the images in the original
-    imagelist.</p>
+      <p>Creates a deep copy of the imagelist. The new imagelist contains a copy of all the images in the original imagelist.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>An imagelist</p>
+      <p>An imagelist</p>
 
-    <h4>Example</h4>
-    <pre>
+      <h4>Example</h4>
+      <pre>
 imagelist2 = imagelist1.copy
-</pre>
+</pre
+      >
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="image1.html#copy">Image#copy</a>, <a href=
-    "#clone">clone</a>, <a href="#dup">dup</a></p>
-  </div>
+      <p>
+        <a href="image1.html#copy">Image#copy</a>, <a href="#clone">clone</a>,
+        <a href="#dup">dup</a>
+      </p>
+    </div>
 
-  <div class="sig">
-    <h3 id="cur_image">cur_image</h3>
+    <div class="sig">
+      <h3 id="cur_image">cur_image</h3>
 
-    <p><span class="arg">ilist.</span>cur_image -&gt;
-    <em>image</em></p>
-  </div>
+      <p><span class="arg">ilist.</span>cur_image -&gt; <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Retrieves the image indexed by <a href="#scene">scene</a>.
-    Raises <code>IndexError</code> if there are no images in the
-    list.</p>
+      <p>Retrieves the image indexed by <a href="#scene">scene</a>. Raises <code>IndexError</code> if there are no images in the list.</p>
 
-    <p>Both the ImageList class and the Image class support the
-    <code>cur_image</code> method. Of course, in the Image class,
-    <code>cur_image</code> simply returns <code>self</code>. When a
-    method accepts either an image or a imagelist as an argument,
-    it sends the <code>cur_image</code> method to the argument to
-    get the current image.</p>
+      <p>
+        Both the ImageList class and the Image class support the
+        <code>cur_image</code> method. Of course, in the Image class, <code>cur_image</code> simply returns <code>self</code>. When a method accepts either an
+        image or a imagelist as an argument, it sends the <code>cur_image</code> method to the argument to get the current image.
+      </p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>An image</p>
-  </div>
+      <p>An image</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="deconstruct">deconstruct</h3>
+    <div class="sig">
+      <h3 id="deconstruct">deconstruct</h3>
 
-    <p><span class="arg">ilist.</span>deconstruct -&gt;
-    <em>imagelist</em></p>
-  </div>
+      <p><span class="arg">ilist.</span>deconstruct -&gt; <em>imagelist</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>This method constructs a new imagelist containing images
-    that include only the changed pixels between each image and its
-    successor. The resulting imagelist usually produces a much
-    smaller file.</p>
+      <p>
+        This method constructs a new imagelist containing images that include only the changed pixels between each image and its successor. The resulting
+        imagelist usually produces a much smaller file.
+      </p>
 
-    <p>The <code>deconstruct</code> method starts by copying the
-    first image in the list to the output imagelist. Then, for each
-    pair of images, <code>deconstruct</code> computes the smallest
-    rectangle that encompasses all the changes between the first
-    and second image and stores just the changed rectangle of the
-    second image, along with the offset of the rectangle relative
-    to the boundary of the first image.</p>
+      <p>
+        The <code>deconstruct</code> method starts by copying the first image in the list to the output imagelist. Then, for each pair of images,
+        <code>deconstruct</code> computes the smallest rectangle that encompasses all the changes between the first and second image and stores just the changed
+        rectangle of the second image, along with the offset of the rectangle relative to the boundary of the first image.
+      </p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new imagelist</p>
+      <p>A new imagelist</p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>DeconstructImages</p>
+      <p>DeconstructImages</p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#optimize_layers">optimize_layers</a></p>
-  </div>
+      <p><a href="#optimize_layers">optimize_layers</a></p>
+    </div>
 
-  <div class="sig">
-    <h3 id="dup">dup</h3>
+    <div class="sig">
+      <h3 id="dup">dup</h3>
 
-    <p><span class="arg">ilist</span>.dup -&gt;
-    <em>other_imagelist</em></p>
-  </div>
+      <p><span class="arg">ilist</span>.dup -&gt; <em>other_imagelist</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Makes a <em>shallow</em> copy of the receiver. The image
-    elements in the new imagelist are references to the image
-    elements in the original imagelist, not copies.</p>
+      <p>
+        Makes a <em>shallow</em> copy of the receiver. The image elements in the new imagelist are references to the image elements in the original imagelist,
+        not copies.
+      </p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#copy">copy</a>, <a href="#clone">clone</a></p>
-  </div>
+      <p><a href="#copy">copy</a>, <a href="#clone">clone</a></p>
+    </div>
 
-  <div class="sig">
-    <h3 id="display">display</h3>
+    <div class="sig">
+      <h3 id="display">display</h3>
 
-    <p><span class="arg">ilist.</span>display <span class=
-    "arg">[&nbsp;{ optional arguments }&nbsp;]</span> -&gt;
-    <em>self</em></p>
-  </div>
+      <p>
+        <span class="arg">ilist.</span>display <span class="arg">[&nbsp;{ optional arguments }&nbsp;]</span> -&gt;
+        <em>self</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Displays the images in the imagelist to any X Window screen.
-    By default displays to the local screen. You can specify a
-    different screen by assigning the name to the
-    <code>server_name</code> attribute in the optional arguments
-    block.</p>
+      <p>
+        Displays the images in the imagelist to any X Window screen. By default displays to the local screen. You can specify a different screen by assigning
+        the name to the <code>server_name</code> attribute in the optional arguments block.
+      </p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>self</p>
+      <p>self</p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#animate">animate</a>, <a href=
-    "image1.html#display">Image#display</a></p>
+      <p>
+        <a href="#animate">animate</a>,
+        <a href="image1.html#display">Image#display</a>
+      </p>
 
-    <h4>Note</h4>
+      <h4>Note</h4>
 
-    <p>The display method is not supported on native MS
-    Windows.</p>
+      <p>The display method is not supported on native MS Windows.</p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>DisplayImages</p>
-  </div>
+      <p>DisplayImages</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="flatten_images">flatten_images</h3>
+    <div class="sig">
+      <h3 id="flatten_images">flatten_images</h3>
 
-    <p><span class="arg">ilist.</span>flatten_images -&gt;
-    <em>image</em></p>
-  </div>
+      <p><span class="arg">ilist.</span>flatten_images -&gt; <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Combines all the images in the imagelist into a single image
-    by overlaying each successive image onto the preceding images.
-    If a image has transparent areas, the underlying image will
-    show through. Use the <a href="imageattrs.html#page">page</a>
-    attribute to specify the position of each image with respect to
-    the preceding images.</p>
+      <p>
+        Combines all the images in the imagelist into a single image by overlaying each successive image onto the preceding images. If a image has transparent
+        areas, the underlying image will show through. Use the
+        <a href="imageattrs.html#page">page</a> attribute to specify the position of each image with respect to the preceding images.
+      </p>
 
-    <p class="imquote">This is useful for combining Photoshop
-    layers into a single image.</p>
+      <p class="imquote">This is useful for combining Photoshop layers into a single image.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>An image</p>
+      <p>An image</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p><a href=
-    "javascript:popup('flatten_images.rb.html')"><img alt=
-    "flatten_images example" src="ex/flatten_images.gif" title=
-    "Click to see the example script" /></a></p>
+      <p>
+        <a href="javascript:popup('flatten_images.rb.html')"
+          ><img alt="flatten_images example" src="ex/flatten_images.gif" title="Click to see the example script"
+        /></a>
+      </p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#coalesce">coalesce</a>, <a href=
-    "#optimize_layers">optimize_layers</a></p>
+      <p>
+        <a href="#coalesce">coalesce</a>,
+        <a href="#optimize_layers">optimize_layers</a>
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>MergeImageLayers with the FlattenLayer method.</p>
-  </div>
+      <p>MergeImageLayers with the FlattenLayer method.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="from_blob">from_blob</h3>
+    <div class="sig">
+      <h3 id="from_blob">from_blob</h3>
 
-    <p><span class="arg">ilist.</span>from_blob(blob<span class=
-    "arg">[, blob...]</span>) <span class="arg">[&nbsp;{ optional
-    arguments }&nbsp;]</span> -&gt; <em>self</em></p>
-  </div>
+      <p>
+        <span class="arg">ilist.</span>from_blob(blob<span class="arg">[, blob...]</span>) <span class="arg">[&nbsp;{ optional arguments }&nbsp;]</span> -&gt;
+        <em>self</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Creates images from the blob (<em>B</em>inary <em>L</em>arge
-    <em>O</em>bjects) arguments and appends the images to the
-    imagelist.</p>
+      <p>Creates images from the blob (<em>B</em>inary <em>L</em>arge <em>O</em>bjects) arguments and appends the images to the imagelist.</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>A <em>blob</em> can be a string containing an image file
-    such as a JPEG or GIF. The string can contain a multi-image
-    file such as an animated GIF or a Photoshop image with multiple
-    layers. A blob can also be one of the strings produced by
-    <a href="#to_blob">to_blob</a>. Control how the image(s) are
-    created by setting additional <a href=
-    "info.html">Image::Info</a> attributes in the optional block
-    argument. Useful attributes include <a href=
-    "info.html#scene">scene</a>, <a href=
-    "info.html#number_scenes">number_scenes</a>, and <a href=
-    "info.html#extract">extract</a>.</p>
+      <p>
+        A <em>blob</em> can be a string containing an image file such as a JPEG or GIF. The string can contain a multi-image file such as an animated GIF or a
+        Photoshop image with multiple layers. A blob can also be one of the strings produced by <a href="#to_blob">to_blob</a>. Control how the image(s) are
+        created by setting additional <a href="info.html">Image::Info</a> attributes in the optional block argument. Useful attributes include
+        <a href="info.html#scene">scene</a>, <a href="info.html#number_scenes">number_scenes</a>, and <a href="info.html#extract">extract</a>.
+      </p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>An image created from the blob argument(s). The
-    <code>scene</code> attribute is set to the last image in the
-    imagelist.</p>
+      <p>
+        An image created from the blob argument(s). The
+        <code>scene</code> attribute is set to the last image in the imagelist.
+      </p>
 
-    <h4>Example</h4>
-    <pre>
+      <h4>Example</h4>
+      <pre>
 require "rmagick"
 
 f = File.open('Cheetah.jpg')
@@ -923,1058 +897,1000 @@ blob = f.read
 ilist = Magick::ImageList.new
 ilist.from_blob(blob)
 ilist.display
-</pre>
+</pre
+      >
 
-    <h4>See also</h4><a href="#to_blob">to_blob</a>, <a href=
-    "image3.html#to_blob">Image#to_blob</a>, <a href=
-    "image1.html#from_blob">Image.from_blob</a>
+      <h4>See also</h4>
+      <a href="#to_blob">to_blob</a>, <a href="image3.html#to_blob">Image#to_blob</a>,
+      <a href="image1.html#from_blob">Image.from_blob</a>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>BlobToImageList</p>
-  </div>
+      <p>BlobToImageList</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="fx">fx</h3>
+    <div class="sig">
+      <h3 id="fx">fx</h3>
 
-    <p><span class="arg">ilist</span> .fx(<span class=
-    "arg">expression</span> [, <span class=
-    "arg">channel</span>...]) -&gt; <em>image</em></p>
-  </div>
+      <p><span class="arg">ilist</span> .fx(<span class="arg">expression</span> [, <span class="arg">channel</span>...]) -&gt; <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Applies the specified mathematical expression to the input
-    images. This method corresponds to ImageMagick's <a href=
-    "https://imagemagick.org/script/fx.php">-fx</a>
-    operator.</p>
+      <p>
+        Applies the specified mathematical expression to the input images. This method corresponds to ImageMagick's
+        <a href="https://imagemagick.org/script/fx.php">-fx</a> operator.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>expression</dt>
+      <dl>
+        <dt>expression</dt>
 
-      <dd>A mathematical expression of the form accepted by the -fx
-      operator..</dd>
+        <dd>A mathematical expression of the form accepted by the -fx operator..</dd>
 
-      <dt>channel...</dt>
+        <dt>channel...</dt>
 
-      <dd>0 or more <a href=
-      "constants.html#ChannelType">ChannelType</a> arguments.
-      Specify the output channels. If no channels are specified the
-      result is set over all channels except the opacity
-      channel.</dd>
-    </dl>
+        <dd>
+          0 or more
+          <a href="constants.html#ChannelType">ChannelType</a> arguments. Specify the output channels. If no channels are specified the result is set over all
+          channels except the opacity channel.
+        </dd>
+      </dl>
 
-    <h4>Notes</h4>
+      <h4>Notes</h4>
 
-    <ul>
-      <li>Fx expressions are interpreted. Therefore this method can
-      be quite slow depending on the complexity of the expression.
-      Generally you will get better performance by accessing the
-      image pixels as <a href="struct.html#Pixel">Pixel</a> objects
-      (see <a href="image2.html#get_pixels">get_pixels</a> and
-      <a href="image3.html#view">view</a>) and using Ruby code to
-      perform the mathematics.</li>
+      <ul>
+        <li>
+          Fx expressions are interpreted. Therefore this method can be quite slow depending on the complexity of the expression. Generally you will get better
+          performance by accessing the image pixels as
+          <a href="struct.html#Pixel">Pixel</a> objects (see <a href="image2.html#get_pixels">get_pixels</a> and <a href="image3.html#view">view</a>) and using
+          Ruby code to perform the mathematics.
+        </li>
 
-      <li>The <code>u</code> and <code>v</code> symbols refer to
-      the 0th and 1st image in the list. The image reference index
-      (<code>u[2]</code> for example) works as expected. The
-      current <a href="#scene">scene number</a> has no meaning in
-      the context of the <code>fx</code> method.</li>
+        <li>
+          The <code>u</code> and <code>v</code> symbols refer to the 0th and 1st image in the list. The image reference index (<code>u[2]</code> for example)
+          works as expected. The current <a href="#scene">scene number</a> has no meaning in the context of the <code>fx</code> method.
+        </li>
 
-      <li>To specify a non-default pixel interpolation method, set
-      the <a href=
-      "imageattrs.html#pixel_interpolation_method">pixel_interpolation_method</a>
-      attribute of the last image in the list.</li>
-    </ul>
+        <li>
+          To specify a non-default pixel interpolation method, set the
+          <a href="imageattrs.html#pixel_interpolation_method">pixel_interpolation_method</a>
+          attribute of the last image in the list.
+        </li>
+      </ul>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>The image created by the expression.</p>
+      <p>The image created by the expression.</p>
 
-    <h4>Example</h4>
-    <pre>
+      <h4>Example</h4>
+      <pre>
 # Produce a navy blue image from a black image
 imgl = Magick::ImageList.new
 imgl &lt;&lt; Magick::Image.new(64, 64) { |options| options.background_color = 'black'}
 
 res = imgl.fx('1/2', Magick::BlueChannel)
-</pre>
+</pre
+      >
 
-    <h4>ImageMagick API</h4>
+      <h4>ImageMagick API</h4>
 
-    <p>FxImageChannel</p>
+      <p>FxImageChannel</p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="image2.html#get_pixels">get_pixels</a>, <a href=
-    "image3.html#view">view</a></p>
-  </div>
+      <p>
+        <a href="image2.html#get_pixels">get_pixels</a>,
+        <a href="image3.html#view">view</a>
+      </p>
+    </div>
 
-  <div class="sig">
-    <h3 id="inspect">inspect</h3>
+    <div class="sig">
+      <h3 id="inspect">inspect</h3>
 
-    <p><span class="arg">ilist.</span>inspect -&gt;
-    <em>string</em></p>
-  </div>
+      <p><span class="arg">ilist.</span>inspect -&gt; <em>string</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Produces a string that describes the images in the
-    imagelist.</p>
+      <p>Produces a string that describes the images in the imagelist.</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>The returned string is a concatenation of the strings
-    returned by <a href="image2.html#inspect">Image#inspect</a> for
-    all the images in the imagelist.</p>
+      <p>
+        The returned string is a concatenation of the strings returned by
+        <a href="image2.html#inspect">Image#inspect</a> for all the images in the imagelist.
+      </p>
 
-    <h4>Example</h4>
-    <pre>
+      <h4>Example</h4>
+      <pre>
 i = Magick::ImageList.new("images/Button_A.gif", "images/Button_B.gif")
 &raquo; [images/Button_A.gif GIF 127x120+0+0 PseudoClass 256c 8-bit 18136b
 images/Button_B.gif GIF 127x120+0+0 PseudoClass 256c 8-bit 5157b]
 scene=1
-</pre>
+</pre
+      >
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="image2.html#inspect">Image#inspect</a></p>
-  </div>
+      <p><a href="image2.html#inspect">Image#inspect</a></p>
+    </div>
 
-  <div class="sig">
-    <h3 id="montage">montage</h3>
+    <div class="sig">
+      <h3 id="montage">montage</h3>
 
-    <p><span class="arg">ilist.</span>montage <span class=
-    "arg">[&nbsp;{ optional arguments }&nbsp;]</span> -&gt;
-    <em>imagelist</em></p>
-  </div>
+      <p>
+        <span class="arg">ilist.</span>montage <span class="arg">[&nbsp;{ optional arguments }&nbsp;]</span> -&gt;
+        <em>imagelist</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Creates a composite image by reducing the size of the input
-    images and arranging them in a grid on the background color or
-    texture of your choice. There are many configuration options.
-    For example, you can specify the number of columns and rows,
-    the distance between images, and include a label with each
-    small image (called a <em>tile</em>).</p>
+      <p>
+        Creates a composite image by reducing the size of the input images and arranging them in a grid on the background color or texture of your choice. There
+        are many configuration options. For example, you can specify the number of columns and rows, the distance between images, and include a label with each
+        small image (called a <em>tile</em>).
+      </p>
 
-    <p>All of <code>montage</code>'s configuration options are
-    specified by assigning values to attributes in a block
-    associated with the method call.</p>
+      <p>All of <code>montage</code>'s configuration options are specified by assigning values to attributes in a block associated with the method call.</p>
 
-    <p>As you can see in the examples below, when you assign a
-    value to a montage attribute you must specify <code>self</code>
-    as the receiver so that Ruby can distinguish the method call
-    from an assignment to a local variable.</p>
+      <p>
+        As you can see in the examples below, when you assign a value to a montage attribute you must specify <code>self</code> as the receiver so that Ruby can
+        distinguish the method call from an assignment to a local variable.
+      </p>
 
-    <p>You may assign a <a href="struct.html#Pixel">Pixel</a>
-    object to any attribute that accepts a color name.</p>
+      <p>You may assign a <a href="struct.html#Pixel">Pixel</a> object to any attribute that accepts a color name.</p>
 
-    <h4>Montage attributes</h4>
+      <h4>Montage attributes</h4>
 
-    <dl>
-      <dt>background_color=</dt>
+      <dl>
+        <dt>background_color=</dt>
 
-      <dd>The composite image background color.</dd>
+        <dd>The composite image background color.</dd>
 
-      <dt>border_color=</dt>
+        <dt>border_color=</dt>
 
-      <dd>The tile border color.</dd>
+        <dd>The tile border color.</dd>
 
-      <dt>border_width=</dt>
+        <dt>border_width=</dt>
 
-      <dd>The tile border width in pixels.</dd>
+        <dd>The tile border width in pixels.</dd>
 
-      <dt>compose=</dt>
+        <dt>compose=</dt>
 
-      <dd>The <a href="constants.html#CompositeOperator">composite
-      operator</a> to use when compositing the tile images onto the
-      background. The default composition operator is
-      <code>OverCompositeOp</code>.</dd>
+        <dd>
+          The
+          <a href="constants.html#CompositeOperator">composite operator</a> to use when compositing the tile images onto the background. The default composition
+          operator is <code>OverCompositeOp</code>.
+        </dd>
 
-      <dd><em>Hint:</em> You can use a different composite operator
-      for each tile by setting each image's <a href=
-      "imageattrs.html#compose">compose=</a> attribute to the
-      desired operator. In the optional arguments block, set
-      <code>compose</code> to UndefinedCompositeOp.</dd>
+        <dd>
+          <em>Hint:</em> You can use a different composite operator for each tile by setting each image's
+          <a href="imageattrs.html#compose">compose=</a> attribute to the desired operator. In the optional arguments block, set <code>compose</code> to
+          UndefinedCompositeOp.
+        </dd>
 
-      <dt>fill=</dt>
+        <dt>fill=</dt>
 
-      <dd>If the tiles have labels, the label fill color. The
-      default fill color is black.</dd>
+        <dd>If the tiles have labels, the label fill color. The default fill color is black.</dd>
 
-      <dt>font=</dt>
+        <dt>font=</dt>
 
-      <dd>If the tiles have labels, the label font. The default
-      font is Helvetica.</dd>
+        <dd>If the tiles have labels, the label font. The default font is Helvetica.</dd>
 
-      <dt>frame=</dt>
+        <dt>frame=</dt>
 
-      <dd>
-        The size of an ornamental frame surrounding each tile. The
-        frame specification may be either a string or a <a href=
-        "struct.html#Geometry">Geometry</a> object. If the argument
-        is a string, it must have the form
-        <code>&lt;width&gt;x&lt;height&gt;+&lt;outer bevel
-        width&gt;+&lt;inner bevel width&gt;</code>. If the argument
-        is a Geometry object, specify the width and height of the
-        frame with the <code>width</code> and <code>height</code>
-        attributes, and specify the outer bevel width and the inner
-        bevel width with the <code>x</code> and <code>y</code>
-        attributes. The values are in pixels. For example, to
-        surround each tile with a frame 20 pixels wide by 20 pixels
-        high and a 4-pixel inner and outer bevel, use:
-        <pre>
+        <dd>
+          The size of an ornamental frame surrounding each tile. The frame specification may be either a string or a
+          <a href="struct.html#Geometry">Geometry</a> object. If the argument is a string, it must have the form
+          <code>&lt;width&gt;x&lt;height&gt;+&lt;outer bevel width&gt;+&lt;inner bevel width&gt;</code>. If the argument is a Geometry object, specify the width
+          and height of the frame with the <code>width</code> and <code>height</code> attributes, and specify the outer bevel width and the inner bevel width
+          with the <code>x</code> and <code>y</code>
+          attributes. The values are in pixels. For example, to surround each tile with a frame 20 pixels wide by 20 pixels high and a 4-pixel inner and outer
+          bevel, use:
+          <pre>
 options.frame = "20x20+4+4"
-</pre>or
-        <pre>
+</pre
+          >
+          or
+          <pre>
 options.frame = Magick::Geometry.new(20,20,4,4)
-</pre>
-      </dd>
+</pre
+          >
+        </dd>
 
-      <dd>If the tile has a label, the label is included in the
-      frame. The default is to have no frame.</dd>
+        <dd>If the tile has a label, the label is included in the frame. The default is to have no frame.</dd>
 
-      <dd>See <a href="image2.html#frame">Image#frame</a>.</dd>
+        <dd>See <a href="image2.html#frame">Image#frame</a>.</dd>
 
-      <dt>geometry=</dt>
+        <dt>geometry=</dt>
 
-      <dd>
-        The size of the tiles and the distance between tiles. The
-        value can be either a <a href=
-        "imusage.html#geometry">geometry string</a> or a <a href=
-        "struct.html#Geometry">Geometry</a> object. The geometry
-        string has the form:
-        <code>&lt;tile-width&gt;x&lt;tile-height&gt;+&lt;distance-between-columns&gt;+&lt;distance-between-rows&gt;</code>.
-        If you use a Geometry object, specify the tile width and
-        height with the <code>width</code> and <code>height</code>
-        attributes, and the distance between rows and distance
-        between columns by the <code>x</code> and <code>y</code>
-        attributes. To create tiles that are 130 pixels wide and
-        194 pixels tall, with 10 pixels between each column of
-        tiles and 5 between each row, use:
-        <pre>
+        <dd>
+          The size of the tiles and the distance between tiles. The value can be either a <a href="imusage.html#geometry">geometry string</a> or a
+          <a href="struct.html#Geometry">Geometry</a> object. The geometry string has the form:
+          <code>&lt;tile-width&gt;x&lt;tile-height&gt;+&lt;distance-between-columns&gt;+&lt;distance-between-rows&gt;</code>. If you use a Geometry object,
+          specify the tile width and height with the <code>width</code> and <code>height</code> attributes, and the distance between rows and distance between
+          columns by the <code>x</code> and <code>y</code>
+          attributes. To create tiles that are 130 pixels wide and 194 pixels tall, with 10 pixels between each column of tiles and 5 between each row, use:
+          <pre>
 options.geometry = "130x194+10+5"
-</pre>or
-        <pre>
+</pre
+          >
+          or
+          <pre>
 options.geometry = Magick::Geometry.new(130, 194, 10, 5)
-</pre>Both the geometry string and the <code>Geometry</code> object
-support flags that specify additional constraints. The default
-geometry is "120x120+4+3&gt;".
-      </dd>
+</pre
+          >
+          Both the geometry string and the <code>Geometry</code> object support flags that specify additional constraints. The default geometry is
+          "120x120+4+3&gt;".
+        </dd>
 
-      <dt>gravity=</dt>
+        <dt>gravity=</dt>
 
-      <dd>The <a href="constants.html#GravityType">direction</a>
-      used when adding the tile labels. (See <a href=
-      "draw.html#Draw.annotate">annotate</a>.)</dd>
+        <dd>The <a href="constants.html#GravityType">direction</a> used when adding the tile labels. (See <a href="draw.html#Draw.annotate">annotate</a>.)</dd>
 
-      <dt>matte_color=</dt>
+        <dt>matte_color=</dt>
 
-      <dd>The matte color. The default is #bdbdbd.</dd>
+        <dd>The matte color. The default is #bdbdbd.</dd>
 
-      <dt>pointsize=</dt>
+        <dt>pointsize=</dt>
 
-      <dd>If the tiles have labels, the size of the label font in
-      points. The default is 12 points.</dd>
+        <dd>If the tiles have labels, the size of the label font in points. The default is 12 points.</dd>
 
-      <dt>shadow=</dt>
+        <dt>shadow=</dt>
 
-      <dd>If set to <code>true</code>, adds a drop shadow to each
-      tile. The default is <code>false</code>.</dd>
+        <dd>If set to <code>true</code>, adds a drop shadow to each tile. The default is <code>false</code>.</dd>
 
-      <dt>stroke=</dt>
+        <dt>stroke=</dt>
 
-      <dd>If the tiles have labels, sets the stroke (outline) color
-      of the label text. The default is "transparent".</dd>
+        <dd>If the tiles have labels, sets the stroke (outline) color of the label text. The default is "transparent".</dd>
 
-      <dt>texture=</dt>
+        <dt>texture=</dt>
 
-      <dd>
-        A image to be tiled on the background of the composite
-        image. If present, this attribute overrides the background
-        color. For example, to use ImageMagick's built-in "granite"
-        texture as the background, use:
-        <pre>
+        <dd>
+          A image to be tiled on the background of the composite image. If present, this attribute overrides the background color. For example, to use
+          ImageMagick's built-in "granite" texture as the background, use:
+          <pre>
 options.texture = Magick::Image.read("granite:").first
-</pre>
+</pre
+          >
 
-        <p>The default is no texture.</p>
-      </dd>
+          <p>The default is no texture.</p>
+        </dd>
 
-      <dt>tile=</dt>
+        <dt>tile=</dt>
 
-      <dd>
-        The number of columns and rows to use when arranging the
-        tiles on the composite image. The value can be either a
-        string or a <a href="struct.html#Geometry">Geometry</a>
-        object. If the value is a string, it should have the form
-        <code>"&lt;columns&gt;x&lt;rows&gt;"</code>. If the value
-        is a Geometry object, specify the number of columns as the
-        <code>width</code> attribute and the number of rows as the
-        <code>height</code> attribute. <code>montage</code> always
-        generates all the rows, leaving empty cells if necessary.
-        To arrange the tiles 4 across and 10 down, use:
-        <pre>
+        <dd>
+          The number of columns and rows to use when arranging the tiles on the composite image. The value can be either a string or a
+          <a href="struct.html#Geometry">Geometry</a>
+          object. If the value is a string, it should have the form
+          <code>"&lt;columns&gt;x&lt;rows&gt;"</code>. If the value is a Geometry object, specify the number of columns as the <code>width</code> attribute and
+          the number of rows as the <code>height</code> attribute. <code>montage</code> always generates all the rows, leaving empty cells if necessary. To
+          arrange the tiles 4 across and 10 down, use:
+          <pre>
 options.tile = "4x10"
-</pre>or
-        <pre>
+</pre
+          >
+          or
+          <pre>
 options.tile = Magick::Geometry.new(4,10)
-</pre>
+</pre
+          >
 
-        <p>The default is "6x4". If there are too many tiles to fit
-        on one composite image, <code>montage</code> creates
-        multiple composite images.</p>
-      </dd>
+          <p>The default is "6x4". If there are too many tiles to fit on one composite image, <code>montage</code> creates multiple composite images.</p>
+        </dd>
 
-      <dt>title=</dt>
+        <dt>title=</dt>
 
-      <dd>Adds a title over the whole montage.</dd>
-    </dl>
+        <dd>Adds a title over the whole montage.</dd>
+      </dl>
 
-    <h4>Tile labels</h4>
+      <h4>Tile labels</h4>
 
-    <p>To add labels to the tiles, assign a "Label" property to
-    each image. The <code>montage</code> method will use the value
-    of the property as the label. For example,</p>
-    <pre>
+      <p>
+        To add labels to the tiles, assign a "Label" property to each image. The
+        <code>montage</code> method will use the value of the property as the label. For example,
+      </p>
+      <pre>
 img[2]['Label'] = "Mom's Birthday"
-</pre>
+</pre
+      >
 
-    <p>See <a href="image1.html#aset">[]=</a>.</p>
+      <p>See <a href="image1.html#aset">[]=</a>.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>An imagelist that contains as many images as are required to
-    display all the tiles.</p>
+      <p>An imagelist that contains as many images as are required to display all the tiles.</p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>MontageImages</p>
-  </div>
+      <p>MontageImages</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="morph">morph</h3>
+    <div class="sig">
+      <h3 id="morph">morph</h3>
 
-    <p><span class="arg">ilist.</span>morph(<span class=
-    "arg">n</span>) -&gt; <em>imagelist</em></p>
-  </div>
+      <p>
+        <span class="arg">ilist.</span>morph(<span class="arg">n</span>) -&gt;
+        <em>imagelist</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Transforms a image into another image by inserting
-    <code>n</code> in-between images. Requires at least two images.
-    If more images are present, the 2nd image is transformed into
-    the 3rd, the 3rd to the 4th, etc.</p>
+      <p>
+        Transforms a image into another image by inserting
+        <code>n</code> in-between images. Requires at least two images. If more images are present, the 2nd image is transformed into the 3rd, the 3rd to the
+        4th, etc.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>The number of in-between images to insert between each pair
-    of images.</p>
+      <p>The number of in-between images to insert between each pair of images.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>An imagelist containing copies of the original images plus
-    the in-between images.</p>
+      <p>An imagelist containing copies of the original images plus the in-between images.</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p>This animated GIF was created by reading the "0", "1", "2"
-    and "3" images, then using <code>morph</code> to create 8
-    images between each original image. Mouse over the image to
-    start the animation.</p>
+      <p>
+        This animated GIF was created by reading the "0", "1", "2" and "3" images, then using <code>morph</code> to create 8 images between each original image.
+        Mouse over the image to start the animation.
+      </p>
 
-    <p class="rollover"><a href=
-    "javascript:popup('morph.rb.html')"><img onmouseover=
-    "this.src='ex/morph.gif'" onmouseout=
-    "this.src='ex/images/Button_0.gif'" src=
-    "ex/images/Button_0.gif" alt="morph example" title=
-    "Click the image to see the example script" /></a><img src=
-    "ex/images/spin.gif" alt="" class="spin" style="left:131px"
-    title="Mouse over the example to see the animation" /></p>
+      <p class="rollover">
+        <a href="javascript:popup('morph.rb.html')"
+          ><img
+            onmouseover="this.src='ex/morph.gif'"
+            onmouseout="this.src='ex/images/Button_0.gif'"
+            src="ex/images/Button_0.gif"
+            alt="morph example"
+            title="Click the image to see the example script" /></a
+        ><img src="ex/images/spin.gif" alt="" class="spin" style="left: 131px" title="Mouse over the example to see the animation" />
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>MorphImages</p>
-  </div>
+      <p>MorphImages</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="mosaic">mosaic</h3>
+    <div class="sig">
+      <h3 id="mosaic">mosaic</h3>
 
-    <p><span class="arg">ilist.</span>mosaic -&gt;
-    <em>image</em></p>
-  </div>
+      <p><span class="arg">ilist.</span>mosaic -&gt; <em>image</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Composites all the images into a single new image. The
-    location of each image is determined by the value of its
-    <a href="imageattrs.html#page">page</a> attribute.</p>
+      <p>
+        Composites all the images into a single new image. The location of each image is determined by the value of its
+        <a href="imageattrs.html#page">page</a> attribute.
+      </p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>An image</p>
+      <p>An image</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p><a href="javascript:popup('mosaic.rb.html')"><img src=
-    "ex/mosaic.gif" alt="mosaic example" title=
-    "Click to see the example script" /></a></p>
+      <p>
+        <a href="javascript:popup('mosaic.rb.html')"><img src="ex/mosaic.gif" alt="mosaic example" title="Click to see the example script" /></a>
+      </p>
 
-    <h4>See also</h4><a href="#coalesce">coalesce</a>, <a href=
-    "#flatten_images">flatten_images</a>, <a href=
-    "#montage">montage</a>, <a href=
-    "#optimize_images">optimize_images</a>
+      <h4>See also</h4>
+      <a href="#coalesce">coalesce</a>, <a href="#flatten_images">flatten_images</a>, <a href="#montage">montage</a>,
+      <a href="#optimize_images">optimize_images</a>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>MergeImageLayers with the MosaicLayer method.</p>
-  </div>
+      <p>MergeImageLayers with the MosaicLayer method.</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="new_image">new_image</h3>
+    <div class="sig">
+      <h3 id="new_image">new_image</h3>
 
-    <p><span class="arg">ilist.</span>new_image(<span class=
-    "arg">columns</span>, <span class="arg">rows[, fill]</span>)
-    <span class="arg">[&nbsp;{ optional arguments }&nbsp;]</span>
-    -&gt; <em>self</em></p>
-  </div>
+      <p>
+        <span class="arg">ilist.</span>new_image(<span class="arg">columns</span>, <span class="arg">rows[, fill]</span>)
+        <span class="arg">[&nbsp;{ optional arguments }&nbsp;]</span>
+        -&gt; <em>self</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Adds a new image to the imagelist. The image can have an
-    optional <a href="struct.html#fill">fill</a> applied to it.</p>
+      <p>
+        Adds a new image to the imagelist. The image can have an optional
+        <a href="struct.html#fill">fill</a> applied to it.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>Creates a new image with the specified number of rows and
-    columns. If the optional <code>fill</code> argument is used,
-    calls the <code>fill</code> method to fill the image.
-    Otherwise, the image is filled with the background color.</p>
+      <p>
+        Creates a new image with the specified number of rows and columns. If the optional <code>fill</code> argument is used, calls the
+        <code>fill</code> method to fill the image. Otherwise, the image is filled with the background color.
+      </p>
 
-    <p>You can set any <a href="info.html">Image::Info</a>
-    attributes in an associated block. These attributes supply
-    options to be used when creating the image. For example, you
-    can specify the <a href=
-    "imageattrs.html#background_color">background color</a> to fill
-    the image with (see the example), the <a href=
-    "imageattrs.html#depth">depth</a>, <a href=
-    "imageattrs.html#border_color">border color</a>, etc.</p>
+      <p>
+        You can set any <a href="info.html">Image::Info</a> attributes in an associated block. These attributes supply options to be used when creating the
+        image. For example, you can specify the <a href="imageattrs.html#background_color">background color</a> to fill the image with (see the example), the
+        <a href="imageattrs.html#depth">depth</a>, <a href="imageattrs.html#border_color">border color</a>, etc.
+      </p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>self</p>
+      <p>self</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p>Create a square red image.</p>
-    <pre>
+      <p>Create a square red image.</p>
+      <pre>
 ilist = Magick::ImageList.new
 ilist.new_image(100, 100) { |options| options.background_color = "red" }
-</pre>
-  </div>
+</pre
+      >
+    </div>
 
-  <div class="sig">
-    <h3 id="optimize_layers">optimize_layers</h3>
+    <div class="sig">
+      <h3 id="optimize_layers">optimize_layers</h3>
 
-    <p><span class="arg">ilist</span>.optimize_layers(<span class=
-    "arg">layer_method</span>) -&gt; <em>imagelist</em></p>
-  </div>
+      <p><span class="arg">ilist</span>.optimize_layers(<span class="arg">layer_method</span>) -&gt; <em>imagelist</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Optimizes or compares the images in the list. Equivalent to
-    the <code>-layers</code> option in ImageMagick's
-    <code>mogrify</code> command.</p>
+      <p>
+        Optimizes or compares the images in the list. Equivalent to the
+        <code>-layers</code> option in ImageMagick's <code>mogrify</code> command.
+      </p>
 
-    <p>The <code>optimize_layers</code> method corresponds to the
-    <code>-layers</code> option on ImageMagick's
-    <code>convert</code> and <code>mogrify</code> commands. Anthony
-    Thyssen's excellent <a href=
-    "http://www.imagemagick.org/Usage/">Examples of ImageMagick
-    Usage</a> site has very detailed <a href=
-    "http://www.imagemagick.org/Usage/anim_opt/">information and
-    examples</a> of the <code>-layers</code> option and and the
-    optimization methods .</p>
+      <p>
+        The <code>optimize_layers</code> method corresponds to the <code>-layers</code> option on ImageMagick's <code>convert</code> and
+        <code>mogrify</code> commands. Anthony Thyssen's excellent
+        <a href="http://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>
+        site has very detailed
+        <a href="http://www.imagemagick.org/Usage/anim_opt/">information and examples</a>
+        of the <code>-layers</code> option and and the optimization methods .
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>One of the following ImageLayerMethod enum values:</p>
+      <p>One of the following ImageLayerMethod enum values:</p>
 
-    <dl>
-      <dt>CoalesceLayer</dt>
+      <dl>
+        <dt>CoalesceLayer</dt>
 
-      <dd class="imquote">Equivalent to [<a href=
-      "#coalesce">coalesce</a>]. Apply the GIF disposal methods set
-      in the current image sequence to form a fully defined
-      animation sequence without, as it should be displayed.
-      Effectively converting a GIF animation into a 'film strip'
-      like animation.</dd>
+        <dd class="imquote">
+          Equivalent to [<a href="#coalesce">coalesce</a>]. Apply the GIF disposal methods set in the current image sequence to form a fully defined animation
+          sequence without, as it should be displayed. Effectively converting a GIF animation into a 'film strip' like animation.
+        </dd>
 
-      <dt>CompareAnyLayer</dt>
+        <dt>CompareAnyLayer</dt>
 
-      <dd class="imquote">Crop the second and later frames to the
-      smallest rectangle that contains all the differences between
-      the two images. No GIF disposal methods are taken into
-      account. This is exactly the same as [<a href=
-      "#deconstruct">deconstruct</a>], and does not preserve a
-      animation's normal working, especially when a animation used
-      GIF disposal methods such as 'Previous' or 'Background'.</dd>
+        <dd class="imquote">
+          Crop the second and later frames to the smallest rectangle that contains all the differences between the two images. No GIF disposal methods are taken
+          into account. This is exactly the same as [<a href="#deconstruct">deconstruct</a>], and does not preserve a animation's normal working, especially
+          when a animation used GIF disposal methods such as 'Previous' or 'Background'.
+        </dd>
 
-      <dt>CompareClearLayer</dt>
+        <dt>CompareClearLayer</dt>
 
-      <dd class="imquote">As [CompareAnyLayer] but crop to the
-      bounds of any opaque pixels which become transparent in the
-      second frame. That is the smallest image needed to mask or
-      erase pixels for the next frame.</dd>
+        <dd class="imquote">
+          As [CompareAnyLayer] but crop to the bounds of any opaque pixels which become transparent in the second frame. That is the smallest image needed to
+          mask or erase pixels for the next frame.
+        </dd>
 
-      <dt>CompareOverlayLayer</dt>
+        <dt>CompareOverlayLayer</dt>
 
-      <dd class="imquote">As [CompareAnyLayer] but crop to pixels
-      that add extra color to the next image, as a result of
-      overlaying color pixels. That is the smallest single overlaid
-      image to add or change colors. This can, be used with the
-      -compose alpha composition method 'change-mask', to reduce
-      the image to just the pixels that need to be overlaid.</dd>
+        <dd class="imquote">
+          As [CompareAnyLayer] but crop to pixels that add extra color to the next image, as a result of overlaying color pixels. That is the smallest single
+          overlaid image to add or change colors. This can, be used with the -compose alpha composition method 'change-mask', to reduce the image to just the
+          pixels that need to be overlaid.
+        </dd>
 
-      <dt>DisposeLayer</dt>
+        <dt>DisposeLayer</dt>
 
-      <dd class="imquote">This is like [CoalesceLayer] but shows
-      the look of the animation after the GIF disposal method has
-      been applied, before the next sub-frame image is overlaid.
-      That is the 'dispose' image that results from the application
-      of the GIF disposal method. This allows you to check what is
-      going wrong with a particular animation you may be
-      developing.</dd>
+        <dd class="imquote">
+          This is like [CoalesceLayer] but shows the look of the animation after the GIF disposal method has been applied, before the next sub-frame image is
+          overlaid. That is the 'dispose' image that results from the application of the GIF disposal method. This allows you to check what is going wrong with
+          a particular animation you may be developing.
+        </dd>
 
-      <dt>FlattenLayer</dt>
+        <dt>FlattenLayer</dt>
 
-      <dd><span class="imquote">Create a canvas the size of the
-      first images virtual canvas using the current background
-      color, and compose each image in turn onto that canvas.
-      Images falling outside that canvas will be clipped. Final
-      image will have a zero virtual canvas offset. This is usually
-      used as one of the final 'image layering' operations
-      overlaying all the prepared image layers into a final image.
-      For a single image this method can also be used to fillout a
-      virtual canvas with real pixels, or to underlay a opaque
-      color to remove transparency from an image.</span> This
-      method corresponds to <a href=
-      "#flatten_images">flatten_images</a>, above.</dd>
+        <dd>
+          <span class="imquote"
+            >Create a canvas the size of the first images virtual canvas using the current background color, and compose each image in turn onto that canvas.
+            Images falling outside that canvas will be clipped. Final image will have a zero virtual canvas offset. This is usually used as one of the final
+            'image layering' operations overlaying all the prepared image layers into a final image. For a single image this method can also be used to fillout
+            a virtual canvas with real pixels, or to underlay a opaque color to remove transparency from an image.</span
+          >
+          This method corresponds to
+          <a href="#flatten_images">flatten_images</a>, above.
+        </dd>
 
-      <dt>MergeLayers</dt>
+        <dt>MergeLayers</dt>
 
-      <dd class="imquote">As [FlattenLayer] but merging all the
-      given image layers into a new layer image just large enough
-      to hold all the image without clipping or extra space. The
-      new image's virtual offset will prevere the position of the
-      new layer, even if this offset is negative. the virtual
-      canvas size of the first image is preserved. Caution is
-      advised when handling image layers with negative offsets as
-      few image file formats handle them correctly.</dd>
+        <dd class="imquote">
+          As [FlattenLayer] but merging all the given image layers into a new layer image just large enough to hold all the image without clipping or extra
+          space. The new image's virtual offset will prevere the position of the new layer, even if this offset is negative. the virtual canvas size of the
+          first image is preserved. Caution is advised when handling image layers with negative offsets as few image file formats handle them correctly.
+        </dd>
 
-      <dt>MosaicLayer</dt>
+        <dt>MosaicLayer</dt>
 
-      <dd><span class="imquote">As [FlattenLayer] but expanding the
-      initial canvas size of the first image so as to hold all the
-      image layers. However as a virtual canvas is 'locked' to the
-      origin, by definition, image layers with a negative offsets
-      will still be clipped by the top and left edges. This method
-      is commonly used to layout individual image using various
-      offset but without knowing the final canvas size. The
-      resulting image will, like FlattenLayer not have any virtual
-      offset, so can be saved to any image file format.</span> This
-      method corresponds to <a href="#mosaic">mosaic</a>,
-      above.</dd>
+        <dd>
+          <span class="imquote"
+            >As [FlattenLayer] but expanding the initial canvas size of the first image so as to hold all the image layers. However as a virtual canvas is
+            'locked' to the origin, by definition, image layers with a negative offsets will still be clipped by the top and left edges. This method is commonly
+            used to layout individual image using various offset but without knowing the final canvas size. The resulting image will, like FlattenLayer not have
+            any virtual offset, so can be saved to any image file format.</span
+          >
+          This method corresponds to <a href="#mosaic">mosaic</a>, above.
+        </dd>
 
-      <dt>OptimizeImageLayer</dt>
+        <dt>OptimizeImageLayer</dt>
 
-      <dd class="imquote">Optimize a coalesced animation into GIF
-      animation by reducing the number of pixels per frame as much
-      as possible by attempting to pick the best GIF disposal
-      method to use, while ensuring the result will continue to
-      animate properly. There is no guarantee that the best
-      optimization will be found. But then no reasonably fast GIF
-      optimization algorithm can do this. However this does seem to
-      do better than most other GIF frame optimizers seen.</dd>
+        <dd class="imquote">
+          Optimize a coalesced animation into GIF animation by reducing the number of pixels per frame as much as possible by attempting to pick the best GIF
+          disposal method to use, while ensuring the result will continue to animate properly. There is no guarantee that the best optimization will be found.
+          But then no reasonably fast GIF optimization algorithm can do this. However this does seem to do better than most other GIF frame optimizers seen.
+        </dd>
 
-      <dt>OptimizeLayer</dt>
+        <dt>OptimizeLayer</dt>
 
-      <dd class="imquote">Optimize a coalesced animation into GIF
-      animation using a number of general techniques. This is
-      currently a short cut to apply both the [OptimizeImageLayer]
-      and [OptimizeTransLayer] methods but will expand to include
-      other methods.</dd>
+        <dd class="imquote">
+          Optimize a coalesced animation into GIF animation using a number of general techniques. This is currently a short cut to apply both the
+          [OptimizeImageLayer] and [OptimizeTransLayer] methods but will expand to include other methods.
+        </dd>
 
-      <dt>OptimizePlusLayer</dt>
+        <dt>OptimizePlusLayer</dt>
 
-      <dd class="imquote">As [OptimizeImageLayer] but attempt to
-      improve the overall optimization by adding extra frames to
-      the animation, without changing the final look or timing of
-      the animation. The frames are added to attempt to separate
-      the clearing of pixels from the overlaying of new additional
-      pixels from one animation frame to the next. If this does not
-      improve the optimization (for the next frame only), it will
-      fall back to the results of the previous normal
-      [OptimizeImageLayer] technique. There is the possibility that
-      the change in the disposal style will result in a worsening
-      in the optimization of later frames, though this is unlikely.
-      In other words there no guarantee that it is better than the
-      normal 'optimize-frame' technique.</dd>
+        <dd class="imquote">
+          As [OptimizeImageLayer] but attempt to improve the overall optimization by adding extra frames to the animation, without changing the final look or
+          timing of the animation. The frames are added to attempt to separate the clearing of pixels from the overlaying of new additional pixels from one
+          animation frame to the next. If this does not improve the optimization (for the next frame only), it will fall back to the results of the previous
+          normal [OptimizeImageLayer] technique. There is the possibility that the change in the disposal style will result in a worsening in the optimization
+          of later frames, though this is unlikely. In other words there no guarantee that it is better than the normal 'optimize-frame' technique.
+        </dd>
 
-      <dt>OptimizeTransLayer</dt>
+        <dt>OptimizeTransLayer</dt>
 
-      <dd class="imquote">Given a GIF animation, replace any pixel
-      in the sub-frame overlay images with transparency, if it does
-      not change the resulting animation by more than the current
-      fuzz factor. This should allow a existing frame optimized GIF
-      animation to compress into a smaller file size due to larger
-      areas of one (transparent) color rather than a pattern of
-      multiple colors repeating the current disposed image of the
-      last frame.</dd>
+        <dd class="imquote">
+          Given a GIF animation, replace any pixel in the sub-frame overlay images with transparency, if it does not change the resulting animation by more than
+          the current fuzz factor. This should allow a existing frame optimized GIF animation to compress into a smaller file size due to larger areas of one
+          (transparent) color rather than a pattern of multiple colors repeating the current disposed image of the last frame.
+        </dd>
 
-      <dt>RemoveDupsLayer</dt>
+        <dt>RemoveDupsLayer</dt>
 
-      <dd class="imquote">Remove (and merge time delays) of
-      duplicate consecutive images, so as to simplify layer
-      overlays of coalesced animations. Usually this is a result of
-      using a constant time delay across the whole animation, or
-      after a larger animation was split into smaller
-      sub-animations. The duplicate frames could also have been
-      used as part of some frame optimization methods.</dd>
+        <dd class="imquote">
+          Remove (and merge time delays) of duplicate consecutive images, so as to simplify layer overlays of coalesced animations. Usually this is a result of
+          using a constant time delay across the whole animation, or after a larger animation was split into smaller sub-animations. The duplicate frames could
+          also have been used as part of some frame optimization methods.
+        </dd>
 
-      <dt>RemoveZeroLayer</dt>
+        <dt>RemoveZeroLayer</dt>
 
-      <dd class="imquote">Remove any image with a zero time delay,
-      unless ALL the images have a zero time delay (and is not a
-      proper timed animation, a warning is then issued). In a GIF
-      animation, such images are usually frames which provide
-      partial intermediary updates between the frames that are
-      actually displayed to users. These frames are usually added
-      for improved frame optimization in GIF animations.</dd>
+        <dd class="imquote">
+          Remove any image with a zero time delay, unless ALL the images have a zero time delay (and is not a proper timed animation, a warning is then issued).
+          In a GIF animation, such images are usually frames which provide partial intermediary updates between the frames that are actually displayed to users.
+          These frames are usually added for improved frame optimization in GIF animations.
+        </dd>
 
-      <dt>TrimBoundsLayer</dt>
+        <dt>TrimBoundsLayer</dt>
 
-      <dd class="imquote">Find the minimal bounds of all the images
-      in the current image sequence, then adjust the offsets so all
-      images are contained on a minimal positive canvas. None of
-      the image data is modified, only the virtual canvas size and
-      offset. Then all the images will have the same canvas size,
-      and all will have a positive offset, at least one image will
-      touch every edge of that canvas with actual pixel data,
-      though that data may be transparent.</dd>
-    </dl>
+        <dd class="imquote">
+          Find the minimal bounds of all the images in the current image sequence, then adjust the offsets so all images are contained on a minimal positive
+          canvas. None of the image data is modified, only the virtual canvas size and offset. Then all the images will have the same canvas size, and all will
+          have a positive offset, at least one image will touch every edge of that canvas with actual pixel data, though that data may be transparent.
+        </dd>
+      </dl>
 
-    <p>Some of these values are not supported by older versions of
-    ImageMagick. To see what values are available, enter the
-    following code in irb:</p>
-    <pre>
+      <p>Some of these values are not supported by older versions of ImageMagick. To see what values are available, enter the following code in irb:</p>
+      <pre>
 Magick::ImageLayerMethod.values {|v| puts v}
-</pre>
+</pre
+      >
 
-    <p>In releases of ImageMagick before 6.3.6, this type was
-    called MagickLayerMethod, so you may need to use this
-    instead:</p>
-    <pre>
+      <p>In releases of ImageMagick before 6.3.6, this type was called MagickLayerMethod, so you may need to use this instead:</p>
+      <pre>
 Magick::MagickLayerMethod.values {|v| puts v}
-</pre>
+</pre
+      >
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new imagelist</p>
+      <p>A new imagelist</p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#composite_layers">composite_layers</a></p>
+      <p><a href="#composite_layers">composite_layers</a></p>
 
-    <p><a href="#deconstruct">deconstruct</a> is an alias for
-    <code>optimize_layers</code> with the
-    <code>CompareAnyLayer</code> argument.</p>
+      <p><a href="#deconstruct">deconstruct</a> is an alias for <code>optimize_layers</code> with the <code>CompareAnyLayer</code> argument.</p>
 
-    <p><a href="#coalesce">coalesce</a> is an alias for
-    <code>optimize_layers</code> with the
-    <code>CoalesceLayer</code> argument.</p>
+      <p><a href="#coalesce">coalesce</a> is an alias for <code>optimize_layers</code> with the <code>CoalesceLayer</code> argument.</p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>OptimizeImageLayers, CompareImageLayers</p>
-  </div>
+      <p>OptimizeImageLayers, CompareImageLayers</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="ping">ping</h3>
+    <div class="sig">
+      <h3 id="ping">ping</h3>
 
-    <p><span class="arg">ilist.</span>ping(<span class=
-    "arg">filename</span>[, <span class="arg">filename</span>...])
-    -&gt; <em>self</em><br />
-    <span class="arg">ilist.</span>ping(<span class=
-    "arg">file</span>[, <span class="arg">file</span>...]) -&gt;
-    <em>self</em></p>
-  </div>
+      <p>
+        <span class="arg">ilist.</span>ping(<span class="arg">filename</span>[, <span class="arg">filename</span>...]) -&gt; <em>self</em><br />
+        <span class="arg">ilist.</span>ping(<span class="arg">file</span>[, <span class="arg">file</span>...]) -&gt; <em>self</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Reads the image files and creates one or more images that
-    contain all the image attributes but without the pixel data. If
-    all you need is the image attributes, the <code>ping</code>
-    method is much faster and consumes less memory than <a href=
-    "#read"><code>read</code></a>.</p>
+      <p>
+        Reads the image files and creates one or more images that contain all the image attributes but without the pixel data. If all you need is the image
+        attributes, the <code>ping</code> method is much faster and consumes less memory than <a href="#read"><code>read</code></a
+        >.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>One or more image file names or open file objects.</p>
+      <p>One or more image file names or open file objects.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>self</p>
+      <p>self</p>
 
-    <h4>Example</h4>
-    <pre>
+      <h4>Example</h4>
+      <pre>
 ilist = Magick::ImageList.new
 ilist.ping "Button_A.gif"
 puts "The image has #{i.columns} columns and #{i.rows} rows." &raquo;
       The image has 127 columns and 120 rows.
-</pre>
+</pre
+      >
 
-    <h4>See also</h4><a href="#read">read</a>
+      <h4>See also</h4>
+      <a href="#read">read</a>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>PingImage</p>
-  </div>
+      <p>PingImage</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="quantize">quantize</h3>
+    <div class="sig">
+      <h3 id="quantize">quantize</h3>
 
-    <p><span class="arg">ilist.</span>quantize(nc=256,
-    colorspace=<code>RGBColorspace</code>,
-    dither=<code>RiemersmaDitherMethod</code>, tree_depth=0,
-    measure_error=<code>false</code>) -&gt; <em>imagelist</em></p>
-  </div>
+      <p>
+        <span class="arg">ilist.</span>quantize(nc=256, colorspace=<code>RGBColorspace</code>, dither=<code>RiemersmaDitherMethod</code>, tree_depth=0,
+        measure_error=<code>false</code>) -&gt; <em>imagelist</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p class="imquote">Analyzes the colors within a set of
-    reference images and chooses a fixed number of colors to
-    represent the set. The goal of the algorithm is to minimize the
-    difference between the input and output images while minimizing
-    the processing time.</p>
+      <p class="imquote">
+        Analyzes the colors within a set of reference images and chooses a fixed number of colors to represent the set. The goal of the algorithm is to minimize
+        the difference between the input and output images while minimizing the processing time.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>nc</dt>
+      <dl>
+        <dt>nc</dt>
 
-      <dd>The maximum number of colors to use in the output images.
-      Must be less than or equal to <a href=
-      "constants.html#Miscellaneous_constants">QuantumRange</a>.</dd>
+        <dd>
+          The maximum number of colors to use in the output images. Must be less than or equal to
+          <a href="constants.html#Miscellaneous_constants">QuantumRange</a>.
+        </dd>
 
-      <dt>colorspace</dt>
+        <dt>colorspace</dt>
 
-      <dd class="imquote">The <a href=
-      "constants.html#ColorspaceType">colorspace</a> to quantize
-      in. Color reduction, by default, takes place in the RGB color
-      space. Empirical evidence suggests that distances in color
-      spaces such as YUV or YIQ correspond to perceptual color
-      differences more closely than do distances in RGB space. The
-      Transparent color space behaves uniquely in that it preserves
-      the matte channel of the image if it exists.</dd>
+        <dd class="imquote">
+          The <a href="constants.html#ColorspaceType">colorspace</a> to quantize in. Color reduction, by default, takes place in the RGB color space. Empirical
+          evidence suggests that distances in color spaces such as YUV or YIQ correspond to perceptual color differences more closely than do distances in RGB
+          space. The Transparent color space behaves uniquely in that it preserves the matte channel of the image if it exists.
+        </dd>
 
-      <dt>dither</dt>
+        <dt>dither</dt>
 
-      <dd>A <a href="constants.html#DitherMethod">DitherMethod</a>
-      value. See the documentation for the <a href=
-      "https://imagemagick.org/script/command-line-options.php#dither">
-      ImageMagick -dither option</a> for more information.</dd>
+        <dd>
+          A <a href="constants.html#DitherMethod">DitherMethod</a> value. See the documentation for the
+          <a href="https://imagemagick.org/script/command-line-options.php#dither"> ImageMagick -dither option</a>
+          for more information.
+        </dd>
 
-      <dt>tree_depth</dt>
+        <dt>tree_depth</dt>
 
-      <dd class="imquote">Specify the tree depth to use while
-      quantizing. The values 0 and 1 support automatic tree depth
-      determination. The tree depth may be forced via values
-      ranging from two to eight. The ideal tree depth depends on
-      the characteristics of the input image, and may be determined
-      through experimentation.</dd>
+        <dd class="imquote">
+          Specify the tree depth to use while quantizing. The values 0 and 1 support automatic tree depth determination. The tree depth may be forced via values
+          ranging from two to eight. The ideal tree depth depends on the characteristics of the input image, and may be determined through experimentation.
+        </dd>
 
-      <dt>measure_error</dt>
+        <dt>measure_error</dt>
 
-      <dd><span class="imquote">Calculate quantization errors when
-      quantizing the image.</span> Stores the results for each
-      image in the imagelist <a href=
-      "imageattrs.html#mean_error_per_pixel">mean_error_per_pixel</a>,
-      <a href=
-      "imageattrs.html#normalized_maximum_error">normalized_maximum_error</a>,
-      and <a href=
-      "imageattrs.html#normalized_mean_error">normalized_mean_error</a>
-      attributes. Stores the number of colors used for the image in
-      the <a href="imageattrs.html#total_colors">total_colors</a>
-      attribute.</dd>
-    </dl>
+        <dd>
+          <span class="imquote">Calculate quantization errors when quantizing the image.</span>
+          Stores the results for each image in the imagelist
+          <a href="imageattrs.html#mean_error_per_pixel">mean_error_per_pixel</a>,
+          <a href="imageattrs.html#normalized_maximum_error">normalized_maximum_error</a>, and
+          <a href="imageattrs.html#normalized_mean_error">normalized_mean_error</a>
+          attributes. Stores the number of colors used for the image in the
+          <a href="imageattrs.html#total_colors">total_colors</a> attribute.
+        </dd>
+      </dl>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>A new imagelist containing quantized copies of the images in
-    the original image.</p>
+      <p>A new imagelist containing quantized copies of the images in the original image.</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p>This example shows the effect of quantizing 3 images to a
-    set of 16 colors in the RGB colorspace. Mouse over the image to
-    see the images before quantizing.</p>
+      <p>
+        This example shows the effect of quantizing 3 images to a set of 16 colors in the RGB colorspace. Mouse over the image to see the images before
+        quantizing.
+      </p>
 
-    <p class="rollover"><a href=
-    "javascript:popup('quantize-m.rb.html')"><img src=
-    "ex/quantize-m_after.jpg" alt="quantize example" title=
-    "Click to see the example script" onmouseover=
-    "this.src='ex/quantize-m_before.jpg'" onmouseout=
-    "this.src='ex/quantize-m_after.jpg'" /></a> <img src=
-    "ex/images/spin.gif" alt="" class="spin" style="left: 505px;"
-    title="Mouse over the example to see the original image" /></p>
+      <p class="rollover">
+        <a href="javascript:popup('quantize-m.rb.html')"
+          ><img
+            src="ex/quantize-m_after.jpg"
+            alt="quantize example"
+            title="Click to see the example script"
+            onmouseover="this.src='ex/quantize-m_before.jpg'"
+            onmouseout="this.src='ex/quantize-m_after.jpg'"
+        /></a>
+        <img src="ex/images/spin.gif" alt="" class="spin" style="left: 505px" title="Mouse over the example to see the original image" />
+      </p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="image3.html#quantize">Image#quantize</a></p>
+      <p><a href="image3.html#quantize">Image#quantize</a></p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>QuantizeImages</p>
-  </div>
+      <p>QuantizeImages</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="read">read</h3>
+    <div class="sig">
+      <h3 id="read">read</h3>
 
-    <p><span class="arg">ilist.</span>read(<span class=
-    "arg">filename[, filename...]</span>) <span class=
-    "arg">[&nbsp;{ optional arguments }&nbsp;]</span> -&gt;
-    <em>self</em><br />
-    <span class="arg">ilist.</span>read(<span class="arg">file[,
-    file...]</span>) <span class="arg">[&nbsp;{ optional arguments
-    }&nbsp;]</span> -&gt; <em>self</em></p>
-  </div>
+      <p>
+        <span class="arg">ilist.</span>read(<span class="arg">filename[, filename...]</span>)
+        <span class="arg">[&nbsp;{ optional arguments }&nbsp;]</span> -&gt; <em>self</em><br />
+        <span class="arg">ilist.</span>read(<span class="arg">file[, file...]</span>) <span class="arg">[&nbsp;{ optional arguments }&nbsp;]</span> -&gt;
+        <em>self</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Reads one or more image files and adds the images to the
-    imagelist. After reading all the files, sets the <a href=
-    "#scene">scene</a> number to the last image in the list.</p>
+      <p>
+        Reads one or more image files and adds the images to the imagelist. After reading all the files, sets the <a href="#scene">scene</a> number to the last
+        image in the list.
+      </p>
 
-    <p>The image files may be multi-frame (animated or layered)
-    files. In this case <code>read</code> adds multiple images per
-    file to the imagelist.</p>
+      <p>The image files may be multi-frame (animated or layered) files. In this case <code>read</code> adds multiple images per file to the imagelist.</p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>One or more filenames or open file objects. You can also
-    specify optional arguments to be used when reading the file(s)
-    by setting <a href="info.html">Image::Info</a> attributes in
-    the optional block.</p>
+      <p>
+        One or more filenames or open file objects. You can also specify optional arguments to be used when reading the file(s) by setting
+        <a href="info.html">Image::Info</a> attributes in the optional block.
+      </p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>self</p>
+      <p>self</p>
 
-    <h4>Example</h4>
-    <pre>
+      <h4>Example</h4>
+      <pre>
 i = Magick::ImageList.new
 number = '0'
 4.times do
         i.read "images/Button_" + number + ".gif"
         number.succ!
         end
-</pre>
+</pre
+      >
 
-    <p>Also see the morph.rb example and the demo.rb example.</p>
+      <p>Also see the morph.rb example and the demo.rb example.</p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="image1.html#read">Image.read</a></p>
+      <p><a href="image1.html#read">Image.read</a></p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>ReadImage</p>
+      <p>ReadImage</p>
 
-    <h4>Notes</h4>
+      <h4>Notes</h4>
 
-    <p>You can create images using ImageMagick's built-in formats
-    with the <code>read</code> method. See <a href=
-    "imusage.html#builtin_formats">Built-in image formats</a>.</p>
-  </div>
+      <p>
+        You can create images using ImageMagick's built-in formats with the
+        <code>read</code> method. See <a href="imusage.html#builtin_formats">Built-in image formats</a>.
+      </p>
+    </div>
 
-  <div class="sig">
-    <h3 id="remap">remap</h3>
+    <div class="sig">
+      <h3 id="remap">remap</h3>
 
-    <p><span class="arg">ilist</span>.remap(<span class=
-    "arg">remap_image</span>=nil, <span class=
-    "arg">dither</span>=RiemersmaDitherMethod) -&gt;
-    <em>self</em></p>
-  </div>
+      <p>
+        <span class="arg">ilist</span>.remap(<span class="arg">remap_image</span>=nil, <span class="arg">dither</span>=RiemersmaDitherMethod) -&gt;
+        <em>self</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Reduce the colors used in the imagelist to the set of colors
-    in <span id="arg">remap_image</span>.</p>
+      <p>
+        Reduce the colors used in the imagelist to the set of colors in
+        <span id="arg">remap_image</span>.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <dl>
-      <dt>remap_image</dt>
+      <dl>
+        <dt>remap_image</dt>
 
-      <dd>The reference image</dd>
+        <dd>The reference image</dd>
 
-      <dt>dither</dt>
+        <dt>dither</dt>
 
-      <dd>A <a href="constants.html#DitherMethod">DitherMethod</a>
-      value. RiemersmaDitherMethod is the default. To disable
-      dithering specify NoDitherMethod.</dd>
-    </dl>
+        <dd>
+          A <a href="constants.html#DitherMethod">DitherMethod</a> value. RiemersmaDitherMethod is the default. To disable dithering specify NoDitherMethod.
+        </dd>
+      </dl>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>self</p>
+      <p>self</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p>This example shows the effect of reducing the colors used in
-    the apple, beach scene, and leaf images to the set of colors
-    used in the yellow rose image.</p>
+      <p>
+        This example shows the effect of reducing the colors used in the apple, beach scene, and leaf images to the set of colors used in the yellow rose image.
+      </p>
 
-    <p><a href="javascript:popup('remap_images.rb.html')"><img alt=
-    "remap_images example" src="ex/remap_images.jpg" title=
-    "Click to see the example script" /></a></p>
+      <p>
+        <a href="javascript:popup('remap_images.rb.html')"
+          ><img alt="remap_images example" src="ex/remap_images.jpg" title="Click to see the example script"
+        /></a>
+      </p>
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="image3.html#remap">Image#remap</a></p>
+      <p><a href="image3.html#remap">Image#remap</a></p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>RemapImages (available in ImageMagick 6.4.3-6)</p>
-  </div>
+      <p>RemapImages (available in ImageMagick 6.4.3-6)</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="to_blob">to_blob</h3>
+    <div class="sig">
+      <h3 id="to_blob">to_blob</h3>
 
-    <p><span class="arg">ilist.</span>to_blob <span class=
-    "arg">[&nbsp;{ optional arguments }&nbsp;]</span> -&gt;
-    <em>string</em></p>
-  </div>
+      <p>
+        <span class="arg">ilist.</span>to_blob <span class="arg">[&nbsp;{ optional arguments }&nbsp;]</span> -&gt;
+        <em>string</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Converts the images in the imagelist to a <em>blob</em>.
-    <span class="imquote">A blob contains data that directly
-    represent a particular image format in memory instead of on
-    disk.</span></p>
+      <p>
+        Converts the images in the imagelist to a <em>blob</em>.
+        <span class="imquote">A blob contains data that directly represent a particular image format in memory instead of on disk.</span>
+      </p>
 
-    <p>Control the format of the blob by setting <a href=
-    "info.html">Image::Info</a> attributes in an associated
-    block.</p>
+      <p>
+        Control the format of the blob by setting
+        <a href="info.html">Image::Info</a> attributes in an associated block.
+      </p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>The blob in the form of a string</p>
+      <p>The blob in the form of a string</p>
 
-    <h4>Example</h4>
-    <pre>
+      <h4>Example</h4>
+      <pre>
 i = Magick::ImageList.new "birthday.png"
 s = i.to_blob &raquo; a string representing the image.
-</pre>
+</pre
+      >
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="#from_blob">from_blob</a>, <a href=
-    "image3.html#to_blob">Image#to_blob</a>, <a href=
-    "image1.html#from_blob">Image.from_blob</a></p>
+      <p>
+        <a href="#from_blob">from_blob</a>, <a href="image3.html#to_blob">Image#to_blob</a>,
+        <a href="image1.html#from_blob">Image.from_blob</a>
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>ImageListToBlob</p>
-  </div>
+      <p>ImageListToBlob</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="to_a">to_a</h3>
+    <div class="sig">
+      <h3 id="to_a">to_a</h3>
 
-    <p><span class="arg">ilist</span>.to_a -&gt; <em>array</em></p>
-  </div>
+      <p><span class="arg">ilist</span>.to_a -&gt; <em>array</em></p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Returns an array containing all the images in the list.</p>
+      <p>Returns an array containing all the images in the list.</p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>An array</p>
-  </div>
+      <p>An array</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="write">write</h3>
+    <div class="sig">
+      <h3 id="write">write</h3>
 
-    <p><span class="arg">ilist.</span>write(<span class=
-    "arg">filename</span>) <span class="arg">[&nbsp;{ optional
-    arguments }&nbsp;]</span> -&gt; <em>self</em><br />
-    <span class="arg">ilist.</span>write(<span class=
-    "arg">file</span>) <span class="arg">[&nbsp;{ optional
-    arguments }&nbsp;]</span> -&gt; <em>self</em></p>
-  </div>
+      <p>
+        <span class="arg">ilist.</span>write(<span class="arg">filename</span>) <span class="arg">[&nbsp;{ optional arguments }&nbsp;]</span> -&gt; <em>self</em
+        ><br />
+        <span class="arg">ilist.</span>write(<span class="arg">file</span>) <span class="arg">[&nbsp;{ optional arguments }&nbsp;]</span> -&gt;
+        <em>self</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>If the image format <a href="imusage.html#formats">indicated
-    by the filename</a> supports multiple images per file (animated
-    images), <code>write</code> writes all the images in the
-    imagelist to a single file. Otherwise, <code>write</code>
-    writes each image to a separate file.</p>
+      <p>
+        If the image format
+        <a href="imusage.html#formats">indicated by the filename</a> supports multiple images per file (animated images), <code>write</code> writes all the
+        images in the imagelist to a single file. Otherwise, <code>write</code> writes each image to a separate file.
+      </p>
 
-    <p>Regardless of the original format, <code>write</code>
-    converts the images to the format specified by the
-    filename.</p>
+      <p>Regardless of the original format, <code>write</code> converts the images to the format specified by the filename.</p>
 
-    <p>If the imagelist contains more than one image and the output
-    format does not support multi-frame images, each image is
-    written to a file that has the filename you specify followed by
-    a period (.) and the scene number. You can change this behavior
-    by embedding a %d, %0Nd, %o, %0No, %x, or %0Nx printf format
-    specification in the file name.</p>
+      <p>
+        If the imagelist contains more than one image and the output format does not support multi-frame images, each image is written to a file that has the
+        filename you specify followed by a period (.) and the scene number. You can change this behavior by embedding a %d, %0Nd, %o, %0No, %x, or %0Nx printf
+        format specification in the file name.
+      </p>
 
-    <h4>Arguments</h4>
+      <h4>Arguments</h4>
 
-    <p>A filename or open file object. Indicate the desired image
-    <a href="imusage.html#formats">format</a> either by the suffix
-    (i.e. <code>.jpg</code>, <code>.png</code>) or the prefix
-    (<code>ps:</code>) to the filename. If the argument is an open
-    file object, you can specify a format for each image in the
-    list by setting its <a href="imageattrs.html#format">format</a>
-    attribute. (See the Notes section for <a href=
-    "image3.html#write">Image#write</a>.)</p>
+      <p>
+        A filename or open file object. Indicate the desired image
+        <a href="imusage.html#formats">format</a> either by the suffix (i.e. <code>.jpg</code>, <code>.png</code>) or the prefix (<code>ps:</code>) to the
+        filename. If the argument is an open file object, you can specify a format for each image in the list by setting its
+        <a href="imageattrs.html#format">format</a> attribute. (See the Notes section for <a href="image3.html#write">Image#write</a>.)
+      </p>
 
-    <p>You can also specify optional arguments by setting <a href=
-    "info.html">Image::Info</a> attributes in an associated
-    block.</p>
+      <p>
+        You can also specify optional arguments by setting
+        <a href="info.html">Image::Info</a> attributes in an associated block.
+      </p>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>self, or <code>nil</code> if the format cannot be
-    determined.</p>
+      <p>self, or <code>nil</code> if the format cannot be determined.</p>
 
-    <h4>Example</h4>
-    <pre>
+      <h4>Example</h4>
+      <pre>
 # The PNG format does not support multi-frame files,
 # so each image is written to a separate file.
 i = Magick::ImageList.new "animated.gif"
@@ -1985,23 +1901,20 @@ i.write "test.png" &raquo; test.png.0
 # ImageMagick's MIFF format does support multi-frame
 # files, so all 3 images are written to one file.
 i.write "animated.miff" &raquo; animated.miff
-</pre>
+</pre
+      >
 
-    <h4>See also</h4>
+      <h4>See also</h4>
 
-    <p><a href="image3.html#write">Image#write</a></p>
+      <p><a href="image3.html#write">Image#write</a></p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>WriteImages</p>
-  </div>
+      <p>WriteImages</p>
+    </div>
 
-  <p class="spacer">&nbsp;</p>
+    <p class="spacer">&nbsp;</p>
 
-  <div class="nav">
-    &laquo;&nbsp;<a href="magick.html">Prev</a> | <a href=
-    "index.html">Contents</a> | <a href=
-    "imageattrs.html">Next</a>&nbsp;&raquo;
-  </div>
-</body>
+    <div class="nav">&laquo;&nbsp;<a href="magick.html">Prev</a> | <a href="index.html">Contents</a> | <a href="imageattrs.html">Next</a>&nbsp;&raquo;</div>
+  </body>
 </html>
