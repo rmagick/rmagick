@@ -23,3 +23,5 @@ tmp
 Makefile
 extconf.h
 build-ImageMagick/
+doc/node_modules/
+doc/package-lock.json
