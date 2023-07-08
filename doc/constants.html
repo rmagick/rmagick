@@ -70,11 +70,13 @@
 
       <div class="toccol">
         <ul>
-          <li>
-            <a href="#Miscellaneous_constants">Miscellaneous constants</a>
-          </li>
+          <li><a href="#Miscellaneous_constants">Miscellaneous constants</a></li>
 
           <li><a href="#AlignType">AlignType</a></li>
+
+          <li><a href="#AlphaChannelOption">AlphaChannelOption</a></li>
+
+          <li><a href="#AnchorType">AnchorType</a></li>
 
           <li><a href="#ChannelType">ChannelType</a></li>
 
@@ -89,18 +91,22 @@
           <li><a href="#CompressionType">CompressionType</a></li>
 
           <li><a href="#DecorationType">DecorationType</a></li>
+
+          <li><a href="#DisposeType">DisposeType</a></li>
+
+          <li><a href="#DistortMethod">DistortMethod</a></li>
         </ul>
       </div>
 
       <div class="toccol">
         <ul>
-          <li><a href="#DisposeType">DisposeType</a></li>
-
           <li><a href="#DitherMethod">DitherMethod</a></li>
 
           <li><a href="#EndianType">EndianType</a></li>
 
-          <li><a href="#FilterTypes">FilterTypes</a></li>
+          <li><a href="#FilterType">FilterType</a></li>
+
+          <li><a href="#GeometryFlags">GeometryFlags</a></li>
 
           <li><a href="#GravityType">GravityType</a></li>
 
@@ -108,31 +114,47 @@
 
           <li><a href="#InterlaceType">InterlaceType</a></li>
 
-          <li><a href="#InterpolatePixelMethod">InterpolatePixelMethod</a></li>
+          <li><a href="#KernelInfoType">KernelInfoType</a></li>
+
+          <li><a href="#MagickFunction">MagickFunction</a></li>
 
           <li><a href="#MetricType">MetricType</a></li>
+
+          <li><a href="#MorphologyMethod">MorphologyMethod</a></li>
+
+          <li><a href="#NoiseType">NoiseType</a></li>
+
+          <li><a href="#Opacity">Opacity</a></li>
         </ul>
       </div>
 
       <div class="toccol">
         <ul>
-          <li><a href="#NoiseType">NoiseType</a></li>
-
-          <li><a href="#Opacity">Opacity</a></li>
-
           <li><a href="#OrientationType">OrientationType</a></li>
 
           <li><a href="#PaintMethod">PaintMethod</a></li>
 
+          <li><a href="#PixelInterpolateMethod">PixelInterpolateMethod</a></li>
+
+          <li><a href="#PreviewType">PreviewType</a></li>
+
+          <li><a href="#QuantumExpressionOperator">QuantumExpressionOperator</a></li>
+
           <li><a href="#RenderingIntent">RenderingIntent</a></li>
 
           <li><a href="#ResolutionType">ResolutionType</a></li>
+
+          <li><a href="#SparseColorMethod">SparseColorMethod</a></li>
+
+          <li><a href="#SpreadMethod">SpreadMethod</a></li>
 
           <li><a href="#StretchType">StretchType</a></li>
 
           <li><a href="#StorageType">StorageType</a></li>
 
           <li><a href="#StyleType">StyleType</a></li>
+
+          <li><a href="#VirtualPixelMethod">VirtualPixelMethod</a></li>
 
           <li><a href="#WeightType">WeightType</a></li>
         </ul>
@@ -245,6 +267,54 @@ RMAGICK_ENABLE_MANAGED_MEMORY = true
       <dd>Align the rightmost part of the text to the starting point.</dd>
     </dl>
 
+    <h3 class="const" id="AlphaChannelOption">AlphaChannelOption</h3>
+
+    <p>Specify alpha channel option. See <a href="image1.html#alpha">Image#alpha</a>.</p>
+
+    <dl>
+      <dt>UndefinedAlphaChannel</dt>
+
+      <dt>ActivateAlphaChannel</dt>
+
+      <dt>DeactivateAlphaChannel</dt>
+
+      <dt>SetAlphaChannel</dt>
+
+      <dt>RemoveAlphaChannel</dt>
+
+      <dt>CopyAlphaChannel</dt>
+
+      <dt>ExtractAlphaChannel</dt>
+
+      <dt>OpaqueAlphaChannel</dt>
+
+      <dt>ShapeAlphaChannel</dt>
+
+      <dt>TransparentAlphaChannel</dt>
+
+      <dt>BackgroundAlphaChannel</dt>
+
+      <dt>AssociateAlphaChannel</dt>
+
+      <dt>DisassociateAlphaChannel</dt>
+
+      <dt>OnAlphaChannel</dt>
+
+      <dt>OffAlphaChannel</dt>
+    </dl>
+
+    <h3 class="const" id="AnchorType">AnchorType</h3>
+
+    <p>Specify text anchor. See <a href="draw.html#text_anchor">Draw#text_anchor</a>.</p>
+
+    <dl>
+      <dt>StartAnchor</dt>
+
+      <dt>MiddleAnchor</dt>
+
+      <dt>EndAnchor</dt>
+    </dl>
+
     <h3 class="const" id="ChannelType">ChannelType</h3>
 
     <p>
@@ -292,6 +362,8 @@ RMAGICK_ENABLE_MANAGED_MEMORY = true
       <dt>LuminosityChannel</dt>
 
       <dt>SaturationChannel</dt>
+
+      <dt>IndexChannel</dt>
     </dl>
 
     <h3 class="const" id="ClassType">ClassType</h3>
@@ -425,6 +497,34 @@ ruby -rRMagick -e"Magick::ColorspaceType.values {|cs| puts cs}"
       <dt>Rec709YCbCrColorspace</dt>
 
       <dd>YCbCr according to ITU-R 709</dd>
+
+      <dt>LuvColorspace</dt>
+
+      <dt>HCLColorspace</dt>
+
+      <dt>LCHColorspace</dt>
+
+      <dt>LMSColorspace</dt>
+
+      <dt>LCHabColorspace</dt>
+
+      <dt>LCHuvColorspace</dt>
+
+      <dt>ScRGBColorspace</dt>
+
+      <dt>HSIColorspace</dt>
+
+      <dt>HSVColorspace</dt>
+
+      <dt>HCLpColorspace</dt>
+
+      <dt>YDbDrColorspace</dt>
+
+      <dt>XyYColorspace</dt>
+
+      <dt>LinearGRAYColorspace</dt>
+
+      <dt>JzazbzColorspace</dt>
     </dl>
 
     <h3 class="const" id="ComplianceType">ComplianceType</h3>
@@ -450,6 +550,10 @@ ruby -rRMagick -e"Magick::ColorspaceType.values {|cs| puts cs}"
       <dt>AllCompliance</dt>
 
       <dd>The union of the 3 color standards.</dd>
+
+      <dt>UndefinedCompliance</dt>
+
+      <dt>NoCompliance</dt>
     </dl>
 
     <h3 class="const" id="CompositeOperator">CompositeOperator</h3>
@@ -479,6 +583,8 @@ ruby -rRMagick -e"Magick::ColorspaceType.values {|cs| puts cs}"
         that this differs from OverCompositeOp because the portion of <code>composite image</code> outside of <code>image</code>'s shape does not appear in the
         result.
       </dd>
+
+      <dt>BlendCompositeOp</dt>
 
       <dt>BlurCompositeOp</dt>
 
@@ -513,6 +619,14 @@ ruby -rRMagick -e"Magick::ColorspaceType.values {|cs| puts cs}"
         <em>opposite</em> of LuminizeCompositeOp.
       </dd>
 
+      <dt>CopyAlphaCompositeOp</dt>
+
+      <dd>
+        If the composite image's
+        <a href="imageattrs.html#matte">matte</a> attribute is <code>true</code>, copy the opacity channel from the composite image to the target image.
+        Otherwise, set the target image pixel's opacity to the intensity of the corresponding pixel in the composite image.
+      </dd>
+
       <dt>CopyCompositeOp</dt>
 
       <dd>Replace the target image with the composite image.</dd>
@@ -537,14 +651,6 @@ ruby -rRMagick -e"Magick::ColorspaceType.values {|cs| puts cs}"
 
       <dd>Copy the magenta channel from the composite image to the target image.</dd>
 
-      <dt>CopyOpacityCompositeOp</dt>
-
-      <dd>
-        If the composite image's
-        <a href="imageattrs.html#matte">matte</a> attribute is <code>true</code>, copy the opacity channel from the composite image to the target image.
-        Otherwise, set the target image pixel's opacity to the intensity of the corresponding pixel in the composite image.
-      </dd>
-
       <dt>CopyRedCompositeOp</dt>
 
       <dd>Copy the red channel from the composite image to the target image.</dd>
@@ -556,6 +662,8 @@ ruby -rRMagick -e"Magick::ColorspaceType.values {|cs| puts cs}"
       <dt>DarkenCompositeOp</dt>
 
       <dd>Replace target image pixels with darker pixels from the composite image.</dd>
+
+      <dt>DarkenIntensityCompositeOp</dt>
 
       <dt>DifferenceCompositeOp</dt>
 
@@ -576,9 +684,9 @@ ruby -rRMagick -e"Magick::ColorspaceType.values {|cs| puts cs}"
 
       <dd>?</dd>
 
-      <dt>DivideCompositeOp</dt>
+      <dt>DivideDstCompositeOp</dt>
 
-      <dd>?</dd>
+      <dt>DivideSrcCompositeOp</dt>
 
       <dt>DstCompositeOp</dt>
 
@@ -616,6 +724,8 @@ ruby -rRMagick -e"Magick::ColorspaceType.values {|cs| puts cs}"
         produces black or white.
       </dd>
 
+      <dt>HardMixCompositeOp</dt>
+
       <dt>HueCompositeOp</dt>
 
       <dd class="imquote">
@@ -632,6 +742,8 @@ ruby -rRMagick -e"Magick::ColorspaceType.values {|cs| puts cs}"
       <dt>LightenCompositeOp</dt>
 
       <dd>Replace target image pixels with lighter pixels from the composite image.</dd>
+
+      <dt>LightenIntensityCompositeOp</dt>
 
       <dt>LinearBurnCompositeOp</dt>
 
@@ -655,13 +767,19 @@ ruby -rRMagick -e"Magick::ColorspaceType.values {|cs| puts cs}"
         <em>opposite</em> of ColorizeCompositeOp.
       </dd>
 
-      <dt>MinusCompositeOp</dt>
+      <dt>MathematicsCompositeOp</dt>
 
-      <dd class="imquote">The result of composite image - image, with overflow cropped to zero. The matte chanel is ignored (set to 255, full coverage).</dd>
+      <dt>MinusDstCompositeOp</dt>
+
+      <dt>MinusSrcCompositeOp</dt>
 
       <dt>ModulateCompositeOp</dt>
 
       <dd>Used by the <a href="image3.html#watermark">watermark</a> method.</dd>
+
+      <dt>ModulusAddCompositeOp</dt>
+
+      <dt>ModulusSubtractCompositeOp</dt>
 
       <dt>MultiplyCompositeOp</dt>
 
@@ -868,6 +986,12 @@ ruby -rRMagick -e"Magick::ColorspaceType.values {|cs| puts cs}"
       <dt>ZipSCompression</dt>
 
       <dd>Available in ImageMagick 6.5.5-4 and later.</dd>
+
+      <dt>LZMACompression</dt>
+
+      <dt>JBIG1Compression</dt>
+
+      <dt>JBIG2Compression</dt>
     </dl>
 
     <h3 class="const" id="DecorationType">DecorationType</h3>
@@ -917,6 +1041,52 @@ ruby -rRMagick -e"Magick::ColorspaceType.values {|cs| puts cs}"
       <dd>Overwrite the image area with what was there prior to rendering the image.</dd>
     </dl>
 
+    <h3 class="const" id="DistortMethod">DistortMethod</h3>
+
+    <p>The value of the <a href="image1.html#distort">Image#distort</a> argument.</p>
+
+    <dl>
+      <dt>UndefinedDistortion</dt>
+
+      <dt>AffineDistortion</dt>
+
+      <dt>AffineProjectionDistortion</dt>
+
+      <dt>ArcDistortion</dt>
+
+      <dt>PolarDistortion</dt>
+
+      <dt>DePolarDistortion</dt>
+
+      <dt>BarrelDistortion</dt>
+
+      <dt>BilinearDistortion</dt>
+
+      <dt>BilinearForwardDistortion</dt>
+
+      <dt>BilinearReverseDistortion</dt>
+
+      <dt>PerspectiveDistortion</dt>
+
+      <dt>PerspectiveProjectionDistortion</dt>
+
+      <dt>PolynomialDistortion</dt>
+
+      <dt>ScaleRotateTranslateDistortion</dt>
+
+      <dt>ShepardsDistortion</dt>
+
+      <dt>BarrelInverseDistortion</dt>
+
+      <dt>Cylinder2PlaneDistortion</dt>
+
+      <dt>Plane2CylinderDistortion</dt>
+
+      <dt>ResizeDistortion</dt>
+
+      <dt>SentinelDistortion</dt>
+    </dl>
+
     <h3 class="const" id="DitherMethod">DitherMethod</h3>
 
     <p>
@@ -925,6 +1095,8 @@ ruby -rRMagick -e"Magick::ColorspaceType.values {|cs| puts cs}"
     </p>
 
     <dl>
+      <dt>UndefinedDitherMethod</dt>
+
       <dt>NoDitherMethod</dt>
 
       <dt>RiemersmaDitherMethod</dt>
@@ -944,7 +1116,7 @@ ruby -rRMagick -e"Magick::ColorspaceType.values {|cs| puts cs}"
       <dt>MSBEndian</dt>
     </dl>
 
-    <h3 class="const" id="FilterTypes">FilterTypes</h3>
+    <h3 class="const" id="FilterType">FilterType</h3>
 
     <p>
       <span class="imquote"
@@ -959,47 +1131,123 @@ ruby -rRMagick -e"Magick::ColorspaceType.values {|cs| puts cs}"
     <dl>
       <dt>UndefinedFilter</dt>
 
-      <dt>Bartlett</dt>
-
-      <dt>BesselFilter</dt>
-
-      <dt>BlackmanFilter</dt>
-
-      <dt>Bohman</dt>
+      <dt>PointFilter</dt>
 
       <dt>BoxFilter</dt>
 
-      <dt>CatromFilter</dt>
-
-      <dt>CubicFilter</dt>
-
-      <dt>GaussianFilter</dt>
-
-      <dt>HammingFilter</dt>
-
-      <dt>HanningFilter</dt>
+      <dt>TriangleFilter</dt>
 
       <dt>HermiteFilter</dt>
 
-      <dt>KaiserFilter</dt>
+      <dt>HanningFilter</dt>
 
-      <dt>LagrangianFilter</dt>
+      <dt>HammingFilter</dt>
 
-      <dt>LanczosFilter</dt>
+      <dt>BlackmanFilter</dt>
 
-      <dt>MitchellFilter</dt>
-
-      <dt>ParzenFilter</dt>
-
-      <dt>PointFilter</dt>
+      <dt>GaussianFilter</dt>
 
       <dt>QuadraticFilter</dt>
 
+      <dt>CubicFilter</dt>
+
+      <dt>CatromFilter</dt>
+
+      <dt>MitchellFilter</dt>
+
+      <dt>LanczosFilter</dt>
+
+      <dt>BesselFilter</dt>
+
       <dt>SincFilter</dt>
 
-      <dt>TriangleFilter</dt>
+      <dt>KaiserFilter</dt>
 
       <dt>WelshFilter</dt>
+
+      <dt>ParzenFilter</dt>
+
+      <dt>LagrangeFilter</dt>
+
+      <dt>BohmanFilter</dt>
+
+      <dt>BartlettFilter</dt>
+
+      <dt>JincFilter</dt>
+
+      <dt>SincFastFilter</dt>
+
+      <dt>LanczosSharpFilter</dt>
+
+      <dt>Lanczos2Filter</dt>
+
+      <dt>Lanczos2SharpFilter</dt>
+
+      <dt>RobidouxFilter</dt>
+
+      <dt>RobidouxSharpFilter</dt>
+
+      <dt>CosineFilter</dt>
+
+      <dt>SplineFilter</dt>
+
+      <dt>LanczosRadiusFilter</dt>
+    </dl>
+
+    <h3 class="const" id="GeometryFlags">GeometryFlags</h3>
+
+    <dl>
+      <dt>NoValue</dt>
+
+      <dt>XValue</dt>
+
+      <dt>XiValue</dt>
+
+      <dt>YValue</dt>
+
+      <dt>PsiValue</dt>
+
+      <dt>WidthValue</dt>
+
+      <dt>RhoValue</dt>
+
+      <dt>HeightValue</dt>
+
+      <dt>SigmaValue</dt>
+
+      <dt>ChiValue</dt>
+
+      <dt>XiNegative</dt>
+
+      <dt>XNegative</dt>
+
+      <dt>PsiNegative</dt>
+
+      <dt>YNegative</dt>
+
+      <dt>ChiNegative</dt>
+
+      <dt>PercentValue</dt>
+
+      <dt>AspectValue</dt>
+
+      <dt>NormalizeValue</dt>
+
+      <dt>LessValue</dt>
+
+      <dt>GreaterValue</dt>
+
+      <dt>MinimumValue</dt>
+
+      <dt>CorrelateNormalizeValue</dt>
+
+      <dt>AreaValue</dt>
+
+      <dt>DecimalValue</dt>
+
+      <dt>SeparatorValue</dt>
+
+      <dt>AllValues</dt>
     </dl>
 
     <h3 class="const" id="GravityType">GravityType</h3>
@@ -1014,6 +1262,8 @@ ruby -rRMagick -e"Magick::ColorspaceType.values {|cs| puts cs}"
     </p>
 
     <dl>
+      <dt>UndefinedGravity</dt>
+
       <dt>ForgetGravity</dt>
 
       <dd class="imquote">Don't use gravity.</dd>
@@ -1101,6 +1351,16 @@ ruby -rRMagick -e"Magick::ColorspaceType.values {|cs| puts cs}"
       <dt>OptimizeType</dt>
 
       <dt>PaletteBilevelMatteType</dt>
+
+      <dt>GrayscaleAlphaType</dt>
+
+      <dt>PaletteAlphaType</dt>
+
+      <dt>TrueColorAlphaType</dt>
+
+      <dt>ColorSeparationAlphaType</dt>
+
+      <dt>PaletteBilevelAlphaType</dt>
     </dl>
 
     <h3 class="const" id="InterlaceType">InterlaceType</h3>
@@ -1146,29 +1406,100 @@ ruby -rRMagick -e"Magick::ColorspaceType.values {|cs| puts cs}"
       <dd>See the ImageMagick documentation for the -interlace option.</dd>
     </dl>
 
-    <h3 class="const" id="InterpolatePixelMethod">InterpolatePixelMethod</h3>
-
-    <p>
-      The pixel color interpolation method. See
-      <a href="imageattrs.html#pixel_interpolation_method">pixel_interpolation_method</a>.
-    </p>
+    <h3 class="const" id="KernelInfoType">KernelInfoType</h3>
 
     <dl>
-      <dt>AverageInterpolatePixel</dt>
+      <dt>UndefinedKernel</dt>
 
-      <dt>BicubicInterpolatePixel</dt>
+      <dt>UnityKernel</dt>
 
-      <dt>BilinearInterpolatePixel</dt>
+      <dt>GaussianKernel</dt>
 
-      <dt>FilterInterpolatePixel</dt>
+      <dt>DoGKernel</dt>
 
-      <dt>IntegerInterpolatePixel</dt>
+      <dt>LoGKernel</dt>
 
-      <dt>MeshInterpolatePixel</dt>
+      <dt>BlurKernel</dt>
 
-      <dt>NearestNeighborInterpolatePixel</dt>
+      <dt>CometKernel</dt>
 
-      <dt>SplineInterpolatePixel</dt>
+      <dt>LaplacianKernel</dt>
+
+      <dt>SobelKernel</dt>
+
+      <dt>FreiChenKernel</dt>
+
+      <dt>RobertsKernel</dt>
+
+      <dt>PrewittKernel</dt>
+
+      <dt>CompassKernel</dt>
+
+      <dt>KirschKernel</dt>
+
+      <dt>DiamondKernel</dt>
+
+      <dt>SquareKernel</dt>
+
+      <dt>RectangleKernel</dt>
+
+      <dt>OctagonKernel</dt>
+
+      <dt>DiskKernel</dt>
+
+      <dt>PlusKernel</dt>
+
+      <dt>CrossKernel</dt>
+
+      <dt>RingKernel</dt>
+
+      <dt>PeaksKernel</dt>
+
+      <dt>EdgesKernel</dt>
+
+      <dt>CornersKernel</dt>
+
+      <dt>DiagonalsKernel</dt>
+
+      <dt>LineEndsKernel</dt>
+
+      <dt>LineJunctionsKernel</dt>
+
+      <dt>RidgesKernel</dt>
+
+      <dt>ConvexHullKernel</dt>
+
+      <dt>ThinSEKernel</dt>
+
+      <dt>SkeletonKernel</dt>
+
+      <dt>ChebyshevKernel</dt>
+
+      <dt>ManhattanKernel</dt>
+
+      <dt>OctagonalKernel</dt>
+
+      <dt>EuclideanKernel</dt>
+
+      <dt>UserDefinedKernel</dt>
+
+      <dt>BinomialKernel</dt>
+    </dl>
+
+    <h3 class="const" id="MagickFunction">MagickFunction</h3>
+
+    <p>The value of the <a href="image2.html#function_channel">Image#function_channel</a> argument.</p>
+
+    <dl>
+      <dt>UndefinedFunction</dt>
+
+      <dt>PolynomialFunction</dt>
+
+      <dt>SinusoidFunction</dt>
+
+      <dt>ArcsinFunction</dt>
+
+      <dt>ArctanFunction</dt>
     </dl>
 
     <p>
@@ -1193,6 +1524,56 @@ ruby -rRMagick -e"Magick::ColorspaceType.values {|cs| puts cs}"
       <dt>PeakSignalToNoiseRatioMetric</dt>
 
       <dt>RootMeanSquaredErrorMetric</dt>
+    </dl>
+
+    <h3 class="const" id="MorphologyMethod">MorphologyMethod</h3>
+
+    <dl>
+      <dt>UndefinedMorphology</dt>
+
+      <dt>ConvolveMorphology</dt>
+
+      <dt>CorrelateMorphology</dt>
+
+      <dt>ErodeMorphology</dt>
+
+      <dt>DilateMorphology</dt>
+
+      <dt>ErodeIntensityMorphology</dt>
+
+      <dt>DilateIntensityMorphology</dt>
+
+      <dt>DistanceMorphology</dt>
+
+      <dt>OpenMorphology</dt>
+
+      <dt>CloseMorphology</dt>
+
+      <dt>OpenIntensityMorphology</dt>
+
+      <dt>CloseIntensityMorphology</dt>
+
+      <dt>SmoothMorphology</dt>
+
+      <dt>EdgeInMorphology</dt>
+
+      <dt>EdgeOutMorphology</dt>
+
+      <dt>EdgeMorphology</dt>
+
+      <dt>TopHatMorphology</dt>
+
+      <dt>BottomHatMorphology</dt>
+
+      <dt>HitAndMissMorphology</dt>
+
+      <dt>ThinningMorphology</dt>
+
+      <dt>ThickenMorphology</dt>
+
+      <dt>VoronoiMorphology</dt>
+
+      <dt>IterativeDistanceMorphology</dt>
     </dl>
 
     <h3 class="const" id="NoiseType">NoiseType</h3>
@@ -1294,6 +1675,173 @@ ruby -rRMagick -e"Magick::ColorspaceType.values {|cs| puts cs}"
       <dd class="imquote">Replace colors for <strong>all</strong> pixels in image with fill color.</dd>
     </dl>
 
+    <h3 class="const" id="PixelInterpolateMethod">PixelInterpolateMethod</h3>
+
+    <p>
+      The pixel color interpolation method. See
+      <a href="imageattrs.html#pixel_interpolation_method">pixel_interpolation_method</a>.
+    </p>
+
+    <dl>
+      <dt>UndefinedInterpolatePixel</dt>
+
+      <dt>AverageInterpolatePixel</dt>
+
+      <dt>BilinearInterpolatePixel</dt>
+
+      <dt>IntegerInterpolatePixel</dt>
+
+      <dt>MeshInterpolatePixel</dt>
+
+      <dt>NearestInterpolatePixel</dt>
+
+      <dt>SplineInterpolatePixel</dt>
+
+      <dt>Average9InterpolatePixel</dt>
+
+      <dt>Average16InterpolatePixel</dt>
+
+      <dt>BlendInterpolatePixel</dt>
+
+      <dt>BackgroundInterpolatePixel</dt>
+
+      <dt>CatromInterpolatePixel</dt>
+    </dl>
+
+    <h3 class="const" id="PreviewType">PreviewType</h3>
+
+    <dl>
+      <dt>UndefinedPreview</dt>
+
+      <dt>RotatePreview</dt>
+
+      <dt>ShearPreview</dt>
+
+      <dt>RollPreview</dt>
+
+      <dt>HuePreview</dt>
+
+      <dt>SaturationPreview</dt>
+
+      <dt>BrightnessPreview</dt>
+
+      <dt>GammaPreview</dt>
+
+      <dt>SpiffPreview</dt>
+
+      <dt>DullPreview</dt>
+
+      <dt>GrayscalePreview</dt>
+
+      <dt>QuantizePreview</dt>
+
+      <dt>DespecklePreview</dt>
+
+      <dt>ReduceNoisePreview</dt>
+
+      <dt>AddNoisePreview</dt>
+
+      <dt>SharpenPreview</dt>
+
+      <dt>BlurPreview</dt>
+
+      <dt>ThresholdPreview</dt>
+
+      <dt>EdgeDetectPreview</dt>
+
+      <dt>SpreadPreview</dt>
+
+      <dt>SolarizePreview</dt>
+
+      <dt>ShadePreview</dt>
+
+      <dt>RaisePreview</dt>
+
+      <dt>SegmentPreview</dt>
+
+      <dt>SwirlPreview</dt>
+
+      <dt>ImplodePreview</dt>
+
+      <dt>WavePreview</dt>
+
+      <dt>OilPaintPreview</dt>
+
+      <dt>CharcoalDrawingPreview</dt>
+
+      <dt>JPEGPreview</dt>
+    </dl>
+
+    <h3 class="const" id="QuantumExpressionOperator">QuantumExpressionOperator</h3>
+
+    <dl>
+      <dt>UndefinedQuantumOperator</dt>
+
+      <dt>AddQuantumOperator</dt>
+
+      <dt>AndQuantumOperator</dt>
+
+      <dt>DivideQuantumOperator</dt>
+
+      <dt>LShiftQuantumOperator</dt>
+
+      <dt>MaxQuantumOperator</dt>
+
+      <dt>MinQuantumOperator</dt>
+
+      <dt>MultiplyQuantumOperator</dt>
+
+      <dt>OrQuantumOperator</dt>
+
+      <dt>RShiftQuantumOperator</dt>
+
+      <dt>SubtractQuantumOperator</dt>
+
+      <dt>XorQuantumOperator</dt>
+
+      <dt>PowQuantumOperator</dt>
+
+      <dt>LogQuantumOperator</dt>
+
+      <dt>ThresholdQuantumOperator</dt>
+
+      <dt>ThresholdBlackQuantumOperator</dt>
+
+      <dt>ThresholdWhiteQuantumOperator</dt>
+
+      <dt>GaussianNoiseQuantumOperator</dt>
+
+      <dt>ImpulseNoiseQuantumOperator</dt>
+
+      <dt>LaplacianNoiseQuantumOperator</dt>
+
+      <dt>MultiplicativeNoiseQuantumOperator</dt>
+
+      <dt>PoissonNoiseQuantumOperator</dt>
+
+      <dt>UniformNoiseQuantumOperator</dt>
+
+      <dt>CosineQuantumOperator</dt>
+
+      <dt>SetQuantumOperator</dt>
+
+      <dt>SineQuantumOperator</dt>
+
+      <dt>AddModulusQuantumOperator</dt>
+
+      <dt>MeanQuantumOperator</dt>
+
+      <dt>AbsQuantumOperator</dt>
+
+      <dt>ExponentialQuantumOperator</dt>
+
+      <dt>MedianQuantumOperator</dt>
+
+      <dt>SumQuantumOperator</dt>
+
+      <dt>RootMeanSquareQuantumOperator</dt>
+    </dl>
+
     <h3 class="const" id="RenderingIntent">RenderingIntent</h3>
 
     <p>
@@ -1357,6 +1905,34 @@ ruby -rRMagick -e"Magick::ColorspaceType.values {|cs| puts cs}"
       <dt>PixelsPerCentimeterResolution</dt>
 
       <dd class="imquote">Density specifications are specified in units of pixels per centimeter (metric units).</dd>
+    </dl>
+
+    <h3 class="const" id="SparseColorMethod">SparseColorMethod</h3>
+
+    <dl>
+      <dt>UndefinedColorInterpolate</dt>
+
+      <dt>BarycentricColorInterpolate</dt>
+
+      <dt>BilinearColorInterpolate</dt>
+
+      <dt>ShepardsColorInterpolate</dt>
+
+      <dt>VoronoiColorInterpolate</dt>
+
+      <dt>InverseColorInterpolate</dt>
+    </dl>
+
+    <h3 class="const" id="SpreadMethod">SpreadMethod</h3>
+
+    <dl>
+      <dt>UndefinedSpread</dt>
+
+      <dt>PadSpread</dt>
+
+      <dt>ReflectSpread</dt>
+
+      <dt>RepeatSpread</dt>
     </dl>
 
     <h3 class="const" id="StretchType">StretchType</h3>
@@ -1431,6 +2007,44 @@ ruby -rRMagick -e"Magick::ColorspaceType.values {|cs| puts cs}"
       <dt>ObliqueStyle</dt>
 
       <dt>AnyStyle</dt>
+    </dl>
+
+    <h3 class="const" id="VirtualPixelMethod">VirtualPixelMethod</h3>
+
+    <dl>
+      <dt>UndefinedVirtualPixelMethod</dt>
+
+      <dt>EdgeVirtualPixelMethod</dt>
+
+      <dt>MirrorVirtualPixelMethod</dt>
+
+      <dt>TileVirtualPixelMethod</dt>
+
+      <dt>TransparentVirtualPixelMethod</dt>
+
+      <dt>BackgroundVirtualPixelMethod</dt>
+
+      <dt>DitherVirtualPixelMethod</dt>
+
+      <dt>RandomVirtualPixelMethod</dt>
+
+      <dt>MaskVirtualPixelMethod</dt>
+
+      <dt>BlackVirtualPixelMethod</dt>
+
+      <dt>GrayVirtualPixelMethod</dt>
+
+      <dt>WhiteVirtualPixelMethod</dt>
+
+      <dt>HorizontalTileVirtualPixelMethod</dt>
+
+      <dt>VerticalTileVirtualPixelMethod</dt>
+
+      <dt>HorizontalTileEdgeVirtualPixelMethod</dt>
+
+      <dt>VerticalTileEdgeVirtualPixelMethod</dt>
+
+      <dt>CheckerTileVirtualPixelMethod</dt>
     </dl>
 
     <h3 class="const" id="WeightType">WeightType</h3>
