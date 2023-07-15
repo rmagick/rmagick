@@ -39,6 +39,8 @@
 
         <li><a href="#limit_resource">limit_resource</a></li>
 
+        <li><a href="#set_cache_threshold">set_cache_threshold</a></li>
+
         <li><a href="#set_log_event_mask">set_log_event_mask</a></li>
 
         <li><a href="#set_log_format">set_log_format</a></li>
@@ -351,6 +353,24 @@ p Magick.formats &raquo;
         Setting the <code>:time</code> limit resets the elapsed time to zero in the pixel cache. Call it before any operation that you need to set a time limit
         on.
       </p>
+    </div>
+
+    <div class="sig">
+      <h3 id="set_cache_threshold">set_cache_threshold</h3>
+
+      <p>Magick.set_cache_threshold(<span class="arg">threshold</span>)</p>
+    </div>
+
+    <div class="desc">
+      <h4>Description</h4>
+
+      <p>
+        Set the amount of free memory allocated for the pixel cache. Once this threshold is exceeded, all subsequent pixels cache operations are to/from disk.
+      </p>
+
+      <h4>Argument</h4>
+
+      <p>A number of megabytes to set.</p>
     </div>
 
     <div class="sig">
