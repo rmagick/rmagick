@@ -1420,8 +1420,6 @@ DrawOptions_initialize(VALUE self)
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
 
-    GetDrawInfo(NULL, draw_options->info);
-
     if (rb_block_given_p())
     {
         rb_yield(self);
