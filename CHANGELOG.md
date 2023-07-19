@@ -3,6 +3,18 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 5.3.0
+
+Improvements
+
+- Support GC compaction (#1388)
+
+Bug Fixes
+
+- Fix memory leak in `Magick::Draw` for recentry ImageMagick 6 by removing unnecessary `GetDrawInfo()` calling (#1406)
+- Fix crash on ImageList#write with animation gif (#1379)
+- Windows: Fix RubyInstaller::Runtime::DllDirectory::WinApiError (#1381)
+
 ## RMagick 5.2.0
 
 Improvements
