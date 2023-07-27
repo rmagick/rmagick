@@ -1839,3 +1839,23 @@ rm_raise_exception(ExceptionInfo *exception)
 
     rm_magick_error(msg);
 }
+
+/**
+ * Get IO path.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param io An IO object
+ * @return string of the path
+ */
+VALUE
+rm_io_path(VALUE io)
+{
+#ifdef HAVE_RB_IO_PATH
+    return rb_io_path(io);
+#else
+    rb_io_t *fptr;
+    GetOpenFile(io, fptr);
+    return fptr->pathv;
+#endif
+}

@@ -1193,7 +1193,9 @@ ImageList_write(VALUE self, VALUE file)
 
         // Ensure file is open - raise error if not
         GetOpenFile(file, fptr);
-        add_format_prefix(info, fptr->pathv);
+        rb_io_check_writable(fptr);
+
+        add_format_prefix(info, rm_io_path(file));
 #if defined(_WIN32)
         SetImageInfoFile(info, NULL);
 #else

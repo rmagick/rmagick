@@ -1209,6 +1209,7 @@ extern void   rm_error_handler(const ExceptionType, const char *, const char *);
 extern void   rm_warning_handler(const ExceptionType, const char *, const char *);
 extern MagickBooleanType rm_should_raise_exception(ExceptionInfo *, const ExceptionRetention);
 extern void   rm_raise_exception(ExceptionInfo *);
+extern VALUE  rm_io_path(VALUE io);
 #if defined(IMAGEMAGICK_6)
 extern void   rm_check_image_exception(Image *, ErrorRetention);
 #endif

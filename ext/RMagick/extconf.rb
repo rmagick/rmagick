@@ -361,7 +361,8 @@ module RMagick
     def create_header_file
       ruby_api = [
         'rb_gc_adjust_memory_usage', # Ruby 2.4.0
-        'rb_gc_mark_movable' # Ruby 2.7.0
+        'rb_gc_mark_movable', # Ruby 2.7.0
+        'rb_io_path' # Ruby 3.2.0
       ]
       memory_api = %w[
         posix_memalign
