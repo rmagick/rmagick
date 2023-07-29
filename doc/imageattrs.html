@@ -47,13 +47,11 @@
 
             <li><a href="#bias">bias</a></li>
 
-            <li>
-              <a href="#black_point_compensation">black_point_compensation</a>
-            </li>
-
-            <li><a href="#blur">blur</a></li>
+            <li><a href="#black_point_compensation">black_point_compensation</a></li>
 
             <li><a href="#border_color">border_color</a></li>
+
+            <li><a href="#bounding_box">bounding_box</a></li>
 
             <li><a href="#chromaticity">chromaticity</a></li>
 
@@ -85,6 +83,8 @@
           <ul>
             <li><a href="#dispose">dispose</a></li>
 
+            <li><a href="#endian">endian</a></li>
+
             <li><a href="#extract_info">extract_info</a></li>
 
             <li><a href="#filename">filename</a></li>
@@ -109,6 +109,8 @@
 
             <li><a href="#iptc_profile">iptc_profile</a></li>
 
+            <li><a href="#matte_color">matte_color</a></li>
+
             <li><a href="#mean_error_per_pixel">mean_error_per_pixel</a></li>
 
             <li><a href="#mime_type">mime_type</a></li>
@@ -129,15 +131,11 @@
 
             <li><a href="#offset">offset</a></li>
 
-            <li><a href="#opacity">opacity</a></li>
-
             <li><a href="#orientation">orientation</a></li>
 
             <li><a href="#page">page</a></li>
 
-            <li>
-              <a href="#pixel_interpolation_method">pixel_interpolation_method</a>
-            </li>
+            <li><a href="#pixel_interpolation_method">pixel_interpolation_method</a></li>
 
             <li><a href="#quality">quality</a></li>
 
@@ -156,6 +154,8 @@
             <li><a href="#total_colors">total_colors</a></li>
 
             <li><a href="#total_ink_density">total_ink_density</a></li>
+
+            <li><a href="#transparent_color">transparent_color</a></li>
 
             <li><a href="#units">units</a></li>
 
@@ -176,7 +176,8 @@
 
       <p>
         <span class="arg">img.</span>background_color -&gt; <em>string</em><br />
-        <span class="arg">img</span>.background_color = <span class="arg">string</span> or <span class="arg">pixel</span>
+        <span class="arg">img</span>.background_color = <span class="arg">string</span> or <span class="arg">pixel</span> -&gt; <em>string</em> or
+        <em>pixel</em>
       </p>
     </div>
 
@@ -186,11 +187,12 @@
       <p>The image's background color. By default the background color is "white".</p>
 
       <h4>Argument</h4>
-      Either a <a href="imusage.html#color_names">color name</a> or a <a href="struct.html#Pixel">Pixel</a> object.
+
+      <p>Either a <a href="imusage.html#color_names">color name</a> or a <a href="struct.html#Pixel">Pixel</a> object.</p>
 
       <h4>Returns</h4>
 
-      <p>A color name.</p>
+      <p>A color name or <a href="struct.html#Pixel">Pixel</a> object.</p>
     </div>
 
     <div class="sig">
@@ -234,8 +236,7 @@
 
       <p>
         <span class="arg">img</span>.bias -&gt; <em>float</em><br />
-        <span class="arg">img</span>.bias = <span class="arg">float</span><br />
-        <span class="arg">img</span>.bias = <span class="arg">string</span>
+        <span class="arg">img</span>.bias = <span class="arg">float</span> or <span class="arg">string</span> -&gt; <em>float</em> or <em>string</em>
       </p>
     </div>
 
@@ -254,7 +255,7 @@
 
       <p>
         <span class="arg">img</span>.black_point_compensation -&gt; <code>true</code> or <code>false</code><br />
-        <span class="arg">img</span>.black_point_compensation = <code>true</code> or <code>false</code> -&gt; <em>self</em>
+        <span class="arg">img</span>.black_point_compensation = <code>true</code> or <code>false</code> -&gt; <em>true</em> or <em>false</em>
       </p>
     </div>
 
@@ -262,30 +263,9 @@
       <h4>Description</h4>
 
       <p>
-        Use black point compensation. Typically used in CMYK-to-RGB conversion along with <code>image.</code><a href="#rendering_intent">rendering_intent</a>=<a
-          href="constants.html#RenderingIntent"
-          >Magick::RelativeIntent</a
-        >
+        Use black point compensation. Typically used in CMYK-to-RGB conversion along with <code>image.</code>
+        <a href="#rendering_intent">rendering_intent</a>=<a href="constants.html#RenderingIntent">Magick::RelativeIntent</a>
       </p>
-    </div>
-
-    <div class="sig">
-      <h3 id="blur">blur</h3>
-
-      <p>
-        <span class="arg">img.</span>blur -&gt; <em>float</em><br />
-        <span class="arg">img.</span>blur = <span class="arg">float</span>
-      </p>
-    </div>
-
-    <div class="desc">
-      <h4>Description</h4>
-      The blur factor to use when resizing. See
-      <a href="image3.html#resize">resize</a>.
-
-      <h4>Argument</h4>
-
-      <p>&gt; 1.0 is blurry, &lt; 1.0 is sharp.</p>
     </div>
 
     <div class="sig">
@@ -293,13 +273,14 @@
 
       <p>
         <span class="arg">img.</span>border_color -&gt; <em>string</em><br />
-        <span class="arg">img.</span>border_color = <span class="arg">string</span> or <span class="arg">pixel</span>
+        <span class="arg">img.</span>border_color = <span class="arg">string</span> or <span class="arg">pixel</span> -&gt; <em>string</em> or <em>pixel</em>
       </p>
     </div>
 
     <div class="desc">
       <h4>Description</h4>
-      The image's border color. The default border color is "#dfdfdf" (gray).
+
+      <p>The image's border color. The default border color is "#dfdfdf" (gray).</p>
 
       <h4>Argument</h4>
 
@@ -311,28 +292,44 @@
     </div>
 
     <div class="sig">
-      <h3 id="chromaticity">chromaticity</h3>
+      <h3 id="bounding_box">bounding_box</h3>
 
       <p>
-        <span class="arg">img.</span>chromaticity -&gt; <em>chromaticity</em><br />
-        <span class="arg">img.</span>chromaticity =
-        <span class="arg">chromaticity</span>
+        <span class="arg">img.</span>bounding_box -&gt; <em>rectangle</em><br />
       </p>
     </div>
 
     <div class="desc">
       <h4>Description</h4>
 
-      <p>
-        The
-        <span class="imquote">red, green, blue, and white-point chromaticity values.</span>.
-      </p>
-
-      <h4>Argument</h4>
-      A <a href="struct.html#Chromaticity">Chromaticity</a> object.
+      <p>Returns the bounding box of an image canvas. Get-only.</p>
 
       <h4>Returns</h4>
-      A <a href="struct.html#Chromaticity">Chromaticity</a> object.
+
+      <p>A <a href="struct.html#Rectangle">Rectangle</a> object.</p>
+    </div>
+
+    <div class="sig">
+      <h3 id="chromaticity">chromaticity</h3>
+
+      <p>
+        <span class="arg">img.</span>chromaticity -&gt; <em>chromaticity</em><br />
+        <span class="arg">img.</span>chromaticity = <span class="arg">chromaticity</span> -&gt; <em>chromaticity</em>
+      </p>
+    </div>
+
+    <div class="desc">
+      <h4>Description</h4>
+
+      <p>The <span class="imquote">red, green, blue, and white-point chromaticity values.</span>.</p>
+
+      <h4>Argument</h4>
+
+      <p>A <a href="struct.html#Chromaticity">Chromaticity</a> object.</p>
+
+      <h4>Returns</h4>
+
+      <p>A <a href="struct.html#Chromaticity">Chromaticity</a> object.</p>
     </div>
 
     <div class="sig">
@@ -340,8 +337,7 @@
 
       <p>
         <span class="arg">img.</span>class_type -&gt; <em>storage_class</em><br />
-        <span class="arg">img.</span>class_type =
-        <span class="arg">storage_class</span>
+        <span class="arg">img.</span>class_type = <span class="arg">storage_class</span> -&gt; <em>storage_class</em>
       </p>
     </div>
 
@@ -350,10 +346,9 @@
 
       <p>
         The image's <em>storage class</em>.
-        <span class="imquote"
-          >If DirectClass then the pixels contain valid RGB or CMYK colors. If PseudoClass then the image has a colormap referenced by the pixel's index
-          member.</span
-        >
+        <span class="imquote">
+          If DirectClass then the pixels contain valid RGB or CMYK colors. If PseudoClass then the image has a colormap referenced by the pixel's index member.
+        </span>
       </p>
 
       <h4>Argument</h4>
@@ -370,8 +365,7 @@
 
       <p>
         <span class="arg">img.</span>color_profile -&gt; <em>string</em><br />
-        <span class="arg">img.</span>color_profile =
-        <span class="arg">string</span>
+        <span class="arg">img.</span>color_profile = <span class="arg">string</span> -&gt; <em>string</em>
       </p>
     </div>
 
@@ -392,8 +386,7 @@
 
       <p>
         The setter form of this attribute deletes any existing ICC color profile(s) before adding the new one. If you need to add both source and destination
-        profiles use
-        <a href="image1.html#add_profile">add_profile</a> or <a href="image3.html#profile_bang">profile!</a>.
+        profiles use <a href="image1.html#add_profile">add_profile</a> or <a href="image3.html#profile_bang">profile!</a>.
       </p>
 
       <h4>Returns</h4>
@@ -429,8 +422,7 @@
 
       <p>
         <span class="arg">img.</span>colorspace -&gt; <em>colorspace</em><br />
-        <span class="arg">img.</span>colorspace =
-        <span class="arg">colorspace</span>
+        <span class="arg">img.</span>colorspace = <span class="arg">colorspace</span> -&gt; <em>colorspace</em>
       </p>
     </div>
 
@@ -469,7 +461,7 @@
 
       <p>
         <span class="arg">img.</span>compose -&gt; <em>operator</em><br />
-        <span class="arg">img.</span>compose = <span class="arg">operator</span>
+        <span class="arg">img.</span>compose = <span class="arg">operator</span> -&gt; <em>operator</em>
       </p>
     </div>
 
@@ -483,19 +475,11 @@
 
       <h4>Argument</h4>
 
-      <p>
-        A
-        <a href="constants.html#CompositeOperator">composite operator</a>
-        constant.
-      </p>
+      <p>A <a href="constants.html#CompositeOperator">composite operator</a> constant.</p>
 
       <h4>Returns</h4>
 
-      <p>
-        A
-        <a href="constants.html#CompositeOperator">composite operator</a>
-        constant.
-      </p>
+      <p>A <a href="constants.html#CompositeOperator">composite operator</a> constant.</p>
     </div>
 
     <div class="sig">
@@ -503,13 +487,14 @@
 
       <p>
         <span class="arg">img.</span>compression -&gt; <em>type</em><br />
-        <span class="arg">img.</span>compression = <span class="arg">type</span>
+        <span class="arg">img.</span>compression = <span class="arg">type</span> -&gt; <em>type</em>
       </p>
     </div>
 
     <div class="desc">
       <h4>Description</h4>
-      The image compression type. The default is the compression type of the specified image file.
+
+      <p>The image compression type. The default is the compression type of the specified image file.</p>
 
       <h4>Argument</h4>
 
@@ -525,7 +510,7 @@
 
       <p>
         <span class="arg">img.</span>delay -&gt; <em>integer</em><br />
-        <span class="arg">img.</span>delay = <span class="arg">integer</span>
+        <span class="arg">img.</span>delay = <span class="arg">integer</span> -&gt; <em>integer</em>
       </p>
     </div>
 
@@ -534,12 +519,12 @@
 
       <p>
         Number of ticks which must expire before displaying the next image in an animated sequence. The default number of ticks is 0. By default there are 100
-        ticks per second but this number can be changed via the
-        <a href="#ticks_per_second">ticks_per_second</a> attribute.
+        ticks per second but this number can be changed via the <a href="#ticks_per_second">ticks_per_second</a> attribute.
       </p>
 
       <h4>Argument</h4>
-      An integer value between 0 and 65535, inclusive.
+
+      <p>An integer value between 0 and 65535, inclusive.</p>
 
       <h4>Returns</h4>
 
@@ -551,7 +536,7 @@
 
       <p>
         <span class="arg">img.</span>density -&gt; <em>string</em><br />
-        <span class="arg">img.</span>density = <span class="arg">string</span> or <span class="arg">geometry</span>
+        <span class="arg">img.</span>density = <span class="arg">string</span> or <span class="arg">geometry</span> -&gt; <em>string</em> or <em>geometry</em>
       </p>
     </div>
 
@@ -604,10 +589,10 @@
       <h4>Description</h4>
 
       <p>
-        <span class="imquote"
-          >Tile names from within an image montage. Only valid after calling <a href="ilist.html#montage">montage</a> or reading a MIFF file which contains a
-          directory.</span
-        >
+        <span class="imquote">
+          Tile names from within an image montage. Only valid after calling <a href="ilist.html#montage">montage</a> or reading a MIFF file which contains a
+          directory.
+        </span>
         Get-only.
       </p>
 
@@ -621,7 +606,7 @@
 
       <p>
         <span class="arg">img.</span>dispose -&gt; <em>method</em><br />
-        <span class="arg">img.</span>dispose = <span class="arg">method</span>
+        <span class="arg">img.</span>dispose = <span class="arg">method</span> -&gt; <em>method</em>
       </p>
     </div>
 
@@ -638,7 +623,31 @@
       <p>An integer corresponding to the disposal method.</p>
 
       <h4>Returns</h4>
-      A <a href="constants.html#DisposeType">DisposeType</a> constant.
+
+      <p>A <a href="constants.html#DisposeType">DisposeType</a> constant.</p>
+    </div>
+
+    <div class="sig">
+      <h3 id="endian">endian</h3>
+
+      <p>
+        <span class="arg">img.</span>endian -&gt; <em>endian</em><br />
+        <span class="arg">img.</span>endian = <span class="arg">endian</span> -&gt; <em>endian</em>
+      </p>
+    </div>
+
+    <div class="desc">
+      <h4>Description</h4>
+
+      <p class="imquote">Specify an endian option for images that support it.</p>
+
+      <h4>Argument</h4>
+
+      <p>A <a href="constants.html#EndianType">EndianType</a> constant.</p>
+
+      <h4>Returns</h4>
+
+      <p>A <a href="constants.html#EndianType">EndianType</a> constant.</p>
     </div>
 
     <div class="sig">
@@ -646,8 +655,7 @@
 
       <p>
         <span class="arg">img.</span>extract_info -&gt; <em>rectangle</em><br />
-        <span class="arg">img.</span>extract_info =
-        <span class="arg">rectangle</span>
+        <span class="arg">img.</span>extract_info = <span class="arg">rectangle</span>
       </p>
     </div>
 
@@ -697,7 +705,7 @@
 
       <p>
         <span class="arg">img.</span>filter -&gt; <em>type</em><br />
-        <span class="arg">img.</span>filter = <span class="arg">type</span>
+        <span class="arg">img.</span>filter = <span class="arg">type</span> -&gt; <em>type</em>
       </p>
     </div>
 
@@ -714,7 +722,8 @@
       <p>A <a href="constants.html#FilterTypes">FilterTypes</a> constant.</p>
 
       <h4>Returns</h4>
-      A <a href="constants.html#FilterTypes">FilterTypes</a> constant.
+
+      <p>A <a href="constants.html#FilterTypes">FilterTypes</a> constant.</p>
     </div>
 
     <div class="sig">
@@ -722,7 +731,7 @@
 
       <p>
         <span class="arg">img.</span>format -&gt; <em>string</em><br />
-        <span class="arg">img.</span>format = <span class="arg">string</span>
+        <span class="arg">img.</span>format = <span class="arg">string</span> -&gt; <em>string</em>
       </p>
     </div>
 
@@ -748,8 +757,7 @@
 
       <p>
         <span class="arg">img.</span>fuzz -&gt; <em>float</em><br />
-        <span class="arg">img.</span>fuzz = <span class="arg">integer</span> or
-        <span class="arg">string</span>
+        <span class="arg">img.</span>fuzz = <span class="arg">float</span> or <span class="arg">string</span> -&gt; <em>float</em> or <em>string</em>
       </p>
     </div>
 
@@ -757,10 +765,9 @@
       <h4>Description</h4>
 
       <p>
-        <span class="imquote"
-          >Colors within this distance are considered equal. A number of algorithms search for a target color. By default the color must be exact. Use
-          this</span
-        >
+        <span class="imquote">
+          Colors within this distance are considered equal. A number of algorithms search for a target color. By default the color must be exact. Use this
+        </span>
         [attribute]
         <span class="imquote">to match colors that are close to the target color in RGB space.</span>
       </p>
@@ -779,7 +786,7 @@
 
       <h4>Returns</h4>
 
-      <p>A <code>Float</code></p>
+      <p>A <code>Float</code> or string</p>
     </div>
 
     <div class="sig">
@@ -787,7 +794,7 @@
 
       <p>
         <span class="arg">img.</span>gamma -&gt; <em>float</em><br />
-        <span>image.</span>gamma = <span class="arg">float</span>
+        <span>image.</span>gamma = <span class="arg">float</span> -&gt; <em>float</em>
       </p>
     </div>
 
@@ -805,7 +812,7 @@
 
       <p>
         <span class="arg">img.</span>geometry -&gt; <em>string</em><br />
-        <span class="arg">img.</span>geometry = <span class="arg">string</span> or <span class="arg">geometry</span>
+        <span class="arg">img.</span>geometry = <span class="arg">string</span> -&gt; <em>string</em>
       </p>
     </div>
 
@@ -816,7 +823,7 @@
 
       <h4>Argument</h4>
 
-      <p>A <a href="imusage.html#geometry">geometry string</a> or a <a href="struct.html#Geometry">Geometry</a> object.</p>
+      <p>A <a href="imusage.html#geometry">geometry string</a>.</p>
 
       <h4>Returns</h4>
 
@@ -828,7 +835,7 @@
 
       <p>
         <span class="arg">img</span>.gravity -&gt; <em>gravity</em><br />
-        <span class="arg">img</span>.gravity = <span class="arg">gravity</span>
+        <span class="arg">img</span>.gravity = <span class="arg">gravity</span> -&gt; <em>gravity</em>
       </p>
     </div>
 
@@ -836,9 +843,7 @@
       <h4>Description</h4>
 
       <p>
-        Used with the
-        <a href="ilist.html#composite_layers">ImageList#composite_layers</a>
-        method.
+        Used with the <a href="ilist.html#composite_layers">ImageList#composite_layers</a> method.
         <span class="imquote">The direction that the image gravitates within the composite.</span>
       </p>
 
@@ -856,7 +861,7 @@
 
       <p>
         <span class="arg">img.</span>image_type -&gt; <em>type</em><br />
-        <span class="arg">img</span>.image_type = <span class="arg">type</span>
+        <span class="arg">img</span>.image_type = <span class="arg">type</span> -&gt; <em>type</em>
       </p>
     </div>
 
@@ -882,7 +887,7 @@
 
       <p>
         <span class="arg">img.</span>interlace -&gt; <em>type</em><br />
-        <span class="arg">img.</span>interlace = <span class="arg">type</span>
+        <span class="arg">img.</span>interlace = <span class="arg">type</span> -&gt; <em>type</em>
       </p>
     </div>
 
@@ -910,8 +915,7 @@
 
       <p>
         <span class="arg">img.</span>iptc_profile -&gt; <em>string</em><br />
-        <span class="arg">img.</span>iptc_profile =
-        <span class="arg">string</span>
+        <span class="arg">img.</span>iptc_profile = <span class="arg">string</span> -&gt; <em>string</em>
       </p>
     </div>
 
@@ -944,6 +948,25 @@
     </div>
 
     <div class="sig">
+      <h3 id="matte_color">matte_color</h3>
+
+      <p>
+        <span class="arg">img.</span>matte_color -&gt; <em>string</em><br />
+        <span class="arg">img.</span>matte_color = <span class="arg">string</span> or <span class="arg">pixel</span> -&gt; <em>string</em> or <em>pixel</em>
+      </p>
+    </div>
+
+    <div class="desc">
+      <h4>Description</h4>
+
+      <p>Specify the matte color.</p>
+
+      <h4>Returns</h4>
+
+      <p>A matte color name or <a href="struct.html#Pixel">Pixel</a> object.</p>
+    </div>
+
+    <div class="sig">
       <h3 id="mean_error_per_pixel">mean_error_per_pixel</h3>
 
       <p><span class="arg">img.</span>mean_error_per_pixel -&gt; <em>float</em></p>
@@ -954,8 +977,8 @@
 
       <p>
         <span class="imquote">The mean error per pixel computed when a image is color reduced.</span>
-        This attribute is only valid if the <code>measure_error</code> argument to <code>quantize</code><a href="ilist.html#quantize">[ImageList]</a
-        ><a href="image3.html#quantize">[Image]</a> is set to <code>true</code>. Get-only.
+        This attribute is only valid if the <code>measure_error</code> argument to <code>quantize</code><a href="ilist.html#quantize">[ImageList]</a>
+        <a href="image3.html#quantize">[Image]</a> is set to <code>true</code>. Get-only.
       </p>
     </div>
 
@@ -1040,7 +1063,7 @@
 
       <p>
         <span class="arg">img.</span>offset -&gt; <em>integer</em><br />
-        <span class="arg">img.</span>offset = <span class="arg">integer</span>
+        <span class="arg">img.</span>offset = <span class="arg">integer</span> -&gt; <em>integer</em>
       </p>
     </div>
 
@@ -1050,25 +1073,19 @@
       <p class="imquote">Number of initial bytes to skip over when reading raw image.</p>
     </div>
 
-    <div class="sig">
-      <h3 id="opacity">opacity</h3>
-
-      <p><span class="arg">img.</span>opacity = <em>integer</em></p>
-    </div>
-
     <div class="desc">
       <h4>Description</h4>
 
       <p>
-        <span class="imquote"
-          >Attenuates the opacity channel of an image. If the image pixels are opaque, they are set to the specified opacity level. Otherwise, the pixel opacity
-          values are blended with the supplied transparency value.</span
-        >
-        Set-only.
+        <span class="imquote">
+          Attenuates the opacity channel of an image. If the image pixels are opaque, they are set to the specified opacity level. Otherwise, the pixel opacity
+          values are blended with the supplied transparency value.
+        </span>
       </p>
 
       <h4>Argument</h4>
-      A number between 0 and QuantumRange. Higher numbers increase transparency.
+
+      <p>A number between 0 and QuantumRange. Higher numbers increase transparency.</p>
     </div>
 
     <div class="sig">
@@ -1076,7 +1093,7 @@
 
       <p>
         <span class="arg">img</span>.orientation -&gt; <em>type</em><br />
-        <span class="arg">img</span>.orientation = <em>type</em>
+        <span class="arg">img</span>.orientation = <em>type</em> -&gt; <em>type</em>
       </p>
     </div>
 
@@ -1090,9 +1107,12 @@
       <p>An <a href="constants.html#OrientationType">OrientationType</a> value.</p>
 
       <h4>Notes</h4>
-      See
-      <a href="http://jpegclub.org/exif_orientation.html">http://jpegclub.org/exif_orientation.html</a>
-      for more information about the Exif Orientation Tag.
+
+      <p>
+        See
+        <a href="http://jpegclub.org/exif_orientation.html">http://jpegclub.org/exif_orientation.html</a>
+        for more information about the Exif Orientation Tag.
+      </p>
     </div>
 
     <div class="sig">
@@ -1100,7 +1120,7 @@
 
       <p>
         <span class="arg">img.</span>page -&gt; <em>rectangle</em><br />
-        <span class="arg">img.</span>page = <span class="arg">rectangle</span>
+        <span class="arg">img.</span>page = <span class="arg">rectangle</span> -&gt; <em>rectangle</em>
       </p>
     </div>
 
@@ -1126,8 +1146,7 @@
 
       <p>
         <span class="arg">img</span>.pixel_interpolation_method -&gt; <em>method</em><br />
-        <span class="arg">img</span>.pixel_interpolation_method =
-        <span class="arg">method</span>
+        <span class="arg">img</span>.pixel_interpolation_method = <span class="arg">method</span> -&gt; <em>method</em>
       </p>
     </div>
 
@@ -1142,19 +1161,11 @@
 
       <h4>Argument</h4>
 
-      <p>
-        An
-        <a href="constants.html#PixelInterpolateMethod">PixelInterpolateMethod</a>
-        enum value.
-      </p>
+      <p>An <a href="constants.html#PixelInterpolateMethod">PixelInterpolateMethod</a> enum value.</p>
 
       <h4>Returns</h4>
 
-      <p>
-        An
-        <a href="constants.html#PixelInterpolateMethod">PixelInterpolateMethod</a>
-        enum value.
-      </p>
+      <p>An <a href="constants.html#PixelInterpolateMethod">PixelInterpolateMethod</a> enum value.</p>
     </div>
 
     <div class="sig">
@@ -1200,8 +1211,7 @@
 
       <p>
         <span class="arg">img.</span>rendering_intent -&gt; <em>type</em><br />
-        <span class="arg">img.</span>rendering_intent =
-        <span class="arg">type</span>
+        <span class="arg">img.</span>rendering_intent = <span class="arg">type</span> -&gt; <em>type</em>
       </p>
     </div>
 
@@ -1211,8 +1221,8 @@
       <p class="imquote">
         The type of rendering intent. See
         <a href="http://www.cambridgeincolour.com/tutorials/color-space-conversion.htm">
-          http://www.cambridgeincolour.com/tutorials/color-space-conversion.htm</a
-        >
+          http://www.cambridgeincolour.com/tutorials/color-space-conversion.htm
+        </a>
       </p>
 
       <h4>Argument</h4>
@@ -1220,7 +1230,8 @@
       <p>A <a href="constants.html#RenderingIntent">RenderingIntent</a> constant.</p>
 
       <h4>Returns</h4>
-      A <a href="constants.html#RenderingIntent">RenderingIntent</a> constant.
+
+      <p>A <a href="constants.html#RenderingIntent">RenderingIntent</a> constant.</p>
     </div>
 
     <div class="sig">
@@ -1255,8 +1266,7 @@
 
       <p>
         <span class="arg">img.</span>start_loop -&gt; <code>true</code> or <code>false</code><br />
-        <span class="arg">img.</span>start_loop = <code>true</code> or
-        <code>false</code>
+        <span class="arg">img.</span>start_loop = <code>true</code> or <code>false</code> -&gt; <code>true</code> or <code>false</code>
       </p>
     </div>
 
@@ -1271,8 +1281,7 @@
 
       <p>
         <span class="arg">img.</span>ticks_per_second -&gt; <em>integer</em><br />
-        <span class="arg">image.</span>ticks_per_second =
-        <span class="arg">integer</span>
+        <span class="arg">image.</span>ticks_per_second = <span class="arg">integer</span> -&gt; <em>integer</em>
       </p>
     </div>
 
@@ -1308,7 +1317,7 @@
     <div class="sig">
       <h3 id="total_ink_density">total_ink_density</h3>
 
-      <p><span class="arg">img</span>.total_ink_density -&gt; float</p>
+      <p><span class="arg">img</span>.total_ink_density -&gt; <em>float</em></p>
     </div>
 
     <div class="desc">
@@ -1323,11 +1332,30 @@
     </div>
 
     <div class="sig">
+      <h3 id="transparent_color">transparent_color</h3>
+
+      <p>
+        <span class="arg">img</span>.transparent_color -&gt; <em>string</em><br />
+        <span class="arg">img.</span>transparent_color = <span class="arg">string</span> or <span class="arg">pixel</span> -&gt; <em>string</em> or <em>pixel</em>
+      </p>
+    </div>
+
+    <div class="desc">
+      <h4>Description</h4>
+
+      <p>Specify the name of the transparent color as a String.</p>
+
+      <h4>Returns</h4>
+
+      <p>A transparent color name or <a href="struct.html#Pixel">Pixel</a> object.</p>
+    </div>
+
+    <div class="sig">
       <h3 id="units">units</h3>
 
       <p>
         <span class="arg">img.</span>units -&gt; <em>type</em><br />
-        <span class="arg">img.</span>units = <span class="arg">type</span>
+        <span class="arg">img.</span>units = <span class="arg">type</span> -&gt; <em>type</em>
       </p>
     </div>
 
@@ -1357,8 +1385,7 @@
 
       <p>
         <span class="arg">img</span>.virtual_pixel_method -&gt; <em>method</em><br />
-        <span class="arg">img</span>.virtual_pixel_method =
-        <span class="arg">method</span>
+        <span class="arg">img</span>.virtual_pixel_method = <span class="arg">method</span> -&gt; <em>method</em>
       </p>
     </div>
 
@@ -1461,8 +1488,7 @@ Magick::VirtualPixelMethod.values {|v| puts v}
 
       <p>
         <span class="arg">img.</span>x_resolution -&gt; <em>float</em><br />
-        <span class="arg">img.</span>x_resolution =
-        <span class="arg">float</span>
+        <span class="arg">img.</span>x_resolution = <span class="arg">float</span> -&gt; <em>float</em>
       </p>
     </div>
 
@@ -1481,8 +1507,7 @@ Magick::VirtualPixelMethod.values {|v| puts v}
 
       <p>
         <span class="arg">img.</span>y_resolution -&gt; <em>float</em><br />
-        <span class="arg">img.</span>y_resolution =
-        <span class="arg">float</span>
+        <span class="arg">img.</span>y_resolution = <span class="arg">float</span> -&gt; <em>float</em>
       </p>
     </div>
 
