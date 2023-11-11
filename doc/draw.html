@@ -42,6 +42,8 @@
           <li><a href="#annotate">annotate</a></li>
 
           <li><a href="#clone">clone</a></li>
+
+          <li><a href="#composite">composite</a></li>
         </ul>
       </div>
 
@@ -50,18 +52,20 @@
           <li><a href="#draw">draw</a></li>
 
           <li><a href="#dup">dup</a></li>
+
+          <li>
+            <a href="#get_multiline_type_metrics">get_multiline_type_metrics</a>
+          </li>
         </ul>
       </div>
 
       <div class="toccol">
         <ul>
-          <li>
-            <a href="#get_multiline_type_metrics">get_multiline_type_metrics</a>
-          </li>
-
           <li><a href="#get_type_metrics">get_type_metrics</a></li>
 
           <li><a href="#inspect">inspect</a></li>
+
+          <li><a href="#primitive">primitive</a></li>
         </ul>
       </div>
 
@@ -558,6 +562,38 @@ title.annotate(montage, 0,0,0,40, 'Named Colors') { |options|
     </div>
 
     <div class="sig">
+      <h3 id="composite">composite</h3>
+
+      <p>
+        <span class="arg">draw</span>.composite(<span class="arg">x</span>, <span class="arg">y</span>, <span class="arg">width</span>,
+        <span class="arg">height</span>, <span class="arg">image</span>, [<span class="arg">operator</span>]) -&gt; <em>self</em>
+      </p>
+    </div>
+
+    <div class="desc">
+      <h4>Description</h4>
+
+      <p>This method draw the image using <a href="constants.html#CompositeOperator">CompositeOperator</a>.</p>
+
+      <h4>Arguments</h4>
+      <dl>
+        <dt>x</dt>
+        <dt>y</dt>
+        <dt>width</dt>
+        <dt>height</dt>
+        <dt>image</dt>
+        <dd>Either an imagelist or a image. If an imagelist, draws on the current image.</dd>
+
+        <dt>operator</dt>
+        <dd>Specify one of <a href="constants.html#CompositeOperator">CompositeOperator</a> enum.</dd>
+      </dl>
+
+      <h4>Returns</h4>
+
+      <p>self</p>
+    </div>
+
+    <div class="sig">
       <h3 id="draw">draw</h3>
 
       <p>
@@ -783,6 +819,29 @@ draw.inspect &raquo;
     fill black"
 </pre
       >
+    </div>
+
+    <div class="sig">
+      <h3 id="primitive">primitive</h3>
+
+      <p><span class="arg">draw</span>.primitive(<span class="arg">primitive</span>) -&gt; <em>self</em></p>
+    </div>
+
+    <div class="desc">
+      <h4>Description</h4>
+
+      <p>Add a drawing primitive to the list of primitives in the Draw object.</p>
+
+      <h4>Arguments</h4>
+
+      <dl>
+        <dt>primitive</dt>
+        <dd>String that it is a drawing primitive to add.</dd>
+      </dl>
+
+      <h4>Returns</h4>
+
+      <p>self</p>
     </div>
 
     <h2 class="methods">drawing primitive methods</h2>
