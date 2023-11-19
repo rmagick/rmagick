@@ -121,9 +121,9 @@
 
           <li><a href="#matte_color">matte_color</a></li>
 
-          <li><a href="#monitor">monitor</a></li>
-
           <li><a href="#monochrome">monochrome</a></li>
+
+          <li><a href="#number_scenes">number_scenes</a></li>
 
           <li><a href="#orientation">orientation</a></li>
 
@@ -1062,30 +1062,6 @@ p img.first['caption'] &raquo; "a new caption"
     </div>
 
     <div class="sig">
-      <h3 id="monitor">monitor</h3>
-
-      <p><span class="arg">self.</span>monitor= <span class="arg">proc</span></p>
-    </div>
-
-    <div class="desc">
-      <h4>Description</h4>
-
-      <p>
-        Set a <code>Proc</code> object as a progress monitor. This proc can be used to monitor the progress of methods that accept optional arguments such as
-        <code>read</code> and <code>write</code>. To stop monitoring, set the monitor to <code>nil</code>. See
-        <a href="imageattrs.html#monitor">Image#monitor</a> for more information about the proc. This attribute is set-only.
-      </p>
-
-      <p>
-        If you assign a monitor to an image with
-        <code>options.monitor=</code> when the image is created, the image object inherits the monitor. Any methods applied to the new image will be monitored
-        as well.
-      </p>
-
-      <p>This method supercedes the <code>Magick.set_monitor</code> method.</p>
-    </div>
-
-    <div class="sig">
       <h3 id="monochrome">monochrome</h3>
 
       <p>
@@ -1097,7 +1073,20 @@ p img.first['caption'] &raquo; "a new caption"
     <div class="desc">
       <h4>Description</h4>
 
-      <p>Transform the image to black and white on input. Only the EPT, PDF, and PS formats respect this attribute.</p>
+    </div>
+
+    <div class="sig">
+      <h3 id="number_scenes">number_scenes</h3>
+
+      <p>
+        <span class="arg">self.</span>number_scenes= <span class="arg"><code>integer</code></span></span>
+      </p>
+    </div>
+
+    <div class="desc">
+      <h4>Description</h4>
+
+      <p>Set the scene number of an image or the first image in a sequence.</p>
     </div>
 
     <div class="sig">
