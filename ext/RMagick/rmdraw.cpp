@@ -1667,7 +1667,8 @@ get_type_metrics(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
 #else
     GVL_STRUCT_TYPE(get_type_metrics) args = { image, draw->info, &metrics };
 #endif
-    okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(fp, &args);
+    void *ret = CALL_FUNC_WITHOUT_GVL(fp, &args);
+    okay = reinterpret_cast<MagickBooleanType &>(ret);
 
     magick_free(draw->info->text);
     draw->info->text = NULL;
