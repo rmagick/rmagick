@@ -5,8 +5,8 @@
  *
  * Changes since Nov. 2009 copyright &copy; by Benjamin Thomas and Omer Bar-or
  *
- * @file     rmstruct.c
- * @version  $Id: rmstruct.c,v 1.5 2009/12/20 02:33:34 baror Exp $
+ * @file     rmstruct.cpp
+ * @version  $Id: rmstruct.cpp,v 1.5 2009/12/20 02:33:34 baror Exp $
  * @author   Tim Hunter
  ******************************************************************************/
 

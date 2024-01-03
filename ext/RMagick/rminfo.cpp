@@ -5,8 +5,8 @@
  *
  * Changes since Nov. 2009 copyright &copy; by Benjamin Thomas and Omer Bar-or
  *
- * @file     rminfo.c
- * @version  $Id: rminfo.c,v 1.79 2009/12/20 02:33:33 baror Exp $
+ * @file     rminfo.cpp
+ * @version  $Id: rminfo.cpp,v 1.79 2009/12/20 02:33:33 baror Exp $
  * @author   Tim Hunter
  ******************************************************************************/
 

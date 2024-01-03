@@ -6,8 +6,8 @@
  *
  * Changes since Nov. 2009 copyright &copy; by Benjamin Thomas and Omer Bar-or
  *
- * @file     rmmain.c
- * @version  $Id: rmmain.c,v 1.303 2009/12/20 02:33:33 baror Exp $
+ * @file     rmmain.cpp
+ * @version  $Id: rmmain.cpp,v 1.303 2009/12/20 02:33:33 baror Exp $
  * @author   Tim Hunter
  ******************************************************************************/
 

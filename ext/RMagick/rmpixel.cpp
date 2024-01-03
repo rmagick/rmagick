@@ -5,8 +5,8 @@
  *
  * Changes since Nov. 2009 copyright &copy; by Benjamin Thomas and Omer Bar-or
  *
- * @file     rmpixel.c
- * @version  $Id: rmpixel.c,v 1.7 2009/12/21 10:34:58 baror Exp $
+ * @file     rmpixel.cpp
+ * @version  $Id: rmpixel.cpp,v 1.7 2009/12/21 10:34:58 baror Exp $
  * @author   Tim Hunter
  ******************************************************************************/
 

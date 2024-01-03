@@ -5,8 +5,8 @@
  *
  * Changes since Nov. 2009 copyright &copy; by Benjamin Thomas and Omer Bar-or
  *
- * @file     rmilist.c
- * @version  $Id: rmilist.c,v 1.94 2009/12/20 02:33:33 baror Exp $
+ * @file     rmilist.cpp
+ * @version  $Id: rmilist.cpp,v 1.94 2009/12/20 02:33:33 baror Exp $
  * @author   Tim Hunter
  ******************************************************************************/
 

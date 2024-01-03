@@ -5,8 +5,8 @@
  *
  * Changes since Nov. 2009 copyright &copy; by Benjamin Thomas and Omer Bar-or
  *
- * @file     rmutil.c
- * @version  $Id: rmutil.c,v 1.182 2009/12/21 10:34:58 baror Exp $
+ * @file     rmutil.cpp
+ * @version  $Id: rmutil.cpp,v 1.182 2009/12/21 10:34:58 baror Exp $
  * @author   Tim Hunter
  ******************************************************************************/
 

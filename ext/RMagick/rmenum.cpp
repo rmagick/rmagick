@@ -5,8 +5,8 @@
  *
  * Changes since Nov. 2009 copyright &copy; by Benjamin Thomas and Omer Bar-or
  *
- * @file     rmenum.c
- * @version  $Id: rmenum.c,v 1.9 2009/12/20 02:33:33 baror Exp $
+ * @file     rmenum.cpp
+ * @version  $Id: rmenum.cpp,v 1.9 2009/12/20 02:33:33 baror Exp $
  * @author   Tim Hunter
  ******************************************************************************/
 

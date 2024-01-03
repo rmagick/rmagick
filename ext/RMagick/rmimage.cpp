@@ -5,8 +5,8 @@
  *
  * Changes since Nov. 2009 copyright &copy; by Benjamin Thomas and Omer Bar-or
  *
- * @file     rmimage.c
- * @version  $Id: rmimage.c,v 1.361 2010/05/03 03:34:48 baror Exp $
+ * @file     rmimage.cpp
+ * @version  $Id: rmimage.cpp,v 1.361 2010/05/03 03:34:48 baror Exp $
  * @author   Tim Hunter
  ******************************************************************************/
 

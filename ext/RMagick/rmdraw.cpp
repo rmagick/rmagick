@@ -5,8 +5,8 @@
  *
  * Changes since Nov. 2009 copyright &copy; by Benjamin Thomas and Omer Bar-or
  *
- * @file     rmdraw.c
- * @version  $Id: rmdraw.c,v 1.83 2009/12/20 02:33:33 baror Exp $
+ * @file     rmdraw.cpp
+ * @version  $Id: rmdraw.cpp,v 1.83 2009/12/20 02:33:33 baror Exp $
  * @author   Tim Hunter
  ******************************************************************************/
 
@@ -1433,7 +1433,7 @@ DrawOptions_initialize(VALUE self)
  * Allocate a new Magick::Image::PolaroidOptions object.
  *
  * - Internally a PolaroidOptions object is the same as a Draw object. The
- *   methods are implemented by Draw methods in rmdraw.c.
+ *   methods are implemented by Draw methods in rmdraw.cpp.
  *
  * @return [Magick::Image::PolaroidOptions] a new PolaroidOptions object
  */

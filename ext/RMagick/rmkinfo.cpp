@@ -3,8 +3,8 @@
  *
  * Copyright &copy; RMagick Project
  *
- * @file rmkinfo.c
- * @version $Id: rmkinfo.c,v 1.0 2011/11/29 15:33:14 naquad Exp $
+ * @file rmkinfo.cpp
+ * @version $Id: rmkinfo.cpp,v 1.0 2011/11/29 15:33:14 naquad Exp $
  * @author Naquad
  ****************************************************************************/
 

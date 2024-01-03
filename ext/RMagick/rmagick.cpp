@@ -5,8 +5,8 @@
  *
  * Changes since Nov. 2009 copyright &copy; by Benjamin Thomas and Omer Bar-or
  *
- * @file     rmagick.c
- * @version  $Id: rmagick.c,v 1.4 2009/12/20 02:33:32 baror Exp $
+ * @file     rmagick.cpp
+ * @version  $Id: rmagick.cpp,v 1.4 2009/12/20 02:33:32 baror Exp $
  * @author   Tim Hunter
  ******************************************************************************/
 
@@ -208,7 +208,7 @@ Magick_init_formats(VALUE klass ATTRIBUTE_UNUSED)
  *   Set resource limits.
  *   @param resource [String, Symbol] the type of resource
  *   @param limit [Numeric] the new limit number
- * 
+ *
  * @return [Numeric] the old limit.
  */
 VALUE
