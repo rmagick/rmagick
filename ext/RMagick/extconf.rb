@@ -132,12 +132,6 @@ module RMagick
         $LOCAL_LIBS += ' ' + (im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_.lib' : 'CORE_RL_magick_.lib')
 
       end
-
-      $CPPFLAGS << if have_macro('__GNUC__')
-                     ' -std=gnu99 -Wno-void-pointer-to-int-cast -Wno-void-pointer-to-enum-cast -Wno-pointer-to-int-cast'
-                   else
-                     ' -std=c99'
-                   end
       ruby_version = RUBY_VERSION.split('.')
       $CPPFLAGS += " -DRUBY_VERSION_MAJOR=#{ruby_version[0]} -DRUBY_VERSION_MINOR=#{ruby_version[1]}"
     end
