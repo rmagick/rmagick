@@ -111,6 +111,8 @@ module RMagick
           $LDFLAGS = "#{original_ldflags} #{ldflags}"
         end
 
+        $CPPFLAGS += ' -Wno-register'
+
         configure_archflags_for_osx($magick_package) if RUBY_PLATFORM =~ /darwin/ # osx
 
       elsif RUBY_PLATFORM =~ /mingw/ # mingw
@@ -119,6 +121,8 @@ module RMagick
         $CPPFLAGS += %( -I"#{dir_paths[:include]}")
         $LDFLAGS += %( -L"#{dir_paths[:lib]}")
         $LDFLAGS << ' -lucrt' if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.4.0')
+
+        $CPPFLAGS += ' -Wno-register'
 
         have_library(im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_' : 'CORE_RL_magick_')
 
