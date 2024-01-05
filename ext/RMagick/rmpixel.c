@@ -492,13 +492,13 @@ Color_Name_to_PixelColor(PixelColor *color, VALUE name_arg)
  * @return [Magick::Pixel] a new Magick::Pixel object
  */
 VALUE
-Pixel_alloc(VALUE class)
+Pixel_alloc(VALUE klass)
 {
     Pixel *pixel;
 
     pixel = ALLOC(Pixel);
     memset(pixel, '\0', sizeof(Pixel));
-    return TypedData_Wrap_Struct(class, &rm_pixel_data_type, pixel);
+    return TypedData_Wrap_Struct(klass, &rm_pixel_data_type, pixel);
 }
 
 
@@ -679,7 +679,7 @@ Pixel_fcmp(int argc, VALUE *argv, VALUE self)
  * @see Magick::Pixel#to_color
  */
 VALUE
-Pixel_from_color(VALUE class ATTRIBUTE_UNUSED, VALUE name)
+Pixel_from_color(VALUE klass ATTRIBUTE_UNUSED, VALUE name)
 {
     PixelColor pp;
     ExceptionInfo *exception;
@@ -715,7 +715,7 @@ Pixel_from_color(VALUE class ATTRIBUTE_UNUSED, VALUE name)
  *   @return [Magick::Pixel] a new Magick::Pixel object
  */
 VALUE
-Pixel_from_hsla(int argc, VALUE *argv, VALUE class ATTRIBUTE_UNUSED)
+Pixel_from_hsla(int argc, VALUE *argv, VALUE klass ATTRIBUTE_UNUSED)
 {
     double h, s, l, a = 1.0;
     MagickPixel pp;

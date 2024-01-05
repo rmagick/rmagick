@@ -454,47 +454,47 @@ extern const rb_data_type_t rm_kernel_info_data_type;
 #define R_dbl_to_C_dbl(attr) NUM2DBL(attr) /**< C double <- Ruby double */
 
 //! define attribute reader
-#define IMPLEMENT_TYPED_ATTR_READER(class, attr, type, data_type) \
+#define IMPLEMENT_TYPED_ATTR_READER(klass, attr, type, data_type) \
     {\
-        class *ptr;\
+        klass *ptr;\
         if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {\
             rm_check_destroyed(self); \
         }\
-        TypedData_Get_Struct(self, class, data_type, ptr);\
+        TypedData_Get_Struct(self, klass, data_type, ptr);\
         return C_##type##_to_R_##type(ptr->attr);\
     }
 
 //! define attribute reader when attribute name is different from the field name
-#define IMPLEMENT_TYPED_ATTR_READERF(class, attr, field, type, data_type) \
+#define IMPLEMENT_TYPED_ATTR_READERF(klass, attr, field, type, data_type) \
     {\
-        class *ptr;\
+        klass *ptr;\
         rm_check_destroyed(self); \
-        TypedData_Get_Struct(self, class, data_type, ptr);\
+        TypedData_Get_Struct(self, klass, data_type, ptr);\
         return C_##type##_to_R_##type(ptr->field);\
     }
 
 //! define attribute writer
-#define IMPLEMENT_TYPED_ATTR_WRITER(class, attr, type, data_type) \
+#define IMPLEMENT_TYPED_ATTR_WRITER(klass, attr, type, data_type) \
     {\
-        class *ptr;\
+        klass *ptr;\
         if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {\
             rm_check_destroyed(self); \
         }\
         rb_check_frozen(self);\
-        TypedData_Get_Struct(self, class, data_type, ptr);\
+        TypedData_Get_Struct(self, klass, data_type, ptr);\
         ptr->attr = R_##type##_to_C_##type(val);\
         return val;\
     }
 
 //! define attribute writer when attribute name is different from the field name
-#define IMPLEMENT_TYPED_ATTR_WRITERF(class, attr, field, type, data_type) \
+#define IMPLEMENT_TYPED_ATTR_WRITERF(klass, attr, field, type, data_type) \
     {\
-        class *ptr;\
+        klass *ptr;\
         if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {\
             rm_check_destroyed(self); \
         }\
         rb_check_frozen(self);\
-        TypedData_Get_Struct(self, class, data_type, ptr);\
+        TypedData_Get_Struct(self, klass, data_type, ptr);\
         ptr->field = R_##type##_to_C_##type(val);\
         return self;\
     }
@@ -504,15 +504,15 @@ extern const rb_data_type_t rm_kernel_info_data_type;
  *  Declare attribute accessors
  */
 //! declare attribute reader
-#define ATTR_READER(class, attr) \
-    extern VALUE class##_##attr(VALUE);
+#define ATTR_READER(klass, attr) \
+    extern VALUE klass##_##attr(VALUE);
 //! declare attribute writer
-#define ATTR_WRITER(class, attr) \
-    extern VALUE class##_##attr##_eq(VALUE, VALUE);
+#define ATTR_WRITER(klass, attr) \
+    extern VALUE klass##_##attr##_eq(VALUE, VALUE);
 //! declare attribute accessor
-#define ATTR_ACCESSOR(class, attr) \
-    ATTR_READER(class, attr)\
-    ATTR_WRITER(class, attr)
+#define ATTR_ACCESSOR(klass, attr) \
+    ATTR_READER(klass, attr)\
+    ATTR_WRITER(klass, attr)
 
 
 //!  Define a Magick module constant
@@ -1081,7 +1081,7 @@ extern VALUE  Enum_spaceship(VALUE, VALUE);
 extern VALUE  Enum_bitwise_or(VALUE, VALUE);
 extern VALUE  Enum_case_eq(VALUE, VALUE);
 extern VALUE  Enum_type_initialize(VALUE, VALUE, VALUE);
-extern VALUE  Enum_find(VALUE class, int val);
+extern VALUE  Enum_find(VALUE, int);
 extern VALUE  Enum_type_each(VALUE);
 extern VALUE  rm_enum_new(VALUE, VALUE, VALUE);
 extern VALUE  ClassType_find(ClassType);
@@ -1209,7 +1209,7 @@ extern void   rm_error_handler(const ExceptionType, const char *, const char *);
 extern void   rm_warning_handler(const ExceptionType, const char *, const char *);
 extern MagickBooleanType rm_should_raise_exception(ExceptionInfo *, const ExceptionRetention);
 extern void   rm_raise_exception(ExceptionInfo *);
-extern VALUE  rm_io_path(VALUE io);
+extern VALUE  rm_io_path(VALUE);
 #if defined(IMAGEMAGICK_6)
 extern void   rm_check_image_exception(Image *, ErrorRetention);
 #endif

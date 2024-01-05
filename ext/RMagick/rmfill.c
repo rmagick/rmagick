@@ -86,11 +86,11 @@ GradientFill_memsize(const void *ptr)
  * @return [Magick::GradientFill] a new GradientFill object
  */
 VALUE
-GradientFill_alloc(VALUE class)
+GradientFill_alloc(VALUE klass)
 {
     rm_GradientFill *fill;
 
-    return TypedData_Make_Struct(class, rm_GradientFill, &rm_gradient_fill_data_type, fill);
+    return TypedData_Make_Struct(klass, rm_GradientFill, &rm_gradient_fill_data_type, fill);
 }
 
 
@@ -741,10 +741,10 @@ TextureFill_memsize(const void *ptr)
  * @return [Magick::TextureFill] a new TextureFill object
  */
 VALUE
-TextureFill_alloc(VALUE class)
+TextureFill_alloc(VALUE klass)
 {
     rm_TextureFill *fill;
-    return TypedData_Make_Struct(class, rm_TextureFill, &rm_texture_fill_data_type, fill);
+    return TypedData_Make_Struct(klass, rm_TextureFill, &rm_texture_fill_data_type, fill);
 }
 
 /**

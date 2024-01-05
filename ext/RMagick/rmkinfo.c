@@ -64,9 +64,9 @@ rm_kernel_info_memsize(const void *ptr)
  * @return [Magick::KernelInfo] a new KernelInfo object
  */
 VALUE
-KernelInfo_alloc(VALUE class)
+KernelInfo_alloc(VALUE klass)
 {
-    return TypedData_Wrap_Struct(class, &rm_kernel_info_data_type, NULL);
+    return TypedData_Wrap_Struct(klass, &rm_kernel_info_data_type, NULL);
 }
 
 /**
