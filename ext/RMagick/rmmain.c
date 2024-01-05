@@ -43,17 +43,17 @@ static void features_constant(void);
  */
 //! define Ruby enum
 #define DEF_ENUM(tag) {\
-   VALUE _cls, _enum;\
-   _cls =  Class_##tag = rm_define_enum_type(#tag);
+   VALUE _klass, _enum;\
+   _klass =  Class_##tag = rm_define_enum_type(#tag);
 
 //! define Ruby enumerator elements
 #define ENUMERATOR(val)\
-   _enum = rm_enum_new(_cls, ID2SYM(rb_intern(#val)), INT2NUM(val));\
+   _enum = rm_enum_new(_klass, ID2SYM(rb_intern(#val)), INT2NUM(val));\
    rb_define_const(Module_Magick, #val, _enum);
 
 //! define Ruby enumerator elements when name is different from the value
 #define ENUMERATORV(name, val)\
-   _enum = rm_enum_new(_cls, ID2SYM(rb_intern(#name)), INT2NUM(val));\
+   _enum = rm_enum_new(_klass, ID2SYM(rb_intern(#name)), INT2NUM(val));\
    rb_define_const(Module_Magick, #name, _enum);
 
 //! end of an enumerator

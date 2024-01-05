@@ -42,7 +42,7 @@ rm_yield_handle_exception(VALUE allocated_area, VALUE exc)
  *
  */
 VALUE
-Magick_colors(VALUE class)
+Magick_colors(VALUE klass)
 {
     const ColorInfo **color_info_list;
     size_t number_colors, x;
@@ -63,7 +63,7 @@ Magick_colors(VALUE class)
             rb_rescue(rm_yield_body, Import_ColorInfo(color_info_list[x]), rm_yield_handle_exception, (VALUE)color_info_list);
         }
         magick_free((void *)color_info_list);
-        return class;
+        return klass;
     }
     else
     {
@@ -93,7 +93,7 @@ Magick_colors(VALUE class)
  *
  */
 VALUE
-Magick_fonts(VALUE class)
+Magick_fonts(VALUE klass)
 {
     const TypeInfo **type_info;
     size_t number_types, x;
@@ -112,7 +112,7 @@ Magick_fonts(VALUE class)
             rb_rescue(rm_yield_body, Import_TypeInfo((const TypeInfo *)type_info[x]), rm_yield_handle_exception, (VALUE)type_info);
         }
         magick_free((void *)type_info);
-        return class;
+        return klass;
     }
     else
     {
@@ -170,7 +170,7 @@ MagickInfo_to_format(const MagickInfo *magick_info)
  * @return [Hash] the formats hash.
  */
 VALUE
-Magick_init_formats(VALUE class ATTRIBUTE_UNUSED)
+Magick_init_formats(VALUE klass ATTRIBUTE_UNUSED)
 {
     const MagickInfo **magick_info;
     size_t number_formats, x;
@@ -214,7 +214,7 @@ Magick_init_formats(VALUE class ATTRIBUTE_UNUSED)
  * @return [Numeric] the old limit.
  */
 VALUE
-Magick_limit_resource(int argc, VALUE *argv, VALUE class)
+Magick_limit_resource(int argc, VALUE *argv, VALUE klass)
 {
     VALUE resource, limit;
     ResourceType res = UndefinedResource;
@@ -227,7 +227,7 @@ Magick_limit_resource(int argc, VALUE *argv, VALUE class)
     switch (TYPE(resource))
     {
         case T_NIL:
-            return class;
+            return klass;
 
         case T_SYMBOL:
             id = (ID)SYM2ID(resource);
@@ -265,7 +265,7 @@ Magick_limit_resource(int argc, VALUE *argv, VALUE class)
             str = StringValueCStr(resource);
             if (*str == '\0')
             {
-                return class;
+                return klass;
             }
             else if (rm_strcasecmp("area", str) == 0)
             {
@@ -321,12 +321,12 @@ Magick_limit_resource(int argc, VALUE *argv, VALUE class)
  * @param threshold [Numeric] the number of megabytes to set.
  */
 VALUE
-Magick_set_cache_threshold(VALUE class, VALUE threshold)
+Magick_set_cache_threshold(VALUE klass, VALUE threshold)
 {
     unsigned long thrshld = NUM2ULONG(threshold);
     SetMagickResourceLimit(MemoryResource, (MagickSizeType)thrshld);
     SetMagickResourceLimit(MapResource, (MagickSizeType)(2*thrshld));
-    return class;
+    return klass;
 }
 
 
@@ -354,7 +354,7 @@ Magick_set_cache_threshold(VALUE class, VALUE threshold)
  * @param args [String] the mask of log event.
  */
 VALUE
-Magick_set_log_event_mask(int argc, VALUE *argv, VALUE class)
+Magick_set_log_event_mask(int argc, VALUE *argv, VALUE klass)
 {
     int x;
 
@@ -366,7 +366,7 @@ Magick_set_log_event_mask(int argc, VALUE *argv, VALUE class)
     {
         SetLogEventMask(StringValueCStr(argv[x]));
     }
-    return class;
+    return klass;
 }
 
 /**
@@ -388,9 +388,9 @@ Magick_set_log_event_mask(int argc, VALUE *argv, VALUE class)
  * @param format [String] the format to set.
  */
 VALUE
-Magick_set_log_format(VALUE class, VALUE format)
+Magick_set_log_format(VALUE klass, VALUE format)
 {
     SetLogFormat(StringValueCStr(format));
-    return class;
+    return klass;
 }
 

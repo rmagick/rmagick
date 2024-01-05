@@ -2350,11 +2350,11 @@ Info_memsize(const void *infoptr)
  *
  * No Ruby usage (internal function)
  *
- * @param class the Ruby class to use
+ * @param klass the Ruby class to use
  * @return a new ImageInfo object
  */
 VALUE
-Info_alloc(VALUE class)
+Info_alloc(VALUE klass)
 {
     Info *info;
     VALUE info_obj;
@@ -2364,7 +2364,7 @@ Info_alloc(VALUE class)
     {
         rb_raise(rb_eNoMemError, "not enough memory to initialize Info object");
     }
-    info_obj = TypedData_Wrap_Struct(class, &rm_info_data_type, info);
+    info_obj = TypedData_Wrap_Struct(klass, &rm_info_data_type, info);
 
     RB_GC_GUARD(info_obj);
 

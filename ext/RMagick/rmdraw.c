@@ -1235,14 +1235,14 @@ Draw_inspect(VALUE self)
  *
  * @return [Magick::Draw] a new Draw object
  */
-VALUE Draw_alloc(VALUE class)
+VALUE Draw_alloc(VALUE klass)
 {
     Draw *draw;
     VALUE draw_obj;
 
     draw = ALLOC(Draw);
     memset(draw, 0, sizeof(Draw));
-    draw_obj = TypedData_Wrap_Struct(class, &rm_draw_data_type, draw);
+    draw_obj = TypedData_Wrap_Struct(klass, &rm_draw_data_type, draw);
 
     RB_GC_GUARD(draw_obj);
 
@@ -1388,14 +1388,14 @@ new_DrawOptions(void)
  * @return [Magick::Image::DrawOptions] a new DrawOptions object
  */
 VALUE
-DrawOptions_alloc(VALUE class)
+DrawOptions_alloc(VALUE klass)
 {
     Draw *draw_options;
     VALUE draw_options_obj;
 
     draw_options = ALLOC(Draw);
     memset(draw_options, 0, sizeof(Draw));
-    draw_options_obj = TypedData_Wrap_Struct(class, &rm_draw_data_type, draw_options);
+    draw_options_obj = TypedData_Wrap_Struct(klass, &rm_draw_data_type, draw_options);
 
     RB_GC_GUARD(draw_options_obj);
 
@@ -1438,7 +1438,7 @@ DrawOptions_initialize(VALUE self)
  * @return [Magick::Image::PolaroidOptions] a new PolaroidOptions object
  */
 VALUE
-PolaroidOptions_alloc(VALUE class)
+PolaroidOptions_alloc(VALUE klass)
 {
     VALUE polaroid_obj;
     ImageInfo *image_info;
@@ -1452,7 +1452,7 @@ PolaroidOptions_alloc(VALUE class)
     draw->info = CloneDrawInfo(image_info, (DrawInfo *) NULL);
     (void) DestroyImageInfo(image_info);
 
-    polaroid_obj = TypedData_Wrap_Struct(class, &rm_draw_data_type, draw);
+    polaroid_obj = TypedData_Wrap_Struct(klass, &rm_draw_data_type, draw);
 
     RB_GC_GUARD(polaroid_obj);
 

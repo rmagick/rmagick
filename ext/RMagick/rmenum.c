@@ -40,14 +40,14 @@ const rb_data_type_t rm_enum_data_type = {
 VALUE
 rm_define_enum_type(const char *tag)
 {
-    VALUE class;
+    VALUE klass;
 
-    class = rb_define_class_under(Module_Magick, tag, Class_Enum);\
+    klass = rb_define_class_under(Module_Magick, tag, Class_Enum);\
 
-    rb_define_singleton_method(class, "values", Enum_type_values, 0);
-    rb_define_method(class, "initialize", Enum_type_initialize, 2);
-    rb_define_method(class, "inspect", Enum_type_inspect, 0);
-    return class;
+    rb_define_singleton_method(klass, "values", Enum_type_values, 0);
+    rb_define_method(klass, "initialize", Enum_type_initialize, 2);
+    rb_define_method(klass, "inspect", Enum_type_inspect, 0);
+    return klass;
 }
 
 
@@ -56,19 +56,19 @@ rm_define_enum_type(const char *tag)
  *
  * No Ruby usage (internal function)
  *
- * @param class the subclass
+ * @param klass the subclass
  * @param sym the symbol
  * @param val the value for the symbol
  * @return a new instance of class
  */
 VALUE
-rm_enum_new(VALUE class, VALUE sym, VALUE val)
+rm_enum_new(VALUE klass, VALUE sym, VALUE val)
 {
     VALUE argv[2];
 
     argv[0] = sym;
     argv[1] = val;
-    return rb_obj_freeze(rb_class_new_instance(2, argv, class));
+    return rb_obj_freeze(rb_class_new_instance(2, argv, klass));
 }
 
 /**
@@ -118,12 +118,12 @@ static void rm_enum_free(void *magick_enum)
  * @return [Magick::Enum] a new enumerator
  */
 VALUE
-Enum_alloc(VALUE class)
+Enum_alloc(VALUE klass)
 {
     MagickEnum *magick_enum;
     VALUE enumr;
 
-    enumr = TypedData_Make_Struct(class, MagickEnum, &rm_enum_data_type, magick_enum);
+    enumr = TypedData_Make_Struct(klass, MagickEnum, &rm_enum_data_type, magick_enum);
     rb_obj_freeze(enumr);
 
     return enumr;
@@ -226,16 +226,16 @@ Enum_spaceship(VALUE self, VALUE other)
 VALUE
 Enum_bitwise_or(VALUE self, VALUE another)
 {
-    VALUE new_enum, cls;
+    VALUE new_enum, klass;
     MagickEnum *this, *that, *new_enum_data;
 
-    cls = CLASS_OF(self);
-    if (CLASS_OF(another) != cls)
+    klass = CLASS_OF(self);
+    if (CLASS_OF(another) != klass)
     {
-        rb_raise(rb_eArgError, "Expected class %s but got %s", rb_class2name(cls), rb_class2name(CLASS_OF(another)));
+        rb_raise(rb_eArgError, "Expected class %s but got %s", rb_class2name(klass), rb_class2name(CLASS_OF(another)));
     }
 
-    new_enum = Enum_alloc(cls);
+    new_enum = Enum_alloc(klass);
 
     TypedData_Get_Struct(self, MagickEnum, &rm_enum_data_type, this);
     TypedData_Get_Struct(another, MagickEnum, &rm_enum_data_type, that);
@@ -321,13 +321,13 @@ Enum_type_inspect(VALUE self)
  *   @return [Magick::Enum] self
  */
 static VALUE
-Enum_type_values(VALUE class)
+Enum_type_values(VALUE klass)
 {
     VALUE enumerators, copy;
     VALUE rv;
     int x;
 
-    enumerators = rb_cv_get(class, ENUMERATORS_CLASS_VAR);
+    enumerators = rb_cv_get(klass, ENUMERATORS_CLASS_VAR);
 
     if (rb_block_given_p())
     {
@@ -335,7 +335,7 @@ Enum_type_values(VALUE class)
         {
             rb_yield(rb_ary_entry(enumerators, x));
         }
-        rv = class;
+        rv = klass;
     }
     else
     {
@@ -360,19 +360,19 @@ Enum_type_values(VALUE class)
  *
  * No Ruby usage (internal function)
  *
- * @param class the class type
+ * @param klass the class type
  * @param value the value for enum
  * @return a enumerator
  */
 
 VALUE
-Enum_find(VALUE class, int val)
+Enum_find(VALUE klass, int val)
 {
     VALUE enumerators;
     MagickEnum *magick_enum;
     int x;
 
-    enumerators = rb_cv_get(class, ENUMERATORS_CLASS_VAR);
+    enumerators = rb_cv_get(klass, ENUMERATORS_CLASS_VAR);
     enumerators = rm_check_ary_type(enumerators);
 
     for (x = 0; x < RARRAY_LEN(enumerators); x++)
@@ -398,9 +398,9 @@ Enum_find(VALUE class, int val)
  * @return a new enumerator
  */
 VALUE
-ClassType_find(ClassType cls)
+ClassType_find(ClassType klass)
 {
-    return Enum_find(Class_ClassType, cls);
+    return Enum_find(Class_ClassType, klass);
 }
 
 

@@ -75,7 +75,7 @@ Montage_memsize(const void *ptr)
  * @return [Magick::ImageList::Montage] a new Montage object
  */
 VALUE
-Montage_alloc(VALUE class)
+Montage_alloc(VALUE klass)
 {
     MontageInfo *montage_info;
     Montage *montage;
@@ -100,7 +100,7 @@ Montage_alloc(VALUE class)
     montage = ALLOC(Montage);
     montage->info = montage_info;
     montage->compose = OverCompositeOp;
-    montage_obj = TypedData_Wrap_Struct(class, &rm_montage_data_type, montage);
+    montage_obj = TypedData_Wrap_Struct(klass, &rm_montage_data_type, montage);
 
     RB_GC_GUARD(montage_obj);
 

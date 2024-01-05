@@ -4339,7 +4339,7 @@ Image_compress_colormap_bang(VALUE self)
  * @return [Magick::Image] a new image
  */
 VALUE
-Image_constitute(VALUE class ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg,
+Image_constitute(VALUE klass ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg,
                  VALUE map_arg, VALUE pixels_arg)
 {
     Image *new_image;
@@ -7261,7 +7261,7 @@ Image_frame(int argc, VALUE *argv, VALUE self)
  * @see Image#to_blob
  */
 VALUE
-Image_from_blob(VALUE class ATTRIBUTE_UNUSED, VALUE blob_arg)
+Image_from_blob(VALUE klass ATTRIBUTE_UNUSED, VALUE blob_arg)
 {
     Image *images;
     Info *info;
@@ -8868,7 +8868,7 @@ Image_liquid_rescale(int argc, VALUE *argv, VALUE self)
  * @see Image#_dump
  */
 VALUE
-Image__load(VALUE class ATTRIBUTE_UNUSED, VALUE str)
+Image__load(VALUE klass ATTRIBUTE_UNUSED, VALUE str)
 {
     Image *image;
     ImageInfo *info;
@@ -9827,11 +9827,11 @@ Image_negate_channel(int argc, VALUE *argv, VALUE self)
  * @return [Magick::Image] a newly allocated image
  */
 VALUE
-Image_alloc(VALUE class)
+Image_alloc(VALUE klass)
 {
     VALUE image_obj;
 
-    image_obj = TypedData_Wrap_Struct(class, &rm_image_data_type, NULL);
+    image_obj = TypedData_Wrap_Struct(klass, &rm_image_data_type, NULL);
 
     RB_GC_GUARD(image_obj);
 
@@ -10550,9 +10550,9 @@ Image_palette_q(VALUE self)
  * @see Image#read
  */
 VALUE
-Image_ping(VALUE class, VALUE file_arg)
+Image_ping(VALUE klass, VALUE file_arg)
 {
-    return rd_image(class, file_arg, GVL_FUNC(PingImage));
+    return rd_image(klass, file_arg, GVL_FUNC(PingImage));
 }
 
 
@@ -11464,9 +11464,9 @@ Image_raise(int argc, VALUE *argv, VALUE self)
  * @return [Array<Magick::Image>] an array of 1 or more new image objects
  */
 VALUE
-Image_read(VALUE class, VALUE file_arg)
+Image_read(VALUE klass, VALUE file_arg)
 {
-    return rd_image(class, file_arg, GVL_FUNC(ReadImage));
+    return rd_image(klass, file_arg, GVL_FUNC(ReadImage));
 }
 
 
@@ -11498,7 +11498,7 @@ typedef GVL_STRUCT_TYPE(PingImage) GVL_STRUCT_TYPE(rd_image);
  *   - Yields to a block to get Image::Info attributes before calling
  *     Read/PingImage
  *
- * @param class the Ruby class for an Image
+ * @param klass the Ruby class for an Image
  * @param file the file containing image data
  * @param reader which image reader to use (ReadImage or PingImage)
  * @return an array of 1 or more new image objects
@@ -11514,7 +11514,7 @@ void sig_handler(int sig ATTRIBUTE_UNUSED)
 #endif
 
 static VALUE
-rd_image(VALUE class ATTRIBUTE_UNUSED, VALUE file, gvl_function_t fp)
+rd_image(VALUE klass ATTRIBUTE_UNUSED, VALUE file, gvl_function_t fp)
 {
     char *filename;
     long filename_l;
