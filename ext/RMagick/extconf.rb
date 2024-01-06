@@ -305,10 +305,8 @@ module RMagick
       exit_failure <<~END_MINGW
         Can't install RMagick #{RMAGICK_VERS}.
         Can't find the ImageMagick library.
-        Retry with '--with-opt-dir' option.
-        Usage: gem install rmagick -- '--with-opt-dir=\"[path to ImageMagick]\"'
-        e.g.
-          gem install rmagick -- '--with-opt-dir=\"C:\\Program Files\\ImageMagick-6.9.1-Q16\"'
+
+        Please check PATH environment variable for ImageMagick installation path.
       END_MINGW
     end
 
