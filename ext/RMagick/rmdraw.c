@@ -957,7 +957,7 @@ Draw_clone(VALUE self)
  *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
  *     imagelist, uses the current image.
  *
- * @overload composite(x, y, width, height, image, operator = Magick::OverCompositeOp)
+ * @overload composite(x, y, width, height, image, composite_op = Magick::OverCompositeOp)
  *   - The "image" argument can be either an ImageList object or an Image
  *     argument.
  *   @param x [Float] x position
@@ -966,7 +966,7 @@ Draw_clone(VALUE self)
  *   @param height [Float] the height
  *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
  *     imagelist, uses the current image.
- *   @param operator [Magick::CompositeOperator] the operator
+ *   @param composite_op [Magick::CompositeOperator] the operator
  *
  * @return [Magick::Draw] self
  */
@@ -976,7 +976,7 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
     Draw *draw;
     const char *op;
     double x, y, width, height;
-    CompositeOperator cop;
+    CompositeOperator composite_op;
     VALUE image;
     Image *comp_img;
     struct TmpFile_Name *tmpfile_name;
@@ -998,16 +998,16 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
     width  = NUM2DBL(argv[2]);
     height = NUM2DBL(argv[3]);
 
-    cop = OverCompositeOp;
+    composite_op = OverCompositeOp;
     if (argc == 6)
     {
-        VALUE_TO_ENUM(argv[5], cop, CompositeOperator);
+        VALUE_TO_ENUM(argv[5], composite_op, CompositeOperator);
     }
 
-    op = CommandOptionToMnemonic(MagickComposeOptions, cop);
+    op = CommandOptionToMnemonic(MagickComposeOptions, composite_op);
     if (rm_strcasecmp("Unrecognized", op) == 0)
     {
-        rb_raise(rb_eArgError, "unknown composite operator (%d)", cop);
+        rb_raise(rb_eArgError, "unknown composite operator (%d)", composite_op);
     }
 
     TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
