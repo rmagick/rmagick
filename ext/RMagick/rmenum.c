@@ -141,11 +141,11 @@ Enum_case_eq(VALUE self, VALUE other)
 {
     if (CLASS_OF(self) == CLASS_OF(other))
     {
-        MagickEnum *this, *that;
+        MagickEnum *self_enum, *other_enum;
 
-        TypedData_Get_Struct(self, MagickEnum, &rm_enum_data_type, this);
-        TypedData_Get_Struct(other, MagickEnum, &rm_enum_data_type, that);
-        return this->val == that->val ? Qtrue : Qfalse;
+        TypedData_Get_Struct(self, MagickEnum, &rm_enum_data_type, self_enum);
+        TypedData_Get_Struct(other, MagickEnum, &rm_enum_data_type, other_enum);
+        return self_enum->val == other_enum->val ? Qtrue : Qfalse;
     }
 
     return Qfalse;
@@ -196,20 +196,20 @@ Enum_to_i(VALUE self)
 VALUE
 Enum_spaceship(VALUE self, VALUE other)
 {
-    MagickEnum *this, *that;
+    MagickEnum *self_enum, *other_enum;
 
     if(CLASS_OF(self) != CLASS_OF(other)) {
         return Qnil;
     }
 
-    TypedData_Get_Struct(self, MagickEnum, &rm_enum_data_type, this);
-    TypedData_Get_Struct(other, MagickEnum, &rm_enum_data_type, that);
+    TypedData_Get_Struct(self, MagickEnum, &rm_enum_data_type, self_enum);
+    TypedData_Get_Struct(other, MagickEnum, &rm_enum_data_type, other_enum);
 
-    if (this->val > that->val)
+    if (self_enum->val > other_enum->val)
     {
         return INT2FIX(1);
     }
-    else if (this->val < that->val)
+    else if (self_enum->val < other_enum->val)
     {
         return INT2FIX(-1);
     }
@@ -224,25 +224,25 @@ Enum_spaceship(VALUE self, VALUE other)
  * @return [Magick::Enum] new Enum instance
  */
 VALUE
-Enum_bitwise_or(VALUE self, VALUE another)
+Enum_bitwise_or(VALUE self, VALUE other)
 {
     VALUE new_enum, klass;
-    MagickEnum *this, *that, *new_enum_data;
+    MagickEnum *self_enum, *other_enum, *new_enum_data;
 
     klass = CLASS_OF(self);
-    if (CLASS_OF(another) != klass)
+    if (CLASS_OF(other) != klass)
     {
-        rb_raise(rb_eArgError, "Expected class %s but got %s", rb_class2name(klass), rb_class2name(CLASS_OF(another)));
+        rb_raise(rb_eArgError, "Expected class %s but got %s", rb_class2name(klass), rb_class2name(CLASS_OF(other)));
     }
 
     new_enum = Enum_alloc(klass);
 
-    TypedData_Get_Struct(self, MagickEnum, &rm_enum_data_type, this);
-    TypedData_Get_Struct(another, MagickEnum, &rm_enum_data_type, that);
+    TypedData_Get_Struct(self, MagickEnum, &rm_enum_data_type, self_enum);
+    TypedData_Get_Struct(other, MagickEnum, &rm_enum_data_type, other_enum);
     TypedData_Get_Struct(new_enum, MagickEnum, &rm_enum_data_type, new_enum_data);
 
-    new_enum_data->id = rb_to_id(rb_sprintf("%s|%s", rb_id2name(this->id), rb_id2name(that->id)));
-    new_enum_data->val = this->val | that->val;
+    new_enum_data->id = rb_to_id(rb_sprintf("%s|%s", rb_id2name(self_enum->id), rb_id2name(other_enum->id)));
+    new_enum_data->val = self_enum->val | other_enum->val;
 
     return new_enum;
 }

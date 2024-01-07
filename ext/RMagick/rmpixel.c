@@ -514,17 +514,17 @@ Pixel_case_eq(VALUE self, VALUE other)
 {
     if (CLASS_OF(self) == CLASS_OF(other))
     {
-        Pixel *this, *that;
+        Pixel *self_pixel, *other_pixel;
 
-        TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, this);
-        TypedData_Get_Struct(other, Pixel, &rm_pixel_data_type, that);
-        return (this->red == that->red
-            && this->blue == that->blue
-            && this->green == that->green
+        TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, self_pixel);
+        TypedData_Get_Struct(other, Pixel, &rm_pixel_data_type, other_pixel);
+        return (self_pixel->red == other_pixel->red
+            && self_pixel->blue == other_pixel->blue
+            && self_pixel->green == other_pixel->green
 #if defined(IMAGEMAGICK_7)
-            && this->alpha == that->alpha) ? Qtrue : Qfalse;
+            && self_pixel->alpha == other_pixel->alpha) ? Qtrue : Qfalse;
 #else
-            && this->opacity == that->opacity) ? Qtrue : Qfalse;
+            && self_pixel->opacity == other_pixel->opacity) ? Qtrue : Qfalse;
 #endif
     }
 
@@ -606,7 +606,7 @@ Pixel_fcmp(int argc, VALUE *argv, VALUE self)
     double fuzz = 0.0;
     unsigned int equal;
     ColorspaceType colorspace = RGBColorspace;
-    PixelColor this, that;
+    PixelColor self_pixel_color, other_pixel_color;
 #if defined(IMAGEMAGICK_6)
     Image *image;
     Info *info;
@@ -626,15 +626,15 @@ Pixel_fcmp(int argc, VALUE *argv, VALUE self)
             break;
     }
 
-    Color_to_PixelColor(&this, self);
-    Color_to_PixelColor(&that, argv[0]);
+    Color_to_PixelColor(&self_pixel_color, self);
+    Color_to_PixelColor(&other_pixel_color, argv[0]);
 
 #if defined(IMAGEMAGICK_7)
-    this.fuzz = fuzz;
-    this.colorspace = colorspace;
-    that.fuzz = fuzz;
-    that.colorspace = colorspace;
-    equal = IsFuzzyEquivalencePixelInfo(&this, &that);
+    self_pixel_color.fuzz = fuzz;
+    self_pixel_color.colorspace = colorspace;
+    other_pixel_color.fuzz = fuzz;
+    other_pixel_color.colorspace = colorspace;
+    equal = IsFuzzyEquivalencePixelInfo(&self_pixel_color, &other_pixel_color);
 #else
     // The IsColorSimilar function expects to get the
     // colorspace and fuzz parameters from an Image structure.
@@ -658,7 +658,7 @@ Pixel_fcmp(int argc, VALUE *argv, VALUE self)
     image->colorspace = colorspace;
     image->fuzz = fuzz;
 
-    equal = IsColorSimilar(image, &this, &that);
+    equal = IsColorSimilar(image, &self_pixel_color, &other_pixel_color);
     DestroyImage(image);
 #endif
 
@@ -1067,32 +1067,32 @@ Pixel_marshal_load(VALUE self, VALUE dpixel)
 VALUE
 Pixel_spaceship(VALUE self, VALUE other)
 {
-    Pixel *this, *that;
+    Pixel *self_pixel, *other_pixel;
 
-    TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, this);
-    TypedData_Get_Struct(other, Pixel, &rm_pixel_data_type, that);
+    TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, self_pixel);
+    TypedData_Get_Struct(other, Pixel, &rm_pixel_data_type, other_pixel);
 
-    if (this->red != that->red)
+    if (self_pixel->red != other_pixel->red)
     {
-        return INT2NUM((this->red - that->red)/abs((int)(this->red - that->red)));
+        return INT2NUM((self_pixel->red - other_pixel->red)/abs((int)(self_pixel->red - other_pixel->red)));
     }
-    else if(this->green != that->green)
+    else if(self_pixel->green != other_pixel->green)
     {
-        return INT2NUM((this->green - that->green)/abs((int)(this->green - that->green)));
+        return INT2NUM((self_pixel->green - other_pixel->green)/abs((int)(self_pixel->green - other_pixel->green)));
     }
-    else if(this->blue != that->blue)
+    else if(self_pixel->blue != other_pixel->blue)
     {
-        return INT2NUM((this->blue - that->blue)/abs((int)(this->blue - that->blue)));
+        return INT2NUM((self_pixel->blue - other_pixel->blue)/abs((int)(self_pixel->blue - other_pixel->blue)));
     }
 #if defined(IMAGEMAGICK_7)
-    else if(this->alpha != that->alpha)
+    else if(self_pixel->alpha != other_pixel->alpha)
     {
-        return INT2NUM((this->alpha - that->alpha)/abs((int)(this->alpha - that->alpha)));
+        return INT2NUM((self_pixel->alpha - other_pixel->alpha)/abs((int)(self_pixel->alpha - other_pixel->alpha)));
     }
 #else
-    else if(this->opacity != that->opacity)
+    else if(self_pixel->opacity != other_pixel->opacity)
     {
-        return INT2NUM(((QuantumRange - this->opacity) - (QuantumRange - that->opacity))/abs((int)((QuantumRange - this->opacity) - (QuantumRange - that->opacity))));
+        return INT2NUM(((QuantumRange - self_pixel->opacity) - (QuantumRange - other_pixel->opacity))/abs((int)((QuantumRange - self_pixel->opacity) - (QuantumRange - other_pixel->opacity))));
     }
 #endif
 
@@ -1318,4 +1318,3 @@ Pixel_to_s(VALUE self)
 #endif
     return rb_str_new2(buff);
 }
-
