@@ -311,10 +311,10 @@ VALUE ImageList_combine(int argc, VALUE *argv, VALUE self)
  * @overload composite_layers(images)
  *   @param images [Magick::ImageList] the source images
  *
- * @overload composite_layers(images, operator)
+ * @overload composite_layers(images, composite_op)
  *   - Default operator is {Magick::OverCompositeOp}
  *   @param images [Magick::ImageList] the source images
- *   @param operator [Magick::CompositeOperator] the operator
+ *   @param composite_op [Magick::CompositeOperator] the operator
  *
  * @return [Magick::ImageList] a new imagelist
  */
@@ -324,13 +324,13 @@ ImageList_composite_layers(int argc, VALUE *argv, VALUE self)
     VALUE source_images;
     Image *dest, *source, *new_images;
     RectangleInfo geometry;
-    CompositeOperator operator = OverCompositeOp;
+    CompositeOperator composite_op = OverCompositeOp;
     ExceptionInfo *exception;
 
     switch (argc)
     {
         case 2:
-            VALUE_TO_ENUM(argv[1], operator, CompositeOperator);
+            VALUE_TO_ENUM(argv[1], composite_op, CompositeOperator);
         case 1:
             source_images = argv[0];
             break;
@@ -356,7 +356,7 @@ ImageList_composite_layers(int argc, VALUE *argv, VALUE self)
                           new_images->gravity, &geometry);
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(CompositeLayers) args = { new_images, operator, source, geometry.x, geometry.y, exception };
+    GVL_STRUCT_TYPE(CompositeLayers) args = { new_images, composite_op, source, geometry.x, geometry.y, exception };
     CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompositeLayers), &args);
     rm_split(source);
     rm_check_exception(exception, new_images, DestroyOnError);

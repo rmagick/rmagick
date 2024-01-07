@@ -3541,7 +3541,7 @@ composite(int bang, int argc, VALUE *argv, VALUE self, ChannelType channels)
 {
     Image *image, *new_image;
     Image *comp_image;
-    CompositeOperator operator = UndefinedCompositeOp;
+    CompositeOperator composite_op = UndefinedCompositeOp;
     GravityType gravity;
     VALUE comp;
     signed long x_offset = 0;
@@ -3570,7 +3570,7 @@ composite(int bang, int argc, VALUE *argv, VALUE self, ChannelType channels)
     {
         case 3:                 // argv[1] is gravity, argv[2] is composite_op
             VALUE_TO_ENUM(argv[1], gravity, GravityType);
-            VALUE_TO_ENUM(argv[2], operator, CompositeOperator);
+            VALUE_TO_ENUM(argv[2], composite_op, CompositeOperator);
 
             // convert gravity to x, y offsets
             switch (gravity)
@@ -3620,14 +3620,14 @@ composite(int bang, int argc, VALUE *argv, VALUE self, ChannelType channels)
             // argv[3] is composite_op
             x_offset = NUM2LONG(argv[1]);
             y_offset = NUM2LONG(argv[2]);
-            VALUE_TO_ENUM(argv[3], operator, CompositeOperator);
+            VALUE_TO_ENUM(argv[3], composite_op, CompositeOperator);
             break;
 
         case 5:
             VALUE_TO_ENUM(argv[1], gravity, GravityType);
             x_offset = NUM2LONG(argv[2]);
             y_offset = NUM2LONG(argv[3]);
-            VALUE_TO_ENUM(argv[4], operator, CompositeOperator);
+            VALUE_TO_ENUM(argv[4], composite_op, CompositeOperator);
 
             switch (gravity)
             {
@@ -3670,13 +3670,13 @@ composite(int bang, int argc, VALUE *argv, VALUE self, ChannelType channels)
 #if defined(IMAGEMAGICK_7)
         exception = AcquireExceptionInfo();
         BEGIN_CHANNEL_MASK(image, channels);
-        GVL_STRUCT_TYPE(CompositeImage) args = { image, comp_image, operator, MagickTrue, x_offset, y_offset, exception };
+        GVL_STRUCT_TYPE(CompositeImage) args = { image, comp_image, composite_op, MagickTrue, x_offset, y_offset, exception };
         CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompositeImage), &args);
         END_CHANNEL_MASK(image);
         CHECK_EXCEPTION();
         DestroyExceptionInfo(exception);
 #else
-        GVL_STRUCT_TYPE(CompositeImageChannel) args = { image, channels, operator, comp_image, x_offset, y_offset };
+        GVL_STRUCT_TYPE(CompositeImageChannel) args = { image, channels, composite_op, comp_image, x_offset, y_offset };
         CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompositeImageChannel), &args);
         rm_check_image_exception(image, RetainOnError);
 #endif
@@ -3690,13 +3690,13 @@ composite(int bang, int argc, VALUE *argv, VALUE self, ChannelType channels)
 #if defined(IMAGEMAGICK_7)
         exception = AcquireExceptionInfo();
         BEGIN_CHANNEL_MASK(new_image, channels);
-        GVL_STRUCT_TYPE(CompositeImage) args = { new_image, comp_image, operator, MagickTrue, x_offset, y_offset, exception };
+        GVL_STRUCT_TYPE(CompositeImage) args = { new_image, comp_image, composite_op, MagickTrue, x_offset, y_offset, exception };
         CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompositeImage), &args);
         END_CHANNEL_MASK(new_image);
         rm_check_exception(exception, new_image, DestroyOnError);
         DestroyExceptionInfo(exception);
 #else
-        GVL_STRUCT_TYPE(CompositeImageChannel) args = { new_image, channels, operator, comp_image, x_offset, y_offset };
+        GVL_STRUCT_TYPE(CompositeImageChannel) args = { new_image, channels, composite_op, comp_image, x_offset, y_offset };
         CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompositeImageChannel), &args);
         rm_check_image_exception(new_image, DestroyOnError);
 #endif
@@ -4123,7 +4123,7 @@ composite_tiled(int bang, int argc, VALUE *argv, VALUE self)
 {
     Image *image;
     Image *comp_image;
-    CompositeOperator operator = OverCompositeOp;
+    CompositeOperator composite_op = OverCompositeOp;
     long x, y;
     unsigned long columns;
     ChannelType channels;
@@ -4147,7 +4147,7 @@ composite_tiled(int bang, int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 2:
-            VALUE_TO_ENUM(argv[1], operator, CompositeOperator);
+            VALUE_TO_ENUM(argv[1], composite_op, CompositeOperator);
         case 1:
             break;
         case 0:
@@ -4181,12 +4181,12 @@ composite_tiled(int bang, int argc, VALUE *argv, VALUE self)
         {
 #if defined(IMAGEMAGICK_7)
             BEGIN_CHANNEL_MASK(image, channels);
-            GVL_STRUCT_TYPE(CompositeImage) args = { image, comp_image, operator, MagickTrue, x, y, exception };
+            GVL_STRUCT_TYPE(CompositeImage) args = { image, comp_image, composite_op, MagickTrue, x, y, exception };
             status = (MagickStatusType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompositeImage), &args);
             END_CHANNEL_MASK(image);
             rm_check_exception(exception, image, bang ? RetainOnError: DestroyOnError);
 #else
-            GVL_STRUCT_TYPE(CompositeImageChannel) args = { image, channels, operator, comp_image, x, y };
+            GVL_STRUCT_TYPE(CompositeImageChannel) args = { image, channels, composite_op, comp_image, x, y };
             status = (MagickStatusType)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompositeImageChannel), &args);
             rm_check_image_exception(image, bang ? RetainOnError: DestroyOnError);
 #endif
@@ -10989,13 +10989,13 @@ Image_quantum_depth(VALUE self)
  * quantum_operator will be faster, especially for large numbers of pixels, since it does not need
  * to convert the pixels from C to Ruby.
  *
- * @overload quantum_operator(operator, rvalue, channel = Magick::AllChannels)
- *   @param operator [Magick::QuantumExpressionOperator] the operator
+ * @overload quantum_operator(quantum_expression_op, rvalue, channel = Magick::AllChannels)
+ *   @param quantum_expression_op [Magick::QuantumExpressionOperator] the operator
  *   @param rvalue [Float] the operation rvalue.
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *
- * @overload quantum_operator(operator, rvalue, *channels)
- *   @param operator [Magick::QuantumExpressionOperator] the operator
+ * @overload quantum_operator(quantum_expression_op, rvalue, *channels)
+ *   @param quantum_expression_op [Magick::QuantumExpressionOperator] the operator
  *   @param rvalue [Float] the operation rvalue.
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
@@ -11005,7 +11005,7 @@ VALUE
 Image_quantum_operator(int argc, VALUE *argv, VALUE self)
 {
     Image *image;
-    QuantumExpressionOperator operator;
+    QuantumExpressionOperator quantum_expression_op;
     MagickEvaluateOperator qop;
     double rvalue;
     ChannelType channel;
@@ -11028,7 +11028,7 @@ Image_quantum_operator(int argc, VALUE *argv, VALUE self)
             /* Fall through */
         case 2:
             rvalue = NUM2DBL(argv[1]);
-            VALUE_TO_ENUM(argv[0], operator, QuantumExpressionOperator);
+            VALUE_TO_ENUM(argv[0], quantum_expression_op, QuantumExpressionOperator);
             break;
         default:
             rb_raise(rb_eArgError, "wrong number of arguments (%d for 2 or 3)", argc);
@@ -11036,7 +11036,7 @@ Image_quantum_operator(int argc, VALUE *argv, VALUE self)
     }
 
     // Map QuantumExpressionOperator to MagickEvaluateOperator
-    switch (operator)
+    switch (quantum_expression_op)
     {
         default:
         case UndefinedQuantumOperator:
