@@ -1214,5 +1214,12 @@ extern VALUE  rm_io_path(VALUE);
 extern void   rm_check_image_exception(Image *, ErrorRetention);
 #endif
 
+#if (RUBY_VERSION_MAJOR == 2 && RUBY_VERSION_MINOR < 7)
+    #define RESCUE_FUNC(func)                   (VALUE (*)(ANYARGS))(func)
+    #define RESCUE_EXCEPTION_HANDLER_FUNC(func) (VALUE (*)(ANYARGS))(func)
+#else
+    #define RESCUE_FUNC(func)                   (VALUE(*)(VALUE))(func)
+    #define RESCUE_EXCEPTION_HANDLER_FUNC(func) (VALUE(*)(VALUE, VALUE))(func)
 #endif
 
+#endif

@@ -373,7 +373,7 @@ rm_percentage(VALUE arg, double max)
         char *pct_str;
         long pct_long;
 
-        arg = rb_rescue(rb_str_to_str, arg, rescue_not_str, arg);
+        arg = rb_rescue(RESCUE_FUNC(rb_str_to_str), arg, RESCUE_EXCEPTION_HANDLER_FUNC(rescue_not_str), arg);
         pct_str = StringValueCStr(arg);
         errno = 0;
         pct_long = strtol(pct_str, &end, 10);
@@ -454,7 +454,7 @@ rescue_not_dbl(VALUE ignored ATTRIBUTE_UNUSED, VALUE raised_exc ATTRIBUTE_UNUSED
 int
 rm_check_num2dbl(VALUE obj)
 {
-    return FIX2INT(rb_rescue(check_num2dbl, obj, rescue_not_dbl, (VALUE)0));
+    return FIX2INT(rb_rescue(RESCUE_FUNC(check_num2dbl), obj, RESCUE_EXCEPTION_HANDLER_FUNC(rescue_not_dbl), (VALUE)0));
 }
 
 
@@ -472,7 +472,7 @@ rm_str_to_pct(VALUE str)
     long pct;
     char *pct_str, *end;
 
-    str = rb_rescue(rb_str_to_str, str, rescue_not_str, str);
+    str = rb_rescue(RESCUE_FUNC(rb_str_to_str), str, RESCUE_EXCEPTION_HANDLER_FUNC(rescue_not_str), str);
     pct_str = StringValueCStr(str);
     errno = 0;
     pct = strtol(pct_str, &end, 10);
@@ -516,7 +516,7 @@ rm_fuzz_to_dbl(VALUE fuzz_arg)
         char *fuzz_str;
 
         // Convert to string, issue error message if failure.
-        fuzz_arg = rb_rescue(rb_str_to_str, fuzz_arg, rescue_not_str, fuzz_arg);
+        fuzz_arg = rb_rescue(RESCUE_FUNC(rb_str_to_str), fuzz_arg, RESCUE_EXCEPTION_HANDLER_FUNC(rescue_not_str), fuzz_arg);
         fuzz_str = StringValueCStr(fuzz_arg);
         errno = 0;
         fuzz = strtod(fuzz_str, &end);

@@ -414,7 +414,7 @@ Color_to_PixelColor(PixelColor *pp, VALUE color)
     else
     {
         // require 'to_str' here instead of just 'to_s'.
-        color = rb_rescue(rb_str_to_str, color, color_arg_rescue, color);
+        color = rb_rescue(RESCUE_FUNC(rb_str_to_str), color, RESCUE_EXCEPTION_HANDLER_FUNC(color_arg_rescue), color);
         Color_Name_to_PixelColor(pp, color);
     }
 }

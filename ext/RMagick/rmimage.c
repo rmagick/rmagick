@@ -11539,7 +11539,7 @@ rd_image(VALUE klass ATTRIBUTE_UNUSED, VALUE file, gvl_function_t fp)
     else
     {
         // Convert arg to string. If an exception occurs raise an error condition.
-        file = rb_rescue(rb_String, file, file_arg_rescue, file);
+        file = rb_rescue(RESCUE_FUNC(rb_String), file, RESCUE_EXCEPTION_HANDLER_FUNC(file_arg_rescue), file);
 
         filename = rm_str2cstr(file, &filename_l);
         filename_l = min(filename_l, MaxTextExtent-1);
@@ -15808,7 +15808,7 @@ void add_format_prefix(Info *info, VALUE file)
     {
         FilePathStringValue(file);
     }
-    file = rb_rescue(rb_String, file, file_arg_rescue, file);
+    file = rb_rescue(RESCUE_FUNC(rb_String), file, RESCUE_EXCEPTION_HANDLER_FUNC(file_arg_rescue), file);
 
     filename = rm_str2cstr(file, &filename_l);
 

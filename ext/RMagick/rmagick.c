@@ -14,8 +14,6 @@
 
 
 
-static VALUE rm_yield_handle_exception(VALUE, VALUE) ATTRIBUTE_NORETURN;
-
 static VALUE
 rm_yield_body(VALUE object)
 {
@@ -60,7 +58,7 @@ Magick_colors(VALUE klass)
     {
         for (x = 0; x < number_colors; x++)
         {
-            rb_rescue(rm_yield_body, Import_ColorInfo(color_info_list[x]), rm_yield_handle_exception, (VALUE)color_info_list);
+            rb_rescue(RESCUE_FUNC(rm_yield_body), Import_ColorInfo(color_info_list[x]), RESCUE_EXCEPTION_HANDLER_FUNC(rm_yield_handle_exception), (VALUE)color_info_list);
         }
         magick_free((void *)color_info_list);
         return klass;
@@ -109,7 +107,7 @@ Magick_fonts(VALUE klass)
     {
         for (x = 0; x < number_types; x++)
         {
-            rb_rescue(rm_yield_body, Import_TypeInfo((const TypeInfo *)type_info[x]), rm_yield_handle_exception, (VALUE)type_info);
+            rb_rescue(RESCUE_FUNC(rm_yield_body), Import_TypeInfo((const TypeInfo *)type_info[x]), RESCUE_EXCEPTION_HANDLER_FUNC(rm_yield_handle_exception), (VALUE)type_info);
         }
         magick_free((void *)type_info);
         return klass;
@@ -393,4 +391,3 @@ Magick_set_log_format(VALUE klass, VALUE format)
     SetLogFormat(StringValueCStr(format));
     return klass;
 }
-

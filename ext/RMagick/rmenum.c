@@ -44,9 +44,9 @@ rm_define_enum_type(const char *tag)
 
     klass = rb_define_class_under(Module_Magick, tag, Class_Enum);\
 
-    rb_define_singleton_method(klass, "values", Enum_type_values, 0);
-    rb_define_method(klass, "initialize", Enum_type_initialize, 2);
-    rb_define_method(klass, "inspect", Enum_type_inspect, 0);
+    rb_define_singleton_method(klass, "values", RUBY_METHOD_FUNC(Enum_type_values), 0);
+    rb_define_method(klass, "initialize", RUBY_METHOD_FUNC(Enum_type_initialize), 2);
+    rb_define_method(klass, "inspect", RUBY_METHOD_FUNC(Enum_type_inspect), 0);
     return klass;
 }
 
