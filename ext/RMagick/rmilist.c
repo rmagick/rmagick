@@ -135,7 +135,7 @@ VALUE
 ImageList_append(VALUE self, VALUE stack_arg)
 {
     Image *images, *new_image;
-    unsigned int stack;
+    MagickBooleanType stack;
     ExceptionInfo *exception;
 
     // Convert the image array to an image sequence.
@@ -143,7 +143,7 @@ ImageList_append(VALUE self, VALUE stack_arg)
 
     // If stack == true, stack rectangular images top-to-bottom,
     // otherwise left-to-right.
-    stack = RTEST(stack_arg);
+    stack = (MagickBooleanType)RTEST(stack_arg);
 
     exception = AcquireExceptionInfo();
     GVL_STRUCT_TYPE(AppendImages) args = { images, stack, exception };
@@ -260,20 +260,20 @@ VALUE ImageList_combine(int argc, VALUE *argv, VALUE self)
     {
         case 5:
             if (colorspace == CMYKColorspace)
-                channel |= AlphaChannel;
+                channel = (ChannelType)(channel | AlphaChannel);
             else
                 rb_raise(rb_eArgError, "invalid number of images in this image list");
         case 4:
             if (colorspace == CMYKColorspace)
-                channel |= IndexChannel;
+                channel = (ChannelType)(channel | IndexChannel);
             else
-                channel |= AlphaChannel;
+                channel = (ChannelType)(channel | AlphaChannel);
         case 3:
-            channel |= GreenChannel;
-            channel |= BlueChannel;
+            channel = (ChannelType)(channel | GreenChannel);
+            channel = (ChannelType)(channel | BlueChannel);
             break;
         case 2:
-            channel |= AlphaChannel;
+            channel = (ChannelType)(channel | AlphaChannel);
             break;
         case 1:
             break;
@@ -970,7 +970,7 @@ ImageList_quantize(int argc, VALUE *argv, VALUE self)
             if (rb_obj_is_kind_of(argv[2], Class_DitherMethod))
             {
                 VALUE_TO_ENUM(argv[2], quantize_info.dither_method, DitherMethod);
-                quantize_info.dither = quantize_info.dither_method != NoDitherMethod;
+                quantize_info.dither = (MagickBooleanType)(quantize_info.dither_method != NoDitherMethod);
             }
             else
             {
@@ -1155,7 +1155,7 @@ ImageList_to_blob(VALUE self)
         return Qnil;
     }
 
-    blob_str = rb_str_new(blob, (long)length);
+    blob_str = rb_str_new((const char *)blob, (long)length);
     magick_free((void*)blob);
 
     RB_GC_GUARD(info_obj);
