@@ -30,9 +30,10 @@ RSpec.describe Magick, '.limit_resources' do
     expect(new).to eq(500)
     described_class.limit_resource(:file, cur)
 
+    expect { described_class.limit_resource(:time, 123) }.not_to raise_error
     expect { cur = described_class.limit_resource(:time, 300) }.not_to raise_error
     expect(cur).to be_kind_of(Integer)
-    expect(cur > 300).to be(true)
+    expect(cur).to eq(123)
     expect { new = described_class.limit_resource('time') }.not_to raise_error
     expect(new).to eq(300)
     described_class.limit_resource(:time, cur)
