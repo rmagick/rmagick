@@ -1332,7 +1332,7 @@ rm_exif_by_entry(Image *image)
         return Qnil;
     }
 
-    str = xmalloc(len);
+    str = (char *)xmalloc(len);
     len = 0;
 
     // Copy the exif properties and values into the string.
@@ -1450,7 +1450,7 @@ rm_exif_by_number(Image *image)
         return Qnil;
     }
 
-    str = xmalloc(len);
+    str = (char *)xmalloc(len);
     len = 0;
 
     // Copy the exif properties and values into the string.

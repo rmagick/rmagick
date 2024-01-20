@@ -595,8 +595,8 @@ Draw_marshal_load(VALUE self, VALUE ddraw)
     draw->info->stroke_width = NUM2DBL(rb_hash_aref(ddraw, CSTR2SYM("stroke_width")));
     draw->info->fill_pattern = str_to_image(rb_hash_aref(ddraw, CSTR2SYM("fill_pattern")));
     draw->info->stroke_pattern = str_to_image(rb_hash_aref(ddraw, CSTR2SYM("stroke_pattern")));
-    draw->info->stroke_antialias = RTEST(rb_hash_aref(ddraw, CSTR2SYM("stroke_antialias")));
-    draw->info->text_antialias = RTEST(rb_hash_aref(ddraw, CSTR2SYM("text_antialias")));
+    draw->info->stroke_antialias = (MagickBooleanType)RTEST(rb_hash_aref(ddraw, CSTR2SYM("stroke_antialias")));
+    draw->info->text_antialias = (MagickBooleanType)RTEST(rb_hash_aref(ddraw, CSTR2SYM("text_antialias")));
     draw->info->decorate = (DecorationType) FIX2INT(rb_hash_aref(ddraw, CSTR2SYM("decorate")));
     OBJ_TO_MAGICK_STRING(draw->info->font, rb_hash_aref(ddraw, CSTR2SYM("font")));
     OBJ_TO_MAGICK_STRING(draw->info->family, rb_hash_aref(ddraw, CSTR2SYM("family")));
@@ -612,7 +612,7 @@ Draw_marshal_load(VALUE self, VALUE ddraw)
     val = rb_hash_aref(ddraw, CSTR2SYM("undercolor"));
     Color_to_PixelColor(&draw->info->undercolor, val);
 
-    draw->info->clip_units = FIX2INT(rb_hash_aref(ddraw, CSTR2SYM("clip_units")));
+    draw->info->clip_units = (ClipPathUnits)FIX2INT(rb_hash_aref(ddraw, CSTR2SYM("clip_units")));
 #if defined(IMAGEMAGICK_7)
     draw->info->alpha = NUM2QUANTUM(rb_hash_aref(ddraw, CSTR2SYM("alpha")));
 #else
@@ -1018,7 +1018,7 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
     // Add the temp filename to the filename array.
     // Use Magick storage since we need to keep the list around
     // until destroy_Draw is called.
-    tmpfile_name = magick_malloc(sizeof(struct TmpFile_Name) + rm_strnlen_s(name, sizeof(name)));
+    tmpfile_name = (struct TmpFile_Name *)magick_malloc(sizeof(struct TmpFile_Name) + rm_strnlen_s(name, sizeof(name)));
     strcpy(tmpfile_name->name, name);
     tmpfile_name->next = draw->tmpfile_ary;
     draw->tmpfile_ary = tmpfile_name;

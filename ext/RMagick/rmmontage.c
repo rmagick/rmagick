@@ -37,7 +37,7 @@ const rb_data_type_t rm_montage_data_type = {
 static void
 Montage_destroy(void *obj)
 {
-    Montage *montage = obj;
+    Montage *montage = (Montage *)obj;
 
     // If we saved a temporary texture image, delete it now.
     if (montage->info && montage->info->texture != NULL)

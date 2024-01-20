@@ -1207,13 +1207,13 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
     char name[MaxTextExtent];
     ExceptionInfo *exception;
     ComplianceType compliance = AllCompliance;
-    unsigned int alpha = MagickFalse;
+    MagickBooleanType alpha = MagickFalse;
     unsigned int depth = MAGICKCORE_QUANTUM_DEPTH;
 
     switch (argc)
     {
         case 4:
-            hex = RTEST(argv[3]);
+            hex = (MagickBooleanType)RTEST(argv[3]);
         case 3:
             depth = NUM2UINT(argv[2]);
 
@@ -1233,7 +1233,7 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
                     break;
             }
        case 2:
-            alpha = RTEST(argv[1]);
+            alpha = (MagickBooleanType)RTEST(argv[1]);
         case 1:
             VALUE_TO_ENUM(argv[0], compliance, ComplianceType);
         case 0:

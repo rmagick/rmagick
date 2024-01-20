@@ -456,8 +456,8 @@ Export_TypeInfo(TypeInfo *ti, VALUE st)
     {
         CloneString((char **)&(ti->family), StringValueCStr(m));
     }
-    m = rb_ary_entry(members, 3); ti->style   = m == Qnil ? 0 : FIX2INT(Enum_to_i(m));
-    m = rb_ary_entry(members, 4); ti->stretch = m == Qnil ? 0 : FIX2INT(Enum_to_i(m));
+    m = rb_ary_entry(members, 3); ti->style   = m == Qnil ? UndefinedStyle : (StyleType)FIX2INT(Enum_to_i(m));
+    m = rb_ary_entry(members, 4); ti->stretch = m == Qnil ? UndefinedStretch : (StretchType)FIX2INT(Enum_to_i(m));
     m = rb_ary_entry(members, 5); ti->weight  = m == Qnil ? 0 : FIX2INT(m);
 
     m = rb_ary_entry(members, 6);

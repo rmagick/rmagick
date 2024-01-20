@@ -485,7 +485,7 @@ ComplianceType_find(ComplianceType compliance)
     if ((compliance & (SVGCompliance|X11Compliance|XPMCompliance))
         == (SVGCompliance|X11Compliance|XPMCompliance))
     {
-        c = SVGCompliance|X11Compliance|XPMCompliance;
+        c = (ComplianceType)(SVGCompliance|X11Compliance|XPMCompliance);
     }
     else if (compliance & SVGCompliance)
     {

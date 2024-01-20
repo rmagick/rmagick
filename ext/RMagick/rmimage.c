@@ -757,7 +757,7 @@ Image_add_noise_channel(int argc, VALUE *argv, VALUE self)
     }
 
     VALUE_TO_ENUM(argv[0], noise_type, NoiseType);
-    channels &= ~OpacityChannel;
+    channels = (ChannelType)(channels & ~OpacityChannel);
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
@@ -4507,7 +4507,7 @@ VALUE
 Image_contrast(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
-    unsigned int sharpen = 0;
+    MagickBooleanType sharpen = MagickFalse;
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
 #endif
@@ -4519,7 +4519,7 @@ Image_contrast(int argc, VALUE *argv, VALUE self)
     }
     else if (argc == 1)
     {
-        sharpen = RTEST(argv[0]);
+        sharpen = (MagickBooleanType)RTEST(argv[0]);
     }
 
     new_image = rm_clone_image(image);
@@ -5937,7 +5937,7 @@ Image_distort(int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 3:
-            bestfit = RTEST(argv[2]);
+            bestfit = (MagickBooleanType)RTEST(argv[2]);
         case 2:
             // Ensure pts is an array
             pts = rb_Array(argv[1]);
@@ -8647,7 +8647,7 @@ Image_level_colors(int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 3:
-            invert = RTEST(argv[2]);
+            invert = (MagickBooleanType)RTEST(argv[2]);
 
         case 2:
             Color_to_MagickPixel(image, &white_color, argv[1]);
@@ -9728,7 +9728,7 @@ VALUE
 Image_negate(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
-    unsigned int grayscale = MagickFalse;
+    MagickBooleanType grayscale = MagickFalse;
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
 #endif
@@ -9736,7 +9736,7 @@ Image_negate(int argc, VALUE *argv, VALUE self)
     image = rm_check_destroyed(self);
     if (argc == 1)
     {
-        grayscale = RTEST(argv[0]);
+        grayscale = (MagickBooleanType)RTEST(argv[0]);
     }
     else if (argc > 1)
     {
@@ -9783,7 +9783,7 @@ Image_negate_channel(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
     ChannelType channels;
-    unsigned int grayscale = MagickFalse;
+    MagickBooleanType grayscale = MagickFalse;
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
 #endif
@@ -9798,7 +9798,7 @@ Image_negate_channel(int argc, VALUE *argv, VALUE self)
     }
     else if (argc == 1)
     {
-        grayscale = RTEST(argv[0]);
+        grayscale = (MagickBooleanType)RTEST(argv[0]);
     }
 
     new_image = rm_clone_image(image);
@@ -10250,7 +10250,7 @@ Image_opaque_channel(int argc, VALUE *argv, VALUE self)
                 rb_raise(rb_eArgError, "fuzz must be >= 0.0 (%g given)", fuzz);
             }
         case 3:
-            invert = RTEST(argv[2]);
+            invert = (MagickBooleanType)RTEST(argv[2]);
         case 2:
             // Allow color name or Pixel
             Color_to_MagickPixel(image, &fill_pp, argv[1]);
@@ -10478,11 +10478,11 @@ Image_paint_transparent(int argc, VALUE *argv, VALUE self)
         case 3:
             if (TYPE(argv[argc - 1]) == T_HASH)
             {
-                invert = RTEST(argv[1]);
+                invert = (MagickBooleanType)RTEST(argv[1]);
             }
             else
             {
-                invert = RTEST(argv[2]);
+                invert = (MagickBooleanType)RTEST(argv[2]);
             }
         case 2:
             alpha = get_named_alpha_value(argv[argc - 1]);
@@ -11201,7 +11201,7 @@ Image_quantize(int argc, VALUE *argv, VALUE self)
             {
                 VALUE_TO_ENUM(argv[2], quantize_info.dither_method, DitherMethod);
 #if defined(IMAGEMAGICK_6)
-                quantize_info.dither = quantize_info.dither_method != NoDitherMethod;
+                quantize_info.dither = (MagickBooleanType)(quantize_info.dither_method != NoDitherMethod);
 #endif
             }
             else
@@ -11414,7 +11414,7 @@ Image_raise(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
     RectangleInfo rect;
-    int raised = MagickTrue;      // default
+    MagickBooleanType raised = MagickTrue;      // default
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
 #endif
@@ -11427,7 +11427,7 @@ Image_raise(int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 3:
-            raised = RTEST(argv[2]);
+            raised = (MagickBooleanType)RTEST(argv[2]);
         case 2:
             rect.height = NUM2ULONG(argv[1]);
         case 1:
@@ -12668,7 +12668,7 @@ VALUE
 Image_separate(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_images;
-    ChannelType channels = 0;
+    ChannelType channels = UndefinedChannel;
     ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
@@ -12757,8 +12757,8 @@ VALUE
 Image_segment(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
-    int colorspace              = RGBColorspace;    // These are the Magick++ defaults
-    unsigned int verbose        = MagickFalse;
+    ColorspaceType colorspace   = RGBColorspace;    // These are the Magick++ defaults
+    MagickBooleanType verbose   = MagickFalse;
     double cluster_threshold    = 1.0;
     double smoothing_threshold  = 1.5;
 #if defined(IMAGEMAGICK_7)
@@ -12769,7 +12769,7 @@ Image_segment(int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 4:
-            verbose = RTEST(argv[3]);
+            verbose = (MagickBooleanType)RTEST(argv[3]);
         case 3:
             smoothing_threshold = NUM2DBL(argv[2]);
         case 2:
@@ -12909,7 +12909,7 @@ Image_shade(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
     double azimuth = 30.0, elevation = 30.0;
-    unsigned int shading = MagickFalse;
+    MagickBooleanType shading = MagickFalse;
     ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
@@ -12920,7 +12920,7 @@ Image_shade(int argc, VALUE *argv, VALUE self)
         case 2:
             azimuth = NUM2DBL(argv[1]);
         case 1:
-            shading = RTEST(argv[0]);
+            shading = (MagickBooleanType)RTEST(argv[0]);
         case 0:
             break;
         default:
@@ -14548,7 +14548,7 @@ Image_to_blob(VALUE self)
         return Qnil;
     }
 
-    blob_str = rb_str_new(blob, length);
+    blob_str = rb_str_new((const char *)blob, length);
 
     magick_free((void*)blob);
 
@@ -14739,11 +14739,11 @@ Image_transparent_chroma(int argc, VALUE *argv, VALUE self)
         case 4:
             if (TYPE(argv[argc - 1]) == T_HASH)
             {
-                invert = RTEST(argv[3]);
+                invert = (MagickBooleanType)RTEST(argv[3]);
             }
             else
             {
-                invert = RTEST(argv[2]);
+                invert = (MagickBooleanType)RTEST(argv[2]);
             }
         case 3:
             alpha = get_named_alpha_value(argv[argc - 1]);
@@ -15822,7 +15822,7 @@ void add_format_prefix(Info *info, VALUE file)
     // If the filename starts with a prefix, and it's a valid image format
     // prefix, then check for a conflict. If it's not a valid format prefix,
     // ignore it.
-    p = memchr(filename, ':', (size_t)filename_l);
+    p = (char *)memchr(filename, ':', (size_t)filename_l);
     if (p)
     {
         memset(magic, '\0', sizeof(magic));
@@ -16311,7 +16311,7 @@ ChannelType extract_channels(int *argc, VALUE *argv)
     VALUE arg;
     ChannelType channels, ch_arg;
 
-    channels = 0;
+    channels = UndefinedChannel;
     while (*argc > 0)
     {
         arg = argv[(*argc)-1];
@@ -16322,7 +16322,7 @@ ChannelType extract_channels(int *argc, VALUE *argv)
             break;
         }
         VALUE_TO_ENUM(arg, ch_arg, ChannelType);
-        channels |= ch_arg;
+        channels = (ChannelType)(channels | ch_arg);
         *argc -= 1;
     }
 
