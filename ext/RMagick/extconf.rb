@@ -4,6 +4,11 @@ require 'rubygems'
 require 'mkmf'
 require 'pkg-config'
 
+module MakeMakefile
+  # Use the C++ compiler to retrieve the information needed to create a Makefile.
+  CONFTEST_C = "#{CONFTEST}.cpp"
+end
+
 module RMagick
   class Extconf
     require 'rmagick/version'
