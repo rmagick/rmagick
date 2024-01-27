@@ -82,7 +82,7 @@ module RMagick
     end
 
     def configure_headers
-      @headers = %w[assert.h ctype.h stdio.h stdlib.h math.h time.h sys/types.h]
+      @headers = %w[assert.h ctype.h stdio.h stdlib.h math.h time.h sys/types.h ruby.h ruby/io.h]
 
       if have_header('MagickCore/MagickCore.h')
         headers << 'MagickCore/MagickCore.h'
