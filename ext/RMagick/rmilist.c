@@ -532,16 +532,16 @@ ImageList_morph(VALUE self, VALUE nimages)
 {
     Image *images, *new_images;
     ExceptionInfo *exception;
-    long number_images;
+    size_t number_images;
 
 
     // Use a signed long so we can test for a negative argument.
-    number_images = NUM2LONG(nimages);
-    if (number_images <= 0)
+    if (NUM2LONG(nimages) <= 0)
     {
         rb_raise(rb_eArgError, "number of intervening images must be > 0");
     }
 
+    number_images = NUM2LONG(nimages);
     images = images_from_imagelist(self);
     exception = AcquireExceptionInfo();
     GVL_STRUCT_TYPE(MorphImages) args = { images, number_images, exception };
