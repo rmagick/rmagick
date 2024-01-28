@@ -597,10 +597,10 @@ Image_adaptive_sharpen_channel(int argc, VALUE *argv, VALUE self)
  * local neighborhood. This allows for thresholding of an image whose global intensity histogram
  * doesn't contain distinctive peaks.
  *
- * @overload adaptive_threshold(width = 3, height = 3, offset = 0)
+ * @overload adaptive_threshold(width = 3, height = 3, bias = 0)
  *   @param width [Numeric] the width of the local neighborhood.
  *   @param height [Numeric] the height of the local neighborhood.
- *   @param offset [Numeric] the mean offset
+ *   @param bias [Numeric] the mean offset
  *   @return [Magick::Image] a new image
  */
 VALUE
@@ -608,7 +608,7 @@ Image_adaptive_threshold(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
     unsigned long width = 3, height = 3;
-    long offset = 0;
+    double bias = 0;
     ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
@@ -616,7 +616,7 @@ Image_adaptive_threshold(int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 3:
-            offset = NUM2LONG(argv[2]);
+            bias = NUM2DBL(argv[2]);
         case 2:
             height = NUM2ULONG(argv[1]);
         case 1:
@@ -628,7 +628,7 @@ Image_adaptive_threshold(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(AdaptiveThresholdImage) args = { image, width, height, offset, exception };
+    GVL_STRUCT_TYPE(AdaptiveThresholdImage) args = { image, width, height, bias, exception };
     new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(AdaptiveThresholdImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -2927,7 +2927,7 @@ set_profile(VALUE self, const char *name, VALUE profile)
     ExceptionInfo *exception;
     char *profile_name;
     char *profile_blob;
-    long profile_length;
+    size_t profile_length;
     const StringInfo *profile_data;
 
     image = rm_check_frozen(self);
@@ -2951,7 +2951,7 @@ set_profile(VALUE self, const char *name, VALUE profile)
 
     strlcpy(info->magick, m->name, sizeof(info->magick));
 
-    GVL_STRUCT_TYPE(BlobToImage) args = { info, profile_blob, (size_t)profile_length, exception };
+    GVL_STRUCT_TYPE(BlobToImage) args = { info, profile_blob, profile_length, exception };
     profile_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BlobToImage), &args);
     DestroyImageInfo(info);
     CHECK_EXCEPTION();
@@ -4344,7 +4344,8 @@ Image_constitute(VALUE klass ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
 {
     Image *new_image;
     VALUE pixel, pixel0;
-    long width, height, x, npixels, map_l;
+    long x, npixels;
+    size_t width, height, map_l;
     char *map;
     volatile union
     {
@@ -4360,14 +4361,13 @@ Image_constitute(VALUE klass ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
     // and raises TypeError if it can't.
     pixels_arg = rb_Array(pixels_arg);
 
-    width = NUM2LONG(width_arg);
-    height = NUM2LONG(height_arg);
-
-    if (width <= 0 || height <= 0)
+    if (NUM2LONG(width_arg) <= 0 || NUM2LONG(height_arg) <= 0)
     {
         rb_raise(rb_eArgError, "width and height must be greater than zero");
     }
 
+    width = NUM2LONG(width_arg);
+    height = NUM2LONG(height_arg);
     map = rm_str2cstr(map_arg, &map_l);
 
     npixels = width * height * map_l;
@@ -5665,7 +5665,7 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
     VALUE pixels_ary;
     StorageType stg_type = QuantumPixel;
     char *map;
-    long mapL;
+    size_t mapL;
     MagickBooleanType okay;
     ExceptionInfo *exception;
     volatile union
@@ -7268,7 +7268,7 @@ Image_from_blob(VALUE klass ATTRIBUTE_UNUSED, VALUE blob_arg)
     VALUE info_obj;
     ExceptionInfo *exception;
     void *blob;
-    long length;
+    size_t length;
 
     blob = (void *) rm_str2cstr(blob_arg, &length);
 
@@ -8040,7 +8040,7 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
     long x_off, y_off;
     unsigned long cols, rows;
     unsigned long n, npixels;
-    long buffer_l;
+    size_t buffer_l;
     char *map;
     VALUE pixel_arg, pixel_ary;
     StorageType stg_type = CharPixel;
@@ -8875,7 +8875,7 @@ Image__load(VALUE klass ATTRIBUTE_UNUSED, VALUE str)
     DumpedImage mi;
     ExceptionInfo *exception;
     char *blob;
-    long length;
+    size_t length;
 
     blob = rm_str2cstr(str, &length);
 
@@ -8906,7 +8906,7 @@ Image__load(VALUE klass ATTRIBUTE_UNUSED, VALUE str)
     mi.len = ((DumpedImage *)blob)->len;
 
     // Must be bigger than the header
-    if (length <= (long)(mi.len+sizeof(DumpedImage)-MaxTextExtent))
+    if (length <= (mi.len + sizeof(DumpedImage) - MaxTextExtent))
     {
         rb_raise(rb_eTypeError, "image is invalid or corrupted (too short)");
     }
@@ -9075,7 +9075,7 @@ Image_marshal_load(VALUE self, VALUE ary)
     {
         strlcpy(info->filename, RSTRING_PTR(filename), sizeof(info->filename));
     }
-    GVL_STRUCT_TYPE(BlobToImage) args = { info, RSTRING_PTR(blob), RSTRING_LEN(blob), exception };
+    GVL_STRUCT_TYPE(BlobToImage) args = { info, RSTRING_PTR(blob), (size_t)RSTRING_LEN(blob), exception };
     image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BlobToImage), &args);
 
     // Destroy info before raising an exception
@@ -11517,7 +11517,7 @@ static VALUE
 rd_image(VALUE klass ATTRIBUTE_UNUSED, VALUE file, gvl_function_t fp)
 {
     char *filename;
-    long filename_l;
+    size_t filename_l;
     Info *info;
     VALUE info_obj;
     Image *images;
@@ -11677,7 +11677,7 @@ Image_read_inline(VALUE self ATTRIBUTE_UNUSED, VALUE content)
     Image *images;
     ImageInfo *info;
     char *image_data;
-    long x, image_data_l;
+    size_t x, image_data_l;
     unsigned char *blob;
     size_t blob_l;
     ExceptionInfo *exception;
@@ -12252,7 +12252,7 @@ rotate(int bang, int argc, VALUE *argv, VALUE self)
     Image *image, *new_image;
     double degrees;
     char *arrow;
-    long arrow_l;
+    size_t arrow_l;
     ExceptionInfo *exception;
 
     TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
@@ -15795,7 +15795,7 @@ Image_white_threshold(int argc, VALUE *argv, VALUE self)
 void add_format_prefix(Info *info, VALUE file)
 {
     char *filename;
-    long filename_l;
+    size_t filename_l;
     const MagickInfo *magick_info, *magick_info2;
     ExceptionInfo *exception;
     char magic[MaxTextExtent];

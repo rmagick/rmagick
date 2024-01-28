@@ -480,7 +480,7 @@ Image *str_to_image(VALUE str)
 
         info = CloneImageInfo(NULL);
         exception = AcquireExceptionInfo();
-        GVL_STRUCT_TYPE(BlobToImage) args = { info, RSTRING_PTR(str), RSTRING_LEN(str), exception };
+        GVL_STRUCT_TYPE(BlobToImage) args = { info, RSTRING_PTR(str), (size_t)RSTRING_LEN(str), exception };
         image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BlobToImage), &args);
         DestroyImageInfo(info);
         CHECK_EXCEPTION();
@@ -1612,7 +1612,7 @@ get_type_metrics(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
     VALUE t;
     TypeMetric metrics;
     char *text = NULL;
-    long text_l;
+    size_t text_l;
     MagickBooleanType okay;
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;

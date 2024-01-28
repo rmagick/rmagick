@@ -319,16 +319,16 @@ rm_no_freeze(VALUE obj)
  * No Ruby usage (internal function)
  *
  * @param str the Ruby string
- * @param len pointer to a long in which to store the number of characters
+ * @param len pointer to a size_t in which to store the number of characters
  * @return a C string version of str
  */
 char *
-rm_str2cstr(VALUE str, long *len)
+rm_str2cstr(VALUE str, size_t *len)
 {
     StringValue(str);
     if (len)
     {
-        *len = RSTRING_LEN(str);
+        *len = (size_t)RSTRING_LEN(str);
     }
     return RSTRING_PTR(str);
 }

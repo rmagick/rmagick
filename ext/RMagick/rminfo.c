@@ -255,7 +255,7 @@ Info_aref(int argc, VALUE *argv, VALUE self)
 {
     Info *info;
     char *format_p, *key_p;
-    long format_l, key_l;
+    size_t format_l, key_l;
     const char *value;
     char fkey[MaxTextExtent];
 
@@ -318,7 +318,7 @@ Info_aset(int argc, VALUE *argv, VALUE self)
     Info *info;
     VALUE value;
     char *format_p, *key_p, *value_p = NULL;
-    long format_l, key_l;
+    size_t format_l, key_l;
     char ckey[MaxTextExtent];
 
     TypedData_Get_Struct(self, Info, &rm_info_data_type, info);
@@ -686,7 +686,7 @@ Info_define(int argc, VALUE *argv, VALUE self)
     Info *info;
     char *format, *key;
     const char *value = "";
-    long format_l, key_l;
+    size_t format_l, key_l;
     char ckey[100];
     unsigned int okay;
     VALUE fmt_arg;
@@ -1835,7 +1835,7 @@ Info_sampling_factor_eq(VALUE self, VALUE sampling_factor)
 {
     Info *info;
     char *sampling_factor_p = NULL;
-    long sampling_factor_len = 0;
+    size_t sampling_factor_len = 0;
 
     TypedData_Get_Struct(self, Info, &rm_info_data_type, info);
 
@@ -2175,7 +2175,7 @@ Info_undefine(VALUE self, VALUE format, VALUE key)
 {
     Info *info;
     char *format_p, *key_p;
-    long format_l, key_l;
+    size_t format_l, key_l;
     char fkey[MaxTextExtent];
 
     format_p = rm_str2cstr(format, &format_l);
