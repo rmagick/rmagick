@@ -20,6 +20,7 @@ tmp
 *.o
 *.a
 *.log
+*.def
 Makefile
 extconf.h
 build-ImageMagick/
