@@ -4814,7 +4814,7 @@ VALUE
 Image_convolve(VALUE self, VALUE order_arg, VALUE kernel_arg)
 {
     Image *image, *new_image;
-    int order;
+    size_t order;
     ExceptionInfo *exception;
 #if defined(IMAGEMAGICK_7)
     KernelInfo *kernel;
@@ -4825,13 +4825,12 @@ Image_convolve(VALUE self, VALUE order_arg, VALUE kernel_arg)
 
     image = rm_check_destroyed(self);
 
-    order = NUM2INT(order_arg);
-
-    if (order <= 0)
+    if (NUM2INT(order_arg) <= 0)
     {
         rb_raise(rb_eArgError, "order must be non-zero and positive");
     }
 
+    order = NUM2INT(order_arg);
     kernel_arg = rb_Array(kernel_arg);
     rm_check_ary_len(kernel_arg, (long)(order*order));
 
@@ -4895,7 +4894,7 @@ Image_convolve_channel(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
     VALUE ary;
-    int order;
+    size_t order;
     ChannelType channels;
     ExceptionInfo *exception;
 #if defined(IMAGEMAGICK_7)
@@ -4919,12 +4918,12 @@ Image_convolve_channel(int argc, VALUE *argv, VALUE self)
         rb_raise(rb_eArgError, "wrong number of arguments (%d for 2 or more)", argc);
     }
 
-    order = NUM2INT(argv[0]);
-    if (order <= 0)
+    if (NUM2INT(argv[0]) <= 0)
     {
         rb_raise(rb_eArgError, "order must be non-zero and positive");
     }
 
+    order = NUM2INT(argv[0]);
     ary = rb_Array(argv[1]);
     rm_check_ary_len(ary, (long)(order*order));
 
@@ -10534,7 +10533,7 @@ Image_paint_transparent(int argc, VALUE *argv, VALUE self)
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(TransparentPaintImage) args = { new_image, (const MagickPixel *)&color, QuantumRange - alpha, invert };
+    GVL_STRUCT_TYPE(TransparentPaintImage) args = { new_image, (const MagickPixel *)&color, (Quantum)(QuantumRange - alpha), invert };
     void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TransparentPaintImage), &args);
     okay = reinterpret_cast<MagickBooleanType &>(ret);
     new_image->fuzz = keep;
@@ -14726,7 +14725,7 @@ Image_transparent(int argc, VALUE *argv, VALUE self)
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(TransparentPaintImage) args = { new_image, &color, QuantumRange - alpha, MagickFalse };
+    GVL_STRUCT_TYPE(TransparentPaintImage) args = { new_image, &color, (Quantum)(QuantumRange - alpha), MagickFalse };
     void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TransparentPaintImage), &args);
     okay = reinterpret_cast<MagickBooleanType &>(ret);
     rm_check_image_exception(new_image, DestroyOnError);
@@ -14804,7 +14803,7 @@ Image_transparent_chroma(int argc, VALUE *argv, VALUE self)
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(TransparentPaintImageChroma) args = { new_image, &low, &high, QuantumRange - alpha, invert };
+    GVL_STRUCT_TYPE(TransparentPaintImageChroma) args = { new_image, &low, &high, (Quantum)(QuantumRange - alpha), invert };
     void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TransparentPaintImageChroma), &args);
     okay = reinterpret_cast<MagickBooleanType &>(ret);
     rm_check_image_exception(new_image, DestroyOnError);
