@@ -1888,7 +1888,7 @@ Info_scene_eq(VALUE self, VALUE scene)
     TypedData_Get_Struct(self, Info, &rm_info_data_type, info);
     info->scene = NUM2ULONG(scene);
 
-    snprintf(buf, sizeof(buf), "%"RMIuSIZE"", info->scene);
+    snprintf(buf, sizeof(buf), "%" RMIuSIZE "", info->scene);
     SetImageOption(info, "scene", buf);
 
     return scene;
