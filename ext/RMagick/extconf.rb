@@ -144,6 +144,7 @@ module RMagick
       end
       ruby_version = RUBY_VERSION.split('.')
       $CPPFLAGS += " -DRUBY_VERSION_MAJOR=#{ruby_version[0]} -DRUBY_VERSION_MINOR=#{ruby_version[1]}"
+      $CPPFLAGS += ' $(optflags) $(debugflags)'
     end
 
     def exit_failure(msg)
