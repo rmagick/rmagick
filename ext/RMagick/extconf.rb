@@ -6,6 +6,7 @@ require 'pkg-config'
 
 module MakeMakefile
   # Use the C++ compiler to retrieve the information needed to create a Makefile.
+  remove_const(:CONFTEST_C)
   CONFTEST_C = "#{CONFTEST}.cpp"
 end
 
