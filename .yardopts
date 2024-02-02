@@ -1,5 +1,5 @@
 --no-private
 lib/**/*.rb
-ext/**/*.c
+ext/**/*.cpp
 *.md
 LICENSE

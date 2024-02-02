@@ -3,8 +3,8 @@
  *
  * Copyright &copy; RMagick Project
  *
- * @file rmkinfo.c
- * @version $Id: rmkinfo.c,v 1.0 2011/11/29 15:33:14 naquad Exp $
+ * @file rmkinfo.cpp
+ * @version $Id: rmkinfo.cpp,v 1.0 2011/11/29 15:33:14 naquad Exp $
  * @author Naquad
  ****************************************************************************/
 
@@ -19,11 +19,6 @@ const rb_data_type_t rm_kernel_info_data_type = {
     0, 0,
     RUBY_TYPED_FROZEN_SHAREABLE,
 };
-
-/* UnityAddKernelInfo() was private function until IM 6.9 */
-MagickExport void UnityAddKernelInfo(KernelInfo *kernel, const double scale);
-/* ScaleKernelInfo() was private function until IM 6.9 */
-MagickExport void ScaleKernelInfo(KernelInfo *kernel, const double scaling_factor, const GeometryFlags normalize_flags);
 
 DEFINE_GVL_VOID_STUB2(UnityAddKernelInfo, KernelInfo *, const double);
 DEFINE_GVL_VOID_STUB3(ScaleKernelInfo, KernelInfo *, const double, const GeometryFlags);

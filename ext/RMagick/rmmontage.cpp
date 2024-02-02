@@ -5,8 +5,8 @@
  *
  * Changes since Nov. 2009 copyright &copy; by Benjamin Thomas and Omer Bar-or
  *
- * @file     rmmontage.c
- * @version  $Id: rmmontage.c,v 1.5 2009/12/20 02:33:33 baror Exp $
+ * @file     rmmontage.cpp
+ * @version  $Id: rmmontage.cpp,v 1.5 2009/12/20 02:33:33 baror Exp $
  * @author   Tim Hunter
  ******************************************************************************/
 

@@ -5,8 +5,8 @@
  *
  * Changes since Nov. 2009 copyright &copy; by Benjamin Thomas and Omer Bar-or
  *
- * @file     rmstruct.c
- * @version  $Id: rmstruct.c,v 1.5 2009/12/20 02:33:34 baror Exp $
+ * @file     rmstruct.cpp
+ * @version  $Id: rmstruct.cpp,v 1.5 2009/12/20 02:33:34 baror Exp $
  * @author   Tim Hunter
  ******************************************************************************/
 
@@ -524,7 +524,7 @@ Font_to_s(VALUE self)
             strcpy(weight, "BoldWeight");
             break;
         default:
-            snprintf(weight, sizeof(weight), "%"RMIuSIZE"", ti.weight);
+            snprintf(weight, sizeof(weight), "%" RMIuSIZE "", ti.weight);
             break;
     }
 
@@ -732,7 +732,7 @@ RectangleInfo_to_s(VALUE self)
     char buff[100];
 
     Export_RectangleInfo(&rect, self);
-    snprintf(buff, sizeof(buff), "width=%"RMIuSIZE", height=%"RMIuSIZE", x=%"RMIdSIZE", y=%"RMIdSIZE"",
+    snprintf(buff, sizeof(buff), "width=%" RMIuSIZE ", height=%" RMIuSIZE ", x=%" RMIdSIZE ", y=%" RMIdSIZE "",
              rect.width, rect.height, rect.x, rect.y);
     return rb_str_new2(buff);
 }

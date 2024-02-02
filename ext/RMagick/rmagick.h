@@ -16,15 +16,21 @@
 //! Suppress warnings about deprecated functions on Windows
 #define _CRT_SECURE_NO_DEPRECATE 1
 
-#include <assert.h>
-#include <stdio.h>
-#include <ctype.h>
-#include <stdlib.h>
-#include <math.h>
-#include <sys/types.h>
-#include "ruby.h"
-#include "ruby/io.h"
-#include "rmagick_gvl.h"
+// ruby.h contains a C++ template, which cannot be included in extern "C".
+// Therefore, it includes the header in advance.
+#include "ruby/defines.h"
+
+extern "C" {
+    #include <assert.h>
+    #include <stdio.h>
+    #include <ctype.h>
+    #include <stdlib.h>
+    #include <math.h>
+    #include <sys/types.h>
+    #include "ruby.h"
+    #include "ruby/io.h"
+    #include "rmagick_gvl.h"
+}
 
 #if defined(__MINGW32__)
     // Ruby defines wrong format specifiers for MinGW. So this defines original macro in here.
@@ -45,10 +51,6 @@
 #endif
 
 #if defined(__GNUC__)
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wdeclaration-after-statement"
-    #pragma GCC diagnostic ignored "-Wunknown-pragmas"
-
     #if __GNUC__ > 6
         #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
     #endif
@@ -316,7 +318,7 @@ typedef enum _QuantumExpressionOperator
 
 
 /** This implements the "omitted storage class model" for external variables.
- * (Ref: Harbison & Steele.) The rmmain.c file defines MAIN, which causes
+ * (Ref: Harbison & Steele.) The rmmain.cpp file defines MAIN, which causes
  * the single defining declarations to be generated. No other source files
  * define MAIN and therefore generate referencing declarations.
  */
@@ -544,11 +546,13 @@ extern const rb_data_type_t rm_kernel_info_data_type;
 // the same source file.
 
 
-// rmmain.c
+extern "C" {
+
+// rmmain.cpp
 extern void Init_RMagick2(void);
 
 
-// rmagick.c
+// rmagick.cpp
 extern VALUE Magick_colors(VALUE);
 extern VALUE Magick_fonts(VALUE);
 extern VALUE Magick_init_formats(VALUE);
@@ -557,7 +561,7 @@ extern VALUE Magick_set_cache_threshold(VALUE, VALUE);
 extern VALUE Magick_set_log_event_mask(int, VALUE *, VALUE);
 extern VALUE Magick_set_log_format(VALUE, VALUE);
 
-// rmdraw.c
+// rmdraw.cpp
 ATTR_WRITER(Draw, affine)
 ATTR_WRITER(Draw, align)
 ATTR_WRITER(Draw, border_color)
@@ -608,7 +612,7 @@ ATTR_WRITER(PolaroidOptions, shadow_color);
 ATTR_WRITER(PolaroidOptions, border_color);
 
 
-// rmmontage.c
+// rmmontage.cpp
 ATTR_WRITER(Montage, background_color)
 ATTR_WRITER(Montage, border_color)
 ATTR_WRITER(Montage, border_width)
@@ -631,7 +635,7 @@ extern VALUE Montage_alloc(VALUE);
 extern VALUE rm_montage_new(void);
 
 
-// rmilist.c
+// rmilist.cpp
 extern VALUE ImageList_animate(int, VALUE *, VALUE);
 extern VALUE ImageList_append(VALUE, VALUE);
 extern VALUE ImageList_average(VALUE);
@@ -653,7 +657,7 @@ extern VALUE ImageList_write(VALUE, VALUE);
 extern VALUE rm_imagelist_from_images(Image *);
 
 
-// rminfo.c
+// rminfo.cpp
 ATTR_ACCESSOR(Info, antialias)
 ATTR_ACCESSOR(Info, attenuate)
 ATTR_ACCESSOR(Info, authenticate)
@@ -715,7 +719,7 @@ extern VALUE rm_info_new(void);
 extern DisposeType rm_dispose_to_enum(const char *);
 extern GravityType rm_gravity_to_enum(const char *);
 
-// rmkinfo.c
+// rmkinfo.cpp
 
 extern VALUE KernelInfo_alloc(VALUE);
 
@@ -728,7 +732,7 @@ extern VALUE KernelInfo_clone(VALUE);
 extern VALUE KernelInfo_builtin(VALUE, VALUE, VALUE);
 
 
-// rmimage.c
+// rmimage.cpp
 ATTR_ACCESSOR(Image, background_color)
 ATTR_READER(Image, base_columns)
 ATTR_READER(Image, base_filename)
@@ -1031,7 +1035,7 @@ extern VALUE rm_image_new(Image *);
 extern void  rm_image_destroy(void *);
 
 
-// rmfill.c
+// rmfill.cpp
 extern VALUE  GradientFill_alloc(VALUE);
 extern VALUE  GradientFill_initialize(VALUE, VALUE, VALUE, VALUE, VALUE, VALUE, VALUE);
 extern VALUE  GradientFill_fill(VALUE, VALUE);
@@ -1041,7 +1045,7 @@ extern VALUE  TextureFill_initialize(VALUE, VALUE);
 extern VALUE  TextureFill_fill(VALUE, VALUE);
 
 
-// rmpixel.c
+// rmpixel.cpp
 
 
 ATTR_ACCESSOR(Pixel, red)
@@ -1072,7 +1076,7 @@ extern VALUE  Pixel_to_hsla(VALUE);
 extern VALUE  Pixel_to_s(VALUE);
 
 
-// rmenum.c
+// rmenum.cpp
 extern VALUE  Enum_alloc(VALUE);
 extern VALUE  Enum_initialize(VALUE, VALUE, VALUE);
 extern VALUE  Enum_to_s(VALUE);
@@ -1108,7 +1112,7 @@ extern const char *StyleType_name(StyleType);
 extern VALUE  VirtualPixelMethod_find(VirtualPixelMethod);
 
 
-// rmstruct.c
+// rmstruct.cpp
 extern VALUE  ChromaticityInfo_to_s(VALUE);
 extern VALUE  ChromaticityInfo_new(ChromaticityInfo *);
 extern void   Color_to_PixelColor(PixelColor *, VALUE);
@@ -1143,7 +1147,7 @@ extern void   Export_TypeInfo(TypeInfo *, VALUE);
 extern VALUE  Import_TypeMetric(TypeMetric *);
 
 
-// rmutil.c
+// rmutil.cpp
 extern VALUE  ImageMagickError_initialize(int, VALUE *, VALUE);
 extern void  *magick_malloc(const size_t);
 extern void  *magick_safe_malloc(const size_t, const size_t);
@@ -1214,6 +1218,13 @@ extern VALUE  rm_io_path(VALUE);
 extern void   rm_check_image_exception(Image *, ErrorRetention);
 #endif
 
+#if !defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_9_0)
+/* UnityAddKernelInfo() was private function until IM 6.9 */
+MagickExport void UnityAddKernelInfo(KernelInfo *kernel, const double scale);
+/* ScaleKernelInfo() was private function until IM 6.9 */
+MagickExport void ScaleKernelInfo(KernelInfo *kernel, const double scaling_factor, const GeometryFlags normalize_flags);
+#endif
+
 #if (RUBY_VERSION_MAJOR == 2 && RUBY_VERSION_MINOR < 7)
     #define RESCUE_FUNC(func)                   (VALUE (*)(ANYARGS))(func)
     #define RESCUE_EXCEPTION_HANDLER_FUNC(func) (VALUE (*)(ANYARGS))(func)
@@ -1221,5 +1232,7 @@ extern void   rm_check_image_exception(Image *, ErrorRetention);
     #define RESCUE_FUNC(func)                   (VALUE(*)(VALUE))(func)
     #define RESCUE_EXCEPTION_HANDLER_FUNC(func) (VALUE(*)(VALUE, VALUE))(func)
 #endif
+
+} // extern "C"
 
 #endif

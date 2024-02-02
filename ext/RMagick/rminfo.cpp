@@ -5,8 +5,8 @@
  *
  * Changes since Nov. 2009 copyright &copy; by Benjamin Thomas and Omer Bar-or
  *
- * @file     rminfo.c
- * @version  $Id: rminfo.c,v 1.79 2009/12/20 02:33:33 baror Exp $
+ * @file     rminfo.cpp
+ * @version  $Id: rminfo.cpp,v 1.79 2009/12/20 02:33:33 baror Exp $
  * @author   Tim Hunter
  ******************************************************************************/
 
@@ -1888,7 +1888,7 @@ Info_scene_eq(VALUE self, VALUE scene)
     TypedData_Get_Struct(self, Info, &rm_info_data_type, info);
     info->scene = NUM2ULONG(scene);
 
-    snprintf(buf, sizeof(buf), "%"RMIuSIZE"", info->scene);
+    snprintf(buf, sizeof(buf), "%" RMIuSIZE "", info->scene);
     SetImageOption(info, "scene", buf);
 
     return scene;

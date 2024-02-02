@@ -5,8 +5,8 @@
  *
  * Changes since Nov. 2009 copyright &copy; by Benjamin Thomas and Omer Bar-or
  *
- * @file     rmdraw.c
- * @version  $Id: rmdraw.c,v 1.83 2009/12/20 02:33:33 baror Exp $
+ * @file     rmdraw.cpp
+ * @version  $Id: rmdraw.cpp,v 1.83 2009/12/20 02:33:33 baror Exp $
  * @author   Tim Hunter
  ******************************************************************************/
 
@@ -295,7 +295,7 @@ Draw_font_weight_eq(VALUE self, VALUE weight)
         w = FIX2INT(weight);
         if (w < 100 || w > 900)
         {
-            rb_raise(rb_eArgError, "invalid font weight (%"RMIuSIZE" given)", w);
+            rb_raise(rb_eArgError, "invalid font weight (%" RMIuSIZE " given)", w);
         }
         draw->info->weight = w;
     }
@@ -1433,7 +1433,7 @@ DrawOptions_initialize(VALUE self)
  * Allocate a new Magick::Image::PolaroidOptions object.
  *
  * - Internally a PolaroidOptions object is the same as a Draw object. The
- *   methods are implemented by Draw methods in rmdraw.c.
+ *   methods are implemented by Draw methods in rmdraw.cpp.
  *
  * @return [Magick::Image::PolaroidOptions] a new PolaroidOptions object
  */
@@ -1667,7 +1667,8 @@ get_type_metrics(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
 #else
     GVL_STRUCT_TYPE(get_type_metrics) args = { image, draw->info, &metrics };
 #endif
-    okay = (MagickBooleanType)CALL_FUNC_WITHOUT_GVL(fp, &args);
+    void *ret = CALL_FUNC_WITHOUT_GVL(fp, &args);
+    okay = reinterpret_cast<MagickBooleanType &>(ret);
 
     magick_free(draw->info->text);
     draw->info->text = NULL;

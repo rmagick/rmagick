@@ -5,8 +5,8 @@
  *
  * Changes since Nov. 2009 copyright &copy; by Benjamin Thomas and Omer Bar-or
  *
- * @file     rmutil.c
- * @version  $Id: rmutil.c,v 1.182 2009/12/21 10:34:58 baror Exp $
+ * @file     rmutil.cpp
+ * @version  $Id: rmutil.cpp,v 1.182 2009/12/21 10:34:58 baror Exp $
  * @author   Tim Hunter
  ******************************************************************************/
 
@@ -252,7 +252,7 @@ rm_check_ary_type(VALUE ary)
     VALUE checked = rb_check_array_type(ary);
     if (NIL_P(checked))
     {
-        rb_raise(rb_eTypeError, "wrong argument type %"RMIsVALUE" was given. (must respond to :to_ary)", rb_obj_class(ary));
+        rb_raise(rb_eTypeError, "wrong argument type %" RMIsVALUE " was given. (must respond to :to_ary)", rb_obj_class(ary));
     }
     return checked;
 }
@@ -911,7 +911,7 @@ ImageMagickError_initialize(int argc, VALUE *argv, VALUE self)
     }
 
     rb_call_super(super_argc, (const VALUE *)super_argv);
-    rb_iv_set(self, "@"MAGICK_LOC, extra);
+    rb_iv_set(self, "@" MAGICK_LOC, extra);
 
     RB_GC_GUARD(extra);
 

@@ -5,8 +5,8 @@
  *
  * Changes since Nov. 2009 copyright &copy; by Benjamin Thomas and Omer Bar-or
  *
- * @file     rmfill.c
- * @version  $Id: rmfill.c,v 1.33 2009/12/20 02:33:33 baror Exp $
+ * @file     rmfill.cpp
+ * @version  $Id: rmfill.cpp,v 1.33 2009/12/20 02:33:33 baror Exp $
  * @author   Tim Hunter
  ******************************************************************************/
 

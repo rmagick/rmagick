@@ -4,6 +4,12 @@ require 'rubygems'
 require 'mkmf'
 require 'pkg-config'
 
+module MakeMakefile
+  # Use the C++ compiler to retrieve the information needed to create a Makefile.
+  remove_const(:CONFTEST_C)
+  CONFTEST_C = "#{CONFTEST}.cpp"
+end
+
 module RMagick
   class Extconf
     require 'rmagick/version'
@@ -77,7 +83,7 @@ module RMagick
     end
 
     def configure_headers
-      @headers = %w[assert.h ctype.h stdio.h stdlib.h math.h time.h sys/types.h]
+      @headers = %w[assert.h ctype.h stdio.h stdlib.h math.h time.h sys/types.h ruby.h ruby/io.h]
 
       if have_header('MagickCore/MagickCore.h')
         headers << 'MagickCore/MagickCore.h'
@@ -111,6 +117,8 @@ module RMagick
           $LDFLAGS = "#{original_ldflags} #{ldflags}"
         end
 
+        $CPPFLAGS += ' -std=c++11 -Wno-register'
+
         configure_archflags_for_osx($magick_package) if RUBY_PLATFORM =~ /darwin/ # osx
 
       elsif RUBY_PLATFORM =~ /mingw/ # mingw
@@ -119,6 +127,8 @@ module RMagick
         $CPPFLAGS += %( -I"#{dir_paths[:include]}")
         $LDFLAGS += %( -L"#{dir_paths[:lib]}")
         $LDFLAGS << ' -lucrt' if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.4.0')
+
+        $CPPFLAGS += ' -std=c++11 -Wno-register'
 
         have_library(im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_' : 'CORE_RL_magick_')
 
@@ -131,15 +141,11 @@ module RMagick
 
         $LOCAL_LIBS += ' ' + (im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_.lib' : 'CORE_RL_magick_.lib')
 
+        $CPPFLAGS += ' /std:c++11'
       end
-
-      $CPPFLAGS << if have_macro('__GNUC__')
-                     ' -std=gnu99 -Wno-void-pointer-to-int-cast -Wno-void-pointer-to-enum-cast -Wno-pointer-to-int-cast'
-                   else
-                     ' -std=c99'
-                   end
       ruby_version = RUBY_VERSION.split('.')
       $CPPFLAGS += " -DRUBY_VERSION_MAJOR=#{ruby_version[0]} -DRUBY_VERSION_MINOR=#{ruby_version[1]}"
+      $CPPFLAGS += ' $(optflags) $(debugflags)'
     end
 
     def exit_failure(msg)

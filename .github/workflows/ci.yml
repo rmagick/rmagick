@@ -106,7 +106,7 @@ jobs:
         ruby-version: ['3.3']
         imagemagick-version:
           - { full: 6.9.13-4, major-minor: '6.9' }
-          - { full: 7.1.1-7, major-minor: '7.1' }
+          - { full: 7.1.1-26, major-minor: '7.1' }
     env:
       bundled_im_dir: C:\Program Files\ImageMagick-7.1.1-Q16-HDRI
       install_im_dir: D:\ImageMagick
