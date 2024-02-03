@@ -1355,6 +1355,8 @@ Init_RMagick2(void)
 #if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
         ENUMERATOR(LanczosRadiusFilter)
 #endif
+        ENUMERATORV(WelchFilter, WelshFilter)
+        ENUMERATORV(HannFilter, HanningFilter)
     END_ENUM
 
     // GravityType constants
