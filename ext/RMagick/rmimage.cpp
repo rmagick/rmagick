@@ -126,6 +126,7 @@ DEFINE_GVL_STUB4(ColorizeImage, const Image *, const char *, const PixelInfo *, 
 DEFINE_GVL_STUB5(CompareImages, Image *, const Image *, const MetricType, double *, ExceptionInfo *);
 DEFINE_GVL_STUB7(CompositeImage, Image *, const Image *, const CompositeOperator, const MagickBooleanType, const ssize_t, const ssize_t, ExceptionInfo *);
 DEFINE_GVL_STUB2(CompressImageColormap, Image *, ExceptionInfo *);
+DEFINE_GVL_STUB3(ContrastImage, Image *, const MagickBooleanType, ExceptionInfo *);
 DEFINE_GVL_STUB4(ContrastStretchImage, Image *, const double, const double, ExceptionInfo *);
 DEFINE_GVL_STUB3(ConvolveImage, const Image *, const KernelInfo *, ExceptionInfo *);
 DEFINE_GVL_STUB3(CycleColormapImage, Image *, const ssize_t, ExceptionInfo *);
@@ -206,6 +207,7 @@ DEFINE_GVL_STUB6(CompareImageChannels, Image *, const Image *, const ChannelType
 DEFINE_GVL_STUB5(CompositeImage, Image *, const CompositeOperator, const Image *, const ssize_t, const ssize_t);
 DEFINE_GVL_STUB6(CompositeImageChannel, Image *, const ChannelType, const CompositeOperator, const Image *, const ssize_t, const ssize_t);
 DEFINE_GVL_STUB1(CompressImageColormap, Image *);
+DEFINE_GVL_STUB2(ContrastImage, Image *, const MagickBooleanType);
 DEFINE_GVL_STUB4(ContrastStretchImageChannel, Image *, const ChannelType, const double, const double);
 DEFINE_GVL_STUB4(ConvolveImage, const Image *, const size_t, const double *, ExceptionInfo *);
 DEFINE_GVL_STUB5(ConvolveImageChannel, const Image *, const ChannelType, const size_t, const double *, ExceptionInfo *);
@@ -4535,11 +4537,13 @@ Image_contrast(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    ContrastImage(new_image, sharpen, exception);
+    GVL_STRUCT_TYPE(ContrastImage) args = { new_image, sharpen, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ContrastImage), &args);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    ContrastImage(new_image, sharpen);
+    GVL_STRUCT_TYPE(ContrastImage) args = { new_image, sharpen };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ContrastImage), &args);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
