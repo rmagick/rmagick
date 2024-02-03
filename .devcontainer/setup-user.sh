@@ -42,4 +42,4 @@ __show_notice
 EOF
 )"
 
- echo "${codespaces_bash}" >> "/root/.bashrc"
+echo "${codespaces_bash}" >> "/root/.bashrc"
