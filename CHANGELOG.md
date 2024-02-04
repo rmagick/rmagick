@@ -3,6 +3,19 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 5.4.0
+
+Improvements
+
+- Use rb_io_path() if exist because pathv attr was marked as deprecated at Ruby 3.3 (#1409)
+- Add observer gem as dependency (#1411)
+- Add aliases of filter type (#1439)
+- Release GVL in Image#contrast (#1440)
+
+Bug Fixes
+
+- Use C++ compiler in order to fix installation error with latest ImageMagick 7 on Windows (#1433)
+
 ## RMagick 5.3.0
 
 Improvements
