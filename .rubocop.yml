@@ -35,3 +35,5 @@ Style/NumericLiterals: { MinDigits: 6 }
 
 RSpec/AlignLeftLetBrace: { Enabled: false }
 RSpec/AlignRightLetBrace: { Enabled: false }
+RSpec/FactoryBot/CreateList: { Enabled: false }
+Style/Copyright: { Enabled: false }
