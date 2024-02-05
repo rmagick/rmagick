@@ -22,11 +22,9 @@ module Magick
       def set(styles)
         begin
           styles.each_pair do |style, value|
-            begin
-              self[style] = value
-            rescue NoMethodError
-              raise ArgumentError, "unknown style `#{style}'"
-            end
+            self[style] = value
+          rescue NoMethodError
+            raise ArgumentError, "unknown style `#{style}'"
           end
         rescue NoMethodError
           raise ArgumentError, "style arguments must be in the form `style => value'"

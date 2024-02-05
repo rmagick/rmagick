@@ -12,6 +12,6 @@ RSpec.describe Magick::Image, "#alpha?" do
     expect { image.alpha Magick::SetAlphaChannel }.not_to raise_error
     expect { image.alpha Magick::SetAlphaChannel, Magick::OpaqueAlphaChannel }.to raise_error(ArgumentError)
     image.freeze
-    expect { image.alpha Magick::SetAlphaChannel }.to raise_error(FreezeError)
+    expect { image.alpha Magick::SetAlphaChannel }.to raise_error(FrozenError)
   end
 end

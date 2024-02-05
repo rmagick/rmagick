@@ -6,6 +6,6 @@ RSpec.describe Magick::Image, '#thumbnail!' do
     expect(result).to be(image)
 
     image.freeze
-    expect { image.thumbnail!(0.50) }.to raise_error(FreezeError)
+    expect { image.thumbnail!(0.50) }.to raise_error(FrozenError)
   end
 end

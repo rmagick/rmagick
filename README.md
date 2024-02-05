@@ -39,7 +39,8 @@ These prerequisites are required for the latest version of RMagick.
 - Other \*nix-like systems
 
 **Ruby**
-- Version 2.3 or later.
+
+- Version 2.7 or later.
 
 You can get Ruby from <https://www.ruby-lang.org>.
 

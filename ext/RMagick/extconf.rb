@@ -126,7 +126,7 @@ module RMagick
         dir_paths = search_paths_for_library_for_windows
         $CPPFLAGS += %( -I"#{dir_paths[:include]}")
         $LDFLAGS += %( -L"#{dir_paths[:lib]}")
-        $LDFLAGS << ' -lucrt' if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.4.0')
+        $LDFLAGS << ' -lucrt'
 
         $CPPFLAGS += ' -std=c++11 -Wno-register'
 
@@ -137,7 +137,7 @@ module RMagick
         dir_paths = search_paths_for_library_for_windows
         $CPPFLAGS << %( -I"#{dir_paths[:include]}")
         $LDFLAGS << %( -libpath:"#{dir_paths[:lib]}")
-        $LDFLAGS << ' -libpath:ucrt' if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.4.0')
+        $LDFLAGS << ' -libpath:ucrt'
 
         $LOCAL_LIBS += ' ' + (im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_.lib' : 'CORE_RL_magick_.lib')
 

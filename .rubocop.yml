@@ -7,7 +7,7 @@ require:
 AllCops:
   DefaultFormatter: fuubar
   EnabledByDefault: true
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 2.7
   Exclude:
     - 'vendor/bundle/**/*'
     - '**/*\.spec'

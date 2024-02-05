@@ -6,6 +6,6 @@ RSpec.describe Magick::Image, '#sample!' do
     expect(result).to be(image)
 
     image.freeze
-    expect { image.sample!(0.50) }.to raise_error(FreezeError)
+    expect { image.sample!(0.50) }.to raise_error(FrozenError)
   end
 end
