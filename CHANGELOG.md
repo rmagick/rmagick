@@ -3,6 +3,12 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 5.4.1
+
+Bug Fixes
+
+- Fix invalid cast between different size variables (#1448)
+
 ## RMagick 5.4.0
 
 Improvements
