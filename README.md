@@ -38,6 +38,9 @@ These prerequisites are required for the latest version of RMagick.
 - Windows
 - Other \*nix-like systems
 
+**C++ compiler**
+- RMagick 5.4.0 or later requires a C++ compiler.
+
 **Ruby**
 - Version 2.3 or later.
 
@@ -63,7 +66,7 @@ sudo apt-get install libmagickwand-dev
 On Centos, you can run:
 
 ```sh
-sudo yum install gcc ImageMagick-devel make which
+sudo yum install ImageMagick-devel
 ```
 
 #### Arch Linux
