@@ -322,9 +322,9 @@ module RMagick
       assert_minimum_ruby_version!
       assert_has_dev_libs!
 
-      # Check for compiler. Extract first word so ENV['CC'] can be a program name with arguments.
-      cc = (ENV['CC'] || RbConfig::CONFIG['CC'] || 'gcc').split(' ').first
-      exit_failure "No C compiler found in ${ENV['PATH']}. See mkmf.log for details." unless find_executable(cc)
+      # Check for compiler. Extract first word so ENV['CXX'] can be a program name with arguments.
+      cxx = (ENV['CXX'] || RbConfig::CONFIG['CXX'] || 'g++').split(' ').first
+      exit_failure "No C++ compiler found in ${ENV['PATH']}. See mkmf.log for details." unless find_executable(cxx)
     end
 
     def assert_minimum_ruby_version!
