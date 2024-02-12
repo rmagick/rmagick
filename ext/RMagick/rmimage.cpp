@@ -10435,7 +10435,7 @@ Image_orientation_eq(VALUE self, VALUE orientation)
 /**
  * The page attribute getter.
  *
- * @return [Magick::Rectang] the page rectangle
+ * @return [Magick::Rectangle] the page rectangle
  */
 VALUE
 Image_page(VALUE self)
@@ -10448,8 +10448,8 @@ Image_page(VALUE self)
 /**
  * The page attribute setter.
  *
- * @param rect [Magick::Rectang] the page rectangle
- * @return [Magick::Rectang] the given value
+ * @param rect [Magick::Rectangle] the page rectangle
+ * @return [Magick::Rectangle] the given value
  */
 VALUE
 Image_page_eq(VALUE self, VALUE rect)
