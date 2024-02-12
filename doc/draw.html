@@ -75,6 +75,8 @@
         <ul>
           <li><a href="#affine">affine</a></li>
 
+          <li><a href="#alpha">alpha</a></li>
+
           <li><a href="#arc">arc</a></li>
 
           <li><a href="#bezier">bezier</a></li>
@@ -899,6 +901,43 @@ draw.inspect &raquo;
     </div>
 
     <div class="sig">
+      <h3 id="alpha">alpha</h3>
+
+      <p><span class="arg">draw</span>.alpha(<span class="arg">x, y, method</span>) -&gt; <em>self</em></p>
+    </div>
+
+    <div class="desc">
+      <h4>Description</h4>
+
+      <p>Set alpha (make transparent) in image according to the specified colorization rule.</p>
+
+      <h4>Arguments</h4>
+
+      <dl>
+        <dt>x, y</dt>
+
+        <dd>The point in the <em>x</em> and <em>y</em> to start filling color</dd>
+
+        <dt>method</dt>
+
+        <dd>
+          A <a href="constants.html#PaintMethod">PaintMethod</a> constant. If you use the <code>FillToBorderMethod</code>, assign the border color with the
+          <code>Draw#border_color=</code> attribute before calling <a href="#draw">draw</a>.
+        </dd>
+      </dl>
+
+      <h4>Returns</h4>
+
+      <p>self</p>
+
+      <h4>Example</h4>
+      <pre>
+  draw.alpha(x, y, FillToBorderMethod)
+</pre
+      >
+    </div>
+
+    <div class="sig">
       <h3 id="arc">arc</h3>
 
       <p><span class="arg">draw</span>.arc(<span class="arg">start_x, start_y, end_x, end_y, start_degrees, end_degrees</span>) -&gt; <em>self</em></p>
@@ -1196,10 +1235,18 @@ gc.draw
 
       <h4>Arguments</h4>
 
-      <p>
-        A <a href="constants.html#PaintMethod">PaintMethod</a> constant. If you use the <code>FillToBorderMethod</code>, assign the border color with the
-        <code>Draw#border_color=</code> attribute before calling <a href="#draw">draw</a>.
-      </p>
+      <dl>
+        <dt>x, y</dt>
+
+        <dd>The point in the <em>x</em> and <em>y</em> to start filling color</dd>
+
+        <dt>method</dt>
+
+        <dd>
+          A <a href="constants.html#PaintMethod">PaintMethod</a> constant. If you use the <code>FillToBorderMethod</code>, assign the border color with the
+          <code>Draw#border_color=</code> attribute before calling <a href="#draw">draw</a>.
+        </dd>
+      </dl>
 
       <h4>Returns</h4>
 
