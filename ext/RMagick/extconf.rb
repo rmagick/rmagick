@@ -5,7 +5,7 @@ require 'mkmf'
 require 'pkg-config'
 
 module MakeMakefile
-  # Use the C++ compiler to retrieve the information needed to create a Makefile.
+  # Use the C++ compiler to retrieve the information needed to create a Makefile for mswin environment.
   remove_const(:CONFTEST_C)
   CONFTEST_C = "#{CONFTEST}.cpp"
 end
@@ -117,7 +117,7 @@ module RMagick
           $LDFLAGS = "#{original_ldflags} #{ldflags}"
         end
 
-        $CPPFLAGS += ' -std=c++11 -Wno-register'
+        $CPPFLAGS += ' -x c++ -std=c++11 -Wno-register'
 
         configure_archflags_for_osx($magick_package) if RUBY_PLATFORM =~ /darwin/ # osx
 
@@ -128,7 +128,7 @@ module RMagick
         $LDFLAGS += %( -L"#{dir_paths[:lib]}")
         $LDFLAGS << ' -lucrt' if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.4.0')
 
-        $CPPFLAGS += ' -std=c++11 -Wno-register'
+        $CPPFLAGS += ' -x c++ -std=c++11 -Wno-register'
 
         have_library(im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_' : 'CORE_RL_magick_')
 
