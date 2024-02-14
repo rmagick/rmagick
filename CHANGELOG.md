@@ -3,6 +3,12 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 5.4.3
+
+Bug Fixes
+
+- Fix installation error in some environment by using x flag to use C++ compiler in order to create Makefile (#1460)
+
 ## RMagick 5.4.2
 
 Improvements
