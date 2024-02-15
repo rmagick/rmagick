@@ -1069,6 +1069,10 @@ Pixel_spaceship(VALUE self, VALUE other)
 {
     Pixel *self_pixel, *other_pixel;
 
+    if (CLASS_OF(self) != CLASS_OF(other)) {
+        return Qnil;
+    }
+
     TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, self_pixel);
     TypedData_Get_Struct(other, Pixel, &rm_pixel_data_type, other_pixel);
 
@@ -1096,10 +1100,8 @@ Pixel_spaceship(VALUE self, VALUE other)
     }
 #endif
 
-    // Values are equal, check class.
-
-    return rb_funcall(CLASS_OF(self), rb_intern("<=>"), 1, CLASS_OF(other));
-
+    // Values are equal.
+    return INT2NUM(0);
 }
 
 
