@@ -3,6 +3,13 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 5.4.4
+
+Bug Fixes
+
+- Fix installation error again in some environment at creatint Makefile (#1465)
+- Fix Pixel#<=> which should accept other class instance (#1463)
+
 ## RMagick 5.4.3
 
 Bug Fixes
