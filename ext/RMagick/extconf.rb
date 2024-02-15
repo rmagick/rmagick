@@ -109,7 +109,8 @@ module RMagick
 
         # Save flags
         $CPPFLAGS   += " #{ENV['CPPFLAGS']} " + PKGConfig.cflags($magick_package).chomp
-        $LOCAL_LIBS += " #{ENV['LIBS']} "     + PKGConfig.libs($magick_package).chomp
+        $CPPFLAGS   += ' -x c++ -std=c++11 -Wno-register'
+        $LOCAL_LIBS += " #{ENV['LIBS']} " + PKGConfig.libs($magick_package).chomp
         $LDFLAGS    += " #{ldflags} #{rpath}"
 
         unless try_link("int main() { }")
@@ -117,18 +118,15 @@ module RMagick
           $LDFLAGS = "#{original_ldflags} #{ldflags}"
         end
 
-        $CPPFLAGS += ' -x c++ -std=c++11 -Wno-register'
-
         configure_archflags_for_osx($magick_package) if RUBY_PLATFORM =~ /darwin/ # osx
 
       elsif RUBY_PLATFORM =~ /mingw/ # mingw
 
         dir_paths = search_paths_for_library_for_windows
         $CPPFLAGS += %( -I"#{dir_paths[:include]}")
+        $CPPFLAGS += ' -x c++ -std=c++11 -Wno-register'
         $LDFLAGS += %( -L"#{dir_paths[:lib]}")
         $LDFLAGS << ' -lucrt' if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.4.0')
-
-        $CPPFLAGS += ' -x c++ -std=c++11 -Wno-register'
 
         have_library(im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_' : 'CORE_RL_magick_')
 
