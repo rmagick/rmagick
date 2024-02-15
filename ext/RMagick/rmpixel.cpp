@@ -596,7 +596,7 @@ Pixel_eql_q(VALUE self, VALUE other)
  *
  * @overload fcmp(other, fuzz = 0.0, colorspace = Magick::RGBColorspace)
  *   @param other [Magick::Pixel] The pixel to which the receiver is compared
- *   @param fuzz [Float] The amount of fuzz to allow before the colors are considered to be different
+ *   @param fuzz [Numeric] The amount of fuzz to allow before the colors are considered to be different
  *   @param colorspace [Magick::ColorspaceType] The colorspace
  *   @return [Boolean] true if equal, otherwise false
  */
@@ -711,7 +711,7 @@ Pixel_from_color(VALUE klass ATTRIBUTE_UNUSED, VALUE name)
  *   @param hue [Numeric, String] A value in the range.
  *   @param saturation [Numeric, String] A value in the range.
  *   @param lightness [Numeric, String] A value in the range.
- *   @param alpha [Numeric] The alpha value.
+ *   @param alpha [Numeric, String] The alpha value.
  *   @return [Magick::Pixel] a new Magick::Pixel object
  */
 VALUE
