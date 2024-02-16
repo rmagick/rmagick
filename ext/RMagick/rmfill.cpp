@@ -634,7 +634,7 @@ h_diagonal_fill(
  * Call GradientFill with the start and stop colors specified when this fill
  * object was created.
  *
- * @param image_obj [Magick::Image] the image to fill
+ * @param image_obj [Magick::Image, Magick::ImageList] the image to fill
  * @return [Magick::GradientFill] self
  */
 VALUE
@@ -646,7 +646,7 @@ GradientFill_fill(VALUE self, VALUE image_obj)
     double x1, y1, x2, y2;          // points on the line
 
     TypedData_Get_Struct(self, rm_GradientFill, &rm_gradient_fill_data_type, fill);
-    image = rm_check_destroyed(image_obj);
+    image = rm_check_destroyed(rm_cur_image(image_obj));
 
     x1 = fill->x1;
     y1 = fill->y1;
@@ -780,7 +780,7 @@ TextureFill_initialize(VALUE self, VALUE texture_arg)
  * Call TextureFill with the texture specified when this fill object was
  * created.
  *
- * @param image_obj [Magick::Image] the image to fill
+ * @param image_obj [Magick::Image, Magick::ImageList] the image to fill
  * @return [Magick::TextureFill] self
  */
 VALUE
@@ -792,7 +792,7 @@ TextureFill_fill(VALUE self, VALUE image_obj)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(image_obj);
+    image = rm_check_destroyed(rm_cur_image(image_obj));
     TypedData_Get_Struct(self, rm_TextureFill, &rm_texture_fill_data_type, fill);
 
 #if defined(IMAGEMAGICK_7)

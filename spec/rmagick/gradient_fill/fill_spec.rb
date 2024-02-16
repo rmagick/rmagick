@@ -37,5 +37,12 @@ RSpec.describe Magick::GradientFill, '#fill' do
     gradient = described_class.new(0, 100, 100, 200, '#900', '#000')
     obj = gradient.fill(image)
     expect(obj).to eq(gradient)
+
+    imgl = Magick::ImageList.new
+    imgl.new_image(10, 10)
+
+    gradient = described_class.new(0, 0, 0, 0, '#900', '#000')
+    obj = gradient.fill(imgl)
+    expect(obj).to eq(gradient)
   end
 end
