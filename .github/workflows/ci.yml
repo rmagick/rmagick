@@ -20,6 +20,7 @@ jobs:
       uses: ruby/setup-ruby@master
       with:
         ruby-version: '2.3'
+        bundler-cache: true
     - name: Build and test with Rake
       run: |
         bundle install --path=vendor/bundle --jobs 4 --retry 3
@@ -57,6 +58,7 @@ jobs:
       uses: ruby/setup-ruby@master
       with:
         ruby-version: ${{ matrix.ruby-version }}
+        bundler-cache: true
     - name: Update/Install packages
       run: |
         export IMAGEMAGICK_VERSION=${{ matrix.imagemagick-version.full }}
@@ -90,6 +92,7 @@ jobs:
       uses: ruby/setup-ruby@master
       with:
         ruby-version: ${{ matrix.ruby-version }}
+        bundler-cache: true
     - name: Update/Install packages
       run: |
         IMAGEMAGICK_VERSION=${{ matrix.imagemagick-version.full }} ./before_install_osx.sh
@@ -126,6 +129,7 @@ jobs:
       uses: ruby/setup-ruby@master
       with:
         ruby-version: ${{ matrix.ruby-version }}
+        bundler-cache: true
     - name: Install ghostscript
       run: |
         choco install ghostscript
