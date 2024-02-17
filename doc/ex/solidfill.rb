@@ -3,7 +3,7 @@ require 'rmagick'
 # Demonstrate the SolidFill class
 
 fill = Magick::SolidFill.new('orange')
-img = Magick::Image.new(Cols, Rows, fill)
+img = Magick::Image.new(300, 100, fill)
 
 # Annotate the filled image with the code that created the fill.
 
