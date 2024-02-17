@@ -73,6 +73,8 @@
 
         <li><a href="#HatchFill">HatchFill</a></li>
 
+        <li><a href="#SolidFill">SolidFill</a></li>
+
         <li><a href="#TextureFill">TextureFill</a></li>
       </ul>
 
@@ -1091,7 +1093,7 @@ g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
         RMagick supplies three Fill classes,
         <code><strong>HatchFill</strong></code
         >, <code><strong>GradientFill</strong></code
-        >, and <code><strong>TextureFill</strong></code
+        >, <code><strong>SolidFill</strong></code> and <code><strong>TextureFill</strong></code
         >. These classes are explained below. The <code>HatchFill</code> class is intended as an example of how to write a <code>Fill</code> class and is
         written in pure Ruby. You can read it in RMagick.rb.
       </p>
@@ -1191,6 +1193,37 @@ g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
 
       <p>
         <a href="javascript:popup('hatchfill.rb.html')"><img src="ex/hatchfill.gif" alt="HatchFill example" title="Click to see the example script" /></a>
+      </p>
+    </div>
+
+    <h3 id="SolidFill">class SolidFill <span class="superclass">&lt; Object</span></h3>
+
+    <div class="sig">
+      <h4>new</h4>
+
+      <p>
+        SolidFill.new(<span class="arg">bgcolor</span>) -&gt;
+        <em>solid_fill</em>
+      </p>
+    </div>
+
+    <div class="desc">
+      <h5>Description</h5>
+
+      <p>Creates a solid fill.</p>
+
+      <h5>Arguments</h5>
+
+      <dl>
+        <dt>bgcolor</dt>
+
+        <dd>The image background color.</dd>
+      </dl>
+
+      <h5>Example</h5>
+
+      <p>
+        <a href="javascript:popup('solidfill.rb.html')"><img src="ex/solidfill.gif" alt="SolidFill example" title="Click to see the example script" /></a>
       </p>
     </div>
 
