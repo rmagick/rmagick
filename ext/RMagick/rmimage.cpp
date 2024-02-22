@@ -2763,11 +2763,11 @@ Image_clone(VALUE self)
  * the CLUT image.
  *
  * @overload clut_channel(clut_image, channel = Magick::AllChannels)
- *   @param clut_image [Magick::Image] The LUT gradient image.
+ *   @param clut_image [Magick::Image, Magick::ImageList] The LUT gradient image.
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *
  * @overload clut_channel(clut_image, *channels)
- *   @param clut_image [Magick::Image] The LUT gradient image.
+ *   @param clut_image [Magick::Image, Magick::ImageList] The LUT gradient image.
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
  * @return [Magick::Image] self
@@ -2787,7 +2787,7 @@ Image_clut_channel(int argc, VALUE *argv, VALUE self)
     // check_destroyed before confirming the arguments
     if (argc >= 1)
     {
-        rm_check_destroyed(argv[0]);
+        clut = rm_check_destroyed(rm_cur_image(argv[0]));
         channels = extract_channels(&argc, argv);
         if (argc != 1)
         {
@@ -2798,8 +2798,6 @@ Image_clut_channel(int argc, VALUE *argv, VALUE self)
     {
         rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 or more)", argc);
     }
-
-    TypedData_Get_Struct(argv[0], Image, &rm_image_data_type, clut);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
