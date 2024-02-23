@@ -1614,7 +1614,9 @@ module Magick
     # it up the line. Catch a NameError and emit a useful message.
     def method_missing(meth_id, *args, &block)
       if @scene
-        @images[@scene].send(meth_id, *args, &block)
+        img = @images[@scene]
+        new_img = img.send(meth_id, *args, &block)
+        img.object_id == new_img.object_id ? self : new_img
       else
         super
       end
