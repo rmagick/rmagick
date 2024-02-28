@@ -1080,13 +1080,13 @@ module Magick
         %i[red green blue opacity].each do |c|
           module_eval <<-END_EVAL, __FILE__, __LINE__ + 1
             def #{c}
-                return collect { |p| p.#{c} }
+              return collect { |p| p.#{c} }
             end
             def #{c}=(v)
-                each { |p| p.#{c} = v }
-                changed
-                notify_observers(self)
-                nil
+              each { |p| p.#{c} = v }
+              changed
+              notify_observers(self)
+              v
             end
           END_EVAL
         end

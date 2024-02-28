@@ -836,7 +836,7 @@ Info_density_eq(VALUE self, VALUE density_arg)
     {
         magick_free(info->density);
         info->density = NULL;
-        return self;
+        return density_arg;
     }
 
     density = rb_String(density_arg);
@@ -1000,7 +1000,7 @@ Info_dispose_eq(VALUE self, VALUE disp)
     if (NIL_P(disp))
     {
         DeleteImageOption(info, "dispose");
-        return self;
+        return disp;
     }
 
     VALUE_TO_ENUM(disp, dispose, DisposeType);
@@ -1113,7 +1113,7 @@ Info_extract_eq(VALUE self, VALUE extract_arg)
     {
         magick_free(info->extract);
         info->extract = NULL;
-        return self;
+        return extract_arg;
     }
 
     extract = rb_String(extract_arg);
@@ -1431,7 +1431,7 @@ Info_gravity_eq(VALUE self, VALUE grav)
     if (NIL_P(grav))
     {
         DeleteImageOption(info, "gravity");
-        return self;
+        return grav;
     }
 
     VALUE_TO_ENUM(grav, gravity, GravityType);
@@ -1684,7 +1684,7 @@ Info_origin_eq(VALUE self, VALUE origin_arg)
     if (NIL_P(origin_arg))
     {
         DeleteImageOption(info, "origin");
-        return self;
+        return origin_arg;
     }
 
     origin_str = rb_String(origin_arg);
@@ -1740,7 +1740,7 @@ Info_page_eq(VALUE self, VALUE page_arg)
     {
         magick_free(info->page);
         info->page = NULL;
-        return self;
+        return page_arg;
     }
     geom_str = rb_String(page_arg);
     geometry = GetPageGeometry(StringValueCStr(geom_str));
@@ -1748,7 +1748,7 @@ Info_page_eq(VALUE self, VALUE page_arg)
     {
         magick_free(info->page);
         info->page = NULL;
-        return self;
+        return page_arg;
     }
     info->page = geometry;
 
@@ -1966,7 +1966,7 @@ Info_size_eq(VALUE self, VALUE size_arg)
     {
         magick_free(info->size);
         info->size = NULL;
-        return self;
+        return size_arg;
     }
 
     size = rb_String(size_arg);
