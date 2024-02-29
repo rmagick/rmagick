@@ -965,6 +965,7 @@ Init_RMagick2(void)
     rb_define_method(Class_PolaroidOptions, "stroke_pattern=", RUBY_METHOD_FUNC(Draw_stroke_pattern_eq), 1);
     rb_define_method(Class_PolaroidOptions, "stroke_width=", RUBY_METHOD_FUNC(Draw_stroke_width_eq), 1);
     rb_define_method(Class_PolaroidOptions, "text_antialias=", RUBY_METHOD_FUNC(Draw_text_antialias_eq), 1);
+    rb_define_method(Class_PolaroidOptions, "tile=", RUBY_METHOD_FUNC(Draw_tile_eq), 1);
     rb_define_method(Class_PolaroidOptions, "undercolor=", RUBY_METHOD_FUNC(Draw_undercolor_eq), 1);
 
 
