@@ -653,30 +653,33 @@ Init_RMagick2(void)
     rb_define_alloc_func(Class_Draw, Draw_alloc);
 
     // Define the attributes
-    rb_define_method(Class_Draw, "affine=", RUBY_METHOD_FUNC(Draw_affine_eq), 1);
-    rb_define_method(Class_Draw, "align=", RUBY_METHOD_FUNC(Draw_align_eq), 1);
-    rb_define_method(Class_Draw, "decorate=", RUBY_METHOD_FUNC(Draw_decorate_eq), 1);
-    rb_define_method(Class_Draw, "density=", RUBY_METHOD_FUNC(Draw_density_eq), 1);
-    rb_define_method(Class_Draw, "encoding=", RUBY_METHOD_FUNC(Draw_encoding_eq), 1);
-    rb_define_method(Class_Draw, "fill=", RUBY_METHOD_FUNC(Draw_fill_eq), 1);
-    rb_define_method(Class_Draw, "fill_pattern=", RUBY_METHOD_FUNC(Draw_fill_pattern_eq), 1);
-    rb_define_method(Class_Draw, "font=", RUBY_METHOD_FUNC(Draw_font_eq), 1);
-    rb_define_method(Class_Draw, "font_family=", RUBY_METHOD_FUNC(Draw_font_family_eq), 1);
-    rb_define_method(Class_Draw, "font_stretch=", RUBY_METHOD_FUNC(Draw_font_stretch_eq), 1);
-    rb_define_method(Class_Draw, "font_style=", RUBY_METHOD_FUNC(Draw_font_style_eq), 1);
-    rb_define_method(Class_Draw, "font_weight=", RUBY_METHOD_FUNC(Draw_font_weight_eq), 1);
-    rb_define_method(Class_Draw, "gravity=", RUBY_METHOD_FUNC(Draw_gravity_eq), 1);
-    rb_define_method(Class_Draw, "interline_spacing=", RUBY_METHOD_FUNC(Draw_interline_spacing_eq), 1);
-    rb_define_method(Class_Draw, "interword_spacing=", RUBY_METHOD_FUNC(Draw_interword_spacing_eq), 1);
-    rb_define_method(Class_Draw, "kerning=", RUBY_METHOD_FUNC(Draw_kerning_eq), 1);
-    rb_define_method(Class_Draw, "pointsize=", RUBY_METHOD_FUNC(Draw_pointsize_eq), 1);
-    rb_define_method(Class_Draw, "rotation=", RUBY_METHOD_FUNC(Draw_rotation_eq), 1);
-    rb_define_method(Class_Draw, "stroke=", RUBY_METHOD_FUNC(Draw_stroke_eq), 1);
-    rb_define_method(Class_Draw, "stroke_pattern=", RUBY_METHOD_FUNC(Draw_stroke_pattern_eq), 1);
-    rb_define_method(Class_Draw, "stroke_width=", RUBY_METHOD_FUNC(Draw_stroke_width_eq), 1);
-    rb_define_method(Class_Draw, "text_antialias=", RUBY_METHOD_FUNC(Draw_text_antialias_eq), 1);
-    rb_define_method(Class_Draw, "tile=", RUBY_METHOD_FUNC(Draw_tile_eq), 1);
-    rb_define_method(Class_Draw, "undercolor=", RUBY_METHOD_FUNC(Draw_undercolor_eq), 1);
+    Module_DrawAttribute = rb_define_module_under(Module_Magick, "DrawAttribute");
+    rb_define_method(Module_DrawAttribute, "affine=", RUBY_METHOD_FUNC(Draw_affine_eq), 1);
+    rb_define_method(Module_DrawAttribute, "align=", RUBY_METHOD_FUNC(Draw_align_eq), 1);
+    rb_define_method(Module_DrawAttribute, "decorate=", RUBY_METHOD_FUNC(Draw_decorate_eq), 1);
+    rb_define_method(Module_DrawAttribute, "density=", RUBY_METHOD_FUNC(Draw_density_eq), 1);
+    rb_define_method(Module_DrawAttribute, "encoding=", RUBY_METHOD_FUNC(Draw_encoding_eq), 1);
+    rb_define_method(Module_DrawAttribute, "fill=", RUBY_METHOD_FUNC(Draw_fill_eq), 1);
+    rb_define_method(Module_DrawAttribute, "fill_pattern=", RUBY_METHOD_FUNC(Draw_fill_pattern_eq), 1);
+    rb_define_method(Module_DrawAttribute, "font=", RUBY_METHOD_FUNC(Draw_font_eq), 1);
+    rb_define_method(Module_DrawAttribute, "font_family=", RUBY_METHOD_FUNC(Draw_font_family_eq), 1);
+    rb_define_method(Module_DrawAttribute, "font_stretch=", RUBY_METHOD_FUNC(Draw_font_stretch_eq), 1);
+    rb_define_method(Module_DrawAttribute, "font_style=", RUBY_METHOD_FUNC(Draw_font_style_eq), 1);
+    rb_define_method(Module_DrawAttribute, "font_weight=", RUBY_METHOD_FUNC(Draw_font_weight_eq), 1);
+    rb_define_method(Module_DrawAttribute, "gravity=", RUBY_METHOD_FUNC(Draw_gravity_eq), 1);
+    rb_define_method(Module_DrawAttribute, "interline_spacing=", RUBY_METHOD_FUNC(Draw_interline_spacing_eq), 1);
+    rb_define_method(Module_DrawAttribute, "interword_spacing=", RUBY_METHOD_FUNC(Draw_interword_spacing_eq), 1);
+    rb_define_method(Module_DrawAttribute, "kerning=", RUBY_METHOD_FUNC(Draw_kerning_eq), 1);
+    rb_define_method(Module_DrawAttribute, "pointsize=", RUBY_METHOD_FUNC(Draw_pointsize_eq), 1);
+    rb_define_method(Module_DrawAttribute, "rotation=", RUBY_METHOD_FUNC(Draw_rotation_eq), 1);
+    rb_define_method(Module_DrawAttribute, "stroke=", RUBY_METHOD_FUNC(Draw_stroke_eq), 1);
+    rb_define_method(Module_DrawAttribute, "stroke_pattern=", RUBY_METHOD_FUNC(Draw_stroke_pattern_eq), 1);
+    rb_define_method(Module_DrawAttribute, "stroke_width=", RUBY_METHOD_FUNC(Draw_stroke_width_eq), 1);
+    rb_define_method(Module_DrawAttribute, "text_antialias=", RUBY_METHOD_FUNC(Draw_text_antialias_eq), 1);
+    rb_define_method(Module_DrawAttribute, "tile=", RUBY_METHOD_FUNC(Draw_tile_eq), 1);
+    rb_define_method(Module_DrawAttribute, "undercolor=", RUBY_METHOD_FUNC(Draw_undercolor_eq), 1);
+
+    rb_include_module(Class_Draw, Module_DrawAttribute);
 
     rb_define_method(Class_Draw, "annotate", RUBY_METHOD_FUNC(Draw_annotate), 6);
     rb_define_method(Class_Draw, "clone", RUBY_METHOD_FUNC(Draw_clone), 0);
@@ -704,30 +707,8 @@ Init_RMagick2(void)
 
     rb_define_method(Class_DrawOptions, "initialize", RUBY_METHOD_FUNC(DrawOptions_initialize), 0);
 
-    rb_define_method(Class_DrawOptions, "affine=", RUBY_METHOD_FUNC(Draw_affine_eq), 1);
-    rb_define_method(Class_DrawOptions, "align=", RUBY_METHOD_FUNC(Draw_align_eq), 1);
-    rb_define_method(Class_DrawOptions, "decorate=", RUBY_METHOD_FUNC(Draw_decorate_eq), 1);
-    rb_define_method(Class_DrawOptions, "density=", RUBY_METHOD_FUNC(Draw_density_eq), 1);
-    rb_define_method(Class_DrawOptions, "encoding=", RUBY_METHOD_FUNC(Draw_encoding_eq), 1);
-    rb_define_method(Class_DrawOptions, "fill=", RUBY_METHOD_FUNC(Draw_fill_eq), 1);
-    rb_define_method(Class_DrawOptions, "fill_pattern=", RUBY_METHOD_FUNC(Draw_fill_pattern_eq), 1);
-    rb_define_method(Class_DrawOptions, "font=", RUBY_METHOD_FUNC(Draw_font_eq), 1);
-    rb_define_method(Class_DrawOptions, "font_family=", RUBY_METHOD_FUNC(Draw_font_family_eq), 1);
-    rb_define_method(Class_DrawOptions, "font_stretch=", RUBY_METHOD_FUNC(Draw_font_stretch_eq), 1);
-    rb_define_method(Class_DrawOptions, "font_style=", RUBY_METHOD_FUNC(Draw_font_style_eq), 1);
-    rb_define_method(Class_DrawOptions, "font_weight=", RUBY_METHOD_FUNC(Draw_font_weight_eq), 1);
-    rb_define_method(Class_DrawOptions, "gravity=", RUBY_METHOD_FUNC(Draw_gravity_eq), 1);
-    rb_define_method(Class_DrawOptions, "interline_spacing=", RUBY_METHOD_FUNC(Draw_interline_spacing_eq), 1);
-    rb_define_method(Class_DrawOptions, "interword_spacing=", RUBY_METHOD_FUNC(Draw_interword_spacing_eq), 1);
-    rb_define_method(Class_DrawOptions, "kerning=", RUBY_METHOD_FUNC(Draw_kerning_eq), 1);
-    rb_define_method(Class_DrawOptions, "pointsize=", RUBY_METHOD_FUNC(Draw_pointsize_eq), 1);
-    rb_define_method(Class_DrawOptions, "rotation=", RUBY_METHOD_FUNC(Draw_rotation_eq), 1);
-    rb_define_method(Class_DrawOptions, "stroke=", RUBY_METHOD_FUNC(Draw_stroke_eq), 1);
-    rb_define_method(Class_DrawOptions, "stroke_pattern=", RUBY_METHOD_FUNC(Draw_stroke_pattern_eq), 1);
-    rb_define_method(Class_DrawOptions, "stroke_width=", RUBY_METHOD_FUNC(Draw_stroke_width_eq), 1);
-    rb_define_method(Class_DrawOptions, "text_antialias=", RUBY_METHOD_FUNC(Draw_text_antialias_eq), 1);
-    rb_define_method(Class_DrawOptions, "tile=", RUBY_METHOD_FUNC(Draw_tile_eq), 1);
-    rb_define_method(Class_DrawOptions, "undercolor=", RUBY_METHOD_FUNC(Draw_undercolor_eq), 1);
+    rb_include_module(Class_DrawOptions, Module_DrawAttribute);
+
 
     /*-----------------------------------------------------------------------*/
     /* Class Magick::Pixel                                                   */
@@ -951,30 +932,7 @@ Init_RMagick2(void)
     rb_define_method(Class_PolaroidOptions, "border_color=", RUBY_METHOD_FUNC(PolaroidOptions_border_color_eq), 1);
 
     // The other attribute writer methods are implemented by Draw's functions
-    rb_define_method(Class_PolaroidOptions, "affine=", RUBY_METHOD_FUNC(Draw_affine_eq), 1);
-    rb_define_method(Class_PolaroidOptions, "align=", RUBY_METHOD_FUNC(Draw_align_eq), 1);
-    rb_define_method(Class_PolaroidOptions, "decorate=", RUBY_METHOD_FUNC(Draw_decorate_eq), 1);
-    rb_define_method(Class_PolaroidOptions, "density=", RUBY_METHOD_FUNC(Draw_density_eq), 1);
-    rb_define_method(Class_PolaroidOptions, "encoding=", RUBY_METHOD_FUNC(Draw_encoding_eq), 1);
-    rb_define_method(Class_PolaroidOptions, "fill=", RUBY_METHOD_FUNC(Draw_fill_eq), 1);
-    rb_define_method(Class_PolaroidOptions, "fill_pattern=", RUBY_METHOD_FUNC(Draw_fill_pattern_eq), 1);
-    rb_define_method(Class_PolaroidOptions, "font=", RUBY_METHOD_FUNC(Draw_font_eq), 1);
-    rb_define_method(Class_PolaroidOptions, "font_family=", RUBY_METHOD_FUNC(Draw_font_family_eq), 1);
-    rb_define_method(Class_PolaroidOptions, "font_stretch=", RUBY_METHOD_FUNC(Draw_font_stretch_eq), 1);
-    rb_define_method(Class_PolaroidOptions, "font_style=", RUBY_METHOD_FUNC(Draw_font_style_eq), 1);
-    rb_define_method(Class_PolaroidOptions, "font_weight=", RUBY_METHOD_FUNC(Draw_font_weight_eq), 1);
-    rb_define_method(Class_PolaroidOptions, "gravity=", RUBY_METHOD_FUNC(Draw_gravity_eq), 1);
-    rb_define_method(Class_PolaroidOptions, "interline_spacing=", RUBY_METHOD_FUNC(Draw_interline_spacing_eq), 1);
-    rb_define_method(Class_PolaroidOptions, "interword_spacing=", RUBY_METHOD_FUNC(Draw_interword_spacing_eq), 1);
-    rb_define_method(Class_PolaroidOptions, "kerning=", RUBY_METHOD_FUNC(Draw_kerning_eq), 1);
-    rb_define_method(Class_PolaroidOptions, "pointsize=", RUBY_METHOD_FUNC(Draw_pointsize_eq), 1);
-    rb_define_method(Class_PolaroidOptions, "stroke=", RUBY_METHOD_FUNC(Draw_stroke_eq), 1);
-    rb_define_method(Class_PolaroidOptions, "stroke_pattern=", RUBY_METHOD_FUNC(Draw_stroke_pattern_eq), 1);
-    rb_define_method(Class_PolaroidOptions, "stroke_width=", RUBY_METHOD_FUNC(Draw_stroke_width_eq), 1);
-    rb_define_method(Class_PolaroidOptions, "text_antialias=", RUBY_METHOD_FUNC(Draw_text_antialias_eq), 1);
-    rb_define_method(Class_PolaroidOptions, "tile=", RUBY_METHOD_FUNC(Draw_tile_eq), 1);
-    rb_define_method(Class_PolaroidOptions, "undercolor=", RUBY_METHOD_FUNC(Draw_undercolor_eq), 1);
-
+    rb_include_module(Class_PolaroidOptions, Module_DrawAttribute);
 
     /*-----------------------------------------------------------------------*/
     /* Magick::******Fill classes and methods                                */
