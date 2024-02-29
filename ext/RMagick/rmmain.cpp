@@ -717,6 +717,9 @@ Init_RMagick2(void)
     rb_define_method(Class_DrawOptions, "font_style=", RUBY_METHOD_FUNC(Draw_font_style_eq), 1);
     rb_define_method(Class_DrawOptions, "font_weight=", RUBY_METHOD_FUNC(Draw_font_weight_eq), 1);
     rb_define_method(Class_DrawOptions, "gravity=", RUBY_METHOD_FUNC(Draw_gravity_eq), 1);
+    rb_define_method(Class_DrawOptions, "interline_spacing=", RUBY_METHOD_FUNC(Draw_interline_spacing_eq), 1);
+    rb_define_method(Class_DrawOptions, "interword_spacing=", RUBY_METHOD_FUNC(Draw_interword_spacing_eq), 1);
+    rb_define_method(Class_DrawOptions, "kerning=", RUBY_METHOD_FUNC(Draw_kerning_eq), 1);
     rb_define_method(Class_DrawOptions, "pointsize=", RUBY_METHOD_FUNC(Draw_pointsize_eq), 1);
     rb_define_method(Class_DrawOptions, "rotation=", RUBY_METHOD_FUNC(Draw_rotation_eq), 1);
     rb_define_method(Class_DrawOptions, "stroke=", RUBY_METHOD_FUNC(Draw_stroke_eq), 1);
@@ -961,6 +964,9 @@ Init_RMagick2(void)
     rb_define_method(Class_PolaroidOptions, "font_style=", RUBY_METHOD_FUNC(Draw_font_style_eq), 1);
     rb_define_method(Class_PolaroidOptions, "font_weight=", RUBY_METHOD_FUNC(Draw_font_weight_eq), 1);
     rb_define_method(Class_PolaroidOptions, "gravity=", RUBY_METHOD_FUNC(Draw_gravity_eq), 1);
+    rb_define_method(Class_PolaroidOptions, "interline_spacing=", RUBY_METHOD_FUNC(Draw_interline_spacing_eq), 1);
+    rb_define_method(Class_PolaroidOptions, "interword_spacing=", RUBY_METHOD_FUNC(Draw_interword_spacing_eq), 1);
+    rb_define_method(Class_PolaroidOptions, "kerning=", RUBY_METHOD_FUNC(Draw_kerning_eq), 1);
     rb_define_method(Class_PolaroidOptions, "pointsize=", RUBY_METHOD_FUNC(Draw_pointsize_eq), 1);
     rb_define_method(Class_PolaroidOptions, "stroke=", RUBY_METHOD_FUNC(Draw_stroke_eq), 1);
     rb_define_method(Class_PolaroidOptions, "stroke_pattern=", RUBY_METHOD_FUNC(Draw_stroke_pattern_eq), 1);
