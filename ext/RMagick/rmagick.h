@@ -333,6 +333,7 @@ typedef enum _QuantumExpressionOperator
 *   RMagick Module and Class VALUEs
 */
 EXTERN VALUE Module_Magick;
+EXTERN VALUE Module_DrawAttribute;
 EXTERN VALUE Class_ImageList;
 EXTERN VALUE Class_Info;
 EXTERN VALUE Class_KernelInfo;
