@@ -948,6 +948,7 @@ Init_RMagick2(void)
     rb_define_method(Class_PolaroidOptions, "border_color=", RUBY_METHOD_FUNC(PolaroidOptions_border_color_eq), 1);
 
     // The other attribute writer methods are implemented by Draw's functions
+    rb_define_method(Class_PolaroidOptions, "affine=", RUBY_METHOD_FUNC(Draw_affine_eq), 1);
     rb_define_method(Class_PolaroidOptions, "align=", RUBY_METHOD_FUNC(Draw_align_eq), 1);
     rb_define_method(Class_PolaroidOptions, "decorate=", RUBY_METHOD_FUNC(Draw_decorate_eq), 1);
     rb_define_method(Class_PolaroidOptions, "density=", RUBY_METHOD_FUNC(Draw_density_eq), 1);
