@@ -1349,16 +1349,18 @@ module Magick
     #   return if A.scene != B.scene
     #   return A.length <=> B.length
     def <=>(other)
-      Kernel.raise TypeError, "#{self.class} required (#{other.class} given)" unless other.is_a? self.class
+      return unless other.is_a? self.class
+
       size = [length, other.length].min
       size.times do |x|
         r = self[x] <=> other[x]
         return r unless r.zero?
       end
-      return 0 if @scene.nil? && other.scene.nil?
 
-      Kernel.raise TypeError, "cannot convert nil into #{other.scene.class}" if @scene.nil? && !other.scene.nil?
-      Kernel.raise TypeError, "cannot convert nil into #{scene.class}" if !@scene.nil? && other.scene.nil?
+      return 0 if @scene.nil? && other.scene.nil?
+      return if @scene.nil? && !other.scene.nil?
+      return if !@scene.nil? && other.scene.nil?
+
       r = scene <=> other.scene
       return r unless r.zero?
 
