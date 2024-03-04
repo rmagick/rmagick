@@ -1810,7 +1810,6 @@ module Magick
     end
 
     def values_at(*args)
-      a = @images.values_at(*args)
       a = self.class.new
       @images.values_at(*args).each { |image| a << image }
       a.scene = a.length - 1
