@@ -1392,7 +1392,7 @@ module Magick
 
     %i[
       at each each_index empty? fetch
-      first hash include? index length rindex sort!
+      first hash include? index length rindex
     ].each do |mth|
       module_eval <<-END_SIMPLE_DELEGATES, __FILE__, __LINE__ + 1
         def #{mth}(*args, &block)
@@ -1401,6 +1401,11 @@ module Magick
       END_SIMPLE_DELEGATES
     end
     alias size length
+
+    def sort!(*args, &block)
+      @images.sort!(*args, &block)
+      self
+    end
 
     def clear
       @scene = nil
