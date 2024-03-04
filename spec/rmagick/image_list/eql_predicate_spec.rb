@@ -6,5 +6,7 @@ RSpec.describe Magick::ImageList, '#eql?' do
     expect(image_list.eql?(image_list2)).to be(true)
     image_list2 = image_list.copy
     expect(image_list.eql?(image_list2)).to be(false)
+
+    expect(image_list.eql?(Object)).to be(false)
   end
 end

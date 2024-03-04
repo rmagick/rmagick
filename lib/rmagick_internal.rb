@@ -1512,7 +1512,12 @@ module Magick
     end
 
     def eql?(other)
-      assert_image_array other
+      begin
+        assert_image_array other
+      rescue ArgumentError
+        return false
+      end
+
       eql = other.eql?(@images)
       begin # "other" is another ImageList
         eql &&= @scene == other.scene
