@@ -646,7 +646,7 @@ Image_adaptive_threshold(int argc, VALUE *argv, VALUE self)
  * The areas of the destination image that are masked by white pixels will be modified by the
  * {Magick::Image#composite} method, while areas masked by black pixels are unchanged.
  *
- * @param mask [Magick::Image] the composite mask
+ * @param mask [Magick::Image, Magick::ImageList] the composite mask
  * @see Image#mask
  * @see Image#delete_compose_mask
  */
@@ -660,7 +660,7 @@ Image_add_compose_mask(VALUE self, VALUE mask)
 #endif
 
     image = rm_check_frozen(self);
-    mask_image = rm_check_destroyed(mask);
+    mask_image = rm_check_destroyed(rm_cur_image(mask));
     if (image->columns != mask_image->columns || image->rows != mask_image->rows)
     {
         rb_raise(rb_eArgError, "mask must be the same size as image");

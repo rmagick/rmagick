@@ -13,4 +13,13 @@ RSpec.describe Magick::Image, "#add_compose_mask" do
     mask = described_class.new(10, 10)
     expect { image.add_compose_mask(mask) }.to raise_error(ArgumentError)
   end
+
+  it 'accepts an ImageList argument' do
+    image = described_class.new(20, 20)
+
+    mask = Magick::ImageList.new
+    mask.new_image(20, 20)
+
+    expect { image.add_compose_mask(mask) }.not_to raise_error
+  end
 end
