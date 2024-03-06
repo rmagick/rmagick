@@ -585,7 +585,7 @@ module Magick
       if list.length.zero?
         primitive 'stroke-dasharray none'
       else
-        list.each do |x|
+        list.map! { |x| Float(x) }.each do |x|
           Kernel.raise ArgumentError, "dash array elements must be > 0 (#{x} given)" if x <= 0
         end
         primitive "stroke-dasharray #{list.join(',')}"
@@ -608,6 +608,7 @@ module Magick
     end
 
     def stroke_miterlimit(value)
+      value = Float(value)
       Kernel.raise ArgumentError, 'miterlimit must be >= 1' if value < 1
       primitive "stroke-miterlimit #{value}"
     end

@@ -4,7 +4,7 @@ RSpec.describe Magick::Draw, '#stroke_dasharray' do
     image = Magick::Image.new(200, 200)
 
     draw.stroke_dasharray(2, 2)
-    expect(draw.inspect).to eq('stroke-dasharray 2,2')
+    expect(draw.inspect).to eq('stroke-dasharray 2.0,2.0')
     draw.stroke_pattern('red')
     draw.stroke_width(2)
     draw.rectangle(10, '10', 100, 100)
@@ -17,5 +17,6 @@ RSpec.describe Magick::Draw, '#stroke_dasharray' do
 
     expect { draw.stroke_dasharray(-0.1) }.to raise_error(ArgumentError)
     expect { draw.stroke_dasharray('x') }.to raise_error(ArgumentError)
+    expect { draw.stroke_dasharray(2, '2') }.not_to raise_error
   end
 end
