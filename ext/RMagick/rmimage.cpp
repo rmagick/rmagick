@@ -5452,7 +5452,7 @@ Image_deskew(int argc, VALUE *argv, VALUE self)
         case 0:
             break;
         default:
-            rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 or 2)", argc);
+            rb_raise(rb_eArgError, "wrong number of arguments (%d for 0 to 2)", argc);
             break;
     }
 
@@ -6808,7 +6808,7 @@ Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
         case 0:
             break;
         default:
-            rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 to 6)", argc);
+            rb_raise(rb_eArgError, "wrong number of arguments (%d for 0 to 6)", argc);
             break;
     }
 
@@ -9697,7 +9697,7 @@ motion_blur(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
         case 0:
             break;
         default:
-            rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 to 3)", argc);
+            rb_raise(rb_eArgError, "wrong number of arguments (%d for 0 to 3)", argc);
             break;
     }
 
@@ -15523,7 +15523,7 @@ Image_watermark(int argc, VALUE *argv, VALUE self)
 
     if (argc < 1)
     {
-        rb_raise(rb_eArgError, "wrong number of arguments (%d for 2 to 6)", argc);
+        rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 to 6)", argc);
     }
 
     ovly = rm_cur_image(argv[0]);
@@ -15545,7 +15545,7 @@ Image_watermark(int argc, VALUE *argv, VALUE self)
         case 1:
             break;
         default:
-            rb_raise(rb_eArgError, "wrong number of arguments (%d for 2 to 6)", argc);
+            rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 to 6)", argc);
             break;
     }
 
