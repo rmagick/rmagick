@@ -3795,7 +3795,7 @@ Image_composite(int argc, VALUE *argv, VALUE self)
 /**
  * Composite the source over the destination image as dictated by the affine transform.
  *
- * @param source [Magick::Image] the source image
+ * @param source [Magick::Image, Magick::ImageList] the source image
  * @param affine_matrix [Magick::AffineMatrix] affine transform matrix
  * @return [Magick::Image] a new image
  */
@@ -3809,7 +3809,7 @@ Image_composite_affine(VALUE self, VALUE source, VALUE affine_matrix)
 #endif
 
     image = rm_check_destroyed(self);
-    composite_image = rm_check_destroyed(source);
+    composite_image = rm_check_destroyed(rm_cur_image(source));
 
     Export_AffineMatrix(&affine, affine_matrix);
     new_image = rm_clone_image(image);
