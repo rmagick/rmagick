@@ -2337,7 +2337,7 @@ Image_capture(int argc, VALUE *argv, VALUE self ATTRIBUTE_UNUSED)
  * For example, you can specify that the image should be resized such that the aspect ratio should
  * be retained but the resulting image should be no larger than 640 pixels wide and 480 pixels tall.
  *
- * @param geom_arg [String] the geometry string
+ * @param geom_arg [Magick::Geometry, String] the geometry
  * @yield [column, row, image]
  * @yieldparam column [Numeric] The desired column size
  * @yieldparam row [Numeric] The desired row size
@@ -5152,8 +5152,8 @@ Image_density(VALUE self)
  *   resolution. The height attribute is used for the y resolution.  If the height attribute is
  *   missing, the width attribute is used for both.
  *
- * @param density_arg [String, Magick::Geometry] The density String or Geometry
- * @return [String, Magick::Geometry] the given value
+ * @param density_arg [Magick::Geometry, String] The density String or Geometry
+ * @return [Magick::Geometry, String] the given value
  * @see https://www.imagemagick.org/Magick++/Geometry.html
  */
 VALUE
@@ -7765,8 +7765,8 @@ Image_geometry(VALUE self)
 /**
  * Set the preferred size of the image when encoding.
  *
- * @param geometry [String] the geometry
- * @return [String] the given geometry
+ * @param geometry [Magick::Geometry, String] the geometry
+ * @return [Magick::Geometry, String] the given geometry
  * @see https://www.imagemagick.org/Magick++/Geometry.html
  */
 VALUE
@@ -11367,11 +11367,11 @@ Image_radial_blur_channel(int argc, VALUE *argv, VALUE self)
  * threshold. The result is a low-contrast, two color image.
  *
  * @overload random_threshold_channel(geometry_str, channel = Magick::AllChannels)
- *   @param geometry_str [String] A geometry string containing LOWxHIGH thresholds.
+ *   @param geometry_str [Magick::Geometry, String] A geometry string containing LOWxHIGH thresholds.
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *
  * @overload random_threshold_channel(geometry_str, *channels)
- *   @param geometry_str [String] A geometry string containing LOWxHIGH thresholds.
+ *   @param geometry_str [Magick::Geometry, String] A geometry string containing LOWxHIGH thresholds.
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
  * @return [Magick::Image] a new image

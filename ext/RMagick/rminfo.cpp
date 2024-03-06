@@ -819,8 +819,8 @@ Info_density(VALUE self)
 /**
  * Set the text rendering density geometry
  *
- * @param density_arg [String] the density
- * @return [String] the given value
+ * @param density_arg [Magick::Geometry, String] the density
+ * @return [Magick::Geometry, String] the given value
  * @see https://www.imagemagick.org/Magick++/Geometry.html
  */
 VALUE
@@ -1096,8 +1096,8 @@ Info_extract(VALUE self)
 /**
  * Set the extract geometry.
  *
- * @param extract_arg [String] the extract string
- * @return [String] the given value
+ * @param extract_arg [Magick::Geometry, String] the extract string
+ * @return [Magick::Geometry, String] the given value
  * @see https://www.imagemagick.org/Magick++/Geometry.html
  */
 VALUE
@@ -1668,8 +1668,8 @@ Info_origin(VALUE self)
  * The geometry format is
  *     +-x+-y
  *
- * @param origin_arg [String] the origin geometry
- * @return [String] the given value
+ * @param origin_arg [Magick::Geometry, String] the origin geometry
+ * @return [Magick::Geometry, String] the given value
  * @see https://www.imagemagick.org/Magick++/Geometry.html
  */
 VALUE
@@ -1724,8 +1724,8 @@ Info_page(VALUE self)
  * Store the Postscript page geometry. Argument may be a Geometry object as well
  * as a geometry string.
  *
- * @param page_arg [String] the geometry
- * @return [String] the given value
+ * @param page_arg [Magick::Geometry, String] the geometry
+ * @return [Magick::Geometry, String] the given value
  * @see https://www.imagemagick.org/Magick++/Geometry.html
  */
 VALUE
@@ -1949,8 +1949,8 @@ Info_size(VALUE self)
 /**
  * Set the size (either as a Geometry object or a Geometry string
  *
- * @param size_arg [String] the size
- * @return [String] the given value
+ * @param size_arg [Magick::Geometry, String] the size
+ * @return [Magick::Geometry, String] the given value
  * @see https://www.imagemagick.org/Magick++/Geometry.html
  */
 VALUE
@@ -2100,8 +2100,8 @@ Info_tile_offset(VALUE self)
 /**
  * Set tile offset geometry.
  *
- * @param offset [String] the offset geometry
- * @return [String] the given value
+ * @param offset [Magick::Geometry, String] the offset geometry
+ * @return [Magick::Geometry, String] the given value
  * @see https://www.imagemagick.org/Magick++/Geometry.html
  */
 VALUE

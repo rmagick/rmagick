@@ -235,7 +235,7 @@ Montage_font_eq(VALUE self, VALUE font)
  *      <width>x<height>+<outer-bevel-width>+<inner-bevel-width>
  *   or a Geometry object
  *
- * @param frame_arg [String] the frame geometry
+ * @param frame_arg [Magick::Geometry, String] the frame geometry
  * @see https://www.imagemagick.org/Magick++/Geometry.html
  */
 VALUE
@@ -261,8 +261,8 @@ Montage_frame_eq(VALUE self, VALUE frame_arg)
  *      <width>x<height>+<outer-bevel-width>+<inner-bevel-width>
  *   or a Geometry object
  *
- * @param geometry_arg [String] the geometry
- * @return [String] the given geometry
+ * @param geometry_arg [Magick::Geometry, String] the geometry
+ * @return [Magick::Geometry, String] the given geometry
  * @see https://www.imagemagick.org/Magick++/Geometry.html
  */
 VALUE
@@ -422,8 +422,8 @@ Montage_texture_eq(VALUE self, VALUE texture)
  *      <width>x<height>+<outer-bevel-width>+<inner-bevel-width>
  *   or a Geometry object
  *
- * @param tile_arg [String] the tile geometry
- * @return [String] the given tile geometry
+ * @param tile_arg [Magick::Geometry, String] the tile geometry
+ * @return [Magick::Geometry, String] the given tile geometry
  * @see https://www.imagemagick.org/Magick++/Geometry.html
  */
 VALUE
