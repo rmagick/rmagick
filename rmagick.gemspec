@@ -32,7 +32,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec', '~> 3.8'
   s.add_development_dependency 'rspec_junit_formatter', '~> 0.6.0'
   if RUBY_PLATFORM !~ /mswin|mingw/
-    s.add_development_dependency 'rubocop', '~> 0.81.0'
+    s.add_development_dependency 'rubocop', '~> 1.62.0'
     s.add_development_dependency 'rubocop-rspec', '~> 1.38.1'
     s.add_development_dependency 'rubocop-performance', '~> 1.5.2'
   end
