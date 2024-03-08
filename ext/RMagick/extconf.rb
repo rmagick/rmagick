@@ -413,6 +413,22 @@ module RMagick
       print_summary
     end
 
+    def create_compile_flags_txt
+      cppflags = $CPPFLAGS.split(' ')
+      include_flags = cppflags.select { |flag| flag.start_with?('-I') }
+      define_flags = cppflags.select { |flag| flag.start_with?('-D') } + $defs
+
+      File.open('compile_flags.txt', 'w') do |f|
+        include_flags.each { |flag| f.puts(flag) }
+        f.puts "-I#{Dir.pwd}"
+        f.puts "-I#{RbConfig::CONFIG['rubyhdrdir']}"
+        f.puts "-I#{RbConfig::CONFIG['rubyhdrdir']}/ruby/backward"
+        f.puts "-I#{RbConfig::CONFIG['rubyarchhdrdir']}"
+        f.puts "-std=c++11"
+        define_flags.each { |flag| f.puts(flag) }
+      end
+    end
+
     def magick_command
       @magick_command ||= if find_executable('magick')
                             'magick'
@@ -451,3 +467,4 @@ at_exit do
   message msg + "\n"
 end
 extconf.create_makefile_file
+extconf.create_compile_flags_txt
