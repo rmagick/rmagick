@@ -74,15 +74,13 @@ VALUE
 KernelInfo_initialize(VALUE self, VALUE kernel_string)
 {
     KernelInfo *kernel;
+    char *string = StringValueCStr(kernel_string);
+
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
-#endif
 
-    Check_Type(kernel_string, T_STRING);
-
-#if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    kernel = AcquireKernelInfo(StringValueCStr(kernel_string), exception);
+    kernel = AcquireKernelInfo(string, exception);
     if (rm_should_raise_exception(exception, DestroyExceptionRetention))
     {
         if (kernel != (KernelInfo *) NULL)
@@ -92,7 +90,7 @@ KernelInfo_initialize(VALUE self, VALUE kernel_string)
         rm_raise_exception(exception);
     }
 #else
-    kernel = AcquireKernelInfo(StringValueCStr(kernel_string));
+    kernel = AcquireKernelInfo(string);
 #endif
 
     if (!kernel)
@@ -158,7 +156,6 @@ KernelInfo_scale(VALUE self, VALUE scale, VALUE flags)
 VALUE
 KernelInfo_scale_geometry(VALUE self, VALUE geometry)
 {
-    Check_Type(geometry, T_STRING);
     GVL_STRUCT_TYPE(ScaleGeometryKernelInfo) args = { (KernelInfo*)DATA_PTR(self), StringValueCStr(geometry) };
     CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ScaleGeometryKernelInfo), &args);
     return Qnil;
@@ -195,7 +192,6 @@ KernelInfo_builtin(VALUE self, VALUE what, VALUE geometry)
     ExceptionInfo *exception;
 #endif
 
-    Check_Type(geometry, T_STRING);
     VALUE_TO_ENUM(what, kernel_type, KernelInfoType);
     ParseGeometry(StringValueCStr(geometry), &info);
 
