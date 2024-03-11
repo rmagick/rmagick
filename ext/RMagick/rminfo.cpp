@@ -2401,7 +2401,8 @@ rm_info_new(void)
  * @overload initialize
  *
  * @overload initialize
- *   @yield [Magick::Image::Info]
+ *   @yield [info]
+ *   @yieldparam info [Magick::Image::Info]
  *
  * @return self
  */

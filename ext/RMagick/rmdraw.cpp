@@ -950,20 +950,20 @@ Draw_clone(VALUE self)
  * Draw the image.
  *
  * @overload composite(x, y, width, height, image)
- *   @param x [Float] x position
- *   @param y [Float] y position
- *   @param width [Float] the width
- *   @param height [Float] the height
+ *   @param x [Numeric] x position
+ *   @param y [Numeric] y position
+ *   @param width [Numeric] the width
+ *   @param height [Numeric] the height
  *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
  *     imagelist, uses the current image.
  *
  * @overload composite(x, y, width, height, image, composite_op = Magick::OverCompositeOp)
  *   - The "image" argument can be either an ImageList object or an Image
  *     argument.
- *   @param x [Float] x position
- *   @param y [Float] y position
- *   @param width [Float] the width
- *   @param height [Float] the height
+ *   @param x [Numeric] x position
+ *   @param y [Numeric] y position
+ *   @param width [Numeric] the width
+ *   @param height [Numeric] the height
  *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
  *     imagelist, uses the current image.
  *   @param composite_op [Magick::CompositeOperator] the operator
@@ -1463,8 +1463,8 @@ PolaroidOptions_alloc(VALUE klass)
 /**
  * Initialize a PolaroidOptions object.
  *
- * @yield [self]
- * @yieldparam self [Magick::Image::PolaroidOptions] self
+ * @yield [opt]
+ * @yieldparam opt [Magick::Image::PolaroidOptions] self
  * @return [Magick::Image::PolaroidOptions] self
  */
 VALUE
