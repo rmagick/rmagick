@@ -1,0 +1,43 @@
+module Magick
+  # A real number, ie not a `Complex`.
+  type magick_real = Integer | Float | Rational | _ToF
+  # A percentage, a real number or a string in the form "NN%"
+  type magick_percentage = magick_real | String
+
+  type magick_image = Image | ImageList
+
+  type magick_color = Pixel | string
+
+  type magick_fill = GradientFill | HatchFill | SolidFill | TextureFill | _Fill
+
+  interface _Fill
+    def fill: (magick_image image_obj) -> void
+  end
+
+  VERSION: String
+  MIN_RUBY_VERSION: String
+  MIN_IM_VERSION: String
+
+  QuantumRange: Integer
+  MAGICKCORE_QUANTUM_DEPTH: Integer
+  OpaqueAlpha: Integer
+  TransparentAlpha: Integer
+
+  IMAGEMAGICK_VERSION: String
+  Magick_version: String
+  Long_version: String
+  Magick_features: String
+
+  def self.formats: () -> Hash[String, String]
+                  | () { (String, String) -> void } -> self
+  def self.colors: () { (Color) -> void } -> self
+                 | () -> Array[Color]
+  def self.fonts: () { (Font) -> void } -> self
+                | () -> Array[Font]
+  def self.init_formats: () -> Hash[String, String]
+  def self.limit_resource: (interned resource) -> Integer
+                         | (interned resource, int limit) -> Integer
+  def self.set_cache_threshold: (int threshold) -> self
+  def self.set_log_event_mask: (*string args) -> self
+  def self.set_log_format: (string format) -> self
+end
