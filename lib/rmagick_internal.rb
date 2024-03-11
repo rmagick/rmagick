@@ -1443,7 +1443,7 @@ module Magick
     alias map! collect!
     alias __map__! collect!
 
-    # ImageMagic used affinity in 6.4.3, switch to remap in 6.4.4.
+    # ImageMagick used affinity in 6.4.3, switch to remap in 6.4.4.
     alias affinity remap
 
     def compact
