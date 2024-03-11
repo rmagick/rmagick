@@ -1,0 +1,90 @@
+module Magick
+  class AffineMatrix < Struct[untyped]
+    attr_accessor sx: Numeric
+    attr_accessor rx: Numeric
+    attr_accessor ry: Numeric
+    attr_accessor sy: Numeric
+    attr_accessor tx: Numeric
+    attr_accessor ty: Numeric
+
+    def self.new: (Numeric sx, Numeric rx, Numeric ry, Numeric sy, Numeric tx, Numeric ty) -> AffineMatrix
+  end
+
+  class Primary < Struct[untyped]
+    attr_accessor x: Numeric
+    attr_accessor y: Numeric
+    attr_accessor z: Numeric
+
+    def self.new: (Numeric x, Numeric y, Numeric z) -> Primary
+  end
+
+  class Chromaticity < Struct[untyped]
+    attr_accessor red_primary: Primary
+    attr_accessor green_primary: Primary
+    attr_accessor blue_primary: Primary
+    attr_accessor white_point: Primary
+
+    def self.new: (Primary red_primary, Primary green_primary, Primary blue_primary, Primary white_point) -> Chromaticity
+  end
+
+  class Color < Struct[untyped]
+    attr_accessor name: String
+    attr_accessor compliance: ComplianceType
+    attr_accessor color: Pixel
+
+    def self.new: (String name, ComplianceType compliance, Pixel color) -> Color
+  end
+
+  class Point < Struct[untyped]
+    attr_accessor x: Numeric
+    attr_accessor y: Numeric
+
+    def self.new: (Numeric x, Numeric y) -> Point
+  end
+
+  class Rectangle < Struct[untyped]
+    attr_accessor width: Numeric
+    attr_accessor height: Numeric
+    attr_accessor x: Numeric
+    attr_accessor y: Numeric
+
+    def self.new: (Numeric width, Numeric height, Numeric x, Numeric y) -> Rectangle
+  end
+
+  class Segment < Struct[untyped]
+    attr_accessor x1: Numeric
+    attr_accessor y1: Numeric
+    attr_accessor x2: Numeric
+    attr_accessor y2: Numeric
+
+    def self.new: (Numeric x1, Numeric y1, Numeric x2, Numeric y2) -> Segment
+  end
+
+  class Font < Struct[untyped]
+    attr_accessor name: String
+    attr_accessor description: String
+    attr_accessor family: String
+    attr_accessor style: StyleType
+    attr_accessor stretch: StretchType
+    attr_accessor weight: Integer
+    attr_accessor encoding: String
+    attr_accessor foundry: String
+    attr_accessor format: String
+
+    def self.new: (String name, String description, String family, StyleType style, StretchType stretch, Integer weight, String encoding, String foundry, String format) -> Font
+  end
+
+  class TypeMetric < Struct[untyped]
+    attr_accessor pixels_per_em: Point
+    attr_accessor ascent: Numeric
+    attr_accessor descent: Numeric
+    attr_accessor width: Numeric
+    attr_accessor height: Numeric
+    attr_accessor max_advance: Numeric
+    attr_accessor bounds: Segment
+    attr_accessor underline_position: Numeric
+    attr_accessor underline_thickness: Numeric
+
+    def self.new: (Point pixels_per_em, Numeric ascent, Numeric descent, Numeric width, Numeric height, Numeric max_advance, Segment bounds, Numeric underline_position, Numeric underline_thickness) -> TypeMetric
+  end
+end
