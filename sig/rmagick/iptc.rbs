@@ -1,0 +1,101 @@
+module Magick
+  module IPTC
+    module Envelope
+      Model_Version: String
+      Destination: String
+      File_Format: String
+      File_Format_Version: String
+      Service_Identifier: String
+      Envelope_Number: String
+      Product_ID: String
+      Envelope_Priority: String
+      Date_Sent: String
+      Time_Sent: String
+      Coded_Character_Set: String
+      UNO: String
+      Unique_Name_of_Object: String
+      ARM_Identifier: String
+      ARM_Version: String
+    end
+
+    module Application
+      Record_Version: String
+      Object_Type_Reference: String
+      Object_Name: String
+      Title: String
+      Edit_Status: String
+      Editorial_Update: String
+      Urgency: String
+      Subject_Reference: String
+      Category: String
+      Supplemental_Category: String
+      Fixture_Identifier: String
+      Keywords: String
+      Content_Location_Code: String
+      Content_Location_Name: String
+      Release_Date: String
+      Release_Time: String
+      Expiration_Date: String
+      Expiration_Time: String
+      Special_Instructions: String
+      Action_Advised: String
+      Reference_Service: String
+      Reference_Date: String
+      Reference_Number: String
+      Date_Created: String
+      Time_Created: String
+      Digital_Creation_Date: String
+      Digital_Creation_Time: String
+      Originating_Program: String
+      Program_Version: String
+      Object_Cycle: String
+      By_Line: String
+      Author: String
+      By_Line_Title: String
+      Author_Position: String
+      City: String
+      Sub_Location: String
+      Province: String
+      State: String
+      Country_Primary_Location_Code: String
+      Country_Primary_Location_Name: String
+      Original_Transmission_Reference: String
+      Headline: String
+      Credit: String
+      Source: String
+      Copyright_Notice: String
+      Contact: String
+      Abstract: String
+      Caption: String
+      Editor: String
+      Caption_Writer: String
+      Rasterized_Caption: String
+      Image_Type: String
+      Image_Orientation: String
+      Language_Identifier: String
+      Audio_Type: String
+      Audio_Sampling_Rate: String
+      Audio_Sampling_Resolution: String
+      Audio_Duration: String
+      Audio_Outcue: String
+      ObjectData_Preview_File_Format: String
+      ObjectData_Preview_File_Format_Version: String
+      ObjectData_Preview_Data: String
+    end
+
+    module Pre_ObjectData_Descriptor
+      Size_Mode: String
+      Max_Subfile_Size: String
+      ObjectData_Size_Announced: String
+      Maximum_ObjectData_Size: String
+    end
+
+    module ObjectData
+      Subfile: String
+    end
+
+    module Post_ObjectData_Descriptor
+      Confirmed_ObjectData_Size: String
+    end
+  end
+end
