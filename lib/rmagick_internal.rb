@@ -1311,17 +1311,11 @@ module Magick
     %w[& + - |].each do |op|
       module_eval <<-END_BINOPS, __FILE__, __LINE__ + 1
         def #{op}(other)
+          assert_image_array(other)
           ilist = self.class.new
-          begin
-            a = other #{op} @images
-          rescue TypeError
-            Kernel.raise ArgumentError, "Magick::ImageList expected, got " + other.class.to_s
-          end
+          a = other #{op} @images
           current = get_current()
-          a.each do |image|
-            assert_image image
-            ilist << image
-          end
+          a.each { |image| ilist << image }
           ilist.set_current current
           return ilist
         end
