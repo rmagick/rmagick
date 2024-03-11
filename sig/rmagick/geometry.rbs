@@ -1,0 +1,14 @@
+module Magick
+  class Geometry
+    attr_accessor width: Integer | Float
+    attr_accessor height: Integer | Float
+    attr_accessor x: Integer
+    attr_accessor y: Integer
+    attr_accessor flag: GeometryValue?
+
+    def initialize: (?magick_real? width, ?magick_real? height, ?real? x, ?real? y, ?GeometryValue? flag) -> void
+    def self.from_s: (String str) -> Geometry
+    def to_s: -> String
+  end
+end
+
