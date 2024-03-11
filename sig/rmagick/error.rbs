@@ -1,0 +1,11 @@
+module Magick
+  class ImageMagickError < StandardError
+    attr_reader magick_location: String
+  end
+
+  class FatalImageMagickError < StandardError
+  end
+
+  class DestroyedImageError < StandardError
+  end
+end
