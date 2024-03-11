@@ -1,0 +1,64 @@
+module Magick
+  interface _DrawCommonMethods
+    def affine: (magick_real sx, magick_real rx, magick_real ry, magick_real sy, magick_real tx, magick_real ty) -> self
+    def alpha: (magick_real x, magick_real y, PaintMethod method) -> self
+    def arc: (magick_real start_x, magick_real start_y, magick_real end_x, magick_real end_y, magick_real start_degrees, magick_real end_degrees) -> self
+    def bezier: (*magick_real points) -> self
+    def circle: (magick_real origin_x, magick_real origin_y, magick_real perim_x, magick_real perim_y) -> self
+    def clip_path: (interned name) -> self
+    def clip_rule: (interned rule) -> self
+    def clip_units: (interned unit) -> self
+    def color: (magick_real x, magick_real y, PaintMethod method) -> self
+    def decorate: (DecorationType decoration) -> self
+    def define_clip_path: (interned name) { () -> void } -> void
+    def ellipse: (magick_real origin_x, magick_real origin_y, magick_real width, magick_real height, magick_real arc_start, magick_real arc_end) -> self
+    def encoding: (interned encoding) -> self
+    def fill: (interned colorspec) -> self
+    alias fill_color fill
+    alias fill_pattern fill
+    def fill_opacity: (magick_percentage opacity) -> self
+    def fill_rule: (interned rule) -> self
+    def gravity: (GravityType grav) -> self
+    def image: (CompositeOperator composite, magick_real x, magick_real y, magick_real width, magick_real height, String image_file_path) -> self
+    def interline_spacing: (magick_real space) -> self
+    def interword_spacing: (magick_real space) -> self
+    def kerning: (magick_real space) -> self
+    def line: (magick_real start_x, magick_real start_y, magick_real end_x, magick_real end_y) -> self
+    def opacity: (magick_percentage opacity) -> self
+    def path: (interned cmds) -> self
+    def pattern: (interned name, magick_real x, magick_real y, magick_real width, magick_real height) { () -> void } -> void
+    def point: (magick_real x, magick_real y) -> self
+    def pointsize: (magick_real points) -> self
+    def polygon: (*magick_real points) -> self
+    def polyline: (*magick_real points) -> self
+    def rectangle: (magick_real upper_left_x, magick_real upper_left_y, magick_real lower_right_x, magick_real lower_right_y) -> self
+    def roundrectangle: (magick_real center_x, magick_real center_y, magick_real width, magick_real height, magick_real corner_width, magick_real corner_height) -> self
+    def skewx: (magick_real angle) -> self
+    def skewy: (magick_real angle) -> self
+    def stroke: (interned colorspec) -> self
+    alias stroke_color stroke
+    alias stroke_pattern stroke
+    def stroke_antialias: (bool `bool`) -> self
+    def stroke_dasharray: (*magick_real list) -> self
+    def stroke_dashoffset: (?magick_real value) -> self
+    def stroke_linecap: (interned value) -> self
+    def stroke_linejoin: (interned value) -> self
+    def stroke_miterlimit: (magick_real value) -> self
+    def stroke_opacity: (magick_percentage opacity) -> self
+    def text_align: (AlignType alignment) -> self
+    def text_antialias: (bool boolean) -> self
+    def text_undercolor: (String color) -> self
+
+    def annotate: (magick_image image_arg, int width_arg, int height_arg, int x_arg, int y_arg, string text) -> self
+                | (magick_image image_arg, int width_arg, int height_arg, int x_arg, int y_arg, string text) { (self) -> void } -> self
+    def composite: (magick_real x, magick_real y, magick_real width, magick_real height, magick_image image, ?CompositeOperator composite_op) -> self
+    def draw: (magick_image image_arg) -> self
+    def get_type_metrics: (magick_image image, string text) -> TypeMetric
+                        | (string text) -> TypeMetric
+    def get_multiline_type_metrics: (magick_image image, string text) -> TypeMetric
+                                  | (string text) -> TypeMetric
+    def marshal_dump: () -> Hash[Symbol, untyped]
+    def marshal_load: (Hash[Symbol, untyped] ddraw) -> self
+    def primitive: (string primitive) -> self
+  end
+end

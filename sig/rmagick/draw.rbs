@@ -1,0 +1,38 @@
+module Magick
+  class Draw
+    include DrawAttribute
+    include _DrawCommonMethods
+
+    ALIGN_TYPE_NAMES: Hash[Integer, 'left' | 'right' | 'center']
+    ANCHOR_TYPE_NAMES: Hash[Integer, 'start' | 'middle' | 'end']
+    DECORATION_TYPE_NAMES: Hash[Integer, 'none' | 'underline' | 'overline' | 'line-through']
+    FONT_WEIGHT_NAMES: Hash[Integer, 'all' | 'normal' | 'bold' | 'bolder' | 'lighter']
+    GRAVITY_NAMES: Hash[Integer, 'northwest' | 'north' | 'northeast' | 'west' | 'center' | 'east' | 'southwest' | 'south' | 'southeast']
+    PAINT_METHOD_NAMES: Hash[Integer, 'point' | 'replace' | 'floodfill' | 'filltoborder' | 'reset']
+    STRETCH_TYPE_NAMES: Hash[Integer, 'normal' | 'ultra-condensed' | 'extra-condensed' | 'condensed' | 'semi-condensed' | 'semi-expanded' | 'expanded' | 'extra-expanded' | 'ultra-expanded' | 'all']
+    STYLE_TYPE_NAMES: Hash[Integer, 'normal' | 'italic' | 'oblique' | 'all']
+
+    private
+
+    def enquote: (interned str) -> untyped
+    def to_opacity: (magick_percentage opacity) -> untyped
+    def to_string: (interned obj) -> untyped
+
+    public
+
+    def pop: (*interned what) -> self
+    def push: (*interned what) -> self
+    def text: (magick_real x, magick_real y, String text) -> self
+    def font: (interned name) -> self
+    def font_family: (interned name) -> self
+    def font_stretch: (StretchType stretch) -> self
+    def font_style: (StyleType style) -> self
+    def font_weight: (WeightType | int weight) -> self
+    alias font_size pointsize
+    def rotate: (magick_real angle) -> self
+    def scale: (magick_real x, magick_real y) -> self
+    def stroke_width: (magick_real pixels) -> self
+    def text_anchor: (AnchorType anchor) -> self
+    def translate: (magick_real x, magick_real y) -> self
+  end
+end
