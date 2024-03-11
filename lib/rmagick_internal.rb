@@ -233,11 +233,13 @@ module Magick
       end
     end
 
-    def check_opacity(opacity)
-      return if opacity.is_a?(String) && opacity['%']
+    def to_opacity(opacity)
+      return opacity if opacity.is_a?(String) && opacity.end_with?('%')
 
       value = Float(opacity)
       Kernel.raise ArgumentError, 'opacity must be >= 0 and <= 1.0' if value < 0 || value > 1.0
+
+      value
     end
 
     public
@@ -352,7 +354,7 @@ module Magick
 
     # Specify fill opacity (use "xx%" to indicate percentage)
     def fill_opacity(opacity)
-      check_opacity(opacity)
+      opacity = to_opacity(opacity)
       primitive "fill-opacity #{opacity}"
     end
 
@@ -426,7 +428,7 @@ module Magick
     # Specify drawing fill and stroke opacities. If the value is a string
     # ending with a %, the number will be multiplied by 0.01.
     def opacity(opacity)
-      check_opacity(opacity)
+      opacity = to_opacity(opacity)
       primitive "opacity #{opacity}"
     end
 
@@ -595,7 +597,7 @@ module Magick
     # Specify opacity of stroke drawing color
     #  (use "xx%" to indicate percentage)
     def stroke_opacity(opacity)
-      check_opacity(opacity)
+      opacity = to_opacity(opacity)
       primitive "stroke-opacity #{opacity}"
     end
 
