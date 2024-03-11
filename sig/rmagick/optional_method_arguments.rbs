@@ -1,0 +1,8 @@
+module Magick
+  class OptionalMethodArguments
+    def initialize: (magick_image img) -> void
+    def define: (string key, ?string? value) -> String
+    attr_writer highlight_color: magick_color
+    attr_writer lowlight_color: magick_color
+  end
+end
