@@ -25,6 +25,11 @@ RSpec.describe Magick::Draw, '#kerning' do
     expect(draw.inspect).to eq('kerning 40.5')
     expect { draw.draw(image) }.not_to raise_error
 
+    draw = described_class.new
+    draw.kerning(1/4r)
+    expect(draw.inspect).to eq('kerning 0.25')
+    expect { draw.draw(image) }.not_to raise_error
+
     # expect { draw.kerning(Float::NAN) }.to raise_error(ArgumentError)
     expect { draw.kerning('nan') }.to raise_error(ArgumentError)
     expect { draw.kerning('xxx') }.to raise_error(ArgumentError)

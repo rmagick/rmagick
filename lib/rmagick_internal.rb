@@ -405,38 +405,17 @@ module Magick
 
     # IM 6.5.5-8 and later
     def interline_spacing(space)
-      begin
-        Float(space)
-      rescue ArgumentError
-        Kernel.raise ArgumentError, 'invalid value for interline_spacing'
-      rescue TypeError
-        Kernel.raise TypeError, "can't convert #{space.class} into Float"
-      end
-      primitive "interline-spacing #{space}"
+      primitive "interline-spacing #{Float(space)}"
     end
 
     # IM 6.4.8-3 and later
     def interword_spacing(space)
-      begin
-        Float(space)
-      rescue ArgumentError
-        Kernel.raise ArgumentError, 'invalid value for interword_spacing'
-      rescue TypeError
-        Kernel.raise TypeError, "can't convert #{space.class} into Float"
-      end
-      primitive "interword-spacing #{space}"
+      primitive "interword-spacing #{Float(space)}"
     end
 
     # IM 6.4.8-3 and later
     def kerning(space)
-      begin
-        Float(space)
-      rescue ArgumentError
-        Kernel.raise ArgumentError, 'invalid value for kerning'
-      rescue TypeError
-        Kernel.raise TypeError, "can't convert #{space.class} into Float"
-      end
-      primitive "kerning #{space}"
+      primitive "kerning #{Float(space)}"
     end
 
     # Draw a line
