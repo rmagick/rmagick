@@ -242,6 +242,14 @@ module Magick
       value
     end
 
+    def to_string(obj)
+      return obj if obj.is_a?(String)
+      return obj.to_s if obj.is_a?(Symbol)
+      return obj.to_str if obj.respond_to?(:to_str)
+
+      Kernel.raise TypeError, "no implicit conversion of #{obj.class} into String"
+    end
+
     public
 
     # Apply coordinate transformations to support scaling (s), rotation (r),
@@ -283,7 +291,7 @@ module Magick
 
     # Invoke a clip-path defined by def_clip_path.
     def clip_path(name)
-      primitive "clip-path #{name}"
+      primitive "clip-path #{to_string(name)}"
     end
 
     # Define the clipping rule.
@@ -322,7 +330,7 @@ module Magick
     # (pop) graphic-context".
     def define_clip_path(name)
       push('defs')
-      push("clip-path \"#{name}\"")
+      push("clip-path \"#{to_string(name)}\"")
       push('graphic-context')
       yield
     ensure
@@ -342,7 +350,7 @@ module Magick
     # Let anything through, but the only defined argument
     # is "UTF-8". All others are apparently ignored.
     def encoding(encoding)
-      primitive "encoding #{encoding}"
+      primitive "encoding #{to_string(encoding)}"
     end
 
     # Specify object fill, a color name or pattern name
@@ -365,11 +373,11 @@ module Magick
 
     # Specify text drawing font
     def font(name)
-      primitive "font \'#{name}\'"
+      primitive "font \'#{to_string(name)}\'"
     end
 
     def font_family(name)
-      primitive "font-family \'#{name}\'"
+      primitive "font-family \'#{to_string(name)}\'"
     end
 
     def font_stretch(stretch)
@@ -436,7 +444,7 @@ module Magick
     # primitive requires that the commands be surrounded by quotes or
     # apostrophes. Here we simply use apostrophes.
     def path(cmds)
-      primitive "path '" + cmds + "'"
+      primitive "path '#{to_string(cmds)}'"
     end
 
     # Define a pattern. In the block, call primitive methods to
@@ -444,7 +452,7 @@ module Magick
     # as the argument to the 'fill' or 'stroke' methods
     def pattern(name, x, y, width, height)
       push('defs')
-      push("pattern #{name} " + sprintf('%g %g %g %g', x, y, width, height))
+      push("pattern #{to_string(name)} " + sprintf('%g %g %g %g', x, y, width, height))
       push('graphic-context')
       yield
     ensure

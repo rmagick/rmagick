@@ -8,5 +8,7 @@ RSpec.describe Magick::Draw, '#font' do
     expect(draw.inspect).to eq("font '#{font_name}'")
     draw.text(50, 50, 'Hello world')
     expect { draw.draw(image) }.not_to raise_error
+
+    expect { draw.font(Object.new) }.to raise_error(TypeError)
   end
 end

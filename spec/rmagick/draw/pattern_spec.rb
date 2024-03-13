@@ -11,5 +11,6 @@ RSpec.describe Magick::Draw, '#pattern' do
     expect { draw.pattern('hat', 0, 'x', 20, 20) {} }.to raise_error(ArgumentError)
     expect { draw.pattern('hat', 0, 0, 'x', 20) {} }.to raise_error(ArgumentError)
     expect { draw.pattern('hat', 0, 0, 20, 'x') {} }.to raise_error(ArgumentError)
+    expect { draw.pattern(Object.new, 'x', 0, 20, 20) }.to raise_error(TypeError)
   end
 end

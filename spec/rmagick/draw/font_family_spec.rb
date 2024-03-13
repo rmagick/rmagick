@@ -7,5 +7,7 @@ RSpec.describe Magick::Draw, '#font_family' do
     expect(draw.inspect).to eq("font-family 'sans-serif'")
     draw.text(50, 50, 'Hello world')
     expect { draw.draw(image) }.not_to raise_error
+
+    expect { draw.font_family(Object.new) }.to raise_error(TypeError)
   end
 end
