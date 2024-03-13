@@ -27,5 +27,7 @@ RSpec.describe Magick::Draw, '#clip_path' do
 
     canvas = Magick::Image.new(10, 10)
     draw.draw(canvas)
+
+    expect { draw.clip_path(Object.new) }.to raise_error(TypeError)
   end
 end
