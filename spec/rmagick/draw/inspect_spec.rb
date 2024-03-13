@@ -6,6 +6,6 @@ RSpec.describe Magick::Draw, '#inspect' do
 
     draw.path('M110,100 h-75 a75,75 0 1,0 75,-75 z')
     draw.fill('yellow')
-    expect(draw.inspect).to eq("path 'M110,100 h-75 a75,75 0 1,0 75,-75 z'\nfill \"yellow\"")
+    expect(draw.inspect).to eq("path \"M110,100 h-75 a75,75 0 1,0 75,-75 z\"\nfill \"yellow\"")
   end
 end

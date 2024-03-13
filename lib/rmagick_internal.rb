@@ -333,7 +333,7 @@ module Magick
     # (pop) graphic-context".
     def define_clip_path(name)
       push('defs')
-      push("clip-path \"#{to_string(name)}\"")
+      push("clip-path #{enquote(name)}")
       push('graphic-context')
       yield
     ensure
@@ -377,11 +377,11 @@ module Magick
 
     # Specify text drawing font
     def font(name)
-      primitive "font \'#{to_string(name)}\'"
+      primitive "font #{enquote(name)}"
     end
 
     def font_family(name)
-      primitive "font-family \'#{to_string(name)}\'"
+      primitive "font-family #{enquote(name)}"
     end
 
     def font_stretch(stretch)
@@ -448,7 +448,7 @@ module Magick
     # primitive requires that the commands be surrounded by quotes or
     # apostrophes. Here we simply use apostrophes.
     def path(cmds)
-      primitive "path '#{to_string(cmds)}'"
+      primitive "path #{enquote(cmds)}"
     end
 
     # Define a pattern. In the block, call primitive methods to
