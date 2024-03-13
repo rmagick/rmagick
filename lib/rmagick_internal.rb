@@ -226,6 +226,7 @@ module Magick
     private
 
     def enquote(str)
+      str = to_string(str)
       if str.length > 2 && /\A(?:\"[^\"]+\"|\'[^\']+\'|\{[^\}]+\})\z/.match(str)
         str
       else
@@ -296,12 +297,14 @@ module Magick
 
     # Define the clipping rule.
     def clip_rule(rule)
+      rule = to_string(rule)
       Kernel.raise ArgumentError, "Unknown clipping rule #{rule}" unless %w[evenodd nonzero].include?(rule.downcase)
       primitive "clip-rule #{rule}"
     end
 
     # Define the clip units
     def clip_units(unit)
+      unit = to_string(unit)
       Kernel.raise ArgumentError, "Unknown clip unit #{unit}" unless %w[userspace userspaceonuse objectboundingbox].include?(unit.downcase)
       primitive "clip-units #{unit}"
     end
@@ -367,6 +370,7 @@ module Magick
     end
 
     def fill_rule(rule)
+      rule = to_string(rule)
       Kernel.raise ArgumentError, "Unknown fill rule #{rule}" unless %w[evenodd nonzero].include?(rule.downcase)
       primitive "fill-rule #{rule}"
     end
@@ -585,11 +589,13 @@ module Magick
     end
 
     def stroke_linecap(value)
+      value = to_string(value)
       Kernel.raise ArgumentError, "Unknown linecap type: #{value}" unless %w[butt round square].include?(value.downcase)
       primitive "stroke-linecap #{value}"
     end
 
     def stroke_linejoin(value)
+      value = to_string(value)
       Kernel.raise ArgumentError, "Unknown linejoin type: #{value}" unless %w[round miter bevel].include?(value.downcase)
       primitive "stroke-linejoin #{value}"
     end
@@ -614,7 +620,8 @@ module Magick
 
     # Draw text at position x,y. Add quotes to text that is not already quoted.
     def text(x, y, text)
-      Kernel.raise ArgumentError, 'missing text argument' if text.to_s.empty?
+      text = to_string(text)
+      Kernel.raise ArgumentError, 'missing text argument' if text.empty?
       if text.length > 2 && /\A(?:\"[^\"]+\"|\'[^\']+\'|\{[^\}]+\})\z/.match(text)
       # text already quoted
       elsif !text['\'']
