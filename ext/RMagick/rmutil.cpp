@@ -370,34 +370,7 @@ rm_percentage(VALUE arg, double max)
 
     if (!rm_check_num2dbl(arg))
     {
-        char *pct_str;
-        long pct_long;
-
-        arg = rb_rescue(RESCUE_FUNC(rb_str_to_str), arg, RESCUE_EXCEPTION_HANDLER_FUNC(rescue_not_str), arg);
-        pct_str = StringValueCStr(arg);
-        errno = 0;
-        pct_long = strtol(pct_str, &end, 10);
-        if (errno == ERANGE)
-        {
-            rb_raise(rb_eRangeError, "`%s' out of range", pct_str);
-        }
-        if (*end != '\0' && *end != '%')
-        {
-            rb_raise(rb_eArgError, "expected percentage, got `%s'", pct_str);
-        }
-
-        if (*end == '%' && pct_long != 0)
-        {
-            pct = (((double)pct_long) / 100.0) * max;
-        }
-        else
-        {
-            pct = (double) pct_long;
-        }
-        if (pct < 0.0)
-        {
-            rb_raise(rb_eArgError, "percentages may not be negative (got `%s')", pct_str);
-        }
+        pct = rm_str_to_pct(arg) * max;
     }
     else
     {
@@ -508,45 +481,7 @@ rm_str_to_pct(VALUE str)
 double
 rm_fuzz_to_dbl(VALUE fuzz_arg)
 {
-    double fuzz;
-    char *end;
-
-    if (!rm_check_num2dbl(fuzz_arg))
-    {
-        char *fuzz_str;
-
-        // Convert to string, issue error message if failure.
-        fuzz_arg = rb_rescue(RESCUE_FUNC(rb_str_to_str), fuzz_arg, RESCUE_EXCEPTION_HANDLER_FUNC(rescue_not_str), fuzz_arg);
-        fuzz_str = StringValueCStr(fuzz_arg);
-        errno = 0;
-        fuzz = strtod(fuzz_str, &end);
-        if (errno == ERANGE)
-        {
-            rb_raise(rb_eRangeError, "`%s' out of range", fuzz_str);
-        }
-        if(*end == '%')
-        {
-            if (fuzz < 0.0)
-            {
-                rb_raise(rb_eArgError, "percentages may not be negative (got `%s')", fuzz_str);
-            }
-            fuzz = (fuzz * QuantumRange) / 100.0;
-        }
-        else if(*end != '\0')
-        {
-            rb_raise(rb_eArgError, "expected percentage, got `%s'", fuzz_str);
-        }
-    }
-    else
-    {
-        fuzz = NUM2DBL(fuzz_arg);
-        if (fuzz < 0.0)
-        {
-            rb_raise(rb_eArgError, "fuzz may not be negative (got `%g')", fuzz);
-        }
-    }
-
-    return fuzz;
+    return rm_percentage(fuzz_arg, QuantumRange);
 }
 
 
