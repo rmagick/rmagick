@@ -64,6 +64,8 @@ DEFINE_GVL_VOID_STUB2(RemoveZeroDelayLayers, Image **, ExceptionInfo *);
  *
  * @overload animate(delay)
  *   @param delay [Numeric] the length of time between each image in an animation
+ *   @yield [info]
+ *   @yieldparam info [Magick::Image::Info]
  *
  * @return [Magick::ImageList] self
  */
@@ -400,6 +402,8 @@ ImageList_deconstruct(VALUE self)
 /**
  * Display all the images to an X window screen.
  *
+ * @yield [info]
+ * @yieldparam info [Magick::Image::Info]
  * @return [Magick::ImageList] self
  */
 VALUE
@@ -469,7 +473,8 @@ ImageList_flatten_images(VALUE self)
  * @overload montage
  *   Creates {Magick::ImageList::Montage} object, yields to block
  *   if present in {Magick::ImageList::Montage} object's scope.
- *   @yield [Magick::ImageList::Montage]
+ *   @yield [opt]
+ *   @yieldparam opt [Magick::ImageList::Montage]
  *
  * @return [Magick::ImageList] a new image list
  */
@@ -1094,7 +1099,8 @@ ImageList_remap(int argc, VALUE *argv, VALUE self)
  *
  * @overload to_blob
  *   Runs an info parm block if present - the user can specify the image format and depth
- *   @yield [Magick::Image::Info]
+ *   @yield [info]
+ *   @yieldparam info [Magick::Image::Info]
  *
  * @return [String] the blob
  */
@@ -1171,6 +1177,8 @@ ImageList_to_blob(VALUE self)
  * the images will be written as a single multi-image file. Otherwise each image
  * will be written to a separate file.
  *
+ * @yield [info]
+ * @yieldparam info [Magick::Image::Info]
  * @param file [File, String] the file
  */
 VALUE

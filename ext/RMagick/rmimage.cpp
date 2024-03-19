@@ -449,8 +449,8 @@ adaptive_channel_method(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
  * than sigma. Use a radius of 0 and adaptive_blur selects a suitable radius for you.
  *
  * @overload adaptive_blur(radius = 0.0, sigma = 1.0)
- *   @param radius [Float] The radius of the Gaussian in pixels, not counting the center pixel.
- *   @param sigma [Float] The standard deviation of the Laplacian, in pixels.
+ *   @param radius [Numeric] The radius of the Gaussian in pixels, not counting the center pixel.
+ *   @param sigma [Numeric] The standard deviation of the Laplacian, in pixels.
  *   @return [Magick::Image] a new image
  */
 VALUE
@@ -464,13 +464,13 @@ Image_adaptive_blur(int argc, VALUE *argv, VALUE self)
  * The same as {Magick::Image#adaptive_blur} except only the specified channels are blurred.
  *
  * @overload adaptive_blur_channel(radius = 0.0, sigma = 1.0, channel = Magick::AllChannels)
- *   @param radius [Float] The radius of the Gaussian in pixels, not counting the center pixel.
- *   @param sigma [Float] The standard deviation of the Laplacian, in pixels.
+ *   @param radius [Numeric] The radius of the Gaussian in pixels, not counting the center pixel.
+ *   @param sigma [Numeric] The standard deviation of the Laplacian, in pixels.
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *
  * @overload adaptive_blur_channel(radius = 0.0, sigma = 1.0, *channels)
- *   @param radius [Float] The radius of the Gaussian in pixels, not counting the center pixel.
- *   @param sigma [Float] The standard deviation of the Laplacian, in pixels.
+ *   @param radius [Numeric] The radius of the Gaussian in pixels, not counting the center pixel.
+ *   @param sigma [Numeric] The standard deviation of the Laplacian, in pixels.
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
  * @return [Magick::Image] a new image
@@ -490,7 +490,7 @@ Image_adaptive_blur_channel(int argc, VALUE *argv, VALUE self)
  * Resizes the image with data dependent triangulation.
  *
  * @overload adaptive_resize(scale_val)
- *   @param scale_val [Float] You can use this argument instead of specifying the desired width and
+ *   @param scale_val [Numeric] You can use this argument instead of specifying the desired width and
  *     height. The percentage size change. For example, 1.25 makes the new image 125% of the size of
  *     the receiver.
  *
@@ -557,8 +557,8 @@ Image_adaptive_resize(int argc, VALUE *argv, VALUE self)
  * Use a radius of 0 and adaptive_sharpen selects a suitable radius for you.
  *
  * @overload adaptive_sharpen(radius = 0.0, sigma = 1.0)
- *   @param radius [Float] The radius of the Gaussian in pixels, not counting the center pixel.
- *   @param sigma [Float] The standard deviation of the Laplacian, in pixels.
+ *   @param radius [Numeric] The radius of the Gaussian in pixels, not counting the center pixel.
+ *   @param sigma [Numeric] The standard deviation of the Laplacian, in pixels.
  *   @return [Magick::Image] a new image
  */
 VALUE
@@ -572,13 +572,13 @@ Image_adaptive_sharpen(int argc, VALUE *argv, VALUE self)
  * The same as {Magick::Image#adaptive_sharpen} except only the specified channels are sharpened.
  *
  * @overload adaptive_sharpen_channel(radius = 0.0, sigma = 1.0, channel = Magick::AllChannels)
- *   @param radius [Float] The radius of the Gaussian in pixels, not counting the center pixel.
- *   @param sigma [Float] The standard deviation of the Laplacian, in pixels.
+ *   @param radius [Numeric] The radius of the Gaussian in pixels, not counting the center pixel.
+ *   @param sigma [Numeric] The standard deviation of the Laplacian, in pixels.
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *
  * @overload adaptive_sharpen_channel(radius = 0.0, sigma = 1.0, *channels)
- *   @param radius [Float] The radius of the Gaussian in pixels, not counting the center pixel.
- *   @param sigma [Float] The standard deviation of the Laplacian, in pixels.
+ *   @param radius [Numeric] The radius of the Gaussian in pixels, not counting the center pixel.
+ *   @param sigma [Numeric] The standard deviation of the Laplacian, in pixels.
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
  * @return [Magick::Image] a new image
@@ -972,12 +972,12 @@ Image_affine_transform(VALUE self, VALUE affine)
  * "Comment", "Signature", and in some cases "EXIF".
  *
  * @param key_arg [String, Symbol] the key to get
- * @return [String] property value or nil if key doesn't exist
+ * @return [String, nil] property value or nil if key doesn't exist
  * @see Image#[]=
  * @see Image#properties
  */
 VALUE
-Image_aref(VALUE self, VALUE key_arg)
+ Image_aref(VALUE self, VALUE key_arg)
 {
     Image *image;
     const char *key;
@@ -1352,7 +1352,7 @@ Image_background_color_eq(VALUE self, VALUE color)
 /**
  * Return the number of rows (before transformations).
  *
- * @return [Numeric] the number of rows
+ * @return [Integer] the number of rows
  */
 VALUE
 Image_base_columns(VALUE self)
@@ -1383,7 +1383,7 @@ Image_base_filename(VALUE self)
 /**
  * Return the number of rows (before transformations).
  *
- * @return [Numeric] the number of rows
+ * @return [Integer] the number of rows
  */
 VALUE
 Image_base_rows(VALUE self)
@@ -1429,8 +1429,8 @@ Image_bias(VALUE self)
 /**
  * Set image bias (used when convolving an image).
  *
- * @param pct [Float, String] Either a number between 0.0 and 1.0 or a string in the form "NN%"
- * @return [Float, String] the given value
+ * @param pct [Numeric, String] Either a number between 0.0 and 1.0 or a string in the form "NN%"
+ * @return [Numeric, String] the given value
  */
 VALUE
 Image_bias_eq(VALUE self, VALUE pct)
@@ -1460,10 +1460,11 @@ Image_bias_eq(VALUE self, VALUE pct)
  * is a high-contrast image.
  *
  * @overload bilevel_channel(threshold, channel = Magick::AllChannels)
- *   @param threshold [Float] The threshold value, a number between 0 and QuantumRange.
+ *   @param threshold [Numeric] The threshold value, a number between 0 and QuantumRange.
+ *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *
  * @overload bilevel_channel(threshold, *channels)
- *   @param threshold [Float] The threshold value, a number between 0 and QuantumRange.
+ *   @param threshold [Numeric] The threshold value, a number between 0 and QuantumRange.
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
  * @return [Magick::Image] a new image
@@ -1923,10 +1924,10 @@ special_composite(Image *image, Image *overlay, double image_pct, double overlay
  * @overload blend(overlay, src_percent, dst_percent, gravity = Magick::NorthWestGravity, x_offset = 0, y_offset = 0)
  *   @param overlay [Magick::Image, Magick::ImageList] The source image for the composite operation.
  *     Either an imagelist or an image. If an imagelist, uses the current image.
- *   @param src_percent [Float, String] Either a non-negative number a string in the form "NN%".
+ *   @param src_percent [Numeric, String] Either a non-negative number a string in the form "NN%".
  *     If src_percentage is a number it is interpreted as a percentage.
  *     Both 0.25 and "25%" mean 25%. This argument is required.
- *   @param dst_percent [Float, String] Either a non-negative number a string in the form "NN%".
+ *   @param dst_percent [Numeric, String] Either a non-negative number a string in the form "NN%".
  *     If src_percentage is a number it is interpreted as a percentage.
  *     Both 0.25 and "25%" mean 25%. This argument may omitted if no other arguments follow it.
  *     In this case the default is 100%-src_percentage.
@@ -1988,7 +1989,7 @@ Image_blend(int argc, VALUE *argv, VALUE self)
  * Simulate a scene at nighttime in the moonlight.
  *
  * @overload blue_shift(factor = 1.5)
- *   @param factor [Float] Larger values increase the effect.
+ *   @param factor [Numeric] Larger values increase the effect.
  *   @return [Magick::Image] a new image
  */
 VALUE
@@ -2027,13 +2028,13 @@ Image_blue_shift(int argc, VALUE *argv, VALUE self)
  * Convolves the image with a Gaussian operator of the given radius and standard deviation (sigma).
  *
  * @overload blur_channel(radius = 0.0, sigma = 1.0, channel = Magick::AllChannels)
- *   @param radius [Float] the radius value
- *   @param sigma [Float] the sigma value
+ *   @param radius [Numeric] the radius value
+ *   @param sigma [Numeric] the sigma value
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *
  * @overload blur_channel(radius = 0.0, sigma = 1.0, *channels)
- *   @param radius [Float] the radius value
- *   @param sigma [Float] the sigma value
+ *   @param radius [Numeric] the radius value
+ *   @param sigma [Numeric] the sigma value
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
  * @return [Magick::Image] a new image
@@ -2085,8 +2086,8 @@ Image_blur_channel(int argc, VALUE *argv, VALUE self)
  * Blur the image.
  *
  * @overload blur_image(radius = 0.0, sigma = 1.0)
- *   @param radius [Float] the radius value
- *   @param sigma [Float] the sigma value
+ *   @param radius [Numeric] the radius value
+ *   @param sigma [Numeric] the sigma value
  *   @return [Magick::Image] a new image
  */
 VALUE
@@ -2264,7 +2265,8 @@ Image_bounding_box(VALUE self)
  *     importantly, you can capture menus or other popups that are independent windows but appear
  *     over the specified window.
  *   @param borders [Boolean] If true, include the border in the image.
- *   @yield [Magick::Image::Info]
+ *   @yield [info]
+ *   @yieldparam info [Magick::Image::Info]
  *
  * @return [Magick::Image] a new image
  * @example
@@ -2339,8 +2341,8 @@ Image_capture(int argc, VALUE *argv, VALUE self ATTRIBUTE_UNUSED)
  *
  * @param geom_arg [Magick::Geometry, String] the geometry
  * @yield [column, row, image]
- * @yieldparam column [Numeric] The desired column size
- * @yieldparam row [Numeric] The desired row size
+ * @yieldparam column [Integer] The desired column size
+ * @yieldparam row [Integer] The desired row size
  * @yieldparam image [Magick::Image] self
  * @see https://www.imagemagick.org/Magick++/Geometry.html
  * @example
@@ -2445,7 +2447,7 @@ Image_channel(VALUE self, VALUE channel_arg)
  * @overload channel_depth(*channels)
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
- * @return [Numeric] the channel depth
+ * @return [Integer] the channel depth
  */
 VALUE
 Image_channel_depth(int argc, VALUE *argv, VALUE self)
@@ -2492,7 +2494,7 @@ Image_channel_depth(int argc, VALUE *argv, VALUE self)
  * @overload channel_extrema(*channels)
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
- * @return [Array<Numeric>] The first element in the array is the minimum value. The second element is the
+ * @return [Array<Integer>] The first element in the array is the minimum value. The second element is the
  *   maximum value.
  */
 VALUE
@@ -2656,8 +2658,8 @@ Image_channel_entropy(int argc ATTRIBUTE_UNUSED, VALUE *argv ATTRIBUTE_UNUSED, V
  * Return a new image that is a copy of the input image with the edges highlighted.
  *
  * @overload charcoal(radius = 0.0, sigma = 1.0)
- *   @param radius [Float] The radius of the pixel neighborhood.
- *   @param sigma [Float] The standard deviation of the Gaussian, in pixels.
+ *   @param radius [Numeric] The radius of the pixel neighborhood.
+ *   @param sigma [Numeric] The standard deviation of the Gaussian, in pixels.
  *   @return [Magick::Image] a new image
  */
 VALUE
@@ -2827,7 +2829,7 @@ Image_clut_channel(int argc, VALUE *argv, VALUE self)
 /**
  * Computes the number of times each unique color appears in the image.
  *
- * @return [Hash] Each key in the hash is a pixel representing a color that appears in the image.
+ * @return [Hash<Magick::Pixel, Integer>] Each key in the hash is a pixel representing a color that appears in the image.
  *   The value associated with the key is the number of times that color appears in the image.
  */
 VALUE
@@ -3050,8 +3052,8 @@ Image_color_profile(VALUE self)
  * - Pass nil to remove any existing profile.
  * - Removes any existing profile before adding the new one.
  *
- * @param profile [String] the profile to set
- * @return [String] the given profile
+ * @param profile [String, nil] the profile to set
+ * @return [String, nil] the given profile
  */
 VALUE
 Image_color_profile_eq(VALUE self, VALUE profile)
@@ -3163,16 +3165,16 @@ Image_color_flood_fill(VALUE self, VALUE target_color, VALUE fill_color,
  * blend for each r, g, b component.
  *
  * @overload colorize(red, green, blue, target)
- *   @param red [Float] The percentage of the fill color red
- *   @param green [Float] The percentage of the fill color green
- *   @param blue [Float] The percentage of the fill color blue
+ *   @param red [Numeric] The percentage of the fill color red
+ *   @param green [Numeric] The percentage of the fill color green
+ *   @param blue [Numeric] The percentage of the fill color blue
  *   @param target [Magick::Pixel, String] the color name
  *
  * @overload colorize(red, green, blue, matte, target)
- *   @param red [Float] The percentage of the fill color red
- *   @param green [Float] The percentage of the fill color green
- *   @param blue [Float] The percentage of the fill color blue
- *   @param matte [Float] The percentage of the fill color transparency
+ *   @param red [Numeric] The percentage of the fill color red
+ *   @param green [Numeric] The percentage of the fill color green
+ *   @param blue [Numeric] The percentage of the fill color blue
+ *   @param matte [Numeric] The percentage of the fill color transparency
  *   @param target [Magick::Pixel, String] the color name
  *
  * @return [Magick::Image] a new image
@@ -3321,7 +3323,7 @@ Image_colormap(int argc, VALUE *argv, VALUE self)
 /**
  * Get the number of colors in the colormap.
  *
- * @return [Numeric] the number of colors
+ * @return [Integer] the number of colors
  */
 VALUE
 Image_colors(VALUE self)
@@ -3383,7 +3385,7 @@ Image_colorspace_eq(VALUE self, VALUE colorspace)
 /**
  * Get image columns.
  *
- * @return [Numeric] the columns
+ * @return [Integer] the columns
  */
 VALUE
 Image_columns(VALUE self)
@@ -3413,13 +3415,13 @@ Image_columns(VALUE self)
  *     imagelist, uses the current image.
  *   @param metric [Magick::MetricType] The desired distortion metric.
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
- *   @yield [Magick::OptionalMethodArguments]
+ *   @yield [opt_args]
+ *   @yieldparam opt_args [Magick::OptionalMethodArguments]
  *
  * @overload compare_channel(image, metric, *channels)
  *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
  *     imagelist, uses the current image.
  *   @param metric [Magick::MetricType] The desired distortion metric.
- *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
  * @overload compare_channel(image, metric, *channels)
@@ -3432,9 +3434,9 @@ Image_columns(VALUE self)
  *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
  *     imagelist, uses the current image.
  *   @param metric [Magick::MetricType] The desired distortion metric.
- *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
- *   @yield [Magick::OptionalMethodArguments]
+ *   @yield [opt_args]
+ *   @yieldparam opt_args [Magick::OptionalMethodArguments]
  *
  * @return [Array] The first element is a difference image, the second is a the value of the
  *   computed distortion represented as a Float.
@@ -4025,19 +4027,19 @@ Image_composite_channel_bang(int argc, VALUE *argv, VALUE self)
  * @overload composite_mathematics(image, a, b, c, d, gravity)
  *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
  *     imagelist, uses the current image.
- *   @param a [Float] See the description.
- *   @param b [Float] See the description.
- *   @param c [Float] See the description.
- *   @param d [Float] See the description.
+ *   @param a [Numeric] See the description.
+ *   @param b [Numeric] See the description.
+ *   @param c [Numeric] See the description.
+ *   @param d [Numeric] See the description.
  *   @param gravity [Magick::GravityType] the gravity type
  *
  * @overload composite_mathematics(image, a, b, c, d, x_off, y_off)
  *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
  *     imagelist, uses the current image.
- *   @param a [Float] See the description.
- *   @param b [Float] See the description.
- *   @param c [Float] See the description.
- *   @param d [Float] See the description.
+ *   @param a [Numeric] See the description.
+ *   @param b [Numeric] See the description.
+ *   @param c [Numeric] See the description.
+ *   @param d [Numeric] See the description.
  *   @param x_off [Numeric] The x-offset of the composited image, measured relative to the gravity
  *     argument.
  *   @param y_off [Numeric] The y-offset of the composited image, measured relative to the gravity
@@ -4046,10 +4048,10 @@ Image_composite_channel_bang(int argc, VALUE *argv, VALUE self)
  * @overload composite_mathematics(image, a, b, c, d, gravity, x_off, y_off)
  *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
  *     imagelist, uses the current image.
- *   @param a [Float] See the description.
- *   @param b [Float] See the description.
- *   @param c [Float] See the description.
- *   @param d [Float] See the description.
+ *   @param a [Numeric] See the description.
+ *   @param b [Numeric] See the description.
+ *   @param c [Numeric] See the description.
+ *   @param d [Numeric] See the description.
  *   @param gravity [Magick::GravityType] the gravity type
  *   @param x_off [Numeric] The x-offset of the composited image, measured relative to the gravity
  *     argument.
@@ -4620,17 +4622,17 @@ get_black_white_point(Image *image, int argc, VALUE *argv, double *black_point, 
  * a linear scaling function to the image pixel values.
  *
  * @overload contrast_stretch_channel(black_point, white_point = pixels - black_point, channel = Magick::AllChannels)
- *   @param black_point [Float, String] black out at most this many pixels. Specify an absolute
+ *   @param black_point [Numeric, String] black out at most this many pixels. Specify an absolute
  *     number of pixels as a numeric value, or a percentage as a string in the form 'NN%'.
- *   @param white_point [Float, String] burn at most this many pixels. Specify an absolute number
+ *   @param white_point [Numeric, String] burn at most this many pixels. Specify an absolute number
  *     of pixels as a numeric value, or a percentage as a string in the form 'NN%'. This argument
  *     is optional. If not specified the default is `(columns * rows) - black_point`.
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *
  * @overload contrast_stretch_channel(black_point, white_point = pixels - black_point, *channels)
- *   @param black_point [Float, String] black out at most this many pixels. Specify an absolute
+ *   @param black_point [Numeric, String] black out at most this many pixels. Specify an absolute
  *     number of pixels as a numeric value, or a percentage as a string in the form 'NN%'.
- *   @param white_point [Float, String] burn at most this many pixels. Specify an absolute number of
+ *   @param white_point [Numeric, String] burn at most this many pixels. Specify an absolute number of
  *     pixels as a numeric value, or a percentage as a string in the form 'NN%'. This argument is
  *     optional. If not specified the default is all pixels - black_point pixels.
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
@@ -5047,26 +5049,26 @@ Image_crop(int argc, VALUE *argv, VALUE self)
  * Extract a region of the image defined by width, height, x, y.
  * In-place form of {Image#crop}.
  *
- * @overload crop!(reset = false, x, y, width, height)
- *   @param reset [Boolean] true if reset the cropped image page canvas and position
+ * @overload crop!(x, y, width, height, reset = false)
  *   @param x [Numeric] x position of start of region
  *   @param y [Numeric] y position of start of region
  *   @param width [Numeric] width of region
  *   @param height [Numeric] height of region
+ *   @param reset [Boolean] true if reset the cropped image page canvas and position
  *
- * @overload crop!(reset = false, gravity, width, height)
- *   @param reset [Boolean] true if reset the cropped image page canvas and position
+ * @overload crop!(gravity, width, height, reset = false)
  *   @param gravity [Magick::GravityType] the gravity type
  *   @param width [Numeric] width of region
  *   @param height [Numeric] height of region
-
- * @overload crop!(reset = false, gravity, x, y, width, height)
  *   @param reset [Boolean] true if reset the cropped image page canvas and position
+
+ * @overload crop!(gravity, x, y, width, height, reset = false)
  *   @param gravity [Magick::GravityType] the gravity type
  *   @param x [Numeric] x position of start of region
  *   @param y [Numeric] y position of start of region
  *   @param width [Numeric] width of region
  *   @param height [Numeric] height of region
+ *   @param reset [Boolean] true if reset the cropped image page canvas and position
  *
  * @return [Magick::Image] a new image
  * @see Image#crop!
@@ -5271,8 +5273,8 @@ Image_decipher(VALUE self, VALUE passphrase)
  * - If value is nil, the artifact will be removed
  *
  * @param artifact [String] the artifact to set
- * @param value [String] the value to which to set the artifact
- * @return [String] the given `value`
+ * @param value [String, nil] the value to which to set the artifact
+ * @return [String, nil] the given `value`
  */
 VALUE
 Image_define(VALUE self, VALUE artifact, VALUE value)
@@ -5309,7 +5311,7 @@ Image_define(VALUE self, VALUE artifact, VALUE value)
  * sequence. The default number of ticks is 0. By default there are 100 ticks per second but this
  * number can be changed via the ticks_per_second attribute.
  *
- * @return [Numeric] The current delay value.
+ * @return [Integer] The current delay value.
  */
 VALUE
 Image_delay(VALUE self)
@@ -5397,7 +5399,7 @@ Image_delete_profile(VALUE self, VALUE name)
  * - If all pixels have lower-order bytes equal to higher-order bytes, the depth will be reported as
  *   8 even if the depth field in the Image structure says 16.
  *
- * @return [Numeric] the depth
+ * @return [Integer] the depth
  */
 VALUE
 Image_depth(VALUE self)
@@ -5423,9 +5425,9 @@ Image_depth(VALUE self)
  * Straightens an image. A threshold of 40% works for most images.
  *
  * @overload deskew(threshold = 0.40, auto_crop_width = nil)
- *   @param threshold [Float] A percentage of QuantumRange. Either a Float between 0 and 1.0,
+ *   @param threshold [Numeric, String] A percentage of QuantumRange. Either a Float between 0 and 1.0,
  *     inclusive, or a string in the form "NN%" where NN is between 0 and 100.
- *   @param auto_crop_width [Float] Specify a value for this argument to cause the deskewed image to
+ *   @param auto_crop_width [Numeric] Specify a value for this argument to cause the deskewed image to
  *     be auto-cropped. The argument is the pixel width of the image background (e.g. 40).
  *   @return [Magick::Image] a new image
  */
@@ -5581,7 +5583,7 @@ Image_difference(VALUE self, VALUE other)
 /**
  * Get image directory.
  *
- * @return [String] the directory
+ * @return [String, nil] the directory
  */
 VALUE
 Image_directory(VALUE self)
@@ -5597,8 +5599,8 @@ Image_directory(VALUE self)
  * @overload displace(displacement_map, x_amp, y_amp = x_amp, gravity = Magick::NorthWestGravity, x_offset = 0, y_offset = 0)
  *   @param displacement_map [Magick::Image, Magick::ImageList] The source image for the composite
  *     operation. Either an imagelist or an image. If an imagelist, uses the current image.
- *   @param x_amp [Float] The maximum displacement on the x-axis.
- *   @param y_amp [Float] The maximum displacement on the y-axis.
+ *   @param x_amp [Numeric] The maximum displacement on the x-axis.
+ *   @param y_amp [Numeric] The maximum displacement on the y-axis.
  *   @param gravity [Magick::GravityType] the gravity for offset. the offsets are measured from the
  *   NorthWest corner by default.
  *   @param x_offset [Numeric] The offset that measured from the left-hand side of the target image.
@@ -5755,6 +5757,8 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
 /**
  * Display the image to an X window screen.
  *
+ * @yield [info]
+ * @yieldparam info [Magick::Image::Info]
  * @return [Magick::Image] self
  */
 VALUE
@@ -5831,10 +5835,10 @@ Image_dispose_eq(VALUE self, VALUE dispose)
  * @overload dissolve(overlay, src_percent, dst_percent = -1.0, gravity = Magick::NorthWestGravity, x_offset = 0, y_offset = 0)
  *   @param overlay [Magick::Image, Magick::ImageList] The source image for the composite operation.
  *     Either an imagelist or an image. If an imagelist, uses the current image.
- *   @param src_percent [Float, String] Either a non-negative number a string in the form "NN%".
+ *   @param src_percent [Numeric, String] Either a non-negative number a string in the form "NN%".
  *     If src_percentage is a number it is interpreted as a percentage.
  *     Both 0.25 and "25%" mean 25%. This argument is required.
- *   @param dst_percent [Float, String] Either a non-negative number a string in the form "NN%".
+ *   @param dst_percent [Numeric, String] Either a non-negative number a string in the form "NN%".
  *     If src_percentage is a number it is interpreted as a percentage.
  *     Both 0.25 and "25%" mean 25%. This argument may omitted if no other arguments follow it.
  *     In this case the default is 100%-src_percentage.
@@ -5923,7 +5927,8 @@ Image_dissolve(int argc, VALUE *argv, VALUE self)
  *     image is adjusted to ensure the whole source image will just fit within the final destination
  *     image, which will be sized and offset accordingly.  Also in many cases the virtual offset of
  *     the source image will be taken into account in the mapping.
- *   @yield [Magick::OptionalMethodArguments]
+ *   @yield [opt_args]
+ *   @yieldparam opt_args [Magick::OptionalMethodArguments]
  *
  * @return [Magick::Image] a new image
  * @example
@@ -6189,7 +6194,7 @@ Image_each_profile(VALUE self)
  * Find edges in an image. "radius" defines the radius of the convolution filter.
  *
  * @overload edge(radius = 0.0)
- *   @param radius [Float] The radius of the convolution filter.
+ *   @param radius [Numeric] The radius of the convolution filter.
  *   @return [Magick::Image] a new image
  */
 VALUE
@@ -6277,8 +6282,8 @@ effect_image(VALUE self, int argc, VALUE *argv, gvl_function_t fp)
  * Adds a 3-dimensional effect.
  *
  * @overload emboss(radius = 0.0, sigma = 1.0)
- *   @param radius [Float] The radius of the Gaussian operator.
- *   @param sigma [Float] The sigma (standard deviation) of the Gaussian operator.
+ *   @param radius [Numeric] The radius of the Gaussian operator.
+ *   @param sigma [Numeric] The sigma (standard deviation) of the Gaussian operator.
  *   @return [Magick::Image] a new image
  */
 VALUE
@@ -6918,7 +6923,7 @@ Image_filename(VALUE self)
 /**
  * Return the image file size.
  *
- * @return [Numeric] the file size
+ * @return [Integer] the file size
  */
 VALUE Image_filesize(VALUE self)
 {
@@ -7088,7 +7093,7 @@ Image_flip(VALUE self)
  * Create a vertical mirror image by reflecting the pixels around the central x-axis.
  * In-place form of {Image#flip}.
  *
- * @return [Magick::Image] a new image
+ * @return [Magick::Image] self
  * @see Image#flip
  * @see Image#flop
  * @see Image#flop!
@@ -7121,7 +7126,7 @@ Image_flop(VALUE self)
  * Create a horizonal mirror image by reflecting the pixels around the central y-axis.
  * In-place form of {Image#flop}.
  *
- * @return [Magick::Image] a new image
+ * @return [Magick::Image] self
  * @see Image#flop
  * @see Image#flip
  * @see Image#flip!
@@ -7271,7 +7276,8 @@ Image_frame(int argc, VALUE *argv, VALUE self)
  * @overload from_blob(blob)
  *   This yields {Magick::Image::Info} to block with its object's scope.
  *   @param blob [String] the blob data
- *   @yield [Magick::Image::Info]
+ *   @yield [info]
+ *   @yieldparam info [Magick::Image::Info]
  *
  * @return [Array<Magick::Image>] an array of new images
  * @see Image#to_blob
@@ -7313,15 +7319,14 @@ Image_from_blob(VALUE klass ATTRIBUTE_UNUSED, VALUE blob_arg)
  *
  * @overload function_channel(function, *args, channel = Magick::AllChannels)
  *   @param function [Magick::MagickFunction] the function
- *   @param *args [Float] One or more floating-point numbers.
+ *   @param *args [Numeric] One or more floating-point numbers.
  *     The number of parameters depends on the function. See the ImageMagick documentation for
  *     details.
-
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *
  * @overload function_channel(function, *args, *channels)
  *   @param function [Magick::MagickFunction] the function
- *   @param *args [Float] One or more floating-point numbers.
+ *   @param *args [Numeric] One or more floating-point numbers.
  *     The number of parameters depends on the function. See the ImageMagick documentation for
  *     details.
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
@@ -7427,9 +7432,9 @@ Image_fuzz(VALUE self)
 /**
  * Set the number of algorithms search for a target color.
  *
- * @param fuzz [String, Float] The argument may be a floating-point numeric value or a string in the
+ * @param fuzz [String, Numeric] The argument may be a floating-point numeric value or a string in the
  *   form "NN%".
- * @return [String, Float] the given value
+ * @return [String, Numeric] the given value
  * @see Info#fuzz=
  */
 VALUE
@@ -7508,8 +7513,8 @@ Image_gamma(VALUE self)
 /**
  * Set the gamma level of the image.
  *
- * @param val [Float] the gamma level
- * @return [Float] the gamma level
+ * @param val [Numeric] the gamma level
+ * @return [Numeric] the gamma level
  */
 VALUE
 Image_gamma_eq(VALUE self, VALUE val)
@@ -7522,12 +7527,12 @@ Image_gamma_eq(VALUE self, VALUE val)
  * Apply gamma to a channel.
  *
  * @overload gamma_channel(gamma, channel = Magick::AllChannels)
- *   @param Values gamma [Float] typically range from 0.8 to 2.3. You can also reduce the influence
+ *   @param Values gamma [Numeric] typically range from 0.8 to 2.3. You can also reduce the influence
  *     of a particular channel with a gamma value of 0.
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *
  * @overload gamma_channel(gamma, *channels)
- *   @param Values gamma [Float] typically range from 0.8 to 2.3. You can also reduce the influence
+ *   @param Values gamma [Numeric] typically range from 0.8 to 2.3. You can also reduce the influence
  *     of a particular channel with a gamma value of 0.
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
@@ -7677,8 +7682,8 @@ Image_gamma_correct(int argc, VALUE *argv, VALUE self)
  * Blur the image.
  *
  * @overload gaussian_blur(radius = 0.0, sigma = 1.0)
- *   @param radius [Float] The radius of the Gaussian operator.
- *   @param sigma [Float] The sigma (standard deviation) of the Gaussian operator.
+ *   @param radius [Numeric] The radius of the Gaussian operator.
+ *   @param sigma [Numeric] The sigma (standard deviation) of the Gaussian operator.
  *   @return [Magick::Image] a new image
  */
 VALUE
@@ -7692,13 +7697,13 @@ Image_gaussian_blur(int argc, VALUE *argv, VALUE self)
  * Blur the image on a channel.
  *
  * @overload gaussian_blur_channel(radius = 0.0, sigma = 1.0, channel = Magick::AllChannels)
- *   @param radius [Float] The radius of the Gaussian operator.
- *   @param sigma [Float] The sigma (standard deviation) of the Gaussian operator.
+ *   @param radius [Numeric] The radius of the Gaussian operator.
+ *   @param sigma [Numeric] The sigma (standard deviation) of the Gaussian operator.
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *
  * @overload gaussian_blur_channel(radius = 0.0, sigma = 1.0, *channels)
- *   @param radius [Float] The radius of the Gaussian operator.
- *   @param sigma [Float] The sigma (standard deviation) of the Gaussian operator.
+ *   @param radius [Numeric] The radius of the Gaussian operator.
+ *   @param sigma [Numeric] The sigma (standard deviation) of the Gaussian operator.
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
  * @return [Magick::Image] a new image
@@ -7998,6 +8003,8 @@ Image_histogram_q(VALUE self)
  * Implode the image by the specified percentage.
  *
  * @overload implode(amount = 0.50)
+ *   @param amount [Numeric] Increasing the absolute value of the argument increases the effect.
+ *     The value may be positive for implosion, or negative for explosion. The default is 0.50.
  *   @return [Magick::Image] a new image
  */
 VALUE
@@ -8464,8 +8471,8 @@ Image_iptc_profile(VALUE self)
 /**
  * Set the IPTC profile. The argument is a string.
  *
- * @param profile [String] the IPTC profile
- * @return [String] the given profile
+ * @param profile [String, nil] the IPTC profile
+ * @return [String, nil] the given profile
  */
 VALUE
 Image_iptc_profile_eq(VALUE self, VALUE profile)
@@ -8500,9 +8507,9 @@ Image_iterations_eq(VALUE self, VALUE val)
  * points to the full available quantum range.
  *
  * @overload level2(black_point = 0.0, white_point = Magick::QuantumRange, gamma = 1.0)
- *   @param black_point [Float] A black point level in the range 0 - QuantumRange.
- *   @param white_point [Float] A white point level in the range 0..QuantumRange.
- *   @param gamma [Float] A gamma correction in the range 0.0 - 10.0.
+ *   @param black_point [Numeric] A black point level in the range 0 - QuantumRange.
+ *   @param white_point [Numeric] A white point level in the range 0..QuantumRange.
+ *   @param gamma [Numeric] A gamma correction in the range 0.0 - 10.0.
  *   @return [Magick::Image] a new image
  */
 VALUE
@@ -8563,9 +8570,9 @@ Image_level2(int argc, VALUE *argv, VALUE self)
  *
  * @overload level_channel(aChannelType, black = 0.0, white = 1.0, gamma = Magick::QuantumRange)
  *   @param aChannelType [Magick::ChannelType] A ChannelType value.
- *   @param black [Float] A black point level in the range 0..QuantumRange.
- *   @param white [Float] A white point level in the range 0..QuantumRange.
- *   @param gamma [Float] A gamma correction in the range 0.0 - 10.0.
+ *   @param black [Numeric] A black point level in the range 0..QuantumRange.
+ *   @param white [Numeric] A white point level in the range 0..QuantumRange.
+ *   @param gamma [Numeric] A gamma correction in the range 0.0 - 10.0.
  *   @return [Magick::Image] a new image
  *   @see Image#level2
  */
@@ -8718,14 +8725,15 @@ Image_level_colors(int argc, VALUE *argv, VALUE self)
  * Maps black and white to the specified points. The reverse of {Image#level_channel}.
  *
  * @overload levelize_channel(black_point, white_point = Magick::QuantumRange - black_point, gamma = 1.0, channel = Magick::AllChannels)
- *   @param black [Float] A black point level in the range 0..QuantumRange.
- *   @param white [Float] A white point level in the range 0..QuantumRange.
- *   @param gamma [Float] A gamma correction in the range 0.0 - 10.0.
+ *   @param black [Numeric] A black point level in the range 0..QuantumRange.
+ *   @param white [Numeric] A white point level in the range 0..QuantumRange.
+ *   @param gamma [Numeric] A gamma correction in the range 0.0 - 10.0.
+ *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *
  * @overload levelize_channel(black_point, white_point = Magick::QuantumRange - black_point, gamma = 1.0, *channels)
- *   @param black [Float] A black point level in the range 0..QuantumRange.
- *   @param white [Float] A white point level in the range 0..QuantumRange.
- *   @param gamma [Float] A gamma correction in the range 0.0 - 10.0.
+ *   @param black [Numeric] A black point level in the range 0..QuantumRange.
+ *   @param white [Numeric] A white point level in the range 0..QuantumRange.
+ *   @param gamma [Numeric] A gamma correction in the range 0.0 - 10.0.
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
  * @return [Magick::Image] a new image
@@ -8796,10 +8804,10 @@ Image_levelize_channel(int argc, VALUE *argv, VALUE self)
  * Linear with saturation stretch.
  *
  * @overload linear_stretch(black_point, white_point = pixels - black_point)
- *   @param black_point [Float, String] black out at most this many pixels.
+ *   @param black_point [Numeric, String] black out at most this many pixels.
  *     Specify an absolute number of pixels as a numeric value, or a percentage as a string in the
  *     form 'NN%'.
- *   @param white_point [Float, String] burn at most this many pixels.
+ *   @param white_point [Numeric, String] burn at most this many pixels.
  *     Specify an absolute number of pixels as a numeric value, or a percentage as a string in the
  *     form 'NN%'.
  *     This argument is optional. If not specified the default is `(columns * rows) - black_point`.
@@ -8842,8 +8850,8 @@ Image_linear_stretch(int argc, VALUE *argv, VALUE self)
  *   @param columns [Numeric] The desired width height. Should not exceed 200% of the original
  *     dimension.
  *   @param rows [Numeric] The desired height. Should not exceed 200% of the original dimension.
- *   @param delta_x [Float] Maximum seam transversal step (0 means straight seams).
- *   @param rigidity [Float] Introduce a bias for non-straight seams (typically 0).
+ *   @param delta_x [Numeric] Maximum seam transversal step (0 means straight seams).
+ *   @param rigidity [Numeric] Introduce a bias for non-straight seams (typically 0).
  *   @return [Magick::Image] a new image
  */
 VALUE
@@ -9302,7 +9310,7 @@ set_image_mask(Image *image, VALUE mask)
  *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
  *     imagelist, uses the current image.
  *
- * @return [Magick::Image] the mask image
+ * @return [Magick::Image, nil] the mask image
  */
 VALUE
 Image_mask(int argc, VALUE *argv, VALUE self)
@@ -9574,9 +9582,9 @@ Image_minify_bang(VALUE self)
  * Changes the brightness, saturation, and hue.
  *
  * @overload modulate(brightness = 1.0, saturation = 1.0, hue = 1.0)
- *   @param brightness [Float] The percent change in the brightness
- *   @param saturation [Float] The percent change in the saturation
- *   @param hue [Float] The percent change in the hue
+ *   @param brightness [Numeric] The percent change in the brightness
+ *   @param saturation [Numeric] The percent change in the saturation
+ *   @param hue [Numeric] The percent change in the hue
  *   @return [Magick::Image] a new image
  */
 VALUE
@@ -9652,7 +9660,7 @@ Image_monochrome_q(VALUE self)
 /**
  * Tile size and offset within an image montage. Only valid for montage images.
  *
- * @return [String] the tile size and offset
+ * @return [String, nil] the tile size and offset
  */
 VALUE
 Image_montage(VALUE self)
@@ -9725,9 +9733,9 @@ motion_blur(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
  * blurring motion.
  *
  * @overload motion_blur(radius = 0.0, sigma = 1.0, angle = 0.0)
- *   @param radius [Float] The radius
- *   @param sigma [Float] The standard deviation
- *   @param angle [Float] The angle (in degrees)
+ *   @param radius [Numeric] The radius
+ *   @param sigma [Numeric] The standard deviation
+ *   @param angle [Numeric] The angle (in degrees)
  *   @return [Magick::Image] a new image
  */
 VALUE
@@ -9795,7 +9803,6 @@ Image_negate(int argc, VALUE *argv, VALUE self)
  * @overload negate_channel(grayscale = false, *channels)
  *   @param grayscale [Boolean] If the grayscale argument is true, only the grayscale values are
  *     negated.
- *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
  * @return [Magick::Image] a new image
@@ -10010,7 +10017,11 @@ Image_normalize(VALUE self)
  *
  * @overload normalize_channel(channel = Magick::AllChannels)
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
- *   @return [Magick::Image] a new image
+ *
+ * @overload normalize_channel(*channels)
+ *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
+ *
+ * @return [Magick::Image] a new image
  */
 VALUE
 Image_normalize_channel(int argc, VALUE *argv, VALUE self)
@@ -10075,7 +10086,7 @@ Image_normalized_maximum_error(VALUE self)
 /**
  * Return the number of unique colors in the image.
  *
- * @return [Numeric] number of unique colors
+ * @return [Integer] number of unique colors
  */
 VALUE
 Image_number_colors(VALUE self)
@@ -10100,7 +10111,7 @@ Image_number_colors(VALUE self)
 /**
  * Get the number of bytes to skip over when reading raw image.
  *
- * @return [Number] the offset
+ * @return [Integer] the offset
  */
 VALUE
 Image_offset(VALUE self)
@@ -10111,8 +10122,8 @@ Image_offset(VALUE self)
 /**
  * Set the number of bytes to skip over when reading raw image.
  *
- * @param val [Number] the offset
- * @return [Number] the given offset
+ * @param val [Numeric] the offset
+ * @return [Numeric] the given offset
  */
 VALUE
 Image_offset_eq(VALUE self, VALUE val)
@@ -10125,7 +10136,7 @@ Image_offset_eq(VALUE self, VALUE val)
  * Apply a special effect filter that simulates an oil painting.
  *
  * @overload oil_paint(radius = 3.0)
- *   @param radius [Float] The radius of the Gaussian in pixels.
+ *   @param radius [Numeric] The radius of the Gaussian in pixels.
  *   @return [Magick::Image] a new image
  */
 VALUE
@@ -10230,7 +10241,7 @@ Image_opaque(VALUE self, VALUE target, VALUE fill)
  *   @param fill [Magick::Pixel, String] the color for filling
  *   @param invert [Boolean] If true, the target pixels are all the pixels that are not the target
  *     color. The default is the value of the target image's fuzz attribute
- *   @param fuzz [Float] Colors within this distance are considered equal to the target color.
+ *   @param fuzz [Numeric] Colors within this distance are considered equal to the target color.
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *
  * @overload opaque_channel(target, fill, invert, fuzz, *channels)
@@ -10238,7 +10249,7 @@ Image_opaque(VALUE self, VALUE target, VALUE fill)
  *   @param fill [Magick::Pixel, String] the color for filling
  *   @param invert [Boolean] If true, the target pixels are all the pixels that are not the target
  *     color. The default is the value of the target image's fuzz attribute
- *   @param fuzz [Float] Colors within this distance are considered equal to the target color.
+ *   @param fuzz [Numeric] Colors within this distance are considered equal to the target color.
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
  * @return [Magick::Image] a new image
@@ -10462,11 +10473,11 @@ Image_page_eq(VALUE self, VALUE rect)
  * Changes the opacity value of all the pixels that match color to the value specified by opacity.
  * If invert is true, changes the pixels that don't match color.
  *
- * @overload paint_transparent(target, invert, fuzz, alpha: Magick::TransparentAlpha)
- *   @param target [Magick::Pixel, String] the color name
+ * @overload paint_transparent(color, invert, fuzz, alpha: Magick::TransparentAlpha)
+ *   @param color [Magick::Pixel, String] the color name
  *   @param invert [Boolean] If true, the target pixels are all the pixels that are not the target
  *     color.
- *   @param fuzz [Float] By default the pixel must match exactly, but you can specify a tolerance
+ *   @param fuzz [Numeric] By default the pixel must match exactly, but you can specify a tolerance
  *     level by passing a positive value.
  *   @param alpha [Numeric] The new alpha value, either an alpha value or a number between 0 and
  *     QuantumRange. The default is TransparentAlpha.
@@ -10574,6 +10585,9 @@ Image_palette_q(VALUE self)
 /**
  * Returns all the properties of an image or image sequence except for the pixels.
  *
+ * @param file_arg [File, String] the file containing image data or file name
+ * @yield [info]
+ * @yieldparam info [Magick::Image::Info]
  * @return [Array<Magick::Image>] an array of 1 or more new image objects (without pixel data)
  * @see Image#read
  */
@@ -10812,7 +10826,7 @@ Image_pixel_interpolation_method_eq(VALUE self, VALUE method)
  * font_weight, gravity, pointsize, stroke, stroke_width, text_antialias, undercolor.
  *
  * @overload polaroid(angle = -5.0)
- *   @param angle [Float] The resulting image is rotated by this amount, measured in degrees.
+ *   @param angle [Numeric] The resulting image is rotated by this amount, measured in degrees.
  *
  * @overload polaroid(angle = -5.0)
  *   If present a block, optional arguments may be specified in a block associated with the method.
@@ -10821,8 +10835,9 @@ Image_pixel_interpolation_method_eq(VALUE self, VALUE method)
  *   use options.shadow_color.
  *   To specify a different border color (that is, the color of the image border) use options.border_color.
  *   Both of these methods accept either a color name or a Pixel argument.
- *   @param angle [Float] The resulting image is rotated by this amount, measured in degrees.
- *   @yield [Magick::Image::Info]
+ *   @param angle [Numeric] The resulting image is rotated by this amount, measured in degrees.
+ *   @yield [opt]
+ *   @yieldparam opt [Magick::Image::PolaroidOptions]
  *
  * @return [Magick::Image] a new image
  */
@@ -10963,7 +10978,7 @@ Image_preview(VALUE self, VALUE preview)
  * Set the image profile. If "profile" is nil, deletes the profile. Otherwise "profile" must be a
  * string containing the specified profile.
  *
- * @param name [String] The profile name, or "*" to represent all the profiles in the image.
+ * @param name [String, nil] The profile name, or "*" to represent all the profiles in the image.
  * @param profile [String] The profile value, or nil to cause the profile to be removed.
  * @return [Magick::Image] self
  */
@@ -10986,7 +11001,7 @@ Image_profile_bang(VALUE self, VALUE name, VALUE profile)
 /**
  * Get image quality.
  *
- * @return [Numeric] the quality
+ * @return [Integer] the quality
  */
 VALUE
 Image_quality(VALUE self)
@@ -10998,7 +11013,7 @@ Image_quality(VALUE self)
 /**
  * Return the image depth to the nearest Quantum (8, 16, or 32).
  *
- * @return [Numeric] image depth
+ * @return [Integer] image depth
  */
 VALUE
 Image_quantum_depth(VALUE self)
@@ -11023,12 +11038,12 @@ Image_quantum_depth(VALUE self)
  *
  * @overload quantum_operator(quantum_expression_op, rvalue, channel = Magick::AllChannels)
  *   @param quantum_expression_op [Magick::QuantumExpressionOperator] the operator
- *   @param rvalue [Float] the operation rvalue.
+ *   @param rvalue [Numeric] the operation rvalue.
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *
  * @overload quantum_operator(quantum_expression_op, rvalue, *channels)
  *   @param quantum_expression_op [Magick::QuantumExpressionOperator] the operator
- *   @param rvalue [Float] the operation rvalue.
+ *   @param rvalue [Numeric] the operation rvalue.
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
  * @return [Magick::Image] self
@@ -11276,7 +11291,7 @@ Image_quantize(int argc, VALUE *argv, VALUE self)
 /**
  * Applies a radial blur to the image.
  *
- * @param angle_obj [Float] the angle (in degrees)
+ * @param angle_obj [Numeric] the angle (in degrees)
  * @return [Magick::Image] a new image
  */
 VALUE
@@ -11309,11 +11324,11 @@ Image_radial_blur(VALUE self, VALUE angle_obj)
  * Applies a radial blur to the selected image channels.
  *
  * @overload radial_blur_channel(angle, channel = Magick::AllChannels)
- *   @param angle [Float] the angle (in degrees)
+ *   @param angle [Numeric] the angle (in degrees)
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *
  * @overload radial_blur_channel(angle, *channels)
- *   @param angle [Float] the angle (in degrees)
+ *   @param angle [Numeric] the angle (in degrees)
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
  * @return [Magick::Image] a new image
@@ -11495,6 +11510,8 @@ Image_raise(int argc, VALUE *argv, VALUE self)
  * Call ReadImage.
  *
  * @param file_arg [File, String] the file containing image data or file name
+ * @yield [info]
+ * @yieldparam info [Magick::Image::Info]
  * @return [Array<Magick::Image>] an array of 1 or more new image objects
  */
 VALUE
@@ -11624,7 +11641,7 @@ rd_image(VALUE klass ATTRIBUTE_UNUSED, VALUE file, gvl_function_t fp)
  * sized matrices, typically you use a 5x5 for an RGBA image and a 6x6 for CMYKA. Populate the last
  * row with normalized values to translate.
  *
- * @param color_matrix [Array<Float>] An array of Float values representing the recolor matrix.
+ * @param color_matrix [Array<Numeric>] An array of Float values representing the recolor matrix.
  * @return [Magick::Image] a new image
  */
 VALUE
@@ -11702,6 +11719,8 @@ Image_recolor(VALUE self, VALUE color_matrix)
  * Read a Base64-encoded image.
  *
  * @param content [String] the content
+ * @yield [info]
+ * @yieldparam info [Magick::Image::Info]
  * @return [Array<Magick::Image>] an array of new images
  */
 VALUE
@@ -12056,10 +12075,10 @@ resample(int bang, int argc, VALUE *argv, VALUE self)
  * specifying the resample resolution.
  *
  * @overload resample(x_resolution = 72.0, y_resolution = 72.0, filter = self.filter, blur = self.blur)
- *   @param x_resolution [Float] the target horizontal resolution.
- *   @param y_resolution [Float] the target vertical resolution.
+ *   @param x_resolution [Numeric] the target horizontal resolution.
+ *   @param y_resolution [Numeric] the target vertical resolution.
  *   @param filter [Magick::FilterType] the filter type
- *   @param blur [Float] the blur size
+ *   @param blur [Numeric] the blur size
  *   @return [Magick] a new image
  *   @see Image#resample!
  */
@@ -12076,10 +12095,10 @@ Image_resample(int argc, VALUE *argv, VALUE self)
  * In-place form of {Image#resample}.
  *
  * @overload resample!(x_resolution = 72.0, y_resolution = 72.0, filter = self.filter, blur = self.blur)
- *   @param x_resolution [Float] the target horizontal resolution.
- *   @param y_resolution [Float] the target vertical resolution.
+ *   @param x_resolution [Numeric] the target horizontal resolution.
+ *   @param y_resolution [Numeric] the target vertical resolution.
  *   @param filter [Magick::FilterType] the filter type
- *   @param blur [Float] the blur size
+ *   @param blur [Numeric] the blur size
  *   @return [Magick] a new image
  *   @see Image#resample
  */
@@ -12193,15 +12212,15 @@ resize(int bang, int argc, VALUE *argv, VALUE self)
  * Scale an image to the desired dimensions using the specified filter and blur factor.
  *
  * @overload resize(scale)
- *   @param scale [Float] You can use this argument instead of specifying the desired width and
+ *   @param scale [Numeric] You can use this argument instead of specifying the desired width and
  *     height. The percentage size change. For example, 1.25 makes the new image 125% of the size of
  *     the receiver. The scale factor 0.5 makes the new image 50% of the size of the receiver.
  *
  * @overload resize(cols, rows, filter, blur)
- *   @param cols [Float] The desired width
- *   @param rows [Float] The desired height.
+ *   @param cols [Numeric] The desired width
+ *   @param rows [Numeric] The desired height.
  *   @param filter [Magick::FilterType] the filter type
- *   @param blur [Float] the blur size
+ *   @param blur [Numeric] the blur size
  *
  * @return [Magick::Image] a new image
  * @see Image#resize!
@@ -12219,15 +12238,15 @@ Image_resize(int argc, VALUE *argv, VALUE self)
  * In-place form of {Image#resize}.
  *
  * @overload resize!(scale)
- *   @param scale [Float] You can use this argument instead of specifying the desired width and
+ *   @param scale [Numeric] You can use this argument instead of specifying the desired width and
  *     height. The percentage size change. For example, 1.25 makes the new image 125% of the size of
  *     the receiver. The scale factor 0.5 makes the new image 50% of the size of the receiver.
  *
  * @overload resize!(cols, rows, filter, blur)
- *   @param cols [Float] The desired width
- *   @param rows [Float] The desired height.
+ *   @param cols [Numeric] The desired width
+ *   @param rows [Numeric] The desired height.
  *   @param filter [Magick::FilterType] the filter type
- *   @param blur [Float] the blur size
+ *   @param blur [Numeric] the blur size
  *
  * @return [Magick::Image] a new image
  * @see Image#resize!
@@ -12340,10 +12359,10 @@ rotate(int bang, int argc, VALUE *argv, VALUE self)
  * black.
  *
  * @overload rotate(degrees)
- *   @param degrees [Float] The number of degrees to rotate the image.
+ *   @param degrees [Numeric] The number of degrees to rotate the image.
  *
  * @overload rotate(degrees, qualifier)
- *   @param degrees [Float] The number of degrees to rotate the image.
+ *   @param degrees [Numeric] The number of degrees to rotate the image.
  *   @param qualifier [String] If present, either ">" or "<". If ">", rotates the image only if the
  *     image's width exceeds its height. If "<" rotates the image only if its height exceeds its
  *     width. If this argument is omitted the image is always rotated.
@@ -12364,10 +12383,10 @@ Image_rotate(int argc, VALUE *argv, VALUE self)
  * In-place form of {Image#rotate}.
  *
  * @overload rotate!(degrees)
- *   @param degrees [Float] The number of degrees to rotate the image.
+ *   @param degrees [Numeric] The number of degrees to rotate the image.
  *
  * @overload rotate!(degrees, qualifier)
- *   @param degrees [Float] The number of degrees to rotate the image.
+ *   @param degrees [Numeric] The number of degrees to rotate the image.
  *   @param qualifier [String] If present, either ">" or "<". If ">", rotates the image only if the
  *     image's width exceeds its height. If "<" rotates the image only if its height exceeds its
  *     width. If this argument is omitted the image is always rotated.
@@ -12386,7 +12405,7 @@ Image_rotate_bang(int argc, VALUE *argv, VALUE self)
 /**
  * Return image rows.
  *
- * @return [Numeric] the image rows
+ * @return [Integer] the image rows
  */
 VALUE
 Image_rows(VALUE self)
@@ -12400,7 +12419,7 @@ Image_rows(VALUE self)
  * method does not introduce any additional color into the scaled image.
  *
  * @overload sample(scale)
- *   @param scale [Float] You can use this argument instead of specifying the desired width and
+ *   @param scale [Numeric] You can use this argument instead of specifying the desired width and
  *     height. The percentage size change. For example, 1.25 makes the new image 125% of the size of
  *     the receiver. The scale factor 0.5 makes the new image 50% of the size of the receiver.
  *
@@ -12424,7 +12443,7 @@ Image_sample(int argc, VALUE *argv, VALUE self)
  * In-place form of {Image#sample}.
  *
  * @overload sample!(scale)
- *   @param scale [Float] You can use this argument instead of specifying the desired width and
+ *   @param scale [Numeric] You can use this argument instead of specifying the desired width and
  *     height. The percentage size change. For example, 1.25 makes the new image 125% of the size of
  *     the receiver. The scale factor 0.5 makes the new image 50% of the size of the receiver.
  *
@@ -12576,7 +12595,7 @@ scale(int bang, int argc, VALUE *argv, VALUE self, gvl_function_t fp)
  * Return the scene number assigned to the image the last time the image was written to a
  * multi-image image file.
  *
- * @return [Numeric] the image scene
+ * @return [Integer] the image scene
  */
 VALUE
 Image_scene(VALUE self)
@@ -12589,16 +12608,16 @@ Image_scene(VALUE self)
  * Selectively blur pixels within a contrast threshold.
  *
  * @overload selective_blur_channel(radius, sigma, threshold, channel = Magick::AllChannels)
- *   @param radius [Float] the radius value
- *   @param sigma [Float] the sigma value
- *   @param threshold [Float, String] Either a number between 0.0 and 1.0 or a string in the form
+ *   @param radius [Numeric] the radius value
+ *   @param sigma [Numeric] the sigma value
+ *   @param threshold [Numeric, String] Either a number between 0.0 and 1.0 or a string in the form
  *     "NN%"
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *
  * @overload selective_blur_channel(radius, sigma, threshold, *channels)
- *   @param radius [Float] the radius value
- *   @param sigma [Float] the sigma value
- *   @param threshold [Float, String] Either a number between 0.0 and 1.0 or a string in the form
+ *   @param radius [Numeric] the radius value
+ *   @param sigma [Numeric] the sigma value
+ *   @param threshold [Numeric, String] Either a number between 0.0 and 1.0 or a string in the form
  *     "NN%"
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
@@ -12737,7 +12756,7 @@ Image_separate(int argc, VALUE *argv, VALUE self)
  * sepia toning.
  *
  * @overload sepiatone(threshold = Magick::QuantumRange)
- *   @param threshold [Float] Threshold ranges from 0 to QuantumRange and is a measure of the extent
+ *   @param threshold [Numeric] Threshold ranges from 0 to QuantumRange and is a measure of the extent
  *     of the sepia toning. A threshold of 80% is a good starting point for a reasonable tone.
  *   @return [Magick::Image] a new image
  */
@@ -12779,9 +12798,9 @@ Image_sepiatone(int argc, VALUE *argv, VALUE self)
  *   @param colorspace [Magick::ColorspaceType] A ColorspaceType value. Empirical evidence suggests
  *     that distances in YUV or YIQ correspond to perceptual color differences more closely than do
  *     distances in RGB space. The image is then returned to RGB colorspace after color reduction.
- *   @param cluster_threshold [Float] The number of pixels in each cluster must exceed the the
+ *   @param cluster_threshold [Numeric] The number of pixels in each cluster must exceed the the
  *     cluster threshold to be considered valid.
- *   @param smoothing_threshold [Float] The smoothing threshold eliminates noise in the second
+ *   @param smoothing_threshold [Numeric] The smoothing threshold eliminates noise in the second
  *     derivative of the histogram. As the value is increased, you can expect a smoother second
  *     derivative.
  *   @param verbose [Boolean] If true, segment prints detailed information about the identified classes.
@@ -12842,10 +12861,12 @@ Image_segment(int argc, VALUE *argv, VALUE self)
  * and the associated value is the property value.
  *
  * @overload properties
- *   @return [Hash] the properties
+ *   @return [Hash<String, String>] the properties
  *
  * @overload properties
- *   @yield [Magick::Image::Info]
+ *   @yield [property, value]
+ *   @yieldparam property [String] property key
+ *   @yieldparam value [String] property value
  *   @return [Magick::Image] self
  */
 VALUE
@@ -12932,9 +12953,9 @@ Image_properties(VALUE self)
  *
  * @overload shade(shading = false, azimuth = 30.0, elevation = 30.0)
  *   @param shading [Boolean] If true, shade shades the intensity of each pixel.
- *   @param azimuth [Float] The light source direction. The azimuth is measured in degrees. 0 is at
+ *   @param azimuth [Numeric] The light source direction. The azimuth is measured in degrees. 0 is at
  *     9 o'clock. Increasing values move the light source counter-clockwise.
- *   @param elevation [Float] The light source direction. The azimuth is measured in degrees. 0 is
+ *   @param elevation [Numeric] The light source direction. The azimuth is measured in degrees. 0 is
  *     at 9 o'clock. Increasing values move the light source counter-clockwise.
  *   @return [Magick::Image] a new image
  */
@@ -12979,10 +13000,10 @@ Image_shade(int argc, VALUE *argv, VALUE self)
  * @overload Image#shadow(x_offset = 4, y_offset = 4, sigma = 4.0, alpha = 1.0)
  *   @param x_offset [Numeric] The shadow x-offset
  *   @param y_offset [Numeric] The shadow y-offset
- *   @param sigma [Float] The standard deviation of the Gaussian operator used to produce the
+ *   @param sigma [Numeric] The standard deviation of the Gaussian operator used to produce the
  *     shadow. The higher the number, the "blurrier" the shadow, but the longer it takes to produce
  *     the shadow. Must be > 0.0.
- *   @param alpha [String, Float] The percent alpha of the shadow. The argument may be a
+ *   @param alpha [Numeric, String] The percent alpha of the shadow. The argument may be a
  *     floating-point numeric value or a string in the form "NN%".
  *   @return [Magick::Image] a new image
  */
@@ -13035,8 +13056,8 @@ Image_shadow(int argc, VALUE *argv, VALUE self)
  * Sharpen an image.
  *
  * @overload sharpen(radius = 0.0, sigma = 1.0)
- *   @param radius [Float] The radius of the Gaussian operator.
- *   @param sigma [Float] The sigma (standard deviation) of the Gaussian operator.
+ *   @param radius [Numeric] The radius of the Gaussian operator.
+ *   @param sigma [Numeric] The sigma (standard deviation) of the Gaussian operator.
  *   @return [Magick::Image] a new image
  */
 VALUE
@@ -13050,13 +13071,13 @@ Image_sharpen(int argc, VALUE *argv, VALUE self)
  * Sharpen image on a channel.
  *
  * @overload sharpen_channel(radius = 0.0, sigma = 1.0, channel = Magick::AllChannels)
- *   @param radius [Float] The radius of the Gaussian operator.
- *   @param sigma [Float] The sigma (standard deviation) of the Gaussian operator.
+ *   @param radius [Numeric] The radius of the Gaussian operator.
+ *   @param sigma [Numeric] The sigma (standard deviation) of the Gaussian operator.
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *
  * @overload sharpen_channel(radius = 0.0, sigma = 1.0, *channels)
- *   @param radius [Float] The radius of the Gaussian operator.
- *   @param sigma [Float] The sigma (standard deviation) of the Gaussian operator.
+ *   @param radius [Numeric] The radius of the Gaussian operator.
+ *   @param sigma [Numeric] The sigma (standard deviation) of the Gaussian operator.
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
  * @return [Magick::Image] a new image
@@ -13149,8 +13170,8 @@ Image_shave_bang(VALUE self, VALUE width, VALUE height)
  * measured relative to the X axis. Empty triangles left over from shearing the image are filled
  * with the background color.
  *
- * @param x_shear [Float] the x shear (in degrees)
- * @param y_shear [Float] the y shear (in degrees)
+ * @param x_shear [Numeric] the x shear (in degrees)
+ * @param y_shear [Numeric] the y shear (in degrees)
  * @return [Magick::Image] a new image
  */
 VALUE
@@ -13179,10 +13200,9 @@ Image_shear(VALUE self, VALUE x_shear, VALUE y_shear)
  * saturating highlights or shadows.
  *
  * @overload sigmoidal_contrast_channel(contrast = 3.0, midpoint = 50.0, sharpen = false, channel = Magick::AllChannels)
-
- *   @param contrast [Float] indicates how much to increase the contrast
+ *   @param contrast [Numeric] indicates how much to increase the contrast
  *     (0 is none; 3 is typical; 20 is pushing it)
- *   @param midpoint [Float] indicates where midtones fall in the resultant image (0 is white; 50%
+ *   @param midpoint [Numeric] indicates where midtones fall in the resultant image (0 is white; 50%
  *     is middle-gray; 100% is black). Note that "50%" means "50% of the quantum range." This argument
  *     is a number between 0 and QuantumRange. To specify "50%" use QuantumRange * 0.50.
  *   @param sharpen [Boolean] Set sharpen to true to increase the image contrast otherwise the
@@ -13190,9 +13210,9 @@ Image_shear(VALUE self, VALUE x_shear, VALUE y_shear)
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *
  * @overload sigmoidal_contrast_channel(contrast = 3.0, midpoint = 50.0, sharpen = false, *channels)
- *   @param contrast [Float] indicates how much to increase the contrast
+ *   @param contrast [Numeric] indicates how much to increase the contrast
  *     (0 is none; 3 is typical; 20 is pushing it)
- *   @param midpoint [Float] indicates where midtones fall in the resultant image (0 is white; 50%
+ *   @param midpoint [Numeric] indicates where midtones fall in the resultant image (0 is white; 50%
  *     is middle-gray; 100% is black). Note that "50%" means "50% of the quantum range." This argument
  *     is a number between 0 and QuantumRange. To specify "50%" use QuantumRange * 0.50.
  *   @param sharpen [Boolean] Set sharpen to true to increase the image contrast otherwise the
@@ -13292,9 +13312,9 @@ Image_signature(VALUE self)
  * Simulates a pencil sketch. For best results start with a grayscale image.
  *
  * @overload sketch(radius = 0.0, sigma = 1.0, angle = 0.0)
- *   @param radius [Float] The radius
- *   @param sigma [Float] The standard deviation
- *   @param angle [Float] The angle (in degrees)
+ *   @param radius [Numeric] The radius
+ *   @param sigma [Numeric] The standard deviation
+ *   @param angle [Numeric] The angle (in degrees)
  *   @return [Magick::Image] a new image
  *   @see motion_blur
  */
@@ -13312,7 +13332,7 @@ Image_sketch(int argc, VALUE *argv, VALUE self)
  * QuantumRange and is a measure of the extent of the solarization.
  *
  * @overload solarize(threshold = 50.0)
- *   @param threshold [Float] Ranges from 0 to QuantumRange and is a measure of the extent of the
+ *   @param threshold [Numeric] Ranges from 0 to QuantumRange and is a measure of the extent of the
  *   solarization.
  *   @return a new image
  */
@@ -13655,7 +13675,7 @@ Image_splice(int argc, VALUE *argv, VALUE self)
  * Randomly displace each pixel in a block defined by "radius".
  *
  * @overload spread(radius = 3.0)
- *   @param radius [Float] The radius
+ *   @param radius [Numeric] The radius
  *   @return [Magick::Image] a new image
  */
 VALUE
@@ -14029,7 +14049,7 @@ Image_strip_bang(VALUE self)
  * through which each pixel is moved. You get a more dramatic effect as the degrees move from 1 to
  * 360.
  *
- * @param degrees_obj [Float] the degrees
+ * @param degrees_obj [Numeric] the degrees
  * @return [Magick::Image] a new image
  */
 VALUE
@@ -14162,7 +14182,7 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj,
  * Change the value of individual pixels based on the intensity of each pixel compared to
  * threshold. The result is a high-contrast, two color image.
  *
- * @param threshold_obj [Float] the threshold
+ * @param threshold_obj [Numeric] the threshold
  * @return [Magick::Image] a new image
  */
 VALUE
@@ -14351,11 +14371,12 @@ thumbnail(int bang, int argc, VALUE *argv, VALUE self)
  * image is < 10% of the original.
  *
  * @overload thumbnail(scale)
- *   @param scale [Float] The desired size represented as a floating-point number. For example, to
+ *   @param scale [Numeric] The desired size represented as a floating-point number. For example, to
  *     make a thumbnail that is 9.5% of the size of the original image, use 0.095.
  *
  * @overload thumbnail(cols, rows)
  *   @param cols [Numeric] The desired width in pixels.
+ *   @param rows [Numeric] The desired height.
  *
  * @return [Magick::Image] a new image
  * @see Image#thumbnail!
@@ -14373,11 +14394,12 @@ Image_thumbnail(int argc, VALUE *argv, VALUE self)
  * image is < 10% of the original.  In-place form of {Image#thumbnail}.
  *
  * @overload thumbnail!(scale)
- *   @param scale [Float] The desired size represented as a floating-point number. For example, to
+ *   @param scale [Numeric] The desired size represented as a floating-point number. For example, to
  *     make a thumbnail that is 9.5% of the size of the original image, use 0.095.
  *
  * @overload thumbnail!(cols, rows)
  *   @param cols [Numeric] The desired width in pixels.
+ *   @param rows [Numeric] The desired height.
  *
  * @return [Magick::Image] a new image
  * @see Image#thumbnail
@@ -14395,7 +14417,7 @@ Image_thumbnail_bang(int argc, VALUE *argv, VALUE self)
  * This attribute is used in conjunction with the delay attribute to establish the amount of time
  * that must elapse between frames in an animation.The default is 100.
  *
- * @return [Numeric] ticks per second
+ * @return [Integer] ticks per second
  */
 VALUE
 Image_ticks_per_second(VALUE self)
@@ -14429,10 +14451,10 @@ Image_ticks_per_second_eq(VALUE self, VALUE tps)
  *
  * @overload tint(tint, red_alpha, green_alpha = red_alpha, blue_alpha = red_alpha, alpha_alpha = 1.0)
  *   @param tint [Magick::Pixel, String] the color name
- *   @param red_alpha [Float] the red value
- *   @param green_alpha [Float] the green value
- *   @param blue_alpha [Float] the blue value
- *   @param alpha_alpha [Float] the alpha value
+ *   @param red_alpha [Numeric] the red value
+ *   @param green_alpha [Numeric] the green value
+ *   @param blue_alpha [Numeric] the blue value
+ *   @param alpha_alpha [Numeric] the alpha value
  *   @return a new image
  */
 VALUE
@@ -14506,6 +14528,8 @@ Image_tint(int argc, VALUE *argv, VALUE self)
  * - The magick member of the Image structure determines the format of the
  *   returned blob (GIG, JPEG,  PNG, etc.)
  *
+ * @yield [info]
+ * @yieldparam info [Magick::Image::Info]
  * @return [String] the blob
  * @see Image#from_blob
  */
@@ -14636,7 +14660,7 @@ Image_to_color(VALUE self, VALUE pixel_arg)
 /**
  * Alias for {Image#number_colors}.
  *
- * @return [Numeric] number of unique colors
+ * @return [Integer] number of unique colors
  * @see Image#number_colors
  */
 VALUE
@@ -14869,7 +14893,7 @@ Image_transpose(VALUE self)
  * rotating them by 90 degrees.
  * In-place form of {Image#transpose}.
  *
- * @return [Magick::Image] a new image
+ * @return [Magick::Image] self
  * @see Image#transpose
  */
 VALUE
@@ -14899,7 +14923,7 @@ Image_transverse(VALUE self)
  * them by 270 degrees
  * In-place form of {Image#transverse}.
  *
- * @return [Magick::Image] a new image
+ * @return [Magick::Image] self
  * @see Image#transverse
  */
 VALUE
@@ -14999,7 +15023,7 @@ Image_trim(int argc, VALUE *argv, VALUE self)
  *     image. This may cause the image to appear to be surrounded by blank or black space when viewed
  *     with an external viewer. This only occurs when the image is saved in a format (such as GIF)
  *     that saves offset information. To reset the offset data, use true as the argument to trim.
- *   @return [Magick::Image] a new image
+ *   @return [Magick::Image] self
  *   @see Image#trim
  */
 VALUE
@@ -15276,11 +15300,11 @@ unsharp_mask_args(int argc, VALUE *argv, double *radius, double *sigma,
  * apply the diffence amount.
  *
  * @overload unsharp_mask(radius = 0.0, sigma = 1.0, amount = 1.0, threshold = 0.05)
- *   @param radius [Float] The radius of the Gaussian operator.
- *   @param sigma [Float] The standard deviation of the Gaussian operator.
- *   @param amount [Float] The percentage of the blurred image to be added to the receiver,
+ *   @param radius [Numeric] The radius of the Gaussian operator.
+ *   @param sigma [Numeric] The standard deviation of the Gaussian operator.
+ *   @param amount [Numeric] The percentage of the blurred image to be added to the receiver,
  *     specified as a fraction between 0 and 1.0
- *   @param threshold [Float] The threshold needed to apply the amount, specified as a fraction
+ *   @param threshold [Numeric] The threshold needed to apply the amount, specified as a fraction
  *     between 0 and 1.0
  *   @return [Magick::Image] a new image
  */
@@ -15313,20 +15337,20 @@ Image_unsharp_mask(int argc, VALUE *argv, VALUE self)
  * Only the specified channels are sharpened.
  *
  * @overload unsharp_mask(radius = 0.0, sigma = 1.0, amount = 1.0, threshold = 0.05, channel = Magick::AllChannels)
- *   @param radius [Float] The radius of the Gaussian operator.
- *   @param sigma [Float] The standard deviation of the Gaussian operator.
- *   @param amount [Float] The percentage of the blurred image to be added to the receiver,
+ *   @param radius [Numeric] The radius of the Gaussian operator.
+ *   @param sigma [Numeric] The standard deviation of the Gaussian operator.
+ *   @param amount [Numeric] The percentage of the blurred image to be added to the receiver,
  *     specified as a fraction between 0 and 1.0
- *   @param threshold [Float] The threshold needed to apply the amount, specified as a fraction
+ *   @param threshold [Numeric] The threshold needed to apply the amount, specified as a fraction
  *     between 0 and 1.0
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *
  * @overload unsharp_mask(radius = 0.0, sigma = 1.0, amount = 1.0, threshold = 0.05, *channels)
- *   @param radius [Float] The radius of the Gaussian operator.
- *   @param sigma [Float] The standard deviation of the Gaussian operator.
- *   @param amount [Float] The percentage of the blurred image to be added to the receiver,
+ *   @param radius [Numeric] The radius of the Gaussian operator.
+ *   @param sigma [Numeric] The standard deviation of the Gaussian operator.
+ *   @param amount [Numeric] The percentage of the blurred image to be added to the receiver,
  *     specified as a fraction between 0 and 1.0
- *   @param threshold [Float] The threshold needed to apply the amount, specified as a fraction
+ *   @param threshold [Numeric] The threshold needed to apply the amount, specified as a fraction
  *     between 0 and 1.0
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
@@ -15371,10 +15395,10 @@ Image_unsharp_mask_channel(int argc, VALUE *argv, VALUE self)
  * Soften the edges of an image.
  *
  * @overload vignette(horz_radius = self.columns*0.1+0.5, vert_radius = self.rows*0.1+0.5, radius = 0.0, sigma = 1.0)
- *   @param horz_radius [Float] Influences the amount of background color in the horizontal dimension.
- *   @param vert_radius [Float] Influences the amount of background color in the vertical dimension.
- *   @param radius [Float] Controls the amount of blurring.
- *   @param sigma [Float] Controls the amount of blurring.
+ *   @param horz_radius [Numeric] Influences the amount of background color in the horizontal dimension.
+ *   @param vert_radius [Numeric] Influences the amount of background color in the vertical dimension.
+ *   @param radius [Numeric] Controls the amount of blurring.
+ *   @param sigma [Numeric] Controls the amount of blurring.
  *   @return [Magick::Image] a new image
  */
 VALUE
@@ -15476,11 +15500,11 @@ Image_virtual_pixel_method_eq(VALUE self, VALUE method)
  * @overload watermark(mark, brightness = 1.0, saturation = 1.0, x_off = 0, y_off = 0)
  *   @param mark [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
  *     imagelist, uses the current image.
- *   @param brightness [Float] The fraction of the lightness component of the watermark pixels to be
+ *   @param brightness [Numeric, String] The fraction of the lightness component of the watermark pixels to be
  *     composited onto the target image. Must be a non-negative number or a string in the form
  *     "NN%". If lightness is a number it is interpreted as a percentage. Both 0.25 and "25%" mean
  *     25%. The default is 100%.
- *   @param saturation [Float] The fraction of the saturation component of the watermark pixels to
+ *   @param saturation [Numeric, String] The fraction of the saturation component of the watermark pixels to
  *     be composited onto the target image. Must be a non-negative number or a string in the form
  *     "NN%". If lightness is a number it is interpreted as a percentage. Both 0.25 and "25%" mean
  *     25%. The default is 100%.
@@ -15491,11 +15515,11 @@ Image_virtual_pixel_method_eq(VALUE self, VALUE method)
  * @overload watermark(mark, brightness, saturation, gravity, x_off = 0, y_off = 0)
  *   @param mark [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
  *     imagelist, uses the current image.
- *   @param brightness [Float] The fraction of the lightness component of the watermark pixels to be
+ *   @param brightness [Numeric, String] The fraction of the lightness component of the watermark pixels to be
  *     composited onto the target image. Must be a non-negative number or a string in the form
  *     "NN%". If lightness is a number it is interpreted as a percentage. Both 0.25 and "25%" mean
  *     25%. The default is 100%.
- *   @param saturation [Float] The fraction of the saturation component of the watermark pixels to
+ *   @param saturation [Numeric, String] The fraction of the saturation component of the watermark pixels to
  *     be composited onto the target image. Must be a non-negative number or a string in the form
  *     "NN%". If lightness is a number it is interpreted as a percentage. Both 0.25 and "25%" mean
  *     25%. The default is 100%.
@@ -15578,8 +15602,8 @@ Image_watermark(int argc, VALUE *argv, VALUE self)
  * amplitude and wavelength is specified by the given parameters.
  *
  * @overload wave(amplitude = 25.0, wavelength = 150.0)
- *   @param amplitude [Float] the amplitude
- *   @param wavelength [Float] the wave length
+ *   @param amplitude [Numeric] the amplitude
+ *   @param wavelength [Numeric] the wave length
  *   @return [Magick::Image] a new image
  */
 VALUE
@@ -15623,11 +15647,11 @@ Image_wave(int argc, VALUE *argv, VALUE self)
  * appears in the reflection.
  *
  * @overload wet_floor(initial = 0.5, rate = 1.0)
- *   @param initial [Float] A value between 0.0 and 1.0 that specifies the initial percentage of
+ *   @param initial [Numeric] A value between 0.0 and 1.0 that specifies the initial percentage of
  *     transparency. Higher values cause the top of the reflection to be more transparent, lower
  *     values less transparent. The default is 0.5, which means that the top of the reflection is 50%
  *     transparent.
- *   @param rate [Float] A non-negative value that specifies how rapidly the reflection transitions
+ *   @param rate [Numeric] A non-negative value that specifies how rapidly the reflection transitions
  *     from the initial level of transparency to entirely transparent. The default value is 1.0, which
  *     means that the transition occurs in 1/3 the image height. Values greater than 1.0 speed up the
  *     transition (the reflection will have fewer rows), values lower than 1.0 slow down the
@@ -15809,9 +15833,9 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
  * unchanged.
  *
  * @overload white_threshold(red, green, blue, alpha: alpha)
- *  @param red [Float] the number for red channel
- *  @param green [Float] the number for green channel
- *  @param blue [Float] the number for blue channel
+ *  @param red [Numeric] the number for red channel
+ *  @param green [Numeric] the number for green channel
+ *  @param blue [Numeric] the number for blue channel
  *  @param alpha [Numeric] the number for alpha channel
  *  @return [Magick::Image] a new image
  *  @see Image#black_threshold
@@ -15921,6 +15945,8 @@ void add_format_prefix(Info *info, VALUE file)
  * Write the image to the file.
  *
  * @param file [File, String] the file
+ * @yield [info]
+ * @yieldparam info [Magick::Image::Info]
  * @return [Magick::Image] self
  */
 VALUE
@@ -15995,8 +16021,8 @@ Image_x_resolution(VALUE self)
 /**
  * Set the horizontal resolution of the image.
  *
- * @param val [Float] the resolution
- * @return [Float] the given resolution
+ * @param val [Numeric] the resolution
+ * @return [Numeric] the given resolution
  */
 VALUE
 Image_x_resolution_eq(VALUE self, VALUE val)
@@ -16018,8 +16044,8 @@ Image_y_resolution(VALUE self)
 /**
  * Set the vertical resolution of the image.
  *
- * @param val [Float] the resolution
- * @return [Float] the given resolution
+ * @param val [Numeric] the resolution
+ * @return [Numeric] the given resolution
  */
 VALUE
 Image_y_resolution_eq(VALUE self, VALUE val)
@@ -16041,8 +16067,8 @@ Image_x_resolution(VALUE self)
 /**
  * Set the horizontal resolution of the image.
  *
- * @param val [Float] the resolution
- * @return [Float] the given resolution
+ * @param val [Numeric] the resolution
+ * @return [Numeric] the given resolution
  */
 VALUE
 Image_x_resolution_eq(VALUE self, VALUE val)
@@ -16064,8 +16090,8 @@ Image_y_resolution(VALUE self)
 /**
  * Set the vertical resolution of the image.
  *
- * @param val [Float] the resolution
- * @return [Float] the given resolution
+ * @param val [Numeric] the resolution
+ * @return [Numeric] the given resolution
  */
 VALUE
 Image_y_resolution_eq(VALUE self, VALUE val)
