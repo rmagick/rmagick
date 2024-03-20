@@ -58,16 +58,17 @@ module RMagick
       return if RUBY_PLATFORM =~ /mswin|mingw/
 
       if find_executable('brew')
-        pkg_config_path = "#{`brew --prefix imagemagick@6`.strip}/lib/pkgconfig"
+        append_pkg_config_path("#{`brew --prefix imagemagick`.strip}/lib/pkgconfig")
+        append_pkg_config_path("#{`brew --prefix imagemagick@6`.strip}/lib/pkgconfig")
       elsif find_executable('pacman')
-        pkg_config_path = '/usr/lib/imagemagick6/pkgconfig'
-      else
-        return
+        append_pkg_config_path('/usr/lib/imagemagick6/pkgconfig')
       end
+    end
 
+    def append_pkg_config_path(path)
       pkg_config_paths = ENV['PKG_CONFIG_PATH'].to_s.split(':')
-      if File.exist?(pkg_config_path) && !pkg_config_paths.include?(pkg_config_path)
-        ENV['PKG_CONFIG_PATH'] = [ENV['PKG_CONFIG_PATH'], pkg_config_path].compact.join(':')
+      if File.exist?(path) && !pkg_config_paths.include?(path)
+        ENV['PKG_CONFIG_PATH'] = [ENV['PKG_CONFIG_PATH'], path].compact.join(':')
       end
     end
 
