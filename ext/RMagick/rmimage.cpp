@@ -9582,9 +9582,12 @@ Image_minify_bang(VALUE self)
  * Changes the brightness, saturation, and hue.
  *
  * @overload modulate(brightness = 1.0, saturation = 1.0, hue = 1.0)
- *   @param brightness [Numeric] The percent change in the brightness
- *   @param saturation [Numeric] The percent change in the saturation
- *   @param hue [Numeric] The percent change in the hue
+ *   @param brightness [Numeric, String] The percent change in the brightness.
+ *     Must be a non-negative number or a string in the form "NN%".
+ *   @param saturation [Numeric, String] The percent change in the saturation.
+ *     Must be a non-negative number or a string in the form "NN%".
+ *   @param hue [Numeric, String] The percent change in the hue.
+ *     Must be a non-negative number or a string in the form "NN%".
  *   @return [Magick::Image] a new image
  */
 VALUE
@@ -9603,11 +9606,11 @@ Image_modulate(int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 3:
-            pct_hue        = 100*NUM2DBL(argv[2]);
+            pct_hue        = rm_percentage(argv[2], 1.0) * 100.0;
         case 2:
-            pct_saturation = 100*NUM2DBL(argv[1]);
+            pct_saturation = rm_percentage(argv[1], 1.0) * 100.0;
         case 1:
-            pct_brightness = 100*NUM2DBL(argv[0]);
+            pct_brightness = rm_percentage(argv[0], 1.0) * 100.0;
             break;
         case 0:
             break;
