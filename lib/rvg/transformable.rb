@@ -89,7 +89,7 @@ module Magick
             cx = Float(args[0])
             cy = Float(args[1])
             @transforms << [:translate, [cx, cy]]
-            @transforms << [:rotate, [angle]]
+            @transforms << [:rotate, [Float(angle)]]
             @transforms << [:translate, [-cx, -cy]]
           else
             raise ArgumentError, "wrong number of arguments (#{args.length} for 1 or 3)"
