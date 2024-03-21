@@ -11,7 +11,11 @@ RSpec.describe Magick::Image, '#modulate' do
     expect { image.modulate(0.5, 0.5) }.not_to raise_error
     expect { image.modulate(0.5, '50%') }.not_to raise_error
     expect { image.modulate(0.5, 0.5, 0.5) }.not_to raise_error
+    expect { image.modulate(0.5, -0.5, -0.5) }.not_to raise_error
     expect { image.modulate(0.5, 0.5, '50%') }.not_to raise_error
+    expect { image.modulate(0.5, '-50%', '-50%') }.not_to raise_error
+    expect { image.modulate(-0.5) }.to raise_error(ArgumentError)
+    expect { image.modulate('-50%') }.to raise_error(ArgumentError)
     expect { image.modulate(0.0, 0.5, 0.5) }.to raise_error(ArgumentError)
     expect { image.modulate(0.5, 0.5, 0.5, 0.5) }.to raise_error(ArgumentError)
     expect { image.modulate('x', 0.5, 0.5) }.to raise_error(ArgumentError)

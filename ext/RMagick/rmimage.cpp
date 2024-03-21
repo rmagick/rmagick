@@ -4582,7 +4582,7 @@ get_black_white_point(Image *image, int argc, VALUE *argv, double *black_point, 
             }
             else
             {
-                *black_point = pixels * rm_str_to_pct(argv[0]);
+                *black_point = pixels * rm_str_to_pct(argv[0], true);
             }
             if (rm_check_num2dbl(argv[1]))
             {
@@ -4590,7 +4590,7 @@ get_black_white_point(Image *image, int argc, VALUE *argv, double *black_point, 
             }
             else
             {
-                *white_point = pixels * rm_str_to_pct(argv[1]);
+                *white_point = pixels * rm_str_to_pct(argv[1], true);
             }
             break;
 
@@ -4601,7 +4601,7 @@ get_black_white_point(Image *image, int argc, VALUE *argv, double *black_point, 
             }
             else
             {
-                *black_point = pixels * rm_str_to_pct(argv[0]);
+                *black_point = pixels * rm_str_to_pct(argv[0], true);
             }
             *white_point = pixels - *black_point;
             break;
@@ -9585,9 +9585,9 @@ Image_minify_bang(VALUE self)
  *   @param brightness [Numeric, String] The percent change in the brightness.
  *     Must be a non-negative number or a string in the form "NN%".
  *   @param saturation [Numeric, String] The percent change in the saturation.
- *     Must be a non-negative number or a string in the form "NN%".
+ *     Must be a number or a string in the form "NN%".
  *   @param hue [Numeric, String] The percent change in the hue.
- *     Must be a non-negative number or a string in the form "NN%".
+ *     Must be a number or a string in the form "NN%".
  *   @return [Magick::Image] a new image
  */
 VALUE
@@ -9606,9 +9606,9 @@ Image_modulate(int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 3:
-            pct_hue        = rm_percentage(argv[2], 1.0) * 100.0;
+            pct_hue        = rm_percentage2(argv[2], 1.0, false) * 100.0;
         case 2:
-            pct_saturation = rm_percentage(argv[1], 1.0) * 100.0;
+            pct_saturation = rm_percentage2(argv[1], 1.0, false) * 100.0;
         case 1:
             pct_brightness = rm_percentage(argv[0], 1.0) * 100.0;
             break;
