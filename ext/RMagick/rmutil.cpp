@@ -360,28 +360,47 @@ rescue_not_str(VALUE arg, VALUE raised_exc ATTRIBUTE_UNUSED)
  *
  * @param arg the argument
  * @param max the maximum allowed value
+ * @param only_positive Accept whether only positive numbers?
  * @return a double
  */
 double
-rm_percentage(VALUE arg, double max)
+rm_percentage2(VALUE arg, double max, bool only_positive)
 {
     double pct;
     char *end;
 
     if (!rm_check_num2dbl(arg))
     {
-        pct = rm_str_to_pct(arg) * max;
+        pct = rm_str_to_pct(arg, only_positive) * max;
     }
     else
     {
         pct = NUM2DBL(arg);
-        if (pct < 0.0)
+        if (pct < 0.0 && only_positive)
         {
             rb_raise(rb_eArgError, "percentages may not be negative (got `%g')", pct);
         }
     }
 
     return pct;
+}
+
+
+/**
+ * Return a double between 0.0 and max (the second argument), inclusive. If the
+ * argument is a number convert to a Float object, otherwise it's supposed to be
+ * a string in the form * "NN%". Convert to a number and then to a Float.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param arg the argument
+ * @param max the maximum allowed value
+ * @return a double
+ */
+double
+rm_percentage(VALUE arg, double max)
+{
+    return rm_percentage2(arg, max, true);
 }
 
 
@@ -437,10 +456,11 @@ rm_check_num2dbl(VALUE obj)
  * No Ruby usage (internal function)
  *
  * @param str the string
+ * @param only_positive Accept whether only positive numbers?
  * @return a double
  */
 double
-rm_str_to_pct(VALUE str)
+rm_str_to_pct(VALUE str, bool only_positive)
 {
     long pct;
     char *pct_str, *end;
@@ -458,7 +478,7 @@ rm_str_to_pct(VALUE str)
     {
         rb_raise(rb_eArgError, "expected percentage, got `%s'", pct_str);
     }
-    if (pct < 0L)
+    if (pct < 0L && only_positive)
     {
         rb_raise(rb_eArgError, "percentages may not be negative (got `%s')", pct_str);
     }
