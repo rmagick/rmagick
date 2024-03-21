@@ -1197,6 +1197,11 @@ void rm_sync_image_options(Image *image, Info *info)
     }
 
     copy_options(image, info);
+
+#if defined(IMAGEMAGICK_7)
+    // The value of info->compression is referenced when saving the image in ImageMagick 7.
+    info->compression = image->compression;
+#endif
 }
 
 
