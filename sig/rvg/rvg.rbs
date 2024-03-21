@@ -1,0 +1,125 @@
+module Magick
+  class RVG
+    @background_image: untyped
+    @background_pattern: untyped
+    @background_position: untyped
+    @background_fill: untyped
+    @background_fill_opacity: untyped
+    @width: untyped
+    @height: untyped
+    @content: Content
+    @canvas: Magick::Image
+    @desc: untyped
+    @title: untyped
+    @metadata: untyped
+    @x: untyped
+    @y: untyped
+    @nested: untyped
+
+    include Stylable
+    include Transformable
+    include Stretchable
+    include Embellishable
+    include Describable
+    include Duplicatable
+
+    interface _Duplicatable
+      def deep_copy: (?Hash[untyped, untyped] h) -> self
+    end
+
+    # The background image specified by background_image=
+    attr_reader background_image: Magick::Image
+
+    # The background image layout specified by background_position=
+    attr_reader background_position: Symbol
+
+    # The background fill color specified by background_fill=
+    attr_reader background_fill: Magick::Pixel
+
+    # The background fill color opacity specified by background_fill_opacity=
+    attr_reader background_fill_opacity: Float
+
+    # The image after drawing has completed
+    attr_reader canvas: Magick::Image
+
+    # For embedded RVG objects, the x-axis coordinate of the upper-left corner
+    attr_reader x: Float
+
+    # For embedded RVG objects, the x-axis coordinate of the upper-left corner
+    attr_reader y: Float
+
+    attr_reader width: Float
+
+    attr_reader height: Float
+
+    private
+
+    def bgfill: () -> Magick::Pixel
+    def new_canvas: () ->  Magick::Image
+
+    public
+
+
+    # Sets an image to use as the canvas background. See background_position= for layout options.
+    def background_image=: (Magick::Image? bg_image) -> Magick::Image?
+
+    # Sets an object to use to fill the canvas background.
+    # The object must have a <tt>fill</tt> method. See the <b>Fill Classes</b>
+    # section in the RMagick doc for more information.
+    def background_pattern=: (magick_fill filler) -> magick_fill
+
+    # How to position the background image on the canvas. One of the following symbols:
+    # [:scaled] Scale the image to the canvas width and height.
+    # [:tiled]  Tile the image across the canvas.
+    # [:fit] Scale the image to fit within the canvas while retaining the
+    #        image proportions. Center the image on the canvas. Color any part of
+    #        the canvas not covered by the image with the background color.
+    def background_position=: (interned pos) -> Symbol
+
+    # Sets the canvas background color. Either a Magick::Pixel or a color name.
+    # The default fill is "none", that is, transparent black.
+    def background_fill=: (magick_color color) -> Magick::Pixel
+
+    # Opacity of the background fill color, a number between 0.0 (transparent) and
+    # 1.0 (opaque). The default is 1.0 when the background_fill= attribute has been set.
+    def background_fill_opacity=: (magick_real opacity) -> magick_real
+
+    # Draw a +width+ x +height+ image. The image is specified by calling
+    # one or more drawing methods on the RVG object.
+    # You can group the drawing method calls in the optional associated block.
+    # The +x+ and +y+ arguments have no meaning for the outermost RVG object.
+    # On nested RVG objects [+x+, +y+] is the coordinate of the upper-left
+    # corner in the containing canvas on which the nested RVG object is placed.
+    #
+    # Drawing occurs on a +canvas+ created by the #draw method. By default the
+    # canvas is transparent. You can specify a different canvas with the
+    # #background_fill= or #background_image= methods.
+    #
+    # RVG objects are _containers_. That is, styles and transforms defined
+    # on the object are used by contained objects such as shapes, text, and
+    # groups unless overridden by an inner container or the object itself.
+    def initialize: (?magick_real? width, ?magick_real? height) -> void
+                  | (?magick_real? width, ?magick_real? height) { (RVG) -> void } -> void
+
+    # Construct a canvas or reuse an existing canvas.
+    # Execute drawing commands. Return the canvas.
+    def draw: () -> Magick::Image
+
+    # Accept #use arguments. Use (x,y) to generate an additional translate.
+    # Override @width and @height if new values are supplied.
+    # @private
+    def ref: (Integer | Float x, Integer | Float y, Integer | Float rw, Integer | Float rh) -> void
+
+    # Used by Magick::Embellishable.rvg to set non-0 x- and y-coordinates
+    # @private
+    def corner: (magick_real x, magick_real y) -> void
+
+    # Primitives for the outermost RVG object
+    # @private
+    def add_outermost_primitives: (Utility::GraphicContext gc) -> self
+
+    # Primitives for nested RVG objects
+    # @private
+    def add_primitives: (Utility::GraphicContext gc) -> void
+  end
+end

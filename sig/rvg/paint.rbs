@@ -1,0 +1,55 @@
+module Magick
+  class RVG
+    class Pattern
+      @width: Float
+      @height: Float
+      @x: Float
+      @y: Float
+      @content: Content
+
+      include StructureConstructors
+      include UseConstructors
+      include ShapeConstructors
+      include TextConstructors
+      include ImageConstructors
+      include Stretchable
+      include Duplicatable
+      include Stylable
+
+      # Return upper-left corner, width, height of viewport in user coordinates.
+      # Usually these are the values specified when the Pattern object is
+      # created, but they can be changed by a call to the viewbox method.
+      attr_reader x: Float
+
+      # Return upper-left corner, width, height of viewport in user coordinates.
+      # Usually these are the values specified when the Pattern object is
+      # created, but they can be changed by a call to the viewbox method.
+      attr_reader y: Float
+
+      # Return upper-left corner, width, height of viewport in user coordinates.
+      # Usually these are the values specified when the Pattern object is
+      # created, but they can be changed by a call to the viewbox method.
+      attr_reader width: Float
+
+      # Return upper-left corner, width, height of viewport in user coordinates.
+      # Usually these are the values specified when the Pattern object is
+      # created, but they can be changed by a call to the viewbox method.
+      attr_reader height: Float
+
+      # Create a pattern that can be used with the :fill or :stroke styles.
+      # The +width+ and +height+ arguments define the viewport.
+      # The pattern will be repeated at <tt>x+m*width</tt> and <tt>y+n*height</tt>
+      # offsets.
+      #
+      # Define the pattern in the block.
+      # The pattern can be composed of shapes (rectangle, circles, etc.), text,
+      # raster images and container objects. You can include graphic objects by
+      # referring to them with #use.
+      def initialize: (?magick_real width, ?magick_real height, ?magick_real x, ?magick_real y) -> void
+                    | (?magick_real width, ?magick_real height, ?magick_real x, ?magick_real y) { (Pattern) -> void } -> void
+
+      # @private
+      def add_primitives: (Utility::GraphicContext gc, interned style) -> void
+    end
+  end
+end

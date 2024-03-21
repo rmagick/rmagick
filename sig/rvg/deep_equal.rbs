@@ -1,0 +1,48 @@
+module Magick
+  class RVG
+    interface _DeepEqual
+      def deep_equal: (untyped other) -> bool
+    end
+    class PathData
+      include _DeepEqual
+    end
+
+    class Styles
+      include _DeepEqual
+    end
+
+    class Transforms
+      include _DeepEqual
+    end
+
+    class Shape
+      include _DeepEqual
+    end
+
+    class TextBase
+      include _DeepEqual
+    end
+
+    class Image
+      include _DeepEqual
+    end
+
+    class Group
+      include _DeepEqual
+    end
+
+    class Content
+      include _DeepEqual
+    end
+
+    class Use
+      include _DeepEqual
+    end
+
+    class ClipPath
+      include _DeepEqual
+    end
+
+    include _DeepEqual
+  end
+end

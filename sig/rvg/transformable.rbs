@@ -1,0 +1,59 @@
+module Magick
+  class RVG
+    # Transforms is an Array with a deep_copy method.
+    # During unit-testing it also has a deep_equal method.
+    # @private
+    class Transforms < Array[untyped]
+      def deep_copy: (?untyped? _h) -> Transforms
+    end
+
+    # Transformations are operations on the coordinate system.
+    # All the transformations defined within a container (an RVG object
+    # or a group) are applied before drawing any shapes or text.
+    # All transformations are applied in the order they were
+    # defined. <em>Note:</em> This means that
+    #   g.translate(10,20).scale(2)
+    # is not the same as
+    #   g.scale(2).translate(10,20)
+    module Transformable
+      @transforms: Transforms
+
+      private
+
+      # Apply transforms in the same order they were specified!
+      def add_transform_primitives: (Utility::GraphicContext gc) -> void
+
+      public
+
+      # Applies the transformation matrix [sx, rx, ry, sy, tx, ty]
+      def matrix: (magick_real sx, magick_real rx, magick_real ry, magick_real sy, magick_real tx, magick_real ty) -> self
+                | (magick_real sx, magick_real rx, magick_real ry, magick_real sy, magick_real tx, magick_real ty) { (self) -> void } -> self
+
+      # Add <tt>tx</tt> to all x-coordinates and <tt>ty</tt>
+      # to all y-coordinates. If <tt>ty</tt> is omitted it defaults
+      # to <tt>tx</tt>.
+      def translate: (magick_real tx, ?magick_real? ty) -> self
+                   | (magick_real tx, ?magick_real? ty) { (self) -> void } -> self
+
+      # Multiply the x-coordinates by <tt>sx</tt> and the y-coordinates
+      # by <tt>sy</tt>. If <tt>sy</tt> is omitted it defaults to <tt>sx</tt>.
+      def scale: (magick_real sx, ?magick_real? sy) -> self
+               | (magick_real sx, ?magick_real? sy) { (self) -> void } -> self
+
+      # This method can take either of two argument lists:
+      # [rotate(angle)] rotate by <tt>angle</tt> degrees
+      # [rotate(angle, cx, cy)] rotate by <tt>angle</tt> degrees about
+      #                         the point [<tt>cx</tt>, <tt>cy</tt>].
+      def rotate: (magick_real angle, *magick_real args) -> self
+                | (magick_real angle, *magick_real args) { (self) -> void } -> self
+
+      # Skew the X-axis by <tt>angle</tt> degrees.
+      def skewX: (magick_real angle) -> self
+               | (magick_real angle) { (self) -> void } -> self
+
+      # Skew the Y-axis by <tt>angle</tt> degrees.
+      def skewY: (magick_real angle) -> self
+               | (magick_real angle) { (self) -> void } -> self
+    end
+  end
+end

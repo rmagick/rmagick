@@ -1,0 +1,226 @@
+module Magick
+  class RVG
+    # Parent class of Circle, Ellipse, Text, etc.
+    # @private
+    class Shape
+      include Stylable
+      include Transformable
+      include Duplicatable
+
+      # Each shape can have its own set of transforms and styles.
+      def add_primitives: (Utility::GraphicContext gc) -> void
+    end
+
+    class Circle < Shape
+      @primitive: Symbol
+      @args: Array[Float]
+
+      # Define a circle with radius +r+ and centered at [<tt>cx</tt>, <tt>cy</tt>].
+      # Use the RVG::ShapeConstructors#circle method to create Circle objects in a container.
+      def initialize: (magick_real r, ?magick_real cx, ?magick_real cy) -> void
+    end
+
+    class Ellipse < Shape
+      @primitive: Symbol
+      @args: Array[Integer | Float]
+
+      # Define an ellipse with a center at [<tt>cx</tt>, <tt>cy</tt>], a horizontal radius +rx+
+      # and a vertical radius +ry+.
+      # Use the RVG::ShapeConstructors#ellipse method to create Ellipse objects in a container.
+      def initialize: (magick_real rx, magick_real ry, ?magick_real cx, ?magick_real cy) -> void
+    end
+
+    class Line < Shape
+      @primitive: Symbol
+      @args: Array[Integer | Float]
+
+      # Define a line from [<tt>x1</tt>, <tt>y1</tt>] to [<tt>x2</tt>, <tt>y2</tt>].
+      # Use the RVG::ShapeConstructors#line method to create Line objects in a container.
+      def initialize: (?magick_real x1, ?magick_real y1, ?magick_real x2, ?magick_real y2) -> void
+    end
+
+    class Path < Shape
+      @primitive: Symbol
+      @args: Array[String]
+
+      # Define an SVG path. The argument can be either a path string
+      # or a PathData object.
+      # Use the RVG::ShapeConstructors#path method to create Path objects in a container.
+      def initialize: (interned path) -> void
+    end
+
+    class Rect < Shape
+      @primitive: Symbol
+      @args: Array[Float]
+
+      # Define a width x height rectangle. The upper-left corner is at [<tt>x</tt>, <tt>y</tt>].
+      # If either <tt>width</tt> or <tt>height</tt> is 0, the rectangle is not rendered.
+      # Use the RVG::ShapeConstructors#rect method to create Rect objects in a container.
+      def initialize: (magick_real width, magick_real height, ?magick_real x, ?magick_real y) -> void
+
+      # Specify optional rounded corners for a rectangle. The arguments
+      # are the x- and y-axis radii. If y is omitted it defaults to x.
+      def round: (magick_real rx, ?magick_real? ry) -> self
+    end
+
+    class PolyShape < Shape
+      def polypoints: (Array[magick_real] points) -> Array[Float?]
+    end
+
+    class Polygon < PolyShape
+      @primitive: Symbol
+      @args: Array[Float]
+
+      # Draws a polygon. The arguments are [<tt>x</tt>, <tt>y</tt>] pairs that
+      # define the points that make up the polygon. At least two
+      # points must be specified. If the last point is not the
+      # same as the first, adds an additional point to close
+      # the polygon.
+      # Use the RVG::ShapeConstructors#polygon method to create Polygon objects in a container.
+      def initialize: (*magick_real points) -> void
+    end
+
+    class Polyline < PolyShape
+      @primitive: Symbol
+      @args: Array[Float]
+
+      # Draws a polyline. The arguments are [<tt>x</tt>, <tt>y</tt>] pairs that
+      # define the points that make up the polyline. At least two
+      # points must be specified.
+      # Use the RVG::ShapeConstructors#polyline method to create Polyline objects in a container.
+      def initialize: (*magick_real points) -> void
+    end
+
+    class Image
+      @align: String
+      @vbx_width: Integer
+      @vbx_height: Integer
+      @meet_or_slice: String
+      @image: Magick::Image
+      @x: Float
+      @y: Float
+      @width: Float
+      @height: Float
+
+      include Stylable
+      include Transformable
+      include Describable
+      include PreserveAspectRatio
+      include Duplicatable
+
+      private
+
+      def align_to_viewport: (real scale) -> [Numeric?, Numeric?]
+      def add_composite_primitive: (Utility::GraphicContext gc) -> void
+      def init_viewbox: () -> void
+
+      public
+
+      # Composite a raster image in the viewport defined by [x,y] and
+      # +width+ and +height+.
+      # Use the RVG::ImageConstructors#image method to create Text objects in a container.
+      def initialize: (Magick::Image image, ?magick_real? width, ?magick_real? height, ?magick_real x, ?magick_real y) -> void
+
+      # @private
+      def add_primitives: (Utility::GraphicContext gc) -> void
+    end
+
+    # Methods that construct basic shapes within a container
+    module ShapeConstructors
+      # Draws a circle whose center is [<tt>cx</tt>, <tt>cy</tt>] and radius is +r+.
+      def circle: (magick_real r, ?magick_real cx, ?magick_real cy) -> Circle
+
+      # Draws an ellipse whose center is [<tt>cx</tt>, <tt>cy</tt>] and having
+      # a horizontal radius +rx+ and vertical radius +ry+.
+      def ellipse: (magick_real rx, magick_real ry, ?magick_real cx, ?magick_real cy) -> Ellipse
+
+      # Draws a line from [<tt>x1</tt>, <tt>y1</tt>] to  [<tt>x2</tt>, <tt>y2</tt>].
+      def line: (?magick_real x1, ?magick_real y1, ?magick_real x2, ?magick_real y2) -> Line
+
+      # Draws a path defined by an SVG path string or a PathData
+      # object.
+      def path: (interned path) -> Path
+
+      # Draws a rectangle whose upper-left corner is [<tt>x</tt>, <tt>y</tt>] and
+      # with the specified +width+ and +height+. Unless otherwise
+      # specified the rectangle has square corners. Returns a
+      # Rectangle object.
+      #
+      # Draw a rectangle with rounded corners by calling the #round
+      # method on the Rectangle object. <tt>rx</tt> and <tt>ry</tt> are
+      # the corner radii in the x- and y-directions. For example:
+      #   canvas.rect(width, height, x, y).round(8, 6)
+      # If <tt>ry</tt> is omitted it defaults to <tt>rx</tt>.
+      def rect: (magick_real width, magick_real height, ?magick_real x, ?magick_real y) -> Rect
+
+      # Draws a polygon. The arguments are [<tt>x</tt>, <tt>y</tt>] pairs that
+      # define the points that make up the polygon. At least two
+      # points must be specified. If the last point is not the
+      # same as the first, adds an additional point to close
+      # the polygon.
+      def polygon: (*magick_real points) -> Polygon
+
+      # Draws a polyline. The arguments are [<tt>x</tt>, <tt>y</tt>] pairs that
+      # define the points that make up the polyline. At least two
+      # points must be specified.
+      def polyline: (*magick_real points) -> Polyline
+    end
+
+    # Methods that reference ("use") other drawable objects within a container
+    module UseConstructors
+      # Reference an object to be inserted into the container's
+      # content. [<tt>x</tt>,<tt>y</tt>] is the offset from the upper-left
+      # corner. If the argument is an RVG or Image object and +width+ and +height+
+      # are specified, these values will override the +width+ and +height+
+      # attributes on the argument.
+      def use: (_Duplicatable obj, ?magick_real x, ?magick_real y, ?magick_real? width, ?magick_real? height) -> Use
+    end
+
+    # Methods that construct container objects within a container
+    module StructureConstructors
+      # Establishes a new viewport. [<tt>x</tt>, <tt>y</tt>] is the coordinate of the
+      # upper-left corner within the containing viewport. This is a
+      # _container_ method. Styles and
+      # transforms specified on this object will be used by objects
+      # contained within, unless overridden by an inner container or
+      # the contained object itself.
+      def rvg: (magick_real cols, magick_real rows, ?magick_real x, ?magick_real y) -> RVG
+             | (magick_real cols, magick_real rows, ?magick_real x, ?magick_real y) { (RVG) -> void } -> RVG
+
+      # Defines a group.
+      #
+      # This method constructs a new
+      # Group _container_ object. The styles and
+      # transforms specified on this object will be used by objects
+      # contained within, unless overridden by an inner container or
+      # the contained object itself.
+      # Define grouped elements by calling RVG::Embellishable
+      # methods within the associated block.
+      def g: () -> Group
+           | { (Group) -> void } -> Group
+    end
+
+    # Methods that construct raster image objects within a container
+    module ImageConstructors
+      # Composite a raster image at [<tt>x</tt>,<tt>y</tt>]
+      # in a viewport of the specified <tt>width</tt> and <tt>height</tt>.
+      # If not specified, the width and height are the width and height
+      # of the image. Use the RVG::PreserveAspectRatio#preserve_aspect_ratio method to
+      # control the placement and scaling of the image within the
+      # viewport. By default, the image is scaled to fit inside the
+      # viewport and centered within the viewport.
+      def image: (Magick::Image image, ?magick_real? width, ?magick_real? height, ?magick_real x, ?magick_real y) -> Image
+    end
+
+    # Methods that create shapes, text, and other drawable objects
+    # within container objects such as ::Magick::RVG and
+    # ::Magick::RVG::Group
+    module Embellishable
+      include StructureConstructors
+      include ShapeConstructors
+      include TextConstructors
+      include UseConstructors
+      include ImageConstructors
+    end
+  end
+end

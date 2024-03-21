@@ -1,0 +1,78 @@
+# -
+# $Id: container.rb,v 1.5 2009/02/28 23:52:13 rmagick Exp $
+# Copyright (C) 2009 Timothy P. Hunter
+# +
+module Magick
+  class RVG
+    # Content is simply an Array with a deep_copy method.
+    # When unit-testing, it also has a deep_equal method.
+    # @private
+    class Content < Array[untyped]
+      include _Duplicatable
+    end
+
+    # Define a collection of shapes, text, etc. that can be reused.
+    # Group objects are _containers_. That is, styles and transforms defined
+    # on the group are used by contained objects such as shapes, text, and
+    # nested groups unless overridden by a nested container or the object itself.
+    # Groups can be reused with the RVG::UseConstructors#use method.
+    # Create groups within
+    # containers with the RVG::StructureConstructors#g method.
+    #
+    # Example:
+    #   # All elements in the group will be translated by 50 in the
+    #   # x-direction and 10 in the y-direction.
+    #   rvg.g.translate(50, 10).styles(:stroke=>'red',:fill=>'none') do |grp|
+    #       # The line will be red.
+    #       grp.line(10,10, 20,20)
+    #       # The circle will be blue.
+    #       grp.circle(10, 20, 20).styles(:stroke=>'blue')
+    #   end
+    class Group
+      @content: Content
+
+      include Stylable
+      include Transformable
+      include Embellishable
+      include Describable
+      include Duplicatable
+
+      def initialize: () -> void
+                    | () { (Group) -> void } -> void
+
+      # @private
+      def add_primitives: (Utility::GraphicContext gc) -> void
+
+      # Translate container according to #use arguments
+      # @private
+      def ref: (magick_real x, magick_real y, untyped _width, untyped _height) -> void
+
+      # Append an arbitrary object to the group's content. Called
+      # by #use to insert a non-container object into a group.
+      # @private
+      def <<: (_Duplicatable obj) -> void
+    end
+
+    # A Use object allows the re-use of RVG and RVG::Group
+    # objects within a container. Create a Use object with the
+    # RVG::UseConstructors#use method.
+    class Use
+      @element: Group
+
+      include Stylable
+      include Transformable
+      include Duplicatable
+
+      # In a container, Use objects are created indirectly via the
+      # RVG::UseConstructors#use method.
+      # The +x+ and +y+ arguments
+      # can be used to specify an additional translation for
+      # the group. The +width+ and +height+ arguments specify
+      # a width and height for referenced RVG objects.
+      def initialize: (_Duplicatable element, ?magick_real x, ?magick_real y, ?magick_real? width, ?magick_real? height) -> void
+
+      # @private
+      def add_primitives: (Utility::GraphicContext gc) -> void
+    end
+  end
+end
