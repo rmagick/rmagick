@@ -137,8 +137,8 @@ module Magick
         rescue ArgumentError
           raise ArgumentError, "arguments must be convertable to float (got #{x.class}, #{y.class}, #{width.class}, #{height.class})"
         end
-        raise(ArgumentError, "viewbox width must be > 0 (#{width} given)") unless width >= 0
-        raise(ArgumentError, "viewbox height must be > 0 (#{height} given)") unless height >= 0
+        raise(ArgumentError, "viewbox width must be > 0 (#{@vbx_width} given)") unless @vbx_width >= 0
+        raise(ArgumentError, "viewbox height must be > 0 (#{@vbx_height} given)") unless @vbx_height >= 0
 
         # return the user-coordinate space attributes if defined
         class << self
