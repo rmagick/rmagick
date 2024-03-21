@@ -1,0 +1,27 @@
+module Magick
+  class RVG
+    module PreserveAspectRatio
+      # -
+      #   Included in Stretchable module and Image class
+      # +
+      # Specifies how the image within a viewport should be scaled.
+      # [+align+] a combination of 'xMin', 'xMid', or 'xMax', followed by
+      #           'YMin', 'YMid', or 'YMax'
+      # [+meet_or_slice+] one of 'meet' or 'slice'
+      def preserve_aspect_ratio: (interned align, ?interned meet_or_slice) -> self
+                               | (interned align, ?interned meet_or_slice) { (self) -> void } -> self
+    end
+
+    # The methods in this module describe the user-coordinate space.
+    # RVG and Pattern objects are stretchable.
+    module Stretchable
+      include PreserveAspectRatio
+
+      # Describe a user coordinate system to be imposed on the viewbox.
+      # The arguments must be numbers and the +width+ and +height+
+      # arguments must be positive.
+      def viewbox: (magick_real x, magick_real y, magick_real width, magick_real height) -> self
+                 | (magick_real x, magick_real y, magick_real width, magick_real height) { (self) -> void } -> self
+    end
+  end
+end

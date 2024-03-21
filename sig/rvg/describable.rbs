@@ -1,0 +1,30 @@
+module Magick
+  class RVG
+    # -
+    # Corresponds to SVG's Description.class
+    # +
+    # This module defines a number of metadata attributes.
+    module Describable
+      # Sets the object description
+      attr_writer desc: interned
+
+      # Sets the object title
+      attr_writer title: interned
+
+      # Sets the object metadata
+      attr_writer metadata: interned
+
+      # Returns the title of this object. The RVG object title is stored as
+      # the 'title' property on the image
+      def title: () -> String
+
+      # Returns the description of this object. The RVG object description is
+      # stored as the 'desc' property on the image
+      def desc: () -> String
+
+      # Returns additional metadata of this object. The RVG object metadata
+      # are stored as the 'metadata' property on the image
+      def metadata: () -> String
+    end
+  end
+end
