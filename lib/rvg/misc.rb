@@ -452,10 +452,10 @@ module Magick
         }
 
         FONT_WEIGHT = {
-          'normal' => Magick::NormalWeight,
-          'bold' => Magick::BoldWeight,
-          'bolder' => Magick::BolderWeight,
-          'lighter' => Magick::LighterWeight
+          normal: Magick::NormalWeight,
+          bold: Magick::BoldWeight,
+          bolder: Magick::BolderWeight,
+          lighter: Magick::LighterWeight
         }
 
         TEXT_ANCHOR = {
@@ -579,7 +579,7 @@ module Magick
 
         def font_weight(weight)
           # If the arg is not in the hash use it directly. Handles numeric values.
-          weight = FONT_WEIGHT.fetch(weight) { |key| key }
+          weight = FONT_WEIGHT.fetch(weight.to_sym) { |key| key }
           @gc.font_weight(weight)
           @shadow[-1].font_weight = weight
           nil
