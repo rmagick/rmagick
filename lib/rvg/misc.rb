@@ -579,7 +579,7 @@ module Magick
 
         def font_weight(weight)
           # If the arg is not in the hash use it directly. Handles numeric values.
-          weight = FONT_WEIGHT.fetch(weight.to_sym) { |key| key }
+          weight = weight.is_a?(Numeric) ? weight : FONT_WEIGHT.fetch(weight.to_sym, Magick::NormalWeight)
           @gc.font_weight(weight)
           @shadow[-1].font_weight = weight
           nil
