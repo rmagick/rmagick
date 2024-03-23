@@ -1854,7 +1854,7 @@ module Magick
   class HatchFill
     def initialize(bgcolor, hatchcolor = 'white', dist = 10)
       @bgcolor = bgcolor
-      @hatchpixel = Pixel.from_color(hatchcolor)
+      @hatchpixel = hatchcolor.is_a?(Pixel) ? hatchcolor : Pixel.from_color(hatchcolor)
       @dist = dist
     end
 
