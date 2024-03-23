@@ -26,7 +26,6 @@ Layout/ClassStructure:
     - 'lib/rvg/misc.rb'
     - 'lib/rvg/pathdata.rb'
     - 'lib/rvg/rvg.rb'
-    - 'lib/rvg/to_c.rb'
 
 # Offense count: 2312
 # Cop supports --auto-correct.
@@ -79,7 +78,6 @@ Lint/NumberConversion:
     - 'examples/thumbnail.rb'
     - 'lib/rmagick_internal.rb'
     - 'lib/rvg/misc.rb'
-    - 'lib/rvg/to_c.rb'
     - 'spec/magick_spec.rb'
     - 'spec/rmagick/align_type/class_methods/values_spec.rb'
     - 'spec/rmagick/enum/bitwise_or_spec.rb'
@@ -225,11 +223,6 @@ Security/MarshalLoad:
     - 'spec/rmagick/draw/marshal_dump_spec.rb'
     - 'spec/rmagick/image/marshal_spec.rb'
     - 'spec/rmagick/image_list/marshal_spec.rb'
-
-# Offense count: 1
-Style/AutoResourceCleanup:
-  Exclude:
-    - 'lib/rvg/to_c.rb'
 
 # Offense count: 7
 Style/CaseEquality:
