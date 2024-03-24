@@ -4707,7 +4707,7 @@ Image_morphology(VALUE self, VALUE method_v, VALUE iterations, VALUE kernel_v)
  *
  * @param channel_v [Magick::ChannelType] a channel type
  * @param method_v [Magick::MorphologyMethod] the morphology method
- * @param iterations [Numeric] apply the operation this many times (or no change).
+ * @param iterations_v [Numeric] apply the operation this many times (or no change).
  *   A value of -1 means loop until no change found.
  *   How this is applied may depend on the morphology method.
  *   Typically this is a value of 1.
@@ -4716,19 +4716,19 @@ Image_morphology(VALUE self, VALUE method_v, VALUE iterations, VALUE kernel_v)
  */
 
 VALUE
-Image_morphology_channel(VALUE self, VALUE channel_v, VALUE method_v, VALUE iterations, VALUE kernel_v)
+Image_morphology_channel(VALUE self, VALUE channel_v, VALUE method_v, VALUE iterations_v, VALUE kernel_v)
 {
     Image *image, *new_image;
     ExceptionInfo *exception;
     MorphologyMethod method;
     ChannelType channel;
     KernelInfo *kernel;
+    ssize_t iterations = NUM2LONG(iterations_v);;
 
     image = rm_check_destroyed(self);
 
     VALUE_TO_ENUM(method_v, method, MorphologyMethod);
     VALUE_TO_ENUM(channel_v, channel, ChannelType);
-    Check_Type(iterations, T_FIXNUM);
 
     if (TYPE(kernel_v) == T_STRING)
     {
@@ -4746,12 +4746,12 @@ Image_morphology_channel(VALUE self, VALUE channel_v, VALUE method_v, VALUE iter
 
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channel);
-    GVL_STRUCT_TYPE(MorphologyImage) args = { image, method, NUM2LONG(iterations), kernel, exception };
+    GVL_STRUCT_TYPE(MorphologyImage) args = { image, method, iterations, kernel, exception };
     new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(MorphologyImage), &args);
     CHANGE_RESULT_CHANNEL_MASK(new_image);
     END_CHANNEL_MASK(image);
 #else
-    GVL_STRUCT_TYPE(MorphologyImageChannel) args = { image, channel, method, NUM2LONG(iterations), kernel, exception };
+    GVL_STRUCT_TYPE(MorphologyImageChannel) args = { image, channel, method, iterations, kernel, exception };
     new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(MorphologyImageChannel), &args);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
