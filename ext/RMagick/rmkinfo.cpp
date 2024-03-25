@@ -112,9 +112,6 @@ KernelInfo_initialize(VALUE self, VALUE kernel_string)
 VALUE
 KernelInfo_unity_add(VALUE self, VALUE scale)
 {
-    if (!FIXNUM_P(scale))
-        Check_Type(scale, T_FLOAT);
-
     GVL_STRUCT_TYPE(UnityAddKernelInfo) args = { (KernelInfo*)DATA_PTR(self), NUM2DBL(scale) };
     CALL_FUNC_WITHOUT_GVL(GVL_FUNC(UnityAddKernelInfo), &args);
     return Qnil;
@@ -134,13 +131,7 @@ KernelInfo_scale(VALUE self, VALUE scale, VALUE flags)
 {
     GeometryFlags geoflags;
 
-    if (!FIXNUM_P(scale))
-        Check_Type(scale, T_FLOAT);
-
-    if (rb_obj_is_instance_of(flags, Class_GeometryFlags))
-        VALUE_TO_ENUM(flags, geoflags, GeometryFlags);
-    else
-        rb_raise(rb_eArgError, "expected Integer or Magick::GeometryFlags to specify flags");
+    VALUE_TO_ENUM(flags, geoflags, GeometryFlags);
 
     GVL_STRUCT_TYPE(ScaleKernelInfo) args = { (KernelInfo*)DATA_PTR(self), NUM2DBL(scale), geoflags };
     CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ScaleKernelInfo), &args);
