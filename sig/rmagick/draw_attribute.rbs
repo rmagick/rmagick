@@ -1,0 +1,28 @@
+module Magick
+  module DrawAttribute
+    attr_writer affine: AffineMatrix
+    attr_writer align: AlignType
+    attr_writer decorate: DecorationType
+    attr_writer density: string
+    attr_writer encoding: string
+    attr_writer fill: magick_color
+    attr_writer fill_pattern: magick_image?
+    attr_writer font: string
+    attr_writer font_family: string
+    attr_writer font_stretch: StretchType
+    attr_writer font_style: StyleType
+    attr_writer font_weight: WeightType | Integer
+    attr_writer gravity: GravityType
+    attr_writer interline_spacing: magick_real
+    attr_writer interword_spacing: magick_real
+    attr_writer kerning: magick_real
+    attr_writer pointsize: magick_real
+    attr_writer rotation: magick_real
+    attr_writer stroke: magick_color
+    attr_writer stroke_pattern: magick_image?
+    attr_writer stroke_width: magick_real
+    attr_writer text_antialias: bool
+    attr_writer tile: magick_image?
+    attr_writer undercolor: magick_color
+  end
+end

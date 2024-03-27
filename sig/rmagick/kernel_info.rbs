@@ -1,0 +1,12 @@
+module Magick
+  class KernelInfo
+    def self.builtin: (KernelInfoType what, string geometry) -> KernelInfo
+
+    def initialize: (string kernel_string) -> void
+    def unity_add: (magick_real scale) -> nil
+    def scale: (magick_real scale, GeometryFlags flags) -> nil
+    def scale_geometry: (string geometry) -> nil
+    def clone: () -> KernelInfo
+    def dup: () -> KernelInfo
+  end
+end
