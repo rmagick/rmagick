@@ -646,7 +646,7 @@ module Magick
 
         def skewX(degrees)
           degrees = Magick::RVG.convert_one_to_float(degrees)
-          @gc.skewX(degrees)
+          @gc.skewx(degrees)
           @ry = Math.tan(GraphicContext.degrees_to_radians(degrees))
           concat_matrix
           nil
@@ -654,7 +654,7 @@ module Magick
 
         def skewY(degrees)
           degrees = Magick::RVG.convert_one_to_float(degrees)
-          @gc.skewY(degrees)
+          @gc.skewy(degrees)
           @rx = Math.tan(GraphicContext.degrees_to_radians(degrees))
           concat_matrix
           nil
