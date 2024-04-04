@@ -43,7 +43,7 @@ build_imagemagick() {
   fi
 
   cd "${build_dir}"
-  ./configure --prefix=/usr/local "${options}" --without-raw --without-jxl
+  ./configure --prefix=/usr/local "${options}" --without-raw --without-jxl --without-openjp2
   make -j
 }
 
