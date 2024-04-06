@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.license = 'MIT'
 
   tracked_files = `git ls-files`.split($OUTPUT_RECORD_SEPARATOR)
-  file_exclusion_regex = /\A(doc|benchmarks|examples|spec)/
+  file_exclusion_regex = /\A(doc|benchmarks|examples|spec|Steepfile)/
   files = tracked_files.reject { |file| file[file_exclusion_regex] }
 
   s.files = files

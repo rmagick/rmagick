@@ -38,7 +38,7 @@ jobs:
     - name: Validate RBS signatures
       run: |
         bundle install --path=vendor/bundle --jobs 4 --retry 3
-        bundle exec rake rbs:validate
+        bundle exec rake rbs:validate && bundle exec steep check
 
   test-linux:
     runs-on: ubuntu-latest

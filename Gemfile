@@ -19,4 +19,6 @@ end
 if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.0.0')
   # For CI
   gem 'rbs', '~> 3.4'
+
+  gem 'steep', '~> 1.6'
 end
