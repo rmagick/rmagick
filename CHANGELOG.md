@@ -3,6 +3,49 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 5.5.0
+
+Improvements
+
+- Add RBS signatures (#1458)
+- Remove unnecessary type check in KernelInfo#{unity_add, scale} (#1514)
+- Remove unnecessary type check in Image#{morphology, morphology_channel} (#1513)
+- Improve HatchFill.new to accept Pixel object as color (#1512)
+- Fix GraphicContext#font_weight to accept Numeric object (#1510)
+- Improve GraphicContext#font_weight to accept Symbol object (#1509)
+- Improve Stretchable#viewbox to use implicitly conversioned value (#1507)
+- Improve RVG::Transformable#rotate to convert to Float implicitly (#1506)
+- Fix Image#modulate in order to accept negative number (#1505)
+- Improve Image#modulate to accept "NN%" form string (#1504)
+- Implicit conversion to string with methods that expect a string (#1496)
+- Coerce to string instead of using #to_s (#1495)
+- Coerce to string where pass object into string interpolation (#1494)
+- Fix Draw#{fill_opacity, opacity, stroke_opacity} to correctly handle arguments (#1492)
+- Fix Draw#{interline_spacing, interword_spacing, kerning} to correctly handle arguments that can be converted to Float (#1491)
+- Remove unnecessary type check in KernelInfo methods (#1489)
+- Generate compile_flags.txt for clangd for development (#1488)
+- Fix Draw#{stroke_dasharray, stroke_miterlimit} to accept object which has #to_f method (#1486)
+- Fix Image#composite_affine to accept ImageList object (#1484)
+- Fix Image#add_compose_mask to accept ImageList object (#1483)
+- Fix incorrect number of required arguments in ArgumentError (#1482)
+- Fix ImageList#sort! that should return self (#1481)
+- Fix ImageList#eql? that should not raise exception if can't compare (#1479)
+- Fix ImageList#<=> that should return nil if can't compare (#1478)
+- Add DrawAttribute module to simplify Draw, DrawOptions and PolaroidOptions (#1477)
+- Add missing attribute writer methods in Image::{DrawOptions, PolaroidOptions} (#1476)
+- Add Image::PolaroidOptions#affine= (#1475)
+- Add Image::PolaroidOptions#tile= (#1474)
+- Attribute writer methods should return passed value (#1473)
+- Return self with ImageList if Image's method return self (#1472)
+- Fix Image#clut_channel to accept ImageList object (#1471)
+- Fix Magick::GradientFill#fill and Magick::TextureFill#fill to accept ImageList object (#1467)
+
+Bug Fixes
+
+- Fix typo in order to fix NoMethodError (#1515)
+- Sync compression value in order fix  the problem of compression being ignored by ImageMagick 7 (#1503)
+- Add PKG_CONFIG_PATH for ImageMagick 7 in order to fix installation error on macOS (#1501)
+
 ## RMagick 5.4.4
 
 Bug Fixes
