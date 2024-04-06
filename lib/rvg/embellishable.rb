@@ -162,6 +162,8 @@ module Magick
                (@width - @image.columns * scale) / 2.0
              when /\AxMax/
                @width - @image.columns * scale
+             else
+               0
              end
 
         ty = case @align
@@ -171,6 +173,8 @@ module Magick
                (@height - @image.rows * scale) / 2.0
              when /YMax\z/
                @height - @image.rows * scale
+             else
+               0
              end
         [tx, ty]
       end
@@ -182,7 +186,7 @@ module Magick
           width = @width
           height = @height
         elsif @meet_or_slice == 'meet'
-          scale = [@width / @image.columns, @height / @image.rows].min
+          scale = [@width / @image.columns, @height / @image.rows].min || 1.0
           width = @image.columns
           height = @image.rows
         else
@@ -193,7 +197,7 @@ module Magick
           end
 
           gc.clip_path(name)
-          scale = [@width / @image.columns, @height / @image.rows].max
+          scale = [@width / @image.columns, @height / @image.rows].max || 1.0
           width = @image.columns
           height = @image.rows
         end

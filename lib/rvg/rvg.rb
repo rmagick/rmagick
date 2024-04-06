@@ -90,6 +90,8 @@ module Magick
                        end
                        bg_image
                      end
+                   else
+                     @background_image.copy
                    end
                  else
                    @background_image.copy
