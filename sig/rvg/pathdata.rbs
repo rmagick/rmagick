@@ -1,0 +1,77 @@
+module Magick
+  class RVG
+    # The PathData class provides an object-oriented way to produce an SVG
+    # path. Each of the methods corresponds to a path command. Construct a
+    # path by calling one or more methods. The path object can be passed
+    # as an argument to the RVG::ShapeConstructors#path method.
+    class PathData
+      @path: String
+
+      private
+
+      def add_points: (Integer req, *magick_real coords) -> void
+
+      public
+
+      # Construct an empty path
+      def initialize: () -> void
+
+      # Convert the path to its string equivalent.
+      def to_s: () -> String
+
+      # @private
+      def deep_copy: (?untyped? _h) -> String
+
+      # Add a <tt>moveto</tt> command. If <tt>abs</tt> is
+      # <tt>true</tt> the coordinates are absolute, otherwise
+      # the coordinates are relative.
+      def moveto: (bool abs, magick_real x, magick_real y, *magick_real coords) -> void
+
+      # Add a <tt>closepath</tt> command. The <tt>abs</tt> argument
+      # is ignored.
+      def closepath: (?bool _abs) -> void
+
+      # Add a <tt>lineto</tt> command. Any number of x,y coordinate
+      # pairs may be specified. If <tt>abs</tt> is
+      # <tt>true</tt> the coordinates are absolute, otherwise
+      # the coordinates are relative.
+      def lineto: (bool abs, magick_real x, magick_real y, *magick_real coords) -> void
+
+      # Add a <tt>horizontal lineto</tt> command. If <tt>abs</tt> is
+      # <tt>true</tt> the coordinates are absolute, otherwise
+      # the coordinates are relative.
+      def hlineto: (bool abs, magick_real x) -> void
+
+      # Add a <tt>vertical lineto</tt> command. If <tt>abs</tt> is
+      # <tt>true</tt> the coordinates are absolute, otherwise
+      # the coordinates are relative.
+      def vlineto: (bool abs, magick_real y) -> void
+
+      # Add a <tt>curveto</tt> (<em>cubic Bezier</em>) command.
+      # If <tt>abs</tt> is
+      # <tt>true</tt> the coordinates are absolute, otherwise
+      # the coordinates are relative.
+      def curveto: (bool abs, magick_real x1, magick_real y1, magick_real x2, magick_real y2, magick_real x, magick_real y, *magick_real coords) -> void
+
+      # Add a <tt>smooth curveto</tt> (<em>cubic Bezier</em>) command.
+      # If <tt>abs</tt> is
+      # <tt>true</tt> the coordinates are absolute, otherwise
+      # the coordinates are relative.
+      def smooth_curveto: (bool abs, magick_real x2, magick_real y2, magick_real x, magick_real y, *magick_real coords) -> void
+
+      # Add a <tt>quadratic Bezier curveto</tt> command.
+      # If <tt>abs</tt> is
+      # <tt>true</tt> the coordinates are absolute, otherwise
+      # the coordinates are relative.
+      def quadratic_curveto: (bool abs, magick_real x1, magick_real y1, magick_real x, magick_real y, *magick_real coords) -> void
+
+      # Add a <tt>smooth quadratic Bezier curveto</tt> command.
+      # If <tt>abs</tt> is
+      # <tt>true</tt> the coordinates are absolute, otherwise
+      # the coordinates are relative.
+      def smooth_quadratic_curveto: (bool abs, magick_real x, magick_real y, *magick_real coords) -> void
+
+      def arc: (bool abs, magick_real rx, magick_real ry, magick_real x_axis_rotation, magick_real large_arc_flag, magick_real sweep_flag, magick_real x, magick_real y) -> void
+    end
+  end
+end

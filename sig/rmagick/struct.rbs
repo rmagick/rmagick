@@ -1,0 +1,90 @@
+module Magick
+  class AffineMatrix < Struct[untyped]
+    attr_accessor sx: real
+    attr_accessor rx: real
+    attr_accessor ry: real
+    attr_accessor sy: real
+    attr_accessor tx: real
+    attr_accessor ty: real
+
+    def self.new: (?real? sx, ?real? rx, ?real? ry, ?real? sy, ?real? tx, ?real? ty) -> AffineMatrix
+  end
+
+  class Primary < Struct[untyped]
+    attr_accessor x: real
+    attr_accessor y: real
+    attr_accessor z: real
+
+    def self.new: (?real? x, ?real? y, ?real? z) -> Primary
+  end
+
+  class Chromaticity < Struct[untyped]
+    attr_accessor red_primary: Primary
+    attr_accessor green_primary: Primary
+    attr_accessor blue_primary: Primary
+    attr_accessor white_point: Primary
+
+    def self.new: (?Primary? red_primary, ?Primary? green_primary, ?Primary? blue_primary, ?Primary? white_point) -> Chromaticity
+  end
+
+  class Color < Struct[untyped]
+    attr_accessor name: String
+    attr_accessor compliance: ComplianceType
+    attr_accessor color: Pixel
+
+    def self.new: (?String? name, ?ComplianceType? compliance, ?Pixel? color) -> Color
+  end
+
+  class Point < Struct[untyped]
+    attr_accessor x: real
+    attr_accessor y: real
+
+    def self.new: (?real? x, ?real? y) -> Point
+  end
+
+  class Rectangle < Struct[untyped]
+    attr_accessor width: real
+    attr_accessor height: real
+    attr_accessor x: real
+    attr_accessor y: real
+
+    def self.new: (?real? width, ?real? height, ?real? x, ?real? y) -> Rectangle
+  end
+
+  class Segment < Struct[untyped]
+    attr_accessor x1: real
+    attr_accessor y1: real
+    attr_accessor x2: real
+    attr_accessor y2: real
+
+    def self.new: (?real? x1, ?real? y1, ?real? x2, ?real? y2) -> Segment
+  end
+
+  class Font < Struct[untyped]
+    attr_accessor name: String
+    attr_accessor description: String
+    attr_accessor family: String
+    attr_accessor style: StyleType
+    attr_accessor stretch: StretchType
+    attr_accessor weight: Integer
+    attr_accessor encoding: String
+    attr_accessor foundry: String
+    attr_accessor format: String
+
+    def self.new: (?String? name, ?String? description, ?String? family, ?StyleType? style, ?StretchType? stretch, ?Integer? weight, ?String? encoding, ?String? foundry, ?String? format) -> Font
+  end
+
+  class TypeMetric < Struct[untyped]
+    attr_accessor pixels_per_em: Point
+    attr_accessor ascent: Float
+    attr_accessor descent: Float
+    attr_accessor width: Float
+    attr_accessor height: Float
+    attr_accessor max_advance: Float
+    attr_accessor bounds: Segment
+    attr_accessor underline_position: Float
+    attr_accessor underline_thickness: Float
+
+    def self.new: (?Point? pixels_per_em, ?magick_real? ascent, ?magick_real? descent, ?magick_real? width, ?magick_real? height, ?magick_real? max_advance, ?Segment? bounds, ?magick_real? underline_position, ?magick_real? underline_thickness) -> TypeMetric
+  end
+end

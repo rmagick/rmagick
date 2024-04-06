@@ -1,0 +1,46 @@
+module Magick
+  class Pixel
+    # TODO:
+    # include Observable
+
+    include Comparable
+
+    # RGBA attributes
+    def red: () -> Integer
+    attr_writer red: real
+    def green: () -> Integer
+    attr_writer green: real
+    def blue: () -> Integer
+    attr_writer blue: real
+    def alpha: () -> Integer
+    attr_writer alpha: real
+
+    # CMYK attributes
+    def cyan: () -> Integer
+    attr_writer cyan: real
+    def magenta: () -> Integer
+    attr_writer magenta: real
+    def yellow: () -> Integer
+    attr_writer yellow: real
+    def black: () -> Integer
+    attr_writer black: real
+
+    def self.from_color: (string name) -> Pixel
+    def self.from_hsla: (magick_percentage hue, magick_percentage saturation, magick_percentage lightness, magick_percentage alpha) -> Pixel
+
+    def <=>: (untyped other) -> (-1 | 0 | 1 | nil)
+    def ===: (untyped other) -> bool
+    def eql?: (untyped other) -> bool
+    def initialize: (?real red, ?real green, ?real blue, ?real opacity) -> void
+    def clone: () -> Pixel
+    def dup: () -> Pixel
+    def fcmp: (magick_color other, ?magick_real fuzz, ?ColorspaceType colorspace) -> bool
+    def hash: () -> Integer
+    def intensity: () -> Integer
+    def marshal_dump: () -> Hash[Symbol, Integer]
+    def marshal_load: (Hash[Symbol, Integer] dpixel) -> self
+    def to_color: (?ComplianceType compliance, ?bool alpha, ?int depth, ?bool hex) -> String
+    def to_hsla: () -> [Float, Float, Float, Float]
+    def to_s: () -> String
+  end
+end

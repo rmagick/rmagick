@@ -1,0 +1,66 @@
+module Magick
+  class RVG
+    # Styles is a Struct class with a couple of extra methods
+    class Styles < Struct[untyped]
+      def set: (Hash[Symbol, untyped] styles) -> self
+
+      # Iterate over the style names. Yield for each style that has a value.
+      def each_value: () { (Symbol, untyped) -> void } -> void
+
+      # The "usual" deep_copy method doesn't copy a Struct correctly.
+      def deep_copy: (?untyped? _h) -> Styles
+
+      def self.new: (*untyped obj) -> Styles
+    end
+
+    # This module is mixed into classes that can have styles.
+    module Stylable
+      @styles: Styles
+
+      private
+
+      # For each style that has a value, add a style primitive to the gc.
+      # Use splat to splat out Array arguments such as stroke_dasharray.
+      def add_style_primitives: (Utility::GraphicContext gc) -> void
+
+      public
+
+      # This method can be used with any RVG, Group, Use, Text, or
+      # shape object. The argument is a hash. The style names are
+      # the hash keys. The style names and values are:
+      # [:baseline_shift] modify the text baseline
+      # [:clip_path] clipping path defined by clip_path
+      # [:clip_rule] 'evenodd' or 'nozero'
+      # [:fill] color name
+      # [:fill_opacity] the fill opacity, 0.0<=N<=1.0
+      # [:fill_rule] 'evenodd' or 'nozero'
+      # [:font] font name or font file name
+      # [:font_family] font family name, ex. 'serif'
+      # [:font_size] font size in points
+      # [:font_stretch] 'normal','ultra_condensed','extra_condensed',
+      #                 'condensed','semi_condensed','semi_expanded',
+      #                 'expanded','extra_expanded','ultra_expanded'
+      # [:font_style] 'normal','italic','oblique'
+      # [:font_weight] 'normal','bold','bolder','lighter', or
+      #                a multiple of 100 between 100 and 900.
+      # [:glyph_orientation_horizontal] 0, 90, 180, 270
+      # [:glyph_orientation_vertical] 0, 90, 180, 270
+      # [:letter_spacing] modify the spacing between letters
+      # [:opacity] both fill and stroke opacity, 0.0<=N<=1.0
+      # [:stroke] color name
+      # [:stroke_dasharray] dash pattern (Array)
+      # [:stroke_dashoffset] initial distance into dash pattern
+      # [:stroke_linecap] 'butt', 'round', 'square'
+      # [:stroke_linejoin] 'miter', 'round', 'bevel'
+      # [:stroke_miterlimit] miter length constraint
+      # [:stroke_opacity] the stroke opacity, 0.0<=N<=1.0
+      # [:stroke_width] stroke width
+      # [:text_anchor] 'start','middle','end'
+      # [:text_decoration] 'none','underline','overline','line_through'
+      # [:word_spacing] modify the spacing between words
+      # [:writing_mode] 'lr-tb', 'lr', 'rt-tb', 'rl', 'tb-rl', 'tb'
+      def styles: (Hash[Symbol, untyped] styles) -> self
+                | (Hash[Symbol, untyped] styles) { (self) -> void } -> self
+    end
+  end
+end

@@ -25,6 +25,21 @@ jobs:
         bundle install --path=vendor/bundle --jobs 4 --retry 3
         STYLE_CHECKS=true bundle exec rubocop
 
+  rbs:
+    runs-on: ubuntu-latest
+    name: RBS
+    timeout-minutes: 20
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Ruby 3.0
+      uses: ruby/setup-ruby@master
+      with:
+        ruby-version: '3.0'
+    - name: Validate RBS signatures
+      run: |
+        bundle install --path=vendor/bundle --jobs 4 --retry 3
+        bundle exec rake rbs:validate && bundle exec steep check
+
   test-linux:
     runs-on: ubuntu-latest
     timeout-minutes: 20

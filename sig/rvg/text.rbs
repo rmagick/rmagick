@@ -1,0 +1,118 @@
+# -
+# $Id: text.rb,v 1.7 2009/02/28 23:52:28 rmagick Exp $
+# Copyright (C) 2009 Timothy P. Hunter
+# +
+# Text-related classes
+module Magick
+  class RVG
+    # Base class for Tspan, Tref and Text.
+    class TextBase
+      @text: String?
+      @dx: Integer | Float
+      @rotation: Integer | Float
+      @tspans: Content
+      @dy: Integer | Float
+
+      include Stylable
+      include Duplicatable
+
+      def initialize: (interned? text) -> void
+                    |  (interned? text) { (self) -> void } -> void
+
+      # Create a new text chunk. Each chunk can have its own initial position and styles.
+      # If <tt>x</tt> and <tt>y</tt> are omitted the text starts at the current text
+      # position.
+      def tspan: (interned text, ?magick_real? x, ?magick_real? y) -> Tspan
+               | (interned text, ?magick_real? x, ?magick_real? y) { (self) -> void } -> Tspan
+
+      # Add <tt>x</tt> and <tt>y</tt> to the current text position.
+      def d: (magick_real x, ?magick_real y) -> self
+           | (magick_real x, ?magick_real y) { (self) -> void } -> self
+
+      # Rotate the text about the current text position.
+      def rotate: (magick_real degrees) -> self
+                | (magick_real degrees) { (self) -> void } -> self
+
+      # We do our own transformations.
+      # @private
+      def add_primitives: (Utility::GraphicContext gc) -> void
+    end
+
+    # Tspan and Tref shared methods - read/update @cx, @cy in parent Text object.
+    # @private
+    module TextLink
+      def add_primitives: (Utility::GraphicContext gc) -> void
+      def cx: () -> Float
+      def cy: () -> Float
+      def cx=: (magick_real x) -> magick_real
+      def cy=: (magick_real y) -> magick_real
+    end
+
+    # @private
+    class Tref < TextBase
+      @x: Float
+      @y: Float
+      @parent: TextBase
+
+      include TextLink
+
+      def initialize: (TextBase obj, magick_real x, magick_real y, TextBase parent) -> void
+    end
+
+    # @private
+    class Tspan < TextBase
+      @x: Float
+      @y: Float
+
+      include TextLink
+
+      attr_accessor parent: TextBase
+
+      # Define a text segment starting at (<tt>x</tt>, <tt>y</tt>).
+      # If <tt>x</tt> and <tt>y</tt> are omitted the segment starts
+      # at the current text position.
+      #
+      # Tspan objects can contain Tspan objects.
+      def initialize: (?interned? text, ?magick_real? x, ?magick_real? y) -> void
+                    | (?interned? text, ?magick_real? x, ?magick_real? y) { (Tspan) -> void } -> void
+    end
+
+    class Text < TextBase
+      @cx: Float
+      @cy: Float
+
+      # @private
+      attr_accessor cx: Float
+
+      # @private
+      attr_accessor cy: Float
+
+      # Define a text string starting at [<tt>x</tt>, <tt>y</tt>].
+      # Use the RVG::TextConstructors#text method to create Text objects in a container.
+      #
+      #  container.text(100, 100, "Simple text").styles(:font=>'Arial')
+      #
+      # Text objects can contain Tspan objects.
+      #
+      #  container.text(100, 100).styles(:font=>'Arial') do |t|
+      #     t.tspan("Red text").styles(:fill=>'red')
+      #     t.tspan("Blue text").styles(:fill=>'blue')
+      #  end
+      def initialize: (?magick_real x, ?magick_real y, ?interned? text) -> void
+                    | (?magick_real x, ?magick_real y, ?interned? text) { (Text) -> void } -> void
+
+      # Reference a Tspan object. <tt>x</tt> and <tt>y</tt> are just
+      # like <tt>x</tt> and <tt>y</tt> in RVG::TextBase#tspan
+      def tref: (TextBase obj, ?magick_real? x, ?magick_real? y) -> Tref
+    end
+
+    # Methods that construct text objects within a container
+    module TextConstructors
+      # Draw a text string at (<tt>x</tt>,<tt>y</tt>). The string can
+      # be omitted. Optionally, define text chunks within the associated
+      # block.
+      def text: (?magick_real x, ?magick_real y, ?interned? text) -> Text
+              | (?magick_real x, ?magick_real y, ?interned? text) { (Text) -> void } -> Text
+    end
+  end
+end

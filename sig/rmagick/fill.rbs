@@ -1,0 +1,21 @@
+module Magick
+  class GradientFill
+    include _Fill
+    def initialize: (magick_real x1, magick_real y1, magick_real x2, magick_real y2, magick_color start_color, magick_color stop_color) -> void
+  end
+
+  class HatchFill
+    include _Fill
+    def initialize: (magick_color bgcolor, ?magick_color hatchcolor, ?Numeric dist) -> void
+  end
+
+  class SolidFill
+    include _Fill
+    def initialize: (magick_color bgcolor) -> void
+  end
+
+  class TextureFill
+    include _Fill
+    def initialize: (magick_image texture_arg) -> void
+  end
+end
