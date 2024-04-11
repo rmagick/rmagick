@@ -12,7 +12,7 @@ gem 'yard', '~> 0.9.24'
 
 if RUBY_PLATFORM !~ /mswin|mingw/
   gem 'rubocop', '~> 0.81.0'
-  gem 'rubocop-rspec', '~> 1.38.1'
+  gem 'rubocop-rspec', '~> 2.29.1'
   gem 'rubocop-performance', '~> 1.5.2'
 end
 
