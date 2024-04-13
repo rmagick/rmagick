@@ -406,12 +406,6 @@ Style/SafeNavigation:
   Exclude:
     - 'lib/rmagick_internal.rb'
 
-# Offense count: 5
-Style/Send:
-  Exclude:
-    - 'lib/rmagick_internal.rb'
-    - 'spec/rmagick/image/destroy_spec.rb'
-
 # Offense count: 2
 # Configuration parameters: Methods.
 # Methods: {"reduce"=>["acc", "elem"]}, {"inject"=>["acc", "elem"]}
