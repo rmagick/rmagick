@@ -99,12 +99,6 @@ Lint/NumberConversion:
     - 'spec/rmagick/enum/to_i_spec.rb'
     - 'spec/rmagick/image/export_pixels_spec.rb'
 
-# Offense count: 2
-# Cop supports --auto-correct.
-Lint/RedundantStringCoercion:
-  Exclude:
-    - 'spec/rmagick/font/initialize_spec.rb'
-
 # Offense count: 1
 Lint/RescueException:
   Exclude:
