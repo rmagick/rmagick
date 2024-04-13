@@ -300,13 +300,6 @@ Style/FormatStringToken:
     - 'lib/rmagick_internal.rb'
     - 'lib/rvg/pathdata.rb'
 
-# Offense count: 808
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: always, always_true, never
-Style/FrozenStringLiteralComment:
-  Enabled: false
-
 # Offense count: 42
 # Configuration parameters: AllowedVariables.
 Style/GlobalVars:

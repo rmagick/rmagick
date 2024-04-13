@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::ImageList, '#combine' do
   it 'works' do
     red   = Magick::Image.new(20, 20) { |options| options.background_color = 'red' }

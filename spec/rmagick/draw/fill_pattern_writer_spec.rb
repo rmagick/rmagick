@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Draw, '#fill_pattern' do
   it 'accepts an Image argument' do
     draw = described_class.new

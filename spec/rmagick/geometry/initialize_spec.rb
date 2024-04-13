@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Geometry, '#initialize' do
   it 'works' do
     expect { described_class.new(Magick::PercentGeometry) }.to raise_error(ArgumentError)

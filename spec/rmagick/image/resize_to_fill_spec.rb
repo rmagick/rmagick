@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#resize_to_fill' do
   it 'does not change image when using the same dimensions' do
     image = described_class.new(20, 20)

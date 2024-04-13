@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # ensure methods detect destroyed images
 RSpec.describe Magick::Image, '#destroy' do
   it 'works' do

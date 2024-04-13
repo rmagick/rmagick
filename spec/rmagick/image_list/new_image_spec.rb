@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::ImageList, "#new_image" do
   it "works" do
     image_list = described_class.new

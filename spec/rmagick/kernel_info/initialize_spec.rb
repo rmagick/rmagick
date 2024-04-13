@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::KernelInfo, '#initialize' do
   it 'works' do
     Magick::KernelInfoType.values do |kernel|

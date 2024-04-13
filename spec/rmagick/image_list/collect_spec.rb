@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop:disable Style/CollectionMethods
 RSpec.describe Magick::ImageList, '#collect' do
   it 'works' do

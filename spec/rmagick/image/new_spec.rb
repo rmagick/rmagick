@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#new' do
   it 'works Call yield when there is a block argument (issue 699)' do
     self_obj = nil

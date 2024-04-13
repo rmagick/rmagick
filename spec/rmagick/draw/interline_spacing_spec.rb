@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Draw, '#interline_spacing' do
   it 'accepts a valid parameter without raising an error' do
     draw = described_class.new

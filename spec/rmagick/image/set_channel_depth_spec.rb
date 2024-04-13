@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#set_channel_depth' do
   it 'works' do
     image = described_class.new(20, 20)

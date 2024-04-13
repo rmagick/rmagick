@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#quantum_operator' do
   it 'works' do
     image = described_class.new(20, 20)

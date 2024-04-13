@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#composite_mathematics' do
   it 'works' do
     bg = described_class.new(50, 50)

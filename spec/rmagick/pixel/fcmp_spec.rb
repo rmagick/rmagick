@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Pixel, '#fcmp' do
   it 'works' do
     red = described_class.from_color('red')

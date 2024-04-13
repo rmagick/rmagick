@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#composite_tiled' do
   it 'works' do
     bg = described_class.new(200, 200)

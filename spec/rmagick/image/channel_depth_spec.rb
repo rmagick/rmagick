@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, "#channel_depth" do
   it "returns the depth for the given channel" do
     image = build_image

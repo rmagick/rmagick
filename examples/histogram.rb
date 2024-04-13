@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This routine needs the color_histogram method
 # from either ImageMagick 6.0.0 or GraphicsMagick 1.1
 # Specify an image filename as an argument.

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#dissolve' do
   it 'raises an error given invalid arguments' do
     image1 = described_class.new(100, 100) { |options| options.background_color = 'transparent' }

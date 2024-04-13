@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Magick
   def self._tmpnam_
     @@_tmpnam_

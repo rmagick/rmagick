@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rmagick'
 
 #   The Image#find_similar_region searches for a region in the image

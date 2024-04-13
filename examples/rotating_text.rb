@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Demonstrate the Draw#rotation= method by producing
 # an animated MIFF file showing a rotating text string.
 

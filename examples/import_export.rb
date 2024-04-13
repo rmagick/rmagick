@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Demonstrate the export_pixels and import_pixels methods.
 #

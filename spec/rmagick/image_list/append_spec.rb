@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::ImageList, '#<<' do
   it 'allows appending identical instances more than once' do
     image = Magick::Image.new(1, 1)

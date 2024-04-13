@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rmagick'
 
 f = Magick::Image.read('../doc/ex/images/Flower_Hat.jpg').first

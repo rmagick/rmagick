@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#function_channel' do
   it 'works' do
     image = described_class.read('gradient:') { |options| options.size = '20x600' }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rmagick'
 
 img = Magick::Image.new(200, 200) { |info| info.background_color = '#ffffcc' }

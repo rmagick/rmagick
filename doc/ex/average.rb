@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Demonstrate ImageList#average method
 require 'rmagick'
 

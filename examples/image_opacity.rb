@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Ccreate a semi-transparent title for an image.
 
 require 'rmagick'

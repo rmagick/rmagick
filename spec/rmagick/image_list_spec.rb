@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop:disable Style/CollectionMethods
 RSpec.describe Magick::ImageList do
   it 'does not have certain array methods' do

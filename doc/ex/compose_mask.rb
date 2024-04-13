@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rmagick'
 
 background = Magick::Image.read('images/Flower_Hat.jpg').first

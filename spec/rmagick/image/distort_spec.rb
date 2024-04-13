@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#distort' do
   it 'works' do
     image = described_class.new(200, 200)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Draw, '#marshal_dump' do
   it 'marshals without an error' do
     draw = described_class.new

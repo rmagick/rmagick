@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Draw, '#clip_path' do
   it 'updates the inspect output' do
     draw = described_class.new

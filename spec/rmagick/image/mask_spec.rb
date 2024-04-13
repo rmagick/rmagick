@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#mask' do
   it 'works' do
     image1 = described_class.new(20, 20)
