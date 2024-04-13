@@ -398,13 +398,6 @@ Style/NumericPredicate:
     - 'lib/rmagick_internal.rb'
     - 'lib/rvg/embellishable.rb'
 
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: AllowMultipleReturnValues.
-Style/RedundantReturn:
-  Exclude:
-    - 'examples/histogram.rb'
-
 # Offense count: 3
 # Cop supports --auto-correct.
 # Configuration parameters: ConvertCodeThatCanStartToReturnNil, AllowedMethods.
