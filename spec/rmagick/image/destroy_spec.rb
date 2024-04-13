@@ -26,15 +26,15 @@ RSpec.describe Magick::Image, '#destroy' do
       elsif method == 'profile!'
         expect { image.profile!('x', 'y') }.to raise_error(Magick::DestroyedImageError)
       elsif /=\Z/.match(method)
-        expect { image.send(method, 1) }.to raise_error(Magick::DestroyedImageError)
+        expect { image.public_send(method, 1) }.to raise_error(Magick::DestroyedImageError)
       elsif arity.zero?
-        expect { image.send(method) }.to raise_error(Magick::DestroyedImageError)
+        expect { image.public_send(method) }.to raise_error(Magick::DestroyedImageError)
       elsif arity < 0
         args = (1..-arity).to_a
-        expect { image.send(method, *args) }.to raise_error(Magick::DestroyedImageError)
+        expect { image.public_send(method, *args) }.to raise_error(Magick::DestroyedImageError)
       elsif arity > 0
         args = (1..arity).to_a
-        expect { image.send(method, *args) }.to raise_error(Magick::DestroyedImageError)
+        expect { image.public_send(method, *args) }.to raise_error(Magick::DestroyedImageError)
       else
         # Don't know how to test!
         flunk("don't know how to test method #{method}")
