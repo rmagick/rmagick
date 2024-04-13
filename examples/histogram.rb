@@ -144,7 +144,7 @@ module Magick
         end
 
         histogram['Label'] = 'Color Frequency'
-        return histogram
+        histogram
       end
     end
 
