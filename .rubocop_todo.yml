@@ -222,11 +222,6 @@ Naming/MethodParameterName:
     - 'lib/rvg/units.rb'
 
 # Offense count: 1
-Performance/ChainArrayAllocation:
-  Exclude:
-    - 'lib/rvg/embellishable.rb'
-
-# Offense count: 1
 # Cop supports --auto-correct.
 Performance/Detect:
   Exclude:
