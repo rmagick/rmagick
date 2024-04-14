@@ -272,7 +272,7 @@ module RMagick
       return unless PKGConfig.libs_only_L(magick_package).match(%r{-L(.+)/lib})
 
       imagemagick_dir = Regexp.last_match(1)
-      command = Dir.glob(File.join(imagemagick_dir, "bin/*")).select { |file| File.executable? file }.first
+      command = Dir.glob(File.join(imagemagick_dir, "bin/*")).find { |file| File.executable? file }
       fileinfo = `file #{command}`
 
       # default ARCHFLAGS
