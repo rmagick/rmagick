@@ -229,11 +229,6 @@ Performance/RedundantMatch:
     - 'ext/RMagick/extconf.rb'
     - 'spec/rmagick/image/destroy_spec.rb'
 
-# Offense count: 1
-Performance/UnfreezeString:
-  Exclude:
-    - 'lib/rmagick_internal.rb'
-
 # Offense count: 428
 # Configuration parameters: Max.
 RSpec/ExampleLength:

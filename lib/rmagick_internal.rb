@@ -140,7 +140,7 @@ module Magick
 
     # Convert object to a geometry string
     def to_s
-      str = String.new
+      str = +''
       if @width > 0
         fmt = @width.truncate == @width ? '%d' : '%.2f'
         str << sprintf(fmt, @width)
