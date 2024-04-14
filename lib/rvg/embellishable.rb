@@ -109,7 +109,7 @@ module Magick
           short = n > 0 ? y_coords : x_coords
           olen = short.length
           n.abs.times { |x| short << short[x % olen] }
-          points = x_coords.zip(y_coords).flatten
+          points = x_coords.zip(y_coords).flatten!
         end
         n = points.length
         raise ArgumentError, "insufficient/odd number of points specified: #{n}" if n < 4 || n.odd?
