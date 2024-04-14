@@ -3,6 +3,7 @@ inherit_from:
 
 require:
   - rubocop-rspec
+  - rubocop-performance
 
 AllCops:
   DefaultFormatter: fuubar
