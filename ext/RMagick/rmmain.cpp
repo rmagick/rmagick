@@ -1834,13 +1834,18 @@ test_Magick_version(void)
     const char *version_str;
     ID bypass = rb_intern("RMAGICK_BYPASS_VERSION_TEST");
 
+    /* ImageMagick versions are defined as major, minor and patch, each of which are defined as a value in 1 byte. */
+    /* ImageMagick 6.9.12 has `#define MagickLibVersion  0x69C` */
+    /* It use only major and minor versions. */
+    size_t mask_major_minor_version = 0xFFFFFFF0;
+
     if (RTEST(rb_const_defined(rb_cObject, bypass)) && RTEST(rb_const_get(rb_cObject, bypass)))
     {
         return;
     }
 
     version_str = GetMagickVersion(&version_number);
-    if (version_number != MagickLibVersion)
+    if ((version_number & mask_major_minor_version) != (MagickLibVersion & mask_major_minor_version))
     {
         int n, x;
 
