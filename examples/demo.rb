@@ -5,7 +5,6 @@
 # by Bob Friesenhahn.
 #
 require 'rmagick'
-include Magick
 
 #
 #   RMagick version of Magick++/demo/demo.cpp
@@ -16,12 +15,12 @@ FONT = 'Helvetica'
 begin
   puts 'Read images...'
 
-  model = ImageList.new('../doc/ex/images/model.miff')
+  model = Magick::ImageList.new('../doc/ex/images/model.miff')
   model.border_color = 'black'
   model.background_color = 'black'
   model.cur_image[:Label] = 'RMagick'
 
-  smile = ImageList.new('../doc/ex/images/smile.miff')
+  smile = Magick::ImageList.new('../doc/ex/images/smile.miff')
   smile.border_color = 'black'
   smile.cur_image[:Label] = 'Smile'
 
@@ -35,23 +34,23 @@ begin
   # Notice I specify the width and height of the images via the
   # optional "size" attribute in the parm block associated with
   # the read method. There are two more examples of this, below.
-  example = ImageList.new
+  example = Magick::ImageList.new
   5.times { example.read('NULL:black') { |options| options.size = '70x70' } }
 
   puts '   add noise...'
-  example << model.add_noise(LaplacianNoise)
+  example << model.add_noise(Magick::LaplacianNoise)
   example.cur_image[:Label] = 'Add Noise'
 
   puts '   annotate...'
   example << model.cur_image.copy
   example.cur_image[:Label] = 'Annotate'
-  draw = Draw.new
+  draw = Magick::Draw.new
   draw.annotate(example, 0, 0, 0, 20, 'RMagick') do |options|
     options.pointsize = 18
     options.font = FONT
     options.stroke = 'gold'
     options.fill = 'gold'
-    options.gravity = NorthGravity
+    options.gravity = Magick::NorthGravity
   end
 
   puts '   blur...'
@@ -63,7 +62,7 @@ begin
   example.cur_image[:Label] = 'Border'
 
   puts '   channel...'
-  example << model.channel(RedChannel)
+  example << model.channel(Magick::RedChannel)
   example.cur_image[:Label] = 'Channel'
 
   puts '   charcoal...'
@@ -71,7 +70,7 @@ begin
   example.cur_image[:Label] = 'Charcoal'
 
   puts '   composite...'
-  example << model.composite(smile, 35, 65, OverCompositeOp)
+  example << model.composite(smile, 35, 65, Magick::OverCompositeOp)
   example.cur_image[:Label] = 'Composite'
 
   puts '   contrast...'
@@ -94,7 +93,7 @@ begin
   puts '   draw...'
   example << model.cur_image.copy
   example.cur_image[:Label] = 'Draw'
-  gc = Draw.new
+  gc = Magick::Draw.new
   gc.fill 'black'
   gc.fill_opacity 0
   gc.stroke 'gold'
@@ -148,12 +147,12 @@ begin
   # the same size as the model image.
   puts '   gradient...'
   example.read('gradient:#20a0ff-#ffff00') do |options|
-    options.size = Geometry.new(model.columns, model.rows)
+    options.size = Magick::Geometry.new(model.columns, model.rows)
   end
   example.cur_image[:Label] = 'Gradient'
 
   puts '   grayscale...'
-  example << model.cur_image.quantize(256, GRAYColorspace)
+  example << model.cur_image.quantize(256, Magick::GRAYColorspace)
   example.cur_image[:Label] = 'Grayscale'
 
   puts '   implode...'
@@ -169,7 +168,7 @@ begin
   example.cur_image[:Label] = 'Modulate'
 
   puts '   monochrome...'
-  example << model.cur_image.quantize(2, GRAYColorspace, false)
+  example << model.cur_image.quantize(2, Magick::GRAYColorspace, false)
   example.cur_image[:Label] = 'Monochrome'
 
   puts '   negate...'
@@ -187,7 +186,7 @@ begin
   # The plasma format is very similar to the gradient format, above.
   puts '   plasma...'
   example.read('plasma:fractal') do |options|
-    options.size = Geometry.new(model.columns, model.rows)
+    options.size = Magick::Geometry.new(model.columns, model.rows)
   end
   example.cur_image[:Label] = 'Plasma'
 
@@ -272,11 +271,11 @@ begin
 
   montage = example.montage do |options|
     options.geometry = '130x194+10+5>'
-    options.gravity = CenterGravity
+    options.gravity = Magick::CenterGravity
     options.border_width = 1
     rows = (example.size + 4) / 5
-    options.tile = Geometry.new(5, rows)
-    options.compose = OverCompositeOp
+    options.tile = Magick::Geometry.new(5, rows)
+    options.compose = Magick::OverCompositeOp
 
     # Use the ImageMagick built-in "granite" format
     # as the background texture.
@@ -294,19 +293,19 @@ begin
   # Add the ImageMagick logo to the top of the montage. The "logo:"
   # format is a fixed-size image, so I don't need to specify a size.
   puts 'Adding logo image...'
-  logo = Image.read('logo:').first
-  if Magick_version =~ /GraphicsMagick/
+  logo = Magick::Image.read('logo:').first
+  if Magick::Magick_version =~ /GraphicsMagick/
     logo.resize!(200.0 / logo.rows)
   else
     logo.crop!(98, 0, 461, 455).resize!(0.45)
   end
 
   # Create a new Image for the composited montage and logo
-  montage_image = ImageList.new
-  montage_image << montage.composite(logo, 245, 0, OverCompositeOp)
+  montage_image = Magick::ImageList.new
+  montage_image << montage.composite(logo, 245, 0, Magick::OverCompositeOp)
 
   # Write the result to a file
-  montage_image.compression = RLECompression
+  montage_image.compression = Magick::RLECompression
   montage_image.alpha(Magick::DeactivateAlphaChannel)
   puts 'Writing image ./rm_demo_out.png'
   montage_image.write 'rm_demo_out.png'

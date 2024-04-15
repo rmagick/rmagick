@@ -6,28 +6,27 @@
 # Demo the use of the GravityType argument to Image#crop.
 
 require 'rmagick'
-include Magick
 
-shorts = Image.read('images/Shorts.jpg').first
+shorts = Magick::Image.read('images/Shorts.jpg').first
 
 regwidth = shorts.columns / 2
 regheight = shorts.rows / 2
 
-mask = Image.new(regwidth, regheight) { |info| info.background_color = 'white' }
+mask = Magick::Image.new(regwidth, regheight) { |info| info.background_color = 'white' }
 mask.alpha(Magick::ActivateAlphaChannel)
-mask.quantum_operator(SetQuantumOperator, 0.50 * QuantumRange, AlphaChannel)
+mask.quantum_operator(Magick::SetQuantumOperator, 0.50 * Magick::QuantumRange, Magick::AlphaChannel)
 
-black = Image.new(shorts.columns, shorts.rows) { |info| info.background_color = 'black' }
-pairs = ImageList.new
+black = Magick::Image.new(shorts.columns, shorts.rows) { |info| info.background_color = 'black' }
+pairs = Magick::ImageList.new
 
 [
-  NorthWestGravity, NorthGravity, NorthEastGravity,
-  WestGravity, CenterGravity, EastGravity,
-  SouthWestGravity, SouthGravity, SouthEastGravity
+  Magick::NorthWestGravity, Magick::NorthGravity, Magick::NorthEastGravity,
+  Magick::WestGravity, Magick::CenterGravity, Magick::EastGravity,
+  Magick::SouthWestGravity, Magick::SouthGravity, Magick::SouthEastGravity
 ].each do |gravity|
-  pattern = shorts.composite(mask, gravity, OverCompositeOp)
+  pattern = shorts.composite(mask, gravity, Magick::OverCompositeOp)
   cropped = shorts.crop(gravity, regwidth, regheight)
-  result = black.composite(cropped, gravity, OverCompositeOp)
+  result = black.composite(cropped, gravity, Magick::OverCompositeOp)
   result.border_color = 'white'
   pairs << pattern
   pairs << result

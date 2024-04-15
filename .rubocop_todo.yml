@@ -345,22 +345,6 @@ Style/MissingRespondToMissing:
     - 'lib/rmagick_internal.rb'
     - 'lib/rvg/misc.rb'
 
-# Offense count: 12
-Style/MixinUsage:
-  Exclude:
-    - 'doc/ex/colors.rb'
-    - 'doc/ex/composite.rb'
-    - 'doc/ex/crop_with_gravity.rb'
-    - 'doc/ex/smile.rb'
-    - 'examples/crop_with_gravity.rb'
-    - 'examples/demo.rb'
-    - 'examples/image_opacity.rb'
-    - 'examples/import_export.rb'
-    - 'examples/pattern_fill.rb'
-    - 'examples/rotating_text.rb'
-    - 'examples/thumbnail.rb'
-    - 'examples/vignette.rb'
-
 # Offense count: 63
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
