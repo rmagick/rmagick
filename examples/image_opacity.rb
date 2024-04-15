@@ -1,7 +1,6 @@
 # Ccreate a semi-transparent title for an image.
 
 require 'rmagick'
-include Magick
 
 puts <<~END_INFO
 
@@ -10,18 +9,18 @@ puts <<~END_INFO
 
 END_INFO
 
-balloons = Image.read('../doc/ex/images/Hot_Air_Balloons_H.jpg').first
-legend = Image.new(160, 50) { |options| options.background_color = '#ffffffc0' }
+balloons = Magick::Image.read('../doc/ex/images/Hot_Air_Balloons_H.jpg').first
+legend = Magick::Image.new(160, 50) { |options| options.background_color = '#ffffffc0' }
 
-gc = Draw.new
+gc = Magick::Draw.new
 gc.annotate(legend, 0, 0, 0, 0, 'Balloon Day!\\nFri May 2 2003') do |options|
-  options.gravity = CenterGravity
+  options.gravity = Magick::CenterGravity
   options.stroke = 'transparent'
   options.fill = 'white'
   options.pointsize = 18
 end
 
-result = balloons.composite(legend, SouthGravity, OverCompositeOp)
+result = balloons.composite(legend, Magick::SouthGravity, Magick::OverCompositeOp)
 
 puts '...Writing image_opacity.png'
 result.write 'image_opacity.png'

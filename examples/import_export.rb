@@ -3,7 +3,6 @@
 #
 
 require 'rmagick'
-include Magick
 
 puts <<~END_INFO
 
@@ -13,8 +12,8 @@ puts <<~END_INFO
 
 END_INFO
 
-img = Image.read('../doc/ex/images/Gold_Statue.jpg').first
-copy = Image.new(img.columns, img.rows)
+img = Magick::Image.read('../doc/ex/images/Gold_Statue.jpg').first
+copy = Magick::Image.new(img.columns, img.rows)
 
 begin
   img.rows.times do |r|

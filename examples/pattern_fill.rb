@@ -5,7 +5,6 @@
 # Try 'checkerboard' or 'verticalsaw'
 
 require 'rmagick'
-include Magick
 
 puts <<~END_INFO
 
@@ -30,8 +29,8 @@ else
 end
 
 # Create a sample image that is 100x bigger than the pattern.
-attrs = Image.ping("pattern:#{pattern}").first
+attrs = Magick::Image.ping("pattern:#{pattern}").first
 
-tryit = Image.new(10 * attrs.columns, 10 * attrs.rows, PatternFill.new(pattern))
+tryit = Magick::Image.new(10 * attrs.columns, 10 * attrs.rows, PatternFill.new(pattern))
 tryit.write('pattern_fill.gif')
 exit

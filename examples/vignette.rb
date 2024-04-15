@@ -1,5 +1,4 @@
 require 'rmagick'
-include Magick
 
 puts <<END_INFO
 
@@ -13,7 +12,7 @@ puts <<END_INFO
 
 END_INFO
 
-ballerina = Image.read('../doc/ex/images/Ballerina3.jpg')[0]
+ballerina = Magick::Image.read('../doc/ex/images/Ballerina3.jpg')[0]
 
 # Note: this technique won't work with every image. To make a pretty
 # vignette you need an image with a uniform, fairly dark background.
@@ -28,8 +27,8 @@ ballerina = Image.read('../doc/ex/images/Ballerina3.jpg')[0]
 # The size of the oval is arbitrary - in this case it's 90% of the
 # size of the image.
 
-oval = Image.new(ballerina.columns, ballerina.rows) { |options| options.background_color = 'black' }
-gc = Draw.new
+oval = Magick::Image.new(ballerina.columns, ballerina.rows) { |options| options.background_color = 'black' }
+gc = Magick::Draw.new
 gc.stroke('white')
 gc.fill('white')
 gc.ellipse(
@@ -58,7 +57,7 @@ oval.alpha(Magick::CopyAlphaChannel)           # Force the CopyAlphaCompositeOp 
 # to determine how much transparency to add to the ballerina
 # pixels.
 
-ballerina = ballerina.composite(oval, CenterGravity, CopyAlphaCompositeOp)
+ballerina = ballerina.composite(oval, Magick::CenterGravity, Magick::CopyAlphaCompositeOp)
 
 # Since the vignette has multiple levels of transparency, we can't
 # save it as a GIF or a JPEG. The PNG format can handle it, though.
@@ -74,7 +73,7 @@ end
 # supports 1`level of transparency. Therefore, composite the vignette over a
 # standard "checkerboard" background. The resulting image will be 100% opaque.
 
-checkerboard = Image.read('pattern:checkerboard') { |options| options.size = "#{ballerina.columns}x#{ballerina.rows}" }
-vignette = checkerboard[0].composite(ballerina, CenterGravity, OverCompositeOp)
+checkerboard = Magick::Image.read('pattern:checkerboard') { |options| options.size = "#{ballerina.columns}x#{ballerina.rows}" }
+vignette = checkerboard[0].composite(ballerina, Magick::CenterGravity, Magick::OverCompositeOp)
 vignette.write('vignette1.png')
 exit
