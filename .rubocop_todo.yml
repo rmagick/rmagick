@@ -378,13 +378,6 @@ Style/NumericPredicate:
     - 'lib/rmagick_internal.rb'
     - 'lib/rvg/embellishable.rb'
 
-# Offense count: 2
-# Configuration parameters: Methods.
-# Methods: {"reduce"=>["acc", "elem"]}, {"inject"=>["acc", "elem"]}
-Style/SingleLineBlockParams:
-  Exclude:
-    - 'lib/rvg/misc.rb'
-
 # Offense count: 18
 # Cop supports --auto-correct.
 Style/StringHashKeys:
