@@ -25,7 +25,7 @@ RSpec.describe Magick::Image, '#destroy' do
         expect { image.get_iptc_dataset('x') }.to raise_error(Magick::DestroyedImageError)
       elsif method == 'profile!'
         expect { image.profile!('x', 'y') }.to raise_error(Magick::DestroyedImageError)
-      elsif /=\Z/.match(method)
+      elsif method =~ /=\Z/
         expect { image.public_send(method, 1) }.to raise_error(Magick::DestroyedImageError)
       elsif arity.zero?
         expect { image.public_send(method) }.to raise_error(Magick::DestroyedImageError)

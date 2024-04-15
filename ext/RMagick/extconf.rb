@@ -269,7 +269,7 @@ module RMagick
     # issue #169
     # set ARCHFLAGS appropriately for OSX
     def configure_archflags_for_osx(magick_package)
-      return unless PKGConfig.libs_only_L(magick_package).match(%r{-L(.+)/lib})
+      return unless PKGConfig.libs_only_L(magick_package) =~ %r{-L(.+)/lib}
 
       imagemagick_dir = Regexp.last_match(1)
       command = Dir.glob(File.join(imagemagick_dir, "bin/*")).find { |file| File.executable? file }

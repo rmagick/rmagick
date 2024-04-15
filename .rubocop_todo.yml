@@ -221,14 +221,6 @@ Naming/MethodParameterName:
     - 'lib/rvg/transformable.rb'
     - 'lib/rvg/units.rb'
 
-# Offense count: 3
-# Cop supports --auto-correct.
-Performance/RedundantMatch:
-  Exclude:
-    - 'examples/demo.rb'
-    - 'ext/RMagick/extconf.rb'
-    - 'spec/rmagick/image/destroy_spec.rb'
-
 # Offense count: 428
 # Configuration parameters: Max.
 RSpec/ExampleLength:
