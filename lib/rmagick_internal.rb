@@ -839,7 +839,7 @@ module Magick
       ary = []
       if entry.length.zero?
         exif_data = self['EXIF:*']
-        exif_data.split("\n").each { |exif| ary.push(exif.split('=')) } if exif_data
+        exif_data&.split("\n")&.each { |exif| ary.push(exif.split('=')) }
       else
         get_exif_by_entry # ensure properties is populated with exif data
         entry.each do |name|
@@ -855,12 +855,10 @@ module Magick
       hash = {}
       if tag.length.zero?
         exif_data = self['EXIF:!']
-        if exif_data
-          exif_data.split("\n").each do |exif|
-            tag, value = exif.split('=')
-            tag = tag[1, 4].hex
-            hash[tag] = value
-          end
+        exif_data&.split("\n")&.each do |exif|
+          tag, value = exif.split('=')
+          tag = tag[1, 4].hex
+          hash[tag] = value
         end
       else
         get_exif_by_number # ensure properties is populated with exif data
@@ -1368,7 +1366,7 @@ module Magick
 
     def []=(*args)
       obj = @images.[]=(*args)
-      if obj && obj.respond_to?(:each)
+      if obj&.respond_to?(:each)
         assert_image_array(obj)
         set_current obj.last.__id__
       elsif obj
