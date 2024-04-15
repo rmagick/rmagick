@@ -150,23 +150,6 @@ Naming/ClassAndModuleCamelCase:
   Exclude:
     - 'lib/rmagick_internal.rb'
 
-# Offense count: 120
-Naming/ConstantName:
-  Exclude:
-    - 'doc/ex/arcs02.rb'
-    - 'doc/ex/cubic01.rb'
-    - 'doc/ex/cubic02.rb'
-    - 'doc/ex/drop_shadow.rb'
-    - 'doc/ex/flatten_images.rb'
-    - 'doc/ex/get_type_metrics.rb'
-    - 'doc/ex/gradientfill.rb'
-    - 'doc/ex/hatchfill.rb'
-    - 'doc/ex/rubyname.rb'
-    - 'doc/ex/smile.rb'
-    - 'doc/ex/tref01.rb'
-    - 'examples/demo.rb'
-    - 'lib/rmagick_internal.rb'
-
 # Offense count: 11
 # Configuration parameters: ExpectMatchingDefinition, Regex, IgnoreExecutableScripts, AllowedAcronyms.
 # AllowedAcronyms: CLI, DSL, ACL, API, ASCII, CPU, CSS, DNS, EOF, GUID, HTML, HTTP, HTTPS, ID, IP, JSON, LHS, QPS, RAM, RHS, RPC, SLA, SMTP, SQL, SSH, TCP, TLS, TTL, UDP, UI, UID, UUID, URI, URL, UTF8, VM, XML, XMPP, XSRF, XSS

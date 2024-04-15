@@ -1,7 +1,7 @@
 require 'rvg/rvg'
 
 Magick::RVG.dpi = 90
-Fill = %w[yellow pink green blue cyan red purple brown]
+FILL = %w[yellow pink green blue cyan red purple brown]
 
 rvg = Magick::RVG.new(6.cm, 6.cm).viewbox(0, 0, 600, 600) do |canvas|
   canvas.background_fill = 'white'
@@ -12,7 +12,7 @@ rvg = Magick::RVG.new(6.cm, 6.cm).viewbox(0, 0, 600, 600) do |canvas|
     angle = 0
     8.times do |n|
       grp.text do |txt|
-        txt.tref(ref_text).d(0, 30).rotate(angle).styles(fill: Fill[n])
+        txt.tref(ref_text).d(0, 30).rotate(angle).styles(fill: FILL[n])
         angle += 45
       end
     end
