@@ -22,29 +22,29 @@ module Magick
   end
 end
 
-Origin_x = 110
-Origin_y = 230
-Glyph = 'g'
-Face = RUBY_PLATFORM =~ /mswin/ ? 'Verdana' : 'Times'
+ORIGIN_X = 110
+ORIGIN_Y = 230
+GLYPH = 'g'
+FONT = RUBY_PLATFORM =~ /mswin/ ? 'Verdana' : 'Times'
 
 canvas = Magick::Image.new(410, 320, Magick::HatchFill.new('white', 'lightcyan2'))
 
 # Draw a big lowercase 'g' on the canvas. Leave room on all sides for
 # the labels. Use 'undercolor' to set off the glyph.
 glyph = Magick::Draw.new
-glyph.annotate(canvas, 0, 0, Origin_x, Origin_y, Glyph) do |options|
+glyph.annotate(canvas, 0, 0, ORIGIN_X, ORIGIN_Y, GLYPH) do |options|
   options.pointsize = 124
   options.stroke = 'none'
   options.fill = 'black'
-  options.font_family = Face
+  options.font_family = FONT
   options.undercolor = '#ffff00c0'
 end
 
 # Call get_type_metrics. This is what this example's all about.
-metrics = glyph.get_type_metrics(canvas, Glyph)
+metrics = glyph.get_type_metrics(canvas, GLYPH)
 
 gc = Magick::Draw.new
-gc.translate(Origin_x, Origin_y)
+gc.translate(ORIGIN_X, ORIGIN_Y)
 
 # Draw the origin as a big red dot.
 gc.stroke('red')
@@ -89,12 +89,12 @@ gc.draw(canvas)
 # Draw the braces and labels. Position the braces by transforming the
 # user coordinate system with translate and rotate methods.
 gc = Magick::Draw.new
-gc.font_family('Face')
+gc.font_family(FONT)
 gc.pointsize(13)
 gc.fill('none')
 gc.stroke('black')
 gc.stroke_width(1)
-gc.translate(Origin_x, Origin_y)
+gc.translate(ORIGIN_X, ORIGIN_Y)
 
 # between origin and descent
 gc.push

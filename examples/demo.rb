@@ -11,7 +11,7 @@ include Magick
 #   RMagick version of Magick++/demo/demo.cpp
 #
 
-Font = 'Helvetica'
+FONT = 'Helvetica'
 
 begin
   puts 'Read images...'
@@ -48,7 +48,7 @@ begin
   draw = Draw.new
   draw.annotate(example, 0, 0, 0, 20, 'RMagick') do |options|
     options.pointsize = 18
-    options.font = Font
+    options.font = FONT
     options.stroke = 'gold'
     options.fill = 'gold'
     options.gravity = NorthGravity
@@ -283,7 +283,7 @@ begin
 
     #       options.texture = Image.read("granite:").first
     options.background_color = 'white'
-    options.font = Font
+    options.font = FONT
     options.pointsize = 18
     options.fill = '#600'
     options.filename = 'RMagick Demo'

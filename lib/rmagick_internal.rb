@@ -669,6 +669,7 @@ module Magick
 
   # Define IPTC record number:dataset tags for use with Image#get_iptc_dataset
   module IPTC
+    # rubocop:disable Naming/ConstantName
     module Envelope
       Model_Version                          = '1:00'
       Destination                            = '1:05'
@@ -766,6 +767,7 @@ module Magick
     module Post_ObjectData_Descriptor
       Confirmed_ObjectData_Size              = '9:10'
     end
+    # rubocop:enable Naming/ConstantName
   end # module Magick::IPTC
 
   # Ruby-level Magick::Image methods

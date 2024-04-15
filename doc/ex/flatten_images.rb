@@ -2,7 +2,7 @@
 
 require 'rmagick'
 
-RMagick = 'RMagick'
+TEXT = 'RMagick'
 
 i = Magick::ImageList.new
 
@@ -12,7 +12,7 @@ i.new_image(200, 100, Magick::GradientFill.new(100, 50, 100, 50, 'khaki1', 'turq
 # Create a transparent image for the text shadow
 i.new_image(200, 100) { |info| info.background_color = 'transparent' }
 primitives = Magick::Draw.new
-primitives.annotate i, 0, 0, 2, 2, RMagick do |options|
+primitives.annotate i, 0, 0, 2, 2, TEXT do |options|
   options.pointsize = 32
   options.fill = 'gray50'
   options.gravity = Magick::CenterGravity
@@ -21,7 +21,7 @@ end
 # Create another transparent image for the text itself
 i.new_image(200, 100) { |info| info.background_color = 'transparent' }
 primitives = Magick::Draw.new
-primitives.annotate i, 0, 0, -2, -2, RMagick do |options|
+primitives.annotate i, 0, 0, -2, -2, TEXT do |options|
   options.pointsize = 32
   options.fill = 'red'
   options.stroke = 'black'
