@@ -21,14 +21,6 @@ Bundler/OrderedGems:
   Exclude:
     - 'Gemfile'
 
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: TreatCommentsAsGroupSeparators, Include.
-# Include: **/*.gemspec
-Gemspec/OrderedDependencies:
-  Exclude:
-    - 'rmagick.gemspec'
-
 # Offense count: 11
 # Cop supports --auto-correct.
 # Configuration parameters: Categories, ExpectedOrder.

@@ -24,6 +24,6 @@ Gem::Specification.new do |s|
   s.required_ruby_version = ">= #{Magick::MIN_RUBY_VERSION}"
   s.requirements << "ImageMagick #{Magick::MIN_IM_VERSION} or later"
 
-  s.add_runtime_dependency 'pkg-config', '~> 1.4'
   s.add_runtime_dependency 'observer', '~> 0.1'
+  s.add_runtime_dependency 'pkg-config', '~> 1.4'
 end
