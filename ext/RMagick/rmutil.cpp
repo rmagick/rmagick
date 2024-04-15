@@ -367,7 +367,6 @@ double
 rm_percentage2(VALUE arg, double max, bool only_positive)
 {
     double pct;
-    char *end;
 
     if (!rm_check_num2dbl(arg))
     {
