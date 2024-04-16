@@ -1,7 +1,7 @@
 require 'rvg/rvg'
 
 rvg = Magick::RVG.new(450, 300) do |canvas|
-  canvas.desc = 'Example Preserve Aspect Ratio'
+  canvas.desc = 'Example - Preserve Aspect Ratio'
   canvas.background_fill = 'white'
 
   canvas.rect(448, 298, 1, 1).styles(fill: 'none', stroke: 'blue')
@@ -201,4 +201,4 @@ rvg = Magick::RVG.new(450, 300) do |canvas|
   end
 end
 
-rvg.draw.write('PreserveAspectRatio.gif')
+rvg.draw.write('preserve_aspect_ratio.gif')

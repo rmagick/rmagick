@@ -1,7 +1,7 @@
 require 'rvg/rvg'
 
 rvg = Magick::RVG.new(400, 150) do |canvas|
-  canvas.desc = 'Example OrigCoordSys - Simple transformations: original picture'
+  canvas.desc = 'Example - Simple transformations: original picture'
   canvas.background_fill = 'white'
 
   canvas.g.styles(fill: 'none', stroke: 'black', stroke_width: 3) do |grp|
@@ -13,4 +13,4 @@ rvg = Magick::RVG.new(400, 150) do |canvas|
   canvas.text(30, 30, 'ABC (orig coord system)').styles(font_size: 20, font_family: 'Verdana', font_weight: 'normal', font_style: 'normal')
 end
 
-rvg.draw.write('OrigCoordSys.gif')
+rvg.draw.write('orig_coord_sys.gif')

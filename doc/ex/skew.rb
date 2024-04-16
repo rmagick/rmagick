@@ -1,7 +1,7 @@
 require 'rvg/rvg'
 
 rvg = Magick::RVG.new(400, 120) do |canvas|
-  canvas.desc = 'Example Skew - Show effects of skewX and skewY'
+  canvas.desc = 'Example - Show effects of skewX and skewY'
   canvas.background_fill = 'white'
 
   canvas.g.styles(fill: 'none', stroke: 'black', stroke_width: 3) do |grp|
@@ -35,4 +35,4 @@ rvg = Magick::RVG.new(400, 120) do |canvas|
   end
 end
 
-rvg.draw.write('Skew.gif')
+rvg.draw.write('skew.gif')
