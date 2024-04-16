@@ -4,7 +4,7 @@ Magick::RVG.dpi = 90
 
 rvg = Magick::RVG.new(10.cm, 3.cm).viewbox(0, 0, 100, 30) do |canvas|
   canvas.background_fill = 'white'
-  canvas.desc = "Example Use03 - 'use' with a 'transform' attribute"
+  canvas.desc = "Example - 'use' with a 'transform' attribute"
 
   myrect = Magick::RVG::Group.new do |grp|
     grp.rect(60, 10)
@@ -13,4 +13,4 @@ rvg = Magick::RVG.new(10.cm, 3.cm).viewbox(0, 0, 100, 30) do |canvas|
   canvas.use(myrect).translate(20, 2.5).rotate(10)
 end
 
-rvg.draw.write('Use03.gif')
+rvg.draw.write('use03.gif')

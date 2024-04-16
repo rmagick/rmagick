@@ -4,7 +4,7 @@ Magick::RVG.dpi = 90
 
 rvg = Magick::RVG.new(10.cm, 3.5.cm).viewbox(0, 0, 100, 35) do |canvas|
   canvas.background_fill = 'white'
-  canvas.desc = "Example Use02 - Chain 'styles' to 'use'"
+  canvas.desc = "Example - Chain 'styles' to 'use'"
   r = Magick::RVG::Group.new do |grp|
     grp.rect(60, 10).styles(fill: 'yellow')
   end
@@ -17,4 +17,4 @@ rvg = Magick::RVG.new(10.cm, 3.5.cm).viewbox(0, 0, 100, 35) do |canvas|
   canvas.use(r, 20, 20).styles(fill: 'green', stroke: 'blue')
 end
 
-rvg.draw.write('Use02.gif')
+rvg.draw.write('use02.gif')

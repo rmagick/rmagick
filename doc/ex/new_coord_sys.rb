@@ -2,7 +2,7 @@ require 'rvg/rvg'
 
 rvg = Magick::RVG.new(400, 150) do |canvas|
   canvas.background_fill = 'white'
-  canvas.desc = 'Example NewCoordSys - New user coordinate system'
+  canvas.desc = 'Example - New user coordinate system'
   canvas.g.styles(fill: 'none', stroke: 'black', stroke_width: 3) do |grp|
     # Draw the axes of the original coordinate system
     grp.line(0, 1.5, 400, 1.5)
@@ -27,4 +27,4 @@ rvg = Magick::RVG.new(400, 150) do |canvas|
   end
 end
 
-rvg.draw.write('NewCoordSys.gif')
+rvg.draw.write('new_coord_sys.gif')

@@ -1,7 +1,7 @@
 require 'rvg/rvg'
 
 rvg = Magick::RVG.new(300, 100) do |canvas|
-  canvas.desc = "Example InitialCoords - SVG's initial coordinate system"
+  canvas.desc = "Example - SVG's initial coordinate system"
   canvas.background_fill = 'white'
   canvas.g.styles(fill: 'none', stroke: 'black', stroke_width: 3) do |grp|
     grp.line(0, 1.5, 300, 1.5)
@@ -19,4 +19,4 @@ rvg = Magick::RVG.new(300, 100) do |canvas|
   end
 end
 
-rvg.draw.write('InitialCoords.gif')
+rvg.draw.write('initial_coords.gif')

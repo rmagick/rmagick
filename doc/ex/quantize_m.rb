@@ -14,10 +14,10 @@ puts 'Done.'
 # Arrange the original images side-by-side into a
 # single image.
 old = snapshots.append false
-old.write('quantize-m_before.jpg')
+old.write('quantize_m_before.jpg')
 
 # Repeat for the quantized images.
 new = quant.append false
-new.write('quantize-m_after.jpg')
+new.write('quantize_m_after.jpg')
 
 exit

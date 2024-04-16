@@ -4,9 +4,9 @@ def example(cols, rows)
   rvg = Magick::RVG.new(cols, rows) do |canvas|
     canvas.background_fill = 'white'
     canvas.desc = <<-'END_DESC'
-            Example ViewBox - uses the viewBox attribute to automatically create an
-            initial user coordinate system which causes the graphic to scale to fit
-            into the viewport no matter what size the viewport is.
+            Example - uses the viewBox attribute to automatically create an initial
+            user coordinate system which causes the graphic to scale to fit into
+            the viewport no matter what size the viewport is.
     END_DESC
 
     canvas.viewbox(0, 0, 1500, 1000)
@@ -27,5 +27,5 @@ def example(cols, rows)
   rvg.draw
 end
 
-example(300, 200).write('ViewBox_300x200.gif')
-example(150, 200).write('ViewBox_150x200.gif')
+example(300, 200).write('view_box_300x200.gif')
+example(150, 200).write('view_box_150x200.gif')

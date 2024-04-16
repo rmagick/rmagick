@@ -1,7 +1,7 @@
 require 'rvg/rvg'
 
 rvg = Magick::RVG.new(400, 120) do |canvas|
-  canvas.desc = 'Example RotateScale - Rotate and scale transforms'
+  canvas.desc = 'Example - Rotate and scale transforms'
   canvas.background_fill = 'white'
   canvas.g.styles(fill: 'none', stroke: 'black', stroke_width: 3) do |grp|
     # Draw the axes of the original coordinate system
@@ -33,4 +33,4 @@ rvg = Magick::RVG.new(400, 120) do |canvas|
   end
 end
 
-rvg.draw.write('RotateScale.gif')
+rvg.draw.write('rotate_scale.gif')
