@@ -4,7 +4,6 @@ RSpec.describe Magick::Image, "#channel_mean" do
 
     mean_and_stddev = image.channel_mean(Magick::RedChannel)
     expected_stddev = value_by_version(
-      "6.7": 100.1757830016816,
       "6.8": 100.1757830016816,
       "6.9": 115.6730305646048,
       "7.0": 115.6730305646048,
@@ -20,7 +19,6 @@ RSpec.describe Magick::Image, "#channel_mean" do
 
     mean_and_stddev = image.channel_mean(Magick::GreenChannel)
     expected_stddev = value_by_version(
-      "6.7": 66.22122016393234,
       "6.8": 66.22122016393234,
       "6.9": 76.46567857542362,
       "7.0": 76.46567857542362,
@@ -36,7 +34,6 @@ RSpec.describe Magick::Image, "#channel_mean" do
 
     mean_and_stddev = image.channel_mean(Magick::RedChannel, Magick::GreenChannel)
     expected_stddev = value_by_version(
-      "6.7": 84.91300695417634,
       "6.8": 84.91300695417634,
       "6.9": 96.06935457001421,
       "7.0": 96.06935457001421,
@@ -52,7 +49,6 @@ RSpec.describe Magick::Image, "#channel_mean" do
 
     mean_and_stddev = image.channel_mean
     expected_stddev = value_by_version(
-      "6.7": 91.23584365076407,
       "6.8": 91.23584365076407,
       "6.9": 103.58337316538109,
       "7.0": 103.58337316538109,

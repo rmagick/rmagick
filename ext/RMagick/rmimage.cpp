@@ -288,17 +288,11 @@ DEFINE_GVL_STUB2(WriteImage, const ImageInfo *, Image *);
 DEFINE_GVL_STUB4(GetImageChannelEntropy, const Image *, const ChannelType, double *, ExceptionInfo *);
 #endif
 
-#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
 DEFINE_GVL_STUB3(RotationalBlurImage, const Image *, const double, ExceptionInfo *);
-#else
-DEFINE_GVL_STUB3(RadialBlurImage, const Image *, const double, ExceptionInfo *);
-#endif
 
 #if defined(IMAGEMAGICK_7)
-#elif defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
-DEFINE_GVL_STUB4(RotationalBlurImageChannel, const Image *, const ChannelType, const double, ExceptionInfo *);
 #else
-DEFINE_GVL_STUB4(RadialBlurImageChannel, const Image *, const ChannelType, const double, ExceptionInfo *);
+DEFINE_GVL_STUB4(RotationalBlurImageChannel, const Image *, const ChannelType, const double, ExceptionInfo *);
 #endif
 
 /**
@@ -7963,26 +7957,7 @@ Image_gray_q(VALUE self)
 #if defined(HAVE_SETIMAGEGRAY)
     return has_attribute(self, (MagickBooleanType (*)(const Image *, ExceptionInfo *))SetImageGray);
 #else
-#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
     return has_attribute(self, IsGrayImage);
-#else
-    // For ImageMagick 6.7
-    Image *image;
-    ColorspaceType colorspace;
-    VALUE ret;
-
-    image = rm_check_destroyed(self);
-    colorspace = image->colorspace;
-    if (image->colorspace == sRGBColorspace || image->colorspace == TransparentColorspace) {
-        // Workaround
-        //   If image colorspace has non-RGBColorspace, IsGrayImage() always return false.
-        image->colorspace = RGBColorspace;
-    }
-
-    ret = has_attribute(self, IsGrayImage);
-    image->colorspace = colorspace;
-    return ret;
-#endif
 #endif
 }
 
@@ -11185,11 +11160,9 @@ Image_quantum_operator(int argc, VALUE *argv, VALUE self)
         case SumQuantumOperator:
             qop = SumEvaluateOperator;
             break;
-#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
         case RootMeanSquareQuantumOperator:
             qop = RootMeanSquareEvaluateOperator;
             break;
-#endif
     }
 
     exception = AcquireExceptionInfo();
@@ -11307,15 +11280,9 @@ Image_radial_blur(VALUE self, VALUE angle_obj)
     image = rm_check_destroyed(self);
     exception = AcquireExceptionInfo();
 
-#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
     GVL_STRUCT_TYPE(RotationalBlurImage) args = { image, angle, exception };
     void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RotationalBlurImage), &args);
     new_image = reinterpret_cast<decltype(new_image)>(ret);
-#else
-    GVL_STRUCT_TYPE(RadialBlurImage) args = { image, angle, exception };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RadialBlurImage), &args);
-    new_image = reinterpret_cast<decltype(new_image)>(ret);
-#endif
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -11366,12 +11333,9 @@ Image_radial_blur_channel(int argc, VALUE *argv, VALUE self)
     new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RotationalBlurImage), &args);
     CHANGE_RESULT_CHANNEL_MASK(new_image);
     END_CHANNEL_MASK(image);
-#elif defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
+#else
     GVL_STRUCT_TYPE(RotationalBlurImageChannel) args = { image, channels, angle, exception };
     new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RotationalBlurImageChannel), &args);
-#else
-    GVL_STRUCT_TYPE(RadialBlurImageChannel) args = { image, channels, angle, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RadialBlurImageChannel), &args);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);

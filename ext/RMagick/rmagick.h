@@ -310,10 +310,8 @@ typedef enum _QuantumExpressionOperator
     AbsQuantumOperator, /**< abs */
     ExponentialQuantumOperator, /**< exponential */
     MedianQuantumOperator, /**< median */
-    SumQuantumOperator /**< sum */
-#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
-    , RootMeanSquareQuantumOperator /** root mean square */
-#endif
+    SumQuantumOperator, /**< sum */
+    RootMeanSquareQuantumOperator /** root mean square */
 } QuantumExpressionOperator ;
 
 

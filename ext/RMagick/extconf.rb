@@ -16,9 +16,6 @@ module RMagick
     RMAGICK_VERS = ::Magick::VERSION
     MIN_RUBY_VERS = ::Magick::MIN_RUBY_VERSION
 
-    # ImageMagick 6.7 package
-    IM6_7_PACKAGES = ['ImageMagick'].freeze
-
     # ImageMagick 6.8+ packages
     IM6_PACKAGES = %w[
       ImageMagick-6.Q64HDRI
@@ -180,11 +177,6 @@ module RMagick
 
     def determine_imagemagick_package
       packages = [installed_im7_packages, installed_im6_packages].flatten
-
-      if packages.empty?
-        # ImageMagick 6.7 does not have package file like ImageMagick-6.Q16.pc
-        packages = detect_imagemagick_packages(IM6_7_PACKAGES)
-      end
 
       if packages.empty?
         exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find ImageMagick with pkg-config\n"
@@ -394,7 +386,6 @@ module RMagick
       $defs.push("-DRUBY_VERSION_STRING=\"ruby #{RUBY_VERSION}\"")
       $defs.push("-DRMAGICK_VERSION_STRING=\"RMagick #{RMAGICK_VERS}\"")
 
-      $defs.push('-DIMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9=1') if im_version_at_least?('6.8.9')
       $defs.push('-DIMAGEMAGICK_GREATER_THAN_EQUAL_6_9_0=1') if im_version_at_least?('6.9.0')
       $defs.push('-DIMAGEMAGICK_GREATER_THAN_EQUAL_6_9_10=1') if im_version_at_least?('6.9.10')
       $defs.push('-DIMAGEMAGICK_7=1') if im_version_at_least?('7.0.0')
