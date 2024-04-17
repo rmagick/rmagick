@@ -14,7 +14,7 @@
 #define MAIN                        // Define external variables
 #include "rmagick.h"
 
-#if defined(HAVE_SETMAGICKALIGNEDMEMORYMETHODS) && defined(HAVE_RB_GC_ADJUST_MEMORY_USAGE)
+#if defined(HAVE_SETMAGICKALIGNEDMEMORYMETHODS)
     #if defined(HAVE_POSIX_MEMALIGN) || defined(HAVE__ALIGNED_MSIZE)
         #define USE_RM_ALIGNED_MALLOC 1
 

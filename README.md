@@ -42,7 +42,7 @@ These prerequisites are required for the latest version of RMagick.
 - RMagick 5.4.0 or later requires a C++ compiler.
 
 **Ruby**
-- Version 2.3 or later.
+- Version 3.0 or later.
 
 You can get Ruby from <https://www.ruby-lang.org>.
 
@@ -138,7 +138,7 @@ gem install rmagick
 ### Versioning
 
 RMagick is versioned according to Semantic Versioning. For stable version
-compatible with Ruby 1.8+, use `~> 2.0`. Versions >= 3 work on Ruby >= 2.x
+compatible with Ruby 3.0+, use `~> 3.0`. Versions >= 6 work on Ruby >= 3.x
 only.
 
 Using RMagick

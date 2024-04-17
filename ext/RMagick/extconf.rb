@@ -123,8 +123,7 @@ module RMagick
         dir_paths = search_paths_for_library_for_windows
         $CPPFLAGS += %( -I"#{dir_paths[:include]}")
         $CPPFLAGS += ' -x c++ -std=c++11 -Wno-register'
-        $LDFLAGS += %( -L"#{dir_paths[:lib]}")
-        $LDFLAGS << ' -lucrt' if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.4.0')
+        $LDFLAGS += %( -L"#{dir_paths[:lib]}" -lucrt)
 
         have_library(im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_' : 'CORE_RL_magick_')
 
@@ -132,15 +131,12 @@ module RMagick
 
         dir_paths = search_paths_for_library_for_windows
         $CPPFLAGS << %( -I"#{dir_paths[:include]}")
-        $LDFLAGS << %( -libpath:"#{dir_paths[:lib]}")
-        $LDFLAGS << ' -libpath:ucrt' if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.4.0')
+        $LDFLAGS << %( -libpath:"#{dir_paths[:lib]}" -libpath:ucrt)
 
         $LOCAL_LIBS += ' ' + (im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_.lib' : 'CORE_RL_magick_.lib')
 
         $CPPFLAGS += ' /std:c++11'
       end
-      ruby_version = RUBY_VERSION.split('.')
-      $CPPFLAGS += " -DRUBY_VERSION_MAJOR=#{ruby_version[0]} -DRUBY_VERSION_MINOR=#{ruby_version[1]}"
       $CPPFLAGS += ' $(optflags) $(debugflags)'
     end
 
@@ -357,8 +353,6 @@ module RMagick
 
     def create_header_file
       ruby_api = [
-        'rb_gc_adjust_memory_usage', # Ruby 2.4.0
-        'rb_gc_mark_movable', # Ruby 2.7.0
         'rb_io_path' # Ruby 3.2.0
       ]
       memory_api = %w[

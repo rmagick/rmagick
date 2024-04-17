@@ -6,6 +6,6 @@ RSpec.describe Magick::Image, '#shave' do
     expect(result).to be(image)
 
     image.freeze
-    expect { image.shave!(2, 2) }.to raise_error(FreezeError)
+    expect { image.shave!(2, 2) }.to raise_error(FrozenError)
   end
 end

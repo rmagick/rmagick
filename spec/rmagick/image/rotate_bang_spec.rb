@@ -6,6 +6,6 @@ RSpec.describe Magick::Image, '#rotate!' do
     expect(result).to be(image)
 
     image.freeze
-    expect { image.rotate!(45) }.to raise_error(FreezeError)
+    expect { image.rotate!(45) }.to raise_error(FrozenError)
   end
 end

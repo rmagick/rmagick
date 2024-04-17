@@ -14,8 +14,8 @@ RSpec.describe Magick::Image, '#profile!' do
     expect { image.profile!('test', 'foobarbaz') }.to raise_error(ArgumentError)
 
     image.freeze
-    expect { image.profile!('icc', 'xxx') }.to raise_error(FreezeError)
-    expect { image.profile!('*', nil) }.to raise_error(FreezeError)
+    expect { image.profile!('icc', 'xxx') }.to raise_error(FrozenError)
+    expect { image.profile!('*', nil) }.to raise_error(FrozenError)
   end
 
   it 'delete exif when nil given as profile' do

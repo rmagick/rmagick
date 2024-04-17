@@ -1225,13 +1225,8 @@ MagickExport void UnityAddKernelInfo(KernelInfo *kernel, const double scale);
 MagickExport void ScaleKernelInfo(KernelInfo *kernel, const double scaling_factor, const GeometryFlags normalize_flags);
 #endif
 
-#if (RUBY_VERSION_MAJOR == 2 && RUBY_VERSION_MINOR < 7)
-    #define RESCUE_FUNC(func)                   (VALUE (*)(ANYARGS))(func)
-    #define RESCUE_EXCEPTION_HANDLER_FUNC(func) (VALUE (*)(ANYARGS))(func)
-#else
-    #define RESCUE_FUNC(func)                   (VALUE(*)(VALUE))(func)
-    #define RESCUE_EXCEPTION_HANDLER_FUNC(func) (VALUE(*)(VALUE, VALUE))(func)
-#endif
+#define RESCUE_FUNC(func)                   (VALUE(*)(VALUE))(func)
+#define RESCUE_EXCEPTION_HANDLER_FUNC(func) (VALUE(*)(VALUE, VALUE))(func)
 
 } // extern "C"
 
