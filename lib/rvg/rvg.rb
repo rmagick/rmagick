@@ -41,8 +41,6 @@ require 'rvg/clippath'
 require 'rvg/paint'
 require 'rvg/units'
 
-require 'pp' if ENV['debug_rvg']
-
 # RVG is the main class in this library. All graphic elements
 # must be contained within an RVG object.
 module Magick

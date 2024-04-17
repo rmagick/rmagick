@@ -211,12 +211,6 @@ Lint/NumberConversion:
 
 # Offense count: 1
 # This cop supports unsafe autocorrection (--autocorrect-all).
-Lint/RedundantRequireStatement:
-  Exclude:
-    - 'lib/rvg/rvg.rb'
-
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: AllowedMethods.
 # AllowedMethods: instance_of?, kind_of?, is_a?, eql?, respond_to?, equal?
 Lint/RedundantSafeNavigation:
