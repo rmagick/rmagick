@@ -122,7 +122,7 @@ module Magick
       begin
         hist = img.color_histogram
       rescue NotImplementedError
-        warn 'The color_histogram method is not supported by this version '\
+        warn 'The color_histogram method is not supported by this version ' \
                      'of ImageMagick/GraphicsMagick'
       else
         pixels = hist.keys.sort_by { |pixel| hist[pixel] }
