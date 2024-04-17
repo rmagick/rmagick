@@ -13,9 +13,7 @@
 #include "rmagick.h"
 #include "float.h"
 
-#ifdef HAVE_RB_GC_MARK_MOVABLE
 static void Draw_compact(void *drawptr);
-#endif
 static void Draw_mark(void *);
 static void Draw_destroy(void *);
 static size_t Draw_memsize(const void *);
@@ -28,9 +26,7 @@ const rb_data_type_t rm_draw_data_type = {
         Draw_mark,
         Draw_destroy,
         Draw_memsize,
-#ifdef HAVE_RB_GC_MARK_MOVABLE
         Draw_compact,
-#endif
     },
     0, 0,
     RUBY_TYPED_FROZEN_SHAREABLE,
@@ -1277,7 +1273,6 @@ Draw_primitive(VALUE self, VALUE primitive)
     return self;
 }
 
-#ifdef HAVE_RB_GC_MARK_MOVABLE
 /**
  * Compact the objects.
  *
@@ -1295,7 +1290,6 @@ Draw_compact(void *drawptr)
         draw->primitives = rb_gc_location(draw->primitives);
     }
 }
-#endif
 
 /**
  * Mark referenced objects.
@@ -1311,11 +1305,7 @@ Draw_mark(void *drawptr)
 
     if (draw->primitives != (VALUE)0)
     {
-#ifdef HAVE_RB_GC_MARK_MOVABLE
         rb_gc_mark_movable(draw->primitives);
-#else
-        rb_gc_mark(draw->primitives);
-#endif
     }
 }
 

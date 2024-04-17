@@ -16,7 +16,7 @@ RSpec.describe Magick::Image, '#mask' do
     expect { image1.mask = 2 }.to raise_error(NoMethodError)
 
     image2 = image1.copy.freeze
-    expect { image2.mask cimage }.to raise_error(FreezeError)
+    expect { image2.mask cimage }.to raise_error(FrozenError)
 
     image1.destroy!
     expect { image1.mask cimage }.to raise_error(Magick::DestroyedImageError)

@@ -6,6 +6,6 @@ RSpec.describe Magick::Image, '#resize!' do
     expect(result).to be(image)
 
     image.freeze
-    expect { image.resize!(0.50) }.to raise_error(FreezeError)
+    expect { image.resize!(0.50) }.to raise_error(FrozenError)
   end
 end

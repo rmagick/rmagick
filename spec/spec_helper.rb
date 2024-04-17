@@ -18,8 +18,6 @@ Magick::Magick_version =~ /ImageMagick (\d+\.\d+\.\d+)-(\d+) /
 abort 'Unable to get ImageMagick version' unless Regexp.last_match(1) && Regexp.last_match(2)
 IM_VERSION = Gem::Version.new(Regexp.last_match(1))
 
-FreezeError = RUBY_VERSION > '2.5' ? FrozenError : RuntimeError
-
 def unsupported_before(version, condition = {})
   cond = condition.key?(:if) ? condition[:if] : true
   message = "Unsupported before #{version}; running #{Magick::IMAGEMAGICK_VERSION}"

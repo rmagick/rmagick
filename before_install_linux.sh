@@ -2,8 +2,6 @@
 
 set -euox pipefail
 
-gem install bundler -v 2.3.26 # Bundler 2.4.x has dropped support for Ruby 2.3
-
 if [ -v STYLE_CHECKS ]; then
   set +ux
   exit 0

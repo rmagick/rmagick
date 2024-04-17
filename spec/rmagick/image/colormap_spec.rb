@@ -27,6 +27,6 @@ RSpec.describe Magick::Image, "#colormap" do
     expect { pc_image.colormap(0, pixel, Magick::BlackChannel) }.to raise_error(ArgumentError)
     expect { pc_image.colormap(0, [2]) }.to raise_error(TypeError)
     pc_image.freeze
-    expect { pc_image.colormap(0, 'red') }.to raise_error(FreezeError)
+    expect { pc_image.colormap(0, 'red') }.to raise_error(FrozenError)
   end
 end

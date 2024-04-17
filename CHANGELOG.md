@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 Improvements
 
+- Drop Ruby 2.x support (#1540)
 - Drop ImageMagick 6.7 support (#1539)
 - Loosen ImageMagick version check between compiled and runtime (#1526)
 
