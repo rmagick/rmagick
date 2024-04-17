@@ -1368,7 +1368,7 @@ module Magick
 
     def []=(*args)
       obj = @images.[]=(*args)
-      if obj&.respond_to?(:each)
+      if obj.respond_to?(:each)
         assert_image_array(obj)
         set_current obj.last.__id__
       elsif obj
