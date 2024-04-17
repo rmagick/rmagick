@@ -22,7 +22,7 @@ begin
   end
 rescue NotImplementedError
   warn 'The export_pixels and import_pixels methods are not supported ' \
-               'by this version of ImageMagick/GraphicsMagick'
+       'by this version of ImageMagick/GraphicsMagick'
   exit
 end
 

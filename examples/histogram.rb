@@ -123,7 +123,7 @@ module Magick
         hist = img.color_histogram
       rescue NotImplementedError
         warn 'The color_histogram method is not supported by this version ' \
-                     'of ImageMagick/GraphicsMagick'
+             'of ImageMagick/GraphicsMagick'
       else
         pixels = hist.keys.sort_by { |pixel| hist[pixel] }
         scale = HISTOGRAM_ROWS / (hist.values.max * AIR_FACTOR)
