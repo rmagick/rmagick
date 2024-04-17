@@ -211,12 +211,6 @@ Lint/NumberConversion:
 
 # Offense count: 1
 # This cop supports unsafe autocorrection (--autocorrect-all).
-Lint/RedundantDirGlobSort:
-  Exclude:
-    - 'spec/spec_helper.rb'
-
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
 Lint/RedundantRequireStatement:
   Exclude:
     - 'lib/rvg/rvg.rb'
