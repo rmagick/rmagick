@@ -49,7 +49,7 @@ You can get Ruby from <https://www.ruby-lang.org>.
 Ruby must be able to build C-Extensions (e.g. MRI, Rubinius, not JRuby)
 
 **ImageMagick**
-- Version 6.7.7 or later (6.x.x).
+- Version 6.8.9 or later (6.x.x).
 - Version 7.0.8 or later (7.x.x). Require RMagick 4.1.0 or later.
 
 You can get ImageMagick from <https://imagemagick.org>.
