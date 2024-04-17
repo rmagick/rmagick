@@ -58,15 +58,6 @@ Layout/LeadingCommentSpace:
   Exclude:
     - 'lib/rvg/stylable.rb'
 
-# Offense count: 2
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: space, no_space
-Layout/LineContinuationSpacing:
-  Exclude:
-    - 'examples/describe.rb'
-    - 'examples/histogram.rb'
-
 # Offense count: 3
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyle, IndentationWidth.

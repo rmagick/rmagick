@@ -29,7 +29,7 @@ ARGV.each do |file|
   puts "   Depth: #{img.depth} bits-per-pixel"
   puts "   Colors: #{img.number_colors}"
   puts "   Filesize: #{img.filesize}"
-  puts "   Resolution: #{img.x_resolution.to_i}x#{img.y_resolution.to_i} "\
+  puts "   Resolution: #{img.x_resolution.to_i}x#{img.y_resolution.to_i} " \
        "pixels/#{img.units == Magick::PixelsPerInchResolution ? 'inch' : 'centimeter'}"
 
   next if img.properties.empty?
