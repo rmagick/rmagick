@@ -5,7 +5,6 @@ require './lib/rmagick/version'
 Gem::Specification.new do |s|
   s.name = 'rmagick'
   s.version = Magick::VERSION
-  s.date = Date.today.to_s
   s.summary = 'Ruby binding to ImageMagick'
   s.description = 'RMagick is an interface between Ruby and ImageMagick.'
   s.authors = ['Tim Hunter', 'Omer Bar-or', 'Benjamin Thomas', 'Moncef Maiza']
