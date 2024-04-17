@@ -210,14 +210,6 @@ Lint/NumberConversion:
     - 'spec/rmagick/image/export_pixels_spec.rb'
 
 # Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: AllowedMethods.
-# AllowedMethods: instance_of?, kind_of?, is_a?, eql?, respond_to?, equal?
-Lint/RedundantSafeNavigation:
-  Exclude:
-    - 'lib/rmagick_internal.rb'
-
-# Offense count: 1
 Lint/RescueException:
   Exclude:
     - 'lib/rmagick_internal.rb'
