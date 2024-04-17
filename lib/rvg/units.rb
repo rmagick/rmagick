@@ -5,6 +5,7 @@ module Magick
     # Define RVG.dpi and RVG.dpi=. Add conversions to Integer and Float classes
     class << self
       attr_reader :dpi
+
       def dpi=(n)
         unless defined?(@dpi)
           [Float, Integer].each do |c|
