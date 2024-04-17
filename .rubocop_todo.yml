@@ -41,14 +41,6 @@ Layout/ClassStructure:
     - 'lib/rvg/pathdata.rb'
     - 'lib/rvg/rvg.rb'
 
-# Offense count: 2
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowForAlignment, AllowBeforeTrailingComments, ForceEqualSignAlignment.
-Layout/ExtraSpacing:
-  Exclude:
-    - 'doc/ex/channel.rb'
-    - 'lib/rvg/misc.rb'
-
 # Offense count: 6
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: AllowMultilineFinalElement.
