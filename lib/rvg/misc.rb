@@ -87,7 +87,7 @@ module Magick
 
           # escape existing braces, surround with braces
           text.gsub!(/[}]/) { |b| '\\' + b }
-          '{' +  text + '}'
+          '{' + text + '}'
         end
 
         def glyph_metrics(glyph_orientation, glyph)
