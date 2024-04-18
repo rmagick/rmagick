@@ -322,12 +322,6 @@ Naming/MethodParameterName:
     - 'lib/rvg/units.rb'
 
 # Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-Performance/BlockGivenWithExplicitBlock:
-  Exclude:
-    - 'lib/rmagick_internal.rb'
-
-# Offense count: 1
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: AllowRegexpMatch.
 Performance/RedundantEqualityComparisonBlock:
