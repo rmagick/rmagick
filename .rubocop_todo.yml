@@ -215,11 +215,6 @@ Lint/RescueException:
     - 'lib/rmagick_internal.rb'
 
 # Offense count: 1
-Lint/SelfAssignment:
-  Exclude:
-    - 'spec/rmagick/image_list/push_spec.rb'
-
-# Offense count: 1
 # Configuration parameters: AllowComments, AllowNil.
 Lint/SuppressedException:
   Exclude:
@@ -628,6 +623,13 @@ Style/RedundantBegin:
   Exclude:
     - 'lib/rvg/stylable.rb'
 
+# Offense count: 12
+# This cop supports safe autocorrection (--autocorrect).
+Style/RedundantRegexpEscape:
+  Exclude:
+    - 'lib/rmagick_internal.rb'
+    - 'lib/rvg/misc.rb'
+
 # Offense count: 19
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Style/RequireOrder:
@@ -690,6 +692,15 @@ Style/YodaCondition:
 # SupportedOperators: *, +, &, |, ^
 Style/YodaExpression:
   Enabled: false
+
+# Offense count: 17
+# This cop supports unsafe autocorrection (--autocorrect-all).
+Style/ZeroLengthPredicate:
+  Exclude:
+    - 'examples/describe.rb'
+    - 'examples/identify.rb'
+    - 'lib/rmagick_internal.rb'
+    - 'lib/rvg/misc.rb'
 
 # Offense count: 135
 # This cop supports safe autocorrection (--autocorrect).
