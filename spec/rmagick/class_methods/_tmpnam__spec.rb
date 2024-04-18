@@ -6,7 +6,7 @@ end
 
 RSpec.describe Magick, '._tmpnam_' do
   it 'works' do
-    tmpfiles = Dir[ENV['HOME'] + '/tmp/magick*'].length
+    tmpfiles = Dir[Dir.home + '/tmp/magick*'].length
 
     texture = Magick::Image.read('granite:') { |options| options.size = '20x20' }.first
     info = Magick::Image::Info.new
@@ -37,7 +37,7 @@ RSpec.describe Magick, '._tmpnam_' do
     gc.composite(0, 0, 20, 20, texture)
     expect(described_class._tmpnam_).to eq(original_tmpnam + 5)
 
-    tmpfiles2 = Dir[ENV['HOME'] + '/tmp/magick*'].length
+    tmpfiles2 = Dir[Dir.home + '/tmp/magick*'].length
 
     # The 2nd montage texture deletes the first.
     # The 2nd info texture deletes the first.

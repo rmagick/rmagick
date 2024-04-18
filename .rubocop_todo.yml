@@ -495,12 +495,6 @@ Style/DocumentationMethod:
   Enabled: false
 
 # Offense count: 2
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Style/EnvHome:
-  Exclude:
-    - 'spec/rmagick/class_methods/_tmpnam__spec.rb'
-
-# Offense count: 2
 # This cop supports safe autocorrection (--autocorrect).
 Style/ExplicitBlockArgument:
   Exclude:
