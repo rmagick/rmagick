@@ -691,15 +691,6 @@ Style/YodaCondition:
 Style/YodaExpression:
   Enabled: false
 
-# Offense count: 17
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Style/ZeroLengthPredicate:
-  Exclude:
-    - 'examples/describe.rb'
-    - 'examples/identify.rb'
-    - 'lib/rmagick_internal.rb'
-    - 'lib/rvg/misc.rb'
-
 # Offense count: 135
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, AllowedPatterns.

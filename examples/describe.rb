@@ -10,7 +10,7 @@ puts <<~END_INFO
 
 END_INFO
 
-if ARGV.length.zero?
+if ARGV.empty?
   puts 'Specify one or more image filenames as arguments.'
   exit
 end
