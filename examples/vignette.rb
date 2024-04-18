@@ -14,7 +14,7 @@ END_INFO
 
 ballerina = Magick::Image.read('../doc/ex/images/Ballerina3.jpg')[0]
 
-# Note: this technique won't work with every image. To make a pretty
+# NOTE: this technique won't work with every image. To make a pretty
 # vignette you need an image with a uniform, fairly dark background.
 
 # Start by drawing a white oval on a black background. (Although you don't
