@@ -173,7 +173,7 @@ module Magick
 
         def render(x, y, text)
           x_rel_coords, y_rel_coords = text_rel_coords(text)
-          dx = x_rel_coords.reduce(0) { |acc, elem| acc + elem }
+          dx = x_rel_coords.sum
           dy = y_rel_coords.max
 
           # We're handling the anchoring.
@@ -234,7 +234,7 @@ module Magick
         def render(x, y, text)
           x_rel_coords, y_rel_coords = text_rel_coords(text)
           dx = x_rel_coords.max
-          dy = y_rel_coords.reduce(0) { |acc, elem| acc + elem }
+          dy = y_rel_coords.sum
 
           # We're handling the anchoring.
           @ctx.gc.push
