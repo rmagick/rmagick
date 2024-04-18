@@ -642,12 +642,6 @@ Style/RedundantRegexpEscape:
     - 'lib/rmagick_internal.rb'
     - 'lib/rvg/misc.rb'
 
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-Style/RedundantSelfAssignmentBranch:
-  Exclude:
-    - 'lib/rvg/misc.rb'
-
 # Offense count: 8
 # This cop supports safe autocorrection (--autocorrect).
 Style/RedundantStringEscape:
