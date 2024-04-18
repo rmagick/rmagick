@@ -1522,7 +1522,7 @@ module Magick
     end
 
     def fill(*args, &block)
-      assert_image args[0] unless block_given?
+      assert_image args[0] unless block
       current = get_current
       @images.fill(*args, &block)
       assert_image_array self
