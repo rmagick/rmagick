@@ -622,13 +622,6 @@ Style/OptionalBooleanParameter:
 Style/QuotedSymbols:
   EnforcedStyle: double_quotes
 
-# Offense count: 2
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: Methods.
-Style/RedundantArgument:
-  Exclude:
-    - 'ext/RMagick/extconf.rb'
-
 # Offense count: 1
 # This cop supports safe autocorrection (--autocorrect).
 Style/RedundantAssignment:

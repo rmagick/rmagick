@@ -310,7 +310,7 @@ module RMagick
       assert_has_dev_libs!
 
       # Check for compiler. Extract first word so ENV['CXX'] can be a program name with arguments.
-      cxx = (ENV['CXX'] || RbConfig::CONFIG['CXX'] || 'g++').split(' ').first
+      cxx = (ENV['CXX'] || RbConfig::CONFIG['CXX'] || 'g++').split.first
       exit_failure "No C++ compiler found in ${ENV['PATH']}. See mkmf.log for details." unless find_executable(cxx)
     end
 
@@ -400,7 +400,7 @@ module RMagick
     end
 
     def create_compile_flags_txt
-      cppflags = $CPPFLAGS.split(' ')
+      cppflags = $CPPFLAGS.split
       include_flags = cppflags.select { |flag| flag.start_with?('-I') }
       define_flags = cppflags.select { |flag| flag.start_with?('-D') } + $defs
 
