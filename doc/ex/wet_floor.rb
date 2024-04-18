@@ -21,10 +21,8 @@ gc.annotate(img, 0, 0, 0, -15, 'RUBY!') do |options|
 end
 
 # Add a little bit of shading
-if Magick.const_defined? 'HardLightCompositeOp'
-  shade = img.shade(true, 310, 30)
-  img.composite!(shade, Magick::CenterGravity, Magick::HardLightCompositeOp)
-end
+shade = img.shade(true, 310, 30)
+img.composite!(shade, Magick::CenterGravity, Magick::HardLightCompositeOp)
 
 # Create the default reflection
 reflection = img.wet_floor
