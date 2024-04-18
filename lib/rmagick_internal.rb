@@ -1571,9 +1571,8 @@ module Magick
 
     # Call inspect for all the images
     def inspect
-      img = []
-      @images.each { |image| img << image.inspect }
-      img = '[' + img.join(",\n") + "]\nscene=#{@scene}"
+      img = @images.map(&:inspect)
+      '[' + img.join(",\n") + "]\nscene=#{@scene}"
     end
 
     # Set the number of iterations of an animated GIF
@@ -1775,9 +1774,7 @@ module Magick
     end
 
     def to_a
-      a = []
-      @images.each { |image| a << image }
-      a
+      @images.map { |image| image }
     end
 
     def uniq

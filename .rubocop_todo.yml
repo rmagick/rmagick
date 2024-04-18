@@ -569,12 +569,6 @@ Style/InvertibleUnlessCondition:
     - 'lib/rvg/embellishable.rb'
     - 'lib/rvg/stretchable.rb'
 
-# Offense count: 2
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Style/MapIntoArray:
-  Exclude:
-    - 'lib/rmagick_internal.rb'
-
 # Offense count: 4512
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: IgnoreMacros, AllowedMethods, AllowedPatterns, IncludedMacros, AllowParenthesesInMultilineCall, AllowParenthesesInChaining, AllowParenthesesInCamelCaseMethod, AllowParenthesesInStringInterpolation, EnforcedStyle.
