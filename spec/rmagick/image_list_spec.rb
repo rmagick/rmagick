@@ -20,7 +20,7 @@ RSpec.describe Magick::ImageList do
 
     expect { image_list.entries }.not_to raise_error
     expect { image_list.include?(image_list[0]) }.not_to raise_error
-    expect { image_list.inject(0) { 0 } }.not_to raise_error
+    expect { image_list.inject(0) { |_acc, _elem| 0 } }.not_to raise_error
     expect { image_list.max }.not_to raise_error
     expect { image_list.min }.not_to raise_error
     expect { image_list.sort }.not_to raise_error
