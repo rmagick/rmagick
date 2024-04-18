@@ -51,11 +51,11 @@ module Magick
     #   p Magick.formats
     #   => {"3FR"=>" r-+", "3G2"=>" r-+", "3GP"=>" r-+", "A"=>"*rw+",
     #   ...
-    def formats
+    def formats(&block)
       formats = init_formats
 
-      if block_given?
-        formats.each { |k, v| yield k, v }
+      if block
+        formats.each(&block)
         self
       else
         formats
@@ -1735,8 +1735,8 @@ module Magick
       self
     end
 
-    def reverse_each
-      @images.reverse_each { |image| yield(image) }
+    def reverse_each(&block)
+      @images.reverse_each(&block)
       self
     end
 
