@@ -116,9 +116,9 @@ module RMagick
           $LDFLAGS = "#{original_ldflags} #{ldflags}"
         end
 
-        configure_archflags_for_osx($magick_package) if RUBY_PLATFORM.match?(/darwin/) # osx
+        configure_archflags_for_osx($magick_package) if RUBY_PLATFORM.include?('darwin') # osx
 
-      elsif RUBY_PLATFORM.match?(/mingw/) # mingw
+      elsif RUBY_PLATFORM.include?('mingw') # mingw
 
         dir_paths = search_paths_for_library_for_windows
         $CPPFLAGS += %( -I"#{dir_paths[:include]}")

@@ -11,7 +11,7 @@ gc.annotate(img, 0, 0, 0, -15, 'RUBY!') do |options|
   options.stroke_width = 2
   options.font_weight = Magick::BoldWeight
   options.gravity = Magick::SouthGravity
-  if RUBY_PLATFORM.match?(/mswin32/)
+  if RUBY_PLATFORM.match?(/mswin|mingw/)
     options.font_family = 'Georgia'
     options.pointsize = 76
   else
