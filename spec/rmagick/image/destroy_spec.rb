@@ -5,9 +5,9 @@ RSpec.describe Magick::Image, '#destroy' do
     methods = described_class.instance_methods(false).sort
     methods -= %i[__display__ destroy! destroyed? inspect cur_image marshal_load]
 
-    expect(image.destroyed?).to eq(false)
+    expect(image.destroyed?).to be(false)
     image.destroy!
-    expect(image.destroyed?).to eq(true)
+    expect(image.destroyed?).to be(true)
     expect { image.check_destroyed }.to raise_error(Magick::DestroyedImageError)
 
     methods.each do |method|
