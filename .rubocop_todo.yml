@@ -624,12 +624,6 @@ Style/QuotedSymbols:
 
 # Offense count: 1
 # This cop supports safe autocorrection (--autocorrect).
-Style/RedundantAssignment:
-  Exclude:
-    - 'examples/histogram.rb'
-
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
 Style/RedundantBegin:
   Exclude:
     - 'lib/rvg/stylable.rb'

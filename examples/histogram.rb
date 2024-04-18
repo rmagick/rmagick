@@ -254,7 +254,7 @@ module Magick
       charts << color_hist(fg, bg)
 
       # Make a montage.
-      histogram = charts.montage do |options|
+      charts.montage do |options|
         options.background_color = bg
         options.stroke = 'transparent'
         options.fill = fg
@@ -262,8 +262,6 @@ module Magick
         options.tile = '4x2'
         options.geometry = "#{HISTOGRAM_COLS}x#{HISTOGRAM_ROWS}+10+10"
       end
-
-      histogram
     end
   end
 end
