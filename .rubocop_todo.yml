@@ -444,14 +444,6 @@ Style/ClassMethodsDefinitions:
     - 'lib/rmagick_internal.rb'
     - 'lib/rvg/units.rb'
 
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: Keywords, RequireColon.
-# Keywords: TODO, FIXME, OPTIMIZE, HACK, REVIEW, NOTE
-Style/CommentAnnotation:
-  Exclude:
-    - 'examples/vignette.rb'
-
 # Offense count: 88
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Style/CommentedKeyword:
