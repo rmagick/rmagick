@@ -329,17 +329,17 @@ module RMagick
         Check the mkmf.log file for more detailed information.
       END_FAILURE
 
-      if !RUBY_PLATFORM.match?(/mswin|mingw/)
+      if RUBY_PLATFORM.match?(/mswin|mingw/)
+        `#{magick_command} -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
+        $magick_version = Regexp.last_match(1)
+        exit_failure failure_message unless $magick_version
+      else
         unless PKGConfig.libs('MagickCore')[/\bl\s*(MagickCore|Magick)6?\b/]
           exit_failure failure_message
         end
 
         $magick_package = determine_imagemagick_package
         $magick_version = PKGConfig.modversion($magick_package)[/^(\d+\.\d+\.\d+)/]
-      else
-        `#{magick_command} -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
-        $magick_version = Regexp.last_match(1)
-        exit_failure failure_message unless $magick_version
       end
 
       # Ensure minimum ImageMagick version

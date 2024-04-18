@@ -596,15 +596,6 @@ Style/MissingRespondToMissing:
 Style/MutableConstant:
   Enabled: false
 
-# Offense count: 5
-# This cop supports safe autocorrection (--autocorrect).
-Style/NegatedIfElseCondition:
-  Exclude:
-    - 'examples/histogram.rb'
-    - 'ext/RMagick/extconf.rb'
-    - 'lib/rvg/container.rb'
-    - 'lib/rvg/rvg.rb'
-
 # Offense count: 32
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: EnforcedStyle, AllowedMethods, AllowedPatterns.

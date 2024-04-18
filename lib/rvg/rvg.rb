@@ -170,7 +170,9 @@ module Magick
     # The default fill is "none", that is, transparent black.
     def background_fill=(color)
       warn 'background_fill= has no effect in nested RVG objects' if @nested
-      if !color.is_a?(Magick::Pixel)
+      if color.is_a?(Magick::Pixel)
+        @background_fill = color
+      else
         begin
           @background_fill = Magick::Pixel.from_color(color)
         rescue Magick::ImageMagickError
@@ -180,8 +182,6 @@ module Magick
         rescue StandardError
           raise ArgumentError, "argument must be a color name or a Pixel (got #{color.class})"
         end
-      else
-        @background_fill = color
       end
     end
 

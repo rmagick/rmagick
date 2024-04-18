@@ -238,10 +238,10 @@ module Magick
       charts << channel_hists.shift
 
       # Add Alpha channel or image stats
-      charts << if !opaque?
-                  alpha_hist(alpha, scale, fg, bg)
-                else
+      charts << if opaque?
                   info_text(fg, bg)
+                else
+                  alpha_hist(alpha, scale, fg, bg)
                 end
 
       # Add the RGB histogram
@@ -276,11 +276,11 @@ puts <<~END_INFO
 END_INFO
 
 # Get filename from command line.
-if !ARGV[0]
+if ARGV[0]
+  filename = ARGV[0]
+else
   puts 'No filename argument. Defaulting to Flower_Hat.jpg'
   filename = '../doc/ex/images/Flower_Hat.jpg'
-else
-  filename = ARGV[0]
 end
 
 # Only process first frame if multi-frame image
