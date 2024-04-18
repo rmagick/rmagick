@@ -668,7 +668,7 @@ module Magick
         end
 
         def text(x, y, text)
-          return if text.length.zero?
+          return if text.empty?
 
           text_renderer = if @text_attrs.non_default?
                             TEXT_STRATEGIES[@text_attrs.writing_mode].new(self)

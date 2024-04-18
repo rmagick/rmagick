@@ -277,7 +277,7 @@ module Magick
 
     # Draw a bezier curve.
     def bezier(*points)
-      if points.length.zero?
+      if points.empty?
         Kernel.raise ArgumentError, 'no points specified'
       elsif points.length.odd?
         Kernel.raise ArgumentError, 'odd number of arguments specified'
@@ -479,7 +479,7 @@ module Magick
 
     # Draw a polygon
     def polygon(*points)
-      if points.length.zero?
+      if points.empty?
         Kernel.raise ArgumentError, 'no points specified'
       elsif points.length.odd?
         Kernel.raise ArgumentError, 'odd number of points specified'
@@ -489,7 +489,7 @@ module Magick
 
     # Draw a polyline
     def polyline(*points)
-      if points.length.zero?
+      if points.empty?
         Kernel.raise ArgumentError, 'no points specified'
       elsif points.length.odd?
         Kernel.raise ArgumentError, 'odd number of points specified'
@@ -504,7 +504,7 @@ module Magick
     # pop('pattern')
 
     def pop(*what)
-      if what.length.zero?
+      if what.empty?
         primitive 'pop graphic-context'
       else
         primitive 'pop ' + what.map { |x| to_string(x) }.join(' ')
@@ -517,7 +517,7 @@ module Magick
     # push('gradient')
     # push('pattern')
     def push(*what)
-      if what.length.zero?
+      if what.empty?
         primitive 'push graphic-context'
       else
         primitive 'push ' + what.map { |x| to_string(x) }.join(' ')
@@ -573,7 +573,7 @@ module Magick
 
     # Specify a stroke dash pattern
     def stroke_dasharray(*list)
-      if list.length.zero?
+      if list.empty?
         primitive 'stroke-dasharray none'
       else
         list.map! { |x| Float(x) }.each do |x|
@@ -839,7 +839,7 @@ module Magick
     # arrays.
     def get_exif_by_entry(*entry)
       ary = []
-      if entry.length.zero?
+      if entry.empty?
         exif_data = self['EXIF:*']
         exif_data&.split("\n")&.each { |exif| ary.push(exif.split('=')) }
       else
@@ -855,7 +855,7 @@ module Magick
     # Retrieve EXIF data by tag number or all tag/value pairs. The return value is a hash.
     def get_exif_by_number(*tag)
       hash = {}
-      if tag.length.zero?
+      if tag.empty?
         exif_data = self['EXIF:!']
         exif_data&.split("\n")&.each do |exif|
           tag, value = exif.split('=')
@@ -1288,10 +1288,10 @@ module Magick
     # Allow scene to be set to nil
     def scene=(n)
       if n.nil?
-        Kernel.raise IndexError, 'scene number out of bounds' unless @images.length.zero?
+        Kernel.raise IndexError, 'scene number out of bounds' unless @images.empty?
         @scene = nil
         return
-      elsif @images.length.zero?
+      elsif @images.empty?
         Kernel.raise IndexError, 'scene number out of bounds'
       end
 
@@ -1542,7 +1542,7 @@ module Magick
     alias select find_all
 
     def from_blob(*blobs, &block)
-      Kernel.raise ArgumentError, 'no blobs given' if blobs.length.zero?
+      Kernel.raise ArgumentError, 'no blobs given' if blobs.empty?
       blobs.each do |b|
         Magick::Image.from_blob(b, &block).each { |n| @images << n }
       end
@@ -1583,7 +1583,7 @@ module Magick
     end
 
     def last(*args)
-      if args.length.zero?
+      if args.empty?
         a = @images.last
       else
         a = @images.last(*args)
@@ -1645,7 +1645,7 @@ module Magick
 
     # Ping files and concatenate the new images
     def ping(*files, &block)
-      Kernel.raise ArgumentError, 'no files given' if files.length.zero?
+      Kernel.raise ArgumentError, 'no files given' if files.empty?
       files.each do |f|
         Magick::Image.ping(f, &block).each { |n| @images << n }
       end
@@ -1671,7 +1671,7 @@ module Magick
 
     # Read files and concatenate the new images
     def read(*files, &block)
-      Kernel.raise ArgumentError, 'no files given' if files.length.zero?
+      Kernel.raise ArgumentError, 'no files given' if files.empty?
       files.each do |f|
         Magick::Image.read(f, &block).each { |n| @images << n }
       end
