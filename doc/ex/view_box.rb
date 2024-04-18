@@ -3,7 +3,7 @@ require 'rvg/rvg'
 def example(cols, rows)
   rvg = Magick::RVG.new(cols, rows) do |canvas|
     canvas.background_fill = 'white'
-    canvas.desc = <<-'END_DESC'
+    canvas.desc = <<-END_DESC
             Example - uses the viewBox attribute to automatically create an initial
             user coordinate system which causes the graphic to scale to fit into
             the viewport no matter what size the viewport is.
