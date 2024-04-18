@@ -630,13 +630,6 @@ Style/RedundantBegin:
 
 # Offense count: 2
 # This cop supports safe autocorrection (--autocorrect).
-Style/RedundantHeredocDelimiterQuotes:
-  Exclude:
-    - 'doc/ex/view_box.rb'
-    - 'examples/identify.rb'
-
-# Offense count: 2
-# This cop supports safe autocorrection (--autocorrect).
 Style/RedundantRegexpArgument:
   Exclude:
     - 'Rakefile'

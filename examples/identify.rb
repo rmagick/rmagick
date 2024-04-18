@@ -158,7 +158,7 @@ module Magick
 end
 
 if ARGV.length.zero?
-  puts <<-'END_USAGE'
+  puts <<-END_USAGE
     This example displays information about the specified image file(s)
     that is similar to ImageMagick/GraphicsMagick's identify command.
 
