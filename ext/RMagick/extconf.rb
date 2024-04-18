@@ -52,7 +52,7 @@ module RMagick
     end
 
     def setup_pkg_config_path
-      return if RUBY_PLATFORM =~ /mswin|mingw/
+      return if RUBY_PLATFORM.match?(/mswin|mingw/)
 
       if find_executable('brew')
         append_pkg_config_path("#{`brew --prefix imagemagick`.strip}/lib/pkgconfig")
@@ -94,7 +94,7 @@ module RMagick
 
     def configure_compile_options
       # Magick-config is not available on Windows
-      if RUBY_PLATFORM !~ /mswin|mingw/
+      if !RUBY_PLATFORM.match?(/mswin|mingw/)
 
         check_multiple_imagemagick_versions
         check_partial_imagemagick_versions
@@ -116,9 +116,9 @@ module RMagick
           $LDFLAGS = "#{original_ldflags} #{ldflags}"
         end
 
-        configure_archflags_for_osx($magick_package) if RUBY_PLATFORM =~ /darwin/ # osx
+        configure_archflags_for_osx($magick_package) if RUBY_PLATFORM.match?(/darwin/) # osx
 
-      elsif RUBY_PLATFORM =~ /mingw/ # mingw
+      elsif RUBY_PLATFORM.match?(/mingw/) # mingw
 
         dir_paths = search_paths_for_library_for_windows
         $CPPFLAGS += %( -I"#{dir_paths[:include]}")
@@ -329,7 +329,7 @@ module RMagick
         Check the mkmf.log file for more detailed information.
       END_FAILURE
 
-      if RUBY_PLATFORM !~ /mswin|mingw/
+      if !RUBY_PLATFORM.match?(/mswin|mingw/)
         unless PKGConfig.libs('MagickCore')[/\bl\s*(MagickCore|Magick)6?\b/]
           exit_failure failure_message
         end

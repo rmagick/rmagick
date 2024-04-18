@@ -321,23 +321,6 @@ Naming/MethodParameterName:
     - 'lib/rvg/transformable.rb'
     - 'lib/rvg/units.rb'
 
-# Offense count: 16
-# This cop supports safe autocorrection (--autocorrect).
-Performance/RegexpMatch:
-  Exclude:
-    - 'doc/ex/colors.rb'
-    - 'doc/ex/font_styles.rb'
-    - 'doc/ex/get_type_metrics.rb'
-    - 'doc/ex/text.rb'
-    - 'doc/ex/text_antialias.rb'
-    - 'doc/ex/watermark.rb'
-    - 'doc/ex/wet_floor.rb'
-    - 'examples/demo.rb'
-    - 'ext/RMagick/extconf.rb'
-    - 'lib/rmagick_internal.rb'
-    - 'spec/magick_spec.rb'
-    - 'spec/rmagick/image/destroy_spec.rb'
-
 # Offense count: 2
 # This cop supports safe autocorrection (--autocorrect).
 Performance/StringIdentifierArgument:

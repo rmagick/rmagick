@@ -10,7 +10,7 @@
 #               to the classes.
 #==============================================================================
 
-if RUBY_PLATFORM =~ /mingw/i
+if RUBY_PLATFORM.match?(/mingw/i)
   begin
     require 'ruby_installer'
     ENV['PATH'].split(File::PATH_SEPARATOR).grep(/ImageMagick/i).each do |path|
