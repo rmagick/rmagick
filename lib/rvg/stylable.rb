@@ -4,7 +4,7 @@
 #++
 module Magick
   class RVG
-    #:stopdoc:
+    # :stopdoc:
     STYLES = %i[
       clip_path clip_rule fill fill_opacity fill_rule font
       font_family font_size font_stretch font_style font_weight
@@ -49,7 +49,7 @@ module Magick
       end
     end # class Styles
 
-    #:startdoc:
+    # :startdoc:
 
     # This module is mixed into classes that can have styles.
     module Stylable
