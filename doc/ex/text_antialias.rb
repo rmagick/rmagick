@@ -7,7 +7,7 @@ gc = Magick::Draw.new
 gc.fill('black')
 gc.stroke('transparent')
 
-if RUBY_PLATFORM =~ /mswin32/
+if RUBY_PLATFORM.match?(/mswin32/)
   gc.font_family('Georgia')
   gc.pointsize(152)
 else

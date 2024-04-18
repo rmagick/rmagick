@@ -25,7 +25,7 @@ end
 ORIGIN_X = 110
 ORIGIN_Y = 230
 GLYPH = 'g'
-FONT = RUBY_PLATFORM =~ /mswin/ ? 'Verdana' : 'Times'
+FONT = RUBY_PLATFORM.match?(/mswin/) ? 'Verdana' : 'Times'
 
 canvas = Magick::Image.new(410, 320, Magick::HatchFill.new('white', 'lightcyan2'))
 

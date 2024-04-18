@@ -5,7 +5,7 @@ imgl.new_image(190, 190)
 
 sample = Magick::Draw.new
 sample.stroke('transparent')
-if RUBY_PLATFORM =~ /mswin32/
+if RUBY_PLATFORM.match?(/mswin32/)
   sample.font_family('Georgia')
 else
   sample.font_family('times')

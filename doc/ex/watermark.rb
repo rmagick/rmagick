@@ -9,7 +9,7 @@ gc = Magick::Draw.new
 gc.annotate(mark, 0, 0, 0, -5, 'RMagick') do |options|
   options.gravity = Magick::CenterGravity
   options.pointsize = 32
-  options.font_family = if RUBY_PLATFORM =~ /mswin32/
+  options.font_family = if RUBY_PLATFORM.match?(/mswin32/)
                           'Georgia'
                         else
                           'Times'
