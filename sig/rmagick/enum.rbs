@@ -275,6 +275,7 @@ module Magick
     extend _EnumClassMethod[DisposeType]
   end
 
+  UnrecognizedDispose: DisposeType
   UndefinedDispose: DisposeType
   BackgroundDispose: DisposeType
   NoneDispose: DisposeType

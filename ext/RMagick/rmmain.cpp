@@ -1241,6 +1241,7 @@ Init_RMagick2(void)
 
     // DisposeType constants
     DEF_ENUM(DisposeType)
+        ENUMERATOR(UnrecognizedDispose)
         ENUMERATOR(UndefinedDispose)
         ENUMERATOR(BackgroundDispose)
         ENUMERATOR(NoneDispose)
