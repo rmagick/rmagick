@@ -72,7 +72,7 @@ module Magick
         end
 
         def enquote(text)
-          return text if text.length > 2 && /\A(?:\"[^\"]+\"|\'[^\']+\'|\{[^\}]+\})\z/.match(text)
+          return text if text.length > 2 && /\A(?:"[^\"]+"|'[^\']+'|\{[^\}]+\})\z/.match(text)
 
           if !text['\'']
             text = '\'' + text + '\''
