@@ -220,12 +220,6 @@ Lint/SuppressedException:
   Exclude:
     - 'lib/rmagick_internal.rb'
 
-# Offense count: 1
-# Configuration parameters: Methods.
-Lint/UnexpectedBlockArity:
-  Exclude:
-    - 'spec/rmagick/image_list_spec.rb'
-
 # Offense count: 39
 # Configuration parameters: AllowedMethods, AllowedPatterns, CountRepeatedAttributes.
 Metrics/AbcSize:
