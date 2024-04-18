@@ -660,12 +660,6 @@ Style/StaticClass:
   Exclude:
     - 'spec/rmagick/draw/class_methods/_dummy_img__spec.rb'
 
-# Offense count: 3
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Style/StringChars:
-  Exclude:
-    - 'lib/rvg/misc.rb'
-
 # Offense count: 185
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: Mode.

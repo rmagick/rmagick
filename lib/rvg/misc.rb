@@ -114,7 +114,7 @@ module Magick
               y_rel_coords << wy
             end
             first_word = false
-            word.split('').each do |glyph|
+            word.chars.each do |glyph|
               wx, wy = get_letter_spacing(glyph)
               x_rel_coords << wx
               y_rel_coords << wy
@@ -203,7 +203,7 @@ module Magick
           text.split(::Magick::RVG::WORD_SEP).each do |word|
             x += x_rel_coords.shift unless first_word
             first_word = false
-            word.split('').each do |glyph|
+            word.chars.each do |glyph|
               render_glyph(@ctx.text_attrs.glyph_orientation_horizontal, x, y, glyph)
               x += x_rel_coords.shift
             end
@@ -271,7 +271,7 @@ module Magick
               x_rel_coords.shift
             end
             first_word = false
-            word.split('').each do |glyph|
+            word.chars.each do |glyph|
               case @ctx.text_attrs.glyph_orientation_vertical.to_i
               when 0, 90, 270
                 x_shift = (dx - x_rel_coords.shift) / 2
