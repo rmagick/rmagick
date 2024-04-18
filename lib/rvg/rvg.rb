@@ -106,7 +106,7 @@ module Magick
 
     if ENV['debug_prim']
       def print_gc(gc)
-        primitives = gc.inspect.split(/\n/)
+        primitives = gc.inspect.split("\n")
         indent = 0
         primitives.each do |cmd|
           indent -= 1 if cmd['pop ']
