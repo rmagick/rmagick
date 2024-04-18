@@ -71,7 +71,7 @@ namespace :website do
     now = now.strftime('%m/%d/%y')
 
     lines.each do |line|
-      line.gsub!(/0\.0\.0/, Magick::VERSION)
+      line.gsub!("0.0.0", Magick::VERSION)
       line.gsub!(%r{YY/MM/DD}, now)
     end
     lines
