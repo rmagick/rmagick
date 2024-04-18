@@ -51,13 +51,6 @@ Layout/FirstMethodArgumentLineBreak:
     - 'doc/ex/get_type_metrics.rb'
     - 'doc/ex/nonzero.rb'
 
-# Offense count: 2
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowDoxygenCommentStyle, AllowGemfileRubyComment.
-Layout/LeadingCommentSpace:
-  Exclude:
-    - 'lib/rvg/stylable.rb'
-
 # Offense count: 2311
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: AllowMultilineFinalElement.
