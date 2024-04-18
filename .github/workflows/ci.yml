@@ -20,9 +20,9 @@ jobs:
       uses: ruby/setup-ruby@master
       with:
         ruby-version: '3.0'
+        bundler-cache: true
     - name: Build and test with Rake
       run: |
-        bundle install --path=vendor/bundle --jobs 4 --retry 3
         STYLE_CHECKS=true bundle exec rubocop
 
   rbs:
@@ -35,9 +35,9 @@ jobs:
       uses: ruby/setup-ruby@master
       with:
         ruby-version: '3.0'
+        bundler-cache: true
     - name: Validate RBS signatures
       run: |
-        bundle install --path=vendor/bundle --jobs 4 --retry 3
         bundle exec rake rbs:validate && bundle exec steep check
 
   test-linux:
@@ -62,17 +62,17 @@ jobs:
         key: v1-${{ runner.os }}-imagemagick-${{ matrix.imagemagick-version.full }}
         restore-keys: |
           v1-${{ runner.os }}-imagemagick-${{ matrix.imagemagick-version.full }}
-    - name: Set up Ruby ${{ matrix.ruby-version }}
-      uses: ruby/setup-ruby@master
-      with:
-        ruby-version: ${{ matrix.ruby-version }}
     - name: Update/Install packages
       run: |
         export IMAGEMAGICK_VERSION=${{ matrix.imagemagick-version.full }}
         ./before_install_linux.sh
+    - name: Set up Ruby ${{ matrix.ruby-version }}
+      uses: ruby/setup-ruby@master
+      with:
+        ruby-version: ${{ matrix.ruby-version }}
+        bundler-cache: true
     - name: Build and test with Rake
       run: |
-        bundle install --path=vendor/bundle --jobs 4 --retry 3
         bundle exec rake
 
   test-macos:
@@ -95,16 +95,16 @@ jobs:
         key: v1-${{ runner.os }}-imagemagick-${{ matrix.imagemagick-version.full }}
         restore-keys: |
           v1-${{ runner.os }}-imagemagick-${{ matrix.imagemagick-version.full }}
+    - name: Update/Install packages
+      run: |
+        IMAGEMAGICK_VERSION=${{ matrix.imagemagick-version.full }} ./before_install_osx.sh
     - name: Set up Ruby ${{ matrix.ruby-version }}
       uses: ruby/setup-ruby@master
       with:
         ruby-version: ${{ matrix.ruby-version }}
-    - name: Update/Install packages
-      run: |
-        IMAGEMAGICK_VERSION=${{ matrix.imagemagick-version.full }} ./before_install_osx.sh
+        bundler-cache: true
     - name: Build and test with Rake
       run: |
-        bundle install --path=vendor/bundle --jobs 4 --retry 3
         bundle exec rake
 
   test-windows:
@@ -131,10 +131,6 @@ jobs:
       # Bundled ImageMagick does not have C/C++ library and dll which required by rmagick.
       run: |
         Start-Process -FilePath "${{ env.bundled_im_dir }}\unins000.exe" -ArgumentList "/VERYSILENT /NORESTART"
-    - name: Set up Ruby ${{ matrix.ruby-version }}
-      uses: ruby/setup-ruby@master
-      with:
-        ruby-version: ${{ matrix.ruby-version }}
     - name: Install ghostscript
       run: |
         choco install ghostscript
@@ -146,6 +142,11 @@ jobs:
         $url = "https://github.com/rmagick/ImageMagick-binaries/raw/main/$($installer_name)"
         Invoke-WebRequest -Uri $url -OutFile $installer_name
         Start-Process -FilePath $installer_name -ArgumentList "/DIR=${{ env.install_im_dir }} /VERYSILENT /NORESTART /TASKS=install_Devel"
+    - name: Set up Ruby ${{ matrix.ruby-version }}
+      uses: ruby/setup-ruby@master
+      with:
+        ruby-version: ${{ matrix.ruby-version }}
+        bundler-cache: true
     - name: Build and test with Rake
       run: |
-        cmd.exe /D /S /C "bundle install --path=vendor/bundle --retry 3 & bundle exec rake"
+        cmd.exe /D /S /C "bundle exec rake"
