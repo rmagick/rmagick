@@ -90,6 +90,12 @@ module RMagick
       else
         exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find magick/MagickCore.h."
       end
+
+      if have_header('malloc.h')
+        headers << 'malloc.h'
+      elsif have_header('malloc/malloc.h')
+        headers << 'malloc/malloc.h'
+      end
     end
 
     def configure_compile_options
@@ -370,10 +376,6 @@ module RMagick
       check_api = ruby_api + memory_api + imagemagick_api
       check_api.each do |func|
         have_func(func, headers)
-      end
-
-      unless have_header('malloc.h')
-        have_header('malloc/malloc.h')
       end
 
       # Miscellaneous constants
