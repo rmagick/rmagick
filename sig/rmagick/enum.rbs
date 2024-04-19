@@ -83,7 +83,12 @@ module Magick
   BlackChannel: ChannelType
   IndexChannel: ChannelType
   GrayChannel: ChannelType
+  CompositeChannels: ChannelType
   AllChannels: ChannelType
+  TrueAlphaChannel: ChannelType
+  RGBChannels: ChannelType
+  GrayChannels: ChannelType
+  SyncChannels: ChannelType
   AlphaChannel: ChannelType
   DefaultChannels: ChannelType
   HueChannel: ChannelType
@@ -270,6 +275,7 @@ module Magick
     extend _EnumClassMethod[DisposeType]
   end
 
+  UnrecognizedDispose: DisposeType
   UndefinedDispose: DisposeType
   BackgroundDispose: DisposeType
   NoneDispose: DisposeType
