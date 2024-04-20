@@ -43,5 +43,8 @@ RSpec/AlignRightLetBrace:
 RSpec/BeNil:
   EnforcedStyle: be
 
+RSpec/ClassCheck:
+  EnforcedStyle: be_kind_of
+
 Style/Copyright:
   Enabled: false
