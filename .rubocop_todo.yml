@@ -607,14 +607,6 @@ Style/StringHashKeys:
 Style/StringLiterals:
   Enabled: false
 
-# Offense count: 5
-Style/TopLevelMethodDefinition:
-  Exclude:
-    - 'doc/ex/sparse_color.rb'
-    - 'doc/ex/view_box.rb'
-    - 'spec/spec_helper.rb'
-    - 'spec/support/matchers.rb'
-
 # Offense count: 1
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: EnforcedStyle.
