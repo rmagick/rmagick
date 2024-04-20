@@ -40,5 +40,8 @@ RSpec/AlignLeftLetBrace:
 RSpec/AlignRightLetBrace:
   Enabled: false
 
+RSpec/BeNil:
+  EnforcedStyle: be
+
 Style/Copyright:
   Enabled: false

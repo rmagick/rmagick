@@ -32,6 +32,6 @@ RSpec.describe Magick::Pixel, '#<=>' do
     pixel2.alpha += 20
     expect(pixel <=> pixel2).to eq(-1)
 
-    expect(pixel <=> Object.new).to be_nil
+    expect(pixel <=> Object.new).to be(nil)
   end
 end

@@ -295,13 +295,6 @@ Naming/MethodParameterName:
     - 'lib/rvg/transformable.rb'
     - 'lib/rvg/units.rb'
 
-# Offense count: 61
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: be, be_nil
-RSpec/BeNil:
-  Enabled: false
-
 # Offense count: 22
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyle.
