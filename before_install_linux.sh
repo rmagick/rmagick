@@ -15,15 +15,12 @@ if [ ! -v IMAGEMAGICK_VERSION ]; then
   exit 1
 fi
 
-sudo apt-get clean
-sudo apt-get update
-
 # remove all existing imagemagick related packages
 sudo apt-get autoremove -y imagemagick* libmagick* --purge
 
 # install build tools, ImageMagick delegates
 sudo apt-get install -y build-essential libx11-dev libxext-dev zlib1g-dev \
-  liblcms2-dev libpng-dev libjpeg-dev libfreetype6-dev libxml2-dev \
+  liblcms2-dev libpng-dev libjpeg-dev libfreetype6-dev \
   libtiff5-dev libwebp-dev liblqr-1-0-dev vim gsfonts ghostscript
 
 if [ ! -d /usr/include/freetype ]; then
