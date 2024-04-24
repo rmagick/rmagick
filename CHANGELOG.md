@@ -3,6 +3,12 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 5.6.0
+
+Bug Fixes
+
+- Fix install error on Windows MINGW environment and drop Windows MSWIN environment support (#1585)
+
 ## RMagick 5.5.0
 
 Improvements
