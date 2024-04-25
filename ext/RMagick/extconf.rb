@@ -123,19 +123,18 @@ module RMagick
 
       elsif RUBY_PLATFORM =~ /mingw/ # mingw
 
-        dir_paths = search_paths_for_library_for_windows
+        dir_paths = search_paths_for_windows
         $CPPFLAGS += %( -I"#{dir_paths[:include]}")
         $CPPFLAGS += ' -x c++ -std=c++11 -Wno-register'
-        $LDFLAGS += %( -L"#{dir_paths[:lib]}")
+        $LDFLAGS += %( -L"#{dir_paths[:root]}")
         $LDFLAGS << ' -lucrt' if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.4.0')
-
-        have_library(im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_' : 'CORE_RL_magick_')
+        $LDFLAGS << (im_version_at_least?('7.0.0') ? ' -lCORE_RL_MagickCore_' : ' -lCORE_RL_magick_')
 
       else # mswin
 
-        dir_paths = search_paths_for_library_for_windows
+        dir_paths = search_paths_for_windows
         $CPPFLAGS << %( -I"#{dir_paths[:include]}")
-        $LDFLAGS << %( -libpath:"#{dir_paths[:lib]}")
+        $LDFLAGS << %( -libpath:"#{dir_paths[:root]}")
         $LDFLAGS << ' -libpath:ucrt' if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.4.0')
 
         $LOCAL_LIBS += ' ' + (im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_.lib' : 'CORE_RL_magick_.lib')
@@ -286,32 +285,31 @@ module RMagick
       $ARCH_FLAG = archflags.join(' ') unless archflags.empty?
     end
 
-    def search_paths_for_library_for_windows
-      msg = 'searching PATH for the ImageMagick library...'
+    def search_paths_for_windows
+      msg = 'searching PATH for the ImageMagick...'
       Logging.message msg
       message msg + "\n"
 
-      found_lib = false
+      found = false
       dir_paths = {}
 
       paths = ENV['PATH'].split(File::PATH_SEPARATOR)
       paths.each do |dir|
-        lib = File.join(dir, 'lib')
-        lib_file = File.join(lib, im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_.lib' : 'CORE_RL_magick_.lib')
-        next unless File.exist?(lib_file)
+        include_dir = File.join(dir, 'include')
+        next unless File.exist?(include_dir)
 
-        dir_paths[:include] = File.join(dir, 'include')
-        dir_paths[:lib] = lib
+        dir_paths[:include] = include_dir
+        dir_paths[:root] = dir
 
-        found_lib = true
+        found = true
         break
       end
 
-      return dir_paths if found_lib
+      return dir_paths if found
 
       exit_failure <<~END_MINGW
         Can't install RMagick #{RMAGICK_VERS}.
-        Can't find the ImageMagick library.
+        Can't find the ImageMagick C++ header files.
 
         Please check PATH environment variable for ImageMagick installation path.
       END_MINGW
