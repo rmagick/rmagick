@@ -1,5 +1,5 @@
 describe Magick, '.formats' do
-  it 'works', unless: -> { RUBY_PLATFORM !~ /mswin|mingw/ } do
+  it 'works', unless: -> { !RUBY_PLATFORM.include?('mingw') } do
     # Skip because it causes "`init_formats': unable to register image format 'DMR'" error on Windows
     expect(described_class.formats).to be_instance_of(Hash)
     described_class.formats.each do |f, v|

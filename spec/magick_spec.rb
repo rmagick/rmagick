@@ -91,7 +91,7 @@ RSpec.describe Magick do
           r.take
         end.not_to raise_error
 
-        unless RUBY_PLATFORM.match?(/mswin|mingw/)
+        unless RUBY_PLATFORM.include?('mingw')
           # Skip because it causes "`init_formats': unable to register image format 'DMR'" error on Windows
           expect do
             r = Ractor.new do

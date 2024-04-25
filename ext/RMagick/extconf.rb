@@ -4,12 +4,6 @@ require 'rubygems'
 require 'mkmf'
 require 'pkg-config'
 
-module MakeMakefile
-  # Use the C++ compiler to retrieve the information needed to create a Makefile for mswin environment.
-  remove_const(:CONFTEST_C)
-  CONFTEST_C = "#{CONFTEST}.cpp"
-end
-
 module RMagick
   class Extconf
     require 'rmagick/version'
@@ -45,6 +39,8 @@ module RMagick
     def initialize
       @stdout = $stdout.dup
 
+      exit_failure("No longer support MSWIN environment.") if RUBY_PLATFORM.include?('mswin')
+
       setup_pkg_config_path
       assert_can_compile!
       configure_compile_options
@@ -52,7 +48,7 @@ module RMagick
     end
 
     def setup_pkg_config_path
-      return if RUBY_PLATFORM.match?(/mswin|mingw/)
+      return if RUBY_PLATFORM.include?('mingw')
 
       if find_executable('brew')
         append_pkg_config_path("#{`brew --prefix imagemagick`.strip}/lib/pkgconfig")
@@ -100,7 +96,16 @@ module RMagick
 
     def configure_compile_options
       # Magick-config is not available on Windows
-      if !RUBY_PLATFORM.match?(/mswin|mingw/)
+      if RUBY_PLATFORM.include?('mingw') # mingw
+
+        dir_paths = search_paths_for_library_for_windows
+        $CPPFLAGS += %( -I"#{dir_paths[:include]}")
+        $CPPFLAGS += ' -x c++ -std=c++11 -Wno-register'
+        $LDFLAGS += %( -L"#{dir_paths[:lib]}" -lucrt)
+
+        have_library(im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_' : 'CORE_RL_magick_')
+
+      else
 
         check_multiple_imagemagick_versions
         check_partial_imagemagick_versions
@@ -124,24 +129,6 @@ module RMagick
 
         configure_archflags_for_osx($magick_package) if RUBY_PLATFORM.include?('darwin') # osx
 
-      elsif RUBY_PLATFORM.include?('mingw') # mingw
-
-        dir_paths = search_paths_for_library_for_windows
-        $CPPFLAGS += %( -I"#{dir_paths[:include]}")
-        $CPPFLAGS += ' -x c++ -std=c++11 -Wno-register'
-        $LDFLAGS += %( -L"#{dir_paths[:lib]}" -lucrt)
-
-        have_library(im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_' : 'CORE_RL_magick_')
-
-      else # mswin
-
-        dir_paths = search_paths_for_library_for_windows
-        $CPPFLAGS << %( -I"#{dir_paths[:include]}")
-        $LDFLAGS << %( -libpath:"#{dir_paths[:lib]}" -libpath:ucrt)
-
-        $LOCAL_LIBS += ' ' + (im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_.lib' : 'CORE_RL_magick_.lib')
-
-        $CPPFLAGS += ' /std:c++11'
       end
       $CPPFLAGS += ' $(optflags) $(debugflags)'
     end
@@ -335,7 +322,7 @@ module RMagick
         Check the mkmf.log file for more detailed information.
       END_FAILURE
 
-      if RUBY_PLATFORM.match?(/mswin|mingw/)
+      if RUBY_PLATFORM.include?('mingw')
         `#{magick_command} -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
         $magick_version = Regexp.last_match(1)
         exit_failure failure_message unless $magick_version

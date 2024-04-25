@@ -13,7 +13,7 @@ rvg = Magick::RVG.new(200, 250) do |canvas|
   end
 
   canvas.g.styles(font_size: 14, font_weight: 'normal', font_style: 'normal') do |grp|
-    if RUBY_PLATFORM.match?(/mswin|mingw/)
+    if RUBY_PLATFORM.include?('mingw')
       grp.text(8, 120, ":font_family=>'Courier-New'").styles(font_family: 'Courier-New')
     else
       grp.text(8, 120, ":font_family=>'Courier'").styles(font_family: 'Courier')
