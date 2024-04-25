@@ -7,9 +7,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 Improvements
 
+- Drop ruby-mswin environment support on Windows (#1587)
+- Add missing constants (#1580)
 - Drop Ruby 2.x support (#1540)
 - Drop ImageMagick 6.7 support (#1539)
 - Loosen ImageMagick version check between compiled and runtime (#1526)
+
+Bug Fixes
+
+- Fix install error on Windows MINGW environment (#1588)
+- Fix header checks in order to use aligned_malloc expectedly (#1579)
 
 ## RMagick 5.5.0
 
