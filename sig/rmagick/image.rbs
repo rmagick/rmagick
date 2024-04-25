@@ -40,6 +40,8 @@ module Magick
                | () { (Image::Info) -> void} -> String?
     def write: (File | string file) -> self
              | (File | string file) { (Image::Info) -> void} -> self
+    def destroy!: () -> self
+    def destroyed?: () -> bool
 
     class View
       attr_reader x: real

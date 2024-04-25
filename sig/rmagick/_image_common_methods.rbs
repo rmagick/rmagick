@@ -222,8 +222,6 @@ module Magick
     def delete_compose_mask: () -> self
     def delete_profile: (string name) -> self
     def despeckle: () -> Image
-    def destroy!: () -> self
-    def destroyed?: () -> bool
     def difference: (magick_image other) -> [Float, Float, Float]
     def dispatch: (int x, int y, int columns, int rows, string map, ?bool float) -> Array[Integer]
     def displace: (magick_image displacement_map, magick_real x_amp, ?magick_real y_amp, ?GravityType gravity, ?int x_offset, ?int y_offset) -> Image

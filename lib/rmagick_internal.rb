@@ -1808,6 +1808,15 @@ module Magick
     end
     alias indexes values_at
     alias indices values_at
+
+    def destroy!
+      @images.each(&:destroy!)
+      self
+    end
+
+    def destroyed?
+      @images.all?(&:destroyed?)
+    end
   end # Magick::ImageList
 
   class Pixel
