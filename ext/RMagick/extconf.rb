@@ -98,12 +98,11 @@ module RMagick
       # Magick-config is not available on Windows
       if RUBY_PLATFORM.include?('mingw') # mingw
 
-        dir_paths = search_paths_for_library_for_windows
+        dir_paths = search_paths_for_windows
         $CPPFLAGS += %( -I"#{dir_paths[:include]}")
         $CPPFLAGS += ' -x c++ -std=c++11 -Wno-register'
-        $LDFLAGS += %( -L"#{dir_paths[:lib]}" -lucrt)
-
-        have_library(im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_' : 'CORE_RL_magick_')
+        $LDFLAGS += %( -L"#{dir_paths[:root]}" -lucrt)
+        $LDFLAGS += (im_version_at_least?('7.0.0') ? ' -lCORE_RL_MagickCore_' : ' -lCORE_RL_magick_')
 
       else
 
@@ -267,28 +266,27 @@ module RMagick
       $ARCH_FLAG = archflags.join(' ') unless archflags.empty?
     end
 
-    def search_paths_for_library_for_windows
+    def search_paths_for_windows
       msg = 'searching PATH for the ImageMagick library...'
       Logging.message msg
       message msg + "\n"
 
-      found_lib = false
+      found = false
       dir_paths = {}
 
       paths = ENV['PATH'].split(File::PATH_SEPARATOR)
       paths.each do |dir|
-        lib = File.join(dir, 'lib')
-        lib_file = File.join(lib, im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_.lib' : 'CORE_RL_magick_.lib')
-        next unless File.exist?(lib_file)
+        dll = File.join(dir, im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_.dll' : 'CORE_RL_magick_.dll')
+        next unless File.exist?(dll)
 
         dir_paths[:include] = File.join(dir, 'include')
-        dir_paths[:lib] = lib
+        dir_paths[:root] = dir
 
-        found_lib = true
+        found = true
         break
       end
 
-      return dir_paths if found_lib
+      return dir_paths if found
 
       exit_failure <<~END_MINGW
         Can't install RMagick #{RMAGICK_VERS}.
