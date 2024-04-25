@@ -132,14 +132,8 @@ module RMagick
 
       else # mswin
 
-        dir_paths = search_paths_for_windows
-        $CPPFLAGS << %( -I"#{dir_paths[:include]}")
-        $LDFLAGS << %( -libpath:"#{dir_paths[:root]}")
-        $LDFLAGS << ' -libpath:ucrt' if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.4.0')
+        exit_failure("No longer support MSWIN environment.")
 
-        $LOCAL_LIBS += ' ' + (im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_.lib' : 'CORE_RL_magick_.lib')
-
-        $CPPFLAGS += ' /std:c++11'
       end
       ruby_version = RUBY_VERSION.split('.')
       $CPPFLAGS += " -DRUBY_VERSION_MAJOR=#{ruby_version[0]} -DRUBY_VERSION_MINOR=#{ruby_version[1]}"
