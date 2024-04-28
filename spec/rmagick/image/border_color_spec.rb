@@ -1,6 +1,6 @@
 RSpec.describe Magick::Image, '#border_color' do
   it 'works' do
-    image = described_class.new(100, 100)
+    image = described_class.new(100, 100) { |info| info.depth = 16 }
 
     expect { image.border_color }.not_to raise_error
     # expect(image.border_color).to eq("rgb(223,223,223)")
@@ -31,5 +31,15 @@ RSpec.describe Magick::Image, '#border_color' do
     )
     expect(border_color).to eq(expected)
     expect { image.border_color = 2 }.to raise_error(TypeError)
+
+    image = described_class.new(100, 100) { |info| info.depth = 8 }
+    border_color = image.border_color
+    expected = value_by_version(
+      "6.8": "#DFDFDF",
+      "6.9": "#DFDFDFFF",
+      "7.0": "#DFDFDFFF",
+      "7.1": "#DFDFDFFF"
+    )
+    expect(border_color).to eq(expected)
   end
 end

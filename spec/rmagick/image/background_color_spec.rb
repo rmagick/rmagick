@@ -1,6 +1,6 @@
 RSpec.describe Magick::Image, '#background_color' do
   it 'works' do
-    image = described_class.new(100, 100)
+    image = described_class.new(100, 100) { |info| info.depth = 16 }
 
     expect { image.background_color }.not_to raise_error
     expected = value_by_version(
@@ -31,5 +31,16 @@ RSpec.describe Magick::Image, '#background_color' do
     )
     expect(background_color).to eq(expected)
     expect { image.background_color = 2 }.to raise_error(TypeError)
+
+    image = described_class.new(100, 100) { |info| info.depth = 8 }
+
+    expect { image.background_color }.not_to raise_error
+    expected = value_by_version(
+      "6.8": "#FFFFFF",
+      "6.9": "#FFFFFFFF",
+      "7.0": "#FFFFFFFF",
+      "7.1": "#FFFFFFFF"
+    )
+    expect(image.background_color).to eq(expected)
   end
 end

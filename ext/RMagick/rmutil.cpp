@@ -605,7 +605,7 @@ rm_pixelcolor_to_color_name(Image *image, PixelColor *color)
     mpp.index   = (MagickRealType) 0.0;
     mpp.matte = MagickTrue;
 #endif
-    mpp.depth = MAGICKCORE_QUANTUM_DEPTH;
+    mpp.depth = image->depth;
 
     GetColorTuple(&mpp, MagickTrue, tuple);
 

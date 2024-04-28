@@ -6,7 +6,7 @@ RSpec.describe Magick::ImageList, "#montage" do
   end
 
   it "works", unsupported_before('6.8.0') do
-    image_list1 = described_class.new
+    image_list1 = described_class.new { |info| info.depth = 16 }
 
     image_list1.read(*Dir[IMAGES_DIR + '/Button_*.gif'])
     image_list2 = image_list1.copy
