@@ -6,7 +6,7 @@ RSpec.describe Magick::Image, '#pixel_color' do
     expect(result).to be_instance_of(Magick::Pixel)
 
     result = image.pixel_color(0, 0)
-    expect(result.to_color).to eq(image.background_color)
+    expect(result.to_color).to eq('white')
     result = image.pixel_color(0, 0, 'red')
     expect(result.to_color).to eq('white')
     result = image.pixel_color(0, 0)

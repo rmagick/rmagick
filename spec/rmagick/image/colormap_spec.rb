@@ -19,7 +19,13 @@ RSpec.describe Magick::Image, "#colormap" do
     result = pc_image.colormap(0, 'red')
     expect(result).to eq(old_color)
     result = pc_image.colormap(0)
-    expect(result).to eq('red')
+    expected = value_by_version(
+      "6.8": "#FFFF00000000",
+      "6.9": "#FFFF00000000FFFF",
+      "7.0": "#FFFF00000000FFFF",
+      "7.1": "#FFFF00000000FFFF"
+    )
+    expect(result).to eq(expected)
 
     pixel = Magick::Pixel.new(Magick::QuantumRange)
     expect { pc_image.colormap(0, pixel) }.not_to raise_error

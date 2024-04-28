@@ -589,23 +589,27 @@ rm_cur_image(VALUE img)
 VALUE
 rm_pixelcolor_to_color_name(Image *image, PixelColor *color)
 {
-    PixelColor pp;
-    char name[MaxTextExtent];
-    ExceptionInfo *exception;
+    MagickPixel mpp;
+    char tuple[MaxTextExtent];
 
-    exception = AcquireExceptionInfo();
-
-    pp = *color;
 #if defined(IMAGEMAGICK_7)
-    pp.depth = MAGICKCORE_QUANTUM_DEPTH;
-    pp.colorspace = image->colorspace;
+    mpp = *color;
+    mpp.alpha_trait = BlendPixelTrait;
+    mpp.colorspace = image->colorspace;
+#else
+    rm_init_magickpixel(image, &mpp);
+    mpp.red = GetPixelRed(color);
+    mpp.green = GetPixelGreen(color);
+    mpp.blue = GetPixelBlue(color);
+    mpp.opacity = GetPixelOpacity(color);
+    mpp.index   = (MagickRealType) 0.0;
+    mpp.matte = MagickTrue;
 #endif
+    mpp.depth = MAGICKCORE_QUANTUM_DEPTH;
 
-    QueryColorname(image, &pp, X11Compliance, name, exception);
-    CHECK_EXCEPTION();
-    DestroyExceptionInfo(exception);
+    GetColorTuple(&mpp, MagickTrue, tuple);
 
-    return rb_str_new2(name);
+    return rb_str_new2(tuple);
 }
 
 
