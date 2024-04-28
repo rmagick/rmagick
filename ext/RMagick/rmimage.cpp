@@ -10646,11 +10646,11 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
         DestroyExceptionInfo(exception);
 
 #if defined(IMAGEMAGICK_7)
-        old_color.red   = GetPixelRed(image, old_pixel);
-        old_color.green = GetPixelGreen(image, old_pixel);
-        old_color.blue  = GetPixelBlue(image, old_pixel);
-        old_color.alpha = GetPixelAlpha(image, old_pixel);
-        old_color.black = GetPixelBlack(image, old_pixel);
+        old_color.red   = GetPixelRed(image, old_pixel) + 0.5;
+        old_color.green = GetPixelGreen(image, old_pixel) + 0.5;
+        old_color.blue  = GetPixelBlue(image, old_pixel) + 0.5;
+        old_color.alpha = GetPixelAlpha(image, old_pixel) + 0.5;
+        old_color.black = GetPixelBlack(image, old_pixel) + 0.5;
         return Pixel_from_PixelPacket(&old_color);
 #else
         old_color = *old_pixel;
@@ -10725,11 +10725,11 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
     if (pixel)
     {
 #if defined(IMAGEMAGICK_7)
-        old_color.red   = GetPixelRed(image, pixel);
-        old_color.green = GetPixelGreen(image, pixel);
-        old_color.blue  = GetPixelBlue(image, pixel);
-        old_color.alpha = GetPixelAlpha(image, pixel);
-        old_color.black = GetPixelBlack(image, pixel);
+        old_color.red   = GetPixelRed(image, pixel) + 0.5;
+        old_color.green = GetPixelGreen(image, pixel) + 0.5;
+        old_color.blue  = GetPixelBlue(image, pixel) + 0.5;
+        old_color.alpha = GetPixelAlpha(image, pixel) + 0.5;
+        old_color.black = GetPixelBlack(image, pixel) + 0.5;
 
         SetPixelRed(image,   new_color.red,   pixel);
         SetPixelGreen(image, new_color.green, pixel);
