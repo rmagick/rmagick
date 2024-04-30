@@ -1191,7 +1191,7 @@ rm_set_magick_pixel_packet(Pixel *pixel, MagickPixel *pp)
 /**
  * Return the color name corresponding to the pixel values.
  *
- * @overload to_color(compliance = Magick::AllCompliance, alpha = false, depth = Magick::MAGICKCORE_QUANTUM_DEPTH, hex = false)
+ * @overload to_color(compliance = Magick::AllCompliance, alpha = false, depth = Magick::MAGICKCORE_QUANTUM_DEPTH, hex = true)
  *   @param compliance [Magick::ComplianceType] A ComplianceType constant
  *   @param alpha [Boolean] If false, the pixel's alpha attribute is ignored
  *   @param depth [Numeric] An image depth
@@ -1205,7 +1205,7 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
     Image *image;
     Pixel *pixel;
     MagickPixel mpp;
-    MagickBooleanType hex = MagickFalse;
+    MagickBooleanType hex = MagickTrue;
     char name[MaxTextExtent];
     ExceptionInfo *exception;
     ComplianceType compliance = AllCompliance;
