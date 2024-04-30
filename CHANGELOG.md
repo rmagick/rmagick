@@ -7,16 +7,33 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 Improvements
 
-- Drop ruby-mswin environment support on Windows (#1587)
+- Improve compatibility of Image#pixel_color value for ImageMagick 6 and 7 (#1591)
 - Add missing constants (#1580)
-- Drop Ruby 2.x support (#1540)
-- Drop ImageMagick 6.7 support (#1539)
 - Loosen ImageMagick version check between compiled and runtime (#1526)
 
 Bug Fixes
 
 - Fix install error on Windows MINGW environment (#1588)
 - Fix header checks in order to use aligned_malloc expectedly (#1579)
+
+Breaking Changes
+
+- Change method that returns a color name to return a hex string (#1592)
+  - The following methods return RGBA hex string as color name. The hex string length is according to color depth.
+    - `Image#background_color`
+    - `Image#border_color`
+    - `Image#colormap`
+    - `Image#matte_color`
+    - `Image#transparent_color`
+    - `Info#background_color`
+    - `Info#border_color`
+    - `Info#matte_color`
+    - `Info#transparent_color`
+  - Change default value of argument
+    - The hex argument of `Pixel#to_color` has `true` by default.
+- Drop ruby-mswin environment support on Windows (#1587)
+- Drop Ruby 2.x support (#1540)
+- Drop ImageMagick 6.7 support (#1539)
 
 ## RMagick 5.5.0
 
