@@ -6,21 +6,21 @@ RSpec.describe Magick::Image, '#pixel_color' do
     expect(result).to be_instance_of(Magick::Pixel)
 
     result = image.pixel_color(0, 0)
-    expect(result.to_color).to eq(image.background_color)
+    expect(result.to_color).to eq('#FFFFFFFFFFFF')
     result = image.pixel_color(0, 0, 'red')
-    expect(result.to_color).to eq('white')
+    expect(result.to_color).to eq('#FFFFFFFFFFFF')
     result = image.pixel_color(0, 0)
-    expect(result.to_color).to eq('red')
+    expect(result.to_color).to eq('#FFFF00000000')
 
     blue = Magick::Pixel.new(0, 0, Magick::QuantumRange)
     expect { image.pixel_color(0, 0, blue) }.not_to raise_error
     # If args are out-of-bounds return the background color
     image = described_class.new(10, 10) { |options| options.background_color = 'blue' }
-    expect(image.pixel_color(50, 50).to_color).to eq('blue')
+    expect(image.pixel_color(50, 50).to_color).to eq('#00000000FFFF')
 
     image.class_type = Magick::PseudoClass
     result = image.pixel_color(0, 0, 'red')
-    expect(result.to_color).to eq('blue')
+    expect(result.to_color).to eq('#00000000FFFF')
   end
 
   it 'get/set CYMK color', unsupported_before('6.8.0') do

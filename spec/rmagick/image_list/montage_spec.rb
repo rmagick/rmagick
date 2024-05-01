@@ -6,7 +6,7 @@ RSpec.describe Magick::ImageList, "#montage" do
   end
 
   it "works", unsupported_before('6.8.0') do
-    image_list1 = described_class.new
+    image_list1 = described_class.new { |info| info.depth = 16 }
 
     image_list1.read(*Dir[IMAGES_DIR + '/Button_*.gif'])
     image_list2 = image_list1.copy
@@ -41,8 +41,20 @@ RSpec.describe Magick::ImageList, "#montage" do
     expect(image_list2).to eq(image_list1)
 
     montage_image = montage.first
-    expect(montage_image.background_color).to eq('blue')
-    expect(montage_image.border_color).to eq('red')
+    expected = value_by_version(
+      "6.8": "#00000000FFFF",
+      "6.9": "#00000000FFFFFFFF",
+      "7.0": "#00000000FFFFFFFF",
+      "7.1": "#00000000FFFFFFFF"
+    )
+    expect(montage_image.background_color).to eq(expected)
+    expected = value_by_version(
+      "6.8": "#FFFF00000000",
+      "6.9": "#FFFF00000000FFFF",
+      "7.0": "#FFFF00000000FFFF",
+      "7.1": "#FFFF00000000FFFF"
+    )
+    expect(montage_image.border_color).to eq(expected)
 
     # test illegal option arguments
     # looks like IM doesn't diagnose invalid geometry args

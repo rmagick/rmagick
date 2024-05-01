@@ -1,25 +1,45 @@
 RSpec.describe Magick::Image, '#border_color' do
   it 'works' do
-    image = described_class.new(100, 100)
+    image = described_class.new(100, 100) { |info| info.depth = 16 }
 
     expect { image.border_color }.not_to raise_error
     # expect(image.border_color).to eq("rgb(223,223,223)")
     border_color = image.border_color
-    if border_color.length == 13
-      expect(border_color).to eq('#DFDFDFDFDFDF')
-    else
-      expect(border_color).to eq('#DFDFDFDFDFDFFFFF')
-    end
+    expected = value_by_version(
+      "6.8": "#DFDFDFDFDFDF",
+      "6.9": "#DFDFDFDFDFDFFFFF",
+      "7.0": "#DFDFDFDFDFDFFFFF",
+      "7.1": "#DFDFDFDFDFDFFFFF"
+    )
+    expect(border_color).to eq(expected)
     expect { image.border_color = 'red' }.not_to raise_error
-    expect(image.border_color).to eq('red')
+    expected = value_by_version(
+      "6.8": "#FFFF00000000",
+      "6.9": "#FFFF00000000FFFF",
+      "7.0": "#FFFF00000000FFFF",
+      "7.1": "#FFFF00000000FFFF"
+    )
+    expect(image.border_color).to eq(expected)
     expect { image.border_color = Magick::Pixel.new(Magick::QuantumRange, Magick::QuantumRange / 2, Magick::QuantumRange / 2) }.not_to raise_error
     # expect(image.border_color).to eq("rgb(100%,49.9992%,49.9992%)")
     border_color = image.border_color
-    if border_color.length == 13
-      expect(border_color).to eq('#FFFF7FFF7FFF')
-    else
-      expect(border_color).to eq('#FFFF7FFF7FFFFFFF')
-    end
+    expected = value_by_version(
+      "6.8": "#FFFF7FFF7FFF",
+      "6.9": "#FFFF7FFF7FFFFFFF",
+      "7.0": "#FFFF7FFF7FFFFFFF",
+      "7.1": "#FFFF7FFF7FFFFFFF"
+    )
+    expect(border_color).to eq(expected)
     expect { image.border_color = 2 }.to raise_error(TypeError)
+
+    image = described_class.new(100, 100) { |info| info.depth = 8 }
+    border_color = image.border_color
+    expected = value_by_version(
+      "6.8": "#DFDFDF",
+      "6.9": "#DFDFDFFF",
+      "7.0": "#DFDFDFFF",
+      "7.1": "#DFDFDFFF"
+    )
+    expect(border_color).to eq(expected)
   end
 end
