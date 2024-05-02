@@ -13,6 +13,7 @@ Improvements
 
 Bug Fixes
 
+- Transform image according to Info#colorspace (#1594)
 - Sync Image::Info attributes to image object (#1593)
 - Fix install error on Windows MINGW environment (#1588)
 - Fix header checks in order to use aligned_malloc expectedly (#1579)
