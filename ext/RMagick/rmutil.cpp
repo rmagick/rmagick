@@ -21,6 +21,11 @@
 static VALUE rescue_not_str(VALUE, VALUE ATTRIBUTE_UNUSED) ATTRIBUTE_NORETURN;
 static void handle_exception(ExceptionInfo *, Image *, ErrorRetention);
 
+#if defined(IMAGEMAGICK_7)
+DEFINE_GVL_STUB3(TransformImageColorspace, Image *, const ColorspaceType, ExceptionInfo *);
+#else
+DEFINE_GVL_STUB2(TransformImageColorspace, Image *, const ColorspaceType);
+#endif
 
 DEFINE_GVL_STUB5(CloneImage, const Image *, const size_t, const size_t, const MagickBooleanType, ExceptionInfo *);
 
@@ -1060,13 +1065,14 @@ void rm_sync_image_options(Image *image, Info *info)
     {
 #if defined(IMAGEMAGICK_7)
         exception = AcquireExceptionInfo();
-        SetImageColorspace(image, info->colorspace, exception);
-        // We should not throw an exception in this method because we will
-        // leak memory in the place where this method is called. And that is
-        // why the exception is being ignored here.
+        GVL_STRUCT_TYPE(TransformImageColorspace) args = { image, info->colorspace, exception };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TransformImageColorspace), &args);
+        CHECK_EXCEPTION();
         DestroyExceptionInfo(exception);
 #else
-        SetImageColorspace(image, info->colorspace);
+        GVL_STRUCT_TYPE(TransformImageColorspace) args = { image, info->colorspace };
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TransformImageColorspace), &args);
+        rm_check_image_exception(image, RetainOnError);
 #endif
     }
 
