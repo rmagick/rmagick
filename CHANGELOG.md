@@ -3,7 +3,7 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## RMagick 6.0.0 (development)
+## RMagick 6.0.0
 
 Improvements
 
