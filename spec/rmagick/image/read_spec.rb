@@ -13,4 +13,11 @@ RSpec.describe Magick::Image, '#read' do
       expect { described_class.read(File.join(FIXTURE_PATH, 'sample.pdf')) }.not_to raise_error
     end
   end
+
+  it 'sync Image::Info' do
+    result = described_class.read(IMAGES_DIR + '/Button_0.gif') do |options|
+      options.colorspace = Magick::LabColorspace
+    end
+    expect(result.first.colorspace).to eq(Magick::LabColorspace)
+  end
 end

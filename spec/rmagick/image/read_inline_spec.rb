@@ -10,4 +10,15 @@ RSpec.describe Magick::Image, "#read_inline" do
     expect { described_class.read(nil) }.to raise_error(ArgumentError)
     expect { described_class.read("") }.to raise_error(ArgumentError)
   end
+
+  it 'sync Image::Info' do
+    image = described_class.read(IMAGES_DIR + '/Button_0.gif').first
+    blob = image.to_blob
+    encoded = [blob].pack('m*')
+
+    result = described_class.read_inline(encoded) do |options|
+      options.colorspace = Magick::LabColorspace
+    end
+    expect(result.first.colorspace).to eq(Magick::LabColorspace)
+  end
 end
