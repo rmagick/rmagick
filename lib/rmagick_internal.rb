@@ -1616,7 +1616,7 @@ module Magick
       if @scene
         img = @images[@scene]
         new_img = img.public_send(meth_id, *args, &block)
-        img.object_id == new_img.object_id ? self : new_img
+        img.equal?(new_img) ? self : new_img
       else
         super
       end
