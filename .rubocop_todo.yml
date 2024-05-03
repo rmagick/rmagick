@@ -171,12 +171,6 @@ Lint/FloatComparison:
   Exclude:
     - 'lib/rvg/stretchable.rb'
 
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-Lint/IdentityComparison:
-  Exclude:
-    - 'lib/rmagick_internal.rb'
-
 # Offense count: 91
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: AllowedMethods, AllowedPatterns, IgnoredClasses.
