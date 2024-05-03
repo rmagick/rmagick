@@ -107,8 +107,8 @@ brew install imagemagick@6
 2. You might need to configure `PATH` environment variable to where the compiler is located.
    (Ex: `set PATH=C:\Ruby27-x64\msys64\usr\bin;C:\Ruby27-x64\msys64\mingw64\bin;%PATH%`)
 3. Download `ImageMagick-7.XXXX-Q16-x64-dll.exe` (not, `ImageMagick-7.XXXX-Q16-x64-static.exe`) binary from [Windows Binary Release](https://imagemagick.org/script/download.php#windows), or you can download ImageMagick 6 from [Windows Binary Release](https://legacy.imagemagick.org/script/download.php#windows).
-4. Install ImageMagick. You need to turn on checkboxes `Add application directory to your system path` and `Install development headers and libraries for C and C++` in an installer for RMagick.
-<img width="50%" src="https://user-images.githubusercontent.com/199156/77183472-b72cbd00-6b11-11ea-8b9a-247bc1f9d8b1.png" />
+4. Install ImageMagick. You need to turn on checkboxes `Add application directory to your system path` and `Install development headers for C and C++` in an installer for RMagick.
+<img width="75%" src="https://github.com/rmagick/rmagick/assets/199156/494e7963-cca5-4cb5-b28a-6c4d76adce5d" />
 
 Installing RMagick
 ------------------
