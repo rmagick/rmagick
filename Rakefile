@@ -2,6 +2,9 @@ require 'simplecov'
 require './lib/rmagick/version'
 require 'fileutils'
 require 'English'
+require 'bundler/gem_tasks'
+require 'rake/extensiontask'
+require 'rspec/core/rake_task'
 
 desc "Open an irb session preloaded with this library"
 task :console do
@@ -60,6 +63,7 @@ task push_and_tag: [:build] do
   end
 end
 
+Rake::Task["release"].clear # Remove `release` task in bundler/gem_tasks
 desc 'Release'
 task release: %i[assert_clean_repo push_and_tag]
 
@@ -153,9 +157,6 @@ namespace :rbs do
   end
 end
 
-require 'bundler/gem_tasks'
-require 'rake/extensiontask'
-require 'rspec/core/rake_task'
 RSpec::Core::RakeTask.new(:spec)
 
 Rake::ExtensionTask.new('RMagick2') do |ext|
