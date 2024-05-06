@@ -273,8 +273,8 @@ typedef struct
 
 //! Quantum expression adapter.
 /**
- * Both ImageMagick and GraphicsMagick define an enum type for quantum-level
- * expressions, but they're different types. The QuantumExpressionOperator
+ * ImageMagick defines an enum type for quantum-level expressions,
+ * but they're different types. The QuantumExpressionOperator
  * type is an adapter type that can be mapped to either one.
  */
 typedef enum _QuantumExpressionOperator

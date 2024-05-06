@@ -294,11 +294,7 @@ begin
   # format is a fixed-size image, so I don't need to specify a size.
   puts 'Adding logo image...'
   logo = Magick::Image.read('logo:').first
-  if Magick::Magick_version.include?('GraphicsMagick')
-    logo.resize!(200.0 / logo.rows)
-  else
-    logo.crop!(98, 0, 461, 455).resize!(0.45)
-  end
+  logo.crop!(98, 0, 461, 455).resize!(0.45)
 
   # Create a new Image for the composited montage and logo
   montage_image = Magick::ImageList.new
