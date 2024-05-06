@@ -1,5 +1,4 @@
-# This routine needs the color_histogram method
-# from either ImageMagick 6.0.0 or GraphicsMagick 1.1
+# This routine needs the color_histogram method from ImageMagick 6.0.0.
 # Specify an image filename as an argument.
 
 require 'rmagick'
@@ -119,33 +118,27 @@ module Magick
     def color_hist(fg, bg)
       img = number_colors > 256 ? quantize(256) : self
 
-      begin
-        hist = img.color_histogram
-      rescue NotImplementedError
-        warn 'The color_histogram method is not supported by this version ' \
-             'of ImageMagick/GraphicsMagick'
-      else
-        pixels = hist.keys.sort_by { |pixel| hist[pixel] }
-        scale = HISTOGRAM_ROWS / (hist.values.max * AIR_FACTOR)
+      hist = img.color_histogram
+      pixels = hist.keys.sort_by { |pixel| hist[pixel] }
+      scale = HISTOGRAM_ROWS / (hist.values.max * AIR_FACTOR)
 
-        histogram = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do |options|
-          options.background_color = bg
-          options.border_color = fg
-        end
-
-        x = 0
-        pixels.each do |pixel|
-          column = Array.new(HISTOGRAM_ROWS).fill { Pixel.new }
-          HISTOGRAM_ROWS.times do |y|
-            column[y] = pixel if y >= HISTOGRAM_ROWS - (hist[pixel] * scale)
-          end
-          histogram.store_pixels(x, 0, 1, HISTOGRAM_ROWS, column)
-          x = x.succ
-        end
-
-        histogram['Label'] = 'Color Frequency'
-        histogram
+      histogram = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do |options|
+        options.background_color = bg
+        options.border_color = fg
       end
+
+      x = 0
+      pixels.each do |pixel|
+        column = Array.new(HISTOGRAM_ROWS).fill { Pixel.new }
+        HISTOGRAM_ROWS.times do |y|
+          column[y] = pixel if y >= HISTOGRAM_ROWS - (hist[pixel] * scale)
+        end
+        histogram.store_pixels(x, 0, 1, HISTOGRAM_ROWS, column)
+        x = x.succ
+      end
+
+      histogram['Label'] = 'Color Frequency'
+      histogram
     end
 
     # Use AnnotateImage to write the stats.

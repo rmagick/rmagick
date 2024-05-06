@@ -160,7 +160,7 @@ end
 if ARGV.empty?
   puts <<-END_USAGE
     This example displays information about the specified image file(s)
-    that is similar to ImageMagick/GraphicsMagick's identify command.
+    that is similar to ImageMagick's identify command.
 
     Usage:
     ruby identify.rb filename [filename...]
