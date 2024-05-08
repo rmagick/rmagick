@@ -193,12 +193,6 @@ Lint/RescueException:
   Exclude:
     - 'lib/rmagick_internal.rb'
 
-# Offense count: 1
-# Configuration parameters: AllowComments, AllowNil.
-Lint/SuppressedException:
-  Exclude:
-    - 'lib/rmagick_internal.rb'
-
 # Offense count: 39
 # Configuration parameters: AllowedMethods, AllowedPatterns, CountRepeatedAttributes.
 Metrics/AbcSize:
