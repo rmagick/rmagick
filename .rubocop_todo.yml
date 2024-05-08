@@ -449,12 +449,6 @@ Style/FormatStringToken:
 Style/FrozenStringLiteralComment:
   Enabled: false
 
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Style/GlobalStdStream:
-  Exclude:
-    - 'Rakefile'
-
 # Offense count: 46
 # Configuration parameters: AllowedVariables.
 Style/GlobalVars:

@@ -55,7 +55,7 @@ task push_and_tag: [:build] do
   sh "gem push #{File.join(base, 'pkg', gem_name)}"
   if $CHILD_STATUS.success?
     sh "git tag -a -m \"Version #{version}\" #{version_tag}"
-    STDOUT.puts "Tagged #{version_tag}."
+    puts "Tagged #{version_tag}."
     sh 'git push'
     sh 'git push --tags'
   else
