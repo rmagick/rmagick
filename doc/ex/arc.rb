@@ -19,9 +19,9 @@ gc.circle(146, 50, 146 + 3, 50)
 # Annotate
 gc.font_weight(Magick::NormalWeight)
 gc.font_style(Magick::NormalStyle)
-gc.stroke('transparent')
 gc.fill('black')
 gc.fill_opacity(1)
+gc.stroke('transparent')
 
 # xMagick recognizes the braces as delimiters.
 gc.gravity(Magick::NorthWestGravity)
