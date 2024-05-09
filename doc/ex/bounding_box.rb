@@ -26,6 +26,7 @@ gc.circle(bb.x, bb.y + bb.height, bb.x + 2, bb.y + bb.height + 2)
 gc.circle(bb.x + bb.width, bb.y + bb.height, bb.x + bb.width + 2, bb.y + bb.height + 2)
 
 gc.fill('black')
+gc.fill_opacity(1)
 gc.stroke('transparent')
 gc.font_weight(Magick::NormalWeight)
 gc.font_style(Magick::NormalStyle)
