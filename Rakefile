@@ -124,8 +124,8 @@ namespace :website do
     end
   end
 
-  desc 'Update RMagick website'
-  task :update do
+  desc 'Update RMagick website HTML files'
+  task :"update:html" do
     unless File.exist?(PATH_TO_LOCAL_WEBSITE_REPOSITORY)
       puts "Please clone the rmagick.github.io repository to #{PATH_TO_LOCAL_WEBSITE_REPOSITORY}"
       exit 1
@@ -138,6 +138,25 @@ namespace :website do
     Dir.glob('doc/ex/*.rb') do |file|
       file_name = File.basename(file)
       file_to_html('doc/ex', file_name, PATH_TO_LOCAL_WEBSITE_REPOSITORY, "#{file_name}.html")
+    end
+  end
+
+  desc 'Update RMagick website image files'
+  task :"update:image" do
+    unless File.exist?(PATH_TO_LOCAL_WEBSITE_REPOSITORY)
+      puts "Please clone the rmagick.github.io repository to #{PATH_TO_LOCAL_WEBSITE_REPOSITORY}"
+      exit 1
+    end
+
+    Rake::Task['install'].invoke
+
+    FileUtils.rm_rf("#{PATH_TO_LOCAL_WEBSITE_REPOSITORY}/ex")
+    FileUtils.cp_r('doc/ex', PATH_TO_LOCAL_WEBSITE_REPOSITORY)
+
+    FileUtils.cd("#{PATH_TO_LOCAL_WEBSITE_REPOSITORY}/ex") do
+      Dir.glob('*.rb').each do |file|
+        sh "ruby #{file}"
+      end
     end
   end
 end
