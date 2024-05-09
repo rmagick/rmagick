@@ -6,11 +6,6 @@ require 'bundler/gem_tasks'
 require 'rake/extensiontask'
 require 'rspec/core/rake_task'
 
-desc "Open an irb session preloaded with this library"
-task :console do
-  sh "irb -r ./ext/RMagick/extconf.rb -r ./lib/rmagick.rb"
-end
-
 task :config do
   def version
     Magick::VERSION
