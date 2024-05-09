@@ -15,12 +15,12 @@ FONT = 'Helvetica'
 begin
   puts 'Read images...'
 
-  model = Magick::ImageList.new('../doc/ex/images/model.miff')
+  model = Magick::ImageList.new('images/model.miff')
   model.border_color = 'black'
   model.background_color = 'black'
   model.cur_image[:Label] = 'RMagick'
 
-  smile = Magick::ImageList.new('../doc/ex/images/smile.miff')
+  smile = Magick::ImageList.new('images/smile.miff')
   smile.border_color = 'black'
   smile.cur_image[:Label] = 'Smile'
 
