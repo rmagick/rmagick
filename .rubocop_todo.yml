@@ -377,12 +377,6 @@ Style/ClassMethodsDefinitions:
 Style/CommentedKeyword:
   Enabled: false
 
-# Offense count: 2
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Style/ConcatArrayLiterals:
-  Exclude:
-    - 'spec/rmagick/image_list/concat_spec.rb'
-
 # Offense count: 129
 # Configuration parameters: IgnoreModules.
 Style/ConstantVisibility:
@@ -395,17 +389,6 @@ Style/ConstantVisibility:
     - 'lib/rvg/rvg.rb'
     - 'lib/rvg/stylable.rb'
     - 'spec/support/helpers.rb'
-
-# Offense count: 9
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowedCops.
-Style/DisableCopsWithinSourceCodeDirective:
-  Exclude:
-    - 'lib/rmagick_internal.rb'
-    - 'spec/magick_spec.rb'
-    - 'spec/rmagick/image_list/collect_spec.rb'
-    - 'spec/rmagick/image_list/find_all_spec.rb'
-    - 'spec/rmagick/image_list_spec.rb'
 
 # Offense count: 3
 Style/DocumentDynamicEvalDefinition:

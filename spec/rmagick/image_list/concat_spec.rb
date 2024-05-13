@@ -1,4 +1,5 @@
 RSpec.describe Magick::ImageList, '#concat' do
+  # rubocop:disable Style/ConcatArrayLiterals
   it 'allows appending identical instances more than once' do
     image = Magick::Image.new(1, 1)
     image2 = Magick::Image.new(3, 3)
@@ -28,4 +29,5 @@ RSpec.describe Magick::ImageList, '#concat' do
     expect { image_list.concat(2) }.to raise_error(ArgumentError)
     expect { image_list.concat([2]) }.to raise_error(ArgumentError)
   end
+  # rubocop:enable Style/ConcatArrayLiterals
 end
