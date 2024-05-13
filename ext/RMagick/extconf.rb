@@ -129,7 +129,7 @@ module RMagick
         configure_archflags_for_osx($magick_package) if RUBY_PLATFORM.include?('darwin') # osx
 
       end
-      $CPPFLAGS += ' $(optflags) $(debugflags)'
+      $CPPFLAGS += ' $(optflags) $(debugflags) -fomit-frame-pointer'
     end
 
     def exit_failure(msg)
