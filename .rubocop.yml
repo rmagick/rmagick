@@ -62,3 +62,6 @@ RSpec/AlignRightLetBrace:
 
 Style/Copyright:
   Enabled: false
+
+Style/DisableCopsWithinSourceCodeDirective:
+  Enabled: false
