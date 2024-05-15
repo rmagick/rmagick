@@ -3,6 +3,13 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 6.0.1
+
+Bug Fixes
+
+- Fix build error on FreeBSD (#1618)
+- Fix build error with GCC 14 on Windows (#1616)
+
 ## RMagick 6.0.0
 
 Improvements
