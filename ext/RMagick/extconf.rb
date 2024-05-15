@@ -20,6 +20,7 @@ module RMagick
       ImageMagick-6.Q32
       ImageMagick-6.Q16
       ImageMagick-6.Q8
+      ImageMagick-6
     ].freeze
 
     # ImageMagick 7 packages
@@ -32,6 +33,7 @@ module RMagick
       ImageMagick-7.Q32
       ImageMagick-7.Q16
       ImageMagick-7.Q8
+      ImageMagick-7
     ].freeze
 
     attr_reader :headers
