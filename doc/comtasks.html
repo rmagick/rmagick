@@ -64,30 +64,29 @@
     </p>
     <pre class="example">
 require "rmagick"
-ARGV.each { |file|
-    puts file
-    img = Magick::Image::read(file).first
-    puts "   Format: #{img.format}"
-    puts "   Geometry: #{img.columns}x#{img.rows}"
-    puts "   Class: " + case img.class_type
-                            when Magick::DirectClass
-                                "DirectClass"
-                            when Magick::PseudoClass
-                                "PseudoClass"
-                        end
-    puts "   Depth: #{img.depth} bits-per-pixel"
-    puts "   Colors: #{img.number_colors}"
-    puts "   Filesize: #{img.filesize}"
-    puts "   Resolution: #{img.x_resolution.to_i}x#{img.y_resolution.to_i} "+
-        "pixels/#{img.units == Magick::PixelsPerInchResolution ?
-        "inch" : "centimeter"}"
-    if img.properties.length &gt; 0
-        puts "   Properties:"
-        img.properties { |name,value|
-            puts %Q|      #{name} = "#{value}"|
-        }
-    end
-    }
+ARGV.each do |file|
+  puts file
+  img = Magick::Image.read(file).first
+  puts "   Format: #{img.format}"
+  puts "   Geometry: #{img.columns}x#{img.rows}"
+  puts "   Class: " + case img.class_type
+                      when Magick::DirectClass
+                        "DirectClass"
+                      when Magick::PseudoClass
+                        "PseudoClass"
+                      end
+  puts "   Depth: #{img.depth} bits-per-pixel"
+  puts "   Colors: #{img.number_colors}"
+  puts "   Filesize: #{img.filesize}"
+  puts "   Resolution: #{img.x_resolution.to_i}x#{img.y_resolution.to_i} " +
+       "pixels/#{img.units == Magick::PixelsPerInchResolution ? 'inch' : 'centimeter'}"
+  next if img.properties.length &lt;= 0
+
+  puts "   Properties:"
+  img.properties do |name, value|
+    puts %(      #{name} = "#{value}")
+  end
+end
 </pre
     >
 
@@ -109,7 +108,7 @@ ARGV.each { |file|
       >. All four are equally easy to use. Specify the number of columns and rows you want the thumbnail to have, like this:
     </p>
     <pre class="example">
-img = Image.new "bigimage.gif"
+img = Magick::Image.new "bigimage.gif"
 thumb = img.scale(125, 125)
 thumb.write "thumb.gif"
 </pre
@@ -120,7 +119,7 @@ thumb.write "thumb.gif"
       image to 25% of its original size, do this:
     </p>
     <pre class="example">
-img = Image.new "bigimage.gif"
+img = Magick::Image.new "bigimage.gif"
 thumb = img.scale(0.25)
 thumb.write "thumb.gif"
 </pre

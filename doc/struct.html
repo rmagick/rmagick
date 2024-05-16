@@ -237,7 +237,7 @@
         <pre>
   # Get the value of the green channel of
   # the top-left pixel in the view.
-  view[0][0] = Pixel(0,128,255)
+  view[0][0] = Magick::Pixel.new(0,128,255)
   g = view[0][0].green  # returns 128
 
   # Get the maximum value of the red channel
@@ -299,7 +299,7 @@
         <pre>
   # Set the red channel of all the pixels in the 2nd
   # row of the view to QuantumRange
-  view[1][].red = QuantumRange
+  view[1][].red = Magick::QuantumRange
   # Set the green channel of the pixel at [20][30] to
   # half that of its left-hand neighbor.
   view[20][30].green = view[20][29].green * 0.5
