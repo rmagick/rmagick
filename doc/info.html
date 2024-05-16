@@ -247,8 +247,8 @@
 
       <p>For example,</p>
       <pre>
-img = Magick::Image.new(10,10) do
-   self['user'] = __FILE__ + ':' + __LINE__.to_s
+img = Magick::Image.new(10,10) do |options|
+  options['user'] = __FILE__ + ':' + __LINE__.to_s
 end &raquo; 10x10 DirectClass 16-bit user:test.rb:3
 </pre
       >
@@ -267,7 +267,7 @@ end &raquo; 10x10 DirectClass 16-bit user:test.rb:3
 
       <h4>Example</h4>
       <pre>
-self["tiff", "bits-per-sample"] = 2
+options["tiff", "bits-per-sample"] = 2
 </pre
       >
 
@@ -309,7 +309,7 @@ self["tiff", "bits-per-sample"] = 2
 
       <h4>Example</h4>
       <pre>
-self["tiff", "bits-per-sample"] &raquo; 2
+options["tiff", "bits-per-sample"] &raquo; 2
 </pre
       >
 

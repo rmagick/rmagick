@@ -13,74 +13,74 @@
     <style type="text/css">
       /*<![CDATA[*/
 
-        /* Styles local to this page. */
+      /* Styles local to this page. */
 
-        #index {
-          margin-left: 100px;
-          margin-right: 100px;
-        }
-        #index h4 {
-          position: relative;
-          left: -100px;
-          padding-left: 5px;
-          background-image: url(ex/images/graydient230x6.gif);
-          background-repeat: repeat-y;
-          color: black;
-        }
+      #index {
+        margin-left: 100px;
+        margin-right: 100px;
+      }
+      #index h4 {
+        position: relative;
+        left: -100px;
+        padding-left: 5px;
+        background-image: url(ex/images/graydient230x6.gif);
+        background-repeat: repeat-y;
+        color: black;
+      }
 
-        /*
+      /*
          *  The "ilist" class identifies ImageList methods in the index.
          */
-        .ilist {
-          font-weight: bold;
-        }
-        .ilist a:link {
-          font-weight: bold;
-          text-decoration: none;
-        }
-        .ilist a:visited {
-          font-weight: bold;
-          color: #7f7fff;
-        }
-        .ilist a:hover {
-          text-decoration: underline;
-        }
-        .ilist a:active {
-          background-color: blue;
-          color: white;
-          text-decoration: underline;
-        }
+      .ilist {
+        font-weight: bold;
+      }
+      .ilist a:link {
+        font-weight: bold;
+        text-decoration: none;
+      }
+      .ilist a:visited {
+        font-weight: bold;
+        color: #7f7fff;
+      }
+      .ilist a:hover {
+        text-decoration: underline;
+      }
+      .ilist a:active {
+        background-color: blue;
+        color: white;
+        text-decoration: underline;
+      }
 
-        #axes {
-          margin-left:100px;
-          margin-right:100px;
-          margin-bottom: 1em;
-          position:relative;
-        }
-        #axes div {
-          position:absolute;
-          top:0;
-          left: 260px;
-        }
-        #rubyname {
-          margin-left: auto;
-          margin-right:auto;
-          width:300px;
-          margin-bottom:1em;
-        }
-        #footnotes {
-          border-top: thin solid black;
-          padding-top: 1em;????
-        }
-        #footnotes h5 {
-          display: none;
-        }
-        .sup {
-          vertical-align: super;
-          font-size: x-small;
-        }
+      #axes {
+        margin-left: 100px;
+        margin-right: 100px;
+        margin-bottom: 1em;
+        position: relative;
+      }
+      #axes div {
+        position: absolute;
+        top: 0;
+        left: 260px;
+      }
+      #rubyname {
+        margin-left: auto;
+        margin-right: auto;
+        width: 300px;
+        margin-bottom: 1em;
+      }
+      #footnotes {
+        border-top: thin solid black;
+        padding-top: 1em;
+      }
+      #footnotes h5 {
+        display: none;
+      }
+      .sup {
+        vertical-align: super;
+        font-size: x-small;
+      }
 
-        /*]]>*/
+      /*]]>*/
     </style>
   </head>
 
@@ -120,13 +120,11 @@
       it on your monitor
     </p>
     <pre class="example">
-1. require "rmagick"
-2. include Magick
-3.
-4. cat = ImageList.new("Cheetah.jpg")
-5. cat.display
-6. exit
+require "rmagick"
 
+cat = Magick::ImageList.new("Cheetah.jpg")
+cat.display
+exit
 </pre
     >
 
@@ -176,13 +174,12 @@
 
     <p>Going back to the example, let's make one modification.</p>
     <pre class="example">
-1. require "rmagick"
-2. include Magick
-3.
-4. cat = ImageList.new("Cheetah.jpg")
-5. smallcat = cat.minify
-6. smallcat.display
-7. exit
+require "rmagick"
+
+cat = Magick::ImageList.new("Cheetah.jpg")
+smallcat = cat.minify
+smallcat.display
+exit
 </pre
     >
 
@@ -201,14 +198,13 @@
 
     <p>Here's how to write the small cheetah to a file in GIF format.</p>
     <pre class="example">
-1. require "rmagick"
-2. include Magick
-3.
-4. cat = ImageList.new("Cheetah.jpg")
-5. smallcat = cat.minify
-6. smallcat.display
-7. smallcat.write("Small-Cheetah.gif")
-8. exit
+require "rmagick"
+
+cat = Magick::ImageList.new("Cheetah.jpg")
+smallcat = cat.minify
+smallcat.display
+smallcat.write("Small-Cheetah.gif")
+exit
 </pre
     >
 
@@ -260,9 +256,9 @@
     </p>
     <pre class="example">
 require "rmagick"
-include Magick
+
 # Create a 100x100 red image.
-f = Image.new(100,100) { |options| options.background_color = "red" }
+f = MagickImage.new(100,100) { |options| options.background_color = "red" }
 f.display
 exit
 </pre
@@ -296,9 +292,9 @@ exit
       <code>ImageList#write</code> to combine all the images in those files (remember, each input file can contain multiple images) into one animated GIF file.
     </p>
     <pre class="example">
-#!/usr/bin/env ruby -w
 require "rmagick"
-anim = ImageList.new("start.gif", "middle.gif", "finish.gif")
+
+anim = Magick::ImageList.new("start.gif", "middle.gif", "finish.gif")
 anim.write("animated.gif")
 exit
 </pre
@@ -1271,22 +1267,21 @@ exit
 
     <p>As an example, here's the section of the Ruby program that created the circle in the center of the above image.</p>
     <pre class="example">
- 1. !# /usr/local/bin/ruby -w
- 2. require "rmagick"
- 3.
- 4. canvas = Magick::ImageList.new
- 5. canvas.new_image(250, 250, Magick::HatchFill.new('white', 'gray90'))
- 6.
- 7. circle = Magick::Draw.new
- 8. circle.stroke('tomato')
- 9. circle.fill_opacity(0)
-10. circle.stroke_opacity(0.75)
-11. circle.stroke_width(6)
-12. circle.stroke_linecap('round')
-13. circle.stroke_linejoin('round')
-14. circle.ellipse(canvas.rows/2,canvas.columns/2, 80, 80, 0, 315)
-15. circle.polyline(180,70, 173,78, 190,78, 191,62)
-16. circle.draw(canvas)
+require "rmagick"
+
+canvas = Magick::ImageList.new
+canvas.new_image(250, 250, Magick::HatchFill.new('white', 'gray90'))
+
+circle = Magick::Draw.new
+circle.stroke('tomato')
+circle.fill_opacity(0)
+circle.stroke_opacity(0.75)
+circle.stroke_width(6)
+circle.stroke_linecap('round')
+circle.stroke_linejoin('round')
+circle.ellipse(canvas.rows/2,canvas.columns/2, 80, 80, 0, 315)
+circle.polyline(180,70, 173,78, 190,78, 191,62)
+circle.draw(canvas)
 </pre
     >
 
@@ -1332,36 +1327,35 @@ exit
       <a href="javascript:popup('rubyname.rb.html')"><img src="ex/rubyname.gif" alt="annotate example" title="Click to see the example script" /></a>
     </div>
     <pre class="example">
- 1.   #! /usr/local/bin/ruby -w
- 2.   require "rmagick"
- 3.
- 4.   # Demonstrate the annotate method
- 5.
- 6.   Text = 'RMagick'
- 7.
- 8.   granite = Magick::ImageList.new('granite:')
- 9.   canvas = Magick::ImageList.new
-10.   canvas.new_image(300, 100, Magick::TextureFill.new(granite))
-11.
-12.   text = Magick::Draw.new
-13.   text.font_family = 'helvetica'
-14.   text.pointsize = 52
-15.   text.gravity = Magick::CenterGravity
-16.
-17.   text.annotate(canvas, 0,0,2,2, Text) { |options|
-18.      options.fill = 'gray83'
-19.   }
-20.
-21.   text.annotate(canvas, 0,0,-1.5,-1.5, Text) { |options|
-22.      options.fill = 'gray40'
-23.   }
-24.
-25.   text.annotate(canvas, 0,0,0,0, Text) { |options|
-26.      options.fill = 'darkred'
-27.   }
-28.
-29.   canvas.write('rubyname.gif')
-30.   exit
+require "rmagick"
+
+# Demonstrate the annotate method
+
+Text = 'RMagick'
+
+granite = Magick::ImageList.new('granite:')
+canvas = Magick::ImageList.new
+canvas.new_image(300, 100, Magick::TextureFill.new(granite))
+
+text = Magick::Draw.new
+text.font_family = 'helvetica'
+text.pointsize = 52
+text.gravity = Magick::CenterGravity
+
+text.annotate(canvas, 0,0,2,2, Text) { |options|
+  options.fill = 'gray83'
+}
+
+text.annotate(canvas, 0,0,-1.5,-1.5, Text) { |options|
+  options.fill = 'gray40'
+}
+
+text.annotate(canvas, 0,0,0,0, Text) { |options|
+  options.fill = 'darkred'
+}
+
+canvas.write('rubyname.gif')
+exit
 </pre
     >
 

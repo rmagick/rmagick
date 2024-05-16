@@ -587,7 +587,9 @@ end
       <p>This half-size preview demonstrates the SolarizePreview argument.</p>
 
       <p>
-        <a href="javascript:popup('preview.rb.html')"><img src="ex/preview_SolarizePreview.jpg" alt="preview example" title="Click to see the example script" /></a>
+        <a href="javascript:popup('preview.rb.html')"
+          ><img src="ex/preview_SolarizePreview.jpg" alt="preview example" title="Click to see the example script"
+        /></a>
       </p>
 
       <h4>Magick API</h4>
@@ -866,7 +868,7 @@ Magick::QuantumExpressionOperator.values {|v| puts v}
 
       <p>Divide the red component of all the pixels in the image by 2:</p>
       <pre>
-img.quantum_operator(DivideQuantumOperator, 2, RedChannel)
+img.quantum_operator(Magick::DivideQuantumOperator, 2, Magick::RedChannel)
 </pre
       >
 
@@ -1069,8 +1071,8 @@ img.quantum_operator(DivideQuantumOperator, 2, RedChannel)
 
       <h4>Example</h4>
       <pre>
-geom = Geometry.new(QuantumRange/2)
-random_threshold_channel(geom, RedChannel)
+geom = Magick::Geometry.new(Magick::QuantumRange/2)
+random_threshold_channel(geom, Magick::RedChannel)
 </pre
       >
 
@@ -1896,7 +1898,7 @@ random_threshold_channel(geom, RedChannel)
 
       <h4>Example</h4>
 
-      <p><code>segment(YUVColorspace, 0.4, 0.4)</code></p>
+      <p><code>img.segment(YUVColorspace, 0.4, 0.4)</code></p>
 
       <p class="rollover">
         <a href="javascript:popup('segment.rb.html')"
@@ -2139,7 +2141,7 @@ random_threshold_channel(geom, RedChannel)
 
       <h4>Example</h4>
 
-      <p><code>shade(true, 50, 50)</code></p>
+      <p><code>img.shade(true, 50, 50)</code></p>
 
       <p class="rollover">
         <a href="javascript:popup('shade.rb.html')"
@@ -2518,15 +2520,11 @@ random_threshold_channel(geom, RedChannel)
 
       <h4>Example</h4>
       <pre>
-img = Image.read('ex/images/Flower_Hat.jpg').first &raquo;
-  ex/images/Flower_Hat.jpg JPEG 200x250 DirectClass 8-bit 9761b
-img.properties &raquo;
-  {"comment"=&gt;"File written by Adobe Photoshop\250 4.0"}
-img.signature &raquo;
-  "485e01ecba1a1f47924d67b887cb07b474f695841733796dfa3c2876965c7e8b"
-img.properties &raquo;
-  {"signature"=&gt;"485e01ecba1a1f47924d67b887cb07b474f695841733796dfa3c2876965c7e8b",
-   "comment"=&gt;"File written by Adobe Photoshop\250 4.0"}
+img = Magick::Image.read('ex/images/Flower_Hat.jpg').first &raquo; ex/images/Flower_Hat.jpg JPEG 200x250 DirectClass 8-bit 9761b
+img.properties &raquo; {"comment"=&gt;"File written by Adobe Photoshop\250 4.0"}
+img.signature  &raquo; "485e01ecba1a1f47924d67b887cb07b474f695841733796dfa3c2876965c7e8b"
+img.properties &raquo; {"signature"=&gt;"485e01ecba1a1f47924d67b887cb07b474f695841733796dfa3c2876965c7e8b",
+               &raquo; "comment"=&gt;"File written by Adobe Photoshop\250 4.0"}
 </pre
       >
 
@@ -3228,7 +3226,7 @@ img.properties &raquo;
 
       <h4>Example</h4>
 
-      <p><code>threshold(QuantumRange*0.55)</code></p>
+      <p><code>img.threshold(Magick::QuantumRange * 0.55)</code></p>
 
       <p class="rollover">
         <a href="javascript:popup('threshold.rb.html')"
@@ -3290,8 +3288,8 @@ img.properties &raquo;
 
       <h4>Example</h4>
       <pre>
-img = Image.read("images/Cheetah.jpg").first
-thumbnail = img.thumbnail(img.columns*0.09, img.rows*0.09)
+img = Magick::Image.read("images/Cheetah.jpg").first
+thumbnail = img.thumbnail(img.columns * 0.09, img.rows * 0.09)
 </pre
       >
 
@@ -3389,12 +3387,9 @@ thumbnail = img.thumbnail(img.columns*0.09, img.rows*0.09)
 
       <h4>Example</h4>
       <pre>
-img = Image.read('ex/images/Flower_Hat.jpg').first
-&raquo; ex/images/Flower_Hat.jpg JPEG 200x250 DirectClass 8-bit 9761b
-pixel = img.pixel_color(img.columns/2, img.rows/2)
-&raquo; #&lt;struct Pixel red=216, green=147, blue=106, opacity=0&gt;
-img.to_color(pixel)
-&raquo; "#D8936A"
+img = Magick::Image.read('ex/images/Flower_Hat.jpg').first &raquo; ex/images/Flower_Hat.jpg JPEG 200x250 DirectClass 8-bit 9761b
+pixel = img.pixel_color(img.columns/2, img.rows/2)         &raquo; #&lt;struct Pixel red=216, green=147, blue=106, opacity=0&gt;
+img.to_color(pixel)                                        &raquo; "#D8936A"
 </pre
       >
 
@@ -3919,32 +3914,32 @@ img.to_color(pixel)
         <a href="javascript:popup('viewex.rb.html')"><img src="ex/viewex.gif" title="Click to see the example script" alt="view example" /></a>
       </p>
       <pre>
-img = Image.new(40, 40) { |options| options.background_color = 'lightcyan2'}
+img = Magick::Image.new(40, 40) { |options| options.background_color = 'lightcyan2'}
 
 # The view is 400 pixels square, starting at
 # column 10, row 5 from the top of the image.
 img.view( 10, 5, 20, 20) do |view|
 
-    # Set all the pixels in the view to green.
-    view[][] = Pixel.new(0, QuantumRange)
+  # Set all the pixels in the view to green.
+  view[][] = Pixel.new(0, Magick::QuantumRange)
 
-    # Change the top and bottom rows to red.
-    view[0][] = 'red'
-    view[-1,1][] = 'red'
+  # Change the top and bottom rows to red.
+  view[0][] = 'red'
+  view[-1,1][] = 'red'
 
-    # Set 6 pixels to black.
-    view[[13,15]][[12,14,16]] = 'black'
+  # Set 6 pixels to black.
+  view[[13,15]][[12,14,16]] = 'black'
 
-    # Set 1 pixel to yellow.
-    view[5][7] = 'yellow'
+  # Set 1 pixel to yellow.
+  view[5][7] = 'yellow'
 
-    # Change the green channel of all the
-    # pixels on row 8.
-    view[8][].green = QuantumRange/2
+  # Change the green channel of all the
+  # pixels on row 8.
+  view[8][].green = Magick::QuantumRange/2
 
-    # Change the blue channel of 8 pixels
-    # on column 10.
-    view[4,8][10].blue = QuantumRange
+  # Change the blue channel of 8 pixels
+  # on column 10.
+  view[4,8][10].blue = Magick::QuantumRange
 end
 </pre
       >
