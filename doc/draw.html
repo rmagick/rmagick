@@ -290,10 +290,8 @@
       A new <code>Draw</code> object.
 
       <h4>Example</h4>
-      <pre>
-gc = Magick::Draw.new
-</pre
-      >
+
+      <pre>gc = Magick::Draw.new</pre>
     </div>
 
     <h2 class="methods">instance methods</h2>
@@ -687,7 +685,7 @@ title.annotate(montage, 0,0,0,40, 'Named Colors') { |options|
           The pixel units may be converted to points (the standard resolution-independent measure used by the typesetting industry) via the following equation:
         </p>
 
-        <p><code>size_points = (size_pixels * 72)/resolution</code></p>
+        <pre>size_points = (size_pixels * 72)/resolution</pre>
 
         <p class="imquote">where resolution is in dots-per-inch (DPI). This means that at the default image resolution, there is one pixel per point.</p>
 
@@ -810,6 +808,7 @@ title.annotate(montage, 0,0,0,40, 'Named Colors') { |options|
       </p>
 
       <h4>Example</h4>
+
       <pre>
 draw.inspect &raquo;
    "stroke red
@@ -889,7 +888,7 @@ draw.inspect &raquo;
         This example changes the default coordinate system to the standard Cartesian coordinate system: the x-axis points rightward and the y-axis points up.
       </p>
 
-      <p><code>gc.affine(1, 0, 0, -1, 0, max_y)</code></p>
+      <pre>gc.affine(1, 0, 0, -1, 0, max_y)</pre>
 
       <p>
         <a href="javascript:popup('affine.rb.html')" title="Click to see the example script"><img src="ex/affine.gif" alt="affine example" /></a>
@@ -931,10 +930,8 @@ draw.inspect &raquo;
       <p>self</p>
 
       <h4>Example</h4>
-      <pre>
-  draw.alpha(x, y, FillToBorderMethod)
-</pre
-      >
+
+      <pre>draw.alpha(x, y, FillToBorderMethod)</pre>
     </div>
 
     <div class="sig">
@@ -974,7 +971,7 @@ draw.inspect &raquo;
 
       <h4>Example</h4>
 
-      <p><code>gc.arc(40, 50, 250, 180, 0, 270)</code></p>
+      <pre>gc.arc(40, 50, 250, 180, 0, 270)</pre>
 
       <p>
         <a href="javascript:popup('arc.rb.html')" title="Click to see the example script"><img src="ex/arc.gif" alt="arc example" /></a>
@@ -1022,7 +1019,7 @@ draw.inspect &raquo;
 
       <h4>Example 1</h4>
 
-      <p><code>gc.bezier(20,120, 20,20, 320,20, 320,120)</code></p>
+      <pre>gc.bezier(20,120, 20,20, 320,20, 320,120)</pre>
 
       <p>
         <a href="javascript:popup('cbezier1.rb.html')"><img src="ex/cbezier1.gif" alt="bezier example 1" title="Click to see the example script" /></a>
@@ -1030,7 +1027,7 @@ draw.inspect &raquo;
 
       <h4>Example 2</h4>
 
-      <p><code>gc.bezier(25,125, 100,25, 400,25, 325,125)</code></p>
+      <pre>gc.bezier(25,125, 100,25, 400,25, 325,125)</pre>
 
       <p>
         <a href="javascript:popup('cbezier2.rb.html')"><img src="ex/cbezier2.gif" alt="bezier example 2" title="Click to see the example script" /></a>
@@ -1038,7 +1035,7 @@ draw.inspect &raquo;
 
       <h4>Example 3</h4>
 
-      <p><code>gc.bezier(100,150, 25,50, 475,50, 400,150)</code></p>
+      <pre>gc.bezier(100,150, 25,50, 475,50, 400,150)</pre>
 
       <p>
         <a href="javascript:popup('cbezier3.rb.html')"><img src="ex/cbezier3.gif" alt="bezier example 3" title="Click to see the example script" /></a>
@@ -1046,7 +1043,7 @@ draw.inspect &raquo;
 
       <h4>Example 4</h4>
 
-      <p><code>gc.bezier(20,180, 20,30, 320,330, 320,180)</code></p>
+      <pre>gc.bezier(20,180, 20,30, 320,330, 320,180)</pre>
 
       <p>
         <a href="javascript:popup('cbezier4.rb.html')"><img src="ex/cbezier4.gif" alt="bezier example 4" title="Click to see the example script" /></a>
@@ -1054,7 +1051,7 @@ draw.inspect &raquo;
 
       <h4>Example 5</h4>
 
-      <p><code>gc.bezier(20,120, 95,20, 245,20, 320,120)</code></p>
+      <pre>gc.bezier(20,120, 95,20, 245,20, 320,120)</pre>
 
       <p>
         <a href="javascript:popup('cbezier5.rb.html')"><img src="ex/cbezier5.gif" alt="bezier example 5" title="Click to see the example script" /></a>
@@ -1062,9 +1059,7 @@ draw.inspect &raquo;
 
       <h4>Example 6</h4>
 
-      <p>
-        <code>gc.bezier(50,150, 50,50, 200,50, 200,150, 200,250, 350,250, 350,150)</code>
-      </p>
+      <pre>gc.bezier(50,150, 50,50, 200,50, 200,150, 200,250, 350,250, 350,150)</pre>
 
       <p>
         <a href="javascript:popup('cbezier6.rb.html')"><img src="ex/cbezier6.gif" alt="bezier example 6" title="Click to see the example script" /></a>
@@ -1102,7 +1097,7 @@ draw.inspect &raquo;
 
       <h4>Example</h4>
 
-      <p><code>gc.circle(125,125, 25,125)</code></p>
+      <pre>gc.circle(125,125, 25,125)</pre>
 
       <p>
         <a href="javascript:popup('circle.rb.html')"><img src="ex/circle.gif" alt="circle example" title="Click to see the example script" /></a>
@@ -1253,9 +1248,10 @@ gc.draw
       <p>self</p>
 
       <h4>Example</h4>
+
       <pre>
-  draw.border_color = 'black'
-  draw.color(x, y, FillToBorderMethod)
+draw.border_color = 'black'
+draw.color(x, y, FillToBorderMethod)
 </pre
       >
 
@@ -1344,10 +1340,8 @@ gc.draw
       <p>self</p>
 
       <h4>Example</h4>
-      <pre>
-draw.decorate(LineThroughDecoration)
-</pre
-      >
+
+      <pre>draw.decorate(LineThroughDecoration)</pre>
     </div>
 
     <div class="sig">
@@ -1422,7 +1416,7 @@ draw.decorate(LineThroughDecoration)
 
       <h4>Example</h4>
 
-      <p><code>draw.ellipse(180,125, 150,75, 0, 270)</code></p>
+      <pre>draw.ellipse(180,125, 150,75, 0, 270)</pre>
 
       <p>
         <a href="javascript:popup('ellipse.rb.html')"><img src="ex/ellipse.gif" alt="ellipse example" title="Click to see the example script" /></a>
@@ -1473,10 +1467,8 @@ draw.decorate(LineThroughDecoration)
       <p>self</p>
 
       <h4>Example</h4>
-      <pre>
-  draw.fill('red')
-</pre
-      >
+
+      <pre>draw.fill('red')</pre>
 
       <h4>Aliases</h4>
 
@@ -1796,13 +1788,12 @@ gc.kerning(5)
 
       <h4>Example</h4>
 
-      <p>
-        <code
-          >gc.line(50,50, 50,200)<br />
-          gc.line(50,200, 200,200)<br />
-          gc.line(200,200, 50,50)</code
-        >
-      </p>
+      <pre>
+gc.line(50,50, 50,200)
+gc.line(50,200, 200,200)
+gc.line(200,200, 50,50)
+</pre
+      >
 
       <p>
         <a href="javascript:popup('line.rb.html')"><img src="ex/line.gif" alt="line example" title="Click to see the example script" /></a>
@@ -1953,12 +1944,11 @@ gc.kerning(5)
 
       <h4>Example 1 - Arcs</h4>
 
-      <p>
-        <code
-          >gc.path('M110,100 h-75 a75,75 0 1,0 75,-75 z')<br />
-          gc.path('M97.5,87.5 v-75 a75,75 0 0,0 -75,75 z')</code
-        >
-      </p>
+      <pre>
+gc.path('M110,100 h-75 a75,75 0 1,0 75,-75 z')
+gc.path('M97.5,87.5 v-75 a75,75 0 0,0 -75,75 z')
+</pre
+      >
 
       <p>
         <a href="javascript:popup('arcpath.rb.html')"><img src="ex/arcpath.gif" alt="path example 1" title="Click to see the example script" /></a>
@@ -1966,7 +1956,7 @@ gc.kerning(5)
 
       <h4>Example 2 - Quadratic bezier</h4>
 
-      <p><code>gc.path("M20,150 Q120,25 220,150 T420,150")</code></p>
+      <pre>gc.path("M20,150 Q120,25 220,150 T420,150")</pre>
 
       <p>
         <a href="javascript:popup('qbezierpath.rb.html')"><img src="ex/qbezierpath.gif" alt="path example 2" title="Click to see the example script" /></a>
@@ -1974,9 +1964,7 @@ gc.kerning(5)
 
       <h4>Example 3 - Cubic bezier</h4>
 
-      <p>
-        <code>gc.path("M20,120 C20,20 170,20 170,120 S320,220 320,120")</code>
-      </p>
+      <pre>gc.path("M20,120 C20,20 170,20 170,120 S320,220 320,120")</pre>
 
       <p>
         <a href="javascript:popup('path.rb.html')"><img src="ex/path.gif" alt="path example 3" title="Click to see the example script" /></a>
@@ -2242,7 +2230,7 @@ gc.kerning(5)
 
       <h4>Example</h4>
 
-      <p><code>gc.rectangle(20,20, 280,180)</code></p>
+      <pre>gc.rectangle(20,20, 280,180)</pre>
       <a href="javascript:popup('rectangle.rb.html')"><img src="ex/rectangle.gif" alt="rectangle example" title="Click to see the example script" /></a>
     </div>
 
@@ -2267,7 +2255,7 @@ gc.kerning(5)
 
       <h4>Example</h4>
 
-      <p><code>gc.rotate(45)</code></p>
+      <pre>gc.rotate(45)</pre>
 
       <p>
         <a href="javascript:popup('rotate.rb.html')"><img src="ex/rotate.gif" alt="rotate example" title="Click to see the example script" /></a>
@@ -2313,7 +2301,7 @@ gc.kerning(5)
 
       <h4>Example</h4>
 
-      <p><code>gc.roundrectangle(20,20, 280,180, 8, 8)</code></p>
+      <pre>gc.roundrectangle(20,20, 280,180, 8, 8)</pre>
 
       <p>
         <a href="javascript:popup('roundrect.rb.html')"><img src="ex/roundrect.gif" alt="roundrectangle example" title="Click to see the example script" /></a>
@@ -2368,7 +2356,7 @@ gc.kerning(5)
 
       <h4>Example</h4>
 
-      <p><code>gc.skewx(30)</code></p>
+      <pre>gc.skewx(30)</pre>
 
       <p>
         <a href="javascript:popup('skewx.rb.html')"><img src="ex/skewx.gif" alt="skewx example" title="Click to see the example script" /></a>
@@ -2400,7 +2388,7 @@ gc.kerning(5)
 
       <h4>Example</h4>
 
-      <p><code>gc.skewy(30)</code></p>
+      <pre>gc.skewy(30)</pre>
 
       <p>
         <a href="javascript:popup('skewy.rb.html')"><img src="ex/skewy.gif" alt="skewy example" title="Click to see the example script" /></a>
@@ -2630,6 +2618,7 @@ gc.kerning(5)
       <p>self</p>
 
       <h4>Example</h4>
+
       <pre>
 draw.stroke_opacity(0.4)
 draw.stroke_opacity('40%')
@@ -2855,7 +2844,7 @@ gc.text(10,10, %q/{"What's up?"}/) &raquo; "What's up?"
 
       <h4>Example</h4>
 
-      <p><code>gc.translate(125, 125)</code></p>
+      <pre>gc.translate(125, 125)</pre>
 
       <p>
         <a href="javascript:popup('translate.rb.html')"><img src="ex/translate.gif" alt="translate example" title="Click to see the example script" /></a>
