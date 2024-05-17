@@ -258,7 +258,7 @@ exit
 require "rmagick"
 
 # Create a 100x100 red image.
-f = MagickImage.new(100,100) { |options| options.background_color = "red" }
+f = Magick::Image.new(100,100) { |options| options.background_color = "red" }
 f.display
 exit
 </pre
