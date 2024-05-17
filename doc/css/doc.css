@@ -211,7 +211,7 @@ ul {
 .example,
 .desc pre {
   padding: 0 0.5em 1em 0.5em; /* Tell Konq to not pad at the top. */
-  padd\ing-top: 1em; /* Tell everybody else to use 1em padding at the top. */
+  padding-top: 1em; /* Tell everybody else to use 1em padding at the top. */
   background-color: #f8f8f8;
   border-left: thin dotted black;
   border-top: thin dotted black;

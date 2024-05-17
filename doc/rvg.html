@@ -16,7 +16,6 @@
     </script>
     <style type="text/css">
       /*<![CDATA[*/
-        }
       /*]]>*/
     </style>
   </head>
@@ -212,10 +211,8 @@
       </p>
 
       <h4>Example</h4>
-      <pre>
-canvas.background_fill = 'white'
-</pre
-      >
+
+      <pre>canvas.background_fill = 'white'</pre>
 
       <h4>Returns</h4>
       <span class="arg">value</span>
@@ -240,6 +237,7 @@ canvas.background_fill = 'white'
       </p>
 
       <h4>Example</h4>
+
       <pre>
 canvas.background_fill = 'white'
 canvas.background_fill_opacity = 0.50
@@ -268,10 +266,8 @@ canvas.background_fill_opacity = 0.50
       </p>
 
       <h4>Example</h4>
-      <pre>
-canvas.background_image = Magick::Image.read('myBackground.gif').first
-</pre
-      >
+
+      <pre>canvas.background_image = Magick::Image.read('myBackground.gif').first</pre>
 
       <h4>Returns</h4>
       <span class="arg">image</span>
@@ -296,10 +292,8 @@ canvas.background_image = Magick::Image.read('myBackground.gif').first
       <p>Specify an <a href="struct.html#fill">Fill object</a> to fill the canvas background. This attribute has no effect on nested RVG objects.</p>
 
       <h4>Example</h4>
-      <pre>
-canvas.background_pattern = Magick::GradientFill.new(0, 0, 0, 100, "#900", "#000")
-</pre
-      >
+
+      <pre>canvas.background_pattern = Magick::GradientFill.new(0, 0, 0, 100, "#900", "#000")</pre>
 
       <h4>Returns</h4>
       <p>a Fill object</p>
@@ -344,6 +338,7 @@ canvas.background_pattern = Magick::GradientFill.new(0, 0, 0, 100, "#900", "#000
       </dl>
 
       <h4>Example</h4>
+
       <pre>
 canvas.background_image = Magick::Image.read('myBackground.gif').first
 canvas.background_position = :scaled
@@ -524,6 +519,7 @@ canvas.background_position = :scaled
       <p>An image</p>
 
       <h4>Example</h4>
+
       <pre>
 img = rvg.draw
 img.write('myDrawing.jpg')
@@ -850,17 +846,16 @@ img.write('myDrawing.jpg')
         RVG supports a subset of the unit identifiers defined by the SVG specification. In RVG, unit identifiers are methods in the Float and Integer classes.
         The units are (for the most part) defined in terms of "dots per inch," accordingly, the unit identifier methods are added only if the value
       </p>
-      <pre>
-    Magick::RVG.dpi = NN
-</pre
-      >
+
+      <pre>Magick::RVG.dpi = NN</pre>
 
       <p>is defined, where NN is the number of "dots" (pixels) per inch you wish to use. (Hint: 90 is a good default.)</p>
 
       <p>For example, to specify a length of 10 inches, you can use</p>
+
       <pre>
-    Magick::RVG.dpi = 90
-    length = 10.in  # =&gt; 900 pixels
+Magick::RVG.dpi = 90
+length = 10.in  # =&gt; 900 pixels
 </pre
       >
 

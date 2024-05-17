@@ -156,6 +156,7 @@
       </p>
 
       <h4>Example</h4>
+
       <pre>
 i = Magick::ImageList.new
 i = Magick::ImageList.new("Button_A.gif", "Cheetah.jpg")
@@ -190,10 +191,8 @@ i = Magick::ImageList.new("Button_A.gif", "Cheetah.jpg")
       <p>self</p>
 
       <h4>Example</h4>
-      <pre>
-ilist.delay = 20 # delay 1/5 of a second between images.
-</pre
-      >
+
+      <pre>ilist.delay = 20 # delay 1/5 of a second between images.</pre>
 
       <h4>See also</h4>
 
@@ -225,10 +224,8 @@ ilist.delay = 20 # delay 1/5 of a second between images.
       <p>self</p>
 
       <h4>Example</h4>
-      <pre>
-ilist.iterations = 10
-</pre
-      >
+
+      <pre>ilist.iterations = 10</pre>
     </div>
 
     <div class="sig">
@@ -243,6 +240,7 @@ ilist.iterations = 10
       <p>Returns the number of images in the imagelist.</p>
 
       <h4>Example</h4>
+
       <pre>
 i = Magick::ImageList.new("images/Button_A.gif", "images/Button_B.gif")
 i.length &raquo; 2
@@ -265,6 +263,7 @@ i.length &raquo; 2
       <p>Get/set the current <em>scene number</em>. The scene number indicates the image to which <a href="image1.html">Image</a> methods are sent.</p>
 
       <h4>Example</h4>
+
       <pre>
 ilist.scene = 10
 ilist.scene &raquo; 10
@@ -287,10 +286,8 @@ ilist.scene &raquo; 10
       </p>
 
       <h4>Example</h4>
-      <pre>
-ilist.ticks_per_second = 1000
-</pre
-      >
+
+      <pre>ilist.ticks_per_second = 1000</pre>
     </div>
 
     <h2 class="methods">instance methods</h2>
@@ -378,6 +375,7 @@ ilist.ticks_per_second = 1000
       <h4>Example</h4>
 
       <p>Add noise to a model image. Append the resulting image to the imagelist in "example". (See the <code>demo.rb</code> example.)</p>
+
       <pre>
 example = Magick::ImageList.new
 model = Magick::ImageList.new "model.miff"
@@ -447,6 +445,7 @@ example &lt;&lt; model.add_noise Magick::LaplacisanNoise
       <p>self</p>
 
       <h4>Example</h4>
+
       <pre>
 ilist.animate
 ilist.animate { |options| options.server_name = "other:0.0" }
@@ -692,10 +691,8 @@ ilist.animate { |options| options.server_name = "other:0.0" }
       <p>An imagelist</p>
 
       <h4>Example</h4>
-      <pre>
-imagelist2 = imagelist1.copy
-</pre
-      >
+
+      <pre>imagelist2 = imagelist1.copy</pre>
 
       <h4>See also</h4>
 
@@ -888,6 +885,7 @@ imagelist2 = imagelist1.copy
       </p>
 
       <h4>Example</h4>
+
       <pre>
 require "rmagick"
 
@@ -966,6 +964,7 @@ ilist.display
       <p>The image created by the expression.</p>
 
       <h4>Example</h4>
+
       <pre>
 # Produce a navy blue image from a black image
 imgl = Magick::ImageList.new
@@ -1008,6 +1007,7 @@ res = imgl.fx('1/2', Magick::BlueChannel)
       </p>
 
       <h4>Example</h4>
+
       <pre>
 i = Magick::ImageList.new("images/Button_A.gif", "images/Button_B.gif")
 &raquo; [images/Button_A.gif GIF 127x120+0+0 PseudoClass 256c 8-bit 18136b
@@ -1554,6 +1554,7 @@ Magick::MagickLayerMethod.values {|v| puts v}
       <p>self</p>
 
       <h4>Example</h4>
+
       <pre>
 ilist = Magick::ImageList.new
 ilist.ping "Button_A.gif"
@@ -1698,6 +1699,7 @@ puts "The image has #{i.columns} columns and #{i.rows} rows." &raquo;
       <p>self</p>
 
       <h4>Example</h4>
+
       <pre>
 i = Magick::ImageList.new
 number = '0'
@@ -1809,6 +1811,7 @@ end
       <p>The blob in the form of a string</p>
 
       <h4>Example</h4>
+
       <pre>
 i = Magick::ImageList.new "birthday.png"
 s = i.to_blob &raquo; a string representing the image.
@@ -1890,6 +1893,7 @@ s = i.to_blob &raquo; a string representing the image.
       <p>self, or <code>nil</code> if the format cannot be determined.</p>
 
       <h4>Example</h4>
+
       <pre>
 # The PNG format does not support multi-frame files,
 # so each image is written to a separate file.

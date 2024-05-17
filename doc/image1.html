@@ -341,6 +341,7 @@
       <p>A new image.</p>
 
       <h4>Example</h4>
+
       <pre>
 img = Magick::Image.capture { |options|
   options.filename = "root"
@@ -445,10 +446,8 @@ img = Magick::Image.capture { |options|
       <p>An image constructed from the pixel data.</p>
 
       <h4>Example</h4>
-      <pre>
-image = Magick::Image.constitute(width, height, "RGB", pixels)
-</pre
-      >
+
+      <pre>image = Magick::Image.constitute(width, height, "RGB", pixels)</pre>
 
       <h4>See also</h4>
 
@@ -535,6 +534,7 @@ image = Magick::Image.constitute(width, height, "RGB", pixels)
       <p>A new image.</p>
 
       <h4>Example</h4>
+
       <pre>
 img = Magick::Image.new(256, 64) { |options|
   options.background_color = 'red'
@@ -581,6 +581,7 @@ img = Magick::Image.new(256, 64) { |options|
       <p>An array containing 0 or more images.</p>
 
       <h4>Example</h4>
+
       <pre>
 cheetah = Magick::Image.ping("Cheetah.jpg") &raquo; [Cheetah.jpg JPEG 1024x768 DirectClass 8-bit 101684b]
 p cheetah[0].rows &raquo; 768
@@ -632,6 +633,7 @@ p cheetah[0].columns &raquo; 1024
       </p>
 
       <h4>Example</h4>
+
       <pre>
 animated = Magick::Image.read("animated.gif") &raquo; [animated.gif GIF 127x120+0+0 PseudoClass 256c 8-bit 54395b
                                               &raquo;  animated.gif[1] GIF 127x120+0+0 PseudoClass 256c 8-bit 54395b,
@@ -683,6 +685,7 @@ animated = Magick::Image.read("animated.gif") &raquo; [animated.gif GIF 127x120+
       </p>
 
       <h4>Example</h4>
+
       <pre>
 content = "R0lGODlhnAEuAferAAAAAAcIBggJBgw..."
 img = Magick::Image.read_inline(content)
@@ -725,10 +728,8 @@ img = Magick::Image.read_inline(content)
       <p>The value of the property.</p>
 
       <h4>Example</h4>
-      <pre>
- mom['Label'] = 'My Mother'
-</pre
-      >
+
+      <pre>mom['Label'] = 'My Mother'</pre>
 
       <h4>See also</h4>
 
@@ -1345,10 +1346,8 @@ img = Magick::Image.read_inline(content)
       <p>self</p>
 
       <h4>Example</h4>
-      <pre>
-img.add_profile('my_cmyk.icm')
-</pre
-      >
+
+      <pre>img.add_profile('my_cmyk.icm')</pre>
 
       <h4>See also</h4>
 
@@ -1740,7 +1739,7 @@ img.add_profile('my_cmyk.icm')
 
       <h4>Example</h4>
 
-      <p><code>bilevel_channel(2*QuantumRange/3, RedChannel)</code></p>
+      <pre>bilevel_channel(2*QuantumRange/3, RedChannel)</pre>
 
       <p class="rollover">
         <a href="javascript:popup('bilevel_channel.rb.html')"
@@ -2162,6 +2161,7 @@ img.add_profile('my_cmyk.icm')
       <p>The value returned by the block</p>
 
       <h4>Example</h4>
+
       <pre>
 mona = Magick::Image.read('MonaLisa.jpg').first
 mona.change_geometry!('320x240') { |cols, rows, img|
@@ -2853,10 +2853,8 @@ mona.change_geometry!('320x240') { |cols, rows, img|
       <p>A new image</p>
 
       <h4>Example</h4>
-      <pre>
-f.color_point(50,50, 'red')
-</pre
-      >
+
+      <pre>f.color_point(50,50, 'red')</pre>
 
       <h4>See also</h4>
 
@@ -2889,10 +2887,8 @@ f.color_point(50,50, 'red')
       self
 
       <h4>Example</h4>
-      <pre>
-f.color_reset!(red)
-</pre
-      >
+
+      <pre>f.color_reset!(red)</pre>
 
       <h4>See also</h4>
 
@@ -3375,6 +3371,7 @@ f.color_reset!(red)
       self
 
       <h4>Example</h4>
+
       <pre>
 f = Magick::Image.read('cbezier1.gif').first &raquo; cbezier1.gif GIF 500x350+0+0 PseudoClass 128c 8-bit 177503b
 f.colors &raquo; 128
@@ -3590,10 +3587,8 @@ f.colors &raquo; 108
       Returns a copy of the image. The tainted state of the original is propagated to the copy.
 
       <h4>Example</h4>
-      <pre>
-f2 = f.copy
-</pre
-      >
+
+      <pre>f2 = f.copy</pre>
 
       <h4>See also</h4>
 
@@ -3871,10 +3866,8 @@ cropped = img.crop(x, y, width, height, true)
       <p>A new image</p>
 
       <h4>Example</h4>
-      <pre>
-deciphered_img = img.decipher("magic word")
-</pre
-      >
+
+      <pre>deciphered_img = img.decipher("magic word")</pre>
 
       <h4>Magick API</h4>
 
@@ -3978,10 +3971,8 @@ deciphered_img = img.decipher("magic word")
       <p>A new image</p>
 
       <h4>Example</h4>
-      <pre>
-img2 = img.deskew
-</pre
-      >
+
+      <pre>img2 = img.deskew</pre>
 
       <h4>Magick API</h4>
       DeskewImage (available in 6.4.2)
@@ -4158,10 +4149,8 @@ img2 = img.deskew
       An array
 
       <h4>Example</h4>
-      <pre>
-pixels = f.dispatch(0, 0, f.columns, f.rows, "RGB")
-</pre
-      >
+
+      <pre>pixels = f.dispatch(0, 0, f.columns, f.rows, "RGB")</pre>
 
       <h4>See also</h4>
 
@@ -4344,7 +4333,7 @@ pixels = f.dispatch(0, 0, f.columns, f.rows, "RGB")
         >.
       </p>
 
-      <p><code>bgnd.dissolve(overlay, 0.50, 1.0)</code></p>
+      <pre>bgnd.dissolve(overlay, 0.50, 1.0)</pre>
 
       <p class="rollover">
         <a href="javascript:popup('dissolve.rb.html')"
@@ -4466,6 +4455,7 @@ pixels = f.dispatch(0, 0, f.columns, f.rows, "RGB")
       <p>A new image</p>
 
       <h4>Example</h4>
+
       <pre>
 result = img.distort(Magick::ScaleRotateTranslateDistortion, [0]) do |options|
   options.define "distort:viewport", "44x44+15+0"
