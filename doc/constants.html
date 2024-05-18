@@ -54,6 +54,12 @@
 
       /*]]>*/
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+      hljs.configure({ cssSelector: "pre" });
+      hljs.highlightAll();
+    </script>
   </head>
 
   <body>
@@ -190,11 +196,8 @@
       <dd>
         If <code>true</code>, RMagick is using Ruby managed memory for all allocations. If <code>false</code>, RMagick allocates memory for objects directly
         from the operating system. You can enable RMagick to use Ruby managed memory (when built with ImageMagick 6.4.0-11 and later) by setting
-        <pre>
 
-RMAGICK_ENABLE_MANAGED_MEMORY = true
-</pre
-        >
+        <pre class="language-ruby">RMAGICK_ENABLE_MANAGED_MEMORY = true</pre>
         <em>before</em> requiring RMagick.
       </dd>
 
@@ -416,10 +419,7 @@ RMAGICK_ENABLE_MANAGED_MEMORY = true
     </p>
 
     <p>Each version of ImageMagick defines a subset of the colorspaces listed below. To list the subset supported by your version, issue the command:</p>
-    <pre class="example">
-ruby -r rmagick -e"Magick::ColorspaceType.values {|cs| puts cs}"
-</pre
-    >
+    <pre class="example language-ruby">ruby -r rmagick -e"Magick::ColorspaceType.values {|cs| puts cs}"</pre>
 
     <dl>
       <dt>UndefinedColorspace</dt>

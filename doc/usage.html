@@ -82,6 +82,12 @@
 
       /*]]>*/
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+      hljs.configure({ cssSelector: "pre" });
+      hljs.highlightAll();
+    </script>
   </head>
 
   <body>
@@ -119,7 +125,7 @@
       >
       it on your monitor
     </p>
-    <pre class="example">
+    <pre class="example language-ruby">
 require "rmagick"
 
 cat = Magick::ImageList.new("Cheetah.jpg")
@@ -173,7 +179,7 @@ exit
     </p>
 
     <p>Going back to the example, let's make one modification.</p>
-    <pre class="example">
+    <pre class="example language-ruby">
 require "rmagick"
 
 cat = Magick::ImageList.new("Cheetah.jpg")
@@ -197,7 +203,7 @@ exit
     </p>
 
     <p>Here's how to write the small cheetah to a file in GIF format.</p>
-    <pre class="example">
+    <pre class="example language-ruby">
 require "rmagick"
 
 cat = Magick::ImageList.new("Cheetah.jpg")
@@ -254,7 +260,7 @@ exit
       calling attribute setter methods defined in the parameter object's class. For example, you can set the background color of a new image to red with the
       <code>background_color=</code> method, as shown here:
     </p>
-    <pre class="example">
+    <pre class="example language-ruby">
 require "rmagick"
 
 # Create a 100x100 red image.
@@ -291,7 +297,7 @@ exit
       For example, the following program reads three GIF files and then uses
       <code>ImageList#write</code> to combine all the images in those files (remember, each input file can contain multiple images) into one animated GIF file.
     </p>
-    <pre class="example">
+    <pre class="example language-ruby">
 require "rmagick"
 
 anim = Magick::ImageList.new("start.gif", "middle.gif", "finish.gif")
@@ -1266,7 +1272,7 @@ exit
     </p>
 
     <p>As an example, here's the section of the Ruby program that created the circle in the center of the above image.</p>
-    <pre class="example">
+    <pre class="example language-ruby">
 require "rmagick"
 
 canvas = Magick::ImageList.new
@@ -1326,7 +1332,7 @@ circle.draw(canvas)
     <div id="rubyname">
       <a href="javascript:popup('rubyname.rb.html')"><img src="ex/rubyname.gif" alt="annotate example" title="Click to see the example script" /></a>
     </div>
-    <pre class="example">
+    <pre class="example language-ruby">
 require "rmagick"
 
 # Demonstrate the annotate method

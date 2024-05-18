@@ -35,6 +35,12 @@
 
       /*]]>*/
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+      hljs.configure({ cssSelector: "pre" });
+      hljs.highlightAll();
+    </script>
   </head>
 
   <body>
@@ -246,7 +252,7 @@
       </p>
 
       <p>For example,</p>
-      <pre>
+      <pre class="language-ruby">
 img = Magick::Image.new(10,10) do |options|
   options['user'] = __FILE__ + ':' + __LINE__.to_s
 end &raquo; 10x10 DirectClass 16-bit user:test.rb:3
@@ -267,7 +273,7 @@ end &raquo; 10x10 DirectClass 16-bit user:test.rb:3
 
       <h4>Example</h4>
 
-      <pre>options["tiff", "bits-per-sample"] = 2</pre>
+      <pre class="language-ruby">options["tiff", "bits-per-sample"] = 2</pre>
 
       <h4>Magick API</h4>
 
@@ -307,7 +313,7 @@ end &raquo; 10x10 DirectClass 16-bit user:test.rb:3
 
       <h4>Example</h4>
 
-      <pre>options["tiff", "bits-per-sample"] &raquo; 2</pre>
+      <pre class="language-ruby">options["tiff", "bits-per-sample"] &raquo; 2</pre>
 
       <h4>Magick API</h4>
 
@@ -376,7 +382,7 @@ end &raquo; 10x10 DirectClass 16-bit user:test.rb:3
 
       <h4>Example</h4>
 
-      <pre>options.define("tiff", "bits-per-sample", 2)</pre>
+      <pre class="language-ruby">options.define("tiff", "bits-per-sample", 2)</pre>
 
       <h4>Magick API</h4>
 
@@ -415,7 +421,7 @@ end &raquo; 10x10 DirectClass 16-bit user:test.rb:3
 
       <h4>Example</h4>
 
-      <pre>options.undefine("tiff", "bits-per-sample")</pre>
+      <pre class="language-ruby">options.undefine("tiff", "bits-per-sample")</pre>
     </div>
 
     <h2 class="methods">attribute methods</h2>
@@ -509,7 +515,7 @@ end &raquo; 10x10 DirectClass 16-bit user:test.rb:3
       <h4>Description</h4>
 
       <p>When used with <a href="image1.html#read">Image.read</a>, assigns a caption to an image. The caption is an image property:</p>
-      <pre>
+      <pre class="language-ruby">
 img = Magick::Image.read("xc:white") do |options|
   options.caption = "a new caption"
   options.size = "20x20"

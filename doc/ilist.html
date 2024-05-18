@@ -10,7 +10,12 @@
     <meta name="Copyright" content="Copyright (C) 2005 by Timothy P. Hunter" />
     <link rel="stylesheet" type="text/css" href="css/doc.css" />
     <script type="text/javascript" src="scripts/doc.js"></script>
-    <script type="text/javascript" src="scripts/doc.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+      hljs.configure({ cssSelector: "pre" });
+      hljs.highlightAll();
+    </script>
   </head>
 
   <body>
@@ -157,7 +162,7 @@
 
       <h4>Example</h4>
 
-      <pre>
+      <pre class="language-ruby">
 i = Magick::ImageList.new
 i = Magick::ImageList.new("Button_A.gif", "Cheetah.jpg")
 </pre
@@ -192,7 +197,7 @@ i = Magick::ImageList.new("Button_A.gif", "Cheetah.jpg")
 
       <h4>Example</h4>
 
-      <pre>ilist.delay = 20 # delay 1/5 of a second between images.</pre>
+      <pre class="language-ruby">ilist.delay = 20 # delay 1/5 of a second between images.</pre>
 
       <h4>See also</h4>
 
@@ -225,7 +230,7 @@ i = Magick::ImageList.new("Button_A.gif", "Cheetah.jpg")
 
       <h4>Example</h4>
 
-      <pre>ilist.iterations = 10</pre>
+      <pre class="language-ruby">ilist.iterations = 10</pre>
     </div>
 
     <div class="sig">
@@ -241,7 +246,7 @@ i = Magick::ImageList.new("Button_A.gif", "Cheetah.jpg")
 
       <h4>Example</h4>
 
-      <pre>
+      <pre class="language-ruby">
 i = Magick::ImageList.new("images/Button_A.gif", "images/Button_B.gif")
 i.length &raquo; 2
 </pre
@@ -264,7 +269,7 @@ i.length &raquo; 2
 
       <h4>Example</h4>
 
-      <pre>
+      <pre class="language-ruby">
 ilist.scene = 10
 ilist.scene &raquo; 10
 </pre
@@ -287,7 +292,7 @@ ilist.scene &raquo; 10
 
       <h4>Example</h4>
 
-      <pre>ilist.ticks_per_second = 1000</pre>
+      <pre class="language-ruby">ilist.ticks_per_second = 1000</pre>
     </div>
 
     <h2 class="methods">instance methods</h2>
@@ -376,7 +381,7 @@ ilist.scene &raquo; 10
 
       <p>Add noise to a model image. Append the resulting image to the imagelist in "example". (See the <code>demo.rb</code> example.)</p>
 
-      <pre>
+      <pre class="language-ruby">
 example = Magick::ImageList.new
 model = Magick::ImageList.new "model.miff"
 example &lt;&lt; model.add_noise Magick::LaplacisanNoise
@@ -446,7 +451,7 @@ example &lt;&lt; model.add_noise Magick::LaplacisanNoise
 
       <h4>Example</h4>
 
-      <pre>
+      <pre class="language-ruby">
 ilist.animate
 ilist.animate { |options| options.server_name = "other:0.0" }
 </pre
@@ -692,7 +697,7 @@ ilist.animate { |options| options.server_name = "other:0.0" }
 
       <h4>Example</h4>
 
-      <pre>imagelist2 = imagelist1.copy</pre>
+      <pre class="language-ruby">imagelist2 = imagelist1.copy</pre>
 
       <h4>See also</h4>
 
@@ -886,7 +891,7 @@ ilist.animate { |options| options.server_name = "other:0.0" }
 
       <h4>Example</h4>
 
-      <pre>
+      <pre class="language-ruby">
 require "rmagick"
 
 f = File.open('Cheetah.jpg')
@@ -965,7 +970,7 @@ ilist.display
 
       <h4>Example</h4>
 
-      <pre>
+      <pre class="language-ruby">
 # Produce a navy blue image from a black image
 imgl = Magick::ImageList.new
 imgl &lt;&lt; Magick::Image.new(64, 64) { |options| options.background_color = 'black'}
@@ -1008,7 +1013,7 @@ res = imgl.fx('1/2', Magick::BlueChannel)
 
       <h4>Example</h4>
 
-      <pre>
+      <pre class="language-ruby">
 i = Magick::ImageList.new("images/Button_A.gif", "images/Button_B.gif")
 &raquo; [images/Button_A.gif GIF 127x120+0+0 PseudoClass 256c 8-bit 18136b
 images/Button_B.gif GIF 127x120+0+0 PseudoClass 256c 8-bit 5157b]
@@ -1095,15 +1100,9 @@ scene=1
           with the <code>x</code> and <code>y</code>
           attributes. The values are in pixels. For example, to surround each tile with a frame 20 pixels wide by 20 pixels high and a 4-pixel inner and outer
           bevel, use:
-          <pre>
-options.frame = "20x20+4+4"
-</pre
-          >
+          <pre class="language-ruby">options.frame = "20x20+4+4"</pre>
           or
-          <pre>
-options.frame = Magick::Geometry.new(20,20,4,4)
-</pre
-          >
+          <pre class="language-ruby">options.frame = Magick::Geometry.new(20,20,4,4)</pre>
         </dd>
 
         <dd>If the tile has a label, the label is included in the frame. The default is to have no frame.</dd>
@@ -1119,15 +1118,9 @@ options.frame = Magick::Geometry.new(20,20,4,4)
           specify the tile width and height with the <code>width</code> and <code>height</code> attributes, and the distance between rows and distance between
           columns by the <code>x</code> and <code>y</code>
           attributes. To create tiles that are 130 pixels wide and 194 pixels tall, with 10 pixels between each column of tiles and 5 between each row, use:
-          <pre>
-options.geometry = "130x194+10+5"
-</pre
-          >
+          <pre class="language-ruby">options.geometry = "130x194+10+5"</pre>
           or
-          <pre>
-options.geometry = Magick::Geometry.new(130, 194, 10, 5)
-</pre
-          >
+          <pre class="language-ruby">options.geometry = Magick::Geometry.new(130, 194, 10, 5)</pre>
           Both the geometry string and the <code>Geometry</code> object support flags that specify additional constraints. The default geometry is
           "120x120+4+3&gt;".
         </dd>
@@ -1157,10 +1150,7 @@ options.geometry = Magick::Geometry.new(130, 194, 10, 5)
         <dd>
           A image to be tiled on the background of the composite image. If present, this attribute overrides the background color. For example, to use
           ImageMagick's built-in "granite" texture as the background, use:
-          <pre>
-options.texture = Magick::Image.read("granite:").first
-</pre
-          >
+          <pre class="language-ruby">options.texture = Magick::Image.read("granite:").first</pre>
 
           <p>The default is no texture.</p>
         </dd>
@@ -1174,15 +1164,9 @@ options.texture = Magick::Image.read("granite:").first
           <code>"&lt;columns&gt;x&lt;rows&gt;"</code>. If the value is a Geometry object, specify the number of columns as the <code>width</code> attribute and
           the number of rows as the <code>height</code> attribute. <code>montage</code> always generates all the rows, leaving empty cells if necessary. To
           arrange the tiles 4 across and 10 down, use:
-          <pre>
-options.tile = "4x10"
-</pre
-          >
+          <pre class="language-ruby">options.tile = "4x10"</pre>
           or
-          <pre>
-options.tile = Magick::Geometry.new(4,10)
-</pre
-          >
+          <pre class="language-ruby">options.tile = Magick::Geometry.new(4,10)</pre>
 
           <p>The default is "6x4". If there are too many tiles to fit on one composite image, <code>montage</code> creates multiple composite images.</p>
         </dd>
@@ -1198,10 +1182,7 @@ options.tile = Magick::Geometry.new(4,10)
         To add labels to the tiles, assign a "Label" property to each image. The
         <code>montage</code> method will use the value of the property as the label. For example,
       </p>
-      <pre>
-img[2]['Label'] = "Mom's Birthday"
-</pre
-      >
+      <pre class="language-ruby">img[2]['Label'] = "Mom's Birthday"</pre>
 
       <p>See <a href="image1.html#aset">[]=</a>.</p>
 
@@ -1334,7 +1315,7 @@ img[2]['Label'] = "Mom's Birthday"
       <h4>Example</h4>
 
       <p>Create a square red image.</p>
-      <pre>
+      <pre class="language-ruby">
 ilist = Magick::ImageList.new
 ilist.new_image(100, 100) { |options| options.background_color = "red" }
 </pre
@@ -1499,16 +1480,10 @@ ilist.new_image(100, 100) { |options| options.background_color = "red" }
       </dl>
 
       <p>Some of these values are not supported by older versions of ImageMagick. To see what values are available, enter the following code in irb:</p>
-      <pre>
-Magick::ImageLayerMethod.values {|v| puts v}
-</pre
-      >
+      <pre class="language-ruby">Magick::ImageLayerMethod.values {|v| puts v}</pre>
 
       <p>In releases of ImageMagick before 6.3.6, this type was called MagickLayerMethod, so you may need to use this instead:</p>
-      <pre>
-Magick::MagickLayerMethod.values {|v| puts v}
-</pre
-      >
+      <pre class="language-ruby">Magick::MagickLayerMethod.values {|v| puts v}</pre>
 
       <h4>Returns</h4>
 
@@ -1555,7 +1530,7 @@ Magick::MagickLayerMethod.values {|v| puts v}
 
       <h4>Example</h4>
 
-      <pre>
+      <pre class="language-ruby">
 ilist = Magick::ImageList.new
 ilist.ping "Button_A.gif"
 puts "The image has #{i.columns} columns and #{i.rows} rows." &raquo;
@@ -1700,7 +1675,7 @@ puts "The image has #{i.columns} columns and #{i.rows} rows." &raquo;
 
       <h4>Example</h4>
 
-      <pre>
+      <pre class="language-ruby">
 i = Magick::ImageList.new
 number = '0'
 4.times do
@@ -1812,7 +1787,7 @@ end
 
       <h4>Example</h4>
 
-      <pre>
+      <pre class="language-ruby">
 i = Magick::ImageList.new "birthday.png"
 s = i.to_blob &raquo; a string representing the image.
 </pre
@@ -1894,7 +1869,7 @@ s = i.to_blob &raquo; a string representing the image.
 
       <h4>Example</h4>
 
-      <pre>
+      <pre class="language-ruby">
 # The PNG format does not support multi-frame files,
 # so each image is written to a separate file.
 i = Magick::ImageList.new "animated.gif"

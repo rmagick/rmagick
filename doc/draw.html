@@ -17,6 +17,12 @@
 
       /*]]>*/
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+      hljs.configure({ cssSelector: "pre" });
+      hljs.highlightAll();
+    </script>
   </head>
 
   <body>
@@ -291,7 +297,7 @@
 
       <h4>Example</h4>
 
-      <pre>gc = Magick::Draw.new</pre>
+      <pre class="language-ruby">gc = Magick::Draw.new</pre>
     </div>
 
     <h2 class="methods">instance methods</h2>
@@ -360,7 +366,7 @@
         This example is an excerpt of
         <a href="javascript:popup('colors.rb.html')" title="Click to see the example script">colors.rb</a>. Many other examples also use <code>annotate</code>.
       </p>
-      <pre>
+      <pre class="language-ruby">
 title.annotate(montage, 0,0,0,40, 'Named Colors') { |options|
   options.font_family = 'Helvetica'
   options.fill = 'white'
@@ -685,7 +691,7 @@ title.annotate(montage, 0,0,0,40, 'Named Colors') { |options|
           The pixel units may be converted to points (the standard resolution-independent measure used by the typesetting industry) via the following equation:
         </p>
 
-        <pre>size_points = (size_pixels * 72)/resolution</pre>
+        <pre class="language-ruby">size_points = (size_pixels * 72)/resolution</pre>
 
         <p class="imquote">where resolution is in dots-per-inch (DPI). This means that at the default image resolution, there is one pixel per point.</p>
 
@@ -809,7 +815,7 @@ title.annotate(montage, 0,0,0,40, 'Named Colors') { |options|
 
       <h4>Example</h4>
 
-      <pre>
+      <pre class="language-ruby">
 draw.inspect &raquo;
    "stroke red
     fill transparent
@@ -888,7 +894,7 @@ draw.inspect &raquo;
         This example changes the default coordinate system to the standard Cartesian coordinate system: the x-axis points rightward and the y-axis points up.
       </p>
 
-      <pre>gc.affine(1, 0, 0, -1, 0, max_y)</pre>
+      <pre class="language-ruby">gc.affine(1, 0, 0, -1, 0, max_y)</pre>
 
       <p>
         <a href="javascript:popup('affine.rb.html')" title="Click to see the example script"><img src="ex/affine.gif" alt="affine example" /></a>
@@ -931,7 +937,7 @@ draw.inspect &raquo;
 
       <h4>Example</h4>
 
-      <pre>draw.alpha(x, y, FillToBorderMethod)</pre>
+      <pre class="language-ruby">draw.alpha(x, y, FillToBorderMethod)</pre>
     </div>
 
     <div class="sig">
@@ -971,7 +977,7 @@ draw.inspect &raquo;
 
       <h4>Example</h4>
 
-      <pre>gc.arc(40, 50, 250, 180, 0, 270)</pre>
+      <pre class="language-ruby">gc.arc(40, 50, 250, 180, 0, 270)</pre>
 
       <p>
         <a href="javascript:popup('arc.rb.html')" title="Click to see the example script"><img src="ex/arc.gif" alt="arc example" /></a>
@@ -1019,7 +1025,7 @@ draw.inspect &raquo;
 
       <h4>Example 1</h4>
 
-      <pre>gc.bezier(20,120, 20,20, 320,20, 320,120)</pre>
+      <pre class="language-ruby">gc.bezier(20,120, 20,20, 320,20, 320,120)</pre>
 
       <p>
         <a href="javascript:popup('cbezier1.rb.html')"><img src="ex/cbezier1.gif" alt="bezier example 1" title="Click to see the example script" /></a>
@@ -1027,7 +1033,7 @@ draw.inspect &raquo;
 
       <h4>Example 2</h4>
 
-      <pre>gc.bezier(25,125, 100,25, 400,25, 325,125)</pre>
+      <pre class="language-ruby">gc.bezier(25,125, 100,25, 400,25, 325,125)</pre>
 
       <p>
         <a href="javascript:popup('cbezier2.rb.html')"><img src="ex/cbezier2.gif" alt="bezier example 2" title="Click to see the example script" /></a>
@@ -1035,7 +1041,7 @@ draw.inspect &raquo;
 
       <h4>Example 3</h4>
 
-      <pre>gc.bezier(100,150, 25,50, 475,50, 400,150)</pre>
+      <pre class="language-ruby">gc.bezier(100,150, 25,50, 475,50, 400,150)</pre>
 
       <p>
         <a href="javascript:popup('cbezier3.rb.html')"><img src="ex/cbezier3.gif" alt="bezier example 3" title="Click to see the example script" /></a>
@@ -1043,7 +1049,7 @@ draw.inspect &raquo;
 
       <h4>Example 4</h4>
 
-      <pre>gc.bezier(20,180, 20,30, 320,330, 320,180)</pre>
+      <pre class="language-ruby">gc.bezier(20,180, 20,30, 320,330, 320,180)</pre>
 
       <p>
         <a href="javascript:popup('cbezier4.rb.html')"><img src="ex/cbezier4.gif" alt="bezier example 4" title="Click to see the example script" /></a>
@@ -1051,7 +1057,7 @@ draw.inspect &raquo;
 
       <h4>Example 5</h4>
 
-      <pre>gc.bezier(20,120, 95,20, 245,20, 320,120)</pre>
+      <pre class="language-ruby">gc.bezier(20,120, 95,20, 245,20, 320,120)</pre>
 
       <p>
         <a href="javascript:popup('cbezier5.rb.html')"><img src="ex/cbezier5.gif" alt="bezier example 5" title="Click to see the example script" /></a>
@@ -1059,7 +1065,7 @@ draw.inspect &raquo;
 
       <h4>Example 6</h4>
 
-      <pre>gc.bezier(50,150, 50,50, 200,50, 200,150, 200,250, 350,250, 350,150)</pre>
+      <pre class="language-ruby">gc.bezier(50,150, 50,50, 200,50, 200,150, 200,250, 350,250, 350,150)</pre>
 
       <p>
         <a href="javascript:popup('cbezier6.rb.html')"><img src="ex/cbezier6.gif" alt="bezier example 6" title="Click to see the example script" /></a>
@@ -1097,7 +1103,7 @@ draw.inspect &raquo;
 
       <h4>Example</h4>
 
-      <pre>gc.circle(125,125, 25,125)</pre>
+      <pre class="language-ruby">gc.circle(125,125, 25,125)</pre>
 
       <p>
         <a href="javascript:popup('circle.rb.html')"><img src="ex/circle.gif" alt="circle example" title="Click to see the example script" /></a>
@@ -1123,7 +1129,7 @@ draw.inspect &raquo;
         <a href="#define_clip_path">define_clip_path</a> method. You must precede <code>clip_path</code> with <a href="#push">push</a> and terminate the
         primitives that draw within the clip path with <a href="#pop">pop</a>. For example,
       </p>
-      <pre>
+      <pre class="language-ruby">
 gc.push
 gc.clip_path('mypath')
 # drawing primitives within the clip path
@@ -1249,7 +1255,7 @@ gc.draw
 
       <h4>Example</h4>
 
-      <pre>
+      <pre class="language-ruby">
 draw.border_color = 'black'
 draw.color(x, y, FillToBorderMethod)
 </pre
@@ -1341,7 +1347,7 @@ draw.color(x, y, FillToBorderMethod)
 
       <h4>Example</h4>
 
-      <pre>draw.decorate(LineThroughDecoration)</pre>
+      <pre class="language-ruby">draw.decorate(LineThroughDecoration)</pre>
     </div>
 
     <div class="sig">
@@ -1416,7 +1422,7 @@ draw.color(x, y, FillToBorderMethod)
 
       <h4>Example</h4>
 
-      <pre>draw.ellipse(180,125, 150,75, 0, 270)</pre>
+      <pre class="language-ruby">draw.ellipse(180,125, 150,75, 0, 270)</pre>
 
       <p>
         <a href="javascript:popup('ellipse.rb.html')"><img src="ex/ellipse.gif" alt="ellipse example" title="Click to see the example script" /></a>
@@ -1468,7 +1474,7 @@ draw.color(x, y, FillToBorderMethod)
 
       <h4>Example</h4>
 
-      <pre>draw.fill('red')</pre>
+      <pre class="language-ruby">draw.fill('red')</pre>
 
       <h4>Aliases</h4>
 
@@ -1746,10 +1752,8 @@ draw.color(x, y, FillToBorderMethod)
         A numeric value. If positive, inserts additional space between letters. If negative, removes space between letters. The amount of space inserted or
         removed depends on the font but is usually measured in pixels. That is, the following call adds <em>about</em> 5 pixels between each letter.
       </p>
-      <pre>
-gc.kerning(5)
-</pre
-      >
+
+      <pre class="language-ruby">gc.kerning(5)</pre>
 
       <h4>Returns</h4>
 
@@ -1788,7 +1792,7 @@ gc.kerning(5)
 
       <h4>Example</h4>
 
-      <pre>
+      <pre class="language-ruby">
 gc.line(50,50, 50,200)
 gc.line(50,200, 200,200)
 gc.line(200,200, 50,50)
@@ -1944,7 +1948,7 @@ gc.line(200,200, 50,50)
 
       <h4>Example 1 - Arcs</h4>
 
-      <pre>
+      <pre class="language-ruby">
 gc.path('M110,100 h-75 a75,75 0 1,0 75,-75 z')
 gc.path('M97.5,87.5 v-75 a75,75 0 0,0 -75,75 z')
 </pre
@@ -1956,7 +1960,7 @@ gc.path('M97.5,87.5 v-75 a75,75 0 0,0 -75,75 z')
 
       <h4>Example 2 - Quadratic bezier</h4>
 
-      <pre>gc.path("M20,150 Q120,25 220,150 T420,150")</pre>
+      <pre class="language-ruby">gc.path("M20,150 Q120,25 220,150 T420,150")</pre>
 
       <p>
         <a href="javascript:popup('qbezierpath.rb.html')"><img src="ex/qbezierpath.gif" alt="path example 2" title="Click to see the example script" /></a>
@@ -1964,7 +1968,7 @@ gc.path('M97.5,87.5 v-75 a75,75 0 0,0 -75,75 z')
 
       <h4>Example 3 - Cubic bezier</h4>
 
-      <pre>gc.path("M20,120 C20,20 170,20 170,120 S320,220 320,120")</pre>
+      <pre class="language-ruby">gc.path("M20,120 C20,20 170,20 170,120 S320,220 320,120")</pre>
 
       <p>
         <a href="javascript:popup('path.rb.html')"><img src="ex/path.gif" alt="path example 3" title="Click to see the example script" /></a>
@@ -2230,7 +2234,7 @@ gc.path('M97.5,87.5 v-75 a75,75 0 0,0 -75,75 z')
 
       <h4>Example</h4>
 
-      <pre>gc.rectangle(20,20, 280,180)</pre>
+      <pre class="language-ruby">gc.rectangle(20,20, 280,180)</pre>
       <a href="javascript:popup('rectangle.rb.html')"><img src="ex/rectangle.gif" alt="rectangle example" title="Click to see the example script" /></a>
     </div>
 
@@ -2255,7 +2259,7 @@ gc.path('M97.5,87.5 v-75 a75,75 0 0,0 -75,75 z')
 
       <h4>Example</h4>
 
-      <pre>gc.rotate(45)</pre>
+      <pre class="language-ruby">gc.rotate(45)</pre>
 
       <p>
         <a href="javascript:popup('rotate.rb.html')"><img src="ex/rotate.gif" alt="rotate example" title="Click to see the example script" /></a>
@@ -2301,7 +2305,7 @@ gc.path('M97.5,87.5 v-75 a75,75 0 0,0 -75,75 z')
 
       <h4>Example</h4>
 
-      <pre>gc.roundrectangle(20,20, 280,180, 8, 8)</pre>
+      <pre class="language-ruby">gc.roundrectangle(20,20, 280,180, 8, 8)</pre>
 
       <p>
         <a href="javascript:popup('roundrect.rb.html')"><img src="ex/roundrect.gif" alt="roundrectangle example" title="Click to see the example script" /></a>
@@ -2356,7 +2360,7 @@ gc.path('M97.5,87.5 v-75 a75,75 0 0,0 -75,75 z')
 
       <h4>Example</h4>
 
-      <pre>gc.skewx(30)</pre>
+      <pre class="language-ruby">gc.skewx(30)</pre>
 
       <p>
         <a href="javascript:popup('skewx.rb.html')"><img src="ex/skewx.gif" alt="skewx example" title="Click to see the example script" /></a>
@@ -2388,7 +2392,7 @@ gc.path('M97.5,87.5 v-75 a75,75 0 0,0 -75,75 z')
 
       <h4>Example</h4>
 
-      <pre>gc.skewy(30)</pre>
+      <pre class="language-ruby">gc.skewy(30)</pre>
 
       <p>
         <a href="javascript:popup('skewy.rb.html')"><img src="ex/skewy.gif" alt="skewy example" title="Click to see the example script" /></a>
@@ -2619,7 +2623,7 @@ gc.path('M97.5,87.5 v-75 a75,75 0 0,0 -75,75 z')
 
       <h4>Example</h4>
 
-      <pre>
+      <pre class="language-ruby">
 draw.stroke_opacity(0.4)
 draw.stroke_opacity('40%')
 </pre
@@ -2697,7 +2701,7 @@ draw.stroke_opacity('40%')
       <h4>Quoting examples</h4>
 
       <p>The text to the right of &raquo; is the text that will be drawn.</p>
-      <pre>
+      <pre class="language-ruby">
 gc.text(10,10, '"Hello there!"') &raquo; Hello there!
 gc.text(10,10, "'What\'s up?'") &raquo; What's up?
 gc.text(10,10, %q/"What's up?"/) &raquo; What's up?
@@ -2844,7 +2848,7 @@ gc.text(10,10, %q/{"What's up?"}/) &raquo; "What's up?"
 
       <h4>Example</h4>
 
-      <pre>gc.translate(125, 125)</pre>
+      <pre class="language-ruby">gc.translate(125, 125)</pre>
 
       <p>
         <a href="javascript:popup('translate.rb.html')"><img src="ex/translate.gif" alt="translate example" title="Click to see the example script" /></a>
