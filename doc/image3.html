@@ -43,6 +43,12 @@
 
       /*]]>*/
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+      hljs.configure({ cssSelector: "pre" });
+      hljs.highlightAll();
+    </script>
   </head>
 
   <body>
@@ -365,10 +371,7 @@
       A <a href="struct.html#Pixel">Pixel</a> having the RGB values of the specified pixel.
 
       <h4>Example</h4>
-      <pre>
-old = image.pixel_color(20,40,"white")
-</pre
-      >
+      <pre class="language-ruby">old = image.pixel_color(20,40,"white")</pre>
 
       <h4>Magick API</h4>
 
@@ -405,7 +408,7 @@ old = image.pixel_color(20,40,"white")
         <a href="draw.html#stroke_eq">stroke</a>, <a href="draw.html#stroke_width_eq">stroke_width</a>,
         <a href="draw.html#text_antialias_eq">text_antialias</a>, <a href="draw.html#undercolor_eq">undercolor</a>.
       </p>
-      <pre>
+      <pre class="language-ruby">
 img.polaroid do |options|
   options.shadow_color = "gray40"
   options.pointsize = 12
@@ -845,10 +848,7 @@ end
             <li><code>AddModulusQuantumOperator</code></li>
           </ul>
           Some of these constants are not defined in older releases of ImageMagick. To see which ones are defined, enter this statement in IRB:
-          <pre>
-Magick::QuantumExpressionOperator.values {|v| puts v}
-</pre
-          >
+          <pre class="language-ruby">Magick::QuantumExpressionOperator.values {|v| puts v}</pre>
         </dd>
 
         <dt>rvalue</dt>
@@ -867,10 +867,7 @@ Magick::QuantumExpressionOperator.values {|v| puts v}
       <h4>Example</h4>
 
       <p>Divide the red component of all the pixels in the image by 2:</p>
-      <pre>
-img.quantum_operator(Magick::DivideQuantumOperator, 2, Magick::RedChannel)
-</pre
-      >
+      <pre class="language-ruby">img.quantum_operator(Magick::DivideQuantumOperator, 2, Magick::RedChannel)</pre>
 
       <h4>See also</h4>
 
@@ -1070,7 +1067,7 @@ img.quantum_operator(Magick::DivideQuantumOperator, 2, Magick::RedChannel)
       <p>A new image</p>
 
       <h4>Example</h4>
-      <pre>
+      <pre class="language-ruby">
 geom = Magick::Geometry.new(Magick::QuantumRange/2)
 random_threshold_channel(geom, Magick::RedChannel)
 </pre
@@ -1898,7 +1895,7 @@ random_threshold_channel(geom, Magick::RedChannel)
 
       <h4>Example</h4>
 
-      <pre>img.segment(YUVColorspace, 0.4, 0.4)</pre>
+      <pre class="language-ruby">img.segment(YUVColorspace, 0.4, 0.4)</pre>
 
       <p class="rollover">
         <a href="javascript:popup('segment.rb.html')"
@@ -1955,10 +1952,7 @@ random_threshold_channel(geom, Magick::RedChannel)
       <p>A new image</p>
 
       <h4>Example</h4>
-      <pre>
-   img2 = img.selective_blur_channel(0, 1, '10%')
-</pre
-      >
+      <pre class="language-ruby">img2 = img.selective_blur_channel(0, 1, '10%')</pre>
 
       <h4>See also</h4>
 
@@ -2141,7 +2135,7 @@ random_threshold_channel(geom, Magick::RedChannel)
 
       <h4>Example</h4>
 
-      <pre>img.shade(true, 50, 50)</pre>
+      <pre class="language-ruby">img.shade(true, 50, 50)</pre>
 
       <p class="rollover">
         <a href="javascript:popup('shade.rb.html')"
@@ -2519,7 +2513,7 @@ random_threshold_channel(geom, Magick::RedChannel)
       <p>The signature as a 64-character string.</p>
 
       <h4>Example</h4>
-      <pre>
+      <pre class="language-ruby">
 img = Magick::Image.read('ex/images/Flower_Hat.jpg').first &raquo; ex/images/Flower_Hat.jpg JPEG 200x250 DirectClass 8-bit 9761b
 img.properties &raquo; {"comment"=&gt;"File written by Adobe Photoshop\250 4.0"}
 img.signature  &raquo; "485e01ecba1a1f47924d67b887cb07b474f695841733796dfa3c2876965c7e8b"
@@ -3226,7 +3220,7 @@ img.properties &raquo; {"signature"=&gt;"485e01ecba1a1f47924d67b887cb07b474f6958
 
       <h4>Example</h4>
 
-      <pre>img.threshold(Magick::QuantumRange * 0.55)</pre>
+      <pre class="language-ruby">img.threshold(Magick::QuantumRange * 0.55)</pre>
 
       <p class="rollover">
         <a href="javascript:popup('threshold.rb.html')"
@@ -3287,7 +3281,7 @@ img.properties &raquo; {"signature"=&gt;"485e01ecba1a1f47924d67b887cb07b474f6958
       <p>A new image</p>
 
       <h4>Example</h4>
-      <pre>
+      <pre class="language-ruby">
 img = Magick::Image.read("images/Cheetah.jpg").first
 thumbnail = img.thumbnail(img.columns * 0.09, img.rows * 0.09)
 </pre
@@ -3386,7 +3380,7 @@ thumbnail = img.thumbnail(img.columns * 0.09, img.rows * 0.09)
       <p>A <a href="imusage.html#color_names">color name</a>.</p>
 
       <h4>Example</h4>
-      <pre>
+      <pre class="language-ruby">
 img = Magick::Image.read('ex/images/Flower_Hat.jpg').first &raquo; ex/images/Flower_Hat.jpg JPEG 200x250 DirectClass 8-bit 9761b
 pixel = img.pixel_color(img.columns/2, img.rows/2)         &raquo; #&lt;struct Pixel red=216, green=147, blue=106, opacity=0&gt;
 img.to_color(pixel)                                        &raquo; "#D8936A"
@@ -3913,7 +3907,7 @@ img.to_color(pixel)                                        &raquo; "#D8936A"
       <p>
         <a href="javascript:popup('viewex.rb.html')"><img src="ex/viewex.gif" title="Click to see the example script" alt="view example" /></a>
       </p>
-      <pre>
+      <pre class="language-ruby">
 img = Magick::Image.new(40, 40) { |options| options.background_color = 'lightcyan2'}
 
 # The view is 400 pixels square, starting at
@@ -4365,7 +4359,7 @@ end
         <em>Do not</em> use a StringIO object or a Tempfile object as the argument. Neither of these work. Use <code>to_blob</code> to write to a String.
         Instead of a tempfile, get the path of the tempfile from the <code>path</code> method. Prefix the path with the desired image format. For example,
       </p>
-      <pre>
+      <pre class="language-ruby">
 temp = Tempfile.new("image")
 img.write("jpeg:"+ temp.path)
 </pre

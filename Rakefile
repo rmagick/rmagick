@@ -98,13 +98,19 @@ namespace :website do
             <meta name="generator" content="ex2html.rb" />
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
             <link rel="stylesheet" type="text/css" href="css/popup.css" />
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+            <script>
+              hljs.configure({ cssSelector: "pre" });
+              hljs.highlightAll();
+            </script>
             <title>RMagick example: #{input_file_name}</title>
           </head>
           <body>
           <h1>#{input_file_name}</h1>
           <div class="bodybox">
           <div class="bodyfloat">
-          <pre>
+          <pre class="language-ruby">
         END_EXHTMLHEAD
 
         src.each do |line|

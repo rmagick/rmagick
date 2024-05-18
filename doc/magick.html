@@ -16,6 +16,12 @@
       /* Styles local to this page. */
       /*]]>*/
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+      hljs.configure({ cssSelector: "pre" });
+      hljs.highlightAll();
+    </script>
   </head>
 
   <body>
@@ -277,7 +283,7 @@
 
       <h4>Example</h4>
 
-      <pre>
+      <pre class="language-ruby">
 p Magick.formats &raquo;
    {"TIF"=&gt;"*rw+",
    "H"=&gt;"*rw-",
@@ -395,7 +401,7 @@ p Magick.formats &raquo;
 
       <h4>Example</h4>
 
-      <pre>Magick.set_log_event_mask("Module,Coder")</pre>
+      <pre class="language-ruby">Magick.set_log_event_mask("Module,Coder")</pre>
 
       <h4>Magick API</h4>
 
@@ -413,10 +419,7 @@ p Magick.formats &raquo;
       </p>
 
       <p>Use this command to find out about the current log configuration.</p>
-      <pre>
-convert -list log
-</pre
-      >
+      <pre class="language-console">convert -list log</pre>
     </div>
 
     <div class="sig">

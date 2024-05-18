@@ -17,6 +17,12 @@
 
       /*]]>*/
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+      hljs.configure({ cssSelector: "pre" });
+      hljs.highlightAll();
+    </script>
   </head>
 
   <body>
@@ -1466,10 +1472,7 @@
       </dl>
 
       <p>Some of these values are not supported by older versions of ImageMagick. To see what values are available, enter the following code in irb:</p>
-      <pre>
-Magick::VirtualPixelMethod.values {|v| puts v}
-</pre
-      >
+      <pre class="language-ruby">Magick::VirtualPixelMethod.values {|v| puts v}</pre>
 
       <h4>Returns</h4>
 
@@ -1477,7 +1480,7 @@ Magick::VirtualPixelMethod.values {|v| puts v}
 
       <h4>Example</h4>
 
-      <pre>img.virtual_pixel_method = Magick::TransparentVirtualPixelMethod</pre>
+      <pre class="language-ruby">img.virtual_pixel_method = Magick::TransparentVirtualPixelMethod</pre>
     </div>
 
     <div class="sig">

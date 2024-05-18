@@ -18,6 +18,12 @@
 
       /*]]>*/
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+      hljs.configure({ cssSelector: "pre" });
+      hljs.highlightAll();
+    </script>
   </head>
 
   <body>
@@ -194,7 +200,7 @@
         </dl>
 
         <h5>Examples</h5>
-        <pre>
+        <pre class="language-ruby">
   # Get the 2nd pixel in the 4th row of the view.
   pixel = view[3][1]  # returns a pixel
   # Returns an array with only one value
@@ -234,7 +240,7 @@
         </p>
 
         <h5>Examples</h5>
-        <pre>
+        <pre class="language-ruby">
   # Get the value of the green channel of
   # the top-left pixel in the view.
   view[0][0] = Magick::Pixel.new(0,128,255)
@@ -296,7 +302,7 @@
         <p>Assigns <em>integer</em> to the red, green, blue, or opacity channel of the pixel or pixels identified by the indexes.</p>
 
         <h5>Examples</h5>
-        <pre>
+        <pre class="language-ruby">
   # Set the red channel of all the pixels in the 2nd
   # row of the view to QuantumRange
   view[1][].red = Magick::QuantumRange
@@ -529,7 +535,7 @@
         <p>If any attribute is omitted the default is nil or 0.</p>
 
         <h5>Example</h5>
-        <pre>
+        <pre class="language-ruby">
 g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
 </pre
         >

@@ -93,6 +93,12 @@
       }
       /*]]>*/
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+      hljs.configure({ cssSelector: "pre" });
+      hljs.highlightAll();
+    </script>
   </head>
 
   <body>
@@ -332,7 +338,7 @@
       For quickest results, include the RMagick, ImageMagick and Ruby version numbers, along with a thorough description of the problem. RMagick will tell you
       both its version number and ImageMagick's version number. Simply bring up irb and run this command:
     </p>
-    <pre class="example" id="version">
+    <pre class="example language-console" id="version">
 $ ruby -rrmagick -e "puts Magick::Long_version"
 This is RMagick 5.2.0 ($Date: 2009/12/20 02:33:33 $) Copyright (C) 2009 by Timothy P. Hunter
 Built with ImageMagick 7.1.1-8 Q16-HDRI x86_64 21129 https://imagemagick.org

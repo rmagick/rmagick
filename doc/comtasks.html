@@ -22,6 +22,12 @@
 
       /*]]>*/
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+      hljs.configure({ cssSelector: "pre" });
+      hljs.highlightAll();
+    </script>
   </head>
 
   <body>
@@ -62,7 +68,7 @@
       <a href="imageattrs.html">attributes</a> to an image. All you have to do is read the image and then call the attribute methods. Here's a Ruby program that
       takes image filenames from the command line and then prints a variety of information about each image to the terminal.
     </p>
-    <pre class="example">
+    <pre class="example language-ruby">
 require "rmagick"
 ARGV.each do |file|
   puts file
@@ -107,7 +113,7 @@ end
       >, and <a href="image3.html#thumbnail"><code>thumbnail</code></a
       >. All four are equally easy to use. Specify the number of columns and rows you want the thumbnail to have, like this:
     </p>
-    <pre class="example">
+    <pre class="example language-ruby">
 img = Magick::Image.new "bigimage.gif"
 thumb = img.scale(125, 125)
 thumb.write "thumb.gif"
@@ -118,7 +124,7 @@ thumb.write "thumb.gif"
       Alternatively, just pass a single <code>Float</code> argument that represents the change in size. For example, to proportionally reduce the size of an
       image to 25% of its original size, do this:
     </p>
-    <pre class="example">
+    <pre class="example language-ruby">
 img = Magick::Image.new "bigimage.gif"
 thumb = img.scale(0.25)
 thumb.write "thumb.gif"
@@ -142,7 +148,7 @@ thumb.write "thumb.gif"
       in its larger dimension so that the image isn't distorted. You can get make this kind of thumbnail with the
       <a href="image3.html#resize_to_fill">resize_to_fill</a> method.
     </p>
-    <pre class="example">
+    <pre class="example language-ruby">
 thumb = img.resize_to_fill(75, 75)
 </pre
     >
@@ -177,7 +183,7 @@ thumb = img.resize_to_fill(75, 75)
       If you just want to make sure your thumbnail is no bigger than a certain width and height, use the
       <a href="image3.html#resize_to_fit">resize_to_fit</a> method.
     </p>
-    <pre class="example">
+    <pre class="example language-ruby">
 thumb = img.resize_to_fit(75, 75)
 </pre
     >
@@ -231,7 +237,7 @@ thumb = img.resize_to_fit(75, 75)
       For more information, see the ImageMagick documentation for the
       <code>-quality</code> option to the utility commands.
     </p>
-    <pre class="example">
+    <pre class="example language-ruby">
 img.write("myimage.jpg") { |options| options.quality = 50 }
 </pre
     >

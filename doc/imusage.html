@@ -61,6 +61,12 @@
 
       /*]]>*/
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+      hljs.configure({ cssSelector: "pre" });
+      hljs.highlightAll();
+    </script>
   </head>
 
   <body>
@@ -372,10 +378,7 @@
       <code>size</code> attribute in the <code>read</code> method's additional parms block. For example, to create a image in the gradient format that is 100
       pixels wide and 200 pixels high, use:
     </p>
-    <pre class="example">
-i = Magick::Image.read("gradient:red-blue") { |options| options.size = "100x200" }
-</pre
-    >
+    <pre class="example language-ruby">i = Magick::Image.read("gradient:red-blue") { |options| options.size = "100x200" }</pre>
 
     <p>See <a href="javascript:popup('demo.rb.html')">demo.rb</a> for more examples of reading built-in formats.</p>
 

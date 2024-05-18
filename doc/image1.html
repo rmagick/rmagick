@@ -36,6 +36,12 @@
       }
       /*]]>*/
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+      hljs.configure({ cssSelector: "pre" });
+      hljs.highlightAll();
+    </script>
   </head>
 
   <body>
@@ -342,7 +348,7 @@
 
       <h4>Example</h4>
 
-      <pre>
+      <pre class="language-ruby">
 img = Magick::Image.capture { |options|
   options.filename = "root"
 }
@@ -447,7 +453,7 @@ img = Magick::Image.capture { |options|
 
       <h4>Example</h4>
 
-      <pre>image = Magick::Image.constitute(width, height, "RGB", pixels)</pre>
+      <pre class="language-ruby">image = Magick::Image.constitute(width, height, "RGB", pixels)</pre>
 
       <h4>See also</h4>
 
@@ -535,7 +541,7 @@ img = Magick::Image.capture { |options|
 
       <h4>Example</h4>
 
-      <pre>
+      <pre class="language-ruby">
 img = Magick::Image.new(256, 64) { |options|
   options.background_color = 'red'
 }
@@ -582,7 +588,7 @@ img = Magick::Image.new(256, 64) { |options|
 
       <h4>Example</h4>
 
-      <pre>
+      <pre class="language-ruby">
 cheetah = Magick::Image.ping("Cheetah.jpg") &raquo; [Cheetah.jpg JPEG 1024x768 DirectClass 8-bit 101684b]
 p cheetah[0].rows &raquo; 768
 p cheetah[0].columns &raquo; 1024
@@ -634,7 +640,7 @@ p cheetah[0].columns &raquo; 1024
 
       <h4>Example</h4>
 
-      <pre>
+      <pre class="language-ruby">
 animated = Magick::Image.read("animated.gif") &raquo; [animated.gif GIF 127x120+0+0 PseudoClass 256c 8-bit 54395b
                                               &raquo;  animated.gif[1] GIF 127x120+0+0 PseudoClass 256c 8-bit 54395b,
                                               &raquo;  animated.gif[2] GIF 127x120+0+0 PseudoClass 256c 8-bit 54395b]
@@ -686,7 +692,7 @@ animated = Magick::Image.read("animated.gif") &raquo; [animated.gif GIF 127x120+
 
       <h4>Example</h4>
 
-      <pre>
+      <pre class="language-ruby">
 content = "R0lGODlhnAEuAferAAAAAAcIBggJBgw..."
 img = Magick::Image.read_inline(content)
 </pre
@@ -729,7 +735,7 @@ img = Magick::Image.read_inline(content)
 
       <h4>Example</h4>
 
-      <pre>mom['Label'] = 'My Mother'</pre>
+      <pre class="language-ruby">mom['Label'] = 'My Mother'</pre>
 
       <h4>See also</h4>
 
@@ -1347,7 +1353,7 @@ img = Magick::Image.read_inline(content)
 
       <h4>Example</h4>
 
-      <pre>img.add_profile('my_cmyk.icm')</pre>
+      <pre class="language-ruby">img.add_profile('my_cmyk.icm')</pre>
 
       <h4>See also</h4>
 
@@ -1739,7 +1745,7 @@ img = Magick::Image.read_inline(content)
 
       <h4>Example</h4>
 
-      <pre>bilevel_channel(2*QuantumRange/3, RedChannel)</pre>
+      <pre class="language-ruby">bilevel_channel(2*QuantumRange/3, RedChannel)</pre>
 
       <p class="rollover">
         <a href="javascript:popup('bilevel_channel.rb.html')"
@@ -2162,7 +2168,7 @@ img = Magick::Image.read_inline(content)
 
       <h4>Example</h4>
 
-      <pre>
+      <pre class="language-ruby">
 mona = Magick::Image.read('MonaLisa.jpg').first
 mona.change_geometry!('320x240') { |cols, rows, img|
   img.resize!(cols, rows)
@@ -2854,7 +2860,7 @@ mona.change_geometry!('320x240') { |cols, rows, img|
 
       <h4>Example</h4>
 
-      <pre>f.color_point(50,50, 'red')</pre>
+      <pre class="language-ruby">f.color_point(50,50, 'red')</pre>
 
       <h4>See also</h4>
 
@@ -2888,7 +2894,7 @@ mona.change_geometry!('320x240') { |cols, rows, img|
 
       <h4>Example</h4>
 
-      <pre>f.color_reset!(red)</pre>
+      <pre class="language-ruby">f.color_reset!(red)</pre>
 
       <h4>See also</h4>
 
@@ -3372,7 +3378,7 @@ mona.change_geometry!('320x240') { |cols, rows, img|
 
       <h4>Example</h4>
 
-      <pre>
+      <pre class="language-ruby">
 f = Magick::Image.read('cbezier1.gif').first &raquo; cbezier1.gif GIF 500x350+0+0 PseudoClass 128c 8-bit 177503b
 f.colors &raquo; 128
 f.compress_colormap! &raquo; cbezier1.gif GIF 500x350+0+0 PseudoClass 108c 8-bit 177503b
@@ -3588,7 +3594,7 @@ f.colors &raquo; 108
 
       <h4>Example</h4>
 
-      <pre>f2 = f.copy</pre>
+      <pre class="language-ruby">f2 = f.copy</pre>
 
       <h4>See also</h4>
 
@@ -3722,10 +3728,7 @@ f.colors &raquo; 108
       The <code>crop</code> method retains the offset information in the cropped image. This may cause the image to appear to be surrounded by blank or black
       space when viewed with an external viewer. This only occurs when the image is saved in a format (such as GIF) that saves offset information. To reset the
       offset data, add <code>true</code> as the last argument to <code>crop</code>. For example,
-      <pre>
-cropped = img.crop(x, y, width, height, true)
-</pre
-      >
+      <pre class="language-ruby">cropped = img.crop(x, y, width, height, true)</pre>
 
       <p>You can add <code>true</code> as the last argument with any of the three argument list formats described above.</p>
 
@@ -3867,7 +3870,7 @@ cropped = img.crop(x, y, width, height, true)
 
       <h4>Example</h4>
 
-      <pre>deciphered_img = img.decipher("magic word")</pre>
+      <pre class="language-ruby">deciphered_img = img.decipher("magic word")</pre>
 
       <h4>Magick API</h4>
 
@@ -3972,7 +3975,7 @@ cropped = img.crop(x, y, width, height, true)
 
       <h4>Example</h4>
 
-      <pre>img2 = img.deskew</pre>
+      <pre class="language-ruby">img2 = img.deskew</pre>
 
       <h4>Magick API</h4>
       DeskewImage (available in 6.4.2)
@@ -4150,7 +4153,7 @@ cropped = img.crop(x, y, width, height, true)
 
       <h4>Example</h4>
 
-      <pre>pixels = f.dispatch(0, 0, f.columns, f.rows, "RGB")</pre>
+      <pre class="language-ruby">pixels = f.dispatch(0, 0, f.columns, f.rows, "RGB")</pre>
 
       <h4>See also</h4>
 
@@ -4333,7 +4336,7 @@ cropped = img.crop(x, y, width, height, true)
         >.
       </p>
 
-      <pre>bgnd.dissolve(overlay, 0.50, 1.0)</pre>
+      <pre class="language-ruby">bgnd.dissolve(overlay, 0.50, 1.0)</pre>
 
       <p class="rollover">
         <a href="javascript:popup('dissolve.rb.html')"
@@ -4456,7 +4459,7 @@ cropped = img.crop(x, y, width, height, true)
 
       <h4>Example</h4>
 
-      <pre>
+      <pre class="language-ruby">
 result = img.distort(Magick::ScaleRotateTranslateDistortion, [0]) do |options|
   options.define "distort:viewport", "44x44+15+0"
   options.define "distort:scale", 2

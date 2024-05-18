@@ -18,6 +18,12 @@
       /*<![CDATA[*/
       /*]]>*/
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+      hljs.configure({ cssSelector: "pre" });
+      hljs.highlightAll();
+    </script>
   </head>
 
   <body>
@@ -212,7 +218,7 @@
 
       <h4>Example</h4>
 
-      <pre>canvas.background_fill = 'white'</pre>
+      <pre class="language-ruby">canvas.background_fill = 'white'</pre>
 
       <h4>Returns</h4>
       <span class="arg">value</span>
@@ -238,7 +244,7 @@
 
       <h4>Example</h4>
 
-      <pre>
+      <pre class="language-ruby">
 canvas.background_fill = 'white'
 canvas.background_fill_opacity = 0.50
 </pre
@@ -267,7 +273,7 @@ canvas.background_fill_opacity = 0.50
 
       <h4>Example</h4>
 
-      <pre>canvas.background_image = Magick::Image.read('myBackground.gif').first</pre>
+      <pre class="language-ruby">canvas.background_image = Magick::Image.read('myBackground.gif').first</pre>
 
       <h4>Returns</h4>
       <span class="arg">image</span>
@@ -293,7 +299,7 @@ canvas.background_fill_opacity = 0.50
 
       <h4>Example</h4>
 
-      <pre>canvas.background_pattern = Magick::GradientFill.new(0, 0, 0, 100, "#900", "#000")</pre>
+      <pre class="language-ruby">canvas.background_pattern = Magick::GradientFill.new(0, 0, 0, 100, "#900", "#000")</pre>
 
       <h4>Returns</h4>
       <p>a Fill object</p>
@@ -339,7 +345,7 @@ canvas.background_fill_opacity = 0.50
 
       <h4>Example</h4>
 
-      <pre>
+      <pre class="language-ruby">
 canvas.background_image = Magick::Image.read('myBackground.gif').first
 canvas.background_position = :scaled
 </pre
@@ -520,7 +526,7 @@ canvas.background_position = :scaled
 
       <h4>Example</h4>
 
-      <pre>
+      <pre class="language-ruby">
 img = rvg.draw
 img.write('myDrawing.jpg')
 </pre
@@ -847,13 +853,13 @@ img.write('myDrawing.jpg')
         The units are (for the most part) defined in terms of "dots per inch," accordingly, the unit identifier methods are added only if the value
       </p>
 
-      <pre>Magick::RVG.dpi = NN</pre>
+      <pre class="language-ruby">Magick::RVG.dpi = NN</pre>
 
       <p>is defined, where NN is the number of "dots" (pixels) per inch you wish to use. (Hint: 90 is a good default.)</p>
 
       <p>For example, to specify a length of 10 inches, you can use</p>
 
-      <pre>
+      <pre class="language-ruby">
 Magick::RVG.dpi = 90
 length = 10.in  # =&gt; 900 pixels
 </pre

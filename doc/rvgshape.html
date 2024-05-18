@@ -19,6 +19,12 @@
       /*<![CDATA[*/
       /*]]>*/
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+      hljs.configure({ cssSelector: "pre" });
+      hljs.highlightAll();
+    </script>
   </head>
 
   <body>
@@ -264,7 +270,7 @@
           Two arrays. The first array is a list of x-coordinates. The second array is a list of y-coordinates. Both arrays must have at least one element. If
           one array is shorter than the other, the shorter array is extended by duplicating its elements as necessary. The combined arrays must describe at
           least 2 pairs of [x,y] coordinates. For example
-          <pre>
+          <pre class="language-ruby">
 x = [1, 3, 5, 7, 9]
 y = [2,4]
 canvas.polygon(x, y)
