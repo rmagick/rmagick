@@ -1352,9 +1352,9 @@ scanline = img.export_pixels(0, r, img.columns, 1, "RGB");
       <h4>Example</h4>
 
       <pre class="language-ruby">
-image.get_exif_by_entry('Make')              &raquo; [["Make", "Canon"]]
-image.get_exif_by_entry("ShutterSpeedValue") &raquo; [["ShutterSpeedValue", "189/32"]]
-image.get_exif_by_entry()                    &raquo; [["Make", "Canon"], ["ShutterSpeedValue", "189/32"] ...]
+image.get_exif_by_entry('Make')              #=&gt; [["Make", "Canon"]]
+image.get_exif_by_entry("ShutterSpeedValue") #=&gt; [["ShutterSpeedValue", "189/32"]]
+image.get_exif_by_entry()                    #=&gt; [["Make", "Canon"], ["ShutterSpeedValue", "189/32"] ...]
 </pre
       >
 
@@ -1391,9 +1391,9 @@ image.get_exif_by_entry()                    &raquo; [["Make", "Canon"], ["Shutt
       <h4>Example</h4>
 
       <pre class="language-ruby">
-image.get_exif_by_number(271)   &raquo; {271=&gt;"Canon"}
-image.get_exif_by_number(37377) &raquo; {37377=&gt;"189/32"}
-image.get_exif_by_number()      &raquo; {271=&gt;"Canon", 37377=&gt;"189/32" ...}
+image.get_exif_by_number(271)   #=&gt; {271=&gt;"Canon"}
+image.get_exif_by_number(37377) #=&gt; {37377=&gt;"189/32"}
+image.get_exif_by_number()      #=&gt; {271=&gt;"Canon", 37377=&gt;"189/32" ...}
 </pre
       >
 
@@ -2296,7 +2296,7 @@ img.import_pixels(0, 0, hat.columns, hat.rows, "RGB", char_buffer, CharPixel)
 
       <h4>Example</h4>
 
-      <pre class="language-ruby">f.inspect &raquo; "images/Flower_Hat.jpg JPEG 200x250 DirectClass 8-bit 9kb"</pre>
+      <pre class="language-ruby">f.inspect #=&gt; "images/Flower_Hat.jpg JPEG 200x250 DirectClass 8-bit 9kb"</pre>
     </div>
 
     <div class="sig">

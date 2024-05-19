@@ -248,7 +248,7 @@ i = Magick::ImageList.new("Button_A.gif", "Cheetah.jpg")
 
       <pre class="language-ruby">
 i = Magick::ImageList.new("images/Button_A.gif", "images/Button_B.gif")
-i.length &raquo; 2
+i.length #=&gt; 2
 </pre
       >
     </div>
@@ -271,7 +271,7 @@ i.length &raquo; 2
 
       <pre class="language-ruby">
 ilist.scene = 10
-ilist.scene &raquo; 10
+ilist.scene #=&gt; 10
 </pre
       >
     </div>
@@ -1015,9 +1015,9 @@ res = imgl.fx('1/2', Magick::BlueChannel)
 
       <pre class="language-ruby">
 i = Magick::ImageList.new("images/Button_A.gif", "images/Button_B.gif")
-&raquo; [images/Button_A.gif GIF 127x120+0+0 PseudoClass 256c 8-bit 18136b
-images/Button_B.gif GIF 127x120+0+0 PseudoClass 256c 8-bit 5157b]
-scene=1
+#=&gt; [images/Button_A.gif GIF 127x120+0+0 PseudoClass 256c 8-bit 18136b
+#   images/Button_B.gif GIF 127x120+0+0 PseudoClass 256c 8-bit 5157b]
+#   scene=1
 </pre
       >
 
@@ -1533,8 +1533,8 @@ ilist.new_image(100, 100) { |options| options.background_color = "red" }
       <pre class="language-ruby">
 ilist = Magick::ImageList.new
 ilist.ping "Button_A.gif"
-puts "The image has #{i.columns} columns and #{i.rows} rows." &raquo;
-      The image has 127 columns and 120 rows.
+puts "The image has #{i.columns} columns and #{i.rows} rows."
+#=&gt; The image has 127 columns and 120 rows.
 </pre
       >
 
@@ -1789,7 +1789,7 @@ end
 
       <pre class="language-ruby">
 i = Magick::ImageList.new "birthday.png"
-s = i.to_blob &raquo; a string representing the image.
+s = i.to_blob #=&gt; a string representing the image.
 </pre
       >
 
@@ -1873,13 +1873,15 @@ s = i.to_blob &raquo; a string representing the image.
 # The PNG format does not support multi-frame files,
 # so each image is written to a separate file.
 i = Magick::ImageList.new "animated.gif"
-p i.length &raquo; 3 # contains 3 images
-i.write "test.png" &raquo; test.png.0
-                   &raquo; test.png.1
-                   &raquo; test.png.2
+p i.length #=&gt; 3 # contains 3 images
+i.write "test.png"
+#=&gt; test.png.0
+#   test.png.1
+#   test.png.2
+
 # ImageMagick's MIFF format does support multi-frame
 # files, so all 3 images are written to one file.
-i.write "animated.miff" &raquo; animated.miff
+i.write "animated.miff" #=&gt; animated.miff
 </pre
       >
 
