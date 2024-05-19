@@ -589,9 +589,9 @@ img = Magick::Image.new(256, 64) { |options|
       <h4>Example</h4>
 
       <pre class="language-ruby">
-cheetah = Magick::Image.ping("Cheetah.jpg") &raquo; [Cheetah.jpg JPEG 1024x768 DirectClass 8-bit 101684b]
-p cheetah[0].rows &raquo; 768
-p cheetah[0].columns &raquo; 1024
+cheetah = Magick::Image.ping("Cheetah.jpg") #=&gt; [Cheetah.jpg JPEG 1024x768 DirectClass 8-bit 101684b]
+p cheetah[0].rows    #=&gt; 768
+p cheetah[0].columns #=&gt; 1024
 </pre
       >
 
@@ -641,9 +641,10 @@ p cheetah[0].columns &raquo; 1024
       <h4>Example</h4>
 
       <pre class="language-ruby">
-animated = Magick::Image.read("animated.gif") &raquo; [animated.gif GIF 127x120+0+0 PseudoClass 256c 8-bit 54395b
-                                              &raquo;  animated.gif[1] GIF 127x120+0+0 PseudoClass 256c 8-bit 54395b,
-                                              &raquo;  animated.gif[2] GIF 127x120+0+0 PseudoClass 256c 8-bit 54395b]
+animated = Magick::Image.read("animated.gif")
+#=&gt; [animated.gif GIF 127x120+0+0 PseudoClass 256c 8-bit 54395b
+#   animated.gif[1] GIF 127x120+0+0 PseudoClass 256c 8-bit 54395b,
+#   animated.gif[2] GIF 127x120+0+0 PseudoClass 256c 8-bit 54395b]
 </pre
       >
 
@@ -3379,10 +3380,10 @@ mona.change_geometry!('320x240') { |cols, rows, img|
       <h4>Example</h4>
 
       <pre class="language-ruby">
-f = Magick::Image.read('cbezier1.gif').first &raquo; cbezier1.gif GIF 500x350+0+0 PseudoClass 128c 8-bit 177503b
-f.colors &raquo; 128
-f.compress_colormap! &raquo; cbezier1.gif GIF 500x350+0+0 PseudoClass 108c 8-bit 177503b
-f.colors &raquo; 108
+f = Magick::Image.read('cbezier1.gif').first #=&gt; cbezier1.gif GIF 500x350+0+0 PseudoClass 128c 8-bit 177503b
+f.colors #=&gt; 128
+f.compress_colormap! #=&gt; cbezier1.gif GIF 500x350+0+0 PseudoClass 108c 8-bit 177503b
+f.colors #=&gt; 108
 </pre
       >
 

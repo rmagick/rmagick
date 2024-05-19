@@ -2514,11 +2514,12 @@ random_threshold_channel(geom, Magick::RedChannel)
 
       <h4>Example</h4>
       <pre class="language-ruby">
-img = Magick::Image.read('ex/images/Flower_Hat.jpg').first &raquo; ex/images/Flower_Hat.jpg JPEG 200x250 DirectClass 8-bit 9761b
-img.properties &raquo; {"comment"=&gt;"File written by Adobe Photoshop\250 4.0"}
-img.signature  &raquo; "485e01ecba1a1f47924d67b887cb07b474f695841733796dfa3c2876965c7e8b"
-img.properties &raquo; {"signature"=&gt;"485e01ecba1a1f47924d67b887cb07b474f695841733796dfa3c2876965c7e8b",
-               &raquo; "comment"=&gt;"File written by Adobe Photoshop\250 4.0"}
+img = Magick::Image.read('ex/images/Flower_Hat.jpg').first #=&gt; ex/images/Flower_Hat.jpg JPEG 200x250 DirectClass 8-bit 9761b
+img.properties #=&gt; {"comment"=&gt;"File written by Adobe Photoshop\250 4.0"}
+img.signature  #=&gt; "485e01ecba1a1f47924d67b887cb07b474f695841733796dfa3c2876965c7e8b"
+img.properties
+#=&gt; {"signature"=&gt;"485e01ecba1a1f47924d67b887cb07b474f695841733796dfa3c2876965c7e8b",
+#   "comment"=&gt;"File written by Adobe Photoshop\250 4.0"}
 </pre
       >
 
@@ -3381,9 +3382,9 @@ thumbnail = img.thumbnail(img.columns * 0.09, img.rows * 0.09)
 
       <h4>Example</h4>
       <pre class="language-ruby">
-img = Magick::Image.read('ex/images/Flower_Hat.jpg').first &raquo; ex/images/Flower_Hat.jpg JPEG 200x250 DirectClass 8-bit 9761b
-pixel = img.pixel_color(img.columns/2, img.rows/2)         &raquo; #&lt;struct Pixel red=216, green=147, blue=106, opacity=0&gt;
-img.to_color(pixel)                                        &raquo; "#D8936A"
+img = Magick::Image.read('ex/images/Flower_Hat.jpg').first #=&gt; ex/images/Flower_Hat.jpg JPEG 200x250 DirectClass 8-bit 9761b
+pixel = img.pixel_color(img.columns/2, img.rows/2)         #=&gt; #&lt;struct Pixel red=216, green=147, blue=106, opacity=0&gt;
+img.to_color(pixel)                                        #=&gt; "#D8936A"
 </pre
       >
 

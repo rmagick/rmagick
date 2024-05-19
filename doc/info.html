@@ -255,7 +255,8 @@
       <pre class="language-ruby">
 img = Magick::Image.new(10,10) do |options|
   options['user'] = __FILE__ + ':' + __LINE__.to_s
-end &raquo; 10x10 DirectClass 16-bit user:test.rb:3
+end
+#=&gt; 10x10 DirectClass 16-bit user:test.rb:3
 </pre
       >
 
@@ -313,7 +314,7 @@ end &raquo; 10x10 DirectClass 16-bit user:test.rb:3
 
       <h4>Example</h4>
 
-      <pre class="language-ruby">options["tiff", "bits-per-sample"] &raquo; 2</pre>
+      <pre class="language-ruby">options["tiff", "bits-per-sample"] #=&gt; 2</pre>
 
       <h4>Magick API</h4>
 
@@ -520,8 +521,8 @@ img = Magick::Image.read("xc:white") do |options|
   options.caption = "a new caption"
   options.size = "20x20"
 end
-p img.first.properties &raquo; {"caption"=&gt;"a new caption"}
-p img.first['caption'] &raquo; "a new caption"
+p img.first.properties #=&gt; {"caption"=&gt;"a new caption"}
+p img.first['caption'] #=&gt; "a new caption"
 </pre
       >
 

@@ -816,14 +816,14 @@ title.annotate(montage, 0,0,0,40, 'Named Colors') { |options|
       <h4>Example</h4>
 
       <pre class="language-ruby">
-draw.inspect &raquo;
-   "stroke red
-    fill transparent
-    rectangle 20,20 380,180
-    line 200,20 200,180
-    line 20,100 380,100
-    stroke transparent
-    fill black"
+draw.inspect
+  #=&gt; "stroke red
+  #   fill transparent
+  #   rectangle 20,20 380,180
+  #   line 200,20 200,180
+  #   line 20,100 380,100
+  #   stroke transparent
+  #   fill black"
 </pre
       >
     </div>
@@ -2700,12 +2700,12 @@ draw.stroke_opacity('40%')
 
       <h4>Quoting examples</h4>
 
-      <p>The text to the right of &raquo; is the text that will be drawn.</p>
+      <p>The text to the right of #=&gt; is the text that will be drawn.</p>
       <pre class="language-ruby">
-gc.text(10,10, '"Hello there!"') &raquo; Hello there!
-gc.text(10,10, "'What\'s up?'") &raquo; What's up?
-gc.text(10,10, %q/"What's up?"/) &raquo; What's up?
-gc.text(10,10, %q/{"What's up?"}/) &raquo; "What's up?"
+gc.text(10,10, '"Hello there!"')   #=&gt; Hello there!
+gc.text(10,10, "'What\'s up?'")    #=&gt; What's up?
+gc.text(10,10, %q/"What's up?"/)   #=&gt; What's up?
+gc.text(10,10, %q/{"What's up?"}/) #=&gt; "What's up?"
 </pre
       >
 
