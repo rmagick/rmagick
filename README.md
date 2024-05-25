@@ -211,7 +211,7 @@ release of RMagick over an earlier release.
 More samples
 ------------
 
-You can find more sample RMagick programs in the [`/examples`](https://github.com/rmagick/rmagick/tree/main/examples) and [/doc/ex](https://github.com/rmagick/rmagick/tree/main/doc/ex) directories. These
+You can find more sample RMagick programs in the [/examples](https://github.com/rmagick/rmagick/tree/main/examples) and [/doc/ex](https://github.com/rmagick/rmagick/tree/main/doc/ex) directories. These
 programs are not installed in the RMagick documentation tree.
 
 Reporting bugs
