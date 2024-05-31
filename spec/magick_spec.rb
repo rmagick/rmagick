@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick do
   describe '::Magick_features' do
     it 'works' do

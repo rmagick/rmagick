@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#mean_error_per_pixel' do
   it 'works' do
     hat = described_class.read(FLOWER_HAT).first

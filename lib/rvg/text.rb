@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #--
 # $Id: text.rb,v 1.7 2009/02/28 23:52:28 rmagick Exp $
 # Copyright (C) 2009 Timothy P. Hunter

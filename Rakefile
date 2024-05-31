@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'simplecov'
 require './lib/rmagick/version'
 require 'fileutils'

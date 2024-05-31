@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#export_pixels' do
   def fimport(image, pixels, type)
     image = Magick::Image.new(image.columns, image.rows)

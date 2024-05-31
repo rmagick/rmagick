@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::KernelInfo, '#scale' do
   it 'works' do
     kernel = described_class.new('Octagon')

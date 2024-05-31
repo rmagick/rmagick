@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, "#charcoal" do
   it "applies a charcoal effect", unsupported_before('6.8') do
     image = build_image

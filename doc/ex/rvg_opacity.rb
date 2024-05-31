@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rvg/rvg'
 
 FONT_STYLES = { font_size: 20, font_weight: 'bold', fill: 'white' }

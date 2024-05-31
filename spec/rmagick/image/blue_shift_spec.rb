@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#blue_shift' do
   it 'returns a new Image' do
     image = described_class.read(IMAGES_DIR + '/Button_0.gif').first

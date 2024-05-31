@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#class_type=' do
   it 'does not allow setting to UndefinedClass' do
     image = described_class.new(20, 20)

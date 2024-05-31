@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rmagick'
 
 puts('Creating colors.miff. This may take a few seconds...')

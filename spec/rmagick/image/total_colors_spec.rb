@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#total_colors' do
   it 'works' do
     hat = described_class.read(FLOWER_HAT).first

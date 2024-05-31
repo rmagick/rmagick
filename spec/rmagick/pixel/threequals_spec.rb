@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Pixel, '#===' do
   it 'works' do
     pixel1 = described_class.from_color('brown')

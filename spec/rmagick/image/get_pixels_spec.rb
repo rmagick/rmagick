@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'tmpdir'
 
 RSpec.describe Magick::Image, '#get_pixels' do

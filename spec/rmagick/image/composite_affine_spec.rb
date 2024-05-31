@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#composite_affine' do
   it 'works' do
     affine = Magick::AffineMatrix.new(1, 0, 1, 0, 0, 0)

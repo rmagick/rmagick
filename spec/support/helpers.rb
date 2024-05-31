@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TestHelpers
   TEST_PIXELS = {
     RGB: [[45, 98, 156], [209, 171, 11], [239, 236, 2], [8, 65, 247]],

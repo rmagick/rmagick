@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, "#channel" do
   it "returns a gray image based on the red pixel values" do
     image = build_image

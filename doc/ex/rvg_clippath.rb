@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rvg/rvg'
 
 hat = Magick::Image.read('images/Flower_Hat.jpg').first

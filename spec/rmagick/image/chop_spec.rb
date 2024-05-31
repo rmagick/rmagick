@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, "#chop" do
   def build_gray_image
     image = Magick::Image.new(3, 3)

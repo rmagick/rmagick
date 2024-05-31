@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 #   A RMagick version of Magick++/demo/gravity.cpp
 #

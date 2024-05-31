@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Make a 32x32 animated GIF that resembles the OS X animation.
 # This produces a very small (~2.6Kb) GIF file.
 

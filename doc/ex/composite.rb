@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Demonstrate the effects of various composite operators.
 # Based on ImageMagick's composite test.
 

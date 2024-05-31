@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Purpose: Demonstrate getting information from the image attributes.
 # Usage: describe.rb filename1 [filename2...]
 # Notes: The output is similar to ImageMagick's identify command.

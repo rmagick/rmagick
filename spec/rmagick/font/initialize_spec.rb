@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Font, '#initialize' do
   it 'accepts all stretch types' do
     Magick::StretchType.values do |stretch|

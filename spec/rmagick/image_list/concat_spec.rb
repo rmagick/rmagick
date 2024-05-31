@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::ImageList, '#concat' do
   # rubocop:disable Style/ConcatArrayLiterals
   it 'allows appending identical instances more than once' do

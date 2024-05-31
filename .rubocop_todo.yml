@@ -419,13 +419,6 @@ Style/FetchEnvVar:
 Style/FormatStringToken:
   EnforcedStyle: unannotated
 
-# Offense count: 802
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: always, always_true, never
-Style/FrozenStringLiteralComment:
-  Enabled: false
-
 # Offense count: 46
 # Configuration parameters: AllowedVariables.
 Style/GlobalVars:

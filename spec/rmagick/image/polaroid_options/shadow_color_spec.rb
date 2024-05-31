@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Magick::Image::PolaroidOptions, "#shadow_color" do
   it "works" do
     options = described_class.new

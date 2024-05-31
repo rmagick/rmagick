@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Magick, '.formats' do
   it 'works', unless: -> { !RUBY_PLATFORM.include?('mingw') } do
     # Skip because it causes "`init_formats': unable to register image format 'DMR'" error on Windows

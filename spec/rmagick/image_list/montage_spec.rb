@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::ImageList, "#montage" do
   def assert_same_image(expected_image_path, image_object, delta: 0.01)
     expected = Magick::Image.read(expected_image_path).first

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image::Info, '#stroke_width' do
   it 'works' do
     info = described_class.new

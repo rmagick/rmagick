@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#channel_entropy' do
   pixels = [[45, 9, 156], [45, 98, 156], [45, 74, 156], [45, 196, 156]]
 

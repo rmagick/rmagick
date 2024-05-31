@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Draw, '#get_multiline_type_metrics' do
   it 'works' do
     draw = described_class.new

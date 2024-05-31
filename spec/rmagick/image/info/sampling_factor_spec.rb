@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image::Info, '#sampling_factor' do
   it 'works' do
     info = described_class.new

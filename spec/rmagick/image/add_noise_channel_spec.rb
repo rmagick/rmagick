@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, "#add_noise_channel" do
   it "works" do
     image = described_class.new(20, 20)

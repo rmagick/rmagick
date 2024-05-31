@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #--
 # $Id: clippath.rb,v 1.5 2009/02/28 23:52:13 rmagick Exp $
 # Copyright (C) 2009 Timothy P. Hunter
