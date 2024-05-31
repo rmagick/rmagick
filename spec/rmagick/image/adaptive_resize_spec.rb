@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, "#adaptive_resize" do
   it "works" do
     image = described_class.new(20, 20)

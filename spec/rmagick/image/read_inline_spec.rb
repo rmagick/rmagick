@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, "#read_inline" do
   it "works" do
     image = described_class.read(IMAGES_DIR + '/Button_0.gif').first

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Magick::Segment, '#to_s' do
   it 'works' do
     segment = described_class.new(10, 20, 30, 40)

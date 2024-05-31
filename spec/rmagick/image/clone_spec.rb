@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, "#clone" do
   it "returns a new copy of the image" do
     image = build_image

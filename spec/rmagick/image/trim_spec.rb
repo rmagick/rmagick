@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#trim' do
   it 'works' do
     # Can't use the default image because it's a solid color

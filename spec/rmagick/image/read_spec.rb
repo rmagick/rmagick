@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'timeout'
 
 RSpec.describe Magick::Image, '#read' do

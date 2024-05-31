@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Pixel, '#black' do
   it 'works' do
     pixel = described_class.from_color('brown')

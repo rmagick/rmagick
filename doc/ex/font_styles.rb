@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rvg/rvg'
 
 rvg = Magick::RVG.new(200, 250) do |canvas|

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#ping' do
   it 'returns an image from the source, omitting pixel data' do
     result = described_class.ping(IMAGES_DIR + '/Button_0.gif')

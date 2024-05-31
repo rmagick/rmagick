@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#from_blob' do
   it 'returns an image equal to the original' do
     image = described_class.read(IMAGES_DIR + '/Button_0.gif').first

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick, '.limit_resources' do
   it 'works' do
     cur = new = nil

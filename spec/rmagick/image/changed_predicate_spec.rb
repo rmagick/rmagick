@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, "#changed?" do
   it "returns true when a new image is instantiated" do
     image = described_class.new(2, 2)

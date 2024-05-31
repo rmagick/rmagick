@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, "#channel_mean" do
   it "returns the mean and std. dev for the RedChannel" do
     image = build_image

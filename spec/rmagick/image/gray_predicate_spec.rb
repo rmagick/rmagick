@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#gray?' do
   it 'works' do
     gray = described_class.new(20, 20) { |options| options.background_color = 'gray50' }

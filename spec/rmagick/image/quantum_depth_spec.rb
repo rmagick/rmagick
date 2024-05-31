@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#quantum_depth' do
   it 'works' do
     image = described_class.new(100, 100)

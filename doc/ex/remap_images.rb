@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rmagick'
 
 images = Magick::ImageList.new('images/Apple.miff', 'images/Rocks_On_Beach.miff', 'images/Leaf.miff')

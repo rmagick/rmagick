@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rmagick'
 
 # This example demonstrates the mask attribute. The mask image must

@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require 'rmagick'
 
 buttons = Magick::ImageList.new
 
 # Read 25 alphabet image files, scale to 1/4 size
-letter = 'A'
+letter = +'A'
 26.times do
   if letter != 'M' # "M" is not the same size as the other letters
     tiny = Magick::Image.read('images/Button_' + letter + '.gif').first

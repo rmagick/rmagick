@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Enum, '#initialize' do
   it 'works' do
     expect { described_class.new(:foo, 42) }.not_to raise_error

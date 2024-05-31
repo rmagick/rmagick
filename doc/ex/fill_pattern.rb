@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rmagick'
 
 # Demonstrate the Magick::Draw#fill_pattern and #stroke_pattern attributes.

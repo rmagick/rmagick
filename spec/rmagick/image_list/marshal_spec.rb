@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::ImageList, "#marshal" do
   it "works" do
     image_list1 = described_class.new(*Dir[IMAGES_DIR + '/Button_*.gif'])

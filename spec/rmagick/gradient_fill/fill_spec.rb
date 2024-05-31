@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::GradientFill, '#fill' do
   it 'works' do
     image = Magick::Image.new(10, 10)

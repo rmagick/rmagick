@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # $Id: misc.rb,v 1.17 2010/03/21 01:43:01 baror Exp $
 # Copyright (C) 2009 Timothy P. Hunter
 module Magick

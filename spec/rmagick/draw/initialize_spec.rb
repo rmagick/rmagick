@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Draw, '#initialize' do
   it 'works' do
     yield_obj = nil

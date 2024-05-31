@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#scene' do
   it 'works' do
     image1 = described_class.new(100, 100)

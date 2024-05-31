@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick, '.colors' do
   it 'works' do
     result = described_class.colors

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#get_exif_by_number' do
   it 'works' do
     image = described_class.new(20, 20)

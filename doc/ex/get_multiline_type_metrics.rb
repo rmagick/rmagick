@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rmagick'
 
 TEXT = 'get\nmultiline\ntype\nmetrics'

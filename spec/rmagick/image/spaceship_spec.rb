@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, "#spaceship" do
   it "works" do
     image0 = described_class.read(IMAGES_DIR + '/Button_0.gif').first

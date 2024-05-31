@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 lib_dir = File.expand_path('../../lib', File.dirname(__FILE__))
 $LOAD_PATH.unshift(lib_dir) unless $LOAD_PATH.include?(lib_dir)
 require 'rubygems'
@@ -211,9 +213,9 @@ module RMagick
 
       msg = "\nWarning: Found more than one ImageMagick installation. This could cause problems at runtime.\n"
       versions.each do |vers, prefix, dir|
-        msg << "         #{dir}/Magick-config reports version #{vers} is installed in #{prefix}\n"
+        msg += "         #{dir}/Magick-config reports version #{vers} is installed in #{prefix}\n"
       end
-      msg << "Using #{versions[0][0]} from #{versions[0][1]}.\n\n"
+      msg += "Using #{versions[0][0]} from #{versions[0][1]}.\n\n"
       Logging.message msg
       message msg
     end

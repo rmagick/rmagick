@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # RMagick version of ImageMagick's "smile.c" example program.
 
 require 'rmagick'
