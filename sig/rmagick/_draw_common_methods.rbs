@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Magick
   interface _DrawCommonMethods
     def affine: (magick_real sx, magick_real rx, magick_real ry, magick_real sy, magick_real tx, magick_real ty) -> self

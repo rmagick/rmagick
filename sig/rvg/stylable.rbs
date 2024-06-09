@@ -8,7 +8,7 @@ module Magick
       def each_value: () { (Symbol, untyped) -> void } -> void
 
       # The "usual" deep_copy method doesn't copy a Struct correctly.
-      def deep_copy: (?untyped? _h) -> Styles
+      def deep_copy: (?untyped _h) -> Styles
 
       def self.new: (*untyped obj) -> Styles
     end

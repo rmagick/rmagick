@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 module Magick
   class ImageList
     include Enumerable[Image]
     include Comparable
-      # The methods of Magick::Image class can be called via method_missing
-      include _ImageCommonMethods
+    # The methods of Magick::Image class can be called via method_missing
+    include _ImageCommonMethods
 
     private
 
@@ -37,7 +39,7 @@ module Magick
            | (int start, int length, magick_image | Array[Image] image) -> void
     def at: () -> Image
     def each: () -> Enumerator[Image, self]
-            | () { (Image) -> void} -> void
+            | () { (Image) -> void } -> void
     def each_index: () -> Enumerator[Integer, self]
                   | () { (Integer) -> void } -> void
     def empty?: () -> bool
@@ -49,11 +51,11 @@ module Magick
     def hash: () -> Integer
     def include?: (untyped obj) -> bool
     def index: (Image | ImageList | Array[Image] obj) -> ::Integer?
-             | () { (Image) -> bool } -> Integer?
+             | () { (Image) -> boolish } -> Integer?
              | () -> ::Enumerator[Image, Integer?]
     def length: () -> Integer
-    def rindex: (Image | ImageList | Array[Image]  obj) -> ::Integer?
-              | () { (Image) -> bool } -> Integer?
+    def rindex: (Image | ImageList | Array[Image] obj) -> ::Integer?
+              | () { (Image) -> boolish } -> Integer?
               | () -> ::Enumerator[Image, Integer?]
     def sort!: () -> self
              | () { (Image a, Image b) -> Integer } -> self
@@ -77,7 +79,7 @@ module Magick
     def delete: (Image obj) -> Image?
               | [T] (Image obj) { (Image) -> T } -> (Image | T)
     def delete_at: (int ndx) -> Image?
-    def delete_if: () { (Image) -> bool } -> self
+    def delete_if: () { (Image) -> boolish } -> self
                  | () -> self
     def dup: -> ImageList
            | ...
@@ -86,7 +88,7 @@ module Magick
             | (Image image, Range[Integer] range) -> ImageList
             | (?int start, ?int length) { (Integer index) -> Image } -> ImageList
             | (Range[Integer] range) { (Integer index) -> Image } -> ImageList
-    def find_all: () { (Image) -> bool } -> ImageList
+    def find_all: () { (Image) -> boolish } -> ImageList
                 | () -> ImageList
     alias select find_all
     def from_blob: (string blob) -> self
@@ -102,15 +104,15 @@ module Magick
     def method_missing: (untyped meth_id, *untyped args) ?{ (*untyped, **untyped) -> untyped } -> untyped
     def new_image: (int cols, int rows, ?magick_fill fill) -> self
                  | (int cols, int rows, ?magick_fill fill) { (Image::Info) -> void } -> self
-    def partition: () { (Image) -> bool } -> [ImageList, ImageList]
+    def partition: () { (Image) -> boolish } -> [ImageList, ImageList]
     def ping: (*(File | string) files) -> self
             | (*(File | string) files) { (Image::Info) -> void } -> self
     def pop: () -> Image?
     def push: (*Image objs) -> self
     def read: (*(File | string) files) -> self
             | (*(File | string) files) { (Image::Info) -> void } -> self
-    def reject: () { (Image) -> bool } -> ImageList
-    def reject!: () { (Image) -> bool } -> self?
+    def reject: () { (Image) -> boolish } -> ImageList
+    def reject!: () { (Image) -> boolish } -> self?
     def replace: (ImageList | Array[Image] other) -> ImageList
     def respond_to?: (interned meth_id, ?bool priv) -> bool
     def reverse: -> ImageList
@@ -152,7 +154,7 @@ module Magick
     def optimize_layers: (LayerMethod method) -> ImageList
     def quantize: (?int number_colors, ?ColorspaceType colorspace, ?(DitherMethod | bool) dither, ?int tree_depth, ?bool measure_error) -> ImageList
     def to_blob: () -> String?
-               | () { (Image::Info) -> void} -> String?
+               | () { (Image::Info) -> void } -> String?
     def write: (File | string file) -> self
              | (File | string file) { (Image::Info) -> void } -> self
     def destroy!: () -> self

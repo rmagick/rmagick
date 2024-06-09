@@ -20,7 +20,7 @@ module Magick
       def to_s: () -> String
 
       # @private
-      def deep_copy: (?untyped? _h) -> String
+      def deep_copy: (?untyped _h) -> String
 
       # Add a <tt>moveto</tt> command. If <tt>abs</tt> is
       # <tt>true</tt> the coordinates are absolute, otherwise

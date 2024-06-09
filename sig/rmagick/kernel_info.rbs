@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Magick
   class KernelInfo
     def self.builtin: (KernelInfoType what, string geometry) -> KernelInfo
