@@ -17,7 +17,7 @@ module Magick
       include Duplicatable
 
       def initialize: (interned? text) -> void
-                    |  (interned? text) { (self) -> void } -> void
+                    | (interned? text) { (self) -> void } -> void
 
       # Create a new text chunk. Each chunk can have its own initial position and styles.
       # If <tt>x</tt> and <tt>y</tt> are omitted the text starts at the current text

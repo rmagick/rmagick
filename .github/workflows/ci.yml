@@ -16,10 +16,10 @@ jobs:
     timeout-minutes: 20
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Ruby 3.0
+    - name: Set up Ruby 3.3
       uses: ruby/setup-ruby@master
       with:
-        ruby-version: '3.0'
+        ruby-version: '3.3'
         bundler-cache: true
     - name: Build and test with Rake
       run: |

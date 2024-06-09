@@ -4,6 +4,7 @@ inherit_from:
 require:
   - rubocop-rspec
   - rubocop-performance
+  - rubocop-on-rbs
 
 AllCops:
   DefaultFormatter: fuubar
@@ -64,4 +65,7 @@ Style/Copyright:
   Enabled: false
 
 Style/DisableCopsWithinSourceCodeDirective:
+  Enabled: false
+
+Style/AccessorGrouping:
   Enabled: false

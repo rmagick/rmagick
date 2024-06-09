@@ -4,7 +4,7 @@ module Magick
     # During unit-testing it also has a deep_equal method.
     # @private
     class Transforms < Array[untyped]
-      def deep_copy: (?untyped? _h) -> Transforms
+      def deep_copy: (?untyped _h) -> Transforms
     end
 
     # Transformations are operations on the coordinate system.

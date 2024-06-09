@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Magick
   class Image
     include Comparable
@@ -29,7 +31,7 @@ module Magick
     def []=: (interned key_arg, String attr_arg) -> self
     def delay=: (int val) -> int
     def display: () -> self
-               | () { (Image::Info) -> void} -> self
+               | () { (Image::Info) -> void } -> self
     def marshal_dump: () -> [String, String]
     def marshal_load: ([string, string] ary) -> self
     def montage: () -> String?
@@ -37,9 +39,9 @@ module Magick
     def scene: () -> Integer
     def ticks_per_second=: (int tps) -> int
     def to_blob: () -> String?
-               | () { (Image::Info) -> void} -> String?
+               | () { (Image::Info) -> void } -> String?
     def write: (File | string file) -> self
-             | (File | string file) { (Image::Info) -> void} -> self
+             | (File | string file) { (Image::Info) -> void } -> self
     def destroy!: () -> self
     def destroyed?: () -> bool
 

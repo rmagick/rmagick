@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Magick
   class ImageMagickError < StandardError
     attr_reader magick_location: String

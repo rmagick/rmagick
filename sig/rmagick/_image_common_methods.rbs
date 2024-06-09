@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Magick
   interface _ImageCommonMethods
     # Magick::Image / Magick::ImageList common methods
@@ -304,7 +306,7 @@ module Magick
     def raise: (?int width, ?int height, ?bool raised) -> Image
     def random_threshold_channel: (Geometry | string geometry, *ChannelType channel) -> Image
     def recolor: (Array[magick_real] color_matrix) -> Image
-    def reduce_noise: (int radius)  -> Image
+    def reduce_noise: (int radius) -> Image
     def resample: (?magick_real x_resolution, ?magick_real y_resolution, ?FilterType filter, ?magick_real blur) -> Image
     def resample!: (?magick_real x_resolution, ?magick_real y_resolution, ?FilterType filter, ?magick_real blur) -> self
     def resize: (magick_real scale) -> Image

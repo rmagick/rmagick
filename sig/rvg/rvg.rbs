@@ -55,7 +55,7 @@ module Magick
     private
 
     def bgfill: () -> Magick::Pixel
-    def new_canvas: () ->  Magick::Image
+    def new_canvas: () -> Magick::Image
 
     public
 
