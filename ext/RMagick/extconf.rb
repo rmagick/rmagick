@@ -129,10 +129,8 @@ module RMagick
           # if linker does not recognizes '-Wl,-rpath,somewhere' option, it revert to original option
           $LDFLAGS = "#{original_ldflags} #{ldflags}"
         end
-
-        configure_archflags_for_osx($magick_package) if RUBY_PLATFORM.include?('darwin') # osx
-
       end
+
       $CPPFLAGS += ' $(optflags) $(debugflags) -fomit-frame-pointer'
     end
 
@@ -248,26 +246,6 @@ module RMagick
 
       Logging.message msg
       message msg
-    end
-
-    # issue #169
-    # set ARCHFLAGS appropriately for OSX
-    def configure_archflags_for_osx(magick_package)
-      return unless PKGConfig.libs_only_L(magick_package) =~ %r{-L(.+)/lib}
-
-      imagemagick_dir = Regexp.last_match(1)
-      command = Dir.glob(File.join(imagemagick_dir, "bin/*")).find { |file| File.executable? file }
-      fileinfo = `file #{command}`
-
-      # default ARCHFLAGS
-      archs = $ARCH_FLAG.scan(/-arch\s+(\S+)/).flatten
-
-      archflags = []
-      archs.each do |arch|
-        archflags << "-arch #{arch}" if fileinfo.include?(arch)
-      end
-
-      $ARCH_FLAG = archflags.join(' ') unless archflags.empty?
     end
 
     def search_paths_for_windows
