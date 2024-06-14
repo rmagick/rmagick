@@ -10,7 +10,7 @@ module Magick
 
     def initialize: (?magick_real? width, ?magick_real? height, ?real? x, ?real? y, ?GeometryValue? flag) -> void
     def self.from_s: (String str) -> Geometry
-    def to_s: -> String
+    def to_s: () -> String
   end
 end
 

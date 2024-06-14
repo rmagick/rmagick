@@ -69,3 +69,7 @@ Style/DisableCopsWithinSourceCodeDirective:
 
 Style/AccessorGrouping:
   Enabled: false
+
+RBS/Style/EmptyArgument:
+  Exclude:
+    - 'sig/rmagick/image_list.rbs'
