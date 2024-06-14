@@ -197,7 +197,7 @@ module Magick
       # Define grouped elements by calling RVG::Embellishable
       # methods within the associated block.
       def g: () -> Group
-           | { (Group) -> void } -> Group
+           | () { (Group) -> void } -> Group
     end
 
     # Methods that construct raster image objects within a container

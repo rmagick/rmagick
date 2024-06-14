@@ -3,8 +3,8 @@
 module Magick
   class Enum
     def initialize: (interned sym, int val) -> void
-    def to_s: -> String
-    def to_i: -> Integer
+    def to_s: () -> String
+    def to_i: () -> Integer
     def <=>: (Enum other) -> (-1 | 0 | 1 | nil)
     def ===: (Enum other) -> bool
     def |: (Enum other) -> Enum
@@ -12,11 +12,11 @@ module Magick
 
   interface _EnumInstanceMethod
     def initialize: (interned sym, int val) -> void
-    def inspect: -> String
+    def inspect: () -> String
   end
 
   interface _EnumClassMethod[T]
-    def values: -> Array[T]
+    def values: () -> Array[T]
   end
 
   class GeometryValue < Enum

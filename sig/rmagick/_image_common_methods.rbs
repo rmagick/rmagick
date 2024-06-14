@@ -22,7 +22,7 @@ module Magick
     def matte_replace: (int x, int y) -> Image
     def matte_floodfill: (int x, int y) -> Image
     def matte_fill_to_border: (int x, int y) -> Image
-    def matte_reset!: -> Image
+    def matte_reset!: () -> Image
     def resize_to_fill: (real ncols, ?real nrows, ?GravityType gravity) -> Image
     def resize_to_fill!: (real ncols, ?real nrows, ?GravityType gravity) -> Image
     alias crop_resized resize_to_fill
