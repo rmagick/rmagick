@@ -99,7 +99,7 @@ module Magick
     def iterations=: (int n) -> void
     def last: () -> Image?
             | (int n) -> ImageList
-    def marshal_dump: () -> (Array[(Integer | String)?])
+    def marshal_dump: () -> Array[(Integer | String)?]
     def marshal_load: (Array[(Integer | String)?] ary) -> void
     def method_missing: (untyped meth_id, *untyped args) ?{ (*untyped, **untyped) -> untyped } -> untyped
     def new_image: (int cols, int rows, ?magick_fill fill) -> self

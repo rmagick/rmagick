@@ -283,12 +283,6 @@ Naming/MethodParameterName:
     - 'lib/rvg/transformable.rb'
     - 'lib/rvg/units.rb'
 
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-RBS/Style/RedundantParentheses:
-  Exclude:
-    - 'sig/rmagick/image_list.rbs'
-
 # Offense count: 432
 # Configuration parameters: CountAsOne.
 RSpec/ExampleLength:
