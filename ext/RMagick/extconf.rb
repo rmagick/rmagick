@@ -279,20 +279,11 @@ module RMagick
     end
 
     def assert_can_compile!
-      assert_minimum_ruby_version!
       assert_has_dev_libs!
 
       # Check for compiler. Extract first word so ENV['CXX'] can be a program name with arguments.
       cxx = (ENV['CXX'] || RbConfig::CONFIG['CXX'] || 'g++').split.first
       exit_failure "No C++ compiler found in ${ENV['PATH']}. See mkmf.log for details." unless find_executable(cxx)
-    end
-
-    def assert_minimum_ruby_version!
-      supported = checking_for("Ruby version >= #{MIN_RUBY_VERS}") do
-        Gem::Version.new(RUBY_VERSION) >= Gem::Version.new(MIN_RUBY_VERS)
-      end
-
-      exit_failure "Can't install RMagick #{RMAGICK_VERS}. Ruby #{MIN_RUBY_VERS} or later required.\n" unless supported
     end
 
     def assert_has_dev_libs!
