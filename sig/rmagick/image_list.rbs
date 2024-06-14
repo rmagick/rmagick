@@ -64,16 +64,16 @@ module Magick
              | ...
     def collect: () { (Image) -> Image } -> ImageList
     def collect!: () { (Image) -> Image } -> self
-    def copy: ()-> ImageList
+    def copy: () -> ImageList
             | ...
-    def cur_image: ()-> Image
+    def cur_image: () -> Image
                  | ...
     alias map collect
     alias __map__ collect
     alias map! collect!
     alias __map__! collect!
-    def compact: ()-> ImageList
-    def compact!: ()-> self?
+    def compact: () -> ImageList
+    def compact!: () -> self?
     def concat: (ImageList | Array[Image] other) -> self
     def delay=: (int d) -> void
     def delete: (Image obj) -> Image?
@@ -81,7 +81,7 @@ module Magick
     def delete_at: (int ndx) -> Image?
     def delete_if: () { (Image) -> boolish } -> self
                  | () -> self
-    def dup: ()-> ImageList
+    def dup: () -> ImageList
            | ...
     def eql?: (ImageList | Array[Image] other) -> bool
     def fill: (Image image, ?int start, ?int length) -> ImageList
@@ -115,8 +115,8 @@ module Magick
     def reject!: () { (Image) -> boolish } -> self?
     def replace: (ImageList | Array[Image] other) -> ImageList
     def respond_to?: (interned meth_id, ?bool priv) -> bool
-    def reverse: ()-> ImageList
-    def reverse!: ()-> self
+    def reverse: () -> ImageList
+    def reverse!: () -> self
     def reverse_each: () { (Image) -> void } -> self
     def shift: () -> Image?
     def slice: (int index) -> ImageList?
@@ -127,7 +127,7 @@ module Magick
               | (Range[Integer] range) -> Image?
     def ticks_per_second=: (int t) -> void
     def to_a: () -> Array[Image]
-    def uniq: ()-> ImageList
+    def uniq: () -> ImageList
     def uniq!: () -> self?
     def unshift: (Image obj) -> self
     def values_at: (*int index) -> ImageList
