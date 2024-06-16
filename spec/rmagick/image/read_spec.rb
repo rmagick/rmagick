@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'timeout'
-
 RSpec.describe Magick::Image, '#read' do
   describe 'issue #200' do
     it 'raise error with nil argument' do
