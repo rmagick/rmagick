@@ -140,9 +140,8 @@ exit
     </p>
 
     <p>
-      Line 1 requires <span class="sup"><a href="#rubygems">2</a></span> the rmagick.rb file, which defines the <b>Magick</b> module. The Magick module contains
-      3 major classes, <b>ImageList</b>, <b>Image</b>, and <b>Draw</b>. This section - <em>Basic Concepts</em> - describes the ImageList and Image classes. The
-      Draw class is explained in the
+      Line 1 requires the rmagick.rb file, which defines the <b>Magick</b> module. The Magick module contains 3 major classes, <b>ImageList</b>, <b>Image</b>,
+      and <b>Draw</b>. This section - <em>Basic Concepts</em> - describes the ImageList and Image classes. The Draw class is explained in the
       <em><a href="#drawing">Drawing on and adding text to images</a></em>
       section, below.
     </p>
@@ -1249,7 +1248,7 @@ exit
         <p>
           Here's an illustration of the default drawing coordinate system. The origin is in the top left corner. The x axis extends to the right. The y axis
           extends downward. The units are pixels. 0&deg; is at 3 o'clock and rotation is clockwise. The units of rotation are usually degrees.<sup
-            ><a href="#degrees">3</a></sup
+            ><a href="#degrees">2</a></sup
           >
         </p>
 
@@ -1413,21 +1412,8 @@ exit
         file and view it with a separate image viewer.
       </p>
 
-      <p id="rubygems">
-        <span class="sup">2</span>If you installed RMagick using <a href="https://rubygems.org/">Rubygems</a> you must set up the RubyGems environment before
-        using RMagick. You can do one of
-      </p>
-
-      <ol>
-        <li>add the <code>require 'rubygems'</code> statement to your program</li>
-
-        <li>use the -rubygems command line option</li>
-
-        <li>add <code>rubygems</code> to the RUBYOPT environment variable</li>
-      </ol>
-
       <p id="degrees">
-        <span class="sup">3</span>The rotation attributes <code>rx</code> and <code>ry</code> in the
+        <span class="sup">2</span>The rotation attributes <code>rx</code> and <code>ry</code> in the
         <a href="struct.html#AffineMatrix"><code>AffineMatrix</code></a> class use radians instead of degrees.
       </p>
     </div>
