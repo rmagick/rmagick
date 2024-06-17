@@ -744,7 +744,7 @@ ImageList_optimize_layers(VALUE self, VALUE method)
  * No Ruby usage (internal function)
  *
  * Notes:
- *   - this simply calls ImageList.new() in RMagick.rb
+ *   - this simply calls ImageList.new() in rmagick_internal.rb
  *
  * @return a new imagelist
  */
