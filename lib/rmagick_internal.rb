@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-# $Id: RMagick.rb,v 1.84 2009/09/15 22:08:41 rmagick Exp $
+# $Id: rmagick_internal.rb,v 1.84 2009/09/15 22:08:41 rmagick Exp $
 #==============================================================================
 #                  Copyright (C) 2009 by Timothy P. Hunter
-#   Name:       RMagick.rb
+#   Name:       rmagick_internal.rb
 #   Author:     Tim Hunter
 #   Purpose:    Extend Ruby to interface with ImageMagick.
 #   Notes:      RMagick2.so defines the classes. The code below adds methods

@@ -158,7 +158,7 @@ Things that can go wrong
 The [RMagick installation FAQ][faq] has answers to the most commonly reported
 problems, though may be out of date.
 
-### Can't install RMagick. Can't find libMagick or one of the dependent libraries. Check the mkmf.log file for more detailed information
+### Can't install RMagick. Can't find libMagickCore-XXXX.so or one of the dependent libraries. Check the mkmf.log file for more detailed information
 
 Typically this message means that one or more of the libraries that ImageMagick
 depends on hasn't been installed. Examine the mkmf.log file in the ext/RMagick
@@ -171,15 +171,14 @@ diagnose the problem. Also see [this FAQ][libmagick-faq].
 If you get a message like this:
 
 ```sh
-$DIR/RMagick.rb:11:in `require': libMagick.so.0:
-  cannot open shared object file: No such file or directory -
-  $DIR/RMagick2.so (LoadError)
+... /core_ext/kernel_require.rb>:136:in `require': cannot load such file -- RMagick2.so (LoadError)
+  (snip)
 ```
 
 you probably do not have the directory in which the ImageMagick library
 is installed in your load path. An easy way to fix this is to define
 the directory in the `LD_LIBRARY_PATH` environment variable. For
-example, suppose you installed the ImageMagick library `libMagick.so` in
+example, suppose you installed the ImageMagick library `libMagickCore-XXXX.so` in
 `/usr/local/lib`. (By default this is where it is installed.) Create the
 `LD_LIBRARY_PATH` variable like this:
 

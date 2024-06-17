@@ -349,7 +349,7 @@ EXTERN VALUE Class_Chromaticity;
 EXTERN VALUE Class_Color;
 EXTERN VALUE Class_Font;
 EXTERN VALUE Class_Geometry;
-EXTERN VALUE Class_GeometryValue;   // Defined in RMagick.rb
+EXTERN VALUE Class_GeometryValue;   // Defined in rmagick_internal.rb
 EXTERN VALUE Class_Pixel;
 EXTERN VALUE Class_Point;
 EXTERN VALUE Class_PolaroidOptions;
