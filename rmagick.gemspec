@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
   s.metadata['bug_tracker_uri'] = 'https://github.com/rmagick/rmagick/issues'
   s.metadata['documentation_uri'] = 'https://rmagick.github.io/'
   s.metadata['changelog_uri'] = 'https://github.com/rmagick/rmagick/blob/main/CHANGELOG.md'
+  s.metadata['rubygems_mfa_required'] = 'true'
 
   tracked_files = `git ls-files`.split($OUTPUT_RECORD_SEPARATOR)
   file_exclusion_regex = /\A(doc|benchmarks|examples|spec|Steepfile)/
