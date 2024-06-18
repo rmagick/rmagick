@@ -338,7 +338,7 @@
         <dd>
           You can specify any of these Image::Info attributes in the
           <em>optional arguments</em> block: <a href="info.html#colorspace">colorspace</a>, <a href="info.html#depth">depth</a>,
-          <a href="info.html#dither">dither</a>, <a href="info.html#interlace">interlace</a>, and <a href="info.html#type">type</a>.
+          <a href="info.html#dither">dither</a>, <a href="info.html#interlace">interlace</a>, and <a href="info.html#image_type">image_type</a>.
         </dd>
       </dl>
 
@@ -457,10 +457,7 @@ img = Magick::Image.capture { |options|
 
       <h4>See also</h4>
 
-      <p>
-        <a href="image2.html#import_pixels"><code>import_pixels</code></a
-        >, <a href="image3.html#store_pixels"><code>store_pixels</code></a>
-      </p>
+      <p><a href="image2.html#import_pixels">import_pixels</a>, <a href="image3.html#store_pixels">store_pixels</a></p>
 
       <h4>Magick API</h4>
 
@@ -492,10 +489,7 @@ img = Magick::Image.capture { |options|
 
       <h4>Example</h4>
 
-      <p>
-        See <a href="image3.html#to_blob"><code>to_blob</code></a
-        >.
-      </p>
+      <p>See <a href="image3.html#to_blob">to_blob</a>.</p>
 
       <h4>Magick API</h4>
 
@@ -530,9 +524,7 @@ img = Magick::Image.capture { |options|
 
         <dt>fill</dt>
 
-        <dd>
-          A <a href="struct.html#fill"><code>Fill</code></a> object
-        </dd>
+        <dd>A <a href="struct.html#fill">Fill</a> object</dd>
       </dl>
 
       <h4>Returns</h4>
@@ -551,7 +543,7 @@ img = Magick::Image.new(256, 64) { |options|
       <h4>See also</h4>
 
       <p>
-        <a href="ilist.html#new_image"><code>ImageList.new_image</code></a>
+        <a href="ilist.html#new_image">ImageList.new_image</a>
       </p>
 
       <h4>Magick API</h4>
@@ -573,7 +565,7 @@ img = Magick::Image.new(256, 64) { |options|
 
       <p>
         Creates one or more images from the image file, omitting the pixel data. Only the attributes are stored in the images. This method is faster than
-        <code><a href="#read">read</a></code> and uses less memory.
+        <a href="#read">read</a> and uses less memory.
       </p>
 
       <h4>Arguments</h4>
@@ -598,7 +590,7 @@ p cheetah[0].columns #=&gt; 1024
       <h4>See also</h4>
 
       <p>
-        <a href="#read"><code>read</code></a>
+        <a href="#read">read</a>
       </p>
 
       <h4>Magick API</h4>
@@ -651,7 +643,7 @@ animated = Magick::Image.read("animated.gif")
       <h4>See also</h4>
 
       <p>
-        <a href="#ping"><code>ping</code></a>
+        <a href="#ping">ping</a>
       </p>
 
       <h4>Note</h4>
@@ -702,7 +694,7 @@ img = Magick::Image.read_inline(content)
       <h4>See also</h4>
 
       <p>
-        <a href="#read"><code>read</code></a>
+        <a href="#read">read</a>
       </p>
     </div>
 
@@ -740,10 +732,7 @@ img = Magick::Image.read_inline(content)
 
       <h4>See also</h4>
 
-      <p>
-        <a href="#aset"><code>[ ]=</code></a
-        >, <a href="image3.html#properties"><code>properties</code></a>
-      </p>
+      <p><a href="#aset">[ ]=</a>, <a href="image3.html#properties">properties</a></p>
 
       <h4>Magick API</h4>
 
@@ -779,10 +768,7 @@ img = Magick::Image.read_inline(content)
 
       <h4>See also</h4>
 
-      <p>
-        <a href="#aref">[<code>&nbsp;]</code></a
-        >, <a href="image3.html#properties"><code>properties</code></a>
-      </p>
+      <p><a href="#aref">[ ]</a>, <a href="image3.html#properties">properties</a></p>
 
       <h4>Magick API</h4>
 
@@ -3360,7 +3346,7 @@ mona.change_geometry!('320x240') { |cols, rows, img|
     </div>
 
     <div class="sig">
-      <h3 id="compress_colormap">compress_colormap</h3>
+      <h3 id="compress_colormap_bang">compress_colormap!</h3>
 
       <p><span class="arg">img</span>.compress_colormap! -&gt; <em>self</em></p>
     </div>

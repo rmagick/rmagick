@@ -270,8 +270,8 @@
       A <code>Pixel</code> object contains the numeric representation of a color. The <a href="struct.html#Pixel.from_color">Pixel.from_color</a> method
       converts a color name to a pixel. There are two methods to convert a pixel to a color name. The
       <a href="struct.html#Pixel.to_color">Pixel#to_color</a> method requires that you specify whether the alpha (opacity) channel is used, the depth (8 or 16)
-      and the color standard to use. The <a href="image3.html#to_color">Image#to_color</a> method uses the image's depth and
-      <a href="imageattrs.html#matte">matte</a> attributes. If <code>matte</code> is false the opacity value is ignored.
+      and the color standard to use. The <a href="image3.html#to_color">Image#to_color</a> method uses the image's
+      <a href="imageattrs.html#depth">depth</a> attribute and <a href="image1.html#alpha">alpha</a> method.
     </p>
 
     <p><em>Hint:</em> You can specify the transparent color as "none", "transparent", "#00000000", or rgba(0, 0, 0, 0.0).</p>
@@ -361,7 +361,7 @@
 
     <p>
       GIF format images are PseudoClass. JPEG format images are DirectClass. You can change the class of a image with the
-      <code><a href="imageattrs.html#class_type_eq">class_type=</a></code>
+      <code><a href="imageattrs.html#class_type">class_type</a></code>
       method.
     </p>
 
