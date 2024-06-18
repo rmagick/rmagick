@@ -3,7 +3,7 @@
   "build": {
     "dockerfile": "../Dockerfile",
     "args": {
-      "RUBY_VERSION": "3.1.2",
+      "RUBY_VERSION": "3.3.3",
       "IMAGEMAGICK_VERSION": "6.9.13-11"
     }
   },
