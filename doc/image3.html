@@ -874,7 +874,7 @@ end
       <p><a href="image2.html#function_channel">function_channel</a></p>
 
       <p>
-        The <a href="struct.html#view">Image:View</a> class supports operations on individual pixels and collections of pixels, as well as operations on
+        The <a href="struct.html#view">Image::View</a> class supports operations on individual pixels and collections of pixels, as well as operations on
         channels within pixels. See <a href="#view">view</a>, below.
       </p>
 
@@ -1282,7 +1282,7 @@ random_threshold_channel(geom, Magick::RedChannel)
 
       <p>
         <span class="arg">img</span>.resize(<span class="arg">new_width</span>, <span class="arg">new_height</span>, <em>filter</em>=<a
-          href="constants.html#FilterTypes"
+          href="constants.html#FilterType"
           >LanczosFilter</a
         >, <em>support</em>=1.0) -&gt; <em>image</em><br />
         <span class="arg">img</span>.resize(<span class="arg">scale_factor</span>) -&gt; <em>image</em>
@@ -1313,7 +1313,7 @@ random_threshold_channel(geom, Magick::RedChannel)
         <dt>filter</dt>
 
         <dd>
-          The <a href="constants.html#FilterTypes">filter</a> to use when resizing. If you do not specify a filter argument, resize uses the value of the
+          The <a href="constants.html#FilterType">filter</a> to use when resizing. If you do not specify a filter argument, resize uses the value of the
           receiver's <a href="imageattrs.html#filter">filter attribute</a>.
           <span class="imquote"
             >Most of the filters are FIR (finite impulse response), however, Bessel, Gaussian, and Sinc are IIR (infinite impulse response). Bessel and Sinc are
@@ -1323,10 +1323,7 @@ random_threshold_channel(geom, Magick::RedChannel)
 
         <dt>support</dt>
 
-        <dd>
-          Values &gt; 1 increase the blurriness. Values &lt; 1 increase the sharpness. If this argument is not specified, <code>resize</code> uses the value of
-          the receiver's <a href="imageattrs.html#blur">blur</a> attribute.
-        </dd>
+        <dd>Values &gt; 1 increase the blurriness. Values &lt; 1 increase the sharpness.</dd>
 
         <dt>scale_factor</dt>
 
@@ -1356,7 +1353,7 @@ random_threshold_channel(geom, Magick::RedChannel)
       <h3 id="resize_bang">resize!</h3>
 
       <p>
-        <span class="arg">img</span>.resize!(<em>new_width</em>, <em>new_height</em>, <em>filter</em>=<a href="constants.html#FilterTypes">LanczosFilter</a>,
+        <span class="arg">img</span>.resize!(<em>new_width</em>, <em>new_height</em>, <em>filter</em>=<a href="constants.html#FilterType">LanczosFilter</a>,
         <em>support</em>=1.0) -&gt; <em>self</em><br />
         <span class="arg">img</span>.resize!(<span class="arg">scale_factor</span>) -&gt; <em>self</em>
       </p>
@@ -1632,7 +1629,7 @@ random_threshold_channel(geom, Magick::RedChannel)
       <p>
         Rotate the receiver by the specified angle. Positive angles rotate clockwise while negative angles rotate counter-clockwise. New pixels introduced by
         the rotation are the same color as the current
-        <a href="imageattrs.html#background_color">background color</a>. Set the background color to "none" to make the new pixels transparent black.
+        <a href="imageattrs.html#background_color">background_color</a>. Set the background color to "none" to make the new pixels transparent black.
       </p>
 
       <h4>Arguments</h4>
@@ -2080,7 +2077,7 @@ random_threshold_channel(geom, Magick::RedChannel)
 
         <dd>
           The desired depth (must be no greater than
-          <a href="constants.html">QuantumDepth</a>)
+          <a href="constants.html#Miscellaneous_constants">QuantumDepth</a>)
         </dd>
       </dl>
 
@@ -3368,8 +3365,7 @@ thumbnail = img.thumbnail(img.columns * 0.09, img.rows * 0.09)
 
       <p>
         Returns the color name for a pixel. Unlike the
-        <code>Pixel#to_color</code> method, to_color uses the <a href="imageattrs.html#depth">depth</a> and <a href="imageattrs.html#matte">matte</a> attributes
-        of the image to determine the color name.
+        <code>Pixel#to_color</code> method, to_color uses the <a href="imageattrs.html#depth">depth</a> attribute of the image to determine the color name.
       </p>
 
       <h4>Arguments</h4>
@@ -4330,7 +4326,7 @@ end
 
       <p>
         If the argument is an open file, ImageMagick will write the image in its current format. You can force a different format by setting the image's
-        <a href="imageattrs.html#Image.format">format</a> attribute.
+        <a href="imageattrs.html#format">format</a> attribute.
       </p>
 
       <h4>Arguments</h4>

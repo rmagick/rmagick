@@ -250,7 +250,7 @@
 
     <h3 class="const" id="AlignType">AlignType</h3>
 
-    <p>Specify text alignment. See <a href="draw.html#Draw.align_eq">align=</a>, <a href="draw.html#Draw.text_align">text_align</a>.</p>
+    <p>Specify text alignment. See <a href="draw.html#align_eq">align=</a>, <a href="draw.html#text_align">text_align</a>.</p>
 
     <dl>
       <dt>UndefinedAlign</dt>
@@ -324,7 +324,7 @@
       Specify an image channel. A channel is a color component of a pixel. In the RGB colorspace the channels are red, green, and blue. There may also be an
       alpha (transparency/opacity) channel. In the CMYK colorspace the channels area cyan, magenta, yellow, and black. In the HSL colorspace the channels are
       hue, saturation, and lightness. In the Gray colorspace the only channel is gray. See
-      <a href="image1.html#channel">Image#channel</a> and <a href="info.html#channel">Image::Info#channel=</a>.
+      <a href="image1.html#channel">Image#channel</a> and <a href="info.html#channel">Image::Info#channel</a>.
     </p>
 
     <dl>
@@ -633,8 +633,8 @@
 
       <dd>
         If the composite image's
-        <a href="imageattrs.html#matte">matte</a> attribute is <code>true</code>, copy the opacity channel from the composite image to the target image.
-        Otherwise, set the target image pixel's opacity to the intensity of the corresponding pixel in the composite image.
+        <a href="image1.html#alpha_q">alpha?</a> is <code>true</code>, copy the opacity channel from the composite image to the target image. Otherwise, set the
+        target image pixel's opacity to the intensity of the corresponding pixel in the composite image.
       </dd>
 
       <dt>CopyCompositeOp</dt>
@@ -1007,7 +1007,7 @@
     <h3 class="const" id="DecorationType">DecorationType</h3>
 
     <p>
-      Use with the <a href="draw.html#decorate">decorate=</a> method in the Draw class to specify the text decoration for the
+      Use with the <a href="draw.html#decorate">decorate</a> method in the Draw class to specify the text decoration for the
       <a href="draw.html#annotate">annotate</a> method.
     </p>
 
@@ -1102,7 +1102,7 @@
     <h3 class="const" id="DitherMethod">DitherMethod</h3>
 
     <p>
-      Specify the method of dithering for <a href="image1.html#remap">remap</a>, <a href="image3.html#quantize">quantize</a>,
+      Specify the method of dithering for <a href="image3.html#remap">remap</a>, <a href="image3.html#quantize">quantize</a>,
       <a href="image3.html#posterize">posterize</a>, etc.
     </p>
 
@@ -1326,7 +1326,7 @@
     <p>
       Indicate
       <span class="imquote">the type classification of the image.</span> See <a href="imageattrs.html#image_type">image_type</a> and
-      <a href="info.html#image_type_eq">image_type=</a>.
+      <a href="info.html#image_type">image_type=</a>.
     </p>
 
     <dl>
@@ -1518,10 +1518,7 @@
       <dt>ArctanFunction</dt>
     </dl>
 
-    <p>
-      For FilterInterpolatePixel, specify the filter with the
-      <a href="imageattrs.html#filter">filter</a> attribute. Specify the sharpness with the <a href="imageattrs.html#blur">blur</a> attribute.
-    </p>
+    <p>For FilterInterpolatePixel, specify the filter with the <a href="imageattrs.html#filter">filter</a> attribute.</p>
 
     <h3 class="const" id="MetricType">MetricType</h3>
 

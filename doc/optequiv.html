@@ -158,7 +158,7 @@
         <tr>
           <td>-alpha <em>type</em></td>
 
-          <td>Image#<a href="imageattrs.html#alpha">alpha=</a><em>type</em></td>
+          <td>Image#<a href="image1.html#alpha">alpha</a>(<em>type</em>)</td>
         </tr>
 
         <tr>
@@ -226,7 +226,7 @@
         <tr>
           <td>-auto-orient</td>
 
-          <td>Image#<a href="image1.html#auto-orient">auto-orient</a></td>
+          <td>Image#<a href="image1.html#auto_orient">auto_orient</a></td>
         </tr>
 
         <tr>
@@ -265,7 +265,7 @@
         <tr>
           <td>-black-point-compensation</td>
 
-          <td>Image#<a href="imageattrs.html#black_point_compensation">black_point_compensation</a>= <code>true</code></td>
+          <td>Image#<a href="imageattrs.html#black_point_compensation">black_point_compensation=</a><code>true</code></td>
         </tr>
 
         <tr>
@@ -289,8 +289,7 @@
           <td>-blue-primary <em>x</em>,<em>y</em></td>
 
           <td>
-            Image#<a href="imageattrs.html#chromaticity">chromaticity=</a>
-            <em><a href="struct.html#Chromaticity">chromaticity</a></em>
+            Image#<a href="imageattrs.html#chromaticity">chromaticity=</a><em><a href="struct.html#Chromaticity">chromaticity</a></em>
           </td>
         </tr>
 
@@ -372,7 +371,7 @@
         <tr>
           <td>-clip-mask</td>
 
-          <td>Image#<a href="imageattrs.html#mask">mask</a>(image)</td>
+          <td>Image#<a href="image2.html#mask">mask</a>(image)</td>
         </tr>
 
         <tr>
@@ -564,11 +563,7 @@
         <tr>
           <td>-delay <em>ticks</em>x<em>ticks-per-second</em></td>
 
-          <td>
-            Image#<a href="imageattrs.html#ticks">ticks=</a><em>ticks</em><br />
-            Image#<a href="imageattrs.html#ticks_per_second">ticks_per_second=</a>
-            <em>ticks-per-second</em>
-          </td>
+          <td>Image#<a href="imageattrs.html#ticks_per_second">ticks_per_second=</a><em>ticks-per-second</em></td>
         </tr>
 
         <tr>
@@ -743,15 +738,15 @@
         <tr>
           <td>-extract <em>width</em>x<em>height</em>+<em>x</em>+<em>y</em></td>
 
-          <td>Image::Info.<a href="info.html#extract">extract=</a>"<em>width</em>x<em>height</em>+ <em>x</em>+<em>y</em>"</td>
+          <td>Image::Info#<a href="info.html#extract">extract=</a>"<em>width</em>x<em>height</em>+ <em>x</em>+<em>y</em>"</td>
         </tr>
 
         <tr>
           <td>-family <em>font_family</em></td>
 
           <td>
-            Draw#<a href="draw.html#fill">font_family</a>(<em>font_family</em>) (for drawing)<br />
-            Draw#<a href="draw.html#fill_eq">font_family=</a><em>font_family</em> (for annotation)
+            Draw#<a href="draw.html#font_family">font_family</a>(<em>font_family</em>) (for drawing)<br />
+            Draw#<a href="draw.html#font_family_eq">font_family=</a><em>font_family</em> (for annotation)
           </td>
         </tr>
 
@@ -889,7 +884,7 @@
           <td>
             Draw#<a href="draw.html#gravity">gravity</a>(<em><a href="constants.html#GravityType">type</a></em
             >) (for drawing)<br />
-            Draw#<a href="draw.html#gravity_eq">gravity=</a> <em><a href="constants.html#GravityType">type</a></em> (for annotation)
+            Draw#<a href="draw.html#gravity_eq">gravity=</a><em><a href="constants.html#GravityType">type</a></em> (for annotation)
           </td>
         </tr>
 
@@ -897,8 +892,7 @@
           <td>-green-primary <em>x</em>,<em>y</em></td>
 
           <td>
-            Image#<a href="imageattrs.html#chromaticity">chromaticity=</a>
-            <em><a href="struct.html#Chromaticity">chromaticity</a></em>
+            Image#<a href="imageattrs.html#chromaticity">chromaticity=</a><em><a href="struct.html#Chromaticity">chromaticity</a></em>
           </td>
         </tr>
 
@@ -917,7 +911,7 @@
         <tr>
           <td>-highlight-color <em>color</em></td>
 
-          <td>Image#compare_channel(ref_image, metric[, channels...]) { self.<a href="image1.html#compare_channel">highlight_color</a> <em>color</em>}</td>
+          <td>Image#<a href="image1.html#compare_channel">compare_channel</a>(ref_image, metric[, channels...]) [ { optional arguments } ]</td>
         </tr>
 
         <tr>
@@ -1125,7 +1119,7 @@
         <tr>
           <td>-lowlight-color <em>color</em></td>
 
-          <td>Image#compare_channel(ref_image, metric[, channels...]) { self.<a href="image1.html#compare_channel">lowlight_color</a> <em>color</em>}</td>
+          <td>Image#<a href="image1.html#compare_channel">compare_channel</a>(ref_image, metric[, channels...]) [ { optional arguments } ]</td>
         </tr>
 
         <tr>
@@ -1137,16 +1131,13 @@
         <tr>
           <td>-map <em>filename</em></td>
 
-          <td>
-            Image#<a href="image2.html#map">map</a>(<em>reference</em>, <em>dither</em>=<code>false</code>)<br />
-            ImageList#<a href="ilist.html#map">map</a>(<em>reference</em>, <span class="arg">dither</span>=<code>false</code>)
-          </td>
+          <td>No equivalent</td>
         </tr>
 
         <tr>
           <td>-mask filename</td>
 
-          <td>Image#<a href="image1.html#add_composite_mask">add_composite_mask</a>(image)</td>
+          <td>Image#<a href="image1.html#add_compose_mask">add_compose_mask</a>(image)</td>
         </tr>
 
         <tr>
@@ -1185,16 +1176,13 @@
         <tr>
           <td>-monitor</td>
 
-          <td>Image#<a href="imageattrs.html#monitor">monitor=</a></td>
+          <td>No equivalent</td>
         </tr>
 
         <tr>
           <td>-monochrome</td>
 
-          <td>
-            Image#<a href="imageattrs.html#image_type">image_type=</a>
-            <a href="constants.html#ImageType">Magick::BilevelType</a>
-          </td>
+          <td>Image#<a href="imageattrs.html#image_type">image_type=</a><a href="constants.html#ImageType">Magick::BilevelType</a></td>
         </tr>
 
         <tr>
@@ -1270,7 +1258,7 @@
         <tr>
           <td>-ordered-dither <em>N</em>x<em>N</em></td>
 
-          <td>Image#<a href="image1.html#ordered_dither">ordered_dither</a>(<em>N</em>)</td>
+          <td>Image#<a href="image2.html#ordered_dither">ordered_dither</a>(<em>N</em>)</td>
         </tr>
 
         <tr>
@@ -1432,8 +1420,7 @@
           <td>-red-primary <em>x</em>,<em>y</em></td>
 
           <td>
-            Image#<a href="imageattrs.html#chromaticity">chromaticity=</a>
-            <em><a href="struct.html#Chromaticity">chromaticity</a></em>
+            Image#<a href="imageattrs.html#chromaticity">chromaticity=</a><em><a href="struct.html#Chromaticity">chromaticity</a></em>
           </td>
         </tr>
 
@@ -1456,7 +1443,7 @@
           </td>
 
           <td>
-            Image#<a href="image1.html#remap">remap</a>(<em>remap_image</em>, <em>dither</em>=RiemersmaDitherMethod)<br />
+            Image#<a href="image3.html#remap">remap</a>(<em>remap_image</em>, <em>dither</em>=RiemersmaDitherMethod)<br />
             ImageList#<a href="ilist.html#remap">remap</a>()
           </td>
         </tr>
@@ -1543,8 +1530,8 @@
           <td>-scene <em>value</em></td>
 
           <td>
-            ImageList#<a href="ilist.html#scene">scene=</a> <em>value</em><br />
-            Image::Info#<a href="info.html#scene">scene=</a> <em>value</em>
+            ImageList#<a href="ilist.html#scene">scene=</a><em>value</em><br />
+            Image::Info#<a href="info.html#scene">scene=</a><em>value</em>
           </td>
         </tr>
 
@@ -1573,7 +1560,7 @@
           <td>-selective-blur <em>geometry</em></td>
 
           <td>
-            Image#<a href="image3.html#selective_blur">selective_blur</a>(<em>radius</em>, <em>sigma</em>, <em>threshold</em> [,&nbsp;<em
+            Image#<a href="image3.html#selective_blur_channel">selective_blur_channel</a>(<em>radius</em>, <em>sigma</em>, <em>threshold</em> [,&nbsp;<em
               ><a href="constants.html#ChannelType">channel</a></em
             >...])
           </td>
@@ -1598,7 +1585,7 @@
           <td>-set <em>attribute</em> <em>value</em></td>
 
           <td>
-            Image#<a href="image1.html#aset">[</a>'<em>attribute</em>'<a href="image1.html#aset">] =</a>
+            Image#<a href="image1.html#aset">['<em>attribute</em>']=</a>
             <em>value</em>
           </td>
         </tr>
@@ -1729,8 +1716,8 @@
           <td>-stretch <em>font_stretch</em></td>
 
           <td>
-            Draw#<a href="draw.html#stroke">font_stretch</a>(<em>font_stretch</em>) (for drawing)<br />
-            Draw#<a href="draw.html#stroke_eq">font_stretch=</a><em>font_stretch</em> (for annotation)
+            Draw#<a href="draw.html#font_stretch">font_stretch</a>(<em>font_stretch</em>) (for drawing)<br />
+            Draw#<a href="draw.html#font_stretch_eq">font_stretch=</a><em>font_stretch</em> (for annotation)
           </td>
         </tr>
 
@@ -1762,8 +1749,8 @@
           <td>-style <em>font_style</em></td>
 
           <td>
-            Draw#<a href="draw.html#stroke">font_style</a>(<em>font_style</em>) (for drawing)<br />
-            Draw#<a href="draw.html#stroke_eq">font_style=</a><em>font_style</em> (for annotation)
+            Draw#<a href="draw.html#font_style">font_style</a>(<em>font_style</em>) (for drawing)<br />
+            Draw#<a href="draw.html#font_style_eq">font_style=</a><em>font_style</em> (for annotation)
           </td>
         </tr>
 
@@ -1809,19 +1796,19 @@
         <tr>
           <td>-thumbnail <em>width</em>x<em>height</em></td>
 
-          <td>Image#<a href="image1.html#thumbnail">thumbnail</a>(<em>width</em>, <em>height</em>)</td>
+          <td>Image#<a href="image3.html#thumbnail">thumbnail</a>(<em>width</em>, <em>height</em>)</td>
         </tr>
 
         <tr>
           <td>-tile <em>filename</em></td>
 
-          <td>Draw#<a href="draw.html#tile">tile</a>(<em>image</em>)</td>
+          <td>Draw#<a href="draw.html#tile_eq">tile=</a><em>image</em></td>
         </tr>
 
         <tr>
           <td>-tile-offset <em>+x+y</em></td>
 
-          <td>Image::Info#<a href="info.html#tile_offset">tile_offset</a> = "+x+y"</td>
+          <td>Image::Info#<a href="info.html#tile_offset">tile_offset=</a>"+x+y"</td>
         </tr>
 
         <tr>
@@ -1901,9 +1888,7 @@
         <tr>
           <td>-type <em>type</em></td>
 
-          <td>
-            Image#type=<em><a href="constants.html#ImageType">type</a></em>
-          </td>
+          <td>No equivalent</td>
         </tr>
 
         <tr>
@@ -1912,7 +1897,7 @@
           <td>
             Draw#<a href="draw.html#text_undercolor">text_undercolor</a>(<em>color</em>)<br />
 
-            Draw#<a href="draw.html#undercolor">undercolor=</a><em>color</em>
+            Draw#<a href="draw.html#undercolor_eq">undercolor=</a><em>color</em>
           </td>
         </tr>
 
@@ -1953,15 +1938,13 @@
         <tr>
           <td>-version</td>
 
-          <td>
-            <a href="constants.html#Miscellaneous_constants">Magick::Long_version</a>
-          </td>
+          <td>Magick::<a href="constants.html#Miscellaneous_constants">Long_version</a></td>
         </tr>
 
         <tr>
           <td>-view <em>string</em></td>
 
-          <td><a href="info.html#view">Image::Info#view=</a><em>string</em></td>
+          <td>Image::Info#<a href="info.html#view">view=</a><em>string</em></td>
         </tr>
 
         <tr>

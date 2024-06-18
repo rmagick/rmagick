@@ -1127,7 +1127,7 @@ i = Magick::ImageList.new("images/Button_A.gif", "images/Button_B.gif")
 
         <dt>gravity=</dt>
 
-        <dd>The <a href="constants.html#GravityType">direction</a> used when adding the tile labels. (See <a href="draw.html#Draw.annotate">annotate</a>.)</dd>
+        <dd>The <a href="constants.html#GravityType">direction</a> used when adding the tile labels. (See <a href="draw.html#annotate">Draw#annotate</a>.)</dd>
 
         <dt>matte_color=</dt>
 
@@ -1270,7 +1270,7 @@ i = Magick::ImageList.new("images/Button_A.gif", "images/Button_B.gif")
 
       <h4>See also</h4>
       <a href="#coalesce">coalesce</a>, <a href="#flatten_images">flatten_images</a>, <a href="#montage">montage</a>,
-      <a href="#optimize_images">optimize_images</a>
+      <a href="#optimize_layers">optimize_layers</a>
 
       <h4>Magick API</h4>
 
@@ -1304,8 +1304,8 @@ i = Magick::ImageList.new("images/Button_A.gif", "images/Button_B.gif")
 
       <p>
         You can set any <a href="info.html">Image::Info</a> attributes in an associated block. These attributes supply options to be used when creating the
-        image. For example, you can specify the <a href="imageattrs.html#background_color">background color</a> to fill the image with (see the example), the
-        <a href="imageattrs.html#depth">depth</a>, <a href="imageattrs.html#border_color">border color</a>, etc.
+        image. For example, you can specify the <a href="imageattrs.html#background_color">background_color</a> to fill the image with (see the example), the
+        <a href="imageattrs.html#depth">depth</a>, <a href="imageattrs.html#border_color">border_color</a>, etc.
       </p>
 
       <h4>Returns</h4>

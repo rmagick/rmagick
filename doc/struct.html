@@ -264,7 +264,7 @@
 
         <p>
           Replaces each pixel identified by the indexes with a duplicate of
-          <span class="arg">rvalue</span>. The rvalue is either a <a href="#Pixel">Pixel</a> object or a <a href="imusage.html#color_name">color name</a>. If
+          <span class="arg">rvalue</span>. The rvalue is either a <a href="#Pixel">Pixel</a> object or a <a href="imusage.html#color_names">color name</a>. If
           <code>rvalue</code> is a color name, calls <code>Pixel.from_color</code> to create a pixel.
         </p>
 
@@ -577,12 +577,12 @@ g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
           <a href="constants.html#ColorspaceType">colorspace</a>, a pixel's color is described by its intensity in the red, green, and blue channels. Its
           opacity is described by its intensity in the opacity (also called alpha, or matte) channel. In the CMYK colorspace a pixel's color is described by its
           intensity in the cyan, magenta, yellow and black (K) channels. Intensity is a value between 0 and
-          <a href="constants.html#QuantumRange">QuantumRange</a>.
+          <a href="constants.html#Miscellaneous_constants">QuantumRange</a>.
         </p>
 
         <p>
           Usually, RMagick methods operate on entire images or on groups of pixels that have been selected by their position or color. Some methods, such as
-          <a href="image2.html#pixel_color">pixel_color</a> and <a href="image3.html#view">view</a>, operate on individual pixels or even on the RGBA (or CMYK)
+          <a href="image3.html#pixel_color">pixel_color</a> and <a href="image3.html#view">view</a>, operate on individual pixels or even on the RGBA (or CMYK)
           components thereof.
         </p>
       </div>
@@ -992,7 +992,7 @@ g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
       <div class="desc">
         <h5>Description</h5>
 
-        <p>See <a href="#Chromaticity">class Chromaticity</a>.</p>
+        <p>See <a href="#Chromaticity">Chromaticity</a> class.</p>
 
         <h5>Attributes</h5>
 
@@ -1027,7 +1027,6 @@ g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
 
         <p>
           The value of the
-          <a href="imageattrs.html#tile_info">Image#tile_info</a> and
           <a href="imageattrs.html#bounding_box">Image#bounding_box</a>
           attributes.
         </p>
