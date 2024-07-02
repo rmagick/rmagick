@@ -166,10 +166,7 @@ module RMagick
 
     def determine_imagemagick_package
       packages = [installed_im7_packages, installed_im6_packages].flatten
-
-      if packages.empty?
-        exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find ImageMagick with pkg-config\n"
-      end
+      return if packages.empty?
 
       if installed_im6_packages.any? && installed_im7_packages.any?
         checking_for('forced use of ImageMagick 6') do
@@ -297,11 +294,10 @@ module RMagick
         $magick_version = Regexp.last_match(1)
         exit_failure failure_message unless $magick_version
       else
-        unless PKGConfig.libs('MagickCore')[/\bl\s*(MagickCore|Magick)6?\b/]
+        unless ($magick_package = determine_imagemagick_package)
           exit_failure failure_message
         end
 
-        $magick_package = determine_imagemagick_package
         $magick_version = PKGConfig.modversion($magick_package)[/^(\d+\.\d+\.\d+)/]
       end
 
