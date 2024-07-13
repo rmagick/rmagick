@@ -110,6 +110,12 @@ brew install imagemagick@6
 4. Install ImageMagick. You need to turn on checkboxes `Add application directory to your system path` and `Install development headers for C and C++` in an installer for RMagick.
 <img width="75%" src="https://github.com/rmagick/rmagick/assets/199156/494e7963-cca5-4cb5-b28a-6c4d76adce5d" />
 
+If you want to install ImageMagick using [winget](https://learn.microsoft.com/en-us/windows/package-manager/winget/), run the following command:
+
+```sh
+winget install ImageMagick.ImageMagick --custom /TASKS=modifypath,install_Devel
+```
+
 Installing RMagick
 ------------------
 
