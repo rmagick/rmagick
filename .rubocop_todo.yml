@@ -13,14 +13,6 @@ Bundler/GemComment:
   Exclude:
     - 'Gemfile'
 
-# Offense count: 2
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: Include.
-# Include: **/*.gemspec
-Gemspec/AddRuntimeDependency:
-  Exclude:
-    - 'rmagick.gemspec'
-
 # Offense count: 1
 # Configuration parameters: Severity, Include.
 # Include: **/*.gemspec
