@@ -109,9 +109,6 @@ module RMagick
 
       else
 
-        check_multiple_imagemagick_versions
-        check_partial_imagemagick_versions
-
         original_ldflags = $LDFLAGS.dup
 
         libdir  = PKGConfig.libs_only_L($magick_package).chomp.sub('-L', '')
@@ -188,60 +185,6 @@ module RMagick
       end
 
       packages.first
-    end
-
-    # Seems like lots of people have multiple versions of ImageMagick installed.
-    def check_multiple_imagemagick_versions
-      versions = []
-      path = ENV['PATH'].split(File::PATH_SEPARATOR)
-      path.each do |dir|
-        file = File.join(dir, 'Magick-config')
-        next unless File.executable? file
-
-        vers = `#{file} --version`.chomp.strip
-        prefix = `#{file} --prefix`.chomp.strip
-        versions << [vers, prefix, dir]
-      end
-      versions.uniq!
-      return unless versions.size > 1
-
-      msg = "\nWarning: Found more than one ImageMagick installation. This could cause problems at runtime.\n"
-      versions.each do |vers, prefix, dir|
-        msg += "         #{dir}/Magick-config reports version #{vers} is installed in #{prefix}\n"
-      end
-      msg += "Using #{versions[0][0]} from #{versions[0][1]}.\n\n"
-      Logging.message msg
-      message msg
-    end
-
-    # Ubuntu (maybe other systems) comes with a partial installation of
-    # ImageMagick in the prefix /usr (some libraries, no includes, and no
-    # binaries). This causes problems when /usr/lib is in the path (e.g., using
-    # the default Ruby installation).
-    def check_partial_imagemagick_versions
-      prefix = config_string('prefix') || ''
-      matches = [
-        prefix + '/lib/lib?agick*',
-        prefix + '/include/ImageMagick',
-        prefix + '/bin/Magick-config'
-      ].map do |file_glob|
-        Dir.glob(file_glob)
-      end
-      matches.delete_if(&:empty?)
-      return unless !matches.empty? && matches.length < 3
-
-      msg = <<~MESSAGE
-
-        Warning: Found a partial ImageMagick installation. Your operating
-        system likely has some built-in ImageMagick libraries but not all of
-        ImageMagick. This will most likely cause problems at both compile and
-        runtime.
-        Found partial installation at: #{prefix}
-
-      MESSAGE
-
-      Logging.message msg
-      message msg
     end
 
     def search_paths_for_windows
