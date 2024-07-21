@@ -165,6 +165,13 @@ module RMagick
       packages = [installed_im7_packages, installed_im6_packages].flatten
       return if packages.empty?
 
+      msg = "\nDetected ImageMagick packages:\n"
+      Logging.message msg
+      message msg
+      package_paths = packages.map { |package| "- #{PKGConfig.package_config(package).pc_path}" }.join("\n")
+      Logging.message package_paths + "\n\n"
+      message package_paths + "\n\n"
+
       if installed_im6_packages.any? && installed_im7_packages.any?
         checking_for('forced use of ImageMagick 6') do
           if ENV['USE_IMAGEMAGICK_6']
@@ -178,8 +185,7 @@ module RMagick
       end
 
       if packages.length > 1
-        package_lines = packages.map { |package| " - #{package}" }.join("\n")
-        msg = "\nWarning: Found more than one ImageMagick installation. This could cause problems at runtime.\n#{package_lines}\n\n"
+        msg = "\nWarning: Found more than one ImageMagick installation. This could cause problems at runtime.\n\n"
         Logging.message msg
         message msg
       end
