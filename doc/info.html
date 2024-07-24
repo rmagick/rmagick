@@ -261,7 +261,7 @@ end
       >
 
       <p>
-        These methods propogate the value of the "user" option to new image(s):
+        These methods propagate the value of the "user" option to new image(s):
         <code
           >Image.new, ImageList.new, ImageList.new_image, Image.capture, Image.from_blob, ImageList.from_blob, Image.read, ImageList.read, Image.read_inline,
           and Image.ping</code
@@ -833,7 +833,7 @@ p img.first['caption'] #=&gt; "a new caption"
     <div class="desc">
       <h4>Description</h4>
 
-      <p>Specify the endianess of the image when reading the image file.</p>
+      <p>Specify the endian of the image when reading the image file.</p>
 
       <h4>Argument</h4>
 
@@ -1317,12 +1317,12 @@ p img.first['caption'] #=&gt; "a new caption"
 
       <p class="imquote">
         The transparent color. Sometimes used for saving to image formats such as GIF and PNG8 which uses this color to represent boolean transparency. This
-        does not make a color transparent, just defines what color the transparent color will be in the color pallette of the saved image.
+        does not make a color transparent, just defines what color the transparent color will be in the color palette of the saved image.
       </p>
 
       <p class="imquote">
         This attribute allows you to have both a opaque visible color as well as a transparent color of the same color value without conflict. That is you can
-        use the same color for both the transparent and opaque color areas within an image. This in turn frees to you to select a transparenct color that is
+        use the same color for both the transparent and opaque color areas within an image. This in turn frees to you to select a transparent color that is
         appropriate when a image is displayed by application that does not handle a transparent color index, while allowing RMagick to correctly handle images
         of this type.
       </p>

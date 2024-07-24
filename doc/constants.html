@@ -404,7 +404,7 @@
 
     <p class="imquote">
       Specify the colorspace that quantization (color reduction and mapping) is done under or to specify the colorspace when encoding an output image.
-      Colorspaces are ways of describing colors to fit the requirements of a particular application (e.g. Television, offset printing, color monitors).&nbsp;
+      Color spaces are ways of describing colors to fit the requirements of a particular application (e.g. Television, offset printing, color monitors).&nbsp;
       Color reduction, by default, takes place in the RGBColorspace. Empirical evidence suggests that distances in color spaces such as YUVColorspace or
       YIQColorspace correspond to perceptual color differences more closely than do distances in RGB space. These color spaces may give better results when
       color reducing an image.
@@ -412,13 +412,13 @@
 
     <p>
       <span class="imquote"
-        >When encoding an output image, the colorspaces RGBColorspace, CMYKColorspace, and GRAYColorspace may be specified. The CMYKColorspace option is only
+        >When encoding an output image, the color spaces RGBColorspace, CMYKColorspace, and GRAYColorspace may be specified. The CMYKColorspace option is only
         applicable when writing TIFF, JPEG, and Adobe Photoshop bitmap (PSD) files.</span
       >
       See <a href="imageattrs.html#colorspace">colorspace</a>.
     </p>
 
-    <p>Each version of ImageMagick defines a subset of the colorspaces listed below. To list the subset supported by your version, issue the command:</p>
+    <p>Each version of ImageMagick defines a subset of the color spaces listed below. To list the subset supported by your version, issue the command:</p>
     <pre class="example language-ruby">ruby -r rmagick -e"Magick::ColorspaceType.values {|cs| puts cs}"</pre>
 
     <dl>
@@ -489,7 +489,7 @@
       <dd class="imquote">Y-signal, U-signal, and V-signal colorspace. YUV is most widely used to encode color for use in television transmission.</dd>
     </dl>
 
-    <p>The colorspaces in this group are typically associated with the DPX and Cineon image formats used in the motion picture industry.</p>
+    <p>The color spaces in this group are typically associated with the DPX and Cineon image formats used in the motion picture industry.</p>
 
     <dl>
       <dt>Rec601LumaColorspace</dt>
@@ -762,7 +762,7 @@
       <dt>LinearDodgeCompositeOp</dt>
 
       <dd class="imquote">
-        This is equivelent to <code>PlusCompositeOp</code> in that the color channels are simply added, however it does not "plus" the alpha channel, but uses
+        This is equivalent to <code>PlusCompositeOp</code> in that the color channels are simply added, however it does not "plus" the alpha channel, but uses
         the normal <code>OverCompositeOp</code> alpha blending, which transparencies are involved. Produces a sort of additive multiply-like result.
       </dd>
 
@@ -831,7 +831,7 @@
       <dt>PinLightCompositeOp</dt>
 
       <dd class="imquote">
-        Similar to <code>HardLightCompositeOp</code>, but using sharp linear shadings, to similate the effects of a strong 'pinhole' light source.
+        Similar to <code>HardLightCompositeOp</code>, but using sharp linear shadings, to simulate the effects of a strong 'pinhole' light source.
       </dd>
 
       <dt>PlusCompositeOp</dt>
@@ -885,7 +885,7 @@
 
       <dd class="imquote">
         The result of <code>composite image</code> - <code>image</code>, with underflow wrapping around (mod 256). The add and subtract operators can be used to
-        perform reversable transformations.
+        perform reversible transformations.
       </dd>
 
       <dt>ThresholdCompositeOp</dt>
@@ -894,7 +894,7 @@
 
       <dt>VividLightCompositeOp</dt>
 
-      <dd class="imquote">A modified <code>LinearLightCompositeOp</code> designed to preserve very stong primary and secondary colors in the image.</dd>
+      <dd class="imquote">A modified <code>LinearLightCompositeOp</code> designed to preserve very strong primary and secondary colors in the image.</dd>
 
       <dt>XorCompositeOp</dt>
 
