@@ -683,7 +683,7 @@ title.annotate(montage, 0,0,0,40, 'Named Colors') { |options|
         <p class="imquote">
           The TypeMetric class provides the means to pass data from the Draw class's get_type_metric method to the user. It provides information regarding font
           metrics such as ascent, descent, text width, text height, and maximum horizontal advance. The units of these font metrics are in pixels...(T)he
-          metrics are dependent on the current Image font (default Ghostscript's "Helvetica"), pointsize (default 12 points), and x/y resolution (default 72
+          metrics are dependent on the current Image font (default Ghostscript's "Helvetica"), point size (default 12 points), and x/y resolution (default 72
           DPI) settings.
         </p>
 
@@ -696,8 +696,8 @@ title.annotate(montage, 0,0,0,40, 'Named Colors') { |options|
         <p class="imquote">where resolution is in dots-per-inch (DPI). This means that at the default image resolution, there is one pixel per point.</p>
 
         <p class="imquote">
-          Note that a font's pointsize is only a first-order approximation of the font height (ascender + descender) in points. The relationship between the
-          specified pointsize and the rendered font height is determined by the font designer.
+          Note that a font's point size is only a first-order approximation of the font height (ascender + descender) in points. The relationship between the
+          specified point size and the rendered font height is determined by the font designer.
         </p>
 
         <p class="imquote">
@@ -713,7 +713,7 @@ title.annotate(montage, 0,0,0,40, 'Named Colors') { |options|
         <dt>image <em>(optional)</em></dt>
 
         <dd>
-          The image on which the string will be rendered. ImageMagick uses the attributes of the image (font name, pointsize, etc.) to compute the metrics. If
+          The image on which the string will be rendered. ImageMagick uses the attributes of the image (font name, point size, etc.) to compute the metrics. If
           this argument is omitted,
           <code>get_type_metrics</code> substitutes a dummy image with default attributes. The <span class="arg">string</span> argument may not contain any of
           the special characters shown in <a href="#spec_chars_table">this</a> table.
