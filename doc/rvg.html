@@ -166,12 +166,6 @@
         call <a href="#units">conversion methods</a> to use units such as inches and millimeters instead of pixels.
       </p>
 
-      <p>
-        Otherwise, <span class="arg">width</span> and <span class="arg">height</span> specify the area of the viewbox. If the RVG object will be used as an
-        argument to the <a href="rvguse.html#use">use</a> method, then <span class="arg">width</span> and <span class="arg">height</span> may be omitted here,
-        then specified as arguments to <code>use</code>.
-      </p>
-
       <h4>Returns</h4>
 
       <p>An RVG object</p>
@@ -181,8 +175,7 @@
       <p>
         See the <a href="rvgtut.html">tutorial</a> for a simple example. The image below demonstrates an advanced use of <code>RVG.new</code>. This example
         creates an RVG object that draws an orange-and-green target. The <span class="arg">width</span> and <span class="arg">height</span> arguments are
-        omitted in the <code>RVG.new</code> call. Instead, the viewport width and height are specified as arguments to 4 invocations of
-        <a href="rvguse.html#use">use</a>. Each <code>use</code> specifies a different viewport size, so the same RVG object draws 4 different-sized targets.
+        omitted in the <code>RVG.new</code> call.
       </p>
 
       <p>Click the image to see the example script.</p>
@@ -339,7 +332,7 @@ canvas.background_fill_opacity = 0.50
 
         <dd>
           The image is scaled to fit. The image proportions are retained. Any part of the background that is not covered by the image is colored with the
-          <a href="#RVG_background_color">background color</a>.
+          background color.
         </dd>
       </dl>
 
