@@ -11,18 +11,6 @@ h1 {
   text-align: center;
 }
 
-.bodybox {
-  background-color: white;
-  border: 1px solid black;
-  text-align: left;
-}
-
-.bodyfloat {
-  padding: 10px;
-  color: black;
-  text-align: left;
-}
-
 #close {
   width: 100%;
   text-align: center;
