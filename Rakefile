@@ -95,7 +95,7 @@ namespace :website do
       File.open(File.join(output_dir, output_file_name), 'w') do |dest|
         dest.puts <<~END_EXHTMLHEAD
           <!DOCTYPE public PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-          <html xmlns="http://www.w3.org/1999/xhtml">
+          <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
           <head>
             <meta name="generator" content="ex2html.rb" />
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />

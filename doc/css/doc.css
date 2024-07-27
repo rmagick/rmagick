@@ -22,7 +22,7 @@ a:active {
 body {
   background-color: white;
   color: black;
-  font-size: 100.01%;
+  font-size: 100%;
 }
 
 img {
@@ -115,12 +115,12 @@ div.nav a:active {
 }
 
 span.superclass {
-  font-size: normal;
+  font-size: medium;
   font-weight: normal;
 }
 
 span.mixin {
-  font-size: smaller;
+  font-size: x-small;
   padding-left: 1em;
 }
 
