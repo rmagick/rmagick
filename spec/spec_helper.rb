@@ -4,6 +4,12 @@ require_relative 'support/simplecov' if ENV['COVERAGE'] == 'true'
 require_relative 'support/matchers'
 require_relative 'support/helpers'
 
+$stderr = Module.new do
+  def self.write(message)
+    raise message
+  end
+end
+
 require 'pry'
 require 'rmagick'
 require 'rvg/rvg'
