@@ -14,7 +14,7 @@ gem 'yard', '~> 0.9.36'
 
 gem 'rubocop', '~> 1.63'
 gem 'rubocop-performance', '~> 1.21'
-gem 'rubocop-rspec', '~> 2.29'
+gem 'rubocop-rspec', '~> 3.3'
 
 gem 'rubocop-on-rbs', '~> 0.5' if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.1')
 
