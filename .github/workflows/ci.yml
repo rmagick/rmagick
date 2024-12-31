@@ -145,7 +145,7 @@ jobs:
     timeout-minutes: 20
     strategy:
       matrix:
-        ruby-version: ['3.3']
+        ruby-version: ['3.4']
         imagemagick-version:
           - { full: 6.9.13-17, major-minor: '6.9' }
           - { full: 7.1.1-39, major-minor: '7.1' }
