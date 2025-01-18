@@ -11600,6 +11600,8 @@ rd_image(VALUE klass ATTRIBUTE_UNUSED, VALUE file, gvl_function_t fp)
     rm_check_exception(exception, images, DestroyOnError);
     DestroyExceptionInfo(exception);
 
+    rm_ensure_result(images);
+
     rm_set_user_artifact(images, info);
     rm_sync_image_options(images, info);
 
