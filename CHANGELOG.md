@@ -3,6 +3,21 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 6.1.0
+
+Bug Fixes
+
+- Fix SEGV if read incorrect PDF file (#1671)
+
+Improvements
+
+- Remove multiple imagemagick version checks (#1650)
+- Suppress exception at installation if ImageMagick is not installed (#1647)
+- Remove unnecessary `require` (#1639)
+- Remove unnecessary minimum ruby version check (#1637)
+- Remove universal build configuration for system bundled ruby in macOS (#1633)
+- Add `frozen_string_literal: true` magic comment (#1631)
+
 ## RMagick 6.0.1
 
 Bug Fixes
