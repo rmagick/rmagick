@@ -3,6 +3,12 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 6.1.1
+
+Bug Fixes
+
+- Fix FrozenError in Magick::RVG::PathData (#1675)
+
 ## RMagick 6.1.0
 
 Bug Fixes
