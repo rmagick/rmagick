@@ -24,7 +24,7 @@ module Magick
 
       # Construct an empty path
       def initialize
-        @path = ''
+        @path = +''
       end
 
       # Convert the path to its string equivalent.
