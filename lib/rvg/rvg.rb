@@ -54,6 +54,8 @@ module Magick
     include Describable
     include Duplicatable
 
+    WORD_SEP = / / # Regexp to separate words
+
     private
 
     # background_fill defaults to 'none'. If background_fill has been set to something
@@ -119,8 +121,6 @@ module Magick
     end
 
     public
-
-    WORD_SEP = / / # Regexp to separate words
 
     # The background image specified by background_image=
     attr_reader :background_image

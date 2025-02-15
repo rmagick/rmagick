@@ -27,12 +27,16 @@ module Magick
   end
 
   class Image
-    private
-
     HISTOGRAM_COLS = 256
+    private_constant :HISTOGRAM_COLS
     HISTOGRAM_ROWS = 200
+    private_constant :HISTOGRAM_ROWS
     MAX_QUANTUM = 255
+    private_constant :MAX_QUANTUM
     AIR_FACTOR = 1.025
+    private_constant :AIR_FACTOR
+
+    private
 
     # The alpha frequencies are shown as white dots.
     def alpha_hist(freqs, scale, fg, bg)
