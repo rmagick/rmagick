@@ -1,9 +1,11 @@
 inherit_from:
   - .rubocop_todo.yml
 
-require:
+plugins:
   - rubocop-rspec
   - rubocop-performance
+
+require:
   - rubocop-on-rbs
 
 AllCops:
@@ -22,9 +24,6 @@ AllCops:
 
 Layout/MultilineAssignmentLayout:
   EnforcedStyle: same_line
-
-RSpec/FilePath:
-  CustomTransform: { Magick: rmagick }
 
 Style/FormatString:
   EnforcedStyle: sprintf
