@@ -114,6 +114,12 @@ If you want to install ImageMagick using [winget](https://learn.microsoft.com/en
 winget install ImageMagick.ImageMagick --custom /TASKS=modifypath,install_Devel
 ```
 
+If you want to install ImageMagick using [Chocolatey](https://chocolatey.org/), run the following command:
+
+```sh
+choco install imagemagick -PackageParameters InstallDevelopmentHeaders=true
+```
+
 Installing RMagick
 ------------------
 
