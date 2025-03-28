@@ -4,8 +4,6 @@ inherit_from:
 plugins:
   - rubocop-rspec
   - rubocop-performance
-
-require:
   - rubocop-on-rbs
 
 AllCops:
