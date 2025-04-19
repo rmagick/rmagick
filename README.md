@@ -123,6 +123,9 @@ choco install imagemagick -PackageParameters InstallDevelopmentHeaders=true
 Installing RMagick
 ------------------
 
+> [!NOTE]
+> When you update the ImageMagick version, we have recommended you should re-install RMagick.
+
 ### Installing via Bundler
 
 Add to your `Gemfile`:
@@ -141,9 +144,6 @@ For Windows, you need to run using [ridk tool](https://github.com/oneclick/rubyi
 ```sh
 ridk exec bundle install
 ```
-
-> [!NOTE]
-> When you update the ImageMagick version, we have recommended you should re-install RMagick.
 
 ### Installing via RubyGems
 
