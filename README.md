@@ -142,6 +142,9 @@ For Windows, you need to run using [ridk tool](https://github.com/oneclick/rubyi
 ridk exec bundle install
 ```
 
+> [!NOTE]
+> When you update the ImageMagick version, we have recommended you should re-install RMagick.
+
 ### Installing via RubyGems
 
 Run:
