@@ -114,9 +114,9 @@ module Magick
       puts "\tUnits: #{units}\n"
       size = filesize
       if size >= 1_048_576
-        puts "\tFilesize: #{sprintf('%.1f', (size / 1_048_576.0))}mb\n"
+        puts "\tFilesize: #{sprintf('%.1f', size / 1_048_576.0)}mb\n"
       elsif size >= 1024
-        puts "\tFilesize: #{sprintf('%.0f', (size / 1024.0))}kb\n"
+        puts "\tFilesize: #{sprintf('%.0f', size / 1024.0)}kb\n"
       else
         puts "\tFilesize: #{size}b\n"
       end
