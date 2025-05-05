@@ -141,7 +141,7 @@ jobs:
         bundle exec rake
 
   test-windows:
-    runs-on: windows-latest
+    runs-on: ${{ matrix.os.target }}
     timeout-minutes: 20
     strategy:
       matrix:
@@ -149,11 +149,19 @@ jobs:
         imagemagick-version:
           - { full: 6.9.13-25, major-minor: '6.9' }
           - { full: 7.1.1-47, major-minor: '7.1' }
-    env:
-      bundled_im_dir: C:\Program Files\ImageMagick-7.1.1-Q16-HDRI
-      install_im_dir: D:\ImageMagick
+        os:
+          - { target: windows-latest, arch: 'x64' }
+          - { target: windows-11-arm, arch: 'arm64' }
+        exclude:
+          # ImageMagick 6 has not provided ARM binary. Ref. https://legacy.imagemagick.org/archive/binaries/
+          - imagemagick-version: { full: 6.9.13-25, major-minor: '6.9' }
+            os: { target: windows-11-arm, arch: 'arm64' }
 
-    name: MSWin, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
+    env:
+      bundled_im_dir: ${{ matrix.os.arch == 'x64' && 'C:\Program Files\ImageMagick-7.1.1-Q16-HDRI' || 'C:\Program Files (x86)\ImageMagick-7.1.1-Q16-HDRI' }}
+      install_im_dir: C:\ImageMagick
+
+    name: MSWin ${{ matrix.os.arch }}, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
     steps:
     - uses: actions/checkout@v4
     - name: Setup environment variable
@@ -171,7 +179,8 @@ jobs:
       # https://github.com/rmagick/ImageMagick-binaries
       run: |
         $imagemagick_version = "${{ matrix.imagemagick-version.full }}"
-        $installer_name = "ImageMagick-$($imagemagick_version)-Q16-x64-dll.exe"
+        $arch = "${{ matrix.os.arch }}"
+        $installer_name = "ImageMagick-$($imagemagick_version)-Q16-$($arch)-dll.exe"
         $url = "https://github.com/rmagick/ImageMagick-binaries/raw/main/$($installer_name)"
         Invoke-WebRequest -Uri $url -OutFile $installer_name
         Start-Process -FilePath $installer_name -ArgumentList "/DIR=${{ env.install_im_dir }} /VERYSILENT /NORESTART /TASKS=install_Devel"
