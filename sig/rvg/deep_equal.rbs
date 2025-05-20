@@ -3,6 +3,7 @@ module Magick
     interface _DeepEqual
       def deep_equal: (untyped other) -> bool
     end
+
     class PathData
       include _DeepEqual
     end
