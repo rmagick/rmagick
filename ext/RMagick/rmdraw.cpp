@@ -1262,11 +1262,11 @@ Draw_primitive(VALUE self, VALUE primitive)
 
     if (draw->primitives == (VALUE)0)
     {
-        draw->primitives = primitive;
+        draw->primitives = rb_str_dup(primitive);
     }
     else
     {
-        draw->primitives = rb_str_plus(draw->primitives, rb_str_new2("\n"));
+        draw->primitives = rb_str_concat(draw->primitives, rb_str_new2("\n"));
         draw->primitives = rb_str_concat(draw->primitives, primitive);
     }
 
