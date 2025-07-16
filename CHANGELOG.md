@@ -3,6 +3,12 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 6.1.2
+
+Improvements
+
+- Improve Magick::Draw#primitive performance (#1697)
+
 ## RMagick 6.1.1
 
 Bug Fixes
