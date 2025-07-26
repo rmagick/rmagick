@@ -158,7 +158,7 @@ jobs:
             os: { target: windows-11-arm, arch: 'arm64' }
 
     env:
-      bundled_im_dir: ${{ matrix.os.arch == 'x64' && 'C:\Program Files\ImageMagick-7.1.1-Q16-HDRI' || 'C:\Program Files (x86)\ImageMagick-7.1.1-Q16-HDRI' }}
+      bundled_im_dir: ${{ matrix.os.arch == 'x64' && 'C:\Program Files\ImageMagick-7.1.2-Q16-HDRI' || 'C:\Program Files (x86)\ImageMagick-7.1.1-Q16-HDRI' }}
       install_im_dir: C:\ImageMagick
 
     name: MSWin ${{ matrix.os.arch }}, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
