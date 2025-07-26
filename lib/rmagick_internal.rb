@@ -1236,6 +1236,7 @@ module Magick
   class ImageList
     include Comparable
     include Enumerable
+
     attr_reader :scene
 
     private
