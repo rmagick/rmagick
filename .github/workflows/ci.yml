@@ -46,6 +46,7 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 20
     strategy:
+      fail-fast: false
       matrix:
         ruby-version: ['3.0']
         imagemagick-version:
@@ -79,6 +80,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     strategy:
+      fail-fast: false
       matrix:
         ruby-version: ['3.0', '3.1', '3.2', '3.3', '3.4']
         imagemagick-version:
@@ -112,6 +114,7 @@ jobs:
     runs-on: macos-latest
     timeout-minutes: 20
     strategy:
+      fail-fast: false
       matrix:
         ruby-version: ['3.0', '3.1', '3.2', '3.3', '3.4']
         imagemagick-version:
@@ -144,6 +147,7 @@ jobs:
     runs-on: ${{ matrix.os.target }}
     timeout-minutes: 20
     strategy:
+      fail-fast: false
       matrix:
         ruby-version: ['3.4']
         imagemagick-version:
