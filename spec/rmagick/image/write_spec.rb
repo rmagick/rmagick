@@ -39,7 +39,7 @@ RSpec.describe Magick::Image, '#write' do
       image1.write('gif:temp.0') { |options| options.format = 'JPEG' }
     end.to raise_error(RuntimeError)
 
-    f = File.new('test.0', 'w')
+    f = File.new('test.0', 'wb')
     image1.write(f) { |options| options.format = 'JPEG' }
     f.close
     image2 = described_class.read('test.0')
@@ -55,7 +55,7 @@ RSpec.describe Magick::Image, '#write' do
       nil
     end # Avoid failure on AppVeyor
 
-    f = File.new('test.0', 'w')
+    f = File.new('test.0', 'wb')
     described_class.new(100, 100).write(f) do |options|
       options.format = 'JPEG'
       options.colorspace = Magick::CMYKColorspace
