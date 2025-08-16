@@ -15949,7 +15949,7 @@ Image_write(VALUE self, VALUE file)
         rb_io_check_writable(fptr);
 
         add_format_prefix(info, rm_io_path(file));
-#if defined(_WIN32)
+#if defined(_WIN32) && !defined(IMAGEMAGICK_GREATER_THAN_EQUAL_7_1_2)
         SetImageInfoFile(info, NULL);
 #else
         SetImageInfoFile(info, rb_io_stdio_file(fptr));
