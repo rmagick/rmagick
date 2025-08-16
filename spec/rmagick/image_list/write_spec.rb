@@ -22,7 +22,7 @@ RSpec.describe Magick::ImageList, "#write" do
     expect(image_list.format).to eq('JPEG')
     FileUtils.rm('temp.0')
 
-    f = File.new('test.0', 'w')
+    f = File.new('test.0', 'wb')
     image_list.write(f) { |options| options.format = 'JPEG' }
     f.close
     image_list = described_class.new('test.0')
@@ -34,11 +34,11 @@ RSpec.describe Magick::ImageList, "#write" do
     # https://commons.wikimedia.org/wiki/File:Animhorse.gif
     image_list = described_class.new(File.join(FIXTURE_PATH, 'animhorse.gif'))
 
-    File.open(File.join(Dir.tmpdir, 'out.gif'), 'w') do |f|
+    File.open(File.join(Dir.tmpdir, 'out.gif'), 'wb') do |f|
       image_list.write(f)
     end
 
-    Tempfile.open('out.gif') do |f|
+    Tempfile.create('out.gif', mode: File::BINARY) do |f|
       image_list.write(f)
     end
   end
