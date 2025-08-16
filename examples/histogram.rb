@@ -177,7 +177,7 @@ module Magick
     end
 
     def intensity_hist(int_histogram)
-      gradient = (Image.read('gradient:#ffff80-#ff9000') { |options| options.size = "#{HISTOGRAM_COLS}x#{HISTOGRAM_ROWS}" }).first
+      gradient = Image.read('gradient:#ffff80-#ff9000') { |options| options.size = "#{HISTOGRAM_COLS}x#{HISTOGRAM_ROWS}" }.first
       int_histogram = gradient.composite(int_histogram, CenterGravity, OverCompositeOp)
 
       int_histogram['Label'] = 'Intensity'
