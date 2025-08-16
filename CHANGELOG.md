@@ -3,6 +3,12 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 6.1.3
+
+Bug Fixes
+
+- Fixed an error with ImageMagick 7.1.2 on Windows when saving images using file descriptor (#1699)
+
 ## RMagick 6.1.2
 
 Improvements
