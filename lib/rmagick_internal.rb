@@ -224,7 +224,7 @@ module Magick
 
     def enquote(str)
       str = to_string(str)
-      if str.length > 2 && /\A(?:"[^\"]+"|'[^\']+'|\{[^\}]+\})\z/.match(str)
+      if str.length > 2 && /\A(?:"[^"]+"|'[^']+'|\{[^}]+\})\z/.match(str)
         str
       else
         '"' + str + '"'
@@ -619,7 +619,7 @@ module Magick
     def text(x, y, text)
       text = to_string(text)
       Kernel.raise ArgumentError, 'missing text argument' if text.empty?
-      if text.length > 2 && /\A(?:"[^\"]+"|'[^\']+'|\{[^\}]+\})\z/.match(text)
+      if text.length > 2 && /\A(?:"[^"]+"|'[^']+'|\{[^}]+\})\z/.match(text)
       # text already quoted
       elsif !text['\'']
         text = '\'' + text + '\''
