@@ -231,7 +231,7 @@ module RMagick
       cxx = (ENV['CXX'] || RbConfig::CONFIG['CXX']).split.first
       return if cxx != "false" && find_executable(cxx)
 
-      exit_failure "No C++ compiler found in ${ENV['PATH']}. See mkmf.log for details." 
+      exit_failure "No C++ compiler found in ${ENV['PATH']}. See mkmf.log for details."
     end
 
     def assert_has_dev_libs!
