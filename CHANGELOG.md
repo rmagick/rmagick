@@ -3,6 +3,12 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 6.1.4
+
+Improvements
+
+- Improve check whether C++ compiler exists (#1708)
+
 ## RMagick 6.1.3
 
 Bug Fixes
