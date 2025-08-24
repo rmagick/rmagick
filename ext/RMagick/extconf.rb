@@ -226,9 +226,10 @@ module RMagick
     def assert_can_compile!
       assert_has_dev_libs!
 
-      # Check for compiler. Extract first word so ENV['CXX'] can be a program name with arguments.
-      cxx = (ENV['CXX'] || RbConfig::CONFIG['CXX'] || 'g++').split.first
-      exit_failure "No C++ compiler found in ${ENV['PATH']}. See mkmf.log for details." unless find_executable(cxx)
+      # Check for C++ compiler. Extract first word so ENV['CXX'] can be a program name with arguments.
+      # Ref. https://bugs.ruby-lang.org/issues/21111
+      cxx = (ENV['CXX'] || RbConfig::CONFIG['CXX']).split.first
+      exit_failure "No C++ compiler found in ${ENV['PATH']}. See mkmf.log for details." if cxx == "false" || !find_executable(cxx)
     end
 
     def assert_has_dev_libs!
