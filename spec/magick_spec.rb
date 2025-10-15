@@ -76,7 +76,14 @@ RSpec.describe Magick do
             img.new_image(200, 200, Magick::GradientFill.new(100, 50, 100, 50, 'khaki1', 'turquoise'))
             img.resize(20, 20)
           end
-          r.take
+
+          if r.respond_to?(:take)
+            r.take
+          else
+            # Ractor#take was replaced at Ruby 3.5.
+            # https://bugs.ruby-lang.org/issues/21262
+            r.join
+          end
         end.not_to raise_error
 
         expect do
@@ -90,7 +97,14 @@ RSpec.describe Magick do
             gc.text(5, 20, "'20,20'")
             gc.draw(img)
           end
-          r.take
+
+          if r.respond_to?(:take)
+            r.take
+          else
+            # Ractor#take was replaced at Ruby 3.5.
+            # https://bugs.ruby-lang.org/issues/21262
+            r.join
+          end
         end.not_to raise_error
 
         unless RUBY_PLATFORM.include?('mingw')
@@ -99,7 +113,14 @@ RSpec.describe Magick do
             r = Ractor.new do
               Magick.formats # rubocop:disable RSpec/DescribedClass
             end
-            r.take
+
+            if r.respond_to?(:take)
+              r.take
+            else
+              # Ractor#take was replaced at Ruby 3.5.
+              # https://bugs.ruby-lang.org/issues/21262
+              r.join
+            end
           end.not_to raise_error
         end
       end
