@@ -47,11 +47,14 @@ RSpec.describe Magick::Image, '#dissolve' do
 
   context 'when given gravity' do
     # generate an image to use with gravity
-    wk = described_class.new(40, 40) { |options| options.background_color = 'transparent' }
-    d = Magick::Draw.new
-    d.stroke('none').fill('blue')
-    d.circle(wk.columns / 2, wk.rows / 2, 4, wk.rows / 2)
-    d.draw(wk)
+    let(:wk) { described_class.new(40, 40) { |options| options.background_color = 'transparent' } }
+
+    before do
+      d = Magick::Draw.new
+      d.stroke('none').fill('blue')
+      d.circle(wk.columns / 2, wk.rows / 2, 4, wk.rows / 2)
+      d.draw(wk)
+    end
 
     it 'works on colored background' do
       image = described_class.new(100, 100) { |options| options.background_color = 'green' }
