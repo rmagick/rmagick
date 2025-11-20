@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Magick::Image, '#channel_entropy' do
-  pixels = [[45, 9, 156], [45, 98, 156], [45, 74, 156], [45, 196, 156]]
+  let(:pixels) { [[45, 9, 156], [45, 98, 156], [45, 74, 156], [45, 196, 156]] }
 
   it 'returns a channel entropy', unsupported_before('6.9.0') do
     image = build_image(pixels: pixels)
