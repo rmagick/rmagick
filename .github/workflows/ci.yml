@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Set up Ruby 3.3
       uses: ruby/setup-ruby@master
       with:
@@ -30,7 +30,7 @@ jobs:
     name: RBS
     timeout-minutes: 20
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Set up Ruby 3.0
       uses: ruby/setup-ruby@master
       with:
@@ -55,7 +55,7 @@ jobs:
 
     name: Linux, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Cache ImageMagick built objects
       uses: actions/cache@v4
       with:
@@ -82,14 +82,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby-version: ['3.0', '3.1', '3.2', '3.3', '3.4']
+        ruby-version: ['3.0', '3.1', '3.2', '3.3', '3.4', '4.0.0-preview2']
         imagemagick-version:
           - { full: 6.9.13-33, major-minor: '6.9' }
           - { full: 7.1.2-8, major-minor: '7.1' }
 
     name: Linux, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Cache ImageMagick built objects
       uses: actions/cache@v4
       with:
@@ -116,14 +116,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby-version: ['3.0', '3.1', '3.2', '3.3', '3.4']
+        ruby-version: ['3.0', '3.1', '3.2', '3.3', '3.4', '4.0.0-preview2']
         imagemagick-version:
           - { full: 6.9.13-33, major-minor: '6.9' }
           - { full: 7.1.2-8, major-minor: '7.1' }
 
     name: macOS, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Cache ImageMagick built objects
       uses: actions/cache@v4
       with:
@@ -167,7 +167,7 @@ jobs:
 
     name: MSWin ${{ matrix.os.arch }}, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
     - name: Setup environment variable
       # https://stackoverflow.com/questions/60169752/how-to-update-the-path-in-a-github-action-workflow-file-for-a-windows-latest-hos
       run: |
