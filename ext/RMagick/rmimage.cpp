@@ -9065,17 +9065,17 @@ Image_marshal_load(VALUE self, VALUE ary)
     Image *image;
     ExceptionInfo *exception;
 
-    info = CloneImageInfo(NULL);
-    if (!info)
-    {
-        rb_raise(rb_eNoMemError, "not enough memory to initialize Info object");
-    }
-
     filename = rb_ary_shift(ary);
     blob = rb_ary_shift(ary);
 
     filename = StringValue(filename);
     blob = StringValue(blob);
+
+    info = CloneImageInfo(NULL);
+    if (!info)
+    {
+        rb_raise(rb_eNoMemError, "not enough memory to initialize Info object");
+    }
 
     exception = AcquireExceptionInfo();
     if (filename != Qnil)
