@@ -185,6 +185,14 @@ Rake::ExtensionTask.new('RMagick2') do |ext|
   ext.ext_dir = 'ext/RMagick'
 end
 
+if RUBY_PLATFORM.include?('linux')
+  require 'ruby_memcheck'
+  require 'ruby_memcheck/rspec/rake_task'
+  namespace :spec do
+    RubyMemcheck::RSpec::RakeTask.new(valgrind: :compile)
+  end
+end
+
 task spec: :compile
 
 if ENV['STYLE_CHECKS']
