@@ -20,3 +20,5 @@ gem 'rubocop-on-rbs', '~> 1.5' if Gem::Version.new(RUBY_VERSION) >= Gem::Version
 
 gem 'rbs', '~> 3.4'
 gem 'steep', '~> 1.6'
+
+gem 'ruby_memcheck', '~> 3.0' if RUBY_PLATFORM.include?('linux')
