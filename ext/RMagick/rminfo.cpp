@@ -2292,7 +2292,7 @@ Info_view_eq(VALUE self, VALUE view_arg)
     }
     else
     {
-        RemoveImageOption(info, "fpx:view");
+        DeleteImageOption(info, "fpx:view");
     }
 #else
     if (info->view)
