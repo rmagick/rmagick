@@ -446,7 +446,7 @@ Info_authenticate_eq(VALUE self, VALUE passwd_arg)
     }
     else
     {
-        RemoveImageOption(info, "authenticate");
+        DeleteImageOption(info, "authenticate");
     }
 #else
     if (info->authenticate)
