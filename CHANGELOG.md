@@ -3,6 +3,16 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 6.1.5
+
+Bug Fixes
+
+- Fix memory leak in Image#marshal_load (#1721)
+- Fix memory leak in Image::Info#page= (#1720)
+- Fix memory leak in Image::Info#view= with ImageMagick 7 (#1719)
+- Fix memory leak in Image::Info#authenticate= with ImageMagick 7 (#1718)
+- Fix memory leak in Image#marshal_load with invalid data (#1717)
+
 ## RMagick 6.1.4
 
 Improvements
