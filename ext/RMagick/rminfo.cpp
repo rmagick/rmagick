@@ -1750,6 +1750,8 @@ Info_page_eq(VALUE self, VALUE page_arg)
         info->page = NULL;
         return page_arg;
     }
+    magick_free(info->page);
+
     info->page = geometry;
 
     RB_GC_GUARD(geom_str);
