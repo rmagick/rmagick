@@ -9062,8 +9062,10 @@ Image_marshal_load(VALUE self, VALUE ary)
 {
     VALUE blob, filename;
     Info *info;
-    Image *image;
+    Image *image, *new_image;
     ExceptionInfo *exception;
+
+    TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
 
     filename = rb_ary_shift(ary);
     blob = rb_ary_shift(ary);
@@ -9083,14 +9085,15 @@ Image_marshal_load(VALUE self, VALUE ary)
         strlcpy(info->filename, RSTRING_PTR(filename), sizeof(info->filename));
     }
     GVL_STRUCT_TYPE(BlobToImage) args = { info, RSTRING_PTR(blob), (size_t)RSTRING_LEN(blob), exception };
-    image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BlobToImage), &args);
+    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BlobToImage), &args);
 
     // Destroy info before raising an exception
     DestroyImageInfo(info);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 
-    UPDATE_DATA_PTR(self, image);
+    UPDATE_DATA_PTR(self, new_image);
+    rm_image_destroy(image);
 
     return self;
 }
