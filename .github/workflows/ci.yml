@@ -164,6 +164,7 @@ jobs:
     env:
       bundled_im_dir: ${{ matrix.os.arch == 'x64' && 'C:\Program Files\ImageMagick-7.1.2-Q16-HDRI' || 'C:\Program Files (x86)\ImageMagick-7.1.2-Q16-HDRI' }}
       install_im_dir: C:\ImageMagick
+      install_gs_dir: C:\Ghostscript
 
     name: MSWin ${{ matrix.os.arch }}, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
     steps:
@@ -172,13 +173,21 @@ jobs:
       # https://stackoverflow.com/questions/60169752/how-to-update-the-path-in-a-github-action-workflow-file-for-a-windows-latest-hos
       run: |
         Add-Content $env:GITHUB_PATH ${{ env.install_im_dir }}
+        Add-Content $env:GITHUB_PATH ${{ env.install_gs_dir }}\bin
+    - name: Install Ghostscript
+      shell: powershell
+      run: |
+        $url = "https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10060/gs10060w64.exe"
+        $installer = "$env:TEMP\gs_installer.exe"
+
+        Write-Host "Downloading Ghostscript..."
+        Invoke-WebRequest -Uri $url -OutFile $installer
+
+        7z x $installer -o${{ env.install_gs_dir }} -y
     - name: Uninstall bundled ImageMagick
       # Bundled ImageMagick does not have C/C++ library and dll which required by rmagick.
       run: |
         Start-Process -FilePath "${{ env.bundled_im_dir }}\unins000.exe" -ArgumentList "/VERYSILENT /NORESTART"
-    - name: Install ghostscript
-      run: |
-        choco install ghostscript
     - name: Install ImageMagick
       # https://github.com/rmagick/ImageMagick-binaries
       run: |
