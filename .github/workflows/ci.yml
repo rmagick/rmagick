@@ -162,7 +162,6 @@ jobs:
             os: { target: windows-11-arm, arch: 'arm64' }
 
     env:
-      bundled_im_dir: ${{ matrix.os.arch == 'x64' && 'C:\Program Files\ImageMagick-7.1.2-Q16-HDRI' || 'C:\Program Files (x86)\ImageMagick-7.1.2-Q16-HDRI' }}
       install_im_dir: C:\ImageMagick
       install_gs_dir: C:\Ghostscript
 
@@ -186,8 +185,33 @@ jobs:
         7z x $installer -o${{ env.install_gs_dir }} -y
     - name: Uninstall bundled ImageMagick
       # Bundled ImageMagick does not have C/C++ library and dll which required by rmagick.
+      shell: powershell
       run: |
-        Start-Process -FilePath "${{ env.bundled_im_dir }}\unins000.exe" -ArgumentList "/VERYSILENT /NORESTART"
+        $regPaths = @(
+            "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*",
+            "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*"
+        )
+
+        # Search for ImageMagick installation entry from registry
+        $target = Get-ItemProperty $regPaths -ErrorAction SilentlyContinue |
+                  Where-Object { $_.DisplayName -like "*ImageMagick*" } |
+                  Select-Object -First 1
+
+        if ($target) {
+            Write-Host "Found installed ImageMagick: $($target.DisplayName)"
+
+            $uninstallCommand = $target.UninstallString -replace '"', ''
+
+            if (Test-Path $uninstallCommand) {
+                Write-Host "Running uninstaller: $uninstallCommand"
+                Start-Process -FilePath $uninstallCommand -ArgumentList "/VERYSILENT", "/NORESTART" -Wait
+                Write-Host "Uninstallation completed."
+            } else {
+                Write-Error "Uninstaller file not found at: $uninstallCommand"
+            }
+        } else {
+            Write-Host "ImageMagick is not installed (Registry check). Skipping."
+        }
     - name: Install ImageMagick
       # https://github.com/rmagick/ImageMagick-binaries
       run: |
