@@ -178,7 +178,7 @@ jobs:
         Start-Process -FilePath "${{ env.bundled_im_dir }}\unins000.exe" -ArgumentList "/VERYSILENT /NORESTART"
     - name: Install ghostscript
       run: |
-        choco install ghostscript
+        choco install ghostscript -y --no-progress
     - name: Install ImageMagick
       # https://github.com/rmagick/ImageMagick-binaries
       run: |
