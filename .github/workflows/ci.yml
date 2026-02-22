@@ -240,8 +240,6 @@ jobs:
         os:
           - { target: windows-latest, arch: 'x64' }
           - { target: windows-11-arm, arch: 'arm64' }
-    env:
-      RMAGICK_SKIP_GHOSTSCRIPT_TEST: "true" # To avoid the tedious Ghostscript setup
 
     name: MSWin ${{ matrix.os.arch }}, Ruby ${{ matrix.ruby-version }}, MSYS2 IM
     steps:
@@ -251,14 +249,13 @@ jobs:
       with:
         ruby-version: ${{ matrix.ruby-version }}
         bundler-cache: true
-    - name: Install ImageMagick
+    - name: Install Ghostscript / ImageMagick
       run: |
         if ("${{ matrix.os.arch }}" -eq "arm64") {
-          $pkg = "mingw-w64-clang-aarch64-imagemagick"
+          ridk exec pacman -S mingw-w64-clang-aarch64-ghostscript mingw-w64-clang-aarch64-imagemagick --noconfirm
         } else {
-          $pkg = "mingw-w64-ucrt-x86_64-imagemagick"
+          ridk exec pacman -S mingw-w64-ucrt-x86_64-ghostscript mingw-w64-ucrt-x86_64-imagemagick --noconfirm
         }
-        ridk exec pacman -S $pkg --noconfirm
     - name: Build and test with Rake
       run: |
         cmd.exe /D /S /C "bundle exec rake"
