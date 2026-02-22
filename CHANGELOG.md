@@ -3,6 +3,12 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 6.2.0
+
+Improvements
+
+- Support MSYS2 ImageMagick via pkg-config on Windows (#1730)
+
 ## RMagick 6.1.5
 
 Bug Fixes
