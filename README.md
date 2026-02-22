@@ -120,6 +120,22 @@ If you want to install ImageMagick using [Chocolatey](https://chocolatey.org/), 
 choco install imagemagick -PackageParameters InstallDevelopmentHeaders=true
 ```
 
+### Windows (via MSYS2 / RubyInstaller)
+
+If you are using RubyInstaller for Windows, you can easily install ImageMagick using MSYS2's `pacman` package manager.
+Open your command prompt and run the appropriate command for your architecture to install ImageMagick:
+
+For x64:
+
+```sh
+ridk exec pacman -S mingw-w64-ucrt-x86_64-imagemagick
+```
+For ARM64:
+
+```
+ridk exec pacman -S mingw-w64-clang-aarch64-imagemagick
+```
+
 Installing RMagick
 ------------------
 
