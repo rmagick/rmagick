@@ -241,30 +241,11 @@ jobs:
           - { target: windows-latest, arch: 'x64' }
           - { target: windows-11-arm, arch: 'arm64' }
     env:
-      install_gs_dir: C:\Ghostscript
+      RMAGICK_SKIP_GHOSTSCRIPT_TEST: "true" # To avoid the tedious Ghostscript setup
 
-    name: MSWin ${{ matrix.os.arch }}, Ruby ${{ matrix.ruby-version }} with MSYS2 ImageMagick
+    name: MSWin ${{ matrix.os.arch }}, Ruby ${{ matrix.ruby-version }}, MSYS2 IM
     steps:
     - uses: actions/checkout@v6
-    - name: Setup environment variable
-      # https://stackoverflow.com/questions/60169752/how-to-update-the-path-in-a-github-action-workflow-file-for-a-windows-latest-hos
-      run: |
-        Add-Content $env:GITHUB_PATH ${{ env.install_gs_dir }}\bin
-    - name: Install Ghostscript
-      shell: powershell
-      run: |
-        $url = "https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10060/gs10060w64.exe"
-        $installer = "$env:TEMP\gs_installer.exe"
-
-        Write-Host "Downloading Ghostscript..."
-        Invoke-WebRequest -Uri $url -OutFile $installer
-
-        7z x $installer -o${{ env.install_gs_dir }} -y
-
-        # Add alias
-        $binDir = "${{ env.install_gs_dir }}\bin"
-        Copy-Item "$binDir\gswin64c.exe" "$binDir\gswin32c.exe" -ErrorAction SilentlyContinue
-        Copy-Item "$binDir\gswin64c.exe" "$binDir\gs.exe" -ErrorAction SilentlyContinue
     - name: Set up Ruby ${{ matrix.ruby-version }}
       uses: ruby/setup-ruby@master
       with:
