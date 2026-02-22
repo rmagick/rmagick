@@ -99,7 +99,7 @@ module RMagick
 
     def configure_compile_options
       # Magick-config is not available on Windows
-      if RUBY_PLATFORM.include?('mingw') # mingw
+      if RUBY_PLATFORM.include?('mingw') && !pkgconfig_exist? # mingw without pkg-config support, likely a manual installation
 
         dir_paths = search_paths_for_windows
         $CPPFLAGS += %( -I"#{dir_paths[:include]}")
@@ -159,6 +159,11 @@ module RMagick
 
     def installed_im7_packages
       @installed_im7_packages ||= detect_imagemagick_packages(IM7_PACKAGES)
+    end
+
+    def pkgconfig_exist?
+      $magick_package ||= determine_imagemagick_package
+      !!$magick_package
     end
 
     def determine_imagemagick_package
@@ -241,16 +246,15 @@ module RMagick
         Check the mkmf.log file for more detailed information.
       END_FAILURE
 
-      if RUBY_PLATFORM.include?('mingw')
+      if pkgconfig_exist?
+        $magick_version = PKGConfig.modversion($magick_package)[/^(\d+\.\d+\.\d+)/]
+        exit_failure failure_message unless $magick_version
+      elsif RUBY_PLATFORM.include?('mingw')
         `#{magick_command} -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
         $magick_version = Regexp.last_match(1)
         exit_failure failure_message unless $magick_version
       else
-        unless ($magick_package = determine_imagemagick_package)
-          exit_failure failure_message
-        end
-
-        $magick_version = PKGConfig.modversion($magick_package)[/^(\d+\.\d+\.\d+)/]
+        exit_failure failure_message
       end
 
       # Ensure minimum ImageMagick version
