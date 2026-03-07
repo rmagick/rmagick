@@ -352,15 +352,6 @@ Style/CaseEquality:
     - 'spec/rmagick/pixel/threequals_spec.rb'
 
 # Offense count: 2
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: AllowedMethods, AllowedPatterns.
-# AllowedMethods: ==, equal?, eql?
-Style/ClassEqualityComparison:
-  Exclude:
-    - 'spec/rmagick/image_list/all_predicate_spec.rb'
-    - 'spec/rmagick/image_list/any_predicate_spec.rb'
-
-# Offense count: 2
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: def_self, self_class
