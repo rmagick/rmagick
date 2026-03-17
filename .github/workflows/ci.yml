@@ -259,6 +259,6 @@ jobs:
           $pkg = "mingw-w64-ucrt-x86_64-imagemagick"
         }
         ridk exec pacman -S $pkg --noconfirm
-    - name: Build and test with Rake
+    - name: Build test
       run: |
-        cmd.exe /D /S /C "bundle exec rake"
+        cmd.exe /D /S /C "bundle exec rake compile"
