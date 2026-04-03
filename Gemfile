@@ -17,10 +17,9 @@ gem 'rubocop-performance', '~> 1.21'
 gem 'rubocop-rspec', '~> 3.5'
 
 if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.2')
-  gem 'rbs', '~> 4.0'
-  gem 'rubocop-on-rbs', '~> 2.0'
+  gem 'rbs', '~> 3.9'
+  gem 'rubocop-on-rbs', '< 2.0'
+  gem 'steep', '~> 1.10'
 end
-
-gem 'steep', '~> 1.6'
 
 gem 'ruby_memcheck', '~> 3.0' if RUBY_PLATFORM.include?('linux')
