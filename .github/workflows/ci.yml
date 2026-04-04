@@ -17,7 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v6
     - name: Set up Ruby 4.0
-      uses: ruby/setup-ruby@master
+      uses: ruby/setup-ruby@v1
       with:
         ruby-version: '4.0'
         bundler-cache: true
@@ -32,7 +32,7 @@ jobs:
     steps:
     - uses: actions/checkout@v6
     - name: Set up Ruby 4.0
-      uses: ruby/setup-ruby@master
+      uses: ruby/setup-ruby@v1
       with:
         ruby-version: '4.0'
         bundler-cache: true
@@ -68,7 +68,7 @@ jobs:
         export IMAGEMAGICK_VERSION=${{ matrix.imagemagick-version.full }}
         ./before_install_linux.sh
     - name: Set up Ruby ${{ matrix.ruby-version }}
-      uses: ruby/setup-ruby@master
+      uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby-version }}
         bundler-cache: true
@@ -102,7 +102,7 @@ jobs:
         export IMAGEMAGICK_VERSION=${{ matrix.imagemagick-version.full }}
         ./before_install_linux.sh
     - name: Set up Ruby ${{ matrix.ruby-version }}
-      uses: ruby/setup-ruby@master
+      uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby-version }}
         bundler-cache: true
@@ -135,7 +135,7 @@ jobs:
       run: |
         IMAGEMAGICK_VERSION=${{ matrix.imagemagick-version.full }} ./before_install_osx.sh
     - name: Set up Ruby ${{ matrix.ruby-version }}
-      uses: ruby/setup-ruby@master
+      uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby-version }}
         bundler-cache: true
@@ -222,7 +222,7 @@ jobs:
         Invoke-WebRequest -Uri $url -OutFile $installer_name
         Start-Process -FilePath $installer_name -ArgumentList "/DIR=${{ env.install_im_dir }} /VERYSILENT /NORESTART /TASKS=install_Devel"
     - name: Set up Ruby ${{ matrix.ruby-version }}
-      uses: ruby/setup-ruby@master
+      uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby-version }}
         bundler-cache: true
@@ -247,7 +247,7 @@ jobs:
     steps:
     - uses: actions/checkout@v6
     - name: Set up Ruby ${{ matrix.ruby-version }}
-      uses: ruby/setup-ruby@master
+      uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby-version }}
         bundler-cache: true
