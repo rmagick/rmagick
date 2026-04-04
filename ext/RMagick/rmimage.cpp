@@ -224,6 +224,7 @@ DEFINE_GVL_STUB3(GammaImageChannel, Image *, const ChannelType, const double);
 DEFINE_GVL_STUB5(GaussianBlurImageChannel, const Image *, const ChannelType, const double, const double, ExceptionInfo *);
 DEFINE_GVL_STUB3(GetImageChannelDepth, const Image *, const ChannelType, ExceptionInfo *);
 DEFINE_GVL_STUB6(GetImageChannelDistortion, Image *, const Image *, const ChannelType, const MetricType, double *, ExceptionInfo *);
+DEFINE_GVL_STUB4(GetImageChannelEntropy, const Image *, const ChannelType, double *, ExceptionInfo *);
 DEFINE_GVL_STUB5(GetImageChannelExtrema, const Image *, const ChannelType, size_t *, size_t *, ExceptionInfo *);
 DEFINE_GVL_STUB5(GetImageChannelMean, const Image *, const ChannelType, double *, double *, ExceptionInfo *);
 DEFINE_GVL_STUB2(GetImageClipMask, const Image *, ExceptionInfo *);
@@ -282,10 +283,6 @@ DEFINE_GVL_STUB7(UnsharpMaskImageChannel, const Image *, const ChannelType, cons
 DEFINE_GVL_STUB4(WaveImage, const Image *, const double, const double, ExceptionInfo *);
 DEFINE_GVL_STUB2(WhiteThresholdImage, Image *, const char *);
 DEFINE_GVL_STUB2(WriteImage, const ImageInfo *, Image *);
-#endif
-
-#if defined(HAVE_GETIMAGECHANNELENTROPY)
-DEFINE_GVL_STUB4(GetImageChannelEntropy, const Image *, const ChannelType, double *, ExceptionInfo *);
 #endif
 
 DEFINE_GVL_STUB3(RotationalBlurImage, const Image *, const double, ExceptionInfo *);
@@ -2600,7 +2597,6 @@ Image_channel_mean(int argc, VALUE *argv, VALUE self)
  *
  * @return [Array<Float>] The first element in the array is the average entropy of the selected channels.
  */
-#if defined(HAVE_GETIMAGECHANNELENTROPY) || defined(IMAGEMAGICK_7)
 VALUE
 Image_channel_entropy(int argc, VALUE *argv, VALUE self)
 {
@@ -2641,13 +2637,7 @@ Image_channel_entropy(int argc, VALUE *argv, VALUE self)
 
     return ary;
 }
-#else
-VALUE
-Image_channel_entropy(int argc ATTRIBUTE_UNUSED, VALUE *argv ATTRIBUTE_UNUSED, VALUE self ATTRIBUTE_UNUSED)
-{
-    rm_not_implemented();
-}
-#endif
+
 
 /**
  * Return a new image that is a copy of the input image with the edges highlighted.

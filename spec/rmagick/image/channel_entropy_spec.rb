@@ -34,10 +34,4 @@ RSpec.describe Magick::Image, '#channel_entropy' do
 
     expect(result).to eq([0.5])
   end
-
-  it 'raises an error on earlier versions', supported_before('6.9.0') do
-    image = build_image
-
-    expect { image.channel_entropy }.to raise_error(NotImplementedError)
-  end
 end

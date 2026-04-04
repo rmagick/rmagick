@@ -778,26 +778,6 @@ rm_delete_temp_image(char *temp_name)
 
 
 /**
- * Raise NotImplementedError.
- *
- * No Ruby usage (internal function)
- *
- * Notes:
- *   - Called when a xMagick API is not available.
- *   - Replaces Ruby's rb_notimplement function.
- *
- * @throw NotImpError
- */
-void
-rm_not_implemented(void)
-{
-
-    rb_raise(rb_eNotImpError, "the `%s' method is not supported by ImageMagick "
-            MagickLibVersionText, rb_id2name(rb_frame_this_func()));
-}
-
-
-/**
  * Create a new ImageMagickError object and raise an exception.
  *
  * No Ruby usage (internal function)

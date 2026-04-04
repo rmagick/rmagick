@@ -21,8 +21,6 @@ RSpec.describe Magick::Image, '#destroy' do
       elsif method == 'difference'
         other = described_class.new(20, 20)
         expect { image.difference(other) }.to raise_error(Magick::DestroyedImageError)
-      elsif method == 'channel_entropy' && IM_VERSION < Gem::Version.new('6.9')
-        expect { image.channel_entropy }.to raise_error(NotImplementedError)
       elsif method == 'get_iptc_dataset'
         expect { image.get_iptc_dataset('x') }.to raise_error(Magick::DestroyedImageError)
       elsif method == 'profile!'
