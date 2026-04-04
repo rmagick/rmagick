@@ -209,12 +209,7 @@ static void set_managed_memory(void)
         return;
     }
 
-#if defined(_WIN32)
     managed_memory_enable(Qtrue);
-#else
-    // Not Windows
-    managed_memory_enable(Qtrue);
-#endif
 }
 
 
