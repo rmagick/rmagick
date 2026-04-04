@@ -296,7 +296,6 @@ module RMagick
       $defs.push("-DRUBY_VERSION_STRING=\"ruby #{RUBY_VERSION}\"")
       $defs.push("-DRMAGICK_VERSION_STRING=\"RMagick #{RMAGICK_VERS}\"")
 
-      $defs.push('-DIMAGEMAGICK_GREATER_THAN_EQUAL_6_9_0=1') if im_version_at_least?('6.9.0')
       $defs.push('-DIMAGEMAGICK_GREATER_THAN_EQUAL_6_9_10=1') if im_version_at_least?('6.9.10')
       $defs.push('-DIMAGEMAGICK_7=1') if im_version_at_least?('7.0.0')
       $defs.push('-DIMAGEMAGICK_GREATER_THAN_EQUAL_7_0_8=1') if im_version_at_least?('7.0.8')

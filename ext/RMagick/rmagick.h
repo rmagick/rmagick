@@ -1213,13 +1213,6 @@ extern VALUE  rm_io_path(VALUE);
 extern void   rm_check_image_exception(Image *, ErrorRetention);
 #endif
 
-#if !defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_9_0)
-/* UnityAddKernelInfo() was private function until IM 6.9 */
-MagickExport void UnityAddKernelInfo(KernelInfo *kernel, const double scale);
-/* ScaleKernelInfo() was private function until IM 6.9 */
-MagickExport void ScaleKernelInfo(KernelInfo *kernel, const double scaling_factor, const GeometryFlags normalize_flags);
-#endif
-
 #define RESCUE_FUNC(func)                   (VALUE(*)(VALUE))(func)
 #define RESCUE_EXCEPTION_HANDLER_FUNC(func) (VALUE(*)(VALUE, VALUE))(func)
 
