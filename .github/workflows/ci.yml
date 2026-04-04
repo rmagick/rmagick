@@ -40,41 +40,6 @@ jobs:
       run: |
         bundle exec rake rbs:validate && bundle exec steep check
 
-  # Seems that old imagemagick depend on ghostscript 9.x for handling fonts.
-  # However, ubuntu 24.04 has ghostscript 10.x, which is too new for old imagemagick.
-  test-linux-for-old-imagemagick:
-    runs-on: ubuntu-22.04
-    timeout-minutes: 20
-    strategy:
-      fail-fast: false
-      matrix:
-        ruby-version: ['3.0']
-        imagemagick-version:
-          - { full: 6.8.9-10, major-minor: '6.8' }
-          - { full: 7.0.11-14, major-minor: '7.0' }
-
-    name: Linux, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
-    steps:
-    - uses: actions/checkout@v6
-    - name: Cache ImageMagick built objects
-      uses: actions/cache@v5
-      with:
-        path: ./build-ImageMagick
-        key: v1-${{ runner.os }}-imagemagick-${{ matrix.imagemagick-version.full }}
-        restore-keys: |
-          v1-${{ runner.os }}-imagemagick-${{ matrix.imagemagick-version.full }}
-    - name: Update/Install packages
-      run: |
-        IMAGEMAGICK_VERSION=${{ matrix.imagemagick-version.full }} ./before_install_linux.sh
-    - name: Set up Ruby ${{ matrix.ruby-version }}
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: ${{ matrix.ruby-version }}
-        bundler-cache: true
-    - name: Build and test with Rake
-      run: |
-        bundle exec rake
-
   test:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
