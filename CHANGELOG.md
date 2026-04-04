@@ -3,6 +3,20 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 6.3.0
+
+> [!IMPORTANT]
+> This release is the final minor update for the RMagick 6 series.
+>
+> The upcoming RMagick 7.0 will require:
+>  * Ruby 3.2 or later
+>  * ImageMagick 6.9 or later (for ImageMagick 6 users)
+>  * ImageMagick 7.1 or later (for ImageMagick 7 users)
+
+Enhancements
+
+- Add deprecation warnings for upcoming RMagick 7.0 (#1740)
+
 ## RMagick 6.2.0
 
 Improvements
