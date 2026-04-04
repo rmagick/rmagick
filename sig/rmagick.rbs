@@ -16,7 +16,8 @@ module Magick
 
   VERSION: String
   MIN_RUBY_VERSION: String
-  MIN_IM_VERSION: String
+  MIN_IM6_VERSION: String
+  MIN_IM7_VERSION: String
 
   QuantumRange: Integer
   MAGICKCORE_QUANTUM_DEPTH: Integer

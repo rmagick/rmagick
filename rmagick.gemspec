@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
 
   s.extensions = %w[ext/RMagick/extconf.rb]
   s.required_ruby_version = ">= #{Magick::MIN_RUBY_VERSION}"
-  s.requirements << "ImageMagick #{Magick::MIN_IM_VERSION} or later"
+  s.requirements << "ImageMagick #{Magick::MIN_IM6_VERSION}+ (for ImageMagick 6) or #{Magick::MIN_IM7_VERSION}+ (for ImageMagick 7)"
 
   s.add_dependency 'observer', '~> 0.1'
   s.add_dependency 'pkg-config', '~> 1.4'

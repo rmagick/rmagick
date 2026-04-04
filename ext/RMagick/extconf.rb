@@ -259,10 +259,16 @@ module RMagick
 
       # Ensure minimum ImageMagick version
       # Check minimum ImageMagick version if possible
-      checking_for("outdated ImageMagick version (<= #{Magick::MIN_IM_VERSION})") do
+      checking_for("outdated ImageMagick version") do
         Logging.message("Detected ImageMagick version: #{$magick_version}\n")
 
-        exit_failure "Can't install RMagick #{RMAGICK_VERS}. You must have ImageMagick #{Magick::MIN_IM_VERSION} or later.\n" if Gem::Version.new($magick_version) < Gem::Version.new(Magick::MIN_IM_VERSION)
+        required_version = im_version_at_least?('7.0.0') ? Magick::MIN_IM7_VERSION : Magick::MIN_IM6_VERSION
+
+        if Gem::Version.new($magick_version) < Gem::Version.new(required_version)
+          exit_failure "Can't install RMagick #{RMAGICK_VERS}. You must have ImageMagick #{required_version} or later.\n"
+        end
+
+        false
       end
     end
 
