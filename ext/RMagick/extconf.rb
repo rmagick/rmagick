@@ -376,27 +376,6 @@ at_exit do
       =======================================================================
     WARNING
   end
-
-  if Gem::Version.new($magick_version) < Gem::Version.new('6.9.0')
-    message <<~"WARNING"
-      =======================================================================
-      DEPRECATION WARNING
-
-      RMagick 7.0 will drop support for ImageMagick #{$magick_version}.
-      Please upgrade to ImageMagick 6.9.0 or later.
-      =======================================================================
-    WARNING
-  end
-  if Gem::Version.new($magick_version) >= Gem::Version.new('7.0.0') && Gem::Version.new($magick_version) < Gem::Version.new('7.1.0')
-    message <<~"WARNING"
-      =======================================================================
-      DEPRECATION WARNING
-
-      RMagick 7.0 will drop support for ImageMagick #{$magick_version}.
-      Please upgrade to ImageMagick 7.1.0 or later.
-      =======================================================================
-    WARNING
-  end
 end
 extconf.create_makefile_file
 extconf.create_compile_flags_txt
