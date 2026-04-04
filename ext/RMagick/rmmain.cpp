@@ -1100,9 +1100,7 @@ Init_RMagick2(void)
         ENUMERATOR(YDbDrColorspace)
         ENUMERATORV(XyYColorspace, xyYColorspace)
 #if defined(IMAGEMAGICK_7)
-#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_7_0_8)
         ENUMERATOR(LinearGRAYColorspace)
-#endif
 #if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_7_0_10)
         ENUMERATOR(JzazbzColorspace)
 #endif
