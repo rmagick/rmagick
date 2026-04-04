@@ -57,7 +57,7 @@ jobs:
     steps:
     - uses: actions/checkout@v6
     - name: Cache ImageMagick built objects
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ./build-ImageMagick
         key: v1-${{ runner.os }}-imagemagick-${{ matrix.imagemagick-version.full }}
@@ -93,7 +93,7 @@ jobs:
     steps:
     - uses: actions/checkout@v6
     - name: Cache ImageMagick built objects
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ./build-ImageMagick
         key: v1-${{ runner.os }}-imagemagick-${{ matrix.imagemagick-version.full }}
