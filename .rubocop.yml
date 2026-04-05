@@ -9,7 +9,7 @@ plugins:
 AllCops:
   DefaultFormatter: fuubar
   EnabledByDefault: true
-  TargetRubyVersion: 3.0
+  TargetRubyVersion: 3.2
   Exclude:
     - 'vendor/bundle/**/*'
     - '**/*\.spec'

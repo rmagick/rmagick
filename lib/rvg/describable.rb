@@ -13,7 +13,7 @@ module Magick
     module Describable
       private
 
-      def initialize(*args, &block)
+      def initialize(*args, &)
         super
         @title, @desc, @metadata = nil
       end

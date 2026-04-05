@@ -775,9 +775,9 @@ module Magick
 
     # Provide an alternate version of Draw#annotate, for folks who
     # want to find it in this class.
-    def annotate(draw, width, height, x, y, text, &block)
+    def annotate(draw, width, height, x, y, text, &)
       check_destroyed
-      draw.annotate(self, width, height, x, y, text, &block)
+      draw.annotate(self, width, height, x, y, text, &)
       self
     end
 
@@ -1389,8 +1389,8 @@ module Magick
     end
     alias size length
 
-    def sort!(*args, &block)
-      @images.sort!(*args, &block)
+    def sort!(*args, &)
+      @images.sort!(*args, &)
       self
     end
 
@@ -1406,17 +1406,17 @@ module Magick
     end
 
     # override Enumerable#collect
-    def collect(&block)
+    def collect(&)
       current = get_current
-      a = @images.map(&block)
+      a = @images.map(&)
       ilist = self.class.new
       a.each { |image| ilist << image }
       ilist.set_current current
       ilist
     end
 
-    def collect!(&block)
-      @images.map!(&block)
+    def collect!(&)
+      @images.map!(&)
       assert_image_array @images
       self
     end
@@ -1474,10 +1474,10 @@ module Magick
       @images.each { |f| f.delay = Integer(d) }
     end
 
-    def delete(obj, &block)
+    def delete(obj, &)
       assert_image obj
       current = get_current
-      a = @images.delete(obj, &block)
+      a = @images.delete(obj, &)
       set_current current
       a
     end
@@ -1489,9 +1489,9 @@ module Magick
       a
     end
 
-    def delete_if(&block)
+    def delete_if(&)
       current = get_current
-      @images.delete_if(&block)
+      @images.delete_if(&)
       set_current current
       self
     end
@@ -1529,9 +1529,9 @@ module Magick
     end
 
     # Override Enumerable's find_all
-    def find_all(&block)
+    def find_all(&)
       current = get_current
-      a = @images.select(&block)
+      a = @images.select(&)
       ilist = self.class.new
       a.each { |image| ilist << image }
       ilist.set_current current
@@ -1610,10 +1610,10 @@ module Magick
     # the method to the current image. If the method isn't explicitly supported,
     # send it to the current image in the array. If there are no images, send
     # it up the line. Catch a NameError and emit a useful message.
-    def method_missing(meth_id, *args, &block)
+    def method_missing(meth_id, *args, &)
       if @scene
         img = @images[@scene]
-        new_img = img.public_send(meth_id, *args, &block)
+        new_img = img.public_send(meth_id, *args, &)
         img.equal?(new_img) ? self : new_img
       else
         super
@@ -1626,12 +1626,12 @@ module Magick
     end
 
     # Create a new image and add it to the end
-    def new_image(cols, rows, *fill, &info_blk)
-      self << Magick::Image.new(cols, rows, *fill, &info_blk)
+    def new_image(cols, rows, *fill, &)
+      self << Magick::Image.new(cols, rows, *fill, &)
     end
 
-    def partition(&block)
-      a = @images.partition(&block)
+    def partition(&)
+      a = @images.partition(&)
       t = self.class.new
       a[0].each { |img| t << img }
       t.set_current nil
@@ -1678,18 +1678,18 @@ module Magick
     end
 
     # override Enumerable's reject
-    def reject(&block)
+    def reject(&)
       current = get_current
       ilist = self.class.new
-      a = @images.reject(&block)
+      a = @images.reject(&)
       a.each { |image| ilist << image }
       ilist.set_current current
       ilist
     end
 
-    def reject!(&block)
+    def reject!(&)
       current = get_current
-      a = @images.reject!(&block)
+      a = @images.reject!(&)
       @images = a unless a.nil?
       set_current current
       a.nil? ? nil : self
@@ -1732,8 +1732,8 @@ module Magick
       self
     end
 
-    def reverse_each(&block)
-      @images.reverse_each(&block)
+    def reverse_each(&)
+      @images.reverse_each(&)
       self
     end
 

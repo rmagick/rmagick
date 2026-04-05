@@ -332,8 +332,8 @@ module Magick
       # transforms specified on this object will be used by objects
       # contained within, unless overridden by an inner container or
       # the contained object itself.
-      def rvg(cols, rows, x = 0, y = 0, &block)
-        rvg = Magick::RVG.new(cols, rows, &block)
+      def rvg(cols, rows, x = 0, y = 0, &)
+        rvg = Magick::RVG.new(cols, rows, &)
         begin
           x = Float(x)
           y = Float(y)
@@ -355,8 +355,8 @@ module Magick
       # the contained object itself.
       # Define grouped elements by calling RVG::Embellishable
       # methods within the associated block.
-      def g(&block)
-        group = Group.new(&block)
+      def g(&)
+        group = Group.new(&)
         @content << group
         group
       end

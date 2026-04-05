@@ -124,9 +124,9 @@ module Magick
       # at the current text position.
       #
       # Tspan objects can contain Tspan objects.
-      def initialize(text = nil, x = nil, y = nil, &block)
+      def initialize(text = nil, x = nil, y = nil, &)
         @x, @y = Magick::RVG.convert_to_float(x, y, :allow_nil)
-        super(text, &block)
+        super(text, &)
       end
     end # class Tspan
 
@@ -145,9 +145,9 @@ module Magick
       #     t.tspan("Red text").styles(:fill=>'red')
       #     t.tspan("Blue text").styles(:fill=>'blue')
       #  end
-      def initialize(x = 0, y = 0, text = nil, &block)
+      def initialize(x = 0, y = 0, text = nil, &)
         @cx, @cy = Magick::RVG.convert_to_float(x, y)
-        super(text, &block)
+        super(text, &)
       end
 
       # Reference a Tspan object. <tt>x</tt> and <tt>y</tt> are just
@@ -168,8 +168,8 @@ module Magick
       # Draw a text string at (<tt>x</tt>,<tt>y</tt>). The string can
       # be omitted. Optionally, define text chunks within the associated
       # block.
-      def text(x = 0, y = 0, text = nil, &block)
-        t = Text.new(x, y, text, &block)
+      def text(x = 0, y = 0, text = nil, &)
+        t = Text.new(x, y, text, &)
         @content << t
         t
       end
