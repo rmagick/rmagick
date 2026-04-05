@@ -274,7 +274,7 @@ module RMagick
 
     def create_header_file
       ruby_api = [
-        'rb_io_path' # Ruby 3.2.0
+        'rb_io_path' # Ruby 3.3.0
       ]
       memory_api = %w[
         posix_memalign
