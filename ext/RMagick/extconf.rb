@@ -11,7 +11,7 @@ module RMagick
     RMAGICK_VERS = ::Magick::VERSION
     MIN_RUBY_VERS = ::Magick::MIN_RUBY_VERSION
 
-    # ImageMagick 6.8+ packages
+    # ImageMagick 6 packages
     IM6_PACKAGES = %w[
       ImageMagick-6.Q64HDRI
       ImageMagick-6.Q32HDRI
