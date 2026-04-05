@@ -14,9 +14,4 @@ module TestHelpers
   def gray(pixel_value)
     [pixel_value, pixel_value, pixel_value]
   end
-
-  def value_by_version(hash)
-    major, minor = Gem::Version.new(Magick::IMAGEMAGICK_VERSION).segments
-    hash[:"#{major}.#{minor}"]
-  end
 end
