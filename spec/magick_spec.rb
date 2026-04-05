@@ -67,62 +67,60 @@ RSpec.describe Magick do
     end
   end
 
-  if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.1.0')
-    describe 'Ractor' do
-      it 'is supported' do
-        expect do
-          r = Ractor.new do
-            img = Magick::ImageList.new
-            img.new_image(200, 200, Magick::GradientFill.new(100, 50, 100, 50, 'khaki1', 'turquoise'))
-            img.resize(20, 20)
-          end
-
-          if r.respond_to?(:take)
-            r.take
-          else
-            # Ractor#take was replaced at Ruby 3.5.
-            # https://bugs.ruby-lang.org/issues/21262
-            r.join
-          end
-        end.not_to raise_error
-
-        expect do
-          r = Ractor.new do
-            img = Magick::ImageList.new
-            img.new_image(40, 40, Magick::HatchFill.new('white', 'lightcyan2'))
-            gc = Magick::Draw.new
-
-            gc.font_weight(Magick::NormalWeight)
-            gc.font_style(Magick::NormalStyle)
-            gc.text(5, 20, "'20,20'")
-            gc.draw(img)
-          end
-
-          if r.respond_to?(:take)
-            r.take
-          else
-            # Ractor#take was replaced at Ruby 3.5.
-            # https://bugs.ruby-lang.org/issues/21262
-            r.join
-          end
-        end.not_to raise_error
-
-        unless RUBY_PLATFORM.include?('mingw')
-          # Skip because it causes "`init_formats': unable to register image format 'DMR'" error on Windows
-          expect do
-            r = Ractor.new do
-              Magick.formats # rubocop:disable RSpec/DescribedClass
-            end
-
-            if r.respond_to?(:take)
-              r.take
-            else
-              # Ractor#take was replaced at Ruby 3.5.
-              # https://bugs.ruby-lang.org/issues/21262
-              r.join
-            end
-          end.not_to raise_error
+  describe 'Ractor' do
+    it 'is supported' do
+      expect do
+        r = Ractor.new do
+          img = Magick::ImageList.new
+          img.new_image(200, 200, Magick::GradientFill.new(100, 50, 100, 50, 'khaki1', 'turquoise'))
+          img.resize(20, 20)
         end
+
+        if r.respond_to?(:take)
+          r.take
+        else
+          # Ractor#take was replaced at Ruby 4.0.
+          # https://bugs.ruby-lang.org/issues/21262
+          r.join
+        end
+      end.not_to raise_error
+
+      expect do
+        r = Ractor.new do
+          img = Magick::ImageList.new
+          img.new_image(40, 40, Magick::HatchFill.new('white', 'lightcyan2'))
+          gc = Magick::Draw.new
+
+          gc.font_weight(Magick::NormalWeight)
+          gc.font_style(Magick::NormalStyle)
+          gc.text(5, 20, "'20,20'")
+          gc.draw(img)
+        end
+
+        if r.respond_to?(:take)
+          r.take
+        else
+          # Ractor#take was replaced at Ruby 4.0.
+          # https://bugs.ruby-lang.org/issues/21262
+          r.join
+        end
+      end.not_to raise_error
+
+      unless RUBY_PLATFORM.include?('mingw')
+        # Skip because it causes "`init_formats': unable to register image format 'DMR'" error on Windows
+        expect do
+          r = Ractor.new do
+            Magick.formats # rubocop:disable RSpec/DescribedClass
+          end
+
+          if r.respond_to?(:take)
+            r.take
+          else
+            # Ractor#take was replaced at Ruby 4.0.
+            # https://bugs.ruby-lang.org/issues/21262
+            r.join
+          end
+        end.not_to raise_error
       end
     end
   end
