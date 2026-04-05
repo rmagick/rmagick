@@ -1,14 +1,12 @@
-/**************************************************************************//**
- * Utility functions for RMagick.
+/**
+ * Utility functions.
  *
- * Copyright &copy; 2002 - 2009 by Timothy P. Hunter
- *
- * Changes since Nov. 2009 copyright &copy; by Benjamin Thomas and Omer Bar-or
+ * Copyright (c) 2002 - 2009 Timothy P. Hunter
+ * Copyright (c) 2009 -      RMagick contributors
  *
  * @file     rmutil.cpp
- * @version  $Id: rmutil.cpp,v 1.182 2009/12/21 10:34:58 baror Exp $
  * @author   Tim Hunter
- ******************************************************************************/
+ */
 
 #include "rmagick.h"
 #include <errno.h>

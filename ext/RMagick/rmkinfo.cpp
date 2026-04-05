@@ -1,12 +1,12 @@
-/************************************************************************//**
- * KernelInfo class definitions for RMagick.
+/**
+ * KernelInfo class methods.
  *
- * Copyright &copy; RMagick Project
+ * Copyright (c) 2002 - 2009 Timothy P. Hunter
+ * Copyright (c) 2009 -      RMagick contributors
  *
- * @file rmkinfo.cpp
- * @version $Id: rmkinfo.cpp,v 1.0 2011/11/29 15:33:14 naquad Exp $
- * @author Naquad
- ****************************************************************************/
+ * @file     rmkinfo.cpp
+ * @author   Tim Hunter
+ */
 
 #include "rmagick.h"
 

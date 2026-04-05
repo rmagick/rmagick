@@ -1,14 +1,12 @@
-/**************************************************************************//**
- * Contains Pixel class methods.
+/**
+ * Pixel class methods.
  *
- * Copyright &copy; 2002 - 2009 by Timothy P. Hunter
- *
- * Changes since Nov. 2009 copyright &copy; by Benjamin Thomas and Omer Bar-or
+ * Copyright (c) 2002 - 2009 Timothy P. Hunter
+ * Copyright (c) 2009 -      RMagick contributors
  *
  * @file     rmpixel.cpp
- * @version  $Id: rmpixel.cpp,v 1.7 2009/12/21 10:34:58 baror Exp $
  * @author   Tim Hunter
- ******************************************************************************/
+ */
 
 #include "rmagick.h"
 

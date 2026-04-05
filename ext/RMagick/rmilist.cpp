@@ -1,14 +1,12 @@
-/**************************************************************************//**
- * ImageList class method definitions for RMagick.
+/**
+ * ImageList class methods.
  *
- * Copyright &copy; 2002 - 2009 by Timothy P. Hunter
- *
- * Changes since Nov. 2009 copyright &copy; by Benjamin Thomas and Omer Bar-or
+ * Copyright (c) 2002 - 2009 Timothy P. Hunter
+ * Copyright (c) 2009 -      RMagick contributors
  *
  * @file     rmilist.cpp
- * @version  $Id: rmilist.cpp,v 1.94 2009/12/20 02:33:33 baror Exp $
  * @author   Tim Hunter
- ******************************************************************************/
+ */
 
 #include "rmagick.h"
 

@@ -1,15 +1,13 @@
-/**************************************************************************//**
- * Contains all module, class, method declarations. Defines all constants.
- * Contains Magick module methods.
+/**
+ * All module, class, method declarations. Defines all constants.
+ * Magick module methods.
  *
- * Copyright &copy; 2002 - 2009 by Timothy P. Hunter
- *
- * Changes since Nov. 2009 copyright &copy; by Benjamin Thomas and Omer Bar-or
+ * Copyright (c) 2002 - 2009 Timothy P. Hunter
+ * Copyright (c) 2009 -      RMagick contributors
  *
  * @file     rmmain.cpp
- * @version  $Id: rmmain.cpp,v 1.303 2009/12/20 02:33:33 baror Exp $
  * @author   Tim Hunter
- ******************************************************************************/
+ */
 
 #define MAIN                        // Define external variables
 #include "rmagick.h"

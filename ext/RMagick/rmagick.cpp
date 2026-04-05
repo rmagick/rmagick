@@ -1,14 +1,12 @@
-/**************************************************************************//**
- * Contains Magick module methods.
+/**
+ * Magick module methods.
  *
- * Copyright &copy; 2002 - 2009 by Timothy P. Hunter
- *
- * Changes since Nov. 2009 copyright &copy; by Benjamin Thomas and Omer Bar-or
+ * Copyright (c) 2002 - 2009 Timothy P. Hunter
+ * Copyright (c) 2009 -      RMagick contributors
  *
  * @file     rmagick.cpp
- * @version  $Id: rmagick.cpp,v 1.4 2009/12/20 02:33:32 baror Exp $
  * @author   Tim Hunter
- ******************************************************************************/
+ */
 
 #include "rmagick.h"
 

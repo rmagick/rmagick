@@ -1,14 +1,12 @@
-/**************************************************************************//**
+/**
  * RMagick declarations and definitions.
  *
- * Copyright &copy; 2002 - 2009 by Timothy P. Hunter
- *
- * Changes since Nov. 2009 copyright &copy; by Benjamin Thomas and Omer Bar-or
+ * Copyright (c) 2002 - 2009 Timothy P. Hunter
+ * Copyright (c) 2009 -      RMagick contributors
  *
  * @file     rmagick.h
- * @version  $Id: rmagick.h,v 1.282 2010/02/16 06:50:28 baror Exp $
  * @author   Tim Hunter
- ******************************************************************************/
+ */
 
 #ifndef _RMAGICK_H_
 #define _RMAGICK_H_
