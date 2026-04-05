@@ -20,18 +20,6 @@ Magick::Magick_version =~ /ImageMagick (\d+\.\d+\.\d+)-(\d+) /
 abort 'Unable to get ImageMagick version' unless Regexp.last_match(1) && Regexp.last_match(2)
 IM_VERSION = Gem::Version.new(Regexp.last_match(1))
 
-def unsupported_before(version, condition = {})
-  cond = condition.key?(:if) ? condition[:if] : true
-  message = "Unsupported before #{version}; running #{Magick::IMAGEMAGICK_VERSION}"
-  { skip: message } if cond && Gem::Version.new(Magick::IMAGEMAGICK_VERSION) < Gem::Version.new(version)
-end
-
-def supported_before(version, condition = {})
-  cond = condition.key?(:if) ? condition[:if] : true
-  message = "Supported before #{version}; running #{Magick::IMAGEMAGICK_VERSION}"
-  { skip: message } if cond && Gem::Version.new(Magick::IMAGEMAGICK_VERSION) >= Gem::Version.new(version)
-end
-
 RSpec.configure do |config|
   config.include(TestHelpers)
 end
