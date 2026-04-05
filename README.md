@@ -299,7 +299,7 @@ vagrant ssh
 
 ```sh
 cd /vagrant/rmagick
-export IMAGEMAGICK_VERSION=6.8.9-10
+export IMAGEMAGICK_VERSION=6.9.13-43
 bash ./before_install_linux.sh
 ```
 

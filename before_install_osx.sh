@@ -9,7 +9,7 @@ fi
 
 if [ ! -v IMAGEMAGICK_VERSION ]; then
   echo "you must specify an ImageMagick version."
-  echo "example: 'IMAGEMAGICK_VERSION=6.8.9-10 bash ./before_install_osx.sh'"
+  echo "example: 'IMAGEMAGICK_VERSION=6.9.13-43 bash ./before_install_osx.sh'"
   exit 1
 fi
 
