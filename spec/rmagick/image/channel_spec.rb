@@ -43,7 +43,7 @@ RSpec.describe Magick::Image, "#channel" do
     expect(image.channel(Magick::YellowChannel)).to match_pixels(expected_pixels)
   end
 
-  it "returns a gray image based on the black pixel values from a CMYK image", unsupported_before('6.8') do
+  it "returns a gray image based on the black pixel values from a CMYK image" do
     image = build_image(mode: "CMYK")
     expected_pixels = [gray(76), gray(122), gray(76), gray(54)]
 

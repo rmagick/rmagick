@@ -7,7 +7,7 @@ RSpec.describe Magick::Image, '#read' do
     end
   end
 
-  describe 'issue #483', unsupported_before('6.9.0') do
+  describe 'issue #483' do
     # The newer Ghostscript might not be worked with old ImageMagick.
     it 'can read PDF file', unless: -> { ENV.fetch('RMAGICK_SKIP_GHOSTSCRIPT_TEST', nil) } do
       expect { described_class.read(File.join(FIXTURE_PATH, 'sample.pdf')) }.not_to raise_error

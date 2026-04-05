@@ -21,7 +21,7 @@ RSpec.describe Magick::Draw, '#annotate' do
     expect { draw.annotate('x', 0, 0, 0, 20, 'Hello world') }.to raise_error(NoMethodError)
   end
 
-  it 'works with string started with @ (issue 38)', unsupported_before('6.9.0') do
+  it 'works with string started with @ (issue 38)' do
     draw = described_class.new
 
     image = Magick::Image.new(10, 10)

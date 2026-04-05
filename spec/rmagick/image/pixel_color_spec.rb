@@ -25,7 +25,7 @@ RSpec.describe Magick::Image, '#pixel_color' do
     expect(result.to_color).to eq('#00000000FFFF')
   end
 
-  it 'get/set CYMK color', unsupported_before('6.8.0') do
+  it 'get/set CYMK color' do
     image = described_class.new(20, 30) { |options| options.quality = 100 }
     image.colorspace = Magick::CMYKColorspace
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Magick::KernelInfo, '.builtin' do
-  it 'works', unsupported_before('6.9.0') do
+  it 'works' do
     expect(described_class.builtin(Magick::UnityKernel, '')).to be_instance_of(described_class)
     expect(described_class.builtin(Magick::GaussianKernel, 'Gaussian:10,5')).to be_instance_of(described_class)
     expect(described_class.builtin(Magick::LoGKernel, 'LoG:10,5')).to be_instance_of(described_class)
