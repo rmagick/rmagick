@@ -365,17 +365,6 @@ at_exit do
   msg = "Configured compile options: #{extconf.configured_compile_options}"
   Logging.message msg
   message msg + "\n"
-
-  if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('3.2.0')
-    message <<~"WARNING"
-      =======================================================================
-      DEPRECATION WARNING
-
-      RMagick 7.0 will drop support for Ruby #{RUBY_VERSION}.
-      Please upgrade to Ruby 3.2 or later.
-      =======================================================================
-    WARNING
-  end
 end
 extconf.create_makefile_file
 extconf.create_compile_flags_txt
