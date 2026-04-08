@@ -45,7 +45,7 @@ build_imagemagick() {
 
   cd "${build_dir}"
   ./configure --prefix=/usr "${options}"
-  make -j
+  make -j$(nproc)
 }
 
 if [ ! -d "${build_dir}" ]; then
@@ -53,7 +53,7 @@ if [ ! -d "${build_dir}" ]; then
 fi
 
 cd "${build_dir}"
-sudo make install -j
+sudo make install -j$(nproc)
 cd "${project_dir}"
 
 sudo ldconfig

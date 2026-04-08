@@ -46,7 +46,7 @@ build_imagemagick() {
     "${options}" \
     --with-gs-font-dir=/opt/homebrew/share/ghostscript/fonts \
     --without-raw
-  make -j
+  make -j$(sysctl -n hw.logicalcpu)
 }
 
 if [ ! -d "${build_dir}" ]; then
@@ -54,7 +54,7 @@ if [ ! -d "${build_dir}" ]; then
 fi
 
 cd "${build_dir}"
-sudo make install -j
+sudo make install -j$(sysctl -n hw.logicalcpu)
 cd "${project_dir}"
 
 set +ux
