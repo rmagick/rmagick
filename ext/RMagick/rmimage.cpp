@@ -295,22 +295,15 @@ DEFINE_GVL_STUB4(RotationalBlurImageChannel, const Image *, const ChannelType, c
  *
  * No Ruby usage (internal function)
  *
- * @hash the hash
+ * @kwargs the keyword arguments
  */
 static Quantum
-get_named_alpha_value(VALUE hash)
+get_named_alpha_value(VALUE kwargs)
 {
-    if (TYPE(hash) != T_HASH)
-    {
-        rb_raise(rb_eArgError, "missing keyword: alpha");
-    }
+    ID keyword_ids[] = { rb_intern("alpha") };
+    VALUE alpha;
 
-    if (FIX2ULONG(rb_hash_size(hash)) != 1)
-    {
-        rb_raise(rb_eArgError, "wrong number of arguments");
-    }
-
-    VALUE alpha = rb_hash_aref(hash, ID2SYM(rb_intern("alpha")));
+    rb_get_kwargs(kwargs, keyword_ids, 1, 0, &alpha);
     if (NIL_P(alpha))
     {
         rb_raise(rb_eArgError, "missing keyword: alpha");
@@ -9354,25 +9347,23 @@ Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
 #endif
+    VALUE color_obj, x_obj, y_obj, method_obj, kwargs;
 
     image = rm_check_destroyed(self);
 
-    if (argc != 5)
-    {
-        rb_raise(rb_eArgError, "wrong number of arguments (%d for 5)", argc);
-    }
+    rb_scan_args(argc, argv, "4:", &color_obj, &x_obj, &y_obj, &method_obj, &kwargs);
 
-    alpha = get_named_alpha_value(argv[4]);
+    alpha = get_named_alpha_value(kwargs);
 
-    Color_to_PixelColor(&target, argv[0]);
-    VALUE_TO_ENUM(argv[3], method, PaintMethod);
+    Color_to_PixelColor(&target, color_obj);
+    VALUE_TO_ENUM(method_obj, method, PaintMethod);
     if (!(method == FloodfillMethod || method == FillToBorderMethod))
     {
         rb_raise(rb_eArgError, "paint method_obj must be FloodfillMethod or "
                  "FillToBorderMethod (%d given)", method);
     }
-    x = NUM2LONG(argv[1]);
-    y = NUM2LONG(argv[2]);
+    x = NUM2LONG(x_obj);
+    y = NUM2LONG(y_obj);
     if ((unsigned long)x > image->columns || (unsigned long)y > image->rows)
     {
         rb_raise(rb_eArgError, "target out of range. %ldx%ld given, image is %" RMIuSIZE "x%" RMIuSIZE "",
@@ -10467,41 +10458,18 @@ Image_paint_transparent(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
 #endif
+    VALUE color_obj, invert_obj, fuzz_obj, kwargs;
 
     image = rm_check_destroyed(self);
 
-    // Default fuzz value is image's fuzz attribute.
-    fuzz = image->fuzz;
-    invert = MagickFalse;
+    rb_scan_args(argc, argv, "12:", &color_obj, &invert_obj, &fuzz_obj, &kwargs);
 
-    switch (argc)
+    Color_to_MagickPixel(image, &color, color_obj);
+    invert = (invert_obj != Qnil) ? (MagickBooleanType)RTEST(invert_obj) : MagickFalse;
+    fuzz = (fuzz_obj != Qnil) ? NUM2DBL(fuzz_obj) : image->fuzz;
+    if (RTEST(kwargs))
     {
-        case 4:
-            if (TYPE(argv[argc - 1]) == T_HASH)
-            {
-                fuzz = NUM2DBL(argv[2]);
-            }
-            else
-            {
-                fuzz = NUM2DBL(argv[3]);
-            }
-        case 3:
-            if (TYPE(argv[argc - 1]) == T_HASH)
-            {
-                invert = (MagickBooleanType)RTEST(argv[1]);
-            }
-            else
-            {
-                invert = (MagickBooleanType)RTEST(argv[2]);
-            }
-        case 2:
-            alpha = get_named_alpha_value(argv[argc - 1]);
-        case 1:
-            Color_to_MagickPixel(image, &color, argv[0]);
-            break;
-        default:
-            rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 to 4)", argc);
-            break;
+        alpha = get_named_alpha_value(kwargs);
     }
 
     new_image = rm_clone_image(image);
@@ -14203,31 +14171,33 @@ threshold_image(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
 #endif
+    VALUE red_obj, green_obj, blue_obj, kwargs;
 
     image = rm_check_destroyed(self);
 
+    rb_scan_args(argc, argv, "12:", &red_obj, &green_obj, &blue_obj, &kwargs);
     switch (argc)
     {
         case 4:
-            red     = NUM2DBL(argv[0]);
-            green   = NUM2DBL(argv[1]);
-            blue    = NUM2DBL(argv[2]);
-            alpha   = get_named_alpha_value(argv[3]);
+            red     = NUM2DBL(red_obj);
+            green   = NUM2DBL(green_obj);
+            blue    = NUM2DBL(blue_obj);
+            alpha   = get_named_alpha_value(kwargs);
             snprintf(ctarg, sizeof(ctarg), "%f,%f,%f,%f", red, green, blue, QuantumRange - alpha);
             break;
         case 3:
-            red     = NUM2DBL(argv[0]);
-            green   = NUM2DBL(argv[1]);
-            blue    = NUM2DBL(argv[2]);
+            red     = NUM2DBL(red_obj);
+            green   = NUM2DBL(green_obj);
+            blue    = NUM2DBL(blue_obj);
             snprintf(ctarg, sizeof(ctarg), "%f,%f,%f", red, green, blue);
             break;
         case 2:
-            red     = NUM2DBL(argv[0]);
-            green   = NUM2DBL(argv[1]);
+            red     = NUM2DBL(red_obj);
+            green   = NUM2DBL(green_obj);
             snprintf(ctarg, sizeof(ctarg), "%f,%f", red, green);
             break;
         case 1:
-            red     = NUM2DBL(argv[0]);
+            red     = NUM2DBL(red_obj);
             snprintf(ctarg, sizeof(ctarg), "%f", red);
             break;
         default:
@@ -14692,20 +14662,15 @@ Image_transparent(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
 #endif
-
+    VALUE color_obj, kwargs;
 
     image = rm_check_destroyed(self);
 
-    switch (argc)
+    rb_scan_args(argc, argv, "1:", &color_obj, &kwargs);
+    Color_to_MagickPixel(image, &color, color_obj);
+    if (RTEST(kwargs))
     {
-        case 2:
-            alpha = get_named_alpha_value(argv[1]);
-        case 1:
-            Color_to_MagickPixel(image, &color, argv[0]);
-            break;
-        default:
-            rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 or 2)", argc);
-            break;
+        alpha = get_named_alpha_value(kwargs);
     }
 
     new_image = rm_clone_image(image);
@@ -14761,29 +14726,21 @@ Image_transparent_chroma(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
 #endif
+    VALUE low_obj, high_obj, invert_obj, kwargs;
 
     image = rm_check_destroyed(self);
 
-    switch (argc)
+    rb_scan_args(argc, argv, "21:", &low_obj, &high_obj, &invert_obj, &kwargs);
+
+    Color_to_MagickPixel(image, &low, low_obj);
+    Color_to_MagickPixel(image, &high, high_obj);
+    if (invert_obj != Qnil)
     {
-        case 4:
-            if (TYPE(argv[argc - 1]) == T_HASH)
-            {
-                invert = (MagickBooleanType)RTEST(argv[3]);
-            }
-            else
-            {
-                invert = (MagickBooleanType)RTEST(argv[2]);
-            }
-        case 3:
-            alpha = get_named_alpha_value(argv[argc - 1]);
-        case 2:
-            Color_to_MagickPixel(image, &high, argv[1]);
-            Color_to_MagickPixel(image, &low, argv[0]);
-            break;
-        default:
-            rb_raise(rb_eArgError, "wrong number of arguments (%d for 2, 3 or 4)", argc);
-            break;
+        invert = (MagickBooleanType)RTEST(invert_obj);
+    }
+    if (RTEST(kwargs))
+    {
+        alpha = get_named_alpha_value(kwargs);
     }
 
     new_image = rm_clone_image(image);
