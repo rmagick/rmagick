@@ -46,12 +46,12 @@ static void features_constant(void);
 
 //! define Ruby enumerator elements
 #define ENUMERATOR(val)\
-   _enum = rm_enum_new(_klass, ID2SYM(rb_intern(#val)), INT2NUM(val));\
+   _enum = rm_enum_new(_klass, ID2SYM(rb_intern(#val)), rb_ull2inum((unsigned long long)val));\
    rb_define_const(Module_Magick, #val, _enum);
 
 //! define Ruby enumerator elements when name is different from the value
 #define ENUMERATORV(name, val)\
-   _enum = rm_enum_new(_klass, ID2SYM(rb_intern(#name)), INT2NUM(val));\
+   _enum = rm_enum_new(_klass, ID2SYM(rb_intern(#name)), rb_ull2inum((unsigned long long)val));\
    rb_define_const(Module_Magick, #name, _enum);
 
 //! end of an enumerator
