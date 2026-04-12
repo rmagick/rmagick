@@ -1603,7 +1603,7 @@ module Magick
     def marshal_load(ary)
       @scene = ary.shift
       @images = []
-      ary.each { |a| @images << Marshal.load(a) }
+      ary.each { |a| @images << Marshal.load(a) } # rubocop:disable Security/MarshalLoad
     end
 
     # The ImageList class supports the Magick::Image class methods by simply sending

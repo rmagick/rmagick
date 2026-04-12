@@ -29,6 +29,10 @@ Style/FormatString:
 Style/GuardClause:
   MinBodyLength: 3
 
+Security/MarshalLoad:
+  Exclude:
+    - 'spec/**/*'
+
 # we may not need this after finishing RSpec conversion
 # seems like `rubocop-rspec` already excludes the `spec/` directory
 Style/MethodCalledOnDoEndBlock:
