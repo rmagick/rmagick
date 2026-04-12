@@ -12,11 +12,6 @@ Bundler/GemComment:
   Exclude:
     - 'Gemfile'
 
-# Offense count: 1
-Gemspec/RequiredRubyVersion:
-  Exclude:
-    - 'rmagick.gemspec'
-
 # Offense count: 11
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: Categories, ExpectedOrder.
