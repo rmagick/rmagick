@@ -1620,7 +1620,7 @@ module Magick
       end
     rescue NoMethodError
       Kernel.raise NoMethodError, "undefined method `#{meth_id.id2name}' for #{self.class}"
-    rescue Exception
+    rescue StandardError
       $ERROR_POSITION.delete_if { |s| /:in `send'$/.match(s) || /:in `method_missing'$/.match(s) }
       Kernel.raise
     end

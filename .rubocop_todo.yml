@@ -171,11 +171,6 @@ Lint/NumberConversion:
     - 'spec/rmagick/enum/to_i_spec.rb'
     - 'spec/rmagick/image/export_pixels_spec.rb'
 
-# Offense count: 1
-Lint/RescueException:
-  Exclude:
-    - 'lib/rmagick_internal.rb'
-
 # Offense count: 36
 # Configuration parameters: AllowedMethods, AllowedPatterns, CountRepeatedAttributes.
 Metrics/AbcSize:
