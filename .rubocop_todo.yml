@@ -144,11 +144,6 @@ Lint/EmptyWhen:
   Exclude:
     - 'lib/rvg/misc.rb'
 
-# Offense count: 2
-Lint/FloatComparison:
-  Exclude:
-    - 'lib/rvg/stretchable.rb'
-
 # Offense count: 91
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: AllowedMethods, AllowedPatterns, IgnoredClasses.
