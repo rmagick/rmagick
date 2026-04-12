@@ -4,8 +4,8 @@ require 'rvg/rvg'
 
 Magick::RVG.dpi = 90
 
-PATH_STYLES = { fill: 'none', stroke: 'red', stroke_width: 6 }
-BASE_ELLIPSES_STYLES = { font_size: 20, font_family: 'Verdana', fill: 'none', stroke: '#888', stroke_width: 2 }
+PATH_STYLES = { fill: 'none', stroke: 'red', stroke_width: 6 }.freeze
+BASE_ELLIPSES_STYLES = { font_size: 20, font_family: 'Verdana', fill: 'none', stroke: '#888', stroke_width: 2 }.freeze
 
 rvg = Magick::RVG.new(12.cm, 5.25.cm).viewbox(0, 0, 1200, 525) do |canvas|
   canvas.title = 'Example arcs02 - arc options in paths'

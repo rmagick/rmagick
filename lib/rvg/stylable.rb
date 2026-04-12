@@ -15,7 +15,7 @@ module Magick
       text_anchor text_decoration
       glyph_orientation_vertical glyph_orientation_horizontal
       letter_spacing word_spacing baseline_shift writing_mode
-    ]
+    ].freeze
 
     Styles = Struct.new(*STYLES)
 

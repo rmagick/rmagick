@@ -472,27 +472,6 @@ Style/MissingRespondToMissing:
     - 'lib/rmagick_internal.rb'
     - 'lib/rvg/misc.rb'
 
-# Offense count: 46
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: literals, strict
-Style/MutableConstant:
-  Exclude:
-    - 'doc/ex/add_noise.rb'
-    - 'doc/ex/arcs02.rb'
-    - 'doc/ex/cubic01.rb'
-    - 'doc/ex/cubic02.rb'
-    - 'doc/ex/rvg_linecap.rb'
-    - 'doc/ex/rvg_linejoin.rb'
-    - 'doc/ex/rvg_opacity.rb'
-    - 'doc/ex/smile.rb'
-    - 'doc/ex/tref01.rb'
-    - 'doc/ex/writing_mode01.rb'
-    - 'doc/ex/writing_mode02.rb'
-    - 'lib/rvg/misc.rb'
-    - 'lib/rvg/stylable.rb'
-    - 'spec/support/helpers.rb'
-
 # Offense count: 32
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: EnforcedStyle, AllowedMethods, AllowedPatterns.

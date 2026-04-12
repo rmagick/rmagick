@@ -315,7 +315,7 @@ module Magick
   class RVG
     class Utility
       class TextAttributes
-        WRITING_MODE = %w[lr-tb lr rl-tb rl tb-rl tb]
+        WRITING_MODE = %w[lr-tb lr rl-tb rl tb-rl tb].freeze
 
         def initialize
           @affine = []
@@ -445,39 +445,39 @@ module Magick
           expanded: Magick::ExpandedStretch,
           extra_expanded: Magick::ExtraExpandedStretch,
           ultra_expanded: Magick::UltraExpandedStretch
-        }
+        }.freeze
 
         FONT_STYLE = {
           normal: Magick::NormalStyle,
           italic: Magick::ItalicStyle,
           oblique: Magick::ObliqueStyle
-        }
+        }.freeze
 
         FONT_WEIGHT = {
           normal: Magick::NormalWeight,
           bold: Magick::BoldWeight,
           bolder: Magick::BolderWeight,
           lighter: Magick::LighterWeight
-        }
+        }.freeze
 
         TEXT_ANCHOR = {
           start: Magick::StartAnchor,
           middle: Magick::MiddleAnchor,
           end: Magick::EndAnchor
-        }
+        }.freeze
 
         ANCHOR_TO_ALIGN = {
           start: Magick::LeftAlign,
           middle: Magick::CenterAlign,
           end: Magick::RightAlign
-        }
+        }.freeze
 
         TEXT_DECORATION = {
           none: Magick::NoDecoration,
           underline: Magick::UnderlineDecoration,
           overline: Magick::OverlineDecoration,
           line_through: Magick::LineThroughDecoration
-        }
+        }.freeze
 
         TEXT_STRATEGIES = {
           'lr-tb' => LRTextStrategy,
@@ -486,7 +486,7 @@ module Magick
           'rl' => RLTextStrategy,
           'tb-rl' => TBTextStrategy,
           'tb' => TBTextStrategy
-        }
+        }.freeze
 
         def self.degrees_to_radians(deg)
           Math::PI * (deg % 360.0) / 180.0

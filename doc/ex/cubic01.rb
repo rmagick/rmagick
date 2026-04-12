@@ -4,13 +4,13 @@ require 'rvg/rvg'
 
 Magick::RVG.dpi = 90
 
-BORDER         = { fill: 'none', stroke: 'blue', stroke_width: 1 }
-CONNECT        = { fill: 'none', stroke: '#888', stroke_width: 2 }
-SAMPLE_PATH    = { fill: 'none', stroke: 'red',  stroke_width: 5 }
-END_POINT      = { fill: 'none', stroke: '#888', stroke_width: 2 }
-CTL_POINT      = { fill: '#888', stroke: 'none' }
-AUTO_CTL_POINT = { fill: 'none', stroke: 'blue', stroke_width: 4 }
-LABEL          = { font_size: 22, font_family: 'Verdana', font_weight: 'normal', font_style: 'normal' }
+BORDER         = { fill: 'none', stroke: 'blue', stroke_width: 1 }.freeze
+CONNECT        = { fill: 'none', stroke: '#888', stroke_width: 2 }.freeze
+SAMPLE_PATH    = { fill: 'none', stroke: 'red',  stroke_width: 5 }.freeze
+END_POINT      = { fill: 'none', stroke: '#888', stroke_width: 2 }.freeze
+CTL_POINT      = { fill: '#888', stroke: 'none' }.freeze
+AUTO_CTL_POINT = { fill: 'none', stroke: 'blue', stroke_width: 4 }.freeze
+LABEL          = { font_size: 22, font_family: 'Verdana', font_weight: 'normal', font_style: 'normal' }.freeze
 
 rvg = Magick::RVG.new(5.cm, 4.cm).viewbox(0, 0, 500, 400) do |canvas|
   canvas.title = 'Example cubic01 - cubic Bezier commands in path data'

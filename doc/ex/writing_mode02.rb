@@ -10,7 +10,7 @@ TEXT_STYLES = {
   fill: 'red4',
   font_weight: 'bold',
   font_size: 16
-}
+}.freeze
 
 TEXT_STYLES2 = {
   writing_mode: 'lr',
@@ -18,7 +18,7 @@ TEXT_STYLES2 = {
   fill: 'green',
   font_weight: 'bold',
   font_size: 16
-}
+}.freeze
 
 rvg = Magick::RVG.new(3.in, 1.in).viewbox(0, 0, 300, 100) do |canvas|
   canvas.background_fill = 'white'
