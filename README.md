@@ -261,7 +261,7 @@ via the bug tracker on the [RMagick issues page][issues].
 However, We can't help with Ruby installation and configuration or ImageMagick
 installation and configuration. Information about reporting problems and
 getting help for ImageMagick is available at the [ImageMagick
-website][imagemagick] or the [ImageMagick Forum][imagemagick-forum].
+website][imagemagick] or the [ImageMagick Discussions][imagemagick-discussions].
 
 Development Setup
 -----------------
@@ -352,6 +352,6 @@ See <https://github.com/rmagick/rmagick/wiki/Release-Process>
 [libmagick-faq]: https://web.archive.org/web/20140512193354/https://rmagick.rubyforge.org/install-faq.html#libmagick
 [faq]: https://web.archive.org/web/20140512193354/https://rmagick.rubyforge.org/install-faq.html
 [imagemagick]: https://imagemagick.org
-[imagemagick-forum]: https://imagemagick.org/discourse-server
+[imagemagick-discussions]: https://github.com/ImageMagick/ImageMagick/discussions
 [dev-box]: https://github.com/tjschuck/rake-compiler-dev-box
 [vagrant]: https://www.vagrantup.com/
