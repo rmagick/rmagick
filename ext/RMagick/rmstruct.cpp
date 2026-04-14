@@ -556,7 +556,7 @@ VALUE
 Import_PointInfo(PointInfo *p)
 {
     return rb_funcall(Class_Point, rm_ID_new, 2,
-                      INT2FIX(p->x), INT2FIX(p->y));
+                      rb_float_new(p->x), rb_float_new(p->y));
 }
 
 
