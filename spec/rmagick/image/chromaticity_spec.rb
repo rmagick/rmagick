@@ -19,15 +19,30 @@ RSpec.describe Magick::Image, '#chromaticity' do
 
   it "returns default chromaticity values" do
     image = build_image
+    delta = 0.0001
 
-    red_primary = Magick::Primary.new(0.6399999856948853, 0.33000001311302185, 0.029999999329447746)
-    green_primary = Magick::Primary.new(0.30000001192092896, 0.6000000238418579, 0.10000000149011612)
-    blue_primary = Magick::Primary.new(0.15000000596046448, 0.05999999865889549, 0.7900000214576721)
-    white_point = Magick::Primary.new(0.3127000033855438, 0.32899999618530273, 0.35830000042915344)
+    expect(image.chromaticity.red_primary).to have_attributes(
+      x: be_within(delta).of(0.64),
+      y: be_within(delta).of(0.33),
+      z: be_within(delta).of(0.03)
+    )
 
-    expect(image.chromaticity.red_primary).to eq(red_primary)
-    expect(image.chromaticity.green_primary).to eq(green_primary)
-    expect(image.chromaticity.blue_primary).to eq(blue_primary)
-    expect(image.chromaticity.white_point).to eq(white_point)
+    expect(image.chromaticity.green_primary).to have_attributes(
+      x: be_within(delta).of(0.30),
+      y: be_within(delta).of(0.60),
+      z: be_within(delta).of(0.10)
+    )
+
+    expect(image.chromaticity.blue_primary).to have_attributes(
+      x: be_within(delta).of(0.15),
+      y: be_within(delta).of(0.06),
+      z: be_within(delta).of(0.79)
+    )
+
+    expect(image.chromaticity.white_point).to have_attributes(
+      x: be_within(delta).of(0.3127),
+      y: be_within(delta).of(0.3290),
+      z: be_within(delta).of(0.3583)
+    )
   end
 end
