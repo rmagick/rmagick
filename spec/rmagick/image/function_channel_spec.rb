@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#function_channel' do
   it 'works' do
-    image = described_class.read('gradient:') { self.size = '20x600' }
+    image = described_class.read('gradient:') { |options| options.size = '20x600' }
     image = image.first
     image.rotate!(90)
     expect { image.function_channel Magick::PolynomialFunction, 0.33 }.not_to raise_error

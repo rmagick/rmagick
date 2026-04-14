@@ -1,0 +1,11 @@
+{
+  "name": "ImageMagick 6",
+  "build": {
+    "dockerfile": "../Dockerfile",
+    "args": {
+      "RUBY_VERSION": "3.3.3",
+      "IMAGEMAGICK_VERSION": "6.9.13-43"
+    }
+  },
+  "onCreateCommand": "/setup/setup-repo.sh"
+}

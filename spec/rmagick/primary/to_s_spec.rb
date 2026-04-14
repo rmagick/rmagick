@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Magick::Primary, '#to_s' do
   it 'works' do
     chrom = Magick::Image.new(10, 10).chromaticity

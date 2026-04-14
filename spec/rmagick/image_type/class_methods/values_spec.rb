@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::ImageType, '.values' do
   it 'does not cause an infinite loop' do
     info = Magick::Image::Info.new

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Magick
   class Draw
     def self._dummy_img_

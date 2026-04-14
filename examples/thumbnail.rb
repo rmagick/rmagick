@@ -1,5 +1,6 @@
+# frozen_string_literal: true
+
 require 'rmagick'
-include Magick
 
 puts <<~END_INFO
 
@@ -39,7 +40,7 @@ geom = "#{size}x#{size}"
 # computes the new image geometry and yields to a block. The
 # return value of the block is the return value of the method.
 
-img = Image.read(image)[0]
+img = Magick::Image.read(image)[0]
 img.change_geometry!(geom) { |cols, rows| img.thumbnail! cols, rows }
 
 # We need a background to display the thumbnail.
@@ -48,17 +49,17 @@ img.change_geometry!(geom) { |cols, rows| img.thumbnail! cols, rows }
 # for the raised border. A 3-pixel raised edge means that the
 # background needs to be 6 pixels larger in each dimension.
 
-bg = Image.new(size + 6, size + 6) { self.background_color = 'gray75' }
+bg = Magick::Image.new(size + 6, size + 6) { |options| options.background_color = 'gray75' }
 bg = bg.raise(3, 3)
 
 # Just for the purposes of this example, display the thumbnail background on
 # a larger white background.
 
-white_bg = Image.new(size + 50, size + 50) { self.background_color = 'white' }
-white_bg = white_bg.composite(bg, CenterGravity, OverCompositeOp)
+white_bg = Magick::Image.new(size + 50, size + 50) { |options| options.background_color = 'white' }
+white_bg = white_bg.composite(bg, Magick::CenterGravity, Magick::OverCompositeOp)
 
 # Finally, center the thumbnail on the gray background.
-thumbnail = white_bg.composite(img, CenterGravity, OverCompositeOp)
+thumbnail = white_bg.composite(img, Magick::CenterGravity, Magick::OverCompositeOp)
 
 thumbnail.write('thumbnail.gif')
 exit

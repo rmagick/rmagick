@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#modulate' do
   it 'works' do
     image = described_class.new(20, 20)
@@ -7,12 +9,19 @@ RSpec.describe Magick::Image, '#modulate' do
     expect(result).not_to be(image)
 
     expect { image.modulate(0.5) }.not_to raise_error
+    expect { image.modulate('50%') }.not_to raise_error
     expect { image.modulate(0.5, 0.5) }.not_to raise_error
+    expect { image.modulate(0.5, '50%') }.not_to raise_error
     expect { image.modulate(0.5, 0.5, 0.5) }.not_to raise_error
+    expect { image.modulate(0.5, -0.5, -0.5) }.not_to raise_error
+    expect { image.modulate(0.5, 0.5, '50%') }.not_to raise_error
+    expect { image.modulate(0.5, '-50%', '-50%') }.not_to raise_error
+    expect { image.modulate(-0.5) }.to raise_error(ArgumentError)
+    expect { image.modulate('-50%') }.to raise_error(ArgumentError)
     expect { image.modulate(0.0, 0.5, 0.5) }.to raise_error(ArgumentError)
     expect { image.modulate(0.5, 0.5, 0.5, 0.5) }.to raise_error(ArgumentError)
-    expect { image.modulate('x', 0.5, 0.5) }.to raise_error(TypeError)
-    expect { image.modulate(0.5, 'x', 0.5) }.to raise_error(TypeError)
-    expect { image.modulate(0.5, 0.5, 'x') }.to raise_error(TypeError)
+    expect { image.modulate('x', 0.5, 0.5) }.to raise_error(ArgumentError)
+    expect { image.modulate(0.5, 'x', 0.5) }.to raise_error(ArgumentError)
+    expect { image.modulate(0.5, 0.5, 'x') }.to raise_error(ArgumentError)
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #--
 # $Id: embellishable.rb,v 1.9 2009/02/28 23:52:13 rmagick Exp $
 # Copyright (C) 2009 Timothy P. Hunter
@@ -109,7 +111,7 @@ module Magick
           short = n > 0 ? y_coords : x_coords
           olen = short.length
           n.abs.times { |x| short << short[x % olen] }
-          points = x_coords.zip(y_coords).flatten
+          points = x_coords.zip(y_coords).flatten!
         end
         n = points.length
         raise ArgumentError, "insufficient/odd number of points specified: #{n}" if n < 4 || n.odd?
@@ -162,6 +164,8 @@ module Magick
                (@width - @image.columns * scale) / 2.0
              when /\AxMax/
                @width - @image.columns * scale
+             else
+               0
              end
 
         ty = case @align
@@ -171,6 +175,8 @@ module Magick
                (@height - @image.rows * scale) / 2.0
              when /YMax\z/
                @height - @image.rows * scale
+             else
+               0
              end
         [tx, ty]
       end
@@ -182,7 +188,7 @@ module Magick
           width = @width
           height = @height
         elsif @meet_or_slice == 'meet'
-          scale = [@width / @image.columns, @height / @image.rows].min
+          scale = [@width / @image.columns, @height / @image.rows].min || 1.0
           width = @image.columns
           height = @image.rows
         else
@@ -193,7 +199,7 @@ module Magick
           end
 
           gc.clip_path(name)
-          scale = [@width / @image.columns, @height / @image.rows].max
+          scale = [@width / @image.columns, @height / @image.rows].max || 1.0
           width = @image.columns
           height = @image.rows
         end
@@ -326,8 +332,8 @@ module Magick
       # transforms specified on this object will be used by objects
       # contained within, unless overridden by an inner container or
       # the contained object itself.
-      def rvg(cols, rows, x = 0, y = 0, &block)
-        rvg = Magick::RVG.new(cols, rows, &block)
+      def rvg(cols, rows, x = 0, y = 0, &)
+        rvg = Magick::RVG.new(cols, rows, &)
         begin
           x = Float(x)
           y = Float(y)
@@ -349,8 +355,8 @@ module Magick
       # the contained object itself.
       # Define grouped elements by calling RVG::Embellishable
       # methods within the associated block.
-      def g(&block)
-        group = Group.new(&block)
+      def g(&)
+        group = Group.new(&)
         @content << group
         group
       end

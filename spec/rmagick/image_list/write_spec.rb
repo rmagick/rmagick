@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::ImageList, "#write" do
   it "works" do
     image_list = described_class.new
@@ -15,16 +17,29 @@ RSpec.describe Magick::ImageList, "#write" do
     expect(image_list.format).to eq('JPEG')
     FileUtils.rm('temp.foo')
 
-    image_list.write('temp.0') { self.format = 'JPEG' }
+    image_list.write('temp.0') { |options| options.format = 'JPEG' }
     image_list = described_class.new('temp.0')
     expect(image_list.format).to eq('JPEG')
     FileUtils.rm('temp.0')
 
-    f = File.new('test.0', 'w')
-    image_list.write(f) { self.format = 'JPEG' }
+    f = File.new('test.0', 'wb')
+    image_list.write(f) { |options| options.format = 'JPEG' }
     f.close
     image_list = described_class.new('test.0')
     expect(image_list.format).to eq('JPEG')
     FileUtils.rm('test.0')
+  end
+
+  it "issue #1375" do
+    # https://commons.wikimedia.org/wiki/File:Animhorse.gif
+    image_list = described_class.new(File.join(FIXTURE_PATH, 'animhorse.gif'))
+
+    File.open(File.join(Dir.tmpdir, 'out.gif'), 'wb') do |f|
+      image_list.write(f)
+    end
+
+    Tempfile.create('out.gif', mode: File::BINARY) do |f|
+      image_list.write(f)
+    end
   end
 end

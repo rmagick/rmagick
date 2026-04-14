@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Magick::Font, '#to_s' do
   it 'works' do
     font = Magick.fonts[0]

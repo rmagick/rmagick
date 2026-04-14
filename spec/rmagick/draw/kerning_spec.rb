@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Draw, '#kerning' do
   it 'accepts a valid parameter without raising an error' do
     draw = described_class.new
@@ -23,6 +25,11 @@ RSpec.describe Magick::Draw, '#kerning' do
     draw = described_class.new
     draw.kerning('40.5')
     expect(draw.inspect).to eq('kerning 40.5')
+    expect { draw.draw(image) }.not_to raise_error
+
+    draw = described_class.new
+    draw.kerning(1/4r)
+    expect(draw.inspect).to eq('kerning 0.25')
     expect { draw.draw(image) }.not_to raise_error
 
     # expect { draw.kerning(Float::NAN) }.to raise_error(ArgumentError)

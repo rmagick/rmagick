@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rmagick'
 
 imgl = Magick::ImageList.new
@@ -40,8 +42,9 @@ gc.circle 170, 220, 173, 223
 # Add labels
 gc.font_weight Magick::NormalWeight
 gc.font_style Magick::NormalStyle
-gc.stroke 'none' # unset stroke color
 gc.fill 'black'
+gc.fill_opacity 1
+gc.stroke 'none' # unset stroke color
 
 # Add end point labels
 gc.text 30, 125, "'20,120'"

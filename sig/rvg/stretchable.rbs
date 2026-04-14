@@ -1,0 +1,56 @@
+module Magick
+  class RVG
+    module PreserveAspectRatio
+      @align: String
+      @meet_or_slice: String
+
+      # -
+      #   Included in Stretchable module and Image class
+      # +
+      # Specifies how the image within a viewport should be scaled.
+      # [+align+] a combination of 'xMin', 'xMid', or 'xMax', followed by
+      #           'YMin', 'YMid', or 'YMax'
+      # [+meet_or_slice+] one of 'meet' or 'slice'
+      def preserve_aspect_ratio: (interned align, ?interned meet_or_slice) -> self
+                               | (interned align, ?interned meet_or_slice) { (self) -> void } -> self
+    end
+
+    # The methods in this module describe the user-coordinate space.
+    # RVG and Pattern objects are stretchable.
+    module Stretchable
+      @vbx_width: Float
+      @vbx_height: Float
+      @vbx_x: Float
+      @vbx_y: Float
+      @meet_or_slice: String
+      @align: String
+
+      include PreserveAspectRatio
+
+      private
+
+      # Scale to fit
+      def set_viewbox_none: (Integer | Float width, Integer | Float height) -> [Integer | Float, Integer | Float]
+
+      # Use align attribute to compute x- and y-offset from viewport's upper-left corner.
+      def align_to_viewport: (Integer | Float width, Integer | Float height, Integer | Float sx, Integer | Float sy) -> [(Integer | Float)?, (Integer | Float)?]
+
+      # Scale to smaller viewbox dimension
+      def set_viewbox_meet: (Integer | Float width, Integer | Float height) -> [(Integer | Float)?, (Integer | Float)?]
+
+      # Scale to larger viewbox dimension
+      def set_viewbox_slice: (Integer | Float width, Integer | Float height) -> [(Integer | Float)?, (Integer | Float)?]
+
+      # Establish the viewbox as necessary
+      def add_viewbox_primitives: (Integer | Float width, Integer | Float height, Utility::GraphicContext gc) -> void
+
+      public
+
+      # Describe a user coordinate system to be imposed on the viewbox.
+      # The arguments must be numbers and the +width+ and +height+
+      # arguments must be positive.
+      def viewbox: (magick_real x, magick_real y, magick_real width, magick_real height) -> self
+                 | (magick_real x, magick_real y, magick_real width, magick_real height) { (self) -> void } -> self
+    end
+  end
+end

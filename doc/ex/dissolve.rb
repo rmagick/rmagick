@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rmagick'
 
 bgnd = Magick::Image.read('images/Violin.jpg').first

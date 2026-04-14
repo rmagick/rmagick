@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#palette?' do
   it 'works' do
     image = described_class.read(IMAGES_DIR + '/Flower_Hat.jpg').first

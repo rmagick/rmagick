@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Pixel, '#<=>' do
   it 'works' do
     pixel = described_class.from_color('brown')
@@ -31,5 +33,7 @@ RSpec.describe Magick::Pixel, '#<=>' do
     expect(pixel <=> pixel2).to eq(1)
     pixel2.alpha += 20
     expect(pixel <=> pixel2).to eq(-1)
+
+    expect(pixel <=> Object.new).to be(nil)
   end
 end

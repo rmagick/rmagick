@@ -1,0 +1,33 @@
+module Magick
+  class RVG
+    attr_reader self.dpi: Float
+
+    def self.dpi=: (magick_real n) -> Float
+  end
+end
+
+class Float
+  attr_reader px: Float
+  attr_reader in: Float
+  attr_reader mm: Float
+  attr_reader cm: Float
+  attr_reader pt: Float
+  attr_reader pc: Float
+  def pct: (Magick::magick_real of) -> Float
+  attr_reader deg: Float
+  attr_reader rad: Float
+  attr_reader grad: Float
+end
+
+class Integer
+  attr_reader px: Integer
+  attr_reader in: Float
+  attr_reader mm: Float
+  attr_reader cm: Float
+  attr_reader pt: Float
+  attr_reader pc: Float
+  def pct: (Magick::magick_real of) -> Float
+  attr_reader deg: Integer
+  attr_reader rad: Float
+  attr_reader grad: Float
+end

@@ -1,17 +1,19 @@
+# frozen_string_literal: true
+
 require 'rmagick'
 
 # Add a drop shadow to a text string. This example
 # uses a 3-image animation to show each step of the
 # process
 
-Rows = 60
-Cols = 250
-Text = 'Ruby rocks!'
+ROWS = 60
+COLS = 250
+TEXT = 'Ruby rocks!'
 
 # This imagelist will contain the animation frames
 anim = Magick::ImageList.new
 
-ex = Magick::Image.new(Cols, Rows)
+ex = Magick::Image.new(COLS, ROWS)
 
 # Create a Draw object to draw the text with. Most of the text
 # attributes are shared between the shadow and the foreground.
@@ -25,8 +27,8 @@ text.stroke = 'transparent'
 
 # Draw the shadow text first. The color is a very light gray.
 # Position the text to the right and down.
-text.annotate(ex, 0, 0, 2, 2, Text) do
-  self.fill = 'gray60'
+text.annotate(ex, 0, 0, 2, 2, TEXT) do |options|
+  options.fill = 'gray60'
 end
 
 # Save the first frame of the animation.
@@ -38,8 +40,8 @@ anim << ex.copy
 
 # Add the foreground text in solid black. Position it
 # to the left and up from the shadow text.
-text.annotate(ex, 0, 0, -1, -1, Text) do
-  self.fill = 'maroon'
+text.annotate(ex, 0, 0, -1, -1, TEXT) do |options|
+  options.fill = 'maroon'
 end
 
 # Save yet another copy of the image as the 3rd frame.

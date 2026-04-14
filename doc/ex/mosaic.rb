@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'rmagick'
 
 # Demonstrate the mosaic method
 
 a = Magick::ImageList.new
 
-letter = 'A'
+letter = +'A'
 26.times do
   # 'M' is not the same size as the other letters.
   a.read('images/Button_' + letter + '.gif') if letter != 'M'

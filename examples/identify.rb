@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rmagick'
 
 module Magick
@@ -112,9 +114,9 @@ module Magick
       puts "\tUnits: #{units}\n"
       size = filesize
       if size >= 1_048_576
-        puts "\tFilesize: #{sprintf('%.1f', (size / 1_048_576.0))}mb\n"
+        puts "\tFilesize: #{sprintf('%.1f', size / 1_048_576.0)}mb\n"
       elsif size >= 1024
-        puts "\tFilesize: #{sprintf('%.0f', (size / 1024.0))}kb\n"
+        puts "\tFilesize: #{sprintf('%.0f', size / 1024.0)}kb\n"
       else
         puts "\tFilesize: #{size}b\n"
       end
@@ -157,10 +159,10 @@ module Magick
   end
 end
 
-if ARGV.length.zero?
-  puts <<-'END_USAGE'
+if ARGV.empty?
+  puts <<-END_USAGE
     This example displays information about the specified image file(s)
-    that is similar to ImageMagick/GraphicsMagick's identify command.
+    that is similar to ImageMagick's identify command.
 
     Usage:
     ruby identify.rb filename [filename...]

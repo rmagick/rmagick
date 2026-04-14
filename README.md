@@ -1,7 +1,6 @@
 RMagick
 =======
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/901780ea1a244a8584b18033b2e03866)](https://app.codacy.com/gh/rmagick/rmagick?utm_source=github.com&utm_medium=referral&utm_content=rmagick/rmagick&utm_campaign=Badge_Grade_Settings)
 [![GemVersion](https://img.shields.io/gem/v/rmagick.svg?style=flat)](https://rubygems.org/gems/rmagick)
 ![CI](https://github.com/rmagick/rmagick/workflows/CI/badge.svg)
 
@@ -30,19 +29,30 @@ ImageMagick image processing library.
 Prerequisites
 -------------
 
-These prerequisites are required for the latest DEVELOPMENT version of RMagick.
-To see prerequisites for the latest RELEASED version of the gem, switch to the
-master branch.
+These prerequisites are required for the latest version of RMagick.
 
-**O/S** Linux, \*BSD, OS X, Windows 2000, XP, Vista, other \*nix-like systems.
+**OS**
+- Linux
+- \*BSD
+- macOS
+- Windows
+- Other \*nix-like systems
 
-**Ruby** 2.3 or later. You can get Ruby from <https://www.ruby-lang.org>.
+**C++ compiler**
+- RMagick 5.4.0 or later requires a C++ compiler.
+
+**Ruby**
+- Version 3.2 or later.
+
+You can get Ruby from <https://www.ruby-lang.org>.
 
 Ruby must be able to build C-Extensions (e.g. MRI, Rubinius, not JRuby)
 
-**ImageMagick** Version 6.7.7 or later (6.x.x). Version 7 has beta support in
-version 4.1.0.rc2 (#256). You can get ImageMagick from
-<https://imagemagick.org>.
+**ImageMagick**
+- Version 6.9 or later (for ImageMagick 6 users).
+- Version 7.1 or later (for ImageMagick 7 users).
+
+You can get ImageMagick from <https://imagemagick.org>.
 
 ### Linux
 #### Ubuntu
@@ -56,52 +66,81 @@ sudo apt-get install libmagickwand-dev
 On Centos, you can run:
 
 ```sh
-sudo yum install gcc ImageMagick-devel make which
+sudo yum install ImageMagick-devel
 ```
 
 #### Arch Linux
 On Arch Linux, you can run:
 
 ```sh
-pacman -Syy pkg-config imagemagick
+pacman -Syy imagemagick
 ```
 
 #### Alpine Linux
 On Alpine Linux, you can run:
 
 ```
-apk add pkgconfig imagemagick imagemagick-dev imagemagick-libs
+apk add imagemagick imagemagick-dev imagemagick-libs
 ```
 
 or you can run if you would like to use ImageMagick 6:
 
 ```
-apk add pkgconfig imagemagick6 imagemagick6-dev imagemagick6-libs
+apk add imagemagick6 imagemagick6-dev imagemagick6-libs
 ```
 
 ### macOS
 On macOS, you can run:
 
 ```sh
-brew install pkg-config imagemagick
+brew install imagemagick
 ```
 
 or you can run if you would like to use ImageMagick 6:
 
 ```sh
-brew install pkg-config imagemagick@6
+brew install imagemagick@6
 ```
 
 ### Windows
 1. Install latest Ruby+Devkit package which you can get from [RubyInstaller for Windows](https://rubyinstaller.org).
-2. You might need to configure `PATH` environment variable to where the compiler is located.
-   (Ex: `set PATH=C:\Ruby27-x64\msys64\usr\bin;C:\Ruby27-x64\msys64\mingw64\bin;%PATH%`)
-3. Download `ImageMagick-7.XXXX-Q16-x64-dll.exe` (not, `ImageMagick-7.XXXX-Q16-x64-static.exe`) binary from [Windows Binary Release](https://imagemagick.org/script/download.php#windows), or you can download ImageMagick 6 from [Windows Binary Release](https://legacy.imagemagick.org/script/download.php#windows).
-4. Install ImageMagick. You need to turn on checkboxes `Add application directory to your system path` and `Install development headers and librarries for C and C++` in an installer for RMagick.
-<img width="50%" src="https://user-images.githubusercontent.com/199156/77183472-b72cbd00-6b11-11ea-8b9a-247bc1f9d8b1.png" />
+2. Download `ImageMagick-7.XXXX-Q16-x64-dll.exe` (not, `ImageMagick-7.XXXX-Q16-x64-static.exe`) binary from [Windows Binary Release](https://imagemagick.org/script/download.php#windows), or you can download ImageMagick 6 from [Windows Binary Release](https://legacy.imagemagick.org/script/download.php#windows).
+3. Install ImageMagick. You need to turn on checkboxes `Add application directory to your system path` and `Install development headers for C and C++` in an installer for RMagick.
+<img width="75%" src="https://github.com/rmagick/rmagick/assets/199156/494e7963-cca5-4cb5-b28a-6c4d76adce5d" />
+
+If you want to install ImageMagick using [winget](https://learn.microsoft.com/en-us/windows/package-manager/winget/), run the following command:
+
+```sh
+winget install ImageMagick.ImageMagick --custom /TASKS=modifypath,install_Devel
+```
+
+If you want to install ImageMagick using [Chocolatey](https://chocolatey.org/), run the following command:
+
+```sh
+choco install imagemagick -PackageParameters InstallDevelopmentHeaders=true
+```
+
+### Windows (via MSYS2 / RubyInstaller)
+
+If you are using RubyInstaller for Windows, you can easily install ImageMagick using MSYS2's `pacman` package manager.
+Open your command prompt and run the appropriate command for your architecture to install ImageMagick:
+
+For x64:
+
+```sh
+ridk exec pacman -S mingw-w64-ucrt-x86_64-imagemagick
+```
+For ARM64:
+
+```
+ridk exec pacman -S mingw-w64-clang-aarch64-imagemagick
+```
 
 Installing RMagick
 ------------------
+
+> [!NOTE]
+> When you update the ImageMagick version, we have recommended you should re-install RMagick.
 
 ### Installing via Bundler
 
@@ -117,6 +156,11 @@ Then run:
 bundle install
 ```
 
+For Windows, you need to run using [ridk tool](https://github.com/oneclick/rubyinstaller2/wiki/The-ridk-tool):
+```sh
+ridk exec bundle install
+```
+
 ### Installing via RubyGems
 
 Run:
@@ -125,11 +169,16 @@ Run:
 gem install rmagick
 ```
 
+For Windows, you need to run using [ridk tool](https://github.com/oneclick/rubyinstaller2/wiki/The-ridk-tool):
+```sh
+ridk exec gem install rmagick
+```
+
 ### Versioning
 
-RMagick is versioned according to Semantic Versioning. For stable version
-compatible with Ruby 1.8+, use `~> 2.0`. Versions >= 3 work on Ruby >= 2.x
-only.
+RMagick is versioned according to Semantic Versioning.
+Versions >= 7 work on Ruby >= 3.2 only.
+For older Ruby versions, use RMagick `~> 6.0`.
 
 Using RMagick
 -------------
@@ -148,7 +197,7 @@ Things that can go wrong
 The [RMagick installation FAQ][faq] has answers to the most commonly reported
 problems, though may be out of date.
 
-### Can't install RMagick. Can't find libMagick or one of the dependent libraries. Check the mkmf.log file for more detailed information
+### Can't install RMagick. Can't find libMagickCore-XXXX.so or one of the dependent libraries. Check the mkmf.log file for more detailed information
 
 Typically this message means that one or more of the libraries that ImageMagick
 depends on hasn't been installed. Examine the mkmf.log file in the ext/RMagick
@@ -156,29 +205,19 @@ subdirectory of the installation directory for any error messages. These
 messages typically contain enough additional information for you to be able to
 diagnose the problem. Also see [this FAQ][libmagick-faq].
 
-On OS X with Homebrew, try (re)installing pkg-config:
-
-```sh
-brew uninstall pkg-config
-brew install pkg-config
-brew unlink pkg-config
-brew link pkg-config
-```
-
 ### Cannot open shared object file
 
 If you get a message like this:
 
 ```sh
-$DIR/RMagick.rb:11:in `require': libMagick.so.0:
-  cannot open shared object file: No such file or directory -
-  $DIR/RMagick2.so (LoadError)
+... /core_ext/kernel_require.rb>:136:in `require': cannot load such file -- RMagick2.so (LoadError)
+  (snip)
 ```
 
 you probably do not have the directory in which the ImageMagick library
 is installed in your load path. An easy way to fix this is to define
 the directory in the `LD_LIBRARY_PATH` environment variable. For
-example, suppose you installed the ImageMagick library `libMagick.so` in
+example, suppose you installed the ImageMagick library `libMagickCore-XXXX.so` in
 `/usr/local/lib`. (By default this is where it is installed.) Create the
 `LD_LIBRARY_PATH` variable like this:
 
@@ -188,6 +227,8 @@ export LD_LIBRARY_PATH=/usr/local/lib
 
 On Linux, see `ld(1)` and `ld.so(8)` for more information. On other operating
 systems, see the documentation for the dynamic loading facility.
+
+This operation might not be required when you can use 4.2.5 or later.
 
 ### Segmentation fault
 
@@ -208,7 +249,7 @@ release of RMagick over an earlier release.
 More samples
 ------------
 
-You can find more sample RMagick programs in the `/examples` directory. These
+You can find more sample RMagick programs in the [/examples](https://github.com/rmagick/rmagick/tree/main/examples) and [/doc/ex](https://github.com/rmagick/rmagick/tree/main/doc/ex) directories. These
 programs are not installed in the RMagick documentation tree.
 
 Reporting bugs
@@ -220,7 +261,7 @@ via the bug tracker on the [RMagick issues page][issues].
 However, We can't help with Ruby installation and configuration or ImageMagick
 installation and configuration. Information about reporting problems and
 getting help for ImageMagick is available at the [ImageMagick
-website][imagemagick] or the [ImageMagick Forum][imagemagick-forum].
+website][imagemagick] or the [ImageMagick Discussions][imagemagick-discussions].
 
 Development Setup
 -----------------
@@ -258,7 +299,7 @@ vagrant ssh
 
 ```sh
 cd /vagrant/rmagick
-export IMAGEMAGICK_VERSION=6.8.9-10
+export IMAGEMAGICK_VERSION=6.9.13-43
 bash ./before_install_linux.sh
 ```
 
@@ -311,6 +352,6 @@ See <https://github.com/rmagick/rmagick/wiki/Release-Process>
 [libmagick-faq]: https://web.archive.org/web/20140512193354/https://rmagick.rubyforge.org/install-faq.html#libmagick
 [faq]: https://web.archive.org/web/20140512193354/https://rmagick.rubyforge.org/install-faq.html
 [imagemagick]: https://imagemagick.org
-[imagemagick-forum]: https://imagemagick.org/discourse-server
+[imagemagick-discussions]: https://github.com/ImageMagick/ImageMagick/discussions
 [dev-box]: https://github.com/tjschuck/rake-compiler-dev-box
 [vagrant]: https://www.vagrantup.com/

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Demonstrate ImageMagick's new (5.5.7-3 and later) built-in patterns.
 # Create a Fill class that can be reused to fill in new Image backgrounds.
 
@@ -5,7 +7,6 @@
 # Try 'checkerboard' or 'verticalsaw'
 
 require 'rmagick'
-include Magick
 
 puts <<~END_INFO
 
@@ -30,8 +31,8 @@ else
 end
 
 # Create a sample image that is 100x bigger than the pattern.
-attrs = Image.ping("pattern:#{pattern}").first
+attrs = Magick::Image.ping("pattern:#{pattern}").first
 
-tryit = Image.new(10 * attrs.columns, 10 * attrs.rows, PatternFill.new(pattern))
+tryit = Magick::Image.new(10 * attrs.columns, 10 * attrs.rows, PatternFill.new(pattern))
 tryit.write('pattern_fill.gif')
 exit

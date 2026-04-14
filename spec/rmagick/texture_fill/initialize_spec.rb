@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::TextureFill, '#initialize' do
   it 'works' do
     granite = Magick::Image.read('granite:').first

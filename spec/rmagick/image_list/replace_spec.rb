@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::ImageList, '#replace' do
   def make_lists
     image_list = Magick::ImageList.new(*FILES[0..9])

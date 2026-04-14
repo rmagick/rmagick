@@ -7,16 +7,13 @@ function popup(URL) {
 
 // Run a function on window onload event
 function addLoadEvent(func) {
-    var oldonload = window.onload;
-    if (typeof window.onload != 'function') {
-        window.onload = func;
-    }
-    else {
-        window.onload = function () {
-            oldonload();
-            func();
-        }
-    }
+  var oldonload = window.onload;
+  if (typeof window.onload != "function") {
+    window.onload = func;
+  } else {
+    window.onload = function () {
+      oldonload();
+      func();
+    };
+  }
 }
-
-

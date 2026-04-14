@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rmagick'
 
 # Demonstrate the Image#add_noise method
@@ -6,7 +8,7 @@ NOISE_TYPES = [
   Magick::MultiplicativeGaussianNoise,
   Magick::ImpulseNoise, Magick::LaplacianNoise,
   Magick::PoissonNoise
-]
+].freeze
 
 img = Magick::Image.read('images/Flower_Hat.jpg').first
 

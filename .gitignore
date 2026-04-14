@@ -20,6 +20,10 @@ tmp
 *.o
 *.a
 *.log
+*.def
 Makefile
 extconf.h
+compile_flags.txt
 build-ImageMagick/
+doc/node_modules/
+doc/package-lock.json

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Magick::Image::PolaroidOptions, "#border_color" do
   it "works" do
     options = described_class.new
@@ -5,6 +7,6 @@ describe Magick::Image::PolaroidOptions, "#border_color" do
     expect { options.border_color = "gray50" }.not_to raise_error
 
     options.freeze
-    expect { options.border_color = "gray50" }.to raise_error(FreezeError)
+    expect { options.border_color = "gray50" }.to raise_error(FrozenError)
   end
 end

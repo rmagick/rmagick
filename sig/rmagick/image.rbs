@@ -1,0 +1,198 @@
+# frozen_string_literal: true
+
+module Magick
+  class Image
+    include Comparable
+
+    include _ImageCommonMethods
+
+    # When it reads an image file, it returns one or more Image objects.
+    # However, it cannot properly define it in RBS.
+    # If define as Array[Image] implies the possibility of returning nil.
+    # it would require consideration of nil in subsequent method calls.
+    # So, it defined in Tuple type to avoid allowing unnecessary guard statements to be written.
+    def self.constitute: (int witdth_arg, int height_arg, string map_arg, Array[Pixel] pixels_arg) -> Image
+    def self._load: (string str) -> Image
+    def self.capture: (bool silent, bool frame, bool descend, bool screen, bool borders) -> Image
+                    | (bool silent, bool frame, bool descend, bool screen, bool borders) { (Image::Info) -> void } -> Image
+    def self.ping: (File | string file) -> [Image]
+                 | (File | string file) { (Image::Info) -> void } -> [Image]
+    def self.read: (File | string file) -> [Image]
+                 | (File | string file) { (Image::Info) -> void } -> [Image]
+    def self.read_inline: (string content) -> [Image]
+                        | (string content) { (Image::Info) -> void } -> [Image]
+    def self.from_blob: (string blob) -> [Image]
+                      | (string blob) { (Image::Info) -> void } -> [Image]
+
+    def initialize: (int cols, int rows, ?magick_fill fill) -> void
+                  | (int cols, int rows, ?magick_fill fill) { (Image::Info) -> void } -> void
+    def <=>: (untyped object) -> (Integer | nil)
+    def []: (interned key_arg) -> String?
+    def []=: (interned key_arg, String attr_arg) -> self
+    def delay=: (int val) -> int
+    def display: () -> self
+               | () { (Image::Info) -> void } -> self
+    def marshal_dump: () -> [String, String]
+    def marshal_load: ([string, string] ary) -> self
+    def montage: () -> String?
+    def quantize: (?int number_colors, ?ColorspaceType colorspace, ?bool dither, ?int tree_depth, ?bool measure_error) -> Image
+    def scene: () -> Integer
+    def ticks_per_second=: (int tps) -> int
+    def to_blob: () -> String?
+               | () { (Image::Info) -> void } -> String?
+    def write: (File | string file) -> self
+             | (File | string file) { (Image::Info) -> void } -> self
+    def destroy!: () -> self
+    def destroyed?: () -> bool
+
+    class View
+      attr_reader x: real
+      attr_reader y: real
+      attr_reader width: real
+      attr_reader height: real
+      attr_accessor dirty: bool
+      def initialize: (Image img, real x, real y, real width, real height) -> void
+      def []: (Integer index) -> Rows
+            | (Range[Numeric] range) -> Rows
+            | (Integer start, Integer length) -> Rows
+      def sync: (?bool force) -> bool
+      def update: (Rows rows) -> nil
+
+      class Pixels < Array[untyped]
+        # include Observable
+        def red: () -> Array[Integer]
+        attr_writer red: Integer
+        def green: () -> Array[Integer]
+        attr_writer green: Integer
+        def blue: () -> Array[Integer]
+        attr_writer blue: Integer
+        def opacity: () -> Array[Integer]
+        attr_writer opacity: Integer
+      end
+
+      class Rows
+        # include Observable
+        def initialize: (View view, real width, real height, Rows rows) -> void
+        def []: () -> View::Pixels
+              | (Integer index) -> Pixel
+              | (Range[Numeric] range) -> View::Pixels
+              | (Integer start, Integer length) -> View::Pixels
+        def []=: (magick_color value) -> void
+               | (Integer index, magick_color value) -> void
+               | (Range[Numeric] range, magick_color value) -> void
+               | (Integer start, Integer length, magick_color value) -> void
+        def update: (Pixels | Pixel pixel) -> nil
+
+        private
+
+        def cols: (*untyped args) -> void
+        def each: () -> void
+      end
+    end
+
+    class Info
+      def initialize: () -> void
+      def channel: (*ChannelType channel) -> self
+      def define: (string format, string key, ?string value) -> self?
+      def []=: (string format, string key, string value) -> self?
+             | (string key, string value) -> self?
+      def []: (string format, string key) -> String?
+            | (string key) -> String?
+      def undefine: (string format, string key) -> self
+
+      attr_accessor antialias: bool
+      def attenuate: () -> Float
+      attr_writer attenuate: magick_real
+      attr_accessor authenticate: string?
+      def background_color: () -> String
+      attr_writer background_color: magick_color
+      def border_color: () -> String
+      attr_writer border_color: magick_color
+      def caption: () -> String
+      attr_writer caption: string?
+      attr_accessor colorspace: ColorspaceType
+      def comment: () -> String
+      attr_writer comment: string?
+      attr_accessor compression: CompressionType
+      def delay: () -> Integer?
+      attr_writer delay: int?
+      def density: () -> String?
+      attr_writer density: (Geometry | string)?
+      def depth: () -> Integer
+      attr_writer depth: int
+      def dispose: () -> DisposeType
+      attr_writer dispose: DisposeType?
+      attr_accessor dither: bool
+      attr_accessor endian: EndianType
+      def extract: () -> String?
+      attr_writer extract: (Geometry | string)?
+      def filename: () -> String
+      attr_writer filename: string?
+      def fill: () -> String?
+      attr_writer fill: string?
+      def font: () -> String?
+      attr_writer font: string?
+      def format: () -> String?
+      attr_writer format: string
+      def fuzz: () -> Float
+      attr_writer fuzz: magick_percentage
+      def gravity: () -> GravityType
+      attr_writer gravity: GravityType?
+      attr_accessor image_type: ImageType
+      attr_accessor interlace: InterlaceType
+      def label: () -> String?
+      attr_writer label: string?
+      def matte_color: () -> String
+      attr_writer matte_color: magick_color
+      attr_accessor monochrome: bool
+      def number_scenes: () -> Integer
+      attr_writer number_scenes: int
+      attr_accessor orientation: OrientationType
+      def origin: () -> String?
+      attr_writer origin: (Geometry | string)?
+      def page: () -> String?
+      attr_writer page: (Geometry | string)?
+      def pointsize: () -> Float
+      attr_writer pointsize: magick_real
+      def quality: () -> Integer
+      attr_writer quality: int
+      def sampling_factor: () -> String?
+      attr_writer sampling_factor: string?
+      def scene: () -> Integer
+      attr_writer scene: int
+      def server_name: () -> String?
+      attr_writer server_name: string?
+      def size: () -> String?
+      attr_writer size: (Geometry | string)?
+      def stroke: () -> String?
+      attr_writer stroke: string?
+      def stroke_width: () -> Float?
+      attr_writer stroke_width: magick_real?
+      attr_writer texture: Image | nil
+      def tile_offset: () -> String?
+      attr_writer tile_offset: (Geometry | string)?
+      def transparent_color: () -> String
+      attr_writer transparent_color: magick_color
+      def undercolor: () -> String?
+      attr_writer undercolor: string?
+      attr_accessor units: ResolutionType
+      def view: () -> String?
+      attr_writer view: string?
+    end
+
+    class DrawOptions
+      def initialize: () -> void
+
+      include DrawAttribute
+    end
+
+    class PolaroidOptions
+      def initialize: () -> void
+
+      attr_writer shadow_color: magick_color
+      attr_writer border_color: magick_color
+
+      include DrawAttribute
+    end
+  end
+end

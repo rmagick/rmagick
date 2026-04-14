@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #--
 # $Id: pathdata.rb,v 1.5 2009/02/28 23:52:28 rmagick Exp $
 # Copyright (C) 2009 Timothy P. Hunter
@@ -22,7 +24,7 @@ module Magick
 
       # Construct an empty path
       def initialize
-        @path = ''
+        @path = +''
       end
 
       # Convert the path to its string equivalent.

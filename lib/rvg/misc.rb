@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # $Id: misc.rb,v 1.17 2010/03/21 01:43:01 baror Exp $
 # Copyright (C) 2009 Timothy P. Hunter
 module Magick
@@ -72,7 +74,7 @@ module Magick
         end
 
         def enquote(text)
-          return text if text.length > 2 && /\A(?:\"[^\"]+\"|\'[^\']+\'|\{[^\}]+\})\z/.match(text)
+          return text if text.length > 2 && /\A(?:"[^"]+"|'[^']+'|\{[^}]+\})\z/.match(text)
 
           if !text['\'']
             text = '\'' + text + '\''
@@ -87,7 +89,7 @@ module Magick
 
           # escape existing braces, surround with braces
           text.gsub!(/[}]/) { |b| '\\' + b }
-          '{' +  text + '}'
+          '{' + text + '}'
         end
 
         def glyph_metrics(glyph_orientation, glyph)
@@ -114,7 +116,7 @@ module Magick
               y_rel_coords << wy
             end
             first_word = false
-            word.split('').each do |glyph|
+            word.chars.each do |glyph|
               wx, wy = get_letter_spacing(glyph)
               x_rel_coords << wx
               y_rel_coords << wy
@@ -173,7 +175,7 @@ module Magick
 
         def render(x, y, text)
           x_rel_coords, y_rel_coords = text_rel_coords(text)
-          dx = x_rel_coords.reduce(0) { |sum, a| sum + a }
+          dx = x_rel_coords.sum
           dy = y_rel_coords.max
 
           # We're handling the anchoring.
@@ -203,7 +205,7 @@ module Magick
           text.split(::Magick::RVG::WORD_SEP).each do |word|
             x += x_rel_coords.shift unless first_word
             first_word = false
-            word.split('').each do |glyph|
+            word.chars.each do |glyph|
               render_glyph(@ctx.text_attrs.glyph_orientation_horizontal, x, y, glyph)
               x += x_rel_coords.shift
             end
@@ -234,7 +236,7 @@ module Magick
         def render(x, y, text)
           x_rel_coords, y_rel_coords = text_rel_coords(text)
           dx = x_rel_coords.max
-          dy = y_rel_coords.reduce(0) { |sum, a| sum + a }
+          dy = y_rel_coords.sum
 
           # We're handling the anchoring.
           @ctx.gc.push
@@ -271,7 +273,7 @@ module Magick
               x_rel_coords.shift
             end
             first_word = false
-            word.split('').each do |glyph|
+            word.chars.each do |glyph|
               case @ctx.text_attrs.glyph_orientation_vertical.to_i
               when 0, 90, 270
                 x_shift = (dx - x_rel_coords.shift) / 2
@@ -313,7 +315,7 @@ module Magick
   class RVG
     class Utility
       class TextAttributes
-        WRITING_MODE = %w[lr-tb lr rl-tb rl tb-rl tb]
+        WRITING_MODE = %w[lr-tb lr rl-tb rl tb-rl tb].freeze
 
         def initialize
           @affine = []
@@ -443,39 +445,39 @@ module Magick
           expanded: Magick::ExpandedStretch,
           extra_expanded: Magick::ExtraExpandedStretch,
           ultra_expanded: Magick::UltraExpandedStretch
-        }
+        }.freeze
 
         FONT_STYLE = {
           normal: Magick::NormalStyle,
           italic: Magick::ItalicStyle,
           oblique: Magick::ObliqueStyle
-        }
+        }.freeze
 
         FONT_WEIGHT = {
-          'normal' => Magick::NormalWeight,
-          'bold' => Magick::BoldWeight,
-          'bolder' => Magick::BolderWeight,
-          'lighter' => Magick::LighterWeight
-        }
+          normal: Magick::NormalWeight,
+          bold: Magick::BoldWeight,
+          bolder: Magick::BolderWeight,
+          lighter: Magick::LighterWeight
+        }.freeze
 
         TEXT_ANCHOR = {
           start: Magick::StartAnchor,
           middle: Magick::MiddleAnchor,
           end: Magick::EndAnchor
-        }
+        }.freeze
 
         ANCHOR_TO_ALIGN = {
           start: Magick::LeftAlign,
           middle: Magick::CenterAlign,
           end: Magick::RightAlign
-        }
+        }.freeze
 
         TEXT_DECORATION = {
           none: Magick::NoDecoration,
           underline: Magick::UnderlineDecoration,
           overline: Magick::OverlineDecoration,
           line_through: Magick::LineThroughDecoration
-        }
+        }.freeze
 
         TEXT_STRATEGIES = {
           'lr-tb' => LRTextStrategy,
@@ -484,7 +486,7 @@ module Magick
           'rl' => RLTextStrategy,
           'tb-rl' => TBTextStrategy,
           'tb' => TBTextStrategy
-        }
+        }.freeze
 
         def self.degrees_to_radians(deg)
           Math::PI * (deg % 360.0) / 180.0
@@ -522,8 +524,8 @@ module Magick
           init_matrix
         end
 
-        def method_missing(meth_id, *args, &block)
-          @gc.__send__(meth_id, *args, &block)
+        def method_missing(meth_id, *args, &)
+          @gc.__send__(meth_id, *args, &)
         end
 
         def affine(sx, rx, ry, sy, tx, ty)
@@ -579,7 +581,7 @@ module Magick
 
         def font_weight(weight)
           # If the arg is not in the hash use it directly. Handles numeric values.
-          weight = FONT_WEIGHT.fetch(weight) { |key| key }
+          weight = FONT_WEIGHT.fetch(weight.to_sym, Magick::NormalWeight) unless weight.is_a?(Numeric)
           @gc.font_weight(weight)
           @shadow[-1].font_weight = weight
           nil
@@ -646,7 +648,7 @@ module Magick
 
         def skewX(degrees)
           degrees = Magick::RVG.convert_one_to_float(degrees)
-          @gc.skewX(degrees)
+          @gc.skewx(degrees)
           @ry = Math.tan(GraphicContext.degrees_to_radians(degrees))
           concat_matrix
           nil
@@ -654,7 +656,7 @@ module Magick
 
         def skewY(degrees)
           degrees = Magick::RVG.convert_one_to_float(degrees)
-          @gc.skewY(degrees)
+          @gc.skewy(degrees)
           @rx = Math.tan(GraphicContext.degrees_to_radians(degrees))
           concat_matrix
           nil
@@ -668,7 +670,7 @@ module Magick
         end
 
         def text(x, y, text)
-          return if text.length.zero?
+          return if text.empty?
 
           text_renderer = if @text_attrs.non_default?
                             TEXT_STRATEGIES[@text_attrs.writing_mode].new(self)

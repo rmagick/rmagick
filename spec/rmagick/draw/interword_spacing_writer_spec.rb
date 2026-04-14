@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Draw, '#interword_spacing=' do
   it 'assigns without raising an error' do
     draw = described_class.new

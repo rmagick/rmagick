@@ -1,12 +1,12 @@
+# frozen_string_literal: true
+
 require 'simplecov'
 require './lib/rmagick/version'
 require 'fileutils'
 require 'English'
-
-desc "Open an irb session preloaded with this library"
-task :console do
-  sh "irb -r ./ext/RMagick/extconf.rb -r ./lib/rmagick.rb"
-end
+require 'bundler/gem_tasks'
+require 'rake/extensiontask'
+require 'rspec/core/rake_task'
 
 task :config do
   def version
@@ -52,7 +52,7 @@ task push_and_tag: [:build] do
   sh "gem push #{File.join(base, 'pkg', gem_name)}"
   if $CHILD_STATUS.success?
     sh "git tag -a -m \"Version #{version}\" #{version_tag}"
-    STDOUT.puts "Tagged #{version_tag}."
+    puts "Tagged #{version_tag}."
     sh 'git push'
     sh 'git push --tags'
   else
@@ -60,123 +60,137 @@ task push_and_tag: [:build] do
   end
 end
 
+Rake::Task["release"].clear # Remove `release` task in bundler/gem_tasks
 desc 'Release'
 task release: %i[assert_clean_repo push_and_tag]
 
-desc 'Release and build the legacy way'
-task legacy_release: ['legacy:README.html', 'legacy:extconf', 'legacy:doc', 'legacy:manifest', 'release']
+namespace :website do
+  PATH_TO_LOCAL_WEBSITE_REPOSITORY = File.expand_path('../rmagick.github.io')
 
-namespace :legacy do
-  require 'find'
-
-  task :redcloth do
-    require 'redcloth'
-  end
-
-  README = 'README.html'
-  MANIFEST = 'ext/RMagick/MANIFEST'
-
-  # Change the version number placeholders in a file.
-  # Returns an array of lines from the file.
-  def reversion(name)
+  def replace_reversion(lines)
     now = Time.new
     now = now.strftime('%m/%d/%y')
 
-    lines = File.readlines name
     lines.each do |line|
-      line.gsub!(/0\.0\.0/, Magick::VERSION)
+      line.gsub!("0.0.0", Magick::VERSION)
       line.gsub!(%r{YY/MM/DD}, now)
     end
     lines
   end
 
-  # Rewrite a file containing embedded version number placeholders.
-  def reversion_file(name)
-    lines = reversion(name)
-    tmp_name = name + '_tmp'
-    mv name, tmp_name
-    begin
-      File.open(name, 'w') { |f| lines.each { |line| f.write line } }
-    rescue StandardError
-      mv tmp_name, name
-    ensure
-      rm tmp_name
-    end
+  def update_html(input_dir, output_dir, file_name)
+    lines = File.readlines(File.join(input_dir, file_name))
+    lines = replace_reversion(lines)
+    File.open(File.join(output_dir, file_name), 'w') { |f| lines.each { |line| f.write line } }
   end
 
-  desc 'Update version in extconf'
-  task :extconf do
-    reversion_file 'ext/RMagick/extconf.rb'
-  end
+  ENTITY = {
+    '&' => '&amp;',
+    '>' => '&gt;',
+    '<' => '&lt;'
+  }.freeze
 
-  desc 'Build README.txt from README.textile using RedCloth'
-  task 'README.txt' => [:redcloth] do
-    reversion_file 'README.textile'
-    body = File.readlines 'README.textile'
-    body = RedCloth.new(body.join).to_html + "\n"
-    File.open('README.txt', 'w') { |f| f.write body }
-  end
-
-  desc 'Build README.html from README.txt'
-  task README => 'README.txt' do
-    puts "writing #{README}"
-    File.open(README, 'w') do |html|
-      html.write <<~END_HTML_HEAD
-        <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-        <html>
+  def file_to_html(input_dir, input_file_name, output_dir, output_file_name)
+    File.open(File.join(input_dir, input_file_name)) do |src|
+      File.open(File.join(output_dir, output_file_name), 'w') do |dest|
+        dest.puts <<~END_EXHTMLHEAD
+          <!DOCTYPE public PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN""http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+          <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
           <head>
-            <title>RMagick #{Magick::VERSION} README</title>
-            <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-            <meta name="GENERATOR" content="RedCloth">
+            <meta name="generator" content="ex2html.rb" />
+            <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+            <link rel="stylesheet" type="text/css" href="css/popup.css" />
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+            <script>
+              hljs.configure({ cssSelector: "pre" });
+              hljs.highlightAll();
+            </script>
+            <title>RMagick example: #{input_file_name}</title>
           </head>
           <body>
-      END_HTML_HEAD
-      html.write File.readlines('README.txt')
-      html.write <<~END_HTML_TAIL
+          <h1>#{input_file_name}</h1>
+          <div class="bodybox">
+          <div class="bodyfloat">
+          <pre class="language-ruby">
+        END_EXHTMLHEAD
+
+        src.each do |line|
+          line.gsub!(/[&><]/) { |s| ENTITY[s] }
+          dest.puts(line)
+        end
+
+        dest.puts <<~END_EXHTMLTAIL
+          </pre>
+          </div>
+          </div>
+          <div id="close"><a href="javascript:window.close();">Close window</a></div>
           </body>
-        </html>
-      END_HTML_TAIL
+          </html>
+        END_EXHTMLTAIL
+      end
     end
   end
 
-  desc 'Update versions in html files'
-  task :doc do
-    Dir.chdir('doc') do
-      FileList['*.html'].each { |d| reversion_file(d) }
+  desc 'Update RMagick website HTML files'
+  task :"update:html" do
+    unless File.exist?(PATH_TO_LOCAL_WEBSITE_REPOSITORY)
+      puts "Please clone the rmagick.github.io repository to #{PATH_TO_LOCAL_WEBSITE_REPOSITORY}"
+      exit 1
+    end
+
+    Dir.glob('doc/*.html') do |file|
+      update_html('doc', PATH_TO_LOCAL_WEBSITE_REPOSITORY, File.basename(file))
+    end
+
+    Dir.glob('doc/ex/*.rb') do |file|
+      file_name = File.basename(file)
+      file_to_html('doc/ex', file_name, PATH_TO_LOCAL_WEBSITE_REPOSITORY, "#{file_name}.html")
     end
   end
 
-  # Remove files we don't want in the tarball.
-  # Ensure files are not executable. (ref: bug #10080)
-  desc "Remove files we don't want in the .gem; ensure files are not executable"
-  task :fix_files do
-    rm 'README.txt', verbose: true
-    chmod 0o644, FileList['doc/*.html', 'doc/ex/*.rb', 'doc/ex/images/*', 'examples/*.rb']
-  end
+  desc 'Update RMagick website image files'
+  task :"update:image" do
+    unless File.exist?(PATH_TO_LOCAL_WEBSITE_REPOSITORY)
+      puts "Please clone the rmagick.github.io repository to #{PATH_TO_LOCAL_WEBSITE_REPOSITORY}"
+      exit 1
+    end
 
-  desc 'Build manifest'
-  task :manifest do
-    now = Time.new
-    now = now.strftime('%H:%M:%S %m/%d/%y')
-    puts "generating #{MANIFEST}"
+    Rake::Task['install'].invoke
 
-    File.open(MANIFEST, 'w') do |f|
-      f.puts "MANIFEST for #{Magick::VERSION} - #{now}\n\n"
-      Find.find('.') do |name|
-        next if File.directory? name
+    FileUtils.rm_rf("#{PATH_TO_LOCAL_WEBSITE_REPOSITORY}/ex")
+    FileUtils.cp_r('doc/ex', PATH_TO_LOCAL_WEBSITE_REPOSITORY)
 
-        f.puts name[2..-1] # remove leading "./"
+    FileUtils.cd("#{PATH_TO_LOCAL_WEBSITE_REPOSITORY}/ex") do
+      Dir.glob('*.rb').each do |file|
+        sh "ruby #{file}"
       end
     end
   end
 end
 
-require 'rake/extensiontask'
-require 'rspec/core/rake_task'
+namespace :rbs do
+  desc 'Validate RBS definitions'
+  task :validate do
+    all_sigs = Dir.glob('sig').map { |dir| "-I #{dir}" }.join(' ')
+    sh("bundle exec rbs #{all_sigs} validate") do |ok, _|
+      abort('one or more rbs validate failed') unless ok
+    end
+  end
+end
+
 RSpec::Core::RakeTask.new(:spec)
 
 Rake::ExtensionTask.new('RMagick2') do |ext|
   ext.ext_dir = 'ext/RMagick'
+end
+
+if RUBY_PLATFORM.include?('linux')
+  require 'ruby_memcheck'
+  require 'ruby_memcheck/rspec/rake_task'
+  namespace :spec do
+    RubyMemcheck::RSpec::RakeTask.new(valgrind: :compile)
+  end
 end
 
 task spec: :compile

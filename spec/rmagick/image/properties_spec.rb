@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#properties' do
   it 'returns a hash of assigned properties' do
     image = described_class.new(20, 20)

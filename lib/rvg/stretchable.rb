@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #--
 # $Id: stretchable.rb,v 1.7 2009/02/28 23:52:28 rmagick Exp $
 # Copyright (C) 2009 Timothy P. Hunter
@@ -109,7 +111,7 @@ module Magick
         # Add a non-scaled translation if meet or slice
         gc.translate(tx, ty) if tx.abs > 1.0e-10 || ty.abs > 1.0e-10
         # Scale viewbox as necessary
-        gc.scale(sx, sy) if sx != 1.0 || sy != 1.0
+        gc.scale(sx, sy) if (sx - 1.0).abs > Float::EPSILON || (sy - 1.0).abs > Float::EPSILON
         # Add a scaled translation if non-0 origin
         gc.translate(-@vbx_x, -@vbx_y) if @vbx_x.abs != 0.0 || @vbx_y.abs != 0
       end
@@ -137,8 +139,8 @@ module Magick
         rescue ArgumentError
           raise ArgumentError, "arguments must be convertable to float (got #{x.class}, #{y.class}, #{width.class}, #{height.class})"
         end
-        raise(ArgumentError, "viewbox width must be > 0 (#{width} given)") unless width >= 0
-        raise(ArgumentError, "viewbox height must be > 0 (#{height} given)") unless height >= 0
+        raise(ArgumentError, "viewbox width must be > 0 (#{@vbx_width} given)") unless @vbx_width >= 0
+        raise(ArgumentError, "viewbox height must be > 0 (#{@vbx_height} given)") unless @vbx_height >= 0
 
         # return the user-coordinate space attributes if defined
         class << self

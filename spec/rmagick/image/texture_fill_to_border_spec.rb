@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#texture_fill_to_border' do
   it 'works' do
     image = described_class.new(20, 20)

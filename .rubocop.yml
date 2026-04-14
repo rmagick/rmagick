@@ -1,13 +1,15 @@
 inherit_from:
   - .rubocop_todo.yml
 
-require:
+plugins:
   - rubocop-rspec
+  - rubocop-performance
+  - rubocop-on-rbs
 
 AllCops:
   DefaultFormatter: fuubar
   EnabledByDefault: true
-  TargetRubyVersion: 2.3
+  TargetRubyVersion: 3.2
   Exclude:
     - 'vendor/bundle/**/*'
     - '**/*\.spec'
@@ -18,14 +20,35 @@ AllCops:
 #
 ################################################################################
 
-Layout/MultilineAssignmentLayout: { EnforcedStyle: same_line }
-RSpec/FilePath: { CustomTransform: { Magick: rmagick } }
-Style/FormatString: { EnforcedStyle: sprintf }
-Style/GuardClause: { MinBodyLength: 3 }
+Layout/MultilineAssignmentLayout:
+  EnforcedStyle: same_line
+
+Style/FormatString:
+  EnforcedStyle: sprintf
+
+Style/GuardClause:
+  MinBodyLength: 3
+
+Security/MarshalLoad:
+  Exclude:
+    - 'spec/**/*'
+
 # we may not need this after finishing RSpec conversion
 # seems like `rubocop-rspec` already excludes the `spec/` directory
-Style/MethodCalledOnDoEndBlock: { Exclude: [test/**/*.rb, spec/**/*.rb] }
-Style/NumericLiterals: { MinDigits: 6 }
+Style/MethodCalledOnDoEndBlock:
+  Exclude: [spec/**/*.rb]
+
+Style/NumericLiterals:
+  MinDigits: 6
+
+Style/TopLevelMethodDefinition:
+  Exclude: [doc/**/*.rb, examples/**/*.rb, spec/**/*.rb]
+
+RSpec/BeNil:
+  EnforcedStyle: be
+
+RSpec/ClassCheck:
+  EnforcedStyle: be_kind_of
 
 ################################################################################
 #
@@ -33,5 +56,17 @@ Style/NumericLiterals: { MinDigits: 6 }
 #
 ################################################################################
 
-RSpec/AlignLeftLetBrace: { Enabled: false }
-RSpec/AlignRightLetBrace: { Enabled: false }
+RSpec/AlignLeftLetBrace:
+  Enabled: false
+
+RSpec/AlignRightLetBrace:
+  Enabled: false
+
+Style/Copyright:
+  Enabled: false
+
+Style/DisableCopsWithinSourceCodeDirective:
+  Enabled: false
+
+Style/AccessorGrouping:
+  Enabled: false

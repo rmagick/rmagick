@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'rmagick'
 
 # Demonstrate the Draw#text_undercolor method
 
-canvas = Magick::Image.new(250, 100) { self.background_color = 'white' }
+canvas = Magick::Image.new(250, 100) { |info| info.background_color = 'white' }
 
 gc = Magick::Draw.new
 

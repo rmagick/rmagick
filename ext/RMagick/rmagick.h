@@ -1,14 +1,12 @@
-/**************************************************************************//**
+/**
  * RMagick declarations and definitions.
  *
- * Copyright &copy; 2002 - 2009 by Timothy P. Hunter
- *
- * Changes since Nov. 2009 copyright &copy; by Benjamin Thomas and Omer Bar-or
+ * Copyright (c) 2002 - 2009 Timothy P. Hunter
+ * Copyright (c) 2009 -      RMagick contributors
  *
  * @file     rmagick.h
- * @version  $Id: rmagick.h,v 1.282 2010/02/16 06:50:28 baror Exp $
  * @author   Tim Hunter
- ******************************************************************************/
+ */
 
 #ifndef _RMAGICK_H_
 #define _RMAGICK_H_
@@ -16,14 +14,21 @@
 //! Suppress warnings about deprecated functions on Windows
 #define _CRT_SECURE_NO_DEPRECATE 1
 
-#include <assert.h>
-#include <stdio.h>
-#include <ctype.h>
-#include <stdlib.h>
-#include <math.h>
-#include <sys/types.h>
-#include "ruby.h"
-#include "ruby/io.h"
+// ruby.h contains a C++ template, which cannot be included in extern "C".
+// Therefore, it includes the header in advance.
+#include "ruby/defines.h"
+
+extern "C" {
+    #include <assert.h>
+    #include <stdio.h>
+    #include <ctype.h>
+    #include <stdlib.h>
+    #include <math.h>
+    #include <sys/types.h>
+    #include "ruby.h"
+    #include "ruby/io.h"
+    #include "rmagick_gvl.h"
+}
 
 #if defined(__MINGW32__)
     // Ruby defines wrong format specifiers for MinGW. So this defines original macro in here.
@@ -44,10 +49,6 @@
 #endif
 
 #if defined(__GNUC__)
-    #pragma GCC diagnostic push
-    #pragma GCC diagnostic ignored "-Wdeclaration-after-statement"
-    #pragma GCC diagnostic ignored "-Wunknown-pragmas"
-
     #if __GNUC__ > 6
         #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
     #endif
@@ -60,6 +61,11 @@
 #undef PACKAGE_BUGREPORT
 #undef PACKAGE_TARNAME
 #undef WORDS_BIGENDIAN
+
+#ifndef HAVE_RB_EXT_RACTOR_SAFE
+#undef RUBY_TYPED_FROZEN_SHAREABLE
+#define RUBY_TYPED_FROZEN_SHAREABLE 0
+#endif
 
 #include "extconf.h"
 
@@ -90,8 +96,8 @@
 
 //! Trace new image creation in bang methods
 #define UPDATE_DATA_PTR(_obj_, _new_) \
-    do { (void) rm_trace_creation(_new_);\
-    DATA_PTR(_obj_) = (void *)(_new_);\
+    do { \
+        DATA_PTR(_obj_) = (void *)(_new_); \
     } while(0)
 
 
@@ -265,8 +271,8 @@ typedef struct
 
 //! Quantum expression adapter.
 /**
- * Both ImageMagick and GraphicsMagick define an enum type for quantum-level
- * expressions, but they're different types. The QuantumExpressionOperator
+ * ImageMagick defines an enum type for quantum-level expressions,
+ * but they're different types. The QuantumExpressionOperator
  * type is an adapter type that can be mapped to either one.
  */
 typedef enum _QuantumExpressionOperator
@@ -302,15 +308,13 @@ typedef enum _QuantumExpressionOperator
     AbsQuantumOperator, /**< abs */
     ExponentialQuantumOperator, /**< exponential */
     MedianQuantumOperator, /**< median */
-    SumQuantumOperator /**< sum */
-#if defined(IMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9)
-    , RootMeanSquareQuantumOperator /** root mean square */
-#endif
+    SumQuantumOperator, /**< sum */
+    RootMeanSquareQuantumOperator /** root mean square */
 } QuantumExpressionOperator ;
 
 
 /** This implements the "omitted storage class model" for external variables.
- * (Ref: Harbison & Steele.) The rmmain.c file defines MAIN, which causes
+ * (Ref: Harbison & Steele.) The rmmain.cpp file defines MAIN, which causes
  * the single defining declarations to be generated. No other source files
  * define MAIN and therefore generate referencing declarations.
  */
@@ -325,6 +329,7 @@ typedef enum _QuantumExpressionOperator
 *   RMagick Module and Class VALUEs
 */
 EXTERN VALUE Module_Magick;
+EXTERN VALUE Module_DrawAttribute;
 EXTERN VALUE Class_ImageList;
 EXTERN VALUE Class_Info;
 EXTERN VALUE Class_KernelInfo;
@@ -342,7 +347,7 @@ EXTERN VALUE Class_Chromaticity;
 EXTERN VALUE Class_Color;
 EXTERN VALUE Class_Font;
 EXTERN VALUE Class_Geometry;
-EXTERN VALUE Class_GeometryValue;   // Defined in RMagick.rb
+EXTERN VALUE Class_GeometryValue;   // Defined in rmagick_internal.rb
 EXTERN VALUE Class_Pixel;
 EXTERN VALUE Class_Point;
 EXTERN VALUE Class_PolaroidOptions;
@@ -396,7 +401,6 @@ EXTERN VALUE Class_KernelInfoType;
 /**
 *   Commonly-used IDs
 */
-EXTERN ID rm_ID_trace_proc;        /**< "@trace_proc" */
 EXTERN ID rm_ID_call;              /**< "call" */
 EXTERN ID rm_ID_changed;           /**< "changed" */
 EXTERN ID rm_ID_cur_image;         /**< "cur_image" */
@@ -410,6 +414,14 @@ EXTERN ID rm_ID_new;               /**< "new" */
 EXTERN ID rm_ID_push;              /**< "push" */
 EXTERN ID rm_ID_values;            /**< "values" */
 EXTERN ID rm_ID_width;             /**< "width" */
+
+extern const rb_data_type_t rm_enum_data_type;
+extern const rb_data_type_t rm_info_data_type;
+extern const rb_data_type_t rm_image_data_type;
+extern const rb_data_type_t rm_draw_data_type;
+extern const rb_data_type_t rm_pixel_data_type;
+extern const rb_data_type_t rm_montage_data_type;
+extern const rb_data_type_t rm_kernel_info_data_type;
 
 #if !defined(min)
 #define min(a, b) ((a)<(b)?(a):(b)) /**< min of two values */
@@ -429,59 +441,59 @@ EXTERN ID rm_ID_width;             /**< "width" */
     Define simple attribute accessor methods (boolean, int, string, and double types)
 */
 #define C_boolean_to_R_boolean(attr) (attr) ? Qtrue : Qfalse /**< C boolean -> Ruby boolean */
-#define R_boolean_to_C_boolean(attr) RTEST(attr) /**<  C boolean <- Ruby boolean */
+#define R_boolean_to_C_boolean(attr) (MagickBooleanType)RTEST(attr) /**<  C boolean <- Ruby boolean */
 #define C_int_to_R_int(attr) INT2FIX(attr) /**< C int -> Ruby int */
 #define R_int_to_C_int(attr) NUM2INT(attr) /**< C int <- Ruby int */
-#define C_long_to_R_long(attr) INT2NUM(attr) /**< C long -> Ruby long */
+#define C_long_to_R_long(attr) LONG2NUM(attr) /**< C long -> Ruby long */
 #define R_long_to_C_long(attr) NUM2LONG(attr) /**< C long <- Ruby long */
-#define C_ulong_to_R_ulong(attr) UINT2NUM(attr) /**< C unsigned long -> Ruby unsigned long */
+#define C_ulong_to_R_ulong(attr) ULONG2NUM(attr) /**< C unsigned long -> Ruby unsigned long */
 #define R_ulong_to_C_ulong(attr) NUM2ULONG(attr) /**< C unsigned long <- Ruby unsigned long */
 #define C_str_to_R_str(attr) attr ? rb_str_new2(attr) : Qnil /**< C string -> Ruby string */
 #define C_dbl_to_R_dbl(attr) rb_float_new(attr) /**< C double -> Ruby double */
 #define R_dbl_to_C_dbl(attr) NUM2DBL(attr) /**< C double <- Ruby double */
 
 //! define attribute reader
-#define IMPLEMENT_ATTR_READER(class, attr, type) \
+#define IMPLEMENT_TYPED_ATTR_READER(klass, attr, type, data_type) \
     {\
-        class *ptr;\
+        klass *ptr;\
         if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {\
             rm_check_destroyed(self); \
         }\
-        Data_Get_Struct(self, class, ptr);\
+        TypedData_Get_Struct(self, klass, data_type, ptr);\
         return C_##type##_to_R_##type(ptr->attr);\
     }
 
 //! define attribute reader when attribute name is different from the field name
-#define IMPLEMENT_ATTR_READERF(class, attr, field, type) \
+#define IMPLEMENT_TYPED_ATTR_READERF(klass, attr, field, type, data_type) \
     {\
-        class *ptr;\
+        klass *ptr;\
         rm_check_destroyed(self); \
-        Data_Get_Struct(self, class, ptr);\
+        TypedData_Get_Struct(self, klass, data_type, ptr);\
         return C_##type##_to_R_##type(ptr->field);\
     }
 
 //! define attribute writer
-#define IMPLEMENT_ATTR_WRITER(class, attr, type) \
+#define IMPLEMENT_TYPED_ATTR_WRITER(klass, attr, type, data_type) \
     {\
-        class *ptr;\
+        klass *ptr;\
         if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {\
             rm_check_destroyed(self); \
         }\
         rb_check_frozen(self);\
-        Data_Get_Struct(self, class, ptr);\
+        TypedData_Get_Struct(self, klass, data_type, ptr);\
         ptr->attr = R_##type##_to_C_##type(val);\
         return val;\
     }
 
 //! define attribute writer when attribute name is different from the field name
-#define IMPLEMENT_ATTR_WRITERF(class, attr, field, type) \
+#define IMPLEMENT_TYPED_ATTR_WRITERF(klass, attr, field, type, data_type) \
     {\
-        class *ptr;\
+        klass *ptr;\
         if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {\
             rm_check_destroyed(self); \
         }\
         rb_check_frozen(self);\
-        Data_Get_Struct(self, class, ptr);\
+        TypedData_Get_Struct(self, klass, data_type, ptr);\
         ptr->field = R_##type##_to_C_##type(val);\
         return self;\
     }
@@ -491,15 +503,15 @@ EXTERN ID rm_ID_width;             /**< "width" */
  *  Declare attribute accessors
  */
 //! declare attribute reader
-#define ATTR_READER(class, attr) \
-    extern VALUE class##_##attr(VALUE);
+#define ATTR_READER(klass, attr) \
+    extern VALUE klass##_##attr(VALUE);
 //! declare attribute writer
-#define ATTR_WRITER(class, attr) \
-    extern VALUE class##_##attr##_eq(VALUE, VALUE);
+#define ATTR_WRITER(klass, attr) \
+    extern VALUE klass##_##attr##_eq(VALUE, VALUE);
 //! declare attribute accessor
-#define ATTR_ACCESSOR(class, attr) \
-    ATTR_READER(class, attr)\
-    ATTR_WRITER(class, attr)
+#define ATTR_ACCESSOR(klass, attr) \
+    ATTR_READER(klass, attr)\
+    ATTR_WRITER(klass, attr)
 
 
 //!  Define a Magick module constant
@@ -511,7 +523,6 @@ EXTERN ID rm_ID_width;             /**< "width" */
 #define DEF_CONSTV(constant, val) rb_define_const(Module_Magick, #constant, UINT2NUM(val))
 #endif
 
-
 //! Convert a Ruby enum constant back to a C enum member.
 #define VALUE_TO_ENUM(value, e, type) \
    do {\
@@ -519,7 +530,7 @@ EXTERN ID rm_ID_width;             /**< "width" */
    if (CLASS_OF(value) != Class_##type)\
        rb_raise(rb_eTypeError, "wrong enumeration type - expected %s, got %s", \
                 rb_class2name(Class_##type), rb_class2name(CLASS_OF(value)));\
-   Data_Get_Struct(value, MagickEnum, magick_enum);\
+   TypedData_Get_Struct(value, MagickEnum, &rm_enum_data_type, magick_enum);\
    e = (type)(magick_enum->val);\
    } while(0)
 
@@ -532,11 +543,13 @@ EXTERN ID rm_ID_width;             /**< "width" */
 // the same source file.
 
 
-// rmmain.c
+extern "C" {
+
+// rmmain.cpp
 extern void Init_RMagick2(void);
 
 
-// rmagick.c
+// rmagick.cpp
 extern VALUE Magick_colors(VALUE);
 extern VALUE Magick_fonts(VALUE);
 extern VALUE Magick_init_formats(VALUE);
@@ -545,7 +558,7 @@ extern VALUE Magick_set_cache_threshold(VALUE, VALUE);
 extern VALUE Magick_set_log_event_mask(int, VALUE *, VALUE);
 extern VALUE Magick_set_log_format(VALUE, VALUE);
 
-// rmdraw.c
+// rmdraw.cpp
 ATTR_WRITER(Draw, affine)
 ATTR_WRITER(Draw, align)
 ATTR_WRITER(Draw, border_color)
@@ -596,7 +609,7 @@ ATTR_WRITER(PolaroidOptions, shadow_color);
 ATTR_WRITER(PolaroidOptions, border_color);
 
 
-// rmmontage.c
+// rmmontage.cpp
 ATTR_WRITER(Montage, background_color)
 ATTR_WRITER(Montage, border_color)
 ATTR_WRITER(Montage, border_width)
@@ -619,7 +632,7 @@ extern VALUE Montage_alloc(VALUE);
 extern VALUE rm_montage_new(void);
 
 
-// rmilist.c
+// rmilist.cpp
 extern VALUE ImageList_animate(int, VALUE *, VALUE);
 extern VALUE ImageList_append(VALUE, VALUE);
 extern VALUE ImageList_average(VALUE);
@@ -641,7 +654,7 @@ extern VALUE ImageList_write(VALUE, VALUE);
 extern VALUE rm_imagelist_from_images(Image *);
 
 
-// rminfo.c
+// rminfo.cpp
 ATTR_ACCESSOR(Info, antialias)
 ATTR_ACCESSOR(Info, attenuate)
 ATTR_ACCESSOR(Info, authenticate)
@@ -703,7 +716,7 @@ extern VALUE rm_info_new(void);
 extern DisposeType rm_dispose_to_enum(const char *);
 extern GravityType rm_gravity_to_enum(const char *);
 
-// rmkinfo.c
+// rmkinfo.cpp
 
 extern VALUE KernelInfo_alloc(VALUE);
 
@@ -716,7 +729,7 @@ extern VALUE KernelInfo_clone(VALUE);
 extern VALUE KernelInfo_builtin(VALUE, VALUE, VALUE);
 
 
-// rmimage.c
+// rmimage.cpp
 ATTR_ACCESSOR(Image, background_color)
 ATTR_READER(Image, base_columns)
 ATTR_READER(Image, base_filename)
@@ -822,11 +835,7 @@ extern VALUE Image_compare_channel(int, VALUE *, VALUE);
 extern VALUE Image_channel_depth(int, VALUE *, VALUE);
 extern VALUE Image_channel_extrema(int, VALUE *, VALUE);
 extern VALUE Image_channel_mean(int, VALUE *, VALUE);
-#if defined(HAVE_GETIMAGECHANNELENTROPY) || defined(IMAGEMAGICK_7)
 extern VALUE Image_channel_entropy(int, VALUE *, VALUE);
-#else
-extern VALUE Image_channel_entropy(int, VALUE *, VALUE) ATTRIBUTE_NORETURN;
-#endif
 extern VALUE Image_charcoal(int, VALUE *, VALUE);
 extern VALUE Image_chop(VALUE, VALUE, VALUE, VALUE, VALUE);
 extern VALUE Image_clone(VALUE);
@@ -1017,10 +1026,9 @@ extern VALUE Image_write(VALUE, VALUE);
 
 extern VALUE rm_image_new(Image *);
 extern void  rm_image_destroy(void *);
-extern void  rm_trace_creation(Image *);
 
 
-// rmfill.c
+// rmfill.cpp
 extern VALUE  GradientFill_alloc(VALUE);
 extern VALUE  GradientFill_initialize(VALUE, VALUE, VALUE, VALUE, VALUE, VALUE, VALUE);
 extern VALUE  GradientFill_fill(VALUE, VALUE);
@@ -1030,7 +1038,7 @@ extern VALUE  TextureFill_initialize(VALUE, VALUE);
 extern VALUE  TextureFill_fill(VALUE, VALUE);
 
 
-// rmpixel.c
+// rmpixel.cpp
 
 
 ATTR_ACCESSOR(Pixel, red)
@@ -1041,7 +1049,6 @@ ATTR_ACCESSOR(Pixel, cyan)
 ATTR_ACCESSOR(Pixel, magenta)
 ATTR_ACCESSOR(Pixel, yellow)
 ATTR_ACCESSOR(Pixel, black)
-extern void   destroy_Pixel(Pixel *);
 extern VALUE  Pixel_alloc(VALUE);
 extern VALUE  Pixel_case_eq(VALUE, VALUE);
 extern VALUE  Pixel_clone(VALUE);
@@ -1062,7 +1069,7 @@ extern VALUE  Pixel_to_hsla(VALUE);
 extern VALUE  Pixel_to_s(VALUE);
 
 
-// rmenum.c
+// rmenum.cpp
 extern VALUE  Enum_alloc(VALUE);
 extern VALUE  Enum_initialize(VALUE, VALUE, VALUE);
 extern VALUE  Enum_to_s(VALUE);
@@ -1071,7 +1078,7 @@ extern VALUE  Enum_spaceship(VALUE, VALUE);
 extern VALUE  Enum_bitwise_or(VALUE, VALUE);
 extern VALUE  Enum_case_eq(VALUE, VALUE);
 extern VALUE  Enum_type_initialize(VALUE, VALUE, VALUE);
-extern VALUE  Enum_find(VALUE class, int val);
+extern VALUE  Enum_find(VALUE, int);
 extern VALUE  Enum_type_each(VALUE);
 extern VALUE  rm_enum_new(VALUE, VALUE, VALUE);
 extern VALUE  ClassType_find(ClassType);
@@ -1098,7 +1105,7 @@ extern const char *StyleType_name(StyleType);
 extern VALUE  VirtualPixelMethod_find(VirtualPixelMethod);
 
 
-// rmstruct.c
+// rmstruct.cpp
 extern VALUE  ChromaticityInfo_to_s(VALUE);
 extern VALUE  ChromaticityInfo_new(ChromaticityInfo *);
 extern void   Color_to_PixelColor(PixelColor *, VALUE);
@@ -1133,7 +1140,7 @@ extern void   Export_TypeInfo(TypeInfo *, VALUE);
 extern VALUE  Import_TypeMetric(TypeMetric *);
 
 
-// rmutil.c
+// rmutil.cpp
 extern VALUE  ImageMagickError_initialize(int, VALUE *, VALUE);
 extern void  *magick_malloc(const size_t);
 extern void  *magick_safe_malloc(const size_t, const size_t);
@@ -1154,16 +1161,16 @@ extern void   rm_check_ary_len(VALUE, long);
 extern VALUE  rm_check_ary_type(VALUE ary);
 extern Image *rm_check_destroyed(VALUE);
 extern Image *rm_check_frozen(VALUE);
-extern char  *rm_str2cstr(VALUE, long *);
+extern char  *rm_str2cstr(VALUE, size_t *);
 extern int    rm_check_num2dbl(VALUE);
 extern double rm_fuzz_to_dbl(VALUE);
 extern Quantum rm_app2quantum(VALUE);
 extern double rm_percentage(VALUE, double);
-extern double rm_str_to_pct(VALUE);
+extern double rm_percentage2(VALUE, double, bool);
+extern double rm_str_to_pct(VALUE, bool);
 extern VALUE  rm_define_enum_type(const char *);
 extern void   rm_write_temp_image(Image *, char *, size_t);
 extern void   rm_delete_temp_image(char *);
-extern void   rm_not_implemented(void) ATTRIBUTE_NORETURN;
 extern void   rm_attr_write(VALUE, VALUE);
 extern const char *rm_get_property(const Image *, const char *);
 extern MagickBooleanType rm_set_property(Image *, const char *, const char *);
@@ -1171,6 +1178,9 @@ extern void   rm_set_user_artifact(Image *, Info *);
 extern void   rm_sync_image_options(Image *, Info *);
 extern void   rm_split(Image *);
 extern void   rm_magick_error(const char *);
+#if defined(IMAGEMAGICK_7)
+extern void   rm_set_pixelinfo_alpha(PixelInfo *, const MagickRealType);
+#endif
 
 //! whether to retain on errors
 typedef enum
@@ -1188,7 +1198,6 @@ typedef enum
 extern void   rm_check_exception(ExceptionInfo *, Image *, ErrorRetention);
 extern void   rm_ensure_result(Image *);
 extern Image *rm_clone_image(Image *);
-extern MagickBooleanType rm_progress_monitor(const char *, const MagickOffsetType, const MagickSizeType, void *);
 extern VALUE  rm_exif_by_entry(Image *);
 extern VALUE  rm_exif_by_number(Image *);
 extern void   rm_get_optional_arguments(VALUE);
@@ -1197,9 +1206,14 @@ extern void   rm_error_handler(const ExceptionType, const char *, const char *);
 extern void   rm_warning_handler(const ExceptionType, const char *, const char *);
 extern MagickBooleanType rm_should_raise_exception(ExceptionInfo *, const ExceptionRetention);
 extern void   rm_raise_exception(ExceptionInfo *);
+extern VALUE  rm_io_path(VALUE);
 #if defined(IMAGEMAGICK_6)
 extern void   rm_check_image_exception(Image *, ErrorRetention);
 #endif
 
-#endif
+#define RESCUE_FUNC(func)                   (VALUE(*)(VALUE))(func)
+#define RESCUE_EXCEPTION_HANDLER_FUNC(func) (VALUE(*)(VALUE, VALUE))(func)
 
+} // extern "C"
+
+#endif

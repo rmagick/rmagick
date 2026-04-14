@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#composite_affine' do
   it 'works' do
     affine = Magick::AffineMatrix.new(1, 0, 1, 0, 0, 0)
@@ -9,5 +11,14 @@ RSpec.describe Magick::Image, '#composite_affine' do
     result = image1.composite_affine(image2, affine)
     expect(result).to be_instance_of(described_class)
     expect(result).not_to be(image1)
+  end
+
+  it 'accepts an ImageList argument' do
+    affine = Magick::AffineMatrix.new(1, 0, 1, 0, 0, 0)
+    image = described_class.new(20, 20)
+    image_list = Magick::ImageList.new
+    image_list.new_image(20, 20)
+
+    expect { image.composite_affine(image_list, affine) }.not_to raise_error
   end
 end

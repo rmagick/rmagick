@@ -1,0 +1,14 @@
+ARG RUBY_VERSION
+
+FROM ruby:${RUBY_VERSION}
+
+ARG IMAGEMAGICK_VERSION
+
+RUN mkdir /setup
+ADD *.sh /setup
+
+ENV IMAGEMAGICK_VERSION ${IMAGEMAGICK_VERSION}
+
+RUN /setup/setup-user.sh
+
+WORKDIR /workspaces/rmagick

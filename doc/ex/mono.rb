@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rmagick'
 
 # Demonstrate the ImageListImage#quantize method by converting

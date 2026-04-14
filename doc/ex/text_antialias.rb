@@ -1,13 +1,15 @@
+# frozen_string_literal: true
+
 require 'rmagick'
 
 imgl = Magick::ImageList.new
-imgl.new_image(275, 170) { self.background_color = 'white' }
+imgl.new_image(275, 170) { |info| info.background_color = 'white' }
 
 gc = Magick::Draw.new
 gc.fill('black')
 gc.stroke('transparent')
 
-if RUBY_PLATFORM =~ /mswin32/
+if RUBY_PLATFORM.include?('mingw')
   gc.font_family('Georgia')
   gc.pointsize(152)
 else

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Magick::TypeMetric, '#to_s' do
   it 'works' do
     draw = Magick::Draw.new

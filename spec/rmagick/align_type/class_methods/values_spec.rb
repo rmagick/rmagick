@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::AlignType, '.values' do
   it 'works' do
     expect(described_class.values).to be_instance_of(Array)

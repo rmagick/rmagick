@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Matchers
   class MatchPixels
     attr_accessor :actual, :expected, :delta

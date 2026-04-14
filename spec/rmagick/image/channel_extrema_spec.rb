@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, "#channel_extrema" do
   it "returns the min and max intensity values for all channels when no arguments are passed" do
     image = build_image

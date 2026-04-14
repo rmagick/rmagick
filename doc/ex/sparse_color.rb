@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rmagick'
 
 def draw_centers(img, all_four = true)
@@ -51,10 +53,10 @@ begin
   img2['Label'] = 'Barycentric'
   imgl << draw_centers(img2, false)
 
-  montage = imgl.montage do
-    self.background_color = 'none'
-    self.geometry = '100x100+10+10'
-    self.tile = '2x2'
+  montage = imgl.montage do |options|
+    options.background_color = 'none'
+    options.geometry = '100x100+10+10'
+    options.tile = '2x2'
   end
 
   montage.write('sparse_color.png')

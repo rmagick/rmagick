@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#composite' do
   it 'raises an error given invalid arguments' do
     image1 = described_class.read(IMAGES_DIR + '/Button_0.gif').first

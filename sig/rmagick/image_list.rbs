@@ -1,0 +1,185 @@
+# frozen_string_literal: true
+
+module Magick
+  class ImageList
+    include Enumerable[Image]
+    include Comparable
+    # The methods of Magick::Image class can be called via method_missing
+    include _ImageCommonMethods
+
+    private
+
+    def get_current: () -> Integer?
+
+    public
+
+    def assert_image: (untyped obj) -> void
+
+    # Ensure array is always an array of Magick::Image objects
+    def assert_image_array: (untyped ary) -> void
+
+    # Find old current image, update scene number
+    # current is the id of the old current image.
+    def set_current: (untyped current) -> void
+
+    def scene: () -> Integer?
+    def scene=: (int? n) -> Integer?
+    def &: (ImageList | Array[Image] other) -> ImageList
+    def +: (ImageList | Array[Image] other) -> ImageList
+    def -: (ImageList | Array[Image] other) -> ImageList
+    def |: (ImageList | Array[Image] other) -> ImageList
+    def *: (Integer other) -> ImageList
+    def <<: (Image obj) -> self
+    def <=>: (untyped other) -> (Integer | nil)
+    def []: (int nth) -> Image?
+          | (Range[Integer] range) -> ImageList
+          | (int start, int length) -> ImageList
+    def []=: (int nth, magick_image | Array[Image] image) -> void
+           | (Range[Integer] range, magick_image | Array[Image] image) -> void
+           | (int start, int length, magick_image | Array[Image] image) -> void
+    def at: () -> Image
+    def each: () -> Enumerator[Image, self]
+            | () { (Image) -> void } -> void
+    def each_index: () -> Enumerator[Integer, self]
+                  | () { (Integer) -> void } -> void
+    def empty?: () -> bool
+    def fetch: (int index) -> Image
+             | [T] (int index, T default) -> (Image | T)
+             | [T] (int index) { (Integer index) -> T } -> (Integer | T)
+    def first: () -> Image?
+             | (int n) -> Array[Image]
+    def hash: () -> Integer
+    def include?: (untyped obj) -> bool
+    def index: (Image | ImageList | Array[Image] obj) -> ::Integer?
+             | () { (Image) -> boolish } -> Integer?
+             | () -> ::Enumerator[Image, Integer?]
+    def length: () -> Integer
+    def rindex: (Image | ImageList | Array[Image] obj) -> ::Integer?
+              | () { (Image) -> boolish } -> Integer?
+              | () -> ::Enumerator[Image, Integer?]
+    def sort!: () -> self
+             | () { (Image a, Image b) -> Integer } -> self
+    def clear: () -> void
+    def clone: () -> ImageList
+             | ...
+    def collect: () { (Image) -> Image } -> ImageList
+    def collect!: () { (Image) -> Image } -> self
+    def copy: () -> ImageList
+            | ...
+    def cur_image: () -> Image
+                 | ...
+    alias map collect
+    alias __map__ collect
+    alias map! collect!
+    alias __map__! collect!
+    def compact: () -> ImageList
+    def compact!: () -> self?
+    def concat: (ImageList | Array[Image] other) -> self
+    def delay=: (int d) -> void
+    def delete: (Image obj) -> Image?
+              | [T] (Image obj) { (Image) -> T } -> (Image | T)
+    def delete_at: (int ndx) -> Image?
+    def delete_if: () { (Image) -> boolish } -> self
+                 | () -> self
+    def dup: () -> ImageList
+           | ...
+    def eql?: (ImageList | Array[Image] other) -> bool
+    def fill: (Image image, ?int start, ?int length) -> ImageList
+            | (Image image, Range[Integer] range) -> ImageList
+            | (?int start, ?int length) { (Integer index) -> Image } -> ImageList
+            | (Range[Integer] range) { (Integer index) -> Image } -> ImageList
+    def find_all: () { (Image) -> boolish } -> ImageList
+                | () -> ImageList
+    alias select find_all
+    def from_blob: (string blob) -> self
+                 | (string blob) { (Image::Info) -> void } -> self
+    def initialize: (*(File | string) filenames) -> void
+                  | (*(File | string) filenames) { (Image::Info) -> void } -> void
+    def insert: (int index, *Image args) -> self
+    def iterations=: (int n) -> void
+    def last: () -> Image?
+            | (int n) -> ImageList
+    def marshal_dump: () -> Array[(Integer | String)?]
+    def marshal_load: (Array[(Integer | String)?] ary) -> void
+    def method_missing: (untyped meth_id, *untyped args) ?{ (*untyped, **untyped) -> untyped } -> untyped
+    def new_image: (int cols, int rows, ?magick_fill fill) -> self
+                 | (int cols, int rows, ?magick_fill fill) { (Image::Info) -> void } -> self
+    def partition: () { (Image) -> boolish } -> [ImageList, ImageList]
+    def ping: (*(File | string) files) -> self
+            | (*(File | string) files) { (Image::Info) -> void } -> self
+    def pop: () -> Image?
+    def push: (*Image objs) -> self
+    def read: (*(File | string) files) -> self
+            | (*(File | string) files) { (Image::Info) -> void } -> self
+    def reject: () { (Image) -> boolish } -> ImageList
+    def reject!: () { (Image) -> boolish } -> self?
+    def replace: (ImageList | Array[Image] other) -> ImageList
+    def respond_to?: (interned meth_id, ?bool priv) -> bool
+    def reverse: () -> ImageList
+    def reverse!: () -> self
+    def reverse_each: () { (Image) -> void } -> self
+    def shift: () -> Image?
+    def slice: (int index) -> ImageList?
+             | (int start, int length) -> ImageList?
+             | (Range[Integer] range) -> ImageList?
+    def slice!: (int index) -> Image?
+              | (int start, int length) -> Image?
+              | (Range[Integer] range) -> Image?
+    def ticks_per_second=: (int t) -> void
+    def to_a: () -> Array[Image]
+    def uniq: () -> ImageList
+    def uniq!: () -> self?
+    def unshift: (Image obj) -> self
+    def values_at: (*int index) -> ImageList
+                 | (Range[Integer] range) -> ImageList
+
+    alias __display__ display
+    def remap: (?magick_image? remap_image, ?DitherMethod dither_method) -> self
+             | ...
+    def animate: (?int delay) -> self
+               | (?int delay) { (Image::Info) -> void } -> self
+    def append: (bool stack_arg) -> Image
+    def average: () -> Image
+    def coalesce: () -> ImageList
+    def combine: (?ColorspaceType colorspace) -> Image
+    def composite_layers: (ImageList images, ?CompositeOperator composite_op) -> ImageList
+    def deconstruct: () -> ImageList
+    def display: () -> self
+               | () { (Image::Info) -> void } -> self
+    def flatten_images: () -> Image
+    def montage: () -> ImageList
+               | () { (ImageList::Montage) -> void } -> ImageList
+    def morph: (int nimages) -> ImageList
+    def mosaic: () -> Image
+    def optimize_layers: (LayerMethod method) -> ImageList
+    def quantize: (?int number_colors, ?ColorspaceType colorspace, ?(DitherMethod | bool) dither, ?int tree_depth, ?bool measure_error) -> ImageList
+    def to_blob: () -> String?
+               | () { (Image::Info) -> void } -> String?
+    def write: (File | string file) -> self
+             | (File | string file) { (Image::Info) -> void } -> self
+    def destroy!: () -> self
+    def destroyed?: () -> bool
+
+    class Montage
+      def initialize: () -> void
+
+      attr_writer background_color: magick_color
+      attr_writer border_color: magick_color
+      attr_writer border_width: int
+      attr_writer compose: CompositeOperator
+      attr_writer filename: string
+      attr_writer fill: magick_color
+      attr_writer font: string
+      attr_writer frame: Geometry | string
+      attr_writer geometry: Geometry | string
+      attr_writer gravity: GravityType
+      attr_writer matte_color: magick_color
+      attr_writer pointsize: magick_real
+      attr_writer shadow: bool
+      attr_writer stroke: magick_color
+      attr_writer texture: magick_image
+      attr_writer tile: Geometry | string
+      attr_writer title: string
+    end
+  end
+end

@@ -3,105 +3,189 @@ name: CI
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
-    branches:
-      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   lint:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    name: lint & RBS check
+    timeout-minutes: 20
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Ruby 2.3
-      uses: ruby/setup-ruby@master
+    - uses: actions/checkout@v6
+    - name: Set up Ruby 4.0
+      uses: ruby/setup-ruby@v1
       with:
-        ruby-version: 2.3
-    - name: Build and test with Rake
+        ruby-version: '4.0'
+        bundler-cache: true
+    - name: RuboCop
       run: |
-        bundle install --path=vendor/bundle --jobs 4 --retry 3
-        STYLE_CHECKS=true bundle exec rubocop
-
-  test-linux:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    strategy:
-      matrix:
-        ruby-version: [2.3, 2.4, 2.5, 2.6, 2.7]
-        imagemagick-version:
-          - { full: 6.7.7-10, major-minor: '6.7' }
-          - { full: 6.8.9-10, major-minor: '6.8' }
-          - { full: 6.9.11-23, major-minor: '6.9' }
-          - { full: 7.0.10-23, major-minor: '7.0' }
-
-    name: Linux, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Ruby ${{ matrix.ruby-version }}
-      uses: ruby/setup-ruby@master
-      with:
-        ruby-version: ${{ matrix.ruby-version }}
-    - name: Update/Install packages
+        bundle exec rubocop
+    - name: Validate RBS signatures
       run: |
-        export IMAGEMAGICK_VERSION=${{ matrix.imagemagick-version.full }}
-        ./before_install_linux.sh
-    - name: Build and test with Rake
-      run: |
-        bundle install --path=vendor/bundle --jobs 4 --retry 3
-        bundle exec rake
+        bundle exec rake rbs:validate && bundle exec steep check
 
-  test-macos:
-    runs-on: macos-latest
+  test:
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     strategy:
+      fail-fast: false
       matrix:
-        ruby-version: [2.6, 2.7]
+        os:
+          - ubuntu-latest
+          - macos-latest
+        ruby-version: ['3.2', '3.3', '3.4', '4.0']
         imagemagick-version:
-          - { full: 6.9.11-23, major-minor: '6.9' }
-          - { full: 7.0.10-23, major-minor: '7.0' }
+          - { full: 6.9.13-43, major-minor: '6.9' }
+          - { full: 7.1.2-18, major-minor: '7.1' }
 
-    name: macOS, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
+    name: ${{ matrix.os }}, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Ruby ${{ matrix.ruby-version }}
-      uses: ruby/setup-ruby@master
+    - uses: actions/checkout@v6
+    - name: Cache ImageMagick built objects
+      uses: actions/cache@v5
       with:
-        ruby-version: ${{ matrix.ruby-version }}
-    - name: Update/Install packages
+        path: ./build-ImageMagick
+        key: v1-${{ runner.os }}-imagemagick-${{ matrix.imagemagick-version.full }}
+        restore-keys: |
+          v1-${{ runner.os }}-imagemagick-${{ matrix.imagemagick-version.full }}
+    - name: Update/Install packages (Linux)
+      if: runner.os == 'Linux'
+      run: |
+        IMAGEMAGICK_VERSION=${{ matrix.imagemagick-version.full }} ./before_install_linux.sh
+    - name: Update/Install packages (macOS)
+      if: runner.os == 'macOS'
       run: |
         IMAGEMAGICK_VERSION=${{ matrix.imagemagick-version.full }} ./before_install_osx.sh
+    - name: Set up Ruby ${{ matrix.ruby-version }}
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby-version }}
+        bundler-cache: true
     - name: Build and test with Rake
       run: |
-        bundle install --path=vendor/bundle --jobs 4 --retry 3
         bundle exec rake
 
   test-windows:
-    runs-on: windows-latest
-    timeout-minutes: 10
+    runs-on: ${{ matrix.os.target }}
+    timeout-minutes: 20
     strategy:
+      fail-fast: false
       matrix:
-        ruby-version: [2.3, 2.4, 2.5, 2.6, 2.7]
+        ruby-version: ['4.0']
         imagemagick-version:
-          - { full: 6.8.9-10, major-minor: '6.8' }
-          - { full: 6.9.11-23, major-minor: '6.9' }
-          - { full: 7.0.10-23, major-minor: '7.0' }
-    name: MSWin, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
+          - { full: 6.9.13-43, major-minor: '6.9' }
+          - { full: 7.1.2-18, major-minor: '7.1' }
+        os:
+          - { target: windows-latest, arch: 'x64' }
+          - { target: windows-11-arm, arch: 'arm64' }
+        exclude:
+          # ImageMagick 6 has not provided ARM binary. Ref. https://legacy.imagemagick.org/archive/binaries/
+          - imagemagick-version: { full: 6.9.13-43, major-minor: '6.9' }
+            os: { target: windows-11-arm, arch: 'arm64' }
+
+    env:
+      install_im_dir: C:\ImageMagick
+      install_gs_dir: C:\Ghostscript
+
+    name: MSWin ${{ matrix.os.arch }}, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Ruby ${{ matrix.ruby-version }}
-      uses: ruby/setup-ruby@master
-      with:
-        ruby-version: ${{ matrix.ruby-version }}
+    - uses: actions/checkout@v6
+    - name: Setup environment variable
+      # https://stackoverflow.com/questions/60169752/how-to-update-the-path-in-a-github-action-workflow-file-for-a-windows-latest-hos
+      run: |
+        Add-Content $env:GITHUB_PATH ${{ env.install_im_dir }}
+        Add-Content $env:GITHUB_PATH ${{ env.install_gs_dir }}\bin
+    - name: Install Ghostscript
+      shell: powershell
+      run: |
+        $url = "https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10060/gs10060w64.exe"
+        $installer = "$env:TEMP\gs_installer.exe"
+
+        Write-Host "Downloading Ghostscript..."
+        Invoke-WebRequest -Uri $url -OutFile $installer
+
+        7z x $installer -o${{ env.install_gs_dir }} -y
+    - name: Uninstall bundled ImageMagick
+      # Bundled ImageMagick does not have C/C++ library and dll which required by rmagick.
+      shell: powershell
+      run: |
+        $regPaths = @(
+            "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\*",
+            "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*"
+        )
+
+        # Search for ImageMagick installation entry from registry
+        $target = Get-ItemProperty $regPaths -ErrorAction SilentlyContinue |
+                  Where-Object { $_.DisplayName -like "*ImageMagick*" } |
+                  Select-Object -First 1
+
+        if ($target) {
+            Write-Host "Found installed ImageMagick: $($target.DisplayName)"
+
+            $uninstallCommand = $target.UninstallString -replace '"', ''
+
+            if (Test-Path $uninstallCommand) {
+                Write-Host "Running uninstaller: $uninstallCommand"
+                Start-Process -FilePath $uninstallCommand -ArgumentList "/VERYSILENT", "/NORESTART" -Wait
+                Write-Host "Uninstallation completed."
+            } else {
+                Write-Error "Uninstaller file not found at: $uninstallCommand"
+            }
+        } else {
+            Write-Host "ImageMagick is not installed (Registry check). Skipping."
+        }
     - name: Install ImageMagick
+      # https://github.com/rmagick/ImageMagick-binaries
       run: |
         $imagemagick_version = "${{ matrix.imagemagick-version.full }}"
-        $imagemagick_version_without_patch = $imagemagick_version.split("-")[0]
-        $installer_name = "ImageMagick-$($imagemagick_version)-Q16-x64-dll.exe"
-        $url = "https://ftp.icm.edu.pl/pub/graphics/ImageMagick/binaries/$($installer_name)"
-        choco install wget ghostscript
-        wget $url --progress=dot
-        cmd.exe /D /S /C "$($installer_name) /DIR=D:\ImageMagick /VERYSILENT /TASKS=install_Devel"
+        $arch = "${{ matrix.os.arch }}"
+        $installer_name = "ImageMagick-$($imagemagick_version)-Q16-$($arch)-dll.exe"
+        $url = "https://github.com/rmagick/ImageMagick-binaries/raw/main/$($installer_name)"
+        Invoke-WebRequest -Uri $url -OutFile $installer_name
+        Start-Process -FilePath $installer_name -ArgumentList "/DIR=${{ env.install_im_dir }} /VERYSILENT /NORESTART /TASKS=install_Devel"
+    - name: Set up Ruby ${{ matrix.ruby-version }}
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby-version }}
+        bundler-cache: true
     - name: Build and test with Rake
       run: |
-        cmd.exe /D /S /C "SET MAKE=make & SET PATH=D:\ImageMagick;%PATH% & bundle install --path=vendor/bundle --retry 3 & bundle exec rake"
+        cmd.exe /D /S /C "bundle exec rake"
+
+  test-windows-pkgconfig:
+    runs-on: ${{ matrix.os.target }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby-version: ['4.0']
+        os:
+          - { target: windows-latest, arch: 'x64' }
+          - { target: windows-11-arm, arch: 'arm64' }
+    env:
+      RMAGICK_SKIP_GHOSTSCRIPT_TEST: "true" # To avoid the tedious Ghostscript setup
+
+    name: MSWin ${{ matrix.os.arch }}, Ruby ${{ matrix.ruby-version }}, MSYS2 IM
+    steps:
+    - uses: actions/checkout@v6
+    - name: Set up Ruby ${{ matrix.ruby-version }}
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby-version }}
+        bundler-cache: true
+    - name: Install ImageMagick
+      run: |
+        if ("${{ matrix.os.arch }}" -eq "arm64") {
+          $pkg = "mingw-w64-clang-aarch64-imagemagick"
+        } else {
+          $pkg = "mingw-w64-ucrt-x86_64-imagemagick"
+        }
+        ridk exec pacman -S $pkg --noconfirm
+    - name: Build test
+      run: |
+        cmd.exe /D /S /C "bundle exec rake compile"

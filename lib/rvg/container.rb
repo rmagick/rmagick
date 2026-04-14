@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #--
 # $Id: container.rb,v 1.5 2009/02/28 23:52:13 rmagick Exp $
 # Copyright (C) 2009 Timothy P. Hunter
@@ -108,11 +110,11 @@ module Magick
         # If the element is not a group, defs, symbol, or rvg,
         # wrap a group around it so it can get a transform and
         # possibly a new viewport.
-        if !element.respond_to?(:ref)
+        if element.respond_to?(:ref)
+          @element = element.deep_copy
+        else
           @element = Group.new
           @element << element.deep_copy
-        else
-          @element = element.deep_copy
         end
         @element.ref(x, y, width, height)
       end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rmagick'
 
 # Demonstrate the morph method
@@ -7,7 +9,7 @@ require 'rmagick'
 # in-between images between each pair of digits.
 
 i = Magick::ImageList.new
-number = '0'
+number = +'0'
 4.times do
   i.read 'images/Button_' + number + '.gif'
   number.succ!

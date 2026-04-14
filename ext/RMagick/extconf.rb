@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 lib_dir = File.expand_path('../../lib', File.dirname(__FILE__))
 $LOAD_PATH.unshift(lib_dir) unless $LOAD_PATH.include?(lib_dir)
-require 'rubygems'
 require 'mkmf'
+require 'pkg-config'
 
 module RMagick
   class Extconf
@@ -9,10 +11,38 @@ module RMagick
     RMAGICK_VERS = ::Magick::VERSION
     MIN_RUBY_VERS = ::Magick::MIN_RUBY_VERSION
 
+    # ImageMagick 6 packages
+    IM6_PACKAGES = %w[
+      ImageMagick-6.Q64HDRI
+      ImageMagick-6.Q32HDRI
+      ImageMagick-6.Q16HDRI
+      ImageMagick-6.Q8HDRI
+      ImageMagick-6.Q64
+      ImageMagick-6.Q32
+      ImageMagick-6.Q16
+      ImageMagick-6.Q8
+      ImageMagick-6
+    ].freeze
+
+    # ImageMagick 7 packages
+    IM7_PACKAGES = %w[
+      ImageMagick-7.Q64HDRI
+      ImageMagick-7.Q32HDRI
+      ImageMagick-7.Q16HDRI
+      ImageMagick-7.Q8HDRI
+      ImageMagick-7.Q64
+      ImageMagick-7.Q32
+      ImageMagick-7.Q16
+      ImageMagick-7.Q8
+      ImageMagick-7
+    ].freeze
+
     attr_reader :headers
 
     def initialize
       @stdout = $stdout.dup
+
+      exit_failure("No longer support MSWIN environment.") if RUBY_PLATFORM.include?('mswin')
 
       setup_pkg_config_path
       assert_can_compile!
@@ -21,19 +51,20 @@ module RMagick
     end
 
     def setup_pkg_config_path
-      return if RUBY_PLATFORM =~ /mswin|mingw/
+      return if RUBY_PLATFORM.include?('mingw')
 
       if find_executable('brew')
-        pkg_config_path = "#{`brew --prefix imagemagick@6`.strip}/lib/pkgconfig"
+        append_pkg_config_path("#{`brew --prefix imagemagick`.strip}/lib/pkgconfig")
+        append_pkg_config_path("#{`brew --prefix imagemagick@6`.strip}/lib/pkgconfig")
       elsif find_executable('pacman')
-        pkg_config_path = '/usr/lib/imagemagick6/pkgconfig'
-      else
-        return
+        append_pkg_config_path('/usr/lib/imagemagick6/pkgconfig')
       end
+    end
 
+    def append_pkg_config_path(path)
       pkg_config_paths = ENV['PKG_CONFIG_PATH'].to_s.split(':')
-      if File.exist?(pkg_config_path) && !pkg_config_paths.include?(pkg_config_path)
-        ENV['PKG_CONFIG_PATH'] = [ENV['PKG_CONFIG_PATH'], pkg_config_path].compact.join(':')
+      if File.exist?(path) && !pkg_config_paths.include?(path)
+        ENV['PKG_CONFIG_PATH'] = [ENV['PKG_CONFIG_PATH'], path].compact.join(':')
       end
     end
 
@@ -41,7 +72,6 @@ module RMagick
       {
         magick_version: $magick_version,
         local_libs: $LOCAL_LIBS,
-        cflags: $CFLAGS,
         cppflags: $CPPFLAGS,
         ldflags: $LDFLAGS,
         defs: $defs,
@@ -50,7 +80,7 @@ module RMagick
     end
 
     def configure_headers
-      @headers = %w[assert.h ctype.h stdio.h stdlib.h math.h time.h sys/types.h]
+      @headers = %w[assert.h ctype.h stdio.h stdlib.h math.h time.h sys/types.h ruby.h ruby/io.h]
 
       if have_header('MagickCore/MagickCore.h')
         headers << 'MagickCore/MagickCore.h'
@@ -59,44 +89,45 @@ module RMagick
       else
         exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find magick/MagickCore.h."
       end
+
+      if have_header('malloc.h')
+        headers << 'malloc.h'
+      elsif have_header('malloc/malloc.h')
+        headers << 'malloc/malloc.h'
+      end
     end
 
     def configure_compile_options
       # Magick-config is not available on Windows
-      if RUBY_PLATFORM !~ /mswin|mingw/
+      if RUBY_PLATFORM.include?('mingw') && !pkgconfig_exist? # mingw without pkg-config support, likely a manual installation
 
-        check_multiple_imagemagick_versions
-        check_partial_imagemagick_versions
+        dir_paths = search_paths_for_windows
+        $CPPFLAGS += %( -I"#{dir_paths[:include]}")
+        $CPPFLAGS += ' -x c++ -std=c++11 -Wno-register'
+        $LDFLAGS += %( -L"#{dir_paths[:root]}" -lucrt)
+        $LDFLAGS += (im_version_at_least?('7.0.0') ? ' -lCORE_RL_MagickCore_' : ' -lCORE_RL_magick_')
+
+      else
+
+        original_ldflags = $LDFLAGS.dup
+
+        libdir  = PKGConfig.libs_only_L($magick_package).chomp.sub('-L', '')
+        ldflags = "#{ENV['LDFLAGS']} " + PKGConfig.libs($magick_package).chomp
+        rpath   = libdir.empty? ? '' : "-Wl,-rpath,#{libdir}"
 
         # Save flags
-        $CFLAGS     = "#{ENV['CFLAGS']} "   + `pkg-config --cflags #{$magick_package}`.chomp
-        $CPPFLAGS   = "#{ENV['CPPFLAGS']} " + `pkg-config --cflags #{$magick_package}`.chomp
-        $LDFLAGS    = "#{ENV['LDFLAGS']} "  + `pkg-config --libs #{$magick_package}`.chomp
-        $LOCAL_LIBS = "#{ENV['LIBS']} "     + `pkg-config --libs #{$magick_package}`.chomp
+        $CPPFLAGS   += " #{ENV['CPPFLAGS']} " + PKGConfig.cflags($magick_package).chomp
+        $CPPFLAGS   += ' -x c++ -std=c++11 -Wno-register'
+        $LOCAL_LIBS += " #{ENV['LIBS']} " + PKGConfig.libs($magick_package).chomp
+        $LDFLAGS    += " #{ldflags} #{rpath}"
 
-        configure_archflags_for_osx($magick_package) if RUBY_PLATFORM =~ /darwin/ # osx
-
-      elsif RUBY_PLATFORM =~ /mingw/ # mingw
-
-        dir_paths = search_paths_for_library_for_windows
-        $CPPFLAGS = %(-I"#{dir_paths[:include]}")
-        $LDFLAGS = %(-L"#{dir_paths[:lib]}")
-        $LDFLAGS << ' -lucrt' if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.4.0')
-
-        have_library(im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_' : 'CORE_RL_magick_')
-
-      else # mswin
-
-        dir_paths = search_paths_for_library_for_windows
-        $CPPFLAGS << %( -I"#{dir_paths[:include]}")
-        $LDFLAGS << %( -libpath:"#{dir_paths[:lib]}")
-        $LDFLAGS << ' -libpath:ucrt' if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('2.4.0')
-
-        $LOCAL_LIBS = im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_.lib' : 'CORE_RL_magick_.lib'
-
+        unless try_link("int main() { }")
+          # if linker does not recognizes '-Wl,-rpath,somewhere' option, it revert to original option
+          $LDFLAGS = "#{original_ldflags} #{ldflags}"
+        end
       end
 
-      $CFLAGS << (have_macro('__GNUC__') ? ' -std=gnu99' : ' -std=c99')
+      $CPPFLAGS += ' $(optflags) $(debugflags) -fomit-frame-pointer'
     end
 
     def exit_failure(msg)
@@ -116,38 +147,50 @@ module RMagick
       exit(1)
     end
 
+    def detect_imagemagick_packages(packages)
+      packages.select do |package|
+        PKGConfig.exist?(package)
+      end
+    end
+
+    def installed_im6_packages
+      @installed_im6_packages ||= detect_imagemagick_packages(IM6_PACKAGES)
+    end
+
+    def installed_im7_packages
+      @installed_im7_packages ||= detect_imagemagick_packages(IM7_PACKAGES)
+    end
+
+    def pkgconfig_exist?
+      $magick_package ||= determine_imagemagick_package
+      !!$magick_package
+    end
+
     def determine_imagemagick_package
-      packages = `pkg-config --list-all`.scan(/(ImageMagick\-[\.A-Z0-9]+) .*/).flatten
+      packages = [installed_im7_packages, installed_im6_packages].flatten
+      return if packages.empty?
 
-      # For ancient version of ImageMagick 6 we need a different regex
-      if packages.empty?
-        packages = `pkg-config --list-all`.scan(/(ImageMagick) .*/).flatten
-      end
+      msg = "\nDetected ImageMagick packages:\n"
+      Logging.message msg
+      message msg
+      package_paths = packages.map { |package| "- #{PKGConfig.package_config(package).pc_path}" }.join("\n")
+      Logging.message package_paths + "\n\n"
+      message package_paths + "\n\n"
 
-      if packages.empty?
-        exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find ImageMagick with pkg-config\n"
-      end
-
-      if packages.length > 1
-
-        im7_packages = packages.grep(/\AImageMagick-7/)
-
-        if im7_packages.any?
-          checking_for('forced use of ImageMagick 6') do
-            if ENV['USE_IMAGEMAGICK_6']
-              packages -= im7_packages
-              true
-            else
-              packages = im7_packages
-              false
-            end
+      if installed_im6_packages.any? && installed_im7_packages.any?
+        checking_for('forced use of ImageMagick 6') do
+          if ENV['USE_IMAGEMAGICK_6']
+            packages = installed_im6_packages
+            true
+          else
+            packages = installed_im7_packages
+            false
           end
         end
       end
 
       if packages.length > 1
-        package_lines = packages.map { |package| " - #{package}" }.join("\n")
-        msg = "\nWarning: Found more than one ImageMagick installation. This could cause problems at runtime.\n#{package_lines}\n\n"
+        msg = "\nWarning: Found more than one ImageMagick installation. This could cause problems at runtime.\n\n"
         Logging.message msg
         message msg
       end
@@ -155,128 +198,45 @@ module RMagick
       packages.first
     end
 
-    # Seems like lots of people have multiple versions of ImageMagick installed.
-    def check_multiple_imagemagick_versions
-      versions = []
-      path = ENV['PATH'].split(File::PATH_SEPARATOR)
-      path.each do |dir|
-        file = File.join(dir, 'Magick-config')
-        next unless File.executable? file
-
-        vers = `#{file} --version`.chomp.strip
-        prefix = `#{file} --prefix`.chomp.strip
-        versions << [vers, prefix, dir]
-      end
-      versions.uniq!
-      return unless versions.size > 1
-
-      msg = "\nWarning: Found more than one ImageMagick installation. This could cause problems at runtime.\n"
-      versions.each do |vers, prefix, dir|
-        msg << "         #{dir}/Magick-config reports version #{vers} is installed in #{prefix}\n"
-      end
-      msg << "Using #{versions[0][0]} from #{versions[0][1]}.\n\n"
-      Logging.message msg
-      message msg
-    end
-
-    # Ubuntu (maybe other systems) comes with a partial installation of
-    # ImageMagick in the prefix /usr (some libraries, no includes, and no
-    # binaries). This causes problems when /usr/lib is in the path (e.g., using
-    # the default Ruby installation).
-    def check_partial_imagemagick_versions
-      prefix = config_string('prefix') || ''
-      matches = [
-        prefix + '/lib/lib?agick*',
-        prefix + '/include/ImageMagick',
-        prefix + '/bin/Magick-config'
-      ].map do |file_glob|
-        Dir.glob(file_glob)
-      end
-      matches.delete_if(&:empty?)
-      return unless !matches.empty? && matches.length < 3
-
-      msg = <<~MESSAGE
-
-        Warning: Found a partial ImageMagick installation. Your operating
-        system likely has some built-in ImageMagick libraries but not all of
-        ImageMagick. This will most likely cause problems at both compile and
-        runtime.
-        Found partial installation at: #{prefix}
-
-      MESSAGE
-
-      Logging.message msg
-      message msg
-    end
-
-    # issue #169
-    # set ARCHFLAGS appropriately for OSX
-    def configure_archflags_for_osx(magick_package)
-      return unless `pkg-config #{magick_package} --libs-only-L`.match(%r{-L(.+)/lib})
-
-      imagemagick_dir = Regexp.last_match(1)
-      command = Dir.glob(File.join(imagemagick_dir, "bin/*")).select { |file| File.executable? file }.first
-      fileinfo = `file #{command}`
-
-      # default ARCHFLAGS
-      archs = $ARCH_FLAG.scan(/-arch\s+(\S+)/).flatten
-
-      archflags = []
-      archs.each do |arch|
-        archflags << "-arch #{arch}" if fileinfo.include?(arch)
-      end
-
-      $ARCH_FLAG = archflags.join(' ') unless archflags.empty?
-    end
-
-    def search_paths_for_library_for_windows
+    def search_paths_for_windows
       msg = 'searching PATH for the ImageMagick library...'
       Logging.message msg
       message msg + "\n"
 
-      found_lib = false
+      found = false
       dir_paths = {}
 
       paths = ENV['PATH'].split(File::PATH_SEPARATOR)
       paths.each do |dir|
-        lib = File.join(dir, 'lib')
-        lib_file = File.join(lib, im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_.lib' : 'CORE_RL_magick_.lib')
-        next unless File.exist?(lib_file)
+        dll = File.join(dir, im_version_at_least?('7.0.0') ? 'CORE_RL_MagickCore_.dll' : 'CORE_RL_magick_.dll')
+        next unless File.exist?(dll)
 
         dir_paths[:include] = File.join(dir, 'include')
-        dir_paths[:lib] = lib
+        dir_paths[:root] = dir
 
-        found_lib = true
+        found = true
         break
       end
 
-      return dir_paths if found_lib
+      return dir_paths if found
 
       exit_failure <<~END_MINGW
         Can't install RMagick #{RMAGICK_VERS}.
         Can't find the ImageMagick library.
-        Retry with '--with-opt-dir' option.
-        Usage: gem install rmagick -- '--with-opt-dir=\"[path to ImageMagick]\"'
-        e.g.
-          gem install rmagick -- '--with-opt-dir=\"C:\Program Files\ImageMagick-6.9.1-Q16\"'
+
+        Please check PATH environment variable for ImageMagick installation path.
       END_MINGW
     end
 
     def assert_can_compile!
-      assert_minimum_ruby_version!
       assert_has_dev_libs!
 
-      # Check for compiler. Extract first word so ENV['CC'] can be a program name with arguments.
-      cc = (ENV['CC'] || RbConfig::CONFIG['CC'] || 'gcc').split(' ').first
-      exit_failure "No C compiler found in ${ENV['PATH']}. See mkmf.log for details." unless find_executable(cc)
-    end
+      # Check for C++ compiler. Extract first word so ENV['CXX'] can be a program name with arguments.
+      # Ref. https://bugs.ruby-lang.org/issues/21111
+      cxx = (ENV['CXX'] || RbConfig::CONFIG['CXX']).split.first
+      return if cxx != "false" && find_executable(cxx)
 
-    def assert_minimum_ruby_version!
-      supported = checking_for("Ruby version >= #{MIN_RUBY_VERS}") do
-        Gem::Version.new(RUBY_VERSION) >= Gem::Version.new(MIN_RUBY_VERS)
-      end
-
-      exit_failure "Can't install RMagick #{RMAGICK_VERS}. Ruby #{MIN_RUBY_VERS} or later required.\n" unless supported
+      exit_failure "No C++ compiler found in ${ENV['PATH']}. See mkmf.log for details."
     end
 
     def assert_has_dev_libs!
@@ -286,35 +246,35 @@ module RMagick
         Check the mkmf.log file for more detailed information.
       END_FAILURE
 
-      if RUBY_PLATFORM !~ /mswin|mingw/
-        unless find_executable('pkg-config')
-          exit_failure "Can't install RMagick #{RMAGICK_VERS}. Can't find pkg-config in #{ENV['PATH']}\n"
-        end
-
-        unless `pkg-config --libs MagickCore`[/\bl\s*(MagickCore|Magick)6?\b/]
-          exit_failure failure_message
-        end
-
-        $magick_package = determine_imagemagick_package
-        $magick_version = `pkg-config #{$magick_package} --modversion`[/^(\d+\.\d+\.\d+)/]
-      else
+      if pkgconfig_exist?
+        $magick_version = PKGConfig.modversion($magick_package)[/^(\d+\.\d+\.\d+)/]
+        exit_failure failure_message unless $magick_version
+      elsif RUBY_PLATFORM.include?('mingw')
         `#{magick_command} -version` =~ /Version: ImageMagick (\d+\.\d+\.\d+)-+\d+ /
         $magick_version = Regexp.last_match(1)
         exit_failure failure_message unless $magick_version
+      else
+        exit_failure failure_message
       end
 
       # Ensure minimum ImageMagick version
       # Check minimum ImageMagick version if possible
-      checking_for("outdated ImageMagick version (<= #{Magick::MIN_IM_VERSION})") do
+      checking_for("outdated ImageMagick version") do
         Logging.message("Detected ImageMagick version: #{$magick_version}\n")
 
-        exit_failure "Can't install RMagick #{RMAGICK_VERS}. You must have ImageMagick #{Magick::MIN_IM_VERSION} or later.\n" if Gem::Version.new($magick_version) < Gem::Version.new(Magick::MIN_IM_VERSION)
+        required_version = im_version_at_least?('7.0.0') ? Magick::MIN_IM7_VERSION : Magick::MIN_IM6_VERSION
+
+        if Gem::Version.new($magick_version) < Gem::Version.new(required_version)
+          exit_failure "Can't install RMagick #{RMAGICK_VERS}. You must have ImageMagick #{required_version} or later.\n"
+        end
+
+        false
       end
     end
 
     def create_header_file
       ruby_api = [
-        'rb_gc_adjust_memory_usage' # Ruby 2.4.0
+        'rb_io_path' # Ruby 3.3.0
       ]
       memory_api = %w[
         posix_memalign
@@ -323,7 +283,6 @@ module RMagick
         _aligned_msize
       ]
       imagemagick_api = [
-        'GetImageChannelEntropy', # 6.9.0-0
         'SetImageGray', # 6.9.1-10
         'SetMagickAlignedMemoryMethods' # 7.0.9-0
       ]
@@ -333,32 +292,41 @@ module RMagick
         have_func(func, headers)
       end
 
-      unless have_header('malloc.h')
-        have_header('malloc/malloc.h')
-      end
-
       # Miscellaneous constants
       $defs.push("-DRUBY_VERSION_STRING=\"ruby #{RUBY_VERSION}\"")
       $defs.push("-DRMAGICK_VERSION_STRING=\"RMagick #{RMAGICK_VERS}\"")
 
-      $defs.push('-DIMAGEMAGICK_GREATER_THAN_EQUAL_6_8_9=1') if im_version_at_least?('6.8.9')
-      $defs.push('-DIMAGEMAGICK_GREATER_THAN_EQUAL_6_9_0=1') if im_version_at_least?('6.9.0')
+      $defs.push('-DIMAGEMAGICK_GREATER_THAN_EQUAL_6_9_10=1') if im_version_at_least?('6.9.10')
       $defs.push('-DIMAGEMAGICK_7=1') if im_version_at_least?('7.0.0')
+      $defs.push('-DIMAGEMAGICK_GREATER_THAN_EQUAL_7_1_2=1') if im_version_at_least?('7.1.2')
 
       create_header
     end
 
     def create_makefile_file
       create_header_file
-      # Prior to 1.8.5 mkmf duplicated the symbols on the command line and in the
-      # extconf.h header. Suppress that behavior by removing the symbol array.
-      $defs = []
 
       # Force re-compilation if the generated Makefile changed.
-      $config_h = 'Makefile rmagick.h'
+      $config_h = 'Makefile'
 
       create_makefile('RMagick2')
       print_summary
+    end
+
+    def create_compile_flags_txt
+      cppflags = $CPPFLAGS.split
+      include_flags = cppflags.select { |flag| flag.start_with?('-I') }
+      define_flags = cppflags.select { |flag| flag.start_with?('-D') } + $defs
+
+      File.open('compile_flags.txt', 'w') do |f|
+        include_flags.each { |flag| f.puts(flag) }
+        f.puts "-I#{Dir.pwd}"
+        f.puts "-I#{RbConfig::CONFIG['rubyhdrdir']}"
+        f.puts "-I#{RbConfig::CONFIG['rubyhdrdir']}/ruby/backward"
+        f.puts "-I#{RbConfig::CONFIG['rubyarchhdrdir']}"
+        f.puts "-std=c++11"
+        define_flags.each { |flag| f.puts(flag) }
+      end
     end
 
     def magick_command
@@ -399,3 +367,4 @@ at_exit do
   message msg + "\n"
 end
 extconf.create_makefile_file
+extconf.create_compile_flags_txt

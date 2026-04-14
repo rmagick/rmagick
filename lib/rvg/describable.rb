@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #--
 # $Id: describable.rb,v 1.5 2009/02/28 23:52:13 rmagick Exp $
 # Copyright (C) 2009 Timothy P. Hunter
@@ -11,7 +13,7 @@ module Magick
     module Describable
       private
 
-      def initialize(*args, &block)
+      def initialize(*args, &)
         super
         @title, @desc, @metadata = nil
       end

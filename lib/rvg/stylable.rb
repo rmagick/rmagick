@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 #--
 # $Id: stylable.rb,v 1.7 2009/02/28 23:52:28 rmagick Exp $
 # Copyright (C) 2009 Timothy P. Hunter
 #++
 module Magick
   class RVG
-    #:stopdoc:
+    # :stopdoc:
     STYLES = %i[
       clip_path clip_rule fill fill_opacity fill_rule font
       font_family font_size font_stretch font_style font_weight
@@ -13,7 +15,7 @@ module Magick
       text_anchor text_decoration
       glyph_orientation_vertical glyph_orientation_horizontal
       letter_spacing word_spacing baseline_shift writing_mode
-    ]
+    ].freeze
 
     Styles = Struct.new(*STYLES)
 
@@ -49,7 +51,7 @@ module Magick
       end
     end # class Styles
 
-    #:startdoc:
+    # :startdoc:
 
     # This module is mixed into classes that can have styles.
     module Stylable

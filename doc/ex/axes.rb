@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rmagick'
 
 # Demonstrate the use of RMagick's Draw class

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#write' do
   it 'works' do
     image1 = described_class.new(20, 20)
@@ -12,33 +14,33 @@ RSpec.describe Magick::Image, '#write' do
     expect(image2.first.format).to eq('JPEG')
     FileUtils.rm('temp.foo')
 
-    image1.write('temp.0') { self.format = 'JPEG' }
+    image1.write('temp.0') { |options| options.format = 'JPEG' }
     image2 = described_class.read('temp.0')
     expect(image2.first.format).to eq('JPEG')
 
     # JPEG has two names.
-    image1.write('jpeg:temp.0') { self.format = 'JPEG' }
+    image1.write('jpeg:temp.0') { |options| options.format = 'JPEG' }
     image2 = described_class.read('temp.0')
     expect(image2.first.format).to eq('JPEG')
 
-    image1.write('jpg:temp.0') { self.format = 'JPG' }
+    image1.write('jpg:temp.0') { |options| options.format = 'JPG' }
     image2 = described_class.read('temp.0')
     expect(image2.first.format).to eq('JPEG')
 
-    image1.write('jpg:temp.0') { self.format = 'JPEG' }
+    image1.write('jpg:temp.0') { |options| options.format = 'JPEG' }
     image2 = described_class.read('temp.0')
     expect(image2.first.format).to eq('JPEG')
 
-    image1.write('jpeg:temp.0') { self.format = 'JPG' }
+    image1.write('jpeg:temp.0') { |options| options.format = 'JPG' }
     image2 = described_class.read('temp.0')
     expect(image2.first.format).to eq('JPEG')
 
     expect do
-      image1.write('gif:temp.0') { self.format = 'JPEG' }
+      image1.write('gif:temp.0') { |options| options.format = 'JPEG' }
     end.to raise_error(RuntimeError)
 
-    f = File.new('test.0', 'w')
-    image1.write(f) { self.format = 'JPEG' }
+    f = File.new('test.0', 'wb')
+    image1.write(f) { |options| options.format = 'JPEG' }
     f.close
     image2 = described_class.read('test.0')
     expect(image2.first.format).to eq('JPEG')
@@ -53,10 +55,10 @@ RSpec.describe Magick::Image, '#write' do
       nil
     end # Avoid failure on AppVeyor
 
-    f = File.new('test.0', 'w')
-    described_class.new(100, 100).write(f) do
-      self.format = 'JPEG'
-      self.colorspace = Magick::CMYKColorspace
+    f = File.new('test.0', 'wb')
+    described_class.new(100, 100).write(f) do |options|
+      options.format = 'JPEG'
+      options.colorspace = Magick::CMYKColorspace
     end
     f.close
     image2 = described_class.read('test.0')

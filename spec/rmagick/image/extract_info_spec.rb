@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#extract_info' do
   it 'works' do
     image = described_class.new(100, 100)

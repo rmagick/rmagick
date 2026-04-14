@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#[]=' do
   it 'allows assignment of arbitrary properties' do
     image = described_class.new(20, 20)

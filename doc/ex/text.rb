@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rmagick'
 
 imgl = Magick::ImageList.new
@@ -5,7 +7,7 @@ imgl.new_image(190, 190)
 
 sample = Magick::Draw.new
 sample.stroke('transparent')
-if RUBY_PLATFORM =~ /mswin32/
+if RUBY_PLATFORM.include?('mingw')
   sample.font_family('Georgia')
 else
   sample.font_family('times')

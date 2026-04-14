@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#composite!' do
   it 'works' do
     image1 = described_class.read(IMAGES_DIR + '/Button_0.gif').first
@@ -11,7 +13,7 @@ RSpec.describe Magick::Image, '#composite!' do
       end
     end
     image1.freeze
-    expect { image1.composite!(image2, Magick::NorthWestGravity, Magick::OverCompositeOp) }.to raise_error(FreezeError)
+    expect { image1.composite!(image2, Magick::NorthWestGravity, Magick::OverCompositeOp) }.to raise_error(FrozenError)
   end
 
   it 'accepts an ImageList argument' do

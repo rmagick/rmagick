@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 require 'rmagick'
 
-img = Magick::Image.new(200, 200) { self.background_color = '#ffffcc' }
+img = Magick::Image.new(200, 200) { |info| info.background_color = '#ffffcc' }
 
 # Draw a blue circle.
 gc = Magick::Draw.new
@@ -26,14 +28,15 @@ gc.circle(bb.x, bb.y + bb.height, bb.x + 2, bb.y + bb.height + 2)
 gc.circle(bb.x + bb.width, bb.y + bb.height, bb.x + bb.width + 2, bb.y + bb.height + 2)
 
 gc.fill('black')
+gc.fill_opacity(1)
 gc.stroke('transparent')
 gc.font_weight(Magick::NormalWeight)
 gc.font_style(Magick::NormalStyle)
 gc.pointsize(9)
-gc.text(bb.x - 15, bb.y - 5, "\'#{bb.x},#{bb.y}\'")
-gc.text(bb.x + bb.width - 15, bb.y - 5, "\'#{bb.x + bb.width},#{bb.y}\'")
-gc.text(bb.x - 15, bb.y + bb.height + 15, "\'#{bb.x},#{bb.y + bb.height}\'")
-gc.text(bb.x + bb.width - 15, bb.y + bb.height + 15, "\'#{bb.x + bb.width},#{bb.y + bb.height}\'")
+gc.text(bb.x - 15, bb.y - 5, "'#{bb.x},#{bb.y}'")
+gc.text(bb.x + bb.width - 15, bb.y - 5, "'#{bb.x + bb.width},#{bb.y}'")
+gc.text(bb.x - 15, bb.y + bb.height + 15, "'#{bb.x},#{bb.y + bb.height}'")
+gc.text(bb.x + bb.width - 15, bb.y + bb.height + 15, "'#{bb.x + bb.width},#{bb.y + bb.height}'")
 
 gc.draw(img)
 

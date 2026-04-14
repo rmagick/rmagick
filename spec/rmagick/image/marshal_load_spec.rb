@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#marshal_load' do
   it 'works' do
     image1 = described_class.read('granite:').first

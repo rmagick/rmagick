@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, "#auto_orient" do
   it "works" do
     Magick::OrientationType.values.each do |v|

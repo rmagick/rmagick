@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Draw, '#draw' do
   it 'works' do
     draw1 = described_class.new

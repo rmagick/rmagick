@@ -1,0 +1,389 @@
+# frozen_string_literal: true
+
+module Magick
+  interface _ImageCommonMethods
+    # Magick::Image / Magick::ImageList common methods
+
+    alias affinity remap
+    def annotate: (Draw draw, int width, int height, int x, int y, string text) -> self
+                | (Draw draw, int width, int height, int x, int y, string text) { (Draw) -> void } -> self
+    def color_point: (int x, int y, magick_color fill) -> Image
+    def color_floodfill: (int x, int y, magick_color fill) -> Image
+    def color_fill_to_border: (int x, int y, magick_color fill) -> Image
+    def color_reset!: (magick_color fill) -> Image
+    def cur_image: () -> self
+    def each_pixel: () { (Pixel, Integer, Integer) -> void } -> self
+    def get_exif_by_entry: (*(String | Symbol) entry) -> Array[[String, String]]
+    def get_exif_by_number: (*Integer tag) -> Hash[Integer, String]
+    def get_iptc_dataset: (interned ds) -> String?
+    def each_iptc_dataset: () { (String dataset, String data_field) -> void } -> nil
+    def level: (?magick_real black_point, ?magick_real white_point, ?magick_real gamma) -> Image
+    def matte_point: (int x, int y) -> Image
+    def matte_replace: (int x, int y) -> Image
+    def matte_floodfill: (int x, int y) -> Image
+    def matte_fill_to_border: (int x, int y) -> Image
+    def matte_reset!: () -> Image
+    def resize_to_fill: (real ncols, ?real nrows, ?GravityType gravity) -> Image
+    def resize_to_fill!: (real ncols, ?real nrows, ?GravityType gravity) -> Image
+    alias crop_resized resize_to_fill
+    alias crop_resized! resize_to_fill!
+    def resize_to_fit: (magick_real cols, ?magick_real rows) -> Image
+    def resize_to_fit!: (magick_real cols, ?magick_real rows) -> Image
+    def texture_floodfill: (int x, int y, magick_image texture) -> Image
+    def texture_fill_to_border: (int x, int y, magick_image texture) -> Image
+    def view: (real x, real y, real width, real height) -> Image::View
+            | (real x, real y, real width, real height) { (Image::View) -> void } -> nil
+
+    def background_color: () -> String
+    def background_color=: (magick_color color) -> magick_color
+    def base_columns: () -> Integer
+    def base_filename: () -> String
+    def base_rows: () -> Integer
+    def bias: () -> Float
+    def bias=: (magick_percentage pct) -> magick_percentage
+    def black_point_compensation: () -> bool
+    def black_point_compensation=: (bool arg) -> bool
+    def border_color: () -> String
+    def border_color=: (magick_color color) -> magick_color
+    def bounding_box: () -> Rectangle
+    def chromaticity: () -> Chromaticity
+    def chromaticity=: (Chromaticity chroma) -> Chromaticity
+    def color_profile: () -> String?
+    def color_profile=: (string? profile) -> string?
+    def colors: () -> Integer
+    def colorspace: () -> ColorspaceType?
+    def colorspace=: (ColorspaceType colorspace) -> ColorspaceType
+    def columns: () -> Integer
+    def compose: () -> CompositeOperator?
+    def compose=: (CompositeOperator compose_arg) -> CompositeOperator
+    def compression: () -> CompressionType?
+    def compression=: (CompressionType compression) -> CompressionType
+    def delay: () -> Integer
+    def density: () -> String
+    def density=: (Geometry | string density_arg) -> (Geometry | string)
+    def depth: () -> Integer
+    def directory: () -> String?
+    def dispose: () -> DisposeType?
+    def dispose=: (DisposeType dispose) -> DisposeType
+    def endian: () -> EndianType?
+    def endian=: (EndianType endian_type) -> EndianType
+    def extract_info: () -> Rectangle
+    def extract_info=: (Rectangle rect) -> Rectangle
+    def filename: () -> String
+    def filesize: () -> Integer
+    def filter: () -> FilterType?
+    def filter=: (FilterType filter) -> FilterType
+    def format: () -> String?
+    def format=: (string magick) -> string
+    def fuzz: () -> Float
+    def fuzz=: (magick_percentage fuzz_arg) -> magick_percentage
+    def gamma: () -> Float
+    def gamma=: (magick_real val) -> magick_real
+    def geometry: () -> String?
+    def geometry=: ((Geometry | string)? geometry) -> (Geometry | string)?
+    def gravity: () -> GravityType?
+    def gravity=: (GravityType gravity) -> GravityType
+    def image_type: () -> ImageType?
+    def image_type=: (ImageType image_type) -> ImageType
+    def interlace: () -> InterlaceType?
+    def interlace=: (InterlaceType interlace) -> InterlaceType?
+    def iptc_profile: () -> String?
+    def iptc_profile=: (string? profile) -> string?
+    def matte_color: () -> String
+    def matte_color=: (magick_color color) -> magick_color
+    def mean_error_per_pixel: () -> Float
+    def mime_type: () -> String?
+    def normalized_mean_error: () -> Float
+    def normalized_maximum_error: () -> Float
+    def number_colors: () -> Integer
+    def offset: () -> Integer
+    def offset=: (int val) -> int
+    def orientation: () -> OrientationType?
+    def orientation=: (OrientationType orientation) -> OrientationType
+    def page: () -> Rectangle
+    def page=: (Rectangle rect) -> Rectangle
+    def pixel_interpolation_method: () -> PixelInterpolateMethod?
+    def pixel_interpolation_method=: (PixelInterpolateMethod method) -> PixelInterpolateMethod
+    def quality: () -> Integer
+    def quantum_depth: () -> Integer
+    def rendering_intent: () -> RenderingIntent?
+    def rendering_intent=: (RenderingIntent ri) -> RenderingIntent
+    def rows: () -> Integer
+    def start_loop: () -> bool
+    def start_loop=: (bool val) -> bool
+    def class_type: () -> ClassType?
+    def class_type=: (ClassType new_class_type) -> ClassType
+    def ticks_per_second: () -> Integer
+    alias total_colors number_colors
+    def total_ink_density: () -> Float
+    def transparent_color: () -> String
+    def transparent_color=: (magick_color color) -> magick_color
+    def units: () -> ResolutionType
+    def units=: (ResolutionType restype) -> ResolutionType
+    def virtual_pixel_method: () -> VirtualPixelMethod?
+    def virtual_pixel_method=: (VirtualPixelMethod method) -> VirtualPixelMethod
+    def x_resolution: () -> Float
+    def x_resolution=: (magick_real val) -> magick_real
+    def y_resolution: () -> Float
+    def y_resolution=: (magick_real val) -> magick_real
+
+    def adaptive_blur: (?magick_real radius, ?magick_real sigma) -> Image
+    def adaptive_blur_channel: (magick_real radius, magick_real sigma, *ChannelType channels) -> Image
+                             | (magick_real radius, *ChannelType channels) -> Image
+                             | (*ChannelType channels) -> Image
+    def adaptive_resize: (magick_real scale_val) -> Image
+                       | (int cols, int rows) -> Image
+    def adaptive_sharpen: (?magick_real radius, ?magick_real sigma) -> Image
+    def adaptive_sharpen_channel: (magick_real radius, magick_real sigma, *ChannelType channels) -> Image
+                                | (magick_real radius, *ChannelType channels) -> Image
+                                | (*ChannelType channels) -> Image
+    def adaptive_threshold: (?int width, ?int height, ?magick_real bias) -> Image
+    def add_compose_mask: (magick_image mask) -> self
+    def add_noise: (NoiseType noise) -> Image
+    def add_noise_channel: (NoiseType noise, *ChannelType channels) -> Image
+    def add_profile: (string name) -> self
+    def affine_transform: (AffineMatrix affine) -> Image
+    def remap: (magick_image remap_image, ?DitherMethod dither_method) -> self
+    def alpha: () -> bool
+             | (AlphaChannelOption value) -> AlphaChannelOption
+    def alpha?: () -> bool
+    def auto_gamma_channel: (*ChannelType channel) -> Image
+    def auto_level_channel: (*ChannelType channel) -> Image
+    def auto_orient: () -> Image
+    def auto_orient!: () -> self
+    def properties: () -> Hash[String, String]
+                  | () { ([String, String]) -> void } -> self
+    def bilevel_channel: (magick_real threshold, *ChannelType channel) -> Image
+    def black_threshold: (magick_real red, ?magick_real green, ?magick_real blue, ?int alpha) -> Image
+    def blend: (magick_image overlay, magick_percentage src_percent, ?magick_percentage dst_percent, ?GravityType gravity, ?int x_offset, ?int y_offset) -> Image
+             | (magick_image overlay, magick_percentage src_percent, magick_percentage dst_percent, ?int x_offset, ?int y_offset) -> Image
+    def blue_shift: (?magick_real factor) -> Image
+    def blur_image: (?magick_real radius, ?magick_real sigma) -> Image
+    def blur_channel: (magick_real radius, magick_real sigma, *ChannelType channel) -> Image
+                    | (magick_real radius, *ChannelType channel) -> Image
+                    | (*ChannelType channel) -> Image
+    def border: (int width, int height, magick_color color) -> Image
+    def border!: (int width, int height, magick_color color) -> self
+    def change_geometry: (Geometry | string geom_arg) { ([Integer, Integer, Image]) -> void } -> untyped
+    alias change_geometry! change_geometry
+    def changed?: () -> bool
+    def channel: (ChannelType channel) -> Image
+    def check_destroyed: () -> nil
+    def compare_channel: (magick_image image, MetricType metric, *ChannelType channel) -> [Image, Float]
+                       | (magick_image image, MetricType metric, *ChannelType channel) { (OptionalMethodArguments) -> void } -> [Image, Float]
+    alias channel_compare compare_channel
+    def channel_depth: (*ChannelType channel) -> Integer
+    def channel_extrema: (*ChannelType channel) -> [Integer, Integer]
+    def channel_mean: (*ChannelType channel) -> [Float, Float]
+    def channel_entropy: (*ChannelType channel) -> [Float]
+    def charcoal: (?magick_real radius, ?magick_real sigma) -> Image
+    def chop: (int x, int y, int width, int height) -> Image
+    def clut_channel: (magick_image clut_image, *ChannelType channel) -> self
+    def clone: () -> Image
+    def color_flood_fill: (magick_color target_color, magick_color fill_color, int xv, int yv, PaintMethod method) -> Image
+    def color_histogram: () -> Hash[Pixel, Integer]
+    def colorize: (magick_real red, magick_real green, magick_real blue, magick_color target) -> Image
+                | (magick_real red, magick_real green, magick_real blue, magick_real matte, magick_color target) -> Image
+    def colormap: (int index, ?magick_color new_color) -> String
+    def composite: (magick_image image, GravityType gravity, int x_off, int y_off, CompositeOperator composite_op) -> Image
+                 | (magick_image image, int x_off, int y_off, CompositeOperator composite_op) -> Image
+                 | (magick_image image, GravityType gravity, CompositeOperator composite_op) -> Image
+    def composite!: (magick_image image, GravityType gravity, int x_off, int y_off, CompositeOperator composite_op) -> self
+                  | (magick_image image, int x_off, int y_off, CompositeOperator composite_op) -> self
+                  | (magick_image image, GravityType gravity, CompositeOperator composite_op) -> self
+    def composite_affine: (magick_image source, AffineMatrix affine_matrix) -> Image
+    def composite_channel: (magick_image image, GravityType gravity, int x_off, int y_off, CompositeOperator composite_op, *ChannelType channel) -> Image
+                         | (magick_image image, int x_off, int y_off, CompositeOperator composite_op, *ChannelType channel) -> Image
+                         | (magick_image image, GravityType gravity, CompositeOperator composite_op, *ChannelType channel) -> Image
+    def composite_channel!: (magick_image image, GravityType gravity, int x_off, int y_off, CompositeOperator composite_op, *ChannelType channel) -> self
+                          | (magick_image image, int x_off, int y_off, CompositeOperator composite_op, *ChannelType channel) -> self
+                          | (magick_image image, GravityType gravity, CompositeOperator composite_op, *ChannelType channel) -> self
+    def composite_mathematics: (magick_image image, magick_real a, magick_real b, magick_real c, magick_real d, GravityType gravity) -> Image
+                             | (magick_image image, magick_real a, magick_real b, magick_real c, magick_real d, int x_off, int y_off) -> Image
+                             | (magick_image image, magick_real a, magick_real b, magick_real c, magick_real d, GravityType gravity, int x_off, int y_off) -> Image
+    def composite_tiled: (magick_image src, ?CompositeOperator composite_op, *ChannelType channel) -> Image
+    def composite_tiled!: (magick_image src, ?CompositeOperator composite_op, *ChannelType channel) -> self
+    def compress_colormap!: () -> Image
+    def contrast: (?bool sharpen) -> Image
+    def contrast_stretch_channel: (magick_percentage black_point, magick_percentage white_point, *ChannelType channel) -> Image
+    def convolve: (int order_arg, Array[magick_real] kernel_arg) -> Image
+    def convolve_channel: (int order_arg, Array[magick_real] kernel_arg, *ChannelType channel) -> Image
+    def morphology: (MorphologyMethod method_v, int iterations, KernelInfo kernel_v) -> Image
+    def morphology_channel: (ChannelType channel_v, MorphologyMethod method_v, int iterations, KernelInfo kernel_v) -> Image
+    def copy: () -> Image
+    def crop: (GravityType gravity, int x, int y, int width, int height, ?bool reset) -> Image
+            | (GravityType gravity, int width, int height, ?bool reset) -> Image
+            | (int x, int y, int width, int height, ?bool reset) -> Image
+    def crop!: (GravityType gravity, int x, int y, int width, int height, ?bool reset) -> Image
+             | (GravityType gravity, int width, int height, ?bool reset) -> Image
+             | (int x, int y, int width, int height, ?bool reset) -> Image
+    def cycle_colormap: (int amount) -> Image
+    def decipher: (string passphrase) -> Image
+    def define: (string artifact, string? value) -> string?
+    def deskew: (?magick_percentage threshold, ?int auto_crop_width) -> Image
+    def delete_compose_mask: () -> self
+    def delete_profile: (string name) -> self
+    def despeckle: () -> Image
+    def difference: (magick_image other) -> [Float, Float, Float]
+    def dispatch: (int x, int y, int columns, int rows, string map, ?bool float) -> Array[Integer]
+    def displace: (magick_image displacement_map, magick_real x_amp, ?magick_real y_amp, ?GravityType gravity, ?int x_offset, ?int y_offset) -> Image
+    def dissolve: (magick_image overlay, magick_percentage src_percent, ?magick_percentage dst_percent, ?GravityType gravity, ?int x_offset, ?int y_offset) -> Image
+    def distort: (DistortMethod method, Array[magick_real] points, ?bool bestfit) -> Image
+    def distortion_channel: (magick_image reconstructed_image, MetricType metric, *ChannelType channel) -> Float
+    def _dump: (untyped depth) -> String
+    def dup: () -> Image
+    def each_profile: () { (String name, String val) -> void } -> untyped
+    def edge: (?magick_real radius) -> Image
+    def emboss: (?magick_real radius, ?magick_real sigma) -> Image
+    def encipher: (string passphrase) -> Image
+    def enhance: () -> Image
+    def equalize: () -> Image
+    def equalize_channel: (*ChannelType channel) -> Image
+    def erase!: () -> self
+    def excerpt: (int x, int y, int width, int height) -> Image
+    def excerpt!: (int x, int y, int width, int height) -> self
+    def export_pixels: (?int x, ?int y, ?int cols, ?int rows, ?string map) -> Array[Integer]
+    def export_pixels_to_str: (?int x, ?int y, ?int cols, ?int rows, ?string map, ?StorageType storage_type) -> String
+    def extent: (int width, int height, ?int x, ?int y) -> Image
+    def find_similar_region: (magick_image target, int x, int y) -> [Integer, Integer]?
+    def flip: () -> Image
+    def flip!: () -> self
+    def flop: () -> Image
+    def flop!: () -> self
+    def frame: (?int width, ?int height, ?int x, ?int y, ?int inner_bevel, ?int outer_bevel, ?magick_color color) -> Image
+    def function_channel: (MagickFunction function, ?magick_real arg1, ?magick_real arg2, ?magick_real arg3, ?magick_real arg4, *ChannelType channel) -> Image
+    def fx: (string expression, *ChannelType channel) -> Image
+    def gamma_channel: (magick_real gamma, *ChannelType channel) -> Image
+    def gamma_correct: (magick_real red_gamma, ?magick_real green_gamma, ?magick_real blue_gamma) -> Image
+    def gaussian_blur: (?magick_real radius, ?magick_real sigma) -> Image
+    def gaussian_blur_channel: (?magick_real radius, ?magick_real sigma, *ChannelType channel) -> Image
+    def get_pixels: (int x_arg, int y_arg, int cols_arg, int rows_arg) -> Array[Pixel]
+    def gray?: () -> bool
+    alias grey? gray?
+    def histogram?: () -> bool
+    def implode: (?magick_real amount) -> Image
+    def import_pixels: (int x, int y, int columns, int rows, string map, string | Array[magick_real] pixels, ?StorageType storage_type) -> self
+    def inspect: () -> String
+    def level2: (?magick_real black_point, ?magick_real white_point, ?magick_real gamma) -> Image
+    def level_channel: (ChannelType channel, ?magick_real black_point, ?magick_real white_point, ?magick_real gamma) -> Image
+    def level_colors: (?magick_color black_color, ?magick_color white_color, ?bool invert, *ChannelType channel) -> Image
+    def levelize_channel: (magick_real black, ?magick_real white, ?magick_real gamma, *ChannelType channel) -> Image
+    def linear_stretch: (magick_percentage black_point, magick_percentage white_point, *ChannelType channel) -> Image
+    def liquid_rescale: (int columns, int rows, ?magick_real delta_x, ?magick_real rigidity) -> Image
+    def magnify: () -> Image
+    def magnify!: () -> self
+    def mask: (?magick_image image) -> Image?
+    def matte_flood_fill: (magick_color color, int x_obj, int y_obj, PaintMethod method, alpha: int) -> Image
+    def median_filter: (magick_real radius) -> Image
+    def minify: () -> Image
+    def minify!: () -> self
+    def modulate: (?magick_percentage brightness, ?magick_percentage saturation, ?magick_percentage hue) -> Image
+    def monochrome?: () -> bool
+    def motion_blur: (?magick_real radius, ?magick_real sigma, ?magick_real angle) -> Image
+    def negate: (?bool grayscale) -> Image
+    def negate_channel: (?bool grayscale, *ChannelType channel) -> Image
+                      | (*ChannelType channel) -> Image
+    def normalize: () -> Image
+    def normalize_channel: (*ChannelType channel) -> Image
+    def oil_paint: (?magick_real radius) -> Image
+    def opaque: (magick_color target, magick_color fill) -> Image
+    def opaque_channel: (magick_color target, magick_color fill, bool invert, magick_real fuzz, *ChannelType channel) -> Image
+                      | (magick_color target, magick_color fill, bool invert, *ChannelType channel) -> Image
+                      | (magick_color target, magick_color fill, *ChannelType channel) -> Image
+    def opaque?: () -> bool
+    def ordered_dither: (?(string | 2 | 3 | 4) threshold_map) -> Image
+    def paint_transparent: (magick_color color, ?bool invert, ?magick_real fuzz, ?alpha: int) -> Image
+    def palette?: () -> bool
+    def pixel_color: (int x, int y, ?magick_color color) -> Pixel
+    def polaroid: (?magick_real angle) -> Image
+                | (?magick_real angle) { (Image::PolaroidOptions) -> void } -> Image
+    def posterize: (?int levels, ?bool dither) -> Image
+    def preview: (PreviewType preview) -> Image
+    def profile!: (string name, ?string profile) -> self
+    def quantum_operator: (QuantumExpressionOperator quantum_expression_op, magick_real rvalue, ?ChannelType channel) -> self
+    def radial_blur: (magick_real angle) -> Image
+    def radial_blur_channel: (magick_real angle, *ChannelType channel) -> Image
+    def raise: (?int width, ?int height, ?bool raised) -> Image
+    def random_threshold_channel: (Geometry | string geometry, *ChannelType channel) -> Image
+    def recolor: (Array[magick_real] color_matrix) -> Image
+    def reduce_noise: (int radius) -> Image
+    def resample: (?magick_real x_resolution, ?magick_real y_resolution, ?FilterType filter, ?magick_real blur) -> Image
+    def resample!: (?magick_real x_resolution, ?magick_real y_resolution, ?FilterType filter, ?magick_real blur) -> self
+    def resize: (magick_real scale) -> Image
+              | (int cols, int rows, ?FilterType filter, ?magick_real blur) -> Image
+    def resize!: (magick_real scale) -> self
+               | (int cols, int rows, ?FilterType filter, ?magick_real blur) -> self
+    def roll: (int x_offset, int y_offset) -> Image
+    def rotate: (magick_real degrees) -> Image
+              | (magick_real degrees, ?('<' | '>') qualifier) -> Image?
+    def rotate!: (magick_real degrees) -> self
+               | (magick_real degrees, ?('<' | '>') qualifier) -> self?
+    def sample: (magick_real scale) -> Image
+              | (int cols, int rows) -> Image
+    def sample!: (magick_real scale) -> self
+               | (int cols, int rows) -> self
+    def scale: (magick_real scale) -> Image
+             | (int cols, int rows) -> Image
+    def scale!: (magick_real scale) -> self
+              | (int cols, int rows) -> self
+    def segment: (?ColorspaceType colorspace, ?magick_real cluster_threshold, ?magick_real smoothing_threshold, ?bool verbose) -> Image
+    def selective_blur_channel: (magick_real radius, magick_real sigma, magick_percentage threshold, *ChannelType channel) -> Image
+    def separate: (*ChannelType channel) -> ImageList
+    def sepiatone: (magick_real threshold) -> Image
+    def set_channel_depth: (ChannelType channel, int depth) -> self
+    def shade: (?bool shading, ?magick_real azimuth, ?magick_real elevation) -> Image
+    def shadow: (?int x_offset, ?int y_offset, ?magick_real sigma, ?magick_percentage alpha) -> Image
+    def sharpen: (?magick_real radius, ?magick_real sigma) -> Image
+    def sharpen_channel: (magick_real radius, magick_real sigma, *ChannelType channel) -> Image
+                       | (magick_real radius, *ChannelType channel) -> Image
+                       | (*ChannelType channel) -> Image
+    def shave: (int width, int height) -> Image
+    def shave!: (int width, int height) -> self
+    def shear: (magick_real x_shear, magick_real y_shear) -> Image
+    def sigmoidal_contrast_channel: (magick_real contrast, magick_real midpoint, bool sharpen, *ChannelType channel) -> Image
+                                  | (magick_real contrast, magick_real midpoint, *ChannelType channel) -> Image
+                                  | (magick_real contrast, *ChannelType channel) -> Image
+                                  | (*ChannelType channel) -> Image
+    def signature: () -> String?
+    def sketch: (?magick_real radius, ?magick_real sigma, ?magick_real angle) -> Image
+    def solarize: (?magick_real threshold) -> Image
+    def sparse_color: (*untyped) -> Image # TODO: it can't describe expected argument type
+    def splice: (int x, int y, int width, int height, ?magick_color color) -> Image
+    def spread: (?magick_real radius) -> Image
+    def stegano: (magick_image watermark_image, int offset) -> Image
+    def stereo: (magick_image offset_image_arg) -> Image
+    def strip!: () -> self
+    def store_pixels: (int x, int y, int cols_arg, int rows_arg, Array[Pixel] new_pixels) -> self
+    def swirl: (magick_real degrees_obj) -> Image
+    def texture_flood_fill: (magick_color color_obj, magick_image texture_obj, int x_obj, int y_obj, PaintMethod method_obj) -> Image
+    def threshold: (magick_real threshold_obj) -> Image
+    def thumbnail: (magick_real scale) -> Image
+                 | (int cols, int rows) -> Image
+    def thumbnail!: (magick_real scale) -> self
+                  | (int cols, int rows) -> self
+    def tint: (magick_color tint, magick_real red_alpha, ?magick_real green_alpha, ?magick_real blue_alpha, ?magick_real alpha_alpha) -> Image
+    def to_color: (magick_color pixel_arg) -> String
+    def transparent: (magick_color color, ?alpha: int) -> Image
+    def transparent_chroma: (magick_color low, magick_color high, ?bool invert, ?alpha: int) -> Image
+    def transpose: () -> Image
+    def transpose!: () -> self
+    def transverse: () -> Image
+    def transverse!: () -> self
+    def trim: (?bool reset) -> Image
+    def trim!: (?bool reset) -> self
+    def undefine: (string artifact) -> self
+    def unique_colors: () -> Image
+    def unsharp_mask: (?magick_real radius, ?magick_real sigma, ?magick_real amount, ?magick_real threshold) -> Image
+    def unsharp_mask_channel: (magick_real radius, magick_real sigma, magick_real amount, magick_real threshold, *ChannelType channel) -> Image
+                            | (magick_real radius, magick_real sigma, magick_real amount, *ChannelType channel) -> Image
+                            | (magick_real radius, magick_real sigma, *ChannelType channel) -> Image
+                            | (magick_real radius, *ChannelType channel) -> Image
+                            | (*ChannelType channel) -> Image
+    def vignette: (?int horz_radius, ?int vert_radius, ?magick_real radius, ?magick_real sigma) -> Image
+    def watermark: (magick_image mark, ?magick_percentage brightness, ?magick_percentage saturation, ?int x_off, ?int y_off) -> Image
+                 | (magick_image mark, magick_percentage brightness, magick_percentage saturation, GravityType gravity, ?int x_off, ?int y_off) -> Image
+    def wave: (?magick_real amplitude, ?magick_real wavelength) -> Image
+    def wet_floor: (?magick_real initial, ?magick_real rate) -> Image
+    def white_threshold: (magick_real red, ?magick_real green, ?magick_real blue, ?alpha: int) -> Image
+  end
+end

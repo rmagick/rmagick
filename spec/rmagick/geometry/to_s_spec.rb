@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Geometry, '#to_s' do
   it 'works' do
     g = nil

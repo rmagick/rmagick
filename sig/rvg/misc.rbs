@@ -1,0 +1,145 @@
+# $Id: misc.rb,v 1.17 2010/03/21 01:43:01 baror Exp $
+# Copyright (C) 2009 Timothy P. Hunter
+module Magick
+  class RVG
+    # This is a standard deep_copy method that is used in most classes.
+    # Thanks to Robert Klemme.
+    module Duplicatable
+      include _Duplicatable
+    end
+
+    # Convert an array of method arguments to Float objects. If any
+    # cannot be converted, raise ArgumentError and issue a message.
+    def self.fmsg: (*untyped args) -> String
+
+    def self.convert_to_float: (*(magick_real | Symbol) args) -> Array[Float?]
+    def self.convert_one_to_float: (magick_real arg) -> Float
+  end
+end
+
+module Magick
+  class RVG
+    class Utility
+      class TextStrategy
+        @ctx: GraphicContext
+
+        def initialize: (GraphicContext context) -> void
+        def enquote: (String text) -> String
+        def glyph_metrics: (Integer | Float glyph_orientation, string glyph) -> [Integer | Float, Integer | Float]
+        def text_rel_coords: (string text) -> [Array[Integer | Float], Array[Integer | Float]]
+        def shift_baseline: (Integer | Float glyph_orientation, string glyph) -> (Integer | Float)
+        def render_glyph: (Integer | Float glyph_orientation, magick_real x, magick_real y, String glyph) -> void
+      end
+
+      class LRTextStrategy < TextStrategy
+        @word_space: Integer | Float
+
+        def get_word_spacing: () -> [Integer | Float, 0]
+        def get_letter_spacing: (string glyph) -> [Integer | Float, Integer | Float]
+        def render: (Integer | Float x, Integer | Float y, string text) -> [Integer | Float, 0]
+      end
+
+      class RLTextStrategy < TextStrategy
+        def render: (untyped _x, untyped _y, untyped _text) -> untyped
+      end
+
+      class TBTextStrategy < TextStrategy
+        @word_space: Integer | Float
+
+        def get_word_spacing: () -> [0, Integer | Float]
+        def get_letter_spacing: (string glyph) -> [Integer | Float, Integer | Float]
+        def render: (Integer | Float x, Integer | Float y, string text) -> [0, Integer | Float]
+      end
+
+      # Handle "easy" text
+      class DefaultTextStrategy < TextStrategy
+        def render: (Integer | Float x, Integer | Float y, String text) -> [(Integer | Float)?, 0]
+      end
+    end
+  end
+end
+
+module Magick
+  class RVG
+    class Utility
+      class TextAttributes
+        def initialize: () -> void
+        def push: () -> void
+        def pop: () -> void
+        def set_affine: (real sx, real rx, real ry, real sy, real tx, real ty) -> void
+        def affine: () -> Magick::AffineMatrix
+        def baseline_shift: () -> Symbol
+        def baseline_shift=: (interned | real value) -> Symbol
+        def text_anchor: () -> Symbol
+        def text_anchor=: (Symbol anchor) -> Symbol
+        def glyph_orientation_vertical: () -> (Integer | Float)
+        def glyph_orientation_vertical=: (Integer | Float angle) -> (Integer | Float)
+        def glyph_orientation_horizontal: () -> (Integer | Float)
+        def glyph_orientation_horizontal=: (Integer | Float angle) -> (Integer | Float)
+        def letter_spacing: () -> (Integer | Float)
+        def letter_spacing=: (Integer | Float value) -> (Integer | Float)
+        def non_default?: () -> bool
+        def word_spacing: () -> (Integer | Float)
+        def word_spacing=: (Integer | Float value) -> (Integer | Float)
+        def writing_mode: () -> String
+        def writing_mode=: (String mode) -> String
+      end
+
+      class GraphicContext
+        @rx: Integer | Float
+        @sx: Integer | Float
+        @tx: Integer | Float
+        @gc: Magick::Draw
+        @shadow: Array[Magick::Draw]
+        @text_attrs: TextAttributes
+        @ry: Integer | Float
+        @sy: Integer | Float
+        @ty: Integer | Float
+
+        # The methods of Magick::Draw class can be called via method_missing
+        include Magick::_DrawCommonMethods
+
+        attr_reader gc: Magick::Draw
+        attr_reader text_attrs: TextAttributes
+
+        private
+
+        def init_matrix: () -> void
+        def concat_matrix: () -> void
+
+        public
+
+        def self.degrees_to_radians: (real deg) -> Float
+
+        def initialize: () -> void
+        def affine: (magick_real sx, magick_real rx, magick_real ry, magick_real sy, magick_real tx, magick_real ty) -> nil
+                  | ...
+        def baseline_shift: (String | real value) -> nil
+        def font: (string name) -> nil
+        def font_family: (string name) -> nil
+        def font_size: (magick_real points) -> nil
+        def font_stretch: (interned stretch) -> nil
+        def font_style: (interned style) -> nil
+        def font_weight: (interned | int weight) -> nil
+        def glyph_orientation_horizontal: (magick_real deg) -> nil
+        def glyph_orientation_vertical: (magick_real deg) -> nil
+        def inspect: () -> String
+        def letter_spacing: (magick_real value) -> nil
+        def push: () -> nil
+        def pop: () -> nil
+        def rotate: (magick_real degrees) -> nil
+        def scale: (magick_real sx, magick_real sy) -> nil
+        def shadow: () -> Magick::Draw?
+        def skewX: (magick_real degrees) -> nil
+        def skewY: (magick_real degrees) -> nil
+        def stroke_width: (magick_real width) -> nil
+        def text: (magick_real x, magick_real y, string text) -> void
+        def text_anchor: (interned anchor) -> nil
+        def text_decoration: (interned decoration) -> nil
+        def translate: (magick_real tx, magick_real ty) -> nil
+        def word_spacing: (magick_real value) -> nil
+        def writing_mode: (String mode) -> nil
+      end
+    end
+  end
+end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Demonstrate the random_channel_threshold method
 
 require 'rmagick'

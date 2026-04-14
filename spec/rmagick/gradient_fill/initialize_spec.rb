@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::GradientFill, '#initialize' do
   it 'works' do
     expect(described_class.new(0, 0, 0, 100, '#900', '#000')).to be_instance_of(described_class)

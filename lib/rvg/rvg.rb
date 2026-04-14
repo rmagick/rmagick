@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #--############################################################################
 # $Id: rvg.rb,v 1.10 2009/02/28 23:52:28 rmagick Exp $
 #
@@ -41,8 +43,6 @@ require 'rvg/clippath'
 require 'rvg/paint'
 require 'rvg/units'
 
-require 'pp' if ENV['debug_rvg']
-
 # RVG is the main class in this library. All graphic elements
 # must be contained within an RVG object.
 module Magick
@@ -53,6 +53,8 @@ module Magick
     include Embellishable
     include Describable
     include Duplicatable
+
+    WORD_SEP = / / # Regexp to separate words
 
     private
 
@@ -85,18 +87,20 @@ module Magick
                      @background_image.change_geometry(Magick::Geometry.new(width, height)) do |new_cols, new_rows|
                        bg_image = @background_image.resize(new_cols, new_rows)
                        if bg_image.columns != width || bg_image.rows != height
-                         bg = Magick::Image.new(width, height) { self.background_color = bgcolor }
+                         bg = Magick::Image.new(width, height) { |options| options.background_color = bgcolor }
                          bg_image = bg.composite!(bg_image, Magick::CenterGravity, Magick::OverCompositeOp)
                        end
                        bg_image
                      end
+                   else
+                     @background_image.copy
                    end
                  else
                    @background_image.copy
                  end
       else
         bgcolor = bgfill
-        canvas = Magick::Image.new(Integer(@width), Integer(@height)) { self.background_color = bgcolor }
+        canvas = Magick::Image.new(Integer(@width), Integer(@height)) { |options| options.background_color = bgcolor }
       end
       canvas[:desc] = @desc if @desc
       canvas[:title] = @title if @title
@@ -106,19 +110,17 @@ module Magick
 
     if ENV['debug_prim']
       def print_gc(gc)
-        primitives = gc.inspect.split(/\n/)
+        primitives = gc.inspect.split("\n")
         indent = 0
         primitives.each do |cmd|
           indent -= 1 if cmd['pop ']
-          print(('   ' * indent), cmd, "\n")
+          print('   ' * indent, cmd, "\n")
           indent += 1 if cmd['push ']
         end
       end
     end
 
     public
-
-    WORD_SEP = / / # Regexp to separate words
 
     # The background image specified by background_image=
     attr_reader :background_image
@@ -170,7 +172,9 @@ module Magick
     # The default fill is "none", that is, transparent black.
     def background_fill=(color)
       warn 'background_fill= has no effect in nested RVG objects' if @nested
-      if !color.is_a?(Magick::Pixel)
+      if color.is_a?(Magick::Pixel)
+        @background_fill = color
+      else
         begin
           @background_fill = Magick::Pixel.from_color(color)
         rescue Magick::ImageMagickError
@@ -180,8 +184,6 @@ module Magick
         rescue StandardError
           raise ArgumentError, "argument must be a color name or a Pixel (got #{color.class})"
         end
-      else
-        @background_fill = color
       end
     end
 

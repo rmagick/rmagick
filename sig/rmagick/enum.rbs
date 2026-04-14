@@ -1,0 +1,822 @@
+# frozen_string_literal: true
+
+module Magick
+  class Enum
+    def initialize: (interned sym, int val) -> void
+    def to_s: () -> String
+    def to_i: () -> Integer
+    def <=>: (Enum other) -> (-1 | 0 | 1 | nil)
+    def ===: (Enum other) -> bool
+    def |: (Enum other) -> Enum
+  end
+
+  interface _EnumInstanceMethod
+    def initialize: (interned sym, int val) -> void
+    def inspect: () -> String
+  end
+
+  interface _EnumClassMethod[T]
+    def values: () -> Array[T]
+  end
+
+  class GeometryValue < Enum
+  end
+
+  PercentGeometry: GeometryValue
+  AspectGeometry: GeometryValue
+  LessGeometry: GeometryValue
+  GreaterGeometry: GeometryValue
+  AreaGeometry: GeometryValue
+  MinimumGeometry: GeometryValue
+
+  class AlignType < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[AlignType]
+  end
+
+  UndefinedAlign: AlignType
+  LeftAlign: AlignType
+  CenterAlign: AlignType
+  RightAlign: AlignType
+
+  class AlphaChannelOption < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[AlphaChannelOption]
+  end
+
+  UndefinedAlphaChannel: AlphaChannelOption
+  ActivateAlphaChannel: AlphaChannelOption
+  DeactivateAlphaChannel: AlphaChannelOption
+  SetAlphaChannel: AlphaChannelOption
+  RemoveAlphaChannel: AlphaChannelOption
+  CopyAlphaChannel: AlphaChannelOption
+  ExtractAlphaChannel: AlphaChannelOption
+  OpaqueAlphaChannel: AlphaChannelOption
+  ShapeAlphaChannel: AlphaChannelOption
+  TransparentAlphaChannel: AlphaChannelOption
+  BackgroundAlphaChannel: AlphaChannelOption
+  AssociateAlphaChannel: AlphaChannelOption
+  DisassociateAlphaChannel: AlphaChannelOption
+  OnAlphaChannel: AlphaChannelOption
+  OffAlphaChannel: AlphaChannelOption
+
+  class AnchorType < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[AnchorType]
+  end
+
+  StartAnchor: AnchorType
+  MiddleAnchor: AnchorType
+  EndAnchor: AnchorType
+
+  class ChannelType < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[ChannelType]
+  end
+
+  UndefinedChannel: ChannelType
+  RedChannel: ChannelType
+  CyanChannel: ChannelType
+  GreenChannel: ChannelType
+  MagentaChannel: ChannelType
+  BlueChannel: ChannelType
+  YellowChannel: ChannelType
+  OpacityChannel: ChannelType
+  BlackChannel: ChannelType
+  IndexChannel: ChannelType
+  GrayChannel: ChannelType
+  CompositeChannels: ChannelType
+  AllChannels: ChannelType
+  TrueAlphaChannel: ChannelType
+  RGBChannels: ChannelType
+  GrayChannels: ChannelType
+  SyncChannels: ChannelType
+  AlphaChannel: ChannelType
+  DefaultChannels: ChannelType
+  HueChannel: ChannelType
+  LuminosityChannel: ChannelType
+  SaturationChannel: ChannelType
+
+  class ClassType < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[ClassType]
+  end
+
+  UndefinedClass: ClassType
+  PseudoClass: ClassType
+  DirectClass: ClassType
+
+  class ColorspaceType < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[ColorspaceType]
+  end
+
+  UndefinedColorspace: ColorspaceType
+  RGBColorspace: ColorspaceType
+  GRAYColorspace: ColorspaceType
+  TransparentColorspace: ColorspaceType
+  OHTAColorspace: ColorspaceType
+  XYZColorspace: ColorspaceType
+  YCbCrColorspace: ColorspaceType
+  YCCColorspace: ColorspaceType
+  YIQColorspace: ColorspaceType
+  YPbPrColorspace: ColorspaceType
+  YUVColorspace: ColorspaceType
+  CMYKColorspace: ColorspaceType
+  SRGBColorspace: ColorspaceType
+  HSLColorspace: ColorspaceType
+  HWBColorspace: ColorspaceType
+  HSBColorspace: ColorspaceType
+  LabColorspace: ColorspaceType
+  Rec601YCbCrColorspace: ColorspaceType
+  Rec709YCbCrColorspace: ColorspaceType
+  LogColorspace: ColorspaceType
+  CMYColorspace: ColorspaceType
+  LuvColorspace: ColorspaceType
+  HCLColorspace: ColorspaceType
+  LCHColorspace: ColorspaceType
+  LMSColorspace: ColorspaceType
+  LCHabColorspace: ColorspaceType
+  LCHuvColorspace: ColorspaceType
+  ScRGBColorspace: ColorspaceType
+  HSIColorspace: ColorspaceType
+  HSVColorspace: ColorspaceType
+  HCLpColorspace: ColorspaceType
+  YDbDrColorspace: ColorspaceType
+  XyYColorspace: ColorspaceType
+  LinearGRAYColorspace: ColorspaceType
+  JzazbzColorspace: ColorspaceType
+
+  class ComplianceType < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[ComplianceType]
+  end
+
+  UndefinedCompliance: ComplianceType
+  AllCompliance: ComplianceType
+  NoCompliance: ComplianceType
+  SVGCompliance: ComplianceType
+  X11Compliance: ComplianceType
+  XPMCompliance: ComplianceType
+
+  class CompositeOperator < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[CompositeOperator]
+  end
+
+  AtopCompositeOp: CompositeOperator
+  BlendCompositeOp: CompositeOperator
+  BlurCompositeOp: CompositeOperator
+  BumpmapCompositeOp: CompositeOperator
+  ChangeMaskCompositeOp: CompositeOperator
+  ClearCompositeOp: CompositeOperator
+  ColorBurnCompositeOp: CompositeOperator
+  ColorDodgeCompositeOp: CompositeOperator
+  ColorizeCompositeOp: CompositeOperator
+  CopyBlackCompositeOp: CompositeOperator
+  CopyBlueCompositeOp: CompositeOperator
+  CopyCompositeOp: CompositeOperator
+  CopyCyanCompositeOp: CompositeOperator
+  CopyGreenCompositeOp: CompositeOperator
+  CopyMagentaCompositeOp: CompositeOperator
+  CopyRedCompositeOp: CompositeOperator
+  CopyYellowCompositeOp: CompositeOperator
+  DarkenCompositeOp: CompositeOperator
+  DarkenIntensityCompositeOp: CompositeOperator
+  DistortCompositeOp: CompositeOperator
+  DivideDstCompositeOp: CompositeOperator
+  DivideSrcCompositeOp: CompositeOperator
+  DstAtopCompositeOp: CompositeOperator
+  DstCompositeOp: CompositeOperator
+  DstInCompositeOp: CompositeOperator
+  DstOutCompositeOp: CompositeOperator
+  DstOverCompositeOp: CompositeOperator
+  DifferenceCompositeOp: CompositeOperator
+  DisplaceCompositeOp: CompositeOperator
+  DissolveCompositeOp: CompositeOperator
+  ExclusionCompositeOp: CompositeOperator
+  HardLightCompositeOp: CompositeOperator
+  HueCompositeOp: CompositeOperator
+  InCompositeOp: CompositeOperator
+  LightenCompositeOp: CompositeOperator
+  LightenIntensityCompositeOp: CompositeOperator
+  LinearBurnCompositeOp: CompositeOperator
+  LinearDodgeCompositeOp: CompositeOperator
+  LinearLightCompositeOp: CompositeOperator
+  LuminizeCompositeOp: CompositeOperator
+  MathematicsCompositeOp: CompositeOperator
+  MinusDstCompositeOp: CompositeOperator
+  MinusSrcCompositeOp: CompositeOperator
+  ModulateCompositeOp: CompositeOperator
+  ModulusAddCompositeOp: CompositeOperator
+  ModulusSubtractCompositeOp: CompositeOperator
+  MultiplyCompositeOp: CompositeOperator
+  NoCompositeOp: CompositeOperator
+  OutCompositeOp: CompositeOperator
+  OverCompositeOp: CompositeOperator
+  OverlayCompositeOp: CompositeOperator
+  PegtopLightCompositeOp: CompositeOperator
+  PinLightCompositeOp: CompositeOperator
+  PlusCompositeOp: CompositeOperator
+  ReplaceCompositeOp: CompositeOperator
+  SaturateCompositeOp: CompositeOperator
+  ScreenCompositeOp: CompositeOperator
+  SoftLightCompositeOp: CompositeOperator
+  SrcAtopCompositeOp: CompositeOperator
+  SrcCompositeOp: CompositeOperator
+  SrcInCompositeOp: CompositeOperator
+  SrcOutCompositeOp: CompositeOperator
+  SrcOverCompositeOp: CompositeOperator
+  ThresholdCompositeOp: CompositeOperator
+  UndefinedCompositeOp: CompositeOperator
+  VividLightCompositeOp: CompositeOperator
+  XorCompositeOp: CompositeOperator
+  HardMixCompositeOp: CompositeOperator
+  CopyAlphaCompositeOp: CompositeOperator
+
+  class CompressionType < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[CompressionType]
+  end
+
+  UndefinedCompression: CompressionType
+  NoCompression: CompressionType
+  B44Compression: CompressionType
+  B44ACompression: CompressionType
+  BZipCompression: CompressionType
+  DXT1Compression: CompressionType
+  DXT3Compression: CompressionType
+  DXT5Compression: CompressionType
+  FaxCompression: CompressionType
+  Group4Compression: CompressionType
+  JPEGCompression: CompressionType
+  JPEG2000Compression: CompressionType
+  LosslessJPEGCompression: CompressionType
+  LZWCompression: CompressionType
+  PizCompression: CompressionType
+  Pxr24Compression: CompressionType
+  RLECompression: CompressionType
+  ZipCompression: CompressionType
+  ZipSCompression: CompressionType
+  LZMACompression: CompressionType
+  JBIG1Compression: CompressionType
+  JBIG2Compression: CompressionType
+
+  class DecorationType < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[DecorationType]
+  end
+
+  NoDecoration: DecorationType
+  UnderlineDecoration: DecorationType
+  OverlineDecoration: DecorationType
+  LineThroughDecoration: DecorationType
+
+  class DisposeType < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[DisposeType]
+  end
+
+  UnrecognizedDispose: DisposeType
+  UndefinedDispose: DisposeType
+  BackgroundDispose: DisposeType
+  NoneDispose: DisposeType
+  PreviousDispose: DisposeType
+
+  class DistortMethod < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[DistortMethod]
+  end
+
+  UndefinedDistortion: DistortMethod
+  AffineDistortion: DistortMethod
+  AffineProjectionDistortion: DistortMethod
+  ArcDistortion: DistortMethod
+  PolarDistortion: DistortMethod
+  DePolarDistortion: DistortMethod
+  BarrelDistortion: DistortMethod
+  BilinearDistortion: DistortMethod
+  BilinearForwardDistortion: DistortMethod
+  BilinearReverseDistortion: DistortMethod
+  PerspectiveDistortion: DistortMethod
+  PerspectiveProjectionDistortion: DistortMethod
+  PolynomialDistortion: DistortMethod
+  ScaleRotateTranslateDistortion: DistortMethod
+  ShepardsDistortion: DistortMethod
+  BarrelInverseDistortion: DistortMethod
+  Cylinder2PlaneDistortion: DistortMethod
+  Plane2CylinderDistortion: DistortMethod
+  ResizeDistortion: DistortMethod
+  SentinelDistortion: DistortMethod
+
+  class DitherMethod < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[DitherMethod]
+  end
+
+  UndefinedDitherMethod: DitherMethod
+  NoDitherMethod: DitherMethod
+  RiemersmaDitherMethod: DitherMethod
+  FloydSteinbergDitherMethod: DitherMethod
+
+  class EndianType < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[EndianType]
+  end
+
+  UndefinedEndian: EndianType
+  LSBEndian: EndianType
+  MSBEndian: EndianType
+
+  class FilterType < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[FilterType]
+  end
+
+  UndefinedFilter: FilterType
+  PointFilter: FilterType
+  BoxFilter: FilterType
+  TriangleFilter: FilterType
+  HermiteFilter: FilterType
+  HanningFilter: FilterType
+  HammingFilter: FilterType
+  BlackmanFilter: FilterType
+  GaussianFilter: FilterType
+  QuadraticFilter: FilterType
+  CubicFilter: FilterType
+  CatromFilter: FilterType
+  MitchellFilter: FilterType
+  LanczosFilter: FilterType
+  BesselFilter: FilterType
+  SincFilter: FilterType
+  KaiserFilter: FilterType
+  WelshFilter: FilterType
+  ParzenFilter: FilterType
+  LagrangeFilter: FilterType
+  BohmanFilter: FilterType
+  BartlettFilter: FilterType
+  JincFilter: FilterType
+  SincFastFilter: FilterType
+  LanczosSharpFilter: FilterType
+  Lanczos2Filter: FilterType
+  Lanczos2SharpFilter: FilterType
+  RobidouxFilter: FilterType
+  RobidouxSharpFilter: FilterType
+  CosineFilter: FilterType
+  SplineFilter: FilterType
+  LanczosRadiusFilter: FilterType
+  WelchFilter: FilterType
+  HannFilter: FilterType
+
+  class GravityType < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[GravityType]
+  end
+
+  UndefinedGravity: GravityType
+  ForgetGravity: GravityType
+  NorthWestGravity: GravityType
+  NorthGravity: GravityType
+  NorthEastGravity: GravityType
+  WestGravity: GravityType
+  CenterGravity: GravityType
+  EastGravity: GravityType
+  SouthWestGravity: GravityType
+  SouthGravity: GravityType
+  SouthEastGravity: GravityType
+
+  class ImageType < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[ImageType]
+  end
+
+  UndefinedType: ImageType
+  BilevelType: ImageType
+  GrayscaleType: ImageType
+  PaletteType: ImageType
+  TrueColorType: ImageType
+  ColorSeparationType: ImageType
+  OptimizeType: ImageType
+  GrayscaleAlphaType: ImageType
+  PaletteAlphaType: ImageType
+  TrueColorAlphaType: ImageType
+  ColorSeparationAlphaType: ImageType
+  PaletteBilevelAlphaType: ImageType
+
+  class InterlaceType < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[InterlaceType]
+  end
+
+  UndefinedInterlace: InterlaceType
+  NoInterlace: InterlaceType
+  LineInterlace: InterlaceType
+  PlaneInterlace: InterlaceType
+  PartitionInterlace: InterlaceType
+  GIFInterlace: InterlaceType
+  JPEGInterlace: InterlaceType
+  PNGInterlace: InterlaceType
+
+  class MagickFunction < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[MagickFunction]
+  end
+
+  UndefinedFunction: MagickFunction
+  PolynomialFunction: MagickFunction
+  SinusoidFunction: MagickFunction
+  ArcsinFunction: MagickFunction
+  ArctanFunction: MagickFunction
+
+  class LayerMethod < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[LayerMethod]
+  end
+
+  UndefinedLayer: LayerMethod
+  CompareAnyLayer: LayerMethod
+  CompareClearLayer: LayerMethod
+  CompareOverlayLayer: LayerMethod
+  OptimizeLayer: LayerMethod
+  OptimizePlusLayer: LayerMethod
+  CoalesceLayer: LayerMethod
+  DisposeLayer: LayerMethod
+  OptimizeTransLayer: LayerMethod
+  OptimizeImageLayer: LayerMethod
+  RemoveDupsLayer: LayerMethod
+  RemoveZeroLayer: LayerMethod
+  CompositeLayer: LayerMethod
+  MergeLayer: LayerMethod
+  MosaicLayer: LayerMethod
+  FlattenLayer: LayerMethod
+  TrimBoundsLayer: LayerMethod
+
+  class MetricType < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[MetricType]
+  end
+
+  AbsoluteErrorMetric: MetricType
+  MeanAbsoluteErrorMetric: MetricType
+  MeanSquaredErrorMetric: MetricType
+  PeakAbsoluteErrorMetric: MetricType
+  RootMeanSquaredErrorMetric: MetricType
+  NormalizedCrossCorrelationErrorMetric: MetricType
+  FuzzErrorMetric: MetricType
+  PerceptualHashErrorMetric: MetricType
+  UndefinedErrorMetric: MetricType
+  MeanErrorPerPixelErrorMetric: MetricType
+  PeakSignalToNoiseRatioErrorMetric: MetricType
+
+  class NoiseType < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[NoiseType]
+  end
+
+  UniformNoise: NoiseType
+  GaussianNoise: NoiseType
+  MultiplicativeGaussianNoise: NoiseType
+  ImpulseNoise: NoiseType
+  LaplacianNoise: NoiseType
+  PoissonNoise: NoiseType
+  RandomNoise: NoiseType
+
+  class OrientationType < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[OrientationType]
+  end
+
+  UndefinedOrientation: OrientationType
+  TopLeftOrientation: OrientationType
+  TopRightOrientation: OrientationType
+  BottomRightOrientation: OrientationType
+  BottomLeftOrientation: OrientationType
+  LeftTopOrientation: OrientationType
+  RightTopOrientation: OrientationType
+  RightBottomOrientation: OrientationType
+  LeftBottomOrientation: OrientationType
+
+  class PaintMethod < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[PaintMethod]
+  end
+
+  PointMethod: PaintMethod
+  ReplaceMethod: PaintMethod
+  FloodfillMethod: PaintMethod
+  FillToBorderMethod: PaintMethod
+  ResetMethod: PaintMethod
+
+  class PixelInterpolateMethod < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[PixelInterpolateMethod]
+  end
+
+  UndefinedInterpolatePixel: PixelInterpolateMethod
+  AverageInterpolatePixel: PixelInterpolateMethod
+  BilinearInterpolatePixel: PixelInterpolateMethod
+  IntegerInterpolatePixel: PixelInterpolateMethod
+  MeshInterpolatePixel: PixelInterpolateMethod
+  NearestInterpolatePixel: PixelInterpolateMethod
+  SplineInterpolatePixel: PixelInterpolateMethod
+  Average9InterpolatePixel: PixelInterpolateMethod
+  Average16InterpolatePixel: PixelInterpolateMethod
+  BlendInterpolatePixel: PixelInterpolateMethod
+  BackgroundInterpolatePixel: PixelInterpolateMethod
+  CatromInterpolatePixel: PixelInterpolateMethod
+
+  class PreviewType < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[PreviewType]
+  end
+
+  UndefinedPreview: PreviewType
+  RotatePreview: PreviewType
+  ShearPreview: PreviewType
+  RollPreview: PreviewType
+  HuePreview: PreviewType
+  SaturationPreview: PreviewType
+  BrightnessPreview: PreviewType
+  GammaPreview: PreviewType
+  SpiffPreview: PreviewType
+  DullPreview: PreviewType
+  GrayscalePreview: PreviewType
+  QuantizePreview: PreviewType
+  DespecklePreview: PreviewType
+  ReduceNoisePreview: PreviewType
+  AddNoisePreview: PreviewType
+  SharpenPreview: PreviewType
+  BlurPreview: PreviewType
+  ThresholdPreview: PreviewType
+  EdgeDetectPreview: PreviewType
+  SpreadPreview: PreviewType
+  SolarizePreview: PreviewType
+  ShadePreview: PreviewType
+  RaisePreview: PreviewType
+  SegmentPreview: PreviewType
+  SwirlPreview: PreviewType
+  ImplodePreview: PreviewType
+  WavePreview: PreviewType
+  OilPaintPreview: PreviewType
+  CharcoalDrawingPreview: PreviewType
+  JPEGPreview: PreviewType
+
+  class QuantumExpressionOperator < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[QuantumExpressionOperator]
+  end
+
+  UndefinedQuantumOperator: QuantumExpressionOperator
+  AddQuantumOperator: QuantumExpressionOperator
+  AndQuantumOperator: QuantumExpressionOperator
+  DivideQuantumOperator: QuantumExpressionOperator
+  LShiftQuantumOperator: QuantumExpressionOperator
+  MaxQuantumOperator: QuantumExpressionOperator
+  MinQuantumOperator: QuantumExpressionOperator
+  MultiplyQuantumOperator: QuantumExpressionOperator
+  OrQuantumOperator: QuantumExpressionOperator
+  RShiftQuantumOperator: QuantumExpressionOperator
+  SubtractQuantumOperator: QuantumExpressionOperator
+  XorQuantumOperator: QuantumExpressionOperator
+  PowQuantumOperator: QuantumExpressionOperator
+  LogQuantumOperator: QuantumExpressionOperator
+  ThresholdQuantumOperator: QuantumExpressionOperator
+  ThresholdBlackQuantumOperator: QuantumExpressionOperator
+  ThresholdWhiteQuantumOperator: QuantumExpressionOperator
+  GaussianNoiseQuantumOperator: QuantumExpressionOperator
+  ImpulseNoiseQuantumOperator: QuantumExpressionOperator
+  LaplacianNoiseQuantumOperator: QuantumExpressionOperator
+  MultiplicativeNoiseQuantumOperator: QuantumExpressionOperator
+  PoissonNoiseQuantumOperator: QuantumExpressionOperator
+  UniformNoiseQuantumOperator: QuantumExpressionOperator
+  CosineQuantumOperator: QuantumExpressionOperator
+  SetQuantumOperator: QuantumExpressionOperator
+  SineQuantumOperator: QuantumExpressionOperator
+  AddModulusQuantumOperator: QuantumExpressionOperator
+  MeanQuantumOperator: QuantumExpressionOperator
+  AbsQuantumOperator: QuantumExpressionOperator
+  ExponentialQuantumOperator: QuantumExpressionOperator
+  MedianQuantumOperator: QuantumExpressionOperator
+  SumQuantumOperator: QuantumExpressionOperator
+  RootMeanSquareQuantumOperator: QuantumExpressionOperator
+
+  class RenderingIntent < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[RenderingIntent]
+  end
+
+  UndefinedIntent: RenderingIntent
+  SaturationIntent: RenderingIntent
+  PerceptualIntent: RenderingIntent
+  AbsoluteIntent: RenderingIntent
+  RelativeIntent: RenderingIntent
+
+  class ResolutionType < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[ResolutionType]
+  end
+
+  UndefinedResolution: ResolutionType
+  PixelsPerInchResolution: ResolutionType
+  PixelsPerCentimeterResolution: ResolutionType
+
+  class SparseColorMethod < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[SparseColorMethod]
+  end
+
+  UndefinedColorInterpolate: SparseColorMethod
+  BarycentricColorInterpolate: SparseColorMethod
+  BilinearColorInterpolate: SparseColorMethod
+  ShepardsColorInterpolate: SparseColorMethod
+  VoronoiColorInterpolate: SparseColorMethod
+  InverseColorInterpolate: SparseColorMethod
+
+  class SpreadMethod < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[SpreadMethod]
+  end
+
+  UndefinedSpread: SpreadMethod
+  PadSpread: SpreadMethod
+  ReflectSpread: SpreadMethod
+  RepeatSpread: SpreadMethod
+
+  class StorageType < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[StorageType]
+  end
+
+  UndefinedPixel: StorageType
+  CharPixel: StorageType
+  DoublePixel: StorageType
+  FloatPixel: StorageType
+  LongPixel: StorageType
+  QuantumPixel: StorageType
+  ShortPixel: StorageType
+
+  class StretchType < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[StretchType]
+  end
+
+  NormalStretch: StretchType
+  UltraCondensedStretch: StretchType
+  ExtraCondensedStretch: StretchType
+  CondensedStretch: StretchType
+  SemiCondensedStretch: StretchType
+  SemiExpandedStretch: StretchType
+  ExpandedStretch: StretchType
+  ExtraExpandedStretch: StretchType
+  UltraExpandedStretch: StretchType
+  AnyStretch: StretchType
+
+  class StyleType < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[StyleType]
+  end
+
+  NormalStyle: StyleType
+  ItalicStyle: StyleType
+  ObliqueStyle: StyleType
+  AnyStyle: StyleType
+
+  class VirtualPixelMethod < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[VirtualPixelMethod]
+  end
+
+  UndefinedVirtualPixelMethod: VirtualPixelMethod
+  EdgeVirtualPixelMethod: VirtualPixelMethod
+  MirrorVirtualPixelMethod: VirtualPixelMethod
+  TileVirtualPixelMethod: VirtualPixelMethod
+  TransparentVirtualPixelMethod: VirtualPixelMethod
+  BackgroundVirtualPixelMethod: VirtualPixelMethod
+  DitherVirtualPixelMethod: VirtualPixelMethod
+  RandomVirtualPixelMethod: VirtualPixelMethod
+  MaskVirtualPixelMethod: VirtualPixelMethod
+  BlackVirtualPixelMethod: VirtualPixelMethod
+  GrayVirtualPixelMethod: VirtualPixelMethod
+  WhiteVirtualPixelMethod: VirtualPixelMethod
+  HorizontalTileVirtualPixelMethod: VirtualPixelMethod
+  VerticalTileVirtualPixelMethod: VirtualPixelMethod
+  HorizontalTileEdgeVirtualPixelMethod: VirtualPixelMethod
+  VerticalTileEdgeVirtualPixelMethod: VirtualPixelMethod
+  CheckerTileVirtualPixelMethod: VirtualPixelMethod
+
+  class WeightType < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[WeightType]
+  end
+
+  AnyWeight: WeightType
+  NormalWeight: WeightType
+  BoldWeight: WeightType
+  BolderWeight: WeightType
+  LighterWeight: WeightType
+
+  class GeometryFlags < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[GeometryFlags]
+  end
+
+  NoValue: GeometryFlags
+  XValue: GeometryFlags
+  XiValue: GeometryFlags
+  YValue: GeometryFlags
+  PsiValue: GeometryFlags
+  WidthValue: GeometryFlags
+  RhoValue: GeometryFlags
+  HeightValue: GeometryFlags
+  SigmaValue: GeometryFlags
+  ChiValue: GeometryFlags
+  XiNegative: GeometryFlags
+  XNegative: GeometryFlags
+  PsiNegative: GeometryFlags
+  YNegative: GeometryFlags
+  ChiNegative: GeometryFlags
+  PercentValue: GeometryFlags
+  AspectValue: GeometryFlags
+  NormalizeValue: GeometryFlags
+  LessValue: GeometryFlags
+  GreaterValue: GeometryFlags
+  MinimumValue: GeometryFlags
+  CorrelateNormalizeValue: GeometryFlags
+  AreaValue: GeometryFlags
+  DecimalValue: GeometryFlags
+  SeparatorValue: GeometryFlags
+  AllValues: GeometryFlags
+
+  class MorphologyMethod < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[MorphologyMethod]
+  end
+
+  UndefinedMorphology: MorphologyMethod
+  ConvolveMorphology: MorphologyMethod
+  CorrelateMorphology: MorphologyMethod
+  ErodeMorphology: MorphologyMethod
+  DilateMorphology: MorphologyMethod
+  ErodeIntensityMorphology: MorphologyMethod
+  DilateIntensityMorphology: MorphologyMethod
+  DistanceMorphology: MorphologyMethod
+  OpenMorphology: MorphologyMethod
+  CloseMorphology: MorphologyMethod
+  OpenIntensityMorphology: MorphologyMethod
+  CloseIntensityMorphology: MorphologyMethod
+  SmoothMorphology: MorphologyMethod
+  EdgeInMorphology: MorphologyMethod
+  EdgeOutMorphology: MorphologyMethod
+  EdgeMorphology: MorphologyMethod
+  TopHatMorphology: MorphologyMethod
+  BottomHatMorphology: MorphologyMethod
+  HitAndMissMorphology: MorphologyMethod
+  ThinningMorphology: MorphologyMethod
+  ThickenMorphology: MorphologyMethod
+  VoronoiMorphology: MorphologyMethod
+  IterativeDistanceMorphology: MorphologyMethod
+
+  class KernelInfoType < Enum
+    include _EnumInstanceMethod
+    extend _EnumClassMethod[KernelInfoType]
+  end
+
+  UndefinedKernel: KernelInfoType
+  UnityKernel: KernelInfoType
+  GaussianKernel: KernelInfoType
+  DoGKernel: KernelInfoType
+  LoGKernel: KernelInfoType
+  BlurKernel: KernelInfoType
+  CometKernel: KernelInfoType
+  LaplacianKernel: KernelInfoType
+  SobelKernel: KernelInfoType
+  FreiChenKernel: KernelInfoType
+  RobertsKernel: KernelInfoType
+  PrewittKernel: KernelInfoType
+  CompassKernel: KernelInfoType
+  KirschKernel: KernelInfoType
+  DiamondKernel: KernelInfoType
+  SquareKernel: KernelInfoType
+  RectangleKernel: KernelInfoType
+  OctagonKernel: KernelInfoType
+  DiskKernel: KernelInfoType
+  PlusKernel: KernelInfoType
+  CrossKernel: KernelInfoType
+  RingKernel: KernelInfoType
+  PeaksKernel: KernelInfoType
+  EdgesKernel: KernelInfoType
+  CornersKernel: KernelInfoType
+  DiagonalsKernel: KernelInfoType
+  LineEndsKernel: KernelInfoType
+  LineJunctionsKernel: KernelInfoType
+  RidgesKernel: KernelInfoType
+  ConvexHullKernel: KernelInfoType
+  ThinSEKernel: KernelInfoType
+  SkeletonKernel: KernelInfoType
+  ChebyshevKernel: KernelInfoType
+  ManhattanKernel: KernelInfoType
+  OctagonalKernel: KernelInfoType
+  EuclideanKernel: KernelInfoType
+  UserDefinedKernel: KernelInfoType
+  BinomialKernel: KernelInfoType
+end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#distortion_channel' do
   it 'works' do
     image1 = described_class.new(20, 20)
@@ -10,7 +12,7 @@ RSpec.describe Magick::Image, '#distortion_channel' do
     expect { image1.distortion_channel(image1, Magick::PeakAbsoluteErrorMetric) }.not_to raise_error
     expect { image1.distortion_channel(image1, Magick::PeakSignalToNoiseRatioErrorMetric) }.not_to raise_error
     expect { image1.distortion_channel(image1, Magick::RootMeanSquaredErrorMetric) }.not_to raise_error
-    expect { image1.distortion_channel(image1, Magick::MeanSquaredErrorMetric, Magick::RedChannel, Magick:: BlueChannel) }.not_to raise_error
+    expect { image1.distortion_channel(image1, Magick::MeanSquaredErrorMetric, Magick::RedChannel, Magick::BlueChannel) }.not_to raise_error
     expect { image1.distortion_channel(image1, Magick::NormalizedCrossCorrelationErrorMetric) }.not_to raise_error
     expect { image1.distortion_channel(image1, Magick::FuzzErrorMetric) }.not_to raise_error
     expect { image1.distortion_channel(image1, 2) }.to raise_error(TypeError)
@@ -29,6 +31,6 @@ RSpec.describe Magick::Image, '#distortion_channel' do
     image_list = Magick::ImageList.new
     image_list.new_image(10, 10)
     expect { image.distortion_channel(image_list, Magick::MeanAbsoluteErrorMetric) }.not_to raise_error
-    expect { image.distortion_channel(image_list, Magick::MeanSquaredErrorMetric, Magick::RedChannel, Magick:: BlueChannel) }.not_to raise_error
+    expect { image.distortion_channel(image_list, Magick::MeanSquaredErrorMetric, Magick::RedChannel, Magick::BlueChannel) }.not_to raise_error
   end
 end

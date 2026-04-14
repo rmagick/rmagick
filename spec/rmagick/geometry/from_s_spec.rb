@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Geometry, '#from_s' do
   it 'works' do
     expect(described_class.from_s('').to_s).to eq('')

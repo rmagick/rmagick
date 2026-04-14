@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#dispatch' do
   it 'expects exactly 5 or 6 arguments' do
     image = described_class.read(IMAGES_DIR + '/Button_0.gif').first

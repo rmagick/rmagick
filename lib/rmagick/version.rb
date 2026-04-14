@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 module Magick
-  VERSION = '4.1.2'
-  MIN_RUBY_VERSION = '2.3.0'
-  MIN_IM_VERSION = '6.7.7'
+  VERSION = '6.3.0'
+  MIN_RUBY_VERSION = '3.2.0'
+  MIN_IM6_VERSION = '6.9.0'
+  MIN_IM7_VERSION = '7.1.0'
 end

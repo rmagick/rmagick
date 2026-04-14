@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rmagick'
 
 canvas = Magick::Image.new(260, 125)
@@ -23,8 +25,9 @@ gc.roundrectangle(200, 20, 240, 90, 5, 5)
 
 gc.font_weight(Magick::NormalWeight)
 gc.font_style(Magick::NormalStyle)
-gc.stroke('transparent')
 gc.fill('black')
+gc.fill_opacity(1)
+gc.stroke('transparent')
 gc.gravity(Magick::SouthGravity)
 gc.text(-90, 15, '"25%"')
 gc.text(-30, 15, '"50%"')

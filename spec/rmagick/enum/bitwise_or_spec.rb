@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Enum, '#|' do
   it 'works' do
     enum1 = described_class.new(:foo, 42)

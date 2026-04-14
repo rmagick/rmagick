@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, "#change_geometry" do
   it "passes the original image to the block" do
     image = build_image

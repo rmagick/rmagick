@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Magick::Color, '#compliance' do
   it 'return expect value, not nil' do
     Magick.colors do |color|

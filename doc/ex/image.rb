@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'rvg/rvg'
 
 rvg = Magick::RVG.new(525, 270) do |canvas|
   canvas.background_fill = 'white'
   canvas.rect(524, 269).styles(fill: 'none', stroke: 'blue', stroke_width: 1)
 
-  hat = ::Magick::Image.read('images/Flower_Hat.jpg').first
+  hat = Magick::Image.read('images/Flower_Hat.jpg').first
 
   canvas.image(hat, 100, 75, 25, 40).preserve_aspect_ratio('none')
   canvas.rect(100, 75, 25, 40).styles(fill: 'none', stroke: 'blue')

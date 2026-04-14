@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::ImageList::Montage, '#texture=' do
   it 'works' do
     montage = described_class.new

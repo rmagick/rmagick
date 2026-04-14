@@ -3,6 +3,330 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 6.3.0
+
+> [!IMPORTANT]
+> This release is the final minor update for the RMagick 6 series.
+>
+> The upcoming RMagick 7.0 will require:
+>  * Ruby 3.2 or later
+>  * ImageMagick 6.9 or later (for ImageMagick 6 users)
+>  * ImageMagick 7.1 or later (for ImageMagick 7 users)
+
+Enhancements
+
+- Add deprecation warnings for upcoming RMagick 7.0 (#1740)
+
+## RMagick 6.2.0
+
+Improvements
+
+- Support MSYS2 ImageMagick via pkg-config on Windows (#1730)
+
+## RMagick 6.1.5
+
+Bug Fixes
+
+- Fix memory leak in Image#marshal_load (#1721)
+- Fix memory leak in Image::Info#page= (#1720)
+- Fix memory leak in Image::Info#view= with ImageMagick 7 (#1719)
+- Fix memory leak in Image::Info#authenticate= with ImageMagick 7 (#1718)
+- Fix memory leak in Image#marshal_load with invalid data (#1717)
+
+## RMagick 6.1.4
+
+Improvements
+
+- Improve check whether C++ compiler exists (#1708)
+
+## RMagick 6.1.3
+
+Bug Fixes
+
+- Fixed an error with ImageMagick 7.1.2 on Windows when saving images using file descriptor (#1699)
+
+## RMagick 6.1.2
+
+Improvements
+
+- Improve Magick::Draw#primitive performance (#1697)
+
+## RMagick 6.1.1
+
+Bug Fixes
+
+- Fix FrozenError in Magick::RVG::PathData (#1675)
+
+## RMagick 6.1.0
+
+Bug Fixes
+
+- Fix SEGV if read incorrect PDF file (#1671)
+
+Improvements
+
+- Remove multiple imagemagick version checks (#1650)
+- Suppress exception at installation if ImageMagick is not installed (#1647)
+- Remove unnecessary `require` (#1639)
+- Remove unnecessary minimum ruby version check (#1637)
+- Remove universal build configuration for system bundled ruby in macOS (#1633)
+- Add `frozen_string_literal: true` magic comment (#1631)
+
+## RMagick 6.0.1
+
+Bug Fixes
+
+- Fix build error on FreeBSD (#1618)
+- Fix build error with GCC 14 on Windows (#1616)
+
+## RMagick 6.0.0
+
+Improvements
+
+- Improve compatibility of Image#pixel_color value for ImageMagick 6 and 7 (#1591)
+- Add missing constants (#1580)
+- Loosen ImageMagick version check between compiled and runtime (#1526)
+
+Bug Fixes
+
+- Transform image according to Info#colorspace (#1594)
+- Sync Image::Info attributes to image object (#1593)
+- Fix install error on Windows MINGW environment (#1588)
+- Fix header checks in order to use aligned_malloc expectedly (#1579)
+
+Breaking Changes
+
+- Change method that returns a color name to return a hex string (#1592)
+  - The following methods return RGBA hex string as color name. The hex string length is according to color depth.
+    - `Image#background_color`
+    - `Image#border_color`
+    - `Image#colormap`
+    - `Image#matte_color`
+    - `Image#transparent_color`
+    - `Info#background_color`
+    - `Info#border_color`
+    - `Info#matte_color`
+    - `Info#transparent_color`
+  - Change default value of argument
+    - The hex argument of `Pixel#to_color` has `true` by default.
+- Drop ruby-mswin environment support on Windows (#1587)
+- Drop Ruby 2.x support (#1540)
+- Drop ImageMagick 6.7 support (#1539)
+
+## RMagick 5.5.0
+
+Improvements
+
+- Add RBS signatures (#1458)
+- Remove unnecessary type check in KernelInfo#{unity_add, scale} (#1514)
+- Remove unnecessary type check in Image#{morphology, morphology_channel} (#1513)
+- Improve HatchFill.new to accept Pixel object as color (#1512)
+- Fix GraphicContext#font_weight to accept Numeric object (#1510)
+- Improve GraphicContext#font_weight to accept Symbol object (#1509)
+- Improve Stretchable#viewbox to use implicitly conversioned value (#1507)
+- Improve RVG::Transformable#rotate to convert to Float implicitly (#1506)
+- Fix Image#modulate in order to accept negative number (#1505)
+- Improve Image#modulate to accept "NN%" form string (#1504)
+- Implicit conversion to string with methods that expect a string (#1496)
+- Coerce to string instead of using #to_s (#1495)
+- Coerce to string where pass object into string interpolation (#1494)
+- Fix Draw#{fill_opacity, opacity, stroke_opacity} to correctly handle arguments (#1492)
+- Fix Draw#{interline_spacing, interword_spacing, kerning} to correctly handle arguments that can be converted to Float (#1491)
+- Remove unnecessary type check in KernelInfo methods (#1489)
+- Generate compile_flags.txt for clangd for development (#1488)
+- Fix Draw#{stroke_dasharray, stroke_miterlimit} to accept object which has #to_f method (#1486)
+- Fix Image#composite_affine to accept ImageList object (#1484)
+- Fix Image#add_compose_mask to accept ImageList object (#1483)
+- Fix incorrect number of required arguments in ArgumentError (#1482)
+- Fix ImageList#sort! that should return self (#1481)
+- Fix ImageList#eql? that should not raise exception if can't compare (#1479)
+- Fix ImageList#<=> that should return nil if can't compare (#1478)
+- Add DrawAttribute module to simplify Draw, DrawOptions and PolaroidOptions (#1477)
+- Add missing attribute writer methods in Image::{DrawOptions, PolaroidOptions} (#1476)
+- Add Image::PolaroidOptions#affine= (#1475)
+- Add Image::PolaroidOptions#tile= (#1474)
+- Attribute writer methods should return passed value (#1473)
+- Return self with ImageList if Image's method return self (#1472)
+- Fix Image#clut_channel to accept ImageList object (#1471)
+- Fix Magick::GradientFill#fill and Magick::TextureFill#fill to accept ImageList object (#1467)
+
+Bug Fixes
+
+- Fix typo in order to fix NoMethodError (#1515)
+- Sync compression value in order fix  the problem of compression being ignored by ImageMagick 7 (#1503)
+- Add PKG_CONFIG_PATH for ImageMagick 7 in order to fix installation error on macOS (#1501)
+
+## RMagick 5.4.4
+
+Bug Fixes
+
+- Fix installation error again in some environment at creatint Makefile (#1465)
+- Fix Pixel#<=> which should accept other class instance (#1463)
+
+## RMagick 5.4.3
+
+Bug Fixes
+
+- Fix installation error in some environment by using x flag to use C++ compiler in order to create Makefile (#1460)
+
+## RMagick 5.4.2
+
+Improvements
+
+- Check C++ compiler exists (#1453)
+
+## RMagick 5.4.1
+
+Bug Fixes
+
+- Fix invalid cast between different size variables (#1448)
+
+## RMagick 5.4.0
+
+Improvements
+
+- Use rb_io_path() if exist because pathv attr was marked as deprecated at Ruby 3.3 (#1409)
+- Add observer gem as dependency (#1411)
+- Add aliases of filter type (#1439)
+- Release GVL in Image#contrast (#1440)
+
+Bug Fixes
+
+- Use C++ compiler in order to fix installation error with latest ImageMagick 7 on Windows (#1433)
+
+## RMagick 5.3.0
+
+Improvements
+
+- Support GC compaction (#1388)
+
+Bug Fixes
+
+- Fix memory leak in `Magick::Draw` for recentry ImageMagick 6 by removing unnecessary `GetDrawInfo()` calling (#1406)
+- Fix crash on ImageList#write with animation gif (#1379)
+- Windows: Fix RubyInstaller::Runtime::DllDirectory::WinApiError (#1381)
+
+## RMagick 5.2.0
+
+Improvements
+
+- Add OnAlphaChannel and OffAlphaChannel to the AlphaChannelOption enumeration. (#1377)
+- Add Ruby 3.2 support (#1370)
+
+## RMagick 5.1.0
+
+Improvements
+
+- Improve multi-thread performance by releasing GVL (#1352)
+- Add Ractor support (#1349)
+- Avoid overriding compilation variables (#1365)
+- Remove pkg-config command dependency (#1366)
+
+## RMagick 5.0.0
+
+Improvements
+
+- Improve installer in order to avoid SEGV within pkg-config command (#1359)
+- Clean up the documents and comment in source code referring to something that no longer exist (#1363)
+- Remove deprecated 'tile' attribute in Draw#marshal_dump (#1364)
+- Remove deprecated #instance_eval calling when block was given with Magick::ImageList#montage, Magick::Image::Info.new and more (#1362)
+- Remove deprecated RMagick.rb file (#1361)
+- Remove deprecated Magick.trace_proc= (#1351)
+- Remove deprecated Magick::{Image, Image::Info}#monitor= (#1356)
+
+## RMagick 4.3.0
+
+Deprecates
+
+- Mark Magick.trace_proc= as deprecated (#1354)
+- Mark Magick::{Image, Image::Info}#monitor= as deprecated (#1353)
+
+These methods will be removed in RMagick 5.0 and no alternative.
+
+## RMagick 4.2.6
+
+Improvements
+
+- Remove test_files to reduce gem package size (#1338)
+
+Bug Fixes
+
+- Guard against an empty rpath (#1333)
+- Call GetImageDistortion instead of IsImagesEqual to fix the issue reported in #1342 (#1343)
+
+## RMagick 4.2.5
+
+Bug Fixes
+
+- Specify rpath linker option to fix dynamic lib lookup failure on Linux (#1325)
+- Fix Image#profile! that can't delete exif data (#1326)
+
+## RMagick 4.2.4
+
+Improvements
+
+- spec_helper: drop require_relative to lib directory (#1306)
+- Fix build error with Ruby 3.1 on macOS (#1313)
+
+Bug Fixes
+
+- remove Mutex in trace_proc= (#1303)
+- channel_mean_spec: fix floating point comparison (#1307)
+- changed_predicate_spec: ensure target directory exists (#1305)
+- Doc: Fix documentation of Magick::Image#crop (#1311)
+- Magick::UndefinedKernel should also not be used when creating a new KernelInfo. (#1312)
+
+## RMagick 4.2.3
+
+Bug Fixes
+
+- Re-add block syntax deprecation warning and fix in RMagick source (#1279) (#1280)
+- Doc: Replace Magick::Montage with Magick::ImageList::Montage (#1281)
+- Update shadow example (#1297)
+- Escape the backslashes in windows error message (#1298)
+- Also set the alpha value of the target pixel (#1299)
+- Set alpha_trait to BlendPixelTrait when the alpha value of the pixel is not opaque. (#1300)
+
+## RMagick 4.2.2
+
+Bug Fixes:
+
+- Remove deprecation warning about block syntax (#1272)
+
+You are still recommended to use the block parameter instead of `self.` but
+we're silencing the deprecation warning until we can get RMagick's code up to
+that standard.
+
+## RMagick 4.2.1
+
+Bug Fixes:
+
+- Fix compilation with optimization on glibc (#1263)
+
+## RMagick 4.2.0
+
+This adds a deprecation warning when using a block for image operations.
+Instead of setting properties on `self`, you should accept a block argument and
+modify that instead. In a future version we we no longer be binding the block
+to the image.
+
+```diff
+- img.to_blob { self.quality = 75 }
++ img.to_blob { |image| image.quality = 75 }
+```
+
+Improvements:
+
+- Updated error messages if runtime ImageMagick version was not matched with when installed rmagick (#1213)
+- Improve Image#resize performance with ImageMagick 7 (#1240)
+- Added new colorspaces (#1252)
+
+Bug Fixes:
+
+- Fix assertion failed in Magick::TextureFill.new with with unexpected argument (#1216)
+- Call with yield when there is a block arguments (#701)
+- Avoid crash with monitor feature on Ruby 3.0  (#1253)
+
 ## RMagick 4.1.2
 
 Bug Fixes:

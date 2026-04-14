@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::ImageList, "#remap" do
   it "works" do
     image_list = described_class.new
 
     image_list.read(*Dir[IMAGES_DIR + '/Button_*.gif'])
     expect { image_list.remap }.not_to raise_error
-    remap_image = Magick::Image.new(20, 20) { self.background_color = 'green' }
+    remap_image = Magick::Image.new(20, 20) { |options| options.background_color = 'green' }
     expect { image_list.remap(remap_image) }.not_to raise_error
     expect { image_list.remap(remap_image, Magick::NoDitherMethod) }.not_to raise_error
     expect { image_list.remap(remap_image, Magick::RiemersmaDitherMethod) }.not_to raise_error

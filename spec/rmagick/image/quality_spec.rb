@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#quality' do
   it 'works' do
     hat = described_class.read(FLOWER_HAT).first

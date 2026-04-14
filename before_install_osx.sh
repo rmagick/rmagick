@@ -2,8 +2,6 @@
 
 set -euox pipefail
 
-gem install bundler
-
 if [ -v STYLE_CHECKS ]; then
   set +ux
   exit 0
@@ -11,15 +9,16 @@ fi
 
 if [ ! -v IMAGEMAGICK_VERSION ]; then
   echo "you must specify an ImageMagick version."
-  echo "example: 'IMAGEMAGICK_VERSION=6.8.9-10 bash ./before_install_osx.sh'"
+  echo "example: 'IMAGEMAGICK_VERSION=6.9.13-43 bash ./before_install_osx.sh'"
   exit 1
 fi
 
 export HOMEBREW_NO_AUTO_UPDATE=true
-brew install wget pkg-config ghostscript freetype jpeg little-cms2 libomp libpng libtiff liblqr libtool libxml2 zlib webp
+brew uninstall --force imagemagick imagemagick@6
+brew install wget ghostscript freetype libtool jpeg jpeg-xl little-cms2 openexr libomp libpng libtiff liblqr zlib webp zstd glib xz harfbuzz
 
-export LDFLAGS="-L/usr/local/opt/libxml2/lib -L/usr/local/opt/zlib/lib"
-export CPPFLAGS="-I/usr/local/opt/libxml2/include/libxml2 -I/usr/local/opt/zlib/include"
+export LDFLAGS="-L$(brew --prefix jpeg)/lib -I$(brew --prefix jpeg-xl)/lib -L$(brew --prefix little-cms2)/lib -L$(brew --prefix openexr)/lib -L$(brew --prefix libomp)/lib -L$(brew --prefix libpng)/lib -L$(brew --prefix libtiff)/lib -L$(brew --prefix liblqr)/lib -L$(brew --prefix zlib)/lib -L$(brew --prefix webp)/lib -L$(brew --prefix zstd)/lib -L$(brew --prefix xz)/lib -L$(brew --prefix harfbuzz)/lib"
+export CPPFLAGS="-I$(brew --prefix jpeg)/include -I$(brew --prefix jpeg-xl)/include -I$(brew --prefix openexr)/include/OpenEXR -I$(brew --prefix libtiff)/include -I$(brew --prefix zlib)/include -I$(brew --prefix zstd)/include -I$(brew --prefix glib)/include/glib-2.0 -I$(brew --prefix glib)/lib/glib-2.0/include -I$(brew --prefix xz)/include -I$(brew --prefix harfbuzz)/include"
 
 project_dir=$(pwd)
 build_dir="${project_dir}/build-ImageMagick/ImageMagick-${IMAGEMAGICK_VERSION}"
@@ -31,7 +30,7 @@ build_imagemagick() {
   mkdir -p build-ImageMagick
 
   version=(${IMAGEMAGICK_VERSION//./ })
-  wget "https://imagemagick.org/download/releases/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz"
+  wget "https://imagemagick.org/archive/releases/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz"
   tar -xf "ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz"
   rm "ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz"
   mv "ImageMagick-${IMAGEMAGICK_VERSION}" "${build_dir}"
@@ -42,8 +41,12 @@ build_imagemagick() {
   fi
 
   cd "${build_dir}"
-  ./configure --prefix=/usr/local "${options}"
-  make -j
+  ./configure \
+    --prefix=/usr/local \
+    "${options}" \
+    --with-gs-font-dir=/opt/homebrew/share/ghostscript/fonts \
+    --without-raw
+  make -j$(sysctl -n hw.logicalcpu)
 }
 
 if [ ! -d "${build_dir}" ]; then
@@ -51,7 +54,7 @@ if [ ! -d "${build_dir}" ]; then
 fi
 
 cd "${build_dir}"
-make install -j
+sudo make install -j$(sysctl -n hw.logicalcpu)
 cd "${project_dir}"
 
 set +ux

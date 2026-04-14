@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Purpose: Demonstrate getting information from the image attributes.
 # Usage: describe.rb filename1 [filename2...]
 # Notes: The output is similar to ImageMagick's identify command.
@@ -10,7 +12,7 @@ puts <<~END_INFO
 
 END_INFO
 
-if ARGV.length.zero?
+if ARGV.empty?
   puts 'Specify one or more image filenames as arguments.'
   exit
 end
@@ -29,7 +31,7 @@ ARGV.each do |file|
   puts "   Depth: #{img.depth} bits-per-pixel"
   puts "   Colors: #{img.number_colors}"
   puts "   Filesize: #{img.filesize}"
-  puts "   Resolution: #{img.x_resolution.to_i}x#{img.y_resolution.to_i} "\
+  puts "   Resolution: #{img.x_resolution.to_i}x#{img.y_resolution.to_i} " \
        "pixels/#{img.units == Magick::PixelsPerInchResolution ? 'inch' : 'centimeter'}"
 
   next if img.properties.empty?

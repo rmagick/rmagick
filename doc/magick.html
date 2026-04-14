@@ -1,570 +1,495 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-  <meta name="generator" content=
-  "HTML Tidy for Linux/x86 (vers 6 November 2007), see www.w3.org" />
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta name="generator" content="HTML Tidy for Linux/x86 (vers 6 November 2007), see www.w3.org" />
 
-  <title>RMagick 0.0.0: module Magick</title>
-  <meta http-equiv="Content-Type" content=
-  "text/html; charset=us-ascii" />
-  <meta name="GENERATOR" content="Quanta Plus" />
-  <meta name="Copyright" content=
-  "Copyright (C) 2006 by Timothy P. Hunter" />
-  <link rel="stylesheet" type="text/css" href="css/doc.css" />
-  <script type="text/javascript" src="scripts/doc.js">
-</script>
-  <style type="text/css">
-/*<![CDATA[*/
+    <title>RMagick 0.0.0: module Magick</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+    <meta name="GENERATOR" content="Quanta Plus" />
+    <meta name="Copyright" content="Copyright (C) 2006 by Timothy P. Hunter" />
+    <link rel="stylesheet" type="text/css" href="css/doc.css" />
+    <script type="text/javascript" src="scripts/doc.js"></script>
+    <style type="text/css">
+      /*<![CDATA[*/
 
-  /* Styles local to this page. */
-  /*]]>*/
-  </style>
-</head>
+      /* Styles local to this page. */
+      /*]]>*/
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+      hljs.configure({ cssSelector: "pre" });
+      hljs.highlightAll();
+    </script>
+  </head>
 
-<body>
-  <h6 id="header">RMagick 0.0.0 User's Guide and Reference</h6>
+  <body>
+    <h6 id="header">RMagick 0.0.0 User's Guide and Reference</h6>
 
-  <div class="nav">
-    &laquo;&nbsp;<a href="comtasks.html">Prev</a> | <a href=
-    "index.html">Contents</a> | <a href=
-    "ilist.html">Next</a>&nbsp;&raquo;
-  </div>
+    <div class="nav">&laquo;&nbsp;<a href="comtasks.html">Prev</a> | <a href="index.html">Contents</a> | <a href="ilist.html">Next</a>&nbsp;&raquo;</div>
 
-  <h1>module Magick</h1>
+    <h1>module Magick</h1>
 
-  <div id="toc">
-    <h2>Table of Contents</h2>
+    <div id="toc">
+      <h2>Table of Contents</h2>
 
-    <h3>module methods</h3>
+      <h3>module methods</h3>
 
-    <ul>
-      <li><a href="#colors">colors</a></li>
+      <ul>
+        <li><a href="#colors">colors</a></li>
 
-      <li><a href="#fonts">fonts</a></li>
+        <li><a href="#fonts">fonts</a></li>
 
-      <li><a href="#formats">formats</a></li>
+        <li><a href="#formats">formats</a></li>
 
-      <li><a href="#limit_resource">limit_resource</a></li>
+        <li><a href="#limit_resource">limit_resource</a></li>
 
-      <li><a href="#set_log_event_mask">set_log_event_mask</a></li>
+        <li><a href="#set_cache_threshold">set_cache_threshold</a></li>
 
-      <li><a href="#set_log_format">set_log_format</a></li>
+        <li><a href="#set_log_event_mask">set_log_event_mask</a></li>
 
-      <li><a href="#trace_proc">trace_proc</a></li>
-    </ul>
-  </div>
+        <li><a href="#set_log_format">set_log_format</a></li>
+      </ul>
+    </div>
 
-  <h2 class="methods">module methods</h2>
+    <h2 class="methods">module methods</h2>
 
-  <div class="sig">
-    <h3 id="colors">colors</h3>
+    <div class="sig">
+      <h3 id="colors">colors</h3>
 
-    <p>Magick.colors <span class="arg">{ |color| block }</span>
-    -&gt; <em>Magick</em><br />
-    Magick.colors -&gt; <em>array</em></p>
-  </div>
+      <p>
+        Magick.colors <span class="arg">{ |color| block }</span> -&gt; <em>Magick</em><br />
+        Magick.colors -&gt; <em>array</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Lists the <a href="imusage.html#color_names">named
-    colors</a>. If the optional block is present, calls the block
-    once for each color, passing a Magick::Color object. Otherwise,
-    returns an array of Magick::Color objects, one for each
-    color.</p>
+      <p>
+        Lists the <a href="imusage.html#color_names">named colors</a>. If the optional block is present, calls the block once for each color, passing a
+        Magick::Color object. Otherwise, returns an array of Magick::Color objects, one for each color.
+      </p>
 
-    <p>The Magick::Color class is a Struct class with the following
-    attributes:</p>
+      <p>The Magick::Color class is a Struct class with the following attributes:</p>
 
-    <table class="simple_table" summary="magic color attributes">
-      <caption>
-        Magick::Color attributes
-      </caption>
+      <table class="simple_table" summary="magic color attributes">
+        <caption>
+          Magick::Color attributes
+        </caption>
 
-      <tr>
-        <th>Attribute</th>
+        <tr>
+          <th>Attribute</th>
 
-        <th>Value</th>
-      </tr>
+          <th>Value</th>
+        </tr>
 
-      <tr>
-        <td>name</td>
+        <tr>
+          <td>name</td>
 
-        <td>The color name. For example, "red".</td>
-      </tr>
+          <td>The color name. For example, "red".</td>
+        </tr>
 
-      <tr>
-        <td>compliance</td>
+        <tr>
+          <td>compliance</td>
 
-        <td>A <a href=
-        "constants.html#ComplianceType">ComplianceType</a> value
-        such as X11Compliance.</td>
-      </tr>
+          <td>A <a href="constants.html#ComplianceType">ComplianceType</a> value such as X11Compliance.</td>
+        </tr>
 
-      <tr>
-        <td>color</td>
+        <tr>
+          <td>color</td>
 
-        <td>A <a href="struct.html#Pixel">Pixel</a> object
-        containing the RGB values.</td>
-      </tr>
-    </table>
+          <td>A <a href="struct.html#Pixel">Pixel</a> object containing the RGB values.</td>
+        </tr>
+      </table>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>If no block is associated with the call, returns an array of
-    Magick::Color objects.</p>
+      <p>If no block is associated with the call, returns an array of Magick::Color objects.</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p>This is a small sample of <code>colors.miff</code>, the
-    complete image created by the example program.</p>
+      <p>This is a small sample of <code>colors.miff</code>, the complete image created by the example program.</p>
 
-    <p><a href="javascript:popup('colors.rb.html')"><img src=
-    "ex/colors.gif" title="Click to see the example script" alt=
-    "Magick::colors example" /></a></p>
+      <p>
+        <a href="javascript:popup('colors.rb.html')"><img src="ex/colors.gif" title="Click to see the example script" alt="Magick::colors example" /></a>
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>GetColorInfo</p>
-  </div>
+      <p>GetColorInfo</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="fonts">fonts</h3>
+    <div class="sig">
+      <h3 id="fonts">fonts</h3>
 
-    <p>Magick.fonts <span class="arg">{ |font| block }</span> -&gt;
-    <em>Magick</em><br />
-    Magick.fonts -&gt; <em>array</em></p>
-  </div>
+      <p>
+        Magick.fonts <span class="arg">{ |font| block }</span> -&gt; <em>Magick</em><br />
+        Magick.fonts -&gt; <em>array</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Lists the fonts that ImageMagick knows about. If the
-    optional block is present, calls the block once for each font,
-    passing a Magick::Font object. Otherwise, returns an array of
-    Magick::Font objects, one for each font.</p>
+      <p>
+        Lists the fonts that ImageMagick knows about. If the optional block is present, calls the block once for each font, passing a Magick::Font object.
+        Otherwise, returns an array of Magick::Font objects, one for each font.
+      </p>
 
-    <p>The Magick::Font class is a Struct class with the following
-    attributes:</p>
+      <p>The Magick::Font class is a Struct class with the following attributes:</p>
 
-    <table summary="font class attributes" class="simple_table">
-      <caption>
-        Magick::Font attributes
-      </caption>
+      <table summary="font class attributes" class="simple_table">
+        <caption>
+          Magick::Font attributes
+        </caption>
 
-      <tr>
-        <th>Attribute</th>
+        <tr>
+          <th>Attribute</th>
 
-        <th>Value</th>
-      </tr>
+          <th>Value</th>
+        </tr>
 
-      <tr>
-        <td>name</td>
+        <tr>
+          <td>name</td>
 
-        <td>The font name. For example, "Palatino-Roman".</td>
-      </tr>
+          <td>The font name. For example, "Palatino-Roman".</td>
+        </tr>
 
-      <tr>
-        <td>description</td>
+        <tr>
+          <td>description</td>
 
-        <td>The font description. For example, "Palatino
-        Roman".</td>
-      </tr>
+          <td>The font description. For example, "Palatino Roman".</td>
+        </tr>
 
-      <tr>
-        <td>family</td>
+        <tr>
+          <td>family</td>
 
-        <td>The font family. For example, "Palatino", "Helvetica",
-        or "Courier".</td>
-      </tr>
+          <td>The font family. For example, "Palatino", "Helvetica", or "Courier".</td>
+        </tr>
 
-      <tr>
-        <td>style</td>
+        <tr>
+          <td>style</td>
 
-        <td>A <a href="constants.html#StyleType">StyleType</a>
-        value such as <code>NormalStyle</code>.</td>
-      </tr>
+          <td>A <a href="constants.html#StyleType">StyleType</a> value such as <code>NormalStyle</code>.</td>
+        </tr>
 
-      <tr>
-        <td>stretch</td>
+        <tr>
+          <td>stretch</td>
 
-        <td>A <a href="constants.html#StretchType">StretchType</a>
-        value such as <code>NormalStretch</code>.</td>
-      </tr>
+          <td>A <a href="constants.html#StretchType">StretchType</a> value such as <code>NormalStretch</code>.</td>
+        </tr>
 
-      <tr>
-        <td>weight</td>
+        <tr>
+          <td>weight</td>
 
-        <td>The font weight, one of 100, 200, 300, 400, 500, 600,
-        700, 800, or 900.</td>
-      </tr>
+          <td>The font weight, one of 100, 200, 300, 400, 500, 600, 700, 800, or 900.</td>
+        </tr>
 
-      <tr>
-        <td>encoding</td>
+        <tr>
+          <td>encoding</td>
 
-        <td>The font encoding, such as "AppleRoman". May be
-        <code>nil</code>.</td>
-      </tr>
+          <td>The font encoding, such as "AppleRoman". May be <code>nil</code>.</td>
+        </tr>
 
-      <tr>
-        <td>foundry</td>
+        <tr>
+          <td>foundry</td>
 
-        <td>The font foundry. "URW", for example. May be
-        <code>nil</code>.</td>
-      </tr>
+          <td>The font foundry. "URW", for example. May be <code>nil</code>.</td>
+        </tr>
 
-      <tr>
-        <td>format</td>
+        <tr>
+          <td>format</td>
 
-        <td>If the font is a Type1 font, has the value "type1",
-        otherwise <code>nil</code>.</td>
-      </tr>
-    </table>
+          <td>
+            If the font is a Type1 font, has the value "type1", otherwise
+            <code>nil</code>.
+          </td>
+        </tr>
+      </table>
 
-    <h4>Returns</h4>
+      <h4>Returns</h4>
 
-    <p>If no block is associated with the call, returns an array of
-    Magick::Font objects.</p>
+      <p>If no block is associated with the call, returns an array of Magick::Font objects.</p>
 
-    <h4>Example</h4>
+      <h4>Example</h4>
 
-    <p><a href="javascript:popup('fonts.rb.html')" title=
-    "The example script">fonts.rb</a></p>
+      <p>
+        <a href="javascript:popup('fonts.rb.html')" title="The example script">fonts.rb</a>
+      </p>
 
-    <h4>Magick API</h4>
+      <h4>Magick API</h4>
 
-    <p>GetFontInfo</p>
-  </div>
+      <p>GetFontInfo</p>
+    </div>
 
-  <div class="sig">
-    <h3 id="formats">formats</h3>
+    <div class="sig">
+      <h3 id="formats">formats</h3>
 
-    <p>Magick.formats <span class="arg">{ |f,v| block }</span>
-    -&gt; <em>Magick</em><br />
-    Magick.formats -&gt; <em>hash</em></p>
-  </div>
+      <p>
+        Magick.formats <span class="arg">{ |f,v| block }</span> -&gt; <em>Magick</em><br />
+        Magick.formats -&gt; <em>hash</em>
+      </p>
+    </div>
 
-  <div class="desc">
-    <h4>Description</h4>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <p>Describes the image formats supported by ImageMagick. If the
-    optional block is present, calls the block once for each image
-    format. The first argument, <em>f</em>, is the format name. The
-    second argument, <em>v</em>, is the properties string described
-    below.</p>
+      <p>
+        Describes the image formats supported by ImageMagick. If the optional block is present, calls the block once for each image format. The first argument,
+        <em>f</em>, is the format name. The second argument, <em>v</em>, is the properties string described below.
+      </p>
 
-    <h4>Returns</h4>A hash of image formats and their properties.
-    Each key in the returned hash is the name of a supported image
-    format. Each value is a string in the form "BRWA". The details
-    are in this table:
+      <h4>Returns</h4>
+      A hash of image formats and their properties. Each key in the returned hash is the name of a supported image format. Each value is a string in the form
+      "BRWA". The details are in this table:
 
-    <table summary="format string symbols" class="simple_table">
-      <caption>
-        Format property codes
-      </caption>
+      <table summary="format string symbols" class="simple_table">
+        <caption>
+          Format property codes
+        </caption>
 
-      <tr>
-        <th>Code</th>
+        <tr>
+          <th>Code</th>
 
-        <th>Definition</th>
-      </tr>
+          <th>Definition</th>
+        </tr>
 
-      <tr>
-        <td>B</td>
+        <tr>
+          <td>B</td>
 
-        <td>is "*" if the format has native blob support, and "-"
-        otherwise.</td>
-      </tr>
+          <td>is "*" if the format has native blob support, and "-" otherwise.</td>
+        </tr>
 
-      <tr>
-        <td>R</td>
+        <tr>
+          <td>R</td>
 
-        <td>is "r" if ImageMagick can read the format, and "-"
-        otherwise.</td>
-      </tr>
+          <td>is "r" if ImageMagick can read the format, and "-" otherwise.</td>
+        </tr>
 
-      <tr>
-        <td>W</td>
+        <tr>
+          <td>W</td>
 
-        <td>is "w" if ImageMagick can write the format, and "-"
-        otherwise.</td>
-      </tr>
+          <td>is "w" if ImageMagick can write the format, and "-" otherwise.</td>
+        </tr>
 
-      <tr>
-        <td>A</td>
+        <tr>
+          <td>A</td>
 
-        <td>is "+" if the format supports multi-image files, and
-        "-" otherwise.</td>
-      </tr>
-    </table>
+          <td>is "+" if the format supports multi-image files, and "-" otherwise.</td>
+        </tr>
+      </table>
 
-    <h4>Example</h4>
-    <pre>
-p Magick.formats &raquo;
-   {"TIF"=&gt;"*rw+",
-   "H"=&gt;"*rw-",
-   "MNG"=&gt;"*rw+",
-   "NULL"=&gt;"*rw-",
-   ...
-   "G"=&gt;"*rw+",
-   "GIF"=&gt;"*rw+",
-   "PDB"=&gt;"*rw+"}
-</pre>
+      <h4>Example</h4>
 
-    <h4>Magick API</h4>
+      <pre class="language-ruby">
+p Magick.formats
+#=&gt; {"TIF"=&gt;"*rw+",
+#  "H"=&gt;"*rw-",
+#  "MNG"=&gt;"*rw+",
+#  "NULL"=&gt;"*rw-",
+#  ...
+#  "G"=&gt;"*rw+",
+#  "GIF"=&gt;"*rw+",
+#  "PDB"=&gt;"*rw+"}
+</pre
+      >
 
-    <p>GetMagickInfo</p>
+      <h4>Magick API</h4>
 
-    <h4>Note</h4>
+      <p>GetMagickInfo</p>
 
-    <p>ImageMagick depends on external programs for some formats.
-    Depending on how ImageMagick was installed on your system, some
-    formats may not be available. If you have questions, ask your
-    system administrator.</p>
-  </div>
+      <h4>Note</h4>
 
-  <div class="sig">
-    <h3 id="limit_resource">limit_resource</h3>
+      <p>
+        ImageMagick depends on external programs for some formats. Depending on how ImageMagick was installed on your system, some formats may not be available.
+        If you have questions, ask your system administrator.
+      </p>
+    </div>
 
-    <p>Magick.limit_resource(<span class="arg">resource_type</span>
-    [, <span class="arg">limit</span>]) -&gt; <span class=
-    "arg">old_limit</span></p>
-  </div>
+    <div class="sig">
+      <h3 id="limit_resource">limit_resource</h3>
 
-  <div class="desc">
-    <h4>Description</h4>
+      <p>
+        Magick.limit_resource(<span class="arg">resource_type</span> [, <span class="arg">limit</span>]) -&gt;
+        <span class="arg">old_limit</span>
+      </p>
+    </div>
 
-    <p>Sets a limit to the amount of a resource, or gets the
-    current limit for the resource. <span class="imquote">When the
-    limit is reached, ImageMagick will fail in some fashion or take
-    compensating actions if possible.</span> The default limits
-    vary according to the platform. See the ImageMagick
-    documentation for the <em>-limit</em> option for more
-    information.</p>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <h4>Arguments</h4>This method may be called with one or two
-    arguments. The first argument identifies the resource. If
-    specified, the second argument is the limit.
+      <p>
+        Sets a limit to the amount of a resource, or gets the current limit for the resource.
+        <span class="imquote">When the limit is reached, ImageMagick will fail in some fashion or take compensating actions if possible.</span>
+        The default limits vary according to the platform. See the ImageMagick documentation for the <em>-limit</em> option for more information.
+      </p>
 
-    <dl>
-      <dt>resource_type</dt>
+      <h4>Arguments</h4>
+      This method may be called with one or two arguments. The first argument identifies the resource. If specified, the second argument is the limit.
 
-      <dd>One of the symbols <code>:area</code>,
-      <code>:disk</code>, <code>:file</code>, <code>:map</code>,
-      <code>:memory</code>, or <code>:time</code>. You may use a
-      string instead of a symbol.</dd>
+      <dl>
+        <dt>resource_type</dt>
 
-      <dt>limit</dt>
+        <dd>
+          One of the symbols <code>:area</code>, <code>:disk</code>, <code>:file</code>, <code>:map</code>, <code>:memory</code>, or <code>:time</code>. You may
+          use a string instead of a symbol.
+        </dd>
 
-      <dd>If present, the limit for the resource. This argument is
-      always an integer number. If the <span class=
-      "arg">resource_type</span> is <code>:file</code>, the limit
-      is the number of open files. If <code>:memory</code> or
-      <code>:map</code>, the limit is measured megabytes. If
-      <code>:disk</code>, the limit is measured in gigabytes. If
-      the <span class="arg">resource_type</span> is
-      <code>:area</code> the limit is the maximum width * height of
-      an image in pixels that can reside in pixel cache memory. If
-      <code>:time</code>, the limit is measured in seconds. If this
-      argument is omitted the limit is not changed.</dd>
-    </dl>
+        <dt>limit</dt>
 
-    <h4>Returns</h4>
+        <dd>
+          If present, the limit for the resource. This argument is always an integer number. If the <span class="arg">resource_type</span> is
+          <code>:file</code>, the limit is the number of open files. If <code>:memory</code> or <code>:map</code>, the limit is measured megabytes. If
+          <code>:disk</code>, the limit is measured in gigabytes. If the <span class="arg">resource_type</span> is <code>:area</code> the limit is the maximum
+          width * height of an image in pixels that can reside in pixel cache memory. If <code>:time</code>, the limit is measured in seconds. If this argument
+          is omitted the limit is not changed.
+        </dd>
+      </dl>
 
-    <p>The current resource limit. If a new limit is specified this
-    is the limit <em>before</em> the change.</p>
+      <h4>Returns</h4>
 
-    <h4>Notes</h4>
+      <p>The current resource limit. If a new limit is specified this is the limit <em>before</em> the change.</p>
 
-    <p>This method supercedes <code>set_cache_threshold</code>.</p>
+      <h4>Notes</h4>
 
-    <p>Setting the <code>:time</code> limit resets the elapsed time
-    to zero in the pixel cache. Call it before any operation that
-    you need to set a time limit on.</p>
-  </div>
+      <p>This method supersedes <code>set_cache_threshold</code>.</p>
 
-  <div class="sig">
-    <h3 id="set_log_event_mask">set_log_event_mask</h3>
+      <p>
+        Setting the <code>:time</code> limit resets the elapsed time to zero in the pixel cache. Call it before any operation that you need to set a time limit
+        on.
+      </p>
+    </div>
 
-    <p>Magick.set_log_event_mask(<span class=
-    "arg">event_list</span>)</p>
-  </div>
+    <div class="sig">
+      <h3 id="set_cache_threshold">set_cache_threshold</h3>
 
-  <div class="desc">
-    <h4>Description</h4>
+      <p>Magick.set_cache_threshold(<span class="arg">threshold</span>)</p>
+    </div>
 
-    <p>Specify which events to log.</p>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <h4>Argument</h4>
+      <p>
+        Set the amount of free memory allocated for the pixel cache. Once this threshold is exceeded, all subsequent pixels cache operations are to/from disk.
+      </p>
 
-    <p>A string composed of one or more of the following event
-    types. If more than one event type is specified, separate the
-    event types with commas.</p>
+      <h4>Argument</h4>
 
-    <p><code>All, Annotate, Blob, Cache, Coder, Configure,
-    Deprecate, Draw, Exception, Locale, Module, None, Resource,
-    Trace, Transform, User, Wand, X11</code></p>
+      <p>A number of megabytes to set.</p>
+    </div>
 
-    <h4>Example</h4>
-    <pre>
-Magick.set_log_event_mask("Module,Coder")
-</pre>
+    <div class="sig">
+      <h3 id="set_log_event_mask">set_log_event_mask</h3>
 
-    <h4>Magick API</h4>
+      <p>Magick.set_log_event_mask(<span class="arg">event_list</span>)</p>
+    </div>
 
-    <p>SetLogEventMask</p>
+    <div class="desc">
+      <h4>Description</h4>
 
-    <h4>See also</h4>
+      <p>Specify which events to log.</p>
 
-    <p><a href="#set_log_format">set_log_format</a></p>
+      <h4>Argument</h4>
 
-    <h4>Log configuration</h4>
+      <p>A string composed of one or more of the following event types. If more than one event type is specified, separate the event types with commas.</p>
 
-    <p>Magick logging is configured with the log.xml file in
-    Magick's config directory. See <a href=
-    "http://redux.imagemagick.org/script/resources.php">Resources</a>
-    in the ImageMagick documentation for more information.</p>
+      <p>
+        <code>All, Annotate, Blob, Cache, Coder, Configure, Deprecate, Draw, Exception, Locale, Module, None, Resource, Trace, Transform, User, Wand, X11</code>
+      </p>
 
-    <p>Use this command to find out about the current log
-    configuration.</p>
-    <pre>
-convert -list log
-</pre>
-  </div>
+      <h4>Example</h4>
 
-  <div class="sig">
-    <h3 id="set_log_format">set_log_format</h3>
+      <pre class="language-ruby">Magick.set_log_event_mask("Module,Coder")</pre>
 
-    <p>Magick.set_log_format(<span class="arg">format</span>)</p>
-  </div>
+      <h4>Magick API</h4>
 
-  <div class="desc">
-    <h4>Description</h4>
+      <p>SetLogEventMask</p>
 
-    <p>Specify the event log format.</p>
+      <h4>See also</h4>
 
-    <h4>Argument</h4>
+      <p><a href="#set_log_format">set_log_format</a></p>
 
-    <p>A fprintf-like format string composed of optional "normal"
-    text (to which no meaning is assigned) and the following format
-    characters:</p>
+      <h4>Log configuration</h4>
 
-    <dl>
-      <dt>%d</dt>
+      <p>
+        Magick logging is configured with the log.xml file in Magick's config directory. See
+        <a href="https://imagemagick.org/script/resources.php">Resources</a> in the ImageMagick documentation for more information.
+      </p>
 
-      <dd>domain</dd>
+      <p>Use this command to find out about the current log configuration.</p>
+      <pre class="language-console">convert -list log</pre>
+    </div>
 
-      <dt>%e</dt>
+    <div class="sig">
+      <h3 id="set_log_format">set_log_format</h3>
 
-      <dd>event</dd>
+      <p>Magick.set_log_format(<span class="arg">format</span>)</p>
+    </div>
 
-      <dt>%f</dt>
+    <div class="desc">
+      <h4>Description</h4>
 
-      <dd>function</dd>
+      <p>Specify the event log format.</p>
 
-      <dt>%l</dt>
+      <h4>Argument</h4>
 
-      <dd>line</dd>
+      <p>A fprintf-like format string composed of optional "normal" text (to which no meaning is assigned) and the following format characters:</p>
 
-      <dt>%m</dt>
+      <dl>
+        <dt>%d</dt>
 
-      <dd>module</dd>
+        <dd>domain</dd>
 
-      <dt>%p</dt>
+        <dt>%e</dt>
 
-      <dd>process ID</dd>
+        <dd>event</dd>
 
-      <dt>%r</dt>
+        <dt>%f</dt>
 
-      <dd>read CPU time</dd>
+        <dd>function</dd>
 
-      <dt>%t</dt>
+        <dt>%l</dt>
 
-      <dd>wall clock time</dd>
+        <dd>line</dd>
 
-      <dt>%u</dt>
+        <dt>%m</dt>
 
-      <dd>user CPU time</dd>
+        <dd>module</dd>
 
-      <dt>%%</dt>
+        <dt>%p</dt>
 
-      <dd>percent sign</dd>
+        <dd>process ID</dd>
 
-      <dt>\n</dt>
+        <dt>%r</dt>
 
-      <dd>newline</dd>
+        <dd>read CPU time</dd>
 
-      <dt>\r</dt>
+        <dt>%t</dt>
 
-      <dd>carriage return</dd>
-    </dl>
-  </div>
+        <dd>wall clock time</dd>
 
-  <div class="sig">
-    <h3 id="trace_proc">trace_proc</h3>
+        <dt>%u</dt>
 
-    <p>Magick.trace_proc = <span class="arg">proc</span></p>
-  </div>
+        <dd>user CPU time</dd>
 
-  <div class="desc">
-    <h4>Description</h4>
+        <dt>%%</dt>
 
-    <p>If the Magick module attribute <code>trace_proc</code> is
-    set to a Proc object, RMagick calls the proc whenever an image
-    is created or destroyed. You can use this proc to keep track of
-    which images your program has created and which have been
-    destroyed.</p>
+        <dd>percent sign</dd>
 
-    <h4>Arguments</h4>
+        <dt>\n</dt>
 
-    <p>The proc should accept these four arguments:</p>
+        <dd>newline</dd>
 
-    <dl>
-      <dt>which</dt>
+        <dt>\r</dt>
 
-      <dd>A symbol that indicates which operation the proc is being
-      called for. If the proc is called for an image creation, the
-      value is :c. If called for an image destruction, the value is
-      :d.</dd>
+        <dd>carriage return</dd>
+      </dl>
+    </div>
 
-      <dt>description</dt>
+    <p class="spacer">&nbsp;</p>
 
-      <dd>A string describing the image. This is the same string
-      that would be returned by calling the image's inspect
-      method.</dd>
-
-      <dt>id</dt>
-
-      <dd>A unique identifier for the image. This identifier is not
-      the same as the object's object_id. No two images will have
-      the same id at the same time. However, the id of an image
-      that has been destroyed may be reused for a subsequent
-      image.</dd>
-
-      <dt>method</dt>
-
-      <dd>The name of the method responsible for creating or
-      destroying the image.</dd>
-    </dl>
-
-    <h4>Notes</h4>
-
-    <p>If called while Ruby is cleaning up after the program has
-    finished, any methods the proc calls may not be executed.</p>
-
-    <p>Use <a href="info.html#user_option">the "user" option</a> to
-    add an additional identifying string to the image's
-    description.</p>
-  </div>
-
-  <p class="spacer">&nbsp;</p>
-
-  <div class="nav">
-    &laquo;&nbsp;<a href="comtasks.html">Prev</a> | <a href=
-    "index.html">Contents</a> | <a href=
-    "ilist.html">Next</a>&nbsp;&raquo;
-  </div>
-</body>
+    <div class="nav">&laquo;&nbsp;<a href="comtasks.html">Prev</a> | <a href="index.html">Contents</a> | <a href="ilist.html">Next</a>&nbsp;&raquo;</div>
+  </body>
 </html>

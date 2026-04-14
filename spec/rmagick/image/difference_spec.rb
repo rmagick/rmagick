@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#difference' do
   it 'works' do
     image1 = described_class.read(IMAGES_DIR + '/Button_0.gif').first
@@ -7,8 +9,11 @@ RSpec.describe Magick::Image, '#difference' do
     expect(result).to be_instance_of(Array)
     expect(result.length).to eq(3)
     expect(result[0]).to be_instance_of(Float)
+    expect(result[0]).not_to eq(0.0)
     expect(result[1]).to be_instance_of(Float)
+    expect(result[1]).not_to eq(0.0)
     expect(result[2]).to be_instance_of(Float)
+    expect(result[2]).not_to eq(0.0)
 
     expect { image1.difference(2) }.to raise_error(NoMethodError)
     image2.destroy!

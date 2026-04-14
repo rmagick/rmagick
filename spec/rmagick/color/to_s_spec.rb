@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Magick::Color, '#to_s' do
   it 'works' do
     color = Magick.colors[0]

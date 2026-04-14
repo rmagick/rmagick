@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 require 'rmagick'
 
 imgl = Magick::ImageList.new
-imgl.new_image(400, 150) { self.background_color = 'white' }
+imgl.new_image(400, 150) { |info| info.background_color = 'white' }
 
 gc = Magick::Draw.new
 
@@ -35,6 +37,7 @@ gc.circle(325, 25, 326, 26)
 
 # Annotate
 gc.fill('black')
+gc.fill_opacity(1)
 gc.stroke('transparent')
 gc.pointsize(14)
 gc.font_weight(Magick::BoldWeight)

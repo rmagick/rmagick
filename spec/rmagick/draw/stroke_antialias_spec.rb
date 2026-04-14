@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Draw, '#stroke_antialias' do
   it 'works' do
     image = Magick::Image.new(200, 200)

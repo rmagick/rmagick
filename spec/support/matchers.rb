@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'matchers/match_pixels_matcher'
 
 def match_pixels(expected, delta: 0)

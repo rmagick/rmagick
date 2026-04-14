@@ -2,8 +2,6 @@
 
 set -euox pipefail
 
-gem install bundler
-
 if [ -v STYLE_CHECKS ]; then
   set +ux
   exit 0
@@ -11,11 +9,10 @@ fi
 
 if [ ! -v IMAGEMAGICK_VERSION ]; then
   echo "you must specify an ImageMagick version."
-  echo "example: 'IMAGEMAGICK_VERSION=6.8.9-10 bash ./before_install_linux.sh'"
+  echo "example: 'IMAGEMAGICK_VERSION=6.9.13-43 bash ./before_install_linux.sh'"
   exit 1
 fi
 
-sudo apt-get clean
 sudo apt-get update
 
 # remove all existing imagemagick related packages
@@ -23,13 +20,8 @@ sudo apt-get autoremove -y imagemagick* libmagick* --purge
 
 # install build tools, ImageMagick delegates
 sudo apt-get install -y build-essential libx11-dev libxext-dev zlib1g-dev \
-  liblcms2-dev libpng-dev libjpeg-dev libfreetype6-dev libxml2-dev \
-  libtiff5-dev libwebp-dev liblqr-1-0-dev vim gsfonts ghostscript ccache
-
-if [ ! -d /usr/include/freetype ]; then
-  # If `/usr/include/freetype` is not existed, ImageMagick 6.7 configuration fails about Freetype.
-  sudo ln -sf /usr/include/freetype2 /usr/include/freetype
-fi
+  liblcms2-dev libpng-dev libjpeg-dev libfreetype6-dev \
+  libtiff5-dev libwebp-dev liblqr-1-0-dev libglib2.0-dev gsfonts ghostscript
 
 project_dir=$(pwd)
 build_dir="${project_dir}/build-ImageMagick/ImageMagick-${IMAGEMAGICK_VERSION}"
@@ -41,7 +33,7 @@ build_imagemagick() {
   mkdir -p build-ImageMagick
 
   version=(${IMAGEMAGICK_VERSION//./ })
-  wget "https://imagemagick.org/download/releases/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz"
+  wget "https://imagemagick.org/archive/releases/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz"
   tar -xf "ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz"
   rm "ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz"
   mv "ImageMagick-${IMAGEMAGICK_VERSION}" "${build_dir}"
@@ -52,8 +44,8 @@ build_imagemagick() {
   fi
 
   cd "${build_dir}"
-  CC="ccache cc" CXX="ccache c++" ./configure --prefix=/usr "${options}"
-  make -j
+  ./configure --prefix=/usr "${options}"
+  make -j$(nproc)
 }
 
 if [ ! -d "${build_dir}" ]; then
@@ -61,7 +53,7 @@ if [ ! -d "${build_dir}" ]; then
 fi
 
 cd "${build_dir}"
-sudo make install -j
+sudo make install -j$(nproc)
 cd "${project_dir}"
 
 sudo ldconfig

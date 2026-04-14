@@ -1,20 +1,19 @@
-# $Id: RMagick.rb,v 1.84 2009/09/15 22:08:41 rmagick Exp $
+# frozen_string_literal: true
+
+# $Id: rmagick_internal.rb,v 1.84 2009/09/15 22:08:41 rmagick Exp $
 #==============================================================================
 #                  Copyright (C) 2009 by Timothy P. Hunter
-#   Name:       RMagick.rb
+#   Name:       rmagick_internal.rb
 #   Author:     Tim Hunter
 #   Purpose:    Extend Ruby to interface with ImageMagick.
 #   Notes:      RMagick2.so defines the classes. The code below adds methods
 #               to the classes.
 #==============================================================================
 
-if RUBY_PLATFORM =~ /mingw/i
-  begin
-    require 'ruby_installer'
-    ENV['PATH'].split(File::PATH_SEPARATOR).grep(/ImageMagick/i).each do |path|
-      RubyInstaller::Runtime.add_dll_directory(path)
-    end
-  rescue LoadError
+if RUBY_PLATFORM.match?(/mingw/i)
+  require 'ruby_installer'
+  ENV['PATH'].split(File::PATH_SEPARATOR).grep(/ImageMagick/i).each do |path|
+    RubyInstaller::Runtime.add_dll_directory(path) if File.exist?(File.join(path, 'CORE_RL_magick_.dll')) || File.exist?(File.join(path, 'CORE_RL_MagickCore_.dll'))
   end
 end
 
@@ -23,9 +22,6 @@ require 'observer'
 require 'RMagick2.so'
 
 module Magick
-  @formats = nil
-  @trace_proc = nil
-  @exit_block_set_up = nil
   IMAGEMAGICK_VERSION = Magick::Magick_version.split[1].split('-').first
 
   class << self
@@ -52,46 +48,14 @@ module Magick
     #   p Magick.formats
     #   => {"3FR"=>" r-+", "3G2"=>" r-+", "3GP"=>" r-+", "A"=>"*rw+",
     #   ...
-    def formats
-      @formats ||= init_formats
+    def formats(&block)
+      formats = init_formats
 
-      if block_given?
-        @formats.each { |k, v| yield k, v }
+      if block
+        formats.each(&block)
         self
       else
-        @formats
-      end
-    end
-
-    # If the Magick module attribute +trace_proc+ is set to a Proc object,
-    # RMagick calls the proc whenever an image is created or destroyed.
-    #
-    # You can use this proc to keep track of which images your program has created
-    # and which have been destroyed.
-    #
-    # @param p [Proc] The proc object.
-    #   The following value will be passed into the proc object.
-    #   - +which+ - A symbol that indicates which operation the proc is being called for.
-    #     If the proc is called for an image creation, the value is +:c+.
-    #     If called for an image destruction, the value is +:d+.
-    #   - +description+ - A string describing the image. This is the same string that
-    #     would be returned by calling the image's inspect method.
-    #   - +id+ - A unique identifier for the image. This identifier is not the same as the object's +object_id+.
-    #   - +method+ - The name of the method responsible for creating or destroying the image.
-    #
-    # @example
-    #   Magick.trace_proc = proc do |which, description, id, method|
-    #     ...
-    #   end
-    def trace_proc=(p)
-      m = Mutex.new
-      m.synchronize do
-        if @trace_proc.nil? && !p.nil? && !@exit_block_set_up
-          at_exit { @trace_proc = nil }
-          @exit_block_set_up = true
-        end
-
-        @trace_proc = p
+        formats
       end
     end
   end
@@ -109,7 +73,7 @@ module Magick
   MinimumGeometry  = GeometryValue.new(:MinimumGeometry, 6).freeze
 
   class Geometry
-    FLAGS = ['', '%', '!', '<', '>', '@', '^']
+    FLAGS = ['', '%', '!', '<', '>', '@', '^'].freeze
     RFLAGS = {
       '%' => PercentGeometry,
       '!' => AspectGeometry,
@@ -117,7 +81,7 @@ module Magick
       '>' => GreaterGeometry,
       '@' => AreaGeometry,
       '^' => MinimumGeometry
-    }
+    }.freeze
 
     attr_accessor :width, :height, :x, :y, :flag
 
@@ -173,7 +137,7 @@ module Magick
 
     # Convert object to a geometry string
     def to_s
-      str = ''
+      str = +''
       if @width > 0
         fmt = @width.truncate == @width ? '%d' : '%.2f'
         str << sprintf(fmt, @width)
@@ -259,18 +223,29 @@ module Magick
     private
 
     def enquote(str)
-      if str.length > 2 && /\A(?:\"[^\"]+\"|\'[^\']+\'|\{[^\}]+\})\z/.match(str)
+      str = to_string(str)
+      if str.length > 2 && /\A(?:"[^"]+"|'[^']+'|\{[^}]+\})\z/.match(str)
         str
       else
         '"' + str + '"'
       end
     end
 
-    def check_opacity(opacity)
-      return if opacity.is_a?(String) && opacity['%']
+    def to_opacity(opacity)
+      return opacity if opacity.is_a?(String) && opacity.end_with?('%')
 
       value = Float(opacity)
       Kernel.raise ArgumentError, 'opacity must be >= 0 and <= 1.0' if value < 0 || value > 1.0
+
+      value
+    end
+
+    def to_string(obj)
+      return obj if obj.is_a?(String)
+      return obj.to_s if obj.is_a?(Symbol)
+      return obj.to_str if obj.respond_to?(:to_str)
+
+      Kernel.raise TypeError, "no implicit conversion of #{obj.class} into String"
     end
 
     public
@@ -299,7 +274,7 @@ module Magick
 
     # Draw a bezier curve.
     def bezier(*points)
-      if points.length.zero?
+      if points.empty?
         Kernel.raise ArgumentError, 'no points specified'
       elsif points.length.odd?
         Kernel.raise ArgumentError, 'odd number of arguments specified'
@@ -314,17 +289,19 @@ module Magick
 
     # Invoke a clip-path defined by def_clip_path.
     def clip_path(name)
-      primitive "clip-path #{name}"
+      primitive "clip-path #{to_string(name)}"
     end
 
     # Define the clipping rule.
     def clip_rule(rule)
+      rule = to_string(rule)
       Kernel.raise ArgumentError, "Unknown clipping rule #{rule}" unless %w[evenodd nonzero].include?(rule.downcase)
       primitive "clip-rule #{rule}"
     end
 
     # Define the clip units
     def clip_units(unit)
+      unit = to_string(unit)
       Kernel.raise ArgumentError, "Unknown clip unit #{unit}" unless %w[userspace userspaceonuse objectboundingbox].include?(unit.downcase)
       primitive "clip-units #{unit}"
     end
@@ -353,7 +330,7 @@ module Magick
     # (pop) graphic-context".
     def define_clip_path(name)
       push('defs')
-      push("clip-path \"#{name}\"")
+      push("clip-path #{enquote(name)}")
       push('graphic-context')
       yield
     ensure
@@ -373,7 +350,7 @@ module Magick
     # Let anything through, but the only defined argument
     # is "UTF-8". All others are apparently ignored.
     def encoding(encoding)
-      primitive "encoding #{encoding}"
+      primitive "encoding #{to_string(encoding)}"
     end
 
     # Specify object fill, a color name or pattern name
@@ -385,22 +362,23 @@ module Magick
 
     # Specify fill opacity (use "xx%" to indicate percentage)
     def fill_opacity(opacity)
-      check_opacity(opacity)
+      opacity = to_opacity(opacity)
       primitive "fill-opacity #{opacity}"
     end
 
     def fill_rule(rule)
+      rule = to_string(rule)
       Kernel.raise ArgumentError, "Unknown fill rule #{rule}" unless %w[evenodd nonzero].include?(rule.downcase)
       primitive "fill-rule #{rule}"
     end
 
     # Specify text drawing font
     def font(name)
-      primitive "font \'#{name}\'"
+      primitive "font #{enquote(name)}"
     end
 
     def font_family(name)
-      primitive "font-family \'#{name}\'"
+      primitive "font-family #{enquote(name)}"
     end
 
     def font_stretch(stretch)
@@ -438,38 +416,17 @@ module Magick
 
     # IM 6.5.5-8 and later
     def interline_spacing(space)
-      begin
-        Float(space)
-      rescue ArgumentError
-        Kernel.raise ArgumentError, 'invalid value for interline_spacing'
-      rescue TypeError
-        Kernel.raise TypeError, "can't convert #{space.class} into Float"
-      end
-      primitive "interline-spacing #{space}"
+      primitive "interline-spacing #{Float(space)}"
     end
 
     # IM 6.4.8-3 and later
     def interword_spacing(space)
-      begin
-        Float(space)
-      rescue ArgumentError
-        Kernel.raise ArgumentError, 'invalid value for interword_spacing'
-      rescue TypeError
-        Kernel.raise TypeError, "can't convert #{space.class} into Float"
-      end
-      primitive "interword-spacing #{space}"
+      primitive "interword-spacing #{Float(space)}"
     end
 
     # IM 6.4.8-3 and later
     def kerning(space)
-      begin
-        Float(space)
-      rescue ArgumentError
-        Kernel.raise ArgumentError, 'invalid value for kerning'
-      rescue TypeError
-        Kernel.raise TypeError, "can't convert #{space.class} into Float"
-      end
-      primitive "kerning #{space}"
+      primitive "kerning #{Float(space)}"
     end
 
     # Draw a line
@@ -480,7 +437,7 @@ module Magick
     # Specify drawing fill and stroke opacities. If the value is a string
     # ending with a %, the number will be multiplied by 0.01.
     def opacity(opacity)
-      check_opacity(opacity)
+      opacity = to_opacity(opacity)
       primitive "opacity #{opacity}"
     end
 
@@ -488,7 +445,7 @@ module Magick
     # primitive requires that the commands be surrounded by quotes or
     # apostrophes. Here we simply use apostrophes.
     def path(cmds)
-      primitive "path '" + cmds + "'"
+      primitive "path #{enquote(cmds)}"
     end
 
     # Define a pattern. In the block, call primitive methods to
@@ -496,7 +453,7 @@ module Magick
     # as the argument to the 'fill' or 'stroke' methods
     def pattern(name, x, y, width, height)
       push('defs')
-      push("pattern #{name} " + sprintf('%g %g %g %g', x, y, width, height))
+      push("pattern #{to_string(name)} " + sprintf('%g %g %g %g', x, y, width, height))
       push('graphic-context')
       yield
     ensure
@@ -519,7 +476,7 @@ module Magick
 
     # Draw a polygon
     def polygon(*points)
-      if points.length.zero?
+      if points.empty?
         Kernel.raise ArgumentError, 'no points specified'
       elsif points.length.odd?
         Kernel.raise ArgumentError, 'odd number of points specified'
@@ -529,7 +486,7 @@ module Magick
 
     # Draw a polyline
     def polyline(*points)
-      if points.length.zero?
+      if points.empty?
         Kernel.raise ArgumentError, 'no points specified'
       elsif points.length.odd?
         Kernel.raise ArgumentError, 'odd number of points specified'
@@ -544,11 +501,10 @@ module Magick
     # pop('pattern')
 
     def pop(*what)
-      if what.length.zero?
+      if what.empty?
         primitive 'pop graphic-context'
       else
-        # to_s allows a Symbol to be used instead of a String
-        primitive 'pop ' + what.map(&:to_s).join(' ')
+        primitive 'pop ' + what.map { |x| to_string(x) }.join(' ')
       end
     end
 
@@ -558,11 +514,10 @@ module Magick
     # push('gradient')
     # push('pattern')
     def push(*what)
-      if what.length.zero?
+      if what.empty?
         primitive 'push graphic-context'
       else
-        # to_s allows a Symbol to be used instead of a String
-        primitive 'push ' + what.map(&:to_s).join(' ')
+        primitive 'push ' + what.map { |x| to_string(x) }.join(' ')
       end
     end
 
@@ -615,10 +570,10 @@ module Magick
 
     # Specify a stroke dash pattern
     def stroke_dasharray(*list)
-      if list.length.zero?
+      if list.empty?
         primitive 'stroke-dasharray none'
       else
-        list.each do |x|
+        list.map! { |x| Float(x) }.each do |x|
           Kernel.raise ArgumentError, "dash array elements must be > 0 (#{x} given)" if x <= 0
         end
         primitive "stroke-dasharray #{list.join(',')}"
@@ -631,16 +586,19 @@ module Magick
     end
 
     def stroke_linecap(value)
+      value = to_string(value)
       Kernel.raise ArgumentError, "Unknown linecap type: #{value}" unless %w[butt round square].include?(value.downcase)
       primitive "stroke-linecap #{value}"
     end
 
     def stroke_linejoin(value)
+      value = to_string(value)
       Kernel.raise ArgumentError, "Unknown linejoin type: #{value}" unless %w[round miter bevel].include?(value.downcase)
       primitive "stroke-linejoin #{value}"
     end
 
     def stroke_miterlimit(value)
+      value = Float(value)
       Kernel.raise ArgumentError, 'miterlimit must be >= 1' if value < 1
       primitive "stroke-miterlimit #{value}"
     end
@@ -648,7 +606,7 @@ module Magick
     # Specify opacity of stroke drawing color
     #  (use "xx%" to indicate percentage)
     def stroke_opacity(opacity)
-      check_opacity(opacity)
+      opacity = to_opacity(opacity)
       primitive "stroke-opacity #{opacity}"
     end
 
@@ -659,8 +617,9 @@ module Magick
 
     # Draw text at position x,y. Add quotes to text that is not already quoted.
     def text(x, y, text)
-      Kernel.raise ArgumentError, 'missing text argument' if text.to_s.empty?
-      if text.length > 2 && /\A(?:\"[^\"]+\"|\'[^\']+\'|\{[^\}]+\})\z/.match(text)
+      text = to_string(text)
+      Kernel.raise ArgumentError, 'missing text argument' if text.empty?
+      if text.length > 2 && /\A(?:"[^"]+"|'[^']+'|\{[^}]+\})\z/.match(text)
       # text already quoted
       elsif !text['\'']
         text = '\'' + text + '\''
@@ -707,6 +666,7 @@ module Magick
 
   # Define IPTC record number:dataset tags for use with Image#get_iptc_dataset
   module IPTC
+    # rubocop:disable Naming/ConstantName
     module Envelope
       Model_Version                          = '1:00'
       Destination                            = '1:05'
@@ -804,12 +764,7 @@ module Magick
     module Post_ObjectData_Descriptor
       Confirmed_ObjectData_Size              = '9:10'
     end
-
-    # Make all constants above immutable
-    constants.each do |record|
-      rec = const_get(record)
-      rec.constants.each { |ds| rec.const_get(ds).freeze }
-    end
+    # rubocop:enable Naming/ConstantName
   end # module Magick::IPTC
 
   # Ruby-level Magick::Image methods
@@ -820,9 +775,9 @@ module Magick
 
     # Provide an alternate version of Draw#annotate, for folks who
     # want to find it in this class.
-    def annotate(draw, width, height, x, y, text, &block)
+    def annotate(draw, width, height, x, y, text, &)
       check_destroyed
-      draw.annotate(self, width, height, x, y, text, &block)
+      draw.annotate(self, width, height, x, y, text, &)
       self
     end
 
@@ -881,9 +836,9 @@ module Magick
     # arrays.
     def get_exif_by_entry(*entry)
       ary = []
-      if entry.length.zero?
+      if entry.empty?
         exif_data = self['EXIF:*']
-        exif_data.split("\n").each { |exif| ary.push(exif.split('=')) } if exif_data
+        exif_data&.split("\n")&.each { |exif| ary.push(exif.split('=')) }
       else
         get_exif_by_entry # ensure properties is populated with exif data
         entry.each do |name|
@@ -897,14 +852,12 @@ module Magick
     # Retrieve EXIF data by tag number or all tag/value pairs. The return value is a hash.
     def get_exif_by_number(*tag)
       hash = {}
-      if tag.length.zero?
+      if tag.empty?
         exif_data = self['EXIF:!']
-        if exif_data
-          exif_data.split("\n").each do |exif|
-            tag, value = exif.split('=')
-            tag = tag[1, 4].hex
-            hash[tag] = value
-          end
+        exif_data&.split("\n")&.each do |exif|
+          tag, value = exif.split('=')
+          tag = tag[1, 4].hex
+          hash[tag] = value
         end
       else
         get_exif_by_number # ensure properties is populated with exif data
@@ -1119,13 +1072,13 @@ module Magick
         %i[red green blue opacity].each do |c|
           module_eval <<-END_EVAL, __FILE__, __LINE__ + 1
             def #{c}
-                return collect { |p| p.#{c} }
+              return collect { |p| p.#{c} }
             end
             def #{c}=(v)
-                each { |p| p.#{c} = v }
-                changed
-                notify_observers(self)
-                nil
+              each { |p| p.#{c} = v }
+              changed
+              notify_observers(self)
+              v
             end
           END_EVAL
         end
@@ -1283,6 +1236,7 @@ module Magick
   class ImageList
     include Comparable
     include Enumerable
+
     attr_reader :scene
 
     private
@@ -1332,10 +1286,10 @@ module Magick
     # Allow scene to be set to nil
     def scene=(n)
       if n.nil?
-        Kernel.raise IndexError, 'scene number out of bounds' unless @images.length.zero?
+        Kernel.raise IndexError, 'scene number out of bounds' unless @images.empty?
         @scene = nil
         return
-      elsif @images.length.zero?
+      elsif @images.empty?
         Kernel.raise IndexError, 'scene number out of bounds'
       end
 
@@ -1349,17 +1303,11 @@ module Magick
     %w[& + - |].each do |op|
       module_eval <<-END_BINOPS, __FILE__, __LINE__ + 1
         def #{op}(other)
+          assert_image_array(other)
           ilist = self.class.new
-          begin
-            a = other #{op} @images
-          rescue TypeError
-            Kernel.raise ArgumentError, "Magick::ImageList expected, got " + other.class.to_s
-          end
+          a = other #{op} @images
           current = get_current()
-          a.each do |image|
-            assert_image image
-            ilist << image
-          end
+          a.each { |image| ilist << image }
           ilist.set_current current
           return ilist
         end
@@ -1388,16 +1336,18 @@ module Magick
     #   return if A.scene != B.scene
     #   return A.length <=> B.length
     def <=>(other)
-      Kernel.raise TypeError, "#{self.class} required (#{other.class} given)" unless other.is_a? self.class
+      return unless other.is_a? self.class
+
       size = [length, other.length].min
       size.times do |x|
         r = self[x] <=> other[x]
         return r unless r.zero?
       end
-      return 0 if @scene.nil? && other.scene.nil?
 
-      Kernel.raise TypeError, "cannot convert nil into #{other.scene.class}" if @scene.nil? && !other.scene.nil?
-      Kernel.raise TypeError, "cannot convert nil into #{scene.class}" if !@scene.nil? && other.scene.nil?
+      return 0 if @scene.nil? && other.scene.nil?
+      return if @scene.nil? && !other.scene.nil?
+      return if !@scene.nil? && other.scene.nil?
+
       r = scene <=> other.scene
       return r unless r.zero?
 
@@ -1416,7 +1366,7 @@ module Magick
 
     def []=(*args)
       obj = @images.[]=(*args)
-      if obj && obj.respond_to?(:each)
+      if obj.respond_to?(:each)
         assert_image_array(obj)
         set_current obj.last.__id__
       elsif obj
@@ -1429,7 +1379,7 @@ module Magick
 
     %i[
       at each each_index empty? fetch
-      first hash include? index length rindex sort!
+      first hash include? index length rindex
     ].each do |mth|
       module_eval <<-END_SIMPLE_DELEGATES, __FILE__, __LINE__ + 1
         def #{mth}(*args, &block)
@@ -1438,6 +1388,11 @@ module Magick
       END_SIMPLE_DELEGATES
     end
     alias size length
+
+    def sort!(*args, &)
+      @images.sort!(*args, &)
+      self
+    end
 
     def clear
       @scene = nil
@@ -1451,17 +1406,17 @@ module Magick
     end
 
     # override Enumerable#collect
-    def collect(&block)
+    def collect(&)
       current = get_current
-      a = @images.map(&block)
+      a = @images.map(&)
       ilist = self.class.new
       a.each { |image| ilist << image }
       ilist.set_current current
       ilist
     end
 
-    def collect!(&block)
-      @images.map!(&block)
+    def collect!(&)
+      @images.map!(&)
       assert_image_array @images
       self
     end
@@ -1486,7 +1441,7 @@ module Magick
     alias map! collect!
     alias __map__! collect!
 
-    # ImageMagic used affinity in 6.4.3, switch to remap in 6.4.4.
+    # ImageMagick used affinity in 6.4.3, switch to remap in 6.4.4.
     alias affinity remap
 
     def compact
@@ -1519,10 +1474,10 @@ module Magick
       @images.each { |f| f.delay = Integer(d) }
     end
 
-    def delete(obj, &block)
+    def delete(obj, &)
       assert_image obj
       current = get_current
-      a = @images.delete(obj, &block)
+      a = @images.delete(obj, &)
       set_current current
       a
     end
@@ -1534,9 +1489,9 @@ module Magick
       a
     end
 
-    def delete_if(&block)
+    def delete_if(&)
       current = get_current
-      @images.delete_if(&block)
+      @images.delete_if(&)
       set_current current
       self
     end
@@ -1549,7 +1504,12 @@ module Magick
     end
 
     def eql?(other)
-      assert_image_array other
+      begin
+        assert_image_array other
+      rescue ArgumentError
+        return false
+      end
+
       eql = other.eql?(@images)
       begin # "other" is another ImageList
         eql &&= @scene == other.scene
@@ -1560,7 +1520,7 @@ module Magick
     end
 
     def fill(*args, &block)
-      assert_image args[0] unless block_given?
+      assert_image args[0] unless block
       current = get_current
       @images.fill(*args, &block)
       assert_image_array self
@@ -1569,9 +1529,9 @@ module Magick
     end
 
     # Override Enumerable's find_all
-    def find_all(&block)
+    def find_all(&)
       current = get_current
-      a = @images.select(&block)
+      a = @images.select(&)
       ilist = self.class.new
       a.each { |image| ilist << image }
       ilist.set_current current
@@ -1580,7 +1540,7 @@ module Magick
     alias select find_all
 
     def from_blob(*blobs, &block)
-      Kernel.raise ArgumentError, 'no blobs given' if blobs.length.zero?
+      Kernel.raise ArgumentError, 'no blobs given' if blobs.empty?
       blobs.each do |b|
         Magick::Image.from_blob(b, &block).each { |n| @images << n }
       end
@@ -1609,9 +1569,8 @@ module Magick
 
     # Call inspect for all the images
     def inspect
-      img = []
-      @images.each { |image| img << image.inspect }
-      img = '[' + img.join(",\n") + "]\nscene=#{@scene}"
+      img = @images.map(&:inspect)
+      '[' + img.join(",\n") + "]\nscene=#{@scene}"
     end
 
     # Set the number of iterations of an animated GIF
@@ -1622,7 +1581,7 @@ module Magick
     end
 
     def last(*args)
-      if args.length.zero?
+      if args.empty?
         a = @images.last
       else
         a = @images.last(*args)
@@ -1644,33 +1603,35 @@ module Magick
     def marshal_load(ary)
       @scene = ary.shift
       @images = []
-      ary.each { |a| @images << Marshal.load(a) }
+      ary.each { |a| @images << Marshal.load(a) } # rubocop:disable Security/MarshalLoad
     end
 
     # The ImageList class supports the Magick::Image class methods by simply sending
     # the method to the current image. If the method isn't explicitly supported,
     # send it to the current image in the array. If there are no images, send
     # it up the line. Catch a NameError and emit a useful message.
-    def method_missing(meth_id, *args, &block)
+    def method_missing(meth_id, *args, &)
       if @scene
-        @images[@scene].send(meth_id, *args, &block)
+        img = @images[@scene]
+        new_img = img.public_send(meth_id, *args, &)
+        img.equal?(new_img) ? self : new_img
       else
         super
       end
     rescue NoMethodError
       Kernel.raise NoMethodError, "undefined method `#{meth_id.id2name}' for #{self.class}"
-    rescue Exception
+    rescue StandardError
       $ERROR_POSITION.delete_if { |s| /:in `send'$/.match(s) || /:in `method_missing'$/.match(s) }
       Kernel.raise
     end
 
     # Create a new image and add it to the end
-    def new_image(cols, rows, *fill, &info_blk)
-      self << Magick::Image.new(cols, rows, *fill, &info_blk)
+    def new_image(cols, rows, *fill, &)
+      self << Magick::Image.new(cols, rows, *fill, &)
     end
 
-    def partition(&block)
-      a = @images.partition(&block)
+    def partition(&)
+      a = @images.partition(&)
       t = self.class.new
       a[0].each { |img| t << img }
       t.set_current nil
@@ -1682,7 +1643,7 @@ module Magick
 
     # Ping files and concatenate the new images
     def ping(*files, &block)
-      Kernel.raise ArgumentError, 'no files given' if files.length.zero?
+      Kernel.raise ArgumentError, 'no files given' if files.empty?
       files.each do |f|
         Magick::Image.ping(f, &block).each { |n| @images << n }
       end
@@ -1708,7 +1669,7 @@ module Magick
 
     # Read files and concatenate the new images
     def read(*files, &block)
-      Kernel.raise ArgumentError, 'no files given' if files.length.zero?
+      Kernel.raise ArgumentError, 'no files given' if files.empty?
       files.each do |f|
         Magick::Image.read(f, &block).each { |n| @images << n }
       end
@@ -1717,18 +1678,18 @@ module Magick
     end
 
     # override Enumerable's reject
-    def reject(&block)
+    def reject(&)
       current = get_current
       ilist = self.class.new
-      a = @images.reject(&block)
+      a = @images.reject(&)
       a.each { |image| ilist << image }
       ilist.set_current current
       ilist
     end
 
-    def reject!(&block)
+    def reject!(&)
       current = get_current
-      a = @images.reject!(&block)
+      a = @images.reject!(&)
       @images = a unless a.nil?
       set_current current
       a.nil? ? nil : self
@@ -1771,8 +1732,8 @@ module Magick
       self
     end
 
-    def reverse_each
-      @images.reverse_each { |image| yield(image) }
+    def reverse_each(&)
+      @images.reverse_each(&)
       self
     end
 
@@ -1811,9 +1772,7 @@ module Magick
     end
 
     def to_a
-      a = []
-      @images.each { |image| a << image }
-      a
+      @images.map { |image| image }
     end
 
     def uniq
@@ -1840,7 +1799,6 @@ module Magick
     end
 
     def values_at(*args)
-      a = @images.values_at(*args)
       a = self.class.new
       @images.values_at(*args).each { |image| a << image }
       a.scene = a.length - 1
@@ -1848,6 +1806,15 @@ module Magick
     end
     alias indexes values_at
     alias indices values_at
+
+    def destroy!
+      @images.each(&:destroy!)
+      self
+    end
+
+    def destroyed?
+      @images.all?(&:destroyed?)
+    end
   end # Magick::ImageList
 
   class Pixel
@@ -1891,7 +1858,7 @@ module Magick
   class HatchFill
     def initialize(bgcolor, hatchcolor = 'white', dist = 10)
       @bgcolor = bgcolor
-      @hatchpixel = Pixel.from_color(hatchcolor)
+      @hatchpixel = hatchcolor.is_a?(Pixel) ? hatchcolor : Pixel.from_color(hatchcolor)
       @dist = dist
     end
 

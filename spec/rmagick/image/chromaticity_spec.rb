@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#chromaticity' do
   it "returns an assigned chromaticity" do
     image = build_image

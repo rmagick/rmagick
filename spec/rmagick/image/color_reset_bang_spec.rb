@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, "#color_reset!" do
   it "works" do
     image = described_class.new(20, 20)
@@ -10,6 +12,6 @@ RSpec.describe Magick::Image, "#color_reset!" do
     expect { image.color_reset!([2]) }.to raise_error(TypeError)
     expect { image.color_reset!('x') }.to raise_error(ArgumentError)
     image.freeze
-    expect { image.color_reset!('red') }.to raise_error(FreezeError)
+    expect { image.color_reset!('red') }.to raise_error(FrozenError)
   end
 end

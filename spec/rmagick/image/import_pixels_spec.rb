@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::Image, '#import_pixels' do
   def import(image, pixels, type, expected = 0.0)
     image = Magick::Image.new(image.columns, image.rows)
@@ -47,7 +49,7 @@ RSpec.describe Magick::Image, '#import_pixels' do
 
   it 'works with different pixel types' do
     image = described_class.read(File.join(IMAGES_DIR, 'Flower_Hat.jpg')).first
-    is_hdri_support = Magick::Magick_features =~ /HDRI/
+    is_hdri_support = Magick::Magick_features.include?('HDRI')
     pixels = image.export_pixels(0, 0, image.columns, image.rows, 'RGB')
 
     case Magick::MAGICKCORE_QUANTUM_DEPTH

@@ -1,5 +1,6 @@
-# This routine needs the color_histogram method
-# from either ImageMagick 6.0.0 or GraphicsMagick 1.1
+# frozen_string_literal: true
+
+# This routine needs the color_histogram method from ImageMagick 6.0.0.
 # Specify an image filename as an argument.
 
 require 'rmagick'
@@ -26,18 +27,22 @@ module Magick
   end
 
   class Image
-    private
-
     HISTOGRAM_COLS = 256
+    private_constant :HISTOGRAM_COLS
     HISTOGRAM_ROWS = 200
+    private_constant :HISTOGRAM_ROWS
     MAX_QUANTUM = 255
+    private_constant :MAX_QUANTUM
     AIR_FACTOR = 1.025
+    private_constant :AIR_FACTOR
+
+    private
 
     # The alpha frequencies are shown as white dots.
     def alpha_hist(freqs, scale, fg, bg)
-      histogram = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do
-        self.background_color = bg
-        self.border_color = fg
+      histogram = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do |options|
+        options.background_color = bg
+        options.border_color = fg
       end
 
       gc = Draw.new
@@ -55,9 +60,9 @@ module Magick
     end
 
     def channel_histograms(red, green, blue, int, scale, fg, bg)
-      rgb_histogram = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do
-        self.background_color = bg
-        self.border_color = fg
+      rgb_histogram = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do |options|
+        options.background_color = bg
+        options.border_color = fg
       end
       rgb_histogram['Label'] = 'RGB'
       red_histogram = rgb_histogram.copy
@@ -119,33 +124,27 @@ module Magick
     def color_hist(fg, bg)
       img = number_colors > 256 ? quantize(256) : self
 
-      begin
-        hist = img.color_histogram
-      rescue NotImplementedError
-        warn 'The color_histogram method is not supported by this version '\
-                     'of ImageMagick/GraphicsMagick'
-      else
-        pixels = hist.keys.sort_by { |pixel| hist[pixel] }
-        scale = HISTOGRAM_ROWS / (hist.values.max * AIR_FACTOR)
+      hist = img.color_histogram
+      pixels = hist.keys.sort_by { |pixel| hist[pixel] }
+      scale = HISTOGRAM_ROWS / (hist.values.max * AIR_FACTOR)
 
-        histogram = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do
-          self.background_color = bg
-          self.border_color = fg
-        end
-
-        x = 0
-        pixels.each do |pixel|
-          column = Array.new(HISTOGRAM_ROWS).fill { Pixel.new }
-          HISTOGRAM_ROWS.times do |y|
-            column[y] = pixel if y >= HISTOGRAM_ROWS - (hist[pixel] * scale)
-          end
-          histogram.store_pixels(x, 0, 1, HISTOGRAM_ROWS, column)
-          x = x.succ
-        end
-
-        histogram['Label'] = 'Color Frequency'
-        return histogram
+      histogram = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do |options|
+        options.background_color = bg
+        options.border_color = fg
       end
+
+      x = 0
+      pixels.each do |pixel|
+        column = Array.new(HISTOGRAM_ROWS).fill { Pixel.new }
+        HISTOGRAM_ROWS.times do |y|
+          column[y] = pixel if y >= HISTOGRAM_ROWS - (hist[pixel] * scale)
+        end
+        histogram.store_pixels(x, 0, 1, HISTOGRAM_ROWS, column)
+        x = x.succ
+      end
+
+      histogram['Label'] = 'Color Frequency'
+      histogram
     end
 
     # Use AnnotateImage to write the stats.
@@ -160,17 +159,17 @@ module Magick
         Colors: #{number_colors}
       END_TEXT
 
-      info = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do
-        self.background_color = bg
-        self.border_color = fg
+      info = Image.new(HISTOGRAM_COLS, HISTOGRAM_ROWS) do |options|
+        options.background_color = bg
+        options.border_color = fg
       end
 
       gc = Draw.new
 
-      gc.annotate(info, 0, 0, 0, 0, text) do
-        self.stroke = 'transparent'
-        self.fill = fg
-        self.gravity = CenterGravity
+      gc.annotate(info, 0, 0, 0, 0, text) do |options|
+        options.stroke = 'transparent'
+        options.fill = fg
+        options.gravity = CenterGravity
       end
       info['Label'] = 'Info'
 
@@ -178,7 +177,7 @@ module Magick
     end
 
     def intensity_hist(int_histogram)
-      gradient = (Image.read('gradient:#ffff80-#ff9000') { self.size = "#{HISTOGRAM_COLS}x#{HISTOGRAM_ROWS}" }).first
+      gradient = Image.read('gradient:#ffff80-#ff9000') { |options| options.size = "#{HISTOGRAM_COLS}x#{HISTOGRAM_ROWS}" }.first
       int_histogram = gradient.composite(int_histogram, CenterGravity, OverCompositeOp)
 
       int_histogram['Label'] = 'Intensity'
@@ -238,10 +237,10 @@ module Magick
       charts << channel_hists.shift
 
       # Add Alpha channel or image stats
-      charts << if !opaque?
-                  alpha_hist(alpha, scale, fg, bg)
-                else
+      charts << if opaque?
                   info_text(fg, bg)
+                else
+                  alpha_hist(alpha, scale, fg, bg)
                 end
 
       # Add the RGB histogram
@@ -254,16 +253,14 @@ module Magick
       charts << color_hist(fg, bg)
 
       # Make a montage.
-      histogram = charts.montage do
-        self.background_color = bg
-        self.stroke = 'transparent'
-        self.fill = fg
-        self.border_width = 1
-        self.tile         = '4x2'
-        self.geometry     = "#{HISTOGRAM_COLS}x#{HISTOGRAM_ROWS}+10+10"
+      charts.montage do |options|
+        options.background_color = bg
+        options.stroke = 'transparent'
+        options.fill = fg
+        options.border_width = 1
+        options.tile = '4x2'
+        options.geometry = "#{HISTOGRAM_COLS}x#{HISTOGRAM_ROWS}+10+10"
       end
-
-      histogram
     end
   end
 end
@@ -276,11 +273,11 @@ puts <<~END_INFO
 END_INFO
 
 # Get filename from command line.
-if !ARGV[0]
+if ARGV[0]
+  filename = ARGV[0]
+else
   puts 'No filename argument. Defaulting to Flower_Hat.jpg'
   filename = '../doc/ex/images/Flower_Hat.jpg'
-else
-  filename = ARGV[0]
 end
 
 # Only process first frame if multi-frame image

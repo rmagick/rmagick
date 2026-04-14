@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rmagick'
 
 imgl = Magick::ImageList.new
@@ -22,6 +24,7 @@ gc.circle(280, 180, 283, 183)
 gc.font_weight(Magick::NormalWeight)
 gc.font_style(Magick::NormalStyle)
 gc.fill('black')
+gc.fill_opacity(1)
 gc.stroke('transparent')
 gc.text(30, 35, "'20,20'")
 gc.text(230, 175, "'280,180'")

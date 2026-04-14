@@ -1,11 +1,11 @@
-require 'date'
+# frozen_string_literal: true
+
 require 'English'
 require './lib/rmagick/version'
 
 Gem::Specification.new do |s|
   s.name = 'rmagick'
   s.version = Magick::VERSION
-  s.date = Date.today.to_s
   s.summary = 'Ruby binding to ImageMagick'
   s.description = 'RMagick is an interface between Ruby and ImageMagick.'
   s.authors = ['Tim Hunter', 'Omer Bar-or', 'Benjamin Thomas', 'Moncef Maiza']
@@ -13,27 +13,22 @@ Gem::Specification.new do |s|
   s.homepage = 'https://github.com/rmagick/rmagick'
   s.license = 'MIT'
 
-  tracked_files = `git ls-files`.split($OUTPUT_RECORD_SEPARATOR)
-  file_exclusion_regex = %r{\A(doc|benchmarks|examples|spec|lib/rvg/to_c.rb)}
-  files         = tracked_files.reject { |file| file[file_exclusion_regex] }
-  test_files    = files.grep(%r{^(test|spec|features)/})
+  s.metadata['bug_tracker_uri'] = 'https://github.com/rmagick/rmagick/issues'
+  s.metadata['documentation_uri'] = 'https://rmagick.github.io/'
+  s.metadata['changelog_uri'] = 'https://github.com/rmagick/rmagick/blob/main/CHANGELOG.md'
+  s.metadata['rubygems_mfa_required'] = 'true'
 
-  s.files                       = files
-  s.test_files                  = test_files
-  s.require_paths << 'ext' << 'deprecated'
+  tracked_files = `git ls-files`.split($OUTPUT_RECORD_SEPARATOR)
+  file_exclusion_regex = /\A(doc|benchmarks|examples|spec|Steepfile)/
+  files = tracked_files.reject { |file| file[file_exclusion_regex] }
+
+  s.files = files
+  s.require_paths << 'ext'
 
   s.extensions = %w[ext/RMagick/extconf.rb]
-  s.required_ruby_version = ">= #{Magick::MIN_RUBY_VERSION}"
-  s.requirements << "ImageMagick #{Magick::MIN_IM_VERSION} or later"
+  s.required_ruby_version = ">= #{Magick::MIN_RUBY_VERSION}" # rubocop:disable Gemspec/RequiredRubyVersion
+  s.requirements << "ImageMagick #{Magick::MIN_IM6_VERSION}+ (for ImageMagick 6) or #{Magick::MIN_IM7_VERSION}+ (for ImageMagick 7)"
 
-  s.add_development_dependency 'pry', '~> 0.12.2'
-  s.add_development_dependency 'rake-compiler', '~> 1.0'
-  s.add_development_dependency 'rspec', '~> 3.8'
-  s.add_development_dependency 'rspec_junit_formatter', '~> 0.4.1'
-  if RUBY_PLATFORM !~ /mswin|mingw/
-    s.add_development_dependency 'rubocop', '~> 0.68.0'
-    s.add_development_dependency 'rubocop-rspec', '~> 1.37.0'
-  end
-  s.add_development_dependency 'simplecov', '~> 0.16.1'
-  s.add_development_dependency 'yard', '~> 0.9.24'
+  s.add_dependency 'observer', '~> 0.1'
+  s.add_dependency 'pkg-config', '~> 1.4'
 end

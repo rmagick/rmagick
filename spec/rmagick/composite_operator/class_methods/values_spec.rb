@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Magick::CompositeOperator, '.values' do
   it 'does not cause an infinite loop' do
     image = Magick::Image.new(10, 10)

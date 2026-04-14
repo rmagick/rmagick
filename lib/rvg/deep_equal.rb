@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Magick
   class RVG
     [PathData, Styles, Transforms].each do |c|
