@@ -46,7 +46,7 @@ These prerequisites are required for the latest version of RMagick.
 
 You can get Ruby from <https://www.ruby-lang.org>.
 
-Ruby must be able to build C-Extensions (e.g. MRI, Rubinius, not JRuby)
+Ruby must be able to build C-Extensions (e.g. MRI, not JRuby)
 
 **ImageMagick**
 - Version 6.9 or later (for ImageMagick 6 users).
