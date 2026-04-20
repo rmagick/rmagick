@@ -17,7 +17,7 @@ gem 'rubocop-performance', '~> 1.21'
 gem 'rubocop-rspec', '~> 3.5'
 
 # TODO: Bump rubocop-on-rbs to >= 2.0 when steep supports rbs 4.0
-gem 'rbs', '~> 3.9'
+gem 'rbs', '~> 4.0'
 gem 'rubocop-on-rbs', '< 2.0'
 gem 'steep', '~> 1.10'
 
