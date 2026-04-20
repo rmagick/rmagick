@@ -55,18 +55,18 @@ Ruby must be able to build C-Extensions (e.g. MRI, not JRuby)
 You can get ImageMagick from <https://imagemagick.org>.
 
 ### Linux
-#### Ubuntu
-On Ubuntu, you can run:
+#### Debian-based
+On Debian-based, you can run:
 
 ```sh
-sudo apt-get install libmagickwand-dev
+apt install libmagickwand-dev
 ```
 
-#### Centos
-On Centos, you can run:
+#### RHEL-compatible
+On RHEL-compatible, you can run:
 
 ```sh
-sudo yum install ImageMagick-devel
+dnf install ImageMagick-devel
 ```
 
 #### Arch Linux
