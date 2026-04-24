@@ -140,13 +140,18 @@ jobs:
             Write-Host "ImageMagick is not installed (Registry check). Skipping."
         }
     - name: Install ImageMagick
-      # https://github.com/rmagick/ImageMagick-binaries
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         $imagemagick_version = "${{ matrix.imagemagick-version.full }}"
         $arch = "${{ matrix.os.arch }}"
         $installer_name = "ImageMagick-$($imagemagick_version)-Q16-$($arch)-dll.exe"
-        $url = "https://github.com/rmagick/ImageMagick-binaries/raw/main/$($installer_name)"
-        Invoke-WebRequest -Uri $url -OutFile $installer_name
+        $repo = "ImageMagick/ImageMagick"
+        if ($imagemagick_version -like "6.*") {
+            $repo = "ImageMagick/ImageMagick6"
+        }
+
+        gh release download $imagemagick_version -R $repo -p $installer_name
         Start-Process -FilePath $installer_name -ArgumentList "/DIR=${{ env.install_im_dir }} /VERYSILENT /NORESTART /TASKS=install_Devel"
     - name: Set up Ruby ${{ matrix.ruby-version }}
       uses: ruby/setup-ruby@v1
