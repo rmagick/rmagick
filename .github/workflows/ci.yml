@@ -40,8 +40,8 @@ jobs:
           - macos-latest
         ruby-version: ['3.2', '3.3', '3.4', '4.0']
         imagemagick-version:
-          - { full: 6.9.13-43, major-minor: '6.9' }
-          - { full: 7.1.2-18, major-minor: '7.1' }
+          - { full: 6.9.13-46, major-minor: '6.9' }
+          - { full: 7.1.2-21, major-minor: '7.1' }
 
     name: ${{ matrix.os }}, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
     steps:
@@ -78,14 +78,14 @@ jobs:
       matrix:
         ruby-version: ['4.0']
         imagemagick-version:
-          - { full: 6.9.13-43, major-minor: '6.9' }
-          - { full: 7.1.2-18, major-minor: '7.1' }
+          - { full: 6.9.13-46, major-minor: '6.9' }
+          - { full: 7.1.2-21, major-minor: '7.1' }
         os:
           - { target: windows-latest, arch: 'x64' }
           - { target: windows-11-arm, arch: 'arm64' }
         exclude:
           # ImageMagick 6 has not provided ARM binary. Ref. https://legacy.imagemagick.org/archive/binaries/
-          - imagemagick-version: { full: 6.9.13-43, major-minor: '6.9' }
+          - imagemagick-version: { full: 6.9.13-46, major-minor: '6.9' }
             os: { target: windows-11-arm, arch: 'arm64' }
 
     env:
