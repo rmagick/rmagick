@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.metadata['rubygems_mfa_required'] = 'true'
 
   tracked_files = `git ls-files`.split($OUTPUT_RECORD_SEPARATOR)
-  file_exclusion_regex = /\A(doc|benchmarks|examples|spec|Steepfile)/
+  file_exclusion_regex = /\A(\.|doc|benchmarks|examples|spec|Steepfile|before_install)/
   files = tracked_files.reject { |file| file[file_exclusion_regex] }
 
   s.files = files
