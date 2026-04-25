@@ -13,7 +13,7 @@ if [ ! -v IMAGEMAGICK_VERSION ]; then
   exit 1
 fi
 
-sudo apt-get update
+sudo apt-get update -y
 
 # remove all existing imagemagick related packages
 sudo apt-get autoremove -y imagemagick* libmagick* --purge

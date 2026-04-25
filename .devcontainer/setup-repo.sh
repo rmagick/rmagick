@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-apt-get update
-apt-get install sudo
+apt-get update -y
+apt-get install -y sudo
 
 bash /workspaces/rmagick/before_install_linux.sh
 
