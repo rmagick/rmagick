@@ -20,7 +20,9 @@ Gem::Specification.new do |s|
 
   tracked_files = `git ls-files`.split($OUTPUT_RECORD_SEPARATOR)
   file_exclusion_regex = /\A(\.|doc|benchmarks|examples|spec|Steepfile|before_install)/
-  files = tracked_files.reject { |file| file[file_exclusion_regex] }
+  files = tracked_files.reject do |file|
+    file != '.yardopts' && file[file_exclusion_regex]
+  end
 
   s.files = files
   s.require_paths << 'ext'
