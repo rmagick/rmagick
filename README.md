@@ -267,63 +267,46 @@ Development Setup
 -----------------
 
 In order to minimize issues on your local machine, we recommend that you make
-use of a [Vagrant installation][dev-box].
+use of [Dev Containers](https://containers.dev/). This provides a consistent, pre-configured development environment using Docker.
 
 Steps to get up and running with a passing build are as follows:
 
-### 1) set up the Vagrant environment
+### 1) Set up the prerequisites
 
-If you don't already have Vagrant installed, you can download and install it
-from [here][vagrant]. Once installed, we can set up a pre-built environment:
+To use Dev Containers, you will need to install the following tools on your machine:
+* [Docker Desktop](https://www.docker.com/products/docker-desktop/) (or Docker Engine)
+* [Visual Studio Code](https://code.visualstudio.com/)
+* [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) for VS Code
 
-```sh
-git clone https://github.com/tjschuck/rake-compiler-dev-box.git
-cd rake-compiler-dev-box
-vagrant up
-```
+### 2) Clone RMagick and open the container
 
-This last part will probably take a while as it has to download an Ubuntu image
-and configure it. If there is an error during this process, you may need to
-reboot your computer and enable virtualization in your BIOS settings.
-
-### 2) clone RMagick and log in to the vagrant box
-
-Within the `rake-compiler-dev-box` directory:
+Clone the repository to your local machine and open it in VS Code:
 
 ```sh
 git clone https://github.com/rmagick/rmagick.git # or your fork
-vagrant ssh
+cd rmagick
+code .
 ```
 
-### 3) install ImageMagick and additional environment stuff
+Once VS Code opens, it should detect the .devcontainer configuration and prompt you to "Reopen in Container".
 
-```sh
-cd /vagrant/rmagick
-export IMAGEMAGICK_VERSION=6.9.13-43
-bash ./before_install_linux.sh
+During this process, VS Code will ask you to select a devcontainer.json configuration. You can choose the environment you want to develop and test against:
+
+* ImageMagick 7 (.devcontainer/devcontainer.json) - Recommended for the latest development.
+* ImageMagick 6 (.devcontainer/ImageMagick6/devcontainer.json) - For testing against the legacy ImageMagick 6 API.
+
+Select the one you need, and VS Code will automatically build the corresponding Docker image and start your isolated development environment. This may take a few minutes the first time.
+
+### 3) Build RMagick
+Once the container is running and the ImageMagick setup is complete, open a new terminal inside VS Code.
+Install the Ruby dependencies and compile the RMagick extension:
+
+```
+$ bundle install
+$ bundle exec rake
 ```
 
-This will take just a few minutes to build ImageMagick
-
-### 4) build RMagick
-
-```sh
-rake
-```
-
-This compiles the RMagick extensions and runs the tests. If all goes well
-you'll see a lot of output, eventually ending in something like:
-
-```sh
-Finished tests in 35.865734s, 11.3758 tests/s, 6560.3007 assertions/s.
-
-408 tests, 235290 assertions, 0 failures, 0 errors, 0 skips
-```
-
-And you're all set! The copy of RMagick within `/vagrant/rmagick` inside your
-Vagrant session is the same as the one in the `rake-compiler-dev-box` directory
-on your machine. You can make changes locally and run tests within your `ssh`
-session.
+And you're all set! The codebase on your local machine is automatically synced with the container. You can edit files using your local VS Code, and run tests seamlessly within the integrated container terminal.
 
 Credits
 -------
@@ -353,5 +336,3 @@ See <https://github.com/rmagick/rmagick/wiki/Release-Process>
 [faq]: https://web.archive.org/web/20140512193354/https://rmagick.rubyforge.org/install-faq.html
 [imagemagick]: https://imagemagick.org
 [imagemagick-discussions]: https://github.com/ImageMagick/ImageMagick/discussions
-[dev-box]: https://github.com/tjschuck/rake-compiler-dev-box
-[vagrant]: https://www.vagrantup.com/
