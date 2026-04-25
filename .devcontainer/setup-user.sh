@@ -32,7 +32,7 @@ __show_notice() {
 \033[0;32mWelcome to Codespaces! You are using the pre-configured rmagick image.\033[0m
 
 \033[0;35mTests can be executed with:\033[0m bundle exec rake
-\033[0;35mCode style can be checked with:\033[0m STYLE_CHECKS=true bundle exec rubocop
+\033[0;35mCode style can be checked with:\033[0m bundle exec rubocop
 "
   echo -e "$__message"
 
