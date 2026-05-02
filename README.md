@@ -7,18 +7,18 @@ RMagick
 Table of Contents
 -----------------
 
--   [Introduction](#introduction)
--   [Prerequisites](#prerequisites)
--   [Installing RMagick](#installing-rmagick)
--   [Using RMagick](#using-rmagick)
--   [Things that can go wrong](#things-that-can-go-wrong)
--   [Upgrading](#upgrading)
--   [More samples](#more-samples)
--   [Reporting Bugs](#reporting-bugs)
--   [Development Setup](#development-setup)
--   [Credits](#credits)
--   [License](#mit-license)
--   [Releasing](#releasing)
+- [Introduction](#introduction)
+- [Prerequisites](#prerequisites)
+- [Installing RMagick](#installing-rmagick)
+- [Using RMagick](#using-rmagick)
+- [Things that can go wrong](#things-that-can-go-wrong)
+- [Upgrading](#upgrading)
+- [More samples](#more-samples)
+- [Reporting Bugs](#reporting-bugs)
+- [Development Setup](#development-setup)
+- [Credits](#credits)
+- [License](#license)
+- [Releasing](#releasing)
 
 Introduction
 ------------
@@ -288,12 +288,12 @@ cd rmagick
 code .
 ```
 
-Once VS Code opens, it should detect the .devcontainer configuration and prompt you to "Reopen in Container".
+Once VS Code opens, it should detect the `.devcontainer` configuration and prompt you to "Reopen in Container".
 
-During this process, VS Code will ask you to select a devcontainer.json configuration. You can choose the environment you want to develop and test against:
+During this process, VS Code will ask you to select a `devcontainer.json` configuration. You can choose the environment you want to develop and test against:
 
-* ImageMagick 7 (.devcontainer/devcontainer.json) - Recommended for the latest development.
-* ImageMagick 6 (.devcontainer/ImageMagick6/devcontainer.json) - For testing against the legacy ImageMagick 6 API.
+* ImageMagick 7 (`.devcontainer/devcontainer.json`) - Recommended for the latest development.
+* ImageMagick 6 (`.devcontainer/ImageMagick6/devcontainer.json`) - For testing against the legacy ImageMagick 6 API.
 
 Select the one you need, and VS Code will automatically build the corresponding Docker image and start your isolated development environment. This may take a few minutes the first time.
 
@@ -323,8 +323,6 @@ License
 
 Releasing
 ---------
-
-See <https://github.com/rmagick/rmagick/wiki/Release-Process>
 
 1.  Update ChangeLog
 2.  Edit `lib/rmagick/version.rb`
