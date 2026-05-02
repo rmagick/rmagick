@@ -2,6 +2,7 @@
  * Various Struct class methods.
  *
  * Copyright (c) 2002 - 2009 Timothy P. Hunter
+ * Copyright (c) 2009 -      Benjamin Thomas and Omer Bar-or
  * Copyright (c) 2009 -      RMagick contributors
  *
  * @file     rmstruct.cpp
@@ -937,4 +938,3 @@ TypeMetric_to_s(VALUE self)
 
     return str;
 }
-

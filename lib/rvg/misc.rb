@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-# $Id: misc.rb,v 1.17 2010/03/21 01:43:01 baror Exp $
-# Copyright (C) 2009 Timothy P. Hunter
+# Copyright (c) 2002 - 2009 Timothy P. Hunter
+# Copyright (c) 2009 -      RMagick contributors
+
 module Magick
   class RVG
     # This is a standard deep_copy method that is used in most classes.

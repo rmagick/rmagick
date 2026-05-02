@@ -1,14 +1,7 @@
 # frozen_string_literal: true
 
-# $Id: rmagick_internal.rb,v 1.84 2009/09/15 22:08:41 rmagick Exp $
-#==============================================================================
-#                  Copyright (C) 2009 by Timothy P. Hunter
-#   Name:       rmagick_internal.rb
-#   Author:     Tim Hunter
-#   Purpose:    Extend Ruby to interface with ImageMagick.
-#   Notes:      RMagick2.so defines the classes. The code below adds methods
-#               to the classes.
-#==============================================================================
+# Copyright (c) 2002 - 2009 Timothy P. Hunter
+# Copyright (c) 2009 -      RMagick contributors
 
 if RUBY_PLATFORM.match?(/mingw/i)
   require 'ruby_installer'

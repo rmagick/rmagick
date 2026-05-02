@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# Copyright (c) 2002 - 2009 Timothy P. Hunter
+# Copyright (c) 2009 -      RMagick contributors
+
 module Magick
   class RVG
     [PathData, Styles, Transforms].each do |c|

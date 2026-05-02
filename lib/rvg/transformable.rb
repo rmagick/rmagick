@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
-#--
-# $Id: transformable.rb,v 1.5 2009/02/28 23:52:28 rmagick Exp $
-# Copyright (C) 2009 Timothy P. Hunter
-#++
+# Copyright (c) 2002 - 2009 Timothy P. Hunter
+# Copyright (c) 2009 -      RMagick contributors
+
 module Magick
   class RVG
     # Transforms is an Array with a deep_copy method.

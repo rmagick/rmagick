@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
-#--
-# $Id: text.rb,v 1.7 2009/02/28 23:52:28 rmagick Exp $
-# Copyright (C) 2009 Timothy P. Hunter
-#++
+# Copyright (c) 2002 - 2009 Timothy P. Hunter
+# Copyright (c) 2009 -      RMagick contributors
+
 # Text-related classes
 module Magick
   class RVG
