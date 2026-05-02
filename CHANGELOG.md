@@ -3,6 +3,19 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 7.0.0
+
+Breaking Changes
+
+* Drop support for Ruby 3.1 and older (#1749)
+* Drop support for old ImageMagick (6.8.x and 7.0.x) (#1748)
+
+Improvements
+
+* Modernize argument parsing using keyword arguments API (#1754)
+* Fix floating-point truncation in Magick::TypeMetric coordinates (#1765)
+* Fix floating-point truncation in Magick::ChromaticityInfo coordinates (#1241)
+
 ## RMagick 6.3.0
 
 > [!IMPORTANT]
