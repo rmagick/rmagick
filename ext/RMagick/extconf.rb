@@ -42,6 +42,7 @@ module RMagick
     def initialize
       @stdout = $stdout.dup
 
+      exit_failure("JRuby is not supported.\nSee https://github.com/jruby/jruby/wiki/C-Extension-Alternatives") if RUBY_ENGINE == 'jruby'
       exit_failure("No longer support MSWIN environment.") if RUBY_PLATFORM.include?('mswin')
 
       setup_pkg_config_path
