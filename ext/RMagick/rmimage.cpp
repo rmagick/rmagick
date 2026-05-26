@@ -11357,19 +11357,21 @@ Image_random_threshold_channel(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     {
         GeometryInfo geometry_info;
+
         if (ParseGeometry(thresholds, &geometry_info) == NoValue && *thresholds)
         {
-            DestroyExceptionInfo(exception);
-            DestroyImage(new_image);
-            rb_raise(rb_eArgError, "invalid geometry string");
+            (void) ThrowMagickException(exception, GetMagickModule(), OptionError,
+                                        "InvalidArgument", "'%s'", thresholds);
         }
-
-        BEGIN_CHANNEL_MASK(new_image, channels);
+        else
         {
-            GVL_STRUCT_TYPE(RandomThresholdImage) args = { new_image, geometry_info.rho, geometry_info.sigma, exception };
-            CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RandomThresholdImage), &args);
+            BEGIN_CHANNEL_MASK(new_image, channels);
+            {
+                GVL_STRUCT_TYPE(RandomThresholdImage) args = { new_image, geometry_info.rho, geometry_info.sigma, exception };
+                CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RandomThresholdImage), &args);
+            }
+            END_CHANNEL_MASK(new_image);
         }
-        END_CHANNEL_MASK(new_image);
     }
 #else
     GVL_STRUCT_TYPE(RandomThresholdImageChannel) args = { new_image, channels, thresholds, exception };
