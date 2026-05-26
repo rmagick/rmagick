@@ -180,12 +180,17 @@ KernelInfo_builtin(VALUE self, VALUE what, VALUE geometry)
     KernelInfo *kernel;
     KernelInfoType kernel_type;
     GeometryInfo info;
+    const char *geom_str;
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
 #endif
 
     VALUE_TO_ENUM(what, kernel_type, KernelInfoType);
-    ParseGeometry(StringValueCStr(geometry), &info);
+    geom_str = StringValueCStr(geometry);
+    if (ParseGeometry(geom_str, &info) == NoValue && *geom_str)
+    {
+        rb_raise(rb_eArgError, "invalid geometry string");
+    }
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();

@@ -13,5 +13,6 @@ RSpec.describe Magick::Image, '#random_threshold_channel' do
     expect { image.random_threshold_channel(threshold, Magick::RedChannel, Magick::BlueChannel) }.not_to raise_error
     expect { image.random_threshold_channel }.to raise_error(ArgumentError)
     expect { image.random_threshold_channel('20%', 2) }.to raise_error(TypeError)
+    expect { image.random_threshold_channel('invalid', Magick::AllChannels) }.to raise_error(ArgumentError)
   end
 end
