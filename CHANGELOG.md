@@ -3,6 +3,14 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 7.0.1
+
+Bug Fixes
+
+* Image_gray_q changes the colour space of the image, instead of returning whether it's grayscale (#1788)
+* Check for errors from ParseGeometry() (#1786)
+* Fail explicitly when trying to install on JRuby (#1784)
+
 ## RMagick 7.0.0
 
 Breaking Changes
