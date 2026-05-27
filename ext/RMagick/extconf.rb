@@ -284,7 +284,6 @@ module RMagick
         _aligned_msize
       ]
       imagemagick_api = [
-        'SetImageGray', # 6.9.1-10
         'SetMagickAlignedMemoryMethods' # 7.0.9-0
       ]
 
