@@ -8675,6 +8675,7 @@ Image_level_colors(int argc, VALUE *argv, VALUE self)
 #endif
     if (!okay)
     {
+        DestroyImage(new_image);
         rb_raise(rb_eRuntimeError, "LevelImageColors failed for unknown reason.");
     }
 
@@ -8756,6 +8757,7 @@ Image_levelize_channel(int argc, VALUE *argv, VALUE self)
 
     if (!okay)
     {
+        DestroyImage(new_image);
         rb_raise(rb_eRuntimeError, "LevelizeImageChannel failed for unknown reason.");
     }
     return rm_image_new(new_image);
