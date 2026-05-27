@@ -7929,6 +7929,13 @@ has_image_attribute(VALUE self, MagickBooleanType (attr_test)(const Image *))
 }
 #endif
 
+static MagickBooleanType
+Image_is_gray_colorspace_type(const Image *image, ExceptionInfo *exception)
+{
+    ColorspaceType colorspace = GetImageColorspaceType(image, exception);
+    return (colorspace == GRAYColorspace || colorspace == LinearGRAYColorspace) ? MagickTrue : MagickFalse;
+}
+
 
 /**
  * Return true if all the pixels in the image have the same red, green, and blue intensities.
@@ -7938,11 +7945,7 @@ has_image_attribute(VALUE self, MagickBooleanType (attr_test)(const Image *))
 VALUE
 Image_gray_q(VALUE self)
 {
-#if defined(HAVE_SETIMAGEGRAY)
-    return has_attribute(self, (MagickBooleanType (*)(const Image *, ExceptionInfo *))SetImageGray);
-#else
-    return has_attribute(self, IsGrayImage);
-#endif
+    return has_attribute(self, Image_is_gray_colorspace_type);
 }
 
 
