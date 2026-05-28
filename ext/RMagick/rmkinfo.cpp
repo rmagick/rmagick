@@ -162,6 +162,10 @@ VALUE
 KernelInfo_clone(VALUE self)
 {
     KernelInfo *kernel = CloneKernelInfo((KernelInfo*)DATA_PTR(self));
+    if (!kernel)
+    {
+        rb_raise(rb_eNoMemError, "not enough memory to continue");
+    }
     return TypedData_Wrap_Struct(Class_KernelInfo, &rm_kernel_info_data_type, kernel);
 }
 
