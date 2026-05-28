@@ -7647,7 +7647,7 @@ Image_gamma_correct(int argc, VALUE *argv, VALUE self)
     }
 
 #if defined(IMAGEMAGICK_7)
-    CHECK_EXCEPTION();
+    rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
     rm_check_image_exception(new_image, DestroyOnError);
