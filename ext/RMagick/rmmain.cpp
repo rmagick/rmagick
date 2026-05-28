@@ -214,6 +214,12 @@ static void set_managed_memory(void)
 
 
 
+static void
+rmagick_terminus(VALUE unused)
+{
+    MagickCoreTerminus();
+}
+
 /**
  * Define the classes and constants.
  *
@@ -231,6 +237,7 @@ Init_RMagick2(void)
     set_managed_memory();
 
     MagickCoreGenesis("RMagick", MagickFalse);
+    rb_set_end_proc(rmagick_terminus, Qnil);
 
     test_Magick_version();
 
