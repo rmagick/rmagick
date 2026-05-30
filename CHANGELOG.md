@@ -3,6 +3,16 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 7.0.2
+
+Bug Fixes
+
+* Fix missing error check in KernelInfo#clone (#1794)
+* Fix memory leak in Image#gamma_correct (#1793)
+* Fix memory leak in Image#{color_profile=, iptc_profile=} when out of memory (#1792)
+* Fix memory leaks if level operations fail in Image#{level_colors, levelize_channel} (#1791)
+* Clean up ImageMagick resources on exit to fix ruby_memcheck false leaks (#1790)
+
 ## RMagick 7.0.1
 
 Bug Fixes
