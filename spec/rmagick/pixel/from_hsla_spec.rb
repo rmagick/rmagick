@@ -22,6 +22,10 @@ RSpec.describe Magick::Pixel, '#from_hsla' do
     expect { described_class.from_hsla(360, 0, 0) }.to raise_error(RangeError)
     expect { described_class.from_hsla(0, 256, 0) }.to raise_error(RangeError)
     expect { described_class.from_hsla(0, 0, 256) }.to raise_error(RangeError)
+    expect { described_class.from_hsla(Float::NAN, 0, 0) }.to raise_error(RangeError)
+    expect { described_class.from_hsla(0, Float::NAN, 0) }.to raise_error(RangeError)
+    expect { described_class.from_hsla(0, 0, Float::NAN) }.to raise_error(RangeError)
+    expect { described_class.from_hsla(0, 0, 0, Float::NAN) }.to raise_error(RangeError)
     expect { pixel.to_hsla }.not_to raise_error
 
     args = [200, 125.125, 250.5, 0.6]
