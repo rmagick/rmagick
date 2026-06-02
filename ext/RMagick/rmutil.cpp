@@ -1574,15 +1574,11 @@ rm_check_image_exception(Image *imglist, ErrorRetention retention)
 static void
 format_exception(const ExceptionType severity, const char *reason, const char *description, char *msg)
 {
-    int len;
     memset(msg, 0, ERROR_MSG_SIZE);
-
-    len = snprintf(msg, ERROR_MSG_SIZE, "%s%s%s",
+    snprintf(msg, ERROR_MSG_SIZE, "%s%s%s",
         GetLocaleExceptionMessage(severity, reason),
         description ? ": " : "",
         description ? GetLocaleExceptionMessage(severity, description) : "");
-
-    msg[len] = '\0';
 }
 
 
