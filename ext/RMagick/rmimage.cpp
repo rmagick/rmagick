@@ -15833,6 +15833,9 @@ void add_format_prefix(Info *info, VALUE file)
     {
         memset(magic, '\0', sizeof(magic));
         magic_l = p - filename;
+        if (magic_l >= sizeof(magic)) {
+            magic_l = sizeof(magic) - 1;
+        }
         memcpy(magic, filename, magic_l);
 
         exception = AcquireExceptionInfo();
