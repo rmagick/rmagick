@@ -3,6 +3,12 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 7.0.3
+
+Bug Fixes
+
+* Fix potential stack buffer overflows in format_exception and add_format_prefix (#1796)
+
 ## RMagick 7.0.2
 
 Bug Fixes
