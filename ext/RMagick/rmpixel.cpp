@@ -739,19 +739,19 @@ Pixel_from_hsla(int argc, VALUE *argv, VALUE klass ATTRIBUTE_UNUSED)
             break;
     }
 
-    if (alpha && (a < 0.0 || a > 1.0))
+    if (alpha && !(a >= 0.0 && a <= 1.0))
     {
         rb_raise(rb_eRangeError, "alpha %g out of range [0.0, 1.0]", a);
     }
-    if (l < 0.0 || l > 255.0)
+    if (!(l >= 0.0 && l <= 255.0))
     {
         rb_raise(rb_eRangeError, "lightness %g out of range [0.0, 255.0]", l);
     }
-    if (s < 0.0 || s > 255.0)
+    if (!(s >= 0.0 && s <= 255.0))
     {
         rb_raise(rb_eRangeError, "saturation %g out of range [0.0, 255.0]", s);
     }
-    if (h < 0.0 || h >= 360.0)
+    if (!(h >= 0.0 && h < 360.0))
     {
         rb_raise(rb_eRangeError, "hue %g out of range [0.0, 360.0)", h);
     }
