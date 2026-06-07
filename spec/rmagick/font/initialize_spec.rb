@@ -8,7 +8,7 @@ RSpec.describe Magick::Font, '#initialize' do
     end
 
     font = described_class.new('Arial', 'font test', 'Arial family', Magick::NormalStyle, nil, 400, nil, 'test foundry', 'test format')
-    expect(font.to_s).to match(/stretch=UndefinedStretch/)
+    expect(font.to_s).to include('stretch=UndefinedStretch')
   end
 
   it 'accepts all style types' do
@@ -18,6 +18,6 @@ RSpec.describe Magick::Font, '#initialize' do
     end
 
     font = described_class.new('Arial', 'font test', 'Arial family', nil, Magick::NormalStretch, 400, nil, 'test foundry', 'test format')
-    expect(font.to_s).to match(/style=UndefinedStyle/)
+    expect(font.to_s).to include('style=UndefinedStyle')
   end
 end

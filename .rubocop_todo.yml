@@ -277,12 +277,6 @@ RSpec/IdenticalEqualityAssertion:
   Exclude:
     - 'spec/rmagick/image/spaceship_spec.rb'
 
-# Offense count: 2
-# This cop supports safe autocorrection (--autocorrect).
-RSpec/MatchWithSimpleRegex:
-  Exclude:
-    - 'spec/rmagick/font/initialize_spec.rb'
-
 # Offense count: 547
 RSpec/MultipleExpectations:
   Max: 72
