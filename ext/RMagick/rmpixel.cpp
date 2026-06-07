@@ -1269,8 +1269,7 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
     rm_init_magickpixel(image, &mpp);
     rm_set_magick_pixel_packet(pixel, &mpp);
 
-    // Support for hex-format color names moved out of QueryMagickColorname
-    // in 6.4.1-9. The 'hex' argument was removed as well.
+    MagickBooleanType okay = MagickTrue;
     if (hex)
     {
         if (compliance == XPMCompliance)
@@ -1286,14 +1285,18 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
     }
     else
     {
-        QueryColorname(image, &mpp, compliance, name, exception);
+        okay = QueryColorname(image, &mpp, compliance, name, exception);
     }
 
     DestroyImage(image);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 
-    // Always return a string, even if it's ""
+    if (!okay)
+    {
+        rb_raise(Class_ImageMagickError, "QueryColorname failed (unsupported colorspace)");
+    }
+
     return rb_str_new2(name);
 }
 
