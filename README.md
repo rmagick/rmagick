@@ -3,6 +3,7 @@ RMagick
 
 [![GemVersion](https://img.shields.io/gem/v/rmagick.svg?style=flat)](https://rubygems.org/gems/rmagick)
 ![CI](https://github.com/rmagick/rmagick/workflows/CI/badge.svg)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/rmagick/rmagick)
 
 Table of Contents
 -----------------
