@@ -51,7 +51,21 @@ rm_kernel_info_destroy(void *kernel)
 static size_t
 rm_kernel_info_memsize(const void *ptr)
 {
-    return sizeof(KernelInfo);
+    const KernelInfo *kernel = (const KernelInfo *)ptr;
+    size_t size = 0;
+
+    // A KernelInfo may be a linked list of kernels, each owning a values array.
+    while (kernel)
+    {
+        size += sizeof(KernelInfo);
+        if (kernel->values)
+        {
+            size += kernel->width * kernel->height * sizeof(*kernel->values);
+        }
+        kernel = kernel->next;
+    }
+
+    return size;
 }
 
 /**
