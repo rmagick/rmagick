@@ -106,6 +106,32 @@ KernelInfo_initialize(VALUE self, VALUE kernel_string)
 
 
 /**
+ * Return the KernelInfo struct associated with the object, raising an
+ * exception if the object has not been initialized (for example, when it was
+ * created with KernelInfo.allocate or a previous initialize failed). Without
+ * this guard a NULL pointer would be handed to ImageMagick, causing a crash.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param self the KernelInfo object
+ * @return the KernelInfo struct
+ * @throw RuntimeError if the kernel has not been initialized
+ */
+static KernelInfo *
+get_kernel_info(VALUE self)
+{
+    KernelInfo *kernel;
+
+    TypedData_Get_Struct(self, KernelInfo, &rm_kernel_info_data_type, kernel);
+    if (!kernel)
+    {
+        rb_raise(rb_eRuntimeError, "KernelInfo has not been initialized");
+    }
+    return kernel;
+}
+
+
+/**
  * Adds a given amount of the 'Unity' Convolution Kernel to the given pre-scaled and normalized Kernel.
  *
  * @param scale [Numeric] scale to add
@@ -113,7 +139,7 @@ KernelInfo_initialize(VALUE self, VALUE kernel_string)
 VALUE
 KernelInfo_unity_add(VALUE self, VALUE scale)
 {
-    GVL_STRUCT_TYPE(UnityAddKernelInfo) args = { (KernelInfo*)DATA_PTR(self), NUM2DBL(scale) };
+    GVL_STRUCT_TYPE(UnityAddKernelInfo) args = { get_kernel_info(self), NUM2DBL(scale) };
     CALL_FUNC_WITHOUT_GVL(GVL_FUNC(UnityAddKernelInfo), &args);
     return Qnil;
 }
@@ -134,7 +160,7 @@ KernelInfo_scale(VALUE self, VALUE scale, VALUE flags)
 
     VALUE_TO_ENUM(flags, geoflags, GeometryFlags);
 
-    GVL_STRUCT_TYPE(ScaleKernelInfo) args = { (KernelInfo*)DATA_PTR(self), NUM2DBL(scale), geoflags };
+    GVL_STRUCT_TYPE(ScaleKernelInfo) args = { get_kernel_info(self), NUM2DBL(scale), geoflags };
     CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ScaleKernelInfo), &args);
     return Qnil;
 }
@@ -148,7 +174,7 @@ KernelInfo_scale(VALUE self, VALUE scale, VALUE flags)
 VALUE
 KernelInfo_scale_geometry(VALUE self, VALUE geometry)
 {
-    GVL_STRUCT_TYPE(ScaleGeometryKernelInfo) args = { (KernelInfo*)DATA_PTR(self), StringValueCStr(geometry) };
+    GVL_STRUCT_TYPE(ScaleGeometryKernelInfo) args = { get_kernel_info(self), StringValueCStr(geometry) };
     CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ScaleGeometryKernelInfo), &args);
     return Qnil;
 }
@@ -161,7 +187,7 @@ KernelInfo_scale_geometry(VALUE self, VALUE geometry)
 VALUE
 KernelInfo_clone(VALUE self)
 {
-    KernelInfo *kernel = CloneKernelInfo((KernelInfo*)DATA_PTR(self));
+    KernelInfo *kernel = CloneKernelInfo(get_kernel_info(self));
     if (!kernel)
     {
         rb_raise(rb_eNoMemError, "not enough memory to continue");
