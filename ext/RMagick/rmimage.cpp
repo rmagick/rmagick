@@ -12839,7 +12839,12 @@ Image_properties(VALUE self)
 
     if (rb_block_given_p())
     {
-        ary = rb_ary_new2(2);
+        long i;
+
+        // Collect the properties first so that neither the ExceptionInfo nor
+        // the property iterator is held across rb_yield. The block may break
+        // or raise, which would otherwise leak the ExceptionInfo.
+        ary = rb_ary_new();
 
         ResetImagePropertyIterator(image);
         property = GetNextImageProperty(image);
@@ -12850,9 +12855,7 @@ Image_properties(VALUE self)
 #else
             value = GetImageProperty(image, property);
 #endif
-            rb_ary_store(ary, 0, rb_str_new2(property));
-            rb_ary_store(ary, 1, rb_str_new2(value));
-            rb_yield(ary);
+            rb_ary_push(ary, rb_assoc_new(rb_str_new2(property), value ? rb_str_new2(value) : Qnil));
             property = GetNextImageProperty(image);
         }
 #if defined(IMAGEMAGICK_7)
@@ -12861,6 +12864,11 @@ Image_properties(VALUE self)
 #else
         rm_check_image_exception(image, RetainOnError);
 #endif
+
+        for (i = 0; i < RARRAY_LEN(ary); i++)
+        {
+            rb_yield(rb_ary_entry(ary, i));
+        }
 
         RB_GC_GUARD(ary);
 
@@ -12880,7 +12888,7 @@ Image_properties(VALUE self)
 #else
             value = GetImageProperty(image, property);
 #endif
-            rb_hash_aset(attr_hash, rb_str_new2(property), rb_str_new2(value));
+            rb_hash_aset(attr_hash, rb_str_new2(property), value ? rb_str_new2(value) : Qnil);
             property = GetNextImageProperty(image);
         }
 #if defined(IMAGEMAGICK_7)
