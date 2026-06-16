@@ -3,6 +3,17 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 7.0.4
+
+Bug Fixes
+
+* Fix report size in rm_kernel_info_memsize (#1808)
+* Fix NULL dereference in KernelInfo instance methods (#1807)
+* Fix memory leak and NULL deref in Image#properties (#1806)
+* Fix memory leak when string conversion raises (#1805)
+* Fix error handling in Pixel#to_color when QueryColorname fails (#1800)
+* Reject NAN in Pixel#from_hsla() (#1798)
+
 ## RMagick 7.0.3
 
 Bug Fixes
