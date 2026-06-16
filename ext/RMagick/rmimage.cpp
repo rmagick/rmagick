@@ -5355,16 +5355,17 @@ VALUE
 Image_delete_profile(VALUE self, VALUE name)
 {
     Image *image = rm_check_frozen(self);
+    char *profile_name = StringValueCStr(name);
 
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception = AcquireExceptionInfo();
 
-    GVL_STRUCT_TYPE(ProfileImage) args = { image, StringValueCStr(name), NULL, 0, exception };
+    GVL_STRUCT_TYPE(ProfileImage) args = { image, profile_name, NULL, 0, exception };
     CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ProfileImage), &args);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(ProfileImage) args = { image, StringValueCStr(name), NULL, 0, MagickTrue };
+    GVL_STRUCT_TYPE(ProfileImage) args = { image, profile_name, NULL, 0, MagickTrue };
     CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ProfileImage), &args);
 #endif
     return self;
