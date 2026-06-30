@@ -3,6 +3,15 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 7.0.5
+
+Bug Fixes
+
+* Fix heap overflow from integer overflow in dispatch/export_pixels geometry (#1816)
+* Fix SEGV in Image/Pixel/Draw #marshal_load on a non-collection argument (#1815)
+* Fix SEGV when a Draw method is called on an uninitialized object (#1814)
+* Fix SEGV in Draw#primitive on non-String argument (#1813)
+
 ## RMagick 7.0.4
 
 Bug Fixes
