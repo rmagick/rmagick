@@ -1046,6 +1046,9 @@ Pixel_marshal_load(VALUE self, VALUE dpixel)
     Pixel *pixel;
 
     TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
+
+    Check_Type(dpixel, T_HASH);
+
     pixel->red = NUM2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("red")));
     pixel->green = NUM2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("green")));
     pixel->blue = NUM2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("blue")));
