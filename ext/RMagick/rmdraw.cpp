@@ -48,6 +48,33 @@ DEFINE_GVL_STUB3(GetTypeMetrics, Image *, const DrawInfo *, TypeMetric *);
 
 
 /**
+ * Fetch the Draw struct and ensure it has been initialized (draw->info != NULL).
+ *
+ * Draw_alloc() leaves draw->info NULL until #initialize runs, so a Draw obtained
+ * via .allocate (or a subclass whose #initialize skips super) would otherwise
+ * dereference a NULL DrawInfo and crash the process. Raise instead.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param self the Draw object
+ * @return the initialized Draw struct
+ * @throw RuntimeError if the Draw object has not been initialized
+ */
+static Draw *
+get_draw(VALUE self)
+{
+    Draw *draw;
+
+    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    if (!draw->info)
+    {
+        rb_raise(rb_eRuntimeError, "%s has not been initialized", rb_obj_classname(self));
+    }
+    return draw;
+}
+
+
+/**
  * Set the affine matrix from an {Magick::AffineMatrix}.
  *
  * @param matrix [Magick::AffineMatrix] the affine matrix
@@ -59,7 +86,7 @@ Draw_affine_eq(VALUE self, VALUE matrix)
     Draw *draw;
 
     rb_check_frozen(self);
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    draw = get_draw(self);
     Export_AffineMatrix(&draw->info->affine, matrix);
     return matrix;
 }
@@ -77,7 +104,7 @@ Draw_align_eq(VALUE self, VALUE align)
     Draw *draw;
 
     rb_check_frozen(self);
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    draw = get_draw(self);
     VALUE_TO_ENUM(align, draw->info->align, AlignType);
     return align;
 }
@@ -95,7 +122,7 @@ Draw_decorate_eq(VALUE self, VALUE decorate)
     Draw *draw;
 
     rb_check_frozen(self);
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    draw = get_draw(self);
     VALUE_TO_ENUM(decorate, draw->info->decorate, DecorationType);
     return decorate;
 }
@@ -113,7 +140,7 @@ Draw_density_eq(VALUE self, VALUE density)
     Draw *draw;
 
     rb_check_frozen(self);
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    draw = get_draw(self);
     magick_clone_string(&draw->info->density, StringValueCStr(density));
 
     return density;
@@ -132,7 +159,7 @@ Draw_encoding_eq(VALUE self, VALUE encoding)
     Draw *draw;
 
     rb_check_frozen(self);
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    draw = get_draw(self);
     magick_clone_string(&draw->info->encoding, StringValueCStr(encoding));
 
     return encoding;
@@ -151,7 +178,7 @@ Draw_fill_eq(VALUE self, VALUE fill)
     Draw *draw;
 
     rb_check_frozen(self);
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    draw = get_draw(self);
     Color_to_PixelColor(&draw->info->fill, fill);
     return fill;
 }
@@ -172,7 +199,7 @@ Draw_fill_pattern_eq(VALUE self, VALUE pattern)
     Draw *draw;
 
     rb_check_frozen(self);
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    draw = get_draw(self);
 
     if (draw->info->fill_pattern != NULL)
     {
@@ -207,7 +234,7 @@ Draw_font_eq(VALUE self, VALUE font)
     Draw *draw;
 
     rb_check_frozen(self);
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    draw = get_draw(self);
     magick_clone_string(&draw->info->font, StringValueCStr(font));
 
     return font;
@@ -226,7 +253,7 @@ Draw_font_family_eq(VALUE self, VALUE family)
     Draw *draw;
 
     rb_check_frozen(self);
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    draw = get_draw(self);
     magick_clone_string(&draw->info->family, StringValueCStr(family));
 
     return family;
@@ -245,7 +272,7 @@ Draw_font_stretch_eq(VALUE self, VALUE stretch)
     Draw *draw;
 
     rb_check_frozen(self);
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    draw = get_draw(self);
     VALUE_TO_ENUM(stretch, draw->info->stretch, StretchType);
     return stretch;
 }
@@ -263,7 +290,7 @@ Draw_font_style_eq(VALUE self, VALUE style)
     Draw *draw;
 
     rb_check_frozen(self);
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    draw = get_draw(self);
     VALUE_TO_ENUM(style, draw->info->style, StyleType);
     return style;
 }
@@ -283,7 +310,7 @@ Draw_font_weight_eq(VALUE self, VALUE weight)
     size_t w;
 
     rb_check_frozen(self);
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    draw = get_draw(self);
 
     if (FIXNUM_P(weight))
     {
@@ -349,7 +376,7 @@ Draw_gravity_eq(VALUE self, VALUE grav)
     Draw *draw;
 
     rb_check_frozen(self);
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    draw = get_draw(self);
     VALUE_TO_ENUM(grav, draw->info->gravity, GravityType);
 
     return grav;
@@ -368,7 +395,7 @@ Draw_kerning_eq(VALUE self, VALUE kerning)
     Draw *draw;
 
     rb_check_frozen(self);
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    draw = get_draw(self);
     draw->info->kerning = NUM2DBL(kerning);
     return kerning;
 }
@@ -386,7 +413,7 @@ Draw_interline_spacing_eq(VALUE self, VALUE spacing)
     Draw *draw;
 
     rb_check_frozen(self);
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    draw = get_draw(self);
     draw->info->interline_spacing = NUM2DBL(spacing);
     return spacing;
 }
@@ -404,7 +431,7 @@ Draw_interword_spacing_eq(VALUE self, VALUE spacing)
     Draw *draw;
 
     rb_check_frozen(self);
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    draw = get_draw(self);
     draw->info->interword_spacing = NUM2DBL(spacing);
     return spacing;
 }
@@ -505,7 +532,7 @@ Draw_marshal_dump(VALUE self)
     Draw *draw;
     VALUE ddraw;
 
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    draw = get_draw(self);
 
     // Raise an exception if the Draw has a non-NULL gradient or element_reference field
     if (draw->info->element_reference.type != UndefinedReference
@@ -636,7 +663,7 @@ Draw_pointsize_eq(VALUE self, VALUE pointsize)
     Draw *draw;
 
     rb_check_frozen(self);
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    draw = get_draw(self);
     draw->info->pointsize = NUM2DBL(pointsize);
     return pointsize;
 }
@@ -656,7 +683,7 @@ Draw_rotation_eq(VALUE self, VALUE deg)
     AffineMatrix affine, current;
 
     rb_check_frozen(self);
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    draw = get_draw(self);
 
     degrees = NUM2DBL(deg);
     if (fabs(degrees) > DBL_EPSILON)
@@ -692,7 +719,7 @@ Draw_stroke_eq(VALUE self, VALUE stroke)
     Draw *draw;
 
     rb_check_frozen(self);
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    draw = get_draw(self);
     Color_to_PixelColor(&draw->info->stroke, stroke);
     return stroke;
 }
@@ -712,7 +739,7 @@ Draw_stroke_pattern_eq(VALUE self, VALUE pattern)
     Draw *draw;
 
     rb_check_frozen(self);
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    draw = get_draw(self);
 
     if (draw->info->stroke_pattern != NULL)
     {
@@ -748,7 +775,7 @@ Draw_stroke_width_eq(VALUE self, VALUE stroke_width)
     Draw *draw;
 
     rb_check_frozen(self);
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    draw = get_draw(self);
     draw->info->stroke_width = NUM2DBL(stroke_width);
     return stroke_width;
 }
@@ -766,7 +793,7 @@ Draw_text_antialias_eq(VALUE self, VALUE text_antialias)
     Draw *draw;
 
     rb_check_frozen(self);
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    draw = get_draw(self);
     draw->info->text_antialias = (MagickBooleanType) RTEST(text_antialias);
     return text_antialias;
 }
@@ -797,7 +824,7 @@ Draw_undercolor_eq(VALUE self, VALUE undercolor)
     Draw *draw;
 
     rb_check_frozen(self);
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    draw = get_draw(self);
     Color_to_PixelColor(&draw->info->undercolor, undercolor);
     return undercolor;
 }
@@ -840,7 +867,7 @@ VALUE Draw_annotate(
 
     // Save the affine matrix in case it is modified by
     // Draw#rotation=
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    draw = get_draw(self);
     keep = draw->info->affine;
 
     image_arg = rm_cur_image(image_arg);
@@ -1050,7 +1077,7 @@ Draw_draw(VALUE self, VALUE image_arg)
     image_arg = rm_cur_image(image_arg);
     image = rm_check_frozen(image_arg);
 
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    draw = get_draw(self);
     if (draw->primitives == 0)
     {
         rb_raise(rb_eArgError, "nothing to draw");
@@ -1464,7 +1491,7 @@ PolaroidOptions_initialize(VALUE self)
     ExceptionInfo *exception;
 
     // Default shadow color
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    draw = get_draw(self);
 
     exception = AcquireExceptionInfo();
     QueryColorCompliance("gray75", AllCompliance, &draw->shadow_color, exception);
@@ -1526,7 +1553,7 @@ PolaroidOptions_border_color_eq(VALUE self, VALUE border)
     Draw *draw;
 
     rb_check_frozen(self);
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    draw = get_draw(self);
     Color_to_PixelColor(&draw->info->border_color, border);
     return border;
 }
@@ -1629,7 +1656,7 @@ get_type_metrics(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
         rb_raise(rb_eArgError, "no text to measure");
     }
 
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    draw = get_draw(self);
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     draw->info->text = InterpretImageProperties(NULL, image, text, exception);
