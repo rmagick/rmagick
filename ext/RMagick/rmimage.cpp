@@ -5631,6 +5631,41 @@ Image_displace(int argc, VALUE *argv, VALUE self)
 
 
 /**
+ * Compute columns * rows * map_length for a pixel buffer, raising RangeError on
+ * overflow.
+ *
+ * The product is used to size the buffer that ImageMagick fills based on the
+ * (caller-supplied) columns and rows. If the multiplication wrapped around, the
+ * buffer would be allocated too small and ImageMagick would write out of bounds.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param columns the number of columns
+ * @param rows the number of rows
+ * @param map_length the number of channels per pixel (length of the map string)
+ * @return columns * rows * map_length
+ * @throw RangeError if the multiplication overflows
+ */
+static size_t
+pixel_buffer_count(size_t columns, size_t rows, size_t map_length)
+{
+    size_t pixels;
+
+    if (columns != 0 && rows > SIZE_MAX / columns)
+    {
+        rb_raise(rb_eRangeError, "pixel buffer dimensions too large (%" RMIuSIZE "x%" RMIuSIZE ")", columns, rows);
+    }
+    pixels = columns * rows;
+    if (map_length != 0 && pixels > SIZE_MAX / map_length)
+    {
+        rb_raise(rb_eRangeError, "pixel buffer dimensions too large (%" RMIuSIZE "x%" RMIuSIZE " map=%" RMIuSIZE ")",
+                 columns, rows, map_length);
+    }
+    return pixels * map_length;
+}
+
+
+/**
  * Extract pixel data from the image and returns it as an array of pixels. The "x", "y", "width" and
  * "height" parameters specify the rectangle to be extracted. The "map" parameter reflects the
  * expected ordering of the pixel array. It can be any combination or order of R = red, G = green,
@@ -5685,7 +5720,7 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
     }
 
     // Compute the size of the pixel array and allocate the memory.
-    npixels = columns * rows * mapL;
+    npixels = pixel_buffer_count(columns, rows, mapL);
     pixels.v = stg_type == QuantumPixel ? (void *) ALLOC_N(Quantum, npixels)
                : (void *) ALLOC_N(double, npixels);
 
@@ -6636,7 +6671,7 @@ Image_export_pixels(int argc, VALUE *argv, VALUE self)
     }
 
 
-    npixels = (long)(cols * rows * strlen(map));
+    npixels = (long)pixel_buffer_count(cols, rows, strlen(map));
     pixels = ALLOC_N(Quantum, npixels);
     if (!pixels)    // app recovered from exception
     {
@@ -6804,7 +6839,7 @@ Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
     }
 
 
-    npixels = cols * rows * strlen(map);
+    npixels = pixel_buffer_count(cols, rows, strlen(map));
     switch (type)
     {
         case CharPixel:
@@ -6833,6 +6868,10 @@ Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
 
     // Allocate a string long enough to hold the exported pixel data.
     // Get a pointer to the buffer.
+    if (npixels != 0 && sz > (size_t)LONG_MAX / npixels)
+    {
+        rb_raise(rb_eRangeError, "pixel buffer dimensions too large");
+    }
     string = rb_str_new2("");
     rb_str_resize(string, (long)(sz * npixels));
 
