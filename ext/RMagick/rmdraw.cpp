@@ -1257,6 +1257,7 @@ Draw_primitive(VALUE self, VALUE primitive)
     Draw *draw;
 
     rb_check_frozen(self);
+    StringValue(primitive);
     TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
 
     if (draw->primitives == (VALUE)0)
