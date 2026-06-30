@@ -593,6 +593,8 @@ Draw_marshal_load(VALUE self, VALUE ddraw)
 
     TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
 
+    Check_Type(ddraw, T_HASH);
+
     if (draw->info == NULL)
     {
         ImageInfo *image_info;

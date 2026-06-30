@@ -9056,6 +9056,8 @@ Image_marshal_load(VALUE self, VALUE ary)
 
     TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
 
+    Check_Type(ary, T_ARRAY);
+
     filename = rb_ary_shift(ary);
     blob = rb_ary_shift(ary);
 
