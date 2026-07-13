@@ -33,10 +33,17 @@ build_imagemagick() {
   mkdir -p build-ImageMagick
 
   version=(${IMAGEMAGICK_VERSION//./ })
-  wget "https://imagemagick.org/archive/releases/ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz"
-  tar -xf "ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz"
-  rm "ImageMagick-${IMAGEMAGICK_VERSION}.tar.xz"
-  mv "ImageMagick-${IMAGEMAGICK_VERSION}" "${build_dir}"
+  repo="ImageMagick/ImageMagick"
+  archive_dir="ImageMagick-${IMAGEMAGICK_VERSION}"
+  if [ "${version[0]}" = "6" ]; then
+    repo="ImageMagick/ImageMagick6"
+    archive_dir="ImageMagick6-${IMAGEMAGICK_VERSION}"
+  fi
+
+  wget -O "ImageMagick-${IMAGEMAGICK_VERSION}.tar.gz" "https://github.com/${repo}/archive/refs/tags/${IMAGEMAGICK_VERSION}.tar.gz"
+  tar -xf "ImageMagick-${IMAGEMAGICK_VERSION}.tar.gz"
+  rm "ImageMagick-${IMAGEMAGICK_VERSION}.tar.gz"
+  mv "${archive_dir}" "${build_dir}"
 
   options="--with-magick-plus-plus=no --disable-docs"
   if [ -v CONFIGURE_OPTIONS ]; then
