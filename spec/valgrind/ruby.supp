@@ -34,3 +34,29 @@
    ...
    fun:lt_dlopenadvise
 }
+
+# Some of those coder modules are C++, and their static initializers allocate
+# process-lifetime state while the dynamic linker runs them (call_init) as part
+# of the same lt_dlopen(). That state is meant to live until the process exits;
+# the module is never dlclose()d, so the constructors' counterparts never run and
+# memcheck reports the allocation as lost.
+#
+# This is the same class of report as the one above -- it happens inside a
+# module RMagick merely caused to be loaded, so there is no pointer RMagick
+# could free -- and it is likewise bounded: calling Magick.formats once and 30
+# times both report exactly 152 (16 direct, 136 indirect) bytes in 1 block.
+#
+# The allocation site is left unanchored on purpose (both operator new and
+# operator new[] show up, and the frames inside the module have no symbols).
+# What pins the stanza down is the pair of frames around it: call_init, i.e. the
+# linker running an ELF initializer, reached from lt_dlopenadvise, i.e. libltdl
+# loading a module. Nothing RMagick allocates itself passes through those.
+{
+   ImageMagick: static initializer of a C++ coder module loaded by libltdl (bounded, once per process)
+   Memcheck:Leak
+   match-leak-kinds: definite,indirect
+   ...
+   fun:call_init*
+   ...
+   fun:lt_dlopenadvise
+}
