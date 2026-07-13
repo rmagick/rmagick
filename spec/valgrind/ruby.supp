@@ -1,0 +1,36 @@
+# Valgrind suppressions for `rake spec:valgrind` (ruby_memcheck).
+#
+# The file name is dictated by ruby_memcheck, which only loads suppression files
+# named after the Ruby engine/version (ruby.supp applies to all MRI versions);
+# the directory is set via valgrind_suppressions_dir in the Rakefile.
+
+# ImageMagick built with --enable-modules (`magick -version` lists the "Modules"
+# feature) loads its coders as shared objects through libltdl. Each lt_dlopen()
+# ends in a glibc dlopen(), and when the newly loaded coder has to be added to
+# the symbol resolution scope of an object that was itself dlopen()ed -- here
+# RMagick2.so, loaded by `require` -- the dynamic linker grows that object's
+# l_scope array with a malloc() in resize_scopes(). glibc keeps the old array
+# reachable only from the link_map, hands the pointer to no one else, and never
+# frees it, so memcheck reports it as "definitely lost" at exit.
+#
+# There is nothing for RMagick to free: the allocation is made by ld.so, RMagick
+# never sees the pointer, and it survives MagickCoreTerminus() (which RMagick
+# does call, from an end proc in Init_RMagick2). It is also bounded -- calling
+# Magick.formats once and 30 times both report exactly 2,688 bytes in 3 blocks,
+# because the coder modules are dlopen()ed once per process. Reproducing the
+# same report through Fiddle, with none of RMagick's code on the stack, confirms
+# it comes from the glibc/libltdl pair rather than from this extension.
+#
+# The stanza is anchored on both resize_scopes (the glibc allocation site) and
+# lt_dlopenadvise (the libltdl entry point), so it only covers module loading and
+# cannot swallow an unrelated leak in RMagick itself.
+{
+   ImageMagick: glibc grows the dlopen scope array when libltdl loads a coder module (bounded, once per process)
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:malloc
+   fun:resize_scopes
+   ...
+   fun:lt_dlopenadvise
+}

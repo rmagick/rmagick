@@ -188,6 +188,12 @@ end
 if RUBY_PLATFORM.include?('linux')
   require 'ruby_memcheck'
   require 'ruby_memcheck/rspec/rake_task'
+
+  RubyMemcheck.config(
+    binary_name: 'RMagick2',
+    valgrind_suppressions_dir: 'spec/valgrind'
+  )
+
   namespace :spec do
     RubyMemcheck::RSpec::RakeTask.new(valgrind: :compile)
   end
