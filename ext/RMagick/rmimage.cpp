@@ -1429,7 +1429,10 @@ Image_bias_eq(VALUE self, VALUE pct)
         char artifact[21];
 
         snprintf(artifact, sizeof(artifact), "%.20g", bias);
-        SetImageArtifact(image, "convolve:bias", artifact);
+        if (!SetImageArtifact(image, "convolve:bias", artifact))
+        {
+            rb_raise(rb_eNoMemError, "not enough memory to continue");
+        }
     }
 #else
     image->bias = bias;
@@ -1876,11 +1879,16 @@ special_composite(Image *image, Image *overlay, double image_pct, double overlay
 
     blend_geometry(geometry, sizeof(geometry), image_pct, overlay_pct);
     CloneString(&overlay->geometry, geometry);
-    SetImageArtifact(overlay, "compose:args", geometry);
+    if (!SetImageArtifact(overlay, "compose:args", geometry))
+    {
+        rb_raise(rb_eNoMemError, "not enough memory to continue");
+    }
 
     new_image = rm_clone_image(image);
-    SetImageArtifact(new_image, "compose:args", geometry); // 6.9 appears to get this info from canvas (dest) image
-
+    if (!SetImageArtifact(new_image, "compose:args", geometry)) // 6.9 appears to get this info from canvas (dest) image
+    {
+        rb_raise(rb_eNoMemError, "not enough memory to continue");
+    }
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -4072,7 +4080,10 @@ Image_composite_mathematics(int argc, VALUE *argv, VALUE self)
     composite_image = rm_check_destroyed(rm_cur_image(argv[0]));
 
     snprintf(compose_args, sizeof(compose_args), "%-.16g,%-.16g,%-.16g,%-.16g", NUM2DBL(argv[1]), NUM2DBL(argv[2]), NUM2DBL(argv[3]), NUM2DBL(argv[4]));
-    SetImageArtifact(composite_image, "compose:args", compose_args);
+    if (!SetImageArtifact(composite_image, "compose:args", compose_args))
+    {
+        rb_raise(rb_eNoMemError, "not enough memory to continue");
+    }
 
     // Call composite(False, gravity, x_off, y_off, MathematicsCompositeOp, DefaultChannels)
     args[0] = argv[0];
@@ -4145,12 +4156,15 @@ composite_tiled(int bang, int argc, VALUE *argv, VALUE self)
 
     comp_image = rm_check_destroyed(rm_cur_image(argv[0]));
 
+    if (!SetImageArtifact(comp_image, "modify-outside-overlay", "false"))
+    {
+        rb_raise(rb_eNoMemError, "not enough memory to continue");
+    }
+
     if (!bang)
     {
         image = rm_clone_image(image);
     }
-
-    SetImageArtifact(comp_image, "modify-outside-overlay", "false");
 
     status = MagickTrue;
     columns = comp_image->columns;
@@ -5426,7 +5440,10 @@ Image_deskew(int argc, VALUE *argv, VALUE self)
             width = NUM2ULONG(argv[1]);
             memset(auto_crop_width, 0, sizeof(auto_crop_width));
             snprintf(auto_crop_width, sizeof(auto_crop_width), "%lu", width);
-            SetImageArtifact(image, "deskew:auto-crop", auto_crop_width);
+            if (!SetImageArtifact(image, "deskew:auto-crop", auto_crop_width))
+            {
+                rb_raise(rb_eNoMemError, "not enough memory to continue");
+            }
         case 1:
             threshold = rm_percentage(argv[0], 1.0) * QuantumRange;
         case 0:
@@ -15515,7 +15532,10 @@ Image_watermark(int argc, VALUE *argv, VALUE self)
 
     blend_geometry(geometry, sizeof(geometry), src_percent, dst_percent);
     CloneString(&overlay->geometry, geometry);
-    SetImageArtifact(overlay, "compose:args", geometry);
+    if (!SetImageArtifact(overlay, "compose:args", geometry))
+    {
+        rb_raise(rb_eNoMemError, "not enough memory to continue");
+    }
 
     new_image = rm_clone_image(image);
 #if defined(IMAGEMAGICK_7)

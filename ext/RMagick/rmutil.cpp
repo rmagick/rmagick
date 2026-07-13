@@ -937,7 +937,10 @@ void rm_set_user_artifact(Image *images, Info *info)
         image = GetFirstImageInList(images);
         while (image)
         {
-            SetImageArtifact(image, "user", value);
+            if (!SetImageArtifact(image, "user", value))
+            {
+                rb_raise(rb_eNoMemError, "not enough memory to continue");
+            }
             image = GetNextImageInList(image);
         }
     }
@@ -1002,7 +1005,10 @@ static void copy_options(Image *image, Info *info)
         if (value)
         {
             strlcpy(property, value, sizeof(property));
-            SetImageArtifact(image, property, value);
+            if (!SetImageArtifact(image, property, value))
+            {
+                rb_raise(rb_eNoMemError, "not enough memory to continue");
+            }
         }
     }
 }
