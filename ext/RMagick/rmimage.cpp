@@ -1887,6 +1887,7 @@ special_composite(Image *image, Image *overlay, double image_pct, double overlay
     new_image = rm_clone_image(image);
     if (!SetImageArtifact(new_image, "compose:args", geometry)) // 6.9 appears to get this info from canvas (dest) image
     {
+        DestroyImage(new_image);
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
 
