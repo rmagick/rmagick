@@ -993,7 +993,6 @@ rm_get_optional_arguments(VALUE img)
  */
 static void copy_options(Image *image, Info *info)
 {
-    char property[MaxTextExtent];
     const char *option;
 
     ResetImageOptionIterator(info);
@@ -1004,8 +1003,7 @@ static void copy_options(Image *image, Info *info)
         value = GetImageOption(info, option);
         if (value)
         {
-            strlcpy(property, value, sizeof(property));
-            if (!SetImageArtifact(image, property, value))
+            if (!SetImageArtifact(image, option, value))
             {
                 rb_raise(rb_eNoMemError, "not enough memory to continue");
             }
