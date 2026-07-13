@@ -344,7 +344,7 @@ module RMagick
     end
 
     def print_summary
-      summary = <<~"END_SUMMARY"
+      summary = <<~END_SUMMARY
         #{'=' * 70}
         #{Time.now.strftime('%a %d %b %y %T')}
         This installation of RMagick #{RMAGICK_VERS} is configured for
