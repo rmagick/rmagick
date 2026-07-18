@@ -859,7 +859,7 @@ imagelist_length(VALUE imagelist)
 
 
 /**
- * Raise exception if imagelist is emtpy.
+ * Raise exception if imagelist is empty.
  *
  * No Ruby usage (internal function)
  *
@@ -934,7 +934,7 @@ clone_imagelist(Image *images)
  * Analyzes the colors within a set of reference images and chooses a fixed number of colors to represent the set.
  * The goal of the algorithm is to minimize the difference between the input and output images while minimizing the processing time.
  *
- * @overload quantize(number_colors = 256, colorspace = Magick::RGBColorsapce, dither = true, tree_depth = 0, measure_error = false)
+ * @overload quantize(number_colors = 256, colorspace = Magick::RGBColorspace, dither = true, tree_depth = 0, measure_error = false)
  *   @param number_colors [Numeric] the maximum number of colors to use in the output images.
  *   @param colorspace [Magick::ColorspaceType] the colorspace to quantize in.
  *   @param dither [Magick::DitherMethod, Boolean] a DitherMethod value or true if you want apply dither.

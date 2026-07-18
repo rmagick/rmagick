@@ -219,7 +219,7 @@ Enum_spaceship(VALUE self, VALUE other)
 /**
  * Bitwise OR for enums
  *
- * @param another [Magick::Enum] the another enum
+ * @param another [Magick::Enum] the other enum
  * @return [Magick::Enum] new Enum instance
  */
 VALUE
@@ -361,7 +361,7 @@ Enum_type_values(VALUE klass)
  *
  * @param klass the class type
  * @param value the value for enum
- * @return a enumerator
+ * @return an enumerator
  */
 
 VALUE
@@ -541,7 +541,7 @@ CompressionType_find(CompressionType ct)
 
 
 /**
- * Returns a DisposeType enum object for the specified value..new.
+ * Returns a DisposeType enum object for the specified value.
  *
  * No Ruby usage (internal function)
  *
@@ -661,7 +661,7 @@ PixelInterpolateMethod_find(PixelInterpolateMethod interpolate)
 
 
 /**
- * Construct an RenderingIntent enum object for the specified value.
+ * Construct a RenderingIntent enum object for the specified value.
  *
  * No Ruby usage (internal function)
  *
@@ -785,7 +785,7 @@ StyleType_find(StyleType style)
  *
  * No Ruby usage (internal function)
  *
- * @param style theVirtualPixelMethod
+ * @param style the VirtualPixelMethod
  * @return a new VirtualPixelMethod enumerator
  */
 VALUE

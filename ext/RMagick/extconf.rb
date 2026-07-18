@@ -123,7 +123,7 @@ module RMagick
         $LDFLAGS    += " #{ldflags} #{rpath}"
 
         unless try_link("int main() { }")
-          # if linker does not recognizes '-Wl,-rpath,somewhere' option, it revert to original option
+          # if linker does not recognize '-Wl,-rpath,somewhere' option, it reverts to original option
           $LDFLAGS = "#{original_ldflags} #{ldflags}"
         end
       end

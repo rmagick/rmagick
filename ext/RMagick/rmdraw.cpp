@@ -836,7 +836,7 @@ Draw_undercolor_eq(VALUE self, VALUE undercolor)
  * Annotates an image with text.
  *
  * - Additional Draw attribute methods may be called in the optional block,
- *   which is executed in the context of an Draw object.
+ *   which is executed in the context of a Draw object.
  *
  * @param image_arg [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
  *   imagelist, uses the current image.
@@ -1147,7 +1147,7 @@ Draw_dup(VALUE self)
  *     imagelist, uses the current image.
  *   @param text [String] The string to be rendered.
  *
- * @return [Magick::TypeMetric] The information for a specific string if rendered on a image.
+ * @return [Magick::TypeMetric] The information for a specific string if rendered on an image.
  */
 VALUE
 Draw_get_type_metrics(
@@ -1174,7 +1174,7 @@ Draw_get_type_metrics(
  *     imagelist, uses the current image.
  *   @param text [String] The string to be rendered.
  *
- * @return [Magick::TypeMetric] The information for a specific string if rendered on a image.
+ * @return [Magick::TypeMetric] The information for a specific string if rendered on an image.
  */
 VALUE
 Draw_get_multiline_type_metrics(
@@ -1340,7 +1340,7 @@ Draw_mark(void *drawptr)
 
 
 /**
- * Free the memory associated with an Draw object.
+ * Free the memory associated with a Draw object.
  *
  * No Ruby usage (internal function)
  *
@@ -1401,7 +1401,7 @@ new_DrawOptions(void)
 /**
  * Create a DrawOptions object.
  *
- * - The DrawOptions class is the same as the Draw class except is has only
+ * - The DrawOptions class is the same as the Draw class except it has only
  *   the attribute writer functions
  *
  * @return [Magick::Image::DrawOptions] a new DrawOptions object

@@ -463,7 +463,7 @@ Color_to_Pixel(Pixel *pp, VALUE color)
  * No Ruby usage (internal function)
  *
  * @param color the PixelColor to modify
- * @param name_arg the coor name
+ * @param name_arg the color name
  * @throw ArgumentError
  */
 static void
@@ -666,14 +666,14 @@ Pixel_fcmp(int argc, VALUE *argv, VALUE self)
 
 
 /**
- * Construct an {Magick::Pixel} corresponding to the given color name.
+ * Construct a {Magick::Pixel} corresponding to the given color name.
  *
  * - The "inverse" is {Image#to_color}, b/c the conversion of a pixel to a
  *   color name requires both a color depth and if the opacity value has
  *   meaning.
  *
  * @param name [String] the color name
- * @return [Magick::Pixel] a new Magic::Pixel object
+ * @return [Magick::Pixel] a new Magick::Pixel object
  * @see Magick::Image#to_color
  * @see Magick::Pixel#to_color
  */
@@ -1009,7 +1009,7 @@ Pixel_intensity(VALUE self)
 /**
  * Support Marshal.dump.
  *
- * @return [Hash] a representing the dumped pixel
+ * @return [Hash] a Hash representing the dumped pixel
  */
 VALUE
 Pixel_marshal_dump(VALUE self)

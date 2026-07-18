@@ -1318,7 +1318,7 @@ Image_background_color(VALUE self)
 
 
 /**
- * Set the the background color to the specified color spec.
+ * Set the background color to the specified color spec.
  *
  * @param color [Magick::Pixel, String] the color
  * @return [Magick::Pixel, String] the given color
@@ -1916,12 +1916,12 @@ special_composite(Image *image, Image *overlay, double image_pct, double overlay
  * @overload blend(overlay, src_percent, dst_percent, gravity = Magick::NorthWestGravity, x_offset = 0, y_offset = 0)
  *   @param overlay [Magick::Image, Magick::ImageList] The source image for the composite operation.
  *     Either an imagelist or an image. If an imagelist, uses the current image.
- *   @param src_percent [Numeric, String] Either a non-negative number a string in the form "NN%".
+ *   @param src_percent [Numeric, String] Either a non-negative number or a string in the form "NN%".
  *     If src_percentage is a number it is interpreted as a percentage.
  *     Both 0.25 and "25%" mean 25%. This argument is required.
- *   @param dst_percent [Numeric, String] Either a non-negative number a string in the form "NN%".
+ *   @param dst_percent [Numeric, String] Either a non-negative number or a string in the form "NN%".
  *     If src_percentage is a number it is interpreted as a percentage.
- *     Both 0.25 and "25%" mean 25%. This argument may omitted if no other arguments follow it.
+ *     Both 0.25 and "25%" mean 25%. This argument may be omitted if no other arguments follow it.
  *     In this case the default is 100%-src_percentage.
  *   @param gravity [Magick::GravityType] the gravity for offset. the offsets are measured from the NorthWest corner by default.
  *   @param x_offset [Numeric] The offset that measured from the left-hand side of the target image.
@@ -2191,7 +2191,7 @@ Image_border_color(VALUE self)
 
 
 /**
- * Set the the border color.
+ * Set the border color.
  *
  * @param [Magick::Pixel, String] color the color
  * @return [Magick::Pixel, String] the given color
@@ -3397,7 +3397,7 @@ Image_columns(VALUE self)
  *   - options.highlight_color = color
  *     - Emphasize pixel differences with this color. The default is partially transparent red.
  *   - options.lowlight_color = color
- *     - Demphasize pixel differences with this color. The default is partially transparent white.
+ *     - De-emphasize pixel differences with this color. The default is partially transparent white.
  *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
  *     imagelist, uses the current image.
  *   @param metric [Magick::MetricType] The desired distortion metric.
@@ -3417,7 +3417,7 @@ Image_columns(VALUE self)
  *   - options.highlight_color = color
  *     - Emphasize pixel differences with this color. The default is partially transparent red.
  *   - options.lowlight_color = color
- *     - Demphasize pixel differences with this color. The default is partially transparent white.
+ *     - De-emphasize pixel differences with this color. The default is partially transparent white.
  *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
  *     imagelist, uses the current image.
  *   @param metric [Magick::MetricType] The desired distortion metric.
@@ -3425,7 +3425,7 @@ Image_columns(VALUE self)
  *   @yield [opt_args]
  *   @yieldparam opt_args [Magick::OptionalMethodArguments]
  *
- * @return [Array] The first element is a difference image, the second is a the value of the
+ * @return [Array] The first element is a difference image, the second is the value of the
  *   computed distortion represented as a Float.
  */
 VALUE
@@ -4671,7 +4671,7 @@ Image_contrast_stretch_channel(int argc, VALUE *argv, VALUE self)
 }
 
 /**
- * Apply a user supplied kernel to the image according to the given mophology method.
+ * Apply a user supplied kernel to the image according to the given morphology method.
  *
  * @param method_v [Magick::MorphologyMethod] the morphology method
  * @param iterations [Numeric] apply the operation this many times (or no change).
@@ -4696,7 +4696,7 @@ Image_morphology(VALUE self, VALUE method_v, VALUE iterations, VALUE kernel_v)
 }
 
 /**
- * Apply a user supplied kernel to the image channel according to the given mophology method.
+ * Apply a user supplied kernel to the image channel according to the given morphology method.
  *
  * @param channel_v [Magick::ChannelType] a channel type
  * @param method_v [Magick::MorphologyMethod] the morphology method
@@ -5867,12 +5867,12 @@ Image_dispose_eq(VALUE self, VALUE dispose)
  * @overload dissolve(overlay, src_percent, dst_percent = -1.0, gravity = Magick::NorthWestGravity, x_offset = 0, y_offset = 0)
  *   @param overlay [Magick::Image, Magick::ImageList] The source image for the composite operation.
  *     Either an imagelist or an image. If an imagelist, uses the current image.
- *   @param src_percent [Numeric, String] Either a non-negative number a string in the form "NN%".
+ *   @param src_percent [Numeric, String] Either a non-negative number or a string in the form "NN%".
  *     If src_percentage is a number it is interpreted as a percentage.
  *     Both 0.25 and "25%" mean 25%. This argument is required.
- *   @param dst_percent [Numeric, String] Either a non-negative number a string in the form "NN%".
+ *   @param dst_percent [Numeric, String] Either a non-negative number or a string in the form "NN%".
  *     If src_percentage is a number it is interpreted as a percentage.
- *     Both 0.25 and "25%" mean 25%. This argument may omitted if no other arguments follow it.
+ *     Both 0.25 and "25%" mean 25%. This argument may be omitted if no other arguments follow it.
  *     In this case the default is 100%-src_percentage.
  *   @param gravity [Magick::GravityType] the gravity for offset. the offsets are measured from the
  *     NorthWest corner by default.
@@ -5952,7 +5952,7 @@ Image_dissolve(int argc, VALUE *argv, VALUE self)
  *       the image (with appropriate viewport changes, or post-distort cropping and resizing).
  *   - options.verbose(true)
  *     - Attempt to output the internal coefficients, and the -fx equivalent to the distortion, for
-         expert study, and debugging purposes. This many not be available for all distorts.
+         expert study, and debugging purposes. This may not be available for all distorts.
  *   @param type [Magick::DistortMethod] a DistortMethod value
  *   @param points [Array<Numeric>] an Array of Numeric values. The size of the array depends on the distortion type.
  *   @param bestfit [Boolean] If bestfit is enabled, and the distortion allows it, the destination
@@ -6158,7 +6158,7 @@ Image__dump(VALUE self, VALUE depth ATTRIBUTE_UNUSED)
 
 
 /**
- * Duplicates a image.
+ * Duplicates an image.
  *
  * @return [Magick::Image] a new image
  */
@@ -7143,7 +7143,7 @@ Image_flip_bang(VALUE self)
 
 
 /**
- * Create a horizonal mirror image by reflecting the pixels around the central y-axis.
+ * Create a horizontal mirror image by reflecting the pixels around the central y-axis.
  *
  * @return [Magick::Image] a new image
  * @see Image#flop!
@@ -7159,7 +7159,7 @@ Image_flop(VALUE self)
 
 
 /**
- * Create a horizonal mirror image by reflecting the pixels around the central y-axis.
+ * Create a horizontal mirror image by reflecting the pixels around the central y-axis.
  * In-place form of {Image#flop}.
  *
  * @return [Magick::Image] self
@@ -8069,7 +8069,7 @@ Image_implode(int argc, VALUE *argv, VALUE self)
  *   @param y [Numeric] The y-offset of the rectangle to be replaced.
  *   @param columns [Numeric] The number of columns in the rectangle.
  *   @param rows [Numeric] The number of rows in the rectangle.
- *   @param map [String] his string reflects the expected ordering of the pixel array.
+ *   @param map [String] This string reflects the expected ordering of the pixel array.
  *   @param pixels [Array] An array of pixels.
  *     The number of pixels in the array must be the same as the number
  *     of pixels in the rectangle, that is, rows*columns.
@@ -8932,7 +8932,7 @@ Image__load(VALUE klass ATTRIBUTE_UNUSED, VALUE str)
 
     blob = rm_str2cstr(str, &length);
 
-    // Must be as least as big as the 1st 4 fields in DumpedImage
+    // Must be at least as big as the 1st 4 fields in DumpedImage
     if (length <= (long)(sizeof(DumpedImage)-MaxTextExtent))
     {
         rb_raise(rb_eTypeError, "image is invalid or corrupted (too short)");
@@ -12809,7 +12809,7 @@ Image_sepiatone(int argc, VALUE *argv, VALUE self)
  *   @param colorspace [Magick::ColorspaceType] A ColorspaceType value. Empirical evidence suggests
  *     that distances in YUV or YIQ correspond to perceptual color differences more closely than do
  *     distances in RGB space. The image is then returned to RGB colorspace after color reduction.
- *   @param cluster_threshold [Numeric] The number of pixels in each cluster must exceed the the
+ *   @param cluster_threshold [Numeric] The number of pixels in each cluster must exceed the
  *     cluster threshold to be considered valid.
  *   @param smoothing_threshold [Numeric] The smoothing threshold eliminates noise in the second
  *     derivative of the histogram. As the value is increased, you can expect a smoother second
@@ -13151,7 +13151,7 @@ Image_sharpen_channel(int argc, VALUE *argv, VALUE self)
  * center.
  *
  * @param width [Numeric] the width to leave
- * @param height [Numeric] the hight to leave
+ * @param height [Numeric] the height to leave
  * @return [Magick::Image] a new image
  * @see Image#shave!
  */
@@ -13169,7 +13169,7 @@ Image_shave(VALUE self, VALUE width, VALUE height)
  * In-place form of {Image#shave}.
  *
  * @param width [Numeric] the width to leave
- * @param height [Numeric] the hight to leave
+ * @param height [Numeric] the height to leave
  * @return [Magick::Image] a new image
  * @see Image#shave
  */
@@ -14547,7 +14547,7 @@ Image_tint(int argc, VALUE *argv, VALUE self)
  * Return a "blob" (a String) from the image.
  *
  * - The magick member of the Image structure determines the format of the
- *   returned blob (GIG, JPEG,  PNG, etc.)
+ *   returned blob (GIF, JPEG,  PNG, etc.)
  *
  * @yield [info]
  * @yieldparam info [Magick::Image::Info]
@@ -14867,7 +14867,7 @@ Image_transparent_color(VALUE self)
 
 
 /**
- * Set the the transparent color to the specified color spec.
+ * Set the transparent color to the specified color spec.
  *
  * @param color [Magick::Pixel, String] the transparent color
  * @return [Magick::Pixel, String] the given color
@@ -15249,13 +15249,13 @@ Image_units_eq(VALUE self, VALUE restype)
 /**
  * Sharpen an image. "amount" is the percentage of the difference between the original and the blur
  * image that is added back into the original. "threshold" is the threshold in pixels needed to
- * apply the diffence amount.
+ * apply the difference amount.
  *
  * No Ruby usage (internal function)
  *
  * @param argc number of input arguments
  * @param argv array of input arguments
- * @param radious the radious
+ * @param radius the radius
  * @param sigma the sigma
  * @param amount the amount
  * @param threshold the threshold
@@ -15295,7 +15295,7 @@ unsharp_mask_args(int argc, VALUE *argv, double *radius, double *sigma,
             break;
 
             // This case can't occur if we're called from Image_unsharp_mask_channel
-            // because it has already raised an exception for the the argc > 4 case.
+            // because it has already raised an exception for the argc > 4 case.
         default:
             rb_raise(rb_eArgError, "wrong number of arguments (%d for 0 to 4)", argc);
     }
@@ -15305,7 +15305,7 @@ unsharp_mask_args(int argc, VALUE *argv, double *radius, double *sigma,
 /**
  * Sharpen an image. "amount" is the percentage of the difference between the original and the blur
  * image that is added back into the original. "threshold" is the threshold in pixels needed to
- * apply the diffence amount.
+ * apply the difference amount.
  *
  * @overload unsharp_mask(radius = 0.0, sigma = 1.0, amount = 1.0, threshold = 0.05)
  *   @param radius [Numeric] The radius of the Gaussian operator.
@@ -15340,7 +15340,7 @@ Image_unsharp_mask(int argc, VALUE *argv, VALUE self)
 /**
  * Sharpen an image. "amount" is the percentage of the difference between the original and the blur
  * image that is added back into the original. "threshold" is the threshold in pixels needed to
- * apply the diffence amount.
+ * apply the difference amount.
  *
  * Only the specified channels are sharpened.
  *
@@ -15518,7 +15518,7 @@ Image_virtual_pixel_method_eq(VALUE self, VALUE method)
  *     25%. The default is 100%.
  *   @param x_off [Numeric] The offset of the watermark, measured from the left-hand side of the
  *     target image.
- *   @param y_off [Numeri] The offset of the watermark, measured from the top of the target image.
+ *   @param y_off [Numeric] The offset of the watermark, measured from the top of the target image.
  *
  * @overload watermark(mark, brightness, saturation, gravity, x_off = 0, y_off = 0)
  *   @param mark [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
@@ -15535,7 +15535,7 @@ Image_virtual_pixel_method_eq(VALUE self, VALUE method)
  *     NorthWest corner by default.
  *   @param x_off [Numeric] The offset of the watermark, measured from the left-hand side of the
  *     target image.
- *   @param y_off [Numeri] The offset of the watermark, measured from the top of the target image.
+ *   @param y_off [Numeric] The offset of the watermark, measured from the top of the target image.
  *
  * @return [Magick::Image] a new image
  */

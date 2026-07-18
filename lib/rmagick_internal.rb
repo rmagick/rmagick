@@ -151,7 +151,7 @@ module Magick
   end
 
   class Draw
-    # Thse hashes are used to map Magick constant
+    # These hashes are used to map Magick constant
     # values to the strings used in the primitives.
     ALIGN_TYPE_NAMES = {
       LeftAlign.to_i => 'left',
@@ -799,7 +799,7 @@ module Magick
     def color_reset!(fill)
       save = background_color
       # Change the background color _outside_ the begin block
-      # so that if this object is frozen the exeception will be
+      # so that if this object is frozen the exception will be
       # raised before we have to handle it explicitly.
       self.background_color = fill
       begin

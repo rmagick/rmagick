@@ -23,7 +23,7 @@ const rb_data_type_t rm_montage_data_type = {
 
 
 /**
- * Destory the MontageInfo struct and free the Montage struct.
+ * Destroy the MontageInfo struct and free the Montage struct.
  *
  * No Ruby usage (internal function)
  *

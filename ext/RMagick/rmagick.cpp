@@ -312,7 +312,7 @@ Magick_limit_resource(int argc, VALUE *argv, VALUE klass)
 
 /**
  * Set the amount of free memory allocated for the pixel cache.  Once this
- * threshold is exceeded, all subsequent pixels cache operations are to/from
+ * threshold is exceeded, all subsequent pixel cache operations are to/from
  * disk.
  *
  * @param threshold [Numeric] the number of megabytes to set.
@@ -346,7 +346,7 @@ Magick_set_cache_threshold(VALUE klass, VALUE threshold)
  * - "user"
  * - "x11"
  *
- * Multiple events can be specified as the aruments. Event names may be capitalized.
+ * Multiple events can be specified as the arguments. Event names may be capitalized.
  *
  * @param args [String] the mask of log event.
  */
