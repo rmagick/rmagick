@@ -418,7 +418,7 @@
         <h5>Attributes</h5>
 
         <p>
-          A geometry string has the general form "WxH+x+y[!@%&lt;&gt;]. In a
+          A geometry string has the general form "WxH+x+y[!@%&lt;&gt;]". In a
           <code>Geometry</code> object,
         </p>
 
@@ -470,7 +470,7 @@
 
             <td>
               Normally the attributes are treated as pixels. Use this flag when the <code>width</code> and <code>height</code> attributes represent
-              <em>percentages</em>. For example, 125x75 means 125% of the height and 75% of the width. The <code>x</code> and <code>y</code> attributes are not
+              <em>percentages</em>. For example, 125x75 means 125% of the width and 75% of the height. The <code>x</code> and <code>y</code> attributes are not
               affected by this flag.
             </td>
           </tr>
@@ -840,7 +840,7 @@ g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
       <div class="sig">
         <h4 id="to_hsla">to_hsla</h4>
 
-        <p><span class="arg">pixel</span>.to_HSL -&gt; <em>array</em></p>
+        <p><span class="arg">pixel</span>.to_hsla -&gt; <em>array</em></p>
       </div>
 
       <div class="desc">
@@ -1095,7 +1095,7 @@ g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
       </p>
 
       <p>
-        RMagick supplies three Fill classes,
+        RMagick supplies four Fill classes,
         <code><strong>HatchFill</strong></code
         >, <code><strong>GradientFill</strong></code
         >, <code><strong>SolidFill</strong></code> and <code><strong>TextureFill</strong></code

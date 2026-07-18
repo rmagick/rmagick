@@ -514,7 +514,7 @@
 
         <dd>
           0 or more
-          <a href="constants.html#ChannelType">ChannelType</a> arguments. If no channels are specified, all the channels are normalized. Specifying no channel
+          <a href="constants.html#ChannelType">ChannelType</a> arguments. If no channels are specified, all the channels are equalized. Specifying no channel
           arguments has the same effect as the equalize method, above.
         </dd>
       </dl>
@@ -2325,7 +2325,7 @@ img.import_pixels(0, 0, hat.columns, hat.rows, "RGB", char_buffer, CharPixel)
 
         <dd>A black point level in the range 0-<a href="constants.html#Miscellaneous_constants">QuantumRange</a>. The default is 0.0.</dd>
 
-        <dt>mid_point</dt>
+        <dt>white_point</dt>
 
         <dd>
           A white point level in the range 0..QuantumRange. The default is
@@ -2855,7 +2855,7 @@ img.level(white_point, gamma, black_point) -&gt; image # wrong!
 
       <h4>Magick API</h4>
 
-      <p>MatteFloodfilImage</p>
+      <p>MatteFloodfillImage</p>
     </div>
 
     <div class="sig">
