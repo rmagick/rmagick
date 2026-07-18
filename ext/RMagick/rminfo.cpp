@@ -1936,7 +1936,7 @@ Info_server_name_eq(VALUE self, VALUE server_arg)
 }
 
 /**
- * Get ths size
+ * Get the size
  *
  * @return [String] the size as a Geometry object
  * @see https://www.imagemagick.org/Magick++/Geometry.html
@@ -2374,7 +2374,7 @@ Info_alloc(VALUE klass)
 
 
 /**
- * Provide a Info.new method for internal use.
+ * Provide an Info.new method for internal use.
  *
  * No Ruby usage (internal function)
  *

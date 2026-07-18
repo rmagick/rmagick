@@ -80,10 +80,10 @@ module Magick
       # the hash keys. The style names and values are:
       # [:baseline_shift] modify the text baseline
       # [:clip_path] clipping path defined by clip_path
-      # [:clip_rule] 'evenodd' or 'nozero'
+      # [:clip_rule] 'evenodd' or 'nonzero'
       # [:fill] color name
       # [:fill_opacity] the fill opacity, 0.0<=N<=1.0
-      # [:fill_rule] 'evenodd' or 'nozero'
+      # [:fill_rule] 'evenodd' or 'nonzero'
       # [:font] font name or font file name
       # [:font_family] font family name, ex. 'serif'
       # [:font_size] font size in points

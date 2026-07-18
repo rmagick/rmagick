@@ -108,10 +108,10 @@ extern "C" {
 #define NUM2QUANTUM(n) (Quantum)NUM2UINT((n)) /**< Quantum <- Ruby Numeric conversion */
 #elif (MAGICKCORE_QUANTUM_DEPTH == 32)
 #define QUANTUM2NUM(q) UINT2NUM((q)) /**< Quantum -> Ruby Numeric conversion */
-#define NUM2QUANTUM(n) (Quantum)NUM2UINT((n)) /**< Quntum <- Ruby Numeric conversion */
+#define NUM2QUANTUM(n) (Quantum)NUM2UINT((n)) /**< Quantum <- Ruby Numeric conversion */
 #elif (MAGICKCORE_QUANTUM_DEPTH == 64)
 #define QUANTUM2NUM(q) ULL2NUM((q)) /**< Quantum -> Ruby Numeric conversion */
-#define NUM2QUANTUM(n) (Quantum)NUM2ULL((n)) /**< Quntum <- Ruby Numeric conversion */
+#define NUM2QUANTUM(n) (Quantum)NUM2ULL((n)) /**< Quantum <- Ruby Numeric conversion */
 #else
 #error Specified MAGICKCORE_QUANTUM_DEPTH is not supported.
 #endif
@@ -247,7 +247,7 @@ typedef enum {
 //! Draw#text_anchor AnchorType argument
 typedef enum {
     StartAnchor = 1,  /**< start */
-    MiddleAnchor = 2, /**< midle */
+    MiddleAnchor = 2, /**< middle */
     EndAnchor = 3     /**< end */
 } AnchorType;
 

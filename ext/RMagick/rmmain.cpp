@@ -120,7 +120,7 @@ rm_aligned_malloc_size(void *ptr)
 #elif defined(HAVE_MALLOC_SIZE)
     return malloc_size(ptr);
 #elif defined(HAVE__ALIGNED_MSIZE)
-// Refered to https://github.com/ImageMagick/ImageMagick/blob/master/MagickCore/memory-private.h
+// Referred to https://github.com/ImageMagick/ImageMagick/blob/master/MagickCore/memory-private.h
 #define MAGICKCORE_SIZEOF_VOID_P 8
 #define CACHE_LINE_SIZE  (8 * MAGICKCORE_SIZEOF_VOID_P)
     size_t _aligned_msize(void *memblock, size_t alignment, size_t offset);
@@ -1812,7 +1812,7 @@ test_Magick_version(void)
 
     /* ImageMagick versions are defined as major, minor and patch, each of which are defined as a value in 1 byte. */
     /* ImageMagick 6.9.12 has `#define MagickLibVersion  0x69C` */
-    /* It use only major and minor versions. */
+    /* It uses only major and minor versions. */
     size_t mask_major_minor_version = 0xFFFFFFF0;
 
     version_str = GetMagickVersion(&version_number);

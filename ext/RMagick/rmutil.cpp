@@ -509,7 +509,7 @@ rm_fuzz_to_dbl(VALUE fuzz_arg)
 
 
 /**
- * Convert a application-supplied number to a Quantum. If the object is a Float,
+ * Convert an application-supplied number to a Quantum. If the object is a Float,
  * truncate it before converting.
  *
  * No Ruby usage (internal function)
@@ -706,7 +706,7 @@ rm_set_magickpixel(MagickPixel *pp, const char *color)
  * No Ruby usage (internal function)
  *
  * Notes:
- *   - The `temp_name' argument must point to an char array of size
+ *   - The `temp_name' argument must point to a char array of size
  *     MaxTextExtent.
  *
  * @param image the image
@@ -785,7 +785,7 @@ rm_delete_temp_image(char *temp_name)
  *   - This funky technique allows me to safely add additional information to
  *     the ImageMagickError object in both 1.6.8 and 1.8.0.
  *
- * @param msg the error mesage
+ * @param msg the error message
  * @throw ImageMagickError
  * @see www.ruby_talk.org/36408.
  */
@@ -1487,7 +1487,7 @@ rm_clone_image(Image *image)
 
 
 /**
- * Remove the ImageMagick links between images in an scene sequence.
+ * Remove the ImageMagick links between images in a scene sequence.
  *
  * No Ruby usage (internal function)
  *
@@ -1573,7 +1573,7 @@ rm_check_image_exception(Image *imglist, ErrorRetention retention)
  * @param severity information about the severity of the error
  * @param reason the reason for the error
  * @param description description of the error
- * @param msg the buffer where the exception message should be formated in
+ * @param msg the buffer where the exception message should be formatted in
  */
 static void
 format_exception(const ExceptionType severity, const char *reason, const char *description, char *msg)
@@ -1629,7 +1629,7 @@ rm_warning_handler(const ExceptionType severity, const char *reason, const char 
 
 
 /**
- * Called from ImageMagick for a error.
+ * Called from ImageMagick for an error.
  *
  * No Ruby usage (internal function)
  *

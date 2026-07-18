@@ -194,7 +194,7 @@ KernelInfo_scale_geometry(VALUE self, VALUE geometry)
 }
 
 /**
- * Creates a new clone of the object so that its can be modified without effecting the original.
+ * Creates a new clone of the object so that it can be modified without affecting the original.
  *
  * @return [Magick::KernelInfo] new KernelInfo object
  */
