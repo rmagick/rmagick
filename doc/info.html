@@ -257,8 +257,7 @@ img = Magick::Image.new(10,10) do |options|
   options['user'] = __FILE__ + ':' + __LINE__.to_s
 end
 #=&gt; 10x10 DirectClass 16-bit user:test.rb:3
-</pre
-      >
+</pre>
 
       <p>
         These methods propagate the value of the "user" option to new image(s):
@@ -373,7 +372,7 @@ end
 
         <dd>
           The value of the option. <span class="arg">Value</span> can be any object that responds to <code>to_s</code>. If omitted, the key is simply defined to
-          an null value.
+          a null value.
         </dd>
       </dl>
 
@@ -523,8 +522,7 @@ img = Magick::Image.read("xc:white") do |options|
 end
 p img.first.properties #=&gt; {"caption"=&gt;"a new caption"}
 p img.first['caption'] #=&gt; "a new caption"
-</pre
-      >
+</pre>
 
       <h4>Arguments</h4>
 
@@ -579,7 +577,7 @@ p img.first['caption'] #=&gt; "a new caption"
 
       <p>
         Specifies the type of compression used when writing the image. Only some image formats support compression. For those that do, only some compression
-        types are supported. If you specify an compression type that is not supported, the default compression type (usually NoCompression) is used instead.
+        types are supported. If you specify a compression type that is not supported, the default compression type (usually NoCompression) is used instead.
       </p>
 
       <p>
@@ -896,7 +894,7 @@ p img.first['caption'] #=&gt; "a new caption"
     <div class="desc">
       <h4>Description</h4>
 
-      <p>Specifies the fill color to use when creating an image with the "caption:" format..</p>
+      <p>Specifies the fill color to use when creating an image with the "caption:" format.</p>
 
       <h4>Arguments</h4>
 
@@ -1038,7 +1036,7 @@ p img.first['caption'] #=&gt; "a new caption"
       <p>
         <span class="imquote"
           >Use this option to assign a specific label to the image, when writing to an image format that supports labels, such as TIFF, PNG, MIFF, or
-          PostScript. You can include the the image filename, type, width, height, or other image attribute by embedding special format characters.</span
+          PostScript. You can include the image filename, type, width, height, or other image attribute by embedding special format characters.</span
         >
         See <a href="draw.html#annotate">annotate</a> for details.
       </p>
@@ -1166,7 +1164,7 @@ p img.first['caption'] #=&gt; "a new caption"
       <h4>Description</h4>
 
       <p>
-        The compression level for JPEG, MPEG, JPEG-2000, MIFF, MNG, and PNG image format. Corresponds to ImageMagick's -quality option. The default is 75. See
+        The compression level for JPEG, MPEG, JPEG-2000, MIFF, MNG, and PNG image formats. Corresponds to ImageMagick's -quality option. The default is 75. See
         <em><a href="comtasks.html#compressing">Compressing image files</a></em
         >.
       </p>
@@ -1264,7 +1262,7 @@ p img.first['caption'] #=&gt; "a new caption"
     <div class="desc">
       <h4>Description</h4>
 
-      <p>Specifies the stroke color to use when creating an image with the "caption:" format..</p>
+      <p>Specifies the stroke color to use when creating an image with the "caption:" format.</p>
 
       <h4>Arguments</h4>
 
@@ -1280,7 +1278,7 @@ p img.first['caption'] #=&gt; "a new caption"
     <div class="desc">
       <h4>Description</h4>
 
-      <p>Specifies the stroke width to use when creating an image with the "caption:" format..</p>
+      <p>Specifies the stroke width to use when creating an image with the "caption:" format.</p>
 
       <h4>Arguments</h4>
 
@@ -1321,10 +1319,10 @@ p img.first['caption'] #=&gt; "a new caption"
       </p>
 
       <p class="imquote">
-        This attribute allows you to have both a opaque visible color as well as a transparent color of the same color value without conflict. That is you can
-        use the same color for both the transparent and opaque color areas within an image. This in turn frees to you to select a transparent color that is
-        appropriate when a image is displayed by application that does not handle a transparent color index, while allowing RMagick to correctly handle images
-        of this type.
+        This attribute allows you to have both an opaque visible color as well as a transparent color of the same color value without conflict. That is you can
+        use the same color for both the transparent and opaque color areas within an image. This in turn frees you to select a transparent color that is
+        appropriate when an image is displayed by an application that does not handle a transparent color index, while allowing RMagick to correctly handle
+        images of this type.
       </p>
     </div>
 
@@ -1355,7 +1353,7 @@ p img.first['caption'] #=&gt; "a new caption"
     <div class="desc">
       <h4>Description</h4>
 
-      <p>Specifies the undercolor color to use when creating an image with the "caption:" format..</p>
+      <p>Specifies the undercolor color to use when creating an image with the "caption:" format.</p>
 
       <h4>Arguments</h4>
 

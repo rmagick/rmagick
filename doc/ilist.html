@@ -165,8 +165,7 @@
       <pre class="language-ruby">
 i = Magick::ImageList.new
 i = Magick::ImageList.new("Button_A.gif", "Cheetah.jpg")
-</pre
-      >
+</pre>
     </div>
 
     <h2 class="methods">attributes</h2>
@@ -216,8 +215,8 @@ i = Magick::ImageList.new("Button_A.gif", "Cheetah.jpg")
       <p>Sets the number of times an animated image should loop.</p>
 
       <p>
-        The <a href="#animate">animate</a> method and the ImageMagick animate command does not respect this number. Both will repeat the animation until you
-        stop them. Mozilla (and presumably Netscape) do respect the value..
+        The <a href="#animate">animate</a> method and the ImageMagick animate command do not respect this number. Both will repeat the animation until you stop
+        them. Mozilla (and presumably Netscape) do respect the value.
       </p>
 
       <h4>Arguments</h4>
@@ -249,8 +248,7 @@ i = Magick::ImageList.new("Button_A.gif", "Cheetah.jpg")
       <pre class="language-ruby">
 i = Magick::ImageList.new("images/Button_A.gif", "images/Button_B.gif")
 i.length #=&gt; 2
-</pre
-      >
+</pre>
     </div>
 
     <div class="sig">
@@ -272,8 +270,7 @@ i.length #=&gt; 2
       <pre class="language-ruby">
 ilist.scene = 10
 ilist.scene #=&gt; 10
-</pre
-      >
+</pre>
     </div>
 
     <div class="sig">
@@ -367,7 +364,7 @@ ilist.scene #=&gt; 10
       </table>
 
       <p>
-        Adding anything other than a image to an imagelist has undefined results. Most of the time RMagick will raise an ArgumentError exception. For example,
+        Adding anything other than an image to an imagelist has undefined results. Most of the time RMagick will raise an ArgumentError exception. For example,
         if you call <code>collect!</code> on an imagelist you should make sure that the members of the imagelist remain images. If you need to replace images in
         an imagelist with non-image objects, convert the imagelist to an array with the <code>to_a</code> method, then modify the array.
       </p>
@@ -385,8 +382,7 @@ ilist.scene #=&gt; 10
 example = Magick::ImageList.new
 model = Magick::ImageList.new "model.miff"
 example &lt;&lt; model.add_noise Magick::LaplacisanNoise
-</pre
-      >
+</pre>
 
       <h4>See also</h4>
 
@@ -454,8 +450,7 @@ example &lt;&lt; model.add_noise Magick::LaplacisanNoise
       <pre class="language-ruby">
 ilist.animate
 ilist.animate { |options| options.server_name = "other:0.0" }
-</pre
-      >
+</pre>
 
       <h4>See also</h4>
 
@@ -490,7 +485,7 @@ ilist.animate { |options| options.server_name = "other:0.0" }
 
       <h4>Returns</h4>
 
-      <p>A image composed of all the images in the imagelist.</p>
+      <p>An image composed of all the images in the imagelist.</p>
 
       <h4>Magick API</h4>
 
@@ -506,7 +501,7 @@ ilist.animate { |options| options.server_name = "other:0.0" }
     <div class="desc">
       <h4>Description</h4>
 
-      <p>Averages all the images together. Each image in the image must have the same width and height.</p>
+      <p>Averages all the images together. Each image in the imagelist must have the same width and height.</p>
 
       <h4>Returns</h4>
 
@@ -520,7 +515,11 @@ ilist.animate { |options| options.server_name = "other:0.0" }
           <img
             style="display: none"
             id="notaveraged"
-            onmouseout="this.style.display='none'; averaged.style.display=''; averagedspin.style.display='';"
+            onmouseout="
+              this.style.display = 'none';
+              averaged.style.display = '';
+              averagedspin.style.display = '';
+            "
             title="Click to see the example script"
             src="ex/average_before.gif"
             alt="average example" /><!--
@@ -528,7 +527,11 @@ ilist.animate { |options| options.server_name = "other:0.0" }
                                   --><img
             style="display:"
             id="averaged"
-            onmouseover="this.style.display='none'; notaveraged.style.display=''; averagedspin.style.display='none';"
+            onmouseover="
+              this.style.display = 'none';
+              notaveraged.style.display = '';
+              averagedspin.style.display = 'none';
+            "
             src="ex/average_after.gif"
             alt="average example"
         /></a>
@@ -595,8 +598,8 @@ ilist.animate { |options| options.server_name = "other:0.0" }
       <p class="rollover">
         <a href="javascript:popup('coalesce.rb.html')"
           ><img
-            onmouseover="this.src='ex/coalesce_anim.gif'"
-            onmouseout="this.src='ex/coalesce.gif'"
+            onmouseover="this.src = 'ex/coalesce_anim.gif'"
+            onmouseout="this.src = 'ex/coalesce.gif'"
             src="ex/coalesce.gif"
             alt="coalesce example"
             title="Click the image to see the example script" /></a
@@ -635,7 +638,7 @@ ilist.animate { |options| options.server_name = "other:0.0" }
         <span class="imquote"
           >Unlike a normal composite operation, the canvas offset is also included to the composite positioning. If one of the image lists only contains one
           image, that image is applied to all the images in the other image list, regardless of which list it is. In this case it is the image meta-data of the
-          list which preserved.</span
+          list which is preserved.</span
         >
       </p>
 
@@ -657,8 +660,8 @@ ilist.animate { |options| options.server_name = "other:0.0" }
       <p class="rollover">
         <a href="javascript:popup('composite_layers.rb.html')"
           ><img
-            onmouseover="this.src='ex/composite_layers.gif'"
-            onmouseout="this.src='ex/composite_layers1.gif'"
+            onmouseover="this.src = 'ex/composite_layers.gif'"
+            onmouseout="this.src = 'ex/composite_layers1.gif'"
             src="ex/composite_layers1.gif"
             alt="composite_layers example"
             title="Click the image to see the example script" /></a
@@ -721,7 +724,7 @@ ilist.animate { |options| options.server_name = "other:0.0" }
       <p>
         Both the ImageList class and the Image class support the
         <code>cur_image</code> method. Of course, in the Image class, <code>cur_image</code> simply returns <code>self</code>. When a method accepts either an
-        image or a imagelist as an argument, it sends the <code>cur_image</code> method to the argument to get the current image.
+        image or an imagelist as an argument, it sends the <code>cur_image</code> method to the argument to get the current image.
       </p>
 
       <h4>Returns</h4>
@@ -828,7 +831,7 @@ ilist.animate { |options| options.server_name = "other:0.0" }
       <h4>Description</h4>
 
       <p>
-        Combines all the images in the imagelist into a single image by overlaying each successive image onto the preceding images. If a image has transparent
+        Combines all the images in the imagelist into a single image by overlaying each successive image onto the preceding images. If an image has transparent
         areas, the underlying image will show through. Use the
         <a href="imageattrs.html#page">page</a> attribute to specify the position of each image with respect to the preceding images.
       </p>
@@ -900,8 +903,7 @@ blob = f.read
 ilist = Magick::ImageList.new
 ilist.from_blob(blob)
 ilist.display
-</pre
-      >
+</pre>
 
       <h4>See also</h4>
       <a href="#to_blob">to_blob</a>, <a href="image3.html#to_blob">Image#to_blob</a>,
@@ -931,7 +933,7 @@ ilist.display
       <dl>
         <dt>expression</dt>
 
-        <dd>A mathematical expression of the form accepted by the -fx operator..</dd>
+        <dd>A mathematical expression of the form accepted by the -fx operator.</dd>
 
         <dt>channel...</dt>
 
@@ -976,8 +978,7 @@ imgl = Magick::ImageList.new
 imgl &lt;&lt; Magick::Image.new(64, 64) { |options| options.background_color = 'black'}
 
 res = imgl.fx('1/2', Magick::BlueChannel)
-</pre
-      >
+</pre>
 
       <h4>ImageMagick API</h4>
 
@@ -1018,8 +1019,7 @@ i = Magick::ImageList.new("images/Button_A.gif", "images/Button_B.gif")
 #=&gt; [images/Button_A.gif GIF 127x120+0+0 PseudoClass 256c 8-bit 18136b
 #   images/Button_B.gif GIF 127x120+0+0 PseudoClass 256c 8-bit 5157b]
 #   scene=1
-</pre
-      >
+</pre>
 
       <h4>See also</h4>
 
@@ -1148,7 +1148,7 @@ i = Magick::ImageList.new("images/Button_A.gif", "images/Button_B.gif")
         <dt>texture=</dt>
 
         <dd>
-          A image to be tiled on the background of the composite image. If present, this attribute overrides the background color. For example, to use
+          An image to be tiled on the background of the composite image. If present, this attribute overrides the background color. For example, to use
           ImageMagick's built-in "granite" texture as the background, use:
           <pre class="language-ruby">options.texture = Magick::Image.read("granite:").first</pre>
 
@@ -1208,7 +1208,7 @@ i = Magick::ImageList.new("images/Button_A.gif", "images/Button_B.gif")
       <h4>Description</h4>
 
       <p>
-        Transforms a image into another image by inserting
+        Transforms an image into another image by inserting
         <code>n</code> in-between images. Requires at least two images. If more images are present, the 2nd image is transformed into the 3rd, the 3rd to the
         4th, etc.
       </p>
@@ -1231,8 +1231,8 @@ i = Magick::ImageList.new("images/Button_A.gif", "images/Button_B.gif")
       <p class="rollover">
         <a href="javascript:popup('morph.rb.html')"
           ><img
-            onmouseover="this.src='ex/morph.gif'"
-            onmouseout="this.src='ex/images/Button_0.gif'"
+            onmouseover="this.src = 'ex/morph.gif'"
+            onmouseout="this.src = 'ex/images/Button_0.gif'"
             src="ex/images/Button_0.gif"
             alt="morph example"
             title="Click the image to see the example script" /></a
@@ -1318,8 +1318,7 @@ i = Magick::ImageList.new("images/Button_A.gif", "images/Button_B.gif")
       <pre class="language-ruby">
 ilist = Magick::ImageList.new
 ilist.new_image(100, 100) { |options| options.background_color = "red" }
-</pre
-      >
+</pre>
     </div>
 
     <div class="sig">
@@ -1342,7 +1341,7 @@ ilist.new_image(100, 100) { |options| options.background_color = "red" }
         <a href="https://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>
         site has very detailed
         <a href="https://www.imagemagick.org/Usage/anim_opt/">information and examples</a>
-        of the <code>-layers</code> option and and the optimization methods .
+        of the <code>-layers</code> option and the optimization methods.
       </p>
 
       <h4>Arguments</h4>
@@ -1535,8 +1534,7 @@ ilist = Magick::ImageList.new
 ilist.ping "Button_A.gif"
 puts "The image has #{i.columns} columns and #{i.rows} rows."
 #=&gt; The image has 127 columns and 120 rows.
-</pre
-      >
+</pre>
 
       <h4>See also</h4>
       <a href="#read">read</a>
@@ -1626,8 +1624,8 @@ puts "The image has #{i.columns} columns and #{i.rows} rows."
             src="ex/quantize_m_after.jpg"
             alt="quantize example"
             title="Click to see the example script"
-            onmouseover="this.src='ex/quantize_m_before.jpg'"
-            onmouseout="this.src='ex/quantize_m_after.jpg'"
+            onmouseover="this.src = 'ex/quantize_m_before.jpg'"
+            onmouseout="this.src = 'ex/quantize_m_after.jpg'"
         /></a>
         <img src="ex/images/spin.gif" alt="" class="spin" style="left: 505px" title="Mouse over the example to see the original image" />
       </p>
@@ -1682,8 +1680,7 @@ number = '0'
   i.read "images/Button_" + number + ".gif"
   number.succ!
 end
-</pre
-      >
+</pre>
 
       <p>Also see the morph.rb example and the demo.rb example.</p>
 
@@ -1790,8 +1787,7 @@ end
       <pre class="language-ruby">
 i = Magick::ImageList.new "birthday.png"
 s = i.to_blob #=&gt; a string representing the image.
-</pre
-      >
+</pre>
 
       <h4>See also</h4>
 
@@ -1882,8 +1878,7 @@ i.write "test.png"
 # ImageMagick's MIFF format does support multi-frame
 # files, so all 3 images are written to one file.
 i.write "animated.miff" #=&gt; animated.miff
-</pre
-      >
+</pre>
 
       <h4>See also</h4>
 

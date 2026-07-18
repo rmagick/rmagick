@@ -99,8 +99,7 @@
 36  end
 37
 38  rvg.draw.write('duck.gif')
-</pre
-    >
+</pre>
 
     <h2>Summary</h2>
 
@@ -123,8 +122,7 @@
     <pre class="example language-ruby">
  1  require 'rvg/rvg'
  2  include Magick
-</pre
-    >
+</pre>
 
     <p>These are just the usual Ruby code to load the RVG extension. To save some typing, I've included the Magick module into Object's namespace.</p>
 
@@ -133,12 +131,11 @@
  4  RVG::dpi = 72
  5
  6  rvg = RVG.new(2.5.in, 2.5.in).viewbox(0,0,250,250) do |canvas|
-</pre
-    >
+</pre>
 
     <p>
       <code>RVG::dpi</code> enables the use of <em>unit methods</em> in RVG. When you set <code>RVG::dpi</code> to a non-nil value, RVG adds a number of
-      conversion methods to the Integer and Float classes . These methods allow you to specify measurements in units such as inches, millimeters, and
+      conversion methods to the Integer and Float classes. These methods allow you to specify measurements in units such as inches, millimeters, and
       centimeters. <em>DPI</em>
       stands for "dots per inch," the image resolution. Here I set
       <code>RVG::dpi</code> to 72, a common value for displays.
@@ -189,8 +186,7 @@
     <h2>Line 7</h2>
     <pre class="example language-ruby">
  7       canvas.background_fill = 'white'
-</pre
-    >
+</pre>
 
     <p>
       By default, RVG graphics are drawn on a transparent background. This is convenient when you want to display your image over another image. You can
@@ -205,8 +201,7 @@
 11      body.ellipse(50, 30)
 12      body.rect(45, 20, -20, -10).skewX(-35)
 13    end
-</pre
-    >
+</pre>
 
     <p>There's a lot going on in these few lines - seven method calls - so let's take it one method at a time.</p>
 
@@ -268,7 +263,7 @@
 
     <p>
       The <code>styles</code> method is a real workhorse. It's defined in almost every class in RVG and there are many other style names in addition to these
-      three..
+      three.
     </p>
 
     <h3>Basic shapes</h3>
@@ -334,8 +329,7 @@
 18      head.circle(5, 10, -5).styles(:fill=&gt;'black')
 19      head.polygon(30,0, 70,5, 30,10, 62,25, 23,20).styles(:fill=&gt;'orange')
 20    end
-</pre
-    >
+</pre>
 
     <p>
       This section is very similar to the previous one. I'm defining a group to contain the graphic objects that draw the duck's head, eye, and beak. First I
@@ -368,8 +362,7 @@
 23      _foot.path('m0,0 v30 l30,10 l5,-10, l-5,-10 l-30,10z').
 24      styles(:stroke_width=&gt;2, :fill=&gt;'orange', :stroke=&gt;'black')
 25    end
-</pre
-    >
+</pre>
 
     <p>
       Here I create a group by directly calling <code>new</code> instead of calling the <code>g</code> method on a container. This creates a group object that
@@ -384,8 +377,7 @@
     <pre class="example language-ruby">
 26    canvas.use(foot).translate(75, 188).rotate(15)
 27    canvas.use(foot).translate(100, 185).rotate(-15)
-</pre
-    >
+</pre>
 
     <p>
       To add the group to the canvas I use the <code>use</code>
@@ -418,14 +410,13 @@
 32      title.tspan("type").styles(:font_size=&gt;22,
 33                                 :font_family=&gt;'times', :font_style=&gt;'italic', :fill=&gt;'red')
 34    end
-</pre
-    >
+</pre>
 
     <p>
       All I need now is a title for the picture. Text in RVG is a job for the
       <code>text</code> method. Like the shape methods, <code>text</code> can be used with any container object. <code>Text</code> itself is a container, except
       that it can only contain text-related objects. The <code>text</code> method takes 2 or 3 arguments, an (x,y) pair and optionally a string. The (x,y) pair
-      define a <em>current text position</em> at which rendering starts. If there is a string argument, it will be rendered starting at the current text
+      defines a <em>current text position</em> at which rendering starts. If there is a string argument, it will be rendered starting at the current text
       position. Rendering text changes the current text position to the end of the text.
     </p>
 
@@ -446,10 +437,9 @@
     <h2>Line 35</h2>
     <pre class="example language-ruby">
 35    canvas.rect(249,249).styles(:stroke=&gt;'blue', :fill=&gt;'none')
-</pre
-    >
+</pre>
 
-    <p>I'm almost done. All I need to do it add a blue border. (I'm going to remove the graph paper background because we don't need it any more.)</p>
+    <p>I'm almost done. All I need to do is add a blue border. (I'm going to remove the graph paper background because we don't need it any more.)</p>
 
     <p>
       <img src="ex/images/duck15.gif" width="180" height="180" alt="duck with border" />
@@ -458,8 +448,7 @@
     <h2>Line 38</h2>
     <pre class="example language-ruby">
 38  rvg.draw.write('duck.gif')
-</pre
-    >
+</pre>
 
     <p>
       The <code>draw</code> method call doesn't occupy a lot of space - just 4 letters - but does a lot of work. The <code>draw</code> method goes through all
@@ -472,9 +461,8 @@
 
     <p>Are RVG images really scalable? Let's try. Change the RVG.new call to make an image that's 4 times as big. That's 5 inches on a side:</p>
     <pre class="example language-ruby">
- 6  rvg = RVG.new(2.5.in, 2.5.in).viewbox(0,0,250,250) do |canvas|
-</pre
-    >
+ 6  rvg = RVG.new(5.in, 5.in).viewbox(0,0,250,250) do |canvas|
+</pre>
 
     <p>Change nothing else. Run the program again and see what you get.</p>
 

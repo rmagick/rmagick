@@ -205,7 +205,7 @@
 
       <dd>
         The maximum value of a <em>Quantum</em>. A quantum is one of the red, green, blue, or opacity elements of a pixel in the RGB colorspace, or cyan,
-        yellow, magenta, or black elements in the CYMK colorspace.
+        magenta, yellow, or black elements in the CMYK colorspace.
       </dd>
 
       <dt>QuantumDepth</dt>
@@ -322,7 +322,7 @@
 
     <p>
       Specify an image channel. A channel is a color component of a pixel. In the RGB colorspace the channels are red, green, and blue. There may also be an
-      alpha (transparency/opacity) channel. In the CMYK colorspace the channels area cyan, magenta, yellow, and black. In the HSL colorspace the channels are
+      alpha (transparency/opacity) channel. In the CMYK colorspace the channels are cyan, magenta, yellow, and black. In the HSL colorspace the channels are
       hue, saturation, and lightness. In the Gray colorspace the only channel is gray. See
       <a href="image1.html#channel">Image#channel</a> and <a href="info.html#channel">Image::Info#channel</a>.
     </p>
@@ -431,7 +431,7 @@
       <dt>CMYKColorspace</dt>
 
       <dd class="imquote">
-        Cyan-Magenta-Yellow-Black colorspace. CYMK is a subtractive color system used by printers and photographers for the rendering of colors with ink or
+        Cyan-Magenta-Yellow-Black colorspace. CMYK is a subtractive color system used by printers and photographers for the rendering of colors with ink or
         emulsion, normally on a white surface.
       </dd>
 
@@ -607,7 +607,7 @@
       <dt>ChangeMaskCompositeOp</dt>
 
       <dd class="imquote">
-        Replace any destination pixel that is the similar to the source image's pixel (as defined by the current fuzz factor), with transparency.
+        Replace any destination pixel that is similar to the source image's pixel (as defined by the current fuzz factor), with transparency.
       </dd>
 
       <dt>ClearCompositeOp</dt>
@@ -757,7 +757,7 @@
 
       <dt>LinearBurnCompositeOp</dt>
 
-      <dd>Same as <code>LinearDodgeCompositeOp</code>, but also subtract one from the result. Sort of a additive 'Screen' of the images.</dd>
+      <dd>Same as <code>LinearDodgeCompositeOp</code>, but also subtract one from the result. Sort of an additive 'Screen' of the images.</dd>
 
       <dt>LinearDodgeCompositeOp</dt>
 
@@ -809,7 +809,7 @@
 
       <dd>
         <span class="imquote"
-          >The result is the union of the the two image shapes with <code>composite image</code> obscuring <code>image</code> in the region of overlap.</span
+          >The result is the union of the two image shapes with <code>composite image</code> obscuring <code>image</code> in the region of overlap.</span
         >
         The matte channel of the composite image is respected, so that if the composite pixel is part or all transparent, the corresponding image pixel will
         show through.
@@ -825,7 +825,7 @@
       <dt>PegtopLightCompositeOp</dt>
 
       <dd class="imquote">
-        Almost equivalent to <code>SoftLightCompositeOp</code>, but using a continuious mathematical formula rather than two conditionally selected formulae.
+        Almost equivalent to <code>SoftLightCompositeOp</code>, but using a continuous mathematical formula rather than two conditionally selected formulae.
       </dd>
 
       <dt>PinLightCompositeOp</dt>
@@ -871,7 +871,7 @@
 
       <dt>SrcInCompositeOp</dt>
 
-      <dd class="imquote">he part of the source lying inside of the destination replaces the destination.</dd>
+      <dd class="imquote">The part of the source lying inside of the destination replaces the destination.</dd>
 
       <dt>SrcOutCompositeOp</dt>
 
@@ -1360,7 +1360,7 @@
 
       <dt>ColorSeparationType</dt>
 
-      <dd class="imquote">Cyan/Yellow/Magenta/Black (CYMK) image</dd>
+      <dd class="imquote">Cyan/Magenta/Yellow/Black (CMYK) image</dd>
 
       <dt>ColorSeparationMatteType</dt>
 
@@ -1615,7 +1615,7 @@
     <h3 class="const" id="Opacity">Opacity</h3>
 
     <p>
-      represent the maximum and minimum levels of opacity. You can specify a partial level of opacity by choosing a number between OpaqueOpacity and
+      Represent the maximum and minimum levels of opacity. You can specify a partial level of opacity by choosing a number between OpaqueOpacity and
       TransparentOpacity. For example, 25% opacity is
       <code>abs(Magick::TransparentOpacity-Magick::OpaqueOpacity) * 0.25</code>
     </p>

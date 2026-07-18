@@ -317,7 +317,7 @@
       <h4>Description</h4>
 
       <p>
-        Annotates a image with text. The text is positioned according to the
+        Annotates an image with text. The text is positioned according to the
         <code>gravity</code> attribute around the rectangle described by the <span class="arg">x</span>, <span class="arg">y</span>,
         <span class="arg">width</span>, and <span class="arg">height</span> arguments. If either of the <span class="arg">width</span> or
         <span class="arg">height</span> arguments are 0, uses the image width-<span class="arg">x</span> and the image height-<span class="arg">y</span>
@@ -375,8 +375,7 @@ title.annotate(montage, 0,0,0,40, 'Named Colors') { |options|
   options.font_weight = BoldWeight
   options.gravity = NorthGravity
 }
-</pre
-      >
+</pre>
 
       <h4>Special characters</h4>
 
@@ -579,7 +578,7 @@ title.annotate(montage, 0,0,0,40, 'Named Colors') { |options|
     <div class="desc">
       <h4>Description</h4>
 
-      <p>This method draw the image using <a href="constants.html#CompositeOperator">CompositeOperator</a>.</p>
+      <p>This method draws the image using <a href="constants.html#CompositeOperator">CompositeOperator</a>.</p>
 
       <h4>Arguments</h4>
       <dl>
@@ -588,7 +587,7 @@ title.annotate(montage, 0,0,0,40, 'Named Colors') { |options|
         <dt>width</dt>
         <dt>height</dt>
         <dt>image</dt>
-        <dd>Either an imagelist or a image. If an imagelist, draws on the current image.</dd>
+        <dd>Either an imagelist or an image. If an imagelist, draws on the current image.</dd>
 
         <dt>operator</dt>
         <dd>Specify one of <a href="constants.html#CompositeOperator">CompositeOperator</a> enum.</dd>
@@ -618,7 +617,7 @@ title.annotate(montage, 0,0,0,40, 'Named Colors') { |options|
 
       <h4>Arguments</h4>
 
-      <p>Either an imagelist or a image. If an imagelist, draws on the current image.</p>
+      <p>Either an imagelist or an image. If an imagelist, draws on the current image.</p>
 
       <h4>Returns</h4>
 
@@ -671,7 +670,7 @@ title.annotate(montage, 0,0,0,40, 'Named Colors') { |options|
       <h4>Description</h4>
 
       <p>
-        Returns information for a specific string if rendered on a image. Metrics are derived from either the
+        Returns information for a specific string if rendered on an image. Metrics are derived from either the
         <a href="#attributes"> annotate attributes</a> or from the <a href="info.html">image info attributes</a>, but not from any drawing primitive methods.
         The <code>get_multiline_type_metrics</code> method is the same as <code>get_type_metrics</code>, except the former returns the maximum height and width
         for multiple lines of text. (Text lines are separated by "\n" characters.)
@@ -824,8 +823,7 @@ draw.inspect
   #   line 20,100 380,100
   #   stroke transparent
   #   fill black"
-</pre
-      >
+</pre>
     </div>
 
     <div class="sig">
@@ -1135,8 +1133,7 @@ gc.clip_path('mypath')
 # drawing primitives within the clip path
 gc.pop
 gc.draw
-</pre
-      >
+</pre>
 
       <p>Also see the example below.</p>
 
@@ -1172,7 +1169,7 @@ gc.draw
       <h4>Description</h4>
 
       <p>
-        Specify how to determine if a point on the image is inside clipping region. See
+        Specify how to determine if a point on the image is inside the clipping region. See
         <a href="https://www.w3.org/TR/SVG/painting.html#FillRuleProperty"
           ><code> the <b>'fill-rule'</b> property</code></a
         >
@@ -1258,8 +1255,7 @@ gc.draw
       <pre class="language-ruby">
 draw.border_color = 'black'
 draw.color(x, y, FillToBorderMethod)
-</pre
-      >
+</pre>
 
       <h4>See Also</h4>
 
@@ -1294,7 +1290,7 @@ draw.color(x, y, FillToBorderMethod)
 
         <dt>composite_image</dt>
 
-        <dd>Either an imagelist or a image. If an imagelist, uses the current image.</dd>
+        <dd>Either an imagelist or an image. If an imagelist, uses the current image.</dd>
 
         <dt>op</dt>
 
@@ -1796,8 +1792,7 @@ draw.color(x, y, FillToBorderMethod)
 gc.line(50,50, 50,200)
 gc.line(50,200, 200,200)
 gc.line(200,200, 50,50)
-</pre
-      >
+</pre>
 
       <p>
         <a href="javascript:popup('line.rb.html')"><img src="ex/line.gif" alt="line example" title="Click to see the example script" /></a>
@@ -1951,8 +1946,7 @@ gc.line(200,200, 50,50)
       <pre class="language-ruby">
 gc.path('M110,100 h-75 a75,75 0 1,0 75,-75 z')
 gc.path('M97.5,87.5 v-75 a75,75 0 0,0 -75,75 z')
-</pre
-      >
+</pre>
 
       <p>
         <a href="javascript:popup('arcpath.rb.html')"><img src="ex/arcpath.gif" alt="path example 1" title="Click to see the example script" /></a>
@@ -2473,7 +2467,7 @@ gc.path('M97.5,87.5 v-75 a75,75 0 0,0 -75,75 z')
       <h4>Example</h4>
 
       <p>
-        <a href="javascript:popup('stroke_dasharray.rb.html'"
+        <a href="javascript:popup('stroke_dasharray.rb.html')"
           ><img src="ex/stroke_dasharray.gif" alt="stroke_dasharray example" title="Click to see the example script"
         /></a>
       </p>
@@ -2589,7 +2583,7 @@ gc.path('M97.5,87.5 v-75 a75,75 0 0,0 -75,75 z')
       <h4>Description</h4>
 
       <p>
-        Specify a constraint on the length of the "miter" formed by two lines meeting at an angle. If the angle if very sharp, the miter could be very long
+        Specify a constraint on the length of the "miter" formed by two lines meeting at an angle. If the angle is very sharp, the miter could be very long
         relative to the line thickness. The miter limit is a limit on the ratio of the miter length to the line width.
       </p>
 
@@ -2626,8 +2620,7 @@ gc.path('M97.5,87.5 v-75 a75,75 0 0,0 -75,75 z')
       <pre class="language-ruby">
 draw.stroke_opacity(0.4)
 draw.stroke_opacity('40%')
-</pre
-      >
+</pre>
 
       <h4>See also</h4>
       <a href="#fill_opacity">fill_opacity</a>,
@@ -2706,8 +2699,7 @@ gc.text(10,10, '"Hello there!"')   #=&gt; Hello there!
 gc.text(10,10, "'What\'s up?'")    #=&gt; What's up?
 gc.text(10,10, %q/"What's up?"/)   #=&gt; What's up?
 gc.text(10,10, %q/{"What's up?"}/) #=&gt; "What's up?"
-</pre
-      >
+</pre>
 
       <h4>Example</h4>
 
@@ -3190,7 +3182,7 @@ gc.text(10,10, %q/{"What's up?"}/) #=&gt; "What's up?"
     <div class="sig">
       <h3 id="stroke_width_eq">stroke_width=</h3>
 
-      <p><span class="arg">draw</span>.stroke = <em>integer</em></p>
+      <p><span class="arg">draw</span>.stroke_width = <em>integer</em></p>
     </div>
 
     <div class="desc">

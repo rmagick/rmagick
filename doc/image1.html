@@ -293,7 +293,7 @@
 
       <p>
         Within the optional arguments block, specify
-        <code>options.filename = "root"</code> to capture the entire desktop. To programatically specify the window to be captured, use
+        <code>options.filename = "root"</code> to capture the entire desktop. To programmatically specify the window to be captured, use
         <code>options.filename = window_id</code>, where window_id is the id displayed by xwininfo(1).
       </p>
 
@@ -352,8 +352,7 @@
 img = Magick::Image.capture { |options|
   options.filename = "root"
 }
-</pre
-      >
+</pre>
     </div>
 
     <div class="sig">
@@ -537,8 +536,7 @@ img = Magick::Image.capture { |options|
 img = Magick::Image.new(256, 64) { |options|
   options.background_color = 'red'
 }
-</pre
-      >
+</pre>
 
       <h4>See also</h4>
 
@@ -584,8 +582,7 @@ img = Magick::Image.new(256, 64) { |options|
 cheetah = Magick::Image.ping("Cheetah.jpg") #=&gt; [Cheetah.jpg JPEG 1024x768 DirectClass 8-bit 101684b]
 p cheetah[0].rows    #=&gt; 768
 p cheetah[0].columns #=&gt; 1024
-</pre
-      >
+</pre>
 
       <h4>See also</h4>
 
@@ -637,8 +634,7 @@ animated = Magick::Image.read("animated.gif")
 #=&gt; [animated.gif GIF 127x120+0+0 PseudoClass 256c 8-bit 54395b
 #   animated.gif[1] GIF 127x120+0+0 PseudoClass 256c 8-bit 54395b,
 #   animated.gif[2] GIF 127x120+0+0 PseudoClass 256c 8-bit 54395b]
-</pre
-      >
+</pre>
 
       <h4>See also</h4>
 
@@ -688,8 +684,7 @@ animated = Magick::Image.read("animated.gif")
       <pre class="language-ruby">
 content = "R0lGODlhnAEuAferAAAAAAcIBggJBgw..."
 img = Magick::Image.read_inline(content)
-</pre
-      >
+</pre>
 
       <h4>See also</h4>
 
@@ -1121,8 +1116,8 @@ img = Magick::Image.read_inline(content)
         <a href="javascript:popup('adaptive_threshold.rb.html')"
           ><img
             src="ex/adaptive_threshold.jpg"
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/adaptive_threshold.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/adaptive_threshold.jpg'"
             alt="adaptive_threshold example"
             title="Click to see the example script"
         /></a>
@@ -1433,8 +1428,8 @@ img = Magick::Image.read_inline(content)
       <p class="rollover">
         <a href="javascript:popup('affine_transform.rb.html')"
           ><img
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/affine_transform.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/affine_transform.jpg'"
             src="ex/affine_transform.jpg"
             alt="affine_transform example"
             title="Click to see the example script"
@@ -1494,7 +1489,7 @@ img = Magick::Image.read_inline(content)
         <dt>OffAlphaChannel</dt>
 
         <dd class="imquote">
-          Disables the image's transparency channel. Does not delete or change the existing data, just turns of the use of that data. This is the same as
+          Disables the image's transparency channel. Does not delete or change the existing data, just turns off the use of that data. This is the same as
           assigning false to the old matte= attribute.
         </dd>
 
@@ -1523,7 +1518,7 @@ img = Magick::Image.read_inline(content)
         <dt>TransparentAlphaChannel</dt>
 
         <dd class="imquote">
-          Turns on the alpha/matte channel and forces it to be fully transparent. This effectivally creates a transparent image the same size as the original,
+          Turns on the alpha/matte channel and forces it to be fully transparent. This effectively creates a transparent image the same size as the original,
           with all its meta-data still attached.
         </dd>
       </dl>
@@ -1693,7 +1688,7 @@ img = Magick::Image.read_inline(content)
 
       <h4>Returns</h4>
 
-      <p>self. or <code>nil</code> if the image is already properly oriented</p>
+      <p>self, or <code>nil</code> if the image is already properly oriented</p>
 
       <h4>See also</h4>
 
@@ -1737,8 +1732,8 @@ img = Magick::Image.read_inline(content)
       <p class="rollover">
         <a href="javascript:popup('bilevel_channel.rb.html')"
           ><img
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/bilevel_channel.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/bilevel_channel.jpg'"
             src="ex/bilevel_channel.jpg"
             alt="bilevel_channel example"
             title="Click to see the example script"
@@ -1832,16 +1827,16 @@ img = Magick::Image.read_inline(content)
         <dt>src_percentage</dt>
 
         <dd>
-          Either a non-negative number a string in the form "NN%". If
+          Either a non-negative number or a string in the form "NN%". If
           <span class="arg">src_percentage</span> is a number it is interpreted as a percentage. Both 0.25 and "25%" mean 25%. This argument is required.
         </dd>
 
         <dt>dst_percentage</dt>
 
         <dd>
-          Either a non-negative number a string in the form "NN%". If
-          <span class="arg">src_percentage</span> is a number it is interpreted as a percentage. Both 0.25 and "25%" mean 25%. This argument may omitted if no
-          other arguments follow it. In this case the default is 100%-<span class="arg">src_percentage</span>.
+          Either a non-negative number or a string in the form "NN%". If
+          <span class="arg">dst_percentage</span> is a number it is interpreted as a percentage. Both 0.25 and "25%" mean 25%. This argument may be omitted if
+          no other arguments follow it. In this case the default is 100%-<span class="arg">src_percentage</span>.
         </dd>
       </dl>
 
@@ -1984,8 +1979,8 @@ img = Magick::Image.read_inline(content)
       <p class="rollover">
         <a href="javascript:popup('blur_image.rb.html')"
           ><img
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/blur_image.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/blur_image.jpg'"
             src="ex/blur_image.jpg"
             alt="blur_image example"
             title="Click to see the example script"
@@ -2050,11 +2045,21 @@ img = Magick::Image.read_inline(content)
           ><img
             style="padding: 10px; display: none"
             id="borderless"
-            onmouseout="this.style.display='none'; bordered.style.display='';"
+            onmouseout="
+              this.style.display = 'none';
+              bordered.style.display = '';
+            "
             src="ex/images/Flower_Hat.jpg"
             alt="border example"
             title="Click to see the example script" />
-          <img id="bordered" onmouseover="this.style.display='none'; borderless.style.display='';" src="ex/border.jpg" alt="border example" /></a
+          <img
+            id="bordered"
+            onmouseover="
+              this.style.display = 'none';
+              borderless.style.display = '';
+            "
+            src="ex/border.jpg"
+            alt="border example" /></a
         ><img src="ex/images/spin.gif" alt="" class="spin" style="left: 224px" title="Mouse over the example to see the original image" />
       </p>
 
@@ -2136,7 +2141,7 @@ img = Magick::Image.read_inline(content)
       <h4>Description</h4>
 
       <p>
-        The <code>change_geometry</code> method supports resizing a method by specifying constraints. For example, you can specify that the image should be
+        The <code>change_geometry</code> method supports resizing an image by specifying constraints. For example, you can specify that the image should be
         resized such that the aspect ratio should be retained but the resulting image should be no larger than 640 pixels wide and 480 pixels tall.
       </p>
 
@@ -2147,7 +2152,7 @@ img = Magick::Image.read_inline(content)
       </p>
 
       <h4>Arguments</h4>
-      An <a href="imusage.html#geometry">geometry string</a> or a <code>Geometry</code> object
+      A <a href="imusage.html#geometry">geometry string</a> or a <code>Geometry</code> object
 
       <h4>Returns</h4>
 
@@ -2160,8 +2165,7 @@ mona = Magick::Image.read('MonaLisa.jpg').first
 mona.change_geometry!('320x240') { |cols, rows, img|
   img.resize!(cols, rows)
 }
-</pre
-      >
+</pre>
 
       <h4>Magick API</h4>
 
@@ -2361,8 +2365,8 @@ mona.change_geometry!('320x240') { |cols, rows, img|
       <p class="rollover">
         <a href="javascript:popup('charcoal.rb.html')"
           ><img
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/charcoal.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/charcoal.jpg'"
             src="ex/charcoal.jpg"
             alt="charcoal example"
             title="Click the image to see the example script"
@@ -2439,8 +2443,8 @@ mona.change_geometry!('320x240') { |cols, rows, img|
       <p class="rollover">
         <a href="javascript:popup('chop.rb.html')"
           ><img
-            onmouseover="this.src='ex/chop_before.jpg'"
-            onmouseout="this.src='ex/chop_after.jpg'"
+            onmouseover="this.src = 'ex/chop_before.jpg'"
+            onmouseout="this.src = 'ex/chop_after.jpg'"
             src="ex/chop_after.jpg"
             alt="chop example"
             title="Click the image to see the example script"
@@ -2557,7 +2561,7 @@ mona.change_geometry!('320x240') { |cols, rows, img|
         <dt>fill_color</dt>
 
         <dd>
-          The fill color. The fill color can be either color name or a
+          The fill color. The fill color can be either a color name or a
           <a href="struct.html#Pixel">Pixel</a> object.
         </dd>
       </dl>
@@ -2571,14 +2575,14 @@ mona.change_geometry!('320x240') { |cols, rows, img|
       <p>
         In this example, the aquamarine fill starts at the center of the circle and fills to the black border. All non-black pixels are replaced by the fill
         color. Contrast the result of
-        <code>color_fill_to_border</code> with that of <code>color_floodfill</code> example, below.
+        <code>color_fill_to_border</code> with that of the <code>color_floodfill</code> example, below.
       </p>
 
       <p class="rollover">
         <a href="javascript:popup('color_fill_to_border.rb.html')"
           ><img
-            onmouseover="this.src='ex/color_fill_to_border_before.gif'"
-            onmouseout="this.src='ex/color_fill_to_border_after.gif'"
+            onmouseover="this.src = 'ex/color_fill_to_border_before.gif'"
+            onmouseout="this.src = 'ex/color_fill_to_border_after.gif'"
             src="ex/color_fill_to_border_after.gif"
             alt="color_fill_to_border example"
             title="Click the image to see the example script" /></a
@@ -2624,7 +2628,7 @@ mona.change_geometry!('320x240') { |cols, rows, img|
         <dt>fill_color</dt>
 
         <dd>
-          The fill color, either color name or a
+          The fill color, either a color name or a
           <a href="struct.html#Pixel">Pixel</a> object.
         </dd>
       </dl>
@@ -2643,8 +2647,8 @@ mona.change_geometry!('320x240') { |cols, rows, img|
       <p class="rollover">
         <a href="javascript:popup('color_floodfill.rb.html')"
           ><img
-            onmouseover="this.src='ex/color_floodfill_before.gif'"
-            onmouseout="this.src='ex/color_floodfill_after.gif'"
+            onmouseover="this.src = 'ex/color_floodfill_before.gif'"
+            onmouseout="this.src = 'ex/color_floodfill_after.gif'"
             src="ex/color_floodfill_after.gif"
             alt="color_floodfill example"
             title="Click the image to see the example script"
@@ -2751,8 +2755,8 @@ mona.change_geometry!('320x240') { |cols, rows, img|
       <p class="rollover">
         <a href="javascript:popup('colorize.rb.html')"
           ><img
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/colorize.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/colorize.jpg'"
             src="ex/colorize.jpg"
             alt="colorize example"
             title="Click the image to see the example script"
@@ -2836,7 +2840,7 @@ mona.change_geometry!('320x240') { |cols, rows, img|
         <dt>fill</dt>
 
         <dd>
-          The fill color, either color name or a
+          The fill color, either a color name or a
           <a href="struct.html#Pixel">Pixel</a> object.
         </dd>
       </dl>
@@ -2873,7 +2877,7 @@ mona.change_geometry!('320x240') { |cols, rows, img|
       <p>Sets all the pixels in the image to the specified fill color.</p>
 
       <h4>Arguments</h4>
-      The fill color, either color name or a
+      The fill color, either a color name or a
       <a href="struct.html#Pixel">Pixel</a> object.
 
       <h4>Returns</h4>
@@ -2940,14 +2944,14 @@ mona.change_geometry!('320x240') { |cols, rows, img|
 
             <dt>options.lowlight_color = color</dt>
 
-            <dd>Demphasize pixel differences with this color. The default is partially transparent white.</dd>
+            <dd>De-emphasize pixel differences with this color. The default is partially transparent white.</dd>
           </dl>
         </dd>
       </dl>
 
       <h4>Returns</h4>
 
-      <p>An array. The first element is a difference image, the second is a the value of the computed distortion represented as a <code>Float</code>.</p>
+      <p>An array. The first element is a difference image, the second is the value of the computed distortion represented as a <code>Float</code>.</p>
 
       <h4>See also</h4>
 
@@ -3213,7 +3217,7 @@ mona.change_geometry!('320x240') { |cols, rows, img|
       <p>
         Equivalent to the
         <code>-compose Mathematics -set option:compose:args a,b,c,d</code>
-        options to ImagMagick's <code>convert</code> command. See
+        options to ImageMagick's <code>convert</code> command. See
         <a href="https://www.imagemagick.org/Usage/compose/#mathematics">Examples of ImageMagick Usage</a>.
       </p>
 
@@ -3320,8 +3324,8 @@ mona.change_geometry!('320x240') { |cols, rows, img|
       <p class="rollover">
         <a href="javascript:popup('composite_tiled.rb.html')"
           ><img
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/composite_tiled.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/composite_tiled.jpg'"
             src="ex/composite_tiled.jpg"
             alt="composite_tiled example"
             title="Click the image to see the example script"
@@ -3370,8 +3374,7 @@ f = Magick::Image.read('cbezier1.gif').first #=&gt; cbezier1.gif GIF 500x350+0+0
 f.colors #=&gt; 128
 f.compress_colormap! #=&gt; cbezier1.gif GIF 500x350+0+0 PseudoClass 108c 8-bit 177503b
 f.colors #=&gt; 108
-</pre
-      >
+</pre>
 
       <h4>Magick API</h4>
 
@@ -3730,8 +3733,8 @@ f.colors #=&gt; 108
       <p class="rollover">
         <a href="javascript:popup('crop.rb.html')"
           ><img
-            onmouseover="this.src='ex/crop_before.png'"
-            onmouseout="this.src='ex/crop_after.png'"
+            onmouseover="this.src = 'ex/crop_before.png'"
+            onmouseout="this.src = 'ex/crop_after.png'"
             src="ex/crop_after.png"
             alt="crop example"
             title="Click the image to see the example script" /></a
@@ -3823,8 +3826,8 @@ f.colors #=&gt; 108
       <p class="rollover">
         <a href="javascript:popup('cycle_colormap.rb.html')"
           ><img
-            onmouseover="this.src='ex/cycle_colormap.gif'"
-            onmouseout="this.src='ex/images/Hot_Air_Balloons.jpg'"
+            onmouseover="this.src = 'ex/cycle_colormap.gif'"
+            onmouseout="this.src = 'ex/images/Hot_Air_Balloons.jpg'"
             src="ex/images/Hot_Air_Balloons.jpg"
             alt="cycle_colormap example"
             title="Click the image to see the example script" /></a
@@ -4197,7 +4200,7 @@ f.colors #=&gt; 108
         <dt>y_amplitude</dt>
 
         <dd>
-          The maximum displacement on the y-axis. This argument may omitted if no other arguments follow it. In this case the default is the value of
+          The maximum displacement on the y-axis. This argument may be omitted if no other arguments follow it. In this case the default is the value of
           <span class="arg">x_amplitude</span>.
         </dd>
       </dl>
@@ -4295,16 +4298,16 @@ f.colors #=&gt; 108
         <dt>src_percentage</dt>
 
         <dd>
-          Either a non-negative number a string in the form "NN%". If
+          Either a non-negative number or a string in the form "NN%". If
           <span class="arg">src_percentage</span> is a number it is interpreted as a percentage. Both 0.25 and "25%" mean 25%. This argument is required.
         </dd>
 
         <dt>dst_percentage</dt>
 
         <dd>
-          Either a non-negative number a string in the form "NN%". If
-          <span class="arg">src_percentage</span> is a number it is interpreted as a percentage. Both 0.25 and "25%" mean 25%. This argument may omitted if no
-          other arguments follow it. In this case <span class="arg">img</span>'s opacity is unchanged.
+          Either a non-negative number or a string in the form "NN%". If
+          <span class="arg">dst_percentage</span> is a number it is interpreted as a percentage. Both 0.25 and "25%" mean 25%. This argument may be omitted if
+          no other arguments follow it. In this case <span class="arg">img</span>'s opacity is unchanged.
         </dd>
       </dl>
 
@@ -4328,8 +4331,8 @@ f.colors #=&gt; 108
       <p class="rollover">
         <a href="javascript:popup('dissolve.rb.html')"
           ><img
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/dissolve.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/dissolve.jpg'"
             src="ex/dissolve.jpg"
             alt="dissolve example"
             title="Click to see the example script"
@@ -4433,7 +4436,7 @@ f.colors #=&gt; 108
             <dt>options.verbose(true)</dt>
 
             <dd class="imquote">
-              Attempt to output the internal coefficients, and the -fx equivalent to the distortion, for expert study, and debugging purposes. This many not be
+              Attempt to output the internal coefficients, and the -fx equivalent to the distortion, for expert study, and debugging purposes. This may not be
               available for all distorts.
             </dd>
           </dl>
@@ -4451,8 +4454,7 @@ result = img.distort(Magick::ScaleRotateTranslateDistortion, [0]) do |options|
   options.define "distort:viewport", "44x44+15+0"
   options.define "distort:scale", 2
 end
-</pre
-      >
+</pre>
 
       <h4>Note</h4>
 

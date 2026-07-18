@@ -240,8 +240,7 @@
       <pre class="language-ruby">
 canvas.background_fill = 'white'
 canvas.background_fill_opacity = 0.50
-</pre
-      >
+</pre>
 
       <h4>Returns</h4>
       <span class="arg">value</span>
@@ -288,7 +287,7 @@ canvas.background_fill_opacity = 0.50
     <div class="desc">
       <h4>Description</h4>
 
-      <p>Specify an <a href="struct.html#fill">Fill object</a> to fill the canvas background. This attribute has no effect on nested RVG objects.</p>
+      <p>Specify a <a href="struct.html#fill">Fill object</a> to fill the canvas background. This attribute has no effect on nested RVG objects.</p>
 
       <h4>Example</h4>
 
@@ -341,8 +340,7 @@ canvas.background_fill_opacity = 0.50
       <pre class="language-ruby">
 canvas.background_image = Magick::Image.read('myBackground.gif').first
 canvas.background_position = :scaled
-</pre
-      >
+</pre>
 
       <h4>Returns</h4>
       <span class="arg">pos</span>
@@ -522,8 +520,7 @@ canvas.background_position = :scaled
       <pre class="language-ruby">
 img = rvg.draw
 img.write('myDrawing.jpg')
-</pre
-      >
+</pre>
     </div>
 
     <div class="sig">
@@ -608,7 +605,7 @@ img.write('myDrawing.jpg')
 
             <dt>xMid</dt>
 
-            <dd>vertically center the content within the viewport.</dd>
+            <dd>horizontally center the content within the viewport.</dd>
 
             <dt>xMax</dt>
 
@@ -624,7 +621,7 @@ img.write('myDrawing.jpg')
 
             <dt>YMid</dt>
 
-            <dd>horizontally center the content within the viewport.</dd>
+            <dd>vertically center the content within the viewport.</dd>
 
             <dt>YMax</dt>
 
@@ -855,8 +852,7 @@ img.write('myDrawing.jpg')
       <pre class="language-ruby">
 Magick::RVG.dpi = 90
 length = 10.in  # =&gt; 900 pixels
-</pre
-      >
+</pre>
 
       <p>
         If the dpi is defined, the following methods are added to
@@ -902,7 +898,7 @@ length = 10.in  # =&gt; 900 pixels
 
         <dt>pct</dt>
 
-        <dd>This conversion takes an numeric argument and returns a percentage of the argument. For example 20.pct(150) -&gt; 30</dd>
+        <dd>This conversion takes a numeric argument and returns a percentage of the argument. For example 20.pct(150) -&gt; 30</dd>
       </dl>
 
       <p>SVG also supports <em>em</em> and <em>ex</em>, which are measurements based on the font size. RVG does not.</p>

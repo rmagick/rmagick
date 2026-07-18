@@ -288,8 +288,7 @@
     <p>This is the format of the geometry string. Any of the values may be omitted, depending on the context:</p>
     <pre id="geostr">
 &lt;width&gt;x&lt;height&gt;+-&lt;x&gt;+-&lt;y&gt;{%@!&lt;&gt;}
-</pre
-    >
+</pre>
 
     <p>
       <a href="https://www.imagemagick.org/script/command-line-options.php#resize"> This</a>
@@ -347,7 +346,7 @@
 
     <div class="imquote">
       <p>
-        DirectClass images are continuous-tone images stored as RGB (red, green, blue), RGBA (red, green, blue, alpha), or CMYK (cyan, yellow, magenta, black)
+        DirectClass images are continuous-tone images stored as RGB (red, green, blue), RGBA (red, green, blue, alpha), or CMYK (cyan, magenta, yellow, black)
         intensity values as defined by the
         <code>colorspace</code> [attribute].
       </p>
@@ -360,7 +359,7 @@
     </div>
 
     <p>
-      GIF format images are PseudoClass. JPEG format images are DirectClass. You can change the class of a image with the
+      GIF format images are PseudoClass. JPEG format images are DirectClass. You can change the class of an image with the
       <code><a href="imageattrs.html#class_type">class_type</a></code>
       method.
     </p>
@@ -375,7 +374,7 @@
     <p>
       These are the built-in formats that I know something about. (There are more but I've never used them.) When the format is marked with an
       <sup>*</sup>, you must supply the desired size of the image in order to "read" it. Specify the size by assigning a string in the form "WxH" to the
-      <code>size</code> attribute in the <code>read</code> method's additional parms block. For example, to create a image in the gradient format that is 100
+      <code>size</code> attribute in the <code>read</code> method's additional parms block. For example, to create an image in the gradient format that is 100
       pixels wide and 200 pixels high, use:
     </p>
     <pre class="example language-ruby">i = Magick::Image.read("gradient:red-blue") { |options| options.size = "100x200" }</pre>

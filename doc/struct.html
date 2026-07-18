@@ -211,8 +211,7 @@
   pixels = view[[1,3,5]][[2,4,6]]
   # Use ranges to specify a contiguous set of rows and columns
   pixels = view[1..5][2..6]
-</pre
-        >
+</pre>
       </div>
 
       <div class="sig">
@@ -249,8 +248,7 @@
   # Get the maximum value of the red channel
   # for all the pixels in the top row of the view.
   m = view[0][].red.max
-</pre
-        >
+</pre>
       </div>
 
       <div class="sig">
@@ -309,8 +307,7 @@
   # Set the green channel of the pixel at [20][30] to
   # half that of its left-hand neighbor.
   view[20][30].green = view[20][29].green * 0.5
-</pre
-        >
+</pre>
       </div>
 
       <div id="view_sync" class="sig">
@@ -418,7 +415,7 @@
         <h5>Attributes</h5>
 
         <p>
-          A geometry string has the general form "WxH+x+y[!@%&lt;&gt;]. In a
+          A geometry string has the general form "WxH+x+y[!@%&lt;&gt;]". In a
           <code>Geometry</code> object,
         </p>
 
@@ -470,7 +467,7 @@
 
             <td>
               Normally the attributes are treated as pixels. Use this flag when the <code>width</code> and <code>height</code> attributes represent
-              <em>percentages</em>. For example, 125x75 means 125% of the height and 75% of the width. The <code>x</code> and <code>y</code> attributes are not
+              <em>percentages</em>. For example, 125x75 means 125% of the width and 75% of the height. The <code>x</code> and <code>y</code> attributes are not
               affected by this flag.
             </td>
           </tr>
@@ -481,7 +478,7 @@
             <td valign="top" align="center">!</td>
 
             <td>
-              Use this flag when you want to force the new image to have exactly the size specified by the the <code>width</code> and
+              Use this flag when you want to force the new image to have exactly the size specified by the <code>width</code> and
               <code>height</code> attributes.
             </td>
           </tr>
@@ -492,7 +489,7 @@
             <td valign="top" align="center">&lt;</td>
 
             <td>
-              Use this flag when you want to change the size of the image only if both its width and height are smaller the values specified by those
+              Use this flag when you want to change the size of the image only if both its width and height are smaller than the values specified by those
               attributes. The image size is changed proportionally.
             </td>
           </tr>
@@ -537,8 +534,7 @@
         <h5>Example</h5>
         <pre class="language-ruby">
 g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
-</pre
-        >
+</pre>
       </div>
     </div>
 
@@ -563,7 +559,7 @@ g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
     <div class="desc">
       <h5>Description</h5>
 
-      <p>Returns the string equivalent of the <code>Geometry</code> object..</p>
+      <p>Returns the string equivalent of the <code>Geometry</code> object.</p>
     </div>
 
     <div class="subhd" id="Pixel">
@@ -794,7 +790,7 @@ g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
 
         <p>
           Returns the
-          <a href="imusage.html#color_names">color name</a> corresponding the the pixel values. If there is no such named color in the specified color standard,
+          <a href="imusage.html#color_names">color name</a> corresponding to the pixel values. If there is no such named color in the specified color standard,
           returns a string in the form "rgb(r,g,b,a)".
         </p>
 
@@ -840,7 +836,7 @@ g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
       <div class="sig">
         <h4 id="to_hsla">to_hsla</h4>
 
-        <p><span class="arg">pixel</span>.to_HSL -&gt; <em>array</em></p>
+        <p><span class="arg">pixel</span>.to_hsla -&gt; <em>array</em></p>
       </div>
 
       <div class="desc">
@@ -965,7 +961,7 @@ g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
 
         <p>
           The value of the <code>pixels_per_em</code> attribute in the TypeMetric struct returned by
-          <a href="draw.html#get_type_metrics">Draw#get_type_metrics</a> is a <code>Point</code> object..
+          <a href="draw.html#get_type_metrics">Draw#get_type_metrics</a> is a <code>Point</code> object.
         </p>
 
         <h5>Attributes</h5>
@@ -1095,7 +1091,7 @@ g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
       </p>
 
       <p>
-        RMagick supplies three Fill classes,
+        RMagick supplies four Fill classes,
         <code><strong>HatchFill</strong></code
         >, <code><strong>GradientFill</strong></code
         >, <code><strong>SolidFill</strong></code> and <code><strong>TextureFill</strong></code

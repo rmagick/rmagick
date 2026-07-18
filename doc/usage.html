@@ -131,8 +131,7 @@ require "rmagick"
 cat = Magick::ImageList.new("Cheetah.jpg")
 cat.display
 exit
-</pre
-    >
+</pre>
 
     <p class="example_cutline">
       MS Windows users note: The
@@ -160,7 +159,7 @@ exit
     <p>
       The Image and ImageList classes are closely related. An
       <em>Image</em> object describes one image or one frame in an image with multiple frames. (An animated GIF or a Photoshop image with multiple layers are
-      examples of images with multiple frames.) You can create a image object from an image file such as a GIF, PNG, or JPEG. You can create a image from
+      examples of images with multiple frames.) You can create an image object from an image file such as a GIF, PNG, or JPEG. You can create an image from
       scratch by specifying its dimensions. You can write an image to disk, display it on a screen, change its size or orientation, convert it to another
       format, or otherwise modify it using one of over 100 methods.
     </p>
@@ -185,8 +184,7 @@ cat = Magick::ImageList.new("Cheetah.jpg")
 smallcat = cat.minify
 smallcat.display
 exit
-</pre
-    >
+</pre>
 
     <p>
       The difference is the statement on line 5. This statement sends the
@@ -210,13 +208,12 @@ smallcat = cat.minify
 smallcat.display
 smallcat.write("Small-Cheetah.gif")
 exit
-</pre
-    >
+</pre>
 
     <p>
       The statement on line 7 writes the image to a file. Notice that the filename extension is <code>gif</code>. When writing images, ImageMagick uses the
       filename extension to determine what image format to write. In this example, the <code>Small-Cheetah.gif</code> file will be in the GIF format. Notice how
-      easy it is to covert an image from one format to another? (For more details, see <a href="imusage.html#formats">Image formats and filenames</a>.)
+      easy it is to convert an image from one format to another? (For more details, see <a href="imusage.html#formats">Image formats and filenames</a>.)
     </p>
 
     <p>
@@ -266,8 +263,7 @@ require "rmagick"
 f = Magick::Image.new(100,100) { |options| options.background_color = "red" }
 f.display
 exit
-</pre
-    >
+</pre>
 
     <p>Within the parameter block you must use <code>self</code> so that Ruby knows that this statement is a method call, not an assignment to a variable.</p>
 
@@ -288,7 +284,7 @@ exit
     <p>
       If an ImageList object contains only one image, then
       <a href="ilist.html#write"><code>ImageList#write</code></a> is the same as <code>Image#write</code>. However, if the imagelist contains multiple images
-      and the file format (determined by the file name extension, as I mentioned earlier) supports multi-frame images, <code>Image#write</code> will
+      and the file format (determined by the file name extension, as I mentioned earlier) supports multi-frame images, <code>ImageList#write</code> will
       automatically create a multi-frame image file.
     </p>
 
@@ -302,8 +298,7 @@ require "rmagick"
 anim = Magick::ImageList.new("start.gif", "middle.gif", "finish.gif")
 anim.write("animated.gif")
 exit
-</pre
-    >
+</pre>
 
     <h2 id="displaying">Displaying images</h2>
 
@@ -474,7 +469,7 @@ exit
 
         <dt><a href="image2.html#histogram_q">histogram?</a></dt>
 
-        <dd>Does the image have &lt;= 1024 unique colors??</dd>
+        <dd>Does the image have &lt;= 1024 unique colors?</dd>
 
         <dt><a href="image2.html#import_pixels">import_pixels</a></dt>
 
@@ -1287,8 +1282,7 @@ circle.stroke_linejoin('round')
 circle.ellipse(canvas.rows/2,canvas.columns/2, 80, 80, 0, 315)
 circle.polyline(180,70, 173,78, 190,78, 191,62)
 circle.draw(canvas)
-</pre
-    >
+</pre>
 
     <p>
       The statements on lines 4 and 5 create the drawing canvas with a single 250x250 image. The <code>HatchFill</code> object fills the image with light-gray
@@ -1304,7 +1298,7 @@ circle.draw(canvas)
     </p>
 
     <p>
-      The <code>ellipse</code> method call on line 14 describes an circle in the center of the canvas with a radius of 80 pixels. The ellipse occupies 315&deg;
+      The <code>ellipse</code> method call on line 14 describes a circle in the center of the canvas with a radius of 80 pixels. The ellipse occupies 315&deg;
       of a circle, starting at 0&deg; (that is, 3 o'clock). The <code>polyline</code> call on line 15 adds the arrowhead to the circle. The arguments (always an
       even number) are the x- and y-coordinates of the points the line passes through.
     </p>
@@ -1361,8 +1355,7 @@ text.annotate(canvas, 0,0,0,0, Text) { |options|
 
 canvas.write('rubyname.gif')
 exit
-</pre
-    >
+</pre>
 
     <p>
       This program uses three calls to <code>annotate</code> to produce the "etched" appearance. All three calls have some parameters in common but the fill
@@ -1380,7 +1373,7 @@ exit
     <p>
       The first <code>annotate</code> argument is the image on which the text will be drawn. Arguments 2-5, <code>width</code>, <code>height</code>,
       <code>x</code>, and <code>y</code>, describe a rectangle about which the text is drawn. This rectangle, combined with the value of <code>gravity</code>,
-      define the position of the text. When the <code>gravity</code> value is <a href="constants.html#GravityType"><code>CenterGravity</code></a> the values of
+      defines the position of the text. When the <code>gravity</code> value is <a href="constants.html#GravityType"><code>CenterGravity</code></a> the values of
       <code>width</code> and <code>height</code> are unused.
     </p>
 
@@ -1397,9 +1390,9 @@ exit
       The next section,
       <a href="imusage.html">"ImageMagick Conventions,"</a> describes some conventions that you need to know, such as how ImageMagick determines the graphic
       format of an image file, etc. The ImageMagick (www.imagemagick.org) web site (from which much of the information in these pages has been taken) offers a
-      lot of detail about ImageMagick. While this web sites doesn't describe RMagick, you can often use the documentation to learn more about a RMagick method
-      by reading about the Magick API the method calls. (In the Reference section of this document, most of the method descriptions include the name of the
-      Magick API that the method calls.) Check out the example programs. Almost every one of the methods is demonstrated in one of the examples.
+      lot of detail about ImageMagick. While this web site doesn't describe RMagick, you can often use the documentation to learn more about a RMagick method by
+      reading about the Magick API the method calls. (In the Reference section of this document, most of the method descriptions include the name of the Magick
+      API that the method calls.) Check out the example programs. Almost every one of the methods is demonstrated in one of the examples.
     </p>
 
     <p>Good luck!</p>
