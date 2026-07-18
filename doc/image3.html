@@ -610,7 +610,7 @@ end
       <h4>Description</h4>
 
       <p>
-        <span class="imquote">Adds or removes a ICM, IPTC, or generic profile from an image.</span>
+        <span class="imquote">Adds or removes an ICM, IPTC, or generic profile from an image.</span>
         If <code>profile</code> is <code>nil</code>, the specified profile is removed from the image. Use <code>profile('*', nil)</code> to remove all profiles
         from the image.
       </p>
@@ -857,7 +857,7 @@ end
 
         <dt>channel</dt>
 
-        <dd>A <a href="constants.html#ChannelType">ChannelType</a> value. The default is to operate on the R, G. and B channels.</dd>
+        <dd>A <a href="constants.html#ChannelType">ChannelType</a> value. The default is to operate on the R, G, and B channels.</dd>
       </dl>
 
       <h4>Returns</h4>
@@ -1048,7 +1048,7 @@ end
 
         <dd>
           <span class="imquote">A geometry string containing LOWxHIGH thresholds.</span>
-          The string is in the form `XxY'. The Y value may be omitted, in which case it is assigned the value QuantumRange-X. If an % appears in the string then
+          The string is in the form `XxY'. The Y value may be omitted, in which case it is assigned the value QuantumRange-X. If a % appears in the string then
           the values are assumed to be percentages of QuantumRange.
           <span class="imquote">If the string contains 2x2, 3x3, or 4x4, then an ordered dither of order 2, 3, or 4 will be performed instead.</span>
           A <a href="struct.html#Geometry">Geometry</a> object may be used as well.
@@ -1869,7 +1869,7 @@ random_threshold_channel(geom, Magick::RedChannel)
 
         <dt>cluster_threshold</dt>
 
-        <dd class="imquote">The number of pixels in each cluster must exceed the the cluster threshold to be considered valid.</dd>
+        <dd class="imquote">The number of pixels in each cluster must exceed the cluster threshold to be considered valid.</dd>
 
         <dt>smoothing_threshold</dt>
 
@@ -2672,11 +2672,11 @@ img.properties
 
             <dt>ShepardsColorInterpolate</dt>
 
-            <dd class="imquote">Colors points basied on the ratio of inverse distance squared. Generating spots of color in a sea of the average of colors.</dd>
+            <dd class="imquote">Colors points based on the ratio of inverse distance squared. Generating spots of color in a sea of the average of colors.</dd>
 
             <dt>VoronoiColorInterpolate</dt>
 
-            <dd class="imquote">Simply map each pixel to the to nearest color point given. The result are polygonal 'cells' of solid color.</dd>
+            <dd class="imquote">Simply map each pixel to the nearest color point given. The result is polygonal 'cells' of solid color.</dd>
           </dl>
         </dd>
 
@@ -3478,9 +3478,9 @@ img.to_color(pixel)                                        #=&gt; "#D8936A"
       </p>
 
       <p class="imquote">
-        As there is one fuzz value for the all the channels, the
+        As there is one fuzz value for all the channels, the
         <a href="#transparent">transparent</a> method is not suitable for the operations like chroma, where the tolerance for similarity of two color components
-        (RGB) can be different, Thus we define this method take two target pixels (one low and one high) and all the pixels of an image which are lying between
+        (RGB) can be different, Thus we define this method to take two target pixels (one low and one high) and all the pixels of an image which are lying between
         these two pixels are made transparent.
       </p>
 

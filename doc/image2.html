@@ -494,7 +494,7 @@
     </div>
 
     <div class="sig">
-      <h3 id="equalize_channel">equalize_chanel</h3>
+      <h3 id="equalize_channel">equalize_channel</h3>
 
       <p><span class="arg">img</span>.equalize_channel(<span class="arg">[channel...]</span>) -&gt; <em>image</em></p>
     </div>
@@ -802,7 +802,7 @@ scanline = img.export_pixels(0, r, img.columns, 1, "RGB");
       <h4>Notes</h4>
 
       <p>
-        The new image is composed over the background using the composite operator specified by target image's
+        The new image is composed over the background using the composite operator specified by the target image's
         <a href="imageattrs.html#compose">compose</a> attribute.
       </p>
 
@@ -2334,7 +2334,7 @@ img.import_pixels(0, 0, hat.columns, hat.rows, "RGB", char_buffer, CharPixel)
 
         <dt>gamma</dt>
 
-        <dd>A gamma correction in the range 0.0-10.0 The default is 1.0.</dd>
+        <dd>A gamma correction in the range 0.0-10.0. The default is 1.0.</dd>
       </dl>
 
       <h4>Returns</h4>
@@ -2423,7 +2423,7 @@ img.level(white_point, gamma, black_point) -&gt; image # wrong!
 
         <dt>gamma</dt>
 
-        <dd>A gamma correction in the range 0.0-10.0 The default is 1.0.</dd>
+        <dd>A gamma correction in the range 0.0-10.0. The default is 1.0.</dd>
       </dl>
 
       <h4>Returns</h4>
@@ -2538,7 +2538,7 @@ img.level(white_point, gamma, black_point) -&gt; image # wrong!
 
         <dt>gamma</dt>
 
-        <dd>A gamma correction in the range 0.0-10.0 The default is 1.0.</dd>
+        <dd>A gamma correction in the range 0.0-10.0. The default is 1.0.</dd>
 
         <dt>channel...</dt>
 
@@ -3278,7 +3278,6 @@ img.level(white_point, gamma, black_point) -&gt; image # wrong!
       <h4>See also</h4>
 
       <p><a href="#negate">negate</a></p>
-      .
 
       <h4>Magick API</h4>
 
@@ -3562,7 +3561,7 @@ convert -list Thresholds
       >
 
       <p>
-        If you have a sufficiently new version of ImageMagick, you can add a
+        If you have a sufficiently new version of ImageMagick, you can add
         <span class="imquote">a uniform color map with the number of levels per color channel</span>
         immediately following the <span class="arg">threshold_map</span>, separated by a comma. See the documentation for
         <a href="https://imagemagick.org/script/command-line-options.php#ordered-dither"> ImageMagick's -ordered-dither option</a>

@@ -216,8 +216,8 @@ i = Magick::ImageList.new("Button_A.gif", "Cheetah.jpg")
       <p>Sets the number of times an animated image should loop.</p>
 
       <p>
-        The <a href="#animate">animate</a> method and the ImageMagick animate command does not respect this number. Both will repeat the animation until you
-        stop them. Mozilla (and presumably Netscape) do respect the value..
+        The <a href="#animate">animate</a> method and the ImageMagick animate command do not respect this number. Both will repeat the animation until you
+        stop them. Mozilla (and presumably Netscape) do respect the value.
       </p>
 
       <h4>Arguments</h4>
@@ -367,7 +367,7 @@ ilist.scene #=&gt; 10
       </table>
 
       <p>
-        Adding anything other than a image to an imagelist has undefined results. Most of the time RMagick will raise an ArgumentError exception. For example,
+        Adding anything other than an image to an imagelist has undefined results. Most of the time RMagick will raise an ArgumentError exception. For example,
         if you call <code>collect!</code> on an imagelist you should make sure that the members of the imagelist remain images. If you need to replace images in
         an imagelist with non-image objects, convert the imagelist to an array with the <code>to_a</code> method, then modify the array.
       </p>
@@ -490,7 +490,7 @@ ilist.animate { |options| options.server_name = "other:0.0" }
 
       <h4>Returns</h4>
 
-      <p>A image composed of all the images in the imagelist.</p>
+      <p>An image composed of all the images in the imagelist.</p>
 
       <h4>Magick API</h4>
 
@@ -506,7 +506,7 @@ ilist.animate { |options| options.server_name = "other:0.0" }
     <div class="desc">
       <h4>Description</h4>
 
-      <p>Averages all the images together. Each image in the image must have the same width and height.</p>
+      <p>Averages all the images together. Each image in the imagelist must have the same width and height.</p>
 
       <h4>Returns</h4>
 
@@ -635,7 +635,7 @@ ilist.animate { |options| options.server_name = "other:0.0" }
         <span class="imquote"
           >Unlike a normal composite operation, the canvas offset is also included to the composite positioning. If one of the image lists only contains one
           image, that image is applied to all the images in the other image list, regardless of which list it is. In this case it is the image meta-data of the
-          list which preserved.</span
+          list which is preserved.</span
         >
       </p>
 
@@ -721,7 +721,7 @@ ilist.animate { |options| options.server_name = "other:0.0" }
       <p>
         Both the ImageList class and the Image class support the
         <code>cur_image</code> method. Of course, in the Image class, <code>cur_image</code> simply returns <code>self</code>. When a method accepts either an
-        image or a imagelist as an argument, it sends the <code>cur_image</code> method to the argument to get the current image.
+        image or an imagelist as an argument, it sends the <code>cur_image</code> method to the argument to get the current image.
       </p>
 
       <h4>Returns</h4>
@@ -828,7 +828,7 @@ ilist.animate { |options| options.server_name = "other:0.0" }
       <h4>Description</h4>
 
       <p>
-        Combines all the images in the imagelist into a single image by overlaying each successive image onto the preceding images. If a image has transparent
+        Combines all the images in the imagelist into a single image by overlaying each successive image onto the preceding images. If an image has transparent
         areas, the underlying image will show through. Use the
         <a href="imageattrs.html#page">page</a> attribute to specify the position of each image with respect to the preceding images.
       </p>
@@ -931,7 +931,7 @@ ilist.display
       <dl>
         <dt>expression</dt>
 
-        <dd>A mathematical expression of the form accepted by the -fx operator..</dd>
+        <dd>A mathematical expression of the form accepted by the -fx operator.</dd>
 
         <dt>channel...</dt>
 
@@ -1148,7 +1148,7 @@ i = Magick::ImageList.new("images/Button_A.gif", "images/Button_B.gif")
         <dt>texture=</dt>
 
         <dd>
-          A image to be tiled on the background of the composite image. If present, this attribute overrides the background color. For example, to use
+          An image to be tiled on the background of the composite image. If present, this attribute overrides the background color. For example, to use
           ImageMagick's built-in "granite" texture as the background, use:
           <pre class="language-ruby">options.texture = Magick::Image.read("granite:").first</pre>
 
@@ -1208,7 +1208,7 @@ i = Magick::ImageList.new("images/Button_A.gif", "images/Button_B.gif")
       <h4>Description</h4>
 
       <p>
-        Transforms a image into another image by inserting
+        Transforms an image into another image by inserting
         <code>n</code> in-between images. Requires at least two images. If more images are present, the 2nd image is transformed into the 3rd, the 3rd to the
         4th, etc.
       </p>
@@ -1342,7 +1342,7 @@ ilist.new_image(100, 100) { |options| options.background_color = "red" }
         <a href="https://www.imagemagick.org/Usage/">Examples of ImageMagick Usage</a>
         site has very detailed
         <a href="https://www.imagemagick.org/Usage/anim_opt/">information and examples</a>
-        of the <code>-layers</code> option and and the optimization methods .
+        of the <code>-layers</code> option and the optimization methods.
       </p>
 
       <h4>Arguments</h4>

@@ -145,7 +145,7 @@ thumb.write "thumb.gif"
 
     <p>
       <a href="https://www.flickr.com">flickr</a> thumbnails are 75 pixels wide and 75 pixels tall. If the original image isn't square, the thumbnail is cropped
-      in its larger dimension so that the image isn't distorted. You can get make this kind of thumbnail with the
+      in its larger dimension so that the image isn't distorted. You can make this kind of thumbnail with the
       <a href="image3.html#resize_to_fill">resize_to_fill</a> method.
     </p>
     <pre class="example language-ruby">
@@ -196,7 +196,7 @@ thumb = img.resize_to_fit(75, 75)
       Use the <a href="image1.html#from_blob">Image.from_blob</a>
       method to construct an Image object from a string. Use the
       <a href="image3.html#to_blob">Image#to_blob</a> method to convert an image to a string. A blob is simply an in-memory version of an image file. That is,
-      you could use <code>File.read</code> to read an JPEG file into a string, then create an image by using that string as an argument to
+      you could use <code>File.read</code> to read a JPEG file into a string, then create an image by using that string as an argument to
       <code>from_blob</code>. Similarly, if you create a string version of an image with <code>to_blob</code>, then write the string to a file, any image viewer
       will be able to display it just as if you had written the image directly to a file. Blobs are very useful in web applications when you want to modify an
       image and then stream it back to the client.

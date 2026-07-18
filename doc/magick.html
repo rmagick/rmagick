@@ -341,7 +341,7 @@ p Magick.formats
 
         <dd>
           If present, the limit for the resource. This argument is always an integer number. If the <span class="arg">resource_type</span> is
-          <code>:file</code>, the limit is the number of open files. If <code>:memory</code> or <code>:map</code>, the limit is measured megabytes. If
+          <code>:file</code>, the limit is the number of open files. If <code>:memory</code> or <code>:map</code>, the limit is measured in megabytes. If
           <code>:disk</code>, the limit is measured in gigabytes. If the <span class="arg">resource_type</span> is <code>:area</code> the limit is the maximum
           width * height of an image in pixels that can reside in pixel cache memory. If <code>:time</code>, the limit is measured in seconds. If this argument
           is omitted the limit is not changed.
@@ -372,7 +372,7 @@ p Magick.formats
       <h4>Description</h4>
 
       <p>
-        Set the amount of free memory allocated for the pixel cache. Once this threshold is exceeded, all subsequent pixels cache operations are to/from disk.
+        Set the amount of free memory allocated for the pixel cache. Once this threshold is exceeded, all subsequent pixel cache operations are to/from disk.
       </p>
 
       <h4>Argument</h4>

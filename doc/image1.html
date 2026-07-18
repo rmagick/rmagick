@@ -293,7 +293,7 @@
 
       <p>
         Within the optional arguments block, specify
-        <code>options.filename = "root"</code> to capture the entire desktop. To programatically specify the window to be captured, use
+        <code>options.filename = "root"</code> to capture the entire desktop. To programmatically specify the window to be captured, use
         <code>options.filename = window_id</code>, where window_id is the id displayed by xwininfo(1).
       </p>
 
@@ -1494,7 +1494,7 @@ img = Magick::Image.read_inline(content)
         <dt>OffAlphaChannel</dt>
 
         <dd class="imquote">
-          Disables the image's transparency channel. Does not delete or change the existing data, just turns of the use of that data. This is the same as
+          Disables the image's transparency channel. Does not delete or change the existing data, just turns off the use of that data. This is the same as
           assigning false to the old matte= attribute.
         </dd>
 
@@ -1523,7 +1523,7 @@ img = Magick::Image.read_inline(content)
         <dt>TransparentAlphaChannel</dt>
 
         <dd class="imquote">
-          Turns on the alpha/matte channel and forces it to be fully transparent. This effectivally creates a transparent image the same size as the original,
+          Turns on the alpha/matte channel and forces it to be fully transparent. This effectively creates a transparent image the same size as the original,
           with all its meta-data still attached.
         </dd>
       </dl>
@@ -1693,7 +1693,7 @@ img = Magick::Image.read_inline(content)
 
       <h4>Returns</h4>
 
-      <p>self. or <code>nil</code> if the image is already properly oriented</p>
+      <p>self, or <code>nil</code> if the image is already properly oriented</p>
 
       <h4>See also</h4>
 
@@ -1832,15 +1832,15 @@ img = Magick::Image.read_inline(content)
         <dt>src_percentage</dt>
 
         <dd>
-          Either a non-negative number a string in the form "NN%". If
+          Either a non-negative number or a string in the form "NN%". If
           <span class="arg">src_percentage</span> is a number it is interpreted as a percentage. Both 0.25 and "25%" mean 25%. This argument is required.
         </dd>
 
         <dt>dst_percentage</dt>
 
         <dd>
-          Either a non-negative number a string in the form "NN%". If
-          <span class="arg">src_percentage</span> is a number it is interpreted as a percentage. Both 0.25 and "25%" mean 25%. This argument may omitted if no
+          Either a non-negative number or a string in the form "NN%". If
+          <span class="arg">src_percentage</span> is a number it is interpreted as a percentage. Both 0.25 and "25%" mean 25%. This argument may be omitted if no
           other arguments follow it. In this case the default is 100%-<span class="arg">src_percentage</span>.
         </dd>
       </dl>
@@ -2136,7 +2136,7 @@ img = Magick::Image.read_inline(content)
       <h4>Description</h4>
 
       <p>
-        The <code>change_geometry</code> method supports resizing a method by specifying constraints. For example, you can specify that the image should be
+        The <code>change_geometry</code> method supports resizing an image by specifying constraints. For example, you can specify that the image should be
         resized such that the aspect ratio should be retained but the resulting image should be no larger than 640 pixels wide and 480 pixels tall.
       </p>
 
@@ -2147,7 +2147,7 @@ img = Magick::Image.read_inline(content)
       </p>
 
       <h4>Arguments</h4>
-      An <a href="imusage.html#geometry">geometry string</a> or a <code>Geometry</code> object
+      A <a href="imusage.html#geometry">geometry string</a> or a <code>Geometry</code> object
 
       <h4>Returns</h4>
 
@@ -2557,7 +2557,7 @@ mona.change_geometry!('320x240') { |cols, rows, img|
         <dt>fill_color</dt>
 
         <dd>
-          The fill color. The fill color can be either color name or a
+          The fill color. The fill color can be either a color name or a
           <a href="struct.html#Pixel">Pixel</a> object.
         </dd>
       </dl>
@@ -2571,7 +2571,7 @@ mona.change_geometry!('320x240') { |cols, rows, img|
       <p>
         In this example, the aquamarine fill starts at the center of the circle and fills to the black border. All non-black pixels are replaced by the fill
         color. Contrast the result of
-        <code>color_fill_to_border</code> with that of <code>color_floodfill</code> example, below.
+        <code>color_fill_to_border</code> with that of the <code>color_floodfill</code> example, below.
       </p>
 
       <p class="rollover">
@@ -2624,7 +2624,7 @@ mona.change_geometry!('320x240') { |cols, rows, img|
         <dt>fill_color</dt>
 
         <dd>
-          The fill color, either color name or a
+          The fill color, either a color name or a
           <a href="struct.html#Pixel">Pixel</a> object.
         </dd>
       </dl>
@@ -2836,7 +2836,7 @@ mona.change_geometry!('320x240') { |cols, rows, img|
         <dt>fill</dt>
 
         <dd>
-          The fill color, either color name or a
+          The fill color, either a color name or a
           <a href="struct.html#Pixel">Pixel</a> object.
         </dd>
       </dl>
@@ -2873,7 +2873,7 @@ mona.change_geometry!('320x240') { |cols, rows, img|
       <p>Sets all the pixels in the image to the specified fill color.</p>
 
       <h4>Arguments</h4>
-      The fill color, either color name or a
+      The fill color, either a color name or a
       <a href="struct.html#Pixel">Pixel</a> object.
 
       <h4>Returns</h4>
@@ -2940,14 +2940,14 @@ mona.change_geometry!('320x240') { |cols, rows, img|
 
             <dt>options.lowlight_color = color</dt>
 
-            <dd>Demphasize pixel differences with this color. The default is partially transparent white.</dd>
+            <dd>De-emphasize pixel differences with this color. The default is partially transparent white.</dd>
           </dl>
         </dd>
       </dl>
 
       <h4>Returns</h4>
 
-      <p>An array. The first element is a difference image, the second is a the value of the computed distortion represented as a <code>Float</code>.</p>
+      <p>An array. The first element is a difference image, the second is the value of the computed distortion represented as a <code>Float</code>.</p>
 
       <h4>See also</h4>
 
@@ -3213,7 +3213,7 @@ mona.change_geometry!('320x240') { |cols, rows, img|
       <p>
         Equivalent to the
         <code>-compose Mathematics -set option:compose:args a,b,c,d</code>
-        options to ImagMagick's <code>convert</code> command. See
+        options to ImageMagick's <code>convert</code> command. See
         <a href="https://www.imagemagick.org/Usage/compose/#mathematics">Examples of ImageMagick Usage</a>.
       </p>
 
@@ -4197,7 +4197,7 @@ f.colors #=&gt; 108
         <dt>y_amplitude</dt>
 
         <dd>
-          The maximum displacement on the y-axis. This argument may omitted if no other arguments follow it. In this case the default is the value of
+          The maximum displacement on the y-axis. This argument may be omitted if no other arguments follow it. In this case the default is the value of
           <span class="arg">x_amplitude</span>.
         </dd>
       </dl>
@@ -4295,15 +4295,15 @@ f.colors #=&gt; 108
         <dt>src_percentage</dt>
 
         <dd>
-          Either a non-negative number a string in the form "NN%". If
+          Either a non-negative number or a string in the form "NN%". If
           <span class="arg">src_percentage</span> is a number it is interpreted as a percentage. Both 0.25 and "25%" mean 25%. This argument is required.
         </dd>
 
         <dt>dst_percentage</dt>
 
         <dd>
-          Either a non-negative number a string in the form "NN%". If
-          <span class="arg">src_percentage</span> is a number it is interpreted as a percentage. Both 0.25 and "25%" mean 25%. This argument may omitted if no
+          Either a non-negative number or a string in the form "NN%". If
+          <span class="arg">src_percentage</span> is a number it is interpreted as a percentage. Both 0.25 and "25%" mean 25%. This argument may be omitted if no
           other arguments follow it. In this case <span class="arg">img</span>'s opacity is unchanged.
         </dd>
       </dl>
@@ -4433,7 +4433,7 @@ f.colors #=&gt; 108
             <dt>options.verbose(true)</dt>
 
             <dd class="imquote">
-              Attempt to output the internal coefficients, and the -fx equivalent to the distortion, for expert study, and debugging purposes. This many not be
+              Attempt to output the internal coefficients, and the -fx equivalent to the distortion, for expert study, and debugging purposes. This may not be
               available for all distorts.
             </dd>
           </dl>
