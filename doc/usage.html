@@ -131,8 +131,7 @@ require "rmagick"
 cat = Magick::ImageList.new("Cheetah.jpg")
 cat.display
 exit
-</pre
-    >
+</pre>
 
     <p class="example_cutline">
       MS Windows users note: The
@@ -185,8 +184,7 @@ cat = Magick::ImageList.new("Cheetah.jpg")
 smallcat = cat.minify
 smallcat.display
 exit
-</pre
-    >
+</pre>
 
     <p>
       The difference is the statement on line 5. This statement sends the
@@ -210,8 +208,7 @@ smallcat = cat.minify
 smallcat.display
 smallcat.write("Small-Cheetah.gif")
 exit
-</pre
-    >
+</pre>
 
     <p>
       The statement on line 7 writes the image to a file. Notice that the filename extension is <code>gif</code>. When writing images, ImageMagick uses the
@@ -266,8 +263,7 @@ require "rmagick"
 f = Magick::Image.new(100,100) { |options| options.background_color = "red" }
 f.display
 exit
-</pre
-    >
+</pre>
 
     <p>Within the parameter block you must use <code>self</code> so that Ruby knows that this statement is a method call, not an assignment to a variable.</p>
 
@@ -302,8 +298,7 @@ require "rmagick"
 anim = Magick::ImageList.new("start.gif", "middle.gif", "finish.gif")
 anim.write("animated.gif")
 exit
-</pre
-    >
+</pre>
 
     <h2 id="displaying">Displaying images</h2>
 
@@ -1287,8 +1282,7 @@ circle.stroke_linejoin('round')
 circle.ellipse(canvas.rows/2,canvas.columns/2, 80, 80, 0, 315)
 circle.polyline(180,70, 173,78, 190,78, 191,62)
 circle.draw(canvas)
-</pre
-    >
+</pre>
 
     <p>
       The statements on lines 4 and 5 create the drawing canvas with a single 250x250 image. The <code>HatchFill</code> object fills the image with light-gray
@@ -1361,8 +1355,7 @@ text.annotate(canvas, 0,0,0,0, Text) { |options|
 
 canvas.write('rubyname.gif')
 exit
-</pre
-    >
+</pre>
 
     <p>
       This program uses three calls to <code>annotate</code> to produce the "etched" appearance. All three calls have some parameters in common but the fill
@@ -1397,9 +1390,9 @@ exit
       The next section,
       <a href="imusage.html">"ImageMagick Conventions,"</a> describes some conventions that you need to know, such as how ImageMagick determines the graphic
       format of an image file, etc. The ImageMagick (www.imagemagick.org) web site (from which much of the information in these pages has been taken) offers a
-      lot of detail about ImageMagick. While this web site doesn't describe RMagick, you can often use the documentation to learn more about a RMagick method
-      by reading about the Magick API the method calls. (In the Reference section of this document, most of the method descriptions include the name of the
-      Magick API that the method calls.) Check out the example programs. Almost every one of the methods is demonstrated in one of the examples.
+      lot of detail about ImageMagick. While this web site doesn't describe RMagick, you can often use the documentation to learn more about a RMagick method by
+      reading about the Magick API the method calls. (In the Reference section of this document, most of the method descriptions include the name of the Magick
+      API that the method calls.) Check out the example programs. Almost every one of the methods is demonstrated in one of the examples.
     </p>
 
     <p>Good luck!</p>

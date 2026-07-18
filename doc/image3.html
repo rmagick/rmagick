@@ -413,8 +413,7 @@ img.polaroid do |options|
   options.shadow_color = "gray40"
   options.pointsize = 12
 end
-</pre
-      >
+</pre>
 
       <h4>Arguments</h4>
 
@@ -476,8 +475,8 @@ end
           ><img
             src="ex/posterize.jpg"
             alt="posterize example"
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/posterize.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/posterize.jpg'"
             title="Click to see the example script"
         /></a>
         <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
@@ -912,8 +911,8 @@ end
         <a href="javascript:popup('radial_blur.rb.html')"
           ><img
             src="ex/radial_blur.jpg"
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/radial_blur.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/radial_blur.jpg'"
             alt="radial_blur example"
             title="Click to see the example script"
         /></a>
@@ -1012,8 +1011,8 @@ end
         <a href="javascript:popup('raise.rb.html')"
           ><img
             src="ex/raise.jpg"
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/raise.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/raise.jpg'"
             alt="raise example"
             title="Click to see the example script"
         /></a>
@@ -1070,8 +1069,7 @@ end
       <pre class="language-ruby">
 geom = Magick::Geometry.new(Magick::QuantumRange/2)
 random_threshold_channel(geom, Magick::RedChannel)
-</pre
-      >
+</pre>
 
       <p class="rollover">
         <a href="javascript:popup('random_threshold_channel.rb.html')"
@@ -1079,8 +1077,8 @@ random_threshold_channel(geom, Magick::RedChannel)
             src="ex/random_threshold_channel.jpg"
             alt="random_threshold_channel example"
             title="Click to see the example script"
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/random_threshold_channel.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/random_threshold_channel.jpg'"
         /></a>
         <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
       </p>
@@ -1221,8 +1219,8 @@ random_threshold_channel(geom, Magick::RedChannel)
       <p class="rollover">
         <a href="javascript:popup('remap.rb.html')"
           ><img
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/remap.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/remap.jpg'"
             src="ex/remap.jpg"
             alt="remap example"
             title="Click to see the example script"
@@ -1425,14 +1423,20 @@ random_threshold_channel(geom, Magick::RedChannel)
             src="ex/resize_to_fill.jpg"
             style="padding-left: 62px; padding-right: 62px; padding-top: 87px; padding-bottom: 87px"
             id="after_resize_to_fill"
-            onmouseover="this.style.display='none'; before_resize_to_fill.style.display='';"
+            onmouseover="
+              this.style.display = 'none';
+              before_resize_to_fill.style.display = '';
+            "
             alt="resize_to_fill example" />
           <!-- This img tag displays the before image when moused over -->
           <img
             src="ex/images/Flower_Hat.jpg"
             style="display: none"
             id="before_resize_to_fill"
-            onmouseout="this.style.display='none'; after_resize_to_fill.style.display='';"
+            onmouseout="
+              this.style.display = 'none';
+              after_resize_to_fill.style.display = '';
+            "
             alt="resize_to_fill example"
             title="Click to see the example script"
         /></a>
@@ -1524,7 +1528,10 @@ random_threshold_channel(geom, Magick::RedChannel)
           <img
             id="rtfless"
             style="display: none"
-            onmouseout="this.style.display='none';rtf.style.display='';"
+            onmouseout="
+              this.style.display = 'none';
+              rtf.style.display = '';
+            "
             src="ex/images/Flower_Hat.jpg"
             alt="resize_to_fit example"
             title="Click to see the example script" />
@@ -1532,7 +1539,10 @@ random_threshold_channel(geom, Magick::RedChannel)
           <img
             style="padding-left: 69px; padding-right: 69px; padding-top: 87px; padding-bottom: 87px"
             id="rtf"
-            onmouseover="this.style.display='none';rtfless.style.display='';"
+            onmouseover="
+              this.style.display = 'none';
+              rtfless.style.display = '';
+            "
             src="ex/resize_to_fit.jpg"
             alt="resize_to_fit example"
         /></a>
@@ -1607,8 +1617,8 @@ random_threshold_channel(geom, Magick::RedChannel)
             src="ex/roll.jpg"
             title="Click to see the example script"
             alt="roll example"
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/roll.jpg'" /></a
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/roll.jpg'" /></a
         ><img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
       </p>
 
@@ -1661,7 +1671,10 @@ random_threshold_channel(geom, Magick::RedChannel)
                                                                     same space as the rotated image. --><img
             style="padding-top: 34px; padding-bottom: 34px; display: none"
             id="notrotated"
-            onmouseout="this.style.display='none'; rotated.style.display='';"
+            onmouseout="
+              this.style.display = 'none';
+              rotated.style.display = '';
+            "
             src="ex/images/Flower_Hat.jpg"
             alt="rotate example"
             title="Click to see the example script" /><!--
@@ -1669,7 +1682,10 @@ random_threshold_channel(geom, Magick::RedChannel)
                                                                       --><img
             class="hide"
             id="rotated"
-            onmouseover="this.style.display='none'; notrotated.style.display='';"
+            onmouseover="
+              this.style.display = 'none';
+              notrotated.style.display = '';
+            "
             src="ex/rotate_f.jpg"
             alt="rotate example"
         /></a>
@@ -1900,8 +1916,8 @@ random_threshold_channel(geom, Magick::RedChannel)
             src="ex/segment.jpg"
             alt="segment example"
             title="Click to see the example script"
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/segment.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/segment.jpg'"
         /></a>
         <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
       </p>
@@ -2036,8 +2052,8 @@ random_threshold_channel(geom, Magick::RedChannel)
           ><img
             src="ex/sepiatone.jpg"
             alt="sepiatone example"
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/sepiatone.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/sepiatone.jpg'"
             title="Click to see the example script"
         /></a>
         <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
@@ -2139,8 +2155,8 @@ random_threshold_channel(geom, Magick::RedChannel)
           ><img
             src="ex/shade.jpg"
             alt="shade example"
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/shade.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/shade.jpg'"
             title="Click to see the example script"
         /></a>
         <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
@@ -2203,7 +2219,10 @@ random_threshold_channel(geom, Magick::RedChannel)
           <img
             style="padding: 8px; display: none"
             id="shadowless"
-            onmouseout="this.style.display='none';shadowed.style.display='';"
+            onmouseout="
+              this.style.display = 'none';
+              shadowed.style.display = '';
+            "
             src="ex/shadow_before.png"
             alt="shadow example"
             title="Click to see the example script" /><!--
@@ -2211,7 +2230,10 @@ random_threshold_channel(geom, Magick::RedChannel)
                                                           --><img
             class="hide"
             id="shadowed"
-            onmouseover="this.style.display='none';shadowless.style.display='';"
+            onmouseover="
+              this.style.display = 'none';
+              shadowless.style.display = '';
+            "
             src="ex/shadow_after.png"
             alt="shadow example"
         /></a>
@@ -2342,8 +2364,8 @@ random_threshold_channel(geom, Magick::RedChannel)
         <a href="javascript:popup('shave.rb.html')"
           ><img
             src="ex/shave.jpg"
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/shave.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/shave.jpg'"
             alt="shave example"
             title="Click to see the example script"
         /></a>
@@ -2408,14 +2430,24 @@ random_threshold_channel(geom, Magick::RedChannel)
                                                                       --><img
             style="padding-top: 34px; padding-bottom: 33px; padding-left: 49px; padding-right: 49px; display: none"
             id="noshear"
-            onmouseout="this.style.display='none'; sheared.style.display='';"
+            onmouseout="
+              this.style.display = 'none';
+              sheared.style.display = '';
+            "
             src="ex/images/Flower_Hat.jpg"
             alt="shear example"
             title="Click to see the example script" />
           <!--
                                                                        This img tag displays the sheared image when the mouse is not over
                                                                        -->
-          <img id="sheared" onmouseover="this.style.display='none'; noshear.style.display='';" src="ex/shear.jpg" alt="shear example" /></a
+          <img
+            id="sheared"
+            onmouseover="
+              this.style.display = 'none';
+              noshear.style.display = '';
+            "
+            src="ex/shear.jpg"
+            alt="shear example" /></a
         ><img src="ex/images/spin.gif" alt="" class="spin" style="left: 253px; top: 34px" title="Mouse over the example to see the original image" />
       </p>
 
@@ -2517,8 +2549,7 @@ img.signature  #=&gt; "485e01ecba1a1f47924d67b887cb07b474f695841733796dfa3c28769
 img.properties
 #=&gt; {"signature"=&gt;"485e01ecba1a1f47924d67b887cb07b474f695841733796dfa3c2876965c7e8b",
 #   "comment"=&gt;"File written by Adobe Photoshop\250 4.0"}
-</pre
-      >
+</pre>
 
       <h4>See also</h4>
 
@@ -2570,8 +2601,8 @@ img.properties
             src="ex/sketch.jpg"
             title="Click to see the example script"
             alt="sketch example"
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/sketch.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/sketch.jpg'"
         /></a>
         <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
       </p>
@@ -2614,8 +2645,8 @@ img.properties
             src="ex/solarize.jpg"
             title="Click to see the example script"
             alt="solarize example"
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/solarize.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/solarize.jpg'"
         /></a>
         <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
       </p>
@@ -2758,7 +2789,10 @@ img.properties
           <img
             style="padding-left: 8px; padding-right: 8px; padding-top: 10px; padding-bottom: 10px; display: none"
             id="nosplice"
-            onmouseout="this.style.display='none';spliced.style.display='';"
+            onmouseout="
+              this.style.display = 'none';
+              spliced.style.display = '';
+            "
             src="ex/images/Flower_Hat.jpg"
             alt="splice example"
             title="Click to see the example script" /><!--
@@ -2766,7 +2800,10 @@ img.properties
                                                                                                                 --><img
             class="hide"
             id="spliced"
-            onmouseover="this.style.display='none';nosplice.style.display='';"
+            onmouseover="
+              this.style.display = 'none';
+              nosplice.style.display = '';
+            "
             src="ex/splice.jpg"
             alt="splice example"
         /></a>
@@ -2812,8 +2849,8 @@ img.properties
             src="ex/spread.jpg"
             alt="spread example"
             title="Click to see the example script"
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/spread.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/spread.jpg'"
         /></a>
         <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
       </p>
@@ -3021,8 +3058,8 @@ img.properties
       <p class="rollover">
         <a href="javascript:popup('swirl.rb.html')"
           ><img
-            onmouseover="this.src='ex/swirl.gif'"
-            onmouseout="this.src='ex/images/Flower_Hat.jpg'"
+            onmouseover="this.src = 'ex/swirl.gif'"
+            onmouseout="this.src = 'ex/images/Flower_Hat.jpg'"
             src="ex/images/Flower_Hat.jpg"
             alt="swirl example"
             title="Click the image to see the example script" /></a
@@ -3109,8 +3146,8 @@ img.properties
           ><img
             src="ex/texture_fill_to_border_after.gif"
             alt="texture_fill_to_border example"
-            onmouseover="this.src='ex/texture_fill_to_border_before.gif'"
-            onmouseout="this.src='ex/texture_fill_to_border_after.gif'"
+            onmouseover="this.src = 'ex/texture_fill_to_border_before.gif'"
+            onmouseout="this.src = 'ex/texture_fill_to_border_after.gif'"
             title="Click to see the example script"
         /></a>
         <img src="ex/images/spin.gif" alt="" class="spin" style="left: 206px" title="Mouse over the example to see the original image" />
@@ -3176,8 +3213,8 @@ img.properties
           ><img
             src="ex/texture_floodfill_after.gif"
             alt="texture_floodfill example"
-            onmouseover="this.src='ex/texture_floodfill_before.gif'"
-            onmouseout="this.src='ex/texture_floodfill_after.gif'"
+            onmouseover="this.src = 'ex/texture_floodfill_before.gif'"
+            onmouseout="this.src = 'ex/texture_floodfill_after.gif'"
             title="Click to see the example script" /></a
         ><img src="ex/images/spin.gif" alt="" class="spin" style="left: 206px" title="Mouse over the example to see the original image" />
       </p>
@@ -3224,8 +3261,8 @@ img.properties
         <a href="javascript:popup('threshold.rb.html')"
           ><img
             src="ex/threshold.jpg"
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/threshold.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/threshold.jpg'"
             title="Click to see the example script"
             alt="threshold example" /></a
         ><img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
@@ -3282,8 +3319,7 @@ img.properties
       <pre class="language-ruby">
 img = Magick::Image.read("images/Cheetah.jpg").first
 thumbnail = img.thumbnail(img.columns * 0.09, img.rows * 0.09)
-</pre
-      >
+</pre>
 
       <h4>See also</h4>
 
@@ -3381,8 +3417,7 @@ thumbnail = img.thumbnail(img.columns * 0.09, img.rows * 0.09)
 img = Magick::Image.read('ex/images/Flower_Hat.jpg').first #=&gt; ex/images/Flower_Hat.jpg JPEG 200x250 DirectClass 8-bit 9761b
 pixel = img.pixel_color(img.columns/2, img.rows/2)         #=&gt; #&lt;struct Pixel red=216, green=147, blue=106, opacity=0&gt;
 img.to_color(pixel)                                        #=&gt; "#D8936A"
-</pre
-      >
+</pre>
 
       <h4>See also</h4>
 
@@ -3442,8 +3477,8 @@ img.to_color(pixel)                                        #=&gt; "#D8936A"
           ><img
             src="ex/transparent_after.gif"
             title="Click to see the example script"
-            onmouseover="this.src='ex/transparent_before.gif'"
-            onmouseout="this.src='ex/transparent_after.gif'"
+            onmouseover="this.src = 'ex/transparent_before.gif'"
+            onmouseout="this.src = 'ex/transparent_after.gif'"
             alt="transparent example" /></a
         ><img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
       </p>
@@ -3480,8 +3515,8 @@ img.to_color(pixel)                                        #=&gt; "#D8936A"
       <p class="imquote">
         As there is one fuzz value for all the channels, the
         <a href="#transparent">transparent</a> method is not suitable for the operations like chroma, where the tolerance for similarity of two color components
-        (RGB) can be different, Thus we define this method to take two target pixels (one low and one high) and all the pixels of an image which are lying between
-        these two pixels are made transparent.
+        (RGB) can be different, Thus we define this method to take two target pixels (one low and one high) and all the pixels of an image which are lying
+        between these two pixels are made transparent.
       </p>
 
       <h4>Arguments</h4>
@@ -3535,8 +3570,8 @@ img.to_color(pixel)                                        #=&gt; "#D8936A"
             src="ex/transpose.jpg"
             alt="transpose example"
             title="Click to see the example script"
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/transpose.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/transpose.jpg'"
         /></a>
         <img src="ex/images/spin.gif" alt="" class="spin" style="left: 252px" title="Mouse over the example to see the original image" />
       </p>
@@ -3593,8 +3628,8 @@ img.to_color(pixel)                                        #=&gt; "#D8936A"
             src="ex/transverse.jpg"
             alt="transverse example"
             title="Click to see the example script"
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/transverse.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/transverse.jpg'"
         /></a>
         <img src="ex/images/spin.gif" alt="" class="spin" style="left: 252px" title="Mouse over the example to see the original image" />
       </p>
@@ -3661,8 +3696,8 @@ img.to_color(pixel)                                        #=&gt; "#D8936A"
         <a href="javascript:popup('trim.rb.html')"
           ><img
             src="ex/trim_after.jpg"
-            onmouseover="this.src='ex/trim_before.jpg'"
-            onmouseout="this.src='ex/trim_after.jpg'"
+            onmouseover="this.src = 'ex/trim_before.jpg'"
+            onmouseout="this.src = 'ex/trim_after.jpg'"
             alt="trim example"
             title="Click to see the example script"
         /></a>
@@ -3932,8 +3967,7 @@ img.view( 10, 5, 20, 20) do |view|
   # on column 10.
   view[4,8][10].blue = Magick::QuantumRange
 end
-</pre
-      >
+</pre>
 
       <h4>See also</h4>
 
@@ -4007,8 +4041,8 @@ end
             src="ex/vignette.jpg"
             alt="vignette example"
             title="Click to see the example script"
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/vignette.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/vignette.jpg'"
         /></a>
         <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
       </p>
@@ -4146,8 +4180,8 @@ end
             src="ex/watermark.jpg"
             alt="watermark example"
             title="Click to see the example script"
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/watermark.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/watermark.jpg'"
         /></a>
         <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
       </p>
@@ -4187,7 +4221,10 @@ end
             style="padding-top: 25px; padding-bottom: 25px; display: none"
             id="nowave"
             title="Click to see the example script"
-            onmouseout="this.style.display='none'; waved.style.display='';"
+            onmouseout="
+              this.style.display = 'none';
+              waved.style.display = '';
+            "
             src="ex/images/Flower_Hat.jpg"
             alt="wave example" />
           <!--
@@ -4195,7 +4232,10 @@ end
                                                               --><img
             class="hide"
             id="waved"
-            onmouseover="this.style.display='none'; nowave.style.display='';"
+            onmouseover="
+              this.style.display = 'none';
+              nowave.style.display = '';
+            "
             src="ex/wave.jpg"
             alt="wave example"
         /></a>
@@ -4359,8 +4399,7 @@ end
       <pre class="language-ruby">
 temp = Tempfile.new("image")
 img.write("jpeg:"+ temp.path)
-</pre
-      >
+</pre>
 
       <h4>See also</h4>
 

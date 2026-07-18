@@ -326,8 +326,8 @@
       <p class="rollover">
         <a href="javascript:popup('edge.rb.html')"
           ><img
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/edge.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/edge.jpg'"
             src="ex/edge.jpg"
             alt="edge example"
             title="Click the image to see the example script"
@@ -371,8 +371,8 @@
       <p class="rollover">
         <a href="javascript:popup('emboss.rb.html')"
           ><img
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/emboss.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/emboss.jpg'"
             src="ex/emboss.jpg"
             alt="emboss example"
             title="Click the image to see the example script" /></a
@@ -475,8 +475,8 @@
       <p class="rollover">
         <a href="javascript:popup('equalize.rb.html')"
           ><img
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/equalize.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/equalize.jpg'"
             src="ex/equalize.jpg"
             alt="equalize example"
             title="Click to see the example script"
@@ -671,8 +671,7 @@
       <pre class="language-ruby">
 # Export the r'th scanline from an image in red-green-blue order
 scanline = img.export_pixels(0, r, img.columns, 1, "RGB");
-</pre
-      >
+</pre>
 
       <h4>See also</h4>
 
@@ -876,8 +875,8 @@ scanline = img.export_pixels(0, r, img.columns, 1, "RGB");
       <p class="rollover">
         <a href="javascript:popup('flip.rb.html')"
           ><img
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/flip.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/flip.jpg'"
             src="ex/flip.jpg"
             alt="flip example"
             title="Click to see the example script"
@@ -934,8 +933,8 @@ scanline = img.export_pixels(0, r, img.columns, 1, "RGB");
       <p class="rollover">
         <a href="javascript:popup('flop.rb.html')"
           ><img
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/flop.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/flop.jpg'"
             src="ex/flop.jpg"
             alt="flop example"
             title="Click to see the example script"
@@ -1033,12 +1032,21 @@ scanline = img.export_pixels(0, r, img.columns, 1, "RGB");
           <img
             style="padding: 25px; display: none"
             id="frameless"
-            onmouseout="this.style.display='none';framed.style.display='';"
+            onmouseout="
+              this.style.display = 'none';
+              framed.style.display = '';
+            "
             src="ex/images/Flower_Hat.jpg"
             alt="frame example"
             title="Click to see the example script" />
           <!-- This img tag displays the framed image when the mouse is not over -->
-          <img onmouseover="this.style.display='none';frameless.style.display='';" src="ex/frame.jpg" alt="frame example"
+          <img
+            onmouseover="
+              this.style.display = 'none';
+              frameless.style.display = '';
+            "
+            src="ex/frame.jpg"
+            alt="frame example"
         /></a>
         <img src="ex/images/spin.gif" alt="" style="margin-bottom: 280px" title="Mouse over the example to see the original image" />
       </p>
@@ -1250,8 +1258,8 @@ scanline = img.export_pixels(0, r, img.columns, 1, "RGB");
       <p class="rollover">
         <a href="javascript:popup('gaussian_blur.rb.html')"
           ><img
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/gaussian_blur.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/gaussian_blur.jpg'"
             src="ex/gaussian_blur.jpg"
             alt="gaussian_blur example"
             title="Click to see the example script"
@@ -1355,8 +1363,7 @@ scanline = img.export_pixels(0, r, img.columns, 1, "RGB");
 image.get_exif_by_entry('Make')              #=&gt; [["Make", "Canon"]]
 image.get_exif_by_entry("ShutterSpeedValue") #=&gt; [["ShutterSpeedValue", "189/32"]]
 image.get_exif_by_entry()                    #=&gt; [["Make", "Canon"], ["ShutterSpeedValue", "189/32"] ...]
-</pre
-      >
+</pre>
 
       <h4>See also</h4>
 
@@ -1394,8 +1401,7 @@ image.get_exif_by_entry()                    #=&gt; [["Make", "Canon"], ["Shutte
 image.get_exif_by_number(271)   #=&gt; {271=&gt;"Canon"}
 image.get_exif_by_number(37377) #=&gt; {37377=&gt;"189/32"}
 image.get_exif_by_number()      #=&gt; {271=&gt;"Canon", 37377=&gt;"189/32" ...}
-</pre
-      >
+</pre>
 
       <h4>See also</h4>
 
@@ -1986,8 +1992,8 @@ image.get_exif_by_number()      #=&gt; {271=&gt;"Canon", 37377=&gt;"189/32" ...}
           ><img
             width="384"
             height="249"
-            onmouseover="this.src='ex/images/Red_Rocks.jpg'"
-            onmouseout="this.src='ex/get_pixels.jpg'"
+            onmouseover="this.src = 'ex/images/Red_Rocks.jpg'"
+            onmouseout="this.src = 'ex/get_pixels.jpg'"
             src="ex/get_pixels.jpg"
             title="Click to see the example script"
             alt="get_pixels example"
@@ -2101,8 +2107,8 @@ image.get_exif_by_number()      #=&gt; {271=&gt;"Canon", 37377=&gt;"189/32" ...}
       <p class="rollover">
         <a href="javascript:popup('implode.rb.html')"
           ><img
-            onmouseover="this.src='ex/implode.gif'"
-            onmouseout="this.src='ex/images/Flower_Hat.jpg'"
+            onmouseover="this.src = 'ex/implode.gif'"
+            onmouseout="this.src = 'ex/images/Flower_Hat.jpg'"
             src="ex/images/Flower_Hat.jpg"
             alt="implode example"
             title="Click the image to see the example script" /></a
@@ -2202,8 +2208,7 @@ image.get_exif_by_number()      #=&gt; {271=&gt;"Canon", 37377=&gt;"189/32" ...}
 # Replace the r'th scanline of the image using
 # pixel data stored in red-green-blue order.
 img.import_pixels(0, r, img.columns, 1, "RGB", scanline);
-</pre
-      >
+</pre>
 
       <h4>Example</h4>
 
@@ -2218,8 +2223,7 @@ pixels = hat.export_pixels(0, 0, hat.columns, hat.rows, "RGB")
 char_buffer = pixels.pack("C*")
 img = Magick::Image.new(hat.columns, hat.rows)
 img.import_pixels(0, 0, hat.columns, hat.rows, "RGB", char_buffer, CharPixel)
-</pre
-      >
+</pre>
 
       <h4>See also</h4>
 
@@ -2348,8 +2352,8 @@ img.import_pixels(0, 0, hat.columns, hat.rows, "RGB", char_buffer, CharPixel)
       <p class="rollover">
         <a href="javascript:popup('level.rb.html')"
           ><img
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/level.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/level.jpg'"
             src="ex/level.jpg"
             title="Click to see the example script"
             alt="level example"
@@ -2365,8 +2369,7 @@ img.import_pixels(0, 0, hat.columns, hat.rows, "RGB", char_buffer, CharPixel)
       </p>
       <pre class="language-ruby">
 img.level(white_point, gamma, black_point) -&gt; image # wrong!
-</pre
-      >
+</pre>
 
       <p>
         That is, the <code>gamma</code> and <code>white_point</code>
@@ -2486,8 +2489,8 @@ img.level(white_point, gamma, black_point) -&gt; image # wrong!
       <p class="rollover">
         <a href="javascript:popup('level_colors.rb.html')"
           ><img
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/level_colors.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/level_colors.jpg'"
             src="ex/level_colors.jpg"
             title="Click to see the example script"
             alt="level_colors example"
@@ -2734,8 +2737,8 @@ img.level(white_point, gamma, black_point) -&gt; image # wrong!
             src="ex/mask.jpg"
             alt="mask example"
             title="Click to see the example script"
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/mask.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/mask.jpg'"
         /></a>
         <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
       </p>
@@ -2785,8 +2788,8 @@ img.level(white_point, gamma, black_point) -&gt; image # wrong!
         <a href="javascript:popup('matte_fill_to_border.rb.html')"
           ><img
             src="ex/matte_fill_to_border_after.gif"
-            onmouseover="this.src='ex/matte_fill_to_border_before.gif'"
-            onmouseout="this.src='ex/matte_fill_to_border_after.gif'"
+            onmouseover="this.src = 'ex/matte_fill_to_border_before.gif'"
+            onmouseout="this.src = 'ex/matte_fill_to_border_after.gif'"
             alt="matte_fill_to_border example"
             title="Click to see the example script"
         /></a>
@@ -2838,8 +2841,8 @@ img.level(white_point, gamma, black_point) -&gt; image # wrong!
         <a href="javascript:popup('matte_floodfill.rb.html')"
           ><img
             src="ex/matte_floodfill_after.gif"
-            onmouseover="this.src='ex/matte_floodfill_before.gif'"
-            onmouseout="this.src='ex/matte_floodfill_after.gif'"
+            onmouseover="this.src = 'ex/matte_floodfill_before.gif'"
+            onmouseout="this.src = 'ex/matte_floodfill_after.gif'"
             alt="matte_floodfill example"
             title="Click to see the example script"
         /></a>
@@ -2916,8 +2919,8 @@ img.level(white_point, gamma, black_point) -&gt; image # wrong!
       <p class="rollover">
         <a href="javascript:popup('matte_replace.rb.html')"
           ><img
-            onmouseover="this.src='ex/matte_replace_before.gif'"
-            onmouseout="this.src='ex/matte_replace_after.gif'"
+            onmouseover="this.src = 'ex/matte_replace_before.gif'"
+            onmouseout="this.src = 'ex/matte_replace_after.gif'"
             src="ex/matte_replace_after.gif"
             alt="matte_replace example"
             title="Click to see the example script"
@@ -3086,8 +3089,8 @@ img.level(white_point, gamma, black_point) -&gt; image # wrong!
           ><img
             src="ex/modulate.jpg"
             alt="modulate example"
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/modulate.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/modulate.jpg'"
             title="Click to see the example script"
         /></a>
         <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
@@ -3168,8 +3171,8 @@ img.level(white_point, gamma, black_point) -&gt; image # wrong!
             src="ex/motion_blur.jpg"
             alt="motion_blur example"
             title="Click to see the example script"
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/motion_blur.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/motion_blur.jpg'"
         /></a>
         <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
       </p>
@@ -3212,8 +3215,8 @@ img.level(white_point, gamma, black_point) -&gt; image # wrong!
           ><img
             src="ex/negate.jpg"
             alt="negate example"
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/negate.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/negate.jpg'"
             title="Click to see the example script"
         /></a>
         <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
@@ -3268,8 +3271,8 @@ img.level(white_point, gamma, black_point) -&gt; image # wrong!
           ><img
             src="ex/negate_channel.jpg"
             alt="negate_channel example"
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/negate_channel.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/negate_channel.jpg'"
             title="Click to see the example script"
         /></a>
         <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
@@ -3307,8 +3310,8 @@ img.level(white_point, gamma, black_point) -&gt; image # wrong!
             src="ex/normalize.jpg"
             alt="normalize example"
             title="Click to see the example script"
-            onmouseover="this.src='ex/images/Hot_Air_Balloons.jpg'"
-            onmouseout="this.src='ex/normalize.jpg'"
+            onmouseover="this.src = 'ex/images/Hot_Air_Balloons.jpg'"
+            onmouseout="this.src = 'ex/normalize.jpg'"
         /></a>
         <img src="ex/images/spin.gif" alt="" class="spin" style="left: 191px" title="Mouse over the example to see the original image" />
       </p>
@@ -3386,8 +3389,8 @@ img.level(white_point, gamma, black_point) -&gt; image # wrong!
           ><img
             src="ex/oil_paint.jpg"
             title="Click to see the example script"
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/oil_paint.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/oil_paint.jpg'"
             alt="oil_paint example"
         /></a>
         <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />
@@ -3436,8 +3439,7 @@ img.level(white_point, gamma, black_point) -&gt; image # wrong!
       <pre class="language-ruby">
 img.fuzz = 25
 img = img.opaque('white', 'red')
-</pre
-      >
+</pre>
 
       <h4>See also</h4>
 
@@ -3557,8 +3559,7 @@ img = img.opaque('white', 'red')
       <p>The <span class="arg">threshold_map</span> argument can be any of the strings listed by this command:</p>
       <pre class="language-console">
 convert -list Thresholds
-</pre
-      >
+</pre>
 
       <p>
         If you have a sufficiently new version of ImageMagick, you can add
@@ -3579,8 +3580,8 @@ convert -list Thresholds
           ><img
             src="ex/ordered_dither.jpg"
             alt="ordered_dither example"
-            onmouseover="this.src='ex/images/Flower_Hat.jpg'"
-            onmouseout="this.src='ex/ordered_dither.jpg'"
+            onmouseover="this.src = 'ex/images/Flower_Hat.jpg'"
+            onmouseout="this.src = 'ex/ordered_dither.jpg'"
             title="Click to see the example script"
         /></a>
         <img src="ex/images/spin.gif" alt="" class="spin" title="Mouse over the example to see the original image" />

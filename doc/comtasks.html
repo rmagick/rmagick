@@ -93,8 +93,7 @@ ARGV.each do |file|
     puts %(      #{name} = "#{value}")
   end
 end
-</pre
-    >
+</pre>
 
     <h2 id="convert">Converting an image to another format</h2>
 
@@ -117,8 +116,7 @@ end
 img = Magick::Image.new "bigimage.gif"
 thumb = img.scale(125, 125)
 thumb.write "thumb.gif"
-</pre
-    >
+</pre>
 
     <p>
       Alternatively, just pass a single <code>Float</code> argument that represents the change in size. For example, to proportionally reduce the size of an
@@ -128,8 +126,7 @@ thumb.write "thumb.gif"
 img = Magick::Image.new "bigimage.gif"
 thumb = img.scale(0.25)
 thumb.write "thumb.gif"
-</pre
-    >
+</pre>
 
     <p>
       The <code>resize</code> method gives you more control by allowing you to specify a <a href="constants.html#FilterType">filter</a> to use when scaling the
@@ -150,8 +147,7 @@ thumb.write "thumb.gif"
     </p>
     <pre class="example language-ruby">
 thumb = img.resize_to_fill(75, 75)
-</pre
-    >
+</pre>
 
     <h2 id="resizing">Resizing to a maximum (or minimum) size</h2>
 
@@ -185,8 +181,7 @@ thumb = img.resize_to_fill(75, 75)
     </p>
     <pre class="example language-ruby">
 thumb = img.resize_to_fit(75, 75)
-</pre
-    >
+</pre>
 
     <h2>
       <a id="blob" name="blob">Writing to or reading from a string instead of a file</a>
@@ -239,8 +234,7 @@ thumb = img.resize_to_fit(75, 75)
     </p>
     <pre class="example language-ruby">
 img.write("myimage.jpg") { |options| options.quality = 50 }
-</pre
-    >
+</pre>
 
     <h2 id="shadow">Making a drop shadow</h2>
 

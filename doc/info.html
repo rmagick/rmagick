@@ -257,8 +257,7 @@ img = Magick::Image.new(10,10) do |options|
   options['user'] = __FILE__ + ':' + __LINE__.to_s
 end
 #=&gt; 10x10 DirectClass 16-bit user:test.rb:3
-</pre
-      >
+</pre>
 
       <p>
         These methods propagate the value of the "user" option to new image(s):
@@ -523,8 +522,7 @@ img = Magick::Image.read("xc:white") do |options|
 end
 p img.first.properties #=&gt; {"caption"=&gt;"a new caption"}
 p img.first['caption'] #=&gt; "a new caption"
-</pre
-      >
+</pre>
 
       <h4>Arguments</h4>
 
@@ -1323,8 +1321,8 @@ p img.first['caption'] #=&gt; "a new caption"
       <p class="imquote">
         This attribute allows you to have both an opaque visible color as well as a transparent color of the same color value without conflict. That is you can
         use the same color for both the transparent and opaque color areas within an image. This in turn frees you to select a transparent color that is
-        appropriate when an image is displayed by an application that does not handle a transparent color index, while allowing RMagick to correctly handle images
-        of this type.
+        appropriate when an image is displayed by an application that does not handle a transparent color index, while allowing RMagick to correctly handle
+        images of this type.
       </p>
     </div>
 
