@@ -346,9 +346,9 @@ Magick_set_cache_threshold(VALUE klass, VALUE threshold)
  * - "user"
  * - "x11"
  *
- * Multiple events can be specified as the aruments. Event names may be capitalized.
+ * Multiple events can be specified as the arguments. Event names may be capitalized.
  *
- * @param args [String] the mask of log event.
+ * @param args [Array<String>] one or more log event types (comma-separated lists and/or multiple arguments).
  * @raise [ArgumentError] if an event name is invalid
  */
 VALUE
