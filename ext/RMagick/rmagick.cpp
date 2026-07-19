@@ -349,20 +349,42 @@ Magick_set_cache_threshold(VALUE klass, VALUE threshold)
  * Multiple events can be specified as the aruments. Event names may be capitalized.
  *
  * @param args [String] the mask of log event.
+ * @raise [ArgumentError] if an event name is invalid
  */
 VALUE
 Magick_set_log_event_mask(int argc, VALUE *argv, VALUE klass)
 {
+    VALUE events;
     int x;
 
     if (argc == 0)
     {
         rb_raise(rb_eArgError, "wrong number of arguments (at least 1 required)");
     }
+
+    // SetLogEventMask() does not provide a way to check if it failed
+    // since it returns the old mask.
     for (x = 0; x < argc; x++)
     {
-        SetLogEventMask(StringValueCStr(argv[x]));
+        const char *event = StringValueCStr(argv[x]);
+        if (ParseCommandOption(MagickLogEventOptions, MagickTrue, event) == -1)
+        {
+            rb_raise(rb_eArgError, "invalid log event type: %s", event);
+        }
     }
+
+    // SetLogEventMask() replaces the mask on each call rather than adding to it,
+    // so multiple events must be passed as a single comma-separated list.
+    events = rb_str_dup(argv[0]);
+    for (x = 1; x < argc; x++)
+    {
+        rb_str_cat_cstr(events, ",");
+        rb_str_append(events, argv[x]);
+    }
+    SetLogEventMask(StringValueCStr(events));
+
+    RB_GC_GUARD(events);
+
     return klass;
 }
 
