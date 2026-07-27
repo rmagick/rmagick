@@ -38,6 +38,18 @@ RSpec.describe Magick::Image, '#import_pixels' do
     expect { image.import_pixels(0, 0, image.columns, 1, 'RGB', pixels) }.to raise_error(ArgumentError)
   end
 
+  # Regression: cols * rows * map_length was computed in unsigned arithmetic.
+  # A geometry that overflowed it wrapped npixels down to a small value, so an
+  # undersized (even empty) pixel buffer passed the size check and
+  # ImportImagePixels read far past its end. It must raise RangeError instead.
+  it 'raises RangeError when the geometry overflows the buffer size' do
+    image = described_class.new(8, 8)
+
+    expect { image.import_pixels(0, 0, 1024, 2**54, 'R', '') }.to raise_error(RangeError)
+    expect { image.import_pixels(0, 0, 2**32, 2**32, 'R', '') }.to raise_error(RangeError)
+    expect { image.import_pixels(0, 0, 2**62, 1, 'RGBA', '') }.to raise_error(RangeError)
+  end
+
   it 'raises an error given UndefinedPixel' do
     image = described_class.new(20, 20)
     pixels = image.export_pixels(0, 0, 20, 20, 'RGB').pack('D*')
