@@ -74,25 +74,6 @@ module Magick
           @ctx.shadow.affine = @ctx.text_attrs.affine
         end
 
-        def enquote(text)
-          return text if text.length > 2 && /\A(?:"[^"]+"|'[^']+'|\{[^}]+\})\z/.match(text)
-
-          if !text['\'']
-            text = '\'' + text + '\''
-            return text
-          elsif !text['"']
-            text = '"' + text + '"'
-            return text
-          elsif !(text['{'] || text['}'])
-            text = '{' + text + '}'
-            return text
-          end
-
-          # escape existing braces, surround with braces
-          text.gsub!(/[}]/) { |b| '\\' + b }
-          '{' + text + '}'
-        end
-
         def glyph_metrics(glyph_orientation, glyph)
           gm = @ctx.shadow.get_type_metrics('a' + glyph + 'a')
           gm2 = @ctx.shadow.get_type_metrics('aa')
@@ -151,13 +132,13 @@ module Magick
 
         def render_glyph(glyph_orientation, x, y, glyph)
           if glyph_orientation.zero?
-            @ctx.gc.text(x, y, enquote(glyph))
+            @ctx.gc.text(x, y, glyph)
           else
             @ctx.gc.push
             @ctx.gc.translate(x, y)
             @ctx.gc.rotate(glyph_orientation)
             @ctx.gc.translate(-x, -y)
-            @ctx.gc.text(x, y, enquote(glyph))
+            @ctx.gc.text(x, y, glyph)
             @ctx.gc.pop
           end
         end
@@ -295,7 +276,7 @@ module Magick
       # Handle "easy" text
       class DefaultTextStrategy < TextStrategy
         def render(x, y, text)
-          @ctx.gc.text(x, y, enquote(text))
+          @ctx.gc.text(x, y, text)
           tm = @ctx.shadow.get_type_metrics(text)
           dx = case @ctx.text_attrs.text_anchor
                when :start
