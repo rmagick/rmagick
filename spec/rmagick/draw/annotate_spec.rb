@@ -54,4 +54,16 @@ RSpec.describe Magick::Draw, '#annotate' do
       end
     end.not_to raise_error
   end
+
+  it 'does not free the annotation text twice when the text raises an exception' do
+    image = Magick::Image.new(10, 10)
+
+    expect do
+      described_class.new.annotate(image, 0, 0, 0, 20, '%[fx:(]')
+    end.to raise_error(Magick::ImageMagickError)
+
+    # The Draw object is garbage now. Reclaiming it must not free the
+    # annotation text a second time.
+    GC.start
+  end
 end

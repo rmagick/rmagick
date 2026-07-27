@@ -892,6 +892,7 @@ VALUE Draw_annotate(
         if (draw->info->text)
         {
             magick_free(draw->info->text);
+            draw->info->text = NULL;
         }
         rm_raise_exception(exception);
     }
