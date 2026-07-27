@@ -500,6 +500,8 @@ Image *str_to_image(VALUE str)
         Info *info;
         ExceptionInfo *exception;
 
+        StringValue(str);
+
         info = CloneImageInfo(NULL);
         exception = AcquireExceptionInfo();
         GVL_STRUCT_TYPE(BlobToImage) args = { info, RSTRING_PTR(str), (size_t)RSTRING_LEN(str), exception };
