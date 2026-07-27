@@ -21,4 +21,20 @@ RSpec.describe Magick::Draw, '#get_type_metrics' do
     image_list.new_image(10, 10)
     expect { draw.get_type_metrics(image_list, 'ABCDEF') }.not_to raise_error
   end
+
+  it 'does not free the interpreted text twice when the text cannot be interpreted' do
+    image = Magick::Image.new(10, 10)
+
+    %i[get_type_metrics get_multiline_type_metrics].each do |method_name|
+      described_class.new.public_send(method_name, image, '%[fx:(]')
+    rescue StandardError
+      # ImageMagick 6 and 7 differ in whether they report this as an error.
+    end
+
+    # The Draw objects are garbage now. Reclaiming them must not free the
+    # interpreted text a second time.
+    GC.start
+
+    expect(described_class.new.get_type_metrics(image, 'ABCDEF')).to be_kind_of(Magick::TypeMetric)
+  end
 end
