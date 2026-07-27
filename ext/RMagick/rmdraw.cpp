@@ -835,6 +835,46 @@ Draw_undercolor_eq(VALUE self, VALUE undercolor)
 
 
 /**
+ * Expand the property and percent-escape references in text to be drawn.
+ *
+ * No Ruby usage (internal function)
+ *
+ * Notes:
+ *   - InterpretImageProperties() treats text whose first non-blank character is
+ *     '@' as the name of a file to read the text from. The argument is
+ *     documented as the text to draw, so draw it as-is instead.
+ *
+ * @param image the image
+ * @param text the text to draw
+ * @return the interpreted text, to be freed by the caller with magick_free()
+ */
+static char *
+interpret_text(Image *image, const char *text
+#if defined(IMAGEMAGICK_7)
+               , ExceptionInfo *exception
+#endif
+              )
+{
+    const char *p = text;
+
+    while (isspace((int) ((unsigned char) *p)))
+    {
+        p++;
+    }
+    if (*p == '@')
+    {
+        return ConstantString(text);
+    }
+
+#if defined(IMAGEMAGICK_7)
+    return InterpretImageProperties(NULL, image, text, exception);
+#else
+    return InterpretImageProperties(NULL, image, text);
+#endif
+}
+
+
+/**
  * Annotates an image with text.
  *
  * - Additional Draw attribute methods may be called in the optional block,
@@ -888,7 +928,7 @@ VALUE Draw_annotate(
     embed_text = StringValueCStr(text);
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    draw->info->text = InterpretImageProperties(NULL, image, embed_text, exception);
+    draw->info->text = interpret_text(image, embed_text, exception);
     if (rm_should_raise_exception(exception, RetainExceptionRetention))
     {
         if (draw->info->text)
@@ -899,7 +939,7 @@ VALUE Draw_annotate(
         rm_raise_exception(exception);
     }
 #else
-    draw->info->text = InterpretImageProperties(NULL, image, embed_text);
+    draw->info->text = interpret_text(image, embed_text);
 #endif
     if (!draw->info->text)
     {
@@ -1664,7 +1704,7 @@ get_type_metrics(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
     draw = get_draw(self);
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    draw->info->text = InterpretImageProperties(NULL, image, text, exception);
+    draw->info->text = interpret_text(image, text, exception);
     if (rm_should_raise_exception(exception, RetainExceptionRetention))
     {
         if (draw->info->text)
@@ -1675,7 +1715,7 @@ get_type_metrics(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
         rm_raise_exception(exception);
     }
 #else
-    draw->info->text = InterpretImageProperties(NULL, image, text);
+    draw->info->text = interpret_text(image, text);
 #endif
     if (!draw->info->text)
     {

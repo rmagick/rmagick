@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'tmpdir'
+
 RSpec.describe Magick::Draw, '#annotate' do
   it 'works' do
     draw = described_class.new
@@ -32,6 +34,38 @@ RSpec.describe Magick::Draw, '#annotate' do
       yield_obj = draw2
     end
     expect(yield_obj).to be_instance_of(described_class)
+  end
+
+  # Regression: the text was handed to InterpretImageProperties(), which reads
+  # the annotation text out of the named file when the first non-blank character
+  # is '@'. Caller-supplied text was therefore an arbitrary local file read whose
+  # contents were rasterized into the image.
+  it 'draws text starting with @ instead of the contents of that file' do
+    Dir.mktmpdir do |dir|
+      path = File.join(dir, 'canary.txt')
+      File.write(path, 'SECRET')
+
+      draw = described_class.new
+      draw.pointsize = 12
+
+      rendered = lambda do |text|
+        image = Magick::Image.new(300, 40) { |options| options.background_color = 'white' }
+        described_class.new.tap { |d| d.pointsize = 12 }.annotate(image, 0, 0, 0, 20, text)
+        image.export_pixels(0, 0, 300, 40, 'I')
+      end
+
+      expect(rendered.call("@#{path}")).not_to eq(rendered.call('SECRET'))
+      expect(draw.get_type_metrics(Magick::Image.new(10, 10), "@#{path}").width)
+        .not_to eq(draw.get_type_metrics(Magick::Image.new(10, 10), 'SECRET').width)
+    end
+  end
+
+  it 'still expands percent escapes' do
+    image = Magick::Image.new(123, 10)
+    draw = described_class.new
+
+    expect(draw.get_type_metrics(image, '%[width]').width)
+      .to eq(draw.get_type_metrics(image, '123').width)
   end
 
   it 'accepts an ImageList argument' do
