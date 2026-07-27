@@ -22,19 +22,18 @@ RSpec.describe Magick::Draw, '#get_type_metrics' do
     expect { draw.get_type_metrics(image_list, 'ABCDEF') }.not_to raise_error
   end
 
-  it 'does not free the interpreted text twice when the text cannot be interpreted' do
-    image = Magick::Image.new(10, 10)
+  # The text is no longer run through InterpretImageProperties(), so an escape in
+  # it is measured rather than replaced -- including a malformed one, which used
+  # to make the interpretation fail.
+  it 'measures a percent escape as text' do
+    draw = described_class.new
+    small = Magick::Image.new(1, 1)
+    large = Magick::Image.new(1234, 1)
 
     %i[get_type_metrics get_multiline_type_metrics].each do |method_name|
-      described_class.new.public_send(method_name, image, '%[fx:(]')
-    rescue StandardError
-      # ImageMagick 6 and 7 differ in whether they report this as an error.
+      expect { draw.public_send(method_name, small, '%[fx:(]') }.not_to raise_error
+      expect(draw.public_send(method_name, small, '%[width]').width)
+        .to eq(draw.public_send(method_name, large, '%[width]').width)
     end
-
-    # The Draw objects are garbage now. Reclaiming them must not free the
-    # interpreted text a second time.
-    GC.start
-
-    expect(described_class.new.get_type_metrics(image, 'ABCDEF')).to be_kind_of(Magick::TypeMetric)
   end
 end
