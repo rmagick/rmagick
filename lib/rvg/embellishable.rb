@@ -66,8 +66,15 @@ module Magick
       # Use the RVG::ShapeConstructors#path method to create Path objects in a container.
       def initialize(path)
         super()
+        path = path.to_s
+        # SVG path data is command letters, numbers, commas and whitespace only.
+        # Anything else could close the MVG token that Draw#path wraps this in
+        # and have the rest of the string executed as further MVG primitives.
+        invalid = path[/[^MmZzLlHhVvCcSsQqTtAa0-9eE.,+\-\s]/]
+        raise ArgumentError, "invalid character in path data (#{invalid.inspect} given)" if invalid
+
         @primitive = :path
-        @args = [path.to_s]
+        @args = [path]
       end
     end # class Path
 
