@@ -17,15 +17,9 @@ RSpec.describe Magick::Image::Info, '#define' do
       info.define('reg', 'probe', 'HELLOARTIFACT')
     end
 
-    draw = Magick::Draw.new
-    via_artifact = draw.get_type_metrics(image, '%[artifact:reg:probe]').width
-    literal = draw.get_type_metrics(image, 'HELLOARTIFACT').width
-
-    expect(literal).to be_positive
-    expect(via_artifact).to eq(literal)
+    expect(image.artifact('reg:probe')).to eq('HELLOARTIFACT')
 
     # The value must not be used as the artifact key.
-    via_value_as_key = draw.get_type_metrics(image, '%[artifact:HELLOARTIFACT]').width
-    expect(via_value_as_key).to eq(0)
+    expect(image.artifact('HELLOARTIFACT')).to be(nil)
   end
 end
