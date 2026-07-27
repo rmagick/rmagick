@@ -339,6 +339,36 @@ rm_str2cstr(VALUE str, size_t *len)
 
 
 /**
+ * Same as rm_str2cstr, but for arguments that name a file. Use this one for a
+ * pathname and rm_str2cstr for a blob.
+ *
+ * ImageMagick keeps a pathname in a fixed-size buffer and reads it back as a
+ * NUL-terminated C string, so a NUL byte in the middle of the argument would
+ * cut the pathname short and the file opened or created would not be the one
+ * the caller named. Ruby's own file methods reject such a pathname; going
+ * through StringValueCStr makes these do the same.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param str the Ruby string
+ * @param len pointer to a size_t in which to store the number of characters
+ * @return a C string version of str
+ * @throw ArgumentError if str contains a NUL byte
+ */
+char *
+rm_path2cstr(VALUE str, size_t *len)
+{
+    char *path = StringValueCStr(str);
+
+    if (len)
+    {
+        *len = (size_t)RSTRING_LEN(str);
+    }
+    return path;
+}
+
+
+/**
  * Called when `rb_str_to_str' raises an exception.
  *
  * No Ruby usage (internal function)

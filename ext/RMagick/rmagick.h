@@ -1163,6 +1163,7 @@ extern VALUE  rm_check_ary_type(VALUE ary);
 extern Image *rm_check_destroyed(VALUE);
 extern Image *rm_check_frozen(VALUE);
 extern char  *rm_str2cstr(VALUE, size_t *);
+extern char  *rm_path2cstr(VALUE, size_t *);
 extern int    rm_check_num2dbl(VALUE);
 extern double rm_fuzz_to_dbl(VALUE);
 extern Quantum rm_app2quantum(VALUE);

@@ -30,6 +30,18 @@ RSpec.describe Magick::ImageList, "#write" do
     FileUtils.rm('test.0')
   end
 
+  it "raises an error when the filename contains a null byte" do
+    image_list = described_class.new
+    image_list.read(IMAGES_DIR + '/Button_0.gif')
+
+    Dir.mktmpdir do |dir|
+      truncated = File.join(dir, 'temp.php')
+
+      expect { image_list.write("#{truncated}\0.gif") }.to raise_error(ArgumentError)
+      expect(File.exist?(truncated)).to be(false)
+    end
+  end
+
   it "issue #1375" do
     # https://commons.wikimedia.org/wiki/File:Animhorse.gif
     image_list = described_class.new(File.join(FIXTURE_PATH, 'animhorse.gif'))
