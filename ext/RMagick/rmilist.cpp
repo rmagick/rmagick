@@ -11,8 +11,16 @@
 
 #include "rmagick.h"
 
+struct ImagesFromImageList_Args
+{
+    VALUE imagelist;
+    VALUE *clones;
+    Image *images;
+};
+
 static Image *clone_imagelist(Image *);
 static Image *images_from_imagelist(VALUE, VALUE *);
+static VALUE images_from_imagelist_protected(VALUE);
 static long imagelist_length(VALUE);
 static long check_imagelist_length(VALUE);
 static void imagelist_push(VALUE, VALUE);
@@ -351,13 +359,23 @@ ImageList_composite_layers(int argc, VALUE *argv, VALUE self)
     }
 
     // Convert ImageLists to image sequences.
-    VALUE clones;
+    VALUE clones, source_clones = Qnil;
     dest = images_from_imagelist(self, &clones);
     new_images = clone_imagelist(dest);
     rm_split(dest);
     RB_GC_GUARD(clones);
 
-    source = images_from_imagelist(source_images, &clones);
+    // new_images is not owned by any Ruby object yet, so resolving the source
+    // list has to be able to unwind without abandoning it.
+    struct ImagesFromImageList_Args source_args = { source_images, &source_clones, NULL };
+    int state = 0;
+    rb_protect(images_from_imagelist_protected, (VALUE)&source_args, &state);
+    if (state)
+    {
+        DestroyImageList(new_images);
+        rb_jump_tag(state);
+    }
+    source = source_args.images;
 
     SetGeometry(new_images, &geometry);
     ParseAbsoluteGeometry(new_images->geometry, &geometry);
@@ -372,7 +390,7 @@ ImageList_composite_layers(int argc, VALUE *argv, VALUE self)
     GVL_STRUCT_TYPE(CompositeLayers) args = { new_images, composite_op, source, geometry.x, geometry.y, exception };
     CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompositeLayers), &args);
     rm_split(source);
-    RB_GC_GUARD(clones);
+    RB_GC_GUARD(source_clones);
     rm_check_exception(exception, new_images, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -863,6 +881,26 @@ images_from_imagelist(VALUE imagelist, VALUE *clones)
     RB_GC_GUARD(t);
 
     return head;
+}
+
+
+/**
+ * Call images_from_imagelist() so that it can be passed to rb_protect().
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param arg a pointer to an ImagesFromImageList_Args, cast to a VALUE
+ * @return nil, the result is stored in the argument
+ * @see images_from_imagelist
+ */
+static VALUE
+images_from_imagelist_protected(VALUE arg)
+{
+    struct ImagesFromImageList_Args *args = (struct ImagesFromImageList_Args *)arg;
+
+    args->images = images_from_imagelist(args->imagelist, args->clones);
+
+    return Qnil;
 }
 
 
