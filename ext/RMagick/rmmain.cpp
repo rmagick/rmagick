@@ -407,6 +407,7 @@ Init_RMagick2(void)
     rb_define_method(Class_Image, "alpha?", RUBY_METHOD_FUNC(Image_alpha_q), 0);
     rb_define_method(Class_Image, "[]", RUBY_METHOD_FUNC(Image_aref), 1);
     rb_define_method(Class_Image, "[]=", RUBY_METHOD_FUNC(Image_aset), 2);
+    rb_define_method(Class_Image, "artifact", RUBY_METHOD_FUNC(Image_artifact), 1);
     rb_define_method(Class_Image, "auto_gamma_channel", RUBY_METHOD_FUNC(Image_auto_gamma_channel), -1);
     rb_define_method(Class_Image, "auto_level_channel", RUBY_METHOD_FUNC(Image_auto_level_channel), -1);
     rb_define_method(Class_Image, "auto_orient", RUBY_METHOD_FUNC(Image_auto_orient), 0);

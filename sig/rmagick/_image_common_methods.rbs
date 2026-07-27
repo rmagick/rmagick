@@ -147,6 +147,7 @@ module Magick
     def alpha: () -> bool
              | (AlphaChannelOption value) -> AlphaChannelOption
     def alpha?: () -> bool
+    def artifact: (string artifact) -> String?
     def auto_gamma_channel: (*ChannelType channel) -> Image
     def auto_level_channel: (*ChannelType channel) -> Image
     def auto_orient: () -> Image

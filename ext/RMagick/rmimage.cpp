@@ -5257,6 +5257,28 @@ Image_decipher(VALUE self, VALUE passphrase)
 
 
 /**
+ * Return the value of an artifact set by {Magick::Image#define} or by
+ * {Magick::Image::Info#define}.
+ *
+ * @param artifact [String] the artifact to look up
+ * @return [String, nil] the value, or nil if the artifact is not set
+ * @see Magick::Image#define
+ */
+VALUE
+Image_artifact(VALUE self, VALUE artifact)
+{
+    Image *image;
+    const char *value;
+
+    image = rm_check_destroyed(self);
+    artifact = rb_String(artifact);
+    value = GetImageArtifact(image, StringValueCStr(artifact));
+
+    return value ? rb_str_new2(value) : Qnil;
+}
+
+
+/**
  * Associates makes a copy of the given string arguments and
  * inserts it into the artifact tree.
  *

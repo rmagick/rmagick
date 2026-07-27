@@ -813,6 +813,7 @@ extern VALUE Image_affine_transform(VALUE, VALUE);
 extern VALUE Image_alpha(int, VALUE *, VALUE);
 extern VALUE Image_alpha_q(VALUE);
 extern VALUE Image_aref(VALUE, VALUE);
+extern VALUE Image_artifact(VALUE, VALUE);
 extern VALUE Image_aset(VALUE, VALUE, VALUE);
 extern VALUE Image_auto_gamma_channel(int, VALUE *, VALUE);
 extern VALUE Image_auto_level_channel(int, VALUE *, VALUE);
