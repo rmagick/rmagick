@@ -612,7 +612,10 @@ module Magick
     def text(x, y, text)
       text = to_string(text)
       Kernel.raise ArgumentError, 'missing text argument' if text.empty?
-      if text.length > 2 && /\A(?:"[^"]+"|'[^']+'|\{[^}]+\})\z/.match(text)
+      # escape existing backslashes, so that they cannot escape the delimiter
+      # added below and let the rest of the string be parsed as MVG
+      text = text.gsub('\\') { |b| '\\' + b }
+      if text.length > 2 && /\A(?:"[^"\\]+"|'[^'\\]+'|\{[^}\\]+\})\z/.match(text)
       # text already quoted
       elsif !text['\'']
         text = '\'' + text + '\''
