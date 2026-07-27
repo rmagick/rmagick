@@ -11685,7 +11685,7 @@ Image_recolor(VALUE self, VALUE color_matrix)
         }
     }
 
-    order = (unsigned long)sqrt((double)(len + 1.0));
+    order = (unsigned long)sqrt((double)len);
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
