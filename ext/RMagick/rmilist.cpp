@@ -12,7 +12,7 @@
 #include "rmagick.h"
 
 static Image *clone_imagelist(Image *);
-static Image *images_from_imagelist(VALUE);
+static Image *images_from_imagelist(VALUE, VALUE *);
 static long imagelist_length(VALUE);
 static long check_imagelist_length(VALUE);
 static void imagelist_push(VALUE, VALUE);
@@ -93,7 +93,8 @@ ImageList_animate(int argc, VALUE *argv, VALUE self)
     info_obj = rm_info_new();
 
     // Convert the images array to an images sequence.
-    images = images_from_imagelist(self);
+    VALUE clones;
+    images = images_from_imagelist(self, &clones);
 
     if (argc == 1)
     {
@@ -120,6 +121,7 @@ ImageList_animate(int argc, VALUE *argv, VALUE self)
     rm_check_image_exception(images, RetainOnError);
 #endif
 
+    RB_GC_GUARD(clones);
     RB_GC_GUARD(info_obj);
 
     return self;
@@ -140,7 +142,8 @@ ImageList_append(VALUE self, VALUE stack_arg)
     ExceptionInfo *exception;
 
     // Convert the image array to an image sequence.
-    images = images_from_imagelist(self);
+    VALUE clones;
+    images = images_from_imagelist(self, &clones);
 
     // If stack == true, stack rectangular images top-to-bottom,
     // otherwise left-to-right.
@@ -150,6 +153,7 @@ ImageList_append(VALUE self, VALUE stack_arg)
     GVL_STRUCT_TYPE(AppendImages) args = { images, stack, exception };
     new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(AppendImages), &args);
     rm_split(images);
+    RB_GC_GUARD(clones);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -169,12 +173,14 @@ ImageList_average(VALUE self)
     ExceptionInfo *exception;
 
     // Convert the images array to an images sequence.
-    images = images_from_imagelist(self);
+    VALUE clones;
+    images = images_from_imagelist(self, &clones);
 
     exception = AcquireExceptionInfo();
     GVL_STRUCT_TYPE(EvaluateImages) args = { images, MeanEvaluateOperator, exception };
     new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(EvaluateImages), &args);
     rm_split(images);
+    RB_GC_GUARD(clones);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -197,12 +203,14 @@ ImageList_coalesce(VALUE self)
     ExceptionInfo *exception;
 
     // Convert the image array to an image sequence.
-    images = images_from_imagelist(self);
+    VALUE clones;
+    images = images_from_imagelist(self, &clones);
 
     exception = AcquireExceptionInfo();
     GVL_STRUCT_TYPE(CoalesceImages) args = { images, exception };
     new_images = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CoalesceImages), &args);
     rm_split(images);
+    RB_GC_GUARD(clones);
     rm_check_exception(exception, new_images, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -284,7 +292,8 @@ VALUE ImageList_combine(int argc, VALUE *argv, VALUE self)
     }
 #endif
 
-    images = images_from_imagelist(self);
+    VALUE clones;
+    images = images_from_imagelist(self, &clones);
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_6)
     old_colorspace = images->colorspace;
@@ -296,6 +305,7 @@ VALUE ImageList_combine(int argc, VALUE *argv, VALUE self)
     new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CombineImages), &args);
 
     rm_split(images);
+    RB_GC_GUARD(clones);
 #if defined(IMAGEMAGICK_6)
     images->colorspace = old_colorspace;
 #endif
@@ -341,11 +351,13 @@ ImageList_composite_layers(int argc, VALUE *argv, VALUE self)
     }
 
     // Convert ImageLists to image sequences.
-    dest = images_from_imagelist(self);
+    VALUE clones;
+    dest = images_from_imagelist(self, &clones);
     new_images = clone_imagelist(dest);
     rm_split(dest);
+    RB_GC_GUARD(clones);
 
-    source = images_from_imagelist(source_images);
+    source = images_from_imagelist(source_images, &clones);
 
     SetGeometry(new_images, &geometry);
     ParseAbsoluteGeometry(new_images->geometry, &geometry);
@@ -360,6 +372,7 @@ ImageList_composite_layers(int argc, VALUE *argv, VALUE self)
     GVL_STRUCT_TYPE(CompositeLayers) args = { new_images, composite_op, source, geometry.x, geometry.y, exception };
     CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompositeLayers), &args);
     rm_split(source);
+    RB_GC_GUARD(clones);
     rm_check_exception(exception, new_images, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -381,7 +394,8 @@ ImageList_deconstruct(VALUE self)
     Image *new_images, *images;
     ExceptionInfo *exception;
 
-    images = images_from_imagelist(self);
+    VALUE clones;
+    images = images_from_imagelist(self, &clones);
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     GVL_STRUCT_TYPE(CompareImagesLayers) args = { images, CompareAnyLayer, exception };
@@ -391,6 +405,7 @@ ImageList_deconstruct(VALUE self)
     new_images = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(DeconstructImages), &args);
 #endif
     rm_split(images);
+    RB_GC_GUARD(clones);
     rm_check_exception(exception, new_images, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -420,7 +435,8 @@ ImageList_display(VALUE self)
     TypedData_Get_Struct(info_obj, Info, &rm_info_data_type, info);
 
     // Convert the images array to an images sequence.
-    images = images_from_imagelist(self);
+    VALUE clones;
+    images = images_from_imagelist(self, &clones);
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     DisplayImages(info, images, exception);
@@ -433,6 +449,7 @@ ImageList_display(VALUE self)
     rm_check_image_exception(images, RetainOnError);
 #endif
 
+    RB_GC_GUARD(clones);
     RB_GC_GUARD(info_obj);
 
     return self;
@@ -450,13 +467,15 @@ ImageList_flatten_images(VALUE self)
     Image *images, *new_image;
     ExceptionInfo *exception;
 
-    images = images_from_imagelist(self);
+    VALUE clones;
+    images = images_from_imagelist(self, &clones);
     exception = AcquireExceptionInfo();
 
     GVL_STRUCT_TYPE(MergeImageLayers) args = { images, FlattenLayer, exception };
     new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(MergeImageLayers), &args);
 
     rm_split(images);
+    RB_GC_GUARD(clones);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -494,7 +513,8 @@ ImageList_montage(VALUE self)
 
     TypedData_Get_Struct(montage_obj, Montage, &rm_montage_data_type, montage);
 
-    images = images_from_imagelist(self);
+    VALUE clones;
+    images = images_from_imagelist(self, &clones);
 
     for (Image *image = images; image; image = GetNextImageInList(image))
     {
@@ -514,6 +534,7 @@ ImageList_montage(VALUE self)
     GVL_STRUCT_TYPE(MontageImages) args = { images, montage->info, exception };
     new_images = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(MontageImages), &args);
     rm_split(images);
+    RB_GC_GUARD(clones);
     rm_check_exception(exception, new_images, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -546,11 +567,13 @@ ImageList_morph(VALUE self, VALUE nimages)
     }
 
     number_images = NUM2LONG(nimages);
-    images = images_from_imagelist(self);
+    VALUE clones;
+    images = images_from_imagelist(self, &clones);
     exception = AcquireExceptionInfo();
     GVL_STRUCT_TYPE(MorphImages) args = { images, number_images, exception };
     new_images = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(MorphImages), &args);
     rm_split(images);
+    RB_GC_GUARD(clones);
     rm_check_exception(exception, new_images, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -569,13 +592,15 @@ ImageList_mosaic(VALUE self)
     Image *images, *new_image;
     ExceptionInfo *exception;
 
-    images = images_from_imagelist(self);
+    VALUE clones;
+    images = images_from_imagelist(self, &clones);
 
     exception = AcquireExceptionInfo();
     GVL_STRUCT_TYPE(MergeImageLayers) args = { images, MosaicLayer, exception };
     new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(MergeImageLayers), &args);
 
     rm_split(images);
+    RB_GC_GUARD(clones);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -601,7 +626,8 @@ ImageList_optimize_layers(VALUE self, VALUE method)
     new_images2 = NULL;     // defeat "unused variable" message
 
     VALUE_TO_ENUM(method, mthd, LayerMethod);
-    images = images_from_imagelist(self);
+    VALUE clones;
+    images = images_from_imagelist(self, &clones);
 
     exception = AcquireExceptionInfo();
     switch (mthd)
@@ -730,6 +756,7 @@ ImageList_optimize_layers(VALUE self, VALUE method)
     }
 
     rm_split(images);
+    RB_GC_GUARD(clones);
     rm_check_exception(exception, new_images, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -802,11 +829,13 @@ rm_imagelist_from_images(Image *images)
  * @see rm_imagelist_from_images
  */
 static Image *
-images_from_imagelist(VALUE imagelist)
+images_from_imagelist(VALUE imagelist, VALUE *clones)
 {
     long x, len;
     Image *head = NULL;
     VALUE images, t;
+
+    *clones = rb_ary_new();
 
     len = check_imagelist_length(imagelist);
 
@@ -823,7 +852,9 @@ images_from_imagelist(VALUE imagelist)
             image = rm_clone_image(image);
 
             // Wrap raw ImageMagick object by Ruby object to destroy using Ruby's GC.
-            rm_image_new(image);
+            // The wrapper is kept in *clones so that the GC cannot reclaim it, and
+            // with it the Image, while the list below is still in use.
+            rb_ary_push(*clones, rm_image_new(image));
         }
         AppendImageToList(&head, image);
     }
@@ -994,11 +1025,13 @@ ImageList_quantize(int argc, VALUE *argv, VALUE self)
 
 
     // Convert image array to image sequence, clone image sequence.
-    images = images_from_imagelist(self);
+    VALUE clones;
+    images = images_from_imagelist(self, &clones);
     exception = AcquireExceptionInfo();
     GVL_STRUCT_TYPE(CloneImageList) args_CloneImageList = { images, exception };
     new_images = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CloneImageList), &args_CloneImageList);
     rm_split(images);
+    RB_GC_GUARD(clones);
     rm_check_exception(exception, new_images, DestroyOnError);
 
     rm_ensure_result(new_images);
@@ -1071,7 +1104,8 @@ ImageList_remap(int argc, VALUE *argv, VALUE self)
         rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 or 2)", argc);
     }
 
-    images = images_from_imagelist(self);
+    VALUE clones;
+    images = images_from_imagelist(self, &clones);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -1086,6 +1120,8 @@ ImageList_remap(int argc, VALUE *argv, VALUE self)
     rm_split(images);
     rm_check_image_exception(images, RetainOnError);
 #endif
+
+    RB_GC_GUARD(clones);
 
     return self;
 }
@@ -1118,7 +1154,8 @@ ImageList_to_blob(VALUE self)
     TypedData_Get_Struct(info_obj, Info, &rm_info_data_type, info);
 
     // Convert the images array to an images sequence.
-    images = images_from_imagelist(self);
+    VALUE clones;
+    images = images_from_imagelist(self, &clones);
 
     exception = AcquireExceptionInfo();
     SetImageInfo(info, MagickTrue, exception);
@@ -1151,6 +1188,7 @@ ImageList_to_blob(VALUE self)
         length = 0;
     }
     rm_split(images);
+    RB_GC_GUARD(clones);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 
@@ -1216,7 +1254,8 @@ ImageList_write(VALUE self, VALUE file)
     }
 
     // Convert the images array to an images sequence.
-    images = images_from_imagelist(self);
+    VALUE clones;
+    images = images_from_imagelist(self, &clones);
 
     // Copy the filename into each image. Set a scene number to be used if
     // writing multiple files. (Ref: ImageMagick's utilities/convert.c
@@ -1267,6 +1306,7 @@ ImageList_write(VALUE self, VALUE file)
 #endif
 
     rm_split(images);
+    RB_GC_GUARD(clones);
 
     RB_GC_GUARD(info_obj);
 
