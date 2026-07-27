@@ -14,6 +14,10 @@ RSpec.describe Magick::Image, '#read' do
     end
   end
 
+  it 'raises an error when the filename contains a null byte' do
+    expect { described_class.read("#{IMAGES_DIR}/Button_0.gif\0.png") }.to raise_error(ArgumentError)
+  end
+
   it 'sync Image::Info' do
     result = described_class.read(IMAGES_DIR + '/Button_0.gif') do |options|
       options.colorspace = Magick::LabColorspace

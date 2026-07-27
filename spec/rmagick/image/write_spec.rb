@@ -65,4 +65,16 @@ RSpec.describe Magick::Image, '#write' do
     expect(image2.first.format).to eq('JPEG')
     FileUtils.rm('test.0')
   end
+
+  it 'raises an error when the filename contains a null byte' do
+    image = described_class.new(20, 20)
+    image.format = 'PNG'
+
+    Dir.mktmpdir do |dir|
+      truncated = File.join(dir, 'temp.php')
+
+      expect { image.write("#{truncated}\0.png") }.to raise_error(ArgumentError)
+      expect(File.exist?(truncated)).to be(false)
+    end
+  end
 end

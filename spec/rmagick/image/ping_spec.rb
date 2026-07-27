@@ -11,4 +11,8 @@ RSpec.describe Magick::Image, '#ping' do
     expect(image.rows).to eq 120
     expect(image.filename).to match(/Button_0.gif/)
   end
+
+  it 'raises an error when the filename contains a null byte' do
+    expect { described_class.ping("#{IMAGES_DIR}/Button_0.gif\0.png") }.to raise_error(ArgumentError)
+  end
 end
