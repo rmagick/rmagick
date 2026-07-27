@@ -8122,7 +8122,11 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
         rb_raise(rb_eArgError, "invalid import geometry");
     }
 
-    map_l = rm_strnlen_s(map, MaxTextExtent);
+    map_l = strlen(map);
+    if (map_l == 0)
+    {
+        rb_raise(rb_eArgError, "map must not be empty");
+    }
     npixels = pixel_buffer_count((size_t)cols, (size_t)rows, map_l);
 
     // Assume that any object that responds to :to_str is a string buffer containing

@@ -50,6 +50,25 @@ RSpec.describe Magick::Image, '#import_pixels' do
     expect { image.import_pixels(0, 0, 2**62, 1, 'RGBA', '') }.to raise_error(RangeError)
   end
 
+  # Regression: the map length was measured with rm_strnlen_s(map, MaxTextExtent),
+  # capping it at 4096, while ImageMagick walks the map with the real strlen() for
+  # every pixel. A longer map therefore under-counted the buffer and
+  # ImportImagePixels read past its end.
+  it 'measures the map with its real length' do
+    image = described_class.new(10, 10)
+    map = 'R' * 8192 # longer than MaxTextExtent
+
+    expect { image.import_pixels(0, 0, 10, 10, map, "\0".b * (10 * 10 * 4096)) }.to raise_error(ArgumentError)
+    expect { image.import_pixels(0, 0, 10, 10, map, "\0".b * (10 * 10 * 8192)) }.not_to raise_error
+  end
+
+  # Regression: an empty map made map_l zero, and the buffer checks divided by it.
+  it 'raises ArgumentError given an empty map' do
+    image = described_class.new(10, 10)
+
+    expect { image.import_pixels(0, 0, 2, 2, '', '') }.to raise_error(ArgumentError, /map must not be empty/)
+  end
+
   it 'raises an error given UndefinedPixel' do
     image = described_class.new(20, 20)
     pixels = image.export_pixels(0, 0, 20, 20, 'RGB').pack('D*')
