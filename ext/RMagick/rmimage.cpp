@@ -8083,8 +8083,8 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
 {
     Image *image;
     long x_off, y_off;
-    unsigned long cols, rows;
-    unsigned long n, npixels;
+    long cols, rows;
+    size_t n, npixels;
     size_t buffer_l;
     char *map;
     VALUE pixel_arg, pixel_ary;
@@ -8107,8 +8107,8 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
         case 6:
             x_off = NUM2LONG(argv[0]);
             y_off = NUM2LONG(argv[1]);
-            cols = NUM2ULONG(argv[2]);
-            rows = NUM2ULONG(argv[3]);
+            cols = NUM2LONG(argv[2]);
+            rows = NUM2LONG(argv[3]);
             map = StringValueCStr(argv[4]);
             pixel_arg = argv[5];
             break;
@@ -8123,7 +8123,7 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
     }
 
     map_l = rm_strnlen_s(map, MaxTextExtent);
-    npixels = cols * rows * map_l;
+    npixels = pixel_buffer_count((size_t)cols, (size_t)rows, map_l);
 
     // Assume that any object that responds to :to_str is a string buffer containing
     // binary pixel data.
@@ -8163,9 +8163,9 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
         {
             rb_raise(rb_eArgError, "pixel buffer must contain an exact multiple of the map length");
         }
-        if ((unsigned long)(buffer_l / type_sz) < npixels)
+        if (buffer_l / type_sz < npixels)
         {
-            rb_raise(rb_eArgError, "pixel buffer too small (need %lu channel values, got %" RMIuSIZE ")",
+            rb_raise(rb_eArgError, "pixel buffer too small (need %" RMIuSIZE " channel values, got %" RMIuSIZE ")",
                      npixels, buffer_l/type_sz);
         }
     }
@@ -8181,9 +8181,9 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
         {
             rb_raise(rb_eArgError, "pixel array must contain an exact multiple of the map length");
         }
-        if ((unsigned long)RARRAY_LEN(pixel_ary) < npixels)
+        if ((size_t)RARRAY_LEN(pixel_ary) < npixels)
         {
-            rb_raise(rb_eArgError, "pixel array too small (need %lu elements, got %ld)",
+            rb_raise(rb_eArgError, "pixel array too small (need %" RMIuSIZE " elements, got %ld)",
                      npixels, RARRAY_LEN(pixel_ary));
         }
 
@@ -8230,9 +8230,9 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(ImportImagePixels) args = { image, x_off, y_off, cols, rows, map, stg_type, buffer, exception };
+    GVL_STRUCT_TYPE(ImportImagePixels) args = { image, x_off, y_off, (size_t)cols, (size_t)rows, map, stg_type, buffer, exception };
 #else
-    GVL_STRUCT_TYPE(ImportImagePixels) args = { image, x_off, y_off, cols, rows, map, stg_type, buffer };
+    GVL_STRUCT_TYPE(ImportImagePixels) args = { image, x_off, y_off, (size_t)cols, (size_t)rows, map, stg_type, buffer };
 #endif
     void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ImportImagePixels), &args);
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
