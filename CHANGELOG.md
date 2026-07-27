@@ -3,6 +3,45 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 7.1.0
+
+> [!IMPORTANT]
+> `Draw#annotate` and `Draw#get_type_metrics` no longer interpret the text they are given.
+> A `%[...]` or `%x` escape in it is now drawn as written instead of being replaced by an image property.
+> Everything those escapes provided is available directly from Ruby -- `Image#columns`, `Image#rows`, `Image#format`, `Image#filesize`, `Image#filename`, `Image#[]`, `Image#artifact`, `Image#channel_mean`, `Image#pixel_color` and `Image#fx` -- so build the string in Ruby and pass the result.
+>
+> The interpolation was undocumented, and it handed any caller that passed user-supplied text an expression evaluator, a pixel and metadata reader, and an unbounded CPU sink. It also corrupted ordinary captions: `"%d items"` was drawn as the directory the image had been read from.
+
+Breaking Changes
+
+* Draw annotation text as given instead of interpreting it (#1843)
+* Draw text starting with '@' instead of reading it from that file (#1837)
+* Validate RVG path data against the SVG path grammar (#1839)
+* Escape values and quote the clip-path and encoding names in the MVG program (#1841)
+* Reject embedded NUL bytes in pathname arguments (#1827)
+
+Improvements
+
+* Add Image#artifact to read the artifacts Image#define writes (#1842)
+* Fix grammar, typos, and content errors in the documentation (#1824)
+
+Bug Fixes
+
+* Fix RVG text being quoted twice and the added quotes being drawn (#1840)
+* Fix MVG injection in Draw#text from unescaped backslashes (#1838)
+* Fix memory leak in ImageList#composite_layers with an unusable source list (#1836)
+* Fix heap over-read in Image#import_pixels with a long or empty map (#1835)
+* Fix SEGV from integer overflow in Image#import_pixels geometry (#1834)
+* Fix heap over-read in Image#recolor (#1833)
+* Fix SEGV in Draw#marshal_load with a non-String pattern (#1832)
+* Fix use-after-free of cloned images in images_from_imagelist() (#1831)
+* Fix double free of the interpreted text in Draw#get_type_metrics (#1830)
+* Fix double free of the annotation text in Draw#annotate (#1829)
+* Fix SEGV in Info#stroke_width= and Info#attenuate= with a large Float (#1828)
+* Fix Magick#set_log_event_mask() (#1826)
+* Fix copy_options() using the option value as the artifact key (#1823)
+* Fix unchecked SetImageArtifact() calls (#1822)
+
 ## RMagick 7.0.5
 
 Bug Fixes
