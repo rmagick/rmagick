@@ -199,7 +199,15 @@ static VALUE set_dbl_option(VALUE self, const char *option, VALUE value)
         {
             len = snprintf(buff, sizeof(buff), "%-10.2f", d);
         }
-        memset(buff+len, '\0', sizeof(buff)-len);
+        if (len < 0)
+        {
+            len = 0;
+        }
+        else if ((size_t)len > sizeof(buff) - 1)
+        {
+            len = (int)(sizeof(buff) - 1);
+        }
+        memset(buff+len, '\0', sizeof(buff)-(size_t)len);
         SetImageOption(info, option, buff);
     }
 
