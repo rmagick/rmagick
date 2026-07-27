@@ -12,6 +12,21 @@ RSpec.describe Magick::ImageList, '#<<' do
     expect(result.rows).to eq(1)
   end
 
+  it 'keeps the clones of repeated instances alive until the list has been used' do
+    image = Magick::Image.new(1, 1)
+    image_list = described_class.new
+    10.times { image_list << image }
+
+    GC.stress = true
+    begin
+      result = image_list.append(false)
+    ensure
+      GC.stress = false
+    end
+
+    expect(result.columns).to eq(10)
+  end
+
   it "works" do
     image_list = described_class.new
     image_list.read(IMAGES_DIR + '/Button_0.gif', IMAGES_DIR + '/Button_0.gif')
