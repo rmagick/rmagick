@@ -835,46 +835,6 @@ Draw_undercolor_eq(VALUE self, VALUE undercolor)
 
 
 /**
- * Expand the property and percent-escape references in text to be drawn.
- *
- * No Ruby usage (internal function)
- *
- * Notes:
- *   - InterpretImageProperties() treats text whose first non-blank character is
- *     '@' as the name of a file to read the text from. The argument is
- *     documented as the text to draw, so draw it as-is instead.
- *
- * @param image the image
- * @param text the text to draw
- * @return the interpreted text, to be freed by the caller with magick_free()
- */
-static char *
-interpret_text(Image *image, const char *text
-#if defined(IMAGEMAGICK_7)
-               , ExceptionInfo *exception
-#endif
-              )
-{
-    const char *p = text;
-
-    while (isspace((int) ((unsigned char) *p)))
-    {
-        p++;
-    }
-    if (*p == '@')
-    {
-        return ConstantString(text);
-    }
-
-#if defined(IMAGEMAGICK_7)
-    return InterpretImageProperties(NULL, image, text, exception);
-#else
-    return InterpretImageProperties(NULL, image, text);
-#endif
-}
-
-
-/**
  * Annotates an image with text.
  *
  * - Additional Draw attribute methods may be called in the optional block,
@@ -924,30 +884,15 @@ VALUE Draw_annotate(
         rb_yield(self);
     }
 
-    // Translate & store in Draw structure
+    // Store in Draw structure. The text is drawn as given: it is not run
+    // through InterpretImageProperties(), so a `%[...]` or `%x` escape in it is
+    // not expanded. Everything those escapes provide is available directly from
+    // Ruby -- Image#columns, Image#filename, Image#artifact and so on.
     embed_text = StringValueCStr(text);
+    draw->info->text = ConstantString(embed_text);
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    draw->info->text = interpret_text(image, embed_text, exception);
-    if (rm_should_raise_exception(exception, RetainExceptionRetention))
-    {
-        if (draw->info->text)
-        {
-            magick_free(draw->info->text);
-            draw->info->text = NULL;
-        }
-        rm_raise_exception(exception);
-    }
-#else
-    draw->info->text = interpret_text(image, embed_text);
 #endif
-    if (!draw->info->text)
-    {
-#if defined(IMAGEMAGICK_7)
-        DestroyExceptionInfo(exception);
-#endif
-        rb_raise(rb_eArgError, "no text");
-    }
 
     // Create geometry string, copy to Draw structure, overriding
     // any previously existing value.
@@ -1702,30 +1647,11 @@ get_type_metrics(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
     }
 
     draw = get_draw(self);
-#if defined(IMAGEMAGICK_7)
-    exception = AcquireExceptionInfo();
-    draw->info->text = interpret_text(image, text, exception);
-    if (rm_should_raise_exception(exception, RetainExceptionRetention))
-    {
-        if (draw->info->text)
-        {
-            magick_free(draw->info->text);
-            draw->info->text = NULL;
-        }
-        rm_raise_exception(exception);
-    }
-#else
-    draw->info->text = interpret_text(image, text);
-#endif
-    if (!draw->info->text)
-    {
-#if defined(IMAGEMAGICK_7)
-        DestroyExceptionInfo(exception);
-#endif
-        rb_raise(rb_eArgError, "no text to measure");
-    }
+    // Measured as given: see the comment in Draw_annotate().
+    draw->info->text = ConstantString(text);
 
 #if defined(IMAGEMAGICK_7)
+    exception = AcquireExceptionInfo();
     GVL_STRUCT_TYPE(get_type_metrics) args = { image, draw->info, &metrics, exception };
 #else
     GVL_STRUCT_TYPE(get_type_metrics) args = { image, draw->info, &metrics };

@@ -60,12 +60,17 @@ RSpec.describe Magick::Draw, '#annotate' do
     end
   end
 
-  it 'still expands percent escapes' do
-    image = Magick::Image.new(123, 10)
+  # The text is no longer run through InterpretImageProperties(), so an escape
+  # in it is drawn rather than replaced. If it were still expanded, the same
+  # text would measure differently against images of different sizes.
+  it 'does not expand percent escapes' do
     draw = described_class.new
+    small = Magick::Image.new(1, 1)
+    large = Magick::Image.new(1234, 1)
 
-    expect(draw.get_type_metrics(image, '%[width]').width)
-      .to eq(draw.get_type_metrics(image, '123').width)
+    ['%[width]', '%w', '%[fx:w]', '%[fx:1+1]', '%[artifact:probe]'].each do |text|
+      expect(draw.get_type_metrics(small, text).width).to eq(draw.get_type_metrics(large, text).width)
+    end
   end
 
   it 'accepts an ImageList argument' do
@@ -89,15 +94,11 @@ RSpec.describe Magick::Draw, '#annotate' do
     end.not_to raise_error
   end
 
-  it 'does not free the annotation text twice when the text raises an exception' do
+  # This used to raise, because ImageMagick could not parse the escape. The text
+  # is drawn as-is now, so a malformed escape is just text.
+  it 'draws a malformed percent escape as text' do
     image = Magick::Image.new(10, 10)
 
-    expect do
-      described_class.new.annotate(image, 0, 0, 0, 20, '%[fx:(]')
-    end.to raise_error(Magick::ImageMagickError)
-
-    # The Draw object is garbage now. Reclaiming it must not free the
-    # annotation text a second time.
-    GC.start
+    expect { described_class.new.annotate(image, 0, 0, 0, 20, '%[fx:(]') }.not_to raise_error
   end
 end
