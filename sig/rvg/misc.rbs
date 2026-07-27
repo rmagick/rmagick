@@ -24,7 +24,6 @@ module Magick
         @ctx: GraphicContext
 
         def initialize: (GraphicContext context) -> void
-        def enquote: (String text) -> String
         def glyph_metrics: (Integer | Float glyph_orientation, string glyph) -> [Integer | Float, Integer | Float]
         def text_rel_coords: (string text) -> [Array[Integer | Float], Array[Integer | Float]]
         def shift_baseline: (Integer | Float glyph_orientation, string glyph) -> (Integer | Float)
