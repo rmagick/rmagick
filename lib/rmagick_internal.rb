@@ -217,10 +217,13 @@ module Magick
 
     def enquote(str)
       str = to_string(str)
-      if str.length > 2 && /\A(?:"[^"]+"|'[^']+'|\{[^}]+\})\z/.match(str)
+      # escape existing backslashes, so that they cannot escape the delimiter
+      # added below and let the rest of the string be parsed as MVG
+      str = str.gsub('\\') { |b| '\\' + b }
+      if str.length > 2 && /\A(?:"[^"\\]+"|'[^'\\]+'|\{[^}\\]+\})\z/.match(str)
         str
       else
-        '"' + str + '"'
+        '"' + str.gsub('"') { |c| '\\' + c } + '"'
       end
     end
 
@@ -282,7 +285,7 @@ module Magick
 
     # Invoke a clip-path defined by def_clip_path.
     def clip_path(name)
-      primitive "clip-path #{to_string(name)}"
+      primitive "clip-path #{enquote(name)}"
     end
 
     # Define the clipping rule.
@@ -343,7 +346,7 @@ module Magick
     # Let anything through, but the only defined argument
     # is "UTF-8". All others are apparently ignored.
     def encoding(encoding)
-      primitive "encoding #{to_string(encoding)}"
+      primitive "encoding #{enquote(encoding)}"
     end
 
     # Specify object fill, a color name or pattern name

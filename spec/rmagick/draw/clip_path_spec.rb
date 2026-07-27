@@ -6,7 +6,7 @@ RSpec.describe Magick::Draw, '#clip_path' do
     image = Magick::Image.new(200, 200)
 
     draw.clip_path('test')
-    expect(draw.inspect).to eq('clip-path test')
+    expect(draw.inspect).to eq('clip-path "test"')
     expect { draw.draw(image) }.not_to raise_error
   end
 
