@@ -4,7 +4,7 @@
     "dockerfile": "Dockerfile",
     "args": {
       "RUBY_VERSION": "4.0.3",
-      "IMAGEMAGICK_VERSION": "7.1.2-27"
+      "IMAGEMAGICK_VERSION": "7.1.2-29"
     }
   },
   "onCreateCommand": "/setup/setup-repo.sh"
