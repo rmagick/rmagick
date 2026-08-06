@@ -3,6 +3,12 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 7.1.1
+
+Bug Fixes
+
+* Fix Strings being recycled while the C pointers into them are in use (#1847)
+
 ## RMagick 7.1.0
 
 > [!IMPORTANT]
