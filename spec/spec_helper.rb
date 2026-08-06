@@ -3,6 +3,7 @@
 require_relative 'support/simplecov' if ENV['COVERAGE'] == 'true'
 require_relative 'support/matchers'
 require_relative 'support/helpers'
+require_relative 'support/to_str_duck'
 
 require 'pry'
 require 'rmagick'

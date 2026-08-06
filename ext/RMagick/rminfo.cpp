@@ -269,8 +269,8 @@ Info_aref(int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 2:
-            format_p = rm_str2cstr(argv[0], &format_l);
-            key_p = rm_str2cstr(argv[1], &key_l);
+            format_p = rm_str2cstr(&argv[0], &format_l);
+            key_p = rm_str2cstr(&argv[1], &key_l);
             if (format_l > MAX_FORMAT_LEN || format_l + key_l > MaxTextExtent-1)
             {
                 rb_raise(rb_eArgError, "can't reference %.60s:%.1024s - too long", format_p, key_p);
@@ -333,8 +333,8 @@ Info_aset(int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 3:
-            format_p = rm_str2cstr(argv[0], &format_l);
-            key_p = rm_str2cstr(argv[1], &key_l);
+            format_p = rm_str2cstr(&argv[0], &format_l);
+            key_p = rm_str2cstr(&argv[1], &key_l);
 
             if (format_l > MAX_FORMAT_LEN || format_l+key_l > MaxTextExtent-1)
             {
@@ -707,8 +707,8 @@ Info_define(int argc, VALUE *argv, VALUE self)
             fmt_arg = rb_String(argv[2]);
             value = (const char *)StringValueCStr(fmt_arg);
         case 2:
-            key = rm_str2cstr(argv[1], &key_l);
-            format = rm_str2cstr(argv[0], &format_l);
+            key = rm_str2cstr(&argv[1], &key_l);
+            format = rm_str2cstr(&argv[0], &format_l);
             break;
         default:
             rb_raise(rb_eArgError, "wrong number of arguments (%d for 2 or 3)", argc);
@@ -1850,7 +1850,7 @@ Info_sampling_factor_eq(VALUE self, VALUE sampling_factor)
 
     if (!NIL_P(sampling_factor))
     {
-        sampling_factor_p = rm_str2cstr(sampling_factor, &sampling_factor_len);
+        sampling_factor_p = rm_str2cstr(&sampling_factor, &sampling_factor_len);
     }
 
     if (info->sampling_factor)
@@ -2187,8 +2187,8 @@ Info_undefine(VALUE self, VALUE format, VALUE key)
     size_t format_l, key_l;
     char fkey[MaxTextExtent];
 
-    format_p = rm_str2cstr(format, &format_l);
-    key_p = rm_str2cstr(key, &key_l);
+    format_p = rm_str2cstr(&format, &format_l);
+    key_p = rm_str2cstr(&key, &key_l);
 
     if (format_l > MAX_FORMAT_LEN || format_l + key_l > MaxTextExtent)
     {

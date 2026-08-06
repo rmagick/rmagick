@@ -511,6 +511,8 @@ Image *str_to_image(VALUE str)
         DestroyExceptionInfo(exception);
     }
 
+    RB_GC_GUARD(str);
+
     return image;
 }
 
@@ -1617,6 +1619,7 @@ get_type_metrics(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
     Image *image;
     Draw *draw;
     VALUE t;
+    VALUE text_arg = Qnil;
     TypeMetric metrics;
     char *text = NULL;
     size_t text_l;
@@ -1628,13 +1631,15 @@ get_type_metrics(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
     switch (argc)
     {
         case 1:                   // use default image
-            text = rm_str2cstr(argv[0], &text_l);
+            text_arg = argv[0];
+            text = rm_str2cstr(&text_arg, &text_l);
             TypedData_Get_Struct(get_dummy_tm_img(CLASS_OF(self)), Image, &rm_image_data_type, image);
             break;
         case 2:
             t = rm_cur_image(argv[0]);
             image = rm_check_destroyed(t);
-            text = rm_str2cstr(argv[1], &text_l);
+            text_arg = argv[1];
+            text = rm_str2cstr(&text_arg, &text_l);
             break;                  // okay
         default:
             rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 or 2)", argc);
@@ -1680,6 +1685,7 @@ get_type_metrics(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
 #endif
 
     RB_GC_GUARD(t);
+    RB_GC_GUARD(text_arg);
 
     return Import_TypeMetric(&metrics);
 }

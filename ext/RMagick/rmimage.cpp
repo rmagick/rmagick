@@ -2925,7 +2925,7 @@ set_profile(VALUE self, const char *name, VALUE profile)
 
     image = rm_check_frozen(self);
 
-    profile_blob = rm_str2cstr(profile, &profile_length);
+    profile_blob = rm_str2cstr(&profile, &profile_length);
 
     exception = AcquireExceptionInfo();
     m = GetMagickInfo(name, exception);
@@ -3001,6 +3001,8 @@ set_profile(VALUE self, const char *name, VALUE profile)
     DestroyExceptionInfo(exception);
     rm_check_image_exception(image, RetainOnError);
 #endif
+
+    RB_GC_GUARD(profile);
 
     return self;
 }
@@ -4372,7 +4374,7 @@ Image_constitute(VALUE klass ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
 
     width = NUM2LONG(width_arg);
     height = NUM2LONG(height_arg);
-    map = rm_str2cstr(map_arg, &map_l);
+    map = rm_str2cstr(&map_arg, &map_l);
 
     npixels = width * height * map_l;
     if (RARRAY_LEN(pixels_arg) != npixels)
@@ -4495,6 +4497,7 @@ Image_constitute(VALUE klass ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
     RB_GC_GUARD(pixel);
     RB_GC_GUARD(pixel0);
     RB_GC_GUARD(pixel_class);
+    RB_GC_GUARD(map_arg);
 
     return rm_image_new(new_image);
 }
@@ -5252,6 +5255,8 @@ Image_decipher(VALUE self, VALUE passphrase)
 
     DestroyExceptionInfo(exception);
 
+    RB_GC_GUARD(passphrase);
+
     return rm_image_new(new_image);
 }
 
@@ -5753,7 +5758,7 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
     y       = NUM2LONG(argv[1]);
     columns = NUM2ULONG(argv[2]);
     rows    = NUM2ULONG(argv[3]);
-    map     = rm_str2cstr(argv[4], &mapL);
+    map     = rm_str2cstr(&argv[4], &mapL);
     if (argc == 6)
     {
         stg_type = RTEST(argv[5]) ? DoublePixel : QuantumPixel;
@@ -5803,6 +5808,7 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
     xfree((void *)pixels.v);
 
     RB_GC_GUARD(pixels_ary);
+    RB_GC_GUARD(argv[4]);
 
     return pixels_ary;
 }
@@ -6380,6 +6386,8 @@ Image_encipher(VALUE self, VALUE passphrase)
     }
 
     DestroyExceptionInfo(exception);
+
+    RB_GC_GUARD(passphrase);
 
     return rm_image_new(new_image);
 }
@@ -7350,7 +7358,7 @@ Image_from_blob(VALUE klass ATTRIBUTE_UNUSED, VALUE blob_arg)
     void *blob;
     size_t length;
 
-    blob = (void *) rm_str2cstr(blob_arg, &length);
+    blob = (void *) rm_str2cstr(&blob_arg, &length);
 
     // Get a new Info object - run the parm block if supplied
     info_obj = rm_info_new();
@@ -7368,6 +7376,7 @@ Image_from_blob(VALUE klass ATTRIBUTE_UNUSED, VALUE blob_arg)
     rm_sync_image_options(images, info);
 
     RB_GC_GUARD(info_obj);
+    RB_GC_GUARD(blob_arg);
 
     return array_from_images(images);
 }
@@ -8155,7 +8164,7 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
     // binary pixel data.
     if (rb_respond_to(pixel_arg, rb_intern("to_str")))
     {
-        buffer = (void *)rm_str2cstr(pixel_arg, &buffer_l);
+        buffer = (void *)rm_str2cstr(&pixel_arg, &buffer_l);
         switch (stg_type)
         {
             case CharPixel:
@@ -8956,7 +8965,7 @@ Image__load(VALUE klass ATTRIBUTE_UNUSED, VALUE str)
     char *blob;
     size_t length;
 
-    blob = rm_str2cstr(str, &length);
+    blob = rm_str2cstr(&str, &length);
 
     // Must be at least as big as the 1st 4 fields in DumpedImage
     if (length <= (long)(sizeof(DumpedImage)-MaxTextExtent))
@@ -9005,6 +9014,8 @@ Image__load(VALUE klass ATTRIBUTE_UNUSED, VALUE str)
 
     rm_check_exception(exception, image, DestroyOnError);
     DestroyExceptionInfo(exception);
+
+    RB_GC_GUARD(str);
 
     return rm_image_new(image);
 }
@@ -9168,6 +9179,9 @@ Image_marshal_load(VALUE self, VALUE ary)
 
     UPDATE_DATA_PTR(self, new_image);
     rm_image_destroy(image);
+
+    RB_GC_GUARD(filename);
+    RB_GC_GUARD(blob);
 
     return self;
 }
@@ -11624,7 +11638,7 @@ rd_image(VALUE klass ATTRIBUTE_UNUSED, VALUE file, gvl_function_t fp)
         // Convert arg to string. If an exception occurs raise an error condition.
         file = rb_rescue(RESCUE_FUNC(rb_String), file, RESCUE_EXCEPTION_HANDLER_FUNC(file_arg_rescue), file);
 
-        filename = rm_path2cstr(file, &filename_l);
+        filename = rm_path2cstr(&file, &filename_l);
         filename_l = min(filename_l, MaxTextExtent-1);
         if (filename_l == 0)
         {
@@ -11771,7 +11785,7 @@ Image_read_inline(VALUE self ATTRIBUTE_UNUSED, VALUE content)
     size_t blob_l;
     ExceptionInfo *exception;
 
-    image_data = rm_str2cstr(content, &image_data_l);
+    image_data = rm_str2cstr(&content, &image_data_l);
 
     // Search for a comma. If found, we'll set the start of the
     // image data just following the comma. Otherwise we'll assume
@@ -11813,6 +11827,7 @@ Image_read_inline(VALUE self ATTRIBUTE_UNUSED, VALUE content)
     rm_sync_image_options(images, info);
 
     RB_GC_GUARD(info_obj);
+    RB_GC_GUARD(content);
 
     return array_from_images(images);
 }
@@ -12350,7 +12365,7 @@ rotate(int bang, int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 2:
-            arrow = rm_str2cstr(argv[1], &arrow_l);
+            arrow = rm_str2cstr(&argv[1], &arrow_l);
             if (arrow_l != 1 || (*arrow != '<' && *arrow != '>'))
             {
                 rb_raise(rb_eArgError, "second argument must be '<' or '>', '%s' given", arrow);
@@ -15913,7 +15928,7 @@ void add_format_prefix(Info *info, VALUE file)
     }
     file = rb_rescue(RESCUE_FUNC(rb_String), file, RESCUE_EXCEPTION_HANDLER_FUNC(file_arg_rescue), file);
 
-    filename = rm_path2cstr(file, &filename_l);
+    filename = rm_path2cstr(&file, &filename_l);
 
     if (*info->magick == '\0')
     {

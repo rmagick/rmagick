@@ -320,21 +320,34 @@ rm_no_freeze(VALUE obj)
 /**
  * Supply our own version of the "obsolete" rb_str2cstr.
  *
+ * The argument is taken by reference because StringValue may replace it. When
+ * the argument is not a String but responds to #to_str, StringValue converts
+ * it and the String it produces is referenced by nothing but the variable it
+ * is stored in. Writing that String back into the caller's variable is what
+ * keeps it - and therefore the buffer the returned pointer addresses - alive
+ * for as long as the caller can see it. Taking the argument by value would
+ * leave the String unreferenced the moment this function returns, and the GC
+ * would be free to recycle it out from under the pointer.
+ *
+ * Callers must still RB_GC_GUARD the variable after their last use of the
+ * pointer whenever the GC can run in between - that is, whenever they release
+ * the GVL or call into Ruby.
+ *
  * No Ruby usage (internal function)
  *
- * @param str the Ruby string
+ * @param str pointer to the Ruby string, updated in place if it is converted
  * @param len pointer to a size_t in which to store the number of characters
  * @return a C string version of str
  */
 char *
-rm_str2cstr(VALUE str, size_t *len)
+rm_str2cstr(VALUE *str, size_t *len)
 {
-    StringValue(str);
+    StringValue(*str);
     if (len)
     {
-        *len = (size_t)RSTRING_LEN(str);
+        *len = (size_t)RSTRING_LEN(*str);
     }
-    return RSTRING_PTR(str);
+    return RSTRING_PTR(*str);
 }
 
 
@@ -350,19 +363,20 @@ rm_str2cstr(VALUE str, size_t *len)
  *
  * No Ruby usage (internal function)
  *
- * @param str the Ruby string
+ * @param str pointer to the Ruby string, updated in place if it is converted
  * @param len pointer to a size_t in which to store the number of characters
  * @return a C string version of str
  * @throw ArgumentError if str contains a NUL byte
+ * @see rm_str2cstr for why the argument is taken by reference
  */
 char *
-rm_path2cstr(VALUE str, size_t *len)
+rm_path2cstr(VALUE *str, size_t *len)
 {
-    char *path = StringValueCStr(str);
+    char *path = StringValueCStr(*str);
 
     if (len)
     {
-        *len = (size_t)RSTRING_LEN(str);
+        *len = (size_t)RSTRING_LEN(*str);
     }
     return path;
 }
