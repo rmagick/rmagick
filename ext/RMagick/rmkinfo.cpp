@@ -188,8 +188,13 @@ KernelInfo_scale(VALUE self, VALUE scale, VALUE flags)
 VALUE
 KernelInfo_scale_geometry(VALUE self, VALUE geometry)
 {
-    GVL_STRUCT_TYPE(ScaleGeometryKernelInfo) args = { get_kernel_info(self), StringValueCStr(geometry) };
+    char *geom = StringValueCStr(geometry);
+
+    GVL_STRUCT_TYPE(ScaleGeometryKernelInfo) args = { get_kernel_info(self), geom };
     CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ScaleGeometryKernelInfo), &args);
+
+    RB_GC_GUARD(geometry);
+
     return Qnil;
 }
 

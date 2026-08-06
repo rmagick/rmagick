@@ -14,4 +14,14 @@ module TestHelpers
   def gray(pixel_value)
     [pixel_value, pixel_value, pixel_value]
   end
+
+  # Runs the block with the GC collecting on every allocation, so that anything
+  # the extension leaves unreferenced is reclaimed at the first opportunity
+  # rather than by chance.
+  def with_gc_stress
+    GC.stress = true
+    yield
+  ensure
+    GC.stress = false
+  end
 end

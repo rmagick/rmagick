@@ -22,4 +22,19 @@ RSpec.describe Magick::Image::Info, '#define' do
     # The value must not be used as the artifact key.
     expect(image.artifact('HELLOARTIFACT')).to be(nil)
   end
+
+  # Regression: see the matching example in braces_spec.rb. The option used to
+  # be defined and undefined under a corrupted key.
+  it 'accepts arguments that respond to #to_str' do
+    with_gc_stress do
+      10.times do
+        info = described_class.new
+        info.define(ToStrDuck.new('tiff'), ToStrDuck.new('rows-per-strip'), '8')
+        expect(info['tiff', 'rows-per-strip']).to eq('8')
+
+        info.undefine(ToStrDuck.new('tiff'), ToStrDuck.new('rows-per-strip'))
+        expect(info['tiff', 'rows-per-strip']).to be(nil)
+      end
+    end
+  end
 end

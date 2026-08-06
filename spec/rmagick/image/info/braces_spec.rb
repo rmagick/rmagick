@@ -26,4 +26,18 @@ RSpec.describe Magick::Image::Info, '#[]' do
     expect(info['tiff', 'bits-per-sample']).to be(nil)
     expect { info.undefine('tiff', 'a' * 10_000) }.to raise_error(ArgumentError)
   end
+
+  # Regression: rm_str2cstr took its argument by value, so the String that
+  # #to_str produced was referenced by nothing once it returned and the GC was
+  # free to recycle it. The option was then looked up under a corrupted key.
+  it 'accepts arguments that respond to #to_str' do
+    info = described_class.new
+    info['tiff', 'rows-per-strip'] = '8'
+
+    with_gc_stress do
+      10.times do
+        expect(info[ToStrDuck.new('tiff'), ToStrDuck.new('rows-per-strip')]).to eq('8')
+      end
+    end
+  end
 end
