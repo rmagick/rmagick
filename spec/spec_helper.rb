@@ -5,6 +5,12 @@ require_relative 'support/matchers'
 require_relative 'support/helpers'
 require_relative 'support/to_str_duck'
 
+$stderr = Module.new do
+  def self.write(message)
+    raise message
+  end
+end
+
 require 'pry'
 require 'rmagick'
 require 'rvg/rvg'
