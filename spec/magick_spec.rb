@@ -67,7 +67,7 @@ RSpec.describe Magick do
     end
   end
 
-  describe 'Ractor' do
+  describe 'Ractor', :slow do
     it 'is supported' do
       expect do
         r = Ractor.new do
