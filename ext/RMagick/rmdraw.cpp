@@ -886,18 +886,8 @@ VALUE Draw_annotate(
         rb_yield(self);
     }
 
-    // Store in Draw structure. The text is drawn as given: it is not run
-    // through InterpretImageProperties(), so a `%[...]` or `%x` escape in it is
-    // not expanded. Everything those escapes provide is available directly from
-    // Ruby -- Image#columns, Image#filename, Image#artifact and so on.
-    embed_text = StringValueCStr(text);
-    draw->info->text = ConstantString(embed_text);
-#if defined(IMAGEMAGICK_7)
-    exception = AcquireExceptionInfo();
-#endif
-
-    // Create geometry string, copy to Draw structure, overriding
-    // any previously existing value.
+    // Convert the geometry arguments before allocating native resources. A
+    // conversion can raise, and Ruby's longjmp would otherwise leak them.
     width  = NUM2ULONG(width_arg);
     height = NUM2ULONG(height_arg);
     x      = NUM2LONG(x_arg);
@@ -914,6 +904,18 @@ VALUE Draw_annotate(
         snprintf(geometry_str, sizeof(geometry_str), "%lux%lu%+ld%+ld", width, height, x, y);
     }
 
+    // Store in Draw structure. The text is drawn as given: it is not run
+    // through InterpretImageProperties(), so a `%[...]` or `%x` escape in it is
+    // not expanded. Everything those escapes provide is available directly from
+    // Ruby -- Image#columns, Image#filename, Image#artifact and so on.
+    embed_text = StringValueCStr(text);
+    draw->info->text = ConstantString(embed_text);
+#if defined(IMAGEMAGICK_7)
+    exception = AcquireExceptionInfo();
+#endif
+
+    // Copy the geometry string to the Draw structure, overriding any
+    // previously existing value.
     magick_clone_string(&draw->info->geometry, geometry_str);
 
 #if defined(IMAGEMAGICK_7)
