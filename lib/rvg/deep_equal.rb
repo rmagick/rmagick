@@ -17,7 +17,7 @@ module Magick
       end
     end
 
-    [Shape, TextBase, Image, Group, Content, Use, ClipPath, Pattern, self].each do |c|
+    [Shape, TextBase, Image, Group, Content, Use, ClipPath, Pattern, RVG].each do |c|
       c.class_eval do
         def deep_equal(other)
           ivs = instance_variables
