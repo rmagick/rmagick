@@ -847,11 +847,14 @@ struct Draw_annotate_args
     VALUE text;
     Draw *draw;
     AffineMatrix keep;
+#if defined(IMAGEMAGICK_7)
+    ExceptionInfo *exception;
+#endif
 };
 
 
 /**
- * Restore the affine matrix Draw_annotate saved before it yielded.
+ * Release what annotate_body acquired and restore the affine matrix.
  *
  * No Ruby usage (internal function)
  *
@@ -860,11 +863,23 @@ struct Draw_annotate_args
  * @see Draw_annotate
  */
 static VALUE
-annotate_restore_affine(VALUE arg)
+annotate_ensure(VALUE arg)
 {
     struct Draw_annotate_args *annotate = (struct Draw_annotate_args *)arg;
+    Draw *draw = annotate->draw;
 
-    annotate->draw->info->affine = annotate->keep;
+    magick_free(draw->info->text);
+    draw->info->text = NULL;
+    draw->info->affine = annotate->keep;
+
+#if defined(IMAGEMAGICK_7)
+    if (annotate->exception)
+    {
+        DestroyExceptionInfo(annotate->exception);
+        annotate->exception = NULL;
+    }
+#endif
+
     return Qnil;
 }
 
@@ -928,17 +943,17 @@ annotate_body(VALUE arg)
     draw->info->text = ConstantString(embed_text);
 
 #if defined(IMAGEMAGICK_7)
-    exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(AnnotateImage) args = { image, draw->info, exception };
+    annotate->exception = AcquireExceptionInfo();
+    GVL_STRUCT_TYPE(AnnotateImage) args = { image, draw->info, annotate->exception };
 #else
     GVL_STRUCT_TYPE(AnnotateImage) args = { image, draw->info };
 #endif
     CALL_FUNC_WITHOUT_GVL(GVL_FUNC(AnnotateImage), &args);
 
-    magick_free(draw->info->text);
-    draw->info->text = NULL;
-
 #if defined(IMAGEMAGICK_7)
+    exception = annotate->exception;
+    annotate->exception = NULL;
+
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
@@ -987,10 +1002,13 @@ VALUE Draw_annotate(
     annotate.x_arg      = x_arg;
     annotate.y_arg      = y_arg;
     annotate.text       = text;
+#if defined(IMAGEMAGICK_7)
+    annotate.exception  = NULL;
+#endif
 
     rm_check_frozen(annotate.image_arg);
 
-    return rb_ensure(annotate_body, (VALUE)&annotate, annotate_restore_affine, (VALUE)&annotate);
+    return rb_ensure(annotate_body, (VALUE)&annotate, annotate_ensure, (VALUE)&annotate);
 }
 
 
