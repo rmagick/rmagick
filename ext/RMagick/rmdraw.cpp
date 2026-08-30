@@ -914,8 +914,6 @@ annotate_body(VALUE arg)
         rb_yield(annotate->self);
     }
 
-    // Convert the geometry arguments before allocating native resources. A
-    // conversion can raise, and Ruby's longjmp would otherwise leak them.
     width  = NUM2ULONG(annotate->width_arg);
     height = NUM2ULONG(annotate->height_arg);
     x      = NUM2LONG(annotate->x_arg);
