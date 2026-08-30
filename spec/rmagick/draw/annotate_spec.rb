@@ -107,6 +107,34 @@ RSpec.describe Magick::Draw, '#annotate' do
       .to raise_error(Magick::DestroyedImageError)
   end
 
+  it 'restores the affine matrix when annotate raises' do
+    render = lambda do |draw|
+      image = Magick::Image.new(120, 60) { |options| options.background_color = 'white' }
+      draw.annotate(image, 0, 0, 5, 40, 'ABC')
+      image.export_pixels(0, 0, 120, 60, 'I')
+    end
+
+    upright = described_class.new
+    upright.pointsize = 24
+    expected = render.call(upright)
+
+    draw = described_class.new
+    draw.pointsize = 24
+
+    expect do
+      draw.annotate(Magick::Image.new(10, 10), nil, 0, 0, 0, 'x') { |d| d.rotation = 45 }
+    end.to raise_error(TypeError)
+    expect(render.call(draw)).to eq(expected)
+
+    expect do
+      draw.annotate(Magick::Image.new(10, 10), 0, 0, 0, 0, 'x') do |d|
+        d.rotation = 45
+        raise IOError, 'boom'
+      end
+    end.to raise_error(IOError, 'boom')
+    expect(render.call(draw)).to eq(expected)
+  end
+
   it 'accepts an ImageList argument' do
     draw = described_class.new
 
