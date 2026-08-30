@@ -195,7 +195,9 @@ if RUBY_PLATFORM.include?('linux')
   )
 
   namespace :spec do
-    RubyMemcheck::RSpec::RakeTask.new(valgrind: :compile)
+    RubyMemcheck::RSpec::RakeTask.new(valgrind: :compile) do |t|
+      t.rspec_opts = '--tag "~slow"' unless ENV['SLOW']
+    end
   end
 end
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Magick::Image, '#preview' do
+describe Magick::Image, '#preview', :slow do
   it 'works' do
     hat = described_class.read(IMAGES_DIR + '/Flower_Hat.jpg').first
 
