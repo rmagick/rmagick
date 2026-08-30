@@ -836,6 +836,123 @@ Draw_undercolor_eq(VALUE self, VALUE undercolor)
 }
 
 
+struct Draw_annotate_args
+{
+    VALUE self;
+    VALUE image_arg;
+    VALUE width_arg;
+    VALUE height_arg;
+    VALUE x_arg;
+    VALUE y_arg;
+    VALUE text;
+    Draw *draw;
+    AffineMatrix keep;
+};
+
+
+/**
+ * Restore the affine matrix Draw_annotate saved before it yielded.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param arg the annotate arguments
+ * @return nil
+ * @see Draw_annotate
+ */
+static VALUE
+annotate_restore_affine(VALUE arg)
+{
+    struct Draw_annotate_args *annotate = (struct Draw_annotate_args *)arg;
+
+    annotate->draw->info->affine = annotate->keep;
+    return Qnil;
+}
+
+
+/**
+ * Annotate the image.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param arg the annotate arguments
+ * @return self
+ * @see Draw_annotate
+ */
+static VALUE
+annotate_body(VALUE arg)
+{
+    struct Draw_annotate_args *annotate = (struct Draw_annotate_args *)arg;
+    Draw *draw = annotate->draw;
+    Image *image;
+    unsigned long width, height;
+    long x, y;
+    char geometry_str[100];
+    char *embed_text;
+#if defined(IMAGEMAGICK_7)
+    ExceptionInfo *exception;
+#endif
+
+    // If we have an optional parm block, run it in self's context,
+    // allowing the app a chance to modify the object's attributes
+    if (rb_block_given_p())
+    {
+        rb_yield(annotate->self);
+    }
+
+    // Convert the geometry arguments before allocating native resources. A
+    // conversion can raise, and Ruby's longjmp would otherwise leak them.
+    width  = NUM2ULONG(annotate->width_arg);
+    height = NUM2ULONG(annotate->height_arg);
+    x      = NUM2LONG(annotate->x_arg);
+    y      = NUM2LONG(annotate->y_arg);
+
+    if (width == 0 && height == 0)
+    {
+        snprintf(geometry_str, sizeof(geometry_str), "%+ld%+ld", x, y);
+    }
+
+    // WxH is non-zero
+    else
+    {
+        snprintf(geometry_str, sizeof(geometry_str), "%lux%lu%+ld%+ld", width, height, x, y);
+    }
+
+    // Store in Draw structure. The text is drawn as given: it is not run
+    // through InterpretImageProperties(), so a `%[...]` or `%x` escape in it is
+    // not expanded. Everything those escapes provide is available directly from
+    // Ruby -- Image#columns, Image#filename, Image#artifact and so on.
+    embed_text = StringValueCStr(annotate->text);
+    image = rm_check_frozen(annotate->image_arg);
+    draw->info->text = ConstantString(embed_text);
+#if defined(IMAGEMAGICK_7)
+    exception = AcquireExceptionInfo();
+#endif
+
+    // Copy the geometry string to the Draw structure, overriding any
+    // previously existing value.
+    magick_clone_string(&draw->info->geometry, geometry_str);
+
+#if defined(IMAGEMAGICK_7)
+    GVL_STRUCT_TYPE(AnnotateImage) args = { image, draw->info, exception };
+#else
+    GVL_STRUCT_TYPE(AnnotateImage) args = { image, draw->info };
+#endif
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(AnnotateImage), &args);
+
+    magick_free(draw->info->text);
+    draw->info->text = NULL;
+
+#if defined(IMAGEMAGICK_7)
+    CHECK_EXCEPTION();
+    DestroyExceptionInfo(exception);
+#else
+    rm_check_image_exception(image, RetainOnError);
+#endif
+
+    return annotate->self;
+}
+
+
 /**
  * Annotates an image with text.
  *
@@ -860,84 +977,24 @@ VALUE Draw_annotate(
                    VALUE y_arg,
                    VALUE text)
 {
-    Draw *draw;
-    Image *image;
-    unsigned long width, height;
-    long x, y;
-    AffineMatrix keep;
-    char geometry_str[100];
-    char *embed_text;
-#if defined(IMAGEMAGICK_7)
-    ExceptionInfo *exception;
-#endif
+    struct Draw_annotate_args annotate;
 
     // Save the affine matrix in case it is modified by
     // Draw#rotation=
-    draw = get_draw(self);
-    keep = draw->info->affine;
+    annotate.draw = get_draw(self);
+    annotate.keep = annotate.draw->info->affine;
 
-    image_arg = rm_cur_image(image_arg);
-    rm_check_frozen(image_arg);
+    annotate.self       = self;
+    annotate.image_arg  = rm_cur_image(image_arg);
+    annotate.width_arg  = width_arg;
+    annotate.height_arg = height_arg;
+    annotate.x_arg      = x_arg;
+    annotate.y_arg      = y_arg;
+    annotate.text       = text;
 
-    // If we have an optional parm block, run it in self's context,
-    // allowing the app a chance to modify the object's attributes
-    if (rb_block_given_p())
-    {
-        rb_yield(self);
-    }
+    rm_check_frozen(annotate.image_arg);
 
-    // Convert the geometry arguments before allocating native resources. A
-    // conversion can raise, and Ruby's longjmp would otherwise leak them.
-    width  = NUM2ULONG(width_arg);
-    height = NUM2ULONG(height_arg);
-    x      = NUM2LONG(x_arg);
-    y      = NUM2LONG(y_arg);
-
-    if (width == 0 && height == 0)
-    {
-        snprintf(geometry_str, sizeof(geometry_str), "%+ld%+ld", x, y);
-    }
-
-    // WxH is non-zero
-    else
-    {
-        snprintf(geometry_str, sizeof(geometry_str), "%lux%lu%+ld%+ld", width, height, x, y);
-    }
-
-    // Store in Draw structure. The text is drawn as given: it is not run
-    // through InterpretImageProperties(), so a `%[...]` or `%x` escape in it is
-    // not expanded. Everything those escapes provide is available directly from
-    // Ruby -- Image#columns, Image#filename, Image#artifact and so on.
-    embed_text = StringValueCStr(text);
-    image = rm_check_frozen(image_arg);
-    draw->info->text = ConstantString(embed_text);
-#if defined(IMAGEMAGICK_7)
-    exception = AcquireExceptionInfo();
-#endif
-
-    // Copy the geometry string to the Draw structure, overriding any
-    // previously existing value.
-    magick_clone_string(&draw->info->geometry, geometry_str);
-
-#if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(AnnotateImage) args = { image, draw->info, exception };
-#else
-    GVL_STRUCT_TYPE(AnnotateImage) args = { image, draw->info };
-#endif
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(AnnotateImage), &args);
-
-    magick_free(draw->info->text);
-    draw->info->text = NULL;
-    draw->info->affine = keep;
-
-#if defined(IMAGEMAGICK_7)
-    CHECK_EXCEPTION();
-    DestroyExceptionInfo(exception);
-#else
-    rm_check_image_exception(image, RetainOnError);
-#endif
-
-    return self;
+    return rb_ensure(annotate_body, (VALUE)&annotate, annotate_restore_affine, (VALUE)&annotate);
 }
 
 
