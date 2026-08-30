@@ -3,6 +3,15 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 7.1.2
+
+Bug Fixes
+
+* Fix memory leak in Draw#annotate when the geometry copy fails (#1854)
+* Fix affine matrix not being restored when Draw#annotate raises (#1853)
+* Fix use-after-free in Draw#annotate when a callback destroys the image (#1852)
+* Fix memory leak in Draw#annotate when a geometry argument raises (#1850)
+
 ## RMagick 7.1.1
 
 Bug Fixes
