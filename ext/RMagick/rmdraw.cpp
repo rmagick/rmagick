@@ -917,6 +917,8 @@ annotate_body(VALUE arg)
         snprintf(geometry_str, sizeof(geometry_str), "%lux%lu%+ld%+ld", width, height, x, y);
     }
 
+    magick_clone_string(&draw->info->geometry, geometry_str);
+
     // Store in Draw structure. The text is drawn as given: it is not run
     // through InterpretImageProperties(), so a `%[...]` or `%x` escape in it is
     // not expanded. Everything those escapes provide is available directly from
@@ -924,15 +926,9 @@ annotate_body(VALUE arg)
     embed_text = StringValueCStr(annotate->text);
     image = rm_check_frozen(annotate->image_arg);
     draw->info->text = ConstantString(embed_text);
+
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-#endif
-
-    // Copy the geometry string to the Draw structure, overriding any
-    // previously existing value.
-    magick_clone_string(&draw->info->geometry, geometry_str);
-
-#if defined(IMAGEMAGICK_7)
     GVL_STRUCT_TYPE(AnnotateImage) args = { image, draw->info, exception };
 #else
     GVL_STRUCT_TYPE(AnnotateImage) args = { image, draw->info };
