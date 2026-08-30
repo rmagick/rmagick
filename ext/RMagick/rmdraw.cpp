@@ -877,7 +877,7 @@ VALUE Draw_annotate(
     keep = draw->info->affine;
 
     image_arg = rm_cur_image(image_arg);
-    image = rm_check_frozen(image_arg);
+    rm_check_frozen(image_arg);
 
     // If we have an optional parm block, run it in self's context,
     // allowing the app a chance to modify the object's attributes
@@ -909,6 +909,7 @@ VALUE Draw_annotate(
     // not expanded. Everything those escapes provide is available directly from
     // Ruby -- Image#columns, Image#filename, Image#artifact and so on.
     embed_text = StringValueCStr(text);
+    image = rm_check_frozen(image_arg);
     draw->info->text = ConstantString(embed_text);
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();

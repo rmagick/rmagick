@@ -73,6 +73,40 @@ RSpec.describe Magick::Draw, '#annotate' do
     end
   end
 
+  it 'raises when the block destroys the image' do
+    draw = described_class.new
+    image = Magick::Image.new(10, 10)
+
+    expect { draw.annotate(image, 0, 0, 0, 20, 'Hello world') { image.destroy! } }
+      .to raise_error(Magick::DestroyedImageError)
+  end
+
+  it 'raises when the block freezes the image' do
+    draw = described_class.new
+    image = Magick::Image.new(10, 10)
+
+    expect { draw.annotate(image, 0, 0, 0, 20, 'Hello world') { image.freeze } }
+      .to raise_error(FrozenError)
+  end
+
+  it 'raises when an argument conversion destroys the image' do
+    destroyer = Class.new do
+      def initialize(image)
+        @image = image
+      end
+
+      def to_int
+        @image.destroy!
+        0
+      end
+    end
+
+    image = Magick::Image.new(10, 10)
+
+    expect { described_class.new.annotate(image, destroyer.new(image), 0, 0, 20, 'Hello world') }
+      .to raise_error(Magick::DestroyedImageError)
+  end
+
   it 'accepts an ImageList argument' do
     draw = described_class.new
 
