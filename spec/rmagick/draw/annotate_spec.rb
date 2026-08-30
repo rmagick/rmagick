@@ -135,6 +135,14 @@ RSpec.describe Magick::Draw, '#annotate' do
     expect(render.call(draw)).to eq(expected)
   end
 
+  it 'does not leak when a geometry argument cannot be converted' do
+    draw = described_class.new
+    image = Magick::Image.new(10, 10)
+
+    expect { draw.annotate(image, 2**70, 0, 0, 0, 'Hello world') }.to raise_error(RangeError)
+    expect { draw.annotate(image, nil, 0, 0, 0, 'Hello world') }.to raise_error(TypeError)
+  end
+
   it 'accepts an ImageList argument' do
     draw = described_class.new
 
