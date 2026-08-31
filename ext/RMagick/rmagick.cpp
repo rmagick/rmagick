@@ -217,7 +217,7 @@ Magick_limit_resource(int argc, VALUE *argv, VALUE klass)
     ResourceType res = UndefinedResource;
     char *str;
     ID id;
-    unsigned long cur_limit;
+    MagickSizeType cur_limit;
 
     rb_scan_args(argc, argv, "11", &resource, &limit);
 
@@ -301,12 +301,12 @@ Magick_limit_resource(int argc, VALUE *argv, VALUE klass)
 
     if (argc > 1)
     {
-        SetMagickResourceLimit(res, (MagickSizeType)NUM2ULONG(limit));
+        SetMagickResourceLimit(res, (MagickSizeType)NUM2ULL(limit));
     }
 
     RB_GC_GUARD(limit);
 
-    return ULONG2NUM(cur_limit);
+    return ULL2NUM(cur_limit);
 }
 
 
