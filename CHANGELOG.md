@@ -3,6 +3,13 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 7.1.3
+
+Bug Fixes
+
+* Fix Magick.set_cache_threshold truncating the threshold on 32-bit platforms (#1865)
+* Fix Magick.limit_resource truncating 64-bit limits on 32-bit platforms (#1864)
+
 ## RMagick 7.1.2
 
 Bug Fixes
