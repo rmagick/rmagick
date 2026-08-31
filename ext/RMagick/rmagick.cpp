@@ -320,9 +320,9 @@ Magick_limit_resource(int argc, VALUE *argv, VALUE klass)
 VALUE
 Magick_set_cache_threshold(VALUE klass, VALUE threshold)
 {
-    unsigned long thrshld = NUM2ULONG(threshold);
-    SetMagickResourceLimit(MemoryResource, (MagickSizeType)thrshld);
-    SetMagickResourceLimit(MapResource, (MagickSizeType)(2*thrshld));
+    MagickSizeType thrshld = (MagickSizeType)NUM2ULL(threshold);
+    SetMagickResourceLimit(MemoryResource, thrshld);
+    SetMagickResourceLimit(MapResource, 2*thrshld);
     return klass;
 }
 
