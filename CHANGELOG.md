@@ -3,6 +3,22 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 7.1.4
+
+> [!IMPORTANT]
+> Four kinds of input that used to be accepted now raise `ArgumentError`.
+>
+> Three of them were ways for a string RMagick documents as a value to be read back as part of an ImageMagick program: an opacity of `"1%\nimage Over 0,0 80,80 'secret.png'\n1%"`, a `Draw#pattern` name carrying the same payload, and a `Caption` property of `"@/etc/passwd"` arriving in the metadata of an uploaded image. ImageMagick executed the injected primitive, or read the named file and drew its contents into the returned image. `Image#dispatch` is the fourth: a `map` containing a NUL byte is now rejected rather than sized with the byte length while ImageMagick fills only what precedes the NUL.
+>
+> `Image#export_pixels_to_str` with `Magick::LongPixel` also returns half as many bytes on LP64, and `Image#import_pixels` takes a buffer of that size. RMagick reserved `sizeof(unsigned long)` per element while ImageMagick reads and writes `unsigned int`, so the second half of the string was never written and carried whatever the heap held. `Image#colormap` returned uninitialized memory the same way, as the previous colour of an entry it had just created.
+
+Breaking Changes
+
+* Reject an opacity percentage that is not a plain number from 0% to 100% (#1867)
+* Restrict a Draw#pattern name to letters, digits, hyphen, period and underscore (#1869)
+* Return LongPixel pixel data as unsigned int, without the uninitialized padding Image#export_pixels_to_str used to append (#1870)
+* Reject a Caption property beginning with '@' in Image#polaroid instead of reading that file (#1871)
+
 ## RMagick 7.1.3
 
 Bug Fixes
