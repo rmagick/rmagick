@@ -3295,7 +3295,7 @@ Image_colormap(int argc, VALUE *argv, VALUE self)
             image->colormap = (PixelColor *)magick_safe_realloc(image->colormap, (idx+1), sizeof(PixelColor));
         }
 
-        for (i = image->colors; i < idx; i++)
+        for (i = image->colors; i <= idx; i++)
         {
             image->colormap[i] = black;
         }
@@ -5758,7 +5758,8 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
     y       = NUM2LONG(argv[1]);
     columns = NUM2ULONG(argv[2]);
     rows    = NUM2ULONG(argv[3]);
-    map     = rm_str2cstr(&argv[4], &mapL);
+    map     = StringValueCStr(argv[4]);
+    mapL    = strlen(map);
     if (argc == 6)
     {
         stg_type = RTEST(argv[5]) ? DoublePixel : QuantumPixel;
@@ -6903,7 +6904,7 @@ Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
             sz = sizeof(float);
             break;
         case LongPixel:
-            sz = sizeof(unsigned long);
+            sz = sizeof(unsigned int);
             break;
         case QuantumPixel:
             sz = sizeof(Quantum);
@@ -8174,7 +8175,7 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
                 type_sz = sizeof(unsigned short);
                 break;
             case LongPixel:
-                type_sz = sizeof(unsigned long);
+                type_sz = sizeof(unsigned int);
                 break;
             case DoublePixel:
                 type_sz = sizeof(double);

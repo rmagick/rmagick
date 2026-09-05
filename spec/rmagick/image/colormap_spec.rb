@@ -31,4 +31,19 @@ RSpec.describe Magick::Image, "#colormap" do
     pc_image.freeze
     expect { pc_image.colormap(0, 'red') }.to raise_error(FrozenError)
   end
+
+  # Regression: growing the colormap filled [colors, idx) with black and left
+  # entry idx untouched, so the previous colour handed back to the caller was
+  # whatever the freshly allocated heap held. Entry idx - 1 is one the fill loop
+  # did write, so it says what black renders as on either ImageMagick version.
+  it 'reports black as the previous colour of an entry it just created' do
+    pc_image = described_class.read(IMAGES_DIR + '/Button_0.gif') { |info| info.depth = 8 }.first
+    idx = pc_image.colors + 40
+
+    previous = pc_image.colormap(idx, 'red')
+
+    expect(previous).to eq(pc_image.colormap(idx - 1))
+    expect(pc_image.colors).to eq(idx + 1)
+    expect(pc_image.colormap(idx)).to eq('#FF0000FF')
+  end
 end

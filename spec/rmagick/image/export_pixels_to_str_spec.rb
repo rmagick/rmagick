@@ -26,7 +26,7 @@ RSpec.describe Magick::Image, '#export_pixels_to_str' do
     expect(result.length).to eq(10 * 10 * 2)
 
     result = image.export_pixels_to_str(0, 0, 10, 10, 'I', Magick::LongPixel)
-    expect(result.length).to eq(10 * 10 * [1].pack('L!').length)
+    expect(result.length).to eq(10 * 10 * 4)
 
     result = image.export_pixels_to_str(0, 0, 10, 10, 'I', Magick::FloatPixel)
     expect(result.length).to eq(10 * 10 * 4)
@@ -40,6 +40,19 @@ RSpec.describe Magick::Image, '#export_pixels_to_str' do
     expect { image.export_pixels_to_str(0, 0, 10, 10, 'I', Magick::QuantumPixel, 1) }.to raise_error(ArgumentError)
     # last arg s/b StorageType
     expect { image.export_pixels_to_str(0, 0, 10, 10, 'I', 2) }.to raise_error(TypeError)
+  end
+
+  # Regression: LongPixel reserved sizeof(unsigned long) per element, but
+  # ImageMagick's ExportLongPixel writes unsigned int. On LP64 that left the
+  # second half of the string as whatever the heap held, and a caller reading it
+  # back as native longs got the wrong values as well.
+  it 'fills the whole buffer for LongPixel' do
+    image = described_class.new(8, 8) { |options| options.background_color = 'white' }
+
+    result = image.export_pixels_to_str(0, 0, 8, 8, 'RGB', Magick::LongPixel)
+
+    expect(result.bytesize).to eq(8 * 8 * 3 * 4)
+    expect(result.unpack('L*')).to all(eq(0xffffffff))
   end
 
   # Regression: cols * rows * map_length (and that times the storage-type size)
