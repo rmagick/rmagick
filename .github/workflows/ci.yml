@@ -46,13 +46,17 @@ jobs:
     name: ${{ matrix.os }}, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
     steps:
     - uses: actions/checkout@v7
+    - name: Identify the runner image
+      id: runner-image
+      shell: bash
+      run: |
+        test -n "$ImageVersion"
+        echo "id=${ImageOS}-${ImageVersion}" >> "$GITHUB_OUTPUT"
     - name: Cache ImageMagick built objects
       uses: actions/cache@v6
       with:
         path: ./build-ImageMagick
-        key: v1-${{ runner.os }}-imagemagick-${{ matrix.imagemagick-version.full }}
-        restore-keys: |
-          v1-${{ runner.os }}-imagemagick-${{ matrix.imagemagick-version.full }}
+        key: v1-${{ runner.os }}-${{ steps.runner-image.outputs.id }}-imagemagick-${{ matrix.imagemagick-version.full }}
     - name: Update/Install packages (Linux)
       if: runner.os == 'Linux'
       run: |
