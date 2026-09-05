@@ -10868,7 +10868,8 @@ Image_pixel_interpolation_method_eq(VALUE self, VALUE method)
 
 /**
  * Produce an image that looks like a Polaroid instant picture. If the image has a "Caption"
- * property, the value is used as a caption.
+ * property, the value is used as a caption. A caption whose first non-blank character is '@'
+ * is rejected because ImageMagick reads the caption from the file it names.
  *
  * The following annotate attributes control the label rendering:
  * align, decorate, density, encoding, fill, font, font_family, font_stretch, font_style,
@@ -10889,6 +10890,7 @@ Image_pixel_interpolation_method_eq(VALUE self, VALUE method)
  *   @yieldparam opt [Magick::Image::PolaroidOptions]
  *
  * @return [Magick::Image] a new image
+ * @raise [ArgumentError] if the "Caption" property begins with '@'
  */
 VALUE
 Image_polaroid(int argc, VALUE *argv, VALUE self)
@@ -10898,9 +10900,7 @@ Image_polaroid(int argc, VALUE *argv, VALUE self)
     double angle = -5.0;
     Draw *draw;
     ExceptionInfo *exception;
-#if defined(IMAGEMAGICK_7)
     const char *caption;
-#endif
 
     image = rm_check_destroyed(self);
 
@@ -10925,6 +10925,26 @@ Image_polaroid(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     caption = GetImageProperty(clone, "Caption", exception);
+#else
+    caption = GetImageProperty(clone, "Caption");
+#endif
+    if (caption)
+    {
+        const char *p = caption;
+
+        while (isspace((int) ((unsigned char) *p)))
+        {
+            p++;
+        }
+        if (*p == '@')
+        {
+            DestroyImage(clone);
+            DestroyExceptionInfo(exception);
+            rb_raise(rb_eArgError, "the Caption property must not begin with '@'");
+        }
+    }
+
+#if defined(IMAGEMAGICK_7)
     GVL_STRUCT_TYPE(PolaroidImage) args = { clone, draw->info, caption, angle, image->interpolate, exception };
     new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(PolaroidImage), &args);
 #else
