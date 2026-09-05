@@ -453,14 +453,21 @@ module Magick
     # draw the pattern. Reference the pattern by using its name
     # as the argument to the 'fill' or 'stroke' methods
     def pattern(name, x, y, width, height)
+      name = to_string(name)
+      Kernel.raise ArgumentError, 'pattern name must consist of letters, digits, hyphen, period and underscore' unless /\A[\w.-]+\z/.match?(name)
+
+      viewport = sprintf('%g %g %g %g', x, y, width, height)
+
       push('defs')
-      push("pattern #{to_string(name)} " + sprintf('%g %g %g %g', x, y, width, height))
+      push("pattern #{name} " + viewport)
       push('graphic-context')
-      yield
-    ensure
-      pop('graphic-context')
-      pop('pattern')
-      pop('defs')
+      begin
+        yield
+      ensure
+        pop('graphic-context')
+        pop('pattern')
+        pop('defs')
+      end
     end
 
     # Set point to fill color.
