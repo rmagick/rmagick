@@ -228,7 +228,12 @@ module Magick
     end
 
     def to_opacity(opacity)
-      return opacity if opacity.is_a?(String) && opacity.end_with?('%')
+      if opacity.is_a?(String) && opacity.end_with?('%')
+        percentage = /\A(\d*\.?\d+(?:[eE][-+]?\d+)?)%\z/.match(opacity)
+        Kernel.raise ArgumentError, 'opacity must be a percentage between 0% and 100%' unless percentage && Float(percentage[1]) <= 100
+
+        return opacity
+      end
 
       value = Float(opacity)
       Kernel.raise ArgumentError, 'opacity must be >= 0 and <= 1.0' if value < 0 || value > 1.0
