@@ -26,4 +26,26 @@ RSpec.describe Magick::Image::Info, '#[]=' do
       end
     end
   end
+
+  # Regression: see the matching examples in caption_spec.rb, comment_spec.rb
+  # and label_spec.rb. ImageMagick matches option keys case-insensitively, so
+  # these keys reach the same options as Info#caption=, #comment= and #label=.
+  it "rejects a caption, comment or label that begins with '@'" do
+    info = described_class.new
+
+    %w[caption Comment LABEL].each do |key|
+      expect { info[key] = '@/etc/passwd' }.to raise_error(ArgumentError)
+      expect { info[key] = '  @/etc/passwd' }.to raise_error(ArgumentError)
+      expect(info[key]).to be(nil)
+    end
+  end
+
+  it "accepts '@' for other keys" do
+    info = described_class.new
+
+    expect { info['tiff'] = '@xxx' }.not_to raise_error
+    expect(info['tiff']).to eq('@xxx')
+    expect { info['comment'] = 'user@example.com' }.not_to raise_error
+    expect(info['comment']).to eq('user@example.com')
+  end
 end
