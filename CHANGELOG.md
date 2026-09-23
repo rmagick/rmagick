@@ -3,6 +3,26 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 7.1.5
+
+> [!IMPORTANT]
+> More strings that ImageMagick would read from a file now raise `ArgumentError`.
+>
+> `Montage#title=` and the `caption`, `comment` and `label` options, set through `Info#caption=`, `#comment=`, `#label=` or `Info#[]=`, now reject a value whose first non-blank character is `@`, as `Image#polaroid` has done since 7.1.4. ImageMagick read the file it named and put its contents into the montage or into the metadata of the image being read. These checks and the one in `Image#polaroid` also reject a `%[fx:@...]`, `%[hex:@...]` or `%[pixel:@...]` escape, which ImageMagick 7 reads from the named file as well, and their message now says the value "must not name a file with '@'".
+>
+> `Image#profile!` now accepts only the profile formats of ImageMagick's META coder (8BIM, APP1, EXIF, ICC, ICM, IPTC, XMP and their variants) and raises `ArgumentError` for any other name. It decoded the profile with the coder of whatever name it was given, so a profile named `msl` copied from an uploaded image ran as an MSL script.
+
+Breaking Changes
+
+* Accept only META profile formats in Image#profile! instead of decoding the profile with the coder of that name (#1873)
+* Reject a Montage#title beginning with '@' instead of reading that file (#1874)
+* Reject an Info#caption, #comment or #label value beginning with '@' instead of reading that file (#1875)
+* Also reject %[fx:@...], %[hex:@...] and %[pixel:@...] escapes where a value beginning with '@' is rejected (#1876)
+
+Bug Fixes
+
+* Fix stack buffer overflow in Image#inspect with a long format name (#1877)
+
 ## RMagick 7.1.4
 
 > [!IMPORTANT]
