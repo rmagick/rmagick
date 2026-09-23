@@ -2901,6 +2901,35 @@ Image_color_histogram(VALUE self)
 
 
 /**
+ * Return true if the format is one handled by ImageMagick's META coder. set_profile
+ * decodes the profile with the coder of that name, so any other format would run an
+ * unrelated decoder (MSL, MVG, SVG, ...) on the profile bytes.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param format the format name
+ * @return true if the format is a META profile format, otherwise false
+ */
+static bool
+is_meta_profile_format(const char *format)
+{
+    static const char *meta_formats[] = {
+        "8BIM", "8BIMTEXT", "8BIMWTEXT", "APP1", "APP1JPEG", "EXIF",
+        "ICC", "ICM", "IPTC", "IPTCTEXT", "IPTCWTEXT", "XMP"
+    };
+
+    for (size_t i = 0; i < sizeof(meta_formats) / sizeof(meta_formats[0]); i++)
+    {
+        if (rm_strcasecmp(format, meta_formats[i]) == 0)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+/**
  * Store all the profiles in the profile in the target image. Called from
  * Image_color_profile_eq and Image_iptc_profile_eq.
  *
@@ -2930,7 +2959,7 @@ set_profile(VALUE self, const char *name, VALUE profile)
     exception = AcquireExceptionInfo();
     m = GetMagickInfo(name, exception);
     CHECK_EXCEPTION();
-    if (!m)
+    if (!m || !is_meta_profile_format(m->name))
     {
         DestroyExceptionInfo(exception);
         rb_raise(rb_eArgError, "unknown name: %s", name);
@@ -11045,11 +11074,13 @@ Image_preview(VALUE self, VALUE preview)
 
 /**
  * Set the image profile. If "profile" is nil, deletes the profile. Otherwise "profile" must be a
- * string containing the specified profile.
+ * string containing the specified profile, and "name" must be one of the profile formats of
+ * ImageMagick's META coder (8BIM, APP1, EXIF, ICC, ICM, IPTC, XMP and their variants).
  *
  * @param name [String, nil] The profile name, or "*" to represent all the profiles in the image.
  * @param profile [String] The profile value, or nil to cause the profile to be removed.
  * @return [Magick::Image] self
+ * @raise [ArgumentError] if "profile" is not nil and "name" is not a META profile format
  */
 VALUE
 Image_profile_bang(VALUE self, VALUE name, VALUE profile)
