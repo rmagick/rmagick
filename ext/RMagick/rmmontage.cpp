@@ -454,17 +454,11 @@ Montage_title_eq(VALUE self, VALUE title)
 {
     Montage *montage;
     const char *title_cstr;
-    const char *p;
 
     TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
     title_cstr = StringValueCStr(title);
 
-    p = title_cstr;
-    while (isspace((int) ((unsigned char) *p)))
-    {
-        p++;
-    }
-    if (*p == '@')
+    if (rm_is_file_reference(title_cstr))
     {
         rb_raise(rb_eArgError, "the title must not begin with '@'");
     }

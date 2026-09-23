@@ -222,6 +222,26 @@ rm_strnlen_s(const char *str, size_t strsz)
 
 
 /**
+ * Return true if InterpretImageProperties() would read the string from a file, that is, if its
+ * first non-blank character is '@'.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param str the string
+ * @return true if the string names a file to read, otherwise false
+ */
+bool
+rm_is_file_reference(const char *str)
+{
+    while (isspace((int) ((unsigned char) *str)))
+    {
+        str++;
+    }
+    return *str == '@';
+}
+
+
+/**
  * Raise exception if array too short.
  *
  * No Ruby usage (internal function)
