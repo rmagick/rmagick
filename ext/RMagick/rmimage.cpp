@@ -10964,20 +10964,11 @@ Image_polaroid(int argc, VALUE *argv, VALUE self)
 #else
     caption = GetImageProperty(clone, "Caption");
 #endif
-    if (caption)
+    if (caption && rm_is_file_reference(caption))
     {
-        const char *p = caption;
-
-        while (isspace((int) ((unsigned char) *p)))
-        {
-            p++;
-        }
-        if (*p == '@')
-        {
-            DestroyImage(clone);
-            DestroyExceptionInfo(exception);
-            rb_raise(rb_eArgError, "the Caption property must not begin with '@'");
-        }
+        DestroyImage(clone);
+        DestroyExceptionInfo(exception);
+        rb_raise(rb_eArgError, "the Caption property must not begin with '@'");
     }
 
 #if defined(IMAGEMAGICK_7)

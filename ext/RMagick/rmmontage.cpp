@@ -442,18 +442,28 @@ Montage_tile_eq(VALUE self, VALUE tile_arg)
 
 
 /**
- * Set title value.
+ * Set title value. A title whose first non-blank character is '@' is rejected because
+ * ImageMagick reads the title from the file it names.
  *
  * @param title [String] the title
  * @return [String] the given title
+ * @raise [ArgumentError] if the title begins with '@'
  */
 VALUE
 Montage_title_eq(VALUE self, VALUE title)
 {
     Montage *montage;
+    const char *title_cstr;
 
     TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
-    magick_clone_string(&montage->info->title, StringValueCStr(title));
+    title_cstr = StringValueCStr(title);
+
+    if (rm_is_file_reference(title_cstr))
+    {
+        rb_raise(rb_eArgError, "the title must not begin with '@'");
+    }
+
+    magick_clone_string(&montage->info->title, title_cstr);
     return title;
 }
 
