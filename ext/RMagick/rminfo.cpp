@@ -48,6 +48,25 @@ get_option(VALUE self, const char *key)
 }
 
 /**
+ * Raise ArgumentError if the option is one that ReadImage runs through
+ * InterpretImageProperties() and the value would make it read the file it names.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param key the option key
+ * @param value the value
+ */
+static void
+check_interpreted_option(const char *key, const char *value)
+{
+    if ((rm_strcasecmp(key, "caption") == 0 || rm_strcasecmp(key, "comment") == 0 || rm_strcasecmp(key, "label") == 0)
+        && rm_is_file_reference(value))
+    {
+        rb_raise(rb_eArgError, "the %s option must not begin with '@'", key);
+    }
+}
+
+/**
  * Set the specified option to this value. If the value is nil just unset any
  * current value.
  *
@@ -74,6 +93,7 @@ set_option(VALUE self, const char *key, VALUE string)
         char *value;
 
         value = StringValueCStr(string);
+        check_interpreted_option(key, value);
         SetImageOption(info, key, value);
     }
     return string;
@@ -306,6 +326,8 @@ Info_aref(int argc, VALUE *argv, VALUE self)
  *
  * - Essentially the same function as {Info#define} but paired with {Info#[]}
  * - If the value is nil it is equivalent to {Info#undefine}.
+ * - A value whose first non-blank character is '@' is rejected for the "caption", "comment" and
+ *   "label" keys because ImageMagick reads such a value from the file it names.
  *
  * @overload []=(format, key)
  *   @param format [String] An image format name such as "ps" or "tiff".
@@ -315,6 +337,7 @@ Info_aref(int argc, VALUE *argv, VALUE self)
  *   @param key [String] A string that identifies the option.
  *
  * @return [Magick::Image::Info] self
+ * @raise [ArgumentError] if the "caption", "comment" or "label" value begins with '@'
  * @see #[]
  * @see #define
  * @see #undefine
@@ -368,6 +391,7 @@ Info_aset(int argc, VALUE *argv, VALUE self)
         /* Allow any argument that supports to_s */
         value = rb_String(value);
         value_p = StringValueCStr(value);
+        check_interpreted_option(ckey, value_p);
 
         okay = SetImageOption(info, ckey, value_p);
         if (!okay)
@@ -552,10 +576,12 @@ Info_caption(VALUE self)
 
 
 /**
- * Assigns a caption to an image.
+ * Assigns a caption to an image. A caption whose first non-blank character is '@' is rejected
+ * because ImageMagick reads the caption from the file it names.
  *
  * @param caption [String] the caption
  * @return [String] the given value
+ * @raise [ArgumentError] if the caption begins with '@'
  */
 VALUE
 Info_caption_eq(VALUE self, VALUE caption)
@@ -637,10 +663,12 @@ VALUE Info_comment(VALUE self)
 }
 
 /**
- * Set the comment
+ * Set the comment. A comment whose first non-blank character is '@' is rejected because
+ * ImageMagick reads the comment from the file it names.
  *
  * @param string [String] the comment
  * @return [String] the given comment
+ * @raise [ArgumentError] if the comment begins with '@'
  */
 VALUE Info_comment_eq(VALUE self, VALUE string)
 {
@@ -1529,10 +1557,12 @@ VALUE Info_label(VALUE self)
 }
 
 /**
- * Set the label.
+ * Set the label. A label whose first non-blank character is '@' is rejected because
+ * ImageMagick reads the label from the file it names.
  *
  * @param string [String] the label
  * @return [String] the given label
+ * @raise [ArgumentError] if the label begins with '@'
  */
 VALUE Info_label_eq(VALUE self, VALUE string)
 {
