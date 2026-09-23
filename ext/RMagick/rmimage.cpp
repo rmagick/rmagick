@@ -8342,6 +8342,42 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
 
 
 /**
+ * Append formatted text to the buffer used by build_inspect_string.
+ *
+ * No Ruby usage (internal function)
+ *
+ * Notes:
+ *   - vsnprintf returns the length of the untruncated text, so only the bytes
+ *     that actually fit are counted. The returned offset never exceeds len-1,
+ *     so once the buffer is full later appends add nothing to it.
+ *
+ * @param buffer buffer for the output string
+ * @param len length of buffer
+ * @param x # bytes used in buffer, at most len-1
+ * @param format printf-style format string
+ * @return the new # bytes used in buffer, at most len-1
+ * @see build_inspect_string
+ */
+static int
+append_inspect_string(char *buffer, size_t len, int x, const char *format, ...)
+{
+    va_list args;
+    int n;
+
+    va_start(args, format);
+    n = vsnprintf(buffer+x, len-x, format, args);
+    va_end(args);
+
+    if (n > 0)
+    {
+        x += (int)min((size_t)n, len-1-x);
+    }
+
+    return x;
+}
+
+
+/**
  * Override Object#inspect - return a string description of the image.
  *
  * No Ruby usage (internal function)
@@ -8364,56 +8400,56 @@ build_inspect_string(Image *image, char *buffer, size_t len)
     // Print magick filename if different from current filename.
     if (*image->magick_filename != '\0' && strcmp(image->magick_filename, image->filename) != 0)
     {
-        x += snprintf(buffer+x, len-x, "%.1024s=>", image->magick_filename);
+        x = append_inspect_string(buffer, len, x, "%.1024s=>", image->magick_filename);
     }
     // Print current filename.
-    x += snprintf(buffer+x, len-x, "%.1024s", image->filename);
+    x = append_inspect_string(buffer, len, x, "%.1024s", image->filename);
     // Print scene number.
     if ((GetPreviousImageInList(image) != NULL) && (GetNextImageInList(image) != NULL) && image->scene > 0)
     {
-        x += snprintf(buffer+x, len-x, "[%" RMIuSIZE "]", image->scene);
+        x = append_inspect_string(buffer, len, x, "[%" RMIuSIZE "]", image->scene);
     }
     // Print format
-    x += snprintf(buffer+x, len-x, " %s ", image->magick);
+    x = append_inspect_string(buffer, len, x, " %s ", image->magick);
 
     // Print magick columnsXrows if different from current.
     if (image->magick_columns != 0 || image->magick_rows != 0)
     {
         if (image->magick_columns != image->columns || image->magick_rows != image->rows)
         {
-            x += snprintf(buffer+x, len-x, "%" RMIuSIZE "x%" RMIuSIZE "=>", image->magick_columns, image->magick_rows);
+            x = append_inspect_string(buffer, len, x, "%" RMIuSIZE "x%" RMIuSIZE "=>", image->magick_columns, image->magick_rows);
         }
     }
 
-    x += snprintf(buffer+x, len-x, "%" RMIuSIZE "x%" RMIuSIZE " ", image->columns, image->rows);
+    x = append_inspect_string(buffer, len, x, "%" RMIuSIZE "x%" RMIuSIZE " ", image->columns, image->rows);
 
     // Print current columnsXrows
     if (   image->page.width != 0 || image->page.height != 0
            || image->page.x != 0     || image->page.y != 0)
     {
-        x += snprintf(buffer+x, len-x, "%" RMIuSIZE "x%" RMIuSIZE "+%" RMIdSIZE "+%" RMIdSIZE " ",
-                      image->page.width, image->page.height,
-                      image->page.x, image->page.y);
+        x = append_inspect_string(buffer, len, x, "%" RMIuSIZE "x%" RMIuSIZE "+%" RMIdSIZE "+%" RMIdSIZE " ",
+                                  image->page.width, image->page.height,
+                                  image->page.x, image->page.y);
     }
 
     if (image->storage_class == DirectClass)
     {
-        x += snprintf(buffer+x, len-x, "DirectClass ");
+        x = append_inspect_string(buffer, len, x, "DirectClass ");
         if (image->total_colors != 0)
         {
             if (image->total_colors >= (unsigned long)(1 << 24))
             {
-                x += snprintf(buffer+x, len-x, "%" RMIuSIZE "mc ", image->total_colors/1024/1024);
+                x = append_inspect_string(buffer, len, x, "%" RMIuSIZE "mc ", image->total_colors/1024/1024);
             }
             else
             {
                 if (image->total_colors >= (unsigned long)(1 << 16))
                 {
-                    x += snprintf(buffer+x, len-x, "%" RMIuSIZE "kc ", image->total_colors/1024);
+                    x = append_inspect_string(buffer, len, x, "%" RMIuSIZE "kc ", image->total_colors/1024);
                 }
                 else
                 {
-                    x += snprintf(buffer+x, len-x, "%" RMIuSIZE "c ", image->total_colors);
+                    x = append_inspect_string(buffer, len, x, "%" RMIuSIZE "c ", image->total_colors);
                 }
             }
         }
@@ -8424,39 +8460,39 @@ build_inspect_string(Image *image, char *buffer, size_t len)
         // building with GM. GM defines that field as an unsigned int.
         if (image->total_colors <= image->colors)
         {
-            x += snprintf(buffer+x, len-x, "PseudoClass %ldc ", (long) image->colors);
+            x = append_inspect_string(buffer, len, x, "PseudoClass %ldc ", (long) image->colors);
         }
         else
         {
-            x += snprintf(buffer+x, len-x, "PseudoClass %" RMIuSIZE "=>%" RMIuSIZE "c ", image->total_colors, image->colors);
+            x = append_inspect_string(buffer, len, x, "PseudoClass %" RMIuSIZE "=>%" RMIuSIZE "c ", image->total_colors, image->colors);
             if (image->error.mean_error_per_pixel != 0.0)
             {
-                x += snprintf(buffer+x, len-x, "%ld/%.6f/%.6fdb ",
-                              (long) (image->error.mean_error_per_pixel+0.5),
-                              image->error.normalized_mean_error,
-                              image->error.normalized_maximum_error);
+                x = append_inspect_string(buffer, len, x, "%ld/%.6f/%.6fdb ",
+                                          (long) (image->error.mean_error_per_pixel+0.5),
+                                          image->error.normalized_mean_error,
+                                          image->error.normalized_maximum_error);
             }
         }
     }
 
     // Print bit depth
     quantum_depth = GetImageQuantumDepth(image, MagickTrue);
-    x += snprintf(buffer+x, len-x, "%lu-bit", quantum_depth);
+    x = append_inspect_string(buffer, len, x, "%lu-bit", quantum_depth);
 
     // Print blob info if appropriate.
     if (GetBlobSize(image) != 0)
     {
         if (GetBlobSize(image) >= (1 << 24))
         {
-            x += snprintf(buffer+x, len-x, " %lumb", (unsigned long) (GetBlobSize(image)/1024/1024));
+            x = append_inspect_string(buffer, len, x, " %lumb", (unsigned long) (GetBlobSize(image)/1024/1024));
         }
         else if (GetBlobSize(image) >= 1024)
         {
-            x += snprintf(buffer+x, len-x, " %lukb", (unsigned long) (GetBlobSize(image)/1024));
+            x = append_inspect_string(buffer, len, x, " %lukb", (unsigned long) (GetBlobSize(image)/1024));
         }
         else
         {
-            x += snprintf(buffer+x, len-x, " %lub", (unsigned long) GetBlobSize(image));
+            x = append_inspect_string(buffer, len, x, " %lub", (unsigned long) GetBlobSize(image));
         }
     }
 
@@ -8476,7 +8512,7 @@ build_inspect_string(Image *image, char *buffer, size_t len)
         }
     }
 
-    assert(x < (int)(len-1));
+    assert(x < (int)len);
     buffer[x] = '\0';
 
     return;
