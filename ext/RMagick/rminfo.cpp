@@ -60,9 +60,9 @@ static void
 check_interpreted_option(const char *key, const char *value)
 {
     if ((rm_strcasecmp(key, "caption") == 0 || rm_strcasecmp(key, "comment") == 0 || rm_strcasecmp(key, "label") == 0)
-        && rm_is_file_reference(value))
+        && rm_has_file_reference(value))
     {
-        rb_raise(rb_eArgError, "the %s option must not begin with '@'", key);
+        rb_raise(rb_eArgError, "the %s option must not name a file with '@'", key);
     }
 }
 
@@ -326,8 +326,9 @@ Info_aref(int argc, VALUE *argv, VALUE self)
  *
  * - Essentially the same function as {Info#define} but paired with {Info#[]}
  * - If the value is nil it is equivalent to {Info#undefine}.
- * - A value whose first non-blank character is '@' is rejected for the "caption", "comment" and
- *   "label" keys because ImageMagick reads such a value from the file it names.
+ * - A value whose first non-blank character is '@', or that contains a %[fx:@...], %[hex:@...] or
+ *   %[pixel:@...] escape, is rejected for the "caption", "comment" and "label" keys because
+ *   ImageMagick reads the file it names.
  *
  * @overload []=(format, key)
  *   @param format [String] An image format name such as "ps" or "tiff".
@@ -337,7 +338,7 @@ Info_aref(int argc, VALUE *argv, VALUE self)
  *   @param key [String] A string that identifies the option.
  *
  * @return [Magick::Image::Info] self
- * @raise [ArgumentError] if the "caption", "comment" or "label" value begins with '@'
+ * @raise [ArgumentError] if the "caption", "comment" or "label" value names a file with '@'
  * @see #[]
  * @see #define
  * @see #undefine
@@ -576,12 +577,13 @@ Info_caption(VALUE self)
 
 
 /**
- * Assigns a caption to an image. A caption whose first non-blank character is '@' is rejected
- * because ImageMagick reads the caption from the file it names.
+ * Assigns a caption to an image. A caption whose first non-blank character is '@', or that
+ * contains a %[fx:@...], %[hex:@...] or %[pixel:@...] escape, is rejected because ImageMagick
+ * reads the file it names.
  *
  * @param caption [String] the caption
  * @return [String] the given value
- * @raise [ArgumentError] if the caption begins with '@'
+ * @raise [ArgumentError] if the caption names a file with '@'
  */
 VALUE
 Info_caption_eq(VALUE self, VALUE caption)
@@ -663,12 +665,13 @@ VALUE Info_comment(VALUE self)
 }
 
 /**
- * Set the comment. A comment whose first non-blank character is '@' is rejected because
- * ImageMagick reads the comment from the file it names.
+ * Set the comment. A comment whose first non-blank character is '@', or that contains a
+ * %[fx:@...], %[hex:@...] or %[pixel:@...] escape, is rejected because ImageMagick reads the
+ * file it names.
  *
  * @param string [String] the comment
  * @return [String] the given comment
- * @raise [ArgumentError] if the comment begins with '@'
+ * @raise [ArgumentError] if the comment names a file with '@'
  */
 VALUE Info_comment_eq(VALUE self, VALUE string)
 {
@@ -1557,12 +1560,13 @@ VALUE Info_label(VALUE self)
 }
 
 /**
- * Set the label. A label whose first non-blank character is '@' is rejected because
- * ImageMagick reads the label from the file it names.
+ * Set the label. A label whose first non-blank character is '@', or that contains a
+ * %[fx:@...], %[hex:@...] or %[pixel:@...] escape, is rejected because ImageMagick reads the
+ * file it names.
  *
  * @param string [String] the label
  * @return [String] the given label
- * @raise [ArgumentError] if the label begins with '@'
+ * @raise [ArgumentError] if the label names a file with '@'
  */
 VALUE Info_label_eq(VALUE self, VALUE string)
 {

@@ -10904,8 +10904,9 @@ Image_pixel_interpolation_method_eq(VALUE self, VALUE method)
 
 /**
  * Produce an image that looks like a Polaroid instant picture. If the image has a "Caption"
- * property, the value is used as a caption. A caption whose first non-blank character is '@'
- * is rejected because ImageMagick reads the caption from the file it names.
+ * property, the value is used as a caption. A caption whose first non-blank character is '@',
+ * or that contains a %[fx:@...], %[hex:@...] or %[pixel:@...] escape, is rejected because
+ * ImageMagick reads the file it names.
  *
  * The following annotate attributes control the label rendering:
  * align, decorate, density, encoding, fill, font, font_family, font_stretch, font_style,
@@ -10926,7 +10927,7 @@ Image_pixel_interpolation_method_eq(VALUE self, VALUE method)
  *   @yieldparam opt [Magick::Image::PolaroidOptions]
  *
  * @return [Magick::Image] a new image
- * @raise [ArgumentError] if the "Caption" property begins with '@'
+ * @raise [ArgumentError] if the "Caption" property names a file with '@'
  */
 VALUE
 Image_polaroid(int argc, VALUE *argv, VALUE self)
@@ -10964,11 +10965,11 @@ Image_polaroid(int argc, VALUE *argv, VALUE self)
 #else
     caption = GetImageProperty(clone, "Caption");
 #endif
-    if (caption && rm_is_file_reference(caption))
+    if (caption && rm_has_file_reference(caption))
     {
         DestroyImage(clone);
         DestroyExceptionInfo(exception);
-        rb_raise(rb_eArgError, "the Caption property must not begin with '@'");
+        rb_raise(rb_eArgError, "the Caption property must not name a file with '@'");
     }
 
 #if defined(IMAGEMAGICK_7)

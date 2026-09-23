@@ -222,8 +222,15 @@ rm_strnlen_s(const char *str, size_t strsz)
 
 
 /**
- * Return true if InterpretImageProperties() would read the string from a file, that is, if its
- * first non-blank character is '@'.
+ * Return true if InterpretImageProperties() would read a file the string names, that is, if its
+ * first non-blank character is '@', or if it contains a %[fx:...], %[hex:...] or %[pixel:...]
+ * escape whose expression begins with '@'.
+ *
+ * ImageMagick 7 reads such an expression from the file it names, with no blank skipped before
+ * the '@'. It also interprets a %[...] inside an fx expression, even after "%%" since '%' is the
+ * modulo operator there, so every "%[" in the string is checked. The prefixes are compared with
+ * LocaleNCompare() as ImageMagick does. ImageMagick 6 does not read these expressions, but the
+ * check is the same for both.
  *
  * No Ruby usage (internal function)
  *
@@ -231,13 +238,30 @@ rm_strnlen_s(const char *str, size_t strsz)
  * @return true if the string names a file to read, otherwise false
  */
 bool
-rm_is_file_reference(const char *str)
+rm_has_file_reference(const char *str)
 {
-    while (isspace((int) ((unsigned char) *str)))
+    const char *p;
+
+    p = str;
+    while (isspace((int) ((unsigned char) *p)))
     {
-        str++;
+        p++;
     }
-    return *str == '@';
+    if (*p == '@')
+    {
+        return true;
+    }
+
+    for (p = strstr(str, "%["); p != NULL; p = strstr(p + 2, "%["))
+    {
+        if (LocaleNCompare(p + 2, "fx:@", 4) == 0
+            || LocaleNCompare(p + 2, "hex:@", 5) == 0
+            || LocaleNCompare(p + 2, "pixel:@", 7) == 0)
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 

@@ -34,4 +34,32 @@ RSpec.describe Magick::Image::Info, '#label' do
     expect { info.label = 'user@example.com' }.not_to raise_error
     expect(info.label).to eq('user@example.com')
   end
+
+  # Regression: InterpretImageProperties also evaluates %[fx:...], %[hex:...]
+  # and %[pixel:...] escapes, and ImageMagick 7 reads an fx expression that
+  # begins with '@' from the file it names, including one in a %[...] nested in
+  # another fx expression. A label of "%[fx:@/path]" therefore walked past the
+  # check above.
+  it "rejects a label with an fx, hex or pixel escape that begins with '@'" do
+    info = described_class.new
+
+    [
+      '%[fx:@/etc/passwd]',
+      '%[FX:@/etc/passwd]',
+      '%[hex:@/etc/passwd]',
+      '%[pixel:@/etc/passwd]',
+      'x %[fx:1+%[fx:@/etc/passwd]]',
+      '%[fx:100%%[fx:@/etc/passwd]]'
+    ].each do |label|
+      expect { info.label = label }.to raise_error(ArgumentError)
+    end
+    expect(info.label).to be(nil)
+  end
+
+  it "accepts a label with an fx escape that does not read a file" do
+    info = described_class.new
+
+    expect { info.label = '%[fx:1+1]' }.not_to raise_error
+    expect(info.label).to eq('%[fx:1+1]')
+  end
 end

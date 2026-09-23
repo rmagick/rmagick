@@ -34,4 +34,33 @@ RSpec.describe Magick::ImageList::Montage, '#title=' do
 
     expect { image_list.montage { |options| options.title = 'user@example.com' } }.not_to raise_error
   end
+
+  # Regression: InterpretImageProperties also evaluates %[fx:...], %[hex:...]
+  # and %[pixel:...] escapes, and ImageMagick 7 reads an fx expression that
+  # begins with '@' from the file it names, including one in a %[...] nested in
+  # another fx expression. A title of "%[fx:@/path]" therefore walked past the
+  # check above.
+  it "rejects a title with an fx, hex or pixel escape that begins with '@'" do
+    [
+      '%[fx:@/etc/passwd]',
+      '%[FX:@/etc/passwd]',
+      '%[hex:@/etc/passwd]',
+      '%[pixel:@/etc/passwd]',
+      'x %[fx:1+%[fx:@/etc/passwd]]',
+      '%[fx:100%%[fx:@/etc/passwd]]'
+    ].each do |title|
+      montage = described_class.new
+
+      expect { montage.title = title }.to raise_error(ArgumentError)
+    end
+  end
+
+  it "accepts a title with an fx escape that does not read a file" do
+    ['%[fx:1+1]', '%[fx:w/2]', 'user@example.com %[fx:1+1]'].each do |title|
+      image_list = Magick::ImageList.new
+      image_list.new_image(20, 20)
+
+      expect { image_list.montage { |options| options.title = title } }.not_to raise_error
+    end
+  end
 end

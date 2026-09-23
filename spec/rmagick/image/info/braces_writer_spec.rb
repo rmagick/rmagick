@@ -40,6 +40,15 @@ RSpec.describe Magick::Image::Info, '#[]=' do
     end
   end
 
+  it "rejects a caption, comment or label with an fx escape that begins with '@'" do
+    info = described_class.new
+
+    %w[caption Comment LABEL].each do |key|
+      expect { info[key] = '%[fx:@/etc/passwd]' }.to raise_error(ArgumentError)
+      expect(info[key]).to be(nil)
+    end
+  end
+
   it "accepts '@' for other keys" do
     info = described_class.new
 

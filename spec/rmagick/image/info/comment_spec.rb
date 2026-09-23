@@ -33,4 +33,31 @@ RSpec.describe Magick::Image::Info, '#comment' do
 
     expect(image['comment']).to eq('user@example.com')
   end
+
+  # Regression: InterpretImageProperties also evaluates %[fx:...], %[hex:...]
+  # and %[pixel:...] escapes, and ImageMagick 7 reads an fx expression that
+  # begins with '@' from the file it names, including one in a %[...] nested in
+  # another fx expression. A comment of "%[fx:@/path]" therefore walked past the
+  # check above.
+  it "rejects a comment with an fx, hex or pixel escape that begins with '@'" do
+    info = described_class.new
+
+    [
+      '%[fx:@/etc/passwd]',
+      '%[FX:@/etc/passwd]',
+      '%[hex:@/etc/passwd]',
+      '%[pixel:@/etc/passwd]',
+      'x %[fx:1+%[fx:@/etc/passwd]]',
+      '%[fx:100%%[fx:@/etc/passwd]]'
+    ].each do |comment|
+      expect { info.comment = comment }.to raise_error(ArgumentError)
+    end
+    expect(info.comment).to be(nil)
+  end
+
+  it "accepts a comment with an fx escape that does not read a file" do
+    image = Magick::Image.read(FILES[0]) { |options| options.comment = '%[fx:1+1]' }.first
+
+    expect(image['comment']).to eq('2')
+  end
 end
