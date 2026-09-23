@@ -2956,6 +2956,13 @@ set_profile(VALUE self, const char *name, VALUE profile)
 
     profile_blob = rm_str2cstr(&profile, &profile_length);
 
+    // Reject the name before GetMagickInfo(), which loads the coder module it names
+    // ("*" loads all of them).
+    if (!is_meta_profile_format(name))
+    {
+        rb_raise(rb_eArgError, "unknown name: %s", name);
+    }
+
     exception = AcquireExceptionInfo();
     m = GetMagickInfo(name, exception);
     CHECK_EXCEPTION();
