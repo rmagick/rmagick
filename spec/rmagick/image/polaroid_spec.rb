@@ -39,4 +39,35 @@ RSpec.describe Magick::Image, '#polaroid' do
 
     expect { image.polaroid }.not_to raise_error
   end
+
+  # Regression: InterpretImageProperties also evaluates %[fx:...], %[hex:...]
+  # and %[pixel:...] escapes, and ImageMagick 7 reads an fx expression that
+  # begins with '@' from the file it names, including one in a %[...] nested in
+  # another fx expression. A Caption of "%[fx:@/path]" therefore walked past the
+  # check above: a file holding a number was drawn, and the error raised for any
+  # other file quoted its first characters.
+  it "rejects a Caption property with an fx, hex or pixel escape that begins with '@'" do
+    [
+      '%[fx:@/etc/passwd]',
+      '%[FX:@/etc/passwd]',
+      '%[hex:@/etc/passwd]',
+      '%[pixel:@/etc/passwd]',
+      'x %[fx:1+%[fx:@/etc/passwd]]',
+      '%[fx:100%%[fx:@/etc/passwd]]'
+    ].each do |caption|
+      image = described_class.new(20, 20)
+      image['Caption'] = caption
+
+      expect { image.polaroid }.to raise_error(ArgumentError)
+    end
+  end
+
+  it "accepts a Caption property with an fx escape that does not read a file" do
+    ['%[fx:1+1]', '%[fx:w/2]', 'user@example.com %[fx:1+1]'].each do |caption|
+      image = described_class.new(20, 20)
+      image['Caption'] = caption
+
+      expect { image.polaroid }.not_to raise_error
+    end
+  end
 end
