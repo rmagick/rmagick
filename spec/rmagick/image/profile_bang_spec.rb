@@ -20,6 +20,27 @@ RSpec.describe Magick::Image, '#profile!' do
     expect { image.profile!('*', nil) }.to raise_error(FrozenError)
   end
 
+  it 'does not decode the profile with a coder other than the META profile formats' do
+    image = described_class.new(20, 20)
+    image.profile!('xmp', 'xmp data')
+
+    %w[msl MSL mvg svg png txt text *].each do |name|
+      expect { image.profile!(name, 'profile data') }.to raise_error(ArgumentError, /unknown name/)
+    end
+
+    profiles = []
+    image.each_profile { |name, value| profiles << [name, value] }
+    expect(profiles).to eq([['xmp', 'xmp data']])
+  end
+
+  it 'accepts the META profile formats' do
+    image = described_class.new(20, 20)
+
+    %w[8bim app1 exif icm iptc iptctext iptcwtext xmp].each do |name|
+      expect { image.profile!(name, 'profile data') }.not_to raise_error
+    end
+  end
+
   it 'delete exif when nil given as profile' do
     image = described_class.read(IMAGE_WITH_PROFILE).first
     expect(image.get_exif_by_number).to be_kind_of(Hash)
