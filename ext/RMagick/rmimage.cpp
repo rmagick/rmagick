@@ -11,6 +11,9 @@
 
 #include "rmagick.h"
 #include <signal.h>
+#if defined(__APPLE__) || defined(__FreeBSD__)
+#include <pthread.h>
+#endif
 
 #define BEGIN_CHANNEL_MASK(image, channels) \
   { \
@@ -5032,6 +5035,7 @@ Image_init_copy(VALUE copy, VALUE orig)
 {
     Image *image, *new_image;
 
+    rm_wait_for_offload(orig);
     image = rm_check_destroyed(orig);
     new_image = rm_clone_image(image);
     UPDATE_DATA_PTR(copy, new_image);
@@ -7586,6 +7590,9 @@ Image_fx(int argc, VALUE *argv, VALUE self)
         raise_ChannelType_error(argv[argc-1]);
     }
 
+    // The worker reads the expression while other fibers may run, so read it
+    // from a frozen string.
+    argv[0] = rb_str_new_frozen(rb_string_value(&argv[0]));
     expression = StringValueCStr(argv[0]);
 
     exception = AcquireExceptionInfo();
@@ -10520,6 +10527,9 @@ Image_ordered_dither(int argc, VALUE *argv, VALUE self)
     {
         if (TYPE(argv[0]) == T_STRING)
         {
+            // The worker reads the map while other fibers may run, so read it
+            // from a frozen string.
+            argv[0] = rb_str_new_frozen(argv[0]);
             threshold_map = StringValueCStr(argv[0]);
         }
         else
@@ -11704,29 +11714,46 @@ typedef struct
     int error;
 } rd_image_sigchld_t;
 
+// Reads can overlap when they run on worker threads, and the handler is
+// process-wide, so the first read installs it and the last one restores it.
+static pthread_mutex_t sigchld_mutex = PTHREAD_MUTEX_INITIALIZER;
+static int sigchld_reads = 0;
+static struct sigaction sigchld_previous;
+
 // Runs on the thread that reads, so the handler is restored as soon as the
 // read finishes, even if the calling fiber is unwound instead of returning.
 static void *
 rd_image_with_sigchld(void *ptr)
 {
     rd_image_sigchld_t *call = (rd_image_sigchld_t *)ptr;
-    struct sigaction act, oldact;
+    struct sigaction act;
     void *result;
 
-    act.sa_handler = sig_handler;
-    act.sa_flags = SA_RESTART;
-    if (sigaction(SIGCHLD, &act, &oldact) < 0)
+    pthread_mutex_lock(&sigchld_mutex);
+    if (sigchld_reads == 0)
     {
-        call->error = errno;
-        return NULL;
+        act.sa_handler = sig_handler;
+        act.sa_flags = SA_RESTART;
+        sigemptyset(&act.sa_mask);
+        if (sigaction(SIGCHLD, &act, &sigchld_previous) < 0)
+        {
+            call->error = errno;
+            pthread_mutex_unlock(&sigchld_mutex);
+            return NULL;
+        }
     }
+    sigchld_reads++;
+    pthread_mutex_unlock(&sigchld_mutex);
 
     result = call->fp(call->args);
 
-    if (sigaction(SIGCHLD, &oldact, NULL) < 0)
+    pthread_mutex_lock(&sigchld_mutex);
+    sigchld_reads--;
+    if (sigchld_reads == 0 && sigaction(SIGCHLD, &sigchld_previous, NULL) < 0)
     {
         call->error = errno;
     }
+    pthread_mutex_unlock(&sigchld_mutex);
     return result;
 }
 #endif
@@ -14057,11 +14084,11 @@ Image_class_type_eq(VALUE self, VALUE new_class_type)
         qinfo.number_colors = QuantumRange+1;
 #if defined(IMAGEMAGICK_7)
         GVL_STRUCT_TYPE(QuantizeImage) args = { &qinfo, image, exception };
-        rm_offload_call(GVL_FUNC(QuantizeImage), &args, self, exception, NULL);
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(QuantizeImage), &args);
         CHECK_EXCEPTION();
 #else
         GVL_STRUCT_TYPE(QuantizeImage) args = { &qinfo, image };
-        rm_offload_call(GVL_FUNC(QuantizeImage), &args, self, NULL, NULL);
+        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(QuantizeImage), &args);
 #endif
     }
 

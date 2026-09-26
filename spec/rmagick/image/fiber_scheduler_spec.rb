@@ -106,6 +106,20 @@ RSpec.describe Magick::Image, if: offloading do
       expect(result.columns).to eq(2000)
     end
 
+    it "keeps a waiting fiber from using an image that another fiber replaced" do
+      image = described_class.new(2000, 2000)
+      results = []
+
+      scheduler.run do
+        Fiber.schedule { results << image.gaussian_blur(0, 3) }
+        Fiber.schedule { image.resize!(500, 500) }
+        Fiber.schedule { results << image.gaussian_blur(0, 3) }
+      end
+
+      expect(results.map(&:columns)).to eq([2000, 500])
+      expect(image.columns).to eq(500)
+    end
+
     it "lets a fiber use an image while a call is in flight on another image" do
       first = described_class.new(20, 20)
       second = described_class.new(2000, 2000)
@@ -129,6 +143,24 @@ RSpec.describe Magick::Image, if: offloading do
       begin
         scheduler.cancel_next_operation(cancelled.new)
         expect { scheduler.run { described_class.read(FLOWER_HAT) } }.to raise_error(cancelled)
+
+        Process.kill("CHLD", Process.pid)
+        sleep(0.05)
+        expect(calls).to eq(1)
+      ensure
+        Signal.trap("CHLD", previous)
+      end
+    end
+
+    it "restores the SIGCHLD handler after overlapping reads", if: offloading && RUBY_PLATFORM.match?(/darwin|freebsd/) do
+      calls = 0
+      previous = Signal.trap("CHLD") { calls += 1 }
+      begin
+        scheduler.run do
+          Fiber.schedule { described_class.read(FLOWER_HAT) }
+          described_class.read(FLOWER_HAT)
+        end
+        expect(scheduler.offloaded.size).to eq(2)
 
         Process.kill("CHLD", Process.pid)
         sleep(0.05)

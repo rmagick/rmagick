@@ -320,6 +320,15 @@ rm_check_destroyed(VALUE obj)
 {
     Image *image;
 
+#if defined(RMAGICK_OFFLOAD_SAFE)
+    // A wait is a point where other fibers run, so it is only safe before the
+    // caller has fetched any Image pointer: at method entry, for the receiver.
+    // A second image is fetched after the receiver, so it must not wait.
+    if (obj == rb_current_receiver())
+    {
+        rm_wait_for_offload(obj);
+    }
+#endif
     TypedData_Get_Struct(obj, Image, &rm_image_data_type, image);
     if (!image)
     {
@@ -1829,15 +1838,16 @@ handle_exception(ExceptionInfo *exception, Image *imglist, ErrorRetention retent
  *    what it would have released, and it is released before re-raising.
  *
  * 2. Other fibers on the same thread run while the call is in flight. They
- *    could destroy the image the worker is using, or start another call on
- *    it. While a call is in flight on an object, a fiber that would free the
- *    object's image (Image#destroy!, Image#marshal_load) or offload another
- *    call on it waits for the call to finish. Nothing else waits: a wait is a
- *    point where other fibers run, and the C functions fetch their Image
- *    pointers before doing anything else, so a wait inside rm_check_destroyed
- *    would let another fiber destroy an image a caller has already fetched.
- *    Concurrent reads and in-place changes from other fibers are left alone,
- *    as they are between threads.
+ *    could destroy, replace or modify the image the worker is using. While a
+ *    call is in flight on an image, every method called on that image waits
+ *    for it at entry, in rm_check_destroyed, before it fetches the Image
+ *    pointer; so do Image#destroy!, #marshal_load and #dup. A wait is a
+ *    point where other fibers run, so it is never done later than that: an
+ *    image fetched as a second argument (composite, clut, ImageList methods)
+ *    does not wait, and offload() itself does not wait either. If a call is
+ *    already in flight on the object when offload() is reached, which needs
+ *    a suspension point between entry and the call, such as a Ruby block,
+ *    the call runs on the calling thread instead.
  *
  * The bookkeeping is per Ractor. Ruby objects never cross Ractors, so a call
  * in flight in one Ractor never has to be waited for in another.
@@ -2053,19 +2063,15 @@ offload(gvl_function_t *fp, void *args, VALUE obj, OffloadResultType result_type
         st_data_t key = (st_data_t)obj;
         int tag;
 
-        rm_wait_for_offload(obj);
-        if (rb_typeddata_is_kind_of(obj, &rm_image_data_type) && !DATA_PTR(obj))
+        state = offload_state(1);
+        if (st_lookup(state->locks, key, NULL))
         {
-            // Another fiber destroyed the image while this one waited.
-            offload_release(result_type, NULL, exception, image
-#if defined(IMAGEMAGICK_7)
-                            , masked_image, channel_mask
-#endif
-                            );
-            rb_raise(Class_DestroyedImageError, "destroyed image");
+            // Another fiber has a call in flight on this object, and the
+            // caller has already fetched its Image pointer, so waiting here
+            // is not safe. Keep the thread instead.
+            return CALL_FUNC_WITHOUT_GVL(fp, args);
         }
 
-        state = offload_state(1);
         mutex = rb_mutex_new();
         rb_mutex_lock(mutex);
         st_insert(state->locks, key, (st_data_t)mutex);
