@@ -6,8 +6,8 @@
 # Ruby 3.4 added Fiber::Scheduler#blocking_operation_wait. When a scheduler
 # implements it, rb_nogvl hands every call made with RB_NOGVL_OFFLOAD_SAFE to
 # that hook instead of running it on the scheduler's thread. This scheduler
-# records those calls so the specs can check that RMagick's GVL-free calls opt
-# in, and it never returns control to the waiting fiber before the worker has
+# records those calls so the specs can check which RMagick calls opt in, and
+# it never returns control to the waiting fiber before the worker has
 # finished, since the arguments of the call live on that fiber's stack.
 class OffloadingScheduler
   attr_reader :offloaded, :completed
@@ -22,7 +22,7 @@ class OffloadingScheduler
 
   # Runs the block in a non-blocking fiber on a fresh thread and drives the
   # scheduler until every fiber has finished. Returns the block's value and
-  # re-raises whatever the fiber raised.
+  # re-raises whatever a fiber raised.
   def run(&block)
     Thread.new do
       Thread.current.report_on_exception = false
@@ -51,6 +51,12 @@ class OffloadingScheduler
     thread.join while thread&.alive?
   end
 
+  def fiber(&)
+    fiber = Fiber.new(blocking: false, &)
+    fiber.resume
+    fiber
+  end
+
   def fiber_interrupt(fiber, exception)
     @ready << [fiber, exception]
   end
@@ -65,7 +71,12 @@ class OffloadingScheduler
   end
 
   def kernel_sleep(duration = nil)
-    Fiber.blocking { sleep(duration) }
+    fiber = Fiber.current
+    Thread.new do
+      sleep(duration)
+      unblock(nil, fiber)
+    end
+    block(nil, duration)
   end
 
   def io_wait(_io, events, _timeout = nil)
