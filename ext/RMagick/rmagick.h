@@ -29,6 +29,9 @@ extern "C" {
     #include "ruby.h"
     #include "ruby/io.h"
     #include "rmagick_gvl.h"
+#if defined(RMAGICK_OFFLOAD_SAFE)
+    #include "ruby/ractor.h"
+#endif
 }
 
 #if defined(__MINGW32__)
@@ -1164,6 +1167,7 @@ extern void   rm_check_ary_len(VALUE, long);
 extern VALUE  rm_check_ary_type(VALUE ary);
 extern Image *rm_check_destroyed(VALUE);
 extern Image *rm_check_frozen(VALUE);
+extern void   rm_init_offload(void);
 extern void   rm_wait_for_offload(VALUE);
 extern Image *rm_offload_image(gvl_function_t *, void *, VALUE, ExceptionInfo *);
 extern Image *rm_offload_image_and_destroy(gvl_function_t *, void *, VALUE, ExceptionInfo *, Image *);

@@ -9222,6 +9222,7 @@ Image_marshal_load(VALUE self, VALUE ary)
     Image *image, *new_image;
     ExceptionInfo *exception;
 
+    rm_wait_for_offload(self);
     TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
 
     Check_Type(ary, T_ARRAY);
@@ -11695,6 +11696,39 @@ typedef GVL_STRUCT_TYPE(PingImage) GVL_STRUCT_TYPE(rd_image);
 void sig_handler(int sig ATTRIBUTE_UNUSED)
 {
 }
+
+typedef struct
+{
+    gvl_function_t *fp;
+    GVL_STRUCT_TYPE(rd_image) *args;
+    int error;
+} rd_image_sigchld_t;
+
+// Runs on the thread that reads, so the handler is restored as soon as the
+// read finishes, even if the calling fiber is unwound instead of returning.
+static void *
+rd_image_with_sigchld(void *ptr)
+{
+    rd_image_sigchld_t *call = (rd_image_sigchld_t *)ptr;
+    struct sigaction act, oldact;
+    void *result;
+
+    act.sa_handler = sig_handler;
+    act.sa_flags = SA_RESTART;
+    if (sigaction(SIGCHLD, &act, &oldact) < 0)
+    {
+        call->error = errno;
+        return NULL;
+    }
+
+    result = call->fp(call->args);
+
+    if (sigaction(SIGCHLD, &oldact, NULL) < 0)
+    {
+        call->error = errno;
+    }
+    return result;
+}
 #endif
 
 static VALUE
@@ -11739,29 +11773,27 @@ rd_image(VALUE klass ATTRIBUTE_UNUSED, VALUE file, gvl_function_t fp)
 
     exception = AcquireExceptionInfo();
 
+    GVL_STRUCT_TYPE(rd_image) args = { info, exception };
+    void *call_args = &args;
 #if defined(__APPLE__) || defined(__FreeBSD__)
-    struct sigaction act, oldact;
-    act.sa_handler = sig_handler;
-    act.sa_flags = SA_RESTART;
-    if (sigaction(SIGCHLD, &act, &oldact) < 0)
-    {
-        rb_sys_fail("sigaction");
-    }
+    rd_image_sigchld_t sigchld_call = { fp, &args, 0 };
+    fp = rd_image_with_sigchld;
+    call_args = &sigchld_call;
 #endif
 
-    GVL_STRUCT_TYPE(rd_image) args = { info, exception };
     if (info->file)
     {
-        images = (Image *)CALL_FUNC_WITHOUT_GVL(fp, &args);
+        images = (Image *)CALL_FUNC_WITHOUT_GVL(fp, call_args);
     }
     else
     {
-        images = rm_offload_image(fp, &args, info_obj, exception);
+        images = rm_offload_image(fp, call_args, info_obj, exception);
     }
 
 #if defined(__APPLE__) || defined(__FreeBSD__)
-    if (sigaction(SIGCHLD, &oldact, NULL) < 0)
+    if (sigchld_call.error)
     {
+        errno = sigchld_call.error;
         rb_sys_fail("sigaction");
     }
 #endif

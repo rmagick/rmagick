@@ -320,7 +320,6 @@ rm_check_destroyed(VALUE obj)
 {
     Image *image;
 
-    rm_wait_for_offload(obj);
     TypedData_Get_Struct(obj, Image, &rm_image_data_type, image);
     if (!image)
     {
@@ -1830,17 +1829,59 @@ handle_exception(ExceptionInfo *exception, Image *imglist, ErrorRetention retent
  *    what it would have released, and it is released before re-raising.
  *
  * 2. Other fibers on the same thread run while the call is in flight. They
- *    could modify or destroy the image the worker is using. While a call is
- *    in flight on an object, every other fiber that touches that object
- *    through rm_check_destroyed waits for the call to finish.
+ *    could destroy the image the worker is using, or start another call on
+ *    it. While a call is in flight on an object, a fiber that would free the
+ *    object's image (Image#destroy!, Image#marshal_load) or offload another
+ *    call on it waits for the call to finish. Nothing else waits: a wait is a
+ *    point where other fibers run, and the C functions fetch their Image
+ *    pointers before doing anything else, so a wait inside rm_check_destroyed
+ *    would let another fiber destroy an image a caller has already fetched.
+ *    Concurrent reads and in-place changes from other fibers are left alone,
+ *    as they are between threads.
+ *
+ * The bookkeeping is per Ractor. Ruby objects never cross Ractors, so a call
+ * in flight in one Ractor never has to be waited for in another.
  *
  * Without a scheduler that offloads, or on Ruby before 4.0, these functions
  * are CALL_FUNC_WITHOUT_GVL.
  */
 
 #if defined(RMAGICK_OFFLOAD_SAFE)
-static st_table *offload_locks = NULL;   // object => Mutex, while a call is in flight on the object
-static int offload_count = 0;
+typedef struct
+{
+    st_table *locks;   // object => Mutex, while a call is in flight on the object
+    int count;
+} offload_state_t;
+
+static rb_ractor_local_key_t offload_state_key;
+
+static void
+offload_state_free(void *ptr)
+{
+    offload_state_t *state = (offload_state_t *)ptr;
+
+    if (state->locks)
+    {
+        st_free_table(state->locks);
+    }
+    xfree(state);
+}
+
+static const struct rb_ractor_local_storage_type offload_state_type = { NULL, offload_state_free };
+
+static offload_state_t *
+offload_state(int create)
+{
+    offload_state_t *state = (offload_state_t *)rb_ractor_local_storage_ptr(offload_state_key);
+
+    if (!state && create)
+    {
+        state = ZALLOC(offload_state_t);
+        state->locks = st_init_numtable();
+        rb_ractor_local_storage_ptr_set(offload_state_key, state);
+    }
+    return state;
+}
 
 typedef struct
 {
@@ -1888,7 +1929,23 @@ offload_p(void)
 
 
 /**
+ * Set up the offload bookkeeping. Called once, when the extension is loaded.
+ *
+ * No Ruby usage (internal function)
+ */
+void
+rm_init_offload(void)
+{
+#if defined(RMAGICK_OFFLOAD_SAFE)
+    offload_state_key = rb_ractor_local_storage_ptr_newkey(&offload_state_type);
+#endif
+}
+
+
+/**
  * Wait until no other fiber has an offloaded call in flight on the object.
+ * Other fibers run while this waits, so call it before fetching any Image
+ * pointer the caller relies on.
  *
  * No Ruby usage (internal function)
  *
@@ -1898,9 +1955,10 @@ void
 rm_wait_for_offload(VALUE obj)
 {
 #if defined(RMAGICK_OFFLOAD_SAFE)
+    offload_state_t *state = offload_state(0);
     st_data_t mutex;
 
-    while (offload_count > 0 && st_lookup(offload_locks, (st_data_t)obj, &mutex))
+    while (state && state->count > 0 && st_lookup(state->locks, (st_data_t)obj, &mutex))
     {
         rb_mutex_lock((VALUE)mutex);
         rb_mutex_unlock((VALUE)mutex);
@@ -1917,6 +1975,50 @@ typedef enum
     OffloadResultImage,
     OffloadResultMemory
 } OffloadResultType;
+
+
+#if defined(RMAGICK_OFFLOAD_SAFE)
+// Release what the caller would have released after the call.
+static void
+offload_release(OffloadResultType result_type, void *result, ExceptionInfo *exception, Image *image
+#if defined(IMAGEMAGICK_7)
+                , Image *masked_image, ChannelType channel_mask
+#endif
+                )
+{
+    switch (result_type)
+    {
+        case OffloadResultImage:
+            if (result)
+            {
+                DestroyImageList((Image *)result);
+            }
+            break;
+        case OffloadResultMemory:
+            if (result)
+            {
+                magick_free(result);
+            }
+            break;
+        case OffloadResultIgnored:
+            break;
+    }
+    if (image)
+    {
+        DestroyImageList(image);
+    }
+#if defined(IMAGEMAGICK_7)
+    if (masked_image)
+    {
+        SetPixelChannelMask(masked_image, channel_mask);
+    }
+#endif
+    if (exception)
+    {
+        DestroyExceptionInfo(exception);
+    }
+}
+#endif
 
 
 /**
@@ -1946,64 +2048,45 @@ offload(gvl_function_t *fp, void *args, VALUE obj, OffloadResultType result_type
     if (offload_p())
     {
         offload_call_t call = { fp, args, NULL };
+        offload_state_t *state;
         VALUE mutex;
         st_data_t key = (st_data_t)obj;
-        int state;
+        int tag;
 
         rm_wait_for_offload(obj);
+        if (rb_typeddata_is_kind_of(obj, &rm_image_data_type) && !DATA_PTR(obj))
+        {
+            // Another fiber destroyed the image while this one waited.
+            offload_release(result_type, NULL, exception, image
+#if defined(IMAGEMAGICK_7)
+                            , masked_image, channel_mask
+#endif
+                            );
+            rb_raise(Class_DestroyedImageError, "destroyed image");
+        }
 
+        state = offload_state(1);
         mutex = rb_mutex_new();
         rb_mutex_lock(mutex);
-        if (!offload_locks)
-        {
-            offload_locks = st_init_numtable();
-        }
-        st_insert(offload_locks, key, (st_data_t)mutex);
-        offload_count++;
+        st_insert(state->locks, key, (st_data_t)mutex);
+        state->count++;
 
-        rb_protect(offload_call, (VALUE)&call, &state);
+        rb_protect(offload_call, (VALUE)&call, &tag);
 
-        st_delete(offload_locks, &key, NULL);
-        offload_count--;
+        st_delete(state->locks, &key, NULL);
+        state->count--;
         rb_mutex_unlock(mutex);
         RB_GC_GUARD(mutex);
 
-        if (state)
+        if (tag)
         {
             // The scheduler raised into this fiber after the worker finished.
-            // Release what the caller would have released after the call.
-            switch (result_type)
-            {
-                case OffloadResultImage:
-                    if (call.result)
-                    {
-                        DestroyImageList((Image *)call.result);
-                    }
-                    break;
-                case OffloadResultMemory:
-                    if (call.result)
-                    {
-                        magick_free(call.result);
-                    }
-                    break;
-                case OffloadResultIgnored:
-                    break;
-            }
-            if (image)
-            {
-                DestroyImageList(image);
-            }
+            offload_release(result_type, call.result, exception, image
 #if defined(IMAGEMAGICK_7)
-            if (masked_image)
-            {
-                SetPixelChannelMask(masked_image, channel_mask);
-            }
+                            , masked_image, channel_mask
 #endif
-            if (exception)
-            {
-                DestroyExceptionInfo(exception);
-            }
-            rb_jump_tag(state);
+                            );
+            rb_jump_tag(tag);
         }
 
         return call.result;
