@@ -7,8 +7,13 @@ typedef void *(gvl_function_t)(void *);
 
 #define GVL_FUNC(name)        name##_gvl
 #define GVL_STRUCT_TYPE(name) name##_args_t
+#if defined(RB_NOGVL_OFFLOAD_SAFE)
+#define CALL_FUNC_WITHOUT_GVL(fp, args) \
+    rb_nogvl(fp, args, RUBY_UBF_PROCESS, NULL, RB_NOGVL_OFFLOAD_SAFE)
+#else
 #define CALL_FUNC_WITHOUT_GVL(fp, args) \
     rb_thread_call_without_gvl(fp, args, RUBY_UBF_PROCESS, NULL)
+#endif
 
 
 #define DEFINE_GVL_STRUCT1(name, type1) \
