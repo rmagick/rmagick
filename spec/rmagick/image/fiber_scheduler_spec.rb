@@ -86,7 +86,7 @@ RSpec.describe Magick::Image, if: offloading do
       expect(image.negate.pixel_color(0, 0).to_color).to eq(red_image.negate.pixel_color(0, 0).to_color)
     end
 
-    it "makes another fiber wait for a call in flight before it touches the image" do
+    it "makes another fiber wait for a call in flight before it destroys the image" do
       image = described_class.new(2000, 2000)
       order = []
 
@@ -104,6 +104,54 @@ RSpec.describe Magick::Image, if: offloading do
       expect(order).to eq(%i[blurred destroyed])
       expect(image).to be_destroyed
       expect(result.columns).to eq(2000)
+    end
+
+    it "lets a fiber use an image while a call is in flight on another image" do
+      first = described_class.new(20, 20)
+      second = described_class.new(2000, 2000)
+
+      result = scheduler.run do
+        Fiber.schedule { second.gaussian_blur(0, 5) }
+        Fiber.schedule do
+          sleep(0.01)
+          first.destroy!
+        end
+        first.composite(second, 0, 0, Magick::OverCompositeOp)
+      end
+
+      expect(result.columns).to eq(20)
+      expect(first).to be_destroyed
+    end
+
+    it "restores the SIGCHLD handler when a cancelled read is unwound", if: offloading && RUBY_PLATFORM.match?(/darwin|freebsd/) do
+      calls = 0
+      previous = Signal.trap("CHLD") { calls += 1 }
+      begin
+        scheduler.cancel_next_operation(cancelled.new)
+        expect { scheduler.run { described_class.read(FLOWER_HAT) } }.to raise_error(cancelled)
+
+        Process.kill("CHLD", Process.pid)
+        sleep(0.05)
+        expect(calls).to eq(1)
+      ensure
+        Signal.trap("CHLD", previous)
+      end
+    end
+
+    it "keeps the bookkeeping per Ractor", if: offloading && defined?(Ractor) do
+      experimental = Warning[:experimental]
+      Warning[:experimental] = false
+      ractors = Array.new(4) do
+        Ractor.new(described_class) do |image_class|
+          image = image_class.new(5, 5)
+          OffloadingScheduler.new.run { 200.times { image.blur_image.destroy! } }
+          :ok
+        end
+      end
+
+      expect(ractors.map(&:value)).to all(eq(:ok))
+    ensure
+      Warning[:experimental] = experimental
     end
 
     it "reads a blob that another fiber modifies meanwhile" do
