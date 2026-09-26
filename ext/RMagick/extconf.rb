@@ -292,6 +292,9 @@ module RMagick
         have_func(func, headers)
       end
 
+      # Ruby 4.0: lets a Fiber scheduler run GVL-free calls on its worker pool
+      have_func('rb_fiber_scheduler_blocking_operation_extract', headers + ['ruby/fiber/scheduler.h'])
+
       # Miscellaneous constants
       $defs.push("-DRUBY_VERSION_STRING=\"ruby #{RUBY_VERSION}\"")
       $defs.push("-DRMAGICK_VERSION_STRING=\"RMagick #{RMAGICK_VERS}\"")

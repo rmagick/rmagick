@@ -1164,6 +1164,14 @@ extern void   rm_check_ary_len(VALUE, long);
 extern VALUE  rm_check_ary_type(VALUE ary);
 extern Image *rm_check_destroyed(VALUE);
 extern Image *rm_check_frozen(VALUE);
+extern void   rm_wait_for_offload(VALUE);
+extern Image *rm_offload_image(gvl_function_t *, void *, VALUE, ExceptionInfo *);
+extern Image *rm_offload_image_and_destroy(gvl_function_t *, void *, VALUE, ExceptionInfo *, Image *);
+extern void  *rm_offload_call(gvl_function_t *, void *, VALUE, ExceptionInfo *, Image *);
+extern void  *rm_offload_blob(gvl_function_t *, void *, VALUE, ExceptionInfo *);
+#if defined(IMAGEMAGICK_7)
+extern Image *rm_offload_masked_image(gvl_function_t *, void *, VALUE, ExceptionInfo *, Image *, ChannelType);
+#endif
 extern char  *rm_str2cstr(VALUE *, size_t *);
 extern char  *rm_path2cstr(VALUE *, size_t *);
 extern int    rm_check_num2dbl(VALUE);

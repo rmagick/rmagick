@@ -320,6 +320,7 @@ rm_check_destroyed(VALUE obj)
 {
     Image *image;
 
+    rm_wait_for_offload(obj);
     TypedData_Get_Struct(obj, Image, &rm_image_data_type, image);
     if (!image)
     {
@@ -1807,6 +1808,341 @@ handle_exception(ExceptionInfo *exception, Image *imglist, ErrorRetention retent
 
     rm_magick_error(msg);
 }
+
+
+/*
+ * Offloading GVL-free calls to a Fiber scheduler
+ *
+ * CALL_FUNC_WITHOUT_GVL releases the GVL but keeps the calling thread busy
+ * until the ImageMagick function returns. Under a Fiber scheduler that has a
+ * worker pool (Async with IO::Event::WorkerPool), that stalls every fiber on
+ * the thread for the whole operation. Ruby 4.0 lets rb_nogvl hand a call to
+ * the scheduler instead (RB_NOGVL_OFFLOAD_SAFE, Feature #20876): the call runs
+ * on a worker thread while the calling fiber is suspended.
+ *
+ * Two things change for the caller when that happens, and the rm_offload_*
+ * functions below deal with both:
+ *
+ * 1. The scheduler can raise into the waiting fiber, for example when the
+ *    task is stopped or times out. The scheduler waits for the worker to
+ *    finish first, so the call has completed, but the exception unwinds
+ *    through the caller and skips the code after the call. The caller passes
+ *    what it would have released, and it is released before re-raising.
+ *
+ * 2. Other fibers on the same thread run while the call is in flight. They
+ *    could modify or destroy the image the worker is using. While a call is
+ *    in flight on an object, every other fiber that touches that object
+ *    through rm_check_destroyed waits for the call to finish.
+ *
+ * Without a scheduler that offloads, or on Ruby before 4.0, these functions
+ * are CALL_FUNC_WITHOUT_GVL.
+ */
+
+#if defined(RMAGICK_OFFLOAD_SAFE)
+static st_table *offload_locks = NULL;   // object => Mutex, while a call is in flight on the object
+static int offload_count = 0;
+
+typedef struct
+{
+    gvl_function_t *fp;
+    void *args;
+    void *result;
+} offload_call_t;
+
+// Runs on the worker thread. Stores the result here rather than relying on
+// the return value of rb_nogvl, which is lost when the scheduler raises into
+// the waiting fiber.
+static void *
+offload_run(void *arg)
+{
+    offload_call_t *call = (offload_call_t *)arg;
+
+    call->result = call->fp(call->args);
+    return call->result;
+}
+
+static VALUE
+offload_call(VALUE arg)
+{
+    rb_nogvl(offload_run, (void *)arg, RUBY_UBF_PROCESS, NULL, RB_NOGVL_OFFLOAD_SAFE);
+    return Qnil;
+}
+
+static int
+offload_p(void)
+{
+    static ID id_blocking_operation_wait = 0;
+    VALUE scheduler = rb_fiber_scheduler_current();
+
+    if (scheduler == Qnil)
+    {
+        return 0;
+    }
+    if (!id_blocking_operation_wait)
+    {
+        id_blocking_operation_wait = rb_intern("blocking_operation_wait");
+    }
+    return rb_respond_to(scheduler, id_blocking_operation_wait);
+}
+#endif
+
+
+/**
+ * Wait until no other fiber has an offloaded call in flight on the object.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param obj the object, usually an Image
+ */
+void
+rm_wait_for_offload(VALUE obj)
+{
+#if defined(RMAGICK_OFFLOAD_SAFE)
+    st_data_t mutex;
+
+    while (offload_count > 0 && st_lookup(offload_locks, (st_data_t)obj, &mutex))
+    {
+        rb_mutex_lock((VALUE)mutex);
+        rb_mutex_unlock((VALUE)mutex);
+    }
+#else
+    (void)obj;
+#endif
+}
+
+
+typedef enum
+{
+    OffloadResultIgnored,
+    OffloadResultImage,
+    OffloadResultMemory
+} OffloadResultType;
+
+
+/**
+ * Run fp(args) without the GVL, letting a Fiber scheduler offload it.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param fp the function
+ * @param args its argument struct, on the caller's stack
+ * @param obj the Ruby object whose image the call uses
+ * @param result_type what to do with the result if the call is unwound
+ * @param exception released if the call is unwound, may be NULL
+ * @param image destroyed if the call is unwound, may be NULL
+ * @param masked_image image whose channel mask is restored if the call is unwound (ImageMagick 7)
+ * @param channel_mask the channel mask to restore
+ * @return the result of fp
+ */
+static void *
+offload(gvl_function_t *fp, void *args, VALUE obj, OffloadResultType result_type,
+        ExceptionInfo *exception, Image *image
+#if defined(IMAGEMAGICK_7)
+        , Image *masked_image, ChannelType channel_mask
+#endif
+        )
+{
+#if defined(RMAGICK_OFFLOAD_SAFE)
+    if (offload_p())
+    {
+        offload_call_t call = { fp, args, NULL };
+        VALUE mutex;
+        st_data_t key = (st_data_t)obj;
+        int state;
+
+        rm_wait_for_offload(obj);
+
+        mutex = rb_mutex_new();
+        rb_mutex_lock(mutex);
+        if (!offload_locks)
+        {
+            offload_locks = st_init_numtable();
+        }
+        st_insert(offload_locks, key, (st_data_t)mutex);
+        offload_count++;
+
+        rb_protect(offload_call, (VALUE)&call, &state);
+
+        st_delete(offload_locks, &key, NULL);
+        offload_count--;
+        rb_mutex_unlock(mutex);
+        RB_GC_GUARD(mutex);
+
+        if (state)
+        {
+            // The scheduler raised into this fiber after the worker finished.
+            // Release what the caller would have released after the call.
+            switch (result_type)
+            {
+                case OffloadResultImage:
+                    if (call.result)
+                    {
+                        DestroyImageList((Image *)call.result);
+                    }
+                    break;
+                case OffloadResultMemory:
+                    if (call.result)
+                    {
+                        magick_free(call.result);
+                    }
+                    break;
+                case OffloadResultIgnored:
+                    break;
+            }
+            if (image)
+            {
+                DestroyImageList(image);
+            }
+#if defined(IMAGEMAGICK_7)
+            if (masked_image)
+            {
+                SetPixelChannelMask(masked_image, channel_mask);
+            }
+#endif
+            if (exception)
+            {
+                DestroyExceptionInfo(exception);
+            }
+            rb_jump_tag(state);
+        }
+
+        return call.result;
+    }
+#else
+    (void)obj;
+    (void)result_type;
+    (void)exception;
+    (void)image;
+#if defined(IMAGEMAGICK_7)
+    (void)masked_image;
+    (void)channel_mask;
+#endif
+#endif
+
+    return CALL_FUNC_WITHOUT_GVL(fp, args);
+}
+
+
+/**
+ * Run an ImageMagick function that returns a new image, letting a Fiber
+ * scheduler offload it. If the call is unwound, the new image and exception
+ * are released.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param fp the function
+ * @param args its argument struct
+ * @param obj the Ruby object whose image the call uses
+ * @param exception the ExceptionInfo passed to the call, may be NULL
+ * @return the new image
+ */
+Image *
+rm_offload_image(gvl_function_t *fp, void *args, VALUE obj, ExceptionInfo *exception)
+{
+    return (Image *)offload(fp, args, obj, OffloadResultImage, exception, NULL
+#if defined(IMAGEMAGICK_7)
+                            , NULL, UndefinedChannel
+#endif
+                            );
+}
+
+
+/**
+ * Like rm_offload_image, for a call that reads a scratch image the caller
+ * destroys afterwards. If the call is unwound, the scratch image is destroyed
+ * as well.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param fp the function
+ * @param args its argument struct
+ * @param obj the Ruby object whose image the call uses
+ * @param exception the ExceptionInfo passed to the call, may be NULL
+ * @param scratch the scratch image, may be NULL
+ * @return the new image
+ */
+Image *
+rm_offload_image_and_destroy(gvl_function_t *fp, void *args, VALUE obj, ExceptionInfo *exception, Image *scratch)
+{
+    return (Image *)offload(fp, args, obj, OffloadResultImage, exception, scratch
+#if defined(IMAGEMAGICK_7)
+                            , NULL, UndefinedChannel
+#endif
+                            );
+}
+
+
+/**
+ * Run an ImageMagick function whose result needs no release, letting a Fiber
+ * scheduler offload it. If the call is unwound, the image and exception are
+ * released.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param fp the function
+ * @param args its argument struct
+ * @param obj the Ruby object whose image the call uses
+ * @param exception the ExceptionInfo passed to the call, may be NULL
+ * @param image an image the caller would destroy on error, may be NULL
+ * @return the result of the call
+ */
+void *
+rm_offload_call(gvl_function_t *fp, void *args, VALUE obj, ExceptionInfo *exception, Image *image)
+{
+    return offload(fp, args, obj, OffloadResultIgnored, exception, image
+#if defined(IMAGEMAGICK_7)
+                   , NULL, UndefinedChannel
+#endif
+                   );
+}
+
+
+/**
+ * Run an ImageMagick function that returns memory the caller frees with
+ * magick_free, letting a Fiber scheduler offload it. If the call is unwound,
+ * the memory and exception are released.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param fp the function
+ * @param args its argument struct
+ * @param obj the Ruby object whose image the call uses
+ * @param exception the ExceptionInfo passed to the call, may be NULL
+ * @return the result of the call
+ */
+void *
+rm_offload_blob(gvl_function_t *fp, void *args, VALUE obj, ExceptionInfo *exception)
+{
+    return offload(fp, args, obj, OffloadResultMemory, exception, NULL
+#if defined(IMAGEMAGICK_7)
+                   , NULL, UndefinedChannel
+#endif
+                   );
+}
+
+
+#if defined(IMAGEMAGICK_7)
+/**
+ * Like rm_offload_image, for a call made while the channel mask of an image
+ * is changed. If the call is unwound, the channel mask is restored as well.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param fp the function
+ * @param args its argument struct
+ * @param obj the Ruby object whose image the call uses
+ * @param exception the ExceptionInfo passed to the call, may be NULL
+ * @param masked_image the image whose channel mask was changed
+ * @param channel_mask its channel mask before the change
+ * @return the new image
+ */
+Image *
+rm_offload_masked_image(gvl_function_t *fp, void *args, VALUE obj, ExceptionInfo *exception,
+                        Image *masked_image, ChannelType channel_mask)
+{
+    return (Image *)offload(fp, args, obj, OffloadResultImage, exception, NULL, masked_image, channel_mask);
+}
+#endif
 
 
 /**
