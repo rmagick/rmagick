@@ -208,6 +208,10 @@
 
             <li><a href="#composite_affine">composite_affine</a></li>
 
+            <li><a href="#composite_channel">composite_channel</a></li>
+
+            <li><a href="#composite_channel_bang">composite_channel!</a></li>
+
             <li><a href="#composite_mathematics">composite_mathematics</a></li>
 
             <li><a href="#composite_tiled">composite_tiled</a></li>
@@ -3282,6 +3286,99 @@ Magick::Image.new(10, 10).channel_entropy #=&gt; [0.0]
       <h4>Magick API</h4>
 
       <p>DrawAffineImage</p>
+    </div>
+
+    <div class="sig">
+      <h3 id="composite_channel">composite_channel</h3>
+
+      <p>
+        <span class="arg">dest</span>.composite_channel(<span class="arg">src</span>, <span class="arg">x</span>, <span class="arg">y</span>,
+        <span class="arg">composite_op</span>[, <span class="arg">channel</span>...]) -&gt; <em>image</em><br />
+        <span class="arg">dest</span>.composite_channel(<span class="arg">src</span>, <span class="arg">gravity</span>,
+        <span class="arg">composite_op</span>[, <span class="arg">channel</span>...]) -&gt; <em>image</em><br />
+        <span class="arg">dest</span>.composite_channel(<span class="arg">src</span>, <span class="arg">gravity</span>, <span class="arg">x</span>,
+        <span class="arg">y</span>, <span class="arg">composite_op</span>[, <span class="arg">channel</span>...]) -&gt; <em>image</em>
+      </p>
+    </div>
+
+    <div class="desc">
+      <h4>Description</h4>
+
+      <p>
+        Composites <span class="arg">src</span> onto <span class="arg">dest</span> using the specified composite operator, changing only the specified
+        channels of <span class="arg">dest</span>.
+      </p>
+
+      <h4>Arguments</h4>
+
+      <p>
+        The arguments before <span class="arg">channel</span> are the same as those of <a href="#composite">composite</a>, which can be called three
+        different ways.
+      </p>
+
+      <dl>
+        <dt>channel...</dt>
+
+        <dd>
+          Zero or more
+          <a href="constants.html#ChannelType">ChannelType</a> values. If no channels are specified, the default is all channels.
+        </dd>
+      </dl>
+
+      <h4>Returns</h4>
+
+      <p>A new image</p>
+
+      <h4>Example</h4>
+
+      <pre class="language-ruby">
+dest = Magick::Image.new(100, 100) { |options| options.background_color = 'white' }
+src = Magick::Image.new(50, 50) { |options| options.background_color = 'black' }
+
+img = dest.composite_channel(src, Magick::CenterGravity, Magick::MultiplyCompositeOp, Magick::RedChannel)
+img.pixel_color(50, 50).to_color #=&gt; "#0000FFFFFFFF" (cyan, with Q16)
+</pre>
+
+      <h4>Notes</h4>
+
+      <p>
+        Some composite operators change every channel whatever channels are specified: <code>CopyCompositeOp</code>, <code>OverCompositeOp</code> and
+        <code>SrcOverCompositeOp</code>, and with ImageMagick 6 also <code>ReplaceCompositeOp</code> and <code>SrcCompositeOp</code>.
+      </p>
+
+      <h4>See also</h4>
+
+      <p>
+        <a href="#composite_channel_bang">composite_channel!</a>,
+        <a href="#composite">composite</a>
+      </p>
+
+      <h4>Magick API</h4>
+
+      <p>CompositeImageChannel</p>
+    </div>
+
+    <div class="sig">
+      <h3 id="composite_channel_bang">composite_channel!</h3>
+
+      <p>
+        <span class="arg">dest</span>.composite_channel!(<span class="arg">src</span>, <span class="arg">x</span>, <span class="arg">y</span>,
+        <span class="arg">composite_op</span>[, <span class="arg">channel</span>...]) -&gt; <em>self</em><br />
+        <span class="arg">dest</span>.composite_channel!(<span class="arg">src</span>, <span class="arg">gravity</span>,
+        <span class="arg">composite_op</span>[, <span class="arg">channel</span>...]) -&gt; <em>self</em><br />
+        <span class="arg">dest</span>.composite_channel!(<span class="arg">src</span>, <span class="arg">gravity</span>, <span class="arg">x</span>,
+        <span class="arg">y</span>, <span class="arg">composite_op</span>[, <span class="arg">channel</span>...]) -&gt; <em>self</em>
+      </p>
+    </div>
+
+    <div class="desc">
+      <h4>Description</h4>
+
+      <p>In-place form of <a href="#composite_channel">composite_channel</a>.</p>
+
+      <h4>Returns</h4>
+
+      <p>self</p>
     </div>
 
     <div class="sig">
