@@ -45,6 +45,8 @@
 
         <li><a href="#limit_resource">limit_resource</a></li>
 
+        <li><a href="#resource_usage">resource_usage</a></li>
+
         <li><a href="#set_cache_threshold">set_cache_threshold</a></li>
 
         <li><a href="#set_log_event_mask">set_log_event_mask</a></li>
@@ -340,8 +342,8 @@ p Magick.formats
 
         <dd>
           If present, the limit for the resource. This argument is always an integer number. If the <span class="arg">resource_type</span> is
-          <code>:file</code>, the limit is the number of open files. If <code>:memory</code> or <code>:map</code>, the limit is measured in megabytes. If
-          <code>:disk</code>, the limit is measured in gigabytes. If the <span class="arg">resource_type</span> is <code>:area</code> the limit is the maximum
+          <code>:file</code>, the limit is the number of open files. If <code>:memory</code>, <code>:map</code> or <code>:disk</code>, the limit is measured in
+          bytes. If the <span class="arg">resource_type</span> is <code>:area</code> the limit is the maximum
           width * height of an image in pixels that can reside in pixel cache memory. If <code>:time</code>, the limit is measured in seconds. If this argument
           is omitted the limit is not changed.
         </dd>
@@ -359,6 +361,63 @@ p Magick.formats
         Setting the <code>:time</code> limit resets the elapsed time to zero in the pixel cache. Call it before any operation that you need to set a time limit
         on.
       </p>
+    </div>
+
+    <div class="sig">
+      <h3 id="resource_usage">resource_usage</h3>
+
+      <p>Magick.resource_usage(<span class="arg">resource_type</span>) -&gt; <em>integer</em></p>
+    </div>
+
+    <div class="desc">
+      <h4>Description</h4>
+
+      <p>
+        Gets the amount of a resource that ImageMagick is using now. The <code>:memory</code>, <code>:map</code> and <code>:disk</code> resources are in bytes.
+        Most of them are the pixel caches of all images held in memory, in memory-mapped files and on disk, including those of Image objects that are no longer
+        referenced but have not been garbage collected yet, which <code>ObjectSpace</code> cannot see. ImageMagick also counts blobs that it maps into memory
+        and a few internal buffers, but not other memory it allocates.
+      </p>
+
+      <h4>Arguments</h4>
+
+      <dl>
+        <dt>resource_type</dt>
+
+        <dd>
+          One of the symbols <code>:area</code>, <code>:disk</code>, <code>:file</code>, <code>:map</code>, <code>:memory</code>, or <code>:time</code>. You may
+          use a string instead of a symbol.
+        </dd>
+      </dl>
+
+      <h4>Returns</h4>
+
+      <p>The amount of the resource in use.</p>
+
+      <h4>Example</h4>
+
+      <pre class="language-ruby">
+image = Magick::Image.new(1000, 1000)
+p Magick.resource_usage(:memory)
+#=&gt; 12000000 (with Q16 HDRI, 3 channels of 4 bytes per pixel)
+
+# Collect unreferenced images once their pixel caches reach 1GB
+GC.start if Magick.resource_usage(:memory) &gt; 1024**3
+</pre>
+
+      <h4>Notes</h4>
+
+      <p>
+        The <code>:area</code> resource is the width * height of the last pixel cache that ImageMagick checked against its limit, not a total.
+      </p>
+
+      <h4>See also</h4>
+
+      <p><a href="#limit_resource">limit_resource</a></p>
+
+      <h4>Magick API</h4>
+
+      <p>GetMagickResource</p>
     </div>
 
     <div class="sig">

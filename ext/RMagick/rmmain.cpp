@@ -267,6 +267,7 @@ Init_RMagick2(void)
     rb_define_module_function(Module_Magick, "fonts", RUBY_METHOD_FUNC(Magick_fonts), 0);
     rb_define_module_function(Module_Magick, "init_formats", RUBY_METHOD_FUNC(Magick_init_formats), 0);
     rb_define_module_function(Module_Magick, "limit_resource", RUBY_METHOD_FUNC(Magick_limit_resource), -1);
+    rb_define_module_function(Module_Magick, "resource_usage", RUBY_METHOD_FUNC(Magick_resource_usage), 1);
     rb_define_module_function(Module_Magick, "set_cache_threshold", RUBY_METHOD_FUNC(Magick_set_cache_threshold), 1);
     rb_define_module_function(Module_Magick, "set_log_event_mask", RUBY_METHOD_FUNC(Magick_set_log_event_mask), -1);
     rb_define_module_function(Module_Magick, "set_log_format", RUBY_METHOD_FUNC(Magick_set_log_format), 1);
