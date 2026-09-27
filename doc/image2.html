@@ -188,6 +188,10 @@
 
             <li><a href="#monochrome_q">monochrome?</a></li>
 
+            <li><a href="#morphology">morphology</a></li>
+
+            <li><a href="#morphology_channel">morphology_channel</a></li>
+
             <li><a href="#motion_blur">motion_blur</a></li>
 
             <li><a href="#negate">negate</a></li>
@@ -3276,6 +3280,136 @@ img.level2(0, 1.5)
       <h4>Magick API</h4>
 
       <p>IsMonochromeImage</p>
+    </div>
+
+    <div class="sig">
+      <h3 id="morphology">morphology</h3>
+
+      <p>
+        <span class="arg">img</span>.morphology(<span class="arg">method</span>, <span class="arg">iterations</span>, <span class="arg">kernel</span>) -&gt;
+        <em>image</em>
+      </p>
+    </div>
+
+    <div class="desc">
+      <h4>Description</h4>
+
+      <p>
+        Applies a morphology method, such as dilate or erode, to the image using the specified kernel. This method corresponds to ImageMagick's
+        <a href="https://usage.imagemagick.org/morphology/">-morphology</a> option.
+      </p>
+
+      <p>
+        It changes the channels in <code>Magick::DefaultChannels</code>, which do not include the alpha channel, so a shape grown on a transparent
+        background stays transparent. To change the alpha channel as well, use <a href="#morphology_channel">morphology_channel</a> with
+        <code>Magick::AllChannels</code>.
+      </p>
+
+      <h4>Arguments</h4>
+
+      <dl>
+        <dt>method</dt>
+
+        <dd>A <a href="constants.html#MorphologyMethod">MorphologyMethod</a> value, such as <code>DilateMorphology</code>.</dd>
+
+        <dt>iterations</dt>
+
+        <dd>
+          How many times to repeat the operation, stopping early when the image no longer changes. -1 repeats until then, up to the larger of the width and
+          height of the image. For a compound method such as <code>OpenMorphology</code> or <code>CloseMorphology</code>, each of its primitive operations is
+          repeated in turn, so <code>CloseMorphology</code> with 2 dilates twice and then erodes twice. For <code>HitAndMissMorphology</code>,
+          <code>ThinningMorphology</code> and <code>ThickenMorphology</code>, the whole method is repeated. 0 raises <code>RuntimeError</code>, since
+          ImageMagick returns no image for it.
+        </dd>
+
+        <dt>kernel</dt>
+
+        <dd>
+          A <code>Magick::KernelInfo</code> object, or a string that describes the kernel in the form accepted by the
+          <a href="https://usage.imagemagick.org/morphology/#kernel">-morphology</a> option, such as <code>"Diamond"</code>, <code>"Disk:2.5"</code> or
+          <code>"3x3: 0,1,0 1,1,1 0,1,0"</code>. A string is converted with <code>Magick::KernelInfo.new</code>, which raises <code>RuntimeError</code> if
+          ImageMagick cannot parse it. Any other object raises <code>ArgumentError</code>.
+        </dd>
+      </dl>
+
+      <h4>Returns</h4>
+
+      <p>A new image</p>
+
+      <h4>Example</h4>
+
+      <pre class="language-ruby">
+img = Magick::Image.new(9, 9) { |options| options.background_color = 'black' }
+img.pixel_color(4, 4, 'white')
+
+# The white pixel grows into a diamond of 5 pixels
+img.morphology(Magick::DilateMorphology, 1, 'Diamond')
+
+# Twice, a diamond of 13 pixels
+img.morphology(Magick::DilateMorphology, 2, Magick::KernelInfo.new('Diamond'))
+</pre>
+
+      <h4>See also</h4>
+
+      <p><a href="#morphology_channel">morphology_channel</a></p>
+
+      <h4>Magick API</h4>
+
+      <p>MorphologyImageChannel</p>
+    </div>
+
+    <div class="sig">
+      <h3 id="morphology_channel">morphology_channel</h3>
+
+      <p>
+        <span class="arg">img</span>.morphology_channel(<span class="arg">channel</span>, <span class="arg">method</span>, <span class="arg">iterations</span>,
+        <span class="arg">kernel</span>) -&gt; <em>image</em>
+      </p>
+    </div>
+
+    <div class="desc">
+      <h4>Description</h4>
+
+      <p>Same as <a href="#morphology">morphology</a>, but changes only the specified channel.</p>
+
+      <h4>Arguments</h4>
+
+      <dl>
+        <dt>channel</dt>
+
+        <dd>A <a href="constants.html#ChannelType">ChannelType</a> value.</dd>
+
+        <dt>method, iterations, kernel</dt>
+
+        <dd>The same as for <a href="#morphology">morphology</a>.</dd>
+      </dl>
+
+      <h4>Returns</h4>
+
+      <p>A new image</p>
+
+      <h4>Example</h4>
+
+      <pre class="language-ruby">
+img = Magick::Image.new(9, 9) { |options| options.background_color = 'black' }
+img.pixel_color(4, 4, 'white')
+
+# Grow the white pixel in the red channel only: the 4 pixels around it turn red
+img.morphology_channel(Magick::RedChannel, Magick::DilateMorphology, 1, 'Diamond')
+
+# On a transparent background, grow the alpha channel too
+img = Magick::Image.new(9, 9) { |options| options.background_color = 'none' }
+img.pixel_color(4, 4, 'white')
+img.morphology_channel(Magick::AllChannels, Magick::DilateMorphology, 1, 'Diamond')
+</pre>
+
+      <h4>See also</h4>
+
+      <p><a href="#morphology">morphology</a></p>
+
+      <h4>Magick API</h4>
+
+      <p>MorphologyImageChannel</p>
     </div>
 
     <div class="sig">
