@@ -1,10 +1,20 @@
 name: CI
 
+# Changes only to the documentation in doc/ skip CI. The images in
+# doc/ex/images are test fixtures, so a change there still runs it.
 on:
   push:
     branches:
       - main
+    paths:
+      - '**'
+      - '!doc/**'
+      - 'doc/ex/images/**'
   pull_request:
+    paths:
+      - '**'
+      - '!doc/**'
+      - 'doc/ex/images/**'
   workflow_dispatch:
 
 permissions:
