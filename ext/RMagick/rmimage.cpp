@@ -12067,35 +12067,71 @@ Image_rendering_intent_eq(VALUE self, VALUE ri)
 
 #if defined(IMAGEMAGICK_7)
 /**
- * Create new blurred image.
+ * Return the image to resize or resample with the given blur factor.
+ *
+ * ImageMagick 7 dropped the blur argument of ResizeImage() and ResampleImage(). Their filter
+ * reads the factor from the "filter:blur" artifact instead, as ImageMagick 6 did on top of the
+ * argument, so the factor is set there, multiplied by any "filter:blur" the image already has.
+ * A factor of 1.0 leaves the filter as it is.
  *
  * No Ruby usage (internal function)
  *
  * @param image the image
- * @param blur the blur
- * @return NULL if not apply blur, otherwise a new image
+ * @param blur the blur factor: > 1.0 blurs and < 1.0 sharpens
+ * @return the image itself when blur is 1.0, otherwise a clone that shares its pixels and has
+ *   the artifact set, which the caller destroys
  */
 static Image*
-blurred_image(Image* image, double blur)
+image_with_filter_blur(Image* image, double blur)
 {
-    ExceptionInfo *exception;
-    Image *new_image;
+    Image *clone;
+    const char *artifact;
+    char value[MaxTextExtent];
 
-    exception = AcquireExceptionInfo();
-    if (blur > 1.0)
+    if (blur == 1.0)
     {
-        GVL_STRUCT_TYPE(BlurImage) args = { image, blur, blur, exception };
-        new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BlurImage), &args);
+        return image;
+    }
+
+    artifact = GetImageArtifact(image, "filter:blur");
+    if (artifact)
+    {
+        blur *= InterpretLocaleValue(artifact, (char **)NULL);
+    }
+    snprintf(value, sizeof(value), "%.17g", blur);
+
+    clone = rm_clone_image(image);
+    if (!SetImageArtifact(clone, "filter:blur", value))
+    {
+        DestroyImage(clone);
+        rb_raise(rb_eNoMemError, "not enough memory to continue");
+    }
+    return clone;
+}
+
+
+/**
+ * Give the result of a resize or resample the "filter:blur" artifact of the original image, or
+ * none, instead of the one image_with_filter_blur() set on the image it was made from.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param result the result image
+ * @param image the original image
+ */
+static void
+restore_filter_blur(Image* result, Image* image)
+{
+    const char *artifact = GetImageArtifact(image, "filter:blur");
+
+    if (artifact)
+    {
+        (void) SetImageArtifact(result, "filter:blur", artifact);
     }
     else
     {
-        GVL_STRUCT_TYPE(SharpenImage) args = { image, blur, blur, exception };
-        new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SharpenImage), &args);
+        (void) DeleteImageArtifact(result, "filter:blur");
     }
-    rm_check_exception(exception, new_image, DestroyOnError);
-    DestroyExceptionInfo(exception);
-
-    return new_image;
 }
 #endif
 
@@ -12180,12 +12216,22 @@ resample(int bang, int argc, VALUE *argv, VALUE self)
             break;
     }
 
+#if defined(IMAGEMAGICK_7)
+    // Before AcquireExceptionInfo(), since it can raise
+    Image *source = image_with_filter_blur(image, blur);
+#endif
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    Image *preprocess = blurred_image(image, blur);
-    GVL_STRUCT_TYPE(ResampleImage) args = { preprocess, x_resolution, y_resolution, filter, exception };
+    GVL_STRUCT_TYPE(ResampleImage) args = { source, x_resolution, y_resolution, filter, exception };
     new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ResampleImage), &args);
-    DestroyImage(preprocess);
+    if (source != image)
+    {
+        if (new_image)
+        {
+            restore_filter_blur(new_image, image);
+        }
+        DestroyImage(source);
+    }
 #else
     GVL_STRUCT_TYPE(ResampleImage) args = { image, x_resolution, y_resolution, filter, blur, exception };
     new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ResampleImage), &args);
@@ -12219,7 +12265,7 @@ resample(int bang, int argc, VALUE *argv, VALUE self)
  *   @param x_resolution [Numeric] the target horizontal resolution.
  *   @param y_resolution [Numeric] the target vertical resolution.
  *   @param filter [Magick::FilterType] the filter type
- *   @param blur [Numeric] the blur factor: with ImageMagick 6, > 1.0 blurs and < 1.0 sharpens
+ *   @param blur [Numeric] the blur factor of the filter: > 1.0 blurs and < 1.0 sharpens
  *   @return [Magick::Image] a new image
  *   @see Image#resample!
  */
@@ -12239,7 +12285,7 @@ Image_resample(int argc, VALUE *argv, VALUE self)
  *   @param x_resolution [Numeric] the target horizontal resolution.
  *   @param y_resolution [Numeric] the target vertical resolution.
  *   @param filter [Magick::FilterType] the filter type
- *   @param blur [Numeric] the blur factor: with ImageMagick 6, > 1.0 blurs and < 1.0 sharpens
+ *   @param blur [Numeric] the blur factor of the filter: > 1.0 blurs and < 1.0 sharpens
  *   @return [Magick::Image] self
  *   @see Image#resample
  */
@@ -12321,14 +12367,21 @@ resize(int bang, int argc, VALUE *argv, VALUE self)
             break;
     }
 
+#if defined(IMAGEMAGICK_7)
+    // Before AcquireExceptionInfo(), since it can raise
+    Image *source = image_with_filter_blur(image, blur);
+#endif
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    Image *preprocess = (argc == 4) ? blurred_image(image, blur) : image;
-    GVL_STRUCT_TYPE(ResizeImage) args = { preprocess, columns, rows, filter, exception };
+    GVL_STRUCT_TYPE(ResizeImage) args = { source, columns, rows, filter, exception };
     new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ResizeImage), &args);
-    if (argc == 4)
+    if (source != image)
     {
-        DestroyImage(preprocess);
+        if (new_image)
+        {
+            restore_filter_blur(new_image, image);
+        }
+        DestroyImage(source);
     }
 #else
     GVL_STRUCT_TYPE(ResizeImage) args = { image, columns, rows, filter, blur, exception };
@@ -12361,7 +12414,7 @@ resize(int bang, int argc, VALUE *argv, VALUE self)
  *   @param cols [Numeric] The desired width
  *   @param rows [Numeric] The desired height.
  *   @param filter [Magick::FilterType] the filter type
- *   @param blur [Numeric] the blur size
+ *   @param blur [Numeric] the blur factor of the filter: > 1.0 blurs and < 1.0 sharpens
  *
  * @return [Magick::Image] a new image
  * @see Image#resize!
@@ -12387,7 +12440,7 @@ Image_resize(int argc, VALUE *argv, VALUE self)
  *   @param cols [Numeric] The desired width
  *   @param rows [Numeric] The desired height.
  *   @param filter [Magick::FilterType] the filter type
- *   @param blur [Numeric] the blur size
+ *   @param blur [Numeric] the blur factor of the filter: > 1.0 blurs and < 1.0 sharpens
  *
  * @return [Magick::Image] a new image
  * @see Image#resize!

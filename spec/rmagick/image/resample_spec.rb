@@ -42,4 +42,23 @@ RSpec.describe Magick::Image, '#resample' do
     expect { image.resample(-100) }.to raise_error(ArgumentError)
     expect { image.resample(100, -100) }.to raise_error(ArgumentError)
   end
+
+  it 'leaves the image unchanged beyond the resize with the default blur factor' do
+    image = described_class.read(IMAGES_DIR + '/Flower_Hat.jpg').first
+    result = image.resample(120, 120, Magick::LanczosFilter)
+    resized = image.resize(result.columns, result.rows, Magick::LanczosFilter)
+
+    expect(result.difference(resized)[1]).to eq(0.0)
+    expect(image.resample(120, 120, Magick::LanczosFilter, 1.0).difference(result)[1]).to eq(0.0)
+  end
+
+  it 'applies the blur factor as the filter:blur artifact does' do
+    image = described_class.read(IMAGES_DIR + '/Flower_Hat.jpg').first
+    with_artifact = image.copy
+    with_artifact.define('filter:blur', '2')
+
+    result = image.resample(120, 120, Magick::LanczosFilter, 2.0)
+    expect(result.difference(with_artifact.resample(120, 120, Magick::LanczosFilter))[1]).to eq(0.0)
+    expect(result.artifact('filter:blur')).to be(nil)
+  end
 end

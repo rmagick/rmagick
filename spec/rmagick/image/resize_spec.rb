@@ -23,4 +23,11 @@ RSpec.describe Magick::Image, '#resize' do
     expect { image.resize(50, 50, Magick::SincFilter, 2.0, 'x') }.to raise_error(ArgumentError)
     expect { image.resize }.to raise_error(ArgumentError)
   end
+
+  it 'leaves the image unchanged beyond the resize with a blur factor of 1.0' do
+    image = described_class.read(IMAGES_DIR + '/Flower_Hat.jpg').first
+    resized = image.resize(100, 100, Magick::LanczosFilter)
+
+    expect(image.resize(100, 100, Magick::LanczosFilter, 1.0).difference(resized)[1]).to eq(0.0)
+  end
 end
