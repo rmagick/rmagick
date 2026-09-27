@@ -3325,7 +3325,7 @@ img.level2(0, 1.5)
         <dt>kernel</dt>
 
         <dd>
-          A <code>Magick::KernelInfo</code> object, or a string that describes the kernel in the form accepted by the
+          A <a href="struct.html#KernelInfo">Magick::KernelInfo</a> object, or a string that describes the kernel in the form accepted by the
           <a href="https://usage.imagemagick.org/morphology/#kernel">-morphology</a> option, such as <code>"Diamond"</code>, <code>"Disk:2.5"</code> or
           <code>"3x3: 0,1,0 1,1,1 0,1,0"</code>. A string is converted with <code>Magick::KernelInfo.new</code>, which raises <code>RuntimeError</code> if
           ImageMagick cannot parse it. Any other object raises <code>ArgumentError</code>.
