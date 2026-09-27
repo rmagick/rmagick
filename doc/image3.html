@@ -1299,9 +1299,9 @@ random_threshold_channel(geom, Magick::RedChannel)
         <dt>blur</dt>
 
         <dd>
-          The blur factor. The default is 1.0. With ImageMagick 6, a value greater than 1.0 blurs and a value less than 1.0 sharpens, and 1.0 changes
-          nothing. With ImageMagick 7, the image is blurred before resampling when the value is greater than 1.0 and sharpened otherwise, so the default
-          1.0 also sharpens it slightly.
+          The blur factor of the filter. The default is 1.0, which changes nothing; a value greater than 1.0 blurs and a value less than 1.0 sharpens. It
+          is multiplied by the <code>"filter:blur"</code> artifact if the image has one. In RMagick 7.1.5 and earlier with ImageMagick 7, the image was
+          instead blurred or sharpened before resampling, so even the default 1.0 sharpened it slightly.
         </dd>
       </dl>
 
