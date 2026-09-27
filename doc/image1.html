@@ -170,6 +170,8 @@
 
             <li><a href="#channel_depth">channel_depth</a></li>
 
+            <li><a href="#channel_entropy">channel_entropy</a></li>
+
             <li><a href="#channel_extrema">channel_extrema</a></li>
 
             <li><a href="#channel_mean">channel_mean</a></li>
@@ -2310,6 +2312,53 @@ mona.change_geometry!('320x240') { |cols, rows, img|
       <h4>Magick API</h4>
 
       <p>GetImageChannelDepth</p>
+    </div>
+
+    <div class="sig">
+      <h3 id="channel_entropy">channel_entropy</h3>
+
+      <p><span class="arg">img</span>.channel_entropy([<span class="arg">channel</span>...]) -&gt; <em>[number]</em></p>
+    </div>
+
+    <div class="desc">
+      <h4>Description</h4>
+
+      <p>
+        Returns the entropy of the specified channel or channels. The entropy of each channel is normalized by the number of distinct values in it, so it
+        ranges from 0.0, for a channel with a single value, to 1.0.
+      </p>
+
+      <h4>Arguments</h4>
+
+      <dl>
+        <dt>channel...</dt>
+
+        <dd>
+          Zero or more
+          <a href="constants.html#ChannelType">ChannelType</a> values. If no arguments are specified, the default is all channels.
+        </dd>
+      </dl>
+
+      <h4>Returns</h4>
+
+      <p>An array. The first and only element in the array is the average entropy of the specified channels.</p>
+
+      <h4>Example</h4>
+
+      <pre class="language-ruby">
+img = Magick::Image.read('Flower_Hat.jpg').first
+img.channel_entropy                       #=&gt; [0.973284848841281]
+img.channel_entropy(Magick::RedChannel)   #=&gt; [0.967219883311157]
+Magick::Image.new(10, 10).channel_entropy #=&gt; [0.0]
+</pre>
+
+      <h4>See also</h4>
+
+      <p><a href="#channel_mean">channel_mean</a></p>
+
+      <h4>Magick API</h4>
+
+      <p>GetImageChannelEntropy</p>
     </div>
 
     <div class="sig">
