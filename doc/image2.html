@@ -109,6 +109,8 @@
             <li><a href="#freeze">freeze</a></li>
 
             <li><a href="#function_channel">function_channel</a></li>
+
+            <li><a href="#fx">fx</a></li>
           </ul>
         </div>
 
@@ -1139,6 +1141,81 @@ scanline = img.export_pixels(0, r, img.columns, 1, "RGB");
       <h4>See also</h4>
 
       <p><a href="image3.html#quantum_operator">quantum_operator</a></p>
+    </div>
+
+    <div class="sig">
+      <h3 id="fx">fx</h3>
+
+      <p><span class="arg">img</span>.fx(<span class="arg">expression</span>[, <span class="arg">channel</span>...]) -&gt; <em>image</em></p>
+    </div>
+
+    <div class="desc">
+      <h4>Description</h4>
+
+      <p>
+        Applies the specified mathematical expression to the image. This method corresponds to ImageMagick's
+        <a href="https://imagemagick.org/script/fx.php">-fx</a> operator.
+      </p>
+
+      <h4>Arguments</h4>
+
+      <dl>
+        <dt>expression</dt>
+
+        <dd>A mathematical expression of the form accepted by the -fx operator. The <code>u</code> symbol refers to this image.</dd>
+
+        <dt>channel...</dt>
+
+        <dd>
+          Zero or more
+          <a href="constants.html#ChannelType">ChannelType</a> values. Specify the output channels. If no channels are specified, the result is set over all
+          channels, with the difference for the alpha channel described in the notes.
+        </dd>
+      </dl>
+
+      <h4>Returns</h4>
+
+      <p>A new image</p>
+
+      <h4>Example</h4>
+
+      <pre class="language-ruby">
+# Produce a navy blue image from a black image
+img = Magick::Image.new(64, 64) { |options| options.background_color = 'black' }
+res = img.fx('1/2', Magick::BlueChannel)
+
+# A horizontal gradient: i is the column of the pixel and w the width of the image
+res = img.fx('i/w')
+</pre>
+
+      <h4>Notes</h4>
+
+      <ul>
+        <li>
+          Fx expressions are interpreted, so this method can be slow for complex expressions. Accessing the pixels as
+          <a href="struct.html#Pixel">Pixel</a> objects (see <a href="#get_pixels">get_pixels</a> and <a href="image3.html#view">view</a>) and doing the
+          mathematics in Ruby is often faster.
+        </li>
+
+        <li>
+          The expression can refer only to this image, as <code>u</code>, <code>u[0]</code> or <code>s</code>. A reference to a second image, such as
+          <code>v</code> or <code>u[1]</code>, raises <code>Magick::ImageMagickError</code>. Called on an imagelist, <code>fx</code> applies to the current
+          image only.
+        </li>
+
+        <li>
+          With no channels specified, ImageMagick 6 leaves the alpha channel unchanged, while ImageMagick 7 sets it to the result as well. Specify the channels
+          to get the same result with both.
+        </li>
+      </ul>
+
+      <h4>See also</h4>
+
+      <p><a href="#function_channel">function_channel</a></p>
+
+      <h4>Magick API</h4>
+
+      <p>FxImageChannel</p>
     </div>
 
     <div class="sig">
