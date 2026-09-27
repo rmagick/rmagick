@@ -246,6 +246,8 @@
 
             <li><a href="#decipher">decipher</a></li>
 
+            <li><a href="#define">define</a></li>
+
             <li><a href="#delete_compose_mask">delete_compose_mask</a></li>
 
             <li><a href="#delete_profile">delete_profile</a></li>
@@ -1605,7 +1607,7 @@ img = Magick::Image.read_inline(content)
       <h4>Description</h4>
 
       <p>
-        Return the value of an artifact. Artifacts are set by <code>Image#define</code>, by the
+        Return the value of an artifact. Artifacts are set by <a href="#define">define</a>, by the
         <a href="info.html#define">Image::Info#define</a> method in a block passed to <code>write</code> or <code>to_blob</code>, and by the
         <code>OptionalMethodArguments</code> class. They are separate from image properties, so neither <code>Image#[]</code> nor
         <a href="image3.html#properties">properties</a> returns them.
@@ -4059,6 +4061,68 @@ f.colors #=&gt; 108
       <h4>See also</h4>
 
       <p><a href="image2.html#encipher">encipher</a></p>
+    </div>
+
+    <div class="sig">
+      <h3 id="define">define</h3>
+
+      <p><span class="arg">img</span>.define(<span class="arg">name</span>, <span class="arg">value</span>) -&gt; <em>string or nil</em></p>
+    </div>
+
+    <div class="desc">
+      <h4>Description</h4>
+
+      <p>
+        Sets an artifact of the image, or removes it when <span class="arg">value</span> is <code>nil</code>. Artifacts are the image's equivalent of the
+        <em>-define</em> command line option: some ImageMagick methods read them to change how they work, for example <code>"distort:viewport"</code> for
+        <a href="#distort">distort</a>. Use <a href="#artifact">artifact</a> to read one back.
+      </p>
+
+      <h4>Arguments</h4>
+
+      <dl>
+        <dt>name</dt>
+
+        <dd>The name of the artifact, usually in the form <code>"prefix:key"</code>. It is converted to a string.</dd>
+
+        <dt>value</dt>
+
+        <dd>The value of the artifact, converted to a string, or <code>nil</code> to remove the artifact.</dd>
+      </dl>
+
+      <h4>Returns</h4>
+
+      <p>The value, converted to a string, or <code>nil</code>.</p>
+
+      <h4>Example</h4>
+
+      <pre class="language-ruby">
+img = Magick::Image.new(100, 50)
+img.define('distort:viewport', '44x44+15+0')
+img.distort(Magick::ScaleRotateTranslateDistortion, [0]).columns #=&gt; 44
+
+img.define('distort:viewport', nil)
+img.artifact('distort:viewport') #=&gt; nil
+</pre>
+
+      <h4>Notes</h4>
+
+      <p>
+        The <code>options.define</code> method in the optional-arguments block of <a href="#distort">distort</a> and similar methods calls this method, so
+        the artifacts it sets stay on the image. Copies of the image, such as those made by <a href="#dup">dup</a>, have the same artifacts. Raises
+        <code>FrozenError</code> if the image is frozen.
+      </p>
+
+      <h4>See also</h4>
+
+      <p>
+        <a href="#artifact">artifact</a>,
+        <a href="info.html#define">Image::Info#define</a>
+      </p>
+
+      <h4>Magick API</h4>
+
+      <p>SetImageArtifact, DeleteImageArtifact</p>
     </div>
 
     <div class="sig">
