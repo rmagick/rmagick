@@ -201,8 +201,10 @@ KernelInfo_unity_add(VALUE self, VALUE scale)
  * of the sum of the kernel values (as per given flags).
  *
  * @param scale [Numeric] scale to use
- * @param flags [Magick::GeometryFlags] one of Magick::NormalizeValue, Magick::CorrelateNormalizeValue,
- *   and/or Magick::PercentValue
+ * @param flags [Magick::GeometryFlags] Magick::NoValue, Magick::NormalizeValue or
+ *   Magick::CorrelateNormalizeValue. ScaleKernelInfo ignores the other values, including
+ *   Magick::PercentValue; use {KernelInfo#scale_geometry} for a percentage.
+ * @return [nil]
  */
 VALUE
 KernelInfo_scale(VALUE self, VALUE scale, VALUE flags)

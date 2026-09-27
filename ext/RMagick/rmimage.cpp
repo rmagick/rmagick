@@ -3897,7 +3897,8 @@ composite_channel(int bang, int argc, VALUE *argv, VALUE self)
 
 
 /**
- * Composite the source over the destination image channel as dictated by the affine transform.
+ * Composite the source over the destination image, changing only the specified channels of the
+ * destination. The arguments before the channels are the same as those of {Image#composite}.
  *
  * @overload composite_channel(image, x_off, y_off, composite_op, channel = Magick::AllChannels)
  *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
@@ -3970,8 +3971,8 @@ Image_composite_channel(int argc, VALUE *argv, VALUE self)
 
 
 /**
- * Composite the source over the destination image channel as dictated by the affine transform.
- * In-place form of {Image#composite_channel}.
+ * Composite the source over the destination image, changing only the specified channels of the
+ * destination. In-place form of {Image#composite_channel}.
  *
  * @overload composite_channel!(image, x_off, y_off, composite_op, channel = Magick::AllChannels)
  *   @param image [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
@@ -4033,7 +4034,7 @@ Image_composite_channel(int argc, VALUE *argv, VALUE self)
  *   @param composite_op [Magick::CompositeOperator] the composite operator
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
- * @return [Magick::Image] a new image
+ * @return [Magick::Image] self
  * @see Image#composite_channel
  * @see Image#composite!
  */
@@ -8697,11 +8698,12 @@ Image_level2(int argc, VALUE *argv, VALUE self)
 /**
  * Similar to {Image#level2} but applies to a single channel only.
  *
- * @overload level_channel(aChannelType, black = 0.0, white = 1.0, gamma = Magick::QuantumRange)
+ * @overload level_channel(aChannelType, black = 0.0, white = Magick::QuantumRange - black, gamma = 1.0)
  *   @param aChannelType [Magick::ChannelType] A ChannelType value.
  *   @param black [Numeric] A black point level in the range 0..QuantumRange.
  *   @param white [Numeric] A white point level in the range 0..QuantumRange.
- *   @param gamma [Numeric] A gamma correction in the range 0.0 - 10.0.
+ *   @param gamma [Numeric] A gamma correction. Unlike with {Image#level}, a value greater than 10.0 is
+ *     used as given.
  *   @return [Magick::Image] a new image
  *   @see Image#level2
  */
@@ -12213,12 +12215,12 @@ resample(int bang, int argc, VALUE *argv, VALUE self)
  * the original resolution of the image must be specified via the density attribute prior to
  * specifying the resample resolution.
  *
- * @overload resample(x_resolution = 72.0, y_resolution = 72.0, filter = self.filter, blur = self.blur)
+ * @overload resample(x_resolution = 72.0, y_resolution = x_resolution, filter = self.filter, blur = 1.0)
  *   @param x_resolution [Numeric] the target horizontal resolution.
  *   @param y_resolution [Numeric] the target vertical resolution.
  *   @param filter [Magick::FilterType] the filter type
- *   @param blur [Numeric] the blur size
- *   @return [Magick] a new image
+ *   @param blur [Numeric] the blur factor: with ImageMagick 6, > 1.0 blurs and < 1.0 sharpens
+ *   @return [Magick::Image] a new image
  *   @see Image#resample!
  */
 VALUE
@@ -12233,12 +12235,12 @@ Image_resample(int argc, VALUE *argv, VALUE self)
  * Resample image to specified horizontal resolution, vertical resolution, filter and blur factor.
  * In-place form of {Image#resample}.
  *
- * @overload resample!(x_resolution = 72.0, y_resolution = 72.0, filter = self.filter, blur = self.blur)
+ * @overload resample!(x_resolution = 72.0, y_resolution = x_resolution, filter = self.filter, blur = 1.0)
  *   @param x_resolution [Numeric] the target horizontal resolution.
  *   @param y_resolution [Numeric] the target vertical resolution.
  *   @param filter [Magick::FilterType] the filter type
- *   @param blur [Numeric] the blur size
- *   @return [Magick] a new image
+ *   @param blur [Numeric] the blur factor: with ImageMagick 6, > 1.0 blurs and < 1.0 sharpens
+ *   @return [Magick::Image] self
  *   @see Image#resample
  */
 VALUE
@@ -14603,8 +14605,8 @@ Image_ticks_per_second_eq(VALUE self, VALUE tps)
  *   @param red_alpha [Numeric] the red value
  *   @param green_alpha [Numeric] the green value
  *   @param blue_alpha [Numeric] the blue value
- *   @param alpha_alpha [Numeric] the alpha value
- *   @return a new image
+ *   @param alpha_alpha [Numeric] accepted but ignored: TintImage leaves the alpha channel unchanged
+ *   @return [Magick::Image] a new image
  */
 VALUE
 Image_tint(int argc, VALUE *argv, VALUE self)
@@ -15255,7 +15257,8 @@ VALUE Image_image_type_eq(VALUE self, VALUE image_type)
 
 
 /**
- * Removes an artifact from the image and returns its value.
+ * Removes an artifact from the image. The same as {Image#define} with a nil value, except that it
+ * returns self and that the name must be a String.
  *
  * @param artifact [String] the artifact
  * @return [Magick::Image] self
