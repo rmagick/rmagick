@@ -11,7 +11,7 @@ module Magick
     # If define as Array[Image] implies the possibility of returning nil.
     # it would require consideration of nil in subsequent method calls.
     # So, it defined in Tuple type to avoid allowing unnecessary guard statements to be written.
-    def self.constitute: (int witdth_arg, int height_arg, string map_arg, Array[Pixel] pixels_arg) -> Image
+    def self.constitute: (int witdth_arg, int height_arg, string map_arg, Array[Integer] | Array[Float] pixels_arg) -> Image
     def self._load: (string str) -> Image
     def self.capture: (bool silent, bool frame, bool descend, bool screen, bool borders) -> Image
                     | (bool silent, bool frame, bool descend, bool screen, bool borders) { (Image::Info) -> void } -> Image
@@ -24,8 +24,8 @@ module Magick
     def self.from_blob: (string blob) -> [Image]
                       | (string blob) { (Image::Info) -> void } -> [Image]
 
-    def initialize: (int cols, int rows, ?magick_fill fill) -> void
-                  | (int cols, int rows, ?magick_fill fill) { (Image::Info) -> void } -> void
+    def initialize: (int cols, int rows, ?magick_fill? fill) -> void
+                  | (int cols, int rows, ?magick_fill? fill) { (Image::Info) -> void } -> void
     def <=>: (untyped object) -> (Integer | nil)
     def []: (interned key_arg) -> String?
     def []=: (interned key_arg, String attr_arg) -> self
@@ -35,7 +35,7 @@ module Magick
     def marshal_dump: () -> [String, String]
     def marshal_load: ([string, string] ary) -> self
     def montage: () -> String?
-    def quantize: (?int number_colors, ?ColorspaceType colorspace, ?bool dither, ?int tree_depth, ?bool measure_error) -> Image
+    def quantize: (?int number_colors, ?ColorspaceType colorspace, ?(DitherMethod | bool) dither, ?int tree_depth, ?bool measure_error) -> Image
     def scene: () -> Integer
     def ticks_per_second=: (int tps) -> int
     def to_blob: () -> String?
