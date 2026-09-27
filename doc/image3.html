@@ -107,6 +107,8 @@
 
             <li><a href="#resample">resample</a></li>
 
+            <li><a href="#resample_bang">resample!</a></li>
+
             <li><a href="#resize">resize</a></li>
 
             <li><a href="#resize_bang">resize!</a></li>
@@ -1240,7 +1242,10 @@ random_threshold_channel(geom, Magick::RedChannel)
     <div class="sig">
       <h3 id="resample">resample</h3>
 
-      <p><span class="arg">img</span>.resample(<span class="arg">horizontal_res</span>=72.0[, <span class="arg">vertical_res</span>]) -&gt; <em>image</em></p>
+      <p>
+        <span class="arg">img</span>.resample(<span class="arg">horizontal_res</span>=72.0[, <span class="arg">vertical_res</span>[,
+        <span class="arg">filter</span>[, <span class="arg">blur</span>]]]) -&gt; <em>image</em>
+      </p>
     </div>
 
     <div class="desc">
@@ -1272,7 +1277,71 @@ random_threshold_channel(geom, Magick::RedChannel)
           the target vertical resolution. The default is
           <span class="arg">horizontal_res</span>.
         </dd>
+
+        <dt>filter</dt>
+
+        <dd>
+          The <a href="constants.html#FilterType">filter</a> to use. The default is the value of the receiver's
+          <a href="imageattrs.html#filter">filter attribute</a>. That attribute is <code>UndefinedFilter</code> unless it has been set, and then
+          ImageMagick uses <code>LanczosFilter</code>, or <code>MitchellFilter</code> when enlarging or when the image has an alpha channel or a
+          palette.
+        </dd>
+
+        <dt>blur</dt>
+
+        <dd>
+          The blur factor. The default is 1.0. With ImageMagick 6, a value greater than 1.0 blurs and a value less than 1.0 sharpens, and 1.0 changes
+          nothing. With ImageMagick 7, the image is blurred before resampling when the value is greater than 1.0 and sharpened otherwise, so the default
+          1.0 also sharpens it slightly.
+        </dd>
       </dl>
+
+      <h4>Returns</h4>
+
+      <p>A new image</p>
+
+      <h4>Example</h4>
+
+      <pre class="language-ruby">
+img = Magick::Image.new(300, 200)
+img.density = '300x300'
+res = img.resample(72)
+[res.columns, res.rows] #=&gt; [72, 48]
+</pre>
+
+      <h4>Notes</h4>
+
+      <p>An image with no resolution, such as one created by <code>Image.new</code>, is resampled as if it were 72 DPI.</p>
+
+      <h4>See also</h4>
+
+      <p>
+        <a href="#resample_bang">resample!</a>,
+        <a href="#resize">resize</a>
+      </p>
+
+      <h4>Magick API</h4>
+
+      <p>ResampleImage</p>
+    </div>
+
+    <div class="sig">
+      <h3 id="resample_bang">resample!</h3>
+
+      <p>
+        <span class="arg">img</span>.resample!(<span class="arg">horizontal_res</span>=72.0[, <span class="arg">vertical_res</span>[,
+        <span class="arg">filter</span>[, <span class="arg">blur</span>]]]) -&gt; <em>self</em>
+      </p>
+    </div>
+
+    <div class="desc">
+      <h4>Description</h4>
+
+      <p>In-place form of <a href="#resample">resample</a>. Raises <code>FrozenError</code> if the image is frozen.</p>
+
+      <h4>Returns</h4>
+
+      <p>self</p>
     </div>
 
     <div class="sig">
