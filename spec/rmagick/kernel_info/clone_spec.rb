@@ -14,4 +14,11 @@ RSpec.describe Magick::KernelInfo, '#clone' do
     expect(kernel.clone).not_to be_frozen
     expect(kernel.freeze.clone).to be_frozen
   end
+
+  it 'accepts the freeze keyword as Object#clone does' do
+    object = described_class.new('Octagon').freeze
+
+    expect(object.clone(freeze: false)).not_to be_frozen
+    expect(object.clone(freeze: true)).to be_frozen
+  end
 end

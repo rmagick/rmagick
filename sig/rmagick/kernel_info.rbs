@@ -8,7 +8,7 @@ module Magick
     def unity_add: (magick_real scale) -> nil
     def scale: (magick_real scale, GeometryFlags flags) -> nil
     def scale_geometry: (string geometry) -> nil
-    def clone: () -> KernelInfo
+    def clone: (?freeze: bool?) -> KernelInfo
     def dup: () -> KernelInfo
   end
 end

@@ -238,42 +238,32 @@ KernelInfo_scale_geometry(VALUE self, VALUE geometry)
 }
 
 /**
- * Creates a new copy of the object so that it can be modified without affecting the original.
- * The copy is not frozen.
+ * Initialize a copy made by clone or dup with a copy of the kernel of the original.
  *
- * @return [Magick::KernelInfo] new KernelInfo object
+ * @param orig the original object
+ * @return [Magick::KernelInfo] self
+ * @raise [FrozenError] if the object is frozen
  */
 VALUE
-KernelInfo_dup(VALUE self)
+KernelInfo_init_copy(VALUE self, VALUE orig)
 {
-    KernelInfo *kernel = CloneKernelInfo(get_kernel_info(self));
+    KernelInfo *kernel, *old_kernel;
+
+    rb_check_frozen(self);
+    kernel = CloneKernelInfo(get_kernel_info(orig));
     if (!kernel)
     {
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
-    return TypedData_Wrap_Struct(Class_KernelInfo, &rm_kernel_info_data_type, kernel);
-}
 
-
-/**
- * Creates a new copy of the object, frozen if the object is frozen.
- *
- * @return [Magick::KernelInfo] new KernelInfo object
- */
-VALUE
-KernelInfo_clone(VALUE self)
-{
-    VALUE clone;
-
-    clone = KernelInfo_dup(self);
-    if (OBJ_FROZEN(self))
+    old_kernel = (KernelInfo *)DATA_PTR(self);
+    DATA_PTR(self) = kernel;
+    if (old_kernel)
     {
-        OBJ_FREEZE(clone);
+        DestroyKernelInfo(old_kernel);
     }
 
-    RB_GC_GUARD(clone);
-
-    return clone;
+    return self;
 }
 
 /**

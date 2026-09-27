@@ -27,4 +27,11 @@ RSpec.describe Magick::Image, "#clone" do
 
     expect(new_image.frozen?).to be(true)
   end
+
+  it "accepts the freeze keyword as Object#clone does" do
+    object = build_image.freeze
+
+    expect(object.clone(freeze: false)).not_to be_frozen
+    expect(object.clone(freeze: true)).to be_frozen
+  end
 end

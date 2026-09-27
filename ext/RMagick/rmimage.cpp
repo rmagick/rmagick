@@ -2714,27 +2714,6 @@ Image_chromaticity_eq(VALUE self, VALUE chroma)
 }
 
 
-/**
- * Same as {Magick::Image#dup} except the frozen state of the original is propagated to the new
- * copy.
- *
- * @return [Magick::Image] a clone of this object
- */
-VALUE
-Image_clone(VALUE self)
-{
-    VALUE clone;
-
-    clone = Image_dup(self);
-    if (OBJ_FROZEN(self))
-    {
-        OBJ_FREEZE(clone);
-    }
-
-    RB_GC_GUARD(clone);
-
-    return clone;
-}
 
 
 /**
@@ -6223,22 +6202,6 @@ Image__dump(VALUE self, VALUE depth ATTRIBUTE_UNUSED)
 }
 
 
-/**
- * Duplicates an image.
- *
- * @return [Magick::Image] a new image
- */
-VALUE
-Image_dup(VALUE self)
-{
-    VALUE dup;
-
-    rm_check_destroyed(self);
-    dup = TypedData_Wrap_Struct(CLASS_OF(self), &rm_image_data_type, NULL);
-    RB_GC_GUARD(dup);
-
-    return rb_funcall(dup, rm_ID_initialize_copy, 1, self);
-}
 
 
 /**

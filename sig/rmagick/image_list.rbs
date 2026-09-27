@@ -60,7 +60,7 @@ module Magick
     def sort!: () -> self
              | () { (Image a, Image b) -> Integer } -> self
     def clear: () -> void
-    def clone: () -> ImageList
+    def clone: (?freeze: bool?) -> ImageList
              | ...
     def collect: () { (Image) -> Image } -> ImageList
     def collect!: () { (Image) -> Image } -> self

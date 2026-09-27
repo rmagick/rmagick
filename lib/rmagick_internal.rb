@@ -1410,12 +1410,6 @@ module Magick
       @images.clear
     end
 
-    def clone
-      ditto = dup
-      ditto.freeze if frozen?
-      ditto
-    end
-
     # override Enumerable#collect
     def collect(&)
       current = get_current
@@ -1507,13 +1501,6 @@ module Magick
       self
     end
 
-    def dup
-      ditto = self.class.new
-      @images.each { |img| ditto << img }
-      ditto.scene = @scene
-      ditto
-    end
-
     def eql?(other)
       begin
         assert_image_array other
@@ -1568,6 +1555,13 @@ module Magick
       end
 
       @scene = length - 1 if length > 0 # last image in array
+    end
+
+    # Called by clone and dup, after the instance variables are copied. The copy
+    # has its own array of the same images.
+    def initialize_copy(other)
+      super
+      @images = @images.dup
     end
 
     def insert(index, *args)

@@ -12,4 +12,11 @@ RSpec.describe Magick::ImageList, "#clone" do
     image_list2 = image_list.clone
     expect(image_list2.frozen?).to eq(image_list.frozen?)
   end
+
+  it "accepts the freeze keyword as Object#clone does" do
+    object = described_class.new.tap { |list| list << Magick::Image.new(2, 2) }.freeze
+
+    expect(object.clone(freeze: false)).not_to be_frozen
+    expect(object.clone(freeze: true)).to be_frozen
+  end
 end
