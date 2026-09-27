@@ -1932,12 +1932,14 @@ special_composite(Image *image, Image *overlay, double image_pct, double overlay
 VALUE
 Image_blend(int argc, VALUE *argv, VALUE self)
 {
+    int waited;
     VALUE ovly;
     Image *image, *overlay;
     double src_percent, dst_percent;
     long x_offset = 0L, y_offset = 0L;
 
-    image = rm_check_destroyed(self);
+
+    rm_check_destroyed(self);
 
     if (argc < 1)
     {
@@ -1945,6 +1947,15 @@ Image_blend(int argc, VALUE *argv, VALUE self)
     }
 
     ovly = rm_cur_image(argv[0]);
+    // The overlay's geometry and artifacts are changed below, so wait for
+    // both inputs before fetching either.
+    do
+    {
+        waited = rm_wait_for_offload(self);
+        waited |= rm_wait_for_offload(ovly);
+    }
+    while (waited);
+    image = rm_check_destroyed(self);
     overlay = rm_check_destroyed(ovly);
 
     if (argc > 3)
@@ -4758,7 +4769,7 @@ Image_morphology_channel(VALUE self, VALUE channel_v, VALUE method_v, VALUE iter
     KernelInfo *kernel;
     ssize_t iterations = NUM2LONG(iterations_v);;
 
-    image = rm_check_destroyed(self);
+    rm_check_destroyed(self);
 
     VALUE_TO_ENUM(method_v, method, MorphologyMethod);
     VALUE_TO_ENUM(channel_v, channel, ChannelType);
@@ -4773,6 +4784,16 @@ Image_morphology_channel(VALUE self, VALUE channel_v, VALUE method_v, VALUE iter
         rb_raise(rb_eArgError, "expected String or Magick::KernelInfo");
     }
 
+    // Waiting for either input may let another fiber start using the other.
+    // Recheck both before fetching either native pointer.
+    int waited;
+    do
+    {
+        waited = rm_wait_for_offload(self);
+        waited |= rm_wait_for_offload(kernel_v);
+    } while (waited);
+
+    image = rm_check_destroyed(self);
     TypedData_Get_Struct(kernel_v, KernelInfo, &rm_kernel_info_data_type, kernel);
 
     exception = AcquireExceptionInfo();
@@ -4780,15 +4801,17 @@ Image_morphology_channel(VALUE self, VALUE channel_v, VALUE method_v, VALUE iter
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channel);
     GVL_STRUCT_TYPE(MorphologyImage) args = { image, method, iterations, kernel, exception };
-    new_image = rm_offload_masked_image(GVL_FUNC(MorphologyImage), &args, self, exception, image, channel_mask);
+    new_image = rm_offload_masked_image(GVL_FUNC(MorphologyImage), &args, self, exception, image, channel_mask, kernel_v);
     CHANGE_RESULT_CHANNEL_MASK(new_image);
     END_CHANNEL_MASK(image);
 #else
     GVL_STRUCT_TYPE(MorphologyImageChannel) args = { image, channel, method, iterations, kernel, exception };
-    new_image = rm_offload_image(GVL_FUNC(MorphologyImageChannel), &args, self, exception);
+    new_image = rm_offload_image(GVL_FUNC(MorphologyImageChannel), &args, self, exception, kernel_v);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
+
+    RB_GC_GUARD(kernel_v);
 
     return rm_image_new(new_image);
 }
@@ -5673,12 +5696,14 @@ Image_directory(VALUE self)
 VALUE
 Image_displace(int argc, VALUE *argv, VALUE self)
 {
+    int waited;
     Image *image, *displacement_map;
     VALUE dmap;
     double x_amplitude = 0.0, y_amplitude = 0.0;
     long x_offset = 0L, y_offset = 0L;
 
-    image = rm_check_destroyed(self);
+
+    rm_check_destroyed(self);
 
     if (argc < 2)
     {
@@ -5686,6 +5711,15 @@ Image_displace(int argc, VALUE *argv, VALUE self)
     }
 
     dmap = rm_cur_image(argv[0]);
+    // The overlay's geometry and artifacts are changed below, so wait for
+    // both inputs before fetching either.
+    do
+    {
+        waited = rm_wait_for_offload(self);
+        waited |= rm_wait_for_offload(dmap);
+    }
+    while (waited);
+    image = rm_check_destroyed(self);
     displacement_map = rm_check_destroyed(dmap);
 
     if (argc > 3)
@@ -5881,6 +5915,9 @@ Image_display(VALUE self)
     info_obj = rm_info_new();
     TypedData_Get_Struct(info_obj, Info, &rm_info_data_type, info);
 
+    // The options block may have suspended this fiber, so fetch the image again after it.
+    image = rm_check_destroyed(self);
+
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     DisplayImages(info, image, exception);
@@ -5951,12 +5988,14 @@ Image_dispose_eq(VALUE self, VALUE dispose)
 VALUE
 Image_dissolve(int argc, VALUE *argv, VALUE self)
 {
+    int waited;
     Image *image, *overlay;
     double src_percent, dst_percent = -1.0;
     long x_offset = 0L, y_offset = 0L;
     VALUE composite_image, ovly;
 
-    image = rm_check_destroyed(self);
+
+    rm_check_destroyed(self);
 
     if (argc < 1)
     {
@@ -5964,6 +6003,15 @@ Image_dissolve(int argc, VALUE *argv, VALUE self)
     }
 
     ovly = rm_cur_image(argv[0]);
+    // The overlay's geometry and artifacts are changed below, so wait for
+    // both inputs before fetching either.
+    do
+    {
+        waited = rm_wait_for_offload(self);
+        waited |= rm_wait_for_offload(ovly);
+    }
+    while (waited);
+    image = rm_check_destroyed(self);
     overlay = rm_check_destroyed(ovly);
 
     if (argc > 3)
@@ -7408,7 +7456,7 @@ Image_from_blob(VALUE klass ATTRIBUTE_UNUSED, VALUE blob_arg)
 
     exception = AcquireExceptionInfo();
     GVL_STRUCT_TYPE(BlobToImage) args = { info,  blob, (size_t)length, exception };
-    images = rm_offload_image(GVL_FUNC(BlobToImage), &args, blob_arg, exception);
+    images = rm_offload_image(GVL_FUNC(BlobToImage), &args, info_obj, exception);
     rm_check_exception(exception, images, DestroyOnError);
 
     DestroyExceptionInfo(exception);
@@ -14814,7 +14862,7 @@ Image_to_blob(VALUE self)
     rm_sync_image_options(image, info);
 
     GVL_STRUCT_TYPE(ImageToBlob) args = { info, image, &length, exception };
-    blob = rm_offload_blob(GVL_FUNC(ImageToBlob), &args, self, exception);
+    blob = rm_offload_blob(GVL_FUNC(ImageToBlob), &args, self, exception, info_obj);
     CHECK_EXCEPTION();
 
     DestroyExceptionInfo(exception);
@@ -15736,6 +15784,7 @@ Image_virtual_pixel_method_eq(VALUE self, VALUE method)
 VALUE
 Image_watermark(int argc, VALUE *argv, VALUE self)
 {
+    int waited;
     Image *image, *overlay, *new_image;
     double src_percent = 100.0, dst_percent = 100.0;
     long x_offset = 0L, y_offset = 0L;
@@ -15745,7 +15794,8 @@ Image_watermark(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+
+    rm_check_destroyed(self);
 
     if (argc < 1)
     {
@@ -15753,6 +15803,15 @@ Image_watermark(int argc, VALUE *argv, VALUE self)
     }
 
     ovly = rm_cur_image(argv[0]);
+    // The overlay's geometry and artifacts are changed below, so wait for
+    // both inputs before fetching either.
+    do
+    {
+        waited = rm_wait_for_offload(self);
+        waited |= rm_wait_for_offload(ovly);
+    }
+    while (waited);
+    image = rm_check_destroyed(self);
     overlay = rm_check_destroyed(ovly);
 
     if (argc > 3)
@@ -16167,10 +16226,12 @@ Image_write(VALUE self, VALUE file)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
 
     info_obj = rm_info_new();
     TypedData_Get_Struct(info_obj, Info, &rm_info_data_type, info);
+
+    // The options block may have suspended this fiber, so fetch the image after it.
+    image = rm_check_destroyed(self);
 
     if (TYPE(file) == T_FILE)
     {
@@ -16206,7 +16267,7 @@ Image_write(VALUE self, VALUE file)
     }
     else
     {
-        rm_offload_call(GVL_FUNC(WriteImage), &args, self, exception, NULL);
+        rm_offload_call(GVL_FUNC(WriteImage), &args, self, exception, NULL, info_obj);
     }
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
@@ -16218,7 +16279,7 @@ Image_write(VALUE self, VALUE file)
     }
     else
     {
-        rm_offload_call(GVL_FUNC(WriteImage), &args, self, NULL, NULL);
+        rm_offload_call(GVL_FUNC(WriteImage), &args, self, NULL, NULL, info_obj);
     }
     rm_check_image_exception(image, RetainOnError);
 #endif

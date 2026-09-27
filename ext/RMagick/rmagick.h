@@ -462,6 +462,8 @@ extern const rb_data_type_t rm_kernel_info_data_type;
         klass *ptr;\
         if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {\
             rm_check_destroyed(self); \
+        } else {\
+            rm_wait_for_offload(self); \
         }\
         TypedData_Get_Struct(self, klass, data_type, ptr);\
         return C_##type##_to_R_##type(ptr->attr);\
@@ -482,6 +484,8 @@ extern const rb_data_type_t rm_kernel_info_data_type;
         klass *ptr;\
         if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {\
             rm_check_destroyed(self); \
+        } else {\
+            rm_wait_for_offload(self); \
         }\
         rb_check_frozen(self);\
         TypedData_Get_Struct(self, klass, data_type, ptr);\
@@ -495,6 +499,8 @@ extern const rb_data_type_t rm_kernel_info_data_type;
         klass *ptr;\
         if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {\
             rm_check_destroyed(self); \
+        } else {\
+            rm_wait_for_offload(self); \
         }\
         rb_check_frozen(self);\
         TypedData_Get_Struct(self, klass, data_type, ptr);\
@@ -1168,13 +1174,13 @@ extern VALUE  rm_check_ary_type(VALUE ary);
 extern Image *rm_check_destroyed(VALUE);
 extern Image *rm_check_frozen(VALUE);
 extern void   rm_init_offload(void);
-extern void   rm_wait_for_offload(VALUE);
-extern Image *rm_offload_image(gvl_function_t *, void *, VALUE, ExceptionInfo *);
+extern int    rm_wait_for_offload(VALUE);
+extern Image *rm_offload_image(gvl_function_t *, void *, VALUE, ExceptionInfo *, VALUE = Qnil);
 extern Image *rm_offload_image_and_destroy(gvl_function_t *, void *, VALUE, ExceptionInfo *, Image *);
-extern void  *rm_offload_call(gvl_function_t *, void *, VALUE, ExceptionInfo *, Image *);
-extern void  *rm_offload_blob(gvl_function_t *, void *, VALUE, ExceptionInfo *);
+extern void  *rm_offload_call(gvl_function_t *, void *, VALUE, ExceptionInfo *, Image *, VALUE = Qnil);
+extern void  *rm_offload_blob(gvl_function_t *, void *, VALUE, ExceptionInfo *, VALUE = Qnil);
 #if defined(IMAGEMAGICK_7)
-extern Image *rm_offload_masked_image(gvl_function_t *, void *, VALUE, ExceptionInfo *, Image *, ChannelType);
+extern Image *rm_offload_masked_image(gvl_function_t *, void *, VALUE, ExceptionInfo *, Image *, ChannelType, VALUE = Qnil);
 #endif
 extern char  *rm_str2cstr(VALUE *, size_t *);
 extern char  *rm_path2cstr(VALUE *, size_t *);

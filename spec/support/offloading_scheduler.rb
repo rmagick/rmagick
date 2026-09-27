@@ -36,7 +36,16 @@ class OffloadingScheduler
     @cancel_next = exception
   end
 
+  # Run once after the extension has registered the operation, before its
+  # worker starts. Tests can start competing fibers without relying on timing.
+  def before_next_operation(&block)
+    @before_next = block
+  end
+
   def blocking_operation_wait(work)
+    before_next = @before_next
+    @before_next = nil
+    before_next&.call
     @offloaded << work
     thread = Thread.new do
       work.call
