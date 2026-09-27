@@ -645,7 +645,9 @@ GradientFill_fill(VALUE self, VALUE image_obj)
     double x1, y1, x2, y2;          // points on the line
 
     TypedData_Get_Struct(self, rm_GradientFill, &rm_gradient_fill_data_type, fill);
-    image = rm_check_destroyed(rm_cur_image(image_obj));
+    image_obj = rm_cur_image(image_obj);
+    rm_wait_for_offload(image_obj);
+    image = rm_check_destroyed(image_obj);
 
     x1 = fill->x1;
     y1 = fill->y1;
@@ -763,6 +765,7 @@ TextureFill_initialize(VALUE self, VALUE texture_arg)
     TypedData_Get_Struct(self, rm_TextureFill, &rm_texture_fill_data_type, fill);
 
     texture_image = rm_cur_image(texture_arg);
+    rm_wait_for_offload(texture_image);
 
     // Bump the reference count on the texture image.
     texture = rm_check_destroyed(texture_image);
@@ -791,7 +794,9 @@ TextureFill_fill(VALUE self, VALUE image_obj)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(rm_cur_image(image_obj));
+    image_obj = rm_cur_image(image_obj);
+    rm_wait_for_offload(image_obj);
+    image = rm_check_destroyed(image_obj);
     TypedData_Get_Struct(self, rm_TextureFill, &rm_texture_fill_data_type, fill);
 
 #if defined(IMAGEMAGICK_7)

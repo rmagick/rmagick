@@ -155,6 +155,7 @@ get_kernel_info(VALUE self)
 {
     KernelInfo *kernel;
 
+    rm_wait_for_offload(self);
     TypedData_Get_Struct(self, KernelInfo, &rm_kernel_info_data_type, kernel);
     if (!kernel)
     {
@@ -227,9 +228,10 @@ KernelInfo_scale(VALUE self, VALUE scale, VALUE flags)
 VALUE
 KernelInfo_scale_geometry(VALUE self, VALUE geometry)
 {
+    KernelInfo *kernel = get_unfrozen_kernel_info(self);
     char *geom = StringValueCStr(geometry);
 
-    GVL_STRUCT_TYPE(ScaleGeometryKernelInfo) args = { get_unfrozen_kernel_info(self), geom };
+    GVL_STRUCT_TYPE(ScaleGeometryKernelInfo) args = { kernel, geom };
     CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ScaleGeometryKernelInfo), &args);
 
     RB_GC_GUARD(geometry);

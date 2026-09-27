@@ -1861,9 +1861,11 @@ handle_exception(ExceptionInfo *exception, Image *imglist, ErrorRetention retent
  *    could destroy, replace or modify the image the worker is using. While a
  *    call is in flight on an image, every method called on that image waits
  *    for it at entry, in rm_check_destroyed, before it fetches the Image
- *    pointer; so do Image#destroy!, #marshal_load and #dup. A wait is a
+ *    pointer; so do Image#destroy!, #marshal_load and #dup. Draw and ImageList
+ *    entry points wait for their inputs before fetching any Image pointers.
+ *    Mutable Info and KernelInfo inputs share the operation's lock. A wait is a
  *    point where other fibers run, so it is never done later than that: an
- *    image fetched as a second argument (composite, clut, ImageList methods)
+ *    image fetched as a second argument (composite, clut)
  *    does not wait, and offload() itself does not wait either. If a call is
  *    already in flight on the object when offload() is reached, which needs
  *    a suspension point between entry and the call, such as a Ruby block,
@@ -1879,7 +1881,7 @@ handle_exception(ExceptionInfo *exception, Image *imglist, ErrorRetention retent
 #if defined(RMAGICK_OFFLOAD_SAFE)
 typedef struct
 {
-    st_table *locks;   // object => Mutex, while a call is in flight on the object
+    st_table *locks;   // object => [Mutex, scheduler waiters, owner thread]
     int count;
 } offload_state_t;
 
@@ -1955,6 +1957,39 @@ offload_p(void)
     }
     return rb_respond_to(scheduler, id_blocking_operation_wait);
 }
+
+typedef struct
+{
+    VALUE lock;
+    VALUE waiter;
+} offload_wait_t;
+
+static VALUE
+offload_wait(VALUE arg)
+{
+    offload_wait_t *wait = (offload_wait_t *)arg;
+    VALUE scheduler = rb_ary_entry(wait->waiter, 0);
+
+    rb_ary_push(rb_ary_entry(wait->lock, 1), wait->waiter);
+    return rb_fiber_scheduler_block(scheduler, wait->lock, Qnil);
+}
+
+static VALUE
+offload_wait_ensure(VALUE arg)
+{
+    offload_wait_t *wait = (offload_wait_t *)arg;
+    VALUE waiters = rb_ary_entry(wait->lock, 1);
+
+    for (long i = 0; i < RARRAY_LEN(waiters); i++)
+    {
+        if (rb_ary_entry(waiters, i) == wait->waiter)
+        {
+            rb_ary_delete_at(waiters, i);
+            break;
+        }
+    }
+    return Qnil;
+}
 #endif
 
 
@@ -1980,22 +2015,43 @@ rm_init_offload(void)
  * No Ruby usage (internal function)
  *
  * @param obj the object, usually an Image
+ * @return whether the wait let other fibers run
  */
-void
+int
 rm_wait_for_offload(VALUE obj)
 {
+    int waited = 0;
 #if defined(RMAGICK_OFFLOAD_SAFE)
     offload_state_t *state = offload_state(0);
-    st_data_t mutex;
+    st_data_t entry;
 
-    while (state && state->count > 0 && st_lookup(state->locks, (st_data_t)obj, &mutex))
+    while (state && state->count > 0 && st_lookup(state->locks, (st_data_t)obj, &entry))
     {
-        rb_mutex_lock((VALUE)mutex);
-        rb_mutex_unlock((VALUE)mutex);
+        VALUE lock = (VALUE)entry;
+        VALUE scheduler = rb_fiber_scheduler_get();
+
+        waited = 1;
+        if (!NIL_P(scheduler) && NIL_P(rb_fiber_scheduler_current())
+            && rb_ary_entry(lock, 2) == rb_thread_current())
+        {
+            // A blocking fiber cannot lock a mutex owned by a suspended fiber
+            // on the same thread. Explicitly yield to its scheduler so the
+            // owner can finish all of its native pointer bookkeeping first.
+            offload_wait_t wait = { lock, rb_ary_new_from_args(2, scheduler, rb_fiber_current()) };
+            rb_ensure(offload_wait, (VALUE)&wait, offload_wait_ensure, (VALUE)&wait);
+        }
+        else
+        {
+            VALUE mutex = rb_ary_entry(lock, 0);
+            rb_mutex_lock(mutex);
+            rb_mutex_unlock(mutex);
+        }
+        RB_GC_GUARD(lock);
     }
 #else
     (void)obj;
 #endif
+    return waited;
 }
 
 
@@ -2064,6 +2120,7 @@ offload_release(OffloadResultType result_type, void *result, ExceptionInfo *exce
  * @param image destroyed if the call is unwound, may be NULL
  * @param masked_image image whose channel mask is restored if the call is unwound (ImageMagick 7)
  * @param channel_mask the channel mask to restore
+ * @param dependency another Ruby object used by the call, or nil
  * @return the result of fp
  */
 static void *
@@ -2072,6 +2129,7 @@ offload(gvl_function_t *fp, void *args, VALUE obj, OffloadResultType result_type
 #if defined(IMAGEMAGICK_7)
         , Image *masked_image, ChannelType channel_mask
 #endif
+        , VALUE dependency = Qnil
         )
 {
 #if defined(RMAGICK_OFFLOAD_SAFE)
@@ -2079,12 +2137,14 @@ offload(gvl_function_t *fp, void *args, VALUE obj, OffloadResultType result_type
     {
         offload_call_t call = { fp, args, NULL };
         offload_state_t *state;
-        VALUE mutex;
+        VALUE mutex, lock, waiters;
         st_data_t key = (st_data_t)obj;
+        st_data_t dependency_key = (st_data_t)dependency;
         int tag;
 
         state = offload_state(1);
-        if (st_lookup(state->locks, key, NULL))
+        if (st_lookup(state->locks, key, NULL)
+            || (!NIL_P(dependency) && st_lookup(state->locks, dependency_key, NULL)))
         {
             // Another fiber has a call in flight on this object, and the
             // caller has already fetched its Image pointer, so waiting here
@@ -2093,16 +2153,31 @@ offload(gvl_function_t *fp, void *args, VALUE obj, OffloadResultType result_type
         }
 
         mutex = rb_mutex_new();
+        waiters = rb_ary_new();
+        lock = rb_ary_new_from_args(3, mutex, waiters, rb_thread_current());
         rb_mutex_lock(mutex);
-        st_insert(state->locks, key, (st_data_t)mutex);
+        st_insert(state->locks, key, (st_data_t)lock);
+        if (!NIL_P(dependency))
+        {
+            st_insert(state->locks, dependency_key, (st_data_t)lock);
+        }
         state->count++;
 
         rb_protect(offload_call, (VALUE)&call, &tag);
 
         st_delete(state->locks, &key, NULL);
+        if (!NIL_P(dependency))
+        {
+            st_delete(state->locks, &dependency_key, NULL);
+        }
         state->count--;
         rb_mutex_unlock(mutex);
-        RB_GC_GUARD(mutex);
+        while (RARRAY_LEN(waiters) > 0)
+        {
+            VALUE waiter = rb_ary_pop(waiters);
+            rb_fiber_scheduler_unblock(rb_ary_entry(waiter, 0), lock, rb_ary_entry(waiter, 1));
+        }
+        RB_GC_GUARD(lock);
 
         if (tag)
         {
@@ -2122,6 +2197,7 @@ offload(gvl_function_t *fp, void *args, VALUE obj, OffloadResultType result_type
     (void)result_type;
     (void)exception;
     (void)image;
+    (void)dependency;
 #if defined(IMAGEMAGICK_7)
     (void)masked_image;
     (void)channel_mask;
@@ -2143,15 +2219,17 @@ offload(gvl_function_t *fp, void *args, VALUE obj, OffloadResultType result_type
  * @param args its argument struct
  * @param obj the Ruby object whose image the call uses
  * @param exception the ExceptionInfo passed to the call, may be NULL
+ * @param dependency another Ruby object used by the call, or nil
  * @return the new image
  */
 Image *
-rm_offload_image(gvl_function_t *fp, void *args, VALUE obj, ExceptionInfo *exception)
+rm_offload_image(gvl_function_t *fp, void *args, VALUE obj, ExceptionInfo *exception, VALUE dependency)
 {
     return (Image *)offload(fp, args, obj, OffloadResultImage, exception, NULL
 #if defined(IMAGEMAGICK_7)
                             , NULL, UndefinedChannel
 #endif
+                            , dependency
                             );
 }
 
@@ -2193,15 +2271,17 @@ rm_offload_image_and_destroy(gvl_function_t *fp, void *args, VALUE obj, Exceptio
  * @param obj the Ruby object whose image the call uses
  * @param exception the ExceptionInfo passed to the call, may be NULL
  * @param image an image the caller would destroy on error, may be NULL
+ * @param dependency another Ruby object used by the call, or nil
  * @return the result of the call
  */
 void *
-rm_offload_call(gvl_function_t *fp, void *args, VALUE obj, ExceptionInfo *exception, Image *image)
+rm_offload_call(gvl_function_t *fp, void *args, VALUE obj, ExceptionInfo *exception, Image *image, VALUE dependency)
 {
     return offload(fp, args, obj, OffloadResultIgnored, exception, image
 #if defined(IMAGEMAGICK_7)
                    , NULL, UndefinedChannel
 #endif
+                   , dependency
                    );
 }
 
@@ -2217,15 +2297,17 @@ rm_offload_call(gvl_function_t *fp, void *args, VALUE obj, ExceptionInfo *except
  * @param args its argument struct
  * @param obj the Ruby object whose image the call uses
  * @param exception the ExceptionInfo passed to the call, may be NULL
+ * @param dependency another Ruby object used by the call, or nil
  * @return the result of the call
  */
 void *
-rm_offload_blob(gvl_function_t *fp, void *args, VALUE obj, ExceptionInfo *exception)
+rm_offload_blob(gvl_function_t *fp, void *args, VALUE obj, ExceptionInfo *exception, VALUE dependency)
 {
     return offload(fp, args, obj, OffloadResultMemory, exception, NULL
 #if defined(IMAGEMAGICK_7)
                    , NULL, UndefinedChannel
 #endif
+                   , dependency
                    );
 }
 
@@ -2243,13 +2325,14 @@ rm_offload_blob(gvl_function_t *fp, void *args, VALUE obj, ExceptionInfo *except
  * @param exception the ExceptionInfo passed to the call, may be NULL
  * @param masked_image the image whose channel mask was changed
  * @param channel_mask its channel mask before the change
+ * @param dependency another Ruby object used by the call, or nil
  * @return the new image
  */
 Image *
 rm_offload_masked_image(gvl_function_t *fp, void *args, VALUE obj, ExceptionInfo *exception,
-                        Image *masked_image, ChannelType channel_mask)
+                        Image *masked_image, ChannelType channel_mask, VALUE dependency)
 {
-    return (Image *)offload(fp, args, obj, OffloadResultImage, exception, NULL, masked_image, channel_mask);
+    return (Image *)offload(fp, args, obj, OffloadResultImage, exception, NULL, masked_image, channel_mask, dependency);
 }
 #endif
 
