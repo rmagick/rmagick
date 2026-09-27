@@ -231,6 +231,8 @@
 
             <li><a href="#trim_bang">trim!</a></li>
 
+            <li><a href="#undefine">undefine</a></li>
+
             <li><a href="#unique_colors">unique_colors</a></li>
 
             <li><a href="#unsharp_mask">unsharp_mask</a></li>
@@ -3873,6 +3875,63 @@ img.to_color(pixel)                                        #=&gt; "#D8936A"
       <h4>Returns</h4>
 
       <p>self</p>
+    </div>
+
+    <div class="sig">
+      <h3 id="undefine">undefine</h3>
+
+      <p><span class="arg">img</span>.undefine(<span class="arg">name</span>) -&gt; <em>self</em></p>
+    </div>
+
+    <div class="desc">
+      <h4>Description</h4>
+
+      <p>
+        Removes an artifact of the image, such as one set by <a href="image1.html#define">define</a> or by <code>options.define</code> in the
+        optional-arguments block of <a href="image1.html#distort">distort</a>. Removing an artifact that is not set does nothing. This is the same as
+        <code>define(name, nil)</code>, except that it returns <em>self</em>, so calls can be chained, and that <span class="arg">name</span> must be a
+        string.
+      </p>
+
+      <h4>Arguments</h4>
+
+      <dl>
+        <dt>name</dt>
+
+        <dd>
+          The name of the artifact, as a string. Unlike with <a href="image1.html#define">define</a>, it is not converted, so a symbol raises
+          <code>TypeError</code>.
+        </dd>
+      </dl>
+
+      <h4>Returns</h4>
+
+      <p>self</p>
+
+      <h4>Example</h4>
+
+      <pre class="language-ruby">
+img = Magick::Image.new(100, 50)
+img.define('distort:viewport', '44x44+15+0')
+img.undefine('distort:viewport')
+img.distort(Magick::ScaleRotateTranslateDistortion, [0]).columns #=&gt; 100
+</pre>
+
+      <h4>Notes</h4>
+
+      <p>Raises <code>FrozenError</code> if the image is frozen.</p>
+
+      <h4>See also</h4>
+
+      <p>
+        <a href="image1.html#define">define</a>,
+        <a href="image1.html#artifact">artifact</a>,
+        <a href="info.html#undefine">Image::Info#undefine</a>
+      </p>
+
+      <h4>Magick API</h4>
+
+      <p>DeleteImageArtifact</p>
     </div>
 
     <div class="sig">
