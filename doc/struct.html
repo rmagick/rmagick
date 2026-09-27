@@ -54,6 +54,12 @@
         <li><a href="#Pixel">Pixel</a></li>
       </ul>
 
+      <h3><a href="#KernelInfo">The KernelInfo class</a></h3>
+
+      <ul>
+        <li><a href="#KernelInfo">KernelInfo</a></li>
+      </ul>
+
       <h3><a href="#struct">Struct classes</a></h3>
 
       <ul>
@@ -850,6 +856,246 @@ g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
           An array of the form <code>[hue, saturation, lightness, alpha]</code>. Each value is in the range specified for it, as described in
           <a href="#from_hsla">from_hsla</a>, above.
         </p>
+      </div>
+    </div>
+
+    <div class="subhd" id="KernelInfo">
+      <h2>The KernelInfo class</h2>
+
+      <div class="intro">
+        <h3>Introduction</h3>
+
+        <p>
+          A KernelInfo object is a kernel, a small matrix of values, for <a href="image2.html#morphology">Image#morphology</a> and
+          <a href="image2.html#morphology_channel">Image#morphology_channel</a>. Those methods also accept a string, which they convert with
+          <a href="#KernelInfo_new">KernelInfo.new</a>. See <a href="https://usage.imagemagick.org/morphology/#kernel">Morphology Kernels</a> in the
+          ImageMagick usage pages for the kernels and their meanings.
+        </p>
+
+        <p>
+          The values of a kernel cannot be read from Ruby. <a href="#KernelInfo_scale">scale</a>, <a href="#KernelInfo_scale_geometry">scale_geometry</a>
+          and <a href="#KernelInfo_unity_add">unity_add</a> change the kernel in place and return <code>nil</code>. Use
+          <a href="#KernelInfo_clone">clone</a> first to keep the original.
+        </p>
+      </div>
+
+      <h3>class KernelInfo <span class="superclass">&lt; Object</span></h3>
+
+      <div class="sig">
+        <h4 id="KernelInfo_new">new</h4>
+
+        <p>KernelInfo.new(<span class="arg">kernel_string</span>) -&gt; <em>kernel_info</em></p>
+      </div>
+
+      <div class="desc">
+        <h5>Description</h5>
+
+        <p>Creates a kernel from a string in the form accepted by ImageMagick's <em>-morphology</em> option.</p>
+
+        <h5>Arguments</h5>
+
+        <dl>
+          <dt>kernel_string</dt>
+
+          <dd>
+            The name of a built-in kernel with its arguments, such as <code>"Diamond"</code> or <code>"Disk:2.5"</code>, or the values of a user-defined
+            kernel, such as <code>"3x3: 0,1,0 1,1,1 0,1,0"</code>. Raises <code>RuntimeError</code> if ImageMagick cannot parse it.
+          </dd>
+        </dl>
+
+        <h5>Example</h5>
+
+        <pre class="language-ruby">
+img = Magick::Image.new(9, 9) { |options| options.background_color = 'black' }
+img.pixel_color(4, 4, 'white')
+
+kernel = Magick::KernelInfo.new('Diamond')
+img.morphology(Magick::DilateMorphology, 1, kernel) # the white pixel grows into a diamond of 5 pixels
+</pre>
+      </div>
+
+      <div class="sig">
+        <h4 id="KernelInfo_builtin">builtin</h4>
+
+        <p>KernelInfo.builtin(<span class="arg">kernel_type</span>, <span class="arg">geometry</span>) -&gt; <em>kernel_info</em></p>
+      </div>
+
+      <div class="desc">
+        <h5>Description</h5>
+
+        <p>Creates one of ImageMagick's built-in kernels.</p>
+
+        <h5>Arguments</h5>
+
+        <dl>
+          <dt>kernel_type</dt>
+
+          <dd>A <a href="constants.html#KernelInfoType">KernelInfoType</a> value, such as <code>DiamondKernel</code>.</dd>
+
+          <dt>geometry</dt>
+
+          <dd>
+            The arguments of the kernel, as a <a href="imusage.html#geometry">geometry string</a> such as <code>"1,1"</code>, or an empty string. Raises
+            <code>ArgumentError</code> if it is not a geometry.
+          </dd>
+        </dl>
+
+        <h5>Example</h5>
+
+        <pre class="language-ruby">
+# The same kernel as Magick::KernelInfo.new('Diamond:1')
+kernel = Magick::KernelInfo.builtin(Magick::DiamondKernel, '1,1')
+</pre>
+
+        <h5>Notes</h5>
+
+        <p>
+          Unlike <a href="#KernelInfo_new">KernelInfo.new</a>, this method does not fill in the arguments that are left out with ImageMagick's defaults; each
+          one is 0. For example, the second argument of <code>DiamondKernel</code> is the value of its elements, so
+          <code>KernelInfo.builtin(Magick::DiamondKernel, '1')</code> makes a kernel of zeros that changes nothing.
+        </p>
+      </div>
+
+      <div class="sig">
+        <h4 id="KernelInfo_clone">clone, dup</h4>
+
+        <p>
+          <span class="arg">kernel_info</span>.clone -&gt; <em>kernel_info</em><br />
+          <span class="arg">kernel_info</span>.dup -&gt; <em>kernel_info</em>
+        </p>
+      </div>
+
+      <div class="desc">
+        <h5>Description</h5>
+
+        <p>Returns a copy of the kernel that can be changed without changing the original.</p>
+      </div>
+
+      <div class="sig">
+        <h4 id="KernelInfo_scale">scale</h4>
+
+        <p><span class="arg">kernel_info</span>.scale(<span class="arg">scale</span>, <span class="arg">flag</span>) -&gt; <em>nil</em></p>
+      </div>
+
+      <div class="desc">
+        <h5>Description</h5>
+
+        <p>Multiplies the values of the kernel by <span class="arg">scale</span>, after normalizing them if <span class="arg">flag</span> asks for it.</p>
+
+        <h5>Arguments</h5>
+
+        <dl>
+          <dt>scale</dt>
+
+          <dd>The factor to multiply the values by.</dd>
+
+          <dt>flag</dt>
+
+          <dd>
+            One of these <a href="constants.html#GeometryFlags">GeometryFlags</a> values:
+
+            <dl>
+              <dt>NoValue</dt>
+
+              <dd>Multiply the values as they are.</dd>
+
+              <dt>NormalizeValue</dt>
+
+              <dd>First make the values add up to 1.0, the same as the <code>!</code> flag of <a href="#KernelInfo_scale_geometry">scale_geometry</a>.</dd>
+
+              <dt>CorrelateNormalizeValue</dt>
+
+              <dd>
+                First normalize the positive and negative values separately, for a kernel whose values add up to zero, the same as the <code>^</code> flag
+                of <a href="#KernelInfo_scale_geometry">scale_geometry</a>.
+              </dd>
+            </dl>
+
+            Other values, including <code>PercentValue</code>, are ignored. Use <a href="#KernelInfo_scale_geometry">scale_geometry</a> to give a
+            percentage.
+          </dd>
+        </dl>
+
+        <h5>Example</h5>
+
+        <pre class="language-ruby">
+img = Magick::Image.new(5, 5) { |options| options.background_color = 'gray25' }
+
+# A 3x3 box kernel adds up 9 pixels: the result is 9 times as bright
+kernel = Magick::KernelInfo.new('3x3: 1,1,1 1,1,1 1,1,1')
+img.morphology(Magick::ConvolveMorphology, 1, kernel)
+
+# Normalized, it averages them: the result is unchanged
+kernel.scale(1.0, Magick::NormalizeValue)
+img.morphology(Magick::ConvolveMorphology, 1, kernel)
+</pre>
+      </div>
+
+      <div class="sig">
+        <h4 id="KernelInfo_scale_geometry">scale_geometry</h4>
+
+        <p><span class="arg">kernel_info</span>.scale_geometry(<span class="arg">geometry</span>) -&gt; <em>nil</em></p>
+      </div>
+
+      <div class="desc">
+        <h5>Description</h5>
+
+        <p>
+          Scales the kernel as described by a string in the form of ImageMagick's <code>convolve:scale</code> setting,
+          <em>scale</em>[<code>!</code>|<code>^</code>][<code>%</code>][,<em>unity</em>].
+        </p>
+
+        <h5>Arguments</h5>
+
+        <dl>
+          <dt>geometry</dt>
+
+          <dd>
+            <em>scale</em> is the factor to multiply the values by. <code>!</code> normalizes the values first and <code>^</code> normalizes the
+            positive and negative values separately, like the flags of <a href="#KernelInfo_scale">scale</a>. <em>unity</em>, if given, is then added as
+            with <a href="#KernelInfo_unity_add">unity_add</a>. With <code>%</code>, both <em>scale</em> and <em>unity</em> are percentages, so
+            <code>"100%!,100"</code> is the same as <code>"1!,1"</code>.
+          </dd>
+        </dl>
+
+        <h5>Example</h5>
+
+        <pre class="language-ruby">
+kernel = Magick::KernelInfo.new('3x3: 1,1,1 1,1,1 1,1,1')
+kernel.scale_geometry('50%!') # normalize, then halve: the result is half as bright
+</pre>
+      </div>
+
+      <div class="sig">
+        <h4 id="KernelInfo_unity_add">unity_add</h4>
+
+        <p><span class="arg">kernel_info</span>.unity_add(<span class="arg">scale</span>) -&gt; <em>nil</em></p>
+      </div>
+
+      <div class="desc">
+        <h5>Description</h5>
+
+        <p>
+          Adds <span class="arg">scale</span> times the unity kernel, a kernel whose only non-zero value is 1.0 at its center, to the kernel. This adds
+          that much of the original image to the result, which turns a normalized blurring kernel into a soft blur, an unsharp or a sharpening kernel,
+          depending on <span class="arg">scale</span>.
+        </p>
+
+        <h5>Arguments</h5>
+
+        <dl>
+          <dt>scale</dt>
+
+          <dd>How much of the unity kernel to add.</dd>
+        </dl>
+
+        <h5>Example</h5>
+
+        <pre class="language-ruby">
+kernel = Magick::KernelInfo.new('3x3: 1,1,1 1,1,1 1,1,1')
+kernel.scale(1.0, Magick::NormalizeValue)
+kernel.unity_add(1.0) # a flat area becomes twice as bright
+</pre>
       </div>
     </div>
 
