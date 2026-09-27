@@ -27,4 +27,14 @@ RSpec.describe Magick::KernelInfo, '#initialize' do
 
     expect { kernel.__send__(:initialize, 'Square') }.to raise_error(FrozenError)
   end
+
+  it 'rejects a kernel string that names a file with @' do
+    Tempfile.create(['kernel', '.txt']) do |file|
+      file.write('3x3: 0,0,0 0,1,0 0,0,0')
+      file.flush
+
+      expect { described_class.new("@#{file.path}") }.to raise_error(ArgumentError, /must not name a file/)
+      expect { described_class.new("  @#{file.path}") }.to raise_error(ArgumentError, /must not name a file/)
+    end
+  end
 end

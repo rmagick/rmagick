@@ -395,7 +395,8 @@
 
       <p>
         Produce an image that looks like a Polaroid&reg; instant picture. If the image has a "Caption" <a href="image1.html#aset">property</a>, the value is
-        used as a caption.
+        used as a caption. A caption whose first non-blank character is <code>@</code>, or that contains a <code>%[fx:@...]</code>,
+        <code>%[hex:@...]</code> or <code>%[pixel:@...]</code> escape, raises <code>ArgumentError</code>, because ImageMagick would read the file it names.
       </p>
 
       <p>
@@ -625,7 +626,11 @@ end
       <dl>
         <dt>name</dt>
 
-        <dd>The profile name, or "*" to represent all the profiles in the image.</dd>
+        <dd>
+          The profile name, or "*" to represent all the profiles in the image. To add a profile, the name must be one of the profile formats of ImageMagick's
+          META coder: 8BIM, 8BIMTEXT, 8BIMWTEXT, APP1, APP1JPEG, EXIF, ICC, ICM, IPTC, IPTCTEXT, IPTCWTEXT or XMP, in any case. Any other name raises
+          <code>ArgumentError</code>, since ImageMagick would decode the profile with the coder of that name.
+        </dd>
 
         <dt>profile</dt>
 

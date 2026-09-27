@@ -899,7 +899,9 @@ g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
 
           <dd>
             The name of a built-in kernel with its arguments, such as <code>"Diamond"</code> or <code>"Disk:2.5"</code>, or the values of a user-defined
-            kernel, such as <code>"3x3: 0,1,0 1,1,1 0,1,0"</code>. Raises <code>RuntimeError</code> if ImageMagick cannot parse it.
+            kernel, such as <code>"3x3: 0,1,0 1,1,1 0,1,0"</code>. Raises <code>RuntimeError</code> if ImageMagick cannot parse it, and
+            <code>ArgumentError</code> if its first non-blank character is <code>@</code>, with which ImageMagick would read the kernel from the file it
+            names, or if it contains a <code>%[fx:@...]</code>, <code>%[hex:@...]</code> or <code>%[pixel:@...]</code> escape.
           </dd>
         </dl>
 

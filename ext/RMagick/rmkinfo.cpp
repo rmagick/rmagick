@@ -83,10 +83,14 @@ KernelInfo_alloc(VALUE klass)
  * KernelInfo object constructor
  *
  * - Calling it again on an initialized object replaces its kernel and destroys the old one.
+ * - A kernel string whose first non-blank character is '@' is rejected: ImageMagick would read the
+ *   kernel from the file it names. A string that contains a %[fx:@...], %[hex:@...] or
+ *   %[pixel:@...] escape is rejected as well, by the same check as the other options that name files.
  *
  * @param kernel_string [String] kernel info string representation to be parsed
  * @return [Magick::KernelInfo] self
  * @raise [FrozenError] if the object is frozen
+ * @raise [ArgumentError] if the kernel string names a file with '@'
  */
 VALUE
 KernelInfo_initialize(VALUE self, VALUE kernel_string)
@@ -96,6 +100,10 @@ KernelInfo_initialize(VALUE self, VALUE kernel_string)
 
     rb_check_frozen(self);
     string = StringValueCStr(kernel_string);
+    if (rm_has_file_reference(string))
+    {
+        rb_raise(rb_eArgError, "the kernel must not name a file with '@'");
+    }
 
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;

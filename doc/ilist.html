@@ -1093,7 +1093,10 @@ i = Magick::ImageList.new("images/Button_A.gif", "images/Button_B.gif")
 
         <dt>title=</dt>
 
-        <dd>Adds a title over the whole montage.</dd>
+        <dd>
+          Adds a title over the whole montage. A title whose first non-blank character is <code>@</code>, or that contains a <code>%[fx:@...]</code>,
+          <code>%[hex:@...]</code> or <code>%[pixel:@...]</code> escape, raises <code>ArgumentError</code>, because ImageMagick would read the file it names.
+        </dd>
       </dl>
 
       <h4>Tile labels</h4>
