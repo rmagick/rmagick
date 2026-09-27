@@ -20,7 +20,7 @@
  * the scheduler instead (RB_NOGVL_OFFLOAD_SAFE, Feature #20876): the call runs
  * on a worker thread while the calling fiber is suspended.
  *
- * Two things change for the caller when that happens, and the rm_offload_*
+ * Two things change for the caller when that happens, and the rm_gvl_offload_*
  * functions below deal with both:
  *
  * 1. The scheduler can raise into the waiting fiber, for example when the
@@ -171,7 +171,7 @@ offload_wait_ensure(VALUE arg)
  * No Ruby usage (internal function)
  */
 void
-rm_init_offload(void)
+rm_gvl_init_offload(void)
 {
 #if defined(RMAGICK_OFFLOAD_SAFE)
     offload_state_key = rb_ractor_local_storage_ptr_newkey(&offload_state_type);
@@ -190,7 +190,7 @@ rm_init_offload(void)
  * @return whether the wait let other fibers run
  */
 int
-rm_wait_for_offload(VALUE obj)
+rm_gvl_wait_for_offload(VALUE obj)
 {
     int waited = 0;
 #if defined(RMAGICK_OFFLOAD_SAFE)
@@ -395,7 +395,7 @@ offload(gvl_function_t *fp, void *args, VALUE obj, OffloadResultType result_type
  * @return the new image
  */
 Image *
-rm_offload_image(gvl_function_t *fp, void *args, VALUE obj, ExceptionInfo *exception, VALUE dependency)
+rm_gvl_offload_image(gvl_function_t *fp, void *args, VALUE obj, ExceptionInfo *exception, VALUE dependency)
 {
     return (Image *)offload(fp, args, obj, OffloadResultImage, exception, NULL
 #if defined(IMAGEMAGICK_7)
@@ -407,7 +407,7 @@ rm_offload_image(gvl_function_t *fp, void *args, VALUE obj, ExceptionInfo *excep
 
 
 /**
- * Like rm_offload_image, for a call that reads a scratch image the caller
+ * Like rm_gvl_offload_image, for a call that reads a scratch image the caller
  * destroys afterwards. If the call is unwound, the scratch image is destroyed
  * as well.
  *
@@ -421,7 +421,7 @@ rm_offload_image(gvl_function_t *fp, void *args, VALUE obj, ExceptionInfo *excep
  * @return the new image
  */
 Image *
-rm_offload_image_and_destroy(gvl_function_t *fp, void *args, VALUE obj, ExceptionInfo *exception, Image *scratch)
+rm_gvl_offload_image_and_destroy(gvl_function_t *fp, void *args, VALUE obj, ExceptionInfo *exception, Image *scratch)
 {
     return (Image *)offload(fp, args, obj, OffloadResultImage, exception, scratch
 #if defined(IMAGEMAGICK_7)
@@ -447,7 +447,7 @@ rm_offload_image_and_destroy(gvl_function_t *fp, void *args, VALUE obj, Exceptio
  * @return the result of the call
  */
 void *
-rm_offload_call(gvl_function_t *fp, void *args, VALUE obj, ExceptionInfo *exception, Image *image, VALUE dependency)
+rm_gvl_offload_call(gvl_function_t *fp, void *args, VALUE obj, ExceptionInfo *exception, Image *image, VALUE dependency)
 {
     return offload(fp, args, obj, OffloadResultIgnored, exception, image
 #if defined(IMAGEMAGICK_7)
@@ -473,7 +473,7 @@ rm_offload_call(gvl_function_t *fp, void *args, VALUE obj, ExceptionInfo *except
  * @return the result of the call
  */
 void *
-rm_offload_blob(gvl_function_t *fp, void *args, VALUE obj, ExceptionInfo *exception, VALUE dependency)
+rm_gvl_offload_blob(gvl_function_t *fp, void *args, VALUE obj, ExceptionInfo *exception, VALUE dependency)
 {
     return offload(fp, args, obj, OffloadResultMemory, exception, NULL
 #if defined(IMAGEMAGICK_7)
@@ -486,7 +486,7 @@ rm_offload_blob(gvl_function_t *fp, void *args, VALUE obj, ExceptionInfo *except
 
 #if defined(IMAGEMAGICK_7)
 /**
- * Like rm_offload_image, for a call made while the channel mask of an image
+ * Like rm_gvl_offload_image, for a call made while the channel mask of an image
  * is changed. If the call is unwound, the channel mask is restored as well.
  *
  * No Ruby usage (internal function)
@@ -501,8 +501,8 @@ rm_offload_blob(gvl_function_t *fp, void *args, VALUE obj, ExceptionInfo *except
  * @return the new image
  */
 Image *
-rm_offload_masked_image(gvl_function_t *fp, void *args, VALUE obj, ExceptionInfo *exception,
-                        Image *masked_image, ChannelType channel_mask, VALUE dependency)
+rm_gvl_offload_masked_image(gvl_function_t *fp, void *args, VALUE obj, ExceptionInfo *exception,
+                            Image *masked_image, ChannelType channel_mask, VALUE dependency)
 {
     return (Image *)offload(fp, args, obj, OffloadResultImage, exception, NULL, masked_image, channel_mask, dependency);
 }

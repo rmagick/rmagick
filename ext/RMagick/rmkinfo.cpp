@@ -155,7 +155,7 @@ get_kernel_info(VALUE self)
 {
     KernelInfo *kernel;
 
-    rm_wait_for_offload(self);
+    rm_gvl_wait_for_offload(self);
     TypedData_Get_Struct(self, KernelInfo, &rm_kernel_info_data_type, kernel);
     if (!kernel)
     {

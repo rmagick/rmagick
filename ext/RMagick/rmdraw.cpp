@@ -202,7 +202,7 @@ Draw_fill_pattern_eq(VALUE self, VALUE pattern)
     if (!NIL_P(pattern))
     {
         pattern = rm_cur_image(pattern);
-        rm_wait_for_offload(pattern);
+        rm_gvl_wait_for_offload(pattern);
     }
     draw = get_draw(self);
 
@@ -752,7 +752,7 @@ Draw_stroke_pattern_eq(VALUE self, VALUE pattern)
     if (!NIL_P(pattern))
     {
         pattern = rm_cur_image(pattern);
-        rm_wait_for_offload(pattern);
+        rm_gvl_wait_for_offload(pattern);
     }
     draw = get_draw(self);
 
@@ -945,7 +945,7 @@ annotate_body(VALUE arg)
     // not expanded. Everything those escapes provide is available directly from
     // Ruby -- Image#columns, Image#filename, Image#artifact and so on.
     StringValue(annotate->text);
-    rm_wait_for_offload(annotate->image_arg);
+    rm_gvl_wait_for_offload(annotate->image_arg);
     embed_text = StringValueCStr(annotate->text);
     image = rm_check_frozen(annotate->image_arg);
     draw->info->text = ConstantString(embed_text);
@@ -1014,7 +1014,7 @@ VALUE Draw_annotate(
     annotate.exception  = NULL;
 #endif
 
-    rm_wait_for_offload(annotate.image_arg);
+    rm_gvl_wait_for_offload(annotate.image_arg);
     rm_check_frozen(annotate.image_arg);
 
     return rb_ensure(annotate_body, (VALUE)&annotate, annotate_ensure, (VALUE)&annotate);
@@ -1068,7 +1068,7 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
 
     // Retrieve the image to composite
     image = rm_cur_image(argv[4]);
-    rm_wait_for_offload(image);
+    rm_gvl_wait_for_offload(image);
     comp_img = rm_check_destroyed(image);
 
     x = NUM2DBL(argv[0]);
@@ -1131,7 +1131,7 @@ Draw_draw(VALUE self, VALUE image_arg)
 #endif
 
     image_arg = rm_cur_image(image_arg);
-    rm_wait_for_offload(image_arg);
+    rm_gvl_wait_for_offload(image_arg);
     image = rm_check_frozen(image_arg);
 
     draw = get_draw(self);
@@ -1682,7 +1682,7 @@ get_type_metrics(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
             break;
         case 2:
             t = rm_cur_image(argv[0]);
-            rm_wait_for_offload(t);
+            rm_gvl_wait_for_offload(t);
             image = rm_check_destroyed(t);
             text_arg = argv[1];
             text = rm_str2cstr(&text_arg, &text_l);

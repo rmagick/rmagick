@@ -865,12 +865,12 @@ wait_for_imagelist(VALUE imagelist, VALUE extra)
 
     do
     {
-        waited = rm_wait_for_offload(extra);
+        waited = rm_gvl_wait_for_offload(extra);
         check_imagelist_length(imagelist);
         images = rb_iv_get(imagelist, "@images");
         for (long i = 0; i < RARRAY_LEN(images); i++)
         {
-            if (rm_wait_for_offload(rb_ary_entry(images, i)))
+            if (rm_gvl_wait_for_offload(rb_ary_entry(images, i)))
             {
                 waited = 1;
                 break;

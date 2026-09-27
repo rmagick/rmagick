@@ -29,7 +29,7 @@ get_info(VALUE self)
 {
     Info *info;
 
-    rm_wait_for_offload(self);
+    rm_gvl_wait_for_offload(self);
     TypedData_Get_Struct(self, Info, &rm_info_data_type, info);
     return info;
 }
@@ -2105,8 +2105,8 @@ Info_texture_eq(VALUE self, VALUE texture)
     int waited;
     do
     {
-        waited = rm_wait_for_offload(self);
-        waited |= rm_wait_for_offload(texture);
+        waited = rm_gvl_wait_for_offload(self);
+        waited |= rm_gvl_wait_for_offload(texture);
     } while (waited);
 
     info = get_info(self);

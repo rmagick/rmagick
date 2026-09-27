@@ -326,7 +326,7 @@ rm_check_destroyed(VALUE obj)
     // A second image is fetched after the receiver, so it must not wait.
     if (obj == rb_current_receiver())
     {
-        rm_wait_for_offload(obj);
+        rm_gvl_wait_for_offload(obj);
     }
 #endif
     TypedData_Get_Struct(obj, Image, &rm_image_data_type, image);
