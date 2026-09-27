@@ -746,6 +746,15 @@ title.annotate(montage, 0,0,0,40, 'Named Colors') { |options|
         </tr>
 
         <tr>
+          <td>pixels_per_em</td>
+
+          <td>
+            A <a href="struct.html#Point">Point</a> whose <code>x</code> and <code>y</code> are the number of pixels per em, the font size in pixels,
+            horizontally and vertically. It depends on the point size and the <a href="#density_eq">density</a>.
+          </td>
+        </tr>
+
+        <tr>
           <td>ascent</td>
 
           <td>Distance in pixels from the text baseline to the highest/upper grid coordinate used to place an outline point. Always a positive value.</td>
@@ -773,6 +782,28 @@ title.annotate(montage, 0,0,0,40, 'Named Colors') { |options|
           <td>max_advance</td>
 
           <td>Maximum horizontal advance (advance from the beginning of a character to the beginning of the next character) in pixels.</td>
+        </tr>
+
+        <tr>
+          <td>bounds</td>
+
+          <td>
+            A <a href="struct.html#Segment">Segment</a> that contains every glyph of the text, with each glyph measured from its own origin:
+            <code>x1</code> and <code>y1</code> are the smallest left and bottom edges, and <code>x2</code> and <code>y2</code> the largest right and top edges.
+            It is not the bounding box of the whole text; use <code>width</code> and <code>height</code> for that.
+          </td>
+        </tr>
+
+        <tr>
+          <td>underline_position</td>
+
+          <td>Distance in pixels from the baseline to the underline. A negative value is below the baseline.</td>
+        </tr>
+
+        <tr>
+          <td>underline_thickness</td>
+
+          <td>Thickness of the underline in pixels.</td>
         </tr>
       </table>
 
