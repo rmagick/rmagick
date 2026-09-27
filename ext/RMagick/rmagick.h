@@ -555,6 +555,7 @@ extern VALUE Magick_colors(VALUE);
 extern VALUE Magick_fonts(VALUE);
 extern VALUE Magick_init_formats(VALUE);
 extern VALUE Magick_limit_resource(int, VALUE *, VALUE);
+extern VALUE Magick_resource_usage(VALUE, VALUE);
 extern VALUE Magick_set_cache_threshold(VALUE, VALUE);
 extern VALUE Magick_set_log_event_mask(int, VALUE *, VALUE);
 extern VALUE Magick_set_log_format(VALUE, VALUE);

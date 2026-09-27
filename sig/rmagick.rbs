@@ -38,6 +38,7 @@ module Magick
   def self.init_formats: () -> Hash[String, String]
   def self.limit_resource: (interned resource) -> Integer
                          | (interned resource, int limit) -> Integer
+  def self.resource_usage: (interned resource) -> Integer
   def self.set_cache_threshold: (int threshold) -> self
   def self.set_log_event_mask: (*string args) -> self
   def self.set_log_format: (string format) -> self

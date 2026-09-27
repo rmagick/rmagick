@@ -196,35 +196,24 @@ Magick_init_formats(VALUE klass ATTRIBUTE_UNUSED)
 
 
 /**
- * Get/set resource limits. If a limit is specified the old limit is set to the
- * new value. Either way the current/old limit is returned.
+ * Convert the name of a resource to its ResourceType.
  *
- * @overload limit_resource(resource)
- *   Get resource limits.
- *   @param resource [String, Symbol] the type of resource
+ * No Ruby usage (internal function)
  *
- * @overload limit_resource(resource, limit)
- *   Set resource limits.
- *   @param resource [String, Symbol] the type of resource
- *   @param limit [Numeric] the new limit number
- *
- * @return [Numeric] the old limit.
+ * @param resource the name of the resource, a String or Symbol
+ * @return the resource type, or UndefinedResource for nil or an empty string
  */
-VALUE
-Magick_limit_resource(int argc, VALUE *argv, VALUE klass)
+static ResourceType
+resource_type(VALUE resource)
 {
-    VALUE resource, limit;
     ResourceType res = UndefinedResource;
     char *str;
     ID id;
-    MagickSizeType cur_limit;
-
-    rb_scan_args(argc, argv, "11", &resource, &limit);
 
     switch (TYPE(resource))
     {
         case T_NIL:
-            return klass;
+            break;
 
         case T_SYMBOL:
             id = (ID)SYM2ID(resource);
@@ -262,7 +251,7 @@ Magick_limit_resource(int argc, VALUE *argv, VALUE klass)
             str = StringValueCStr(resource);
             if (*str == '\0')
             {
-                return klass;
+                break;
             }
             else if (rm_strcasecmp("area", str) == 0)
             {
@@ -297,6 +286,40 @@ Magick_limit_resource(int argc, VALUE *argv, VALUE klass)
 
     RB_GC_GUARD(resource);
 
+    return res;
+}
+
+
+/**
+ * Get/set resource limits. If a limit is specified the old limit is set to the
+ * new value. Either way the current/old limit is returned.
+ *
+ * @overload limit_resource(resource)
+ *   Get resource limits.
+ *   @param resource [String, Symbol] the type of resource
+ *
+ * @overload limit_resource(resource, limit)
+ *   Set resource limits.
+ *   @param resource [String, Symbol] the type of resource
+ *   @param limit [Numeric] the new limit number
+ *
+ * @return [Numeric] the old limit.
+ */
+VALUE
+Magick_limit_resource(int argc, VALUE *argv, VALUE klass)
+{
+    VALUE resource, limit;
+    ResourceType res;
+    MagickSizeType cur_limit;
+
+    rb_scan_args(argc, argv, "11", &resource, &limit);
+
+    res = resource_type(resource);
+    if (res == UndefinedResource)
+    {
+        return klass;
+    }
+
     cur_limit = GetMagickResourceLimit(res);
 
     if (argc > 1)
@@ -307,6 +330,37 @@ Magick_limit_resource(int argc, VALUE *argv, VALUE klass)
     RB_GC_GUARD(limit);
 
     return ULL2NUM(cur_limit);
+}
+
+
+/**
+ * Get the amount of a resource that ImageMagick is using now. The memory, map
+ * and disk resources are in bytes. Most of them are the pixel caches of all
+ * images, including those of Image objects that are no longer referenced but
+ * have not been garbage collected yet. ImageMagick also counts blobs that it
+ * maps into memory and a few internal buffers, but not other memory it
+ * allocates.
+ *
+ * The area resource is the number of pixels of the last pixel cache that was
+ * checked against its limit, not a total.
+ *
+ * @param resource [String, Symbol] the type of resource
+ * @return [Numeric] the amount in use
+ * @see limit_resource
+ * @example
+ *   GC.start if Magick.resource_usage(:memory) > 1024**3
+ */
+VALUE
+Magick_resource_usage(VALUE klass ATTRIBUTE_UNUSED, VALUE resource)
+{
+    ResourceType res = resource_type(resource);
+
+    if (res == UndefinedResource)
+    {
+        rb_raise(rb_eArgError, "no resource given");
+    }
+
+    return ULL2NUM(GetMagickResource(res));
 }
 
 
