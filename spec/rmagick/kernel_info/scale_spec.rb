@@ -11,4 +11,10 @@ RSpec.describe Magick::KernelInfo, '#scale' do
     expect { kernel.scale(42, 'x') }.to raise_error(TypeError)
     expect { kernel.scale(42, Magick::BoldWeight) }.to raise_error(TypeError)
   end
+
+  it 'raises FrozenError for a frozen kernel' do
+    kernel = described_class.new('Octagon').freeze
+
+    expect { kernel.scale(1.0, Magick::NormalizeValue) }.to raise_error(FrozenError)
+  end
 end
