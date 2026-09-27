@@ -279,6 +279,9 @@ KernelInfo_clone(VALUE self)
  * kernels used for special purposes such as gaussian blurring, skeleton
  * pruning, and edge distance determination.
  *
+ * - The kernel is parsed from "name:geometry" as KernelInfo.new does, so the
+ *   arguments that are left out get ImageMagick's defaults.
+ *
  * @param what [Magick::KernelInfoType] kernel one of Magick::KernelInfoType enums
  * @param geometry [String] geometry to pass to default kernel
  * @return [Magick::KernelInfo] a new KernelInfo object
@@ -289,21 +292,32 @@ KernelInfo_builtin(VALUE self, VALUE what, VALUE geometry)
     KernelInfo *kernel;
     KernelInfoType kernel_type;
     GeometryInfo info;
-    const char *geom_str;
+    const char *geom_str, *name;
+    char kernel_string[MaxTextExtent];
+    int length;
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
 #endif
 
     VALUE_TO_ENUM(what, kernel_type, KernelInfoType);
     geom_str = StringValueCStr(geometry);
-    if (ParseGeometry(geom_str, &info) == NoValue && *geom_str)
+    // AcquireKernelInfo() reads a list of kernels separated by ';'. ParseGeometry() rejects such a
+    // string today, but builtin makes one built-in kernel, so reject ';' explicitly as well.
+    if ((ParseGeometry(geom_str, &info) == NoValue && *geom_str) || strchr(geom_str, ';'))
     {
         rb_raise(rb_eArgError, "invalid geometry string");
     }
 
+    name = CommandOptionToMnemonic(MagickKernelOptions, kernel_type);
+    length = snprintf(kernel_string, sizeof(kernel_string), "%s:%s", name, geom_str);
+    if (length < 0 || (size_t)length >= sizeof(kernel_string))
+    {
+        rb_raise(rb_eArgError, "geometry string too long");
+    }
+
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    kernel = AcquireKernelBuiltIn(kernel_type, &info, exception);
+    kernel = AcquireKernelInfo(kernel_string, exception);
     if (rm_should_raise_exception(exception, DestroyExceptionRetention))
     {
         if (kernel != (KernelInfo *) NULL)
@@ -313,8 +327,10 @@ KernelInfo_builtin(VALUE self, VALUE what, VALUE geometry)
         rm_raise_exception(exception);
     }
 #else
-    kernel = AcquireKernelBuiltIn(kernel_type, &info);
+    kernel = AcquireKernelInfo(kernel_string);
 #endif
+
+    RB_GC_GUARD(geometry);
 
     if (!kernel)
     {

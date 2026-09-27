@@ -937,8 +937,8 @@ img.morphology(Magick::DilateMorphology, 1, kernel) # the white pixel grows into
           <dt>geometry</dt>
 
           <dd>
-            The arguments of the kernel, as a <a href="imusage.html#geometry">geometry string</a> such as <code>"1,1"</code>, or an empty string. Raises
-            <code>ArgumentError</code> if it is not a geometry.
+            The arguments of the kernel, as a <a href="imusage.html#geometry">geometry string</a> such as <code>"1"</code> or <code>"2,1"</code>, or an
+            empty string. Raises <code>ArgumentError</code> if it is not a geometry.
           </dd>
         </dl>
 
@@ -946,15 +946,21 @@ img.morphology(Magick::DilateMorphology, 1, kernel) # the white pixel grows into
 
         <pre class="language-ruby">
 # The same kernel as Magick::KernelInfo.new('Diamond:1')
-kernel = Magick::KernelInfo.builtin(Magick::DiamondKernel, '1,1')
+kernel = Magick::KernelInfo.builtin(Magick::DiamondKernel, '1')
 </pre>
 
         <h5>Notes</h5>
 
         <p>
-          Unlike <a href="#KernelInfo_new">KernelInfo.new</a>, this method does not fill in the arguments that are left out with ImageMagick's defaults; each
-          one is 0. For example, the second argument of <code>DiamondKernel</code> is the value of its elements, so
-          <code>KernelInfo.builtin(Magick::DiamondKernel, '1')</code> makes a kernel of zeros that changes nothing.
+          The arguments that are left out get ImageMagick's defaults, as with <a href="#KernelInfo_new">KernelInfo.new</a>. In RMagick 7.1.5 and earlier,
+          each of them was 0, so <code>KernelInfo.builtin(Magick::DiamondKernel, '1')</code> made a kernel of zeros that changed nothing; pass
+          <code>'1,1'</code> to get the same kernel with those versions.
+        </p>
+
+        <p>
+          The flags in <span class="arg">geometry</span> also work as with <code>KernelInfo.new</code>: <code>@</code>, <code>&gt;</code> and
+          <code>&lt;</code> expand the kernel into a list of rotated kernels, and <code>!</code> and <code>%</code> scale the distance kernels. In RMagick
+          7.1.5 and earlier, they were ignored.
         </p>
       </div>
 
