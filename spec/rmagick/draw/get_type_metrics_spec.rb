@@ -17,7 +17,7 @@ RSpec.describe Magick::Draw, '#get_type_metrics' do
   it 'returns the underline thickness, not the underline position' do
     metrics = described_class.new.get_type_metrics('ABCDEF')
 
-    expect(metrics.underline_thickness).to be > 0
+    expect(metrics.underline_thickness).to be_positive
     expect(metrics.underline_thickness).not_to eq(metrics.underline_position)
   end
 
