@@ -209,6 +209,8 @@
 
             <li><a href="#thumbnail_bang">thumbnail!</a></li>
 
+            <li><a href="#tint">tint</a></li>
+
             <li><a href="#to_blob">to_blob</a></li>
 
             <li><a href="#to_color">to_color</a></li>
@@ -3416,6 +3418,83 @@ thumbnail = img.thumbnail(img.columns * 0.09, img.rows * 0.09)
       <h4>Returns</h4>
 
       <p>self</p>
+    </div>
+
+    <div class="sig">
+      <h3 id="tint">tint</h3>
+
+      <p>
+        <span class="arg">img</span>.tint(<span class="arg">color</span>, <span class="arg">red_pct</span>[, <span class="arg">green_pct</span>[,
+        <span class="arg">blue_pct</span>[, <span class="arg">alpha_pct</span>]]]) -&gt; <em>image</em>
+      </p>
+    </div>
+
+    <div class="desc">
+      <h4>Description</h4>
+
+      <p>
+        Tints the midtones of the image with the specified color. This method corresponds to ImageMagick's
+        <a href="https://usage.imagemagick.org/color_mods/#tinting">-tint</a> option. Pure black and pure white are not changed, and the closer a
+        channel value is to the middle of its range, the more it is changed.
+      </p>
+
+      <h4>Arguments</h4>
+
+      <dl>
+        <dt>color</dt>
+
+        <dd>The tint color, as a color name or a <a href="struct.html#Pixel">Pixel</a>.</dd>
+
+        <dt>red_pct, green_pct, blue_pct</dt>
+
+        <dd>
+          How much of each channel of <span class="arg">color</span> to apply, as a fraction: 1.0 is 100%. They must not be negative.
+          <span class="arg">green_pct</span> defaults to <span class="arg">red_pct</span>, and so does <span class="arg">blue_pct</span>, not to
+          <span class="arg">green_pct</span>, when only <span class="arg">green_pct</span> is given.
+        </dd>
+
+        <dt>alpha_pct</dt>
+
+        <dd>Accepted but ignored: the alpha channel is left unchanged.</dd>
+      </dl>
+
+      <h4>Returns</h4>
+
+      <p>A new image</p>
+
+      <h4>Example</h4>
+
+      <pre class="language-ruby">
+img = Magick::Image.read('Flower_Hat.jpg').first
+
+# Tint the midtones red
+img.tint('red', 0.5)
+
+# With white, whose intensity is 1.0, a percentage of 1.0 leaves a channel unchanged
+# and a lower one darkens its midtones: mid-gray becomes [127, 76, 76] of 255
+img.tint('white', 1.0, 0.8, 0.8)
+</pre>
+
+      <h4>Notes</h4>
+
+      <p>
+        Each channel moves by its percentage times the same channel of <span class="arg">color</span>, minus the intensity of <span class="arg">color</span>,
+        scaled by 1 - 4 &times; (<em>v</em> - 0.5)<sup>2</sup> for a channel value <em>v</em> from 0.0 to 1.0. So a percentage of 0.0 does not leave a
+        channel alone: its midtones get darker by the intensity of <span class="arg">color</span>.
+      </p>
+
+      <p>
+        With an HDRI build of ImageMagick, the result is not clamped. For example, a mid-gray pixel tinted with <code>tint('red', 1.0)</code> has a red
+        value of 84237, above <a href="constants.html#Miscellaneous_constants">QuantumRange</a> (65535), with Q16-HDRI.
+      </p>
+
+      <h4>See also</h4>
+
+      <p><a href="image1.html#colorize">colorize</a></p>
+
+      <h4>Magick API</h4>
+
+      <p>TintImage</p>
     </div>
 
     <div class="sig">
