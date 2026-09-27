@@ -104,6 +104,11 @@ KernelInfo_initialize(VALUE self, VALUE kernel_string)
     {
         rb_raise(rb_eArgError, "the kernel must not name a file with '@'");
     }
+    old_kernel = (KernelInfo *)DATA_PTR(self);
+    if (old_kernel)
+    {
+        rm_gvl_check_writable(old_kernel);
+    }
 
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
@@ -155,7 +160,6 @@ get_kernel_info(VALUE self)
 {
     KernelInfo *kernel;
 
-    rm_gvl_wait_for_offload(self);
     TypedData_Get_Struct(self, KernelInfo, &rm_kernel_info_data_type, kernel);
     if (!kernel)
     {
@@ -174,12 +178,17 @@ get_kernel_info(VALUE self)
  * @param self the KernelInfo object
  * @return the KernelInfo struct
  * @throw FrozenError if the object is frozen
+ * @throw RuntimeError if an offloaded call is using the kernel
  */
 static KernelInfo *
-get_unfrozen_kernel_info(VALUE self)
+get_writable_kernel_info(VALUE self)
 {
+    KernelInfo *kernel;
+
     rb_check_frozen(self);
-    return get_kernel_info(self);
+    kernel = get_kernel_info(self);
+    rm_gvl_check_writable(kernel);
+    return kernel;
 }
 
 
@@ -191,7 +200,7 @@ get_unfrozen_kernel_info(VALUE self)
 VALUE
 KernelInfo_unity_add(VALUE self, VALUE scale)
 {
-    GVL_STRUCT_TYPE(UnityAddKernelInfo) args = { get_unfrozen_kernel_info(self), NUM2DBL(scale) };
+    GVL_STRUCT_TYPE(UnityAddKernelInfo) args = { get_writable_kernel_info(self), NUM2DBL(scale) };
     CALL_FUNC_WITHOUT_GVL(GVL_FUNC(UnityAddKernelInfo), &args);
     return Qnil;
 }
@@ -214,7 +223,7 @@ KernelInfo_scale(VALUE self, VALUE scale, VALUE flags)
 
     VALUE_TO_ENUM(flags, geoflags, GeometryFlags);
 
-    GVL_STRUCT_TYPE(ScaleKernelInfo) args = { get_unfrozen_kernel_info(self), NUM2DBL(scale), geoflags };
+    GVL_STRUCT_TYPE(ScaleKernelInfo) args = { get_writable_kernel_info(self), NUM2DBL(scale), geoflags };
     CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ScaleKernelInfo), &args);
     return Qnil;
 }
@@ -228,7 +237,7 @@ KernelInfo_scale(VALUE self, VALUE scale, VALUE flags)
 VALUE
 KernelInfo_scale_geometry(VALUE self, VALUE geometry)
 {
-    KernelInfo *kernel = get_unfrozen_kernel_info(self);
+    KernelInfo *kernel = get_writable_kernel_info(self);
     char *geom = StringValueCStr(geometry);
 
     GVL_STRUCT_TYPE(ScaleGeometryKernelInfo) args = { kernel, geom };
@@ -252,6 +261,11 @@ KernelInfo_init_copy(VALUE self, VALUE orig)
     KernelInfo *kernel, *old_kernel;
 
     rb_check_frozen(self);
+    old_kernel = (KernelInfo *)DATA_PTR(self);
+    if (old_kernel)
+    {
+        rm_gvl_check_writable(old_kernel);
+    }
     kernel = CloneKernelInfo(get_kernel_info(orig));
     if (!kernel)
     {

@@ -19,9 +19,8 @@ struct ImagesFromImageList_Args
 };
 
 static Image *clone_imagelist(Image *);
-static VALUE wait_for_imagelist(VALUE, VALUE);
-static Image *images_from_array(VALUE, VALUE *);
 static Image *images_from_imagelist(VALUE, VALUE *);
+static void check_images_writable(VALUE);
 static VALUE images_from_imagelist_protected(VALUE);
 static long imagelist_length(VALUE);
 static long check_imagelist_length(VALUE);
@@ -839,6 +838,25 @@ rm_imagelist_from_images(Image *images)
 
 
 /**
+ * Raise if an offloaded call is using any image in the imagelist.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param imagelist the imagelist
+ */
+static void
+check_images_writable(VALUE imagelist)
+{
+    VALUE images = rb_iv_get(imagelist, "@images");
+
+    for (long i = 0; i < RARRAY_LEN(images); i++)
+    {
+        rm_gvl_check_writable(rm_check_destroyed(rb_ary_entry(images, i)));
+    }
+}
+
+
+/**
  * Convert an array of Image *s to an ImageMagick scene sequence (i.e. a
  * doubly-linked list of Images).
  *
@@ -851,47 +869,15 @@ rm_imagelist_from_images(Image *images)
 static Image *
 images_from_imagelist(VALUE imagelist, VALUE *clones)
 {
-    return images_from_array(wait_for_imagelist(imagelist, Qnil), clones);
-}
-
-// Wait for the whole set before fetching any Image pointers or linking images.
-// A wait can replace @images or start a new operation on an earlier input, so
-// restart the scan whenever another fiber has had a chance to run.
-static VALUE
-wait_for_imagelist(VALUE imagelist, VALUE extra)
-{
-    VALUE images;
-    int waited;
-
-    do
-    {
-        waited = rm_gvl_wait_for_offload(extra);
-        check_imagelist_length(imagelist);
-        images = rb_iv_get(imagelist, "@images");
-        for (long i = 0; i < RARRAY_LEN(images); i++)
-        {
-            if (rm_gvl_wait_for_offload(rb_ary_entry(images, i)))
-            {
-                waited = 1;
-                break;
-            }
-        }
-    } while (waited);
-
-    return images;
-}
-
-static Image *
-images_from_array(VALUE images, VALUE *clones)
-{
     long x, len;
     Image *head = NULL;
-    VALUE t;
+    VALUE images, t;
 
     *clones = rb_ary_new();
 
-    len = RARRAY_LEN(images);
+    len = check_imagelist_length(imagelist);
 
+    images = rb_iv_get(imagelist, "@images");
     for (x = 0; x < len; x++)
     {
         Image *image;
@@ -1150,7 +1136,6 @@ VALUE
 ImageList_remap(int argc, VALUE *argv, VALUE self)
 {
     Image *images, *remap_image = NULL;
-    VALUE remap_obj = Qnil;
     QuantizeInfo quantize_info;
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
@@ -1158,7 +1143,9 @@ ImageList_remap(int argc, VALUE *argv, VALUE self)
 
     if (argc > 0 && argv[0] != Qnil)
     {
-        remap_obj = rm_cur_image(argv[0]);
+        VALUE t = rm_cur_image(argv[0]);
+        remap_image = rm_check_destroyed(t);
+        RB_GC_GUARD(t);
     }
 
     GetQuantizeInfo(&quantize_info);
@@ -1176,12 +1163,8 @@ ImageList_remap(int argc, VALUE *argv, VALUE self)
     }
 
     VALUE clones;
-    VALUE image_array = wait_for_imagelist(self, remap_obj);
-    if (!NIL_P(remap_obj))
-    {
-        remap_image = rm_check_destroyed(remap_obj);
-    }
-    images = images_from_array(image_array, &clones);
+    check_images_writable(self);
+    images = images_from_imagelist(self, &clones);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -1198,7 +1181,6 @@ ImageList_remap(int argc, VALUE *argv, VALUE self)
 #endif
 
     RB_GC_GUARD(clones);
-    RB_GC_GUARD(remap_obj);
 
     return self;
 }
@@ -1232,6 +1214,7 @@ ImageList_to_blob(VALUE self)
 
     // Convert the images array to an images sequence.
     VALUE clones;
+    check_images_writable(self);
     images = images_from_imagelist(self, &clones);
 
     exception = AcquireExceptionInfo();
@@ -1332,6 +1315,7 @@ ImageList_write(VALUE self, VALUE file)
 
     // Convert the images array to an images sequence.
     VALUE clones;
+    check_images_writable(self);
     images = images_from_imagelist(self, &clones);
 
     // Copy the filename into each image. Set a scene number to be used if

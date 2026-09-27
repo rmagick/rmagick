@@ -320,20 +320,12 @@ rm_check_destroyed(VALUE obj)
 {
     Image *image;
 
-#if defined(RMAGICK_OFFLOAD_SAFE)
-    // A wait is a point where other fibers run, so it is only safe before the
-    // caller has fetched any Image pointer: at method entry, for the receiver.
-    // A second image is fetched after the receiver, so it must not wait.
-    if (obj == rb_current_receiver())
-    {
-        rm_gvl_wait_for_offload(obj);
-    }
-#endif
     TypedData_Get_Struct(obj, Image, &rm_image_data_type, image);
     if (!image)
     {
         rb_raise(Class_DestroyedImageError, "destroyed image");
     }
+    rm_gvl_check_readable(image);
 
     return image;
 }
@@ -352,6 +344,7 @@ rm_check_frozen(VALUE obj)
 {
     Image *image = rm_check_destroyed(obj);
     rb_check_frozen(obj);
+    rm_gvl_check_writable(image);
     return image;
 }
 

@@ -10,13 +10,24 @@ RSpec.describe Magick::Image, if: offloading do
   context "with a Fiber scheduler that offloads blocking operations" do
     let(:scheduler) { OffloadingScheduler.new }
     let(:cancelled) { Class.new(StandardError) }
+    let(:in_use) { an_instance_of(RuntimeError).and(having_attributes(message: "object is in use by another fiber")) }
 
     def red_image
       described_class.new(10, 10) { |options| options.background_color = "red" }
     end
 
+    def blue_image
+      described_class.new(10, 10) { |options| options.background_color = "blue" }
+    end
+
     def resident_set_size
       Integer(`ps -o rss= -p #{Process.pid}`)
+    end
+
+    def attempt
+      yield
+    rescue StandardError => e
+      e
     end
 
     it "runs heavy calls through #blocking_operation_wait" do
@@ -86,38 +97,60 @@ RSpec.describe Magick::Image, if: offloading do
       expect(image.negate.pixel_color(0, 0).to_color).to eq(red_image.negate.pixel_color(0, 0).to_color)
     end
 
-    it "makes another fiber wait for a call in flight before it destroys the image" do
-      image = described_class.new(2000, 2000)
-      order = []
-
-      result = scheduler.run do
+    it "lets another fiber read an image that a call reads" do
+      image = described_class.new(200, 200)
+      reads = nil
+      scheduler.before_next_operation do
         Fiber.schedule do
-          sleep(0.01)
-          image.destroy!
-          order << :destroyed
+          reads = [image.pixel_color(0, 0).class, image.blur_image.columns, Fiber.blocking { image.columns }]
         end
-        blurred = image.gaussian_blur(0, 5)
-        order << :blurred
-        blurred
       end
 
-      expect(order).to eq(%i[blurred destroyed])
-      expect(image).to be_destroyed
-      expect(result.columns).to eq(2000)
+      result = scheduler.run { image.gaussian_blur(0, 5) }
+
+      expect(reads).to eq([Magick::Pixel, 200, 200])
+      expect(result.columns).to eq(200)
     end
 
-    it "keeps a waiting fiber from using an image that another fiber replaced" do
-      image = described_class.new(2000, 2000)
-      results = []
-
-      scheduler.run do
-        Fiber.schedule { results << image.gaussian_blur(0, 3) }
-        Fiber.schedule { image.resize!(500, 500) }
-        Fiber.schedule { results << image.gaussian_blur(0, 3) }
+    it "does not let another fiber change or destroy an image that a call reads" do
+      image = described_class.new(200, 200)
+      errors = nil
+      scheduler.before_next_operation do
+        Fiber.schedule do
+          errors = [
+            attempt { image.destroy! },
+            attempt { image.resize!(50, 50) },
+            attempt { image.channel_mean(Magick::RedChannel) }
+          ]
+        end
       end
 
-      expect(results.map(&:columns)).to eq([2000, 500])
-      expect(image.columns).to eq(500)
+      result = scheduler.run { image.gaussian_blur(0, 5) }
+
+      expect(errors).to all(in_use)
+      expect(image).not_to be_destroyed
+      expect(image.columns).to eq(200)
+      expect(result.columns).to eq(200)
+    end
+
+    it "does not let another fiber use an image that a call changes" do
+      image = described_class.new(200, 200)
+      errors = nil
+      scheduler.before_next_operation do
+        Fiber.schedule do
+          errors = [
+            attempt { image.pixel_color(0, 0) },
+            attempt { image.blur_image },
+            attempt { Fiber.blocking { image.columns } },
+            attempt { image.destroy! }
+          ]
+        end
+      end
+
+      scheduler.run { image.resize!(100, 100) }
+
+      expect(errors).to all(in_use)
+      expect(image.columns).to eq(100)
     end
 
     it "lets a fiber use an image while a call is in flight on another image" do
@@ -137,71 +170,111 @@ RSpec.describe Magick::Image, if: offloading do
       expect(first).to be_destroyed
     end
 
-    it "waits before drawing on an image used by a worker" do
+    it "composites with an image that another fiber's call reads" do
+      src = described_class.new(200, 200)
+      dst = described_class.new(50, 50)
+      composited = nil
+      scheduler.before_next_operation do
+        Fiber.schedule { composited = dst.composite_affine(src, Magick::AffineMatrix.new(1, 0, 0, 1, 0, 0)) }
+      end
+
+      scheduler.run do
+        src.gaussian_blur(0, 5)
+        dst.destroy!
+      end
+
+      expect(composited.columns).to eq(50)
+      expect(dst).to be_destroyed
+    end
+
+    it "does not let another fiber read an image as an argument while a call changes it" do
+      src = red_image
+      dst = described_class.new(10, 10)
+      error = nil
+      scheduler.before_next_operation do
+        Fiber.schedule { error = attempt { dst.composite(src, 0, 0, Magick::CopyCompositeOp) } }
+      end
+
+      scheduler.run { src.colorspace = Magick::CMYKColorspace }
+
+      expect(error).to in_use
+    end
+
+    it "does not let another fiber read an image while a call changes its channel mask" do
+      image = red_image
+      other = blue_image
+      error = nil
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { other.difference(image) } } }
+
+      scheduler.run { image.blur_channel(0, 1, Magick::GreenChannel) }
+
+      expect(error).to in_use
+      expect(other.difference(image)).not_to eq([0.0, 0.0, 0.0])
+    end
+
+    it "does not let another fiber draw on an image that a call reads" do
       image = red_image
       draw = Magick::Draw.new
       draw.fill("blue").rectangle(0, 0, 9, 9)
-      scheduler.before_next_operation { Fiber.schedule { draw.draw(image) } }
+      error = nil
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { draw.draw(image) } } }
 
-      result = scheduler.run { image.blur_image }
+      scheduler.run { image.blur_image }
 
-      expect(result.pixel_color(5, 5).to_color).to eq(red_image.pixel_color(5, 5).to_color)
-      expect(image.pixel_color(5, 5).blue).to eq(Magick::QuantumRange)
+      expect(error).to in_use
+      expect(image.pixel_color(5, 5).to_color).to eq(red_image.pixel_color(5, 5).to_color)
     end
 
-    it "waits before remapping an image used by a worker" do
+    it "does not let another fiber remap an image that a call reads" do
       image = red_image
       images = Magick::ImageList.new << image
-      palette = described_class.new(1, 1) { |info| info.background_color = "blue" }
-      scheduler.before_next_operation { Fiber.schedule { images.remap(palette) } }
+      error = nil
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { images.remap(blue_image) } } }
 
-      result = scheduler.run { image.blur_image }
+      scheduler.run { image.blur_image }
 
-      expect(result.pixel_color(0, 0).red).to eq(Magick::QuantumRange)
-      expect(image.pixel_color(0, 0).blue).to eq(Magick::QuantumRange)
+      expect(error).to in_use
+      expect(image.pixel_color(0, 0).red).to eq(Magick::QuantumRange)
     end
 
-    it "waits for a remap palette before fetching the target images" do
+    it "remaps with a palette that another fiber's call reads" do
       image = red_image
-      palette = red_image
+      palette = blue_image
       images = Magick::ImageList.new << image
-      errors = []
-      scheduler.before_next_operation do
-        Fiber.schedule do
-          images.remap(palette)
-        rescue Magick::DestroyedImageError => e
-          errors << e
-        end
-        image.destroy!
-      end
+      error = :not_run
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { images.remap(palette) } } }
 
       scheduler.run { palette.blur_image }
 
-      expect(errors.size).to eq(1)
+      expect(error).to be_a(Magick::ImageList)
+      expect(image.pixel_color(0, 0).blue).to eq(Magick::QuantumRange)
     end
 
-    it "waits for every list member before linking native images" do
-      first = red_image
-      second = red_image
-      images = Magick::ImageList.new << first << second
-      errors = []
-      scheduler.before_next_operation do
-        Fiber.schedule do
-          images.append(false)
-        rescue Magick::DestroyedImageError => e
-          errors << e
-        end
-        first.destroy!
-      end
+    it "appends a list with a member that another fiber's call reads" do
+      images = Magick::ImageList.new << red_image << red_image
+      appended = nil
+      scheduler.before_next_operation { Fiber.schedule { appended = images.append(false) } }
 
-      scheduler.run { second.blur_image }
+      scheduler.run { images[1].blur_image }
 
-      expect(errors.size).to eq(1)
+      expect(appended.columns).to eq(20)
     end
 
-    it "keeps read options stable until the worker finishes" do
+    it "does not let another fiber change an overlay that a call reads" do
+      image = described_class.new(50, 50)
+      overlay = described_class.new(200, 200)
+      error = nil
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { image.blend(overlay, 0.5) } } }
+
+      scheduler.run { overlay.blur_image(0, 3) }
+
+      expect(error).to in_use
+    end
+
+    it "does not let another fiber change read options until the worker finishes" do
       options = nil
-      scheduler.before_next_operation { Fiber.schedule { options.size = "30x30" } }
+      error = nil
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { options.size = "30x30" } } }
 
       images = scheduler.run do
         described_class.read("xc:red") do |info|
@@ -210,88 +283,68 @@ RSpec.describe Magick::Image, if: offloading do
         end
       end
 
+      expect(error).to in_use
       expect(images.first.columns).to eq(5)
-      expect(options.size).to eq("30x30")
+      expect(options.size).to eq("5x5")
     end
 
-    it "locks options while decoding a blob" do
+    it "does not let another fiber change options while decoding a blob" do
       blob = red_image.to_blob { |info| info.format = "PNG" }
       options = nil
-      order = []
-      scheduler.before_next_operation do
-        Fiber.schedule do
-          options.quality = 1
-          order << :changed
-        end
-      end
+      error = nil
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { options.quality = 1 } } }
 
-      scheduler.run do
-        described_class.from_blob(blob) { |info| options = info }
-        order << :decoded
-      end
+      images = scheduler.run { described_class.from_blob(blob) { |info| options = info } }
 
-      expect(order).to eq(%i[decoded changed])
+      expect(error).to in_use
+      expect(images.first.columns).to eq(10)
     end
 
-    it "locks options while encoding a blob" do
+    it "does not let another fiber change options while encoding a blob" do
       image = red_image
       options = nil
-      order = []
-      scheduler.before_next_operation do
-        Fiber.schedule do
-          options.format = "JPEG"
-          order << :changed
-        end
-      end
+      error = nil
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { options.format = "JPEG" } } }
 
       blob = scheduler.run do
-        result = image.to_blob do |info|
+        image.to_blob do |info|
           options = info
           info.format = "PNG"
         end
-        order << :encoded
-        result
       end
 
-      expect(order).to eq(%i[encoded changed])
+      expect(error).to in_use
       expect(described_class.from_blob(blob).first.format).to eq("PNG")
     end
 
-    it "locks options while writing an image" do
+    it "does not let another fiber change options while writing an image" do
       image = red_image
       options = nil
-      order = []
-      scheduler.before_next_operation do
-        Fiber.schedule do
-          options.quality = 1
-          order << :changed
-        end
-      end
+      error = nil
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { options.quality = 1 } } }
 
       Dir.mktmpdir do |dir|
-        scheduler.run do
-          image.write(File.join(dir, "image.png")) { |info| options = info }
-          order << :written
-        end
+        scheduler.run { image.write(File.join(dir, "image.png")) { |info| options = info } }
       end
 
-      expect(order).to eq(%i[written changed])
+      expect(error).to in_use
     end
 
-    it "keeps morphology kernels stable until the worker finishes" do
+    it "does not let another fiber change a morphology kernel until the worker finishes" do
       image = red_image
       kernel = Magick::KernelInfo.new("1:1")
-      scheduler.before_next_operation { Fiber.schedule { kernel.scale(0, Magick::NoValue) } }
+      error = nil
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { kernel.scale(0, Magick::NoValue) } } }
 
       result = scheduler.run do
         image.morphology_channel(Magick::RedChannel, Magick::ConvolveMorphology, 1, kernel)
       end
 
+      expect(error).to in_use
       expect(result.pixel_color(0, 0).red).to eq(Magick::QuantumRange)
-      expect(image.morphology(Magick::ConvolveMorphology, 1, kernel).pixel_color(0, 0).red).to eq(0)
     end
 
-    it "releases the options lock when a read is cancelled" do
+    it "releases the options when a read is cancelled" do
       options = nil
       scheduler.cancel_next_operation(cancelled.new)
 
@@ -302,7 +355,7 @@ RSpec.describe Magick::Image, if: offloading do
       expect { options.size = "5x5" }.not_to raise_error
     end
 
-    it "releases the kernel lock when morphology is cancelled" do
+    it "releases the kernel when morphology is cancelled" do
       image = red_image
       kernel = Magick::KernelInfo.new("1:1")
       scheduler.cancel_next_operation(cancelled.new)
@@ -312,38 +365,6 @@ RSpec.describe Magick::Image, if: offloading do
       end.to raise_error(cancelled)
 
       expect { kernel.scale(0, Magick::NoValue) }.not_to raise_error
-    end
-
-    it "lets a blocking fiber wait for a replaced image" do
-      image = red_image
-      widths = []
-      scheduler.before_next_operation do
-        Fiber.schedule { Fiber.blocking { widths << image.columns } }
-      end
-
-      scheduler.run { image.resize!(5, 5) }
-
-      expect(widths).to eq([5])
-    end
-
-    it "removes a cancelled blocking waiter before waking other fibers" do
-      image = red_image
-      errors = []
-      widths = []
-      scheduler.before_next_operation do
-        waiter = Fiber.schedule do
-          Fiber.blocking { image.columns }
-        rescue StandardError => e
-          errors << e
-        end
-        scheduler.fiber_interrupt(waiter, cancelled.new)
-        Fiber.schedule { Fiber.blocking { widths << image.columns } }
-      end
-
-      scheduler.run { image.resize!(5, 5) }
-
-      expect(errors).to contain_exactly(an_instance_of(cancelled))
-      expect(widths).to eq([5])
     end
 
     it "restores the SIGCHLD handler when a cancelled read is unwound", if: offloading && RUBY_PLATFORM.match?(/darwin|freebsd/) do
@@ -411,23 +432,6 @@ RSpec.describe Magick::Image, if: offloading do
 
         expect(described_class.read(path).first.columns).to eq(50)
       end
-    end
-
-    it "waits for an overlay in flight before changing it" do
-      image = described_class.new(50, 50)
-      overlay = described_class.new(1500, 1500)
-      order = []
-
-      scheduler.run do
-        Fiber.schedule do
-          overlay.blur_image(0, 3)
-          order << :blurred
-        end
-        image.blend(overlay, 0.5)
-        order << :blended
-      end
-
-      expect(order).to eq(%i[blurred blended])
     end
 
     it "reads a blob that another fiber modifies meanwhile" do

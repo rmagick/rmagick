@@ -397,6 +397,7 @@ adaptive_channel_method(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
     ChannelType channels;
 
     image = rm_check_destroyed(self);
+    rm_gvl_check_writable(image);
     channels = extract_channels(&argc, argv);
 
     switch (argc)
@@ -736,6 +737,7 @@ Image_add_noise_channel(int argc, VALUE *argv, VALUE self)
     ChannelType channels;
 
     image = rm_check_destroyed(self);
+    rm_gvl_check_writable(image);
     channels = extract_channels(&argc, argv);
 
     // There must be 1 remaining argument.
@@ -1090,7 +1092,7 @@ crisscross(int bang, VALUE self, gvl_function_t fp)
     exception = AcquireExceptionInfo();
 
     GVL_STRUCT_TYPE(crisscross) args = { image, exception };
-    new_image = rm_gvl_offload_image(fp, &args, self, exception);
+    new_image = rm_gvl_offload_image_replacing(fp, &args, self, exception, bang);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -1936,14 +1938,12 @@ special_composite(Image *image, Image *overlay, double image_pct, double overlay
 VALUE
 Image_blend(int argc, VALUE *argv, VALUE self)
 {
-    int waited;
     VALUE ovly;
     Image *image, *overlay;
     double src_percent, dst_percent;
     long x_offset = 0L, y_offset = 0L;
 
-
-    rm_check_destroyed(self);
+    image = rm_check_destroyed(self);
 
     if (argc < 1)
     {
@@ -1951,16 +1951,8 @@ Image_blend(int argc, VALUE *argv, VALUE self)
     }
 
     ovly = rm_cur_image(argv[0]);
-    // The overlay's geometry and artifacts are changed below, so wait for
-    // both inputs before fetching either.
-    do
-    {
-        waited = rm_gvl_wait_for_offload(self);
-        waited |= rm_gvl_wait_for_offload(ovly);
-    }
-    while (waited);
-    image = rm_check_destroyed(self);
     overlay = rm_check_destroyed(ovly);
+    rm_gvl_check_writable(overlay);
 
     if (argc > 3)
     {
@@ -2056,6 +2048,7 @@ Image_blur_channel(int argc, VALUE *argv, VALUE self)
     double radius = 0.0, sigma = 1.0;
 
     image = rm_check_destroyed(self);
+    rm_gvl_check_writable(image);
 
     channels = extract_channels(&argc, argv);
 
@@ -2467,6 +2460,7 @@ Image_channel_depth(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
+    rm_gvl_check_writable(image);
     channels = extract_channels(&argc, argv);
 
     // Ensure all arguments consumed.
@@ -2516,6 +2510,7 @@ Image_channel_extrema(int argc, VALUE *argv, VALUE self)
     VALUE ary;
 
     image = rm_check_destroyed(self);
+    rm_gvl_check_writable(image);
 
     channels = extract_channels(&argc, argv);
 
@@ -2571,6 +2566,7 @@ Image_channel_mean(int argc, VALUE *argv, VALUE self)
     VALUE ary;
 
     image = rm_check_destroyed(self);
+    rm_gvl_check_writable(image);
 
     channels = extract_channels(&argc, argv);
 
@@ -2624,6 +2620,7 @@ Image_channel_entropy(int argc, VALUE *argv, VALUE self)
     VALUE ary;
 
     image = rm_check_destroyed(self);
+    rm_gvl_check_writable(image);
 
     channels = extract_channels(&argc, argv);
 
@@ -3389,12 +3386,12 @@ Image_colorspace_eq(VALUE self, VALUE colorspace)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     GVL_STRUCT_TYPE(TransformImageColorspace) args = { image, new_cs, exception };
-    rm_gvl_offload_call(GVL_FUNC(TransformImageColorspace), &args, self, exception, NULL);
+    rm_gvl_offload_update(GVL_FUNC(TransformImageColorspace), &args, self, exception);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     GVL_STRUCT_TYPE(TransformImageColorspace) args = { image, new_cs };
-    rm_gvl_offload_call(GVL_FUNC(TransformImageColorspace), &args, self, NULL, NULL);
+    rm_gvl_offload_update(GVL_FUNC(TransformImageColorspace), &args, self, NULL);
     rm_check_image_exception(image, RetainOnError);
 #endif
 
@@ -3472,6 +3469,7 @@ Image_compare_channel(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
+    rm_gvl_check_writable(image);
 
     channels = extract_channels(&argc, argv);
 
@@ -3582,6 +3580,7 @@ composite(int bang, int argc, VALUE *argv, VALUE self, ChannelType channels)
     if (bang)
     {
         rb_check_frozen(self);
+        rm_gvl_check_writable(image);
     }
     if (argc < 3 || argc > 5)
     {
@@ -4762,7 +4761,8 @@ Image_morphology_channel(VALUE self, VALUE channel_v, VALUE method_v, VALUE iter
     KernelInfo *kernel;
     ssize_t iterations = NUM2LONG(iterations_v);;
 
-    rm_check_destroyed(self);
+    image = rm_check_destroyed(self);
+    rm_gvl_check_writable(image);
 
     VALUE_TO_ENUM(method_v, method, MorphologyMethod);
     VALUE_TO_ENUM(channel_v, channel, ChannelType);
@@ -4777,16 +4777,6 @@ Image_morphology_channel(VALUE self, VALUE channel_v, VALUE method_v, VALUE iter
         rb_raise(rb_eArgError, "expected String or Magick::KernelInfo");
     }
 
-    // Waiting for either input may let another fiber start using the other.
-    // Recheck both before fetching either native pointer.
-    int waited;
-    do
-    {
-        waited = rm_gvl_wait_for_offload(self);
-        waited |= rm_gvl_wait_for_offload(kernel_v);
-    } while (waited);
-
-    image = rm_check_destroyed(self);
     TypedData_Get_Struct(kernel_v, KernelInfo, &rm_kernel_info_data_type, kernel);
 
     exception = AcquireExceptionInfo();
@@ -4958,6 +4948,7 @@ Image_convolve_channel(int argc, VALUE *argv, VALUE self)
 #endif
 
     image = rm_check_destroyed(self);
+    rm_gvl_check_writable(image);
 
     channels = extract_channels(&argc, argv);
 
@@ -5051,7 +5042,6 @@ Image_init_copy(VALUE copy, VALUE orig)
 {
     Image *image, *new_image;
 
-    rm_gvl_wait_for_offload(orig);
     image = rm_check_destroyed(orig);
     new_image = rm_clone_image(image);
     UPDATE_DATA_PTR(copy, new_image);
@@ -5579,9 +5569,12 @@ Image_destroy_bang(VALUE self)
 {
     Image *image;
 
-    rm_gvl_wait_for_offload(self);
     rb_check_frozen(self);
     TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
+    if (image)
+    {
+        rm_gvl_check_writable(image);
+    }
     rm_image_destroy(image);
     DATA_PTR(self) = NULL;
     return self;
@@ -5689,14 +5682,12 @@ Image_directory(VALUE self)
 VALUE
 Image_displace(int argc, VALUE *argv, VALUE self)
 {
-    int waited;
     Image *image, *displacement_map;
     VALUE dmap;
     double x_amplitude = 0.0, y_amplitude = 0.0;
     long x_offset = 0L, y_offset = 0L;
 
-
-    rm_check_destroyed(self);
+    image = rm_check_destroyed(self);
 
     if (argc < 2)
     {
@@ -5704,16 +5695,8 @@ Image_displace(int argc, VALUE *argv, VALUE self)
     }
 
     dmap = rm_cur_image(argv[0]);
-    // The overlay's geometry and artifacts are changed below, so wait for
-    // both inputs before fetching either.
-    do
-    {
-        waited = rm_gvl_wait_for_offload(self);
-        waited |= rm_gvl_wait_for_offload(dmap);
-    }
-    while (waited);
-    image = rm_check_destroyed(self);
     displacement_map = rm_check_destroyed(dmap);
+    rm_gvl_check_writable(displacement_map);
 
     if (argc > 3)
     {
@@ -5981,14 +5964,12 @@ Image_dispose_eq(VALUE self, VALUE dispose)
 VALUE
 Image_dissolve(int argc, VALUE *argv, VALUE self)
 {
-    int waited;
     Image *image, *overlay;
     double src_percent, dst_percent = -1.0;
     long x_offset = 0L, y_offset = 0L;
     VALUE composite_image, ovly;
 
-
-    rm_check_destroyed(self);
+    image = rm_check_destroyed(self);
 
     if (argc < 1)
     {
@@ -5996,16 +5977,8 @@ Image_dissolve(int argc, VALUE *argv, VALUE self)
     }
 
     ovly = rm_cur_image(argv[0]);
-    // The overlay's geometry and artifacts are changed below, so wait for
-    // both inputs before fetching either.
-    do
-    {
-        waited = rm_gvl_wait_for_offload(self);
-        waited |= rm_gvl_wait_for_offload(ovly);
-    }
-    while (waited);
-    image = rm_check_destroyed(self);
     overlay = rm_check_destroyed(ovly);
+    rm_gvl_check_writable(overlay);
 
     if (argc > 3)
     {
@@ -6168,6 +6141,7 @@ Image_distortion_channel(int argc, VALUE *argv, VALUE self)
 #endif
 
     image = rm_check_destroyed(self);
+    rm_gvl_check_writable(image);
     channels = extract_channels(&argc, argv);
     if (argc > 2)
     {
@@ -7188,7 +7162,7 @@ flipflop(int bang, VALUE self, gvl_function_t fp)
     exception = AcquireExceptionInfo();
 
     GVL_STRUCT_TYPE(flipflop) args = { image, exception };
-    new_image = rm_gvl_offload_image(fp, &args, self, exception);
+    new_image = rm_gvl_offload_image_replacing(fp, &args, self, exception, bang);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -7603,6 +7577,7 @@ Image_fx(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
+    rm_gvl_check_writable(image);
     channels = extract_channels(&argc, argv);
 
     // There must be exactly 1 remaining argument.
@@ -7859,6 +7834,7 @@ Image_gaussian_blur_channel(int argc, VALUE *argv, VALUE self)
     double radius = 0.0, sigma = 1.0;
 
     image = rm_check_destroyed(self);
+    rm_gvl_check_writable(image);
     channels = extract_channels(&argc, argv);
 
     // There can be 0, 1, or 2 remaining arguments.
@@ -9177,7 +9153,7 @@ magnify(int bang, VALUE self, gvl_function_t fp)
     exception = AcquireExceptionInfo();
 
     GVL_STRUCT_TYPE(magnify) args = { image, exception };
-    new_image = rm_gvl_offload_image(fp, &args, self, exception);
+    new_image = rm_gvl_offload_image_replacing(fp, &args, self, exception, bang);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     DestroyExceptionInfo(exception);
@@ -9280,7 +9256,6 @@ Image_marshal_load(VALUE self, VALUE ary)
     Image *image, *new_image;
     ExceptionInfo *exception;
 
-    rm_gvl_wait_for_offload(self);
     TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
 
     Check_Type(ary, T_ARRAY);
@@ -11264,6 +11239,7 @@ Image_quantum_operator(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
+    rm_gvl_check_writable(image);
 
     // The default channel is AllChannels
     channel = AllChannels;
@@ -11538,6 +11514,7 @@ Image_radial_blur_channel(int argc, VALUE *argv, VALUE self)
     double angle;
 
     image = rm_check_destroyed(self);
+    rm_gvl_check_writable(image);
     channels = extract_channels(&argc, argv);
 
     // There must be 1 remaining argument.
@@ -12347,7 +12324,7 @@ resample(int bang, int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     GVL_STRUCT_TYPE(ResampleImage) args = { source, x_resolution, y_resolution, filter, exception };
-    new_image = rm_gvl_offload_image_and_destroy(GVL_FUNC(ResampleImage), &args, self, exception, source != image ? source : NULL);
+    new_image = rm_gvl_offload_image_and_destroy(GVL_FUNC(ResampleImage), &args, self, exception, source != image ? source : NULL, bang);
     if (source != image)
     {
         if (new_image)
@@ -12358,7 +12335,7 @@ resample(int bang, int argc, VALUE *argv, VALUE self)
     }
 #else
     GVL_STRUCT_TYPE(ResampleImage) args = { image, x_resolution, y_resolution, filter, blur, exception };
-    new_image = rm_gvl_offload_image(GVL_FUNC(ResampleImage), &args, self, exception);
+    new_image = rm_gvl_offload_image_replacing(GVL_FUNC(ResampleImage), &args, self, exception, bang);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
 
@@ -12498,7 +12475,7 @@ resize(int bang, int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     GVL_STRUCT_TYPE(ResizeImage) args = { source, columns, rows, filter, exception };
-    new_image = rm_gvl_offload_image_and_destroy(GVL_FUNC(ResizeImage), &args, self, exception, source != image ? source : NULL);
+    new_image = rm_gvl_offload_image_and_destroy(GVL_FUNC(ResizeImage), &args, self, exception, source != image ? source : NULL, bang);
     if (source != image)
     {
         if (new_image)
@@ -12509,7 +12486,7 @@ resize(int bang, int argc, VALUE *argv, VALUE self)
     }
 #else
     GVL_STRUCT_TYPE(ResizeImage) args = { image, columns, rows, filter, blur, exception };
-    new_image = rm_gvl_offload_image(GVL_FUNC(ResizeImage), &args, self, exception);
+    new_image = rm_gvl_offload_image_replacing(GVL_FUNC(ResizeImage), &args, self, exception, bang);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
 
@@ -12655,7 +12632,7 @@ rotate(int bang, int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 
     GVL_STRUCT_TYPE(RotateImage) args = { image, degrees, exception };
-    new_image = rm_gvl_offload_image(GVL_FUNC(RotateImage), &args, self, exception);
+    new_image = rm_gvl_offload_image_replacing(GVL_FUNC(RotateImage), &args, self, exception, bang);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -12893,7 +12870,7 @@ scale(int bang, int argc, VALUE *argv, VALUE self, gvl_function_t fp)
 
     exception = AcquireExceptionInfo();
     GVL_STRUCT_TYPE(scale) args = { image, columns, rows, exception };
-    new_image = rm_gvl_offload_image(fp, &args, self, exception);
+    new_image = rm_gvl_offload_image_replacing(fp, &args, self, exception, bang);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -12950,6 +12927,7 @@ Image_selective_blur_channel(int argc, VALUE *argv, VALUE self)
     ChannelType channels;
 
     image = rm_check_destroyed(self);
+    rm_gvl_check_writable(image);
     channels = extract_channels(&argc, argv);
     if (argc > 3)
     {
@@ -13043,6 +13021,7 @@ Image_separate(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
+    rm_gvl_check_writable(image);
     channels = extract_channels(&argc, argv);
 
     // All arguments are ChannelType enums
@@ -13417,6 +13396,7 @@ Image_sharpen_channel(int argc, VALUE *argv, VALUE self)
     double radius = 0.0, sigma = 1.0;
 
     image = rm_check_destroyed(self);
+    rm_gvl_check_writable(image);
     channels = extract_channels(&argc, argv);
 
     // There must be 0, 1, or 2 remaining arguments.
@@ -13613,16 +13593,17 @@ Image_signature(VALUE self)
 #endif
 
     image = rm_check_destroyed(self);
+    rm_gvl_check_writable(image);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     GVL_STRUCT_TYPE(SignatureImage) args = { image, exception };
-    rm_gvl_offload_call(GVL_FUNC(SignatureImage), &args, self, exception, NULL);
+    rm_gvl_offload_update(GVL_FUNC(SignatureImage), &args, self, exception);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     GVL_STRUCT_TYPE(SignatureImage) args = { image };
-    rm_gvl_offload_call(GVL_FUNC(SignatureImage), &args, self, NULL, NULL);
+    rm_gvl_offload_update(GVL_FUNC(SignatureImage), &args, self, NULL);
     rm_check_image_exception(image, RetainOnError);
 #endif
     signature = rm_get_property(image, "signature");
@@ -13847,6 +13828,7 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
+    rm_gvl_check_writable(image);
 
     n = argc;
     channels = extract_channels(&argc, argv);
@@ -14678,7 +14660,7 @@ thumbnail(int bang, int argc, VALUE *argv, VALUE self)
     rm_check_exception(exception, image, RetainOnError);
 
     GVL_STRUCT_TYPE(ThumbnailImage) args = { image, geometry.width, geometry.height, exception };
-    new_image = rm_gvl_offload_image(GVL_FUNC(ThumbnailImage), &args, self, exception);
+    new_image = rm_gvl_offload_image_replacing(GVL_FUNC(ThumbnailImage), &args, self, exception, bang);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -14880,6 +14862,7 @@ Image_to_blob(VALUE self)
     TypedData_Get_Struct(info_obj, Info, &rm_info_data_type, info);
 
     image = rm_check_destroyed(self);
+    rm_gvl_check_writable(image);
 
     exception = AcquireExceptionInfo();
 
@@ -15383,7 +15366,7 @@ trimmer(int bang, int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
     GVL_STRUCT_TYPE(TrimImage) args = { image, exception };
-    new_image = rm_gvl_offload_image(GVL_FUNC(TrimImage), &args, self, exception);
+    new_image = rm_gvl_offload_image_replacing(GVL_FUNC(TrimImage), &args, self, exception, bang);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -15777,6 +15760,7 @@ Image_unsharp_mask_channel(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 
     image = rm_check_destroyed(self);
+    rm_gvl_check_writable(image);
     channels = extract_channels(&argc, argv);
     if (argc > 4)
     {
@@ -15946,7 +15930,6 @@ Image_virtual_pixel_method_eq(VALUE self, VALUE method)
 VALUE
 Image_watermark(int argc, VALUE *argv, VALUE self)
 {
-    int waited;
     Image *image, *overlay, *new_image;
     double src_percent = 100.0, dst_percent = 100.0;
     long x_offset = 0L, y_offset = 0L;
@@ -15956,8 +15939,7 @@ Image_watermark(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 #endif
 
-
-    rm_check_destroyed(self);
+    image = rm_check_destroyed(self);
 
     if (argc < 1)
     {
@@ -15965,16 +15947,8 @@ Image_watermark(int argc, VALUE *argv, VALUE self)
     }
 
     ovly = rm_cur_image(argv[0]);
-    // The overlay's geometry and artifacts are changed below, so wait for
-    // both inputs before fetching either.
-    do
-    {
-        waited = rm_gvl_wait_for_offload(self);
-        waited |= rm_gvl_wait_for_offload(ovly);
-    }
-    while (waited);
-    image = rm_check_destroyed(self);
     overlay = rm_check_destroyed(ovly);
+    rm_gvl_check_writable(overlay);
 
     if (argc > 3)
     {
@@ -16394,6 +16368,7 @@ Image_write(VALUE self, VALUE file)
 
     // The options block may have suspended this fiber, so fetch the image after it.
     image = rm_check_destroyed(self);
+    rm_gvl_check_writable(image);
 
     if (TYPE(file) == T_FILE)
     {
@@ -16429,7 +16404,7 @@ Image_write(VALUE self, VALUE file)
     }
     else
     {
-        rm_gvl_offload_call(GVL_FUNC(WriteImage), &args, self, exception, NULL, info_obj);
+        rm_gvl_offload_update(GVL_FUNC(WriteImage), &args, self, exception, info_obj);
     }
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
@@ -16441,7 +16416,7 @@ Image_write(VALUE self, VALUE file)
     }
     else
     {
-        rm_gvl_offload_call(GVL_FUNC(WriteImage), &args, self, NULL, NULL, info_obj);
+        rm_gvl_offload_update(GVL_FUNC(WriteImage), &args, self, NULL, info_obj);
     }
     rm_check_image_exception(image, RetainOnError);
 #endif
@@ -16779,7 +16754,7 @@ xform_image(int bang, VALUE self, VALUE x, VALUE y, VALUE width, VALUE height, g
     exception = AcquireExceptionInfo();
 
     GVL_STRUCT_TYPE(xform_image) args = { image, &rect, exception };
-    new_image = rm_gvl_offload_image(fp, &args, self, exception);
+    new_image = rm_gvl_offload_image_replacing(fp, &args, self, exception, bang);
 
     // An exception can occur in either the old or the new images
     rm_check_exception(exception, new_image, DestroyOnError);
