@@ -46,7 +46,7 @@ module Magick
       # Define an SVG path. The argument can be either a path string
       # or a PathData object.
       # Use the RVG::ShapeConstructors#path method to create Path objects in a container.
-      def initialize: (interned path) -> void
+      def initialize: (interned | PathData path) -> void
     end
 
     class Rect < Shape
@@ -139,7 +139,7 @@ module Magick
 
       # Draws a path defined by an SVG path string or a PathData
       # object.
-      def path: (interned path) -> Path
+      def path: (interned | PathData path) -> Path
 
       # Draws a rectangle whose upper-left corner is [<tt>x</tt>, <tt>y</tt>] and
       # with the specified +width+ and +height+. Unless otherwise

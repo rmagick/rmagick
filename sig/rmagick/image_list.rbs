@@ -37,7 +37,7 @@ module Magick
     def []=: (int nth, magick_image | Array[Image] image) -> void
            | (Range[Integer] range, magick_image | Array[Image] image) -> void
            | (int start, int length, magick_image | Array[Image] image) -> void
-    def at: () -> Image
+    def at: (int index) -> Image?
     def each: () -> Enumerator[Image, self]
             | () { (Image) -> void } -> void
     def each_index: () -> Enumerator[Integer, self]
@@ -54,6 +54,7 @@ module Magick
              | () { (Image) -> boolish } -> Integer?
              | () -> ::Enumerator[Image, Integer?]
     def length: () -> Integer
+    alias size length
     def rindex: (Image | ImageList | Array[Image] obj) -> ::Integer?
               | () { (Image) -> boolish } -> Integer?
               | () -> ::Enumerator[Image, Integer?]
@@ -83,7 +84,7 @@ module Magick
                  | () -> self
     def dup: () -> ImageList
            | ...
-    def eql?: (ImageList | Array[Image] other) -> bool
+    def eql?: (untyped other) -> bool
     def fill: (Image image, ?int start, ?int length) -> ImageList
             | (Image image, Range[Integer] range) -> ImageList
             | (?int start, ?int length) { (Integer index) -> Image } -> ImageList
@@ -102,8 +103,8 @@ module Magick
     def marshal_dump: () -> Array[(Integer | String)?]
     def marshal_load: (Array[(Integer | String)?] ary) -> void
     def method_missing: (untyped meth_id, *untyped args) ?{ (*untyped, **untyped) -> untyped } -> untyped
-    def new_image: (int cols, int rows, ?magick_fill fill) -> self
-                 | (int cols, int rows, ?magick_fill fill) { (Image::Info) -> void } -> self
+    def new_image: (int cols, int rows, ?magick_fill? fill) -> self
+                 | (int cols, int rows, ?magick_fill? fill) { (Image::Info) -> void } -> self
     def partition: () { (Image) -> boolish } -> [ImageList, ImageList]
     def ping: (*(File | string) files) -> self
             | (*(File | string) files) { (Image::Info) -> void } -> self
@@ -123,8 +124,8 @@ module Magick
              | (int start, int length) -> ImageList?
              | (Range[Integer] range) -> ImageList?
     def slice!: (int index) -> Image?
-              | (int start, int length) -> Image?
-              | (Range[Integer] range) -> Image?
+              | (int start, int length) -> Array[Image]?
+              | (Range[Integer] range) -> Array[Image]?
     def ticks_per_second=: (int t) -> void
     def to_a: () -> Array[Image]
     def uniq: () -> ImageList
@@ -132,6 +133,8 @@ module Magick
     def unshift: (Image obj) -> self
     def values_at: (*int index) -> ImageList
                  | (Range[Integer] range) -> ImageList
+    alias indexes values_at
+    alias indices values_at
 
     alias __display__ display
     def remap: (?magick_image? remap_image, ?DitherMethod dither_method) -> self

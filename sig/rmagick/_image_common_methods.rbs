@@ -23,8 +23,8 @@ module Magick
     def matte_floodfill: (int x, int y) -> Image
     def matte_fill_to_border: (int x, int y) -> Image
     def matte_reset!: () -> Image
-    def resize_to_fill: (real ncols, ?real nrows, ?GravityType gravity) -> Image
-    def resize_to_fill!: (real ncols, ?real nrows, ?GravityType gravity) -> Image
+    def resize_to_fill: (real ncols, ?real? nrows, ?GravityType gravity) -> Image
+    def resize_to_fill!: (real ncols, ?real? nrows, ?GravityType gravity) -> self
     alias crop_resized resize_to_fill
     alias crop_resized! resize_to_fill!
     def resize_to_fit: (magick_real cols, ?magick_real rows) -> Image
@@ -147,15 +147,16 @@ module Magick
     def alpha: () -> bool
              | (AlphaChannelOption value) -> AlphaChannelOption
     def alpha?: () -> bool
-    def artifact: (string artifact) -> String?
+    def artifact: (interned artifact) -> String?
     def auto_gamma_channel: (*ChannelType channel) -> Image
     def auto_level_channel: (*ChannelType channel) -> Image
     def auto_orient: () -> Image
-    def auto_orient!: () -> self
+    def auto_orient!: () -> self?
     def properties: () -> Hash[String, String]
                   | () { ([String, String]) -> void } -> self
     def bilevel_channel: (magick_real threshold, *ChannelType channel) -> Image
-    def black_threshold: (magick_real red, ?magick_real green, ?magick_real blue, ?int alpha) -> Image
+    def black_threshold: (magick_real red, ?magick_real green, ?magick_real blue) -> Image
+                       | (magick_real red, magick_real green, magick_real blue, alpha: int) -> Image
     def blend: (magick_image overlay, magick_percentage src_percent, ?magick_percentage dst_percent, ?GravityType gravity, ?int x_offset, ?int y_offset) -> Image
              | (magick_image overlay, magick_percentage src_percent, magick_percentage dst_percent, ?int x_offset, ?int y_offset) -> Image
     def blue_shift: (?magick_real factor) -> Image
@@ -203,10 +204,13 @@ module Magick
                              | (magick_image image, magick_real a, magick_real b, magick_real c, magick_real d, int x_off, int y_off) -> Image
                              | (magick_image image, magick_real a, magick_real b, magick_real c, magick_real d, GravityType gravity, int x_off, int y_off) -> Image
     def composite_tiled: (magick_image src, ?CompositeOperator composite_op, *ChannelType channel) -> Image
+                       | (magick_image src, *ChannelType channel) -> Image
     def composite_tiled!: (magick_image src, ?CompositeOperator composite_op, *ChannelType channel) -> self
+                        | (magick_image src, *ChannelType channel) -> self
     def compress_colormap!: () -> Image
     def contrast: (?bool sharpen) -> Image
-    def contrast_stretch_channel: (magick_percentage black_point, magick_percentage white_point, *ChannelType channel) -> Image
+    def contrast_stretch_channel: (magick_percentage black_point, ?magick_percentage white_point, *ChannelType channel) -> Image
+                                | (magick_percentage black_point, *ChannelType channel) -> Image
     def convolve: (int order_arg, Array[magick_real] kernel_arg) -> Image
     def convolve_channel: (int order_arg, Array[magick_real] kernel_arg, *ChannelType channel) -> Image
     def morphology: (MorphologyMethod method_v, int iterations, KernelInfo kernel_v) -> Image
@@ -220,7 +224,7 @@ module Magick
              | (int x, int y, int width, int height, ?bool reset) -> Image
     def cycle_colormap: (int amount) -> Image
     def decipher: (string passphrase) -> Image
-    def define: (string artifact, string? value) -> string?
+    def define: (interned artifact, (string | Numeric)? value) -> String?
     def deskew: (?magick_percentage threshold, ?int auto_crop_width) -> Image
     def delete_compose_mask: () -> self
     def delete_profile: (string name) -> self
@@ -228,12 +232,13 @@ module Magick
     def difference: (magick_image other) -> [Float, Float, Float]
     def dispatch: (int x, int y, int columns, int rows, string map, ?bool float) -> Array[Integer]
     def displace: (magick_image displacement_map, magick_real x_amp, ?magick_real y_amp, ?GravityType gravity, ?int x_offset, ?int y_offset) -> Image
+                | (magick_image displacement_map, magick_real x_amp, magick_real y_amp, int x_offset, ?int y_offset) -> Image
     def dissolve: (magick_image overlay, magick_percentage src_percent, ?magick_percentage dst_percent, ?GravityType gravity, ?int x_offset, ?int y_offset) -> Image
     def distort: (DistortMethod method, Array[magick_real] points, ?bool bestfit) -> Image
     def distortion_channel: (magick_image reconstructed_image, MetricType metric, *ChannelType channel) -> Float
     def _dump: (untyped depth) -> String
     def dup: () -> Image
-    def each_profile: () { (String name, String val) -> void } -> untyped
+    def each_profile: () { ([String, String?] profile) -> void } -> untyped
     def edge: (?magick_real radius) -> Image
     def emboss: (?magick_real radius, ?magick_real sigma) -> Image
     def encipher: (string passphrase) -> Image
@@ -246,13 +251,13 @@ module Magick
     def export_pixels: (?int x, ?int y, ?int cols, ?int rows, ?string map) -> Array[Integer]
     def export_pixels_to_str: (?int x, ?int y, ?int cols, ?int rows, ?string map, ?StorageType storage_type) -> String
     def extent: (int width, int height, ?int x, ?int y) -> Image
-    def find_similar_region: (magick_image target, int x, int y) -> [Integer, Integer]?
+    def find_similar_region: (magick_image target, ?int x, ?int y) -> [Integer, Integer]?
     def flip: () -> Image
     def flip!: () -> self
     def flop: () -> Image
     def flop!: () -> self
     def frame: (?int width, ?int height, ?int x, ?int y, ?int inner_bevel, ?int outer_bevel, ?magick_color color) -> Image
-    def function_channel: (MagickFunction function, ?magick_real arg1, ?magick_real arg2, ?magick_real arg3, ?magick_real arg4, *ChannelType channel) -> Image
+    def function_channel: (MagickFunction function, *(magick_real | ChannelType) args) -> Image
     def fx: (string expression, *ChannelType channel) -> Image
     def gamma_channel: (magick_real gamma, *ChannelType channel) -> Image
     def gamma_correct: (magick_real red_gamma, ?magick_real green_gamma, ?magick_real blue_gamma) -> Image
@@ -275,7 +280,7 @@ module Magick
     def magnify!: () -> self
     def mask: (?magick_image image) -> Image?
     def matte_flood_fill: (magick_color color, int x_obj, int y_obj, PaintMethod method, alpha: int) -> Image
-    def median_filter: (magick_real radius) -> Image
+    def median_filter: (?magick_real radius) -> Image
     def minify: () -> Image
     def minify!: () -> self
     def modulate: (?magick_percentage brightness, ?magick_percentage saturation, ?magick_percentage hue) -> Image
@@ -300,7 +305,7 @@ module Magick
                 | (?magick_real angle) { (Image::PolaroidOptions) -> void } -> Image
     def posterize: (?int levels, ?bool dither) -> Image
     def preview: (PreviewType preview) -> Image
-    def profile!: (string name, ?string profile) -> self
+    def profile!: (string name, string? profile) -> self
     def quantum_operator: (QuantumExpressionOperator quantum_expression_op, magick_real rvalue, ?ChannelType channel) -> self
     def radial_blur: (magick_real angle) -> Image
     def radial_blur_channel: (magick_real angle, *ChannelType channel) -> Image
@@ -330,7 +335,7 @@ module Magick
     def segment: (?ColorspaceType colorspace, ?magick_real cluster_threshold, ?magick_real smoothing_threshold, ?bool verbose) -> Image
     def selective_blur_channel: (magick_real radius, magick_real sigma, magick_percentage threshold, *ChannelType channel) -> Image
     def separate: (*ChannelType channel) -> ImageList
-    def sepiatone: (magick_real threshold) -> Image
+    def sepiatone: (?magick_real threshold) -> Image
     def set_channel_depth: (ChannelType channel, int depth) -> self
     def shade: (?bool shading, ?magick_real azimuth, ?magick_real elevation) -> Image
     def shadow: (?int x_offset, ?int y_offset, ?magick_real sigma, ?magick_percentage alpha) -> Image
@@ -385,6 +390,7 @@ module Magick
                  | (magick_image mark, magick_percentage brightness, magick_percentage saturation, GravityType gravity, ?int x_off, ?int y_off) -> Image
     def wave: (?magick_real amplitude, ?magick_real wavelength) -> Image
     def wet_floor: (?magick_real initial, ?magick_real rate) -> Image
-    def white_threshold: (magick_real red, ?magick_real green, ?magick_real blue, ?alpha: int) -> Image
+    def white_threshold: (magick_real red, ?magick_real green, ?magick_real blue) -> Image
+                       | (magick_real red, magick_real green, magick_real blue, alpha: int) -> Image
   end
 end
