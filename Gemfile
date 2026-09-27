@@ -5,6 +5,7 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in rmagick.gemspec
 gemspec
 
+gem 'fiddle', '~> 1.1'
 gem 'pry', '~> 0.14'
 gem 'rake-compiler', '~> 1.2'
 gem 'rspec', '~> 3.13'

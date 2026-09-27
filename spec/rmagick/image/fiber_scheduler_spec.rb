@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'fiddle'
 require_relative '../../support/offloading_scheduler'
 
 # RMagick offloads only on Ruby 4.0, which has the C API a scheduler needs to
@@ -20,8 +21,16 @@ RSpec.describe Magick::Image, if: offloading do
       described_class.new(10, 10) { |options| options.background_color = "blue" }
     end
 
-    def resident_set_size
-      Integer(`ps -o rss= -p #{Process.pid}`)
+    # Bytes of the pixel caches that ImageMagick holds in memory, in maps and
+    # on disk. Unlike the RSS, it leaves out what malloc keeps for reuse after
+    # ImageMagick frees it, which grows with the number of threads.
+    def pixel_cache_size
+      # DiskResource, MapResource and MemoryResource in the ResourceType enum of resource_.h
+      types = Gem::Version.new(Magick::IMAGEMAGICK_VERSION) >= Gem::Version.new("7") ? [2, 5, 6] : [2, 4, 5]
+      get_magick_resource = Fiddle::Function.new(
+        Fiddle::Handle::DEFAULT["GetMagickResource"], [Fiddle::TYPE_INT], Fiddle::TYPE_UINT64_T
+      )
+      types.sum { |type| get_magick_resource.call(type) }
     end
 
     def attempt
@@ -73,19 +82,19 @@ RSpec.describe Magick::Image, if: offloading do
     end
 
     it "releases the result of a cancelled call", if: offloading && !Gem.win_platform? do
+      GC.start
+      empty = pixel_cache_size
       image = described_class.new(1000, 1000)
-      cancel_blur = lambda do
+      before = pixel_cache_size
+
+      3.times do
         scheduler = OffloadingScheduler.new
         scheduler.cancel_next_operation(cancelled.new)
         expect { scheduler.run { image.gaussian_blur(0, 0.5) } }.to raise_error(cancelled)
       end
-      cancel_blur.call
-      before = resident_set_size
 
-      20.times { cancel_blur.call }
-      GC.start
-
-      expect(resident_set_size - before).to be < 100 * 1024
+      expect(before - empty).to be >= image.columns * image.rows
+      expect(pixel_cache_size).to be <= before
     end
 
     it "restores the channel mask of a cancelled call" do
