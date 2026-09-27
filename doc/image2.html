@@ -146,6 +146,8 @@
 
             <li><a href="#level">level</a></li>
 
+            <li><a href="#level2">level2</a></li>
+
             <li><a href="#level_channel">level_channel</a></li>
 
             <li><a href="#level_colors">level_colors</a></li>
@@ -2385,7 +2387,7 @@ img.import_pixels(0, 0, hat.columns, hat.rows, "RGB", char_buffer, CharPixel)
 
       <p>
         <span class="arg">img</span>.level(<span class="arg">black_point</span>=<code>0.0</code>,
-        <span class="arg">white_point</span>=<code>QuantumRange</code>, <span class="arg">gamma</span>=<code>1.0</code>) -&gt; <em>image</em>
+        <span class="arg">white_point</span>=<code>QuantumRange - black_point</code>, <span class="arg">gamma</span>=<code>1.0</code>) -&gt; <em>image</em>
       </p>
     </div>
 
@@ -2452,18 +2454,86 @@ img.level(white_point, gamma, black_point) -&gt; image # wrong!
         That is, the <code>gamma</code> and <code>white_point</code>
         arguments were swapped. In an effort to maintain compatibility with older scripts that expect that signature,
         <code>level</code> inspects its arguments and will interchange <code>white_point</code> and gamma if they "look" incorrect. That is, if
-        <code>gamma</code> is &gt; 10.0, or if <code>white_point</code> is &lt; 10.0, or if <code>gamma</code> &gt; <code>white_point</code>, then
+        <code>gamma</code> is &gt; 10.0, or if <code>white_point</code> is &lt;= 10.0, or if <code>gamma</code> &gt; <code>white_point</code>, then
         <code>level</code> will swap them.
       </p>
 
       <p>
-        If you want to avoid this behavior, use the <code>level2</code> method instead. The <code>level2</code> method is exactly the same as
+        If you want to avoid this behavior, use the <a href="#level2">level2</a> method instead. The <code>level2</code> method is exactly the same as
         <code>level</code> except that it never swaps the arguments.
       </p>
 
       <h4>See also</h4>
 
-      <p><a href="#level_channel">level_channel</a></p>
+      <p>
+        <a href="#level2">level2</a>,
+        <a href="#level_channel">level_channel</a>
+      </p>
+
+      <h4>Magick API</h4>
+
+      <p>LevelImage</p>
+    </div>
+
+    <div class="sig">
+      <h3 id="level2">level2</h3>
+
+      <p>
+        <span class="arg">img</span>.level2(<span class="arg">black_point</span>=<code>0.0</code>,
+        <span class="arg">white_point</span>=<code>QuantumRange - black_point</code>, <span class="arg">gamma</span>=<code>1.0</code>) -&gt; <em>image</em>
+      </p>
+    </div>
+
+    <div class="desc">
+      <h4>Description</h4>
+
+      <p>
+        Adjusts the levels of an image, the same as <a href="#level">level</a>, but takes the arguments as given. Unlike <code>level</code>, it never
+        swaps <span class="arg">white_point</span> and <span class="arg">gamma</span> when they look like the old argument order.
+      </p>
+
+      <h4>Arguments</h4>
+
+      <dl>
+        <dt>black_point</dt>
+
+        <dd>A black point level in the range 0-<a href="constants.html#Miscellaneous_constants">QuantumRange</a>. The default is 0.0.</dd>
+
+        <dt>white_point</dt>
+
+        <dd>
+          A white point level in the range 0..QuantumRange. The default is
+          <a href="constants.html#Miscellaneous_constants">QuantumRange</a> - <span class="arg">black_point</span>.
+        </dd>
+
+        <dt>gamma</dt>
+
+        <dd>
+          A gamma correction. The default is 1.0. Unlike with <code>level</code>, a value greater than 10.0 is used as given instead of being taken for a
+          white point.
+        </dd>
+      </dl>
+
+      <h4>Returns</h4>
+
+      <p>A new image</p>
+
+      <h4>Example</h4>
+
+      <pre class="language-ruby">
+# The same as img.level(0, 1.5), which level treats as a gamma of 1.5
+img.level2(0, Magick::QuantumRange, 1.5)
+
+# A white point of 1.5, which makes nearly every pixel white
+img.level2(0, 1.5)
+</pre>
+
+      <h4>See also</h4>
+
+      <p>
+        <a href="#level">level</a>,
+        <a href="#level_channel">level_channel</a>
+      </p>
 
       <h4>Magick API</h4>
 
@@ -2481,7 +2551,10 @@ img.level(white_point, gamma, black_point) -&gt; image # wrong!
 
     <div class="desc">
       <h4>Description</h4>
-      Same as level but operates only on the specified channel.
+      <p>
+        Same as <a href="#level2">level2</a> but operates only on the specified channel. Like <code>level2</code>, it never swaps
+        <span class="arg">white_point</span> and <span class="arg">gamma</span>.
+      </p>
 
       <h4>Arguments</h4>
 
@@ -2503,7 +2576,10 @@ img.level(white_point, gamma, black_point) -&gt; image # wrong!
 
         <dt>gamma</dt>
 
-        <dd>A gamma correction in the range 0.0-10.0. The default is 1.0.</dd>
+        <dd>
+          A gamma correction. The default is 1.0. Unlike with <code>level</code>, a value greater than 10.0 is used as given instead of being taken for a
+          white point.
+        </dd>
       </dl>
 
       <h4>Returns</h4>
@@ -2514,6 +2590,7 @@ img.level(white_point, gamma, black_point) -&gt; image # wrong!
 
       <p>
         <a href="#level">level</a>,
+        <a href="#level2">level2</a>,
         <a href="#levelize_channel">levelize_channel</a>
       </p>
 
