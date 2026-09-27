@@ -3,6 +3,31 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 7.1.6
+
+> [!IMPORTANT]
+> A `Magick::KernelInfo` kernel string starting with `@` now raises `ArgumentError`.
+>
+> `KernelInfo.new`, and `Image#morphology` and `#morphology_channel` when given a string kernel, passed the string to ImageMagick, which reads the kernel from the file a string starting with `@` names. A kernel string taken from user input could therefore read any file the process can open: a file holding a kernel definition changed the result image, and with ImageMagick 7 the error told whether the path exists. The message is "the kernel must not name a file with '@'", as for the other values that reject `@`.
+
+Breaking Changes
+
+* Reject a KernelInfo kernel string beginning with '@' instead of reading that file (#1895)
+
+Improvements
+
+* Add Magick.resource_usage to read how much of a resource ImageMagick uses (#1880)
+* Add the methods, classes and fields missing from the API reference, and fix the entries that disagreed with the code (#1881, #1883-#1891, #1893, #1897, #1899)
+
+Bug Fixes
+
+* Fix RBS signatures that disagree with the implementation (#1901)
+* Fix clone of Image, Draw, Pixel, KernelInfo and ImageList rejecting the freeze keyword (#1900)
+* Fix resample and resize sharpening the image at blur 1.0 with ImageMagick 7 (#1898)
+* Fix KernelInfo.builtin leaving out ImageMagick's default arguments (#1896)
+* Fix mutating a frozen Magick::KernelInfo and a leak in KernelInfo#initialize (#1894)
+* Fix TypeMetric#underline_thickness returning the underline position (#1892)
+
 ## RMagick 7.1.5
 
 > [!IMPORTANT]
