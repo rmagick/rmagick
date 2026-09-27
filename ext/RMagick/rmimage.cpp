@@ -8096,7 +8096,7 @@ Image_implode(int argc, VALUE *argv, VALUE self)
 /**
  * Store image pixel data from an array.
  *
- * @overload store_pixels(x, y, columns, rows, map, pixels, type = Magick::CharPixel)
+ * @overload import_pixels(x, y, columns, rows, map, pixels, type = Magick::CharPixel)
  *   @param x [Numeric] The x-offset of the rectangle to be replaced.
  *   @param y [Numeric] The y-offset of the rectangle to be replaced.
  *   @param columns [Numeric] The number of columns in the rectangle.
