@@ -238,7 +238,9 @@
 
         <dd>
           The value of the option. <span class="arg">Value</span> can be any object that responds to <code>to_s</code>. Use <code>nil</code> to set the key to a
-          null value.
+          null value. For the <code>"caption"</code>, <code>"comment"</code> and <code>"label"</code> keys, a value whose first non-blank character is
+          <code>@</code>, or that contains a <code>%[fx:@...]</code>, <code>%[hex:@...]</code> or <code>%[pixel:@...]</code> escape, raises
+          <code>ArgumentError</code>, because ImageMagick would read the file it names.
         </dd>
       </dl>
 
@@ -526,7 +528,10 @@ p img.first['caption'] #=&gt; "a new caption"
 
       <h4>Arguments</h4>
 
-      <p>A string.</p>
+      <p>
+        A string. A caption whose first non-blank character is <code>@</code>, or that contains a <code>%[fx:@...]</code>, <code>%[hex:@...]</code> or
+        <code>%[pixel:@...]</code> escape, raises <code>ArgumentError</code>, because ImageMagick would read the file it names.
+      </p>
     </div>
 
     <div class="sig">
@@ -563,6 +568,11 @@ p img.first['caption'] #=&gt; "a new caption"
       <p class="imquote">
         You can include the image filename, type, width, height, or other image attribute by embedding special format characters listed under the
         <a href="draw.html#annotate">annotate</a> method.
+      </p>
+
+      <p>
+        A comment whose first non-blank character is <code>@</code>, or that contains a <code>%[fx:@...]</code>, <code>%[hex:@...]</code> or
+        <code>%[pixel:@...]</code> escape, raises <code>ArgumentError</code>, because ImageMagick would read the file it names.
       </p>
     </div>
 
@@ -1039,6 +1049,11 @@ p img.first['caption'] #=&gt; "a new caption"
           PostScript. You can include the image filename, type, width, height, or other image attribute by embedding special format characters.</span
         >
         See <a href="draw.html#annotate">annotate</a> for details.
+      </p>
+
+      <p>
+        A label whose first non-blank character is <code>@</code>, or that contains a <code>%[fx:@...]</code>, <code>%[hex:@...]</code> or
+        <code>%[pixel:@...]</code> escape, raises <code>ArgumentError</code>, because ImageMagick would read the file it names.
       </p>
     </div>
 
