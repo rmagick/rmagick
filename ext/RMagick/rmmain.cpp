@@ -232,6 +232,8 @@ Init_RMagick2(void)
     rb_ext_ractor_safe(true);
 #endif
 
+    rm_init_offload();
+
     Module_Magick = rb_define_module("Magick");
 
     set_managed_memory();

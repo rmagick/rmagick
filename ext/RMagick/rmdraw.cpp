@@ -199,6 +199,11 @@ Draw_fill_pattern_eq(VALUE self, VALUE pattern)
     Draw *draw;
 
     rb_check_frozen(self);
+    if (!NIL_P(pattern))
+    {
+        pattern = rm_cur_image(pattern);
+        rm_wait_for_offload(pattern);
+    }
     draw = get_draw(self);
 
     if (draw->info->fill_pattern != NULL)
@@ -212,7 +217,6 @@ Draw_fill_pattern_eq(VALUE self, VALUE pattern)
     {
         Image *image;
 
-        pattern = rm_cur_image(pattern);
         image = rm_check_destroyed(pattern);
         // Do not trace creation
         draw->info->fill_pattern = rm_clone_image(image);
@@ -745,6 +749,11 @@ Draw_stroke_pattern_eq(VALUE self, VALUE pattern)
     Draw *draw;
 
     rb_check_frozen(self);
+    if (!NIL_P(pattern))
+    {
+        pattern = rm_cur_image(pattern);
+        rm_wait_for_offload(pattern);
+    }
     draw = get_draw(self);
 
     if (draw->info->stroke_pattern != NULL)
@@ -759,7 +768,6 @@ Draw_stroke_pattern_eq(VALUE self, VALUE pattern)
         Image *image;
 
         // DestroyDrawInfo destroys the clone
-        pattern = rm_cur_image(pattern);
         image = rm_check_destroyed(pattern);
         // Do not trace creation
         draw->info->stroke_pattern = rm_clone_image(image);
@@ -936,6 +944,8 @@ annotate_body(VALUE arg)
     // through InterpretImageProperties(), so a `%[...]` or `%x` escape in it is
     // not expanded. Everything those escapes provide is available directly from
     // Ruby -- Image#columns, Image#filename, Image#artifact and so on.
+    StringValue(annotate->text);
+    rm_wait_for_offload(annotate->image_arg);
     embed_text = StringValueCStr(annotate->text);
     image = rm_check_frozen(annotate->image_arg);
     draw->info->text = ConstantString(embed_text);
@@ -1004,6 +1014,7 @@ VALUE Draw_annotate(
     annotate.exception  = NULL;
 #endif
 
+    rm_wait_for_offload(annotate.image_arg);
     rm_check_frozen(annotate.image_arg);
 
     return rb_ensure(annotate_body, (VALUE)&annotate, annotate_ensure, (VALUE)&annotate);
@@ -1077,6 +1088,7 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
 
     // Retrieve the image to composite
     image = rm_cur_image(argv[4]);
+    rm_wait_for_offload(image);
     comp_img = rm_check_destroyed(image);
 
     x = NUM2DBL(argv[0]);
@@ -1139,6 +1151,7 @@ Draw_draw(VALUE self, VALUE image_arg)
 #endif
 
     image_arg = rm_cur_image(image_arg);
+    rm_wait_for_offload(image_arg);
     image = rm_check_frozen(image_arg);
 
     draw = get_draw(self);
@@ -1709,6 +1722,7 @@ get_type_metrics(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
             break;
         case 2:
             t = rm_cur_image(argv[0]);
+            rm_wait_for_offload(t);
             image = rm_check_destroyed(t);
             text_arg = argv[1];
             text = rm_str2cstr(&text_arg, &text_l);
