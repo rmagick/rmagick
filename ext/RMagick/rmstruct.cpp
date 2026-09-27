@@ -838,7 +838,7 @@ Import_TypeMetric(TypeMetric *tm)
     max_advance         = rb_float_new(tm->max_advance);
     bounds              = Import_SegmentInfo(&tm->bounds);
     underline_position  = rb_float_new(tm->underline_position);
-    underline_thickness = rb_float_new(tm->underline_position);
+    underline_thickness = rb_float_new(tm->underline_thickness);
 
     RB_GC_GUARD(pixels_per_em);
     RB_GC_GUARD(ascent);

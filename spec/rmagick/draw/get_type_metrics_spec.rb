@@ -14,6 +14,13 @@ RSpec.describe Magick::Draw, '#get_type_metrics' do
     expect { draw.get_type_metrics('x', 'ABCDEF') }.to raise_error(NoMethodError)
   end
 
+  it 'returns the underline thickness, not the underline position' do
+    metrics = described_class.new.get_type_metrics('ABCDEF')
+
+    expect(metrics.underline_thickness).to be_positive
+    expect(metrics.underline_thickness).not_to eq(metrics.underline_position)
+  end
+
   it 'accepts an ImageList argument' do
     draw = described_class.new
 
