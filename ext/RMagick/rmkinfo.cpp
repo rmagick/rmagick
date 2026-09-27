@@ -82,14 +82,20 @@ KernelInfo_alloc(VALUE klass)
 /**
  * KernelInfo object constructor
  *
+ * - Calling it again on an initialized object replaces its kernel and destroys the old one.
+ *
  * @param kernel_string [String] kernel info string representation to be parsed
  * @return [Magick::KernelInfo] self
+ * @raise [FrozenError] if the object is frozen
  */
 VALUE
 KernelInfo_initialize(VALUE self, VALUE kernel_string)
 {
-    KernelInfo *kernel;
-    char *string = StringValueCStr(kernel_string);
+    KernelInfo *kernel, *old_kernel;
+    char *string;
+
+    rb_check_frozen(self);
+    string = StringValueCStr(kernel_string);
 
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
@@ -113,7 +119,12 @@ KernelInfo_initialize(VALUE self, VALUE kernel_string)
         rb_raise(rb_eRuntimeError, "failed to parse kernel string");
     }
 
+    old_kernel = (KernelInfo *)DATA_PTR(self);
     DATA_PTR(self) = kernel;
+    if (old_kernel)
+    {
+        DestroyKernelInfo(old_kernel);
+    }
 
     return self;
 }
@@ -146,6 +157,24 @@ get_kernel_info(VALUE self)
 
 
 /**
+ * Return the KernelInfo struct of an object that is about to be changed,
+ * raising FrozenError if the object is frozen.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param self the KernelInfo object
+ * @return the KernelInfo struct
+ * @throw FrozenError if the object is frozen
+ */
+static KernelInfo *
+get_unfrozen_kernel_info(VALUE self)
+{
+    rb_check_frozen(self);
+    return get_kernel_info(self);
+}
+
+
+/**
  * Adds a given amount of the 'Unity' Convolution Kernel to the given pre-scaled and normalized Kernel.
  *
  * @param scale [Numeric] scale to add
@@ -153,7 +182,7 @@ get_kernel_info(VALUE self)
 VALUE
 KernelInfo_unity_add(VALUE self, VALUE scale)
 {
-    GVL_STRUCT_TYPE(UnityAddKernelInfo) args = { get_kernel_info(self), NUM2DBL(scale) };
+    GVL_STRUCT_TYPE(UnityAddKernelInfo) args = { get_unfrozen_kernel_info(self), NUM2DBL(scale) };
     CALL_FUNC_WITHOUT_GVL(GVL_FUNC(UnityAddKernelInfo), &args);
     return Qnil;
 }
@@ -174,7 +203,7 @@ KernelInfo_scale(VALUE self, VALUE scale, VALUE flags)
 
     VALUE_TO_ENUM(flags, geoflags, GeometryFlags);
 
-    GVL_STRUCT_TYPE(ScaleKernelInfo) args = { get_kernel_info(self), NUM2DBL(scale), geoflags };
+    GVL_STRUCT_TYPE(ScaleKernelInfo) args = { get_unfrozen_kernel_info(self), NUM2DBL(scale), geoflags };
     CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ScaleKernelInfo), &args);
     return Qnil;
 }
@@ -190,7 +219,7 @@ KernelInfo_scale_geometry(VALUE self, VALUE geometry)
 {
     char *geom = StringValueCStr(geometry);
 
-    GVL_STRUCT_TYPE(ScaleGeometryKernelInfo) args = { get_kernel_info(self), geom };
+    GVL_STRUCT_TYPE(ScaleGeometryKernelInfo) args = { get_unfrozen_kernel_info(self), geom };
     CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ScaleGeometryKernelInfo), &args);
 
     RB_GC_GUARD(geometry);
@@ -199,12 +228,13 @@ KernelInfo_scale_geometry(VALUE self, VALUE geometry)
 }
 
 /**
- * Creates a new clone of the object so that it can be modified without affecting the original.
+ * Creates a new copy of the object so that it can be modified without affecting the original.
+ * The copy is not frozen.
  *
  * @return [Magick::KernelInfo] new KernelInfo object
  */
 VALUE
-KernelInfo_clone(VALUE self)
+KernelInfo_dup(VALUE self)
 {
     KernelInfo *kernel = CloneKernelInfo(get_kernel_info(self));
     if (!kernel)
@@ -212,6 +242,28 @@ KernelInfo_clone(VALUE self)
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
     return TypedData_Wrap_Struct(Class_KernelInfo, &rm_kernel_info_data_type, kernel);
+}
+
+
+/**
+ * Creates a new copy of the object, frozen if the object is frozen.
+ *
+ * @return [Magick::KernelInfo] new KernelInfo object
+ */
+VALUE
+KernelInfo_clone(VALUE self)
+{
+    VALUE clone;
+
+    clone = KernelInfo_dup(self);
+    if (OBJ_FROZEN(self))
+    {
+        OBJ_FREEZE(clone);
+    }
+
+    RB_GC_GUARD(clone);
+
+    return clone;
 }
 
 /**

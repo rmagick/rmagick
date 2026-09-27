@@ -727,6 +727,7 @@ extern VALUE KernelInfo_unity_add(VALUE, VALUE);
 extern VALUE KernelInfo_scale(VALUE, VALUE, VALUE);
 extern VALUE KernelInfo_scale_geometry(VALUE, VALUE);
 extern VALUE KernelInfo_clone(VALUE);
+extern VALUE KernelInfo_dup(VALUE);
 
 extern VALUE KernelInfo_builtin(VALUE, VALUE, VALUE);
 

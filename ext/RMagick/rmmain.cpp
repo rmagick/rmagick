@@ -909,7 +909,7 @@ Init_RMagick2(void)
     rb_define_method(Class_KernelInfo, "scale", RUBY_METHOD_FUNC(KernelInfo_scale), 2);
     rb_define_method(Class_KernelInfo, "scale_geometry", RUBY_METHOD_FUNC(KernelInfo_scale_geometry), 1);
     rb_define_method(Class_KernelInfo, "clone", RUBY_METHOD_FUNC(KernelInfo_clone), 0);
-    rb_define_method(Class_KernelInfo, "dup", RUBY_METHOD_FUNC(KernelInfo_clone), 0);
+    rb_define_method(Class_KernelInfo, "dup", RUBY_METHOD_FUNC(KernelInfo_dup), 0);
 
     rb_define_singleton_method(Class_KernelInfo, "builtin", RUBY_METHOD_FUNC(KernelInfo_builtin), 2);
 
