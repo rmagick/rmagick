@@ -29,9 +29,6 @@ extern "C" {
     #include "ruby.h"
     #include "ruby/io.h"
     #include "rmagick_gvl.h"
-#if defined(RMAGICK_OFFLOAD_SAFE)
-    #include "ruby/ractor.h"
-#endif
 }
 
 #if defined(__MINGW32__)
@@ -1146,6 +1143,18 @@ extern void   Export_TypeInfo(TypeInfo *, VALUE);
 extern VALUE  Import_TypeMetric(TypeMetric *);
 
 
+// rmagick_gvl.cpp
+extern void   rm_init_offload(void);
+extern int    rm_wait_for_offload(VALUE);
+extern Image *rm_offload_image(gvl_function_t *, void *, VALUE, ExceptionInfo *, VALUE = Qnil);
+extern Image *rm_offload_image_and_destroy(gvl_function_t *, void *, VALUE, ExceptionInfo *, Image *);
+extern void  *rm_offload_call(gvl_function_t *, void *, VALUE, ExceptionInfo *, Image *, VALUE = Qnil);
+extern void  *rm_offload_blob(gvl_function_t *, void *, VALUE, ExceptionInfo *, VALUE = Qnil);
+#if defined(IMAGEMAGICK_7)
+extern Image *rm_offload_masked_image(gvl_function_t *, void *, VALUE, ExceptionInfo *, Image *, ChannelType, VALUE = Qnil);
+#endif
+
+
 // rmutil.cpp
 extern VALUE  ImageMagickError_initialize(int, VALUE *, VALUE);
 extern void  *magick_malloc(const size_t);
@@ -1168,15 +1177,6 @@ extern void   rm_check_ary_len(VALUE, long);
 extern VALUE  rm_check_ary_type(VALUE ary);
 extern Image *rm_check_destroyed(VALUE);
 extern Image *rm_check_frozen(VALUE);
-extern void   rm_init_offload(void);
-extern int    rm_wait_for_offload(VALUE);
-extern Image *rm_offload_image(gvl_function_t *, void *, VALUE, ExceptionInfo *, VALUE = Qnil);
-extern Image *rm_offload_image_and_destroy(gvl_function_t *, void *, VALUE, ExceptionInfo *, Image *);
-extern void  *rm_offload_call(gvl_function_t *, void *, VALUE, ExceptionInfo *, Image *, VALUE = Qnil);
-extern void  *rm_offload_blob(gvl_function_t *, void *, VALUE, ExceptionInfo *, VALUE = Qnil);
-#if defined(IMAGEMAGICK_7)
-extern Image *rm_offload_masked_image(gvl_function_t *, void *, VALUE, ExceptionInfo *, Image *, ChannelType, VALUE = Qnil);
-#endif
 extern char  *rm_str2cstr(VALUE *, size_t *);
 extern char  *rm_path2cstr(VALUE *, size_t *);
 extern int    rm_check_num2dbl(VALUE);
