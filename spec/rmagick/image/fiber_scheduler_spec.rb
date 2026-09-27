@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'fiddle'
 require_relative '../../support/offloading_scheduler'
 
 # RMagick offloads only on Ruby 4.0, which has the C API a scheduler needs to
@@ -25,12 +24,7 @@ RSpec.describe Magick::Image, if: offloading do
     # on disk. Unlike the RSS, it leaves out what malloc keeps for reuse after
     # ImageMagick frees it, which grows with the number of threads.
     def pixel_cache_size
-      # DiskResource, MapResource and MemoryResource in the ResourceType enum of resource_.h
-      types = Gem::Version.new(Magick::IMAGEMAGICK_VERSION) >= Gem::Version.new("7") ? [2, 5, 6] : [2, 4, 5]
-      get_magick_resource = Fiddle::Function.new(
-        Fiddle::Handle::DEFAULT["GetMagickResource"], [Fiddle::TYPE_INT], Fiddle::TYPE_UINT64_T
-      )
-      types.sum { |type| get_magick_resource.call(type) }
+      %i[memory map disk].sum { |resource| Magick.resource_usage(resource) }
     end
 
     def attempt
