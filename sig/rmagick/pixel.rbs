@@ -34,7 +34,7 @@ module Magick
     def ===: (untyped other) -> bool
     def eql?: (untyped other) -> bool
     def initialize: (?real red, ?real green, ?real blue, ?real opacity) -> void
-    def clone: () -> Pixel
+    def clone: (?freeze: bool?) -> Pixel
     def dup: () -> Pixel
     def fcmp: (magick_color other, ?magick_real fuzz, ?ColorspaceType colorspace) -> bool
     def hash: () -> Integer

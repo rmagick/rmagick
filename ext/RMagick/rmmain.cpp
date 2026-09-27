@@ -437,7 +437,6 @@ Init_RMagick2(void)
     rb_define_method(Class_Image, "charcoal", RUBY_METHOD_FUNC(Image_charcoal), -1);
     rb_define_method(Class_Image, "chop", RUBY_METHOD_FUNC(Image_chop), 4);
     rb_define_method(Class_Image, "clut_channel", RUBY_METHOD_FUNC(Image_clut_channel), -1);
-    rb_define_method(Class_Image, "clone", RUBY_METHOD_FUNC(Image_clone), 0);
     rb_define_method(Class_Image, "color_flood_fill", RUBY_METHOD_FUNC(Image_color_flood_fill), 5);
     rb_define_method(Class_Image, "color_histogram", RUBY_METHOD_FUNC(Image_color_histogram), 0);
     rb_define_method(Class_Image, "colorize", RUBY_METHOD_FUNC(Image_colorize), -1);
@@ -477,7 +476,6 @@ Init_RMagick2(void)
     rb_define_method(Class_Image, "distort", RUBY_METHOD_FUNC(Image_distort), -1);
     rb_define_method(Class_Image, "distortion_channel", RUBY_METHOD_FUNC(Image_distortion_channel), -1);
     rb_define_method(Class_Image, "_dump", RUBY_METHOD_FUNC(Image__dump), 1);
-    rb_define_method(Class_Image, "dup", RUBY_METHOD_FUNC(Image_dup), 0);
     rb_define_method(Class_Image, "each_profile", RUBY_METHOD_FUNC(Image_each_profile), 0);
     rb_define_method(Class_Image, "edge", RUBY_METHOD_FUNC(Image_edge), -1);
     rb_define_method(Class_Image, "emboss", RUBY_METHOD_FUNC(Image_emboss), -1);
@@ -679,10 +677,8 @@ Init_RMagick2(void)
     rb_include_module(Class_Draw, Module_DrawAttribute);
 
     rb_define_method(Class_Draw, "annotate", RUBY_METHOD_FUNC(Draw_annotate), 6);
-    rb_define_method(Class_Draw, "clone", RUBY_METHOD_FUNC(Draw_clone), 0);
     rb_define_method(Class_Draw, "composite", RUBY_METHOD_FUNC(Draw_composite), -1);
     rb_define_method(Class_Draw, "draw", RUBY_METHOD_FUNC(Draw_draw), 1);
-    rb_define_method(Class_Draw, "dup", RUBY_METHOD_FUNC(Draw_dup), 0);
     rb_define_method(Class_Draw, "get_type_metrics", RUBY_METHOD_FUNC(Draw_get_type_metrics), -1);
     rb_define_method(Class_Draw, "get_multiline_type_metrics", RUBY_METHOD_FUNC(Draw_get_multiline_type_metrics), -1);
     rb_define_method(Class_Draw, "initialize", RUBY_METHOD_FUNC(Draw_initialize), 0);
@@ -748,8 +744,6 @@ Init_RMagick2(void)
     rb_define_method(Class_Pixel, "eql?", RUBY_METHOD_FUNC(Pixel_eql_q), 1);
     rb_define_method(Class_Pixel, "initialize", RUBY_METHOD_FUNC(Pixel_initialize), -1);
     rb_define_method(Class_Pixel, "initialize_copy", RUBY_METHOD_FUNC(Pixel_init_copy), 1);
-    rb_define_method(Class_Pixel, "clone", RUBY_METHOD_FUNC(Pixel_clone), 0);
-    rb_define_method(Class_Pixel, "dup", RUBY_METHOD_FUNC(Pixel_dup), 0);
     rb_define_method(Class_Pixel, "fcmp", RUBY_METHOD_FUNC(Pixel_fcmp), -1);
     rb_define_method(Class_Pixel, "hash", RUBY_METHOD_FUNC(Pixel_hash), 0);
     rb_define_method(Class_Pixel, "intensity", RUBY_METHOD_FUNC(Pixel_intensity), 0);
@@ -908,8 +902,7 @@ Init_RMagick2(void)
     rb_define_method(Class_KernelInfo, "unity_add", RUBY_METHOD_FUNC(KernelInfo_unity_add), 1);
     rb_define_method(Class_KernelInfo, "scale", RUBY_METHOD_FUNC(KernelInfo_scale), 2);
     rb_define_method(Class_KernelInfo, "scale_geometry", RUBY_METHOD_FUNC(KernelInfo_scale_geometry), 1);
-    rb_define_method(Class_KernelInfo, "clone", RUBY_METHOD_FUNC(KernelInfo_clone), 0);
-    rb_define_method(Class_KernelInfo, "dup", RUBY_METHOD_FUNC(KernelInfo_dup), 0);
+    rb_define_method(Class_KernelInfo, "initialize_copy", RUBY_METHOD_FUNC(KernelInfo_init_copy), 1);
 
     rb_define_singleton_method(Class_KernelInfo, "builtin", RUBY_METHOD_FUNC(KernelInfo_builtin), 2);
 

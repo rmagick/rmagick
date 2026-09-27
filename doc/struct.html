@@ -968,7 +968,7 @@ kernel = Magick::KernelInfo.builtin(Magick::DiamondKernel, '1')
         <h4 id="KernelInfo_clone">clone, dup</h4>
 
         <p>
-          <span class="arg">kernel_info</span>.clone -&gt; <em>kernel_info</em><br />
+          <span class="arg">kernel_info</span>.clone(freeze: nil) -&gt; <em>kernel_info</em><br />
           <span class="arg">kernel_info</span>.dup -&gt; <em>kernel_info</em>
         </p>
       </div>
@@ -976,7 +976,10 @@ kernel = Magick::KernelInfo.builtin(Magick::DiamondKernel, '1')
       <div class="desc">
         <h5>Description</h5>
 
-        <p>Returns a copy of the kernel that can be changed without changing the original.</p>
+        <p>
+          Returns a copy of the kernel that can be changed without changing the original. As with <code>Object#clone</code> and <code>Object#dup</code>,
+          <code>clone</code> keeps the frozen state of the kernel unless <code>freeze:</code> is given, and <code>dup</code> returns an unfrozen copy.
+        </p>
       </div>
 
       <div class="sig">

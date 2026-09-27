@@ -551,13 +551,13 @@ ilist.animate { |options| options.server_name = "other:0.0" }
     <div class="sig">
       <h3 id="clone">clone</h3>
 
-      <p><span class="arg">ilist</span>.clone -&gt; <em>other_imagelist</em></p>
+      <p><span class="arg">ilist</span>.clone(freeze: nil) -&gt; <em>other_imagelist</em></p>
     </div>
 
     <div class="desc">
       <h4>Description</h4>
 
-      <p>Same as <a href="#dup">dup</a>, but the frozen state of the original is propagated to the copy.</p>
+      <p>Same as <a href="#dup">dup</a>, but the frozen state of the original is propagated to the copy. As with <code>Object#clone</code>, <code>freeze: false</code> or <code>freeze: true</code> sets the frozen state of the copy instead.</p>
 
       <h4>Returns</h4>
 

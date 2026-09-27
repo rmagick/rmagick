@@ -180,7 +180,7 @@ module Magick
     def charcoal: (?magick_real radius, ?magick_real sigma) -> Image
     def chop: (int x, int y, int width, int height) -> Image
     def clut_channel: (magick_image clut_image, *ChannelType channel) -> self
-    def clone: () -> Image
+    def clone: (?freeze: bool?) -> Image
     def color_flood_fill: (magick_color target_color, magick_color fill_color, int xv, int yv, PaintMethod method) -> Image
     def color_histogram: () -> Hash[Pixel, Integer]
     def colorize: (magick_real red, magick_real green, magick_real blue, magick_color target) -> Image

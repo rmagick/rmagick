@@ -588,10 +588,8 @@ ATTR_WRITER(Draw, tile)
 ATTR_WRITER(Draw, undercolor)
 extern VALUE Draw_alloc(VALUE);
 extern VALUE Draw_annotate(VALUE, VALUE, VALUE, VALUE, VALUE, VALUE, VALUE);
-extern VALUE Draw_clone(VALUE);
 extern VALUE Draw_composite(int, VALUE *, VALUE);
 extern VALUE Draw_draw(VALUE, VALUE);
-extern VALUE Draw_dup(VALUE);
 extern VALUE Draw_get_multiline_type_metrics(int, VALUE *, VALUE);
 extern VALUE Draw_get_type_metrics(int, VALUE *, VALUE);
 extern VALUE Draw_init_copy(VALUE, VALUE);
@@ -726,8 +724,7 @@ extern VALUE KernelInfo_initialize(VALUE, VALUE);
 extern VALUE KernelInfo_unity_add(VALUE, VALUE);
 extern VALUE KernelInfo_scale(VALUE, VALUE, VALUE);
 extern VALUE KernelInfo_scale_geometry(VALUE, VALUE);
-extern VALUE KernelInfo_clone(VALUE);
-extern VALUE KernelInfo_dup(VALUE);
+extern VALUE KernelInfo_init_copy(VALUE, VALUE);
 
 extern VALUE KernelInfo_builtin(VALUE, VALUE, VALUE);
 
@@ -842,7 +839,6 @@ extern VALUE Image_channel_mean(int, VALUE *, VALUE);
 extern VALUE Image_channel_entropy(int, VALUE *, VALUE);
 extern VALUE Image_charcoal(int, VALUE *, VALUE);
 extern VALUE Image_chop(VALUE, VALUE, VALUE, VALUE, VALUE);
-extern VALUE Image_clone(VALUE);
 extern VALUE Image_clut_channel(int, VALUE *, VALUE);
 extern VALUE Image_color_flood_fill(VALUE, VALUE, VALUE, VALUE, VALUE, VALUE);
 extern VALUE Image_color_histogram(VALUE);
@@ -884,7 +880,6 @@ extern VALUE Image_dissolve(int, VALUE *, VALUE);
 extern VALUE Image_distort(int, VALUE *, VALUE);
 extern VALUE Image_distortion_channel(int, VALUE *, VALUE);
 extern VALUE Image__dump(VALUE, VALUE);
-extern VALUE Image_dup(VALUE);
 extern VALUE Image_each_profile(VALUE);
 extern VALUE Image_edge(int, VALUE *, VALUE);
 extern VALUE Image_emboss(int, VALUE *, VALUE);
@@ -1055,8 +1050,6 @@ ATTR_ACCESSOR(Pixel, yellow)
 ATTR_ACCESSOR(Pixel, black)
 extern VALUE  Pixel_alloc(VALUE);
 extern VALUE  Pixel_case_eq(VALUE, VALUE);
-extern VALUE  Pixel_clone(VALUE);
-extern VALUE  Pixel_dup(VALUE);
 extern VALUE  Pixel_eql_q(VALUE, VALUE);
 extern VALUE  Pixel_fcmp(int, VALUE *, VALUE);
 extern VALUE  Pixel_from_color(VALUE, VALUE);

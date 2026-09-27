@@ -1010,26 +1010,6 @@ VALUE Draw_annotate(
 }
 
 
-/**
- * Clones this object.
- *
- * @return [Magick::Draw] the cloned object
- */
-VALUE
-Draw_clone(VALUE self)
-{
-    VALUE clone;
-
-    clone = Draw_dup(self);
-    if (OBJ_FROZEN(self))
-    {
-        OBJ_FREEZE(clone);
-    }
-
-    RB_GC_GUARD(clone);
-
-    return clone;
-}
 
 
 /**
@@ -1172,26 +1152,6 @@ Draw_draw(VALUE self, VALUE image_arg)
 }
 
 
-/**
- * Duplicate a Draw object.
- *
- * - Constructs a new Draw object, then calls initialize_copy.
- *
- * @return [Magick::Draw] the duplicated object
- */
-VALUE
-Draw_dup(VALUE self)
-{
-    Draw *draw;
-    VALUE dup;
-
-    draw = ALLOC(Draw);
-    memset(draw, 0, sizeof(Draw));
-    dup = TypedData_Wrap_Struct(CLASS_OF(self), &rm_draw_data_type, draw);
-    RB_GC_GUARD(dup);
-
-    return rb_funcall(dup, rm_ID_initialize_copy, 1, self);
-}
 
 
 /**

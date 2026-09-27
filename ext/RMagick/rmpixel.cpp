@@ -531,50 +531,8 @@ Pixel_case_eq(VALUE self, VALUE other)
 }
 
 
-/**
- * Clone a Pixel.
- *
- * @return [Magick::Pixel] a clone object
- * @see #dup
- * @see #initialize_copy
- */
-VALUE
-Pixel_clone(VALUE self)
-{
-    VALUE clone;
-
-    clone = Pixel_dup(self);
-    if (OBJ_FROZEN(self))
-    {
-        OBJ_FREEZE(clone);
-    }
-
-    RB_GC_GUARD(clone);
-
-    return clone;
-}
 
 
-/**
- * Duplicate a Pixel.
- *
- * @return [Magick::Pixel] a duplicated object
- * @see #clone
- * @see #initialize_copy
- */
-VALUE
-Pixel_dup(VALUE self)
-{
-    Pixel *pixel;
-    VALUE dup;
-
-    pixel = ALLOC(Pixel);
-    memset(pixel, '\0', sizeof(Pixel));
-    dup = TypedData_Wrap_Struct(CLASS_OF(self), &rm_pixel_data_type, pixel);
-    RB_GC_GUARD(dup);
-
-    return rb_funcall(dup, rm_ID_initialize_copy, 1, self);
-}
 
 
 /**

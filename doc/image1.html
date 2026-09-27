@@ -2563,13 +2563,13 @@ Magick::Image.new(10, 10).channel_entropy #=&gt; [0.0]
     <div class="sig">
       <h3 id="clone">clone</h3>
 
-      <p><span class="arg">img</span>.clone -&gt; <em>image</em></p>
+      <p><span class="arg">img</span>.clone(freeze: nil) -&gt; <em>image</em></p>
     </div>
 
     <div class="desc">
       <h4>Description</h4>
 
-      <p>Same as <a href="#dup">dup</a> except the frozen state of the original is propagated to the new copy.</p>
+      <p>Same as <a href="#dup">dup</a> except the frozen state of the original is propagated to the new copy. As with <code>Object#clone</code>, <code>freeze: false</code> or <code>freeze: true</code> sets the frozen state of the copy instead.</p>
 
       <h4>Returns</h4>
 

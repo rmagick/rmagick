@@ -11,4 +11,11 @@ RSpec.describe Magick::Pixel, '#clone' do
     pixel2 = pixel.freeze.clone
     expect(pixel2.frozen?).to be(true)
   end
+
+  it 'accepts the freeze keyword as Object#clone does' do
+    object = described_class.from_color('brown').freeze
+
+    expect(object.clone(freeze: false)).not_to be_frozen
+    expect(object.clone(freeze: true)).to be_frozen
+  end
 end
