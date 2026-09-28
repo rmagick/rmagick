@@ -1845,14 +1845,25 @@ module Magick
 
     # accepts Pixel object or color name
     def highlight_color=(color)
-      color = @img.to_color(color) if color.respond_to?(:to_color)
-      @img.define('highlight-color', color)
+      define_compare_color('highlight-color', color)
     end
 
     # accepts Pixel object or color name
     def lowlight_color=(color)
-      color = @img.to_color(color) if color.respond_to?(:to_color)
-      @img.define('lowlight-color', color)
+      define_compare_color('lowlight-color', color)
+    end
+
+    private
+
+    def define_compare_color(name, color)
+      color = if color.is_a?(Magick::Pixel)
+                color.to_color(Magick::AllCompliance, true)
+              else
+                String.try_convert(color) || raise(TypeError, "argument must be color name or pixel (#{color.class} given)")
+              end
+      @img.define("compare:#{name}", color)
+      # ImageMagick 6.9.6-0 and older read the name without the "compare:" prefix.
+      @img.define(name, color)
     end
   end
 
