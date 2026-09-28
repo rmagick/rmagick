@@ -621,16 +621,17 @@ g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
             <a href="constants.html#ColorspaceType">CMYKColorspace</a>, these attributes are interpreted as the cyan, magenta, and yellow intensities.
           </dd>
 
-          <dt>opacity</dt>
+          <dt>alpha</dt>
 
-          <dd>
-            The opacity level. Higher intensities are more transparent. If the colorspace is CMYKColorspace, this attribute is interpreted as the black
-            intensity.
-          </dd>
+          <dd>The alpha level. Higher intensities are more opaque.</dd>
 
-          <dt>cyan, magenta, yellow, black</dt>
+          <dt>cyan, magenta, yellow</dt>
 
-          <dd>These attributes are aliases for <code>red</code>, <code>green</code>, <code>blue</code>, and <code>opacity</code>, respectively.</dd>
+          <dd>These attributes are aliases for <code>red</code>, <code>green</code>, and <code>blue</code>, respectively.</dd>
+
+          <dt>black</dt>
+
+          <dd>The black intensity of a CMYK pixel.</dd>
         </dl>
       </div>
 
@@ -795,9 +796,9 @@ g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
         <h5>Description</h5>
 
         <p>
-          Returns the
+          Returns a string that represents the pixel's color. By default the string is in hex format. If <span class="arg">hex</span> is false, returns the
           <a href="imusage.html#color_names">color name</a> corresponding to the pixel values. If there is no such named color in the specified color standard,
-          returns a string in the form "rgb(r,g,b,a)".
+          returns the hex format.
         </p>
 
         <h5>Arguments</h5>
@@ -811,9 +812,9 @@ g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
             <code>to_color</code> to search for a color name in any of the 3 defined color standards.
           </dd>
 
-          <dt>matte</dt>
+          <dt>alpha</dt>
 
-          <dd>If false, the pixel's opacity attribute is ignored.</dd>
+          <dd>If false, the pixel's alpha attribute is ignored.</dd>
 
           <dt>depth</dt>
 
@@ -825,18 +826,15 @@ g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
           <dt>hex</dt>
 
           <dd>
-            If true, represent the color name in hex (#rrggbbaa or #rrrrggggbbbbaaaa) format. In this case
-            <span class="arg">compliance</span> is meaningless.
+            If true, represent the color in hex format. The format is #rrggbb when <span class="arg">depth</span> is 8, and #rrrrggggbbbb when it is 16.
+            If <span class="arg">alpha</span> is true, the alpha value is appended, as in #rrggbbaa. When <span class="arg">hex</span> is true,
+            <span class="arg">compliance</span> is ignored, except that XPMCompliance omits the alpha value.
           </dd>
         </dl>
 
         <h5>See also</h5>
 
-        <p>
-          Compare this method to
-          <a href="image3.html#to_color">Image#to_color</a>, in which the <span class="arg">matte</span> and <span class="arg">depth</span> values are taken
-          from an image.
-        </p>
+        <p><a href="image3.html#to_color">Image#to_color</a></p>
       </div>
 
       <div class="sig">
