@@ -14806,8 +14806,14 @@ Image_to_color(VALUE self, VALUE pixel_arg)
     exception = AcquireExceptionInfo();
 
 #if defined(IMAGEMAGICK_7)
-    pixel.depth = MAGICKCORE_QUANTUM_DEPTH;
-    pixel.colorspace = image->colorspace;
+    PixelColor color = pixel;
+
+    rm_init_magickpixel(image, &pixel);
+    pixel.red   = color.red;
+    pixel.green = color.green;
+    pixel.blue  = color.blue;
+    pixel.black = color.black;
+    pixel.alpha = color.alpha;
 #endif
 
     // QueryColorname returns False if the color represented by the PixelPacket

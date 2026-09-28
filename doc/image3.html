@@ -3559,7 +3559,9 @@ img.tint('white', 1.0, 0.8, 0.8)
       <h4>Description</h4>
 
       <p>
-        Returns the color name for a pixel. If there is no such named color, returns the color in hex format.
+        Returns the color name for a pixel. If there is no such named color, returns the color in hex format. Unlike
+        <code>Pixel#to_color</code>, the hex format uses the depth of the image. The alpha value of the pixel is ignored unless the image has an alpha
+        channel, both when looking up the color name and in the hex format.
       </p>
 
       <h4>Arguments</h4>
