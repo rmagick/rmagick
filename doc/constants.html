@@ -177,35 +177,25 @@
       <dd>
         An extended form of the <code>Version</code> constant with the format shown here:<br />
         <code
-          >This is RMagick 5.2.0 ($Date: 2009/12/20 02:33:33 $) Copyright (C) 2009 by Timothy P. Hunter<br />
-          Built with ImageMagick 7.1.1-8 Q16-HDRI x86_64 21129 https://imagemagick.org<br />
-          Built for ruby 3.2.2<br />
+          >This is RMagick 7.1.6 ($Date: 2009/12/20 02:33:33 $) Copyright (C) 2009 by Timothy P. Hunter<br />
+          Built with ImageMagick 7.1.2-32 Q16-HDRI x86_64 68f8d115a:20260926 https://imagemagick.org<br />
+          Built for ruby 4.0.7<br />
           Web page: https://rmagick.github.io/</code
         >
+      </dd>
+
+      <dt>Magick_features</dt>
+
+      <dd>
+        The features ImageMagick was built with, separated by spaces. For example:<br />
+        <code>Cipher DPC HDRI Modules OpenCL OpenMP</code>
       </dd>
 
       <dt>Magick_version</dt>
 
       <dd>
         The ImageMagick version string. This has the form:<br />
-        <code>@(#)ImageMagick X.Y.Z MM/DD/YY Q:16 https://www.imagemagick.org</code>
-      </dd>
-
-      <dt>MANAGED_MEMORY</dt>
-
-      <dd>
-        If <code>true</code>, RMagick is using Ruby managed memory for all allocations. If <code>false</code>, RMagick allocates memory for objects directly
-        from the operating system. You can enable RMagick to use Ruby managed memory (when built with ImageMagick 6.4.0-11 and later) by setting
-
-        <pre class="language-ruby">RMAGICK_ENABLE_MANAGED_MEMORY = true</pre>
-        <em>before</em> requiring RMagick.
-      </dd>
-
-      <dt>QuantumRange</dt>
-
-      <dd>
-        The maximum value of a <em>Quantum</em>. A quantum is one of the red, green, blue, or opacity elements of a pixel in the RGB colorspace, or cyan,
-        magenta, yellow, or black elements in the CMYK colorspace.
+        <code>ImageMagick 7.1.2-32 Q16-HDRI x86_64 68f8d115a:20260926 https://imagemagick.org</code>
       </dd>
 
       <dt>MAGICKCORE_QUANTUM_DEPTH</dt>
@@ -246,11 +236,37 @@
         </table>
       </dd>
 
+      <dt>MANAGED_MEMORY</dt>
+
+      <dd>
+        If <code>true</code>, RMagick is using Ruby managed memory for all allocations. If <code>false</code>, RMagick allocates memory for objects directly
+        from the operating system. The default is <code>true</code>. To disable Ruby managed memory, set the
+        <code>RMAGICK_DISABLE_MANAGED_MEMORY</code> environment variable
+
+        <pre class="language-ruby">ENV['RMAGICK_DISABLE_MANAGED_MEMORY'] = '1'</pre>
+        <em>before</em> requiring RMagick.
+      </dd>
+
+      <dt>OpaqueAlpha</dt>
+
+      <dd>The alpha value of a fully opaque pixel. This is the same as <code>QuantumRange</code>.</dd>
+
+      <dt>QuantumRange</dt>
+
+      <dd>
+        The maximum value of a <em>Quantum</em>. A quantum is one of the red, green, blue, or alpha elements of a pixel in the RGB colorspace, or cyan,
+        magenta, yellow, or black elements in the CMYK colorspace.
+      </dd>
+
+      <dt>TransparentAlpha</dt>
+
+      <dd>The alpha value of a fully transparent pixel. This is 0.</dd>
+
       <dt>Version</dt>
 
       <dd>
         The RMagick version string. This has the form:<br />
-        <code>RMagick 2.0.0</code>
+        <code>RMagick 7.1.6</code>
       </dd>
     </dl>
 
