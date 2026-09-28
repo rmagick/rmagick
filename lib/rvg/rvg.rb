@@ -36,7 +36,7 @@ module Magick
     # else, combine it with the background_fill_opacity.
     def bgfill
       if @background_fill.nil?
-        color = Magick::Pixel.new(0, 0, 0, Magick::OpaqueAlpha)
+        color = Magick::Pixel.from_color('none')
       else
         color = @background_fill
         color.alpha = @background_fill_opacity * Magick::OpaqueAlpha

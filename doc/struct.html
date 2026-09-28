@@ -577,7 +577,7 @@ g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
         <p>
           A pixel describes the smallest individually addressable part of an image. In the RGB
           <a href="constants.html#ColorspaceType">colorspace</a>, a pixel's color is described by its intensity in the red, green, and blue channels. Its
-          opacity is described by its intensity in the opacity (also called alpha, or matte) channel. In the CMYK colorspace a pixel's color is described by its
+          opacity is described by its intensity in the alpha channel. Higher alpha intensities are more opaque. In the CMYK colorspace a pixel's color is described by its
           intensity in the cyan, magenta, yellow and black (K) channels. Intensity is a value between 0 and
           <a href="constants.html#Miscellaneous_constants">QuantumRange</a>.
         </p>
@@ -609,6 +609,11 @@ g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
         <p>
           Constructs a pixel object from the specified red, green, blue, and opacity intensities. The intensity is a number between 0 and
           <a href="constants.html#Miscellaneous_constants">QuantumRange</a>.
+        </p>
+
+        <p>
+          The <span class="arg">opacity</span> is the opposite of the <code>alpha</code> attribute. An opacity of 0 is fully opaque, and the
+          <code>alpha</code> attribute is set to QuantumRange minus <span class="arg">opacity</span>.
         </p>
 
         <h5>Attributes</h5>
