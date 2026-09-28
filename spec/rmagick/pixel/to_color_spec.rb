@@ -19,8 +19,19 @@ RSpec.describe Magick::Pixel, '#to_color' do
     expect(pixel.to_color(Magick::AllCompliance, false, 8, true)).to eq('#A52A2A')
     expect(pixel.to_color(Magick::AllCompliance, false, 16, false)).to eq('brown')
 
-    expect { pixel.to_color(Magick::AllCompliance, false, 32) }.to raise_error(ArgumentError)
     expect { pixel.to_color(1) }.to raise_error(TypeError)
+  end
+
+  it 'accepts a depth up to the quantum depth' do
+    pixel = described_class.from_color('brown')
+
+    { 8 => 2, 16 => 4, 32 => 8, 64 => 16 }.each do |depth, digits|
+      if depth <= Magick::MAGICKCORE_QUANTUM_DEPTH
+        expect(pixel.to_color(Magick::AllCompliance, false, depth)).to match(/\A#\h{#{digits * 3}}\z/)
+      else
+        expect { pixel.to_color(Magick::AllCompliance, false, depth) }.to raise_error(ArgumentError)
+      end
+    end
   end
 
   it 'return alpha value if pixel has alpha' do

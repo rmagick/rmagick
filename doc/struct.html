@@ -824,16 +824,18 @@ g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
           <dt>depth</dt>
 
           <dd>
-            An image depth. The default is the quantum depth used when ImageMagick was compiled. The value 16 can be used only when
-            <a href="constants.html#Miscellaneous_constants">MAGICKCORE_QUANTUM_DEPTH</a> is 16 or 32, and 32 only when it is 32.
+            An image depth. The default is the quantum depth used when ImageMagick was compiled. The value is 8, 16, 32, or 64, and must be no
+            greater than <a href="constants.html#Miscellaneous_constants">MAGICKCORE_QUANTUM_DEPTH</a>.
           </dd>
 
           <dt>hex</dt>
 
           <dd>
             If true, represent the color in hex format. The format is #rrggbb when <span class="arg">depth</span> is 8, and #rrrrggggbbbb when it is 16.
-            If <span class="arg">alpha</span> is true, the alpha value is appended, as in #rrggbbaa. When <span class="arg">hex</span> is true,
-            <span class="arg">compliance</span> is ignored, except that XPMCompliance omits the alpha value.
+            Each channel has 8 hex digits when <span class="arg">depth</span> is 32. When it is 64, each channel has 16 hex digits, which repeat the
+            8 digits of the 32-bit value. If <span class="arg">alpha</span> is true, the alpha value is appended, as in #rrggbbaa. When
+            <span class="arg">hex</span> is true, <span class="arg">compliance</span> is ignored, except that XPMCompliance omits the alpha value and uses a
+            depth of at most 16.
           </dd>
         </dl>
 
