@@ -890,7 +890,7 @@ Pixel_init_copy(VALUE self, VALUE orig)
  *   @param red [Numeric] The red value
  *   @param green [Numeric] The green value
  *   @param blue [Numeric] The blue value
- *   @param opacity [Numeric] The opacity value
+ *   @param opacity [Numeric] The opacity value. The alpha is set to QuantumRange minus this value.
  *   @return [Magick::Pixel] self
  */
 VALUE
@@ -910,7 +910,7 @@ Pixel_initialize(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
             if (argv[3] != Qnil)
             {
-                pixel->alpha = APP2QUANTUM(argv[3]);
+                pixel->alpha = QuantumRange - APP2QUANTUM(argv[3]);
             }
 #else
             if (argv[3] != Qnil)
