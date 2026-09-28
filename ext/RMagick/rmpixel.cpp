@@ -1184,11 +1184,14 @@ Pixel_to_color(int argc, VALUE *argv, VALUE self)
             switch (depth)
             {
                 case 8:
-#if MAGICKCORE_QUANTUM_DEPTH == 16 || MAGICKCORE_QUANTUM_DEPTH == 32
+#if MAGICKCORE_QUANTUM_DEPTH == 16 || MAGICKCORE_QUANTUM_DEPTH == 32 || MAGICKCORE_QUANTUM_DEPTH == 64
                 case 16:
 #endif
-#if MAGICKCORE_QUANTUM_DEPTH == 32
+#if MAGICKCORE_QUANTUM_DEPTH == 32 || MAGICKCORE_QUANTUM_DEPTH == 64
                 case 32:
+#endif
+#if MAGICKCORE_QUANTUM_DEPTH == 64
+                case 64:
 #endif
                     break;
                 default:
