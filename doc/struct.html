@@ -819,8 +819,8 @@ g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
           <dt>depth</dt>
 
           <dd>
-            An image depth. The default is the quantum depth used when ImageMagick was compiled. The values 16 and 32 can be used only when ImageMagick was
-            compiled with the appropriate QuantumDepth.
+            An image depth. The default is the quantum depth used when ImageMagick was compiled. The value 16 can be used only when
+            <a href="constants.html#Miscellaneous_constants">MAGICKCORE_QUANTUM_DEPTH</a> is 16 or 32, and 32 only when it is 32.
           </dd>
 
           <dt>hex</dt>
