@@ -2298,7 +2298,8 @@ img.import_pixels(0, r, img.columns, 1, "RGB", scanline);
       <p>
         This example is contrived since there's no need to convert the
         <code>pixels</code> array into a string by calling <code>pack</code>, but it does demonstrate the use of a string
-        <span class="arg">pixels</span> argument. Note that this example assumes that ImageMagick is configured with QuantumDepth=8.
+        <span class="arg">pixels</span> argument. Note that this example assumes that
+        <a href="constants.html#Miscellaneous_constants">MAGICKCORE_QUANTUM_DEPTH</a> is 8.
       </p>
       <pre class="language-ruby">
 hat = Magick::Image.read("Flower_Hat.jpg").first

@@ -788,7 +788,10 @@ p img.first['caption'] #=&gt; "a new caption"
 
       <h4>Arguments</h4>
 
-      <p>Either 8, 16, or 32. You can specify 16 and 32 only when ImageMagick was compiled with a QuantumDepth that allows these depth values.</p>
+      <p>
+        Either 8, 16, 32, or 64. The value must be no greater than
+        <a href="constants.html#Miscellaneous_constants">MAGICKCORE_QUANTUM_DEPTH</a>.
+      </p>
 
       <p>
         Use <code>depth</code> to specify the depth of CMYK, GRAY, RGB, RGBA, MAP, and XC format images. See also <a href="#size"><code>size</code></a
