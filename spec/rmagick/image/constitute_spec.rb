@@ -50,6 +50,15 @@ RSpec.describe Magick::Image, '#constitute' do
       .to raise_error(ArgumentError, 'element 0 is out of range [0..1]: NaN')
   end
 
+  it 'raises RangeError when the geometry overflows the buffer size' do
+    expect { described_class.constitute(2**30, 2**30, 'RGBA' * 4, []) }
+      .to raise_error(RangeError, /pixel buffer dimensions too large/)
+  end
+
+  it 'raises an error when the map is empty' do
+    expect { described_class.constitute(1, 1, '', []) }.to raise_error(ArgumentError, 'map must not be empty')
+  end
+
   it 'raises an error when 0 is passed for columns' do
     image = described_class.read(IMAGES_DIR + '/Button_0.gif').first
     pixels = image.export_pixels(0, 0, image.columns, image.rows, 'RGBA')

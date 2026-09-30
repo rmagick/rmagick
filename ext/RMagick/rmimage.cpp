@@ -39,6 +39,7 @@ static VALUE xform_image(int, VALUE, VALUE, VALUE, VALUE, VALUE, gvl_function_t)
 static VALUE array_from_images(Image *);
 static VALUE file_arg_rescue(VALUE, VALUE ATTRIBUTE_UNUSED) ATTRIBUTE_NORETURN;
 static size_t rm_image_memsize(const void *img);
+static size_t pixel_buffer_count(size_t, size_t, size_t);
 
 const rb_data_type_t rm_image_data_type = {
     "Magick::Image",
@@ -4367,7 +4368,7 @@ Image_constitute(VALUE klass ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
     Image *new_image;
     VALUE pixel, pixel0;
     long x, npixels;
-    size_t width, height, map_l;
+    size_t width, height, map_l, count;
     char *map;
     volatile union
     {
@@ -4392,13 +4393,18 @@ Image_constitute(VALUE klass ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
     width = NUM2LONG(width_arg);
     height = NUM2LONG(height_arg);
     map = rm_str2cstr(&map_arg, &map_l);
-
-    npixels = width * height * map_l;
-    if (RARRAY_LEN(pixels_arg) != npixels)
+    if (map_l == 0)
     {
-        rb_raise(rb_eArgError, "wrong number of array elements (%ld for %ld)",
-                 RARRAY_LEN(pixels_arg), npixels);
+        rb_raise(rb_eArgError, "map must not be empty");
     }
+
+    count = pixel_buffer_count(width, height, map_l);
+    if ((size_t)RARRAY_LEN(pixels_arg) != count)
+    {
+        rb_raise(rb_eArgError, "wrong number of array elements (%ld for %" RMIuSIZE ")",
+                 RARRAY_LEN(pixels_arg), count);
+    }
+    npixels = (long)count;
 
     // Inspect the first element in the pixels array to determine the expected
     // type of all the elements. Allocate the pixel buffer.
