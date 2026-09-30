@@ -4376,6 +4376,7 @@ Image_constitute(VALUE klass ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
         void *v;
     } pixels;
     VALUE pixel_class;
+    VALUE pixels_buf;
     StorageType stg_type;
     ExceptionInfo *exception;
 
@@ -4404,13 +4405,13 @@ Image_constitute(VALUE klass ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
     pixel0 = rb_ary_entry(pixels_arg, 0);
     if (rb_obj_is_kind_of(pixel0, rb_cFloat) == Qtrue)
     {
-        pixels.f = ALLOC_N(double, npixels);
+        pixels.f = ALLOCV_N(double, pixels_buf, npixels);
         stg_type = DoublePixel;
         pixel_class = rb_cFloat;
     }
     else if (rb_obj_is_kind_of(pixel0, rb_cInteger) == Qtrue)
     {
-        pixels.i = ALLOC_N(Quantum, npixels);
+        pixels.i = ALLOCV_N(Quantum, pixels_buf, npixels);
         stg_type = QuantumPixel;
         pixel_class = rb_cInteger;
     }
@@ -4429,18 +4430,20 @@ Image_constitute(VALUE klass ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
         pixel = rb_ary_entry(pixels_arg, x);
         if (rb_obj_is_kind_of(pixel, pixel_class) != Qtrue)
         {
-            xfree(pixels.v);
+            ALLOCV_END(pixels_buf);
             rb_raise(rb_eTypeError, "element %ld in pixel array is %s, expected %s",
                      x, rb_class2name(CLASS_OF(pixel)), rb_class2name(CLASS_OF(pixel0)));
         }
         if (pixel_class == rb_cFloat)
         {
-            pixels.f[x] = (float) NUM2DBL(pixel);
-            if (pixels.f[x] < 0.0 || pixels.f[x] > 1.0)
+            double value = NUM2DBL(pixel);
+
+            if (!(value >= 0.0 && value <= 1.0))
             {
-                xfree(pixels.v);
-                rb_raise(rb_eArgError, "element %ld is out of range [0..1]: %f", x, pixels.f[x]);
+                ALLOCV_END(pixels_buf);
+                rb_raise(rb_eArgError, "element %ld is out of range [0..1]: %" PRIsVALUE, x, pixel);
             }
+            pixels.f[x] = value;
         }
         else
         {
@@ -4452,7 +4455,7 @@ Image_constitute(VALUE klass ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
     new_image = rm_acquire_image((ImageInfo *) NULL);
     if (!new_image)
     {
-        xfree(pixels.v);
+        ALLOCV_END(pixels_buf);
         rb_raise(rb_eNoMemError, "not enough memory to continue.");
     }
 
@@ -4468,7 +4471,7 @@ Image_constitute(VALUE klass ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
 
     if (rm_should_raise_exception(exception, RetainExceptionRetention))
     {
-        xfree(pixels.v);
+        ALLOCV_END(pixels_buf);
 #if defined(IMAGEMAGICK_7)
         DestroyImage(new_image);
         rm_raise_exception(exception);
@@ -4488,7 +4491,7 @@ Image_constitute(VALUE klass ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
 
     if (rm_should_raise_exception(exception, RetainExceptionRetention))
     {
-        xfree(pixels.v);
+        ALLOCV_END(pixels_buf);
 #if defined(IMAGEMAGICK_7)
         DestroyImage(new_image);
         rm_raise_exception(exception);
@@ -4500,19 +4503,20 @@ Image_constitute(VALUE klass ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
 #if defined(IMAGEMAGICK_7)
     GVL_STRUCT_TYPE(ImportImagePixels) args_ImportImagePixels = { new_image, 0, 0, width, height, map, stg_type, (const void *)pixels.v, exception };
     CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ImportImagePixels), &args_ImportImagePixels);
-    xfree(pixels.v);
+    ALLOCV_END(pixels_buf);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
     GVL_STRUCT_TYPE(ImportImagePixels) args_ImportImagePixels = { new_image, 0, 0, width, height, map, stg_type, (const void *)pixels.v };
     CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ImportImagePixels), &args_ImportImagePixels);
-    xfree(pixels.v);
+    ALLOCV_END(pixels_buf);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
     RB_GC_GUARD(pixel);
     RB_GC_GUARD(pixel0);
     RB_GC_GUARD(pixel_class);
+    RB_GC_GUARD(pixels_buf);
     RB_GC_GUARD(map_arg);
 
     return rm_image_new(new_image);
