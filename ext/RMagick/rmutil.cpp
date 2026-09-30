@@ -598,7 +598,8 @@ rm_fuzz_to_dbl(VALUE fuzz_arg)
 
 /**
  * Convert an application-supplied number to a Quantum. If the object is a Float,
- * truncate it before converting.
+ * truncate it before converting. A value outside 0 to QuantumRange is clamped
+ * as ClampToQuantum does, so it is kept as is with HDRI.
  *
  * No Ruby usage (internal function)
  *
@@ -615,13 +616,32 @@ Quantum
 rm_app2quantum(VALUE obj)
 {
     VALUE v = obj;
+    MagickRealType value;
 
     if (TYPE(obj) == T_FLOAT)
     {
         v = rb_Integer(obj);
     }
+    v = rb_to_int(v);
 
-    return NUM2QUANTUM(v);
+    if (RTEST(rb_funcall(v, rb_intern("negative?"), 0)))
+    {
+#if MAGICKCORE_QUANTUM_DEPTH == 64
+        value = (MagickRealType) NUM2LL(v);
+#else
+        value = (MagickRealType) NUM2INT(v);
+#endif
+    }
+    else
+    {
+#if MAGICKCORE_QUANTUM_DEPTH == 64
+        value = (MagickRealType) NUM2ULL(v);
+#else
+        value = (MagickRealType) NUM2UINT(v);
+#endif
+    }
+
+    return ClampToQuantum(value);
 }
 
 

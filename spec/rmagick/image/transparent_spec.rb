@@ -17,4 +17,11 @@ RSpec.describe Magick::Image, '#transparent' do
     expect { image.transparent('white', Magick::QuantumRange / 2) }.to raise_error(ArgumentError)
     expect { image.transparent(2) }.to raise_error(TypeError)
   end
+
+  it 'clamps an out-of-range alpha unless ImageMagick uses HDRI' do
+    image = described_class.new(1, 1)
+
+    alpha = image.transparent('white', alpha: Magick::QuantumRange + 1).pixel_color(0, 0).alpha
+    expect(alpha).to eq(Magick::Magick_features.include?('HDRI') ? Magick::QuantumRange + 1 : Magick::QuantumRange)
+  end
 end
