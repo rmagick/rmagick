@@ -104,7 +104,7 @@ extern "C" {
 
 // Handle Quantum <-> Ruby Numeric object conversion
 #if (MAGICKCORE_QUANTUM_DEPTH == 8 || MAGICKCORE_QUANTUM_DEPTH == 16)
-#define QUANTUM2NUM(q) INT2FIX((q)) /**< Quantum -> Ruby Numeric conversion */
+#define QUANTUM2NUM(q) INT2NUM((q)) /**< Quantum -> Ruby Numeric conversion */
 #define NUM2QUANTUM(n) (Quantum)NUM2UINT((n)) /**< Quantum <- Ruby Numeric conversion */
 #elif (MAGICKCORE_QUANTUM_DEPTH == 32)
 #define QUANTUM2NUM(q) UINT2NUM((q)) /**< Quantum -> Ruby Numeric conversion */
@@ -443,7 +443,7 @@ extern const rb_data_type_t rm_kernel_info_data_type;
 */
 #define C_boolean_to_R_boolean(attr) (attr) ? Qtrue : Qfalse /**< C boolean -> Ruby boolean */
 #define R_boolean_to_C_boolean(attr) (MagickBooleanType)RTEST(attr) /**<  C boolean <- Ruby boolean */
-#define C_int_to_R_int(attr) INT2FIX(attr) /**< C int -> Ruby int */
+#define C_int_to_R_int(attr) INT2NUM(attr) /**< C int -> Ruby int */
 #define R_int_to_C_int(attr) NUM2INT(attr) /**< C int <- Ruby int */
 #define C_long_to_R_long(attr) LONG2NUM(attr) /**< C long -> Ruby long */
 #define R_long_to_C_long(attr) NUM2LONG(attr) /**< C long <- Ruby long */
