@@ -50,4 +50,12 @@ RSpec.describe Magick::Image, '#pixel_color' do
 
     File.delete(temp_file_path)
   end
+
+  it 'reads a negative value of an HDRI image' do
+    image = described_class.new(1, 1).fx('-1')
+    expected = Magick::Magick_features.include?('HDRI') ? -Magick::QuantumRange : 0
+
+    expect(image.pixel_color(0, 0).red).to eq(expected)
+    expect(image.pixel_color(0, 0, 'white').red).to eq(expected)
+  end
 end

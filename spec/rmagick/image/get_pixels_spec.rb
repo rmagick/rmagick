@@ -52,4 +52,11 @@ RSpec.describe Magick::Image, '#get_pixels' do
     expect(pixel.blue).to  equal(56 * 257)
     expect(pixel.alpha).to be_within(78 * 257).of(1)
   end
+
+  it 'reads a negative value of an HDRI image' do
+    image = described_class.new(1, 1).fx('-1')
+    expected = Magick::Magick_features.include?('HDRI') ? -Magick::QuantumRange : 0
+
+    expect(image.get_pixels(0, 0, 1, 1).first.red).to eq(expected)
+  end
 end

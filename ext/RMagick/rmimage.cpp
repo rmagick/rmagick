@@ -40,6 +40,9 @@ static VALUE array_from_images(Image *);
 static VALUE file_arg_rescue(VALUE, VALUE ATTRIBUTE_UNUSED) ATTRIBUTE_NORETURN;
 static size_t rm_image_memsize(const void *img);
 static size_t pixel_buffer_count(size_t, size_t, size_t);
+#if defined(IMAGEMAGICK_7)
+static void get_pixel_color(const Image *, const Quantum *, PixelColor *);
+#endif
 
 const rb_data_type_t rm_image_data_type = {
     "Magick::Image",
@@ -7884,6 +7887,28 @@ Image_geometry_eq(VALUE self, VALUE geometry)
 }
 
 
+#if defined(IMAGEMAGICK_7)
+/**
+ * Get the color of the pixel at p, rounding each channel to the nearest integer.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param image the image
+ * @param p the pixel
+ * @param color the PixelColor to store the color in
+ */
+static void
+get_pixel_color(const Image *image, const Quantum *p, PixelColor *color)
+{
+    color->red   = floor(GetPixelRed(image, p) + 0.5);
+    color->green = floor(GetPixelGreen(image, p) + 0.5);
+    color->blue  = floor(GetPixelBlue(image, p) + 0.5);
+    color->alpha = floor(GetPixelAlpha(image, p) + 0.5);
+    color->black = floor(GetPixelBlack(image, p) + 0.5);
+}
+#endif
+
+
 /**
  * Gets the pixels from the specified rectangle within the image.
  *
@@ -7951,14 +7976,13 @@ Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE row
     for (n = 0; n < size; n++)
     {
 #if defined(IMAGEMAGICK_7)
-        PixelPacket color;
-        memset(&color, 0, sizeof(color));
-        color.red   = GetPixelRed(image, pixels);
-        color.green = GetPixelGreen(image, pixels);
-        color.blue  = GetPixelBlue(image, pixels);
-        color.alpha = GetPixelAlpha(image, pixels);
-        color.black = GetPixelBlack(image, pixels);
-        rb_ary_store(pixel_ary, n, Pixel_from_PixelPacket(&color));
+        PixelColor color;
+        color.red   = trunc(GetPixelRed(image, pixels));
+        color.green = trunc(GetPixelGreen(image, pixels));
+        color.blue  = trunc(GetPixelBlue(image, pixels));
+        color.alpha = trunc(GetPixelAlpha(image, pixels));
+        color.black = trunc(GetPixelBlack(image, pixels));
+        rb_ary_store(pixel_ary, n, Pixel_from_PixelColor(&color));
 
         pixels += GetPixelChannels(image);
 #else
@@ -10715,7 +10739,11 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
 {
     Image *image;
     Pixel new_color;
+#if defined(IMAGEMAGICK_7)
+    PixelColor old_color;
+#else
     PixelPacket old_color;
+#endif
     ExceptionInfo *exception;
     long x, y;
     unsigned int set = False;
@@ -10764,12 +10792,8 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
         DestroyExceptionInfo(exception);
 
 #if defined(IMAGEMAGICK_7)
-        old_color.red   = GetPixelRed(image, old_pixel) + 0.5;
-        old_color.green = GetPixelGreen(image, old_pixel) + 0.5;
-        old_color.blue  = GetPixelBlue(image, old_pixel) + 0.5;
-        old_color.alpha = GetPixelAlpha(image, old_pixel) + 0.5;
-        old_color.black = GetPixelBlack(image, old_pixel) + 0.5;
-        return Pixel_from_PixelPacket(&old_color);
+        get_pixel_color(image, old_pixel, &old_color);
+        return Pixel_from_PixelColor(&old_color);
 #else
         old_color = *old_pixel;
         indexes = GetAuthenticIndexQueue(image);
@@ -10843,11 +10867,7 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
     if (pixel)
     {
 #if defined(IMAGEMAGICK_7)
-        old_color.red   = GetPixelRed(image, pixel) + 0.5;
-        old_color.green = GetPixelGreen(image, pixel) + 0.5;
-        old_color.blue  = GetPixelBlue(image, pixel) + 0.5;
-        old_color.alpha = GetPixelAlpha(image, pixel) + 0.5;
-        old_color.black = GetPixelBlack(image, pixel) + 0.5;
+        get_pixel_color(image, pixel, &old_color);
 
         SetPixelRed(image,   new_color.red,   pixel);
         SetPixelGreen(image, new_color.green, pixel);
@@ -10879,7 +10899,11 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
 
     DestroyExceptionInfo(exception);
 
+#if defined(IMAGEMAGICK_7)
+    return Pixel_from_PixelColor(&old_color);
+#else
     return Pixel_from_PixelPacket(&old_color);
+#endif
 }
 
 
