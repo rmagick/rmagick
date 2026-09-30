@@ -14,4 +14,15 @@ RSpec.describe Magick::Pixel, '.new' do
   it 'ignores a nil opacity' do
     expect(described_class.new(0, 0, 0, nil).alpha).to eq(Magick::QuantumRange)
   end
+
+  it 'clamps an out-of-range value unless ImageMagick uses HDRI' do
+    pixel = described_class.new(Magick::QuantumRange + 1, -1, 0)
+
+    if Magick::Magick_features.include?('HDRI')
+      expect(pixel.red).to eq(Magick::QuantumRange + 1)
+    else
+      expect(pixel.red).to eq(Magick::QuantumRange)
+      expect(pixel.green).to eq(0)
+    end
+  end
 end
