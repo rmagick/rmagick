@@ -11892,6 +11892,7 @@ Image_read_inline(VALUE self ATTRIBUTE_UNUSED, VALUE content)
     blob = (unsigned char *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(Base64Decode), &args_Base64Decode);
     if (blob_l == 0)
     {
+        magick_free((void *)blob);
         rb_raise(rb_eArgError, "can't decode image");
     }
 
@@ -11909,6 +11910,7 @@ Image_read_inline(VALUE self ATTRIBUTE_UNUSED, VALUE content)
     rm_check_exception(exception, images, DestroyOnError);
     DestroyExceptionInfo(exception);
 
+    rm_ensure_result(images);
     rm_set_user_artifact(images, info);
     rm_sync_image_options(images, info);
 
