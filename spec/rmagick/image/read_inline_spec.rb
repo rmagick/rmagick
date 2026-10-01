@@ -23,4 +23,10 @@ RSpec.describe Magick::Image, "#read_inline" do
     end
     expect(result.first.colorspace).to eq(Magick::LabColorspace)
   end
+
+  it 'raises an error when ImageMagick returns no image without an exception' do
+    encoded = ["\x00\x00\x00\x0cjP  \r\n\x87\n".b].pack('m*')
+
+    expect { described_class.read_inline(encoded) }.to raise_error(StandardError)
+  end
 end
