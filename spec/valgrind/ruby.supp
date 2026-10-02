@@ -60,3 +60,21 @@
    ...
    fun:lt_dlopenadvise
 }
+
+# PolaroidImage leaks the temporary string it passes to CloneString when the
+# image has a caption and the gravity is not set
+# (https://github.com/ImageMagick/ImageMagick/issues/8994). ImageMagick 6 has the
+# same code. The leak is inside ImageMagick, so there is nothing for RMagick to
+# free; `magick -set caption hello -polaroid -5` reproduces it without RMagick.
+#
+# The stanza is anchored on AcquireString called directly from PolaroidImage, so
+# it does not hide other leaks. Remove it once the ImageMagick versions we test
+# with include the fix.
+{
+   ImageMagick: PolaroidImage leaks the geometry string it builds for a caption (https://github.com/ImageMagick/ImageMagick/issues/8994)
+   Memcheck:Leak
+   match-leak-kinds: definite
+   ...
+   fun:AcquireString
+   fun:PolaroidImage
+}
