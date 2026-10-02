@@ -1168,7 +1168,11 @@ scanline = img.export_pixels(0, r, img.columns, 1, "RGB");
       <dl>
         <dt>expression</dt>
 
-        <dd>A mathematical expression of the form accepted by the -fx operator. The <code>u</code> symbol refers to this image.</dd>
+        <dd>
+          A mathematical expression of the form accepted by the -fx operator. The <code>u</code> symbol refers to this image. An expression whose first
+          non-blank character is <code>@</code>, or that contains a <code>%[fx:@...]</code>, <code>%[hex:@...]</code> or <code>%[pixel:@...]</code> escape,
+          raises <code>ArgumentError</code>, because ImageMagick would read the file it names.
+        </dd>
 
         <dt>channel...</dt>
 

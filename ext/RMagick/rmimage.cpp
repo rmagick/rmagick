@@ -7563,6 +7563,10 @@ Image_fx(int argc, VALUE *argv, VALUE self)
     }
 
     expression = StringValueCStr(argv[0]);
+    if (rm_has_file_reference(expression))
+    {
+        rb_raise(rb_eArgError, "the expression must not name a file with '@'");
+    }
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
