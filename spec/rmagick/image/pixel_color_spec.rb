@@ -59,4 +59,18 @@ RSpec.describe Magick::Image, '#pixel_color' do
     expect(image.pixel_color(0, 0).red).to eq(expected)
     expect(image.pixel_color(0, 0, 'white').red).to eq(expected)
   end
+
+  it 'returns the background color when the offset of the pixel overflows' do
+    image = described_class.new(2, 2) { |options| options.background_color = 'red' }
+    image = image.colorize(1.0, 1.0, 1.0, 'blue')
+    long_is_32bit = [0].pack('l!').bytesize < 8
+
+    [[0, 2**62], [0, -(2**62)], [2**62, 2**62]].each do |x, y|
+      if long_is_32bit
+        expect { image.pixel_color(x, y) }.to raise_error(RangeError)
+      else
+        expect(image.pixel_color(x, y)).to eq(Magick::Pixel.from_color('red'))
+      end
+    end
+  end
 end
