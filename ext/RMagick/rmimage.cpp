@@ -10791,6 +10791,13 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
 
         DestroyExceptionInfo(exception);
 
+        // ImageMagick returns no pixel when the pixel offset overflows, so only the
+        // background color is left to return, as GetOneVirtualPixel does.
+        if (!old_pixel)
+        {
+            return Pixel_from_PixelColor(&image->background_color);
+        }
+
 #if defined(IMAGEMAGICK_7)
         get_pixel_color(image, old_pixel, &old_color);
         return Pixel_from_PixelColor(&old_color);
