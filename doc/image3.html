@@ -3566,7 +3566,11 @@ img.tint('white', 1.0, 0.8, 0.8)
 
       <h4>Arguments</h4>
 
-      <p>A <a href="struct.html#Pixel">Pixel</a> object.</p>
+      <p>
+        A <a href="struct.html#Pixel">Pixel</a> object or a <a href="imusage.html#color_names">color name</a>. The values of a Pixel are read
+        in the colorspace of the image, as <code>pixel_color</code> returns them. A color name is converted to CMYK when the image is in the CMYK
+        colorspace.
+      </p>
 
       <h4>Returns</h4>
 
