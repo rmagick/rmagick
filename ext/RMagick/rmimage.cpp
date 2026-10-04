@@ -14835,19 +14835,23 @@ Image_to_blob(VALUE self)
 
 
 /**
- * Convert an sRGB color to CMYK in the same way as converting an image.
+ * Convert a color name to CMYK in the same way as converting an image.
  *
  * No Ruby usage (internal function)
  *
- * @param color the color to convert
+ * @param color the Pixel to modify
+ * @param name the color name
  */
 static void
-rgb_to_cmyk(Pixel *color)
+color_name_to_cmyk(Pixel *color, VALUE name)
 {
     Info *info;
     Image *image;
+    PixelColor parsed;
     MagickPixel cmyk;
     ExceptionInfo *exception;
+
+    Color_to_PixelColor(&parsed, name);
 
     info = CloneImageInfo(NULL);
     image = rm_acquire_image(info);
@@ -14858,15 +14862,14 @@ rgb_to_cmyk(Pixel *color)
         rb_raise(rb_eNoMemError, "not enough memory to continue.");
     }
 
-    image->background_color.red   = color->red;
-    image->background_color.green = color->green;
-    image->background_color.blue  = color->blue;
-
-    exception = AcquireExceptionInfo();
+    image->background_color = parsed;
 
 #if defined(IMAGEMAGICK_7)
+    exception = AcquireExceptionInfo();
     GVL_STRUCT_TYPE(SetImageExtent) args_SetImageExtent = { image, 1, 1, exception };
     CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageExtent), &args_SetImageExtent);
+    rm_check_exception(exception, image, DestroyOnError);
+    SetImageColorspace(image, parsed.colorspace, exception);
     rm_check_exception(exception, image, DestroyOnError);
     GVL_STRUCT_TYPE(SetImageBackgroundColor) args_SetImageBackgroundColor = { image, exception };
     CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageBackgroundColor), &args_SetImageBackgroundColor);
@@ -14885,6 +14888,7 @@ rgb_to_cmyk(Pixel *color)
     GVL_STRUCT_TYPE(TransformImageColorspace) args_TransformImageColorspace = { image, CMYKColorspace };
     CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TransformImageColorspace), &args_TransformImageColorspace);
     rm_check_image_exception(image, DestroyOnError);
+    exception = AcquireExceptionInfo();
     GetOneVirtualMagickPixel(image, 0, 0, &cmyk, exception);
 #endif
     rm_check_exception(exception, image, DestroyOnError);
@@ -14896,9 +14900,11 @@ rgb_to_cmyk(Pixel *color)
     color->green = cmyk.green;
     color->blue  = cmyk.blue;
 #if defined(IMAGEMAGICK_7)
+    color->alpha = parsed.alpha;
     color->black = cmyk.black;
 #else
-    color->black = cmyk.index;
+    color->opacity = parsed.opacity;
+    color->black   = cmyk.index;
 #endif
 }
 
@@ -14919,11 +14925,14 @@ Image_to_color(VALUE self, VALUE pixel_arg)
     char name[MaxTextExtent];
 
     image = rm_check_destroyed(self);
-    Color_to_Pixel(&color, pixel_arg);
 
     if (CLASS_OF(pixel_arg) != Class_Pixel && image->colorspace == CMYKColorspace)
     {
-        rgb_to_cmyk(&color);
+        color_name_to_cmyk(&color, pixel_arg);
+    }
+    else
+    {
+        Color_to_Pixel(&color, pixel_arg);
     }
 
     rm_init_magickpixel(image, &pixel);

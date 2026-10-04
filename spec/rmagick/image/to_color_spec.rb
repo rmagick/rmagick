@@ -31,6 +31,7 @@ RSpec.describe Magick::Image, '#to_color' do
     image.colorspace = Magick::CMYKColorspace
 
     expect(image.to_color('red')).to eq('#00FFFF00')
+    expect(image.to_color('cmyk(0,255,255,0)')).to eq('#00FFFF00')
   end
 
   it 'includes the black value of a pixel of a CMYK image' do
