@@ -14835,6 +14835,81 @@ Image_to_blob(VALUE self)
 
 
 /**
+ * Convert a color name to CMYK in the same way as converting an image.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param color the Pixel to modify
+ * @param name the color name
+ */
+static void
+color_name_to_cmyk(Pixel *color, VALUE name)
+{
+    Info *info;
+    Image *image;
+    PixelColor parsed;
+    MagickPixel cmyk;
+    ExceptionInfo *exception;
+
+    Color_to_PixelColor(&parsed, name);
+
+    info = CloneImageInfo(NULL);
+    image = rm_acquire_image(info);
+    DestroyImageInfo(info);
+
+    if (!image)
+    {
+        rb_raise(rb_eNoMemError, "not enough memory to continue.");
+    }
+
+    image->background_color = parsed;
+
+#if defined(IMAGEMAGICK_7)
+    exception = AcquireExceptionInfo();
+    GVL_STRUCT_TYPE(SetImageExtent) args_SetImageExtent = { image, 1, 1, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageExtent), &args_SetImageExtent);
+    rm_check_exception(exception, image, DestroyOnError);
+    SetImageColorspace(image, parsed.colorspace, exception);
+    rm_check_exception(exception, image, DestroyOnError);
+    GVL_STRUCT_TYPE(SetImageBackgroundColor) args_SetImageBackgroundColor = { image, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageBackgroundColor), &args_SetImageBackgroundColor);
+    rm_check_exception(exception, image, DestroyOnError);
+    GVL_STRUCT_TYPE(TransformImageColorspace) args_TransformImageColorspace = { image, CMYKColorspace, exception };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TransformImageColorspace), &args_TransformImageColorspace);
+    rm_check_exception(exception, image, DestroyOnError);
+    GetOneVirtualPixelInfo(image, UndefinedVirtualPixelMethod, 0, 0, &cmyk, exception);
+#else
+    GVL_STRUCT_TYPE(SetImageExtent) args_SetImageExtent = { image, 1, 1 };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageExtent), &args_SetImageExtent);
+    rm_check_image_exception(image, DestroyOnError);
+    GVL_STRUCT_TYPE(SetImageBackgroundColor) args_SetImageBackgroundColor = { image };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageBackgroundColor), &args_SetImageBackgroundColor);
+    rm_check_image_exception(image, DestroyOnError);
+    GVL_STRUCT_TYPE(TransformImageColorspace) args_TransformImageColorspace = { image, CMYKColorspace };
+    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TransformImageColorspace), &args_TransformImageColorspace);
+    rm_check_image_exception(image, DestroyOnError);
+    exception = AcquireExceptionInfo();
+    GetOneVirtualMagickPixel(image, 0, 0, &cmyk, exception);
+#endif
+    rm_check_exception(exception, image, DestroyOnError);
+
+    DestroyExceptionInfo(exception);
+    DestroyImage(image);
+
+    color->red   = cmyk.red;
+    color->green = cmyk.green;
+    color->blue  = cmyk.blue;
+#if defined(IMAGEMAGICK_7)
+    color->alpha = parsed.alpha;
+    color->black = cmyk.black;
+#else
+    color->opacity = parsed.opacity;
+    color->black   = cmyk.index;
+#endif
+}
+
+
+/**
  * Return a color name for the color intensity specified by the Magick::Pixel argument.
  *
  * @param pixel_arg [Magick::Pixel, String] the pixel
@@ -14844,30 +14919,45 @@ VALUE
 Image_to_color(VALUE self, VALUE pixel_arg)
 {
     Image *image;
-    PixelColor pixel;
+    Pixel color;
+    MagickPixel pixel;
     ExceptionInfo *exception;
     char name[MaxTextExtent];
 
     image = rm_check_destroyed(self);
-    Color_to_PixelColor(&pixel, pixel_arg);
-    exception = AcquireExceptionInfo();
 
-#if defined(IMAGEMAGICK_7)
-    PixelColor color = pixel;
+    if (CLASS_OF(pixel_arg) != Class_Pixel && image->colorspace == CMYKColorspace)
+    {
+        color_name_to_cmyk(&color, pixel_arg);
+    }
+    else
+    {
+        Color_to_Pixel(&color, pixel_arg);
+    }
 
     rm_init_magickpixel(image, &pixel);
     pixel.red   = color.red;
     pixel.green = color.green;
     pixel.blue  = color.blue;
+#if defined(IMAGEMAGICK_7)
     pixel.black = color.black;
     pixel.alpha = color.alpha;
+#else
+    pixel.index   = color.black;
+    pixel.opacity = color.opacity;
 #endif
+
+    exception = AcquireExceptionInfo();
 
     // QueryColorname returns False if the color represented by the PixelPacket
     // doesn't have a "real" name, just a sequence of hex digits. We don't care
     // about that.
 
+#if defined(IMAGEMAGICK_7)
     QueryColorname(image, &pixel, AllCompliance, name, exception);
+#else
+    QueryMagickColorname(image, &pixel, AllCompliance, name, exception);
+#endif
     CHECK_EXCEPTION();
 
     DestroyExceptionInfo(exception);

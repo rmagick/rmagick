@@ -25,4 +25,22 @@ RSpec.describe Magick::Image, '#to_color' do
     image.alpha(Magick::ActivateAlphaChannel)
     expect(image.to_color(pixel)).to eq('#05162380')
   end
+
+  it 'converts a color name to CMYK for a CMYK image' do
+    image = described_class.new(1, 1) { |options| options.depth = 8 }
+    image.colorspace = Magick::CMYKColorspace
+
+    expect(image.to_color('red')).to eq('#00FFFF00')
+    expect(image.to_color('cmyk(0,255,255,0)')).to eq('#00FFFF00')
+  end
+
+  it 'includes the black value of a pixel of a CMYK image' do
+    image = described_class.new(1, 1) do |options|
+      options.background_color = 'gray50'
+      options.depth = 8
+    end
+    image.colorspace = Magick::CMYKColorspace
+
+    expect(image.to_color(image.pixel_color(0, 0))).to eq('#00000080')
+  end
 end
