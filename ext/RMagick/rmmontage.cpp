@@ -404,7 +404,7 @@ Montage_texture_eq(VALUE self, VALUE texture)
     }
 
     texture = rm_cur_image(texture);
-    texture_image = rm_check_destroyed(texture);
+    texture_image = rm_check_readable(texture);
 
     // Write a temp copy of the image & save its name.
     rm_write_temp_image(texture_image, temp_name, sizeof(temp_name));

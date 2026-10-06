@@ -458,7 +458,7 @@ extern const rb_data_type_t rm_kernel_info_data_type;
     {\
         klass *ptr;\
         if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {\
-            rm_check_destroyed(self); \
+            rm_check_readable(self); \
         }\
         TypedData_Get_Struct(self, klass, data_type, ptr);\
         return C_##type##_to_R_##type(ptr->attr);\
@@ -468,7 +468,7 @@ extern const rb_data_type_t rm_kernel_info_data_type;
 #define IMPLEMENT_TYPED_ATTR_READERF(klass, attr, field, type, data_type) \
     {\
         klass *ptr;\
-        rm_check_destroyed(self); \
+        rm_check_readable(self); \
         TypedData_Get_Struct(self, klass, data_type, ptr);\
         return C_##type##_to_R_##type(ptr->field);\
     }
@@ -478,7 +478,7 @@ extern const rb_data_type_t rm_kernel_info_data_type;
     {\
         klass *ptr;\
         if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {\
-            rm_check_destroyed(self); \
+            rm_check_readable(self); \
         }\
         rb_check_frozen(self);\
         TypedData_Get_Struct(self, klass, data_type, ptr);\
@@ -492,7 +492,7 @@ extern const rb_data_type_t rm_kernel_info_data_type;
     {\
         klass *ptr;\
         if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {\
-            rm_check_destroyed(self); \
+            rm_check_readable(self); \
         }\
         rb_check_frozen(self);\
         TypedData_Get_Struct(self, klass, data_type, ptr);\
@@ -1174,7 +1174,7 @@ extern size_t rm_strnlen_s(const char *, size_t);
 extern bool   rm_has_file_reference(const char *);
 extern void   rm_check_ary_len(VALUE, long);
 extern VALUE  rm_check_ary_type(VALUE ary);
-extern Image *rm_check_destroyed(VALUE);
+extern Image *rm_check_readable(VALUE);
 extern Image *rm_check_writable(VALUE);
 extern Image *rm_check_frozen(VALUE);
 extern char  *rm_str2cstr(VALUE *, size_t *);

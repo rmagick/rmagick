@@ -307,16 +307,17 @@ rm_check_ary_type(VALUE ary)
 
 
 /**
- * Raise an error if the image has been destroyed.
+ * Raise an error if the image has been destroyed or an offloaded call is changing it.
  *
  * No Ruby usage (internal function)
  *
  * @param obj the image
  * @return the C image structure for the image
  * @throw DestroyedImageError
+ * @throw RuntimeError if an offloaded call is changing the image
  */
 Image *
-rm_check_destroyed(VALUE obj)
+rm_check_readable(VALUE obj)
 {
     Image *image;
 
@@ -339,18 +340,19 @@ rm_check_destroyed(VALUE obj)
  * @param obj the image
  * @return the C image structure for the image
  * @throw DestroyedImageError
+ * @throw RuntimeError if an offloaded call is using the image
  */
 Image *
 rm_check_writable(VALUE obj)
 {
-    Image *image = rm_check_destroyed(obj);
+    Image *image = rm_check_readable(obj);
     rm_gvl_check_writable(image);
     return image;
 }
 
 
 /**
- * Raise an error if the image has been destroyed or is frozen.
+ * Raise an error if the image has been destroyed, is frozen or an offloaded call is using it.
  *
  * No Ruby usage (internal function)
  *
@@ -360,7 +362,7 @@ rm_check_writable(VALUE obj)
 Image *
 rm_check_frozen(VALUE obj)
 {
-    Image *image = rm_check_destroyed(obj);
+    Image *image = rm_check_readable(obj);
     rb_check_frozen(obj);
     rm_gvl_check_writable(image);
     return image;

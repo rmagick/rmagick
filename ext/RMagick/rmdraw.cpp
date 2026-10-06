@@ -213,7 +213,7 @@ Draw_fill_pattern_eq(VALUE self, VALUE pattern)
         Image *image;
 
         pattern = rm_cur_image(pattern);
-        image = rm_check_destroyed(pattern);
+        image = rm_check_readable(pattern);
         // Do not trace creation
         draw->info->fill_pattern = rm_clone_image(image);
     }
@@ -760,7 +760,7 @@ Draw_stroke_pattern_eq(VALUE self, VALUE pattern)
 
         // DestroyDrawInfo destroys the clone
         pattern = rm_cur_image(pattern);
-        image = rm_check_destroyed(pattern);
+        image = rm_check_readable(pattern);
         // Do not trace creation
         draw->info->stroke_pattern = rm_clone_image(image);
     }
@@ -1057,7 +1057,7 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
 
     // Retrieve the image to composite
     image = rm_cur_image(argv[4]);
-    comp_img = rm_check_destroyed(image);
+    comp_img = rm_check_readable(image);
 
     x = NUM2DBL(argv[0]);
     y = NUM2DBL(argv[1]);
@@ -1669,7 +1669,7 @@ get_type_metrics(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
             break;
         case 2:
             t = rm_cur_image(argv[0]);
-            image = rm_check_destroyed(t);
+            image = rm_check_readable(t);
             text_arg = argv[1];
             text = rm_str2cstr(&text_arg, &text_l);
             break;                  // okay

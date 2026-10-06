@@ -2125,7 +2125,7 @@ Info_texture_eq(VALUE self, VALUE texture)
     }
 
     // Create a temp copy of the texture and store its name in the texture field
-    image = rm_check_destroyed(texture);
+    image = rm_check_readable(texture);
     rm_write_temp_image(image, name, sizeof(name));
 
     magick_clone_string(&info->texture, name);

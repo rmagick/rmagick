@@ -883,7 +883,7 @@ images_from_imagelist(VALUE imagelist, VALUE *clones)
         Image *image;
 
         t = rb_ary_entry(images, x);
-        image = rm_check_destroyed(t);
+        image = rm_check_readable(t);
         // avoid a loop in this linked imagelist, issue #202
         if (head == image || GetPreviousImageInList(image) != NULL)
         {
@@ -1144,7 +1144,7 @@ ImageList_remap(int argc, VALUE *argv, VALUE self)
     if (argc > 0 && argv[0] != Qnil)
     {
         VALUE t = rm_cur_image(argv[0]);
-        remap_image = rm_check_destroyed(t);
+        remap_image = rm_check_readable(t);
         RB_GC_GUARD(t);
     }
 
