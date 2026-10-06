@@ -104,11 +104,6 @@ KernelInfo_initialize(VALUE self, VALUE kernel_string)
     {
         rb_raise(rb_eArgError, "the kernel must not name a file with '@'");
     }
-    old_kernel = (KernelInfo *)DATA_PTR(self);
-    if (old_kernel)
-    {
-        rm_gvl_check_writable(old_kernel);
-    }
 
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
@@ -133,6 +128,11 @@ KernelInfo_initialize(VALUE self, VALUE kernel_string)
     }
 
     old_kernel = (KernelInfo *)DATA_PTR(self);
+    if (old_kernel && rm_gvl_in_use(old_kernel))
+    {
+        DestroyKernelInfo(kernel);
+        rm_gvl_check_writable(old_kernel);
+    }
     DATA_PTR(self) = kernel;
     if (old_kernel)
     {
@@ -264,11 +264,6 @@ KernelInfo_init_copy(VALUE self, VALUE orig)
     KernelInfo *kernel, *old_kernel;
 
     rb_check_frozen(self);
-    old_kernel = (KernelInfo *)DATA_PTR(self);
-    if (old_kernel)
-    {
-        rm_gvl_check_writable(old_kernel);
-    }
     kernel = CloneKernelInfo(get_kernel_info(orig));
     if (!kernel)
     {
@@ -276,6 +271,11 @@ KernelInfo_init_copy(VALUE self, VALUE orig)
     }
 
     old_kernel = (KernelInfo *)DATA_PTR(self);
+    if (old_kernel && rm_gvl_in_use(old_kernel))
+    {
+        DestroyKernelInfo(kernel);
+        rm_gvl_check_writable(old_kernel);
+    }
     DATA_PTR(self) = kernel;
     if (old_kernel)
     {
