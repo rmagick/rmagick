@@ -23,11 +23,15 @@ public:
     rm_gvl_call &update_each(VALUE ary);
     rm_gvl_call &release(ExceptionInfo *exception);
     rm_gvl_call &release(ImageInfo *info);
+    rm_gvl_call &release(DrawInfo *draw_info);
+    rm_gvl_call &release(KernelInfo *kernel);
     rm_gvl_call &destroy(Image *image);
     rm_gvl_call &split(Image *images);
 #if defined(IMAGEMAGICK_7)
     rm_gvl_call &restore_mask(Image *image, ChannelType channel_mask);
 #endif
+    rm_gvl_call &free_buffer(void *buffer);
+    rm_gvl_call &relinquish(void *memory);
     rm_gvl_call &free_result();
     rm_gvl_call &keep_thread(bool keep = true);
     rm_gvl_call &cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg = 0);

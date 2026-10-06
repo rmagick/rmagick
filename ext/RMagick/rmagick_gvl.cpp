@@ -287,6 +287,30 @@ destroy_info(void *ptr, intptr_t arg ATTRIBUTE_UNUSED)
 }
 
 static void
+destroy_draw_info(void *ptr, intptr_t arg ATTRIBUTE_UNUSED)
+{
+    DestroyDrawInfo((DrawInfo *)ptr);
+}
+
+static void
+destroy_kernel(void *ptr, intptr_t arg ATTRIBUTE_UNUSED)
+{
+    DestroyKernelInfo((KernelInfo *)ptr);
+}
+
+static void
+free_ruby_memory(void *ptr, intptr_t arg ATTRIBUTE_UNUSED)
+{
+    xfree(ptr);
+}
+
+static void
+free_magick_memory(void *ptr, intptr_t arg ATTRIBUTE_UNUSED)
+{
+    magick_free(ptr);
+}
+
+static void
 destroy_image(void *ptr, intptr_t arg ATTRIBUTE_UNUSED)
 {
     DestroyImageList((Image *)ptr);
@@ -470,6 +494,58 @@ rm_gvl_call &
 rm_gvl_call::release(ImageInfo *info)
 {
     return cleanup(destroy_info, info, 0);
+}
+
+
+/**
+ * Destroy the DrawInfo if the call is refused or unwound.
+ *
+ * @param draw_info the DrawInfo, may be NULL
+ * @return self
+ */
+rm_gvl_call &
+rm_gvl_call::release(DrawInfo *draw_info)
+{
+    return cleanup(destroy_draw_info, draw_info, 0);
+}
+
+
+/**
+ * Destroy the KernelInfo if the call is refused or unwound.
+ *
+ * @param kernel the KernelInfo, may be NULL
+ * @return self
+ */
+rm_gvl_call &
+rm_gvl_call::release(KernelInfo *kernel)
+{
+    return cleanup(destroy_kernel, kernel, 0);
+}
+
+
+/**
+ * Free the buffer, allocated with ALLOC_N, if the call is refused or unwound.
+ *
+ * @param buffer the buffer, may be NULL
+ * @return self
+ */
+rm_gvl_call &
+rm_gvl_call::free_buffer(void *buffer)
+{
+    return cleanup(free_ruby_memory, buffer, 0);
+}
+
+
+/**
+ * Free the memory, allocated by ImageMagick, if the call is refused or unwound.
+ *
+ * @param memory the memory, may be NULL
+ * @return self
+ */
+rm_gvl_call &
+rm_gvl_call::relinquish(void *memory)
+{
+    return cleanup(free_magick_memory, memory, 0);
 }
 
 
