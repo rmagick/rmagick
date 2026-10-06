@@ -374,6 +374,27 @@ RSpec.describe Magick::Image, if: offloading do
       expect(result.signature).to eq(expected.signature)
     end
 
+    it "does not let another fiber destroy an image that it removes from a list being written" do
+      first = red_image
+      second = blue_image
+      images = Magick::ImageList.new << first << second
+      error = nil
+
+      Dir.mktmpdir do |dir|
+        scheduler.before_next_operation do
+          Fiber.schedule do
+            images.delete_at(1)
+            scheduler.before_next_operation { error = attempt { second.destroy! } }
+          end
+        end
+
+        scheduler.run { images.write("#{dir}/out.jpg") }
+
+        expect(error).to in_use
+        expect(Dir.children(dir).sort).to eq(%w[out-0.jpg out-1.jpg])
+      end
+    end
+
     it "does not let another fiber change read options until the worker finishes" do
       options = nil
       error = nil

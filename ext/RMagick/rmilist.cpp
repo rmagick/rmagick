@@ -1340,8 +1340,9 @@ ImageList_write(VALUE self, VALUE file)
     }
 
     // Convert the images array to an images sequence.
-    VALUE clones;
+    VALUE clones, written;
     check_images_writable(self);
+    written = rb_ary_dup(rb_iv_get(self, "@images"));
     images = images_from_imagelist(self, &clones);
 
     // Copy the filename into each image. Set a scene number to be used if
@@ -1374,12 +1375,12 @@ ImageList_write(VALUE self, VALUE file)
         rm_sync_image_options(img, info);
 #if defined(IMAGEMAGICK_7)
         DECLARE_GVL_CALL(call, WriteImage, info, img, exception);
-        call.update_each(rb_iv_get(self, "@images")).read(info_obj).split(images).release(exception);
+        call.update_each(written).read(info_obj).split(images).release(exception);
         call.keep_thread(info->file != NULL).run<void>();
         rm_check_exception(exception, img, RetainOnError);
 #else
         DECLARE_GVL_CALL(call, WriteImage, info, img);
-        call.update_each(rb_iv_get(self, "@images")).read(info_obj).split(images);
+        call.update_each(written).read(info_obj).split(images);
         call.keep_thread(info->file != NULL).run<void>();
         // images will be split before raising an exception
         rm_check_image_exception(images, RetainOnError);
@@ -1396,6 +1397,7 @@ ImageList_write(VALUE self, VALUE file)
 
     rm_split(images);
     RB_GC_GUARD(clones);
+    RB_GC_GUARD(written);
 
     RB_GC_GUARD(info_obj);
 
