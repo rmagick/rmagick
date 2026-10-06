@@ -5908,7 +5908,6 @@ Image_display(VALUE self)
     info_obj = rm_info_new();
     TypedData_Get_Struct(info_obj, Info, &rm_info_data_type, info);
 
-    // The options block may have suspended this fiber, so fetch the image again after it.
     image = rm_check_readable(self);
 
 #if defined(IMAGEMAGICK_7)
@@ -7609,8 +7608,6 @@ Image_fx(int argc, VALUE *argv, VALUE self)
         raise_ChannelType_error(argv[argc-1]);
     }
 
-    // The worker reads the expression while other fibers may run, so read it
-    // from a frozen string.
     argv[0] = rb_str_new_frozen(rb_string_value(&argv[0]));
     expression = StringValueCStr(argv[0]);
     if (rm_has_file_reference(expression))
@@ -10575,8 +10572,6 @@ Image_ordered_dither(int argc, VALUE *argv, VALUE self)
     {
         if (TYPE(argv[0]) == T_STRING)
         {
-            // The worker reads the map while other fibers may run, so read it
-            // from a frozen string.
             argv[0] = rb_str_new_frozen(argv[0]);
             threshold_map = StringValueCStr(argv[0]);
         }
@@ -16387,7 +16382,6 @@ Image_write(VALUE self, VALUE file)
     info_obj = rm_info_new();
     TypedData_Get_Struct(info_obj, Info, &rm_info_data_type, info);
 
-    // The options block may have suspended this fiber, so fetch the image after it.
     image = rm_check_writable(self);
 
     if (TYPE(file) == T_FILE)
