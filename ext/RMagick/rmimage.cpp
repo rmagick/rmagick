@@ -12,7 +12,7 @@
 #include "rmagick.h"
 #include <signal.h>
 #if defined(__APPLE__) || defined(__FreeBSD__)
-#include <pthread.h>
+#include <atomic>
 #endif
 
 #define BEGIN_CHANNEL_MASK(image, channels) \
@@ -11723,56 +11723,66 @@ void sig_handler(int sig ATTRIBUTE_UNUSED)
 {
 }
 
-typedef struct
-{
-    gvl_function_t *fp;
-    GVL_STRUCT_TYPE(rd_image) *args;
-    int error;
-} rd_image_sigchld_t;
-
-// Reads can overlap when they run on worker threads, and the handler is
-// process-wide, so the first read installs it and the last one restores it.
-static pthread_mutex_t sigchld_mutex = PTHREAD_MUTEX_INITIALIZER;
-static int sigchld_reads = 0;
+// Reads can overlap, for example on the worker threads of a Fiber scheduler,
+// and the handler is process-wide, so the first read swaps it and the last one
+// restores it.
+static std::atomic<int> sigchld_reads(0);
 static struct sigaction sigchld_previous;
 
-// Runs on the thread that reads, so the handler is restored as soon as the
-// read finishes, even if the calling fiber is unwound instead of returning.
-static void *
-rd_image_with_sigchld(void *ptr)
+static void
+swap_sigchld(void)
 {
-    rd_image_sigchld_t *call = (rd_image_sigchld_t *)ptr;
     struct sigaction act;
-    void *result;
 
-    pthread_mutex_lock(&sigchld_mutex);
-    if (sigchld_reads == 0)
+    if (sigchld_reads.fetch_add(1) == 0)
     {
         act.sa_handler = sig_handler;
         act.sa_flags = SA_RESTART;
         sigemptyset(&act.sa_mask);
         if (sigaction(SIGCHLD, &act, &sigchld_previous) < 0)
         {
-            call->error = errno;
-            pthread_mutex_unlock(&sigchld_mutex);
-            return NULL;
+            sigchld_reads.fetch_sub(1);
+            rb_sys_fail("sigaction");
         }
     }
-    sigchld_reads++;
-    pthread_mutex_unlock(&sigchld_mutex);
+}
 
-    result = call->fp(call->args);
-
-    pthread_mutex_lock(&sigchld_mutex);
-    sigchld_reads--;
-    if (sigchld_reads == 0 && sigaction(SIGCHLD, &sigchld_previous, NULL) < 0)
+static VALUE
+restore_sigchld(VALUE arg ATTRIBUTE_UNUSED)
+{
+    if (sigchld_reads.fetch_sub(1) == 1 && sigaction(SIGCHLD, &sigchld_previous, NULL) < 0)
     {
-        call->error = errno;
+        rb_sys_fail("sigaction");
     }
-    pthread_mutex_unlock(&sigchld_mutex);
-    return result;
+    return Qnil;
 }
 #endif
+
+typedef struct
+{
+    gvl_function_t *fp;
+    GVL_STRUCT_TYPE(rd_image) *args;
+    Info *info;
+    VALUE info_obj;
+    ExceptionInfo *exception;
+} rd_image_call_t;
+
+static VALUE
+rd_image_call(VALUE arg)
+{
+    rd_image_call_t *call = (rd_image_call_t *)arg;
+    Image *images;
+
+    if (call->info->file)
+    {
+        images = (Image *)CALL_FUNC_WITHOUT_GVL(call->fp, call->args);
+    }
+    else
+    {
+        images = rm_gvl_offload_image(call->fp, call->args, call->info_obj, call->exception);
+    }
+    return (VALUE)images;
+}
 
 static VALUE
 rd_image(VALUE klass ATTRIBUTE_UNUSED, VALUE file, gvl_function_t fp)
@@ -11817,28 +11827,13 @@ rd_image(VALUE klass ATTRIBUTE_UNUSED, VALUE file, gvl_function_t fp)
     exception = AcquireExceptionInfo();
 
     GVL_STRUCT_TYPE(rd_image) args = { info, exception };
-    void *call_args = &args;
+    rd_image_call_t call = { fp, &args, info, info_obj, exception };
 #if defined(__APPLE__) || defined(__FreeBSD__)
-    rd_image_sigchld_t sigchld_call = { fp, &args, 0 };
-    fp = rd_image_with_sigchld;
-    call_args = &sigchld_call;
-#endif
-
-    if (info->file)
-    {
-        images = (Image *)CALL_FUNC_WITHOUT_GVL(fp, call_args);
-    }
-    else
-    {
-        images = rm_gvl_offload_image(fp, call_args, info_obj, exception);
-    }
-
-#if defined(__APPLE__) || defined(__FreeBSD__)
-    if (sigchld_call.error)
-    {
-        errno = sigchld_call.error;
-        rb_sys_fail("sigaction");
-    }
+    // Restore the handler even if the scheduler raises into this fiber
+    swap_sigchld();
+    images = (Image *)rb_ensure(rd_image_call, (VALUE)&call, restore_sigchld, Qnil);
+#else
+    images = (Image *)rd_image_call((VALUE)&call);
 #endif
 
     rm_check_exception(exception, images, DestroyOnError);
