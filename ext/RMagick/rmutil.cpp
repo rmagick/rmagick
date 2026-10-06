@@ -362,7 +362,13 @@ rm_check_writable(VALUE obj)
 Image *
 rm_check_frozen(VALUE obj)
 {
-    Image *image = rm_check_readable(obj);
+    Image *image;
+
+    TypedData_Get_Struct(obj, Image, &rm_image_data_type, image);
+    if (!image)
+    {
+        rb_raise(Class_DestroyedImageError, "destroyed image");
+    }
     rb_check_frozen(obj);
     rm_gvl_check_writable(image);
     return image;
