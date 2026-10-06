@@ -911,7 +911,7 @@ images_from_imagelist(VALUE imagelist, VALUE *clones)
         t = rb_ary_entry(images, x);
         image = rm_check_readable(t);
         // avoid a loop in this linked imagelist, issue #202
-        if (head == image || GetPreviousImageInList(image) != NULL)
+        if (head == image || GetPreviousImageInList(image) != NULL || GetNextImageInList(image) != NULL)
         {
             image = rm_clone_image(image);
 
