@@ -1139,21 +1139,6 @@ extern void   Export_TypeInfo(TypeInfo *, VALUE);
 extern VALUE  Import_TypeMetric(TypeMetric *);
 
 
-// rmagick_gvl.cpp
-extern void   rm_gvl_init_offload(void);
-extern void   rm_gvl_check_readable(const void *);
-extern void   rm_gvl_check_writable(const void *);
-extern Image *rm_gvl_offload_image(gvl_function_t *, void *, VALUE, ExceptionInfo *, VALUE = Qnil);
-extern Image *rm_gvl_offload_image_replacing(gvl_function_t *, void *, VALUE, ExceptionInfo *, bool);
-extern Image *rm_gvl_offload_image_and_destroy(gvl_function_t *, void *, VALUE, ExceptionInfo *, Image *, bool);
-extern void  *rm_gvl_offload_call(gvl_function_t *, void *, VALUE, ExceptionInfo *, Image *);
-extern void  *rm_gvl_offload_update(gvl_function_t *, void *, VALUE, ExceptionInfo *, VALUE = Qnil);
-extern void  *rm_gvl_offload_blob(gvl_function_t *, void *, VALUE, ExceptionInfo *, VALUE = Qnil);
-#if defined(IMAGEMAGICK_7)
-extern Image *rm_gvl_offload_masked_image(gvl_function_t *, void *, VALUE, ExceptionInfo *, Image *, ChannelType, VALUE = Qnil);
-#endif
-
-
 // rmutil.cpp
 extern VALUE  ImageMagickError_initialize(int, VALUE *, VALUE);
 extern void  *magick_malloc(const size_t);
@@ -1232,5 +1217,7 @@ extern void   rm_check_image_exception(Image *, ErrorRetention);
 #define RESCUE_EXCEPTION_HANDLER_FUNC(func) (VALUE(*)(VALUE, VALUE))(func)
 
 } // extern "C"
+
+#include "rmagick_gvl.hpp"
 
 #endif
