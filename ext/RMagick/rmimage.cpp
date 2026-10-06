@@ -687,7 +687,8 @@ Image_add_compose_mask(VALUE self, VALUE mask)
 #endif
 
     image = rm_check_frozen(self);
-    mask_image = rm_check_readable(rm_cur_image(mask));
+    mask = rm_cur_image(mask);
+    mask_image = rm_check_readable(mask);
     if (image->columns != mask_image->columns || image->rows != mask_image->rows)
     {
         rb_raise(rb_eArgError, "mask must be the same size as image");
@@ -698,7 +699,7 @@ Image_add_compose_mask(VALUE self, VALUE mask)
 
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(negate_call, NegateImage, clip_mask, MagickFalse, exception);
-    negate_call.read(mask_image).destroy(clip_mask).release(exception).run<void>();
+    negate_call.read(mask).destroy(clip_mask).release(exception).run<void>();
     rm_check_exception(exception, clip_mask, DestroyOnError);
     DECLARE_GVL_CALL(mask_call, SetImageMask, image, CompositePixelMask, clip_mask, exception);
     mask_call.update(self).destroy(clip_mask).release(exception).run<void>();
@@ -709,13 +710,15 @@ Image_add_compose_mask(VALUE self, VALUE mask)
     // Delete any previously-existing mask image.
     // Store a clone of the new mask image.
     DECLARE_GVL_CALL(mask_call, SetImageMask, image, mask_image);
-    mask_call.update(self).read(mask_image).run<void>();
+    mask_call.update(self).read(mask).run<void>();
     DECLARE_GVL_CALL(negate_call, NegateImage, image->mask, MagickFalse);
     negate_call.update(self).run<void>();
 
     // Since both Set and GetImageMask clone the mask image I don't see any
     // way to negate the mask without referencing it directly. Sigh.
 #endif
+
+    RB_GC_GUARD(mask);
 
     return self;
 }
@@ -2788,6 +2791,7 @@ VALUE
 Image_clut_channel(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *clut;
+    VALUE clut_obj;
     ChannelType channels;
     MagickBooleanType okay;
 #if defined(IMAGEMAGICK_7)
@@ -2799,7 +2803,8 @@ Image_clut_channel(int argc, VALUE *argv, VALUE self)
     // check_destroyed before confirming the arguments
     if (argc >= 1)
     {
-        clut = rm_check_readable(rm_cur_image(argv[0]));
+        clut_obj = rm_cur_image(argv[0]);
+        clut = rm_check_readable(clut_obj);
         channels = extract_channels(&argc, argv);
         if (argc != 1)
         {
@@ -2815,14 +2820,14 @@ Image_clut_channel(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(image, channels);
     DECLARE_GVL_CALL(call, ClutImage, image, clut, image->interpolate, exception);
-    void *ret = call.update(self).restore_mask(image, channel_mask).read(clut).release(exception).run<void *>();
+    void *ret = call.update(self).restore_mask(image, channel_mask).read(clut_obj).release(exception).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
     END_CHANNEL_MASK(image);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     DECLARE_GVL_CALL(call, ClutImageChannel, image, channels, clut);
-    void *ret = call.update(self).read(clut).run<void *>();
+    void *ret = call.update(self).read(clut_obj).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
     rm_check_image_exception(image, RetainOnError);
     rm_check_image_exception(clut, RetainOnError);
@@ -2831,6 +2836,8 @@ Image_clut_channel(int argc, VALUE *argv, VALUE self)
     {
         rb_raise(rb_eRuntimeError, "ClutImageChannel failed.");
     }
+
+    RB_GC_GUARD(clut_obj);
 
     return self;
 }
@@ -3861,7 +3868,8 @@ Image_composite_affine(VALUE self, VALUE source, VALUE affine_matrix)
 #endif
 
     image = rm_check_readable(self);
-    composite_image = rm_check_readable(rm_cur_image(source));
+    source = rm_cur_image(source);
+    composite_image = rm_check_readable(source);
 
     Export_AffineMatrix(&affine, affine_matrix);
     new_image = rm_clone_image(image);
@@ -3869,14 +3877,16 @@ Image_composite_affine(VALUE self, VALUE source, VALUE affine_matrix)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, DrawAffineImage, new_image, composite_image, &affine, exception);
-    call.read(self).read(composite_image).destroy(new_image).release(exception).run<void>();
+    call.read(self).read(source).destroy(new_image).release(exception).run<void>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
     DECLARE_GVL_CALL(call, DrawAffineImage, new_image, composite_image, &affine);
-    call.read(self).read(composite_image).destroy(new_image).run<void>();
+    call.read(self).read(source).destroy(new_image).run<void>();
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
+
+    RB_GC_GUARD(source);
 
     return rm_image_new(new_image);
 }
@@ -12125,6 +12135,7 @@ VALUE
 Image_remap(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *remap_image;
+    VALUE remap_obj;
     QuantizeInfo quantize_info;
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
@@ -12149,19 +12160,22 @@ Image_remap(int argc, VALUE *argv, VALUE self)
             break;
     }
 
-    remap_image = rm_check_readable(rm_cur_image(argv[0]));
+    remap_obj = rm_cur_image(argv[0]);
+    remap_image = rm_check_readable(remap_obj);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, RemapImage, &quantize_info, image, remap_image, exception);
-    call.update(self).read(remap_image).release(exception).run<void>();
+    call.update(self).read(remap_obj).release(exception).run<void>();
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     DECLARE_GVL_CALL(call, RemapImage, &quantize_info, image, remap_image);
-    call.update(self).read(remap_image).run<void>();
+    call.update(self).read(remap_obj).run<void>();
     rm_check_image_exception(image, RetainOnError);
 #endif
+
+    RB_GC_GUARD(remap_obj);
 
     return self;
 }

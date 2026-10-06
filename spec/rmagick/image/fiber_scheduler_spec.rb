@@ -417,6 +417,36 @@ RSpec.describe Magick::Image, if: offloading do
       end
     end
 
+    it "keeps the images of a list that another fiber clears while append reads them" do
+      images = Magick::ImageList.new
+      3.times { images << red_image }
+      scheduler.before_next_operation do
+        Fiber.schedule do
+          images.clear
+          GC.start
+        end
+      end
+
+      result = scheduler.run { images.append(false) }
+
+      expect(result.columns).to eq(30)
+    end
+
+    it "keeps the image of a list that another fiber clears while clut_channel reads it" do
+      image = described_class.new(200, 200)
+      clut = Magick::ImageList.new << described_class.new(16, 1)
+      scheduler.before_next_operation do
+        Fiber.schedule do
+          clut.clear
+          GC.start
+        end
+      end
+
+      result = scheduler.run { image.clut_channel(clut) }
+
+      expect(result).to be(image)
+    end
+
     it "does not let another fiber change read options until the worker finishes" do
       options = nil
       error = nil

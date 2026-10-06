@@ -465,6 +465,8 @@ rm_gvl_call::update(const void *ptr)
 
 /**
  * The call reads every object in the array, such as the images of an ImageList.
+ * A copy of the array keeps the objects alive while the call is in flight,
+ * even if another fiber removes them from the array.
  *
  * @param ary the array
  * @return self
@@ -472,13 +474,13 @@ rm_gvl_call::update(const void *ptr)
 rm_gvl_call &
 rm_gvl_call::read_each(VALUE ary)
 {
-    return add_object(ary, NULL, false, true);
+    return add_object(rb_ary_dup(ary), NULL, false, true);
 }
 
 
 /**
  * The call changes every object in the array, such as the images of an
- * ImageList.
+ * ImageList. Like read_each(), a copy of the array keeps the objects alive.
  *
  * @param ary the array
  * @return self
@@ -486,7 +488,7 @@ rm_gvl_call::read_each(VALUE ary)
 rm_gvl_call &
 rm_gvl_call::update_each(VALUE ary)
 {
-    return add_object(ary, NULL, true, true);
+    return add_object(rb_ary_dup(ary), NULL, true, true);
 }
 
 
