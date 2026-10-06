@@ -3313,7 +3313,7 @@ Image_colormap(int argc, VALUE *argv, VALUE self)
 
     // This is a "set" operation. Things are different.
 
-    rb_check_frozen(self);
+    rm_check_frozen(self);
 
     // Replace with new color? The arg can be either a color name or
     // a Magick::Pixel.
@@ -9528,7 +9528,7 @@ Image_mask(int argc, VALUE *argv, VALUE self)
         rb_raise(rb_eArgError, "wrong number of arguments (expected 0 or 1, got %d)", argc);
     }
 
-    rb_check_frozen(self);
+    rm_check_frozen(self);
     mask = argv[0];
     return set_image_mask(image, mask);
 }
@@ -10829,7 +10829,7 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 3:
-            rb_check_frozen(self);
+            rm_check_frozen(self);
             set = True;
             // Replace with new color? The arg can be either a color name or
             // a Magick::Pixel.
@@ -14257,7 +14257,7 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg,
     PixelPacket *pixels;
 #endif
 
-    image = rm_check_readable(self);
+    image = rm_check_writable(self);
 
     x = NUM2LONG(x_arg);
     y = NUM2LONG(y_arg);
