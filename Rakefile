@@ -191,6 +191,7 @@ if RUBY_PLATFORM.include?('linux')
 
   RubyMemcheck.config(
     binary_name: 'RMagick2',
+    valgrind_options: RubyMemcheck::Configuration::DEFAULT_VALGRIND_OPTIONS + ['--max-stackframe=65536'],
     valgrind_suppressions_dir: 'spec/valgrind'
   )
 
