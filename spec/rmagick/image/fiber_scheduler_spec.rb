@@ -679,18 +679,12 @@ RSpec.describe Magick::Image, if: offloading do
 
     it "fetches the image after the write options block" do
       image = described_class.new(600, 600)
-      other = described_class.new(1200, 1200)
 
       Dir.mktmpdir do |dir|
         path = File.join(dir, "written.png")
-        scheduler.run do
-          Fiber.schedule do
-            sleep(0.01)
-            image.resize!(50, 50)
-          end
-          image.write(path) { |_info| other.blur_image(0, 3) }
-        end
+        scheduler.run { image.write(path) { |_info| image.resize!(50, 50) } }
 
+        expect(scheduler.offloaded.size).to eq(2)
         expect(described_class.read(path).first.columns).to eq(50)
       end
     end
