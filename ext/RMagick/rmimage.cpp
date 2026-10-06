@@ -396,8 +396,7 @@ adaptive_channel_method(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
     ExceptionInfo *exception;
     ChannelType channels;
 
-    image = rm_check_destroyed(self);
-    rm_gvl_check_writable(image);
+    image = rm_check_writable(self);
     channels = extract_channels(&argc, argv);
 
     switch (argc)
@@ -736,8 +735,7 @@ Image_add_noise_channel(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
     ChannelType channels;
 
-    image = rm_check_destroyed(self);
-    rm_gvl_check_writable(image);
+    image = rm_check_writable(self);
     channels = extract_channels(&argc, argv);
 
     // There must be 1 remaining argument.
@@ -1951,8 +1949,7 @@ Image_blend(int argc, VALUE *argv, VALUE self)
     }
 
     ovly = rm_cur_image(argv[0]);
-    overlay = rm_check_destroyed(ovly);
-    rm_gvl_check_writable(overlay);
+    overlay = rm_check_writable(ovly);
 
     if (argc > 3)
     {
@@ -2047,8 +2044,7 @@ Image_blur_channel(int argc, VALUE *argv, VALUE self)
     ChannelType channels;
     double radius = 0.0, sigma = 1.0;
 
-    image = rm_check_destroyed(self);
-    rm_gvl_check_writable(image);
+    image = rm_check_writable(self);
 
     channels = extract_channels(&argc, argv);
 
@@ -2459,8 +2455,7 @@ Image_channel_depth(int argc, VALUE *argv, VALUE self)
     size_t channel_depth;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
-    rm_gvl_check_writable(image);
+    image = rm_check_writable(self);
     channels = extract_channels(&argc, argv);
 
     // Ensure all arguments consumed.
@@ -2509,8 +2504,7 @@ Image_channel_extrema(int argc, VALUE *argv, VALUE self)
     size_t min, max;
     VALUE ary;
 
-    image = rm_check_destroyed(self);
-    rm_gvl_check_writable(image);
+    image = rm_check_writable(self);
 
     channels = extract_channels(&argc, argv);
 
@@ -2565,8 +2559,7 @@ Image_channel_mean(int argc, VALUE *argv, VALUE self)
     double mean, stddev;
     VALUE ary;
 
-    image = rm_check_destroyed(self);
-    rm_gvl_check_writable(image);
+    image = rm_check_writable(self);
 
     channels = extract_channels(&argc, argv);
 
@@ -2619,8 +2612,7 @@ Image_channel_entropy(int argc, VALUE *argv, VALUE self)
     double entropy;
     VALUE ary;
 
-    image = rm_check_destroyed(self);
-    rm_gvl_check_writable(image);
+    image = rm_check_writable(self);
 
     channels = extract_channels(&argc, argv);
 
@@ -3468,8 +3460,7 @@ Image_compare_channel(int argc, VALUE *argv, VALUE self)
     ChannelType channels;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
-    rm_gvl_check_writable(image);
+    image = rm_check_writable(self);
 
     channels = extract_channels(&argc, argv);
 
@@ -3579,8 +3570,7 @@ composite(int bang, int argc, VALUE *argv, VALUE self, ChannelType channels)
 
     if (bang)
     {
-        rb_check_frozen(self);
-        rm_gvl_check_writable(image);
+        rm_check_frozen(self);
     }
     if (argc < 3 || argc > 5)
     {
@@ -4761,8 +4751,7 @@ Image_morphology_channel(VALUE self, VALUE channel_v, VALUE method_v, VALUE iter
     KernelInfo *kernel;
     ssize_t iterations = NUM2LONG(iterations_v);;
 
-    image = rm_check_destroyed(self);
-    rm_gvl_check_writable(image);
+    image = rm_check_writable(self);
 
     VALUE_TO_ENUM(method_v, method, MorphologyMethod);
     VALUE_TO_ENUM(channel_v, channel, ChannelType);
@@ -4947,8 +4936,7 @@ Image_convolve_channel(int argc, VALUE *argv, VALUE self)
     unsigned int x;
 #endif
 
-    image = rm_check_destroyed(self);
-    rm_gvl_check_writable(image);
+    image = rm_check_writable(self);
 
     channels = extract_channels(&argc, argv);
 
@@ -5695,8 +5683,7 @@ Image_displace(int argc, VALUE *argv, VALUE self)
     }
 
     dmap = rm_cur_image(argv[0]);
-    displacement_map = rm_check_destroyed(dmap);
-    rm_gvl_check_writable(displacement_map);
+    displacement_map = rm_check_writable(dmap);
 
     if (argc > 3)
     {
@@ -5977,8 +5964,7 @@ Image_dissolve(int argc, VALUE *argv, VALUE self)
     }
 
     ovly = rm_cur_image(argv[0]);
-    overlay = rm_check_destroyed(ovly);
-    rm_gvl_check_writable(overlay);
+    overlay = rm_check_writable(ovly);
 
     if (argc > 3)
     {
@@ -6140,8 +6126,7 @@ Image_distortion_channel(int argc, VALUE *argv, VALUE self)
     Image *difference_image;
 #endif
 
-    image = rm_check_destroyed(self);
-    rm_gvl_check_writable(image);
+    image = rm_check_writable(self);
     channels = extract_channels(&argc, argv);
     if (argc > 2)
     {
@@ -7576,8 +7561,7 @@ Image_fx(int argc, VALUE *argv, VALUE self)
     ChannelType channels;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
-    rm_gvl_check_writable(image);
+    image = rm_check_writable(self);
     channels = extract_channels(&argc, argv);
 
     // There must be exactly 1 remaining argument.
@@ -7833,8 +7817,7 @@ Image_gaussian_blur_channel(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
     double radius = 0.0, sigma = 1.0;
 
-    image = rm_check_destroyed(self);
-    rm_gvl_check_writable(image);
+    image = rm_check_writable(self);
     channels = extract_channels(&argc, argv);
 
     // There can be 0, 1, or 2 remaining arguments.
@@ -11238,8 +11221,7 @@ Image_quantum_operator(int argc, VALUE *argv, VALUE self)
     ChannelType channel;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
-    rm_gvl_check_writable(image);
+    image = rm_check_writable(self);
 
     // The default channel is AllChannels
     channel = AllChannels;
@@ -11513,8 +11495,7 @@ Image_radial_blur_channel(int argc, VALUE *argv, VALUE self)
     ChannelType channels;
     double angle;
 
-    image = rm_check_destroyed(self);
-    rm_gvl_check_writable(image);
+    image = rm_check_writable(self);
     channels = extract_channels(&argc, argv);
 
     // There must be 1 remaining argument.
@@ -12926,8 +12907,7 @@ Image_selective_blur_channel(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
     ChannelType channels;
 
-    image = rm_check_destroyed(self);
-    rm_gvl_check_writable(image);
+    image = rm_check_writable(self);
     channels = extract_channels(&argc, argv);
     if (argc > 3)
     {
@@ -13020,8 +13000,7 @@ Image_separate(int argc, VALUE *argv, VALUE self)
     ChannelType channels = UndefinedChannel;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
-    rm_gvl_check_writable(image);
+    image = rm_check_writable(self);
     channels = extract_channels(&argc, argv);
 
     // All arguments are ChannelType enums
@@ -13395,8 +13374,7 @@ Image_sharpen_channel(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
     double radius = 0.0, sigma = 1.0;
 
-    image = rm_check_destroyed(self);
-    rm_gvl_check_writable(image);
+    image = rm_check_writable(self);
     channels = extract_channels(&argc, argv);
 
     // There must be 0, 1, or 2 remaining arguments.
@@ -13592,8 +13570,7 @@ Image_signature(VALUE self)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
-    rm_gvl_check_writable(image);
+    image = rm_check_writable(self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -13827,8 +13804,7 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
     MagickPixel pp;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
-    rm_gvl_check_writable(image);
+    image = rm_check_writable(self);
 
     n = argc;
     channels = extract_channels(&argc, argv);
@@ -14861,8 +14837,7 @@ Image_to_blob(VALUE self)
     info_obj = rm_info_new();
     TypedData_Get_Struct(info_obj, Info, &rm_info_data_type, info);
 
-    image = rm_check_destroyed(self);
-    rm_gvl_check_writable(image);
+    image = rm_check_writable(self);
 
     exception = AcquireExceptionInfo();
 
@@ -15759,8 +15734,7 @@ Image_unsharp_mask_channel(int argc, VALUE *argv, VALUE self)
     double radius = 0.0, sigma = 1.0, amount = 1.0, threshold = 0.05;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
-    rm_gvl_check_writable(image);
+    image = rm_check_writable(self);
     channels = extract_channels(&argc, argv);
     if (argc > 4)
     {
@@ -15947,8 +15921,7 @@ Image_watermark(int argc, VALUE *argv, VALUE self)
     }
 
     ovly = rm_cur_image(argv[0]);
-    overlay = rm_check_destroyed(ovly);
-    rm_gvl_check_writable(overlay);
+    overlay = rm_check_writable(ovly);
 
     if (argc > 3)
     {
@@ -16367,8 +16340,7 @@ Image_write(VALUE self, VALUE file)
     TypedData_Get_Struct(info_obj, Info, &rm_info_data_type, info);
 
     // The options block may have suspended this fiber, so fetch the image after it.
-    image = rm_check_destroyed(self);
-    rm_gvl_check_writable(image);
+    image = rm_check_writable(self);
 
     if (TYPE(file) == T_FILE)
     {

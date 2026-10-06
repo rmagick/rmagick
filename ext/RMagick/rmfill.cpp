@@ -645,8 +645,7 @@ GradientFill_fill(VALUE self, VALUE image_obj)
     double x1, y1, x2, y2;          // points on the line
 
     TypedData_Get_Struct(self, rm_GradientFill, &rm_gradient_fill_data_type, fill);
-    image = rm_check_destroyed(rm_cur_image(image_obj));
-    rm_gvl_check_writable(image);
+    image = rm_check_writable(rm_cur_image(image_obj));
 
     x1 = fill->x1;
     y1 = fill->y1;
@@ -792,8 +791,7 @@ TextureFill_fill(VALUE self, VALUE image_obj)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(rm_cur_image(image_obj));
-    rm_gvl_check_writable(image);
+    image = rm_check_writable(rm_cur_image(image_obj));
     TypedData_Get_Struct(self, rm_TextureFill, &rm_texture_fill_data_type, fill);
 
 #if defined(IMAGEMAGICK_7)

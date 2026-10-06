@@ -332,6 +332,24 @@ rm_check_destroyed(VALUE obj)
 
 
 /**
+ * Raise an error if the image has been destroyed or an offloaded call is using it.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param obj the image
+ * @return the C image structure for the image
+ * @throw DestroyedImageError
+ */
+Image *
+rm_check_writable(VALUE obj)
+{
+    Image *image = rm_check_destroyed(obj);
+    rm_gvl_check_writable(image);
+    return image;
+}
+
+
+/**
  * Raise an error if the image has been destroyed or is frozen.
  *
  * No Ruby usage (internal function)

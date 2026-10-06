@@ -851,7 +851,7 @@ check_images_writable(VALUE imagelist)
 
     for (long i = 0; i < RARRAY_LEN(images); i++)
     {
-        rm_gvl_check_writable(rm_check_destroyed(rb_ary_entry(images, i)));
+        rm_check_writable(rb_ary_entry(images, i));
     }
 }
 
