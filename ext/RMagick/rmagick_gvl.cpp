@@ -14,7 +14,7 @@
 
 
 /*
- * CALL_FUNC_WITHOUT_GVL releases the GVL but keeps the calling thread busy
+ * rb_thread_call_without_gvl releases the GVL but keeps the calling thread busy
  * until the ImageMagick function returns. Under a Fiber scheduler that has a
  * worker pool (Async with IO::Event::WorkerPool), that stalls every fiber on
  * the thread for the whole operation. Ruby 4.0 lets rb_nogvl hand a call to
@@ -37,7 +37,7 @@
  *    suspended while it holds a pointer that another fiber could free.
  *
  * Without a scheduler that offloads, or on Ruby before 4.0, rm_gvl_call runs
- * the function with CALL_FUNC_WITHOUT_GVL.
+ * the function with rb_thread_call_without_gvl.
  */
 
 typedef enum
@@ -733,7 +733,7 @@ rm_gvl_call::call(ResultType type)
     }
 #endif
 
-    return CALL_FUNC_WITHOUT_GVL(fp, args);
+    return rb_thread_call_without_gvl(fp, args, RUBY_UBF_PROCESS, NULL);
 }
 
 

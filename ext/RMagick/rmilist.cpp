@@ -1033,8 +1033,8 @@ clone_imagelist(Image *images)
     {
         Image *clone;
 
-        GVL_STRUCT_TYPE(CloneImage) args = { image, 0, 0, MagickTrue, exception };
-        clone = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CloneImage), &args);
+        DECLARE_GVL_CALL(call, CloneImage, image, 0, 0, MagickTrue, exception);
+        clone = call.keep_thread().run<Image *>();
         rm_check_exception(exception, new_imagelist, DestroyOnError);
         AppendImageToList(&new_imagelist, clone);
         image = GetNextImageInList(image);

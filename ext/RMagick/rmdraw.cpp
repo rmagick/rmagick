@@ -463,8 +463,8 @@ image_to_str(Image *image)
 
         info = CloneImageInfo(NULL);
         exception = AcquireExceptionInfo();
-        GVL_STRUCT_TYPE(ImageToBlob) args = { info, image, &length, exception };
-        blob = (unsigned char *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ImageToBlob), &args);
+        DECLARE_GVL_CALL(call, ImageToBlob, info, image, &length, exception);
+        blob = call.keep_thread().run<unsigned char *>();
         DestroyImageInfo(info);
         CHECK_EXCEPTION();
         DestroyExceptionInfo(exception);
@@ -504,8 +504,8 @@ Image *str_to_image(VALUE str)
 
         info = CloneImageInfo(NULL);
         exception = AcquireExceptionInfo();
-        GVL_STRUCT_TYPE(BlobToImage) args = { info, RSTRING_PTR(str), (size_t)RSTRING_LEN(str), exception };
-        image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BlobToImage), &args);
+        DECLARE_GVL_CALL(call, BlobToImage, info, RSTRING_PTR(str), (size_t)RSTRING_LEN(str), exception);
+        image = call.keep_thread().run<Image *>();
         DestroyImageInfo(info);
         CHECK_EXCEPTION();
         DestroyExceptionInfo(exception);
