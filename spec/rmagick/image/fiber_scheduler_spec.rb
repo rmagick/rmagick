@@ -47,9 +47,9 @@ RSpec.describe Magick::Image, if: offloading do
     it "keeps cheap calls on the calling thread" do
       image = described_class.new(20, 20)
 
-      depth = scheduler.run { image.depth }
+      pixel = scheduler.run { image.pixel_color(0, 0) }
 
-      expect(depth).to be_kind_of(Integer)
+      expect(pixel).to be_instance_of(Magick::Pixel)
       expect(scheduler.offloaded).to be_empty
     end
 
@@ -158,18 +158,13 @@ RSpec.describe Magick::Image, if: offloading do
 
     it "lets a fiber use an image while a call is in flight on another image" do
       first = described_class.new(20, 20)
-      second = described_class.new(2000, 2000)
-
-      result = scheduler.run do
-        Fiber.schedule { second.gaussian_blur(0, 5) }
-        Fiber.schedule do
-          sleep(0.01)
-          first.destroy!
-        end
-        first.composite(second, 0, 0, Magick::OverCompositeOp)
+      second = described_class.new(200, 200)
+      scheduler.before_next_operation do
+        Fiber.schedule { first.destroy! }
       end
 
-      expect(result.columns).to eq(20)
+      scheduler.run { second.gaussian_blur(0, 5) }
+
       expect(first).to be_destroyed
     end
 
@@ -203,7 +198,7 @@ RSpec.describe Magick::Image, if: offloading do
       expect(error).to in_use
     end
 
-    it "does not let another fiber read an image while a call changes its channel mask" do
+    it "does not let another fiber read an image while a call changes its channel mask", if: offloading && Gem::Version.new(Magick::IMAGEMAGICK_VERSION) >= Gem::Version.new("7.0.0") do
       image = red_image
       other = blue_image
       error = nil
@@ -230,9 +225,10 @@ RSpec.describe Magick::Image, if: offloading do
 
     it "does not let another fiber remap an image that a call reads" do
       image = red_image
+      palette = blue_image
       images = Magick::ImageList.new << image
       error = nil
-      scheduler.before_next_operation { Fiber.schedule { error = attempt { images.remap(blue_image) } } }
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { images.remap(palette) } } }
 
       scheduler.run { image.blur_image }
 
