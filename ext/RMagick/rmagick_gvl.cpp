@@ -237,6 +237,7 @@ offload_release(const offload_cleanup_t *cleanup, void *result)
         DestroyExceptionInfo(cleanup->exception);
     }
 }
+#endif
 
 
 /**
@@ -256,50 +257,51 @@ static void *
 offload(gvl_function_t *fp, void *args, VALUE obj, OffloadMode mode, const offload_cleanup_t *cleanup,
         VALUE dependency)
 {
-    offload_call_t call = { fp, args, NULL };
-    void *key, *dependency_key;
-    int tag;
+#if defined(RMAGICK_OFFLOAD_SAFE)
+    if (offload_p())
+    {
+        offload_call_t call = { fp, args, NULL };
+        void *key = offload_key(obj);
+        void *dependency_key = offload_key(dependency);
+        int tag;
 
-    if (!offload_p())
-    {
-        return CALL_FUNC_WITHOUT_GVL(fp, args);
-    }
+        if (key && !offload_begin(key, mode))
+        {
+            offload_release(cleanup, NULL);
+            raise_in_use();
+        }
+        if (dependency_key && !offload_begin(dependency_key, OffloadRead))
+        {
+            if (key)
+            {
+                offload_end(key);
+            }
+            offload_release(cleanup, NULL);
+            raise_in_use();
+        }
 
-    key = offload_key(obj);
-    dependency_key = offload_key(dependency);
-    if (key && !offload_begin(key, mode))
-    {
-        offload_release(cleanup, NULL);
-        raise_in_use();
-    }
-    if (dependency_key && !offload_begin(dependency_key, OffloadRead))
-    {
+        rb_protect(offload_call, (VALUE)&call, &tag);
+
+        if (dependency_key)
+        {
+            offload_end(dependency_key);
+        }
         if (key)
         {
             offload_end(key);
         }
-        offload_release(cleanup, NULL);
-        raise_in_use();
-    }
+        if (tag)
+        {
+            // The scheduler raised into this fiber after the worker finished.
+            offload_release(cleanup, call.result);
+            rb_jump_tag(tag);
+        }
 
-    rb_protect(offload_call, (VALUE)&call, &tag);
+        return call.result;
+    }
+#endif
 
-    if (dependency_key)
-    {
-        offload_end(dependency_key);
-    }
-    if (key)
-    {
-        offload_end(key);
-    }
-    if (tag)
-    {
-        // The scheduler raised into this fiber after the worker finished.
-        offload_release(cleanup, call.result);
-        rb_jump_tag(tag);
-    }
-
-    return call.result;
+    return CALL_FUNC_WITHOUT_GVL(fp, args);
 }
 
 
@@ -311,7 +313,9 @@ offload(gvl_function_t *fp, void *args, VALUE obj, OffloadMode mode, const offlo
 void
 rm_gvl_init_offload(void)
 {
+#if defined(RMAGICK_OFFLOAD_SAFE)
     offloaded_key = rb_ractor_local_storage_ptr_newkey(&offloaded_type);
+#endif
 }
 
 
@@ -325,10 +329,12 @@ rm_gvl_init_offload(void)
 void
 rm_gvl_check_readable(const void *ptr)
 {
+#if defined(RMAGICK_OFFLOAD_SAFE)
     if (offload_state(ptr) == OFFLOAD_UPDATING)
     {
         raise_in_use();
     }
+#endif
 }
 
 
@@ -342,37 +348,13 @@ rm_gvl_check_readable(const void *ptr)
 void
 rm_gvl_check_writable(const void *ptr)
 {
+#if defined(RMAGICK_OFFLOAD_SAFE)
     if (offload_state(ptr) != 0)
     {
         raise_in_use();
     }
-}
-
-#else
-
-static void *
-offload(gvl_function_t *fp, void *args, VALUE obj ATTRIBUTE_UNUSED, OffloadMode mode ATTRIBUTE_UNUSED,
-        const offload_cleanup_t *cleanup ATTRIBUTE_UNUSED, VALUE dependency ATTRIBUTE_UNUSED)
-{
-    return CALL_FUNC_WITHOUT_GVL(fp, args);
-}
-
-void
-rm_gvl_init_offload(void)
-{
-}
-
-void
-rm_gvl_check_readable(const void *ptr ATTRIBUTE_UNUSED)
-{
-}
-
-void
-rm_gvl_check_writable(const void *ptr ATTRIBUTE_UNUSED)
-{
-}
-
 #endif
+}
 
 
 /**
