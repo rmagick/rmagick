@@ -200,8 +200,8 @@ get_writable_kernel_info(VALUE self)
 VALUE
 KernelInfo_unity_add(VALUE self, VALUE scale)
 {
-    GVL_STRUCT_TYPE(UnityAddKernelInfo) args = { get_writable_kernel_info(self), NUM2DBL(scale) };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(UnityAddKernelInfo), &args);
+    DECLARE_GVL_CALL(call, UnityAddKernelInfo, get_writable_kernel_info(self), NUM2DBL(scale));
+    call.update(self).run<void>();
     return Qnil;
 }
 
@@ -223,8 +223,8 @@ KernelInfo_scale(VALUE self, VALUE scale, VALUE flags)
 
     VALUE_TO_ENUM(flags, geoflags, GeometryFlags);
 
-    GVL_STRUCT_TYPE(ScaleKernelInfo) args = { get_writable_kernel_info(self), NUM2DBL(scale), geoflags };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ScaleKernelInfo), &args);
+    DECLARE_GVL_CALL(call, ScaleKernelInfo, get_writable_kernel_info(self), NUM2DBL(scale), geoflags);
+    call.update(self).run<void>();
     return Qnil;
 }
 
@@ -238,10 +238,13 @@ VALUE
 KernelInfo_scale_geometry(VALUE self, VALUE geometry)
 {
     KernelInfo *kernel = get_writable_kernel_info(self);
-    char *geom = StringValueCStr(geometry);
+    char *geom;
 
-    GVL_STRUCT_TYPE(ScaleGeometryKernelInfo) args = { kernel, geom };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ScaleGeometryKernelInfo), &args);
+    geometry = rb_str_new_frozen(StringValue(geometry));
+    geom = StringValueCStr(geometry);
+
+    DECLARE_GVL_CALL(call, ScaleGeometryKernelInfo, kernel, geom);
+    call.update(self).run<void>();
 
     RB_GC_GUARD(geometry);
 

@@ -942,11 +942,11 @@ annotate_body(VALUE arg)
 
 #if defined(IMAGEMAGICK_7)
     annotate->exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(AnnotateImage) args = { image, draw->info, annotate->exception };
+    DECLARE_GVL_CALL(call, AnnotateImage, image, draw->info, annotate->exception);
 #else
-    GVL_STRUCT_TYPE(AnnotateImage) args = { image, draw->info };
+    DECLARE_GVL_CALL(call, AnnotateImage, image, draw->info);
 #endif
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(AnnotateImage), &args);
+    call.update(annotate->image_arg).update(annotate->self).run<void>();
 
 #if defined(IMAGEMAGICK_7)
     exception = annotate->exception;
@@ -1102,6 +1102,26 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
 }
 
 
+// Release what Draw#draw and get_type_metrics() set on the DrawInfo for one call
+static void
+free_primitive(void *ptr, intptr_t arg ATTRIBUTE_UNUSED)
+{
+    Draw *draw = (Draw *)ptr;
+
+    magick_free(draw->info->primitive);
+    draw->info->primitive = NULL;
+}
+
+static void
+free_text(void *ptr, intptr_t arg ATTRIBUTE_UNUSED)
+{
+    Draw *draw = (Draw *)ptr;
+
+    magick_free(draw->info->text);
+    draw->info->text = NULL;
+}
+
+
 /**
  * Execute the stored drawing primitives on the current image.
  *
@@ -1132,11 +1152,12 @@ Draw_draw(VALUE self, VALUE image_arg)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(DrawImage) args = { image, draw->info, exception };
+    DECLARE_GVL_CALL(call, DrawImage, image, draw->info, exception);
+    call.release(exception);
 #else
-    GVL_STRUCT_TYPE(DrawImage) args = { image, draw->info };
+    DECLARE_GVL_CALL(call, DrawImage, image, draw->info);
 #endif
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(DrawImage), &args);
+    call.update(image_arg).update(self).cleanup(free_primitive, draw).run<void>();
 
     magick_free(draw->info->primitive);
     draw->info->primitive = NULL;
@@ -1689,11 +1710,12 @@ get_type_metrics(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(get_type_metrics) args = { image, draw->info, &metrics, exception };
+    DECLARE_GVL_CALL_FP(call, get_type_metrics, fp, image, draw->info, &metrics, exception);
+    call.release(exception);
 #else
-    GVL_STRUCT_TYPE(get_type_metrics) args = { image, draw->info, &metrics };
+    DECLARE_GVL_CALL_FP(call, get_type_metrics, fp, image, draw->info, &metrics);
 #endif
-    void *ret = CALL_FUNC_WITHOUT_GVL(fp, &args);
+    void *ret = call.read(image).update(self).cleanup(free_text, draw).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
 
     magick_free(draw->info->text);
