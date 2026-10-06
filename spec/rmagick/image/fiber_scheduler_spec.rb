@@ -361,6 +361,19 @@ RSpec.describe Magick::Image, if: offloading do
       expect(%w[compose:args modify-outside-overlay deskew:auto-crop].map { |key| overlay.artifact(key) }).to all(be(nil))
     end
 
+    it "does not let another fiber change the offset of an image that stegano reads" do
+      image = described_class.read(FLOWER_HAT).first.resize(80, 60)
+      watermark = image.resize(10, 10).quantize(2, Magick::GRAYColorspace)
+      expected = image.stegano(watermark, 0)
+      error = nil
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { image.stegano(watermark, 7) } } }
+
+      result = scheduler.run { image.stegano(watermark, 0) }
+
+      expect(error).to in_use
+      expect(result.signature).to eq(expected.signature)
+    end
+
     it "does not let another fiber change read options until the worker finishes" do
       options = nil
       error = nil

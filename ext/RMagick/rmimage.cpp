@@ -2132,7 +2132,7 @@ static VALUE
 border(int bang, VALUE self, VALUE width, VALUE height, VALUE color)
 {
     Image *image, *new_image;
-    PixelColor old_border;
+    PixelColor old_border, new_border;
     ExceptionInfo *exception;
     RectangleInfo rect;
 
@@ -2141,10 +2141,12 @@ border(int bang, VALUE self, VALUE width, VALUE height, VALUE color)
     memset(&rect, 0, sizeof(rect));
     rect.width = NUM2UINT(width);
     rect.height = NUM2UINT(height);
+    Color_to_PixelColor(&new_border, color);
 
     // Save current border color - we'll want to restore it afterwards.
+    rm_gvl_check_writable(image);
     old_border = image->border_color;
-    Color_to_PixelColor(&image->border_color, color);
+    image->border_color = new_border;
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
@@ -13983,6 +13985,7 @@ Image_splice(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 
     // Swap in color for the duration of this call.
+    rm_gvl_check_writable(image);
     old_color = image->background_color;
     image->background_color = color;
     DECLARE_GVL_CALL(call, SpliceImage, image, &rectangle, exception);
@@ -14078,6 +14081,7 @@ Image_stegano(VALUE self, VALUE watermark_image, VALUE offset)
     Image *image, *new_image;
     VALUE wm_image;
     Image *watermark;
+    ssize_t pixel_offset;
     ExceptionInfo *exception;
 
     image = rm_check_readable(self);
@@ -14085,7 +14089,9 @@ Image_stegano(VALUE self, VALUE watermark_image, VALUE offset)
     wm_image = rm_cur_image(watermark_image);
     watermark = rm_check_readable(wm_image);
 
-    image->offset = NUM2LONG(offset);
+    pixel_offset = NUM2LONG(offset);
+    rm_gvl_check_writable(image);
+    image->offset = pixel_offset;
 
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, SteganoImage, image, watermark, exception);
