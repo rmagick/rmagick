@@ -417,6 +417,66 @@ RSpec.describe Magick::Image, if: offloading do
       end
     end
 
+    it "does not let another fiber destroy an image while add_compose_mask negates the mask" do
+      image = red_image
+      mask = blue_image
+      error = nil
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { image.destroy! } } }
+
+      scheduler.run { image.add_compose_mask(mask) }
+
+      expect(error).to in_use
+      expect(image).not_to be_destroyed
+    end
+
+    it "does not let another fiber destroy an image while mask resizes the mask" do
+      image = red_image
+      mask = described_class.new(5, 5)
+      error = nil
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { image.destroy! } } }
+
+      scheduler.run { image.mask(mask) }
+
+      expect(error).to in_use
+      expect(image).not_to be_destroyed
+    end
+
+    it "does not let another fiber destroy an image while profile! decodes the profile" do
+      image = red_image
+      error = nil
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { image.destroy! } } }
+
+      scheduler.run { image.profile!("iptc", "xxx") }
+
+      expect(error).to in_use
+      expect(image).not_to be_destroyed
+    end
+
+    it "does not let another fiber destroy the other image while <=> computes a signature" do
+      first = red_image
+      second = blue_image
+      error = nil
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { second.destroy! } } }
+
+      result = scheduler.run { first <=> second }
+
+      expect(error).to in_use
+      expect(result).to eq(first <=> blue_image)
+    end
+
+    it "does not let another fiber destroy an image while wet_floor crops its reflection" do
+      image = red_image
+      error = nil
+      scheduler.before_next_operation do
+        scheduler.before_next_operation { Fiber.schedule { error = attempt { image.destroy! } } }
+      end
+
+      result = scheduler.run { image.wet_floor }
+
+      expect(error).to in_use
+      expect(result.columns).to eq(10)
+    end
+
     it "keeps the images of a list that another fiber clears while append reads them" do
       images = Magick::ImageList.new
       3.times { images << red_image }

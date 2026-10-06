@@ -699,7 +699,7 @@ Image_add_compose_mask(VALUE self, VALUE mask)
 
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(negate_call, NegateImage, clip_mask, MagickFalse, exception);
-    negate_call.read(mask).destroy(clip_mask).release(exception).run<void>();
+    negate_call.update(self).read(mask).destroy(clip_mask).release(exception).run<void>();
     rm_check_exception(exception, clip_mask, DestroyOnError);
     DECLARE_GVL_CALL(mask_call, SetImageMask, image, CompositePixelMask, clip_mask, exception);
     mask_call.update(self).destroy(clip_mask).release(exception).run<void>();
@@ -3014,7 +3014,7 @@ set_profile(VALUE self, const char *name, VALUE profile)
     strlcpy(info->magick, m->name, sizeof(info->magick));
 
     DECLARE_GVL_CALL(call, BlobToImage, info, profile_blob, profile_length, exception);
-    profile_image = call.release(info).release(exception).run<Image *>();
+    profile_image = call.update(self).release(info).release(exception).run<Image *>();
     DestroyImageInfo(info);
     CHECK_EXCEPTION();
 
@@ -4152,9 +4152,9 @@ Image_composite_mathematics(int argc, VALUE *argv, VALUE self)
             break;
     }
 
-    composite_image = rm_check_writable(rm_cur_image(argv[0]));
-
     snprintf(compose_args, sizeof(compose_args), "%-.16g,%-.16g,%-.16g,%-.16g", NUM2DBL(argv[1]), NUM2DBL(argv[2]), NUM2DBL(argv[3]), NUM2DBL(argv[4]));
+
+    composite_image = rm_check_writable(rm_cur_image(argv[0]));
     if (!SetImageArtifact(composite_image, "compose:args", compose_args))
     {
         rb_raise(rb_eNoMemError, "not enough memory to continue");
@@ -9408,7 +9408,7 @@ set_image_mask(Image *image, VALUE mask)
         if (clip_mask->columns != image->columns || clip_mask->rows != image->rows)
         {
             DECLARE_GVL_CALL(call, ResizeImage, clip_mask, image->columns, image->rows, image->filter, exception);
-            resized_image = call.read(mask).destroy(clip_mask).release(exception).run<Image *>();
+            resized_image = call.update(image).read(mask).destroy(clip_mask).release(exception).run<Image *>();
             DestroyImage(clip_mask);
             rm_check_exception(exception, resized_image, DestroyOnError);
             rm_ensure_result(resized_image);
@@ -9451,7 +9451,7 @@ set_image_mask(Image *image, VALUE mask)
         {
             exception = AcquireExceptionInfo();
             DECLARE_GVL_CALL(call, ResizeImage, clip_mask, image->columns, image->rows, UndefinedFilter, 0.0, exception);
-            resized_image = call.read(mask).destroy(clip_mask).release(exception).run<Image *>();
+            resized_image = call.update(image).read(mask).destroy(clip_mask).release(exception).run<Image *>();
             rm_check_exception(exception, resized_image, DestroyOnError);
             DestroyExceptionInfo(exception);
             rm_ensure_result(resized_image);
@@ -9491,7 +9491,7 @@ set_image_mask(Image *image, VALUE mask)
         DestroyExceptionInfo(exception);
 
         DECLARE_GVL_CALL(class_call, SetImageStorageClass, clip_mask, DirectClass);
-        class_call.read(mask).destroy(clip_mask).run<void>();
+        class_call.update(image).read(mask).destroy(clip_mask).run<void>();
         rm_check_image_exception(clip_mask, DestroyOnError);
 
         clip_mask->matte = MagickTrue;
@@ -13768,17 +13768,17 @@ Image_spaceship(VALUE self, VALUE other)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call_a, SignatureImage, imageA, exception);
-    call_a.update(self).release(exception).run<void>();
+    call_a.update(self).update(other).release(exception).run<void>();
     CHECK_EXCEPTION();
     DECLARE_GVL_CALL(call_b, SignatureImage, imageB, exception);
-    call_b.update(other).release(exception).run<void>();
+    call_b.update(other).update(self).release(exception).run<void>();
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     DECLARE_GVL_CALL(call_a, SignatureImage, imageA);
-    call_a.update(self).run<void>();
+    call_a.update(self).update(other).run<void>();
     DECLARE_GVL_CALL(call_b, SignatureImage, imageB);
-    call_b.update(other).run<void>();
+    call_b.update(other).update(self).run<void>();
 #endif
     sigA = rm_get_property(imageA, "signature");
     sigB = rm_get_property(imageB, "signature");
@@ -16194,21 +16194,21 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
     geometry.width = image->columns;
     geometry.height = max_rows;
     DECLARE_GVL_CALL(crop_call, CropImage, flip_image, &geometry, exception);
-    reflection = crop_call.destroy(flip_image).release(exception).run<Image *>();
+    reflection = crop_call.read(self).destroy(flip_image).release(exception).run<Image *>();
     DestroyImage(flip_image);
     CHECK_EXCEPTION();
 
 
 #if defined(IMAGEMAGICK_7)
     DECLARE_GVL_CALL(class_call, SetImageStorageClass, reflection, DirectClass, exception);
-    class_call.destroy(reflection).release(exception).run<void>();
+    class_call.read(self).destroy(reflection).release(exception).run<void>();
     rm_check_exception(exception, reflection, DestroyOnError);
     DECLARE_GVL_CALL(alpha_call, SetImageAlphaChannel, reflection, ActivateAlphaChannel, exception);
-    alpha_call.destroy(reflection).release(exception).run<void>();
+    alpha_call.read(self).destroy(reflection).release(exception).run<void>();
     rm_check_exception(exception, reflection, DestroyOnError);
 #else
     DECLARE_GVL_CALL(class_call, SetImageStorageClass, reflection, DirectClass);
-    class_call.destroy(reflection).run<void>();
+    class_call.read(self).destroy(reflection).run<void>();
     rm_check_image_exception(reflection, DestroyOnError);
 
 
