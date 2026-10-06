@@ -4121,7 +4121,7 @@ Image_composite_mathematics(int argc, VALUE *argv, VALUE self)
             break;
     }
 
-    composite_image = rm_check_readable(rm_cur_image(argv[0]));
+    composite_image = rm_check_writable(rm_cur_image(argv[0]));
 
     snprintf(compose_args, sizeof(compose_args), "%-.16g,%-.16g,%-.16g,%-.16g", NUM2DBL(argv[1]), NUM2DBL(argv[2]), NUM2DBL(argv[3]), NUM2DBL(argv[4]));
     if (!SetImageArtifact(composite_image, "compose:args", compose_args))
@@ -4198,7 +4198,7 @@ composite_tiled(int bang, int argc, VALUE *argv, VALUE self)
             break;
     }
 
-    comp_image = rm_check_readable(rm_cur_image(argv[0]));
+    comp_image = rm_check_writable(rm_cur_image(argv[0]));
 
     if (!SetImageArtifact(comp_image, "modify-outside-overlay", "false"))
     {
@@ -5529,6 +5529,7 @@ Image_deskew(int argc, VALUE *argv, VALUE self)
             width = NUM2ULONG(argv[1]);
             memset(auto_crop_width, 0, sizeof(auto_crop_width));
             snprintf(auto_crop_width, sizeof(auto_crop_width), "%lu", width);
+            rm_gvl_check_writable(image);
             if (!SetImageArtifact(image, "deskew:auto-crop", auto_crop_width))
             {
                 rb_raise(rb_eNoMemError, "not enough memory to continue");
