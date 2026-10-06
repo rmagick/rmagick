@@ -298,6 +298,25 @@ DEFINE_GVL_STUB3(RotationalBlurImage, const Image *, const double, ExceptionInfo
 DEFINE_GVL_STUB4(RotationalBlurImageChannel, const Image *, const ChannelType, const double, ExceptionInfo *);
 #endif
 
+/**
+ * Get the image of a method that sets the channel mask of the image on IM7.
+ * IM6 passes the channels as an argument instead and only reads the image.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param self the image
+ * @return the C image structure for the image
+ */
+static Image *
+check_channel_writable(VALUE self)
+{
+#if defined(IMAGEMAGICK_7)
+    return rm_check_writable(self);
+#else
+    return rm_check_readable(self);
+#endif
+}
+
 // Restore a color of the image that the method swapped in for one call
 static void
 restore_color(void *ptr, intptr_t old_color)
@@ -414,7 +433,7 @@ adaptive_channel_method(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
     ExceptionInfo *exception;
     ChannelType channels;
 
-    image = rm_check_writable(self);
+    image = check_channel_writable(self);
     channels = extract_channels(&argc, argv);
 
     switch (argc)
@@ -753,7 +772,7 @@ Image_add_noise_channel(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
     ChannelType channels;
 
-    image = rm_check_writable(self);
+    image = check_channel_writable(self);
     channels = extract_channels(&argc, argv);
 
     // There must be 1 remaining argument.
@@ -2063,7 +2082,7 @@ Image_blur_channel(int argc, VALUE *argv, VALUE self)
     ChannelType channels;
     double radius = 0.0, sigma = 1.0;
 
-    image = rm_check_writable(self);
+    image = check_channel_writable(self);
 
     channels = extract_channels(&argc, argv);
 
@@ -2476,7 +2495,7 @@ Image_channel_depth(int argc, VALUE *argv, VALUE self)
     size_t channel_depth;
     ExceptionInfo *exception;
 
-    image = rm_check_writable(self);
+    image = check_channel_writable(self);
     channels = extract_channels(&argc, argv);
 
     // Ensure all arguments consumed.
@@ -2525,7 +2544,7 @@ Image_channel_extrema(int argc, VALUE *argv, VALUE self)
     size_t min, max;
     VALUE ary;
 
-    image = rm_check_writable(self);
+    image = check_channel_writable(self);
 
     channels = extract_channels(&argc, argv);
 
@@ -2580,7 +2599,7 @@ Image_channel_mean(int argc, VALUE *argv, VALUE self)
     double mean, stddev;
     VALUE ary;
 
-    image = rm_check_writable(self);
+    image = check_channel_writable(self);
 
     channels = extract_channels(&argc, argv);
 
@@ -2633,7 +2652,7 @@ Image_channel_entropy(int argc, VALUE *argv, VALUE self)
     double entropy;
     VALUE ary;
 
-    image = rm_check_writable(self);
+    image = check_channel_writable(self);
 
     channels = extract_channels(&argc, argv);
 
@@ -4774,7 +4793,7 @@ Image_morphology_channel(VALUE self, VALUE channel_v, VALUE method_v, VALUE iter
     KernelInfo *kernel;
     ssize_t iterations = NUM2LONG(iterations_v);;
 
-    image = rm_check_writable(self);
+    image = check_channel_writable(self);
 
     VALUE_TO_ENUM(method_v, method, MorphologyMethod);
     VALUE_TO_ENUM(channel_v, channel, ChannelType);
@@ -4959,7 +4978,7 @@ Image_convolve_channel(int argc, VALUE *argv, VALUE self)
     unsigned int x;
 #endif
 
-    image = rm_check_writable(self);
+    image = check_channel_writable(self);
 
     channels = extract_channels(&argc, argv);
 
@@ -7597,7 +7616,7 @@ Image_fx(int argc, VALUE *argv, VALUE self)
     ChannelType channels;
     ExceptionInfo *exception;
 
-    image = rm_check_writable(self);
+    image = check_channel_writable(self);
     channels = extract_channels(&argc, argv);
 
     // There must be exactly 1 remaining argument.
@@ -7851,7 +7870,7 @@ Image_gaussian_blur_channel(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
     double radius = 0.0, sigma = 1.0;
 
-    image = rm_check_writable(self);
+    image = check_channel_writable(self);
     channels = extract_channels(&argc, argv);
 
     // There can be 0, 1, or 2 remaining arguments.
@@ -11534,7 +11553,7 @@ Image_radial_blur_channel(int argc, VALUE *argv, VALUE self)
     ChannelType channels;
     double angle;
 
-    image = rm_check_writable(self);
+    image = check_channel_writable(self);
     channels = extract_channels(&argc, argv);
 
     // There must be 1 remaining argument.
@@ -12950,7 +12969,7 @@ Image_selective_blur_channel(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
     ChannelType channels;
 
-    image = rm_check_writable(self);
+    image = check_channel_writable(self);
     channels = extract_channels(&argc, argv);
     if (argc > 3)
     {
@@ -13043,7 +13062,7 @@ Image_separate(int argc, VALUE *argv, VALUE self)
     ChannelType channels = UndefinedChannel;
     ExceptionInfo *exception;
 
-    image = rm_check_writable(self);
+    image = check_channel_writable(self);
     channels = extract_channels(&argc, argv);
 
     // All arguments are ChannelType enums
@@ -13417,7 +13436,7 @@ Image_sharpen_channel(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
     double radius = 0.0, sigma = 1.0;
 
-    image = rm_check_writable(self);
+    image = check_channel_writable(self);
     channels = extract_channels(&argc, argv);
 
     // There must be 0, 1, or 2 remaining arguments.
@@ -13847,7 +13866,7 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
     MagickPixel pp;
     ExceptionInfo *exception;
 
-    image = rm_check_writable(self);
+    image = check_channel_writable(self);
 
     n = argc;
     channels = extract_channels(&argc, argv);
@@ -15783,7 +15802,7 @@ Image_unsharp_mask_channel(int argc, VALUE *argv, VALUE self)
     double radius = 0.0, sigma = 1.0, amount = 1.0, threshold = 0.05;
     ExceptionInfo *exception;
 
-    image = rm_check_writable(self);
+    image = check_channel_writable(self);
     channels = extract_channels(&argc, argv);
     if (argc > 4)
     {

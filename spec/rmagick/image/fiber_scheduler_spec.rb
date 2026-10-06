@@ -117,13 +117,14 @@ RSpec.describe Magick::Image, if: offloading do
 
     it "does not let another fiber change or destroy an image that a call reads" do
       image = described_class.new(200, 200)
+      other = red_image
       errors = nil
       scheduler.before_next_operation do
         Fiber.schedule do
           errors = [
             attempt { image.destroy! },
             attempt { image.resize!(50, 50) },
-            attempt { image.channel_mean(Magick::RedChannel) }
+            attempt { image.compare_channel(other, Magick::MeanAbsoluteErrorMetric) }
           ]
         end
       end
@@ -208,6 +209,16 @@ RSpec.describe Magick::Image, if: offloading do
 
       expect(error).to in_use
       expect(other.difference(image)).not_to eq([0.0, 0.0, 0.0])
+    end
+
+    it "lets another fiber run a channel method on an image that a call reads on IM6", if: offloading && Gem::Version.new(Magick::IMAGEMAGICK_VERSION) < Gem::Version.new("7.0.0") do
+      image = red_image
+      mean = nil
+      scheduler.before_next_operation { Fiber.schedule { mean = attempt { image.channel_mean(Magick::RedChannel) } } }
+
+      scheduler.run { image.blur_image }
+
+      expect(mean).to eq([Float(Magick::QuantumRange), 0.0])
     end
 
     it "does not let another fiber read an image while compare_channel sets its distortion" do
