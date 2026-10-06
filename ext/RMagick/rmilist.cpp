@@ -1162,6 +1162,7 @@ VALUE
 ImageList_remap(int argc, VALUE *argv, VALUE self)
 {
     Image *images, *remap_image = NULL;
+    VALUE remap_obj = Qnil;
     QuantizeInfo quantize_info;
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
@@ -1169,9 +1170,8 @@ ImageList_remap(int argc, VALUE *argv, VALUE self)
 
     if (argc > 0 && argv[0] != Qnil)
     {
-        VALUE t = rm_cur_image(argv[0]);
-        remap_image = rm_check_readable(t);
-        RB_GC_GUARD(t);
+        remap_obj = rm_cur_image(argv[0]);
+        remap_image = rm_check_readable(remap_obj);
     }
 
     GetQuantizeInfo(&quantize_info);
@@ -1195,18 +1195,19 @@ ImageList_remap(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, RemapImages, &quantize_info, images, remap_image, exception);
-    call.update_each(rb_iv_get(self, "@images")).read(remap_image).split(images).release(exception).run<void>();
+    call.update_each(rb_iv_get(self, "@images")).read(remap_obj).split(images).release(exception).run<void>();
     rm_split(images);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     DECLARE_GVL_CALL(call, RemapImages, &quantize_info, images, remap_image);
-    call.update_each(rb_iv_get(self, "@images")).read(remap_image).split(images).run<void>();
+    call.update_each(rb_iv_get(self, "@images")).read(remap_obj).split(images).run<void>();
     rm_split(images);
     rm_check_image_exception(images, RetainOnError);
 #endif
 
     RB_GC_GUARD(clones);
+    RB_GC_GUARD(remap_obj);
 
     return self;
 }

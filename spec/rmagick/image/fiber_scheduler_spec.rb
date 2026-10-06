@@ -507,6 +507,22 @@ RSpec.describe Magick::Image, if: offloading do
       expect(result).to be(image)
     end
 
+    it "keeps the palette of a list that another fiber clears while ImageList#remap reads it" do
+      images = Magick::ImageList.new << described_class.new(200, 200)
+      palette = Magick::ImageList.new << blue_image
+      scheduler.before_next_operation do
+        Fiber.schedule do
+          palette.clear
+          GC.start
+        end
+      end
+
+      result = scheduler.run { images.remap(palette) }
+
+      expect(result).to be(images)
+      expect(images.first.pixel_color(0, 0).blue).to eq(Magick::QuantumRange)
+    end
+
     it "does not let another fiber change read options until the worker finishes" do
       options = nil
       error = nil
