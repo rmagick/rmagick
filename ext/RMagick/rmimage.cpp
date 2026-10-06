@@ -1977,7 +1977,7 @@ special_composite(Image *image, Image *overlay, double image_pct, double overlay
 VALUE
 Image_blend(int argc, VALUE *argv, VALUE self)
 {
-    VALUE ovly;
+    VALUE composite_image, ovly;
     Image *image, *overlay;
     double src_percent, dst_percent;
     long x_offset = 0L, y_offset = 0L;
@@ -2014,11 +2014,13 @@ Image_blend(int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    composite_image = special_composite(image, overlay, src_percent, dst_percent,
+                                        x_offset, y_offset, BlendCompositeOp);
+
+    RB_GC_GUARD(composite_image);
     RB_GC_GUARD(ovly);
 
-    return special_composite(image, overlay, src_percent, dst_percent,
-                             x_offset, y_offset, BlendCompositeOp);
-
+    return composite_image;
 }
 
 
@@ -5731,7 +5733,7 @@ VALUE
 Image_displace(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *displacement_map;
-    VALUE dmap;
+    VALUE composite_image, dmap;
     double x_amplitude = 0.0, y_amplitude = 0.0;
     long x_offset = 0L, y_offset = 0L;
 
@@ -5764,10 +5766,13 @@ Image_displace(int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    composite_image = special_composite(image, displacement_map, x_amplitude, y_amplitude,
+                                        x_offset, y_offset, DisplaceCompositeOp);
+
+    RB_GC_GUARD(composite_image);
     RB_GC_GUARD(dmap);
 
-    return special_composite(image, displacement_map, x_amplitude, y_amplitude,
-                             x_offset, y_offset, DisplaceCompositeOp);
+    return composite_image;
 }
 
 
