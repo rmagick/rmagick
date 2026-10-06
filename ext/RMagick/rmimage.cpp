@@ -721,11 +721,10 @@ Image_add_noise(VALUE self, VALUE noise)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(AddNoiseImage) args = { image, noise_type, 1.0, exception };
+    DECLARE_GVL_CALL(call, AddNoiseImage, image, noise_type, 1.0, exception);
 #else
-    GVL_STRUCT_TYPE(AddNoiseImage) args = { image, noise_type, exception };
+    DECLARE_GVL_CALL(call, AddNoiseImage, image, noise_type, exception);
 #endif
-    rm_gvl_call call(GVL_FUNC(AddNoiseImage), &args);
     new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -3244,11 +3243,10 @@ Image_colorize(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(ColorizeImage) args = { image, opacity, &target, exception };
+    DECLARE_GVL_CALL(call, ColorizeImage, image, opacity, &target, exception);
 #else
-    GVL_STRUCT_TYPE(ColorizeImage) args = { image, opacity, target, exception };
+    DECLARE_GVL_CALL(call, ColorizeImage, image, opacity, target, exception);
 #endif
-    rm_gvl_call call(GVL_FUNC(ColorizeImage), &args);
     new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -8170,11 +8168,10 @@ Image_implode(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 
 #if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(ImplodeImage) args = { image, amount, image->interpolate, exception };
+    DECLARE_GVL_CALL(call, ImplodeImage, image, amount, image->interpolate, exception);
 #else
-    GVL_STRUCT_TYPE(ImplodeImage) args = { image, amount, exception };
+    DECLARE_GVL_CALL(call, ImplodeImage, image, amount, exception);
 #endif
-    rm_gvl_call call(GVL_FUNC(ImplodeImage), &args);
     new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -10367,11 +10364,10 @@ Image_oil_paint(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 
 #if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(OilPaintImage) args = { image, radius, sigma, exception };
+    DECLARE_GVL_CALL(call, OilPaintImage, image, radius, sigma, exception);
 #else
-    GVL_STRUCT_TYPE(OilPaintImage) args = { image, radius, exception };
+    DECLARE_GVL_CALL(call, OilPaintImage, image, radius, exception);
 #endif
-    rm_gvl_call call(GVL_FUNC(OilPaintImage), &args);
     new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -14032,11 +14028,10 @@ Image_spread(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(SpreadImage) args = { image, image->interpolate, radius, exception };
+    DECLARE_GVL_CALL(call, SpreadImage, image, image->interpolate, radius, exception);
 #else
-    GVL_STRUCT_TYPE(SpreadImage) args = { image, radius, exception };
+    DECLARE_GVL_CALL(call, SpreadImage, image, radius, exception);
 #endif
-    rm_gvl_call call(GVL_FUNC(SpreadImage), &args);
     new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -14398,11 +14393,10 @@ Image_swirl(VALUE self, VALUE degrees_obj)
     exception = AcquireExceptionInfo();
 
 #if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(SwirlImage) args = { image, degrees, image->interpolate, exception };
+    DECLARE_GVL_CALL(call, SwirlImage, image, degrees, image->interpolate, exception);
 #else
-    GVL_STRUCT_TYPE(SwirlImage) args = { image, degrees, exception };
+    DECLARE_GVL_CALL(call, SwirlImage, image, degrees, exception);
 #endif
-    rm_gvl_call call(GVL_FUNC(SwirlImage), &args);
     new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -14848,11 +14842,10 @@ Image_tint(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 
 #if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(TintImage) args = { image, alpha, &tint, exception };
+    DECLARE_GVL_CALL(call, TintImage, image, alpha, &tint, exception);
 #else
-    GVL_STRUCT_TYPE(TintImage) args = { image, alpha, tint, exception };
+    DECLARE_GVL_CALL(call, TintImage, image, alpha, tint, exception);
 #endif
-    rm_gvl_call call(GVL_FUNC(TintImage), &args);
     new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -16056,11 +16049,10 @@ Image_wave(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(WaveImage) args = { image, amplitude, wavelength, image->interpolate, exception };
+    DECLARE_GVL_CALL(call, WaveImage, image, amplitude, wavelength, image->interpolate, exception);
 #else
-    GVL_STRUCT_TYPE(WaveImage) args = { image, amplitude, wavelength, exception };
+    DECLARE_GVL_CALL(call, WaveImage, image, amplitude, wavelength, exception);
 #endif
-    rm_gvl_call call(GVL_FUNC(WaveImage), &args);
     new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
