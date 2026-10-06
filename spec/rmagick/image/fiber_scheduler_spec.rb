@@ -53,6 +53,15 @@ RSpec.describe Magick::Image, if: offloading do
       expect(scheduler.offloaded).to be_empty
     end
 
+    it "reads pixels with get_pixels on the calling thread" do
+      image = described_class.new(20, 20)
+
+      pixels = scheduler.run { image.get_pixels(1, 1, 10, 10) }
+
+      expect(pixels.size).to eq(100)
+      expect(scheduler.offloaded).to be_empty
+    end
+
     it "reads and writes images on the worker thread" do
       blob = scheduler.run do
         image = described_class.read(FLOWER_HAT).first

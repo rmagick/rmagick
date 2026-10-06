@@ -8034,7 +8034,7 @@ Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE row
     // to change the pixels but I don't want to make "pixels" const.
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, GetVirtualPixels, image, x, y, columns, rows, exception);
-    void *ret = call.read(self).release(exception).run<void *>();
+    void *ret = call.keep_thread().run<void *>();
     pixels = reinterpret_cast<decltype(pixels)>(ret);
     CHECK_EXCEPTION();
 
