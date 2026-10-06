@@ -3510,7 +3510,7 @@ Image_compare_channel(int argc, VALUE *argv, VALUE self)
     END_CHANNEL_MASK(image);
 #else
     DECLARE_GVL_CALL(call, CompareImageChannels, image, r_image, channels, metric_type, &distortion, exception);
-    difference_image = call.read(self).read(ref).release(exception).run<Image *>();
+    difference_image = call.update(self).read(ref).release(exception).run<Image *>();
 #endif
     rm_check_exception(exception, difference_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -6180,7 +6180,7 @@ Image_distortion_channel(int argc, VALUE *argv, VALUE self)
     DestroyImage(difference_image);
 #else
     DECLARE_GVL_CALL(call, GetImageChannelDistortion, image, reconstruct, channels, metric, &distortion, exception);
-    call.read(self).read(rec).release(exception).run<void>();
+    call.update(self).read(rec).release(exception).run<void>();
 #endif
 
     CHECK_EXCEPTION();

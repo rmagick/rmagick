@@ -210,6 +210,17 @@ RSpec.describe Magick::Image, if: offloading do
       expect(other.difference(image)).not_to eq([0.0, 0.0, 0.0])
     end
 
+    it "does not let another fiber read an image while compare_channel sets its distortion" do
+      image = red_image
+      other = blue_image
+      error = nil
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { image.blur_image } } }
+
+      scheduler.run { image.compare_channel(other, Magick::MeanAbsoluteErrorMetric) }
+
+      expect(error).to in_use
+    end
+
     it "does not let another fiber draw on an image that a call reads" do
       image = red_image
       draw = Magick::Draw.new
