@@ -521,3 +521,340 @@ rm_gvl_offload_masked_image(gvl_function_t *fp, void *args, VALUE obj, Exception
     return (Image *)offload(fp, args, obj, OffloadUpdate, &cleanup, dependency);
 }
 #endif
+
+
+#if defined(RMAGICK_OFFLOAD_SAFE)
+typedef struct
+{
+    void *key;
+    OffloadMode mode;
+} offload_mark_t;
+
+static bool
+marked(const offload_mark_t *marks, long count, const void *key)
+{
+    for (long i = 0; i < count; i++)
+    {
+        if (marks[i].key == key)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+#endif
+
+static void
+release_exception(void *ptr, intptr_t arg ATTRIBUTE_UNUSED)
+{
+    DestroyExceptionInfo((ExceptionInfo *)ptr);
+}
+
+static void
+destroy_image(void *ptr, intptr_t arg ATTRIBUTE_UNUSED)
+{
+    DestroyImageList((Image *)ptr);
+}
+
+static void
+split_images(void *ptr, intptr_t arg ATTRIBUTE_UNUSED)
+{
+    rm_split((Image *)ptr);
+}
+
+#if defined(IMAGEMAGICK_7)
+static void
+restore_channel_mask(void *ptr, intptr_t arg)
+{
+    SetPixelChannelMask((Image *)ptr, (ChannelType)arg);
+}
+#endif
+
+
+/**
+ * Prepare a call of fp(args).
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param fp the function
+ * @param args its argument struct, on the caller's stack
+ */
+rm_gvl_call::rm_gvl_call(gvl_function_t *fp, void *args)
+    : fp(fp), args(args), nobjects(0), ncleanups(0), result_type(ResultIgnored)
+{
+}
+
+
+rm_gvl_call &
+rm_gvl_call::add_object(VALUE obj, bool update, bool each)
+{
+    if (nobjects == MaxObjects)
+    {
+        rb_bug("too many objects for an offloaded call");
+    }
+    objects[nobjects].obj = obj;
+    objects[nobjects].update = update;
+    objects[nobjects].each = each;
+    nobjects++;
+    return *this;
+}
+
+
+rm_gvl_call &
+rm_gvl_call::add_cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg)
+{
+    if (!ptr)
+    {
+        return *this;
+    }
+    if (ncleanups == MaxCleanups)
+    {
+        rb_bug("too many cleanups for an offloaded call");
+    }
+    cleanups[ncleanups].release = release;
+    cleanups[ncleanups].ptr = ptr;
+    cleanups[ncleanups].arg = arg;
+    ncleanups++;
+    return *this;
+}
+
+
+/**
+ * The call reads the data of obj. Other fibers can still read it, but cannot
+ * change or destroy it while the call is in flight.
+ *
+ * @param obj an Image, Info or KernelInfo
+ * @return self
+ */
+rm_gvl_call &
+rm_gvl_call::read(VALUE obj)
+{
+    return add_object(obj, false, false);
+}
+
+
+/**
+ * The call changes the data of obj, or the caller replaces it with the result.
+ * Other fibers cannot use it while the call is in flight.
+ *
+ * @param obj an Image, Info or KernelInfo
+ * @return self
+ */
+rm_gvl_call &
+rm_gvl_call::update(VALUE obj)
+{
+    return add_object(obj, true, false);
+}
+
+
+/**
+ * The call reads every object in the array, such as the images of an ImageList.
+ *
+ * @param ary the array
+ * @return self
+ */
+rm_gvl_call &
+rm_gvl_call::read_each(VALUE ary)
+{
+    return add_object(ary, false, true);
+}
+
+
+/**
+ * Destroy the exception if the call is refused or unwound.
+ *
+ * @param exception the ExceptionInfo, may be NULL
+ * @return self
+ */
+rm_gvl_call &
+rm_gvl_call::release(ExceptionInfo *exception)
+{
+    return add_cleanup(release_exception, exception, 0);
+}
+
+
+/**
+ * Destroy the image if the call is refused or unwound.
+ *
+ * @param image the image, may be NULL
+ * @return self
+ */
+rm_gvl_call &
+rm_gvl_call::destroy(Image *image)
+{
+    return add_cleanup(destroy_image, image, 0);
+}
+
+
+/**
+ * Split the linked images if the call is refused or unwound.
+ *
+ * @param images the first image of the list
+ * @return self
+ */
+rm_gvl_call &
+rm_gvl_call::split(Image *images)
+{
+    return add_cleanup(split_images, images, 0);
+}
+
+
+#if defined(IMAGEMAGICK_7)
+/**
+ * Restore the channel mask of the image if the call is refused or unwound.
+ *
+ * @param image the image whose channel mask was changed
+ * @param channel_mask its channel mask before the change
+ * @return self
+ */
+rm_gvl_call &
+rm_gvl_call::restore_mask(Image *image, ChannelType channel_mask)
+{
+    return add_cleanup(restore_channel_mask, image, (intptr_t)channel_mask);
+}
+#endif
+
+
+/**
+ * The result is memory that the caller frees with magick_free. It is freed if
+ * the call is unwound.
+ *
+ * @return self
+ */
+rm_gvl_call &
+rm_gvl_call::free_result()
+{
+    result_type = ResultMemory;
+    return *this;
+}
+
+
+void
+rm_gvl_call::unwind(ResultType type, void *result)
+{
+    if (result)
+    {
+        if (type == ResultImage)
+        {
+            DestroyImageList((Image *)result);
+        }
+        else if (type == ResultMemory)
+        {
+            magick_free(result);
+        }
+    }
+    for (int i = 0; i < ncleanups; i++)
+    {
+        cleanups[i].release(cleanups[i].ptr, cleanups[i].arg);
+    }
+}
+
+
+void *
+rm_gvl_call::call(ResultType type)
+{
+#if defined(RMAGICK_OFFLOAD_SAFE)
+    if (offload_p())
+    {
+        offload_call_t call = { fp, args, NULL };
+        offload_mark_t *marks;
+        VALUE marks_buffer;
+        long count = 0, nmarks = 0, nupdates;
+        int tag;
+
+        for (int i = 0; i < nobjects; i++)
+        {
+            count += objects[i].each ? RARRAY_LEN(objects[i].obj) : 1;
+        }
+        marks = ALLOCV_N(offload_mark_t, marks_buffer, count);
+
+        // An object that the call both reads and changes is marked as changed.
+        for (int i = 0; i < nobjects; i++)
+        {
+            void *key = objects[i].update ? offload_key(objects[i].obj) : NULL;
+            if (key && !marked(marks, nmarks, key))
+            {
+                marks[nmarks].key = key;
+                marks[nmarks].mode = OffloadUpdate;
+                nmarks++;
+            }
+        }
+        nupdates = nmarks;
+        for (int i = 0; i < nobjects; i++)
+        {
+            long len = objects[i].each ? RARRAY_LEN(objects[i].obj) : 1;
+
+            if (objects[i].update)
+            {
+                continue;
+            }
+            for (long j = 0; j < len; j++)
+            {
+                void *key = offload_key(objects[i].each ? rb_ary_entry(objects[i].obj, j) : objects[i].obj);
+                if (key && !marked(marks, nupdates, key))
+                {
+                    marks[nmarks].key = key;
+                    marks[nmarks].mode = OffloadRead;
+                    nmarks++;
+                }
+            }
+        }
+
+        for (long i = 0; i < nmarks; i++)
+        {
+            st_data_t state = offload_state(marks[i].key);
+            if (state == OFFLOAD_UPDATING || (marks[i].mode == OffloadUpdate && state != 0))
+            {
+                ALLOCV_END(marks_buffer);
+                unwind(type, NULL);
+                raise_in_use();
+            }
+        }
+        for (long i = 0; i < nmarks; i++)
+        {
+            offload_begin(marks[i].key, marks[i].mode);
+        }
+
+        rb_protect(offload_call, (VALUE)&call, &tag);
+
+        for (long i = 0; i < nmarks; i++)
+        {
+            offload_end(marks[i].key);
+        }
+        ALLOCV_END(marks_buffer);
+        if (tag)
+        {
+            // The scheduler raised into this fiber after the worker finished.
+            unwind(type, call.result);
+            rb_jump_tag(tag);
+        }
+
+        return call.result;
+    }
+#endif
+
+    return CALL_FUNC_WITHOUT_GVL(fp, args);
+}
+
+
+/**
+ * Run the call, letting a Fiber scheduler offload it.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @return the result of the call, cast to T
+ */
+template <>
+Image *
+rm_gvl_call::run<Image *>()
+{
+    return (Image *)call(ResultImage);
+}
+
+
+template <>
+void
+rm_gvl_call::run<void>()
+{
+    call(ResultIgnored);
+}
