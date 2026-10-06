@@ -245,7 +245,7 @@ RSpec.describe Magick::Image, if: offloading do
 
       scheduler.run { palette.blur_image }
 
-      expect(error).to be_a(Magick::ImageList)
+      expect(error).to be_kind_of(Magick::ImageList)
       expect(image.pixel_color(0, 0).blue).to eq(Magick::QuantumRange)
     end
 
@@ -268,6 +268,97 @@ RSpec.describe Magick::Image, if: offloading do
       scheduler.run { overlay.blur_image(0, 3) }
 
       expect(error).to in_use
+    end
+
+    it "does not let another fiber change a Draw that an annotation uses" do
+      image = described_class.new(100, 40)
+      expected = described_class.new(100, 40)
+      other = red_image
+      draw = Magick::Draw.new
+      draw.pointsize = 30
+      draw.dup.annotate(expected, 0, 0, 5, 30, "HELLO")
+      errors = nil
+      scheduler.before_next_operation do
+        Fiber.schedule do
+          errors = [
+            attempt { draw.pointsize = 2 },
+            attempt { draw.annotate(other, 0, 0, 0, 0, "x") },
+            attempt { draw.get_type_metrics(other, "x") }
+          ]
+        end
+      end
+
+      scheduler.run { draw.annotate(image, 0, 0, 5, 30, "HELLO") }
+
+      expect(errors).to all(in_use)
+      expect(image.signature).to eq(expected.signature)
+    end
+
+    it "keeps the annotation of another fiber that takes the Draw over during the block" do
+      first = described_class.new(100, 40)
+      second = described_class.new(100, 40)
+      expected = described_class.new(100, 40)
+      draw = Magick::Draw.new
+      draw.pointsize = 30
+      draw.dup.annotate(expected, 0, 0, 5, 30, "HELLO")
+      error = nil
+
+      scheduler.run do
+        error = attempt do
+          draw.annotate(first, 0, 0, 5, 30, "HELLO") do
+            Fiber.schedule { draw.annotate(second, 0, 0, 5, 30, "HELLO") }
+          end
+        end
+      end
+
+      expect(error).to in_use
+      expect(second.signature).to eq(expected.signature)
+      expect(first.signature).to eq(described_class.new(100, 40).signature)
+    end
+
+    it "does not let another fiber change the options of a montage in progress" do
+      images = Magick::ImageList.new << red_image << blue_image
+      options = nil
+      error = nil
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { options.title = "x" } } }
+
+      scheduler.run { images.montage { |montage| options = montage } }
+
+      expect(error).to in_use
+    end
+
+    it "appends two lists that share an image" do
+      shared = red_image
+      first = Magick::ImageList.new << shared << blue_image
+      second = Magick::ImageList.new << shared << blue_image
+      appended = nil
+      scheduler.before_next_operation { Fiber.schedule { appended = second.append(false) } }
+
+      result = scheduler.run { first.append(false) }
+
+      expect(result.columns).to eq(20)
+      expect(appended.columns).to eq(20)
+      expect((Magick::ImageList.new << shared).append(false).columns).to eq(10)
+    end
+
+    it "does not let another fiber set an artifact on an image that a call reads" do
+      image = described_class.new(50, 50)
+      overlay = described_class.new(200, 200)
+      errors = nil
+      scheduler.before_next_operation do
+        Fiber.schedule do
+          errors = [
+            attempt { image.composite_mathematics(overlay, 1, 0, 0, 0, Magick::CenterGravity) },
+            attempt { image.composite_tiled(overlay) },
+            attempt { overlay.deskew(0.4, 10) }
+          ]
+        end
+      end
+
+      scheduler.run { overlay.blur_image(0, 3) }
+
+      expect(errors).to all(in_use)
+      expect(%w[compose:args modify-outside-overlay deskew:auto-crop].map { |key| overlay.artifact(key) }).to all(be(nil))
     end
 
     it "does not let another fiber change read options until the worker finishes" do
