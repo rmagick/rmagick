@@ -20,6 +20,7 @@ public:
     rm_gvl_call &update(VALUE obj);
     rm_gvl_call &update(const void *ptr);
     rm_gvl_call &read_each(VALUE ary);
+    rm_gvl_call &update_each(VALUE ary);
     rm_gvl_call &release(ExceptionInfo *exception);
     rm_gvl_call &release(ImageInfo *info);
     rm_gvl_call &destroy(Image *image);
@@ -28,6 +29,7 @@ public:
     rm_gvl_call &restore_mask(Image *image, ChannelType channel_mask);
 #endif
     rm_gvl_call &free_result();
+    rm_gvl_call &keep_thread(bool keep = true);
     rm_gvl_call &cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg = 0);
 
     template <typename T> T run();
@@ -58,6 +60,7 @@ private:
     cleanup_t cleanups[MaxCleanups];
     int ncleanups;
     ResultType result_type;
+    bool keep;
 
     rm_gvl_call &add_object(VALUE obj, const void *ptr, bool update, bool each);
     void *call(ResultType type);

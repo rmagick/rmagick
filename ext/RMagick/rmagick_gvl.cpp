@@ -262,7 +262,7 @@ marked(const offload_mark_t *marks, long count, const void *key)
 }
 
 // The data pointer of an object registered with read() or update(), or of the
-// jth element of an array registered with read_each()
+// jth element of an array registered with read_each() or update_each()
 static void *
 object_key(VALUE obj, const void *ptr, bool each, long j)
 {
@@ -316,7 +316,7 @@ restore_channel_mask(void *ptr, intptr_t arg)
  * @param args its argument struct, on the caller's stack
  */
 rm_gvl_call::rm_gvl_call(gvl_function_t *fp, void *args)
-    : fp(fp), args(args), nobjects(0), ncleanups(0), result_type(ResultIgnored)
+    : fp(fp), args(args), nobjects(0), ncleanups(0), result_type(ResultIgnored), keep(false)
 {
 }
 
@@ -434,6 +434,20 @@ rm_gvl_call::read_each(VALUE ary)
 
 
 /**
+ * The call changes every object in the array, such as the images of an
+ * ImageList.
+ *
+ * @param ary the array
+ * @return self
+ */
+rm_gvl_call &
+rm_gvl_call::update_each(VALUE ary)
+{
+    return add_object(ary, NULL, true, true);
+}
+
+
+/**
  * Destroy the exception if the call is refused or unwound.
  *
  * @param exception the ExceptionInfo, may be NULL
@@ -515,6 +529,21 @@ rm_gvl_call::free_result()
 }
 
 
+/**
+ * Run the call on the calling thread even under a Fiber scheduler, for
+ * example because it uses a FILE * that another fiber could close.
+ *
+ * @param keep whether to keep the call on the calling thread
+ * @return self
+ */
+rm_gvl_call &
+rm_gvl_call::keep_thread(bool keep)
+{
+    this->keep = keep;
+    return *this;
+}
+
+
 void
 rm_gvl_call::unwind(ResultType type, void *result)
 {
@@ -540,7 +569,7 @@ void *
 rm_gvl_call::call(ResultType type)
 {
 #if defined(RMAGICK_OFFLOAD_SAFE)
-    if (offload_p())
+    if (!keep && offload_p())
     {
         offload_call_t call = { fp, args, NULL };
         offload_mark_t *marks;
@@ -557,12 +586,21 @@ rm_gvl_call::call(ResultType type)
         // An object that the call both reads and changes is marked as changed.
         for (int i = 0; i < nobjects; i++)
         {
-            void *key = objects[i].update ? object_key(objects[i].obj, objects[i].ptr, false, 0) : NULL;
-            if (key && !marked(marks, nmarks, key))
+            long len = objects[i].each ? RARRAY_LEN(objects[i].obj) : 1;
+
+            if (!objects[i].update)
             {
-                marks[nmarks].key = key;
-                marks[nmarks].mode = OffloadUpdate;
-                nmarks++;
+                continue;
+            }
+            for (long j = 0; j < len; j++)
+            {
+                void *key = object_key(objects[i].obj, objects[i].ptr, objects[i].each, j);
+                if (key && !marked(marks, nmarks, key))
+                {
+                    marks[nmarks].key = key;
+                    marks[nmarks].mode = OffloadUpdate;
+                    nmarks++;
+                }
             }
         }
         nupdates = nmarks;
