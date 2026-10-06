@@ -36,6 +36,13 @@
  *    changes an image, any use of it raises. Nothing waits, so no fiber is
  *    suspended while it holds a pointer that another fiber could free.
  *
+ * ImageMagick reads some images through a working area of the pixel cache
+ * that every thread outside OpenMP shares, so while an offloaded call uses an
+ * image, no other call can use the image or its pixel cache, which clones of
+ * the image share. A call that stays on its thread does not mark the image,
+ * so an image must not be used by two threads without a scheduler at once.
+ * RMagick itself reads and writes pixels through a cache view of its own.
+ *
  * Without a scheduler that offloads, or on Ruby before 4.0, rm_gvl_call runs
  * the function with rb_thread_call_without_gvl.
  */
@@ -73,9 +80,9 @@ offloaded_free(void *table)
 
 static const struct rb_ractor_local_storage_type offloaded_type = { NULL, offloaded_free };
 
-// Data pointer of an Image, Info or KernelInfo => number of calls in flight
-// that read it, or OFFLOAD_UPDATING. Ruby objects that can be changed never
-// cross Ractors, so each Ractor has its own table.
+// Data pointer of an Image, its pixel cache, an Info or a KernelInfo => number
+// of calls in flight that read it, or OFFLOAD_UPDATING. Ruby objects that can
+// be changed never cross Ractors, so each Ractor has its own table.
 static st_table *
 offloaded(void)
 {
@@ -102,18 +109,13 @@ offload_state(const void *ptr)
     return state;
 }
 
-static int
+static void
 offload_begin(const void *ptr, OffloadMode mode)
 {
     st_data_t state = offload_state(ptr);
 
-    if (state == OFFLOAD_UPDATING || (mode == OffloadUpdate && state != 0))
-    {
-        return 0;
-    }
     st_insert(offloaded(), (st_data_t)ptr, mode == OffloadUpdate ? OFFLOAD_UPDATING : state + 1);
     offloads_in_flight.fetch_add(1, std::memory_order_relaxed);
-    return 1;
 }
 
 static void
@@ -265,6 +267,7 @@ typedef struct
 {
     void *key;
     OffloadMode mode;
+    bool image;
 } offload_mark_t;
 
 static bool
@@ -281,15 +284,44 @@ marked(const offload_mark_t *marks, long count, const void *key)
 }
 
 // The data pointer of an object registered with read() or update(), or of the
-// jth element of an array registered with read_each() or update_each()
+// jth element of an array registered with read_each() or update_each(), and
+// whether the object is an Image
 static void *
-object_key(VALUE obj, const void *ptr, bool each, long j)
+object_key(VALUE obj, const void *ptr, bool each, long j, bool *image)
 {
     if (ptr)
     {
+        *image = true;
         return (void *)ptr;
     }
-    return offload_key(each ? rb_ary_entry(obj, j) : obj);
+    obj = each ? rb_ary_entry(obj, j) : obj;
+    *image = rb_typeddata_is_kind_of(obj, &rm_image_data_type);
+    return offload_key(obj);
+}
+
+static void
+add_mark(offload_mark_t *marks, long *nmarks, void *key, OffloadMode mode, bool image)
+{
+    if (!key || marked(marks, *nmarks, key))
+    {
+        return;
+    }
+    marks[*nmarks].key = key;
+    marks[*nmarks].mode = mode;
+    marks[*nmarks].image = image;
+    (*nmarks)++;
+}
+
+static bool
+mark_in_use(const offload_mark_t *mark)
+{
+    st_data_t state = offload_state(mark->key);
+
+    if (mark->image)
+    {
+        return state != 0;
+    }
+    return state == OFFLOAD_UPDATING || (mark->mode == OffloadUpdate && state != 0);
 }
 #endif
 
@@ -410,7 +442,8 @@ rm_gvl_call::cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg)
 
 /**
  * The call reads the data of obj. Other fibers can still read it, but cannot
- * change or destroy it while the call is in flight.
+ * change or destroy it while the call is in flight. Another call cannot use
+ * an image that the call reads.
  *
  * @param obj an Image, Info or KernelInfo
  * @return self
@@ -423,8 +456,8 @@ rm_gvl_call::read(VALUE obj)
 
 
 /**
- * Like read(VALUE), for the data pointer of an object, such as an Image that
- * the caller has fetched.
+ * Like read(VALUE), for the data pointer of an Image that the caller has
+ * fetched.
  *
  * @param ptr the data pointer
  * @return self
@@ -451,7 +484,7 @@ rm_gvl_call::update(VALUE obj)
 
 
 /**
- * Like update(VALUE), for the data pointer of an object.
+ * Like update(VALUE), for the data pointer of an Image.
  *
  * @param ptr the data pointer
  * @return self
@@ -666,71 +699,63 @@ void *
 rm_gvl_call::call(ResultType type)
 {
 #if defined(RMAGICK_OFFLOAD_SAFE)
-    if (!keep && offload_p())
+    bool offload = !keep && offload_p();
+
+    if (offload || offloads_in_flight.load(std::memory_order_relaxed) != 0)
     {
         offload_call_t call = { fp, args, NULL };
         offload_mark_t *marks;
         VALUE marks_buffer;
-        long count = 0, nmarks = 0, nupdates;
+        long count = 0, nmarks = 0;
         int tag;
 
         for (int i = 0; i < nobjects; i++)
         {
             count += objects[i].each ? RARRAY_LEN(objects[i].obj) : 1;
         }
-        marks = ALLOCV_N(offload_mark_t, marks_buffer, count);
+        marks = ALLOCV_N(offload_mark_t, marks_buffer, 2 * count);
 
         // An object that the call both reads and changes is marked as changed.
-        for (int i = 0; i < nobjects; i++)
+        for (int pass = 0; pass < 2; pass++)
         {
-            long len = objects[i].each ? RARRAY_LEN(objects[i].obj) : 1;
+            for (int i = 0; i < nobjects; i++)
+            {
+                long len = objects[i].each ? RARRAY_LEN(objects[i].obj) : 1;
+                OffloadMode mode = objects[i].update ? OffloadUpdate : OffloadRead;
 
-            if (!objects[i].update)
-            {
-                continue;
-            }
-            for (long j = 0; j < len; j++)
-            {
-                void *key = object_key(objects[i].obj, objects[i].ptr, objects[i].each, j);
-                if (key && !marked(marks, nmarks, key))
+                if (objects[i].update != (pass == 0))
                 {
-                    marks[nmarks].key = key;
-                    marks[nmarks].mode = OffloadUpdate;
-                    nmarks++;
+                    continue;
                 }
-            }
-        }
-        nupdates = nmarks;
-        for (int i = 0; i < nobjects; i++)
-        {
-            long len = objects[i].each ? RARRAY_LEN(objects[i].obj) : 1;
-
-            if (objects[i].update)
-            {
-                continue;
-            }
-            for (long j = 0; j < len; j++)
-            {
-                void *key = object_key(objects[i].obj, objects[i].ptr, objects[i].each, j);
-                if (key && !marked(marks, nupdates, key))
+                for (long j = 0; j < len; j++)
                 {
-                    marks[nmarks].key = key;
-                    marks[nmarks].mode = OffloadRead;
-                    nmarks++;
+                    bool image;
+                    void *key = object_key(objects[i].obj, objects[i].ptr, objects[i].each, j, &image);
+
+                    add_mark(marks, &nmarks, key, mode, image);
+                    if (key && image)
+                    {
+                        add_mark(marks, &nmarks, ((Image *)key)->cache, mode, true);
+                    }
                 }
             }
         }
 
         for (long i = 0; i < nmarks; i++)
         {
-            st_data_t state = offload_state(marks[i].key);
-            if (state == OFFLOAD_UPDATING || (marks[i].mode == OffloadUpdate && state != 0))
+            if ((offload || marks[i].image) && mark_in_use(&marks[i]))
             {
                 ALLOCV_END(marks_buffer);
                 unwind(type, NULL);
                 raise_in_use();
             }
         }
+        if (!offload)
+        {
+            ALLOCV_END(marks_buffer);
+            return rb_thread_call_without_gvl(fp, args, RUBY_UBF_PROCESS, NULL);
+        }
+
         for (long i = 0; i < nmarks; i++)
         {
             offload_begin(marks[i].key, marks[i].mode);
