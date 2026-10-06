@@ -81,7 +81,7 @@ module RMagick
     end
 
     def configure_headers
-      @headers = %w[assert.h ctype.h stdio.h stdlib.h math.h time.h sys/types.h ruby.h ruby/io.h]
+      @headers = %w[assert.h ctype.h stdio.h stdlib.h math.h time.h sys/types.h ruby.h ruby/io.h ruby/fiber/scheduler.h]
 
       if have_header('MagickCore/MagickCore.h')
         headers << 'MagickCore/MagickCore.h'
@@ -275,7 +275,8 @@ module RMagick
 
     def create_header_file
       ruby_api = [
-        'rb_io_path' # Ruby 3.3.0
+        'rb_io_path', # Ruby 3.3.0
+        'rb_fiber_scheduler_blocking_operation_extract' # Ruby 4.0.0
       ]
       memory_api = %w[
         posix_memalign

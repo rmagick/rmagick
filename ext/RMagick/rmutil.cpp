@@ -307,16 +307,17 @@ rm_check_ary_type(VALUE ary)
 
 
 /**
- * Raise an error if the image has been destroyed.
+ * Raise an error if the image has been destroyed or an offloaded call is changing it.
  *
  * No Ruby usage (internal function)
  *
  * @param obj the image
  * @return the C image structure for the image
  * @throw DestroyedImageError
+ * @throw RuntimeError if an offloaded call is changing the image
  */
 Image *
-rm_check_destroyed(VALUE obj)
+rm_check_readable(VALUE obj)
 {
     Image *image;
 
@@ -325,13 +326,33 @@ rm_check_destroyed(VALUE obj)
     {
         rb_raise(Class_DestroyedImageError, "destroyed image");
     }
+    rm_gvl_check_readable(image);
 
     return image;
 }
 
 
 /**
- * Raise an error if the image has been destroyed or is frozen.
+ * Raise an error if the image has been destroyed or an offloaded call is using it.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param obj the image
+ * @return the C image structure for the image
+ * @throw DestroyedImageError
+ * @throw RuntimeError if an offloaded call is using the image
+ */
+Image *
+rm_check_writable(VALUE obj)
+{
+    Image *image = rm_check_readable(obj);
+    rm_gvl_check_writable(image);
+    return image;
+}
+
+
+/**
+ * Raise an error if the image has been destroyed, is frozen or an offloaded call is using it.
  *
  * No Ruby usage (internal function)
  *
@@ -341,8 +362,15 @@ rm_check_destroyed(VALUE obj)
 Image *
 rm_check_frozen(VALUE obj)
 {
-    Image *image = rm_check_destroyed(obj);
+    Image *image;
+
+    TypedData_Get_Struct(obj, Image, &rm_image_data_type, image);
+    if (!image)
+    {
+        rb_raise(Class_DestroyedImageError, "destroyed image");
+    }
     rb_check_frozen(obj);
+    rm_gvl_check_writable(image);
     return image;
 }
 
@@ -1156,13 +1184,13 @@ void rm_sync_image_options(Image *image, Info *info)
     {
 #if defined(IMAGEMAGICK_7)
         exception = AcquireExceptionInfo();
-        GVL_STRUCT_TYPE(TransformImageColorspace) args = { image, info->colorspace, exception };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TransformImageColorspace), &args);
+        DECLARE_GVL_CALL(call, TransformImageColorspace, image, info->colorspace, exception);
+        call.keep_thread().run<void>();
         CHECK_EXCEPTION();
         DestroyExceptionInfo(exception);
 #else
-        GVL_STRUCT_TYPE(TransformImageColorspace) args = { image, info->colorspace };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TransformImageColorspace), &args);
+        DECLARE_GVL_CALL(call, TransformImageColorspace, image, info->colorspace);
+        call.keep_thread().run<void>();
         rm_check_image_exception(image, RetainOnError);
 #endif
     }
@@ -1581,8 +1609,8 @@ rm_clone_image(Image *image)
     ExceptionInfo *exception;
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(CloneImage) args = { image, 0, 0, MagickTrue, exception };
-    clone = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CloneImage), &args);
+    DECLARE_GVL_CALL(call, CloneImage, image, 0, 0, MagickTrue, exception);
+    clone = call.keep_thread().run<Image *>();
     if (!clone)
     {
         rb_raise(rb_eNoMemError, "not enough memory to continue");

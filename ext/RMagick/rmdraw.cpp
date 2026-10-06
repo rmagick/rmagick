@@ -75,6 +75,28 @@ get_draw(VALUE self)
 
 
 /**
+ * Get the Draw struct of a Draw object for a method that changes it.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param self the Draw object
+ * @return the initialized Draw struct
+ * @throw FrozenError if the Draw object is frozen
+ * @throw RuntimeError if an offloaded call is using the Draw object
+ */
+static Draw *
+get_writable_draw(VALUE self)
+{
+    Draw *draw;
+
+    rb_check_frozen(self);
+    draw = get_draw(self);
+    rm_gvl_check_writable(draw);
+    return draw;
+}
+
+
+/**
  * Set the affine matrix from an {Magick::AffineMatrix}.
  *
  * @param matrix [Magick::AffineMatrix] the affine matrix
@@ -85,8 +107,7 @@ Draw_affine_eq(VALUE self, VALUE matrix)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     Export_AffineMatrix(&draw->info->affine, matrix);
     return matrix;
 }
@@ -103,8 +124,7 @@ Draw_align_eq(VALUE self, VALUE align)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     VALUE_TO_ENUM(align, draw->info->align, AlignType);
     return align;
 }
@@ -121,8 +141,7 @@ Draw_decorate_eq(VALUE self, VALUE decorate)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     VALUE_TO_ENUM(decorate, draw->info->decorate, DecorationType);
     return decorate;
 }
@@ -139,8 +158,7 @@ Draw_density_eq(VALUE self, VALUE density)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     magick_clone_string(&draw->info->density, StringValueCStr(density));
 
     return density;
@@ -158,8 +176,7 @@ Draw_encoding_eq(VALUE self, VALUE encoding)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     magick_clone_string(&draw->info->encoding, StringValueCStr(encoding));
 
     return encoding;
@@ -177,8 +194,7 @@ Draw_fill_eq(VALUE self, VALUE fill)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     Color_to_PixelColor(&draw->info->fill, fill);
     return fill;
 }
@@ -198,8 +214,7 @@ Draw_fill_pattern_eq(VALUE self, VALUE pattern)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
 
     if (draw->info->fill_pattern != NULL)
     {
@@ -213,7 +228,7 @@ Draw_fill_pattern_eq(VALUE self, VALUE pattern)
         Image *image;
 
         pattern = rm_cur_image(pattern);
-        image = rm_check_destroyed(pattern);
+        image = rm_check_readable(pattern);
         // Do not trace creation
         draw->info->fill_pattern = rm_clone_image(image);
     }
@@ -233,8 +248,7 @@ Draw_font_eq(VALUE self, VALUE font)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     magick_clone_string(&draw->info->font, StringValueCStr(font));
 
     return font;
@@ -252,8 +266,7 @@ Draw_font_family_eq(VALUE self, VALUE family)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     magick_clone_string(&draw->info->family, StringValueCStr(family));
 
     return family;
@@ -271,8 +284,7 @@ Draw_font_stretch_eq(VALUE self, VALUE stretch)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     VALUE_TO_ENUM(stretch, draw->info->stretch, StretchType);
     return stretch;
 }
@@ -289,8 +301,7 @@ Draw_font_style_eq(VALUE self, VALUE style)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     VALUE_TO_ENUM(style, draw->info->style, StyleType);
     return style;
 }
@@ -309,8 +320,7 @@ Draw_font_weight_eq(VALUE self, VALUE weight)
     Draw *draw;
     size_t w;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
 
     if (FIXNUM_P(weight))
     {
@@ -375,8 +385,7 @@ Draw_gravity_eq(VALUE self, VALUE grav)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     VALUE_TO_ENUM(grav, draw->info->gravity, GravityType);
 
     return grav;
@@ -394,8 +403,7 @@ Draw_kerning_eq(VALUE self, VALUE kerning)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     draw->info->kerning = NUM2DBL(kerning);
     return kerning;
 }
@@ -412,8 +420,7 @@ Draw_interline_spacing_eq(VALUE self, VALUE spacing)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     draw->info->interline_spacing = NUM2DBL(spacing);
     return spacing;
 }
@@ -430,8 +437,7 @@ Draw_interword_spacing_eq(VALUE self, VALUE spacing)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     draw->info->interword_spacing = NUM2DBL(spacing);
     return spacing;
 }
@@ -463,8 +469,8 @@ image_to_str(Image *image)
 
         info = CloneImageInfo(NULL);
         exception = AcquireExceptionInfo();
-        GVL_STRUCT_TYPE(ImageToBlob) args = { info, image, &length, exception };
-        blob = (unsigned char *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ImageToBlob), &args);
+        DECLARE_GVL_CALL(call, ImageToBlob, info, image, &length, exception);
+        blob = call.keep_thread().run<unsigned char *>();
         DestroyImageInfo(info);
         CHECK_EXCEPTION();
         DestroyExceptionInfo(exception);
@@ -504,8 +510,8 @@ Image *str_to_image(VALUE str)
 
         info = CloneImageInfo(NULL);
         exception = AcquireExceptionInfo();
-        GVL_STRUCT_TYPE(BlobToImage) args = { info, RSTRING_PTR(str), (size_t)RSTRING_LEN(str), exception };
-        image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BlobToImage), &args);
+        DECLARE_GVL_CALL(call, BlobToImage, info, RSTRING_PTR(str), (size_t)RSTRING_LEN(str), exception);
+        image = call.keep_thread().run<Image *>();
         DestroyImageInfo(info);
         CHECK_EXCEPTION();
         DestroyExceptionInfo(exception);
@@ -668,8 +674,7 @@ Draw_pointsize_eq(VALUE self, VALUE pointsize)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     draw->info->pointsize = NUM2DBL(pointsize);
     return pointsize;
 }
@@ -688,8 +693,7 @@ Draw_rotation_eq(VALUE self, VALUE deg)
     double degrees;
     AffineMatrix affine, current;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
 
     degrees = NUM2DBL(deg);
     if (fabs(degrees) > DBL_EPSILON)
@@ -724,8 +728,7 @@ Draw_stroke_eq(VALUE self, VALUE stroke)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     Color_to_PixelColor(&draw->info->stroke, stroke);
     return stroke;
 }
@@ -744,8 +747,7 @@ Draw_stroke_pattern_eq(VALUE self, VALUE pattern)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
 
     if (draw->info->stroke_pattern != NULL)
     {
@@ -760,7 +762,7 @@ Draw_stroke_pattern_eq(VALUE self, VALUE pattern)
 
         // DestroyDrawInfo destroys the clone
         pattern = rm_cur_image(pattern);
-        image = rm_check_destroyed(pattern);
+        image = rm_check_readable(pattern);
         // Do not trace creation
         draw->info->stroke_pattern = rm_clone_image(image);
     }
@@ -780,8 +782,7 @@ Draw_stroke_width_eq(VALUE self, VALUE stroke_width)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     draw->info->stroke_width = NUM2DBL(stroke_width);
     return stroke_width;
 }
@@ -798,8 +799,7 @@ Draw_text_antialias_eq(VALUE self, VALUE text_antialias)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     draw->info->text_antialias = (MagickBooleanType) RTEST(text_antialias);
     return text_antialias;
 }
@@ -829,8 +829,7 @@ Draw_undercolor_eq(VALUE self, VALUE undercolor)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     Color_to_PixelColor(&draw->info->undercolor, undercolor);
     return undercolor;
 }
@@ -868,9 +867,12 @@ annotate_ensure(VALUE arg)
     struct Draw_annotate_args *annotate = (struct Draw_annotate_args *)arg;
     Draw *draw = annotate->draw;
 
-    magick_free(draw->info->text);
-    draw->info->text = NULL;
-    draw->info->affine = annotate->keep;
+    if (!rm_gvl_in_use(draw))
+    {
+        magick_free(draw->info->text);
+        draw->info->text = NULL;
+        draw->info->affine = annotate->keep;
+    }
 
 #if defined(IMAGEMAGICK_7)
     if (annotate->exception)
@@ -930,23 +932,24 @@ annotate_body(VALUE arg)
         snprintf(geometry_str, sizeof(geometry_str), "%lux%lu%+ld%+ld", width, height, x, y);
     }
 
-    magick_clone_string(&draw->info->geometry, geometry_str);
-
     // Store in Draw structure. The text is drawn as given: it is not run
     // through InterpretImageProperties(), so a `%[...]` or `%x` escape in it is
     // not expanded. Everything those escapes provide is available directly from
     // Ruby -- Image#columns, Image#filename, Image#artifact and so on.
     embed_text = StringValueCStr(annotate->text);
     image = rm_check_frozen(annotate->image_arg);
+    rm_gvl_check_writable(draw);
+
+    magick_clone_string(&draw->info->geometry, geometry_str);
     draw->info->text = ConstantString(embed_text);
 
 #if defined(IMAGEMAGICK_7)
     annotate->exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(AnnotateImage) args = { image, draw->info, annotate->exception };
+    DECLARE_GVL_CALL(call, AnnotateImage, image, draw->info, annotate->exception);
 #else
-    GVL_STRUCT_TYPE(AnnotateImage) args = { image, draw->info };
+    DECLARE_GVL_CALL(call, AnnotateImage, image, draw->info);
 #endif
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(AnnotateImage), &args);
+    call.update(annotate->image_arg).update(annotate->self).run<void>();
 
 #if defined(IMAGEMAGICK_7)
     exception = annotate->exception;
@@ -991,6 +994,7 @@ VALUE Draw_annotate(
     // Save the affine matrix in case it is modified by
     // Draw#rotation=
     annotate.draw = get_draw(self);
+    rm_gvl_check_writable(annotate.draw);
     annotate.keep = annotate.draw->info->affine;
 
     annotate.self       = self;
@@ -1057,7 +1061,7 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
 
     // Retrieve the image to composite
     image = rm_cur_image(argv[4]);
-    comp_img = rm_check_destroyed(image);
+    comp_img = rm_check_readable(image);
 
     x = NUM2DBL(argv[0]);
     y = NUM2DBL(argv[1]);
@@ -1102,6 +1106,26 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
 }
 
 
+// Release what Draw#draw and get_type_metrics() set on the DrawInfo for one call
+static void
+free_primitive(void *ptr, intptr_t arg ATTRIBUTE_UNUSED)
+{
+    Draw *draw = (Draw *)ptr;
+
+    magick_free(draw->info->primitive);
+    draw->info->primitive = NULL;
+}
+
+static void
+free_text(void *ptr, intptr_t arg ATTRIBUTE_UNUSED)
+{
+    Draw *draw = (Draw *)ptr;
+
+    magick_free(draw->info->text);
+    draw->info->text = NULL;
+}
+
+
 /**
  * Execute the stored drawing primitives on the current image.
  *
@@ -1122,6 +1146,7 @@ Draw_draw(VALUE self, VALUE image_arg)
     image = rm_check_frozen(image_arg);
 
     draw = get_draw(self);
+    rm_gvl_check_writable(draw);
     if (draw->primitives == 0)
     {
         rb_raise(rb_eArgError, "nothing to draw");
@@ -1132,11 +1157,12 @@ Draw_draw(VALUE self, VALUE image_arg)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(DrawImage) args = { image, draw->info, exception };
+    DECLARE_GVL_CALL(call, DrawImage, image, draw->info, exception);
+    call.release(exception);
 #else
-    GVL_STRUCT_TYPE(DrawImage) args = { image, draw->info };
+    DECLARE_GVL_CALL(call, DrawImage, image, draw->info);
 #endif
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(DrawImage), &args);
+    call.update(image_arg).update(self).cleanup(free_primitive, draw).run<void>();
 
     magick_free(draw->info->primitive);
     draw->info->primitive = NULL;
@@ -1576,8 +1602,7 @@ PolaroidOptions_border_color_eq(VALUE self, VALUE border)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     Color_to_PixelColor(&draw->info->border_color, border);
     return border;
 }
@@ -1669,7 +1694,7 @@ get_type_metrics(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
             break;
         case 2:
             t = rm_cur_image(argv[0]);
-            image = rm_check_destroyed(t);
+            image = rm_check_readable(t);
             text_arg = argv[1];
             text = rm_str2cstr(&text_arg, &text_l);
             break;                  // okay
@@ -1684,16 +1709,18 @@ get_type_metrics(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
     }
 
     draw = get_draw(self);
+    rm_gvl_check_writable(draw);
     // Measured as given: see the comment in Draw_annotate().
     draw->info->text = ConstantString(text);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(get_type_metrics) args = { image, draw->info, &metrics, exception };
+    DECLARE_GVL_CALL_FP(call, get_type_metrics, fp, image, draw->info, &metrics, exception);
+    call.release(exception);
 #else
-    GVL_STRUCT_TYPE(get_type_metrics) args = { image, draw->info, &metrics };
+    DECLARE_GVL_CALL_FP(call, get_type_metrics, fp, image, draw->info, &metrics);
 #endif
-    void *ret = CALL_FUNC_WITHOUT_GVL(fp, &args);
+    void *ret = call.read(image).update(self).cleanup(free_text, draw).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
 
     magick_free(draw->info->text);

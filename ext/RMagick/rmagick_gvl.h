@@ -2,13 +2,15 @@
 #define _RMAGICK_GVL_H_
 
 #include "ruby/thread.h"
+#include "ruby/fiber/scheduler.h"
 
 typedef void *(gvl_function_t)(void *);
 
 #define GVL_FUNC(name)        name##_gvl
 #define GVL_STRUCT_TYPE(name) name##_args_t
-#define CALL_FUNC_WITHOUT_GVL(fp, args) \
-    rb_thread_call_without_gvl(fp, args, RUBY_UBF_PROCESS, NULL)
+#if defined(RB_NOGVL_OFFLOAD_SAFE) && defined(HAVE_RB_FIBER_SCHEDULER_BLOCKING_OPERATION_EXTRACT)
+#define RMAGICK_OFFLOAD_SAFE 1
+#endif
 
 
 #define DEFINE_GVL_STRUCT1(name, type1) \

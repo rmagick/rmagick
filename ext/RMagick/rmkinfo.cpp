@@ -128,6 +128,11 @@ KernelInfo_initialize(VALUE self, VALUE kernel_string)
     }
 
     old_kernel = (KernelInfo *)DATA_PTR(self);
+    if (old_kernel && rm_gvl_in_use(old_kernel))
+    {
+        DestroyKernelInfo(kernel);
+        rm_gvl_check_writable(old_kernel);
+    }
     DATA_PTR(self) = kernel;
     if (old_kernel)
     {
@@ -173,12 +178,17 @@ get_kernel_info(VALUE self)
  * @param self the KernelInfo object
  * @return the KernelInfo struct
  * @throw FrozenError if the object is frozen
+ * @throw RuntimeError if an offloaded call is using the kernel
  */
 static KernelInfo *
-get_unfrozen_kernel_info(VALUE self)
+get_writable_kernel_info(VALUE self)
 {
+    KernelInfo *kernel;
+
     rb_check_frozen(self);
-    return get_kernel_info(self);
+    kernel = get_kernel_info(self);
+    rm_gvl_check_writable(kernel);
+    return kernel;
 }
 
 
@@ -190,8 +200,8 @@ get_unfrozen_kernel_info(VALUE self)
 VALUE
 KernelInfo_unity_add(VALUE self, VALUE scale)
 {
-    GVL_STRUCT_TYPE(UnityAddKernelInfo) args = { get_unfrozen_kernel_info(self), NUM2DBL(scale) };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(UnityAddKernelInfo), &args);
+    DECLARE_GVL_CALL(call, UnityAddKernelInfo, get_writable_kernel_info(self), NUM2DBL(scale));
+    call.update(self).run<void>();
     return Qnil;
 }
 
@@ -213,8 +223,8 @@ KernelInfo_scale(VALUE self, VALUE scale, VALUE flags)
 
     VALUE_TO_ENUM(flags, geoflags, GeometryFlags);
 
-    GVL_STRUCT_TYPE(ScaleKernelInfo) args = { get_unfrozen_kernel_info(self), NUM2DBL(scale), geoflags };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ScaleKernelInfo), &args);
+    DECLARE_GVL_CALL(call, ScaleKernelInfo, get_writable_kernel_info(self), NUM2DBL(scale), geoflags);
+    call.update(self).run<void>();
     return Qnil;
 }
 
@@ -227,10 +237,14 @@ KernelInfo_scale(VALUE self, VALUE scale, VALUE flags)
 VALUE
 KernelInfo_scale_geometry(VALUE self, VALUE geometry)
 {
-    char *geom = StringValueCStr(geometry);
+    KernelInfo *kernel = get_writable_kernel_info(self);
+    char *geom;
 
-    GVL_STRUCT_TYPE(ScaleGeometryKernelInfo) args = { get_unfrozen_kernel_info(self), geom };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ScaleGeometryKernelInfo), &args);
+    geometry = rb_str_new_frozen(StringValue(geometry));
+    geom = StringValueCStr(geometry);
+
+    DECLARE_GVL_CALL(call, ScaleGeometryKernelInfo, kernel, geom);
+    call.update(self).run<void>();
 
     RB_GC_GUARD(geometry);
 
@@ -257,6 +271,11 @@ KernelInfo_init_copy(VALUE self, VALUE orig)
     }
 
     old_kernel = (KernelInfo *)DATA_PTR(self);
+    if (old_kernel && rm_gvl_in_use(old_kernel))
+    {
+        DestroyKernelInfo(kernel);
+        rm_gvl_check_writable(old_kernel);
+    }
     DATA_PTR(self) = kernel;
     if (old_kernel)
     {

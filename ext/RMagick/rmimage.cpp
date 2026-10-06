@@ -11,6 +11,9 @@
 
 #include "rmagick.h"
 #include <signal.h>
+#if defined(__APPLE__) || defined(__FreeBSD__)
+#include <atomic>
+#endif
 
 #define BEGIN_CHANNEL_MASK(image, channels) \
   { \
@@ -296,6 +299,43 @@ DEFINE_GVL_STUB4(RotationalBlurImageChannel, const Image *, const ChannelType, c
 #endif
 
 /**
+ * Get the image of a method that sets the channel mask of the image on IM7.
+ * IM6 passes the channels as an argument instead and only reads the image.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param self the image
+ * @return the C image structure for the image
+ */
+static Image *
+check_channel_writable(VALUE self)
+{
+#if defined(IMAGEMAGICK_7)
+    return rm_check_writable(self);
+#else
+    return rm_check_readable(self);
+#endif
+}
+
+// Restore a color of the image that the method swapped in for one call
+static void
+restore_color(void *ptr, intptr_t old_color)
+{
+    *(PixelColor *)ptr = *(PixelColor *)old_color;
+}
+
+// Destroy the KernelInfo of Image#recolor, whose values are Ruby memory
+static void
+destroy_color_matrix(void *ptr, intptr_t arg ATTRIBUTE_UNUSED)
+{
+    KernelInfo *kernel_info = (KernelInfo *)ptr;
+
+    xfree((void *)kernel_info->values);
+    kernel_info->values = (double *) NULL;
+    DestroyKernelInfo(kernel_info);
+}
+
+/**
  * Returns the alpha value from the hash.
  *
  * No Ruby usage (internal function)
@@ -340,7 +380,7 @@ adaptive_method(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
     double sigma = 1.0;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     switch (argc)
     {
@@ -357,8 +397,8 @@ adaptive_method(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
 
     exception = AcquireExceptionInfo();
 
-    GVL_STRUCT_TYPE(adaptive_method) args = { image, radius, sigma, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(fp, &args);
+    DECLARE_GVL_CALL_FP(call, adaptive_method, fp, image, radius, sigma, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -393,7 +433,7 @@ adaptive_channel_method(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
     ExceptionInfo *exception;
     ChannelType channels;
 
-    image = rm_check_destroyed(self);
+    image = check_channel_writable(self);
     channels = extract_channels(&argc, argv);
 
     switch (argc)
@@ -413,13 +453,13 @@ adaptive_channel_method(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
 
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    GVL_STRUCT_TYPE(adaptive_channel_method) args = { image, radius, sigma, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(fp, &args);
+    DECLARE_GVL_CALL_FP(call, adaptive_channel_method, fp, image, radius, sigma, exception);
+    new_image = call.update(self).restore_mask(image, channel_mask).release(exception).run<Image *>();
     CHANGE_RESULT_CHANNEL_MASK(new_image);
     END_CHANNEL_MASK(image);
 #else
-    GVL_STRUCT_TYPE(adaptive_channel_method) args = { image, channels, radius, sigma, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(fp, &args);
+    DECLARE_GVL_CALL_FP(call, adaptive_channel_method, fp, image, channels, radius, sigma, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
 #endif
 
     rm_check_exception(exception, new_image, DestroyOnError);
@@ -495,7 +535,7 @@ Image_adaptive_resize(int argc, VALUE *argv, VALUE self)
     double scale_val, drows, dcols;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     switch (argc)
     {
@@ -524,8 +564,8 @@ Image_adaptive_resize(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(AdaptiveResizeImage) args = { image, columns, rows, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(AdaptiveResizeImage), &args);
+    DECLARE_GVL_CALL(call, AdaptiveResizeImage, image, columns, rows, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -600,7 +640,7 @@ Image_adaptive_threshold(int argc, VALUE *argv, VALUE self)
     double bias = 0;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     switch (argc)
     {
@@ -617,8 +657,8 @@ Image_adaptive_threshold(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(AdaptiveThresholdImage) args = { image, width, height, bias, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(AdaptiveThresholdImage), &args);
+    DECLARE_GVL_CALL(call, AdaptiveThresholdImage, image, width, height, bias, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -647,7 +687,8 @@ Image_add_compose_mask(VALUE self, VALUE mask)
 #endif
 
     image = rm_check_frozen(self);
-    mask_image = rm_check_destroyed(rm_cur_image(mask));
+    mask = rm_cur_image(mask);
+    mask_image = rm_check_readable(mask);
     if (image->columns != mask_image->columns || image->rows != mask_image->rows)
     {
         rb_raise(rb_eArgError, "mask must be the same size as image");
@@ -657,25 +698,27 @@ Image_add_compose_mask(VALUE self, VALUE mask)
     clip_mask = rm_clone_image(mask_image);
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(NegateImage) args_NegateImage = { clip_mask, MagickFalse, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(NegateImage), &args_NegateImage);
+    DECLARE_GVL_CALL(negate_call, NegateImage, clip_mask, MagickFalse, exception);
+    negate_call.update(self).read(mask).destroy(clip_mask).release(exception).run<void>();
     rm_check_exception(exception, clip_mask, DestroyOnError);
-    GVL_STRUCT_TYPE(SetImageMask) args_SetImageMask = { image, CompositePixelMask, clip_mask, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageMask), &args_SetImageMask);
+    DECLARE_GVL_CALL(mask_call, SetImageMask, image, CompositePixelMask, clip_mask, exception);
+    mask_call.update(self).destroy(clip_mask).release(exception).run<void>();
     DestroyImage(clip_mask);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     // Delete any previously-existing mask image.
     // Store a clone of the new mask image.
-    GVL_STRUCT_TYPE(SetImageMask) args_SetImageMask = { image, mask_image };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageMask), &args_SetImageMask);
-    GVL_STRUCT_TYPE(NegateImage) args_NegateImage = { image->mask, MagickFalse };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(NegateImage), &args_NegateImage);
+    DECLARE_GVL_CALL(mask_call, SetImageMask, image, mask_image);
+    mask_call.update(self).read(mask).run<void>();
+    DECLARE_GVL_CALL(negate_call, NegateImage, image->mask, MagickFalse);
+    negate_call.update(self).run<void>();
 
     // Since both Set and GetImageMask clone the mask image I don't see any
     // way to negate the mask without referencing it directly. Sigh.
 #endif
+
+    RB_GC_GUARD(mask);
 
     return self;
 }
@@ -694,17 +737,17 @@ Image_add_noise(VALUE self, VALUE noise)
     NoiseType noise_type;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     VALUE_TO_ENUM(noise, noise_type, NoiseType);
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(AddNoiseImage) args = { image, noise_type, 1.0, exception };
+    DECLARE_GVL_CALL(call, AddNoiseImage, image, noise_type, 1.0, exception);
 #else
-    GVL_STRUCT_TYPE(AddNoiseImage) args = { image, noise_type, exception };
+    DECLARE_GVL_CALL(call, AddNoiseImage, image, noise_type, exception);
 #endif
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(AddNoiseImage), &args);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -732,7 +775,7 @@ Image_add_noise_channel(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
     ChannelType channels;
 
-    image = rm_check_destroyed(self);
+    image = check_channel_writable(self);
     channels = extract_channels(&argc, argv);
 
     // There must be 1 remaining argument.
@@ -751,12 +794,12 @@ Image_add_noise_channel(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    GVL_STRUCT_TYPE(AddNoiseImage) args = { image, noise_type, 1.0, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(AddNoiseImage), &args);
+    DECLARE_GVL_CALL(call, AddNoiseImage, image, noise_type, 1.0, exception);
+    new_image = call.update(self).restore_mask(image, channel_mask).release(exception).run<Image *>();
     END_CHANNEL_MASK(new_image);
 #else
-    GVL_STRUCT_TYPE(AddNoiseImageChannel) args = { image, channels, noise_type, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(AddNoiseImageChannel), &args);
+    DECLARE_GVL_CALL(call, AddNoiseImageChannel, image, channels, noise_type, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -814,12 +857,12 @@ Image_add_profile(VALUE self, VALUE name)
         if (profile)
         {
 #if defined(IMAGEMAGICK_7)
-            GVL_STRUCT_TYPE(ProfileImage) args = { image, profile_name, GetStringInfoDatum(profile), GetStringInfoLength(profile), exception };
-            CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ProfileImage), &args);
+            DECLARE_GVL_CALL(call, ProfileImage, image, profile_name, GetStringInfoDatum(profile), GetStringInfoLength(profile), exception);
+            call.update(self).destroy(profile_image).release(exception).run<void>();
             if (rm_should_raise_exception(exception, RetainExceptionRetention))
 #else
-            GVL_STRUCT_TYPE(ProfileImage) args = { image, profile_name, GetStringInfoDatum(profile), GetStringInfoLength(profile), MagickFalse };
-            CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ProfileImage), &args);
+            DECLARE_GVL_CALL(call, ProfileImage, image, profile_name, GetStringInfoDatum(profile), GetStringInfoLength(profile), MagickFalse);
+            call.update(self).destroy(profile_image).release(exception).run<void>();
             if (rm_should_raise_exception(&image->exception, RetainExceptionRetention))
 #endif
             {
@@ -890,13 +933,13 @@ Image_alpha(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(SetImageAlphaChannel) args = { image, alpha, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageAlphaChannel), &args);
+    DECLARE_GVL_CALL(call, SetImageAlphaChannel, image, alpha, exception);
+    call.update(self).release(exception).run<void>();
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(SetImageAlphaChannel) args = { image, alpha };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageAlphaChannel), &args);
+    DECLARE_GVL_CALL(call, SetImageAlphaChannel, image, alpha);
+    call.update(self).run<void>();
     rm_check_image_exception(image, RetainOnError);
 #endif
 
@@ -913,7 +956,7 @@ Image_alpha(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_alpha_q(VALUE self)
 {
-    Image *image = rm_check_destroyed(self);
+    Image *image = rm_check_readable(self);
 #if defined(IMAGEMAGICK_7)
     return image->alpha_trait == BlendPixelTrait ? Qtrue : Qfalse;
 #else
@@ -935,15 +978,14 @@ Image_affine_transform(VALUE self, VALUE affine)
     ExceptionInfo *exception;
     AffineMatrix matrix;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     // Convert Magick::AffineMatrix to AffineMatrix structure.
     Export_AffineMatrix(&matrix, affine);
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(AffineTransformImage) args = { image, &matrix, exception };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(AffineTransformImage), &args);
-    new_image = reinterpret_cast<decltype(new_image)>(ret);
+    DECLARE_GVL_CALL(call, AffineTransformImage, image, &matrix, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -970,7 +1012,7 @@ VALUE
     const char *key;
     const char *attr;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     switch (TYPE(key_arg))
     {
@@ -1087,9 +1129,9 @@ crisscross(int bang, VALUE self, gvl_function_t fp)
     TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
     exception = AcquireExceptionInfo();
 
-    GVL_STRUCT_TYPE(crisscross) args = { image, exception };
-    void *ret = CALL_FUNC_WITHOUT_GVL(fp, &args);
-    new_image = reinterpret_cast<decltype(new_image)>(ret);
+    DECLARE_GVL_CALL_FP(call, crisscross, fp, image, exception);
+    bang ? call.update(self) : call.read(self);
+    new_image = call.release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -1133,7 +1175,7 @@ auto_channel(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     channels = extract_channels(&argc, argv);
 
     if (argc > 0)
@@ -1146,14 +1188,14 @@ auto_channel(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(new_image, channels);
-    GVL_STRUCT_TYPE(auto_channel) args = { new_image, exception };
-    CALL_FUNC_WITHOUT_GVL(fp, &args);
+    DECLARE_GVL_CALL_FP(call, auto_channel, fp, new_image, exception);
+    call.read(self).destroy(new_image).release(exception).run<void>();
     END_CHANNEL_MASK(new_image);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(auto_channel) args = { new_image, channels };
-    CALL_FUNC_WITHOUT_GVL(fp, &args);
+    DECLARE_GVL_CALL_FP(call, auto_channel, fp, new_image, channels);
+    call.read(self).destroy(new_image).run<void>();
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -1286,7 +1328,7 @@ auto_orient(int bang, VALUE self)
 VALUE
 Image_auto_orient(VALUE self)
 {
-    rm_check_destroyed(self);
+    rm_check_readable(self);
     return auto_orient(False, self);
 }
 
@@ -1316,7 +1358,7 @@ Image_auto_orient_bang(VALUE self)
 VALUE
 Image_background_color(VALUE self)
 {
-    Image *image = rm_check_destroyed(self);
+    Image *image = rm_check_readable(self);
     return rm_pixelcolor_to_color_name(image, &image->background_color);
 }
 
@@ -1344,7 +1386,7 @@ Image_background_color_eq(VALUE self, VALUE color)
 VALUE
 Image_base_columns(VALUE self)
 {
-    Image *image = rm_check_destroyed(self);
+    Image *image = rm_check_readable(self);
     return INT2FIX(image->magick_columns);
 }
 
@@ -1356,7 +1398,7 @@ Image_base_columns(VALUE self)
 VALUE
 Image_base_filename(VALUE self)
 {
-    Image *image = rm_check_destroyed(self);
+    Image *image = rm_check_readable(self);
     if (*image->magick_filename)
     {
         return rb_str_new2(image->magick_filename);
@@ -1375,7 +1417,7 @@ Image_base_filename(VALUE self)
 VALUE
 Image_base_rows(VALUE self)
 {
-    Image *image = rm_check_destroyed(self);
+    Image *image = rm_check_readable(self);
     return INT2FIX(image->magick_rows);
 }
 
@@ -1391,7 +1433,7 @@ Image_bias(VALUE self)
     Image *image;
     double bias = 0.0;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 #if defined(IMAGEMAGICK_7)
     {
         const char *artifact = GetImageArtifact(image, "convolve:bias");
@@ -1469,7 +1511,7 @@ Image_bilevel_channel(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     channels = extract_channels(&argc, argv);
 
     if (argc > 1)
@@ -1487,14 +1529,14 @@ Image_bilevel_channel(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(new_image, channels);
-    GVL_STRUCT_TYPE(BilevelImage) args = { new_image, threshold, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BilevelImage), &args);
+    DECLARE_GVL_CALL(call, BilevelImage, new_image, threshold, exception);
+    call.read(self).destroy(new_image).release(exception).run<void>();
     END_CHANNEL_MASK(new_image);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(BilevelImageChannel) args = { new_image, channels, threshold };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BilevelImageChannel), &args);
+    DECLARE_GVL_CALL(call, BilevelImageChannel, new_image, channels, threshold);
+    call.read(self).destroy(new_image).run<void>();
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -1514,7 +1556,7 @@ Image_black_point_compensation(VALUE self)
     const char *attr;
     VALUE value;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     attr = rm_get_property(image, BlackPointCompensationKey);
     if (attr && rm_strcasecmp(attr, "true") == 0)
@@ -1897,13 +1939,13 @@ special_composite(Image *image, Image *overlay, double image_pct, double overlay
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(CompositeImage) args = { new_image, overlay, op, MagickTrue, x_off, y_off, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompositeImage), &args);
+    DECLARE_GVL_CALL(call, CompositeImage, new_image, overlay, op, MagickTrue, x_off, y_off, exception);
+    call.read(image).read(overlay).destroy(new_image).release(exception).run<void>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(CompositeImage) args = { new_image, op, overlay, x_off, y_off };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompositeImage), &args);
+    DECLARE_GVL_CALL(call, CompositeImage, new_image, op, overlay, x_off, y_off);
+    call.read(image).read(overlay).destroy(new_image).run<void>();
 
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
@@ -1935,12 +1977,12 @@ special_composite(Image *image, Image *overlay, double image_pct, double overlay
 VALUE
 Image_blend(int argc, VALUE *argv, VALUE self)
 {
-    VALUE ovly;
+    VALUE composite_image, ovly;
     Image *image, *overlay;
     double src_percent, dst_percent;
     long x_offset = 0L, y_offset = 0L;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     if (argc < 1)
     {
@@ -1948,7 +1990,7 @@ Image_blend(int argc, VALUE *argv, VALUE self)
     }
 
     ovly = rm_cur_image(argv[0]);
-    overlay = rm_check_destroyed(ovly);
+    overlay = rm_check_writable(ovly);
 
     if (argc > 3)
     {
@@ -1972,11 +2014,13 @@ Image_blend(int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    composite_image = special_composite(image, overlay, src_percent, dst_percent,
+                                        x_offset, y_offset, BlendCompositeOp);
+
+    RB_GC_GUARD(composite_image);
     RB_GC_GUARD(ovly);
 
-    return special_composite(image, overlay, src_percent, dst_percent,
-                             x_offset, y_offset, BlendCompositeOp);
-
+    return composite_image;
 }
 
 
@@ -1995,7 +2039,7 @@ Image_blue_shift(int argc, VALUE *argv, VALUE self)
     double factor = 1.5;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     switch (argc)
     {
@@ -2010,8 +2054,8 @@ Image_blue_shift(int argc, VALUE *argv, VALUE self)
 
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(BlueShiftImage) args = { image, factor, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BlueShiftImage), &args);
+    DECLARE_GVL_CALL(call, BlueShiftImage, image, factor, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 
@@ -2043,7 +2087,7 @@ Image_blur_channel(int argc, VALUE *argv, VALUE self)
     ChannelType channels;
     double radius = 0.0, sigma = 1.0;
 
-    image = rm_check_destroyed(self);
+    image = check_channel_writable(self);
 
     channels = extract_channels(&argc, argv);
 
@@ -2063,13 +2107,13 @@ Image_blur_channel(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    GVL_STRUCT_TYPE(BlurImage) args = { image, radius, sigma, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BlurImage), &args);
+    DECLARE_GVL_CALL(call, BlurImage, image, radius, sigma, exception);
+    new_image = call.update(self).restore_mask(image, channel_mask).release(exception).run<Image *>();
     CHANGE_RESULT_CHANNEL_MASK(new_image);
     END_CHANNEL_MASK(image);
 #else
-    GVL_STRUCT_TYPE(BlurImageChannel) args = { image, channels, radius, sigma, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BlurImageChannel), &args);
+    DECLARE_GVL_CALL(call, BlurImageChannel, image, channels, radius, sigma, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -2112,7 +2156,7 @@ static VALUE
 border(int bang, VALUE self, VALUE width, VALUE height, VALUE color)
 {
     Image *image, *new_image;
-    PixelColor old_border;
+    PixelColor old_border, new_border;
     ExceptionInfo *exception;
     RectangleInfo rect;
 
@@ -2121,18 +2165,20 @@ border(int bang, VALUE self, VALUE width, VALUE height, VALUE color)
     memset(&rect, 0, sizeof(rect));
     rect.width = NUM2UINT(width);
     rect.height = NUM2UINT(height);
+    Color_to_PixelColor(&new_border, color);
 
     // Save current border color - we'll want to restore it afterwards.
+    rm_gvl_check_writable(image);
     old_border = image->border_color;
-    Color_to_PixelColor(&image->border_color, color);
+    image->border_color = new_border;
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(BorderImage) args = { image, &rect, image->compose, exception };
+    DECLARE_GVL_CALL(call, BorderImage, image, &rect, image->compose, exception);
 #else
-    GVL_STRUCT_TYPE(BorderImage) args = { image, &rect, exception };
+    DECLARE_GVL_CALL(call, BorderImage, image, &rect, exception);
 #endif
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BorderImage), &args);
+    new_image = call.update(self).cleanup(restore_color, &image->border_color, (intptr_t)&old_border).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -2176,7 +2222,7 @@ Image_border_bang(VALUE self, VALUE width, VALUE height, VALUE color)
 VALUE
 Image_border(VALUE self, VALUE width, VALUE height, VALUE color)
 {
-    rm_check_destroyed(self);
+    rm_check_readable(self);
     return border(False, self, width, height, color);
 }
 
@@ -2189,7 +2235,7 @@ Image_border(VALUE self, VALUE width, VALUE height, VALUE color)
 VALUE
 Image_border_color(VALUE self)
 {
-    Image *image = rm_check_destroyed(self);
+    Image *image = rm_check_readable(self);
     return rm_pixelcolor_to_color_name(image, &image->border_color);
 }
 
@@ -2221,7 +2267,7 @@ Image_bounding_box(VALUE self)
     RectangleInfo box;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
     box = GetImageBoundingBox(image, exception);
     CHECK_EXCEPTION();
@@ -2358,7 +2404,7 @@ Image_change_geometry(VALUE self, VALUE geom_arg)
     unsigned int flags;
     VALUE ary;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     geom_str = rb_String(geom_arg);
     geometry = StringValueCStr(geom_str);
 
@@ -2391,7 +2437,7 @@ Image_change_geometry(VALUE self, VALUE geom_arg)
 VALUE
 Image_changed_q(VALUE self)
 {
-    Image *image = rm_check_destroyed(self);
+    Image *image = rm_check_readable(self);
     VALUE okay = IsTaintImage(image) ? Qtrue : Qfalse;
     return okay;
 }
@@ -2413,20 +2459,20 @@ Image_channel(VALUE self, VALUE channel_arg)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     VALUE_TO_ENUM(channel_arg, channel, ChannelType);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(SeparateImage) args = { image, channel, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SeparateImage), &args);
+    DECLARE_GVL_CALL(call, SeparateImage, image, channel, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
     new_image = rm_clone_image(image);
-    GVL_STRUCT_TYPE(SeparateImageChannel) args = { new_image, channel };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SeparateImageChannel), &args);
+    DECLARE_GVL_CALL(call, SeparateImageChannel, new_image, channel);
+    call.read(self).destroy(new_image).run<void>();
 
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
@@ -2454,7 +2500,7 @@ Image_channel_depth(int argc, VALUE *argv, VALUE self)
     size_t channel_depth;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = check_channel_writable(self);
     channels = extract_channels(&argc, argv);
 
     // Ensure all arguments consumed.
@@ -2467,12 +2513,12 @@ Image_channel_depth(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    GVL_STRUCT_TYPE(GetImageDepth) args = { image, exception };
-    channel_depth = (size_t)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetImageDepth), &args);
+    DECLARE_GVL_CALL(call, GetImageDepth, image, exception);
+    channel_depth = call.update(self).restore_mask(image, channel_mask).release(exception).run<size_t>();
     END_CHANNEL_MASK(image);
 #else
-    GVL_STRUCT_TYPE(GetImageChannelDepth) args = { image, channels, exception };
-    channel_depth = (size_t)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetImageChannelDepth), &args);
+    DECLARE_GVL_CALL(call, GetImageChannelDepth, image, channels, exception);
+    channel_depth = call.read(self).release(exception).run<size_t>();
 #endif
     CHECK_EXCEPTION();
 
@@ -2503,7 +2549,7 @@ Image_channel_extrema(int argc, VALUE *argv, VALUE self)
     size_t min, max;
     VALUE ary;
 
-    image = rm_check_destroyed(self);
+    image = check_channel_writable(self);
 
     channels = extract_channels(&argc, argv);
 
@@ -2516,12 +2562,12 @@ Image_channel_extrema(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    GVL_STRUCT_TYPE(GetImageExtrema) args = { image, &min, &max, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetImageExtrema), &args);
+    DECLARE_GVL_CALL(call, GetImageExtrema, image, &min, &max, exception);
+    call.update(self).restore_mask(image, channel_mask).release(exception).run<void>();
     END_CHANNEL_MASK(image);
 #else
-    GVL_STRUCT_TYPE(GetImageChannelExtrema) args = { image, channels, &min, &max, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetImageChannelExtrema), &args);
+    DECLARE_GVL_CALL(call, GetImageChannelExtrema, image, channels, &min, &max, exception);
+    call.read(self).release(exception).run<void>();
 #endif
     CHECK_EXCEPTION();
 
@@ -2558,7 +2604,7 @@ Image_channel_mean(int argc, VALUE *argv, VALUE self)
     double mean, stddev;
     VALUE ary;
 
-    image = rm_check_destroyed(self);
+    image = check_channel_writable(self);
 
     channels = extract_channels(&argc, argv);
 
@@ -2571,12 +2617,12 @@ Image_channel_mean(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    GVL_STRUCT_TYPE(GetImageMean) args = { image, &mean, &stddev, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetImageMean), &args);
+    DECLARE_GVL_CALL(call, GetImageMean, image, &mean, &stddev, exception);
+    call.update(self).restore_mask(image, channel_mask).release(exception).run<void>();
     END_CHANNEL_MASK(image);
 #else
-    GVL_STRUCT_TYPE(GetImageChannelMean) args = { image, channels, &mean, &stddev, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetImageChannelMean), &args);
+    DECLARE_GVL_CALL(call, GetImageChannelMean, image, channels, &mean, &stddev, exception);
+    call.read(self).release(exception).run<void>();
 #endif
     CHECK_EXCEPTION();
 
@@ -2611,7 +2657,7 @@ Image_channel_entropy(int argc, VALUE *argv, VALUE self)
     double entropy;
     VALUE ary;
 
-    image = rm_check_destroyed(self);
+    image = check_channel_writable(self);
 
     channels = extract_channels(&argc, argv);
 
@@ -2624,12 +2670,12 @@ Image_channel_entropy(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    GVL_STRUCT_TYPE(GetImageEntropy) args = { image, &entropy, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetImageEntropy), &args);
+    DECLARE_GVL_CALL(call, GetImageEntropy, image, &entropy, exception);
+    call.update(self).restore_mask(image, channel_mask).release(exception).run<void>();
     END_CHANNEL_MASK(image);
 #else
-    GVL_STRUCT_TYPE(GetImageChannelEntropy) args = { image, channels, &entropy, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetImageChannelEntropy), &args);
+    DECLARE_GVL_CALL(call, GetImageChannelEntropy, image, channels, &entropy, exception);
+    call.read(self).release(exception).run<void>();
 #endif
     CHECK_EXCEPTION();
 
@@ -2668,7 +2714,7 @@ Image_charcoal(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_check_destroyed(VALUE self)
 {
-    rm_check_destroyed(self);
+    rm_check_readable(self);
     return Qnil;
 }
 
@@ -2685,7 +2731,7 @@ Image_check_destroyed(VALUE self)
 VALUE
 Image_chop(VALUE self, VALUE x, VALUE y, VALUE width, VALUE height)
 {
-    rm_check_destroyed(self);
+    rm_check_readable(self);
     return xform_image(False, self, x, y, width, height, GVL_FUNC(ChopImage));
 }
 
@@ -2698,7 +2744,7 @@ Image_chop(VALUE self, VALUE x, VALUE y, VALUE width, VALUE height)
 VALUE
 Image_chromaticity(VALUE self)
 {
-    Image *image = rm_check_destroyed(self);
+    Image *image = rm_check_readable(self);
     return ChromaticityInfo_new(&image->chromaticity);
 }
 
@@ -2747,6 +2793,7 @@ VALUE
 Image_clut_channel(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *clut;
+    VALUE clut_obj;
     ChannelType channels;
     MagickBooleanType okay;
 #if defined(IMAGEMAGICK_7)
@@ -2758,7 +2805,8 @@ Image_clut_channel(int argc, VALUE *argv, VALUE self)
     // check_destroyed before confirming the arguments
     if (argc >= 1)
     {
-        clut = rm_check_destroyed(rm_cur_image(argv[0]));
+        clut_obj = rm_cur_image(argv[0]);
+        clut = rm_check_readable(clut_obj);
         channels = extract_channels(&argc, argv);
         if (argc != 1)
         {
@@ -2773,15 +2821,15 @@ Image_clut_channel(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(image, channels);
-    GVL_STRUCT_TYPE(ClutImage) args = { image, clut, image->interpolate, exception };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ClutImage), &args);
+    DECLARE_GVL_CALL(call, ClutImage, image, clut, image->interpolate, exception);
+    void *ret = call.update(self).restore_mask(image, channel_mask).read(clut_obj).release(exception).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
     END_CHANNEL_MASK(image);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(ClutImageChannel) args = { image, channels, clut };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ClutImageChannel), &args);
+    DECLARE_GVL_CALL(call, ClutImageChannel, image, channels, clut);
+    void *ret = call.update(self).read(clut_obj).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
     rm_check_image_exception(image, RetainOnError);
     rm_check_image_exception(clut, RetainOnError);
@@ -2790,6 +2838,8 @@ Image_clut_channel(int argc, VALUE *argv, VALUE self)
     {
         rb_raise(rb_eRuntimeError, "ClutImageChannel failed.");
     }
+
+    RB_GC_GUARD(clut_obj);
 
     return self;
 }
@@ -2814,7 +2864,7 @@ Image_color_histogram(VALUE self)
     ColorPacket *histogram;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     exception = AcquireExceptionInfo();
 
@@ -2823,16 +2873,16 @@ Image_color_histogram(VALUE self)
     {
         dc_copy = rm_clone_image(image);
 #if defined(IMAGEMAGICK_7)
-        GVL_STRUCT_TYPE(SetImageStorageClass) args = { dc_copy, DirectClass, exception };
+        DECLARE_GVL_CALL(call, SetImageStorageClass, dc_copy, DirectClass, exception);
 #else
-        GVL_STRUCT_TYPE(SetImageStorageClass) args = { dc_copy, DirectClass };
+        DECLARE_GVL_CALL(call, SetImageStorageClass, dc_copy, DirectClass);
 #endif
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageStorageClass), &args);
+        call.read(self).destroy(dc_copy).release(exception).run<void>();
         image = dc_copy;
     }
 
-    GVL_STRUCT_TYPE(GetImageHistogram) args = { image, &colors, exception };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetImageHistogram), &args);
+    DECLARE_GVL_CALL(call, GetImageHistogram, image, &colors, exception);
+    void *ret = call.read(self).destroy(dc_copy).release(exception).free_result().run<void *>();
     histogram = reinterpret_cast<decltype(histogram)>(ret);
 
     if (histogram == NULL)
@@ -2937,6 +2987,7 @@ set_profile(VALUE self, const char *name, VALUE profile)
 
     image = rm_check_frozen(self);
 
+    profile = rb_str_new_frozen(StringValue(profile));
     profile_blob = rm_str2cstr(&profile, &profile_length);
 
     // Reject the name before GetMagickInfo(), which loads the coder module it names
@@ -2964,8 +3015,8 @@ set_profile(VALUE self, const char *name, VALUE profile)
 
     strlcpy(info->magick, m->name, sizeof(info->magick));
 
-    GVL_STRUCT_TYPE(BlobToImage) args = { info, profile_blob, profile_length, exception };
-    profile_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BlobToImage), &args);
+    DECLARE_GVL_CALL(call, BlobToImage, info, profile_blob, profile_length, exception);
+    profile_image = call.update(self).release(info).release(exception).run<Image *>();
     DestroyImageInfo(info);
     CHECK_EXCEPTION();
 
@@ -2977,12 +3028,12 @@ set_profile(VALUE self, const char *name, VALUE profile)
         if (rm_strcasecmp("8bim", profile_name) == 0 && rm_strcasecmp("iptc", name) == 0)
         {
 #if defined(IMAGEMAGICK_7)
-            GVL_STRUCT_TYPE(ProfileImage) args = { image, name, profile_blob, profile_length, exception };
-            CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ProfileImage), &args);
+            DECLARE_GVL_CALL(call, ProfileImage, image, name, profile_blob, profile_length, exception);
+            call.update(self).destroy(profile_image).release(exception).run<void>();
             if (rm_should_raise_exception(exception, RetainExceptionRetention))
 #else
-            GVL_STRUCT_TYPE(ProfileImage) args = { image, name, profile_blob, profile_length, MagickFalse };
-            CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ProfileImage), &args);
+            DECLARE_GVL_CALL(call, ProfileImage, image, name, profile_blob, profile_length, MagickFalse);
+            call.update(self).destroy(profile_image).release(exception).run<void>();
             if (rm_should_raise_exception(&image->exception, RetainExceptionRetention))
 #endif
             {
@@ -2995,12 +3046,12 @@ set_profile(VALUE self, const char *name, VALUE profile)
             if (profile_data)
             {
 #if defined(IMAGEMAGICK_7)
-                GVL_STRUCT_TYPE(ProfileImage) args = { image, name, GetStringInfoDatum(profile_data), GetStringInfoLength(profile_data), exception };
-                CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ProfileImage), &args);
+                DECLARE_GVL_CALL(call, ProfileImage, image, name, GetStringInfoDatum(profile_data), GetStringInfoLength(profile_data), exception);
+                call.update(self).destroy(profile_image).release(exception).run<void>();
                 if (rm_should_raise_exception(exception, RetainExceptionRetention))
 #else
-                GVL_STRUCT_TYPE(ProfileImage) args = { image, name, GetStringInfoDatum(profile_data), GetStringInfoLength(profile_data), MagickFalse };
-                CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ProfileImage), &args);
+                DECLARE_GVL_CALL(call, ProfileImage, image, name, GetStringInfoDatum(profile_data), GetStringInfoLength(profile_data), MagickFalse);
+                call.update(self).destroy(profile_image).release(exception).run<void>();
                 if (rm_should_raise_exception(&image->exception, RetainExceptionRetention))
 #endif
                 {
@@ -3042,7 +3093,7 @@ Image_color_profile(VALUE self)
     Image *image;
     const StringInfo *profile;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     profile = GetImageProfile(image, "icc");
     if (!profile)
     {
@@ -3102,7 +3153,7 @@ Image_color_flood_fill(VALUE self, VALUE target_color, VALUE fill_color,
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     // The target and fill args can be either a color name or
     // a Magick::Pixel.
@@ -3151,14 +3202,14 @@ Image_color_flood_fill(VALUE self, VALUE target_color, VALUE fill_color,
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(FloodfillPaintImage) args = { new_image, draw_info, &target_mpp, x, y, invert, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(FloodfillPaintImage), &args);
+    DECLARE_GVL_CALL(call, FloodfillPaintImage, new_image, draw_info, &target_mpp, x, y, invert, exception);
+    call.read(self).destroy(new_image).release(draw_info).release(exception).run<void>();
     DestroyDrawInfo(draw_info);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(FloodfillPaintImage) args = { new_image, DefaultChannels, draw_info, &target_mpp, x, y, invert };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(FloodfillPaintImage), &args);
+    DECLARE_GVL_CALL(call, FloodfillPaintImage, new_image, DefaultChannels, draw_info, &target_mpp, x, y, invert);
+    call.read(self).destroy(new_image).release(draw_info).run<void>();
 
     DestroyDrawInfo(draw_info);
     rm_check_image_exception(new_image, DestroyOnError);
@@ -3196,7 +3247,7 @@ Image_colorize(int argc, VALUE *argv, VALUE self)
     PixelColor target;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     if (argc == 4)
     {
@@ -3222,11 +3273,11 @@ Image_colorize(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(ColorizeImage) args = { image, opacity, &target, exception };
+    DECLARE_GVL_CALL(call, ColorizeImage, image, opacity, &target, exception);
 #else
-    GVL_STRUCT_TYPE(ColorizeImage) args = { image, opacity, target, exception };
+    DECLARE_GVL_CALL(call, ColorizeImage, image, opacity, target, exception);
 #endif
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ColorizeImage), &args);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -3258,7 +3309,7 @@ Image_colormap(int argc, VALUE *argv, VALUE self)
     unsigned long idx;
     PixelColor color, new_color;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     // We can handle either 1 or 2 arguments. Nothing else.
     if (argc == 0 || argc > 2)
@@ -3290,7 +3341,7 @@ Image_colormap(int argc, VALUE *argv, VALUE self)
 
     // This is a "set" operation. Things are different.
 
-    rb_check_frozen(self);
+    rm_check_frozen(self);
 
     // Replace with new color? The arg can be either a color name or
     // a Magick::Pixel.
@@ -3351,7 +3402,7 @@ Image_colorspace(VALUE self)
 {
     Image *image;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     return ColorspaceType_find(image->colorspace);
 }
 
@@ -3376,13 +3427,13 @@ Image_colorspace_eq(VALUE self, VALUE colorspace)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(TransformImageColorspace) args = { image, new_cs, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TransformImageColorspace), &args);
+    DECLARE_GVL_CALL(call, TransformImageColorspace, image, new_cs, exception);
+    call.update(self).release(exception).run<void>();
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(TransformImageColorspace) args = { image, new_cs };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TransformImageColorspace), &args);
+    DECLARE_GVL_CALL(call, TransformImageColorspace, image, new_cs);
+    call.update(self).run<void>();
     rm_check_image_exception(image, RetainOnError);
 #endif
 
@@ -3459,7 +3510,7 @@ Image_compare_channel(int argc, VALUE *argv, VALUE self)
     ChannelType channels;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_writable(self);
 
     channels = extract_channels(&argc, argv);
 
@@ -3475,19 +3526,19 @@ Image_compare_channel(int argc, VALUE *argv, VALUE self)
     rm_get_optional_arguments(self);
 
     ref = rm_cur_image(argv[0]);
-    r_image = rm_check_destroyed(ref);
+    r_image = rm_check_readable(ref);
 
     VALUE_TO_ENUM(argv[1], metric_type, MetricType);
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    GVL_STRUCT_TYPE(CompareImages) args = { image, r_image, metric_type, &distortion, exception };
-    difference_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompareImages), &args);
+    DECLARE_GVL_CALL(call, CompareImages, image, r_image, metric_type, &distortion, exception);
+    difference_image = call.update(self).restore_mask(image, channel_mask).read(ref).release(exception).run<Image *>();
     END_CHANNEL_MASK(image);
 #else
-    GVL_STRUCT_TYPE(CompareImageChannels) args = { image, r_image, channels, metric_type, &distortion, exception };
-    difference_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompareImageChannels), &args);
+    DECLARE_GVL_CALL(call, CompareImageChannels, image, r_image, channels, metric_type, &distortion, exception);
+    difference_image = call.update(self).read(ref).release(exception).run<Image *>();
 #endif
     rm_check_exception(exception, difference_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -3511,7 +3562,7 @@ Image_compare_channel(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_compose(VALUE self)
 {
-    Image *image = rm_check_destroyed(self);
+    Image *image = rm_check_readable(self);
     return CompositeOperator_find(image->compose);
 }
 
@@ -3565,11 +3616,11 @@ composite(int bang, int argc, VALUE *argv, VALUE self, ChannelType channels)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     if (bang)
     {
-        rb_check_frozen(self);
+        rm_check_frozen(self);
     }
     if (argc < 3 || argc > 5)
     {
@@ -3578,7 +3629,7 @@ composite(int bang, int argc, VALUE *argv, VALUE self, ChannelType channels)
 
 
     comp = rm_cur_image(argv[0]);
-    comp_image = rm_check_destroyed(comp);
+    comp_image = rm_check_readable(comp);
     RB_GC_GUARD(comp);
 
     switch (argc)
@@ -3685,14 +3736,14 @@ composite(int bang, int argc, VALUE *argv, VALUE self, ChannelType channels)
 #if defined(IMAGEMAGICK_7)
         exception = AcquireExceptionInfo();
         BEGIN_CHANNEL_MASK(image, channels);
-        GVL_STRUCT_TYPE(CompositeImage) args = { image, comp_image, composite_op, MagickTrue, x_offset, y_offset, exception };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompositeImage), &args);
+        DECLARE_GVL_CALL(call, CompositeImage, image, comp_image, composite_op, MagickTrue, x_offset, y_offset, exception);
+        call.update(self).restore_mask(image, channel_mask).read(comp).release(exception).run<void>();
         END_CHANNEL_MASK(image);
         CHECK_EXCEPTION();
         DestroyExceptionInfo(exception);
 #else
-        GVL_STRUCT_TYPE(CompositeImageChannel) args = { image, channels, composite_op, comp_image, x_offset, y_offset };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompositeImageChannel), &args);
+        DECLARE_GVL_CALL(call, CompositeImageChannel, image, channels, composite_op, comp_image, x_offset, y_offset);
+        call.update(self).read(comp).run<void>();
         rm_check_image_exception(image, RetainOnError);
 #endif
 
@@ -3705,14 +3756,14 @@ composite(int bang, int argc, VALUE *argv, VALUE self, ChannelType channels)
 #if defined(IMAGEMAGICK_7)
         exception = AcquireExceptionInfo();
         BEGIN_CHANNEL_MASK(new_image, channels);
-        GVL_STRUCT_TYPE(CompositeImage) args = { new_image, comp_image, composite_op, MagickTrue, x_offset, y_offset, exception };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompositeImage), &args);
+        DECLARE_GVL_CALL(call, CompositeImage, new_image, comp_image, composite_op, MagickTrue, x_offset, y_offset, exception);
+        call.read(self).read(comp).destroy(new_image).release(exception).run<void>();
         END_CHANNEL_MASK(new_image);
         rm_check_exception(exception, new_image, DestroyOnError);
         DestroyExceptionInfo(exception);
 #else
-        GVL_STRUCT_TYPE(CompositeImageChannel) args = { new_image, channels, composite_op, comp_image, x_offset, y_offset };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompositeImageChannel), &args);
+        DECLARE_GVL_CALL(call, CompositeImageChannel, new_image, channels, composite_op, comp_image, x_offset, y_offset);
+        call.read(self).read(comp).destroy(new_image).run<void>();
         rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -3818,23 +3869,26 @@ Image_composite_affine(VALUE self, VALUE source, VALUE affine_matrix)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
-    composite_image = rm_check_destroyed(rm_cur_image(source));
+    image = rm_check_readable(self);
+    source = rm_cur_image(source);
+    composite_image = rm_check_readable(source);
 
     Export_AffineMatrix(&affine, affine_matrix);
     new_image = rm_clone_image(image);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(DrawAffineImage) args = { new_image, composite_image, &affine, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(DrawAffineImage), &args);
+    DECLARE_GVL_CALL(call, DrawAffineImage, new_image, composite_image, &affine, exception);
+    call.read(self).read(source).destroy(new_image).release(exception).run<void>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(DrawAffineImage) args = { new_image, composite_image, &affine };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(DrawAffineImage), &args);
+    DECLARE_GVL_CALL(call, DrawAffineImage, new_image, composite_image, &affine);
+    call.read(self).read(source).destroy(new_image).run<void>();
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
+
+    RB_GC_GUARD(source);
 
     return rm_image_new(new_image);
 }
@@ -3862,7 +3916,7 @@ composite_channel(int bang, int argc, VALUE *argv, VALUE self)
     ChannelType channels;
 
     // Check destroyed before validating the arguments
-    rm_check_destroyed(self);
+    rm_check_readable(self);
     channels = extract_channels(&argc, argv);
 
     // There must be 3, 4, or 5 remaining arguments.
@@ -4079,7 +4133,7 @@ Image_composite_mathematics(int argc, VALUE *argv, VALUE self)
     GravityType gravity = NorthWestGravity;
     char compose_args[200];
 
-    rm_check_destroyed(self);
+    rm_check_readable(self);
 
     switch (argc)
     {
@@ -4100,9 +4154,9 @@ Image_composite_mathematics(int argc, VALUE *argv, VALUE self)
             break;
     }
 
-    composite_image = rm_check_destroyed(rm_cur_image(argv[0]));
-
     snprintf(compose_args, sizeof(compose_args), "%-.16g,%-.16g,%-.16g,%-.16g", NUM2DBL(argv[1]), NUM2DBL(argv[2]), NUM2DBL(argv[3]), NUM2DBL(argv[4]));
+
+    composite_image = rm_check_writable(rm_cur_image(argv[0]));
     if (!SetImageArtifact(composite_image, "compose:args", compose_args))
     {
         rb_raise(rb_eNoMemError, "not enough memory to continue");
@@ -4158,7 +4212,7 @@ composite_tiled(int bang, int argc, VALUE *argv, VALUE self)
     }
     else
     {
-        image = rm_check_destroyed(self);
+        image = rm_check_readable(self);
     }
 
     channels = extract_channels(&argc, argv);
@@ -4177,7 +4231,7 @@ composite_tiled(int bang, int argc, VALUE *argv, VALUE self)
             break;
     }
 
-    comp_image = rm_check_destroyed(rm_cur_image(argv[0]));
+    comp_image = rm_check_writable(rm_cur_image(argv[0]));
 
     if (!SetImageArtifact(comp_image, "modify-outside-overlay", "false"))
     {
@@ -4203,14 +4257,14 @@ composite_tiled(int bang, int argc, VALUE *argv, VALUE self)
         {
 #if defined(IMAGEMAGICK_7)
             BEGIN_CHANNEL_MASK(image, channels);
-            GVL_STRUCT_TYPE(CompositeImage) args = { image, comp_image, composite_op, MagickTrue, x, y, exception };
-            void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompositeImage), &args);
+            DECLARE_GVL_CALL(call, CompositeImage, image, comp_image, composite_op, MagickTrue, x, y, exception);
+            void *ret = call.keep_thread().run<void *>();
             status = reinterpret_cast<MagickStatusType &>(ret);
             END_CHANNEL_MASK(image);
             rm_check_exception(exception, image, bang ? RetainOnError: DestroyOnError);
 #else
-            GVL_STRUCT_TYPE(CompositeImageChannel) args = { image, channels, composite_op, comp_image, x, y };
-            void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompositeImageChannel), &args);
+            DECLARE_GVL_CALL(call, CompositeImageChannel, image, channels, composite_op, comp_image, x, y);
+            void *ret = call.keep_thread().run<void *>();
             status = reinterpret_cast<MagickStatusType &>(ret);
             rm_check_image_exception(image, bang ? RetainOnError: DestroyOnError);
 #endif
@@ -4286,7 +4340,7 @@ Image_composite_tiled_bang(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_compression(VALUE self)
 {
-    Image *image = rm_check_destroyed(self);
+    Image *image = rm_check_readable(self);
     return CompressionType_find(image->compression);
 }
 
@@ -4324,14 +4378,14 @@ Image_compress_colormap_bang(VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(CompressImageColormap) args = { image, exception };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompressImageColormap), &args);
+    DECLARE_GVL_CALL(call, CompressImageColormap, image, exception);
+    void *ret = call.update(self).release(exception).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(CompressImageColormap) args = { image };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompressImageColormap), &args);
+    DECLARE_GVL_CALL(call, CompressImageColormap, image);
+    void *ret = call.update(self).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
     rm_check_image_exception(image, RetainOnError);
 #endif
@@ -4395,6 +4449,7 @@ Image_constitute(VALUE klass ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
 
     width = NUM2LONG(width_arg);
     height = NUM2LONG(height_arg);
+    map_arg = rb_str_new_frozen(StringValue(map_arg));
     map = rm_str2cstr(&map_arg, &map_l);
     if (map_l == 0)
     {
@@ -4470,11 +4525,11 @@ Image_constitute(VALUE klass ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(SetImageExtent) args_SetImageExtent = { new_image, width, height, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageExtent), &args_SetImageExtent);
+    DECLARE_GVL_CALL(extent_call, SetImageExtent, new_image, width, height, exception);
+    extent_call.destroy(new_image).release(exception).run<void>();
 #else
-    GVL_STRUCT_TYPE(SetImageExtent) args_SetImageExtent = { new_image, width, height };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageExtent), &args_SetImageExtent);
+    DECLARE_GVL_CALL(extent_call, SetImageExtent, new_image, width, height);
+    extent_call.destroy(new_image).run<void>();
     exception = &new_image->exception;
 #endif
 
@@ -4490,11 +4545,11 @@ Image_constitute(VALUE klass ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
     }
 
 #if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(SetImageBackgroundColor) args_SetImageBackgroundColor = { new_image, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageBackgroundColor), &args_SetImageBackgroundColor);
+    DECLARE_GVL_CALL(background_call, SetImageBackgroundColor, new_image, exception);
+    background_call.destroy(new_image).release(exception).run<void>();
 #else
-    GVL_STRUCT_TYPE(SetImageBackgroundColor) args_SetImageBackgroundColor = { new_image };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageBackgroundColor), &args_SetImageBackgroundColor);
+    DECLARE_GVL_CALL(background_call, SetImageBackgroundColor, new_image);
+    background_call.destroy(new_image).run<void>();
     exception = &new_image->exception;
 #endif
 
@@ -4510,14 +4565,14 @@ Image_constitute(VALUE klass ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
     }
 
 #if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(ImportImagePixels) args_ImportImagePixels = { new_image, 0, 0, width, height, map, stg_type, (const void *)pixels.v, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ImportImagePixels), &args_ImportImagePixels);
+    DECLARE_GVL_CALL(import_call, ImportImagePixels, new_image, 0, 0, width, height, map, stg_type, (const void *)pixels.v, exception);
+    import_call.destroy(new_image).release(exception).run<void>();
     ALLOCV_END(pixels_buf);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(ImportImagePixels) args_ImportImagePixels = { new_image, 0, 0, width, height, map, stg_type, (const void *)pixels.v };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ImportImagePixels), &args_ImportImagePixels);
+    DECLARE_GVL_CALL(import_call, ImportImagePixels, new_image, 0, 0, width, height, map, stg_type, (const void *)pixels.v);
+    import_call.destroy(new_image).run<void>();
     ALLOCV_END(pixels_buf);
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
@@ -4548,7 +4603,7 @@ Image_contrast(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     if (argc > 1)
     {
         rb_raise(rb_eArgError, "wrong number of arguments (%d for 0 or 1)", argc);
@@ -4562,13 +4617,13 @@ Image_contrast(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(ContrastImage) args = { new_image, sharpen, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ContrastImage), &args);
+    DECLARE_GVL_CALL(call, ContrastImage, new_image, sharpen, exception);
+    call.read(self).destroy(new_image).release(exception).run<void>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(ContrastImage) args = { new_image, sharpen };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ContrastImage), &args);
+    DECLARE_GVL_CALL(call, ContrastImage, new_image, sharpen);
+    call.read(self).destroy(new_image).run<void>();
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -4674,7 +4729,7 @@ Image_contrast_stretch_channel(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     channels = extract_channels(&argc, argv);
     if (argc > 2)
     {
@@ -4688,14 +4743,14 @@ Image_contrast_stretch_channel(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(new_image, channels);
-    GVL_STRUCT_TYPE(ContrastStretchImage) args = { new_image, black_point, white_point, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ContrastStretchImage), &args);
+    DECLARE_GVL_CALL(call, ContrastStretchImage, new_image, black_point, white_point, exception);
+    call.read(self).destroy(new_image).release(exception).run<void>();
     END_CHANNEL_MASK(new_image);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(ContrastStretchImageChannel) args = { new_image, channels, black_point, white_point };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ContrastStretchImageChannel), &args);
+    DECLARE_GVL_CALL(call, ContrastStretchImageChannel, new_image, channels, black_point, white_point);
+    call.read(self).destroy(new_image).run<void>();
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -4750,7 +4805,7 @@ Image_morphology_channel(VALUE self, VALUE channel_v, VALUE method_v, VALUE iter
     KernelInfo *kernel;
     ssize_t iterations = NUM2LONG(iterations_v);;
 
-    image = rm_check_destroyed(self);
+    image = check_channel_writable(self);
 
     VALUE_TO_ENUM(method_v, method, MorphologyMethod);
     VALUE_TO_ENUM(channel_v, channel, ChannelType);
@@ -4771,16 +4826,18 @@ Image_morphology_channel(VALUE self, VALUE channel_v, VALUE method_v, VALUE iter
 
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channel);
-    GVL_STRUCT_TYPE(MorphologyImage) args = { image, method, iterations, kernel, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(MorphologyImage), &args);
+    DECLARE_GVL_CALL(call, MorphologyImage, image, method, iterations, kernel, exception);
+    new_image = call.update(self).restore_mask(image, channel_mask).read(kernel_v).release(exception).run<Image *>();
     CHANGE_RESULT_CHANNEL_MASK(new_image);
     END_CHANNEL_MASK(image);
 #else
-    GVL_STRUCT_TYPE(MorphologyImageChannel) args = { image, channel, method, iterations, kernel, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(MorphologyImageChannel), &args);
+    DECLARE_GVL_CALL(call, MorphologyImageChannel, image, channel, method, iterations, kernel, exception);
+    new_image = call.read(self).read(kernel_v).release(exception).run<Image *>();
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
+
+    RB_GC_GUARD(kernel_v);
 
     return rm_image_new(new_image);
 }
@@ -4852,7 +4909,7 @@ Image_convolve(VALUE self, VALUE order_arg, VALUE kernel_arg)
     unsigned int x;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     if (NUM2INT(order_arg) <= 0)
     {
@@ -4887,12 +4944,12 @@ Image_convolve(VALUE self, VALUE order_arg, VALUE kernel_arg)
     exception = AcquireExceptionInfo();
 
 #if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(ConvolveImage) args = { image, kernel, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ConvolveImage), &args);
+    DECLARE_GVL_CALL(call, ConvolveImage, image, kernel, exception);
+    new_image = call.read(self).release(kernel).release(exception).run<Image *>();
     DestroyKernelInfo(kernel);
 #else
-    GVL_STRUCT_TYPE(ConvolveImage) args = { image, order, kernel, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ConvolveImage), &args);
+    DECLARE_GVL_CALL(call, ConvolveImage, image, order, kernel, exception);
+    new_image = call.read(self).free_buffer(kernel).release(exception).run<Image *>();
     xfree((void *)kernel);
 #endif
 
@@ -4933,7 +4990,7 @@ Image_convolve_channel(int argc, VALUE *argv, VALUE self)
     unsigned int x;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = check_channel_writable(self);
 
     channels = extract_channels(&argc, argv);
 
@@ -4981,14 +5038,14 @@ Image_convolve_channel(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    GVL_STRUCT_TYPE(ConvolveImage) args = { image, kernel, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ConvolveImage), &args);
+    DECLARE_GVL_CALL(call, ConvolveImage, image, kernel, exception);
+    new_image = call.update(self).restore_mask(image, channel_mask).release(kernel).release(exception).run<Image *>();
     CHANGE_RESULT_CHANNEL_MASK(new_image);
     END_CHANNEL_MASK(image);
     DestroyKernelInfo(kernel);
 #else
-    GVL_STRUCT_TYPE(ConvolveImageChannel) args = { image, channels, order, kernel, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ConvolveImageChannel), &args);
+    DECLARE_GVL_CALL(call, ConvolveImageChannel, image, channels, order, kernel, exception);
+    new_image = call.read(self).free_buffer(kernel).release(exception).run<Image *>();
     xfree((void *)kernel);
 #endif
 
@@ -5027,7 +5084,7 @@ Image_init_copy(VALUE copy, VALUE orig)
 {
     Image *image, *new_image;
 
-    image = rm_check_destroyed(orig);
+    image = rm_check_readable(orig);
     new_image = rm_clone_image(image);
     UPDATE_DATA_PTR(copy, new_image);
 
@@ -5065,7 +5122,7 @@ Image_init_copy(VALUE copy, VALUE orig)
 VALUE
 Image_crop(int argc, VALUE *argv, VALUE self)
 {
-    rm_check_destroyed(self);
+    rm_check_readable(self);
     return cropper(False, argc, argv, self);
 }
 
@@ -5126,18 +5183,18 @@ Image_cycle_colormap(VALUE self, VALUE amount)
 
     amt = NUM2INT(amount);
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     new_image = rm_clone_image(image);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(CycleColormapImage) args = { new_image, amt, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CycleColormapImage), &args);
+    DECLARE_GVL_CALL(call, CycleColormapImage, new_image, amt, exception);
+    call.read(self).destroy(new_image).release(exception).run<void>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(CycleColormapImage) args = { new_image, amt };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CycleColormapImage), &args);
+    DECLARE_GVL_CALL(call, CycleColormapImage, new_image, amt);
+    call.read(self).destroy(new_image).run<void>();
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -5158,7 +5215,7 @@ Image_density(VALUE self)
     Image *image;
     char density[128];
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
 #if defined(IMAGEMAGICK_7)
     snprintf(density, sizeof(density), "%gx%g", image->resolution.x, image->resolution.y);
@@ -5266,14 +5323,15 @@ Image_decipher(VALUE self, VALUE passphrase)
     ExceptionInfo *exception;
     MagickBooleanType okay;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
+    passphrase = rb_str_new_frozen(StringValue(passphrase));
     pf = StringValueCStr(passphrase);      // ensure passphrase is a string
     exception = AcquireExceptionInfo();
 
     new_image = rm_clone_image(image);
 
-    GVL_STRUCT_TYPE(DecipherImage) args = { new_image, pf, exception };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(DecipherImage), &args);
+    DECLARE_GVL_CALL(call, DecipherImage, new_image, pf, exception);
+    void *ret = call.read(self).destroy(new_image).release(exception).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
     rm_check_exception(exception, new_image, DestroyOnError);
     if (!okay)
@@ -5304,7 +5362,7 @@ Image_artifact(VALUE self, VALUE artifact)
     Image *image;
     const char *value;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     artifact = rb_String(artifact);
     value = GetImageArtifact(image, StringValueCStr(artifact));
 
@@ -5400,13 +5458,13 @@ Image_delete_compose_mask(VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(SetImageMask) args = { image, CompositePixelMask, NULL, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageMask), &args);
+    DECLARE_GVL_CALL(call, SetImageMask, image, CompositePixelMask, NULL, exception);
+    call.update(self).release(exception).run<void>();
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(SetImageMask) args = { image, NULL };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageMask), &args);
+    DECLARE_GVL_CALL(call, SetImageMask, image, NULL);
+    call.update(self).run<void>();
     rm_check_image_exception(image, RetainOnError);
 #endif
 
@@ -5426,19 +5484,25 @@ VALUE
 Image_delete_profile(VALUE self, VALUE name)
 {
     Image *image = rm_check_frozen(self);
-    char *profile_name = StringValueCStr(name);
+    char *profile_name;
+
+    name = rb_str_new_frozen(StringValue(name));
+    profile_name = StringValueCStr(name);
 
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception = AcquireExceptionInfo();
 
-    GVL_STRUCT_TYPE(ProfileImage) args = { image, profile_name, NULL, 0, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ProfileImage), &args);
+    DECLARE_GVL_CALL(call, ProfileImage, image, profile_name, NULL, 0, exception);
+    call.update(self).release(exception).run<void>();
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(ProfileImage) args = { image, profile_name, NULL, 0, MagickTrue };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ProfileImage), &args);
+    DECLARE_GVL_CALL(call, ProfileImage, image, profile_name, NULL, 0, MagickTrue);
+    call.update(self).run<void>();
 #endif
+
+    RB_GC_GUARD(name);
+
     return self;
 }
 
@@ -5458,11 +5522,11 @@ Image_depth(VALUE self)
     size_t depth = 0;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
 
-    GVL_STRUCT_TYPE(GetImageDepth) args = { image, exception };
-    depth = (size_t)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetImageDepth), &args);
+    DECLARE_GVL_CALL(call, GetImageDepth, image, exception);
+    depth = call.read(self).release(exception).run<size_t>();
     CHECK_EXCEPTION();
 
     DestroyExceptionInfo(exception);
@@ -5490,7 +5554,7 @@ Image_deskew(int argc, VALUE *argv, VALUE self)
     char auto_crop_width[20];
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     switch (argc)
     {
@@ -5498,6 +5562,7 @@ Image_deskew(int argc, VALUE *argv, VALUE self)
             width = NUM2ULONG(argv[1]);
             memset(auto_crop_width, 0, sizeof(auto_crop_width));
             snprintf(auto_crop_width, sizeof(auto_crop_width), "%lu", width);
+            rm_gvl_check_writable(image);
             if (!SetImageArtifact(image, "deskew:auto-crop", auto_crop_width))
             {
                 rb_raise(rb_eNoMemError, "not enough memory to continue");
@@ -5512,8 +5577,8 @@ Image_deskew(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(DeskewImage) args = { image, threshold, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(DeskewImage), &args);
+    DECLARE_GVL_CALL(call, DeskewImage, image, threshold, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 
@@ -5532,11 +5597,11 @@ Image_despeckle(VALUE self)
     Image *image, *new_image;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
 
-    GVL_STRUCT_TYPE(DespeckleImage) args = { image, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(DespeckleImage), &args);
+    DECLARE_GVL_CALL(call, DespeckleImage, image, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -5556,6 +5621,10 @@ Image_destroy_bang(VALUE self)
 
     rb_check_frozen(self);
     TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
+    if (image)
+    {
+        rm_gvl_check_writable(image);
+    }
     rm_image_destroy(image);
     DATA_PTR(self) = NULL;
     return self;
@@ -5605,19 +5674,19 @@ Image_difference(VALUE self, VALUE other)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     other = rm_cur_image(other);
-    image2 = rm_check_destroyed(other);
+    image2 = rm_check_readable(other);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(GetImageDistortion) args = { image, image2, MeanErrorPerPixelErrorMetric, &distortion, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetImageDistortion), &args);
+    DECLARE_GVL_CALL(call, GetImageDistortion, image, image2, MeanErrorPerPixelErrorMetric, &distortion, exception);
+    call.update(self).read(other).release(exception).run<void>();
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(IsImagesEqual) args = { image, image2 };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(IsImagesEqual), &args);
+    DECLARE_GVL_CALL(call, IsImagesEqual, image, image2);
+    call.update(self).read(other).run<void>();
     rm_check_image_exception(image, RetainOnError);
 #endif
 
@@ -5664,11 +5733,11 @@ VALUE
 Image_displace(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *displacement_map;
-    VALUE dmap;
+    VALUE composite_image, dmap;
     double x_amplitude = 0.0, y_amplitude = 0.0;
     long x_offset = 0L, y_offset = 0L;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     if (argc < 2)
     {
@@ -5676,7 +5745,7 @@ Image_displace(int argc, VALUE *argv, VALUE self)
     }
 
     dmap = rm_cur_image(argv[0]);
-    displacement_map = rm_check_destroyed(dmap);
+    displacement_map = rm_check_writable(dmap);
 
     if (argc > 3)
     {
@@ -5697,10 +5766,13 @@ Image_displace(int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    composite_image = special_composite(image, displacement_map, x_amplitude, y_amplitude,
+                                        x_offset, y_offset, DisplaceCompositeOp);
+
+    RB_GC_GUARD(composite_image);
     RB_GC_GUARD(dmap);
 
-    return special_composite(image, displacement_map, x_amplitude, y_amplitude,
-                             x_offset, y_offset, DisplaceCompositeOp);
+    return composite_image;
 }
 
 
@@ -5776,7 +5848,7 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
         void *v;
     } pixels;
 
-    rm_check_destroyed(self);
+    rm_check_readable(self);
 
     if (argc < 5 || argc > 6)
     {
@@ -5787,6 +5859,7 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
     y       = NUM2LONG(argv[1]);
     columns = NUM2ULONG(argv[2]);
     rows    = NUM2ULONG(argv[3]);
+    argv[4] = rb_str_new_frozen(StringValue(argv[4]));
     map     = StringValueCStr(argv[4]);
     mapL    = strlen(map);
     if (argc == 6)
@@ -5805,8 +5878,8 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
     TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(ExportImagePixels) args = { image, x, y, columns, rows, map, stg_type, (void *)pixels.v, exception };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ExportImagePixels), &args);
+    DECLARE_GVL_CALL(call, ExportImagePixels, image, x, y, columns, rows, map, stg_type, (void *)pixels.v, exception);
+    void *ret = call.read(self).free_buffer(pixels.v).release(exception).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
 
     if (!okay)
@@ -5861,7 +5934,7 @@ Image_display(VALUE self)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     if (image->rows == 0 || image->columns == 0)
     {
@@ -5870,6 +5943,8 @@ Image_display(VALUE self)
 
     info_obj = rm_info_new();
     TypedData_Get_Struct(info_obj, Info, &rm_info_data_type, info);
+
+    image = rm_check_readable(self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -5895,7 +5970,7 @@ Image_display(VALUE self)
 VALUE
 Image_dispose(VALUE self)
 {
-    Image *image = rm_check_destroyed(self);
+    Image *image = rm_check_readable(self);
     return DisposeType_find(image->dispose);
 }
 
@@ -5946,7 +6021,7 @@ Image_dissolve(int argc, VALUE *argv, VALUE self)
     long x_offset = 0L, y_offset = 0L;
     VALUE composite_image, ovly;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     if (argc < 1)
     {
@@ -5954,7 +6029,7 @@ Image_dissolve(int argc, VALUE *argv, VALUE self)
     }
 
     ovly = rm_cur_image(argv[0]);
-    overlay = rm_check_destroyed(ovly);
+    overlay = rm_check_writable(ovly);
 
     if (argc > 3)
     {
@@ -6038,7 +6113,7 @@ Image_distort(int argc, VALUE *argv, VALUE self)
     MagickBooleanType bestfit = MagickFalse;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     rm_get_optional_arguments(self);
 
     switch (argc)
@@ -6073,8 +6148,8 @@ Image_distort(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(DistortImage) args = { image, distortion_method, npoints, points, bestfit, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(DistortImage), &args);
+    DECLARE_GVL_CALL(call, DistortImage, image, distortion_method, npoints, points, bestfit, exception);
+    new_image = call.read(self).free_buffer(points).release(exception).run<Image *>();
     xfree(points);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -6116,7 +6191,7 @@ Image_distortion_channel(int argc, VALUE *argv, VALUE self)
     Image *difference_image;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_writable(self);
     channels = extract_channels(&argc, argv);
     if (argc > 2)
     {
@@ -6128,18 +6203,18 @@ Image_distortion_channel(int argc, VALUE *argv, VALUE self)
     }
 
     rec = rm_cur_image(argv[0]);
-    reconstruct = rm_check_destroyed(rec);
+    reconstruct = rm_check_readable(rec);
     VALUE_TO_ENUM(argv[1], metric, MetricType);
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    GVL_STRUCT_TYPE(CompareImages) args = { image, reconstruct, metric, &distortion, exception };
-    difference_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompareImages), &args);
+    DECLARE_GVL_CALL(call, CompareImages, image, reconstruct, metric, &distortion, exception);
+    difference_image = call.update(self).restore_mask(image, channel_mask).read(rec).release(exception).run<Image *>();
     END_CHANNEL_MASK(image);
     DestroyImage(difference_image);
 #else
-    GVL_STRUCT_TYPE(GetImageChannelDistortion) args = { image, reconstruct, channels, metric, &distortion, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetImageChannelDistortion), &args);
+    DECLARE_GVL_CALL(call, GetImageChannelDistortion, image, reconstruct, channels, metric, &distortion, exception);
+    call.update(self).read(rec).release(exception).run<void>();
 #endif
 
     CHECK_EXCEPTION();
@@ -6169,7 +6244,7 @@ Image__dump(VALUE self, VALUE depth ATTRIBUTE_UNUSED)
     VALUE str;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     info = CloneImageInfo(NULL);
     if (!info)
@@ -6179,8 +6254,8 @@ Image__dump(VALUE self, VALUE depth ATTRIBUTE_UNUSED)
     strlcpy(info->magick, image->magick, sizeof(info->magick));
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(ImageToBlob) args = { info, image, &length, exception };
-    blob = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ImageToBlob), &args);
+    DECLARE_GVL_CALL(call, ImageToBlob, info, image, &length, exception);
+    blob = call.read(self).release(info).release(exception).free_result().run<void *>();
 
     // Free ImageInfo first - error handling may raise an exception
     DestroyImageInfo(info);
@@ -6234,7 +6309,7 @@ Image_each_profile(VALUE self)
     char *name;
     const StringInfo *profile;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     ResetImageProfileIterator(image);
 
     ary = rb_ary_new2(2);
@@ -6278,7 +6353,7 @@ Image_edge(int argc, VALUE *argv, VALUE self)
     double radius = 0.0;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     switch (argc)
     {
         case 1:
@@ -6292,8 +6367,8 @@ Image_edge(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 
-    GVL_STRUCT_TYPE(EdgeImage) args = { image, radius, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(EdgeImage), &args);
+    DECLARE_GVL_CALL(call, EdgeImage, image, radius, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -6322,7 +6397,7 @@ effect_image(VALUE self, int argc, VALUE *argv, gvl_function_t fp)
     ExceptionInfo *exception;
     double radius = 0.0, sigma = 1.0;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     switch (argc)
     {
@@ -6343,8 +6418,8 @@ effect_image(VALUE self, int argc, VALUE *argv, gvl_function_t fp)
     }
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(effect_image) args = { image, radius, sigma, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(fp, &args);
+    DECLARE_GVL_CALL_FP(call, effect_image, fp, image, radius, sigma, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -6383,14 +6458,15 @@ Image_encipher(VALUE self, VALUE passphrase)
     ExceptionInfo *exception;
     MagickBooleanType okay;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
+    passphrase = rb_str_new_frozen(StringValue(passphrase));
     pf = StringValueCStr(passphrase);      // ensure passphrase is a string
     exception = AcquireExceptionInfo();
 
     new_image = rm_clone_image(image);
 
-    GVL_STRUCT_TYPE(EncipherImage) args = { new_image, pf, exception };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(EncipherImage), &args);
+    DECLARE_GVL_CALL(call, EncipherImage, new_image, pf, exception);
+    void *ret = call.read(self).destroy(new_image).release(exception).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
     rm_check_exception(exception, new_image, DestroyOnError);
     if (!okay)
@@ -6416,7 +6492,7 @@ Image_encipher(VALUE self, VALUE passphrase)
 VALUE
 Image_endian(VALUE self)
 {
-    Image *image = rm_check_destroyed(self);
+    Image *image = rm_check_readable(self);
     return EndianType_find(image->endian);
 }
 
@@ -6446,11 +6522,11 @@ Image_enhance(VALUE self)
     Image *image, *new_image;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
 
-    GVL_STRUCT_TYPE(EnhanceImage) args = { image, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(EnhanceImage), &args);
+    DECLARE_GVL_CALL(call, EnhanceImage, image, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -6471,18 +6547,18 @@ Image_equalize(VALUE self)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     new_image = rm_clone_image(image);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(EqualizeImage) args = { new_image, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(EqualizeImage), &args);
+    DECLARE_GVL_CALL(call, EqualizeImage, new_image, exception);
+    call.read(self).destroy(new_image).release(exception).run<void>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(EqualizeImage) args = { new_image };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(EqualizeImage), &args);
+    DECLARE_GVL_CALL(call, EqualizeImage, new_image);
+    call.read(self).destroy(new_image).run<void>();
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -6510,7 +6586,7 @@ Image_equalize_channel(int argc, VALUE *argv, VALUE self)
 #endif
     ChannelType channels;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     channels = extract_channels(&argc, argv);
     if (argc > 0)
     {
@@ -6522,14 +6598,14 @@ Image_equalize_channel(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(new_image, channels);
-    GVL_STRUCT_TYPE(EqualizeImage) args = { new_image, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(EqualizeImage), &args);
+    DECLARE_GVL_CALL(call, EqualizeImage, new_image, exception);
+    call.read(self).destroy(new_image).release(exception).run<void>();
     END_CHANNEL_MASK(new_image);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(EqualizeImageChannel) args = { new_image, channels };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(EqualizeImageChannel), &args);
+    DECLARE_GVL_CALL(call, EqualizeImageChannel, new_image, channels);
+    call.read(self).destroy(new_image).run<void>();
 
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
@@ -6555,13 +6631,13 @@ Image_erase_bang(VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(SetImageBackgroundColor) args = { image, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageBackgroundColor), &args);
+    DECLARE_GVL_CALL(call, SetImageBackgroundColor, image, exception);
+    call.update(self).release(exception).run<void>();
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(SetImageBackgroundColor) args = { image };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageBackgroundColor), &args);
+    DECLARE_GVL_CALL(call, SetImageBackgroundColor, image);
+    call.update(self).run<void>();
     rm_check_image_exception(image, RetainOnError);
 #endif
 
@@ -6606,8 +6682,9 @@ excerpt(int bang, VALUE self, VALUE x, VALUE y, VALUE width, VALUE height)
     TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(ExcerptImage) args = { image, &rect, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ExcerptImage), &args);
+    DECLARE_GVL_CALL(call, ExcerptImage, image, &rect, exception);
+    bang ? call.update(self) : call.read(self);
+    new_image = call.release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -6641,7 +6718,7 @@ excerpt(int bang, VALUE self, VALUE x, VALUE y, VALUE width, VALUE height)
 VALUE
 Image_excerpt(VALUE self, VALUE x, VALUE y, VALUE width, VALUE height)
 {
-    rm_check_destroyed(self);
+    rm_check_readable(self);
     return excerpt(False, self, x, y, width, height);
 }
 
@@ -6702,13 +6779,14 @@ Image_export_pixels(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     cols = image->columns;
     rows = image->rows;
 
     switch (argc)
     {
         case 5:
+            argv[4] = rb_str_new_frozen(StringValue(argv[4]));
             map   = StringValueCStr(argv[4]);
         case 4:
             rows  = NUM2ULONG(argv[3]);
@@ -6742,8 +6820,8 @@ Image_export_pixels(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 
-    GVL_STRUCT_TYPE(ExportImagePixels) args = { image, x_off, y_off, cols, rows, map, QuantumPixel, (void *)pixels, exception };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ExportImagePixels), &args);
+    DECLARE_GVL_CALL(call, ExportImagePixels, image, x_off, y_off, cols, rows, map, QuantumPixel, (void *)pixels, exception);
+    void *ret = call.read(self).free_buffer(pixels).release(exception).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
     if (!okay)
     {
@@ -6791,7 +6869,7 @@ Image_extent(int argc, VALUE *argv, VALUE self)
     long height, width;
     ExceptionInfo *exception;
 
-    rm_check_destroyed(self);
+    rm_check_readable(self);
 
     if (argc < 2 || argc > 4)
     {
@@ -6829,8 +6907,8 @@ Image_extent(int argc, VALUE *argv, VALUE self)
     TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
     exception = AcquireExceptionInfo();
 
-    GVL_STRUCT_TYPE(ExtentImage) args = { image, &geometry, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ExtentImage), &args);
+    DECLARE_GVL_CALL(call, ExtentImage, image, &geometry, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -6868,7 +6946,7 @@ Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
     VALUE string;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     cols = image->columns;
     rows = image->rows;
 
@@ -6877,6 +6955,7 @@ Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
         case 6:
             VALUE_TO_ENUM(argv[5], type, StorageType);
         case 5:
+            argv[4] = rb_str_new_frozen(StringValue(argv[4]));
             map   = StringValueCStr(argv[4]);
         case 4:
             rows  = NUM2ULONG(argv[3]);
@@ -6939,8 +7018,8 @@ Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 
-    GVL_STRUCT_TYPE(ExportImagePixels) args = { image, x_off, y_off, cols, rows, map, type, (void *)RSTRING_PTR(string), exception };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ExportImagePixels), &args);
+    DECLARE_GVL_CALL(call, ExportImagePixels, image, x_off, y_off, cols, rows, map, type, (void *)RSTRING_PTR(string), exception);
+    void *ret = call.read(self).release(exception).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
     if (!okay)
     {
@@ -6968,7 +7047,7 @@ Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_extract_info(VALUE self)
 {
-    Image *image = rm_check_destroyed(self);
+    Image *image = rm_check_readable(self);
     return Import_RectangleInfo(&image->extract_info);
 }
 
@@ -7007,7 +7086,7 @@ Image_filename(VALUE self)
  */
 VALUE Image_filesize(VALUE self)
 {
-    Image *image = rm_check_destroyed(self);
+    Image *image = rm_check_readable(self);
     return INT2FIX(GetBlobSize(image));
 }
 
@@ -7020,7 +7099,7 @@ VALUE Image_filesize(VALUE self)
 VALUE
 Image_filter(VALUE self)
 {
-    Image *image = rm_check_destroyed(self);
+    Image *image = rm_check_readable(self);
     return FilterType_find(image->filter);
 }
 
@@ -7065,7 +7144,7 @@ Image_find_similar_region(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
     MagickBooleanType okay;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     switch (argc)
     {
@@ -7075,7 +7154,7 @@ Image_find_similar_region(int argc, VALUE *argv, VALUE self)
             x = NUM2LONG(argv[1]);
         case 1:
             targ = rm_cur_image(argv[0]);
-            target = rm_check_destroyed(targ);
+            target = rm_check_readable(targ);
             break;
         default:
             rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 to 3)", argc);
@@ -7084,11 +7163,11 @@ Image_find_similar_region(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(IsEquivalentImage) args = { image, target, &x, &y, exception };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(IsEquivalentImage), &args);
+    DECLARE_GVL_CALL(call, IsEquivalentImage, image, target, &x, &y, exception);
+    void *ret = call.read(self).read(targ).release(exception).run<void *>();
 #else
-    GVL_STRUCT_TYPE(IsImageSimilar) args = { image, target, &x, &y, exception };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(IsImageSimilar), &args);
+    DECLARE_GVL_CALL(call, IsImageSimilar, image, target, &x, &y, exception);
+    void *ret = call.read(self).read(targ).release(exception).run<void *>();
 #endif
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
     CHECK_EXCEPTION();
@@ -7136,8 +7215,9 @@ flipflop(int bang, VALUE self, gvl_function_t fp)
     TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
     exception = AcquireExceptionInfo();
 
-    GVL_STRUCT_TYPE(flipflop) args = { image, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(fp, &args);
+    DECLARE_GVL_CALL_FP(call, flipflop, fp, image, exception);
+    bang ? call.update(self) : call.read(self);
+    new_image = call.release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -7164,7 +7244,7 @@ flipflop(int bang, VALUE self, gvl_function_t fp)
 VALUE
 Image_flip(VALUE self)
 {
-    rm_check_destroyed(self);
+    rm_check_readable(self);
     return flipflop(False, self, GVL_FUNC(FlipImage));
 }
 
@@ -7197,7 +7277,7 @@ Image_flip_bang(VALUE self)
 VALUE
 Image_flop(VALUE self)
 {
-    rm_check_destroyed(self);
+    rm_check_readable(self);
     return flipflop(False, self, GVL_FUNC(FlopImage));
 }
 
@@ -7231,7 +7311,7 @@ Image_format(VALUE self)
     const MagickInfo *magick_info;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     if (*image->magick)
     {
@@ -7301,7 +7381,7 @@ Image_frame(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
     FrameInfo frame_info;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     frame_info.width = image->columns + 50;
     frame_info.height = image->rows + 50;
@@ -7335,11 +7415,11 @@ Image_frame(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(FrameImage) args = { image, &frame_info, image->compose, exception };
+    DECLARE_GVL_CALL(call, FrameImage, image, &frame_info, image->compose, exception);
 #else
-    GVL_STRUCT_TYPE(FrameImage) args = { image, &frame_info, exception };
+    DECLARE_GVL_CALL(call, FrameImage, image, &frame_info, exception);
 #endif
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(FrameImage), &args);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -7372,15 +7452,17 @@ Image_from_blob(VALUE klass ATTRIBUTE_UNUSED, VALUE blob_arg)
     void *blob;
     size_t length;
 
-    blob = (void *) rm_str2cstr(&blob_arg, &length);
+    rm_str2cstr(&blob_arg, &length);
+    blob_arg = rb_str_new_frozen(blob_arg);
+    blob = (void *) RSTRING_PTR(blob_arg);
 
     // Get a new Info object - run the parm block if supplied
     info_obj = rm_info_new();
     TypedData_Get_Struct(info_obj, Info, &rm_info_data_type, info);
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(BlobToImage) args = { info,  blob, (size_t)length, exception };
-    images = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BlobToImage), &args);
+    DECLARE_GVL_CALL(call, BlobToImage, info,  blob, (size_t)length, exception);
+    images = call.read(info_obj).release(exception).run<Image *>();
     rm_check_exception(exception, images, DestroyOnError);
 
     DestroyExceptionInfo(exception);
@@ -7426,7 +7508,7 @@ Image_function_channel(int argc, VALUE *argv, VALUE self)
     ChannelType channels;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     channels = extract_channels(&argc, argv);
 
     // The number of parameters depends on the function.
@@ -7481,12 +7563,12 @@ Image_function_channel(int argc, VALUE *argv, VALUE self)
     new_image = rm_clone_image(image);
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(new_image, channels);
-    GVL_STRUCT_TYPE(FunctionImage) args = { new_image, function, nparms, parms, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(FunctionImage), &args);
+    DECLARE_GVL_CALL(call, FunctionImage, new_image, function, nparms, parms, exception);
+    call.read(self).destroy(new_image).free_buffer(parms).release(exception).run<void>();
     END_CHANNEL_MASK(new_image);
 #else
-    GVL_STRUCT_TYPE(FunctionImageChannel) args = { new_image, channels, function, nparms, parms, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(FunctionImageChannel), &args);
+    DECLARE_GVL_CALL(call, FunctionImageChannel, new_image, channels, function, nparms, parms, exception);
+    call.read(self).destroy(new_image).free_buffer(parms).release(exception).run<void>();
 #endif
     xfree(parms);
     rm_check_exception(exception, new_image, DestroyOnError);
@@ -7549,7 +7631,7 @@ Image_fx(int argc, VALUE *argv, VALUE self)
     ChannelType channels;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = check_channel_writable(self);
     channels = extract_channels(&argc, argv);
 
     // There must be exactly 1 remaining argument.
@@ -7562,6 +7644,7 @@ Image_fx(int argc, VALUE *argv, VALUE self)
         raise_ChannelType_error(argv[argc-1]);
     }
 
+    argv[0] = rb_str_new_frozen(rb_string_value(&argv[0]));
     expression = StringValueCStr(argv[0]);
     if (rm_has_file_reference(expression))
     {
@@ -7571,13 +7654,13 @@ Image_fx(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    GVL_STRUCT_TYPE(FxImage) args = { image, expression, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(FxImage), &args);
+    DECLARE_GVL_CALL(call, FxImage, image, expression, exception);
+    new_image = call.update(self).restore_mask(image, channel_mask).release(exception).run<Image *>();
     CHANGE_RESULT_CHANNEL_MASK(new_image);
     END_CHANNEL_MASK(image);
 #else
-    GVL_STRUCT_TYPE(FxImageChannel) args = { image, channels, expression, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(FxImageChannel), &args);
+    DECLARE_GVL_CALL(call, FxImageChannel, image, channels, expression, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -7634,7 +7717,7 @@ Image_gamma_channel(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     channels = extract_channels(&argc, argv);
 
     // There must be exactly one remaining argument.
@@ -7653,14 +7736,14 @@ Image_gamma_channel(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(new_image, channels);
-    GVL_STRUCT_TYPE(GammaImage) args = { new_image, gamma, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GammaImage), &args);
+    DECLARE_GVL_CALL(call, GammaImage, new_image, gamma, exception);
+    call.read(self).destroy(new_image).release(exception).run<void>();
     END_CHANNEL_MASK(new_image);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(GammaImageChannel) args = { new_image, channels, gamma };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GammaImageChannel), &args);
+    DECLARE_GVL_CALL(call, GammaImageChannel, new_image, channels, gamma);
+    call.read(self).destroy(new_image).run<void>();
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -7683,7 +7766,7 @@ Image_gamma_correct(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     switch (argc)
     {
         case 1:
@@ -7716,40 +7799,40 @@ Image_gamma_correct(int argc, VALUE *argv, VALUE self)
     {
 #if defined(IMAGEMAGICK_7)
         BEGIN_CHANNEL_MASK(new_image, (ChannelType) (RedChannel | GreenChannel | BlueChannel));
-        GVL_STRUCT_TYPE(GammaImage) args = { new_image, red_gamma, exception };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GammaImage), &args);
+        DECLARE_GVL_CALL(call, GammaImage, new_image, red_gamma, exception);
+        call.read(self).destroy(new_image).release(exception).run<void>();
         END_CHANNEL_MASK(new_image);
 #else
-        GVL_STRUCT_TYPE(GammaImageChannel) args = { new_image, (ChannelType) (RedChannel | GreenChannel | BlueChannel), red_gamma };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GammaImageChannel), &args);
+        DECLARE_GVL_CALL(call, GammaImageChannel, new_image, (ChannelType) (RedChannel | GreenChannel | BlueChannel), red_gamma);
+        call.read(self).destroy(new_image).run<void>();
 #endif
     }
     else
     {
 #if defined(IMAGEMAGICK_7)
         BEGIN_CHANNEL_MASK(new_image, RedChannel);
-        GVL_STRUCT_TYPE(GammaImage) args1 = { new_image, red_gamma, exception };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GammaImage), &args1);
+        DECLARE_GVL_CALL(call1, GammaImage, new_image, red_gamma, exception);
+        call1.read(self).destroy(new_image).release(exception).run<void>();
         END_CHANNEL_MASK(new_image);
 
         BEGIN_CHANNEL_MASK(new_image, GreenChannel);
-        GVL_STRUCT_TYPE(GammaImage) args2 = { new_image, green_gamma, exception };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GammaImage), &args2);
+        DECLARE_GVL_CALL(call2, GammaImage, new_image, green_gamma, exception);
+        call2.read(self).destroy(new_image).release(exception).run<void>();
         END_CHANNEL_MASK(new_image);
 
         BEGIN_CHANNEL_MASK(new_image, BlueChannel);
-        GVL_STRUCT_TYPE(GammaImage) args3 = { new_image, blue_gamma, exception };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GammaImage), &args3);
+        DECLARE_GVL_CALL(call3, GammaImage, new_image, blue_gamma, exception);
+        call3.read(self).destroy(new_image).release(exception).run<void>();
         END_CHANNEL_MASK(new_image);
 #else
-        GVL_STRUCT_TYPE(GammaImageChannel) args1 = { new_image, RedChannel, red_gamma };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GammaImageChannel), &args1);
+        DECLARE_GVL_CALL(call1, GammaImageChannel, new_image, RedChannel, red_gamma);
+        call1.read(self).destroy(new_image).run<void>();
 
-        GVL_STRUCT_TYPE(GammaImageChannel) args2 = { new_image, GreenChannel, green_gamma };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GammaImageChannel), &args2);
+        DECLARE_GVL_CALL(call2, GammaImageChannel, new_image, GreenChannel, green_gamma);
+        call2.read(self).destroy(new_image).run<void>();
 
-        GVL_STRUCT_TYPE(GammaImageChannel) args3 = { new_image, BlueChannel, blue_gamma };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GammaImageChannel), &args3);
+        DECLARE_GVL_CALL(call3, GammaImageChannel, new_image, BlueChannel, blue_gamma);
+        call3.read(self).destroy(new_image).run<void>();
 #endif
     }
 
@@ -7802,7 +7885,7 @@ Image_gaussian_blur_channel(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
     double radius = 0.0, sigma = 1.0;
 
-    image = rm_check_destroyed(self);
+    image = check_channel_writable(self);
     channels = extract_channels(&argc, argv);
 
     // There can be 0, 1, or 2 remaining arguments.
@@ -7823,14 +7906,14 @@ Image_gaussian_blur_channel(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    GVL_STRUCT_TYPE(GaussianBlurImage) args = { image, radius, sigma, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GaussianBlurImage), &args);
+    DECLARE_GVL_CALL(call, GaussianBlurImage, image, radius, sigma, exception);
+    new_image = call.update(self).restore_mask(image, channel_mask).release(exception).run<Image *>();
     CHANGE_RESULT_CHANNEL_MASK(new_image);
     END_CHANNEL_MASK(image);
     rm_check_exception(exception, new_image, DestroyOnError);
 #else
-    GVL_STRUCT_TYPE(GaussianBlurImageChannel) args = { image, channels, radius, sigma, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GaussianBlurImageChannel), &args);
+    DECLARE_GVL_CALL(call, GaussianBlurImageChannel, image, channels, radius, sigma, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
 #endif
 
@@ -7940,7 +8023,7 @@ Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE row
     const IndexPacket *indexes;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     x       = NUM2LONG(x_arg);
     y       = NUM2LONG(y_arg);
     columns = NUM2ULONG(cols_arg);
@@ -7955,8 +8038,8 @@ Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE row
     // Cast AcquireImagePixels to get rid of the const qualifier. We're not going
     // to change the pixels but I don't want to make "pixels" const.
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(GetVirtualPixels) args = { image, x, y, columns, rows, exception };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetVirtualPixels), &args);
+    DECLARE_GVL_CALL(call, GetVirtualPixels, image, x, y, columns, rows, exception);
+    void *ret = call.keep_thread().run<void *>();
     pixels = reinterpret_cast<decltype(pixels)>(ret);
     CHECK_EXCEPTION();
 
@@ -8024,7 +8107,7 @@ has_attribute(VALUE self, MagickBooleanType (attr_test)(const Image *, Exception
     ExceptionInfo *exception;
     MagickBooleanType r;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
 
     r = (attr_test)(image, exception);
@@ -8051,7 +8134,7 @@ has_image_attribute(VALUE self, MagickBooleanType (attr_test)(const Image *))
     Image *image;
     MagickBooleanType r;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     r = (attr_test)(image);
 
     return r ? Qtrue : Qfalse;
@@ -8115,15 +8198,15 @@ Image_implode(int argc, VALUE *argv, VALUE self)
             rb_raise(rb_eArgError, "wrong number of arguments (%d for 0 or 1)", argc);
     }
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
 
 #if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(ImplodeImage) args = { image, amount, image->interpolate, exception };
+    DECLARE_GVL_CALL(call, ImplodeImage, image, amount, image->interpolate, exception);
 #else
-    GVL_STRUCT_TYPE(ImplodeImage) args = { image, amount, exception };
+    DECLARE_GVL_CALL(call, ImplodeImage, image, amount, exception);
 #endif
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ImplodeImage), &args);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -8179,6 +8262,7 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
             y_off = NUM2LONG(argv[1]);
             cols = NUM2LONG(argv[2]);
             rows = NUM2LONG(argv[3]);
+            argv[4] = rb_str_new_frozen(StringValue(argv[4]));
             map = StringValueCStr(argv[4]);
             pixel_arg = argv[5];
             break;
@@ -8203,6 +8287,7 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
     // binary pixel data.
     if (rb_respond_to(pixel_arg, rb_intern("to_str")))
     {
+        pixel_arg = rb_str_new_frozen(StringValue(pixel_arg));
         buffer = (void *)rm_str2cstr(&pixel_arg, &buffer_l);
         switch (stg_type)
         {
@@ -8304,11 +8389,12 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(ImportImagePixels) args = { image, x_off, y_off, (size_t)cols, (size_t)rows, map, stg_type, buffer, exception };
+    DECLARE_GVL_CALL(call, ImportImagePixels, image, x_off, y_off, (size_t)cols, (size_t)rows, map, stg_type, buffer, exception);
+    void *ret = call.update(self).free_buffer(pixels).free_buffer(fpixels).release(exception).run<void *>();
 #else
-    GVL_STRUCT_TYPE(ImportImagePixels) args = { image, x_off, y_off, (size_t)cols, (size_t)rows, map, stg_type, buffer };
+    DECLARE_GVL_CALL(call, ImportImagePixels, image, x_off, y_off, (size_t)cols, (size_t)rows, map, stg_type, buffer);
+    void *ret = call.update(self).free_buffer(pixels).free_buffer(fpixels).run<void *>();
 #endif
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ImportImagePixels), &args);
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
 
     // Free pixel array before checking for errors.
@@ -8555,7 +8641,7 @@ Image_inspect(VALUE self)
 VALUE
 Image_interlace(VALUE self)
 {
-    Image *image = rm_check_destroyed(self);
+    Image *image = rm_check_readable(self);
     return InterlaceType_find(image->interlace);
 }
 
@@ -8586,7 +8672,7 @@ Image_iptc_profile(VALUE self)
     Image *image;
     const StringInfo *profile;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     profile = GetImageProfile(image, "iptc");
     if (!profile)
     {
@@ -8654,7 +8740,7 @@ Image_level2(int argc, VALUE *argv, VALUE self)
     char level[50];
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     switch (argc)
     {
         case 0:             // take all the defaults
@@ -8681,14 +8767,14 @@ Image_level2(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(LevelImage) args = { new_image, black_point, white_point, gamma_val, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(LevelImage), &args);
+    DECLARE_GVL_CALL(call, LevelImage, new_image, black_point, white_point, gamma_val, exception);
+    call.read(self).destroy(new_image).release(exception).run<void>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
     snprintf(level, sizeof(level), "%gx%g+%g", black_point, white_point, gamma_val);
-    GVL_STRUCT_TYPE(LevelImage) args = { new_image, level };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(LevelImage), &args);
+    DECLARE_GVL_CALL(call, LevelImage, new_image, level);
+    call.read(self).destroy(new_image).run<void>();
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -8718,7 +8804,7 @@ Image_level_channel(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     switch (argc)
     {
         case 1:             // take all the defaults
@@ -8748,14 +8834,14 @@ Image_level_channel(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(new_image, channel);
-    GVL_STRUCT_TYPE(LevelImage) args = { new_image, black_point, white_point, gamma_val, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(LevelImage), &args);
+    DECLARE_GVL_CALL(call, LevelImage, new_image, black_point, white_point, gamma_val, exception);
+    call.read(self).destroy(new_image).release(exception).run<void>();
     END_CHANNEL_MASK(new_image);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(LevelImageChannel) args = { new_image, channel, black_point, white_point, gamma_val };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(LevelImageChannel), &args);
+    DECLARE_GVL_CALL(call, LevelImageChannel, new_image, channel, black_point, white_point, gamma_val);
+    call.read(self).destroy(new_image).run<void>();
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -8794,7 +8880,7 @@ Image_level_colors(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     channels = extract_channels(&argc, argv);
 
@@ -8831,15 +8917,15 @@ Image_level_colors(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(new_image, channels);
-    GVL_STRUCT_TYPE(LevelImageColors) args = { new_image, &black_color, &white_color, invert, exception };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(LevelImageColors), &args);
+    DECLARE_GVL_CALL(call, LevelImageColors, new_image, &black_color, &white_color, invert, exception);
+    void *ret = call.read(self).destroy(new_image).release(exception).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
     END_CHANNEL_MASK(new_image);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(LevelColorsImageChannel) args = { new_image, channels, &black_color, &white_color, invert };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(LevelColorsImageChannel), &args);
+    DECLARE_GVL_CALL(call, LevelColorsImageChannel, new_image, channels, &black_color, &white_color, invert);
+    void *ret = call.read(self).destroy(new_image).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
@@ -8883,7 +8969,7 @@ Image_levelize_channel(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     channels = extract_channels(&argc, argv);
     if (argc > 3)
     {
@@ -8912,15 +8998,15 @@ Image_levelize_channel(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(new_image, channels);
-    GVL_STRUCT_TYPE(LevelizeImage) args = { new_image, black_point, white_point, gamma, exception };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(LevelizeImage), &args);
+    DECLARE_GVL_CALL(call, LevelizeImage, new_image, black_point, white_point, gamma, exception);
+    void *ret = call.read(self).destroy(new_image).release(exception).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
     END_CHANNEL_MASK(new_image);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(LevelizeImageChannel) args = { new_image, channels, black_point, white_point, gamma };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(LevelizeImageChannel), &args);
+    DECLARE_GVL_CALL(call, LevelizeImageChannel, new_image, channels, black_point, white_point, gamma);
+    void *ret = call.read(self).destroy(new_image).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
@@ -8957,19 +9043,19 @@ Image_linear_stretch(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     get_black_white_point(image, argc, argv, &black_point, &white_point);
     new_image = rm_clone_image(image);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(LinearStretchImage) args = { new_image, black_point, white_point, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(LinearStretchImage), &args);
+    DECLARE_GVL_CALL(call, LinearStretchImage, new_image, black_point, white_point, exception);
+    call.read(self).destroy(new_image).release(exception).run<void>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(LinearStretchImage) args = { new_image, black_point, white_point };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(LinearStretchImage), &args);
+    DECLARE_GVL_CALL(call, LinearStretchImage, new_image, black_point, white_point);
+    call.read(self).destroy(new_image).run<void>();
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -8997,7 +9083,7 @@ Image_liquid_rescale(int argc, VALUE *argv, VALUE self)
     double rigidity = 0.0;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     switch (argc)
     {
@@ -9015,8 +9101,8 @@ Image_liquid_rescale(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(LiquidRescaleImage) args = { image, cols, rows, delta_x, rigidity, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(LiquidRescaleImage), &args);
+    DECLARE_GVL_CALL(call, LiquidRescaleImage, image, cols, rows, delta_x, rigidity, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -9084,8 +9170,8 @@ Image__load(VALUE klass ATTRIBUTE_UNUSED, VALUE str)
 
     blob += offsetof(DumpedImage, magick) + mi.len;
     length -= offsetof(DumpedImage, magick) + mi.len;
-    GVL_STRUCT_TYPE(BlobToImage) args = { info, blob, (size_t)length, exception };
-    image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BlobToImage), &args);
+    DECLARE_GVL_CALL(call, BlobToImage, info, blob, (size_t)length, exception);
+    image = call.release(info).release(exception).run<Image *>();
     DestroyImageInfo(info);
 
     rm_check_exception(exception, image, DestroyOnError);
@@ -9120,8 +9206,9 @@ magnify(int bang, VALUE self, gvl_function_t fp)
     TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
     exception = AcquireExceptionInfo();
 
-    GVL_STRUCT_TYPE(magnify) args = { image, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(fp, &args);
+    DECLARE_GVL_CALL_FP(call, magnify, fp, image, exception);
+    bang ? call.update(self) : call.read(self);
+    new_image = call.release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
 
     DestroyExceptionInfo(exception);
@@ -9147,7 +9234,7 @@ magnify(int bang, VALUE self, gvl_function_t fp)
 VALUE
 Image_magnify(VALUE self)
 {
-    rm_check_destroyed(self);
+    rm_check_readable(self);
     return magnify(False, self, GVL_FUNC(MagnifyImage));
 }
 
@@ -9183,7 +9270,7 @@ Image_marshal_dump(VALUE self)
     VALUE ary;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     info = CloneImageInfo(NULL);
     if (!info)
@@ -9195,8 +9282,8 @@ Image_marshal_dump(VALUE self)
     rb_ary_store(ary, 0, rb_str_new2(image->filename));
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(ImageToBlob) args = { info, image, &length, exception };
-    blob = (unsigned char *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ImageToBlob), &args);
+    DECLARE_GVL_CALL(call, ImageToBlob, info, image, &length, exception);
+    blob = call.read(self).release(info).release(exception).free_result().run<unsigned char *>();
 
     // Destroy info before raising an exception
     DestroyImageInfo(info);
@@ -9245,8 +9332,8 @@ Image_marshal_load(VALUE self, VALUE ary)
     {
         strlcpy(info->filename, RSTRING_PTR(filename), sizeof(info->filename));
     }
-    GVL_STRUCT_TYPE(BlobToImage) args = { info, RSTRING_PTR(blob), (size_t)RSTRING_LEN(blob), exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BlobToImage), &args);
+    DECLARE_GVL_CALL(call, BlobToImage, info, RSTRING_PTR(blob), (size_t)RSTRING_LEN(blob), exception);
+    new_image = call.update(self).release(info).release(exception).run<Image *>();
 
     // Destroy info before raising an exception
     DestroyImageInfo(info);
@@ -9283,11 +9370,11 @@ get_image_mask(Image *image)
 
     // The returned clip mask is a clone, ours to keep.
 #if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(GetImageMask) args = { image, WritePixelMask, exception };
-    mask = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetImageMask), &args);
+    DECLARE_GVL_CALL(call, GetImageMask, image, WritePixelMask, exception);
+    mask = call.read(image).release(exception).run<Image *>();
 #else
-    GVL_STRUCT_TYPE(GetImageClipMask) args = { image, exception };
-    mask = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetImageClipMask), &args);
+    DECLARE_GVL_CALL(call, GetImageClipMask, image, exception);
+    mask = call.read(image).release(exception).run<Image *>();
 #endif
     rm_check_exception(exception, mask, DestroyOnError);
 
@@ -9319,28 +9406,28 @@ set_image_mask(Image *image, VALUE mask)
     if (mask != Qnil)
     {
         mask = rm_cur_image(mask);
-        mask_image = rm_check_destroyed(mask);
+        mask_image = rm_check_readable(mask);
         clip_mask = rm_clone_image(mask_image);
 
         // Resize if necessary
         if (clip_mask->columns != image->columns || clip_mask->rows != image->rows)
         {
-            GVL_STRUCT_TYPE(ResizeImage) args = { clip_mask, image->columns, image->rows, image->filter, exception };
-            resized_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ResizeImage), &args);
+            DECLARE_GVL_CALL(call, ResizeImage, clip_mask, image->columns, image->rows, image->filter, exception);
+            resized_image = call.update(image).read(mask).destroy(clip_mask).release(exception).run<Image *>();
             DestroyImage(clip_mask);
             rm_check_exception(exception, resized_image, DestroyOnError);
             rm_ensure_result(resized_image);
             clip_mask = resized_image;
         }
 
-        GVL_STRUCT_TYPE(SetImageMask) args = { image, WritePixelMask, clip_mask, exception };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageMask), &args);
+        DECLARE_GVL_CALL(call, SetImageMask, image, WritePixelMask, clip_mask, exception);
+        call.update(image).read(mask).destroy(clip_mask).release(exception).run<void>();
         DestroyImage(clip_mask);
     }
     else
     {
-        GVL_STRUCT_TYPE(SetImageMask) args = { image, WritePixelMask, NULL, exception };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageMask), &args);
+        DECLARE_GVL_CALL(call, SetImageMask, image, WritePixelMask, NULL, exception);
+        call.update(image).release(exception).run<void>();
     }
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
@@ -9361,15 +9448,15 @@ set_image_mask(Image *image, VALUE mask)
     if (mask != Qnil)
     {
         mask = rm_cur_image(mask);
-        mask_image = rm_check_destroyed(mask);
+        mask_image = rm_check_readable(mask);
         clip_mask = rm_clone_image(mask_image);
 
         // Resize if necessary
         if (clip_mask->columns != image->columns || clip_mask->rows != image->rows)
         {
             exception = AcquireExceptionInfo();
-            GVL_STRUCT_TYPE(ResizeImage) args = { clip_mask, image->columns, image->rows, UndefinedFilter, 0.0, exception };
-            resized_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ResizeImage), &args);
+            DECLARE_GVL_CALL(call, ResizeImage, clip_mask, image->columns, image->rows, UndefinedFilter, 0.0, exception);
+            resized_image = call.update(image).read(mask).destroy(clip_mask).release(exception).run<Image *>();
             rm_check_exception(exception, resized_image, DestroyOnError);
             DestroyExceptionInfo(exception);
             rm_ensure_result(resized_image);
@@ -9382,8 +9469,8 @@ set_image_mask(Image *image, VALUE mask)
 
         for (y = 0; y < (long) clip_mask->rows; y++)
         {
-            GVL_STRUCT_TYPE(GetAuthenticPixels) args_GetAuthenticPixels = { clip_mask, 0, y, clip_mask->columns, 1, exception };
-            q = (PixelPacket *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetAuthenticPixels), &args_GetAuthenticPixels);
+            DECLARE_GVL_CALL(pixels_call, GetAuthenticPixels, clip_mask, 0, y, clip_mask->columns, 1, exception);
+            q = pixels_call.keep_thread().run<PixelPacket *>();
             rm_check_exception(exception, clip_mask, DestroyOnError);
 
             if (!q)
@@ -9402,14 +9489,14 @@ set_image_mask(Image *image, VALUE mask)
                 q += 1;
             }
 
-            GVL_STRUCT_TYPE(SyncAuthenticPixels) args_SyncAuthenticPixels = { clip_mask, exception };
-            CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SyncAuthenticPixels), &args_SyncAuthenticPixels);
+            DECLARE_GVL_CALL(sync_call, SyncAuthenticPixels, clip_mask, exception);
+            sync_call.keep_thread().run<void>();
             rm_check_exception(exception, clip_mask, DestroyOnError);
         }
         DestroyExceptionInfo(exception);
 
-        GVL_STRUCT_TYPE(SetImageStorageClass) args_SetImageStorageClass = { clip_mask, DirectClass };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageStorageClass), &args_SetImageStorageClass);
+        DECLARE_GVL_CALL(class_call, SetImageStorageClass, clip_mask, DirectClass);
+        class_call.update(image).read(mask).destroy(clip_mask).run<void>();
         rm_check_image_exception(clip_mask, DestroyOnError);
 
         clip_mask->matte = MagickTrue;
@@ -9417,14 +9504,14 @@ set_image_mask(Image *image, VALUE mask)
         // SetImageClipMask clones the clip_mask image. We can
         // destroy our copy after SetImageClipMask is done with it.
 
-        GVL_STRUCT_TYPE(SetImageClipMask) args_SetImageClipMask = { image, clip_mask };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageClipMask), &args_SetImageClipMask);
+        DECLARE_GVL_CALL(mask_call, SetImageClipMask, image, clip_mask);
+        mask_call.update(image).destroy(clip_mask).run<void>();
         DestroyImage(clip_mask);
     }
     else
     {
-        GVL_STRUCT_TYPE(SetImageClipMask) args_SetImageClipMask = { image, NULL };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageClipMask), &args_SetImageClipMask);
+        DECLARE_GVL_CALL(mask_call, SetImageClipMask, image, NULL);
+        mask_call.update(image).run<void>();
     }
 
     RB_GC_GUARD(mask);
@@ -9462,7 +9549,7 @@ Image_mask(int argc, VALUE *argv, VALUE self)
     VALUE mask;
     Image *image;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     if (argc == 0)
     {
         return get_image_mask(image);
@@ -9472,7 +9559,7 @@ Image_mask(int argc, VALUE *argv, VALUE self)
         rb_raise(rb_eArgError, "wrong number of arguments (expected 0 or 1, got %d)", argc);
     }
 
-    rb_check_frozen(self);
+    rm_check_frozen(self);
     mask = argv[0];
     return set_image_mask(image, mask);
 }
@@ -9486,7 +9573,7 @@ Image_mask(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_matte_color(VALUE self)
 {
-    Image *image = rm_check_destroyed(self);
+    Image *image = rm_check_readable(self);
     return rm_pixelcolor_to_color_name(image, &image->matte_color);
 }
 
@@ -9532,7 +9619,7 @@ Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
 #endif
     VALUE color_obj, x_obj, y_obj, method_obj, kwargs;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     rb_scan_args(argc, argv, "4:", &color_obj, &x_obj, &y_obj, &method_obj, &kwargs);
 
@@ -9596,15 +9683,15 @@ Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(new_image, OpacityChannel);
-    GVL_STRUCT_TYPE(FloodfillPaintImage) args = { new_image, draw_info, &target_mpp, x, y, invert, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(FloodfillPaintImage), &args);
+    DECLARE_GVL_CALL(call, FloodfillPaintImage, new_image, draw_info, &target_mpp, x, y, invert, exception);
+    call.read(self).destroy(new_image).release(draw_info).release(exception).run<void>();
     END_CHANNEL_MASK(new_image);
     DestroyDrawInfo(draw_info);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(FloodfillPaintImage) args = { new_image, OpacityChannel, draw_info, &target_mpp, x, y, invert };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(FloodfillPaintImage), &args);
+    DECLARE_GVL_CALL(call, FloodfillPaintImage, new_image, OpacityChannel, draw_info, &target_mpp, x, y, invert);
+    call.read(self).destroy(new_image).release(draw_info).run<void>();
     DestroyDrawInfo(draw_info);
 
     rm_check_image_exception(new_image, DestroyOnError);
@@ -9629,7 +9716,7 @@ Image_median_filter(int argc, VALUE *argv, VALUE self)
     double radius = 0.0;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     switch (argc)
     {
         case 1:
@@ -9642,8 +9729,8 @@ Image_median_filter(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(StatisticImage) args = { image, MedianStatistic, (size_t)radius, (size_t)radius, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(StatisticImage), &args);
+    DECLARE_GVL_CALL(call, StatisticImage, image, MedianStatistic, (size_t)radius, (size_t)radius, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -9675,7 +9762,7 @@ Image_mime_type(VALUE self)
     char *type;
     VALUE mime_type;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     type = MagickToMime(image->magick);
     if (!type)
     {
@@ -9701,7 +9788,7 @@ Image_mime_type(VALUE self)
 VALUE
 Image_minify(VALUE self)
 {
-    rm_check_destroyed(self);
+    rm_check_readable(self);
     return magnify(False, self, GVL_FUNC(MinifyImage));
 }
 
@@ -9744,7 +9831,7 @@ Image_modulate(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     switch (argc)
     {
         case 3:
@@ -9771,13 +9858,13 @@ Image_modulate(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(ModulateImage) args = { new_image, modulate, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ModulateImage), &args);
+    DECLARE_GVL_CALL(call, ModulateImage, new_image, modulate, exception);
+    call.read(self).destroy(new_image).release(exception).run<void>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(ModulateImage) args = { new_image, modulate };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ModulateImage), &args);
+    DECLARE_GVL_CALL(call, ModulateImage, new_image, modulate);
+    call.read(self).destroy(new_image).run<void>();
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -9862,8 +9949,8 @@ motion_blur(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
     TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(motion_blur) args = { image, radius, sigma, angle, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(fp, &args);
+    DECLARE_GVL_CALL_FP(call, motion_blur, fp, image, radius, sigma, angle, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -9886,7 +9973,7 @@ motion_blur(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
 VALUE
 Image_motion_blur(int argc, VALUE *argv, VALUE self)
 {
-    rm_check_destroyed(self);
+    rm_check_readable(self);
     return motion_blur(argc, argv, self, GVL_FUNC(MotionBlurImage));
 }
 
@@ -9908,7 +9995,7 @@ Image_negate(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     if (argc == 1)
     {
         grayscale = (MagickBooleanType)RTEST(argv[0]);
@@ -9922,13 +10009,13 @@ Image_negate(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(NegateImage) args = { new_image, grayscale, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(NegateImage), &args);
+    DECLARE_GVL_CALL(call, NegateImage, new_image, grayscale, exception);
+    call.read(self).destroy(new_image).release(exception).run<void>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(NegateImage) args = { new_image, grayscale };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(NegateImage), &args);
+    DECLARE_GVL_CALL(call, NegateImage, new_image, grayscale);
+    call.read(self).destroy(new_image).run<void>();
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -9962,7 +10049,7 @@ Image_negate_channel(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     channels = extract_channels(&argc, argv);
 
     // There can be at most 1 remaining argument.
@@ -9980,14 +10067,14 @@ Image_negate_channel(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(new_image, channels);
-    GVL_STRUCT_TYPE(NegateImage) args = { new_image, grayscale, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(NegateImage), &args);
+    DECLARE_GVL_CALL(call, NegateImage, new_image, grayscale, exception);
+    call.read(self).destroy(new_image).release(exception).run<void>();
     END_CHANNEL_MASK(new_image);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(NegateImageChannel) args = { new_image, channels, grayscale };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(NegateImageChannel), &args);
+    DECLARE_GVL_CALL(call, NegateImageChannel, new_image, channels, grayscale);
+    call.read(self).destroy(new_image).run<void>();
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -10064,13 +10151,13 @@ Image_initialize(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(SetImageExtent) args = { image, cols, rows, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageExtent), &args);
+    DECLARE_GVL_CALL(call, SetImageExtent, image, cols, rows, exception);
+    call.update(self).release(exception).run<void>();
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(SetImageExtent) args = { image, cols, rows };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageExtent), &args);
+    DECLARE_GVL_CALL(call, SetImageExtent, image, cols, rows);
+    call.update(self).run<void>();
 #endif
 
     rm_sync_image_options(image, info);
@@ -10082,13 +10169,13 @@ Image_initialize(int argc, VALUE *argv, VALUE self)
     {
 #if defined(IMAGEMAGICK_7)
         exception = AcquireExceptionInfo();
-        GVL_STRUCT_TYPE(SetImageBackgroundColor) args = { image, exception };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageBackgroundColor), &args);
+        DECLARE_GVL_CALL(call, SetImageBackgroundColor, image, exception);
+        call.update(self).release(exception).run<void>();
         CHECK_EXCEPTION();
         DestroyExceptionInfo(exception);
 #else
-        GVL_STRUCT_TYPE(SetImageBackgroundColor) args = { image };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageBackgroundColor), &args);
+        DECLARE_GVL_CALL(call, SetImageBackgroundColor, image);
+        call.update(self).run<void>();
 #endif
     }
     // fillobj.fill(self)
@@ -10139,18 +10226,18 @@ Image_normalize(VALUE self)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     new_image = rm_clone_image(image);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(NormalizeImage) args = { new_image, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(NormalizeImage), &args);
+    DECLARE_GVL_CALL(call, NormalizeImage, new_image, exception);
+    call.read(self).destroy(new_image).release(exception).run<void>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(NormalizeImage) args = { new_image };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(NormalizeImage), &args);
+    DECLARE_GVL_CALL(call, NormalizeImage, new_image);
+    call.read(self).destroy(new_image).run<void>();
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -10179,7 +10266,7 @@ Image_normalize_channel(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     channels = extract_channels(&argc, argv);
     // Ensure all arguments consumed.
     if (argc > 0)
@@ -10192,14 +10279,14 @@ Image_normalize_channel(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(new_image, channels);
-    GVL_STRUCT_TYPE(NormalizeImage) args = { new_image, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(NormalizeImage), &args);
+    DECLARE_GVL_CALL(call, NormalizeImage, new_image, exception);
+    call.read(self).destroy(new_image).release(exception).run<void>();
     END_CHANNEL_MASK(new_image);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(NormalizeImageChannel) args = { new_image, channels };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(NormalizeImageChannel), &args);
+    DECLARE_GVL_CALL(call, NormalizeImageChannel, new_image, channels);
+    call.read(self).destroy(new_image).run<void>();
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -10242,11 +10329,11 @@ Image_number_colors(VALUE self)
     ExceptionInfo *exception;
     size_t n = 0;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
 
-    GVL_STRUCT_TYPE(GetNumberColors) args = { image, NULL, exception };
-    n = (size_t)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetNumberColors), &args);
+    DECLARE_GVL_CALL(call, GetNumberColors, image, NULL, exception);
+    n = call.read(self).release(exception).run<size_t>();
     CHECK_EXCEPTION();
 
     DestroyExceptionInfo(exception);
@@ -10296,7 +10383,7 @@ Image_oil_paint(int argc, VALUE *argv, VALUE self)
     double sigma = 1.0;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     switch (argc)
     {
         case 1:
@@ -10311,11 +10398,11 @@ Image_oil_paint(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 
 #if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(OilPaintImage) args = { image, radius, sigma, exception };
+    DECLARE_GVL_CALL(call, OilPaintImage, image, radius, sigma, exception);
 #else
-    GVL_STRUCT_TYPE(OilPaintImage) args = { image, radius, exception };
+    DECLARE_GVL_CALL(call, OilPaintImage, image, radius, exception);
 #endif
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(OilPaintImage), &args);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -10346,7 +10433,7 @@ Image_opaque(VALUE self, VALUE target, VALUE fill)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     // Allow color name or Pixel
     Color_to_MagickPixel(image, &target_pp, target);
@@ -10356,14 +10443,14 @@ Image_opaque(VALUE self, VALUE target, VALUE fill)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(OpaquePaintImage) args = { new_image, &target_pp, &fill_pp, MagickFalse, exception };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(OpaquePaintImage), &args);
+    DECLARE_GVL_CALL(call, OpaquePaintImage, new_image, &target_pp, &fill_pp, MagickFalse, exception);
+    void *ret = call.read(self).destroy(new_image).release(exception).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(OpaquePaintImageChannel) args = { new_image, DefaultChannels, &target_pp, &fill_pp, MagickFalse };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(OpaquePaintImageChannel), &args);
+    DECLARE_GVL_CALL(call, OpaquePaintImageChannel, new_image, DefaultChannels, &target_pp, &fill_pp, MagickFalse);
+    void *ret = call.read(self).destroy(new_image).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
@@ -10413,7 +10500,7 @@ Image_opaque_channel(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     channels = extract_channels(&argc, argv);
     if (argc > 4)
     {
@@ -10450,16 +10537,16 @@ Image_opaque_channel(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(new_image, channels);
-    GVL_STRUCT_TYPE(OpaquePaintImage) args = { new_image, &target_pp, &fill_pp, invert, exception };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(OpaquePaintImage), &args);
+    DECLARE_GVL_CALL(call, OpaquePaintImage, new_image, &target_pp, &fill_pp, invert, exception);
+    void *ret = call.read(self).destroy(new_image).release(exception).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
     END_CHANNEL_MASK(new_image);
     new_image->fuzz = keep;
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(OpaquePaintImageChannel) args = { new_image, channels, &target_pp, &fill_pp, invert };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(OpaquePaintImageChannel), &args);
+    DECLARE_GVL_CALL(call, OpaquePaintImageChannel, new_image, channels, &target_pp, &fill_pp, invert);
+    void *ret = call.read(self).destroy(new_image).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
 
     new_image->fuzz = keep;
@@ -10511,7 +10598,7 @@ Image_ordered_dither(int argc, VALUE *argv, VALUE self)
     const char *threshold_map = "2x2";
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     if (argc > 1)
     {
@@ -10521,6 +10608,7 @@ Image_ordered_dither(int argc, VALUE *argv, VALUE self)
     {
         if (TYPE(argv[0]) == T_STRING)
         {
+            argv[0] = rb_str_new_frozen(argv[0]);
             threshold_map = StringValueCStr(argv[0]);
         }
         else
@@ -10546,11 +10634,11 @@ Image_ordered_dither(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 
 #if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(OrderedDitherImage) args = { new_image, threshold_map, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(OrderedDitherImage), &args);
+    DECLARE_GVL_CALL(call, OrderedDitherImage, new_image, threshold_map, exception);
+    call.read(self).destroy(new_image).release(exception).run<void>();
 #else
-    GVL_STRUCT_TYPE(OrderedPosterizeImage) args = { new_image, threshold_map, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(OrderedPosterizeImage), &args);
+    DECLARE_GVL_CALL(call, OrderedPosterizeImage, new_image, threshold_map, exception);
+    call.read(self).destroy(new_image).release(exception).run<void>();
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
 
@@ -10568,7 +10656,7 @@ Image_ordered_dither(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_orientation(VALUE self)
 {
-    Image *image = rm_check_destroyed(self);
+    Image *image = rm_check_readable(self);
     return OrientationType_find(image->orientation);
 }
 
@@ -10596,7 +10684,7 @@ Image_orientation_eq(VALUE self, VALUE orientation)
 VALUE
 Image_page(VALUE self)
 {
-    Image *image = rm_check_destroyed(self);
+    Image *image = rm_check_readable(self);
     return Import_RectangleInfo(&image->page);
 }
 
@@ -10643,7 +10731,7 @@ Image_paint_transparent(int argc, VALUE *argv, VALUE self)
 #endif
     VALUE color_obj, invert_obj, fuzz_obj, kwargs;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     rb_scan_args(argc, argv, "12:", &color_obj, &invert_obj, &fuzz_obj, &kwargs);
 
@@ -10663,15 +10751,15 @@ Image_paint_transparent(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(TransparentPaintImage) args = { new_image, (const MagickPixel *)&color, alpha, invert, exception };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TransparentPaintImage), &args);
+    DECLARE_GVL_CALL(call, TransparentPaintImage, new_image, (const MagickPixel *)&color, alpha, invert, exception);
+    void *ret = call.read(self).destroy(new_image).release(exception).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
     new_image->fuzz = keep;
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(TransparentPaintImage) args = { new_image, (const MagickPixel *)&color, (Quantum)(QuantumRange - alpha), invert };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TransparentPaintImage), &args);
+    DECLARE_GVL_CALL(call, TransparentPaintImage, new_image, (const MagickPixel *)&color, (Quantum)(QuantumRange - alpha), invert);
+    void *ret = call.read(self).destroy(new_image).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
     new_image->fuzz = keep;
 
@@ -10764,12 +10852,12 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
 
     memset(&old_color, 0, sizeof(old_color));
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     switch (argc)
     {
         case 3:
-            rb_check_frozen(self);
+            rm_check_frozen(self);
             set = True;
             // Replace with new color? The arg can be either a color name or
             // a Magick::Pixel.
@@ -10788,8 +10876,8 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
     if (!set)
     {
         exception = AcquireExceptionInfo();
-        GVL_STRUCT_TYPE(GetVirtualPixels) args = { image, x, y, 1, 1, exception };
-        void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetVirtualPixels), &args);
+        DECLARE_GVL_CALL(call, GetVirtualPixels, image, x, y, 1, 1, exception);
+        void *ret = call.keep_thread().run<void *>();
         old_pixel = reinterpret_cast<decltype(old_pixel)>(ret);
         CHECK_EXCEPTION();
 
@@ -10845,8 +10933,8 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
     if (image->storage_class == PseudoClass)
     {
 #if defined(IMAGEMAGICK_7)
-        GVL_STRUCT_TYPE(SetImageStorageClass) args = { image, DirectClass, exception };
-        void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageStorageClass), &args);
+        DECLARE_GVL_CALL(call, SetImageStorageClass, image, DirectClass, exception);
+        void *ret = call.update(self).release(exception).run<void *>();
         okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
         CHECK_EXCEPTION();
         if (!okay)
@@ -10855,8 +10943,8 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
             rb_raise(Class_ImageMagickError, "SetImageStorageClass failed. Can't set pixel color.");
         }
 #else
-        GVL_STRUCT_TYPE(SetImageStorageClass) args = { image, DirectClass };
-        void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageStorageClass), &args);
+        DECLARE_GVL_CALL(call, SetImageStorageClass, image, DirectClass);
+        void *ret = call.update(self).run<void *>();
         okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
         rm_check_image_exception(image, RetainOnError);
         if (!okay)
@@ -10870,8 +10958,8 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #endif
 
-    GVL_STRUCT_TYPE(GetAuthenticPixels) args = { image, x, y, 1, 1, exception };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetAuthenticPixels), &args);
+    DECLARE_GVL_CALL(call, GetAuthenticPixels, image, x, y, 1, 1, exception);
+    void *ret = call.keep_thread().run<void *>();
     pixel = reinterpret_cast<decltype(pixel)>(ret);
     CHECK_EXCEPTION();
 
@@ -10903,8 +10991,8 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
         }
 #endif
 
-        GVL_STRUCT_TYPE(SyncAuthenticPixels) args = { image, exception };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SyncAuthenticPixels), &args);
+        DECLARE_GVL_CALL(call, SyncAuthenticPixels, image, exception);
+        call.keep_thread().run<void>();
         CHECK_EXCEPTION();
     }
 
@@ -10927,7 +11015,7 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_pixel_interpolation_method(VALUE self)
 {
-    Image *image = rm_check_destroyed(self);
+    Image *image = rm_check_readable(self);
     return PixelInterpolateMethod_find(image->interpolate);
 }
 
@@ -10985,7 +11073,7 @@ Image_polaroid(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
     const char *caption;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     switch (argc)
     {
@@ -11019,11 +11107,11 @@ Image_polaroid(int argc, VALUE *argv, VALUE self)
     }
 
 #if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(PolaroidImage) args = { clone, draw->info, caption, angle, image->interpolate, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(PolaroidImage), &args);
+    DECLARE_GVL_CALL(call, PolaroidImage, clone, draw->info, caption, angle, image->interpolate, exception);
+    new_image = call.read(self).destroy(clone).release(exception).run<Image *>();
 #else
-    GVL_STRUCT_TYPE(PolaroidImage) args = { clone, draw->info, angle, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(PolaroidImage), &args);
+    DECLARE_GVL_CALL(call, PolaroidImage, clone, draw->info, angle, exception);
+    new_image = call.read(self).destroy(clone).release(exception).run<Image *>();
 #endif
     rm_check_exception(exception, clone, DestroyOnError);
 
@@ -11055,7 +11143,7 @@ Image_posterize(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     switch (argc)
     {
         case 2:
@@ -11075,13 +11163,13 @@ Image_posterize(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     dither_method = dither ? RiemersmaDitherMethod : NoDitherMethod;
-    GVL_STRUCT_TYPE(PosterizeImage) args = { new_image, levels, dither_method, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(PosterizeImage), &args);
+    DECLARE_GVL_CALL(call, PosterizeImage, new_image, levels, dither_method, exception);
+    call.read(self).destroy(new_image).release(exception).run<void>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(PosterizeImage) args = { new_image, levels, dither };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(PosterizeImage), &args);
+    DECLARE_GVL_CALL(call, PosterizeImage, new_image, levels, dither);
+    call.read(self).destroy(new_image).run<void>();
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -11103,12 +11191,12 @@ Image_preview(VALUE self, VALUE preview)
     PreviewType preview_type;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     VALUE_TO_ENUM(preview, preview_type, PreviewType);
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(PreviewImage) args = { image, preview_type, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(PreviewImage), &args);
+    DECLARE_GVL_CALL(call, PreviewImage, image, preview_type, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
 
     DestroyExceptionInfo(exception);
@@ -11137,7 +11225,10 @@ Image_profile_bang(VALUE self, VALUE name, VALUE profile)
     }
     else
     {
-        return set_profile(self, StringValueCStr(name), profile);
+        name = rb_str_new_frozen(StringValue(name));
+        set_profile(self, StringValueCStr(name), profile);
+        RB_GC_GUARD(name);
+        return self;
     }
 
 }
@@ -11166,7 +11257,7 @@ Image_quantum_depth(VALUE self)
     Image *image;
     unsigned long quantum_depth;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     quantum_depth = GetImageQuantumDepth(image, MagickFalse);
 
     return ULONG2NUM(quantum_depth);
@@ -11203,7 +11294,7 @@ Image_quantum_operator(int argc, VALUE *argv, VALUE self)
     ChannelType channel;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_writable(self);
 
     // The default channel is AllChannels
     channel = AllChannels;
@@ -11335,12 +11426,12 @@ Image_quantum_operator(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channel);
-    GVL_STRUCT_TYPE(EvaluateImage) args = { image, qop, rvalue, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(EvaluateImage), &args);
+    DECLARE_GVL_CALL(call, EvaluateImage, image, qop, rvalue, exception);
+    call.update(self).restore_mask(image, channel_mask).release(exception).run<void>();
     END_CHANNEL_MASK(image);
 #else
-    GVL_STRUCT_TYPE(EvaluateImageChannel) args = { image, channel, qop, rvalue, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(EvaluateImageChannel), &args);
+    DECLARE_GVL_CALL(call, EvaluateImageChannel, image, channel, qop, rvalue, exception);
+    call.update(self).release(exception).run<void>();
 #endif
     CHECK_EXCEPTION();
 
@@ -11377,7 +11468,7 @@ Image_quantize(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     GetQuantizeInfo(&quantize_info);
 
     switch (argc)
@@ -11417,13 +11508,13 @@ Image_quantize(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(QuantizeImage) args = { &quantize_info, new_image, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(QuantizeImage), &args);
+    DECLARE_GVL_CALL(call, QuantizeImage, &quantize_info, new_image, exception);
+    call.read(self).destroy(new_image).release(exception).run<void>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(QuantizeImage) args = { &quantize_info, new_image };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(QuantizeImage), &args);
+    DECLARE_GVL_CALL(call, QuantizeImage, &quantize_info, new_image);
+    call.read(self).destroy(new_image).run<void>();
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -11444,12 +11535,11 @@ Image_radial_blur(VALUE self, VALUE angle_obj)
     ExceptionInfo *exception;
     double angle = NUM2DBL(angle_obj);
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
 
-    GVL_STRUCT_TYPE(RotationalBlurImage) args = { image, angle, exception };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RotationalBlurImage), &args);
-    new_image = reinterpret_cast<decltype(new_image)>(ret);
+    DECLARE_GVL_CALL(call, RotationalBlurImage, image, angle, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -11478,7 +11568,7 @@ Image_radial_blur_channel(int argc, VALUE *argv, VALUE self)
     ChannelType channels;
     double angle;
 
-    image = rm_check_destroyed(self);
+    image = check_channel_writable(self);
     channels = extract_channels(&argc, argv);
 
     // There must be 1 remaining argument.
@@ -11496,13 +11586,13 @@ Image_radial_blur_channel(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    GVL_STRUCT_TYPE(RotationalBlurImage) args = { image, angle, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RotationalBlurImage), &args);
+    DECLARE_GVL_CALL(call, RotationalBlurImage, image, angle, exception);
+    new_image = call.update(self).restore_mask(image, channel_mask).release(exception).run<Image *>();
     CHANGE_RESULT_CHANNEL_MASK(new_image);
     END_CHANNEL_MASK(image);
 #else
-    GVL_STRUCT_TYPE(RotationalBlurImageChannel) args = { image, channels, angle, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RotationalBlurImageChannel), &args);
+    DECLARE_GVL_CALL(call, RotationalBlurImageChannel, image, channels, angle, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -11535,7 +11625,7 @@ Image_random_threshold_channel(int argc, VALUE *argv, VALUE self)
     VALUE geom_str;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     channels = extract_channels(&argc, argv);
 
@@ -11550,7 +11640,7 @@ Image_random_threshold_channel(int argc, VALUE *argv, VALUE self)
     }
 
     // Accept any argument that has a to_s method.
-    geom_str = rb_String(argv[0]);
+    geom_str = rb_str_new_frozen(rb_String(argv[0]));
     thresholds = StringValueCStr(geom_str);
 
     new_image = rm_clone_image(image);
@@ -11570,15 +11660,15 @@ Image_random_threshold_channel(int argc, VALUE *argv, VALUE self)
         {
             BEGIN_CHANNEL_MASK(new_image, channels);
             {
-                GVL_STRUCT_TYPE(RandomThresholdImage) args = { new_image, geometry_info.rho, geometry_info.sigma, exception };
-                CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RandomThresholdImage), &args);
+                DECLARE_GVL_CALL(call, RandomThresholdImage, new_image, geometry_info.rho, geometry_info.sigma, exception);
+                call.read(self).destroy(new_image).release(exception).run<void>();
             }
             END_CHANNEL_MASK(new_image);
         }
     }
 #else
-    GVL_STRUCT_TYPE(RandomThresholdImageChannel) args = { new_image, channels, thresholds, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RandomThresholdImageChannel), &args);
+    DECLARE_GVL_CALL(call, RandomThresholdImageChannel, new_image, channels, thresholds, exception);
+    call.read(self).destroy(new_image).release(exception).run<void>();
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
 
@@ -11615,7 +11705,7 @@ Image_raise(int argc, VALUE *argv, VALUE self)
     rect.width = 6;         // default
     rect.height = 6;        // default
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     switch (argc)
     {
         case 3:
@@ -11635,13 +11725,13 @@ Image_raise(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(RaiseImage) args = { new_image, &rect, raised, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RaiseImage), &args);
+    DECLARE_GVL_CALL(call, RaiseImage, new_image, &rect, raised, exception);
+    call.read(self).destroy(new_image).release(exception).run<void>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(RaiseImage) args = { new_image, &rect, raised };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RaiseImage), &args);
+    DECLARE_GVL_CALL(call, RaiseImage, new_image, &rect, raised);
+    call.read(self).destroy(new_image).run<void>();
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -11705,7 +11795,61 @@ typedef GVL_STRUCT_TYPE(PingImage) GVL_STRUCT_TYPE(rd_image);
 void sig_handler(int sig ATTRIBUTE_UNUSED)
 {
 }
+
+// Reads can overlap, for example on the worker threads of a Fiber scheduler,
+// and the handler is process-wide, so the first read swaps it and the last one
+// restores it.
+static std::atomic<int> sigchld_reads(0);
+static struct sigaction sigchld_previous;
+
+static void
+swap_sigchld(void)
+{
+    struct sigaction act;
+
+    if (sigchld_reads.fetch_add(1) == 0)
+    {
+        act.sa_handler = sig_handler;
+        act.sa_flags = SA_RESTART;
+        sigemptyset(&act.sa_mask);
+        if (sigaction(SIGCHLD, &act, &sigchld_previous) < 0)
+        {
+            sigchld_reads.fetch_sub(1);
+            rb_sys_fail("sigaction");
+        }
+    }
+}
+
+static VALUE
+restore_sigchld(VALUE arg ATTRIBUTE_UNUSED)
+{
+    if (sigchld_reads.fetch_sub(1) == 1 && sigaction(SIGCHLD, &sigchld_previous, NULL) < 0)
+    {
+        rb_sys_fail("sigaction");
+    }
+    return Qnil;
+}
 #endif
+
+typedef struct
+{
+    gvl_function_t *fp;
+    GVL_STRUCT_TYPE(rd_image) *args;
+    Info *info;
+    VALUE info_obj;
+    ExceptionInfo *exception;
+} rd_image_call_t;
+
+static VALUE
+rd_image_call(VALUE arg)
+{
+    rd_image_call_t *call = (rd_image_call_t *)arg;
+    Image *images;
+
+    rm_gvl_call gvl_call(call->fp, call->args);
+    images = gvl_call.read(call->info_obj).release(call->exception).keep_thread(call->info->file != NULL).run<Image *>();
+    return (VALUE)images;
+}
 
 static VALUE
 rd_image(VALUE klass ATTRIBUTE_UNUSED, VALUE file, gvl_function_t fp)
@@ -11749,24 +11893,14 @@ rd_image(VALUE klass ATTRIBUTE_UNUSED, VALUE file, gvl_function_t fp)
 
     exception = AcquireExceptionInfo();
 
-#if defined(__APPLE__) || defined(__FreeBSD__)
-    struct sigaction act, oldact;
-    act.sa_handler = sig_handler;
-    act.sa_flags = SA_RESTART;
-    if (sigaction(SIGCHLD, &act, &oldact) < 0)
-    {
-        rb_sys_fail("sigaction");
-    }
-#endif
-
     GVL_STRUCT_TYPE(rd_image) args = { info, exception };
-    images = (Image *)CALL_FUNC_WITHOUT_GVL(fp, &args);
-
+    rd_image_call_t call = { fp, &args, info, info_obj, exception };
 #if defined(__APPLE__) || defined(__FreeBSD__)
-    if (sigaction(SIGCHLD, &oldact, NULL) < 0)
-    {
-        rb_sys_fail("sigaction");
-    }
+    // Restore the handler even if the scheduler raises into this fiber
+    swap_sigchld();
+    images = (Image *)rb_ensure(rd_image_call, (VALUE)&call, restore_sigchld, Qnil);
+#else
+    images = (Image *)rd_image_call((VALUE)&call);
 #endif
 
     rm_check_exception(exception, images, DestroyOnError);
@@ -11801,7 +11935,7 @@ Image_recolor(VALUE self, VALUE color_matrix)
     ExceptionInfo *exception;
     KernelInfo *kernel_info;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     color_matrix = rm_check_ary_type(color_matrix);
 
     // Allocate color matrix from Ruby's memory
@@ -11849,8 +11983,8 @@ Image_recolor(VALUE self, VALUE color_matrix)
     kernel_info->height = order;
     kernel_info->values = (double *) matrix;
 
-    GVL_STRUCT_TYPE(ColorMatrixImage) args = { image, kernel_info, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ColorMatrixImage), &args);
+    DECLARE_GVL_CALL(call, ColorMatrixImage, image, kernel_info, exception);
+    new_image = call.read(self).cleanup(destroy_color_matrix, kernel_info).release(exception).run<Image *>();
     kernel_info->values = (double *) NULL;
     DestroyKernelInfo(kernel_info);
     xfree((void *) matrix);
@@ -11882,6 +12016,7 @@ Image_read_inline(VALUE self ATTRIBUTE_UNUSED, VALUE content)
     size_t blob_l;
     ExceptionInfo *exception;
 
+    content = rb_str_new_frozen(StringValue(content));
     image_data = rm_str2cstr(&content, &image_data_l);
 
     // Search for a comma. If found, we'll set the start of the
@@ -11899,8 +12034,8 @@ Image_read_inline(VALUE self ATTRIBUTE_UNUSED, VALUE content)
         image_data += x + 1;
     }
 
-    GVL_STRUCT_TYPE(Base64Decode) args_Base64Decode = { image_data, &blob_l };
-    blob = (unsigned char *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(Base64Decode), &args_Base64Decode);
+    DECLARE_GVL_CALL(decode_call, Base64Decode, image_data, &blob_l);
+    blob = decode_call.free_result().run<unsigned char *>();
     if (blob_l == 0)
     {
         magick_free((void *)blob);
@@ -11914,8 +12049,8 @@ Image_read_inline(VALUE self ATTRIBUTE_UNUSED, VALUE content)
     info_obj = rm_info_new();
     TypedData_Get_Struct(info_obj, Info, &rm_info_data_type, info);
 
-    GVL_STRUCT_TYPE(BlobToImage) args_BlobToImage = { info, blob, blob_l, exception };
-    images = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BlobToImage), &args_BlobToImage);
+    DECLARE_GVL_CALL(read_call, BlobToImage, info, blob, blob_l, exception);
+    images = read_call.read(info_obj).relinquish(blob).release(exception).run<Image *>();
     magick_free((void *)blob);
 
     rm_check_exception(exception, images, DestroyOnError);
@@ -11977,11 +12112,11 @@ Image_reduce_noise(VALUE self, VALUE radius)
     ExceptionInfo *exception;
     size_t radius_size = NUM2SIZET(radius);
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(StatisticImage) args = { image, NonpeakStatistic, radius_size, radius_size, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(StatisticImage), &args);
+    DECLARE_GVL_CALL(call, StatisticImage, image, NonpeakStatistic, radius_size, radius_size, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
 
     DestroyExceptionInfo(exception);
@@ -12005,6 +12140,7 @@ VALUE
 Image_remap(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *remap_image;
+    VALUE remap_obj;
     QuantizeInfo quantize_info;
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
@@ -12029,19 +12165,22 @@ Image_remap(int argc, VALUE *argv, VALUE self)
             break;
     }
 
-    remap_image = rm_check_destroyed(rm_cur_image(argv[0]));
+    remap_obj = rm_cur_image(argv[0]);
+    remap_image = rm_check_readable(remap_obj);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(RemapImage) args = { &quantize_info, image, remap_image, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RemapImage), &args);
+    DECLARE_GVL_CALL(call, RemapImage, &quantize_info, image, remap_image, exception);
+    call.update(self).read(remap_obj).release(exception).run<void>();
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(RemapImage) args = { &quantize_info, image, remap_image };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RemapImage), &args);
+    DECLARE_GVL_CALL(call, RemapImage, &quantize_info, image, remap_image);
+    call.update(self).read(remap_obj).run<void>();
     rm_check_image_exception(image, RetainOnError);
 #endif
+
+    RB_GC_GUARD(remap_obj);
 
     return self;
 }
@@ -12055,7 +12194,7 @@ Image_remap(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_rendering_intent(VALUE self)
 {
-    Image *image = rm_check_destroyed(self);
+    Image *image = rm_check_readable(self);
     return RenderingIntent_find(image->rendering_intent);
 }
 
@@ -12232,8 +12371,13 @@ resample(int bang, int argc, VALUE *argv, VALUE self)
 #endif
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(ResampleImage) args = { source, x_resolution, y_resolution, filter, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ResampleImage), &args);
+    DECLARE_GVL_CALL(call, ResampleImage, source, x_resolution, y_resolution, filter, exception);
+    bang ? call.update(self) : call.read(self);
+    if (source != image)
+    {
+        call.destroy(source);
+    }
+    new_image = call.release(exception).run<Image *>();
     if (source != image)
     {
         if (new_image)
@@ -12243,8 +12387,9 @@ resample(int bang, int argc, VALUE *argv, VALUE self)
         DestroyImage(source);
     }
 #else
-    GVL_STRUCT_TYPE(ResampleImage) args = { image, x_resolution, y_resolution, filter, blur, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ResampleImage), &args);
+    DECLARE_GVL_CALL(call, ResampleImage, image, x_resolution, y_resolution, filter, blur, exception);
+    bang ? call.update(self) : call.read(self);
+    new_image = call.release(exception).run<Image *>();
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
 
@@ -12282,7 +12427,7 @@ resample(int bang, int argc, VALUE *argv, VALUE self)
 VALUE
 Image_resample(int argc, VALUE *argv, VALUE self)
 {
-    rm_check_destroyed(self);
+    rm_check_readable(self);
     return resample(False, argc, argv, self);
 }
 
@@ -12383,8 +12528,13 @@ resize(int bang, int argc, VALUE *argv, VALUE self)
 #endif
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(ResizeImage) args = { source, columns, rows, filter, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ResizeImage), &args);
+    DECLARE_GVL_CALL(call, ResizeImage, source, columns, rows, filter, exception);
+    bang ? call.update(self) : call.read(self);
+    if (source != image)
+    {
+        call.destroy(source);
+    }
+    new_image = call.release(exception).run<Image *>();
     if (source != image)
     {
         if (new_image)
@@ -12394,8 +12544,9 @@ resize(int bang, int argc, VALUE *argv, VALUE self)
         DestroyImage(source);
     }
 #else
-    GVL_STRUCT_TYPE(ResizeImage) args = { image, columns, rows, filter, blur, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ResizeImage), &args);
+    DECLARE_GVL_CALL(call, ResizeImage, image, columns, rows, filter, blur, exception);
+    bang ? call.update(self) : call.read(self);
+    new_image = call.release(exception).run<Image *>();
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
 
@@ -12432,7 +12583,7 @@ resize(int bang, int argc, VALUE *argv, VALUE self)
 VALUE
 Image_resize(int argc, VALUE *argv, VALUE self)
 {
-    rm_check_destroyed(self);
+    rm_check_readable(self);
     return resize(False, argc, argv, self);
 }
 
@@ -12478,11 +12629,11 @@ Image_roll(VALUE self, VALUE x_offset, VALUE y_offset)
     ssize_t x = NUM2LONG(x_offset);
     ssize_t y = NUM2LONG(y_offset);
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(RollImage) args = { image, x, y, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RollImage), &args);
+    DECLARE_GVL_CALL(call, RollImage, image, x, y, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -12540,8 +12691,9 @@ rotate(int bang, int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 
-    GVL_STRUCT_TYPE(RotateImage) args = { image, degrees, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(RotateImage), &args);
+    DECLARE_GVL_CALL(call, RotateImage, image, degrees, exception);
+    bang ? call.update(self) : call.read(self);
+    new_image = call.release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -12577,7 +12729,7 @@ rotate(int bang, int argc, VALUE *argv, VALUE self)
 VALUE
 Image_rotate(int argc, VALUE *argv, VALUE self)
 {
-    rm_check_destroyed(self);
+    rm_check_readable(self);
     return rotate(False, argc, argv, self);
 }
 
@@ -12637,7 +12789,7 @@ Image_rows(VALUE self)
 VALUE
 Image_sample(int argc, VALUE *argv, VALUE self)
 {
-    rm_check_destroyed(self);
+    rm_check_readable(self);
     return scale(False, argc, argv, self, GVL_FUNC(SampleImage));
 }
 
@@ -12685,7 +12837,7 @@ Image_sample_bang(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_scale(int argc, VALUE *argv, VALUE self)
 {
-    rm_check_destroyed(self);
+    rm_check_readable(self);
     return scale(False, argc, argv, self, GVL_FUNC(ScaleImage));
 }
 
@@ -12778,8 +12930,9 @@ scale(int bang, int argc, VALUE *argv, VALUE self, gvl_function_t fp)
     }
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(scale) args = { image, columns, rows, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(fp, &args);
+    DECLARE_GVL_CALL_FP(call, scale, fp, image, columns, rows, exception);
+    bang ? call.update(self) : call.read(self);
+    new_image = call.release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -12835,7 +12988,7 @@ Image_selective_blur_channel(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
     ChannelType channels;
 
-    image = rm_check_destroyed(self);
+    image = check_channel_writable(self);
     channels = extract_channels(&argc, argv);
     if (argc > 3)
     {
@@ -12855,13 +13008,13 @@ Image_selective_blur_channel(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    GVL_STRUCT_TYPE(SelectiveBlurImage) args = { image, radius, sigma, threshold, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SelectiveBlurImage), &args);
+    DECLARE_GVL_CALL(call, SelectiveBlurImage, image, radius, sigma, threshold, exception);
+    new_image = call.update(self).restore_mask(image, channel_mask).release(exception).run<Image *>();
     CHANGE_RESULT_CHANNEL_MASK(new_image);
     END_CHANNEL_MASK(image);
 #else
-    GVL_STRUCT_TYPE(SelectiveBlurImageChannel) args = { image, channels, radius, sigma, threshold, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SelectiveBlurImageChannel), &args);
+    DECLARE_GVL_CALL(call, SelectiveBlurImageChannel, image, channels, radius, sigma, threshold, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -12895,14 +13048,14 @@ Image_set_channel_depth(VALUE self, VALUE channel_arg, VALUE depth)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(image, channel);
-    GVL_STRUCT_TYPE(SetImageDepth) args = { image, channel_depth, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageDepth), &args);
+    DECLARE_GVL_CALL(call, SetImageDepth, image, channel_depth, exception);
+    call.update(self).restore_mask(image, channel_mask).release(exception).run<void>();
     END_CHANNEL_MASK(image);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(SetImageChannelDepth) args = { image, channel, channel_depth };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageChannelDepth), &args);
+    DECLARE_GVL_CALL(call, SetImageChannelDepth, image, channel, channel_depth);
+    call.update(self).run<void>();
     rm_check_image_exception(image, RetainOnError);
 #endif
 
@@ -12928,7 +13081,7 @@ Image_separate(int argc, VALUE *argv, VALUE self)
     ChannelType channels = UndefinedChannel;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = check_channel_writable(self);
     channels = extract_channels(&argc, argv);
 
     // All arguments are ChannelType enums
@@ -12940,13 +13093,13 @@ Image_separate(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    GVL_STRUCT_TYPE(SeparateImages) args = { image, exception };
-    new_images = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SeparateImages), &args);
+    DECLARE_GVL_CALL(call, SeparateImages, image, exception);
+    new_images = call.update(self).restore_mask(image, channel_mask).release(exception).run<Image *>();
     CHANGE_RESULT_CHANNEL_MASK(new_images);
     END_CHANNEL_MASK(image);
 #else
-    GVL_STRUCT_TYPE(SeparateImages) args = { image, channels, exception };
-    new_images = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SeparateImages), &args);
+    DECLARE_GVL_CALL(call, SeparateImages, image, channels, exception);
+    new_images = call.read(self).release(exception).run<Image *>();
 #endif
     rm_check_exception(exception, new_images, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -12971,7 +13124,7 @@ Image_sepiatone(int argc, VALUE *argv, VALUE self)
     double threshold = (double) QuantumRange;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     switch (argc)
     {
@@ -12985,8 +13138,8 @@ Image_sepiatone(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(SepiaToneImage) args = { image, threshold, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SepiaToneImage), &args);
+    DECLARE_GVL_CALL(call, SepiaToneImage, image, threshold, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -13022,7 +13175,7 @@ Image_segment(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     switch (argc)
     {
         case 4:
@@ -13044,13 +13197,13 @@ Image_segment(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(SegmentImage) args = { new_image, colorspace, verbose, cluster_threshold, smoothing_threshold, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SegmentImage), &args);
+    DECLARE_GVL_CALL(call, SegmentImage, new_image, colorspace, verbose, cluster_threshold, smoothing_threshold, exception);
+    call.read(self).destroy(new_image).release(exception).run<void>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(SegmentImage) args = { new_image, colorspace, verbose, cluster_threshold, smoothing_threshold };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SegmentImage), &args);
+    DECLARE_GVL_CALL(call, SegmentImage, new_image, colorspace, verbose, cluster_threshold, smoothing_threshold);
+    call.read(self).destroy(new_image).run<void>();
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -13083,7 +13236,7 @@ Image_properties(VALUE self)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -13179,7 +13332,7 @@ Image_shade(int argc, VALUE *argv, VALUE self)
     MagickBooleanType shading = MagickFalse;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     switch (argc)
     {
         case 3:
@@ -13196,8 +13349,8 @@ Image_shade(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(ShadeImage) args = { image, shading, azimuth, elevation, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ShadeImage), &args);
+    DECLARE_GVL_CALL(call, ShadeImage, image, shading, azimuth, elevation, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -13229,7 +13382,7 @@ Image_shadow(int argc, VALUE *argv, VALUE self)
     long y_offset = 4L;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     switch (argc)
     {
         case 4:
@@ -13255,8 +13408,8 @@ Image_shadow(int argc, VALUE *argv, VALUE self)
     }
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(ShadowImage) args = { image, alpha, sigma, x_offset, y_offset, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ShadowImage), &args);
+    DECLARE_GVL_CALL(call, ShadowImage, image, alpha, sigma, x_offset, y_offset, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -13302,7 +13455,7 @@ Image_sharpen_channel(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
     double radius = 0.0, sigma = 1.0;
 
-    image = rm_check_destroyed(self);
+    image = check_channel_writable(self);
     channels = extract_channels(&argc, argv);
 
     // There must be 0, 1, or 2 remaining arguments.
@@ -13323,13 +13476,13 @@ Image_sharpen_channel(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    GVL_STRUCT_TYPE(SharpenImage) args = { image, radius, sigma, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SharpenImage), &args);
+    DECLARE_GVL_CALL(call, SharpenImage, image, radius, sigma, exception);
+    new_image = call.update(self).restore_mask(image, channel_mask).release(exception).run<Image *>();
     CHANGE_RESULT_CHANNEL_MASK(new_image);
     END_CHANNEL_MASK(image);
 #else
-    GVL_STRUCT_TYPE(SharpenImageChannel) args = { image, channels, radius, sigma, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SharpenImageChannel), &args);
+    DECLARE_GVL_CALL(call, SharpenImageChannel, image, channels, radius, sigma, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
 #endif
 
     rm_check_exception(exception, new_image, DestroyOnError);
@@ -13351,7 +13504,7 @@ Image_sharpen_channel(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_shave(VALUE self, VALUE width, VALUE height)
 {
-    rm_check_destroyed(self);
+    rm_check_readable(self);
     return xform_image(False, self, INT2FIX(0), INT2FIX(0), width, height, GVL_FUNC(ShaveImage));
 }
 
@@ -13394,11 +13547,11 @@ Image_shear(VALUE self, VALUE x_shear, VALUE y_shear)
     double x = NUM2DBL(x_shear);
     double y = NUM2DBL(y_shear);
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(ShearImage) args = { image, x, y, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ShearImage), &args);
+    DECLARE_GVL_CALL(call, ShearImage, image, x, y, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -13445,7 +13598,7 @@ Image_sigmoidal_contrast_channel(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     channels = extract_channels(&argc, argv);
 
     switch (argc)
@@ -13468,14 +13621,14 @@ Image_sigmoidal_contrast_channel(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(new_image, channels);
-    GVL_STRUCT_TYPE(SigmoidalContrastImage) args = { new_image, sharpen, contrast, midpoint, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SigmoidalContrastImage), &args);
+    DECLARE_GVL_CALL(call, SigmoidalContrastImage, new_image, sharpen, contrast, midpoint, exception);
+    call.read(self).destroy(new_image).release(exception).run<void>();
     END_CHANNEL_MASK(new_image);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(SigmoidalContrastImageChannel) args = { new_image, channels, sharpen, contrast, midpoint };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SigmoidalContrastImageChannel), &args);
+    DECLARE_GVL_CALL(call, SigmoidalContrastImageChannel, new_image, channels, sharpen, contrast, midpoint);
+    call.read(self).destroy(new_image).run<void>();
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -13498,17 +13651,17 @@ Image_signature(VALUE self)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_writable(self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(SignatureImage) args = { image, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SignatureImage), &args);
+    DECLARE_GVL_CALL(call, SignatureImage, image, exception);
+    call.update(self).release(exception).run<void>();
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(SignatureImage) args = { image };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SignatureImage), &args);
+    DECLARE_GVL_CALL(call, SignatureImage, image);
+    call.update(self).run<void>();
     rm_check_image_exception(image, RetainOnError);
 #endif
     signature = rm_get_property(image, "signature");
@@ -13533,7 +13686,7 @@ Image_signature(VALUE self)
 VALUE
 Image_sketch(int argc, VALUE *argv, VALUE self)
 {
-    rm_check_destroyed(self);
+    rm_check_readable(self);
     return motion_blur(argc, argv, self, GVL_FUNC(SketchImage));
 }
 
@@ -13557,7 +13710,7 @@ Image_solarize(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     switch (argc)
     {
         case 1:
@@ -13577,13 +13730,13 @@ Image_solarize(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(SolarizeImage) args = { new_image, threshold, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SolarizeImage), &args);
+    DECLARE_GVL_CALL(call, SolarizeImage, new_image, threshold, exception);
+    call.read(self).destroy(new_image).release(exception).run<void>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(SolarizeImage) args = { new_image, threshold };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SolarizeImage), &args);
+    DECLARE_GVL_CALL(call, SolarizeImage, new_image, threshold);
+    call.read(self).destroy(new_image).run<void>();
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -13607,7 +13760,7 @@ Image_spaceship(VALUE self, VALUE other)
     ExceptionInfo *exception;
 #endif
 
-    imageA = rm_check_destroyed(self);
+    imageA = rm_check_readable(self);
 
     // If the other object isn't a Image object, then they can't be equal.
     if (!rb_obj_is_kind_of(other, Class_Image))
@@ -13615,22 +13768,22 @@ Image_spaceship(VALUE self, VALUE other)
         return Qnil;
     }
 
-    imageB = rm_check_destroyed(other);
+    imageB = rm_check_readable(other);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(SignatureImage) args1 = { imageA, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SignatureImage), &args1);
+    DECLARE_GVL_CALL(call_a, SignatureImage, imageA, exception);
+    call_a.update(self).update(other).release(exception).run<void>();
     CHECK_EXCEPTION();
-    GVL_STRUCT_TYPE(SignatureImage) args2 = { imageB, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SignatureImage), &args2);
+    DECLARE_GVL_CALL(call_b, SignatureImage, imageB, exception);
+    call_b.update(other).update(self).release(exception).run<void>();
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(SignatureImage) args1 = { imageA };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SignatureImage), &args1);
-    GVL_STRUCT_TYPE(SignatureImage) args2 = { imageB };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SignatureImage), &args2);
+    DECLARE_GVL_CALL(call_a, SignatureImage, imageA);
+    call_a.update(self).update(other).run<void>();
+    DECLARE_GVL_CALL(call_b, SignatureImage, imageB);
+    call_b.update(other).update(self).run<void>();
 #endif
     sigA = rm_get_property(imageA, "signature");
     sigB = rm_get_property(imageB, "signature");
@@ -13732,7 +13885,7 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
     MagickPixel pp;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = check_channel_writable(self);
 
     n = argc;
     channels = extract_channels(&argc, argv);
@@ -13807,13 +13960,13 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    GVL_STRUCT_TYPE(SparseColorImage) args_SparseColorImage = { image, method, nargs, args, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SparseColorImage), &args_SparseColorImage);
+    DECLARE_GVL_CALL(call, SparseColorImage, image, method, nargs, args, exception);
+    new_image = call.update(self).restore_mask(image, channel_mask).free_buffer(args).release(exception).run<Image *>();
     CHANGE_RESULT_CHANNEL_MASK(new_image);
     END_CHANNEL_MASK(image);
 #else
-    GVL_STRUCT_TYPE(SparseColorImage) args_SparseColorImage = { image, channels, method, nargs, args, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SparseColorImage), &args_SparseColorImage);
+    DECLARE_GVL_CALL(call, SparseColorImage, image, channels, method, nargs, args, exception);
+    new_image = call.read(self).free_buffer(args).release(exception).run<Image *>();
 #endif
     xfree((void *) args);
     rm_check_exception(exception, new_image, DestroyOnError);
@@ -13845,7 +13998,7 @@ Image_splice(int argc, VALUE *argv, VALUE self)
     RectangleInfo rectangle;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     switch (argc)
     {
@@ -13870,10 +14023,11 @@ Image_splice(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 
     // Swap in color for the duration of this call.
+    rm_gvl_check_writable(image);
     old_color = image->background_color;
     image->background_color = color;
-    GVL_STRUCT_TYPE(SpliceImage) args = { image, &rectangle, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SpliceImage), &args);
+    DECLARE_GVL_CALL(call, SpliceImage, image, &rectangle, exception);
+    new_image = call.update(self).cleanup(restore_color, &image->background_color, (intptr_t)&old_color).release(exception).run<Image *>();
     image->background_color = old_color;
 
     rm_check_exception(exception, new_image, DestroyOnError);
@@ -13897,7 +14051,7 @@ Image_spread(int argc, VALUE *argv, VALUE self)
     double radius = 3.0;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     switch (argc)
     {
         case 1:
@@ -13911,11 +14065,11 @@ Image_spread(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(SpreadImage) args = { image, image->interpolate, radius, exception };
+    DECLARE_GVL_CALL(call, SpreadImage, image, image->interpolate, radius, exception);
 #else
-    GVL_STRUCT_TYPE(SpreadImage) args = { image, radius, exception };
+    DECLARE_GVL_CALL(call, SpreadImage, image, radius, exception);
 #endif
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SpreadImage), &args);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -13965,18 +14119,21 @@ Image_stegano(VALUE self, VALUE watermark_image, VALUE offset)
     Image *image, *new_image;
     VALUE wm_image;
     Image *watermark;
+    ssize_t pixel_offset;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     wm_image = rm_cur_image(watermark_image);
-    watermark = rm_check_destroyed(wm_image);
+    watermark = rm_check_readable(wm_image);
 
-    image->offset = NUM2LONG(offset);
+    pixel_offset = NUM2LONG(offset);
+    rm_gvl_check_writable(image);
+    image->offset = pixel_offset;
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(SteganoImage) args = { image, watermark, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SteganoImage), &args);
+    DECLARE_GVL_CALL(call, SteganoImage, image, watermark, exception);
+    new_image = call.read(self).read(wm_image).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
 
     DestroyExceptionInfo(exception);
@@ -14002,14 +14159,14 @@ Image_stereo(VALUE self, VALUE offset_image_arg)
     Image *offset;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     offset_image = rm_cur_image(offset_image_arg);
-    offset = rm_check_destroyed(offset_image);
+    offset = rm_check_readable(offset_image);
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(StereoImage) args = { image, offset, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(StereoImage), &args);
+    DECLARE_GVL_CALL(call, StereoImage, image, offset, exception);
+    new_image = call.read(self).read(offset_image).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
 
     DestroyExceptionInfo(exception);
@@ -14030,7 +14187,7 @@ Image_stereo(VALUE self, VALUE offset_image_arg)
 VALUE
 Image_class_type(VALUE self)
 {
-    Image *image = rm_check_destroyed(self);
+    Image *image = rm_check_readable(self);
     return ClassType_find(image->storage_class);
 }
 
@@ -14067,12 +14224,12 @@ Image_class_type_eq(VALUE self, VALUE new_class_type)
     if (image->storage_class == PseudoClass && class_type == DirectClass)
     {
 #if defined(IMAGEMAGICK_7)
-        GVL_STRUCT_TYPE(SyncImage) args = { image, exception };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SyncImage), &args);
+        DECLARE_GVL_CALL(call, SyncImage, image, exception);
+        call.update(self).release(exception).run<void>();
         CHECK_EXCEPTION();
 #else
-        GVL_STRUCT_TYPE(SyncImage) args = { image };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SyncImage), &args);
+        DECLARE_GVL_CALL(call, SyncImage, image);
+        call.update(self).run<void>();
 #endif
         magick_free(image->colormap);
         image->colormap = NULL;
@@ -14082,23 +14239,23 @@ Image_class_type_eq(VALUE self, VALUE new_class_type)
         GetQuantizeInfo(&qinfo);
         qinfo.number_colors = QuantumRange+1;
 #if defined(IMAGEMAGICK_7)
-        GVL_STRUCT_TYPE(QuantizeImage) args = { &qinfo, image, exception };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(QuantizeImage), &args);
+        DECLARE_GVL_CALL(call, QuantizeImage, &qinfo, image, exception);
+        call.update(self).release(exception).run<void>();
         CHECK_EXCEPTION();
 #else
-        GVL_STRUCT_TYPE(QuantizeImage) args = { &qinfo, image };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(QuantizeImage), &args);
+        DECLARE_GVL_CALL(call, QuantizeImage, &qinfo, image);
+        call.update(self).run<void>();
 #endif
     }
 
 #if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(SetImageStorageClass) args = { image, class_type, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageStorageClass), &args);
+    DECLARE_GVL_CALL(call, SetImageStorageClass, image, class_type, exception);
+    call.update(self).release(exception).run<void>();
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(SetImageStorageClass) args = { image, class_type };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageStorageClass), &args);
+    DECLARE_GVL_CALL(call, SetImageStorageClass, image, class_type);
+    call.update(self).run<void>();
 #endif
     return new_class_type;
 }
@@ -14135,7 +14292,7 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg,
     PixelPacket *pixels;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_writable(self);
 
     x = NUM2LONG(x_arg);
     y = NUM2LONG(y_arg);
@@ -14153,8 +14310,8 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg,
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(SetImageStorageClass) args = { image, DirectClass, exception };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageStorageClass), &args);
+    DECLARE_GVL_CALL(call, SetImageStorageClass, image, DirectClass, exception);
+    void *ret = call.update(self).release(exception).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
     CHECK_EXCEPTION();
     if (!okay)
@@ -14163,8 +14320,8 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg,
         rb_raise(Class_ImageMagickError, "SetImageStorageClass failed. Can't store pixels.");
     }
 #else
-    GVL_STRUCT_TYPE(SetImageStorageClass) args = { image, DirectClass };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageStorageClass), &args);
+    DECLARE_GVL_CALL(call, SetImageStorageClass, image, DirectClass);
+    void *ret = call.update(self).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
     rm_check_image_exception(image, RetainOnError);
     if (!okay)
@@ -14177,8 +14334,8 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg,
     // Get a pointer to the pixels. Replace the values with the PixelPackets
     // from the pixels argument.
     {
-        GVL_STRUCT_TYPE(GetAuthenticPixels) args = { image, x, y, cols, rows, exception };
-        void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetAuthenticPixels), &args);
+        DECLARE_GVL_CALL(call, GetAuthenticPixels, image, x, y, cols, rows, exception);
+        void *ret = call.update(self).release(exception).run<void *>();
         pixels = reinterpret_cast<decltype(pixels)>(ret);
         CHECK_EXCEPTION();
 
@@ -14215,8 +14372,8 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg,
                 pixels++;
 #endif
             }
-            GVL_STRUCT_TYPE(SyncAuthenticPixels) args = { image, exception };
-            CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SyncAuthenticPixels), &args);
+            DECLARE_GVL_CALL(call, SyncAuthenticPixels, image, exception);
+            call.update(self).release(exception).run<void>();
             CHECK_EXCEPTION();
         }
 
@@ -14271,16 +14428,16 @@ Image_swirl(VALUE self, VALUE degrees_obj)
     ExceptionInfo *exception;
     double degrees = NUM2DBL(degrees_obj);
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     exception = AcquireExceptionInfo();
 
 #if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(SwirlImage) args = { image, degrees, image->interpolate, exception };
+    DECLARE_GVL_CALL(call, SwirlImage, image, degrees, image->interpolate, exception);
 #else
-    GVL_STRUCT_TYPE(SwirlImage) args = { image, degrees, exception };
+    DECLARE_GVL_CALL(call, SwirlImage, image, degrees, exception);
 #endif
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SwirlImage), &args);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -14321,11 +14478,11 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj,
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     Color_to_PixelColor(&color, color_obj);
     texture = rm_cur_image(texture_obj);
-    texture_image = rm_check_destroyed(texture);
+    texture_image = rm_check_readable(texture);
 
     x = NUM2LONG(x_obj);
     y = NUM2LONG(y_obj);
@@ -14371,14 +14528,14 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj,
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(FloodfillPaintImage) args = { new_image, draw_info, &color_mpp, x, y, invert, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(FloodfillPaintImage), &args);
+    DECLARE_GVL_CALL(call, FloodfillPaintImage, new_image, draw_info, &color_mpp, x, y, invert, exception);
+    call.read(self).read(texture).destroy(new_image).release(draw_info).release(exception).run<void>();
     DestroyDrawInfo(draw_info);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(FloodfillPaintImage) args = { new_image, DefaultChannels, draw_info, &color_mpp, x, y, invert };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(FloodfillPaintImage), &args);
+    DECLARE_GVL_CALL(call, FloodfillPaintImage, new_image, DefaultChannels, draw_info, &color_mpp, x, y, invert);
+    call.read(self).read(texture).destroy(new_image).release(draw_info).run<void>();
 
     DestroyDrawInfo(draw_info);
     rm_check_image_exception(new_image, DestroyOnError);
@@ -14406,18 +14563,18 @@ Image_threshold(VALUE self, VALUE threshold_obj)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     new_image = rm_clone_image(image);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(BilevelImage) args = { new_image, threshold, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BilevelImage), &args);
+    DECLARE_GVL_CALL(call, BilevelImage, new_image, threshold, exception);
+    call.read(self).destroy(new_image).release(exception).run<void>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(BilevelImageChannel) args = { new_image, DefaultChannels, threshold };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(BilevelImageChannel), &args);
+    DECLARE_GVL_CALL(call, BilevelImageChannel, new_image, DefaultChannels, threshold);
+    call.read(self).destroy(new_image).run<void>();
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -14450,7 +14607,7 @@ threshold_image(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
 #endif
     VALUE red_obj, green_obj, blue_obj, kwargs;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     rb_scan_args(argc, argv, "12:", &red_obj, &green_obj, &blue_obj, &kwargs);
     switch (argc)
@@ -14485,13 +14642,13 @@ threshold_image(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(threshold_image) args = { new_image, ctarg, exception };
-    CALL_FUNC_WITHOUT_GVL(fp, &args);
+    DECLARE_GVL_CALL_FP(call, threshold_image, fp, new_image, ctarg, exception);
+    call.read(self).destroy(new_image).release(exception).run<void>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(threshold_image) args = { new_image, ctarg };
-    CALL_FUNC_WITHOUT_GVL(fp, &args);
+    DECLARE_GVL_CALL_FP(call, threshold_image, fp, new_image, ctarg);
+    call.read(self).destroy(new_image).run<void>();
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -14563,8 +14720,9 @@ thumbnail(int bang, int argc, VALUE *argv, VALUE self)
     ParseRegionGeometry(image, image_geometry, &geometry, exception);
     rm_check_exception(exception, image, RetainOnError);
 
-    GVL_STRUCT_TYPE(ThumbnailImage) args = { image, geometry.width, geometry.height, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ThumbnailImage), &args);
+    DECLARE_GVL_CALL(call, ThumbnailImage, image, geometry.width, geometry.height, exception);
+    bang ? call.update(self) : call.read(self);
+    new_image = call.release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -14598,7 +14756,7 @@ thumbnail(int bang, int argc, VALUE *argv, VALUE self)
 VALUE
 Image_thumbnail(int argc, VALUE *argv, VALUE self)
 {
-    rm_check_destroyed(self);
+    rm_check_readable(self);
     return thumbnail(False, argc, argv, self);
 }
 
@@ -14636,7 +14794,7 @@ Image_thumbnail_bang(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_ticks_per_second(VALUE self)
 {
-    Image *image = rm_check_destroyed(self);
+    Image *image = rm_check_readable(self);
     return INT2FIX(image->ticks_per_second);
 }
 
@@ -14681,7 +14839,7 @@ Image_tint(int argc, VALUE *argv, VALUE self)
     char alpha[50];
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     switch (argc)
     {
@@ -14724,11 +14882,11 @@ Image_tint(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 
 #if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(TintImage) args = { image, alpha, &tint, exception };
+    DECLARE_GVL_CALL(call, TintImage, image, alpha, &tint, exception);
 #else
-    GVL_STRUCT_TYPE(TintImage) args = { image, alpha, tint, exception };
+    DECLARE_GVL_CALL(call, TintImage, image, alpha, tint, exception);
 #endif
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TintImage), &args);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -14765,7 +14923,7 @@ Image_to_blob(VALUE self)
     info_obj = rm_info_new();
     TypedData_Get_Struct(info_obj, Info, &rm_info_data_type, info);
 
-    image = rm_check_destroyed(self);
+    image = rm_check_writable(self);
 
     exception = AcquireExceptionInfo();
 
@@ -14773,12 +14931,12 @@ Image_to_blob(VALUE self)
     if (info->depth != 0)
     {
 #if defined(IMAGEMAGICK_7)
-        GVL_STRUCT_TYPE(SetImageDepth) args = { image, info->depth, exception };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageDepth), &args);
+        DECLARE_GVL_CALL(depth_call, SetImageDepth, image, info->depth, exception);
+        depth_call.update(self).release(exception).run<void>();
         CHECK_EXCEPTION();
 #else
-        GVL_STRUCT_TYPE(SetImageDepth) args = { image, info->depth };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageDepth), &args);
+        DECLARE_GVL_CALL(depth_call, SetImageDepth, image, info->depth);
+        depth_call.update(self).release(exception).run<void>();
         rm_check_image_exception(image, RetainOnError);
 #endif
     }
@@ -14812,8 +14970,8 @@ Image_to_blob(VALUE self)
 
     rm_sync_image_options(image, info);
 
-    GVL_STRUCT_TYPE(ImageToBlob) args = { info, image, &length, exception };
-    blob = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(ImageToBlob), &args);
+    DECLARE_GVL_CALL(call, ImageToBlob, info, image, &length, exception);
+    blob = call.update(self).read(info_obj).free_result().release(exception).run<void *>();
     CHECK_EXCEPTION();
 
     DestroyExceptionInfo(exception);
@@ -14866,27 +15024,27 @@ color_name_to_cmyk(Pixel *color, VALUE name)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(SetImageExtent) args_SetImageExtent = { image, 1, 1, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageExtent), &args_SetImageExtent);
+    DECLARE_GVL_CALL(extent_call, SetImageExtent, image, 1, 1, exception);
+    extent_call.keep_thread().run<void>();
     rm_check_exception(exception, image, DestroyOnError);
     SetImageColorspace(image, parsed.colorspace, exception);
     rm_check_exception(exception, image, DestroyOnError);
-    GVL_STRUCT_TYPE(SetImageBackgroundColor) args_SetImageBackgroundColor = { image, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageBackgroundColor), &args_SetImageBackgroundColor);
+    DECLARE_GVL_CALL(background_call, SetImageBackgroundColor, image, exception);
+    background_call.keep_thread().run<void>();
     rm_check_exception(exception, image, DestroyOnError);
-    GVL_STRUCT_TYPE(TransformImageColorspace) args_TransformImageColorspace = { image, CMYKColorspace, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TransformImageColorspace), &args_TransformImageColorspace);
+    DECLARE_GVL_CALL(transform_call, TransformImageColorspace, image, CMYKColorspace, exception);
+    transform_call.keep_thread().run<void>();
     rm_check_exception(exception, image, DestroyOnError);
     GetOneVirtualPixelInfo(image, UndefinedVirtualPixelMethod, 0, 0, &cmyk, exception);
 #else
-    GVL_STRUCT_TYPE(SetImageExtent) args_SetImageExtent = { image, 1, 1 };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageExtent), &args_SetImageExtent);
+    DECLARE_GVL_CALL(extent_call, SetImageExtent, image, 1, 1);
+    extent_call.keep_thread().run<void>();
     rm_check_image_exception(image, DestroyOnError);
-    GVL_STRUCT_TYPE(SetImageBackgroundColor) args_SetImageBackgroundColor = { image };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageBackgroundColor), &args_SetImageBackgroundColor);
+    DECLARE_GVL_CALL(background_call, SetImageBackgroundColor, image);
+    background_call.keep_thread().run<void>();
     rm_check_image_exception(image, DestroyOnError);
-    GVL_STRUCT_TYPE(TransformImageColorspace) args_TransformImageColorspace = { image, CMYKColorspace };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TransformImageColorspace), &args_TransformImageColorspace);
+    DECLARE_GVL_CALL(transform_call, TransformImageColorspace, image, CMYKColorspace);
+    transform_call.keep_thread().run<void>();
     rm_check_image_exception(image, DestroyOnError);
     exception = AcquireExceptionInfo();
     GetOneVirtualMagickPixel(image, 0, 0, &cmyk, exception);
@@ -14924,7 +15082,7 @@ Image_to_color(VALUE self, VALUE pixel_arg)
     ExceptionInfo *exception;
     char name[MaxTextExtent];
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     if (CLASS_OF(pixel_arg) != Class_Pixel && image->colorspace == CMYKColorspace)
     {
@@ -14994,7 +15152,7 @@ Image_total_ink_density(VALUE self)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -15037,7 +15195,7 @@ Image_transparent(int argc, VALUE *argv, VALUE self)
 #endif
     VALUE color_obj, kwargs;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     rb_scan_args(argc, argv, "1:", &color_obj, &kwargs);
     Color_to_MagickPixel(image, &color, color_obj);
@@ -15050,14 +15208,14 @@ Image_transparent(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(TransparentPaintImage) args = { new_image, &color, alpha, MagickFalse, exception };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TransparentPaintImage), &args);
+    DECLARE_GVL_CALL(call, TransparentPaintImage, new_image, &color, alpha, MagickFalse, exception);
+    void *ret = call.read(self).destroy(new_image).release(exception).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(TransparentPaintImage) args = { new_image, &color, (Quantum)(QuantumRange - alpha), MagickFalse };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TransparentPaintImage), &args);
+    DECLARE_GVL_CALL(call, TransparentPaintImage, new_image, &color, (Quantum)(QuantumRange - alpha), MagickFalse);
+    void *ret = call.read(self).destroy(new_image).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
@@ -15101,7 +15259,7 @@ Image_transparent_chroma(int argc, VALUE *argv, VALUE self)
 #endif
     VALUE low_obj, high_obj, invert_obj, kwargs;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     rb_scan_args(argc, argv, "21:", &low_obj, &high_obj, &invert_obj, &kwargs);
 
@@ -15120,14 +15278,14 @@ Image_transparent_chroma(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(TransparentPaintImageChroma) args = { new_image, &low, &high, alpha, invert, exception };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TransparentPaintImageChroma), &args);
+    DECLARE_GVL_CALL(call, TransparentPaintImageChroma, new_image, &low, &high, alpha, invert, exception);
+    void *ret = call.read(self).destroy(new_image).release(exception).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(TransparentPaintImageChroma) args = { new_image, &low, &high, (Quantum)(QuantumRange - alpha), invert };
-    void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TransparentPaintImageChroma), &args);
+    DECLARE_GVL_CALL(call, TransparentPaintImageChroma, new_image, &low, &high, (Quantum)(QuantumRange - alpha), invert);
+    void *ret = call.read(self).destroy(new_image).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
@@ -15150,7 +15308,7 @@ Image_transparent_chroma(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_transparent_color(VALUE self)
 {
-    Image *image = rm_check_destroyed(self);
+    Image *image = rm_check_readable(self);
     return rm_pixelcolor_to_color_name(image, &image->transparent_color);
 }
 
@@ -15180,7 +15338,7 @@ Image_transparent_color_eq(VALUE self, VALUE color)
 VALUE
 Image_transpose(VALUE self)
 {
-    rm_check_destroyed(self);
+    rm_check_readable(self);
     return crisscross(False, self, GVL_FUNC(TransposeImage));
 }
 
@@ -15211,7 +15369,7 @@ Image_transpose_bang(VALUE self)
 VALUE
 Image_transverse(VALUE self)
 {
-    rm_check_destroyed(self);
+    rm_check_readable(self);
     return crisscross(False, self, GVL_FUNC(TransverseImage));
 }
 
@@ -15268,8 +15426,9 @@ trimmer(int bang, int argc, VALUE *argv, VALUE self)
     TypedData_Get_Struct(self, Image, &rm_image_data_type, image);
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(TrimImage) args = { image, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(TrimImage), &args);
+    DECLARE_GVL_CALL(call, TrimImage, image, exception);
+    bang ? call.update(self) : call.read(self);
+    new_image = call.release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -15306,7 +15465,7 @@ trimmer(int bang, int argc, VALUE *argv, VALUE self)
 VALUE
 Image_trim(int argc, VALUE *argv, VALUE self)
 {
-    rm_check_destroyed(self);
+    rm_check_readable(self);
     return trimmer(False, argc, argv, self);
 }
 
@@ -15338,7 +15497,7 @@ Image_trim_bang(int argc, VALUE *argv, VALUE self)
  */
 VALUE Image_gravity(VALUE self)
 {
-    Image *image = rm_check_destroyed(self);
+    Image *image = rm_check_readable(self);
     return GravityType_find(image->gravity);
 }
 
@@ -15372,7 +15531,7 @@ VALUE Image_image_type(VALUE self)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 #if defined(IMAGEMAGICK_7)
     type = GetImageType(image);
 #else
@@ -15448,11 +15607,11 @@ Image_unique_colors(VALUE self)
     Image *image, *new_image;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
 
-    GVL_STRUCT_TYPE(UniqueImageColors) args = { image, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(UniqueImageColors), &args);
+    DECLARE_GVL_CALL(call, UniqueImageColors, image, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -15468,7 +15627,7 @@ Image_unique_colors(VALUE self)
 VALUE
 Image_units(VALUE self)
 {
-    Image *image = rm_check_destroyed(self);
+    Image *image = rm_check_readable(self);
     return ResolutionType_find(image->units);
 }
 
@@ -15613,13 +15772,13 @@ Image_unsharp_mask(int argc, VALUE *argv, VALUE self)
     double radius = 0.0, sigma = 1.0, amount = 1.0, threshold = 0.05;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     unsharp_mask_args(argc, argv, &radius, &sigma, &amount, &threshold);
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(UnsharpMaskImage) args = { image, radius, sigma, amount, threshold, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(UnsharpMaskImage), &args);
+    DECLARE_GVL_CALL(call, UnsharpMaskImage, image, radius, sigma, amount, threshold, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -15662,7 +15821,7 @@ Image_unsharp_mask_channel(int argc, VALUE *argv, VALUE self)
     double radius = 0.0, sigma = 1.0, amount = 1.0, threshold = 0.05;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = check_channel_writable(self);
     channels = extract_channels(&argc, argv);
     if (argc > 4)
     {
@@ -15674,13 +15833,13 @@ Image_unsharp_mask_channel(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    GVL_STRUCT_TYPE(UnsharpMaskImage) args = { image, radius, sigma, amount, threshold, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(UnsharpMaskImage), &args);
+    DECLARE_GVL_CALL(call, UnsharpMaskImage, image, radius, sigma, amount, threshold, exception);
+    new_image = call.update(self).restore_mask(image, channel_mask).release(exception).run<Image *>();
     CHANGE_RESULT_CHANNEL_MASK(new_image);
     END_CHANNEL_MASK(image);
 #else
-    GVL_STRUCT_TYPE(UnsharpMaskImageChannel) args = { image, channels, radius, sigma, amount, threshold, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(UnsharpMaskImageChannel), &args);
+    DECLARE_GVL_CALL(call, UnsharpMaskImageChannel, image, channels, radius, sigma, amount, threshold, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -15707,7 +15866,7 @@ Image_vignette(int argc, VALUE *argv, VALUE self)
     double radius = 0.0, sigma = 10.0;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     horz_radius = (long)(image->columns * 0.10 + 0.5);
     vert_radius = (long)(image->rows * 0.10 + 0.5);
@@ -15731,8 +15890,8 @@ Image_vignette(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 
-    GVL_STRUCT_TYPE(VignetteImage) args = { image, radius, sigma, horz_radius, vert_radius, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(VignetteImage), &args);
+    DECLARE_GVL_CALL(call, VignetteImage, image, radius, sigma, horz_radius, vert_radius, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -15752,7 +15911,7 @@ Image_virtual_pixel_method(VALUE self)
     Image *image;
     VirtualPixelMethod vpm;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     vpm = GetImageVirtualPixelMethod(image);
     return VirtualPixelMethod_find(vpm);
 }
@@ -15841,7 +16000,7 @@ Image_watermark(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
 
     if (argc < 1)
     {
@@ -15849,7 +16008,7 @@ Image_watermark(int argc, VALUE *argv, VALUE self)
     }
 
     ovly = rm_cur_image(argv[0]);
-    overlay = rm_check_destroyed(ovly);
+    overlay = rm_check_writable(ovly);
 
     if (argc > 3)
     {
@@ -15881,13 +16040,13 @@ Image_watermark(int argc, VALUE *argv, VALUE self)
     new_image = rm_clone_image(image);
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(CompositeImage) args = { new_image, overlay, ModulateCompositeOp, MagickTrue, x_offset, y_offset, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompositeImage), &args);
+    DECLARE_GVL_CALL(call, CompositeImage, new_image, overlay, ModulateCompositeOp, MagickTrue, x_offset, y_offset, exception);
+    call.read(self).read(ovly).destroy(new_image).release(exception).run<void>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(CompositeImage) args = { new_image, ModulateCompositeOp, overlay, x_offset, y_offset };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CompositeImage), &args);
+    DECLARE_GVL_CALL(call, CompositeImage, new_image, ModulateCompositeOp, overlay, x_offset, y_offset);
+    call.read(self).read(ovly).destroy(new_image).run<void>();
 
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
@@ -15914,7 +16073,7 @@ Image_wave(int argc, VALUE *argv, VALUE self)
     double amplitude = 25.0, wavelength = 150.0;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     switch (argc)
     {
         case 2:
@@ -15930,11 +16089,11 @@ Image_wave(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(WaveImage) args = { image, amplitude, wavelength, image->interpolate, exception };
+    DECLARE_GVL_CALL(call, WaveImage, image, amplitude, wavelength, image->interpolate, exception);
 #else
-    GVL_STRUCT_TYPE(WaveImage) args = { image, amplitude, wavelength, exception };
+    DECLARE_GVL_CALL(call, WaveImage, image, amplitude, wavelength, exception);
 #endif
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(WaveImage), &args);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -15980,7 +16139,7 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
     const char *func;
     ExceptionInfo *exception;
 
-    image = rm_check_destroyed(self);
+    image = rm_check_readable(self);
     switch (argc)
     {
         case 2:
@@ -16030,8 +16189,8 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
 
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(FlipImage) args_FlipImage = { image, exception };
-    flip_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(FlipImage), &args_FlipImage);
+    DECLARE_GVL_CALL(flip_call, FlipImage, image, exception);
+    flip_image = flip_call.read(self).release(exception).run<Image *>();
     CHECK_EXCEPTION();
 
 
@@ -16039,22 +16198,22 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
     geometry.y = 0;
     geometry.width = image->columns;
     geometry.height = max_rows;
-    GVL_STRUCT_TYPE(CropImage) args_CropImage = { flip_image, &geometry, exception };
-    reflection = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(CropImage), &args_CropImage);
+    DECLARE_GVL_CALL(crop_call, CropImage, flip_image, &geometry, exception);
+    reflection = crop_call.read(self).destroy(flip_image).release(exception).run<Image *>();
     DestroyImage(flip_image);
     CHECK_EXCEPTION();
 
 
 #if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(SetImageStorageClass) args_SetImageStorageClass = { reflection, DirectClass, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageStorageClass), &args_SetImageStorageClass);
+    DECLARE_GVL_CALL(class_call, SetImageStorageClass, reflection, DirectClass, exception);
+    class_call.read(self).destroy(reflection).release(exception).run<void>();
     rm_check_exception(exception, reflection, DestroyOnError);
-    GVL_STRUCT_TYPE(SetImageAlphaChannel) args_SetImageAlphaChannel = { reflection, ActivateAlphaChannel, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageAlphaChannel), &args_SetImageAlphaChannel);
+    DECLARE_GVL_CALL(alpha_call, SetImageAlphaChannel, reflection, ActivateAlphaChannel, exception);
+    alpha_call.read(self).destroy(reflection).release(exception).run<void>();
     rm_check_exception(exception, reflection, DestroyOnError);
 #else
-    GVL_STRUCT_TYPE(SetImageStorageClass) args_SetImageStorageClass = { reflection, DirectClass };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SetImageStorageClass), &args_SetImageStorageClass);
+    DECLARE_GVL_CALL(class_call, SetImageStorageClass, reflection, DirectClass);
+    class_call.read(self).destroy(reflection).run<void>();
     rm_check_image_exception(reflection, DestroyOnError);
 
 
@@ -16076,8 +16235,8 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
         }
 #endif
 
-        GVL_STRUCT_TYPE(GetVirtualPixels) args_GetVirtualPixels = { reflection, 0, y, image->columns, 1, exception };
-        void *ret = CALL_FUNC_WITHOUT_GVL(GVL_FUNC(GetVirtualPixels), &args_GetVirtualPixels);
+        DECLARE_GVL_CALL(pixels_call, GetVirtualPixels, reflection, 0, y, image->columns, 1, exception);
+        void *ret = pixels_call.keep_thread().run<void *>();
         p = reinterpret_cast<decltype(p)>(ret);
         rm_check_exception(exception, reflection, DestroyOnError);
         if (!p)
@@ -16110,8 +16269,8 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
 #endif
         }
 
-        GVL_STRUCT_TYPE(SyncAuthenticPixels) args_SyncAuthenticPixels = { reflection, exception };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SyncAuthenticPixels), &args_SyncAuthenticPixels);
+        DECLARE_GVL_CALL(sync_call, SyncAuthenticPixels, reflection, exception);
+        sync_call.keep_thread().run<void>();
         rm_check_exception(exception, reflection, DestroyOnError);
 
         opacity += step;
@@ -16263,10 +16422,11 @@ Image_write(VALUE self, VALUE file)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(self);
 
     info_obj = rm_info_new();
     TypedData_Get_Struct(info_obj, Info, &rm_info_data_type, info);
+
+    image = rm_check_writable(self);
 
     if (TYPE(file) == T_FILE)
     {
@@ -16295,13 +16455,13 @@ Image_write(VALUE self, VALUE file)
     info->adjoin = MagickFalse;
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(WriteImage) args = { info, image, exception };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(WriteImage), &args);
+    DECLARE_GVL_CALL(call, WriteImage, info, image, exception);
+    call.update(self).read(info_obj).release(exception).keep_thread(info->file != NULL).run<void>();
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(WriteImage) args = { info, image };
-    CALL_FUNC_WITHOUT_GVL(GVL_FUNC(WriteImage), &args);
+    DECLARE_GVL_CALL(call, WriteImage, info, image);
+    call.update(self).read(info_obj).keep_thread(info->file != NULL).run<void>();
     rm_check_image_exception(image, RetainOnError);
 #endif
 
@@ -16637,8 +16797,9 @@ xform_image(int bang, VALUE self, VALUE x, VALUE y, VALUE width, VALUE height, g
 
     exception = AcquireExceptionInfo();
 
-    GVL_STRUCT_TYPE(xform_image) args = { image, &rect, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(fp, &args);
+    DECLARE_GVL_CALL_FP(call, xform_image, fp, image, &rect, exception);
+    bang ? call.update(self) : call.read(self);
+    new_image = call.release(exception).run<Image *>();
 
     // An exception can occur in either the old or the new images
     rm_check_exception(exception, new_image, DestroyOnError);

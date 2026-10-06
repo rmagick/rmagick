@@ -191,8 +191,8 @@ point_fill(
 #endif
         }
 
-        GVL_STRUCT_TYPE(SyncAuthenticPixels) args = { image, exception };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SyncAuthenticPixels), &args);
+        DECLARE_GVL_CALL(call, SyncAuthenticPixels, image, exception);
+        call.keep_thread().run<void>();
         CHECK_EXCEPTION();
     }
 
@@ -261,8 +261,8 @@ vertical_fill(
             row_pixels += GetPixelChannels(image);
         }
 
-        GVL_STRUCT_TYPE(SyncAuthenticPixels) args = { image, exception };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SyncAuthenticPixels), &args);
+        DECLARE_GVL_CALL(call, SyncAuthenticPixels, image, exception);
+        call.keep_thread().run<void>();
         CHECK_EXCEPTION();
     }
 
@@ -295,8 +295,8 @@ vertical_fill(
 
         memcpy(row_pixels, master, image->columns * sizeof(PixelPacket));
 
-        GVL_STRUCT_TYPE(SyncAuthenticPixels) args = { image, exception };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SyncAuthenticPixels), &args);
+        DECLARE_GVL_CALL(call, SyncAuthenticPixels, image, exception);
+        call.keep_thread().run<void>();
         if (rm_should_raise_exception(exception, RetainExceptionRetention))
         {
             xfree((void *)master);
@@ -369,8 +369,8 @@ horizontal_fill(
             row_pixels += GetPixelChannels(image);
         }
 
-        GVL_STRUCT_TYPE(SyncAuthenticPixels) args = { image, exception };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SyncAuthenticPixels), &args);
+        DECLARE_GVL_CALL(call, SyncAuthenticPixels, image, exception);
+        call.keep_thread().run<void>();
         CHECK_EXCEPTION();
     }
 
@@ -402,8 +402,8 @@ horizontal_fill(
 
         memcpy(col_pixels, master, image->rows * sizeof(PixelPacket));
 
-        GVL_STRUCT_TYPE(SyncAuthenticPixels) args = { image, exception };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SyncAuthenticPixels), &args);
+        DECLARE_GVL_CALL(call, SyncAuthenticPixels, image, exception);
+        call.keep_thread().run<void>();
         if (rm_should_raise_exception(exception, RetainExceptionRetention))
         {
             xfree((void *)master);
@@ -514,8 +514,8 @@ v_diagonal_fill(
 #endif
         }
 
-        GVL_STRUCT_TYPE(SyncAuthenticPixels) args = { image, exception };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SyncAuthenticPixels), &args);
+        DECLARE_GVL_CALL(call, SyncAuthenticPixels, image, exception);
+        call.keep_thread().run<void>();
         CHECK_EXCEPTION();
     }
 
@@ -621,8 +621,8 @@ h_diagonal_fill(
 #endif
         }
 
-        GVL_STRUCT_TYPE(SyncAuthenticPixels) args = { image, exception };
-        CALL_FUNC_WITHOUT_GVL(GVL_FUNC(SyncAuthenticPixels), &args);
+        DECLARE_GVL_CALL(call, SyncAuthenticPixels, image, exception);
+        call.keep_thread().run<void>();
         CHECK_EXCEPTION();
     }
 
@@ -645,7 +645,7 @@ GradientFill_fill(VALUE self, VALUE image_obj)
     double x1, y1, x2, y2;          // points on the line
 
     TypedData_Get_Struct(self, rm_GradientFill, &rm_gradient_fill_data_type, fill);
-    image = rm_check_destroyed(rm_cur_image(image_obj));
+    image = rm_check_writable(rm_cur_image(image_obj));
 
     x1 = fill->x1;
     y1 = fill->y1;
@@ -765,7 +765,7 @@ TextureFill_initialize(VALUE self, VALUE texture_arg)
     texture_image = rm_cur_image(texture_arg);
 
     // Bump the reference count on the texture image.
-    texture = rm_check_destroyed(texture_image);
+    texture = rm_check_readable(texture_image);
     ReferenceImage(texture);
 
     fill->texture = texture;
@@ -791,7 +791,7 @@ TextureFill_fill(VALUE self, VALUE image_obj)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_destroyed(rm_cur_image(image_obj));
+    image = rm_check_writable(rm_cur_image(image_obj));
     TypedData_Get_Struct(self, rm_TextureFill, &rm_texture_fill_data_type, fill);
 
 #if defined(IMAGEMAGICK_7)
