@@ -223,6 +223,25 @@ rm_gvl_check_readable(const void *ptr)
 
 
 /**
+ * Whether an offloaded call is using the object.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param ptr the data pointer of an Image, Info or KernelInfo
+ * @return true if a call reads or changes the object
+ */
+bool
+rm_gvl_in_use(const void *ptr)
+{
+#if defined(RMAGICK_OFFLOAD_SAFE)
+    return offload_state(ptr) != 0;
+#else
+    return false;
+#endif
+}
+
+
+/**
  * Raise if an offloaded call is using the object.
  *
  * No Ruby usage (internal function)
@@ -233,7 +252,7 @@ void
 rm_gvl_check_writable(const void *ptr)
 {
 #if defined(RMAGICK_OFFLOAD_SAFE)
-    if (offload_state(ptr) != 0)
+    if (rm_gvl_in_use(ptr))
     {
         raise_in_use();
     }

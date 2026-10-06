@@ -119,6 +119,7 @@ Montage_background_color_eq(VALUE self, VALUE color)
     Montage *montage;
 
     TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
+    rm_gvl_check_writable(montage);
     Color_to_PixelColor(&montage->info->background_color, color);
     return color;
 }
@@ -136,6 +137,7 @@ Montage_border_color_eq(VALUE self, VALUE color)
     Montage *montage;
 
     TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
+    rm_gvl_check_writable(montage);
     Color_to_PixelColor(&montage->info->border_color, color);
     return color;
 }
@@ -153,6 +155,7 @@ Montage_border_width_eq(VALUE self, VALUE width)
     Montage *montage;
 
     TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
+    rm_gvl_check_writable(montage);
     montage->info->border_width = NUM2ULONG(width);
     return width;
 }
@@ -170,6 +173,7 @@ Montage_compose_eq(VALUE self, VALUE compose)
     Montage *montage;
 
     TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
+    rm_gvl_check_writable(montage);
     VALUE_TO_ENUM(compose, montage->compose, CompositeOperator);
     return compose;
 }
@@ -187,6 +191,7 @@ Montage_filename_eq(VALUE self, VALUE filename)
     Montage *montage;
 
     TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
+    rm_gvl_check_writable(montage);
     strlcpy(montage->info->filename, StringValueCStr(filename), sizeof(montage->info->filename));
     return filename;
 }
@@ -204,6 +209,7 @@ Montage_fill_eq(VALUE self, VALUE color)
     Montage *montage;
 
     TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
+    rm_gvl_check_writable(montage);
     Color_to_PixelColor(&montage->info->fill, color);
     return color;
 }
@@ -221,6 +227,7 @@ Montage_font_eq(VALUE self, VALUE font)
     Montage *montage;
 
     TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
+    rm_gvl_check_writable(montage);
     magick_clone_string(&montage->info->font, StringValueCStr(font));
 
     return font;
@@ -244,6 +251,7 @@ Montage_frame_eq(VALUE self, VALUE frame_arg)
     VALUE frame;
 
     TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
+    rm_gvl_check_writable(montage);
     frame = rb_String(frame_arg);
     magick_clone_string(&montage->info->frame, StringValueCStr(frame));
 
@@ -271,6 +279,7 @@ Montage_geometry_eq(VALUE self, VALUE geometry_arg)
     VALUE geometry;
 
     TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
+    rm_gvl_check_writable(montage);
     geometry = rb_String(geometry_arg);
     magick_clone_string(&montage->info->geometry, StringValueCStr(geometry));
 
@@ -292,6 +301,7 @@ Montage_gravity_eq(VALUE self, VALUE gravity)
     Montage *montage;
 
     TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
+    rm_gvl_check_writable(montage);
     VALUE_TO_ENUM(gravity, montage->info->gravity, GravityType);
     return gravity;
 }
@@ -322,6 +332,7 @@ Montage_matte_color_eq(VALUE self, VALUE color)
     Montage *montage;
 
     TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
+    rm_gvl_check_writable(montage);
     Color_to_PixelColor(&montage->info->matte_color, color);
     return color;
 }
@@ -339,6 +350,7 @@ Montage_pointsize_eq(VALUE self, VALUE size)
     Montage *montage;
 
     TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
+    rm_gvl_check_writable(montage);
     montage->info->pointsize = NUM2DBL(size);
     return size;
 }
@@ -356,6 +368,7 @@ Montage_shadow_eq(VALUE self, VALUE shadow)
     Montage *montage;
 
     TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
+    rm_gvl_check_writable(montage);
     montage->info->shadow = (MagickBooleanType) RTEST(shadow);
     return shadow;
 }
@@ -373,6 +386,7 @@ Montage_stroke_eq(VALUE self, VALUE color)
     Montage *montage;
 
     TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
+    rm_gvl_check_writable(montage);
     Color_to_PixelColor(&montage->info->stroke, color);
     return color;
 }
@@ -393,6 +407,7 @@ Montage_texture_eq(VALUE self, VALUE texture)
     char temp_name[MaxTextExtent];
 
     TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
+    rm_gvl_check_writable(montage);
 
     // If we had a previously defined temp texture image,
     // remove it now in preparation for this new one.
@@ -432,6 +447,7 @@ Montage_tile_eq(VALUE self, VALUE tile_arg)
     VALUE tile;
 
     TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
+    rm_gvl_check_writable(montage);
     tile = rb_String(tile_arg);
     magick_clone_string(&montage->info->tile, StringValueCStr(tile));
 
@@ -457,6 +473,7 @@ Montage_title_eq(VALUE self, VALUE title)
     const char *title_cstr;
 
     TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
+    rm_gvl_check_writable(montage);
     title_cstr = StringValueCStr(title);
 
     if (rm_has_file_reference(title_cstr))

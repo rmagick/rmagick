@@ -75,6 +75,28 @@ get_draw(VALUE self)
 
 
 /**
+ * Get the Draw struct of a Draw object for a method that changes it.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param self the Draw object
+ * @return the initialized Draw struct
+ * @throw FrozenError if the Draw object is frozen
+ * @throw RuntimeError if an offloaded call is using the Draw object
+ */
+static Draw *
+get_writable_draw(VALUE self)
+{
+    Draw *draw;
+
+    rb_check_frozen(self);
+    draw = get_draw(self);
+    rm_gvl_check_writable(draw);
+    return draw;
+}
+
+
+/**
  * Set the affine matrix from an {Magick::AffineMatrix}.
  *
  * @param matrix [Magick::AffineMatrix] the affine matrix
@@ -85,8 +107,7 @@ Draw_affine_eq(VALUE self, VALUE matrix)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     Export_AffineMatrix(&draw->info->affine, matrix);
     return matrix;
 }
@@ -103,8 +124,7 @@ Draw_align_eq(VALUE self, VALUE align)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     VALUE_TO_ENUM(align, draw->info->align, AlignType);
     return align;
 }
@@ -121,8 +141,7 @@ Draw_decorate_eq(VALUE self, VALUE decorate)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     VALUE_TO_ENUM(decorate, draw->info->decorate, DecorationType);
     return decorate;
 }
@@ -139,8 +158,7 @@ Draw_density_eq(VALUE self, VALUE density)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     magick_clone_string(&draw->info->density, StringValueCStr(density));
 
     return density;
@@ -158,8 +176,7 @@ Draw_encoding_eq(VALUE self, VALUE encoding)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     magick_clone_string(&draw->info->encoding, StringValueCStr(encoding));
 
     return encoding;
@@ -177,8 +194,7 @@ Draw_fill_eq(VALUE self, VALUE fill)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     Color_to_PixelColor(&draw->info->fill, fill);
     return fill;
 }
@@ -198,8 +214,7 @@ Draw_fill_pattern_eq(VALUE self, VALUE pattern)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
 
     if (draw->info->fill_pattern != NULL)
     {
@@ -233,8 +248,7 @@ Draw_font_eq(VALUE self, VALUE font)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     magick_clone_string(&draw->info->font, StringValueCStr(font));
 
     return font;
@@ -252,8 +266,7 @@ Draw_font_family_eq(VALUE self, VALUE family)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     magick_clone_string(&draw->info->family, StringValueCStr(family));
 
     return family;
@@ -271,8 +284,7 @@ Draw_font_stretch_eq(VALUE self, VALUE stretch)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     VALUE_TO_ENUM(stretch, draw->info->stretch, StretchType);
     return stretch;
 }
@@ -289,8 +301,7 @@ Draw_font_style_eq(VALUE self, VALUE style)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     VALUE_TO_ENUM(style, draw->info->style, StyleType);
     return style;
 }
@@ -309,8 +320,7 @@ Draw_font_weight_eq(VALUE self, VALUE weight)
     Draw *draw;
     size_t w;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
 
     if (FIXNUM_P(weight))
     {
@@ -375,8 +385,7 @@ Draw_gravity_eq(VALUE self, VALUE grav)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     VALUE_TO_ENUM(grav, draw->info->gravity, GravityType);
 
     return grav;
@@ -394,8 +403,7 @@ Draw_kerning_eq(VALUE self, VALUE kerning)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     draw->info->kerning = NUM2DBL(kerning);
     return kerning;
 }
@@ -412,8 +420,7 @@ Draw_interline_spacing_eq(VALUE self, VALUE spacing)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     draw->info->interline_spacing = NUM2DBL(spacing);
     return spacing;
 }
@@ -430,8 +437,7 @@ Draw_interword_spacing_eq(VALUE self, VALUE spacing)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     draw->info->interword_spacing = NUM2DBL(spacing);
     return spacing;
 }
@@ -668,8 +674,7 @@ Draw_pointsize_eq(VALUE self, VALUE pointsize)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     draw->info->pointsize = NUM2DBL(pointsize);
     return pointsize;
 }
@@ -688,8 +693,7 @@ Draw_rotation_eq(VALUE self, VALUE deg)
     double degrees;
     AffineMatrix affine, current;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
 
     degrees = NUM2DBL(deg);
     if (fabs(degrees) > DBL_EPSILON)
@@ -724,8 +728,7 @@ Draw_stroke_eq(VALUE self, VALUE stroke)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     Color_to_PixelColor(&draw->info->stroke, stroke);
     return stroke;
 }
@@ -744,8 +747,7 @@ Draw_stroke_pattern_eq(VALUE self, VALUE pattern)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
 
     if (draw->info->stroke_pattern != NULL)
     {
@@ -780,8 +782,7 @@ Draw_stroke_width_eq(VALUE self, VALUE stroke_width)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     draw->info->stroke_width = NUM2DBL(stroke_width);
     return stroke_width;
 }
@@ -798,8 +799,7 @@ Draw_text_antialias_eq(VALUE self, VALUE text_antialias)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     draw->info->text_antialias = (MagickBooleanType) RTEST(text_antialias);
     return text_antialias;
 }
@@ -829,8 +829,7 @@ Draw_undercolor_eq(VALUE self, VALUE undercolor)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     Color_to_PixelColor(&draw->info->undercolor, undercolor);
     return undercolor;
 }
@@ -868,9 +867,12 @@ annotate_ensure(VALUE arg)
     struct Draw_annotate_args *annotate = (struct Draw_annotate_args *)arg;
     Draw *draw = annotate->draw;
 
-    magick_free(draw->info->text);
-    draw->info->text = NULL;
-    draw->info->affine = annotate->keep;
+    if (!rm_gvl_in_use(draw))
+    {
+        magick_free(draw->info->text);
+        draw->info->text = NULL;
+        draw->info->affine = annotate->keep;
+    }
 
 #if defined(IMAGEMAGICK_7)
     if (annotate->exception)
@@ -930,14 +932,15 @@ annotate_body(VALUE arg)
         snprintf(geometry_str, sizeof(geometry_str), "%lux%lu%+ld%+ld", width, height, x, y);
     }
 
-    magick_clone_string(&draw->info->geometry, geometry_str);
-
     // Store in Draw structure. The text is drawn as given: it is not run
     // through InterpretImageProperties(), so a `%[...]` or `%x` escape in it is
     // not expanded. Everything those escapes provide is available directly from
     // Ruby -- Image#columns, Image#filename, Image#artifact and so on.
     embed_text = StringValueCStr(annotate->text);
     image = rm_check_frozen(annotate->image_arg);
+    rm_gvl_check_writable(draw);
+
+    magick_clone_string(&draw->info->geometry, geometry_str);
     draw->info->text = ConstantString(embed_text);
 
 #if defined(IMAGEMAGICK_7)
@@ -991,6 +994,7 @@ VALUE Draw_annotate(
     // Save the affine matrix in case it is modified by
     // Draw#rotation=
     annotate.draw = get_draw(self);
+    rm_gvl_check_writable(annotate.draw);
     annotate.keep = annotate.draw->info->affine;
 
     annotate.self       = self;
@@ -1142,6 +1146,7 @@ Draw_draw(VALUE self, VALUE image_arg)
     image = rm_check_frozen(image_arg);
 
     draw = get_draw(self);
+    rm_gvl_check_writable(draw);
     if (draw->primitives == 0)
     {
         rb_raise(rb_eArgError, "nothing to draw");
@@ -1597,8 +1602,7 @@ PolaroidOptions_border_color_eq(VALUE self, VALUE border)
 {
     Draw *draw;
 
-    rb_check_frozen(self);
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
     Color_to_PixelColor(&draw->info->border_color, border);
     return border;
 }
@@ -1705,6 +1709,7 @@ get_type_metrics(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
     }
 
     draw = get_draw(self);
+    rm_gvl_check_writable(draw);
     // Measured as given: see the comment in Draw_annotate().
     draw->info->text = ConstantString(text);
 
