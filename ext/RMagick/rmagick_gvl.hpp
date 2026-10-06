@@ -16,15 +16,19 @@ public:
     rm_gvl_call(gvl_function_t *fp, void *args);
 
     rm_gvl_call &read(VALUE obj);
+    rm_gvl_call &read(const void *ptr);
     rm_gvl_call &update(VALUE obj);
+    rm_gvl_call &update(const void *ptr);
     rm_gvl_call &read_each(VALUE ary);
     rm_gvl_call &release(ExceptionInfo *exception);
+    rm_gvl_call &release(ImageInfo *info);
     rm_gvl_call &destroy(Image *image);
     rm_gvl_call &split(Image *images);
 #if defined(IMAGEMAGICK_7)
     rm_gvl_call &restore_mask(Image *image, ChannelType channel_mask);
 #endif
     rm_gvl_call &free_result();
+    rm_gvl_call &cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg = 0);
 
     template <typename T> T run();
 
@@ -35,6 +39,7 @@ private:
     typedef struct
     {
         VALUE obj;
+        const void *ptr;
         bool update;
         bool each;
     } object_t;
@@ -54,8 +59,7 @@ private:
     int ncleanups;
     ResultType result_type;
 
-    rm_gvl_call &add_object(VALUE obj, bool update, bool each);
-    rm_gvl_call &add_cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg);
+    rm_gvl_call &add_object(VALUE obj, const void *ptr, bool update, bool each);
     void *call(ResultType type);
     void unwind(ResultType type, void *result);
 };

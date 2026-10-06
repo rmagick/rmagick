@@ -260,12 +260,30 @@ marked(const offload_mark_t *marks, long count, const void *key)
     }
     return false;
 }
+
+// The data pointer of an object registered with read() or update(), or of the
+// jth element of an array registered with read_each()
+static void *
+object_key(VALUE obj, const void *ptr, bool each, long j)
+{
+    if (ptr)
+    {
+        return (void *)ptr;
+    }
+    return offload_key(each ? rb_ary_entry(obj, j) : obj);
+}
 #endif
 
 static void
 release_exception(void *ptr, intptr_t arg ATTRIBUTE_UNUSED)
 {
     DestroyExceptionInfo((ExceptionInfo *)ptr);
+}
+
+static void
+destroy_info(void *ptr, intptr_t arg ATTRIBUTE_UNUSED)
+{
+    DestroyImageInfo((ImageInfo *)ptr);
 }
 
 static void
@@ -304,13 +322,14 @@ rm_gvl_call::rm_gvl_call(gvl_function_t *fp, void *args)
 
 
 rm_gvl_call &
-rm_gvl_call::add_object(VALUE obj, bool update, bool each)
+rm_gvl_call::add_object(VALUE obj, const void *ptr, bool update, bool each)
 {
     if (nobjects == MaxObjects)
     {
         rb_bug("too many objects for an offloaded call");
     }
     objects[nobjects].obj = obj;
+    objects[nobjects].ptr = ptr;
     objects[nobjects].update = update;
     objects[nobjects].each = each;
     nobjects++;
@@ -318,8 +337,17 @@ rm_gvl_call::add_object(VALUE obj, bool update, bool each)
 }
 
 
+/**
+ * Call release(ptr, arg) if the call is refused or unwound. Nothing is
+ * registered when ptr is NULL.
+ *
+ * @param release the function
+ * @param ptr its first argument
+ * @param arg its second argument
+ * @return self
+ */
 rm_gvl_call &
-rm_gvl_call::add_cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg)
+rm_gvl_call::cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg)
 {
     if (!ptr)
     {
@@ -347,7 +375,21 @@ rm_gvl_call::add_cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t 
 rm_gvl_call &
 rm_gvl_call::read(VALUE obj)
 {
-    return add_object(obj, false, false);
+    return add_object(obj, NULL, false, false);
+}
+
+
+/**
+ * Like read(VALUE), for the data pointer of an object, such as an Image that
+ * the caller has fetched.
+ *
+ * @param ptr the data pointer
+ * @return self
+ */
+rm_gvl_call &
+rm_gvl_call::read(const void *ptr)
+{
+    return add_object(Qundef, ptr, false, false);
 }
 
 
@@ -361,7 +403,20 @@ rm_gvl_call::read(VALUE obj)
 rm_gvl_call &
 rm_gvl_call::update(VALUE obj)
 {
-    return add_object(obj, true, false);
+    return add_object(obj, NULL, true, false);
+}
+
+
+/**
+ * Like update(VALUE), for the data pointer of an object.
+ *
+ * @param ptr the data pointer
+ * @return self
+ */
+rm_gvl_call &
+rm_gvl_call::update(const void *ptr)
+{
+    return add_object(Qundef, ptr, true, false);
 }
 
 
@@ -374,7 +429,7 @@ rm_gvl_call::update(VALUE obj)
 rm_gvl_call &
 rm_gvl_call::read_each(VALUE ary)
 {
-    return add_object(ary, false, true);
+    return add_object(ary, NULL, false, true);
 }
 
 
@@ -387,7 +442,20 @@ rm_gvl_call::read_each(VALUE ary)
 rm_gvl_call &
 rm_gvl_call::release(ExceptionInfo *exception)
 {
-    return add_cleanup(release_exception, exception, 0);
+    return cleanup(release_exception, exception, 0);
+}
+
+
+/**
+ * Destroy the ImageInfo if the call is refused or unwound.
+ *
+ * @param info the ImageInfo, may be NULL
+ * @return self
+ */
+rm_gvl_call &
+rm_gvl_call::release(ImageInfo *info)
+{
+    return cleanup(destroy_info, info, 0);
 }
 
 
@@ -400,7 +468,7 @@ rm_gvl_call::release(ExceptionInfo *exception)
 rm_gvl_call &
 rm_gvl_call::destroy(Image *image)
 {
-    return add_cleanup(destroy_image, image, 0);
+    return cleanup(destroy_image, image, 0);
 }
 
 
@@ -413,7 +481,7 @@ rm_gvl_call::destroy(Image *image)
 rm_gvl_call &
 rm_gvl_call::split(Image *images)
 {
-    return add_cleanup(split_images, images, 0);
+    return cleanup(split_images, images, 0);
 }
 
 
@@ -428,7 +496,7 @@ rm_gvl_call::split(Image *images)
 rm_gvl_call &
 rm_gvl_call::restore_mask(Image *image, ChannelType channel_mask)
 {
-    return add_cleanup(restore_channel_mask, image, (intptr_t)channel_mask);
+    return cleanup(restore_channel_mask, image, (intptr_t)channel_mask);
 }
 #endif
 
@@ -489,7 +557,7 @@ rm_gvl_call::call(ResultType type)
         // An object that the call both reads and changes is marked as changed.
         for (int i = 0; i < nobjects; i++)
         {
-            void *key = objects[i].update ? offload_key(objects[i].obj) : NULL;
+            void *key = objects[i].update ? object_key(objects[i].obj, objects[i].ptr, false, 0) : NULL;
             if (key && !marked(marks, nmarks, key))
             {
                 marks[nmarks].key = key;
@@ -508,7 +576,7 @@ rm_gvl_call::call(ResultType type)
             }
             for (long j = 0; j < len; j++)
             {
-                void *key = offload_key(objects[i].each ? rb_ary_entry(objects[i].obj, j) : objects[i].obj);
+                void *key = object_key(objects[i].obj, objects[i].ptr, objects[i].each, j);
                 if (key && !marked(marks, nupdates, key))
                 {
                     marks[nmarks].key = key;
