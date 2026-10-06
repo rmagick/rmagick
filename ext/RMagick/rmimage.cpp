@@ -2064,13 +2064,13 @@ Image_blur_channel(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channels);
-    GVL_STRUCT_TYPE(BlurImage) args = { image, radius, sigma, exception };
-    new_image = rm_gvl_offload_masked_image(GVL_FUNC(BlurImage), &args, self, exception, image, channel_mask);
+    DECLARE_GVL_CALL(call, BlurImage, image, radius, sigma, exception);
+    new_image = call.update(self).restore_mask(image, channel_mask).release(exception).run<Image *>();
     CHANGE_RESULT_CHANNEL_MASK(new_image);
     END_CHANNEL_MASK(image);
 #else
-    GVL_STRUCT_TYPE(BlurImageChannel) args = { image, channels, radius, sigma, exception };
-    new_image = rm_gvl_offload_image(GVL_FUNC(BlurImageChannel), &args, self, exception);
+    DECLARE_GVL_CALL(call, BlurImageChannel, image, channels, radius, sigma, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -3377,13 +3377,13 @@ Image_colorspace_eq(VALUE self, VALUE colorspace)
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(TransformImageColorspace) args = { image, new_cs, exception };
-    rm_gvl_offload_update(GVL_FUNC(TransformImageColorspace), &args, self, exception);
+    DECLARE_GVL_CALL(call, TransformImageColorspace, image, new_cs, exception);
+    call.update(self).release(exception).run<void>();
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    GVL_STRUCT_TYPE(TransformImageColorspace) args = { image, new_cs };
-    rm_gvl_offload_update(GVL_FUNC(TransformImageColorspace), &args, self, NULL);
+    DECLARE_GVL_CALL(call, TransformImageColorspace, image, new_cs);
+    call.update(self).run<void>();
     rm_check_image_exception(image, RetainOnError);
 #endif
 
@@ -6353,8 +6353,8 @@ effect_image(VALUE self, int argc, VALUE *argv, gvl_function_t fp)
     }
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(effect_image) args = { image, radius, sigma, exception };
-    new_image = rm_gvl_offload_image(fp, &args, self, exception);
+    DECLARE_GVL_CALL_FP(call, effect_image, fp, image, radius, sigma, exception);
+    new_image = call.read(self).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -12450,8 +12450,13 @@ resize(int bang, int argc, VALUE *argv, VALUE self)
 #endif
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    GVL_STRUCT_TYPE(ResizeImage) args = { source, columns, rows, filter, exception };
-    new_image = rm_gvl_offload_image_and_destroy(GVL_FUNC(ResizeImage), &args, self, exception, source != image ? source : NULL, bang);
+    DECLARE_GVL_CALL(call, ResizeImage, source, columns, rows, filter, exception);
+    bang ? call.update(self) : call.read(self);
+    if (source != image)
+    {
+        call.destroy(source);
+    }
+    new_image = call.release(exception).run<Image *>();
     if (source != image)
     {
         if (new_image)
@@ -12461,8 +12466,9 @@ resize(int bang, int argc, VALUE *argv, VALUE self)
         DestroyImage(source);
     }
 #else
-    GVL_STRUCT_TYPE(ResizeImage) args = { image, columns, rows, filter, blur, exception };
-    new_image = rm_gvl_offload_image_replacing(GVL_FUNC(ResizeImage), &args, self, exception, bang);
+    DECLARE_GVL_CALL(call, ResizeImage, image, columns, rows, filter, blur, exception);
+    bang ? call.update(self) : call.read(self);
+    new_image = call.release(exception).run<Image *>();
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
 

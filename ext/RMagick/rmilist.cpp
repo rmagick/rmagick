@@ -159,8 +159,8 @@ ImageList_append(VALUE self, VALUE stack_arg)
     stack = (MagickBooleanType)RTEST(stack_arg);
 
     exception = AcquireExceptionInfo();
-    GVL_STRUCT_TYPE(AppendImages) args = { images, stack, exception };
-    new_image = (Image *)CALL_FUNC_WITHOUT_GVL(GVL_FUNC(AppendImages), &args);
+    DECLARE_GVL_CALL(call, AppendImages, images, stack, exception);
+    new_image = call.read_each(rb_iv_get(self, "@images")).split(images).release(exception).run<Image *>();
     rm_split(images);
     RB_GC_GUARD(clones);
     rm_check_exception(exception, new_image, DestroyOnError);
