@@ -3,6 +3,12 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 7.1.7
+
+Bug Fixes
+
+* Fix installing the gem with the system Ruby on Ubuntu 26.04, whose LDFLAGS contain '%' (#1927)
+
 ## RMagick 7.1.6
 
 > [!IMPORTANT]
