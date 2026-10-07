@@ -3,20 +3,6 @@
 require 'tmpdir'
 
 RSpec.describe Magick::Image, '#get_pixels' do
-  def interrupt(error)
-    thread = Thread.new do
-      Thread.current.report_on_exception = false
-      yield
-      nil
-    rescue error
-      nil
-    end
-    Thread.pass until thread.status == 'sleep' || !thread.alive?
-    thread.raise(error) if thread.alive?
-    thread.join
-    nil
-  end
-
   it 'works' do
     image = described_class.new(20, 20)
 

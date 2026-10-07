@@ -30,4 +30,15 @@ RSpec.describe Magick::Image, '#resize' do
 
     expect(image.resize(100, 100, Magick::LanczosFilter, 1.0).difference(resized)[1]).to eq(0.0)
   end
+
+  it 'frees the new image when the thread is interrupted' do
+    cancelled = Class.new(StandardError)
+    image = described_class.new(1000, 1000)
+    GC.start
+    baseline = Magick.resource_usage(:memory)
+    interrupt(cancelled) { image.resize(3000, 3000) }
+    3.times { GC.start }
+
+    expect(Magick.resource_usage(:memory)).to be <= baseline
+  end
 end

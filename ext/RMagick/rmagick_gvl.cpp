@@ -7,8 +7,8 @@
  */
 
 #include "rmagick.h"
-#if defined(RMAGICK_OFFLOAD_SAFE)
 #include "ruby/ractor.h"
+#if defined(RMAGICK_OFFLOAD_SAFE)
 #include <atomic>
 #endif
 
@@ -44,9 +44,13 @@
  * RMagick itself reads and writes pixels through a cache view of its own.
  *
  * Without a scheduler that offloads, or on Ruby before 4.0, rm_gvl_call runs
- * the function with rb_thread_call_without_gvl. That raises a pending
- * interrupt, such as Thread#raise or Timeout, after the function returns, so
- * what the caller registered is released then too.
+ * the function with rb_thread_call_without_gvl. An interrupt that arrives
+ * during the function, such as Thread#raise or Timeout, is raised after the
+ * function returns, so what the caller registered is released then too.
+ * Interrupts are deferred until then because a GC that xmalloc starts in the
+ * function (Magick::MANAGED_MEMORY) takes the GVL back and would raise them
+ * through ImageMagick. An exception raised by a trap handler there is not
+ * deferred.
  */
 
 typedef enum
@@ -81,6 +85,28 @@ call_without_gvl(VALUE arg)
 {
     rb_thread_call_without_gvl(offload_run, (void *)arg, RUBY_UBF_PROCESS, NULL);
     return Qnil;
+}
+
+static VALUE interrupt_mask = Qnil;
+static ID id_handle_interrupt;
+
+static VALUE
+call_without_gvl_block(RB_BLOCK_CALL_FUNC_ARGLIST(yielded_arg, arg))
+{
+    return call_without_gvl(arg);
+}
+
+static VALUE
+check_interrupts(VALUE unused)
+{
+    rb_thread_check_ints();
+    return Qnil;
+}
+
+static VALUE
+call_deferring_interrupts(VALUE arg)
+{
+    return rb_block_call(rb_cThread, id_handle_interrupt, 1, &interrupt_mask, call_without_gvl_block, arg);
 }
 
 #if defined(RMAGICK_OFFLOAD_SAFE)
@@ -203,13 +229,20 @@ offload_p(void)
 
 
 /**
- * Set up the offload bookkeeping. Called once, when the extension is loaded.
+ * Set up rm_gvl_call. Called once, when the extension is loaded.
  *
  * No Ruby usage (internal function)
  */
 void
-rm_gvl_init_offload(void)
+rm_gvl_init(void)
 {
+    rb_gc_register_address(&interrupt_mask);
+    interrupt_mask = rb_hash_new();
+    rb_funcall(interrupt_mask, rb_intern("compare_by_identity"), 0);
+    rb_hash_aset(interrupt_mask, rb_cObject, ID2SYM(rb_intern("never")));
+    rb_ractor_make_shareable(interrupt_mask);
+    id_handle_interrupt = rb_intern("handle_interrupt");
+
 #if defined(RMAGICK_OFFLOAD_SAFE)
     offloaded_key = rb_ractor_local_storage_ptr_newkey(&offloaded_type);
 #endif
@@ -800,7 +833,14 @@ rm_gvl_call::call_here(ResultType type)
     offload_call_t call = { fp, args, NULL, false };
     int tag;
 
-    rb_protect(call_without_gvl, (VALUE)&call, &tag);
+    rb_protect(check_interrupts, Qnil, &tag);
+    if (tag)
+    {
+        unwind(type, NULL);
+        rb_jump_tag(tag);
+    }
+
+    rb_protect(call_deferring_interrupts, (VALUE)&call, &tag);
     if (tag)
     {
         if (call.done)
