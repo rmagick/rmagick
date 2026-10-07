@@ -134,7 +134,7 @@ module RMagick
     def exit_failure(msg)
       msg = "ERROR: #{msg}"
 
-      Logging.message msg
+      Logging.message "%s", msg
 
       @stdout.puts "\n\n"
       if ENV['NO_COLOR']
@@ -172,11 +172,11 @@ module RMagick
       return if packages.empty?
 
       msg = "\nDetected ImageMagick packages:\n"
-      Logging.message msg
-      message msg
+      Logging.message "%s", msg
+      message "%s", msg
       package_paths = packages.map { |package| "- #{PKGConfig.package_config(package).pc_path}" }.join("\n")
-      Logging.message package_paths + "\n\n"
-      message package_paths + "\n\n"
+      Logging.message "%s", package_paths + "\n\n"
+      message "%s", package_paths + "\n\n"
 
       if installed_im6_packages.any? && installed_im7_packages.any?
         checking_for('forced use of ImageMagick 6') do
@@ -192,8 +192,8 @@ module RMagick
 
       if packages.length > 1
         msg = "\nWarning: Found more than one ImageMagick installation. This could cause problems at runtime.\n\n"
-        Logging.message msg
-        message msg
+        Logging.message "%s", msg
+        message "%s", msg
       end
 
       packages.first
@@ -201,8 +201,8 @@ module RMagick
 
     def search_paths_for_windows
       msg = 'searching PATH for the ImageMagick library...'
-      Logging.message msg
-      message msg + "\n"
+      Logging.message "%s", msg
+      message "%s", msg + "\n"
 
       found = false
       dir_paths = {}
@@ -261,7 +261,7 @@ module RMagick
       # Ensure minimum ImageMagick version
       # Check minimum ImageMagick version if possible
       checking_for("outdated ImageMagick version") do
-        Logging.message("Detected ImageMagick version: #{$magick_version}\n")
+        Logging.message("%s", "Detected ImageMagick version: #{$magick_version}\n")
 
         required_version = im_version_at_least?('7.0.0') ? Magick::MIN_IM7_VERSION : Magick::MIN_IM6_VERSION
 
@@ -354,8 +354,8 @@ module RMagick
 
       END_SUMMARY
 
-      Logging.message summary
-      message summary
+      Logging.message "%s", summary
+      message "%s", summary
     end
   end
 end
@@ -363,8 +363,8 @@ end
 extconf = RMagick::Extconf.new
 at_exit do
   msg = "Configured compile options: #{extconf.configured_compile_options}"
-  Logging.message msg
-  message msg + "\n"
+  Logging.message "%s", msg
+  message "%s", msg + "\n"
 end
 extconf.create_makefile_file
 extconf.create_compile_flags_txt
