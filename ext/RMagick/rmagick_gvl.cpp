@@ -44,7 +44,9 @@
  * RMagick itself reads and writes pixels through a cache view of its own.
  *
  * Without a scheduler that offloads, or on Ruby before 4.0, rm_gvl_call runs
- * the function with rb_thread_call_without_gvl.
+ * the function with rb_thread_call_without_gvl. That raises a pending
+ * interrupt, such as Thread#raise or Timeout, after the function returns, so
+ * what the caller registered is released then too.
  */
 
 typedef enum
@@ -53,17 +55,38 @@ typedef enum
     OffloadUpdate
 } OffloadMode;
 
-#if defined(RMAGICK_OFFLOAD_SAFE)
-
-// Value in the table of an object that a call is changing
-#define OFFLOAD_UPDATING ((st_data_t)-1)
-
 typedef struct
 {
     gvl_function_t *fp;
     void *args;
     void *result;
+    bool done;
 } offload_call_t;
+
+// Stores the result here rather than relying on the return value of rb_nogvl
+// or rb_thread_call_without_gvl, which is lost when an exception is raised
+// into the calling fiber after the function returns.
+static void *
+offload_run(void *arg)
+{
+    offload_call_t *call = (offload_call_t *)arg;
+
+    call->result = call->fp(call->args);
+    call->done = true;
+    return call->result;
+}
+
+static VALUE
+call_without_gvl(VALUE arg)
+{
+    rb_thread_call_without_gvl(offload_run, (void *)arg, RUBY_UBF_PROCESS, NULL);
+    return Qnil;
+}
+
+#if defined(RMAGICK_OFFLOAD_SAFE)
+
+// Value in the table of an object that a call is changing
+#define OFFLOAD_UPDATING ((st_data_t)-1)
 
 static void raise_in_use(void) ATTRIBUTE_NORETURN;
 
@@ -151,18 +174,6 @@ offload_key(VALUE obj)
         return NULL;
     }
     return DATA_PTR(obj);
-}
-
-// Runs on the worker thread. Stores the result here rather than relying on
-// the return value of rb_nogvl, which is lost when the scheduler raises into
-// the waiting fiber.
-static void *
-offload_run(void *arg)
-{
-    offload_call_t *call = (offload_call_t *)arg;
-
-    call->result = call->fp(call->args);
-    return call->result;
 }
 
 static VALUE
@@ -703,7 +714,7 @@ rm_gvl_call::call(ResultType type)
 
     if (offload || offloads_in_flight.load(std::memory_order_relaxed) != 0)
     {
-        offload_call_t call = { fp, args, NULL };
+        offload_call_t call = { fp, args, NULL, false };
         offload_mark_t *marks;
         VALUE marks_buffer;
         long count = 0, nmarks = 0;
@@ -753,7 +764,7 @@ rm_gvl_call::call(ResultType type)
         if (!offload)
         {
             ALLOCV_END(marks_buffer);
-            return rb_thread_call_without_gvl(fp, args, RUBY_UBF_PROCESS, NULL);
+            return call_here(type);
         }
 
         for (long i = 0; i < nmarks; i++)
@@ -779,7 +790,26 @@ rm_gvl_call::call(ResultType type)
     }
 #endif
 
-    return rb_thread_call_without_gvl(fp, args, RUBY_UBF_PROCESS, NULL);
+    return call_here(type);
+}
+
+
+void *
+rm_gvl_call::call_here(ResultType type)
+{
+    offload_call_t call = { fp, args, NULL, false };
+    int tag;
+
+    rb_protect(call_without_gvl, (VALUE)&call, &tag);
+    if (tag)
+    {
+        if (call.done)
+        {
+            unwind(type, call.result);
+        }
+        rb_jump_tag(tag);
+    }
+    return call.result;
 }
 
 

@@ -69,6 +69,7 @@ private:
 
     rm_gvl_call &add_object(VALUE obj, const void *ptr, bool update, bool each);
     void *call(ResultType type);
+    void *call_here(ResultType type);
     void unwind(ResultType type, void *result);
 };
 

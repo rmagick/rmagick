@@ -3,6 +3,20 @@
 require 'tmpdir'
 
 RSpec.describe Magick::Image, '#get_pixels' do
+  def interrupt(error)
+    thread = Thread.new do
+      Thread.current.report_on_exception = false
+      yield
+      nil
+    rescue error
+      nil
+    end
+    Thread.pass until thread.status == 'sleep' || !thread.alive?
+    thread.raise(error) if thread.alive?
+    thread.join
+    nil
+  end
+
   it 'works' do
     image = described_class.new(20, 20)
 
@@ -59,5 +73,17 @@ RSpec.describe Magick::Image, '#get_pixels' do
     expected = Magick::Magick_features.include?('HDRI') ? -Magick::QuantumRange : 0
 
     expect(image.get_pixels(0, 0, 1, 1).first.red).to eq(expected)
+  end
+
+  it 'releases the pixel cache when the thread is interrupted' do
+    cancelled = Class.new(StandardError)
+    GC.start
+    baseline = Magick.resource_usage(:memory)
+    image = described_class.new(1000, 1000)
+    interrupt(cancelled) { image.get_pixels(0, 0, 999, 999) }
+    image.destroy!
+    3.times { GC.start }
+
+    expect(Magick.resource_usage(:memory)).to be <= baseline
   end
 end
