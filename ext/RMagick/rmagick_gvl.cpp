@@ -26,10 +26,14 @@
  *
  * 1. The scheduler can raise into the waiting fiber, for example when the
  *    task is stopped or times out. The scheduler waits for the worker to
- *    finish first, so the call has completed, but the exception unwinds
- *    through the caller and skips the code after the call. The caller
- *    registers what it would have released, and it is released before
- *    re-raising.
+ *    finish first, or cancels the call before a worker starts it, but the
+ *    exception unwinds through the caller and skips the code after the call.
+ *    The caller registers what it would have released, and it is released
+ *    before re-raising. IO::Event::WorkerPool can also cancel a call that no
+ *    worker has started without raising, when the fiber wakes up early right
+ *    after a task is stopped, and Ruby then returns as if the call had run.
+ *    rm_gvl_call offloads such a call once more and otherwise runs it on the
+ *    calling thread.
  *
  * 2. Other fibers on the same thread run while the call is in flight. While a
  *    call reads an object, changing or destroying it raises. While a call
@@ -64,6 +68,7 @@ typedef struct
     gvl_function_t *fp;
     void *args;
     void *result;
+    bool started;
     bool done;
 } offload_call_t;
 
@@ -75,6 +80,7 @@ offload_run(void *arg)
 {
     offload_call_t *call = (offload_call_t *)arg;
 
+    call->started = true;
     call->result = call->fp(call->args);
     call->done = true;
     return call->result;
@@ -747,7 +753,7 @@ rm_gvl_call::call(ResultType type)
 
     if (offload || offloads_in_flight.load(std::memory_order_relaxed) != 0)
     {
-        offload_call_t call = { fp, args, NULL, false };
+        offload_call_t call = { fp, args, NULL, false, false };
         offload_mark_t *marks;
         VALUE marks_buffer;
         long count = 0, nmarks = 0;
@@ -806,6 +812,10 @@ rm_gvl_call::call(ResultType type)
         }
 
         rb_protect(offload_call, (VALUE)&call, &tag);
+        if (!tag && !call.started)
+        {
+            rb_protect(offload_call, (VALUE)&call, &tag);
+        }
 
         for (long i = 0; i < nmarks; i++)
         {
@@ -817,6 +827,10 @@ rm_gvl_call::call(ResultType type)
             // The scheduler raised into this fiber after the worker finished.
             unwind(type, call.result);
             rb_jump_tag(tag);
+        }
+        if (!call.started)
+        {
+            return call_here(type);
         }
 
         return call.result;
@@ -830,7 +844,7 @@ rm_gvl_call::call(ResultType type)
 void *
 rm_gvl_call::call_here(ResultType type)
 {
-    offload_call_t call = { fp, args, NULL, false };
+    offload_call_t call = { fp, args, NULL, false, false };
     int tag;
 
     rb_protect(check_interrupts, Qnil, &tag);
