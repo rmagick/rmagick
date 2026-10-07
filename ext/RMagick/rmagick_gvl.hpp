@@ -1,7 +1,7 @@
 #ifndef _RMAGICK_GVL_HPP_
 #define _RMAGICK_GVL_HPP_
 
-extern void   rm_gvl_init_offload(void);
+extern void   rm_gvl_init(void);
 extern void   rm_gvl_check_readable(const void *);
 extern void   rm_gvl_check_writable(const void *);
 extern bool   rm_gvl_in_use(const void *);

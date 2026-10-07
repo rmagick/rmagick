@@ -15,6 +15,20 @@ module TestHelpers
     [pixel_value, pixel_value, pixel_value]
   end
 
+  def interrupt(error)
+    thread = Thread.new do
+      Thread.current.report_on_exception = false
+      yield
+      nil
+    rescue error
+      nil
+    end
+    Thread.pass until thread.status == 'sleep' || !thread.alive?
+    thread.raise(error) if thread.alive?
+    thread.join
+    nil
+  end
+
   # Runs the block with the GC collecting on every allocation, so that anything
   # the extension leaves unreferenced is reclaimed at the first opportunity
   # rather than by chance.

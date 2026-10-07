@@ -232,7 +232,7 @@ Init_RMagick2(void)
     rb_ext_ractor_safe(true);
 #endif
 
-    rm_gvl_init_offload();
+    rm_gvl_init();
 
     Module_Magick = rb_define_module("Magick");
 
