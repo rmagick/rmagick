@@ -292,6 +292,9 @@ DEFINE_GVL_STUB2(WriteImage, const ImageInfo *, Image *);
 #endif
 
 DEFINE_GVL_STUB3(RotationalBlurImage, const Image *, const double, ExceptionInfo *);
+DEFINE_GVL_STUB6(GetCacheViewAuthenticPixels, CacheView *, const ssize_t, const ssize_t, const size_t, const size_t, ExceptionInfo *);
+DEFINE_GVL_STUB6(GetCacheViewVirtualPixels, const CacheView *, const ssize_t, const ssize_t, const size_t, const size_t, ExceptionInfo *);
+DEFINE_GVL_STUB2(SyncCacheViewAuthenticPixels, CacheView *, ExceptionInfo *);
 
 #if defined(IMAGEMAGICK_7)
 #else
@@ -315,6 +318,22 @@ check_channel_writable(VALUE self)
 #else
     return rm_check_readable(self);
 #endif
+}
+
+static void
+destroy_cache_view(void *ptr, intptr_t arg ATTRIBUTE_UNUSED)
+{
+    DestroyCacheView((CacheView *)ptr);
+}
+
+static void
+check_cache_view_exception(CacheView *view, ExceptionInfo *exception)
+{
+    if (rm_should_raise_exception(exception, RetainExceptionRetention))
+    {
+        DestroyCacheView(view);
+        rm_raise_exception(exception);
+    }
 }
 
 // Restore a color of the image that the method swapped in for one call
@@ -7996,71 +8015,37 @@ get_pixel_color(const Image *image, const Quantum *p, PixelColor *color)
 #endif
 
 
-/**
- * Gets the pixels from the specified rectangle within the image.
- *
- * @param x_arg [Numeric] x position of start of region
- * @param y_arg [Numeric] y position of start of region
- * @param cols_arg [Numeric] width of region
- * @param rows_arg [Numeric] height of region
- * @return [Array<Magick::Pixel>] An array of Magick::Pixel objects corresponding to the pixels in the rectangle
- *   defined by the geometry parameters.
- * @see Image#store_pixels
- */
-VALUE
-Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE rows_arg)
+typedef struct
 {
     Image *image;
-    ExceptionInfo *exception;
-    long x, y;
-    unsigned long columns, rows;
-    long size, n;
-    VALUE pixel_ary;
+    CacheView *view;
 #if defined(IMAGEMAGICK_7)
     const Quantum *pixels;
 #else
     const PixelPacket *pixels;
-    const IndexPacket *indexes;
+#endif
+    long size;
+} get_pixels_args_t;
+
+
+static VALUE
+pixels_to_ary(VALUE arg)
+{
+    get_pixels_args_t *args = (get_pixels_args_t *)arg;
+    Image *image = args->image;
+    VALUE pixel_ary;
+    long n;
+#if defined(IMAGEMAGICK_7)
+    const Quantum *pixels = args->pixels;
+#else
+    const PixelPacket *pixels = args->pixels;
+    const IndexPacket *indexes = GetCacheViewVirtualIndexQueue(args->view);
 #endif
 
-    image = rm_check_readable(self);
-    x       = NUM2LONG(x_arg);
-    y       = NUM2LONG(y_arg);
-    columns = NUM2ULONG(cols_arg);
-    rows    = NUM2ULONG(rows_arg);
-
-    if ((x+columns) > image->columns || (y+rows) > image->rows)
-    {
-        rb_raise(rb_eRangeError, "geometry (%lux%lu%+ld%+ld) exceeds image bounds",
-                 columns, rows, x, y);
-    }
-
-    // Cast AcquireImagePixels to get rid of the const qualifier. We're not going
-    // to change the pixels but I don't want to make "pixels" const.
-    exception = AcquireExceptionInfo();
-    DECLARE_GVL_CALL(call, GetVirtualPixels, image, x, y, columns, rows, exception);
-    void *ret = call.keep_thread().run<void *>();
-    pixels = reinterpret_cast<decltype(pixels)>(ret);
-    CHECK_EXCEPTION();
-
-    DestroyExceptionInfo(exception);
-
-    // If the function failed, return a 0-length array.
-    if (!pixels)
-    {
-        return rb_ary_new();
-    }
-
-    // Allocate an array big enough to contain the PixelPackets.
-    size = (long)(columns * rows);
-    pixel_ary = rb_ary_new2(size);
-
-#if defined(IMAGEMAGICK_6)
-    indexes = GetVirtualIndexQueue(image);
-#endif
+    pixel_ary = rb_ary_new2(args->size);
 
     // Convert the PixelPackets to Magick::Pixel objects
-    for (n = 0; n < size; n++)
+    for (n = 0; n < args->size; n++)
     {
 #if defined(IMAGEMAGICK_7)
         PixelColor color;
@@ -8087,7 +8072,80 @@ Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE row
 #endif
     }
 
+    RB_GC_GUARD(pixel_ary);
+
     return pixel_ary;
+}
+
+
+static VALUE
+destroy_view_ensure(VALUE view)
+{
+    DestroyCacheView((CacheView *)view);
+    return Qnil;
+}
+
+
+/**
+ * Gets the pixels from the specified rectangle within the image.
+ *
+ * @param x_arg [Numeric] x position of start of region
+ * @param y_arg [Numeric] y position of start of region
+ * @param cols_arg [Numeric] width of region
+ * @param rows_arg [Numeric] height of region
+ * @return [Array<Magick::Pixel>] An array of Magick::Pixel objects corresponding to the pixels in the rectangle
+ *   defined by the geometry parameters.
+ * @see Image#store_pixels
+ */
+VALUE
+Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE rows_arg)
+{
+    Image *image;
+    ExceptionInfo *exception;
+    long x, y;
+    unsigned long columns, rows;
+    get_pixels_args_t args;
+#if defined(IMAGEMAGICK_7)
+    const Quantum *pixels;
+#else
+    const PixelPacket *pixels;
+#endif
+
+    image = rm_check_readable(self);
+    x       = NUM2LONG(x_arg);
+    y       = NUM2LONG(y_arg);
+    columns = NUM2ULONG(cols_arg);
+    rows    = NUM2ULONG(rows_arg);
+
+    if ((x+columns) > image->columns || (y+rows) > image->rows)
+    {
+        rb_raise(rb_eRangeError, "geometry (%lux%lu%+ld%+ld) exceeds image bounds",
+                 columns, rows, x, y);
+    }
+
+    // Cast AcquireImagePixels to get rid of the const qualifier. We're not going
+    // to change the pixels but I don't want to make "pixels" const.
+    exception = AcquireExceptionInfo();
+    CacheView *view = AcquireVirtualCacheView(image, exception);
+    DECLARE_GVL_CALL(call, GetCacheViewVirtualPixels, view, x, y, columns, rows, exception);
+    void *ret = call.cleanup(destroy_cache_view, view).release(exception).keep_thread().run<void *>();
+    pixels = reinterpret_cast<decltype(pixels)>(ret);
+    check_cache_view_exception(view, exception);
+
+    DestroyExceptionInfo(exception);
+
+    // If the function failed, return a 0-length array.
+    if (!pixels)
+    {
+        DestroyCacheView(view);
+        return rb_ary_new();
+    }
+
+    args.image = image;
+    args.view = view;
+    args.pixels = pixels;
+    args.size = (long)(columns * rows);
+    return rb_ensure(pixels_to_ary, (VALUE)&args, destroy_view_ensure, (VALUE)view);
 }
 
 
@@ -10876,10 +10934,11 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
     if (!set)
     {
         exception = AcquireExceptionInfo();
-        DECLARE_GVL_CALL(call, GetVirtualPixels, image, x, y, 1, 1, exception);
-        void *ret = call.keep_thread().run<void *>();
+        CacheView *view = AcquireVirtualCacheView(image, exception);
+        DECLARE_GVL_CALL(call, GetCacheViewVirtualPixels, view, x, y, 1, 1, exception);
+        void *ret = call.cleanup(destroy_cache_view, view).release(exception).keep_thread().run<void *>();
         old_pixel = reinterpret_cast<decltype(old_pixel)>(ret);
-        CHECK_EXCEPTION();
+        check_cache_view_exception(view, exception);
 
         DestroyExceptionInfo(exception);
 
@@ -10887,15 +10946,17 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
         // background color is left to return, as GetOneVirtualPixel does.
         if (!old_pixel)
         {
+            DestroyCacheView(view);
             return Pixel_from_PixelColor(&image->background_color);
         }
 
 #if defined(IMAGEMAGICK_7)
         get_pixel_color(image, old_pixel, &old_color);
+        DestroyCacheView(view);
         return Pixel_from_PixelColor(&old_color);
 #else
         old_color = *old_pixel;
-        indexes = GetAuthenticIndexQueue(image);
+        indexes = const_cast<IndexPacket *>(GetCacheViewVirtualIndexQueue(view));
         // PseudoClass
         if (image->storage_class == PseudoClass)
         {
@@ -10915,6 +10976,7 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
         {
             mpp.index = GetPixelIndex(indexes);
         }
+        DestroyCacheView(view);
         return Pixel_from_MagickPixel(&mpp);
 #endif
     }
@@ -10958,10 +11020,11 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #endif
 
-    DECLARE_GVL_CALL(call, GetAuthenticPixels, image, x, y, 1, 1, exception);
-    void *ret = call.keep_thread().run<void *>();
+    CacheView *view = AcquireAuthenticCacheView(image, exception);
+    DECLARE_GVL_CALL(call, GetCacheViewAuthenticPixels, view, x, y, 1, 1, exception);
+    void *ret = call.cleanup(destroy_cache_view, view).release(exception).keep_thread().run<void *>();
     pixel = reinterpret_cast<decltype(pixel)>(ret);
-    CHECK_EXCEPTION();
+    check_cache_view_exception(view, exception);
 
     if (pixel)
     {
@@ -10975,7 +11038,7 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
         SetPixelBlack(image, new_color.black, pixel);
 #else
         old_color = *pixel;
-        indexes = GetAuthenticIndexQueue(image);
+        indexes = GetCacheViewAuthenticIndexQueue(view);
         if (!image->matte)
         {
             old_color.opacity = OpaqueOpacity;
@@ -10991,11 +11054,12 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
         }
 #endif
 
-        DECLARE_GVL_CALL(call, SyncAuthenticPixels, image, exception);
-        call.keep_thread().run<void>();
-        CHECK_EXCEPTION();
+        DECLARE_GVL_CALL(sync_call, SyncCacheViewAuthenticPixels, view, exception);
+        sync_call.cleanup(destroy_cache_view, view).release(exception).keep_thread().run<void>();
+        check_cache_view_exception(view, exception);
     }
 
+    DestroyCacheView(view);
     DestroyExceptionInfo(exception);
 
 #if defined(IMAGEMAGICK_7)
@@ -14334,21 +14398,23 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg,
     // Get a pointer to the pixels. Replace the values with the PixelPackets
     // from the pixels argument.
     {
-        DECLARE_GVL_CALL(call, GetAuthenticPixels, image, x, y, cols, rows, exception);
-        void *ret = call.update(self).release(exception).run<void *>();
+        CacheView *view = AcquireAuthenticCacheView(image, exception);
+        DECLARE_GVL_CALL(call, GetCacheViewAuthenticPixels, view, x, y, cols, rows, exception);
+        void *ret = call.update(self).cleanup(destroy_cache_view, view).release(exception).run<void *>();
         pixels = reinterpret_cast<decltype(pixels)>(ret);
-        CHECK_EXCEPTION();
+        check_cache_view_exception(view, exception);
 
         if (pixels)
         {
 #if defined(IMAGEMAGICK_6)
-            IndexPacket *indexes = GetAuthenticIndexQueue(image);
+            IndexPacket *indexes = GetCacheViewAuthenticIndexQueue(view);
 #endif
             for (n = 0; n < size; n++)
             {
                 new_pixel = rb_ary_entry(new_pixels, n);
                 if (CLASS_OF(new_pixel) != Class_Pixel)
                 {
+                    DestroyCacheView(view);
                     DestroyExceptionInfo(exception);
                     rb_raise(rb_eTypeError, "Item in array should be a Pixel.");
                 }
@@ -14372,11 +14438,12 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg,
                 pixels++;
 #endif
             }
-            DECLARE_GVL_CALL(call, SyncAuthenticPixels, image, exception);
-            call.update(self).release(exception).run<void>();
-            CHECK_EXCEPTION();
+            DECLARE_GVL_CALL(sync_call, SyncCacheViewAuthenticPixels, view, exception);
+            sync_call.update(self).cleanup(destroy_cache_view, view).release(exception).run<void>();
+            check_cache_view_exception(view, exception);
         }
 
+        DestroyCacheView(view);
         DestroyExceptionInfo(exception);
     }
 

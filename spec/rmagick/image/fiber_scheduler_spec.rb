@@ -114,14 +114,69 @@ RSpec.describe Magick::Image, if: offloading do
       reads = nil
       scheduler.before_next_operation do
         Fiber.schedule do
-          reads = [image.pixel_color(0, 0).class, image.blur_image.columns, Fiber.blocking { image.columns }]
+          reads = [image.pixel_color(0, 0).class, image.get_pixels(0, 0, 2, 2).size, image.columns, Fiber.blocking { image.columns }]
         end
       end
 
       result = scheduler.run { image.gaussian_blur(0, 5) }
 
-      expect(reads).to eq([Magick::Pixel, 200, 200])
+      expect(reads).to eq([Magick::Pixel, 4, 200, 200])
       expect(result.columns).to eq(200)
+    end
+
+    it "does not let another fiber's call read an image that a call reads" do
+      image = described_class.new(200, 200)
+      error = nil
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { image.blur_image } } }
+
+      result = scheduler.run { image.gaussian_blur(0, 5) }
+
+      expect(error).to in_use
+      expect(result.columns).to eq(200)
+      expect(image.blur_image.columns).to eq(200)
+    end
+
+    it "does not let another fiber's call read a copy that shares the pixel cache of an image that a call reads" do
+      image = described_class.new(200, 200)
+      copy = image.dup
+      error = nil
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { copy.blur_image } } }
+
+      scheduler.run { image.gaussian_blur(0, 5) }
+
+      expect(error).to in_use
+      expect(copy.blur_image.columns).to eq(200)
+    end
+
+    it "does not let another fiber read an image that a call reads in a call that stays on its thread" do
+      image = described_class.new(200, 200)
+      error = nil
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { Fiber.blocking { image.blur_image } } } }
+
+      scheduler.run { image.gaussian_blur(0, 5) }
+
+      expect(error).to in_use
+    end
+
+    it "lets two fibers measure text without an image at once" do
+      result = nil
+      scheduler.before_next_operation { Fiber.schedule { result = attempt { Magick::Draw.new.get_type_metrics("abc") } } }
+
+      scheduler.run { Magick::Draw.new.get_type_metrics("abc") }
+
+      expect(result).to be_instance_of(Magick::TypeMetric)
+    end
+
+    it "lets two fibers' calls read the same kernel" do
+      kernel = Magick::KernelInfo.new("Disk")
+      first = described_class.new(100, 100)
+      second = described_class.new(100, 100)
+      result = nil
+      scheduler.before_next_operation { Fiber.schedule { result = attempt { second.morphology(Magick::DilateMorphology, 1, kernel) } } }
+
+      scheduler.run { first.morphology(Magick::DilateMorphology, 1, kernel) }
+
+      expect(result).to be_instance_of(described_class)
     end
 
     it "does not let another fiber change or destroy an image that a call reads" do
@@ -178,12 +233,12 @@ RSpec.describe Magick::Image, if: offloading do
       expect(first).to be_destroyed
     end
 
-    it "composites with an image that another fiber's call reads" do
+    it "does not let another fiber composite with an image that a call reads" do
       src = described_class.new(200, 200)
       dst = described_class.new(50, 50)
-      composited = nil
+      error = nil
       scheduler.before_next_operation do
-        Fiber.schedule { composited = dst.composite_affine(src, Magick::AffineMatrix.new(1, 0, 0, 1, 0, 0)) }
+        Fiber.schedule { error = attempt { dst.composite_affine(src, Magick::AffineMatrix.new(1, 0, 0, 1, 0, 0)) } }
       end
 
       scheduler.run do
@@ -191,7 +246,7 @@ RSpec.describe Magick::Image, if: offloading do
         dst.destroy!
       end
 
-      expect(composited.columns).to eq(50)
+      expect(error).to in_use
       expect(dst).to be_destroyed
     end
 
@@ -218,16 +273,6 @@ RSpec.describe Magick::Image, if: offloading do
 
       expect(error).to in_use
       expect(other.difference(image)).not_to eq([0.0, 0.0, 0.0])
-    end
-
-    it "lets another fiber run a channel method on an image that a call reads on IM6", if: offloading && Gem::Version.new(Magick::IMAGEMAGICK_VERSION) < Gem::Version.new("7.0.0") do
-      image = red_image
-      mean = nil
-      scheduler.before_next_operation { Fiber.schedule { mean = attempt { image.channel_mean(Magick::RedChannel) } } }
-
-      scheduler.run { image.blur_image }
-
-      expect(mean).to eq([Float(Magick::QuantumRange), 0.0])
     end
 
     it "does not let another fiber read an image while compare_channel sets its distortion" do
@@ -267,27 +312,28 @@ RSpec.describe Magick::Image, if: offloading do
       expect(image.pixel_color(0, 0).red).to eq(Magick::QuantumRange)
     end
 
-    it "remaps with a palette that another fiber's call reads" do
+    it "does not let another fiber remap with a palette that a call reads" do
       image = red_image
       palette = blue_image
       images = Magick::ImageList.new << image
-      error = :not_run
+      error = nil
       scheduler.before_next_operation { Fiber.schedule { error = attempt { images.remap(palette) } } }
 
       scheduler.run { palette.blur_image }
 
-      expect(error).to be_kind_of(Magick::ImageList)
-      expect(image.pixel_color(0, 0).blue).to eq(Magick::QuantumRange)
+      expect(error).to in_use
+      expect(image.pixel_color(0, 0).red).to eq(Magick::QuantumRange)
     end
 
-    it "appends a list with a member that another fiber's call reads" do
+    it "does not let another fiber append a list with a member that a call reads" do
       images = Magick::ImageList.new << red_image << red_image
-      appended = nil
-      scheduler.before_next_operation { Fiber.schedule { appended = images.append(false) } }
+      error = nil
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { images.append(false) } } }
 
       scheduler.run { images[1].blur_image }
 
-      expect(appended.columns).to eq(20)
+      expect(error).to in_use
+      expect(images.append(false).columns).to eq(20)
     end
 
     it "does not let another fiber change an overlay that a call reads" do
@@ -358,18 +404,19 @@ RSpec.describe Magick::Image, if: offloading do
       expect(error).to in_use
     end
 
-    it "appends two lists that share an image" do
+    it "keeps two lists that share an image apart when another fiber appends the second" do
       shared = red_image
       first = Magick::ImageList.new << shared << blue_image
       second = Magick::ImageList.new << shared << blue_image
-      appended = nil
-      scheduler.before_next_operation { Fiber.schedule { appended = second.append(false) } }
+      error = nil
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { second.append(false) } } }
 
       result = scheduler.run { first.append(false) }
 
+      expect(error).to in_use
       expect(result.columns).to eq(20)
-      expect(appended.columns).to eq(20)
       expect((Magick::ImageList.new << shared).append(false).columns).to eq(10)
+      expect(second.append(false).columns).to eq(20)
     end
 
     it "does not let another fiber set an artifact on an image that a call reads" do

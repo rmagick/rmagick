@@ -1720,7 +1720,11 @@ get_type_metrics(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
 #else
     DECLARE_GVL_CALL_FP(call, get_type_metrics, fp, image, draw->info, &metrics);
 #endif
-    void *ret = call.read(image).update(self).cleanup(free_text, draw).run<void *>();
+    if (argc == 2)
+    {
+        call.read(t);
+    }
+    void *ret = call.update(self).cleanup(free_text, draw).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
 
     magick_free(draw->info->text);
