@@ -3529,7 +3529,7 @@ Image_compare_channel(int argc, VALUE *argv, VALUE self)
     ChannelType channels;
     ExceptionInfo *exception;
 
-    image = rm_check_writable(self);
+    rm_check_writable(self);
 
     channels = extract_channels(&argc, argv);
 
@@ -3548,6 +3548,8 @@ Image_compare_channel(int argc, VALUE *argv, VALUE self)
     r_image = rm_check_readable(ref);
 
     VALUE_TO_ENUM(argv[1], metric_type, MetricType);
+
+    image = rm_check_writable(self);
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
@@ -6125,14 +6127,14 @@ VALUE
 Image_distort(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
-    VALUE pts;
+    VALUE pts, values_buf;
     unsigned long n, npoints;
     DistortMethod distortion_method;
-    double *points;
+    double *values, *points;
     MagickBooleanType bestfit = MagickFalse;
     ExceptionInfo *exception;
 
-    image = rm_check_readable(self);
+    rm_check_readable(self);
     rm_get_optional_arguments(self);
 
     switch (argc)
@@ -6150,21 +6152,23 @@ Image_distort(int argc, VALUE *argv, VALUE self)
     }
 
     npoints = RARRAY_LEN(pts);
-    points = ALLOC_N(double, npoints);
+    values = ALLOCV_N(double, values_buf, npoints);
 
     for (n = 0; n < npoints; n++)
     {
         VALUE element = rb_ary_entry(pts, n);
-        if (rm_check_num2dbl(element))
+        if (!rm_check_num2dbl(element))
         {
-            points[n] = NUM2DBL(element);
-        }
-        else
-        {
-            xfree(points);
             rb_raise(rb_eTypeError, "type mismatch: %s given", rb_class2name(CLASS_OF(element)));
         }
+        values[n] = NUM2DBL(element);
     }
+
+    image = rm_check_readable(self);
+
+    points = ALLOC_N(double, npoints);
+    memcpy(points, values, npoints * sizeof(double));
+    ALLOCV_END(values_buf);
 
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, DistortImage, image, distortion_method, npoints, points, bestfit, exception);
@@ -6323,35 +6327,34 @@ VALUE
 Image_each_profile(VALUE self)
 {
     Image *image;
-    VALUE ary;
+    VALUE names, name = Qnil;
     VALUE val = Qnil;
-    char *name;
+    char *profile_name;
     const StringInfo *profile;
+    long i;
 
     image = rm_check_readable(self);
     ResetImageProfileIterator(image);
 
-    ary = rb_ary_new2(2);
+    names = rb_ary_new();
 
-    name = GetNextImageProfile(image);
-    while (name)
+    profile_name = GetNextImageProfile(image);
+    while (profile_name)
     {
-        rb_ary_store(ary, 0, rb_str_new2(name));
-
-        profile = GetImageProfile(image, name);
-        if (!profile)
-        {
-            rb_ary_store(ary, 1, Qnil);
-        }
-        else
-        {
-            rb_ary_store(ary, 1, rb_str_new((char *)profile->datum, (long)profile->length));
-        }
-        val = rb_yield(ary);
-        name = GetNextImageProfile(image);
+        rb_ary_push(names, rb_str_new2(profile_name));
+        profile_name = GetNextImageProfile(image);
     }
 
-    RB_GC_GUARD(ary);
+    for (i = 0; i < RARRAY_LEN(names); i++)
+    {
+        name = rb_ary_entry(names, i);
+        image = rm_check_readable(self);
+        profile = GetImageProfile(image, StringValueCStr(name));
+        val = rb_yield(rb_assoc_new(name, profile ? rb_str_new((char *)profile->datum, (long)profile->length) : Qnil));
+    }
+
+    RB_GC_GUARD(names);
+    RB_GC_GUARD(name);
     RB_GC_GUARD(val);
 
     return val;
@@ -11137,7 +11140,7 @@ Image_polaroid(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
     const char *caption;
 
-    image = rm_check_readable(self);
+    rm_check_readable(self);
 
     switch (argc)
     {
@@ -11153,6 +11156,7 @@ Image_polaroid(int argc, VALUE *argv, VALUE self)
     options = rm_polaroid_new();
     TypedData_Get_Struct(options, Draw, &rm_draw_data_type, draw);
 
+    image = rm_check_readable(self);
     clone = rm_clone_image(image);
     clone->background_color = draw->shadow_color;
     clone->border_color = draw->info->border_color;

@@ -70,4 +70,10 @@ RSpec.describe Magick::Image, '#polaroid' do
       expect { image.polaroid }.not_to raise_error
     end
   end
+
+  it 'raises an error when the options block destroys the image' do
+    image = described_class.new(20, 20)
+
+    expect { image.polaroid { image.destroy! } }.to raise_error(Magick::DestroyedImageError)
+  end
 end

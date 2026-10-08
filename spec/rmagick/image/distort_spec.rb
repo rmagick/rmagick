@@ -15,4 +15,27 @@ RSpec.describe Magick::Image, '#distort' do
     expect { image.distort(1, [1]) }.to raise_error(TypeError)
     expect { image.distort(Magick::AffineDistortion, [2, 60, 2, 60, 32, 60, 32, 60, 2, 30, 17, 'x']) }.to raise_error(TypeError)
   end
+
+  it 'raises an error when the options block destroys the image' do
+    image = described_class.new(20, 20)
+
+    expect { image.distort(Magick::ScaleRotateTranslateDistortion, [0]) { image.destroy! } }.to raise_error(Magick::DestroyedImageError)
+  end
+
+  it 'raises an error when converting the points destroys the image' do
+    image = described_class.new(20, 20)
+    points = Object.new
+    points.define_singleton_method(:to_a) { image.destroy! && [0] }
+
+    expect { image.distort(Magick::ScaleRotateTranslateDistortion, points) }.to raise_error(Magick::DestroyedImageError)
+
+    image = described_class.new(20, 20)
+    point = Struct.new(:image) do
+      def to_f
+        image.destroy! && 0.0
+      end
+    end.new(image)
+
+    expect { image.distort(Magick::ScaleRotateTranslateDistortion, [point]) }.to raise_error(Magick::DestroyedImageError)
+  end
 end
