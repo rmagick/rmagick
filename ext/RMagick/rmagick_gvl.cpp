@@ -10,6 +10,10 @@
 #include "ruby/ractor.h"
 #if defined(RMAGICK_OFFLOAD_SAFE)
 #include <atomic>
+#include <cstddef>
+#if defined(HAVE_WORKING_FORK)
+#include <pthread.h>
+#endif
 #endif
 
 
@@ -47,6 +51,20 @@
  * so an image must not be used by two threads without a scheduler at once.
  * RMagick itself reads and writes pixels through a cache view of its own.
  *
+ * The child of a fork keeps none of the workers of the parent, so it drops
+ * the marks of every fiber but the one that forked, whose calls go on in the
+ * child, and changes back what the dropped calls changed for themselves, such
+ * as a channel mask or the links of a list. A dropped call that is resumed
+ * there raises instead of running. An image that a call was changing at the
+ * fork is in an undefined state in the child.
+ *
+ * Some cases are not handled. A scheduler must resume a fiber that waits in a
+ * call: a fiber collected while it waits leaves its marks behind, and the next
+ * fork changes back objects that may be gone. A worker that holds a lock of
+ * ImageMagick at the fork can leave the cleanup of a dropped call in the child
+ * waiting for good. Draw#annotate changes its text and affine outside
+ * rm_gvl_call, so they are changed back only when the call returns.
+ *
  * Without a scheduler that offloads, or on Ruby before 4.0, rm_gvl_call runs
  * the function with rb_thread_call_without_gvl. An interrupt that arrives
  * during the function, such as Thread#raise or Timeout, is raised after the
@@ -63,14 +81,21 @@ typedef enum
     OffloadUpdate
 } OffloadMode;
 
+struct offload_frame;
+
 typedef struct
 {
     gvl_function_t *fp;
     void *args;
     void *result;
+    struct offload_frame *frame;
     bool started;
     bool done;
 } offload_call_t;
+
+#if defined(RMAGICK_OFFLOAD_SAFE)
+static bool frame_dropped(const struct offload_frame *frame);
+#endif
 
 // Stores the result here rather than relying on the return value of rb_nogvl
 // or rb_thread_call_without_gvl, which is lost when an exception is raised
@@ -80,6 +105,13 @@ offload_run(void *arg)
 {
     offload_call_t *call = (offload_call_t *)arg;
 
+#if defined(RMAGICK_OFFLOAD_SAFE)
+    // The fiber of a call that a fork dropped in the child resumed there
+    if (call->frame && frame_dropped(call->frame))
+    {
+        return NULL;
+    }
+#endif
     call->started = true;
     call->result = call->fp(call->args);
     call->done = true;
@@ -124,32 +156,236 @@ static void raise_in_use(void) ATTRIBUTE_NORETURN;
 
 static rb_ractor_local_key_t offloaded_key;
 
-// Calls in flight in all Ractors, to skip the table when there are none
+// Marks of the calls in flight in all Ractors, to skip the table when there are none
 static std::atomic<unsigned int> offloads_in_flight(0);
 
-static void
-offloaded_free(void *table)
+// Forks seen by this process; a table from an earlier fork is restored before use
+static unsigned int fork_generation;
+
+typedef struct
 {
-    st_free_table((st_table *)table);
+    void *key;
+    OffloadMode mode;
+    bool image;
+} offload_mark_t;
+
+// A release that changes back an object that the caller passed in
+typedef struct
+{
+    void (*release)(void *, intptr_t);
+    void *ptr;
+    intptr_t arg;
+} offload_restore_t;
+
+#define OFFLOAD_MAX_RESTORES 4
+
+static size_t
+frame_align(size_t size)
+{
+    const size_t align = alignof(std::max_align_t);
+
+    return (size + align - 1) / align * align;
 }
 
-static const struct rb_ractor_local_storage_type offloaded_type = { NULL, offloaded_free };
+// A call that has marked its objects, with the marks behind it
+typedef struct offload_frame
+{
+    offload_mark_t *marks;
+    long nmarks;
+    offload_restore_t restores[OFFLOAD_MAX_RESTORES];
+    int nrestores;
+    VALUE thread;
+    VALUE fiber;
+    bool linked;
+    struct offload_frame *prev;
+    struct offload_frame *next;
+} offload_frame_t;
 
 // Data pointer of an Image, its pixel cache, an Info or a KernelInfo => number
 // of calls in flight that read it, or OFFLOAD_UPDATING. Ruby objects that can
 // be changed never cross Ractors, so each Ractor has its own table.
+typedef struct
+{
+    st_table *table;
+    unsigned int generation;
+    offload_frame_t *frames;
+} offloaded_t;
+
+// The entry of the main Ractor, the only one that can fork
+static offloaded_t *main_entry;
+
+static void
+offloaded_free(void *ptr)
+{
+    offloaded_t *entry = (offloaded_t *)ptr;
+
+    st_free_table(entry->table);
+    xfree(entry);
+}
+
+static const struct rb_ractor_local_storage_type offloaded_type = { NULL, offloaded_free };
+
+static void
+mark_insert(st_table *table, const void *ptr, OffloadMode mode)
+{
+    st_data_t state = 0;
+
+    st_lookup(table, (st_data_t)ptr, &state);
+    st_insert(table, (st_data_t)ptr, mode == OffloadUpdate ? OFFLOAD_UPDATING : state + 1);
+}
+
+static void
+mark_remove(st_table *table, const void *ptr)
+{
+    st_data_t key = (st_data_t)ptr;
+    st_data_t state = 0;
+
+    st_lookup(table, key, &state);
+    if (state == OFFLOAD_UPDATING || state <= 1)
+    {
+        st_delete(table, &key, NULL);
+    }
+    else
+    {
+        st_insert(table, key, state - 1);
+    }
+}
+
+static offloaded_t *
+offloaded_entry(void)
+{
+    offloaded_t *entry = (offloaded_t *)rb_ractor_local_storage_ptr(offloaded_key);
+
+    if (!entry)
+    {
+        entry = ALLOC(offloaded_t);
+        entry->table = st_init_numtable();
+        entry->generation = fork_generation;
+        entry->frames = NULL;
+        rb_ractor_local_storage_ptr_set(offloaded_key, entry);
+    }
+    else if (entry->generation != fork_generation)
+    {
+        st_clear(entry->table);
+        entry->generation = fork_generation;
+        for (offload_frame_t *frame = entry->frames; frame; frame = frame->next)
+        {
+            for (long i = 0; i < frame->nmarks; i++)
+            {
+                mark_insert(entry->table, frame->marks[i].key, frame->marks[i].mode);
+            }
+        }
+    }
+    return entry;
+}
+
 static st_table *
 offloaded(void)
 {
-    st_table *table = (st_table *)rb_ractor_local_storage_ptr(offloaded_key);
-
-    if (!table)
-    {
-        table = st_init_numtable();
-        rb_ractor_local_storage_ptr_set(offloaded_key, table);
-    }
-    return table;
+    return offloaded_entry()->table;
 }
+
+static void
+frame_push(offloaded_t *entry, offload_frame_t *frame)
+{
+    frame->prev = NULL;
+    frame->next = entry->frames;
+    if (entry->frames)
+    {
+        entry->frames->prev = frame;
+    }
+    entry->frames = frame;
+    frame->linked = true;
+}
+
+static bool
+frame_dropped(const offload_frame_t *frame)
+{
+    return !frame->linked;
+}
+
+static void
+frame_unlink(offloaded_t *entry, offload_frame_t *frame)
+{
+    if (frame->prev)
+    {
+        frame->prev->next = frame->next;
+    }
+    else
+    {
+        entry->frames = frame->next;
+    }
+    if (frame->next)
+    {
+        frame->next->prev = frame->prev;
+    }
+    frame->linked = false;
+}
+
+#if defined(HAVE_WORKING_FORK)
+// The fiber that forks, noted before the fork, and whether it holds the GVL
+static thread_local VALUE fork_fiber;
+static thread_local bool fork_with_gvl;
+
+// rb_fiber_current allocates the object of a root fiber on its first call,
+// which a frame on the thread rules out.
+static void
+atfork_prepare(void)
+{
+    VALUE thread;
+
+    fork_fiber = 0;
+    fork_with_gvl = ruby_thread_has_gvl_p() && rb_ractor_local_storage_ptr(offloaded_key) == main_entry;
+    if (!fork_with_gvl)
+    {
+        return;
+    }
+    thread = rb_thread_current();
+    for (offload_frame_t *frame = main_entry->frames; frame; frame = frame->next)
+    {
+        if (frame->thread == thread)
+        {
+            fork_fiber = rb_fiber_current();
+            break;
+        }
+    }
+}
+
+// Runs in the child before Ruby does, so it leaves the table to offloaded_entry.
+// A thread without the GVL, such as a delegate of ImageMagick, forks to exec,
+// and the list may be changing under it. The calls of the other fibers never
+// run in the child, so the objects they changed for the call are changed back
+// while nothing in the child can have destroyed them yet.
+static void
+atfork_child(void)
+{
+    unsigned int count = 0;
+    offload_frame_t *next;
+
+    if (!fork_with_gvl)
+    {
+        return;
+    }
+    for (offload_frame_t *frame = main_entry->frames; frame; frame = next)
+    {
+        next = frame->next;
+        if (frame->fiber == fork_fiber)
+        {
+            count += (unsigned int)frame->nmarks;
+        }
+        else
+        {
+            for (int i = 0; i < frame->nrestores; i++)
+            {
+                frame->restores[i].release(frame->restores[i].ptr, frame->restores[i].arg);
+            }
+            frame_unlink(main_entry, frame);
+        }
+    }
+    offloads_in_flight.store(count, std::memory_order_relaxed);
+    fork_generation++;
+}
+#endif
 
 static st_data_t
 offload_state(const void *ptr)
@@ -162,32 +398,6 @@ offload_state(const void *ptr)
     }
     st_lookup(offloaded(), (st_data_t)ptr, &state);
     return state;
-}
-
-static void
-offload_begin(const void *ptr, OffloadMode mode)
-{
-    st_data_t state = offload_state(ptr);
-
-    st_insert(offloaded(), (st_data_t)ptr, mode == OffloadUpdate ? OFFLOAD_UPDATING : state + 1);
-    offloads_in_flight.fetch_add(1, std::memory_order_relaxed);
-}
-
-static void
-offload_end(const void *ptr)
-{
-    st_data_t key = (st_data_t)ptr;
-    st_data_t state = offload_state(ptr);
-
-    if (state == OFFLOAD_UPDATING || state <= 1)
-    {
-        st_delete(offloaded(), &key, NULL);
-    }
-    else
-    {
-        st_insert(offloaded(), key, state - 1);
-    }
-    offloads_in_flight.fetch_sub(1, std::memory_order_relaxed);
 }
 
 static void
@@ -251,6 +461,15 @@ rm_gvl_init(void)
 
 #if defined(RMAGICK_OFFLOAD_SAFE)
     offloaded_key = rb_ractor_local_storage_ptr_newkey(&offloaded_type);
+    main_entry = offloaded_entry();
+#if defined(HAVE_WORKING_FORK)
+    int err = pthread_atfork(atfork_prepare, NULL, atfork_child);
+
+    if (err)
+    {
+        rb_syserr_fail(err, "pthread_atfork");
+    }
+#endif
 #endif
 }
 
@@ -313,13 +532,6 @@ rm_gvl_check_writable(const void *ptr)
 
 
 #if defined(RMAGICK_OFFLOAD_SAFE)
-typedef struct
-{
-    void *key;
-    OffloadMode mode;
-    bool image;
-} offload_mark_t;
-
 static bool
 marked(const offload_mark_t *marks, long count, const void *key)
 {
@@ -474,6 +686,31 @@ rm_gvl_call::add_object(VALUE obj, const void *ptr, bool update, bool each)
 rm_gvl_call &
 rm_gvl_call::cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg)
 {
+    return add_cleanup(release, ptr, arg, 0, false);
+}
+
+
+/**
+ * Like cleanup, for a release that changes an object the caller passed in
+ * back, rather than freeing what the call made.
+ *
+ * @param release the function
+ * @param ptr its first argument
+ * @param arg its second argument
+ * @param size if not 0, arg points to a value of this size, which an
+ *   offloaded call keeps a copy of
+ * @return self
+ */
+rm_gvl_call &
+rm_gvl_call::restore(void (*release)(void *, intptr_t), void *ptr, intptr_t arg, size_t size)
+{
+    return add_cleanup(release, ptr, arg, size, true);
+}
+
+
+rm_gvl_call &
+rm_gvl_call::add_cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg, size_t size, bool restore)
+{
     if (!ptr)
     {
         return *this;
@@ -485,6 +722,8 @@ rm_gvl_call::cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg)
     cleanups[ncleanups].release = release;
     cleanups[ncleanups].ptr = ptr;
     cleanups[ncleanups].arg = arg;
+    cleanups[ncleanups].size = size;
+    cleanups[ncleanups].restore = restore;
     ncleanups++;
     return *this;
 }
@@ -675,7 +914,7 @@ rm_gvl_call::destroy(Image *image)
 rm_gvl_call &
 rm_gvl_call::split(Image *images)
 {
-    return cleanup(split_images, images, 0);
+    return restore(split_images, images, 0);
 }
 
 
@@ -690,7 +929,7 @@ rm_gvl_call::split(Image *images)
 rm_gvl_call &
 rm_gvl_call::restore_mask(Image *image, ChannelType channel_mask)
 {
-    return cleanup(restore_channel_mask, image, (intptr_t)channel_mask);
+    return restore(restore_channel_mask, image, (intptr_t)channel_mask);
 }
 #endif
 
@@ -724,8 +963,18 @@ rm_gvl_call::keep_thread(bool keep)
 }
 
 
+/**
+ * Release what the caller registered, and the result.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param type how to free the result
+ * @param result the result, or NULL
+ * @param abandoned whether the child of a fork dropped the call, which
+ *   changed back the objects that the caller passed in at the fork
+ */
 void
-rm_gvl_call::unwind(ResultType type, void *result)
+rm_gvl_call::unwind(ResultType type, void *result, bool abandoned)
 {
     if (result)
     {
@@ -740,6 +989,10 @@ rm_gvl_call::unwind(ResultType type, void *result)
     }
     for (int i = 0; i < ncleanups; i++)
     {
+        if (cleanups[i].restore && abandoned)
+        {
+            continue;
+        }
         cleanups[i].release(cleanups[i].ptr, cleanups[i].arg);
     }
 }
@@ -753,17 +1006,35 @@ rm_gvl_call::call(ResultType type)
 
     if (offload || offloads_in_flight.load(std::memory_order_relaxed) != 0)
     {
-        offload_call_t call = { fp, args, NULL, false, false };
+        offload_call_t call = { fp, args, NULL, NULL, false, false };
+        VALUE fiber = offload ? rb_fiber_current() : 0;
+        offload_frame_t *frame = NULL;
+        offloaded_t *entry;
         offload_mark_t *marks;
-        VALUE marks_buffer;
+        VALUE marks_buffer = 0;
         long count = 0, nmarks = 0;
+        size_t marks_size, values_size = 0;
+        bool dropped;
         int tag;
 
         for (int i = 0; i < nobjects; i++)
         {
             count += objects[i].each ? RARRAY_LEN(objects[i].obj) : 1;
         }
-        marks = ALLOCV_N(offload_mark_t, marks_buffer, 2 * count);
+        marks_size = frame_align(2 * count * sizeof(offload_mark_t));
+        if (offload)
+        {
+            for (int i = 0; i < ncleanups; i++)
+            {
+                values_size += frame_align(cleanups[i].size);
+            }
+            frame = (offload_frame_t *)xmalloc(frame_align(sizeof(offload_frame_t)) + marks_size + values_size);
+            marks = (offload_mark_t *)((char *)frame + frame_align(sizeof(offload_frame_t)));
+        }
+        else
+        {
+            marks = ALLOCV_N(offload_mark_t, marks_buffer, 2 * count);
+        }
 
         // An object that the call both reads and changes is marked as changed.
         for (int pass = 0; pass < 2; pass++)
@@ -795,7 +1066,14 @@ rm_gvl_call::call(ResultType type)
         {
             if ((offload || marks[i].image) && mark_in_use(&marks[i]))
             {
-                ALLOCV_END(marks_buffer);
+                if (frame)
+                {
+                    xfree(frame);
+                }
+                else
+                {
+                    ALLOCV_END(marks_buffer);
+                }
                 unwind(type, NULL);
                 raise_in_use();
             }
@@ -806,22 +1084,70 @@ rm_gvl_call::call(ResultType type)
             return call_here(type);
         }
 
+        // The frame keeps a copy of the values to change back, which can be on
+        // the stack of a fiber that is gone by the next fork.
+        static_assert(MaxCleanups <= OFFLOAD_MAX_RESTORES, "a frame holds every cleanup that restores");
+        char *values = (char *)marks + marks_size;
+
+        frame->marks = marks;
+        frame->nmarks = nmarks;
+        frame->nrestores = 0;
+        for (int i = 0; i < ncleanups; i++)
+        {
+            if (cleanups[i].restore)
+            {
+                offload_restore_t restore = { cleanups[i].release, cleanups[i].ptr, cleanups[i].arg };
+
+                if (cleanups[i].size)
+                {
+                    memcpy(values, (const void *)cleanups[i].arg, cleanups[i].size);
+                    restore.arg = (intptr_t)values;
+                    values += frame_align(cleanups[i].size);
+                }
+                frame->restores[frame->nrestores++] = restore;
+            }
+        }
+        frame->thread = rb_thread_current();
+        frame->fiber = fiber;
+        call.frame = frame;
+
+        entry = offloaded_entry();
         for (long i = 0; i < nmarks; i++)
         {
-            offload_begin(marks[i].key, marks[i].mode);
+            mark_insert(entry->table, frame->marks[i].key, frame->marks[i].mode);
         }
+        offloads_in_flight.fetch_add((unsigned int)nmarks, std::memory_order_relaxed);
+        frame_push(entry, frame);
 
         rb_protect(offload_call, (VALUE)&call, &tag);
-        if (!tag && !call.started)
+        if (!tag && !call.started && frame->linked)
         {
             rb_protect(offload_call, (VALUE)&call, &tag);
         }
 
-        for (long i = 0; i < nmarks; i++)
+        // A frame that a fork dropped in the child has no marks to release
+        dropped = !frame->linked;
+        if (!dropped)
         {
-            offload_end(marks[i].key);
+            entry = offloaded_entry();
+            for (long i = 0; i < nmarks; i++)
+            {
+                mark_remove(entry->table, frame->marks[i].key);
+            }
+            offloads_in_flight.fetch_sub((unsigned int)nmarks, std::memory_order_relaxed);
+            frame_unlink(entry, frame);
         }
-        ALLOCV_END(marks_buffer);
+        xfree(frame);
+        if (dropped)
+        {
+            // The worker may have finished before the fork
+            unwind(type, call.done ? call.result : NULL, true);
+            if (tag)
+            {
+                rb_jump_tag(tag);
+            }
+            rb_raise(rb_eRuntimeError, "call abandoned in the child of a fork");
+        }
         if (tag)
         {
             // The scheduler raised into this fiber after the worker finished.
@@ -844,7 +1170,7 @@ rm_gvl_call::call(ResultType type)
 void *
 rm_gvl_call::call_here(ResultType type)
 {
-    offload_call_t call = { fp, args, NULL, false, false };
+    offload_call_t call = { fp, args, NULL, NULL, false, false };
     int tag;
 
     rb_protect(check_interrupts, Qnil, &tag);

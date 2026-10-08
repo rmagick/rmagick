@@ -1162,7 +1162,7 @@ Draw_draw(VALUE self, VALUE image_arg)
 #else
     DECLARE_GVL_CALL(call, DrawImage, image, draw->info);
 #endif
-    call.update(image_arg).update(self).cleanup(free_primitive, draw).run<void>();
+    call.update(image_arg).update(self).restore(free_primitive, draw).run<void>();
 
     magick_free(draw->info->primitive);
     draw->info->primitive = NULL;
@@ -1724,7 +1724,7 @@ get_type_metrics(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
     {
         call.read(t);
     }
-    void *ret = call.update(self).cleanup(free_text, draw).run<void *>();
+    void *ret = call.update(self).restore(free_text, draw).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
 
     magick_free(draw->info->text);

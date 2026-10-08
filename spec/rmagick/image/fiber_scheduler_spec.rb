@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'open3'
+require 'tmpdir'
 require_relative '../../support/offloading_scheduler'
 
 # RMagick offloads only on Ruby 4.0, which has the C API a scheduler needs to
@@ -107,6 +109,260 @@ RSpec.describe Magick::Image, if: offloading do
       expect { scheduler.run { image.blur_channel(0, 1, Magick::GreenChannel) } }.to raise_error(cancelled)
 
       expect(image.negate.pixel_color(0, 0).to_color).to eq(red_image.negate.pixel_color(0, 0).to_color)
+    end
+
+    it "drops the marks of the other fibers in the child of a fork", if: offloading && !Gem.win_platform? do
+      changed = described_class.new(200, 200)
+      other = described_class.new(200, 200)
+      reader, writer = IO.pipe
+      scheduler.before_next_operation do
+        Fiber.schedule do
+          pid = fork do
+            reader.close
+            child_scheduler = OffloadingScheduler.new
+            seen = nil
+            child_scheduler.before_next_operation do
+              seen = attempt { changed.background_color = "red" }
+            end
+            child_scheduler.run { other.gaussian_blur(0, 10) }
+            writer.write(seen.is_a?(StandardError) ? seen.message : seen.inspect)
+          rescue StandardError => e
+            writer.write(e.inspect)
+          ensure
+            writer.close
+            exit!(0)
+          end
+          writer.close
+          Process.wait(pid)
+        end
+      end
+
+      scheduler.run { changed.resize!(100, 100) }
+      output = reader.read
+      reader.close
+
+      expect(output).to eq('"red"')
+      expect(changed.columns).to eq(100)
+    end
+
+    it "keeps the marks of a call that goes on in the child of a fork", if: offloading && !Gem.win_platform? do
+      image = described_class.new(200, 200)
+      parent = Process.pid
+      reader, writer = IO.pipe
+      seen = nil
+      scheduler.before_next_operation do
+        pid = fork
+        if pid
+          writer.close
+          Process.wait(pid)
+        else
+          reader.close
+          seen = attempt { image.destroy! }
+        end
+      end
+
+      result = scheduler.run do
+        blurred = attempt { image.gaussian_blur(0, 10) }
+        next blurred if Process.pid == parent
+
+        begin
+          writer.write("#{seen.is_a?(StandardError) ? seen.message : seen.inspect} / #{blurred.class}")
+          writer.close
+        ensure
+          exit!(0)
+        end
+      end
+
+      output = reader.read
+      reader.close
+
+      expect(result).to be_instance_of(described_class)
+      expect(output).to eq("object is in use by another fiber / Magick::Image")
+    end
+
+    # Starts the call in a fiber that yields before the worker starts, and forks
+    # from the root fiber. In the child, in_child gets that fiber, and what it
+    # returns is returned here.
+    def abandon_in_child(call, in_child, with: scheduler)
+      reader, writer = IO.pipe
+      with.before_next_operation { Fiber.yield }
+      Thread.new do
+        Fiber.set_scheduler(with)
+        fiber = Fiber.new(blocking: false) { attempt(&call) }
+        fiber.resume
+        pid = fork
+        if pid
+          writer.close
+          Process.wait(pid)
+          fiber.resume
+          with.drain
+        else
+          reader.close
+          begin
+            writer.write(in_child.call(fiber))
+            writer.close
+          ensure
+            exit!(0)
+          end
+        end
+      ensure
+        Fiber.set_scheduler(nil)
+      end.join
+      output = reader.read
+      reader.close
+      output
+    end
+
+    def message(result)
+      result.is_a?(StandardError) ? result.message : result.inspect
+    end
+
+    it "refuses to go on with a call of another fiber in the child of a fork", if: offloading && !Gem.win_platform? do
+      image = described_class.new(200, 200)
+
+      output = abandon_in_child(
+        -> { image.gaussian_blur(0, 10) },
+        lambda do |fiber|
+          changed = attempt { image.background_color = "red" }
+          "#{message(changed)} / #{message(attempt { fiber.resume })}"
+        end
+      )
+
+      expect(output).to eq('"red" / call abandoned in the child of a fork')
+      expect(scheduler.completed).to eq(scheduler.offloaded)
+    end
+
+    it "restores the channel mask that a call of another fiber set in the child of a fork", if: offloading && !Gem.win_platform? do
+      image = red_image
+
+      output = abandon_in_child(
+        -> { image.blur_channel(0, 1, Magick::GreenChannel) },
+        lambda do |fiber|
+          negated = image.negate.pixel_color(0, 0).to_color
+          image.destroy!
+          "#{negated} / #{message(attempt { fiber.resume })}"
+        end
+      )
+
+      expect(output).to eq("#{red_image.negate.pixel_color(0, 0).to_color} / call abandoned in the child of a fork")
+    end
+
+    it "unlinks the images that a call of another fiber linked in the child of a fork", if: offloading && !Gem.win_platform? do
+      list = Magick::ImageList.new
+      3.times { list << described_class.new(20, 20) }
+
+      output = abandon_in_child(
+        -> { list.average },
+        lambda do |fiber|
+          written = Dir.mktmpdir do |dir|
+            list[0].write(File.join(dir, "first.gif"))
+            Dir.children(dir).join(",")
+          end
+          list[1].destroy!
+          "#{written} / #{message(attempt { fiber.resume })}"
+        end
+      )
+
+      expect(output).to eq("first.gif / call abandoned in the child of a fork")
+    end
+
+    it "restores the background color that splice set for a call of another fiber in the child of a fork", if: offloading && !Gem.win_platform? do
+      image = described_class.new(20, 20) { |info| info.background_color = "white" }
+
+      output = abandon_in_child(
+        -> { image.splice(1, 1, 2, 2, "red") },
+        lambda do |fiber|
+          restored = image.background_color
+          image.destroy!
+          blue = described_class.new(20, 20) { |info| info.background_color = "blue" }
+          "#{restored} / #{message(attempt { fiber.resume })} / #{blue.background_color}"
+        end
+      )
+
+      white = described_class.new(1, 1) { |info| info.background_color = "white" }.background_color
+      blue = described_class.new(1, 1) { |info| info.background_color = "blue" }.background_color
+      expect(output).to eq("#{white} / call abandoned in the child of a fork / #{blue}")
+    end
+
+    it "frees the result of a call that finished before the child of a fork abandoned it", if: offloading && !Gem.win_platform? do
+      finishing = Class.new(OffloadingScheduler) do
+        def blocking_operation_wait(work)
+          Fiber.new(blocking: true) { work.call }.resume
+          Fiber.yield
+        end
+      end.new
+      GC.start
+      empty = pixel_cache_size
+      image = described_class.new(1000, 1000)
+
+      output = abandon_in_child(
+        -> { image.gaussian_blur(0, 0.5) },
+        lambda do |fiber|
+          abandoned = message(attempt { fiber.resume })
+          image.destroy!
+          GC.start
+          "#{abandoned} / #{pixel_cache_size <= empty}"
+        end,
+        with: finishing
+      )
+
+      expect(output).to eq("call abandoned in the child of a fork / true")
+    end
+
+    it "raises what the scheduler raises into a call of another fiber in the child of a fork", if: offloading && !Gem.win_platform? do
+      list = Magick::ImageList.new
+      3.times { list << described_class.new(20, 20) }
+      stopped = cancelled
+
+      output = abandon_in_child(
+        -> { list.average },
+        lambda do |fiber|
+          list[1].destroy!
+          result = attempt { fiber.raise(stopped) }
+          result.is_a?(stopped) ? "stopped" : message(result)
+        end
+      )
+
+      expect(output).to eq("stopped")
+    end
+
+    it "keeps the marks of a call in the child of a fork made before any call was offloaded", if: offloading && !Gem.win_platform? do
+      script = <<~RUBY
+        image = Magick::Image.new(200, 200)
+        pid = fork do
+          scheduler = OffloadingScheduler.new
+          seen = nil
+          scheduler.before_next_operation do
+            seen = begin
+              image.background_color = "red"
+              "changed"
+            rescue RuntimeError => e
+              e.message
+            end
+          end
+          scheduler.run { image.gaussian_blur(0, 10) }
+          $stdout.puts(seen)
+          $stdout.flush
+          exit!(0)
+        end
+        Process.wait(pid)
+      RUBY
+      command = [
+        RbConfig.ruby,
+        "-I",
+        File.expand_path("../../../lib", __dir__),
+        "-r",
+        "rmagick",
+        "-r",
+        File.expand_path("../../support/offloading_scheduler", __dir__),
+        "-e",
+        script
+      ]
+
+      output, errors, status = Open3.capture3(*command)
+
+      expect(status).to be_success, errors
+      expect(output).to eq("object is in use by another fiber\n"), errors
     end
 
     it "lets another fiber read an image that a call reads" do

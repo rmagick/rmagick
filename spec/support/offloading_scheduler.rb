@@ -60,6 +60,15 @@ class OffloadingScheduler
     thread.join while thread&.alive?
   end
 
+  # Resumes the fibers as they unblock, until none is blocked.
+  def drain
+    until @blocked.empty?
+      fiber, exception = @ready.pop
+      @blocked.delete(fiber)
+      exception ? fiber.raise(exception) : fiber.resume
+    end
+  end
+
   def fiber(&)
     fiber = Fiber.new(blocking: false, &)
     fiber.resume
@@ -98,11 +107,7 @@ class OffloadingScheduler
     Fiber.set_scheduler(self)
     result = nil
     Fiber.new(blocking: false) { result = yield }.resume
-    until @blocked.empty?
-      fiber, exception = @ready.pop
-      @blocked.delete(fiber)
-      exception ? fiber.raise(exception) : fiber.resume
-    end
+    drain
     result
   ensure
     Fiber.set_scheduler(nil)
