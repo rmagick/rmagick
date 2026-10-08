@@ -2197,7 +2197,7 @@ border(int bang, VALUE self, VALUE width, VALUE height, VALUE color)
 #else
     DECLARE_GVL_CALL(call, BorderImage, image, &rect, exception);
 #endif
-    new_image = call.update(self).cleanup(restore_color, &image->border_color, (intptr_t)&old_border).release(exception).run<Image *>();
+    new_image = call.update(self).restore(restore_color, &image->border_color, (intptr_t)&old_border).release(exception).run<Image *>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 

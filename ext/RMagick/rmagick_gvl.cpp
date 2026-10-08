@@ -655,6 +655,29 @@ rm_gvl_call::add_object(VALUE obj, const void *ptr, bool update, bool each)
 rm_gvl_call &
 rm_gvl_call::cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg)
 {
+    return add_cleanup(release, ptr, arg, false);
+}
+
+
+/**
+ * Like cleanup, for a release that changes an object the caller passed in
+ * back, rather than freeing what the call made.
+ *
+ * @param release the function
+ * @param ptr its first argument
+ * @param arg its second argument
+ * @return self
+ */
+rm_gvl_call &
+rm_gvl_call::restore(void (*release)(void *, intptr_t), void *ptr, intptr_t arg)
+{
+    return add_cleanup(release, ptr, arg, true);
+}
+
+
+rm_gvl_call &
+rm_gvl_call::add_cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg, bool restore)
+{
     if (!ptr)
     {
         return *this;
@@ -666,6 +689,7 @@ rm_gvl_call::cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg)
     cleanups[ncleanups].release = release;
     cleanups[ncleanups].ptr = ptr;
     cleanups[ncleanups].arg = arg;
+    cleanups[ncleanups].restore = restore;
     ncleanups++;
     return *this;
 }
@@ -856,7 +880,7 @@ rm_gvl_call::destroy(Image *image)
 rm_gvl_call &
 rm_gvl_call::split(Image *images)
 {
-    return cleanup(split_images, images, 0);
+    return restore(split_images, images, 0);
 }
 
 
@@ -871,7 +895,7 @@ rm_gvl_call::split(Image *images)
 rm_gvl_call &
 rm_gvl_call::restore_mask(Image *image, ChannelType channel_mask)
 {
-    return cleanup(restore_channel_mask, image, (intptr_t)channel_mask);
+    return restore(restore_channel_mask, image, (intptr_t)channel_mask);
 }
 #endif
 
@@ -905,9 +929,82 @@ rm_gvl_call::keep_thread(bool keep)
 }
 
 
-void
-rm_gvl_call::unwind(ResultType type, void *result)
+static bool
+image_alive(VALUE obj)
 {
+    return !rb_typeddata_is_kind_of(obj, &rm_image_data_type) || DATA_PTR(obj);
+}
+
+
+// Whether no image that the caller passed in has been destroyed
+bool
+rm_gvl_call::images_alive()
+{
+    for (int i = 0; i < nobjects; i++)
+    {
+        VALUE obj = objects[i].obj;
+
+        if (objects[i].each)
+        {
+            for (long j = 0; j < RARRAY_LEN(obj); j++)
+            {
+                if (!image_alive(rb_ary_entry(obj, j)))
+                {
+                    return false;
+                }
+            }
+        }
+        else if (!NIL_P(obj) && !image_alive(obj))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+
+// Unlink the images of the lists that the caller passed in that are still
+// alive, without following their links to the destroyed ones
+void
+rm_gvl_call::split_alive_images()
+{
+    for (int i = 0; i < nobjects; i++)
+    {
+        if (!objects[i].each)
+        {
+            continue;
+        }
+        for (long j = 0; j < RARRAY_LEN(objects[i].obj); j++)
+        {
+            VALUE obj = rb_ary_entry(objects[i].obj, j);
+
+            if (rb_typeddata_is_kind_of(obj, &rm_image_data_type) && DATA_PTR(obj))
+            {
+                Image *image = (Image *)DATA_PTR(obj);
+
+                image->next = NULL;
+                image->previous = NULL;
+            }
+        }
+    }
+}
+
+
+/**
+ * Release what the caller registered, and the result.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param type how to free the result
+ * @param result the result, or NULL
+ * @param abandoned whether the child of a fork dropped the call, so that an
+ *   image the caller passed in may have been destroyed there since
+ */
+void
+rm_gvl_call::unwind(ResultType type, void *result, bool abandoned)
+{
+    bool alive = !abandoned || images_alive();
+
     if (result)
     {
         if (type == ResultImage)
@@ -921,6 +1018,14 @@ rm_gvl_call::unwind(ResultType type, void *result)
     }
     for (int i = 0; i < ncleanups; i++)
     {
+        if (cleanups[i].restore && !alive)
+        {
+            if (cleanups[i].release == split_images)
+            {
+                split_alive_images();
+            }
+            continue;
+        }
         cleanups[i].release(cleanups[i].ptr, cleanups[i].arg);
     }
 }
@@ -1029,7 +1134,7 @@ rm_gvl_call::call(ResultType type)
         }
         if (call.abandoned)
         {
-            unwind(type, NULL);
+            unwind(type, NULL, true);
             rb_raise(rb_eRuntimeError, "call abandoned in the child of a fork");
         }
         if (!call.started)
