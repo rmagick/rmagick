@@ -3,6 +3,46 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 7.2.0
+
+> [!IMPORTANT]
+> Heavy calls can run on a Fiber scheduler's worker pool, `Image#fx` rejects an expression that names a file, and some results change with ImageMagick 7.
+>
+> On Ruby 4.0 and later, a Fiber scheduler with a worker pool, such as `Async::Scheduler.new(worker_pool: IO::Event::WorkerPool.new)`, now runs heavy ImageMagick calls on its workers, and the other fibers keep running. While such a call uses an image, using that image from another fiber raises `RuntimeError` ("object is in use by another fiber") instead of waiting. `Thread#raise`, `Timeout` and Ctrl-C now reach a thread after the ImageMagick call returns, with or without a scheduler. See "Threads, fibers and fork" in README for the rules.
+>
+> `Image#fx` now raises `ArgumentError` for an expression that starts with `@`, or that has a `%[fx:@...]`, `%[hex:@...]` or `%[pixel:@...]` escape. ImageMagick read the file it names, so an expression taken from user input could read any file the process can open. The message is "the expression must not name a file with '@'", as for the other values that reject `@`.
+>
+> With ImageMagick 7, `Pixel.new(red, green, blue, opacity)` now takes the fourth argument as opacity, as with ImageMagick 6, so `Pixel.new(0, 0, 0, 0)` is opaque. `Image#to_color` now uses the depth and alpha channel of the image, as with ImageMagick 6, so it returns `"#D8936A"` instead of `"#D8D893936A6A"` for an 8-bit image without alpha.
+
+Breaking Changes
+
+* Reject an Image#fx expression beginning with '@' instead of reading that file (#1919)
+* Fix Pixel.new treating the fourth argument as alpha instead of opacity with ImageMagick 7 (#1907)
+* Fix Image#to_color ignoring the image depth and alpha channel with ImageMagick 7 (#1908)
+
+Improvements
+
+* Improve performance by running ImageMagick calls on a Fiber scheduler's worker pool (#1921)
+* Describe how to use RMagick with threads, fibers and fork in README (#1932)
+* Fix the API reference pages that disagree with the code (#1903-#1906)
+
+Bug Fixes
+
+* Fix a crash when an image is destroyed in the block of Image#polaroid and similar methods (#1933)
+* Fix an image staying "in use by another fiber" in the child of a fork (#1931)
+* Fix Image#write and other calls doing nothing right after an Async task is stopped (#1930)
+* Fix memory leak when Thread#raise or Timeout interrupts an image operation (#1926)
+* Fix wrong pixels when two calls read the same image at once (#1925)
+* Fix Image#to_color returning the wrong color for a CMYK image (#1920)
+* Fix Image#pixel_color crashing for a coordinate whose pixel offset overflows (#1918)
+* Fix Image.read_inline crashing when ImageMagick returns no image (#1915)
+* Fix pixel_color and get_pixels returning a huge value for a negative HDRI pixel with ImageMagick 7 (#1914)
+* Fix Image.constitute accepting a pixel array whose size overflows (#1913)
+* Fix Image.constitute reading freed memory and leaking on a bad pixel value (#1912)
+* Fix out-of-range values wrapping around in Pixel and the alpha keyword (#1911)
+* Fix highlight_color and lowlight_color having no effect in compare_channel (#1910)
+* Fix Pixel#to_color rejecting depth 16, 32 and 64 with a 64-bit quantum depth (#1909)
+
 ## RMagick 7.1.7
 
 Bug Fixes
