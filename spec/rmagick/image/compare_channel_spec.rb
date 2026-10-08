@@ -59,4 +59,19 @@ RSpec.describe Magick::Image, "#compare_channel" do
     expect { image.compare_channel(image_list, Magick::MeanAbsoluteErrorMetric) }.not_to raise_error
     expect { image.compare_channel(image_list, Magick::MeanAbsoluteErrorMetric, Magick::RedChannel) }.not_to raise_error
   end
+
+  it 'raises an error when the options block destroys the image' do
+    image = described_class.new(20, 20)
+
+    expect { image.compare_channel(described_class.new(20, 20), Magick::MeanAbsoluteErrorMetric) { image.destroy! } }.to raise_error(Magick::DestroyedImageError)
+  end
+
+  it 'raises an error when getting the reference image destroys the image' do
+    image = described_class.new(20, 20)
+    reference = described_class.new(20, 20)
+    image_list = Object.new
+    image_list.define_singleton_method(:cur_image) { image.destroy! && reference }
+
+    expect { image.compare_channel(image_list, Magick::MeanAbsoluteErrorMetric) }.to raise_error(Magick::DestroyedImageError)
+  end
 end
