@@ -52,9 +52,10 @@
  *
  * The child of a fork keeps none of the workers of the parent, so it drops
  * the marks of every fiber but the one that forked, whose calls go on in the
- * child. A call of another fiber that is resumed there raises instead of
- * running. An image that a call was changing at the fork is in an undefined
- * state in the child.
+ * child, and changes back what the dropped calls changed for themselves, such
+ * as a channel mask or the links of a list. A dropped call that is resumed
+ * there raises instead of running. An image that a call was changing at the
+ * fork is in an undefined state in the child.
  *
  * Without a scheduler that offloads, or on Ruby before 4.0, rm_gvl_call runs
  * the function with rb_thread_call_without_gvl. An interrupt that arrives
@@ -82,7 +83,6 @@ typedef struct
     struct offload_frame *frame;
     bool started;
     bool done;
-    bool abandoned;
 } offload_call_t;
 
 #if defined(RMAGICK_OFFLOAD_SAFE)
@@ -101,9 +101,6 @@ offload_run(void *arg)
     // The fiber of a call that a fork dropped in the child resumed there
     if (call->frame && frame_dropped(call->frame))
     {
-        call->abandoned = true;
-        call->started = true;
-        call->done = true;
         return NULL;
     }
 #endif
@@ -164,11 +161,23 @@ typedef struct
     bool image;
 } offload_mark_t;
 
+// A release that changes back an object that the caller passed in
+typedef struct
+{
+    void (*release)(void *, intptr_t);
+    void *ptr;
+    intptr_t arg;
+} offload_restore_t;
+
+#define OFFLOAD_MAX_RESTORES 4
+
 // A call that has marked its objects, with the marks behind it
 typedef struct offload_frame
 {
     offload_mark_t *marks;
     long nmarks;
+    offload_restore_t restores[OFFLOAD_MAX_RESTORES];
+    int nrestores;
     VALUE thread;
     VALUE fiber;
     bool linked;
@@ -309,8 +318,8 @@ atfork_prepare(void)
 {
     VALUE thread;
 
-    fork_with_gvl = ruby_thread_has_gvl_p();
     fork_fiber = 0;
+    fork_with_gvl = ruby_thread_has_gvl_p() && rb_ractor_local_storage_ptr(offloaded_key) == main_entry;
     if (!fork_with_gvl)
     {
         return;
@@ -328,7 +337,9 @@ atfork_prepare(void)
 
 // Runs in the child before Ruby does, so it leaves the table to offloaded_entry.
 // A thread without the GVL, such as a delegate of ImageMagick, forks to exec,
-// and the list may be changing under it.
+// and the list may be changing under it. The calls of the other fibers never
+// run in the child, so the objects they changed for the call are changed back
+// while nothing in the child can have destroyed them yet.
 static void
 atfork_child(void)
 {
@@ -348,6 +359,10 @@ atfork_child(void)
         }
         else
         {
+            for (int i = 0; i < frame->nrestores; i++)
+            {
+                frame->restores[i].release(frame->restores[i].ptr, frame->restores[i].arg);
+            }
             frame_unlink(main_entry, frame);
         }
     }
@@ -929,67 +944,6 @@ rm_gvl_call::keep_thread(bool keep)
 }
 
 
-static bool
-image_alive(VALUE obj)
-{
-    return !rb_typeddata_is_kind_of(obj, &rm_image_data_type) || DATA_PTR(obj);
-}
-
-
-// Whether no image that the caller passed in has been destroyed
-bool
-rm_gvl_call::images_alive()
-{
-    for (int i = 0; i < nobjects; i++)
-    {
-        VALUE obj = objects[i].obj;
-
-        if (objects[i].each)
-        {
-            for (long j = 0; j < RARRAY_LEN(obj); j++)
-            {
-                if (!image_alive(rb_ary_entry(obj, j)))
-                {
-                    return false;
-                }
-            }
-        }
-        else if (!NIL_P(obj) && !image_alive(obj))
-        {
-            return false;
-        }
-    }
-    return true;
-}
-
-
-// Unlink the images of the lists that the caller passed in that are still
-// alive, without following their links to the destroyed ones
-void
-rm_gvl_call::split_alive_images()
-{
-    for (int i = 0; i < nobjects; i++)
-    {
-        if (!objects[i].each)
-        {
-            continue;
-        }
-        for (long j = 0; j < RARRAY_LEN(objects[i].obj); j++)
-        {
-            VALUE obj = rb_ary_entry(objects[i].obj, j);
-
-            if (rb_typeddata_is_kind_of(obj, &rm_image_data_type) && DATA_PTR(obj))
-            {
-                Image *image = (Image *)DATA_PTR(obj);
-
-                image->next = NULL;
-                image->previous = NULL;
-            }
-        }
-    }
-}
-
-
 /**
  * Release what the caller registered, and the result.
  *
@@ -997,14 +951,12 @@ rm_gvl_call::split_alive_images()
  *
  * @param type how to free the result
  * @param result the result, or NULL
- * @param abandoned whether the child of a fork dropped the call, so that an
- *   image the caller passed in may have been destroyed there since
+ * @param abandoned whether the child of a fork dropped the call, which
+ *   changed back the objects that the caller passed in at the fork
  */
 void
 rm_gvl_call::unwind(ResultType type, void *result, bool abandoned)
 {
-    bool alive = !abandoned || images_alive();
-
     if (result)
     {
         if (type == ResultImage)
@@ -1018,12 +970,8 @@ rm_gvl_call::unwind(ResultType type, void *result, bool abandoned)
     }
     for (int i = 0; i < ncleanups; i++)
     {
-        if (cleanups[i].restore && !alive)
+        if (cleanups[i].restore && abandoned)
         {
-            if (cleanups[i].release == split_images)
-            {
-                split_alive_images();
-            }
             continue;
         }
         cleanups[i].release(cleanups[i].ptr, cleanups[i].arg);
@@ -1039,21 +987,21 @@ rm_gvl_call::call(ResultType type)
 
     if (offload || offloads_in_flight.load(std::memory_order_relaxed) != 0)
     {
-        offload_call_t call = { fp, args, NULL, NULL, false, false, false };
+        offload_call_t call = { fp, args, NULL, NULL, false, false };
         VALUE fiber = offload ? rb_fiber_current() : 0;
         offload_frame_t *frame;
         offloaded_t *entry;
         offload_mark_t *marks;
+        VALUE marks_buffer;
         long count = 0, nmarks = 0;
+        bool dropped;
         int tag;
 
         for (int i = 0; i < nobjects; i++)
         {
             count += objects[i].each ? RARRAY_LEN(objects[i].obj) : 1;
         }
-        frame = (offload_frame_t *)xmalloc(sizeof(offload_frame_t) + 2 * count * sizeof(offload_mark_t));
-        marks = (offload_mark_t *)(frame + 1);
-        call.frame = frame;
+        marks = ALLOCV_N(offload_mark_t, marks_buffer, 2 * count);
 
         // An object that the call both reads and changes is marked as changed.
         for (int pass = 0; pass < 2; pass++)
@@ -1085,57 +1033,79 @@ rm_gvl_call::call(ResultType type)
         {
             if ((offload || marks[i].image) && mark_in_use(&marks[i]))
             {
-                xfree(frame);
+                ALLOCV_END(marks_buffer);
                 unwind(type, NULL);
                 raise_in_use();
             }
         }
         if (!offload)
         {
-            xfree(frame);
+            ALLOCV_END(marks_buffer);
             return call_here(type);
         }
+
+        static_assert(MaxCleanups <= OFFLOAD_MAX_RESTORES, "a frame holds every cleanup that restores");
+        frame = (offload_frame_t *)xmalloc(sizeof(offload_frame_t) + nmarks * sizeof(offload_mark_t));
+        frame->marks = (offload_mark_t *)(frame + 1);
+        MEMCPY(frame->marks, marks, offload_mark_t, nmarks);
+        ALLOCV_END(marks_buffer);
+        frame->nmarks = nmarks;
+        frame->nrestores = 0;
+        for (int i = 0; i < ncleanups; i++)
+        {
+            if (cleanups[i].restore)
+            {
+                offload_restore_t restore = { cleanups[i].release, cleanups[i].ptr, cleanups[i].arg };
+
+                frame->restores[frame->nrestores++] = restore;
+            }
+        }
+        frame->thread = rb_thread_current();
+        frame->fiber = fiber;
+        call.frame = frame;
 
         entry = offloaded_entry();
         for (long i = 0; i < nmarks; i++)
         {
-            mark_insert(entry->table, marks[i].key, marks[i].mode);
+            mark_insert(entry->table, frame->marks[i].key, frame->marks[i].mode);
         }
         offloads_in_flight.fetch_add((unsigned int)nmarks, std::memory_order_relaxed);
-        frame->marks = marks;
-        frame->nmarks = nmarks;
-        frame->thread = rb_thread_current();
-        frame->fiber = fiber;
         frame_push(entry, frame);
 
         rb_protect(offload_call, (VALUE)&call, &tag);
-        if (!tag && !call.started)
+        if (!tag && !call.started && frame->linked)
         {
             rb_protect(offload_call, (VALUE)&call, &tag);
         }
 
         // A frame that a fork dropped in the child has no marks to release
-        if (frame->linked)
+        dropped = !frame->linked;
+        if (!dropped)
         {
             entry = offloaded_entry();
             for (long i = 0; i < nmarks; i++)
             {
-                mark_remove(entry->table, marks[i].key);
+                mark_remove(entry->table, frame->marks[i].key);
             }
             offloads_in_flight.fetch_sub((unsigned int)nmarks, std::memory_order_relaxed);
             frame_unlink(entry, frame);
         }
         xfree(frame);
+        if (dropped)
+        {
+            // The worker may have finished before the fork
+            unwind(type, call.done ? call.result : NULL, true);
+            if (tag)
+            {
+                rb_jump_tag(tag);
+            }
+            rb_raise(rb_eRuntimeError, "call abandoned in the child of a fork");
+        }
         if (tag)
         {
             // The scheduler raised into this fiber after the worker finished.
             unwind(type, call.result);
             rb_jump_tag(tag);
-        }
-        if (call.abandoned)
-        {
-            unwind(type, NULL, true);
-            rb_raise(rb_eRuntimeError, "call abandoned in the child of a fork");
         }
         if (!call.started)
         {
@@ -1153,7 +1123,7 @@ rm_gvl_call::call(ResultType type)
 void *
 rm_gvl_call::call_here(ResultType type)
 {
-    offload_call_t call = { fp, args, NULL, NULL, false, false, false };
+    offload_call_t call = { fp, args, NULL, NULL, false, false };
     int tag;
 
     rb_protect(check_interrupts, Qnil, &tag);

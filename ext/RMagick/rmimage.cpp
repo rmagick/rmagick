@@ -14091,7 +14091,7 @@ Image_splice(int argc, VALUE *argv, VALUE self)
     old_color = image->background_color;
     image->background_color = color;
     DECLARE_GVL_CALL(call, SpliceImage, image, &rectangle, exception);
-    new_image = call.update(self).cleanup(restore_color, &image->background_color, (intptr_t)&old_color).release(exception).run<Image *>();
+    new_image = call.update(self).restore(restore_color, &image->background_color, (intptr_t)&old_color).release(exception).run<Image *>();
     image->background_color = old_color;
 
     rm_check_exception(exception, new_image, DestroyOnError);

@@ -71,8 +71,6 @@ private:
 
     rm_gvl_call &add_object(VALUE obj, const void *ptr, bool update, bool each);
     rm_gvl_call &add_cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg, bool restore);
-    bool images_alive();
-    void split_alive_images();
     void *call(ResultType type);
     void *call_here(ResultType type);
     void unwind(ResultType type, void *result, bool abandoned = false);
