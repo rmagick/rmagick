@@ -10,6 +10,7 @@
 #include "ruby/ractor.h"
 #if defined(RMAGICK_OFFLOAD_SAFE)
 #include <atomic>
+#include <cstddef>
 #if defined(HAVE_WORKING_FORK)
 #include <pthread.h>
 #endif
@@ -56,6 +57,13 @@
  * as a channel mask or the links of a list. A dropped call that is resumed
  * there raises instead of running. An image that a call was changing at the
  * fork is in an undefined state in the child.
+ *
+ * Some cases are not handled. A scheduler must resume a fiber that waits in a
+ * call: a fiber collected while it waits leaves its marks behind, and the next
+ * fork changes back objects that may be gone. A worker that holds a lock of
+ * ImageMagick at the fork can leave the cleanup of a dropped call in the child
+ * waiting for good. Draw#annotate changes its text and affine outside
+ * rm_gvl_call, so they are changed back only when the call returns.
  *
  * Without a scheduler that offloads, or on Ruby before 4.0, rm_gvl_call runs
  * the function with rb_thread_call_without_gvl. An interrupt that arrives
@@ -171,6 +179,14 @@ typedef struct
 
 #define OFFLOAD_MAX_RESTORES 4
 
+static size_t
+frame_align(size_t size)
+{
+    const size_t align = alignof(std::max_align_t);
+
+    return (size + align - 1) / align * align;
+}
+
 // A call that has marked its objects, with the marks behind it
 typedef struct offload_frame
 {
@@ -185,6 +201,9 @@ typedef struct offload_frame
     struct offload_frame *next;
 } offload_frame_t;
 
+// Data pointer of an Image, its pixel cache, an Info or a KernelInfo => number
+// of calls in flight that read it, or OFFLOAD_UPDATING. Ruby objects that can
+// be changed never cross Ractors, so each Ractor has its own table.
 typedef struct
 {
     st_table *table;
@@ -232,9 +251,6 @@ mark_remove(st_table *table, const void *ptr)
     }
 }
 
-// Data pointer of an Image, its pixel cache, an Info or a KernelInfo => number
-// of calls in flight that read it, or OFFLOAD_UPDATING. Ruby objects that can
-// be changed never cross Ractors, so each Ractor has its own table.
 static offloaded_t *
 offloaded_entry(void)
 {
@@ -670,7 +686,7 @@ rm_gvl_call::add_object(VALUE obj, const void *ptr, bool update, bool each)
 rm_gvl_call &
 rm_gvl_call::cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg)
 {
-    return add_cleanup(release, ptr, arg, false);
+    return add_cleanup(release, ptr, arg, 0, false);
 }
 
 
@@ -681,17 +697,19 @@ rm_gvl_call::cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg)
  * @param release the function
  * @param ptr its first argument
  * @param arg its second argument
+ * @param size if not 0, arg points to a value of this size, which an
+ *   offloaded call keeps a copy of
  * @return self
  */
 rm_gvl_call &
-rm_gvl_call::restore(void (*release)(void *, intptr_t), void *ptr, intptr_t arg)
+rm_gvl_call::restore(void (*release)(void *, intptr_t), void *ptr, intptr_t arg, size_t size)
 {
-    return add_cleanup(release, ptr, arg, true);
+    return add_cleanup(release, ptr, arg, size, true);
 }
 
 
 rm_gvl_call &
-rm_gvl_call::add_cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg, bool restore)
+rm_gvl_call::add_cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg, size_t size, bool restore)
 {
     if (!ptr)
     {
@@ -704,6 +722,7 @@ rm_gvl_call::add_cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t 
     cleanups[ncleanups].release = release;
     cleanups[ncleanups].ptr = ptr;
     cleanups[ncleanups].arg = arg;
+    cleanups[ncleanups].size = size;
     cleanups[ncleanups].restore = restore;
     ncleanups++;
     return *this;
@@ -989,11 +1008,12 @@ rm_gvl_call::call(ResultType type)
     {
         offload_call_t call = { fp, args, NULL, NULL, false, false };
         VALUE fiber = offload ? rb_fiber_current() : 0;
-        offload_frame_t *frame;
+        offload_frame_t *frame = NULL;
         offloaded_t *entry;
         offload_mark_t *marks;
-        VALUE marks_buffer;
+        VALUE marks_buffer = 0;
         long count = 0, nmarks = 0;
+        size_t marks_size, values_size = 0;
         bool dropped;
         int tag;
 
@@ -1001,7 +1021,20 @@ rm_gvl_call::call(ResultType type)
         {
             count += objects[i].each ? RARRAY_LEN(objects[i].obj) : 1;
         }
-        marks = ALLOCV_N(offload_mark_t, marks_buffer, 2 * count);
+        marks_size = frame_align(2 * count * sizeof(offload_mark_t));
+        if (offload)
+        {
+            for (int i = 0; i < ncleanups; i++)
+            {
+                values_size += frame_align(cleanups[i].size);
+            }
+            frame = (offload_frame_t *)xmalloc(frame_align(sizeof(offload_frame_t)) + marks_size + values_size);
+            marks = (offload_mark_t *)((char *)frame + frame_align(sizeof(offload_frame_t)));
+        }
+        else
+        {
+            marks = ALLOCV_N(offload_mark_t, marks_buffer, 2 * count);
+        }
 
         // An object that the call both reads and changes is marked as changed.
         for (int pass = 0; pass < 2; pass++)
@@ -1033,7 +1066,14 @@ rm_gvl_call::call(ResultType type)
         {
             if ((offload || marks[i].image) && mark_in_use(&marks[i]))
             {
-                ALLOCV_END(marks_buffer);
+                if (frame)
+                {
+                    xfree(frame);
+                }
+                else
+                {
+                    ALLOCV_END(marks_buffer);
+                }
                 unwind(type, NULL);
                 raise_in_use();
             }
@@ -1044,11 +1084,12 @@ rm_gvl_call::call(ResultType type)
             return call_here(type);
         }
 
+        // The frame keeps a copy of the values to change back, which can be on
+        // the stack of a fiber that is gone by the next fork.
         static_assert(MaxCleanups <= OFFLOAD_MAX_RESTORES, "a frame holds every cleanup that restores");
-        frame = (offload_frame_t *)xmalloc(sizeof(offload_frame_t) + nmarks * sizeof(offload_mark_t));
-        frame->marks = (offload_mark_t *)(frame + 1);
-        MEMCPY(frame->marks, marks, offload_mark_t, nmarks);
-        ALLOCV_END(marks_buffer);
+        char *values = (char *)marks + marks_size;
+
+        frame->marks = marks;
         frame->nmarks = nmarks;
         frame->nrestores = 0;
         for (int i = 0; i < ncleanups; i++)
@@ -1057,6 +1098,12 @@ rm_gvl_call::call(ResultType type)
             {
                 offload_restore_t restore = { cleanups[i].release, cleanups[i].ptr, cleanups[i].arg };
 
+                if (cleanups[i].size)
+                {
+                    memcpy(values, (const void *)cleanups[i].arg, cleanups[i].size);
+                    restore.arg = (intptr_t)values;
+                    values += frame_align(cleanups[i].size);
+                }
                 frame->restores[frame->nrestores++] = restore;
             }
         }
