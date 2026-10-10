@@ -787,6 +787,87 @@ mark_release(st_table *table, const offload_mark_t *mark)
         mark_remove(table, mark->key);
     }
 }
+
+// Take the marks of a frame and link it, or take none and return false if
+// another call holds an object. Growing the table can start a GC that waits
+// for a fork that waits for the lock, so the table is changed outside it. Only
+// this Ractor uses its table, and the child of a fork rebuilds it.
+static bool
+frame_acquire(offloaded_t *entry, offload_frame_t *frame)
+{
+    long i, j;
+
+    for (i = 0; i < frame->nmarks; i++)
+    {
+        if (!frame->marks[i].state && !mark_acquire(entry->table, &frame->marks[i]))
+        {
+            break;
+        }
+    }
+    if (i == frame->nmarks)
+    {
+        entry->lock.lock();
+        for (j = 0; j < frame->nmarks; j++)
+        {
+            if (frame->marks[j].state && !mark_acquire(entry->table, &frame->marks[j]))
+            {
+                break;
+            }
+        }
+        if (j == frame->nmarks)
+        {
+            frame_push(entry, frame);
+            entry->lock.unlock();
+            return true;
+        }
+        while (j-- > 0)
+        {
+            if (frame->marks[j].state)
+            {
+                mark_release(entry->table, &frame->marks[j]);
+            }
+        }
+        entry->lock.unlock();
+    }
+    while (i-- > 0)
+    {
+        if (!frame->marks[i].state)
+        {
+            mark_release(entry->table, &frame->marks[i]);
+        }
+    }
+    return false;
+}
+
+// Release the marks of a frame and unlink it, or return false if a fork
+// dropped it in the child
+static bool
+frame_release(offloaded_t *entry, offload_frame_t *frame)
+{
+    entry->lock.lock();
+    if (!frame->linked)
+    {
+        entry->lock.unlock();
+        return false;
+    }
+    for (long i = 0; i < frame->nmarks; i++)
+    {
+        if (frame->marks[i].state)
+        {
+            mark_release(entry->table, &frame->marks[i]);
+        }
+    }
+    frame_remove(entry, frame);
+    entry->lock.unlock();
+    for (long i = 0; i < frame->nmarks; i++)
+    {
+        if (!frame->marks[i].state)
+        {
+            mark_release(entry->table, &frame->marks[i]);
+        }
+    }
+    return true;
+}
 #endif
 
 static void
@@ -1292,24 +1373,13 @@ rm_gvl_call::call_body(ResultType type)
         // and here, so the marks are taken one by one.
         entry = offloaded_entry();
         offloads_in_flight.fetch_add((unsigned int)nmarks, std::memory_order_relaxed);
-        entry->lock.lock();
-        for (long i = 0; i < nmarks; i++)
+        if (!frame_acquire(entry, frame))
         {
-            if (!mark_acquire(entry->table, &frame->marks[i]))
-            {
-                while (i-- > 0)
-                {
-                    mark_release(entry->table, &frame->marks[i]);
-                }
-                entry->lock.unlock();
-                offloads_in_flight.fetch_sub((unsigned int)nmarks, std::memory_order_relaxed);
-                xfree(frame);
-                unwind(type, NULL);
-                raise_in_use();
-            }
+            offloads_in_flight.fetch_sub((unsigned int)nmarks, std::memory_order_relaxed);
+            xfree(frame);
+            unwind(type, NULL);
+            raise_in_use();
         }
-        frame_push(entry, frame);
-        entry->lock.unlock();
 
         rb_protect(offload_call, (VALUE)&call, &tag);
         if (!tag && !call.started && frame->linked)
@@ -1317,20 +1387,11 @@ rm_gvl_call::call_body(ResultType type)
             rb_protect(offload_call, (VALUE)&call, &tag);
         }
 
-        // A frame that a fork dropped in the child has no marks to release
-        entry = offloaded_entry();
-        entry->lock.lock();
-        dropped = !frame->linked;
+        dropped = !frame_release(offloaded_entry(), frame);
         if (!dropped)
         {
-            for (long i = 0; i < nmarks; i++)
-            {
-                mark_release(entry->table, &frame->marks[i]);
-            }
             offloads_in_flight.fetch_sub((unsigned int)nmarks, std::memory_order_relaxed);
-            frame_remove(entry, frame);
         }
-        entry->lock.unlock();
         xfree(frame);
         if (dropped)
         {
