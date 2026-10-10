@@ -124,4 +124,56 @@ RSpec.describe Magick do
       end
     end
   end
+
+  describe '::MANAGED_MEMORY' do
+    it 'frees objects that the GC collects while it runs' do
+      image = Magick::Image.new(20, 20)
+
+      expect do
+        with_gc_stress do
+          3.times do
+            info = Magick::Image::Info.new
+            info.texture = image
+
+            draw = Magick::Draw.new
+            draw.composite(0, 0, 5, 5, image)
+
+            list = Magick::ImageList.new
+            list << image.copy << image.copy
+            list.montage { |options| options.texture = image }
+
+            Magick::KernelInfo.new('Gaussian:1x1')
+            Magick::Pixel.new(1, 2, 3)
+            Magick::GradientFill.new(0, 0, 1, 1, 'red', 'blue')
+            Magick::TextureFill.new(image)
+            image.resize(10, 10)
+          end
+        end
+        GC.start
+      end.not_to raise_error
+    end
+
+    it 'does not run the GC while GC.disable is in effect' do
+      image = Magick::Image.new(2000, 1500)
+
+      GC.disable
+      count = GC.count
+      10.times { image.resize(1000, 750) }
+      expect(GC.count).to eq(count)
+    ensure
+      GC.enable
+    end
+
+    it 'finishes a GC in progress when ImageMagick allocates a lot' do
+      image = Magick::Image.new(2000, 1500)
+      objects = Array.new(200_000) { Object.new }
+
+      GC.start(full_mark: true, immediate_mark: false, immediate_sweep: false)
+      expect(GC.latest_gc_info(:state)).not_to eq(:none)
+
+      10.times { image.resize(1000, 750) }
+      expect(GC.latest_gc_info(:state)).to eq(:none)
+      expect(objects.size).to eq(200_000)
+    end
+  end
 end

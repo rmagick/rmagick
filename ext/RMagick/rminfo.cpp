@@ -18,7 +18,7 @@ const rb_data_type_t rm_info_data_type = {
     "Magick::Image::Info",
     { NULL, Info_free, Info_memsize, },
     0, 0,
-    RUBY_TYPED_FROZEN_SHAREABLE,
+    RUBY_TYPED_FROZEN_SHAREABLE | RM_TYPED_FREE_IMMEDIATELY,
 };
 
 

@@ -69,10 +69,11 @@
  * the function with rb_thread_call_without_gvl. An interrupt that arrives
  * during the function, such as Thread#raise or Timeout, is raised after the
  * function returns, so what the caller registered is released then too.
- * Interrupts are deferred until then because a GC that xmalloc starts in the
- * function (Magick::MANAGED_MEMORY) takes the GVL back and would raise them
- * through ImageMagick. An exception raised by a trap handler there is not
- * deferred.
+ * Interrupts are deferred until then because, where ImageMagick allocates
+ * with xmalloc (Magick::MANAGED_MEMORY without malloc_usable_size or a similar
+ * function), a GC that xmalloc starts in the function takes the GVL back and
+ * would raise them through ImageMagick. An exception raised by a trap handler
+ * there is not deferred.
  */
 
 typedef enum
@@ -1000,6 +1001,16 @@ rm_gvl_call::unwind(ResultType type, void *result, bool abandoned)
 
 void *
 rm_gvl_call::call(ResultType type)
+{
+    void *result;
+
+    result = call_body(type);
+    rm_gc_continue();
+    return result;
+}
+
+void *
+rm_gvl_call::call_body(ResultType type)
 {
 #if defined(RMAGICK_OFFLOAD_SAFE)
     bool offload = !keep && offload_p();

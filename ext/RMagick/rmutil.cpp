@@ -905,7 +905,7 @@ rm_delete_temp_image(char *temp_name)
 {
     MagickBooleanType okay = DeleteImageRegistry(temp_name+5);
 
-    if (!okay)
+    if (!okay && !rb_during_gc())
     {
         rb_warn("DeleteImageRegistry failed for `%s'", temp_name);
     }

@@ -13,15 +13,17 @@
 #define MAIN                        // Define external variables
 #include "rmagick.h"
 
+#include <atomic>
+
+#if defined(HAVE_MALLOC_H)
+    #include <malloc.h>
+#elif defined(HAVE_MALLOC_MALLOC_H)
+    #include <malloc/malloc.h>
+#endif
+
 #if defined(HAVE_SETMAGICKALIGNEDMEMORYMETHODS)
     #if defined(HAVE_POSIX_MEMALIGN) || defined(HAVE__ALIGNED_MSIZE)
         #define USE_RM_ALIGNED_MALLOC 1
-
-        #if defined(HAVE_MALLOC_H)
-            #include <malloc.h>
-        #elif defined(HAVE_MALLOC_MALLOC_H)
-            #include <malloc/malloc.h>
-        #endif
     #endif
 #endif
 
@@ -63,6 +65,50 @@ static void features_constant(void);
  *  These functions have the same signature as the equivalent C functions.
  */
 
+static const size_t gc_check_interval = 16 * 1024 * 1024;
+static std::atomic<size_t> allocated_since_check(0);
+
+static void
+rm_count_allocation(size_t size)
+{
+    static thread_local size_t allocated = 0;
+
+    allocated += size;
+    if (allocated >= 1024 * 1024)
+    {
+        allocated_since_check.fetch_add(allocated, std::memory_order_relaxed);
+        allocated = 0;
+    }
+}
+
+#if defined(RM_USE_MALLOC)
+
+static size_t
+rm_malloc_size(void *ptr)
+{
+    if (!ptr)
+    {
+        return 0;
+    }
+#if defined(HAVE_MALLOC_USABLE_SIZE)
+    return malloc_usable_size(ptr);
+#elif defined(HAVE_MALLOC_SIZE)
+    return malloc_size(ptr);
+#else
+    return _msize(ptr);
+#endif
+}
+
+static void
+rm_adjust_memory_usage(ssize_t diff)
+{
+    if (diff > 0)
+    {
+        rm_count_allocation((size_t)diff);
+    }
+    rb_gc_adjust_memory_usage(diff);
+}
+
 /**
  * Allocate memory.
  *
@@ -73,7 +119,10 @@ static void features_constant(void);
  */
 static void *rm_malloc(size_t size)
 {
-    return xmalloc((long)size);
+    void *ptr = malloc(size);
+
+    rm_adjust_memory_usage((ssize_t)rm_malloc_size(ptr));
+    return ptr;
 }
 
 
@@ -90,7 +139,14 @@ static void *rm_malloc(size_t size)
  */
 static void *rm_realloc(void *ptr, size_t size)
 {
-    return xrealloc(ptr, (long)size);
+    size_t old_size = rm_malloc_size(ptr);
+    void *new_ptr = realloc(ptr, size);
+
+    if (new_ptr || size == 0)
+    {
+        rm_adjust_memory_usage((ssize_t)rm_malloc_size(new_ptr) - (ssize_t)old_size);
+    }
+    return new_ptr;
 }
 
 
@@ -105,7 +161,79 @@ static void *rm_realloc(void *ptr, size_t size)
  */
 static void rm_free(void *ptr)
 {
+    rm_adjust_memory_usage(-(ssize_t)rm_malloc_size(ptr));
+    free(ptr);
+}
+
+#else
+
+static void *rm_malloc(size_t size)
+{
+    rm_count_allocation(size);
+    return xmalloc((long)size);
+}
+
+static void *rm_realloc(void *ptr, size_t size)
+{
+    rm_count_allocation(size);
+    return xrealloc(ptr, (long)size);
+}
+
+static void rm_free(void *ptr)
+{
     xfree(ptr);
+}
+
+static inline void
+rm_adjust_memory_usage(ssize_t diff)
+{
+    if (diff > 0)
+    {
+        rm_count_allocation((size_t)diff);
+    }
+    rb_gc_adjust_memory_usage(diff);
+}
+
+#endif
+
+
+static VALUE
+gc_run_to_end(VALUE arg)
+{
+    xfree(xmalloc(1));
+    if (!RTEST(rb_gc_disable()))
+    {
+        rb_gc_enable();
+    }
+    return Qnil;
+}
+
+/**
+ * Let the GC start and run to the end each time ImageMagick has allocated
+ * another gc_check_interval bytes.
+ *
+ * The Ruby code around ImageMagick creates few objects, so an incremental GC
+ * stays unfinished while ImageMagick allocates, and malloc does not start one.
+ * xmalloc starts the GC as Ruby does at the limit, unless GC.disable is in
+ * effect, and rb_gc_disable finishes the GC in progress.
+ *
+ * No Ruby usage (internal function)
+ */
+void
+rm_gc_continue(void)
+{
+    int state;
+
+    if (allocated_since_check.load(std::memory_order_relaxed) < gc_check_interval)
+    {
+        return;
+    }
+    allocated_since_check.store(0, std::memory_order_relaxed);
+    rb_protect(gc_run_to_end, Qnil, &state);
+    if (state)
+    {
+        rb_set_errinfo(Qnil);
+    }
 }
 
 
@@ -151,7 +279,7 @@ static void *rm_aligned_malloc(size_t size, size_t alignment)
 #endif
 
     allocated_size = rm_aligned_malloc_size(res);
-    rb_gc_adjust_memory_usage(allocated_size);
+    rm_adjust_memory_usage(allocated_size);
     return res;
 }
 
@@ -168,7 +296,7 @@ static void *rm_aligned_malloc(size_t size, size_t alignment)
 static void rm_aligned_free(void *ptr)
 {
     size_t allocated_size = rm_aligned_malloc_size(ptr);
-    rb_gc_adjust_memory_usage(-allocated_size);
+    rm_adjust_memory_usage(-(ssize_t)allocated_size);
 
 #if defined(HAVE_POSIX_MEMALIGN)
     free(ptr);

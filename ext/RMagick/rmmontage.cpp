@@ -18,7 +18,7 @@ const rb_data_type_t rm_montage_data_type = {
     "Magick::ImageList::Montage",
     { NULL, Montage_destroy, Montage_memsize, },
     0, 0,
-    RUBY_TYPED_FROZEN_SHAREABLE,
+    RUBY_TYPED_FROZEN_SHAREABLE | RM_TYPED_FREE_IMMEDIATELY,
 };
 
 

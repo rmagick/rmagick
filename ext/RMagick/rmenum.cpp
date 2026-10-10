@@ -24,7 +24,7 @@ const rb_data_type_t rm_enum_data_type = {
     "Magick::Enum",
     { NULL, rm_enum_free, rm_enum_memsize, },
     0, 0,
-    RUBY_TYPED_FROZEN_SHAREABLE,
+    RUBY_TYPED_FROZEN_SHAREABLE | RUBY_TYPED_FREE_IMMEDIATELY,
 };
 
 

@@ -25,7 +25,7 @@ const rb_data_type_t rm_pixel_data_type = {
     "Magick::Pixel",
     { NULL, Pixel_destroy, Pixel_memsize, },
     0, 0,
-    RUBY_TYPED_FROZEN_SHAREABLE,
+    RUBY_TYPED_FROZEN_SHAREABLE | RUBY_TYPED_FREE_IMMEDIATELY,
 };
 
 

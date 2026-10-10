@@ -282,6 +282,7 @@ module RMagick
         posix_memalign
         malloc_usable_size
         malloc_size
+        _msize
         _aligned_msize
       ]
       imagemagick_api = [

@@ -70,6 +70,13 @@ extern "C" {
 
 #include "extconf.h"
 
+#if defined(HAVE_MALLOC_USABLE_SIZE) || defined(HAVE_MALLOC_SIZE) || defined(HAVE__MSIZE)
+#define RM_USE_MALLOC 1
+#define RM_TYPED_FREE_IMMEDIATELY RUBY_TYPED_FREE_IMMEDIATELY
+#else
+#define RM_TYPED_FREE_IMMEDIATELY 0
+#endif
+
 #if defined(IMAGEMAGICK_7)
     #include "MagickCore/MagickCore.h"
     #include "MagickCore/magick-config.h"
@@ -550,6 +557,7 @@ extern "C" {
 
 // rmmain.cpp
 extern void Init_RMagick2(void);
+extern void rm_gc_continue(void);
 
 
 // rmagick.cpp

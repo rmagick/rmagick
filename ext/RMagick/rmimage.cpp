@@ -51,7 +51,7 @@ const rb_data_type_t rm_image_data_type = {
     "Magick::Image",
     { NULL, rm_image_destroy, rm_image_memsize, },
     0, 0,
-    RUBY_TYPED_FROZEN_SHAREABLE,
+    RUBY_TYPED_FROZEN_SHAREABLE | RM_TYPED_FREE_IMMEDIATELY,
 };
 
 static const char *BlackPointCompensationKey = "PROFILE:black-point-compensation";

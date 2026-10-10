@@ -18,7 +18,7 @@ const rb_data_type_t rm_kernel_info_data_type = {
     "Magick::KernelInfo",
     { NULL, rm_kernel_info_destroy, rm_kernel_info_memsize, },
     0, 0,
-    RUBY_TYPED_FROZEN_SHAREABLE,
+    RUBY_TYPED_FROZEN_SHAREABLE | RM_TYPED_FREE_IMMEDIATELY,
 };
 
 DEFINE_GVL_VOID_STUB2(UnityAddKernelInfo, KernelInfo *, const double);
