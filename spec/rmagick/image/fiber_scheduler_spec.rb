@@ -980,6 +980,28 @@ RSpec.describe Magick::Image, if: offloading do
       Warning[:experimental] = experimental
     end
 
+    it "does not let another Ractor use a shared image while a call uses it", if: offloading && defined?(Ractor) do
+      experimental = Warning[:experimental]
+      Warning[:experimental] = false
+      image = Ractor.make_shareable(described_class.new(20, 20).freeze)
+      seen = nil
+      scheduler.before_next_operation do
+        ractor = Ractor.new(image) do |shared|
+          shared.blur_image(0, 1)
+          :ran
+        rescue StandardError => e
+          e.message
+        end
+        seen = ractor.respond_to?(:value) ? ractor.value : ractor.take
+      end
+
+      scheduler.run { image.gaussian_blur(0, 1) }
+
+      expect(seen).to eq("object is in use by another fiber")
+    ensure
+      Warning[:experimental] = experimental
+    end
+
     it "fetches the image after the write options block" do
       image = described_class.new(600, 600)
 

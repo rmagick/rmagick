@@ -326,7 +326,7 @@ rm_check_readable(VALUE obj)
     {
         rb_raise(Class_DestroyedImageError, "destroyed image");
     }
-    rm_gvl_check_readable(image);
+    rm_gvl_check_readable(obj);
 
     return image;
 }
@@ -346,7 +346,7 @@ Image *
 rm_check_writable(VALUE obj)
 {
     Image *image = rm_check_readable(obj);
-    rm_gvl_check_writable(image);
+    rm_gvl_check_writable(obj);
     return image;
 }
 
@@ -370,7 +370,7 @@ rm_check_frozen(VALUE obj)
         rb_raise(Class_DestroyedImageError, "destroyed image");
     }
     rb_check_frozen(obj);
-    rm_gvl_check_writable(image);
+    rm_gvl_check_writable(obj);
     return image;
 }
 

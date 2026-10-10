@@ -91,7 +91,7 @@ get_writable_draw(VALUE self)
 
     rb_check_frozen(self);
     draw = get_draw(self);
-    rm_gvl_check_writable(draw);
+    rm_gvl_check_writable(self);
     return draw;
 }
 
@@ -867,7 +867,7 @@ annotate_ensure(VALUE arg)
     struct Draw_annotate_args *annotate = (struct Draw_annotate_args *)arg;
     MagickDraw *draw = annotate->draw;
 
-    if (!rm_gvl_in_use(draw))
+    if (!rm_gvl_in_use(annotate->self))
     {
         magick_free(draw->info->text);
         draw->info->text = NULL;
@@ -938,7 +938,7 @@ annotate_body(VALUE arg)
     // Ruby -- Image#columns, Image#filename, Image#artifact and so on.
     embed_text = StringValueCStr(annotate->text);
     image = rm_check_frozen(annotate->image_arg);
-    rm_gvl_check_writable(draw);
+    rm_gvl_check_writable(annotate->self);
 
     magick_clone_string(&draw->info->geometry, geometry_str);
     draw->info->text = ConstantString(embed_text);
@@ -994,7 +994,7 @@ VALUE Draw_annotate(
     // Save the affine matrix in case it is modified by
     // Draw#rotation=
     annotate.draw = get_draw(self);
-    rm_gvl_check_writable(annotate.draw);
+    rm_gvl_check_writable(self);
     annotate.keep = annotate.draw->info->affine;
 
     annotate.self       = self;
@@ -1146,7 +1146,7 @@ Draw_draw(VALUE self, VALUE image_arg)
     image = rm_check_frozen(image_arg);
 
     draw = get_draw(self);
-    rm_gvl_check_writable(draw);
+    rm_gvl_check_writable(self);
     if (draw->primitives == 0)
     {
         rb_raise(rb_eArgError, "nothing to draw");
@@ -1312,8 +1312,7 @@ VALUE Draw_alloc(VALUE klass)
     MagickDraw *draw;
     VALUE draw_obj;
 
-    draw = ALLOC(MagickDraw);
-    memset(draw, 0, sizeof(MagickDraw));
+    draw = ZALLOC(MagickDraw);
     draw_obj = TypedData_Wrap_Struct(klass, &rm_draw_data_type, draw);
 
     RB_GC_GUARD(draw_obj);
@@ -1460,8 +1459,7 @@ DrawOptions_alloc(VALUE klass)
     MagickDraw *draw_options;
     VALUE draw_options_obj;
 
-    draw_options = ALLOC(MagickDraw);
-    memset(draw_options, 0, sizeof(MagickDraw));
+    draw_options = ZALLOC(MagickDraw);
     draw_options_obj = TypedData_Wrap_Struct(klass, &rm_draw_data_type, draw_options);
 
     RB_GC_GUARD(draw_options_obj);
@@ -1513,8 +1511,7 @@ PolaroidOptions_alloc(VALUE klass)
 
     image_info = CloneImageInfo(NULL);
 
-    draw = ALLOC(MagickDraw);
-    memset(draw, 0, sizeof(*draw));
+    draw = ZALLOC(MagickDraw);
 
     draw->info = CloneDrawInfo(image_info, (DrawInfo *) NULL);
     (void) DestroyImageInfo(image_info);
@@ -1709,7 +1706,7 @@ get_type_metrics(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
     }
 
     draw = get_draw(self);
-    rm_gvl_check_writable(draw);
+    rm_gvl_check_writable(self);
     // Measured as given: see the comment in Draw_annotate().
     draw->info->text = ConstantString(text);
 

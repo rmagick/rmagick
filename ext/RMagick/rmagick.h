@@ -19,6 +19,8 @@
 // Therefore, it includes the header in advance.
 #include "ruby/defines.h"
 
+#include <atomic>
+
 extern "C" {
     #include <assert.h>
     #include <stdio.h>
@@ -195,22 +197,29 @@ typedef ImageInfo Info; /**< Make type name match class name */
     #define IMAGEMAGICK_6 1
 #endif
 
+//! Number of offloaded calls that read an object, or RM_OFFLOAD_UPDATING
+typedef std::atomic<unsigned int> rm_offload_state_t;
+#define RM_OFFLOAD_UPDATING UINT_MAX
+
 //! Image class.
 typedef struct
 {
     Image *image; /**< the ImageMagick image, or NULL after Image#destroy! */
+    rm_offload_state_t offload; /**< the offload state */
 } MagickImage;
 
 //! Info class.
 typedef struct
 {
     Info *info; /**< the ImageInfo */
+    rm_offload_state_t offload; /**< the offload state */
 } MagickImageInfo;
 
 //! KernelInfo class.
 typedef struct
 {
     KernelInfo *kernel; /**< the KernelInfo, or NULL before KernelInfo#initialize */
+    rm_offload_state_t offload; /**< the offload state */
 } MagickKernelInfo;
 
 //! Montage
@@ -218,6 +227,7 @@ typedef struct
 {
     CompositeOperator compose; /**< compose operator */
     MontageInfo *info; /**< montage info */
+    rm_offload_state_t offload; /**< the offload state */
 } MagickMontage;
 
 // Draw
@@ -235,6 +245,7 @@ typedef struct
     VALUE primitives;           /**< the primitive string */
     struct TmpFile_Name *tmpfile_ary; /**< the tmp filenames */
     PixelColor shadow_color;   /**< PolaroidOptions#shadow_color */
+    rm_offload_state_t offload; /**< the offload state */
 } MagickDraw;
 
 // Enum

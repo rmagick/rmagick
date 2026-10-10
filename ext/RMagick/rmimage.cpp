@@ -2190,7 +2190,7 @@ border(int bang, VALUE self, VALUE width, VALUE height, VALUE color)
     Color_to_PixelColor(&new_border, color);
 
     // Save current border color - we'll want to restore it afterwards.
-    rm_gvl_check_writable(image);
+    rm_gvl_check_writable(self);
     old_border = image->border_color;
     image->border_color = new_border;
 
@@ -5586,7 +5586,7 @@ Image_deskew(int argc, VALUE *argv, VALUE self)
             width = NUM2ULONG(argv[1]);
             memset(auto_crop_width, 0, sizeof(auto_crop_width));
             snprintf(auto_crop_width, sizeof(auto_crop_width), "%lu", width);
-            rm_gvl_check_writable(image);
+            rm_gvl_check_writable(self);
             if (!SetImageArtifact(image, "deskew:auto-crop", auto_crop_width))
             {
                 rb_raise(rb_eNoMemError, "not enough memory to continue");
@@ -5647,7 +5647,7 @@ Image_destroy_bang(VALUE self)
     image = rm_image_get(self);
     if (image)
     {
-        rm_gvl_check_writable(image);
+        rm_gvl_check_writable(self);
     }
     rm_image_set(self, NULL);
     rm_image_destroy(image);
@@ -14141,7 +14141,7 @@ Image_splice(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 
     // Swap in color for the duration of this call.
-    rm_gvl_check_writable(image);
+    rm_gvl_check_writable(self);
     old_color = image->background_color;
     image->background_color = color;
     DECLARE_GVL_CALL(call, SpliceImage, image, &rectangle, exception);
@@ -14246,7 +14246,7 @@ Image_stegano(VALUE self, VALUE watermark_image, VALUE offset)
     watermark = rm_check_readable(wm_image);
 
     pixel_offset = NUM2LONG(offset);
-    rm_gvl_check_writable(image);
+    rm_gvl_check_writable(self);
     image->offset = pixel_offset;
 
     exception = AcquireExceptionInfo();

@@ -197,7 +197,7 @@ See <https://rmagick.github.io/usage.html> for links to more information.
 RMagick releases the GVL while ImageMagick works, so calls on different images run in parallel.
 
 - Use each image from one thread at a time. To work in parallel, give each thread its own images.
-- On Ruby 4.0 and later, a Fiber scheduler with a worker pool, such as `Async::Scheduler.new(worker_pool: IO::Event::WorkerPool.new)`, runs heavy calls on its workers, and the other fibers keep running. While such a call uses an image, using that image from another fiber raises `RuntimeError` ("object is in use by another fiber").
+- On Ruby 4.0 and later, a Fiber scheduler with a worker pool, such as `Async::Scheduler.new(worker_pool: IO::Event::WorkerPool.new)`, runs heavy calls on its workers, and the other fibers keep running. While such a call uses an image, using that image from another fiber, or from another Ractor that shares it frozen, raises `RuntimeError` ("object is in use by another fiber").
 - Each call in flight holds its images in memory, so memory use grows with the number of workers. Limit the calls that run at once, for example with `Async::Semaphore`.
 - `Thread#raise`, `Timeout` and Ctrl-C reach a thread after the ImageMagick call returns. An exception raised in a `trap` handler can unwind through ImageMagick instead.
 - Do not fork while other threads or workers are running ImageMagick. The child can hang on a lock that they held.

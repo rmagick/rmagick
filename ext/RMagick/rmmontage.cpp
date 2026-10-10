@@ -96,7 +96,7 @@ Montage_alloc(VALUE klass)
         rb_raise(rb_eNoMemError, "not enough memory to initialize Magick::ImageList::Montage object");
     }
 
-    montage = ALLOC(MagickMontage);
+    montage = ZALLOC(MagickMontage);
     montage->info = montage_info;
     montage->compose = OverCompositeOp;
     montage_obj = TypedData_Wrap_Struct(klass, &rm_montage_data_type, montage);
@@ -122,7 +122,7 @@ get_writable_montage(VALUE self)
     MagickMontage *montage;
 
     TypedData_Get_Struct(self, MagickMontage, &rm_montage_data_type, montage);
-    rm_gvl_check_writable(montage);
+    rm_gvl_check_writable(self);
     return montage;
 }
 

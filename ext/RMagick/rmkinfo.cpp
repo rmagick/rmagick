@@ -171,10 +171,10 @@ KernelInfo_initialize(VALUE self, VALUE kernel_string)
     }
 
     old_kernel = rm_kernel_info_get(self);
-    if (old_kernel && rm_gvl_in_use(old_kernel))
+    if (old_kernel && rm_gvl_in_use(self))
     {
         DestroyKernelInfo(kernel);
-        rm_gvl_check_writable(old_kernel);
+        rm_gvl_check_writable(self);
     }
     rm_kernel_info_set(self, kernel);
     if (old_kernel)
@@ -230,7 +230,7 @@ get_writable_kernel_info(VALUE self)
 
     rb_check_frozen(self);
     kernel = get_kernel_info(self);
-    rm_gvl_check_writable(kernel);
+    rm_gvl_check_writable(self);
     return kernel;
 }
 
@@ -314,10 +314,10 @@ KernelInfo_init_copy(VALUE self, VALUE orig)
     }
 
     old_kernel = rm_kernel_info_get(self);
-    if (old_kernel && rm_gvl_in_use(old_kernel))
+    if (old_kernel && rm_gvl_in_use(self))
     {
         DestroyKernelInfo(kernel);
-        rm_gvl_check_writable(old_kernel);
+        rm_gvl_check_writable(self);
     }
     rm_kernel_info_set(self, kernel);
     if (old_kernel)

@@ -37,7 +37,7 @@ get_writable_info(VALUE self)
     Info *info;
 
     info = rm_info_get(self);
-    rm_gvl_check_writable(info);
+    rm_gvl_check_writable(self);
     return info;
 }
 
