@@ -480,24 +480,6 @@ extern const rb_data_type_t rm_kernel_info_data_type;
         return C_##type##_to_R_##type(ptr->attr);\
     }
 
-//! define attribute reader of Info
-#define IMPLEMENT_INFO_ATTR_READER(attr, type) \
-    {\
-        Info *info = rm_info_get(self);\
-        return C_##type##_to_R_##type(info->attr);\
-    }
-
-//! define attribute writer of Info
-#define IMPLEMENT_INFO_ATTR_WRITER(attr, type) \
-    {\
-        Info *info;\
-        rb_check_frozen(self);\
-        info = rm_info_get(self);\
-        rm_gvl_check_writable(info);\
-        info->attr = R_##type##_to_C_##type(val);\
-        return val;\
-    }
-
 //! define attribute reader of Image when attribute name is different from the field name
 #define IMPLEMENT_IMAGE_ATTR_READERF(attr, field, type) \
     {\

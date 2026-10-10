@@ -41,6 +41,23 @@ get_writable_info(VALUE self)
     return info;
 }
 
+//! define attribute reader of Info
+#define IMPLEMENT_INFO_ATTR_READER(attr, type) \
+    {\
+        Info *info = rm_info_get(self);\
+        return C_##type##_to_R_##type(info->attr);\
+    }
+
+//! define attribute writer of Info
+#define IMPLEMENT_INFO_ATTR_WRITER(attr, type) \
+    {\
+        Info *info;\
+        rb_check_frozen(self);\
+        info = get_writable_info(self);\
+        info->attr = R_##type##_to_C_##type(val);\
+        return val;\
+    }
+
 /**
  * Return the value of the specified option.
  *
@@ -2377,7 +2394,7 @@ Info_view_eq(VALUE self, VALUE view_arg)
  *
  * No Ruby usage (internal function)
  *
- * @param infoptr pointer to the Info object
+ * @param infoptr pointer to the MagickImageInfo struct
  */
 static void
 Info_free(void *infoptr)
@@ -2404,12 +2421,14 @@ Info_free(void *infoptr)
   *
   * No Ruby usage (internal function)
   *
-  * @param infoptr pointer to the Info object
+  * @param infoptr pointer to the MagickImageInfo struct
   */
 static size_t
 Info_memsize(const void *infoptr)
 {
-    return sizeof(MagickImageInfo) + sizeof(Info);
+    const MagickImageInfo *magick_image_info = (const MagickImageInfo *)infoptr;
+
+    return sizeof(MagickImageInfo) + (magick_image_info->info ? sizeof(Info) : 0);
 }
 
 /**

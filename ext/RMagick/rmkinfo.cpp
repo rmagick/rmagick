@@ -31,7 +31,7 @@ DEFINE_GVL_VOID_STUB2(ScaleGeometryKernelInfo, KernelInfo *, const char *);
  *
  * No Ruby usage (internal function)
  *
- * @param kernel pointer to the KernelInfo object associated with instance
+ * @param ptr pointer to the MagickKernelInfo struct
  */
 
 static void
@@ -51,7 +51,7 @@ rm_kernel_info_destroy(void *ptr)
   *
   * No Ruby usage (internal function)
   *
-  * @param ptr pointer to the KernelInfo object
+  * @param ptr pointer to the MagickKernelInfo struct
   */
 static size_t
 rm_kernel_info_memsize(const void *ptr)
@@ -370,6 +370,8 @@ KernelInfo_builtin(VALUE self, VALUE what, VALUE geometry)
         rb_raise(rb_eArgError, "geometry string too long");
     }
 
+    kernel_obj = KernelInfo_alloc(self);
+
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     kernel = AcquireKernelInfo(kernel_string, exception);
@@ -392,7 +394,6 @@ KernelInfo_builtin(VALUE self, VALUE what, VALUE geometry)
         rb_raise(rb_eRuntimeError, "failed to acquire builtin kernel");
     }
 
-    kernel_obj = KernelInfo_alloc(self);
     rm_kernel_info_set(kernel_obj, kernel);
     return kernel_obj;
 }
