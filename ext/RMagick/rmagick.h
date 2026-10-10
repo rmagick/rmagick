@@ -195,6 +195,12 @@ typedef ImageInfo Info; /**< Make type name match class name */
     #define IMAGEMAGICK_6 1
 #endif
 
+//! Image class.
+typedef struct
+{
+    Image *image; /**< the ImageMagick image, or NULL after Image#destroy! */
+} MagickImage;
+
 //! Montage
 typedef struct
 {
@@ -1027,7 +1033,7 @@ extern VALUE Image_write(VALUE, VALUE);
 extern VALUE rm_image_new(Image *);
 extern Image *rm_image_get(VALUE);
 extern void  rm_image_set(VALUE, Image *);
-extern void  rm_image_destroy(void *);
+extern void  rm_image_destroy(Image *);
 
 
 // rmfill.cpp

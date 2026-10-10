@@ -41,7 +41,8 @@ static VALUE threshold_image(int, VALUE *, VALUE, gvl_function_t);
 static VALUE xform_image(int, VALUE, VALUE, VALUE, VALUE, VALUE, gvl_function_t);
 static VALUE array_from_images(Image *);
 static VALUE file_arg_rescue(VALUE, VALUE ATTRIBUTE_UNUSED) ATTRIBUTE_NORETURN;
-static size_t rm_image_memsize(const void *img);
+static void rm_image_free(void *ptr);
+static size_t rm_image_memsize(const void *ptr);
 static size_t pixel_buffer_count(size_t, size_t, size_t);
 #if defined(IMAGEMAGICK_7)
 static void get_pixel_color(const Image *, const Quantum *, PixelColor *);
@@ -49,7 +50,7 @@ static void get_pixel_color(const Image *, const Quantum *, PixelColor *);
 
 const rb_data_type_t rm_image_data_type = {
     "Magick::Image",
-    { NULL, rm_image_destroy, rm_image_memsize, },
+    { NULL, rm_image_free, rm_image_memsize, },
     0, 0,
     RUBY_TYPED_FROZEN_SHAREABLE | RM_TYPED_FREE_IMMEDIATELY,
 };
@@ -10151,13 +10152,9 @@ Image_negate_channel(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_alloc(VALUE klass)
 {
-    VALUE image_obj;
+    MagickImage *magick_image;
 
-    image_obj = TypedData_Wrap_Struct(klass, &rm_image_data_type, NULL);
-
-    RB_GC_GUARD(image_obj);
-
-    return image_obj;
+    return TypedData_Make_Struct(klass, MagickImage, &rm_image_data_type, magick_image);
 }
 
 /**
@@ -10258,7 +10255,7 @@ Image_initialize(int argc, VALUE *argv, VALUE self)
  * No Ruby usage (internal function)
  *
  * Notes:
- *   - Since the Image is already created we don't need to call Image_alloc or
+ *   - Since the Image is already created we don't need to call
  *     Image_initialize.
  *
  * @param image the Image structure
@@ -10267,9 +10264,13 @@ Image_initialize(int argc, VALUE *argv, VALUE self)
 VALUE
 rm_image_new(Image *image)
 {
+    VALUE image_obj;
+
     rm_ensure_result(image);
 
-    return TypedData_Wrap_Struct(Class_Image, &rm_image_data_type, image);
+    image_obj = Image_alloc(Class_Image);
+    rm_image_set(image_obj, image);
+    return image_obj;
 }
 
 
@@ -10284,10 +10285,10 @@ rm_image_new(Image *image)
 Image *
 rm_image_get(VALUE obj)
 {
-    Image *image;
+    MagickImage *magick_image;
 
-    TypedData_Get_Struct(obj, Image, &rm_image_data_type, image);
-    return image;
+    TypedData_Get_Struct(obj, MagickImage, &rm_image_data_type, magick_image);
+    return magick_image->image;
 }
 
 
@@ -10302,8 +10303,10 @@ rm_image_get(VALUE obj)
 void
 rm_image_set(VALUE obj, Image *image)
 {
-    rb_check_typeddata(obj, &rm_image_data_type);
-    RTYPEDDATA_DATA(obj) = image;
+    MagickImage *magick_image;
+
+    TypedData_Get_Struct(obj, MagickImage, &rm_image_data_type, magick_image);
+    magick_image->image = image;
 }
 
 
@@ -16991,8 +16994,7 @@ raise_ChannelType_error(VALUE arg)
 
 
 /**
- * Destroy an image. Called from GC when all references to the image have gone
- * out of scope.
+ * Destroy an ImageMagick image.
  *
  * No Ruby usage (internal function)
  *
@@ -17000,16 +17002,30 @@ raise_ChannelType_error(VALUE arg)
  *   - A NULL Image pointer indicates that the image has already been destroyed
  *     by Image#destroy!
  *
- * @param img the image
+ * @param image the image
  */
-void rm_image_destroy(void *img)
+void rm_image_destroy(Image *image)
 {
-    Image *image = (Image *)img;
-
-    if (img != NULL)
+    if (image != NULL)
     {
         DestroyImage(image);
     }
+}
+
+/**
+ * Free the data of an Image object.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param ptr pointer to the MagickImage
+ */
+static void
+rm_image_free(void *ptr)
+{
+    MagickImage *magick_image = (MagickImage *)ptr;
+
+    rm_image_destroy(magick_image->image);
+    xfree(magick_image);
 }
 
 /**
@@ -17017,10 +17033,12 @@ void rm_image_destroy(void *img)
   *
   * No Ruby usage (internal function)
   *
-  * @param ptr pointer to the Image object
+  * @param ptr pointer to the MagickImage
   */
 static size_t
 rm_image_memsize(const void *ptr)
 {
-    return sizeof(Image);
+    const MagickImage *magick_image = (const MagickImage *)ptr;
+
+    return sizeof(MagickImage) + (magick_image->image ? sizeof(Image) : 0);
 }
