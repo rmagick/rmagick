@@ -1002,6 +1002,43 @@ RSpec.describe Magick::Image, if: offloading do
       Warning[:experimental] = experimental
     end
 
+    # Ruby 4.0 can crash when a Ractor runs a Fiber scheduler after other Ractors have run one.
+    it "drops the marks of another Ractor in the child of a fork", if: Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("4.1") && !Gem.win_platform? do
+      experimental = Warning[:experimental]
+      Warning[:experimental] = false
+      image = Ractor.make_shareable(described_class.new(20, 20).freeze)
+      ready = Ractor::Port.new
+      ractor = Ractor.new(image, ready) do |shared, ready_port|
+        scheduler = OffloadingScheduler.new
+        scheduler.before_next_operation do
+          ready_port << :ready
+          Fiber.blocking { Ractor.receive }
+        end
+        scheduler.run { shared.gaussian_blur(0, 1) }
+        :done
+      end
+      ready.receive
+      reader, writer = IO.pipe
+      pid = fork do
+        reader.close
+        result = attempt { OffloadingScheduler.new.run { image.gaussian_blur(0, 1) } }
+        writer.write(result.is_a?(StandardError) ? result.message : "ok")
+      ensure
+        writer.close
+        exit!(0)
+      end
+      writer.close
+      Process.wait(pid)
+      output = reader.read
+      reader.close
+      ractor << :go
+
+      expect(output).to eq("ok")
+      expect(ractor.value).to eq(:done)
+    ensure
+      Warning[:experimental] = experimental
+    end
+
     it "fetches the image after the write options block" do
       image = described_class.new(600, 600)
 

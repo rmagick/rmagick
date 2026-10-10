@@ -6,6 +6,8 @@
  * @file     rmagick_gvl.cpp
  */
 
+#include <mutex>
+
 #include "rmagick.h"
 #include "ruby/ractor.h"
 #if defined(RMAGICK_OFFLOAD_SAFE)
@@ -210,12 +212,19 @@ typedef struct offload_frame
 // state => number of calls in flight that read it, or OFFLOAD_UPDATING. Each
 // Ractor has its own table, so a pixel cache is marked only in the Ractor that
 // uses it.
-typedef struct
+typedef struct offloaded
 {
     st_table *table;
     unsigned int generation;
     offload_frame_t *frames;
+    struct offloaded *prev;
+    struct offloaded *next;
 } offloaded_t;
+
+// The entries of all Ractors. The lock guards the list and the frames of each
+// entry, so that a fork sees the frames of the other Ractors whole.
+static std::mutex entries_lock;
+static offloaded_t *entries;
 
 // The entry of the main Ractor, the only one that can fork
 static offloaded_t *main_entry;
@@ -225,6 +234,22 @@ offloaded_free(void *ptr)
 {
     offloaded_t *entry = (offloaded_t *)ptr;
 
+    {
+        std::lock_guard<std::mutex> guard(entries_lock);
+
+        if (entry->prev)
+        {
+            entry->prev->next = entry->next;
+        }
+        else
+        {
+            entries = entry->next;
+        }
+        if (entry->next)
+        {
+            entry->next->prev = entry->prev;
+        }
+    }
     st_free_table(entry->table);
     xfree(entry);
 }
@@ -302,6 +327,17 @@ offloaded_entry(void)
         entry->generation = fork_generation;
         entry->frames = NULL;
         rb_ractor_local_storage_ptr_set(offloaded_key, entry);
+        {
+            std::lock_guard<std::mutex> guard(entries_lock);
+
+            entry->prev = NULL;
+            entry->next = entries;
+            if (entries)
+            {
+                entries->prev = entry;
+            }
+            entries = entry;
+        }
     }
     else if (entry->generation != fork_generation)
     {
@@ -330,6 +366,8 @@ offloaded(void)
 static void
 frame_push(offloaded_t *entry, offload_frame_t *frame)
 {
+    std::lock_guard<std::mutex> guard(entries_lock);
+
     frame->prev = NULL;
     frame->next = entry->frames;
     if (entry->frames)
@@ -347,7 +385,7 @@ frame_dropped(const offload_frame_t *frame)
 }
 
 static void
-frame_unlink(offloaded_t *entry, offload_frame_t *frame)
+frame_remove(offloaded_t *entry, offload_frame_t *frame)
 {
     if (frame->prev)
     {
@@ -362,6 +400,14 @@ frame_unlink(offloaded_t *entry, offload_frame_t *frame)
         frame->next->prev = frame->prev;
     }
     frame->linked = false;
+}
+
+static void
+frame_unlink(offloaded_t *entry, offload_frame_t *frame)
+{
+    std::lock_guard<std::mutex> guard(entries_lock);
+
+    frame_remove(entry, frame);
 }
 
 #if defined(HAVE_WORKING_FORK)
@@ -382,6 +428,7 @@ atfork_prepare(void)
     {
         return;
     }
+    entries_lock.lock();
     thread = rb_thread_current();
     for (offload_frame_t *frame = main_entry->frames; frame; frame = frame->next)
     {
@@ -399,6 +446,16 @@ atfork_prepare(void)
 // run in the child, so the objects they changed for the call are changed back
 // while nothing in the child can have destroyed them yet.
 static void
+atfork_parent(void)
+{
+    if (fork_with_gvl)
+    {
+        entries_lock.unlock();
+    }
+}
+
+// The other Ractors do not run in the child, so all of their frames are dropped.
+static void
 atfork_child(void)
 {
     unsigned int count = 0;
@@ -408,15 +465,16 @@ atfork_child(void)
     {
         return;
     }
-    for (offload_frame_t *frame = main_entry->frames; frame; frame = next)
+    for (offloaded_t *entry = entries; entry; entry = entry->next)
     {
-        next = frame->next;
-        if (frame->fiber == fork_fiber)
+        for (offload_frame_t *frame = entry->frames; frame; frame = next)
         {
-            count += (unsigned int)frame->nmarks;
-        }
-        else
-        {
+            next = frame->next;
+            if (entry == main_entry && frame->fiber == fork_fiber)
+            {
+                count += (unsigned int)frame->nmarks;
+                continue;
+            }
             for (int i = 0; i < frame->nrestores; i++)
             {
                 frame->restores[i].release(frame->restores[i].ptr, frame->restores[i].arg);
@@ -428,11 +486,12 @@ atfork_child(void)
                     state_release(frame->marks[i].state, frame->marks[i].mode);
                 }
             }
-            frame_unlink(main_entry, frame);
+            frame_remove(entry, frame);
         }
     }
     offloads_in_flight.store(count, std::memory_order_relaxed);
     fork_generation++;
+    entries_lock.unlock();
 }
 #endif
 
@@ -506,20 +565,9 @@ object_state(VALUE obj)
 static unsigned int
 object_offload_state(VALUE obj)
 {
-    rm_offload_state_t *state;
-    st_data_t table_state;
+    rm_offload_state_t *state = object_state(obj);
 
-    if (offloads_in_flight.load(std::memory_order_relaxed) == 0)
-    {
-        return 0;
-    }
-    state = object_state(obj);
-    if (state)
-    {
-        return state->load(std::memory_order_acquire);
-    }
-    table_state = offload_state(offload_key(obj));
-    return table_state == OFFLOAD_UPDATING ? RM_OFFLOAD_UPDATING : (unsigned int)table_state;
+    return state ? state->load(std::memory_order_acquire) : 0;
 }
 
 static VALUE
@@ -567,7 +615,7 @@ rm_gvl_init(void)
     offloaded_key = rb_ractor_local_storage_ptr_newkey(&offloaded_type);
     main_entry = offloaded_entry();
 #if defined(HAVE_WORKING_FORK)
-    int err = pthread_atfork(atfork_prepare, NULL, atfork_child);
+    int err = pthread_atfork(atfork_prepare, atfork_parent, atfork_child);
 
     if (err)
     {
