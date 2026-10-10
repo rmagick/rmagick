@@ -239,8 +239,9 @@
       <dt>MANAGED_MEMORY</dt>
 
       <dd>
-        If <code>true</code>, RMagick is using Ruby managed memory for all allocations. If <code>false</code>, RMagick allocates memory for objects directly
-        from the operating system. The default is <code>true</code>. To disable Ruby managed memory, set the
+        If <code>true</code>, RMagick tells Ruby's garbage collector how much memory ImageMagick allocates, so that the garbage collector runs and
+        frees unused images as their memory grows. If <code>false</code>, ImageMagick allocates memory without telling Ruby, and unused images are freed
+        only when the garbage collector runs for other reasons. The default is <code>true</code>. To disable it, set the
         <code>RMAGICK_DISABLE_MANAGED_MEMORY</code> environment variable
 
         <pre class="language-ruby">ENV['RMAGICK_DISABLE_MANAGED_MEMORY'] = '1'</pre>

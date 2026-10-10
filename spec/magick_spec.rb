@@ -124,4 +124,29 @@ RSpec.describe Magick do
       end
     end
   end
+
+  describe '::MANAGED_MEMORY' do
+    it 'does not run the GC while GC.disable is in effect' do
+      image = Magick::Image.new(2000, 1500)
+
+      GC.disable
+      count = GC.count
+      10.times { image.resize(1000, 750) }
+      expect(GC.count).to eq(count)
+    ensure
+      GC.enable
+    end
+
+    it 'finishes a GC in progress when ImageMagick allocates a lot' do
+      image = Magick::Image.new(2000, 1500)
+      objects = Array.new(200_000) { Object.new }
+
+      GC.start(full_mark: true, immediate_mark: false, immediate_sweep: false)
+      expect(GC.latest_gc_info(:state)).not_to eq(:none)
+
+      10.times { image.resize(1000, 750) }
+      expect(GC.latest_gc_info(:state)).to eq(:none)
+      expect(objects.size).to eq(200_000)
+    end
+  end
 end
