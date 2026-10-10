@@ -2382,16 +2382,21 @@ Info_view_eq(VALUE self, VALUE view_arg)
 static void
 Info_free(void *infoptr)
 {
-    Info *info = (Info *)infoptr;
+    MagickImageInfo *magick_image_info = (MagickImageInfo *)infoptr;
+    Info *info = magick_image_info->info;
 
-    if (info->texture)
+    if (info)
     {
-        rm_delete_temp_image(info->texture);
-        magick_free(info->texture);
-        info->texture = NULL;
-    }
+        if (info->texture)
+        {
+            rm_delete_temp_image(info->texture);
+            magick_free(info->texture);
+            info->texture = NULL;
+        }
 
-    DestroyImageInfo(info);
+        DestroyImageInfo(info);
+    }
+    xfree(magick_image_info);
 }
 
 /**
@@ -2404,7 +2409,7 @@ Info_free(void *infoptr)
 static size_t
 Info_memsize(const void *infoptr)
 {
-    return sizeof(Info);
+    return sizeof(MagickImageInfo) + sizeof(Info);
 }
 
 /**
@@ -2418,15 +2423,15 @@ Info_memsize(const void *infoptr)
 VALUE
 Info_alloc(VALUE klass)
 {
-    Info *info;
+    MagickImageInfo *magick_image_info;
     VALUE info_obj;
 
-    info = CloneImageInfo(NULL);
-    if (!info)
+    info_obj = TypedData_Make_Struct(klass, MagickImageInfo, &rm_info_data_type, magick_image_info);
+    magick_image_info->info = CloneImageInfo(NULL);
+    if (!magick_image_info->info)
     {
         rb_raise(rb_eNoMemError, "not enough memory to initialize Info object");
     }
-    info_obj = TypedData_Wrap_Struct(klass, &rm_info_data_type, info);
 
     RB_GC_GUARD(info_obj);
 
@@ -2468,10 +2473,10 @@ rm_info_new(void)
 Info *
 rm_info_get(VALUE obj)
 {
-    Info *info;
+    MagickImageInfo *magick_image_info;
 
-    TypedData_Get_Struct(obj, Info, &rm_info_data_type, info);
-    return info;
+    TypedData_Get_Struct(obj, MagickImageInfo, &rm_info_data_type, magick_image_info);
+    return magick_image_info->info;
 }
 
 

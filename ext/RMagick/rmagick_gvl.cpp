@@ -559,7 +559,19 @@ object_key(VALUE obj, const void *ptr, bool each, long j, bool *image)
     }
     obj = each ? rb_ary_entry(obj, j) : obj;
     *image = rb_typeddata_is_kind_of(obj, &rm_image_data_type);
-    return *image ? rm_image_get(obj) : offload_key(obj);
+    if (*image)
+    {
+        return rm_image_get(obj);
+    }
+    if (rb_typeddata_is_kind_of(obj, &rm_info_data_type))
+    {
+        return rm_info_get(obj);
+    }
+    if (rb_typeddata_is_kind_of(obj, &rm_kernel_info_data_type))
+    {
+        return rm_kernel_info_get(obj);
+    }
+    return offload_key(obj);
 }
 
 static void

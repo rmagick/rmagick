@@ -201,6 +201,18 @@ typedef struct
     Image *image; /**< the ImageMagick image, or NULL after Image#destroy! */
 } MagickImage;
 
+//! Info class.
+typedef struct
+{
+    Info *info; /**< the ImageInfo */
+} MagickImageInfo;
+
+//! KernelInfo class.
+typedef struct
+{
+    KernelInfo *kernel; /**< the KernelInfo, or NULL before KernelInfo#initialize */
+} MagickKernelInfo;
+
 //! Montage
 typedef struct
 {

@@ -11,7 +11,7 @@
 
 #include "rmagick.h"
 
-static void rm_kernel_info_destroy(void *kernel);
+static void rm_kernel_info_destroy(void *ptr);
 static size_t rm_kernel_info_memsize(const void *ptr);
 
 const rb_data_type_t rm_kernel_info_data_type = {
@@ -35,10 +35,15 @@ DEFINE_GVL_VOID_STUB2(ScaleGeometryKernelInfo, KernelInfo *, const char *);
  */
 
 static void
-rm_kernel_info_destroy(void *kernel)
+rm_kernel_info_destroy(void *ptr)
 {
-    if (kernel)
-      DestroyKernelInfo((KernelInfo*)kernel);
+    MagickKernelInfo *magick_kernel = (MagickKernelInfo *)ptr;
+
+    if (magick_kernel->kernel)
+    {
+        DestroyKernelInfo(magick_kernel->kernel);
+    }
+    xfree(magick_kernel);
 }
 
 /**
@@ -51,8 +56,8 @@ rm_kernel_info_destroy(void *kernel)
 static size_t
 rm_kernel_info_memsize(const void *ptr)
 {
-    const KernelInfo *kernel = (const KernelInfo *)ptr;
-    size_t size = 0;
+    const KernelInfo *kernel = ((const MagickKernelInfo *)ptr)->kernel;
+    size_t size = sizeof(MagickKernelInfo);
 
     // A KernelInfo may be a linked list of kernels, each owning a values array.
     while (kernel)
@@ -76,7 +81,9 @@ rm_kernel_info_memsize(const void *ptr)
 VALUE
 KernelInfo_alloc(VALUE klass)
 {
-    return TypedData_Wrap_Struct(klass, &rm_kernel_info_data_type, NULL);
+    MagickKernelInfo *magick_kernel;
+
+    return TypedData_Make_Struct(klass, MagickKernelInfo, &rm_kernel_info_data_type, magick_kernel);
 }
 
 
@@ -91,10 +98,10 @@ KernelInfo_alloc(VALUE klass)
 KernelInfo *
 rm_kernel_info_get(VALUE obj)
 {
-    KernelInfo *kernel;
+    MagickKernelInfo *magick_kernel;
 
-    TypedData_Get_Struct(obj, KernelInfo, &rm_kernel_info_data_type, kernel);
-    return kernel;
+    TypedData_Get_Struct(obj, MagickKernelInfo, &rm_kernel_info_data_type, magick_kernel);
+    return magick_kernel->kernel;
 }
 
 
@@ -109,8 +116,10 @@ rm_kernel_info_get(VALUE obj)
 void
 rm_kernel_info_set(VALUE obj, KernelInfo *kernel)
 {
-    rb_check_typeddata(obj, &rm_kernel_info_data_type);
-    RTYPEDDATA_DATA(obj) = kernel;
+    MagickKernelInfo *magick_kernel;
+
+    TypedData_Get_Struct(obj, MagickKernelInfo, &rm_kernel_info_data_type, magick_kernel);
+    magick_kernel->kernel = kernel;
 }
 
 /**
@@ -334,6 +343,7 @@ KernelInfo_init_copy(VALUE self, VALUE orig)
 VALUE
 KernelInfo_builtin(VALUE self, VALUE what, VALUE geometry)
 {
+    VALUE kernel_obj;
     KernelInfo *kernel;
     KernelInfoType kernel_type;
     GeometryInfo info;
@@ -382,5 +392,7 @@ KernelInfo_builtin(VALUE self, VALUE what, VALUE geometry)
         rb_raise(rb_eRuntimeError, "failed to acquire builtin kernel");
     }
 
-    return TypedData_Wrap_Struct(self, &rm_kernel_info_data_type, kernel);
+    kernel_obj = KernelInfo_alloc(self);
+    rm_kernel_info_set(kernel_obj, kernel);
+    return kernel_obj;
 }
