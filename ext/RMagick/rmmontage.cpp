@@ -23,7 +23,7 @@ const rb_data_type_t rm_montage_data_type = {
 
 
 /**
- * Destroy the MontageInfo struct and free the Montage struct.
+ * Destroy the MontageInfo struct and free the MagickMontage struct.
  *
  * No Ruby usage (internal function)
  *
@@ -36,7 +36,7 @@ const rb_data_type_t rm_montage_data_type = {
 static void
 Montage_destroy(void *obj)
 {
-    Montage *montage = (Montage *)obj;
+    MagickMontage *montage = (MagickMontage *)obj;
 
     // If we saved a temporary texture image, delete it now.
     if (montage->info && montage->info->texture != NULL)
@@ -59,12 +59,12 @@ Montage_destroy(void *obj)
   *
   * No Ruby usage (internal function)
   *
-  * @param ptr pointer to the Montage object
+  * @param ptr pointer to the MagickMontage struct
   */
 static size_t
 Montage_memsize(const void *ptr)
 {
-    return sizeof(Montage);
+    return sizeof(MagickMontage);
 }
 
 
@@ -77,7 +77,7 @@ VALUE
 Montage_alloc(VALUE klass)
 {
     MontageInfo *montage_info;
-    Montage *montage;
+    MagickMontage *montage;
     Info *image_info;
     VALUE montage_obj;
 
@@ -96,7 +96,7 @@ Montage_alloc(VALUE klass)
         rb_raise(rb_eNoMemError, "not enough memory to initialize Magick::ImageList::Montage object");
     }
 
-    montage = ALLOC(Montage);
+    montage = ALLOC(MagickMontage);
     montage->info = montage_info;
     montage->compose = OverCompositeOp;
     montage_obj = TypedData_Wrap_Struct(klass, &rm_montage_data_type, montage);
@@ -108,20 +108,20 @@ Montage_alloc(VALUE klass)
 
 
 /**
- * Return the Montage struct of an object that is about to be changed.
+ * Return the MagickMontage struct of an object that is about to be changed.
  *
  * No Ruby usage (internal function)
  *
  * @param self the Montage object
- * @return the Montage struct
- * @throw RuntimeError if an offloaded call is using the Montage
+ * @return the MagickMontage struct
+ * @throw RuntimeError if an offloaded call is using the Montage object
  */
-static Montage *
+static MagickMontage *
 get_writable_montage(VALUE self)
 {
-    Montage *montage;
+    MagickMontage *montage;
 
-    TypedData_Get_Struct(self, Montage, &rm_montage_data_type, montage);
+    TypedData_Get_Struct(self, MagickMontage, &rm_montage_data_type, montage);
     rm_gvl_check_writable(montage);
     return montage;
 }
@@ -136,7 +136,7 @@ get_writable_montage(VALUE self)
 VALUE
 Montage_background_color_eq(VALUE self, VALUE color)
 {
-    Montage *montage;
+    MagickMontage *montage;
 
     montage = get_writable_montage(self);
     Color_to_PixelColor(&montage->info->background_color, color);
@@ -153,7 +153,7 @@ Montage_background_color_eq(VALUE self, VALUE color)
 VALUE
 Montage_border_color_eq(VALUE self, VALUE color)
 {
-    Montage *montage;
+    MagickMontage *montage;
 
     montage = get_writable_montage(self);
     Color_to_PixelColor(&montage->info->border_color, color);
@@ -170,7 +170,7 @@ Montage_border_color_eq(VALUE self, VALUE color)
 VALUE
 Montage_border_width_eq(VALUE self, VALUE width)
 {
-    Montage *montage;
+    MagickMontage *montage;
 
     montage = get_writable_montage(self);
     montage->info->border_width = NUM2ULONG(width);
@@ -187,7 +187,7 @@ Montage_border_width_eq(VALUE self, VALUE width)
 VALUE
 Montage_compose_eq(VALUE self, VALUE compose)
 {
-    Montage *montage;
+    MagickMontage *montage;
 
     montage = get_writable_montage(self);
     VALUE_TO_ENUM(compose, montage->compose, CompositeOperator);
@@ -204,7 +204,7 @@ Montage_compose_eq(VALUE self, VALUE compose)
 VALUE
 Montage_filename_eq(VALUE self, VALUE filename)
 {
-    Montage *montage;
+    MagickMontage *montage;
 
     montage = get_writable_montage(self);
     strlcpy(montage->info->filename, StringValueCStr(filename), sizeof(montage->info->filename));
@@ -221,7 +221,7 @@ Montage_filename_eq(VALUE self, VALUE filename)
 VALUE
 Montage_fill_eq(VALUE self, VALUE color)
 {
-    Montage *montage;
+    MagickMontage *montage;
 
     montage = get_writable_montage(self);
     Color_to_PixelColor(&montage->info->fill, color);
@@ -238,7 +238,7 @@ Montage_fill_eq(VALUE self, VALUE color)
 VALUE
 Montage_font_eq(VALUE self, VALUE font)
 {
-    Montage *montage;
+    MagickMontage *montage;
 
     montage = get_writable_montage(self);
     magick_clone_string(&montage->info->font, StringValueCStr(font));
@@ -260,7 +260,7 @@ Montage_font_eq(VALUE self, VALUE font)
 VALUE
 Montage_frame_eq(VALUE self, VALUE frame_arg)
 {
-    Montage *montage;
+    MagickMontage *montage;
     VALUE frame;
 
     montage = get_writable_montage(self);
@@ -287,7 +287,7 @@ Montage_frame_eq(VALUE self, VALUE frame_arg)
 VALUE
 Montage_geometry_eq(VALUE self, VALUE geometry_arg)
 {
-    Montage *montage;
+    MagickMontage *montage;
     VALUE geometry;
 
     montage = get_writable_montage(self);
@@ -309,7 +309,7 @@ Montage_geometry_eq(VALUE self, VALUE geometry_arg)
 VALUE
 Montage_gravity_eq(VALUE self, VALUE gravity)
 {
-    Montage *montage;
+    MagickMontage *montage;
 
     montage = get_writable_montage(self);
     VALUE_TO_ENUM(gravity, montage->info->gravity, GravityType);
@@ -339,7 +339,7 @@ Montage_initialize(VALUE self)
 VALUE
 Montage_matte_color_eq(VALUE self, VALUE color)
 {
-    Montage *montage;
+    MagickMontage *montage;
 
     montage = get_writable_montage(self);
     Color_to_PixelColor(&montage->info->matte_color, color);
@@ -356,7 +356,7 @@ Montage_matte_color_eq(VALUE self, VALUE color)
 VALUE
 Montage_pointsize_eq(VALUE self, VALUE size)
 {
-    Montage *montage;
+    MagickMontage *montage;
 
     montage = get_writable_montage(self);
     montage->info->pointsize = NUM2DBL(size);
@@ -373,7 +373,7 @@ Montage_pointsize_eq(VALUE self, VALUE size)
 VALUE
 Montage_shadow_eq(VALUE self, VALUE shadow)
 {
-    Montage *montage;
+    MagickMontage *montage;
 
     montage = get_writable_montage(self);
     montage->info->shadow = (MagickBooleanType) RTEST(shadow);
@@ -390,7 +390,7 @@ Montage_shadow_eq(VALUE self, VALUE shadow)
 VALUE
 Montage_stroke_eq(VALUE self, VALUE color)
 {
-    Montage *montage;
+    MagickMontage *montage;
 
     montage = get_writable_montage(self);
     Color_to_PixelColor(&montage->info->stroke, color);
@@ -408,7 +408,7 @@ Montage_stroke_eq(VALUE self, VALUE color)
 VALUE
 Montage_texture_eq(VALUE self, VALUE texture)
 {
-    Montage *montage;
+    MagickMontage *montage;
     Image *texture_image;
     char temp_name[MaxTextExtent];
 
@@ -448,7 +448,7 @@ Montage_texture_eq(VALUE self, VALUE texture)
 VALUE
 Montage_tile_eq(VALUE self, VALUE tile_arg)
 {
-    Montage *montage;
+    MagickMontage *montage;
     VALUE tile;
 
     montage = get_writable_montage(self);
@@ -473,7 +473,7 @@ Montage_tile_eq(VALUE self, VALUE tile_arg)
 VALUE
 Montage_title_eq(VALUE self, VALUE title)
 {
-    Montage *montage;
+    MagickMontage *montage;
     const char *title_cstr;
 
     montage = get_writable_montage(self);

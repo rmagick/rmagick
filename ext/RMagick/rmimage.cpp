@@ -11173,7 +11173,7 @@ Image_polaroid(int argc, VALUE *argv, VALUE self)
     Image *image, *clone, *new_image;
     VALUE options;
     double angle = -5.0;
-    Draw *draw;
+    MagickDraw *draw;
     ExceptionInfo *exception;
     const char *caption;
 
@@ -11191,7 +11191,7 @@ Image_polaroid(int argc, VALUE *argv, VALUE self)
     }
 
     options = rm_polaroid_new();
-    TypedData_Get_Struct(options, Draw, &rm_draw_data_type, draw);
+    TypedData_Get_Struct(options, MagickDraw, &rm_draw_data_type, draw);
 
     image = rm_check_readable(self);
     clone = rm_clone_image(image);

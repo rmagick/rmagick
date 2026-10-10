@@ -48,7 +48,7 @@ DEFINE_GVL_STUB3(GetTypeMetrics, Image *, const DrawInfo *, TypeMetric *);
 
 
 /**
- * Fetch the Draw struct and ensure it has been initialized (draw->info != NULL).
+ * Fetch the MagickDraw struct and ensure it has been initialized (draw->info != NULL).
  *
  * Draw_alloc() leaves draw->info NULL until #initialize runs, so a Draw obtained
  * via .allocate (or a subclass whose #initialize skips super) would otherwise
@@ -57,15 +57,15 @@ DEFINE_GVL_STUB3(GetTypeMetrics, Image *, const DrawInfo *, TypeMetric *);
  * No Ruby usage (internal function)
  *
  * @param self the Draw object
- * @return the initialized Draw struct
+ * @return the initialized MagickDraw struct
  * @throw RuntimeError if the Draw object has not been initialized
  */
-static Draw *
+static MagickDraw *
 get_draw(VALUE self)
 {
-    Draw *draw;
+    MagickDraw *draw;
 
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    TypedData_Get_Struct(self, MagickDraw, &rm_draw_data_type, draw);
     if (!draw->info)
     {
         rb_raise(rb_eRuntimeError, "%s has not been initialized", rb_obj_classname(self));
@@ -75,19 +75,19 @@ get_draw(VALUE self)
 
 
 /**
- * Get the Draw struct of a Draw object for a method that changes it.
+ * Get the MagickDraw struct of a Draw object for a method that changes it.
  *
  * No Ruby usage (internal function)
  *
  * @param self the Draw object
- * @return the initialized Draw struct
+ * @return the initialized MagickDraw struct
  * @throw FrozenError if the Draw object is frozen
  * @throw RuntimeError if an offloaded call is using the Draw object
  */
-static Draw *
+static MagickDraw *
 get_writable_draw(VALUE self)
 {
-    Draw *draw;
+    MagickDraw *draw;
 
     rb_check_frozen(self);
     draw = get_draw(self);
@@ -105,7 +105,7 @@ get_writable_draw(VALUE self)
 VALUE
 Draw_affine_eq(VALUE self, VALUE matrix)
 {
-    Draw *draw;
+    MagickDraw *draw;
 
     draw = get_writable_draw(self);
     Export_AffineMatrix(&draw->info->affine, matrix);
@@ -122,7 +122,7 @@ Draw_affine_eq(VALUE self, VALUE matrix)
 VALUE
 Draw_align_eq(VALUE self, VALUE align)
 {
-    Draw *draw;
+    MagickDraw *draw;
 
     draw = get_writable_draw(self);
     VALUE_TO_ENUM(align, draw->info->align, AlignType);
@@ -139,7 +139,7 @@ Draw_align_eq(VALUE self, VALUE align)
 VALUE
 Draw_decorate_eq(VALUE self, VALUE decorate)
 {
-    Draw *draw;
+    MagickDraw *draw;
 
     draw = get_writable_draw(self);
     VALUE_TO_ENUM(decorate, draw->info->decorate, DecorationType);
@@ -156,7 +156,7 @@ Draw_decorate_eq(VALUE self, VALUE decorate)
 VALUE
 Draw_density_eq(VALUE self, VALUE density)
 {
-    Draw *draw;
+    MagickDraw *draw;
 
     draw = get_writable_draw(self);
     magick_clone_string(&draw->info->density, StringValueCStr(density));
@@ -174,7 +174,7 @@ Draw_density_eq(VALUE self, VALUE density)
 VALUE
 Draw_encoding_eq(VALUE self, VALUE encoding)
 {
-    Draw *draw;
+    MagickDraw *draw;
 
     draw = get_writable_draw(self);
     magick_clone_string(&draw->info->encoding, StringValueCStr(encoding));
@@ -192,7 +192,7 @@ Draw_encoding_eq(VALUE self, VALUE encoding)
 VALUE
 Draw_fill_eq(VALUE self, VALUE fill)
 {
-    Draw *draw;
+    MagickDraw *draw;
 
     draw = get_writable_draw(self);
     Color_to_PixelColor(&draw->info->fill, fill);
@@ -212,7 +212,7 @@ Draw_fill_eq(VALUE self, VALUE fill)
 VALUE
 Draw_fill_pattern_eq(VALUE self, VALUE pattern)
 {
-    Draw *draw;
+    MagickDraw *draw;
 
     draw = get_writable_draw(self);
 
@@ -246,7 +246,7 @@ Draw_fill_pattern_eq(VALUE self, VALUE pattern)
 VALUE
 Draw_font_eq(VALUE self, VALUE font)
 {
-    Draw *draw;
+    MagickDraw *draw;
 
     draw = get_writable_draw(self);
     magick_clone_string(&draw->info->font, StringValueCStr(font));
@@ -264,7 +264,7 @@ Draw_font_eq(VALUE self, VALUE font)
 VALUE
 Draw_font_family_eq(VALUE self, VALUE family)
 {
-    Draw *draw;
+    MagickDraw *draw;
 
     draw = get_writable_draw(self);
     magick_clone_string(&draw->info->family, StringValueCStr(family));
@@ -282,7 +282,7 @@ Draw_font_family_eq(VALUE self, VALUE family)
 VALUE
 Draw_font_stretch_eq(VALUE self, VALUE stretch)
 {
-    Draw *draw;
+    MagickDraw *draw;
 
     draw = get_writable_draw(self);
     VALUE_TO_ENUM(stretch, draw->info->stretch, StretchType);
@@ -299,7 +299,7 @@ Draw_font_stretch_eq(VALUE self, VALUE stretch)
 VALUE
 Draw_font_style_eq(VALUE self, VALUE style)
 {
-    Draw *draw;
+    MagickDraw *draw;
 
     draw = get_writable_draw(self);
     VALUE_TO_ENUM(style, draw->info->style, StyleType);
@@ -317,7 +317,7 @@ Draw_font_style_eq(VALUE self, VALUE style)
 VALUE
 Draw_font_weight_eq(VALUE self, VALUE weight)
 {
-    Draw *draw;
+    MagickDraw *draw;
     size_t w;
 
     draw = get_writable_draw(self);
@@ -383,7 +383,7 @@ Draw_font_weight_eq(VALUE self, VALUE weight)
 VALUE
 Draw_gravity_eq(VALUE self, VALUE grav)
 {
-    Draw *draw;
+    MagickDraw *draw;
 
     draw = get_writable_draw(self);
     VALUE_TO_ENUM(grav, draw->info->gravity, GravityType);
@@ -401,7 +401,7 @@ Draw_gravity_eq(VALUE self, VALUE grav)
 VALUE
 Draw_kerning_eq(VALUE self, VALUE kerning)
 {
-    Draw *draw;
+    MagickDraw *draw;
 
     draw = get_writable_draw(self);
     draw->info->kerning = NUM2DBL(kerning);
@@ -418,7 +418,7 @@ Draw_kerning_eq(VALUE self, VALUE kerning)
 VALUE
 Draw_interline_spacing_eq(VALUE self, VALUE spacing)
 {
-    Draw *draw;
+    MagickDraw *draw;
 
     draw = get_writable_draw(self);
     draw->info->interline_spacing = NUM2DBL(spacing);
@@ -435,7 +435,7 @@ Draw_interline_spacing_eq(VALUE self, VALUE spacing)
 VALUE
 Draw_interword_spacing_eq(VALUE self, VALUE spacing)
 {
-    Draw *draw;
+    MagickDraw *draw;
 
     draw = get_writable_draw(self);
     draw->info->interword_spacing = NUM2DBL(spacing);
@@ -539,7 +539,7 @@ Image *str_to_image(VALUE str)
 VALUE
 Draw_marshal_dump(VALUE self)
 {
-    Draw *draw;
+    MagickDraw *draw;
     VALUE ddraw;
 
     draw = get_draw(self);
@@ -598,10 +598,10 @@ Draw_marshal_dump(VALUE self)
 VALUE
 Draw_marshal_load(VALUE self, VALUE ddraw)
 {
-    Draw *draw;
+    MagickDraw *draw;
     VALUE val;
 
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    TypedData_Get_Struct(self, MagickDraw, &rm_draw_data_type, draw);
 
     Check_Type(ddraw, T_HASH);
 
@@ -672,7 +672,7 @@ Draw_marshal_load(VALUE self, VALUE ddraw)
 VALUE
 Draw_pointsize_eq(VALUE self, VALUE pointsize)
 {
-    Draw *draw;
+    MagickDraw *draw;
 
     draw = get_writable_draw(self);
     draw->info->pointsize = NUM2DBL(pointsize);
@@ -689,7 +689,7 @@ Draw_pointsize_eq(VALUE self, VALUE pointsize)
 VALUE
 Draw_rotation_eq(VALUE self, VALUE deg)
 {
-    Draw *draw;
+    MagickDraw *draw;
     double degrees;
     AffineMatrix affine, current;
 
@@ -726,7 +726,7 @@ Draw_rotation_eq(VALUE self, VALUE deg)
 VALUE
 Draw_stroke_eq(VALUE self, VALUE stroke)
 {
-    Draw *draw;
+    MagickDraw *draw;
 
     draw = get_writable_draw(self);
     Color_to_PixelColor(&draw->info->stroke, stroke);
@@ -745,7 +745,7 @@ Draw_stroke_eq(VALUE self, VALUE stroke)
 VALUE
 Draw_stroke_pattern_eq(VALUE self, VALUE pattern)
 {
-    Draw *draw;
+    MagickDraw *draw;
 
     draw = get_writable_draw(self);
 
@@ -780,7 +780,7 @@ Draw_stroke_pattern_eq(VALUE self, VALUE pattern)
 VALUE
 Draw_stroke_width_eq(VALUE self, VALUE stroke_width)
 {
-    Draw *draw;
+    MagickDraw *draw;
 
     draw = get_writable_draw(self);
     draw->info->stroke_width = NUM2DBL(stroke_width);
@@ -797,7 +797,7 @@ Draw_stroke_width_eq(VALUE self, VALUE stroke_width)
 VALUE
 Draw_text_antialias_eq(VALUE self, VALUE text_antialias)
 {
-    Draw *draw;
+    MagickDraw *draw;
 
     draw = get_writable_draw(self);
     draw->info->text_antialias = (MagickBooleanType) RTEST(text_antialias);
@@ -827,7 +827,7 @@ Draw_tile_eq(VALUE self, VALUE image)
 VALUE
 Draw_undercolor_eq(VALUE self, VALUE undercolor)
 {
-    Draw *draw;
+    MagickDraw *draw;
 
     draw = get_writable_draw(self);
     Color_to_PixelColor(&draw->info->undercolor, undercolor);
@@ -844,7 +844,7 @@ struct Draw_annotate_args
     VALUE x_arg;
     VALUE y_arg;
     VALUE text;
-    Draw *draw;
+    MagickDraw *draw;
     AffineMatrix keep;
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
@@ -865,7 +865,7 @@ static VALUE
 annotate_ensure(VALUE arg)
 {
     struct Draw_annotate_args *annotate = (struct Draw_annotate_args *)arg;
-    Draw *draw = annotate->draw;
+    MagickDraw *draw = annotate->draw;
 
     if (!rm_gvl_in_use(draw))
     {
@@ -899,7 +899,7 @@ static VALUE
 annotate_body(VALUE arg)
 {
     struct Draw_annotate_args *annotate = (struct Draw_annotate_args *)arg;
-    Draw *draw = annotate->draw;
+    MagickDraw *draw = annotate->draw;
     Image *image;
     unsigned long width, height;
     long x, y;
@@ -932,7 +932,7 @@ annotate_body(VALUE arg)
         snprintf(geometry_str, sizeof(geometry_str), "%lux%lu%+ld%+ld", width, height, x, y);
     }
 
-    // Store in Draw structure. The text is drawn as given: it is not run
+    // Store in the MagickDraw struct. The text is drawn as given: it is not run
     // through InterpretImageProperties(), so a `%[...]` or `%x` escape in it is
     // not expanded. Everything those escapes provide is available directly from
     // Ruby -- Image#columns, Image#filename, Image#artifact and so on.
@@ -1043,7 +1043,7 @@ VALUE Draw_annotate(
 VALUE
 Draw_composite(int argc, VALUE *argv, VALUE self)
 {
-    Draw *draw;
+    MagickDraw *draw;
     const char *op;
     double x, y, width, height;
     CompositeOperator composite_op;
@@ -1080,7 +1080,7 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
         rb_raise(rb_eArgError, "unknown composite operator (%d)", composite_op);
     }
 
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    TypedData_Get_Struct(self, MagickDraw, &rm_draw_data_type, draw);
 
     // Create a temp copy of the composite image
     rm_write_temp_image(comp_img, name, sizeof(name));
@@ -1110,7 +1110,7 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
 static void
 free_primitive(void *ptr, intptr_t arg ATTRIBUTE_UNUSED)
 {
-    Draw *draw = (Draw *)ptr;
+    MagickDraw *draw = (MagickDraw *)ptr;
 
     magick_free(draw->info->primitive);
     draw->info->primitive = NULL;
@@ -1119,7 +1119,7 @@ free_primitive(void *ptr, intptr_t arg ATTRIBUTE_UNUSED)
 static void
 free_text(void *ptr, intptr_t arg ATTRIBUTE_UNUSED)
 {
-    Draw *draw = (Draw *)ptr;
+    MagickDraw *draw = (MagickDraw *)ptr;
 
     magick_free(draw->info->text);
     draw->info->text = NULL;
@@ -1136,7 +1136,7 @@ free_text(void *ptr, intptr_t arg ATTRIBUTE_UNUSED)
 VALUE
 Draw_draw(VALUE self, VALUE image_arg)
 {
-    Draw *draw;
+    MagickDraw *draw;
     Image *image;
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
@@ -1242,10 +1242,10 @@ Draw_get_multiline_type_metrics(
  */
 VALUE Draw_init_copy(VALUE self, VALUE orig)
 {
-    Draw *copy, *original;
+    MagickDraw *copy, *original;
 
-    TypedData_Get_Struct(orig, Draw, &rm_draw_data_type, original);
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, copy);
+    TypedData_Get_Struct(orig, MagickDraw, &rm_draw_data_type, original);
+    TypedData_Get_Struct(self, MagickDraw, &rm_draw_data_type, copy);
 
     copy->info = CloneDrawInfo(NULL, original->info);
     if (!copy->info)
@@ -1270,13 +1270,13 @@ VALUE Draw_init_copy(VALUE self, VALUE orig)
 VALUE
 Draw_initialize(VALUE self)
 {
-    Draw *draw, *draw_options;
+    MagickDraw *draw, *draw_options;
     VALUE options;
 
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    TypedData_Get_Struct(self, MagickDraw, &rm_draw_data_type, draw);
 
     options = new_DrawOptions();
-    TypedData_Get_Struct(options, Draw, &rm_draw_data_type, draw_options);
+    TypedData_Get_Struct(options, MagickDraw, &rm_draw_data_type, draw_options);
     draw->info = draw_options->info;
     draw_options->info = NULL;
 
@@ -1295,9 +1295,9 @@ Draw_initialize(VALUE self)
 VALUE
 Draw_inspect(VALUE self)
 {
-    Draw *draw;
+    MagickDraw *draw;
 
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    TypedData_Get_Struct(self, MagickDraw, &rm_draw_data_type, draw);
     return draw->primitives ? draw->primitives : rb_str_new2("(no primitives defined)");
 }
 
@@ -1309,11 +1309,11 @@ Draw_inspect(VALUE self)
  */
 VALUE Draw_alloc(VALUE klass)
 {
-    Draw *draw;
+    MagickDraw *draw;
     VALUE draw_obj;
 
-    draw = ALLOC(Draw);
-    memset(draw, 0, sizeof(Draw));
+    draw = ALLOC(MagickDraw);
+    memset(draw, 0, sizeof(MagickDraw));
     draw_obj = TypedData_Wrap_Struct(klass, &rm_draw_data_type, draw);
 
     RB_GC_GUARD(draw_obj);
@@ -1331,11 +1331,11 @@ VALUE Draw_alloc(VALUE klass)
 VALUE
 Draw_primitive(VALUE self, VALUE primitive)
 {
-    Draw *draw;
+    MagickDraw *draw;
 
     rb_check_frozen(self);
     StringValue(primitive);
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    TypedData_Get_Struct(self, MagickDraw, &rm_draw_data_type, draw);
 
     if (draw->primitives == (VALUE)0)
     {
@@ -1355,12 +1355,12 @@ Draw_primitive(VALUE self, VALUE primitive)
  *
  * No Ruby usage (internal function)
  *
- * @param drawptr pointer to a Draw object
+ * @param drawptr pointer to a MagickDraw struct
  */
 static void
 Draw_compact(void *drawptr)
 {
-    Draw *draw = (Draw *)drawptr;
+    MagickDraw *draw = (MagickDraw *)drawptr;
 
     if (draw->primitives != (VALUE)0)
     {
@@ -1373,12 +1373,12 @@ Draw_compact(void *drawptr)
  *
  * No Ruby usage (internal function)
  *
- * @param drawptr pointer to a Draw object
+ * @param drawptr pointer to a MagickDraw struct
  */
 static void
 Draw_mark(void *drawptr)
 {
-    Draw *draw = (Draw *)drawptr;
+    MagickDraw *draw = (MagickDraw *)drawptr;
 
     if (draw->primitives != (VALUE)0)
     {
@@ -1392,12 +1392,12 @@ Draw_mark(void *drawptr)
  *
  * No Ruby usage (internal function)
  *
- * @param drawptr pointer to a Draw object
+ * @param drawptr pointer to a MagickDraw struct
  */
 static void
 Draw_destroy(void *drawptr)
 {
-    Draw *draw = (Draw *)drawptr;
+    MagickDraw *draw = (MagickDraw *)drawptr;
 
     if (draw->info)
     {
@@ -1424,12 +1424,12 @@ Draw_destroy(void *drawptr)
   *
   * No Ruby usage (internal function)
   *
-  * @param infoptr pointer to the Draw object
+  * @param drawptr pointer to the MagickDraw struct
   */
 static size_t
 Draw_memsize(const void *drawptr)
 {
-    return sizeof(Draw);
+    return sizeof(MagickDraw);
 }
 
 /**
@@ -1457,11 +1457,11 @@ new_DrawOptions(void)
 VALUE
 DrawOptions_alloc(VALUE klass)
 {
-    Draw *draw_options;
+    MagickDraw *draw_options;
     VALUE draw_options_obj;
 
-    draw_options = ALLOC(Draw);
-    memset(draw_options, 0, sizeof(Draw));
+    draw_options = ALLOC(MagickDraw);
+    memset(draw_options, 0, sizeof(MagickDraw));
     draw_options_obj = TypedData_Wrap_Struct(klass, &rm_draw_data_type, draw_options);
 
     RB_GC_GUARD(draw_options_obj);
@@ -1478,9 +1478,9 @@ DrawOptions_alloc(VALUE klass)
 VALUE
 DrawOptions_initialize(VALUE self)
 {
-    Draw *draw_options;
+    MagickDraw *draw_options;
 
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw_options);
+    TypedData_Get_Struct(self, MagickDraw, &rm_draw_data_type, draw_options);
     draw_options->info = AcquireDrawInfo();
     if (!draw_options->info)
     {
@@ -1509,11 +1509,11 @@ PolaroidOptions_alloc(VALUE klass)
 {
     VALUE polaroid_obj;
     ImageInfo *image_info;
-    Draw *draw;
+    MagickDraw *draw;
 
     image_info = CloneImageInfo(NULL);
 
-    draw = ALLOC(Draw);
+    draw = ALLOC(MagickDraw);
     memset(draw, 0, sizeof(*draw));
 
     draw->info = CloneDrawInfo(image_info, (DrawInfo *) NULL);
@@ -1537,7 +1537,7 @@ PolaroidOptions_alloc(VALUE klass)
 VALUE
 PolaroidOptions_initialize(VALUE self)
 {
-    Draw *draw;
+    MagickDraw *draw;
     ExceptionInfo *exception;
 
     // Default shadow color
@@ -1582,10 +1582,10 @@ rm_polaroid_new(void)
 VALUE
 PolaroidOptions_shadow_color_eq(VALUE self, VALUE shadow)
 {
-    Draw *draw;
+    MagickDraw *draw;
 
     rb_check_frozen(self);
-    TypedData_Get_Struct(self, Draw, &rm_draw_data_type, draw);
+    TypedData_Get_Struct(self, MagickDraw, &rm_draw_data_type, draw);
     Color_to_PixelColor(&draw->shadow_color, shadow);
     return shadow;
 }
@@ -1600,7 +1600,7 @@ PolaroidOptions_shadow_color_eq(VALUE self, VALUE shadow)
 VALUE
 PolaroidOptions_border_color_eq(VALUE self, VALUE border)
 {
-    Draw *draw;
+    MagickDraw *draw;
 
     draw = get_writable_draw(self);
     Color_to_PixelColor(&draw->info->border_color, border);
@@ -1674,7 +1674,7 @@ static VALUE
 get_type_metrics(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
 {
     Image *image;
-    Draw *draw;
+    MagickDraw *draw;
     VALUE t;
     VALUE text_arg = Qnil;
     TypeMetric metrics;

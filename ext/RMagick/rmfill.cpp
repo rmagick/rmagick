@@ -25,13 +25,13 @@ typedef struct
     double y2; /**< y position of second point */
     PixelColor start_color; /**< the start color */
     PixelColor stop_color; /**< the stop color */
-} rm_GradientFill;
+} MagickGradientFill;
 
 /** Data associated with a TextureFill */
 typedef struct
 {
     Image *texture; /**< the texture */
-} rm_TextureFill;
+} MagickTextureFill;
 
 const rb_data_type_t rm_gradient_fill_data_type = {
     "Magick::GradientFill",
@@ -70,12 +70,12 @@ GradientFill_free(void *fill)
   *
   * No Ruby usage (internal function)
   *
-  * @param ptr pointer to the GradientFill object
+  * @param ptr pointer to the MagickGradientFill struct
   */
 static size_t
 GradientFill_memsize(const void *ptr)
 {
-    return sizeof(rm_GradientFill);
+    return sizeof(MagickGradientFill);
 }
 
 
@@ -87,9 +87,9 @@ GradientFill_memsize(const void *ptr)
 VALUE
 GradientFill_alloc(VALUE klass)
 {
-    rm_GradientFill *fill;
+    MagickGradientFill *fill;
 
-    return TypedData_Make_Struct(klass, rm_GradientFill, &rm_gradient_fill_data_type, fill);
+    return TypedData_Make_Struct(klass, MagickGradientFill, &rm_gradient_fill_data_type, fill);
 }
 
 
@@ -114,9 +114,9 @@ GradientFill_initialize(
                        VALUE start_color,
                        VALUE stop_color)
 {
-    rm_GradientFill *fill;
+    MagickGradientFill *fill;
 
-    TypedData_Get_Struct(self, rm_GradientFill, &rm_gradient_fill_data_type, fill);
+    TypedData_Get_Struct(self, MagickGradientFill, &rm_gradient_fill_data_type, fill);
 
     fill->x1 = NUM2DBL(x1);
     fill->y1 = NUM2DBL(y1);
@@ -639,12 +639,12 @@ h_diagonal_fill(
 VALUE
 GradientFill_fill(VALUE self, VALUE image_obj)
 {
-    rm_GradientFill *fill;
+    MagickGradientFill *fill;
     Image *image;
     PixelColor start_color, stop_color;
     double x1, y1, x2, y2;          // points on the line
 
-    TypedData_Get_Struct(self, rm_GradientFill, &rm_gradient_fill_data_type, fill);
+    TypedData_Get_Struct(self, MagickGradientFill, &rm_gradient_fill_data_type, fill);
     image = rm_check_writable(rm_cur_image(image_obj));
 
     x1 = fill->x1;
@@ -709,7 +709,7 @@ GradientFill_fill(VALUE self, VALUE image_obj)
 static void
 TextureFill_free(void *fill_obj)
 {
-    rm_TextureFill *fill = (rm_TextureFill *)fill_obj;
+    MagickTextureFill *fill = (MagickTextureFill *)fill_obj;
 
     // Do not trace destruction
     if (fill->texture)
@@ -725,12 +725,12 @@ TextureFill_free(void *fill_obj)
   *
   * No Ruby usage (internal function)
   *
-  * @param ptr pointer to the TextureFill object
+  * @param ptr pointer to the MagickTextureFill struct
   */
 static size_t
 TextureFill_memsize(const void *ptr)
 {
-    return sizeof(rm_TextureFill);
+    return sizeof(MagickTextureFill);
 }
 
 
@@ -742,8 +742,8 @@ TextureFill_memsize(const void *ptr)
 VALUE
 TextureFill_alloc(VALUE klass)
 {
-    rm_TextureFill *fill;
-    return TypedData_Make_Struct(klass, rm_TextureFill, &rm_texture_fill_data_type, fill);
+    MagickTextureFill *fill;
+    return TypedData_Make_Struct(klass, MagickTextureFill, &rm_texture_fill_data_type, fill);
 }
 
 /**
@@ -756,11 +756,11 @@ TextureFill_alloc(VALUE klass)
 VALUE
 TextureFill_initialize(VALUE self, VALUE texture_arg)
 {
-    rm_TextureFill *fill;
+    MagickTextureFill *fill;
     Image *texture;
     VALUE texture_image;
 
-    TypedData_Get_Struct(self, rm_TextureFill, &rm_texture_fill_data_type, fill);
+    TypedData_Get_Struct(self, MagickTextureFill, &rm_texture_fill_data_type, fill);
 
     texture_image = rm_cur_image(texture_arg);
 
@@ -785,14 +785,14 @@ TextureFill_initialize(VALUE self, VALUE texture_arg)
 VALUE
 TextureFill_fill(VALUE self, VALUE image_obj)
 {
-    rm_TextureFill *fill;
+    MagickTextureFill *fill;
     Image *image;
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
 #endif
 
     image = rm_check_writable(rm_cur_image(image_obj));
-    TypedData_Get_Struct(self, rm_TextureFill, &rm_texture_fill_data_type, fill);
+    TypedData_Get_Struct(self, MagickTextureFill, &rm_texture_fill_data_type, fill);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
