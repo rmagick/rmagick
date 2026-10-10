@@ -323,6 +323,7 @@ VALUE ImageList_combine(int argc, VALUE *argv, VALUE self)
 #endif
 
     VALUE clones;
+    VALUE image_ary = rb_iv_get(self, "@images");
 #if defined(IMAGEMAGICK_6)
     check_images_writable(self);
 #endif
@@ -332,11 +333,11 @@ VALUE ImageList_combine(int argc, VALUE *argv, VALUE self)
     old_colorspace = images->colorspace;
     SetImageColorspace(images, colorspace);
     DECLARE_GVL_CALL(call, CombineImages, images, channel, exception);
-    call.update(rb_ary_entry(rb_iv_get(self, "@images"), 0)).restore(restore_colorspace, images, old_colorspace);
+    call.update(rb_ary_entry(image_ary, 0)).restore(restore_colorspace, images, old_colorspace);
 #else
     DECLARE_GVL_CALL(call, CombineImages, images, colorspace, exception);
 #endif
-    new_image = call.read_each(rb_iv_get(self, "@images")).split(images).release(exception).run<Image *>();
+    new_image = call.read_each(image_ary).split(images).release(exception).run<Image *>();
 
     rm_split(images);
     RB_GC_GUARD(clones);

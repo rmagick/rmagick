@@ -751,7 +751,6 @@ rm_gvl_call::read(VALUE obj)
 }
 
 
-
 /**
  * The call changes the data of obj, or the caller replaces it with the result.
  * Other fibers cannot use it while the call is in flight.
@@ -764,7 +763,6 @@ rm_gvl_call::update(VALUE obj)
 {
     return add_object(obj, true, false);
 }
-
 
 
 /**

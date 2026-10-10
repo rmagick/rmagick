@@ -1937,8 +1937,8 @@ static VALUE
 special_composite(VALUE self, VALUE overlay_obj, double image_pct, double overlay_pct,
                   long x_off, long y_off, CompositeOperator op)
 {
-    Image *image = rm_image_get(self);
-    Image *overlay = rm_image_get(overlay_obj);
+    Image *image = rm_check_readable(self);
+    Image *overlay = rm_check_writable(overlay_obj);
     Image *new_image;
     char geometry[20];
 #if defined(IMAGEMAGICK_7)
@@ -6075,7 +6075,7 @@ Image_dissolve(int argc, VALUE *argv, VALUE self)
     }
 
     composite_image = special_composite(self, ovly, src_percent, dst_percent,
-                                         x_offset, y_offset, DissolveCompositeOp);
+                                        x_offset, y_offset, DissolveCompositeOp);
 
     RB_GC_GUARD(composite_image);
     RB_GC_GUARD(ovly);
@@ -9427,7 +9427,7 @@ Image_marshal_load(VALUE self, VALUE ary)
 static VALUE
 get_image_mask(VALUE self)
 {
-    Image *image = rm_image_get(self);
+    Image *image = rm_check_readable(self);
     Image *mask;
     ExceptionInfo *exception;
 
@@ -9462,17 +9462,21 @@ get_image_mask(VALUE self)
 static VALUE
 set_image_mask(VALUE self, VALUE mask)
 {
-    Image *image = rm_image_get(self);
+    Image *image;
     Image *mask_image, *resized_image;
     Image *clip_mask;
     ExceptionInfo *exception;
-
-    exception = AcquireExceptionInfo();
 
     if (mask != Qnil)
     {
         mask = rm_cur_image(mask);
         mask_image = rm_check_readable(mask);
+    }
+    image = rm_check_frozen(self);
+    exception = AcquireExceptionInfo();
+
+    if (mask != Qnil)
+    {
         clip_mask = rm_clone_image(mask_image);
 
         // Resize if necessary
@@ -9505,7 +9509,7 @@ set_image_mask(VALUE self, VALUE mask)
 static VALUE
 set_image_mask(VALUE self, VALUE mask)
 {
-    Image *image = rm_image_get(self);
+    Image *image;
     Image *mask_image, *resized_image;
     Image *clip_mask;
     long x, y;
@@ -9516,6 +9520,11 @@ set_image_mask(VALUE self, VALUE mask)
     {
         mask = rm_cur_image(mask);
         mask_image = rm_check_readable(mask);
+    }
+    image = rm_check_frozen(self);
+
+    if (mask != Qnil)
+    {
         clip_mask = rm_clone_image(mask_image);
 
         // Resize if necessary
@@ -9614,9 +9623,8 @@ VALUE
 Image_mask(int argc, VALUE *argv, VALUE self)
 {
     VALUE mask;
-    Image *image;
 
-    image = rm_check_readable(self);
+    rm_check_readable(self);
     if (argc == 0)
     {
         return get_image_mask(self);
