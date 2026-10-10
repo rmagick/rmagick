@@ -206,7 +206,7 @@ typedef struct
 {
     CompositeOperator compose; /**< compose operator */
     MontageInfo *info; /**< montage info */
-} Montage;
+} MagickMontage;
 
 // Draw
 //! tmp filename linked list
@@ -223,7 +223,7 @@ typedef struct
     VALUE primitives;           /**< the primitive string */
     struct TmpFile_Name *tmpfile_ary; /**< the tmp filenames */
     PixelColor shadow_color;   /**< PolaroidOptions#shadow_color */
-} Draw;             // make the type match the class name
+} MagickDraw;
 
 // Enum
 //! enumerator over Magick ids

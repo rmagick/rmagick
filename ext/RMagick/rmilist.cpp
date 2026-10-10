@@ -544,7 +544,7 @@ VALUE
 ImageList_montage(VALUE self)
 {
     VALUE montage_obj;
-    Montage *montage;
+    MagickMontage *montage;
     Image *new_images, *images;
     ExceptionInfo *exception;
 
@@ -555,7 +555,7 @@ ImageList_montage(VALUE self)
         rb_yield(montage_obj);
     }
 
-    TypedData_Get_Struct(montage_obj, Montage, &rm_montage_data_type, montage);
+    TypedData_Get_Struct(montage_obj, MagickMontage, &rm_montage_data_type, montage);
 
     VALUE clones;
     check_images_writable(self);
