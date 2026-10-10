@@ -37,14 +37,14 @@ const rb_data_type_t rm_gradient_fill_data_type = {
     "Magick::GradientFill",
     { NULL, GradientFill_free, GradientFill_memsize, },
     0, 0,
-    RUBY_TYPED_FROZEN_SHAREABLE,
+    RUBY_TYPED_FROZEN_SHAREABLE | RUBY_TYPED_FREE_IMMEDIATELY,
 };
 
 const rb_data_type_t rm_texture_fill_data_type = {
     "Magick::TextureFill",
     { NULL, TextureFill_free, TextureFill_memsize, },
     0, 0,
-    RUBY_TYPED_FROZEN_SHAREABLE,
+    RUBY_TYPED_FROZEN_SHAREABLE | RM_TYPED_FREE_IMMEDIATELY,
 };
 
 

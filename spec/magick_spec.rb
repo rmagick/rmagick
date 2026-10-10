@@ -126,6 +126,33 @@ RSpec.describe Magick do
   end
 
   describe '::MANAGED_MEMORY' do
+    it 'frees objects that the GC collects while it runs' do
+      image = Magick::Image.new(20, 20)
+
+      expect do
+        with_gc_stress do
+          3.times do
+            info = Magick::Image::Info.new
+            info.texture = image
+
+            draw = Magick::Draw.new
+            draw.composite(0, 0, 5, 5, image)
+
+            list = Magick::ImageList.new
+            list << image.copy << image.copy
+            list.montage { |options| options.texture = image }
+
+            Magick::KernelInfo.new('Gaussian:1x1')
+            Magick::Pixel.new(1, 2, 3)
+            Magick::GradientFill.new(0, 0, 1, 1, 'red', 'blue')
+            Magick::TextureFill.new(image)
+            image.resize(10, 10)
+          end
+        end
+        GC.start
+      end.not_to raise_error
+    end
+
     it 'does not run the GC while GC.disable is in effect' do
       image = Magick::Image.new(2000, 1500)
 
