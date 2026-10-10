@@ -2373,7 +2373,7 @@ Image_capture(int argc, VALUE *argv, VALUE self ATTRIBUTE_UNUSED)
     // Set info->server_name to the server name
     // Also info->colorspace, depth, dither, interlace, type
     info_obj = rm_info_new();
-    TypedData_Get_Struct(info_obj, Info, &rm_info_data_type, image_info);
+    image_info = rm_info_get(info_obj);
 
     // If an error occurs, IM will call our error handler and we raise an exception.
 #if defined(IMAGEMAGICK_7)
@@ -4842,7 +4842,7 @@ Image_morphology_channel(VALUE self, VALUE channel_v, VALUE method_v, VALUE iter
         rb_raise(rb_eArgError, "expected String or Magick::KernelInfo");
     }
 
-    TypedData_Get_Struct(kernel_v, KernelInfo, &rm_kernel_info_data_type, kernel);
+    kernel = rm_kernel_info_get(kernel_v);
 
     exception = AcquireExceptionInfo();
 
@@ -5964,7 +5964,7 @@ Image_display(VALUE self)
     }
 
     info_obj = rm_info_new();
-    TypedData_Get_Struct(info_obj, Info, &rm_info_data_type, info);
+    info = rm_info_get(info_obj);
 
     image = rm_check_readable(self);
 
@@ -7481,7 +7481,7 @@ Image_from_blob(VALUE klass ATTRIBUTE_UNUSED, VALUE blob_arg)
 
     // Get a new Info object - run the parm block if supplied
     info_obj = rm_info_new();
-    TypedData_Get_Struct(info_obj, Info, &rm_info_data_type, info);
+    info = rm_info_get(info_obj);
 
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, BlobToImage, info,  blob, (size_t)length, exception);
@@ -10194,7 +10194,7 @@ Image_initialize(int argc, VALUE *argv, VALUE self)
 
     // Create a new Info object to use when creating this image.
     info_obj = rm_info_new();
-    TypedData_Get_Struct(info_obj, Info, &rm_info_data_type, info);
+    info = rm_info_get(info_obj);
 
     image = rm_acquire_image(info);
     if (!image)
@@ -11968,7 +11968,7 @@ rd_image(VALUE klass ATTRIBUTE_UNUSED, VALUE file, gvl_function_t fp)
 
     // Create a new Info structure for this read/ping
     info_obj = rm_info_new();
-    TypedData_Get_Struct(info_obj, Info, &rm_info_data_type, info);
+    info = rm_info_get(info_obj);
 
     if (TYPE(file) == T_FILE)
     {
@@ -12152,7 +12152,7 @@ Image_read_inline(VALUE self ATTRIBUTE_UNUSED, VALUE content)
     // Create a new Info structure for this read. About the
     // only useful attribute that can be set is `format'.
     info_obj = rm_info_new();
-    TypedData_Get_Struct(info_obj, Info, &rm_info_data_type, info);
+    info = rm_info_get(info_obj);
 
     DECLARE_GVL_CALL(read_call, BlobToImage, info, blob, blob_l, exception);
     images = read_call.read(info_obj).relinquish(blob).release(exception).run<Image *>();
@@ -15029,7 +15029,7 @@ Image_to_blob(VALUE self)
     // both) and the image format by setting the depth and format
     // values in the info parm block.
     info_obj = rm_info_new();
-    TypedData_Get_Struct(info_obj, Info, &rm_info_data_type, info);
+    info = rm_info_get(info_obj);
 
     image = rm_check_writable(self);
 
@@ -16532,7 +16532,7 @@ Image_write(VALUE self, VALUE file)
 
 
     info_obj = rm_info_new();
-    TypedData_Get_Struct(info_obj, Info, &rm_info_data_type, info);
+    info = rm_info_get(info_obj);
 
     image = rm_check_writable(self);
 

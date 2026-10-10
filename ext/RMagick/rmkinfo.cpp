@@ -79,6 +79,40 @@ KernelInfo_alloc(VALUE klass)
     return TypedData_Wrap_Struct(klass, &rm_kernel_info_data_type, NULL);
 }
 
+
+/**
+ * Get the KernelInfo struct of a KernelInfo object.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param obj the KernelInfo object
+ * @return the KernelInfo struct, or NULL before the object is initialized
+ */
+KernelInfo *
+rm_kernel_info_get(VALUE obj)
+{
+    KernelInfo *kernel;
+
+    TypedData_Get_Struct(obj, KernelInfo, &rm_kernel_info_data_type, kernel);
+    return kernel;
+}
+
+
+/**
+ * Store a KernelInfo struct in a KernelInfo object.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param obj the KernelInfo object
+ * @param kernel the KernelInfo struct
+ */
+void
+rm_kernel_info_set(VALUE obj, KernelInfo *kernel)
+{
+    rb_check_typeddata(obj, &rm_kernel_info_data_type);
+    RTYPEDDATA_DATA(obj) = kernel;
+}
+
 /**
  * KernelInfo object constructor
  *
@@ -127,13 +161,13 @@ KernelInfo_initialize(VALUE self, VALUE kernel_string)
         rb_raise(rb_eRuntimeError, "failed to parse kernel string");
     }
 
-    old_kernel = (KernelInfo *)DATA_PTR(self);
+    old_kernel = rm_kernel_info_get(self);
     if (old_kernel && rm_gvl_in_use(old_kernel))
     {
         DestroyKernelInfo(kernel);
         rm_gvl_check_writable(old_kernel);
     }
-    DATA_PTR(self) = kernel;
+    rm_kernel_info_set(self, kernel);
     if (old_kernel)
     {
         DestroyKernelInfo(old_kernel);
@@ -160,7 +194,7 @@ get_kernel_info(VALUE self)
 {
     KernelInfo *kernel;
 
-    TypedData_Get_Struct(self, KernelInfo, &rm_kernel_info_data_type, kernel);
+    kernel = rm_kernel_info_get(self);
     if (!kernel)
     {
         rb_raise(rb_eRuntimeError, "KernelInfo has not been initialized");
@@ -270,13 +304,13 @@ KernelInfo_init_copy(VALUE self, VALUE orig)
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
 
-    old_kernel = (KernelInfo *)DATA_PTR(self);
+    old_kernel = rm_kernel_info_get(self);
     if (old_kernel && rm_gvl_in_use(old_kernel))
     {
         DestroyKernelInfo(kernel);
         rm_gvl_check_writable(old_kernel);
     }
-    DATA_PTR(self) = kernel;
+    rm_kernel_info_set(self, kernel);
     if (old_kernel)
     {
         DestroyKernelInfo(old_kernel);
