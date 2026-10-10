@@ -7,6 +7,7 @@
  */
 
 #include <mutex>
+#include <new>
 
 #include "rmagick.h"
 #include "ruby/ractor.h"
