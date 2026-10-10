@@ -102,12 +102,6 @@ extern "C" {
 #define ATTRIBUTE_NORETURN
 #endif
 
-//! Trace new image creation in bang methods
-#define UPDATE_DATA_PTR(_obj_, _new_) \
-    do { \
-        DATA_PTR(_obj_) = (void *)(_new_); \
-    } while(0)
-
 
 // Handle Quantum <-> Ruby Numeric object conversion
 #if (MAGICKCORE_QUANTUM_DEPTH == 8 || MAGICKCORE_QUANTUM_DEPTH == 16)
@@ -464,29 +458,14 @@ extern const rb_data_type_t rm_kernel_info_data_type;
 #define IMPLEMENT_TYPED_ATTR_READER(klass, attr, type, data_type) \
     {\
         klass *ptr;\
-        if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {\
-            rm_check_readable(self); \
-        }\
         TypedData_Get_Struct(self, klass, data_type, ptr);\
         return C_##type##_to_R_##type(ptr->attr);\
-    }
-
-//! define attribute reader when attribute name is different from the field name
-#define IMPLEMENT_TYPED_ATTR_READERF(klass, attr, field, type, data_type) \
-    {\
-        klass *ptr;\
-        rm_check_readable(self); \
-        TypedData_Get_Struct(self, klass, data_type, ptr);\
-        return C_##type##_to_R_##type(ptr->field);\
     }
 
 //! define attribute writer
 #define IMPLEMENT_TYPED_ATTR_WRITER(klass, attr, type, data_type) \
     {\
         klass *ptr;\
-        if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {\
-            rm_check_readable(self); \
-        }\
         rb_check_frozen(self);\
         TypedData_Get_Struct(self, klass, data_type, ptr);\
         rm_gvl_check_writable(ptr);\
@@ -494,17 +473,29 @@ extern const rb_data_type_t rm_kernel_info_data_type;
         return val;\
     }
 
-//! define attribute writer when attribute name is different from the field name
-#define IMPLEMENT_TYPED_ATTR_WRITERF(klass, attr, field, type, data_type) \
+//! define attribute reader of Image when attribute name is different from the field name
+#define IMPLEMENT_IMAGE_ATTR_READERF(attr, field, type) \
     {\
-        klass *ptr;\
-        if (rb_obj_is_kind_of(self, Class_Image) == Qtrue) {\
-            rm_check_readable(self); \
-        }\
-        rb_check_frozen(self);\
-        TypedData_Get_Struct(self, klass, data_type, ptr);\
-        rm_gvl_check_writable(ptr);\
-        ptr->field = R_##type##_to_C_##type(val);\
+        Image *image = rm_check_readable(self);\
+        return C_##type##_to_R_##type(image->field);\
+    }
+
+//! define attribute reader of Image
+#define IMPLEMENT_IMAGE_ATTR_READER(attr, type) IMPLEMENT_IMAGE_ATTR_READERF(attr, attr, type)
+
+//! define attribute writer of Image
+#define IMPLEMENT_IMAGE_ATTR_WRITER(attr, type) \
+    {\
+        Image *image = rm_check_frozen(self);\
+        image->attr = R_##type##_to_C_##type(val);\
+        return val;\
+    }
+
+//! define attribute writer of Image when attribute name is different from the field name
+#define IMPLEMENT_IMAGE_ATTR_WRITERF(attr, field, type) \
+    {\
+        Image *image = rm_check_frozen(self);\
+        image->field = R_##type##_to_C_##type(val);\
         return self;\
     }
 
@@ -1034,6 +1025,8 @@ extern VALUE Image_white_threshold(int, VALUE *, VALUE);
 extern VALUE Image_write(VALUE, VALUE);
 
 extern VALUE rm_image_new(Image *);
+extern Image *rm_image_get(VALUE);
+extern void  rm_image_set(VALUE, Image *);
 extern void  rm_image_destroy(void *);
 
 

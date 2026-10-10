@@ -321,7 +321,7 @@ rm_check_readable(VALUE obj)
 {
     Image *image;
 
-    TypedData_Get_Struct(obj, Image, &rm_image_data_type, image);
+    image = rm_image_get(obj);
     if (!image)
     {
         rb_raise(Class_DestroyedImageError, "destroyed image");
@@ -364,7 +364,7 @@ rm_check_frozen(VALUE obj)
 {
     Image *image;
 
-    TypedData_Get_Struct(obj, Image, &rm_image_data_type, image);
+    image = rm_image_get(obj);
     if (!image)
     {
         rb_raise(Class_DestroyedImageError, "destroyed image");
