@@ -17,9 +17,7 @@ public:
     rm_gvl_call(gvl_function_t *fp, void *args);
 
     rm_gvl_call &read(VALUE obj);
-    rm_gvl_call &read(const void *ptr);
     rm_gvl_call &update(VALUE obj);
-    rm_gvl_call &update(const void *ptr);
     rm_gvl_call &read_each(VALUE ary);
     rm_gvl_call &update_each(VALUE ary);
     rm_gvl_call &release(ExceptionInfo *exception);
@@ -47,7 +45,6 @@ private:
     typedef struct
     {
         VALUE obj;
-        const void *ptr;
         bool update;
         bool each;
     } object_t;
@@ -70,7 +67,7 @@ private:
     ResultType result_type;
     bool keep;
 
-    rm_gvl_call &add_object(VALUE obj, const void *ptr, bool update, bool each);
+    rm_gvl_call &add_object(VALUE obj, bool update, bool each);
     rm_gvl_call &add_cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg, size_t size, bool restore);
     void *call(ResultType type);
     void *call_body(ResultType type);

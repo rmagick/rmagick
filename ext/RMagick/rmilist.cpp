@@ -332,7 +332,7 @@ VALUE ImageList_combine(int argc, VALUE *argv, VALUE self)
     old_colorspace = images->colorspace;
     SetImageColorspace(images, colorspace);
     DECLARE_GVL_CALL(call, CombineImages, images, channel, exception);
-    call.update(images).restore(restore_colorspace, images, old_colorspace);
+    call.update(rb_ary_entry(rb_iv_get(self, "@images"), 0)).restore(restore_colorspace, images, old_colorspace);
 #else
     DECLARE_GVL_CALL(call, CombineImages, images, colorspace, exception);
 #endif

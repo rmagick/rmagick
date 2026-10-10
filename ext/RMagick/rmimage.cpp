@@ -1924,8 +1924,8 @@ blend_geometry(char *geometry, size_t geometry_l, double src_percent, double dst
  *
  * No Ruby usage (internal function)
  *
- * @param image the original image
- * @param overlay the overlay
+ * @param self the original image
+ * @param overlay_obj the overlay
  * @param image_pct image percentage
  * @param overlay_pct overlay percentage
  * @param x_off the x offset
@@ -1934,9 +1934,11 @@ blend_geometry(char *geometry, size_t geometry_l, double src_percent, double dst
  * @return a new image
  */
 static VALUE
-special_composite(Image *image, Image *overlay, double image_pct, double overlay_pct,
+special_composite(VALUE self, VALUE overlay_obj, double image_pct, double overlay_pct,
                   long x_off, long y_off, CompositeOperator op)
 {
+    Image *image = rm_image_get(self);
+    Image *overlay = rm_image_get(overlay_obj);
     Image *new_image;
     char geometry[20];
 #if defined(IMAGEMAGICK_7)
@@ -1960,12 +1962,12 @@ special_composite(Image *image, Image *overlay, double image_pct, double overlay
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, CompositeImage, new_image, overlay, op, MagickTrue, x_off, y_off, exception);
-    call.read(image).read(overlay).destroy(new_image).release(exception).run<void>();
+    call.read(self).read(overlay_obj).destroy(new_image).release(exception).run<void>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
     DECLARE_GVL_CALL(call, CompositeImage, new_image, op, overlay, x_off, y_off);
-    call.read(image).read(overlay).destroy(new_image).run<void>();
+    call.read(self).read(overlay_obj).destroy(new_image).run<void>();
 
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
@@ -2034,7 +2036,7 @@ Image_blend(int argc, VALUE *argv, VALUE self)
             break;
     }
 
-    composite_image = special_composite(image, overlay, src_percent, dst_percent,
+    composite_image = special_composite(self, ovly, src_percent, dst_percent,
                                         x_offset, y_offset, BlendCompositeOp);
 
     RB_GC_GUARD(composite_image);
@@ -5788,7 +5790,7 @@ Image_displace(int argc, VALUE *argv, VALUE self)
             break;
     }
 
-    composite_image = special_composite(image, displacement_map, x_amplitude, y_amplitude,
+    composite_image = special_composite(self, dmap, x_amplitude, y_amplitude,
                                         x_offset, y_offset, DisplaceCompositeOp);
 
     RB_GC_GUARD(composite_image);
@@ -6072,7 +6074,7 @@ Image_dissolve(int argc, VALUE *argv, VALUE self)
             break;
     }
 
-    composite_image =  special_composite(image, overlay, src_percent, dst_percent,
+    composite_image = special_composite(self, ovly, src_percent, dst_percent,
                                          x_offset, y_offset, DissolveCompositeOp);
 
     RB_GC_GUARD(composite_image);
@@ -9419,12 +9421,13 @@ Image_marshal_load(VALUE self, VALUE ary)
  * Notes:
  *   - Distinguish from Image#clip_mask
  *
- * @param image the image
+ * @param self the image
  * @return copy of the current clip-mask or nil
  */
 static VALUE
-get_image_mask(Image *image)
+get_image_mask(VALUE self)
 {
+    Image *image = rm_image_get(self);
     Image *mask;
     ExceptionInfo *exception;
 
@@ -9433,10 +9436,10 @@ get_image_mask(Image *image)
     // The returned clip mask is a clone, ours to keep.
 #if defined(IMAGEMAGICK_7)
     DECLARE_GVL_CALL(call, GetImageMask, image, WritePixelMask, exception);
-    mask = call.read(image).release(exception).run<Image *>();
+    mask = call.read(self).release(exception).run<Image *>();
 #else
     DECLARE_GVL_CALL(call, GetImageClipMask, image, exception);
-    mask = call.read(image).release(exception).run<Image *>();
+    mask = call.read(self).release(exception).run<Image *>();
 #endif
     rm_check_exception(exception, mask, DestroyOnError);
 
@@ -9450,15 +9453,16 @@ get_image_mask(Image *image)
  *
  * No Ruby usage (internal function)
  *
- * @param image the image
+ * @param self the image
  * @param mask the mask
  * @return copy of the current clip-mask or nil
  * @see get_image_mask
  */
 #if defined(IMAGEMAGICK_7)
 static VALUE
-set_image_mask(Image *image, VALUE mask)
+set_image_mask(VALUE self, VALUE mask)
 {
+    Image *image = rm_image_get(self);
     Image *mask_image, *resized_image;
     Image *clip_mask;
     ExceptionInfo *exception;
@@ -9475,7 +9479,7 @@ set_image_mask(Image *image, VALUE mask)
         if (clip_mask->columns != image->columns || clip_mask->rows != image->rows)
         {
             DECLARE_GVL_CALL(call, ResizeImage, clip_mask, image->columns, image->rows, image->filter, exception);
-            resized_image = call.update(image).read(mask).destroy(clip_mask).release(exception).run<Image *>();
+            resized_image = call.update(self).read(mask).destroy(clip_mask).release(exception).run<Image *>();
             DestroyImage(clip_mask);
             rm_check_exception(exception, resized_image, DestroyOnError);
             rm_ensure_result(resized_image);
@@ -9483,24 +9487,25 @@ set_image_mask(Image *image, VALUE mask)
         }
 
         DECLARE_GVL_CALL(call, SetImageMask, image, WritePixelMask, clip_mask, exception);
-        call.update(image).read(mask).destroy(clip_mask).release(exception).run<void>();
+        call.update(self).read(mask).destroy(clip_mask).release(exception).run<void>();
         DestroyImage(clip_mask);
     }
     else
     {
         DECLARE_GVL_CALL(call, SetImageMask, image, WritePixelMask, NULL, exception);
-        call.update(image).release(exception).run<void>();
+        call.update(self).release(exception).run<void>();
     }
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 
     // Always return a copy of the mask!
-    return get_image_mask(image);
+    return get_image_mask(self);
 }
 #else
 static VALUE
-set_image_mask(Image *image, VALUE mask)
+set_image_mask(VALUE self, VALUE mask)
 {
+    Image *image = rm_image_get(self);
     Image *mask_image, *resized_image;
     Image *clip_mask;
     long x, y;
@@ -9518,7 +9523,7 @@ set_image_mask(Image *image, VALUE mask)
         {
             exception = AcquireExceptionInfo();
             DECLARE_GVL_CALL(call, ResizeImage, clip_mask, image->columns, image->rows, UndefinedFilter, 0.0, exception);
-            resized_image = call.update(image).read(mask).destroy(clip_mask).release(exception).run<Image *>();
+            resized_image = call.update(self).read(mask).destroy(clip_mask).release(exception).run<Image *>();
             rm_check_exception(exception, resized_image, DestroyOnError);
             DestroyExceptionInfo(exception);
             rm_ensure_result(resized_image);
@@ -9558,7 +9563,7 @@ set_image_mask(Image *image, VALUE mask)
         DestroyExceptionInfo(exception);
 
         DECLARE_GVL_CALL(class_call, SetImageStorageClass, clip_mask, DirectClass);
-        class_call.update(image).read(mask).destroy(clip_mask).run<void>();
+        class_call.update(self).read(mask).destroy(clip_mask).run<void>();
         rm_check_image_exception(clip_mask, DestroyOnError);
 
         clip_mask->matte = MagickTrue;
@@ -9567,19 +9572,19 @@ set_image_mask(Image *image, VALUE mask)
         // destroy our copy after SetImageClipMask is done with it.
 
         DECLARE_GVL_CALL(mask_call, SetImageClipMask, image, clip_mask);
-        mask_call.update(image).destroy(clip_mask).run<void>();
+        mask_call.update(self).destroy(clip_mask).run<void>();
         DestroyImage(clip_mask);
     }
     else
     {
         DECLARE_GVL_CALL(mask_call, SetImageClipMask, image, NULL);
-        mask_call.update(image).run<void>();
+        mask_call.update(self).run<void>();
     }
 
     RB_GC_GUARD(mask);
 
     // Always return a copy of the mask!
-    return get_image_mask(image);
+    return get_image_mask(self);
 }
 #endif
 
@@ -9614,7 +9619,7 @@ Image_mask(int argc, VALUE *argv, VALUE self)
     image = rm_check_readable(self);
     if (argc == 0)
     {
-        return get_image_mask(image);
+        return get_image_mask(self);
     }
     if (argc > 1)
     {
@@ -9623,7 +9628,7 @@ Image_mask(int argc, VALUE *argv, VALUE self)
 
     rm_check_frozen(self);
     mask = argv[0];
-    return set_image_mask(image, mask);
+    return set_image_mask(self, mask);
 }
 
 

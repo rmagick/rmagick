@@ -550,13 +550,8 @@ marked(const offload_mark_t *marks, long count, const void *key)
 // jth element of an array registered with read_each() or update_each(), and
 // whether the object is an Image
 static void *
-object_key(VALUE obj, const void *ptr, bool each, long j, bool *image)
+object_key(VALUE obj, bool each, long j, bool *image)
 {
-    if (ptr)
-    {
-        *image = true;
-        return (void *)ptr;
-    }
     obj = each ? rb_ary_entry(obj, j) : obj;
     *image = rb_typeddata_is_kind_of(obj, &rm_image_data_type);
     if (*image)
@@ -672,14 +667,13 @@ rm_gvl_call::rm_gvl_call(gvl_function_t *fp, void *args)
 
 
 rm_gvl_call &
-rm_gvl_call::add_object(VALUE obj, const void *ptr, bool update, bool each)
+rm_gvl_call::add_object(VALUE obj, bool update, bool each)
 {
     if (nobjects == MaxObjects)
     {
         rb_bug("too many objects for an offloaded call");
     }
     objects[nobjects].obj = obj;
-    objects[nobjects].ptr = ptr;
     objects[nobjects].update = update;
     objects[nobjects].each = each;
     nobjects++;
@@ -753,22 +747,9 @@ rm_gvl_call::add_cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t 
 rm_gvl_call &
 rm_gvl_call::read(VALUE obj)
 {
-    return add_object(obj, NULL, false, false);
+    return add_object(obj, false, false);
 }
 
-
-/**
- * Like read(VALUE), for the data pointer of an Image that the caller has
- * fetched.
- *
- * @param ptr the data pointer
- * @return self
- */
-rm_gvl_call &
-rm_gvl_call::read(const void *ptr)
-{
-    return add_object(Qundef, ptr, false, false);
-}
 
 
 /**
@@ -781,21 +762,9 @@ rm_gvl_call::read(const void *ptr)
 rm_gvl_call &
 rm_gvl_call::update(VALUE obj)
 {
-    return add_object(obj, NULL, true, false);
+    return add_object(obj, true, false);
 }
 
-
-/**
- * Like update(VALUE), for the data pointer of an Image.
- *
- * @param ptr the data pointer
- * @return self
- */
-rm_gvl_call &
-rm_gvl_call::update(const void *ptr)
-{
-    return add_object(Qundef, ptr, true, false);
-}
 
 
 /**
@@ -809,7 +778,7 @@ rm_gvl_call::update(const void *ptr)
 rm_gvl_call &
 rm_gvl_call::read_each(VALUE ary)
 {
-    return add_object(rb_ary_dup(ary), NULL, false, true);
+    return add_object(rb_ary_dup(ary), false, true);
 }
 
 
@@ -823,7 +792,7 @@ rm_gvl_call::read_each(VALUE ary)
 rm_gvl_call &
 rm_gvl_call::update_each(VALUE ary)
 {
-    return add_object(rb_ary_dup(ary), NULL, true, true);
+    return add_object(rb_ary_dup(ary), true, true);
 }
 
 
@@ -1074,7 +1043,7 @@ rm_gvl_call::call_body(ResultType type)
                 for (long j = 0; j < len; j++)
                 {
                     bool image;
-                    void *key = object_key(objects[i].obj, objects[i].ptr, objects[i].each, j, &image);
+                    void *key = object_key(objects[i].obj, objects[i].each, j, &image);
 
                     add_mark(marks, &nmarks, key, mode, image);
                     if (key && image)
