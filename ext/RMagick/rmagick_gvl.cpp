@@ -217,12 +217,13 @@ typedef struct offloaded
     st_table *table;
     unsigned int generation;
     offload_frame_t *frames;
+    // Guards the frames and the marks they hold, so that a fork sees them whole
+    std::mutex lock;
     struct offloaded *prev;
     struct offloaded *next;
 } offloaded_t;
 
-// The entries of all Ractors. The lock guards the list and the frames of each
-// entry, so that a fork sees the frames of the other Ractors whole.
+// The entries of all Ractors
 static std::mutex entries_lock;
 static offloaded_t *entries;
 
@@ -251,6 +252,7 @@ offloaded_free(void *ptr)
         }
     }
     st_free_table(entry->table);
+    entry->~offloaded_t();
     xfree(entry);
 }
 
@@ -322,7 +324,7 @@ offloaded_entry(void)
 
     if (!entry)
     {
-        entry = ALLOC(offloaded_t);
+        entry = new (xmalloc(sizeof(offloaded_t))) offloaded_t();
         entry->table = st_init_numtable();
         entry->generation = fork_generation;
         entry->frames = NULL;
@@ -366,8 +368,6 @@ offloaded(void)
 static void
 frame_push(offloaded_t *entry, offload_frame_t *frame)
 {
-    std::lock_guard<std::mutex> guard(entries_lock);
-
     frame->prev = NULL;
     frame->next = entry->frames;
     if (entry->frames)
@@ -402,14 +402,6 @@ frame_remove(offloaded_t *entry, offload_frame_t *frame)
     frame->linked = false;
 }
 
-static void
-frame_unlink(offloaded_t *entry, offload_frame_t *frame)
-{
-    std::lock_guard<std::mutex> guard(entries_lock);
-
-    frame_remove(entry, frame);
-}
-
 #if defined(HAVE_WORKING_FORK)
 // The fiber that forks, noted before the fork, and whether it holds the GVL
 static thread_local VALUE fork_fiber;
@@ -429,6 +421,10 @@ atfork_prepare(void)
         return;
     }
     entries_lock.lock();
+    for (offloaded_t *entry = entries; entry; entry = entry->next)
+    {
+        entry->lock.lock();
+    }
     thread = rb_thread_current();
     for (offload_frame_t *frame = main_entry->frames; frame; frame = frame->next)
     {
@@ -440,21 +436,31 @@ atfork_prepare(void)
     }
 }
 
-// Runs in the child before Ruby does, so it leaves the table to offloaded_entry.
-// A thread without the GVL, such as a delegate of ImageMagick, forks to exec,
-// and the list may be changing under it. The calls of the other fibers never
-// run in the child, so the objects they changed for the call are changed back
-// while nothing in the child can have destroyed them yet.
+static void
+unlock_entries(void)
+{
+    for (offloaded_t *entry = entries; entry; entry = entry->next)
+    {
+        entry->lock.unlock();
+    }
+    entries_lock.unlock();
+}
+
 static void
 atfork_parent(void)
 {
     if (fork_with_gvl)
     {
-        entries_lock.unlock();
+        unlock_entries();
     }
 }
 
-// The other Ractors do not run in the child, so all of their frames are dropped.
+// Runs in the child before Ruby does, so it leaves the table to offloaded_entry.
+// A thread without the GVL, such as a delegate of ImageMagick, forks to exec,
+// and the list may be changing under it. The calls of the other fibers and of
+// the other Ractors never run in the child, so the objects they changed for
+// the call are changed back while nothing in the child can have destroyed them
+// yet.
 static void
 atfork_child(void)
 {
@@ -491,7 +497,7 @@ atfork_child(void)
     }
     offloads_in_flight.store(count, std::memory_order_relaxed);
     fork_generation++;
-    entries_lock.unlock();
+    unlock_entries();
 }
 #endif
 
@@ -1286,6 +1292,7 @@ rm_gvl_call::call_body(ResultType type)
         // and here, so the marks are taken one by one.
         entry = offloaded_entry();
         offloads_in_flight.fetch_add((unsigned int)nmarks, std::memory_order_relaxed);
+        entry->lock.lock();
         for (long i = 0; i < nmarks; i++)
         {
             if (!mark_acquire(entry->table, &frame->marks[i]))
@@ -1294,6 +1301,7 @@ rm_gvl_call::call_body(ResultType type)
                 {
                     mark_release(entry->table, &frame->marks[i]);
                 }
+                entry->lock.unlock();
                 offloads_in_flight.fetch_sub((unsigned int)nmarks, std::memory_order_relaxed);
                 xfree(frame);
                 unwind(type, NULL);
@@ -1301,6 +1309,7 @@ rm_gvl_call::call_body(ResultType type)
             }
         }
         frame_push(entry, frame);
+        entry->lock.unlock();
 
         rb_protect(offload_call, (VALUE)&call, &tag);
         if (!tag && !call.started && frame->linked)
@@ -1309,17 +1318,19 @@ rm_gvl_call::call_body(ResultType type)
         }
 
         // A frame that a fork dropped in the child has no marks to release
+        entry = offloaded_entry();
+        entry->lock.lock();
         dropped = !frame->linked;
         if (!dropped)
         {
-            entry = offloaded_entry();
             for (long i = 0; i < nmarks; i++)
             {
                 mark_release(entry->table, &frame->marks[i]);
             }
             offloads_in_flight.fetch_sub((unsigned int)nmarks, std::memory_order_relaxed);
-            frame_unlink(entry, frame);
+            frame_remove(entry, frame);
         }
+        entry->lock.unlock();
         xfree(frame);
         if (dropped)
         {
