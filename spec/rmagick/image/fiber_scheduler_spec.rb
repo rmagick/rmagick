@@ -392,16 +392,15 @@ RSpec.describe Magick::Image, if: offloading do
       expect(image.blur_image.columns).to eq(200)
     end
 
-    it "does not let another fiber's call read a copy that shares the pixel cache of an image that a call reads" do
+    it "lets another fiber's call read a copy of an image that a call reads" do
       image = described_class.new(200, 200)
       copy = image.dup
-      error = nil
-      scheduler.before_next_operation { Fiber.schedule { error = attempt { copy.blur_image } } }
+      result = nil
+      scheduler.before_next_operation { Fiber.schedule { result = attempt { copy.blur_image } } }
 
       scheduler.run { image.gaussian_blur(0, 5) }
 
-      expect(error).to in_use
-      expect(copy.blur_image.columns).to eq(200)
+      expect(result.columns).to eq(200)
     end
 
     it "does not let another fiber read an image that a call reads in a call that stays on its thread" do
