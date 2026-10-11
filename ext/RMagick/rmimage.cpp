@@ -10308,20 +10308,29 @@ Image_initialize(int argc, VALUE *argv, VALUE self)
 static void
 own_pixel_cache(Image *image)
 {
+    ExceptionInfo *exception;
+
     // Image#initialize sets an image before it has a size, and opening a cache
     // for it would fail.
     if (image->columns == 0 || image->rows == 0)
     {
         return;
     }
+    exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    ExceptionInfo *exception = AcquireExceptionInfo();
-
-    SetImageStorageClass(image, image->storage_class, exception);
-    DestroyExceptionInfo(exception);
+    if (!SetImageStorageClass(image, image->storage_class, exception))
+    {
+        rm_raise_exception(exception);
+    }
 #else
-    SetImageStorageClass(image, image->storage_class);
+    if (!SetImageStorageClass(image, image->storage_class))
+    {
+        InheritException(exception, &image->exception);
+        ClearMagickException(&image->exception);
+        rm_raise_exception(exception);
+    }
 #endif
+    DestroyExceptionInfo(exception);
 }
 
 
@@ -10338,18 +10347,26 @@ rm_copy_image(Image *image)
 {
     Image *copy;
     ExceptionInfo *exception;
+    void *ret;
 
     copy = rm_clone_image(image);
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     DECLARE_GVL_CALL(call, SetImageStorageClass, copy, copy->storage_class, exception);
-    call.keep_thread().destroy(copy).release(exception).run<void>();
-    rm_check_exception(exception, copy, DestroyOnError);
 #else
+    // CloneImage passes on what is left in the exception of the image.
+    ClearMagickException(&copy->exception);
     DECLARE_GVL_CALL(call, SetImageStorageClass, copy, copy->storage_class);
-    call.keep_thread().destroy(copy).release(exception).run<void>();
-    rm_check_image_exception(copy, DestroyOnError);
 #endif
+    ret = call.keep_thread().destroy(copy).release(exception).run<void *>();
+    if (!static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret)))
+    {
+#if defined(IMAGEMAGICK_6)
+        InheritException(exception, &copy->exception);
+#endif
+        DestroyImage(copy);
+        rm_raise_exception(exception);
+    }
     DestroyExceptionInfo(exception);
 
     return copy;
@@ -10412,18 +10429,19 @@ rm_image_set(VALUE obj, Image *image)
 {
     MagickImage *magick_image;
 
+    TypedData_Get_Struct(obj, MagickImage, &rm_image_data_type, magick_image);
+    magick_image->image = image;
     if (image)
     {
         own_pixel_cache(image);
     }
-    TypedData_Get_Struct(obj, MagickImage, &rm_image_data_type, magick_image);
-    magick_image->image = image;
 }
 
 
 /**
- * Wrap an image that shares its pixel cache with an image that a call marks,
- * for as long as the call runs.
+ * Wrap an image without checking that it has a pixel cache of its own: an
+ * image that ImageMagick has just read, or a copy that shares the cache only
+ * with an image that a call marks, for as long as the call runs.
  *
  * No Ruby usage (internal function)
  *
@@ -10431,7 +10449,7 @@ rm_image_set(VALUE obj, Image *image)
  * @return a new Image object
  */
 VALUE
-rm_image_new_sharing_pixels(Image *image)
+rm_image_wrap(Image *image)
 {
     VALUE image_obj;
     MagickImage *magick_image;
@@ -12327,7 +12345,7 @@ array_from_images(Image *images)
     while (images)
     {
         image = RemoveFirstImageFromList(&images);
-        image_obj = rm_image_new(image);
+        image_obj = rm_image_wrap(image);
         rb_ary_push(image_ary, image_obj);
     }
 

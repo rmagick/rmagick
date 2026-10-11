@@ -1045,7 +1045,7 @@ extern VALUE Image_white_threshold(int, VALUE *, VALUE);
 extern VALUE Image_write(VALUE, VALUE);
 
 extern VALUE rm_image_new(Image *);
-extern VALUE rm_image_new_sharing_pixels(Image *);
+extern VALUE rm_image_wrap(Image *);
 extern Image *rm_image_get(VALUE);
 extern void  rm_image_set(VALUE, Image *);
 extern void  rm_image_destroy(Image *);
