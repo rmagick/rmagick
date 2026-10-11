@@ -69,6 +69,9 @@ private:
     rm_gvl_call &add_cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg, bool restore);
     void *call(ResultType type);
     void *call_body(ResultType type);
+    struct offload_frame *new_frame();
+    void *offload(ResultType type);
+    void check_images_idle(ResultType type);
     void *call_here(ResultType type);
     void unwind(ResultType type, void *result, bool abandoned = false);
 };
