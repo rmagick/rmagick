@@ -908,6 +908,44 @@ check_images_frozen(VALUE imagelist)
 }
 
 
+// Link the images of the imagelist, keeping the head so far in args->images
+static VALUE
+link_images(VALUE arg)
+{
+    struct ImagesFromImageList_Args *args = (struct ImagesFromImageList_Args *)arg;
+    long x, len;
+    VALUE images, t;
+
+    len = check_imagelist_length(args->imagelist);
+
+    images = rb_iv_get(args->imagelist, "@images");
+    for (x = 0; x < len; x++)
+    {
+        Image *image;
+
+        t = rb_ary_entry(images, x);
+        image = rm_check_readable(t);
+        // Avoid a loop in this linked imagelist, issue #202. A frozen image can
+        // be shared with another Ractor, which may be linking it into a list of
+        // its own.
+        if (OBJ_FROZEN(t) || args->images == image || GetPreviousImageInList(image) != NULL || GetNextImageInList(image) != NULL)
+        {
+            image = rm_clone_image(image);
+
+            // Wrap raw ImageMagick object by Ruby object to destroy using Ruby's GC.
+            // The wrapper is kept in *clones so that the GC cannot reclaim it, and
+            // with it the Image, while the list below is still in use.
+            rb_ary_push(*args->clones, rm_image_new(image));
+        }
+        AppendImageToList(&args->images, image);
+    }
+
+    RB_GC_GUARD(images);
+    RB_GC_GUARD(t);
+
+    return Qnil;
+}
+
 /**
  * Convert an array of Image *s to an ImageMagick scene sequence (i.e. a
  * doubly-linked list of Images).
@@ -921,40 +959,24 @@ check_images_frozen(VALUE imagelist)
 static Image *
 images_from_imagelist(VALUE imagelist, VALUE *clones)
 {
-    long x, len;
-    Image *head = NULL;
-    VALUE images, t;
+    struct ImagesFromImageList_Args args = { imagelist, clones, NULL };
+    int state = 0;
 
     *clones = rb_ary_new();
 
-    len = check_imagelist_length(imagelist);
-
-    images = rb_iv_get(imagelist, "@images");
-    for (x = 0; x < len; x++)
+    // An exception part way, such as an interrupt in rm_clone_image, would
+    // leave the images linked to copies that the GC then frees.
+    rb_protect(link_images, (VALUE)&args, &state);
+    if (state)
     {
-        Image *image;
-
-        t = rb_ary_entry(images, x);
-        image = rm_check_readable(t);
-        // Avoid a loop in this linked imagelist, issue #202. A frozen image can
-        // be shared with another Ractor, which may be linking it into a list of
-        // its own.
-        if (OBJ_FROZEN(t) || head == image || GetPreviousImageInList(image) != NULL || GetNextImageInList(image) != NULL)
+        if (args.images)
         {
-            image = rm_clone_image(image);
-
-            // Wrap raw ImageMagick object by Ruby object to destroy using Ruby's GC.
-            // The wrapper is kept in *clones so that the GC cannot reclaim it, and
-            // with it the Image, while the list below is still in use.
-            rb_ary_push(*clones, rm_image_new(image));
+            rm_split(args.images);
         }
-        AppendImageToList(&head, image);
+        rb_jump_tag(state);
     }
 
-    RB_GC_GUARD(images);
-    RB_GC_GUARD(t);
-
-    return head;
+    return args.images;
 }
 
 
