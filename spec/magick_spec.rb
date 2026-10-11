@@ -200,6 +200,25 @@ RSpec.describe Magick do
     ensure
       Warning[:experimental] = experimental
     end
+
+    it "reads the properties of a frozen image that Ractors share" do
+      experimental = Warning[:experimental]
+      Warning[:experimental] = false
+      image = Magick::Image.read(IMAGE_WITH_PROFILE).first
+      20.times { |i| image["key#{i}"] = "value#{i}" }
+      Ractor.make_shareable(image)
+      expected = [image.dup["EXIF:*"], image.properties, image.dup.enum_for(:each_profile).to_a]
+
+      ractors = Array.new(4) do
+        Ractor.new(image, expected) do |shared, results|
+          Array.new(50) { [shared["EXIF:*"], shared.properties, shared.enum_for(:each_profile).to_a] == results }.all?
+        end
+      end
+
+      expect(ractors.map { |r| r.respond_to?(:value) ? r.value : r.take }).to all(be(true))
+    ensure
+      Warning[:experimental] = experimental
+    end
   end
 
   describe '::MANAGED_MEMORY' do

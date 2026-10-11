@@ -871,9 +871,13 @@ module Magick
           hash[tag] = value
         end
       else
-        get_exif_by_number # ensure properties is populated with exif data
+        values = {}
+        self['EXIF:!']&.split("\n")&.each do |exif|
+          name, value = exif.split('=', 2)
+          values[name.downcase] = value
+        end
         tag.each do |num|
-          rval = self[sprintf('#%04X', num.to_i)]
+          rval = values[sprintf('#%04x', num.to_i)]
           hash[num] = rval == 'unknown' ? nil : rval
         end
       end
