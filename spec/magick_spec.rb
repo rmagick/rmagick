@@ -219,6 +219,26 @@ RSpec.describe Magick do
     ensure
       Warning[:experimental] = experimental
     end
+
+    it "compares a frozen image that Ractors share" do
+      experimental = Warning[:experimental]
+      Warning[:experimental] = false
+      image = Magick::Image.read("gradient:red-blue") { |options| options.size = "64x64" }.first
+      others = [image.flip, image.flop, image.negate, image.blur_image(0, 3)]
+      Ractor.make_shareable(image)
+      others.each { |other| Ractor.make_shareable(other) }
+      expected = others.map { |other| image.difference(other) }
+
+      ractors = others.each_index.map do |i|
+        Ractor.new(image, others[i], expected[i]) do |shared, other, difference|
+          Array.new(100) { shared.difference(other) == difference }.all?
+        end
+      end
+
+      expect(ractors.map { |r| r.respond_to?(:value) ? r.value : r.take }).to all(be(true))
+    ensure
+      Warning[:experimental] = experimental
+    end
   end
 
   describe '::MANAGED_MEMORY' do

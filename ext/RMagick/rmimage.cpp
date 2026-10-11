@@ -5779,39 +5779,61 @@ Image_destroyed_q(VALUE self)
 VALUE
 Image_difference(VALUE self, VALUE other)
 {
-    Image *image;
+    Image *image, *target;
     Image *image2;
-    VALUE mean, nmean, nmax;
+    double mean, nmean, nmax;
+    bool frozen = OBJ_FROZEN(self);
+    ExceptionInfo *exception;
 #if defined(IMAGEMAGICK_7)
     double distortion;
-    ExceptionInfo *exception;
 #endif
 
     image = rm_check_readable(self);
     other = rm_cur_image(other);
     image2 = rm_check_readable(other);
 
-#if defined(IMAGEMAGICK_7)
+    // The comparison stores the errors in the image, and IM7 also stores the
+    // distortion in a property. A frozen image may be shared with other
+    // Ractors, so compare a copy of it that shares its pixels.
     exception = AcquireExceptionInfo();
-    DECLARE_GVL_CALL(call, GetImageDistortion, image, image2, MeanErrorPerPixelErrorMetric, &distortion, exception);
-    call.update(self).read(other).release(exception).run<void>();
-    CHECK_EXCEPTION();
+    target = frozen ? shallow_clone(image, exception) : image;
+
+#if defined(IMAGEMAGICK_7)
+    DECLARE_GVL_CALL(call, GetImageDistortion, target, image2, MeanErrorPerPixelErrorMetric, &distortion, exception);
+#else
+    if (frozen)
+    {
+        // CloneImage passes on what is left in the exception of the image.
+        ClearMagickException(&target->exception);
+    }
+    DECLARE_GVL_CALL(call, IsImagesEqual, target, image2);
+#endif
+    if (frozen)
+    {
+        call.read(self).destroy(target);
+    }
+    else
+    {
+        call.update(self);
+    }
+    call.read(other).release(exception).run<void>();
+#if defined(IMAGEMAGICK_7)
+    rm_check_exception(exception, target, frozen ? DestroyOnError : RetainOnError);
     DestroyExceptionInfo(exception);
 #else
-    DECLARE_GVL_CALL(call, IsImagesEqual, image, image2);
-    call.update(self).read(other).run<void>();
-    rm_check_image_exception(image, RetainOnError);
+    DestroyExceptionInfo(exception);
+    rm_check_image_exception(target, frozen ? DestroyOnError : RetainOnError);
 #endif
 
-    mean  = rb_float_new(image->error.mean_error_per_pixel);
-    nmean = rb_float_new(image->error.normalized_mean_error);
-    nmax  = rb_float_new(image->error.normalized_maximum_error);
+    mean  = target->error.mean_error_per_pixel;
+    nmean = target->error.normalized_mean_error;
+    nmax  = target->error.normalized_maximum_error;
+    if (frozen)
+    {
+        DestroyImage(target);
+    }
 
-    RB_GC_GUARD(mean);
-    RB_GC_GUARD(nmean);
-    RB_GC_GUARD(nmax);
-
-    return rb_ary_new3(3, mean, nmean, nmax);
+    return rb_ary_new3(3, rb_float_new(mean), rb_float_new(nmean), rb_float_new(nmax));
 }
 
 
