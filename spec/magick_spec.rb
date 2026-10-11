@@ -180,6 +180,26 @@ RSpec.describe Magick do
     ensure
       Warning[:experimental] = experimental
     end
+
+    it "computes the signature of a frozen image that Ractors share" do
+      experimental = Warning[:experimental]
+      Warning[:experimental] = false
+      image = Magick::Image.read("gradient:red-blue") { |options| options.size = "16x16" }.first
+      other = image.flip
+      Ractor.make_shareable(image)
+      Ractor.make_shareable(other)
+      expected = [image.signature, image <=> other]
+
+      ractors = Array.new(4) do
+        Ractor.new(image, other, expected) do |shared, shared_other, results|
+          Array.new(300) { [shared.signature, shared <=> shared_other] == results }.all?
+        end
+      end
+
+      expect(ractors.map { |r| r.respond_to?(:value) ? r.value : r.take }).to all(be(true))
+    ensure
+      Warning[:experimental] = experimental
+    end
   end
 
   describe '::MANAGED_MEMORY' do

@@ -16,4 +16,13 @@ RSpec.describe Magick::Image, "#spaceship" do
     expect(image1).not_to eq(image0)
     expect(image0 <=> nil).to be(nil)
   end
+
+  it "leaves frozen images unchanged" do
+    image0 = described_class.read(IMAGES_DIR + '/Button_0.gif').first.freeze
+    image1 = described_class.read(IMAGES_DIR + '/Button_1.gif').first.freeze
+
+    expect(image0 <=> image1).to eq(image0.dup <=> image1.dup)
+    expect(image0.properties).not_to have_key("signature")
+    expect(image1.properties).not_to have_key("signature")
+  end
 end
