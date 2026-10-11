@@ -149,6 +149,37 @@ RSpec.describe Magick do
     ensure
       Warning[:experimental] = experimental
     end
+
+    it "draws with a frozen pattern that Ractors share" do
+      experimental = Warning[:experimental]
+      Warning[:experimental] = false
+      pattern = Magick::Image.read("gradient:red-blue") { |options| options.size = "16x16" }.first
+      draw = Magick::Draw.new
+      draw.fill_pattern = pattern
+      draw.stroke_pattern = pattern
+      draw.rectangle(10, 10, 189, 189)
+      Ractor.make_shareable(draw)
+      Ractor.make_shareable(pattern)
+      drawn = Magick::Image.new(200, 200)
+      draw.draw(drawn)
+      filled = Magick::Image.new(200, 200).texture_flood_fill("white", pattern, 0, 0, Magick::FloodfillMethod)
+      expected = [drawn.export_pixels_to_str, filled.export_pixels_to_str]
+
+      ractors = Array.new(4) do
+        Ractor.new(draw, pattern, expected) do |shared_draw, texture, pixels|
+          Array.new(10) do
+            image = Magick::Image.new(200, 200)
+            shared_draw.draw(image)
+            flooded = Magick::Image.new(200, 200).texture_flood_fill("white", texture, 0, 0, Magick::FloodfillMethod)
+            [image.export_pixels_to_str, flooded.export_pixels_to_str] == pixels
+          end.all?
+        end
+      end
+
+      expect(ractors.map { |r| r.respond_to?(:value) ? r.value : r.take }).to all(be(true))
+    ensure
+      Warning[:experimental] = experimental
+    end
   end
 
   describe '::MANAGED_MEMORY' do

@@ -14753,7 +14753,7 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj,
                          VALUE x_obj, VALUE y_obj, VALUE method_obj)
 {
     Image *image, *new_image;
-    Image *texture_image;
+    Image *texture_image, *pattern;
     PixelColor color;
     VALUE texture;
     DrawInfo *draw_info;
@@ -14787,13 +14787,17 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj,
                  "FillToBorderMethod (%d given)", (int)method);
     }
 
+    // A frozen texture may be shared with other Ractors, whose calls would read
+    // its pixel cache through the default nexus at once.
+    pattern = OBJ_FROZEN(texture) ? rm_copy_image(texture_image) : rm_clone_image(texture_image);
     draw_info = CloneDrawInfo(NULL, NULL);
     if (!draw_info)
     {
+        DestroyImage(pattern);
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
 
-    draw_info->fill_pattern = rm_clone_image(texture_image);
+    draw_info->fill_pattern = pattern;
     new_image = rm_clone_image(image);
 
 
