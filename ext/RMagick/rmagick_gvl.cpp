@@ -160,8 +160,8 @@ static void raise_in_use(void) ATTRIBUTE_NORETURN;
 
 static rb_ractor_local_key_t offloaded_key;
 
-// Marks of the calls in flight in all Ractors, so that a call that stays on
-// its thread checks its images only when there are some
+// Calls in flight in all Ractors, so that a call that stays on its thread
+// checks its images only when there are some
 static std::atomic<unsigned int> offloads_in_flight(0);
 
 // Forks seen by this process; a state from an earlier fork is free
@@ -386,7 +386,7 @@ atfork_child(void)
             {
                 state_acquire(frame->marks[i].state, frame->marks[i].mode, false);
             }
-            count += (unsigned int)frame->nmarks;
+            count++;
             continue;
         }
         for (int i = 0; i < frame->nrestores; i++)
@@ -603,6 +603,7 @@ mark_in_use(const offload_mark_t *mark)
 static bool
 frame_acquire(offloaded_t *entry, offload_frame_t *frame)
 {
+    offloads_in_flight.fetch_add(1, std::memory_order_relaxed);
     for (long i = 0; i < frame->nmarks; i++)
     {
         if (!state_acquire(frame->marks[i].state, frame->marks[i].mode, frame->marks[i].image))
@@ -611,6 +612,7 @@ frame_acquire(offloaded_t *entry, offload_frame_t *frame)
             {
                 state_release(frame->marks[i].state, frame->marks[i].mode);
             }
+            offloads_in_flight.fetch_sub(1, std::memory_order_relaxed);
             return false;
         }
     }
@@ -632,6 +634,7 @@ frame_release(offloaded_t *entry, offload_frame_t *frame)
         state_release(frame->marks[i].state, frame->marks[i].mode);
     }
     frame_remove(entry, frame);
+    offloads_in_flight.fetch_sub(1, std::memory_order_relaxed);
     return true;
 }
 #endif
@@ -1104,10 +1107,8 @@ rm_gvl_call::call_body(ResultType type)
         // A call in another Ractor can take an object between the check above
         // and here, so the marks are taken one by one.
         entry = offloaded_entry();
-        offloads_in_flight.fetch_add((unsigned int)nmarks, std::memory_order_relaxed);
         if (!frame_acquire(entry, frame))
         {
-            offloads_in_flight.fetch_sub((unsigned int)nmarks, std::memory_order_relaxed);
             xfree(frame);
             unwind(type, NULL);
             raise_in_use();
@@ -1120,10 +1121,6 @@ rm_gvl_call::call_body(ResultType type)
         }
 
         dropped = !frame_release(offloaded_entry(), frame);
-        if (!dropped)
-        {
-            offloads_in_flight.fetch_sub((unsigned int)nmarks, std::memory_order_relaxed);
-        }
         xfree(frame);
         if (dropped)
         {
