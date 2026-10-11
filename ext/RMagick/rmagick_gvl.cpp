@@ -563,7 +563,8 @@ rm_gvl_check_writable(VALUE obj)
 
 
 #if defined(RMAGICK_OFFLOAD_SAFE)
-// Mark an object registered with read() or update(), once for each call
+// Mark an object registered with read() or update(), once for each call. An
+// object that the call both reads and changes is marked as changed.
 static void
 add_object_mark(offload_mark_t *marks, long *nmarks, VALUE obj, OffloadMode mode)
 {
@@ -577,6 +578,10 @@ add_object_mark(offload_mark_t *marks, long *nmarks, VALUE obj, OffloadMode mode
     {
         if (marks[i].state == state)
         {
+            if (mode == OffloadUpdate)
+            {
+                marks[i].mode = OffloadUpdate;
+            }
             return;
         }
     }
@@ -584,18 +589,6 @@ add_object_mark(offload_mark_t *marks, long *nmarks, VALUE obj, OffloadMode mode
     marks[*nmarks].mode = mode;
     marks[*nmarks].image = RTYPEDDATA_TYPE(obj) == &rm_image_data_type;
     (*nmarks)++;
-}
-
-static bool
-mark_in_use(const offload_mark_t *mark)
-{
-    unsigned int count = state_count(mark->state->load(std::memory_order_acquire));
-
-    if (mark->image)
-    {
-        return count != 0;
-    }
-    return count == STATE_UPDATING || (mark->mode == OffloadUpdate && count != 0);
 }
 
 // Take the marks of a frame and link it, or take none and return false if
@@ -1017,138 +1010,134 @@ void *
 rm_gvl_call::call_body(ResultType type)
 {
 #if defined(RMAGICK_OFFLOAD_SAFE)
-    bool offload = !keep && offload_p();
-
-    if (offload || offloads_in_flight.load(std::memory_order_relaxed) != 0)
+    if (!keep && offload_p())
     {
-        offload_call_t call = { fp, args, NULL, NULL, false, false };
-        VALUE fiber = offload ? rb_fiber_current() : 0;
-        offload_frame_t *frame = NULL;
-        offloaded_t *entry;
-        offload_mark_t *marks;
-        VALUE marks_buffer = 0;
-        long count = 0, nmarks = 0;
-        bool dropped;
-        int tag;
-
-        for (int i = 0; i < nobjects; i++)
-        {
-            count += objects[i].each ? RARRAY_LEN(objects[i].obj) : 1;
-        }
-        if (offload)
-        {
-            frame = (offload_frame_t *)xmalloc(frame_align(sizeof(offload_frame_t)) + count * sizeof(offload_mark_t));
-            marks = (offload_mark_t *)((char *)frame + frame_align(sizeof(offload_frame_t)));
-        }
-        else
-        {
-            marks = ALLOCV_N(offload_mark_t, marks_buffer, count);
-        }
-
-        // An object that the call both reads and changes is marked as changed.
-        for (int pass = 0; pass < 2; pass++)
-        {
-            for (int i = 0; i < nobjects; i++)
-            {
-                long len = objects[i].each ? RARRAY_LEN(objects[i].obj) : 1;
-                OffloadMode mode = objects[i].update ? OffloadUpdate : OffloadRead;
-
-                if (objects[i].update != (pass == 0))
-                {
-                    continue;
-                }
-                for (long j = 0; j < len; j++)
-                {
-                    add_object_mark(marks, &nmarks, objects[i].each ? rb_ary_entry(objects[i].obj, j) : objects[i].obj, mode);
-                }
-            }
-        }
-
-        for (long i = 0; i < nmarks; i++)
-        {
-            if ((offload || marks[i].image) && mark_in_use(&marks[i]))
-            {
-                if (frame)
-                {
-                    xfree(frame);
-                }
-                else
-                {
-                    ALLOCV_END(marks_buffer);
-                }
-                unwind(type, NULL);
-                raise_in_use();
-            }
-        }
-        if (!offload)
-        {
-            ALLOCV_END(marks_buffer);
-            return call_here(type);
-        }
-
-        static_assert(MaxCleanups <= OFFLOAD_MAX_RESTORES, "a frame holds every cleanup that restores");
-
-        frame->marks = marks;
-        frame->nmarks = nmarks;
-        frame->nrestores = 0;
-        for (int i = 0; i < ncleanups; i++)
-        {
-            if (cleanups[i].restore)
-            {
-                offload_restore_t restore = { cleanups[i].release, cleanups[i].ptr, cleanups[i].arg };
-
-                frame->restores[frame->nrestores++] = restore;
-            }
-        }
-        frame->thread = rb_thread_current();
-        frame->fiber = fiber;
-        call.frame = frame;
-
-        // A call in another Ractor can take an object between the check above
-        // and here, so the marks are taken one by one.
-        entry = offloaded_entry();
-        if (!frame_acquire(entry, frame))
-        {
-            xfree(frame);
-            unwind(type, NULL);
-            raise_in_use();
-        }
-
-        rb_protect(offload_call, (VALUE)&call, &tag);
-        if (!tag && !call.started && frame->linked)
-        {
-            rb_protect(offload_call, (VALUE)&call, &tag);
-        }
-
-        dropped = !frame_release(offloaded_entry(), frame);
-        xfree(frame);
-        if (dropped)
-        {
-            // The worker may have finished before the fork
-            unwind(type, call.done ? call.result : NULL, true);
-            if (tag)
-            {
-                rb_jump_tag(tag);
-            }
-            rb_raise(rb_eRuntimeError, "call abandoned in the child of a fork");
-        }
-        if (tag)
-        {
-            // The scheduler raised into this fiber after the worker finished.
-            unwind(type, call.result);
-            rb_jump_tag(tag);
-        }
-        if (!call.started)
-        {
-            return call_here(type);
-        }
-
-        return call.result;
+        return offload(type);
+    }
+    if (offloads_in_flight.load(std::memory_order_relaxed) != 0)
+    {
+        check_images_idle(type);
     }
 #endif
 
     return call_here(type);
 }
+
+
+#if defined(RMAGICK_OFFLOAD_SAFE)
+// A frame for an offloaded call, with a mark for each object it registered
+offload_frame_t *
+rm_gvl_call::new_frame()
+{
+    offload_frame_t *frame;
+    long count = 0;
+
+    for (int i = 0; i < nobjects; i++)
+    {
+        count += objects[i].each ? RARRAY_LEN(objects[i].obj) : 1;
+    }
+    frame = (offload_frame_t *)xmalloc(frame_align(sizeof(offload_frame_t)) + count * sizeof(offload_mark_t));
+    frame->marks = (offload_mark_t *)((char *)frame + frame_align(sizeof(offload_frame_t)));
+    frame->nmarks = 0;
+    for (int i = 0; i < nobjects; i++)
+    {
+        long len = objects[i].each ? RARRAY_LEN(objects[i].obj) : 1;
+
+        for (long j = 0; j < len; j++)
+        {
+            add_object_mark(frame->marks, &frame->nmarks, objects[i].each ? rb_ary_entry(objects[i].obj, j) : objects[i].obj,
+                            objects[i].update ? OffloadUpdate : OffloadRead);
+        }
+    }
+
+    static_assert(MaxCleanups <= OFFLOAD_MAX_RESTORES, "a frame holds every cleanup that restores");
+    frame->nrestores = 0;
+    for (int i = 0; i < ncleanups; i++)
+    {
+        if (cleanups[i].restore)
+        {
+            offload_restore_t restore = { cleanups[i].release, cleanups[i].ptr, cleanups[i].arg };
+
+            frame->restores[frame->nrestores++] = restore;
+        }
+    }
+    frame->thread = rb_thread_current();
+    frame->fiber = rb_fiber_current();
+    return frame;
+}
+
+
+void *
+rm_gvl_call::offload(ResultType type)
+{
+    offload_frame_t *frame = new_frame();
+    offload_call_t call = { fp, args, NULL, frame, false, false };
+    bool dropped;
+    int tag;
+
+    if (!frame_acquire(offloaded_entry(), frame))
+    {
+        xfree(frame);
+        unwind(type, NULL);
+        raise_in_use();
+    }
+
+    rb_protect(offload_call, (VALUE)&call, &tag);
+    if (!tag && !call.started && frame->linked)
+    {
+        rb_protect(offload_call, (VALUE)&call, &tag);
+    }
+
+    dropped = !frame_release(offloaded_entry(), frame);
+    xfree(frame);
+    if (dropped)
+    {
+        // The worker may have finished before the fork
+        unwind(type, call.done ? call.result : NULL, true);
+        if (tag)
+        {
+            rb_jump_tag(tag);
+        }
+        rb_raise(rb_eRuntimeError, "call abandoned in the child of a fork");
+    }
+    if (tag)
+    {
+        // The scheduler raised into this fiber after the worker finished.
+        unwind(type, call.result);
+        rb_jump_tag(tag);
+    }
+    if (!call.started)
+    {
+        return call_here(type);
+    }
+
+    return call.result;
+}
+
+
+// Raise if an offloaded call uses an image that this call, which stays on its
+// thread, uses too
+void
+rm_gvl_call::check_images_idle(ResultType type)
+{
+    for (int i = 0; i < nobjects; i++)
+    {
+        long len = objects[i].each ? RARRAY_LEN(objects[i].obj) : 1;
+
+        for (long j = 0; j < len; j++)
+        {
+            VALUE obj = objects[i].each ? rb_ary_entry(objects[i].obj, j) : objects[i].obj;
+            rm_offload_state_t *state = object_state(obj);
+
+            if (state && RTYPEDDATA_TYPE(obj) == &rm_image_data_type && state_count(state->load(std::memory_order_acquire)) != 0)
+            {
+                unwind(type, NULL);
+                raise_in_use();
+            }
+        }
+    }
+}
+#endif
 
 
 void *
