@@ -155,7 +155,7 @@ call_deferring_interrupts(VALUE arg)
 
 #if defined(RMAGICK_OFFLOAD_SAFE)
 
-// Value in the table of an object that a call is changing
+// Value in the table of a pixel cache that a call is changing
 #define OFFLOAD_UPDATING ((st_data_t)-1)
 
 static void raise_in_use(void) ATTRIBUTE_NORETURN;
@@ -168,7 +168,7 @@ static std::atomic<unsigned int> offloads_in_flight(0);
 // Forks seen by this process; a table from an earlier fork is restored before use
 static unsigned int fork_generation;
 
-// A mark on the offload state of an object, or on a key in the table
+// A mark on the offload state of an object, or on a pixel cache in the table
 typedef struct
 {
     void *key;
@@ -209,10 +209,9 @@ typedef struct offload_frame
     struct offload_frame *next;
 } offload_frame_t;
 
-// Pixel cache of an Image, or data pointer of an object without an offload
-// state => number of calls in flight that read it, or OFFLOAD_UPDATING. Each
-// Ractor has its own table, so a pixel cache is marked only in the Ractor that
-// uses it.
+// Pixel cache of an Image => number of calls in flight that read it, or
+// OFFLOAD_UPDATING. Each Ractor has its own table, so a pixel cache is marked
+// only in the Ractor that uses it.
 typedef struct offloaded
 {
     st_table *table;
@@ -521,20 +520,8 @@ raise_in_use(void)
     rb_raise(rb_eRuntimeError, "object is in use by another fiber");
 }
 
-// The data pointer that identifies obj in the table, or NULL for an object
-// that is not tracked, such as the String of Image.from_blob.
-static void *
-offload_key(VALUE obj)
-{
-    if (RB_SPECIAL_CONST_P(obj) || !RB_TYPE_P(obj, T_DATA))
-    {
-        return NULL;
-    }
-    return DATA_PTR(obj);
-}
-
 // The offload state of an Image, Info, KernelInfo, Draw or Montage, or NULL for
-// another object, which is tracked in the table by its data pointer
+// another object, which is not tracked
 static rm_offload_state_t *
 object_state(VALUE obj)
 {
@@ -724,9 +711,14 @@ static void
 add_object_marks(offload_mark_t *marks, long *nmarks, VALUE obj, OffloadMode mode)
 {
     rm_offload_state_t *state = object_state(obj);
-    bool image = state && RTYPEDDATA_TYPE(obj) == &rm_image_data_type;
+    bool image;
 
-    add_mark(marks, nmarks, state ? NULL : offload_key(obj), state, mode, image);
+    if (!state)
+    {
+        return;
+    }
+    image = RTYPEDDATA_TYPE(obj) == &rm_image_data_type;
+    add_mark(marks, nmarks, NULL, state, mode, image);
     if (image)
     {
         Image *ptr = rm_image_get(obj);
