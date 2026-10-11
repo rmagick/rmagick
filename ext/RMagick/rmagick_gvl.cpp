@@ -6,9 +6,6 @@
  * @file     rmagick_gvl.cpp
  */
 
-#include <mutex>
-#include <new>
-
 #include "rmagick.h"
 #include "ruby/ractor.h"
 #if defined(RMAGICK_OFFLOAD_SAFE)
@@ -61,14 +58,16 @@
  * child, and changes back what the dropped calls changed for themselves, such
  * as a channel mask or the links of a list. A dropped call that is resumed
  * there raises instead of running. An image that a call was changing at the
- * fork is in an undefined state in the child.
+ * fork is in an undefined state in the child. The state of an object holds
+ * the fork generation it was taken in, so the child ignores the marks of the
+ * calls in other Ractors without finding them. Those calls change only
+ * objects that are not shareable, which the child cannot reach.
  *
  * Some cases are not handled. A scheduler must resume a fiber that waits in a
  * call: a fiber collected while it waits leaves its marks behind, and the next
  * fork changes back objects that may be gone. A worker that holds a lock of
  * ImageMagick at the fork can leave the cleanup of a dropped call in the child
- * waiting for good. Draw#annotate changes its text and affine outside
- * rm_gvl_call, so they are changed back only when the call returns.
+ * waiting for good.
  *
  * Without a scheduler that offloads, or on Ruby before 4.0, rm_gvl_call runs
  * the function with rb_thread_call_without_gvl. An interrupt that arrives
@@ -165,8 +164,14 @@ static rb_ractor_local_key_t offloaded_key;
 // Marks of the calls in flight in all Ractors, to skip the table when there are none
 static std::atomic<unsigned int> offloads_in_flight(0);
 
-// Forks seen by this process; a table from an earlier fork is restored before use
+// Forks seen by this process; a table from an earlier fork is restored before
+// use, and a state from an earlier fork is free
 static unsigned int fork_generation;
+
+// The state of an object holds the low bits of the fork generation above the
+// number of calls that read it, or STATE_UPDATING
+#define STATE_COUNT_BITS 24
+#define STATE_UPDATING ((1U << STATE_COUNT_BITS) - 1)
 
 // A mark on the offload state of an object, or on a pixel cache in the table
 typedef struct
@@ -217,15 +222,7 @@ typedef struct offloaded
     st_table *table;
     unsigned int generation;
     offload_frame_t *frames;
-    // Guards the frames and the marks they hold, so that a fork sees them whole
-    std::mutex lock;
-    struct offloaded *prev;
-    struct offloaded *next;
 } offloaded_t;
-
-// The entries of all Ractors
-static std::mutex entries_lock;
-static offloaded_t *entries;
 
 // The entry of the main Ractor, the only one that can fork
 static offloaded_t *main_entry;
@@ -235,24 +232,7 @@ offloaded_free(void *ptr)
 {
     offloaded_t *entry = (offloaded_t *)ptr;
 
-    {
-        std::lock_guard<std::mutex> guard(entries_lock);
-
-        if (entry->prev)
-        {
-            entry->prev->next = entry->next;
-        }
-        else
-        {
-            entries = entry->next;
-        }
-        if (entry->next)
-        {
-            entry->next->prev = entry->prev;
-        }
-    }
     st_free_table(entry->table);
-    entry->~offloaded_t();
     xfree(entry);
 }
 
@@ -284,20 +264,39 @@ mark_remove(st_table *table, const void *ptr)
     }
 }
 
+// The number of calls that read an object, or STATE_UPDATING
+static unsigned int
+state_count(unsigned int value)
+{
+    if ((value >> STATE_COUNT_BITS) != (fork_generation & (UINT_MAX >> STATE_COUNT_BITS)))
+    {
+        return 0;
+    }
+    return value & STATE_UPDATING;
+}
+
+static unsigned int
+state_value(unsigned int count)
+{
+    return (fork_generation << STATE_COUNT_BITS) | count;
+}
+
 // Take a state for a call: a call reads an object that other calls only read,
 // and changes one that no call uses. A call that uses an image is the only one.
 static bool
 state_acquire(rm_offload_state_t *state, OffloadMode mode, bool image)
 {
-    unsigned int current = state->load(std::memory_order_relaxed);
+    unsigned int value = state->load(std::memory_order_relaxed);
 
     while (true)
     {
-        if (current == RM_OFFLOAD_UPDATING || ((mode == OffloadUpdate || image) && current != 0))
+        unsigned int count = state_count(value);
+
+        if (count == STATE_UPDATING || ((mode == OffloadUpdate || image) && count != 0))
         {
             return false;
         }
-        if (state->compare_exchange_weak(current, mode == OffloadUpdate ? RM_OFFLOAD_UPDATING : current + 1, std::memory_order_acq_rel))
+        if (state->compare_exchange_weak(value, state_value(mode == OffloadUpdate ? STATE_UPDATING : count + 1), std::memory_order_acq_rel))
         {
             return true;
         }
@@ -324,22 +323,11 @@ offloaded_entry(void)
 
     if (!entry)
     {
-        entry = new (xmalloc(sizeof(offloaded_t))) offloaded_t();
+        entry = ALLOC(offloaded_t);
         entry->table = st_init_numtable();
         entry->generation = fork_generation;
         entry->frames = NULL;
         rb_ractor_local_storage_ptr_set(offloaded_key, entry);
-        {
-            std::lock_guard<std::mutex> guard(entries_lock);
-
-            entry->prev = NULL;
-            entry->next = entries;
-            if (entries)
-            {
-                entries->prev = entry;
-            }
-            entries = entry;
-        }
     }
     else if (entry->generation != fork_generation)
     {
@@ -420,11 +408,6 @@ atfork_prepare(void)
     {
         return;
     }
-    entries_lock.lock();
-    for (offloaded_t *entry = entries; entry; entry = entry->next)
-    {
-        entry->lock.lock();
-    }
     thread = rb_thread_current();
     for (offload_frame_t *frame = main_entry->frames; frame; frame = frame->next)
     {
@@ -436,31 +419,12 @@ atfork_prepare(void)
     }
 }
 
-static void
-unlock_entries(void)
-{
-    for (offloaded_t *entry = entries; entry; entry = entry->next)
-    {
-        entry->lock.unlock();
-    }
-    entries_lock.unlock();
-}
-
-static void
-atfork_parent(void)
-{
-    if (fork_with_gvl)
-    {
-        unlock_entries();
-    }
-}
-
 // Runs in the child before Ruby does, so it leaves the table to offloaded_entry.
 // A thread without the GVL, such as a delegate of ImageMagick, forks to exec,
-// and the list may be changing under it. The calls of the other fibers and of
-// the other Ractors never run in the child, so the objects they changed for
-// the call are changed back while nothing in the child can have destroyed them
-// yet.
+// and the list may be changing under it. The calls of the other fibers never
+// run in the child, so the objects they changed for the call are changed back
+// while nothing in the child can have destroyed them yet. The new generation
+// frees every state, and the calls that go on take theirs again.
 static void
 atfork_child(void)
 {
@@ -471,33 +435,29 @@ atfork_child(void)
     {
         return;
     }
-    for (offloaded_t *entry = entries; entry; entry = entry->next)
+    fork_generation++;
+    for (offload_frame_t *frame = main_entry->frames; frame; frame = next)
     {
-        for (offload_frame_t *frame = entry->frames; frame; frame = next)
+        next = frame->next;
+        if (frame->fiber == fork_fiber)
         {
-            next = frame->next;
-            if (entry == main_entry && frame->fiber == fork_fiber)
-            {
-                count += (unsigned int)frame->nmarks;
-                continue;
-            }
-            for (int i = 0; i < frame->nrestores; i++)
-            {
-                frame->restores[i].release(frame->restores[i].ptr, frame->restores[i].arg);
-            }
             for (long i = 0; i < frame->nmarks; i++)
             {
                 if (frame->marks[i].state)
                 {
-                    state_release(frame->marks[i].state, frame->marks[i].mode);
+                    state_acquire(frame->marks[i].state, frame->marks[i].mode, false);
                 }
             }
-            frame_remove(entry, frame);
+            count += (unsigned int)frame->nmarks;
+            continue;
         }
+        for (int i = 0; i < frame->nrestores; i++)
+        {
+            frame->restores[i].release(frame->restores[i].ptr, frame->restores[i].arg);
+        }
+        frame_remove(main_entry, frame);
     }
     offloads_in_flight.store(count, std::memory_order_relaxed);
-    fork_generation++;
-    unlock_entries();
 }
 #endif
 
@@ -555,13 +515,13 @@ object_state(VALUE obj)
     return NULL;
 }
 
-// Number of calls in flight that read obj, or RM_OFFLOAD_UPDATING
+// Number of calls in flight that read obj, or STATE_UPDATING
 static unsigned int
 object_offload_state(VALUE obj)
 {
     rm_offload_state_t *state = object_state(obj);
 
-    return state ? state->load(std::memory_order_acquire) : 0;
+    return state ? state_count(state->load(std::memory_order_acquire)) : 0;
 }
 
 static VALUE
@@ -609,7 +569,7 @@ rm_gvl_init(void)
     offloaded_key = rb_ractor_local_storage_ptr_newkey(&offloaded_type);
     main_entry = offloaded_entry();
 #if defined(HAVE_WORKING_FORK)
-    int err = pthread_atfork(atfork_prepare, atfork_parent, atfork_child);
+    int err = pthread_atfork(atfork_prepare, NULL, atfork_child);
 
     if (err)
     {
@@ -631,7 +591,7 @@ void
 rm_gvl_check_readable(VALUE obj)
 {
 #if defined(RMAGICK_OFFLOAD_SAFE)
-    if (object_offload_state(obj) == RM_OFFLOAD_UPDATING)
+    if (object_offload_state(obj) == STATE_UPDATING)
     {
         raise_in_use();
     }
@@ -737,19 +697,19 @@ mark_in_use(const offload_mark_t *mark)
 
     if (mark->state)
     {
-        state = mark->state->load(std::memory_order_acquire);
+        state = state_count(mark->state->load(std::memory_order_acquire));
     }
     else
     {
         st_data_t table_state = offload_state(mark->key);
 
-        state = table_state == OFFLOAD_UPDATING ? RM_OFFLOAD_UPDATING : (unsigned int)table_state;
+        state = table_state == OFFLOAD_UPDATING ? STATE_UPDATING : (unsigned int)table_state;
     }
     if (mark->image)
     {
         return state != 0;
     }
-    return state == RM_OFFLOAD_UPDATING || (mark->mode == OffloadUpdate && state != 0);
+    return state == STATE_UPDATING || (mark->mode == OffloadUpdate && state != 0);
 }
 
 // Take a mark for a call, or return false if another call holds the object
@@ -782,54 +742,23 @@ mark_release(st_table *table, const offload_mark_t *mark)
 }
 
 // Take the marks of a frame and link it, or take none and return false if
-// another call holds an object. Growing the table can start a GC that waits
-// for a fork that waits for the lock, so the table is changed outside it. Only
-// this Ractor uses its table, and the child of a fork rebuilds it.
+// another call holds an object
 static bool
 frame_acquire(offloaded_t *entry, offload_frame_t *frame)
 {
-    long i, j;
-
-    for (i = 0; i < frame->nmarks; i++)
+    for (long i = 0; i < frame->nmarks; i++)
     {
-        if (!frame->marks[i].state && !mark_acquire(entry->table, &frame->marks[i]))
+        if (!mark_acquire(entry->table, &frame->marks[i]))
         {
-            break;
-        }
-    }
-    if (i == frame->nmarks)
-    {
-        entry->lock.lock();
-        for (j = 0; j < frame->nmarks; j++)
-        {
-            if (frame->marks[j].state && !mark_acquire(entry->table, &frame->marks[j]))
+            while (i-- > 0)
             {
-                break;
+                mark_release(entry->table, &frame->marks[i]);
             }
-        }
-        if (j == frame->nmarks)
-        {
-            frame_push(entry, frame);
-            entry->lock.unlock();
-            return true;
-        }
-        while (j-- > 0)
-        {
-            if (frame->marks[j].state)
-            {
-                mark_release(entry->table, &frame->marks[j]);
-            }
-        }
-        entry->lock.unlock();
-    }
-    while (i-- > 0)
-    {
-        if (!frame->marks[i].state)
-        {
-            mark_release(entry->table, &frame->marks[i]);
+            return false;
         }
     }
-    return false;
+    frame_push(entry, frame);
+    return true;
 }
 
 // Release the marks of a frame and unlink it, or return false if a fork
@@ -837,28 +766,15 @@ frame_acquire(offloaded_t *entry, offload_frame_t *frame)
 static bool
 frame_release(offloaded_t *entry, offload_frame_t *frame)
 {
-    entry->lock.lock();
     if (!frame->linked)
     {
-        entry->lock.unlock();
         return false;
     }
     for (long i = 0; i < frame->nmarks; i++)
     {
-        if (frame->marks[i].state)
-        {
-            mark_release(entry->table, &frame->marks[i]);
-        }
+        mark_release(entry->table, &frame->marks[i]);
     }
     frame_remove(entry, frame);
-    entry->lock.unlock();
-    for (long i = 0; i < frame->nmarks; i++)
-    {
-        if (!frame->marks[i].state)
-        {
-            mark_release(entry->table, &frame->marks[i]);
-        }
-    }
     return true;
 }
 #endif

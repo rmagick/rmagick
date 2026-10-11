@@ -197,9 +197,8 @@ typedef ImageInfo Info; /**< Make type name match class name */
     #define IMAGEMAGICK_6 1
 #endif
 
-//! Number of offloaded calls that read an object, or RM_OFFLOAD_UPDATING
+//! Offloaded calls that use an object, which only rmagick_gvl.cpp reads
 typedef std::atomic<unsigned int> rm_offload_state_t;
-#define RM_OFFLOAD_UPDATING UINT_MAX
 
 //! Image class.
 typedef struct
