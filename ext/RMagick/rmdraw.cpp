@@ -857,6 +857,53 @@ struct Draw_annotate_args
 };
 
 
+// Give a pattern that CloneDrawInfo shared a pixel cache of its own
+static void
+copy_pattern(Image **pattern)
+{
+    if (*pattern)
+    {
+        Image *copy = rm_copy_image(*pattern);
+
+        DestroyImage(*pattern);
+        *pattern = copy;
+    }
+}
+
+
+static VALUE
+copy_patterns(VALUE arg)
+{
+    DrawInfo *info = (DrawInfo *)arg;
+
+    copy_pattern(&info->fill_pattern);
+    copy_pattern(&info->stroke_pattern);
+    return Qnil;
+}
+
+
+// Copy the DrawInfo of a Draw for a call that draws. A frozen Draw may be
+// shared with other Ractors, whose calls would read the pixel cache of a
+// pattern through its default nexus at once.
+static DrawInfo *
+clone_draw_info(VALUE self, const MagickDraw *draw)
+{
+    DrawInfo *info = CloneDrawInfo(NULL, draw->info);
+    int state = 0;
+
+    if (OBJ_FROZEN(self))
+    {
+        rb_protect(copy_patterns, (VALUE)info, &state);
+        if (state)
+        {
+            DestroyDrawInfo(info);
+            rb_jump_tag(state);
+        }
+    }
+    return info;
+}
+
+
 // Mark a Draw for a call. The copy of its DrawInfo shares the pixel caches of
 // its patterns, which ImageMagick reads through a working area that only one
 // call can use, so a call that may use them takes the Draw for itself.
@@ -965,7 +1012,7 @@ annotate_body(VALUE arg)
     image = rm_check_frozen(annotate->image_arg);
     rm_gvl_check_readable(annotate->self);
 
-    info = CloneDrawInfo(NULL, draw->info);
+    info = clone_draw_info(annotate->self, draw);
     restore_affine(annotate);
     magick_clone_string(&info->geometry, geometry_str);
     magick_clone_string(&info->text, embed_text);
@@ -1163,7 +1210,7 @@ Draw_draw(VALUE self, VALUE image_arg)
     }
     primitive = StringValueCStr(draw->primitives);
 
-    info = CloneDrawInfo(NULL, draw->info);
+    info = clone_draw_info(self, draw);
     magick_clone_string(&info->primitive, primitive);
 
 #if defined(IMAGEMAGICK_7)
@@ -1240,20 +1287,6 @@ Draw_get_multiline_type_metrics(
                                VALUE self)
 {
     return get_type_metrics(argc, argv, self, GVL_FUNC(GetMultilineTypeMetrics));
-}
-
-
-// Give a pattern that CloneDrawInfo shared a pixel cache of its own
-static void
-copy_pattern(Image **pattern)
-{
-    if (*pattern)
-    {
-        Image *copy = rm_copy_image(*pattern);
-
-        DestroyImage(*pattern);
-        *pattern = copy;
-    }
 }
 
 
