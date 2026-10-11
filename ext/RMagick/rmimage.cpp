@@ -10308,6 +10308,12 @@ Image_initialize(int argc, VALUE *argv, VALUE self)
 static void
 own_pixel_cache(Image *image)
 {
+    // Image#initialize sets an image before it has a size, and opening a cache
+    // for it would fail.
+    if (image->columns == 0 || image->rows == 0)
+    {
+        return;
+    }
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception = AcquireExceptionInfo();
 
