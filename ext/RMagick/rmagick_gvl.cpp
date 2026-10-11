@@ -48,10 +48,12 @@
  *
  * ImageMagick reads some images through a working area of the pixel cache
  * that every thread outside OpenMP shares, so while an offloaded call uses an
- * image, no other call can use the image or its pixel cache, which clones of
- * the image share. A call that stays on its thread does not mark the image,
- * so an image must not be used by two threads without a scheduler at once.
- * RMagick itself reads and writes pixels through a cache view of its own.
+ * image, no other call can use the image. No two Image objects share a pixel
+ * cache: an Image object takes one of its own, and a copy that RMagick makes
+ * for one call shares it only with the image that the call marks. A call that
+ * stays on its thread does not mark the image, so an image must not be used
+ * by two threads without a scheduler at once. RMagick itself reads and writes
+ * pixels through a cache view of its own.
  *
  * The child of a fork keeps none of the workers of the parent, so it drops
  * the marks of every fiber but the one that forked, whose calls go on in the
@@ -154,28 +156,24 @@ call_deferring_interrupts(VALUE arg)
 
 #if defined(RMAGICK_OFFLOAD_SAFE)
 
-// Value in the table of a pixel cache that a call is changing
-#define OFFLOAD_UPDATING ((st_data_t)-1)
-
 static void raise_in_use(void) ATTRIBUTE_NORETURN;
 
 static rb_ractor_local_key_t offloaded_key;
 
-// Marks of the calls in flight in all Ractors, to skip the table when there are none
+// Marks of the calls in flight in all Ractors, so that a call that stays on
+// its thread checks its images only when there are some
 static std::atomic<unsigned int> offloads_in_flight(0);
 
-// Forks seen by this process; a table from an earlier fork is restored before
-// use, and a state from an earlier fork is free
+// Forks seen by this process; a state from an earlier fork is free
 static unsigned int fork_generation;
 
 // The state of an object holds the fork generation above the number of calls
 // that read it, or STATE_UPDATING
 #define STATE_UPDATING UINT_MAX
 
-// A mark on the offload state of an object, or on a pixel cache in the table
+// A mark on the offload state of an object
 typedef struct
 {
-    void *key;
     rm_offload_state_t *state;
     OffloadMode mode;
     bool image;
@@ -213,13 +211,9 @@ typedef struct offload_frame
     struct offload_frame *next;
 } offload_frame_t;
 
-// Pixel cache of an Image => number of calls in flight that read it, or
-// OFFLOAD_UPDATING. Each Ractor has its own table, so a pixel cache is marked
-// only in the Ractor that uses it.
+// The calls in flight in a Ractor
 typedef struct offloaded
 {
-    st_table *table;
-    unsigned int generation;
     offload_frame_t *frames;
 } offloaded_t;
 
@@ -229,39 +223,10 @@ static offloaded_t *main_entry;
 static void
 offloaded_free(void *ptr)
 {
-    offloaded_t *entry = (offloaded_t *)ptr;
-
-    st_free_table(entry->table);
-    xfree(entry);
+    xfree(ptr);
 }
 
 static const struct rb_ractor_local_storage_type offloaded_type = { NULL, offloaded_free };
-
-static void
-mark_insert(st_table *table, const void *ptr, OffloadMode mode)
-{
-    st_data_t state = 0;
-
-    st_lookup(table, (st_data_t)ptr, &state);
-    st_insert(table, (st_data_t)ptr, mode == OffloadUpdate ? OFFLOAD_UPDATING : state + 1);
-}
-
-static void
-mark_remove(st_table *table, const void *ptr)
-{
-    st_data_t key = (st_data_t)ptr;
-    st_data_t state = 0;
-
-    st_lookup(table, key, &state);
-    if (state == OFFLOAD_UPDATING || state <= 1)
-    {
-        st_delete(table, &key, NULL);
-    }
-    else
-    {
-        st_insert(table, key, state - 1);
-    }
-}
 
 // The number of calls that read an object, or STATE_UPDATING
 static unsigned int
@@ -323,33 +288,10 @@ offloaded_entry(void)
     if (!entry)
     {
         entry = ALLOC(offloaded_t);
-        entry->table = st_init_numtable();
-        entry->generation = fork_generation;
         entry->frames = NULL;
         rb_ractor_local_storage_ptr_set(offloaded_key, entry);
     }
-    else if (entry->generation != fork_generation)
-    {
-        st_clear(entry->table);
-        entry->generation = fork_generation;
-        for (offload_frame_t *frame = entry->frames; frame; frame = frame->next)
-        {
-            for (long i = 0; i < frame->nmarks; i++)
-            {
-                if (!frame->marks[i].state)
-                {
-                    mark_insert(entry->table, frame->marks[i].key, frame->marks[i].mode);
-                }
-            }
-        }
-    }
     return entry;
-}
-
-static st_table *
-offloaded(void)
-{
-    return offloaded_entry()->table;
 }
 
 static void
@@ -418,8 +360,7 @@ atfork_prepare(void)
     }
 }
 
-// Runs in the child before Ruby does, so it leaves the table to offloaded_entry.
-// A thread without the GVL, such as a delegate of ImageMagick, forks to exec,
+// Runs in the child before Ruby does. A thread without the GVL, such as a delegate of ImageMagick, forks to exec,
 // and the list may be changing under it. The calls of the other fibers never
 // run in the child, so the objects they changed for the call are changed back
 // while nothing in the child can have destroyed them yet. The new generation
@@ -442,10 +383,7 @@ atfork_child(void)
         {
             for (long i = 0; i < frame->nmarks; i++)
             {
-                if (frame->marks[i].state)
-                {
-                    state_acquire(frame->marks[i].state, frame->marks[i].mode, false);
-                }
+                state_acquire(frame->marks[i].state, frame->marks[i].mode, false);
             }
             count += (unsigned int)frame->nmarks;
             continue;
@@ -459,19 +397,6 @@ atfork_child(void)
     offloads_in_flight.store(count, std::memory_order_relaxed);
 }
 #endif
-
-static st_data_t
-offload_state(const void *ptr)
-{
-    st_data_t state = 0;
-
-    if (offloads_in_flight.load(std::memory_order_relaxed) == 0)
-    {
-        return 0;
-    }
-    st_lookup(offloaded(), (st_data_t)ptr, &state);
-    return state;
-}
 
 static void
 raise_in_use(void)
@@ -637,107 +562,39 @@ rm_gvl_check_writable(VALUE obj)
 
 
 #if defined(RMAGICK_OFFLOAD_SAFE)
-static bool
-marked(const offload_mark_t *marks, long count, const void *key, const rm_offload_state_t *state)
-{
-    for (long i = 0; i < count; i++)
-    {
-        if (marks[i].key == key && marks[i].state == state)
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
+// Mark an object registered with read() or update(), once for each call
 static void
-add_mark(offload_mark_t *marks, long *nmarks, void *key, rm_offload_state_t *state, OffloadMode mode, bool image)
-{
-    if ((!key && !state) || marked(marks, *nmarks, key, state))
-    {
-        return;
-    }
-    marks[*nmarks].key = key;
-    marks[*nmarks].state = state;
-    marks[*nmarks].mode = mode;
-    marks[*nmarks].image = image;
-    (*nmarks)++;
-}
-
-// Mark an object registered with read() or update(), and the pixel cache of an
-// Image
-static void
-add_object_marks(offload_mark_t *marks, long *nmarks, VALUE obj, OffloadMode mode)
+add_object_mark(offload_mark_t *marks, long *nmarks, VALUE obj, OffloadMode mode)
 {
     rm_offload_state_t *state = object_state(obj);
-    bool image;
 
     if (!state)
     {
         return;
     }
-    image = RTYPEDDATA_TYPE(obj) == &rm_image_data_type;
-    add_mark(marks, nmarks, NULL, state, mode, image);
-    if (image)
+    for (long i = 0; i < *nmarks; i++)
     {
-        Image *ptr = rm_image_get(obj);
-
-        if (ptr)
+        if (marks[i].state == state)
         {
-            add_mark(marks, nmarks, ptr->cache, NULL, mode, true);
+            return;
         }
     }
+    marks[*nmarks].state = state;
+    marks[*nmarks].mode = mode;
+    marks[*nmarks].image = RTYPEDDATA_TYPE(obj) == &rm_image_data_type;
+    (*nmarks)++;
 }
 
 static bool
 mark_in_use(const offload_mark_t *mark)
 {
-    unsigned int state;
+    unsigned int count = state_count(mark->state->load(std::memory_order_acquire));
 
-    if (mark->state)
-    {
-        state = state_count(mark->state->load(std::memory_order_acquire));
-    }
-    else
-    {
-        st_data_t table_state = offload_state(mark->key);
-
-        state = table_state == OFFLOAD_UPDATING ? STATE_UPDATING : (unsigned int)table_state;
-    }
     if (mark->image)
     {
-        return state != 0;
+        return count != 0;
     }
-    return state == STATE_UPDATING || (mark->mode == OffloadUpdate && state != 0);
-}
-
-// Take a mark for a call, or return false if another call holds the object
-static bool
-mark_acquire(st_table *table, const offload_mark_t *mark)
-{
-    if (mark->state)
-    {
-        return state_acquire(mark->state, mark->mode, mark->image);
-    }
-    if (mark_in_use(mark))
-    {
-        return false;
-    }
-    mark_insert(table, mark->key, mark->mode);
-    return true;
-}
-
-static void
-mark_release(st_table *table, const offload_mark_t *mark)
-{
-    if (mark->state)
-    {
-        state_release(mark->state, mark->mode);
-    }
-    else
-    {
-        mark_remove(table, mark->key);
-    }
+    return count == STATE_UPDATING || (mark->mode == OffloadUpdate && count != 0);
 }
 
 // Take the marks of a frame and link it, or take none and return false if
@@ -747,11 +604,11 @@ frame_acquire(offloaded_t *entry, offload_frame_t *frame)
 {
     for (long i = 0; i < frame->nmarks; i++)
     {
-        if (!mark_acquire(entry->table, &frame->marks[i]))
+        if (!state_acquire(frame->marks[i].state, frame->marks[i].mode, frame->marks[i].image))
         {
             while (i-- > 0)
             {
-                mark_release(entry->table, &frame->marks[i]);
+                state_release(frame->marks[i].state, frame->marks[i].mode);
             }
             return false;
         }
@@ -771,7 +628,7 @@ frame_release(offloaded_t *entry, offload_frame_t *frame)
     }
     for (long i = 0; i < frame->nmarks; i++)
     {
-        mark_release(entry->table, &frame->marks[i]);
+        state_release(frame->marks[i].state, frame->marks[i].mode);
     }
     frame_remove(entry, frame);
     return true;
@@ -1176,12 +1033,12 @@ rm_gvl_call::call_body(ResultType type)
         }
         if (offload)
         {
-            frame = (offload_frame_t *)xmalloc(frame_align(sizeof(offload_frame_t)) + 2 * count * sizeof(offload_mark_t));
+            frame = (offload_frame_t *)xmalloc(frame_align(sizeof(offload_frame_t)) + count * sizeof(offload_mark_t));
             marks = (offload_mark_t *)((char *)frame + frame_align(sizeof(offload_frame_t)));
         }
         else
         {
-            marks = ALLOCV_N(offload_mark_t, marks_buffer, 2 * count);
+            marks = ALLOCV_N(offload_mark_t, marks_buffer, count);
         }
 
         // An object that the call both reads and changes is marked as changed.
@@ -1198,7 +1055,7 @@ rm_gvl_call::call_body(ResultType type)
                 }
                 for (long j = 0; j < len; j++)
                 {
-                    add_object_marks(marks, &nmarks, objects[i].each ? rb_ary_entry(objects[i].obj, j) : objects[i].obj, mode);
+                    add_object_mark(marks, &nmarks, objects[i].each ? rb_ary_entry(objects[i].obj, j) : objects[i].obj, mode);
                 }
             }
         }

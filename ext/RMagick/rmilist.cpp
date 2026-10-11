@@ -935,7 +935,7 @@ link_images(VALUE arg)
             // Wrap raw ImageMagick object by Ruby object to destroy using Ruby's GC.
             // The wrapper is kept in *clones so that the GC cannot reclaim it, and
             // with it the Image, while the list below is still in use.
-            rb_ary_push(*args->clones, rm_image_new(image));
+            rb_ary_push(*args->clones, rm_image_wrap(image));
         }
         AppendImageToList(&args->images, image);
     }

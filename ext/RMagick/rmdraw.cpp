@@ -230,7 +230,7 @@ Draw_fill_pattern_eq(VALUE self, VALUE pattern)
         pattern = rm_cur_image(pattern);
         image = rm_check_readable(pattern);
         // Do not trace creation
-        draw->info->fill_pattern = rm_clone_image(image);
+        draw->info->fill_pattern = rm_copy_image(image);
     }
 
     return pattern;
@@ -764,7 +764,7 @@ Draw_stroke_pattern_eq(VALUE self, VALUE pattern)
         pattern = rm_cur_image(pattern);
         image = rm_check_readable(pattern);
         // Do not trace creation
-        draw->info->stroke_pattern = rm_clone_image(image);
+        draw->info->stroke_pattern = rm_copy_image(image);
     }
 
     return pattern;
@@ -850,6 +850,20 @@ struct Draw_annotate_args
     ExceptionInfo *exception;
 #endif
 };
+
+
+// Mark a Draw for a call. The copy of its DrawInfo shares the pixel caches of
+// its patterns, which ImageMagick reads through a working area that only one
+// call can use, so a call that may use them takes the Draw for itself.
+static rm_gvl_call &
+mark_draw(rm_gvl_call &call, VALUE obj, const MagickDraw *draw)
+{
+    if (draw->info->fill_pattern || draw->info->stroke_pattern)
+    {
+        return call.update(obj);
+    }
+    return call.read(obj);
+}
 
 
 // Change back the affine matrix that the block of Draw#annotate may have changed
@@ -957,7 +971,7 @@ annotate_body(VALUE arg)
 #else
     DECLARE_GVL_CALL(call, AnnotateImage, image, info);
 #endif
-    call.update(annotate->image_arg).read(annotate->self).release(info).run<void>();
+    mark_draw(call.update(annotate->image_arg), annotate->self, draw).release(info).run<void>();
     DestroyDrawInfo(info);
 
 #if defined(IMAGEMAGICK_7)
@@ -1154,7 +1168,7 @@ Draw_draw(VALUE self, VALUE image_arg)
 #else
     DECLARE_GVL_CALL(call, DrawImage, image, info);
 #endif
-    call.update(image_arg).read(self).release(info).run<void>();
+    mark_draw(call.update(image_arg), self, draw).release(info).run<void>();
     DestroyDrawInfo(info);
 
 #if defined(IMAGEMAGICK_7)
@@ -1224,6 +1238,20 @@ Draw_get_multiline_type_metrics(
 }
 
 
+// Give a pattern that CloneDrawInfo shared a pixel cache of its own
+static void
+copy_pattern(Image **pattern)
+{
+    if (*pattern)
+    {
+        Image *copy = rm_copy_image(*pattern);
+
+        DestroyImage(*pattern);
+        *pattern = copy;
+    }
+}
+
+
 /**
  * Initialize clone, dup methods.
  *
@@ -1242,6 +1270,8 @@ VALUE Draw_init_copy(VALUE self, VALUE orig)
     {
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
+    copy_pattern(&copy->info->fill_pattern);
+    copy_pattern(&copy->info->stroke_pattern);
 
     if (original->primitives)
     {
@@ -1713,7 +1743,7 @@ get_type_metrics(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
     {
         call.read(t);
     }
-    void *ret = call.read(self).release(info).run<void *>();
+    void *ret = mark_draw(call, self, draw).release(info).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
     DestroyDrawInfo(info);
 
