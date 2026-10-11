@@ -123,6 +123,32 @@ RSpec.describe Magick do
         end.not_to raise_error
       end
     end
+
+    it "writes a frozen image that Ractors share" do
+      experimental = Warning[:experimental]
+      Warning[:experimental] = false
+      image = Magick::Image.read("gradient:red-blue") { |options| options.size = "200x200" }.first
+      image.format = "MIFF"
+      list = Magick::ImageList.new
+      list << image
+      Ractor.make_shareable(image)
+      Ractor.make_shareable(list)
+      expected = image.to_blob { |options| options.format = "PPM" }
+
+      ractors = Array.new(4) do
+        Ractor.new(image, list, expected) do |shared, shared_list, blob|
+          Array.new(10) do
+            Marshal.dump(shared)
+            shared_list.to_blob { |options| options.format = "PPM" }
+            shared.to_blob { |options| options.format = "PPM" } == blob
+          end.all?
+        end
+      end
+
+      expect(ractors.map { |r| r.respond_to?(:value) ? r.value : r.take }).to all(be(true))
+    ensure
+      Warning[:experimental] = experimental
+    end
   end
 
   describe '::MANAGED_MEMORY' do
