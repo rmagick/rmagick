@@ -21,6 +21,7 @@ struct ImagesFromImageList_Args
 static Image *clone_imagelist(Image *);
 static Image *images_from_imagelist(VALUE, VALUE *);
 static void check_images_writable(VALUE);
+static void check_images_frozen(VALUE);
 static VALUE images_from_imagelist_protected(VALUE);
 static long imagelist_length(VALUE);
 static long check_imagelist_length(VALUE);
@@ -888,6 +889,26 @@ check_images_writable(VALUE imagelist)
 
 
 /**
+ * Raise if any image in the imagelist is frozen or an offloaded call is using
+ * it.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param imagelist the imagelist
+ */
+static void
+check_images_frozen(VALUE imagelist)
+{
+    VALUE images = rb_iv_get(imagelist, "@images");
+
+    for (long i = 0; i < RARRAY_LEN(images); i++)
+    {
+        rm_check_frozen(rb_ary_entry(images, i));
+    }
+}
+
+
+/**
  * Convert an array of Image *s to an ImageMagick scene sequence (i.e. a
  * doubly-linked list of Images).
  *
@@ -915,8 +936,10 @@ images_from_imagelist(VALUE imagelist, VALUE *clones)
 
         t = rb_ary_entry(images, x);
         image = rm_check_readable(t);
-        // avoid a loop in this linked imagelist, issue #202
-        if (head == image || GetPreviousImageInList(image) != NULL || GetNextImageInList(image) != NULL)
+        // Avoid a loop in this linked imagelist, issue #202. A frozen image can
+        // be shared with another Ractor, which may be linking it into a list of
+        // its own.
+        if (OBJ_FROZEN(t) || head == image || GetPreviousImageInList(image) != NULL || GetNextImageInList(image) != NULL)
         {
             image = rm_clone_image(image);
 
@@ -1194,7 +1217,7 @@ ImageList_remap(int argc, VALUE *argv, VALUE self)
     }
 
     VALUE clones;
-    check_images_writable(self);
+    check_images_frozen(self);
     images = images_from_imagelist(self, &clones);
 
 #if defined(IMAGEMAGICK_7)
