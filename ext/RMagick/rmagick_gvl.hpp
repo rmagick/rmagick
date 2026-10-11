@@ -34,7 +34,6 @@ public:
     rm_gvl_call &free_result();
     rm_gvl_call &keep_thread(bool keep = true);
     rm_gvl_call &cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg = 0);
-    rm_gvl_call &restore(void (*release)(void *, intptr_t), void *ptr, intptr_t arg = 0, size_t size = 0);
 
     template <typename T> T run();
 
@@ -54,7 +53,6 @@ private:
         void (*release)(void *, intptr_t);
         void *ptr;
         intptr_t arg;
-        size_t size;
         bool restore;
     } cleanup_t;
 
@@ -68,7 +66,7 @@ private:
     bool keep;
 
     rm_gvl_call &add_object(VALUE obj, bool update, bool each);
-    rm_gvl_call &add_cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg, size_t size, bool restore);
+    rm_gvl_call &add_cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg, bool restore);
     void *call(ResultType type);
     void *call_body(ResultType type);
     void *call_here(ResultType type);

@@ -606,47 +606,34 @@ RSpec.describe Magick::Image, if: offloading do
     it "does not let another fiber change a Draw that an annotation uses" do
       image = described_class.new(100, 40)
       expected = described_class.new(100, 40)
-      other = red_image
       draw = Magick::Draw.new
       draw.pointsize = 30
       draw.dup.annotate(expected, 0, 0, 5, 30, "HELLO")
-      errors = nil
-      scheduler.before_next_operation do
-        Fiber.schedule do
-          errors = [
-            attempt { draw.pointsize = 2 },
-            attempt { draw.annotate(other, 0, 0, 0, 0, "x") },
-            attempt { draw.get_type_metrics(other, "x") }
-          ]
-        end
-      end
+      error = nil
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { draw.pointsize = 2 } } }
 
       scheduler.run { draw.annotate(image, 0, 0, 5, 30, "HELLO") }
 
-      expect(errors).to all(in_use)
+      expect(error).to in_use
       expect(image.signature).to eq(expected.signature)
     end
 
-    it "keeps the annotation of another fiber that takes the Draw over during the block" do
+    it "keeps both annotations when the block annotates with the same Draw" do
       first = described_class.new(100, 40)
       second = described_class.new(100, 40)
       expected = described_class.new(100, 40)
       draw = Magick::Draw.new
       draw.pointsize = 30
       draw.dup.annotate(expected, 0, 0, 5, 30, "HELLO")
-      error = nil
 
       scheduler.run do
-        error = attempt do
-          draw.annotate(first, 0, 0, 5, 30, "HELLO") do
-            Fiber.schedule { draw.annotate(second, 0, 0, 5, 30, "HELLO") }
-          end
+        draw.annotate(first, 0, 0, 5, 30, "HELLO") do
+          draw.annotate(second, 0, 0, 5, 30, "HELLO")
         end
       end
 
-      expect(error).to in_use
       expect(second.signature).to eq(expected.signature)
-      expect(first.signature).to eq(described_class.new(100, 40).signature)
+      expect(first.signature).to eq(expected.signature)
     end
 
     it "does not let another fiber change the options of a montage in progress" do

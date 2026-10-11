@@ -969,30 +969,12 @@ rm_gvl_call::add_object(VALUE obj, bool update, bool each)
 rm_gvl_call &
 rm_gvl_call::cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg)
 {
-    return add_cleanup(release, ptr, arg, 0, false);
-}
-
-
-/**
- * Like cleanup, for a release that changes an object the caller passed in
- * back, rather than freeing what the call made.
- *
- * @param release the function
- * @param ptr its first argument
- * @param arg its second argument
- * @param size if not 0, arg points to a value of this size, which an
- *   offloaded call keeps a copy of
- * @return self
- */
-rm_gvl_call &
-rm_gvl_call::restore(void (*release)(void *, intptr_t), void *ptr, intptr_t arg, size_t size)
-{
-    return add_cleanup(release, ptr, arg, size, true);
+    return add_cleanup(release, ptr, arg, false);
 }
 
 
 rm_gvl_call &
-rm_gvl_call::add_cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg, size_t size, bool restore)
+rm_gvl_call::add_cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg, bool restore)
 {
     if (!ptr)
     {
@@ -1005,7 +987,6 @@ rm_gvl_call::add_cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t 
     cleanups[ncleanups].release = release;
     cleanups[ncleanups].ptr = ptr;
     cleanups[ncleanups].arg = arg;
-    cleanups[ncleanups].size = size;
     cleanups[ncleanups].restore = restore;
     ncleanups++;
     return *this;
@@ -1170,7 +1151,7 @@ rm_gvl_call::destroy(Image *image)
 rm_gvl_call &
 rm_gvl_call::split(Image *images)
 {
-    return restore(split_images, images, 0);
+    return add_cleanup(split_images, images, 0, true);
 }
 
 
@@ -1185,7 +1166,7 @@ rm_gvl_call::split(Image *images)
 rm_gvl_call &
 rm_gvl_call::restore_mask(Image *image, ChannelType channel_mask)
 {
-    return restore(restore_channel_mask, image, (intptr_t)channel_mask);
+    return add_cleanup(restore_channel_mask, image, (intptr_t)channel_mask, true);
 }
 #endif
 
@@ -1279,7 +1260,6 @@ rm_gvl_call::call_body(ResultType type)
         offload_mark_t *marks;
         VALUE marks_buffer = 0;
         long count = 0, nmarks = 0;
-        size_t marks_size, values_size = 0;
         bool dropped;
         int tag;
 
@@ -1287,14 +1267,9 @@ rm_gvl_call::call_body(ResultType type)
         {
             count += objects[i].each ? RARRAY_LEN(objects[i].obj) : 1;
         }
-        marks_size = frame_align(2 * count * sizeof(offload_mark_t));
         if (offload)
         {
-            for (int i = 0; i < ncleanups; i++)
-            {
-                values_size += frame_align(cleanups[i].size);
-            }
-            frame = (offload_frame_t *)xmalloc(frame_align(sizeof(offload_frame_t)) + marks_size + values_size);
+            frame = (offload_frame_t *)xmalloc(frame_align(sizeof(offload_frame_t)) + 2 * count * sizeof(offload_mark_t));
             marks = (offload_mark_t *)((char *)frame + frame_align(sizeof(offload_frame_t)));
         }
         else
@@ -1343,10 +1318,7 @@ rm_gvl_call::call_body(ResultType type)
             return call_here(type);
         }
 
-        // The frame keeps a copy of the values to change back, which can be on
-        // the stack of a fiber that is gone by the next fork.
         static_assert(MaxCleanups <= OFFLOAD_MAX_RESTORES, "a frame holds every cleanup that restores");
-        char *values = (char *)marks + marks_size;
 
         frame->marks = marks;
         frame->nmarks = nmarks;
@@ -1357,12 +1329,6 @@ rm_gvl_call::call_body(ResultType type)
             {
                 offload_restore_t restore = { cleanups[i].release, cleanups[i].ptr, cleanups[i].arg };
 
-                if (cleanups[i].size)
-                {
-                    memcpy(values, (const void *)cleanups[i].arg, cleanups[i].size);
-                    restore.arg = (intptr_t)values;
-                    values += frame_align(cleanups[i].size);
-                }
                 frame->restores[frame->nrestores++] = restore;
             }
         }

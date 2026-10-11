@@ -852,6 +852,17 @@ struct Draw_annotate_args
 };
 
 
+// Change back the affine matrix that the block of Draw#annotate may have changed
+static void
+restore_affine(struct Draw_annotate_args *annotate)
+{
+    if (memcmp(&annotate->draw->info->affine, &annotate->keep, sizeof(annotate->keep)) != 0)
+    {
+        annotate->draw->info->affine = annotate->keep;
+    }
+}
+
+
 /**
  * Release what annotate_body acquired and restore the affine matrix.
  *
@@ -865,14 +876,8 @@ static VALUE
 annotate_ensure(VALUE arg)
 {
     struct Draw_annotate_args *annotate = (struct Draw_annotate_args *)arg;
-    MagickDraw *draw = annotate->draw;
 
-    if (!rm_gvl_in_use(annotate->self))
-    {
-        magick_free(draw->info->text);
-        draw->info->text = NULL;
-        draw->info->affine = annotate->keep;
-    }
+    restore_affine(annotate);
 
 #if defined(IMAGEMAGICK_7)
     if (annotate->exception)
@@ -901,6 +906,7 @@ annotate_body(VALUE arg)
     struct Draw_annotate_args *annotate = (struct Draw_annotate_args *)arg;
     MagickDraw *draw = annotate->draw;
     Image *image;
+    DrawInfo *info;
     unsigned long width, height;
     long x, y;
     char geometry_str[100];
@@ -938,18 +944,21 @@ annotate_body(VALUE arg)
     // Ruby -- Image#columns, Image#filename, Image#artifact and so on.
     embed_text = StringValueCStr(annotate->text);
     image = rm_check_frozen(annotate->image_arg);
-    rm_gvl_check_writable(annotate->self);
+    rm_gvl_check_readable(annotate->self);
 
-    magick_clone_string(&draw->info->geometry, geometry_str);
-    draw->info->text = ConstantString(embed_text);
+    info = CloneDrawInfo(NULL, draw->info);
+    restore_affine(annotate);
+    magick_clone_string(&info->geometry, geometry_str);
+    magick_clone_string(&info->text, embed_text);
 
 #if defined(IMAGEMAGICK_7)
     annotate->exception = AcquireExceptionInfo();
-    DECLARE_GVL_CALL(call, AnnotateImage, image, draw->info, annotate->exception);
+    DECLARE_GVL_CALL(call, AnnotateImage, image, info, annotate->exception);
 #else
-    DECLARE_GVL_CALL(call, AnnotateImage, image, draw->info);
+    DECLARE_GVL_CALL(call, AnnotateImage, image, info);
 #endif
-    call.update(annotate->image_arg).update(annotate->self).run<void>();
+    call.update(annotate->image_arg).read(annotate->self).release(info).run<void>();
+    DestroyDrawInfo(info);
 
 #if defined(IMAGEMAGICK_7)
     exception = annotate->exception;
@@ -994,7 +1003,7 @@ VALUE Draw_annotate(
     // Save the affine matrix in case it is modified by
     // Draw#rotation=
     annotate.draw = get_draw(self);
-    rm_gvl_check_writable(self);
+    rm_gvl_check_readable(self);
     annotate.keep = annotate.draw->info->affine;
 
     annotate.self       = self;
@@ -1106,26 +1115,6 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
 }
 
 
-// Release what Draw#draw and get_type_metrics() set on the DrawInfo for one call
-static void
-free_primitive(void *ptr, intptr_t arg ATTRIBUTE_UNUSED)
-{
-    MagickDraw *draw = (MagickDraw *)ptr;
-
-    magick_free(draw->info->primitive);
-    draw->info->primitive = NULL;
-}
-
-static void
-free_text(void *ptr, intptr_t arg ATTRIBUTE_UNUSED)
-{
-    MagickDraw *draw = (MagickDraw *)ptr;
-
-    magick_free(draw->info->text);
-    draw->info->text = NULL;
-}
-
-
 /**
  * Execute the stored drawing primitives on the current image.
  *
@@ -1138,6 +1127,8 @@ Draw_draw(VALUE self, VALUE image_arg)
 {
     MagickDraw *draw;
     Image *image;
+    DrawInfo *info;
+    char *primitive;
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
 #endif
@@ -1146,26 +1137,25 @@ Draw_draw(VALUE self, VALUE image_arg)
     image = rm_check_frozen(image_arg);
 
     draw = get_draw(self);
-    rm_gvl_check_writable(self);
+    rm_gvl_check_readable(self);
     if (draw->primitives == 0)
     {
         rb_raise(rb_eArgError, "nothing to draw");
     }
+    primitive = StringValueCStr(draw->primitives);
 
-    // Point the DrawInfo structure at the current set of primitives.
-    magick_clone_string(&(draw->info->primitive), StringValueCStr(draw->primitives));
+    info = CloneDrawInfo(NULL, draw->info);
+    magick_clone_string(&info->primitive, primitive);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    DECLARE_GVL_CALL(call, DrawImage, image, draw->info, exception);
+    DECLARE_GVL_CALL(call, DrawImage, image, info, exception);
     call.release(exception);
 #else
-    DECLARE_GVL_CALL(call, DrawImage, image, draw->info);
+    DECLARE_GVL_CALL(call, DrawImage, image, info);
 #endif
-    call.update(image_arg).update(self).restore(free_primitive, draw).run<void>();
-
-    magick_free(draw->info->primitive);
-    draw->info->primitive = NULL;
+    call.update(image_arg).read(self).release(info).run<void>();
+    DestroyDrawInfo(info);
 
 #if defined(IMAGEMAGICK_7)
     CHECK_EXCEPTION();
@@ -1672,6 +1662,7 @@ get_type_metrics(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
 {
     Image *image;
     MagickDraw *draw;
+    DrawInfo *info;
     VALUE t;
     VALUE text_arg = Qnil;
     TypeMetric metrics;
@@ -1706,26 +1697,25 @@ get_type_metrics(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
     }
 
     draw = get_draw(self);
-    rm_gvl_check_writable(self);
+    rm_gvl_check_readable(self);
     // Measured as given: see the comment in Draw_annotate().
-    draw->info->text = ConstantString(text);
+    info = CloneDrawInfo(NULL, draw->info);
+    magick_clone_string(&info->text, text);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    DECLARE_GVL_CALL_FP(call, get_type_metrics, fp, image, draw->info, &metrics, exception);
+    DECLARE_GVL_CALL_FP(call, get_type_metrics, fp, image, info, &metrics, exception);
     call.release(exception);
 #else
-    DECLARE_GVL_CALL_FP(call, get_type_metrics, fp, image, draw->info, &metrics);
+    DECLARE_GVL_CALL_FP(call, get_type_metrics, fp, image, info, &metrics);
 #endif
     if (argc == 2)
     {
         call.read(t);
     }
-    void *ret = call.update(self).restore(free_text, draw).run<void *>();
+    void *ret = call.read(self).release(info).run<void *>();
     okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
-
-    magick_free(draw->info->text);
-    draw->info->text = NULL;
+    DestroyDrawInfo(info);
 
     if (!okay)
     {

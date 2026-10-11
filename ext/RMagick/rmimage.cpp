@@ -27,6 +27,18 @@
     if (result != (Image *)NULL) \
       SetPixelChannelMask(result, channel_mask);
 
+#define BEGIN_CHANNEL_CLONE(clone, image, channels) \
+    BEGIN_CHANNEL_CLONE_RELEASING(clone, image, channels, NULL, NULL)
+
+#define BEGIN_CHANNEL_CLONE_RELEASING(clone, image, channels, release, ptr) \
+  { \
+    Image *clone = shallow_clone(image, exception, release, ptr); \
+    ChannelType channel_mask = SetPixelChannelMask(clone, (ChannelType)channels);
+
+#define END_CHANNEL_CLONE(clone) \
+    DestroyImage(clone); \
+  }
+
 #ifndef magick_module
     #define magick_module module
 #endif
@@ -302,24 +314,40 @@ DEFINE_GVL_STUB2(SyncCacheViewAuthenticPixels, CacheView *, ExceptionInfo *);
 DEFINE_GVL_STUB4(RotationalBlurImageChannel, const Image *, const ChannelType, const double, ExceptionInfo *);
 #endif
 
-/**
- * Get the image of a method that sets the channel mask of the image on IM7.
- * IM6 passes the channels as an argument instead and only reads the image.
- *
- * No Ruby usage (internal function)
- *
- * @param self the image
- * @return the C image structure for the image
- */
+// A copy of the image that shares its pixels and blob, for a call to change in
+// place of the image, which others may share. If the copy fails, release(ptr)
+// frees what the caller allocated before raising.
 static Image *
-check_channel_writable(VALUE self)
+shallow_clone(Image *image, ExceptionInfo *exception, void (*release)(void *) = NULL, void *ptr = NULL)
 {
-#if defined(IMAGEMAGICK_7)
-    return rm_check_writable(self);
-#else
-    return rm_check_readable(self);
-#endif
+    Image *clone = CloneImage(image, 0, 0, MagickFalse, exception);
+
+    if (!clone || exception->severity >= ErrorException)
+    {
+        if (release)
+        {
+            release(ptr);
+        }
+        if (clone)
+        {
+            DestroyImage(clone);
+        }
+        rm_check_exception(exception, NULL, RetainOnError);
+        DestroyExceptionInfo(exception);
+        rb_raise(rb_eNoMemError, "not enough memory to continue");
+    }
+    clone->next = NULL;
+    clone->previous = NULL;
+    return clone;
 }
+
+#if defined(IMAGEMAGICK_7)
+static void
+destroy_kernel_info(void *ptr)
+{
+    DestroyKernelInfo((KernelInfo *)ptr);
+}
+#endif
 
 static void
 destroy_cache_view(void *ptr, intptr_t arg ATTRIBUTE_UNUSED)
@@ -335,13 +363,6 @@ check_cache_view_exception(CacheView *view, ExceptionInfo *exception)
         DestroyCacheView(view);
         rm_raise_exception(exception);
     }
-}
-
-// Restore a color of the image that the method swapped in for one call
-static void
-restore_color(void *ptr, intptr_t old_color)
-{
-    *(PixelColor *)ptr = *(PixelColor *)old_color;
 }
 
 // Destroy the KernelInfo of Image#recolor, whose values are Ruby memory
@@ -453,7 +474,7 @@ adaptive_channel_method(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
     ExceptionInfo *exception;
     ChannelType channels;
 
-    image = check_channel_writable(self);
+    image = rm_check_readable(self);
     channels = extract_channels(&argc, argv);
 
     switch (argc)
@@ -472,11 +493,11 @@ adaptive_channel_method(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
     exception = AcquireExceptionInfo();
 
 #if defined(IMAGEMAGICK_7)
-    BEGIN_CHANNEL_MASK(image, channels);
-    DECLARE_GVL_CALL_FP(call, adaptive_channel_method, fp, image, radius, sigma, exception);
-    new_image = call.update(self).restore_mask(image, channel_mask).release(exception).run<Image *>();
+    BEGIN_CHANNEL_CLONE(masked, image, channels);
+    DECLARE_GVL_CALL_FP(call, adaptive_channel_method, fp, masked, radius, sigma, exception);
+    new_image = call.read(self).destroy(masked).release(exception).run<Image *>();
     CHANGE_RESULT_CHANNEL_MASK(new_image);
-    END_CHANNEL_MASK(image);
+    END_CHANNEL_CLONE(masked);
 #else
     DECLARE_GVL_CALL_FP(call, adaptive_channel_method, fp, image, channels, radius, sigma, exception);
     new_image = call.read(self).release(exception).run<Image *>();
@@ -795,7 +816,7 @@ Image_add_noise_channel(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
     ChannelType channels;
 
-    image = check_channel_writable(self);
+    image = rm_check_readable(self);
     channels = extract_channels(&argc, argv);
 
     // There must be 1 remaining argument.
@@ -813,10 +834,11 @@ Image_add_noise_channel(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    BEGIN_CHANNEL_MASK(image, channels);
-    DECLARE_GVL_CALL(call, AddNoiseImage, image, noise_type, 1.0, exception);
-    new_image = call.update(self).restore_mask(image, channel_mask).release(exception).run<Image *>();
-    END_CHANNEL_MASK(new_image);
+    BEGIN_CHANNEL_CLONE(masked, image, channels);
+    DECLARE_GVL_CALL(call, AddNoiseImage, masked, noise_type, 1.0, exception);
+    new_image = call.read(self).destroy(masked).release(exception).run<Image *>();
+    CHANGE_RESULT_CHANNEL_MASK(new_image);
+    END_CHANNEL_CLONE(masked);
 #else
     DECLARE_GVL_CALL(call, AddNoiseImageChannel, image, channels, noise_type, exception);
     new_image = call.read(self).release(exception).run<Image *>();
@@ -2109,7 +2131,7 @@ Image_blur_channel(int argc, VALUE *argv, VALUE self)
     ChannelType channels;
     double radius = 0.0, sigma = 1.0;
 
-    image = check_channel_writable(self);
+    image = rm_check_readable(self);
 
     channels = extract_channels(&argc, argv);
 
@@ -2128,11 +2150,11 @@ Image_blur_channel(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    BEGIN_CHANNEL_MASK(image, channels);
-    DECLARE_GVL_CALL(call, BlurImage, image, radius, sigma, exception);
-    new_image = call.update(self).restore_mask(image, channel_mask).release(exception).run<Image *>();
+    BEGIN_CHANNEL_CLONE(masked, image, channels);
+    DECLARE_GVL_CALL(call, BlurImage, masked, radius, sigma, exception);
+    new_image = call.read(self).destroy(masked).release(exception).run<Image *>();
     CHANGE_RESULT_CHANNEL_MASK(new_image);
-    END_CHANNEL_MASK(image);
+    END_CHANNEL_CLONE(masked);
 #else
     DECLARE_GVL_CALL(call, BlurImageChannel, image, channels, radius, sigma, exception);
     new_image = call.read(self).release(exception).run<Image *>();
@@ -2177,43 +2199,47 @@ Image_blur_image(int argc, VALUE *argv, VALUE self)
 static VALUE
 border(int bang, VALUE self, VALUE width, VALUE height, VALUE color)
 {
-    Image *image, *new_image;
-    PixelColor old_border, new_border;
+    Image *image, *clone, *new_image;
+    PixelColor new_border;
     ExceptionInfo *exception;
     RectangleInfo rect;
-
-    image = rm_image_get(self);
 
     memset(&rect, 0, sizeof(rect));
     rect.width = NUM2UINT(width);
     rect.height = NUM2UINT(height);
     Color_to_PixelColor(&new_border, color);
-
-    // Save current border color - we'll want to restore it afterwards.
-    rm_gvl_check_writable(self);
-    old_border = image->border_color;
-    image->border_color = new_border;
+    image = bang ? rm_check_frozen(self) : rm_check_readable(self);
 
     exception = AcquireExceptionInfo();
+    clone = shallow_clone(image, exception);
+    clone->border_color = new_border;
 #if defined(IMAGEMAGICK_7)
-    DECLARE_GVL_CALL(call, BorderImage, image, &rect, image->compose, exception);
+    DECLARE_GVL_CALL(call, BorderImage, clone, &rect, clone->compose, exception);
 #else
-    DECLARE_GVL_CALL(call, BorderImage, image, &rect, exception);
+    DECLARE_GVL_CALL(call, BorderImage, clone, &rect, exception);
 #endif
-    new_image = call.update(self).restore(restore_color, &image->border_color, (intptr_t)&old_border, sizeof(old_border)).release(exception).run<Image *>();
+    if (bang)
+    {
+        call.update(self);
+    }
+    else
+    {
+        call.read(self);
+    }
+    new_image = call.destroy(clone).release(exception).run<Image *>();
+    DestroyImage(clone);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
     if (bang)
     {
         rm_ensure_result(new_image);
-        new_image->border_color = old_border;
+        new_image->border_color = image->border_color;
         rm_image_set(self, new_image);
         rm_image_destroy(image);
         return self;
     }
 
-    image->border_color = old_border;
     return rm_image_new(new_image);
 }
 
@@ -2522,7 +2548,7 @@ Image_channel_depth(int argc, VALUE *argv, VALUE self)
     size_t channel_depth;
     ExceptionInfo *exception;
 
-    image = check_channel_writable(self);
+    image = rm_check_readable(self);
     channels = extract_channels(&argc, argv);
 
     // Ensure all arguments consumed.
@@ -2534,10 +2560,10 @@ Image_channel_depth(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 
 #if defined(IMAGEMAGICK_7)
-    BEGIN_CHANNEL_MASK(image, channels);
-    DECLARE_GVL_CALL(call, GetImageDepth, image, exception);
-    channel_depth = call.update(self).restore_mask(image, channel_mask).release(exception).run<size_t>();
-    END_CHANNEL_MASK(image);
+    BEGIN_CHANNEL_CLONE(masked, image, channels);
+    DECLARE_GVL_CALL(call, GetImageDepth, masked, exception);
+    channel_depth = call.read(self).destroy(masked).release(exception).run<size_t>();
+    END_CHANNEL_CLONE(masked);
 #else
     DECLARE_GVL_CALL(call, GetImageChannelDepth, image, channels, exception);
     channel_depth = call.read(self).release(exception).run<size_t>();
@@ -2571,7 +2597,7 @@ Image_channel_extrema(int argc, VALUE *argv, VALUE self)
     size_t min, max;
     VALUE ary;
 
-    image = check_channel_writable(self);
+    image = rm_check_readable(self);
 
     channels = extract_channels(&argc, argv);
 
@@ -2583,10 +2609,10 @@ Image_channel_extrema(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    BEGIN_CHANNEL_MASK(image, channels);
-    DECLARE_GVL_CALL(call, GetImageExtrema, image, &min, &max, exception);
-    call.update(self).restore_mask(image, channel_mask).release(exception).run<void>();
-    END_CHANNEL_MASK(image);
+    BEGIN_CHANNEL_CLONE(masked, image, channels);
+    DECLARE_GVL_CALL(call, GetImageExtrema, masked, &min, &max, exception);
+    call.read(self).destroy(masked).release(exception).run<void>();
+    END_CHANNEL_CLONE(masked);
 #else
     DECLARE_GVL_CALL(call, GetImageChannelExtrema, image, channels, &min, &max, exception);
     call.read(self).release(exception).run<void>();
@@ -2626,7 +2652,7 @@ Image_channel_mean(int argc, VALUE *argv, VALUE self)
     double mean, stddev;
     VALUE ary;
 
-    image = check_channel_writable(self);
+    image = rm_check_readable(self);
 
     channels = extract_channels(&argc, argv);
 
@@ -2638,10 +2664,10 @@ Image_channel_mean(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    BEGIN_CHANNEL_MASK(image, channels);
-    DECLARE_GVL_CALL(call, GetImageMean, image, &mean, &stddev, exception);
-    call.update(self).restore_mask(image, channel_mask).release(exception).run<void>();
-    END_CHANNEL_MASK(image);
+    BEGIN_CHANNEL_CLONE(masked, image, channels);
+    DECLARE_GVL_CALL(call, GetImageMean, masked, &mean, &stddev, exception);
+    call.read(self).destroy(masked).release(exception).run<void>();
+    END_CHANNEL_CLONE(masked);
 #else
     DECLARE_GVL_CALL(call, GetImageChannelMean, image, channels, &mean, &stddev, exception);
     call.read(self).release(exception).run<void>();
@@ -2679,7 +2705,7 @@ Image_channel_entropy(int argc, VALUE *argv, VALUE self)
     double entropy;
     VALUE ary;
 
-    image = check_channel_writable(self);
+    image = rm_check_readable(self);
 
     channels = extract_channels(&argc, argv);
 
@@ -2691,10 +2717,10 @@ Image_channel_entropy(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    BEGIN_CHANNEL_MASK(image, channels);
-    DECLARE_GVL_CALL(call, GetImageEntropy, image, &entropy, exception);
-    call.update(self).restore_mask(image, channel_mask).release(exception).run<void>();
-    END_CHANNEL_MASK(image);
+    BEGIN_CHANNEL_CLONE(masked, image, channels);
+    DECLARE_GVL_CALL(call, GetImageEntropy, masked, &entropy, exception);
+    call.read(self).destroy(masked).release(exception).run<void>();
+    END_CHANNEL_CLONE(masked);
 #else
     DECLARE_GVL_CALL(call, GetImageChannelEntropy, image, channels, &entropy, exception);
     call.read(self).release(exception).run<void>();
@@ -3526,13 +3552,16 @@ VALUE
 Image_compare_channel(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *r_image, *difference_image;
+#if defined(IMAGEMAGICK_6)
+    Image *clone;
+#endif
     double distortion;
     VALUE ary, ref;
     MetricType metric_type;
     ChannelType channels;
     ExceptionInfo *exception;
 
-    rm_check_writable(self);
+    rm_check_readable(self);
 
     channels = extract_channels(&argc, argv);
 
@@ -3552,17 +3581,19 @@ Image_compare_channel(int argc, VALUE *argv, VALUE self)
 
     VALUE_TO_ENUM(argv[1], metric_type, MetricType);
 
-    image = rm_check_writable(self);
+    image = rm_check_readable(self);
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    BEGIN_CHANNEL_MASK(image, channels);
-    DECLARE_GVL_CALL(call, CompareImages, image, r_image, metric_type, &distortion, exception);
-    difference_image = call.update(self).restore_mask(image, channel_mask).read(ref).release(exception).run<Image *>();
-    END_CHANNEL_MASK(image);
+    BEGIN_CHANNEL_CLONE(masked, image, channels);
+    DECLARE_GVL_CALL(call, CompareImages, masked, r_image, metric_type, &distortion, exception);
+    difference_image = call.read(self).destroy(masked).read(ref).release(exception).run<Image *>();
+    END_CHANNEL_CLONE(masked);
 #else
-    DECLARE_GVL_CALL(call, CompareImageChannels, image, r_image, channels, metric_type, &distortion, exception);
-    difference_image = call.update(self).read(ref).release(exception).run<Image *>();
+    clone = shallow_clone(image, exception);
+    DECLARE_GVL_CALL(call, CompareImageChannels, clone, r_image, channels, metric_type, &distortion, exception);
+    difference_image = call.read(self).destroy(clone).read(ref).release(exception).run<Image *>();
+    DestroyImage(clone);
 #endif
     rm_check_exception(exception, difference_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -4829,7 +4860,7 @@ Image_morphology_channel(VALUE self, VALUE channel_v, VALUE method_v, VALUE iter
     KernelInfo *kernel;
     ssize_t iterations = NUM2LONG(iterations_v);;
 
-    image = check_channel_writable(self);
+    image = rm_check_readable(self);
 
     VALUE_TO_ENUM(method_v, method, MorphologyMethod);
     VALUE_TO_ENUM(channel_v, channel, ChannelType);
@@ -4849,11 +4880,11 @@ Image_morphology_channel(VALUE self, VALUE channel_v, VALUE method_v, VALUE iter
     exception = AcquireExceptionInfo();
 
 #if defined(IMAGEMAGICK_7)
-    BEGIN_CHANNEL_MASK(image, channel);
-    DECLARE_GVL_CALL(call, MorphologyImage, image, method, iterations, kernel, exception);
-    new_image = call.update(self).restore_mask(image, channel_mask).read(kernel_v).release(exception).run<Image *>();
+    BEGIN_CHANNEL_CLONE(masked, image, channel);
+    DECLARE_GVL_CALL(call, MorphologyImage, masked, method, iterations, kernel, exception);
+    new_image = call.read(self).destroy(masked).read(kernel_v).release(exception).run<Image *>();
     CHANGE_RESULT_CHANNEL_MASK(new_image);
-    END_CHANNEL_MASK(image);
+    END_CHANNEL_CLONE(masked);
 #else
     DECLARE_GVL_CALL(call, MorphologyImageChannel, image, channel, method, iterations, kernel, exception);
     new_image = call.read(self).read(kernel_v).release(exception).run<Image *>();
@@ -5014,7 +5045,7 @@ Image_convolve_channel(int argc, VALUE *argv, VALUE self)
     unsigned int x;
 #endif
 
-    image = check_channel_writable(self);
+    image = rm_check_readable(self);
 
     channels = extract_channels(&argc, argv);
 
@@ -5061,11 +5092,11 @@ Image_convolve_channel(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 
 #if defined(IMAGEMAGICK_7)
-    BEGIN_CHANNEL_MASK(image, channels);
-    DECLARE_GVL_CALL(call, ConvolveImage, image, kernel, exception);
-    new_image = call.update(self).restore_mask(image, channel_mask).release(kernel).release(exception).run<Image *>();
+    BEGIN_CHANNEL_CLONE_RELEASING(masked, image, channels, destroy_kernel_info, kernel);
+    DECLARE_GVL_CALL(call, ConvolveImage, masked, kernel, exception);
+    new_image = call.read(self).destroy(masked).release(kernel).release(exception).run<Image *>();
     CHANGE_RESULT_CHANNEL_MASK(new_image);
-    END_CHANNEL_MASK(image);
+    END_CHANNEL_CLONE(masked);
     DestroyKernelInfo(kernel);
 #else
     DECLARE_GVL_CALL(call, ConvolveImageChannel, image, channels, order, kernel, exception);
@@ -5572,7 +5603,7 @@ Image_depth(VALUE self)
 VALUE
 Image_deskew(int argc, VALUE *argv, VALUE self)
 {
-    Image *image, *new_image;
+    Image *image, *clone, *new_image;
     double threshold = 40.0 * QuantumRange / 100.0;
     unsigned long width;
     char auto_crop_width[20];
@@ -5580,17 +5611,12 @@ Image_deskew(int argc, VALUE *argv, VALUE self)
 
     image = rm_check_readable(self);
 
+    memset(auto_crop_width, 0, sizeof(auto_crop_width));
     switch (argc)
     {
         case 2:
             width = NUM2ULONG(argv[1]);
-            memset(auto_crop_width, 0, sizeof(auto_crop_width));
             snprintf(auto_crop_width, sizeof(auto_crop_width), "%lu", width);
-            rm_gvl_check_writable(self);
-            if (!SetImageArtifact(image, "deskew:auto-crop", auto_crop_width))
-            {
-                rb_raise(rb_eNoMemError, "not enough memory to continue");
-            }
         case 1:
             threshold = rm_percentage(argv[0], 1.0) * QuantumRange;
         case 0:
@@ -5600,9 +5626,18 @@ Image_deskew(int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
-    DECLARE_GVL_CALL(call, DeskewImage, image, threshold, exception);
-    new_image = call.read(self).release(exception).run<Image *>();
+    clone = shallow_clone(image, exception);
+    if (*auto_crop_width && !SetImageArtifact(clone, "deskew:auto-crop", auto_crop_width))
+    {
+        DestroyImage(clone);
+        DestroyExceptionInfo(exception);
+        rb_raise(rb_eNoMemError, "not enough memory to continue");
+    }
+    DECLARE_GVL_CALL(call, DeskewImage, clone, threshold, exception);
+    new_image = call.read(self).destroy(clone).release(exception).run<Image *>();
+    DestroyImage(clone);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 
@@ -6215,9 +6250,11 @@ Image_distortion_channel(int argc, VALUE *argv, VALUE self)
     double distortion;
 #if defined(IMAGEMAGICK_7)
     Image *difference_image;
+#else
+    Image *clone;
 #endif
 
-    image = rm_check_writable(self);
+    image = rm_check_readable(self);
     channels = extract_channels(&argc, argv);
     if (argc > 2)
     {
@@ -6233,14 +6270,16 @@ Image_distortion_channel(int argc, VALUE *argv, VALUE self)
     VALUE_TO_ENUM(argv[1], metric, MetricType);
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    BEGIN_CHANNEL_MASK(image, channels);
-    DECLARE_GVL_CALL(call, CompareImages, image, reconstruct, metric, &distortion, exception);
-    difference_image = call.update(self).restore_mask(image, channel_mask).read(rec).release(exception).run<Image *>();
-    END_CHANNEL_MASK(image);
+    BEGIN_CHANNEL_CLONE(masked, image, channels);
+    DECLARE_GVL_CALL(call, CompareImages, masked, reconstruct, metric, &distortion, exception);
+    difference_image = call.read(self).destroy(masked).read(rec).release(exception).run<Image *>();
+    END_CHANNEL_CLONE(masked);
     DestroyImage(difference_image);
 #else
-    DECLARE_GVL_CALL(call, GetImageChannelDistortion, image, reconstruct, channels, metric, &distortion, exception);
-    call.update(self).read(rec).release(exception).run<void>();
+    clone = shallow_clone(image, exception);
+    DECLARE_GVL_CALL(call, GetImageChannelDistortion, clone, reconstruct, channels, metric, &distortion, exception);
+    call.read(self).destroy(clone).read(rec).release(exception).run<void>();
+    DestroyImage(clone);
 #endif
 
     CHECK_EXCEPTION();
@@ -7656,7 +7695,7 @@ Image_fx(int argc, VALUE *argv, VALUE self)
     ChannelType channels;
     ExceptionInfo *exception;
 
-    image = check_channel_writable(self);
+    image = rm_check_readable(self);
     channels = extract_channels(&argc, argv);
 
     // There must be exactly 1 remaining argument.
@@ -7678,11 +7717,11 @@ Image_fx(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    BEGIN_CHANNEL_MASK(image, channels);
-    DECLARE_GVL_CALL(call, FxImage, image, expression, exception);
-    new_image = call.update(self).restore_mask(image, channel_mask).release(exception).run<Image *>();
+    BEGIN_CHANNEL_CLONE(masked, image, channels);
+    DECLARE_GVL_CALL(call, FxImage, masked, expression, exception);
+    new_image = call.read(self).destroy(masked).release(exception).run<Image *>();
     CHANGE_RESULT_CHANNEL_MASK(new_image);
-    END_CHANNEL_MASK(image);
+    END_CHANNEL_CLONE(masked);
 #else
     DECLARE_GVL_CALL(call, FxImageChannel, image, channels, expression, exception);
     new_image = call.read(self).release(exception).run<Image *>();
@@ -7910,7 +7949,7 @@ Image_gaussian_blur_channel(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
     double radius = 0.0, sigma = 1.0;
 
-    image = check_channel_writable(self);
+    image = rm_check_readable(self);
     channels = extract_channels(&argc, argv);
 
     // There can be 0, 1, or 2 remaining arguments.
@@ -7930,11 +7969,11 @@ Image_gaussian_blur_channel(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    BEGIN_CHANNEL_MASK(image, channels);
-    DECLARE_GVL_CALL(call, GaussianBlurImage, image, radius, sigma, exception);
-    new_image = call.update(self).restore_mask(image, channel_mask).release(exception).run<Image *>();
+    BEGIN_CHANNEL_CLONE(masked, image, channels);
+    DECLARE_GVL_CALL(call, GaussianBlurImage, masked, radius, sigma, exception);
+    new_image = call.read(self).destroy(masked).release(exception).run<Image *>();
     CHANGE_RESULT_CHANNEL_MASK(new_image);
-    END_CHANNEL_MASK(image);
+    END_CHANNEL_CLONE(masked);
     rm_check_exception(exception, new_image, DestroyOnError);
 #else
     DECLARE_GVL_CALL(call, GaussianBlurImageChannel, image, channels, radius, sigma, exception);
@@ -11412,7 +11451,7 @@ Image_quantum_operator(int argc, VALUE *argv, VALUE self)
     ChannelType channel;
     ExceptionInfo *exception;
 
-    image = rm_check_writable(self);
+    image = rm_check_frozen(self);
 
     // The default channel is AllChannels
     channel = AllChannels;
@@ -11686,7 +11725,7 @@ Image_radial_blur_channel(int argc, VALUE *argv, VALUE self)
     ChannelType channels;
     double angle;
 
-    image = check_channel_writable(self);
+    image = rm_check_readable(self);
     channels = extract_channels(&argc, argv);
 
     // There must be 1 remaining argument.
@@ -11703,11 +11742,11 @@ Image_radial_blur_channel(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 
 #if defined(IMAGEMAGICK_7)
-    BEGIN_CHANNEL_MASK(image, channels);
-    DECLARE_GVL_CALL(call, RotationalBlurImage, image, angle, exception);
-    new_image = call.update(self).restore_mask(image, channel_mask).release(exception).run<Image *>();
+    BEGIN_CHANNEL_CLONE(masked, image, channels);
+    DECLARE_GVL_CALL(call, RotationalBlurImage, masked, angle, exception);
+    new_image = call.read(self).destroy(masked).release(exception).run<Image *>();
     CHANGE_RESULT_CHANNEL_MASK(new_image);
-    END_CHANNEL_MASK(image);
+    END_CHANNEL_CLONE(masked);
 #else
     DECLARE_GVL_CALL(call, RotationalBlurImageChannel, image, channels, angle, exception);
     new_image = call.read(self).release(exception).run<Image *>();
@@ -13106,7 +13145,7 @@ Image_selective_blur_channel(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
     ChannelType channels;
 
-    image = check_channel_writable(self);
+    image = rm_check_readable(self);
     channels = extract_channels(&argc, argv);
     if (argc > 3)
     {
@@ -13125,11 +13164,11 @@ Image_selective_blur_channel(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    BEGIN_CHANNEL_MASK(image, channels);
-    DECLARE_GVL_CALL(call, SelectiveBlurImage, image, radius, sigma, threshold, exception);
-    new_image = call.update(self).restore_mask(image, channel_mask).release(exception).run<Image *>();
+    BEGIN_CHANNEL_CLONE(masked, image, channels);
+    DECLARE_GVL_CALL(call, SelectiveBlurImage, masked, radius, sigma, threshold, exception);
+    new_image = call.read(self).destroy(masked).release(exception).run<Image *>();
     CHANGE_RESULT_CHANNEL_MASK(new_image);
-    END_CHANNEL_MASK(image);
+    END_CHANNEL_CLONE(masked);
 #else
     DECLARE_GVL_CALL(call, SelectiveBlurImageChannel, image, channels, radius, sigma, threshold, exception);
     new_image = call.read(self).release(exception).run<Image *>();
@@ -13199,7 +13238,7 @@ Image_separate(int argc, VALUE *argv, VALUE self)
     ChannelType channels = UndefinedChannel;
     ExceptionInfo *exception;
 
-    image = check_channel_writable(self);
+    image = rm_check_readable(self);
     channels = extract_channels(&argc, argv);
 
     // All arguments are ChannelType enums
@@ -13210,11 +13249,11 @@ Image_separate(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    BEGIN_CHANNEL_MASK(image, channels);
-    DECLARE_GVL_CALL(call, SeparateImages, image, exception);
-    new_images = call.update(self).restore_mask(image, channel_mask).release(exception).run<Image *>();
+    BEGIN_CHANNEL_CLONE(masked, image, channels);
+    DECLARE_GVL_CALL(call, SeparateImages, masked, exception);
+    new_images = call.read(self).destroy(masked).release(exception).run<Image *>();
     CHANGE_RESULT_CHANNEL_MASK(new_images);
-    END_CHANNEL_MASK(image);
+    END_CHANNEL_CLONE(masked);
 #else
     DECLARE_GVL_CALL(call, SeparateImages, image, channels, exception);
     new_images = call.read(self).release(exception).run<Image *>();
@@ -13573,7 +13612,7 @@ Image_sharpen_channel(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
     double radius = 0.0, sigma = 1.0;
 
-    image = check_channel_writable(self);
+    image = rm_check_readable(self);
     channels = extract_channels(&argc, argv);
 
     // There must be 0, 1, or 2 remaining arguments.
@@ -13593,11 +13632,11 @@ Image_sharpen_channel(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    BEGIN_CHANNEL_MASK(image, channels);
-    DECLARE_GVL_CALL(call, SharpenImage, image, radius, sigma, exception);
-    new_image = call.update(self).restore_mask(image, channel_mask).release(exception).run<Image *>();
+    BEGIN_CHANNEL_CLONE(masked, image, channels);
+    DECLARE_GVL_CALL(call, SharpenImage, masked, radius, sigma, exception);
+    new_image = call.read(self).destroy(masked).release(exception).run<Image *>();
     CHANGE_RESULT_CHANNEL_MASK(new_image);
-    END_CHANNEL_MASK(image);
+    END_CHANNEL_CLONE(masked);
 #else
     DECLARE_GVL_CALL(call, SharpenImageChannel, image, channels, radius, sigma, exception);
     new_image = call.read(self).release(exception).run<Image *>();
@@ -14003,7 +14042,7 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
     MagickPixel pp;
     ExceptionInfo *exception;
 
-    image = check_channel_writable(self);
+    image = rm_check_readable(self);
 
     n = argc;
     channels = extract_channels(&argc, argv);
@@ -14077,11 +14116,11 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    BEGIN_CHANNEL_MASK(image, channels);
-    DECLARE_GVL_CALL(call, SparseColorImage, image, method, nargs, args, exception);
-    new_image = call.update(self).restore_mask(image, channel_mask).free_buffer(args).release(exception).run<Image *>();
+    BEGIN_CHANNEL_CLONE_RELEASING(masked, image, channels, ruby_xfree, args);
+    DECLARE_GVL_CALL(call, SparseColorImage, masked, method, nargs, args, exception);
+    new_image = call.read(self).destroy(masked).free_buffer(args).release(exception).run<Image *>();
     CHANGE_RESULT_CHANNEL_MASK(new_image);
-    END_CHANNEL_MASK(image);
+    END_CHANNEL_CLONE(masked);
 #else
     DECLARE_GVL_CALL(call, SparseColorImage, image, channels, method, nargs, args, exception);
     new_image = call.read(self).free_buffer(args).release(exception).run<Image *>();
@@ -14111,8 +14150,8 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_splice(int argc, VALUE *argv, VALUE self)
 {
-    Image *image, *new_image;
-    PixelColor color, old_color;
+    Image *image, *clone, *new_image;
+    PixelColor color;
     RectangleInfo rectangle;
     ExceptionInfo *exception;
 
@@ -14137,16 +14176,14 @@ Image_splice(int argc, VALUE *argv, VALUE self)
     rectangle.y      = NUM2LONG(argv[1]);
     rectangle.width  = NUM2ULONG(argv[2]);
     rectangle.height = NUM2ULONG(argv[3]);
+    image = rm_check_readable(self);
 
     exception = AcquireExceptionInfo();
-
-    // Swap in color for the duration of this call.
-    rm_gvl_check_writable(self);
-    old_color = image->background_color;
-    image->background_color = color;
-    DECLARE_GVL_CALL(call, SpliceImage, image, &rectangle, exception);
-    new_image = call.update(self).restore(restore_color, &image->background_color, (intptr_t)&old_color, sizeof(old_color)).release(exception).run<Image *>();
-    image->background_color = old_color;
+    clone = shallow_clone(image, exception);
+    clone->background_color = color;
+    DECLARE_GVL_CALL(call, SpliceImage, clone, &rectangle, exception);
+    new_image = call.read(self).destroy(clone).release(exception).run<Image *>();
+    DestroyImage(clone);
 
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
@@ -14234,7 +14271,7 @@ Image_start_loop_eq(VALUE self, VALUE val)
 VALUE
 Image_stegano(VALUE self, VALUE watermark_image, VALUE offset)
 {
-    Image *image, *new_image;
+    Image *image, *clone, *new_image;
     VALUE wm_image;
     Image *watermark;
     ssize_t pixel_offset;
@@ -14246,12 +14283,14 @@ Image_stegano(VALUE self, VALUE watermark_image, VALUE offset)
     watermark = rm_check_readable(wm_image);
 
     pixel_offset = NUM2LONG(offset);
-    rm_gvl_check_writable(self);
-    image->offset = pixel_offset;
+    image = rm_check_readable(self);
 
     exception = AcquireExceptionInfo();
-    DECLARE_GVL_CALL(call, SteganoImage, image, watermark, exception);
-    new_image = call.read(self).read(wm_image).release(exception).run<Image *>();
+    clone = shallow_clone(image, exception);
+    clone->offset = pixel_offset;
+    DECLARE_GVL_CALL(call, SteganoImage, clone, watermark, exception);
+    new_image = call.read(self).read(wm_image).destroy(clone).release(exception).run<Image *>();
+    DestroyImage(clone);
     rm_check_exception(exception, new_image, DestroyOnError);
 
     DestroyExceptionInfo(exception);
@@ -15942,7 +15981,7 @@ Image_unsharp_mask_channel(int argc, VALUE *argv, VALUE self)
     double radius = 0.0, sigma = 1.0, amount = 1.0, threshold = 0.05;
     ExceptionInfo *exception;
 
-    image = check_channel_writable(self);
+    image = rm_check_readable(self);
     channels = extract_channels(&argc, argv);
     if (argc > 4)
     {
@@ -15953,11 +15992,11 @@ Image_unsharp_mask_channel(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
-    BEGIN_CHANNEL_MASK(image, channels);
-    DECLARE_GVL_CALL(call, UnsharpMaskImage, image, radius, sigma, amount, threshold, exception);
-    new_image = call.update(self).restore_mask(image, channel_mask).release(exception).run<Image *>();
+    BEGIN_CHANNEL_CLONE(masked, image, channels);
+    DECLARE_GVL_CALL(call, UnsharpMaskImage, masked, radius, sigma, amount, threshold, exception);
+    new_image = call.read(self).destroy(masked).release(exception).run<Image *>();
     CHANGE_RESULT_CHANNEL_MASK(new_image);
-    END_CHANNEL_MASK(image);
+    END_CHANNEL_CLONE(masked);
 #else
     DECLARE_GVL_CALL(call, UnsharpMaskImageChannel, image, channels, radius, sigma, amount, threshold, exception);
     new_image = call.read(self).release(exception).run<Image *>();

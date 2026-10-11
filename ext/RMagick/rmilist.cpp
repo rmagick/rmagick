@@ -71,14 +71,6 @@ destroy_list_at(void *ptr, intptr_t arg ATTRIBUTE_UNUSED)
     DestroyImageList(*(Image **)ptr);
 }
 
-#if defined(IMAGEMAGICK_6)
-static void
-restore_colorspace(void *ptr, intptr_t colorspace)
-{
-    ((Image *)ptr)->colorspace = (ColorspaceType)colorspace;
-}
-#endif
-
 
 /**
  * Repeatedly display the images in the images array to an XWindow screen. The
@@ -262,7 +254,7 @@ VALUE ImageList_combine(int argc, VALUE *argv, VALUE self)
 {
 #if defined(IMAGEMAGICK_6)
     ChannelType channel;
-    ColorspaceType old_colorspace;
+    Image *head;
 #endif
     ColorspaceType colorspace;
     long len;
@@ -324,25 +316,37 @@ VALUE ImageList_combine(int argc, VALUE *argv, VALUE self)
 
     VALUE clones;
     VALUE image_ary = rb_iv_get(self, "@images");
-#if defined(IMAGEMAGICK_6)
-    check_images_writable(self);
-#endif
     images = images_from_imagelist(self, &clones);
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_6)
-    old_colorspace = images->colorspace;
-    SetImageColorspace(images, colorspace);
+    head = CloneImage(images, 0, 0, MagickTrue, exception);
+    if (!head)
+    {
+        rm_split(images);
+        rm_check_exception(exception, NULL, DestroyOnError);
+        DestroyExceptionInfo(exception);
+        rb_raise(rb_eNoMemError, "not enough memory to continue");
+    }
+    SetImageColorspace(head, colorspace);
+    head->next = images->next;
+    if (head->next)
+    {
+        head->next->previous = head;
+    }
+    images->next = NULL;
+    images = head;
     DECLARE_GVL_CALL(call, CombineImages, images, channel, exception);
-    call.update(rb_ary_entry(image_ary, 0)).restore(restore_colorspace, images, old_colorspace);
+    call.read_each(image_ary).split(images).destroy(head);
 #else
     DECLARE_GVL_CALL(call, CombineImages, images, colorspace, exception);
+    call.read_each(image_ary).split(images);
 #endif
-    new_image = call.read_each(image_ary).split(images).release(exception).run<Image *>();
+    new_image = call.release(exception).run<Image *>();
 
     rm_split(images);
     RB_GC_GUARD(clones);
 #if defined(IMAGEMAGICK_6)
-    images->colorspace = old_colorspace;
+    DestroyImage(head);
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
