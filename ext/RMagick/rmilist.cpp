@@ -16,10 +16,11 @@ struct ImagesFromImageList_Args
     VALUE imagelist;
     VALUE *clones;
     Image *images;
+    bool copy_frozen;
 };
 
 static Image *clone_imagelist(Image *);
-static Image *images_from_imagelist(VALUE, VALUE *);
+static Image *images_from_imagelist(VALUE, VALUE *, bool copy_frozen = false);
 static void check_images_writable(VALUE);
 static void check_images_frozen(VALUE);
 static VALUE images_from_imagelist_protected(VALUE);
@@ -399,7 +400,7 @@ ImageList_composite_layers(int argc, VALUE *argv, VALUE self)
 
     // new_images is not owned by any Ruby object yet, so resolving the source
     // list has to be able to unwind without abandoning it.
-    struct ImagesFromImageList_Args source_args = { source_images, &source_clones, NULL };
+    struct ImagesFromImageList_Args source_args = { source_images, &source_clones, NULL, false };
     int state = 0;
     rb_protect(images_from_imagelist_protected, (VALUE)&source_args, &state);
     if (state)
@@ -930,7 +931,9 @@ link_images(VALUE arg)
         // its own.
         if (OBJ_FROZEN(t) || args->images == image || GetPreviousImageInList(image) != NULL || GetNextImageInList(image) != NULL)
         {
-            image = rm_clone_image(image);
+            // ImageMagick reads the pixels to write through the default nexus of
+            // the pixel cache, so a frozen image to write gets a cache of its own.
+            image = args->copy_frozen && OBJ_FROZEN(t) ? rm_copy_image(image) : rm_clone_image(image);
 
             // Wrap raw ImageMagick object by Ruby object to destroy using Ruby's GC.
             // The wrapper is kept in *clones so that the GC cannot reclaim it, and
@@ -957,9 +960,9 @@ link_images(VALUE arg)
  * @see rm_imagelist_from_images
  */
 static Image *
-images_from_imagelist(VALUE imagelist, VALUE *clones)
+images_from_imagelist(VALUE imagelist, VALUE *clones, bool copy_frozen)
 {
-    struct ImagesFromImageList_Args args = { imagelist, clones, NULL };
+    struct ImagesFromImageList_Args args = { imagelist, clones, NULL, copy_frozen };
     int state = 0;
 
     *clones = rb_ary_new();
@@ -1292,7 +1295,7 @@ ImageList_to_blob(VALUE self)
     // Convert the images array to an images sequence.
     VALUE clones;
     check_images_writable(self);
-    images = images_from_imagelist(self, &clones);
+    images = images_from_imagelist(self, &clones, true);
 
     exception = AcquireExceptionInfo();
     SetImageInfo(info, MagickTrue, exception);
@@ -1394,7 +1397,7 @@ ImageList_write(VALUE self, VALUE file)
     VALUE clones, written;
     check_images_writable(self);
     written = rb_ary_dup(rb_iv_get(self, "@images"));
-    images = images_from_imagelist(self, &clones);
+    images = images_from_imagelist(self, &clones, true);
 
     // Copy the filename into each image. Set a scene number to be used if
     // writing multiple files. (Ref: ImageMagick's utilities/convert.c

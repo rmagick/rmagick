@@ -466,11 +466,16 @@ image_to_str(Image *image)
         size_t length;
         Info *info;
         ExceptionInfo *exception;
+        Image *copy;
 
+        // Writing the pattern changes it, and a frozen Draw may be shared with
+        // other Ractors.
+        copy = rm_copy_image(image);
         info = CloneImageInfo(NULL);
         exception = AcquireExceptionInfo();
-        DECLARE_GVL_CALL(call, ImageToBlob, info, image, &length, exception);
-        blob = call.keep_thread().run<unsigned char *>();
+        DECLARE_GVL_CALL(call, ImageToBlob, info, copy, &length, exception);
+        blob = call.keep_thread().destroy(copy).run<unsigned char *>();
+        DestroyImage(copy);
         DestroyImageInfo(info);
         CHECK_EXCEPTION();
         DestroyExceptionInfo(exception);

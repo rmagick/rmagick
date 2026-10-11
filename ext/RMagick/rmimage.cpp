@@ -341,6 +341,22 @@ shallow_clone(Image *image, ExceptionInfo *exception, void (*release)(void *) = 
     return clone;
 }
 
+// ImageMagick changes the image that it writes, and reads its pixels through
+// the default nexus of the pixel cache. A frozen image may be shared with other
+// Ractors, so write a copy of it instead.
+template <typename... Args>
+static VALUE
+write_copy(VALUE self, VALUE (*write)(VALUE, Args...), Args... args)
+{
+    VALUE copy = rm_image_wrap(rm_copy_image(rm_check_readable(self)));
+    VALUE result = write(copy, args...);
+    Image *image = rm_image_get(copy);
+
+    rm_image_set(copy, NULL);
+    rm_image_destroy(image);
+    return result;
+}
+
 #if defined(IMAGEMAGICK_7)
 static void
 destroy_kernel_info(void *ptr)
@@ -6299,7 +6315,7 @@ Image_distortion_channel(int argc, VALUE *argv, VALUE self)
  * @return [String] a string representing the dumped image
  */
 VALUE
-Image__dump(VALUE self, VALUE depth ATTRIBUTE_UNUSED)
+Image__dump(VALUE self, VALUE depth)
 {
     Image *image;
     ImageInfo *info;
@@ -6308,6 +6324,11 @@ Image__dump(VALUE self, VALUE depth ATTRIBUTE_UNUSED)
     DumpedImage mi;
     VALUE str;
     ExceptionInfo *exception;
+
+    if (OBJ_FROZEN(self))
+    {
+        return write_copy(self, Image__dump, depth);
+    }
 
     image = rm_check_readable(self);
 
@@ -9372,6 +9393,11 @@ Image_marshal_dump(VALUE self)
     size_t length;
     VALUE ary;
     ExceptionInfo *exception;
+
+    if (OBJ_FROZEN(self))
+    {
+        return write_copy(self, Image_marshal_dump);
+    }
 
     image = rm_check_readable(self);
 
@@ -15178,6 +15204,11 @@ Image_to_blob(VALUE self)
     size_t length = 2048;       // Do what Magick++ does
     ExceptionInfo *exception;
 
+    if (OBJ_FROZEN(self))
+    {
+        return write_copy(self, Image_to_blob);
+    }
+
     // The user can specify the depth (8 or 16, if the format supports
     // both) and the image format by setting the depth and format
     // values in the info parm block.
@@ -16683,6 +16714,11 @@ Image_write(VALUE self, VALUE file)
     ExceptionInfo *exception;
 #endif
 
+    if (OBJ_FROZEN(self))
+    {
+        write_copy(self, Image_write, file);
+        return self;
+    }
 
     info_obj = rm_info_new();
     info = rm_info_get(info_obj);

@@ -77,4 +77,16 @@ RSpec.describe Magick::Image, '#write' do
       expect(File.exist?(truncated)).to be(false)
     end
   end
+
+  it "leaves a frozen image unchanged" do
+    image = described_class.new(4, 4) { |options| options.background_color = "red" }.freeze
+
+    Dir.mktmpdir do |dir|
+      image.write(File.join(dir, "temp.gif"))
+      written = described_class.read(File.join(dir, "temp.gif")).first
+      expect(written.pixel_color(0, 0)).to eq(image.pixel_color(0, 0))
+    end
+    expect(image.filename).to eq("")
+    expect(image.class_type).to eq(Magick::DirectClass)
+  end
 end
