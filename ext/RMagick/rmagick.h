@@ -1045,6 +1045,7 @@ extern VALUE Image_white_threshold(int, VALUE *, VALUE);
 extern VALUE Image_write(VALUE, VALUE);
 
 extern VALUE rm_image_new(Image *);
+extern VALUE rm_image_new_sharing_pixels(Image *);
 extern Image *rm_image_get(VALUE);
 extern void  rm_image_set(VALUE, Image *);
 extern void  rm_image_destroy(Image *);
@@ -1221,6 +1222,7 @@ typedef enum
 extern void   rm_check_exception(ExceptionInfo *, Image *, ErrorRetention);
 extern void   rm_ensure_result(Image *);
 extern Image *rm_clone_image(Image *);
+extern Image *rm_copy_image(Image *);
 extern VALUE  rm_exif_by_entry(Image *);
 extern VALUE  rm_exif_by_number(Image *);
 extern void   rm_get_optional_arguments(VALUE);

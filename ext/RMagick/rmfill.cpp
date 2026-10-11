@@ -764,9 +764,7 @@ TextureFill_initialize(VALUE self, VALUE texture_arg)
 
     texture_image = rm_cur_image(texture_arg);
 
-    // Bump the reference count on the texture image.
-    texture = rm_check_readable(texture_image);
-    ReferenceImage(texture);
+    texture = rm_copy_image(rm_check_readable(texture_image));
 
     fill->texture = texture;
 

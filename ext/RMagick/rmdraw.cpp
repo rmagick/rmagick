@@ -230,7 +230,7 @@ Draw_fill_pattern_eq(VALUE self, VALUE pattern)
         pattern = rm_cur_image(pattern);
         image = rm_check_readable(pattern);
         // Do not trace creation
-        draw->info->fill_pattern = rm_clone_image(image);
+        draw->info->fill_pattern = rm_copy_image(image);
     }
 
     return pattern;
@@ -764,7 +764,7 @@ Draw_stroke_pattern_eq(VALUE self, VALUE pattern)
         pattern = rm_cur_image(pattern);
         image = rm_check_readable(pattern);
         // Do not trace creation
-        draw->info->stroke_pattern = rm_clone_image(image);
+        draw->info->stroke_pattern = rm_copy_image(image);
     }
 
     return pattern;

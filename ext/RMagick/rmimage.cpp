@@ -5140,7 +5140,7 @@ Image_init_copy(VALUE copy, VALUE orig)
     Image *image, *new_image;
 
     image = rm_check_readable(orig);
-    new_image = rm_clone_image(image);
+    new_image = rm_copy_image(image);
     rm_image_set(copy, new_image);
 
     return copy;
@@ -10301,6 +10301,55 @@ Image_initialize(int argc, VALUE *argv, VALUE self)
 }
 
 
+// Give the image a pixel cache that no other image shares, so that two Image
+// objects never use one at once. ImageMagick copies the pixels only when the
+// cache is shared, which is rare here since rm_copy_image makes the copies
+// that Ruby keeps.
+static void
+own_pixel_cache(Image *image)
+{
+#if defined(IMAGEMAGICK_7)
+    ExceptionInfo *exception = AcquireExceptionInfo();
+
+    SetImageStorageClass(image, image->storage_class, exception);
+    DestroyExceptionInfo(exception);
+#else
+    SetImageStorageClass(image, image->storage_class);
+#endif
+}
+
+
+/**
+ * Copy an image with a pixel cache of its own, for Ruby to keep.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param image the image
+ * @return the copy
+ */
+Image *
+rm_copy_image(Image *image)
+{
+    Image *copy;
+    ExceptionInfo *exception;
+
+    copy = rm_clone_image(image);
+    exception = AcquireExceptionInfo();
+#if defined(IMAGEMAGICK_7)
+    DECLARE_GVL_CALL(call, SetImageStorageClass, copy, copy->storage_class, exception);
+    call.keep_thread().destroy(copy).release(exception).run<void>();
+    rm_check_exception(exception, copy, DestroyOnError);
+#else
+    DECLARE_GVL_CALL(call, SetImageStorageClass, copy, copy->storage_class);
+    call.keep_thread().destroy(copy).release(exception).run<void>();
+    rm_check_image_exception(copy, DestroyOnError);
+#endif
+    DestroyExceptionInfo(exception);
+
+    return copy;
+}
+
+
 /**
  * Create a new Image object from an Image structure.
  *
@@ -10357,8 +10406,36 @@ rm_image_set(VALUE obj, Image *image)
 {
     MagickImage *magick_image;
 
+    if (image)
+    {
+        own_pixel_cache(image);
+    }
     TypedData_Get_Struct(obj, MagickImage, &rm_image_data_type, magick_image);
     magick_image->image = image;
+}
+
+
+/**
+ * Wrap an image that shares its pixel cache with an image that a call marks,
+ * for as long as the call runs.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param image the image
+ * @return a new Image object
+ */
+VALUE
+rm_image_new_sharing_pixels(Image *image)
+{
+    VALUE image_obj;
+    MagickImage *magick_image;
+
+    rm_ensure_result(image);
+
+    image_obj = Image_alloc(Class_Image);
+    TypedData_Get_Struct(image_obj, MagickImage, &rm_image_data_type, magick_image);
+    magick_image->image = image;
+    return image_obj;
 }
 
 
