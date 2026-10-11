@@ -13920,6 +13920,69 @@ Image_sigmoidal_contrast_channel(int argc, VALUE *argv, VALUE self)
 }
 
 
+static rm_gvl_call &
+mark_signature(rm_gvl_call &call, VALUE obj)
+{
+    return OBJ_FROZEN(obj) ? call.read(obj) : call.update(obj);
+}
+
+// SignatureImage stores the signature in a property of the image. A frozen
+// image may be shared with other Ractors, so the signature of a frozen image is
+// computed on a copy that shares its pixels.
+static VALUE
+image_signature(VALUE obj, VALUE other = Qnil)
+{
+    Image *image, *target;
+    const char *signature;
+    char digest[64];
+    bool frozen = OBJ_FROZEN(obj);
+    ExceptionInfo *exception;
+
+    image = frozen ? rm_check_readable(obj) : rm_check_writable(obj);
+    exception = AcquireExceptionInfo();
+    target = frozen ? shallow_clone(image, exception) : image;
+
+#if defined(IMAGEMAGICK_7)
+    DECLARE_GVL_CALL(call, SignatureImage, target, exception);
+#else
+    if (frozen)
+    {
+        // CloneImage passes on what is left in the exception of the image.
+        ClearMagickException(&target->exception);
+    }
+    DECLARE_GVL_CALL(call, SignatureImage, target);
+#endif
+    if (frozen)
+    {
+        call.destroy(target);
+    }
+    mark_signature(call, obj);
+    if (!NIL_P(other))
+    {
+        mark_signature(call, other);
+    }
+    call.release(exception).run<void>();
+#if defined(IMAGEMAGICK_7)
+    rm_check_exception(exception, target, frozen ? DestroyOnError : RetainOnError);
+    DestroyExceptionInfo(exception);
+#else
+    DestroyExceptionInfo(exception);
+    rm_check_image_exception(target, frozen ? DestroyOnError : RetainOnError);
+#endif
+
+    signature = rm_get_property(target, "signature");
+    if (signature)
+    {
+        memcpy(digest, signature, sizeof(digest));
+    }
+    if (frozen)
+    {
+        DestroyImage(target);
+    }
+    return signature ? rb_str_new(digest, sizeof(digest)) : Qnil;
+}
+
+
 /**
  * Compute a message digest from an image pixel stream with an implementation of the NIST SHA-256
  * Message Digest algorithm.
@@ -13929,31 +13992,7 @@ Image_sigmoidal_contrast_channel(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_signature(VALUE self)
 {
-    Image *image;
-    const char *signature;
-#if defined(IMAGEMAGICK_7)
-    ExceptionInfo *exception;
-#endif
-
-    image = rm_check_writable(self);
-
-#if defined(IMAGEMAGICK_7)
-    exception = AcquireExceptionInfo();
-    DECLARE_GVL_CALL(call, SignatureImage, image, exception);
-    call.update(self).release(exception).run<void>();
-    CHECK_EXCEPTION();
-    DestroyExceptionInfo(exception);
-#else
-    DECLARE_GVL_CALL(call, SignatureImage, image);
-    call.update(self).run<void>();
-    rm_check_image_exception(image, RetainOnError);
-#endif
-    signature = rm_get_property(image, "signature");
-    if (!signature)
-    {
-        return Qnil;
-    }
-    return rb_str_new(signature, 64);
+    return image_signature(self);
 }
 
 
@@ -14037,14 +14076,10 @@ Image_solarize(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_spaceship(VALUE self, VALUE other)
 {
-    Image *imageA, *imageB;
-    const char *sigA, *sigB;
+    VALUE sigA, sigB;
     int res;
-#if defined(IMAGEMAGICK_7)
-    ExceptionInfo *exception;
-#endif
 
-    imageA = rm_check_readable(self);
+    rm_check_readable(self);
 
     // If the other object isn't a Image object, then they can't be equal.
     if (!rb_obj_is_kind_of(other, Class_Image))
@@ -14052,32 +14087,20 @@ Image_spaceship(VALUE self, VALUE other)
         return Qnil;
     }
 
-    imageB = rm_check_readable(other);
+    rm_check_readable(other);
 
-#if defined(IMAGEMAGICK_7)
-    exception = AcquireExceptionInfo();
-    DECLARE_GVL_CALL(call_a, SignatureImage, imageA, exception);
-    call_a.update(self).update(other).release(exception).run<void>();
-    CHECK_EXCEPTION();
-    DECLARE_GVL_CALL(call_b, SignatureImage, imageB, exception);
-    call_b.update(other).update(self).release(exception).run<void>();
-    CHECK_EXCEPTION();
-    DestroyExceptionInfo(exception);
-#else
-    DECLARE_GVL_CALL(call_a, SignatureImage, imageA);
-    call_a.update(self).update(other).run<void>();
-    DECLARE_GVL_CALL(call_b, SignatureImage, imageB);
-    call_b.update(other).update(self).run<void>();
-#endif
-    sigA = rm_get_property(imageA, "signature");
-    sigB = rm_get_property(imageB, "signature");
-    if (!sigA || !sigB)
+    sigA = image_signature(self, other);
+    sigB = image_signature(other, self);
+    if (NIL_P(sigA) || NIL_P(sigB))
     {
         rb_raise(Class_ImageMagickError, "can't get image signature");
     }
 
-    res = memcmp(sigA, sigB, 64);
+    res = memcmp(RSTRING_PTR(sigA), RSTRING_PTR(sigB), 64);
     res = res > 0 ? 1 : (res < 0 ? -1 :  0);    // reduce to 1, -1, 0
+
+    RB_GC_GUARD(sigA);
+    RB_GC_GUARD(sigB);
 
     return INT2FIX(res);
 }
