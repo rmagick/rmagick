@@ -360,11 +360,12 @@ atfork_prepare(void)
     }
 }
 
-// Runs in the child before Ruby does. A thread without the GVL, such as a delegate of ImageMagick, forks to exec,
-// and the list may be changing under it. The calls of the other fibers never
-// run in the child, so the objects they changed for the call are changed back
-// while nothing in the child can have destroyed them yet. The new generation
-// frees every state, and the calls that go on take theirs again.
+// Runs in the child before Ruby does. A thread without the GVL, such as a
+// delegate of ImageMagick, forks to exec, and the list may be changing under
+// it. The calls of the other fibers never run in the child, so the objects
+// they changed for the call are changed back while nothing in the child can
+// have destroyed them yet. The new generation frees every state, and the
+// calls that go on take theirs again.
 static void
 atfork_child(void)
 {
