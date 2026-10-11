@@ -266,6 +266,57 @@ RSpec.describe Magick::Image, if: offloading do
       expect(output).to eq("first.gif / call abandoned in the child of a fork")
     end
 
+    it "leaves the list of a call of another fiber alone when the fiber resumes after the child of a fork destroys its first image", if: offloading && !Gem.win_platform? do
+      list = Magick::ImageList.new
+      3.times { list << described_class.new(20, 20) }
+
+      output = abandon_in_child(
+        -> { list.average },
+        lambda do |fiber|
+          list[0].destroy!
+          message(attempt { fiber.resume })
+        end
+      )
+
+      expect(output).to eq("call abandoned in the child of a fork")
+    end
+
+    it "leaves the image of an in-place call of another fiber alone when the fiber resumes after the child of a fork destroys it", if: offloading && !Gem.win_platform? do
+      image = described_class.new(20, 20)
+
+      output = abandon_in_child(
+        -> { image.quantum_operator(Magick::AddQuantumOperator, 1, Magick::GreenChannel) },
+        lambda do |fiber|
+          image.destroy!
+          message(attempt { fiber.resume })
+        end
+      )
+
+      expect(output).to eq("call abandoned in the child of a fork")
+    end
+
+    it "leaves a list of the child of a fork alone when a call of another fiber that linked its image resumes", if: offloading && !Gem.win_platform? do
+      red = red_image
+      list = Magick::ImageList.new << red << described_class.new(10, 10)
+      expected = (Magick::ImageList.new << blue_image << red_image).average.pixel_color(0, 0).to_color
+
+      output = abandon_in_child(
+        -> { list.average },
+        lambda do |fiber|
+          other = Magick::ImageList.new << blue_image << red
+          average = nil
+          scheduler.before_next_operation { fiber.resume }
+          # The child of a fork has no scheduler set on the thread.
+          Fiber.set_scheduler(scheduler)
+          Fiber.schedule { average = other.average }
+          scheduler.drain
+          "#{average.pixel_color(0, 0).to_color} / #{fiber.alive?}"
+        end
+      )
+
+      expect(output).to eq("#{expected} / false")
+    end
+
     it "restores the background color that splice set for a call of another fiber in the child of a fork", if: offloading && !Gem.win_platform? do
       image = described_class.new(20, 20) { |info| info.background_color = "white" }
 
