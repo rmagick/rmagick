@@ -27,4 +27,13 @@ RSpec.describe Magick::Image, '#difference' do
     image_list.new_image(20, 20)
     expect { image.difference(image_list) }.not_to raise_error
   end
+
+  it "leaves a frozen image unchanged" do
+    image1 = described_class.read(IMAGES_DIR + '/Button_0.gif').first.freeze
+    image2 = described_class.read(IMAGES_DIR + '/Button_1.gif').first
+
+    expect(image1.difference(image2)).to eq(image1.dup.difference(image2))
+    expect(image1.mean_error_per_pixel).to eq(0.0)
+    expect(image1.properties).not_to have_key("distortion")
+  end
 end
