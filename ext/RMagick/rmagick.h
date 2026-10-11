@@ -198,7 +198,7 @@ typedef ImageInfo Info; /**< Make type name match class name */
 #endif
 
 //! Offloaded calls that use an object, which only rmagick_gvl.cpp reads
-typedef std::atomic<unsigned int> rm_offload_state_t;
+typedef std::atomic<uint64_t> rm_offload_state_t;
 
 //! Image class.
 typedef struct

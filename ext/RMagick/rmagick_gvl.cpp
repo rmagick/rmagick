@@ -168,10 +168,9 @@ static std::atomic<unsigned int> offloads_in_flight(0);
 // use, and a state from an earlier fork is free
 static unsigned int fork_generation;
 
-// The state of an object holds the low bits of the fork generation above the
-// number of calls that read it, or STATE_UPDATING
-#define STATE_COUNT_BITS 24
-#define STATE_UPDATING ((1U << STATE_COUNT_BITS) - 1)
+// The state of an object holds the fork generation above the number of calls
+// that read it, or STATE_UPDATING
+#define STATE_UPDATING UINT_MAX
 
 // A mark on the offload state of an object, or on a pixel cache in the table
 typedef struct
@@ -266,19 +265,19 @@ mark_remove(st_table *table, const void *ptr)
 
 // The number of calls that read an object, or STATE_UPDATING
 static unsigned int
-state_count(unsigned int value)
+state_count(uint64_t value)
 {
-    if ((value >> STATE_COUNT_BITS) != (fork_generation & (UINT_MAX >> STATE_COUNT_BITS)))
+    if ((unsigned int)(value >> 32) != fork_generation)
     {
         return 0;
     }
-    return value & STATE_UPDATING;
+    return (unsigned int)value;
 }
 
-static unsigned int
+static uint64_t
 state_value(unsigned int count)
 {
-    return (fork_generation << STATE_COUNT_BITS) | count;
+    return ((uint64_t)fork_generation << 32) | count;
 }
 
 // Take a state for a call: a call reads an object that other calls only read,
@@ -286,7 +285,7 @@ state_value(unsigned int count)
 static bool
 state_acquire(rm_offload_state_t *state, OffloadMode mode, bool image)
 {
-    unsigned int value = state->load(std::memory_order_relaxed);
+    uint64_t value = state->load(std::memory_order_relaxed);
 
     while (true)
     {
