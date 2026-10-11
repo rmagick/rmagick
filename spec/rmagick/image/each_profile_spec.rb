@@ -35,4 +35,14 @@ RSpec.describe Magick::Image, '#each_profile' do
 
     expect { image.each_profile { image.destroy! } }.to raise_error(Magick::DestroyedImageError)
   end
+
+  it "yields the profiles of a frozen image" do
+    image = described_class.new(20, 20)
+    image.iptc_profile = "test profile"
+    image.freeze
+
+    yielded = []
+    image.each_profile { |name, value| yielded << [name, value] }
+    expect(yielded).to eq([["iptc", "test profile"]])
+  end
 end

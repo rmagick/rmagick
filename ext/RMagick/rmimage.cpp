@@ -341,20 +341,54 @@ shallow_clone(Image *image, ExceptionInfo *exception, void (*release)(void *) = 
     return clone;
 }
 
-// ImageMagick changes the image that it writes, and reads its pixels through
-// the default nexus of the pixel cache. A frozen image may be shared with other
-// Ractors, so write a copy of it instead.
+// Call a method on a copy of a frozen image, which may be shared with other
+// Ractors, and destroy the copy when the method returns.
 template <typename... Args>
 static VALUE
-write_copy(VALUE self, VALUE (*write)(VALUE, Args...), Args... args)
+call_on_copy(VALUE self, Image *(*copy_image)(Image *), VALUE (*method)(VALUE, Args...), Args... args)
 {
-    VALUE copy = rm_image_wrap(rm_copy_image(rm_check_readable(self)));
-    VALUE result = write(copy, args...);
+    VALUE copy = rm_image_wrap(copy_image(rm_check_readable(self)));
+    VALUE result = method(copy, args...);
     Image *image = rm_image_get(copy);
 
     rm_image_set(copy, NULL);
     rm_image_destroy(image);
     return result;
+}
+
+// ImageMagick changes the image that it writes, and reads its pixels through
+// the default nexus of the pixel cache, so write a copy of a frozen image.
+template <typename... Args>
+static VALUE
+write_copy(VALUE self, VALUE (*write)(VALUE, Args...), Args... args)
+{
+    return call_on_copy(self, rm_copy_image, write, args...);
+}
+
+// A copy of an image that shares its pixels, with properties and profiles of
+// its own
+static Image *
+copy_properties(Image *image)
+{
+    ExceptionInfo *exception = AcquireExceptionInfo();
+    Image *clone = shallow_clone(image, exception);
+
+#if defined(IMAGEMAGICK_6)
+    // CloneImage passes on what is left in the exception of the image.
+    ClearMagickException(&clone->exception);
+#endif
+    DestroyExceptionInfo(exception);
+    return clone;
+}
+
+// GetImageProperty stores in the image what it parses from a profile or
+// computes for a key with a colon, and the image keeps the iterators of its
+// properties and profiles, so read those of a copy of a frozen image.
+template <typename... Args>
+static VALUE
+read_copy(VALUE self, VALUE (*read)(VALUE, Args...), Args... args)
+{
+    return call_on_copy(self, copy_properties, read, args...);
 }
 
 #if defined(IMAGEMAGICK_7)
@@ -1090,6 +1124,10 @@ VALUE
             break;
     }
 
+    if (OBJ_FROZEN(self) && strchr(key, ':'))
+    {
+        return read_copy(self, Image_aref, rb_str_new_cstr(key));
+    }
 
     if (rm_strcasecmp(key, "EXIF:*") == 0)
     {
@@ -6395,6 +6433,11 @@ Image_each_profile(VALUE self)
     char *profile_name;
     const StringInfo *profile;
     long i;
+
+    if (OBJ_FROZEN(self))
+    {
+        return read_copy(self, Image_each_profile);
+    }
 
     image = rm_check_readable(self);
     ResetImageProfileIterator(image);
@@ -13519,6 +13562,13 @@ Image_properties(VALUE self)
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
 #endif
+
+    if (OBJ_FROZEN(self))
+    {
+        VALUE properties = read_copy(self, Image_properties);
+
+        return rb_block_given_p() ? self : properties;
+    }
 
     image = rm_check_readable(self);
 

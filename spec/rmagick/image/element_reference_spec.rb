@@ -13,4 +13,13 @@ RSpec.describe Magick::Image, '#[]' do
     expect(image['jpeg:sampling-factor']).to eq '2x1,1x1,1x1'
     expect(image['d']).to be nil
   end
+
+  it "leaves a frozen image unchanged" do
+    image = described_class.read(IMAGE_WITH_PROFILE).first.freeze
+    properties = image.properties
+
+    expect(image["EXIF:*"]).to eq(image.dup["EXIF:*"])
+    expect(image["EXIF:!"]).to eq(image.dup["EXIF:!"])
+    expect(image.properties).to eq(properties)
+  end
 end
