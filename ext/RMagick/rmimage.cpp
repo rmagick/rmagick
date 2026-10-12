@@ -6324,9 +6324,7 @@ Image_distortion_channel(int argc, VALUE *argv, VALUE self)
     MetricType metric;
     VALUE rec;
     double distortion;
-#if defined(IMAGEMAGICK_7)
-    Image *difference_image;
-#else
+#if defined(IMAGEMAGICK_6)
     Image *clone;
 #endif
 
@@ -6347,10 +6345,9 @@ Image_distortion_channel(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_CLONE(masked, image, channels);
-    DECLARE_GVL_CALL(call, CompareImages, masked, reconstruct, metric, &distortion, exception);
-    difference_image = call.read(self).destroy(masked).read(rec).release(exception).run<Image *>();
+    DECLARE_GVL_CALL(call, GetImageDistortion, masked, reconstruct, metric, &distortion, exception);
+    call.read(self).destroy(masked).read(rec).release(exception).run<void>();
     END_CHANNEL_CLONE(masked);
-    DestroyImage(difference_image);
 #else
     clone = shallow_clone(image, exception);
     DECLARE_GVL_CALL(call, GetImageChannelDistortion, clone, reconstruct, channels, metric, &distortion, exception);

@@ -25,6 +25,18 @@ RSpec.describe Magick::Image, '#distortion_channel' do
     expect { image1.distortion_channel(image2, Magick::MeanSquaredErrorMetric) }.to raise_error(Magick::DestroyedImageError)
   end
 
+  it 'does not crash when ImageMagick cannot allocate a pixel cache' do
+    image1 = described_class.new(20, 20) { |options| options.background_color = 'red' }
+    image2 = described_class.new(20, 20) { |options| options.background_color = 'blue' }
+    expected = image1.distortion_channel(image2, Magick::RootMeanSquaredErrorMetric)
+    resources = %i[area memory map disk]
+    limits = resources.to_h { |resource| [resource, Magick.limit_resource(resource, 0)] }
+
+    expect(image1.distortion_channel(image2, Magick::RootMeanSquaredErrorMetric)).to eq(expected)
+  ensure
+    limits&.each { |resource, limit| Magick.limit_resource(resource, limit) }
+  end
+
   it 'accepts an ImageList argument' do
     image = described_class.new(20, 20)
 
