@@ -5643,13 +5643,87 @@ Image_depth(VALUE self)
 
 
 /**
+ * Set the background color of an image to the average color of its border.
+ * DeskewImage does this itself only for a width of 1, since it reads
+ * "deskew:auto-crop" as a boolean.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param image the image
+ * @param width the width of the border in pixels
+ * @param exception the exception info
+ */
+static void
+set_border_background_color(Image *image, unsigned long width, ExceptionInfo *exception)
+{
+    ssize_t offset = (ssize_t)width;
+    double red = 0.0, green = 0.0, blue = 0.0, alpha = 0.0, count = 0.0;
+
+    for (ssize_t y = 0; y < (ssize_t)image->rows; y++)
+    {
+        bool inner_row = y >= offset && y < (ssize_t)image->rows - offset;
+#if defined(IMAGEMAGICK_7)
+        const Quantum *p = GetVirtualPixels(image, 0, y, image->columns, 1, exception);
+#else
+        const PixelPacket *p = GetVirtualPixels(image, 0, y, image->columns, 1, exception);
+#endif
+        if (!p)
+        {
+            return;
+        }
+        for (ssize_t x = 0; x < (ssize_t)image->columns; x++)
+        {
+            if (!inner_row || x < offset || x >= (ssize_t)image->columns - offset)
+            {
+#if defined(IMAGEMAGICK_7)
+                red += QuantumScale * GetPixelRed(image, p);
+                green += QuantumScale * GetPixelGreen(image, p);
+                blue += QuantumScale * GetPixelBlue(image, p);
+                alpha += QuantumScale * GetPixelAlpha(image, p);
+#else
+                red += QuantumScale * GetPixelRed(p);
+                green += QuantumScale * GetPixelGreen(p);
+                blue += QuantumScale * GetPixelBlue(p);
+                alpha += QuantumScale * GetPixelOpacity(p);
+#endif
+                count++;
+            }
+#if defined(IMAGEMAGICK_7)
+            p += GetPixelChannels(image);
+#else
+            p++;
+#endif
+        }
+    }
+    if (count == 0.0)
+    {
+        return;
+    }
+
+    image->background_color.red = ClampToQuantum(QuantumRange * red / count);
+    image->background_color.green = ClampToQuantum(QuantumRange * green / count);
+    image->background_color.blue = ClampToQuantum(QuantumRange * blue / count);
+#if defined(IMAGEMAGICK_7)
+    if ((GetPixelAlphaTraits(image) & UpdatePixelTrait) != 0)
+    {
+        image->background_color.alpha = ClampToQuantum(QuantumRange * alpha / count);
+    }
+#else
+    image->background_color.opacity = ClampToQuantum(QuantumRange * alpha / count);
+#endif
+}
+
+
+/**
  * Straightens an image. A threshold of 40% works for most images.
  *
  * @overload deskew(threshold = 0.40, auto_crop_width = nil)
  *   @param threshold [Numeric, String] A percentage of QuantumRange. Either a Float between 0 and 1.0,
  *     inclusive, or a string in the form "NN%" where NN is between 0 and 100.
- *   @param auto_crop_width [Numeric] Specify a value for this argument to cause the deskewed image to
- *     be auto-cropped. The argument is the pixel width of the image background (e.g. 40).
+ *   @param auto_crop_width [Numeric, Boolean, nil] Specify a value for this argument to cause the deskewed
+ *     image to be auto-cropped. A number is the pixel width of the border whose average color is used as
+ *     the background (e.g. 40). With true, the image's background color is used. With false or nil, the
+ *     image is not cropped.
  *   @return [Magick::Image] a new image
  */
 VALUE
@@ -5657,18 +5731,24 @@ Image_deskew(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *clone, *new_image;
     double threshold = 40.0 * QuantumRange / 100.0;
-    unsigned long width;
-    char auto_crop_width[20];
+    bool auto_crop = false;
+    unsigned long width = 0;
     ExceptionInfo *exception;
 
     image = rm_check_readable(self);
 
-    memset(auto_crop_width, 0, sizeof(auto_crop_width));
     switch (argc)
     {
         case 2:
-            width = NUM2ULONG(argv[1]);
-            snprintf(auto_crop_width, sizeof(auto_crop_width), "%lu", width);
+            if (argv[1] == Qtrue)
+            {
+                auto_crop = true;
+            }
+            else if (RTEST(argv[1]))
+            {
+                width = NUM2ULONG(argv[1]);
+                auto_crop = true;
+            }
         case 1:
             threshold = rm_percentage(argv[0], 1.0) * QuantumRange;
         case 0:
@@ -5681,11 +5761,19 @@ Image_deskew(int argc, VALUE *argv, VALUE self)
     image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
     clone = shallow_clone(image, exception);
-    if (*auto_crop_width && !SetImageArtifact(clone, "deskew:auto-crop", auto_crop_width))
+    if (auto_crop)
     {
-        DestroyImage(clone);
-        DestroyExceptionInfo(exception);
-        rb_raise(rb_eNoMemError, "not enough memory to continue");
+        if (!SetImageArtifact(clone, "deskew:auto-crop", "true"))
+        {
+            DestroyImage(clone);
+            DestroyExceptionInfo(exception);
+            rb_raise(rb_eNoMemError, "not enough memory to continue");
+        }
+        if (width > 0)
+        {
+            set_border_background_color(clone, width, exception);
+            rm_check_exception(exception, clone, DestroyOnError);
+        }
     }
     DECLARE_GVL_CALL(call, DeskewImage, clone, threshold, exception);
     new_image = call.read(self).destroy(clone).release(exception).run<Image *>();
