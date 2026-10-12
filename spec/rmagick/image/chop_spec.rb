@@ -80,17 +80,6 @@ RSpec.describe Magick::Image, "#chop" do
     expect { image.chop(1, 5, 1, 1) }.to raise_error(RuntimeError)
   end
 
-  it "raises an error left on the image by an earlier call", if: Gem::Version.new(Magick::IMAGEMAGICK_VERSION) < Gem::Version.new("7.0.0") do
-    image = build_gray_image
-    resources = %i[area memory map disk]
-    limits = resources.to_h { |resource| [resource, Magick.limit_resource(resource, 0)] }
-    image.class_type = Magick::PseudoClass
-
-    expect { image.chop(5, 1, 1, 1) }.to raise_error(Magick::ImageMagickError)
-  ensure
-    limits&.each { |resource, limit| Magick.limit_resource(resource, limit) }
-  end
-
   it "does not raise an error when width or height are out of bounds" do
     image = build_gray_image
 

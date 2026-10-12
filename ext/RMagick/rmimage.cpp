@@ -14605,6 +14605,7 @@ Image_class_type_eq(VALUE self, VALUE new_class_type)
 #else
         DECLARE_GVL_CALL(call, SyncImage, image);
         call.update(self).run<void>();
+        rm_check_image_exception(image, RetainOnError);
 #endif
         magick_free(image->colormap);
         image->colormap = NULL;
@@ -14620,6 +14621,7 @@ Image_class_type_eq(VALUE self, VALUE new_class_type)
 #else
         DECLARE_GVL_CALL(call, QuantizeImage, &qinfo, image);
         call.update(self).run<void>();
+        rm_check_image_exception(image, RetainOnError);
 #endif
     }
 
@@ -14631,6 +14633,7 @@ Image_class_type_eq(VALUE self, VALUE new_class_type)
 #else
     DECLARE_GVL_CALL(call, SetImageStorageClass, image, class_type);
     call.update(self).run<void>();
+    rm_check_image_exception(image, RetainOnError);
 #endif
     return new_class_type;
 }
@@ -15956,6 +15959,7 @@ VALUE Image_image_type_eq(VALUE self, VALUE image_type)
     DestroyExceptionInfo(exception);
 #else
     SetImageType(image, type);
+    rm_check_image_exception(image, RetainOnError);
 #endif
     return image_type;
 }
