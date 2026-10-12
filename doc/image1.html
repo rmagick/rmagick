@@ -4210,7 +4210,7 @@ img.artifact('distort:viewport') #=&gt; nil
         <dt>auto_crop_width</dt>
 
         <dd>
-          Specify a value for this argument to cause the deskewed image to be auto-cropped. The argument is the pixel width of the image background (e.g. 40).
+          Specify a value for this argument to cause the deskewed image to be auto-cropped. A number is the pixel width of the border whose average color is used as the background (e.g. 40). With <code>true</code>, the image's background color is used. With <code>false</code> or <code>nil</code>, the image is not cropped.
         </dd>
       </dl>
 

@@ -225,7 +225,7 @@ module Magick
     def cycle_colormap: (int amount) -> Image
     def decipher: (string passphrase) -> Image
     def define: (interned artifact, (string | Numeric)? value) -> String?
-    def deskew: (?magick_percentage threshold, ?int auto_crop_width) -> Image
+    def deskew: (?magick_percentage threshold, ?(int | bool | nil) auto_crop_width) -> Image
     def delete_compose_mask: () -> self
     def delete_profile: (string name) -> self
     def despeckle: () -> Image
