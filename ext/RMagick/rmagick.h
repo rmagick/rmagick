@@ -739,6 +739,7 @@ extern GravityType rm_gravity_to_enum(const char *);
 
 extern VALUE KernelInfo_alloc(VALUE);
 extern KernelInfo *rm_kernel_info_get(VALUE);
+extern KernelInfo *rm_check_kernel_info(VALUE);
 extern void rm_kernel_info_set(VALUE, KernelInfo *);
 
 extern VALUE KernelInfo_initialize(VALUE, VALUE);
