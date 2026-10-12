@@ -1596,7 +1596,7 @@ PolaroidOptions_initialize(VALUE self)
     ExceptionInfo *exception;
 
     // Default shadow color
-    draw = get_draw(self);
+    draw = get_writable_draw(self);
 
     exception = AcquireExceptionInfo();
     QueryColorCompliance("gray75", AllCompliance, &draw->shadow_color, exception);
@@ -1639,8 +1639,7 @@ PolaroidOptions_shadow_color_eq(VALUE self, VALUE shadow)
 {
     MagickDraw *draw;
 
-    rb_check_frozen(self);
-    TypedData_Get_Struct(self, MagickDraw, &rm_draw_data_type, draw);
+    draw = get_writable_draw(self);
     Color_to_PixelColor(&draw->shadow_color, shadow);
     return shadow;
 }

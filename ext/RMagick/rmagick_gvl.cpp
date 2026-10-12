@@ -759,7 +759,7 @@ rm_gvl_call::add_cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t 
  * change or destroy it while the call is in flight. Another call cannot use
  * an image that the call reads.
  *
- * @param obj an Image, Info or KernelInfo
+ * @param obj an Image, Info, KernelInfo, Draw or Montage
  * @return self
  */
 rm_gvl_call &
@@ -773,7 +773,7 @@ rm_gvl_call::read(VALUE obj)
  * The call changes the data of obj, or the caller replaces it with the result.
  * Other fibers cannot use it while the call is in flight.
  *
- * @param obj an Image, Info or KernelInfo
+ * @param obj an Image, Info, KernelInfo, Draw or Montage
  * @return self
  */
 rm_gvl_call &
