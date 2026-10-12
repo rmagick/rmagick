@@ -1617,6 +1617,9 @@ rm_clone_image(Image *image)
     }
     rm_check_exception(exception, clone, DestroyOnError);
     DestroyExceptionInfo(exception);
+#if defined(IMAGEMAGICK_6)
+    ClearMagickException(&clone->exception);
+#endif
 
     return clone;
 }
