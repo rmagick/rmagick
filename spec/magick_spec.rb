@@ -284,8 +284,13 @@ RSpec.describe Magick do
       image = Magick::Image.new(2000, 1500)
       objects = Array.new(200_000) { Object.new }
 
-      GC.start(full_mark: true, immediate_mark: false, immediate_sweep: false)
-      expect(GC.latest_gc_info(:state)).not_to eq(:none)
+      state = :none
+      5.times do
+        GC.start(full_mark: true, immediate_mark: false, immediate_sweep: false)
+        state = GC.latest_gc_info(:state)
+        break unless state == :none
+      end
+      expect(state).not_to eq(:none)
 
       10.times { image.resize(1000, 750) }
       expect(GC.latest_gc_info(:state)).to eq(:none)
