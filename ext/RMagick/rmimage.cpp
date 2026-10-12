@@ -11459,9 +11459,8 @@ Image_polaroid(int argc, VALUE *argv, VALUE self)
     DECLARE_GVL_CALL(call, PolaroidImage, clone, draw->info, angle, exception);
     new_image = call.read(self).read(options).destroy(clone).release(exception).run<Image *>();
 #endif
-    rm_check_exception(exception, clone, DestroyOnError);
-
     DestroyImage(clone);
+    rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
     RB_GC_GUARD(options);
