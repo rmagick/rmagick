@@ -85,4 +85,14 @@ RSpec.describe Magick::Image, '#dissolve' do
     image1.destroy!
     expect { image1.dissolve(image2, 0.50) }.to raise_error(Magick::DestroyedImageError)
   end
+
+  it 'does not change a frozen overlay' do
+    image = described_class.new(20, 20)
+    overlay = described_class.new(5, 5).freeze
+
+    image.dissolve(overlay, 0.50)
+
+    expect(overlay.artifact('compose:args')).to be(nil)
+    expect(overlay.geometry).to be(nil)
+  end
 end

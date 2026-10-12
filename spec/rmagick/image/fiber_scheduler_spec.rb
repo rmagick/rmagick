@@ -739,7 +739,6 @@ RSpec.describe Magick::Image, if: offloading do
         Fiber.schedule do
           errors = [
             attempt { image.composite_mathematics(overlay, 1, 0, 0, 0, Magick::CenterGravity) },
-            attempt { image.composite_tiled(overlay) },
             attempt { overlay.deskew(0.4, 10) }
           ]
         end
@@ -748,7 +747,7 @@ RSpec.describe Magick::Image, if: offloading do
       scheduler.run { overlay.blur_image(0, 3) }
 
       expect(errors).to all(in_use)
-      expect(%w[compose:args modify-outside-overlay deskew:auto-crop].map { |key| overlay.artifact(key) }).to all(be(nil))
+      expect(%w[compose:args deskew:auto-crop].map { |key| overlay.artifact(key) }).to all(be(nil))
     end
 
     it "does not let another fiber change the offset of an image that stegano reads" do

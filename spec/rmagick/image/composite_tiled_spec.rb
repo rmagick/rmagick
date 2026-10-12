@@ -34,4 +34,13 @@ RSpec.describe Magick::Image, '#composite_tiled' do
     expect { image.composite_tiled(image_list, Magick::RedChannel) }.not_to raise_error
     expect { image.composite_tiled(image_list, Magick::RedChannel, Magick::GreenChannel) }.not_to raise_error
   end
+
+  it 'does not change a frozen overlay' do
+    image = described_class.new(20, 20)
+    overlay = described_class.new(5, 5).freeze
+
+    image.composite_tiled(overlay)
+
+    expect(overlay.artifact('modify-outside-overlay')).to be(nil)
+  end
 end
