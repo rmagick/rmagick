@@ -22,4 +22,10 @@ RSpec.describe Magick::Image, '#morphology' do
       expect { image.morphology(Magick::DilateMorphology, 1, "@#{file.path}") }.to raise_error(ArgumentError, /must not name a file/)
     end
   end
+
+  it 'raises an error when the kernel has not been initialized' do
+    image = described_class.new(20, 20)
+
+    expect { image.morphology(Magick::DilateMorphology, 1, Magick::KernelInfo.allocate) }.to raise_error(RuntimeError, 'KernelInfo has not been initialized')
+  end
 end

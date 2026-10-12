@@ -198,8 +198,8 @@ KernelInfo_initialize(VALUE self, VALUE kernel_string)
  * @return the KernelInfo struct
  * @throw RuntimeError if the kernel has not been initialized
  */
-static KernelInfo *
-get_kernel_info(VALUE self)
+KernelInfo *
+rm_check_kernel_info(VALUE self)
 {
     KernelInfo *kernel;
 
@@ -229,7 +229,7 @@ get_writable_kernel_info(VALUE self)
     KernelInfo *kernel;
 
     rb_check_frozen(self);
-    kernel = get_kernel_info(self);
+    kernel = rm_check_kernel_info(self);
     rm_gvl_check_writable(self);
     return kernel;
 }
@@ -307,7 +307,7 @@ KernelInfo_init_copy(VALUE self, VALUE orig)
     KernelInfo *kernel, *old_kernel;
 
     rb_check_frozen(self);
-    kernel = CloneKernelInfo(get_kernel_info(orig));
+    kernel = CloneKernelInfo(rm_check_kernel_info(orig));
     if (!kernel)
     {
         rb_raise(rb_eNoMemError, "not enough memory to continue");

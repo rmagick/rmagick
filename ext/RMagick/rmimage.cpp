@@ -4929,7 +4929,7 @@ Image_morphology_channel(VALUE self, VALUE channel_v, VALUE method_v, VALUE iter
         rb_raise(rb_eArgError, "expected String or Magick::KernelInfo");
     }
 
-    kernel = rm_kernel_info_get(kernel_v);
+    kernel = rm_check_kernel_info(kernel_v);
 
     exception = AcquireExceptionInfo();
 
