@@ -12,4 +12,14 @@ RSpec.describe Magick::Image, '#image_type' do
     expect { image.image_type = nil }.to raise_error(TypeError)
     expect { image.image_type = Magick::PointFilter }.to raise_error(TypeError)
   end
+
+  it 'raises an error when ImageMagick runs out of resources' do
+    image = described_class.new(20, 20)
+    resources = %i[area memory map disk]
+    limits = resources.to_h { |resource| [resource, Magick.limit_resource(resource, 0)] }
+
+    expect { image.image_type = Magick::PaletteType }.to raise_error(Magick::ImageMagickError)
+  ensure
+    limits&.each { |resource, limit| Magick.limit_resource(resource, limit) }
+  end
 end
