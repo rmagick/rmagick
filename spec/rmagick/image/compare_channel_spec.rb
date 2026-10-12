@@ -74,4 +74,37 @@ RSpec.describe Magick::Image, "#compare_channel" do
 
     expect { image.compare_channel(image_list, Magick::MeanAbsoluteErrorMetric) }.to raise_error(Magick::DestroyedImageError)
   end
+
+  it 'does not keep the options of the block on the image' do
+    image = described_class.new(10, 10) { |options| options.background_color = 'red' }
+    reference = described_class.new(10, 10) { |options| options.background_color = 'blue' }
+    default, = image.compare_channel(reference, Magick::MeanAbsoluteErrorMetric)
+
+    image.compare_channel(reference, Magick::MeanAbsoluteErrorMetric) { |options| options.highlight_color = 'lime' }
+    difference, = image.compare_channel(reference, Magick::MeanAbsoluteErrorMetric)
+
+    expect(image.artifact('compare:highlight-color')).to be(nil)
+    expect(difference.pixel_color(5, 5)).to eq(default.pixel_color(5, 5))
+  end
+
+  it 'does not keep the options of the block on the result' do
+    image = described_class.new(10, 10) { |options| options.background_color = 'red' }
+    reference = described_class.new(10, 10) { |options| options.background_color = 'blue' }
+    image.define('compare:highlight-color', 'yellow')
+
+    difference, = image.compare_channel(reference, Magick::MeanAbsoluteErrorMetric) { |options| options.highlight_color = 'lime' }
+
+    expect(difference.pixel_color(5, 5)).to eq(Magick::Pixel.from_color('lime'))
+    expect(difference.artifact('compare:highlight-color')).to eq('yellow')
+    expect(difference.artifact('highlight-color')).to be(nil)
+  end
+
+  it 'accepts a block on a frozen image' do
+    image = described_class.new(10, 10) { |options| options.background_color = 'red' }.freeze
+    reference = described_class.new(10, 10) { |options| options.background_color = 'blue' }
+
+    difference, = image.compare_channel(reference, Magick::MeanAbsoluteErrorMetric) { |options| options.highlight_color = 'lime' }
+
+    expect(difference.pixel_color(5, 5)).to eq(Magick::Pixel.from_color('lime'))
+  end
 end
