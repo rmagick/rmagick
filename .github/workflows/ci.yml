@@ -237,7 +237,12 @@ jobs:
         } else {
           $pkg = "mingw-w64-ucrt-x86_64-imagemagick"
         }
-        ridk exec pacman -S $pkg --noconfirm
+        for ($i = 1; $i -le 3; $i++) {
+          ridk exec pacman -S $pkg --noconfirm
+          if ($LASTEXITCODE -eq 0) { break }
+          if ($i -eq 3) { exit $LASTEXITCODE }
+          Start-Sleep -Seconds 10
+        }
     - name: Build test
       run: |
         cmd.exe /D /S /C "bundle exec rake compile"
