@@ -772,9 +772,9 @@ VALUE
 Image_add_compose_mask(VALUE self, VALUE mask)
 {
     Image *image, *mask_image = NULL;
+    Image *clip_mask = NULL;
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
-    Image *clip_mask = NULL;
 #endif
 
     image = rm_check_frozen(self);
@@ -785,9 +785,9 @@ Image_add_compose_mask(VALUE self, VALUE mask)
         rb_raise(rb_eArgError, "mask must be the same size as image");
     }
 
-#if defined(IMAGEMAGICK_7)
     clip_mask = rm_clone_image(mask_image);
 
+#if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(negate_call, NegateImage, clip_mask, MagickFalse, exception);
     negate_call.update(self).read(mask).destroy(clip_mask).release(exception).run<void>();
@@ -798,15 +798,13 @@ Image_add_compose_mask(VALUE self, VALUE mask)
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
-    // Delete any previously-existing mask image.
-    // Store a clone of the new mask image.
-    DECLARE_GVL_CALL(mask_call, SetImageMask, image, mask_image);
-    mask_call.update(self).read(mask).run<void>();
-    DECLARE_GVL_CALL(negate_call, NegateImage, image->mask, MagickFalse);
-    negate_call.update(self).run<void>();
-
-    // Since both Set and GetImageMask clone the mask image I don't see any
-    // way to negate the mask without referencing it directly. Sigh.
+    DECLARE_GVL_CALL(negate_call, NegateImage, clip_mask, MagickFalse);
+    negate_call.update(self).read(mask).destroy(clip_mask).run<void>();
+    rm_check_image_exception(clip_mask, DestroyOnError);
+    DECLARE_GVL_CALL(mask_call, SetImageMask, image, clip_mask);
+    mask_call.update(self).destroy(clip_mask).run<void>();
+    DestroyImage(clip_mask);
+    rm_check_image_exception(image, RetainOnError);
 #endif
 
     RB_GC_GUARD(mask);
@@ -10297,6 +10295,29 @@ Image_alloc(VALUE klass)
     return TypedData_Make_Struct(klass, MagickImage, &rm_image_data_type, magick_image);
 }
 
+#if defined(IMAGEMAGICK_6)
+/**
+ * Raise the error that ImageMagick left on a new image. An image with no
+ * columns or rows is allowed as before, so its error is cleared instead.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param image the new image
+ * @param cols the requested width
+ * @param rows the requested height
+ */
+static void
+check_new_image_exception(Image *image, unsigned long cols, unsigned long rows)
+{
+    if (cols == 0 || rows == 0)
+    {
+        ClearMagickException(&image->exception);
+        return;
+    }
+    rm_check_image_exception(image, RetainOnError);
+}
+#endif
+
 /**
  * Initialize a new Image object If the fill argument is omitted, fill with background color.
  *
@@ -10356,6 +10377,7 @@ Image_initialize(int argc, VALUE *argv, VALUE self)
 #else
     DECLARE_GVL_CALL(call, SetImageExtent, image, cols, rows);
     call.update(self).run<void>();
+    check_new_image_exception(image, cols, rows);
 #endif
 
     rm_sync_image_options(image, info);
@@ -10374,6 +10396,7 @@ Image_initialize(int argc, VALUE *argv, VALUE self)
 #else
         DECLARE_GVL_CALL(call, SetImageBackgroundColor, image);
         call.update(self).run<void>();
+        check_new_image_exception(image, cols, rows);
 #endif
     }
     // fillobj.fill(self)

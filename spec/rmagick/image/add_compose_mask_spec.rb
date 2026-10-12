@@ -24,4 +24,15 @@ RSpec.describe Magick::Image, "#add_compose_mask" do
 
     expect { image.add_compose_mask(mask) }.not_to raise_error
   end
+
+  it 'raises an error when ImageMagick runs out of resources' do
+    image = described_class.new(20, 20)
+    mask = described_class.new(20, 20)
+    resources = %i[area memory map disk]
+    limits = resources.to_h { |resource| [resource, Magick.limit_resource(resource, 0)] }
+
+    expect { image.add_compose_mask(mask) }.to raise_error(Magick::ImageMagickError)
+  ensure
+    limits&.each { |resource, limit| Magick.limit_resource(resource, limit) }
+  end
 end

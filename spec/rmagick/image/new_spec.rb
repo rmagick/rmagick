@@ -20,4 +20,19 @@ RSpec.describe Magick::Image, '#new' do
     end
     expect(image.colorspace).to eq(Magick::LabColorspace)
   end
+
+  it 'returns an image with no columns on ImageMagick 6', if: Gem::Version.new(Magick::IMAGEMAGICK_VERSION) < Gem::Version.new('7.0.0') do
+    image = described_class.new(0, 5)
+
+    expect(image.columns).to eq(0)
+  end
+
+  it 'raises an error when ImageMagick runs out of resources' do
+    resources = %i[area memory map disk]
+    limits = resources.to_h { |resource| [resource, Magick.limit_resource(resource, 0)] }
+
+    expect { described_class.new(20, 20) }.to raise_error(Magick::ImageMagickError)
+  ensure
+    limits&.each { |resource, limit| Magick.limit_resource(resource, limit) }
+  end
 end
