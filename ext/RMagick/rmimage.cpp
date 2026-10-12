@@ -343,6 +343,89 @@ shallow_clone(Image *image, ExceptionInfo *exception, void (*release)(void *) = 
 
 
 /**
+ * Set "compose:args" on the image that a composite draws onto. If that fails,
+ * destroy the image and raise.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param dest the image to composite onto, owned by the caller
+ * @param args the value of "compose:args"
+ */
+static void
+set_compose_args(Image *dest, const char *args)
+{
+    if (!SetImageArtifact(dest, "compose:args", args))
+    {
+        DestroyImage(dest);
+        rb_raise(rb_eNoMemError, "not enough memory to continue");
+    }
+}
+
+
+/**
+ * Give the result of a composite the "compose:args" of the image it was called
+ * on back, so that the value set for the call does not stay on the result.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param result the result of the composite
+ * @param image the image that the method was called on
+ */
+static void
+restore_compose_args(Image *result, Image *image)
+{
+    const char *value = GetImageArtifact(image, "compose:args");
+
+    if (!value)
+    {
+        DeleteImageArtifact(result, "compose:args");
+    }
+    else if (!SetImageArtifact(result, "compose:args", value))
+    {
+        DestroyImage(result);
+        rb_raise(rb_eNoMemError, "not enough memory to continue");
+    }
+}
+
+#if defined(IMAGEMAGICK_6)
+static void
+shallow_clone_release_image(void *image)
+{
+    DestroyImage((Image *)image);
+}
+
+
+/**
+ * Return a copy of the image to composite with "compose:args" set, since older
+ * ImageMagick 6 releases read it from that image instead of dest. If that
+ * fails, destroy dest and raise.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param dest the image to composite onto, owned by the caller
+ * @param source the image to composite
+ * @param args the value of "compose:args"
+ * @return a copy of source
+ */
+static Image *
+compose_args_source(Image *dest, Image *source, const char *args)
+{
+    ExceptionInfo *exception = AcquireExceptionInfo();
+    Image *clone = shallow_clone(source, exception, shallow_clone_release_image, dest);
+
+    DestroyExceptionInfo(exception);
+    if (!SetImageArtifact(clone, "compose:args", args))
+    {
+        DestroyImage(clone);
+        DestroyImage(dest);
+        rb_raise(rb_eNoMemError, "not enough memory to continue");
+    }
+    return clone;
+}
+#endif
+
+
+/**
  * Set the options of a method's block on the copy of the image that the call
  * uses. If that fails, free the copy and the exception, and raise.
  *
@@ -2062,26 +2145,19 @@ special_composite(VALUE self, VALUE overlay_obj, double image_pct, double overla
                   long x_off, long y_off, CompositeOperator op)
 {
     Image *image = rm_check_readable(self);
-    Image *overlay = rm_check_writable(overlay_obj);
+    Image *overlay = rm_check_readable(overlay_obj);
     Image *new_image;
+#if defined(IMAGEMAGICK_6)
+    Image *source;
+#endif
     char geometry[20];
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
 #endif
 
     blend_geometry(geometry, sizeof(geometry), image_pct, overlay_pct);
-    CloneString(&overlay->geometry, geometry);
-    if (!SetImageArtifact(overlay, "compose:args", geometry))
-    {
-        rb_raise(rb_eNoMemError, "not enough memory to continue");
-    }
-
     new_image = rm_clone_image(image);
-    if (!SetImageArtifact(new_image, "compose:args", geometry)) // 6.9 appears to get this info from canvas (dest) image
-    {
-        DestroyImage(new_image);
-        rb_raise(rb_eNoMemError, "not enough memory to continue");
-    }
+    set_compose_args(new_image, geometry);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -2090,11 +2166,14 @@ special_composite(VALUE self, VALUE overlay_obj, double image_pct, double overla
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    DECLARE_GVL_CALL(call, CompositeImage, new_image, op, overlay, x_off, y_off);
-    call.read(self).read(overlay_obj).destroy(new_image).run<void>();
+    source = compose_args_source(new_image, overlay, geometry);
+    DECLARE_GVL_CALL(call, CompositeImage, new_image, op, source, x_off, y_off);
+    call.read(self).read(overlay_obj).destroy(new_image).destroy(source).run<void>();
+    DestroyImage(source);
 
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
+    restore_compose_args(new_image, image);
 
     return rm_image_new(new_image);
 }
@@ -3764,7 +3843,7 @@ Image_compose_eq(VALUE self, VALUE compose_arg)
  * @see Image_composite_bang
  */
 static VALUE
-composite(int bang, int argc, VALUE *argv, VALUE self, ChannelType channels)
+composite(int bang, int argc, VALUE *argv, VALUE self, ChannelType channels, const char *compose_args = NULL)
 {
     Image *image, *new_image;
     Image *comp_image;
@@ -3913,6 +3992,10 @@ composite(int bang, int argc, VALUE *argv, VALUE self, ChannelType channels)
     else
     {
         new_image = rm_clone_image(image);
+        if (compose_args)
+        {
+            set_compose_args(new_image, compose_args);
+        }
 
 #if defined(IMAGEMAGICK_7)
         exception = AcquireExceptionInfo();
@@ -3923,10 +4006,19 @@ composite(int bang, int argc, VALUE *argv, VALUE self, ChannelType channels)
         rm_check_exception(exception, new_image, DestroyOnError);
         DestroyExceptionInfo(exception);
 #else
-        DECLARE_GVL_CALL(call, CompositeImageChannel, new_image, channels, composite_op, comp_image, x_offset, y_offset);
-        call.read(self).read(comp).destroy(new_image).run<void>();
+        Image *source = compose_args ? compose_args_source(new_image, comp_image, compose_args) : comp_image;
+        DECLARE_GVL_CALL(call, CompositeImageChannel, new_image, channels, composite_op, source, x_offset, y_offset);
+        call.read(self).read(comp).destroy(new_image).destroy(source != comp_image ? source : NULL).run<void>();
+        if (source != comp_image)
+        {
+            DestroyImage(source);
+        }
         rm_check_image_exception(new_image, DestroyOnError);
 #endif
+        if (compose_args)
+        {
+            restore_compose_args(new_image, image);
+        }
 
         return rm_image_new(new_image);
     }
@@ -4287,7 +4379,6 @@ Image_composite_channel_bang(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_composite_mathematics(int argc, VALUE *argv, VALUE self)
 {
-    Image *composite_image;
     VALUE args[5];
     signed long x_off = 0L;
     signed long y_off = 0L;
@@ -4317,12 +4408,6 @@ Image_composite_mathematics(int argc, VALUE *argv, VALUE self)
 
     snprintf(compose_args, sizeof(compose_args), "%-.16g,%-.16g,%-.16g,%-.16g", NUM2DBL(argv[1]), NUM2DBL(argv[2]), NUM2DBL(argv[3]), NUM2DBL(argv[4]));
 
-    composite_image = rm_check_writable(rm_cur_image(argv[0]));
-    if (!SetImageArtifact(composite_image, "compose:args", compose_args))
-    {
-        rb_raise(rb_eNoMemError, "not enough memory to continue");
-    }
-
     // Call composite(False, gravity, x_off, y_off, MathematicsCompositeOp, DefaultChannels)
     args[0] = argv[0];
     args[1] = GravityType_find(gravity);
@@ -4330,7 +4415,7 @@ Image_composite_mathematics(int argc, VALUE *argv, VALUE self)
     args[3] = LONG2FIX(y_off);
     args[4] = CompositeOperator_find(MathematicsCompositeOp);
 
-    return composite(False, 5, args, self, DefaultChannels);
+    return composite(False, 5, args, self, DefaultChannels, compose_args);
 }
 
 
@@ -4392,12 +4477,7 @@ composite_tiled(int bang, int argc, VALUE *argv, VALUE self)
             break;
     }
 
-    comp_image = rm_check_writable(rm_cur_image(argv[0]));
-
-    if (!SetImageArtifact(comp_image, "modify-outside-overlay", "false"))
-    {
-        rb_raise(rb_eNoMemError, "not enough memory to continue");
-    }
+    comp_image = rm_check_readable(rm_cur_image(argv[0]));
 
     if (!bang)
     {
@@ -16558,14 +16638,10 @@ Image_virtual_pixel_method_eq(VALUE self, VALUE method)
 VALUE
 Image_watermark(int argc, VALUE *argv, VALUE self)
 {
-    Image *image, *overlay, *new_image;
+    Image *image, *overlay;
     double src_percent = 100.0, dst_percent = 100.0;
     long x_offset = 0L, y_offset = 0L;
-    char geometry[20];
     VALUE ovly;
-#if defined(IMAGEMAGICK_7)
-    ExceptionInfo *exception;
-#endif
 
     image = rm_check_readable(self);
 
@@ -16575,7 +16651,7 @@ Image_watermark(int argc, VALUE *argv, VALUE self)
     }
 
     ovly = rm_cur_image(argv[0]);
-    overlay = rm_check_writable(ovly);
+    overlay = rm_check_readable(ovly);
 
     if (argc > 3)
     {
@@ -16597,30 +16673,7 @@ Image_watermark(int argc, VALUE *argv, VALUE self)
             break;
     }
 
-    blend_geometry(geometry, sizeof(geometry), src_percent, dst_percent);
-    CloneString(&overlay->geometry, geometry);
-    if (!SetImageArtifact(overlay, "compose:args", geometry))
-    {
-        rb_raise(rb_eNoMemError, "not enough memory to continue");
-    }
-
-    new_image = rm_clone_image(image);
-#if defined(IMAGEMAGICK_7)
-    exception = AcquireExceptionInfo();
-    DECLARE_GVL_CALL(call, CompositeImage, new_image, overlay, ModulateCompositeOp, MagickTrue, x_offset, y_offset, exception);
-    call.read(self).read(ovly).destroy(new_image).release(exception).run<void>();
-    rm_check_exception(exception, new_image, DestroyOnError);
-    DestroyExceptionInfo(exception);
-#else
-    DECLARE_GVL_CALL(call, CompositeImage, new_image, ModulateCompositeOp, overlay, x_offset, y_offset);
-    call.read(self).read(ovly).destroy(new_image).run<void>();
-
-    rm_check_image_exception(new_image, DestroyOnError);
-#endif
-
-    RB_GC_GUARD(ovly);
-
-    return rm_image_new(new_image);
+    return special_composite(self, ovly, src_percent, dst_percent, x_offset, y_offset, ModulateCompositeOp);
 }
 
 

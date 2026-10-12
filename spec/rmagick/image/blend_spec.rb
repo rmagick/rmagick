@@ -39,4 +39,24 @@ RSpec.describe Magick::Image, "#blend" do
     expect { image.blend(image_list, 0.25, 0.75, Magick::NorthWestGravity, 10) }.not_to raise_error
     expect { image.blend(image_list, 0.25, 0.75, Magick::NorthWestGravity, 10, 10) }.not_to raise_error
   end
+
+  it "does not change a frozen overlay" do
+    image = described_class.new(20, 20)
+    overlay = described_class.new(5, 5).freeze
+
+    image.blend(overlay, 0.25, 0.75)
+
+    expect(overlay.artifact("compose:args")).to be(nil)
+    expect(overlay.geometry).to be(nil)
+  end
+
+  it "keeps the compose:args of the image on the result" do
+    image = described_class.new(20, 20)
+    image.define("compose:args", "10x20")
+    overlay = described_class.new(5, 5)
+
+    result = image.blend(overlay, 0.25, 0.75)
+
+    expect(result.artifact("compose:args")).to eq("10x20")
+  end
 end
