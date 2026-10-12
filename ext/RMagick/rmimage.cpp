@@ -17201,7 +17201,7 @@ xform_image(int bang, VALUE self, VALUE x, VALUE y, VALUE width, VALUE height, g
 #if defined(IMAGEMAGICK_6)
     if (rm_should_raise_exception(&image->exception, RetainExceptionRetention))
     {
-        DestroyImage(new_image);
+        DestroyImageList(new_image);
         rm_check_image_exception(image, RetainOnError);
     }
 #endif
