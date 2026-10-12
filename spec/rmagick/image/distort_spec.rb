@@ -38,4 +38,24 @@ RSpec.describe Magick::Image, '#distort' do
 
     expect { image.distort(Magick::ScaleRotateTranslateDistortion, [point]) }.to raise_error(Magick::DestroyedImageError)
   end
+
+  it 'does not keep the options of the block on the image' do
+    image = described_class.new(20, 10)
+    plain = image.distort(Magick::ScaleRotateTranslateDistortion, [0], true)
+
+    scaled = image.distort(Magick::ScaleRotateTranslateDistortion, [0], true) { |options| options.define('distort:scale', 2) }
+    result = image.distort(Magick::ScaleRotateTranslateDistortion, [0], true)
+
+    expect(scaled.columns).to eq(plain.columns * 2)
+    expect(image.artifact('distort:scale')).to be(nil)
+    expect(scaled.artifact('distort:scale')).to be(nil)
+    expect([result.columns, result.rows]).to eq([plain.columns, plain.rows])
+  end
+
+  it 'raises an error from options.define when an option contains a null byte' do
+    image = described_class.new(20, 10)
+
+    expect { image.distort(Magick::ScaleRotateTranslateDistortion, [0]) { |options| options.define("distort:scale\0x", 2) } }
+      .to raise_error(ArgumentError, 'string contains null byte')
+  end
 end

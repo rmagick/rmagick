@@ -1607,10 +1607,9 @@ img = Magick::Image.read_inline(content)
       <h4>Description</h4>
 
       <p>
-        Return the value of an artifact. Artifacts are set by <a href="#define">define</a>, by the
-        <a href="info.html#define">Image::Info#define</a> method in a block passed to <code>write</code> or <code>to_blob</code>, and by the
-        <code>OptionalMethodArguments</code> class. They are separate from image properties, so neither <code>Image#[]</code> nor
-        <a href="image3.html#properties">properties</a> returns them.
+        Return the value of an artifact. Artifacts are set by <a href="#define">define</a> and by the
+        <a href="info.html#define">Image::Info#define</a> method in a block passed to <code>write</code> or <code>to_blob</code>. They are separate from
+        image properties, so neither <code>Image#[]</code> nor <a href="image3.html#properties">properties</a> returns them.
       </p>
 
       <h4>Arguments</h4>
@@ -3033,8 +3032,9 @@ Magick::Image.new(10, 10).channel_entropy #=&gt; [0.0]
         <dt>optional arguments</dt>
 
         <dd>
-          If present, <code>compare_channel</code> yields to a block in which you can set optional arguments by setting attributes on <em>self</em>. In both
-          cases <span class="arg">color</span> may be either a <a href="imusage.html#color_names">color name</a> or a <a href="struct.html#Pixel">pixel</a>.
+          If present, <code>compare_channel</code> yields to a block in which you can set optional arguments by setting attributes on <em>self</em>. They
+          apply only to this call and are not kept on the image. In both cases <span class="arg">color</span> may be either a
+          <a href="imusage.html#color_names">color name</a> or a <a href="struct.html#Pixel">pixel</a>.
 
           <dl>
             <dt>options.highlight_color = color</dt>
@@ -4108,9 +4108,9 @@ img.artifact('distort:viewport') #=&gt; nil
       <h4>Notes</h4>
 
       <p>
-        The <code>options.define</code> method in the optional-arguments block of <a href="#distort">distort</a> and similar methods calls this method, so
-        the artifacts it sets stay on the image. Copies of the image, such as those made by <a href="#dup">dup</a>, have the same artifacts. Raises
-        <code>FrozenError</code> if the image is frozen.
+        The artifacts stay on the image. Copies of the image, such as those made by <a href="#dup">dup</a>, have the same artifacts. Raises
+        <code>FrozenError</code> if the image is frozen. The <code>options.define</code> method in the optional-arguments block of
+        <a href="#distort">distort</a> and similar methods sets an artifact only for that call, so it does not change the image.
       </p>
 
       <h4>See also</h4>
@@ -4667,7 +4667,8 @@ img.artifact('distort:viewport') #=&gt; nil
         <dt>optional arguments</dt>
 
         <dd>
-          If present, <code>distort</code> yields to a block in which you can set optional arguments by calling methods on <em>self</em>.
+          If present, <code>distort</code> yields to a block in which you can set optional arguments by calling methods on <em>self</em>. They apply only
+          to this call and are not kept on the image.
 
           <dl>
             <dt>options.define("distort:viewport", "WxH+X+Y")</dt>

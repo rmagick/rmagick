@@ -6,7 +6,7 @@ module Magick
     attr_writer lowlight_color: magick_color
 
     def initialize: (magick_image img) -> void
-    def define: (string key, ?string? value) -> String
+    def define: (interned key, ?(string | Numeric)? value) -> String?
     def method_missing: (untyped mth, untyped val) ?{ (*untyped, **untyped) -> untyped } -> untyped
   end
 end

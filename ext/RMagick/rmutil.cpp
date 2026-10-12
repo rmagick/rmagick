@@ -1089,33 +1089,132 @@ void rm_set_user_artifact(Image *images, Info *info)
  * No Ruby usage (internal function)
  *
  * Notes:
- *   - Creates an instance of Magick::OptionalMethodArguments, then yields to a
- *     block in the context of the instance.
+ *   - Creates an instance of Magick::OptionalMethodArguments, then yields it
+ *     to the block. The image is not changed; pass the result to
+ *     rm_set_optional_arguments to set the artifacts on the image that the
+ *     method uses.
  *
  * @param img the image
+ * @return an array of [artifact, value] pairs, or nil without a block
  */
-void
+VALUE
 rm_get_optional_arguments(VALUE img)
 {
     VALUE optional_method_arguments;
     VALUE opt_args;
     VALUE argv[1];
 
-    // opt_args = Magick::OptionalMethodArguments.new(img)
-    // opt_args.instance_eval { block }
-    if (rb_block_given_p())
+    if (!rb_block_given_p())
     {
-        optional_method_arguments = rb_const_get_from(Module_Magick, rb_intern("OptionalMethodArguments"));
-        argv[0] = img;
-        opt_args = rb_class_new_instance(1, argv, optional_method_arguments);
+        return Qnil;
+    }
 
-        rb_yield(opt_args);
+    optional_method_arguments = rb_const_get_from(Module_Magick, rb_intern("OptionalMethodArguments"));
+    argv[0] = img;
+    opt_args = rb_class_new_instance(1, argv, optional_method_arguments);
+
+    rb_yield(opt_args);
+
+    VALUE pairs = rb_funcall(rb_iv_get(opt_args, "@artifacts"), rb_intern("to_a"), 0);
+    Check_Type(pairs, T_ARRAY);
+    VALUE artifacts = rb_ary_new2(RARRAY_LEN(pairs));
+    for (long i = 0; i < RARRAY_LEN(pairs); i++)
+    {
+        VALUE pair = rb_ary_entry(pairs, i);
+        Check_Type(pair, T_ARRAY);
+        VALUE key = rb_ary_entry(pair, 0);
+        VALUE value = rb_ary_entry(pair, 1);
+
+        Check_Type(key, T_STRING);
+        key = rb_str_new_frozen(key);
+        StringValueCStr(key);
+        if (!NIL_P(value))
+        {
+            Check_Type(value, T_STRING);
+            value = rb_str_new_frozen(value);
+            StringValueCStr(value);
+        }
+        rb_ary_push(artifacts, rb_assoc_new(key, value));
     }
 
     RB_GC_GUARD(optional_method_arguments);
-    RB_GC_GUARD(opt_args);
+    RB_GC_GUARD(pairs);
 
-    return;
+    return artifacts;
+}
+
+
+/**
+ * Set the artifacts that rm_get_optional_arguments collected on an image.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param image the image
+ * @param artifacts the result of rm_get_optional_arguments
+ * @return MagickFalse if ImageMagick could not set an artifact
+ */
+MagickBooleanType
+rm_set_optional_arguments(Image *image, VALUE artifacts)
+{
+    if (NIL_P(artifacts))
+    {
+        return MagickTrue;
+    }
+
+    for (long i = 0; i < RARRAY_LEN(artifacts); i++)
+    {
+        VALUE pair = rb_ary_entry(artifacts, i);
+        VALUE key = rb_ary_entry(pair, 0);
+        VALUE value = rb_ary_entry(pair, 1);
+
+        if (NIL_P(value))
+        {
+            DeleteImageArtifact(image, RSTRING_PTR(key));
+        }
+        else if (!SetImageArtifact(image, RSTRING_PTR(key), RSTRING_PTR(value)))
+        {
+            return MagickFalse;
+        }
+    }
+    return MagickTrue;
+}
+
+
+/**
+ * Give the result of a method the values that the source image has for the
+ * artifacts that rm_get_optional_arguments collected, so that the options of
+ * the block apply only to the call.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param result the image that the method returns
+ * @param source the image that the method was called on
+ * @param artifacts the result of rm_get_optional_arguments
+ * @return MagickFalse if ImageMagick could not set an artifact
+ */
+MagickBooleanType
+rm_restore_optional_arguments(Image *result, Image *source, VALUE artifacts)
+{
+    if (NIL_P(artifacts))
+    {
+        return MagickTrue;
+    }
+
+    for (long i = 0; i < RARRAY_LEN(artifacts); i++)
+    {
+        const char *key = RSTRING_PTR(rb_ary_entry(rb_ary_entry(artifacts, i), 0));
+        const char *value = GetImageArtifact(source, key);
+
+        if (!value)
+        {
+            DeleteImageArtifact(result, key);
+        }
+        else if (!SetImageArtifact(result, key, value))
+        {
+            return MagickFalse;
+        }
+    }
+    return MagickTrue;
 }
 
 

@@ -1835,16 +1835,22 @@ module Magick
   class OptionalMethodArguments
     def initialize(img)
       @img = img
+      @artifacts = {}
     end
 
     # miscellaneous options like -verbose
     def method_missing(mth, val)
-      @img.define(mth.to_s.tr('_', '-'), val)
+      define(mth.to_s.tr('_', '-'), val)
     end
 
     # set(key, val) corresponds to -set option:key val
     def define(key, val = nil)
-      @img.define(key, val)
+      key = -String(key)
+      val = -String(val) unless val.nil?
+      raise ArgumentError, 'string contains null byte' if key.include?("\0") || val&.include?("\0")
+
+      @artifacts[key] = val
+      val
     end
 
     # accepts Pixel object or color name
@@ -1865,9 +1871,9 @@ module Magick
               else
                 String.try_convert(color) || raise(TypeError, "argument must be color name or pixel (#{color.class} given)")
               end
-      @img.define("compare:#{name}", color)
+      define("compare:#{name}", color)
       # ImageMagick 6.9.6-0 and older read the name without the "compare:" prefix.
-      @img.define(name, color)
+      define(name, color)
     end
   end
 

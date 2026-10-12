@@ -341,6 +341,56 @@ shallow_clone(Image *image, ExceptionInfo *exception, void (*release)(void *) = 
     return clone;
 }
 
+
+/**
+ * Set the options of a method's block on the copy of the image that the call
+ * uses. If that fails, free the copy and the exception, and raise.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param clone the copy of the image
+ * @param artifacts the result of rm_get_optional_arguments
+ * @param exception the exception info
+ * @param release a function that frees ptr before raising, or NULL
+ * @param ptr the memory that release frees
+ */
+static void
+set_optional_arguments(Image *clone, VALUE artifacts, ExceptionInfo *exception, void (*release)(void *) = NULL, void *ptr = NULL)
+{
+    if (!rm_set_optional_arguments(clone, artifacts))
+    {
+        DestroyImage(clone);
+        if (release)
+        {
+            release(ptr);
+        }
+        DestroyExceptionInfo(exception);
+        rb_raise(rb_eNoMemError, "not enough memory to continue");
+    }
+}
+
+
+/**
+ * Give the result of a call the artifacts of the image it was called on back,
+ * so that the options of the block are not kept on the result. If that fails,
+ * free the result and raise.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param result the image that the method returns
+ * @param image the image that the method was called on
+ * @param artifacts the result of rm_get_optional_arguments
+ */
+static void
+restore_optional_arguments(Image *result, Image *image, VALUE artifacts)
+{
+    if (!rm_restore_optional_arguments(result, image, artifacts))
+    {
+        DestroyImage(result);
+        rb_raise(rb_eNoMemError, "not enough memory to continue");
+    }
+}
+
 // Call a method on a copy of a frozen image, which may be shared with other
 // Ractors, and destroy the copy when the method returns.
 template <typename... Args>
@@ -3565,7 +3615,7 @@ Image_columns(VALUE self)
  *
  * @overload compare_channel(image, metric, channel = Magick::AllChannels)
  *   When a block is given, compare_channel yields with a block argument you can optionally use to
- *   set attributes.
+ *   set attributes. They apply only to this call and are not kept on the image.
  *   - options.highlight_color = color
  *     - Emphasize pixel differences with this color. The default is partially transparent red.
  *   - options.lowlight_color = color
@@ -3585,7 +3635,7 @@ Image_columns(VALUE self)
  *
  * @overload compare_channel(image, metric, *channels)
  *   When a block is given, compare_channel yields with a block argument you can optionally use to
- *   set attributes.
+ *   set attributes. They apply only to this call and are not kept on the image.
  *   - options.highlight_color = color
  *     - Emphasize pixel differences with this color. The default is partially transparent red.
  *   - options.lowlight_color = color
@@ -3608,7 +3658,7 @@ Image_compare_channel(int argc, VALUE *argv, VALUE self)
     Image *clone;
 #endif
     double distortion;
-    VALUE ary, ref;
+    VALUE ary, ref, artifacts;
     MetricType metric_type;
     ChannelType channels;
     ExceptionInfo *exception;
@@ -3626,7 +3676,7 @@ Image_compare_channel(int argc, VALUE *argv, VALUE self)
         rb_raise(rb_eArgError, "wrong number of arguments (%d for 2 or more)", argc);
     }
 
-    rm_get_optional_arguments(self);
+    artifacts = rm_get_optional_arguments(self);
 
     ref = rm_cur_image(argv[0]);
     r_image = rm_check_readable(ref);
@@ -3638,17 +3688,20 @@ Image_compare_channel(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_CLONE(masked, image, channels);
+    set_optional_arguments(masked, artifacts, exception);
     DECLARE_GVL_CALL(call, CompareImages, masked, r_image, metric_type, &distortion, exception);
     difference_image = call.read(self).destroy(masked).read(ref).release(exception).run<Image *>();
     END_CHANNEL_CLONE(masked);
 #else
     clone = shallow_clone(image, exception);
+    set_optional_arguments(clone, artifacts, exception);
     DECLARE_GVL_CALL(call, CompareImageChannels, clone, r_image, channels, metric_type, &distortion, exception);
     difference_image = call.read(self).destroy(clone).read(ref).release(exception).run<Image *>();
     DestroyImage(clone);
 #endif
     rm_check_exception(exception, difference_image, DestroyOnError);
     DestroyExceptionInfo(exception);
+    restore_optional_arguments(difference_image, image, artifacts);
 
     ary = rb_ary_new2(2);
     rb_ary_store(ary, 0, rm_image_new(difference_image));
@@ -3656,6 +3709,7 @@ Image_compare_channel(int argc, VALUE *argv, VALUE self)
 
     RB_GC_GUARD(ary);
     RB_GC_GUARD(ref);
+    RB_GC_GUARD(artifacts);
 
     return ary;
 }
@@ -5482,8 +5536,7 @@ Image_artifact(VALUE self, VALUE artifact)
  * inserts it into the artifact tree.
  *
  * - Normally a script should never call this method. Any calls to
- *   SetImageArtifact will be part of the methods in which they're needed, or
- *   be called via the OptionalMethodArguments class.
+ *   SetImageArtifact will be part of the methods in which they're needed.
  * - If value is nil, the artifact will be removed
  *
  * @param artifact [String] the artifact to set
@@ -6296,6 +6349,7 @@ Image_dissolve(int argc, VALUE *argv, VALUE self)
  *
  * @overload distort(type, points, bestfit = false)
  *   When a block is given, distort yields with a block argument you can optionally use to set attributes.
+ *   They apply only to this call and are not kept on the image.
  *   - options.define("distort:viewport", "WxH+X+Y")
  *     - Specify the size and offset of the generated viewport image of the distorted image space. W and
  *       H are the width and height, and X and Y are the offset.
@@ -6326,8 +6380,8 @@ Image_dissolve(int argc, VALUE *argv, VALUE self)
 VALUE
 Image_distort(int argc, VALUE *argv, VALUE self)
 {
-    Image *image, *new_image;
-    VALUE pts, values_buf;
+    Image *image, *clone = NULL, *new_image;
+    VALUE pts, values_buf, artifacts;
     unsigned long n, npoints;
     DistortMethod distortion_method;
     double *values, *points;
@@ -6335,7 +6389,7 @@ Image_distort(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 
     rm_check_readable(self);
-    rm_get_optional_arguments(self);
+    artifacts = rm_get_optional_arguments(self);
 
     switch (argc)
     {
@@ -6371,13 +6425,24 @@ Image_distort(int argc, VALUE *argv, VALUE self)
     ALLOCV_END(values_buf);
 
     exception = AcquireExceptionInfo();
-    DECLARE_GVL_CALL(call, DistortImage, image, distortion_method, npoints, points, bestfit, exception);
-    new_image = call.read(self).free_buffer(points).release(exception).run<Image *>();
+    if (!NIL_P(artifacts))
+    {
+        clone = shallow_clone(image, exception, xfree, points);
+        set_optional_arguments(clone, artifacts, exception, xfree, points);
+    }
+    DECLARE_GVL_CALL(call, DistortImage, clone ? clone : image, distortion_method, npoints, points, bestfit, exception);
+    new_image = call.read(self).destroy(clone).free_buffer(points).release(exception).run<Image *>();
+    if (clone)
+    {
+        DestroyImage(clone);
+    }
     xfree(points);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
+    restore_optional_arguments(new_image, image, artifacts);
 
     RB_GC_GUARD(pts);
+    RB_GC_GUARD(artifacts);
 
     return rm_image_new(new_image);
 }
