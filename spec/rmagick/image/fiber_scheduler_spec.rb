@@ -697,6 +697,25 @@ RSpec.describe Magick::Image, if: offloading do
       expect(error).to in_use
     end
 
+    it "does not let another fiber change the options of a polaroid in progress" do
+      image = red_image
+      options = nil
+      errors = nil
+      scheduler.before_next_operation do
+        Fiber.schedule do
+          errors = [
+            attempt { options.font = "Helvetica" },
+            attempt { options.shadow_color = "blue" },
+            attempt { options.__send__(:initialize) }
+          ]
+        end
+      end
+
+      scheduler.run { image.polaroid { |polaroid| options = polaroid } }
+
+      expect(errors).to all(in_use)
+    end
+
     it "keeps two lists that share an image apart when another fiber appends the second" do
       shared = red_image
       first = Magick::ImageList.new << shared << blue_image

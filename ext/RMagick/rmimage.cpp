@@ -11454,10 +11454,10 @@ Image_polaroid(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     DECLARE_GVL_CALL(call, PolaroidImage, clone, draw->info, caption, angle, image->interpolate, exception);
-    new_image = call.read(self).destroy(clone).release(exception).run<Image *>();
+    new_image = call.read(self).read(options).destroy(clone).release(exception).run<Image *>();
 #else
     DECLARE_GVL_CALL(call, PolaroidImage, clone, draw->info, angle, exception);
-    new_image = call.read(self).destroy(clone).release(exception).run<Image *>();
+    new_image = call.read(self).read(options).destroy(clone).release(exception).run<Image *>();
 #endif
     rm_check_exception(exception, clone, DestroyOnError);
 
