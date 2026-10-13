@@ -11,6 +11,7 @@
 
 #include "rmagick.h"
 #include <errno.h>
+#include <cmath>
 #if defined(_WIN32)
 #include <Windows.h>
 #else
@@ -684,6 +685,36 @@ rm_app2quantum(VALUE obj)
 
     return ClampToQuantum(value);
 }
+
+
+#if defined(MAGICKCORE_HDRI_SUPPORT)
+/**
+ * Convert a Quantum of HDRI to a Ruby Integer, truncating it toward zero.
+ *
+ * No Ruby usage (internal function)
+ *
+ * Notes:
+ *   - NaN and infinity are 0, since an Integer cannot hold them.
+ *   - The value is a double, so that a sum computed from Quantums keeps its
+ *     precision.
+ *
+ * @param value the Quantum
+ * @return a Ruby Integer
+ */
+VALUE
+rm_quantum2num(double value)
+{
+    if (!std::isfinite(value))
+    {
+        return INT2FIX(0);
+    }
+    if (fabs(value) < 9223372036854775808.0)
+    {
+        return LL2NUM((long long) value);
+    }
+    return rb_dbl2big(value);
+}
+#endif
 
 
 /**
