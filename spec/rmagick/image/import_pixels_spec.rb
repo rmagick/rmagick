@@ -50,6 +50,21 @@ RSpec.describe Magick::Image, '#import_pixels' do
     expect { image.import_pixels(0, 0, 2**62, 1, 'RGBA', '') }.to raise_error(RangeError)
   end
 
+  it 'clamps an out-of-range value in an array unless ImageMagick uses HDRI' do
+    image = described_class.new(4, 1)
+    image.import_pixels(0, 0, 4, 1, 'R', [Magick::QuantumRange + 1, -1, 100.7, Float::NAN])
+    red = image.dispatch(0, 0, 4, 1, 'R', true)
+
+    if Magick::Magick_features.include?('HDRI')
+      expected = [Magick::QuantumRange + 1, -1, 100.7]
+      expect(red[3]).to be_nan
+    else
+      expected = [Magick::QuantumRange, 0, 100]
+      expect(red[3]).to eq(0.0)
+    end
+    expect(red[0, 3]).to match(expected.map { |value| be_within(1e-9).of(Float(value) / Magick::QuantumRange) })
+  end
+
   # Regression: the map length was measured with rm_strnlen_s(map, MaxTextExtent),
   # capping it at 4096, while ImageMagick walks the map with the real strlen() for
   # every pixel. A longer map therefore under-counted the buffer and

@@ -8629,6 +8629,37 @@ Image_implode(int argc, VALUE *argv, VALUE self)
 
 
 /**
+ * Convert a channel value from the array of Image#import_pixels to a Quantum.
+ *
+ * No Ruby usage (internal function)
+ *
+ * Notes:
+ *   - A value outside 0 to QuantumRange, or NaN, is clamped, while a value in
+ *     the range is truncated. With HDRI the value is kept as is.
+ *
+ * @param value the channel value
+ * @return the Quantum
+ */
+static Quantum
+import_quantum(double value)
+{
+#if defined(MAGICKCORE_HDRI_SUPPORT)
+    return (Quantum) value;
+#else
+    if (!(value > 0.0))
+    {
+        return 0;
+    }
+    if (value >= QuantumRange)
+    {
+        return QuantumRange;
+    }
+    return (Quantum) value;
+#endif
+}
+
+
+/**
  * Store image pixel data from an array.
  *
  * @overload import_pixels(x, y, columns, rows, map, pixels, type = Magick::CharPixel)
@@ -8787,7 +8818,7 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
                 VALUE element = rb_ary_entry(pixel_ary, n);
                 if (rm_check_num2dbl(element))
                 {
-                    pixels[n] = NUM2DBL(element);
+                    pixels[n] = import_quantum(NUM2DBL(element));
                 }
                 else
                 {
