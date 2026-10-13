@@ -18,4 +18,11 @@ RSpec.describe Magick::Pixel, '#marshal' do
     expect { pixel.marshal_load(nil) }.to raise_error(TypeError)
     expect { pixel.marshal_load([]) }.to raise_error(TypeError)
   end
+
+  it 'raises FrozenError for a frozen pixel' do
+    pixel = described_class.new(1, 2, 3).freeze
+
+    expect { pixel.marshal_load(described_class.new(4, 5, 6).marshal_dump) }.to raise_error(FrozenError)
+    expect(pixel.red).to eq(1)
+  end
 end
