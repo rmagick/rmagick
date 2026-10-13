@@ -65,6 +65,28 @@ RSpec.describe Magick::Image, '#import_pixels' do
     expect(red[0, 3]).to match(expected.map { |value| be_within(1e-9).of(Float(value) / Magick::QuantumRange) })
   end
 
+  it 'raises the error of converting an element of a large pixel array' do
+    element_class = Class.new do
+      def initialize
+        @calls = 0
+      end
+
+      def to_f
+        @calls += 1
+        raise IOError, 'to_f failed' if @calls >= 2
+
+        0.5
+      end
+    end
+    image = described_class.new(100, 100)
+
+    [Magick::QuantumPixel, Magick::DoublePixel].each do |type|
+      pixels = Array.new((100 * 100 * 3) - 1, 0.5) << element_class.new
+
+      expect { image.import_pixels(0, 0, 100, 100, 'RGB', pixels, type) }.to raise_error(IOError, 'to_f failed')
+    end
+  end
+
   # Regression: the map length was measured with rm_strnlen_s(map, MaxTextExtent),
   # capping it at 4096, while ImageMagick walks the map with the real strlen() for
   # every pixel. A longer map therefore under-counted the buffer and

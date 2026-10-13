@@ -8659,6 +8659,48 @@ import_quantum(double value)
 }
 
 
+typedef struct
+{
+    VALUE pixel_ary;
+    size_t npixels;
+    Quantum *pixels;
+    double *fpixels;
+} import_pixels_args_t;
+
+
+/**
+ * Convert the elements of a pixel array for Image#import_pixels.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param arg the import_pixels_args_t, with either pixels or fpixels to fill
+ * @return Qnil
+ */
+static VALUE
+convert_pixel_array(VALUE arg)
+{
+    import_pixels_args_t *args = (import_pixels_args_t *)arg;
+
+    for (size_t n = 0; n < args->npixels; n++)
+    {
+        VALUE element = rb_ary_entry(args->pixel_ary, n);
+        if (!rm_check_num2dbl(element))
+        {
+            rb_raise(rb_eTypeError, "type mismatch: %s given", rb_class2name(CLASS_OF(element)));
+        }
+        if (args->fpixels)
+        {
+            args->fpixels[n] = NUM2DBL(element);
+        }
+        else
+        {
+            args->pixels[n] = import_quantum(NUM2DBL(element));
+        }
+    }
+    return Qnil;
+}
+
+
 /**
  * Store image pixel data from an array.
  *
@@ -8682,7 +8724,7 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
     Image *image;
     long x_off, y_off;
     long cols, rows;
-    size_t n, npixels;
+    size_t npixels;
     size_t buffer_l;
     char *map;
     VALUE pixel_arg, pixel_ary;
@@ -8791,43 +8833,30 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
                      npixels, RARRAY_LEN(pixel_ary));
         }
 
+        import_pixels_args_t args = { pixel_ary, npixels, NULL, NULL };
+        int state;
+
         if (stg_type == DoublePixel || stg_type == FloatPixel)
         {
             fpixels = ALLOC_N(double, npixels);
-            for (n = 0; n < npixels; n++)
-            {
-                VALUE element = rb_ary_entry(pixel_ary, n);
-                if (rm_check_num2dbl(element))
-                {
-                    fpixels[n] = NUM2DBL(element);
-                }
-                else
-                {
-                    xfree(fpixels);
-                    rb_raise(rb_eTypeError, "type mismatch: %s given", rb_class2name(CLASS_OF(element)));
-                }
-            }
+            args.fpixels = fpixels;
             buffer = (void *) fpixels;
             stg_type = DoublePixel;
         }
         else
         {
             pixels = ALLOC_N(Quantum, npixels);
-            for (n = 0; n < npixels; n++)
-            {
-                VALUE element = rb_ary_entry(pixel_ary, n);
-                if (rm_check_num2dbl(element))
-                {
-                    pixels[n] = import_quantum(NUM2DBL(element));
-                }
-                else
-                {
-                    xfree(pixels);
-                    rb_raise(rb_eTypeError, "type mismatch: %s given", rb_class2name(CLASS_OF(element)));
-                }
-            }
+            args.pixels = pixels;
             buffer = (void *) pixels;
             stg_type = QuantumPixel;
+        }
+
+        rb_protect(convert_pixel_array, (VALUE)&args, &state);
+        if (state)
+        {
+            xfree(pixels);
+            xfree(fpixels);
+            rb_jump_tag(state);
         }
     }
 
