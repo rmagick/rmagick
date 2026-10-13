@@ -36,4 +36,25 @@ RSpec.describe Magick::Pixel, '#<=>' do
 
     expect(pixel <=> Object.new).to be(nil)
   end
+
+  it 'compares values that differ by less than 1' do
+    pixel = described_class.from_color('rgb(50%,0,0)')
+    other = described_class.new(Magick::QuantumRange / 2, 0, 0)
+
+    expect(pixel <=> other).to eq(1)
+    expect(other <=> pixel).to eq(-1)
+  end
+
+  it 'returns nil for a NaN value as Float#<=> does' do
+    image = Magick::Image.new(1, 1) { |options| options.background_color = 'black' }
+    pixel = image.fx('0/0', Magick::RedChannel).pixel_color(0, 0)
+    other = described_class.new(Magick::QuantumRange, 0, 0)
+
+    if Magick::Magick_features.include?('HDRI')
+      expect(pixel <=> other).to be(nil)
+      expect(pixel == other).to be(false)
+    else
+      expect(pixel <=> other).to eq(-1)
+    end
+  end
 end
