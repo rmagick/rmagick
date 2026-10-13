@@ -998,13 +998,13 @@ Pixel_marshal_load(VALUE self, VALUE dpixel)
 
     Check_Type(dpixel, T_HASH);
 
-    pixel->red = NUM2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("red")));
-    pixel->green = NUM2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("green")));
-    pixel->blue = NUM2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("blue")));
+    pixel->red = APP2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("red")));
+    pixel->green = APP2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("green")));
+    pixel->blue = APP2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("blue")));
 #if defined(IMAGEMAGICK_7)
-    pixel->alpha = NUM2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("alpha")));
+    pixel->alpha = APP2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("alpha")));
 #else
-    pixel->opacity = NUM2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("opacity")));
+    pixel->opacity = APP2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("opacity")));
 #endif
     return self;
 }

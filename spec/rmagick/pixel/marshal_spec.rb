@@ -19,6 +19,12 @@ RSpec.describe Magick::Pixel, '#marshal' do
     expect { pixel.marshal_load([]) }.to raise_error(TypeError)
   end
 
+  it 'keeps a negative value of an HDRI pixel' do
+    pixel = described_class.new(-65_535, 0, 0)
+
+    expect(Marshal.load(Marshal.dump(pixel)).red).to eq(pixel.red)
+  end
+
   it 'raises FrozenError for a frozen pixel' do
     pixel = described_class.new(1, 2, 3).freeze
 
