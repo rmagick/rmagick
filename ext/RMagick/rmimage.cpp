@@ -15763,6 +15763,7 @@ Image_to_color(VALUE self, VALUE pixel_arg)
 
     image = rm_check_readable(self);
     color_to_image_pixel(image->colorspace, &color, pixel_arg);
+    image = rm_check_readable(self);
 
     rm_init_magickpixel(image, &pixel);
     pixel.red   = color.red;
