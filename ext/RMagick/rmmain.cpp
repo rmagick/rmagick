@@ -197,14 +197,21 @@ rm_adjust_memory_usage(ssize_t diff)
 #endif
 
 
-static VALUE
-gc_run_to_end(VALUE arg)
+static void
+gc_finish(void)
 {
-    xfree(xmalloc(1));
     if (!RTEST(rb_gc_disable()))
     {
         rb_gc_enable();
     }
+}
+
+static VALUE
+gc_run_to_end(VALUE arg)
+{
+    gc_finish();
+    xfree(xmalloc(1));
+    gc_finish();
     return Qnil;
 }
 
@@ -216,6 +223,11 @@ gc_run_to_end(VALUE arg)
  * stays unfinished while ImageMagick allocates, and malloc does not start one.
  * xmalloc starts the GC as Ruby does at the limit, unless GC.disable is in
  * effect, and rb_gc_disable finishes the GC in progress.
+ *
+ * A GC still in progress keeps xmalloc from starting another one, while what
+ * ImageMagick allocated meanwhile stays over the limit. The next allocation of
+ * a Ruby object would then start a GC that stays unfinished, as seen on macOS
+ * with Ruby 4.1. So the GC in progress is finished first.
  *
  * No Ruby usage (internal function)
  */
