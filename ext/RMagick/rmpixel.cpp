@@ -944,15 +944,13 @@ VALUE
 Pixel_intensity(VALUE self)
 {
     Pixel *pixel;
-    Quantum intensity;
+    double intensity;
 
     TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
 
-    intensity = ROUND_TO_QUANTUM((0.299*pixel->red)
-                                + (0.587*pixel->green)
-                                + (0.114*pixel->blue));
+    intensity = (0.299*pixel->red) + (0.587*pixel->green) + (0.114*pixel->blue);
 
-    return QUANTUM2NUM((unsigned long) intensity);
+    return QUANTUM2NUM(floor(intensity + 0.5));
 }
 
 
