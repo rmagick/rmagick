@@ -18,32 +18,9 @@
 
 static VALUE color_arg_rescue(VALUE, VALUE ATTRIBUTE_UNUSED) ATTRIBUTE_NORETURN;
 static void Color_Name_to_PixelColor(PixelColor *, VALUE);
-static void Pixel_destroy(void *);
-static size_t Pixel_memsize(const void *);
-
-const rb_data_type_t rm_pixel_data_type = {
-    "Magick::Pixel",
-    { NULL, Pixel_destroy, Pixel_memsize, },
-    0, 0,
-    RUBY_TYPED_FROZEN_SHAREABLE | RUBY_TYPED_FREE_IMMEDIATELY,
-};
 
 
-/**
- * Free the storage associated with a Pixel object.
- *
- * No Ruby usage (internal function)
- *
- * @param ptr the Pixel object to destroy
- */
-static void
-Pixel_destroy(void *ptr)
-{
-    Pixel *pixel = (Pixel *)ptr;
-    xfree(pixel);
-}
-
-
+#if !defined(RUBY_TYPED_EMBEDDABLE)
 /**
   * Get Pixel object size.
   *
@@ -56,6 +33,21 @@ Pixel_memsize(const void *ptr)
 {
     return sizeof(Pixel);
 }
+#endif
+
+
+const rb_data_type_t rm_pixel_data_type = {
+    "Magick::Pixel",
+#if defined(RUBY_TYPED_EMBEDDABLE)
+    { NULL, RUBY_TYPED_DEFAULT_FREE, NULL, },
+    0, 0,
+    RUBY_TYPED_FROZEN_SHAREABLE | RUBY_TYPED_FREE_IMMEDIATELY | RUBY_TYPED_EMBEDDABLE,
+#else
+    { NULL, RUBY_TYPED_DEFAULT_FREE, Pixel_memsize, },
+    0, 0,
+    RUBY_TYPED_FROZEN_SHAREABLE | RUBY_TYPED_FREE_IMMEDIATELY,
+#endif
+};
 
 
 /**
@@ -495,9 +487,7 @@ Pixel_alloc(VALUE klass)
 {
     Pixel *pixel;
 
-    pixel = ALLOC(Pixel);
-    memset(pixel, '\0', sizeof(Pixel));
-    return TypedData_Wrap_Struct(klass, &rm_pixel_data_type, pixel);
+    return TypedData_Make_Struct(klass, Pixel, &rm_pixel_data_type, pixel);
 }
 
 
@@ -755,8 +745,8 @@ VALUE
 Pixel_from_MagickPixel(const MagickPixel *pp)
 {
     Pixel *pixel;
+    VALUE obj = TypedData_Make_Struct(Class_Pixel, Pixel, &rm_pixel_data_type, pixel);
 
-    pixel          = ALLOC(Pixel);
     pixel->red     = pp->red;
     pixel->green   = pp->green;
     pixel->blue    = pp->blue;
@@ -767,7 +757,7 @@ Pixel_from_MagickPixel(const MagickPixel *pp)
 #endif
     pixel->black   = pp->index;
 
-    return TypedData_Wrap_Struct(Class_Pixel, &rm_pixel_data_type, pixel);
+    return obj;
 }
 
 
@@ -786,8 +776,8 @@ VALUE
 Pixel_from_PixelPacket(const PixelPacket *pp)
 {
     Pixel *pixel;
+    VALUE obj = TypedData_Make_Struct(Class_Pixel, Pixel, &rm_pixel_data_type, pixel);
 
-    pixel          = ALLOC(Pixel);
     pixel->red     = pp->red;
     pixel->green   = pp->green;
     pixel->blue    = pp->blue;
@@ -799,7 +789,7 @@ Pixel_from_PixelPacket(const PixelPacket *pp)
     pixel->black   = 0;
 #endif
 
-    return TypedData_Wrap_Struct(Class_Pixel, &rm_pixel_data_type, pixel);
+    return obj;
 }
 
 
@@ -818,8 +808,8 @@ VALUE
 Pixel_from_PixelColor(const PixelColor *pp)
 {
     Pixel *pixel;
+    VALUE obj = TypedData_Make_Struct(Class_Pixel, Pixel, &rm_pixel_data_type, pixel);
 
-    pixel          = ALLOC(Pixel);
     pixel->red     = pp->red;
     pixel->green   = pp->green;
     pixel->blue    = pp->blue;
@@ -831,7 +821,7 @@ Pixel_from_PixelColor(const PixelColor *pp)
     pixel->black   = 0;
 #endif
 
-    return TypedData_Wrap_Struct(Class_Pixel, &rm_pixel_data_type, pixel);
+    return obj;
 }
 
 
