@@ -11,4 +11,11 @@ RSpec.describe Magick::Pixel, '#dup' do
     pixel2 = pixel.freeze.dup
     expect(pixel2.frozen?).to be(false)
   end
+
+  it 'does not copy into a frozen pixel' do
+    pixel = described_class.new(1, 2, 3).freeze
+
+    expect { pixel.__send__(:initialize_copy, described_class.new(4, 5, 6)) }.to raise_error(FrozenError)
+    expect(pixel.red).to eq(1)
+  end
 end

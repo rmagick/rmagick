@@ -864,6 +864,7 @@ Pixel_init_copy(VALUE self, VALUE orig)
 {
     Pixel *copy, *original;
 
+    rb_check_frozen(self);
     TypedData_Get_Struct(orig, Pixel, &rm_pixel_data_type, original);
     TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, copy);
 
@@ -888,6 +889,7 @@ Pixel_initialize(int argc, VALUE *argv, VALUE self)
 {
     Pixel *pixel;
 
+    rb_check_frozen(self);
     TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
 
 #if defined(IMAGEMAGICK_7)
@@ -993,6 +995,7 @@ Pixel_marshal_load(VALUE self, VALUE dpixel)
 {
     Pixel *pixel;
 
+    rb_check_frozen(self);
     TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
 
     Check_Type(dpixel, T_HASH);

@@ -15,6 +15,13 @@ RSpec.describe Magick::Pixel, '.new' do
     expect(described_class.new(0, 0, 0, nil).alpha).to eq(Magick::QuantumRange)
   end
 
+  it 'does not initialize a frozen pixel again' do
+    pixel = described_class.new(1, 2, 3).freeze
+
+    expect { pixel.__send__(:initialize, 4, 5, 6) }.to raise_error(FrozenError)
+    expect(pixel.red).to eq(1)
+  end
+
   it 'clamps an out-of-range value unless ImageMagick uses HDRI' do
     pixel = described_class.new(Magick::QuantumRange + 1, -1, 0)
 
