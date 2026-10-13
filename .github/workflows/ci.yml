@@ -125,7 +125,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby-version: ['4.0']
+        ruby-version: ['4.0', 'head']
         imagemagick-version: *imagemagick-versions
         os:
           - { target: windows-latest, arch: 'x64' }
