@@ -8461,8 +8461,7 @@ Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE row
 {
     Image *image;
     ExceptionInfo *exception;
-    long x, y;
-    unsigned long columns, rows;
+    long x, y, columns, rows;
     get_pixels_args_t args;
 #if defined(IMAGEMAGICK_7)
     const Quantum *pixels;
@@ -8473,12 +8472,13 @@ Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE row
     image = rm_check_readable(self);
     x       = NUM2LONG(x_arg);
     y       = NUM2LONG(y_arg);
-    columns = NUM2ULONG(cols_arg);
-    rows    = NUM2ULONG(rows_arg);
+    columns = NUM2LONG(cols_arg);
+    rows    = NUM2LONG(rows_arg);
 
-    if ((x+columns) > image->columns || (y+rows) > image->rows)
+    if (columns < 0 || rows < 0
+        || (unsigned long)x + columns > image->columns || (unsigned long)y + rows > image->rows)
     {
-        rb_raise(rb_eRangeError, "geometry (%lux%lu%+ld%+ld) exceeds image bounds",
+        rb_raise(rb_eRangeError, "geometry (%ldx%ld%+ld%+ld) exceeds image bounds",
                  columns, rows, x, y);
     }
 
@@ -8486,7 +8486,7 @@ Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE row
     // to change the pixels but I don't want to make "pixels" const.
     exception = AcquireExceptionInfo();
     CacheView *view = AcquireVirtualCacheView(image, exception);
-    DECLARE_GVL_CALL(call, GetCacheViewVirtualPixels, view, x, y, columns, rows, exception);
+    DECLARE_GVL_CALL(call, GetCacheViewVirtualPixels, view, x, y, (size_t)columns, (size_t)rows, exception);
     void *ret = call.cleanup(destroy_cache_view, view).release(exception).keep_thread().run<void *>();
     pixels = reinterpret_cast<decltype(pixels)>(ret);
     check_cache_view_exception(view, exception);
@@ -8503,7 +8503,7 @@ Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE row
     args.image = image;
     args.view = view;
     args.pixels = pixels;
-    args.size = (long)(columns * rows);
+    args.size = columns * rows;
     return rb_ensure(pixels_to_ary, (VALUE)&args, destroy_view_ensure, (VALUE)view);
 }
 
@@ -14916,8 +14916,7 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg,
     Pixel *pixel;
     VALUE new_pixel;
     long n, size;
-    long x, y;
-    unsigned long cols, rows;
+    long x, y, cols, rows;
     MagickBooleanType okay;
     ExceptionInfo *exception;
 #if defined(IMAGEMAGICK_7)
@@ -14930,15 +14929,16 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg,
 
     x = NUM2LONG(x_arg);
     y = NUM2LONG(y_arg);
-    cols = NUM2ULONG(cols_arg);
-    rows = NUM2ULONG(rows_arg);
-    if (x < 0 || y < 0 || x+cols > image->columns || y+rows > image->rows)
+    cols = NUM2LONG(cols_arg);
+    rows = NUM2LONG(rows_arg);
+    if (x < 0 || y < 0 || cols < 0 || rows < 0
+        || (unsigned long)x + cols > image->columns || (unsigned long)y + rows > image->rows)
     {
-        rb_raise(rb_eRangeError, "geometry (%lux%lu%+ld%+ld) exceeds image bounds",
+        rb_raise(rb_eRangeError, "geometry (%ldx%ld%+ld%+ld) exceeds image bounds",
                  cols, rows, x, y);
     }
 
-    size = (long)(cols * rows);
+    size = cols * rows;
     new_pixels = rb_Array(new_pixels);
     rm_check_ary_len(new_pixels, size);
 
@@ -14969,7 +14969,7 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg,
     // from the pixels argument.
     {
         CacheView *view = AcquireAuthenticCacheView(image, exception);
-        DECLARE_GVL_CALL(call, GetCacheViewAuthenticPixels, view, x, y, cols, rows, exception);
+        DECLARE_GVL_CALL(call, GetCacheViewAuthenticPixels, view, x, y, (size_t)cols, (size_t)rows, exception);
         void *ret = call.update(self).cleanup(destroy_cache_view, view).release(exception).run<void *>();
         pixels = reinterpret_cast<decltype(pixels)>(ret);
         check_cache_view_exception(view, exception);
