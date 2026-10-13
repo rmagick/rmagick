@@ -8409,11 +8409,7 @@ pixels_to_ary(VALUE arg)
     {
 #if defined(IMAGEMAGICK_7)
         PixelColor color;
-        color.red   = trunc(GetPixelRed(image, pixels));
-        color.green = trunc(GetPixelGreen(image, pixels));
-        color.blue  = trunc(GetPixelBlue(image, pixels));
-        color.alpha = trunc(GetPixelAlpha(image, pixels));
-        color.black = trunc(GetPixelBlack(image, pixels));
+        get_pixel_color(image, pixels, &color);
         rb_ary_store(pixel_ary, n, Pixel_from_PixelColor(&color));
 
         pixels += GetPixelChannels(image);
