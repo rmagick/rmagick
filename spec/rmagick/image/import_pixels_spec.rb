@@ -38,6 +38,14 @@ RSpec.describe Magick::Image, '#import_pixels' do
     expect { image.import_pixels(0, 0, image.columns, 1, 'RGB', pixels) }.to raise_error(ArgumentError)
   end
 
+  it 'converts the numeric elements of a pixel array' do
+    image = described_class.new(3, 1)
+    image.import_pixels(0, 0, 3, 1, 'R', [100, 100.0, Rational(100)])
+
+    expect(image.export_pixels(0, 0, 3, 1, 'R')).to eq([100, 100, 100])
+    expect { image.import_pixels(0, 0, 3, 1, 'R', [100, 'x', 100]) }.to raise_error(TypeError, 'type mismatch: String given')
+  end
+
   # Regression: cols * rows * map_length was computed in unsigned arithmetic.
   # A geometry that overflowed it wrapped npixels down to a small value, so an
   # undersized (even empty) pixel buffer passed the size check and

@@ -565,6 +565,10 @@ rescue_not_dbl(VALUE ignored ATTRIBUTE_UNUSED, VALUE raised_exc ATTRIBUTE_UNUSED
 int
 rm_check_num2dbl(VALUE obj)
 {
+    if (FIXNUM_P(obj) || RB_FLOAT_TYPE_P(obj))
+    {
+        return 1;
+    }
     return FIX2INT(rb_rescue(RESCUE_FUNC(check_num2dbl), obj, RESCUE_EXCEPTION_HANDLER_FUNC(rescue_not_dbl), (VALUE)0));
 }
 
