@@ -17,6 +17,15 @@ RSpec.describe Magick::Image, '#get_pixels' do
     expect { image.get_pixels(0,  0, image.columns, image.rows + 1) }.to raise_error(RangeError)
   end
 
+  it 'raises RangeError when the size is negative or too large' do
+    image = described_class.new(4, 4)
+
+    expect { image.get_pixels(1, 0, -1, 1) }.to raise_error(RangeError)
+    expect { image.get_pixels(0, 1, 1, -1) }.to raise_error(RangeError)
+    expect { image.get_pixels(1, 0, (2**64) - 1, 1) }.to raise_error(RangeError)
+    expect { image.get_pixels(0, 1, 1, (2**64) - 1) }.to raise_error(RangeError)
+  end
+
   it 'supports CMYK color' do
     image = described_class.read(File.join(FIXTURE_PATH, 'cmyk.jpg')).first
     pixel = image.get_pixels(0, 0, 1, 1).first
