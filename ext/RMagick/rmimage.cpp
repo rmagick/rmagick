@@ -56,6 +56,7 @@ static VALUE file_arg_rescue(VALUE, VALUE ATTRIBUTE_UNUSED) ATTRIBUTE_NORETURN;
 static void rm_image_free(void *ptr);
 static size_t rm_image_memsize(const void *ptr);
 static size_t pixel_buffer_count(size_t, size_t, size_t);
+static void color_to_image_pixel(ColorspaceType, Pixel *, VALUE);
 #if defined(IMAGEMAGICK_7)
 static void get_pixel_color(const Image *, const Quantum *, PixelColor *);
 #endif
@@ -11418,7 +11419,7 @@ Image_ping(VALUE klass, VALUE file_arg)
  *   Set the color
  *   @param x [Numeric] The x-coordinates of the pixel.
  *   @param y [Numeric] The y-coordinates of the pixel.
- *   @param color [Magick::Pixel, String] the color
+ *   @param color [Magick::Pixel, String] the color. A color name is converted to CMYK for a CMYK image.
  *   @return [Magick::Pixel] the old color at x, y.
  */
 VALUE
@@ -11454,9 +11455,6 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
         case 3:
             rm_check_frozen(self);
             set = True;
-            // Replace with new color? The arg can be either a color name or
-            // a Magick::Pixel.
-            Color_to_Pixel(&new_color, argv[2]);
         case 2:
             break;
         default:
@@ -11466,6 +11464,14 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
 
     x = NUM2LONG(argv[0]);
     y = NUM2LONG(argv[1]);
+
+    if (set)
+    {
+        // Replace with new color? The arg can be either a color name or
+        // a Magick::Pixel.
+        color_to_image_pixel(image->colorspace, &new_color, argv[2]);
+        image = rm_check_frozen(self);
+    }
 
     // Get the color of a pixel
     if (!set)
@@ -15671,26 +15677,26 @@ color_name_to_cmyk(Pixel *color, VALUE name)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(extent_call, SetImageExtent, image, 1, 1, exception);
-    extent_call.keep_thread().run<void>();
+    extent_call.destroy(image).release(exception).keep_thread().run<void>();
     rm_check_exception(exception, image, DestroyOnError);
     SetImageColorspace(image, parsed.colorspace, exception);
     rm_check_exception(exception, image, DestroyOnError);
     DECLARE_GVL_CALL(background_call, SetImageBackgroundColor, image, exception);
-    background_call.keep_thread().run<void>();
+    background_call.destroy(image).release(exception).keep_thread().run<void>();
     rm_check_exception(exception, image, DestroyOnError);
     DECLARE_GVL_CALL(transform_call, TransformImageColorspace, image, CMYKColorspace, exception);
-    transform_call.keep_thread().run<void>();
+    transform_call.destroy(image).release(exception).keep_thread().run<void>();
     rm_check_exception(exception, image, DestroyOnError);
     GetOneVirtualPixelInfo(image, UndefinedVirtualPixelMethod, 0, 0, &cmyk, exception);
 #else
     DECLARE_GVL_CALL(extent_call, SetImageExtent, image, 1, 1);
-    extent_call.keep_thread().run<void>();
+    extent_call.destroy(image).keep_thread().run<void>();
     rm_check_image_exception(image, DestroyOnError);
     DECLARE_GVL_CALL(background_call, SetImageBackgroundColor, image);
-    background_call.keep_thread().run<void>();
+    background_call.destroy(image).keep_thread().run<void>();
     rm_check_image_exception(image, DestroyOnError);
     DECLARE_GVL_CALL(transform_call, TransformImageColorspace, image, CMYKColorspace);
-    transform_call.keep_thread().run<void>();
+    transform_call.destroy(image).keep_thread().run<void>();
     rm_check_image_exception(image, DestroyOnError);
     exception = AcquireExceptionInfo();
     GetOneVirtualMagickPixel(image, 0, 0, &cmyk, exception);
@@ -15714,6 +15720,33 @@ color_name_to_cmyk(Pixel *color, VALUE name)
 
 
 /**
+ * Convert a Pixel or a color name to the channel values of an image.
+ *
+ * No Ruby usage (internal function)
+ *
+ * Notes:
+ *   - A Pixel is used as it is. A color name is converted to CMYK for a CMYK image.
+ *   - Converting a color name can release the GVL, so get the image again afterwards.
+ *
+ * @param colorspace the colorspace of the image
+ * @param color the Pixel to modify
+ * @param color_arg the Pixel or the color name
+ */
+static void
+color_to_image_pixel(ColorspaceType colorspace, Pixel *color, VALUE color_arg)
+{
+    if (CLASS_OF(color_arg) != Class_Pixel && colorspace == CMYKColorspace)
+    {
+        color_name_to_cmyk(color, color_arg);
+    }
+    else
+    {
+        Color_to_Pixel(color, color_arg);
+    }
+}
+
+
+/**
  * Return a color name for the color intensity specified by the Magick::Pixel argument.
  *
  * @param pixel_arg [Magick::Pixel, String] the pixel
@@ -15729,15 +15762,8 @@ Image_to_color(VALUE self, VALUE pixel_arg)
     char name[MaxTextExtent];
 
     image = rm_check_readable(self);
-
-    if (CLASS_OF(pixel_arg) != Class_Pixel && image->colorspace == CMYKColorspace)
-    {
-        color_name_to_cmyk(&color, pixel_arg);
-    }
-    else
-    {
-        Color_to_Pixel(&color, pixel_arg);
-    }
+    color_to_image_pixel(image->colorspace, &color, pixel_arg);
+    image = rm_check_readable(self);
 
     rm_init_magickpixel(image, &pixel);
     pixel.red   = color.red;
