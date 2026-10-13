@@ -15677,26 +15677,26 @@ color_name_to_cmyk(Pixel *color, VALUE name)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(extent_call, SetImageExtent, image, 1, 1, exception);
-    extent_call.keep_thread().run<void>();
+    extent_call.destroy(image).release(exception).keep_thread().run<void>();
     rm_check_exception(exception, image, DestroyOnError);
     SetImageColorspace(image, parsed.colorspace, exception);
     rm_check_exception(exception, image, DestroyOnError);
     DECLARE_GVL_CALL(background_call, SetImageBackgroundColor, image, exception);
-    background_call.keep_thread().run<void>();
+    background_call.destroy(image).release(exception).keep_thread().run<void>();
     rm_check_exception(exception, image, DestroyOnError);
     DECLARE_GVL_CALL(transform_call, TransformImageColorspace, image, CMYKColorspace, exception);
-    transform_call.keep_thread().run<void>();
+    transform_call.destroy(image).release(exception).keep_thread().run<void>();
     rm_check_exception(exception, image, DestroyOnError);
     GetOneVirtualPixelInfo(image, UndefinedVirtualPixelMethod, 0, 0, &cmyk, exception);
 #else
     DECLARE_GVL_CALL(extent_call, SetImageExtent, image, 1, 1);
-    extent_call.keep_thread().run<void>();
+    extent_call.destroy(image).keep_thread().run<void>();
     rm_check_image_exception(image, DestroyOnError);
     DECLARE_GVL_CALL(background_call, SetImageBackgroundColor, image);
-    background_call.keep_thread().run<void>();
+    background_call.destroy(image).keep_thread().run<void>();
     rm_check_image_exception(image, DestroyOnError);
     DECLARE_GVL_CALL(transform_call, TransformImageColorspace, image, CMYKColorspace);
-    transform_call.keep_thread().run<void>();
+    transform_call.destroy(image).keep_thread().run<void>();
     rm_check_image_exception(image, DestroyOnError);
     exception = AcquireExceptionInfo();
     GetOneVirtualMagickPixel(image, 0, 0, &cmyk, exception);
