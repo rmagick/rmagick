@@ -48,7 +48,7 @@ jobs:
         os:
           - ubuntu-latest
           - macos-latest
-        ruby-version: ['3.2', '3.3', '3.4', '4.0']
+        ruby-version: ['3.2', '3.3', '3.4', '4.0', 'head']
         imagemagick-version: &imagemagick-versions
           - &imagemagick-6 { full: 6.9.13-58, major-minor: '6.9' }
           - { full: 7.1.2-33, major-minor: '7.1' }
@@ -125,7 +125,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby-version: ['4.0']
+        ruby-version: ['4.0', 'head']
         imagemagick-version: *imagemagick-versions
         os:
           - { target: windows-latest, arch: 'x64' }
