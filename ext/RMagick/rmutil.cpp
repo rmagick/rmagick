@@ -646,13 +646,22 @@ rm_app2quantum(VALUE obj)
     VALUE v = obj;
     MagickRealType value;
 
+    if (FIXNUM_P(obj))
+    {
+        long n = FIX2LONG(obj);
+        if (n >= 0 && (unsigned long) n <= QuantumRange)
+        {
+            return (Quantum) n;
+        }
+    }
+
     if (TYPE(obj) == T_FLOAT)
     {
         v = rb_Integer(obj);
     }
     v = rb_to_int(v);
 
-    if (RTEST(rb_funcall(v, rb_intern("negative?"), 0)))
+    if (FIXNUM_P(v) ? FIX2LONG(v) < 0 : RBIGNUM_NEGATIVE_P(v))
     {
 #if MAGICKCORE_QUANTUM_DEPTH == 64
         value = (MagickRealType) NUM2LL(v);
