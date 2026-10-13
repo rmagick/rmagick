@@ -534,7 +534,7 @@ Pixel_case_eq(VALUE self, VALUE other)
 VALUE
 Pixel_eql_q(VALUE self, VALUE other)
 {
-    return NUM2INT(Pixel_spaceship(self, other)) == 0 ? Qtrue : Qfalse;
+    return Pixel_spaceship(self, other) == INT2FIX(0) ? Qtrue : Qfalse;
 }
 
 
@@ -1013,6 +1013,34 @@ Pixel_marshal_load(VALUE self, VALUE dpixel)
 
 
 /**
+ * Compare two channel values as Float#<=> does.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param a the first value
+ * @param b the second value
+ * @return -1, 0 or 1, or nil when either is NaN
+ */
+static VALUE
+compare_quantum(Quantum a, Quantum b)
+{
+    if (a < b)
+    {
+        return INT2FIX(-1);
+    }
+    if (a > b)
+    {
+        return INT2FIX(1);
+    }
+    if (a == b)
+    {
+        return INT2FIX(0);
+    }
+    return Qnil;
+}
+
+
+/**
  * Support Comparable mixin.
  *
  * @param other [Object] the other Pixel
@@ -1022,6 +1050,8 @@ VALUE
 Pixel_spaceship(VALUE self, VALUE other)
 {
     Pixel *self_pixel, *other_pixel;
+    const VALUE equal = INT2FIX(0);
+    VALUE result;
 
     if (CLASS_OF(self) != CLASS_OF(other)) {
         return Qnil;
@@ -1030,32 +1060,26 @@ Pixel_spaceship(VALUE self, VALUE other)
     TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, self_pixel);
     TypedData_Get_Struct(other, Pixel, &rm_pixel_data_type, other_pixel);
 
-    if (self_pixel->red != other_pixel->red)
+    result = compare_quantum(self_pixel->red, other_pixel->red);
+    if (result != equal)
     {
-        return INT2NUM((self_pixel->red - other_pixel->red)/abs((int)(self_pixel->red - other_pixel->red)));
+        return result;
     }
-    else if(self_pixel->green != other_pixel->green)
+    result = compare_quantum(self_pixel->green, other_pixel->green);
+    if (result != equal)
     {
-        return INT2NUM((self_pixel->green - other_pixel->green)/abs((int)(self_pixel->green - other_pixel->green)));
+        return result;
     }
-    else if(self_pixel->blue != other_pixel->blue)
+    result = compare_quantum(self_pixel->blue, other_pixel->blue);
+    if (result != equal)
     {
-        return INT2NUM((self_pixel->blue - other_pixel->blue)/abs((int)(self_pixel->blue - other_pixel->blue)));
+        return result;
     }
 #if defined(IMAGEMAGICK_7)
-    else if(self_pixel->alpha != other_pixel->alpha)
-    {
-        return INT2NUM((self_pixel->alpha - other_pixel->alpha)/abs((int)(self_pixel->alpha - other_pixel->alpha)));
-    }
+    return compare_quantum(self_pixel->alpha, other_pixel->alpha);
 #else
-    else if(self_pixel->opacity != other_pixel->opacity)
-    {
-        return INT2NUM(((QuantumRange - self_pixel->opacity) - (QuantumRange - other_pixel->opacity))/abs((int)((QuantumRange - self_pixel->opacity) - (QuantumRange - other_pixel->opacity))));
-    }
+    return compare_quantum(other_pixel->opacity, self_pixel->opacity);
 #endif
-
-    // Values are equal.
-    return INT2NUM(0);
 }
 
 
