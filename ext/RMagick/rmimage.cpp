@@ -4753,7 +4753,7 @@ Image_constitute(VALUE klass ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
         }
         else
         {
-            pixels.i[x] = NUM2QUANTUM(pixel);
+            pixels.i[x] = APP2QUANTUM(pixel);
         }
     }
 

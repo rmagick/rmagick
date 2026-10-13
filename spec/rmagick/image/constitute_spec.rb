@@ -32,6 +32,17 @@ RSpec.describe Magick::Image, '#constitute' do
     expect(result_pixels).to all eq(65_535)
   end
 
+  it 'clamps an out-of-range integer pixel value unless ImageMagick uses HDRI' do
+    image = described_class.constitute(2, 1, 'R', [Magick::QuantumRange + 1, -1])
+    red = image.export_pixels(0, 0, 2, 1, 'R')
+
+    if Magick::Magick_features.include?('HDRI')
+      expect(red).to eq([Magick::QuantumRange + 1, -1])
+    else
+      expect(red).to eq([Magick::QuantumRange, 0])
+    end
+  end
+
   it 'raises an error when invalid RGBA pixel values are given' do
     image = described_class.read(IMAGES_DIR + '/Button_0.gif').first
     pixels = ['x'] * (4 * image.columns * image.rows)
