@@ -53,6 +53,7 @@ RSpec.describe Magick::Pixel, '#<=>' do
     if Magick::Magick_features.include?('HDRI')
       expect(pixel <=> other).to be(nil)
       expect(pixel == other).to be(false)
+      expect(pixel.eql?(other)).to be(false)
     else
       expect(pixel <=> other).to eq(-1)
     end

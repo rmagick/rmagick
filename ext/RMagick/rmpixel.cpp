@@ -534,7 +534,7 @@ Pixel_case_eq(VALUE self, VALUE other)
 VALUE
 Pixel_eql_q(VALUE self, VALUE other)
 {
-    return NUM2INT(Pixel_spaceship(self, other)) == 0 ? Qtrue : Qfalse;
+    return Pixel_spaceship(self, other) == INT2FIX(0) ? Qtrue : Qfalse;
 }
 
 
