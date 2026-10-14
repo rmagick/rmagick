@@ -60,3 +60,21 @@
    ...
    fun:lt_dlopenadvise
 }
+
+# Thread#join returns before the native thread has finished exiting. On its way
+# out, the thread runs libgomp's thread destructor, which stops the OpenMP
+# workers and then frees the thread pool. If another thread forks in that
+# window, the child has no such thread, and memcheck reports the pool as
+# definitely lost in the child. It is a copy of the parent's memory, and
+# libgomp has no fork handler that could free it. The fiber scheduler specs hit
+# this now and then when a spec runs gaussian_blur on its own thread and the
+# next spec forks.
+{
+   libgomp: thread pool of an exiting thread, copied into the child of a fork
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   obj:*/libgomp.so*
+   obj:*/libgomp.so*
+   fun:GOMP_parallel
+}
