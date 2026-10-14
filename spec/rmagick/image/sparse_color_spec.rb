@@ -43,4 +43,15 @@ RSpec.describe Magick::Image, '#sparse_color' do
 
     expect(result.get_pixels(0, 0, 2, 1).map(&:black)).to eq([Magick::QuantumRange, Magick::QuantumRange])
   end
+
+  it 'converts a color name to CMYK for a CMYK image' do
+    image = described_class.new(2, 1)
+    image.pixel_color(0, 0, 'black')
+    image.colorspace = Magick::CMYKColorspace
+
+    result = image.sparse_color(Magick::VoronoiColorInterpolate, 0, 0, 'red')
+
+    expect(result.get_pixels(0, 0, 2, 1).map(&:cyan)).to eq([0, 0])
+    expect(result.get_pixels(0, 0, 2, 1).map(&:magenta)).to eq([Magick::QuantumRange, Magick::QuantumRange])
+  end
 end

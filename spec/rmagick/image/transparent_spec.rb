@@ -36,4 +36,14 @@ RSpec.describe Magick::Image, '#transparent' do
 
     expect(alphas).to eq([Magick::TransparentAlpha, Magick::OpaqueAlpha])
   end
+
+  it 'converts a color name to CMYK for a CMYK image' do
+    image = described_class.new(2, 1)
+    image.pixel_color(0, 0, 'black')
+    image.colorspace = Magick::CMYKColorspace
+
+    alphas = image.transparent('black').get_pixels(0, 0, 2, 1).map(&:alpha)
+
+    expect(alphas).to eq([Magick::TransparentAlpha, Magick::OpaqueAlpha])
+  end
 end

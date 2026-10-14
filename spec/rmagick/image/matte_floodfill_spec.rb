@@ -44,4 +44,15 @@ RSpec.describe Magick::Image, '#matte_floodfill' do
 
     expect(alphas).to eq([Magick::OpaqueAlpha, Magick::TransparentAlpha])
   end
+
+  it 'converts a color name to CMYK for a CMYK image' do
+    image = described_class.new(2, 1)
+    image.pixel_color(1, 0, 'black')
+    image.colorspace = Magick::CMYKColorspace
+
+    # ImageMagick 6 reads past the row when it fills a CMYK image rightward.
+    alphas = image.matte_flood_fill('black', 1, 0, Magick::FloodfillMethod, alpha: Magick::TransparentAlpha).get_pixels(0, 0, 2, 1).map(&:alpha)
+
+    expect(alphas).to eq([Magick::OpaqueAlpha, Magick::TransparentAlpha])
+  end
 end

@@ -57,6 +57,7 @@ static void rm_image_free(void *ptr);
 static size_t rm_image_memsize(const void *ptr);
 static size_t pixel_buffer_count(size_t, size_t, size_t);
 static void color_to_image_pixel(ColorspaceType, Pixel *, VALUE);
+static Image *color_to_magickpixel(VALUE, MagickPixel *, VALUE);
 #if defined(IMAGEMAGICK_7)
 static void get_pixel_color(const Image *, const Quantum *, PixelColor *);
 #else
@@ -3394,8 +3395,14 @@ Image_color_flood_fill(VALUE self, VALUE target_color, VALUE fill_color,
 
     // The target and fill args can be either a color name or
     // a Magick::Pixel.
-    Color_to_Pixel(&target, target_color);
+    color_to_image_pixel(image->colorspace, &target, target_color);
+#if defined(IMAGEMAGICK_7)
+    image = color_to_magickpixel(self, &fill, fill_color);
+    rm_set_pixelinfo_alpha(&fill, fill.alpha);
+#else
     Color_to_PixelColor(&fill, fill_color);
+    image = rm_check_readable(self);
+#endif
 
     x = NUM2LONG(xv);
     y = NUM2LONG(yv);
@@ -10205,7 +10212,8 @@ Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
 
     alpha = get_named_alpha_value(kwargs);
 
-    Color_to_Pixel(&target, color_obj);
+    color_to_image_pixel(image->colorspace, &target, color_obj);
+    image = rm_check_readable(self);
     VALUE_TO_ENUM(method_obj, method, PaintMethod);
     if (!(method == FloodfillMethod || method == FillToBorderMethod))
     {
@@ -11182,8 +11190,8 @@ Image_opaque(VALUE self, VALUE target, VALUE fill)
     image = rm_check_readable(self);
 
     // Allow color name or Pixel
-    Color_to_MagickPixel(image, &target_pp, target);
-    Color_to_MagickPixel(image, &fill_pp, fill);
+    color_to_magickpixel(self, &target_pp, target);
+    image = color_to_magickpixel(self, &fill_pp, fill);
 
     new_image = rm_clone_image(image);
 
@@ -11268,8 +11276,8 @@ Image_opaque_channel(int argc, VALUE *argv, VALUE self)
             invert = (MagickBooleanType)RTEST(argv[2]);
         case 2:
             // Allow color name or Pixel
-            Color_to_MagickPixel(image, &fill_pp, argv[1]);
-            Color_to_MagickPixel(image, &target_pp, argv[0]);
+            color_to_magickpixel(self, &fill_pp, argv[1]);
+            image = color_to_magickpixel(self, &target_pp, argv[0]);
             break;
         default:
             rb_raise(rb_eArgError, "wrong number of arguments (got %d, expected 2 or more)", argc);
@@ -11481,7 +11489,7 @@ Image_paint_transparent(int argc, VALUE *argv, VALUE self)
 
     rb_scan_args(argc, argv, "12:", &color_obj, &invert_obj, &fuzz_obj, &kwargs);
 
-    Color_to_MagickPixel(image, &color, color_obj);
+    image = color_to_magickpixel(self, &color, color_obj);
     invert = (invert_obj != Qnil) ? (MagickBooleanType)RTEST(invert_obj) : MagickFalse;
     fuzz = (fuzz_obj != Qnil) ? NUM2DBL(fuzz_obj) : image->fuzz;
     if (RTEST(kwargs))
@@ -14717,7 +14725,7 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
             xfree((void *) args);
             rb_raise(rb_eTypeError, "type mismatch: %s and %s given", rb_class2name(CLASS_OF(elem1)), rb_class2name(CLASS_OF(elem2)));
         }
-        Color_to_MagickPixel(NULL, &pp, argv[n++]);
+        image = color_to_magickpixel(self, &pp, argv[n++]);
         if (channels & RedChannel)
         {
             args[x++] = pp.red / QuantumRange;
@@ -15277,7 +15285,8 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj,
 
     image = rm_check_readable(self);
 
-    Color_to_Pixel(&color, color_obj);
+    color_to_image_pixel(image->colorspace, &color, color_obj);
+    image = rm_check_readable(self);
     texture = rm_cur_image(texture_obj);
     texture_image = rm_check_readable(texture);
 
@@ -15807,23 +15816,21 @@ Image_to_blob(VALUE self)
 
 
 /**
- * Convert a color name to CMYK in the same way as converting an image.
+ * Convert a parsed color to another colorspace in the same way as converting an
+ * image.
  *
  * No Ruby usage (internal function)
  *
- * @param color the Pixel to modify
- * @param name the color name
+ * @param parsed the parsed color
+ * @param colorspace the colorspace to convert to
+ * @param converted the MagickPixel to store the converted color in
  */
 static void
-color_name_to_cmyk(Pixel *color, VALUE name)
+transform_color(PixelColor *parsed, ColorspaceType colorspace, MagickPixel *converted)
 {
     Info *info;
     Image *image;
-    PixelColor parsed;
-    MagickPixel cmyk;
     ExceptionInfo *exception;
-
-    Color_to_PixelColor(&parsed, name);
 
     info = CloneImageInfo(NULL);
     image = rm_acquire_image(info);
@@ -15834,49 +15841,87 @@ color_name_to_cmyk(Pixel *color, VALUE name)
         rb_raise(rb_eNoMemError, "not enough memory to continue.");
     }
 
-    image->background_color = parsed;
+    image->background_color = *parsed;
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    DECLARE_GVL_CALL(extent_call, SetImageExtent, image, 1, 1, exception);
-    extent_call.destroy(image).release(exception).keep_thread().run<void>();
+    SetImageExtent(image, 1, 1, exception);
     rm_check_exception(exception, image, DestroyOnError);
-    SetImageColorspace(image, parsed.colorspace, exception);
+    SetImageColorspace(image, parsed->colorspace, exception);
     rm_check_exception(exception, image, DestroyOnError);
-    DECLARE_GVL_CALL(background_call, SetImageBackgroundColor, image, exception);
-    background_call.destroy(image).release(exception).keep_thread().run<void>();
+    SetImageBackgroundColor(image, exception);
     rm_check_exception(exception, image, DestroyOnError);
-    DECLARE_GVL_CALL(transform_call, TransformImageColorspace, image, CMYKColorspace, exception);
-    transform_call.destroy(image).release(exception).keep_thread().run<void>();
+    TransformImageColorspace(image, colorspace, exception);
     rm_check_exception(exception, image, DestroyOnError);
-    GetOneVirtualPixelInfo(image, UndefinedVirtualPixelMethod, 0, 0, &cmyk, exception);
+    GetOneVirtualPixelInfo(image, UndefinedVirtualPixelMethod, 0, 0, converted, exception);
 #else
-    DECLARE_GVL_CALL(extent_call, SetImageExtent, image, 1, 1);
-    extent_call.destroy(image).keep_thread().run<void>();
+    SetImageExtent(image, 1, 1);
     rm_check_image_exception(image, DestroyOnError);
-    DECLARE_GVL_CALL(background_call, SetImageBackgroundColor, image);
-    background_call.destroy(image).keep_thread().run<void>();
+    SetImageBackgroundColor(image);
     rm_check_image_exception(image, DestroyOnError);
-    DECLARE_GVL_CALL(transform_call, TransformImageColorspace, image, CMYKColorspace);
-    transform_call.destroy(image).keep_thread().run<void>();
+    TransformImageColorspace(image, colorspace);
     rm_check_image_exception(image, DestroyOnError);
     exception = AcquireExceptionInfo();
-    GetOneVirtualMagickPixel(image, 0, 0, &cmyk, exception);
+    GetOneVirtualMagickPixel(image, 0, 0, converted, exception);
 #endif
     rm_check_exception(exception, image, DestroyOnError);
 
     DestroyExceptionInfo(exception);
     DestroyImage(image);
+}
 
-    color->red   = cmyk.red;
-    color->green = cmyk.green;
-    color->blue  = cmyk.blue;
+
+/**
+ * Convert a color name to CMYK for a CMYK image, and a CMYK color name to sRGB
+ * for other images.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param color the Pixel to modify
+ * @param name the color name
+ * @param colorspace the colorspace of the image
+ */
+static void
+color_name_to_colorspace(Pixel *color, VALUE name, ColorspaceType colorspace)
+{
+    PixelColor parsed;
+    MagickPixel converted;
+
+    Color_to_PixelColor(&parsed, name);
+
 #if defined(IMAGEMAGICK_7)
+    if ((parsed.colorspace == CMYKColorspace) != (colorspace == CMYKColorspace))
+    {
+        transform_color(&parsed, colorspace == CMYKColorspace ? CMYKColorspace : sRGBColorspace, &converted);
+        parsed.red   = converted.red;
+        parsed.green = converted.green;
+        parsed.blue  = converted.blue;
+        parsed.black = converted.black;
+    }
+    color->red   = parsed.red;
+    color->green = parsed.green;
+    color->blue  = parsed.blue;
     color->alpha = parsed.alpha;
-    color->black = cmyk.black;
+    color->black = parsed.black;
 #else
+    color->red     = parsed.red;
+    color->green   = parsed.green;
+    color->blue    = parsed.blue;
     color->opacity = parsed.opacity;
-    color->black   = cmyk.index;
+    color->black   = 0;
+    if (colorspace == CMYKColorspace)
+    {
+        name = rb_str_to_str(name);
+        rm_set_magickpixel(&converted, StringValueCStr(name));
+        if (converted.colorspace != CMYKColorspace)
+        {
+            transform_color(&parsed, CMYKColorspace, &converted);
+        }
+        color->red   = converted.red;
+        color->green = converted.green;
+        color->blue  = converted.blue;
+        color->black = converted.index;
+    }
 #endif
 }
 
@@ -15887,8 +15932,9 @@ color_name_to_cmyk(Pixel *color, VALUE name)
  * No Ruby usage (internal function)
  *
  * Notes:
- *   - A Pixel is used as it is. A color name is converted to CMYK for a CMYK image.
- *   - Converting a color name can release the GVL, so get the image again afterwards.
+ *   - A Pixel is used as it is. A color name is converted to CMYK for a CMYK
+ *     image, and a CMYK color name to sRGB for other images.
+ *   - Converting a color name calls its to_str, so get the image again afterwards.
  *
  * @param colorspace the colorspace of the image
  * @param color the Pixel to modify
@@ -15897,14 +15943,65 @@ color_name_to_cmyk(Pixel *color, VALUE name)
 static void
 color_to_image_pixel(ColorspaceType colorspace, Pixel *color, VALUE color_arg)
 {
-    if (CLASS_OF(color_arg) != Class_Pixel && colorspace == CMYKColorspace)
+    if (CLASS_OF(color_arg) != Class_Pixel)
     {
-        color_name_to_cmyk(color, color_arg);
+        color_name_to_colorspace(color, color_arg, colorspace);
     }
     else
     {
         Color_to_Pixel(color, color_arg);
     }
+}
+
+
+/**
+ * Set a MagickPixel for the image to the channel values of a Pixel.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param image the image
+ * @param mpp the MagickPixel to set
+ * @param color the Pixel
+ */
+static void
+pixel_to_magickpixel(Image *image, MagickPixel *mpp, const Pixel *color)
+{
+    rm_init_magickpixel(image, mpp);
+    mpp->red   = color->red;
+    mpp->green = color->green;
+    mpp->blue  = color->blue;
+#if defined(IMAGEMAGICK_7)
+    mpp->black = color->black;
+    mpp->alpha = color->alpha;
+#else
+    mpp->index   = color->black;
+    mpp->opacity = color->opacity;
+#endif
+}
+
+
+/**
+ * Convert a Pixel or a color name to a MagickPixel for the image of an Image
+ * object, as color_to_image_pixel does.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param self the Image object
+ * @param mpp the MagickPixel to set
+ * @param color_arg the Pixel or the color name
+ * @return the image, got again after converting the color
+ */
+static Image *
+color_to_magickpixel(VALUE self, MagickPixel *mpp, VALUE color_arg)
+{
+    Image *image;
+    Pixel color;
+
+    image = rm_check_readable(self);
+    color_to_image_pixel(image->colorspace, &color, color_arg);
+    image = rm_check_readable(self);
+    pixel_to_magickpixel(image, mpp, &color);
+    return image;
 }
 
 
@@ -15927,17 +16024,7 @@ Image_to_color(VALUE self, VALUE pixel_arg)
     color_to_image_pixel(image->colorspace, &color, pixel_arg);
     image = rm_check_readable(self);
 
-    rm_init_magickpixel(image, &pixel);
-    pixel.red   = color.red;
-    pixel.green = color.green;
-    pixel.blue  = color.blue;
-#if defined(IMAGEMAGICK_7)
-    pixel.black = color.black;
-    pixel.alpha = color.alpha;
-#else
-    pixel.index   = color.black;
-    pixel.opacity = color.opacity;
-#endif
+    pixel_to_magickpixel(image, &pixel, &color);
 
     exception = AcquireExceptionInfo();
 
@@ -16032,7 +16119,7 @@ Image_transparent(int argc, VALUE *argv, VALUE self)
     image = rm_check_readable(self);
 
     rb_scan_args(argc, argv, "1:", &color_obj, &kwargs);
-    Color_to_MagickPixel(image, &color, color_obj);
+    image = color_to_magickpixel(self, &color, color_obj);
     if (RTEST(kwargs))
     {
         alpha = get_named_alpha_value(kwargs);
