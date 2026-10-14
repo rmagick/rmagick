@@ -3395,8 +3395,14 @@ Image_color_flood_fill(VALUE self, VALUE target_color, VALUE fill_color,
 
     // The target and fill args can be either a color name or
     // a Magick::Pixel.
-    Color_to_Pixel(&target, target_color);
+    color_to_image_pixel(image->colorspace, &target, target_color);
+#if defined(IMAGEMAGICK_7)
+    image = color_to_magickpixel(self, &fill, fill_color);
+    rm_set_pixelinfo_alpha(&fill, fill.alpha);
+#else
     Color_to_PixelColor(&fill, fill_color);
+    image = rm_check_readable(self);
+#endif
 
     x = NUM2LONG(xv);
     y = NUM2LONG(yv);
@@ -10206,7 +10212,8 @@ Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
 
     alpha = get_named_alpha_value(kwargs);
 
-    Color_to_Pixel(&target, color_obj);
+    color_to_image_pixel(image->colorspace, &target, color_obj);
+    image = rm_check_readable(self);
     VALUE_TO_ENUM(method_obj, method, PaintMethod);
     if (!(method == FloodfillMethod || method == FillToBorderMethod))
     {
@@ -15278,7 +15285,8 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj,
 
     image = rm_check_readable(self);
 
-    Color_to_Pixel(&color, color_obj);
+    color_to_image_pixel(image->colorspace, &color, color_obj);
+    image = rm_check_readable(self);
     texture = rm_cur_image(texture_obj);
     texture_image = rm_check_readable(texture);
 
