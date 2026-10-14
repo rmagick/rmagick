@@ -31,4 +31,17 @@ RSpec.describe Magick::Image, '#matte_floodfill' do
     color = result.pixel_color(0, 0)
     expect(color.alpha).to eq(Magick::TransparentAlpha)
   end
+
+  it 'fills only the pixels with the black of a CMYK image' do
+    image = described_class.new(2, 1)
+    image.colorspace = Magick::CMYKColorspace
+    black = Magick::Pixel.new(0, 0, 0)
+    black.black = Magick::QuantumRange
+    image.pixel_color(1, 0, black)
+
+    # ImageMagick 6 reads past the row when it fills a CMYK image rightward.
+    alphas = image.matte_floodfill(1, 0).get_pixels(0, 0, 2, 1).map(&:alpha)
+
+    expect(alphas).to eq([Magick::OpaqueAlpha, Magick::TransparentAlpha])
+  end
 end
