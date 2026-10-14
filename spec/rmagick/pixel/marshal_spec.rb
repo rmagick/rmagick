@@ -25,6 +25,25 @@ RSpec.describe Magick::Pixel, '#marshal' do
     expect(Marshal.load(Marshal.dump(pixel)).red).to eq(pixel.red)
   end
 
+  it 'keeps black' do
+    pixel = described_class.new(1, 2, 3)
+    pixel.black = 1000
+
+    loaded = Marshal.load(Marshal.dump(pixel))
+
+    expect(loaded.black).to eq(1000)
+    expect(loaded).to eq(pixel)
+  end
+
+  it 'loads a dump without black as 0' do
+    dump = described_class.new(1, 2, 3).marshal_dump.except(:black)
+    pixel = described_class.new
+    pixel.black = 1000
+
+    expect(pixel.marshal_load(dump).black).to eq(0)
+    expect(pixel.marshal_load(Hash.new(123).merge!(dump)).black).to eq(0)
+  end
+
   it 'raises FrozenError for a frozen pixel' do
     pixel = described_class.new(1, 2, 3).freeze
 
