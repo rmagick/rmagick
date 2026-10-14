@@ -14674,7 +14674,11 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
         }
         if (channels & IndexChannel)
         {
+#if defined(IMAGEMAGICK_7)
+            args[x++] = pp.black / QuantumRange;
+#else
             args[x++] = pp.index / QuantumRange;
+#endif
         }
         if (channels & OpacityChannel)
         {

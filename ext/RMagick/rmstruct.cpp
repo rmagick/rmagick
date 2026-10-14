@@ -309,19 +309,21 @@ Export_ColorInfo(ColorInfo *ci, VALUE st)
 void
 Color_to_MagickPixel(Image *image, MagickPixel *mpp, VALUE color)
 {
-    PixelColor pp;
+    Pixel pixel;
 
     // image can be NULL
     rm_init_magickpixel(image, mpp);
 
-    Color_to_PixelColor(&pp, color);
-    mpp->red = (MagickRealType) pp.red;
-    mpp->green = (MagickRealType) pp.green;
-    mpp->blue = (MagickRealType) pp.blue;
+    Color_to_Pixel(&pixel, color);
+    mpp->red = (MagickRealType) pixel.red;
+    mpp->green = (MagickRealType) pixel.green;
+    mpp->blue = (MagickRealType) pixel.blue;
 #if defined(IMAGEMAGICK_7)
-    mpp->alpha = (MagickRealType) pp.alpha;
+    mpp->alpha = (MagickRealType) pixel.alpha;
+    mpp->black = (MagickRealType) pixel.black;
 #else
-    mpp->opacity = (MagickRealType) pp.opacity;
+    mpp->opacity = (MagickRealType) pixel.opacity;
+    mpp->index = (MagickRealType) pixel.black;
 #endif
 }
 

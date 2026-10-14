@@ -18,4 +18,13 @@ RSpec.describe Magick::Image, '#level_colors' do
     expect { image.level_colors([]) }.to raise_error(TypeError)
     expect { image.level_colors('xxx') }.to raise_error(ArgumentError)
   end
+
+  it 'uses black of a CMYK color' do
+    image = described_class.new(1, 1)
+    image.colorspace = Magick::CMYKColorspace
+    black_point = Magick::Pixel.new(0, 0, 0)
+    black_point.black = 30_000
+
+    expect(image.level_colors(black_point).pixel_color(0, 0).black).to eq(30_000)
+  end
 end

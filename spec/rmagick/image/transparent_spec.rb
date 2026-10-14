@@ -24,4 +24,16 @@ RSpec.describe Magick::Image, '#transparent' do
     alpha = image.transparent('white', alpha: Magick::QuantumRange + 1).pixel_color(0, 0).alpha
     expect(alpha).to eq(Magick::Magick_features.include?('HDRI') ? Magick::QuantumRange + 1 : Magick::QuantumRange)
   end
+
+  it 'matches the black of a CMYK color' do
+    image = described_class.new(2, 1)
+    image.colorspace = Magick::CMYKColorspace
+    black = Magick::Pixel.new(0, 0, 0)
+    black.black = Magick::QuantumRange
+    image.pixel_color(0, 0, black)
+
+    alphas = image.transparent(black).get_pixels(0, 0, 2, 1).map(&:alpha)
+
+    expect(alphas).to eq([Magick::TransparentAlpha, Magick::OpaqueAlpha])
+  end
 end
