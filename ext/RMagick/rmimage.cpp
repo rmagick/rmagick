@@ -3379,7 +3379,7 @@ Image_color_flood_fill(VALUE self, VALUE target_color, VALUE fill_color,
                        VALUE xv, VALUE yv, VALUE method)
 {
     Image *image, *new_image;
-    PixelColor target;
+    Pixel target;
     DrawInfo *draw_info;
     PixelColor fill;
     long x, y;
@@ -3394,7 +3394,7 @@ Image_color_flood_fill(VALUE self, VALUE target_color, VALUE fill_color,
 
     // The target and fill args can be either a color name or
     // a Magick::Pixel.
-    Color_to_PixelColor(&target, target_color);
+    Color_to_Pixel(&target, target_color);
     Color_to_PixelColor(&fill, fill_color);
 
     x = NUM2LONG(xv);
@@ -3428,6 +3428,9 @@ Image_color_flood_fill(VALUE self, VALUE target_color, VALUE fill_color,
         target_mpp.red   = (MagickRealType) image->border_color.red;
         target_mpp.green = (MagickRealType) image->border_color.green;
         target_mpp.blue  = (MagickRealType) image->border_color.blue;
+#if defined(IMAGEMAGICK_7)
+        target_mpp.black = (MagickRealType) image->border_color.black;
+#endif
     }
     else
     {
@@ -3435,6 +3438,11 @@ Image_color_flood_fill(VALUE self, VALUE target_color, VALUE fill_color,
         target_mpp.red   = (MagickRealType) target.red;
         target_mpp.green = (MagickRealType) target.green;
         target_mpp.blue  = (MagickRealType) target.blue;
+#if defined(IMAGEMAGICK_7)
+        target_mpp.black = (MagickRealType) target.black;
+#else
+        target_mpp.index = (MagickRealType) target.black;
+#endif
     }
 
 #if defined(IMAGEMAGICK_7)
@@ -10133,7 +10141,7 @@ VALUE
 Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
-    PixelColor target;
+    Pixel target;
     Quantum alpha;
     long x, y;
     PaintMethod method;
@@ -10151,7 +10159,7 @@ Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
 
     alpha = get_named_alpha_value(kwargs);
 
-    Color_to_PixelColor(&target, color_obj);
+    Color_to_Pixel(&target, color_obj);
     VALUE_TO_ENUM(method_obj, method, PaintMethod);
     if (!(method == FloodfillMethod || method == FillToBorderMethod))
     {
@@ -10181,6 +10189,7 @@ Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
     draw_info->fill.opacity = QuantumRange - alpha;
 #endif
 
+    rm_init_magickpixel(new_image, &target_mpp);
     if (method == FillToBorderMethod)
     {
         invert = MagickTrue;
@@ -10189,6 +10198,7 @@ Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
         target_mpp.blue  = (MagickRealType) image->border_color.blue;
 #if defined(IMAGEMAGICK_7)
         rm_set_pixelinfo_alpha(&target_mpp, (MagickRealType) image->border_color.alpha);
+        target_mpp.black = (MagickRealType) image->border_color.black;
 #else
         target_mpp.opacity = (MagickRealType) image->border_color.opacity;
 #endif
@@ -10201,8 +10211,10 @@ Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
         target_mpp.blue  = (MagickRealType) target.blue;
 #if defined(IMAGEMAGICK_7)
         rm_set_pixelinfo_alpha(&target_mpp, (MagickRealType) target.alpha);
+        target_mpp.black = (MagickRealType) target.black;
 #else
         target_mpp.opacity = (MagickRealType) target.opacity;
+        target_mpp.index = (MagickRealType) target.black;
 #endif
     }
 
@@ -14674,7 +14686,11 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
         }
         if (channels & IndexChannel)
         {
+#if defined(IMAGEMAGICK_7)
+            args[x++] = pp.black / QuantumRange;
+#else
             args[x++] = pp.index / QuantumRange;
+#endif
         }
         if (channels & OpacityChannel)
         {
@@ -15202,7 +15218,7 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj,
 {
     Image *image, *new_image;
     Image *texture_image, *pattern;
-    PixelColor color;
+    Pixel color;
     VALUE texture;
     DrawInfo *draw_info;
     long x, y;
@@ -15215,7 +15231,7 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj,
 
     image = rm_check_readable(self);
 
-    Color_to_PixelColor(&color, color_obj);
+    Color_to_Pixel(&color, color_obj);
     texture = rm_cur_image(texture_obj);
     texture_image = rm_check_readable(texture);
 
@@ -15256,6 +15272,9 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj,
         color_mpp.red   = (MagickRealType) image->border_color.red;
         color_mpp.green = (MagickRealType) image->border_color.green;
         color_mpp.blue  = (MagickRealType) image->border_color.blue;
+#if defined(IMAGEMAGICK_7)
+        color_mpp.black = (MagickRealType) image->border_color.black;
+#endif
     }
     else
     {
@@ -15263,6 +15282,11 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj,
         color_mpp.red   = (MagickRealType) color.red;
         color_mpp.green = (MagickRealType) color.green;
         color_mpp.blue  = (MagickRealType) color.blue;
+#if defined(IMAGEMAGICK_7)
+        color_mpp.black = (MagickRealType) color.black;
+#else
+        color_mpp.index = (MagickRealType) color.black;
+#endif
     }
 
 #if defined(IMAGEMAGICK_7)

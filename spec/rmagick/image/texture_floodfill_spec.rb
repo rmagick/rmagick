@@ -20,4 +20,19 @@ RSpec.describe Magick::Image, '#texture_floodfill' do
     image_list.new_image(10, 10)
     expect { image.texture_floodfill(image.columns / 2, image.rows / 2, image_list) }.not_to raise_error
   end
+
+  it 'fills only the pixels with the black of a CMYK image' do
+    image = described_class.new(2, 1)
+    image.colorspace = Magick::CMYKColorspace
+    black = Magick::Pixel.new(0, 0, 0)
+    black.black = Magick::QuantumRange
+    image.pixel_color(1, 0, black)
+    texture = described_class.new(1, 1) { |options| options.background_color = 'red' }
+
+    # ImageMagick 6 reads past the row when it fills a CMYK image rightward.
+    pixels = image.texture_floodfill(1, 0, texture).get_pixels(0, 0, 2, 1)
+
+    expect(pixels[1].black).to eq(0)
+    expect(pixels[0]).to eq(image.pixel_color(0, 0))
+  end
 end
