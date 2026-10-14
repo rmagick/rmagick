@@ -58,7 +58,7 @@ const rb_data_type_t rm_pixel_data_type = {
 VALUE
 Pixel_red(VALUE self)
 {
-    IMPLEMENT_TYPED_ATTR_READER(Pixel, red, int, &rm_pixel_data_type);
+    IMPLEMENT_TYPED_ATTR_READER(Pixel, red, Quantum, &rm_pixel_data_type);
 }
 
 /**
@@ -69,7 +69,7 @@ Pixel_red(VALUE self)
 VALUE
 Pixel_green(VALUE self)
 {
-    IMPLEMENT_TYPED_ATTR_READER(Pixel, green, int, &rm_pixel_data_type);
+    IMPLEMENT_TYPED_ATTR_READER(Pixel, green, Quantum, &rm_pixel_data_type);
 }
 
 /**
@@ -80,7 +80,7 @@ Pixel_green(VALUE self)
 VALUE
 Pixel_blue(VALUE self)
 {
-    IMPLEMENT_TYPED_ATTR_READER(Pixel, blue, int, &rm_pixel_data_type);
+    IMPLEMENT_TYPED_ATTR_READER(Pixel, blue, Quantum, &rm_pixel_data_type);
 }
 
 /**
@@ -94,9 +94,9 @@ Pixel_alpha(VALUE self)
     Pixel *pixel;
     TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
 #if defined(IMAGEMAGICK_7)
-    return C_int_to_R_int(pixel->alpha);
+    return QUANTUM2NUM(pixel->alpha);
 #else
-    return C_int_to_R_int(QuantumRange - pixel->opacity);
+    return QUANTUM2NUM(QuantumRange - pixel->opacity);
 #endif
 }
 
@@ -214,7 +214,7 @@ Pixel_cyan(VALUE self)
     Pixel *pixel;
 
     TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
-    return INT2NUM(pixel->red);
+    return QUANTUM2NUM(pixel->red);
 }
 
 /**
@@ -252,7 +252,7 @@ Pixel_magenta(VALUE self)
     Pixel *pixel;
 
     TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
-    return INT2NUM(pixel->green);
+    return QUANTUM2NUM(pixel->green);
 }
 
 /**
@@ -290,7 +290,7 @@ Pixel_yellow(VALUE self)
     Pixel *pixel;
 
     TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
-    return INT2NUM(pixel->blue);
+    return QUANTUM2NUM(pixel->blue);
 }
 
 /**
@@ -328,7 +328,7 @@ Pixel_black(VALUE self)
     Pixel *pixel;
 
     TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
-    return INT2NUM(pixel->black);
+    return QUANTUM2NUM(pixel->black);
 }
 
 /**
@@ -944,15 +944,13 @@ VALUE
 Pixel_intensity(VALUE self)
 {
     Pixel *pixel;
-    Quantum intensity;
+    double intensity;
 
     TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
 
-    intensity = ROUND_TO_QUANTUM((0.299*pixel->red)
-                                + (0.587*pixel->green)
-                                + (0.114*pixel->blue));
+    intensity = (0.299*pixel->red) + (0.587*pixel->green) + (0.114*pixel->blue);
 
-    return QUANTUM2NUM((unsigned long) intensity);
+    return QUANTUM2NUM(floor(intensity + 0.5));
 }
 
 
@@ -1000,13 +998,13 @@ Pixel_marshal_load(VALUE self, VALUE dpixel)
 
     Check_Type(dpixel, T_HASH);
 
-    pixel->red = NUM2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("red")));
-    pixel->green = NUM2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("green")));
-    pixel->blue = NUM2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("blue")));
+    pixel->red = APP2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("red")));
+    pixel->green = APP2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("green")));
+    pixel->blue = APP2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("blue")));
 #if defined(IMAGEMAGICK_7)
-    pixel->alpha = NUM2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("alpha")));
+    pixel->alpha = APP2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("alpha")));
 #else
-    pixel->opacity = NUM2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("opacity")));
+    pixel->opacity = APP2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("opacity")));
 #endif
     return self;
 }

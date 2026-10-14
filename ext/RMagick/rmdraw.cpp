@@ -653,9 +653,9 @@ Draw_marshal_load(VALUE self, VALUE ddraw)
 
     draw->info->clip_units = (ClipPathUnits)FIX2INT(rb_hash_aref(ddraw, CSTR2SYM("clip_units")));
 #if defined(IMAGEMAGICK_7)
-    draw->info->alpha = NUM2QUANTUM(rb_hash_aref(ddraw, CSTR2SYM("alpha")));
+    draw->info->alpha = APP2QUANTUM(rb_hash_aref(ddraw, CSTR2SYM("alpha")));
 #else
-    draw->info->opacity = NUM2QUANTUM(rb_hash_aref(ddraw, CSTR2SYM("opacity")));
+    draw->info->opacity = APP2QUANTUM(rb_hash_aref(ddraw, CSTR2SYM("opacity")));
 #endif
     draw->info->kerning = NUM2DBL(rb_hash_aref(ddraw, CSTR2SYM("kerning")));
     draw->info->interword_spacing = NUM2DBL(rb_hash_aref(ddraw, CSTR2SYM("interword_spacing")));

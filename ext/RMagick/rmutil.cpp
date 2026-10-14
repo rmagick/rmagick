@@ -11,6 +11,7 @@
 
 #include "rmagick.h"
 #include <errno.h>
+#include <cmath>
 #if defined(_WIN32)
 #include <Windows.h>
 #else
@@ -631,7 +632,8 @@ rm_fuzz_to_dbl(VALUE fuzz_arg)
 /**
  * Convert an application-supplied number to a Quantum. If the object is a Float,
  * truncate it before converting. A value outside 0 to QuantumRange is clamped
- * as ClampToQuantum does, so it is kept as is with HDRI.
+ * as ClampToQuantum does, so it is kept as is with HDRI. With HDRI, an Integer
+ * of any size is accepted, as rm_quantum2num returns one.
  *
  * No Ruby usage (internal function)
  *
@@ -665,6 +667,9 @@ rm_app2quantum(VALUE obj)
     }
     v = rb_to_int(v);
 
+#if defined(MAGICKCORE_HDRI_SUPPORT)
+    value = (MagickRealType) NUM2DBL(v);
+#else
     if (FIXNUM_P(v) ? FIX2LONG(v) < 0 : RBIGNUM_NEGATIVE_P(v))
     {
 #if MAGICKCORE_QUANTUM_DEPTH == 64
@@ -681,9 +686,40 @@ rm_app2quantum(VALUE obj)
         value = (MagickRealType) NUM2UINT(v);
 #endif
     }
+#endif
 
     return ClampToQuantum(value);
 }
+
+
+#if defined(MAGICKCORE_HDRI_SUPPORT)
+/**
+ * Convert a Quantum of HDRI to a Ruby Integer, truncating it toward zero.
+ *
+ * No Ruby usage (internal function)
+ *
+ * Notes:
+ *   - NaN and infinity are 0, since an Integer cannot hold them.
+ *   - The value is a double, so that a sum computed from Quantums keeps its
+ *     precision.
+ *
+ * @param value the Quantum
+ * @return a Ruby Integer
+ */
+VALUE
+rm_quantum2num(double value)
+{
+    if (!std::isfinite(value))
+    {
+        return INT2FIX(0);
+    }
+    if (fabs(value) < 9223372036854775808.0)
+    {
+        return LL2NUM((long long) value);
+    }
+    return rb_dbl2big(value);
+}
+#endif
 
 
 /**

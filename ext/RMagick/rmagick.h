@@ -118,6 +118,10 @@ extern "C" {
 #else
 #error Specified MAGICKCORE_QUANTUM_DEPTH is not supported.
 #endif
+#if defined(MAGICKCORE_HDRI_SUPPORT)
+#undef QUANTUM2NUM
+#define QUANTUM2NUM(q) rm_quantum2num((q)) /**< HDRI Quantum -> Ruby Integer conversion */
+#endif
 //! Convert user-supplied objects to Quantum
 #define APP2QUANTUM(n) rm_app2quantum((n))
 
@@ -473,6 +477,8 @@ extern const rb_data_type_t rm_kernel_info_data_type;
 #define C_boolean_to_R_boolean(attr) (attr) ? Qtrue : Qfalse /**< C boolean -> Ruby boolean */
 #define R_boolean_to_C_boolean(attr) (MagickBooleanType)RTEST(attr) /**<  C boolean <- Ruby boolean */
 #define C_int_to_R_int(attr) INT2NUM(attr) /**< C int -> Ruby int */
+//! Quantum -> Ruby Integer
+#define C_Quantum_to_R_Quantum(attr) QUANTUM2NUM(attr)
 #define R_int_to_C_int(attr) NUM2INT(attr) /**< C int <- Ruby int */
 #define C_long_to_R_long(attr) LONG2NUM(attr) /**< C long -> Ruby long */
 #define R_long_to_C_long(attr) NUM2LONG(attr) /**< C long <- Ruby long */
@@ -1190,6 +1196,9 @@ extern char  *rm_path2cstr(VALUE *, size_t *);
 extern int    rm_check_num2dbl(VALUE);
 extern double rm_fuzz_to_dbl(VALUE);
 extern Quantum rm_app2quantum(VALUE);
+#if defined(MAGICKCORE_HDRI_SUPPORT)
+extern VALUE  rm_quantum2num(double);
+#endif
 extern double rm_percentage(VALUE, double);
 extern double rm_percentage2(VALUE, double, bool);
 extern double rm_str_to_pct(VALUE, bool);

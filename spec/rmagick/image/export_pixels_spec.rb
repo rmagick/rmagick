@@ -53,4 +53,17 @@ RSpec.describe Magick::Image, '#export_pixels' do
     packed_pixels = fpixels.pack('D*')
     fimport(image, packed_pixels, Magick::DoublePixel)
   end
+
+  it 'reads NaN and a value out of the range of int' do
+    image = described_class.new(3, 1)
+    image.import_pixels(0, 0, 3, 1, 'R', [1e10, -1e10, Float::NAN])
+
+    if Magick::Magick_features.include?('HDRI')
+      expected = [10_000_000_000, -10_000_000_000, 0]
+      expect(image.get_pixels(0, 0, 3, 1).map(&:red)).to eq(expected)
+    else
+      expected = [Magick::QuantumRange, 0, 0]
+    end
+    expect(image.export_pixels(0, 0, 3, 1, 'R')).to eq(expected)
+  end
 end

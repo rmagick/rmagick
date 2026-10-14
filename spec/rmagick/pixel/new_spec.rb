@@ -32,4 +32,12 @@ RSpec.describe Magick::Pixel, '.new' do
       expect(pixel.green).to eq(0)
     end
   end
+
+  it 'accepts a value out of the range of int with HDRI' do
+    if Magick::Magick_features.include?('HDRI')
+      expect(described_class.new(10_000_000_000, 0, 0).red).to eq(10_000_000_000)
+    else
+      expect { described_class.new(10_000_000_000, 0, 0) }.to raise_error(RangeError)
+    end
+  end
 end
