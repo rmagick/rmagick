@@ -1144,7 +1144,6 @@ extern VALUE  Import_ColorInfo(const ColorInfo *);
 extern VALUE  Font_to_s(VALUE);
 extern VALUE  Pixel_from_MagickPixel(const MagickPixel *);
 extern VALUE  Pixel_from_PixelColor(const PixelColor *);
-extern VALUE  Pixel_from_PixelPacket(const PixelPacket *);
 extern void   Export_PointInfo(PointInfo *, VALUE);
 extern VALUE  Import_PointInfo(PointInfo *);
 extern VALUE  PrimaryInfo_to_s(VALUE);

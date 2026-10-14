@@ -58,4 +58,15 @@ RSpec.describe Magick::Pixel, '#<=>' do
       expect(pixel <=> other).to eq(-1)
     end
   end
+
+  it 'compares the black channel' do
+    pixel = described_class.new(0, 0, 0)
+    other = pixel.dup
+    other.black = 30_000
+
+    expect(pixel <=> other).to eq(-1)
+    expect(other <=> pixel).to eq(1)
+    expect(pixel == other).to be(false)
+    expect(pixel.eql?(other)).to be(false)
+  end
 end

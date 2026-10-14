@@ -12,4 +12,11 @@ RSpec.describe Magick::Image, "#color_histogram" do
     expect(image.class_type).to eq(Magick::PseudoClass)
     expect(result).to be_instance_of(Hash)
   end
+
+  it 'keeps black of a CMYK image' do
+    image = described_class.new(1, 1) { |options| options.background_color = 'black' }
+    image.colorspace = Magick::CMYKColorspace
+
+    expect(image.color_histogram.keys.map(&:black)).to eq([Magick::QuantumRange])
+  end
 end

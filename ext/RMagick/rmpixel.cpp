@@ -511,10 +511,11 @@ Pixel_case_eq(VALUE self, VALUE other)
             && self_pixel->blue == other_pixel->blue
             && self_pixel->green == other_pixel->green
 #if defined(IMAGEMAGICK_7)
-            && self_pixel->alpha == other_pixel->alpha) ? Qtrue : Qfalse;
+            && self_pixel->alpha == other_pixel->alpha
 #else
-            && self_pixel->opacity == other_pixel->opacity) ? Qtrue : Qfalse;
+            && self_pixel->opacity == other_pixel->opacity
 #endif
+            && self_pixel->black == other_pixel->black) ? Qtrue : Qfalse;
     }
 
     return Qfalse;
@@ -762,38 +763,6 @@ Pixel_from_MagickPixel(const MagickPixel *pp)
 
 
 /**
- * Create a Magick::Pixel object from a PixelPacket structure.
- *
- * No Ruby usage (internal function)
- *
- * Notes:
- *   - Bypasses normal Pixel.new, Pixel#initialize methods
- *
- * @param pp the PixelPacket
- * @return a new Magick::Pixel object
- */
-VALUE
-Pixel_from_PixelPacket(const PixelPacket *pp)
-{
-    Pixel *pixel;
-    VALUE obj = TypedData_Make_Struct(Class_Pixel, Pixel, &rm_pixel_data_type, pixel);
-
-    pixel->red     = pp->red;
-    pixel->green   = pp->green;
-    pixel->blue    = pp->blue;
-#if defined(IMAGEMAGICK_7)
-    pixel->alpha   = pp->alpha;
-    pixel->black   = pp->black;
-#else
-    pixel->opacity = pp->opacity;
-    pixel->black   = 0;
-#endif
-
-    return obj;
-}
-
-
-/**
  * Create a Magick::Pixel object from a PixelColor structure.
  *
  * No Ruby usage (internal function)
@@ -846,6 +815,7 @@ Pixel_hash(VALUE self)
 #else
     hash += ScaleQuantumToChar(QuantumRange - pixel->opacity);
 #endif
+    hash ^= ScaleQuantumToChar(pixel->black) << 1;
 
     return UINT2NUM(hash >> 1);
 }
@@ -1074,10 +1044,15 @@ Pixel_spaceship(VALUE self, VALUE other)
         return result;
     }
 #if defined(IMAGEMAGICK_7)
-    return compare_quantum(self_pixel->alpha, other_pixel->alpha);
+    result = compare_quantum(self_pixel->alpha, other_pixel->alpha);
 #else
-    return compare_quantum(other_pixel->opacity, self_pixel->opacity);
+    result = compare_quantum(other_pixel->opacity, self_pixel->opacity);
 #endif
+    if (result != equal)
+    {
+        return result;
+    }
+    return compare_quantum(self_pixel->black, other_pixel->black);
 }
 
 

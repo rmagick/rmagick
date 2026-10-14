@@ -84,4 +84,36 @@ RSpec.describe Magick::Image, '#pixel_color' do
       end
     end
   end
+
+  it 'returns 0 for black of a palette image' do
+    image = described_class.new(2, 1)
+    image.pixel_color(1, 0, 'blue')
+    image = described_class.from_blob(image.to_blob { |info| info.format = 'GIF' }).first
+
+    expect(image.class_type).to eq(Magick::PseudoClass)
+    expect([image.pixel_color(0, 0), image.pixel_color(1, 0)].map(&:black)).to eq([0, 0])
+  end
+
+  it 'returns 0 for black of a CMYK palette image' do
+    image = described_class.new(2, 1)
+    image.pixel_color(1, 0, 'blue')
+    image.colorspace = Magick::CMYKColorspace
+    image = image.quantize(2, Magick::CMYKColorspace)
+
+    expect(image.class_type).to eq(Magick::PseudoClass)
+    expect([image.pixel_color(0, 0), image.pixel_color(1, 0)].map(&:black)).to eq([0, 0])
+  end
+
+  it 'returns 0 for black of an RGB image' do
+    image = described_class.new(2, 1)
+
+    expect([image.pixel_color(0, 0), image.pixel_color(1, 0)].map(&:black)).to eq([0, 0])
+  end
+
+  it 'returns black of the replaced pixel of a CMYK image' do
+    image = described_class.new(1, 1) { |options| options.background_color = 'black' }
+    image.colorspace = Magick::CMYKColorspace
+
+    expect(image.pixel_color(0, 0, 'white').black).to eq(Magick::QuantumRange)
+  end
 end
