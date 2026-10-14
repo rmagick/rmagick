@@ -88,4 +88,29 @@ RSpec.describe Magick::Image, '#get_pixels' do
 
     expect(Magick.resource_usage(:memory)).to be <= baseline
   end
+
+  it 'returns 0 for black of a palette image' do
+    image = described_class.new(2, 1)
+    image.pixel_color(1, 0, 'blue')
+    image = described_class.from_blob(image.to_blob { |info| info.format = 'GIF' }).first
+
+    expect(image.class_type).to eq(Magick::PseudoClass)
+    expect(image.get_pixels(0, 0, 2, 1).map(&:black)).to eq([0, 0])
+  end
+
+  it 'returns 0 for black of a CMYK palette image' do
+    image = described_class.new(2, 1)
+    image.pixel_color(1, 0, 'blue')
+    image.colorspace = Magick::CMYKColorspace
+    image = image.quantize(2, Magick::CMYKColorspace)
+
+    expect(image.class_type).to eq(Magick::PseudoClass)
+    expect(image.get_pixels(0, 0, 2, 1).map(&:black)).to eq([0, 0])
+  end
+
+  it 'returns 0 for black of an RGB image' do
+    image = described_class.new(2, 1)
+
+    expect(image.get_pixels(0, 0, 2, 1).map(&:black)).to eq([0, 0])
+  end
 end

@@ -59,6 +59,8 @@ static size_t pixel_buffer_count(size_t, size_t, size_t);
 static void color_to_image_pixel(ColorspaceType, Pixel *, VALUE);
 #if defined(IMAGEMAGICK_7)
 static void get_pixel_color(const Image *, const Quantum *, PixelColor *);
+#else
+static bool index_is_black(const Image *);
 #endif
 
 const rb_data_type_t rm_image_data_type = {
@@ -8372,6 +8374,21 @@ get_pixel_color(const Image *image, const Quantum *p, PixelColor *color)
     color->alpha = floor(GetPixelAlpha(image, p) + 0.5);
     color->black = floor(GetPixelBlack(image, p) + 0.5);
 }
+#else
+/**
+ * Return whether the index channel of the image holds black. It holds the
+ * colormap index of a PseudoClass image.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param image the image
+ * @return true if the index channel holds black
+ */
+static bool
+index_is_black(const Image *image)
+{
+    return image->colorspace == CMYKColorspace && image->storage_class == DirectClass;
+}
 #endif
 
 
@@ -8399,7 +8416,7 @@ pixels_to_ary(VALUE arg)
     const Quantum *pixels = args->pixels;
 #else
     const PixelPacket *pixels = args->pixels;
-    const IndexPacket *indexes = GetCacheViewVirtualIndexQueue(args->view);
+    const IndexPacket *indexes = index_is_black(image) ? GetCacheViewVirtualIndexQueue(args->view) : NULL;
 #endif
 
     pixel_ary = rb_ary_new2(args->size);
@@ -8419,10 +8436,7 @@ pixels_to_ary(VALUE arg)
         mpp.green = GetPixelGreen(pixels);
         mpp.blue = GetPixelBlue(pixels);
         mpp.opacity = GetPixelOpacity(pixels);
-        if (indexes)
-        {
-            mpp.index = GetPixelIndex(indexes + n);
-        }
+        mpp.index = indexes ? GetPixelIndex(indexes + n) : 0;
         rb_ary_store(pixel_ary, n, Pixel_from_MagickPixel(&mpp));
         pixels++;
 #endif
@@ -11571,7 +11585,7 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
         mpp.green = GetPixelGreen(&old_color);
         mpp.blue = GetPixelBlue(&old_color);
         mpp.opacity = GetPixelOpacity(&old_color);
-        if (indexes)
+        if (indexes && index_is_black(image))
         {
             mpp.index = GetPixelIndex(indexes);
         }
