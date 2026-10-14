@@ -43,4 +43,13 @@ RSpec.describe Magick::Draw, '#get_type_metrics' do
         .to eq(draw.public_send(method_name, large, '%[width]').width)
     end
   end
+
+  it 'raises DestroyedImageError when the image it measures on by default is destroyed' do
+    described_class.new.get_type_metrics('a')
+    described_class.class_variable_get(:@@_dummy_img_).destroy!
+
+    expect { described_class.new.get_type_metrics('a') }.to raise_error(Magick::DestroyedImageError)
+  ensure
+    described_class.remove_class_variable(:@@_dummy_img_)
+  end
 end
