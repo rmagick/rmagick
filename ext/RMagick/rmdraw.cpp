@@ -1745,7 +1745,8 @@ get_type_metrics(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
         case 1:                   // use default image
             text_arg = argv[0];
             text = rm_str2cstr(&text_arg, &text_l);
-            image = rm_image_get(get_dummy_tm_img(CLASS_OF(self)));
+            t = get_dummy_tm_img(CLASS_OF(self));
+            image = rm_check_readable(t);
             break;
         case 2:
             t = rm_cur_image(argv[0]);
