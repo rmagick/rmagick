@@ -11,6 +11,7 @@
 
 #include "rmagick.h"
 #include "float.h"
+#include "ruby/ractor.h"
 
 static void Draw_compact(void *drawptr);
 static void Draw_mark(void *);
@@ -18,6 +19,8 @@ static void Draw_destroy(void *);
 static size_t Draw_memsize(const void *);
 static VALUE new_DrawOptions(void);
 static VALUE get_type_metrics(int, VALUE *, VALUE, gvl_function_t);
+
+static rb_ractor_local_key_t dummy_img_key;
 
 const rb_data_type_t rm_draw_data_type = {
     "Magick::Draw",
@@ -1663,20 +1666,32 @@ PolaroidOptions_border_color_eq(VALUE self, VALUE border)
 
 
 /**
- * Create a dummy object of an image class.
+ * Create the key of the image that get_type_metrics measures on when no image is
+ * given.
+ *
+ * No Ruby usage (internal function)
+ */
+void
+rm_draw_init(void)
+{
+    dummy_img_key = rb_ractor_local_storage_value_newkey();
+}
+
+
+/**
+ * Get the image that get_type_metrics measures on when no image is given,
+ * creating it once in each Ractor.
  *
  * No Ruby usage (internal function)
  *
- * @param klass the class for which to create a dummy
- * @return the newly allocated dummy
+ * @return the image
  */
 static VALUE
-get_dummy_tm_img(VALUE klass)
+get_dummy_tm_img(void)
 {
-#define DUMMY_IMG_CLASS_VAR "@@_dummy_img_"
-    VALUE dummy_img = 0;
+    VALUE dummy_img;
 
-    if (rb_cvar_defined(klass, rb_intern(DUMMY_IMG_CLASS_VAR)) != Qtrue)
+    if (!rb_ractor_local_storage_value_lookup(dummy_img_key, &dummy_img))
     {
         Info *info;
         Image *image;
@@ -1694,12 +1709,8 @@ get_dummy_tm_img(VALUE klass)
             rb_raise(rb_eNoMemError, "not enough memory to continue");
         }
         dummy_img = rm_image_new(image);
-
-        rb_cv_set(klass, DUMMY_IMG_CLASS_VAR, dummy_img);
+        rb_ractor_local_storage_value_set(dummy_img_key, dummy_img);
     }
-    dummy_img = rb_cv_get(klass, DUMMY_IMG_CLASS_VAR);
-
-    RB_GC_GUARD(dummy_img);
 
     return dummy_img;
 }
@@ -1745,7 +1756,7 @@ get_type_metrics(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
         case 1:                   // use default image
             text_arg = argv[0];
             text = rm_str2cstr(&text_arg, &text_l);
-            t = get_dummy_tm_img(CLASS_OF(self));
+            t = get_dummy_tm_img();
             image = rm_check_readable(t);
             break;
         case 2:

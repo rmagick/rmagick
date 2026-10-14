@@ -44,12 +44,16 @@ RSpec.describe Magick::Draw, '#get_type_metrics' do
     end
   end
 
-  it 'raises DestroyedImageError when the image it measures on by default is destroyed' do
-    described_class.new.get_type_metrics('a')
-    described_class.class_variable_get(:@@_dummy_img_).destroy!
+  it 'measures text without an image on the same image every time' do
+    draw = described_class.new
+    draw.get_type_metrics('ABC')
+    GC.disable
+    count = ObjectSpace.each_object(Magick::Image).count
 
-    expect { described_class.new.get_type_metrics('a') }.to raise_error(Magick::DestroyedImageError)
+    3.times { draw.get_type_metrics('ABC') }
+
+    expect(ObjectSpace.each_object(Magick::Image).count).to eq(count)
   ensure
-    described_class.remove_class_variable(:@@_dummy_img_)
+    GC.enable
   end
 end

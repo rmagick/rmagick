@@ -524,12 +524,6 @@ Style/RequireOrder:
     - 'rmagick.gemspec'
     - 'spec/spec_helper.rb'
 
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Style/StaticClass:
-  Exclude:
-    - 'spec/rmagick/draw/class_methods/_dummy_img__spec.rb'
-
 # Offense count: 185
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: Mode.

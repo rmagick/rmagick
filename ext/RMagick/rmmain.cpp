@@ -788,6 +788,7 @@ Init_RMagick2(void)
 
     Class_Draw = rb_define_class_under(Module_Magick, "Draw", rb_cObject);
     rb_define_alloc_func(Class_Draw, Draw_alloc);
+    rm_draw_init();
 
     // Define the attributes
     Module_DrawAttribute = rb_define_module_under(Module_Magick, "DrawAttribute");
