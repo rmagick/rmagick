@@ -109,4 +109,11 @@ RSpec.describe Magick::Image, '#pixel_color' do
 
     expect([image.pixel_color(0, 0), image.pixel_color(1, 0)].map(&:black)).to eq([0, 0])
   end
+
+  it 'returns black of the replaced pixel of a CMYK image' do
+    image = described_class.new(1, 1) { |options| options.background_color = 'black' }
+    image.colorspace = Magick::CMYKColorspace
+
+    expect(image.pixel_color(0, 0, 'white').black).to eq(Magick::QuantumRange)
+  end
 end

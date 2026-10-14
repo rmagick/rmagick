@@ -61,6 +61,7 @@ static void color_to_image_pixel(ColorspaceType, Pixel *, VALUE);
 static void get_pixel_color(const Image *, const Quantum *, PixelColor *);
 #else
 static bool index_is_black(const Image *);
+static VALUE pixel_from_packet(const PixelPacket *, IndexPacket);
 #endif
 
 const rb_data_type_t rm_image_data_type = {
@@ -3094,9 +3095,13 @@ Image_color_histogram(VALUE self)
     PixelInfo *histogram;
 #else
     ColorPacket *histogram;
+    bool has_black;
 #endif
 
     image = rm_check_readable(self);
+#if defined(IMAGEMAGICK_6)
+    has_black = index_is_black(image);
+#endif
 
     exception = AcquireExceptionInfo();
 
@@ -3142,7 +3147,7 @@ Image_color_histogram(VALUE self)
 #if defined(IMAGEMAGICK_7)
         pixel = Pixel_from_PixelColor(&histogram[x]);
 #else
-        pixel = Pixel_from_PixelColor(&histogram[x].pixel);
+        pixel = pixel_from_packet(&histogram[x].pixel, has_black ? histogram[x].index : 0);
 #endif
         rb_hash_aset(hash, pixel, ULONG2NUM((unsigned long)histogram[x].count));
     }
@@ -8389,6 +8394,29 @@ index_is_black(const Image *image)
 {
     return image->colorspace == CMYKColorspace && image->storage_class == DirectClass;
 }
+
+
+/**
+ * Create a Magick::Pixel from a PixelPacket and the black value.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param color the PixelPacket
+ * @param black the black value, or 0 unless index_is_black
+ * @return a new Magick::Pixel object
+ */
+static VALUE
+pixel_from_packet(const PixelPacket *color, IndexPacket black)
+{
+    MagickPixel mpp;
+
+    mpp.red = GetPixelRed(color);
+    mpp.green = GetPixelGreen(color);
+    mpp.blue = GetPixelBlue(color);
+    mpp.opacity = GetPixelOpacity(color);
+    mpp.index = black;
+    return Pixel_from_MagickPixel(&mpp);
+}
 #endif
 
 
@@ -8431,13 +8459,7 @@ pixels_to_ary(VALUE arg)
 
         pixels += GetPixelChannels(image);
 #else
-        MagickPixel mpp;
-        mpp.red = GetPixelRed(pixels);
-        mpp.green = GetPixelGreen(pixels);
-        mpp.blue = GetPixelBlue(pixels);
-        mpp.opacity = GetPixelOpacity(pixels);
-        mpp.index = indexes ? GetPixelIndex(indexes + n) : 0;
-        rb_ary_store(pixel_ary, n, Pixel_from_MagickPixel(&mpp));
+        rb_ary_store(pixel_ary, n, pixel_from_packet(pixels, indexes ? GetPixelIndex(indexes + n) : 0));
         pixels++;
 #endif
     }
@@ -11512,8 +11534,9 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
 #else
     PixelPacket *pixel;
     const PixelPacket *old_pixel;
-    MagickPixel mpp;
     IndexPacket *indexes;
+    IndexPacket old_black = 0;
+    bool has_black;
 #endif
 
     memset(&old_color, 0, sizeof(old_color));
@@ -11580,17 +11603,9 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
             old_color.opacity = OpaqueOpacity;
         }
 
-        rm_init_magickpixel(image, &mpp);
-        mpp.red = GetPixelRed(&old_color);
-        mpp.green = GetPixelGreen(&old_color);
-        mpp.blue = GetPixelBlue(&old_color);
-        mpp.opacity = GetPixelOpacity(&old_color);
-        if (indexes && index_is_black(image))
-        {
-            mpp.index = GetPixelIndex(indexes);
-        }
+        old_black = indexes && index_is_black(image) ? GetPixelIndex(indexes) : 0;
         DestroyCacheView(view);
-        return Pixel_from_MagickPixel(&mpp);
+        return pixel_from_packet(&old_color, old_black);
 #endif
     }
 
@@ -11605,6 +11620,9 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #endif
 
+#if defined(IMAGEMAGICK_6)
+    has_black = index_is_black(image);
+#endif
     if (image->storage_class == PseudoClass)
     {
 #if defined(IMAGEMAGICK_7)
@@ -11656,6 +11674,10 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
         {
             old_color.opacity = OpaqueOpacity;
         }
+        if (indexes && has_black)
+        {
+            old_black = GetPixelIndex(indexes);
+        }
 
         SetPixelRed(pixel,     new_color.red);
         SetPixelGreen(pixel,   new_color.green);
@@ -11678,7 +11700,7 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     return Pixel_from_PixelColor(&old_color);
 #else
-    return Pixel_from_PixelPacket(&old_color);
+    return pixel_from_packet(&old_color, old_black);
 #endif
 }
 

@@ -762,38 +762,6 @@ Pixel_from_MagickPixel(const MagickPixel *pp)
 
 
 /**
- * Create a Magick::Pixel object from a PixelPacket structure.
- *
- * No Ruby usage (internal function)
- *
- * Notes:
- *   - Bypasses normal Pixel.new, Pixel#initialize methods
- *
- * @param pp the PixelPacket
- * @return a new Magick::Pixel object
- */
-VALUE
-Pixel_from_PixelPacket(const PixelPacket *pp)
-{
-    Pixel *pixel;
-    VALUE obj = TypedData_Make_Struct(Class_Pixel, Pixel, &rm_pixel_data_type, pixel);
-
-    pixel->red     = pp->red;
-    pixel->green   = pp->green;
-    pixel->blue    = pp->blue;
-#if defined(IMAGEMAGICK_7)
-    pixel->alpha   = pp->alpha;
-    pixel->black   = pp->black;
-#else
-    pixel->opacity = pp->opacity;
-    pixel->black   = 0;
-#endif
-
-    return obj;
-}
-
-
-/**
  * Create a Magick::Pixel object from a PixelColor structure.
  *
  * No Ruby usage (internal function)
