@@ -62,6 +62,23 @@ RSpec.describe Magick::Image, '#pixel_color' do
     expect(image.to_color(image.pixel_color(1, 0))).to eq('#00FFFF00')
   end
 
+  it 'converts a CMYK color name to RGB for an RGB image' do
+    image = described_class.new(1, 1) { |options| options.depth = 8 }
+
+    image.pixel_color(0, 0, 'cmyk(0,255,255,0)')
+
+    expect(image.to_color(image.pixel_color(0, 0))).to eq('red')
+  end
+
+  it 'keeps the values of a CMYK color name for a CMYK image' do
+    image = described_class.new(1, 1) { |options| options.depth = 8 }
+    image.colorspace = Magick::CMYKColorspace
+
+    image.pixel_color(0, 0, 'cmyk(25,50,75,100)')
+
+    expect(image.to_color(image.pixel_color(0, 0))).to eq('#19324B64')
+  end
+
   it 'reads a negative value of an HDRI image' do
     image = described_class.new(1, 1)
     image.pixel_color(0, 0, Magick::Pixel.new(-Magick::QuantumRange, 0, 0))

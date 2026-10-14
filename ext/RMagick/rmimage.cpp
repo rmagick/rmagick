@@ -15807,23 +15807,21 @@ Image_to_blob(VALUE self)
 
 
 /**
- * Convert a color name to CMYK in the same way as converting an image.
+ * Convert a parsed color to another colorspace in the same way as converting an
+ * image.
  *
  * No Ruby usage (internal function)
  *
- * @param color the Pixel to modify
- * @param name the color name
+ * @param parsed the parsed color
+ * @param colorspace the colorspace to convert to
+ * @param converted the MagickPixel to store the converted color in
  */
 static void
-color_name_to_cmyk(Pixel *color, VALUE name)
+transform_color(PixelColor *parsed, ColorspaceType colorspace, MagickPixel *converted)
 {
     Info *info;
     Image *image;
-    PixelColor parsed;
-    MagickPixel cmyk;
     ExceptionInfo *exception;
-
-    Color_to_PixelColor(&parsed, name);
 
     info = CloneImageInfo(NULL);
     image = rm_acquire_image(info);
@@ -15834,49 +15832,87 @@ color_name_to_cmyk(Pixel *color, VALUE name)
         rb_raise(rb_eNoMemError, "not enough memory to continue.");
     }
 
-    image->background_color = parsed;
+    image->background_color = *parsed;
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
-    DECLARE_GVL_CALL(extent_call, SetImageExtent, image, 1, 1, exception);
-    extent_call.destroy(image).release(exception).keep_thread().run<void>();
+    SetImageExtent(image, 1, 1, exception);
     rm_check_exception(exception, image, DestroyOnError);
-    SetImageColorspace(image, parsed.colorspace, exception);
+    SetImageColorspace(image, parsed->colorspace, exception);
     rm_check_exception(exception, image, DestroyOnError);
-    DECLARE_GVL_CALL(background_call, SetImageBackgroundColor, image, exception);
-    background_call.destroy(image).release(exception).keep_thread().run<void>();
+    SetImageBackgroundColor(image, exception);
     rm_check_exception(exception, image, DestroyOnError);
-    DECLARE_GVL_CALL(transform_call, TransformImageColorspace, image, CMYKColorspace, exception);
-    transform_call.destroy(image).release(exception).keep_thread().run<void>();
+    TransformImageColorspace(image, colorspace, exception);
     rm_check_exception(exception, image, DestroyOnError);
-    GetOneVirtualPixelInfo(image, UndefinedVirtualPixelMethod, 0, 0, &cmyk, exception);
+    GetOneVirtualPixelInfo(image, UndefinedVirtualPixelMethod, 0, 0, converted, exception);
 #else
-    DECLARE_GVL_CALL(extent_call, SetImageExtent, image, 1, 1);
-    extent_call.destroy(image).keep_thread().run<void>();
+    SetImageExtent(image, 1, 1);
     rm_check_image_exception(image, DestroyOnError);
-    DECLARE_GVL_CALL(background_call, SetImageBackgroundColor, image);
-    background_call.destroy(image).keep_thread().run<void>();
+    SetImageBackgroundColor(image);
     rm_check_image_exception(image, DestroyOnError);
-    DECLARE_GVL_CALL(transform_call, TransformImageColorspace, image, CMYKColorspace);
-    transform_call.destroy(image).keep_thread().run<void>();
+    TransformImageColorspace(image, colorspace);
     rm_check_image_exception(image, DestroyOnError);
     exception = AcquireExceptionInfo();
-    GetOneVirtualMagickPixel(image, 0, 0, &cmyk, exception);
+    GetOneVirtualMagickPixel(image, 0, 0, converted, exception);
 #endif
     rm_check_exception(exception, image, DestroyOnError);
 
     DestroyExceptionInfo(exception);
     DestroyImage(image);
+}
 
-    color->red   = cmyk.red;
-    color->green = cmyk.green;
-    color->blue  = cmyk.blue;
+
+/**
+ * Convert a color name to CMYK for a CMYK image, and a CMYK color name to sRGB
+ * for other images.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param color the Pixel to modify
+ * @param name the color name
+ * @param colorspace the colorspace of the image
+ */
+static void
+color_name_to_colorspace(Pixel *color, VALUE name, ColorspaceType colorspace)
+{
+    PixelColor parsed;
+    MagickPixel converted;
+
+    Color_to_PixelColor(&parsed, name);
+
 #if defined(IMAGEMAGICK_7)
+    if ((parsed.colorspace == CMYKColorspace) != (colorspace == CMYKColorspace))
+    {
+        transform_color(&parsed, colorspace == CMYKColorspace ? CMYKColorspace : sRGBColorspace, &converted);
+        parsed.red   = converted.red;
+        parsed.green = converted.green;
+        parsed.blue  = converted.blue;
+        parsed.black = converted.black;
+    }
+    color->red   = parsed.red;
+    color->green = parsed.green;
+    color->blue  = parsed.blue;
     color->alpha = parsed.alpha;
-    color->black = cmyk.black;
+    color->black = parsed.black;
 #else
+    color->red     = parsed.red;
+    color->green   = parsed.green;
+    color->blue    = parsed.blue;
     color->opacity = parsed.opacity;
-    color->black   = cmyk.index;
+    color->black   = 0;
+    if (colorspace == CMYKColorspace)
+    {
+        name = rb_str_to_str(name);
+        rm_set_magickpixel(&converted, StringValueCStr(name));
+        if (converted.colorspace != CMYKColorspace)
+        {
+            transform_color(&parsed, CMYKColorspace, &converted);
+        }
+        color->red   = converted.red;
+        color->green = converted.green;
+        color->blue  = converted.blue;
+        color->black = converted.index;
+    }
 #endif
 }
 
@@ -15887,8 +15923,9 @@ color_name_to_cmyk(Pixel *color, VALUE name)
  * No Ruby usage (internal function)
  *
  * Notes:
- *   - A Pixel is used as it is. A color name is converted to CMYK for a CMYK image.
- *   - Converting a color name can release the GVL, so get the image again afterwards.
+ *   - A Pixel is used as it is. A color name is converted to CMYK for a CMYK
+ *     image, and a CMYK color name to sRGB for other images.
+ *   - Converting a color name calls its to_str, so get the image again afterwards.
  *
  * @param colorspace the colorspace of the image
  * @param color the Pixel to modify
@@ -15897,9 +15934,9 @@ color_name_to_cmyk(Pixel *color, VALUE name)
 static void
 color_to_image_pixel(ColorspaceType colorspace, Pixel *color, VALUE color_arg)
 {
-    if (CLASS_OF(color_arg) != Class_Pixel && colorspace == CMYKColorspace)
+    if (CLASS_OF(color_arg) != Class_Pixel)
     {
-        color_name_to_cmyk(color, color_arg);
+        color_name_to_colorspace(color, color_arg, colorspace);
     }
     else
     {
