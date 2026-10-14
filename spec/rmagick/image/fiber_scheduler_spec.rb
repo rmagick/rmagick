@@ -431,6 +431,23 @@ RSpec.describe Magick::Image, if: offloading do
       expect(result.columns).to eq(200)
     end
 
+    it "does not let another fiber initialize an image that a call reads" do
+      image = described_class.new(200, 200)
+      other = described_class.new(10, 10)
+      errors = nil
+      scheduler.before_next_operation do
+        Fiber.schedule do
+          errors = [attempt { image.__send__(:initialize, 10, 10) }, attempt { image.__send__(:initialize_copy, other) }]
+        end
+      end
+
+      result = scheduler.run { image.gaussian_blur(0, 5) }
+
+      expect(errors).to all(in_use)
+      expect(result.columns).to eq(200)
+      expect(image.columns).to eq(200)
+    end
+
     it "does not let another fiber's call read an image that a call reads" do
       image = described_class.new(200, 200)
       error = nil

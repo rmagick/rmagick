@@ -5328,6 +5328,52 @@ Image_copy(VALUE self)
 }
 
 /**
+ * Raise if the Image object is frozen or in use by another fiber.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param self the Image object
+ * @return nil
+ */
+static VALUE
+check_replaceable(VALUE self)
+{
+    rb_check_frozen(self);
+    rm_gvl_check_writable(self);
+    return Qnil;
+}
+
+
+/**
+ * Store an image in the Image object and destroy the one it held, as
+ * Image#destroy! does. If the object is frozen or in use, destroy the new
+ * image instead and raise.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param self the Image object
+ * @param image the new image
+ */
+static void
+replace_image(VALUE self, Image *image)
+{
+    Image *old_image;
+    int state = 0;
+
+    rb_protect(check_replaceable, self, &state);
+    if (state)
+    {
+        DestroyImage(image);
+        rb_jump_tag(state);
+    }
+
+    old_image = rm_image_get(self);
+    rm_image_set(self, image);
+    rm_image_destroy(old_image);
+}
+
+
+/**
  * Initialize copy, clone, dup.
  *
  * @param orig [Magick::Image] the source image
@@ -5343,7 +5389,7 @@ Image_init_copy(VALUE copy, VALUE orig)
 
     image = rm_check_readable(orig);
     new_image = rm_copy_image(image);
-    rm_image_set(copy, new_image);
+    replace_image(copy, new_image);
 
     return copy;
 }
@@ -10704,7 +10750,7 @@ Image_initialize(int argc, VALUE *argv, VALUE self)
     rm_set_user_artifact(image, info);
 
     // NOW store a real image in the image object.
-    rm_image_set(self, image);
+    replace_image(self, image);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();

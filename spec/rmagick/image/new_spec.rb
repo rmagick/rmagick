@@ -35,4 +35,21 @@ RSpec.describe Magick::Image, '#new' do
   ensure
     limits&.each { |resource, limit| Magick.limit_resource(resource, limit) }
   end
+
+  it 'releases the image it held when it is called again' do
+    image = described_class.new(1000, 1000)
+    GC.start
+    baseline = Magick.resource_usage(:memory)
+
+    image.__send__(:initialize, 1000, 1000)
+
+    expect(Magick.resource_usage(:memory)).to be <= baseline
+  end
+
+  it 'raises FrozenError when it is called again on a frozen image' do
+    image = described_class.new(2, 2).freeze
+
+    expect { image.__send__(:initialize, 5, 5) }.to raise_error(FrozenError)
+    expect(image.columns).to eq(2)
+  end
 end
