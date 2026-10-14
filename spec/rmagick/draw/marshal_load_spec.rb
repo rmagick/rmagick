@@ -8,6 +8,15 @@ RSpec.describe Magick::Draw, '#marshal_load' do
     expect { described_class.new.marshal_load(draw.marshal_dump) }.not_to raise_error
   end
 
+  it 'keeps black of the fill color', if: Gem::Version.new(Magick::IMAGEMAGICK_VERSION) >= Gem::Version.new('7.0.0') do
+    fill = Magick::Pixel.new(0, 0, 0)
+    fill.black = 1000
+    draw = described_class.new
+    draw.fill = fill
+
+    expect(Marshal.load(Marshal.dump(draw)).marshal_dump[:fill]).to eq(fill)
+  end
+
   # Regression: a non-Hash argument used to be dereferenced as a Hash and crash
   # the process (SIGSEGV). It must raise TypeError instead.
   it 'raises TypeError for a non-Hash argument' do

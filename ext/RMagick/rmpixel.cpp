@@ -945,6 +945,7 @@ Pixel_marshal_dump(VALUE self)
 #else
     rb_hash_aset(dpixel, CSTR2SYM("opacity"), QUANTUM2NUM(pixel->opacity));
 #endif
+    rb_hash_aset(dpixel, CSTR2SYM("black"), QUANTUM2NUM(pixel->black));
 
     RB_GC_GUARD(dpixel);
 
@@ -976,6 +977,7 @@ Pixel_marshal_load(VALUE self, VALUE dpixel)
 #else
     pixel->opacity = APP2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("opacity")));
 #endif
+    pixel->black = APP2QUANTUM(rb_hash_lookup2(dpixel, CSTR2SYM("black"), INT2FIX(0)));
     return self;
 }
 
