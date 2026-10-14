@@ -57,6 +57,7 @@ static void rm_image_free(void *ptr);
 static size_t rm_image_memsize(const void *ptr);
 static size_t pixel_buffer_count(size_t, size_t, size_t);
 static void color_to_image_pixel(ColorspaceType, Pixel *, VALUE);
+static Image *color_to_magickpixel(VALUE, MagickPixel *, VALUE);
 #if defined(IMAGEMAGICK_7)
 static void get_pixel_color(const Image *, const Quantum *, PixelColor *);
 #else
@@ -11182,8 +11183,8 @@ Image_opaque(VALUE self, VALUE target, VALUE fill)
     image = rm_check_readable(self);
 
     // Allow color name or Pixel
-    Color_to_MagickPixel(image, &target_pp, target);
-    Color_to_MagickPixel(image, &fill_pp, fill);
+    color_to_magickpixel(self, &target_pp, target);
+    image = color_to_magickpixel(self, &fill_pp, fill);
 
     new_image = rm_clone_image(image);
 
@@ -11268,8 +11269,8 @@ Image_opaque_channel(int argc, VALUE *argv, VALUE self)
             invert = (MagickBooleanType)RTEST(argv[2]);
         case 2:
             // Allow color name or Pixel
-            Color_to_MagickPixel(image, &fill_pp, argv[1]);
-            Color_to_MagickPixel(image, &target_pp, argv[0]);
+            color_to_magickpixel(self, &fill_pp, argv[1]);
+            image = color_to_magickpixel(self, &target_pp, argv[0]);
             break;
         default:
             rb_raise(rb_eArgError, "wrong number of arguments (got %d, expected 2 or more)", argc);
@@ -11481,7 +11482,7 @@ Image_paint_transparent(int argc, VALUE *argv, VALUE self)
 
     rb_scan_args(argc, argv, "12:", &color_obj, &invert_obj, &fuzz_obj, &kwargs);
 
-    Color_to_MagickPixel(image, &color, color_obj);
+    image = color_to_magickpixel(self, &color, color_obj);
     invert = (invert_obj != Qnil) ? (MagickBooleanType)RTEST(invert_obj) : MagickFalse;
     fuzz = (fuzz_obj != Qnil) ? NUM2DBL(fuzz_obj) : image->fuzz;
     if (RTEST(kwargs))
@@ -14717,7 +14718,7 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
             xfree((void *) args);
             rb_raise(rb_eTypeError, "type mismatch: %s and %s given", rb_class2name(CLASS_OF(elem1)), rb_class2name(CLASS_OF(elem2)));
         }
-        Color_to_MagickPixel(NULL, &pp, argv[n++]);
+        image = color_to_magickpixel(self, &pp, argv[n++]);
         if (channels & RedChannel)
         {
             args[x++] = pp.red / QuantumRange;
@@ -15946,6 +15947,57 @@ color_to_image_pixel(ColorspaceType colorspace, Pixel *color, VALUE color_arg)
 
 
 /**
+ * Set a MagickPixel for the image to the channel values of a Pixel.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param image the image
+ * @param mpp the MagickPixel to set
+ * @param color the Pixel
+ */
+static void
+pixel_to_magickpixel(Image *image, MagickPixel *mpp, const Pixel *color)
+{
+    rm_init_magickpixel(image, mpp);
+    mpp->red   = color->red;
+    mpp->green = color->green;
+    mpp->blue  = color->blue;
+#if defined(IMAGEMAGICK_7)
+    mpp->black = color->black;
+    mpp->alpha = color->alpha;
+#else
+    mpp->index   = color->black;
+    mpp->opacity = color->opacity;
+#endif
+}
+
+
+/**
+ * Convert a Pixel or a color name to a MagickPixel for the image of an Image
+ * object, as color_to_image_pixel does.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param self the Image object
+ * @param mpp the MagickPixel to set
+ * @param color_arg the Pixel or the color name
+ * @return the image, got again after converting the color
+ */
+static Image *
+color_to_magickpixel(VALUE self, MagickPixel *mpp, VALUE color_arg)
+{
+    Image *image;
+    Pixel color;
+
+    image = rm_check_readable(self);
+    color_to_image_pixel(image->colorspace, &color, color_arg);
+    image = rm_check_readable(self);
+    pixel_to_magickpixel(image, mpp, &color);
+    return image;
+}
+
+
+/**
  * Return a color name for the color intensity specified by the Magick::Pixel argument.
  *
  * @param pixel_arg [Magick::Pixel, String] the pixel
@@ -15964,17 +16016,7 @@ Image_to_color(VALUE self, VALUE pixel_arg)
     color_to_image_pixel(image->colorspace, &color, pixel_arg);
     image = rm_check_readable(self);
 
-    rm_init_magickpixel(image, &pixel);
-    pixel.red   = color.red;
-    pixel.green = color.green;
-    pixel.blue  = color.blue;
-#if defined(IMAGEMAGICK_7)
-    pixel.black = color.black;
-    pixel.alpha = color.alpha;
-#else
-    pixel.index   = color.black;
-    pixel.opacity = color.opacity;
-#endif
+    pixel_to_magickpixel(image, &pixel, &color);
 
     exception = AcquireExceptionInfo();
 
@@ -16069,7 +16111,7 @@ Image_transparent(int argc, VALUE *argv, VALUE self)
     image = rm_check_readable(self);
 
     rb_scan_args(argc, argv, "1:", &color_obj, &kwargs);
-    Color_to_MagickPixel(image, &color, color_obj);
+    image = color_to_magickpixel(self, &color, color_obj);
     if (RTEST(kwargs))
     {
         alpha = get_named_alpha_value(kwargs);

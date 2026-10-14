@@ -26,4 +26,14 @@ RSpec.describe Magick::Image, '#opaque' do
 
     expect(result.get_pixels(0, 0, 2, 1).map { |pixel| [pixel.green, pixel.black] }).to eq([[Magick::QuantumRange, 0], [0, 0]])
   end
+
+  it 'converts color names to CMYK for a CMYK image' do
+    image = described_class.new(2, 1)
+    image.pixel_color(0, 0, 'black')
+    image.colorspace = Magick::CMYKColorspace
+
+    pixels = image.opaque('black', 'red').get_pixels(0, 0, 2, 1)
+
+    expect(pixels.map { |pixel| [pixel.cyan, pixel.magenta, pixel.yellow, pixel.black] }).to eq([[0, Magick::QuantumRange, Magick::QuantumRange, 0], [0, 0, 0, 0]])
+  end
 end
