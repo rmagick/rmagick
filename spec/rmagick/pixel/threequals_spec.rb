@@ -11,4 +11,12 @@ RSpec.describe Magick::Pixel, '#===' do
     pixel2 = described_class.from_color('red')
     expect(pixel1 === pixel2).to be(false)
   end
+
+  it 'compares the black channel' do
+    pixel = described_class.new(0, 0, 0)
+    other = pixel.dup
+    other.black = 30_000
+
+    expect(pixel === other).to be(false)
+  end
 end

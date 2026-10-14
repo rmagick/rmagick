@@ -511,10 +511,11 @@ Pixel_case_eq(VALUE self, VALUE other)
             && self_pixel->blue == other_pixel->blue
             && self_pixel->green == other_pixel->green
 #if defined(IMAGEMAGICK_7)
-            && self_pixel->alpha == other_pixel->alpha) ? Qtrue : Qfalse;
+            && self_pixel->alpha == other_pixel->alpha
 #else
-            && self_pixel->opacity == other_pixel->opacity) ? Qtrue : Qfalse;
+            && self_pixel->opacity == other_pixel->opacity
 #endif
+            && self_pixel->black == other_pixel->black) ? Qtrue : Qfalse;
     }
 
     return Qfalse;
@@ -814,6 +815,7 @@ Pixel_hash(VALUE self)
 #else
     hash += ScaleQuantumToChar(QuantumRange - pixel->opacity);
 #endif
+    hash ^= ScaleQuantumToChar(pixel->black) << 1;
 
     return UINT2NUM(hash >> 1);
 }
@@ -1042,10 +1044,15 @@ Pixel_spaceship(VALUE self, VALUE other)
         return result;
     }
 #if defined(IMAGEMAGICK_7)
-    return compare_quantum(self_pixel->alpha, other_pixel->alpha);
+    result = compare_quantum(self_pixel->alpha, other_pixel->alpha);
 #else
-    return compare_quantum(other_pixel->opacity, self_pixel->opacity);
+    result = compare_quantum(other_pixel->opacity, self_pixel->opacity);
 #endif
+    if (result != equal)
+    {
+        return result;
+    }
+    return compare_quantum(self_pixel->black, other_pixel->black);
 }
 
 

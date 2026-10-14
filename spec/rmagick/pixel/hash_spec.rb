@@ -21,4 +21,12 @@ RSpec.describe Magick::Pixel, '#hash' do
     expect(pixel2).not_to eq(pixel)
     expect(pixel2.hash).to eq(pixel.hash)
   end
+
+  it 'includes black' do
+    pixel = described_class.new(0, 0, 0)
+    other = pixel.dup
+    other.black = 30_000
+
+    expect(other.hash).not_to eq(pixel.hash)
+  end
 end
