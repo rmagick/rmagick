@@ -1307,15 +1307,23 @@ Draw_get_multiline_type_metrics(
 VALUE Draw_init_copy(VALUE self, VALUE orig)
 {
     MagickDraw *copy, *original;
+    DrawInfo *info;
 
+    rb_check_frozen(self);
+    rm_gvl_check_writable(self);
     TypedData_Get_Struct(orig, MagickDraw, &rm_draw_data_type, original);
     TypedData_Get_Struct(self, MagickDraw, &rm_draw_data_type, copy);
 
-    copy->info = CloneDrawInfo(NULL, original->info);
-    if (!copy->info)
+    info = CloneDrawInfo(NULL, original->info);
+    if (!info)
     {
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
+    if (copy->info)
+    {
+        DestroyDrawInfo(copy->info);
+    }
+    copy->info = info;
     copy_pattern(&copy->info->fill_pattern);
     copy_pattern(&copy->info->stroke_pattern);
 
