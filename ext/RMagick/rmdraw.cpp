@@ -1170,9 +1170,10 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
 
     // Add the temp filename to the filename array.
     // Use Magick storage since we need to keep the list around
-    // until destroy_Draw is called.
+    // until the last Draw object that refers to it is freed.
     tmpfile_name = (struct TmpFile_Name *)magick_malloc(sizeof(struct TmpFile_Name) + rm_strnlen_s(name, sizeof(name)));
     strcpy(tmpfile_name->name, name);
+    tmpfile_name->refs = 1;
     tmpfile_name->next = draw->tmpfile_ary;
     draw->tmpfile_ary = tmpfile_name;
 
@@ -1299,6 +1300,28 @@ Draw_get_multiline_type_metrics(
 
 
 /**
+ * Release a reference to a list of temporary images, and delete the images
+ * that no other Draw object refers to.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param tmpfile_name the first entry of the list
+ */
+static void
+release_tmpfiles(struct TmpFile_Name *tmpfile_name)
+{
+    while (tmpfile_name && --tmpfile_name->refs == 0)
+    {
+        struct TmpFile_Name *next = tmpfile_name->next;
+
+        rm_delete_temp_image(tmpfile_name->name);
+        magick_free(tmpfile_name);
+        tmpfile_name = next;
+    }
+}
+
+
+/**
  * Initialize clone, dup methods.
  *
  * @param orig the original object
@@ -1308,6 +1331,7 @@ VALUE Draw_init_copy(VALUE self, VALUE orig)
 {
     MagickDraw *copy, *original;
     DrawInfo *info;
+    struct TmpFile_Name *tmpfile_ary;
 
     rb_check_frozen(self);
     rm_gvl_check_writable(self);
@@ -1327,10 +1351,15 @@ VALUE Draw_init_copy(VALUE self, VALUE orig)
     copy_pattern(&copy->info->fill_pattern);
     copy_pattern(&copy->info->stroke_pattern);
 
-    if (original->primitives)
+    copy->primitives = original->primitives ? rb_str_dup(original->primitives) : (VALUE)0;
+
+    tmpfile_ary = copy->tmpfile_ary;
+    copy->tmpfile_ary = original->tmpfile_ary;
+    if (copy->tmpfile_ary)
     {
-        copy->primitives = rb_str_dup(original->primitives);
+        copy->tmpfile_ary->refs++;
     }
+    release_tmpfiles(tmpfile_ary);
 
     return self;
 }
@@ -1478,16 +1507,7 @@ Draw_destroy(void *drawptr)
         draw->info = NULL;
     }
 
-    // Erase any temporary image files.
-    while (draw->tmpfile_ary)
-    {
-        struct TmpFile_Name *tmpfile_name;
-
-        tmpfile_name = draw->tmpfile_ary;
-        draw->tmpfile_ary = draw->tmpfile_ary->next;
-        rm_delete_temp_image(tmpfile_name->name);
-        magick_free(tmpfile_name);
-    }
+    release_tmpfiles(draw->tmpfile_ary);
 
     xfree(drawptr);
 }
