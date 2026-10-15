@@ -1376,10 +1376,19 @@ Draw_initialize(VALUE self)
     MagickDraw *draw, *draw_options;
     VALUE options;
 
+    rb_check_frozen(self);
+    rm_gvl_check_writable(self);
     TypedData_Get_Struct(self, MagickDraw, &rm_draw_data_type, draw);
 
     options = new_DrawOptions();
     TypedData_Get_Struct(options, MagickDraw, &rm_draw_data_type, draw_options);
+    // The block of Draw.new runs in new_DrawOptions.
+    rb_check_frozen(self);
+    rm_gvl_check_writable(self);
+    if (draw->info)
+    {
+        DestroyDrawInfo(draw->info);
+    }
     draw->info = draw_options->info;
     draw_options->info = NULL;
 
@@ -1571,13 +1580,21 @@ VALUE
 DrawOptions_initialize(VALUE self)
 {
     MagickDraw *draw_options;
+    DrawInfo *info;
 
+    rb_check_frozen(self);
+    rm_gvl_check_writable(self);
     TypedData_Get_Struct(self, MagickDraw, &rm_draw_data_type, draw_options);
-    draw_options->info = AcquireDrawInfo();
-    if (!draw_options->info)
+    info = AcquireDrawInfo();
+    if (!info)
     {
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
+    if (draw_options->info)
+    {
+        DestroyDrawInfo(draw_options->info);
+    }
+    draw_options->info = info;
 
     if (rb_block_given_p())
     {
