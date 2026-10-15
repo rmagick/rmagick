@@ -218,10 +218,11 @@ RSpec.describe Magick do
     it "returns enum values in a Ractor" do
       experimental = Warning[:experimental]
       Warning[:experimental] = false
-      expected = [Magick::Image.new(1, 1).colorspace, Magick::ColorspaceType.values]
+      values = Magick::ColorspaceType.values
+      expected = [Magick::Image.new(1, 1).colorspace, values, values]
 
       ractor = Ractor.new do
-        [Magick::Image.new(1, 1).colorspace, Magick::ColorspaceType.values]
+        [Magick::Image.new(1, 1).colorspace, Magick::ColorspaceType.values, Class.new(Magick::ColorspaceType).enum_for(:values).to_a]
       end
 
       expect(ractor.respond_to?(:value) ? ractor.value : ractor.take).to eq(expected)

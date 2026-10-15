@@ -297,10 +297,10 @@ Enum_type_initialize(VALUE self, VALUE sym, VALUE val)
     rb_call_super(2, (const VALUE *)super_argv);
 
     klass = enum_type_class(CLASS_OF(self));
-    enumerators = rb_attr_get(klass, rb_intern(ENUMERATORS_IVAR));
+    enumerators = rb_iv_get(klass, ENUMERATORS_IVAR);
     enumerators = NIL_P(enumerators) ? rb_ary_new() : rb_ary_dup(enumerators);
     rb_ary_push(enumerators, self);
-    rb_ivar_set(klass, rb_intern(ENUMERATORS_IVAR), rb_obj_freeze(enumerators));
+    rb_iv_set(klass, ENUMERATORS_IVAR, rb_ary_freeze(enumerators));
 
     RB_GC_GUARD(enumerators);
 
@@ -345,7 +345,8 @@ Enum_type_values(VALUE klass)
     VALUE rv;
     int x;
 
-    enumerators = rb_attr_get(enum_type_class(klass), rb_intern(ENUMERATORS_IVAR));
+    enumerators = rb_iv_get(enum_type_class(klass), ENUMERATORS_IVAR);
+    enumerators = rm_check_ary_type(enumerators);
 
     if (rb_block_given_p())
     {
@@ -390,7 +391,7 @@ Enum_find(VALUE klass, int val)
     MagickEnum *magick_enum;
     int x;
 
-    enumerators = rb_attr_get(klass, rb_intern(ENUMERATORS_IVAR));
+    enumerators = rb_iv_get(klass, ENUMERATORS_IVAR);
     enumerators = rm_check_ary_type(enumerators);
 
     for (x = 0; x < RARRAY_LEN(enumerators); x++)
