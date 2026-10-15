@@ -20,7 +20,11 @@ static size_t Draw_memsize(const void *);
 static VALUE new_DrawOptions(void);
 static VALUE get_type_metrics(int, VALUE *, VALUE, gvl_function_t);
 
+#if defined(HAVE_RB_RACTOR_LOCAL_STORAGE_VALUE_NEWKEY)
 static rb_ractor_local_key_t dummy_img_key;
+#else
+static VALUE dummy_img = Qnil;
+#endif
 
 const rb_data_type_t rm_draw_data_type = {
     "Magick::Draw",
@@ -1666,15 +1670,49 @@ PolaroidOptions_border_color_eq(VALUE self, VALUE border)
 
 
 /**
- * Create the key of the image that get_type_metrics measures on when no image is
- * given.
+ * Create the image that get_type_metrics measures on when no image is given.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @return the image
+ */
+static VALUE
+new_dummy_tm_img(void)
+{
+    Info *info;
+    Image *image;
+
+    info = CloneImageInfo(NULL);
+    if (!info)
+    {
+        rb_raise(rb_eNoMemError, "not enough memory to continue");
+    }
+    image = rm_acquire_image(info);
+    DestroyImageInfo(info);
+
+    if (!image)
+    {
+        rb_raise(rb_eNoMemError, "not enough memory to continue");
+    }
+    return rm_image_new(image);
+}
+
+
+/**
+ * Set up where get_type_metrics keeps the image it measures on when no image
+ * is given.
  *
  * No Ruby usage (internal function)
  */
 void
 rm_draw_init(void)
 {
+#if defined(HAVE_RB_RACTOR_LOCAL_STORAGE_VALUE_NEWKEY)
     dummy_img_key = rb_ractor_local_storage_value_newkey();
+#else
+    rb_gc_register_address(&dummy_img);
+    dummy_img = new_dummy_tm_img();
+#endif
 }
 
 
@@ -1689,28 +1727,15 @@ rm_draw_init(void)
 static VALUE
 get_dummy_tm_img(void)
 {
+#if defined(HAVE_RB_RACTOR_LOCAL_STORAGE_VALUE_NEWKEY)
     VALUE dummy_img;
 
     if (!rb_ractor_local_storage_value_lookup(dummy_img_key, &dummy_img))
     {
-        Info *info;
-        Image *image;
-
-        info = CloneImageInfo(NULL);
-        if (!info)
-        {
-            rb_raise(rb_eNoMemError, "not enough memory to continue");
-        }
-        image = rm_acquire_image(info);
-        DestroyImageInfo(info);
-
-        if (!image)
-        {
-            rb_raise(rb_eNoMemError, "not enough memory to continue");
-        }
-        dummy_img = rm_image_new(image);
+        dummy_img = new_dummy_tm_img();
         rb_ractor_local_storage_value_set(dummy_img_key, dummy_img);
     }
+#endif
 
     return dummy_img;
 }

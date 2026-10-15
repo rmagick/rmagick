@@ -277,7 +277,8 @@ module RMagick
       ruby_api = [
         'rb_io_path', # Ruby 3.3.0
         'rb_fiber_scheduler_blocking_operation_extract', # Ruby 4.0.0
-        'rb_ractor_make_shareable' # Not in TruffleRuby
+        'rb_ractor_make_shareable', # Not in TruffleRuby
+        'rb_ractor_local_storage_value_newkey' # Not in TruffleRuby
       ]
       memory_api = %w[
         posix_memalign
