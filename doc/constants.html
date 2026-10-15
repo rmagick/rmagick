@@ -241,7 +241,8 @@
       <dd>
         If <code>true</code>, RMagick tells Ruby's garbage collector how much memory ImageMagick allocates, so that the garbage collector runs and
         frees unused images as their memory grows. If <code>false</code>, ImageMagick allocates memory without telling Ruby, and unused images are freed
-        only when the garbage collector runs for other reasons. The default is <code>true</code>. To disable it, set the
+        only when the garbage collector runs for other reasons. The default is <code>true</code>, except on TruffleRuby, where it is always
+        <code>false</code>. To disable it, set the
         <code>RMAGICK_DISABLE_MANAGED_MEMORY</code> environment variable
 
         <pre class="language-ruby">ENV['RMAGICK_DISABLE_MANAGED_MEMORY'] = '1'</pre>

@@ -348,7 +348,11 @@ static void set_managed_memory(void)
         return;
     }
 
+#if defined(TRUFFLERUBY)
+    managed_memory_enable(Qfalse);
+#else
     managed_memory_enable(Qtrue);
+#endif
 }
 
 
