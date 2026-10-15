@@ -12,7 +12,7 @@
 #include "rmagick.h"
 
 
-#define ENUMERATORS_CLASS_VAR "@@enumerators"
+#define ENUMERATORS_IVAR "@enumerators"
 
 
 static VALUE Enum_type_values(VALUE);
@@ -259,6 +259,27 @@ Enum_to_s(VALUE self)
 
 
 /**
+ * Get the Enum subclass that keeps the values of a class derived from it.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param klass the Enum subclass or a class derived from it
+ * @return the Enum subclass
+ */
+static VALUE
+enum_type_class(VALUE klass)
+{
+    VALUE super;
+
+    while ((super = rb_class_superclass(klass)) != Class_Enum)
+    {
+        klass = super;
+    }
+    return klass;
+}
+
+
+/**
  * Initialize method for all Enum subclasses.
  *
  * @param sym [Symbol] the symbol as enum name
@@ -269,19 +290,17 @@ VALUE
 Enum_type_initialize(VALUE self, VALUE sym, VALUE val)
 {
     VALUE super_argv[2];
-    VALUE enumerators;
+    VALUE klass, enumerators;
 
     super_argv[0] = sym;
     super_argv[1] = val;
     rb_call_super(2, (const VALUE *)super_argv);
 
-    if (rb_cvar_defined(CLASS_OF(self), rb_intern(ENUMERATORS_CLASS_VAR)) != Qtrue)
-    {
-        rb_cv_set(CLASS_OF(self), ENUMERATORS_CLASS_VAR, rb_ary_new());
-    }
-
-    enumerators = rb_cv_get(CLASS_OF(self), ENUMERATORS_CLASS_VAR);
+    klass = enum_type_class(CLASS_OF(self));
+    enumerators = rb_iv_get(klass, ENUMERATORS_IVAR);
+    enumerators = NIL_P(enumerators) ? rb_ary_new() : rb_ary_dup(enumerators);
     rb_ary_push(enumerators, self);
+    rb_iv_set(klass, ENUMERATORS_IVAR, rb_ary_freeze(enumerators));
 
     RB_GC_GUARD(enumerators);
 
@@ -326,7 +345,8 @@ Enum_type_values(VALUE klass)
     VALUE rv;
     int x;
 
-    enumerators = rb_cv_get(klass, ENUMERATORS_CLASS_VAR);
+    enumerators = rb_iv_get(enum_type_class(klass), ENUMERATORS_IVAR);
+    enumerators = rm_check_ary_type(enumerators);
 
     if (rb_block_given_p())
     {
@@ -371,7 +391,7 @@ Enum_find(VALUE klass, int val)
     MagickEnum *magick_enum;
     int x;
 
-    enumerators = rb_cv_get(klass, ENUMERATORS_CLASS_VAR);
+    enumerators = rb_iv_get(klass, ENUMERATORS_IVAR);
     enumerators = rm_check_ary_type(enumerators);
 
     for (x = 0; x < RARRAY_LEN(enumerators); x++)

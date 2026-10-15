@@ -215,6 +215,21 @@ RSpec.describe Magick do
       Warning[:experimental] = experimental
     end
 
+    it "returns enum values in a Ractor" do
+      experimental = Warning[:experimental]
+      Warning[:experimental] = false
+      values = Magick::ColorspaceType.values
+      expected = [Magick::Image.new(1, 1).colorspace, values, values]
+
+      ractor = Ractor.new do
+        [Magick::Image.new(1, 1).colorspace, Magick::ColorspaceType.values, Class.new(Magick::ColorspaceType).enum_for(:values).to_a]
+      end
+
+      expect(ractor.respond_to?(:value) ? ractor.value : ractor.take).to eq(expected)
+    ensure
+      Warning[:experimental] = experimental
+    end
+
     it "reads the properties of a frozen image that Ractors share" do
       experimental = Warning[:experimental]
       Warning[:experimental] = false
