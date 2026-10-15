@@ -487,7 +487,9 @@ rm_gvl_init(void)
     interrupt_mask = rb_hash_new();
     rb_funcall(interrupt_mask, rb_intern("compare_by_identity"), 0);
     rb_hash_aset(interrupt_mask, rb_cObject, ID2SYM(rb_intern("never")));
+#if defined(HAVE_RB_RACTOR_MAKE_SHAREABLE)
     rb_ractor_make_shareable(interrupt_mask);
+#endif
     id_handle_interrupt = rb_intern("handle_interrupt");
 
 #if defined(RMAGICK_OFFLOAD_SAFE)
