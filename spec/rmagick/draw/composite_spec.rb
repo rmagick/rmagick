@@ -29,4 +29,15 @@ RSpec.describe Magick::Draw, '#composite' do
     expect { draw.composite(0, 0, 10, 10, image_list) }.not_to raise_error
     expect { draw.composite(0, 0, 10, 10, image_list, Magick::BlendCompositeOp) }.not_to raise_error
   end
+
+  it 'draws each composited image' do
+    draw = described_class.new
+    draw.composite(0, 0, 2, 2, Magick::Image.new(2, 2) { |options| options.background_color = 'red' })
+    draw.composite(2, 0, 2, 2, Magick::Image.new(2, 2) { |options| options.background_color = 'blue' })
+    image = Magick::Image.new(4, 2)
+    draw.draw(image)
+
+    expect(image.pixel_color(0, 0)).to eq(Magick::Pixel.from_color('red'))
+    expect(image.pixel_color(2, 0)).to eq(Magick::Pixel.from_color('blue'))
+  end
 end

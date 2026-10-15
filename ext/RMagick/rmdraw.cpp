@@ -1162,6 +1162,7 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
         rb_raise(rb_eArgError, "unknown composite operator (%d)", composite_op);
     }
 
+    rb_check_frozen(self);
     TypedData_Get_Struct(self, MagickDraw, &rm_draw_data_type, draw);
 
     // Create a temp copy of the composite image
