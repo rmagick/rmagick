@@ -451,6 +451,23 @@ RSpec.describe Magick::Image, if: offloading do
       expect(image.columns).to eq(200)
     end
 
+    it "does not let another fiber initialize a Draw that a call uses" do
+      image = red_image
+      draw = Magick::Draw.new
+      draw.fill("blue").rectangle(0, 0, 9, 9)
+      errors = nil
+      scheduler.before_next_operation do
+        Fiber.schedule do
+          errors = [attempt { draw.__send__(:initialize) }, attempt { draw.__send__(:initialize_copy, Magick::Draw.new) }]
+        end
+      end
+
+      scheduler.run { draw.draw(image) }
+
+      expect(errors).to all(in_use)
+      expect(image.pixel_color(5, 5).to_color).to eq(blue_image.pixel_color(5, 5).to_color)
+    end
+
     it "does not let another fiber's call read an image that a call reads" do
       image = described_class.new(200, 200)
       error = nil

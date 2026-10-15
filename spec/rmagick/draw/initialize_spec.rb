@@ -22,13 +22,26 @@ RSpec.describe Magick::Draw, '#initialize' do
     expect(image.pixel_color(0, 0)).to eq(Magick::Pixel.from_color('black'))
   end
 
+  it 'releases the DrawInfo it held when initialize is called again' do
+    draw = described_class.new
+    draw.fill_pattern = Magick::Image.new(1000, 1000)
+    GC.start
+    baseline = Magick.resource_usage(:memory)
+
+    draw.__send__(:initialize)
+
+    expect(Magick.resource_usage(:memory)).to be < baseline
+  end
+
   it 'raises FrozenError when initialize is called on a frozen draw' do
     draw = described_class.new
     draw.fill = 'red'
     draw.rectangle(0, 0, 1, 1)
     draw.freeze
+    called = false
 
-    expect { draw.__send__(:initialize) }.to raise_error(FrozenError)
+    expect { draw.__send__(:initialize) { called = true } }.to raise_error(FrozenError)
+    expect(called).to be(false)
 
     image = Magick::Image.new(2, 2)
     draw.draw(image)

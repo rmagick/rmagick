@@ -1376,10 +1376,13 @@ Draw_initialize(VALUE self)
     MagickDraw *draw, *draw_options;
     VALUE options;
 
+    rb_check_frozen(self);
+    rm_gvl_check_writable(self);
     TypedData_Get_Struct(self, MagickDraw, &rm_draw_data_type, draw);
 
     options = new_DrawOptions();
     TypedData_Get_Struct(options, MagickDraw, &rm_draw_data_type, draw_options);
+    // The block of Draw.new runs in new_DrawOptions.
     rb_check_frozen(self);
     rm_gvl_check_writable(self);
     if (draw->info)
