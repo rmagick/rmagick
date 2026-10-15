@@ -238,6 +238,7 @@ typedef struct
 struct TmpFile_Name
 {
     struct TmpFile_Name *next; /**< the next tmp filename */
+    std::atomic<size_t> refs; /**< the number of Draw objects and list entries that refer to it */
     char name[1]; /**< expandable char array for this filename */
 };
 
