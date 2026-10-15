@@ -20,6 +20,9 @@ on:
 permissions:
   contents: read
 
+env:
+  SPEC_OPTS: --format documentation
+
 jobs:
   lint:
     runs-on: ubuntu-latest
