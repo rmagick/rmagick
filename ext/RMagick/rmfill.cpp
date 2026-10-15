@@ -766,6 +766,12 @@ TextureFill_initialize(VALUE self, VALUE texture_arg)
     texture_image = rm_cur_image(texture_arg);
 
     texture = rm_copy_image(rm_check_readable(texture_image));
+    // cur_image and the copy, which releases the GVL, let other code freeze self.
+    if (RB_OBJ_FROZEN(self))
+    {
+        DestroyImage(texture);
+        rb_check_frozen(self);
+    }
 
     if (fill->texture)
     {

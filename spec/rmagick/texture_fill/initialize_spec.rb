@@ -17,8 +17,9 @@ RSpec.describe Magick::TextureFill, '#initialize' do
   end
 
   it 'releases the texture it held when initialize is called again' do
-    fill = described_class.new(Magick::Image.new(1000, 1000))
-    GC.start
+    texture = Magick::Image.new(1000, 1000)
+    fill = described_class.new(texture)
+    texture.destroy!
     baseline = Magick.resource_usage(:memory)
 
     fill.__send__(:initialize, Magick::Image.new(1, 1))
@@ -31,6 +32,23 @@ RSpec.describe Magick::TextureFill, '#initialize' do
     fill = described_class.new(red).freeze
 
     expect { fill.__send__(:initialize, Magick::Image.new(2, 2)) }.to raise_error(FrozenError)
+
+    image = Magick::Image.new(2, 2)
+    fill.fill(image)
+    expect(image.pixel_color(0, 0)).to eq(Magick::Pixel.from_color('red'))
+  end
+
+  it 'raises FrozenError when the fill is frozen while the texture is converted' do
+    red = Magick::Image.new(2, 2) { |options| options.background_color = 'red' }
+    blue = Magick::Image.new(2, 2) { |options| options.background_color = 'blue' }
+    fill = described_class.new(red)
+    texture = Object.new
+    texture.define_singleton_method(:cur_image) do
+      fill.freeze
+      blue
+    end
+
+    expect { fill.__send__(:initialize, texture) }.to raise_error(FrozenError)
 
     image = Magick::Image.new(2, 2)
     fill.fill(image)
