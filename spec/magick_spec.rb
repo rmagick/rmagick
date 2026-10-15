@@ -234,10 +234,18 @@ RSpec.describe Magick do
       experimental = Warning[:experimental]
       Warning[:experimental] = false
 
-      ractors = %w[red green blue yellow].map do |color|
-        Ractor.new(color) do |background_color|
+      colors = %w[red green blue yellow]
+      expected = colors.map do |color|
+        draw = Magick::Draw.new
+        draw.composite(0, 0, 4, 4, Magick::Image.new(4, 4) { |options| options.background_color = color })
+        image = Magick::Image.new(4, 4)
+        draw.draw(image)
+        image.export_pixels_to_str
+      end
+
+      ractors = colors.each_index.map do |i|
+        Ractor.new(colors[i], expected[i]) do |background_color, expected_pixels|
           tile = Magick::Image.new(4, 4) { |options| options.background_color = background_color }
-          expected = tile.export_pixels_to_str
           Magick::Image::Info.new.texture = tile
           Magick::ImageList::Montage.new.texture = tile
 
@@ -246,7 +254,7 @@ RSpec.describe Magick do
             draw.composite(0, 0, 4, 4, tile)
             image = Magick::Image.new(4, 4)
             draw.draw(image)
-            image.export_pixels_to_str == expected
+            image.export_pixels_to_str == expected_pixels
           end.all?
         end
       end
