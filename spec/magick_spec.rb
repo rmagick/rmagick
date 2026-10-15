@@ -201,6 +201,20 @@ RSpec.describe Magick do
       Warning[:experimental] = experimental
     end
 
+    it "measures text without an image in a Ractor" do
+      experimental = Warning[:experimental]
+      Warning[:experimental] = false
+      expected = [Magick::Draw.new.get_type_metrics("ABC").width, Magick::Draw.new.get_multiline_type_metrics("A\nB").height]
+
+      ractor = Ractor.new do
+        [Magick::Draw.new.get_type_metrics("ABC").width, Magick::Draw.new.get_multiline_type_metrics("A\nB").height]
+      end
+
+      expect(ractor.respond_to?(:value) ? ractor.value : ractor.take).to eq(expected)
+    ensure
+      Warning[:experimental] = experimental
+    end
+
     it "reads the properties of a frozen image that Ractors share" do
       experimental = Warning[:experimental]
       Warning[:experimental] = false

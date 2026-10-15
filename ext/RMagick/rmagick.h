@@ -610,6 +610,7 @@ ATTR_WRITER(Draw, stroke_width)
 ATTR_WRITER(Draw, text_antialias)
 ATTR_WRITER(Draw, tile)
 ATTR_WRITER(Draw, undercolor)
+extern void rm_draw_init(void);
 extern VALUE Draw_alloc(VALUE);
 extern VALUE Draw_annotate(VALUE, VALUE, VALUE, VALUE, VALUE, VALUE, VALUE);
 extern VALUE Draw_composite(int, VALUE *, VALUE);
