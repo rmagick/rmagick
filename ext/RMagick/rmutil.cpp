@@ -902,32 +902,13 @@ rm_set_magickpixel(MagickPixel *pp, const char *color)
 void
 rm_write_temp_image(Image *image, char *temp_name, size_t temp_name_l)
 {
-
-#define TMPNAM_CLASS_VAR "@@_tmpnam_"
-
+    static std::atomic<unsigned long> last_id(0);
     MagickBooleanType okay;
     ExceptionInfo *exception;
-    VALUE id_value;
-    int id;
 
     exception = AcquireExceptionInfo();
 
-
-    // 'id' is always the value of its previous use
-    if (rb_cvar_defined(Module_Magick, rb_intern(TMPNAM_CLASS_VAR)) == Qtrue)
-    {
-        id_value = rb_cv_get(Module_Magick, TMPNAM_CLASS_VAR);
-        id = FIX2INT(id_value);
-    }
-    else
-    {
-        id = 0;
-        rb_cv_set(Module_Magick, TMPNAM_CLASS_VAR, INT2FIX(id));
-    }
-
-    id += 1;
-    rb_cv_set(Module_Magick, TMPNAM_CLASS_VAR, INT2FIX(id));
-    snprintf(temp_name, temp_name_l, "mpri:%d", id);
+    snprintf(temp_name, temp_name_l, "mpri:%lu", ++last_id);
 
     // Omit "mpri:" from filename to form the key
     okay = (MagickBooleanType)SetImageRegistry(ImageRegistryType, temp_name+5, image, exception);
@@ -937,8 +918,6 @@ rm_write_temp_image(Image *image, char *temp_name, size_t temp_name_l)
     {
         rb_raise(rb_eRuntimeError, "SetImageRegistry failed.");
     }
-
-    RB_GC_GUARD(id_value);
 }
 
 

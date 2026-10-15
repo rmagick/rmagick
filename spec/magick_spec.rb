@@ -230,6 +230,32 @@ RSpec.describe Magick do
       Warning[:experimental] = experimental
     end
 
+    it "composites images and sets textures in Ractors" do
+      experimental = Warning[:experimental]
+      Warning[:experimental] = false
+
+      ractors = %w[red green blue yellow].map do |color|
+        Ractor.new(color) do |background_color|
+          tile = Magick::Image.new(4, 4) { |options| options.background_color = background_color }
+          expected = tile.export_pixels_to_str
+          Magick::Image::Info.new.texture = tile
+          Magick::ImageList::Montage.new.texture = tile
+
+          Array.new(20) do
+            draw = Magick::Draw.new
+            draw.composite(0, 0, 4, 4, tile)
+            image = Magick::Image.new(4, 4)
+            draw.draw(image)
+            image.export_pixels_to_str == expected
+          end.all?
+        end
+      end
+
+      expect(ractors.map { |r| r.respond_to?(:value) ? r.value : r.take }).to all(be(true))
+    ensure
+      Warning[:experimental] = experimental
+    end
+
     it "reads the properties of a frozen image that Ractors share" do
       experimental = Warning[:experimental]
       Warning[:experimental] = false
