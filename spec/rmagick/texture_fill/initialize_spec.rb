@@ -20,6 +20,7 @@ RSpec.describe Magick::TextureFill, '#initialize' do
     texture = Magick::Image.new(1000, 1000)
     fill = described_class.new(texture)
     texture.destroy!
+    GC.start
     baseline = Magick.resource_usage(:memory)
 
     fill.__send__(:initialize, Magick::Image.new(1, 1))
