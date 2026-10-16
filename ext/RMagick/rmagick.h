@@ -20,6 +20,7 @@
 #include "ruby/defines.h"
 
 #include <atomic>
+#include <utility>
 
 extern "C" {
     #include <assert.h>

@@ -2573,11 +2573,8 @@ Info_init_copy(VALUE self, VALUE orig)
     }
     magick_clone_string(&info->texture, has_texture ? texture : NULL);
 
-    // A setter can keep a pointer into the ImageInfo while it calls Ruby code,
-    // so the ImageInfo keeps its address and takes the contents of the copy.
-    Info old = *copy->info;
-    *copy->info = *info;
-    *info = old;
+    // A setter can keep a pointer into the ImageInfo while it calls Ruby code.
+    std::swap(*copy->info, *info);
     destroy_info(info);
 
     return self;

@@ -4,12 +4,15 @@ RSpec.describe Magick::ImageList::Montage, '#dup' do
   it 'copies the settings' do
     list = Magick::ImageList.new
     2.times { list << Magick::Image.new(10, 10) }
+    texture = Magick::Image.new(4, 4) { |options| options.background_color = 'blue' }
     montage = described_class.new
     montage.background_color = 'red'
     montage.geometry = '10x10+2+2'
+    montage.texture = texture
     expected = list.montage do |given|
       given.background_color = 'red'
       given.geometry = '10x10+2+2'
+      given.texture = texture
     end
 
     [montage.dup, montage.clone].each do |copy|

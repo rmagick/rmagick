@@ -373,10 +373,7 @@ Montage_init_copy(VALUE self, VALUE orig)
         has_texture = rm_copy_temp_image(original->info->texture, texture, sizeof(texture));
     }
 
-    // Copy the fields that CloneMontageInfo copies into the MontageInfo of the
-    // copy. CloneMontageInfo leaks its default geometry when it copies a
-    // MontageInfo, and a setter can keep a pointer into the MontageInfo while
-    // it calls Ruby code.
+    // Copy in place what CloneMontageInfo copies, since it leaks its default geometry.
     info = copy->info;
     magick_clone_string(&info->geometry, original->info->geometry);
     magick_clone_string(&info->tile, original->info->tile);
@@ -398,7 +395,7 @@ Montage_init_copy(VALUE self, VALUE orig)
     info->matte_color = original->info->matte_color;
     info->gravity = original->info->gravity;
     CopyMagickString(info->filename, original->info->filename, sizeof(info->filename));
-    info->debug = original->info->debug;
+    info->debug = IsEventLogging();
     copy->compose = original->compose;
 
     return self;
@@ -488,6 +485,8 @@ Montage_texture_eq(VALUE self, VALUE texture)
     char temp_name[MaxTextExtent];
 
     montage = get_writable_montage(self);
+    texture = rm_cur_image(texture);
+    texture_image = rm_check_readable(texture);
 
     // If we had a previously defined temp texture image,
     // remove it now in preparation for this new one.
@@ -497,9 +496,6 @@ Montage_texture_eq(VALUE self, VALUE texture)
         magick_free(montage->info->texture);
         montage->info->texture = NULL;
     }
-
-    texture = rm_cur_image(texture);
-    texture_image = rm_check_readable(texture);
 
     // Write a temp copy of the image & save its name.
     rm_write_temp_image(texture_image, temp_name, sizeof(temp_name));

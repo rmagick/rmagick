@@ -1337,10 +1337,7 @@ replace_draw_info(MagickDraw *draw, DrawInfo *info)
 {
     if (draw->info)
     {
-        DrawInfo old = *draw->info;
-
-        *draw->info = *info;
-        *info = old;
+        std::swap(*draw->info, *info);
         DestroyDrawInfo(info);
     }
     else
