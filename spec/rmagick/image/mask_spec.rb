@@ -31,4 +31,19 @@ RSpec.describe Magick::Image, '#mask' do
     image_list.new_image(10, 10)
     expect { image.mask(image_list) }.not_to raise_error
   end
+
+  it 'frees the copy of the mask when the thread is interrupted' do
+    cancelled = Class.new(StandardError)
+    GC.start
+    baseline = Magick.resource_usage(:memory)
+    image = described_class.new(1000, 1000)
+    mask = described_class.new(1000, 1000)
+    allocated = Magick.resource_usage(:memory)
+    interrupt(cancelled, ready: -> { Magick.resource_usage(:memory) > allocated }) { image.mask(mask) }
+    image.destroy!
+    mask.destroy!
+    3.times { GC.start }
+
+    expect(Magick.resource_usage(:memory)).to be <= baseline
+  end
 end

@@ -1396,7 +1396,7 @@ void rm_sync_image_options(Image *image, Info *info)
 #if defined(IMAGEMAGICK_7)
         exception = AcquireExceptionInfo();
         DECLARE_GVL_CALL(call, TransformImageColorspace, image, info->colorspace, exception);
-        call.keep_thread().run<void>();
+        call.keep_thread().release(exception).run<void>();
         CHECK_EXCEPTION();
         DestroyExceptionInfo(exception);
 #else
@@ -1821,7 +1821,7 @@ rm_clone_image(Image *image)
 
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, CloneImage, image, 0, 0, MagickTrue, exception);
-    clone = call.keep_thread().run<Image *>();
+    clone = call.keep_thread().release(exception).run<Image *>();
     if (!clone)
     {
         rb_raise(rb_eNoMemError, "not enough memory to continue");

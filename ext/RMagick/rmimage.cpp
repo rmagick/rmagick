@@ -4562,13 +4562,13 @@ composite_tiled(int bang, int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
             BEGIN_CHANNEL_MASK(image, channels);
             DECLARE_GVL_CALL(call, CompositeImage, image, comp_image, composite_op, MagickTrue, x, y, exception);
-            void *ret = call.keep_thread().run<void *>();
+            void *ret = call.keep_thread().restore_mask(image, channel_mask).destroy(bang ? NULL : image).release(exception).run<void *>();
             status = reinterpret_cast<MagickStatusType &>(ret);
             END_CHANNEL_MASK(image);
             rm_check_exception(exception, image, bang ? RetainOnError: DestroyOnError);
 #else
             DECLARE_GVL_CALL(call, CompositeImageChannel, image, channels, composite_op, comp_image, x, y);
-            void *ret = call.keep_thread().run<void *>();
+            void *ret = call.keep_thread().destroy(bang ? NULL : image).run<void *>();
             status = reinterpret_cast<MagickStatusType &>(ret);
             rm_check_image_exception(image, bang ? RetainOnError: DestroyOnError);
 #endif
@@ -10147,7 +10147,7 @@ set_image_mask(VALUE self, VALUE mask)
         for (y = 0; y < (long) clip_mask->rows; y++)
         {
             DECLARE_GVL_CALL(pixels_call, GetAuthenticPixels, clip_mask, 0, y, clip_mask->columns, 1, exception);
-            q = pixels_call.keep_thread().run<PixelPacket *>();
+            q = pixels_call.keep_thread().destroy(clip_mask).release(exception).run<PixelPacket *>();
             rm_check_exception(exception, clip_mask, DestroyOnError);
 
             if (!q)
@@ -10167,7 +10167,7 @@ set_image_mask(VALUE self, VALUE mask)
             }
 
             DECLARE_GVL_CALL(sync_call, SyncAuthenticPixels, clip_mask, exception);
-            sync_call.keep_thread().run<void>();
+            sync_call.keep_thread().destroy(clip_mask).release(exception).run<void>();
             rm_check_exception(exception, clip_mask, DestroyOnError);
         }
         DestroyExceptionInfo(exception);
@@ -17261,7 +17261,7 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
     rm_check_exception(exception, reflection, DestroyOnError);
 #else
     DECLARE_GVL_CALL(class_call, SetImageStorageClass, reflection, DirectClass);
-    class_call.read(self).destroy(reflection).run<void>();
+    class_call.read(self).destroy(reflection).release(exception).run<void>();
     rm_check_image_exception(reflection, DestroyOnError);
 
 
@@ -17284,7 +17284,7 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
 #endif
 
         DECLARE_GVL_CALL(pixels_call, GetVirtualPixels, reflection, 0, y, image->columns, 1, exception);
-        void *ret = pixels_call.keep_thread().run<void *>();
+        void *ret = pixels_call.keep_thread().destroy(reflection).release(exception).run<void *>();
         p = reinterpret_cast<decltype(p)>(ret);
         rm_check_exception(exception, reflection, DestroyOnError);
         if (!p)
@@ -17318,7 +17318,7 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
         }
 
         DECLARE_GVL_CALL(sync_call, SyncAuthenticPixels, reflection, exception);
-        sync_call.keep_thread().run<void>();
+        sync_call.keep_thread().destroy(reflection).release(exception).run<void>();
         rm_check_exception(exception, reflection, DestroyOnError);
 
         opacity += step;

@@ -15,7 +15,7 @@ module TestHelpers
     [pixel_value, pixel_value, pixel_value]
   end
 
-  def interrupt(error)
+  def interrupt(error, ready: nil)
     thread = Thread.new do
       Thread.current.report_on_exception = false
       yield
@@ -23,7 +23,7 @@ module TestHelpers
     rescue error
       nil
     end
-    Thread.pass until thread.status == 'sleep' || !thread.alive?
+    Thread.pass until (ready ? ready.call : thread.status == 'sleep') || !thread.alive?
     thread.raise(error) if thread.alive?
     thread.join
     nil
