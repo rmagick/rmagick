@@ -668,7 +668,8 @@ GradientFill_fill(VALUE self, VALUE image_obj)
     double x1, y1, x2, y2;          // points on the line
 
     TypedData_Get_Struct(self, MagickGradientFill, &rm_gradient_fill_data_type, fill);
-    image = rm_check_writable(rm_cur_image(image_obj));
+    image_obj = rm_cur_image(image_obj);
+    image = rm_check_writable(image_obj);
 
     x1 = fill->x1;
     y1 = fill->y1;
@@ -714,6 +715,8 @@ GradientFill_fill(VALUE self, VALUE image_obj)
             h_diagonal_fill(image, x1, y1, x2, y2, &start_color, &stop_color);
         }
     }
+
+    RB_GC_GUARD(image_obj);
 
     return self;
 }

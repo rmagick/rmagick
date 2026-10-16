@@ -4502,6 +4502,7 @@ composite_tiled(int bang, int argc, VALUE *argv, VALUE self)
 {
     Image *image;
     Image *comp_image;
+    VALUE comp;
     CompositeOperator composite_op = OverCompositeOp;
     long x, y;
     unsigned long columns;
@@ -4537,7 +4538,8 @@ composite_tiled(int bang, int argc, VALUE *argv, VALUE self)
             break;
     }
 
-    comp_image = rm_check_readable(rm_cur_image(argv[0]));
+    comp = rm_cur_image(argv[0]);
+    comp_image = rm_check_readable(comp);
     image = bang ? rm_check_frozen(self) : rm_check_readable(self);
 
     if (!bang)
@@ -4576,6 +4578,8 @@ composite_tiled(int bang, int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     DestroyExceptionInfo(exception);
 #endif
+
+    RB_GC_GUARD(comp);
 
     return bang ? self : rm_image_new(image);
 }

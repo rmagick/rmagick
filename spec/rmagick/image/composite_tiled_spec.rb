@@ -35,6 +35,20 @@ RSpec.describe Magick::Image, '#composite_tiled' do
     expect { image.composite_tiled(image_list, Magick::RedChannel, Magick::GreenChannel) }.not_to raise_error
   end
 
+  it 'keeps the image that #cur_image returns alive while it tiles' do
+    image = described_class.new(8, 4)
+    overlay = described_class.new(4, 4) { |options| options.background_color = 'red' }
+    source = Object.new
+    source.define_singleton_method(:cur_image) { overlay.dup }
+
+    result = with_gc_stress { image.composite_tiled(source) }
+    with_gc_stress { image.composite_tiled!(source) }
+
+    red = Magick::Pixel.from_color('red')
+    expect(result.pixel_color(7, 3)).to eq(red)
+    expect(image.pixel_color(7, 3)).to eq(red)
+  end
+
   it 'does not change a frozen overlay' do
     image = described_class.new(20, 20)
     overlay = described_class.new(5, 5).freeze
