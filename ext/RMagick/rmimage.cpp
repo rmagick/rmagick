@@ -52,6 +52,7 @@ static VALUE scale(int, int, VALUE *, VALUE, gvl_function_t);
 static VALUE threshold_image(int, VALUE *, VALUE, gvl_function_t);
 static VALUE xform_image(int, VALUE, VALUE, VALUE, VALUE, VALUE, gvl_function_t);
 static VALUE array_from_images(Image *);
+static VALUE array_from_synced_images(Image *, Info *);
 static VALUE file_arg_rescue(VALUE, VALUE ATTRIBUTE_UNUSED) ATTRIBUTE_NORETURN;
 static void rm_image_free(void *ptr);
 static size_t rm_image_memsize(const void *ptr);
@@ -2575,7 +2576,7 @@ Image_capture(int argc, VALUE *argv, VALUE self ATTRIBUTE_UNUSED)
 {
     Image *new_image;
     ImageInfo *image_info;
-    VALUE info_obj;
+    VALUE info_obj, image_obj;
     XImportInfo ximage_info;
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
@@ -2623,11 +2624,14 @@ Image_capture(int argc, VALUE *argv, VALUE self ATTRIBUTE_UNUSED)
     rm_ensure_result(new_image);
 
     rm_set_user_artifact(new_image, image_info);
+    image_obj = rm_image_wrap(new_image);
     rm_sync_image_options(new_image, image_info);
+    rm_image_set(image_obj, new_image);
 
     RB_GC_GUARD(info_obj);
+    RB_GC_GUARD(image_obj);
 
-    return rm_image_new(new_image);
+    return image_obj;
 }
 
 
@@ -7988,12 +7992,11 @@ Image_from_blob(VALUE klass ATTRIBUTE_UNUSED, VALUE blob_arg)
 
     rm_ensure_result(images);
     rm_set_user_artifact(images, info);
-    rm_sync_image_options(images, info);
 
     RB_GC_GUARD(info_obj);
     RB_GC_GUARD(blob_arg);
 
-    return array_from_images(images);
+    return array_from_synced_images(images, info);
 }
 
 
@@ -12786,11 +12789,10 @@ rd_image(VALUE klass ATTRIBUTE_UNUSED, VALUE file, gvl_function_t fp)
     rm_ensure_result(images);
 
     rm_set_user_artifact(images, info);
-    rm_sync_image_options(images, info);
 
     RB_GC_GUARD(info_obj);
 
-    return array_from_images(images);
+    return array_from_synced_images(images, info);
 }
 
 
@@ -12937,12 +12939,11 @@ Image_read_inline(VALUE self ATTRIBUTE_UNUSED, VALUE content)
 
     rm_ensure_result(images);
     rm_set_user_artifact(images, info);
-    rm_sync_image_options(images, info);
 
     RB_GC_GUARD(info_obj);
     RB_GC_GUARD(content);
 
-    return array_from_images(images);
+    return array_from_synced_images(images, info);
 }
 
 
@@ -12971,6 +12972,49 @@ array_from_images(Image *images)
     }
 
     RB_GC_GUARD(image_obj);
+    RB_GC_GUARD(image_ary);
+
+    return image_ary;
+}
+
+
+struct SyncImageOptions_Args
+{
+    Image *images;
+    Info *info;
+};
+
+
+static VALUE
+sync_image_options_protected(VALUE arg)
+{
+    struct SyncImageOptions_Args *args = (struct SyncImageOptions_Args *)arg;
+
+    rm_sync_image_options(args->images, args->info);
+    return Qnil;
+}
+
+
+static VALUE
+array_from_synced_images(Image *images, Info *info)
+{
+    struct SyncImageOptions_Args args = { images, info };
+    VALUE image_ary;
+    int state = 0;
+
+    image_ary = rb_ary_new();
+    for (Image *image = images; image; image = GetNextImageInList(image))
+    {
+        rb_ary_push(image_ary, rm_image_wrap(image));
+    }
+
+    rb_protect(sync_image_options_protected, (VALUE)&args, &state);
+    rm_split(images);
+    if (state)
+    {
+        rb_jump_tag(state);
+    }
+
     RB_GC_GUARD(image_ary);
 
     return image_ary;
