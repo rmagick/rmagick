@@ -130,6 +130,32 @@ GradientFill_initialize(
 
 
 /**
+ * Check the receiver and the argument of initialize_copy as
+ * Object#initialize_copy does.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param self the copy
+ * @param orig the original object
+ * @return false if self is orig, true otherwise
+ */
+static bool
+check_init_copy(VALUE self, VALUE orig)
+{
+    if (self == orig)
+    {
+        return false;
+    }
+    rb_check_frozen(self);
+    if (rb_obj_class(self) != rb_obj_class(orig))
+    {
+        rb_raise(rb_eTypeError, "initialize_copy should take same class object");
+    }
+    return true;
+}
+
+
+/**
  * Initialize clone, dup methods.
  *
  * @param orig the original object
@@ -140,7 +166,10 @@ GradientFill_init_copy(VALUE self, VALUE orig)
 {
     MagickGradientFill *copy, *original;
 
-    rb_check_frozen(self);
+    if (!check_init_copy(self, orig))
+    {
+        return self;
+    }
     TypedData_Get_Struct(orig, MagickGradientFill, &rm_gradient_fill_data_type, original);
     TypedData_Get_Struct(self, MagickGradientFill, &rm_gradient_fill_data_type, copy);
     *copy = *original;
@@ -773,18 +802,15 @@ TextureFill_alloc(VALUE klass)
  *
  * @param self the TextureFill object
  * @param fill the MagickTextureFill struct of self
- * @param texture the new texture, or NULL
+ * @param texture the new texture, which is destroyed if self is frozen
  */
 static void
 replace_texture(VALUE self, MagickTextureFill *fill, Image *texture)
 {
-    // The copy releases the GVL, and cur_image runs Ruby code, so other code can freeze self.
+    // Making the copy releases the GVL, so other code can freeze self meanwhile.
     if (OBJ_FROZEN(self))
     {
-        if (texture)
-        {
-            DestroyImage(texture);
-        }
+        DestroyImage(texture);
         rb_error_frozen_object(self);
     }
 
@@ -832,17 +858,19 @@ VALUE
 TextureFill_init_copy(VALUE self, VALUE orig)
 {
     MagickTextureFill *copy, *original;
-    Image *texture = NULL;
 
-    rb_check_frozen(self);
+    if (!check_init_copy(self, orig))
+    {
+        return self;
+    }
     TypedData_Get_Struct(orig, MagickTextureFill, &rm_texture_fill_data_type, original);
     TypedData_Get_Struct(self, MagickTextureFill, &rm_texture_fill_data_type, copy);
-
-    if (original->texture)
+    if (!original->texture)
     {
-        texture = rm_copy_image(original->texture);
+        rb_raise(rb_eRuntimeError, "%s has not been initialized", rb_obj_classname(orig));
     }
-    replace_texture(self, copy, texture);
+
+    replace_texture(self, copy, rm_copy_image(original->texture));
 
     return self;
 }
