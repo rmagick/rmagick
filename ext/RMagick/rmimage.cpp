@@ -1605,7 +1605,11 @@ VALUE
 Image_background_color_eq(VALUE self, VALUE color)
 {
     Image *image = rm_check_frozen(self);
-    Color_to_PixelColor(&image->background_color, color);
+    PixelColor background_color = image->background_color;
+
+    Color_to_PixelColor(&background_color, color);
+    image = rm_check_frozen(self);
+    image->background_color = background_color;
     return color;
 }
 
@@ -1699,8 +1703,9 @@ Image_bias_eq(VALUE self, VALUE pct)
     Image *image;
     double bias;
 
-    image = rm_check_frozen(self);
+    rm_check_frozen(self);
     bias = rm_percentage(pct, 1.0) * QuantumRange;
+    image = rm_check_frozen(self);
 
 #if defined(IMAGEMAGICK_7)
     {
@@ -2484,7 +2489,11 @@ VALUE
 Image_border_color_eq(VALUE self, VALUE color)
 {
     Image *image = rm_check_frozen(self);
-    Color_to_PixelColor(&image->border_color, color);
+    PixelColor border_color = image->border_color;
+
+    Color_to_PixelColor(&border_color, color);
+    image = rm_check_frozen(self);
+    image->border_color = border_color;
     return color;
 }
 
@@ -2993,7 +3002,11 @@ VALUE
 Image_chromaticity_eq(VALUE self, VALUE chroma)
 {
     Image *image = rm_check_frozen(self);
-    Export_ChromaticityInfo(&image->chromaticity, chroma);
+    ChromaticityInfo chromaticity = image->chromaticity;
+
+    Export_ChromaticityInfo(&chromaticity, chroma);
+    image = rm_check_frozen(self);
+    image->chromaticity = chromaticity;
     return chroma;
 }
 
@@ -5559,7 +5572,7 @@ Image_density_eq(VALUE self, VALUE density_arg)
     int count;
     double x_res, y_res;
 
-    image = rm_check_frozen(self);
+    rm_check_frozen(self);
 
     // Get the Class ID for the Geometry class.
     if (!Class_Geometry)
@@ -5578,6 +5591,7 @@ Image_density_eq(VALUE self, VALUE density_arg)
         {
             rb_raise(rb_eArgError, "invalid x resolution: %f", x_res);
         }
+        image = rm_check_frozen(self);
 #if defined(IMAGEMAGICK_7)
         image->resolution.y = y_res != 0.0 ? y_res : x_res;
         image->resolution.x = x_res;
@@ -5596,6 +5610,7 @@ Image_density_eq(VALUE self, VALUE density_arg)
             rb_raise(rb_eArgError, "invalid density geometry %s", density);
         }
 
+        image = rm_check_frozen(self);
 #if defined(IMAGEMAGICK_7)
         count = sscanf(density, "%lfx%lf", &image->resolution.x, &image->resolution.y);
 #else
@@ -7509,7 +7524,11 @@ VALUE
 Image_extract_info_eq(VALUE self, VALUE rect)
 {
     Image *image = rm_check_frozen(self);
-    Export_RectangleInfo(&image->extract_info, rect);
+    RectangleInfo extract_info = image->extract_info;
+
+    Export_RectangleInfo(&extract_info, rect);
+    image = rm_check_frozen(self);
+    image->extract_info = extract_info;
     return rect;
 }
 
@@ -7787,7 +7806,7 @@ Image_format_eq(VALUE self, VALUE magick)
     char *mgk;
     ExceptionInfo *exception;
 
-    image = rm_check_frozen(self);
+    rm_check_frozen(self);
 
     mgk = StringValueCStr(magick);
 
@@ -7803,6 +7822,7 @@ Image_format_eq(VALUE self, VALUE magick)
     }
 
 
+    image = rm_check_frozen(self);
     strlcpy(image->magick, m->name, sizeof(image->magick));
     return magick;
 }
@@ -8051,8 +8071,10 @@ Image_fuzz(VALUE self)
 VALUE
 Image_fuzz_eq(VALUE self, VALUE fuzz)
 {
+    rm_check_frozen(self);
+    double value = rm_fuzz_to_dbl(fuzz);
     Image *image = rm_check_frozen(self);
-    image->fuzz = rm_fuzz_to_dbl(fuzz);
+    image->fuzz = value;
     return fuzz;
 }
 
@@ -8413,6 +8435,7 @@ Image_geometry_eq(VALUE self, VALUE geometry)
     {
         rb_raise(rb_eTypeError, "invalid geometry: %s", geom);
     }
+    image = rm_check_frozen(self);
     magick_clone_string(&image->geometry, geom);
 
     RB_GC_GUARD(geom_str);
@@ -10174,7 +10197,11 @@ VALUE
 Image_matte_color_eq(VALUE self, VALUE color)
 {
     Image *image = rm_check_frozen(self);
-    Color_to_PixelColor(&image->matte_color, color);
+    PixelColor matte_color = image->matte_color;
+
+    Color_to_PixelColor(&matte_color, color);
+    image = rm_check_frozen(self);
+    image->matte_color = matte_color;
     return color;
 }
 
@@ -11453,7 +11480,11 @@ VALUE
 Image_page_eq(VALUE self, VALUE rect)
 {
     Image *image = rm_check_frozen(self);
-    Export_RectangleInfo(&image->page, rect);
+    RectangleInfo page = image->page;
+
+    Export_RectangleInfo(&page, rect);
+    image = rm_check_frozen(self);
+    image->page = page;
     return rect;
 }
 
@@ -15628,8 +15659,10 @@ Image_ticks_per_second(VALUE self)
 VALUE
 Image_ticks_per_second_eq(VALUE self, VALUE tps)
 {
+    rm_check_frozen(self);
+    unsigned long ticks_per_second = NUM2ULONG(tps);
     Image *image = rm_check_frozen(self);
-    image->ticks_per_second = NUM2ULONG(tps);
+    image->ticks_per_second = ticks_per_second;
     return tps;
 }
 
@@ -16244,7 +16277,11 @@ VALUE
 Image_transparent_color_eq(VALUE self, VALUE color)
 {
     Image *image = rm_check_frozen(self);
-    Color_to_PixelColor(&image->transparent_color, color);
+    PixelColor transparent_color = image->transparent_color;
+
+    Color_to_PixelColor(&transparent_color, color);
+    image = rm_check_frozen(self);
+    image->transparent_color = transparent_color;
     return color;
 }
 
