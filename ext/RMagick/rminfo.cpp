@@ -2389,19 +2389,15 @@ Info_view_eq(VALUE self, VALUE view_arg)
 
 
 /**
- * If there is a texture image, delete it before destroying the Image::Info
- * structure.
+ * Delete the texture image of an ImageInfo, and destroy the ImageInfo.
  *
  * No Ruby usage (internal function)
  *
- * @param infoptr pointer to the MagickImageInfo struct
+ * @param info the ImageInfo, or NULL
  */
 static void
-Info_free(void *infoptr)
+destroy_info(Info *info)
 {
-    MagickImageInfo *magick_image_info = (MagickImageInfo *)infoptr;
-    Info *info = magick_image_info->info;
-
     if (info)
     {
         if (info->texture)
@@ -2413,6 +2409,23 @@ Info_free(void *infoptr)
 
         DestroyImageInfo(info);
     }
+}
+
+
+/**
+ * If there is a texture image, delete it before destroying the Image::Info
+ * structure.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param infoptr pointer to the MagickImageInfo struct
+ */
+static void
+Info_free(void *infoptr)
+{
+    MagickImageInfo *magick_image_info = (MagickImageInfo *)infoptr;
+
+    destroy_info(magick_image_info->info);
     xfree(magick_image_info);
 }
 
@@ -2517,5 +2530,50 @@ Info_initialize(VALUE self)
     {
         rb_yield(self);
     }
+    return self;
+}
+
+
+/**
+ * Initialize clone, dup methods.
+ *
+ * @param orig the original object
+ * @return [Magick::Image::Info] self
+ */
+VALUE
+Info_init_copy(VALUE self, VALUE orig)
+{
+    MagickImageInfo *copy, *original;
+    Info *info;
+    char texture[MaxTextExtent];
+    bool has_texture = false;
+
+    if (!rm_check_init_copy(self, orig))
+    {
+        return self;
+    }
+    rm_gvl_check_writable(self);
+    TypedData_Get_Struct(orig, MagickImageInfo, &rm_info_data_type, original);
+    TypedData_Get_Struct(self, MagickImageInfo, &rm_info_data_type, copy);
+
+    // The texture names a temporary image that the copy must own by itself.
+    if (original->info->texture)
+    {
+        has_texture = rm_copy_temp_image(original->info->texture, texture, sizeof(texture));
+    }
+    info = CloneImageInfo(original->info);
+    if (!info)
+    {
+        if (has_texture)
+        {
+            rm_delete_temp_image(texture);
+        }
+        rb_raise(rb_eNoMemError, "not enough memory to continue");
+    }
+    magick_clone_string(&info->texture, has_texture ? texture : NULL);
+
+    destroy_info(copy->info);
+    copy->info = info;
+
     return self;
 }

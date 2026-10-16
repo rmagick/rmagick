@@ -23,6 +23,30 @@ const rb_data_type_t rm_montage_data_type = {
 
 
 /**
+ * Delete the texture image of a MontageInfo, and destroy the MontageInfo.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param info the MontageInfo, or NULL
+ */
+static void
+destroy_montage_info(MontageInfo *info)
+{
+    if (info)
+    {
+        // If we saved a temporary texture image, delete it now.
+        if (info->texture != NULL)
+        {
+            rm_delete_temp_image(info->texture);
+            magick_free(info->texture);
+            info->texture = NULL;
+        }
+        DestroyMontageInfo(info);
+    }
+}
+
+
+/**
  * Destroy the MontageInfo struct and free the MagickMontage struct.
  *
  * No Ruby usage (internal function)
@@ -38,18 +62,8 @@ Montage_destroy(void *obj)
 {
     MagickMontage *montage = (MagickMontage *)obj;
 
-    // If we saved a temporary texture image, delete it now.
-    if (montage->info && montage->info->texture != NULL)
-    {
-        rm_delete_temp_image(montage->info->texture);
-        magick_free(montage->info->texture);
-        montage->info->texture = NULL;
-    }
-    if (montage->info)
-    {
-        DestroyMontageInfo(montage->info);
-        montage->info = NULL;
-    }
+    destroy_montage_info(montage->info);
+    montage->info = NULL;
     xfree(montage);
 }
 
@@ -326,6 +340,60 @@ VALUE
 Montage_initialize(VALUE self)
 {
     // Nothing to do!
+    return self;
+}
+
+
+/**
+ * Initialize clone, dup methods.
+ *
+ * @param orig the original object
+ * @return [Magick::ImageList::Montage] self
+ */
+VALUE
+Montage_init_copy(VALUE self, VALUE orig)
+{
+    MagickMontage *copy, *original;
+    MontageInfo *info;
+    char texture[MaxTextExtent];
+    bool has_texture = false;
+
+    if (!rm_check_init_copy(self, orig))
+    {
+        return self;
+    }
+    rm_gvl_check_writable(self);
+    TypedData_Get_Struct(orig, MagickMontage, &rm_montage_data_type, original);
+    TypedData_Get_Struct(self, MagickMontage, &rm_montage_data_type, copy);
+
+    // The texture names a temporary image that the copy must own by itself.
+    if (original->info->texture)
+    {
+        has_texture = rm_copy_temp_image(original->info->texture, texture, sizeof(texture));
+    }
+    // CloneMontageInfo leaks its default geometry when it copies a MontageInfo.
+    info = (MontageInfo *)AcquireMagickMemory(sizeof(*info));
+    if (!info)
+    {
+        if (has_texture)
+        {
+            rm_delete_temp_image(texture);
+        }
+        rb_raise(rb_eNoMemError, "not enough memory to continue");
+    }
+    *info = *original->info;
+    info->geometry = info->tile = info->title = info->frame = info->texture = info->font = NULL;
+    magick_clone_string(&info->geometry, original->info->geometry);
+    magick_clone_string(&info->tile, original->info->tile);
+    magick_clone_string(&info->title, original->info->title);
+    magick_clone_string(&info->frame, original->info->frame);
+    magick_clone_string(&info->font, original->info->font);
+    magick_clone_string(&info->texture, has_texture ? texture : NULL);
+
+    destroy_montage_info(copy->info);
+    copy->info = info;
+    copy->compose = original->compose;
+
     return self;
 }
 

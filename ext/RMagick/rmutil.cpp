@@ -947,6 +947,64 @@ rm_write_temp_image(Image *image, char *temp_name, size_t temp_name_l)
 }
 
 
+//! the arguments of write_temp_image
+struct WriteTempImageArgs
+{
+    Image *image; /**< the image to register */
+    char *temp_name; /**< the buffer for its name */
+    size_t temp_name_l; /**< the length of temp_name */
+};
+
+static VALUE
+write_temp_image(VALUE arg)
+{
+    struct WriteTempImageArgs *args = (struct WriteTempImageArgs *)arg;
+
+    rm_write_temp_image(args->image, args->temp_name, args->temp_name_l);
+    return Qnil;
+}
+
+static VALUE
+destroy_temp_image_copy(VALUE image)
+{
+    DestroyImage((Image *)image);
+    return Qnil;
+}
+
+
+/**
+ * Register a copy of a temporary image under a new name.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param temp_name the name of the temporary image
+ * @param new_name the buffer for the name of the copy
+ * @param new_name_l the length of new_name
+ * @return false if the registry has no image of temp_name
+ */
+bool
+rm_copy_temp_image(const char *temp_name, char *new_name, size_t new_name_l)
+{
+    ExceptionInfo *exception;
+    Image *image;
+    struct WriteTempImageArgs args;
+
+    exception = AcquireExceptionInfo();
+    image = (Image *)GetImageRegistry(ImageRegistryType, temp_name+5, exception);
+    DestroyExceptionInfo(exception);
+    if (!image)
+    {
+        return false;
+    }
+
+    args.image = image;
+    args.temp_name = new_name;
+    args.temp_name_l = new_name_l;
+    rb_ensure(write_temp_image, (VALUE)&args, destroy_temp_image_copy, (VALUE)image);
+    return true;
+}
+
+
 /**
  * Delete the temporary image from the registry.
  *
