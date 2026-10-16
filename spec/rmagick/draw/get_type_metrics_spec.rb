@@ -56,4 +56,13 @@ RSpec.describe Magick::Draw, '#get_type_metrics' do
   ensure
     GC.enable
   end
+
+  it 'raises an error when converting the text destroys the image' do
+    draw = described_class.new
+    image = Magick::Image.new(10, 10)
+    text = Object.new
+    text.define_singleton_method(:to_str) { image.destroy! && 'ABC' }
+
+    expect { draw.get_type_metrics(image, text) }.to raise_error(Magick::DestroyedImageError)
+  end
 end

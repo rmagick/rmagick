@@ -40,4 +40,16 @@ RSpec.describe Magick::Draw, '#composite' do
     expect(image.pixel_color(0, 0)).to eq(Magick::Pixel.from_color('red'))
     expect(image.pixel_color(2, 0)).to eq(Magick::Pixel.from_color('blue'))
   end
+
+  it 'raises an error when converting an argument destroys the image' do
+    draw = described_class.new
+    image = Magick::Image.new(10, 10)
+    x = Struct.new(:image) do
+      def to_f
+        image.destroy! && 0.0
+      end
+    end.new(image)
+
+    expect { draw.composite(x, 0, 10, 10, image) }.to raise_error(Magick::DestroyedImageError)
+  end
 end
