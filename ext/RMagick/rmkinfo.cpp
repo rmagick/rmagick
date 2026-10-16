@@ -312,7 +312,11 @@ KernelInfo_init_copy(VALUE self, VALUE orig)
 {
     KernelInfo *kernel, *old_kernel;
 
-    rb_check_frozen(self);
+    if (!rm_check_init_copy(self, orig))
+    {
+        return self;
+    }
+    rm_gvl_check_readable(orig);
     kernel = CloneKernelInfo(rm_check_kernel_info(orig));
     if (!kernel)
     {
