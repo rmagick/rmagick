@@ -19,7 +19,16 @@ struct ImagesFromImageList_Args
     bool copy_frozen;
 };
 
-static Image *clone_imagelist(Image *);
+struct LinkedImages_Args
+{
+    Image *images;
+    Image *image;
+    Info *info;
+    Image *new_images;
+};
+
+static Image *clone_linked_imagelist(Image *, ExceptionInfo *);
+static void sync_linked_image_options(Image *, Image *, Info *, ExceptionInfo *);
 static Image *images_from_imagelist(VALUE, VALUE *, bool copy_frozen = false);
 static void check_images_writable(VALUE);
 static void check_images_frozen(VALUE);
@@ -394,7 +403,7 @@ ImageList_composite_layers(int argc, VALUE *argv, VALUE self)
     // Convert ImageLists to image sequences.
     VALUE clones, source_clones = Qnil;
     dest = images_from_imagelist(self, &clones);
-    new_images = clone_imagelist(dest);
+    new_images = clone_linked_imagelist(dest, NULL);
     rm_split(dest);
     RB_GC_GUARD(clones);
 
@@ -698,21 +707,21 @@ ImageList_optimize_layers(VALUE self, VALUE method)
             break;
         case OptimizeTransLayer:
             {
-                new_images = clone_imagelist(images);
+                new_images = clone_linked_imagelist(images, exception);
                 DECLARE_GVL_CALL(call, OptimizeImageTransparency, new_images, exception);
                 call.read_each(rb_iv_get(self, "@images")).split(images).destroy(new_images).release(exception).run<void>();
             }
             break;
         case RemoveDupsLayer:
             {
-                new_images = clone_imagelist(images);
+                new_images = clone_linked_imagelist(images, exception);
                 DECLARE_GVL_CALL(call, RemoveDuplicateLayers, &new_images, exception);
                 call.read_each(rb_iv_get(self, "@images")).split(images).cleanup(destroy_list_at, &new_images).release(exception).run<void>();
             }
             break;
         case RemoveZeroLayer:
             {
-                new_images = clone_imagelist(images);
+                new_images = clone_linked_imagelist(images, exception);
                 DECLARE_GVL_CALL(call, RemoveZeroDelayLayers, &new_images, exception);
                 call.read_each(rb_iv_get(self, "@images")).split(images).cleanup(destroy_list_at, &new_images).release(exception).run<void>();
             }
@@ -1098,6 +1107,63 @@ clone_imagelist(Image *images)
 }
 
 
+static VALUE
+clone_imagelist_protected(VALUE arg)
+{
+    struct LinkedImages_Args *args = (struct LinkedImages_Args *)arg;
+
+    args->new_images = clone_imagelist(args->images);
+    return Qnil;
+}
+
+
+static VALUE
+sync_image_options_protected(VALUE arg)
+{
+    struct LinkedImages_Args *args = (struct LinkedImages_Args *)arg;
+
+    rm_sync_image_options(args->image, args->info);
+    return Qnil;
+}
+
+
+static void
+call_while_linked(VALUE (*fn)(VALUE), struct LinkedImages_Args *args, ExceptionInfo *exception)
+{
+    int state = 0;
+
+    rb_protect(fn, (VALUE)args, &state);
+    if (state)
+    {
+        rm_split(args->images);
+        if (exception)
+        {
+            DestroyExceptionInfo(exception);
+        }
+        rb_jump_tag(state);
+    }
+}
+
+
+static Image *
+clone_linked_imagelist(Image *images, ExceptionInfo *exception)
+{
+    struct LinkedImages_Args args = { images, NULL, NULL, NULL };
+
+    call_while_linked(clone_imagelist_protected, &args, exception);
+    return args.new_images;
+}
+
+
+static void
+sync_linked_image_options(Image *images, Image *image, Info *info, ExceptionInfo *exception)
+{
+    struct LinkedImages_Args args = { images, image, info, NULL };
+
+    call_while_linked(sync_image_options_protected, &args, exception);
+}
+
+
 /**
  * Analyzes the colors within a set of reference images and chooses a fixed number of colors to represent the set.
  * The goal of the algorithm is to minimize the difference between the input and output images while minimizing the processing time.
@@ -1312,7 +1378,7 @@ ImageList_to_blob(VALUE self)
 
     for (image = images; image; image = GetNextImageInList(image))
     {
-        rm_sync_image_options(image, info);
+        sync_linked_image_options(images, image, info, exception);
     }
 
     // Unconditionally request multi-images support. The worst that
@@ -1416,6 +1482,7 @@ ImageList_write(VALUE self, VALUE file)
     rm_check_exception(exception, images, RetainOnError);
 #if defined(IMAGEMAGICK_6)
     DestroyExceptionInfo(exception);
+    exception = NULL;
 #endif
 
     // Tell WriteImage if we want a multi-images file.
@@ -1426,7 +1493,7 @@ ImageList_write(VALUE self, VALUE file)
 
     for (img = images; img; img = GetNextImageInList(img))
     {
-        rm_sync_image_options(img, info);
+        sync_linked_image_options(images, img, info, exception);
 #if defined(IMAGEMAGICK_7)
         DECLARE_GVL_CALL(call, WriteImage, info, img, exception);
         call.update_each(written).read(info_obj).split(images).release(exception);

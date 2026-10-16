@@ -11,4 +11,22 @@ RSpec.describe Magick::ImageList, "#to_blob" do
     expect(image[0]).to eq(image_list[0])
     expect(image.scene).to eq(1)
   end
+
+  it 'splits the images when the thread is interrupted' do
+    cancelled = Class.new(StandardError)
+    image_list = described_class.new
+    2.times { image_list.new_image(1000, 1000) }
+    interrupt(cancelled) do
+      image_list.to_blob do |info|
+        info.format = 'MIFF'
+        info.colorspace = Magick::GRAYColorspace
+      end
+    end
+
+    Dir.mktmpdir do |dir|
+      image_list[0].write(File.join(dir, 'first.miff'))
+
+      expect(File.exist?(File.join(dir, 'first.miff'))).to be(true)
+    end
+  end
 end
