@@ -49,6 +49,27 @@ RSpec.describe Magick::Image, '#composite_tiled' do
     expect(image.pixel_color(7, 3)).to eq(red)
   end
 
+  it 'frees the new image when the thread is interrupted' do
+    cancelled = Class.new(StandardError)
+    image = described_class.new(1000, 1000)
+    overlay = described_class.new(20, 20)
+    GC.start
+    baseline = Magick.resource_usage(:memory)
+    interrupt(cancelled, ready: -> { Magick.resource_usage(:memory) > baseline }) { image.composite_tiled(overlay) }
+    3.times { GC.start }
+
+    expect(Magick.resource_usage(:memory)).to be <= baseline
+  end
+
+  it 'restores the channel mask when the thread is interrupted' do
+    cancelled = Class.new(StandardError)
+    image = described_class.new(600, 600)
+    overlay = described_class.new(20, 20)
+    interrupt(cancelled) { image.composite_tiled!(overlay, Magick::OverCompositeOp, Magick::RedChannel) }
+
+    expect(image.negate.pixel_color(0, 0)).to eq(Magick::Pixel.from_color('black'))
+  end
+
   it 'does not change a frozen overlay' do
     image = described_class.new(20, 20)
     overlay = described_class.new(5, 5).freeze
