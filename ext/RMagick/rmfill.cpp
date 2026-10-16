@@ -128,6 +128,26 @@ GradientFill_initialize(
     return self;
 }
 
+
+/**
+ * Initialize clone, dup methods.
+ *
+ * @param orig the original object
+ * @return [Magick::GradientFill] self
+ */
+VALUE
+GradientFill_init_copy(VALUE self, VALUE orig)
+{
+    MagickGradientFill *copy, *original;
+
+    rb_check_frozen(self);
+    TypedData_Get_Struct(orig, MagickGradientFill, &rm_gradient_fill_data_type, original);
+    TypedData_Get_Struct(self, MagickGradientFill, &rm_gradient_fill_data_type, copy);
+    *copy = *original;
+
+    return self;
+}
+
 /**
  * Do a gradient that radiates from a point.
  *
@@ -747,6 +767,35 @@ TextureFill_alloc(VALUE klass)
 }
 
 /**
+ * Replace the texture of a TextureFill with a copy made for it.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param self the TextureFill object
+ * @param fill the MagickTextureFill struct of self
+ * @param texture the new texture, or NULL
+ */
+static void
+replace_texture(VALUE self, MagickTextureFill *fill, Image *texture)
+{
+    // The copy releases the GVL, and cur_image runs Ruby code, so other code can freeze self.
+    if (OBJ_FROZEN(self))
+    {
+        if (texture)
+        {
+            DestroyImage(texture);
+        }
+        rb_error_frozen_object(self);
+    }
+
+    if (fill->texture)
+    {
+        DestroyImage(fill->texture);
+    }
+    fill->texture = texture;
+}
+
+/**
  * Initialize TextureFill object.
  *
  * @param texture_arg [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
@@ -766,20 +815,34 @@ TextureFill_initialize(VALUE self, VALUE texture_arg)
     texture_image = rm_cur_image(texture_arg);
 
     texture = rm_copy_image(rm_check_readable(texture_image));
-    // cur_image and the copy, which releases the GVL, let other code freeze self.
-    if (OBJ_FROZEN(self))
-    {
-        DestroyImage(texture);
-        rb_error_frozen_object(self);
-    }
-
-    if (fill->texture)
-    {
-        DestroyImage(fill->texture);
-    }
-    fill->texture = texture;
+    replace_texture(self, fill, texture);
 
     RB_GC_GUARD(texture_image);
+
+    return self;
+}
+
+/**
+ * Initialize clone, dup methods.
+ *
+ * @param orig the original object
+ * @return [Magick::TextureFill] self
+ */
+VALUE
+TextureFill_init_copy(VALUE self, VALUE orig)
+{
+    MagickTextureFill *copy, *original;
+    Image *texture = NULL;
+
+    rb_check_frozen(self);
+    TypedData_Get_Struct(orig, MagickTextureFill, &rm_texture_fill_data_type, original);
+    TypedData_Get_Struct(self, MagickTextureFill, &rm_texture_fill_data_type, copy);
+
+    if (original->texture)
+    {
+        texture = rm_copy_image(original->texture);
+    }
+    replace_texture(self, copy, texture);
 
     return self;
 }
@@ -802,6 +865,10 @@ TextureFill_fill(VALUE self, VALUE image_obj)
 
     image = rm_check_writable(rm_cur_image(image_obj));
     TypedData_Get_Struct(self, MagickTextureFill, &rm_texture_fill_data_type, fill);
+    if (!fill->texture)
+    {
+        rb_raise(rb_eRuntimeError, "%s has not been initialized", rb_obj_classname(self));
+    }
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();

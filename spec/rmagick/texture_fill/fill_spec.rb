@@ -15,4 +15,8 @@ RSpec.describe Magick::TextureFill, '#fill' do
     obj = texture.fill(imgl)
     expect(obj).to eq(texture)
   end
+
+  it 'raises RuntimeError when the fill is not initialized' do
+    expect { described_class.allocate.fill(Magick::Image.new(2, 2)) }.to raise_error(RuntimeError, /has not been initialized/)
+  end
 end

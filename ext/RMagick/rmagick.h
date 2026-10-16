@@ -1063,10 +1063,12 @@ extern void  rm_image_destroy(Image *);
 // rmfill.cpp
 extern VALUE  GradientFill_alloc(VALUE);
 extern VALUE  GradientFill_initialize(VALUE, VALUE, VALUE, VALUE, VALUE, VALUE, VALUE);
+extern VALUE  GradientFill_init_copy(VALUE, VALUE);
 extern VALUE  GradientFill_fill(VALUE, VALUE);
 
 extern VALUE  TextureFill_alloc(VALUE);
 extern VALUE  TextureFill_initialize(VALUE, VALUE);
+extern VALUE  TextureFill_init_copy(VALUE, VALUE);
 extern VALUE  TextureFill_fill(VALUE, VALUE);
 
 

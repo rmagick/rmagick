@@ -1081,6 +1081,7 @@ Init_RMagick2(void)
     rb_define_alloc_func(Class_GradientFill, GradientFill_alloc);
 
     rb_define_method(Class_GradientFill, "initialize", GradientFill_initialize, 6);
+    rb_define_method(Class_GradientFill, "initialize_copy", GradientFill_init_copy, 1);
     rb_define_method(Class_GradientFill, "fill", GradientFill_fill, 1);
 
     // class Magick::TextureFill
@@ -1089,6 +1090,7 @@ Init_RMagick2(void)
     rb_define_alloc_func(Class_TextureFill, TextureFill_alloc);
 
     rb_define_method(Class_TextureFill, "initialize", TextureFill_initialize, 1);
+    rb_define_method(Class_TextureFill, "initialize_copy", TextureFill_init_copy, 1);
     rb_define_method(Class_TextureFill, "fill", TextureFill_fill, 1);
 
     /*-----------------------------------------------------------------------*/
