@@ -481,7 +481,7 @@ image_to_str(Image *image)
         info = CloneImageInfo(NULL);
         exception = AcquireExceptionInfo();
         DECLARE_GVL_CALL(call, ImageToBlob, info, copy, &length, exception);
-        blob = call.keep_thread().destroy(copy).run<unsigned char *>();
+        blob = call.keep_thread().destroy(copy).release(info).release(exception).free_result().run<unsigned char *>();
         DestroyImage(copy);
         DestroyImageInfo(info);
         CHECK_EXCEPTION();
@@ -523,7 +523,7 @@ Image *str_to_image(VALUE str)
         info = CloneImageInfo(NULL);
         exception = AcquireExceptionInfo();
         DECLARE_GVL_CALL(call, BlobToImage, info, RSTRING_PTR(str), (size_t)RSTRING_LEN(str), exception);
-        image = call.keep_thread().run<Image *>();
+        image = call.keep_thread().release(info).release(exception).run<Image *>();
         DestroyImageInfo(info);
         CHECK_EXCEPTION();
         DestroyExceptionInfo(exception);
