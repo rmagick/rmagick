@@ -15982,8 +15982,10 @@ Image_to_blob(VALUE self)
         }
     }
 
+    DestroyExceptionInfo(exception);
     rm_sync_image_options(image, info);
 
+    exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, ImageToBlob, info, image, &length, exception);
     blob = call.update(self).read(info_obj).free_result().release(exception).run<void *>();
     CHECK_EXCEPTION();

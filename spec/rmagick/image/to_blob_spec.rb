@@ -17,4 +17,16 @@ RSpec.describe Magick::Image, '#to_blob' do
     expect(described_class.from_blob(blob).first.format).to eq("PNG")
     expect(image.format).to be(nil)
   end
+
+  it "releases what it holds when one of its calls is interrupted" do
+    image = described_class.new(4, 4)
+    calls = interrupt_each_call(Class.new(StandardError)) do
+      image.to_blob do |options|
+        options.format = "MIFF"
+        options.colorspace = Magick::GRAYColorspace
+      end
+    end
+
+    expect(calls).to be_positive
+  end
 end
