@@ -34,6 +34,24 @@ RSpec.describe Magick::Draw, '#dup' do
     expect(image.pixel_color(0, 0)).to eq(Magick::Pixel.from_color('red'))
   end
 
+  it 'keeps the setting that a setter writes after its argument calls initialize_copy or initialize' do
+    %i[initialize_copy initialize].each do |method|
+      draw = described_class.new
+      other = described_class.new
+      color = Object.new
+      color.define_singleton_method(:to_str) do
+        method == :initialize ? draw.__send__(:initialize) : draw.__send__(:initialize_copy, other)
+        'red'
+      end
+
+      draw.fill = color
+      draw.rectangle(0, 0, 1, 1)
+      image = Magick::Image.new(2, 2)
+      draw.draw(image)
+      expect(image.pixel_color(0, 0)).to eq(Magick::Pixel.from_color('red'))
+    end
+  end
+
   it 'raises TypeError when initialize_copy is called with options of another class' do
     expect { described_class.allocate.__send__(:initialize_copy, Magick::Image::DrawOptions.new) }.to raise_error(TypeError)
   end

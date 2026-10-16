@@ -59,6 +59,7 @@ module Magick
     end
 
     def clone(freeze: nil)
+      raise ArgumentError, "unexpected value for freeze: #{freeze.class}" unless [nil, true, false].include?(freeze)
       raise ArgumentError, "can't unfreeze #{self.class}" if freeze == false
 
       self

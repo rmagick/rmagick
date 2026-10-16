@@ -13,5 +13,6 @@ RSpec.describe Magick::Enum, '#dup' do
 
   it 'raises ArgumentError when clone is asked to unfreeze' do
     expect { Magick::OverCompositeOp.clone(freeze: false) }.to raise_error(ArgumentError, "can't unfreeze Magick::CompositeOperator")
+    expect { Magick::OverCompositeOp.clone(freeze: 1) }.to raise_error(ArgumentError, 'unexpected value for freeze: Integer')
   end
 end

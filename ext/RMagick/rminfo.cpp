@@ -2553,6 +2553,7 @@ Info_init_copy(VALUE self, VALUE orig)
         return self;
     }
     rm_gvl_check_writable(self);
+    rm_gvl_check_readable(orig);
     TypedData_Get_Struct(orig, MagickImageInfo, &rm_info_data_type, original);
     TypedData_Get_Struct(self, MagickImageInfo, &rm_info_data_type, copy);
 
@@ -2572,8 +2573,12 @@ Info_init_copy(VALUE self, VALUE orig)
     }
     magick_clone_string(&info->texture, has_texture ? texture : NULL);
 
-    destroy_info(copy->info);
-    copy->info = info;
+    // A setter can keep a pointer into the ImageInfo while it calls Ruby code,
+    // so the ImageInfo keeps its address and takes the contents of the copy.
+    Info old = *copy->info;
+    *copy->info = *info;
+    *info = old;
+    destroy_info(info);
 
     return self;
 }

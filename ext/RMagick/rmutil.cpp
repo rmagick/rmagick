@@ -967,7 +967,7 @@ write_temp_image(VALUE arg)
 static VALUE
 destroy_temp_image_copy(VALUE image)
 {
-    DestroyImage((Image *)image);
+    DestroyImageList((Image *)image);
     return Qnil;
 }
 

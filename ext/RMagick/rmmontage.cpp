@@ -363,6 +363,7 @@ Montage_init_copy(VALUE self, VALUE orig)
         return self;
     }
     rm_gvl_check_writable(self);
+    rm_gvl_check_readable(orig);
     TypedData_Get_Struct(orig, MagickMontage, &rm_montage_data_type, original);
     TypedData_Get_Struct(self, MagickMontage, &rm_montage_data_type, copy);
 
@@ -371,27 +372,33 @@ Montage_init_copy(VALUE self, VALUE orig)
     {
         has_texture = rm_copy_temp_image(original->info->texture, texture, sizeof(texture));
     }
-    // CloneMontageInfo leaks its default geometry when it copies a MontageInfo.
-    info = (MontageInfo *)AcquireMagickMemory(sizeof(*info));
-    if (!info)
-    {
-        if (has_texture)
-        {
-            rm_delete_temp_image(texture);
-        }
-        rb_raise(rb_eNoMemError, "not enough memory to continue");
-    }
-    *info = *original->info;
-    info->geometry = info->tile = info->title = info->frame = info->texture = info->font = NULL;
+
+    // Copy the fields that CloneMontageInfo copies into the MontageInfo of the
+    // copy. CloneMontageInfo leaks its default geometry when it copies a
+    // MontageInfo, and a setter can keep a pointer into the MontageInfo while
+    // it calls Ruby code.
+    info = copy->info;
     magick_clone_string(&info->geometry, original->info->geometry);
     magick_clone_string(&info->tile, original->info->tile);
     magick_clone_string(&info->title, original->info->title);
     magick_clone_string(&info->frame, original->info->frame);
     magick_clone_string(&info->font, original->info->font);
+    if (info->texture)
+    {
+        rm_delete_temp_image(info->texture);
+    }
     magick_clone_string(&info->texture, has_texture ? texture : NULL);
-
-    destroy_montage_info(copy->info);
-    copy->info = info;
+    info->pointsize = original->info->pointsize;
+    info->border_width = original->info->border_width;
+    info->shadow = original->info->shadow;
+    info->fill = original->info->fill;
+    info->stroke = original->info->stroke;
+    info->background_color = original->info->background_color;
+    info->border_color = original->info->border_color;
+    info->matte_color = original->info->matte_color;
+    info->gravity = original->info->gravity;
+    CopyMagickString(info->filename, original->info->filename, sizeof(info->filename));
+    info->debug = original->info->debug;
     copy->compose = original->compose;
 
     return self;

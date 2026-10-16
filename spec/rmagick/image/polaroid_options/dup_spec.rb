@@ -1,12 +1,19 @@
 # frozen_string_literal: true
 
 RSpec.describe Magick::Image::PolaroidOptions, '#dup' do
-  it 'returns options that can be changed' do
+  it 'copies the settings' do
+    image = Magick::Image.new(20, 20)
     options = described_class.new
-    options.shadow_color = 'blue'
+    options.shadow_color = 'red'
+    options.border_color = 'blue'
+    expected = image.polaroid(0) do |given|
+      given.shadow_color = 'red'
+      given.border_color = 'blue'
+    end
 
     [options.dup, options.clone].each do |copy|
-      expect { copy.border_color = 'red' }.not_to raise_error
+      result = image.polaroid(0) { |given| given.__send__(:initialize_copy, copy) }
+      expect(result.export_pixels).to eq(expected.export_pixels)
     end
   end
 

@@ -1322,6 +1322,35 @@ release_tmpfiles(struct TmpFile_Name *tmpfile_name)
 
 
 /**
+ * Replace the DrawInfo of a Draw with another one.
+ *
+ * - A setter can keep a pointer into the DrawInfo while it calls Ruby code,
+ *   so the DrawInfo keeps its address and takes the contents of info.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param draw the MagickDraw struct
+ * @param info the new DrawInfo, which this function destroys or keeps
+ */
+static void
+replace_draw_info(MagickDraw *draw, DrawInfo *info)
+{
+    if (draw->info)
+    {
+        DrawInfo old = *draw->info;
+
+        *draw->info = *info;
+        *info = old;
+        DestroyDrawInfo(info);
+    }
+    else
+    {
+        draw->info = info;
+    }
+}
+
+
+/**
  * Initialize clone, dup methods.
  *
  * @param orig the original object
@@ -1339,6 +1368,7 @@ VALUE Draw_init_copy(VALUE self, VALUE orig)
         return self;
     }
     rm_gvl_check_writable(self);
+    rm_gvl_check_readable(orig);
     TypedData_Get_Struct(orig, MagickDraw, &rm_draw_data_type, original);
     TypedData_Get_Struct(self, MagickDraw, &rm_draw_data_type, copy);
 
@@ -1359,11 +1389,7 @@ VALUE Draw_init_copy(VALUE self, VALUE orig)
         DestroyDrawInfo(info);
         rb_error_frozen_object(self);
     }
-    if (copy->info)
-    {
-        DestroyDrawInfo(copy->info);
-    }
-    copy->info = info;
+    replace_draw_info(copy, info);
     copy->shadow_color = original->shadow_color;
 
     copy->primitives = original->primitives ? rb_str_dup(original->primitives) : (VALUE)0;
@@ -1400,11 +1426,7 @@ Draw_initialize(VALUE self)
     // The block of Draw.new runs in new_DrawOptions.
     rb_check_frozen(self);
     rm_gvl_check_writable(self);
-    if (draw->info)
-    {
-        DestroyDrawInfo(draw->info);
-    }
-    draw->info = draw_options->info;
+    replace_draw_info(draw, draw_options->info);
     draw_options->info = NULL;
 
     RB_GC_GUARD(options);
@@ -1605,11 +1627,7 @@ DrawOptions_initialize(VALUE self)
     {
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
-    if (draw_options->info)
-    {
-        DestroyDrawInfo(draw_options->info);
-    }
-    draw_options->info = info;
+    replace_draw_info(draw_options, info);
 
     if (rb_block_given_p())
     {

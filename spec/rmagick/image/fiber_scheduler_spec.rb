@@ -451,6 +451,19 @@ RSpec.describe Magick::Image, if: offloading do
       expect(image.columns).to eq(200)
     end
 
+    it "does not let another fiber copy a Draw whose pattern a call uses" do
+      image = red_image
+      draw = Magick::Draw.new
+      draw.fill_pattern = blue_image
+      draw.rectangle(0, 0, 9, 9)
+      error = nil
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { draw.dup } } }
+
+      scheduler.run { draw.draw(image) }
+
+      expect(error).to in_use
+    end
+
     it "does not let another fiber initialize a Draw that a call uses" do
       image = red_image
       draw = Magick::Draw.new
