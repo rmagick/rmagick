@@ -243,7 +243,10 @@ get_writable_kernel_info(VALUE self)
 VALUE
 KernelInfo_unity_add(VALUE self, VALUE scale)
 {
-    DECLARE_GVL_CALL(call, UnityAddKernelInfo, get_writable_kernel_info(self), NUM2DBL(scale));
+    get_writable_kernel_info(self);
+    double factor = NUM2DBL(scale);
+
+    DECLARE_GVL_CALL(call, UnityAddKernelInfo, get_writable_kernel_info(self), factor);
     call.update(self).run<void>();
     return Qnil;
 }
@@ -265,8 +268,10 @@ KernelInfo_scale(VALUE self, VALUE scale, VALUE flags)
     GeometryFlags geoflags;
 
     VALUE_TO_ENUM(flags, geoflags, GeometryFlags);
+    get_writable_kernel_info(self);
+    double factor = NUM2DBL(scale);
 
-    DECLARE_GVL_CALL(call, ScaleKernelInfo, get_writable_kernel_info(self), NUM2DBL(scale), geoflags);
+    DECLARE_GVL_CALL(call, ScaleKernelInfo, get_writable_kernel_info(self), factor, geoflags);
     call.update(self).run<void>();
     return Qnil;
 }
@@ -285,6 +290,7 @@ KernelInfo_scale_geometry(VALUE self, VALUE geometry)
 
     geometry = rb_str_new_frozen(StringValue(geometry));
     geom = StringValueCStr(geometry);
+    kernel = get_writable_kernel_info(self);
 
     DECLARE_GVL_CALL(call, ScaleGeometryKernelInfo, kernel, geom);
     call.update(self).run<void>();
@@ -306,7 +312,11 @@ KernelInfo_init_copy(VALUE self, VALUE orig)
 {
     KernelInfo *kernel, *old_kernel;
 
-    rb_check_frozen(self);
+    if (!rm_check_init_copy(self, orig))
+    {
+        return self;
+    }
+    rm_gvl_check_readable(orig);
     kernel = CloneKernelInfo(rm_check_kernel_info(orig));
     if (!kernel)
     {

@@ -511,16 +511,20 @@ extern const rb_data_type_t rm_kernel_info_data_type;
 //! define attribute writer of Image
 #define IMPLEMENT_IMAGE_ATTR_WRITER(attr, type) \
     {\
+        rm_check_frozen(self);\
+        auto value = R_##type##_to_C_##type(val);\
         Image *image = rm_check_frozen(self);\
-        image->attr = R_##type##_to_C_##type(val);\
+        image->attr = value;\
         return val;\
     }
 
 //! define attribute writer of Image when attribute name is different from the field name
 #define IMPLEMENT_IMAGE_ATTR_WRITERF(attr, field, type) \
     {\
+        rm_check_frozen(self);\
+        auto value = R_##type##_to_C_##type(val);\
         Image *image = rm_check_frozen(self);\
-        image->field = R_##type##_to_C_##type(val);\
+        image->field = value;\
         return self;\
     }
 

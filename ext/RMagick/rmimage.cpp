@@ -624,6 +624,7 @@ adaptive_method(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
             break;
     }
 
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
 
     DECLARE_GVL_CALL_FP(call, adaptive_method, fp, image, radius, sigma, exception);
@@ -678,6 +679,7 @@ adaptive_channel_method(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
             break;
     }
 
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
 
 #if defined(IMAGEMAGICK_7)
@@ -771,6 +773,7 @@ Image_adaptive_resize(int argc, VALUE *argv, VALUE self)
         case 2:
             rows = NUM2ULONG(argv[1]);
             columns = NUM2ULONG(argv[0]);
+            image = rm_check_readable(self);
             break;
         case 1:
             scale_val = NUM2DBL(argv[0]);
@@ -778,6 +781,7 @@ Image_adaptive_resize(int argc, VALUE *argv, VALUE self)
             {
                 rb_raise(rb_eArgError, "invalid scale_val value (%g given)", scale_val);
             }
+            image = rm_check_readable(self);
             drows = scale_val * image->rows + 0.5;
             dcols = scale_val * image->columns + 0.5;
             if (drows > (double)ULONG_MAX || dcols > (double)ULONG_MAX)
@@ -885,6 +889,7 @@ Image_adaptive_threshold(int argc, VALUE *argv, VALUE self)
             rb_raise(rb_eArgError, "wrong number of arguments (%d for 0 to 3)", argc);
     }
 
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, AdaptiveThresholdImage, image, width, height, bias, exception);
     new_image = call.read(self).release(exception).run<Image *>();
@@ -918,6 +923,7 @@ Image_add_compose_mask(VALUE self, VALUE mask)
     image = rm_check_frozen(self);
     mask = rm_cur_image(mask);
     mask_image = rm_check_readable(mask);
+    image = rm_check_frozen(self);
     if (image->columns != mask_image->columns || image->rows != mask_image->rows)
     {
         rb_raise(rb_eArgError, "mask must be the same size as image");
@@ -1058,6 +1064,7 @@ Image_add_profile(VALUE self, VALUE name)
 
     // ProfileImage issues a warning if something goes wrong.
     profile_filename = StringValueCStr(name);
+    image = rm_check_frozen(self);
 
     info = CloneImageInfo(NULL);
     if (!info)
@@ -1210,6 +1217,7 @@ Image_affine_transform(VALUE self, VALUE affine)
 
     // Convert Magick::AffineMatrix to AffineMatrix structure.
     Export_AffineMatrix(&matrix, affine);
+    image = rm_check_readable(self);
 
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, AffineTransformImage, image, &matrix, exception);
@@ -1260,6 +1268,7 @@ VALUE
             break;
     }
 
+    image = rm_check_readable(self);
     if (OBJ_FROZEN(self) && strchr(key, ':'))
     {
         return read_copy(self, Image_aref, rb_str_new_cstr(key));
@@ -1322,6 +1331,7 @@ Image_aset(VALUE self, VALUE key_arg, VALUE attr_arg)
             break;
     }
 
+    image = rm_check_frozen(self);
 
     // Delete existing value. SetImageProperty returns False if
     // the attribute doesn't exist - we don't care.
@@ -1605,7 +1615,11 @@ VALUE
 Image_background_color_eq(VALUE self, VALUE color)
 {
     Image *image = rm_check_frozen(self);
-    Color_to_PixelColor(&image->background_color, color);
+    PixelColor background_color = image->background_color;
+
+    Color_to_PixelColor(&background_color, color);
+    image = rm_check_frozen(self);
+    image->background_color = background_color;
     return color;
 }
 
@@ -1699,8 +1713,9 @@ Image_bias_eq(VALUE self, VALUE pct)
     Image *image;
     double bias;
 
-    image = rm_check_frozen(self);
+    rm_check_frozen(self);
     bias = rm_percentage(pct, 1.0) * QuantumRange;
+    image = rm_check_frozen(self);
 
 #if defined(IMAGEMAGICK_7)
     {
@@ -1756,6 +1771,7 @@ Image_bilevel_channel(int argc, VALUE *argv, VALUE self)
     }
 
     threshold = NUM2DBL(argv[0]);
+    image = rm_check_readable(self);
     new_image = rm_clone_image(image);
 
 #if defined(IMAGEMAGICK_7)
@@ -2012,7 +2028,7 @@ check_for_long_value(VALUE obj)
  * @param y_offset pointer to y offset
  */
 static void
-get_composite_offsets(int argc, VALUE *argv, Image *dest, Image *src,
+get_composite_offsets(int argc, VALUE *argv, VALUE dest, VALUE src,
                       long *x_offset, long *y_offset)
 {
     GravityType gravity;
@@ -2030,11 +2046,11 @@ get_composite_offsets(int argc, VALUE *argv, Image *dest, Image *src,
                 *y_offset = NUM2LONG(argv[2]);
             case 2:
                 *x_offset = NUM2LONG(argv[1]);
-                get_relative_offsets(argv[0], dest, src, x_offset, y_offset);
+                get_relative_offsets(argv[0], rm_check_readable(dest), rm_check_readable(src), x_offset, y_offset);
                 break;
             case 1:
                 // No offsets specified. Compute offset based on the gravity alone.
-                get_offsets_from_gravity(gravity, dest, src, x_offset, y_offset);
+                get_offsets_from_gravity(gravity, rm_check_readable(dest), rm_check_readable(src), x_offset, y_offset);
                 break;
         }
     }
@@ -2208,11 +2224,10 @@ VALUE
 Image_blend(int argc, VALUE *argv, VALUE self)
 {
     VALUE composite_image, ovly;
-    Image *image, *overlay;
     double src_percent, dst_percent;
     long x_offset = 0L, y_offset = 0L;
 
-    image = rm_check_readable(self);
+    rm_check_readable(self);
 
     if (argc < 1)
     {
@@ -2220,11 +2235,11 @@ Image_blend(int argc, VALUE *argv, VALUE self)
     }
 
     ovly = rm_cur_image(argv[0]);
-    overlay = rm_check_writable(ovly);
+    rm_check_writable(ovly);
 
     if (argc > 3)
     {
-        get_composite_offsets(argc-3, &argv[3], image, overlay, &x_offset, &y_offset);
+        get_composite_offsets(argc-3, &argv[3], self, ovly, &x_offset, &y_offset);
         // There must be 3 arguments left
         argc = 3;
     }
@@ -2282,7 +2297,7 @@ Image_blue_shift(int argc, VALUE *argv, VALUE self)
             break;
     }
 
-
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, BlueShiftImage, image, factor, exception);
     new_image = call.read(self).release(exception).run<Image *>();
@@ -2334,6 +2349,7 @@ Image_blur_channel(int argc, VALUE *argv, VALUE self)
             raise_ChannelType_error(argv[argc-1]);
     }
 
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_CLONE(masked, image, channels);
@@ -2484,7 +2500,11 @@ VALUE
 Image_border_color_eq(VALUE self, VALUE color)
 {
     Image *image = rm_check_frozen(self);
-    Color_to_PixelColor(&image->border_color, color);
+    PixelColor border_color = image->border_color;
+
+    Color_to_PixelColor(&border_color, color);
+    image = rm_check_frozen(self);
+    image->border_color = border_color;
     return color;
 }
 
@@ -2641,6 +2661,7 @@ Image_change_geometry(VALUE self, VALUE geom_arg)
     image = rm_check_readable(self);
     geom_str = rb_String(geom_arg);
     geometry = StringValueCStr(geom_str);
+    image = rm_check_readable(self);
 
     memset(&rect, 0, sizeof(rect));
 
@@ -2993,7 +3014,11 @@ VALUE
 Image_chromaticity_eq(VALUE self, VALUE chroma)
 {
     Image *image = rm_check_frozen(self);
-    Export_ChromaticityInfo(&image->chromaticity, chroma);
+    ChromaticityInfo chromaticity = image->chromaticity;
+
+    Export_ChromaticityInfo(&chromaticity, chroma);
+    image = rm_check_frozen(self);
+    image->chromaticity = chromaticity;
     return chroma;
 }
 
@@ -3052,6 +3077,7 @@ Image_clut_channel(int argc, VALUE *argv, VALUE self)
         rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 or more)", argc);
     }
 
+    image = rm_check_frozen(self);
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(image, channels);
@@ -3227,6 +3253,7 @@ set_profile(VALUE self, const char *name, VALUE profile)
 
     profile = rb_str_new_frozen(StringValue(profile));
     profile_blob = rm_str2cstr(&profile, &profile_length);
+    image = rm_check_frozen(self);
 
     // Reject the name before GetMagickInfo(), which loads the coder module it names
     // ("*" loads all of them).
@@ -3401,11 +3428,11 @@ Image_color_flood_fill(VALUE self, VALUE target_color, VALUE fill_color,
     rm_set_pixelinfo_alpha(&fill, fill.alpha);
 #else
     Color_to_PixelColor(&fill, fill_color);
-    image = rm_check_readable(self);
 #endif
 
     x = NUM2LONG(xv);
     y = NUM2LONG(yv);
+    image = rm_check_readable(self);
     if ((unsigned long)x > image->columns || (unsigned long)y > image->rows)
     {
         rb_raise(rb_eArgError, "target out of range. %lux%lu given, image is %" RMIuSIZE "x%" RMIuSIZE "",
@@ -3523,6 +3550,7 @@ Image_colorize(int argc, VALUE *argv, VALUE self)
         rb_raise(rb_eArgError, "wrong number of arguments (%d for 4 or 5)", argc);
     }
 
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     DECLARE_GVL_CALL(call, ColorizeImage, image, opacity, &target, exception);
@@ -3574,6 +3602,7 @@ Image_colormap(int argc, VALUE *argv, VALUE self)
     {
         rb_raise(rb_eIndexError, "index out of range");
     }
+    image = rm_check_readable(self);
 
     // If this is a simple "get" operation, ensure the image has a colormap.
     if (argc == 1)
@@ -3598,6 +3627,7 @@ Image_colormap(int argc, VALUE *argv, VALUE self)
     // Replace with new color? The arg can be either a color name or
     // a Magick::Pixel.
     Color_to_PixelColor(&new_color, argv[1]);
+    image = rm_check_frozen(self);
 
     // Handle no colormap or current colormap too small.
     if (!image->colormap || idx > image->colors-1)
@@ -3900,6 +3930,7 @@ composite(int bang, int argc, VALUE *argv, VALUE self, ChannelType channels, con
         case 3:                 // argv[1] is gravity, argv[2] is composite_op
             VALUE_TO_ENUM(argv[1], gravity, GravityType);
             VALUE_TO_ENUM(argv[2], composite_op, CompositeOperator);
+            image = bang ? rm_check_frozen(self) : rm_check_readable(self);
 
             // convert gravity to x, y offsets
             switch (gravity)
@@ -3950,6 +3981,8 @@ composite(int bang, int argc, VALUE *argv, VALUE self, ChannelType channels, con
             x_offset = NUM2LONG(argv[1]);
             y_offset = NUM2LONG(argv[2]);
             VALUE_TO_ENUM(argv[3], composite_op, CompositeOperator);
+            image = bang ? rm_check_frozen(self) : rm_check_readable(self);
+            comp_image = rm_check_readable(comp);
             break;
 
         case 5:
@@ -3957,6 +3990,8 @@ composite(int bang, int argc, VALUE *argv, VALUE self, ChannelType channels, con
             x_offset = NUM2LONG(argv[2]);
             y_offset = NUM2LONG(argv[3]);
             VALUE_TO_ENUM(argv[4], composite_op, CompositeOperator);
+            image = bang ? rm_check_frozen(self) : rm_check_readable(self);
+            comp_image = rm_check_readable(comp);
 
             switch (gravity)
             {
@@ -4150,6 +4185,8 @@ Image_composite_affine(VALUE self, VALUE source, VALUE affine_matrix)
     composite_image = rm_check_readable(source);
 
     Export_AffineMatrix(&affine, affine_matrix);
+    image = rm_check_readable(self);
+    composite_image = rm_check_readable(source);
     new_image = rm_clone_image(image);
 
 #if defined(IMAGEMAGICK_7)
@@ -4501,6 +4538,7 @@ composite_tiled(int bang, int argc, VALUE *argv, VALUE self)
     }
 
     comp_image = rm_check_readable(rm_cur_image(argv[0]));
+    image = bang ? rm_check_frozen(self) : rm_check_readable(self);
 
     if (!bang)
     {
@@ -5001,6 +5039,7 @@ Image_contrast_stretch_channel(int argc, VALUE *argv, VALUE self)
     }
 
     get_black_white_point(image, argc, argv, &black_point, &white_point);
+    image = rm_check_readable(self);
 
     new_image = rm_clone_image(image);
 
@@ -5085,6 +5124,7 @@ Image_morphology_channel(VALUE self, VALUE channel_v, VALUE method_v, VALUE iter
     }
 
     kernel = rm_check_kernel_info(kernel_v);
+    image = rm_check_readable(self);
 
     exception = AcquireExceptionInfo();
 
@@ -5109,7 +5149,7 @@ Image_morphology_channel(VALUE self, VALUE channel_v, VALUE method_v, VALUE iter
 #if defined(IMAGEMAGICK_7)
 // TODO: Move this to KernelInfo class as a constructor?
 KernelInfo*
-convolve_create_kernel_info(unsigned int order, VALUE kernel_arg)
+convolve_create_kernel_info(unsigned int order, const double *values)
 {
     unsigned int x;
     KernelInfo *kernel;
@@ -5137,16 +5177,7 @@ convolve_create_kernel_info(unsigned int order, VALUE kernel_arg)
 
     for (x = 0; x < order*order; x++)
     {
-        VALUE element = rb_ary_entry(kernel_arg, (long)x);
-        if (rm_check_num2dbl(element))
-        {
-            kernel->values[x] = NUM2DBL(element);
-        }
-        else
-        {
-            DestroyKernelInfo(kernel);
-            rb_raise(rb_eTypeError, "type mismatch: %s given", rb_class2name(CLASS_OF(element)));
-        }
+        kernel->values[x] = values[x];
     }
 
     return kernel;
@@ -5165,12 +5196,14 @@ Image_convolve(VALUE self, VALUE order_arg, VALUE kernel_arg)
 {
     Image *image, *new_image;
     size_t order;
+    VALUE values_buf;
+    double *values;
+    unsigned int x;
     ExceptionInfo *exception;
 #if defined(IMAGEMAGICK_7)
     KernelInfo *kernel;
 #else
     double *kernel;
-    unsigned int x;
 #endif
 
     image = rm_check_readable(self);
@@ -5184,26 +5217,27 @@ Image_convolve(VALUE self, VALUE order_arg, VALUE kernel_arg)
     kernel_arg = rb_Array(kernel_arg);
     rm_check_ary_len(kernel_arg, (long)(order*order));
 
-#if defined(IMAGEMAGICK_7)
-    kernel = convolve_create_kernel_info(order, kernel_arg);
-#else
     // Convert the kernel array argument to an array of doubles
-
-    kernel = (double *)ALLOC_N(double, order*order);
+    values = ALLOCV_N(double, values_buf, order*order);
     for (x = 0; x < (unsigned)(order * order); x++)
     {
         VALUE element = rb_ary_entry(kernel_arg, (long)x);
-        if (rm_check_num2dbl(element))
+        if (!rm_check_num2dbl(element))
         {
-            kernel[x] = NUM2DBL(element);
-        }
-        else
-        {
-            xfree((void *)kernel);
             rb_raise(rb_eTypeError, "type mismatch: %s given", rb_class2name(CLASS_OF(element)));
         }
+        values[x] = NUM2DBL(element);
     }
+
+    image = rm_check_readable(self);
+
+#if defined(IMAGEMAGICK_7)
+    kernel = convolve_create_kernel_info(order, values);
+#else
+    kernel = ALLOC_N(double, order*order);
+    memcpy(kernel, values, order * order * sizeof(double));
 #endif
+    ALLOCV_END(values_buf);
 
     exception = AcquireExceptionInfo();
 
@@ -5243,15 +5277,16 @@ VALUE
 Image_convolve_channel(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
-    VALUE ary;
+    VALUE ary, values_buf;
     size_t order;
+    double *values;
+    unsigned int x;
     ChannelType channels;
     ExceptionInfo *exception;
 #if defined(IMAGEMAGICK_7)
     KernelInfo *kernel;
 #else
     double *kernel;
-    unsigned int x;
 #endif
 
     image = rm_check_readable(self);
@@ -5277,26 +5312,27 @@ Image_convolve_channel(int argc, VALUE *argv, VALUE self)
     ary = rb_Array(argv[1]);
     rm_check_ary_len(ary, (long)(order*order));
 
-#if defined(IMAGEMAGICK_7)
-    kernel = convolve_create_kernel_info(order, ary);
-#else
-    kernel = ALLOC_N(double, (long)(order*order));
-
     // Convert the kernel array argument to an array of doubles
+    values = ALLOCV_N(double, values_buf, order*order);
     for (x = 0; x < (unsigned)(order * order); x++)
     {
         VALUE element = rb_ary_entry(ary, (long)x);
-        if (rm_check_num2dbl(element))
+        if (!rm_check_num2dbl(element))
         {
-            kernel[x] = NUM2DBL(element);
-        }
-        else
-        {
-            xfree((void *)kernel);
             rb_raise(rb_eTypeError, "type mismatch: %s given", rb_class2name(CLASS_OF(element)));
         }
+        values[x] = NUM2DBL(element);
     }
+
+    image = rm_check_readable(self);
+
+#if defined(IMAGEMAGICK_7)
+    kernel = convolve_create_kernel_info(order, values);
+#else
+    kernel = ALLOC_N(double, (long)(order*order));
+    memcpy(kernel, values, order * order * sizeof(double));
 #endif
+    ALLOCV_END(values_buf);
 
     exception = AcquireExceptionInfo();
 
@@ -5559,7 +5595,7 @@ Image_density_eq(VALUE self, VALUE density_arg)
     int count;
     double x_res, y_res;
 
-    image = rm_check_frozen(self);
+    rm_check_frozen(self);
 
     // Get the Class ID for the Geometry class.
     if (!Class_Geometry)
@@ -5578,6 +5614,7 @@ Image_density_eq(VALUE self, VALUE density_arg)
         {
             rb_raise(rb_eArgError, "invalid x resolution: %f", x_res);
         }
+        image = rm_check_frozen(self);
 #if defined(IMAGEMAGICK_7)
         image->resolution.y = y_res != 0.0 ? y_res : x_res;
         image->resolution.x = x_res;
@@ -5596,6 +5633,7 @@ Image_density_eq(VALUE self, VALUE density_arg)
             rb_raise(rb_eArgError, "invalid density geometry %s", density);
         }
 
+        image = rm_check_frozen(self);
 #if defined(IMAGEMAGICK_7)
         count = sscanf(density, "%lfx%lf", &image->resolution.x, &image->resolution.y);
 #else
@@ -5636,6 +5674,7 @@ Image_decipher(VALUE self, VALUE passphrase)
     image = rm_check_readable(self);
     passphrase = rb_str_new_frozen(StringValue(passphrase));
     pf = StringValueCStr(passphrase);      // ensure passphrase is a string
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
 
     new_image = rm_clone_image(image);
@@ -5670,11 +5709,14 @@ VALUE
 Image_artifact(VALUE self, VALUE artifact)
 {
     Image *image;
+    char *key;
     const char *value;
 
     image = rm_check_readable(self);
     artifact = rb_String(artifact);
-    value = GetImageArtifact(image, StringValueCStr(artifact));
+    key = StringValueCStr(artifact);
+    image = rm_check_readable(self);
+    value = GetImageArtifact(image, key);
 
     return value ? rb_str_new2(value) : Qnil;
 }
@@ -5705,12 +5747,14 @@ Image_define(VALUE self, VALUE artifact, VALUE value)
 
     if (value == Qnil)
     {
+        image = rm_check_frozen(self);
         DeleteImageArtifact(image, key);
     }
     else
     {
         value = rb_String(value);
         val = StringValueCStr(value);
+        image = rm_check_frozen(self);
         status = SetImageArtifact(image, key, val);
         if (!status)
         {
@@ -5797,6 +5841,7 @@ Image_delete_profile(VALUE self, VALUE name)
 
     name = rb_str_new_frozen(StringValue(name));
     profile_name = StringValueCStr(name);
+    image = rm_check_frozen(self);
 
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception = AcquireExceptionInfo();
@@ -6070,7 +6115,7 @@ Image_difference(VALUE self, VALUE other)
     Image *image, *target;
     Image *image2;
     double mean, nmean, nmax;
-    bool frozen = OBJ_FROZEN(self);
+    bool frozen;
     ExceptionInfo *exception;
 #if defined(IMAGEMAGICK_7)
     double distortion;
@@ -6079,6 +6124,8 @@ Image_difference(VALUE self, VALUE other)
     image = rm_check_readable(self);
     other = rm_cur_image(other);
     image2 = rm_check_readable(other);
+    image = rm_check_readable(self);
+    frozen = OBJ_FROZEN(self);
 
     // The comparison stores the errors in the image, and IM7 also stores the
     // distortion in a property. A frozen image may be shared with other
@@ -6155,12 +6202,11 @@ Image_directory(VALUE self)
 VALUE
 Image_displace(int argc, VALUE *argv, VALUE self)
 {
-    Image *image, *displacement_map;
     VALUE composite_image, dmap;
     double x_amplitude = 0.0, y_amplitude = 0.0;
     long x_offset = 0L, y_offset = 0L;
 
-    image = rm_check_readable(self);
+    rm_check_readable(self);
 
     if (argc < 2)
     {
@@ -6168,11 +6214,11 @@ Image_displace(int argc, VALUE *argv, VALUE self)
     }
 
     dmap = rm_cur_image(argv[0]);
-    displacement_map = rm_check_writable(dmap);
+    rm_check_writable(dmap);
 
     if (argc > 3)
     {
-        get_composite_offsets(argc-3, &argv[3], image, displacement_map, &x_offset, &y_offset);
+        get_composite_offsets(argc-3, &argv[3], self, dmap, &x_offset, &y_offset);
         // There must be 3 arguments left
         argc = 3;
     }
@@ -6289,6 +6335,7 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
     {
         stg_type = RTEST(argv[5]) ? DoublePixel : QuantumPixel;
     }
+    image = rm_check_readable(self);
 
     // Compute the size of the pixel array and allocate the memory.
     npixels = pixel_buffer_count(columns, rows, mapL);
@@ -6297,8 +6344,6 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
 
     // Create the Ruby array for the pixels. Return this even if ExportImagePixels fails.
     pixels_ary = rb_ary_new();
-
-    image = rm_image_get(self);
 
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, ExportImagePixels, image, x, y, columns, rows, map, stg_type, (void *)pixels.v, exception);
@@ -6439,12 +6484,11 @@ Image_dispose_eq(VALUE self, VALUE dispose)
 VALUE
 Image_dissolve(int argc, VALUE *argv, VALUE self)
 {
-    Image *image, *overlay;
     double src_percent, dst_percent = -1.0;
     long x_offset = 0L, y_offset = 0L;
     VALUE composite_image, ovly;
 
-    image = rm_check_readable(self);
+    rm_check_readable(self);
 
     if (argc < 1)
     {
@@ -6452,11 +6496,11 @@ Image_dissolve(int argc, VALUE *argv, VALUE self)
     }
 
     ovly = rm_cur_image(argv[0]);
-    overlay = rm_check_writable(ovly);
+    rm_check_writable(ovly);
 
     if (argc > 3)
     {
-        get_composite_offsets(argc-3, &argv[3], image, overlay, &x_offset, &y_offset);
+        get_composite_offsets(argc-3, &argv[3], self, ovly, &x_offset, &y_offset);
         // There must be 3 arguments left
         argc = 3;
     }
@@ -6641,6 +6685,7 @@ Image_distortion_channel(int argc, VALUE *argv, VALUE self)
 
     rec = rm_cur_image(argv[0]);
     reconstruct = rm_check_readable(rec);
+    image = rm_check_readable(self);
     VALUE_TO_ENUM(argv[1], metric, MetricType);
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
@@ -6812,6 +6857,7 @@ Image_edge(int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
 
     DECLARE_GVL_CALL(call, EdgeImage, image, radius, exception);
@@ -6864,6 +6910,7 @@ effect_image(VALUE self, int argc, VALUE *argv, gvl_function_t fp)
         rb_raise(rb_eArgError, "sigma must be != 0.0");
     }
 
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL_FP(call, effect_image, fp, image, radius, sigma, exception);
     new_image = call.read(self).release(exception).run<Image *>();
@@ -6908,6 +6955,7 @@ Image_encipher(VALUE self, VALUE passphrase)
     image = rm_check_readable(self);
     passphrase = rb_str_new_frozen(StringValue(passphrase));
     pf = StringValueCStr(passphrase);      // ensure passphrase is a string
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
 
     new_image = rm_clone_image(image);
@@ -7126,7 +7174,7 @@ excerpt(int bang, VALUE self, VALUE x, VALUE y, VALUE width, VALUE height)
     rect.width = NUM2ULONG(width);
     rect.height = NUM2ULONG(height);
 
-    image = rm_image_get(self);
+    image = bang ? rm_check_frozen(self) : rm_check_readable(self);
 
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, ExcerptImage, image, &rect, exception);
@@ -7250,6 +7298,7 @@ Image_export_pixels(int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    image = rm_check_readable(self);
     if (   x_off < 0 || (unsigned long)x_off > image->columns
            || y_off < 0 || (unsigned long)y_off > image->rows
            || cols == 0 || rows == 0)
@@ -7351,7 +7400,7 @@ Image_extent(int argc, VALUE *argv, VALUE self)
     }
 
 
-    image = rm_image_get(self);
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
 
     DECLARE_GVL_CALL(call, ExtentImage, image, &geometry, exception);
@@ -7419,6 +7468,7 @@ Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    image = rm_check_readable(self);
     if (   x_off < 0 || (unsigned long)x_off > image->columns
            || y_off < 0 || (unsigned long)y_off > image->rows
            || cols == 0 || rows == 0)
@@ -7509,7 +7559,11 @@ VALUE
 Image_extract_info_eq(VALUE self, VALUE rect)
 {
     Image *image = rm_check_frozen(self);
-    Export_RectangleInfo(&image->extract_info, rect);
+    RectangleInfo extract_info = image->extract_info;
+
+    Export_RectangleInfo(&extract_info, rect);
+    image = rm_check_frozen(self);
+    image->extract_info = extract_info;
     return rect;
 }
 
@@ -7608,6 +7662,7 @@ Image_find_similar_region(int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     DECLARE_GVL_CALL(call, IsEquivalentImage, image, target, &x, &y, exception);
@@ -7787,7 +7842,7 @@ Image_format_eq(VALUE self, VALUE magick)
     char *mgk;
     ExceptionInfo *exception;
 
-    image = rm_check_frozen(self);
+    rm_check_frozen(self);
 
     mgk = StringValueCStr(magick);
 
@@ -7803,6 +7858,7 @@ Image_format_eq(VALUE self, VALUE magick)
     }
 
 
+    image = rm_check_frozen(self);
     strlcpy(image->magick, m->name, sizeof(image->magick));
     return magick;
 }
@@ -7827,11 +7883,12 @@ Image_frame(int argc, VALUE *argv, VALUE self)
     Image *image, *new_image;
     ExceptionInfo *exception;
     FrameInfo frame_info;
+    PixelColor matte_color;
+    long width = 25, height = 25;
 
     image = rm_check_readable(self);
+    matte_color = image->matte_color;
 
-    frame_info.width = image->columns + 50;
-    frame_info.height = image->rows + 50;
     frame_info.x = 25;
     frame_info.y = 25;
     frame_info.inner_bevel = 6;
@@ -7840,7 +7897,7 @@ Image_frame(int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 7:
-            Color_to_PixelColor(&image->matte_color, argv[6]);
+            Color_to_PixelColor(&matte_color, argv[6]);
         case 6:
             frame_info.outer_bevel = NUM2LONG(argv[5]);
         case 5:
@@ -7850,15 +7907,23 @@ Image_frame(int argc, VALUE *argv, VALUE self)
         case 3:
             frame_info.x = NUM2LONG(argv[2]);
         case 2:
-            frame_info.height = image->rows + 2*NUM2LONG(argv[1]);
+            height = NUM2LONG(argv[1]);
         case 1:
-            frame_info.width = image->columns + 2*NUM2LONG(argv[0]);
+            width = NUM2LONG(argv[0]);
         case 0:
             break;
         default:
             rb_raise(rb_eArgError, "wrong number of arguments (%d for 0 to 7)", argc);
             break;
     }
+
+    image = rm_check_readable(self);
+    if (argc == 7)
+    {
+        image->matte_color = matte_color;
+    }
+    frame_info.width = image->columns + 2*width;
+    frame_info.height = image->rows + 2*height;
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
@@ -7951,7 +8016,8 @@ Image_function_channel(int argc, VALUE *argv, VALUE self)
     Image *image, *new_image;
     MagickFunction function;
     unsigned long n, nparms;
-    double *parms;
+    VALUE values_buf;
+    double *values, *parms;
     ChannelType channels;
     ExceptionInfo *exception;
 
@@ -7990,21 +8056,23 @@ Image_function_channel(int argc, VALUE *argv, VALUE self)
     }
 
     nparms = argc;
-    parms = ALLOC_N(double, nparms);
+    values = ALLOCV_N(double, values_buf, nparms);
 
     for (n = 0; n < nparms; n++)
     {
         VALUE element = argv[n];
-        if (rm_check_num2dbl(element))
+        if (!rm_check_num2dbl(element))
         {
-            parms[n] = NUM2DBL(element);
-        }
-        else
-        {
-            xfree(parms);
             rb_raise(rb_eTypeError, "type mismatch: %s given", rb_class2name(CLASS_OF(element)));
         }
+        values[n] = NUM2DBL(element);
     }
+
+    image = rm_check_readable(self);
+
+    parms = ALLOC_N(double, nparms);
+    memcpy(parms, values, nparms * sizeof(double));
+    ALLOCV_END(values_buf);
 
     exception = AcquireExceptionInfo();
     new_image = rm_clone_image(image);
@@ -8051,8 +8119,10 @@ Image_fuzz(VALUE self)
 VALUE
 Image_fuzz_eq(VALUE self, VALUE fuzz)
 {
+    rm_check_frozen(self);
+    double value = rm_fuzz_to_dbl(fuzz);
     Image *image = rm_check_frozen(self);
-    image->fuzz = rm_fuzz_to_dbl(fuzz);
+    image->fuzz = value;
     return fuzz;
 }
 
@@ -8098,6 +8168,7 @@ Image_fx(int argc, VALUE *argv, VALUE self)
         rb_raise(rb_eArgError, "the expression must not name a file with '@'");
     }
 
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_CLONE(masked, image, channels);
@@ -8178,6 +8249,7 @@ Image_gamma_channel(int argc, VALUE *argv, VALUE self)
     }
 
     gamma = NUM2DBL(argv[0]);
+    image = rm_check_readable(self);
     new_image = rm_clone_image(image);
 
 #if defined(IMAGEMAGICK_7)
@@ -8236,6 +8308,7 @@ Image_gamma_correct(int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    image = rm_check_readable(self);
     new_image = rm_clone_image(image);
 
 #if defined(IMAGEMAGICK_7)
@@ -8350,6 +8423,7 @@ Image_gaussian_blur_channel(int argc, VALUE *argv, VALUE self)
             raise_ChannelType_error(argv[argc-1]);
     }
 
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_CLONE(masked, image, channels);
@@ -8413,6 +8487,7 @@ Image_geometry_eq(VALUE self, VALUE geometry)
     {
         rb_raise(rb_eTypeError, "invalid geometry: %s", geom);
     }
+    image = rm_check_frozen(self);
     magick_clone_string(&image->geometry, geom);
 
     RB_GC_GUARD(geom_str);
@@ -8569,6 +8644,7 @@ Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE row
     columns = NUM2LONG(cols_arg);
     rows    = NUM2LONG(rows_arg);
 
+    image = rm_check_readable(self);
     if (columns < 0 || rows < 0
         || (unsigned long)x + columns > image->columns || (unsigned long)y + rows > image->rows)
     {
@@ -8758,6 +8834,7 @@ import_quantum(double value)
 
 typedef struct
 {
+    VALUE self;
     VALUE pixel_ary;
     size_t npixels;
     Quantum *pixels;
@@ -8766,12 +8843,12 @@ typedef struct
 
 
 /**
- * Convert the elements of a pixel array for Image#import_pixels.
+ * Convert the elements of a pixel array for Image#import_pixels, and get the image again.
  *
  * No Ruby usage (internal function)
  *
  * @param arg the import_pixels_args_t, with either pixels or fpixels to fill
- * @return Qnil
+ * @return the image
  */
 static VALUE
 convert_pixel_array(VALUE arg)
@@ -8794,7 +8871,7 @@ convert_pixel_array(VALUE arg)
             args->pixels[n] = import_quantum(NUM2DBL(element));
         }
     }
-    return Qnil;
+    return (VALUE)rm_check_frozen(args->self);
 }
 
 
@@ -8911,6 +8988,8 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
             rb_raise(rb_eArgError, "pixel buffer too small (need %" RMIuSIZE " channel values, got %" RMIuSIZE ")",
                      npixels, buffer_l/type_sz);
         }
+
+        image = rm_check_frozen(self);
     }
     // Otherwise convert the argument to an array and convert the array elements
     // to binary pixel data.
@@ -8930,7 +9009,7 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
                      npixels, RARRAY_LEN(pixel_ary));
         }
 
-        import_pixels_args_t args = { pixel_ary, npixels, NULL, NULL };
+        import_pixels_args_t args = { self, pixel_ary, npixels, NULL, NULL };
         int state;
 
         if (stg_type == DoublePixel || stg_type == FloatPixel)
@@ -8948,7 +9027,7 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
             stg_type = QuantumPixel;
         }
 
-        rb_protect(convert_pixel_array, (VALUE)&args, &state);
+        image = (Image *)rb_protect(convert_pixel_array, (VALUE)&args, &state);
         if (state)
         {
             xfree(pixels);
@@ -9334,6 +9413,7 @@ Image_level2(int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    image = rm_check_readable(self);
     new_image = rm_clone_image(image);
 
 #if defined(IMAGEMAGICK_7)
@@ -9400,6 +9480,7 @@ Image_level_channel(int argc, VALUE *argv, VALUE self)
 
     VALUE_TO_ENUM(argv[0], channel, ChannelType);
 
+    image = rm_check_readable(self);
     new_image = rm_clone_image(image);
 
 #if defined(IMAGEMAGICK_7)
@@ -9465,6 +9546,7 @@ Image_level_colors(int argc, VALUE *argv, VALUE self)
 
         case 2:
             Color_to_MagickPixel(image, &white_color, argv[1]);
+            image = rm_check_readable(self);
             Color_to_MagickPixel(image, &black_color, argv[0]);
             break;
 
@@ -9483,6 +9565,7 @@ Image_level_colors(int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    image = rm_check_readable(self);
     new_image = rm_clone_image(image);
 
 #if defined(IMAGEMAGICK_7)
@@ -9564,6 +9647,7 @@ Image_levelize_channel(int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    image = rm_check_readable(self);
     new_image = rm_clone_image(image);
 
 #if defined(IMAGEMAGICK_7)
@@ -9616,6 +9700,7 @@ Image_linear_stretch(int argc, VALUE *argv, VALUE self)
 
     image = rm_check_readable(self);
     get_black_white_point(image, argc, argv, &black_point, &white_point);
+    image = rm_check_readable(self);
     new_image = rm_clone_image(image);
 
 #if defined(IMAGEMAGICK_7)
@@ -9671,6 +9756,7 @@ Image_liquid_rescale(int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, LiquidRescaleImage, image, cols, rows, delta_x, rigidity, exception);
     new_image = call.read(self).release(exception).run<Image *>();
@@ -9887,8 +9973,6 @@ Image_marshal_load(VALUE self, VALUE ary)
     Image *image, *new_image;
     ExceptionInfo *exception;
 
-    image = rm_image_get(self);
-
     Check_Type(ary, T_ARRAY);
 
     filename = rb_ary_shift(ary);
@@ -9916,6 +10000,7 @@ Image_marshal_load(VALUE self, VALUE ary)
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 
+    image = rm_image_get(self);
     rm_image_set(self, new_image);
     rm_image_destroy(image);
 
@@ -10174,7 +10259,11 @@ VALUE
 Image_matte_color_eq(VALUE self, VALUE color)
 {
     Image *image = rm_check_frozen(self);
-    Color_to_PixelColor(&image->matte_color, color);
+    PixelColor matte_color = image->matte_color;
+
+    Color_to_PixelColor(&matte_color, color);
+    image = rm_check_frozen(self);
+    image->matte_color = matte_color;
     return color;
 }
 
@@ -10212,8 +10301,8 @@ Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
 
     alpha = get_named_alpha_value(kwargs);
 
-    color_to_image_pixel(image->colorspace, &target, color_obj);
     image = rm_check_readable(self);
+    color_to_image_pixel(image->colorspace, &target, color_obj);
     VALUE_TO_ENUM(method_obj, method, PaintMethod);
     if (!(method == FloodfillMethod || method == FillToBorderMethod))
     {
@@ -10222,6 +10311,7 @@ Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
     }
     x = NUM2LONG(x_obj);
     y = NUM2LONG(y_obj);
+    image = rm_check_readable(self);
     if ((unsigned long)x > image->columns || (unsigned long)y > image->rows)
     {
         rb_raise(rb_eArgError, "target out of range. %ldx%ld given, image is %" RMIuSIZE "x%" RMIuSIZE "",
@@ -10320,6 +10410,7 @@ Image_median_filter(int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, StatisticImage, image, MedianStatistic, (size_t)radius, (size_t)radius, exception);
     new_image = call.read(self).release(exception).run<Image *>();
@@ -10446,6 +10537,7 @@ Image_modulate(int argc, VALUE *argv, VALUE self)
     }
     snprintf(modulate, sizeof(modulate), "%f%%,%f%%,%f%%", pct_brightness, pct_saturation, pct_hue);
 
+    image = rm_check_readable(self);
     new_image = rm_clone_image(image);
 
 #if defined(IMAGEMAGICK_7)
@@ -10538,7 +10630,7 @@ motion_blur(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
         rb_raise(rb_eArgError, "sigma must be != 0.0");
     }
 
-    image = rm_image_get(self);
+    image = rm_check_readable(self);
 
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL_FP(call, motion_blur, fp, image, radius, sigma, angle, exception);
@@ -11149,6 +11241,7 @@ Image_oil_paint(int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
 
 #if defined(IMAGEMAGICK_7)
@@ -11383,6 +11476,7 @@ Image_ordered_dither(int argc, VALUE *argv, VALUE self)
         }
     }
 
+    image = rm_check_readable(self);
     new_image = rm_clone_image(image);
 
     exception = AcquireExceptionInfo();
@@ -11453,7 +11547,11 @@ VALUE
 Image_page_eq(VALUE self, VALUE rect)
 {
     Image *image = rm_check_frozen(self);
-    Export_RectangleInfo(&image->page, rect);
+    RectangleInfo page = image->page;
+
+    Export_RectangleInfo(&page, rect);
+    image = rm_check_frozen(self);
+    image->page = page;
     return rect;
 }
 
@@ -11497,6 +11595,7 @@ Image_paint_transparent(int argc, VALUE *argv, VALUE self)
         alpha = get_named_alpha_value(kwargs);
     }
 
+    image = rm_check_readable(self);
     new_image = rm_clone_image(image);
 
     // Use fuzz value from caller
@@ -11623,6 +11722,7 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
 
     x = NUM2LONG(argv[0]);
     y = NUM2LONG(argv[1]);
+    image = set ? rm_check_frozen(self) : rm_check_readable(self);
 
     if (set)
     {
@@ -11923,6 +12023,7 @@ Image_posterize(int argc, VALUE *argv, VALUE self)
             rb_raise(rb_eArgError, "wrong number of arguments (%d for 0 to 2)", argc);
     }
 
+    image = rm_check_readable(self);
     new_image = rm_clone_image(image);
 
 #if defined(IMAGEMAGICK_7)
@@ -12188,6 +12289,7 @@ Image_quantum_operator(int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    image = rm_check_frozen(self);
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(image, channel);
@@ -12269,6 +12371,7 @@ Image_quantize(int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    image = rm_check_readable(self);
     new_image = rm_clone_image(image);
 
 #if defined(IMAGEMAGICK_7)
@@ -12347,6 +12450,7 @@ Image_radial_blur_channel(int argc, VALUE *argv, VALUE self)
     }
 
     angle = NUM2DBL(argv[0]);
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
 
 #if defined(IMAGEMAGICK_7)
@@ -12408,6 +12512,7 @@ Image_random_threshold_channel(int argc, VALUE *argv, VALUE self)
     geom_str = rb_str_new_frozen(rb_String(argv[0]));
     thresholds = StringValueCStr(geom_str);
 
+    image = rm_check_readable(self);
     new_image = rm_clone_image(image);
 
     exception = AcquireExceptionInfo();
@@ -12486,6 +12591,7 @@ Image_raise(int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    image = rm_check_readable(self);
     new_image = rm_clone_image(image);
 
 #if defined(IMAGEMAGICK_7)
@@ -12696,31 +12802,33 @@ Image_recolor(VALUE self, VALUE color_matrix)
     Image *image, *new_image;
     unsigned long order;
     long x, len;
-    double *matrix;
+    VALUE values_buf;
+    double *values, *matrix;
     ExceptionInfo *exception;
     KernelInfo *kernel_info;
 
     image = rm_check_readable(self);
     color_matrix = rm_check_ary_type(color_matrix);
 
-    // Allocate color matrix from Ruby's memory
     len = RARRAY_LEN(color_matrix);
-    matrix = ALLOC_N(double, len);
+    values = ALLOCV_N(double, values_buf, len);
 
     for (x = 0; x < len; x++)
     {
         VALUE element = rb_ary_entry(color_matrix, x);
-        if (rm_check_num2dbl(element))
+        if (!rm_check_num2dbl(element))
         {
-            matrix[x] = NUM2DBL(element);
-        }
-        else
-        {
-            xfree(matrix);
             rb_raise(rb_eTypeError, "type mismatch: %s given", rb_class2name(CLASS_OF(element)));
         }
+        values[x] = NUM2DBL(element);
     }
 
+    image = rm_check_readable(self);
+
+    // Allocate color matrix from Ruby's memory
+    matrix = ALLOC_N(double, len);
+    memcpy(matrix, values, len * sizeof(double));
+    ALLOCV_END(values_buf);
     order = (unsigned long)sqrt((double)len);
 
     exception = AcquireExceptionInfo();
@@ -12932,6 +13040,7 @@ Image_remap(int argc, VALUE *argv, VALUE self)
 
     remap_obj = rm_cur_image(argv[0]);
     remap_image = rm_check_readable(remap_obj);
+    image = rm_check_frozen(self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -13107,6 +13216,7 @@ resample(int bang, int argc, VALUE *argv, VALUE self)
             {
                 y_resolution = x_resolution;
             }
+            image = bang ? rm_check_frozen(self) : rm_check_readable(self);
 #if defined(IMAGEMAGICK_7)
             width = (x_resolution * image->columns /
                         (image->resolution.x == 0.0 ? 72.0 : image->resolution.x) + 0.5);
@@ -13262,6 +13372,7 @@ resize(int bang, int argc, VALUE *argv, VALUE self)
         case 2:
             rows = NUM2ULONG(argv[1]);
             columns = NUM2ULONG(argv[0]);
+            image = bang ? rm_check_frozen(self) : rm_check_readable(self);
             if (columns == 0 || rows == 0)
             {
                 rb_raise(rb_eArgError, "invalid result dimension (%lu, %lu given)", columns, rows);
@@ -13273,6 +13384,7 @@ resize(int bang, int argc, VALUE *argv, VALUE self)
             {
                 rb_raise(rb_eArgError, "invalid scale_arg value (%g given)", scale_arg);
             }
+            image = bang ? rm_check_frozen(self) : rm_check_readable(self);
             drows = scale_arg * image->rows + 0.5;
             dcols = scale_arg * image->columns + 0.5;
             if (drows > (double)ULONG_MAX || dcols > (double)ULONG_MAX)
@@ -13438,6 +13550,7 @@ rotate(int bang, int argc, VALUE *argv, VALUE self)
             {
                 rb_raise(rb_eArgError, "second argument must be '<' or '>', '%s' given", arrow);
             }
+            image = bang ? rm_check_frozen(self) : rm_check_readable(self);
             if (*arrow == '>' && image->columns <= image->rows)
             {
                 return Qnil;
@@ -13448,6 +13561,7 @@ rotate(int bang, int argc, VALUE *argv, VALUE self)
             }
         case 1:
             degrees = NUM2DBL(argv[0]);
+            image = bang ? rm_check_frozen(self) : rm_check_readable(self);
             break;
         default:
             rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 or 2)", argc);
@@ -13669,6 +13783,7 @@ scale(int bang, int argc, VALUE *argv, VALUE self, gvl_function_t fp)
         case 2:
             columns = NUM2ULONG(argv[0]);
             rows    = NUM2ULONG(argv[1]);
+            image = bang ? rm_check_frozen(self) : rm_check_readable(self);
             if (columns == 0 || rows == 0)
             {
                 rb_raise(rb_eArgError, "invalid result dimension (%lu, %lu given)", columns, rows);
@@ -13680,6 +13795,7 @@ scale(int bang, int argc, VALUE *argv, VALUE self, gvl_function_t fp)
             {
                 rb_raise(rb_eArgError, "invalid scale value (%g given)", scale_arg);
             }
+            image = bang ? rm_check_frozen(self) : rm_check_readable(self);
             drows = scale_arg * image->rows + 0.5;
             dcols = scale_arg * image->columns + 0.5;
             if (drows > (double)ULONG_MAX || dcols > (double)ULONG_MAX)
@@ -13770,6 +13886,7 @@ Image_selective_blur_channel(int argc, VALUE *argv, VALUE self)
     // Either way it's supposed to represent a percentage of the QuantumRange.
     threshold = rm_percentage(argv[2], 1.0) * QuantumRange;
 
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_CLONE(masked, image, channels);
@@ -13809,6 +13926,7 @@ Image_set_channel_depth(VALUE self, VALUE channel_arg, VALUE depth)
 
     VALUE_TO_ENUM(channel_arg, channel, ChannelType);
     channel_depth = NUM2ULONG(depth);
+    image = rm_check_frozen(self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -13902,6 +14020,7 @@ Image_sepiatone(int argc, VALUE *argv, VALUE self)
             rb_raise(rb_eArgError, "wrong number of arguments (%d for 0 or 1)", argc);
     }
 
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, SepiaToneImage, image, threshold, exception);
     new_image = call.read(self).release(exception).run<Image *>();
@@ -13958,6 +14077,7 @@ Image_segment(int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    image = rm_check_readable(self);
     new_image = rm_clone_image(image);
 
 #if defined(IMAGEMAGICK_7)
@@ -14120,6 +14240,7 @@ Image_shade(int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, ShadeImage, image, shading, azimuth, elevation, exception);
     new_image = call.read(self).release(exception).run<Image *>();
@@ -14179,6 +14300,7 @@ Image_shadow(int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, ShadowImage, image, alpha, sigma, x_offset, y_offset, exception);
     new_image = call.read(self).release(exception).run<Image *>();
@@ -14245,6 +14367,7 @@ Image_sharpen_channel(int argc, VALUE *argv, VALUE self)
             raise_ChannelType_error(argv[argc-1]);
     }
 
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_CLONE(masked, image, channels);
@@ -14388,6 +14511,7 @@ Image_sigmoidal_contrast_channel(int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    image = rm_check_readable(self);
     new_image = rm_clone_image(image);
 
 #if defined(IMAGEMAGICK_7)
@@ -14537,6 +14661,7 @@ Image_solarize(int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    image = rm_check_readable(self);
     new_image = rm_clone_image(image);
 
 #if defined(IMAGEMAGICK_7)
@@ -14860,6 +14985,7 @@ Image_spread(int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     DECLARE_GVL_CALL(call, SpreadImage, image, image->interpolate, radius, exception);
@@ -14926,6 +15052,7 @@ Image_stegano(VALUE self, VALUE watermark_image, VALUE offset)
 
     pixel_offset = NUM2LONG(offset);
     image = rm_check_readable(self);
+    watermark = rm_check_readable(wm_image);
 
     exception = AcquireExceptionInfo();
     clone = shallow_clone(image, exception);
@@ -14962,6 +15089,7 @@ Image_stereo(VALUE self, VALUE offset_image_arg)
 
     offset_image = rm_cur_image(offset_image_arg);
     offset = rm_check_readable(offset_image);
+    image = rm_check_readable(self);
 
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, StereoImage, image, offset, exception);
@@ -15099,6 +15227,7 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg,
     y = NUM2LONG(y_arg);
     cols = NUM2LONG(cols_arg);
     rows = NUM2LONG(rows_arg);
+    image = rm_check_writable(self);
     if (x < 0 || y < 0 || cols < 0 || rows < 0
         || (unsigned long)x + cols > image->columns || (unsigned long)y + rows > image->rows)
     {
@@ -15109,6 +15238,7 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg,
     size = cols * rows;
     new_pixels = rb_Array(new_pixels);
     rm_check_ary_len(new_pixels, size);
+    image = rm_check_writable(self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -15286,12 +15416,13 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj,
     image = rm_check_readable(self);
 
     color_to_image_pixel(image->colorspace, &color, color_obj);
-    image = rm_check_readable(self);
     texture = rm_cur_image(texture_obj);
     texture_image = rm_check_readable(texture);
 
     x = NUM2LONG(x_obj);
     y = NUM2LONG(y_obj);
+    image = rm_check_readable(self);
+    texture_image = rm_check_readable(texture);
 
     if ((unsigned long)x > image->columns || (unsigned long)y > image->rows)
     {
@@ -15456,6 +15587,7 @@ threshold_image(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
             rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 to 4)", argc);
     }
 
+    image = rm_check_readable(self);
     new_image = rm_clone_image(image);
 
 #if defined(IMAGEMAGICK_7)
@@ -15507,6 +15639,7 @@ thumbnail(int bang, int argc, VALUE *argv, VALUE self)
         case 2:
             columns = NUM2ULONG(argv[0]);
             rows = NUM2ULONG(argv[1]);
+            image = bang ? rm_check_frozen(self) : rm_check_readable(self);
             if (columns == 0 || rows == 0)
             {
                 rb_raise(rb_eArgError, "invalid result dimension (%lu, %lu given)", columns, rows);
@@ -15518,6 +15651,7 @@ thumbnail(int bang, int argc, VALUE *argv, VALUE self)
             {
                 rb_raise(rb_eArgError, "invalid scale value (%g given)", scale_arg);
             }
+            image = bang ? rm_check_frozen(self) : rm_check_readable(self);
             drows = scale_arg * image->rows + 0.5;
             dcols = scale_arg * image->columns + 0.5;
             if (drows > (double)ULONG_MAX || dcols > (double)ULONG_MAX)
@@ -15628,8 +15762,10 @@ Image_ticks_per_second(VALUE self)
 VALUE
 Image_ticks_per_second_eq(VALUE self, VALUE tps)
 {
+    rm_check_frozen(self);
+    unsigned long ticks_per_second = NUM2ULONG(tps);
     Image *image = rm_check_frozen(self);
-    image->ticks_per_second = NUM2ULONG(tps);
+    image->ticks_per_second = ticks_per_second;
     return tps;
 }
 
@@ -15697,6 +15833,7 @@ Image_tint(int argc, VALUE *argv, VALUE self)
             blue_pct_opaque*100.0, alpha_pct_opaque*100.0);
 
     Color_to_PixelColor(&tint, argv[0]);
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
 
 #if defined(IMAGEMAGICK_7)
@@ -16125,6 +16262,7 @@ Image_transparent(int argc, VALUE *argv, VALUE self)
         alpha = get_named_alpha_value(kwargs);
     }
 
+    image = rm_check_readable(self);
     new_image = rm_clone_image(image);
 
 #if defined(IMAGEMAGICK_7)
@@ -16185,6 +16323,7 @@ Image_transparent_chroma(int argc, VALUE *argv, VALUE self)
     rb_scan_args(argc, argv, "21:", &low_obj, &high_obj, &invert_obj, &kwargs);
 
     Color_to_MagickPixel(image, &low, low_obj);
+    image = rm_check_readable(self);
     Color_to_MagickPixel(image, &high, high_obj);
     if (invert_obj != Qnil)
     {
@@ -16195,6 +16334,7 @@ Image_transparent_chroma(int argc, VALUE *argv, VALUE self)
         alpha = get_named_alpha_value(kwargs);
     }
 
+    image = rm_check_readable(self);
     new_image = rm_clone_image(image);
 
 #if defined(IMAGEMAGICK_7)
@@ -16244,7 +16384,11 @@ VALUE
 Image_transparent_color_eq(VALUE self, VALUE color)
 {
     Image *image = rm_check_frozen(self);
-    Color_to_PixelColor(&image->transparent_color, color);
+    PixelColor transparent_color = image->transparent_color;
+
+    Color_to_PixelColor(&transparent_color, color);
+    image = rm_check_frozen(self);
+    image->transparent_color = transparent_color;
     return color;
 }
 
@@ -16512,6 +16656,7 @@ Image_undefine(VALUE self, VALUE artifact)
 
     image = rm_check_frozen(self);
     key = StringValueCStr(artifact);
+    image = rm_check_frozen(self);
     DeleteImageArtifact(image, key);
     return self;
 }
@@ -16697,6 +16842,7 @@ Image_unsharp_mask(int argc, VALUE *argv, VALUE self)
     image = rm_check_readable(self);
 
     unsharp_mask_args(argc, argv, &radius, &sigma, &amount, &threshold);
+    image = rm_check_readable(self);
 
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, UnsharpMaskImage, image, radius, sigma, amount, threshold, exception);
@@ -16751,6 +16897,7 @@ Image_unsharp_mask_channel(int argc, VALUE *argv, VALUE self)
     }
 
     unsharp_mask_args(argc, argv, &radius, &sigma, &amount, &threshold);
+    image = rm_check_readable(self);
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
@@ -16810,6 +16957,7 @@ Image_vignette(int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
 
     DECLARE_GVL_CALL(call, VignetteImage, image, radius, sigma, horz_radius, vert_radius, exception);
@@ -16913,12 +17061,11 @@ Image_virtual_pixel_method_eq(VALUE self, VALUE method)
 VALUE
 Image_watermark(int argc, VALUE *argv, VALUE self)
 {
-    Image *image, *overlay;
     double src_percent = 100.0, dst_percent = 100.0;
     long x_offset = 0L, y_offset = 0L;
     VALUE ovly;
 
-    image = rm_check_readable(self);
+    rm_check_readable(self);
 
     if (argc < 1)
     {
@@ -16926,11 +17073,11 @@ Image_watermark(int argc, VALUE *argv, VALUE self)
     }
 
     ovly = rm_cur_image(argv[0]);
-    overlay = rm_check_readable(ovly);
+    rm_check_readable(ovly);
 
     if (argc > 3)
     {
-        get_composite_offsets(argc-3, &argv[3], image, overlay, &x_offset, &y_offset);
+        get_composite_offsets(argc-3, &argv[3], self, ovly, &x_offset, &y_offset);
         // There must be 3 arguments left
         argc = 3;
     }
@@ -16982,6 +17129,7 @@ Image_wave(int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     DECLARE_GVL_CALL(call, WaveImage, image, amplitude, wavelength, image->interpolate, exception);
@@ -17057,6 +17205,7 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
     {
         rb_raise(rb_eArgError, "Transparency change rate must be >= 0.0 (%g)", rate);
     }
+    image = rm_check_readable(self);
 
 #if defined(IMAGEMAGICK_7)
     initial *= QuantumRange;
@@ -17348,6 +17497,7 @@ Image_write(VALUE self, VALUE file)
         add_format_prefix(info, file);
         SetImageInfoFile(info, NULL);
     }
+    image = rm_check_writable(self);
     strlcpy(image->filename, info->filename, sizeof(image->filename));
 
     rm_sync_image_options(image, info);
@@ -17519,8 +17669,6 @@ cropper(int bang, int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 5:
-            image = rm_image_get(self);
-
             VALUE_TO_ENUM(argv[0], gravity, GravityType);
 
             x      = argv[1];
@@ -17532,6 +17680,7 @@ cropper(int bang, int argc, VALUE *argv, VALUE self)
             ny      = NUM2ULONG(y);
             columns = NUM2ULONG(width);
             rows    = NUM2ULONG(height);
+            image = bang ? rm_check_frozen(self) : rm_check_readable(self);
 
             switch (gravity)
             {
@@ -17586,7 +17735,7 @@ cropper(int bang, int argc, VALUE *argv, VALUE self)
             columns = NUM2ULONG(width);
             rows    = NUM2ULONG(height);
 
-            image = rm_image_get(self);
+            image = bang ? rm_check_frozen(self) : rm_check_readable(self);
 
             switch (gravity)
             {
@@ -17689,11 +17838,11 @@ xform_image(int bang, VALUE self, VALUE x, VALUE y, VALUE width, VALUE height, g
     RectangleInfo rect;
     ExceptionInfo *exception;
 
-    image = rm_image_get(self);
     rect.x      = NUM2LONG(x);
     rect.y      = NUM2LONG(y);
     rect.width  = NUM2ULONG(width);
     rect.height = NUM2ULONG(height);
+    image = bang ? rm_check_frozen(self) : rm_check_readable(self);
 
     exception = AcquireExceptionInfo();
 

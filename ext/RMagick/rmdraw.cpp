@@ -1164,6 +1164,7 @@ Draw_composite(int argc, VALUE *argv, VALUE self)
 
     rb_check_frozen(self);
     TypedData_Get_Struct(self, MagickDraw, &rm_draw_data_type, draw);
+    comp_img = rm_check_readable(image);
 
     // Create a temp copy of the composite image
     rm_write_temp_image(comp_img, name, sizeof(name));
@@ -1865,6 +1866,7 @@ get_type_metrics(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
             image = rm_check_readable(t);
             text_arg = argv[1];
             text = rm_str2cstr(&text_arg, &text_l);
+            image = rm_check_readable(t);
             break;                  // okay
         default:
             rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 or 2)", argc);

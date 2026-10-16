@@ -1013,6 +1013,16 @@ RSpec.describe Magick::Image, if: offloading do
       expect(result.pixel_color(0, 0).red).to eq(Magick::QuantumRange)
     end
 
+    it "does not let another fiber copy a kernel that a call changes" do
+      kernel = Magick::KernelInfo.new("1:1")
+      error = nil
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { kernel.dup } } }
+
+      scheduler.run { kernel.scale(2, Magick::NoValue) }
+
+      expect(error).to in_use
+    end
+
     it "releases the options when a read is cancelled" do
       options = nil
       scheduler.cancel_next_operation(cancelled.new)
