@@ -54,4 +54,17 @@ RSpec.describe Magick::ImageList, "#write" do
       image_list.write(f)
     end
   end
+
+  it 'splits the images when the thread is interrupted' do
+    cancelled = Class.new(StandardError)
+    image_list = described_class.new
+    2.times { image_list.new_image(1000, 1000) }
+
+    Dir.mktmpdir do |dir|
+      interrupt(cancelled) { image_list.write(File.join(dir, 'list.png')) { |info| info.colorspace = Magick::GRAYColorspace } }
+      image_list[0].write(File.join(dir, 'first.miff'))
+
+      expect(File.exist?(File.join(dir, 'first.miff'))).to be(true)
+    end
+  end
 end
