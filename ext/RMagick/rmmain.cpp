@@ -844,6 +844,7 @@ Init_RMagick2(void)
     Class_DrawOptions = rb_define_class_under(Class_Image, "DrawOptions", rb_cObject);
 
     rb_define_alloc_func(Class_DrawOptions, DrawOptions_alloc);
+    rb_define_method(Class_DrawOptions, "initialize_copy", Draw_init_copy, 1);
 
     rb_define_method(Class_DrawOptions, "initialize", DrawOptions_initialize, 0);
 
@@ -907,6 +908,7 @@ Init_RMagick2(void)
     Class_Montage = rb_define_class_under(Class_ImageList, "Montage", rb_cObject);
 
     rb_define_alloc_func(Class_Montage, Montage_alloc);
+    rb_define_method(Class_Montage, "initialize_copy", Montage_init_copy, 1);
 
     rb_define_method(Class_Montage, "initialize", Montage_initialize, 0);
     rb_define_method(Class_Montage, "freeze", rm_no_freeze, 0);
@@ -937,6 +939,7 @@ Init_RMagick2(void)
     Class_Info = rb_define_class_under(Class_Image, "Info", rb_cObject);
 
     rb_define_alloc_func(Class_Info, Info_alloc);
+    rb_define_method(Class_Info, "initialize_copy", Info_init_copy, 1);
 
     rb_define_method(Class_Info, "initialize", Info_initialize, 0);
     rb_define_method(Class_Info, "channel", Info_channel, -1);
@@ -1061,6 +1064,7 @@ Init_RMagick2(void)
     Class_PolaroidOptions = rb_define_class_under(Class_Image, "PolaroidOptions", rb_cObject);
 
     rb_define_alloc_func(Class_PolaroidOptions, PolaroidOptions_alloc);
+    rb_define_method(Class_PolaroidOptions, "initialize_copy", Draw_init_copy, 1);
 
     rb_define_method(Class_PolaroidOptions, "initialize", PolaroidOptions_initialize, 0);
 

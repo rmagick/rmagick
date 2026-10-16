@@ -308,6 +308,32 @@ rm_check_ary_type(VALUE ary)
 
 
 /**
+ * Check the receiver and the argument of initialize_copy as
+ * Object#initialize_copy does.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param self the copy
+ * @param orig the original object
+ * @return false if self is orig, true otherwise
+ */
+bool
+rm_check_init_copy(VALUE self, VALUE orig)
+{
+    if (self == orig)
+    {
+        return false;
+    }
+    rb_check_frozen(self);
+    if (rb_obj_class(self) != rb_obj_class(orig))
+    {
+        rb_raise(rb_eTypeError, "initialize_copy should take same class object");
+    }
+    return true;
+}
+
+
+/**
  * Raise an error if the image has been destroyed or an offloaded call is changing it.
  *
  * No Ruby usage (internal function)
@@ -918,6 +944,64 @@ rm_write_temp_image(Image *image, char *temp_name, size_t temp_name_l)
     {
         rb_raise(rb_eRuntimeError, "SetImageRegistry failed.");
     }
+}
+
+
+//! the arguments of write_temp_image
+struct WriteTempImageArgs
+{
+    Image *image; /**< the image to register */
+    char *temp_name; /**< the buffer for its name */
+    size_t temp_name_l; /**< the length of temp_name */
+};
+
+static VALUE
+write_temp_image(VALUE arg)
+{
+    struct WriteTempImageArgs *args = (struct WriteTempImageArgs *)arg;
+
+    rm_write_temp_image(args->image, args->temp_name, args->temp_name_l);
+    return Qnil;
+}
+
+static VALUE
+destroy_temp_image_copy(VALUE image)
+{
+    DestroyImageList((Image *)image);
+    return Qnil;
+}
+
+
+/**
+ * Register a copy of a temporary image under a new name.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param temp_name the name of the temporary image
+ * @param new_name the buffer for the name of the copy
+ * @param new_name_l the length of new_name
+ * @return false if the registry has no image of temp_name
+ */
+bool
+rm_copy_temp_image(const char *temp_name, char *new_name, size_t new_name_l)
+{
+    ExceptionInfo *exception;
+    Image *image;
+    struct WriteTempImageArgs args;
+
+    exception = AcquireExceptionInfo();
+    image = (Image *)GetImageRegistry(ImageRegistryType, temp_name+5, exception);
+    DestroyExceptionInfo(exception);
+    if (!image)
+    {
+        return false;
+    }
+
+    args.image = image;
+    args.temp_name = new_name;
+    args.temp_name_l = new_name_l;
+    rb_ensure(write_temp_image, (VALUE)&args, destroy_temp_image_copy, (VALUE)image);
+    return true;
 }
 
 

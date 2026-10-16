@@ -20,6 +20,7 @@
 #include "ruby/defines.h"
 
 #include <atomic>
+#include <utility>
 
 extern "C" {
     #include <assert.h>
@@ -654,6 +655,7 @@ ATTR_WRITER(Montage, texture)
 ATTR_WRITER(Montage, tile)
 ATTR_WRITER(Montage, title)
 extern VALUE Montage_initialize(VALUE);
+extern VALUE Montage_init_copy(VALUE, VALUE);
 extern VALUE Montage_alloc(VALUE);
 extern VALUE rm_montage_new(void);
 
@@ -738,6 +740,7 @@ extern VALUE Info_aref(int, VALUE *, VALUE);
 extern VALUE Info_channel(int, VALUE *, VALUE);
 extern VALUE Info_undefine(VALUE, VALUE, VALUE);
 extern VALUE Info_initialize(VALUE);
+extern VALUE Info_init_copy(VALUE, VALUE);
 extern VALUE rm_info_new(void);
 extern Info *rm_info_get(VALUE);
 extern DisposeType rm_dispose_to_enum(const char *);
@@ -1190,6 +1193,7 @@ extern int    rm_strncasecmp(const char *, const char *, size_t);
 extern size_t rm_strnlen_s(const char *, size_t);
 extern bool   rm_has_file_reference(const char *);
 extern void   rm_check_ary_len(VALUE, long);
+extern bool   rm_check_init_copy(VALUE, VALUE);
 extern VALUE  rm_check_ary_type(VALUE ary);
 extern Image *rm_check_readable(VALUE);
 extern Image *rm_check_writable(VALUE);
@@ -1208,6 +1212,7 @@ extern double rm_str_to_pct(VALUE, bool);
 extern VALUE  rm_define_enum_type(const char *);
 extern void   rm_write_temp_image(Image *, char *, size_t);
 extern void   rm_delete_temp_image(char *);
+extern bool   rm_copy_temp_image(const char *, char *, size_t);
 extern void   rm_attr_write(VALUE, VALUE);
 extern const char *rm_get_property(const Image *, const char *);
 extern MagickBooleanType rm_set_property(Image *, const char *, const char *);

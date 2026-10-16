@@ -8,6 +8,8 @@ module Magick
     def <=>: (Enum other) -> (-1 | 0 | 1 | nil)
     def ===: (Enum other) -> bool
     def |: (Enum other) -> Enum
+    def dup: () -> self
+    def clone: (?freeze: bool?) -> self
   end
 
   interface _EnumInstanceMethod

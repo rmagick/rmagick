@@ -23,6 +23,30 @@ const rb_data_type_t rm_montage_data_type = {
 
 
 /**
+ * Delete the texture image of a MontageInfo, and destroy the MontageInfo.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param info the MontageInfo, or NULL
+ */
+static void
+destroy_montage_info(MontageInfo *info)
+{
+    if (info)
+    {
+        // If we saved a temporary texture image, delete it now.
+        if (info->texture != NULL)
+        {
+            rm_delete_temp_image(info->texture);
+            magick_free(info->texture);
+            info->texture = NULL;
+        }
+        DestroyMontageInfo(info);
+    }
+}
+
+
+/**
  * Destroy the MontageInfo struct and free the MagickMontage struct.
  *
  * No Ruby usage (internal function)
@@ -38,18 +62,8 @@ Montage_destroy(void *obj)
 {
     MagickMontage *montage = (MagickMontage *)obj;
 
-    // If we saved a temporary texture image, delete it now.
-    if (montage->info && montage->info->texture != NULL)
-    {
-        rm_delete_temp_image(montage->info->texture);
-        magick_free(montage->info->texture);
-        montage->info->texture = NULL;
-    }
-    if (montage->info)
-    {
-        DestroyMontageInfo(montage->info);
-        montage->info = NULL;
-    }
+    destroy_montage_info(montage->info);
+    montage->info = NULL;
     xfree(montage);
 }
 
@@ -331,6 +345,64 @@ Montage_initialize(VALUE self)
 
 
 /**
+ * Initialize clone, dup methods.
+ *
+ * @param orig the original object
+ * @return [Magick::ImageList::Montage] self
+ */
+VALUE
+Montage_init_copy(VALUE self, VALUE orig)
+{
+    MagickMontage *copy, *original;
+    MontageInfo *info;
+    char texture[MaxTextExtent];
+    bool has_texture = false;
+
+    if (!rm_check_init_copy(self, orig))
+    {
+        return self;
+    }
+    rm_gvl_check_writable(self);
+    rm_gvl_check_readable(orig);
+    TypedData_Get_Struct(orig, MagickMontage, &rm_montage_data_type, original);
+    TypedData_Get_Struct(self, MagickMontage, &rm_montage_data_type, copy);
+
+    // The texture names a temporary image that the copy must own by itself.
+    if (original->info->texture)
+    {
+        has_texture = rm_copy_temp_image(original->info->texture, texture, sizeof(texture));
+    }
+
+    // Copy in place what CloneMontageInfo copies, since it leaks its default geometry.
+    info = copy->info;
+    magick_clone_string(&info->geometry, original->info->geometry);
+    magick_clone_string(&info->tile, original->info->tile);
+    magick_clone_string(&info->title, original->info->title);
+    magick_clone_string(&info->frame, original->info->frame);
+    magick_clone_string(&info->font, original->info->font);
+    if (info->texture)
+    {
+        rm_delete_temp_image(info->texture);
+    }
+    magick_clone_string(&info->texture, has_texture ? texture : NULL);
+    info->pointsize = original->info->pointsize;
+    info->border_width = original->info->border_width;
+    info->shadow = original->info->shadow;
+    info->fill = original->info->fill;
+    info->stroke = original->info->stroke;
+    info->background_color = original->info->background_color;
+    info->border_color = original->info->border_color;
+    info->matte_color = original->info->matte_color;
+    info->gravity = original->info->gravity;
+    CopyMagickString(info->filename, original->info->filename, sizeof(info->filename));
+    info->debug = IsEventLogging();
+    copy->compose = original->compose;
+
+    return self;
+}
+
+
+/**
  * Set matte_color value.
  *
  * @param color [Magick::Pixel, String] the color name
@@ -413,6 +485,8 @@ Montage_texture_eq(VALUE self, VALUE texture)
     char temp_name[MaxTextExtent];
 
     montage = get_writable_montage(self);
+    texture = rm_cur_image(texture);
+    texture_image = rm_check_readable(texture);
 
     // If we had a previously defined temp texture image,
     // remove it now in preparation for this new one.
@@ -422,9 +496,6 @@ Montage_texture_eq(VALUE self, VALUE texture)
         magick_free(montage->info->texture);
         montage->info->texture = NULL;
     }
-
-    texture = rm_cur_image(texture);
-    texture_image = rm_check_readable(texture);
 
     // Write a temp copy of the image & save its name.
     rm_write_temp_image(texture_image, temp_name, sizeof(temp_name));
