@@ -37,4 +37,10 @@ RSpec.describe Magick::Image, '#function_channel' do
     expect { image.function_channel Magick::ArcsinFunction, 0.5, 0.5, 0.5, 0.5, 0.1 }.to raise_error(ArgumentError)
     expect { image.function_channel Magick::ArctanFunction, 15, 0.7, 0.5, 0.75, 0.1 }.to raise_error(ArgumentError)
   end
+
+  it "releases what it holds when one of its calls is interrupted" do
+    image = described_class.new(4, 4)
+
+    expect(interrupt_each_call(Class.new(StandardError)) { image.function_channel(Magick::PolynomialFunction, 1, 0) }).to be_positive
+  end
 end

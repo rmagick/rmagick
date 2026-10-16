@@ -29,6 +29,37 @@ module TestHelpers
     nil
   end
 
+  module InterruptAtCall
+    def handle_interrupt(*)
+      result = super
+      state = Thread.current[:rmagick_interrupt_at_call]
+      if state && (state[:count] += 1) == state[:at]
+        Thread.current[:rmagick_interrupt_at_call] = nil
+        raise state[:error]
+      end
+      result
+    end
+  end
+  Thread.singleton_class.prepend(InterruptAtCall)
+
+  def interrupt_each_call(error, limit: 100)
+    Thread.new do
+      Thread.current.report_on_exception = false
+      finished_at = (1..limit).find do |n|
+        Thread.current[:rmagick_interrupt_at_call] = { count: 0, at: n, error: error }
+        yield
+        true
+      rescue error
+        false
+      ensure
+        Thread.current[:rmagick_interrupt_at_call] = nil
+      end
+      raise ArgumentError, "the block made more than #{limit} calls" unless finished_at
+
+      finished_at - 1
+    end.value
+  end
+
   # Runs the block with the GC collecting on every allocation, so that anything
   # the extension leaves unreferenced is reclaimed at the first opportunity
   # rather than by chance.

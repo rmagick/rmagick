@@ -38,4 +38,10 @@ RSpec.describe Magick::Image, "#color_floodfill" do
 
     expect(pixels.map { |pixel| [pixel.cyan, pixel.magenta, pixel.yellow, pixel.black] }).to eq([[0, 0, 0, 0], [0, Magick::QuantumRange, Magick::QuantumRange, 0]])
   end
+
+  it "releases what it holds when one of its calls is interrupted" do
+    image = described_class.new(4, 4)
+
+    expect(interrupt_each_call(Class.new(StandardError)) { image.color_floodfill(1, 1, "red") }).to be_positive
+  end
 end

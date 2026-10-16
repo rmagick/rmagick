@@ -3130,12 +3130,16 @@ Image_color_histogram(VALUE self)
     has_black = index_is_black(image);
 #endif
 
-    exception = AcquireExceptionInfo();
-
     // If image not DirectClass make a DirectClass copy.
     if (image->storage_class != DirectClass)
     {
         dc_copy = rm_clone_image(image);
+    }
+
+    exception = AcquireExceptionInfo();
+
+    if (dc_copy)
+    {
 #if defined(IMAGEMAGICK_7)
         DECLARE_GVL_CALL(call, SetImageStorageClass, dc_copy, DirectClass, exception);
 #else
@@ -3446,14 +3450,15 @@ Image_color_flood_fill(VALUE self, VALUE target_color, VALUE fill_color,
                  "FillToBorderMethod (%d given)", fill_method);
     }
 
+    new_image = rm_clone_image(image);
+
     draw_info = CloneDrawInfo(NULL, NULL);
     if (!draw_info)
     {
+        DestroyImage(new_image);
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
     draw_info->fill = fill;
-
-    new_image = rm_clone_image(image);
 
     rm_init_magickpixel(new_image, &target_mpp);
     if (fill_method == FillToBorderMethod)
@@ -5679,9 +5684,8 @@ Image_decipher(VALUE self, VALUE passphrase)
     passphrase = rb_str_new_frozen(StringValue(passphrase));
     pf = StringValueCStr(passphrase);      // ensure passphrase is a string
     image = rm_check_readable(self);
-    exception = AcquireExceptionInfo();
-
     new_image = rm_clone_image(image);
+    exception = AcquireExceptionInfo();
 
     DECLARE_GVL_CALL(call, DecipherImage, new_image, pf, exception);
     void *ret = call.read(self).destroy(new_image).release(exception).run<void *>();
@@ -6960,9 +6964,8 @@ Image_encipher(VALUE self, VALUE passphrase)
     passphrase = rb_str_new_frozen(StringValue(passphrase));
     pf = StringValueCStr(passphrase);      // ensure passphrase is a string
     image = rm_check_readable(self);
-    exception = AcquireExceptionInfo();
-
     new_image = rm_clone_image(image);
+    exception = AcquireExceptionInfo();
 
     DECLARE_GVL_CALL(call, EncipherImage, new_image, pf, exception);
     void *ret = call.read(self).destroy(new_image).release(exception).run<void *>();
@@ -8073,13 +8076,13 @@ Image_function_channel(int argc, VALUE *argv, VALUE self)
     }
 
     image = rm_check_readable(self);
+    new_image = rm_clone_image(image);
 
     parms = ALLOC_N(double, nparms);
     memcpy(parms, values, nparms * sizeof(double));
     ALLOCV_END(values_buf);
 
     exception = AcquireExceptionInfo();
-    new_image = rm_clone_image(image);
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(new_image, channels);
     DECLARE_GVL_CALL(call, FunctionImage, new_image, function, nparms, parms, exception);
@@ -10074,12 +10077,11 @@ set_image_mask(VALUE self, VALUE mask)
         mask_image = rm_check_readable(mask);
     }
     image = rm_check_frozen(self);
+    clip_mask = mask != Qnil ? rm_clone_image(mask_image) : NULL;
     exception = AcquireExceptionInfo();
 
     if (mask != Qnil)
     {
-        clip_mask = rm_clone_image(mask_image);
-
         // Resize if necessary
         if (clip_mask->columns != image->columns || clip_mask->rows != image->rows)
         {
