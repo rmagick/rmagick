@@ -308,6 +308,32 @@ rm_check_ary_type(VALUE ary)
 
 
 /**
+ * Check the receiver and the argument of initialize_copy as
+ * Object#initialize_copy does.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param self the copy
+ * @param orig the original object
+ * @return false if self is orig, true otherwise
+ */
+bool
+rm_check_init_copy(VALUE self, VALUE orig)
+{
+    if (self == orig)
+    {
+        return false;
+    }
+    rb_check_frozen(self);
+    if (rb_obj_class(self) != rb_obj_class(orig))
+    {
+        rb_raise(rb_eTypeError, "initialize_copy should take same class object");
+    }
+    return true;
+}
+
+
+/**
  * Raise an error if the image has been destroyed or an offloaded call is changing it.
  *
  * No Ruby usage (internal function)

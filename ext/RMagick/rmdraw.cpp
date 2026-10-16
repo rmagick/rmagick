@@ -1332,8 +1332,12 @@ VALUE Draw_init_copy(VALUE self, VALUE orig)
     MagickDraw *copy, *original;
     DrawInfo *info;
     struct TmpFile_Name *tmpfile_ary;
+    int state = 0;
 
-    rb_check_frozen(self);
+    if (!rm_check_init_copy(self, orig))
+    {
+        return self;
+    }
     rm_gvl_check_writable(self);
     TypedData_Get_Struct(orig, MagickDraw, &rm_draw_data_type, original);
     TypedData_Get_Struct(self, MagickDraw, &rm_draw_data_type, copy);
@@ -1343,13 +1347,24 @@ VALUE Draw_init_copy(VALUE self, VALUE orig)
     {
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
+    rb_protect(copy_patterns, (VALUE)info, &state);
+    if (state)
+    {
+        DestroyDrawInfo(info);
+        rb_jump_tag(state);
+    }
+    // Copying the patterns releases the GVL, so other code can freeze self meanwhile.
+    if (OBJ_FROZEN(self))
+    {
+        DestroyDrawInfo(info);
+        rb_error_frozen_object(self);
+    }
     if (copy->info)
     {
         DestroyDrawInfo(copy->info);
     }
     copy->info = info;
-    copy_pattern(&copy->info->fill_pattern);
-    copy_pattern(&copy->info->stroke_pattern);
+    copy->shadow_color = original->shadow_color;
 
     copy->primitives = original->primitives ? rb_str_dup(original->primitives) : (VALUE)0;
 

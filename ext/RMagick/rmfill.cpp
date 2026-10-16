@@ -130,32 +130,6 @@ GradientFill_initialize(
 
 
 /**
- * Check the receiver and the argument of initialize_copy as
- * Object#initialize_copy does.
- *
- * No Ruby usage (internal function)
- *
- * @param self the copy
- * @param orig the original object
- * @return false if self is orig, true otherwise
- */
-static bool
-check_init_copy(VALUE self, VALUE orig)
-{
-    if (self == orig)
-    {
-        return false;
-    }
-    rb_check_frozen(self);
-    if (rb_obj_class(self) != rb_obj_class(orig))
-    {
-        rb_raise(rb_eTypeError, "initialize_copy should take same class object");
-    }
-    return true;
-}
-
-
-/**
  * Initialize clone, dup methods.
  *
  * @param orig the original object
@@ -166,7 +140,7 @@ GradientFill_init_copy(VALUE self, VALUE orig)
 {
     MagickGradientFill *copy, *original;
 
-    if (!check_init_copy(self, orig))
+    if (!rm_check_init_copy(self, orig))
     {
         return self;
     }
@@ -859,7 +833,7 @@ TextureFill_init_copy(VALUE self, VALUE orig)
 {
     MagickTextureFill *copy, *original;
 
-    if (!check_init_copy(self, orig))
+    if (!rm_check_init_copy(self, orig))
     {
         return self;
     }

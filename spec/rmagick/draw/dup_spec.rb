@@ -34,6 +34,10 @@ RSpec.describe Magick::Draw, '#dup' do
     expect(image.pixel_color(0, 0)).to eq(Magick::Pixel.from_color('red'))
   end
 
+  it 'raises TypeError when initialize_copy is called with options of another class' do
+    expect { described_class.allocate.__send__(:initialize_copy, Magick::Image::DrawOptions.new) }.to raise_error(TypeError)
+  end
+
   it 'raises FrozenError when initialize_copy is called on a frozen draw' do
     draw = described_class.new
     draw.point(0, 0)

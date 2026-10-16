@@ -1190,6 +1190,7 @@ extern int    rm_strncasecmp(const char *, const char *, size_t);
 extern size_t rm_strnlen_s(const char *, size_t);
 extern bool   rm_has_file_reference(const char *);
 extern void   rm_check_ary_len(VALUE, long);
+extern bool   rm_check_init_copy(VALUE, VALUE);
 extern VALUE  rm_check_ary_type(VALUE ary);
 extern Image *rm_check_readable(VALUE);
 extern Image *rm_check_writable(VALUE);
