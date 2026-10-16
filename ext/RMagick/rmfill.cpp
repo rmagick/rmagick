@@ -215,7 +215,7 @@ point_fill(
         }
 
         DECLARE_GVL_CALL(call, SyncAuthenticPixels, image, exception);
-        call.keep_thread().run<void>();
+        call.keep_thread().release(exception).run<void>();
         CHECK_EXCEPTION();
     }
 
@@ -285,7 +285,7 @@ vertical_fill(
         }
 
         DECLARE_GVL_CALL(call, SyncAuthenticPixels, image, exception);
-        call.keep_thread().run<void>();
+        call.keep_thread().release(exception).run<void>();
         CHECK_EXCEPTION();
     }
 
@@ -319,7 +319,7 @@ vertical_fill(
         memcpy(row_pixels, master, image->columns * sizeof(PixelPacket));
 
         DECLARE_GVL_CALL(call, SyncAuthenticPixels, image, exception);
-        call.keep_thread().run<void>();
+        call.keep_thread().free_buffer(master).release(exception).run<void>();
         if (rm_should_raise_exception(exception, RetainExceptionRetention))
         {
             xfree((void *)master);
@@ -393,7 +393,7 @@ horizontal_fill(
         }
 
         DECLARE_GVL_CALL(call, SyncAuthenticPixels, image, exception);
-        call.keep_thread().run<void>();
+        call.keep_thread().release(exception).run<void>();
         CHECK_EXCEPTION();
     }
 
@@ -426,7 +426,7 @@ horizontal_fill(
         memcpy(col_pixels, master, image->rows * sizeof(PixelPacket));
 
         DECLARE_GVL_CALL(call, SyncAuthenticPixels, image, exception);
-        call.keep_thread().run<void>();
+        call.keep_thread().free_buffer(master).release(exception).run<void>();
         if (rm_should_raise_exception(exception, RetainExceptionRetention))
         {
             xfree((void *)master);
@@ -538,7 +538,7 @@ v_diagonal_fill(
         }
 
         DECLARE_GVL_CALL(call, SyncAuthenticPixels, image, exception);
-        call.keep_thread().run<void>();
+        call.keep_thread().release(exception).run<void>();
         CHECK_EXCEPTION();
     }
 
@@ -645,7 +645,7 @@ h_diagonal_fill(
         }
 
         DECLARE_GVL_CALL(call, SyncAuthenticPixels, image, exception);
-        call.keep_thread().run<void>();
+        call.keep_thread().release(exception).run<void>();
         CHECK_EXCEPTION();
     }
 
