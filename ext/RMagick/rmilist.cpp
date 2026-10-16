@@ -24,9 +24,10 @@ struct LinkedImages_Args
     Image *images;
     Image *image;
     Info *info;
+    Image *new_images;
 };
 
-static Image *clone_imagelist(Image *);
+static Image *clone_linked_imagelist(Image *, ExceptionInfo *);
 static void sync_linked_image_options(Image *, Image *, Info *, ExceptionInfo *);
 static Image *images_from_imagelist(VALUE, VALUE *, bool copy_frozen = false);
 static void check_images_writable(VALUE);
@@ -402,7 +403,7 @@ ImageList_composite_layers(int argc, VALUE *argv, VALUE self)
     // Convert ImageLists to image sequences.
     VALUE clones, source_clones = Qnil;
     dest = images_from_imagelist(self, &clones);
-    new_images = clone_imagelist(dest);
+    new_images = clone_linked_imagelist(dest, NULL);
     rm_split(dest);
     RB_GC_GUARD(clones);
 
@@ -706,21 +707,21 @@ ImageList_optimize_layers(VALUE self, VALUE method)
             break;
         case OptimizeTransLayer:
             {
-                new_images = clone_imagelist(images);
+                new_images = clone_linked_imagelist(images, exception);
                 DECLARE_GVL_CALL(call, OptimizeImageTransparency, new_images, exception);
                 call.read_each(rb_iv_get(self, "@images")).split(images).destroy(new_images).release(exception).run<void>();
             }
             break;
         case RemoveDupsLayer:
             {
-                new_images = clone_imagelist(images);
+                new_images = clone_linked_imagelist(images, exception);
                 DECLARE_GVL_CALL(call, RemoveDuplicateLayers, &new_images, exception);
                 call.read_each(rb_iv_get(self, "@images")).split(images).cleanup(destroy_list_at, &new_images).release(exception).run<void>();
             }
             break;
         case RemoveZeroLayer:
             {
-                new_images = clone_imagelist(images);
+                new_images = clone_linked_imagelist(images, exception);
                 DECLARE_GVL_CALL(call, RemoveZeroDelayLayers, &new_images, exception);
                 call.read_each(rb_iv_get(self, "@images")).split(images).cleanup(destroy_list_at, &new_images).release(exception).run<void>();
             }
@@ -1107,6 +1108,16 @@ clone_imagelist(Image *images)
 
 
 static VALUE
+clone_imagelist_protected(VALUE arg)
+{
+    struct LinkedImages_Args *args = (struct LinkedImages_Args *)arg;
+
+    args->new_images = clone_imagelist(args->images);
+    return Qnil;
+}
+
+
+static VALUE
 sync_image_options_protected(VALUE arg)
 {
     struct LinkedImages_Args *args = (struct LinkedImages_Args *)arg;
@@ -1134,10 +1145,20 @@ call_while_linked(VALUE (*fn)(VALUE), struct LinkedImages_Args *args, ExceptionI
 }
 
 
+static Image *
+clone_linked_imagelist(Image *images, ExceptionInfo *exception)
+{
+    struct LinkedImages_Args args = { images, NULL, NULL, NULL };
+
+    call_while_linked(clone_imagelist_protected, &args, exception);
+    return args.new_images;
+}
+
+
 static void
 sync_linked_image_options(Image *images, Image *image, Info *info, ExceptionInfo *exception)
 {
-    struct LinkedImages_Args args = { images, image, info };
+    struct LinkedImages_Args args = { images, image, info, NULL };
 
     call_while_linked(sync_image_options_protected, &args, exception);
 }
