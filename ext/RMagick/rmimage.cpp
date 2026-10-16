@@ -15409,7 +15409,7 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj,
     Image *image, *new_image;
     Image *texture_image, *pattern;
     Pixel color;
-    VALUE texture;
+    VALUE texture, new_obj;
     DrawInfo *draw_info;
     long x, y;
     PaintMethod method;
@@ -15443,6 +15443,9 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj,
                  "FillToBorderMethod (%d given)", (int)method);
     }
 
+    new_image = rm_clone_image(image);
+    new_obj = rm_image_wrap(new_image);
+
     // A frozen texture may be shared with other Ractors, whose calls would read
     // its pixel cache through the default nexus at once.
     pattern = OBJ_FROZEN(texture) ? rm_copy_image(texture_image) : rm_clone_image(texture_image);
@@ -15454,8 +15457,6 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj,
     }
 
     draw_info->fill_pattern = pattern;
-    new_image = rm_clone_image(image);
-
 
     rm_init_magickpixel(new_image, &color_mpp);
     if (method == FillToBorderMethod)
@@ -15484,21 +15485,24 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj,
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, FloodfillPaintImage, new_image, draw_info, &color_mpp, x, y, invert, exception);
-    call.read(self).read(texture).destroy(new_image).release(draw_info).release(exception).run<void>();
+    call.read(self).read(texture).release(draw_info).release(exception).run<void>();
     DestroyDrawInfo(draw_info);
-    rm_check_exception(exception, new_image, DestroyOnError);
+    rm_check_exception(exception, new_image, RetainOnError);
     DestroyExceptionInfo(exception);
 #else
     DECLARE_GVL_CALL(call, FloodfillPaintImage, new_image, DefaultChannels, draw_info, &color_mpp, x, y, invert);
-    call.read(self).read(texture).destroy(new_image).release(draw_info).run<void>();
+    call.read(self).read(texture).release(draw_info).run<void>();
 
     DestroyDrawInfo(draw_info);
-    rm_check_image_exception(new_image, DestroyOnError);
+    rm_check_image_exception(new_image, RetainOnError);
 #endif
 
-    RB_GC_GUARD(texture);
+    rm_image_set(new_obj, new_image);
 
-    return rm_image_new(new_image);
+    RB_GC_GUARD(texture);
+    RB_GC_GUARD(new_obj);
+
+    return new_obj;
 }
 
 
