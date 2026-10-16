@@ -53,6 +53,18 @@ module Magick
     end
   end
 
+  class Enum
+    def dup
+      self
+    end
+
+    def clone(freeze: nil)
+      raise ArgumentError, "can't unfreeze #{self.class}" if freeze == false
+
+      self
+    end
+  end
+
   # Geometry class and related enum constants
   class GeometryValue < Enum
     # no methods
