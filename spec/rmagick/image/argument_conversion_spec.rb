@@ -60,13 +60,39 @@ RSpec.describe Magick::Image do
     ['convolve_channel', :to_f, 1.0, ->(image, arg) { image.convolve_channel(1, [arg], Magick::RedChannel) }],
     ['function_channel', :to_f, 1.0, ->(image, arg) { image.function_channel(Magick::PolynomialFunction, arg) }],
     ['recolor', :to_f, 1.0, ->(image, arg) { image.recolor([arg]) }],
-    ['wet_floor', :to_f, 0.5, ->(image, arg) { image.wet_floor(arg) }]
+    ['wet_floor', :to_f, 0.5, ->(image, arg) { image.wet_floor(arg) }],
+    ['composite', :cur_image, nil, ->(image, arg) { image.composite(arg, Magick::CenterGravity, Magick::OverCompositeOp) }],
+    ['composite_affine', :cur_image, nil, ->(image, arg) { image.composite_affine(arg, Magick::AffineMatrix.new(1, 0, 0, 1, 0, 0)) }],
+    ['difference', :cur_image, nil, ->(image, arg) { image.difference(arg) }],
+    ['distortion_channel', :cur_image, nil, ->(image, arg) { image.distortion_channel(arg, Magick::MeanAbsoluteErrorMetric) }],
+    ['stereo', :cur_image, nil, ->(image, arg) { image.stereo(arg) }],
+    ['add_compose_mask', :cur_image, nil, ->(image, arg) { image.add_compose_mask(arg) }],
+    ['clut_channel', :cur_image, nil, ->(image, arg) { image.clut_channel(arg) }],
+    ['remap', :cur_image, nil, ->(image, arg) { image.remap(arg) }],
+    ['find_similar_region', :cur_image, nil, ->(image, arg) { image.find_similar_region(arg) }],
+    ['blend', :cur_image, nil, ->(image, arg) { image.blend(arg, 0.5, 0.5, Magick::CenterGravity) }]
   ].each do |name, conversion, value, call|
     it "raises an error when converting an argument of ##{name} destroys the image" do
       image = described_class.new(4, 4)
-      arg = converting(conversion, value, -> { image.destroy! })
+      arg = converting(conversion, value || described_class.new(4, 4), -> { image.destroy! })
 
       expect { call.call(image, arg) }.to raise_error(Magick::DestroyedImageError)
+    end
+  end
+
+  [
+    ['composite', :to_int, 0, ->(image, other, arg) { image.composite(other, arg, 0, Magick::OverCompositeOp) }],
+    ['composite_affine', :to_f, 1.0, ->(image, other, arg) { image.composite_affine(other, Magick::AffineMatrix.new(arg, 0, 0, 1, 0, 0)) }],
+    ['stegano', :to_int, 0, ->(image, other, arg) { image.stegano(other, arg) }],
+    ['texture_flood_fill', :to_int, 0, ->(image, other, arg) { image.texture_flood_fill('white', other, arg, 0, Magick::FloodfillMethod) }],
+    ['watermark', :to_int, 0, ->(image, other, arg) { image.watermark(other, 0.5, 0.5, Magick::CenterGravity, arg, 0) }]
+  ].each do |name, conversion, value, call|
+    it "raises an error when converting an argument of ##{name} destroys the image argument" do
+      image = described_class.new(4, 4)
+      other = described_class.new(4, 4)
+      arg = converting(conversion, value, -> { other.destroy! })
+
+      expect { call.call(image, other, arg) }.to raise_error(Magick::DestroyedImageError)
     end
   end
 

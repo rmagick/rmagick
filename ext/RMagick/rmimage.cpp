@@ -923,6 +923,7 @@ Image_add_compose_mask(VALUE self, VALUE mask)
     image = rm_check_frozen(self);
     mask = rm_cur_image(mask);
     mask_image = rm_check_readable(mask);
+    image = rm_check_frozen(self);
     if (image->columns != mask_image->columns || image->rows != mask_image->rows)
     {
         rb_raise(rb_eArgError, "mask must be the same size as image");
@@ -2027,7 +2028,7 @@ check_for_long_value(VALUE obj)
  * @param y_offset pointer to y offset
  */
 static void
-get_composite_offsets(int argc, VALUE *argv, Image *dest, Image *src,
+get_composite_offsets(int argc, VALUE *argv, VALUE dest, VALUE src,
                       long *x_offset, long *y_offset)
 {
     GravityType gravity;
@@ -2045,11 +2046,11 @@ get_composite_offsets(int argc, VALUE *argv, Image *dest, Image *src,
                 *y_offset = NUM2LONG(argv[2]);
             case 2:
                 *x_offset = NUM2LONG(argv[1]);
-                get_relative_offsets(argv[0], dest, src, x_offset, y_offset);
+                get_relative_offsets(argv[0], rm_check_readable(dest), rm_check_readable(src), x_offset, y_offset);
                 break;
             case 1:
                 // No offsets specified. Compute offset based on the gravity alone.
-                get_offsets_from_gravity(gravity, dest, src, x_offset, y_offset);
+                get_offsets_from_gravity(gravity, rm_check_readable(dest), rm_check_readable(src), x_offset, y_offset);
                 break;
         }
     }
@@ -2223,11 +2224,10 @@ VALUE
 Image_blend(int argc, VALUE *argv, VALUE self)
 {
     VALUE composite_image, ovly;
-    Image *image, *overlay;
     double src_percent, dst_percent;
     long x_offset = 0L, y_offset = 0L;
 
-    image = rm_check_readable(self);
+    rm_check_readable(self);
 
     if (argc < 1)
     {
@@ -2235,11 +2235,11 @@ Image_blend(int argc, VALUE *argv, VALUE self)
     }
 
     ovly = rm_cur_image(argv[0]);
-    overlay = rm_check_writable(ovly);
+    rm_check_writable(ovly);
 
     if (argc > 3)
     {
-        get_composite_offsets(argc-3, &argv[3], image, overlay, &x_offset, &y_offset);
+        get_composite_offsets(argc-3, &argv[3], self, ovly, &x_offset, &y_offset);
         // There must be 3 arguments left
         argc = 3;
     }
@@ -3077,6 +3077,7 @@ Image_clut_channel(int argc, VALUE *argv, VALUE self)
         rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 or more)", argc);
     }
 
+    image = rm_check_frozen(self);
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(image, channels);
@@ -3929,6 +3930,7 @@ composite(int bang, int argc, VALUE *argv, VALUE self, ChannelType channels, con
         case 3:                 // argv[1] is gravity, argv[2] is composite_op
             VALUE_TO_ENUM(argv[1], gravity, GravityType);
             VALUE_TO_ENUM(argv[2], composite_op, CompositeOperator);
+            image = bang ? rm_check_frozen(self) : rm_check_readable(self);
 
             // convert gravity to x, y offsets
             switch (gravity)
@@ -3979,6 +3981,8 @@ composite(int bang, int argc, VALUE *argv, VALUE self, ChannelType channels, con
             x_offset = NUM2LONG(argv[1]);
             y_offset = NUM2LONG(argv[2]);
             VALUE_TO_ENUM(argv[3], composite_op, CompositeOperator);
+            image = bang ? rm_check_frozen(self) : rm_check_readable(self);
+            comp_image = rm_check_readable(comp);
             break;
 
         case 5:
@@ -3986,6 +3990,8 @@ composite(int bang, int argc, VALUE *argv, VALUE self, ChannelType channels, con
             x_offset = NUM2LONG(argv[2]);
             y_offset = NUM2LONG(argv[3]);
             VALUE_TO_ENUM(argv[4], composite_op, CompositeOperator);
+            image = bang ? rm_check_frozen(self) : rm_check_readable(self);
+            comp_image = rm_check_readable(comp);
 
             switch (gravity)
             {
@@ -4179,6 +4185,8 @@ Image_composite_affine(VALUE self, VALUE source, VALUE affine_matrix)
     composite_image = rm_check_readable(source);
 
     Export_AffineMatrix(&affine, affine_matrix);
+    image = rm_check_readable(self);
+    composite_image = rm_check_readable(source);
     new_image = rm_clone_image(image);
 
 #if defined(IMAGEMAGICK_7)
@@ -4530,6 +4538,7 @@ composite_tiled(int bang, int argc, VALUE *argv, VALUE self)
     }
 
     comp_image = rm_check_readable(rm_cur_image(argv[0]));
+    image = bang ? rm_check_frozen(self) : rm_check_readable(self);
 
     if (!bang)
     {
@@ -6106,7 +6115,7 @@ Image_difference(VALUE self, VALUE other)
     Image *image, *target;
     Image *image2;
     double mean, nmean, nmax;
-    bool frozen = OBJ_FROZEN(self);
+    bool frozen;
     ExceptionInfo *exception;
 #if defined(IMAGEMAGICK_7)
     double distortion;
@@ -6115,6 +6124,8 @@ Image_difference(VALUE self, VALUE other)
     image = rm_check_readable(self);
     other = rm_cur_image(other);
     image2 = rm_check_readable(other);
+    image = rm_check_readable(self);
+    frozen = OBJ_FROZEN(self);
 
     // The comparison stores the errors in the image, and IM7 also stores the
     // distortion in a property. A frozen image may be shared with other
@@ -6191,12 +6202,11 @@ Image_directory(VALUE self)
 VALUE
 Image_displace(int argc, VALUE *argv, VALUE self)
 {
-    Image *image, *displacement_map;
     VALUE composite_image, dmap;
     double x_amplitude = 0.0, y_amplitude = 0.0;
     long x_offset = 0L, y_offset = 0L;
 
-    image = rm_check_readable(self);
+    rm_check_readable(self);
 
     if (argc < 2)
     {
@@ -6204,11 +6214,11 @@ Image_displace(int argc, VALUE *argv, VALUE self)
     }
 
     dmap = rm_cur_image(argv[0]);
-    displacement_map = rm_check_writable(dmap);
+    rm_check_writable(dmap);
 
     if (argc > 3)
     {
-        get_composite_offsets(argc-3, &argv[3], image, displacement_map, &x_offset, &y_offset);
+        get_composite_offsets(argc-3, &argv[3], self, dmap, &x_offset, &y_offset);
         // There must be 3 arguments left
         argc = 3;
     }
@@ -6474,12 +6484,11 @@ Image_dispose_eq(VALUE self, VALUE dispose)
 VALUE
 Image_dissolve(int argc, VALUE *argv, VALUE self)
 {
-    Image *image, *overlay;
     double src_percent, dst_percent = -1.0;
     long x_offset = 0L, y_offset = 0L;
     VALUE composite_image, ovly;
 
-    image = rm_check_readable(self);
+    rm_check_readable(self);
 
     if (argc < 1)
     {
@@ -6487,11 +6496,11 @@ Image_dissolve(int argc, VALUE *argv, VALUE self)
     }
 
     ovly = rm_cur_image(argv[0]);
-    overlay = rm_check_writable(ovly);
+    rm_check_writable(ovly);
 
     if (argc > 3)
     {
-        get_composite_offsets(argc-3, &argv[3], image, overlay, &x_offset, &y_offset);
+        get_composite_offsets(argc-3, &argv[3], self, ovly, &x_offset, &y_offset);
         // There must be 3 arguments left
         argc = 3;
     }
@@ -6676,6 +6685,7 @@ Image_distortion_channel(int argc, VALUE *argv, VALUE self)
 
     rec = rm_cur_image(argv[0]);
     reconstruct = rm_check_readable(rec);
+    image = rm_check_readable(self);
     VALUE_TO_ENUM(argv[1], metric, MetricType);
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
@@ -7652,6 +7662,7 @@ Image_find_similar_region(int argc, VALUE *argv, VALUE self)
             break;
     }
 
+    image = rm_check_readable(self);
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     DECLARE_GVL_CALL(call, IsEquivalentImage, image, target, &x, &y, exception);
@@ -13029,6 +13040,7 @@ Image_remap(int argc, VALUE *argv, VALUE self)
 
     remap_obj = rm_cur_image(argv[0]);
     remap_image = rm_check_readable(remap_obj);
+    image = rm_check_frozen(self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -15040,6 +15052,7 @@ Image_stegano(VALUE self, VALUE watermark_image, VALUE offset)
 
     pixel_offset = NUM2LONG(offset);
     image = rm_check_readable(self);
+    watermark = rm_check_readable(wm_image);
 
     exception = AcquireExceptionInfo();
     clone = shallow_clone(image, exception);
@@ -15076,6 +15089,7 @@ Image_stereo(VALUE self, VALUE offset_image_arg)
 
     offset_image = rm_cur_image(offset_image_arg);
     offset = rm_check_readable(offset_image);
+    image = rm_check_readable(self);
 
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, StereoImage, image, offset, exception);
@@ -15402,12 +15416,13 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj,
     image = rm_check_readable(self);
 
     color_to_image_pixel(image->colorspace, &color, color_obj);
-    image = rm_check_readable(self);
     texture = rm_cur_image(texture_obj);
     texture_image = rm_check_readable(texture);
 
     x = NUM2LONG(x_obj);
     y = NUM2LONG(y_obj);
+    image = rm_check_readable(self);
+    texture_image = rm_check_readable(texture);
 
     if ((unsigned long)x > image->columns || (unsigned long)y > image->rows)
     {
@@ -17046,12 +17061,11 @@ Image_virtual_pixel_method_eq(VALUE self, VALUE method)
 VALUE
 Image_watermark(int argc, VALUE *argv, VALUE self)
 {
-    Image *image, *overlay;
     double src_percent = 100.0, dst_percent = 100.0;
     long x_offset = 0L, y_offset = 0L;
     VALUE ovly;
 
-    image = rm_check_readable(self);
+    rm_check_readable(self);
 
     if (argc < 1)
     {
@@ -17059,11 +17073,11 @@ Image_watermark(int argc, VALUE *argv, VALUE self)
     }
 
     ovly = rm_cur_image(argv[0]);
-    overlay = rm_check_readable(ovly);
+    rm_check_readable(ovly);
 
     if (argc > 3)
     {
-        get_composite_offsets(argc-3, &argv[3], image, overlay, &x_offset, &y_offset);
+        get_composite_offsets(argc-3, &argv[3], self, ovly, &x_offset, &y_offset);
         // There must be 3 arguments left
         argc = 3;
     }
