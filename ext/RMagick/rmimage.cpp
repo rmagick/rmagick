@@ -1083,7 +1083,11 @@ Image_add_profile(VALUE self, VALUE name)
     profile_image = ReadImage(info, exception);
     DestroyImageInfo(info);
     rm_check_exception(exception, profile_image, DestroyOnError);
-    rm_ensure_result(profile_image);
+    if (!profile_image)
+    {
+        DestroyExceptionInfo(exception);
+        rm_ensure_result(profile_image);
+    }
 
     ResetImageProfileIterator(profile_image);
     profile_name = GetNextImageProfile(profile_image);
@@ -3157,14 +3161,6 @@ Image_color_histogram(VALUE self)
     void *ret = call.read(self).destroy(dc_copy).release(exception).free_result().run<void *>();
     histogram = reinterpret_cast<decltype(histogram)>(ret);
 
-    if (histogram == NULL)
-    {
-        if (dc_copy)
-        {
-            DestroyImage(dc_copy);
-        }
-        rb_raise(rb_eNoMemError, "not enough memory to continue");
-    }
     if (rm_should_raise_exception(exception, DestroyExceptionRetention))
     {
         RelinquishMagickMemory(histogram);
@@ -3174,6 +3170,14 @@ Image_color_histogram(VALUE self)
         }
 
         rm_raise_exception(exception);
+    }
+    if (histogram == NULL)
+    {
+        if (dc_copy)
+        {
+            DestroyImage(dc_copy);
+        }
+        rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
 
     hash = rb_hash_new();
@@ -5698,6 +5702,7 @@ Image_decipher(VALUE self, VALUE passphrase)
     if (!okay)
     {
         DestroyImage(new_image);
+        DestroyExceptionInfo(exception);
         rb_raise(rb_eRuntimeError, "DecipherImage failed for unknown reason.");
     }
 
@@ -6364,6 +6369,7 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
 
     if (!okay)
     {
+        DestroyExceptionInfo(exception);
         goto exit;
     }
 
@@ -6984,6 +6990,7 @@ Image_encipher(VALUE self, VALUE passphrase)
     if (!okay)
     {
         DestroyImage(new_image);
+        DestroyExceptionInfo(exception);
         rb_raise(rb_eRuntimeError, "EncipherImage failed for unknown reason.");
     }
 
@@ -10104,7 +10111,11 @@ set_image_mask(VALUE self, VALUE mask)
             resized_image = call.update(self).read(mask).destroy(clip_mask).release(exception).run<Image *>();
             DestroyImage(clip_mask);
             rm_check_exception(exception, resized_image, DestroyOnError);
-            rm_ensure_result(resized_image);
+            if (!resized_image)
+            {
+                DestroyExceptionInfo(exception);
+                rm_ensure_result(resized_image);
+            }
             clip_mask = resized_image;
         }
 
@@ -15974,6 +15985,7 @@ Image_to_blob(VALUE self)
 
         if (*info->magick == '\0')
         {
+            DestroyExceptionInfo(exception);
             return Qnil;
         }
         strlcpy(image->magick, info->magick, sizeof(image->magick));
@@ -15989,6 +16001,7 @@ Image_to_blob(VALUE self)
                || !rm_strcasecmp(magick_info->name, "JPG"))
               && (image->rows == 0 || image->columns == 0))
         {
+            DestroyExceptionInfo(exception);
             rb_raise(rb_eRuntimeError, "Can't convert %" RMIuSIZE "x%" RMIuSIZE " %.4s image to a blob",
                      image->columns, image->rows, magick_info->name);
         }

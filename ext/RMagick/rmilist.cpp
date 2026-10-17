@@ -1237,7 +1237,11 @@ ImageList_quantize(int argc, VALUE *argv, VALUE self)
     RB_GC_GUARD(clones);
     rm_check_exception(exception, new_images, DestroyOnError);
 
-    rm_ensure_result(new_images);
+    if (!new_images)
+    {
+        DestroyExceptionInfo(exception);
+        rm_ensure_result(new_images);
+    }
 
 #if defined(IMAGEMAGICK_7)
     DECLARE_GVL_CALL(quantize_call, QuantizeImages, &quantize_info, new_images, exception);

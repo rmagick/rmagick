@@ -6,4 +6,10 @@ RSpec.describe Magick::Image, "#encipher" do
 
     expect(interrupt_each_call(Class.new(StandardError)) { image.encipher("passphrase") }).to be_positive
   end
+
+  it "releases what it holds when one of its calls fails" do
+    image = described_class.new(4, 4)
+
+    expect(fail_each_call { image.encipher("passphrase") }).to be_positive
+  end
 end
