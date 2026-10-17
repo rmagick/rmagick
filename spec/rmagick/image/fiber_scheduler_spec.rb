@@ -485,6 +485,42 @@ RSpec.describe Magick::Image, if: offloading do
       expect(error).to in_use
     end
 
+    it "does not let a Draw setter write while converting its argument starts a call that uses the Draw" do
+      image = red_image
+      draw = Magick::Draw.new
+      draw.fill("blue").rectangle(0, 0, 9, 9)
+      color = Object.new
+      color.define_singleton_method(:to_str) do
+        Fiber.schedule { draw.draw(image) }
+        "green"
+      end
+
+      error = scheduler.run { attempt { draw.fill = color } }
+
+      expect(error).to in_use
+    end
+
+    it "does not let initialize_copy replace a Draw that a call starts to use while it copies the patterns" do
+      image = red_image
+      draw = Magick::Draw.new
+      draw.fill("blue").rectangle(0, 0, 9, 9)
+      original = Magick::Draw.new
+      original.fill_pattern = blue_image
+      started = false
+      allow(Thread).to receive(:handle_interrupt).and_wrap_original do |handle_interrupt, *args, &block|
+        unless started
+          started = true
+          Fiber.schedule { draw.draw(image) }
+        end
+        handle_interrupt.call(*args, &block)
+      end
+
+      error = scheduler.run { attempt { draw.__send__(:initialize_copy, original) } }
+
+      expect(error).to in_use
+      expect(image.pixel_color(5, 5).to_color).to eq(blue_image.pixel_color(5, 5).to_color)
+    end
+
     it "does not let another fiber initialize a Draw that a call uses" do
       image = red_image
       draw = Magick::Draw.new
