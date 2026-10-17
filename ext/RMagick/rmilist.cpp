@@ -1097,8 +1097,8 @@ clone_imagelist(Image *images)
 
         DECLARE_GVL_CALL(call, CloneImage, image, 0, 0, MagickTrue, exception);
         clone = call.keep_thread().destroy(new_imagelist).release(exception).run<Image *>();
-        rm_check_exception(exception, new_imagelist, DestroyOnError);
         AppendImageToList(&new_imagelist, clone);
+        rm_check_exception(exception, new_imagelist, DestroyOnError);
         image = GetNextImageInList(image);
     }
 

@@ -53,4 +53,18 @@ RSpec.describe Magick::Image, '#mask' do
 
     expect(interrupt_each_call(Class.new(StandardError)) { image.mask(mask) }).to be_positive
   end
+
+  it "frees the copy of the mask when one of its calls fails" do
+    GC.start
+    baseline = Magick.resource_usage(:memory)
+    image = described_class.new(16, 16)
+    mask = described_class.new(8, 8)
+    calls = fail_each_call { image.mask(mask) }
+    image.destroy!
+    mask.destroy!
+    3.times { GC.start }
+
+    expect(calls).to be_positive
+    expect(Magick.resource_usage(:memory)).to be <= baseline
+  end
 end

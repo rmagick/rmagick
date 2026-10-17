@@ -10162,10 +10162,10 @@ set_image_mask(VALUE self, VALUE mask)
             exception = AcquireExceptionInfo();
             DECLARE_GVL_CALL(call, ResizeImage, clip_mask, image->columns, image->rows, UndefinedFilter, 0.0, exception);
             resized_image = call.update(self).read(mask).destroy(clip_mask).release(exception).run<Image *>();
+            DestroyImage(clip_mask);
             rm_check_exception(exception, resized_image, DestroyOnError);
             DestroyExceptionInfo(exception);
             rm_ensure_result(resized_image);
-            DestroyImage(clip_mask);
             clip_mask = resized_image;
         }
 
@@ -10357,6 +10357,7 @@ Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
     draw_info = CloneDrawInfo(NULL, NULL);
     if (!draw_info)
     {
+        DestroyImage(new_image);
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
 #if defined(IMAGEMAGICK_7)
