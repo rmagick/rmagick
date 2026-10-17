@@ -325,6 +325,7 @@ Info_aref(int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 2:
+            argv[0] = rb_str_new_frozen(StringValue(argv[0]));
             format_p = rm_str2cstr(&argv[0], &format_l);
             key_p = rm_str2cstr(&argv[1], &key_l);
             if (format_l > MAX_FORMAT_LEN || format_l + key_l > MaxTextExtent-1)
@@ -393,6 +394,7 @@ Info_aset(int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 3:
+            argv[0] = rb_str_new_frozen(StringValue(argv[0]));
             format_p = rm_str2cstr(&argv[0], &format_l);
             key_p = rm_str2cstr(&argv[1], &key_l);
 
@@ -771,9 +773,10 @@ Info_define(int argc, VALUE *argv, VALUE self)
     {
         case 3:
             /* Allow any argument that supports to_s */
-            fmt_arg = rb_String(argv[2]);
+            fmt_arg = rb_str_new_frozen(rb_String(argv[2]));
             value = (const char *)StringValueCStr(fmt_arg);
         case 2:
+            argv[1] = rb_str_new_frozen(StringValue(argv[1]));
             key = rm_str2cstr(&argv[1], &key_l);
             format = rm_str2cstr(&argv[0], &format_l);
             break;
@@ -2257,6 +2260,7 @@ Info_undefine(VALUE self, VALUE format, VALUE key)
     size_t format_l, key_l;
     char fkey[MaxTextExtent];
 
+    format = rb_str_new_frozen(StringValue(format));
     format_p = rm_str2cstr(&format, &format_l);
     key_p = rm_str2cstr(&key, &key_l);
 
@@ -2269,6 +2273,8 @@ Info_undefine(VALUE self, VALUE format, VALUE key)
 
     info = get_writable_info(self);
     DeleteImageOption(info, fkey);
+
+    RB_GC_GUARD(format);
 
     return self;
 }

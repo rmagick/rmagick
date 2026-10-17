@@ -1316,7 +1316,12 @@ Image_aset(VALUE self, VALUE key_arg, VALUE attr_arg)
 
     image = rm_check_frozen(self);
 
-    attr = attr_arg == Qnil ? NULL : StringValueCStr(attr_arg);
+    attr = NULL;
+    if (attr_arg != Qnil)
+    {
+        attr_arg = rb_str_new_frozen(StringValue(attr_arg));
+        attr = StringValueCStr(attr_arg);
+    }
 
     switch (TYPE(key_arg))
     {
@@ -1350,6 +1355,9 @@ Image_aset(VALUE self, VALUE key_arg, VALUE attr_arg)
             rb_warning("SetImageProperty failed (probably out of memory)");
         }
     }
+
+    RB_GC_GUARD(attr_arg);
+
     return self;
 }
 
@@ -5759,7 +5767,7 @@ Image_define(VALUE self, VALUE artifact, VALUE value)
     MagickBooleanType status;
 
     image = rm_check_frozen(self);
-    artifact = rb_String(artifact);
+    artifact = rb_str_new_frozen(rb_String(artifact));
     key = StringValueCStr(artifact);
 
     if (value == Qnil)
@@ -5778,6 +5786,8 @@ Image_define(VALUE self, VALUE artifact, VALUE value)
             rb_raise(rb_eNoMemError, "not enough memory to continue");
         }
     }
+
+    RB_GC_GUARD(artifact);
 
     return value;
 }

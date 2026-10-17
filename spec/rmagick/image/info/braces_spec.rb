@@ -40,4 +40,17 @@ RSpec.describe Magick::Image::Info, '#[]' do
       end
     end
   end
+
+  it "keeps the format when converting the key replaces the format" do
+    info = described_class.new
+    info["tiff", "rows-per-strip"] = "8"
+    format = +"tiff"
+    key = Object.new
+    key.define_singleton_method(:to_str) do
+      format.replace("z" * 5000)
+      "rows-per-strip"
+    end
+
+    expect(info[format, key]).to eq("8")
+  end
 end

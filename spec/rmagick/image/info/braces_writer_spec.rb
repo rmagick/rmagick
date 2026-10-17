@@ -57,4 +57,17 @@ RSpec.describe Magick::Image::Info, '#[]=' do
     expect { info['comment'] = 'user@example.com' }.not_to raise_error
     expect(info['comment']).to eq('user@example.com')
   end
+
+  it "keeps the format when converting the key replaces the format" do
+    info = described_class.new
+    format = +"tiff"
+    key = Object.new
+    key.define_singleton_method(:to_str) do
+      format.replace("z" * 5000)
+      "rows-per-strip"
+    end
+
+    info[format, key] = "8"
+    expect(info["tiff", "rows-per-strip"]).to eq("8")
+  end
 end
