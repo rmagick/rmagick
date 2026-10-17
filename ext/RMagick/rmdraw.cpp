@@ -484,6 +484,12 @@ image_to_str(Image *image)
         blob = call.keep_thread().destroy(copy).release(info).release(exception).free_result().run<unsigned char *>();
         DestroyImage(copy);
         DestroyImageInfo(info);
+        if (blob && exception->severity >= ErrorException)
+        {
+            magick_free((void*)blob);
+            blob = NULL;
+            length = 0;
+        }
         CHECK_EXCEPTION();
         DestroyExceptionInfo(exception);
         dimg = rb_str_new((char *)blob, (long)length);

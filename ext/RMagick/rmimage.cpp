@@ -6760,6 +6760,12 @@ Image__dump(VALUE self, VALUE depth)
     // Free ImageInfo first - error handling may raise an exception
     DestroyImageInfo(info);
 
+    if (blob && exception->severity >= ErrorException)
+    {
+        magick_free((void*)blob);
+        blob = NULL;
+        length = 0;
+    }
     CHECK_EXCEPTION();
 
     DestroyExceptionInfo(exception);
@@ -9959,6 +9965,12 @@ Image_marshal_dump(VALUE self)
 
     // Destroy info before raising an exception
     DestroyImageInfo(info);
+    if (blob && exception->severity >= ErrorException)
+    {
+        magick_free((void*)blob);
+        blob = NULL;
+        length = 0;
+    }
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 
@@ -15988,6 +16000,12 @@ Image_to_blob(VALUE self)
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, ImageToBlob, info, image, &length, exception);
     blob = call.update(self).read(info_obj).free_result().release(exception).run<void *>();
+    if (blob && exception->severity >= ErrorException)
+    {
+        magick_free((void*)blob);
+        blob = NULL;
+        length = 0;
+    }
     CHECK_EXCEPTION();
 
     DestroyExceptionInfo(exception);

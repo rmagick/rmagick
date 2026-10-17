@@ -29,4 +29,15 @@ RSpec.describe Magick::Image, '#to_blob' do
 
     expect(calls).to be_positive
   end
+
+  it "releases the blob when one of its calls fails" do
+    calls = fail_each_call do
+      described_class.new(4, 4).to_blob do |options|
+        options.format = "PNG"
+        options.colorspace = Magick::GRAYColorspace
+      end
+    end
+
+    expect(calls).to be_positive
+  end
 end
