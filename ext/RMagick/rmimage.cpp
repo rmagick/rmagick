@@ -9817,6 +9817,7 @@ Image__load(VALUE klass ATTRIBUTE_UNUSED, VALUE str)
     char *blob;
     size_t length;
 
+    str = rb_str_new_frozen(StringValue(str));
     blob = rm_str2cstr(&str, &length);
 
     // Must be at least as big as the 1st 4 fields in DumpedImage
@@ -10018,7 +10019,7 @@ Image_marshal_load(VALUE self, VALUE ary)
     blob = rb_ary_shift(ary);
 
     filename = StringValue(filename);
-    blob = StringValue(blob);
+    blob = rb_str_new_frozen(StringValue(blob));
 
     info = CloneImageInfo(NULL);
     if (!info)

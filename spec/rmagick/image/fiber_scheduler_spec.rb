@@ -78,6 +78,27 @@ RSpec.describe Magick::Image, if: offloading do
       expect(described_class.from_blob(blob).first.format).to eq("PNG")
     end
 
+    it "reads the String given to _load when another fiber replaces it" do
+      source = red_image
+      source.format = "MIFF"
+      dump = source._dump(0)
+      scheduler.before_next_operation { dump.replace("z" * 200_000) }
+
+      image = scheduler.run { described_class._load(dump) }
+      expect(image.pixel_color(0, 0)).to eq(Magick::Pixel.from_color("red"))
+    end
+
+    it "reads the String given to marshal_load when another fiber replaces it" do
+      source = red_image
+      source.format = "MIFF"
+      filename, blob = source.marshal_dump
+      image = described_class.new(1, 1)
+      scheduler.before_next_operation { blob.replace("z" * 200_000) }
+
+      scheduler.run { image.marshal_load([filename, blob]) }
+      expect(image.pixel_color(0, 0)).to eq(Magick::Pixel.from_color("red"))
+    end
+
     it "delivers an exception raised into the waiting fiber after the call has completed" do
       image = described_class.new(200, 200)
       scheduler.cancel_next_operation(cancelled.new)
