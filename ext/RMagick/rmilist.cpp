@@ -1251,6 +1251,9 @@ ImageList_quantize(int argc, VALUE *argv, VALUE self)
     quantize_call.destroy(new_images).release(exception).run<void>();
     rm_check_exception(exception, new_images, DestroyOnError);
     DestroyExceptionInfo(exception);
+#if defined(IMAGEMAGICK_6)
+    rm_check_image_exception(new_images, DestroyOnError);
+#endif
 
     // Create new ImageList object, convert mapped image sequence to images,
     // append to images array.

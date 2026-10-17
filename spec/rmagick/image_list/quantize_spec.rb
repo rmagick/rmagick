@@ -26,4 +26,15 @@ RSpec.describe Magick::ImageList, "#quantize" do
     expect { image_list.quantize(128, Magick::RGBColorspace, true, 'x') }.to raise_error(TypeError)
     expect { image_list.quantize(128, Magick::RGBColorspace, true, 0, false, 'extra') }.to raise_error(ArgumentError)
   end
+
+  it "raises instead of returning the images unquantized when one of its calls fails" do
+    image_list = described_class.new
+    image_list << Magick::Image.new(64, 64, Magick::GradientFill.new(0, 0, 0, 64, "red", "blue"))
+
+    calls = fail_each_call do
+      expect(image_list.quantize(8).first.number_colors).to be <= 8
+    end
+
+    expect(calls).to be_positive
+  end
 end
