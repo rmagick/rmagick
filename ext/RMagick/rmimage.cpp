@@ -12915,6 +12915,11 @@ Image_read_inline(VALUE self ATTRIBUTE_UNUSED, VALUE content)
         image_data += x + 1;
     }
 
+    // Create a new Info structure for this read. About the
+    // only useful attribute that can be set is `format'.
+    info_obj = rm_info_new();
+    info = rm_info_get(info_obj);
+
     DECLARE_GVL_CALL(decode_call, Base64Decode, image_data, &blob_l);
     blob = decode_call.free_result().run<unsigned char *>();
     if (blob_l == 0)
@@ -12924,11 +12929,6 @@ Image_read_inline(VALUE self ATTRIBUTE_UNUSED, VALUE content)
     }
 
     exception = AcquireExceptionInfo();
-
-    // Create a new Info structure for this read. About the
-    // only useful attribute that can be set is `format'.
-    info_obj = rm_info_new();
-    info = rm_info_get(info_obj);
 
     DECLARE_GVL_CALL(read_call, BlobToImage, info, blob, blob_l, exception);
     images = read_call.read(info_obj).relinquish(blob).release(exception).run<Image *>();

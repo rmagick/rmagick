@@ -42,4 +42,12 @@ RSpec.describe Magick::Image, "#read_inline" do
     expect(calls).to be_positive
     expect(Magick.resource_usage(:memory)).to be <= baseline
   end
+
+  it "releases the decoded image when the block raises" do
+    source = described_class.new(64, 64)
+    content = [source.to_blob { |options| options.format = "MIFF" }].pack("m*")
+    source.destroy!
+
+    expect { described_class.read_inline(content) { raise ArgumentError } }.to raise_error(ArgumentError)
+  end
 end
