@@ -37,4 +37,44 @@ RSpec.describe Magick::Image::Info, '#define' do
       end
     end
   end
+
+  it "keeps the value when converting the key replaces the value" do
+    info = described_class.new
+    value = +"8"
+    key = Object.new
+    key.define_singleton_method(:to_str) do
+      value.replace("z" * 5000)
+      "rows-per-strip"
+    end
+
+    info.define("tiff", key, value)
+    expect(info["tiff", "rows-per-strip"]).to eq("8")
+  end
+
+  it "keeps the key when converting the format replaces the key" do
+    info = described_class.new
+    key = +"rows-per-strip"
+    format = Object.new
+    format.define_singleton_method(:to_str) do
+      key.replace("z" * 5000)
+      "tiff"
+    end
+
+    info.define(format, key, "8")
+    expect(info["tiff", "rows-per-strip"]).to eq("8")
+  end
+
+  it "keeps the format of #undefine when converting the key replaces the format" do
+    info = described_class.new
+    info["tiff", "rows-per-strip"] = "8"
+    format = +"tiff"
+    key = Object.new
+    key.define_singleton_method(:to_str) do
+      format.replace("z" * 5000)
+      "rows-per-strip"
+    end
+
+    info.undefine(format, key)
+    expect(info["tiff", "rows-per-strip"]).to be(nil)
+  end
 end

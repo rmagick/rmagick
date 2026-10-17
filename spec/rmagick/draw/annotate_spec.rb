@@ -171,4 +171,18 @@ RSpec.describe Magick::Draw, '#annotate' do
 
     expect { described_class.new.annotate(image, 0, 0, 0, 20, '%[fx:(]') }.not_to raise_error
   end
+
+  it "keeps the text while it copies the patterns of a frozen Draw" do
+    draw = described_class.new
+    draw.fill_pattern = Magick::Image.new(8, 8)
+    draw.freeze
+    image = Magick::Image.new(40, 40)
+    text = "a" * 3000
+    allow(Thread).to receive(:handle_interrupt).and_wrap_original do |original, *args, &block|
+      text.replace("z" * 5000)
+      original.call(*args, &block)
+    end
+
+    expect { draw.annotate(image, 0, 0, 0, 10, text) }.not_to raise_error
+  end
 end
