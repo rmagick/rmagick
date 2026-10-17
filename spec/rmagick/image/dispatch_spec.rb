@@ -37,4 +37,10 @@ RSpec.describe Magick::Image, '#dispatch' do
     expect { image.dispatch(0, 0, 2**32, 2**32, 'R') }.to raise_error(RangeError)
     expect { image.dispatch(0, 0, 2**48, 2**16, 'R') }.to raise_error(RangeError)
   end
+
+  it "returns an empty array when ImageMagick rejects the map" do
+    image = described_class.new(2, 2)
+
+    expect(image.dispatch(0, 0, 1, 1, "Z")).to eq([])
+  end
 end

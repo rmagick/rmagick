@@ -30,33 +30,57 @@ module TestHelpers
   end
 
   module InterruptAtCall
+    EXHAUSTED_RESOURCES = %i[memory map disk].freeze
+
     def handle_interrupt(*)
-      result = super
       state = Thread.current[:rmagick_interrupt_at_call]
-      if state && (state[:count] += 1) == state[:at]
-        Thread.current[:rmagick_interrupt_at_call] = nil
-        raise state[:error]
-      end
-      result
+      return super unless state && (state[:count] += 1) == state[:at]
+
+      Thread.current[:rmagick_interrupt_at_call] = nil
+      return with_exhausted_resources { super } if state[:exhaust]
+
+      super
+      raise state[:error]
+    end
+
+    private
+
+    def with_exhausted_resources
+      limits = EXHAUSTED_RESOURCES.to_h { |resource| [resource, Magick.limit_resource(resource, 1)] }
+      yield
+    ensure
+      limits&.each { |resource, limit| Magick.limit_resource(resource, limit) }
     end
   end
   Thread.singleton_class.prepend(InterruptAtCall)
 
-  def interrupt_each_call(error, limit: 100)
+  def interrupt_each_call(error, &)
+    each_call([error], { error: error }, &)
+  end
+
+  def fail_each_call(&)
+    each_call([StandardError, NoMemoryError], { exhaust: true }, &)
+  end
+
+  def each_call(expected, options)
     Thread.new do
       Thread.current.report_on_exception = false
-      finished_at = (1..limit).find do |n|
-        Thread.current[:rmagick_interrupt_at_call] = { count: 0, at: n, error: error }
+      counter = { count: 0, at: 0 }
+      Thread.current[:rmagick_interrupt_at_call] = counter
+      begin
         yield
-        true
-      rescue error
-        false
       ensure
         Thread.current[:rmagick_interrupt_at_call] = nil
       end
-      raise ArgumentError, "the block made more than #{limit} calls" unless finished_at
-
-      finished_at - 1
+      (1..counter[:count]).each do |n|
+        Thread.current[:rmagick_interrupt_at_call] = options.merge(count: 0, at: n)
+        yield
+      rescue *expected
+        nil
+      ensure
+        Thread.current[:rmagick_interrupt_at_call] = nil
+      end
+      counter[:count]
     end.value
   end
 

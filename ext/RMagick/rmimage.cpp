@@ -1083,7 +1083,11 @@ Image_add_profile(VALUE self, VALUE name)
     profile_image = ReadImage(info, exception);
     DestroyImageInfo(info);
     rm_check_exception(exception, profile_image, DestroyOnError);
-    rm_ensure_result(profile_image);
+    if (!profile_image)
+    {
+        DestroyExceptionInfo(exception);
+        rm_ensure_result(profile_image);
+    }
 
     ResetImageProfileIterator(profile_image);
     profile_name = GetNextImageProfile(profile_image);
@@ -2302,7 +2306,7 @@ Image_blue_shift(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, BlueShiftImage, image, factor, exception);
     new_image = call.read(self).release(exception).run<Image *>();
-    CHECK_EXCEPTION();
+    rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
     return rm_image_new(new_image);
@@ -3157,14 +3161,6 @@ Image_color_histogram(VALUE self)
     void *ret = call.read(self).destroy(dc_copy).release(exception).free_result().run<void *>();
     histogram = reinterpret_cast<decltype(histogram)>(ret);
 
-    if (histogram == NULL)
-    {
-        if (dc_copy)
-        {
-            DestroyImage(dc_copy);
-        }
-        rb_raise(rb_eNoMemError, "not enough memory to continue");
-    }
     if (rm_should_raise_exception(exception, DestroyExceptionRetention))
     {
         RelinquishMagickMemory(histogram);
@@ -3174,6 +3170,14 @@ Image_color_histogram(VALUE self)
         }
 
         rm_raise_exception(exception);
+    }
+    if (histogram == NULL)
+    {
+        if (dc_copy)
+        {
+            DestroyImage(dc_copy);
+        }
+        rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
 
     hash = rb_hash_new();
@@ -3291,7 +3295,7 @@ set_profile(VALUE self, const char *name, VALUE profile)
     DECLARE_GVL_CALL(call, BlobToImage, info, profile_blob, profile_length, exception);
     profile_image = call.update(self).release(info).release(exception).run<Image *>();
     DestroyImageInfo(info);
-    CHECK_EXCEPTION();
+    rm_check_exception(exception, profile_image, DestroyOnError);
 
     ResetImageProfileIterator(profile_image);
     profile_name = GetNextImageProfile(profile_image);
@@ -5062,7 +5066,7 @@ Image_contrast_stretch_channel(int argc, VALUE *argv, VALUE self)
     DECLARE_GVL_CALL(call, ContrastStretchImage, new_image, black_point, white_point, exception);
     call.read(self).destroy(new_image).release(exception).run<void>();
     END_CHANNEL_MASK(new_image);
-    CHECK_EXCEPTION();
+    rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
     DECLARE_GVL_CALL(call, ContrastStretchImageChannel, new_image, channels, black_point, white_point);
@@ -5698,6 +5702,7 @@ Image_decipher(VALUE self, VALUE passphrase)
     if (!okay)
     {
         DestroyImage(new_image);
+        DestroyExceptionInfo(exception);
         rb_raise(rb_eRuntimeError, "DecipherImage failed for unknown reason.");
     }
 
@@ -6037,7 +6042,7 @@ Image_deskew(int argc, VALUE *argv, VALUE self)
     DECLARE_GVL_CALL(call, DeskewImage, clone, threshold, exception);
     new_image = call.read(self).destroy(clone).release(exception).run<Image *>();
     DestroyImage(clone);
-    CHECK_EXCEPTION();
+    rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
     return rm_image_new(new_image);
@@ -6364,6 +6369,7 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
 
     if (!okay)
     {
+        DestroyExceptionInfo(exception);
         goto exit;
     }
 
@@ -6760,6 +6766,12 @@ Image__dump(VALUE self, VALUE depth)
     // Free ImageInfo first - error handling may raise an exception
     DestroyImageInfo(info);
 
+    if (blob && exception->severity >= ErrorException)
+    {
+        magick_free((void*)blob);
+        blob = NULL;
+        length = 0;
+    }
     CHECK_EXCEPTION();
 
     DestroyExceptionInfo(exception);
@@ -6978,6 +6990,7 @@ Image_encipher(VALUE self, VALUE passphrase)
     if (!okay)
     {
         DestroyImage(new_image);
+        DestroyExceptionInfo(exception);
         rb_raise(rb_eRuntimeError, "EncipherImage failed for unknown reason.");
     }
 
@@ -9959,6 +9972,12 @@ Image_marshal_dump(VALUE self)
 
     // Destroy info before raising an exception
     DestroyImageInfo(info);
+    if (blob && exception->severity >= ErrorException)
+    {
+        magick_free((void*)blob);
+        blob = NULL;
+        length = 0;
+    }
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 
@@ -10007,7 +10026,7 @@ Image_marshal_load(VALUE self, VALUE ary)
 
     // Destroy info before raising an exception
     DestroyImageInfo(info);
-    CHECK_EXCEPTION();
+    rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
     image = rm_image_get(self);
@@ -10092,7 +10111,11 @@ set_image_mask(VALUE self, VALUE mask)
             resized_image = call.update(self).read(mask).destroy(clip_mask).release(exception).run<Image *>();
             DestroyImage(clip_mask);
             rm_check_exception(exception, resized_image, DestroyOnError);
-            rm_ensure_result(resized_image);
+            if (!resized_image)
+            {
+                DestroyExceptionInfo(exception);
+                rm_ensure_result(resized_image);
+            }
             clip_mask = resized_image;
         }
 
@@ -10139,10 +10162,10 @@ set_image_mask(VALUE self, VALUE mask)
             exception = AcquireExceptionInfo();
             DECLARE_GVL_CALL(call, ResizeImage, clip_mask, image->columns, image->rows, UndefinedFilter, 0.0, exception);
             resized_image = call.update(self).read(mask).destroy(clip_mask).release(exception).run<Image *>();
+            DestroyImage(clip_mask);
             rm_check_exception(exception, resized_image, DestroyOnError);
             DestroyExceptionInfo(exception);
             rm_ensure_result(resized_image);
-            DestroyImage(clip_mask);
             clip_mask = resized_image;
         }
 
@@ -10334,6 +10357,7 @@ Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
     draw_info = CloneDrawInfo(NULL, NULL);
     if (!draw_info)
     {
+        DestroyImage(new_image);
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
 #if defined(IMAGEMAGICK_7)
@@ -15962,6 +15986,7 @@ Image_to_blob(VALUE self)
 
         if (*info->magick == '\0')
         {
+            DestroyExceptionInfo(exception);
             return Qnil;
         }
         strlcpy(image->magick, info->magick, sizeof(image->magick));
@@ -15977,6 +16002,7 @@ Image_to_blob(VALUE self)
                || !rm_strcasecmp(magick_info->name, "JPG"))
               && (image->rows == 0 || image->columns == 0))
         {
+            DestroyExceptionInfo(exception);
             rb_raise(rb_eRuntimeError, "Can't convert %" RMIuSIZE "x%" RMIuSIZE " %.4s image to a blob",
                      image->columns, image->rows, magick_info->name);
         }
@@ -15988,6 +16014,12 @@ Image_to_blob(VALUE self)
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, ImageToBlob, info, image, &length, exception);
     blob = call.update(self).read(info_obj).free_result().release(exception).run<void *>();
+    if (blob && exception->severity >= ErrorException)
+    {
+        magick_free((void*)blob);
+        blob = NULL;
+        length = 0;
+    }
     CHECK_EXCEPTION();
 
     DestroyExceptionInfo(exception);
@@ -17291,7 +17323,7 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(flip_call, FlipImage, image, exception);
     flip_image = flip_call.read(self).release(exception).run<Image *>();
-    CHECK_EXCEPTION();
+    rm_check_exception(exception, flip_image, DestroyOnError);
 
 
     geometry.x = 0;
@@ -17301,7 +17333,7 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
     DECLARE_GVL_CALL(crop_call, CropImage, flip_image, &geometry, exception);
     reflection = crop_call.read(self).destroy(flip_image).release(exception).run<Image *>();
     DestroyImage(flip_image);
-    CHECK_EXCEPTION();
+    rm_check_exception(exception, reflection, DestroyOnError);
 
 
 #if defined(IMAGEMAGICK_7)
