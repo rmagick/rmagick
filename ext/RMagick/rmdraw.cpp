@@ -1449,11 +1449,13 @@ VALUE Draw_init_copy(VALUE self, VALUE orig)
         DestroyDrawInfo(info);
         rb_jump_tag(state);
     }
-    // Copying the patterns releases the GVL, so other code can freeze self meanwhile.
-    if (OBJ_FROZEN(self))
+    // Copying the patterns releases the GVL, so other code can freeze self or
+    // start a call that uses it meanwhile.
+    if (OBJ_FROZEN(self) || rm_gvl_in_use(self))
     {
         DestroyDrawInfo(info);
-        rb_error_frozen_object(self);
+        rb_check_frozen(self);
+        rm_gvl_check_writable(self);
     }
     replace_draw_info(copy, info);
     copy->shadow_color = original->shadow_color;
