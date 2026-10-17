@@ -525,7 +525,7 @@ Image *str_to_image(VALUE str)
         DECLARE_GVL_CALL(call, BlobToImage, info, RSTRING_PTR(str), (size_t)RSTRING_LEN(str), exception);
         image = call.keep_thread().release(info).release(exception).run<Image *>();
         DestroyImageInfo(info);
-        CHECK_EXCEPTION();
+        rm_check_exception(exception, image, DestroyOnError);
         DestroyExceptionInfo(exception);
     }
 

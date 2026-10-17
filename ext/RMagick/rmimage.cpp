@@ -2302,7 +2302,7 @@ Image_blue_shift(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, BlueShiftImage, image, factor, exception);
     new_image = call.read(self).release(exception).run<Image *>();
-    CHECK_EXCEPTION();
+    rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
     return rm_image_new(new_image);
@@ -3291,7 +3291,7 @@ set_profile(VALUE self, const char *name, VALUE profile)
     DECLARE_GVL_CALL(call, BlobToImage, info, profile_blob, profile_length, exception);
     profile_image = call.update(self).release(info).release(exception).run<Image *>();
     DestroyImageInfo(info);
-    CHECK_EXCEPTION();
+    rm_check_exception(exception, profile_image, DestroyOnError);
 
     ResetImageProfileIterator(profile_image);
     profile_name = GetNextImageProfile(profile_image);
@@ -5062,7 +5062,7 @@ Image_contrast_stretch_channel(int argc, VALUE *argv, VALUE self)
     DECLARE_GVL_CALL(call, ContrastStretchImage, new_image, black_point, white_point, exception);
     call.read(self).destroy(new_image).release(exception).run<void>();
     END_CHANNEL_MASK(new_image);
-    CHECK_EXCEPTION();
+    rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
     DECLARE_GVL_CALL(call, ContrastStretchImageChannel, new_image, channels, black_point, white_point);
@@ -6037,7 +6037,7 @@ Image_deskew(int argc, VALUE *argv, VALUE self)
     DECLARE_GVL_CALL(call, DeskewImage, clone, threshold, exception);
     new_image = call.read(self).destroy(clone).release(exception).run<Image *>();
     DestroyImage(clone);
-    CHECK_EXCEPTION();
+    rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
     return rm_image_new(new_image);
@@ -10007,7 +10007,7 @@ Image_marshal_load(VALUE self, VALUE ary)
 
     // Destroy info before raising an exception
     DestroyImageInfo(info);
-    CHECK_EXCEPTION();
+    rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
     image = rm_image_get(self);
@@ -17291,7 +17291,7 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(flip_call, FlipImage, image, exception);
     flip_image = flip_call.read(self).release(exception).run<Image *>();
-    CHECK_EXCEPTION();
+    rm_check_exception(exception, flip_image, DestroyOnError);
 
 
     geometry.x = 0;
@@ -17301,7 +17301,7 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
     DECLARE_GVL_CALL(crop_call, CropImage, flip_image, &geometry, exception);
     reflection = crop_call.read(self).destroy(flip_image).release(exception).run<Image *>();
     DestroyImage(flip_image);
-    CHECK_EXCEPTION();
+    rm_check_exception(exception, reflection, DestroyOnError);
 
 
 #if defined(IMAGEMAGICK_7)

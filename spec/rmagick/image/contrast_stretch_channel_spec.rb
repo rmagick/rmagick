@@ -18,4 +18,16 @@ RSpec.describe Magick::Image, '#contrast_stretch_channel' do
     expect { image.contrast_stretch_channel('x') }.to raise_error(ArgumentError)
     expect { image.contrast_stretch_channel(25, 'x') }.to raise_error(ArgumentError)
   end
+
+  it "frees its copy when one of its calls fails" do
+    GC.start
+    baseline = Magick.resource_usage(:memory)
+    image = described_class.new(16, 16)
+    calls = fail_each_call { image.contrast_stretch_channel(25, 50) }
+    image.destroy!
+    3.times { GC.start }
+
+    expect(calls).to be_positive
+    expect(Magick.resource_usage(:memory)).to be <= baseline
+  end
 end
