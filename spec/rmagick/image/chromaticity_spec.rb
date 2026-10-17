@@ -45,4 +45,15 @@ RSpec.describe Magick::Image, '#chromaticity' do
       z: be_within(delta).of(0.3583)
     )
   end
+
+  it "returns the chromaticity when creating a Primary destroys the image" do
+    image = build_image
+    expected = image.chromaticity
+    allow(Magick::Primary).to receive(:new).and_wrap_original do |original, *args|
+      image.destroy! unless image.destroyed?
+      original.call(*args)
+    end
+
+    expect(image.chromaticity).to eq(expected)
+  end
 end

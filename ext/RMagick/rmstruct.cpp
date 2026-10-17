@@ -89,15 +89,16 @@ Export_AffineMatrix(AffineMatrix *am, VALUE st)
 VALUE
 ChromaticityInfo_new(ChromaticityInfo *ci)
 {
+    ChromaticityInfo chromaticity = *ci;
     VALUE red_primary;
     VALUE green_primary;
     VALUE blue_primary;
     VALUE white_point;
 
-    red_primary   = Import_PrimaryInfo(&ci->red_primary);
-    green_primary = Import_PrimaryInfo(&ci->green_primary);
-    blue_primary  = Import_PrimaryInfo(&ci->blue_primary);
-    white_point   = Import_PrimaryInfo(&ci->white_point);
+    red_primary   = Import_PrimaryInfo(&chromaticity.red_primary);
+    green_primary = Import_PrimaryInfo(&chromaticity.green_primary);
+    blue_primary  = Import_PrimaryInfo(&chromaticity.blue_primary);
+    white_point   = Import_PrimaryInfo(&chromaticity.white_point);
 
     RB_GC_GUARD(red_primary);
     RB_GC_GUARD(green_primary);
