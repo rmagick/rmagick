@@ -113,9 +113,12 @@ VALUE
 Draw_affine_eq(VALUE self, VALUE matrix)
 {
     MagickDraw *draw;
+    AffineMatrix affine;
 
+    get_writable_draw(self);
+    Export_AffineMatrix(&affine, matrix);
     draw = get_writable_draw(self);
-    Export_AffineMatrix(&draw->info->affine, matrix);
+    draw->info->affine = affine;
     return matrix;
 }
 
@@ -164,9 +167,12 @@ VALUE
 Draw_density_eq(VALUE self, VALUE density)
 {
     MagickDraw *draw;
+    char *value;
 
+    get_writable_draw(self);
+    value = StringValueCStr(density);
     draw = get_writable_draw(self);
-    magick_clone_string(&draw->info->density, StringValueCStr(density));
+    magick_clone_string(&draw->info->density, value);
 
     return density;
 }
@@ -182,9 +188,12 @@ VALUE
 Draw_encoding_eq(VALUE self, VALUE encoding)
 {
     MagickDraw *draw;
+    char *value;
 
+    get_writable_draw(self);
+    value = StringValueCStr(encoding);
     draw = get_writable_draw(self);
-    magick_clone_string(&draw->info->encoding, StringValueCStr(encoding));
+    magick_clone_string(&draw->info->encoding, value);
 
     return encoding;
 }
@@ -200,10 +209,77 @@ VALUE
 Draw_fill_eq(VALUE self, VALUE fill)
 {
     MagickDraw *draw;
+    PixelColor color;
 
+    get_writable_draw(self);
+    Color_to_PixelColor(&color, fill);
     draw = get_writable_draw(self);
-    Color_to_PixelColor(&draw->info->fill, fill);
+    draw->info->fill = color;
     return fill;
+}
+
+
+/**
+ * Call get_writable_draw under rb_protect.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param self this object
+ * @return the MagickDraw struct
+ */
+static VALUE
+writable_draw(VALUE self)
+{
+    return (VALUE)get_writable_draw(self);
+}
+
+
+/**
+ * Set the fill or stroke pattern to a copy of an image.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param self this object
+ * @param pattern the image or imagelist, or nil
+ * @param stroke whether to set the stroke pattern instead of the fill pattern
+ * @return the image the pattern was copied from, or nil
+ */
+static VALUE
+set_pattern(VALUE self, VALUE pattern, bool stroke)
+{
+    MagickDraw *draw;
+    Image *copy = NULL;
+    Image **slot;
+    int state;
+
+    get_writable_draw(self);
+    if (!NIL_P(pattern))
+    {
+        pattern = rm_cur_image(pattern);
+        // Do not trace creation
+        copy = rm_copy_image(rm_check_readable(pattern));
+    }
+
+    draw = (MagickDraw *)rb_protect(writable_draw, self, &state);
+    if (state)
+    {
+        if (copy)
+        {
+            DestroyImage(copy);
+        }
+        rb_jump_tag(state);
+    }
+
+    // DestroyDrawInfo destroys the clone
+    slot = stroke ? &draw->info->stroke_pattern : &draw->info->fill_pattern;
+    if (*slot)
+    {
+        // Do not trace destruction
+        DestroyImage(*slot);
+    }
+    *slot = copy;
+
+    return pattern;
 }
 
 
@@ -219,28 +295,7 @@ Draw_fill_eq(VALUE self, VALUE fill)
 VALUE
 Draw_fill_pattern_eq(VALUE self, VALUE pattern)
 {
-    MagickDraw *draw;
-
-    draw = get_writable_draw(self);
-
-    if (draw->info->fill_pattern != NULL)
-    {
-        // Do not trace destruction
-        DestroyImage(draw->info->fill_pattern);
-        draw->info->fill_pattern = NULL;
-    }
-
-    if (!NIL_P(pattern))
-    {
-        Image *image;
-
-        pattern = rm_cur_image(pattern);
-        image = rm_check_readable(pattern);
-        // Do not trace creation
-        draw->info->fill_pattern = rm_copy_image(image);
-    }
-
-    return pattern;
+    return set_pattern(self, pattern, false);
 }
 
 
@@ -254,9 +309,12 @@ VALUE
 Draw_font_eq(VALUE self, VALUE font)
 {
     MagickDraw *draw;
+    char *value;
 
+    get_writable_draw(self);
+    value = StringValueCStr(font);
     draw = get_writable_draw(self);
-    magick_clone_string(&draw->info->font, StringValueCStr(font));
+    magick_clone_string(&draw->info->font, value);
 
     return font;
 }
@@ -272,9 +330,12 @@ VALUE
 Draw_font_family_eq(VALUE self, VALUE family)
 {
     MagickDraw *draw;
+    char *value;
 
+    get_writable_draw(self);
+    value = StringValueCStr(family);
     draw = get_writable_draw(self);
-    magick_clone_string(&draw->info->family, StringValueCStr(family));
+    magick_clone_string(&draw->info->family, value);
 
     return family;
 }
@@ -409,9 +470,12 @@ VALUE
 Draw_kerning_eq(VALUE self, VALUE kerning)
 {
     MagickDraw *draw;
+    double value;
 
+    get_writable_draw(self);
+    value = NUM2DBL(kerning);
     draw = get_writable_draw(self);
-    draw->info->kerning = NUM2DBL(kerning);
+    draw->info->kerning = value;
     return kerning;
 }
 
@@ -426,9 +490,12 @@ VALUE
 Draw_interline_spacing_eq(VALUE self, VALUE spacing)
 {
     MagickDraw *draw;
+    double value;
 
+    get_writable_draw(self);
+    value = NUM2DBL(spacing);
     draw = get_writable_draw(self);
-    draw->info->interline_spacing = NUM2DBL(spacing);
+    draw->info->interline_spacing = value;
     return spacing;
 }
 
@@ -443,9 +510,12 @@ VALUE
 Draw_interword_spacing_eq(VALUE self, VALUE spacing)
 {
     MagickDraw *draw;
+    double value;
 
+    get_writable_draw(self);
+    value = NUM2DBL(spacing);
     draw = get_writable_draw(self);
-    draw->info->interword_spacing = NUM2DBL(spacing);
+    draw->info->interword_spacing = value;
     return spacing;
 }
 
@@ -691,9 +761,12 @@ VALUE
 Draw_pointsize_eq(VALUE self, VALUE pointsize)
 {
     MagickDraw *draw;
+    double value;
 
+    get_writable_draw(self);
+    value = NUM2DBL(pointsize);
     draw = get_writable_draw(self);
-    draw->info->pointsize = NUM2DBL(pointsize);
+    draw->info->pointsize = value;
     return pointsize;
 }
 
@@ -711,9 +784,10 @@ Draw_rotation_eq(VALUE self, VALUE deg)
     double degrees;
     AffineMatrix affine, current;
 
+    get_writable_draw(self);
+    degrees = NUM2DBL(deg);
     draw = get_writable_draw(self);
 
-    degrees = NUM2DBL(deg);
     if (fabs(degrees) > DBL_EPSILON)
     {
         current   = draw->info->affine;
@@ -745,9 +819,12 @@ VALUE
 Draw_stroke_eq(VALUE self, VALUE stroke)
 {
     MagickDraw *draw;
+    PixelColor color;
 
+    get_writable_draw(self);
+    Color_to_PixelColor(&color, stroke);
     draw = get_writable_draw(self);
-    Color_to_PixelColor(&draw->info->stroke, stroke);
+    draw->info->stroke = color;
     return stroke;
 }
 
@@ -763,29 +840,7 @@ Draw_stroke_eq(VALUE self, VALUE stroke)
 VALUE
 Draw_stroke_pattern_eq(VALUE self, VALUE pattern)
 {
-    MagickDraw *draw;
-
-    draw = get_writable_draw(self);
-
-    if (draw->info->stroke_pattern != NULL)
-    {
-        // Do not trace destruction
-        DestroyImage(draw->info->stroke_pattern);
-        draw->info->stroke_pattern = NULL;
-    }
-
-    if (!NIL_P(pattern))
-    {
-        Image *image;
-
-        // DestroyDrawInfo destroys the clone
-        pattern = rm_cur_image(pattern);
-        image = rm_check_readable(pattern);
-        // Do not trace creation
-        draw->info->stroke_pattern = rm_copy_image(image);
-    }
-
-    return pattern;
+    return set_pattern(self, pattern, true);
 }
 
 
@@ -799,9 +854,12 @@ VALUE
 Draw_stroke_width_eq(VALUE self, VALUE stroke_width)
 {
     MagickDraw *draw;
+    double value;
 
+    get_writable_draw(self);
+    value = NUM2DBL(stroke_width);
     draw = get_writable_draw(self);
-    draw->info->stroke_width = NUM2DBL(stroke_width);
+    draw->info->stroke_width = value;
     return stroke_width;
 }
 
@@ -846,9 +904,12 @@ VALUE
 Draw_undercolor_eq(VALUE self, VALUE undercolor)
 {
     MagickDraw *draw;
+    PixelColor color;
 
+    get_writable_draw(self);
+    Color_to_PixelColor(&color, undercolor);
     draw = get_writable_draw(self);
-    Color_to_PixelColor(&draw->info->undercolor, undercolor);
+    draw->info->undercolor = color;
     return undercolor;
 }
 
@@ -1488,6 +1549,7 @@ Draw_primitive(VALUE self, VALUE primitive)
 
     rb_check_frozen(self);
     StringValue(primitive);
+    rb_check_frozen(self);
     TypedData_Get_Struct(self, MagickDraw, &rm_draw_data_type, draw);
 
     if (draw->primitives == (VALUE)0)
@@ -1729,9 +1791,12 @@ VALUE
 PolaroidOptions_shadow_color_eq(VALUE self, VALUE shadow)
 {
     MagickDraw *draw;
+    PixelColor color;
 
+    get_writable_draw(self);
+    Color_to_PixelColor(&color, shadow);
     draw = get_writable_draw(self);
-    Color_to_PixelColor(&draw->shadow_color, shadow);
+    draw->shadow_color = color;
     return shadow;
 }
 
@@ -1746,9 +1811,12 @@ VALUE
 PolaroidOptions_border_color_eq(VALUE self, VALUE border)
 {
     MagickDraw *draw;
+    PixelColor color;
 
+    get_writable_draw(self);
+    Color_to_PixelColor(&color, border);
     draw = get_writable_draw(self);
-    Color_to_PixelColor(&draw->info->border_color, border);
+    draw->info->border_color = color;
     return border;
 }
 

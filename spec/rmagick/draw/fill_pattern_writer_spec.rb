@@ -37,4 +37,16 @@ RSpec.describe Magick::Draw, '#fill_pattern' do
 
     expect { draw.fill_pattern = 'x' }.to raise_error(NoMethodError)
   end
+
+  it "keeps the pattern when the new one is destroyed" do
+    draw = described_class.new
+    pattern = Magick::Image.new(4, 4)
+    pattern.format = "MIFF"
+    draw.fill_pattern = pattern
+    destroyed = Magick::Image.new(2, 2)
+    destroyed.destroy!
+
+    expect { draw.fill_pattern = destroyed }.to raise_error(Magick::DestroyedImageError)
+    expect(draw.marshal_dump[:fill_pattern]).to be_kind_of(String)
+  end
 end
