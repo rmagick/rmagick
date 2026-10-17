@@ -1021,6 +1021,7 @@ annotate_body(VALUE arg)
     // through InterpretImageProperties(), so a `%[...]` or `%x` escape in it is
     // not expanded. Everything those escapes provide is available directly from
     // Ruby -- Image#columns, Image#filename, Image#artifact and so on.
+    annotate->text = rb_str_new_frozen(StringValue(annotate->text));
     embed_text = StringValueCStr(annotate->text);
     image = rm_check_frozen(annotate->image_arg);
     rm_gvl_check_readable(annotate->self);
