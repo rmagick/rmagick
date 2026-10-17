@@ -15,4 +15,22 @@ RSpec.describe Magick::Image, '#ping' do
   it 'raises an error when the filename contains a null byte' do
     expect { described_class.ping("#{IMAGES_DIR}/Button_0.gif\0.png") }.to raise_error(ArgumentError)
   end
+
+  it "frees the images it read when one of its calls is interrupted" do
+    Dir.mktmpdir do |dir|
+      path = File.join(dir, "image.miff")
+      source = described_class.new(64, 64)
+      source.write(path)
+      source.destroy!
+      GC.start
+      baseline = Magick.resource_usage(:memory)
+      calls = interrupt_each_call(Class.new(StandardError)) do
+        described_class.ping(path) { |options| options.colorspace = Magick::GRAYColorspace }
+      end
+      3.times { GC.start }
+
+      expect(calls).to be_positive
+      expect(Magick.resource_usage(:memory)).to be <= baseline
+    end
+  end
 end

@@ -52,6 +52,7 @@ static VALUE scale(int, int, VALUE *, VALUE, gvl_function_t);
 static VALUE threshold_image(int, VALUE *, VALUE, gvl_function_t);
 static VALUE xform_image(int, VALUE, VALUE, VALUE, VALUE, VALUE, gvl_function_t);
 static VALUE array_from_images(Image *);
+static VALUE array_from_synced_images(Image *, Info *);
 static VALUE file_arg_rescue(VALUE, VALUE ATTRIBUTE_UNUSED) ATTRIBUTE_NORETURN;
 static void rm_image_free(void *ptr);
 static size_t rm_image_memsize(const void *ptr);
@@ -2575,7 +2576,7 @@ Image_capture(int argc, VALUE *argv, VALUE self ATTRIBUTE_UNUSED)
 {
     Image *new_image;
     ImageInfo *image_info;
-    VALUE info_obj;
+    VALUE info_obj, image_obj;
     XImportInfo ximage_info;
 #if defined(IMAGEMAGICK_7)
     ExceptionInfo *exception;
@@ -2623,11 +2624,14 @@ Image_capture(int argc, VALUE *argv, VALUE self ATTRIBUTE_UNUSED)
     rm_ensure_result(new_image);
 
     rm_set_user_artifact(new_image, image_info);
+    image_obj = rm_image_wrap(new_image);
     rm_sync_image_options(new_image, image_info);
+    rm_image_set(image_obj, new_image);
 
     RB_GC_GUARD(info_obj);
+    RB_GC_GUARD(image_obj);
 
-    return rm_image_new(new_image);
+    return image_obj;
 }
 
 
@@ -3130,12 +3134,16 @@ Image_color_histogram(VALUE self)
     has_black = index_is_black(image);
 #endif
 
-    exception = AcquireExceptionInfo();
-
     // If image not DirectClass make a DirectClass copy.
     if (image->storage_class != DirectClass)
     {
         dc_copy = rm_clone_image(image);
+    }
+
+    exception = AcquireExceptionInfo();
+
+    if (dc_copy)
+    {
 #if defined(IMAGEMAGICK_7)
         DECLARE_GVL_CALL(call, SetImageStorageClass, dc_copy, DirectClass, exception);
 #else
@@ -3446,14 +3454,15 @@ Image_color_flood_fill(VALUE self, VALUE target_color, VALUE fill_color,
                  "FillToBorderMethod (%d given)", fill_method);
     }
 
+    new_image = rm_clone_image(image);
+
     draw_info = CloneDrawInfo(NULL, NULL);
     if (!draw_info)
     {
+        DestroyImage(new_image);
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
     draw_info->fill = fill;
-
-    new_image = rm_clone_image(image);
 
     rm_init_magickpixel(new_image, &target_mpp);
     if (fill_method == FillToBorderMethod)
@@ -5679,9 +5688,8 @@ Image_decipher(VALUE self, VALUE passphrase)
     passphrase = rb_str_new_frozen(StringValue(passphrase));
     pf = StringValueCStr(passphrase);      // ensure passphrase is a string
     image = rm_check_readable(self);
-    exception = AcquireExceptionInfo();
-
     new_image = rm_clone_image(image);
+    exception = AcquireExceptionInfo();
 
     DECLARE_GVL_CALL(call, DecipherImage, new_image, pf, exception);
     void *ret = call.read(self).destroy(new_image).release(exception).run<void *>();
@@ -6960,9 +6968,8 @@ Image_encipher(VALUE self, VALUE passphrase)
     passphrase = rb_str_new_frozen(StringValue(passphrase));
     pf = StringValueCStr(passphrase);      // ensure passphrase is a string
     image = rm_check_readable(self);
-    exception = AcquireExceptionInfo();
-
     new_image = rm_clone_image(image);
+    exception = AcquireExceptionInfo();
 
     DECLARE_GVL_CALL(call, EncipherImage, new_image, pf, exception);
     void *ret = call.read(self).destroy(new_image).release(exception).run<void *>();
@@ -7985,12 +7992,11 @@ Image_from_blob(VALUE klass ATTRIBUTE_UNUSED, VALUE blob_arg)
 
     rm_ensure_result(images);
     rm_set_user_artifact(images, info);
-    rm_sync_image_options(images, info);
 
     RB_GC_GUARD(info_obj);
     RB_GC_GUARD(blob_arg);
 
-    return array_from_images(images);
+    return array_from_synced_images(images, info);
 }
 
 
@@ -8073,13 +8079,13 @@ Image_function_channel(int argc, VALUE *argv, VALUE self)
     }
 
     image = rm_check_readable(self);
+    new_image = rm_clone_image(image);
 
     parms = ALLOC_N(double, nparms);
     memcpy(parms, values, nparms * sizeof(double));
     ALLOCV_END(values_buf);
 
     exception = AcquireExceptionInfo();
-    new_image = rm_clone_image(image);
 #if defined(IMAGEMAGICK_7)
     BEGIN_CHANNEL_MASK(new_image, channels);
     DECLARE_GVL_CALL(call, FunctionImage, new_image, function, nparms, parms, exception);
@@ -10074,12 +10080,11 @@ set_image_mask(VALUE self, VALUE mask)
         mask_image = rm_check_readable(mask);
     }
     image = rm_check_frozen(self);
+    clip_mask = mask != Qnil ? rm_clone_image(mask_image) : NULL;
     exception = AcquireExceptionInfo();
 
     if (mask != Qnil)
     {
-        clip_mask = rm_clone_image(mask_image);
-
         // Resize if necessary
         if (clip_mask->columns != image->columns || clip_mask->rows != image->rows)
         {
@@ -12784,11 +12789,10 @@ rd_image(VALUE klass ATTRIBUTE_UNUSED, VALUE file, gvl_function_t fp)
     rm_ensure_result(images);
 
     rm_set_user_artifact(images, info);
-    rm_sync_image_options(images, info);
 
     RB_GC_GUARD(info_obj);
 
-    return array_from_images(images);
+    return array_from_synced_images(images, info);
 }
 
 
@@ -12911,6 +12915,11 @@ Image_read_inline(VALUE self ATTRIBUTE_UNUSED, VALUE content)
         image_data += x + 1;
     }
 
+    // Create a new Info structure for this read. About the
+    // only useful attribute that can be set is `format'.
+    info_obj = rm_info_new();
+    info = rm_info_get(info_obj);
+
     DECLARE_GVL_CALL(decode_call, Base64Decode, image_data, &blob_l);
     blob = decode_call.free_result().run<unsigned char *>();
     if (blob_l == 0)
@@ -12921,11 +12930,6 @@ Image_read_inline(VALUE self ATTRIBUTE_UNUSED, VALUE content)
 
     exception = AcquireExceptionInfo();
 
-    // Create a new Info structure for this read. About the
-    // only useful attribute that can be set is `format'.
-    info_obj = rm_info_new();
-    info = rm_info_get(info_obj);
-
     DECLARE_GVL_CALL(read_call, BlobToImage, info, blob, blob_l, exception);
     images = read_call.read(info_obj).relinquish(blob).release(exception).run<Image *>();
     magick_free((void *)blob);
@@ -12935,12 +12939,11 @@ Image_read_inline(VALUE self ATTRIBUTE_UNUSED, VALUE content)
 
     rm_ensure_result(images);
     rm_set_user_artifact(images, info);
-    rm_sync_image_options(images, info);
 
     RB_GC_GUARD(info_obj);
     RB_GC_GUARD(content);
 
-    return array_from_images(images);
+    return array_from_synced_images(images, info);
 }
 
 
@@ -12969,6 +12972,49 @@ array_from_images(Image *images)
     }
 
     RB_GC_GUARD(image_obj);
+    RB_GC_GUARD(image_ary);
+
+    return image_ary;
+}
+
+
+struct SyncImageOptions_Args
+{
+    Image *images;
+    Info *info;
+};
+
+
+static VALUE
+sync_image_options_protected(VALUE arg)
+{
+    struct SyncImageOptions_Args *args = (struct SyncImageOptions_Args *)arg;
+
+    rm_sync_image_options(args->images, args->info);
+    return Qnil;
+}
+
+
+static VALUE
+array_from_synced_images(Image *images, Info *info)
+{
+    struct SyncImageOptions_Args args = { images, info };
+    VALUE image_ary;
+    int state = 0;
+
+    image_ary = rb_ary_new();
+    for (Image *image = images; image; image = GetNextImageInList(image))
+    {
+        rb_ary_push(image_ary, rm_image_wrap(image));
+    }
+
+    rb_protect(sync_image_options_protected, (VALUE)&args, &state);
+    rm_split(images);
+    if (state)
+    {
+        rb_jump_tag(state);
+    }
+
     RB_GC_GUARD(image_ary);
 
     return image_ary;
@@ -15407,7 +15453,7 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj,
     Image *image, *new_image;
     Image *texture_image, *pattern;
     Pixel color;
-    VALUE texture;
+    VALUE texture, new_obj;
     DrawInfo *draw_info;
     long x, y;
     PaintMethod method;
@@ -15441,6 +15487,9 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj,
                  "FillToBorderMethod (%d given)", (int)method);
     }
 
+    new_image = rm_clone_image(image);
+    new_obj = rm_image_wrap(new_image);
+
     // A frozen texture may be shared with other Ractors, whose calls would read
     // its pixel cache through the default nexus at once.
     pattern = OBJ_FROZEN(texture) ? rm_copy_image(texture_image) : rm_clone_image(texture_image);
@@ -15452,8 +15501,6 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj,
     }
 
     draw_info->fill_pattern = pattern;
-    new_image = rm_clone_image(image);
-
 
     rm_init_magickpixel(new_image, &color_mpp);
     if (method == FillToBorderMethod)
@@ -15482,21 +15529,24 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj,
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, FloodfillPaintImage, new_image, draw_info, &color_mpp, x, y, invert, exception);
-    call.read(self).read(texture).destroy(new_image).release(draw_info).release(exception).run<void>();
+    call.read(self).read(texture).release(draw_info).release(exception).run<void>();
     DestroyDrawInfo(draw_info);
-    rm_check_exception(exception, new_image, DestroyOnError);
+    rm_check_exception(exception, new_image, RetainOnError);
     DestroyExceptionInfo(exception);
 #else
     DECLARE_GVL_CALL(call, FloodfillPaintImage, new_image, DefaultChannels, draw_info, &color_mpp, x, y, invert);
-    call.read(self).read(texture).destroy(new_image).release(draw_info).run<void>();
+    call.read(self).read(texture).release(draw_info).run<void>();
 
     DestroyDrawInfo(draw_info);
-    rm_check_image_exception(new_image, DestroyOnError);
+    rm_check_image_exception(new_image, RetainOnError);
 #endif
 
-    RB_GC_GUARD(texture);
+    rm_image_set(new_obj, new_image);
 
-    return rm_image_new(new_image);
+    RB_GC_GUARD(texture);
+    RB_GC_GUARD(new_obj);
+
+    return new_obj;
 }
 
 
@@ -15932,8 +15982,10 @@ Image_to_blob(VALUE self)
         }
     }
 
+    DestroyExceptionInfo(exception);
     rm_sync_image_options(image, info);
 
+    exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, ImageToBlob, info, image, &length, exception);
     blob = call.update(self).read(info_obj).free_result().release(exception).run<void *>();
     CHECK_EXCEPTION();

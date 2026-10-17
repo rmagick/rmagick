@@ -29,4 +29,25 @@ RSpec.describe Magick::Image, "#read_inline" do
 
     expect { described_class.read_inline(encoded) }.to raise_error(StandardError)
   end
+
+  it "frees the images it read when one of its calls is interrupted" do
+    source = described_class.new(64, 64)
+    blob = source.to_blob { |options| options.format = "MIFF" }
+    source.destroy!
+    GC.start
+    baseline = Magick.resource_usage(:memory)
+    calls = interrupt_each_call(Class.new(StandardError)) { described_class.read_inline([blob].pack("m*")) { |options| options.colorspace = Magick::GRAYColorspace } }
+    3.times { GC.start }
+
+    expect(calls).to be_positive
+    expect(Magick.resource_usage(:memory)).to be <= baseline
+  end
+
+  it "releases the decoded image when the block raises" do
+    source = described_class.new(64, 64)
+    content = [source.to_blob { |options| options.format = "MIFF" }].pack("m*")
+    source.destroy!
+
+    expect { described_class.read_inline(content) { raise ArgumentError } }.to raise_error(ArgumentError)
+  end
 end

@@ -24,4 +24,22 @@ RSpec.describe Magick::Image, '#read' do
     end
     expect(result.first.colorspace).to eq(Magick::LabColorspace)
   end
+
+  it "frees the images it read when one of its calls is interrupted" do
+    Dir.mktmpdir do |dir|
+      path = File.join(dir, "image.miff")
+      source = described_class.new(64, 64)
+      source.write(path)
+      source.destroy!
+      GC.start
+      baseline = Magick.resource_usage(:memory)
+      calls = interrupt_each_call(Class.new(StandardError)) do
+        described_class.read(path) { |options| options.colorspace = Magick::GRAYColorspace }
+      end
+      3.times { GC.start }
+
+      expect(calls).to be_positive
+      expect(Magick.resource_usage(:memory)).to be <= baseline
+    end
+  end
 end

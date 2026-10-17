@@ -49,4 +49,15 @@ RSpec.describe Magick::Image, '#texture_floodfill' do
     expect(pixels[1].black).to eq(0)
     expect(pixels[0]).to eq(image.pixel_color(0, 0))
   end
+
+  it "frees its copies when one of its calls is interrupted" do
+    image = described_class.new(4, 4)
+    GC.start
+    baseline = Magick.resource_usage(:memory)
+    calls = interrupt_each_call(Class.new(StandardError)) { image.texture_floodfill(1, 1, described_class.new(64, 64)) }
+    3.times { GC.start }
+
+    expect(calls).to be_positive
+    expect(Magick.resource_usage(:memory)).to be <= baseline
+  end
 end

@@ -17,4 +17,10 @@ RSpec.describe Magick::Image, '#decipher' do
     expect(res2.rows).to eq(image.rows)
     expect(res2).to eq(image)
   end
+
+  it "releases what it holds when one of its calls is interrupted" do
+    image = described_class.new(4, 4).encipher("passphrase")
+
+    expect(interrupt_each_call(Class.new(StandardError)) { image.decipher("passphrase") }).to be_positive
+  end
 end
