@@ -612,6 +612,21 @@ Image *str_to_image(VALUE str)
 
 
 /**
+ * Copy the primitives of a Draw so that changing the copy leaves the Draw alone.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param primitives the primitives, or 0 if there are none
+ * @return a copy of the String, or primitives itself if it is not a String
+ */
+static VALUE
+copy_primitives(VALUE primitives)
+{
+    return RB_TYPE_P(primitives, T_STRING) ? rb_str_dup(primitives) : primitives;
+}
+
+
+/**
  * Dump custom marshal for Draw objects.
  *
  * - Instead of trying to replicate Ruby's support for cross-system
@@ -671,7 +686,7 @@ Draw_marshal_dump(VALUE self)
     rb_hash_aset(ddraw, CSTR2SYM("interword_spacing"), rb_float_new(draw->info->interword_spacing));
 
     // Non-DrawInfo fields
-    rb_hash_aset(ddraw, CSTR2SYM("primitives"), draw->primitives);
+    rb_hash_aset(ddraw, CSTR2SYM("primitives"), copy_primitives(draw->primitives));
 
     return ddraw;
 }
@@ -1460,7 +1475,7 @@ VALUE Draw_init_copy(VALUE self, VALUE orig)
     replace_draw_info(copy, info);
     copy->shadow_color = original->shadow_color;
 
-    copy->primitives = original->primitives ? rb_str_dup(original->primitives) : (VALUE)0;
+    copy->primitives = copy_primitives(original->primitives);
 
     tmpfile_ary = copy->tmpfile_ary;
     copy->tmpfile_ary = original->tmpfile_ary;
@@ -1515,7 +1530,7 @@ Draw_inspect(VALUE self)
     MagickDraw *draw;
 
     TypedData_Get_Struct(self, MagickDraw, &rm_draw_data_type, draw);
-    return draw->primitives ? draw->primitives : rb_str_new2("(no primitives defined)");
+    return draw->primitives ? copy_primitives(draw->primitives) : rb_str_new2("(no primitives defined)");
 }
 
 

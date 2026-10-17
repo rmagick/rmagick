@@ -72,4 +72,17 @@ RSpec.describe Magick::Draw, '#marshal_dump' do
     draw3.marshal_load(dumped)
     expect(draw3.inspect).to eq(draw2.inspect)
   end
+
+  it "returns a copy of the primitives" do
+    draw = described_class.new
+    draw.primitive("point 0,0")
+    draw.freeze
+    draw.marshal_dump[:primitives] << "\nline 0,0 9,9"
+
+    expect(draw.inspect).to eq("point 0,0")
+  end
+
+  it "stores false for the primitives of a Draw without any" do
+    expect(described_class.new.marshal_dump[:primitives]).to be(false)
+  end
 end
