@@ -11365,16 +11365,18 @@ Image_opaque(VALUE self, VALUE target, VALUE fill)
  *   @param target [Magick::Pixel, String] the color name
  *   @param fill [Magick::Pixel, String] the color for filling
  *   @param invert [Boolean] If true, the target pixels are all the pixels that are not the target
- *     color. The default is the value of the target image's fuzz attribute
+ *     color.
  *   @param fuzz [Numeric] Colors within this distance are considered equal to the target color.
+ *     The default is the value of the image's fuzz attribute. A given value is used instead of it.
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *
  * @overload opaque_channel(target, fill, invert, fuzz, *channels)
  *   @param target [Magick::Pixel, String] the color name
  *   @param fill [Magick::Pixel, String] the color for filling
  *   @param invert [Boolean] If true, the target pixels are all the pixels that are not the target
- *     color. The default is the value of the target image's fuzz attribute
+ *     color.
  *   @param fuzz [Numeric] Colors within this distance are considered equal to the target color.
+ *     The default is the value of the image's fuzz attribute. A given value is used instead of it.
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
  * @return [Magick::Image] a new image
@@ -11398,8 +11400,7 @@ Image_opaque_channel(int argc, VALUE *argv, VALUE self)
         raise_ChannelType_error(argv[argc-1]);
     }
 
-    // Default fuzz value is image's fuzz attribute.
-    fuzz = image->fuzz;
+    fuzz = 0.0;
 
     switch (argc)
     {
@@ -11420,6 +11421,16 @@ Image_opaque_channel(int argc, VALUE *argv, VALUE self)
             rb_raise(rb_eArgError, "wrong number of arguments (got %d, expected 2 or more)", argc);
             break;
     }
+
+    // Default fuzz value is image's fuzz attribute. Read it only now, since
+    // converting the arguments can replace the image.
+    if (argc < 4)
+    {
+        fuzz = image->fuzz;
+    }
+    // ImageMagick uses the larger of the target's fuzz and the image's fuzz,
+    // so the target must carry the given fuzz too.
+    target_pp.fuzz = fuzz;
 
     new_image = rm_clone_image(image);
     keep = new_image->fuzz;
@@ -11608,8 +11619,8 @@ Image_page_eq(VALUE self, VALUE rect)
  *   @param color [Magick::Pixel, String] the color name
  *   @param invert [Boolean] If true, the target pixels are all the pixels that are not the target
  *     color.
- *   @param fuzz [Numeric] By default the pixel must match exactly, but you can specify a tolerance
- *     level by passing a positive value.
+ *   @param fuzz [Numeric] Colors within this distance are considered equal to the target color.
+ *     The default is the value of the image's fuzz attribute. A given value is used instead of it.
  *   @param alpha [Numeric] The new alpha value, either an alpha value or a number between 0 and
  *     QuantumRange. The default is TransparentAlpha.
  *   @return [Magick::Image] a new image
@@ -11633,13 +11644,30 @@ Image_paint_transparent(int argc, VALUE *argv, VALUE self)
 
     image = color_to_magickpixel(self, &color, color_obj);
     invert = (invert_obj != Qnil) ? (MagickBooleanType)RTEST(invert_obj) : MagickFalse;
-    fuzz = (fuzz_obj != Qnil) ? NUM2DBL(fuzz_obj) : image->fuzz;
+    fuzz = 0.0;
+    if (fuzz_obj != Qnil)
+    {
+        fuzz = NUM2DBL(fuzz_obj);
+        if (fuzz < 0.0)
+        {
+            rb_raise(rb_eArgError, "fuzz must be >= 0.0 (%g given)", fuzz);
+        }
+    }
     if (RTEST(kwargs))
     {
         alpha = get_named_alpha_value(kwargs);
     }
 
     image = rm_check_readable(self);
+    // Default fuzz value is image's fuzz attribute. Read it only now, since
+    // converting the arguments can replace the image.
+    if (fuzz_obj == Qnil)
+    {
+        fuzz = image->fuzz;
+    }
+    // ImageMagick uses the larger of the target's fuzz and the image's fuzz,
+    // so the target must carry the given fuzz too.
+    color.fuzz = fuzz;
     new_image = rm_clone_image(image);
 
     // Use fuzz value from caller

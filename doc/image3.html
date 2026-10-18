@@ -321,7 +321,10 @@
 
         <dt>fuzz</dt>
 
-        <dd>By default the pixel must match exactly, but you can specify a tolerance level by passing a positive value.</dd>
+        <dd>
+          Colors within this distance are considered equal to the target color. The default is the value of the image's
+          <a href="imageattrs.html#fuzz">fuzz</a> attribute. A given value is used instead of it.
+        </dd>
       </dl>
 
       <h4>Returns</h4>
