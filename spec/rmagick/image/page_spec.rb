@@ -18,4 +18,13 @@ RSpec.describe Magick::Image, '#page' do
     expect(page.y).to eq(4)
     expect { image.page = 2 }.to raise_error(TypeError)
   end
+
+  it "raises TypeError when Rectangle#values does not return an Array" do
+    image = described_class.new(100, 100)
+    page = Magick::Rectangle.new(1, 2, 3, 4)
+    allow_any_instance_of(Magick::Rectangle).to receive(:values).and_return(nil) # rubocop:disable RSpec/AnyInstance
+
+    expect { image.page = page }
+      .to raise_error(TypeError, "Magick::Rectangle#values must return an Array (NilClass given)")
+  end
 end

@@ -13,6 +13,47 @@
 
 
 /**
+ * Call #values on a Struct and make sure it returned an Array.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param st the Ruby Struct object
+ * @return the Array returned by st.values
+ * @throw TypeError if st.values does not return an Array
+ */
+static VALUE
+struct_values(VALUE st)
+{
+    VALUE values = rb_funcall(st, rm_ID_values, 0);
+
+    if (!RB_TYPE_P(values, T_ARRAY))
+    {
+        rb_raise(rb_eTypeError, "%s#values must return an Array (%s given)",
+                 rb_obj_classname(st), rb_obj_classname(values));
+    }
+    return values;
+}
+
+
+/**
+ * Raise TypeError unless the given object is a Magick::Primary.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param primary the object to check
+ * @throw TypeError if primary is not a Magick::Primary
+ */
+static void
+check_primary(VALUE primary)
+{
+    if (!RTEST(rb_obj_is_kind_of(primary, Class_Primary)))
+    {
+        rb_raise(rb_eTypeError, "type mismatch: %s given", rb_obj_classname(primary));
+    }
+}
+
+
+/**
  * Given a C AffineMatrix, create the equivalent AffineMatrix object.
  *
  * No Ruby usage (internal function)
@@ -59,7 +100,7 @@ Export_AffineMatrix(AffineMatrix *am, VALUE st)
         rb_raise(rb_eTypeError, "type mismatch: %s given",
                  rb_class2name(CLASS_OF(st)));
     }
-    values = rb_funcall(st, rm_ID_values, 0);
+    values = struct_values(st);
     v = rb_ary_entry(values, 0);
     am->sx = v == Qnil ? 1.0 : NUM2DBL(v);
     v = rb_ary_entry(values, 1);
@@ -133,14 +174,15 @@ Export_ChromaticityInfo(ChromaticityInfo *ci, VALUE chrom)
     }
 
     // Get the struct members in an array
-    chrom_members = rb_funcall(chrom, rm_ID_values, 0);
+    chrom_members = struct_values(chrom);
     red_primary   = rb_ary_entry(chrom_members, 0);
     green_primary = rb_ary_entry(chrom_members, 1);
     blue_primary  = rb_ary_entry(chrom_members, 2);
     white_point = rb_ary_entry(chrom_members, 3);
 
     // Get the red_primary PrimaryInfo members in an array
-    entry_members = rb_funcall(red_primary, rm_ID_values, 0);
+    check_primary(red_primary);
+    entry_members = struct_values(red_primary);
     x = rb_ary_entry(entry_members, 0);         // red_primary.x
     ci->red_primary.x = x == Qnil ? 0.0 : NUM2DBL(x);
     y = rb_ary_entry(entry_members, 1);         // red_primary.y
@@ -148,7 +190,8 @@ Export_ChromaticityInfo(ChromaticityInfo *ci, VALUE chrom)
     ci->red_primary.z = 0.0;
 
     // Get the green_primary PrimaryInfo members in an array
-    entry_members = rb_funcall(green_primary, rm_ID_values, 0);
+    check_primary(green_primary);
+    entry_members = struct_values(green_primary);
     x = rb_ary_entry(entry_members, 0);         // green_primary.x
     ci->green_primary.x = x == Qnil ? 0.0 : NUM2DBL(x);
     y = rb_ary_entry(entry_members, 1);         // green_primary.y
@@ -156,7 +199,8 @@ Export_ChromaticityInfo(ChromaticityInfo *ci, VALUE chrom)
     ci->green_primary.z = 0.0;
 
     // Get the blue_primary PrimaryInfo members in an array
-    entry_members = rb_funcall(blue_primary, rm_ID_values, 0);
+    check_primary(blue_primary);
+    entry_members = struct_values(blue_primary);
     x = rb_ary_entry(entry_members, 0);         // blue_primary.x
     ci->blue_primary.x = x == Qnil ? 0.0 : NUM2DBL(x);
     y = rb_ary_entry(entry_members, 1);         // blue_primary.y
@@ -164,7 +208,8 @@ Export_ChromaticityInfo(ChromaticityInfo *ci, VALUE chrom)
     ci->blue_primary.z = 0.0;
 
     // Get the white_point PrimaryInfo members in an array
-    entry_members = rb_funcall(white_point, rm_ID_values, 0);
+    check_primary(white_point);
+    entry_members = struct_values(white_point);
     x = rb_ary_entry(entry_members, 0);         // white_point.x
     ci->white_point.x = x == Qnil ? 0.0 : NUM2DBL(x);
     y = rb_ary_entry(entry_members, 1);         // white_point.y
@@ -260,7 +305,7 @@ Export_ColorInfo(ColorInfo *ci, VALUE st)
 
     memset(ci, '\0', sizeof(ColorInfo));
 
-    members = rb_funcall(st, rm_ID_values, 0);
+    members = struct_values(st);
 
     m = rb_ary_entry(members, 0);
     if (m != Qnil)
@@ -440,7 +485,7 @@ Export_TypeInfo(TypeInfo *ti, VALUE st)
 
     memset(ti, '\0', sizeof(TypeInfo));
 
-    members = rb_funcall(st, rm_ID_values, 0);
+    members = struct_values(st);
     m = rb_ary_entry(members, 0);
     if (m != Qnil)
     {
@@ -582,7 +627,7 @@ Export_PointInfo(PointInfo *pi, VALUE sp)
         rb_raise(rb_eTypeError, "type mismatch: %s given",
                  rb_class2name(CLASS_OF(sp)));
     }
-    members = rb_funcall(sp, rm_ID_values, 0);
+    members = struct_values(sp);
     m = rb_ary_entry(members, 0);
     pi->x = m == Qnil ? 0.0 : NUM2DBL(m);
     m = rb_ary_entry(members, 1);
@@ -627,7 +672,7 @@ Export_PrimaryInfo(PrimaryInfo *pi, VALUE sp)
         rb_raise(rb_eTypeError, "type mismatch: %s given",
                  rb_class2name(CLASS_OF(sp)));
     }
-    members = rb_funcall(sp, rm_ID_values, 0);
+    members = struct_values(sp);
     m = rb_ary_entry(members, 0);
     pi->x = m == Qnil ? 0.0 : NUM2DBL(m);
     m = rb_ary_entry(members, 1);
@@ -705,7 +750,7 @@ Export_RectangleInfo(RectangleInfo *rect, VALUE sr)
         rb_raise(rb_eTypeError, "type mismatch: %s given",
                  rb_class2name(CLASS_OF(sr)));
     }
-    members = rb_funcall(sr, rm_ID_values, 0);
+    members = struct_values(sr);
     m = rb_ary_entry(members, 0);
     rect->width  = m == Qnil ? 0 : NUM2ULONG(m);
     m = rb_ary_entry(members, 1);
@@ -784,7 +829,7 @@ Export_SegmentInfo(SegmentInfo *segment, VALUE s)
                  rb_class2name(CLASS_OF(s)));
     }
 
-    members = rb_funcall(s, rm_ID_values, 0);
+    members = struct_values(s);
     m = rb_ary_entry(members, 0);
     segment->x1 = m == Qnil ? 0.0 : NUM2DBL(m);
     m = rb_ary_entry(members, 1);
@@ -879,7 +924,7 @@ Export_TypeMetric(TypeMetric *tm, VALUE st)
         rb_raise(rb_eTypeError, "type mismatch: %s given",
                  rb_class2name(CLASS_OF(st)));
     }
-    members = rb_funcall(st, rm_ID_values, 0);
+    members = struct_values(st);
 
     pixels_per_em   = rb_ary_entry(members, 0);
     Export_PointInfo(&tm->pixels_per_em, pixels_per_em);
