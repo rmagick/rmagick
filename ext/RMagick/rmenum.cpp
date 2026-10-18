@@ -157,15 +157,29 @@ Enum_case_eq(VALUE self, VALUE other)
  * @param sym [Symbol] the symbol as enum name
  * @param val [Numeric] the value for enum
  * @return [Magick::Enum] self
+ * @raise [FrozenError] if the Enum is already initialized
  */
 VALUE
 Enum_initialize(VALUE self, VALUE sym, VALUE val)
 {
     MagickEnum *magick_enum;
+    ID id;
+    int value;
+
+    // Convert both arguments first, so that a failing conversion leaves the
+    // Enum uninitialized.
+    id = rb_to_id(sym); /* convert symbol to ID */
+    value = NUM2INT(val);
 
     TypedData_Get_Struct(self, MagickEnum, &rm_enum_data_type, magick_enum);
-    magick_enum->id = rb_to_id(sym); /* convert symbol to ID */
-    magick_enum->val = NUM2INT(val);
+    // An Enum is frozen from the start and shared between Ractors, so it must
+    // not be initialized again.
+    if (magick_enum->id != 0)
+    {
+        rb_error_frozen_object(self);
+    }
+    magick_enum->id = id;
+    magick_enum->val = value;
 
     return self;
 }
@@ -341,7 +355,7 @@ Enum_type_inspect(VALUE self)
 static VALUE
 Enum_type_values(VALUE klass)
 {
-    VALUE enumerators, copy;
+    VALUE enumerators, copy = Qnil;
     VALUE rv;
     int x;
 
