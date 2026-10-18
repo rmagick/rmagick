@@ -33,6 +33,19 @@ RSpec.describe Magick::Image, '#sparse_color' do
     expect { image.sparse_color(Magick::VoronoiColorInterpolate, *args) }.to raise_error(TypeError)
   end
 
+  it 'raises ArgumentError for an invalid color name and works again afterwards' do
+    image = described_class.new(10, 10)
+    args = []
+    200.times { |i| args.push(i % 10, i % 7, 'red') }
+    args[-1] = 'no-such-color'
+
+    expect { image.sparse_color(Magick::VoronoiColorInterpolate, *args) }.to raise_error(ArgumentError)
+
+    args[-1] = 'blue'
+    result = image.sparse_color(Magick::VoronoiColorInterpolate, *args)
+    expect(result).to be_instance_of(described_class)
+  end
+
   it 'uses black of a CMYK color' do
     image = described_class.new(2, 1)
     image.colorspace = Magick::CMYKColorspace
