@@ -54,4 +54,15 @@ RSpec.describe Magick::Image, '#store_pixels' do
 
     File.delete(temp_file_path)
   end
+
+  it 'accepts a subclass of Pixel and a Pixel with a singleton method' do
+    image = described_class.new(2, 1)
+    subclass = Class.new(Magick::Pixel).new(Magick::QuantumRange, 0, 0)
+    singleton = Magick::Pixel.from_color('blue')
+    singleton.define_singleton_method(:label) { 'blue' }
+
+    image.store_pixels(0, 0, 2, 1, [subclass, singleton])
+    expect(image.pixel_color(0, 0)).to eq(Magick::Pixel.from_color('red'))
+    expect(image.pixel_color(1, 0)).to eq(Magick::Pixel.from_color('blue'))
+  end
 end

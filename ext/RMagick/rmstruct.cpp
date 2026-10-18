@@ -36,19 +36,21 @@ struct_values(VALUE st)
 
 
 /**
- * Raise TypeError unless the given object is a Magick::Primary.
+ * Raise TypeError unless the given object is an instance of the given Struct
+ * class or of one of its subclasses.
  *
  * No Ruby usage (internal function)
  *
- * @param primary the object to check
- * @throw TypeError if primary is not a Magick::Primary
+ * @param obj the object to check
+ * @param klass the expected Struct class
+ * @throw TypeError if obj is not a klass
  */
 static void
-check_primary(VALUE primary)
+check_struct_type(VALUE obj, VALUE klass)
 {
-    if (!RTEST(rb_obj_is_kind_of(primary, Class_Primary)))
+    if (!RTEST(rb_obj_is_kind_of(obj, klass)))
     {
-        rb_raise(rb_eTypeError, "type mismatch: %s given", rb_obj_classname(primary));
+        rb_raise(rb_eTypeError, "type mismatch: %s given", rb_obj_classname(obj));
     }
 }
 
@@ -95,11 +97,7 @@ Export_AffineMatrix(AffineMatrix *am, VALUE st)
 {
     VALUE values, v;
 
-    if (CLASS_OF(st) != Class_AffineMatrix)
-    {
-        rb_raise(rb_eTypeError, "type mismatch: %s given",
-                 rb_class2name(CLASS_OF(st)));
-    }
+    check_struct_type(st, Class_AffineMatrix);
     values = struct_values(st);
     v = rb_ary_entry(values, 0);
     am->sx = v == Qnil ? 1.0 : NUM2DBL(v);
@@ -167,11 +165,7 @@ Export_ChromaticityInfo(ChromaticityInfo *ci, VALUE chrom)
     VALUE red_primary, green_primary, blue_primary, white_point;
     VALUE entry_members, x, y;
 
-    if (CLASS_OF(chrom) != Class_Chromaticity)
-    {
-        rb_raise(rb_eTypeError, "type mismatch: %s given",
-                 rb_class2name(CLASS_OF(chrom)));
-    }
+    check_struct_type(chrom, Class_Chromaticity);
 
     // Get the struct members in an array
     chrom_members = struct_values(chrom);
@@ -181,7 +175,7 @@ Export_ChromaticityInfo(ChromaticityInfo *ci, VALUE chrom)
     white_point = rb_ary_entry(chrom_members, 3);
 
     // Get the red_primary PrimaryInfo members in an array
-    check_primary(red_primary);
+    check_struct_type(red_primary, Class_Primary);
     entry_members = struct_values(red_primary);
     x = rb_ary_entry(entry_members, 0);         // red_primary.x
     ci->red_primary.x = x == Qnil ? 0.0 : NUM2DBL(x);
@@ -190,7 +184,7 @@ Export_ChromaticityInfo(ChromaticityInfo *ci, VALUE chrom)
     ci->red_primary.z = 0.0;
 
     // Get the green_primary PrimaryInfo members in an array
-    check_primary(green_primary);
+    check_struct_type(green_primary, Class_Primary);
     entry_members = struct_values(green_primary);
     x = rb_ary_entry(entry_members, 0);         // green_primary.x
     ci->green_primary.x = x == Qnil ? 0.0 : NUM2DBL(x);
@@ -199,7 +193,7 @@ Export_ChromaticityInfo(ChromaticityInfo *ci, VALUE chrom)
     ci->green_primary.z = 0.0;
 
     // Get the blue_primary PrimaryInfo members in an array
-    check_primary(blue_primary);
+    check_struct_type(blue_primary, Class_Primary);
     entry_members = struct_values(blue_primary);
     x = rb_ary_entry(entry_members, 0);         // blue_primary.x
     ci->blue_primary.x = x == Qnil ? 0.0 : NUM2DBL(x);
@@ -208,7 +202,7 @@ Export_ChromaticityInfo(ChromaticityInfo *ci, VALUE chrom)
     ci->blue_primary.z = 0.0;
 
     // Get the white_point PrimaryInfo members in an array
-    check_primary(white_point);
+    check_struct_type(white_point, Class_Primary);
     entry_members = struct_values(white_point);
     x = rb_ary_entry(entry_members, 0);         // white_point.x
     ci->white_point.x = x == Qnil ? 0.0 : NUM2DBL(x);
@@ -297,11 +291,7 @@ Export_ColorInfo(ColorInfo *ci, VALUE st)
     PixelColor pixel;
     VALUE members, m;
 
-    if (CLASS_OF(st) != Class_Color)
-    {
-        rb_raise(rb_eTypeError, "type mismatch: %s given",
-                 rb_class2name(CLASS_OF(st)));
-    }
+    check_struct_type(st, Class_Color);
 
     memset(ci, '\0', sizeof(ColorInfo));
 
@@ -477,11 +467,7 @@ Export_TypeInfo(TypeInfo *ti, VALUE st)
 {
     VALUE members, m;
 
-    if (CLASS_OF(st) != Class_Font)
-    {
-        rb_raise(rb_eTypeError, "type mismatch: %s given",
-                 rb_class2name(CLASS_OF(st)));
-    }
+    check_struct_type(st, Class_Font);
 
     memset(ti, '\0', sizeof(TypeInfo));
 
@@ -622,11 +608,7 @@ Export_PointInfo(PointInfo *pi, VALUE sp)
 {
     VALUE members, m;
 
-    if (CLASS_OF(sp) != Class_Point)
-    {
-        rb_raise(rb_eTypeError, "type mismatch: %s given",
-                 rb_class2name(CLASS_OF(sp)));
-    }
+    check_struct_type(sp, Class_Point);
     members = struct_values(sp);
     m = rb_ary_entry(members, 0);
     pi->x = m == Qnil ? 0.0 : NUM2DBL(m);
@@ -667,11 +649,7 @@ Export_PrimaryInfo(PrimaryInfo *pi, VALUE sp)
 {
     VALUE members, m;
 
-    if (CLASS_OF(sp) != Class_Primary)
-    {
-        rb_raise(rb_eTypeError, "type mismatch: %s given",
-                 rb_class2name(CLASS_OF(sp)));
-    }
+    check_struct_type(sp, Class_Primary);
     members = struct_values(sp);
     m = rb_ary_entry(members, 0);
     pi->x = m == Qnil ? 0.0 : NUM2DBL(m);
@@ -745,11 +723,7 @@ Export_RectangleInfo(RectangleInfo *rect, VALUE sr)
 {
     VALUE members, m;
 
-    if (CLASS_OF(sr) != Class_Rectangle)
-    {
-        rb_raise(rb_eTypeError, "type mismatch: %s given",
-                 rb_class2name(CLASS_OF(sr)));
-    }
+    check_struct_type(sr, Class_Rectangle);
     members = struct_values(sr);
     m = rb_ary_entry(members, 0);
     rect->width  = m == Qnil ? 0 : NUM2ULONG(m);
@@ -823,11 +797,7 @@ Export_SegmentInfo(SegmentInfo *segment, VALUE s)
 {
     VALUE members, m;
 
-    if (CLASS_OF(s) != Class_Segment)
-    {
-        rb_raise(rb_eTypeError, "type mismatch: %s given",
-                 rb_class2name(CLASS_OF(s)));
-    }
+    check_struct_type(s, Class_Segment);
 
     members = struct_values(s);
     m = rb_ary_entry(members, 0);
@@ -919,11 +889,7 @@ Export_TypeMetric(TypeMetric *tm, VALUE st)
     VALUE members, m;
     VALUE pixels_per_em;
 
-    if (CLASS_OF(st) != Class_TypeMetric)
-    {
-        rb_raise(rb_eTypeError, "type mismatch: %s given",
-                 rb_class2name(CLASS_OF(st)));
-    }
+    check_struct_type(st, Class_TypeMetric);
     members = struct_values(st);
 
     pixels_per_em   = rb_ary_entry(members, 0);
