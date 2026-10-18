@@ -3121,6 +3121,74 @@ Image_clut_channel(int argc, VALUE *argv, VALUE self)
 }
 
 
+//! Arguments of histogram_to_hash.
+struct HistogramToHash_Args {
+#if defined(IMAGEMAGICK_7)
+    PixelInfo *histogram;   //!< the histogram from GetImageHistogram
+#else
+    ColorPacket *histogram; //!< the histogram from GetImageHistogram
+    bool has_black;         //!< whether the index channel holds black
+#endif
+    size_t colors;          //!< the number of entries in the histogram
+};
+
+/**
+ * Make a Hash from the entries of a histogram, so that it can be passed to
+ * rb_ensure().
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param arg a pointer to a HistogramToHash_Args, cast to a VALUE
+ * @return a Hash of Pixel => count
+ * @see Image_color_histogram
+ */
+static VALUE
+histogram_to_hash(VALUE arg)
+{
+    struct HistogramToHash_Args *args = (struct HistogramToHash_Args *)arg;
+    VALUE hash = rb_hash_new();
+    VALUE pixel = Qnil;
+    size_t x;
+
+    for (x = 0; x < args->colors; x++)
+    {
+#if defined(IMAGEMAGICK_7)
+        pixel = Pixel_from_PixelColor(&args->histogram[x]);
+#else
+        pixel = pixel_from_packet(&args->histogram[x].pixel, args->has_black ? args->histogram[x].index : 0);
+#endif
+        rb_hash_aset(hash, pixel, ULONG2NUM((unsigned long)args->histogram[x].count));
+    }
+
+    RB_GC_GUARD(pixel);
+
+    return hash;
+}
+
+/**
+ * Free the histogram given to histogram_to_hash, so that it can be passed to
+ * rb_ensure().
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param arg a pointer to a HistogramToHash_Args, cast to a VALUE
+ * @return nil
+ * @see Image_color_histogram
+ */
+static VALUE
+free_histogram(VALUE arg)
+{
+    struct HistogramToHash_Args *args = (struct HistogramToHash_Args *)arg;
+
+    /*
+        Christy evidently didn't agree with Bob's memory management.
+    */
+    RelinquishMagickMemory(args->histogram);
+
+    return Qnil;
+}
+
+
 /**
  * Computes the number of times each unique color appears in the image.
  *
@@ -3131,8 +3199,7 @@ VALUE
 Image_color_histogram(VALUE self)
 {
     Image *image, *dc_copy = NULL;
-    VALUE hash, pixel;
-    size_t x, colors;
+    size_t colors;
     ExceptionInfo *exception;
 #if defined(IMAGEMAGICK_7)
     PixelInfo *histogram;
@@ -3169,51 +3236,31 @@ Image_color_histogram(VALUE self)
     void *ret = call.read(self).destroy(dc_copy).release(exception).free_result().run<void *>();
     histogram = reinterpret_cast<decltype(histogram)>(ret);
 
-    if (rm_should_raise_exception(exception, DestroyExceptionRetention))
-    {
-        RelinquishMagickMemory(histogram);
-        if (dc_copy)
-        {
-            DestroyImage(dc_copy);
-        }
-
-        rm_raise_exception(exception);
-    }
-    if (histogram == NULL)
-    {
-        if (dc_copy)
-        {
-            DestroyImage(dc_copy);
-        }
-        rb_raise(rb_eNoMemError, "not enough memory to continue");
-    }
-
-    hash = rb_hash_new();
-    for (x = 0; x < colors; x++)
-    {
-#if defined(IMAGEMAGICK_7)
-        pixel = Pixel_from_PixelColor(&histogram[x]);
-#else
-        pixel = pixel_from_packet(&histogram[x].pixel, has_black ? histogram[x].index : 0);
-#endif
-        rb_hash_aset(hash, pixel, ULONG2NUM((unsigned long)histogram[x].count));
-    }
-
-    /*
-        Christy evidently didn't agree with Bob's memory management.
-    */
-    RelinquishMagickMemory(histogram);
-
+    // The histogram does not refer to the copy, so it is no longer needed.
     if (dc_copy)
     {
         // Do not trace destruction
         DestroyImage(dc_copy);
     }
 
-    RB_GC_GUARD(hash);
-    RB_GC_GUARD(pixel);
+    if (rm_should_raise_exception(exception, DestroyExceptionRetention))
+    {
+        RelinquishMagickMemory(histogram);
+        rm_raise_exception(exception);
+    }
+    if (histogram == NULL)
+    {
+        rb_raise(rb_eNoMemError, "not enough memory to continue");
+    }
 
-    return hash;
+#if defined(IMAGEMAGICK_7)
+    struct HistogramToHash_Args args = { histogram, colors };
+#else
+    struct HistogramToHash_Args args = { histogram, has_black, colors };
+#endif
+    // Pixel#hash, Pixel#eql? or an interrupt such as Thread#raise can raise
+    // part way, so free the histogram in either case.
+    return rb_ensure(histogram_to_hash, (VALUE)&args, free_histogram, (VALUE)&args);
 }
 
 
