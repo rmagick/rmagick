@@ -5629,7 +5629,7 @@ Image_density_eq(VALUE self, VALUE density_arg)
     }
 
     // Geometry object. Width and height attributes are always positive.
-    if (CLASS_OF(density_arg) == Class_Geometry)
+    if (RTEST(rb_obj_is_kind_of(density_arg, Class_Geometry)))
     {
         x_val = rb_funcall(density_arg, rm_ID_width, 0);
         x_res = NUM2DBL(x_val);
@@ -15397,7 +15397,7 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg,
             for (n = 0; n < size; n++)
             {
                 new_pixel = rb_ary_entry(new_pixels, n);
-                if (CLASS_OF(new_pixel) != Class_Pixel)
+                if (!rb_typeddata_is_kind_of(new_pixel, &rm_pixel_data_type))
                 {
                     DestroyCacheView(view);
                     DestroyExceptionInfo(exception);
@@ -16211,7 +16211,7 @@ color_name_to_colorspace(Pixel *color, VALUE name, ColorspaceType colorspace)
 static void
 color_to_image_pixel(ColorspaceType colorspace, Pixel *color, VALUE color_arg)
 {
-    if (CLASS_OF(color_arg) != Class_Pixel)
+    if (!rb_typeddata_is_kind_of(color_arg, &rm_pixel_data_type))
     {
         color_name_to_colorspace(color, color_arg, colorspace);
     }

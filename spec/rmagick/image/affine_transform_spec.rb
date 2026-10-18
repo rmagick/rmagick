@@ -19,4 +19,14 @@ RSpec.describe Magick::Image, "#affine_transform" do
     expect { image.affine_transform(affine) }
       .to raise_error(TypeError, "Magick::AffineMatrix#values must return an Array (NilClass given)")
   end
+
+  it "accepts a subclass of AffineMatrix and an AffineMatrix with a singleton method" do
+    image = described_class.new(20, 20)
+    subclass = Class.new(Magick::AffineMatrix).new(1, 0, 0, 1, 0, 0)
+    singleton = Magick::AffineMatrix.new(1, 0, 0, 1, 0, 0)
+    singleton.define_singleton_method(:label) { 'identity' }
+
+    expect(image.affine_transform(subclass)).to be_instance_of(described_class)
+    expect(image.affine_transform(singleton)).to be_instance_of(described_class)
+  end
 end

@@ -15,4 +15,15 @@ RSpec.describe Magick::Pixel, '#fcmp' do
     expect { red.fcmp }.to raise_error(ArgumentError)
     expect { red.fcmp(blue, 10, 'x', 'y') }.to raise_error(ArgumentError)
   end
+
+  it 'accepts a subclass of Pixel and a Pixel with a singleton method' do
+    red = described_class.from_color('red')
+    subclass = Class.new(described_class).new(Magick::QuantumRange, 0, 0)
+    singleton = described_class.from_color('red')
+    singleton.define_singleton_method(:label) { 'red' }
+
+    expect(subclass.fcmp(red)).to be(true)
+    expect(red.fcmp(subclass)).to be(true)
+    expect(red.fcmp(singleton)).to be(true)
+  end
 end

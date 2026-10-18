@@ -388,7 +388,7 @@ Color_to_PixelColor(PixelColor *pp, VALUE color)
     Pixel *pixel;
 
     // Allow color name or Pixel
-    if (CLASS_OF(color) == Class_Pixel)
+    if (rb_typeddata_is_kind_of(color, &rm_pixel_data_type))
     {
         memset(pp, 0, sizeof(*pp));
         TypedData_Get_Struct(color, Pixel, &rm_pixel_data_type, pixel);
@@ -426,7 +426,7 @@ Color_to_Pixel(Pixel *pp, VALUE color)
 
     memset(pp, 0, sizeof(*pp));
     // Allow color name or Pixel
-    if (CLASS_OF(color) == Class_Pixel)
+    if (rb_typeddata_is_kind_of(color, &rm_pixel_data_type))
     {
         Pixel *pixel;
 
@@ -501,7 +501,7 @@ Pixel_alloc(VALUE klass)
 VALUE
 Pixel_case_eq(VALUE self, VALUE other)
 {
-    if (CLASS_OF(self) == CLASS_OF(other))
+    if (rb_obj_class(self) == rb_obj_class(other))
     {
         Pixel *self_pixel, *other_pixel;
 
@@ -1023,7 +1023,7 @@ Pixel_spaceship(VALUE self, VALUE other)
     const VALUE equal = INT2FIX(0);
     VALUE result;
 
-    if (CLASS_OF(self) != CLASS_OF(other)) {
+    if (rb_obj_class(self) != rb_obj_class(other)) {
         return Qnil;
     }
 

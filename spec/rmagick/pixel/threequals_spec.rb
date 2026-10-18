@@ -19,4 +19,13 @@ RSpec.describe Magick::Pixel, '#===' do
 
     expect(pixel === other).to be(false)
   end
+
+  it 'matches a Pixel that has a singleton method' do
+    pixel = described_class.new(1, 2, 3)
+    singleton = described_class.new(1, 2, 3)
+    singleton.define_singleton_method(:label) { 'pixel' }
+
+    expect(singleton === pixel).to be(true)
+    expect(pixel === singleton).to be(true)
+  end
 end
