@@ -165,6 +165,7 @@ module Magick
 
     class Montage
       def initialize: () -> void
+      def clone: (?freeze: bool?) -> Montage
 
       attr_writer background_color: magick_color
       attr_writer border_color: magick_color

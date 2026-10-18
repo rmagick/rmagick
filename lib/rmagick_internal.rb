@@ -66,6 +66,28 @@ module Magick
     end
   end
 
+  # Info and Montage cannot be frozen, as their #freeze raises TypeError, so
+  # clone(freeze: true) must not make a frozen copy of them either.
+  class Image
+    class Info
+      def clone(freeze: nil)
+        raise TypeError, "can't freeze #{self.class}" if freeze == true
+
+        super
+      end
+    end
+  end
+
+  class ImageList
+    class Montage
+      def clone(freeze: nil)
+        raise TypeError, "can't freeze #{self.class}" if freeze == true
+
+        super
+      end
+    end
+  end
+
   # Geometry class and related enum constants
   class GeometryValue < Enum
     # no methods
