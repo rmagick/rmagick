@@ -23,4 +23,23 @@ RSpec.describe Magick::Image, '#opaque_channel' do
     expect { image.opaque_channel('red', 'blue', true, -0.1) }.to raise_error(ArgumentError)
     expect { image.opaque_channel('red', []) }.to raise_error(TypeError)
   end
+
+  it 'uses the given fuzz even when the image fuzz is larger' do
+    image = described_class.new(2, 1)
+    image.pixel_color(0, 0, 'gray20')
+    image.fuzz = '50%'
+
+    result = image.opaque_channel('black', 'red', false, 0)
+    expect(result.pixel_color(0, 0)).to eq(image.pixel_color(0, 0))
+    expect(result.fuzz).to eq(image.fuzz)
+  end
+
+  it 'uses the image fuzz when no fuzz is given' do
+    image = described_class.new(2, 1)
+    image.pixel_color(0, 0, 'gray20')
+    image.fuzz = '50%'
+
+    result = image.opaque_channel('black', 'red')
+    expect(result.pixel_color(0, 0)).to eq(Magick::Pixel.from_color('red'))
+  end
 end

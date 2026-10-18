@@ -3783,14 +3783,14 @@ img = img.opaque('white', 'red')
 
         <dt>invert</dt>
 
-        <dd>
-          If true, the target pixels are all the pixels that are not the target color. The default is the value of the target image's
-          <code>fuzz</code> attribute
-        </dd>
+        <dd>If true, the target pixels are all the pixels that are not the target color.</dd>
 
         <dt>fuzz</dt>
 
-        <dd>Colors within this distance are considered equal to the target color.</dd>
+        <dd>
+          Colors within this distance are considered equal to the target color. The default is the value of the image's
+          <a href="imageattrs.html#fuzz">fuzz</a> attribute. A given value is used instead of it.
+        </dd>
 
         <dt>channel...</dt>
 

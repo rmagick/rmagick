@@ -27,4 +27,39 @@ RSpec.describe Magick::Image, '#paint_transparent' do
     expect { image.paint_transparent('red', true, [], alpha: Magick::TransparentAlpha) }.to raise_error(TypeError)
     expect { image.paint_transparent(50) }.to raise_error(TypeError)
   end
+
+  it 'uses the given fuzz even when the image fuzz is larger' do
+    image = described_class.new(2, 1)
+    image.pixel_color(0, 0, 'gray20')
+    image.fuzz = '50%'
+
+    result = image.paint_transparent('black', false, 0)
+    expect(result.pixel_color(0, 0).alpha).to eq(Magick::QuantumRange)
+    expect(result.fuzz).to eq(image.fuzz)
+  end
+
+  it 'uses the given fuzz with invert too' do
+    image = described_class.new(2, 1)
+    image.pixel_color(0, 0, 'gray20')
+    image.fuzz = '50%'
+
+    result = image.paint_transparent('black', true, 0)
+    expect(result.pixel_color(0, 0).alpha).to eq(0)
+  end
+
+  it 'raises ArgumentError for a negative fuzz' do
+    image = described_class.new(2, 1)
+
+    expect { image.paint_transparent('black', false, -0.1) }
+      .to raise_error(ArgumentError, 'fuzz must be >= 0.0 (-0.1 given)')
+  end
+
+  it 'uses the image fuzz when no fuzz is given' do
+    image = described_class.new(2, 1)
+    image.pixel_color(0, 0, 'gray20')
+    image.fuzz = '50%'
+
+    result = image.paint_transparent('black')
+    expect(result.pixel_color(0, 0).alpha).to eq(0)
+  end
 end
