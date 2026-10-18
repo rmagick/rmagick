@@ -29,6 +29,7 @@ const rb_data_type_t rm_info_data_type = {
  *
  * @param self the Info object
  * @return the Info struct
+ * @throw FrozenError if the Info is frozen
  * @throw RuntimeError if an offloaded call is using the Info
  */
 static Info *
@@ -36,6 +37,9 @@ get_writable_info(VALUE self)
 {
     Info *info;
 
+    // An Info cannot be frozen through #freeze, but check anyway in case it
+    // was frozen another way.
+    rb_check_frozen(self);
     info = rm_info_get(self);
     rm_gvl_check_writable(self);
     return info;

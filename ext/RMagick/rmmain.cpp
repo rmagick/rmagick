@@ -911,6 +911,7 @@ Init_RMagick2(void)
     rb_define_method(Class_Montage, "initialize_copy", Montage_init_copy, 1);
 
     rb_define_method(Class_Montage, "initialize", Montage_initialize, 0);
+    // Montage#clone in rmagick_internal.rb rejects freeze: true to match.
     rb_define_method(Class_Montage, "freeze", rm_no_freeze, 0);
 
     // These accessors supply optional arguments for Magick::ImageList::Montage.new
@@ -943,6 +944,7 @@ Init_RMagick2(void)
 
     rb_define_method(Class_Info, "initialize", Info_initialize, 0);
     rb_define_method(Class_Info, "channel", Info_channel, -1);
+    // Info#clone in rmagick_internal.rb rejects freeze: true to match.
     rb_define_method(Class_Info, "freeze", rm_no_freeze, 0);
     rb_define_method(Class_Info, "define", Info_define, -1);
     rb_define_method(Class_Info, "[]=", Info_aset, -1);

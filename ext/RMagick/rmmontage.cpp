@@ -128,6 +128,7 @@ Montage_alloc(VALUE klass)
  *
  * @param self the Montage object
  * @return the MagickMontage struct
+ * @throw FrozenError if the Montage object is frozen
  * @throw RuntimeError if an offloaded call is using the Montage object
  */
 static MagickMontage *
@@ -135,6 +136,9 @@ get_writable_montage(VALUE self)
 {
     MagickMontage *montage;
 
+    // A Montage cannot be frozen through #freeze, but check anyway in case it
+    // was frozen another way.
+    rb_check_frozen(self);
     TypedData_Get_Struct(self, MagickMontage, &rm_montage_data_type, montage);
     rm_gvl_check_writable(self);
     return montage;

@@ -92,6 +92,7 @@ module Magick
 
     class Info
       def initialize: () -> void
+      def clone: (?freeze: bool?) -> Info
       def channel: (*ChannelType channel) -> self
       def define: (string format, string key, ?string value) -> self?
       def []=: (string format, string key, string value) -> self?
