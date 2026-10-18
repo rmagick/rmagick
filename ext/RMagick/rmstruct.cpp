@@ -289,18 +289,18 @@ void
 Export_ColorInfo(ColorInfo *ci, VALUE st)
 {
     PixelColor pixel;
-    VALUE members, m;
-
-    check_struct_type(st, Class_Color);
+    VALUE members, m, name;
 
     memset(ci, '\0', sizeof(ColorInfo));
 
+    check_struct_type(st, Class_Color);
+
     members = struct_values(st);
 
-    m = rb_ary_entry(members, 0);
-    if (m != Qnil)
+    name = rb_ary_entry(members, 0);
+    if (name != Qnil)
     {
-        CloneString((char **)&(ci->name), StringValueCStr(m));
+        StringValueCStr(name);
     }
     m = rb_ary_entry(members, 1);
     if (m != Qnil)
@@ -325,8 +325,17 @@ Export_ColorInfo(ColorInfo *ci, VALUE st)
         ci->color.index = (MagickRealType) 0;
     }
 
+    // Copy the name last, so that nothing is left to free when a member
+    // above raises. The pointer is taken again because to_str or to_int above
+    // can change the String.
+    if (name != Qnil)
+    {
+        CloneString((char **)&(ci->name), StringValueCStr(name));
+    }
+
     RB_GC_GUARD(members);
     RB_GC_GUARD(m);
+    RB_GC_GUARD(name);
 }
 
 
@@ -400,7 +409,7 @@ Color_to_s(VALUE self)
 #else
                   "color.red=%g, color.green=%g, color.blue=%g, color.alpha=%g ",
 #endif
-                  ci.name,
+                  ci.name ? ci.name : "",
                   ComplianceType_name(&ci.compliance),
                   ci.color.red, ci.color.green, ci.color.blue,
 #if defined(IMAGEMAGICK_7)
@@ -466,43 +475,69 @@ void
 Export_TypeInfo(TypeInfo *ti, VALUE st)
 {
     VALUE members, m;
-
-    check_struct_type(st, Class_Font);
+    VALUE strings[6];
+    // The members of Magick::Font that are copied as strings.
+    static const int string_members[6] = { 0, 1, 2, 6, 7, 8 };
+    char **fields[6] = {
+        (char **)&(ti->name), (char **)&(ti->description), (char **)&(ti->family),
+        (char **)&(ti->encoding), (char **)&(ti->foundry), (char **)&(ti->format)
+    };
+    long weight;
+    int i;
 
     memset(ti, '\0', sizeof(TypeInfo));
 
-    members = struct_values(st);
-    m = rb_ary_entry(members, 0);
-    if (m != Qnil)
-    {
-        CloneString((char **)&(ti->name), StringValueCStr(m));
-    }
-    m = rb_ary_entry(members, 1);
-    if (m != Qnil)
-    {
-        CloneString((char **)&(ti->description), StringValueCStr(m));
-    }
-    m = rb_ary_entry(members, 2);
-    if (m != Qnil)
-    {
-        CloneString((char **)&(ti->family), StringValueCStr(m));
-    }
-    m = rb_ary_entry(members, 3); ti->style   = m == Qnil ? UndefinedStyle : (StyleType)FIX2INT(Enum_to_i(m));
-    m = rb_ary_entry(members, 4); ti->stretch = m == Qnil ? UndefinedStretch : (StretchType)FIX2INT(Enum_to_i(m));
-    m = rb_ary_entry(members, 5); ti->weight  = m == Qnil ? 0 : FIX2INT(m);
+    check_struct_type(st, Class_Font);
 
-    m = rb_ary_entry(members, 6);
+    members = struct_values(st);
+
+    for (i = 0; i < 6; i++)
+    {
+        strings[i] = rb_ary_entry(members, string_members[i]);
+        if (strings[i] != Qnil)
+        {
+            StringValueCStr(strings[i]);
+        }
+    }
+
+    m = rb_ary_entry(members, 3);
     if (m != Qnil)
-        CloneString((char **)&(ti->encoding), StringValueCStr(m));
-    m = rb_ary_entry(members, 7);
+    {
+        VALUE_TO_ENUM(m, ti->style, StyleType);
+    }
+    m = rb_ary_entry(members, 4);
     if (m != Qnil)
-        CloneString((char **)&(ti->foundry), StringValueCStr(m));
-    m = rb_ary_entry(members, 8);
+    {
+        VALUE_TO_ENUM(m, ti->stretch, StretchType);
+    }
+    m = rb_ary_entry(members, 5);
     if (m != Qnil)
-        CloneString((char **)&(ti->format), StringValueCStr(m));
+    {
+        weight = NUM2LONG(m);
+        if (weight < 0)
+        {
+            rb_raise(rb_eArgError, "weight must be >= 0 (%ld given)", weight);
+        }
+        ti->weight = (size_t)weight;
+    }
+
+    // Copy the strings last, so that nothing is left to free when a member
+    // above raises. The pointers are taken again because to_str or to_int
+    // above can change the Strings.
+    for (i = 0; i < 6; i++)
+    {
+        if (strings[i] != Qnil)
+        {
+            CloneString(fields[i], StringValueCStr(strings[i]));
+        }
+    }
 
     RB_GC_GUARD(members);
     RB_GC_GUARD(m);
+    for (i = 0; i < 6; i++)
+    {
+        RB_GC_GUARD(strings[i]);
+    }
 }
 
 
@@ -563,9 +598,9 @@ Font_to_s(VALUE self)
                   "name=%s, description=%s, "
                   "family=%s, style=%s, stretch=%s, weight=%s, "
                   "encoding=%s, foundry=%s, format=%s",
-                  ti.name,
-                  ti.description,
-                  ti.family,
+                  ti.name ? ti.name : "",
+                  ti.description ? ti.description : "",
+                  ti.family ? ti.family : "",
                   StyleType_name(ti.style),
                   StretchType_name(ti.stretch),
                   weight,
