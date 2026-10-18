@@ -14914,6 +14914,8 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
     SparseColorMethod method;
     int n, exp;
     double * volatile args;
+    double *values;
+    VALUE values_buf;
     ChannelType channels;
     MagickPixel pp;
     ExceptionInfo *exception;
@@ -14942,10 +14944,9 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
     ncolors = count_channels(image, &channels);
     nargs = (argc / 3) * (2 + ncolors);
 
-    // Allocate args from Ruby's memory so that GC will collect it if one of
-    // the type conversions below raises an exception.
-    args = ALLOC_N(double, nargs);
-    memset(args, 0, nargs * sizeof(double));
+    // Convert the arguments into a buffer that GC frees if one of the
+    // conversions below raises an exception.
+    values = ALLOCV_N(double, values_buf, nargs);
 
     x = 0;
     n = 0;
@@ -14955,44 +14956,47 @@ Image_sparse_color(int argc, VALUE *argv, VALUE self)
         VALUE elem2 = argv[n++];
         if (rm_check_num2dbl(elem1) && rm_check_num2dbl(elem2))
         {
-            args[x++] = NUM2DBL(elem1);
-            args[x++] = NUM2DBL(elem2);
+            values[x++] = NUM2DBL(elem1);
+            values[x++] = NUM2DBL(elem2);
         }
         else
         {
-            xfree((void *) args);
             rb_raise(rb_eTypeError, "type mismatch: %s and %s given", rb_class2name(CLASS_OF(elem1)), rb_class2name(CLASS_OF(elem2)));
         }
         image = color_to_magickpixel(self, &pp, argv[n++]);
         if (channels & RedChannel)
         {
-            args[x++] = pp.red / QuantumRange;
+            values[x++] = pp.red / QuantumRange;
         }
         if (channels & GreenChannel)
         {
-            args[x++] = pp.green / QuantumRange;
+            values[x++] = pp.green / QuantumRange;
         }
         if (channels & BlueChannel)
         {
-            args[x++] = pp.blue / QuantumRange;
+            values[x++] = pp.blue / QuantumRange;
         }
         if (channels & IndexChannel)
         {
 #if defined(IMAGEMAGICK_7)
-            args[x++] = pp.black / QuantumRange;
+            values[x++] = pp.black / QuantumRange;
 #else
-            args[x++] = pp.index / QuantumRange;
+            values[x++] = pp.index / QuantumRange;
 #endif
         }
         if (channels & OpacityChannel)
         {
 #if defined(IMAGEMAGICK_7)
-            args[x++] = pp.alpha / QuantumRange;
+            values[x++] = pp.alpha / QuantumRange;
 #else
-            args[x++] = pp.opacity / QuantumRange;
+            values[x++] = pp.opacity / QuantumRange;
 #endif
         }
     }
+
+    args = ALLOC_N(double, nargs);
+    memcpy(args, values, nargs * sizeof(double));
+    ALLOCV_END(values_buf);
 
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
