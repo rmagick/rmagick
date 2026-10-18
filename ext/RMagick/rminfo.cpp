@@ -769,7 +769,7 @@ Info_define(int argc, VALUE *argv, VALUE self)
     size_t format_l, key_l;
     char ckey[100];
     unsigned int okay;
-    VALUE fmt_arg;
+    VALUE value_arg = Qnil;
 
     info = get_writable_info(self);
 
@@ -777,8 +777,9 @@ Info_define(int argc, VALUE *argv, VALUE self)
     {
         case 3:
             /* Allow any argument that supports to_s */
-            fmt_arg = rb_str_new_frozen(rb_String(argv[2]));
-            value = (const char *)StringValueCStr(fmt_arg);
+            value_arg = rb_str_new_frozen(rb_String(argv[2]));
+            value = (const char *)StringValueCStr(value_arg);
+            /* fall through */
         case 2:
             argv[1] = rb_str_new_frozen(StringValue(argv[1]));
             key = rm_str2cstr(&argv[1], &key_l);
@@ -799,10 +800,11 @@ Info_define(int argc, VALUE *argv, VALUE self)
     if (!okay)
     {
         rb_warn("%.20s=\"%.78s\" not defined - SetImageOption failed.", ckey, value);
+        RB_GC_GUARD(value_arg);
         return Qnil;
     }
 
-    RB_GC_GUARD(fmt_arg);
+    RB_GC_GUARD(value_arg);
 
     return self;
 }

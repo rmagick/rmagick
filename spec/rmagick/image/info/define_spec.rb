@@ -10,6 +10,13 @@ RSpec.describe Magick::Image::Info, '#define' do
     expect { info.define('tiff', 'a' * 10_000) }.to raise_error(ArgumentError)
   end
 
+  it 'defines an empty value without a value argument' do
+    info = described_class.new
+
+    info.define('tiff', 'rows-per-strip')
+    expect(info['tiff', 'rows-per-strip']).to eq('')
+  end
+
   it 'copies the image option to an artifact keyed by the option name' do
     image = Magick::Image.new(50, 50)
     image.to_blob do |info|
