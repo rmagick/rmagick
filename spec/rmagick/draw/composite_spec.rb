@@ -52,4 +52,18 @@ RSpec.describe Magick::Draw, '#composite' do
 
     expect { draw.composite(x, 0, 10, 10, image) }.to raise_error(Magick::DestroyedImageError)
   end
+
+  it "keeps its image apart from one written to mpr: under the same number" do
+    draw = described_class.new
+    draw.composite(0, 0, 2, 2, Magick::Image.new(2, 2) { |options| options.background_color = "red" })
+    number = draw.inspect[/mpri:\D*(\d+)/, 1]
+    Magick::Image.new(2, 2) { |options| options.background_color = "blue" }.write("mpr:#{number}")
+
+    image = Magick::Image.new(2, 2)
+    draw.draw(image)
+    expect(image.pixel_color(0, 0)).to eq(Magick::Pixel.from_color("red"))
+
+    draw.__send__(:initialize_copy, described_class.new)
+    expect(Magick::Image.read("mpr:#{number}").first.pixel_color(0, 0)).to eq(Magick::Pixel.from_color("blue"))
+  end
 end

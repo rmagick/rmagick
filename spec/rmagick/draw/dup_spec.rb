@@ -84,7 +84,7 @@ RSpec.describe Magick::Draw, '#dup' do
   it 'deletes the composited images it held when initialize_copy is called again' do
     draw = described_class.new
     draw.composite(0, 0, 2, 2, Magick::Image.new(2, 2))
-    name = draw.inspect[/mpri:\d+/]
+    name = draw.inspect[/'(mpri:[^']+)'/, 1]
 
     draw.__send__(:initialize_copy, described_class.new)
 
