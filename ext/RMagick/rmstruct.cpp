@@ -262,7 +262,7 @@ Import_ColorInfo(const ColorInfo *ci)
     VALUE compliance;
     VALUE color;
 
-    name       = rb_str_new2(ci->name);
+    name       = ci->name ? rb_str_new2(ci->name) : Qnil;
 
     compliance_type = ci->compliance;
     compliance = ComplianceType_find(compliance_type);
