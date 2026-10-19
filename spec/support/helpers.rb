@@ -84,6 +84,12 @@ module TestHelpers
     end.value
   end
 
+  def next_temp_image_number
+    draw = Magick::Draw.new
+    draw.composite(0, 0, 1, 1, Magick::Image.new(1, 1))
+    Integer(draw.inspect[/mpri:\D*(\d+)/, 1], 10) + 1
+  end
+
   # Runs the block with the GC collecting on every allocation, so that anything
   # the extension leaves unreferenced is reclaimed at the first opportunity
   # rather than by chance.

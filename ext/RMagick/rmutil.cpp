@@ -934,7 +934,7 @@ rm_write_temp_image(Image *image, char *temp_name, size_t temp_name_l)
 
     exception = AcquireExceptionInfo();
 
-    snprintf(temp_name, temp_name_l, "mpri:%lu", ++last_id);
+    snprintf(temp_name, temp_name_l, "mpri:rmagick-%lu", ++last_id);
 
     // Omit "mpri:" from filename to form the key
     okay = (MagickBooleanType)SetImageRegistry(ImageRegistryType, temp_name+5, image, exception);
