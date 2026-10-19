@@ -3,7 +3,14 @@
 describe Magick::Font, '#to_s' do
   it 'works' do
     font = Magick.fonts[0]
-    expect(font.to_s).to match(/^name=.+, description=.+, family=.+, style=.+, stretch=.+, weight=.+, encoding=.*, foundry=.*, format=.*$/)
+    expect(font.to_s).to start_with("name=#{font.name}, description=#{font.description}, family=#{font.family}, ")
+    expect(font.to_s).to match(/, style=.+, stretch=.+, weight=.+, encoding=.*, foundry=.*, format=.*$/)
+  end
+
+  it 'shows each member' do
+    font = described_class.new('a', 'b', 'c', Magick::ItalicStyle, Magick::CondensedStretch, 400, 'e', 'f', 'g')
+
+    expect(font.to_s).to eq('name=a, description=b, family=c, style=ItalicStyle, stretch=CondensedStretch, weight=NormalWeight, encoding=e, foundry=f, format=g')
   end
 
   it 'shows empty names when they are nil' do
