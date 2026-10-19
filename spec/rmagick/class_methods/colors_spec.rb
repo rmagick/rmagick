@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require "open3"
+require "tmpdir"
+
 RSpec.describe Magick, '.colors' do
   it 'works' do
     result = described_class.colors
@@ -11,5 +14,31 @@ RSpec.describe Magick, '.colors' do
       expect(c.color).to be_instance_of(Magick::Pixel)
     end
     described_class.colors { |c| expect(c).to be_instance_of(Magick::Color) }
+  end
+
+  # ImageMagick 6 on Windows crashes when it loads any colors.xml of
+  # MAGICK_CONFIGURE_PATH, with or without a name.
+  it "returns nil for the name of a color that has none", unless: Gem.win_platform? && Gem::Version.new(Magick::IMAGEMAGICK_VERSION) < Gem::Version.new("7.0.0") do
+    Dir.mktmpdir do |dir|
+      File.write(File.join(dir, "colors.xml"), <<~XML)
+        <?xml version="1.0"?>
+        <colormap>
+          <color color="rgb(1,2,3)" compliance="SVG"/>
+        </colormap>
+      XML
+      script = "color = Magick.colors.find { |c| c.name.nil? }; Magick.colors { |_| nil }; print color.color.to_color(Magick::AllCompliance, false, 8, true)"
+      command = [RbConfig.ruby, "-I", File.expand_path("../../../lib", __dir__), "-r", "rmagick", "-e", script]
+
+      output, errors, status = Open3.capture3({ "MAGICK_CONFIGURE_PATH" => dir }, *command)
+
+      expect(status).to be_success, errors
+      expect(output).to eq("#010203")
+    end
+  end
+
+  it "returns the value that the block breaks with" do
+    color = described_class.colors { |c| break c }
+
+    expect(color).to be_instance_of(Magick::Color)
   end
 end

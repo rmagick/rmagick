@@ -13,17 +13,62 @@
 
 
 
-static VALUE
-rm_yield_body(VALUE object)
+template <typename Info>
+struct InfoList
 {
-    return rb_yield(object);
+    const Info **list;
+    size_t count;
+};
+
+template <typename Info, VALUE (*import)(const Info *)>
+static VALUE
+info_list_to_ary(VALUE arg)
+{
+    InfoList<Info> *infos = (InfoList<Info> *)arg;
+    VALUE ary = rb_ary_new2((long)infos->count);
+
+    for (size_t x = 0; x < infos->count; x++)
+    {
+        rb_ary_push(ary, import(infos->list[x]));
+    }
+
+    return ary;
 }
 
+template <typename Info>
 static VALUE
-rm_yield_handle_exception(VALUE allocated_area, VALUE exc)
+free_info_list(VALUE arg)
 {
-    magick_free((void *)allocated_area);
-    rb_exc_raise(exc);
+    magick_free((void *)((InfoList<Info> *)arg)->list);
+    return Qnil;
+}
+
+// Free the list before yielding, since Ruby never runs the ensure of an
+// enumerator that is abandoned part way.
+template <typename Info, VALUE (*import)(const Info *)>
+static VALUE
+each_info(VALUE klass, const Info **list, size_t count, ExceptionInfo *exception)
+{
+    if (rm_should_raise_exception(exception, DestroyExceptionRetention))
+    {
+        magick_free((void *)list);
+        rm_raise_exception(exception);
+    }
+
+    InfoList<Info> infos = { list, count };
+    VALUE ary = rb_ensure(info_list_to_ary<Info, import>, (VALUE)&infos, free_info_list<Info>, (VALUE)&infos);
+
+    if (!rb_block_given_p())
+    {
+        return ary;
+    }
+    for (long x = 0; x < RARRAY_LEN(ary); x++)
+    {
+        rb_yield(RARRAY_AREF(ary, x));
+    }
+
+    RB_GC_GUARD(ary);
+    return klass;
 }
 
 /**
@@ -42,38 +87,13 @@ VALUE
 Magick_colors(VALUE klass)
 {
     const ColorInfo **color_info_list;
-    size_t number_colors, x;
-    VALUE ary;
+    size_t number_colors;
     ExceptionInfo *exception;
 
     exception = AcquireExceptionInfo();
-
     color_info_list = GetColorInfoList("*", &number_colors, exception);
-    CHECK_EXCEPTION();
-    DestroyExceptionInfo(exception);
 
-
-    if (rb_block_given_p())
-    {
-        for (x = 0; x < number_colors; x++)
-        {
-            rb_rescue(RESCUE_FUNC(rm_yield_body), Import_ColorInfo(color_info_list[x]), RESCUE_EXCEPTION_HANDLER_FUNC(rm_yield_handle_exception), (VALUE)color_info_list);
-        }
-        magick_free((void *)color_info_list);
-        return klass;
-    }
-    else
-    {
-        ary = rb_ary_new2((long) number_colors);
-        for (x = 0; x < number_colors; x++)
-        {
-            rb_ary_push(ary, Import_ColorInfo(color_info_list[x]));
-        }
-
-        magick_free((void *)color_info_list);
-        RB_GC_GUARD(ary);
-        return ary;
-    }
+    return each_info<ColorInfo, Import_ColorInfo>(klass, color_info_list, number_colors, exception);
 }
 
 
@@ -93,36 +113,13 @@ VALUE
 Magick_fonts(VALUE klass)
 {
     const TypeInfo **type_info;
-    size_t number_types, x;
-    VALUE ary;
+    size_t number_types;
     ExceptionInfo *exception;
 
     exception = AcquireExceptionInfo();
     type_info = GetTypeInfoList("*", &number_types, exception);
-    CHECK_EXCEPTION();
-    DestroyExceptionInfo(exception);
 
-    if (rb_block_given_p())
-    {
-        for (x = 0; x < number_types; x++)
-        {
-            rb_rescue(RESCUE_FUNC(rm_yield_body), Import_TypeInfo((const TypeInfo *)type_info[x]), RESCUE_EXCEPTION_HANDLER_FUNC(rm_yield_handle_exception), (VALUE)type_info);
-        }
-        magick_free((void *)type_info);
-        return klass;
-    }
-    else
-    {
-        ary = rb_ary_new2((long)number_types);
-        for (x = 0; x < number_types; x++)
-        {
-            rb_ary_push(ary, Import_TypeInfo((const TypeInfo *)type_info[x]));
-        }
-        magick_free((void *)type_info);
-        RB_GC_GUARD(ary);
-        return ary;
-    }
-
+    return each_info<TypeInfo, Import_TypeInfo>(klass, type_info, number_types, exception);
 }
 
 

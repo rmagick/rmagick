@@ -15,7 +15,7 @@ puts("\tCreating color swatches...")
 # Create a 200x25 image for each named color.
 # Label with the name, RGB values, and compliance type.
 Magick.colors do |c|
-  unless c.name.include?('grey') # omit SVG 'grays'
+  unless c.name.nil? || c.name.include?('grey') # omit SVG 'grays'
     colors.new_image(200, 25) do |options|
       options.background_color = c.color
       options.border_color = 'gray50'
