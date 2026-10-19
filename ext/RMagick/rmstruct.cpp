@@ -438,7 +438,7 @@ Import_TypeInfo(const TypeInfo *ti)
     VALUE encoding, foundry, format;
 
     name        = rb_str_new2(ti->name);
-    family      = rb_str_new2(ti->family);
+    family      = ti->family      ? rb_str_new2(ti->family) : Qnil;
     style       = StyleType_find(ti->style);
     stretch     = StretchType_find(ti->stretch);
     weight      = ULONG2NUM(ti->weight);
