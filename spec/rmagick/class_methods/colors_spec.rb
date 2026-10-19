@@ -16,7 +16,9 @@ RSpec.describe Magick, '.colors' do
     described_class.colors { |c| expect(c).to be_instance_of(Magick::Color) }
   end
 
-  it "returns nil for the name of a color that has none" do
+  # ImageMagick 6 on Windows crashes when it loads any colors.xml of
+  # MAGICK_CONFIGURE_PATH, with or without a name.
+  it "returns nil for the name of a color that has none", unless: Gem.win_platform? && Gem::Version.new(Magick::IMAGEMAGICK_VERSION) < Gem::Version.new("7.0.0") do
     Dir.mktmpdir do |dir|
       File.write(File.join(dir, "colors.xml"), <<~XML)
         <?xml version="1.0"?>
