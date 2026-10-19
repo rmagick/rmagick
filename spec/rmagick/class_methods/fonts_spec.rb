@@ -40,4 +40,10 @@ RSpec.describe Magick, '.fonts' do
       expect(output).to eq("nil")
     end
   end
+
+  it "returns the value that the block breaks with" do
+    font = described_class.fonts { |f| break f }
+
+    expect(font).to be_instance_of(Magick::Font)
+  end
 end

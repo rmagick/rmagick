@@ -33,4 +33,10 @@ RSpec.describe Magick, '.colors' do
       expect(output).to eq("#010203")
     end
   end
+
+  it "returns the value that the block breaks with" do
+    color = described_class.colors { |c| break c }
+
+    expect(color).to be_instance_of(Magick::Color)
+  end
 end
