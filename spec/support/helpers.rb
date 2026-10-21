@@ -84,6 +84,18 @@ module TestHelpers
     end.value
   end
 
+  # Runs action once while the block calls ImageMagick, at the call or the
+  # return of the Thread.handle_interrupt that defers interrupts meanwhile.
+  def during_call(action, event: :c_call, &)
+    trace = TracePoint.new(event) do |tp|
+      next unless tp.method_id == :handle_interrupt
+
+      trace.disable
+      action.call
+    end
+    trace.enable(&)
+  end
+
   def next_temp_image_number
     draw = Magick::Draw.new
     draw.composite(0, 0, 1, 1, Magick::Image.new(1, 1))

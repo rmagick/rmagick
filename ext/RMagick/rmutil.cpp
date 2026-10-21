@@ -334,14 +334,14 @@ rm_check_init_copy(VALUE self, VALUE orig)
 
 
 /**
- * Raise an error if the image has been destroyed or an offloaded call is changing it.
+ * Raise an error if the image has been destroyed or a call in flight is changing it.
  *
  * No Ruby usage (internal function)
  *
  * @param obj the image
  * @return the C image structure for the image
  * @throw DestroyedImageError
- * @throw RuntimeError if an offloaded call is changing the image
+ * @throw RuntimeError if a call in flight is changing the image
  */
 Image *
 rm_check_readable(VALUE obj)
@@ -360,14 +360,14 @@ rm_check_readable(VALUE obj)
 
 
 /**
- * Raise an error if the image has been destroyed or an offloaded call is using it.
+ * Raise an error if the image has been destroyed or a call in flight is using it.
  *
  * No Ruby usage (internal function)
  *
  * @param obj the image
  * @return the C image structure for the image
  * @throw DestroyedImageError
- * @throw RuntimeError if an offloaded call is using the image
+ * @throw RuntimeError if a call in flight is using the image
  */
 Image *
 rm_check_writable(VALUE obj)
@@ -379,7 +379,7 @@ rm_check_writable(VALUE obj)
 
 
 /**
- * Raise an error if the image has been destroyed, is frozen or an offloaded call is using it.
+ * Raise an error if the image has been destroyed, is frozen or a call in flight is using it.
  *
  * No Ruby usage (internal function)
  *
@@ -1366,9 +1366,11 @@ static void copy_options(Image *image, Info *info)
  *
  * @param image the Image structure to modify
  * @param info the Info structure
+ * @param owner the Image object that holds image, an Array of the Image objects
+ *   whose images are linked with it, or nil
  * @see SyncImageSettings in mogrify.c in ImageMagick
  */
-void rm_sync_image_options(Image *image, Info *info)
+void rm_sync_image_options(Image *image, Info *info, VALUE owner)
 {
     MagickStatusType flags;
     GeometryInfo geometry_info;
@@ -1396,12 +1398,12 @@ void rm_sync_image_options(Image *image, Info *info)
 #if defined(IMAGEMAGICK_7)
         exception = AcquireExceptionInfo();
         DECLARE_GVL_CALL(call, TransformImageColorspace, image, info->colorspace, exception);
-        call.keep_thread().release(exception).run<void>();
+        call.hold(owner, true).keep_thread().release(exception).run<void>();
         CHECK_EXCEPTION();
         DestroyExceptionInfo(exception);
 #else
         DECLARE_GVL_CALL(call, TransformImageColorspace, image, info->colorspace);
-        call.keep_thread().run<void>();
+        call.hold(owner, true).keep_thread().run<void>();
         rm_check_image_exception(image, RetainOnError);
 #endif
     }
@@ -1811,17 +1813,21 @@ rm_exif_by_number(Image *image)
  *     the caller do the trace if desired.
  *
  * @param image the image to clone
+ * @param owner the Image object that holds image, an Array of the Image objects
+ *   whose images are linked with it, or nil
+ * @param held another Image object whose image the caller uses after the clone,
+ *   or nil
  * @return the cloned image
  */
 Image *
-rm_clone_image(Image *image)
+rm_clone_image(Image *image, VALUE owner, VALUE held)
 {
     Image *clone;
     ExceptionInfo *exception;
 
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, CloneImage, image, 0, 0, MagickTrue, exception);
-    clone = call.keep_thread().release(exception).run<Image *>();
+    clone = call.hold(owner).hold(held).keep_thread().release(exception).run<Image *>();
     if (!clone)
     {
         rb_raise(rb_eNoMemError, "not enough memory to continue");

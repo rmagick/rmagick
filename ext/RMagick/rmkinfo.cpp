@@ -221,7 +221,7 @@ rm_check_kernel_info(VALUE self)
  * @param self the KernelInfo object
  * @return the KernelInfo struct
  * @throw FrozenError if the object is frozen
- * @throw RuntimeError if an offloaded call is using the kernel
+ * @throw RuntimeError if a call in flight is using the kernel
  */
 static KernelInfo *
 get_writable_kernel_info(VALUE self)

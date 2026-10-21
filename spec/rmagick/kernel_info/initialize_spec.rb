@@ -28,6 +28,13 @@ RSpec.describe Magick::KernelInfo, '#initialize' do
     expect { kernel.__send__(:initialize, 'Square') }.to raise_error(FrozenError)
   end
 
+  it 'raises instead of replacing the kernel while a call uses it' do
+    image = Magick::Image.new(5, 5)
+    kernel = described_class.new('Diamond')
+
+    expect { during_call(-> { kernel.__send__(:initialize, 'Square') }) { image.morphology(Magick::DilateMorphology, 1, kernel) } }.to raise_error(RuntimeError, 'object is in use by another fiber')
+  end
+
   it 'rejects a kernel string that names a file with @' do
     Tempfile.create(['kernel', '.txt']) do |file|
       file.write('3x3: 0,0,0 0,1,0 0,0,0')

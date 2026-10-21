@@ -89,7 +89,7 @@ get_draw(VALUE self)
  * @param self the Draw object
  * @return the initialized MagickDraw struct
  * @throw FrozenError if the Draw object is frozen
- * @throw RuntimeError if an offloaded call is using the Draw object
+ * @throw RuntimeError if a call in flight is using the Draw object
  */
 static MagickDraw *
 get_writable_draw(VALUE self)
@@ -257,7 +257,7 @@ set_pattern(VALUE self, VALUE pattern, bool stroke)
     {
         pattern = rm_cur_image(pattern);
         // Do not trace creation
-        copy = rm_copy_image(rm_check_readable(pattern));
+        copy = rm_copy_image(rm_check_readable(pattern), pattern);
     }
 
     draw = (MagickDraw *)rb_protect(writable_draw, self, &state);
@@ -529,11 +529,12 @@ Draw_interword_spacing_eq(VALUE self, VALUE spacing)
  *   - Returns Qnil if there is no image
  *
  * @param image the Image to convert
+ * @param owner the Draw object that holds image
  * @return Ruby string representation of image
  * @see str_to_image
  */
 static VALUE
-image_to_str(Image *image)
+image_to_str(Image *image, VALUE owner)
 {
     VALUE dimg = Qnil;
 
@@ -547,7 +548,7 @@ image_to_str(Image *image)
 
         // Writing the pattern changes it, and a frozen Draw may be shared with
         // other Ractors.
-        copy = rm_copy_image(image);
+        copy = rm_copy_image(image, owner);
         info = CloneImageInfo(NULL);
         exception = AcquireExceptionInfo();
         DECLARE_GVL_CALL(call, ImageToBlob, info, copy, &length, exception);
@@ -661,8 +662,8 @@ Draw_marshal_dump(VALUE self)
     rb_hash_aset(ddraw, CSTR2SYM("fill"), Pixel_from_PixelColor(&draw->info->fill));
     rb_hash_aset(ddraw, CSTR2SYM("stroke"), Pixel_from_PixelColor(&draw->info->stroke));
     rb_hash_aset(ddraw, CSTR2SYM("stroke_width"), rb_float_new(draw->info->stroke_width));
-    rb_hash_aset(ddraw, CSTR2SYM("fill_pattern"), image_to_str(draw->info->fill_pattern));
-    rb_hash_aset(ddraw, CSTR2SYM("stroke_pattern"), image_to_str(draw->info->stroke_pattern));
+    rb_hash_aset(ddraw, CSTR2SYM("fill_pattern"), image_to_str(draw->info->fill_pattern, self));
+    rb_hash_aset(ddraw, CSTR2SYM("stroke_pattern"), image_to_str(draw->info->stroke_pattern, self));
     rb_hash_aset(ddraw, CSTR2SYM("stroke_antialias"), draw->info->stroke_antialias ? Qtrue : Qfalse);
     rb_hash_aset(ddraw, CSTR2SYM("text_antialias"), draw->info->text_antialias ? Qtrue : Qfalse);
     rb_hash_aset(ddraw, CSTR2SYM("decorate"), INT2FIX(draw->info->decorate));
@@ -946,13 +947,22 @@ struct Draw_annotate_args
 };
 
 
+// A DrawInfo whose patterns to copy, and an object that the caller uses after
+// the copies
+struct CopyPatterns_Args
+{
+    DrawInfo *info;
+    VALUE held;
+};
+
+
 // Give a pattern that CloneDrawInfo shared a pixel cache of its own
 static void
-copy_pattern(Image **pattern)
+copy_pattern(Image **pattern, VALUE held)
 {
     if (*pattern)
     {
-        Image *copy = rm_copy_image(*pattern);
+        Image *copy = rm_copy_image(*pattern, Qnil, held);
 
         DestroyImage(*pattern);
         *pattern = copy;
@@ -963,10 +973,10 @@ copy_pattern(Image **pattern)
 static VALUE
 copy_patterns(VALUE arg)
 {
-    DrawInfo *info = (DrawInfo *)arg;
+    struct CopyPatterns_Args *args = (struct CopyPatterns_Args *)arg;
 
-    copy_pattern(&info->fill_pattern);
-    copy_pattern(&info->stroke_pattern);
+    copy_pattern(&args->info->fill_pattern, args->held);
+    copy_pattern(&args->info->stroke_pattern, args->held);
     return Qnil;
 }
 
@@ -975,14 +985,16 @@ copy_patterns(VALUE arg)
 // shared with other Ractors, whose calls would read the pixel cache of a
 // pattern through its default nexus at once.
 static DrawInfo *
-clone_draw_info(VALUE self, const MagickDraw *draw)
+clone_draw_info(VALUE self, const MagickDraw *draw, VALUE image_arg)
 {
     DrawInfo *info = CloneDrawInfo(NULL, draw->info);
     int state = 0;
 
     if (OBJ_FROZEN(self))
     {
-        rb_protect(copy_patterns, (VALUE)info, &state);
+        struct CopyPatterns_Args args = { info, image_arg };
+
+        rb_protect(copy_patterns, (VALUE)&args, &state);
         if (state)
         {
             DestroyDrawInfo(info);
@@ -1102,7 +1114,7 @@ annotate_body(VALUE arg)
     image = rm_check_frozen(annotate->image_arg);
     rm_gvl_check_readable(annotate->self);
 
-    info = clone_draw_info(annotate->self, draw);
+    info = clone_draw_info(annotate->self, draw, annotate->image_arg);
     restore_affine(annotate);
     magick_clone_string(&info->geometry, geometry_str);
     magick_clone_string(&info->text, embed_text);
@@ -1303,7 +1315,7 @@ Draw_draw(VALUE self, VALUE image_arg)
     }
     primitive = StringValueCStr(draw->primitives);
 
-    info = clone_draw_info(self, draw);
+    info = clone_draw_info(self, draw, image_arg);
     magick_clone_string(&info->primitive, primitive);
 
 #if defined(IMAGEMAGICK_7)
@@ -1458,7 +1470,8 @@ VALUE Draw_init_copy(VALUE self, VALUE orig)
     {
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
-    rb_protect(copy_patterns, (VALUE)info, &state);
+    struct CopyPatterns_Args args = { info, orig };
+    rb_protect(copy_patterns, (VALUE)&args, &state);
     if (state)
     {
         DestroyDrawInfo(info);

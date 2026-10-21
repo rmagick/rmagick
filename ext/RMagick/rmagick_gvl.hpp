@@ -20,6 +20,7 @@ public:
     rm_gvl_call &update(VALUE obj);
     rm_gvl_call &read_each(VALUE ary);
     rm_gvl_call &update_each(VALUE ary);
+    rm_gvl_call &hold(VALUE obj, bool changes = false);
     rm_gvl_call &release(ExceptionInfo *exception);
     rm_gvl_call &release(ImageInfo *info);
     rm_gvl_call &release(DrawInfo *draw_info);
@@ -36,6 +37,9 @@ public:
     rm_gvl_call &cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg = 0);
 
     template <typename T> T run();
+
+    bool uses(VALUE obj, bool update) const;
+    void restore() const;
 
 private:
     enum ResultType { ResultIgnored, ResultImage, ResultMemory };
@@ -67,6 +71,7 @@ private:
 
     rm_gvl_call &add_object(VALUE obj, bool update, bool each);
     rm_gvl_call &add_cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg, bool restore);
+    template <typename F> bool any_object(bool update_only, F f) const;
     void *call(ResultType type);
     void *call_body(ResultType type);
     struct offload_frame *new_frame();

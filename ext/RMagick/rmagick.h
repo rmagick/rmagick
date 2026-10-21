@@ -1221,7 +1221,7 @@ extern void   rm_attr_write(VALUE, VALUE);
 extern const char *rm_get_property(const Image *, const char *);
 extern MagickBooleanType rm_set_property(Image *, const char *, const char *);
 extern void   rm_set_user_artifact(Image *, Info *);
-extern void   rm_sync_image_options(Image *, Info *);
+extern void   rm_sync_image_options(Image *, Info *, VALUE);
 extern void   rm_split(Image *);
 extern void   rm_magick_error(const char *);
 #if defined(IMAGEMAGICK_7)
@@ -1243,8 +1243,8 @@ typedef enum
 
 extern void   rm_check_exception(ExceptionInfo *, Image *, ErrorRetention);
 extern void   rm_ensure_result(Image *);
-extern Image *rm_clone_image(Image *);
-extern Image *rm_copy_image(Image *);
+extern Image *rm_clone_image(Image *, VALUE, VALUE held = Qnil);
+extern Image *rm_copy_image(Image *, VALUE, VALUE held = Qnil);
 extern VALUE  rm_exif_by_entry(Image *);
 extern VALUE  rm_exif_by_number(Image *);
 extern VALUE  rm_get_optional_arguments(VALUE);

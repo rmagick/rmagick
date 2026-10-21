@@ -484,9 +484,9 @@ restore_optional_arguments(Image *result, Image *image, VALUE artifacts)
 // Ractors, and destroy the copy when the method returns.
 template <typename... Args>
 static VALUE
-call_on_copy(VALUE self, Image *(*copy_image)(Image *), VALUE (*method)(VALUE, Args...), Args... args)
+call_on_copy(VALUE self, Image *(*copy_image)(Image *, VALUE), VALUE (*method)(VALUE, Args...), Args... args)
 {
-    VALUE copy = rm_image_wrap(copy_image(rm_check_readable(self)));
+    VALUE copy = rm_image_wrap(copy_image(rm_check_readable(self), self));
     VALUE result = method(copy, args...);
     Image *image = rm_image_get(copy);
 
@@ -501,13 +501,13 @@ template <typename... Args>
 static VALUE
 write_copy(VALUE self, VALUE (*write)(VALUE, Args...), Args... args)
 {
-    return call_on_copy(self, rm_copy_image, write, args...);
+    return call_on_copy(self, [](Image *image, VALUE owner) { return rm_copy_image(image, owner); }, write, args...);
 }
 
 // A copy of an image that shares its pixels, with properties and profiles of
 // its own
 static Image *
-copy_properties(Image *image)
+copy_properties(Image *image, VALUE owner ATTRIBUTE_UNUSED)
 {
     ExceptionInfo *exception = AcquireExceptionInfo();
     Image *clone = shallow_clone(image, exception);
@@ -930,7 +930,7 @@ Image_add_compose_mask(VALUE self, VALUE mask)
         rb_raise(rb_eArgError, "mask must be the same size as image");
     }
 
-    clip_mask = rm_clone_image(mask_image);
+    clip_mask = rm_clone_image(mask_image, mask, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -1438,7 +1438,7 @@ auto_channel(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
         raise_ChannelType_error(argv[argc-1]);
     }
 
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -1785,7 +1785,7 @@ Image_bilevel_channel(int argc, VALUE *argv, VALUE self)
 
     threshold = NUM2DBL(argv[0]);
     image = rm_check_readable(self);
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -2190,7 +2190,7 @@ special_composite(VALUE self, VALUE overlay_obj, double image_pct, double overla
 #endif
 
     blend_geometry(geometry, sizeof(geometry), image_pct, overlay_pct);
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self, overlay_obj);
     set_compose_args(new_image, geometry);
 
 #if defined(IMAGEMAGICK_7)
@@ -2637,7 +2637,7 @@ Image_capture(int argc, VALUE *argv, VALUE self ATTRIBUTE_UNUSED)
 
     rm_set_user_artifact(new_image, image_info);
     image_obj = rm_image_wrap(new_image);
-    rm_sync_image_options(new_image, image_info);
+    rm_sync_image_options(new_image, image_info, image_obj);
     rm_image_set(image_obj, new_image);
 
     RB_GC_GUARD(info_obj);
@@ -2741,7 +2741,7 @@ Image_channel(VALUE self, VALUE channel_arg)
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
     DECLARE_GVL_CALL(call, SeparateImageChannel, new_image, channel);
     call.read(self).destroy(new_image).run<void>();
 
@@ -3216,7 +3216,7 @@ Image_color_histogram(VALUE self)
     // If image not DirectClass make a DirectClass copy.
     if (image->storage_class != DirectClass)
     {
-        dc_copy = rm_clone_image(image);
+        dc_copy = rm_clone_image(image, self);
     }
 
     exception = AcquireExceptionInfo();
@@ -3513,7 +3513,7 @@ Image_color_flood_fill(VALUE self, VALUE target_color, VALUE fill_color,
                  "FillToBorderMethod (%d given)", fill_method);
     }
 
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
     draw_info = CloneDrawInfo(NULL, NULL);
     if (!draw_info)
@@ -4117,7 +4117,7 @@ composite(int bang, int argc, VALUE *argv, VALUE self, ChannelType channels, con
     }
     else
     {
-        new_image = rm_clone_image(image);
+        new_image = rm_clone_image(image, self, comp);
         if (compose_args)
         {
             set_compose_args(new_image, compose_args);
@@ -4255,7 +4255,7 @@ Image_composite_affine(VALUE self, VALUE source, VALUE affine_matrix)
     Export_AffineMatrix(&affine, affine_matrix);
     image = rm_check_readable(self);
     composite_image = rm_check_readable(source);
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self, source);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -4612,7 +4612,7 @@ composite_tiled(int bang, int argc, VALUE *argv, VALUE self)
 
     if (!bang)
     {
-        image = rm_clone_image(image);
+        image = rm_clone_image(image, self, comp);
     }
 
     status = MagickTrue;
@@ -4630,13 +4630,13 @@ composite_tiled(int bang, int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
             BEGIN_CHANNEL_MASK(image, channels);
             DECLARE_GVL_CALL(call, CompositeImage, image, comp_image, composite_op, MagickTrue, x, y, exception);
-            void *ret = call.keep_thread().restore_mask(image, channel_mask).destroy(bang ? NULL : image).release(exception).run<void *>();
+            void *ret = call.read(comp).hold(bang ? self : Qnil, true).keep_thread().restore_mask(image, channel_mask).destroy(bang ? NULL : image).release(exception).run<void *>();
             status = reinterpret_cast<MagickStatusType &>(ret);
             END_CHANNEL_MASK(image);
             rm_check_exception(exception, image, bang ? RetainOnError: DestroyOnError);
 #else
             DECLARE_GVL_CALL(call, CompositeImageChannel, image, channels, composite_op, comp_image, x, y);
-            void *ret = call.keep_thread().destroy(bang ? NULL : image).run<void *>();
+            void *ret = call.read(comp).hold(bang ? self : Qnil, true).keep_thread().destroy(bang ? NULL : image).run<void *>();
             status = reinterpret_cast<MagickStatusType &>(ret);
             rm_check_image_exception(image, bang ? RetainOnError: DestroyOnError);
 #endif
@@ -4987,7 +4987,7 @@ Image_contrast(int argc, VALUE *argv, VALUE self)
         sharpen = (MagickBooleanType)RTEST(argv[0]);
     }
 
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -5113,7 +5113,7 @@ Image_contrast_stretch_channel(int argc, VALUE *argv, VALUE self)
     get_black_white_point(image, argc, argv, &black_point, &white_point);
     image = rm_check_readable(self);
 
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -5503,7 +5503,7 @@ Image_init_copy(VALUE copy, VALUE orig)
     Image *image, *new_image;
 
     image = rm_check_readable(orig);
-    new_image = rm_copy_image(image);
+    new_image = rm_copy_image(image, orig);
     replace_image(copy, new_image);
 
     return copy;
@@ -5602,7 +5602,7 @@ Image_cycle_colormap(VALUE self, VALUE amount)
     amt = NUM2INT(amount);
 
     image = rm_check_readable(self);
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -5747,7 +5747,7 @@ Image_decipher(VALUE self, VALUE passphrase)
     passphrase = rb_str_new_frozen(StringValue(passphrase));
     pf = StringValueCStr(passphrase);      // ensure passphrase is a string
     image = rm_check_readable(self);
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
     exception = AcquireExceptionInfo();
 
     DECLARE_GVL_CALL(call, DecipherImage, new_image, pf, exception);
@@ -7037,7 +7037,7 @@ Image_encipher(VALUE self, VALUE passphrase)
     passphrase = rb_str_new_frozen(StringValue(passphrase));
     pf = StringValueCStr(passphrase);      // ensure passphrase is a string
     image = rm_check_readable(self);
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
     exception = AcquireExceptionInfo();
 
     DECLARE_GVL_CALL(call, EncipherImage, new_image, pf, exception);
@@ -7124,7 +7124,7 @@ Image_equalize(VALUE self)
 #endif
 
     image = rm_check_readable(self);
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -7169,7 +7169,7 @@ Image_equalize_channel(int argc, VALUE *argv, VALUE self)
         raise_ChannelType_error(argv[argc-1]);
     }
 
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -8149,7 +8149,7 @@ Image_function_channel(int argc, VALUE *argv, VALUE self)
     }
 
     image = rm_check_readable(self);
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
     parms = ALLOC_N(double, nparms);
     memcpy(parms, values, nparms * sizeof(double));
@@ -8330,7 +8330,7 @@ Image_gamma_channel(int argc, VALUE *argv, VALUE self)
 
     gamma = NUM2DBL(argv[0]);
     image = rm_check_readable(self);
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -8389,7 +8389,7 @@ Image_gamma_correct(int argc, VALUE *argv, VALUE self)
     }
 
     image = rm_check_readable(self);
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -9494,7 +9494,7 @@ Image_level2(int argc, VALUE *argv, VALUE self)
     }
 
     image = rm_check_readable(self);
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -9561,7 +9561,7 @@ Image_level_channel(int argc, VALUE *argv, VALUE self)
     VALUE_TO_ENUM(argv[0], channel, ChannelType);
 
     image = rm_check_readable(self);
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -9646,7 +9646,7 @@ Image_level_colors(int argc, VALUE *argv, VALUE self)
     }
 
     image = rm_check_readable(self);
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -9728,7 +9728,7 @@ Image_levelize_channel(int argc, VALUE *argv, VALUE self)
     }
 
     image = rm_check_readable(self);
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -9781,7 +9781,7 @@ Image_linear_stretch(int argc, VALUE *argv, VALUE self)
     image = rm_check_readable(self);
     get_black_white_point(image, argc, argv, &black_point, &white_point);
     image = rm_check_readable(self);
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -10157,7 +10157,7 @@ set_image_mask(VALUE self, VALUE mask)
         mask_image = rm_check_readable(mask);
     }
     image = rm_check_frozen(self);
-    clip_mask = mask != Qnil ? rm_clone_image(mask_image) : NULL;
+    clip_mask = mask != Qnil ? rm_clone_image(mask_image, mask, self) : NULL;
     exception = AcquireExceptionInfo();
 
     if (mask != Qnil)
@@ -10212,7 +10212,7 @@ set_image_mask(VALUE self, VALUE mask)
 
     if (mask != Qnil)
     {
-        clip_mask = rm_clone_image(mask_image);
+        clip_mask = rm_clone_image(mask_image, mask, self);
 
         // Resize if necessary
         if (clip_mask->columns != image->columns || clip_mask->rows != image->rows)
@@ -10233,7 +10233,7 @@ set_image_mask(VALUE self, VALUE mask)
         for (y = 0; y < (long) clip_mask->rows; y++)
         {
             DECLARE_GVL_CALL(pixels_call, GetAuthenticPixels, clip_mask, 0, y, clip_mask->columns, 1, exception);
-            q = pixels_call.keep_thread().destroy(clip_mask).release(exception).run<PixelPacket *>();
+            q = pixels_call.read(self).keep_thread().destroy(clip_mask).release(exception).run<PixelPacket *>();
             rm_check_exception(exception, clip_mask, DestroyOnError);
 
             if (!q)
@@ -10253,7 +10253,7 @@ set_image_mask(VALUE self, VALUE mask)
             }
 
             DECLARE_GVL_CALL(sync_call, SyncAuthenticPixels, clip_mask, exception);
-            sync_call.keep_thread().destroy(clip_mask).release(exception).run<void>();
+            sync_call.read(self).keep_thread().destroy(clip_mask).release(exception).run<void>();
             rm_check_exception(exception, clip_mask, DestroyOnError);
         }
         DestroyExceptionInfo(exception);
@@ -10409,7 +10409,7 @@ Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
     }
 
 
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
     // FloodfillPaintImage looks for the opacity in the DrawInfo.fill field.
     draw_info = CloneDrawInfo(NULL, NULL);
@@ -10629,7 +10629,7 @@ Image_modulate(int argc, VALUE *argv, VALUE self)
     snprintf(modulate, sizeof(modulate), "%f%%,%f%%,%f%%", pct_brightness, pct_saturation, pct_hue);
 
     image = rm_check_readable(self);
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -10780,7 +10780,7 @@ Image_negate(int argc, VALUE *argv, VALUE self)
         rb_raise(rb_eArgError, "wrong number of arguments (%d for 0 or 1)", argc);
     }
 
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -10837,7 +10837,7 @@ Image_negate_channel(int argc, VALUE *argv, VALUE self)
         grayscale = (MagickBooleanType)RTEST(argv[0]);
     }
 
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -10955,7 +10955,7 @@ Image_initialize(int argc, VALUE *argv, VALUE self)
     check_new_image_exception(image, cols, rows);
 #endif
 
-    rm_sync_image_options(image, info);
+    rm_sync_image_options(image, info, self);
 
     // If the caller did not supply a fill argument, call SetImageBackgroundColor
     // to fill the image using the background color. The background color can
@@ -11026,16 +11026,20 @@ own_pixel_cache(Image *image)
  * No Ruby usage (internal function)
  *
  * @param image the image
+ * @param owner the Image object that holds image, an Array of the Image objects
+ *   whose images are linked with it, or nil
+ * @param held another Image object whose image the caller uses after the copy,
+ *   or nil
  * @return the copy
  */
 Image *
-rm_copy_image(Image *image)
+rm_copy_image(Image *image, VALUE owner, VALUE held)
 {
     Image *copy;
     ExceptionInfo *exception;
     void *ret;
 
-    copy = rm_clone_image(image);
+    copy = rm_clone_image(image, owner, held);
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     DECLARE_GVL_CALL(call, SetImageStorageClass, copy, copy->storage_class, exception);
@@ -11044,7 +11048,7 @@ rm_copy_image(Image *image)
     ClearMagickException(&copy->exception);
     DECLARE_GVL_CALL(call, SetImageStorageClass, copy, copy->storage_class);
 #endif
-    ret = call.keep_thread().destroy(copy).release(exception).run<void *>();
+    ret = call.hold(owner).hold(held).keep_thread().destroy(copy).release(exception).run<void *>();
     if (!static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret)))
     {
 #if defined(IMAGEMAGICK_6)
@@ -11164,7 +11168,7 @@ Image_normalize(VALUE self)
 #endif
 
     image = rm_check_readable(self);
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -11211,7 +11215,7 @@ Image_normalize_channel(int argc, VALUE *argv, VALUE self)
         raise_ChannelType_error(argv[argc-1]);
     }
 
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -11377,7 +11381,7 @@ Image_opaque(VALUE self, VALUE target, VALUE fill)
     color_to_magickpixel(self, &target_pp, target);
     image = color_to_magickpixel(self, &fill_pp, fill);
 
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -11479,7 +11483,7 @@ Image_opaque_channel(int argc, VALUE *argv, VALUE self)
     // so the target must carry the given fuzz too.
     target_pp.fuzz = fuzz;
 
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
     keep = new_image->fuzz;
     new_image->fuzz = fuzz;
 
@@ -11579,7 +11583,7 @@ Image_ordered_dither(int argc, VALUE *argv, VALUE self)
     }
 
     image = rm_check_readable(self);
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
     exception = AcquireExceptionInfo();
 
@@ -11715,7 +11719,7 @@ Image_paint_transparent(int argc, VALUE *argv, VALUE self)
     // ImageMagick uses the larger of the target's fuzz and the image's fuzz,
     // so the target must carry the given fuzz too.
     color.fuzz = fuzz;
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
     // Use fuzz value from caller
     keep = new_image->fuzz;
@@ -12074,7 +12078,7 @@ Image_polaroid(int argc, VALUE *argv, VALUE self)
     TypedData_Get_Struct(options, MagickDraw, &rm_draw_data_type, draw);
 
     image = rm_check_readable(self);
-    clone = rm_clone_image(image);
+    clone = rm_clone_image(image, self);
     clone->background_color = draw->shadow_color;
     clone->border_color = draw->info->border_color;
 
@@ -12143,7 +12147,7 @@ Image_posterize(int argc, VALUE *argv, VALUE self)
     }
 
     image = rm_check_readable(self);
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -12491,7 +12495,7 @@ Image_quantize(int argc, VALUE *argv, VALUE self)
     }
 
     image = rm_check_readable(self);
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -12632,7 +12636,7 @@ Image_random_threshold_channel(int argc, VALUE *argv, VALUE self)
     thresholds = StringValueCStr(geom_str);
 
     image = rm_check_readable(self);
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
     exception = AcquireExceptionInfo();
 
@@ -12711,7 +12715,7 @@ Image_raise(int argc, VALUE *argv, VALUE self)
     }
 
     image = rm_check_readable(self);
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -13092,6 +13096,7 @@ struct SyncImageOptions_Args
 {
     Image *images;
     Info *info;
+    VALUE image_ary;
 };
 
 
@@ -13100,7 +13105,7 @@ sync_image_options_protected(VALUE arg)
 {
     struct SyncImageOptions_Args *args = (struct SyncImageOptions_Args *)arg;
 
-    rm_sync_image_options(args->images, args->info);
+    rm_sync_image_options(args->images, args->info, args->image_ary);
     return Qnil;
 }
 
@@ -13108,7 +13113,6 @@ sync_image_options_protected(VALUE arg)
 static VALUE
 array_from_synced_images(Image *images, Info *info)
 {
-    struct SyncImageOptions_Args args = { images, info };
     VALUE image_ary;
     int state = 0;
 
@@ -13118,6 +13122,7 @@ array_from_synced_images(Image *images, Info *info)
         rb_ary_push(image_ary, rm_image_wrap(image));
     }
 
+    struct SyncImageOptions_Args args = { images, info, image_ary };
     rb_protect(sync_image_options_protected, (VALUE)&args, &state);
     rm_split(images);
     if (state)
@@ -13260,12 +13265,13 @@ Image_rendering_intent_eq(VALUE self, VALUE ri)
  * No Ruby usage (internal function)
  *
  * @param image the image
+ * @param self the Image object that holds image
  * @param blur the blur factor: > 1.0 blurs and < 1.0 sharpens
  * @return the image itself when blur is 1.0, otherwise a clone that shares its pixels and has
  *   the artifact set, which the caller destroys
  */
 static Image*
-image_with_filter_blur(Image* image, double blur)
+image_with_filter_blur(Image* image, VALUE self, double blur)
 {
     Image *clone;
     const char *artifact;
@@ -13283,7 +13289,7 @@ image_with_filter_blur(Image* image, double blur)
     }
     snprintf(value, sizeof(value), "%.17g", blur);
 
-    clone = rm_clone_image(image);
+    clone = rm_clone_image(image, self);
     if (!SetImageArtifact(clone, "filter:blur", value))
     {
         DestroyImage(clone);
@@ -13402,7 +13408,7 @@ resample(int bang, int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     // Before AcquireExceptionInfo(), since it can raise
-    Image *source = image_with_filter_blur(image, blur);
+    Image *source = image_with_filter_blur(image, self, blur);
 #endif
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
@@ -13561,7 +13567,7 @@ resize(int bang, int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     // Before AcquireExceptionInfo(), since it can raise
-    Image *source = image_with_filter_blur(image, blur);
+    Image *source = image_with_filter_blur(image, self, blur);
 #endif
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
@@ -14238,7 +14244,7 @@ Image_segment(int argc, VALUE *argv, VALUE self)
     }
 
     image = rm_check_readable(self);
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -14672,7 +14678,7 @@ Image_sigmoidal_contrast_channel(int argc, VALUE *argv, VALUE self)
     }
 
     image = rm_check_readable(self);
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -14822,7 +14828,7 @@ Image_solarize(int argc, VALUE *argv, VALUE self)
     }
 
     image = rm_check_readable(self);
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -15601,12 +15607,12 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj,
                  "FillToBorderMethod (%d given)", (int)method);
     }
 
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self, texture);
     new_obj = rm_image_wrap(new_image);
 
     // A frozen texture may be shared with other Ractors, whose calls would read
     // its pixel cache through the default nexus at once.
-    pattern = OBJ_FROZEN(texture) ? rm_copy_image(texture_image) : rm_clone_image(texture_image);
+    pattern = OBJ_FROZEN(texture) ? rm_copy_image(texture_image, texture) : rm_clone_image(texture_image, texture);
     draw_info = CloneDrawInfo(NULL, NULL);
     if (!draw_info)
     {
@@ -15681,7 +15687,7 @@ Image_threshold(VALUE self, VALUE threshold_obj)
 #endif
 
     image = rm_check_readable(self);
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -15756,7 +15762,7 @@ threshold_image(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
     }
 
     image = rm_check_readable(self);
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -16099,7 +16105,7 @@ Image_to_blob(VALUE self)
     }
 
     DestroyExceptionInfo(exception);
-    rm_sync_image_options(image, info);
+    rm_sync_image_options(image, info, self);
 
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, ImageToBlob, info, image, &length, exception);
@@ -16441,7 +16447,7 @@ Image_transparent(int argc, VALUE *argv, VALUE self)
     }
 
     image = rm_check_readable(self);
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -16513,7 +16519,7 @@ Image_transparent_chroma(int argc, VALUE *argv, VALUE self)
     }
 
     image = rm_check_readable(self);
-    new_image = rm_clone_image(image);
+    new_image = rm_clone_image(image, self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
@@ -17458,7 +17464,7 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
 #endif
 
         DECLARE_GVL_CALL(pixels_call, GetVirtualPixels, reflection, 0, y, image->columns, 1, exception);
-        void *ret = pixels_call.keep_thread().destroy(reflection).release(exception).run<void *>();
+        void *ret = pixels_call.read(self).keep_thread().destroy(reflection).release(exception).run<void *>();
         p = reinterpret_cast<decltype(p)>(ret);
         rm_check_exception(exception, reflection, DestroyOnError);
         if (!p)
@@ -17492,7 +17498,7 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
         }
 
         DECLARE_GVL_CALL(sync_call, SyncAuthenticPixels, reflection, exception);
-        sync_call.keep_thread().destroy(reflection).release(exception).run<void>();
+        sync_call.read(self).keep_thread().destroy(reflection).release(exception).run<void>();
         rm_check_exception(exception, reflection, DestroyOnError);
 
         opacity += step;
@@ -17678,7 +17684,7 @@ Image_write(VALUE self, VALUE file)
     image = rm_check_writable(self);
     strlcpy(image->filename, info->filename, sizeof(image->filename));
 
-    rm_sync_image_options(image, info);
+    rm_sync_image_options(image, info, self);
 
     info->adjoin = MagickFalse;
 #if defined(IMAGEMAGICK_7)

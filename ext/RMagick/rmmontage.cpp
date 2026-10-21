@@ -129,7 +129,7 @@ Montage_alloc(VALUE klass)
  * @param self the Montage object
  * @return the MagickMontage struct
  * @throw FrozenError if the Montage object is frozen
- * @throw RuntimeError if an offloaded call is using the Montage object
+ * @throw RuntimeError if a call in flight is using the Montage object
  */
 static MagickMontage *
 get_writable_montage(VALUE self)

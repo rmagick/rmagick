@@ -157,6 +157,7 @@ GradientFill_init_copy(VALUE self, VALUE orig)
  * No Ruby usage (internal function)
  *
  * @param image the image on which to do the gradient
+ * @param image_obj the Image object that holds image
  * @param x0 x position of the point
  * @param y0 y position of the point
  * @param start_color the start color
@@ -165,6 +166,7 @@ GradientFill_init_copy(VALUE self, VALUE orig)
 static void
 point_fill(
           Image *image,
+          VALUE image_obj,
           double x0,
           double y0,
           PixelColor *start_color,
@@ -215,7 +217,7 @@ point_fill(
         }
 
         DECLARE_GVL_CALL(call, SyncAuthenticPixels, image, exception);
-        call.keep_thread().release(exception).run<void>();
+        call.update(image_obj).keep_thread().release(exception).run<void>();
         CHECK_EXCEPTION();
     }
 
@@ -229,6 +231,7 @@ point_fill(
  * No Ruby usage (internal function)
  *
  * @param image the image on which to do the gradient
+ * @param image_obj the Image object that holds image
  * @param x1 x position of the vertical line
  * @param start_color the start color
  * @param stop_color the stop color
@@ -236,6 +239,7 @@ point_fill(
 static void
 vertical_fill(
              Image *image,
+             VALUE image_obj,
              double x1,
              PixelColor *start_color,
              PixelColor *stop_color)
@@ -285,7 +289,7 @@ vertical_fill(
         }
 
         DECLARE_GVL_CALL(call, SyncAuthenticPixels, image, exception);
-        call.keep_thread().release(exception).run<void>();
+        call.update(image_obj).keep_thread().release(exception).run<void>();
         CHECK_EXCEPTION();
     }
 
@@ -319,7 +323,7 @@ vertical_fill(
         memcpy(row_pixels, master, image->columns * sizeof(PixelPacket));
 
         DECLARE_GVL_CALL(call, SyncAuthenticPixels, image, exception);
-        call.keep_thread().free_buffer(master).release(exception).run<void>();
+        call.update(image_obj).keep_thread().free_buffer(master).release(exception).run<void>();
         if (rm_should_raise_exception(exception, RetainExceptionRetention))
         {
             xfree((void *)master);
@@ -339,6 +343,7 @@ vertical_fill(
  * No Ruby usage (internal function)
  *
  * @param image the image on which to do the gradient
+ * @param image_obj the Image object that holds image
  * @param y1 y position of the horizontal line
  * @param start_color the start color
  * @param stop_color the stop color
@@ -346,6 +351,7 @@ vertical_fill(
 static void
 horizontal_fill(
                Image *image,
+               VALUE image_obj,
                double y1,
                PixelColor *start_color,
                PixelColor *stop_color)
@@ -393,7 +399,7 @@ horizontal_fill(
         }
 
         DECLARE_GVL_CALL(call, SyncAuthenticPixels, image, exception);
-        call.keep_thread().release(exception).run<void>();
+        call.update(image_obj).keep_thread().release(exception).run<void>();
         CHECK_EXCEPTION();
     }
 
@@ -426,7 +432,7 @@ horizontal_fill(
         memcpy(col_pixels, master, image->rows * sizeof(PixelPacket));
 
         DECLARE_GVL_CALL(call, SyncAuthenticPixels, image, exception);
-        call.keep_thread().free_buffer(master).release(exception).run<void>();
+        call.update(image_obj).keep_thread().free_buffer(master).release(exception).run<void>();
         if (rm_should_raise_exception(exception, RetainExceptionRetention))
         {
             xfree((void *)master);
@@ -447,6 +453,7 @@ horizontal_fill(
  * No Ruby usage (internal function)
  *
  * @param image the image on which to do the gradient
+ * @param image_obj the Image object that holds image
  * @param x1 x position of the start of the diagonal line
  * @param y1 y position of the start of the diagonal line
  * @param x2 x position of the end of the diagonal line
@@ -457,6 +464,7 @@ horizontal_fill(
 static void
 v_diagonal_fill(
                Image *image,
+               VALUE image_obj,
                double x1,
                double y1,
                double x2,
@@ -538,7 +546,7 @@ v_diagonal_fill(
         }
 
         DECLARE_GVL_CALL(call, SyncAuthenticPixels, image, exception);
-        call.keep_thread().release(exception).run<void>();
+        call.update(image_obj).keep_thread().release(exception).run<void>();
         CHECK_EXCEPTION();
     }
 
@@ -552,6 +560,7 @@ v_diagonal_fill(
  * No Ruby usage (internal function)
  *
  * @param image the image on which to do the gradient
+ * @param image_obj the Image object that holds image
  * @param x1 x position of the start of the diagonal line
  * @param y1 y position of the start of the diagonal line
  * @param x2 x position of the end of the diagonal line
@@ -562,6 +571,7 @@ v_diagonal_fill(
 static void
 h_diagonal_fill(
                Image *image,
+               VALUE image_obj,
                double x1,
                double y1,
                double x2,
@@ -645,7 +655,7 @@ h_diagonal_fill(
         }
 
         DECLARE_GVL_CALL(call, SyncAuthenticPixels, image, exception);
-        call.keep_thread().release(exception).run<void>();
+        call.update(image_obj).keep_thread().release(exception).run<void>();
         CHECK_EXCEPTION();
     }
 
@@ -683,20 +693,20 @@ GradientFill_fill(VALUE self, VALUE image_obj)
         // If the x1,y1 and x2,y2 points are essentially the same
         if (fabs(y2-y1) < 0.5)
         {
-            point_fill(image, x1, y1, &start_color, &stop_color);
+            point_fill(image, image_obj, x1, y1, &start_color, &stop_color);
         }
 
         // A vertical line is a special case.
         else
         {
-            vertical_fill(image, x1, &start_color, &stop_color);
+            vertical_fill(image, image_obj, x1, &start_color, &stop_color);
         }
     }
 
     // A horizontal line is a special case.
     else if (fabs(y2-y1) < 0.5)
     {
-        horizontal_fill(image, y1, &start_color, &stop_color);
+        horizontal_fill(image, image_obj, y1, &start_color, &stop_color);
     }
 
     // This is the general case - a diagonal line. If the line is more horizontal
@@ -708,11 +718,11 @@ GradientFill_fill(VALUE self, VALUE image_obj)
         double diagonal = ((double)image->rows)/image->columns;
         if (fabs(m) <= diagonal)
         {
-            v_diagonal_fill(image, x1, y1, x2, y2, &start_color, &stop_color);
+            v_diagonal_fill(image, image_obj, x1, y1, x2, y2, &start_color, &stop_color);
         }
         else
         {
-            h_diagonal_fill(image, x1, y1, x2, y2, &start_color, &stop_color);
+            h_diagonal_fill(image, image_obj, x1, y1, x2, y2, &start_color, &stop_color);
         }
     }
 
@@ -817,7 +827,7 @@ TextureFill_initialize(VALUE self, VALUE texture_arg)
 
     texture_image = rm_cur_image(texture_arg);
 
-    texture = rm_copy_image(rm_check_readable(texture_image));
+    texture = rm_copy_image(rm_check_readable(texture_image), texture_image);
     replace_texture(self, fill, texture);
 
     RB_GC_GUARD(texture_image);
@@ -847,7 +857,7 @@ TextureFill_init_copy(VALUE self, VALUE orig)
         rb_raise(rb_eRuntimeError, "%s has not been initialized", rb_obj_classname(orig));
     }
 
-    replace_texture(self, copy, rm_copy_image(original->texture));
+    replace_texture(self, copy, rm_copy_image(original->texture, orig));
 
     return self;
 }

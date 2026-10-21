@@ -8,12 +8,17 @@
 
 #include "rmagick.h"
 #include "ruby/ractor.h"
-#if defined(RMAGICK_OFFLOAD_SAFE)
 #include <atomic>
+#if defined(RMAGICK_OFFLOAD_SAFE)
 #include <cstddef>
-#if defined(HAVE_WORKING_FORK)
-#include <pthread.h>
 #endif
+// TruffleRuby cannot fork, and has no ruby_thread_has_gvl_p
+#if defined(HAVE_WORKING_FORK) && !defined(TRUFFLERUBY)
+#define RMAGICK_ATFORK 1
+#include <pthread.h>
+
+// ruby/thread.h declares it from Ruby 4.0
+extern "C" int ruby_thread_has_gvl_p(void);
 #endif
 
 
@@ -51,9 +56,9 @@
  * image, no other call can use the image. No two Image objects share a pixel
  * cache: an Image object takes one of its own, and a copy that RMagick makes
  * for one call shares it only with the image that the call marks. A call that
- * stays on its thread does not mark the image, so an image must not be used
- * by two threads without a scheduler at once. RMagick itself reads and writes
- * pixels through a cache view of its own.
+ * stays on its thread does not take the image for itself, so an image must
+ * not be used by two threads without a scheduler at once. RMagick itself
+ * reads and writes pixels through a cache view of its own.
  *
  * The child of a fork keeps none of the workers of the parent, so it drops
  * the marks of every fiber but the one that forked, whose calls go on in the
@@ -80,6 +85,16 @@
  * function), a GC that xmalloc starts in the function takes the GVL back and
  * would raise them through ImageMagick. An exception raised by a trap handler
  * there is not deferred.
+ *
+ * Ruby code still runs while such a call is in flight: a trap handler or a
+ * finalizer before and after the function and during a GC that it starts, and
+ * other threads while it runs. The call is linked in its Ractor until it
+ * returns, and like a call that is offloaded, it keeps that code from changing
+ * or destroying the objects it uses, and from using the objects it changes.
+ * Other Ractors share only frozen objects, which they cannot change. The
+ * child of a fork drops the calls of the other threads. The link is on the
+ * stack of the call, so that code must not leave the fiber of the call
+ * suspended for good.
  */
 
 typedef enum
@@ -154,11 +169,101 @@ call_deferring_interrupts(VALUE arg)
     return rb_block_call(rb_cThread, id_handle_interrupt, 1, &interrupt_mask, call_without_gvl_block, arg);
 }
 
-#if defined(RMAGICK_OFFLOAD_SAFE)
-
 static void raise_in_use(void) ATTRIBUTE_NORETURN;
 
+// A call that stays on its thread, linked in its Ractor while it is in flight
+typedef struct pinned_call
+{
+    const rm_gvl_call *call;
+    VALUE thread;
+    struct pinned_call *next;
+} pinned_call_t;
+
+// The calls in flight in a Ractor
+typedef struct offloaded
+{
+    struct offload_frame *frames;
+    pinned_call_t *pinned;
+} offloaded_t;
+
 static rb_ractor_local_key_t offloaded_key;
+
+// The entry of the main Ractor, the only one that can fork
+static offloaded_t *main_entry;
+
+// Calls that stay on their thread in all Ractors, so that checking an object
+// looks for them only when there are some
+static std::atomic<unsigned int> pinned_in_flight(0);
+
+static void
+offloaded_free(void *ptr)
+{
+    xfree(ptr);
+}
+
+static const struct rb_ractor_local_storage_type offloaded_type = { NULL, offloaded_free };
+
+static offloaded_t *
+offloaded_entry(void)
+{
+    offloaded_t *entry = (offloaded_t *)rb_ractor_local_storage_ptr(offloaded_key);
+
+    if (!entry)
+    {
+        entry = ALLOC(offloaded_t);
+        entry->frames = NULL;
+        entry->pinned = NULL;
+        rb_ractor_local_storage_ptr_set(offloaded_key, entry);
+    }
+    return entry;
+}
+
+// Link a call that stays on its thread
+static void
+pin_call(offloaded_t *entry, pinned_call_t *pin)
+{
+    pin->next = entry->pinned;
+    entry->pinned = pin;
+    pinned_in_flight.fetch_add(1, std::memory_order_relaxed);
+}
+
+static void
+unpin_call(offloaded_t *entry, pinned_call_t *pin)
+{
+    for (pinned_call_t **link = &entry->pinned; *link; link = &(*link)->next)
+    {
+        if (*link == pin)
+        {
+            *link = pin->next;
+            pinned_in_flight.fetch_sub(1, std::memory_order_relaxed);
+            return;
+        }
+    }
+}
+
+// Whether a call in this Ractor that stays on its thread uses obj, or changes
+// it if update is true
+static bool
+pinned(VALUE obj, bool update)
+{
+    offloaded_t *entry;
+
+    if (pinned_in_flight.load(std::memory_order_relaxed) == 0)
+    {
+        return false;
+    }
+    entry = (offloaded_t *)rb_ractor_local_storage_ptr(offloaded_key);
+    for (pinned_call_t *pin = entry ? entry->pinned : NULL; pin; pin = pin->next)
+    {
+        if (pin->call->uses(obj, update))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+#if defined(RMAGICK_OFFLOAD_SAFE)
 
 // Calls in flight in all Ractors, so that a call that stays on its thread
 // checks its images only when there are some
@@ -210,23 +315,6 @@ typedef struct offload_frame
     struct offload_frame *prev;
     struct offload_frame *next;
 } offload_frame_t;
-
-// The calls in flight in a Ractor
-typedef struct offloaded
-{
-    offload_frame_t *frames;
-} offloaded_t;
-
-// The entry of the main Ractor, the only one that can fork
-static offloaded_t *main_entry;
-
-static void
-offloaded_free(void *ptr)
-{
-    xfree(ptr);
-}
-
-static const struct rb_ractor_local_storage_type offloaded_type = { NULL, offloaded_free };
 
 // The number of calls that read an object, or STATE_UPDATING
 static unsigned int
@@ -280,20 +368,6 @@ state_release(rm_offload_state_t *state, OffloadMode mode)
     }
 }
 
-static offloaded_t *
-offloaded_entry(void)
-{
-    offloaded_t *entry = (offloaded_t *)rb_ractor_local_storage_ptr(offloaded_key);
-
-    if (!entry)
-    {
-        entry = ALLOC(offloaded_t);
-        entry->frames = NULL;
-        rb_ractor_local_storage_ptr_set(offloaded_key, entry);
-    }
-    return entry;
-}
-
 static void
 frame_push(offloaded_t *entry, offload_frame_t *frame)
 {
@@ -330,10 +404,15 @@ frame_remove(offloaded_t *entry, offload_frame_t *frame)
     }
     frame->linked = false;
 }
+#endif
 
-#if defined(HAVE_WORKING_FORK)
-// The fiber that forks, noted before the fork, and whether it holds the GVL
+#if defined(RMAGICK_ATFORK)
+// The thread and the fiber that fork, noted before the fork, and whether the
+// thread holds the GVL
+static thread_local VALUE fork_thread;
+#if defined(RMAGICK_OFFLOAD_SAFE)
 static thread_local VALUE fork_fiber;
+#endif
 static thread_local bool fork_with_gvl;
 
 // rb_fiber_current allocates the object of a root fiber on its first call,
@@ -341,23 +420,23 @@ static thread_local bool fork_with_gvl;
 static void
 atfork_prepare(void)
 {
-    VALUE thread;
-
-    fork_fiber = 0;
     fork_with_gvl = ruby_thread_has_gvl_p() && rb_ractor_local_storage_ptr(offloaded_key) == main_entry;
     if (!fork_with_gvl)
     {
         return;
     }
-    thread = rb_thread_current();
+    fork_thread = rb_thread_current();
+#if defined(RMAGICK_OFFLOAD_SAFE)
+    fork_fiber = 0;
     for (offload_frame_t *frame = main_entry->frames; frame; frame = frame->next)
     {
-        if (frame->thread == thread)
+        if (frame->thread == fork_thread)
         {
             fork_fiber = rb_fiber_current();
             break;
         }
     }
+#endif
 }
 
 // Runs in the child before Ruby does. A thread without the GVL, such as a
@@ -365,17 +444,22 @@ atfork_prepare(void)
 // it. The calls of the other fibers never run in the child, so the objects
 // they changed for the call are changed back while nothing in the child can
 // have destroyed them yet. The new generation frees every state, and the
-// calls that go on take theirs again.
+// calls that go on take theirs again. The calls of the other threads that stay
+// on their thread never return in the child either, and are changed back the
+// same way.
 static void
 atfork_child(void)
 {
-    unsigned int count = 0;
-    offload_frame_t *next;
+    unsigned int pins = 0;
 
     if (!fork_with_gvl)
     {
         return;
     }
+#if defined(RMAGICK_OFFLOAD_SAFE)
+    unsigned int count = 0;
+    offload_frame_t *next;
+
     fork_generation++;
     for (offload_frame_t *frame = main_entry->frames; frame; frame = next)
     {
@@ -396,6 +480,21 @@ atfork_child(void)
         frame_remove(main_entry, frame);
     }
     offloads_in_flight.store(count, std::memory_order_relaxed);
+#endif
+    for (pinned_call_t **link = &main_entry->pinned; *link;)
+    {
+        if ((*link)->thread == fork_thread)
+        {
+            pins++;
+            link = &(*link)->next;
+        }
+        else
+        {
+            (*link)->call->restore();
+            *link = (*link)->next;
+        }
+    }
+    pinned_in_flight.store(pins, std::memory_order_relaxed);
 }
 #endif
 
@@ -404,6 +503,8 @@ raise_in_use(void)
 {
     rb_raise(rb_eRuntimeError, "object is in use by another fiber");
 }
+
+#if defined(RMAGICK_OFFLOAD_SAFE)
 
 // The offload state of an Image, Info, KernelInfo, Draw or Montage, or NULL for
 // another object, which is not tracked
@@ -492,10 +593,9 @@ rm_gvl_init(void)
 #endif
     id_handle_interrupt = rb_intern("handle_interrupt");
 
-#if defined(RMAGICK_OFFLOAD_SAFE)
     offloaded_key = rb_ractor_local_storage_ptr_newkey(&offloaded_type);
     main_entry = offloaded_entry();
-#if defined(HAVE_WORKING_FORK)
+#if defined(RMAGICK_ATFORK)
     int err = pthread_atfork(atfork_prepare, NULL, atfork_child);
 
     if (err)
@@ -503,12 +603,11 @@ rm_gvl_init(void)
         rb_syserr_fail(err, "pthread_atfork");
     }
 #endif
-#endif
 }
 
 
 /**
- * Raise if an offloaded call is changing the object.
+ * Raise if a call in flight is changing the object.
  *
  * No Ruby usage (internal function)
  *
@@ -523,11 +622,15 @@ rm_gvl_check_readable(VALUE obj)
         raise_in_use();
     }
 #endif
+    if (pinned(obj, true))
+    {
+        raise_in_use();
+    }
 }
 
 
 /**
- * Whether an offloaded call is using the object.
+ * Whether a call in flight is using the object.
  *
  * No Ruby usage (internal function)
  *
@@ -538,15 +641,17 @@ bool
 rm_gvl_in_use(VALUE obj)
 {
 #if defined(RMAGICK_OFFLOAD_SAFE)
-    return object_offload_state(obj) != 0;
-#else
-    return false;
+    if (object_offload_state(obj) != 0)
+    {
+        return true;
+    }
 #endif
+    return pinned(obj, false);
 }
 
 
 /**
- * Raise if an offloaded call is using the object.
+ * Raise if a call in flight is using the object.
  *
  * No Ruby usage (internal function)
  *
@@ -555,12 +660,10 @@ rm_gvl_in_use(VALUE obj)
 void
 rm_gvl_check_writable(VALUE obj)
 {
-#if defined(RMAGICK_OFFLOAD_SAFE)
     if (rm_gvl_in_use(obj))
     {
         raise_in_use();
     }
-#endif
 }
 
 
@@ -815,6 +918,30 @@ rm_gvl_call::update_each(VALUE ary)
 
 
 /**
+ * The call reads obj, or changes it if changes is true, and the caller uses
+ * its data after the call. obj may be an Array, whose objects the call uses
+ * like read_each() and update_each(), or nil, which registers nothing.
+ *
+ * @param obj an Image, an Array of Images, or nil
+ * @param changes whether the call changes the objects
+ * @return self
+ */
+rm_gvl_call &
+rm_gvl_call::hold(VALUE obj, bool changes)
+{
+    if (NIL_P(obj))
+    {
+        return *this;
+    }
+    if (RB_TYPE_P(obj, T_ARRAY))
+    {
+        return changes ? update_each(obj) : read_each(obj);
+    }
+    return changes ? update(obj) : read(obj);
+}
+
+
+/**
  * Destroy the exception if the call is refused or unwound.
  *
  * @param exception the ExceptionInfo, may be NULL
@@ -998,6 +1125,25 @@ rm_gvl_call::unwind(ResultType type, void *result, bool abandoned)
 }
 
 
+/**
+ * Change back the objects that the caller passed in, for a call that the
+ * child of a fork dropped.
+ *
+ * No Ruby usage (internal function)
+ */
+void
+rm_gvl_call::restore() const
+{
+    for (int i = 0; i < ncleanups; i++)
+    {
+        if (cleanups[i].restore)
+        {
+            cleanups[i].release(cleanups[i].ptr, cleanups[i].arg);
+        }
+    }
+}
+
+
 void *
 rm_gvl_call::call(ResultType type)
 {
@@ -1026,6 +1172,33 @@ rm_gvl_call::call_body(ResultType type)
 }
 
 
+// Whether f(obj, update) is true for an object that the call registered, or for
+// an object in an array that it registered with each. update_only skips the
+// objects that the call does not change.
+template <typename F>
+bool
+rm_gvl_call::any_object(bool update_only, F f) const
+{
+    for (int i = 0; i < nobjects; i++)
+    {
+        long len = objects[i].each ? RARRAY_LEN(objects[i].obj) : 1;
+
+        if (update_only && !objects[i].update)
+        {
+            continue;
+        }
+        for (long j = 0; j < len; j++)
+        {
+            if (f(objects[i].each ? rb_ary_entry(objects[i].obj, j) : objects[i].obj, objects[i].update))
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+
 #if defined(RMAGICK_OFFLOAD_SAFE)
 // A frame for an offloaded call, with a mark for each object it registered
 offload_frame_t *
@@ -1041,16 +1214,10 @@ rm_gvl_call::new_frame()
     frame = (offload_frame_t *)xmalloc(frame_align(sizeof(offload_frame_t)) + count * sizeof(offload_mark_t));
     frame->marks = (offload_mark_t *)((char *)frame + frame_align(sizeof(offload_frame_t)));
     frame->nmarks = 0;
-    for (int i = 0; i < nobjects; i++)
-    {
-        long len = objects[i].each ? RARRAY_LEN(objects[i].obj) : 1;
-
-        for (long j = 0; j < len; j++)
-        {
-            add_object_mark(frame->marks, &frame->nmarks, objects[i].each ? rb_ary_entry(objects[i].obj, j) : objects[i].obj,
-                            objects[i].update ? OffloadUpdate : OffloadRead);
-        }
-    }
+    any_object(false, [frame](VALUE obj, bool update) {
+        add_object_mark(frame->marks, &frame->nmarks, obj, update ? OffloadUpdate : OffloadRead);
+        return false;
+    });
 
     static_assert(MaxCleanups <= OFFLOAD_MAX_RESTORES, "a frame holds every cleanup that restores");
     frame->nrestores = 0;
@@ -1122,43 +1289,59 @@ rm_gvl_call::offload(ResultType type)
 void
 rm_gvl_call::check_images_idle(ResultType type)
 {
-    for (int i = 0; i < nobjects; i++)
+    bool busy = any_object(false, [](VALUE obj, bool) {
+        rm_offload_state_t *state = object_state(obj);
+
+        return state && RTYPEDDATA_TYPE(obj) == &rm_image_data_type && state_count(state->load(std::memory_order_acquire)) != 0;
+    });
+
+    if (busy)
     {
-        long len = objects[i].each ? RARRAY_LEN(objects[i].obj) : 1;
-
-        for (long j = 0; j < len; j++)
-        {
-            VALUE obj = objects[i].each ? rb_ary_entry(objects[i].obj, j) : objects[i].obj;
-            rm_offload_state_t *state = object_state(obj);
-
-            if (state && RTYPEDDATA_TYPE(obj) == &rm_image_data_type && state_count(state->load(std::memory_order_acquire)) != 0)
-            {
-                unwind(type, NULL);
-                raise_in_use();
-            }
-        }
+        unwind(type, NULL);
+        raise_in_use();
     }
 }
 #endif
+
+
+/**
+ * Whether the call uses obj, or changes it if update is true.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param obj the object
+ * @param update whether to look only at the objects that the call changes
+ * @return true if the call registered obj
+ */
+bool
+rm_gvl_call::uses(VALUE obj, bool update) const
+{
+    return any_object(update, [obj](VALUE registered, bool) { return registered == obj; });
+}
 
 
 void *
 rm_gvl_call::call_here(ResultType type)
 {
     offload_call_t call = { fp, args, NULL, NULL, false, false };
+    offloaded_t *entry = offloaded_entry();
+    pinned_call_t pin = { this, rb_thread_current(), NULL };
     int tag;
 
+    pin_call(entry, &pin);
     rb_protect(check_interrupts, Qnil, &tag);
     if (tag)
     {
+        unpin_call(entry, &pin);
         unwind(type, NULL);
         rb_jump_tag(tag);
     }
 
     rb_protect(call_deferring_interrupts, (VALUE)&call, &tag);
+    unpin_call(entry, &pin);
     if (tag)
     {
-        if (call.done)
+        if (call.done || !call.started)
         {
             unwind(type, call.result);
         }

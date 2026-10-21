@@ -30,7 +30,7 @@ const rb_data_type_t rm_info_data_type = {
  * @param self the Info object
  * @return the Info struct
  * @throw FrozenError if the Info is frozen
- * @throw RuntimeError if an offloaded call is using the Info
+ * @throw RuntimeError if a call in flight is using the Info
  */
 static Info *
 get_writable_info(VALUE self)
