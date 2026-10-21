@@ -918,6 +918,30 @@ rm_gvl_call::update_each(VALUE ary)
 
 
 /**
+ * The call reads obj, or changes it if changes is true, and the caller uses
+ * its data after the call. obj may be an Array, whose objects the call uses
+ * like read_each() and update_each(), or nil, which registers nothing.
+ *
+ * @param obj an Image, an Array of Images, or nil
+ * @param changes whether the call changes the objects
+ * @return self
+ */
+rm_gvl_call &
+rm_gvl_call::hold(VALUE obj, bool changes)
+{
+    if (NIL_P(obj))
+    {
+        return *this;
+    }
+    if (RB_TYPE_P(obj, T_ARRAY))
+    {
+        return changes ? update_each(obj) : read_each(obj);
+    }
+    return changes ? update(obj) : read(obj);
+}
+
+
+/**
  * Destroy the exception if the call is refused or unwound.
  *
  * @param exception the ExceptionInfo, may be NULL

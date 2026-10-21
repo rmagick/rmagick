@@ -20,6 +20,7 @@ public:
     rm_gvl_call &update(VALUE obj);
     rm_gvl_call &read_each(VALUE ary);
     rm_gvl_call &update_each(VALUE ary);
+    rm_gvl_call &hold(VALUE obj, bool changes = false);
     rm_gvl_call &release(ExceptionInfo *exception);
     rm_gvl_call &release(ImageInfo *info);
     rm_gvl_call &release(DrawInfo *draw_info);
