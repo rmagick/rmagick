@@ -9,4 +9,18 @@ RSpec.describe Magick::Image, '#destroy!' do
     map.destroy!
     mapped.each(&:destroy!)
   end
+
+  it 'raises instead of destroying the image while a call uses it' do
+    image = described_class.new(4, 4)
+
+    expect { during_call(-> { image.destroy! }) { image.blur_image } }.to raise_error(RuntimeError, 'object is in use by another fiber')
+    expect(image.destroyed?).to be(false)
+  end
+
+  it 'raises instead of destroying the image before a bang method replaces it' do
+    image = described_class.new(4, 4)
+
+    expect { during_call(-> { image.destroy! }, event: :c_return) { image.resize!(2, 2) } }.to raise_error(RuntimeError, 'object is in use by another fiber')
+    expect([image.columns, image.rows]).to eq([4, 4])
+  end
 end

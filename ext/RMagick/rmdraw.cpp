@@ -89,7 +89,7 @@ get_draw(VALUE self)
  * @param self the Draw object
  * @return the initialized MagickDraw struct
  * @throw FrozenError if the Draw object is frozen
- * @throw RuntimeError if an offloaded call is using the Draw object
+ * @throw RuntimeError if a call in flight is using the Draw object
  */
 static MagickDraw *
 get_writable_draw(VALUE self)

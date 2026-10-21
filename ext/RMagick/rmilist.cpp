@@ -880,7 +880,7 @@ rm_imagelist_from_images(Image *images)
 
 
 /**
- * Raise if an offloaded call is using any image in the imagelist.
+ * Raise if a call in flight is using any image in the imagelist.
  *
  * No Ruby usage (internal function)
  *
@@ -899,7 +899,7 @@ check_images_writable(VALUE imagelist)
 
 
 /**
- * Raise if any image in the imagelist is frozen or an offloaded call is using
+ * Raise if any image in the imagelist is frozen or a call in flight is using
  * it.
  *
  * No Ruby usage (internal function)

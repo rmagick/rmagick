@@ -37,6 +37,9 @@ public:
 
     template <typename T> T run();
 
+    bool uses(VALUE obj, bool update) const;
+    void restore() const;
+
 private:
     enum ResultType { ResultIgnored, ResultImage, ResultMemory };
     enum { MaxObjects = 4, MaxCleanups = 4 };
@@ -67,6 +70,7 @@ private:
 
     rm_gvl_call &add_object(VALUE obj, bool update, bool each);
     rm_gvl_call &add_cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg, bool restore);
+    template <typename F> bool any_object(bool update_only, F f) const;
     void *call(ResultType type);
     void *call_body(ResultType type);
     struct offload_frame *new_frame();

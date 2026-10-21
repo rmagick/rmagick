@@ -334,14 +334,14 @@ rm_check_init_copy(VALUE self, VALUE orig)
 
 
 /**
- * Raise an error if the image has been destroyed or an offloaded call is changing it.
+ * Raise an error if the image has been destroyed or a call in flight is changing it.
  *
  * No Ruby usage (internal function)
  *
  * @param obj the image
  * @return the C image structure for the image
  * @throw DestroyedImageError
- * @throw RuntimeError if an offloaded call is changing the image
+ * @throw RuntimeError if a call in flight is changing the image
  */
 Image *
 rm_check_readable(VALUE obj)
@@ -360,14 +360,14 @@ rm_check_readable(VALUE obj)
 
 
 /**
- * Raise an error if the image has been destroyed or an offloaded call is using it.
+ * Raise an error if the image has been destroyed or a call in flight is using it.
  *
  * No Ruby usage (internal function)
  *
  * @param obj the image
  * @return the C image structure for the image
  * @throw DestroyedImageError
- * @throw RuntimeError if an offloaded call is using the image
+ * @throw RuntimeError if a call in flight is using the image
  */
 Image *
 rm_check_writable(VALUE obj)
@@ -379,7 +379,7 @@ rm_check_writable(VALUE obj)
 
 
 /**
- * Raise an error if the image has been destroyed, is frozen or an offloaded call is using it.
+ * Raise an error if the image has been destroyed, is frozen or a call in flight is using it.
  *
  * No Ruby usage (internal function)
  *
