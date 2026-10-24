@@ -72,4 +72,27 @@ RSpec.describe Magick::Draw, '#fill' do
       expect(drew_secret).to be(false)
     end
   end
+
+  # Regression: enquote escaped per Ruby character, but ImageMagick's MVG
+  # tokenizer reads bytes. In Shift_JIS, Big5 and similar encodings a trail byte
+  # can equal a backslash or quote, so a value could still close the token and
+  # have the rest parsed as MVG primitives.
+  it 'does not let a non-UTF-8 value inject an MVG primitive' do
+    # Shift_JIS 0x83 0x5C ends in 0x5C, the ASCII backslash.
+    value = (+"DejaVu\x83\x5C\" fill #00FF00 rectangle 0,0 200,120 ").force_encoding('Shift_JIS')
+
+    image = Magick::Image.new(200, 120) { |options| options.background_color = 'white' }
+    draw = described_class.new
+    draw.font(value)
+    draw.rectangle(0, 0, 1, 1)
+    begin
+      draw.draw(image)
+    rescue Magick::ImageMagickError
+      nil
+    end
+
+    centre = image.pixel_color(100, 60)
+    injected = centre.green > 50_000 && centre.red < 15_000 && centre.blue < 15_000
+    expect(injected).to be(false)
+  end
 end

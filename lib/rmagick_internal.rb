@@ -250,15 +250,22 @@ module Magick
 
     private
 
-    def enquote(str)
-      str = to_string(str)
+    # Escape backslashes and return the value as bytes, plus its original
+    # encoding. ImageMagick's MVG tokenizer reads the value byte by byte, so in
+    # Shift_JIS, Big5 and similar encodings a trail byte equal to a delimiter
+    # would slip past a per-character escape and close the token.
+    def escape_mvg_bytes(str)
       # escape existing backslashes, so that they cannot escape the delimiter
-      # added below and let the rest of the string be parsed as MVG
-      str = str.gsub('\\') { |b| '\\' + b }
+      # added by the caller and let the rest of the string be parsed as MVG
+      [str.b.gsub('\\') { |b| '\\' + b }, str.encoding]
+    end
+
+    def enquote(str)
+      str, encoding = escape_mvg_bytes(to_string(str))
       if str.length > 2 && /\A(?:"[^"\\]+"|'[^'\\]+'|\{[^}\\]+\})\z/.match(str)
-        str
+        str.force_encoding(encoding)
       else
-        '"' + str.gsub('"') { |c| '\\' + c } + '"'
+        ('"' + str.gsub('"') { |c| '\\' + c } + '"').force_encoding(encoding)
       end
     end
 
@@ -662,9 +669,7 @@ module Magick
     def text(x, y, text)
       text = to_string(text)
       Kernel.raise ArgumentError, 'missing text argument' if text.empty?
-      # escape existing backslashes, so that they cannot escape the delimiter
-      # added below and let the rest of the string be parsed as MVG
-      text = text.gsub('\\') { |b| '\\' + b }
+      text, encoding = escape_mvg_bytes(text)
       if text.length > 2 && /\A(?:"[^"\\]+"|'[^'\\]+'|\{[^}\\]+\})\z/.match(text)
       # text already quoted
       elsif !text['\'']
@@ -677,7 +682,7 @@ module Magick
         # escape existing braces, surround with braces
         text = '{' + text.gsub(/[}]/) { |b| '\\' + b } + '}'
       end
-      primitive 'text ' + sprintf('%g,%g %s', x, y, text)
+      primitive 'text ' + sprintf('%g,%g %s', x, y, text.force_encoding(encoding))
     end
 
     # Specify text alignment relative to a given point
