@@ -79,4 +79,27 @@ RSpec.describe Magick::Draw, '#text' do
       expect(drew_secret.call(%(x'"\\} #{primitive}\n#))).to be(false)
     end
   end
+
+  # Regression: the delimiter was chosen and escaped per Ruby character, but
+  # ImageMagick's MVG tokenizer reads bytes. In Shift_JIS and similar encodings
+  # a trail byte can equal a brace, so the brace token closed early and the rest
+  # was parsed as MVG primitives.
+  it 'does not let a non-UTF-8 text inject an MVG primitive' do
+    # The leading quotes force the brace branch; Shift_JIS 0x81 0x7D ends in the
+    # ASCII '}' (0x7D), which closes the brace token.
+    text = (+"'\"\x81\x7D fill #00FF00 rectangle 0,0 200,120 ").force_encoding('Shift_JIS')
+
+    image = Magick::Image.new(200, 120) { |options| options.background_color = 'white' }
+    draw = described_class.new
+    draw.text(0, 0, text)
+    begin
+      draw.draw(image)
+    rescue Magick::ImageMagickError
+      nil
+    end
+
+    centre = image.pixel_color(100, 60)
+    injected = centre.green > 50_000 && centre.red < 15_000 && centre.blue < 15_000
+    expect(injected).to be(false)
+  end
 end
