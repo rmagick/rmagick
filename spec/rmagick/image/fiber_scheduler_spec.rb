@@ -7,9 +7,6 @@ require_relative '../../support/offloading_scheduler'
 # RMagick offloads only on Ruby 4.0, which has the C API a scheduler needs to
 # cancel and drain a blocking operation (rb_fiber_scheduler_blocking_operation_extract).
 offloading = Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("4.0")
-# Ruby 4.0 on Windows does not schedule Ractors, so the threads of a Ractor can
-# stop until a waiting thread of another Ractor wakes up.
-ractor_scheduling = defined?(Ractor) && !(Gem.win_platform? && Gem::Version.new(RUBY_VERSION) < Gem::Version.new("4.1"))
 
 RSpec.describe Magick::Image, if: offloading do
   context "with a Fiber scheduler that offloads blocking operations" do
@@ -422,19 +419,7 @@ RSpec.describe Magick::Image, if: offloading do
         end
         Process.wait(pid)
       RUBY
-      command = [
-        RbConfig.ruby,
-        "-I",
-        File.expand_path("../../../lib", __dir__),
-        "-r",
-        "rmagick",
-        "-r",
-        File.expand_path("../../support/offloading_scheduler", __dir__),
-        "-e",
-        script
-      ]
-
-      output, errors, status = Open3.capture3(*command)
+      output, errors, status = Open3.capture3(*rmagick_command(script, "offloading_scheduler"))
 
       expect(status).to be_success, errors
       expect(output).to eq("object is in use by another fiber\n"), errors
@@ -1136,7 +1121,7 @@ RSpec.describe Magick::Image, if: offloading do
       end
     end
 
-    it "keeps the bookkeeping per Ractor", if: offloading && ractor_scheduling do
+    it "keeps the bookkeeping per Ractor", if: offloading && TestHelpers::RACTOR_SCHEDULING do
       experimental = Warning[:experimental]
       Warning[:experimental] = false
       ractors = Array.new(4) do
@@ -1152,7 +1137,7 @@ RSpec.describe Magick::Image, if: offloading do
       Warning[:experimental] = experimental
     end
 
-    it "does not let another Ractor use a shared image while a call uses it", if: offloading && ractor_scheduling do
+    it "does not let another Ractor use a shared image while a call uses it", if: offloading && TestHelpers::RACTOR_SCHEDULING do
       experimental = Warning[:experimental]
       Warning[:experimental] = false
       image = Ractor.make_shareable(described_class.new(20, 20).freeze)

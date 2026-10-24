@@ -27,9 +27,7 @@ RSpec.describe Magick, '.colors' do
         </colormap>
       XML
       script = "color = Magick.colors.find { |c| c.name.nil? }; Magick.colors { |_| nil }; print color.color.to_color(Magick::AllCompliance, false, 8, true)"
-      command = [RbConfig.ruby, "-I", File.expand_path("../../../lib", __dir__), "-r", "rmagick", "-e", script]
-
-      output, errors, status = Open3.capture3({ "MAGICK_CONFIGURE_PATH" => dir }, *command)
+      output, errors, status = Open3.capture3({ "MAGICK_CONFIGURE_PATH" => dir }, *rmagick_command(script))
 
       expect(status).to be_success, errors
       expect(output).to eq("#010203")
