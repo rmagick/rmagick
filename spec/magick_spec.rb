@@ -305,7 +305,7 @@ RSpec.describe Magick do
       Warning[:experimental] = experimental
     end
 
-    it "exits while another Ractor uses ImageMagick", unless: Gem.win_platform? && Gem::Version.new(RUBY_VERSION) < Gem::Version.new("4.1") do
+    it "exits while another Ractor uses ImageMagick", if: TestHelpers::RACTOR_SCHEDULING do
       script = <<~RUBY
         Warning[:experimental] = false
         fill = Ractor.make_shareable(Magick::TextureFill.new(Magick::Image.new(300, 300)))
@@ -318,10 +318,8 @@ RSpec.describe Magick do
         Ractor.receive
         sleep 0.05
       RUBY
-      command = [RbConfig.ruby, "-I", File.expand_path("../lib", __dir__), "-r", "rmagick", "-e", script]
-
       5.times do
-        Open3.popen2e(*command) do |stdin, output, wait|
+        Open3.popen2e(*rmagick_command(script)) do |stdin, output, wait|
           stdin.close
           reader = Thread.new { output.read }
           Process.kill(:KILL, wait.pid) unless wait.join(30)

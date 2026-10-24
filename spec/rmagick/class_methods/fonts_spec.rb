@@ -32,9 +32,7 @@ RSpec.describe Magick, '.fonts' do
         </typemap>
       XML
       script = "font = Magick.fonts.find { |f| f.name == \"NoFamily-Regular\" }; Magick.fonts { |_| nil }; print font.family.inspect"
-      command = [RbConfig.ruby, "-I", File.expand_path("../../../lib", __dir__), "-r", "rmagick", "-e", script]
-
-      output, errors, status = Open3.capture3({ "MAGICK_CONFIGURE_PATH" => dir }, *command)
+      output, errors, status = Open3.capture3({ "MAGICK_CONFIGURE_PATH" => dir }, *rmagick_command(script))
 
       expect(status).to be_success, errors
       expect(output).to eq("nil")

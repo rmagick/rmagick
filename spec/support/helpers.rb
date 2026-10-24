@@ -6,6 +6,11 @@ module TestHelpers
     CMYK: [[23, 54, 186, 76], [29, 71, 131, 122], [239, 206, 99, 76], [84, 165, 47, 54]]
   }.freeze
 
+  # Ruby 4.0 on Windows does not schedule Ractors, so the threads of a Ractor can
+  # stop until a waiting thread of another Ractor wakes up. This leaves out every
+  # version before 4.1 on Windows.
+  RACTOR_SCHEDULING = !(Gem.win_platform? && Gem::Version.new(RUBY_VERSION) < Gem::Version.new("4.1"))
+
   def build_image(mode: "RGB", pixels: TEST_PIXELS[mode.to_sym])
     image = Magick::Image.new(2, 2)
     image.import_pixels(0, 0, 2, 2, mode, pixels.flatten)
@@ -13,6 +18,11 @@ module TestHelpers
 
   def gray(pixel_value)
     [pixel_value, pixel_value, pixel_value]
+  end
+
+  def rmagick_command(script, *support_files)
+    requires = support_files.flat_map { |file| ["-r", File.expand_path(file, __dir__)] }
+    [RbConfig.ruby, "-I", File.expand_path("../../lib", __dir__), "-r", "rmagick", *requires, "-e", script]
   end
 
   def interrupt(error, ready: nil)
