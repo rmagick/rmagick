@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "open3"
+
 RSpec.describe Magick do
   describe '::Magick_features' do
     it 'works' do
@@ -301,6 +303,32 @@ RSpec.describe Magick do
       expect(ractors.map { |r| r.respond_to?(:value) ? r.value : r.take }).to all(be(true))
     ensure
       Warning[:experimental] = experimental
+    end
+
+    it "exits while another Ractor uses ImageMagick", unless: Gem.win_platform? && Gem::Version.new(RUBY_VERSION) < Gem::Version.new("4.1") do
+      script = <<~RUBY
+        Warning[:experimental] = false
+        fill = Ractor.make_shareable(Magick::TextureFill.new(Magick::Image.new(300, 300)))
+        Ractor.new(fill) do |shared|
+          image = Magick::Image.new(2, 2)
+          shared.fill(image)
+          Ractor.main << :filled
+          loop { shared.fill(image) }
+        end
+        Ractor.receive
+        sleep 0.05
+      RUBY
+      command = [RbConfig.ruby, "-I", File.expand_path("../lib", __dir__), "-r", "rmagick", "-e", script]
+
+      5.times do
+        Open3.popen2e(*command) do |stdin, output, wait|
+          stdin.close
+          reader = Thread.new { output.read }
+          Process.kill(:KILL, wait.pid) unless wait.join(30)
+
+          expect(wait.value).to be_success, reader.value
+        end
+      end
     end
   end
 

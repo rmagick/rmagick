@@ -15,7 +15,7 @@
 #
 # There is nothing for RMagick to free: the allocation is made by ld.so, RMagick
 # never sees the pointer, and it survives MagickCoreTerminus() (which RMagick
-# does call, from an end proc in Init_RMagick2). It is also bounded -- calling
+# does call, from the Magick module's finalizer). It is also bounded -- calling
 # Magick.formats once and 30 times both report exactly 2,688 bytes in 3 blocks,
 # because the coder modules are dlopen()ed once per process. Reproducing the
 # same report through Fiddle, with none of RMagick's code on the stack, confirms

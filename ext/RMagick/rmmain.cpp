@@ -358,11 +358,23 @@ static void set_managed_memory(void)
 
 
 
+#if defined(TRUFFLERUBY)
 static void
 rmagick_terminus(VALUE unused)
 {
     MagickCoreTerminus();
 }
+#else
+static VALUE
+rmagick_terminus(RB_BLOCK_CALL_FUNC_ARGLIST(object_id, magick_id))
+{
+    if (RTEST(rb_equal(object_id, magick_id)))
+    {
+        MagickCoreTerminus();
+    }
+    return Qnil;
+}
+#endif
 
 /**
  * Define the classes and constants.
@@ -383,7 +395,11 @@ Init_RMagick2(void)
     set_managed_memory();
 
     MagickCoreGenesis("RMagick", MagickFalse);
+#if defined(TRUFFLERUBY)
     rb_set_end_proc(rmagick_terminus, Qnil);
+#else
+    rb_define_finalizer(Module_Magick, rb_proc_new(rmagick_terminus, rb_obj_id(Module_Magick)));
+#endif
 
     test_Magick_version();
 
