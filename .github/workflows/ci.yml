@@ -53,8 +53,8 @@ jobs:
           - macos-latest
         ruby-version: ['3.2', '3.3', '3.4', '4.0', 'head']
         imagemagick-version: &imagemagick-versions
-          - &imagemagick-6 { full: 6.9.13-58, major-minor: '6.9' }
-          - { full: 7.1.2-33, major-minor: '7.1' }
+          - &imagemagick-6 { full: 6.9.13-59, major-minor: '6.9' }
+          - { full: 7.1.2-34, major-minor: '7.1' }
 
     name: ${{ matrix.os }}, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
     steps:
@@ -153,7 +153,7 @@ jobs:
     - name: Install Ghostscript
       shell: powershell
       run: |
-        $url = "https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10060/gs10060w64.exe"
+        $url = "https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10080/gs10080w64.exe"
         $installer = "$env:TEMP\gs_installer.exe"
 
         Write-Host "Downloading Ghostscript..."
