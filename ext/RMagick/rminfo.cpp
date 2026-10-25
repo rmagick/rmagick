@@ -302,6 +302,34 @@ Info_antialias_eq(VALUE self, VALUE val)
 #define MAX_FORMAT_LEN 60
 
 /**
+ * Build the "format:key" option name shared by Info#[], #[]=, #define and
+ * #undefine, applying the same length limit to all four. The caller converts
+ * format and key with StringValueCStr first, which rejects a NUL byte so the
+ * name cannot be cut short and address a different option, and passes the
+ * resulting C strings and their lengths here.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param format_p the format
+ * @param format_l the length of the format
+ * @param key_p the key
+ * @param key_l the length of the key
+ * @param buffer the buffer that receives "format:key"
+ * @param buffer_l the size of the buffer
+ * @throw ArgumentError if the format or the "format:key" name is too long
+ */
+static void
+build_option_key(const char *format_p, size_t format_l, const char *key_p, size_t key_l, char *buffer, size_t buffer_l)
+{
+    if (format_l > MAX_FORMAT_LEN || format_l + key_l + 2 > buffer_l)
+    {
+        rb_raise(rb_eArgError, "can't use %.60s:%.1024s - format or key too long", format_p, key_p);
+    }
+
+    snprintf(buffer, buffer_l, "%s:%s", format_p, key_p);
+}
+
+/**
  * Get the value of the specified option for the specified format.
  *
  * - The 2 argument form is the original form. Added support for a single
@@ -330,14 +358,11 @@ Info_aref(int argc, VALUE *argv, VALUE self)
     {
         case 2:
             argv[0] = rb_str_new_frozen(StringValue(argv[0]));
-            format_p = rm_str2cstr(&argv[0], &format_l);
-            key_p = rm_str2cstr(&argv[1], &key_l);
-            if (format_l > MAX_FORMAT_LEN || format_l + key_l > MaxTextExtent-1)
-            {
-                rb_raise(rb_eArgError, "can't reference %.60s:%.1024s - too long", format_p, key_p);
-            }
-
-            snprintf(fkey, sizeof(fkey), "%.60s:%.*s", format_p, (int)(MaxTextExtent-61), key_p);
+            format_p = StringValueCStr(argv[0]);
+            format_l = (size_t)RSTRING_LEN(argv[0]);
+            key_p = StringValueCStr(argv[1]);
+            key_l = (size_t)RSTRING_LEN(argv[1]);
+            build_option_key(format_p, format_l, key_p, key_l, fkey, sizeof(fkey));
             break;
 
         case 1:
@@ -399,15 +424,11 @@ Info_aset(int argc, VALUE *argv, VALUE self)
     {
         case 3:
             argv[0] = rb_str_new_frozen(StringValue(argv[0]));
-            format_p = rm_str2cstr(&argv[0], &format_l);
-            key_p = rm_str2cstr(&argv[1], &key_l);
-
-            if (format_l > MAX_FORMAT_LEN || format_l+key_l > MaxTextExtent-1)
-            {
-                rb_raise(rb_eArgError, "%.60s:%.1024s not defined - too long", format_p, key_p);
-            }
-
-            snprintf(ckey, sizeof(ckey), "%.60s:%.*s", format_p, (int)(sizeof(ckey)-MAX_FORMAT_LEN), key_p);
+            format_p = StringValueCStr(argv[0]);
+            format_l = (size_t)RSTRING_LEN(argv[0]);
+            key_p = StringValueCStr(argv[1]);
+            key_l = (size_t)RSTRING_LEN(argv[1]);
+            build_option_key(format_p, format_l, key_p, key_l, ckey, sizeof(ckey));
 
             value = argv[2];
             break;
@@ -767,7 +788,7 @@ Info_define(int argc, VALUE *argv, VALUE self)
     char *format, *key;
     const char *value = "";
     size_t format_l, key_l;
-    char ckey[100];
+    char ckey[MaxTextExtent];
     unsigned int okay;
     VALUE value_arg = Qnil;
 
@@ -782,18 +803,16 @@ Info_define(int argc, VALUE *argv, VALUE self)
             /* fall through */
         case 2:
             argv[1] = rb_str_new_frozen(StringValue(argv[1]));
-            key = rm_str2cstr(&argv[1], &key_l);
-            format = rm_str2cstr(&argv[0], &format_l);
+            key = StringValueCStr(argv[1]);
+            key_l = (size_t)RSTRING_LEN(argv[1]);
+            format = StringValueCStr(argv[0]);
+            format_l = (size_t)RSTRING_LEN(argv[0]);
             break;
         default:
             rb_raise(rb_eArgError, "wrong number of arguments (%d for 2 or 3)", argc);
     }
 
-    if (2 + format_l + key_l > (long)sizeof(ckey))
-    {
-        rb_raise(rb_eArgError, "%.20s:%.20s not defined - format or key too long", format, key);
-    }
-    snprintf(ckey, sizeof(ckey), "%s:%s", format, key);
+    build_option_key(format, format_l, key, key_l, ckey, sizeof(ckey));
 
     DeleteImageOption(info, ckey);
     okay = SetImageOption(info, ckey, value);
@@ -2267,15 +2286,11 @@ Info_undefine(VALUE self, VALUE format, VALUE key)
     char fkey[MaxTextExtent];
 
     format = rb_str_new_frozen(StringValue(format));
-    format_p = rm_str2cstr(&format, &format_l);
-    key_p = rm_str2cstr(&key, &key_l);
-
-    if (format_l > MAX_FORMAT_LEN || format_l + key_l > MaxTextExtent)
-    {
-        rb_raise(rb_eArgError, "can't undefine %.60s:%.1024s - too long", format_p, key_p);
-    }
-
-    snprintf(fkey, sizeof(fkey), "%.60s:%.*s", format_p, (int)(MaxTextExtent-61), key_p);
+    format_p = StringValueCStr(format);
+    format_l = (size_t)RSTRING_LEN(format);
+    key_p = StringValueCStr(key);
+    key_l = (size_t)RSTRING_LEN(key);
+    build_option_key(format_p, format_l, key_p, key_l, fkey, sizeof(fkey));
 
     info = get_writable_info(self);
     DeleteImageOption(info, fkey);

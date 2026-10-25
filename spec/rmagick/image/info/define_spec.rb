@@ -84,4 +84,31 @@ RSpec.describe Magick::Image::Info, '#define' do
     info.undefine(format, key)
     expect(info["tiff", "rows-per-strip"]).to be(nil)
   end
+
+  # Regression: the format and key were read with a function that keeps a NUL
+  # byte, so the "format:key" name was cut short at the NUL and a different
+  # option was defined or undefined.
+  it 'rejects a format or key that contains a NUL byte' do
+    info = described_class.new
+
+    expect { info.define("tiff\u0000evil", 'rows-per-strip', '8') }.to raise_error(ArgumentError)
+    expect { info.define('tiff', "rows\u0000per", '8') }.to raise_error(ArgumentError)
+    expect { info.undefine("tiff\u0000evil", 'rows-per-strip') }.to raise_error(ArgumentError)
+    expect { info.undefine('tiff', "rows\u0000per") }.to raise_error(ArgumentError)
+    expect(info['tiff', 'rows-per-strip']).to be(nil)
+  end
+
+  # Regression: #define rejected a long key that #[]= accepted, because the two
+  # used different buffer sizes.
+  it 'applies the same length limit as Info#[]=' do
+    key = 'k' * 200
+
+    defined = described_class.new
+    aset = described_class.new
+    defined.define('tiff', key, 'v')
+    aset['tiff', key] = 'v'
+
+    expect(defined['tiff', key]).to eq('v')
+    expect(aset['tiff', key]).to eq('v')
+  end
 end
