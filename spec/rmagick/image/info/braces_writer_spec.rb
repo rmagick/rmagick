@@ -70,4 +70,14 @@ RSpec.describe Magick::Image::Info, '#[]=' do
     info[format, key] = "8"
     expect(info["tiff", "rows-per-strip"]).to eq("8")
   end
+
+  # Regression: see the matching example in define_spec.rb. A NUL byte in the
+  # format or key cut the option name short, so a different option was set.
+  it 'rejects a format or key that contains a NUL byte' do
+    info = described_class.new
+
+    expect { info["tiff\u0000evil", 'rows-per-strip'] = '8' }.to raise_error(ArgumentError)
+    expect { info['tiff', "rows\u0000per"] = '8' }.to raise_error(ArgumentError)
+    expect(info['tiff', 'rows-per-strip']).to be(nil)
+  end
 end
