@@ -11,4 +11,11 @@ RSpec.describe Magick::Enum, '#|' do
 
     expect { enum1 | 'x' }.to raise_error(ArgumentError)
   end
+
+  # Regression: an operand made with allocate but never initialized has no
+  # symbol, so | passed the NULL from rb_id2name(0) to rb_sprintf.
+  it 'treats an operand created with allocate as having no name' do
+    enum = described_class.new(:foo, 42) | described_class.allocate
+    expect(enum.to_s).to eq('foo|')
+  end
 end

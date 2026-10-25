@@ -84,6 +84,12 @@ rm_enum_to_cstr(VALUE enum_type)
     MagickEnum *magick_enum;
 
     TypedData_Get_Struct(enum_type, MagickEnum, &rm_enum_data_type, magick_enum);
+    // An Enum made with allocate but never initialized has no symbol (id 0),
+    // and rb_id2name would return NULL.
+    if (magick_enum->id == 0)
+    {
+        return "";
+    }
     return rb_id2name(magick_enum->id);
 }
 
@@ -254,7 +260,7 @@ Enum_bitwise_or(VALUE self, VALUE other)
     TypedData_Get_Struct(other, MagickEnum, &rm_enum_data_type, other_enum);
     TypedData_Get_Struct(new_enum, MagickEnum, &rm_enum_data_type, new_enum_data);
 
-    new_enum_data->id = rb_to_id(rb_sprintf("%s|%s", rb_id2name(self_enum->id), rb_id2name(other_enum->id)));
+    new_enum_data->id = rb_to_id(rb_sprintf("%s|%s", rm_enum_to_cstr(self), rm_enum_to_cstr(other)));
     new_enum_data->val = self_enum->val | other_enum->val;
 
     return new_enum;
@@ -334,7 +340,7 @@ Enum_type_inspect(VALUE self)
     MagickEnum *magick_enum;
 
     TypedData_Get_Struct(self, MagickEnum, &rm_enum_data_type, magick_enum);
-    snprintf(str, sizeof(str), "%.48s=%d", rb_id2name(magick_enum->id), magick_enum->val);
+    snprintf(str, sizeof(str), "%.48s=%d", rm_enum_to_cstr(self), magick_enum->val);
 
     return rb_str_new2(str);
 }
