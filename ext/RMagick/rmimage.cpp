@@ -12923,7 +12923,7 @@ Image_recolor(VALUE self, VALUE color_matrix)
 {
     Image *image, *new_image;
     unsigned long order;
-    long x, len;
+    unsigned long x, len;
     VALUE values_buf;
     double *values, *matrix;
     ExceptionInfo *exception;
