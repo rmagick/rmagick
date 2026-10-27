@@ -78,3 +78,22 @@
    obj:*/libgomp.so*
    fun:GOMP_parallel
 }
+
+# FreeType 2.14.2 leaks the bitmap that FT_Glyph_To_Bitmap renders
+# (https://gitlab.freedesktop.org/freetype/freetype/-/issues/1399, fixed in
+# 2.14.3). Ubuntu 26.04, which ubuntu-latest now runs, ships 2.14.2, so every
+# glyph that ImageMagick draws reports one block. The leak is inside FreeType; a
+# small C program that calls FT_Get_Glyph, FT_Glyph_To_Bitmap and FT_Done_Glyph
+# reproduces it without ImageMagick.
+#
+# The stanza is anchored on the shared library of 2.14.2 (libfreetype.so.6.20.5)
+# right under FT_Glyph_To_Bitmap, so it stops matching once the runner has a
+# fixed FreeType. Remove it then.
+{
+   FreeType 2.14.2: FT_Glyph_To_Bitmap leaks the bitmap it renders (https://gitlab.freedesktop.org/freetype/freetype/-/issues/1399)
+   Memcheck:Leak
+   match-leak-kinds: definite
+   ...
+   obj:*/libfreetype.so.6.20.5
+   fun:FT_Glyph_To_Bitmap
+}
