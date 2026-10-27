@@ -20,4 +20,28 @@ RSpec.describe Magick::Image, '#border_color' do
     border_color = image.border_color
     expect(border_color).to eq('#DFDFDFFF')
   end
+
+  it 'returns the name in sRGB for a CMYK image' do
+    image = described_class.new(1, 1) { |info| info.depth = 16 }
+    image.colorspace = Magick::CMYKColorspace
+
+    expect(image.border_color).to eq('#DFDFDFDFDFDFFFFF')
+    image.border_color = 'black'
+    expect(image.border_color).to eq('#000000000000FFFF')
+  end
+
+  it 'returns a CMYK color name in sRGB' do
+    image = described_class.new(1, 1) { |info| info.depth = 16 }
+    image.border_color = 'cmyk(100%,0,0,0)'
+
+    expect(image.border_color).to eq('#0000FFFFFFFFFFFF')
+  end
+
+  it 'returns the name in sRGB of a Pixel with the channel values of a CMYK image' do
+    image = described_class.new(1, 1) { |info| info.depth = 16 }
+    image.colorspace = Magick::CMYKColorspace
+    image.border_color = Magick::Pixel.new(0, Magick::QuantumRange, Magick::QuantumRange)
+
+    expect(image.border_color).to eq('#FFFF00000000FFFF')
+  end
 end
