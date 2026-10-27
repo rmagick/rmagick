@@ -1188,6 +1188,7 @@ extern void   magick_clone_string(char **, const char *);
 extern Image *rm_acquire_image(ImageInfo *);
 extern VALUE  rm_cur_image(VALUE);
 extern VALUE  rm_pixelcolor_to_color_name(Image *, PixelColor *);
+extern VALUE  rm_srgb_pixelcolor_to_color_name(Image *, PixelColor *);
 extern VALUE  rm_pixelcolor_to_color_name_info(Info *, PixelColor *);
 extern void   rm_init_magickpixel(const Image *, MagickPixel *);
 extern void   rm_set_magickpixel(MagickPixel *, const char *);

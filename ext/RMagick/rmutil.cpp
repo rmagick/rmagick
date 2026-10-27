@@ -792,6 +792,43 @@ rm_cur_image(VALUE img)
 
 
 /**
+ * Map the color intensity in a colorspace to a named color.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param image the image
+ * @param color the color intensity as a PixelColor
+ * @param colorspace the colorspace of the color intensity
+ * @return the named color as a String
+ */
+static VALUE
+pixelcolor_to_color_name(Image *image, PixelColor *color, ColorspaceType colorspace)
+{
+    MagickPixel mpp;
+    char tuple[MaxTextExtent];
+
+#if defined(IMAGEMAGICK_7)
+    mpp = *color;
+    mpp.alpha_trait = BlendPixelTrait;
+#else
+    rm_init_magickpixel(image, &mpp);
+    mpp.red = GetPixelRed(color);
+    mpp.green = GetPixelGreen(color);
+    mpp.blue = GetPixelBlue(color);
+    mpp.opacity = GetPixelOpacity(color);
+    mpp.index   = (MagickRealType) 0.0;
+    mpp.matte = MagickTrue;
+#endif
+    mpp.colorspace = colorspace;
+    mpp.depth = image->depth;
+
+    GetColorTuple(&mpp, MagickTrue, tuple);
+
+    return rb_str_new2(tuple);
+}
+
+
+/**
  * Map the color intensity to a named color.
  *
  * No Ruby usage (internal function)
@@ -804,27 +841,25 @@ rm_cur_image(VALUE img)
 VALUE
 rm_pixelcolor_to_color_name(Image *image, PixelColor *color)
 {
-    MagickPixel mpp;
-    char tuple[MaxTextExtent];
+    return pixelcolor_to_color_name(image, color, image->colorspace);
+}
 
-#if defined(IMAGEMAGICK_7)
-    mpp = *color;
-    mpp.alpha_trait = BlendPixelTrait;
-    mpp.colorspace = image->colorspace;
-#else
-    rm_init_magickpixel(image, &mpp);
-    mpp.red = GetPixelRed(color);
-    mpp.green = GetPixelGreen(color);
-    mpp.blue = GetPixelBlue(color);
-    mpp.opacity = GetPixelOpacity(color);
-    mpp.index   = (MagickRealType) 0.0;
-    mpp.matte = MagickTrue;
-#endif
-    mpp.depth = image->depth;
 
-    GetColorTuple(&mpp, MagickTrue, tuple);
-
-    return rb_str_new2(tuple);
+/**
+ * Map the sRGB color intensity to a named color, whatever the colorspace of the
+ * image is.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param image the image
+ * @param color the sRGB color intensity as a PixelColor
+ * @return the named color as a String
+ * @see rm_pixelcolor_to_color_name
+ */
+VALUE
+rm_srgb_pixelcolor_to_color_name(Image *image, PixelColor *color)
+{
+    return pixelcolor_to_color_name(image, color, sRGBColorspace);
 }
 
 
