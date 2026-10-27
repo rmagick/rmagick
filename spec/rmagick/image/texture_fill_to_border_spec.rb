@@ -32,4 +32,18 @@ RSpec.describe Magick::Image, '#texture_fill_to_border' do
     expect(result.get_pixels(0, 0, 2, 1)).to eq(image.get_pixels(0, 0, 2, 1))
     expect(result.pixel_color(2, 0)).not_to eq(image.pixel_color(2, 0))
   end
+
+  it 'stops at a border color given as a Pixel of a CMYK image' do
+    image = described_class.new(3, 1)
+    image.colorspace = Magick::CMYKColorspace
+    image.pixel_color(1, 0, Magick::Pixel.new(0, Magick::QuantumRange, Magick::QuantumRange))
+    image.border_color = image.pixel_color(1, 0)
+    texture = described_class.new(1, 1) { |info| info.background_color = 'blue' }
+
+    # ImageMagick 6 reads past the row when it fills a CMYK image rightward.
+    result = image.texture_fill_to_border(2, 0, texture)
+
+    expect(result.get_pixels(0, 0, 2, 1)).to eq(image.get_pixels(0, 0, 2, 1))
+    expect(result.pixel_color(2, 0)).not_to eq(image.pixel_color(2, 0))
+  end
 end

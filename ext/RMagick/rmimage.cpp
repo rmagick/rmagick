@@ -58,13 +58,14 @@ static void rm_image_free(void *ptr);
 static size_t rm_image_memsize(const void *ptr);
 static size_t pixel_buffer_count(size_t, size_t, size_t);
 static void color_to_image_pixel(ColorspaceType, Pixel *, VALUE);
-static void pixelcolor_to_colorspace(Pixel *, const PixelColor *, ColorspaceType);
+static void border_color_to_colorspace(const Image *, Pixel *, ColorspaceType);
 static Image *color_to_magickpixel(VALUE, MagickPixel *, VALUE);
 #if defined(IMAGEMAGICK_7)
 static void get_pixel_color(const Image *, const Quantum *, PixelColor *);
 #else
 static bool index_is_black(const Image *);
 static VALUE pixel_from_packet(const PixelPacket *, IndexPacket);
+static void cmyk_pixel_to_rgb(const Pixel *, PixelColor *);
 #endif
 
 const rb_data_type_t rm_image_data_type = {
@@ -2504,7 +2505,7 @@ Image_border_color(VALUE self)
     PixelColor border_color = image->border_color;
     Pixel srgb;
 
-    pixelcolor_to_colorspace(&srgb, &border_color, sRGBColorspace);
+    border_color_to_colorspace(image, &srgb, sRGBColorspace);
     border_color.red   = srgb.red;
     border_color.green = srgb.green;
     border_color.blue  = srgb.blue;
@@ -2526,6 +2527,16 @@ Image_border_color_eq(VALUE self, VALUE color)
 
     Color_to_PixelColor(&border_color, color);
     image = rm_check_frozen(self);
+#if defined(IMAGEMAGICK_6)
+    // The border color has no black, and ImageMagick 6 reads it as RGB.
+    if (image->colorspace == CMYKColorspace && rb_typeddata_is_kind_of(color, &rm_pixel_data_type))
+    {
+        Pixel *pixel;
+
+        TypedData_Get_Struct(color, Pixel, &rm_pixel_data_type, pixel);
+        cmyk_pixel_to_rgb(pixel, &border_color);
+    }
+#endif
     image->border_color = border_color;
     return color;
 }
@@ -3524,7 +3535,7 @@ Image_color_flood_fill(VALUE self, VALUE target_color, VALUE fill_color,
     if (fill_method == FillToBorderMethod)
     {
         invert = MagickTrue;
-        pixelcolor_to_colorspace(&target, &image->border_color, image->colorspace);
+        border_color_to_colorspace(image, &target, image->colorspace);
     }
     else
     {
@@ -10415,7 +10426,7 @@ Image_matte_flood_fill(int argc, VALUE *argv, VALUE self)
     if (method == FillToBorderMethod)
     {
         invert = MagickTrue;
-        pixelcolor_to_colorspace(&target, &image->border_color, image->colorspace);
+        border_color_to_colorspace(image, &target, image->colorspace);
     }
     else
     {
@@ -15605,7 +15616,7 @@ Image_texture_flood_fill(VALUE self, VALUE color_obj, VALUE texture_obj,
     if (method == FillToBorderMethod)
     {
         invert = MagickTrue;
-        pixelcolor_to_colorspace(&color, &image->border_color, image->colorspace);
+        border_color_to_colorspace(image, &color, image->colorspace);
     }
     else
     {
@@ -16183,6 +16194,60 @@ transform_color(const PixelColor *parsed, ColorspaceType colorspace, MagickPixel
 }
 
 
+#if defined(IMAGEMAGICK_6)
+/**
+ * Convert the CMYK channel values of a Pixel to RGB in the same way as converting
+ * an image.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param pixel the Pixel with the CMYK channel values
+ * @param rgb the PixelColor to store the RGB color in
+ */
+static void
+cmyk_pixel_to_rgb(const Pixel *pixel, PixelColor *rgb)
+{
+    Info *info;
+    Image *image;
+    PixelPacket *q;
+
+    info = CloneImageInfo(NULL);
+    image = rm_acquire_image(info);
+    DestroyImageInfo(info);
+
+    if (!image)
+    {
+        rb_raise(rb_eNoMemError, "not enough memory to continue.");
+    }
+
+    SetImageExtent(image, 1, 1);
+    rm_check_image_exception(image, DestroyOnError);
+    SetImageColorspace(image, CMYKColorspace);
+    rm_check_image_exception(image, DestroyOnError);
+    q = QueueAuthenticPixels(image, 0, 0, 1, 1, &image->exception);
+    rm_check_image_exception(image, DestroyOnError);
+    if (!q)
+    {
+        DestroyImage(image);
+        rb_raise(rb_eNoMemError, "not enough memory to continue.");
+    }
+    SetPixelRed(q, pixel->red);
+    SetPixelGreen(q, pixel->green);
+    SetPixelBlue(q, pixel->blue);
+    SetPixelIndex(GetAuthenticIndexQueue(image), pixel->black);
+    SyncAuthenticPixels(image, &image->exception);
+    rm_check_image_exception(image, DestroyOnError);
+    TransformImageColorspace(image, sRGBColorspace);
+    rm_check_image_exception(image, DestroyOnError);
+    GetOneVirtualPixel(image, 0, 0, rgb, &image->exception);
+    rm_check_image_exception(image, DestroyOnError);
+    rgb->opacity = pixel->opacity;
+
+    DestroyImage(image);
+}
+#endif
+
+
 /**
  * Convert a parsed color to CMYK for a CMYK image, and a CMYK color to sRGB for
  * other images.
@@ -16227,6 +16292,32 @@ pixelcolor_to_colorspace(Pixel *color, const PixelColor *parsed, ColorspaceType 
         color->black = converted.index;
     }
 #endif
+}
+
+
+/**
+ * Convert the border color of an image to a colorspace.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param image the image
+ * @param color the Pixel to modify
+ * @param colorspace the colorspace to convert to
+ */
+static void
+border_color_to_colorspace(const Image *image, Pixel *color, ColorspaceType colorspace)
+{
+    PixelColor border_color = image->border_color;
+
+#if defined(IMAGEMAGICK_7)
+    // A border color set from a Pixel has no colorspace and holds the channel
+    // values of the image.
+    if (border_color.colorspace == UndefinedColorspace)
+    {
+        border_color.colorspace = image->colorspace;
+    }
+#endif
+    pixelcolor_to_colorspace(color, &border_color, colorspace);
 }
 
 
