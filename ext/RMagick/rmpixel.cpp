@@ -615,7 +615,8 @@ Pixel_fcmp(int argc, VALUE *argv, VALUE self)
 
 
 /**
- * Construct a {Magick::Pixel} corresponding to the given color name.
+ * Construct a {Magick::Pixel} corresponding to the given color name. A CMYK color
+ * name is converted to RGB.
  *
  * - The "inverse" is {Image#to_color}, b/c the conversion of a pixel to a
  *   color name requires both a color depth and if the opacity value has
@@ -643,6 +644,16 @@ Pixel_from_color(VALUE klass ATTRIBUTE_UNUSED, VALUE name)
     {
         rb_raise(rb_eArgError, "invalid color name: %s", color);
     }
+
+#if defined(IMAGEMAGICK_7)
+    if (pp.colorspace == CMYKColorspace)
+    {
+        pp.red   = ClampToQuantum(QuantumRange - (QuantumScale * pp.red * (QuantumRange - pp.black) + pp.black));
+        pp.green = ClampToQuantum(QuantumRange - (QuantumScale * pp.green * (QuantumRange - pp.black) + pp.black));
+        pp.blue  = ClampToQuantum(QuantumRange - (QuantumScale * pp.blue * (QuantumRange - pp.black) + pp.black));
+        pp.black = 0;
+    }
+#endif
 
     return Pixel_from_PixelColor(&pp);
 }

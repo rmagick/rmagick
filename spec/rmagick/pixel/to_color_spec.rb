@@ -41,4 +41,9 @@ RSpec.describe Magick::Pixel, '#to_color' do
     expect(pixel.to_color(Magick::AllCompliance, true)).to eq('#A5A52A2A2A2A007B')
     expect(pixel.to_color(Magick::AllCompliance, false)).to eq('#A5A52A2A2A2A')
   end
+
+  it 'returns the color of a pixel from a CMYK color name' do
+    expect(described_class.from_color('cmyk(0,0,0,0)').to_color(Magick::AllCompliance, false, 8)).to eq('#FFFFFF')
+    expect(described_class.from_color('cmyk(100%,0,0,0)').to_color(Magick::AllCompliance, false, 8)).to eq('#00FFFF')
+  end
 end
