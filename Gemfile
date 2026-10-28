@@ -8,7 +8,7 @@ gemspec
 gem 'pry', '~> 0.14'
 gem 'rake-compiler', '~> 1.2'
 gem 'rspec', '~> 3.13'
-gem 'rspec_junit_formatter', '~> 0.6.0'
+gem 'rspec_junit_formatter', '~> 0.8.0'
 gem 'simplecov', '~> 0.22.0'
 gem 'yard', '~> 0.9.36'
 
