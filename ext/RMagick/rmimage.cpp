@@ -59,6 +59,8 @@ static size_t rm_image_memsize(const void *ptr);
 static size_t pixel_buffer_count(size_t, size_t, size_t);
 static void color_to_image_pixel(ColorspaceType, Pixel *, VALUE);
 static void border_color_to_colorspace(const Image *, Pixel *, ColorspaceType);
+static VALUE colormap_color_name(Image *, const PixelColor *);
+static void pixel_to_colormap_color(Image *, PixelColor *, const Pixel *);
 static Image *color_to_magickpixel(VALUE, MagickPixel *, VALUE);
 #if defined(IMAGEMAGICK_7)
 static void get_pixel_color(const Image *, const Quantum *, PixelColor *);
@@ -3650,7 +3652,7 @@ Image_colorize(int argc, VALUE *argv, VALUE self)
 
 /**
  * Return the color in the colormap at the specified index. If a new color is specified, replaces
- * the color at the index with the new color.
+ * the color at the index with the new color. The name is in sRGB, even for a CMYK image.
  *
  * @overload colormap(index)
  *   @param index [Numeric] A number between 0 and the number of colors in the color map. If the
@@ -3661,7 +3663,7 @@ Image_colorize(int argc, VALUE *argv, VALUE self)
  *   @param index [Numeric] A number between 0 and the number of colors in the color map. If the
  *     value is out of range, colormap raises an IndexError.  You can get the number of colors in
  *     the color map from the colors attribute.
- *   @param new_color [Magick::Pixel, String] the color name
+ *   @param new_color [Magick::Pixel, String] the color. A color name is converted to CMYK for a CMYK image.
  *
  * @return [String] the name of the color at the specified location in the color map
  */
@@ -3671,6 +3673,7 @@ Image_colormap(int argc, VALUE *argv, VALUE self)
     Image *image;
     unsigned long idx;
     PixelColor color, new_color;
+    Pixel pixel;
 
     image = rm_check_readable(self);
 
@@ -3700,17 +3703,18 @@ Image_colormap(int argc, VALUE *argv, VALUE self)
         {
             rb_raise(rb_eIndexError, "index out of range");
         }
-        return rm_pixelcolor_to_color_name(image, &image->colormap[idx]);
+        return colormap_color_name(image, &image->colormap[idx]);
     }
 
     // This is a "set" operation. Things are different.
 
-    rm_check_frozen(self);
+    image = rm_check_frozen(self);
 
     // Replace with new color? The arg can be either a color name or
     // a Magick::Pixel.
-    Color_to_PixelColor(&new_color, argv[1]);
+    color_to_image_pixel(image->colorspace, &pixel, argv[1]);
     image = rm_check_frozen(self);
+    pixel_to_colormap_color(image, &new_color, &pixel);
 
     // Handle no colormap or current colormap too small.
     if (!image->colormap || idx > image->colors-1)
@@ -3741,7 +3745,7 @@ Image_colormap(int argc, VALUE *argv, VALUE self)
     color = image->colormap[idx];
     image->colormap[idx] = new_color;
 
-    return rm_pixelcolor_to_color_name(image, &color);
+    return colormap_color_name(image, &color);
 }
 
 /**
@@ -16411,6 +16415,83 @@ pixel_to_magickpixel(Image *image, MagickPixel *mpp, const Pixel *color)
 #else
     mpp->index   = color->black;
     mpp->opacity = color->opacity;
+#endif
+}
+
+
+/**
+ * Return the name of a colormap color of an image. The name is in sRGB, even for
+ * a CMYK image.
+ *
+ * No Ruby usage (internal function)
+ *
+ * Notes:
+ *   - The colormap of ImageMagick 6 has no black.
+ *
+ * @param image the image
+ * @param color the colormap color
+ * @return the color name
+ */
+static VALUE
+colormap_color_name(Image *image, const PixelColor *color)
+{
+    PixelColor srgb_color = *color;
+#if defined(IMAGEMAGICK_7)
+    Pixel srgb;
+#endif
+
+    if (image->colorspace != CMYKColorspace)
+    {
+        return rm_pixelcolor_to_color_name(image, &srgb_color);
+    }
+
+#if defined(IMAGEMAGICK_7)
+    srgb_color.colorspace = CMYKColorspace;
+    pixelcolor_to_colorspace(&srgb, &srgb_color, sRGBColorspace);
+    srgb_color.red   = srgb.red;
+    srgb_color.green = srgb.green;
+    srgb_color.blue  = srgb.blue;
+#else
+    srgb_color.red   = QuantumRange - color->red;
+    srgb_color.green = QuantumRange - color->green;
+    srgb_color.blue  = QuantumRange - color->blue;
+#endif
+    return rm_srgb_pixelcolor_to_color_name(image, &srgb_color);
+}
+
+
+/**
+ * Convert a Pixel with the channel values of an image to a colormap color.
+ *
+ * No Ruby usage (internal function)
+ *
+ * Notes:
+ *   - The colormap of ImageMagick 6 has no black, so the black of a CMYK image
+ *     is added to the other channels to keep the color.
+ *
+ * @param image the image
+ * @param color the PixelColor to set
+ * @param pixel the Pixel
+ */
+static void
+pixel_to_colormap_color(Image *image, PixelColor *color, const Pixel *pixel)
+{
+#if defined(IMAGEMAGICK_7)
+    pixel_to_magickpixel(image, color, pixel);
+    rm_set_pixelinfo_alpha(color, pixel->alpha);
+#else
+    color->red     = pixel->red;
+    color->green   = pixel->green;
+    color->blue    = pixel->blue;
+    color->opacity = pixel->opacity;
+    if (image->colorspace == CMYKColorspace)
+    {
+        double black = QuantumScale * pixel->black;
+
+        color->red   = ClampToQuantum(pixel->red + (QuantumRange - pixel->red) * black);
+        color->green = ClampToQuantum(pixel->green + (QuantumRange - pixel->green) * black);
+        color->blue  = ClampToQuantum(pixel->blue + (QuantumRange - pixel->blue) * black);
+    }
 #endif
 }
 
