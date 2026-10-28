@@ -46,4 +46,52 @@ RSpec.describe Magick::Image, "#colormap" do
     expect(pc_image.colors).to eq(idx + 1)
     expect(pc_image.colormap(idx)).to eq('#FF0000FF')
   end
+
+  def cmyk_colormap_image
+    image = described_class.new(1, 1) do |info|
+      info.depth = 16
+      info.background_color = 'red'
+    end
+    image.colorspace = Magick::CMYKColorspace
+    image.quantize(2, Magick::CMYKColorspace)
+  end
+
+  it 'returns the name in sRGB for a CMYK image' do
+    image = cmyk_colormap_image
+
+    expect(image.colormap(0)).to eq('#FFFF00000000FFFF')
+    expect(image.colormap(0, 'green')).to eq('#FFFF00000000FFFF')
+  end
+
+  it 'converts a color name to CMYK for a CMYK image' do
+    image = cmyk_colormap_image
+    image.colormap(0, 'green')
+
+    expect(image.colormap(0)).to eq('#000080800000FFFF')
+    image.colormap(0, image.colormap(0))
+    expect(image.colormap(0)).to eq('#000080800000FFFF')
+  end
+
+  it 'uses a Pixel as the channel values of a CMYK image' do
+    image = cmyk_colormap_image
+    image.colormap(0, Magick::Pixel.new(Magick::QuantumRange, 0, Magick::QuantumRange))
+
+    expect(image.colormap(0)).to eq('#0000FFFF0000FFFF')
+  end
+
+  it 'keeps the black of a Pixel for a CMYK image' do
+    image = cmyk_colormap_image
+    pixel = Magick::Pixel.new(Magick::QuantumRange, 0, Magick::QuantumRange)
+    pixel.black = Magick::QuantumRange / 2
+    image.colormap(0, pixel)
+
+    expect(image.colormap(0)).to eq('#000080000000FFFF')
+  end
+
+  it 'converts a CMYK color name to sRGB for other images' do
+    image = described_class.new(1, 1) { |info| info.depth = 16 }.quantize(2)
+    image.colormap(0, 'cmyk(100%,0,0,0)')
+
+    expect(image.colormap(0)).to eq('#0000FFFFFFFFFFFF')
+  end
 end
