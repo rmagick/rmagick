@@ -19,9 +19,9 @@ RSpec.describe Magick::Pixel, '.from_color' do
   end
 
   it 'keeps the alpha of a CMYK color name' do
-    pixel = described_class.from_color('cmyka(100%,0,0,0,0.5)')
+    pixel = described_class.from_color('cmyka(100%,0,0,0,0.2)')
 
     expect([pixel.red, pixel.green, pixel.blue, pixel.black]).to eq([0, Magick::QuantumRange, Magick::QuantumRange, 0])
-    expect(pixel.alpha).to eq(Magick::QuantumRange / 2)
+    expect(pixel.alpha).to eq(Magick::QuantumRange / 5)
   end
 end
