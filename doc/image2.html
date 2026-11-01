@@ -1010,14 +1010,15 @@ scanline = img.export_pixels(0, r, img.columns, 1, "RGB");
 
         <dd>
           The image does not have to be centered in the border. These two arguments specify the offset of the image from the upper-left outside corner of the
-          border.
+          border. Each offset must be at least <span class="arg">inner_bevel</span> + <span class="arg">outer_bevel</span>, and at most twice the width or
+          height less that sum.
         </dd>
 
         <dt>inner_bevel, outer_bevel</dt>
 
         <dd>
-          The width of the inner and outer shadows of the border. These values should be much smaller than the width and height and cannot be greater than 1/2
-          the lesser of the width or height.
+          The width of the inner and outer shadows of the border. Their sum must not exceed either the <span class="arg">x</span> or the
+          <span class="arg">y</span> offset of the image.
         </dd>
 
         <dt>color</dt>
