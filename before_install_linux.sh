@@ -2,12 +2,12 @@
 
 set -euox pipefail
 
-if [ -v STYLE_CHECKS ]; then
+if [ -n "${STYLE_CHECKS:-}" ]; then
   set +ux
   exit 0
 fi
 
-if [ ! -v IMAGEMAGICK_VERSION ]; then
+if [ -z "${IMAGEMAGICK_VERSION:-}" ]; then
   echo "you must specify an ImageMagick version."
   echo "example: 'IMAGEMAGICK_VERSION=6.9.13-43 bash ./before_install_linux.sh'"
   exit 1
@@ -24,10 +24,14 @@ sudo apt-get install -y build-essential libx11-dev libxext-dev zlib1g-dev \
   libtiff5-dev libwebp-dev liblqr-1-0-dev libglib2.0-dev gsfonts ghostscript
 
 project_dir=$(pwd)
-build_dir="${project_dir}/build-ImageMagick/ImageMagick-${IMAGEMAGICK_VERSION}"
-if [ -v CONFIGURE_OPTIONS ]; then
-  build_dir="${build_dir}-${CONFIGURE_OPTIONS}"
+
+options=(--with-magick-plus-plus=no --disable-docs)
+if [ -n "${CONFIGURE_OPTIONS:-}" ]; then
+  read -r -d '' -a extra_options <<< "${CONFIGURE_OPTIONS}" || true
+  options+=(${extra_options[@]+"${extra_options[@]}"})
 fi
+options_hash=$(printf '%s\0' "${options[@]}" | cksum | cut -d ' ' -f 1)
+build_dir="${project_dir}/build-ImageMagick/ImageMagick-${IMAGEMAGICK_VERSION}-${options_hash}"
 
 build_imagemagick() {
   mkdir -p build-ImageMagick
@@ -45,13 +49,8 @@ build_imagemagick() {
   rm "ImageMagick-${IMAGEMAGICK_VERSION}.tar.gz"
   mv "${archive_dir}" "${build_dir}"
 
-  options="--with-magick-plus-plus=no --disable-docs"
-  if [ -v CONFIGURE_OPTIONS ]; then
-    options="${CONFIGURE_OPTIONS} ${options}"
-  fi
-
   cd "${build_dir}"
-  ./configure --prefix=/usr "${options}"
+  ./configure --prefix=/usr "${options[@]}"
   make -j$(nproc)
 }
 

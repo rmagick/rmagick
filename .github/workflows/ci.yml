@@ -69,7 +69,7 @@ jobs:
       uses: actions/cache@v6
       with:
         path: ./build-ImageMagick
-        key: v1-${{ runner.os }}-${{ steps.runner-image.outputs.id }}-imagemagick-${{ matrix.imagemagick-version.full }}
+        key: v1-${{ runner.os }}-${{ steps.runner-image.outputs.id }}-imagemagick-${{ matrix.imagemagick-version.full }}-${{ hashFiles('before_install_*.sh') }}
     - name: Update/Install packages (Linux)
       if: runner.os == 'Linux'
       run: |
@@ -108,7 +108,7 @@ jobs:
       uses: actions/cache@v6
       with:
         path: ./build-ImageMagick
-        key: v1-${{ runner.os }}-${{ steps.runner-image.outputs.id }}-imagemagick-${{ matrix.imagemagick-version.full }}
+        key: v1-${{ runner.os }}-${{ steps.runner-image.outputs.id }}-imagemagick-${{ matrix.imagemagick-version.full }}-${{ hashFiles('before_install_*.sh') }}
     - name: Update/Install packages
       run: |
         IMAGEMAGICK_VERSION=${{ matrix.imagemagick-version.full }} ./before_install_linux.sh

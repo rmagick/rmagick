@@ -2,12 +2,12 @@
 
 set -euox pipefail
 
-if [ -v STYLE_CHECKS ]; then
+if [ -n "${STYLE_CHECKS:-}" ]; then
   set +ux
   exit 0
 fi
 
-if [ ! -v IMAGEMAGICK_VERSION ]; then
+if [ -z "${IMAGEMAGICK_VERSION:-}" ]; then
   echo "you must specify an ImageMagick version."
   echo "example: 'IMAGEMAGICK_VERSION=6.9.13-43 bash ./before_install_osx.sh'"
   exit 1
@@ -21,10 +21,19 @@ export LDFLAGS="-L$(brew --prefix jpeg)/lib -I$(brew --prefix jpeg-xl)/lib -L$(b
 export CPPFLAGS="-I$(brew --prefix jpeg)/include -I$(brew --prefix jpeg-xl)/include -I$(brew --prefix openexr)/include/OpenEXR -I$(brew --prefix libtiff)/include -I$(brew --prefix zlib)/include -I$(brew --prefix zstd)/include -I$(brew --prefix glib)/include/glib-2.0 -I$(brew --prefix glib)/lib/glib-2.0/include -I$(brew --prefix xz)/include -I$(brew --prefix harfbuzz)/include"
 
 project_dir=$(pwd)
-build_dir="${project_dir}/build-ImageMagick/ImageMagick-${IMAGEMAGICK_VERSION}"
-if [ -v CONFIGURE_OPTIONS ]; then
-  build_dir="${build_dir}-${CONFIGURE_OPTIONS}"
+
+options=(
+  --with-magick-plus-plus=no
+  --disable-docs
+  --with-gs-font-dir=/opt/homebrew/share/ghostscript/fonts
+  --without-raw
+)
+if [ -n "${CONFIGURE_OPTIONS:-}" ]; then
+  read -r -d '' -a extra_options <<< "${CONFIGURE_OPTIONS}" || true
+  options+=(${extra_options[@]+"${extra_options[@]}"})
 fi
+options_hash=$(printf '%s\0' "${options[@]}" | cksum | cut -d ' ' -f 1)
+build_dir="${project_dir}/build-ImageMagick/ImageMagick-${IMAGEMAGICK_VERSION}-${options_hash}"
 
 build_imagemagick() {
   mkdir -p build-ImageMagick
@@ -42,17 +51,8 @@ build_imagemagick() {
   rm "ImageMagick-${IMAGEMAGICK_VERSION}.tar.gz"
   mv "${archive_dir}" "${build_dir}"
 
-  options="--with-magick-plus-plus=no --disable-docs"
-  if [ -v CONFIGURE_OPTIONS ]; then
-    options="${CONFIGURE_OPTIONS} ${options}"
-  fi
-
   cd "${build_dir}"
-  ./configure \
-    --prefix=/usr/local \
-    "${options}" \
-    --with-gs-font-dir=/opt/homebrew/share/ghostscript/fonts \
-    --without-raw
+  ./configure --prefix=/usr/local "${options[@]}"
   make -j$(sysctl -n hw.logicalcpu)
 }
 
