@@ -7995,11 +7995,13 @@ frame_side_fits(size_t image_size, long size, ssize_t offset, ssize_t inner_beve
 /**
  * Add a simulated three-dimensional border around the image.
  *
- * @overload frame(width = self.columns+25*2, height = self.rows+25*2, x = 25, y = 25, inner_bevel = 6, outer_bevel = 6, color = self.matte_color)
+ * @overload frame(width = 25, height = 25, x = 25, y = 25, inner_bevel = 6, outer_bevel = 6, color = self.matte_color)
  *   @param width [Numeric] The width of the left and right sides.
  *   @param height [Numeric] The height of the top and bottom sides.
- *   @param x [Numeric] The offset of the image from the upper-left outside corner of the border.
- *   @param y [Numeric] The offset of the image from the upper-left outside corner of the border.
+ *   @param x [Numeric] The offset of the image from the upper-left outside corner of the border. It
+ *     must be at least inner_bevel + outer_bevel, and at most twice the width less that sum.
+ *   @param y [Numeric] The offset of the image from the upper-left outside corner of the border. It
+ *     must be at least inner_bevel + outer_bevel, and at most twice the height less that sum.
  *   @param inner_bevel [Numeric] The width of the inner shadows of the border.
  *   @param outer_bevel [Numeric] The width of the outer shadows of the border.
  *   @param color [Magick::Pixel, String] The border color.
