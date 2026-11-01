@@ -60,7 +60,6 @@ static size_t pixel_buffer_count(size_t, size_t, size_t);
 static void color_to_image_pixel(ColorspaceType, Pixel *, VALUE);
 static PixelColor image_border_color(const Image *);
 static void border_color_to_colorspace(const Image *, Pixel *, ColorspaceType);
-static VALUE attribute_color_name(Image *, const PixelColor *);
 static VALUE colormap_color_name(Image *, const PixelColor *);
 static void pixel_to_colormap_color(Image *, PixelColor *, const Pixel *);
 static Image *color_to_magickpixel(VALUE, MagickPixel *, VALUE);
@@ -1621,7 +1620,7 @@ VALUE
 Image_background_color(VALUE self)
 {
     Image *image = rm_check_readable(self);
-    return attribute_color_name(image, &image->background_color);
+    return rm_srgb_pixelcolor_to_color_name(image, &image->background_color);
 }
 
 
@@ -2509,7 +2508,7 @@ Image_border_color(VALUE self)
     Image *image = rm_check_readable(self);
     PixelColor border_color = image_border_color(image);
 
-    return attribute_color_name(image, &border_color);
+    return rm_srgb_pixelcolor_to_color_name(image, &border_color);
 }
 
 
@@ -10353,7 +10352,7 @@ VALUE
 Image_matte_color(VALUE self)
 {
     Image *image = rm_check_readable(self);
-    return attribute_color_name(image, &image->matte_color);
+    return rm_srgb_pixelcolor_to_color_name(image, &image->matte_color);
 }
 
 /**
@@ -16341,39 +16340,6 @@ border_color_to_colorspace(const Image *image, Pixel *color, ColorspaceType colo
 
 
 /**
- * Return the name of a color attribute of an image, such as the background color.
- * The name is in sRGB, even for a CMYK image.
- *
- * No Ruby usage (internal function)
- *
- * Notes:
- *   - A color in CMYK is converted to sRGB. ImageMagick 7 keeps a CMYK color
- *     name in CMYK. Other colors are named as they are.
- *
- * @param image the image
- * @param color the color attribute
- * @return the color name
- */
-static VALUE
-attribute_color_name(Image *image, const PixelColor *color)
-{
-    PixelColor srgb_color = *color;
-#if defined(IMAGEMAGICK_7)
-    Pixel srgb;
-
-    if (color->colorspace == CMYKColorspace)
-    {
-        pixelcolor_to_colorspace(&srgb, color, sRGBColorspace);
-        srgb_color.red   = srgb.red;
-        srgb_color.green = srgb.green;
-        srgb_color.blue  = srgb.blue;
-    }
-#endif
-    return rm_srgb_pixelcolor_to_color_name(image, &srgb_color);
-}
-
-
-/**
  * Convert a color name to CMYK for a CMYK image, and a CMYK color name to sRGB
  * for other images.
  *
@@ -16497,7 +16463,7 @@ colormap_color_name(Image *image, const PixelColor *color)
     srgb_color.green = QuantumRange - color->green;
     srgb_color.blue  = QuantumRange - color->blue;
 #endif
-    return attribute_color_name(image, &srgb_color);
+    return rm_srgb_pixelcolor_to_color_name(image, &srgb_color);
 }
 
 
@@ -16791,7 +16757,7 @@ VALUE
 Image_transparent_color(VALUE self)
 {
     Image *image = rm_check_readable(self);
-    return attribute_color_name(image, &image->transparent_color);
+    return rm_srgb_pixelcolor_to_color_name(image, &image->transparent_color);
 }
 
 

@@ -1226,6 +1226,7 @@ extern void   rm_sync_image_options(Image *, Info *, VALUE);
 extern void   rm_split(Image *);
 extern void   rm_magick_error(const char *);
 #if defined(IMAGEMAGICK_7)
+extern void   rm_pixelinfo_cmyk_to_rgb(PixelInfo *);
 extern void   rm_set_pixelinfo_alpha(PixelInfo *, const MagickRealType);
 #endif
 

@@ -646,13 +646,7 @@ Pixel_from_color(VALUE klass ATTRIBUTE_UNUSED, VALUE name)
     }
 
 #if defined(IMAGEMAGICK_7)
-    if (pp.colorspace == CMYKColorspace)
-    {
-        pp.red   = ClampToQuantum(QuantumRange - (QuantumScale * pp.red * (QuantumRange - pp.black) + pp.black));
-        pp.green = ClampToQuantum(QuantumRange - (QuantumScale * pp.green * (QuantumRange - pp.black) + pp.black));
-        pp.blue  = ClampToQuantum(QuantumRange - (QuantumScale * pp.blue * (QuantumRange - pp.black) + pp.black));
-        pp.black = 0;
-    }
+    rm_pixelinfo_cmyk_to_rgb(&pp);
 #endif
 
     return Pixel_from_PixelColor(&pp);
