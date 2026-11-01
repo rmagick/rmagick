@@ -7977,7 +7977,7 @@ Image_format_eq(VALUE self, VALUE magick)
 VALUE
 Image_frame(int argc, VALUE *argv, VALUE self)
 {
-    Image *image, *new_image;
+    Image *image, *clone = NULL, *new_image;
     ExceptionInfo *exception;
     FrameInfo frame_info;
     PixelColor matte_color;
@@ -8015,20 +8015,26 @@ Image_frame(int argc, VALUE *argv, VALUE self)
     }
 
     image = rm_check_readable(self);
-    if (argc == 7)
-    {
-        image->matte_color = matte_color;
-    }
     frame_info.width = image->columns + 2*width;
     frame_info.height = image->rows + 2*height;
 
     exception = AcquireExceptionInfo();
+    if (argc == 7)
+    {
+        clone = shallow_clone(image, exception);
+        clone->matte_color = matte_color;
+        image = clone;
+    }
 #if defined(IMAGEMAGICK_7)
     DECLARE_GVL_CALL(call, FrameImage, image, &frame_info, image->compose, exception);
 #else
     DECLARE_GVL_CALL(call, FrameImage, image, &frame_info, exception);
 #endif
-    new_image = call.read(self).release(exception).run<Image *>();
+    new_image = call.read(self).destroy(clone).release(exception).run<Image *>();
+    if (clone)
+    {
+        DestroyImage(clone);
+    }
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
