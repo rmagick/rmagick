@@ -18,4 +18,12 @@ RSpec.describe Magick::Image::Info, '#border_color' do
     expect { info.border_color = 'red' }.not_to raise_error
     expect(info.border_color).to eq('#FF0000FF')
   end
+
+  it 'returns a CMYK color name in RGB' do
+    info = described_class.new
+    info.depth = 16
+    info.border_color = 'cmyk(100%,0,0,0)'
+
+    expect(info.border_color).to eq('#0000FFFFFFFFFFFF')
+  end
 end

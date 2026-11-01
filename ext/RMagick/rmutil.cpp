@@ -846,38 +846,46 @@ rm_pixelcolor_to_color_name(Image *image, PixelColor *color)
 
 
 /**
- * Map the sRGB color intensity to a named color, whatever the colorspace of the
+ * Map the color intensity to a named color in sRGB, whatever the colorspace of the
  * image is.
  *
  * No Ruby usage (internal function)
  *
+ * Notes:
+ *   - A color in CMYK is converted to sRGB first. ImageMagick 7 keeps a CMYK
+ *     color name in CMYK.
+ *
  * @param image the image
- * @param color the sRGB color intensity as a PixelColor
+ * @param color the color intensity as a PixelColor
  * @return the named color as a String
  * @see rm_pixelcolor_to_color_name
  */
 VALUE
 rm_srgb_pixelcolor_to_color_name(Image *image, PixelColor *color)
 {
-    return pixelcolor_to_color_name(image, color, sRGBColorspace);
+    PixelColor srgb_color = *color;
+
+#if defined(IMAGEMAGICK_7)
+    rm_pixelinfo_cmyk_to_rgb(&srgb_color);
+#endif
+    return pixelcolor_to_color_name(image, &srgb_color, sRGBColorspace);
 }
 
 
 /**
- * Map the color intensity to a named color.
+ * Map the color intensity to a named color in sRGB, as
+ * rm_srgb_pixelcolor_to_color_name does.
  *
  * No Ruby usage (internal function)
  *
  * Notes:
- *   - Simply create an Image from the Info, call QueryColorname, and then
+ *   - Create an Image from the Info to use the depth of the Info, and then
  *     destroy the Image.
- *   - The default depth is always used, and the matte value is set to False,
- *     which means "don't use the alpha channel".
  *
  * @param info the info
  * @param color the color intensity as a PixelColor
  * @return the named color as a String
- * @see rm_pixelcolor_to_color_name
+ * @see rm_srgb_pixelcolor_to_color_name
  */
 VALUE
 rm_pixelcolor_to_color_name_info(Info *info, PixelColor *color)
@@ -897,7 +905,7 @@ rm_pixelcolor_to_color_name_info(Info *info, PixelColor *color)
     image->matte = MagickFalse;
 #endif
 
-    color_name = rm_pixelcolor_to_color_name(image, color);
+    color_name = rm_srgb_pixelcolor_to_color_name(image, color);
     DestroyImage(image);
 
     return color_name;
@@ -1087,6 +1095,29 @@ rm_magick_error(const char *msg)
 }
 
 #if defined(IMAGEMAGICK_7)
+/**
+ * Convert a color in CMYK to RGB with the formula of ConvertCMYKToRGB in
+ * ImageMagick. A color in another colorspace is left as it is.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param pixel the pixel color to convert
+ */
+void
+rm_pixelinfo_cmyk_to_rgb(PixelInfo *pixel)
+{
+    if (pixel->colorspace != CMYKColorspace)
+    {
+        return;
+    }
+    pixel->red   = ClampToQuantum(QuantumRange - (QuantumScale * pixel->red * (QuantumRange - pixel->black) + pixel->black));
+    pixel->green = ClampToQuantum(QuantumRange - (QuantumScale * pixel->green * (QuantumRange - pixel->black) + pixel->black));
+    pixel->blue  = ClampToQuantum(QuantumRange - (QuantumScale * pixel->blue * (QuantumRange - pixel->black) + pixel->black));
+    pixel->black = 0;
+    pixel->colorspace = sRGBColorspace;
+}
+
+
 /**
  * Sets the alpha channel of a pixel color
  *

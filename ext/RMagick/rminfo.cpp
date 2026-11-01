@@ -560,7 +560,8 @@ Info_authenticate_eq(VALUE self, VALUE passwd_arg)
 
 
 /**
- * Return the name of the background color as a String
+ * Return the name of the background color as a String. A CMYK color is named in
+ * sRGB.
  *
  * @return [String] the name of the background color
  * @see Image#background_color
@@ -593,7 +594,7 @@ Info_background_color_eq(VALUE self, VALUE bc_arg)
 }
 
 /**
- * Return the name of the border color as a String.
+ * Return the name of the border color as a String. A CMYK color is named in sRGB.
  *
  * @return [String] the border color name
  * @see Image#border_color
@@ -1638,7 +1639,7 @@ VALUE Info_label_eq(VALUE self, VALUE string)
 }
 
 /**
- * Return the name of the matte color as a String.
+ * Return the name of the matte color as a String. A CMYK color is named in sRGB.
  *
  * @return [String] the name of the matte color
  * @see Image#matte_color
@@ -2237,7 +2238,7 @@ Info_tile_offset_eq(VALUE self, VALUE offset)
 
 
 /**
- * Return the name of the transparent color.
+ * Return the name of the transparent color. A CMYK color is named in sRGB.
  *
  * @return [String] the name of the transparent color
  * @see Image#transparent_color
