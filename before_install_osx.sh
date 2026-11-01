@@ -2,11 +2,6 @@
 
 set -euox pipefail
 
-if [ -n "${STYLE_CHECKS:-}" ]; then
-  set +ux
-  exit 0
-fi
-
 if [ -z "${IMAGEMAGICK_VERSION:-}" ]; then
   echo "you must specify an ImageMagick version."
   echo "example: 'IMAGEMAGICK_VERSION=6.9.13-43 bash ./before_install_osx.sh'"
