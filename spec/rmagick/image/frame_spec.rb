@@ -21,6 +21,29 @@ RSpec.describe Magick::Image, '#frame' do
     expect { image.frame(50, 50, 25, 25, 6, 6, red, 2) }.to raise_error(ArgumentError)
   end
 
+  it 'raises an error when the offset of the image and the bevels do not fit in the frame' do
+    image = described_class.new(20, 20)
+    long_max = [0].pack('l!').bytesize < 8 ? (2**31) - 1 : (2**63) - 1
+
+    expect { image.frame(30, 30, 3, 4, 2, 2) }.to raise_error(ArgumentError, /invalid frame geometry/)
+    expect { image.frame(30, 30, 4, 3, 2, 2) }.to raise_error(ArgumentError, /invalid frame geometry/)
+    expect { image.frame(10, 10, 5, 5) }.to raise_error(ArgumentError, /invalid frame geometry/)
+    expect { image.frame(10, 10, -5, -5) }.to raise_error(ArgumentError, /invalid frame geometry/)
+    expect { image.frame(10, 10, 17, 4, 2, 2) }.to raise_error(ArgumentError, /invalid frame geometry/)
+    expect { image.frame(10, 10, 4, 17, 2, 2) }.to raise_error(ArgumentError, /invalid frame geometry/)
+    expect { image.frame(10, 42, long_max, 42, 0, 42) }.to raise_error(ArgumentError, /invalid frame geometry/)
+    expect { image.frame(30, 30, 12, 12, -6, 6) }.to raise_error(ArgumentError, /invalid frame geometry/)
+    expect(image.frame(10, 10, 16, 16, 2, 2).columns).to eq(40)
+    expect(image.frame(10, 10, 4, 4, 2, 2).columns).to eq(40)
+  end
+
+  it 'raises an error when the frame size overflows', if: [0].pack('l!').bytesize == 8 do
+    image = described_class.new(4, 4)
+
+    expect { image.frame((2**63) - 1, 4, (2**63) - 1, 4, 2, 2) }.to raise_error(ArgumentError, /invalid frame geometry/)
+    expect { image.frame(4, (2**63) - 1, 4, (2**63) - 1, 2, 2) }.to raise_error(ArgumentError, /invalid frame geometry/)
+  end
+
   it 'does not change the matte color of the image' do
     image = described_class.new(4, 4) { |info| info.depth = 16 }
     image.freeze
