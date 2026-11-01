@@ -7962,6 +7962,37 @@ Image_format_eq(VALUE self, VALUE magick)
 
 
 /**
+ * Check that the offset of the image and the bevels fit in a side of the frame,
+ * as FrameImage assumes, and that the frame size fits in ssize_t, whose maximum
+ * is SIZE_MAX / 2.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param image_size the width or the height of the image
+ * @param size the width of the left and right sides, or the height of the top and
+ *   bottom sides
+ * @param offset the x or the y offset of the image
+ * @param inner_bevel the width of the inner bevel
+ * @param outer_bevel the width of the outer bevel
+ * @return true if they fit
+ */
+static bool
+frame_side_fits(size_t image_size, long size, ssize_t offset, ssize_t inner_bevel, ssize_t outer_bevel)
+{
+    unsigned long long bevels;
+
+    if (size < 0 || offset < 0 || inner_bevel < 0 || outer_bevel < 0 ||
+        (unsigned long long) size > (SIZE_MAX / 2 - image_size) / 2)
+    {
+        return false;
+    }
+    bevels = (unsigned long long) inner_bevel + (unsigned long long) outer_bevel;
+    return (unsigned long long) offset >= bevels &&
+           (unsigned long long) offset + bevels <= 2 * (unsigned long long) size;
+}
+
+
+/**
  * Add a simulated three-dimensional border around the image.
  *
  * @overload frame(width = self.columns+25*2, height = self.rows+25*2, x = 25, y = 25, inner_bevel = 6, outer_bevel = 6, color = self.matte_color)
@@ -7973,6 +8004,8 @@ Image_format_eq(VALUE self, VALUE magick)
  *   @param outer_bevel [Numeric] The width of the outer shadows of the border.
  *   @param color [Magick::Pixel, String] The border color.
  *   @return [Magick::Image] a new image.
+ *   @raise [ArgumentError] if the offset of the image and the bevels do not fit in the frame, or
+ *     the frame is too large.
  */
 VALUE
 Image_frame(int argc, VALUE *argv, VALUE self)
@@ -8015,8 +8048,15 @@ Image_frame(int argc, VALUE *argv, VALUE self)
     }
 
     image = rm_check_readable(self);
-    frame_info.width = image->columns + 2*width;
-    frame_info.height = image->rows + 2*height;
+    if (!frame_side_fits(image->columns, width, frame_info.x, frame_info.inner_bevel, frame_info.outer_bevel) ||
+        !frame_side_fits(image->rows, height, frame_info.y, frame_info.inner_bevel, frame_info.outer_bevel))
+    {
+        rb_raise(rb_eArgError, "invalid frame geometry: width=%ld, height=%ld, x=%ld, y=%ld, inner_bevel=%ld, outer_bevel=%ld",
+                 width, height, (long) frame_info.x, (long) frame_info.y,
+                 (long) frame_info.inner_bevel, (long) frame_info.outer_bevel);
+    }
+    frame_info.width = image->columns + 2 * (size_t) width;
+    frame_info.height = image->rows + 2 * (size_t) height;
 
     exception = AcquireExceptionInfo();
     if (argc == 7)
