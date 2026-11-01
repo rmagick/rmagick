@@ -14,4 +14,16 @@ RSpec.describe Magick::Image, "#color_reset!" do
     image.freeze
     expect { image.color_reset!('red') }.to raise_error(FrozenError)
   end
+
+  it 'restores the background color of a CMYK image' do
+    image = described_class.new(1, 1) { |info| info.depth = 16 }
+    image.colorspace = Magick::CMYKColorspace
+    image.background_color = 'blue'
+
+    image.color_reset!('red')
+
+    expect(image.background_color).to eq('#00000000FFFFFFFF')
+    image.colorspace = Magick::SRGBColorspace
+    expect(image.to_color(image.pixel_color(0, 0))).to eq('red')
+  end
 end

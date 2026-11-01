@@ -44,4 +44,11 @@ RSpec.describe Magick::Image, '#border_color' do
 
     expect(image.border_color).to eq('#FFFF00000000FFFF')
   end
+
+  it 'rounds the channels of the color' do
+    image = described_class.new(1, 1) { |info| info.depth = 16 }
+    image.border_color = 'hsl(0,50%,50%)'
+
+    expect(image.border_color).to eq('#BFFF40004000FFFF')
+  end
 end
