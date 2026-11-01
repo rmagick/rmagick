@@ -58,7 +58,9 @@ static void rm_image_free(void *ptr);
 static size_t rm_image_memsize(const void *ptr);
 static size_t pixel_buffer_count(size_t, size_t, size_t);
 static void color_to_image_pixel(ColorspaceType, Pixel *, VALUE);
+static PixelColor image_border_color(const Image *);
 static void border_color_to_colorspace(const Image *, Pixel *, ColorspaceType);
+static VALUE attribute_color_name(Image *, const PixelColor *);
 static VALUE colormap_color_name(Image *, const PixelColor *);
 static void pixel_to_colormap_color(Image *, PixelColor *, const Pixel *);
 static Image *color_to_magickpixel(VALUE, MagickPixel *, VALUE);
@@ -1610,7 +1612,8 @@ Image_auto_orient_bang(VALUE self)
 
 
 /**
- * Return the name of the background color as a String.
+ * Return the name of the background color as a String. The name is in sRGB, even
+ * for a CMYK image.
  *
  * @return [String] the background color
  */
@@ -1618,7 +1621,7 @@ VALUE
 Image_background_color(VALUE self)
 {
     Image *image = rm_check_readable(self);
-    return rm_pixelcolor_to_color_name(image, &image->background_color);
+    return attribute_color_name(image, &image->background_color);
 }
 
 
@@ -2504,14 +2507,9 @@ VALUE
 Image_border_color(VALUE self)
 {
     Image *image = rm_check_readable(self);
-    PixelColor border_color = image->border_color;
-    Pixel srgb;
+    PixelColor border_color = image_border_color(image);
 
-    border_color_to_colorspace(image, &srgb, sRGBColorspace);
-    border_color.red   = srgb.red;
-    border_color.green = srgb.green;
-    border_color.blue  = srgb.blue;
-    return rm_srgb_pixelcolor_to_color_name(image, &border_color);
+    return attribute_color_name(image, &border_color);
 }
 
 
@@ -10347,7 +10345,7 @@ Image_mask(int argc, VALUE *argv, VALUE self)
 
 
 /**
- * Return the matte color.
+ * Return the matte color. The name is in sRGB, even for a CMYK image.
  *
  * @return [String] the matte color
  */
@@ -10355,7 +10353,7 @@ VALUE
 Image_matte_color(VALUE self)
 {
     Image *image = rm_check_readable(self);
-    return rm_pixelcolor_to_color_name(image, &image->matte_color);
+    return attribute_color_name(image, &image->matte_color);
 }
 
 /**
@@ -16300,16 +16298,15 @@ pixelcolor_to_colorspace(Pixel *color, const PixelColor *parsed, ColorspaceType 
 
 
 /**
- * Convert the border color of an image to a colorspace.
+ * Return the border color of an image.
  *
  * No Ruby usage (internal function)
  *
  * @param image the image
- * @param color the Pixel to modify
- * @param colorspace the colorspace to convert to
+ * @return the border color
  */
-static void
-border_color_to_colorspace(const Image *image, Pixel *color, ColorspaceType colorspace)
+static PixelColor
+image_border_color(const Image *image)
 {
     PixelColor border_color = image->border_color;
 
@@ -16321,7 +16318,58 @@ border_color_to_colorspace(const Image *image, Pixel *color, ColorspaceType colo
         border_color.colorspace = image->colorspace;
     }
 #endif
+    return border_color;
+}
+
+
+/**
+ * Convert the border color of an image to a colorspace.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param image the image
+ * @param color the Pixel to modify
+ * @param colorspace the colorspace to convert to
+ */
+static void
+border_color_to_colorspace(const Image *image, Pixel *color, ColorspaceType colorspace)
+{
+    PixelColor border_color = image_border_color(image);
+
     pixelcolor_to_colorspace(color, &border_color, colorspace);
+}
+
+
+/**
+ * Return the name of a color attribute of an image, such as the background color.
+ * The name is in sRGB, even for a CMYK image.
+ *
+ * No Ruby usage (internal function)
+ *
+ * Notes:
+ *   - A color in CMYK is converted to sRGB. ImageMagick 7 keeps a CMYK color
+ *     name in CMYK. Other colors are named as they are.
+ *
+ * @param image the image
+ * @param color the color attribute
+ * @return the color name
+ */
+static VALUE
+attribute_color_name(Image *image, const PixelColor *color)
+{
+    PixelColor srgb_color = *color;
+#if defined(IMAGEMAGICK_7)
+    Pixel srgb;
+
+    if (color->colorspace == CMYKColorspace)
+    {
+        pixelcolor_to_colorspace(&srgb, color, sRGBColorspace);
+        srgb_color.red   = srgb.red;
+        srgb_color.green = srgb.green;
+        srgb_color.blue  = srgb.blue;
+    }
+#endif
+    return rm_srgb_pixelcolor_to_color_name(image, &srgb_color);
 }
 
 
@@ -16436,9 +16484,6 @@ static VALUE
 colormap_color_name(Image *image, const PixelColor *color)
 {
     PixelColor srgb_color = *color;
-#if defined(IMAGEMAGICK_7)
-    Pixel srgb;
-#endif
 
     if (image->colorspace != CMYKColorspace)
     {
@@ -16447,16 +16492,12 @@ colormap_color_name(Image *image, const PixelColor *color)
 
 #if defined(IMAGEMAGICK_7)
     srgb_color.colorspace = CMYKColorspace;
-    pixelcolor_to_colorspace(&srgb, &srgb_color, sRGBColorspace);
-    srgb_color.red   = srgb.red;
-    srgb_color.green = srgb.green;
-    srgb_color.blue  = srgb.blue;
 #else
     srgb_color.red   = QuantumRange - color->red;
     srgb_color.green = QuantumRange - color->green;
     srgb_color.blue  = QuantumRange - color->blue;
 #endif
-    return rm_srgb_pixelcolor_to_color_name(image, &srgb_color);
+    return attribute_color_name(image, &srgb_color);
 }
 
 
@@ -16741,7 +16782,8 @@ Image_transparent_chroma(int argc, VALUE *argv, VALUE self)
 
 
 /**
- * Return the name of the transparent color as a String.
+ * Return the name of the transparent color as a String. The name is in sRGB, even
+ * for a CMYK image.
  *
  * @return [String] the name of the transparent color
  */
@@ -16749,7 +16791,7 @@ VALUE
 Image_transparent_color(VALUE self)
 {
     Image *image = rm_check_readable(self);
-    return rm_pixelcolor_to_color_name(image, &image->transparent_color);
+    return attribute_color_name(image, &image->transparent_color);
 }
 
 
