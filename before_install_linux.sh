@@ -29,6 +29,7 @@ options_hash=$(printf '%s\0' "${options[@]}" | cksum | cut -d ' ' -f 1)
 build_dir="${project_dir}/build-ImageMagick/ImageMagick-${IMAGEMAGICK_VERSION}-${options_hash}"
 
 build_imagemagick() {
+  rm -rf "${build_dir}"
   mkdir -p build-ImageMagick
 
   version=(${IMAGEMAGICK_VERSION//./ })
@@ -47,9 +48,10 @@ build_imagemagick() {
   cd "${build_dir}"
   ./configure --prefix=/usr "${options[@]}"
   make -j$(nproc)
+  touch "${build_dir}/.build-complete"
 }
 
-if [ ! -d "${build_dir}" ]; then
+if [ ! -f "${build_dir}/.build-complete" ]; then
   build_imagemagick
 fi
 
@@ -58,5 +60,3 @@ sudo make install -j$(nproc)
 cd "${project_dir}"
 
 sudo ldconfig
-
-set +ux
