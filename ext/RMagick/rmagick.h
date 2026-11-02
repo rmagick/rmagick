@@ -1234,8 +1234,8 @@ typedef enum
 
 extern void   rm_check_exception(ExceptionInfo *, Image *, ErrorRetention);
 extern void   rm_ensure_result(Image *);
-extern Image *rm_clone_image(Image *, VALUE, VALUE held = Qnil);
-extern Image *rm_copy_image(Image *, VALUE, VALUE held = Qnil);
+extern Image *rm_clone_image(Image *, VALUE, VALUE held = Qnil, bool changes = false);
+extern Image *rm_copy_image(Image *, VALUE, VALUE held = Qnil, bool changes = false);
 extern VALUE  rm_exif_by_entry(Image *);
 extern VALUE  rm_exif_by_number(Image *);
 extern VALUE  rm_get_optional_arguments(VALUE);

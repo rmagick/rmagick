@@ -29,4 +29,21 @@ RSpec.describe Magick::ImageList, "#to_blob" do
       expect(File.exist?(File.join(dir, 'first.miff'))).to be(true)
     end
   end
+
+  it 'does not let an image be frozen while it copies a later frozen image' do
+    image = Magick::Image.new(2, 2)
+    image_list = described_class.new
+    image_list << image << Magick::Image.new(2, 2).freeze
+    error = nil
+    freeze = lambda do
+      image.freeze
+    rescue RuntimeError => e
+      error = e.message
+    end
+
+    during_call(freeze) { image_list.to_blob { |options| options.format = 'MIFF' } }
+
+    expect(error).to eq('object is in use by another fiber')
+    expect(image).not_to be_frozen
+  end
 end

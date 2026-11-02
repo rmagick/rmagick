@@ -11,12 +11,20 @@
 
 #include "rmagick.h"
 
+enum LinkMode
+{
+    LinkRead,
+    LinkChange,
+    LinkWrite
+};
+
 struct ImagesFromImageList_Args
 {
     VALUE imagelist;
-    VALUE *clones;
+    VALUE *linked;
     Image *images;
-    bool copy_frozen;
+    LinkMode mode;
+    VALUE held;
 };
 
 struct LinkedImages_Args
@@ -30,7 +38,7 @@ struct LinkedImages_Args
 
 static Image *clone_linked_imagelist(Image *, VALUE, ExceptionInfo *);
 static void sync_linked_image_options(Image *, Image *, Info *, VALUE, ExceptionInfo *);
-static Image *images_from_imagelist(VALUE, VALUE *, bool copy_frozen = false);
+static Image *images_from_imagelist(VALUE, VALUE *, LinkMode mode = LinkRead, VALUE held = Qnil);
 static void check_images_writable(VALUE);
 static void check_images_frozen(VALUE);
 static VALUE images_from_imagelist_protected(VALUE);
@@ -123,12 +131,12 @@ ImageList_animate(int argc, VALUE *argv, VALUE self)
     info_obj = rm_info_new();
 
     // Convert the images array to an images sequence.
-    VALUE clones;
+    VALUE linked;
     if (argc == 1)
     {
         check_images_writable(self);
     }
-    images = images_from_imagelist(self, &clones);
+    images = images_from_imagelist(self, &linked, LinkChange);
 
     if (argc == 1)
     {
@@ -144,18 +152,18 @@ ImageList_animate(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, AnimateImages, info, images, exception);
-    call.update_each(rb_iv_get(self, "@images")).read(info_obj).split(images).release(exception).run<void>();
+    call.update_each(linked).read(info_obj).split(images).release(exception).run<void>();
     rm_split(images);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     DECLARE_GVL_CALL(call, AnimateImages, info, images);
-    call.update_each(rb_iv_get(self, "@images")).read(info_obj).split(images).run<void>();
+    call.update_each(linked).read(info_obj).split(images).run<void>();
     rm_split(images);
     rm_check_image_exception(images, RetainOnError);
 #endif
 
-    RB_GC_GUARD(clones);
+    RB_GC_GUARD(linked);
     RB_GC_GUARD(info_obj);
 
     return self;
@@ -176,8 +184,8 @@ ImageList_append(VALUE self, VALUE stack_arg)
     ExceptionInfo *exception;
 
     // Convert the image array to an image sequence.
-    VALUE clones;
-    images = images_from_imagelist(self, &clones);
+    VALUE linked;
+    images = images_from_imagelist(self, &linked);
 
     // If stack == true, stack rectangular images top-to-bottom,
     // otherwise left-to-right.
@@ -185,9 +193,9 @@ ImageList_append(VALUE self, VALUE stack_arg)
 
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, AppendImages, images, stack, exception);
-    new_image = call.read_each(rb_iv_get(self, "@images")).split(images).release(exception).run<Image *>();
+    new_image = call.read_each(linked).split(images).release(exception).run<Image *>();
     rm_split(images);
-    RB_GC_GUARD(clones);
+    RB_GC_GUARD(linked);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -207,14 +215,14 @@ ImageList_average(VALUE self)
     ExceptionInfo *exception;
 
     // Convert the images array to an images sequence.
-    VALUE clones;
-    images = images_from_imagelist(self, &clones);
+    VALUE linked;
+    images = images_from_imagelist(self, &linked);
 
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, EvaluateImages, images, MeanEvaluateOperator, exception);
-    new_image = call.read_each(rb_iv_get(self, "@images")).split(images).release(exception).run<Image *>();
+    new_image = call.read_each(linked).split(images).release(exception).run<Image *>();
     rm_split(images);
-    RB_GC_GUARD(clones);
+    RB_GC_GUARD(linked);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -237,14 +245,14 @@ ImageList_coalesce(VALUE self)
     ExceptionInfo *exception;
 
     // Convert the image array to an image sequence.
-    VALUE clones;
-    images = images_from_imagelist(self, &clones);
+    VALUE linked;
+    images = images_from_imagelist(self, &linked);
 
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, CoalesceImages, images, exception);
-    new_images = call.read_each(rb_iv_get(self, "@images")).split(images).release(exception).run<Image *>();
+    new_images = call.read_each(linked).split(images).release(exception).run<Image *>();
     rm_split(images);
-    RB_GC_GUARD(clones);
+    RB_GC_GUARD(linked);
     rm_check_exception(exception, new_images, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -326,9 +334,8 @@ VALUE ImageList_combine(int argc, VALUE *argv, VALUE self)
     }
 #endif
 
-    VALUE clones;
-    VALUE image_ary = rb_iv_get(self, "@images");
-    images = images_from_imagelist(self, &clones);
+    VALUE linked;
+    images = images_from_imagelist(self, &linked);
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_6)
     head = CloneImage(images, 0, 0, MagickTrue, exception);
@@ -348,15 +355,15 @@ VALUE ImageList_combine(int argc, VALUE *argv, VALUE self)
     images->next = NULL;
     images = head;
     DECLARE_GVL_CALL(call, CombineImages, images, channel, exception);
-    call.read_each(image_ary).split(images).destroy(head);
+    call.read_each(linked).split(images).destroy(head);
 #else
     DECLARE_GVL_CALL(call, CombineImages, images, colorspace, exception);
-    call.read_each(image_ary).split(images);
+    call.read_each(linked).split(images);
 #endif
     new_image = call.release(exception).run<Image *>();
 
     rm_split(images);
-    RB_GC_GUARD(clones);
+    RB_GC_GUARD(linked);
 #if defined(IMAGEMAGICK_6)
     DestroyImage(head);
 #endif
@@ -402,15 +409,14 @@ ImageList_composite_layers(int argc, VALUE *argv, VALUE self)
     }
 
     // Convert ImageLists to image sequences.
-    VALUE clones, source_clones = Qnil;
-    dest = images_from_imagelist(self, &clones);
-    new_images = clone_linked_imagelist(dest, rb_iv_get(self, "@images"), NULL);
+    VALUE linked, source_linked = Qnil;
+    dest = images_from_imagelist(self, &linked);
+    new_images = clone_linked_imagelist(dest, linked, NULL);
     rm_split(dest);
-    RB_GC_GUARD(clones);
 
     // new_images is not owned by any Ruby object yet, so resolving the source
     // list has to be able to unwind without abandoning it.
-    struct ImagesFromImageList_Args source_args = { source_images, &source_clones, NULL, false };
+    struct ImagesFromImageList_Args source_args = { source_images, &source_linked, NULL, LinkRead, linked };
     int state = 0;
     rb_protect(images_from_imagelist_protected, (VALUE)&source_args, &state);
     if (state)
@@ -431,9 +437,10 @@ ImageList_composite_layers(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, CompositeLayers, new_images, composite_op, source, geometry.x, geometry.y, exception);
-    call.read_each(rb_iv_get(source_images, "@images")).split(source).destroy(new_images).release(exception).run<void>();
+    call.read_each(source_linked).read_each(linked).split(source).destroy(new_images).release(exception).run<void>();
     rm_split(source);
-    RB_GC_GUARD(source_clones);
+    RB_GC_GUARD(source_linked);
+    RB_GC_GUARD(linked);
     rm_check_exception(exception, new_images, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -455,18 +462,18 @@ ImageList_deconstruct(VALUE self)
     Image *new_images, *images;
     ExceptionInfo *exception;
 
-    VALUE clones;
-    images = images_from_imagelist(self, &clones);
+    VALUE linked;
+    images = images_from_imagelist(self, &linked);
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     DECLARE_GVL_CALL(call, CompareImagesLayers, images, CompareAnyLayer, exception);
-    new_images = call.read_each(rb_iv_get(self, "@images")).split(images).release(exception).run<Image *>();
+    new_images = call.read_each(linked).split(images).release(exception).run<Image *>();
 #else
     DECLARE_GVL_CALL(call, DeconstructImages, images, exception);
-    new_images = call.read_each(rb_iv_get(self, "@images")).split(images).release(exception).run<Image *>();
+    new_images = call.read_each(linked).split(images).release(exception).run<Image *>();
 #endif
     rm_split(images);
-    RB_GC_GUARD(clones);
+    RB_GC_GUARD(linked);
     rm_check_exception(exception, new_images, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -496,8 +503,8 @@ ImageList_display(VALUE self)
     info = rm_info_get(info_obj);
 
     // Convert the images array to an images sequence.
-    VALUE clones;
-    images = images_from_imagelist(self, &clones);
+    VALUE linked;
+    images = images_from_imagelist(self, &linked);
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     DisplayImages(info, images, exception);
@@ -510,7 +517,7 @@ ImageList_display(VALUE self)
     rm_check_image_exception(images, RetainOnError);
 #endif
 
-    RB_GC_GUARD(clones);
+    RB_GC_GUARD(linked);
     RB_GC_GUARD(info_obj);
 
     return self;
@@ -528,15 +535,15 @@ ImageList_flatten_images(VALUE self)
     Image *images, *new_image;
     ExceptionInfo *exception;
 
-    VALUE clones;
-    images = images_from_imagelist(self, &clones);
+    VALUE linked;
+    images = images_from_imagelist(self, &linked);
     exception = AcquireExceptionInfo();
 
     DECLARE_GVL_CALL(call, MergeImageLayers, images, FlattenLayer, exception);
-    new_image = call.read_each(rb_iv_get(self, "@images")).split(images).release(exception).run<Image *>();
+    new_image = call.read_each(linked).split(images).release(exception).run<Image *>();
 
     rm_split(images);
-    RB_GC_GUARD(clones);
+    RB_GC_GUARD(linked);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -574,9 +581,9 @@ ImageList_montage(VALUE self)
 
     TypedData_Get_Struct(montage_obj, MagickMontage, &rm_montage_data_type, montage);
 
-    VALUE clones;
+    VALUE linked;
     check_images_writable(self);
-    images = images_from_imagelist(self, &clones);
+    images = images_from_imagelist(self, &linked, LinkChange);
 
     for (Image *image = images; image; image = GetNextImageInList(image))
     {
@@ -594,9 +601,9 @@ ImageList_montage(VALUE self)
 
     // MontageImage can return more than one image.
     DECLARE_GVL_CALL(call, MontageImages, images, montage->info, exception);
-    new_images = call.update_each(rb_iv_get(self, "@images")).read(montage_obj).split(images).release(exception).run<Image *>();
+    new_images = call.update_each(linked).read(montage_obj).split(images).release(exception).run<Image *>();
     rm_split(images);
-    RB_GC_GUARD(clones);
+    RB_GC_GUARD(linked);
     rm_check_exception(exception, new_images, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -629,13 +636,13 @@ ImageList_morph(VALUE self, VALUE nimages)
     }
 
     number_images = NUM2LONG(nimages);
-    VALUE clones;
-    images = images_from_imagelist(self, &clones);
+    VALUE linked;
+    images = images_from_imagelist(self, &linked);
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, MorphImages, images, number_images, exception);
-    new_images = call.read_each(rb_iv_get(self, "@images")).split(images).release(exception).run<Image *>();
+    new_images = call.read_each(linked).split(images).release(exception).run<Image *>();
     rm_split(images);
-    RB_GC_GUARD(clones);
+    RB_GC_GUARD(linked);
     rm_check_exception(exception, new_images, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -654,15 +661,15 @@ ImageList_mosaic(VALUE self)
     Image *images, *new_image;
     ExceptionInfo *exception;
 
-    VALUE clones;
-    images = images_from_imagelist(self, &clones);
+    VALUE linked;
+    images = images_from_imagelist(self, &linked);
 
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, MergeImageLayers, images, MosaicLayer, exception);
-    new_image = call.read_each(rb_iv_get(self, "@images")).split(images).release(exception).run<Image *>();
+    new_image = call.read_each(linked).split(images).release(exception).run<Image *>();
 
     rm_split(images);
-    RB_GC_GUARD(clones);
+    RB_GC_GUARD(linked);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -688,8 +695,8 @@ ImageList_optimize_layers(VALUE self, VALUE method)
     new_images2 = NULL;     // defeat "unused variable" message
 
     VALUE_TO_ENUM(method, mthd, LayerMethod);
-    VALUE clones;
-    images = images_from_imagelist(self, &clones);
+    VALUE linked;
+    images = images_from_imagelist(self, &linked);
 
     exception = AcquireExceptionInfo();
     switch (mthd)
@@ -697,34 +704,34 @@ ImageList_optimize_layers(VALUE self, VALUE method)
         case CoalesceLayer:
             {
                 DECLARE_GVL_CALL(call, CoalesceImages, images, exception);
-                new_images = call.read_each(rb_iv_get(self, "@images")).split(images).release(exception).run<Image *>();
+                new_images = call.read_each(linked).split(images).release(exception).run<Image *>();
             }
             break;
         case DisposeLayer:
             {
                 DECLARE_GVL_CALL(call, DisposeImages, images, exception);
-                new_images = call.read_each(rb_iv_get(self, "@images")).split(images).release(exception).run<Image *>();
+                new_images = call.read_each(linked).split(images).release(exception).run<Image *>();
             }
             break;
         case OptimizeTransLayer:
             {
-                new_images = clone_linked_imagelist(images, rb_iv_get(self, "@images"), exception);
+                new_images = clone_linked_imagelist(images, linked, exception);
                 DECLARE_GVL_CALL(call, OptimizeImageTransparency, new_images, exception);
-                call.read_each(rb_iv_get(self, "@images")).split(images).destroy(new_images).release(exception).run<void>();
+                call.read_each(linked).split(images).destroy(new_images).release(exception).run<void>();
             }
             break;
         case RemoveDupsLayer:
             {
-                new_images = clone_linked_imagelist(images, rb_iv_get(self, "@images"), exception);
+                new_images = clone_linked_imagelist(images, linked, exception);
                 DECLARE_GVL_CALL(call, RemoveDuplicateLayers, &new_images, exception);
-                call.read_each(rb_iv_get(self, "@images")).split(images).cleanup(destroy_list_at, &new_images).release(exception).run<void>();
+                call.read_each(linked).split(images).cleanup(destroy_list_at, &new_images).release(exception).run<void>();
             }
             break;
         case RemoveZeroLayer:
             {
-                new_images = clone_linked_imagelist(images, rb_iv_get(self, "@images"), exception);
+                new_images = clone_linked_imagelist(images, linked, exception);
                 DECLARE_GVL_CALL(call, RemoveZeroDelayLayers, &new_images, exception);
-                call.read_each(rb_iv_get(self, "@images")).split(images).cleanup(destroy_list_at, &new_images).release(exception).run<void>();
+                call.read_each(linked).split(images).cleanup(destroy_list_at, &new_images).release(exception).run<void>();
             }
             break;
         case CompositeLayer:
@@ -736,14 +743,14 @@ ImageList_optimize_layers(VALUE self, VALUE method)
         case OptimizeImageLayer:
             {
                 DECLARE_GVL_CALL(call, OptimizeImageLayers, images, exception);
-                new_images = call.read_each(rb_iv_get(self, "@images")).split(images).release(exception).run<Image *>();
+                new_images = call.read_each(linked).split(images).release(exception).run<Image *>();
             }
             break;
             // and OptimizeLayer became a "General Purpose, GIF Animation Optimizer" (ref. mogrify.c)
         case OptimizeLayer:
             {
                 DECLARE_GVL_CALL(coalesce_call, CoalesceImages, images, exception);
-                new_images = coalesce_call.read_each(rb_iv_get(self, "@images")).split(images).release(exception).run<Image *>();
+                new_images = coalesce_call.read_each(linked).split(images).release(exception).run<Image *>();
                 rm_split(images);
                 rm_check_exception(exception, new_images, DestroyOnError);
 
@@ -770,7 +777,7 @@ ImageList_optimize_layers(VALUE self, VALUE method)
         case OptimizePlusLayer:
             {
                 DECLARE_GVL_CALL(call, OptimizePlusImageLayers, images, exception);
-                new_images = call.read_each(rb_iv_get(self, "@images")).split(images).release(exception).run<Image *>();
+                new_images = call.read_each(linked).split(images).release(exception).run<Image *>();
             }
             break;
         case CompareAnyLayer:
@@ -779,35 +786,35 @@ ImageList_optimize_layers(VALUE self, VALUE method)
             {
 #if defined(IMAGEMAGICK_7)
                 DECLARE_GVL_CALL(call, CompareImagesLayers, images, mthd, exception);
-                new_images = call.read_each(rb_iv_get(self, "@images")).split(images).release(exception).run<Image *>();
+                new_images = call.read_each(linked).split(images).release(exception).run<Image *>();
 #else
                 DECLARE_GVL_CALL(call, CompareImageLayers, images, mthd, exception);
-                new_images = call.read_each(rb_iv_get(self, "@images")).split(images).release(exception).run<Image *>();
+                new_images = call.read_each(linked).split(images).release(exception).run<Image *>();
 #endif
             }
             break;
         case MosaicLayer:
             {
                 DECLARE_GVL_CALL(call, MergeImageLayers, images, mthd, exception);
-                new_images = call.read_each(rb_iv_get(self, "@images")).split(images).release(exception).run<Image *>();
+                new_images = call.read_each(linked).split(images).release(exception).run<Image *>();
             }
             break;
         case FlattenLayer:
             {
                 DECLARE_GVL_CALL(call, MergeImageLayers, images, mthd, exception);
-                new_images = call.read_each(rb_iv_get(self, "@images")).split(images).release(exception).run<Image *>();
+                new_images = call.read_each(linked).split(images).release(exception).run<Image *>();
             }
             break;
         case MergeLayer:
             {
                 DECLARE_GVL_CALL(call, MergeImageLayers, images, mthd, exception);
-                new_images = call.read_each(rb_iv_get(self, "@images")).split(images).release(exception).run<Image *>();
+                new_images = call.read_each(linked).split(images).release(exception).run<Image *>();
             }
             break;
         case TrimBoundsLayer:
             {
                 DECLARE_GVL_CALL(call, MergeImageLayers, images, mthd, exception);
-                new_images = call.read_each(rb_iv_get(self, "@images")).split(images).release(exception).run<Image *>();
+                new_images = call.read_each(linked).split(images).release(exception).run<Image *>();
             }
             break;
         default:
@@ -818,7 +825,7 @@ ImageList_optimize_layers(VALUE self, VALUE method)
     }
 
     rm_split(images);
-    RB_GC_GUARD(clones);
+    RB_GC_GUARD(linked);
     rm_check_exception(exception, new_images, DestroyOnError);
     DestroyExceptionInfo(exception);
 
@@ -919,6 +926,18 @@ check_images_frozen(VALUE imagelist)
 }
 
 
+// Check an image of the imagelist as the method uses it
+static Image *
+check_link(VALUE obj, LinkMode mode)
+{
+    if (mode != LinkRead && !OBJ_FROZEN(obj))
+    {
+        return rm_check_writable(obj);
+    }
+    return rm_check_readable(obj);
+}
+
+
 // Link the images of the imagelist, keeping the head so far in args->images
 static VALUE
 link_images(VALUE arg)
@@ -929,13 +948,13 @@ link_images(VALUE arg)
 
     len = check_imagelist_length(args->imagelist);
 
-    images = rb_iv_get(args->imagelist, "@images");
+    images = rb_ary_dup(rb_iv_get(args->imagelist, "@images"));
     for (x = 0; x < len; x++)
     {
         Image *image;
 
         t = rb_ary_entry(images, x);
-        image = rm_check_readable(t);
+        image = check_link(t, args->mode);
         // Avoid a loop in this linked imagelist, issue #202. A frozen image can
         // be shared with another Ractor, which may be linking it into a list of
         // its own.
@@ -943,13 +962,18 @@ link_images(VALUE arg)
         {
             // ImageMagick reads the pixels to write through the default nexus of
             // the pixel cache, so a frozen image to write gets a cache of its own.
-            image = args->copy_frozen && OBJ_FROZEN(t) ? rm_copy_image(image, images) : rm_clone_image(image, images);
+            bool changes = args->mode != LinkRead;
+
+            image = args->mode == LinkWrite && OBJ_FROZEN(t) ? rm_copy_image(image, images, args->held, changes)
+                                                             : rm_clone_image(image, images, args->held, changes);
 
             // Wrap raw ImageMagick object by Ruby object to destroy using Ruby's GC.
-            // The wrapper is kept in *clones so that the GC cannot reclaim it, and
-            // with it the Image, while the list below is still in use.
-            rb_ary_push(*args->clones, rm_image_wrap(image));
+            rb_ary_push(*args->linked, rm_image_wrap(image));
         }
+        // *linked keeps the objects whose images are linked, so that the GC
+        // cannot reclaim them and the caller can register them. It keeps t
+        // too when its image is cloned, as the clone shares its pixel cache.
+        rb_ary_push(*args->linked, t);
         AppendImageToList(&args->images, image);
     }
 
@@ -966,16 +990,22 @@ link_images(VALUE arg)
  * No Ruby usage (internal function)
  *
  * @param imagelist the imagelist
+ * @param linked set to an Array of the Image objects whose images the list
+ *   uses, for the caller to register
+ * @param mode whether the caller reads, changes or writes the images. The
+ *   copies of frozen images to write get pixel caches of their own.
+ * @param held another Image object that the caller uses, an Array of them, or
+ *   nil
  * @return a pointer to the head of the scene sequence list
  * @see rm_imagelist_from_images
  */
 static Image *
-images_from_imagelist(VALUE imagelist, VALUE *clones, bool copy_frozen)
+images_from_imagelist(VALUE imagelist, VALUE *linked, LinkMode mode, VALUE held)
 {
-    struct ImagesFromImageList_Args args = { imagelist, clones, NULL, copy_frozen };
+    struct ImagesFromImageList_Args args = { imagelist, linked, NULL, mode, held };
     int state = 0;
 
-    *clones = rb_ary_new();
+    *linked = rb_ary_new();
 
     // An exception part way, such as an interrupt in rm_clone_image, would
     // leave the images linked to copies that the GC then frees.
@@ -1007,7 +1037,7 @@ images_from_imagelist_protected(VALUE arg)
 {
     struct ImagesFromImageList_Args *args = (struct ImagesFromImageList_Args *)arg;
 
-    args->images = images_from_imagelist(args->imagelist, args->clones);
+    args->images = images_from_imagelist(args->imagelist, args->linked, args->mode, args->held);
 
     return Qnil;
 }
@@ -1230,13 +1260,13 @@ ImageList_quantize(int argc, VALUE *argv, VALUE self)
 
 
     // Convert image array to image sequence, clone image sequence.
-    VALUE clones;
-    images = images_from_imagelist(self, &clones);
+    VALUE linked;
+    images = images_from_imagelist(self, &linked);
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(clone_call, CloneImageList, images, exception);
-    new_images = clone_call.read_each(rb_iv_get(self, "@images")).split(images).release(exception).run<Image *>();
+    new_images = clone_call.read_each(linked).split(images).release(exception).run<Image *>();
     rm_split(images);
-    RB_GC_GUARD(clones);
+    RB_GC_GUARD(linked);
     rm_check_exception(exception, new_images, DestroyOnError);
 
     if (!new_images)
@@ -1316,25 +1346,25 @@ ImageList_remap(int argc, VALUE *argv, VALUE self)
         rb_raise(rb_eArgError, "wrong number of arguments (%d for 1 or 2)", argc);
     }
 
-    VALUE clones;
+    VALUE linked;
     check_images_frozen(self);
-    images = images_from_imagelist(self, &clones);
+    images = images_from_imagelist(self, &linked, LinkChange, remap_obj);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, RemapImages, &quantize_info, images, remap_image, exception);
-    call.update_each(rb_iv_get(self, "@images")).read(remap_obj).split(images).release(exception).run<void>();
+    call.update_each(linked).read(remap_obj).split(images).release(exception).run<void>();
     rm_split(images);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     DECLARE_GVL_CALL(call, RemapImages, &quantize_info, images, remap_image);
-    call.update_each(rb_iv_get(self, "@images")).read(remap_obj).split(images).run<void>();
+    call.update_each(linked).read(remap_obj).split(images).run<void>();
     rm_split(images);
     rm_check_image_exception(images, RetainOnError);
 #endif
 
-    RB_GC_GUARD(clones);
+    RB_GC_GUARD(linked);
     RB_GC_GUARD(remap_obj);
 
     return self;
@@ -1368,9 +1398,9 @@ ImageList_to_blob(VALUE self)
     info = rm_info_get(info_obj);
 
     // Convert the images array to an images sequence.
-    VALUE clones;
+    VALUE linked;
     check_images_writable(self);
-    images = images_from_imagelist(self, &clones, true);
+    images = images_from_imagelist(self, &linked, LinkWrite);
 
     exception = AcquireExceptionInfo();
     SetImageInfo(info, MagickTrue, exception);
@@ -1387,7 +1417,7 @@ ImageList_to_blob(VALUE self)
 
     for (image = images; image; image = GetNextImageInList(image))
     {
-        sync_linked_image_options(images, image, info, rb_iv_get(self, "@images"), exception);
+        sync_linked_image_options(images, image, info, linked, exception);
     }
 
     // Unconditionally request multi-images support. The worst that
@@ -1395,7 +1425,7 @@ ImageList_to_blob(VALUE self)
     // doesn't support multi-image files.
     info->adjoin = MagickTrue;
     DECLARE_GVL_CALL(call, ImagesToBlob, info, images, &length, exception);
-    blob = call.update_each(rb_iv_get(self, "@images")).read(info_obj).split(images).release(exception).free_result().run<void *>();
+    blob = call.update_each(linked).read(info_obj).split(images).release(exception).free_result().run<void *>();
     if (blob && exception->severity >= ErrorException)
     {
         magick_free((void*)blob);
@@ -1403,7 +1433,7 @@ ImageList_to_blob(VALUE self)
         length = 0;
     }
     rm_split(images);
-    RB_GC_GUARD(clones);
+    RB_GC_GUARD(linked);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 
@@ -1469,10 +1499,9 @@ ImageList_write(VALUE self, VALUE file)
     }
 
     // Convert the images array to an images sequence.
-    VALUE clones, written;
+    VALUE linked;
     check_images_writable(self);
-    written = rb_ary_dup(rb_iv_get(self, "@images"));
-    images = images_from_imagelist(self, &clones, true);
+    images = images_from_imagelist(self, &linked, LinkWrite);
 
     // Copy the filename into each image. Set a scene number to be used if
     // writing multiple files. (Ref: ImageMagick's utilities/convert.c
@@ -1495,22 +1524,22 @@ ImageList_write(VALUE self, VALUE file)
 #endif
 
     // Tell WriteImage if we want a multi-images file.
-    if (imagelist_length(self) > 1L && m && GetMagickAdjoin(m))
+    if (GetImageListLength(images) > 1L && m && GetMagickAdjoin(m))
     {
         info->adjoin = MagickTrue;
     }
 
     for (img = images; img; img = GetNextImageInList(img))
     {
-        sync_linked_image_options(images, img, info, written, exception);
+        sync_linked_image_options(images, img, info, linked, exception);
 #if defined(IMAGEMAGICK_7)
         DECLARE_GVL_CALL(call, WriteImage, info, img, exception);
-        call.update_each(written).read(info_obj).split(images).release(exception);
+        call.update_each(linked).read(info_obj).split(images).release(exception);
         call.keep_thread(info->file != NULL).run<void>();
         rm_check_exception(exception, img, RetainOnError);
 #else
         DECLARE_GVL_CALL(call, WriteImage, info, img);
-        call.update_each(written).read(info_obj).split(images);
+        call.update_each(linked).read(info_obj).split(images);
         call.keep_thread(info->file != NULL).run<void>();
         // images will be split before raising an exception
         rm_check_image_exception(images, RetainOnError);
@@ -1526,8 +1555,7 @@ ImageList_write(VALUE self, VALUE file)
 #endif
 
     rm_split(images);
-    RB_GC_GUARD(clones);
-    RB_GC_GUARD(written);
+    RB_GC_GUARD(linked);
 
     RB_GC_GUARD(info_obj);
 

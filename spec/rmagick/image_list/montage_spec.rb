@@ -114,4 +114,22 @@ RSpec.describe Magick::ImageList, "#montage" do
     # montage ../../doc/ex/images/Flower_Hat.jpg -border 100x -bordercolor red -mattecolor yellow -background blue -frame 10x10 -gravity Center expected/montage_border_color.jpg
     assert_same_image(File.join(FIXTURE_PATH, 'montage_border_color.jpg'), new_imagelist.first)
   end
+
+  it 'does not let an image be frozen while it copies a repeated image' do
+    image = Magick::Image.new(2, 2)
+    other = Magick::Image.new(2, 2)
+    image_list = described_class.new
+    image_list << image << other << other
+    error = nil
+    freeze = lambda do
+      image.freeze
+    rescue RuntimeError => e
+      error = e.message
+    end
+
+    during_call(freeze) { image_list.montage }
+
+    expect(error).to eq('object is in use by another fiber')
+    expect(image).not_to be_frozen
+  end
 end

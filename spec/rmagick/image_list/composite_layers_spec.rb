@@ -33,4 +33,23 @@ RSpec.describe Magick::ImageList, '#composite_layers' do
     expect { image_list.composite_layers('x') }.to raise_error(Magick::ImageMagickError)
     expect { image_list.composite_layers(destroyed) }.to raise_error(Magick::DestroyedImageError)
   end
+
+  it 'does not let an image be destroyed while it uses a copy of it' do
+    image = Magick::Image.new(2, 2)
+    image_list = described_class.new
+    image_list << image
+    source = described_class.new
+    source << Magick::Image.new(2, 2).freeze
+    errors = []
+    destroy = lambda do
+      image.destroy!
+    rescue RuntimeError => e
+      errors << e.message
+    end
+
+    during_call(-> {}, destroy, destroy) { image_list.composite_layers(source) }
+
+    expect(errors).to eq(['object is in use by another fiber'] * 2)
+    expect(image).not_to be_destroyed
+  end
 end

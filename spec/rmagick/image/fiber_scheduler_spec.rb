@@ -176,6 +176,33 @@ RSpec.describe Magick::Image, if: offloading do
       end
     end
 
+    it "does not let another fiber use the frozen images of a list while a call reads their clones" do
+      image_list = Magick::ImageList.new
+      image_list << red_image.freeze << blue_image.freeze
+      error = nil
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { image_list.optimize_layers(Magick::RemoveDupsLayer) } } }
+
+      scheduler.run { image_list.optimize_layers(Magick::RemoveDupsLayer) }
+
+      expect(error).to in_use
+    end
+
+    it "does not let another fiber use an image that ImageList#to_blob links" do
+      image = red_image
+      image_list = Magick::ImageList.new
+      image_list << blue_image.freeze << image
+      error = nil
+
+      blob = scheduler.run do
+        during_call(-> { Fiber.schedule { error = attempt { image.flip } } }) do
+          attempt { image_list.to_blob { |options| options.format = "MIFF" } }
+        end
+      end
+
+      expect(error).to in_use
+      expect(blob).to be_instance_of(String)
+    end
+
     it "does not let another fiber freeze an image that marshal_dump writes" do
       image = red_image
       image.format = "MIFF"

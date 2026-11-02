@@ -1899,18 +1899,19 @@ rm_exif_by_number(Image *image)
  * @param owner the Image object that holds image, an Array of the Image objects
  *   whose images are linked with it, or nil
  * @param held another Image object whose image the caller uses after the clone,
- *   or nil
+ *   an Array of them, or nil
+ * @param changes whether the caller changes the images of owner after the clone
  * @return the cloned image
  */
 Image *
-rm_clone_image(Image *image, VALUE owner, VALUE held)
+rm_clone_image(Image *image, VALUE owner, VALUE held, bool changes)
 {
     Image *clone;
     ExceptionInfo *exception;
 
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, CloneImage, image, 0, 0, MagickTrue, exception);
-    clone = call.hold(owner).hold(held).keep_thread().release(exception).run<Image *>();
+    clone = call.hold(owner, changes).hold(held).keep_thread().release(exception).run<Image *>();
     if (!clone)
     {
         rb_raise(rb_eNoMemError, "not enough memory to continue");
