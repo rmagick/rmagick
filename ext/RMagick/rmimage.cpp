@@ -6833,7 +6833,7 @@ Image__dump(VALUE self, VALUE depth)
 
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, ImageToBlob, info, image, &length, exception);
-    blob = call.read(self).release(info).release(exception).free_result().run<void *>();
+    blob = call.update(self).release(info).release(exception).free_result().run<void *>();
 
     // Free ImageInfo first - error handling may raise an exception
     DestroyImageInfo(info);
@@ -10100,7 +10100,7 @@ Image_marshal_dump(VALUE self)
 
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, ImageToBlob, info, image, &length, exception);
-    blob = call.read(self).release(info).release(exception).free_result().run<unsigned char *>();
+    blob = call.update(self).release(info).release(exception).free_result().run<unsigned char *>();
 
     // Destroy info before raising an exception
     DestroyImageInfo(info);
@@ -16113,7 +16113,7 @@ Image_to_blob(VALUE self)
     info_obj = rm_info_new();
     info = rm_info_get(info_obj);
 
-    image = rm_check_writable(self);
+    image = rm_check_frozen(self);
 
     exception = AcquireExceptionInfo();
 
@@ -17914,7 +17914,7 @@ Image_write(VALUE self, VALUE file)
     info_obj = rm_info_new();
     info = rm_info_get(info_obj);
 
-    image = rm_check_writable(self);
+    image = rm_check_frozen(self);
 
     if (TYPE(file) == T_FILE)
     {
@@ -17936,7 +17936,7 @@ Image_write(VALUE self, VALUE file)
         add_format_prefix(info, file);
         SetImageInfoFile(info, NULL);
     }
-    image = rm_check_writable(self);
+    image = rm_check_frozen(self);
     strlcpy(image->filename, info->filename, sizeof(image->filename));
 
     rm_sync_image_options(image, info, self);
