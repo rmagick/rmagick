@@ -657,6 +657,7 @@ Init_RMagick2(void)
     rb_define_method(Class_Image, "flop", Image_flop, 0);
     rb_define_method(Class_Image, "flop!", Image_flop_bang, 0);
     rb_define_method(Class_Image, "frame", Image_frame, -1);
+    rb_define_method(Class_Image, "freeze", Image_freeze, 0);
     rb_define_method(Class_Image, "function_channel", Image_function_channel, -1);
     rb_define_method(Class_Image, "fx", Image_fx, -1);
     rb_define_method(Class_Image, "gamma_channel", Image_gamma_channel, -1);

@@ -8082,6 +8082,20 @@ Image_frame(int argc, VALUE *argv, VALUE self)
 
 
 /**
+ * Freeze the image.
+ *
+ * @return [Magick::Image] self
+ * @raise [RuntimeError] if a call of another fiber is changing the image
+ */
+VALUE
+Image_freeze(VALUE self)
+{
+    rm_gvl_check_readable(self);
+    return rb_call_super(0, NULL);
+}
+
+
+/**
  * Convert direct to memory image formats from string data.
  *
  * @overload from_blob(blob)
@@ -10318,6 +10332,11 @@ set_image_mask(VALUE self, VALUE mask)
         }
         DestroyExceptionInfo(exception);
 
+        if (OBJ_FROZEN(self))
+        {
+            DestroyImage(clip_mask);
+            rb_check_frozen(self);
+        }
         DECLARE_GVL_CALL(class_call, SetImageStorageClass, clip_mask, DirectClass);
         class_call.update(self).read(mask).destroy(clip_mask).run<void>();
         rm_check_image_exception(clip_mask, DestroyOnError);
@@ -11994,7 +12013,7 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
 
     CacheView *view = AcquireAuthenticCacheView(image, exception);
     DECLARE_GVL_CALL(call, GetCacheViewAuthenticPixels, view, x, y, 1, 1, exception);
-    void *ret = call.cleanup(destroy_cache_view, view).release(exception).keep_thread().run<void *>();
+    void *ret = call.update(self).cleanup(destroy_cache_view, view).release(exception).keep_thread().run<void *>();
     pixel = reinterpret_cast<decltype(pixel)>(ret);
     check_cache_view_exception(view, exception);
 
@@ -12031,7 +12050,7 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
 #endif
 
         DECLARE_GVL_CALL(sync_call, SyncCacheViewAuthenticPixels, view, exception);
-        sync_call.cleanup(destroy_cache_view, view).release(exception).keep_thread().run<void>();
+        sync_call.update(self).cleanup(destroy_cache_view, view).release(exception).keep_thread().run<void>();
         check_cache_view_exception(view, exception);
     }
 

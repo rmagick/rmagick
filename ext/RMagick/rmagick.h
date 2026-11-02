@@ -924,6 +924,7 @@ extern VALUE Image_flip_bang(VALUE);
 extern VALUE Image_flop(VALUE);
 extern VALUE Image_flop_bang(VALUE);
 extern VALUE Image_frame(int, VALUE *, VALUE);
+extern VALUE Image_freeze(VALUE);
 extern VALUE Image_from_blob(VALUE, VALUE);
 extern VALUE Image_function_channel(int, VALUE *, VALUE);
 extern VALUE Image_fx(int, VALUE *, VALUE);
