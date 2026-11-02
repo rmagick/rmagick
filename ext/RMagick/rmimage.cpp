@@ -10121,9 +10121,10 @@ Image_marshal_load(VALUE self, VALUE ary)
 {
     VALUE blob, filename;
     Info *info;
-    Image *image, *new_image;
+    Image *new_image;
     ExceptionInfo *exception;
 
+    check_replaceable(self);
     Check_Type(ary, T_ARRAY);
 
     filename = rb_ary_shift(ary);
@@ -10150,10 +10151,9 @@ Image_marshal_load(VALUE self, VALUE ary)
     DestroyImageInfo(info);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
+    rm_ensure_result(new_image);
 
-    image = rm_image_get(self);
-    rm_image_set(self, new_image);
-    rm_image_destroy(image);
+    replace_image(self, new_image);
 
     RB_GC_GUARD(filename);
     RB_GC_GUARD(blob);

@@ -96,6 +96,19 @@ RSpec.describe Magick::Image, if: offloading do
       expect(image.pixel_color(0, 0)).to eq(Magick::Pixel.from_color("red"))
     end
 
+    it "does not let marshal_load replace an image that another fiber freezes while it loads" do
+      source = red_image
+      source.format = "MIFF"
+      dumped = source.marshal_dump
+      image = described_class.new(1, 1)
+      scheduler.before_next_operation { image.freeze }
+
+      error = scheduler.run { attempt { image.marshal_load(dumped) } }
+
+      expect(error).to be_kind_of(FrozenError)
+      expect(image.columns).to eq(1)
+    end
+
     it "delivers an exception raised into the waiting fiber after the call has completed" do
       image = described_class.new(200, 200)
       scheduler.cancel_next_operation(cancelled.new)
