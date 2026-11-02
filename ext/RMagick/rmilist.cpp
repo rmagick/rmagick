@@ -813,8 +813,9 @@ ImageList_optimize_layers(VALUE self, VALUE method)
             break;
         case TrimBoundsLayer:
             {
-                DECLARE_GVL_CALL(call, MergeImageLayers, images, mthd, exception);
-                new_images = call.read_each(linked).split(images).release(exception).run<Image *>();
+                new_images = clone_linked_imagelist(images, linked, exception);
+                DECLARE_GVL_CALL(call, MergeImageLayers, new_images, mthd, exception);
+                call.read_each(linked).split(images).destroy(new_images).release(exception).run<void>();
             }
             break;
         default:
