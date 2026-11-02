@@ -417,6 +417,23 @@ rm_no_freeze(VALUE obj)
 
 
 /**
+ * Overrides freeze in classes whose objects a call can change.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param obj the object
+ * @return obj
+ * @raise [RuntimeError] if a call in another fiber or thread is changing obj
+ */
+VALUE
+rm_freeze(VALUE obj)
+{
+    rm_gvl_check_readable(obj);
+    return rb_call_super(0, NULL);
+}
+
+
+/**
  * Supply our own version of the "obsolete" rb_str2cstr.
  *
  * The argument is taken by reference because StringValue may replace it. When

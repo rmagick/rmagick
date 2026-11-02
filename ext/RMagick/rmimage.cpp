@@ -8082,20 +8082,6 @@ Image_frame(int argc, VALUE *argv, VALUE self)
 
 
 /**
- * Freeze the image.
- *
- * @return [Magick::Image] self
- * @raise [RuntimeError] if a call of another fiber is changing the image
- */
-VALUE
-Image_freeze(VALUE self)
-{
-    rm_gvl_check_readable(self);
-    return rb_call_super(0, NULL);
-}
-
-
-/**
  * Convert direct to memory image formats from string data.
  *
  * @overload from_blob(blob)
