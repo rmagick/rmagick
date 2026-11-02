@@ -523,6 +523,37 @@ RSpec.describe Magick::Image, if: offloading do
       expect(image.pixel_color(5, 5).to_color).to eq(blue_image.pixel_color(5, 5).to_color)
     end
 
+    it "does not let marshal_load write while converting a value starts a call that uses the Draw" do
+      image = red_image
+      draw = Magick::Draw.new
+      draw.fill("blue").rectangle(0, 0, 9, 9)
+      dump = draw.marshal_dump
+      pointsize = Struct.new(:draw, :image) do
+        def to_f
+          Fiber.schedule { draw.draw(image) }
+          30.0
+        end
+      end.new(draw, image)
+
+      error = scheduler.run { attempt { draw.marshal_load(dump.merge(pointsize: pointsize)) } }
+
+      expect(error).to in_use
+      expect(draw.marshal_dump[:pointsize]).to eq(dump[:pointsize])
+    end
+
+    it "does not let another fiber load a Draw that a call uses" do
+      image = red_image
+      draw = Magick::Draw.new
+      draw.fill("blue").rectangle(0, 0, 9, 9)
+      error = nil
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { draw.marshal_load(Magick::Draw.new.marshal_dump) } } }
+
+      scheduler.run { draw.draw(image) }
+
+      expect(error).to in_use
+      expect(image.pixel_color(5, 5).to_color).to eq(blue_image.pixel_color(5, 5).to_color)
+    end
+
     it "does not let another fiber's call read an image that a call reads" do
       image = described_class.new(200, 200)
       error = nil

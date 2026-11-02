@@ -149,18 +149,6 @@ extern "C" {
 #define CSTR2SYM(s) ID2SYM(rb_intern(s))
 //! Convert a C string to a Ruby String, or nil if the ptr is NULL
 #define MAGICK_STRING_TO_OBJ(f) (f) ? rb_str_new2(f) : Qnil
-/**
- * Copy the C string in a Ruby String object to ImageMagick memory, or set the
- * pointer to NULL if the object is nil.
- */
-#define OBJ_TO_MAGICK_STRING(f, obj) \
-    if ((obj) != Qnil)\
-    {\
-        VALUE str = rb_String(obj);\
-        magick_clone_string(&f, StringValueCStr(str));\
-    }\
-    else\
-        f = NULL;
 
 
 #define MagickLibSubversion MagickLibAddendum
