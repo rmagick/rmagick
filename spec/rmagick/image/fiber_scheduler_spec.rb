@@ -124,7 +124,7 @@ RSpec.describe Magick::Image, if: offloading do
       expect(image).to be_frozen
     end
 
-    it "does not let marshal_load replace an image that another fiber freezes while it loads" do
+    it "does not let marshal_load replace an image frozen past Image#freeze while it loads" do
       source = red_image
       source.format = "MIFF"
       dumped = source.marshal_dump
@@ -151,7 +151,7 @@ RSpec.describe Magick::Image, if: offloading do
       [:transpose!, []],
       [:trim!, []]
     ].each do |method, args|
-      it "does not let #{method} replace an image that another fiber freezes while it runs" do
+      it "does not let #{method} replace an image frozen past Image#freeze while it runs" do
         image = red_image.border(5, 5, "white")
         image.pixel_color(1, 0, "blue")
         pixels = image.export_pixels
@@ -163,6 +163,42 @@ RSpec.describe Magick::Image, if: offloading do
         expect([image.columns, image.rows]).to eq([20, 20])
         expect(image.export_pixels).to eq(pixels)
       end
+
+      it "does not let another fiber freeze an image that #{method} changes" do
+        image = red_image.border(5, 5, "white")
+        error = nil
+        scheduler.before_next_operation { Fiber.schedule { error = attempt { image.freeze } } }
+
+        scheduler.run { image.public_send(method, *args) }
+
+        expect(error).to in_use
+        expect(image).not_to be_frozen
+      end
+    end
+
+    it "does not let another fiber freeze an image that marshal_dump writes" do
+      image = red_image
+      image.format = "MIFF"
+      error = nil
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { image.freeze } } }
+
+      scheduler.run { image.marshal_dump }
+
+      expect(error).to in_use
+      expect(image).not_to be_frozen
+    end
+
+    it "does not let another fiber freeze or share a KernelInfo that a call changes" do
+      kernel = Magick::KernelInfo.new("3x3: 1,1,1,1,1,1,1,1,1")
+      errors = nil
+      scheduler.before_next_operation do
+        Fiber.schedule { errors = [attempt { kernel.freeze }, attempt { Ractor.make_shareable(kernel) }] }
+      end
+
+      scheduler.run { kernel.scale(2, Magick::NoValue) }
+
+      expect(errors).to all(in_use)
+      expect(kernel).not_to be_frozen
     end
 
     it "delivers an exception raised into the waiting fiber after the call has completed" do
