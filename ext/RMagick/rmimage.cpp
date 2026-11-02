@@ -10332,11 +10332,6 @@ set_image_mask(VALUE self, VALUE mask)
         }
         DestroyExceptionInfo(exception);
 
-        if (OBJ_FROZEN(self))
-        {
-            DestroyImage(clip_mask);
-            rb_check_frozen(self);
-        }
         DECLARE_GVL_CALL(class_call, SetImageStorageClass, clip_mask, DirectClass);
         class_call.update(self).read(mask).destroy(clip_mask).run<void>();
         rm_check_image_exception(clip_mask, DestroyOnError);

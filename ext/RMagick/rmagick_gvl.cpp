@@ -1149,9 +1149,29 @@ rm_gvl_call::call(ResultType type)
 {
     void *result;
 
+    check_frozen_images(type);
     result = call_body(type);
     rm_gc_continue();
     return result;
+}
+
+
+// Raise if the call changes an image that is frozen. An ImageList registers
+// its frozen images with update_each but writes copies of them, so only the
+// images registered one by one are checked.
+void
+rm_gvl_call::check_frozen_images(ResultType type)
+{
+    for (int i = 0; i < nobjects; i++)
+    {
+        VALUE obj = objects[i].obj;
+
+        if (objects[i].update && !objects[i].each && OBJ_FROZEN(obj) && rb_typeddata_is_kind_of(obj, &rm_image_data_type))
+        {
+            unwind(type, NULL);
+            rb_check_frozen(obj);
+        }
+    }
 }
 
 void *
