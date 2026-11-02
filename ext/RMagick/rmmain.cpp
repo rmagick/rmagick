@@ -657,6 +657,7 @@ Init_RMagick2(void)
     rb_define_method(Class_Image, "flop", Image_flop, 0);
     rb_define_method(Class_Image, "flop!", Image_flop_bang, 0);
     rb_define_method(Class_Image, "frame", Image_frame, -1);
+    rb_define_method(Class_Image, "freeze", rm_freeze, 0);
     rb_define_method(Class_Image, "function_channel", Image_function_channel, -1);
     rb_define_method(Class_Image, "fx", Image_fx, -1);
     rb_define_method(Class_Image, "gamma_channel", Image_gamma_channel, -1);
@@ -1066,6 +1067,7 @@ Init_RMagick2(void)
 
     rb_define_alloc_func(Class_KernelInfo, KernelInfo_alloc);
 
+    rb_define_method(Class_KernelInfo, "freeze", rm_freeze, 0);
     rb_define_method(Class_KernelInfo, "initialize", KernelInfo_initialize, 1);
     rb_define_method(Class_KernelInfo, "unity_add", KernelInfo_unity_add, 1);
     rb_define_method(Class_KernelInfo, "scale", KernelInfo_scale, 2);

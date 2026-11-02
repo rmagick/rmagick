@@ -89,4 +89,13 @@ RSpec.describe Magick::Image, '#write' do
     expect(image.filename).to eq("")
     expect(image.class_type).to eq(Magick::DirectClass)
   end
+
+  it "raises FrozenError when the block freezes the image" do
+    image = described_class.new(2, 2)
+
+    Dir.mktmpdir do |dir|
+      expect { image.write(File.join(dir, "temp.png")) { image.freeze } }.to raise_error(FrozenError)
+    end
+    expect(image.filename).to eq("")
+  end
 end

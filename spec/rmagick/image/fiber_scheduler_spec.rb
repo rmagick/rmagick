@@ -35,6 +35,10 @@ RSpec.describe Magick::Image, if: offloading do
       e
     end
 
+    def freeze_past_image_freeze(image)
+      Kernel.instance_method(:freeze).bind_call(image)
+    end
+
     it "runs heavy calls through #blocking_operation_wait" do
       image = described_class.new(20, 20)
 
@@ -96,12 +100,36 @@ RSpec.describe Magick::Image, if: offloading do
       expect(image.pixel_color(0, 0)).to eq(Magick::Pixel.from_color("red"))
     end
 
-    it "does not let marshal_load replace an image that another fiber freezes while it loads" do
+    it "does not let another fiber freeze or share an image that a call changes" do
+      image = red_image
+      errors = nil
+      scheduler.before_next_operation do
+        Fiber.schedule { errors = [attempt { image.freeze }, attempt { Ractor.make_shareable(image) }] }
+      end
+
+      scheduler.run { image.flip! }
+
+      expect(errors).to all(in_use)
+      expect(image).not_to be_frozen
+    end
+
+    it "lets another fiber freeze an image that a call only reads" do
+      image = red_image
+      frozen = nil
+      scheduler.before_next_operation { Fiber.schedule { frozen = attempt { image.freeze } } }
+
+      scheduler.run { image.flip }
+
+      expect(frozen).to be(image)
+      expect(image).to be_frozen
+    end
+
+    it "does not let marshal_load replace an image frozen past Image#freeze while it loads" do
       source = red_image
       source.format = "MIFF"
       dumped = source.marshal_dump
       image = described_class.new(1, 1)
-      scheduler.before_next_operation { image.freeze }
+      scheduler.before_next_operation { freeze_past_image_freeze(image) }
 
       error = scheduler.run { attempt { image.marshal_load(dumped) } }
 
@@ -123,11 +151,11 @@ RSpec.describe Magick::Image, if: offloading do
       [:transpose!, []],
       [:trim!, []]
     ].each do |method, args|
-      it "does not let #{method} replace an image that another fiber freezes while it runs" do
+      it "does not let #{method} replace an image frozen past Image#freeze while it runs" do
         image = red_image.border(5, 5, "white")
         image.pixel_color(1, 0, "blue")
         pixels = image.export_pixels
-        scheduler.before_next_operation { image.freeze }
+        scheduler.before_next_operation { freeze_past_image_freeze(image) }
 
         error = scheduler.run { attempt { image.public_send(method, *args) } }
 
@@ -135,6 +163,42 @@ RSpec.describe Magick::Image, if: offloading do
         expect([image.columns, image.rows]).to eq([20, 20])
         expect(image.export_pixels).to eq(pixels)
       end
+
+      it "does not let another fiber freeze an image that #{method} changes" do
+        image = red_image.border(5, 5, "white")
+        error = nil
+        scheduler.before_next_operation { Fiber.schedule { error = attempt { image.freeze } } }
+
+        scheduler.run { image.public_send(method, *args) }
+
+        expect(error).to in_use
+        expect(image).not_to be_frozen
+      end
+    end
+
+    it "does not let another fiber freeze an image that marshal_dump writes" do
+      image = red_image
+      image.format = "MIFF"
+      error = nil
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { image.freeze } } }
+
+      scheduler.run { image.marshal_dump }
+
+      expect(error).to in_use
+      expect(image).not_to be_frozen
+    end
+
+    it "does not let another fiber freeze or share a KernelInfo that a call changes" do
+      kernel = Magick::KernelInfo.new("3x3: 1,1,1,1,1,1,1,1,1")
+      errors = nil
+      scheduler.before_next_operation do
+        Fiber.schedule { errors = [attempt { kernel.freeze }, attempt { Ractor.make_shareable(kernel) }] }
+      end
+
+      scheduler.run { kernel.scale(2, Magick::NoValue) }
+
+      expect(errors).to all(in_use)
+      expect(kernel).not_to be_frozen
     end
 
     it "delivers an exception raised into the waiting fiber after the call has completed" do

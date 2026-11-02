@@ -40,4 +40,17 @@ RSpec.describe Magick::Image, '#to_blob' do
 
     expect(calls).to be_positive
   end
+
+  it "raises FrozenError when the block freezes the image" do
+    image = described_class.new(2, 2)
+    image.format = "MIFF"
+
+    expect do
+      image.to_blob do |options|
+        options.format = "PNG"
+        image.freeze
+      end
+    end.to raise_error(FrozenError)
+    expect(image.format).to eq("MIFF")
+  end
 end

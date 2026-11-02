@@ -39,4 +39,48 @@ RSpec.describe Magick::Image, '#freeze' do
     expect { image.x_resolution = 72.0 }.to raise_error(FrozenError)
     expect { image.y_resolution = 72.0 }.to raise_error(FrozenError)
   end
+
+  it 'raises RuntimeError while a call changes the image' do
+    image = described_class.new(20, 20)
+    errors = []
+    freeze = lambda do
+      [-> { image.freeze }, -> { Ractor.make_shareable(image) }].each do |attempt|
+        attempt.call
+      rescue RuntimeError => e
+        errors << e.message
+      end
+    end
+
+    during_call(freeze) { image.flip! }
+
+    expect(errors).to eq(['object is in use by another fiber'] * 2)
+    expect(image).not_to be_frozen
+  end
+
+  it 'freezes the image while a call only reads it' do
+    image = described_class.new(20, 20)
+
+    during_call(-> { image.freeze }) { image.flip }
+
+    expect(image).to be_frozen
+  end
+
+  it 'keeps mask from changing an image frozen while it copies the mask' do
+    image = described_class.new(10, 10)
+    mask = described_class.new(10, 10)
+
+    expect { during_call(-> { image.freeze }) { image.mask(mask) } }.to raise_error(FrozenError)
+    expect(image.mask).to be(nil)
+  end
+
+  it 'keeps a frozen Draw from drawing on an image frozen while it copies the patterns' do
+    image = described_class.new(10, 10) { |options| options.background_color = 'red' }
+    draw = Magick::Draw.new
+    draw.fill_pattern = described_class.new(10, 10) { |options| options.background_color = 'blue' }
+    draw.rectangle(0, 0, 9, 9)
+    draw.freeze
+
+    expect { during_call(-> { image.freeze }) { draw.draw(image) } }.to raise_error(FrozenError)
+    expect(image.pixel_color(5, 5)).to eq(Magick::Pixel.from_color('red'))
+  end
 end

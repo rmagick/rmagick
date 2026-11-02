@@ -73,6 +73,7 @@ private:
     rm_gvl_call &add_cleanup(void (*release)(void *, intptr_t), void *ptr, intptr_t arg, bool restore);
     template <typename F> bool any_object(bool update_only, F f) const;
     void *call(ResultType type);
+    void check_frozen_images(ResultType type);
     void *call_body(ResultType type);
     struct offload_frame *new_frame();
     void *offload(ResultType type);

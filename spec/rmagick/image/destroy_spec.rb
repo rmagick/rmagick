@@ -5,7 +5,7 @@ RSpec.describe Magick::Image, '#destroy' do
   it 'works' do
     image = described_class.new(20, 20)
     methods = described_class.instance_methods(false).sort
-    methods -= %i[__display__ destroy! destroyed? inspect cur_image marshal_load]
+    methods -= %i[__display__ destroy! destroyed? inspect cur_image marshal_load freeze]
 
     expect(image.destroyed?).to be(false)
     image.destroy!
