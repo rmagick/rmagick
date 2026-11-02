@@ -16,4 +16,15 @@ RSpec.describe Magick::Image, '#marshal_load' do
     expect { image.marshal_load(nil) }.to raise_error(TypeError)
     expect { image.marshal_load({}) }.to raise_error(TypeError)
   end
+
+  it 'raises FrozenError for a frozen image and leaves it unchanged' do
+    source = described_class.new(3, 3)
+    source.format = 'MIFF'
+    dumped = source.marshal_dump
+    image = described_class.new(2, 2).freeze
+
+    expect { image.marshal_load(dumped) }.to raise_error(FrozenError)
+    expect(image.columns).to eq(2)
+    expect(dumped.size).to eq(2)
+  end
 end
