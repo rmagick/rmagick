@@ -957,8 +957,9 @@ link_images(VALUE arg)
         image = check_link(t, args->mode);
         // Avoid a loop in this linked imagelist, issue #202. A frozen image can
         // be shared with another Ractor, which may be linking it into a list of
-        // its own.
-        if (OBJ_FROZEN(t) || args->images == image || GetPreviousImageInList(image) != NULL || GetNextImageInList(image) != NULL)
+        // its own. An image that another call uses may be alone in the list of
+        // that call, so its links must not change either.
+        if (OBJ_FROZEN(t) || args->images == image || GetPreviousImageInList(image) != NULL || GetNextImageInList(image) != NULL || rm_gvl_in_use(t))
         {
             // ImageMagick reads the pixels to write through the default nexus of
             // the pixel cache, so a frozen image to write gets a cache of its own.

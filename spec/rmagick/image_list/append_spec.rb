@@ -98,4 +98,22 @@ RSpec.describe Magick::ImageList, '#<<' do
     expect(image).not_to be_destroyed
     expect(appended.columns).to eq(6)
   end
+
+  it 'keeps the list of an image that another list links while it copies' do
+    image = Magick::Image.new(2, 2)
+    image_list = described_class.new
+    image_list << image << Magick::Image.new(2, 2).freeze
+    other = described_class.new
+    other << image << Magick::Image.new(2, 2)
+    finish = nil
+
+    begin
+      appended = during_call(-> { finish = pause_in_call { other.append(false) } }) { image_list.append(false) }
+    ensure
+      other_appended = finish&.call
+    end
+
+    expect(appended.columns).to eq(4)
+    expect(other_appended.columns).to eq(4)
+  end
 end

@@ -108,6 +108,28 @@ module TestHelpers
     trace.enable(&)
   end
 
+  # Runs the block on another thread until it enters a call to ImageMagick.
+  # Returns a lambda that lets the thread go on and returns the block's value.
+  def pause_in_call(&block)
+    entered = Queue.new
+    resume = Queue.new
+    pause = lambda do
+      entered << true
+      resume.pop
+    end
+    thread = Thread.new do
+      Thread.current.report_on_exception = false
+      during_call(pause, &block)
+    ensure
+      entered << true
+    end
+    entered.pop
+    lambda do
+      resume << true
+      thread.value
+    end
+  end
+
   def next_temp_image_number
     draw = Magick::Draw.new
     draw.composite(0, 0, 1, 1, Magick::Image.new(1, 1))
