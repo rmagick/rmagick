@@ -27,4 +27,60 @@ RSpec.describe Magick::ImageList, "#remap" do
     expect { image_list.remap(remap_image_list) }.not_to raise_error
     expect { image_list.remap(remap_image_list, Magick::NoDitherMethod) }.not_to raise_error
   end
+
+  it 'does not let an image be frozen while it copies a repeated image' do
+    image = Magick::Image.new(2, 2)
+    other = Magick::Image.new(2, 2)
+    image_list = described_class.new
+    image_list << image << other << other
+    palette = Magick::Image.new(2, 2)
+    error = nil
+    freeze = lambda do
+      image.freeze
+    rescue RuntimeError => e
+      error = e.message
+    end
+
+    during_call(freeze) { image_list.remap(palette) }
+
+    expect(error).to eq('object is in use by another fiber')
+    expect(image).not_to be_frozen
+  end
+
+  it 'does not let the remap image be destroyed while it copies a repeated image' do
+    image = Magick::Image.new(2, 2)
+    image_list = described_class.new
+    image_list << image << image
+    palette = Magick::Image.new(2, 2)
+    error = nil
+    destroy = lambda do
+      palette.destroy!
+    rescue RuntimeError => e
+      error = e.message
+    end
+
+    during_call(destroy) { image_list.remap(palette) }
+
+    expect(error).to eq('object is in use by another fiber')
+    expect(palette).not_to be_destroyed
+  end
+
+  it 'does not let a later image be frozen while it copies a repeated image' do
+    image = Magick::Image.new(2, 2)
+    later = Magick::Image.new(2, 2)
+    image_list = described_class.new
+    image_list << image << image << later
+    palette = Magick::Image.new(2, 2)
+    error = nil
+    freeze = lambda do
+      later.freeze
+    rescue RuntimeError => e
+      error = e.message
+    end
+
+    during_call(freeze) { image_list.remap(palette) }
+
+    expect(error).to eq('object is in use by another fiber')
+    expect(later).not_to be_frozen
+  end
 end

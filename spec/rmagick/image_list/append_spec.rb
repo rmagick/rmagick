@@ -78,4 +78,24 @@ RSpec.describe Magick::ImageList, '#<<' do
     expect { image_list.append }.to raise_error(ArgumentError)
     expect { image_list.append(true, 1) }.to raise_error(ArgumentError)
   end
+
+  it 'keeps the images it links when the list replaces one meanwhile' do
+    image = Magick::Image.new(2, 2)
+    other = Magick::Image.new(2, 2)
+    image_list = described_class.new
+    image_list << image << other << other
+    replacement = Magick::Image.new(2, 2)
+    error = nil
+    destroy = lambda do
+      image.destroy!
+    rescue RuntimeError => e
+      error = e.message
+    end
+
+    appended = during_call(-> { image_list[0] = replacement }, destroy) { image_list.append(false) }
+
+    expect(error).to eq('object is in use by another fiber')
+    expect(image).not_to be_destroyed
+    expect(appended.columns).to eq(6)
+  end
 end

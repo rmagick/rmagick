@@ -11081,17 +11081,18 @@ own_pixel_cache(Image *image)
  * @param owner the Image object that holds image, an Array of the Image objects
  *   whose images are linked with it, or nil
  * @param held another Image object whose image the caller uses after the copy,
- *   or nil
+ *   an Array of them, or nil
+ * @param changes whether the caller changes the images of owner after the copy
  * @return the copy
  */
 Image *
-rm_copy_image(Image *image, VALUE owner, VALUE held)
+rm_copy_image(Image *image, VALUE owner, VALUE held, bool changes)
 {
     Image *copy;
     ExceptionInfo *exception;
     void *ret;
 
-    copy = rm_clone_image(image, owner, held);
+    copy = rm_clone_image(image, owner, held, changes);
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     DECLARE_GVL_CALL(call, SetImageStorageClass, copy, copy->storage_class, exception);
@@ -11100,7 +11101,7 @@ rm_copy_image(Image *image, VALUE owner, VALUE held)
     ClearMagickException(&copy->exception);
     DECLARE_GVL_CALL(call, SetImageStorageClass, copy, copy->storage_class);
 #endif
-    ret = call.hold(owner).hold(held).keep_thread().destroy(copy).release(exception).run<void *>();
+    ret = call.hold(owner, changes).hold(held).keep_thread().destroy(copy).release(exception).run<void *>();
     if (!static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret)))
     {
 #if defined(IMAGEMAGICK_6)
