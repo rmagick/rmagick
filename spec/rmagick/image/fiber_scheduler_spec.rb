@@ -109,6 +109,34 @@ RSpec.describe Magick::Image, if: offloading do
       expect(image.columns).to eq(1)
     end
 
+    [
+      [:border!, [2, 2, "red"]],
+      [:excerpt!, [0, 0, 5, 5]],
+      [:flip!, []],
+      [:magnify!, []],
+      [:resample!, [36]],
+      [:resize!, [5, 5]],
+      [:rotate!, [90]],
+      [:scale!, [5, 5]],
+      [:shave!, [2, 2]],
+      [:thumbnail!, [5, 5]],
+      [:transpose!, []],
+      [:trim!, []]
+    ].each do |method, args|
+      it "does not let #{method} replace an image that another fiber freezes while it runs" do
+        image = red_image.border(5, 5, "white")
+        image.pixel_color(1, 0, "blue")
+        pixels = image.export_pixels
+        scheduler.before_next_operation { image.freeze }
+
+        error = scheduler.run { attempt { image.public_send(method, *args) } }
+
+        expect(error).to be_kind_of(FrozenError)
+        expect([image.columns, image.rows]).to eq([20, 20])
+        expect(image.export_pixels).to eq(pixels)
+      end
+    end
+
     it "delivers an exception raised into the waiting fiber after the call has completed" do
       image = described_class.new(200, 200)
       scheduler.cancel_next_operation(cancelled.new)

@@ -51,6 +51,7 @@ static VALUE rotate(int, int, VALUE *, VALUE);
 static VALUE scale(int, int, VALUE *, VALUE, gvl_function_t);
 static VALUE threshold_image(int, VALUE *, VALUE, gvl_function_t);
 static VALUE xform_image(int, VALUE, VALUE, VALUE, VALUE, VALUE, gvl_function_t);
+static void replace_image(VALUE, Image *);
 static VALUE array_from_images(Image *);
 static VALUE array_from_synced_images(Image *, Info *);
 static VALUE file_arg_rescue(VALUE, VALUE ATTRIBUTE_UNUSED) ATTRIBUTE_NORETURN;
@@ -1398,8 +1399,7 @@ crisscross(int bang, VALUE self, gvl_function_t fp)
     if (bang)
     {
         rm_ensure_result(new_image);
-        rm_image_set(self, new_image);
-        rm_image_destroy(image);
+        replace_image(self, new_image);
         return self;
     }
 
@@ -2456,8 +2456,7 @@ border(int bang, VALUE self, VALUE width, VALUE height, VALUE color)
     {
         rm_ensure_result(new_image);
         new_image->border_color = image->border_color;
-        rm_image_set(self, new_image);
-        rm_image_destroy(image);
+        replace_image(self, new_image);
         return self;
     }
 
@@ -7283,8 +7282,7 @@ excerpt(int bang, VALUE self, VALUE x, VALUE y, VALUE width, VALUE height)
     if (bang)
     {
         rm_ensure_result(new_image);
-        rm_image_set(self, new_image);
-        rm_image_destroy(image);
+        replace_image(self, new_image);
         return self;
     }
 
@@ -7823,8 +7821,7 @@ flipflop(int bang, VALUE self, gvl_function_t fp)
     if (bang)
     {
         rm_ensure_result(new_image);
-        rm_image_set(self, new_image);
-        rm_image_destroy(image);
+        replace_image(self, new_image);
         return self;
     }
 
@@ -10018,8 +10015,7 @@ magnify(int bang, VALUE self, gvl_function_t fp)
     if (bang)
     {
         rm_ensure_result(new_image);
-        rm_image_set(self, new_image);
-        rm_image_destroy(image);
+        replace_image(self, new_image);
         return self;
     }
 
@@ -13495,8 +13491,7 @@ resample(int bang, int argc, VALUE *argv, VALUE self)
     if (bang)
     {
         rm_ensure_result(new_image);
-        rm_image_set(self, new_image);
-        rm_image_destroy(image);
+        replace_image(self, new_image);
         return self;
     }
     return rm_image_new(new_image);
@@ -13654,8 +13649,7 @@ resize(int bang, int argc, VALUE *argv, VALUE self)
     if (bang)
     {
         rm_ensure_result(new_image);
-        rm_image_set(self, new_image);
-        rm_image_destroy(image);
+        replace_image(self, new_image);
         return self;
     }
     return rm_image_new(new_image);
@@ -13801,8 +13795,7 @@ rotate(int bang, int argc, VALUE *argv, VALUE self)
     if (bang)
     {
         rm_ensure_result(new_image);
-        rm_image_set(self, new_image);
-        rm_image_destroy(image);
+        replace_image(self, new_image);
         return self;
     }
     return rm_image_new(new_image);
@@ -14042,8 +14035,7 @@ scale(int bang, int argc, VALUE *argv, VALUE self, gvl_function_t fp)
     if (bang)
     {
         rm_ensure_result(new_image);
-        rm_image_set(self, new_image);
-        rm_image_destroy(image);
+        replace_image(self, new_image);
         return self;
     }
 
@@ -15906,8 +15898,7 @@ thumbnail(int bang, int argc, VALUE *argv, VALUE self)
     if (bang)
     {
         rm_ensure_result(new_image);
-        rm_image_set(self, new_image);
-        rm_image_destroy(image);
+        replace_image(self, new_image);
         return self;
     }
 
@@ -16941,8 +16932,7 @@ trimmer(int bang, int argc, VALUE *argv, VALUE self)
 
     if (bang)
     {
-        rm_image_set(self, new_image);
-        rm_image_destroy(image);
+        replace_image(self, new_image);
         return self;
     }
 
@@ -18300,8 +18290,7 @@ xform_image(int bang, VALUE self, VALUE x, VALUE y, VALUE width, VALUE height, g
     if (bang)
     {
         rm_ensure_result(new_image);
-        rm_image_set(self, new_image);
-        rm_image_destroy(image);
+        replace_image(self, new_image);
         return self;
     }
 
