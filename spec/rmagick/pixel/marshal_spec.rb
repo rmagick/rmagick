@@ -50,4 +50,24 @@ RSpec.describe Magick::Pixel, '#marshal' do
     expect { pixel.marshal_load(described_class.new(4, 5, 6).marshal_dump) }.to raise_error(FrozenError)
     expect(pixel.red).to eq(1)
   end
+
+  it 'leaves the pixel unchanged when a value cannot be converted' do
+    pixel = described_class.new(1, 2, 3)
+    dumped = pixel.marshal_dump.merge(red: 100, green: 200, blue: 300, black: 'x')
+
+    expect { pixel.marshal_load(dumped) }.to raise_error(TypeError)
+    expect([pixel.red, pixel.green, pixel.blue]).to eq([1, 2, 3])
+  end
+
+  it 'raises FrozenError when converting a value freezes the pixel' do
+    pixel = described_class.new(1, 2, 3)
+    red = Object.new
+    red.define_singleton_method(:to_int) do
+      pixel.freeze
+      100
+    end
+
+    expect { pixel.marshal_load(pixel.marshal_dump.merge(red: red)) }.to raise_error(FrozenError)
+    expect(pixel.red).to eq(1)
+  end
 end

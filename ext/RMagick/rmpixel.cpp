@@ -967,22 +967,25 @@ Pixel_marshal_dump(VALUE self)
 VALUE
 Pixel_marshal_load(VALUE self, VALUE dpixel)
 {
-    Pixel *pixel;
+    Pixel *pixel, loaded;
 
     rb_check_frozen(self);
-    TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
 
     Check_Type(dpixel, T_HASH);
 
-    pixel->red = APP2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("red")));
-    pixel->green = APP2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("green")));
-    pixel->blue = APP2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("blue")));
+    loaded.red = APP2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("red")));
+    loaded.green = APP2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("green")));
+    loaded.blue = APP2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("blue")));
 #if defined(IMAGEMAGICK_7)
-    pixel->alpha = APP2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("alpha")));
+    loaded.alpha = APP2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("alpha")));
 #else
-    pixel->opacity = APP2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("opacity")));
+    loaded.opacity = APP2QUANTUM(rb_hash_aref(dpixel, CSTR2SYM("opacity")));
 #endif
-    pixel->black = APP2QUANTUM(rb_hash_lookup2(dpixel, CSTR2SYM("black"), INT2FIX(0)));
+    loaded.black = APP2QUANTUM(rb_hash_lookup2(dpixel, CSTR2SYM("black"), INT2FIX(0)));
+
+    rb_check_frozen(self);
+    TypedData_Get_Struct(self, Pixel, &rm_pixel_data_type, pixel);
+    *pixel = loaded;
     return self;
 }
 

@@ -694,6 +694,73 @@ Draw_marshal_dump(VALUE self)
 
 
 /**
+ * Replace a string of a DrawInfo with a dumped value.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param field the string to replace
+ * @param obj the dumped value, or nil for no string
+ */
+static void
+load_string(char **field, VALUE obj)
+{
+    if (NIL_P(obj))
+    {
+        magick_clone_string(field, NULL);
+    }
+    else
+    {
+        VALUE str = rb_String(obj);
+        magick_clone_string(field, StringValueCStr(str));
+        RB_GC_GUARD(str);
+    }
+}
+
+
+/**
+ * Move the values that Draw#marshal_load loads from one DrawInfo to another.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param info the DrawInfo of the Draw
+ * @param loaded the loaded values, which get the old strings and patterns of info
+ */
+static void
+move_loaded_values(DrawInfo *info, DrawInfo *loaded)
+{
+    std::swap(info->geometry, loaded->geometry);
+    info->affine = loaded->affine;
+    info->gravity = loaded->gravity;
+    info->fill = loaded->fill;
+    info->stroke = loaded->stroke;
+    info->stroke_width = loaded->stroke_width;
+    std::swap(info->fill_pattern, loaded->fill_pattern);
+    std::swap(info->stroke_pattern, loaded->stroke_pattern);
+    info->stroke_antialias = loaded->stroke_antialias;
+    info->text_antialias = loaded->text_antialias;
+    info->decorate = loaded->decorate;
+    std::swap(info->font, loaded->font);
+    std::swap(info->family, loaded->family);
+    info->style = loaded->style;
+    info->stretch = loaded->stretch;
+    info->weight = loaded->weight;
+    std::swap(info->encoding, loaded->encoding);
+    info->pointsize = loaded->pointsize;
+    std::swap(info->density, loaded->density);
+    info->align = loaded->align;
+    info->undercolor = loaded->undercolor;
+    info->clip_units = loaded->clip_units;
+#if defined(IMAGEMAGICK_7)
+    info->alpha = loaded->alpha;
+#else
+    info->opacity = loaded->opacity;
+#endif
+    info->kerning = loaded->kerning;
+    info->interword_spacing = loaded->interword_spacing;
+}
+
+
+/**
  * Load the marshalled object
  *
  * @param ddraw [Hash] the marshalled object
@@ -702,65 +769,87 @@ Draw_marshal_dump(VALUE self)
 VALUE
 Draw_marshal_load(VALUE self, VALUE ddraw)
 {
-    MagickDraw *draw;
-    VALUE val;
+    MagickDraw *draw, *loaded;
+    DrawInfo *info;
+    VALUE loaded_obj, primitives, val;
 
+    rb_check_frozen(self);
+    rm_gvl_check_writable(self);
     TypedData_Get_Struct(self, MagickDraw, &rm_draw_data_type, draw);
 
     Check_Type(ddraw, T_HASH);
 
-    if (draw->info == NULL)
+    loaded_obj = DrawOptions_alloc(Class_DrawOptions);
+    TypedData_Get_Struct(loaded_obj, MagickDraw, &rm_draw_data_type, loaded);
+    loaded->info = CloneDrawInfo(NULL, (DrawInfo *) NULL);
+    if (!loaded->info)
     {
-        ImageInfo *image_info;
-
-        image_info = CloneImageInfo(NULL);
-        draw->info = CloneDrawInfo(image_info, (DrawInfo *) NULL);
-        DestroyImageInfo(image_info);
+        rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
-    OBJ_TO_MAGICK_STRING(draw->info->geometry, rb_hash_aref(ddraw, CSTR2SYM("geometry")));
+    info = loaded->info;
+
+    load_string(&info->geometry, rb_hash_aref(ddraw, CSTR2SYM("geometry")));
 
     val = rb_hash_aref(ddraw, CSTR2SYM("affine"));
-    Export_AffineMatrix(&draw->info->affine, val);
+    Export_AffineMatrix(&info->affine, val);
 
-    draw->info->gravity = (GravityType) FIX2INT(rb_hash_aref(ddraw, CSTR2SYM("gravity")));
+    info->gravity = (GravityType) FIX2INT(rb_hash_aref(ddraw, CSTR2SYM("gravity")));
 
     val = rb_hash_aref(ddraw, CSTR2SYM("fill"));
-    Color_to_PixelColor(&draw->info->fill, val);
+    Color_to_PixelColor(&info->fill, val);
 
     val = rb_hash_aref(ddraw, CSTR2SYM("stroke"));
-    Color_to_PixelColor(&draw->info->stroke, val);
+    Color_to_PixelColor(&info->stroke, val);
 
-    draw->info->stroke_width = NUM2DBL(rb_hash_aref(ddraw, CSTR2SYM("stroke_width")));
-    draw->info->fill_pattern = str_to_image(rb_hash_aref(ddraw, CSTR2SYM("fill_pattern")));
-    draw->info->stroke_pattern = str_to_image(rb_hash_aref(ddraw, CSTR2SYM("stroke_pattern")));
-    draw->info->stroke_antialias = (MagickBooleanType)RTEST(rb_hash_aref(ddraw, CSTR2SYM("stroke_antialias")));
-    draw->info->text_antialias = (MagickBooleanType)RTEST(rb_hash_aref(ddraw, CSTR2SYM("text_antialias")));
-    draw->info->decorate = (DecorationType) FIX2INT(rb_hash_aref(ddraw, CSTR2SYM("decorate")));
-    OBJ_TO_MAGICK_STRING(draw->info->font, rb_hash_aref(ddraw, CSTR2SYM("font")));
-    OBJ_TO_MAGICK_STRING(draw->info->family, rb_hash_aref(ddraw, CSTR2SYM("family")));
+    info->stroke_width = NUM2DBL(rb_hash_aref(ddraw, CSTR2SYM("stroke_width")));
+    info->fill_pattern = str_to_image(rb_hash_aref(ddraw, CSTR2SYM("fill_pattern")));
+    info->stroke_pattern = str_to_image(rb_hash_aref(ddraw, CSTR2SYM("stroke_pattern")));
+    info->stroke_antialias = (MagickBooleanType)RTEST(rb_hash_aref(ddraw, CSTR2SYM("stroke_antialias")));
+    info->text_antialias = (MagickBooleanType)RTEST(rb_hash_aref(ddraw, CSTR2SYM("text_antialias")));
+    info->decorate = (DecorationType) FIX2INT(rb_hash_aref(ddraw, CSTR2SYM("decorate")));
+    load_string(&info->font, rb_hash_aref(ddraw, CSTR2SYM("font")));
+    load_string(&info->family, rb_hash_aref(ddraw, CSTR2SYM("family")));
 
-    draw->info->style = (StyleType) FIX2INT(rb_hash_aref(ddraw, CSTR2SYM("style")));
-    draw->info->stretch = (StretchType) FIX2INT(rb_hash_aref(ddraw, CSTR2SYM("stretch")));
-    draw->info->weight = NUM2ULONG(rb_hash_aref(ddraw, CSTR2SYM("weight")));
-    OBJ_TO_MAGICK_STRING(draw->info->encoding, rb_hash_aref(ddraw, CSTR2SYM("encoding")));
-    draw->info->pointsize = NUM2DBL(rb_hash_aref(ddraw, CSTR2SYM("pointsize")));
-    OBJ_TO_MAGICK_STRING(draw->info->density, rb_hash_aref(ddraw, CSTR2SYM("density")));
-    draw->info->align = (AlignType) FIX2INT(rb_hash_aref(ddraw, CSTR2SYM("align")));
+    info->style = (StyleType) FIX2INT(rb_hash_aref(ddraw, CSTR2SYM("style")));
+    info->stretch = (StretchType) FIX2INT(rb_hash_aref(ddraw, CSTR2SYM("stretch")));
+    info->weight = NUM2ULONG(rb_hash_aref(ddraw, CSTR2SYM("weight")));
+    load_string(&info->encoding, rb_hash_aref(ddraw, CSTR2SYM("encoding")));
+    info->pointsize = NUM2DBL(rb_hash_aref(ddraw, CSTR2SYM("pointsize")));
+    load_string(&info->density, rb_hash_aref(ddraw, CSTR2SYM("density")));
+    info->align = (AlignType) FIX2INT(rb_hash_aref(ddraw, CSTR2SYM("align")));
 
     val = rb_hash_aref(ddraw, CSTR2SYM("undercolor"));
-    Color_to_PixelColor(&draw->info->undercolor, val);
+    Color_to_PixelColor(&info->undercolor, val);
 
-    draw->info->clip_units = (ClipPathUnits)FIX2INT(rb_hash_aref(ddraw, CSTR2SYM("clip_units")));
+    info->clip_units = (ClipPathUnits)FIX2INT(rb_hash_aref(ddraw, CSTR2SYM("clip_units")));
 #if defined(IMAGEMAGICK_7)
-    draw->info->alpha = APP2QUANTUM(rb_hash_aref(ddraw, CSTR2SYM("alpha")));
+    info->alpha = APP2QUANTUM(rb_hash_aref(ddraw, CSTR2SYM("alpha")));
 #else
-    draw->info->opacity = APP2QUANTUM(rb_hash_aref(ddraw, CSTR2SYM("opacity")));
+    info->opacity = APP2QUANTUM(rb_hash_aref(ddraw, CSTR2SYM("opacity")));
 #endif
-    draw->info->kerning = NUM2DBL(rb_hash_aref(ddraw, CSTR2SYM("kerning")));
-    draw->info->interword_spacing = NUM2DBL(rb_hash_aref(ddraw, CSTR2SYM("interword_spacing")));
+    info->kerning = NUM2DBL(rb_hash_aref(ddraw, CSTR2SYM("kerning")));
+    info->interword_spacing = NUM2DBL(rb_hash_aref(ddraw, CSTR2SYM("interword_spacing")));
 
-    draw->primitives = rb_hash_aref(ddraw, CSTR2SYM("primitives"));
+    primitives = copy_primitives(rb_hash_aref(ddraw, CSTR2SYM("primitives")));
 
+    // Converting the values runs Ruby code, and loading a pattern releases
+    // the GVL, so other code can freeze self or start a call that uses it.
+    rb_check_frozen(self);
+    rm_gvl_check_writable(self);
+    if (draw->info)
+    {
+        move_loaded_values(draw->info, info);
+        DestroyDrawInfo(info);
+    }
+    else
+    {
+        draw->info = info;
+    }
+    loaded->info = NULL;
+    draw->primitives = primitives;
+
+    RB_GC_GUARD(loaded_obj);
+    RB_GC_GUARD(primitives);
     RB_GC_GUARD(val);
 
     return self;
