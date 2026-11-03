@@ -20,6 +20,24 @@ RSpec.describe Magick::Image, '#store_pixels' do
     expect { image.store_pixels(0, 0, image.columns, 1, 1234) }.to raise_error(IndexError)
   end
 
+  it 'raises FrozenError for a frozen image, even one frozen while it converts the arguments' do
+    image = described_class.new(4, 4)
+    pixels = image.export_pixels
+    red = Array.new(4, Magick::Pixel.from_color('red'))
+    conversions = 0
+    x = Object.new
+    x.define_singleton_method(:to_int) do
+      conversions += 1
+      image.freeze
+      0
+    end
+
+    expect { image.store_pixels(x, 0, 4, 1, red) }.to raise_error(FrozenError)
+    expect { image.store_pixels(x, 0, 4, 1, red) }.to raise_error(FrozenError)
+    expect(conversions).to eq(1)
+    expect(image.export_pixels).to eq(pixels)
+  end
+
   it 'raises RangeError when the size is negative or too large' do
     image = described_class.new(4, 4)
 

@@ -15440,13 +15440,13 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg,
     PixelPacket *pixels;
 #endif
 
-    image = rm_check_writable(self);
+    image = rm_check_frozen(self);
 
     x = NUM2LONG(x_arg);
     y = NUM2LONG(y_arg);
     cols = NUM2LONG(cols_arg);
     rows = NUM2LONG(rows_arg);
-    image = rm_check_writable(self);
+    image = rm_check_frozen(self);
     if (x < 0 || y < 0 || cols < 0 || rows < 0
         || (unsigned long)x + cols > image->columns || (unsigned long)y + rows > image->rows)
     {
@@ -15457,7 +15457,7 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg,
     size = cols * rows;
     new_pixels = rb_Array(new_pixels);
     rm_check_ary_len(new_pixels, size);
-    image = rm_check_writable(self);
+    image = rm_check_frozen(self);
 
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();

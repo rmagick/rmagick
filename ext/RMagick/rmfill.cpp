@@ -679,7 +679,7 @@ GradientFill_fill(VALUE self, VALUE image_obj)
 
     TypedData_Get_Struct(self, MagickGradientFill, &rm_gradient_fill_data_type, fill);
     image_obj = rm_cur_image(image_obj);
-    image = rm_check_writable(image_obj);
+    image = rm_check_frozen(image_obj);
 
     x1 = fill->x1;
     y1 = fill->y1;
@@ -878,7 +878,7 @@ TextureFill_fill(VALUE self, VALUE image_obj)
     ExceptionInfo *exception;
 #endif
 
-    image = rm_check_writable(rm_cur_image(image_obj));
+    image = rm_check_frozen(rm_cur_image(image_obj));
     TypedData_Get_Struct(self, MagickTextureFill, &rm_texture_fill_data_type, fill);
     if (!fill->texture)
     {
