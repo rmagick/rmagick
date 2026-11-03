@@ -686,6 +686,7 @@ Draw_marshal_dump(VALUE self)
 #endif
     rb_hash_aset(ddraw, CSTR2SYM("kerning"), rb_float_new(draw->info->kerning));
     rb_hash_aset(ddraw, CSTR2SYM("interword_spacing"), rb_float_new(draw->info->interword_spacing));
+    rb_hash_aset(ddraw, CSTR2SYM("interline_spacing"), rb_float_new(draw->info->interline_spacing));
 
     // Non-DrawInfo fields
     rb_hash_aset(ddraw, CSTR2SYM("primitives"), copy_primitives(draw->primitives));
@@ -758,6 +759,7 @@ move_loaded_values(DrawInfo *info, DrawInfo *loaded)
 #endif
     info->kerning = loaded->kerning;
     info->interword_spacing = loaded->interword_spacing;
+    info->interline_spacing = loaded->interline_spacing;
 }
 
 
@@ -773,6 +775,7 @@ Draw_marshal_load(VALUE self, VALUE ddraw)
     MagickDraw *draw, *loaded;
     DrawInfo *info;
     VALUE loaded_obj, primitives, val;
+    bool has_interline_spacing;
 
     rb_check_frozen(self);
     rm_gvl_check_writable(self);
@@ -830,6 +833,12 @@ Draw_marshal_load(VALUE self, VALUE ddraw)
 #endif
     info->kerning = NUM2DBL(rb_hash_aref(ddraw, CSTR2SYM("kerning")));
     info->interword_spacing = NUM2DBL(rb_hash_aref(ddraw, CSTR2SYM("interword_spacing")));
+    val = rb_hash_lookup2(ddraw, CSTR2SYM("interline_spacing"), Qundef);
+    has_interline_spacing = val != Qundef;
+    if (has_interline_spacing)
+    {
+        info->interline_spacing = NUM2DBL(val);
+    }
 
     primitives = copy_primitives(rb_hash_aref(ddraw, CSTR2SYM("primitives")));
 
@@ -839,6 +848,10 @@ Draw_marshal_load(VALUE self, VALUE ddraw)
     rm_gvl_check_writable(self);
     if (draw->info)
     {
+        if (!has_interline_spacing)
+        {
+            info->interline_spacing = draw->info->interline_spacing;
+        }
         move_loaded_values(draw->info, info);
         DestroyDrawInfo(info);
     }
