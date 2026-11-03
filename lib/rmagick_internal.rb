@@ -1650,9 +1650,9 @@ module Magick
     end
 
     def marshal_load(ary)
-      @scene = ary.shift
-      @images = []
-      ary.each { |a| @images << Marshal.load(a) } # rubocop:disable Security/MarshalLoad
+      images = ary.drop(1).map! { |a| Marshal.load(a) } # rubocop:disable Security/MarshalLoad
+      @scene = ary.first
+      @images = images
     end
 
     # The ImageList class supports the Magick::Image class methods by simply sending
