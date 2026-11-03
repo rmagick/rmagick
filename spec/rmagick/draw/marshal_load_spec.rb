@@ -59,6 +59,7 @@ RSpec.describe Magick::Draw, '#marshal_load' do
     source.undercolor = Magick::Pixel.from_color('green')
     source.kerning = 10.5
     source.interword_spacing = 3.75
+    source.interline_spacing = 40
     source.circle(20, 25, 20, 28)
     dumped = source.marshal_dump
 
@@ -66,6 +67,23 @@ RSpec.describe Magick::Draw, '#marshal_load' do
     draw.marshal_load(dumped)
 
     expect(draw.marshal_dump).to eq(dumped)
+  end
+
+  it 'keeps interline_spacing through Marshal' do
+    draw = described_class.new
+    draw.interline_spacing = 40
+
+    loaded = Marshal.load(Marshal.dump(draw))
+
+    expect(loaded.get_multiline_type_metrics("a\nb").height).to eq(draw.get_multiline_type_metrics("a\nb").height)
+  end
+
+  it 'loads an older dump without interline_spacing into a new Draw' do
+    dumped = described_class.new.marshal_dump.except(:interline_spacing)
+
+    draw = described_class.allocate.marshal_load(dumped)
+
+    expect(draw.get_multiline_type_metrics("a\nb").height).to eq(described_class.new.get_multiline_type_metrics("a\nb").height)
   end
 
   it 'raises FrozenError for a frozen Draw and leaves it unchanged' do
@@ -105,7 +123,7 @@ RSpec.describe Magick::Draw, '#marshal_load' do
     end
   end
 
-  it 'keeps the values it does not load, even one set while it converts a value' do
+  it 'keeps its interline_spacing for an older dump without it, even one set while it converts a value' do
     draw = described_class.new
     pointsize = Struct.new(:draw) do
       def to_f
@@ -114,7 +132,7 @@ RSpec.describe Magick::Draw, '#marshal_load' do
       end
     end.new(draw)
 
-    draw.marshal_load(draw.marshal_dump.merge(pointsize: pointsize))
+    draw.marshal_load(draw.marshal_dump.merge(pointsize: pointsize).except(:interline_spacing))
 
     spaced = described_class.new
     spaced.interline_spacing = 40
