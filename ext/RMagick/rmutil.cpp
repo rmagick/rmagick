@@ -1951,6 +1951,25 @@ rm_split(Image *image)
 }
 
 
+/**
+ * Keep the first image of a list and destroy the others, such as the layers
+ * that ImageMagick reads from a PSD file.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param images the list, or NULL
+ * @return the first image, or NULL
+ */
+Image *
+rm_first_image(Image *images)
+{
+    Image *image = RemoveFirstImageFromList(&images);
+
+    DestroyImageList(images);
+    return image;
+}
+
+
 #if defined(IMAGEMAGICK_6)
 /**
  * If an ExceptionInfo struct in a list of images indicates a warning, issue a

@@ -604,6 +604,7 @@ Image *str_to_image(VALUE str)
         DestroyImageInfo(info);
         rm_check_exception(exception, image, DestroyOnError);
         DestroyExceptionInfo(exception);
+        image = rm_first_image(image);
     }
 
     RB_GC_GUARD(str);

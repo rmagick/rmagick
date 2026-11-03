@@ -22,13 +22,6 @@ RSpec.describe Magick::Image, if: offloading do
       described_class.new(10, 10) { |options| options.background_color = "blue" }
     end
 
-    # Bytes of the pixel caches that ImageMagick holds in memory, in maps and
-    # on disk. Unlike the RSS, it leaves out what malloc keeps for reuse after
-    # ImageMagick frees it, which grows with the number of threads.
-    def pixel_cache_size
-      %i[memory map disk].sum { |resource| Magick.resource_usage(resource) }
-    end
-
     def attempt
       yield
     rescue StandardError => e

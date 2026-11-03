@@ -130,6 +130,13 @@ module TestHelpers
     end
   end
 
+  # Bytes of the pixel caches that ImageMagick holds in memory, in maps and
+  # on disk. Unlike the RSS, it leaves out what malloc keeps for reuse after
+  # ImageMagick frees it, which grows with the number of threads.
+  def pixel_cache_size
+    %i[memory map disk].sum { |resource| Magick.resource_usage(resource) }
+  end
+
   def next_temp_image_number
     draw = Magick::Draw.new
     draw.composite(0, 0, 1, 1, Magick::Image.new(1, 1))

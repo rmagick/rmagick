@@ -1094,6 +1094,7 @@ Image_add_profile(VALUE self, VALUE name)
         DestroyExceptionInfo(exception);
         rm_ensure_result(profile_image);
     }
+    profile_image = rm_first_image(profile_image);
 
     ResetImageProfileIterator(profile_image);
     profile_name = GetNextImageProfile(profile_image);
@@ -9978,7 +9979,7 @@ Image__load(VALUE klass ATTRIBUTE_UNUSED, VALUE str)
 
     RB_GC_GUARD(str);
 
-    return rm_image_new(image);
+    return rm_image_new(rm_first_image(image));
 }
 
 
@@ -10149,7 +10150,7 @@ Image_marshal_load(VALUE self, VALUE ary)
     DestroyExceptionInfo(exception);
     rm_ensure_result(new_image);
 
-    replace_image(self, new_image);
+    replace_image(self, rm_first_image(new_image));
 
     RB_GC_GUARD(filename);
     RB_GC_GUARD(blob);

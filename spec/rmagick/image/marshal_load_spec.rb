@@ -27,4 +27,17 @@ RSpec.describe Magick::Image, '#marshal_load' do
     expect(image.columns).to eq(2)
     expect(dumped.size).to eq(2)
   end
+
+  it 'keeps only the first image of a dump that reads back as several images' do
+    image = described_class.new(100, 100)
+    image.format = 'PSD'
+    dumped = Marshal.dump(image)
+    GC.start
+    before = pixel_cache_size
+
+    loaded = Marshal.load(dumped)
+    loaded.destroy!
+
+    expect(pixel_cache_size).to eq(before)
+  end
 end
