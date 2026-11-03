@@ -116,4 +116,24 @@ RSpec.describe Magick::ImageList, '#<<' do
     expect(appended.columns).to eq(4)
     expect(other_appended.columns).to eq(4)
   end
+
+  it 'lets a call on one of the images meanwhile see it alone' do
+    first, image, last = (0..2).map { |n| Magick::Image.read("#{IMAGES_DIR}/Button_#{n}.gif").first }
+    image_list = described_class.new
+    image_list << first << image << last
+    look = lambda do
+      draw = Magick::Draw.new
+      draw.composite(0, 0, 0, 0, image, Magick::CopyCompositeOp)
+      canvas = Magick::Image.new(image.columns, image.rows)
+      draw.draw(canvas)
+      [image.changed?, image.thumbnail(2, 2)['Thumb::Document::Pages'], image._dump(0), canvas.export_pixels]
+    end
+    alone = look.call
+    seen = []
+
+    during_call(*Array.new(10) { -> { seen << look.call } }) { image_list.append(false) }
+
+    expect(seen).not_to be_empty
+    expect(seen).to all(eq(alone))
+  end
 end
