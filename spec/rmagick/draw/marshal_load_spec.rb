@@ -152,4 +152,21 @@ RSpec.describe Magick::Draw, '#marshal_load' do
 
     expect(draw.inspect).to eq('point 0,0')
   end
+
+  it 'keeps only the first image of a pattern that reads back as several images' do
+    pattern = Magick::Image.new(100, 100)
+    pattern.format = 'PSD'
+    draw = described_class.new
+    draw.fill_pattern = pattern
+    draw.stroke_pattern = pattern
+    dumped = draw.marshal_dump
+    loaded = described_class.new
+    loaded.marshal_load(dumped)
+    GC.start
+    before = pixel_cache_size
+
+    5.times { loaded.marshal_load(dumped) }
+
+    expect(pixel_cache_size).to eq(before)
+  end
 end

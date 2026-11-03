@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe Magick, '.resource_usage' do
-  def pixel_cache_size
-    %i[memory map disk].sum { |resource| described_class.resource_usage(resource) }
-  end
-
   it 'returns the amount of each resource in use' do
     %i[area memory map disk file time].each do |resource|
       expect(described_class.resource_usage(resource)).to be_kind_of(Integer)
