@@ -10124,8 +10124,8 @@ Image_marshal_load(VALUE self, VALUE ary)
     check_replaceable(self);
     Check_Type(ary, T_ARRAY);
 
-    filename = rb_ary_shift(ary);
-    blob = rb_ary_shift(ary);
+    filename = rb_ary_entry(ary, 0);
+    blob = rb_ary_entry(ary, 1);
 
     filename = StringValue(filename);
     blob = rb_str_new_frozen(StringValue(blob));

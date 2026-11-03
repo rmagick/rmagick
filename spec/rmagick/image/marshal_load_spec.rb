@@ -28,6 +28,36 @@ RSpec.describe Magick::Image, '#marshal_load' do
     expect(dumped.size).to eq(2)
   end
 
+  it 'leaves the dumped array as it is' do
+    image = described_class.new(3, 2)
+    image.format = 'MIFF'
+    dumped = image.marshal_dump
+    copy = dumped.map(&:dup)
+
+    described_class.new(1, 1).marshal_load(dumped)
+
+    expect(dumped).to eq(copy)
+  end
+
+  it 'loads an image with Marshal.load and freeze: true' do
+    image = described_class.new(3, 2)
+    image.format = 'MIFF'
+
+    loaded = Marshal.load(Marshal.dump(image), freeze: true)
+
+    expect(loaded.columns).to eq(3)
+  end
+
+  it 'loads a frozen image that Ractors can share with Marshal.load and freeze: true', if: Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.3') do
+    image = described_class.new(3, 2)
+    image.format = 'MIFF'
+
+    loaded = Marshal.load(Marshal.dump(image), freeze: true)
+
+    expect(loaded).to be_frozen
+    expect(Ractor.shareable?(loaded)).to be(true)
+  end
+
   it 'keeps only the first image of a dump that reads back as several images' do
     image = described_class.new(100, 100)
     image.format = 'PSD'
