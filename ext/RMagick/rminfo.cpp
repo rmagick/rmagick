@@ -349,6 +349,7 @@ VALUE
 Info_aref(int argc, VALUE *argv, VALUE self)
 {
     Info *info;
+    VALUE format = Qnil, key = Qnil;
     char *format_p, *key_p;
     size_t format_l, key_l;
     const char *value;
@@ -357,11 +358,12 @@ Info_aref(int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 2:
-            argv[0] = rb_str_new_frozen(StringValue(argv[0]));
-            format_p = StringValueCStr(argv[0]);
-            format_l = (size_t)RSTRING_LEN(argv[0]);
-            key_p = StringValueCStr(argv[1]);
-            key_l = (size_t)RSTRING_LEN(argv[1]);
+            format = rb_str_new_frozen(StringValue(argv[0]));
+            key = argv[1];
+            format_p = StringValueCStr(format);
+            format_l = (size_t)RSTRING_LEN(format);
+            key_p = StringValueCStr(key);
+            key_l = (size_t)RSTRING_LEN(key);
             build_option_key(format_p, format_l, key_p, key_l, fkey, sizeof(fkey));
             break;
 
@@ -374,6 +376,9 @@ Info_aref(int argc, VALUE *argv, VALUE self)
             break;
 
     }
+
+    RB_GC_GUARD(format);
+    RB_GC_GUARD(key);
 
     info = rm_info_get(self);
     value = GetImageOption(info, fkey);
@@ -414,6 +419,7 @@ Info_aset(int argc, VALUE *argv, VALUE self)
 {
     Info *info;
     VALUE value;
+    VALUE format = Qnil, key = Qnil;
     char *format_p, *key_p, *value_p = NULL;
     size_t format_l, key_l;
     char ckey[MaxTextExtent];
@@ -423,12 +429,15 @@ Info_aset(int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 3:
-            argv[0] = rb_str_new_frozen(StringValue(argv[0]));
-            format_p = StringValueCStr(argv[0]);
-            format_l = (size_t)RSTRING_LEN(argv[0]);
-            key_p = StringValueCStr(argv[1]);
-            key_l = (size_t)RSTRING_LEN(argv[1]);
+            format = rb_str_new_frozen(StringValue(argv[0]));
+            key = argv[1];
+            format_p = StringValueCStr(format);
+            format_l = (size_t)RSTRING_LEN(format);
+            key_p = StringValueCStr(key);
+            key_l = (size_t)RSTRING_LEN(key);
             build_option_key(format_p, format_l, key_p, key_l, ckey, sizeof(ckey));
+            RB_GC_GUARD(format);
+            RB_GC_GUARD(key);
 
             value = argv[2];
             break;
@@ -792,6 +801,7 @@ Info_define(int argc, VALUE *argv, VALUE self)
     char ckey[MaxTextExtent];
     unsigned int okay;
     VALUE value_arg = Qnil;
+    VALUE format_arg = Qnil, key_arg = Qnil;
 
     info = get_writable_info(self);
 
@@ -803,17 +813,20 @@ Info_define(int argc, VALUE *argv, VALUE self)
             value = (const char *)StringValueCStr(value_arg);
             /* fall through */
         case 2:
-            argv[1] = rb_str_new_frozen(StringValue(argv[1]));
-            key = StringValueCStr(argv[1]);
-            key_l = (size_t)RSTRING_LEN(argv[1]);
-            format = StringValueCStr(argv[0]);
-            format_l = (size_t)RSTRING_LEN(argv[0]);
+            key_arg = rb_str_new_frozen(StringValue(argv[1]));
+            format_arg = argv[0];
+            key = StringValueCStr(key_arg);
+            key_l = (size_t)RSTRING_LEN(key_arg);
+            format = StringValueCStr(format_arg);
+            format_l = (size_t)RSTRING_LEN(format_arg);
             break;
         default:
             rb_raise(rb_eArgError, "wrong number of arguments (%d for 2 or 3)", argc);
     }
 
     build_option_key(format, format_l, key, key_l, ckey, sizeof(ckey));
+    RB_GC_GUARD(format_arg);
+    RB_GC_GUARD(key_arg);
 
     DeleteImageOption(info, ckey);
     okay = SetImageOption(info, ckey, value);

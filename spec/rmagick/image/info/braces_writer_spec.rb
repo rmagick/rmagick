@@ -27,6 +27,16 @@ RSpec.describe Magick::Image::Info, '#[]=' do
     end
   end
 
+  it 'stores the option when the GC compacts while the key is converted', if: GCCompaction.moves_arguments? do
+    infos = Array.new(10) { described_class.new }
+
+    with_gc_compaction do
+      infos.each { |info| info[ToStrDuck.new('tiff'), ToStrDuck.new('rows-per-strip')] = ToStrDuck.new('8') }
+    end
+
+    expect(infos.map { |info| info['tiff:rows-per-strip'] }).to eq(['8'] * 10)
+  end
+
   # Regression: see the matching examples in caption_spec.rb, comment_spec.rb
   # and label_spec.rb. ImageMagick matches option keys case-insensitively, so
   # these keys reach the same options as Info#caption=, #comment= and #label=.

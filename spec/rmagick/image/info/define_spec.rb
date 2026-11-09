@@ -45,6 +45,16 @@ RSpec.describe Magick::Image::Info, '#define' do
     end
   end
 
+  it 'defines the option when the GC compacts while the format is converted', if: GCCompaction.moves_arguments? do
+    infos = Array.new(10) { described_class.new }
+
+    with_gc_compaction do
+      infos.each { |info| info.define(ToStrDuck.new('tiff'), ToStrDuck.new('rows-per-strip'), ToStrDuck.new('8')) }
+    end
+
+    expect(infos.map { |info| info['tiff:rows-per-strip'] }).to eq(['8'] * 10)
+  end
+
   it "keeps the value when converting the key replaces the value" do
     info = described_class.new
     value = +"8"
