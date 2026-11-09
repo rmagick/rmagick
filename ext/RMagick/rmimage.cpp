@@ -13775,7 +13775,7 @@ rotate(int bang, int argc, VALUE *argv, VALUE self)
             arrow = rm_str2cstr(&argv[1], &arrow_l);
             if (arrow_l != 1 || (*arrow != '<' && *arrow != '>'))
             {
-                rb_raise(rb_eArgError, "second argument must be '<' or '>', '%s' given", arrow);
+                rb_raise(rb_eArgError, "second argument must be '<' or '>', '%" PRIsVALUE "' given", argv[1]);
             }
             image = bang ? rm_check_frozen(self) : rm_check_readable(self);
             if (*arrow == '>' && image->columns <= image->rows)
