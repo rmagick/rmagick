@@ -155,8 +155,8 @@ RSpec.describe Magick::Draw, '#annotate' do
     draw = described_class.new
 
     expect do
-      if 1.size == 8
-        # 64-bit environment can use larger value for Integer and it can cause
+      if [0].pack('l!').bytesize == 8
+        # An environment with a 64-bit long can use larger value for Integer and it can cause
         # a stack buffer overflow.
         image = Magick::Image.new(10, 10)
         draw.annotate(image, 2**63, 2**63, 2**62, 2**62, 'Hello world')
