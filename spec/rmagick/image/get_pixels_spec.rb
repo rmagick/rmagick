@@ -26,6 +26,24 @@ RSpec.describe Magick::Image, '#get_pixels' do
     expect { image.get_pixels(0, 1, 1, (2**64) - 1) }.to raise_error(RangeError)
   end
 
+  it 'raises RangeError when the offset is negative' do
+    image = described_class.new(4, 4)
+
+    expect { image.get_pixels(-1, 0, 1, 1) }.to raise_error(RangeError)
+    expect { image.get_pixels(0, -1, 1, 1) }.to raise_error(RangeError)
+    expect { image.get_pixels(-1, -1, 2, 2) }.to raise_error(RangeError)
+    expect { image.get_pixels(-100, 0, 101, 1) }.to raise_error(RangeError)
+    expect { image.get_pixels(0, -100, 1, 101) }.to raise_error(RangeError)
+  end
+
+  it 'reads a region that ends at the edge of the image' do
+    image = described_class.new(4, 4)
+    image.pixel_color(3, 3, 'blue')
+
+    expect(image.get_pixels(3, 3, 1, 1)).to eq([image.pixel_color(3, 3)])
+    expect(image.get_pixels(1, 2, 3, 2).size).to eq(6)
+  end
+
   it 'supports CMYK color' do
     image = described_class.read(File.join(FIXTURE_PATH, 'cmyk.jpg')).first
     pixel = image.get_pixels(0, 0, 1, 1).first

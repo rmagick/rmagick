@@ -8787,7 +8787,7 @@ Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE row
     rows    = NUM2LONG(rows_arg);
 
     image = rm_check_readable(self);
-    if (columns < 0 || rows < 0
+    if (x < 0 || y < 0 || columns < 0 || rows < 0
         || (unsigned long)x + columns > image->columns || (unsigned long)y + rows > image->rows)
     {
         rb_raise(rb_eRangeError, "geometry (%ldx%ld%+ld%+ld) exceeds image bounds",
