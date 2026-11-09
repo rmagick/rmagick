@@ -41,6 +41,18 @@ RSpec.describe Magick::Image::Info, '#[]' do
     end
   end
 
+  it 'reads the option when the GC compacts while the key is converted', if: GCCompaction.moves_arguments? do
+    info = described_class.new
+    info['tiff', 'rows-per-strip'] = '8'
+    values = []
+
+    with_gc_compaction do
+      10.times { values << info[ToStrDuck.new('tiff'), ToStrDuck.new('rows-per-strip')] }
+    end
+
+    expect(values).to eq(['8'] * 10)
+  end
+
   it "keeps the format when converting the key replaces the format" do
     info = described_class.new
     info["tiff", "rows-per-strip"] = "8"
