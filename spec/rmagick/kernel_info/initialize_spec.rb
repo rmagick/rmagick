@@ -28,6 +28,20 @@ RSpec.describe Magick::KernelInfo, '#initialize' do
     expect { kernel.__send__(:initialize, 'Square') }.to raise_error(FrozenError)
   end
 
+  it 'raises FrozenError when converting the argument freezes the kernel' do
+    image = Magick::Image.new(5, 5) { |options| options.background_color = 'gray25' }
+    kernel = described_class.new('3x3: 0,0,0 0,1,0 0,0,0')
+    string = Object.new
+    string.define_singleton_method(:to_str) do
+      kernel.freeze
+      '3x3: 0,0,0 0,2,0 0,0,0'
+    end
+
+    expect { kernel.__send__(:initialize, string) }.to raise_error(FrozenError)
+    result = image.morphology(Magick::ConvolveMorphology, 1, kernel)
+    expect(result.pixel_color(2, 2).red).to be_within(2).of(image.pixel_color(2, 2).red)
+  end
+
   it 'raises instead of replacing the kernel while a call uses it' do
     image = Magick::Image.new(5, 5)
     kernel = described_class.new('Diamond')

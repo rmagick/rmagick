@@ -143,6 +143,7 @@ KernelInfo_initialize(VALUE self, VALUE kernel_string)
 
     rb_check_frozen(self);
     string = StringValueCStr(kernel_string);
+    rb_check_frozen(self);
     if (rm_has_file_reference(string))
     {
         rb_raise(rb_eArgError, "the kernel must not name a file with '@'");
