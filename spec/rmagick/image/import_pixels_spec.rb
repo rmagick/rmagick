@@ -189,4 +189,15 @@ RSpec.describe Magick::Image, '#import_pixels' do
       import(image, packed_pixels, Magick::QuantumPixel)
     end
   end
+
+  it 'reads the map when the GC compacts while it runs', if: GCCompaction.moves_arguments? do
+    pixels = described_class.new(4, 4) { |options| options.background_color = 'red' }.export_pixels(0, 0, 4, 4, 'RGB')
+    images = Array.new(30) { described_class.new(4, 4) }
+
+    with_gc_compaction do
+      images.each { |image| image.import_pixels(0, 0, 4, 4, ToStrDuck.new('RGB'), pixels) }
+    end
+
+    expect(images.map { |image| image.export_pixels(0, 0, 4, 4, 'RGB') }).to eq([pixels] * 30)
+  end
 end

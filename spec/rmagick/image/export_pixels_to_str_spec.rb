@@ -65,4 +65,16 @@ RSpec.describe Magick::Image, '#export_pixels_to_str' do
     expect { image.export_pixels_to_str(0, 0, 2**32, 2**32, 'R', Magick::CharPixel) }.to raise_error(RangeError)
     expect { image.export_pixels_to_str(0, 0, 2**61, 1, 'R', Magick::DoublePixel) }.to raise_error(RangeError)
   end
+
+  it 'reads the map when the GC compacts while it runs', if: GCCompaction.moves_arguments? do
+    image = described_class.new(4, 4) { |options| options.background_color = 'red' }
+    expected = image.export_pixels_to_str(0, 0, 4, 4, 'RGB')
+    results = []
+
+    with_gc_compaction do
+      10.times { results << image.export_pixels_to_str(0, 0, 4, 4, ToStrDuck.new('RGB')) }
+    end
+
+    expect(results).to eq([expected] * 10)
+  end
 end

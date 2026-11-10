@@ -66,4 +66,16 @@ RSpec.describe Magick::Image, '#export_pixels' do
     end
     expect(image.export_pixels(0, 0, 3, 1, 'R')).to eq(expected)
   end
+
+  it 'reads the map when the GC compacts while it runs', if: GCCompaction.moves_arguments? do
+    image = described_class.new(4, 4) { |options| options.background_color = 'red' }
+    expected = image.export_pixels(0, 0, 4, 4, 'RGB')
+    results = []
+
+    with_gc_compaction do
+      30.times { results << image.export_pixels(0, 0, 4, 4, ToStrDuck.new('RGB')) }
+    end
+
+    expect(results).to eq([expected] * 30)
+  end
 end

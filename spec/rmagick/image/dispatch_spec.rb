@@ -43,4 +43,16 @@ RSpec.describe Magick::Image, '#dispatch' do
 
     expect(image.dispatch(0, 0, 1, 1, "Z")).to eq([])
   end
+
+  it 'reads the map when the GC compacts while it runs', if: GCCompaction.moves_arguments? do
+    image = described_class.new(4, 4) { |options| options.background_color = 'red' }
+    expected = image.dispatch(0, 0, 4, 4, 'RGB')
+    results = []
+
+    with_gc_compaction do
+      10.times { results << image.dispatch(0, 0, 4, 4, ToStrDuck.new('RGB')) }
+    end
+
+    expect(results).to eq([expected] * 10)
+  end
 end

@@ -420,7 +420,7 @@ Magick_set_log_event_mask(int argc, VALUE *argv, VALUE klass)
         const char *event = StringValueCStr(argv[x]);
         if (ParseCommandOption(MagickLogEventOptions, MagickTrue, event) == -1)
         {
-            rb_raise(rb_eArgError, "invalid log event type: %s", event);
+            rb_raise(rb_eArgError, "invalid log event type: %" PRIsVALUE, argv[x]);
         }
     }
 

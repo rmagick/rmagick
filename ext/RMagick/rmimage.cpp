@@ -6394,7 +6394,7 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
     Image *image;
     long x, y;
     unsigned long columns, rows, n, npixels;
-    VALUE pixels_ary;
+    VALUE pixels_ary, map_arg;
     StorageType stg_type = QuantumPixel;
     char *map;
     size_t mapL;
@@ -6418,8 +6418,8 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
     y       = NUM2LONG(argv[1]);
     columns = NUM2ULONG(argv[2]);
     rows    = NUM2ULONG(argv[3]);
-    argv[4] = rb_str_new_frozen(StringValue(argv[4]));
-    map     = StringValueCStr(argv[4]);
+    map_arg = rb_str_new_frozen(StringValue(argv[4]));
+    map     = StringValueCStr(map_arg);
     mapL    = strlen(map);
     if (argc == 6)
     {
@@ -6470,7 +6470,7 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
     xfree((void *)pixels.v);
 
     RB_GC_GUARD(pixels_ary);
-    RB_GC_GUARD(argv[4]);
+    RB_GC_GUARD(map_arg);
 
     return pixels_ary;
 }
@@ -7366,7 +7366,7 @@ Image_export_pixels(int argc, VALUE *argv, VALUE self)
     MagickBooleanType okay;
     const char *map = "RGB";
     Quantum *pixels;
-    VALUE ary;
+    VALUE ary, map_arg = Qnil;
     ExceptionInfo *exception;
 
 
@@ -7377,8 +7377,8 @@ Image_export_pixels(int argc, VALUE *argv, VALUE self)
     switch (argc)
     {
         case 5:
-            argv[4] = rb_str_new_frozen(StringValue(argv[4]));
-            map   = StringValueCStr(argv[4]);
+            map_arg = rb_str_new_frozen(StringValue(argv[4]));
+            map   = StringValueCStr(map_arg);
         case 4:
             rows  = NUM2ULONG(argv[3]);
         case 3:
@@ -7435,6 +7435,7 @@ Image_export_pixels(int argc, VALUE *argv, VALUE self)
     xfree((void *)pixels);
 
     RB_GC_GUARD(ary);
+    RB_GC_GUARD(map_arg);
 
     return ary;
 }
@@ -7535,7 +7536,7 @@ Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
     MagickBooleanType okay;
     const char *map = "RGB";
     StorageType type = CharPixel;
-    VALUE string;
+    VALUE string, map_arg = Qnil;
     ExceptionInfo *exception;
 
     image = rm_check_readable(self);
@@ -7547,8 +7548,8 @@ Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
         case 6:
             VALUE_TO_ENUM(argv[5], type, StorageType);
         case 5:
-            argv[4] = rb_str_new_frozen(StringValue(argv[4]));
-            map   = StringValueCStr(argv[4]);
+            map_arg = rb_str_new_frozen(StringValue(argv[4]));
+            map   = StringValueCStr(map_arg);
         case 4:
             rows  = NUM2ULONG(argv[3]);
         case 3:
@@ -7627,6 +7628,7 @@ Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
     DestroyExceptionInfo(exception);
 
     RB_GC_GUARD(string);
+    RB_GC_GUARD(map_arg);
 
     return string;
 }
@@ -8287,6 +8289,7 @@ Image_fx(int argc, VALUE *argv, VALUE self)
 {
     Image *image, *new_image;
     char *expression;
+    VALUE expression_arg;
     ChannelType channels;
     ExceptionInfo *exception;
 
@@ -8303,8 +8306,8 @@ Image_fx(int argc, VALUE *argv, VALUE self)
         raise_ChannelType_error(argv[argc-1]);
     }
 
-    argv[0] = rb_str_new_frozen(rb_string_value(&argv[0]));
-    expression = StringValueCStr(argv[0]);
+    expression_arg = rb_str_new_frozen(rb_string_value(&argv[0]));
+    expression = StringValueCStr(expression_arg);
     if (rm_has_file_reference(expression))
     {
         rb_raise(rb_eArgError, "the expression must not name a file with '@'");
@@ -8324,6 +8327,8 @@ Image_fx(int argc, VALUE *argv, VALUE self)
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
+
+    RB_GC_GUARD(expression_arg);
 
     return rm_image_new(new_image);
 }
@@ -9043,7 +9048,7 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
     size_t npixels;
     size_t buffer_l;
     char *map;
-    VALUE pixel_arg, pixel_ary;
+    VALUE pixel_arg, pixel_ary, map_arg;
     StorageType stg_type = CharPixel;
     size_t type_sz, map_l;
     Quantum *pixels = NULL;
@@ -9065,8 +9070,8 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
             y_off = NUM2LONG(argv[1]);
             cols = NUM2LONG(argv[2]);
             rows = NUM2LONG(argv[3]);
-            argv[4] = rb_str_new_frozen(StringValue(argv[4]));
-            map = StringValueCStr(argv[4]);
+            map_arg = rb_str_new_frozen(StringValue(argv[4]));
+            map = StringValueCStr(map_arg);
             pixel_arg = argv[5];
             break;
         default:
@@ -9216,6 +9221,7 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
 
     RB_GC_GUARD(pixel_arg);
     RB_GC_GUARD(pixel_ary);
+    RB_GC_GUARD(map_arg);
 
     return self;
 }
@@ -11603,6 +11609,7 @@ Image_ordered_dither(int argc, VALUE *argv, VALUE self)
     Image *image, *new_image;
     int order;
     const char *threshold_map = "2x2";
+    VALUE threshold_map_arg = Qnil;
     ExceptionInfo *exception;
 
     image = rm_check_readable(self);
@@ -11615,8 +11622,8 @@ Image_ordered_dither(int argc, VALUE *argv, VALUE self)
     {
         if (TYPE(argv[0]) == T_STRING)
         {
-            argv[0] = rb_str_new_frozen(argv[0]);
-            threshold_map = StringValueCStr(argv[0]);
+            threshold_map_arg = rb_str_new_frozen(argv[0]);
+            threshold_map = StringValueCStr(threshold_map_arg);
         }
         else
         {
@@ -11651,6 +11658,8 @@ Image_ordered_dither(int argc, VALUE *argv, VALUE self)
     rm_check_exception(exception, new_image, DestroyOnError);
 
     DestroyExceptionInfo(exception);
+
+    RB_GC_GUARD(threshold_map_arg);
 
     return rm_image_new(new_image);
 }
@@ -13766,7 +13775,7 @@ rotate(int bang, int argc, VALUE *argv, VALUE self)
             arrow = rm_str2cstr(&argv[1], &arrow_l);
             if (arrow_l != 1 || (*arrow != '<' && *arrow != '>'))
             {
-                rb_raise(rb_eArgError, "second argument must be '<' or '>', '%s' given", arrow);
+                rb_raise(rb_eArgError, "second argument must be '<' or '>', '%" PRIsVALUE "' given", argv[1]);
             }
             image = bang ? rm_check_frozen(self) : rm_check_readable(self);
             if (*arrow == '>' && image->columns <= image->rows)
