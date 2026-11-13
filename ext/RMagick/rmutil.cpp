@@ -38,9 +38,7 @@ DEFINE_GVL_STUB5(CloneImage, const Image *, const size_t, const size_t, const Ma
  * Notes:
  *   - Use when managing memory that ImageMagick may have allocated or may free.
  *   - If malloc fails, it raises an exception.
- *   - magick_safe_malloc and magick_safe_realloc prevent exceptions caused by
- *     integer overflow. Added in 6.3.5-9 but backwards compatible with prior
- *     releases.
+ *   - magick_safe_malloc prevents exceptions caused by integer overflow.
  *
  * @param count the number of quantum elements to allocate
  * @param quantum the number of bytes in each quantum
@@ -93,36 +91,6 @@ void
 magick_free(void *ptr)
 {
     RelinquishMagickMemory(ptr);
-}
-
-
-/**
- * ImageMagick safe version of realloc.
- *
- * No Ruby usage (internal function)
- *
- * Notes:
- *   - Use when managing memory that ImageMagick may have allocated or may free.
- *   - If malloc fails, it raises an exception.
- *   - magick_safe_malloc and magick_safe_realloc prevent exceptions caused by
- *     integer overflow. Added in 6.3.5-9 but backwards compatible with prior
- *     releases.
- *
- * @param memory the existing block of memory
- * @param count the number of quantum elements to allocate
- * @param quantum the number of bytes in each quantum
- * @return a pointer to a block of memory that is at least count*quantum in size
- */
-void *
-magick_safe_realloc(void *memory, const size_t count, const size_t quantum)
-{
-    void *v;
-    v = ResizeQuantumMemory(memory, count, quantum);
-    if (!v)
-    {
-        rb_raise(rb_eNoMemError, "not enough memory to continue");
-    }
-    return v;
 }
 
 
