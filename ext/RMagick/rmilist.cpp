@@ -42,6 +42,7 @@ static Image *images_from_imagelist(VALUE, VALUE *, LinkMode mode = LinkRead, VA
 static void check_images_writable(VALUE);
 static void check_images_frozen(VALUE);
 static VALUE images_from_imagelist_protected(VALUE);
+static VALUE imagelist_images(VALUE);
 static long imagelist_length(VALUE);
 static long check_imagelist_length(VALUE);
 static void imagelist_push(VALUE, VALUE);
@@ -898,7 +899,7 @@ rm_imagelist_from_images(Image *images)
 static void
 check_images_writable(VALUE imagelist)
 {
-    VALUE images = rb_iv_get(imagelist, "@images");
+    VALUE images = imagelist_images(imagelist);
 
     for (long i = 0; i < RARRAY_LEN(images); i++)
     {
@@ -918,7 +919,7 @@ check_images_writable(VALUE imagelist)
 static void
 check_images_frozen(VALUE imagelist)
 {
-    VALUE images = rb_iv_get(imagelist, "@images");
+    VALUE images = imagelist_images(imagelist);
 
     for (long i = 0; i < RARRAY_LEN(images); i++)
     {
@@ -1045,6 +1046,20 @@ images_from_imagelist_protected(VALUE arg)
 }
 
 
+// Return @images of the imagelist, raising unless it is an Array
+static VALUE
+imagelist_images(VALUE imagelist)
+{
+    VALUE images = rb_iv_get(imagelist, "@images");
+    if (!RB_TYPE_P(images, T_ARRAY))
+    {
+        rb_raise(Class_ImageMagickError, "@images is not of type Array");
+    }
+
+    return images;
+}
+
+
 /**
  * return the # of images in an imagelist.
  *
@@ -1056,11 +1071,7 @@ images_from_imagelist_protected(VALUE arg)
 static long
 imagelist_length(VALUE imagelist)
 {
-    VALUE images = rb_iv_get(imagelist, "@images");
-    if (!RB_TYPE_P(images, T_ARRAY))
-    {
-        rb_raise(Class_ImageMagickError, "@images is not of type Array");
-    }
+    VALUE images = imagelist_images(imagelist);
 
     RB_GC_GUARD(images);
 

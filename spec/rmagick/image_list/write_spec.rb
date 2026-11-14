@@ -30,6 +30,15 @@ RSpec.describe Magick::ImageList, "#write" do
     FileUtils.rm('test.0')
   end
 
+  it "raises an error when images is not set" do
+    image_list = described_class.new
+
+    image_list.instance_variable_set(:@images, nil)
+    Dir.mktmpdir do |dir|
+      expect { image_list.write(File.join(dir, 'temp.gif')) }.to raise_error(Magick::ImageMagickError)
+    end
+  end
+
   it "raises an error when the filename contains a null byte" do
     image_list = described_class.new
     image_list.read(IMAGES_DIR + '/Button_0.gif')

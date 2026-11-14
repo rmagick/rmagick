@@ -12,6 +12,13 @@ RSpec.describe Magick::ImageList, "#to_blob" do
     expect(image.scene).to eq(1)
   end
 
+  it "raises an error when images is not set" do
+    image_list = described_class.new
+
+    image_list.instance_variable_set(:@images, nil)
+    expect { image_list.to_blob }.to raise_error(Magick::ImageMagickError)
+  end
+
   it 'splits the images when the thread is interrupted' do
     cancelled = Class.new(StandardError)
     image_list = described_class.new
