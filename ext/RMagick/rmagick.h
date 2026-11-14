@@ -1171,7 +1171,6 @@ extern VALUE  ImageMagickError_initialize(int, VALUE *, VALUE);
 extern void  *magick_malloc(const size_t);
 extern void  *magick_safe_malloc(const size_t, const size_t);
 extern void   magick_free(void *);
-extern void  *magick_safe_realloc(void *, const size_t, const size_t);
 extern void   magick_clone_string(char **, const char *);
 extern Image *rm_acquire_image(ImageInfo *);
 extern VALUE  rm_cur_image(VALUE);

@@ -3728,7 +3728,15 @@ Image_colormap(int argc, VALUE *argv, VALUE self)
         }
         else
         {
-            image->colormap = (PixelColor *)magick_safe_realloc(image->colormap, (idx+1), sizeof(PixelColor));
+            // ResizeQuantumMemory frees the old colormap when it fails, so drop
+            // the colormap as AcquireImageColormap does.
+            image->colormap = (PixelColor *)ResizeQuantumMemory(image->colormap, (idx+1), sizeof(PixelColor));
+            if (!image->colormap)
+            {
+                image->colors = 0;
+                image->storage_class = DirectClass;
+                rb_raise(rb_eNoMemError, "not enough memory to continue");
+            }
         }
 
         for (i = image->colors; i <= idx; i++)
