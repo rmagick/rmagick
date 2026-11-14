@@ -99,6 +99,13 @@ RSpec.describe Magick::ImageList, "#montage" do
     end.to raise_error(NoMethodError)
   end
 
+  it "raises an error when images is not set" do
+    image_list = described_class.new
+
+    image_list.instance_variable_set(:@images, nil)
+    expect { image_list.montage }.to raise_error(Magick::ImageMagickError)
+  end
+
   it 'montages the image' do
     imagelist = described_class.new(IMAGES_DIR + '/Flower_Hat.jpg')
 

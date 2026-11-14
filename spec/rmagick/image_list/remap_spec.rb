@@ -18,6 +18,13 @@ RSpec.describe Magick::ImageList, "#remap" do
     # expect { image_list.affinity(affinity_image, 1) }.to raise_error(TypeError)
   end
 
+  it "raises an error when images is not set" do
+    image_list = described_class.new
+
+    image_list.instance_variable_set(:@images, nil)
+    expect { image_list.remap }.to raise_error(Magick::ImageMagickError)
+  end
+
   it 'accepts an ImageList argument' do
     image_list = described_class.new
 
