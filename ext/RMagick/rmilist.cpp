@@ -39,8 +39,7 @@ struct LinkedImages_Args
 static Image *clone_linked_imagelist(Image *, VALUE, ExceptionInfo *);
 static void sync_linked_image_options(Image *, Image *, Info *, VALUE, ExceptionInfo *);
 static Image *images_from_imagelist(VALUE, VALUE *, LinkMode mode = LinkRead, VALUE held = Qnil);
-static void check_images_writable(VALUE);
-static void check_images_frozen(VALUE);
+static void check_images(VALUE, Image *(*)(VALUE));
 static VALUE images_from_imagelist_protected(VALUE);
 static VALUE imagelist_images(VALUE);
 static long imagelist_length(VALUE);
@@ -135,7 +134,7 @@ ImageList_animate(int argc, VALUE *argv, VALUE self)
     VALUE linked;
     if (argc == 1)
     {
-        check_images_writable(self);
+        check_images(self, rm_check_writable);
     }
     images = images_from_imagelist(self, &linked, LinkChange);
 
@@ -583,7 +582,7 @@ ImageList_montage(VALUE self)
     TypedData_Get_Struct(montage_obj, MagickMontage, &rm_montage_data_type, montage);
 
     VALUE linked;
-    check_images_writable(self);
+    check_images(self, rm_check_writable);
     images = images_from_imagelist(self, &linked, LinkChange);
 
     for (Image *image = images; image; image = GetNextImageInList(image))
@@ -890,40 +889,21 @@ rm_imagelist_from_images(Image *images)
 
 
 /**
- * Raise if a call in flight is using any image in the imagelist.
+ * Run a check that raises on each image in the imagelist.
  *
  * No Ruby usage (internal function)
  *
  * @param imagelist the imagelist
+ * @param check rm_check_writable or rm_check_frozen
  */
 static void
-check_images_writable(VALUE imagelist)
+check_images(VALUE imagelist, Image *(*check)(VALUE))
 {
     VALUE images = imagelist_images(imagelist);
 
     for (long i = 0; i < RARRAY_LEN(images); i++)
     {
-        rm_check_writable(rb_ary_entry(images, i));
-    }
-}
-
-
-/**
- * Raise if any image in the imagelist is frozen or a call in flight is using
- * it.
- *
- * No Ruby usage (internal function)
- *
- * @param imagelist the imagelist
- */
-static void
-check_images_frozen(VALUE imagelist)
-{
-    VALUE images = imagelist_images(imagelist);
-
-    for (long i = 0; i < RARRAY_LEN(images); i++)
-    {
-        rm_check_frozen(rb_ary_entry(images, i));
+        check(rb_ary_entry(images, i));
     }
 }
 
@@ -1360,7 +1340,7 @@ ImageList_remap(int argc, VALUE *argv, VALUE self)
     }
 
     VALUE linked;
-    check_images_frozen(self);
+    check_images(self, rm_check_frozen);
     images = images_from_imagelist(self, &linked, LinkChange, remap_obj);
 
 #if defined(IMAGEMAGICK_7)
@@ -1412,7 +1392,7 @@ ImageList_to_blob(VALUE self)
 
     // Convert the images array to an images sequence.
     VALUE linked;
-    check_images_writable(self);
+    check_images(self, rm_check_writable);
     images = images_from_imagelist(self, &linked, LinkWrite);
 
     exception = AcquireExceptionInfo();
@@ -1513,7 +1493,7 @@ ImageList_write(VALUE self, VALUE file)
 
     // Convert the images array to an images sequence.
     VALUE linked;
-    check_images_writable(self);
+    check_images(self, rm_check_writable);
     images = images_from_imagelist(self, &linked, LinkWrite);
 
     // Copy the filename into each image. Set a scene number to be used if
