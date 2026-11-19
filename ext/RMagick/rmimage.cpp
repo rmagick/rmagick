@@ -11,9 +11,6 @@
 
 #include "rmagick.h"
 #include <signal.h>
-#if defined(__APPLE__) || defined(__FreeBSD__)
-#include <atomic>
-#endif
 
 #define BEGIN_CHANNEL_MASK(image, channels) \
   { \
@@ -12861,36 +12858,57 @@ void sig_handler(int sig ATTRIBUTE_UNUSED)
 {
 }
 
-// Reads can overlap, for example on the worker threads of a Fiber scheduler,
-// and the handler is process-wide, so the first read swaps it and the last one
-// restores it.
-static std::atomic<int> sigchld_reads(0);
+// Reads can overlap on the worker threads of a Fiber scheduler and in Ractors.
+// The handler is process-wide, so the first read swaps it and the last one
+// restores it. The lock changes the count and the handler together.
+static std::mutex sigchld_lock;
+static int sigchld_reads;
 static struct sigaction sigchld_previous;
 
 static void
 swap_sigchld(void)
 {
     struct sigaction act;
+    int err = 0;
 
-    if (sigchld_reads.fetch_add(1) == 0)
+    act.sa_handler = sig_handler;
+    act.sa_flags = SA_RESTART;
+    sigemptyset(&act.sa_mask);
+
     {
-        act.sa_handler = sig_handler;
-        act.sa_flags = SA_RESTART;
-        sigemptyset(&act.sa_mask);
-        if (sigaction(SIGCHLD, &act, &sigchld_previous) < 0)
+        std::lock_guard<std::mutex> guard(sigchld_lock);
+
+        if (sigchld_reads == 0 && sigaction(SIGCHLD, &act, &sigchld_previous) < 0)
         {
-            sigchld_reads.fetch_sub(1);
-            rb_sys_fail("sigaction");
+            err = errno;
         }
+        else
+        {
+            sigchld_reads++;
+        }
+    }
+    if (err)
+    {
+        rb_syserr_fail(err, "sigaction");
     }
 }
 
 static VALUE
 restore_sigchld(VALUE arg ATTRIBUTE_UNUSED)
 {
-    if (sigchld_reads.fetch_sub(1) == 1 && sigaction(SIGCHLD, &sigchld_previous, NULL) < 0)
+    int err = 0;
+
     {
-        rb_sys_fail("sigaction");
+        std::lock_guard<std::mutex> guard(sigchld_lock);
+
+        if (--sigchld_reads == 0 && sigaction(SIGCHLD, &sigchld_previous, NULL) < 0)
+        {
+            err = errno;
+        }
+    }
+    if (err)
+    {
+        rb_syserr_fail(err, "sigaction");
     }
     return Qnil;
 }

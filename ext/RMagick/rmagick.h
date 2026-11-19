@@ -20,6 +20,10 @@
 #include "ruby/defines.h"
 
 #include <atomic>
+// rmimage.cpp uses it. It must come before the min and max macros below.
+#if defined(__APPLE__) || defined(__FreeBSD__)
+#include <mutex>
+#endif
 #include <utility>
 
 extern "C" {
