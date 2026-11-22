@@ -4,6 +4,7 @@ require_relative 'support/simplecov' if ENV['COVERAGE'] == 'true'
 require_relative 'support/matchers'
 require_relative 'support/gc_compaction'
 require_relative 'support/helpers'
+require_relative 'support/imagemagick_bugs'
 require_relative 'support/to_str_duck'
 
 require 'pry'
@@ -20,6 +21,7 @@ IMAGE_WITH_PROFILE = IMAGES_DIR + '/image_with_profile.jpg'
 RSpec.configure do |config|
   config.include(TestHelpers)
   config.include(GCCompaction)
+  config.include(ImageMagickBugs)
 end
 
 if GC.respond_to?(:verify_compaction_references)

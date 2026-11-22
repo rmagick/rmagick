@@ -53,7 +53,7 @@ jobs:
           - macos-latest
         ruby-version: ['3.2', '3.3', '3.4', '4.0', 'head']
         imagemagick-version: &imagemagick-versions
-          - &imagemagick-6 { full: 6.9.13-59, major-minor: '6.9' }
+          - &imagemagick-6 { full: 6.9.13-61, major-minor: '6.9' }
           - { full: 7.1.2-36, major-minor: '7.1' }
 
     name: ${{ matrix.os }}, Ruby ${{ matrix.ruby-version }}, IM ${{ matrix.imagemagick-version.major-minor }}
