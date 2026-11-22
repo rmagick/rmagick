@@ -3,6 +3,130 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 7.3.0
+
+> [!IMPORTANT]
+> Some results change for CMYK colors, `Image#get_pixels` rejects a negative offset, and more calls raise for an object that is frozen or in use, or for an invalid argument.
+>
+> `Pixel#<=>`, `#==`, `#eql?` and `#hash` now include the black channel, so CMYK pixels that differ only in black are no longer equal. With ImageMagick 7, `Pixel.from_color` converts a `cmyk()` color name to RGB as ImageMagick 6 does, so the black of that pixel is 0. For a CMYK image, `Image#background_color`, `#border_color`, `#matte_color`, `#transparent_color` and `#colormap` return the color name in sRGB instead of a 20-digit hex name that no method could parse. With ImageMagick 7, the color attributes of `Image::Info` name a `cmyk()` color by its sRGB value instead of reading its CMYK values as RGB.
+>
+> `Image#get_pixels` now raises `RangeError` for a negative `x` or `y`, as `Image#store_pixels` does. It used to return the virtual pixels left of or above the image.
+>
+> `Image#freeze` and `KernelInfo#freeze`, which `Ractor.make_shareable` also calls, now raise `RuntimeError` while a call is changing the object. Destroying, replacing or changing an object that ImageMagick is using, from a trap handler, a finalizer or another thread, raises `RuntimeError` ("object is in use by another fiber") where it could crash before. Calling `initialize` or `marshal_load` again on a frozen object, and `GradientFill#fill` or `TextureFill#fill` on a frozen image, raise `FrozenError`, as does `initialize` on an existing `Magick::Enum` value. `clone(freeze: true)` on an `Info` or a `Montage` raises `TypeError`, as their `#freeze` does.
+>
+> Some arguments that were accepted silently now raise. `Image#chromaticity=` raises `TypeError` for a `Chromaticity` whose member is not a `Primary`, such as a Hash. `Image#paint_transparent` raises `ArgumentError` for a negative fuzz, as `opaque_channel` does. `Font#to_s` raises `TypeError` for a weight that is not a number or a style or stretch of the wrong class, and `ArgumentError` for a negative weight.
+
+Breaking Changes
+
+* Fix Image#get_pixels reading outside the image with a negative offset (#2060)
+* Prevent freezing an image while a call is changing it (#2051)
+* Fix the names of CMYK colors in Image::Info on ImageMagick 7 (#2040)
+* Fix the names of the background, matte and transparent colors of a CMYK image (#2039)
+* Fix Pixel.from_color with a CMYK color name on ImageMagick 7 (#2038)
+* Fix reading and setting colormap colors of a CMYK image (#2037)
+* Fix filling to the border color of a CMYK image (#2035)
+* Fix Color#to_s and Font#to_s with nil names, a wrong member type or a raising member (#2021)
+* Prevent changing a frozen Info or Montage (#2017)
+* Prevent re-initializing an Enum value (#2016)
+* Fix opaque_channel and paint_transparent ignoring a fuzz smaller than the image's fuzz (#2015)
+* Fix crash when a Struct's #values does not return an Array (#2014)
+* Fix Pixel comparison treating CMYK pixels that differ only in black as equal (#1984)
+
+Improvements
+
+* Document the offset that Image#frame needs and fix its default arguments in the API reference (#2043)
+* Reduce the memory of Magick::Pixel by embedding it in its object on Ruby 4.1 (#1976)
+* Let fibers use copies of an image at once (#1947)
+* Reduce peak memory by freeing unused images as soon as the GC finds them (#1935)
+
+Bug Fixes
+
+* Keep a SIGCHLD trap that is set while an image is read on macOS and FreeBSD (#2069)
+* Keep the user's SIGCHLD handler when Ractors read images at the same time on macOS and FreeBSD (#2068)
+* Fix ImageList methods crashing when `@images` is not an Array (#2066)
+* Fix Image#colormap leaving a freed colormap after a failed growth (#2065)
+* Fix KernelInfo#initialize destroying a kernel that another Ractor is using (#2064)
+* Fix Image#dispatch and other pixel methods reading a moved String when the GC compacts (#2063)
+* Fix Info#[], #[]= and #define using a corrupted option name when the GC compacts (#2062)
+* Fix Draw losing interline_spacing through Marshal (#2059)
+* Fix Marshal.load with freeze: true failing for an Image or ImageList (#2058)
+* Fix leaking the extra images of multi-image dumps and profile files (#2057)
+* Fix GradientFill#fill and TextureFill#fill writing to a frozen image (#2056)
+* Fix calls on an image reading the other images of an ImageList method in flight (#2055)
+* Fix optimize_layers with TrimBoundsLayer raising an error and changing the list (#2054)
+* Fix ImageList calls crashing when another thread links the same image (#2053)
+* Fix ImageList methods using images that are frozen or destroyed while they run (#2052)
+* Fix bang methods replacing an image that was frozen while they ran (#2050)
+* Fix Image#marshal_load changing a frozen image and crashing other Ractors (#2049)
+* Fix marshal_load leaking patterns and leaving Draw and Pixel half loaded (#2048)
+* Fix Image#frame crashing when the image and the bevels do not fit in the frame (#2042)
+* Fix Image#frame changing the matte color of the image (#2041)
+* Fix Magick::Enum#to_s and #inspect on an enum created with allocate (#2031)
+* Fix a NUL byte in an Info option name silently selecting a different option (#2030)
+* Fix MVG injection when a Draw text or style value is not UTF-8 (#2029)
+* Fix crash and hang when the process exits while another Ractor uses ImageMagick (#2027)
+* Fix use-after-free when an object is destroyed or replaced while ImageMagick uses it (#2026)
+* Fix Magick.fonts and Magick.colors raising for an entry with a missing attribute, and leaking their lists (#2025)
+* Fix Draw#composite, Info#texture= and Montage#texture= clashing with images written to mpr: (#2023)
+* Fix Info#define reading an uninitialized variable with two arguments (#2022)
+* Fix memory leak in Image#color_histogram when building the Hash raises (#2020)
+* Fix a subclass or an object with singleton methods being rejected as a Pixel, Struct or Geometry (#2019)
+* Fix memory leak in Image#sparse_color when a color argument is invalid (#2018)
+* Fix changing a Draw, even a frozen one, by appending to the result of #inspect or #marshal_dump (#2013)
+* Fix ImageList#quantize returning unquantized images when quantizing fails on IM6 (#2012)
+* Fix Draw setters and initialize_copy writing to a Draw that became frozen or in use (#2011)
+* Fix reading freed memory in Image#[]=, #define, #chromaticity, ._load, Draw#annotate and Info options (#2010)
+* Fix leaks when blue_shift, to_blob, mask and other methods fail (#2009)
+* Fix leaks when Thread#raise interrupts Image.read, texture_flood_fill and other methods (#2008)
+* Fix ImageList methods leaving their images linked when Thread#raise interrupts them (#2007)
+* Fix leaks and a stuck channel mask when Thread#raise interrupts composite_tiled and others (#2006)
+* Fix a crash in composite_tiled and GradientFill#fill when #cur_image returns a new image (#2005)
+* Fix crashes when converting an argument destroys or replaces the image (#2004)
+* Fix dup and clone of Enum, Info, Montage, DrawOptions and PolaroidOptions (#2003)
+* Fix dup and clone of TextureFill and GradientFill losing their settings (#2002)
+* Fix TextureFill#initialize leaking the texture it replaces (#2001)
+* Fix Draw#initialize leaking the DrawInfo it replaces (#2000)
+* Fix a copy of a Draw losing its composited images when the original is freed (#1996)
+* Fix Draw#initialize_copy leaking the DrawInfo it replaces (#1997)
+* Fix Draw#composite, Info#texture= and Montage#texture= raising in a Ractor (#1995)
+* Fix methods that return an enum value raising in a Ractor (#1994)
+* Fix undefined symbol rb_ractor_local_storage_value_newkey when loading RMagick on TruffleRuby (#1993)
+* Fix undefined symbol rb_ractor_make_shareable when loading RMagick on TruffleRuby (#1992)
+* Fix TruffleRuby aborting when ImageMagick allocates memory on its OpenMP threads (#1991)
+* Fix Draw#get_type_metrics raising in a Ractor when no image is given (#1990)
+* Fix color names matching and painting the wrong colors on a CMYK image (#1989)
+* Fix Image#initialize leaking memory and changing a frozen image when called again (#1988)
+* Fix Image#opaque and others ignoring black of a CMYK color (#1987)
+* Fix Marshal dropping the black channel of a Pixel (#1985)
+* Fix wrong results for negative, NaN and huge HDRI pixel values (#1983)
+* Fix memory leak in Image#import_pixels when converting a pixel array raises (#1982)
+* Fix Image#import_pixels wrapping an out-of-range value in an array (#1981)
+* Fix Pixel#<=> returning a wrong order for values less than 1 apart with HDRI (#1980)
+* Fix Image#get_pixels reading a pixel 1 lower than pixel_color does with HDRI (#1979)
+* Fix Pixel#marshal_load, #initialize and #initialize_copy changing a frozen Pixel (#1978)
+* Fix a GC left in progress after ImageMagick allocates a lot (#1977)
+* Fix Image.constitute wrapping an out-of-range integer pixel value (#1974)
+* Fix Image#pixel_color writing a color name as the wrong color on a CMYK image (#1973)
+* Fix Image#store_pixels and #get_pixels accepting a negative or huge size (#1972)
+* Fix Image#composite_mathematics and #watermark ignoring their arguments (#1970)
+* Fix block options of Image#compare_channel and #distort staying on the image (#1969)
+* Fix Image#deskew ignoring auto_crop_width (#1968)
+* Fix Image.new and Image#add_compose_mask ignoring errors on ImageMagick 6 (#1966)
+* Fix Image#class_type= and #image_type= silently failing on ImageMagick 6 (#1965)
+* Fix crash in Image#morphology with a KernelInfo that is not initialized (#1964)
+* Fix memory leak in Image#polaroid when ImageMagick reports an error (#1963)
+* Fix another fiber changing the options of a running Image#polaroid (#1960)
+* Fix crash in Image#chop and #shave when an earlier error is left on the image (#1959)
+* Fix crash in Image#distortion_channel when ImageMagick runs out of resources (#1958)
+* Fix wrong results when Ractors call Image#difference on a shared frozen image (#1956)
+* Fix heap corruption when Ractors read the properties of a frozen image (#1955)
+* Fix wrong signatures when Ractors share a frozen image (#1954)
+* Fix crash when Ractors draw with a frozen pattern that they share (#1953)
+* Fix crash when Ractors write a frozen image that they share (#1952)
+* Fix a crash when Ractors use a shared frozen ImageList at the same time (#1945)
+* Keep a frozen image or Draw unchanged while a method uses it (#1944)
+* Raise when another Ractor uses an object that an offloaded call is using (#1942)
+
 ## RMagick 7.2.0
 
 > [!IMPORTANT]
