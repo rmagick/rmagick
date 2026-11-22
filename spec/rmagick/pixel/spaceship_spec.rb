@@ -47,7 +47,7 @@ RSpec.describe Magick::Pixel, '#<=>' do
 
   it 'returns nil for a NaN value as Float#<=> does' do
     image = Magick::Image.new(1, 1) { |options| options.background_color = 'black' }
-    pixel = image.fx('0/0', Magick::RedChannel).pixel_color(0, 0)
+    pixel = image.fx('sqrt(-1)', Magick::RedChannel).pixel_color(0, 0)
     other = described_class.new(Magick::QuantumRange, 0, 0)
 
     if Magick::Magick_features.include?('HDRI')
