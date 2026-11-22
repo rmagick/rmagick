@@ -9,6 +9,7 @@ RSpec.describe Magick::Image, '#from_blob' do
     result = described_class.from_blob(blob)
     expect(result).to be_instance_of(Array)
     expect(result.first).to be_instance_of(described_class)
+    pending_on_im6_gif_bug
     expect(result.first).to eq image
   end
 

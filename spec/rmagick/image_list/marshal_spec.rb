@@ -7,6 +7,7 @@ RSpec.describe Magick::ImageList, "#marshal" do
     image_list2 = nil
     expect { d = Marshal.dump(image_list1) }.not_to raise_error
     expect { image_list2 = Marshal.load(d) }.not_to raise_error
+    pending_on_im6_gif_bug
     expect(image_list2).to eq(image_list1)
   end
 end
