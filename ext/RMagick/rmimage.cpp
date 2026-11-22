@@ -12860,7 +12860,8 @@ void sig_handler(int sig ATTRIBUTE_UNUSED)
 
 // Reads can overlap on the worker threads of a Fiber scheduler and in Ractors.
 // The handler is process-wide, so the first read swaps it and the last one
-// restores it. The lock changes the count and the handler together.
+// restores it unless trap replaced it. The lock changes the count and the
+// handler together.
 static std::mutex sigchld_lock;
 static int sigchld_reads;
 static struct sigaction sigchld_previous;
@@ -12901,9 +12902,22 @@ restore_sigchld(VALUE arg ATTRIBUTE_UNUSED)
     {
         std::lock_guard<std::mutex> guard(sigchld_lock);
 
-        if (--sigchld_reads == 0 && sigaction(SIGCHLD, &sigchld_previous, NULL) < 0)
+        if (--sigchld_reads == 0)
         {
-            err = errno;
+            struct sigaction current;
+
+            if (sigaction(SIGCHLD, NULL, &current) < 0)
+            {
+                err = errno;
+            }
+            // Keep a handler that trap set during the reads. Restore over SIG_IGN too:
+            // trap returns nil while sig_handler is installed, and on Ruby 3.3 and later
+            // setting that nil back installs SIG_IGN.
+            else if ((current.sa_handler == sig_handler || current.sa_handler == SIG_IGN)
+                     && sigaction(SIGCHLD, &sigchld_previous, NULL) < 0)
+            {
+                err = errno;
+            }
         }
     }
     if (err)
