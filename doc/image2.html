@@ -799,7 +799,10 @@ scanline = img.export_pixels(0, r, img.columns, 1, "RGB");
 
         <dt>x, y</dt>
 
-        <dd>The upper-left corner of the new image is positioned at -<span class="arg">x</span>, -<span class="arg">y</span>.</dd>
+        <dd>
+          The upper-left corner of <span class="arg">img</span> is placed at -<span class="arg">x</span>, -<span class="arg">y</span> in the new image, so
+          positive values crop the left and top of <span class="arg">img</span>.
+        </dd>
       </dl>
 
       <h4>Returns</h4>
@@ -833,7 +836,7 @@ scanline = img.export_pixels(0, r, img.columns, 1, "RGB");
       <p>
         This interesting method searches for a rectangle in the image that is
         <em>similar</em> to the target. For the rectangle to be <em>similar</em> each pixel in the rectangle must match the corresponding pixel in the target
-        image within the range specified by the <code>fuzz</code> attributes of the image and the target image.
+        image within the range specified by the <code>fuzz</code> attribute of the image. The <code>fuzz</code> attribute of the target is not used.
       </p>
 
       <h4>Arguments</h4>
@@ -1078,7 +1081,9 @@ scanline = img.export_pixels(0, r, img.columns, 1, "RGB");
     <div class="desc">
       <h4>Description</h4>
 
-      <p>Prevent further modifications to the image.</p>
+      <p>
+        Prevent further modifications to the image. Raises <code>RuntimeError</code> if another fiber or thread is running a call that changes the image.
+      </p>
 
       <h4>Returns</h4>
 
@@ -1615,6 +1620,12 @@ image.get_exif_by_number()      #=&gt; {271=&gt;"Canon", 37377=&gt;"189/32" ...}
         </tr>
 
         <tr>
+          <td>Application::Record_Version</td>
+
+          <td class="ds">2:00</td>
+        </tr>
+
+        <tr>
           <td>Application::Object_Type_Reference</td>
 
           <td class="ds">2:03</td>
@@ -2045,7 +2056,10 @@ image.get_exif_by_number()      #=&gt; {271=&gt;"Canon", 37377=&gt;"189/32" ...}
     <div class="desc">
       <h4>Description</h4>
 
-      <p>Gets the pixels from the specified rectangle within the image.</p>
+      <p>
+        Gets the pixels from the specified rectangle within the image. Raises <code>RangeError</code> if the offset or size is negative or the rectangle
+        extends beyond the image.
+      </p>
 
       <h4>Arguments</h4>
 
@@ -2272,7 +2286,8 @@ image.get_exif_by_number()      #=&gt; {271=&gt;"Canon", 37377=&gt;"189/32" ...}
               <code>import_pixels</code> assumes that <span class="arg">pixels</span> is an array or an object that can be converted to an array by the
               <code>Kernel::Array</code>
               method. The elements in the array must be
-              <code>Numeric</code> values in the range [0..QuantumRange]. In either case, the pixel data must be stored in scanline order: left-to-right and
+              <code>Numeric</code> values in the range [0..QuantumRange], or in the range [0.0..1.0] if <span class="arg">type</span> is
+              <code>DoublePixel</code> or <code>FloatPixel</code>. In either case, the pixel data must be stored in scanline order: left-to-right and
               top-to-bottom.
             </dd>
           </dl>
@@ -2282,7 +2297,8 @@ image.get_exif_by_number()      #=&gt; {271=&gt;"Canon", 37377=&gt;"189/32" ...}
 
         <dd>
           A <a href="constants.html#StorageType">StorageType</a> value that specifies the type and range of the pixel data when
-          <span class="arg">pixels</span> is a string.
+          <span class="arg">pixels</span> is a string. When <span class="arg">pixels</span> is an array, only <code>DoublePixel</code> and
+          <code>FloatPixel</code> have an effect, as described above.
         </dd>
       </dl>
 
@@ -2352,7 +2368,10 @@ img.import_pixels(0, 0, hat.columns, hat.rows, "RGB", char_buffer, CharPixel)
 
         <dt>[scene]</dt>
 
-        <dd>the scene number, if the image is part of an image sequence</dd>
+        <dd>
+          the scene number, if the image is linked to the images before and after it in an ImageMagick image list. The images in an imagelist are not linked,
+          so it does not appear for them.
+        </dd>
 
         <dt>format</dt>
 
@@ -2385,11 +2404,15 @@ img.import_pixels(0, 0, hat.columns, hat.rows, "RGB", char_buffer, CharPixel)
         <dt>blob size</dt>
 
         <dd>if present</dd>
+
+        <dt>user:<em>value</em></dt>
+
+        <dd>the value of the <a href="info.html#user_option">"user" option</a>, if present</dd>
       </dl>
 
       <h4>Example</h4>
 
-      <pre class="language-ruby">f.inspect #=&gt; "images/Flower_Hat.jpg JPEG 200x250 DirectClass 8-bit 9kb"</pre>
+      <pre class="language-ruby">f.inspect #=&gt; "images/Flower_Hat.jpg JPEG 200x250 200x250+0+0 DirectClass 8-bit 9kb"</pre>
     </div>
 
     <div class="sig">
@@ -2614,7 +2637,7 @@ img.level2(0, 1.5)
 
       <p>
         <span class="arg">img</span>.level_colors(<span class="arg">black_color</span>="black", <span class="arg">white_color</span>="white",
-        <span class="arg">invert</span>=<code>true</code>) -&gt; <em>image</em>
+        <span class="arg">invert</span>=<code>true</code> [, <span class="arg">channel</span>...]) -&gt; <em>image</em>
       </p>
     </div>
 
@@ -2623,9 +2646,9 @@ img.level2(0, 1.5)
 
       <p>
         When <span class="arg">invert</span> is true, black and white will be mapped to the <span class="arg">black_color</span> and
-        <span class="arg">white_color</span> colors, compressing all other colors linearly. When <span class="arg">invert</span> is false, black and white will
-        be mapped to the <span class="arg">black_color</span> and <span class="arg">white_color</span> colors, stretching all other colors linearly. The default
-        is <code>true</code>.
+        <span class="arg">white_color</span> colors, compressing all other colors linearly. When <span class="arg">invert</span> is false, the
+        <span class="arg">black_color</span> and <span class="arg">white_color</span> colors will be mapped to black and white, stretching all other colors
+        linearly. The default is <code>true</code>.
       </p>
 
       <h4>Arguments</h4>
@@ -2633,15 +2656,22 @@ img.level2(0, 1.5)
       <dl>
         <dt>black_color</dt>
 
-        <dd>The color to be mapped to black. The default is "black".</dd>
+        <dd>The color that black is mapped to, or that is mapped to black when <span class="arg">invert</span> is false. The default is "black".</dd>
 
         <dt>white_color</dt>
 
-        <dd>The color to be mapped to white. The default is "white".</dd>
+        <dd>The color that white is mapped to, or that is mapped to white when <span class="arg">invert</span> is false. The default is "white".</dd>
 
         <dt>invert</dt>
 
         <dd>See the description above.</dd>
+
+        <dt>channel...</dt>
+
+        <dd>
+          0 or more
+          <a href="constants.html#ChannelType">ChannelType</a> arguments that select the channels to change.
+        </dd>
       </dl>
 
       <h4>Returns</h4>
@@ -2679,7 +2709,7 @@ img.level2(0, 1.5)
       <h3 id="levelize_channel">levelize_channel</h3>
 
       <p>
-        <span class="arg">img</span>.levelize_channel(<span class="arg">black_point</span>, <span class="arg">white_point</span>,
+        <span class="arg">img</span>.levelize_channel(<span class="arg">black_point</span>, <span class="arg">white_point</span>=QuantumRange - black_point,
         <span class="arg">gamma</span>=1.0 [, <span class="arg">channel</span>...]) -&gt; <em>image</em>
       </p>
     </div>
@@ -2964,7 +2994,7 @@ img.level2(0, 1.5)
 
       <p>
         <a href="#matte_floodfill">matte_floodfill</a>,
-        <a href="draw.html#matte">Draw#matte</a>
+        <a href="draw.html#alpha">Draw#alpha</a>
       </p>
 
       <h4>Magick API</h4>
@@ -3017,7 +3047,7 @@ img.level2(0, 1.5)
 
       <p>
         <a href="#matte_replace">matte_replace</a>,
-        <a href="draw.html#matte">Draw#matte</a>
+        <a href="draw.html#alpha">Draw#alpha</a>
       </p>
 
       <h4>Magick API</h4>
@@ -3049,7 +3079,7 @@ img.level2(0, 1.5)
 
       <h4>See also</h4>
 
-      <p><a href="draw.html#matte">Draw#matte</a></p>
+      <p><a href="draw.html#alpha">Draw#alpha</a></p>
     </div>
 
     <div class="sig">
@@ -3096,7 +3126,7 @@ img.level2(0, 1.5)
 
       <p>
         <a href="image3.html#transparent">transparent</a>,
-        <a href="draw.html#matte">Draw#matte</a>
+        <a href="draw.html#alpha">Draw#alpha</a>
       </p>
 
       <h4>Magick API</h4>
@@ -3237,7 +3267,8 @@ img.level2(0, 1.5)
 
       <p>
         The percent change in the brightness, saturation, and hue. Must be a number or a string in the form "NN%". For example, 0.25 means "25%". All three
-        arguments may be omitted. The default value of each argument is 1.0, that is, 100%.
+        arguments may be omitted. The default value of each argument is 1.0, that is, 100%. The brightness must be greater than 0, or
+        <code>ArgumentError</code> is raised. The saturation and hue may be negative.
       </p>
 
       <h4>Returns</h4>
@@ -3275,8 +3306,9 @@ img.level2(0, 1.5)
       <h4>Description</h4>
 
       <p>
-        Returns true if all the pixels have the same red, green, and blue values and the values are either 0 or QuantumRange. That is, the image is
-        black-and-white.
+        Returns true if the <a href="imageattrs.html#image_type">image_type</a> is <a href="constants.html#ImageType">BilevelType</a>, for example after
+        reading a PBM file or setting <code>image_type</code> to <code>BilevelType</code>. The pixels are not examined, so an image whose pixels are all
+        black or white returns false unless its type is <code>BilevelType</code>.
       </p>
 
       <h4>See also</h4>
@@ -3824,7 +3856,7 @@ img = img.opaque('white', 'red')
     <div class="desc">
       <h4>Description</h4>
 
-      <p>Returns true if all of the pixels in the receiver have an opacity value of <a href="constants.html#Opacity">OpaqueOpacity</a>.</p>
+      <p>Returns true if all of the pixels in the receiver have an alpha value of <a href="constants.html#Miscellaneous_constants">OpaqueAlpha</a>.</p>
 
       <h4>Returns</h4>
 
