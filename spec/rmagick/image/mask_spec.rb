@@ -146,7 +146,7 @@ RSpec.describe Magick::Image, '#mask' do
     expect(changed).to eq([false, false, true, true])
   end
 
-  it 'frees the copies of a mask with alpha when one of its calls is interrupted or fails' do
+  it 'frees the images it makes from a mask with alpha when one of its calls is interrupted or fails' do
     GC.start
     baseline = Magick.resource_usage(:memory)
     image = described_class.new(16, 16)
