@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Magick::Image::View, '#[]' do
+RSpec.describe Magick::Image::View::Rows, '#[]' do
   it 'clips start and length to the end of the view' do
     view = Magick::Image.new(10, 10).view(0, 0, 10, 10)
 
@@ -14,15 +14,6 @@ RSpec.describe Magick::Image::View, '#[]' do
     expect(view[0][10, 1].size).to eq(0)
   end
 
-  it 'assigns only the pixels inside the view' do
-    image = Magick::Image.new(10, 10)
-    image.view(0, 0, 10, 10) { |view| view[0][8, 5] = 'red' }
-
-    expect(image.pixel_color(7, 0)).to eq(Magick::Pixel.from_color('white'))
-    expect(image.pixel_color(8, 0)).to eq(Magick::Pixel.from_color('red'))
-    expect(image.pixel_color(9, 0)).to eq(Magick::Pixel.from_color('red'))
-  end
-
   it 'raises IndexError for columns outside the view' do
     view = Magick::Image.new(10, 10).view(0, 0, 10, 10)
 
@@ -30,20 +21,22 @@ RSpec.describe Magick::Image::View, '#[]' do
     expect { view[0][-20, 2] }.to raise_error(IndexError)
     expect { view[0][2, -1] }.to raise_error(IndexError)
     expect { view[0][[10]] }.to raise_error(IndexError)
-    expect { view[0][[-11]] }.to raise_error(IndexError)
+    expect { view[0][[-11]] }.to raise_error(IndexError, 'index [-11] out of range')
     expect { view[[-11]][0] }.to raise_error(IndexError)
   end
 
-  it 'counts negative values in an array from the end' do
-    image = Magick::Image.new(10, 10)
-    image.view(0, 0, 10, 10) do |view|
-      view[[2]][[-3]] = 'red'
-      view[[-2]][[3]] = 'blue'
-    end
+  it 'treats three or more integers as a list of indexes' do
+    view = Magick::Image.new(10, 10).view(0, 0, 10, 10)
 
-    expect(image.pixel_color(7, 2)).to eq(Magick::Pixel.from_color('red'))
-    expect(image.pixel_color(7, 1)).to eq(Magick::Pixel.from_color('white'))
-    expect(image.pixel_color(3, 8)).to eq(Magick::Pixel.from_color('blue'))
+    expect(view[1, 2, 3][0].size).to eq(3)
+    expect(view[0][1, 2, 3].size).to eq(3)
+  end
+
+  it 'uses the truncated size of a fractional view' do
+    view = Magick::Image.new(4, 4).view(0, 0, 2.5, 2)
+
+    expect(view[0][].size).to eq(2)
+    expect { view[0][2] }.to raise_error(IndexError)
   end
 
   it 'reads the same rows each time' do

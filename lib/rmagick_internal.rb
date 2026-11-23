@@ -1146,8 +1146,9 @@ module Magick
 
         def initialize(view, width, height, rows)
           @view = view
-          @width = width
-          @height = height
+          # get_pixels truncates a fractional size, so @view has this many columns and rows.
+          @width = Integer(width)
+          @height = Integer(height)
           @rows = rows
         end
 
@@ -1228,6 +1229,8 @@ module Magick
             end
             # Create a Range for the specified set of rows
             @row_indexes = Range.new(start, start + length, true)
+          else # three or more integers
+            @row_indexes = @rows
           end
 
           case @cols.length
@@ -1261,13 +1264,15 @@ module Magick
             # Create a Range for the specified set of columns
             @cols = Range.new(start, start + length, true)
             @unique = false
+          else # three or more integers
+            @unique = false
           end
         end
 
-        def to_index(index, size)
-          index = Integer(index)
+        def to_index(value, size)
+          index = Integer(value)
           index += size if index < 0
-          Kernel.raise IndexError, "index [#{index}] out of range" if index < 0 || index >= size
+          Kernel.raise IndexError, "index [#{value}] out of range" if index < 0 || index >= size
           index
         end
 
@@ -1275,6 +1280,8 @@ module Magick
         def each
           # An index only has to respond to each, so it may not have map.
           rows = @row_indexes.to_enum.map { |j| to_index(j, @height) }
+          return if rows.empty?
+
           cols = @cols.to_enum.map { |i| to_index(i, @width) }
 
           rows.each do |j|
