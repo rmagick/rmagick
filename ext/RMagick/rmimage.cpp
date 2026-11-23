@@ -152,6 +152,7 @@ DEFINE_GVL_STUB4(BorderImage, const Image *, const RectangleInfo *, const Compos
 #if defined(MAGICKCORE_HDRI_SUPPORT)
 DEFINE_GVL_STUB2(ClampImage, Image *, ExceptionInfo *);
 #endif
+DEFINE_GVL_STUB5(CloneImage, const Image *, const size_t, const size_t, const MagickBooleanType, ExceptionInfo *);
 DEFINE_GVL_STUB4(ClutImage, Image *, const Image *, const PixelInterpolateMethod, ExceptionInfo *);
 DEFINE_GVL_STUB4(ColorizeImage, const Image *, const char *, const PixelInfo *, ExceptionInfo *);
 DEFINE_GVL_STUB5(CompareImages, Image *, const Image *, const MetricType, double *, ExceptionInfo *);
@@ -925,9 +926,12 @@ VALUE
 Image_add_compose_mask(VALUE self, VALUE mask)
 {
     Image *image, *mask_image = NULL;
-    Image *clip_mask = NULL;
 #if defined(IMAGEMAGICK_7)
+    Image *new_image;
+    MagickBooleanType okay;
     ExceptionInfo *exception;
+#else
+    Image *clip_mask = NULL;
 #endif
 
     image = rm_check_frozen(self);
@@ -939,19 +943,46 @@ Image_add_compose_mask(VALUE self, VALUE mask)
         rb_raise(rb_eArgError, "mask must be the same size as image");
     }
 
+#if defined(IMAGEMAGICK_7)
+    // Since 7.1.0, the white pixels of a composite mask let the image change,
+    // so the mask goes in as it is. A failed SetImageMask leaves the image with
+    // a pixel cache too small for its channels, so the mask goes on a copy.
+    exception = AcquireExceptionInfo();
+    // Not detached, so the copy keeps the blob and the file size in it.
+    DECLARE_GVL_CALL(clone_call, CloneImage, image, 0, 0, MagickFalse, exception);
+    new_image = clone_call.update(self).read(mask).keep_thread().release(exception).run<Image *>();
+    rm_check_exception(exception, new_image, DestroyOnError);
+    if (!new_image)
+    {
+        DestroyExceptionInfo(exception);
+        rb_raise(rb_eNoMemError, "not enough memory to continue");
+    }
+    DECLARE_GVL_CALL(mask_call, SetImageMask, new_image, CompositePixelMask, mask_image, exception);
+    void *ret = mask_call.update(self).read(mask).destroy(new_image).release(exception).run<void *>();
+    okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+    rm_check_exception(exception, new_image, DestroyOnError);
+    DestroyExceptionInfo(exception);
+    if (!okay)
+    {
+        DestroyImage(new_image);
+        rb_raise(rb_eRuntimeError, "SetImageMask failed.");
+    }
+    replace_image(self, new_image);
+#else
     clip_mask = rm_clone_image(mask_image, mask, self);
 
-#if defined(IMAGEMAGICK_7)
-    exception = AcquireExceptionInfo();
-    DECLARE_GVL_CALL(negate_call, NegateImage, clip_mask, MagickFalse, exception);
-    negate_call.update(self).read(mask).destroy(clip_mask).release(exception).run<void>();
-    rm_check_exception(exception, clip_mask, DestroyOnError);
-    DECLARE_GVL_CALL(mask_call, SetImageMask, image, CompositePixelMask, clip_mask, exception);
-    mask_call.update(self).destroy(clip_mask).release(exception).run<void>();
-    DestroyImage(clip_mask);
-    CHECK_EXCEPTION();
-    DestroyExceptionInfo(exception);
-#else
+    // The clip mask and the mask of the mask image would keep the negation
+    // out of some of its pixels.
+    if (clip_mask->clip_mask)
+    {
+        DECLARE_GVL_CALL(unclip_call, SetImageClipMask, clip_mask, NULL);
+        unclip_call.update(self).read(mask).destroy(clip_mask).run<void>();
+    }
+    if (clip_mask->mask)
+    {
+        DECLARE_GVL_CALL(unmask_call, SetImageMask, clip_mask, NULL);
+        unmask_call.update(self).read(mask).destroy(clip_mask).run<void>();
+    }
     DECLARE_GVL_CALL(negate_call, NegateImage, clip_mask, MagickFalse);
     negate_call.update(self).read(mask).destroy(clip_mask).run<void>();
     rm_check_image_exception(clip_mask, DestroyOnError);
