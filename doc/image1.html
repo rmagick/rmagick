@@ -64,8 +64,6 @@
           <ul>
             <li><a href="#capture">capture</a></li>
 
-            <li><a href="#combine">combine</a></li>
-
             <li><a href="#constitute">constitute</a></li>
           </ul>
         </div>
@@ -363,48 +361,6 @@ img = Magick::Image.capture { |options|
   options.filename = "root"
 }
 </pre>
-    </div>
-
-    <div class="sig">
-      <h3 id="combine">combine</h3>
-
-      <p>
-        Image.combine(<span class="arg">red_ch</span>=nil, <span class="arg">green_ch</span>=nil, <span class="arg">blue_ch</span>=nil<span class="arg"
-          >, opacity_ch</span
-        >=nil) -&gt;<em>image</em>
-      </p>
-    </div>
-
-    <div class="desc">
-      <h4>Description</h4>
-
-      <p>Combines the grayscale value of the pixels in each image to form a new image.</p>
-
-      <h4>Arguments</h4>
-
-      <p>
-        The red channel of the image specified in the first argument is used as the red channel in the new image. The green channel of the image specified in
-        the second argument is used as the green channel in the new image. The blue channel of the image specified in the third argument is used as the blue
-        channel in the new image. The opacity channel of the image specified in the fourth argument is used as the opacity channel in the new image.
-      </p>
-
-      <p>Any of the arguments may be nil. Trailing nil arguments may be omitted. You must specify at least one image argument.</p>
-
-      <h4>Returns</h4>
-
-      <p>A new image</p>
-
-      <h4>See also</h4>
-
-      <p>
-        The same results can be obtained using the
-        <a href="#composite">composite</a> method and the CopyRed/Green/Blue/OpacityCompositeOp
-        <a href="constants.html#CompositeOperator">CompositeOperator</a> enum values.
-      </p>
-
-      <h4>Magick API</h4>
-
-      <p>CombineImages</p>
     </div>
 
     <div class="sig">
@@ -879,7 +835,7 @@ img = Magick::Image.read_inline(content)
       <h3 id="adaptive_blur_channel">adaptive_blur_channel</h3>
 
       <p>
-        <span class="arg">img</span>.adaptive_blur(<span class="arg">radius</span>=0.0, <span class="arg">sigma</span>=1.0 [,<span class="arg">channel</span
+        <span class="arg">img</span>.adaptive_blur_channel(<span class="arg">radius</span>=0.0, <span class="arg">sigma</span>=1.0 [,<span class="arg">channel</span
         >...]) -&gt; <em>image</em>
       </p>
     </div>
@@ -1038,7 +994,7 @@ img = Magick::Image.read_inline(content)
       <h3 id="adaptive_sharpen_channel">adaptive_sharpen_channel</h3>
 
       <p>
-        <span class="arg">img</span>.adaptive_sharpen(<span class="arg">radius</span>=0.0, <span class="arg">sigma</span>=1.0 [,<span class="arg">channel</span
+        <span class="arg">img</span>.adaptive_sharpen_channel(<span class="arg">radius</span>=0.0, <span class="arg">sigma</span>=1.0 [,<span class="arg">channel</span
         >...]) -&gt; <em>image</em>
       </p>
     </div>
@@ -1113,7 +1069,7 @@ img = Magick::Image.read_inline(content)
 
         <dt>offset</dt>
 
-        <dd>constant to subtract from pixel neighborhood mean</dd>
+        <dd>constant to add to pixel neighborhood mean. The sum is the threshold.</dd>
       </dl>
 
       <h4>Returns</h4>
@@ -1383,8 +1339,8 @@ img = Magick::Image.read_inline(content)
 
         <dd>
           0 or more
-          <a href="constants.html#ChannelType">ChannelType</a> arguments. If no channels are specified, adds noise to all the channels. Specifying no channel
-          arguments has the same effect as the <code>add_noise</code> method, above.
+          <a href="constants.html#ChannelType">ChannelType</a> arguments. If no channels are specified, adds noise to all the channels. The alpha channel is
+          never changed, even if it is specified.
         </dd>
       </dl>
 
@@ -1809,7 +1765,9 @@ img.artifact('myapp:missing')  #=&gt; nil
 
       <p>
         <span class="arg">img</span>.black_threshold(<span class="arg">red_channel</span> [, <span class="arg">green_channel</span> [,
-        <span class="arg">blue_channel</span> [, <span class="arg">opacity_channel</span>]]]) -&gt; <em>image</em>
+        <span class="arg">blue_channel</span>]]) -&gt; <em>image</em><br />
+        <span class="arg">img</span>.black_threshold(<span class="arg">red_channel</span>, <span class="arg">green_channel</span>,
+        <span class="arg">blue_channel</span>, <span class="arg">alpha</span>: <span class="arg">alpha_channel</span>) -&gt; <em>image</em>
       </p>
     </div>
     <!-- this example is larger than normal -->
@@ -1824,8 +1782,8 @@ img.artifact('myapp:missing')  #=&gt; nil
       <p>
         Each channel argument is a number between 0 and QuantumRange. All arguments except the first may be omitted. If the
         <span class="arg">green_channel</span> or <span class="arg">blue_channel</span> argument is omitted, the default value is the
-        <span class="arg">red_channel</span> value. If the <span class="arg">opacity_channel</span> argument is omitted, the default value is
-        <a href="constants.html#Opacity">OpaqueOpacity</a>.
+        <span class="arg">red_channel</span> value. The <span class="arg">alpha_channel</span> threshold can be given only as the <code>alpha:</code> keyword
+        argument, together with all three color thresholds.
       </p>
 
       <h4>Returns</h4>
@@ -1978,8 +1936,8 @@ img.artifact('myapp:missing')  #=&gt; nil
 
         <dd>
           One or more
-          <a href="constants.html#ChannelType">ChannelType</a> values. If none are specified, the red, green, and blue channels are blurred. This is the
-          equivalent of <a href="#blur_image">blur_image</a>.
+          <a href="constants.html#ChannelType">ChannelType</a> values. If none are specified, all the channels are blurred, including the alpha channel. This
+          is the equivalent of <a href="#blur_image">blur_image</a>.
         </dd>
       </dl>
 
@@ -2582,7 +2540,7 @@ Magick::Image.new(10, 10).channel_entropy #=&gt; [0.0]
     <div class="sig">
       <h3 id="clut_channel">clut_channel</h3>
 
-      <p><span class="arg">img</span>.clut(<span class="arg">clut_image</span> [, <span class="arg">channel...</span>]) -&gt; <em>self</em></p>
+      <p><span class="arg">img</span>.clut_channel(<span class="arg">clut_image</span> [, <span class="arg">channel...</span>]) -&gt; <em>self</em></p>
     </div>
 
     <div class="desc">
@@ -2886,8 +2844,8 @@ Magick::Image.new(10, 10).channel_entropy #=&gt; [0.0]
       </p>
 
       <p>
-        Raises IndexError if the image does not contain a color map. Only
-        <a href="constants.html#ClassType">PseudoClass</a> images have a color map.
+        When reading a color, raises IndexError if the image does not contain a color map. Only
+        <a href="constants.html#ClassType">PseudoClass</a> images have a color map. When setting a color, creates the color map if there is none.
       </p>
 
       <h4>Arguments</h4>
@@ -2896,8 +2854,9 @@ Magick::Image.new(10, 10).channel_entropy #=&gt; [0.0]
         <dt>index</dt>
 
         <dd>
-          A number between 0 and the number of colors in the color map. If the value is out of range, <code>colormap</code> raises an IndexError. You can get
-          the number of colors in the color map from the <a href="imageattrs.html#colors">colors</a> attribute.
+          A number between 0 and the number of colors in the color map. When reading a color, <code>colormap</code> raises an IndexError if the value is out
+          of range. When setting a color, the color map grows to include the index, and the other new entries are initialized to zero. You can get the
+          number of colors in the color map from the <a href="imageattrs.html#colors">colors</a> attribute.
         </dd>
 
         <dt>new_color</dt>
@@ -2910,7 +2869,10 @@ Magick::Image.new(10, 10).channel_entropy #=&gt; [0.0]
 
       <h4>Returns</h4>
 
-      <p>The name of the color at the specified location in the color map</p>
+      <p>
+        The name of the color at the specified location in the color map. When <span class="arg">new_color</span> is specified, the name of the color it
+        replaces. For a CMYK image the name is in sRGB.
+      </p>
     </div>
 
     <div class="sig">
@@ -2983,7 +2945,7 @@ Magick::Image.new(10, 10).channel_entropy #=&gt; [0.0]
 
       <h4>Example</h4>
 
-      <pre class="language-ruby">f.color_reset!(red)</pre>
+      <pre class="language-ruby">f.color_reset!('red')</pre>
 
       <h4>See also</h4>
 
@@ -3032,8 +2994,8 @@ Magick::Image.new(10, 10).channel_entropy #=&gt; [0.0]
         <dt>optional arguments</dt>
 
         <dd>
-          If present, <code>compare_channel</code> yields to a block in which you can set optional arguments by setting attributes on <em>self</em>. They
-          apply only to this call and are not kept on the image. In both cases <span class="arg">color</span> may be either a
+          If present, <code>compare_channel</code> yields an <em>options</em> object to the block. Set optional arguments by setting attributes on that
+          object. They apply only to this call and are not kept on the image. In both cases <span class="arg">color</span> may be either a
           <a href="imusage.html#color_names">color name</a> or a <a href="struct.html#Pixel">pixel</a>.
 
           <dl>
@@ -3453,8 +3415,8 @@ img.pixel_color(50, 50).to_color #=&gt; "#0000FFFFFFFF" (cyan, with Q16)
       <h3 id="composite_tiled">composite_tiled</h3>
 
       <p>
-        <span class="arg">img</span>.composite_tiled(<span class="arg">src</span>, <span class="arg">composite_op</span> = Magick::OverCompositeOp) -&gt;
-        <em>image</em>
+        <span class="arg">img</span>.composite_tiled(<span class="arg">src</span>, <span class="arg">composite_op</span> = Magick::OverCompositeOp[,
+        <span class="arg">channel</span>...]) -&gt; <em>image</em>
       </p>
     </div>
 
@@ -3471,13 +3433,20 @@ img.pixel_color(50, 50).to_color #=&gt; "#0000FFFFFFFF" (cyan, with Q16)
       <dl>
         <dt>src</dt>
 
-        <dd>The source image</dd>
+        <dd>Either an imagelist or an image. If an imagelist, uses the current image.</dd>
 
         <dt>composite_op</dt>
 
         <dd>
           A
           <a href="constants.html#CompositeOperator">CompositeOperator</a> value
+        </dd>
+
+        <dt>channel...</dt>
+
+        <dd>
+          Zero or more
+          <a href="constants.html#ChannelType">ChannelType</a> values. If no channels are specified, the default is all channels.
         </dd>
       </dl>
 
@@ -3501,8 +3470,8 @@ img.pixel_color(50, 50).to_color #=&gt; "#0000FFFFFFFF" (cyan, with Q16)
       <h3 id="composite_tiled_bang">composite_tiled!</h3>
 
       <p>
-        <span class="arg">img</span>.composite_tiled!(<span class="arg">src</span>, <span class="arg">composite_op</span> = Magick::OverCompositeOp) -&gt;
-        <em>self</em>
+        <span class="arg">img</span>.composite_tiled!(<span class="arg">src</span>, <span class="arg">composite_op</span> = Magick::OverCompositeOp[,
+        <span class="arg">channel</span>...]) -&gt; <em>self</em>
       </p>
     </div>
 
@@ -3553,7 +3522,7 @@ img.pixel_color(50, 50).to_color #=&gt; "#0000FFFFFFFF" (cyan, with Q16)
       <p>
         Removes duplicate or unused entries in the colormap. Only
         <a href="constants.html#ClassType">PseudoClass</a> images have a colormap. If the image is <code>DirectClass</code> then
-        <code>compress_colormap!</code> converts it to <code>PseudoClass</code>.
+        <code>compress_colormap!</code> leaves it unchanged.
       </p>
 
       <h4>Returns</h4>
@@ -3640,9 +3609,10 @@ f.colors #=&gt; 108
         <dt>white_point</dt>
 
         <dd>
-          burn at most this many pixels. Specify an absolute number of pixels as a numeric value, or a percentage as a string in the form 'NN%'. This argument
-          is optional. If not specified the default is
-          <code>all pixels - black_point pixels</code>.
+          the white point, as a number of pixels counted from the darkest. The pixels above it are burned. Specify an absolute number of pixels as a numeric
+          value, or a percentage as a string in the form 'NN%'. To burn at most N pixels, pass <code>columns * rows - N</code>. This argument is optional. If
+          not specified the default is <code>all pixels - black_point pixels</code>, which burns as many pixels as <span class="arg">black_point</span> blacks
+          out. Unlike ImageMagick's -contrast-stretch option, this is not the number of pixels to burn.
         </dd>
 
         <dt>channel...</dt>
@@ -3891,8 +3861,10 @@ f.colors #=&gt; 108
             <dd>
               A <a href="constants.html#GravityType">GravityType</a> value. If the argument is NorthEastGravity, EastGravity, or SouthEastGravity, the
               <em>x-</em>offset is measured from the right side of the image. If the argument is SouthEastGravity, SouthGravity, or SouthWestGravity, the
-              <em>y-</em>offset is measured from the bottom of the image. All other values are ignored and the <em>x-</em> and <em>y-</em>offsets are measured
-              from the upper-left corner of the image.
+              <em>y-</em>offset is measured from the bottom of the image. If the argument is NorthGravity, SouthGravity, or CenterGravity, the
+              <em>x-</em>offset is measured from the position that centers the rectangle. If the argument is EastGravity, WestGravity, or CenterGravity, the
+              <em>y-</em>offset is measured from the position that centers the rectangle. In all other cases an offset is measured from the upper-left corner of
+              the image.
             </dd>
 
             <dt>x, y</dt>
@@ -4562,7 +4534,8 @@ img.artifact('distort:viewport') #=&gt; nil
         <dd>
           Either a non-negative number or a string in the form "NN%". If
           <span class="arg">dst_percentage</span> is a number it is interpreted as a percentage. Both 0.25 and "25%" mean 25%. This argument may be omitted if
-          no other arguments follow it. In this case <span class="arg">img</span>'s opacity is unchanged.
+          no other arguments follow it. In this case <span class="arg">img</span>'s opacity is unchanged if <span class="arg">src_percentage</span> is 100% or
+          less. If it is more, <span class="arg">img</span>'s opacity is multiplied by 200%-<span class="arg">src_percentage</span>.
         </dd>
       </dl>
 
@@ -4667,8 +4640,8 @@ img.artifact('distort:viewport') #=&gt; nil
         <dt>optional arguments</dt>
 
         <dd>
-          If present, <code>distort</code> yields to a block in which you can set optional arguments by calling methods on <em>self</em>. They apply only
-          to this call and are not kept on the image.
+          If present, <code>distort</code> yields an <em>options</em> object to the block. Set optional arguments by calling methods on that object. They
+          apply only to this call and are not kept on the image.
 
           <dl>
             <dt>options.define("distort:viewport", "WxH+X+Y")</dt>

@@ -993,6 +993,7 @@ Image_add_noise(VALUE self, VALUE noise)
 
 /**
  * Adds random noise to the specified channel or channels in the image.
+ * The alpha channel is never changed, even if it is specified.
  *
  * @overload add_noise_channel(noise_type, channel = Magick::AllChannels)
  *   @param noise [Magick::NoiseType] the noise
@@ -1882,7 +1883,7 @@ Image_black_point_compensation_eq(VALUE self, VALUE arg)
  *   @param blue [Numeric] the number for blue channel
  *   @param alpha [Numeric] the number for alpha channel
  *
- * @return [Numeric] a new image
+ * @return [Magick::Image] a new image
  * @see Image#white_threshold
  */
 VALUE
@@ -2233,8 +2234,12 @@ special_composite(VALUE self, VALUE overlay_obj, double image_pct, double overla
  *     Both 0.25 and "25%" mean 25%. This argument may be omitted if no other arguments follow it.
  *     In this case the default is 100%-src_percentage.
  *   @param gravity [Magick::GravityType] the gravity for offset. the offsets are measured from the NorthWest corner by default.
- *   @param x_offset [Numeric] The offset that measured from the left-hand side of the target image.
- *   @param y_offset [Numeric] The offset that measured from the top of the target image.
+ *   @param x_offset [Numeric] The x-offset. It is measured from the right side of the target image
+ *     with NorthEastGravity, EastGravity or SouthEastGravity, from the position that centers the
+ *     overlay with NorthGravity, SouthGravity or CenterGravity, and from the left side otherwise.
+ *   @param y_offset [Numeric] The y-offset. It is measured from the bottom of the target image
+ *     with SouthWestGravity, SouthGravity or SouthEastGravity, from the position that centers the
+ *     overlay with WestGravity, EastGravity or CenterGravity, and from the top otherwise.
  *   @return [Magick::Image] a new image
  */
 VALUE
@@ -2579,7 +2584,7 @@ Image_bounding_box(VALUE self)
  *   @param borders [Boolean] If true, include the border in the image.
  *
  * @overload capture(silent = false, frame = false, descend = false, screen = false, borders = false)
- *   This yields {Magick::Image::Info} to block with its object's scope.
+ *   This yields {Magick::Image::Info} to the block as its argument.
  *   @param silent [Boolean] If true, suppress the beeps that signal the start and finish of the
  *     capture process.
  *   @param frame [Boolean] If true, include the window frame.
@@ -3655,9 +3660,10 @@ Image_colorize(int argc, VALUE *argv, VALUE self)
  *
  * @overload colormap(index, new_color)
  *   @param index [Numeric] A number between 0 and the number of colors in the color map. If the
- *     value is out of range, colormap raises an IndexError.  You can get the number of colors in
- *     the color map from the colors attribute.
+ *     image has no color map, it is created. If the value is out of range, the color map grows to
+ *     include the index, and the other new entries are initialized to zero.
  *   @param new_color [Magick::Pixel, String] the color. A color name is converted to CMYK for a CMYK image.
+ *   @return [String] the name of the color that new_color replaces
  *
  * @return [String] the name of the color at the specified location in the color map
  */
@@ -4756,7 +4762,7 @@ Image_compression_eq(VALUE self, VALUE compression)
 /**
  * Removes duplicate or unused entries in the colormap.
  * Only PseudoClass images have a colormap.
- * If the image is DirectClass then compress_colormap! converts it to PseudoClass.
+ * If the image is DirectClass then compress_colormap! leaves it unchanged.
  *
  * @return [Magick::Image] self
  */
@@ -4807,7 +4813,7 @@ Image_compress_colormap_bang(VALUE self)
  * @param map_arg [String] A string describing the expected ordering of the pixel array.
  *   It can be any combination or order of R = red, G = green, B = blue, A = alpha, C = cyan, Y =
  *   yellow, M = magenta, K = black, or I = intensity (for grayscale).
- * @param pixels_arg [Array<Magick::Pixel>] The pixel data in the array must be stored in scanline order,
+ * @param pixels_arg [Array<Integer>, Array<Float>] The pixel data in the array must be stored in scanline order,
  *   left-to-right and top-to-bottom. The elements in the array must be either all Integers or all
  *   Floats. If the elements are Integers, the Integers must be in the range [0..QuantumRange]. If
  *   the elements are Floats, they must be in the range [0..1].
@@ -5099,17 +5105,21 @@ get_black_white_point(Image *image, int argc, VALUE *argv, double *black_point, 
  * @overload contrast_stretch_channel(black_point, white_point = pixels - black_point, channel = Magick::AllChannels)
  *   @param black_point [Numeric, String] black out at most this many pixels. Specify an absolute
  *     number of pixels as a numeric value, or a percentage as a string in the form 'NN%'.
- *   @param white_point [Numeric, String] burn at most this many pixels. Specify an absolute number
- *     of pixels as a numeric value, or a percentage as a string in the form 'NN%'. This argument
- *     is optional. If not specified the default is `(columns * rows) - black_point`.
+ *   @param white_point [Numeric, String] the white point, as a number of pixels counted from the
+ *     darkest. The pixels above it are burned. Specify an absolute number of pixels as a numeric
+ *     value, or a percentage as a string in the form 'NN%'. To burn at most N pixels, pass
+ *     `columns * rows - N`. This argument is optional. If not specified the default is
+ *     `(columns * rows) - black_point`.
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *
  * @overload contrast_stretch_channel(black_point, white_point = pixels - black_point, *channels)
  *   @param black_point [Numeric, String] black out at most this many pixels. Specify an absolute
  *     number of pixels as a numeric value, or a percentage as a string in the form 'NN%'.
- *   @param white_point [Numeric, String] burn at most this many pixels. Specify an absolute number of
- *     pixels as a numeric value, or a percentage as a string in the form 'NN%'. This argument is
- *     optional. If not specified the default is all pixels - black_point pixels.
+ *   @param white_point [Numeric, String] the white point, as a number of pixels counted from the
+ *     darkest. The pixels above it are burned. Specify an absolute number of pixels as a numeric
+ *     value, or a percentage as a string in the form 'NN%'. To burn at most N pixels, pass
+ *     `columns * rows - N`. This argument is optional. If not specified the default is all pixels -
+ *     black_point pixels.
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
  * @return [Magick::Image] a new image
@@ -6290,8 +6300,13 @@ Image_directory(VALUE self)
  *   @param y_amp [Numeric] The maximum displacement on the y-axis.
  *   @param gravity [Magick::GravityType] the gravity for offset. the offsets are measured from the
  *   NorthWest corner by default.
- *   @param x_offset [Numeric] The offset that measured from the left-hand side of the target image.
- *   @param y_offset [Numeric] The offset that measured from the top of the target image.
+ *   @param x_offset [Numeric] The x-offset. It is measured from the right side of the target image
+ *     with NorthEastGravity, EastGravity or SouthEastGravity, from the position that centers the
+ *     displacement map with NorthGravity, SouthGravity or CenterGravity, and from the left side
+ *     otherwise.
+ *   @param y_offset [Numeric] The y-offset. It is measured from the bottom of the target image
+ *     with SouthWestGravity, SouthGravity or SouthEastGravity, from the position that centers the
+ *     displacement map with WestGravity, EastGravity or CenterGravity, and from the top otherwise.
  *   @return [Magick::Image] a new image
  */
 VALUE
@@ -6570,11 +6585,16 @@ Image_dispose_eq(VALUE self, VALUE dispose)
  *   @param dst_percent [Numeric, String] Either a non-negative number or a string in the form "NN%".
  *     If src_percentage is a number it is interpreted as a percentage.
  *     Both 0.25 and "25%" mean 25%. This argument may be omitted if no other arguments follow it.
- *     In this case the default is 100%-src_percentage.
+ *     In this case the opacity of the target image is unchanged if src_percent is 100% or less.
+ *     If it is more, the opacity of the target image is multiplied by 200%-src_percent.
  *   @param gravity [Magick::GravityType] the gravity for offset. the offsets are measured from the
  *     NorthWest corner by default.
- *   @param x_offset [Numeric] The offset that measured from the left-hand side of the target image.
- *   @param y_offset [Numeric] The offset that measured from the top of the target image.
+ *   @param x_offset [Numeric] The x-offset. It is measured from the right side of the target image
+ *     with NorthEastGravity, EastGravity or SouthEastGravity, from the position that centers the
+ *     overlay with NorthGravity, SouthGravity or CenterGravity, and from the left side otherwise.
+ *   @param y_offset [Numeric] The y-offset. It is measured from the bottom of the target image
+ *     with SouthWestGravity, SouthGravity or SouthEastGravity, from the position that centers the
+ *     overlay with WestGravity, EastGravity or CenterGravity, and from the top otherwise.
  *   @return [Magick::Image] a new image
  */
 VALUE
@@ -8096,7 +8116,7 @@ Image_frame(int argc, VALUE *argv, VALUE self)
  *   @param blob [String] the blob data
  *
  * @overload from_blob(blob)
- *   This yields {Magick::Image::Info} to block with its object's scope.
+ *   This yields {Magick::Image::Info} to the block as its argument.
  *   @param blob [String] the blob data
  *   @yield [info]
  *   @yieldparam info [Magick::Image::Info]
