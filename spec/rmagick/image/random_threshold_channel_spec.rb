@@ -28,7 +28,10 @@ RSpec.describe Magick::Image, '#random_threshold_channel' do
     image = described_class.read('gradient:') { |info| info.size = '16x64' }.first
 
     %w[2x2 3x3 4x4].each do |map|
-      expect(image.random_threshold_channel(map).signature).to eq(image.ordered_dither(map).signature)
+      result = image.random_threshold_channel(map)
+
+      expect(result.signature).to eq(image.ordered_dither(map).signature)
+      expect(result.export_pixels(0, 0, 16, 64, 'R').uniq).to contain_exactly(0, Magick::QuantumRange)
     end
   end
 end

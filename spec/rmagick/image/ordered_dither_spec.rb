@@ -27,4 +27,12 @@ RSpec.describe Magick::Image, '#ordered_dither' do
 
     expect(results).to eq([expected] * 10)
   end
+
+  it 'keeps the values within QuantumRange' do
+    image = described_class.read('gradient:') { |info| info.size = '16x64' }.first
+
+    result = image.ordered_dither('2x2')
+
+    expect(result.export_pixels(0, 0, 16, 64, 'R').uniq).to contain_exactly(0, Magick::QuantumRange)
+  end
 end
