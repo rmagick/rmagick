@@ -101,8 +101,7 @@
       <p>
         Multiplies the current transformation matrix by a matrix having the specified values. See the
         <a href="https://www.w3.org/TR/SVG11/coords.html#TransformAttribute">SVG standard</a>
-        for more information. Note that the meaning of <span class="arg">rx</span> and <span class="arg">ry</span> depends on the ImageMagick version, as
-        described below.
+        for more information.
       </p>
 
       <h5>Arguments</h5>
@@ -115,11 +114,9 @@
         <dt>rx, ry</dt>
 
         <dd>
-          Matrix elements, not angles. With ImageMagick 7.1.2-0 or later, or 6.9.13-26 or later, a point (<em>x</em>, <em>y</em>) is mapped to
-          (<em>sx</em>*<em>x</em> + <em>rx</em>*<em>y</em> + <em>tx</em>, <em>ry</em>*<em>x</em> + <em>sy</em>*<em>y</em> + <em>ty</em>), so SVG's
-          <code>matrix(a, b, c, d, e, f)</code> is <code>matrix(a, c, b, d, e, f)</code> here. With older versions, a point is mapped to
+          Matrix elements, not angles. A point (<em>x</em>, <em>y</em>) is mapped to
           (<em>sx</em>*<em>x</em> + <em>ry</em>*<em>y</em> + <em>tx</em>, <em>rx</em>*<em>x</em> + <em>sy</em>*<em>y</em> + <em>ty</em>), the same as SVG's
-          <code>matrix(sx, rx, ry, sy, tx, ty)</code>.
+          <code>matrix(sx, rx, ry, sy, tx, ty)</code>, whatever the ImageMagick version.
         </dd>
 
         <dt>tx, ty</dt>

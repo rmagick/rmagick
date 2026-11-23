@@ -248,6 +248,12 @@ module Magick
       AnyStyle.to_i => 'all'
     }.freeze
 
+    # ImageMagick 7.1.2-0 and 6.9.13-26 read the second and third values of
+    # the affine primitive as ry and rx, the other way round from before.
+    im_version = Magick::Magick_version.split[1].split(/[.-]/).map(&:to_i)
+    AFFINE_RX_RY_SWAPPED = (im_version <=> (im_version.first == 6 ? [6, 9, 13, 26] : [7, 1, 2, 0])) >= 0
+    private_constant :AFFINE_RX_RY_SWAPPED
+
     private
 
     # Escape backslashes and return the value as bytes, plus its original
@@ -294,10 +300,11 @@ module Magick
     public
 
     # Apply coordinate transformations to support scaling (s), rotation (r),
-    # and translation (t). rx and ry are matrix elements, not angles. With
-    # ImageMagick 7.1.2 or 6.9.13-26 and later, a point (x, y) is drawn at
-    # (sx*x + rx*y + tx, ry*x + sy*y + ty). Earlier versions swap rx and ry.
+    # and translation (t). rx and ry are matrix elements, not angles. A point
+    # (x, y) is drawn at (sx*x + ry*y + tx, rx*x + sy*y + ty), as with
+    # AffineMatrix, whatever the ImageMagick version.
     def affine(sx, rx, ry, sy, tx, ty)
+      rx, ry = ry, rx if AFFINE_RX_RY_SWAPPED
       primitive 'affine ' + sprintf('%g,%g,%g,%g,%g,%g', sx, rx, ry, sy, tx, ty)
     end
 

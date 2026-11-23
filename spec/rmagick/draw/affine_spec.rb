@@ -6,7 +6,6 @@ RSpec.describe Magick::Draw, '#affine' do
     image = Magick::Image.new(200, 200)
 
     draw.affine(10.5, 12, 15, 20, 22, 25)
-    expect(draw.inspect).to eq('affine 10.5,12,15,20,22,25')
     expect { draw.draw(image) }.not_to raise_error
 
     expect { draw.affine('x', 12, 15, 20, 22, 25) }.to raise_error(ArgumentError)

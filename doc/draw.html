@@ -744,8 +744,8 @@ draw.inspect
         <dt>rx, ry</dt>
 
         <dd>
-          The off-diagonal elements of the matrix, not angles. With ImageMagick 7.1.2 and later, and 6.9.13-26 and later, a point (<em>x</em>, <em>y</em>) is
-          drawn at (sx*<em>x</em> + rx*<em>y</em> + tx, ry*<em>x</em> + sy*<em>y</em> + ty). With earlier versions, rx and ry are swapped.
+          The off-diagonal elements of the matrix, not angles. A point (<em>x</em>, <em>y</em>) is drawn at (sx*<em>x</em> + ry*<em>y</em> + tx,
+          rx*<em>x</em> + sy*<em>y</em> + ty), as with <a href="struct.html#AffineMatrix">AffineMatrix</a>, whatever the ImageMagick version.
         </dd>
 
         <dt>tx, ty</dt>

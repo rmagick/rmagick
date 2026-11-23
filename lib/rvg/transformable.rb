@@ -40,11 +40,9 @@ module Magick
       public
 
       # Multiplies the current transformation matrix by [sx, rx, ry, sy, tx, ty].
-      # <tt>rx</tt> and <tt>ry</tt> are matrix elements, not angles. With
-      # ImageMagick 7.1.2-0 or later, or 6.9.13-26 or later, a point (x, y) is
-      # mapped to (sx*x + rx*y + tx, ry*x + sy*y + ty), so SVG's
-      # matrix(a, b, c, d, e, f) is matrix(a, c, b, d, e, f) here. With older
-      # versions, this is the same as SVG's matrix(sx, rx, ry, sy, tx, ty).
+      # <tt>rx</tt> and <tt>ry</tt> are matrix elements, not angles. This is the
+      # same as SVG's matrix(sx, rx, ry, sy, tx, ty), whatever the ImageMagick
+      # version.
       def matrix(sx, rx, ry, sy, tx, ty)
         begin
           @transforms << [:affine, [Float(sx), Float(rx), Float(ry), Float(sy), Float(tx), Float(ty)]]
