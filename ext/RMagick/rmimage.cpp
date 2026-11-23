@@ -10280,14 +10280,37 @@ set_image_mask(VALUE self, VALUE mask)
             clip_mask = resized_image;
         }
 
-        // SetImageMask reads only the intensity of the mask. ImageMagick 6 reads
-        // the alpha of a mask that has one, so turn the alpha into the same gray.
-        if (clip_mask->alpha_trait != UndefinedPixelTrait)
+        // SetImageMask reads the intensity of the mask, while ImageMagick 6 reads
+        // the alpha of a mask that has one. Use an image of the inverted alpha
+        // alone: the intensity of a one-channel image is that channel as it is.
+        if (clip_mask->alpha_trait == BlendPixelTrait)
         {
-            DECLARE_GVL_CALL(extract_call, SetImageAlphaChannel, clip_mask, ExtractAlphaChannel, exception);
-            extract_call.update(self).read(mask).destroy(clip_mask).release(exception).run<void>();
+            Image *alpha_image;
+
+            // The masks of the mask image would keep some of its pixels out.
+            if (clip_mask->channels & (ReadMaskChannel | WriteMaskChannel | CompositeMaskChannel))
+            {
+                static const PixelMask types[] = { ReadPixelMask, WritePixelMask, CompositePixelMask };
+                for (PixelMask type : types)
+                {
+                    DECLARE_GVL_CALL(unmask_call, SetImageMask, clip_mask, type, NULL, exception);
+                    unmask_call.update(self).read(mask).destroy(clip_mask).release(exception).run<void>();
+                }
+                rm_check_exception(exception, clip_mask, DestroyOnError);
+            }
+            DECLARE_GVL_CALL(separate_call, SeparateImage, clip_mask, AlphaChannel, exception);
+            alpha_image = separate_call.update(self).read(mask).destroy(clip_mask).release(exception).run<Image *>();
+            DestroyImage(clip_mask);
+            rm_check_exception(exception, alpha_image, DestroyOnError);
+            if (!alpha_image)
+            {
+                DestroyExceptionInfo(exception);
+                rm_ensure_result(alpha_image);
+            }
+            clip_mask = alpha_image;
             DECLARE_GVL_CALL(negate_call, NegateImage, clip_mask, MagickFalse, exception);
             negate_call.update(self).read(mask).destroy(clip_mask).release(exception).run<void>();
+            rm_check_exception(exception, clip_mask, DestroyOnError);
         }
 
         DECLARE_GVL_CALL(call, SetImageMask, image, WritePixelMask, clip_mask, exception);
