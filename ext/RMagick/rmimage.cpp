@@ -10266,7 +10266,8 @@ set_image_mask(VALUE self, VALUE mask)
     if (mask != Qnil)
     {
         // The masks of the mask image would keep some of its pixels out of the
-        // resize and of the steps below. The ImageMagick 6 path drops them too.
+        // resize and of the steps below. The ImageMagick 6 path drops them before
+        // it writes the gray.
         static const ChannelType channels[] = { ReadMaskChannel, WriteMaskChannel, CompositeMaskChannel };
         static const PixelMask types[] = { ReadPixelMask, WritePixelMask, CompositePixelMask };
         for (int n = 0; n < 3; n++)

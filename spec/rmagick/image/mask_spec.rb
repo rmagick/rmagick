@@ -160,7 +160,7 @@ RSpec.describe Magick::Image, '#mask' do
     expect((0..3).map { |x| image.mask.pixel_color(x, 0).red }).to eq(expected)
   end
 
-  it 'keeps the values of an enlarged mask within the range', if: Gem::Version.new(Magick::IMAGEMAGICK_VERSION) >= Gem::Version.new('7.0.0') do
+  it 'keeps the values of an enlarged mask with alpha within the range', if: Gem::Version.new(Magick::IMAGEMAGICK_VERSION) >= Gem::Version.new('7.0.0') do
     mask = described_class.new(2, 1) { |options| options.background_color = 'none' }
     mask.alpha(Magick::ActivateAlphaChannel)
     mask.pixel_color(0, 0, 'black')
