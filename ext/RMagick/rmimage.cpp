@@ -4652,13 +4652,13 @@ composite_tiled(int bang, int argc, VALUE *argv, VALUE self)
             BEGIN_CHANNEL_MASK(image, channels);
             DECLARE_GVL_CALL(call, CompositeImage, image, comp_image, composite_op, MagickTrue, x, y, exception);
             void *ret = call.read(comp).hold(bang ? self : Qnil, true).keep_thread().restore_mask(image, channel_mask).destroy(bang ? NULL : image).release(exception).run<void *>();
-            status = reinterpret_cast<MagickStatusType &>(ret);
+            status = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
             END_CHANNEL_MASK(image);
             rm_check_exception(exception, image, bang ? RetainOnError: DestroyOnError);
 #else
             DECLARE_GVL_CALL(call, CompositeImageChannel, image, channels, composite_op, comp_image, x, y);
             void *ret = call.read(comp).hold(bang ? self : Qnil, true).keep_thread().destroy(bang ? NULL : image).run<void *>();
-            status = reinterpret_cast<MagickStatusType &>(ret);
+            status = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
             rm_check_image_exception(image, bang ? RetainOnError: DestroyOnError);
 #endif
         }
