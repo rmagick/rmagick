@@ -171,4 +171,11 @@ RSpec.describe Magick::ImageList, "#montage" do
 
     expect(error).to eq('object is in use by another fiber')
   end
+
+  it 'raises ImageMagickError for an image with no columns on ImageMagick 6', if: Gem::Version.new(Magick::IMAGEMAGICK_VERSION) < Gem::Version.new('7.0.0') do
+    image_list = described_class.new
+    image_list << Magick::Image.new(0, 5)
+
+    expect { image_list.montage }.to raise_error(Magick::ImageMagickError)
+  end
 end

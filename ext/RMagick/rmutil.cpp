@@ -1880,12 +1880,12 @@ rm_clone_image(Image *image, VALUE owner, VALUE held, bool changes)
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, CloneImage, image, 0, 0, MagickTrue, exception);
     clone = call.hold(owner, changes).hold(held).keep_thread().release(exception).run<Image *>();
+    rm_check_exception(exception, clone, DestroyOnError);
+    DestroyExceptionInfo(exception);
     if (!clone)
     {
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
-    rm_check_exception(exception, clone, DestroyOnError);
-    DestroyExceptionInfo(exception);
 #if defined(IMAGEMAGICK_6)
     ClearMagickException(&clone->exception);
 #endif
