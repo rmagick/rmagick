@@ -157,7 +157,6 @@ DEFINE_GVL_STUB4(ColorizeImage, const Image *, const char *, const PixelInfo *, 
 DEFINE_GVL_STUB5(CompareImages, Image *, const Image *, const MetricType, double *, ExceptionInfo *);
 DEFINE_GVL_STUB7(CompositeImage, Image *, const Image *, const CompositeOperator, const MagickBooleanType, const ssize_t, const ssize_t, ExceptionInfo *);
 DEFINE_GVL_STUB2(CompressImageColormap, Image *, ExceptionInfo *);
-DEFINE_GVL_STUB6(ConstituteImage, const size_t, const size_t, const char *, const StorageType, const void *, ExceptionInfo *);
 DEFINE_GVL_STUB3(ContrastImage, Image *, const MagickBooleanType, ExceptionInfo *);
 DEFINE_GVL_STUB4(ContrastStretchImage, Image *, const double, const double, ExceptionInfo *);
 DEFINE_GVL_STUB3(ConvolveImage, const Image *, const KernelInfo *, ExceptionInfo *);
@@ -10266,51 +10265,6 @@ set_image_mask(VALUE self, VALUE mask)
 
     if (mask != Qnil)
     {
-        // SetImageMask reads the intensity of the mask, while ImageMagick 6 reads
-        // the alpha of a mask that has one. DeactivateAlphaChannel leaves the
-        // alpha with CopyPixelTrait only. ImageMagick 6 reads the intensity when
-        // the mask image has a mask of its own, as its mask stops the gray.
-        if ((clip_mask->alpha_trait & (UpdatePixelTrait | BlendPixelTrait))
-            && !(clip_mask->channels & (WriteMaskChannel | CompositeMaskChannel)))
-        {
-            Image *alpha_image;
-            size_t count = clip_mask->columns * clip_mask->rows;
-            Quantum *alpha = (Quantum *)AcquireQuantumMemory(count, sizeof(Quantum));
-
-            if (!alpha)
-            {
-                DestroyImage(clip_mask);
-                DestroyExceptionInfo(exception);
-                rb_raise(rb_eNoMemError, "not enough memory to continue");
-            }
-
-            // Build a new gray image of the inverted alpha, the gray that
-            // ImageMagick 6 builds. The intensity of a one-channel image is its
-            // value as it is, whatever the colorspace of the mask.
-            DECLARE_GVL_CALL(export_call, ExportImagePixels, clip_mask, 0, 0, clip_mask->columns, clip_mask->rows, "A", QuantumPixel, (void *)alpha, exception);
-            export_call.update(self).read(mask).destroy(clip_mask).relinquish(alpha).release(exception).run<void>();
-            if (exception->severity >= ErrorException)
-            {
-                RelinquishMagickMemory(alpha);
-                rm_check_exception(exception, clip_mask, DestroyOnError);
-            }
-            for (size_t n = 0; n < count; n++)
-            {
-                alpha[n] = (Quantum)(QuantumRange - alpha[n]);
-            }
-            DECLARE_GVL_CALL(constitute_call, ConstituteImage, clip_mask->columns, clip_mask->rows, "I", QuantumPixel, (const void *)alpha, exception);
-            alpha_image = constitute_call.update(self).read(mask).destroy(clip_mask).relinquish(alpha).release(exception).run<Image *>();
-            RelinquishMagickMemory(alpha);
-            DestroyImage(clip_mask);
-            rm_check_exception(exception, alpha_image, DestroyOnError);
-            if (!alpha_image)
-            {
-                DestroyExceptionInfo(exception);
-                rm_ensure_result(alpha_image);
-            }
-            clip_mask = alpha_image;
-        }
-
         // Resize if necessary
         if (clip_mask->columns != image->columns || clip_mask->rows != image->rows)
         {
@@ -10324,6 +10278,30 @@ set_image_mask(VALUE self, VALUE mask)
                 rm_ensure_result(resized_image);
             }
             clip_mask = resized_image;
+        }
+
+        // ImageMagick 6 builds the mask from the inverted alpha unless the mask
+        // image has a mask of its own. SetImageMask reads the intensity, and the
+        // average intensity of the separated gray is its value in any colorspace.
+        if ((clip_mask->alpha_trait & (UpdatePixelTrait | BlendPixelTrait))
+            && !(clip_mask->channels & (ReadMaskChannel | WriteMaskChannel | CompositeMaskChannel)))
+        {
+            Image *alpha_image;
+
+            DECLARE_GVL_CALL(separate_call, SeparateImage, clip_mask, AlphaChannel, exception);
+            alpha_image = separate_call.update(self).read(mask).destroy(clip_mask).release(exception).run<Image *>();
+            DestroyImage(clip_mask);
+            rm_check_exception(exception, alpha_image, DestroyOnError);
+            if (!alpha_image)
+            {
+                DestroyExceptionInfo(exception);
+                rm_ensure_result(alpha_image);
+            }
+            clip_mask = alpha_image;
+            DECLARE_GVL_CALL(negate_call, NegateImage, clip_mask, MagickFalse, exception);
+            negate_call.update(self).read(mask).destroy(clip_mask).release(exception).run<void>();
+            rm_check_exception(exception, clip_mask, DestroyOnError);
+            clip_mask->intensity = AveragePixelIntensityMethod;
         }
 
         DECLARE_GVL_CALL(call, SetImageMask, image, WritePixelMask, clip_mask, exception);
