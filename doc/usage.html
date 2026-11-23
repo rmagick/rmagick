@@ -146,8 +146,8 @@ exit
     </p>
 
     <p>
-      The statement on line 5 creates an <em>imagelist</em> object and initializes it by reading the <code>Cheetah.jpg</code> file in the current directory.
-      Line 6 sends the <code>display</code> method to the object. When you send <code>display</code> to an imagelist, it causes all the images in the imagelist
+      The statement on line 3 creates an <em>imagelist</em> object and initializes it by reading the <code>Cheetah.jpg</code> file in the current directory.
+      Line 4 sends the <code>display</code> method to the object. When you send <code>display</code> to an imagelist, it causes all the images in the imagelist
       to be displayed on the default X Window screen. In this case, the <code>display</code> method makes a picture of a cheetah appear on your monitor.
     </p>
 
@@ -172,8 +172,8 @@ exit
     </p>
 
     <p>
-      The ImageList class is a subclass of the Array class, so you can use most Array methods to change the images in the imagelist. For example, you can use
-      the <code>&lt;&lt;</code> method to add an image to the list.
+      The ImageList class is not a subclass of the Array class, but it delegates most Array methods to its internal array, so you can use them to change the
+      images in the imagelist. For example, you can use the <code>&lt;&lt;</code> method to add an image to the list.
     </p>
 
     <p>Going back to the example, let's make one modification.</p>
@@ -187,14 +187,14 @@ exit
 </pre>
 
     <p>
-      The difference is the statement on line 5. This statement sends the
+      The difference is the statement on line 4. This statement sends the
       <code>minify</code> method to the imagelist. The <code>minify</code> method is an Image method that reduces the size of an image to half its original
       size. Remember, since <code>minify</code> is an Image method, the ImageList class sends <code>minify</code> to the current (and only) image. The return
       value is a new image, half the size of the original.
     </p>
 
     <p>
-      Line 6 demonstrates the Image class's <code>display</code>
+      Line 5 demonstrates the Image class's <code>display</code>
       method, which displays a single image on the X Window screen.
       <code>Image#display</code> makes a picture of a (in this case, small) cheetah appear on your monitor.
     </p>
@@ -211,7 +211,7 @@ exit
 </pre>
 
     <p>
-      The statement on line 7 writes the image to a file. Notice that the filename extension is <code>gif</code>. When writing images, ImageMagick uses the
+      The statement on line 6 writes the image to a file. Notice that the filename extension is <code>gif</code>. When writing images, ImageMagick uses the
       filename extension to determine what image format to write. In this example, the <code>Small-Cheetah.gif</code> file will be in the GIF format. Notice how
       easy it is to convert an image from one format to another? (For more details, see <a href="imusage.html#formats">Image formats and filenames</a>.)
     </p>
@@ -252,9 +252,9 @@ exit
     <p>
       Like many other methods in the Image and ImageList classes,
       <code>Image.new</code> accepts an optional block that can be used to set additional optional parameters. If the block is present,
-      <code>Image.new</code> creates a <a href="info.html">parameter object</a> and yields to the block in the scope of that object. You set the parameters by
-      calling attribute setter methods defined in the parameter object's class. For example, you can set the background color of a new image to red with the
-      <code>background_color=</code> method, as shown here:
+      <code>Image.new</code> creates a <a href="info.html">parameter object</a> and passes it to the block. You set the parameters by calling attribute setter
+      methods on the block argument. For example, you can set the background color of a new image to red with the <code>background_color=</code> method, as
+      shown here:
     </p>
     <pre class="example language-ruby">
 require "rmagick"
@@ -265,7 +265,10 @@ f.display
 exit
 </pre>
 
-    <p>Within the parameter block you must use <code>self</code> so that Ruby knows that this statement is a method call, not an assignment to a variable.</p>
+    <p>
+      Within the parameter block you must call the setter methods on the block argument so that Ruby knows that this statement is a method call, not an
+      assignment to a variable.
+    </p>
 
     <p>
       You can create an image by capturing it from the XWindow screen using
@@ -378,7 +381,7 @@ exit
 
         <dt><a href="image1.html#clone">clone</a></dt>
 
-        <dd>Return a shallow copy of the image</dd>
+        <dd>Return a deep copy of the image, including its frozen state</dd>
 
         <dt class="ilist"><a href="ilist.html#clone">clone</a></dt>
 
@@ -388,9 +391,9 @@ exit
 
         <dd>Count the number of times each unique color appears in the image</dd>
 
-        <dt><a href="image1.html#combine">combine</a></dt>
+        <dt class="ilist"><a href="ilist.html#combine">combine</a></dt>
 
-        <dd>Combines the grayscale value of the pixels in each image to form a new image.</dd>
+        <dd class="ilist">Combine the images in the imagelist into the channels of a new image</dd>
 
         <dt><a href="image1.html#copy">copy</a></dt>
 
@@ -422,7 +425,7 @@ exit
 
         <dt><a href="image1.html#dup">dup</a></dt>
 
-        <dd>Return a shallow copy of the image</dd>
+        <dd>Return a deep copy of the image</dd>
 
         <dt class="ilist"><a href="ilist.html#dup">dup</a></dt>
 
@@ -518,10 +521,6 @@ exit
         <dt><a href="image3.html#strip_bang">strip!</a></dt>
 
         <dd>Strip the image of all comments and profiles</dd>
-
-        <dt><a href="image3.html#sync_profiles">sync_profiles</a></dt>
-
-        <dd>Synchronize the image properties with the image profiles</dd>
 
         <dt><a href="image3.html#unique_colors">unique_colors</a></dt>
 
@@ -735,11 +734,11 @@ exit
 
         <dt><a href="image3.html#transpose">transpose</a></dt>
 
-        <dd>Create a horizontal mirror image</dd>
+        <dd>Mirror the image along the top-left to bottom-right diagonal</dd>
 
         <dt><a href="image3.html#transverse">transverse</a></dt>
 
-        <dd>Create a vertical mirror image</dd>
+        <dd>Mirror the image along the top-right to bottom-left diagonal</dd>
       </dl>
 
       <h4>Composite</h4>
@@ -1285,25 +1284,25 @@ circle.draw(canvas)
 </pre>
 
     <p>
-      The statements on lines 4 and 5 create the drawing canvas with a single 250x250 image. The <code>HatchFill</code> object fills the image with light-gray
-      lines 10 pixels apart. The statement on line 7 creates a Draw object. The method calls on lines 8-15 construct a list of primitives that are "executed" by
-      the <code>draw</code> method call on line 16.
+      The statements on lines 3 and 4 create the drawing canvas with a single 250x250 image. The <code>HatchFill</code> object fills the image with light-gray
+      lines 10 pixels apart. The statement on line 6 creates a Draw object. The method calls on lines 7-14 construct a list of primitives that are "executed" by
+      the <code>draw</code> method call on line 15.
     </p>
 
     <p>
-      The <code>stroke</code> method sets the stroke color, as seen on line 8. Normally, shapes are filled (opacity = 1.0), but the call to
-      <code>fill_opacity</code> on line 9 sets the opacity to 0, so the background will show through the circle. Similarly, the stroke lines are normally
-      opaque, but the tomato-colored stroke line in this example is made slightly transparent by the call to <code>stroke_opacity</code> on line 10. The method
-      calls on lines 11 through 13 set the stroke width and specify the appearance of the line ends and corners.
+      The <code>stroke</code> method sets the stroke color, as seen on line 7. Normally, shapes are filled (opacity = 1.0), but the call to
+      <code>fill_opacity</code> on line 8 sets the opacity to 0, so the background will show through the circle. Similarly, the stroke lines are normally
+      opaque, but the tomato-colored stroke line in this example is made slightly transparent by the call to <code>stroke_opacity</code> on line 9. The method
+      calls on lines 10 through 12 set the stroke width and specify the appearance of the line ends and corners.
     </p>
 
     <p>
-      The <code>ellipse</code> method call on line 14 describes a circle in the center of the canvas with a radius of 80 pixels. The ellipse occupies 315&deg;
-      of a circle, starting at 0&deg; (that is, 3 o'clock). The <code>polyline</code> call on line 15 adds the arrowhead to the circle. The arguments (always an
+      The <code>ellipse</code> method call on line 13 describes a circle in the center of the canvas with a radius of 80 pixels. The ellipse occupies 315&deg;
+      of a circle, starting at 0&deg; (that is, 3 o'clock). The <code>polyline</code> call on line 14 adds the arrowhead to the circle. The arguments (always an
       even number) are the x- and y-coordinates of the points the line passes through.
     </p>
 
-    <p>Finally, the <code>draw</code> method on line 16 identifies the canvas to be drawn on and executes the stored primitives.</p>
+    <p>Finally, the <code>draw</code> method on line 15 identifies the canvas to be drawn on and executes the stored primitives.</p>
 
     <h3 id="annotation">Annotation</h3>
 
@@ -1363,24 +1362,24 @@ exit
     </p>
 
     <p>
-      First, the statements in lines 8-10 create the background. See
+      First, the statements in lines 7-9 create the background. See
       <a href="struct.html#fill"><code>Fill classes</code></a> for information about the <code>TextureFill</code> class. The "granite:" image format is one of
       ImageMagick's built-in image formats. See <a href="imusage.html#builtin_formats">"Built-in image formats"</a> for more information. The statement on line
-      12 creates the Draw object that does the annotation. The next 3 lines set the values of the attributes that are common to all 3
+      11 creates the Draw object that does the annotation. The next 3 lines set the values of the attributes that are common to all 3
       <code>annotate</code> calls.
     </p>
 
     <p>
       The first <code>annotate</code> argument is the image on which the text will be drawn. Arguments 2-5, <code>width</code>, <code>height</code>,
       <code>x</code>, and <code>y</code>, describe a rectangle about which the text is drawn. This rectangle, combined with the value of <code>gravity</code>,
-      defines the position of the text. When the <code>gravity</code> value is <a href="constants.html#GravityType"><code>CenterGravity</code></a> the values of
-      <code>width</code> and <code>height</code> are unused.
+      defines the position of the text. When the <code>gravity</code> value is <a href="constants.html#GravityType"><code>CenterGravity</code></a
+      >, the text is centered in the rectangle. When <code>width</code> and <code>height</code> are both 0, the whole image is used.
     </p>
 
     <p>
-      The first call to <code>annotate</code>, on lines 17-19, draws the text 2 pixels to the right and down from the center. The
-      <code>options.fill = 'gray83'</code> statement sets the text color to light gray. The second call to <code>annotate</code>, on lines 21-22, draws dark
-      gray text 1.5 pixels to the left and up from the center. The last call, on lines 25-27, draws the text a third time, in dark red, exactly in the center of
+      The first call to <code>annotate</code>, on lines 16-18, draws the text 2 pixels to the right and down from the center. The
+      <code>options.fill = 'gray83'</code> statement sets the text color to light gray. The second call to <code>annotate</code>, on lines 20-22, draws dark
+      gray text 1.5 pixels to the left and up from the center. The last call, on lines 24-26, draws the text a third time, in dark red, exactly in the center of
       the image.
     </p>
 

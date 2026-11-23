@@ -257,8 +257,8 @@
           <td>-bias <em>value[%]</em></td>
 
           <td>
-            Image#<a href="imageattrs.html#bias">bias</a>(<em>value</em>)<br />
-            Image#<a href="imageattrs.html#bias">bias</a>('<em>value%</em>')
+            Image#<a href="imageattrs.html#bias">bias=</a><em>value</em><br />
+            Image#<a href="imageattrs.html#bias">bias=</a>'<em>value%</em>'
           </td>
         </tr>
 
@@ -272,8 +272,8 @@
           <td>-black-threshold <em>threshold</em></td>
 
           <td>
-            Image#<a href="image1.html#black_threshold">black_threshold</a>(<em>red_channel</em> [, <em>green_channel</em> [, <em>blue_channel</em> [,
-            <em>opacity_channel</em>]]])
+            Image#<a href="image1.html#black_threshold">black_threshold</a>(<em>red_channel</em> [, <em>green_channel</em> [, <em>blue_channel</em> [, alpha:
+            <em>alpha_channel</em>]]])
           </td>
         </tr>
 
@@ -440,7 +440,7 @@
         <tr>
           <td>-combine</td>
 
-          <td>Image.<a href="image1.html#combine">combine</a>(<em>red</em>, <em>green</em>, <em>blue</em>, <em>opacity</em>)</td>
+          <td>ImageList#<a href="ilist.html#combine">combine</a></td>
         </tr>
 
         <tr>
@@ -989,8 +989,8 @@
           <td>-interline-spacing <em>value</em></td>
 
           <td>
-            Draw#<a href="draw.html#interword_spacing">interline_spacing</a>(<em>value</em>) (for drawing)<br />
-            Draw#<a href="draw.html#interword_spacing_eq">interline_spacing=</a><em>value</em> (for annotation)
+            Draw#<a href="draw.html#interline_spacing">interline_spacing</a>(<em>value</em>) (for drawing)<br />
+            Draw#<a href="draw.html#interline_spacing_eq">interline_spacing=</a><em>value</em> (for annotation)
           </td>
         </tr>
 
@@ -1056,10 +1056,15 @@
         </tr>
 
         <tr>
-          <td>-level-colors <em>black_color</em>-<em>white_color</em></td>
+          <td>
+            -level-colors <em>black_color</em>-<em>white_color</em><br />
+            +level-colors <em>black_color</em>-<em>white_color</em>
+          </td>
 
           <td>
-            Image#<a href="image2.html#level_colors">level_colors</a>(<em>black_color</em>, <em>white_color</em>, <em>gamma</em>=1.0[, <em>channels</em>...])
+            Image#<a href="image2.html#level_colors">level_colors</a>(<em>black_color</em>, <em>white_color</em>, <code>false</code>[,
+            <em>channels</em>...])<br />
+            Image#<a href="image2.html#level_colors">level_colors</a>(<em>black_color</em>, <em>white_color</em>, <code>true</code>[, <em>channels</em>...])
           </td>
         </tr>
 
@@ -1251,7 +1256,7 @@
 
           <td>
             Image#<a href="image2.html#opaque">opaque</a>(<em>color</em>, <em>fill</em>)<br />
-            Image#<a href="image2.html#opaque_channel">opaque_channel</a>(<em>color</em>, fill, opacity, true)
+            Image#<a href="image2.html#opaque_channel">opaque_channel</a>(<em>color</em>, <em>fill</em>, true)
           </td>
         </tr>
 
@@ -1276,8 +1281,8 @@
           </td>
 
           <td>
-            Image::Info.<a href="info.html#page">page=</a>"<em>width</em>x<em>height</em>+ <em>x</em>+<em>y</em>"<br />
-            Image::Info.<a href="info.html#page">page=</a>"<em>media</em>"
+            Image::Info#<a href="info.html#page">page=</a>"<em>width</em>x<em>height</em>+ <em>x</em>+<em>y</em>"<br />
+            Image::Info#<a href="info.html#page">page=</a>"<em>media</em>"
           </td>
         </tr>
 
@@ -1309,15 +1314,15 @@
           <td>-pointsize <em>value</em></td>
 
           <td>
-            Draw.<a href="draw.html#pointsize">pointsize</a>(<em>value</em>) (for drawing)<br />
-            Draw.<a href="draw.html#pointsize_eq">pointsize=</a><em>value</em> (for annotation)
+            Draw#<a href="draw.html#pointsize">pointsize</a>(<em>value</em>) (for drawing)<br />
+            Draw#<a href="draw.html#pointsize_eq">pointsize=</a><em>value</em> (for annotation)
           </td>
         </tr>
 
         <tr>
           <td>-polaroid <em>angle</em></td>
 
-          <td>Image.<a href="image3.html#polaroid">polaroid</a>(<em>angle=-5.0</em>)</td>
+          <td>Image#<a href="image3.html#polaroid">polaroid</a>(<em>angle=-5.0</em>)</td>
         </tr>
 
         <tr>
@@ -1544,7 +1549,7 @@
         <tr>
           <td>-seed</td>
 
-          <td>Kernel.srand</td>
+          <td>No equivalent</td>
         </tr>
 
         <tr>
@@ -1599,7 +1604,10 @@
         <tr>
           <td>-shadow <em>opacity</em>x<em>sigma</em>+<em>x</em>+<em>y</em></td>
 
-          <td>Image#<a href="image3.html#shadow">shadow</a>(<em>x</em>=4, <em>y</em>=4, <em>sigma</em>=4.0, <em>opacity</em>=4.0)</td>
+          <td>
+            Image#<a href="image3.html#shadow">shadow</a>(<em>x</em>=4, <em>y</em>=4, <em>sigma</em>=4.0, <em>alpha</em>=1.0)<br />
+            Pass <em>opacity</em>/100.0 or '<em>opacity</em>%' as <em>alpha</em>.
+          </td>
         </tr>
 
         <tr>
@@ -1814,7 +1822,7 @@
         <tr>
           <td>-tint</td>
 
-          <td>No equivalent</td>
+          <td>Image#<a href="image3.html#tint">tint</a>(<em>color</em>, <em>red_pct</em>[, <em>green_pct</em>[, <em>blue_pct</em>]])</td>
         </tr>
 
         <tr>
@@ -1839,11 +1847,11 @@
           </td>
 
           <td>
-            Image#<a href="image3.html#transparent">transparent</a>(<em>color</em>, <em><a href="constants.html#Opacity">opacity</a></em
-            >=TransparentOpacity)<br />
+            Image#<a href="image3.html#transparent">transparent</a>(<em>color</em>, alpha:
+            <a href="constants.html#Miscellaneous_constants">TransparentAlpha</a>)<br />
 
-            Image#<a href="image3.html#paint_transparent">paint_transparent</a>(<em>color</em>, <em><a href="constants.html#Opacity">opacity</a></em
-            >, true)
+            Image#<a href="image3.html#paint_transparent">paint_transparent</a>(<em>color</em>, true, alpha:
+            <a href="constants.html#Miscellaneous_constants">TransparentAlpha</a>)
           </td>
         </tr>
 
@@ -1888,7 +1896,9 @@
         <tr>
           <td>-type <em>type</em></td>
 
-          <td>No equivalent</td>
+          <td>
+            Image#<a href="imageattrs.html#image_type">image_type=</a><em><a href="constants.html#ImageType">type</a></em>
+          </td>
         </tr>
 
         <tr>
@@ -1999,8 +2009,8 @@
           <td>-white-threshold <em>threshold</em></td>
 
           <td>
-            Image#<a href="image3.html#white_threshold">white_threshold</a>(<em>red_channel</em> [, <em>green_channel</em>[, <em>blue_channel</em>[,
-            <em>opacity_channel</em>]]])
+            Image#<a href="image3.html#white_threshold">white_threshold</a>(<em>red_channel</em> [, <em>green_channel</em>[, <em>blue_channel</em>[, alpha:
+            <em>alpha_channel</em>]]])
           </td>
         </tr>
 
