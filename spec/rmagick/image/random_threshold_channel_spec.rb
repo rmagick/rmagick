@@ -34,4 +34,11 @@ RSpec.describe Magick::Image, '#random_threshold_channel' do
       expect(result.export_pixels(0, 0, 16, 64, 'R').uniq).to contain_exactly(0, Magick::QuantumRange)
     end
   end
+
+  it 'reads a value of 8 or less without % as a threshold map, as ImageMagick 6 does' do
+    image = described_class.new(4, 4)
+
+    expect { image.random_threshold_channel('8') }.to raise_error(Magick::ImageMagickError, /ordered-dither/)
+    expect { image.random_threshold_channel('') }.to raise_error(Magick::ImageMagickError, /ordered-dither/)
+  end
 end
