@@ -108,7 +108,7 @@
         <p>
           A view is a rectangle in an image. Within the view pixels can be addressed by specifying their <code>[i][j]</code> coordinates. The
           <span class="arg">i</span>, <span class="arg">j</span> index values can identify a single pixel or multiple pixels. Pixels can be accessed or modified
-          individually or collectively. Pixel <em>channels</em> (that is, the red, green, blue, and opacity components) can be accessed or modified individually
+          individually or collectively. Pixel <em>channels</em> (that is, the red, green, blue, and alpha components) can be accessed or modified individually
           or collectively. The <a href="#view_sync">sync</a> method stores modified pixels back into the image.
         </p>
       </div>
@@ -192,14 +192,15 @@
 
           <dd>
             Identifies the set of <code>length</code> rows or columns starting with <code>start</code>. If <code>start</code> is negative, starts at the bottom
-            row or right column of the view.
+            row or right column of the view. If the set extends past the bottom row or right column, it ends there.
           </dd>
 
           <dt>an object that responds to <code>each</code></dt>
 
           <dd>
             The index may be any object that responds to <code>each</code> by returning a sequence of objects that can be converted to integers. An array with
-            integer values or a range of integers are two examples.
+            integer values or a range of integers are two examples. Each negative value that <code>each</code> returns counts from the bottom row or right column of the
+            view.
           </dd>
         </dl>
 
@@ -223,14 +224,14 @@
           [][].red<br />
           [][].green<br />
           [][].blue<br />
-          [][].opacity
+          [][].alpha
         </h4>
 
         <p>
           [<span class="arg">i</span>][<span class="arg">j</span>].red -&gt; <em>integer</em> or <em>array</em><br />
           [<span class="arg">i</span>][<span class="arg">j</span>].green -&gt; <em>integer</em> or <em>array</em><br />
           [<span class="arg">i</span>][<span class="arg">j</span>].blue -&gt; <em>integer</em> or <em>array</em><br />
-          [<span class="arg">i</span>][<span class="arg">j</span>].opacity -&gt; <em>integer</em> or <em>array</em>
+          [<span class="arg">i</span>][<span class="arg">j</span>].alpha -&gt; <em>integer</em> or <em>array</em>
         </p>
       </div>
 
@@ -238,7 +239,7 @@
         <h5>Description</h5>
 
         <p>
-          If the indexes identify a single pixel, these methods return the value of the red, green, blue, or opacity channel of that pixel. If the indexes
+          If the indexes identify a single pixel, these methods return the value of the red, green, blue, or alpha channel of that pixel. If the indexes
           identify more than one pixel, these methods return an array of values. See <code>[][]</code> for a description of possible index arguments.
         </p>
 
@@ -286,14 +287,14 @@
           [][].red=<br />
           [][].green=<br />
           [][].blue=<br />
-          [][].opacity=
+          [][].alpha=
         </h4>
 
         <p>
           [<span class="arg">i</span>][<span class="arg">j</span>].red = <em>integer</em><br />
           [<span class="arg">i</span>][<span class="arg">j</span>].green = <em>integer</em><br />
           [<span class="arg">i</span>][<span class="arg">j</span>].blue = <em>integer</em><br />
-          [<span class="arg">i</span>][<span class="arg">j</span>].opacity =
+          [<span class="arg">i</span>][<span class="arg">j</span>].alpha =
           <em>integer</em>
         </p>
       </div>
@@ -301,7 +302,12 @@
       <div class="desc">
         <h5>Description</h5>
 
-        <p>Assigns <em>integer</em> to the red, green, blue, or opacity channel of the pixel or pixels identified by the indexes.</p>
+        <p>Assigns <em>integer</em> to the red, green, blue, or alpha channel of the pixel or pixels identified by the indexes.</p>
+
+        <p>
+          If the image has no alpha channel, the alpha values do not make the image transparent after <a href="#view_sync">sync</a>. Call
+          <code>img.alpha(Magick::SetAlphaChannel)</code> before creating the view.
+        </p>
 
         <h5>Examples</h5>
         <pre class="language-ruby">

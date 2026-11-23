@@ -1125,7 +1125,7 @@ module Magick
         include Observable
 
         # Define a getter and a setter for each channel.
-        %i[red green blue opacity].each do |c|
+        %i[red green blue alpha].each do |c|
           module_eval <<-END_EVAL, __FILE__, __LINE__ + 1
             def #{c}
               return collect { |p| p.#{c} }
@@ -1146,8 +1146,9 @@ module Magick
 
         def initialize(view, width, height, rows)
           @view = view
-          @width = width
-          @height = height
+          # get_pixels truncates a fractional size, so @view has this many columns and rows.
+          @width = Integer(width)
+          @height = Integer(height)
           @rows = rows
         end
 
@@ -1156,7 +1157,7 @@ module Magick
 
           # Both View::Pixels and Magick::Pixel implement Observable
           if @unique
-            pixels = @view[@rows[0] * @width + @cols[0]]
+            pixels = @view[@row_indexes[0] * @width + @cols[0]]
             pixels.add_observer(self)
           else
             pixels = View::Pixels.new
@@ -1198,21 +1199,19 @@ module Magick
           @cols = args[0] # remove the outermost array
           @unique = false
 
-          # Convert @rows to an Enumerable object
+          # Convert @rows to an Enumerable object. Keep @rows as given,
+          # since the same Rows can be indexed more than once.
           case @rows.length
           when 0                      # Create a Range for all the rows
-            @rows = Range.new(0, @height, true)
+            @row_indexes = Range.new(0, @height, true)
           when 1                      # Range, Array, or a single integer
             # if the single element is already an Enumerable
             # object, get it.
             if @rows.first.respond_to? :each
-              @rows = @rows.first
+              @row_indexes = @rows.first
             else
-              @rows = Integer(@rows.first)
-              @rows += @height if @rows < 0
-              Kernel.raise IndexError, "index [#{@rows}] out of range" if @rows < 0 || @rows > @height - 1
               # Convert back to an array
-              @rows = Array.new(1, @rows)
+              @row_indexes = Array.new(1, to_index(@rows.first, @height))
               @unique = true
             end
           when 2
@@ -1226,11 +1225,12 @@ module Magick
             if start > @height || start < 0 || length < 0
               Kernel.raise IndexError, "index [#{@rows.first}] out of range"
             elsif start + length > @height
-              length = @height - length
-              length = [length, 0].max
+              length = @height - start
             end
             # Create a Range for the specified set of rows
-            @rows = Range.new(start, start + length, true)
+            @row_indexes = Range.new(start, start + length, true)
+          else
+            @row_indexes = @rows
           end
 
           case @cols.length
@@ -1244,11 +1244,8 @@ module Magick
               @cols = @cols.first
               @unique = false
             else
-              @cols = Integer(@cols.first)
-              @cols += @width if @cols < 0
-              Kernel.raise IndexError, "index [#{@cols}] out of range" if @cols < 0 || @cols > @width - 1
               # Convert back to array
-              @cols = Array.new(1, @cols)
+              @cols = Array.new(1, to_index(@cols.first, @width))
               @unique &&= true
             end
           when 2
@@ -1260,28 +1257,39 @@ module Magick
             start += @width if start < 0
 
             if start > @width || start < 0 || length < 0
-            # nop
+              Kernel.raise IndexError, "index [#{@cols.first}] out of range"
             elsif start + length > @width
-              length = @width - length
-              length = [length, 0].max
+              length = @width - start
             end
             # Create a Range for the specified set of columns
             @cols = Range.new(start, start + length, true)
             @unique = false
+          else
+            @unique = false
           end
+        end
+
+        def to_index(value, size)
+          index = Integer(value)
+          index += size if index < 0
+          Kernel.raise IndexError, "index [#{value}] out of range" if index < 0 || index >= size
+          index
         end
 
         # iterator called from subscript methods
         def each
-          maxrows = @height - 1
-          maxcols = @width - 1
+          # Check every index before touching any pixel. Use each, not map: an index
+          # only has to respond to each, it may be lazy, and an endless one has to
+          # stop at the first index outside the view.
+          rows = []
+          @row_indexes.each { |j| rows << to_index(j, @height) } # rubocop:disable Style/MapIntoArray
+          return if rows.empty?
 
-          @rows.each do |j|
-            Kernel.raise IndexError, "index [#{j}] out of range" if j > maxrows
-            @cols.each do |i|
-              Kernel.raise IndexError, "index [#{i}] out of range" if i > maxcols
-              yield j * @width + i
-            end
+          cols = []
+          @cols.each { |i| cols << to_index(i, @width) } # rubocop:disable Style/MapIntoArray
+
+          rows.each do |j|
+            cols.each { |i| yield j * @width + i }
           end
           nil # useless return value
         end

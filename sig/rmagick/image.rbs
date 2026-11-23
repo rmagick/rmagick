@@ -52,40 +52,48 @@ module Magick
       attr_reader height: real
       attr_accessor dirty: bool
       def initialize: (Image img, real x, real y, real width, real height) -> void
-      def []: (Integer index) -> Rows
+      def []: () -> Rows
+            | (Integer index) -> Rows
             | (Range[Numeric] range) -> Rows
+            | (_Each[Integer] indexes) -> Rows
             | (Integer start, Integer length) -> Rows
+            | (Integer index1, Integer index2, Integer index3, *Integer indexes) -> Rows
       def sync: (?bool force) -> bool
       def update: (Rows rows) -> nil
 
       class Pixels < Array[untyped]
         # include Observable
         def red: () -> Array[Integer]
-        attr_writer red: Integer
+        attr_writer red: real
         def green: () -> Array[Integer]
-        attr_writer green: Integer
+        attr_writer green: real
         def blue: () -> Array[Integer]
-        attr_writer blue: Integer
-        def opacity: () -> Array[Integer]
-        attr_writer opacity: Integer
+        attr_writer blue: real
+        def alpha: () -> Array[Integer]
+        attr_writer alpha: real
       end
 
       class Rows
         # include Observable
-        def initialize: (View view, real width, real height, Rows rows) -> void
+        def initialize: (Array[Pixel] view, real width, real height, Array[untyped] rows) -> void
         def []: () -> View::Pixels
               | (Integer index) -> Pixel
               | (Range[Numeric] range) -> View::Pixels
+              | (_Each[Integer] indexes) -> View::Pixels
               | (Integer start, Integer length) -> View::Pixels
+              | (Integer index1, Integer index2, Integer index3, *Integer indexes) -> View::Pixels
         def []=: (magick_color value) -> void
                | (Integer index, magick_color value) -> void
                | (Range[Numeric] range, magick_color value) -> void
+               | (_Each[Integer] indexes, magick_color value) -> void
                | (Integer start, Integer length, magick_color value) -> void
+               | (Integer index1, Integer index2, Integer index3, magick_color value) -> void
         def update: (Pixels | Pixel pixel) -> nil
 
         private
 
         def cols: (*untyped args) -> void
+        def to_index: (untyped value, Integer size) -> Integer
         def each: () -> void
       end
     end
