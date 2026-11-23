@@ -979,8 +979,8 @@ link_images(VALUE arg)
  *   uses, for the caller to register
  * @param mode whether the caller reads, changes or writes the images. The
  *   copies of frozen images to write get pixel caches of their own.
- * @param held another Image object that the caller uses, an Array of them, or
- *   nil
+ * @param held another object that the caller uses, such as an Image or the
+ *   Montage options, an Array of them, or nil
  * @return a pointer to the head of the scene sequence list
  * @see rm_imagelist_from_images
  */

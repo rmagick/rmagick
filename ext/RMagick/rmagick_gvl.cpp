@@ -922,7 +922,8 @@ rm_gvl_call::update_each(VALUE ary)
  * its data after the call. obj may be an Array, whose objects the call uses
  * like read_each() and update_each(), or nil, which registers nothing.
  *
- * @param obj an Image, an Array of Images, or nil
+ * @param obj an object such as an Image or the Montage options, an Array of
+ *   them, or nil
  * @param changes whether the call changes the objects
  * @return self
  */

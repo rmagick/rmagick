@@ -1866,8 +1866,8 @@ rm_exif_by_number(Image *image)
  * @param image the image to clone
  * @param owner the Image object that holds image, an Array of the Image objects
  *   whose images are linked with it, or nil
- * @param held another Image object whose image the caller uses after the clone,
- *   an Array of them, or nil
+ * @param held another object that the caller uses after the clone, such as an
+ *   Image or the Montage options, an Array of them, or nil
  * @param changes whether the caller changes the images of owner after the clone
  * @return the cloned image
  */
