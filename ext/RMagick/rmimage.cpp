@@ -10265,28 +10265,22 @@ set_image_mask(VALUE self, VALUE mask)
 
     if (mask != Qnil)
     {
-        // ImageMagick 6 builds the mask from the inverted alpha of a mask that
-        // has one. The masks of the mask image would keep some of its pixels out
-        // of the resize and of the steps below, so drop them first.
-        bool use_alpha = (clip_mask->alpha_trait & (UpdatePixelTrait | BlendPixelTrait)) != 0;
-        if (use_alpha)
+        // The masks of the mask image would keep some of its pixels out of the
+        // resize and of the steps below. The ImageMagick 6 path drops them too.
+        static const ChannelType channels[] = { ReadMaskChannel, WriteMaskChannel, CompositeMaskChannel };
+        static const PixelMask types[] = { ReadPixelMask, WritePixelMask, CompositePixelMask };
+        for (int n = 0; n < 3; n++)
         {
-            static const ChannelType channels[] = { ReadMaskChannel, WriteMaskChannel, CompositeMaskChannel };
-            static const PixelMask types[] = { ReadPixelMask, WritePixelMask, CompositePixelMask };
-            for (int n = 0; n < 3; n++)
+            if (clip_mask->channels & channels[n])
             {
-                if (clip_mask->channels & channels[n])
-                {
-                    DECLARE_GVL_CALL(unmask_call, SetImageMask, clip_mask, types[n], NULL, exception);
-                    unmask_call.update(self).read(mask).destroy(clip_mask).release(exception).run<void>();
-                    rm_check_exception(exception, clip_mask, DestroyOnError);
-                }
+                DECLARE_GVL_CALL(unmask_call, SetImageMask, clip_mask, types[n], NULL, exception);
+                unmask_call.update(self).read(mask).destroy(clip_mask).release(exception).run<void>();
+                rm_check_exception(exception, clip_mask, DestroyOnError);
             }
         }
 
         // Resize if necessary
-        bool resized = clip_mask->columns != image->columns || clip_mask->rows != image->rows;
-        if (resized)
+        if (clip_mask->columns != image->columns || clip_mask->rows != image->rows)
         {
             DECLARE_GVL_CALL(call, ResizeImage, clip_mask, image->columns, image->rows, image->filter, exception);
             resized_image = call.update(self).read(mask).destroy(clip_mask).release(exception).run<Image *>();
@@ -10300,9 +10294,10 @@ set_image_mask(VALUE self, VALUE mask)
             clip_mask = resized_image;
         }
 
-        // SetImageMask reads the intensity, and the average intensity of the
-        // separated gray is its value in any colorspace.
-        if (use_alpha)
+        // ImageMagick 6 builds the mask from the inverted alpha of a mask that
+        // has one. SetImageMask reads the intensity, and the average intensity
+        // of the separated gray is its value in any colorspace.
+        if (clip_mask->alpha_trait & (UpdatePixelTrait | BlendPixelTrait))
         {
             Image *alpha_image;
 
@@ -10320,18 +10315,14 @@ set_image_mask(VALUE self, VALUE mask)
             negate_call.update(self).read(mask).destroy(clip_mask).release(exception).run<void>();
             rm_check_exception(exception, clip_mask, DestroyOnError);
             clip_mask->intensity = AveragePixelIntensityMethod;
-        }
-
 #if defined(MAGICKCORE_HDRI_SUPPORT)
-        // With HDRI, the resize can leave values outside the range, which would
-        // blend the image past its own colors.
-        if (resized)
-        {
+            // With HDRI, an alpha outside the range, as a resize can leave,
+            // would blend the image past its own colors.
             DECLARE_GVL_CALL(clamp_call, ClampImage, clip_mask, exception);
             clamp_call.update(self).read(mask).destroy(clip_mask).release(exception).run<void>();
             rm_check_exception(exception, clip_mask, DestroyOnError);
-        }
 #endif
+        }
 
         DECLARE_GVL_CALL(call, SetImageMask, image, WritePixelMask, clip_mask, exception);
         call.update(self).read(mask).destroy(clip_mask).release(exception).run<void>();
