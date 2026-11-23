@@ -10265,6 +10265,21 @@ set_image_mask(VALUE self, VALUE mask)
 
     if (mask != Qnil)
     {
+        // The masks of the mask image would keep some of its pixels out of the
+        // resize and of the steps below. The ImageMagick 6 path drops them before
+        // it writes the gray.
+        static const ChannelType channels[] = { ReadMaskChannel, WriteMaskChannel, CompositeMaskChannel };
+        static const PixelMask types[] = { ReadPixelMask, WritePixelMask, CompositePixelMask };
+        for (int n = 0; n < 3; n++)
+        {
+            if (clip_mask->channels & channels[n])
+            {
+                DECLARE_GVL_CALL(unmask_call, SetImageMask, clip_mask, types[n], NULL, exception);
+                unmask_call.update(self).read(mask).destroy(clip_mask).release(exception).run<void>();
+                rm_check_exception(exception, clip_mask, DestroyOnError);
+            }
+        }
+
         // Resize if necessary
         if (clip_mask->columns != image->columns || clip_mask->rows != image->rows)
         {
@@ -10278,6 +10293,36 @@ set_image_mask(VALUE self, VALUE mask)
                 rm_ensure_result(resized_image);
             }
             clip_mask = resized_image;
+        }
+
+        // ImageMagick 6 builds the mask from the inverted alpha of a mask that
+        // has one. SetImageMask reads the intensity, and the average intensity
+        // of the separated gray is its value in any colorspace.
+        if (clip_mask->alpha_trait & (UpdatePixelTrait | BlendPixelTrait))
+        {
+            Image *alpha_image;
+
+            DECLARE_GVL_CALL(separate_call, SeparateImage, clip_mask, AlphaChannel, exception);
+            alpha_image = separate_call.update(self).read(mask).destroy(clip_mask).release(exception).run<Image *>();
+            DestroyImage(clip_mask);
+            rm_check_exception(exception, alpha_image, DestroyOnError);
+            if (!alpha_image)
+            {
+                DestroyExceptionInfo(exception);
+                rm_ensure_result(alpha_image);
+            }
+            clip_mask = alpha_image;
+            DECLARE_GVL_CALL(negate_call, NegateImage, clip_mask, MagickFalse, exception);
+            negate_call.update(self).read(mask).destroy(clip_mask).release(exception).run<void>();
+            rm_check_exception(exception, clip_mask, DestroyOnError);
+            clip_mask->intensity = AveragePixelIntensityMethod;
+#if defined(MAGICKCORE_HDRI_SUPPORT)
+            // With HDRI, an alpha outside the range, as a resize can leave,
+            // would blend the image past its own colors.
+            DECLARE_GVL_CALL(clamp_call, ClampImage, clip_mask, exception);
+            clamp_call.update(self).read(mask).destroy(clip_mask).release(exception).run<void>();
+            rm_check_exception(exception, clip_mask, DestroyOnError);
+#endif
         }
 
         DECLARE_GVL_CALL(call, SetImageMask, image, WritePixelMask, clip_mask, exception);
@@ -10328,6 +10373,19 @@ set_image_mask(VALUE self, VALUE mask)
             DestroyExceptionInfo(exception);
             rm_ensure_result(resized_image);
             clip_mask = resized_image;
+        }
+
+        // The clip mask and the mask of the mask image would keep the gray
+        // below out of some of its pixels.
+        if (clip_mask->clip_mask)
+        {
+            DECLARE_GVL_CALL(unclip_call, SetImageClipMask, clip_mask, NULL);
+            unclip_call.update(self).read(mask).destroy(clip_mask).run<void>();
+        }
+        if (clip_mask->mask)
+        {
+            DECLARE_GVL_CALL(unmask_call, SetImageMask, clip_mask, NULL);
+            unmask_call.update(self).read(mask).destroy(clip_mask).run<void>();
         }
 
         // The following section is copied from mogrify.c (6.2.8-8)

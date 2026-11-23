@@ -67,4 +67,143 @@ RSpec.describe Magick::Image, '#mask' do
     expect(calls).to be_positive
     expect(Magick.resource_usage(:memory)).to be <= baseline
   end
+
+  it 'uses the alpha of a mask that has one' do
+    mask = described_class.new(4, 1) { |options| options.background_color = 'none' }
+    mask.alpha(Magick::ActivateAlphaChannel)
+    %w[white rgba(255,255,255,0) black rgba(0,0,0,0)].each_with_index { |color, x| mask.pixel_color(x, 0, color) }
+    image = described_class.new(4, 1) { |options| options.background_color = 'red' }
+
+    image.mask(mask)
+    draw = Magick::Draw.new
+    draw.fill('blue')
+    draw.rectangle(0, 0, 3, 0)
+    draw.draw(image)
+
+    changed = (0..3).map { |x| image.pixel_color(x, 0).blue > Magick::QuantumRange / 2 }
+    expect(changed).to eq([true, false, true, false])
+  end
+
+  it 'uses the intensity of a mask whose alpha is deactivated' do
+    mask = described_class.new(2, 1)
+    mask.pixel_color(1, 0, 'black')
+    mask.alpha(Magick::ActivateAlphaChannel)
+    mask.alpha(Magick::DeactivateAlphaChannel)
+    image = described_class.new(2, 1) { |options| options.background_color = 'red' }
+
+    image.mask(mask)
+    draw = Magick::Draw.new
+    draw.fill('blue')
+    draw.rectangle(0, 0, 1, 0)
+    draw.draw(image)
+
+    changed = (0..1).map { |x| image.pixel_color(x, 0).blue > Magick::QuantumRange / 2 }
+    expect(changed).to eq([false, true])
+  end
+
+  it 'reads the alpha the same way whatever the colorspace of the mask' do
+    mask = described_class.new(1, 1) { |options| options.background_color = 'none' }
+    mask.alpha(Magick::ActivateAlphaChannel)
+    mask.pixel_color(0, 0, 'rgba(255,255,255,0.75)')
+    mask.colorspace = Magick::RGBColorspace
+    image = described_class.new(1, 1)
+
+    image.mask(mask)
+
+    expect(image.mask.pixel_color(0, 0).red).to be_within(1).of(Magick::QuantumRange * 0.25)
+  end
+
+  it 'uses an alpha copied from the intensity' do
+    mask = described_class.new(2, 1)
+    mask.pixel_color(1, 0, 'black')
+    mask.alpha(Magick::CopyAlphaChannel)
+    image = described_class.new(2, 1) { |options| options.background_color = 'red' }
+
+    image.mask(mask)
+    draw = Magick::Draw.new
+    draw.fill('blue')
+    draw.rectangle(0, 0, 1, 0)
+    draw.draw(image)
+
+    changed = (0..1).map { |x| image.pixel_color(x, 0).blue > Magick::QuantumRange / 2 }
+    expect(changed).to eq([true, false])
+  end
+
+  it 'reads the alpha of a mask that has a mask of its own' do
+    mask = described_class.new(4, 1) { |options| options.background_color = 'none' }
+    mask.alpha(Magick::ActivateAlphaChannel)
+    %w[white rgba(255,255,255,0) black rgba(0,0,0,0)].each_with_index { |color, x| mask.pixel_color(x, 0, color) }
+    mask.mask(described_class.new(4, 1) { |options| options.background_color = 'white' })
+    image = described_class.new(4, 1) { |options| options.background_color = 'red' }
+
+    image.mask(mask)
+    draw = Magick::Draw.new
+    draw.fill('blue')
+    draw.rectangle(0, 0, 3, 0)
+    draw.draw(image)
+
+    changed = (0..3).map { |x| image.pixel_color(x, 0).blue > Magick::QuantumRange / 2 }
+    expect(changed).to eq([true, false, true, false])
+  end
+
+  # The ImageMagick 6 path loses a resized mask: it resizes with a blur of 0.
+  it 'resizes a mask with alpha before it reads the alpha', if: Gem::Version.new(Magick::IMAGEMAGICK_VERSION) >= Gem::Version.new('7.0.0') do
+    mask = described_class.new(7, 1) { |options| options.background_color = 'none' }
+    mask.alpha(Magick::ActivateAlphaChannel)
+    mask.pixel_color(2, 0, 'white')
+    image = described_class.new(4, 1)
+
+    image.mask(mask)
+
+    resized = mask.resize(4, 1)
+    expected = (0..3).map { |x| (Magick::QuantumRange - resized.pixel_color(x, 0).alpha).clamp(0, Magick::QuantumRange) }
+    expect((0..3).map { |x| image.mask.pixel_color(x, 0).red }).to eq(expected)
+  end
+
+  it 'keeps the values of an enlarged mask with alpha within the range', if: Gem::Version.new(Magick::IMAGEMAGICK_VERSION) >= Gem::Version.new('7.0.0') do
+    mask = described_class.new(2, 1) { |options| options.background_color = 'none' }
+    mask.alpha(Magick::ActivateAlphaChannel)
+    mask.pixel_color(0, 0, 'black')
+    image = described_class.new(4, 1)
+
+    image.mask(mask)
+    values = (0..3).map { |x| image.mask.pixel_color(x, 0).red }
+    image.mask(mask.resize(4, 1))
+    values += (0..3).map { |x| image.mask.pixel_color(x, 0).red }
+
+    expect(values).to all(be_between(0, Magick::QuantumRange))
+  end
+
+  it 'resizes a mask that has a mask of its own as one without it', if: Gem::Version.new(Magick::IMAGEMAGICK_VERSION) >= Gem::Version.new('7.0.0') do
+    mask = described_class.new(2, 1)
+    mask.pixel_color(0, 0, 'black')
+    plain = mask.copy
+    mask.mask(described_class.new(2, 1) { |options| options.background_color = 'black' })
+    image = described_class.new(6, 1)
+
+    image.mask(mask)
+    nested_values = (0..5).map { |x| image.mask.pixel_color(x, 0).red }
+    image.mask(plain)
+    plain_values = (0..5).map { |x| image.mask.pixel_color(x, 0).red }
+
+    expect(nested_values).to eq(plain_values)
+  end
+
+  it 'frees the images it makes from a mask with alpha when one of its calls is interrupted or fails' do
+    GC.start
+    baseline = Magick.resource_usage(:memory)
+    image = described_class.new(16, 16)
+    mask = described_class.new(8, 8) { |options| options.background_color = 'none' }
+    mask.alpha(Magick::ActivateAlphaChannel)
+    mask.mask(described_class.new(8, 8) { |options| options.background_color = 'black' })
+    interrupted = interrupt_each_call(Class.new(StandardError)) { image.mask(mask) }
+    failed = fail_each_call { image.mask(mask) }
+    image.destroy!
+    mask.destroy!
+    3.times { GC.start }
+
+    expect(interrupted).to be_positive
+    expect(failed).to be_positive
+    expect(Magick.resource_usage(:memory)).to be <= baseline
+  end
 end
