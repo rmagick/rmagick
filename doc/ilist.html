@@ -69,6 +69,8 @@
 
           <li><a href="#coalesce">coalesce</a></li>
 
+          <li><a href="#combine">combine</a></li>
+
           <li><a href="#composite_layers">composite_layers</a></li>
 
           <li><a href="#copy">copy</a></li>
@@ -188,10 +190,6 @@ i = Magick::ImageList.new("Button_A.gif", "Cheetah.jpg")
 
       <p>An integer value representing the number of ticks that must elapse between each image in an animation.</p>
 
-      <h4>Returns</h4>
-
-      <p>self</p>
-
       <h4>Example</h4>
 
       <pre class="language-ruby">ilist.delay = 20 # delay 1/5 of a second between images.</pre>
@@ -220,10 +218,6 @@ i = Magick::ImageList.new("Button_A.gif", "Cheetah.jpg")
       <h4>Arguments</h4>
 
       <p>The number of iterations.</p>
-
-      <h4>Returns</h4>
-
-      <p>self</p>
 
       <h4>Example</h4>
 
@@ -302,12 +296,17 @@ ilist.scene #=&gt; 10
       <h4>Description</h4>
 
       <p>
-        <code>ImageList</code> delegates many methods to <code>Array</code>, so you can manipulate the images in an imagelist using almost all of the methods
-        defined in <code>Array</code>. Typically these methods also update the scene number. The scene number will never exceed the number of images in the
-        list, and if the imagelist contains no images the scene number will be <code>nil</code>.
+        <code>ImageList</code> delegates many methods to <code>Array</code>, so you can manipulate the images in an imagelist using many of the methods defined
+        in <code>Array</code>. Typically these methods also update the scene number. The scene number will never exceed the number of images in the list, and
+        if the imagelist contains no images the scene number will be <code>nil</code>.
       </p>
 
-      <p>Array methods that would normally return an array return an ImageList.</p>
+      <p>
+        Some of these methods, such as <code>select</code>, <code>reject</code> and <code>reverse</code>, return an ImageList where <code>Array</code>
+        returns an array. Others return an array, such as <code>first(n)</code>, <code>sort</code>, <code>take</code> and <code>drop</code>. An
+        <code>Array</code> method that ImageList does not define, such as <code>rotate</code> or <code>sample</code>, is sent to the current image like
+        the other <a href="image1.html">Image</a> methods.
+      </p>
 
       <p>
         Most array methods keep the current image current. If the method moves the current image to a new position, the method updates the scene number to the
@@ -333,6 +332,12 @@ ilist.scene #=&gt; 10
             <td>&lt;&lt;</td>
 
             <td>set to index the last image in the list</td>
+          </tr>
+
+          <tr>
+            <td>[]=</td>
+
+            <td>set to index the last image assigned</td>
           </tr>
 
           <tr>
@@ -379,7 +384,7 @@ ilist.scene #=&gt; 10
       <pre class="language-ruby">
 example = Magick::ImageList.new
 model = Magick::ImageList.new "model.miff"
-example &lt;&lt; model.add_noise Magick::LaplacisanNoise
+example &lt;&lt; model.add_noise(Magick::LaplacianNoise)
 </pre>
 
       <h4>See also</h4>
@@ -614,6 +619,56 @@ ilist.animate { |options| options.server_name = "other:0.0" }
       <h4>Magick API</h4>
 
       <p>CoalesceImages</p>
+    </div>
+
+    <div class="sig">
+      <h3 id="combine">combine</h3>
+
+      <p>
+        <span class="arg">ilist.</span>combine(<span class="arg">colorspace</span>=<code>SRGBColorspace</code>) -&gt;
+        <em>image</em>
+      </p>
+    </div>
+
+    <div class="desc">
+      <h4>Description</h4>
+
+      <p>
+        Combines the grayscale value of the pixels in each image to form a new image. In SRGBColorspace, one image is used for the red channel, three images
+        for the red, green and blue channels, and four images for the red, green, blue and alpha channels. In CMYKColorspace, four images are used for the
+        cyan, magenta, yellow and black channels. With two images, or with five images in CMYKColorspace, the channels that are used differ between
+        ImageMagick 6 and 7. The channels that no image is used for are copied from the first image.
+      </p>
+
+      <h4>Arguments</h4>
+
+      <p>
+        A <a href="constants.html#ColorspaceType">ColorspaceType</a> value. Raises <code>ArgumentError</code> if the imagelist is empty, has more than 5
+        images, or has 5 images and <span class="arg">colorspace</span> is not CMYKColorspace.
+      </p>
+
+      <h4>Returns</h4>
+
+      <p>A new image</p>
+
+      <h4>Example</h4>
+
+      <p>Swap the red and blue channels of an image.</p>
+
+      <pre class="language-ruby">
+img = Magick::Image.read("Flower_Hat.jpg").first
+ilist = Magick::ImageList.new
+ilist &lt;&lt; img.channel(Magick::BlueChannel) &lt;&lt; img.channel(Magick::GreenChannel) &lt;&lt; img.channel(Magick::RedChannel)
+swapped = ilist.combine
+</pre>
+
+      <h4>See also</h4>
+
+      <p><a href="image1.html#channel">Image#channel</a></p>
+
+      <h4>Magick API</h4>
+
+      <p>CombineImages</p>
     </div>
 
     <div class="sig">
@@ -886,7 +941,7 @@ ilist.animate { |options| options.server_name = "other:0.0" }
       <h4>Returns</h4>
 
       <p>
-        An image created from the blob argument(s). The
+        self. The
         <code>scene</code> attribute is set to the last image in the imagelist.
       </p>
 
@@ -928,15 +983,15 @@ ilist.display
       <h4>Returns</h4>
 
       <p>
-        The returned string is a concatenation of the strings returned by
-        <a href="image2.html#inspect">Image#inspect</a> for all the images in the imagelist.
+        The strings returned by <a href="image2.html#inspect">Image#inspect</a> for all the images in the imagelist, joined with a comma and a newline and
+        enclosed in brackets, followed by a line with the scene number.
       </p>
 
       <h4>Example</h4>
 
       <pre class="language-ruby">
 i = Magick::ImageList.new("images/Button_A.gif", "images/Button_B.gif")
-#=&gt; [images/Button_A.gif GIF 127x120+0+0 PseudoClass 256c 8-bit 18136b
+#=&gt; [images/Button_A.gif GIF 127x120+0+0 PseudoClass 256c 8-bit 18136b,
 #   images/Button_B.gif GIF 127x120+0+0 PseudoClass 256c 8-bit 5157b]
 #   scene=1
 </pre>
@@ -967,8 +1022,7 @@ i = Magick::ImageList.new("images/Button_A.gif", "images/Button_B.gif")
       <p>All of <code>montage</code>'s configuration options are specified by assigning values to attributes in a block associated with the method call.</p>
 
       <p>
-        As you can see in the examples below, when you assign a value to a montage attribute you must specify <code>self</code> as the receiver so that Ruby can
-        distinguish the method call from an assignment to a local variable.
+        The block receives a Montage object as its argument. Assign the attributes through that argument, as in the examples below.
       </p>
 
       <p>You may assign a <a href="struct.html#Pixel">Pixel</a> object to any attribute that accepts a color name.</p>
@@ -1088,7 +1142,10 @@ i = Magick::ImageList.new("images/Button_A.gif", "images/Button_B.gif")
           or
           <pre class="language-ruby">options.tile = Magick::Geometry.new(4,10)</pre>
 
-          <p>The default is "6x4". If there are too many tiles to fit on one composite image, <code>montage</code> creates multiple composite images.</p>
+          <p>
+            By default, <code>montage</code> arranges the tiles in a near-square grid that holds all of them in one image. If <code>tile</code> is set and
+            the tiles do not fit, <code>montage</code> creates multiple composite images.
+          </p>
         </dd>
 
         <dt>title=</dt>
@@ -1132,8 +1189,8 @@ i = Magick::ImageList.new("images/Button_A.gif", "images/Button_B.gif")
 
       <p>
         Transforms an image into another image by inserting
-        <code>n</code> in-between images. Requires at least two images. If more images are present, the 2nd image is transformed into the 3rd, the 3rd to the
-        4th, etc.
+        <code>n</code> in-between images. With only one image, returns <code>n</code> copies of it. If more images are present, the 2nd image is transformed
+        into the 3rd, the 3rd to the 4th, etc.
       </p>
 
       <h4>Arguments</h4>
@@ -1269,7 +1326,7 @@ ilist.new_image(100, 100) { |options| options.background_color = "red" }
 
       <h4>Arguments</h4>
 
-      <p>One of the following ImageLayerMethod enum values:</p>
+      <p>One of the following LayerMethod enum values:</p>
 
       <dl>
         <dt>CoalesceLayer</dt>
@@ -1323,7 +1380,7 @@ ilist.new_image(100, 100) { |options| options.background_color = "red" }
           <a href="#flatten_images">flatten_images</a>, above.
         </dd>
 
-        <dt>MergeLayers</dt>
+        <dt>MergeLayer</dt>
 
         <dd class="imquote">
           As [FlattenLayer] but merging all the given image layers into a new layer image just large enough to hold all the image without clipping or extra
@@ -1402,10 +1459,7 @@ ilist.new_image(100, 100) { |options| options.background_color = "red" }
       </dl>
 
       <p>Some of these values are not supported by older versions of ImageMagick. To see what values are available, enter the following code in irb:</p>
-      <pre class="language-ruby">Magick::ImageLayerMethod.values {|v| puts v}</pre>
-
-      <p>In releases of ImageMagick before 6.3.6, this type was called MagickLayerMethod, so you may need to use this instead:</p>
-      <pre class="language-ruby">Magick::MagickLayerMethod.values {|v| puts v}</pre>
+      <pre class="language-ruby">Magick::LayerMethod.values {|v| puts v}</pre>
 
       <h4>Returns</h4>
 
@@ -1455,7 +1509,7 @@ ilist.new_image(100, 100) { |options| options.background_color = "red" }
       <pre class="language-ruby">
 ilist = Magick::ImageList.new
 ilist.ping "Button_A.gif"
-puts "The image has #{i.columns} columns and #{i.rows} rows."
+puts "The image has #{ilist.columns} columns and #{ilist.rows} rows."
 #=&gt; The image has 127 columns and 120 rows.
 </pre>
 
@@ -1471,7 +1525,7 @@ puts "The image has #{i.columns} columns and #{i.rows} rows."
       <h3 id="quantize">quantize</h3>
 
       <p>
-        <span class="arg">ilist.</span>quantize(nc=256, colorspace=<code>RGBColorspace</code>, dither=<code>RiemersmaDitherMethod</code>, tree_depth=0,
+        <span class="arg">ilist.</span>quantize(nc=256, colorspace=<code>UndefinedColorspace</code>, dither=<code>RiemersmaDitherMethod</code>, tree_depth=0,
         measure_error=<code>false</code>) -&gt; <em>imagelist</em>
       </p>
     </div>
@@ -1496,10 +1550,12 @@ puts "The image has #{i.columns} columns and #{i.rows} rows."
 
         <dt>colorspace</dt>
 
-        <dd class="imquote">
-          The <a href="constants.html#ColorspaceType">colorspace</a> to quantize in. Color reduction, by default, takes place in the RGB color space. Empirical
-          evidence suggests that distances in color spaces such as YUV or YIQ correspond to perceptual color differences more closely than do distances in RGB
-          space. The Transparent color space behaves uniquely in that it preserves the matte channel of the image if it exists.
+        <dd>
+          The <a href="constants.html#ColorspaceType">colorspace</a> to quantize in. If omitted, an sRGB image is quantized in its own colorspace.
+          <span class="imquote"
+            >Empirical evidence suggests that distances in color spaces such as YUV or YIQ correspond to perceptual color differences more closely than do
+            distances in RGB space. The Transparent color space behaves uniquely in that it preserves the matte channel of the image if it exists.</span
+          >
         </dd>
 
         <dt>dither</dt>
@@ -1525,8 +1581,7 @@ puts "The image has #{i.columns} columns and #{i.rows} rows."
           <a href="imageattrs.html#mean_error_per_pixel">mean_error_per_pixel</a>,
           <a href="imageattrs.html#normalized_maximum_error">normalized_maximum_error</a>, and
           <a href="imageattrs.html#normalized_mean_error">normalized_mean_error</a>
-          attributes. Stores the number of colors used for the image in the
-          <a href="imageattrs.html#total_colors">total_colors</a> attribute.
+          attributes.
         </dd>
       </dl>
 
@@ -1767,9 +1822,9 @@ s = i.to_blob #=&gt; a string representing the image.
       <p>Regardless of the original format, <code>write</code> converts the images to the format specified by the filename.</p>
 
       <p>
-        If the imagelist contains more than one image and the output format does not support multi-frame images, each image is written to a file that has the
-        filename you specify followed by a period (.) and the scene number. You can change this behavior by embedding a %d, %0Nd, %o, %0No, %x, or %0Nx printf
-        format specification in the file name.
+        If the imagelist contains more than one image and the output format does not support multi-frame images, each image is written to a separate file,
+        and ImageMagick adds -0, -1 and so on before the suffix, as in <code>test-0.png</code>. You can change this behavior by embedding a %d, %0Nd, %o,
+        %0No, %x, or %0Nx printf format specification in the file name.
       </p>
 
       <h4>Arguments</h4>
@@ -1788,7 +1843,7 @@ s = i.to_blob #=&gt; a string representing the image.
 
       <h4>Returns</h4>
 
-      <p>self, or <code>nil</code> if the format cannot be determined.</p>
+      <p>self</p>
 
       <h4>Example</h4>
 
@@ -1798,9 +1853,9 @@ s = i.to_blob #=&gt; a string representing the image.
 i = Magick::ImageList.new "animated.gif"
 p i.length #=&gt; 3 # contains 3 images
 i.write "test.png"
-#=&gt; test.png.0
-#   test.png.1
-#   test.png.2
+#=&gt; test-0.png
+#   test-1.png
+#   test-2.png
 
 # ImageMagick's MIFF format does support multi-frame
 # files, so all 3 images are written to one file.

@@ -173,7 +173,7 @@ ImageList_animate(int argc, VALUE *argv, VALUE self)
 /**
  * Append all the images
  *
- * @param stack_arg [Magick::ImageList] the stack of images
+ * @param stack_arg [Boolean] true to stack the images top-to-bottom, false to place them left-to-right
  * @return [Magick::Image] a frame object for the result
  */
 VALUE
@@ -527,7 +527,7 @@ ImageList_display(VALUE self)
 /**
  * Merge all the images into a single image.
  *
- * @return [Magick::ImageList] the new image
+ * @return [Magick::Image] the new image
  */
 VALUE
 ImageList_flatten_images(VALUE self)
@@ -557,8 +557,8 @@ ImageList_flatten_images(VALUE self)
  * @overload montage
  *
  * @overload montage
- *   Creates {Magick::ImageList::Montage} object, yields to block
- *   if present in {Magick::ImageList::Montage} object's scope.
+ *   Creates {Magick::ImageList::Montage} object, yields it to block
+ *   if present.
  *   @yield [opt]
  *   @yieldparam opt [Magick::ImageList::Montage]
  *
@@ -614,8 +614,9 @@ ImageList_montage(VALUE self)
 
 
 /**
- * Requires a minimum of two images. The first image is transformed into the
- * second by a number of intervening images as specified by "nimages".
+ * The first image is transformed into the second by a number of intervening
+ * images as specified by "nimages". With only one image, returns "nimages"
+ * copies of it.
  *
  * @note Sets +@scenes+ to 0
  * @param nimages [Numeric] the number of images
@@ -1193,9 +1194,10 @@ sync_linked_image_options(Image *images, Image *image, Info *info, VALUE image_a
  * Analyzes the colors within a set of reference images and chooses a fixed number of colors to represent the set.
  * The goal of the algorithm is to minimize the difference between the input and output images while minimizing the processing time.
  *
- * @overload quantize(number_colors = 256, colorspace = Magick::RGBColorspace, dither = true, tree_depth = 0, measure_error = false)
+ * @overload quantize(number_colors = 256, colorspace = Magick::UndefinedColorspace, dither = Magick::RiemersmaDitherMethod, tree_depth = 0, measure_error = false)
  *   @param number_colors [Numeric] the maximum number of colors to use in the output images.
- *   @param colorspace [Magick::ColorspaceType] the colorspace to quantize in.
+ *   @param colorspace [Magick::ColorspaceType] the colorspace to quantize in. The default quantizes
+ *     an sRGB image in its own colorspace.
  *   @param dither [Magick::DitherMethod, Boolean] a DitherMethod value or true if you want apply dither.
  *   @param tree_depth [Numeric] specify the tree depth to use while quantizing.
  *   @param measure_error [Boolean] calculate quantization errors when quantizing the image.

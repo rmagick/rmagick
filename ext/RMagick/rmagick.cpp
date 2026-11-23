@@ -366,7 +366,7 @@ Magick_resource_usage(VALUE klass ATTRIBUTE_UNUSED, VALUE resource)
  * threshold is exceeded, all subsequent pixel cache operations are to/from
  * disk.
  *
- * @param threshold [Numeric] the number of megabytes to set.
+ * @param threshold [Numeric] the number of bytes to set.
  */
 VALUE
 Magick_set_cache_threshold(VALUE klass, VALUE threshold)
@@ -392,7 +392,6 @@ Magick_set_cache_threshold(VALUE klass, VALUE threshold)
  * - "deprecate"
  * - "locale"
  * - "none"
- * - "render"
  * - "transform"
  * - "user"
  * - "x11"

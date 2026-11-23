@@ -105,11 +105,9 @@ Pixel_alpha(VALUE self)
  *
  * - Pixel is Observable. Setters call {Magick::Pixel#changed},
  *   {Magick::Pixel#notify_observers}
- * - Setters return their argument values for backward compatibility to when
- *   Pixel was a Struct class.
  *
  * @param v [Numeric] the red value
- * @return [Numeric] the given red value
+ * @return [Numeric] the stored red value
  */
 VALUE
 Pixel_red_eq(VALUE self, VALUE v)
@@ -129,11 +127,9 @@ Pixel_red_eq(VALUE self, VALUE v)
  *
  * - Pixel is Observable. Setters call {Magick::Pixel#changed},
  *   {Magick::Pixel#notify_observers}
- * - Setters return their argument values for backward compatibility to when
- *   Pixel was a Struct class.
  *
  * @param v [Numeric] the green value
- * @return [Numeric] the given green value
+ * @return [Numeric] the stored green value
  */
 VALUE
 Pixel_green_eq(VALUE self, VALUE v)
@@ -153,11 +149,9 @@ Pixel_green_eq(VALUE self, VALUE v)
  *
  * - Pixel is Observable. Setters call {Magick::Pixel#changed},
  *   {Magick::Pixel#notify_observers}
- * - Setters return their argument values for backward compatibility to when
- *   Pixel was a Struct class.
  *
  * @param v [Numeric] the blue value
- * @return [Numeric] the given blue value
+ * @return [Numeric] the stored blue value
  */
 VALUE
 Pixel_blue_eq(VALUE self, VALUE v)
@@ -177,11 +171,9 @@ Pixel_blue_eq(VALUE self, VALUE v)
  *
  * - Pixel is Observable. Setters call {Magick::Pixel#changed},
  *   {Magick::Pixel#notify_observers}
- * - Setters return their argument values for backward compatibility to when
- *   Pixel was a Struct class.
  *
  * @param v [Numeric] the alpha value
- * @return [Numeric] the given alpha value
+ * @return [Numeric] the stored alpha value
  */
 VALUE
 Pixel_alpha_eq(VALUE self, VALUE v)
@@ -222,11 +214,9 @@ Pixel_cyan(VALUE self)
  *
  * - Pixel is Observable. Setters call {Magick::Pixel#changed},
  *   {Magick::Pixel#notify_observers}
- * - Setters return their argument values for backward compatibility to when
- *   Pixel was a Struct class.
  *
  * @param v [Numeric] the cyan value
- * @return [Numeric] the given cyan value
+ * @return [Numeric] the stored cyan value
  */
 VALUE
 Pixel_cyan_eq(VALUE self, VALUE v)
@@ -260,11 +250,9 @@ Pixel_magenta(VALUE self)
  *
  * - Pixel is Observable. Setters call {Magick::Pixel#changed},
  *   {Magick::Pixel#notify_observers}
- * - Setters return their argument values for backward compatibility to when
- *   Pixel was a Struct class.
  *
  * @param v [Numeric] the magenta value
- * @return [Numeric] the given magenta value
+ * @return [Numeric] the stored magenta value
  */
 VALUE
 Pixel_magenta_eq(VALUE self, VALUE v)
@@ -298,11 +286,9 @@ Pixel_yellow(VALUE self)
  *
  * - Pixel is Observable. Setters call {Magick::Pixel#changed},
  *   {Magick::Pixel#notify_observers}
- * - Setters return their argument values for backward compatibility to when
- *   Pixel was a Struct class.
  *
  * @param v [Numeric] the yellow value
- * @return [Numeric] the given yellow value
+ * @return [Numeric] the stored yellow value
  */
 VALUE
 Pixel_yellow_eq(VALUE self, VALUE v)
@@ -336,11 +322,9 @@ Pixel_black(VALUE self)
  *
  * - Pixel is Observable. Setters call {Magick::Pixel#changed},
  *   {Magick::Pixel#notify_observers}
- * - Setters return their argument values for backward compatibility to when
- *   Pixel was a Struct class.
  *
  * @param v [Numeric] the black value
- * @return [Numeric] the given black value
+ * @return [Numeric] the stored black value
  */
 VALUE
 Pixel_black_eq(VALUE self, VALUE v)
@@ -527,7 +511,7 @@ Pixel_case_eq(VALUE self, VALUE other)
 
 
 /**
- * Equality. Returns true only if receiver and other are the same object.
+ * Equality. Returns true if other is of the same class and has the same channel values.
  *
  * @param other [Object] the other object
  * @return [Boolean] true if other is the same value, otherwise false
