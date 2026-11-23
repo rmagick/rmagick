@@ -237,10 +237,10 @@
         <dt>value</dt>
 
         <dd>
-          The value of the option. <span class="arg">Value</span> can be any object that responds to <code>to_s</code>. Use <code>nil</code> to set the key to a
-          null value. For the <code>"caption"</code>, <code>"comment"</code> and <code>"label"</code> keys, a value whose first non-blank character is
-          <code>@</code>, or that contains a <code>%[fx:@...]</code>, <code>%[hex:@...]</code> or <code>%[pixel:@...]</code> escape, raises
-          <code>ArgumentError</code>, because ImageMagick would read the file it names.
+          The value of the option. <span class="arg">Value</span> can be any object that responds to <code>to_s</code>. Use <code>nil</code> to remove the
+          option, as <a href="#undefine">undefine</a> does. For the <code>"caption"</code>, <code>"comment"</code> and <code>"label"</code> keys, a value whose
+          first non-blank character is <code>@</code>, or that contains a <code>%[fx:@...]</code>, <code>%[hex:@...]</code> or <code>%[pixel:@...]</code>
+          escape, raises <code>ArgumentError</code>, because ImageMagick would read the file it names.
         </dd>
       </dl>
 
@@ -248,9 +248,8 @@
 
       <p>
         The "user" option is unique to RMagick. It may be set to any string. If this option is used when creating an image via one of the methods listed below
-        then the new image gets the value assigned as a property as if
-        <code>img["user"]</code> had been used. In addition, the value is displayed in the string returned by <code>Image#inspect</code>. The "user" property
-        can be used to help distinguish otherwise similar images when debugging.
+        then the new image gets the value as an artifact, which <code>img.artifact("user")</code> returns. In addition, the value is displayed in the string
+        returned by <code>Image#inspect</code>. The "user" artifact can be used to help distinguish otherwise similar images when debugging.
       </p>
 
       <p>For example,</p>
@@ -311,11 +310,11 @@ end
 
       <h4>Returns</h4>
 
-      <p>The value of the option. Always a string.</p>
+      <p>The value of the option as a string, or <code>nil</code> if the option is not defined.</p>
 
       <h4>Example</h4>
 
-      <pre class="language-ruby">options["tiff", "bits-per-sample"] #=&gt; 2</pre>
+      <pre class="language-ruby">options["tiff", "bits-per-sample"] #=&gt; "2"</pre>
 
       <h4>Magick API</h4>
 
@@ -522,7 +521,7 @@ img = Magick::Image.read("xc:white") do |options|
   options.caption = "a new caption"
   options.size = "20x20"
 end
-p img.first.properties #=&gt; {"caption"=&gt;"a new caption"}
+p img.first.properties #=&gt; {"caption"=&gt;"a new caption", "date:create"=&gt;"...", "date:modify"=&gt;"...", "date:timestamp"=&gt;"..."}
 p img.first['caption'] #=&gt; "a new caption"
 </pre>
 
@@ -898,10 +897,7 @@ p img.first['caption'] #=&gt; "a new caption"
     <div class="sig">
       <h3 id="fill">fill</h3>
 
-      <p>
-        <span class="arg">self.</span>fill= <span class="arg">string</span> or
-        <span class="arg">pixel</span>
-      </p>
+      <p><span class="arg">self.</span>fill= <span class="arg">string</span></p>
     </div>
 
     <div class="desc">
@@ -911,7 +907,7 @@ p img.first['caption'] #=&gt; "a new caption"
 
       <h4>Arguments</h4>
 
-      <p>A <a href="imusage.html#color_names">color name</a> or a <a href="struct.html#Pixel">pixel</a>.</p>
+      <p>A <a href="imusage.html#color_names">color name</a>.</p>
     </div>
 
     <div class="sig">
@@ -1069,7 +1065,7 @@ p img.first['caption'] #=&gt; "a new caption"
     <div class="desc">
       <h4>Description</h4>
 
-      <p>Set the image transparent color. The default is "#bdbdbd".</p>
+      <p>Set the image matte color. The default is "#bdbdbd".</p>
 
       <h4>Arguments</h4>
 
@@ -1100,7 +1096,7 @@ p img.first['caption'] #=&gt; "a new caption"
     <div class="desc">
       <h4>Description</h4>
 
-      <p>Set the scene number of an image or the first image in a sequence.</p>
+      <p>Set the number of images to read from a multi-image file, starting at <a href="#scene">scene</a>.</p>
     </div>
 
     <div class="sig">
@@ -1182,7 +1178,8 @@ p img.first['caption'] #=&gt; "a new caption"
       <h4>Description</h4>
 
       <p>
-        The compression level for JPEG, MPEG, JPEG-2000, MIFF, MNG, and PNG image formats. Corresponds to ImageMagick's -quality option. The default is 75. See
+        The compression level for JPEG, MPEG, JPEG-2000, MIFF, MNG, and PNG image formats. Corresponds to ImageMagick's -quality option. The default is 0.
+        Then ImageMagick uses the quality of the image, or 92 when writing a JPEG image that has none. See
         <em><a href="comtasks.html#compressing">Compressing image files</a></em
         >.
       </p>
@@ -1271,10 +1268,7 @@ p img.first['caption'] #=&gt; "a new caption"
     <div class="sig">
       <h3 id="stroke">stroke</h3>
 
-      <p>
-        <span class="arg">self.</span>stroke= <span class="arg">string</span> or
-        <span class="arg">pixel</span>
-      </p>
+      <p><span class="arg">self.</span>stroke= <span class="arg">string</span></p>
     </div>
 
     <div class="desc">
@@ -1284,7 +1278,7 @@ p img.first['caption'] #=&gt; "a new caption"
 
       <h4>Arguments</h4>
 
-      <p>A <a href="imusage.html#color_names">color name</a> or a <a href="struct.html#Pixel">pixel</a>.</p>
+      <p>A <a href="imusage.html#color_names">color name</a>.</p>
     </div>
 
     <div class="sig">
@@ -1365,7 +1359,7 @@ p img.first['caption'] #=&gt; "a new caption"
     <div class="sig">
       <h3 id="undercolor">undercolor</h3>
 
-      <p><span class="arg">self.</span>undercolor= <span class="arg">string</span> or <span class="arg">pixel</span></p>
+      <p><span class="arg">self.</span>undercolor= <span class="arg">string</span></p>
     </div>
 
     <div class="desc">
@@ -1375,7 +1369,7 @@ p img.first['caption'] #=&gt; "a new caption"
 
       <h4>Arguments</h4>
 
-      <p>A <a href="imusage.html#color_names">color name</a> or a <a href="struct.html#Pixel">pixel</a>.</p>
+      <p>A <a href="imusage.html#color_names">color name</a>.</p>
     </div>
 
     <div class="sig">
