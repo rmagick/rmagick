@@ -378,9 +378,9 @@ Draw_font_style_eq(VALUE self, VALUE style)
 /**
  * Set font weight.
  *
- * @param weight [Magick::WeightType, Numeric] the font weight
- * @return [Magick::WeightType, Numeric] the given font weight
- * @note The font weight can be one of the font weight constants or a number between 100 and 900
+ * @param weight [Magick::WeightType, Integer] the font weight
+ * @return [Magick::WeightType, Integer] the given font weight
+ * @note The font weight can be one of the font weight constants or an integer between 100 and 900
  */
 VALUE
 Draw_font_weight_eq(VALUE self, VALUE weight)
@@ -435,15 +435,15 @@ Draw_font_weight_eq(VALUE self, VALUE weight)
  * Set gravity to draw text.
  * Gravity affects text placement in bounding area according to rules:
  *
- * - +NorthWestGravity+  - text bottom-left corner placed at top-left
- * - +NorthGravity+      - text bottom-center placed at top-center
- * - +NorthEastGravity+  - text bottom-right corner placed at top-right
+ * - +NorthWestGravity+  - text top-left corner placed at top-left
+ * - +NorthGravity+      - text top-center placed at top-center
+ * - +NorthEastGravity+  - text top-right corner placed at top-right
  * - +WestGravity+       - text left-center placed at left-center
  * - +CenterGravity+     - text center placed at center
  * - +EastGravity+       - text right-center placed at right-center
- * - +SouthWestGravity+  - text top-left placed at bottom-left
- * - +SouthGravity+      - text top-center placed at bottom-center
- * - +SouthEastGravity+  - text top-right placed at bottom-right
+ * - +SouthWestGravity+  - text bottom-left placed at bottom-left
+ * - +SouthGravity+      - text bottom-center placed at bottom-center
+ * - +SouthEastGravity+  - text bottom-right placed at bottom-right
  *
  * @param grav [Magick::GravityType] this gravity type
  * @return [Magick::GravityType] the given gravity type
@@ -1185,7 +1185,7 @@ annotate_body(VALUE arg)
     ExceptionInfo *exception;
 #endif
 
-    // If we have an optional parm block, run it in self's context,
+    // If we have an optional parm block, pass self to it,
     // allowing the app a chance to modify the object's attributes
     if (rb_block_given_p())
     {
@@ -1248,8 +1248,8 @@ annotate_body(VALUE arg)
 /**
  * Annotates an image with text.
  *
- * - Additional Draw attribute methods may be called in the optional block,
- *   which is executed in the context of a Draw object.
+ * - The optional block is called with this Draw object as its argument, and
+ *   can set its attributes.
  *
  * @param image_arg [Magick::Image, Magick::ImageList] Either an imagelist or an image. If an
  *   imagelist, uses the current image.
@@ -1447,9 +1447,8 @@ Draw_draw(VALUE self, VALUE image_arg)
 /**
  * Returns measurements for a given font and text string.
  *
- * - If the image argument has been omitted, use a dummy image, but make sure
- *   the text has none of the special characters that refer to image
- *   attributes.
+ * - If the image argument has been omitted, use a dummy image.
+ * - The text is measured as given. % sequences are not interpreted.
  *
  * @overload get_type_metrics(text)
  *   @param text [String] The string to be rendered.
@@ -1474,9 +1473,8 @@ Draw_get_type_metrics(
 /**
  * Returns measurements for a given font and text string.
  *
- * - If the image argument has been omitted, use a dummy image, but make sure
- *   the text has none of the special characters that refer to image
- *   attributes.
+ * - If the image argument has been omitted, use a dummy image.
+ * - The text is measured as given. % sequences are not interpreted.
  *
  * @overload get_multiline_type_metrics(text)
  *   @param text [String] The string to be rendered.

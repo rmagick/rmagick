@@ -294,13 +294,15 @@ module Magick
     public
 
     # Apply coordinate transformations to support scaling (s), rotation (r),
-    # and translation (t). Angles are specified in radians.
+    # and translation (t). rx and ry are matrix elements, not angles. With
+    # ImageMagick 7.1.2 or 6.9.13-26 and later, a point (x, y) is drawn at
+    # (sx*x + rx*y + tx, ry*x + sy*y + ty). Earlier versions swap rx and ry.
     def affine(sx, rx, ry, sy, tx, ty)
       primitive 'affine ' + sprintf('%g,%g,%g,%g,%g,%g', sx, rx, ry, sy, tx, ty)
     end
 
-    # Set alpha (make transparent) in image according to the specified
-    # colorization rule
+    # Set the alpha of the image to the alpha of the fill color according to
+    # the specified colorization rule
     def alpha(x, y, method)
       Kernel.raise ArgumentError, 'Unknown paint method' unless PAINT_METHOD_NAMES.key?(method.to_i)
       name = Gem::Version.new(Magick::IMAGEMAGICK_VERSION) > Gem::Version.new('7.0.0') ? 'alpha ' : 'matte '
@@ -330,7 +332,7 @@ module Magick
       primitive 'circle ' + sprintf('%g,%g %g,%g', origin_x, origin_y, perim_x, perim_y)
     end
 
-    # Invoke a clip-path defined by def_clip_path.
+    # Invoke a clip-path defined by define_clip_path.
     def clip_path(name)
       primitive "clip-path #{enquote(name)}"
     end
@@ -356,8 +358,7 @@ module Magick
       primitive 'color ' + sprintf('%g,%g,%s', x, y, PAINT_METHOD_NAMES[method.to_i])
     end
 
-    # Specify EITHER the text decoration (none, underline, overline,
-    # line-through) OR the text solid background color (any color name or spec)
+    # Specify the text decoration (none, underline, overline, line-through)
     def decorate(decoration)
       if DECORATION_TYPE_NAMES.key?(decoration.to_i)
         primitive "decorate #{DECORATION_TYPE_NAMES[decoration.to_i]}"
