@@ -27,6 +27,7 @@ RSpec.describe Magick::Image::View::Rows, '#[]=' do
     image.view(0, 0, 10, 10) do |view|
       view[5][5] = 'blue'
       expect { view[0][[8, 9, 10]] = 'red' }.to raise_error(IndexError)
+      expect { view[0][[8, 9, 10].lazy] = 'red' }.to raise_error(IndexError)
     end
 
     expect(image.pixel_color(5, 5)).to eq(Magick::Pixel.from_color('blue'))

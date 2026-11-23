@@ -32,6 +32,12 @@ RSpec.describe Magick::Image::View::Rows, '#[]' do
     expect(view[0][1, 2, 3].size).to eq(3)
   end
 
+  it 'accepts a lazy enumerator' do
+    view = Magick::Image.new(10, 10).view(0, 0, 10, 10)
+
+    expect(view[(0..1).lazy][(2..4).lazy].size).to eq(6)
+  end
+
   it 'uses the truncated size of a fractional view' do
     view = Magick::Image.new(4, 4).view(0, 0, 2.5, 2)
 

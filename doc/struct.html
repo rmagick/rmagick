@@ -199,7 +199,8 @@
 
           <dd>
             The index may be any object that responds to <code>each</code> by returning a sequence of objects that can be converted to integers. An array with
-            integer values or a range of integers are two examples. A negative value counts from the bottom row or right column of the view.
+            integer values or a range of integers are two examples. Each negative value that <code>each</code> returns counts from the bottom row or right column of the
+            view.
           </dd>
         </dl>
 
@@ -304,7 +305,7 @@
         <p>Assigns <em>integer</em> to the red, green, blue, or alpha channel of the pixel or pixels identified by the indexes.</p>
 
         <p>
-          If the image has no alpha channel, <a href="#view_sync">sync</a> does not store the alpha values. Call
+          If the image has no alpha channel, the alpha values do not make the image transparent after <a href="#view_sync">sync</a>. Call
           <code>img.alpha(Magick::SetAlphaChannel)</code> before creating the view.
         </p>
 
