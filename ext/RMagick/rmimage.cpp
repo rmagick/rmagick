@@ -149,7 +149,9 @@ DEFINE_GVL_STUB2(AutoLevelImage, Image *, ExceptionInfo *);
 DEFINE_GVL_STUB3(BilevelImage, Image *, const double, ExceptionInfo *);
 DEFINE_GVL_STUB3(BlackThresholdImage, Image *, const char *, ExceptionInfo *);
 DEFINE_GVL_STUB4(BorderImage, const Image *, const RectangleInfo *, const CompositeOperator, ExceptionInfo *);
+#if defined(MAGICKCORE_HDRI_SUPPORT)
 DEFINE_GVL_STUB2(ClampImage, Image *, ExceptionInfo *);
+#endif
 DEFINE_GVL_STUB4(ClutImage, Image *, const Image *, const PixelInterpolateMethod, ExceptionInfo *);
 DEFINE_GVL_STUB4(ColorizeImage, const Image *, const char *, const PixelInfo *, ExceptionInfo *);
 DEFINE_GVL_STUB5(CompareImages, Image *, const Image *, const MetricType, double *, ExceptionInfo *);
@@ -230,6 +232,9 @@ DEFINE_GVL_STUB3(BilevelImageChannel, Image *, const ChannelType,const double);
 DEFINE_GVL_STUB2(BlackThresholdImage, Image *, const char *);
 DEFINE_GVL_STUB5(BlurImageChannel, const Image *, const ChannelType, const double, const double, ExceptionInfo *);
 DEFINE_GVL_STUB3(BorderImage, const Image *, const RectangleInfo *, ExceptionInfo *);
+#if defined(MAGICKCORE_HDRI_SUPPORT)
+DEFINE_GVL_STUB2(ClampImageChannel, Image *, const ChannelType);
+#endif
 DEFINE_GVL_STUB3(ClutImageChannel, Image *, const ChannelType, const Image *);
 DEFINE_GVL_STUB4(ColorizeImage, const Image *, const char *, const PixelPacket, ExceptionInfo *);
 DEFINE_GVL_STUB6(CompareImageChannels, Image *, const Image *, const ChannelType, const MetricType, double *, ExceptionInfo *);
@@ -11624,19 +11629,32 @@ Image_opaque_q(VALUE self)
 }
 
 
+// With HDRI, the ordered dither of ImageMagick 6 and 7 can leave values at
+// twice QuantumRange, so the result is clamped as without HDRI. This clamps a
+// channel that the map skips too, which matters only if it is out of range.
 #if defined(IMAGEMAGICK_7)
-// Ordered dither new_image, a copy of the image of self, with threshold_map.
 static void
 ordered_dither_image(VALUE self, Image *new_image, const char *threshold_map, ExceptionInfo *exception)
 {
     DECLARE_GVL_CALL(call, OrderedDitherImage, new_image, threshold_map, exception);
     call.read(self).destroy(new_image).release(exception).run<void>();
 #if defined(MAGICKCORE_HDRI_SUPPORT)
-    // With HDRI, OrderedDitherImage can leave values above QuantumRange, while
-    // ImageMagick 6 keeps them within the range.
-    DECLARE_GVL_CALL(clamp_call, ClampImage, new_image, exception);
-    clamp_call.read(self).destroy(new_image).release(exception).run<void>();
+    if (exception->severity < ErrorException)
+    {
+        DECLARE_GVL_CALL(clamp_call, ClampImage, new_image, exception);
+        clamp_call.read(self).destroy(new_image).release(exception).run<void>();
+    }
 #endif
+}
+#elif defined(MAGICKCORE_HDRI_SUPPORT)
+static void
+clamp_dithered_image(VALUE self, Image *new_image, ChannelType channels, ExceptionInfo *exception)
+{
+    if (exception->severity < ErrorException)
+    {
+        DECLARE_GVL_CALL(call, ClampImageChannel, new_image, channels);
+        call.read(self).destroy(new_image).release(exception).run<void>();
+    }
 }
 #endif
 
@@ -11701,6 +11719,9 @@ Image_ordered_dither(int argc, VALUE *argv, VALUE self)
 #else
     DECLARE_GVL_CALL(call, OrderedPosterizeImage, new_image, threshold_map, exception);
     call.read(self).destroy(new_image).release(exception).run<void>();
+#if defined(MAGICKCORE_HDRI_SUPPORT)
+    clamp_dithered_image(self, new_image, DefaultChannels, exception);
+#endif
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
 
@@ -12782,6 +12803,10 @@ Image_random_threshold_channel(int argc, VALUE *argv, VALUE self)
 #else
     DECLARE_GVL_CALL(call, RandomThresholdImageChannel, new_image, channels, thresholds, exception);
     call.read(self).destroy(new_image).release(exception).run<void>();
+#if defined(MAGICKCORE_HDRI_SUPPORT)
+    // RandomThresholdImageChannel may have done an ordered dither.
+    clamp_dithered_image(self, new_image, channels, exception);
+#endif
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
 
