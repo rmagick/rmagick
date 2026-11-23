@@ -3,6 +3,12 @@
 All notable changes to this project are documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## RMagick 7.3.1
+
+Bug Fixes
+
+* Fix Image#composite_tiled drawing only the first tile on big-endian platforms (fixes #2072, PR #2073)
+
 ## RMagick 7.3.0
 
 > [!IMPORTANT]
