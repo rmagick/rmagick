@@ -7455,8 +7455,8 @@ Image_export_pixels(int argc, VALUE *argv, VALUE self)
  * @overload extent(width, height, x = 0, y = 0)
  *   @param width [Numeric] The width of the new image
  *   @param height [Numeric] The height of the new image
- *   @param x [Numeric] The upper-left corner of the new image is positioned
- *   @param y [Numeric] The upper-left corner of the new image is positioned
+ *   @param x [Numeric] The upper-left corner of the image is placed at -x in the new image.
+ *   @param y [Numeric] The upper-left corner of the image is placed at -y in the new image.
  *   @return [Magick::Image] a new image
  */
 VALUE
@@ -7726,8 +7726,8 @@ Image_filter_eq(VALUE self, VALUE filter)
 /**
  * This interesting method searches for a rectangle in the image that is similar to the target.
  * For the rectangle to be similar each pixel in the rectangle must match the corresponding pixel in
- * the target image within the range specified by the fuzz attributes of the image and the target
- * image.
+ * the target image within the range specified by the fuzz attribute of the image. The fuzz
+ * attribute of the target is not used.
  *
  * @overload find_similar_region(target, x = 0, y = 0)
  *   @param target [Magick::Image, Magick::ImageList] An image that forms the target of the
@@ -9028,7 +9028,7 @@ convert_pixel_array(VALUE arg)
 
 
 /**
- * Store image pixel data from an array.
+ * Store image pixel data from an array or a string.
  *
  * @overload import_pixels(x, y, columns, rows, map, pixels, type = Magick::CharPixel)
  *   @param x [Numeric] The x-offset of the rectangle to be replaced.
@@ -9036,11 +9036,12 @@ convert_pixel_array(VALUE arg)
  *   @param columns [Numeric] The number of columns in the rectangle.
  *   @param rows [Numeric] The number of rows in the rectangle.
  *   @param map [String] This string reflects the expected ordering of the pixel array.
- *   @param pixels [Array] An array of pixels.
+ *   @param pixels [Array<Numeric>, String] An array of pixels, or a string of binary pixel data.
  *     The number of pixels in the array must be the same as the number
- *     of pixels in the rectangle, that is, rows*columns.
- *   @param type [Magick::StorageType] A StorageType value that specifies the C datatype to which
- *     the pixel data will be converted.
+ *     of pixels in the rectangle, that is, rows*columns. The values in the array must be in the
+ *     range 0 to QuantumRange, or 0.0 to 1.0 if type is DoublePixel or FloatPixel.
+ *   @param type [Magick::StorageType] A StorageType value that specifies the C datatype of the
+ *     pixel data in the string. For an array, only DoublePixel and FloatPixel have an effect.
  *   @return [Magick::Image] self
  *   @see Image#export_pixels
  */
@@ -9526,7 +9527,7 @@ Image_iterations_eq(VALUE self, VALUE val)
  * Adjusts the levels of an image by scaling the colors falling between specified white and black
  * points to the full available quantum range.
  *
- * @overload level2(black_point = 0.0, white_point = Magick::QuantumRange, gamma = 1.0)
+ * @overload level2(black_point = 0.0, white_point = Magick::QuantumRange - black_point, gamma = 1.0)
  *   @param black_point [Numeric] A black point level in the range 0 - QuantumRange.
  *   @param white_point [Numeric] A white point level in the range 0..QuantumRange.
  *   @param gamma [Numeric] A gamma correction in the range 0.0 - 10.0.
@@ -9656,18 +9657,22 @@ Image_level_channel(int argc, VALUE *argv, VALUE self)
 
 /**
  * When invert is true, black and white will be mapped to the black_color and white_color colors,
- * compressing all other colors linearly. When invert is false, black and white will be mapped to
- * the black_color and white_color colors, stretching all other colors linearly.
+ * compressing all other colors linearly. When invert is false, the black_color and white_color
+ * colors will be mapped to black and white, stretching all other colors linearly.
  *
  * @overload level_colors(black_color = "black", white_color = "white", invert = true, channel = Magick::AllChannels)
- *   @param black_color [Magick::Pixel, String] The color to be mapped to black
- *   @param white_color [Magick::Pixel, String] The color to be mapped to white
+ *   @param black_color [Magick::Pixel, String] The color that black is mapped to, or that is
+ *     mapped to black when invert is false
+ *   @param white_color [Magick::Pixel, String] The color that white is mapped to, or that is
+ *     mapped to white when invert is false
  *   @param invert See the description above
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *
  * @overload level_colors(black_color = "black", white_color = "white", invert = true, *channels)
- *   @param black_color [Magick::Pixel, String] The color to be mapped to black
- *   @param white_color [Magick::Pixel, String] The color to be mapped to white
+ *   @param black_color [Magick::Pixel, String] The color that black is mapped to, or that is
+ *     mapped to black when invert is false
+ *   @param white_color [Magick::Pixel, String] The color that white is mapped to, or that is
+ *     mapped to white when invert is false
  *   @param invert See the description above
  *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
@@ -10650,7 +10655,7 @@ Image_minify_bang(VALUE self)
  *
  * @overload modulate(brightness = 1.0, saturation = 1.0, hue = 1.0)
  *   @param brightness [Numeric, String] The percent change in the brightness.
- *     Must be a non-negative number or a string in the form "NN%".
+ *     Must be a positive number or a string in the form "NN%".
  *   @param saturation [Numeric, String] The percent change in the saturation.
  *     Must be a number or a string in the form "NN%".
  *   @param hue [Numeric, String] The percent change in the hue.
@@ -10712,8 +10717,8 @@ Image_modulate(int argc, VALUE *argv, VALUE self)
 
 
 /**
- * Return true if all the pixels in the image have the same red, green, and blue intensities and the
- * intensity is either 0 or {Magick::QuantumRange}.
+ * Return true if the image type is BilevelType, for example after reading a PBM file or setting
+ * image_type to BilevelType. The pixels are not examined.
  *
  * @return [Boolean] true if monochrome, false otherwise
  */
@@ -11583,7 +11588,7 @@ Image_opaque_channel(int argc, VALUE *argv, VALUE self)
 
 
 /**
- * Returns true if all of the pixels in the receiver have an opacity value of OpaqueOpacity.
+ * Returns true if all of the pixels in the receiver have an alpha value of OpaqueAlpha.
  *
  * @return [Boolean] true if opaque, false otherwise
  */
