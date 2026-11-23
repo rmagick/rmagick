@@ -137,8 +137,6 @@
 
           <li><a href="#line">line</a></li>
 
-          <li><a href="#matte">matte</a></li>
-
           <li><a href="#opacity">opacity</a></li>
 
           <li><a href="#path">path</a></li>
@@ -319,9 +317,9 @@
       <p>
         Annotates an image with text. The text is positioned according to the
         <code>gravity</code> attribute around the rectangle described by the <span class="arg">x</span>, <span class="arg">y</span>,
-        <span class="arg">width</span>, and <span class="arg">height</span> arguments. If either of the <span class="arg">width</span> or
-        <span class="arg">height</span> arguments are 0, uses the image width-<span class="arg">x</span> and the image height-<span class="arg">y</span>
-        to compute the rectangle width and height. The attributes described in
+        <span class="arg">width</span>, and <span class="arg">height</span> arguments. If both <span class="arg">width</span> and
+        <span class="arg">height</span> are 0, the rectangle is the size of the image, offset by <span class="arg">x</span> and <span class="arg">y</span>. If
+        only one of them is 0, that side of the rectangle is 0 pixels long. The attributes described in
         <a href="#attributes">annotate attributes</a>, below, influence the appearance and position of the text. These attributes may be set in the Draw object
         before calling <code>annotate</code>, or within <code>annotate</code>'s optional <span class="arg">additional parameters</span> block.
       </p>
@@ -379,164 +377,7 @@ title.annotate(montage, 0,0,0,40, 'Named Colors') { |options|
 
       <h4>Special characters</h4>
 
-      <p>
-        Escape a blank, quote, or apostrophe by preceding it with a backslash ("\"). To include a backslash in the text, use two consecutive backslashes. To
-        include a '%' in the text, use '%%'. You can include information about the image by including one or more of the special character sequences shown in
-        this table.
-      </p>
-
-      <table id="spec_chars_table" summary="annotate special characters" class="simple_table">
-        <caption>
-          Special characters
-        </caption>
-
-        <tr>
-          <th>Replaced by</th>
-
-          <th>&nbsp;</th>
-        </tr>
-
-        <tr>
-          <td>%b</td>
-
-          <td>file size in bytes</td>
-        </tr>
-
-        <tr>
-          <td>%c</td>
-
-          <td>"comment" property string</td>
-        </tr>
-
-        <tr>
-          <td>%d</td>
-
-          <td>directory in which the file resides</td>
-        </tr>
-
-        <tr>
-          <td>%e</td>
-
-          <td>filename extension</td>
-        </tr>
-
-        <tr>
-          <td>%f</td>
-
-          <td>original filename</td>
-        </tr>
-
-        <tr>
-          <td>%g</td>
-
-          <td>group number</td>
-        </tr>
-
-        <tr>
-          <td>%h</td>
-
-          <td>height</td>
-        </tr>
-
-        <tr>
-          <td>%i</td>
-
-          <td>current filename</td>
-        </tr>
-
-        <tr>
-          <td>%k</td>
-
-          <td>number of unique colors</td>
-        </tr>
-
-        <tr>
-          <td>%l</td>
-
-          <td>"label" property string</td>
-        </tr>
-
-        <tr>
-          <td>%m</td>
-
-          <td>file format</td>
-        </tr>
-
-        <tr>
-          <td>%n</td>
-
-          <td>number of images in the sequence (for RMagick, this is always 1)</td>
-        </tr>
-
-        <tr>
-          <td>%o</td>
-
-          <td>output filename</td>
-        </tr>
-
-        <tr>
-          <td>%p</td>
-
-          <td>page number (for RMagick, this is always 1)</td>
-        </tr>
-
-        <tr>
-          <td>%q</td>
-
-          <td>depth</td>
-        </tr>
-
-        <tr>
-          <td>%r</td>
-
-          <td>
-            A string of the form "ClasstypeColorspace," for example "DirectClassRGB". If the image's <em>matte</em> attribute is <code>true</code>, appends the
-            word "Matte" to the end of the string.
-          </td>
-        </tr>
-
-        <tr>
-          <td>%s</td>
-
-          <td>scene number (always 1)</td>
-        </tr>
-
-        <tr>
-          <td>%t</td>
-
-          <td>filename without extension</td>
-        </tr>
-
-        <tr>
-          <td>%u</td>
-
-          <td>unique temporary filename</td>
-        </tr>
-
-        <tr>
-          <td>%w</td>
-
-          <td>width</td>
-        </tr>
-
-        <tr>
-          <td>%x</td>
-
-          <td>x resolution</td>
-        </tr>
-
-        <tr>
-          <td>%y</td>
-
-          <td>y resolution</td>
-        </tr>
-
-        <tr>
-          <td>%z</td>
-
-          <td>depth</td>
-        </tr>
-      </table>
+      <p>The text is drawn as given. Backslashes, quotes, and <code>%</code> sequences are not interpreted.</p>
 
       <h4>See also</h4>
 
@@ -670,8 +511,8 @@ title.annotate(montage, 0,0,0,40, 'Named Colors') { |options|
       <h4>Description</h4>
 
       <p>
-        Returns information for a specific string if rendered on an image. Metrics are derived from either the
-        <a href="#attributes"> annotate attributes</a> or from the <a href="info.html">image info attributes</a>, but not from any drawing primitive methods.
+        Returns information for a specific string if rendered on an image. Metrics are derived from the
+        <a href="#attributes"> annotate attributes</a> of the Draw object, not from the attributes of the image or from any drawing primitive methods.
         The <code>get_multiline_type_metrics</code> method is the same as <code>get_type_metrics</code>, except the former returns the maximum height and width
         for multiple lines of text. (Text lines are separated by "\n" characters.)
       </p>
@@ -712,18 +553,14 @@ title.annotate(montage, 0,0,0,40, 'Named Colors') { |options|
         <dt>image <em>(optional)</em></dt>
 
         <dd>
-          The image on which the string will be rendered. ImageMagick uses the attributes of the image (font name, point size, etc.) to compute the metrics. If
-          this argument is omitted,
-          <code>get_type_metrics</code> substitutes a dummy image with default attributes. The <span class="arg">string</span> argument may not contain any of
-          the special characters shown in <a href="#spec_chars_table">this</a> table.
+          The image on which the string will be rendered. The attributes of the image, such as its density, do not change the metrics. If this argument is
+          omitted,
+          <code>get_type_metrics</code> substitutes a dummy image with default attributes.
         </dd>
 
         <dt>string</dt>
 
-        <dd>
-          The string to be rendered. If <span class="arg">img</span> is specified, the string may contain special characters that refer to the image attributes.
-          See <a href="#spec_chars_table">this</a> table.
-        </dd>
+        <dd>The string to be rendered. It is measured as given, with or without an image. <code>%</code> sequences are not interpreted.</dd>
       </dl>
 
       <h4>Returns</h4>
@@ -906,7 +743,10 @@ draw.inspect
 
         <dt>rx, ry</dt>
 
-        <dd>The rotation in the <em>x</em> and <em>y</em> directions, in radians</dd>
+        <dd>
+          The off-diagonal elements of the matrix, not angles. With ImageMagick 7.1.2 and later, and 6.9.13-26 and later, a point (<em>x</em>, <em>y</em>) is
+          drawn at (sx*<em>x</em> + rx*<em>y</em> + tx, ry*<em>x</em> + sy*<em>y</em> + ty). With earlier versions, rx and ry are swapped.
+        </dd>
 
         <dt>tx, ty</dt>
 
@@ -943,7 +783,10 @@ draw.inspect
     <div class="desc">
       <h4>Description</h4>
 
-      <p>Set alpha (make transparent) in image according to the specified colorization rule.</p>
+      <p>
+        Set the alpha of pixels to the alpha of the <a href="#fill">fill</a> color, according to the specified colorization rule. The default fill is opaque,
+        so set a transparent fill, such as <code>draw.fill('transparent')</code>, to make the pixels transparent.
+      </p>
 
       <h4>Arguments</h4>
 
@@ -955,8 +798,8 @@ draw.inspect
         <dt>method</dt>
 
         <dd>
-          A <a href="constants.html#PaintMethod">PaintMethod</a> constant. If you use the <code>FillToBorderMethod</code>, assign the border color with the
-          <code>Draw#border_color=</code> attribute before calling <a href="#draw">draw</a>.
+          A <a href="constants.html#PaintMethod">PaintMethod</a> constant. If you use the <code>FillToBorderMethod</code>, set the border color
+          first, for example with <code>draw.primitive('border-color black')</code>.
         </dd>
       </dl>
 
@@ -966,7 +809,11 @@ draw.inspect
 
       <h4>Example</h4>
 
-      <pre class="language-ruby">draw.alpha(x, y, FillToBorderMethod)</pre>
+      <pre class="language-ruby">
+draw.fill('transparent')
+draw.primitive('border-color black')
+draw.alpha(x, y, FillToBorderMethod)
+</pre>
     </div>
 
     <div class="sig">
@@ -1163,7 +1010,7 @@ gc.push
 gc.clip_path('mypath')
 # drawing primitives within the clip path
 gc.pop
-gc.draw
+gc.draw(img)
 </pre>
 
       <p>Also see the example below.</p>
@@ -1223,7 +1070,7 @@ gc.draw
 
       <p>
         <span class="arg">draw</span>.clip_units(<code>"userSpace"</code> <span class="arg">or</span> <code>"userSpaceOnUse"</code> or
-        <code>"objectSpace"</code>) -&gt; <em>self</em>
+        <code>"objectBoundingBox"</code>) -&gt; <em>self</em>
       </p>
     </div>
 
@@ -1238,7 +1085,7 @@ gc.draw
 
       <h4>Arguments</h4>
 
-      <p>Either "userSpace", "userSpaceOnUse", or "objectSpace".</p>
+      <p>Either "userSpace", "userSpaceOnUse", or "objectBoundingBox".</p>
 
       <h4>Returns</h4>
 
@@ -1272,8 +1119,8 @@ gc.draw
         <dt>method</dt>
 
         <dd>
-          A <a href="constants.html#PaintMethod">PaintMethod</a> constant. If you use the <code>FillToBorderMethod</code>, assign the border color with the
-          <code>Draw#border_color=</code> attribute before calling <a href="#draw">draw</a>.
+          A <a href="constants.html#PaintMethod">PaintMethod</a> constant. If you use the <code>FillToBorderMethod</code>, set the border color
+          first, for example with <code>draw.primitive('border-color black')</code>.
         </dd>
       </dl>
 
@@ -1284,13 +1131,13 @@ gc.draw
       <h4>Example</h4>
 
       <pre class="language-ruby">
-draw.border_color = 'black'
+draw.primitive('border-color black')
 draw.color(x, y, FillToBorderMethod)
 </pre>
 
       <h4>See Also</h4>
 
-      <p><a href="#matte">matte</a></p>
+      <p><a href="#alpha">alpha</a></p>
     </div>
 
     <div class="sig">
@@ -1317,7 +1164,10 @@ draw.color(x, y, FillToBorderMethod)
 
         <dt>width, height</dt>
 
-        <dd>Scale the <span class="arg">composite_image</span> to this size. If either value is 0, <span class="arg">composite_image</span> is not scaled.</dd>
+        <dd>
+          Scale the <span class="arg">composite_image</span> to this size. If both values are 0, <span class="arg">composite_image</span> is not scaled. If only
+          one of them is 0, <a href="#draw">draw</a> raises <code>ImageMagickError</code>.
+        </dd>
 
         <dt>composite_image</dt>
 
@@ -1693,13 +1543,16 @@ draw.color(x, y, FillToBorderMethod)
       <h4>Description</h4>
 
       <p>
-        Specify how the text is positioned. The default is
-        <code>NorthWestGravity</code>.
+        Specify how the text is positioned. By default, no gravity is set and the baseline of the text is at (<span class="arg">x</span>,
+        <span class="arg">y</span>).
       </p>
 
       <h4>Arguments</h4>
 
-      <p>A <a href="constants.html#GravityType">GravityType</a> constant.</p>
+      <p>
+        A <a href="constants.html#GravityType">GravityType</a> constant other than <code>UndefinedGravity</code> and <code>ForgetGravity</code>, which raise
+        <code>ArgumentError</code>.
+      </p>
 
       <h4>Returns</h4>
 
@@ -1831,77 +1684,6 @@ gc.line(200,200, 50,50)
     </div>
 
     <div class="sig">
-      <h3 id="matte">matte</h3>
-
-      <p>
-        <span class="arg">draw</span>.matte(<span class="arg">x</span>,<span class="arg">y</span>, <span class="arg">paint_method</span>) -&gt; <em>self</em>
-      </p>
-    </div>
-
-    <div class="desc">
-      <h4>Description</h4>
-
-      <p>Make the image transparent according to the specified PaintMethod constant.</p>
-
-      <h4>Arguments</h4>
-
-      <dl>
-        <dt>x, y</dt>
-
-        <dd>Point in image to use, along with the PaintMethod constant, to set transparent pixels in the image.</dd>
-
-        <dt>paint_method</dt>
-
-        <dd>
-          One of the following
-          <a href="constants.html#PaintMethod">PaintMethod</a> constants:
-
-          <dl>
-            <dt>PointMethod</dt>
-
-            <dd>Make the pixel at <em>(x,y)</em> transparent.</dd>
-
-            <dt>ReplaceMethod</dt>
-
-            <dd>
-              Make all pixels that are the same color as the pixel at
-              <em>(x,y)</em> transparent.
-            </dd>
-
-            <dt>FloodfillMethod</dt>
-
-            <dd>
-              Make all the pixels surrounding the pixel at
-              <em>(x,y)</em> transparent, until encountering pixels that fail to match color at <em>(x,y)</em>.
-            </dd>
-
-            <dt>FillToBorderMethod</dt>
-
-            <dd>
-              Make all the pixels surrounding the pixel at
-              <em>(x,y)</em> transparent, until encountering pixels that match the border color. Assign the border color with the
-              <code>Draw#border_color=</code> attribute before calling <a href="#draw">draw</a>.
-            </dd>
-
-            <dt>ResetMethod</dt>
-
-            <dd>Make the entire image transparent.</dd>
-          </dl>
-        </dd>
-      </dl>
-
-      <h4>Returns</h4>
-
-      <p>self</p>
-
-      <h4>See also</h4>
-      <a href="#color">color</a>, <a href="image2.html#matte_point">matte_point</a>, <a href="image2.html#matte_replace">matte_replace</a>,
-      <a href="image2.html#matte_floodfill">matte_floodfill</a>, <a href="image2.html#matte_fill_to_border">matte_fill_to_border</a>,
-      <a href="image2.html#opaque">opaque</a>,
-      <a href="image3.html#transparent">transparent</a>
-    </div>
-
-    <div class="sig">
       <h3 id="opacity">opacity</h3>
 
       <p><span class="arg">draw</span>.opacity(<span class="arg">opacity</span>) -&gt; <em>self</em></p>
@@ -2021,7 +1803,8 @@ gc.path('M97.5,87.5 v-75 a75,75 0 0,0 -75,75 z')
 
         <dd>
           The name of the pattern. The pattern is used in a
-          <a href="#fill">fill</a> or <a href="#stroke">stroke</a> method by specifying its name.
+          <a href="#fill">fill</a> or <a href="#stroke">stroke</a> method by specifying its name. The name may contain only letters, digits, hyphens, periods,
+          and underscores. Any other name raises <code>ArgumentError</code>.
         </dd>
 
         <dt>x, y, width, height</dt>
@@ -2084,7 +1867,7 @@ gc.path('M97.5,87.5 v-75 a75,75 0 0,0 -75,75 z')
     <div class="sig">
       <h3 id="pointsize">pointsize</h3>
 
-      <p><span class="arg">draw</span>.pointsize(<span class="arg">integer</span>) -&gt; <em>self</em></p>
+      <p><span class="arg">draw</span>.pointsize(<span class="arg">number</span>) -&gt; <em>self</em></p>
     </div>
 
     <div class="desc">
@@ -2511,7 +2294,7 @@ gc.path('M97.5,87.5 v-75 a75,75 0 0,0 -75,75 z')
     <div class="sig">
       <h3 id="stroke_dashoffset">stroke_dashoffset</h3>
 
-      <p><span class="arg">draw</span>.stroke_dashoffset(<span class="arg">integer</span>) -&gt; <em>self</em></p>
+      <p><span class="arg">draw</span>.stroke_dashoffset(<span class="arg">number</span>=<code>0</code>) -&gt; <em>self</em></p>
     </div>
 
     <div class="desc">
@@ -2661,7 +2444,7 @@ draw.stroke_opacity('40%')
     <div class="sig">
       <h3 id="stroke_width">stroke_width</h3>
 
-      <p><span class="arg">draw</span>.stroke_width(<span class="arg">integer</span>) -&gt; <em>self</em></p>
+      <p><span class="arg">draw</span>.stroke_width(<span class="arg">number</span>) -&gt; <em>self</em></p>
     </div>
 
     <div class="desc">
@@ -2700,10 +2483,9 @@ draw.stroke_opacity('40%')
       </p>
 
       <p>
-        Generally it is a good idea to surround the text string with quotes (""), apostrophes (''), or braces ({}). If the text string starts with a digit or
-        contains an embedded blank, quote, or apostrophe, you must do this. ImageMagick removes these characters before drawing the text. You can also escape a
-        blank, quote, or apostrophe by preceding it with a backslash ("\"). To include a backslash in the text, use two consecutive backslashes. To include a
-        '%' in the text, use '%%'. See the examples below.
+        RMagick quotes the text and escapes backslashes, so the text, including any backslash or <code>%</code>, is drawn as written. If the whole text is
+        enclosed in quotes (""), apostrophes (''), or braces ({}), they are removed, unless the text contains a backslash or another of the same enclosing
+        character. See the examples below.
       </p>
 
       <h4>Arguments</h4>
@@ -2727,7 +2509,7 @@ draw.stroke_opacity('40%')
       <p>The text to the right of #=&gt; is the text that will be drawn.</p>
       <pre class="language-ruby">
 gc.text(10,10, '"Hello there!"')   #=&gt; Hello there!
-gc.text(10,10, "'What\'s up?'")    #=&gt; What's up?
+gc.text(10,10, "'What\'s up?'")    #=&gt; 'What's up?'
 gc.text(10,10, %q/"What's up?"/)   #=&gt; What's up?
 gc.text(10,10, %q/{"What's up?"}/) #=&gt; "What's up?"
 </pre>
@@ -2755,7 +2537,7 @@ gc.text(10,10, %q/{"What's up?"}/) #=&gt; "What's up?"
 
       <h4>Arguments</h4>
 
-      <p>An <a href="constants.html#AlignType">AlignType</a> constant.</p>
+      <p><code>LeftAlign</code>, <code>CenterAlign</code>, or <code>RightAlign</code>. See <a href="constants.html#AlignType">AlignType</a>.</p>
 
       <h4>Returns</h4>
 
@@ -2925,7 +2707,7 @@ gc.text(10,10, %q/{"What's up?"}/) #=&gt; "What's up?"
     <div class="desc">
       <h4>Description</h4>
 
-      <p>The text decoration. The default is <code>NoDecorationType</code>.</p>
+      <p>The text decoration. The default is <code>NoDecoration</code>.</p>
 
       <h4>Argument</h4>
 
@@ -3151,7 +2933,7 @@ gc.text(10,10, %q/{"What's up?"}/) #=&gt; "What's up?"
     <div class="sig">
       <h3 id="pointsize_eq">pointsize=</h3>
 
-      <p><span class="arg">draw</span>.pointsize = <em>integer</em></p>
+      <p><span class="arg">draw</span>.pointsize = <em>number</em></p>
     </div>
 
     <div class="desc">
@@ -3173,7 +2955,7 @@ gc.text(10,10, %q/{"What's up?"}/) #=&gt; "What's up?"
 
       <h4>Arguments</h4>
 
-      <p>The amount of rotation in degrees.</p>
+      <p>The amount of rotation in degrees. Each assignment adds to the current rotation, so setting 45 twice rotates the text 90 degrees.</p>
     </div>
 
     <div class="sig">
@@ -3185,7 +2967,7 @@ gc.text(10,10, %q/{"What's up?"}/) #=&gt; "What's up?"
     <div class="desc">
       <h4>Description</h4>
 
-      <p>The stroke color. This is the color used to outline the text. The default is "black".</p>
+      <p>The stroke color. This is the color used to outline the text. The default is transparent, so the text is not outlined.</p>
 
       <h4>Arguments</h4>
       A <a href="imusage.html#color_names">color name</a> or <a href="struct.html#Pixel">Pixel</a> object.
@@ -3213,7 +2995,7 @@ gc.text(10,10, %q/{"What's up?"}/) #=&gt; "What's up?"
     <div class="sig">
       <h3 id="stroke_width_eq">stroke_width=</h3>
 
-      <p><span class="arg">draw</span>.stroke_width = <em>integer</em></p>
+      <p><span class="arg">draw</span>.stroke_width = <em>number</em></p>
     </div>
 
     <div class="desc">

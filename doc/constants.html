@@ -129,8 +129,6 @@
           <li><a href="#MorphologyMethod">MorphologyMethod</a></li>
 
           <li><a href="#NoiseType">NoiseType</a></li>
-
-          <li><a href="#Opacity">Opacity</a></li>
         </ul>
       </div>
 
@@ -473,7 +471,7 @@
 
       <dd>Hue, whiteness, blackness</dd>
 
-      <dt>LABColorspace</dt>
+      <dt>LabColorspace</dt>
 
       <dt>LogColorspace</dt>
 
@@ -516,17 +514,9 @@
     <p>The color spaces in this group are typically associated with the DPX and Cineon image formats used in the motion picture industry.</p>
 
     <dl>
-      <dt>Rec601LumaColorspace</dt>
-
-      <dd>Luma (Y) according to ITU-R 601</dd>
-
       <dt>Rec601YCbCrColorspace</dt>
 
       <dd>YCbCr according to ITU-R 601</dd>
-
-      <dt>Rec709LumaColorspace</dt>
-
-      <dd>Luma (Y) according to ITU-R 709</dd>
 
       <dt>Rec709YCbCrColorspace</dt>
 
@@ -558,7 +548,11 @@
 
       <dt>LinearGRAYColorspace</dt>
 
+      <dd>Available in ImageMagick 7, and in ImageMagick 6.9.10 and later.</dd>
+
       <dt>JzazbzColorspace</dt>
+
+      <dd>Available only in ImageMagick 7.</dd>
     </dl>
 
     <h3 class="const" id="ComplianceType">ComplianceType</h3>
@@ -605,10 +599,6 @@
       <dt>UndefinedCompositeOp</dt>
 
       <dd>No composite operator has been specified.</dd>
-
-      <dt>AddCompositeOp</dt>
-
-      <dd class="imquote">The result of <code>composite image</code> + <code>image</code>, with overflow wrapping around (mod 256).</dd>
 
       <dt>AtopCompositeOp</dt>
 
@@ -904,13 +894,6 @@
       <dt>SrcOverCompositeOp</dt>
 
       <dd class="imquote">The source is composited over the destination.</dd>
-
-      <dt>SubtractCompositeOp</dt>
-
-      <dd class="imquote">
-        The result of <code>composite image</code> - <code>image</code>, with underflow wrapping around (mod 256). The add and subtract operators can be used to
-        perform reversible transformations.
-      </dd>
 
       <dt>ThresholdCompositeOp</dt>
 
@@ -1370,27 +1353,15 @@
 
       <dd class="imquote">Indexed color (palette) image</dd>
 
-      <dt>PaletteMatteType</dt>
-
-      <dd class="imquote">Indexed color (palette) image with opacity</dd>
-
       <dt>TrueColorType</dt>
 
       <dd class="imquote">Truecolor image</dd>
-
-      <dt>TrueColorMatteType</dt>
-
-      <dd class="imquote">Truecolor image with opacity</dd>
 
       <dt>ColorSeparationType</dt>
 
       <dd class="imquote">Cyan/Magenta/Yellow/Black (CMYK) image</dd>
 
-      <dt>ColorSeparationMatteType</dt>
-
       <dt>OptimizeType</dt>
-
-      <dt>PaletteBilevelMatteType</dt>
 
       <dt>GrayscaleAlphaType</dt>
 
@@ -1542,8 +1513,6 @@
       <dt>ArctanFunction</dt>
     </dl>
 
-    <p>For FilterInterpolatePixel, specify the filter with the <a href="imageattrs.html#filter">filter</a> attribute.</p>
-
     <h3 class="const" id="MetricType">MetricType</h3>
 
     <p>
@@ -1552,13 +1521,25 @@
     </p>
 
     <dl>
+      <dt>UndefinedErrorMetric</dt>
+
+      <dt>AbsoluteErrorMetric</dt>
+
+      <dt>FuzzErrorMetric</dt>
+
       <dt>MeanAbsoluteErrorMetric</dt>
+
+      <dt>MeanErrorPerPixelErrorMetric</dt>
 
       <dt>MeanSquaredErrorMetric</dt>
 
+      <dt>NormalizedCrossCorrelationErrorMetric</dt>
+
       <dt>PeakAbsoluteErrorMetric</dt>
 
-      <dt>PeakSignalToNoiseRatioMetric</dt>
+      <dt>PeakSignalToNoiseRatioErrorMetric</dt>
+
+      <dt>PerceptualHashErrorMetric</dt>
 
       <dt>RootMeanSquaredErrorMetric</dt>
     </dl>
@@ -1634,24 +1615,6 @@
       <dt>PoissonNoise</dt>
 
       <dt>RandomNoise</dt>
-    </dl>
-
-    <h3 class="const" id="Opacity">Opacity</h3>
-
-    <p>
-      Represent the maximum and minimum levels of opacity. You can specify a partial level of opacity by choosing a number between OpaqueOpacity and
-      TransparentOpacity. For example, 25% opacity is
-      <code>abs(Magick::TransparentOpacity-Magick::OpaqueOpacity) * 0.25</code>
-    </p>
-
-    <dl>
-      <dt>TransparentOpacity</dt>
-
-      <dd>The minimum amount of opacity.</dd>
-
-      <dt>OpaqueOpacity</dt>
-
-      <dd>The maximum amount of opacity.</dd>
     </dl>
 
     <h3 class="const" id="OrientationType">OrientationType</h3>
@@ -2003,6 +1966,8 @@
     <p>See <a href="image2.html#import_pixels">import_pixels</a> and <a href="image2.html#export_pixels_to_str">export_pixels_to_str</a>.</p>
 
     <dl>
+      <dt>UndefinedPixel</dt>
+
       <dt>CharPixel</dt>
 
       <dd>corresponds to a C <code>unsigned char</code>, range 0-255.</dd>
@@ -2011,13 +1976,9 @@
 
       <dd>corresponds to a C <code>unsigned short</code>, range 0-65535.</dd>
 
-      <dt>IntegerPixel</dt>
-
-      <dd>corresponds to a C <code>unsigned int</code>, range 0-4294967295.</dd>
-
       <dt>LongPixel</dt>
 
-      <dd>corresponds to a C <code>unsigned long</code>, range 0-4294967295 (for 32-bit longs).</dd>
+      <dd>corresponds to a C <code>unsigned int</code>, range 0-4294967295.</dd>
 
       <dt>FloatPixel</dt>
 
