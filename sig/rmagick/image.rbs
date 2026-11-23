@@ -86,6 +86,7 @@ module Magick
         private
 
         def cols: (*untyped args) -> void
+        def to_index: (untyped index, Integer size) -> Integer
         def each: () -> void
       end
     end
