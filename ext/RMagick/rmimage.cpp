@@ -12733,21 +12733,35 @@ Image_random_threshold_channel(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     {
         GeometryInfo geometry_info;
+        MagickStatusType flags;
+        double min_threshold, max_threshold;
+        bool percent, ordered;
 
-        if (ParseGeometry(thresholds, &geometry_info) == NoValue && *thresholds)
+        // Read the thresholds as RandomThresholdImageChannel of ImageMagick 6
+        // does. ImageMagick 7 takes the numbers and leaves this to the caller.
+        flags = ParseGeometry(thresholds, &geometry_info);
+        min_threshold = geometry_info.rho;
+        max_threshold = (flags & SigmaValue) ? geometry_info.sigma : min_threshold;
+        percent = strchr(thresholds, '%') != NULL;
+        if (percent)
         {
-            (void) ThrowMagickException(exception, GetMagickModule(), OptionError,
-                                        "InvalidArgument", "'%s'", thresholds);
+            min_threshold *= 0.01 * QuantumRange;
+            max_threshold *= 0.01 * QuantumRange;
+        }
+        ordered = !percent && (max_threshold == min_threshold || max_threshold == 1) && min_threshold <= 8;
+
+        BEGIN_CHANNEL_MASK(new_image, channels);
+        if (ordered)
+        {
+            DECLARE_GVL_CALL(call, OrderedDitherImage, new_image, thresholds, exception);
+            call.read(self).destroy(new_image).release(exception).run<void>();
         }
         else
         {
-            BEGIN_CHANNEL_MASK(new_image, channels);
-            {
-                DECLARE_GVL_CALL(call, RandomThresholdImage, new_image, geometry_info.rho, geometry_info.sigma, exception);
-                call.read(self).destroy(new_image).release(exception).run<void>();
-            }
-            END_CHANNEL_MASK(new_image);
+            DECLARE_GVL_CALL(call, RandomThresholdImage, new_image, min_threshold, max_threshold, exception);
+            call.read(self).destroy(new_image).release(exception).run<void>();
         }
+        END_CHANNEL_MASK(new_image);
     }
 #else
     DECLARE_GVL_CALL(call, RandomThresholdImageChannel, new_image, channels, thresholds, exception);
