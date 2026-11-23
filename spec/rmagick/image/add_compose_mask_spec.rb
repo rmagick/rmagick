@@ -35,4 +35,65 @@ RSpec.describe Magick::Image, "#add_compose_mask" do
   ensure
     limits&.each { |resource, limit| Magick.limit_resource(resource, limit) }
   end
+
+  it 'keeps the image usable when ImageMagick runs out of resources' do
+    image = described_class.new(20, 20) { |options| options.background_color = 'red' }
+    mask = described_class.new(20, 20)
+    source = described_class.new(20, 20) { |options| options.background_color = 'blue' }
+    resources = %i[area memory map disk]
+    limits = resources.to_h { |resource| [resource, Magick.limit_resource(resource, 0)] }
+
+    expect { image.add_compose_mask(mask) }.to raise_error(Magick::ImageMagickError)
+    limits.each { |resource, limit| Magick.limit_resource(resource, limit) }
+    limits = nil
+
+    result = image.composite(source, 0, 0, Magick::OverCompositeOp)
+    expect(result.pixel_color(0, 0)).to eq(Magick::Pixel.from_color('blue'))
+  ensure
+    limits&.each { |resource, limit| Magick.limit_resource(resource, limit) }
+  end
+
+  it 'keeps the file size of the image' do
+    image = described_class.read(File.join(IMAGES_DIR, 'Flower_Hat.jpg')).first
+    filesize = image.filesize
+
+    image.add_compose_mask(described_class.new(image.columns, image.rows))
+
+    expect(image.filesize).to eq(filesize)
+  end
+
+  # ImageMagick 7 blends a masked pixel of an opaque image wrongly.
+  def expect_white_changed_and_black_kept(mask)
+    image = described_class.new(2, 1) { |options| options.background_color = 'none' }
+    source = described_class.new(2, 1) { |options| options.background_color = '#123456' }
+    unmasked = image.composite(source, 0, 0, Magick::OverCompositeOp)
+    image.add_compose_mask(mask)
+    result = image.composite(source, 0, 0, Magick::OverCompositeOp)
+
+    expect(result.pixel_color(0, 0)).to eq(unmasked.pixel_color(0, 0))
+    expect(result.pixel_color(1, 0)).to eq(image.pixel_color(1, 0))
+  end
+
+  it 'lets the white pixels of the mask change and keeps the black ones' do
+    mask = described_class.new(2, 1)
+    mask.pixel_color(1, 0, 'black')
+
+    expect_white_changed_and_black_kept(mask)
+  end
+
+  it 'ignores the masks of the mask image' do
+    mask = described_class.new(2, 1)
+    mask.pixel_color(1, 0, 'black')
+    mask.mask(described_class.new(2, 1) { |options| options.background_color = 'white' })
+
+    expect_white_changed_and_black_kept(mask)
+  end
+
+  it 'ignores the composite mask of the mask image' do
+    mask = described_class.new(2, 1)
+    mask.pixel_color(1, 0, 'black')
+    mask.add_compose_mask(described_class.new(2, 1) { |options| options.background_color = 'black' })
+
+    expect_white_changed_and_black_kept(mask)
+  end
 end
