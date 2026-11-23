@@ -167,8 +167,26 @@ RSpec.describe Magick::Image, '#mask' do
     image = described_class.new(4, 1)
 
     image.mask(mask)
+    values = (0..3).map { |x| image.mask.pixel_color(x, 0).red }
+    image.mask(mask.resize(4, 1))
+    values += (0..3).map { |x| image.mask.pixel_color(x, 0).red }
 
-    expect((0..3).map { |x| image.mask.pixel_color(x, 0).red }).to all(be_between(0, Magick::QuantumRange))
+    expect(values).to all(be_between(0, Magick::QuantumRange))
+  end
+
+  it 'resizes a mask that has a mask of its own as one without it', if: Gem::Version.new(Magick::IMAGEMAGICK_VERSION) >= Gem::Version.new('7.0.0') do
+    mask = described_class.new(2, 1)
+    mask.pixel_color(0, 0, 'black')
+    plain = mask.copy
+    mask.mask(described_class.new(2, 1) { |options| options.background_color = 'black' })
+    image = described_class.new(6, 1)
+
+    image.mask(mask)
+    nested_values = (0..5).map { |x| image.mask.pixel_color(x, 0).red }
+    image.mask(plain)
+    plain_values = (0..5).map { |x| image.mask.pixel_color(x, 0).red }
+
+    expect(nested_values).to eq(plain_values)
   end
 
   it 'frees the images it makes from a mask with alpha when one of its calls is interrupted or fails' do
