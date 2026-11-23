@@ -11653,7 +11653,11 @@ clamp_dithered_image(VALUE self, Image *new_image, ChannelType channels, Excepti
     if (exception->severity < ErrorException)
     {
         DECLARE_GVL_CALL(call, ClampImageChannel, new_image, channels);
-        call.read(self).destroy(new_image).release(exception).run<void>();
+        void *ret = call.read(self).destroy(new_image).release(exception).run<void *>();
+        if (!static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret)))
+        {
+            InheritException(exception, &new_image->exception);
+        }
     }
 }
 #endif
@@ -12721,6 +12725,30 @@ Image_radial_blur_channel(int argc, VALUE *argv, VALUE self)
 }
 
 
+#if defined(IMAGEMAGICK_7) || defined(MAGICKCORE_HDRI_SUPPORT)
+// Read the thresholds as RandomThresholdImageChannel of ImageMagick 6 does, and
+// return whether they ask for an ordered dither. ImageMagick 7 leaves this to
+// the caller.
+static bool
+read_random_thresholds(const char *thresholds, double *min_threshold, double *max_threshold)
+{
+    GeometryInfo geometry_info;
+    MagickStatusType flags;
+
+    flags = ParseGeometry(thresholds, &geometry_info);
+    *min_threshold = geometry_info.rho;
+    *max_threshold = (flags & SigmaValue) ? geometry_info.sigma : *min_threshold;
+    if (strchr(thresholds, '%'))
+    {
+        *min_threshold *= 0.01 * QuantumRange;
+        *max_threshold *= 0.01 * QuantumRange;
+        return false;
+    }
+    return (*max_threshold == *min_threshold || *max_threshold == 1) && *min_threshold <= 8;
+}
+#endif
+
+
 /**
  * Changes the value of individual pixels based on the intensity of each pixel compared to a random
  * threshold. The result is a low-contrast, two color image.
@@ -12770,23 +12798,8 @@ Image_random_threshold_channel(int argc, VALUE *argv, VALUE self)
 
 #if defined(IMAGEMAGICK_7)
     {
-        GeometryInfo geometry_info;
-        MagickStatusType flags;
         double min_threshold, max_threshold;
-        bool percent, ordered;
-
-        // Read the thresholds as RandomThresholdImageChannel of ImageMagick 6
-        // does. ImageMagick 7 takes the numbers and leaves this to the caller.
-        flags = ParseGeometry(thresholds, &geometry_info);
-        min_threshold = geometry_info.rho;
-        max_threshold = (flags & SigmaValue) ? geometry_info.sigma : min_threshold;
-        percent = strchr(thresholds, '%') != NULL;
-        if (percent)
-        {
-            min_threshold *= 0.01 * QuantumRange;
-            max_threshold *= 0.01 * QuantumRange;
-        }
-        ordered = !percent && (max_threshold == min_threshold || max_threshold == 1) && min_threshold <= 8;
+        bool ordered = read_random_thresholds(thresholds, &min_threshold, &max_threshold);
 
         BEGIN_CHANNEL_MASK(new_image, channels);
         if (ordered)
@@ -12804,8 +12817,14 @@ Image_random_threshold_channel(int argc, VALUE *argv, VALUE self)
     DECLARE_GVL_CALL(call, RandomThresholdImageChannel, new_image, channels, thresholds, exception);
     call.read(self).destroy(new_image).release(exception).run<void>();
 #if defined(MAGICKCORE_HDRI_SUPPORT)
-    // RandomThresholdImageChannel may have done an ordered dither.
-    clamp_dithered_image(self, new_image, channels, exception);
+    {
+        double min_threshold, max_threshold;
+
+        if (read_random_thresholds(thresholds, &min_threshold, &max_threshold))
+        {
+            clamp_dithered_image(self, new_image, channels, exception);
+        }
+    }
 #endif
 #endif
     rm_check_exception(exception, new_image, DestroyOnError);
