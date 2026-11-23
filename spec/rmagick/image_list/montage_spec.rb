@@ -122,6 +122,24 @@ RSpec.describe Magick::ImageList, "#montage" do
     assert_same_image(File.join(FIXTURE_PATH, 'montage_border_color.jpg'), new_imagelist.first)
   end
 
+  it 'does not change the images of the list' do
+    image_list = described_class.new
+    image_list << Magick::Image.new(2, 2) << Magick::Image.new(2, 2)
+    image_list[1].compose = Magick::MultiplyCompositeOp
+    attributes = -> { image_list.to_a.map { |image| [image.background_color, image.border_color, image.matte_color, image.gravity, image.compose] } }
+    before = attributes.call
+
+    image_list.montage do |options|
+      options.background_color = 'pink'
+      options.border_color = 'blue'
+      options.matte_color = 'green'
+      options.gravity = Magick::SouthGravity
+      options.compose = Magick::OverCompositeOp
+    end
+
+    expect(attributes.call).to eq(before)
+  end
+
   it 'raises instead of destroying an image of the list while the call uses it' do
     image_list = described_class.new
     image_list << Magick::Image.new(1, 1) << Magick::Image.new(1, 1)
