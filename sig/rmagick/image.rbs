@@ -61,13 +61,13 @@ module Magick
       class Pixels < Array[untyped]
         # include Observable
         def red: () -> Array[Integer]
-        attr_writer red: Integer
+        attr_writer red: real
         def green: () -> Array[Integer]
-        attr_writer green: Integer
+        attr_writer green: real
         def blue: () -> Array[Integer]
-        attr_writer blue: Integer
+        attr_writer blue: real
         def alpha: () -> Array[Integer]
-        attr_writer alpha: Integer
+        attr_writer alpha: real
       end
 
       class Rows
