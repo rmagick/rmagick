@@ -295,7 +295,7 @@ Montage_frame_eq(VALUE self, VALUE frame_arg)
  * Set geometry value.
  *
  * - The geometry is a string in the form:
- *      <width>x<height>+<outer-bevel-width>+<inner-bevel-width>
+ *      <tile-width>x<tile-height>+<distance-between-columns>+<distance-between-rows>
  *   or a Geometry object
  *
  * @param geometry_arg [Magick::Geometry, String] the geometry
@@ -512,8 +512,8 @@ Montage_texture_eq(VALUE self, VALUE texture)
 /**
  * Set tile value.
  *
- * - The geometry is a string in the form:
- *      <width>x<height>+<outer-bevel-width>+<inner-bevel-width>
+ * - The tile is a string in the form:
+ *      <columns>x<rows>
  *   or a Geometry object
  *
  * @param tile_arg [Magick::Geometry, String] the tile geometry

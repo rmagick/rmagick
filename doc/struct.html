@@ -67,8 +67,6 @@
 
         <li><a href="#Chromaticity">Chromaticity</a></li>
 
-        <li><a href="#Pixel">Pixel</a></li>
-
         <li><a href="#Point">Point</a></li>
 
         <li><a href="#Primary">Primary</a></li>
@@ -598,7 +596,7 @@ g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
         <h4>new</h4>
 
         <p>
-          Pixel.new(<span class="arg">red</span>, <span class="arg">green</span>, <span class="arg">blue</span>, <span class="arg">opacity</span>) -&gt;
+          Pixel.new(<span class="arg">red</span>=0, <span class="arg">green</span>=0, <span class="arg">blue</span>=0, <span class="arg">opacity</span>=0) -&gt;
           <em>pixel</em>
         </p>
       </div>
@@ -656,6 +654,8 @@ g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
           Constructs a new Pixel object from the
           <a href="imusage.html#color_names">color name</a>. Raises ArgumentError if the name is unknown.
         </p>
+
+        <p>A <code>cmyk()</code> color name is converted to RGB, so the <code>black</code> attribute of the pixel is 0.</p>
       </div>
 
       <div class="sig">
@@ -695,6 +695,8 @@ g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
           </dd>
         </dl>
 
+        <p>A String percentage must be a whole number followed by %, such as "25%".</p>
+
         <h5>See also</h5>
 
         <p><a href="#to_hsla">to_hsla</a></p>
@@ -717,7 +719,7 @@ g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
         </p>
 
         <ol>
-          <li>pixels with equal RGBA (or CMYK) values compare equal, and</li>
+          <li>pixels compare equal only when their red, green, blue, alpha and black values are all equal, and</li>
 
           <li>comparing the same two unequal pixels always returns the same result.</li>
         </ol>
@@ -803,7 +805,8 @@ g = Magick::Geometry.new(100,200,nil,nil,Magick::AspectGeometry)
         <p>
           Returns a string that represents the pixel's color. By default the string is in hex format. If <span class="arg">hex</span> is false, returns the
           <a href="imusage.html#color_names">color name</a> corresponding to the pixel values. If there is no such named color in the specified color standard,
-          returns the hex format.
+          returns the hex format. With SVGCompliance, it returns an <code>srgb()</code> string instead, or an <code>srgba()</code> string if
+          <span class="arg">alpha</span> is true.
         </p>
 
         <h5>Arguments</h5>
@@ -1130,8 +1133,6 @@ kernel.unity_add(1.0) # a flat area becomes twice as bright
           the classes created by Struct, these classes define both getter and setter methods for their attributes. That is, for an attribute <em>x</em> both the
           <code>x</code> and <code>x=</code> methods are defined.
         </p>
-
-        <p>The <code>Pixel</code> and <code>Geometry</code> classes define additional constructors and conversion methods.</p>
       </div>
 
       <h3 id="AffineMatrix">class AffineMatrix <span class="superclass">&lt; Struct</span></h3>
@@ -1163,7 +1164,10 @@ kernel.unity_add(1.0) # a flat area becomes twice as bright
 
           <dt>rx, ry</dt>
 
-          <dd>The amount of rotation on the x- and y-axes, in radians.</dd>
+          <dd>
+            The shear terms of the matrix. For a rotation by angle <em>a</em>, use sx = cos(<em>a</em>), rx = sin(<em>a</em>), ry = -sin(<em>a</em>) and
+            sy = cos(<em>a</em>).
+          </dd>
 
           <dt>tx, ty</dt>
 
@@ -1561,7 +1565,7 @@ kernel.unity_add(1.0) # a flat area becomes twice as bright
         <h4>Description</h4>
 
         <p>
-          RMagick raises this exception when any Image method (except
+          RMagick raises this exception when any Image method (except <a href="image1.html#destroy_bang">destroy!</a>,
           <a href="image1.html#destroyed_q">destroyed?</a> and <a href="image2.html#inspect">inspect</a>) is called after an image has been
           <a href="image1.html#destroy_bang">destroyed</a>.
         </p>

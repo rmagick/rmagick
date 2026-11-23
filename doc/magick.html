@@ -261,7 +261,7 @@
         <tr>
           <td>B</td>
 
-          <td>is "*" if the format has native blob support, and "-" otherwise.</td>
+          <td>is "*" if the format has native blob support, and " " (a space) otherwise.</td>
         </tr>
 
         <tr>
@@ -435,7 +435,10 @@ GC.start if Magick.resource_usage(:memory) &gt; 1024**3
 
       <h4>Argument</h4>
 
-      <p>A number of megabytes to set.</p>
+      <p>
+        A number of bytes. It sets the <code>:memory</code> limit to this number and the <code>:map</code> limit to twice that. See
+        <a href="#limit_resource">limit_resource</a>.
+      </p>
     </div>
 
     <div class="sig">
