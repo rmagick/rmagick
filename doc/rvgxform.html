@@ -99,9 +99,10 @@
       <h5>Description</h5>
 
       <p>
-        Replaces the current transformation matrix with a new matrix having the specified values. See the
+        Multiplies the current transformation matrix by a matrix having the specified values. See the
         <a href="https://www.w3.org/TR/SVG11/coords.html#TransformAttribute">SVG standard</a>
-        for more information.
+        for more information. Note that the meaning of <span class="arg">rx</span> and <span class="arg">ry</span> depends on the ImageMagick version, as
+        described below.
       </p>
 
       <h5>Arguments</h5>
@@ -113,7 +114,13 @@
 
         <dt>rx, ry</dt>
 
-        <dd>The amount of rotation about the x-axis and y-axis, measured in degrees.</dd>
+        <dd>
+          Matrix elements, not angles. With ImageMagick 7.1.2-0 or later, or 6.9.13-26 or later, a point (<em>x</em>, <em>y</em>) is mapped to
+          (<em>sx</em>*<em>x</em> + <em>rx</em>*<em>y</em> + <em>tx</em>, <em>ry</em>*<em>x</em> + <em>sy</em>*<em>y</em> + <em>ty</em>), so SVG's
+          <code>matrix(a, b, c, d, e, f)</code> is <code>matrix(a, c, b, d, e, f)</code> here. With older versions, a point is mapped to
+          (<em>sx</em>*<em>x</em> + <em>ry</em>*<em>y</em> + <em>tx</em>, <em>rx</em>*<em>x</em> + <em>sy</em>*<em>y</em> + <em>ty</em>), the same as SVG's
+          <code>matrix(sx, rx, ry, sy, tx, ty)</code>.
+        </dd>
 
         <dt>tx, ty</dt>
 
@@ -203,7 +210,10 @@
       <dl>
         <dt>angle</dt>
 
-        <dd>The skew amount, measured in degrees.</dd>
+        <dd>
+          The skew amount, measured in degrees. ImageMagick shears by sin(<span class="arg">angle</span>), not tan(<span class="arg">angle</span>) as SVG does,
+          so the result differs from SVG's skewX. For example, an angle of 30 slants the axis by about 26.6 degrees.
+        </dd>
       </dl>
 
       <h5>Example</h5>
@@ -230,7 +240,10 @@
       <dl>
         <dt>angle</dt>
 
-        <dd>The skew amount, measured in degrees.</dd>
+        <dd>
+          The skew amount, measured in degrees. ImageMagick shears by -tan(<span class="arg">angle</span>/2), not tan(<span class="arg">angle</span>) as SVG
+          does, so the result differs from SVG's skewY. A positive angle slants the axis the opposite way to SVG, by half the angle.
+        </dd>
       </dl>
 
       <h5>Example</h5>

@@ -169,8 +169,10 @@
         <dt>align</dt>
 
         <dd>
-          When the value of the <code>meet_or_slice</code> argument is 'meet' or 'slice', this argument controls the placement of the image within the viewport.
-          The <code>align</code> argument is the concatenation of an <em>x</em>-alignment and a <em>y</em>-alignment. The values are shown in these lists:
+          If the value is 'none', the image is scaled as necessary so that it fits exactly within the viewport. The aspect ratio is <em>not</em> maintained,
+          and <code>meet_or_slice</code> has no effect, though it must still be 'meet' or 'slice'. Otherwise this argument controls the placement of the
+          image within the viewport. The <code>align</code> argument is the concatenation of an <em>x</em>-alignment and a <em>y</em>-alignment. The values
+          are shown in these lists:
 
           <h6><em>x</em>-alignment</h6>
 
@@ -208,13 +210,9 @@
         <dt>meet_or_slice</dt>
 
         <dd>
-          This argument can have one of these three values:
+          This argument can have one of these two values:
 
           <dl>
-            <dt>'none'</dt>
-
-            <dd>The image is scaled as necessary so that it fits exactly within the viewport. The aspect ratio is <em>not</em> maintained.</dd>
-
             <dt>'meet'</dt>
 
             <dd>

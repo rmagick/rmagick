@@ -106,9 +106,11 @@ module Magick
     attr_reader :background_fill_opacity
     # The image after drawing has completed
     attr_reader :canvas
-    # For embedded RVG objects, the x-axis coordinate of the upper-left corner
+    # For embedded RVG objects, the x-axis coordinate of the upper-left corner.
+    # After #viewbox is called, the min_x argument of #viewbox.
     attr_reader :x
-    # For embedded RVG objects, the x-axis coordinate of the upper-left corner
+    # For embedded RVG objects, the y-axis coordinate of the upper-left corner.
+    # After #viewbox is called, the min_y argument of #viewbox.
     attr_reader :y
     attr_reader :width, :height
 
@@ -175,9 +177,8 @@ module Magick
     # Draw a +width+ x +height+ image. The image is specified by calling
     # one or more drawing methods on the RVG object.
     # You can group the drawing method calls in the optional associated block.
-    # The +x+ and +y+ arguments have no meaning for the outermost RVG object.
-    # On nested RVG objects [+x+, +y+] is the coordinate of the upper-left
-    # corner in the containing canvas on which the nested RVG object is placed.
+    # To place a nested RVG object at [+x+, +y+] in its container, use
+    # RVG::StructureConstructors#rvg.
     #
     # Drawing occurs on a +canvas+ created by the #draw method. By default the
     # canvas is transparent. You can specify a different canvas with the

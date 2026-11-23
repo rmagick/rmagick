@@ -54,8 +54,9 @@
       <h4>Description</h4>
 
       <p>
-        Assigns <em>styles</em> to the target object, which may be a container, shape, text, raster image, or pattern. Styles are presentational attributes that
-        define how the object is rendered.
+        Assigns <em>styles</em> to the target object, which may be a container, shape, text, or raster image. Styles are presentational attributes that define
+        how the object is rendered. Styles set on a <a href="rvgpattern.html#new">pattern</a> or a <a href="rvgclip.html#new">clipping path</a> itself are
+        ignored. Set them on the objects inside it instead.
       </p>
 
       <p>
@@ -79,7 +80,8 @@
 
         <dd>
           If the <code>clip_path</code> style is used, how to determine if a point is inside or outside the clip path. The value is a string, either 'nonzero'
-          or 'evenodd'. The default is 'nonzero'. See the <code>fill_rule</code> example below.
+          or 'evenodd'. The default is 'evenodd', which differs from SVG's 'nonzero'. ImageMagick also uses this value as the <code>fill_rule</code>, so it
+          changes how the object is filled too. See the <code>fill_rule</code> example below.
         </dd>
 
         <dt>:fill</dt>
@@ -95,7 +97,10 @@
 
         <dt>:fill_rule</dt>
 
-        <dd>How to determine if a point is inside or outside a shape. The value is a string, either 'nonzero' or 'evenodd'. The default is 'nonzero'.</dd>
+        <dd>
+          How to determine if a point is inside or outside a shape. The value is a string, either 'nonzero' or 'evenodd'. The default is 'evenodd', which
+          differs from SVG's 'nonzero'.
+        </dd>
 
         <dd>
           The following descriptions of 'nonzero' and 'evenodd' are from the
@@ -133,7 +138,7 @@
         <dd>
           The stroke color. The value must be a
           <a href="imusage.html#color_names">color name</a> or a <a href="rvgpattern.html#new">pattern</a>. The default is 'none', that is, transparent black
-          ("#000000ff").
+          ("#00000000").
         </dd>
 
         <dt>:stroke_dasharray</dt>

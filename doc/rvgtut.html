@@ -273,8 +273,7 @@
       <code>Ellipse</code> has four parameters. The first two, the radius on the x-axis and the radius on the y-axis, are required. The last two are the (x,y)
       coordinate of the center. When these are omitted, as here, they default to (0,0). I add the rectangle with the <code>rect</code>
       method, which also has four parameters. The first two are the width and height of the rectangle. The last two are the (x,y) coordinate of the upper-left
-      corner. Both of these methods return
-      <code>self</code>, so you can chain other methods to them.
+      corner. Both of these methods return the new shape object, so you can chain other methods to them.
     </p>
 
     <p>
@@ -303,9 +302,10 @@
     <p>
       Everybody knows that a wing doesn't look like a rectangle! A wing looks like a slanted parallelogram. (Well, it does in this example!) Fortunately, I can
       use the transform methods on shapes as well as containers. The <code>skewX</code> method makes it easy for us to give the rectangle a slant. The
-      <code>skewX</code> method is another transform. It takes a single argument, the number of degrees to skew the x-axis. Since all the shape constructors,
-      including <code>rect</code>, return <code>self</code>, I can chain <code>skewX</code> directly to <code>rect</code> and limit the effect of the transform
-      to just the rectangle. The result looks like this. (I've drawn in the axes for the wing coordinate system.)
+      <code>skewX</code> method is another transform. It takes a single argument, an angle in degrees that controls the skew of the x-axis (see
+      <a href="rvgxform.html#skewX">skewX</a> for how ImageMagick uses the angle). Since all the shape constructors, including <code>rect</code>, return the
+      new shape object, I can chain <code>skewX</code> directly to <code>rect</code> and limit the effect of the transform to just the rectangle. The result
+      looks like this. (I've drawn in the axes for the wing coordinate system.)
     </p>
 
     <p>
@@ -415,9 +415,9 @@
     <p>
       All I need now is a title for the picture. Text in RVG is a job for the
       <code>text</code> method. Like the shape methods, <code>text</code> can be used with any container object. <code>Text</code> itself is a container, except
-      that it can only contain text-related objects. The <code>text</code> method takes 2 or 3 arguments, an (x,y) pair and optionally a string. The (x,y) pair
-      defines a <em>current text position</em> at which rendering starts. If there is a string argument, it will be rendered starting at the current text
-      position. Rendering text changes the current text position to the end of the text.
+      that it can only contain text-related objects. The <code>text</code> method takes up to 3 arguments, an (x,y) pair that defaults to (0,0) and
+      optionally a string. The (x,y) pair defines a <em>current text position</em> at which rendering starts. If there is a string argument, it will be
+      rendered starting at the current text position. Rendering text changes the current text position to the end of the text.
     </p>
 
     <p>

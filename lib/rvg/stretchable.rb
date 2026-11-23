@@ -128,7 +128,7 @@ module Magick
 
       # Describe a user coordinate system to be imposed on the viewbox.
       # The arguments must be numbers and the +width+ and +height+
-      # arguments must be positive.
+      # arguments must not be negative.
       def viewbox(x, y, width, height)
         begin
           @vbx_x = Float(x)
