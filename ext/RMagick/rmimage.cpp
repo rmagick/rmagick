@@ -12184,8 +12184,8 @@ Image_polaroid(int argc, VALUE *argv, VALUE self)
  * Reduces the image to a limited number of colors for a "poster" effect.
  *
  * @overload posterize(levels = 4, dither = false)
- *   @param levels [Numeric] number of input arguments
- *   @param dither [Boolean] array of input arguments
+ *   @param levels [Numeric] number of color levels allowed in each channel
+ *   @param dither [Boolean] If true, dither the image.
  *   @return a new image
  */
 VALUE
@@ -12333,11 +12333,6 @@ Image_quantum_depth(VALUE self)
  *   @param quantum_expression_op [Magick::QuantumExpressionOperator] the operator
  *   @param rvalue [Numeric] the operation rvalue.
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
- *
- * @overload quantum_operator(quantum_expression_op, rvalue, *channels)
- *   @param quantum_expression_op [Magick::QuantumExpressionOperator] the operator
- *   @param rvalue [Numeric] the operation rvalue.
- *   @param *channels [Magick::ChannelType] one or more ChannelType arguments.
  *
  * @return [Magick::Image] self
  */
@@ -12504,11 +12499,13 @@ Image_quantum_operator(int argc, VALUE *argv, VALUE self)
  * the image. The goal of the algorithm is to minimize the difference between the input and output
  * image while minimizing the processing time.
  *
- * @overload quantize(number_colors = 256, colorspace = Magick::RGBColorspace, dither = true, tree_depth = 0, measure_error = false)
+ * @overload quantize(number_colors = 256, colorspace = Magick::UndefinedColorspace, dither = Magick::RiemersmaDitherMethod, tree_depth = 0, measure_error = false)
  *   @param number_colors [Numeric] The maximum number of colors in the result image.
- *   @param colorspace [Magick::ColorspaceType] The colorspace to quantize in.
- *   @param dither [Boolean] If true, Magick::RiemersmaDitherMethod will be used as
- *     DitherMethod. otherwise NoDitherMethod.
+ *   @param colorspace [Magick::ColorspaceType] The colorspace to quantize in. The default quantizes
+ *     an sRGB image in its own colorspace. RGBColorspace is linear RGB, so it gives a different
+ *     result.
+ *   @param dither [Magick::DitherMethod, Boolean] A DitherMethod value. true means
+ *     Magick::RiemersmaDitherMethod and false means NoDitherMethod.
  *   @param tree_depth [Numeric] The tree depth to use while quantizing. The values 0 and 1 support
  *     automatic tree depth determination. The tree depth may be forced via values ranging from 2 to
  *     8. The ideal tree depth depends on the characteristics of the input image, and may be
@@ -13267,14 +13264,15 @@ Image_reduce_noise(VALUE self, VALUE radius)
 
 
 /**
- * Reduce the number of colors in img to the colors used by remap_image. If a dither method is
- * specified then the given colors are dithered over the image as necessary, otherwise the closest
- * color (in RGB colorspace) is selected to replace that pixel in the image.
+ * Reduce the number of colors in img to the colors used by remap_image. The colors are dithered
+ * over the image as necessary with the dither method, which is RiemersmaDitherMethod by default.
+ * With NoDitherMethod, the closest color (in RGB colorspace) is selected to replace that pixel in
+ * the image.
  *
  * @overload remap(remap_image, dither_method = Magick::RiemersmaDitherMethod)
  *   @param remap_image [Magick::Image, Magick::ImageList] The reference image or imagelist. If an
  *     imagelist, uses the current image.
- *   @param dither_method [Magick::DitherMethod] this object
+ *   @param dither_method [Magick::DitherMethod] the dither method
  *   @return self
  */
 VALUE
@@ -13747,7 +13745,7 @@ Image_resize(int argc, VALUE *argv, VALUE self)
  *   @param filter [Magick::FilterType] the filter type
  *   @param blur [Numeric] the blur factor of the filter: > 1.0 blurs and < 1.0 sharpens
  *
- * @return [Magick::Image] a new image
+ * @return [Magick::Image] self
  * @see Image#resize!
  */
 VALUE
@@ -13868,7 +13866,7 @@ rotate(int bang, int argc, VALUE *argv, VALUE self)
  *     image's width exceeds its height. If "<" rotates the image only if its height exceeds its
  *     width. If this argument is omitted the image is always rotated.
  *
- * @return [Magick::Image] a new image
+ * @return [Magick::Image, nil] a new image, or nil if the image does not meet the qualifier
  * @see Image#rotate!
  */
 VALUE
@@ -13892,7 +13890,7 @@ Image_rotate(int argc, VALUE *argv, VALUE self)
  *     image's width exceeds its height. If "<" rotates the image only if its height exceeds its
  *     width. If this argument is omitted the image is always rotated.
  *
- * @return [Magick::Image] a new image
+ * @return [Magick::Image, nil] self, or nil if the image does not meet the qualifier
  * @see Image#rotate!
  */
 VALUE
@@ -13952,7 +13950,7 @@ Image_sample(int argc, VALUE *argv, VALUE self)
  *   @param cols [Numeric] The desired width.
  *   @param rows [Numeric] The desired height.
  *
- * @return [Magick::Image] a new image
+ * @return [Magick::Image] self
  * @see Image#sample
  */
 VALUE
@@ -13964,7 +13962,7 @@ Image_sample_bang(int argc, VALUE *argv, VALUE self)
 
 
 /**
- * Change the size of an image to the given dimensions. Alias of {Image#sample}.
+ * Change the size of an image to the given dimensions.
  *
  * @overload scale(scale)
  *   @param scale [Float] You can use this argument instead of specifying the desired width and
@@ -13988,7 +13986,8 @@ Image_scale(int argc, VALUE *argv, VALUE self)
 
 
 /**
- * Change the size of an image to the given dimensions. Alias of {Image#sample!}.
+ * Change the size of an image to the given dimensions.
+ * In-place form of {Image#scale}.
  *
  * @overload scale!(scale)
  *   @param scale [Float] You can use this argument instead of specifying the desired width and
@@ -13999,7 +13998,7 @@ Image_scale(int argc, VALUE *argv, VALUE self)
  *   @param cols [Numeric] The desired width.
  *   @param rows [Numeric] The desired height.
  *
- * @return [Magick::Image] a new image
+ * @return [Magick::Image] self
  * @see Image#sample
  * @see Image#scale!
  */
@@ -14471,14 +14470,14 @@ Image_properties(VALUE self)
 /**
  * Shine a distant light on an image to create a three-dimensional effect. You control the
  * positioning of the light with azimuth and elevation; azimuth is measured in degrees off the x
- * axis and elevation is measured in pixels above the Z axis.
+ * axis and elevation is measured in degrees above the image.
  *
  * @overload shade(shading = false, azimuth = 30.0, elevation = 30.0)
  *   @param shading [Boolean] If true, shade shades the intensity of each pixel.
  *   @param azimuth [Numeric] The light source direction. The azimuth is measured in degrees. 0 is at
- *     9 o'clock. Increasing values move the light source counter-clockwise.
- *   @param elevation [Numeric] The light source direction. The azimuth is measured in degrees. 0 is
- *     at 9 o'clock. Increasing values move the light source counter-clockwise.
+ *     3 o'clock. Increasing values move the light source counter-clockwise.
+ *   @param elevation [Numeric] The light source elevation, measured in degrees above the image. 90
+ *     is directly above it.
  *   @return [Magick::Image] a new image
  */
 VALUE
@@ -14653,11 +14652,10 @@ Image_sharpen_channel(int argc, VALUE *argv, VALUE self)
 
 
 /**
- * Shave pixels from the image edges, leaving a rectangle of the specified width & height in the
- * center.
+ * Shave pixels from the image edges, leaving the center rectangle.
  *
- * @param width [Numeric] the width to leave
- * @param height [Numeric] the height to leave
+ * @param width [Numeric] the number of pixels to remove from the left and right sides
+ * @param height [Numeric] the number of pixels to remove from the top and bottom
  * @return [Magick::Image] a new image
  * @see Image#shave!
  */
@@ -14670,13 +14668,12 @@ Image_shave(VALUE self, VALUE width, VALUE height)
 
 
 /**
- * Shave pixels from the image edges, leaving a rectangle of the specified width & height in the
- * center.
+ * Shave pixels from the image edges, leaving the center rectangle.
  * In-place form of {Image#shave}.
  *
- * @param width [Numeric] the width to leave
- * @param height [Numeric] the height to leave
- * @return [Magick::Image] a new image
+ * @param width [Numeric] the number of pixels to remove from the left and right sides
+ * @param height [Numeric] the number of pixels to remove from the top and bottom
+ * @return [Magick::Image] self
  * @see Image#shave
  */
 VALUE
@@ -15992,7 +15989,7 @@ Image_thumbnail(int argc, VALUE *argv, VALUE self)
  *   @param cols [Numeric] The desired width in pixels.
  *   @param rows [Numeric] The desired height.
  *
- * @return [Magick::Image] a new image
+ * @return [Magick::Image] self
  * @see Image#thumbnail
  */
 VALUE
@@ -17337,7 +17334,7 @@ Image_unsharp_mask(int argc, VALUE *argv, VALUE self)
  *
  * Only the specified channels are sharpened.
  *
- * @overload unsharp_mask(radius = 0.0, sigma = 1.0, amount = 1.0, threshold = 0.05, channel = Magick::AllChannels)
+ * @overload unsharp_mask_channel(radius = 0.0, sigma = 1.0, amount = 1.0, threshold = 0.05, channel = Magick::AllChannels)
  *   @param radius [Numeric] The radius of the Gaussian operator.
  *   @param sigma [Numeric] The standard deviation of the Gaussian operator.
  *   @param amount [Numeric] The percentage of the blurred image to be added to the receiver,
@@ -17346,7 +17343,7 @@ Image_unsharp_mask(int argc, VALUE *argv, VALUE self)
  *     between 0 and 1.0
  *   @param channel [Magick::ChannelType] a ChannelType arguments.
  *
- * @overload unsharp_mask(radius = 0.0, sigma = 1.0, amount = 1.0, threshold = 0.05, *channels)
+ * @overload unsharp_mask_channel(radius = 0.0, sigma = 1.0, amount = 1.0, threshold = 0.05, *channels)
  *   @param radius [Numeric] The radius of the Gaussian operator.
  *   @param sigma [Numeric] The standard deviation of the Gaussian operator.
  *   @param amount [Numeric] The percentage of the blurred image to be added to the receiver,
@@ -17396,7 +17393,7 @@ Image_unsharp_mask_channel(int argc, VALUE *argv, VALUE self)
 /**
  * Soften the edges of an image.
  *
- * @overload vignette(horz_radius = self.columns*0.1+0.5, vert_radius = self.rows*0.1+0.5, radius = 0.0, sigma = 1.0)
+ * @overload vignette(horz_radius = self.columns*0.1+0.5, vert_radius = self.rows*0.1+0.5, radius = 0.0, sigma = 10.0)
  *   @param horz_radius [Numeric] Influences the amount of background color in the horizontal dimension.
  *   @param vert_radius [Numeric] Influences the amount of background color in the vertical dimension.
  *   @param radius [Numeric] Controls the amount of blurring.
@@ -17526,11 +17523,13 @@ Image_virtual_pixel_method_eq(VALUE self, VALUE method)
  *     be composited onto the target image. Must be a non-negative number or a string in the form
  *     "NN%". If lightness is a number it is interpreted as a percentage. Both 0.25 and "25%" mean
  *     25%. The default is 100%.
- *   @param gravity [Magick::GravityType] the gravity for offset. the offsets are measured from the
- *     NorthWest corner by default.
- *   @param x_off [Numeric] The offset of the watermark, measured from the left-hand side of the
- *     target image.
- *   @param y_off [Numeric] The offset of the watermark, measured from the top of the target image.
+ *   @param gravity [Magick::GravityType] the gravity that the offsets are measured from.
+ *   @param x_off [Numeric] The x offset of the watermark. It is measured from the right side with
+ *     NorthEastGravity, EastGravity or SouthEastGravity, from the position that centers the
+ *     watermark with NorthGravity, SouthGravity or CenterGravity, and from the left side otherwise.
+ *   @param y_off [Numeric] The y offset of the watermark. It is measured from the bottom with
+ *     SouthEastGravity, SouthGravity or SouthWestGravity, from the position that centers the
+ *     watermark with EastGravity, WestGravity or CenterGravity, and from the top otherwise.
  *
  * @return [Magick::Image] a new image
  */

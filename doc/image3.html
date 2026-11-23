@@ -195,8 +195,6 @@
           <ul>
             <li><a href="#swirl">swirl</a></li>
 
-            <li><a href="#sync_profiles">sync_profiles</a></li>
-
             <li>
               <a href="#texture_fill_to_border">texture_fill_to_border</a>
             </li>
@@ -286,8 +284,8 @@
       <h3 id="paint_transparent">paint_transparent</h3>
 
       <p>
-        <span class="arg">img</span>.paint_transparent(<span class="arg">color</span>, <span class="arg">opacity</span>=TransparentOpacity,
-        <span class="arg">invert</span>=false, <span class="arg">fuzz</span>=<span class="arg">img</span>.fuzz) -&gt;
+        <span class="arg">img</span>.paint_transparent(<span class="arg">color</span>, <span class="arg">invert</span>=false,
+        <span class="arg">fuzz</span>=<span class="arg">img</span>.fuzz, <span class="arg">alpha</span>: TransparentAlpha) -&gt;
         <em>image</em>
       </p>
     </div>
@@ -296,8 +294,8 @@
       <h4>Description</h4>
 
       <p>
-        Changes the opacity value of all the pixels that match
-        <span class="arg">color</span> to the value specified by <span class="arg">opacity</span>. If <span class="arg">invert</span> is true, changes the
+        Changes the alpha value of all the pixels that match
+        <span class="arg">color</span> to the value specified by <span class="arg">alpha</span>. If <span class="arg">invert</span> is true, changes the
         pixels that don't match <span class="arg">color</span>.
       </p>
 
@@ -308,13 +306,6 @@
 
         <dd>Either a <a href="imusage.html#color_names">color name</a> or a <a href="struct.html#Pixel">pixel</a>.</dd>
 
-        <dt>opacity</dt>
-
-        <dd>
-          The new opacity value, either an
-          <a href="constants.html#Opacity">opacity</a> value or a number between 0 and QuantumRange. The default is TransparentOpacity.
-        </dd>
-
         <dt>invert</dt>
 
         <dd>If true, changes all the pixels that are <em>not</em> the target color.</dd>
@@ -323,7 +314,14 @@
 
         <dd>
           Colors within this distance are considered equal to the target color. The default is the value of the image's
-          <a href="imageattrs.html#fuzz">fuzz</a> attribute. A given value is used instead of it.
+          <a href="imageattrs.html#fuzz">fuzz</a> attribute. A given value is used instead of it. A negative value raises <code>ArgumentError</code>.
+        </dd>
+
+        <dt>alpha</dt>
+
+        <dd>
+          A keyword argument. The new alpha value, a number between 0 and QuantumRange. The default is
+          <a href="constants.html#Miscellaneous_constants">TransparentAlpha</a>.
         </dd>
       </dl>
 
@@ -334,7 +332,7 @@
       <h4>See also</h4>
 
       <p>
-        <a href="image2.html#matte_replace">matte_replace</a>, <a href="draw.html#matte">Draw#matte</a>,
+        <a href="image2.html#matte_replace">matte_replace</a>, <a href="draw.html#alpha">Draw#alpha</a>,
         <a href="#transparent">transparent</a>
       </p>
 
@@ -622,7 +620,7 @@ end
 
       <p>
         <span class="imquote">Adds or removes an ICM, IPTC, or generic profile from an image.</span>
-        If <code>profile</code> is <code>nil</code>, the specified profile is removed from the image. Use <code>profile('*', nil)</code> to remove all profiles
+        If <code>profile</code> is <code>nil</code>, the specified profile is removed from the image. Use <code>profile!('*', nil)</code> to remove all profiles
         from the image.
       </p>
 
@@ -704,7 +702,7 @@ end
       <h3 id="quantize">quantize</h3>
 
       <p>
-        <span class="arg">img</span>.quantize(<span class="arg">number_colors</span>=256, <span class="arg">colorspace</span>=RGBColorspace,
+        <span class="arg">img</span>.quantize(<span class="arg">number_colors</span>=256, <span class="arg">colorspace</span>=UndefinedColorspace,
         <span class="arg">dither</span>=<code>RiemersmaDitherMethod</code>, <span class="arg">tree_depth</span>=0,
         <span class="arg">measure_error</span>=<code>false</code>) -&gt;
         <em>image</em>
@@ -731,11 +729,13 @@ end
 
         <dt>colorspace</dt>
 
-        <dd class="imquote">
-          The <a href="constants.html#ColorspaceType">colorspace</a> to quantize in. Color reduction, by default, takes place in the RGB color space.&nbsp;
-          Empirical evidence&nbsp;suggests that distances in color spaces such as YUV or YIQ&nbsp; correspond&nbsp; to&nbsp; perceptual&nbsp; color differences
-          more closely than&nbsp; do distances in RGB space. The Transparent color space behaves uniquely in that it preserves the matte channel of the image if
-          it exists.
+        <dd>
+          The <a href="constants.html#ColorspaceType">colorspace</a> to quantize in. The default, <code>UndefinedColorspace</code>, quantizes an sRGB image in
+          its own colorspace. <code>RGBColorspace</code> is linear RGB, so it gives a different result.
+          <span class="imquote"
+            >Empirical evidence suggests that distances in color spaces such as YUV or YIQ correspond to perceptual color differences more closely than do
+            distances in RGB space. The Transparent color space behaves uniquely in that it preserves the matte channel of the image if it exists.</span
+          >
         </dd>
 
         <dt>dither</dt>
@@ -872,7 +872,7 @@ end
 
         <dt>channel</dt>
 
-        <dd>A <a href="constants.html#ChannelType">ChannelType</a> value. The default is to operate on the R, G, and B channels.</dd>
+        <dd>A <a href="constants.html#ChannelType">ChannelType</a> value. The default is AllChannels, which also changes the alpha channel.</dd>
       </dl>
 
       <h4>Returns</h4>
@@ -1063,7 +1063,7 @@ end
 
         <dd>
           <span class="imquote">A geometry string containing LOWxHIGH thresholds.</span>
-          The string is in the form `XxY'. The Y value may be omitted, in which case it is assigned the value QuantumRange-X. If a % appears in the string then
+          The string is in the form `XxY'. The Y value may be omitted, in which case it is the same as X. If a % appears in the string then
           the values are assumed to be percentages of QuantumRange.
           <span class="imquote">If the string contains 2x2, 3x3, or 4x4, then an ordered dither of order 2, 3, or 4 will be performed instead.</span>
           A <a href="struct.html#Geometry">Geometry</a> object may be used as well.
@@ -1205,11 +1205,9 @@ random_threshold_channel(geom, Magick::RedChannel)
       <h4>Description</h4>
 
       <p>
-        Reduce the number of colors in <span class="arg">img</span> to the colors used by <span class="arg">remap_image</span>. If a dither method is specified
-        <span class="imquote"
-          >then the given colors are dithered over the image as necessary, otherwise the closest color (in RGB colorspace) is selected to replace that pixel in
-          the image.</span
-        >
+        Reduce the number of colors in <span class="arg">img</span> to the colors used by <span class="arg">remap_image</span>. The colors are dithered over
+        the image as necessary with the dither method, which is <code>RiemersmaDitherMethod</code> by default. With <code>NoDitherMethod</code>,
+        <span class="imquote">the closest color (in RGB colorspace) is selected to replace that pixel in the image.</span>
       </p>
 
       <h4>Arguments</h4>
@@ -1366,10 +1364,8 @@ res = img.resample(72)
       <h3 id="resize">resize</h3>
 
       <p>
-        <span class="arg">img</span>.resize(<span class="arg">new_width</span>, <span class="arg">new_height</span>, <em>filter</em>=<a
-          href="constants.html#FilterType"
-          >LanczosFilter</a
-        >, <em>support</em>=1.0) -&gt; <em>image</em><br />
+        <span class="arg">img</span>.resize(<span class="arg">new_width</span>, <span class="arg">new_height</span>, <em>filter</em>=<span class="arg">img</span>.filter,
+        <em>support</em>=1.0) -&gt; <em>image</em><br />
         <span class="arg">img</span>.resize(<span class="arg">scale_factor</span>) -&gt; <em>image</em>
       </p>
     </div>
@@ -1399,7 +1395,8 @@ res = img.resample(72)
 
         <dd>
           The <a href="constants.html#FilterType">filter</a> to use when resizing. If you do not specify a filter argument, resize uses the value of the
-          receiver's <a href="imageattrs.html#filter">filter attribute</a>.
+          receiver's <a href="imageattrs.html#filter">filter attribute</a>. That attribute is <code>UndefinedFilter</code> unless it has been set, and then
+          ImageMagick uses <code>LanczosFilter</code>, or <code>MitchellFilter</code> when enlarging or when the image has an alpha channel or a palette.
           <span class="imquote"
             >Most of the filters are FIR (finite impulse response), however, Bessel, Gaussian, and Sinc are IIR (infinite impulse response). Bessel and Sinc are
             windowed (brought down to zero) with the Blackman filter.</span
@@ -1438,7 +1435,7 @@ res = img.resample(72)
       <h3 id="resize_bang">resize!</h3>
 
       <p>
-        <span class="arg">img</span>.resize!(<em>new_width</em>, <em>new_height</em>, <em>filter</em>=<a href="constants.html#FilterType">LanczosFilter</a>,
+        <span class="arg">img</span>.resize!(<em>new_width</em>, <em>new_height</em>, <em>filter</em>=<span class="arg">img</span>.filter,
         <em>support</em>=1.0) -&gt; <em>self</em><br />
         <span class="arg">img</span>.resize!(<span class="arg">scale_factor</span>) -&gt; <em>self</em>
       </p>
@@ -2071,7 +2068,7 @@ res = img.resample(72)
       <h3 id="separate">separate</h3>
 
       <p>
-        Image.separate(<span class="arg">channel</span>...) -&gt;
+        <span class="arg">img</span>.separate(<span class="arg">channel</span>...) -&gt;
         <em>imagelist</em>
       </p>
     </div>
@@ -2209,10 +2206,10 @@ res = img.resample(72)
     <div class="desc">
       <h4>Description</h4>
 
-      <p class="imquote">
-        Shines a distant light on an image to create a three-dimensional effect. You control the positioning of the light with
+      <p>
+        <span class="imquote">Shines a distant light on an image to create a three-dimensional effect.</span> You control the positioning of the light with
         <span class="arg">azimuth</span> and <span class="arg">elevation</span>; <span class="arg">azimuth</span> is measured in degrees off the x axis and
-        <span class="arg">elevation</span> is measured in pixels above the Z axis.
+        <span class="arg">elevation</span> is measured in degrees above the image.
       </p>
 
       <h4>Arguments</h4>
@@ -2225,7 +2222,8 @@ res = img.resample(72)
         <dt>azimuth, elevation</dt>
 
         <dd>
-          The light source direction. The azimuth is measured in degrees. 0&deg; is at 9 o'clock. Increasing values move the light source counter-clockwise.
+          The light source direction. The azimuth is measured in degrees. 0&deg; is at 3 o'clock. Increasing values move the light source counter-clockwise.
+          The elevation is measured in degrees above the image. 90&deg; is directly above it.
         </dd>
       </dl>
 
@@ -2289,8 +2287,9 @@ res = img.resample(72)
         <dt>opacity</dt>
 
         <dd>
-          The percent opacity of the shadow. May be either a number between 0.1 and 1.0, or a string in the form "NN%" between "1%" and "100%". If the
-          percentage is greater than 100 it is reduced to 100.
+          The percent opacity of the shadow. May be either a number between 0.01 and 1.0, or a string in the form "NN%" with a whole number between "1%" and
+          "100%". A percentage greater than 100 is reduced to 100, and a percentage from 0 to less than 1 is raised to 1. A negative value, or a string
+          that is not a whole number followed by "%", such as "0.5%", raises <code>ArgumentError</code>.
         </dd>
       </dl>
 
@@ -2502,7 +2501,7 @@ res = img.resample(72)
 
       <h4>Arguments</h4>
 
-      <p>The X and Y shear angles, measured in degrees. These values must not be 180.0. If either value is 0, no shearing will occur.</p>
+      <p>The X and Y shear angles, measured in degrees. These values must not be 180.0. A value of 0 disables shearing in that direction only.</p>
 
       <h4>Returns</h4>
 
@@ -2630,12 +2629,10 @@ res = img.resample(72)
 
       <h4>Example</h4>
       <pre class="language-ruby">
-img = Magick::Image.read('ex/images/Flower_Hat.jpg').first #=&gt; ex/images/Flower_Hat.jpg JPEG 200x250 DirectClass 8-bit 9761b
-img.properties #=&gt; {"comment"=&gt;"File written by Adobe Photoshop\250 4.0"}
-img.signature  #=&gt; "485e01ecba1a1f47924d67b887cb07b474f695841733796dfa3c2876965c7e8b"
-img.properties
-#=&gt; {"signature"=&gt;"485e01ecba1a1f47924d67b887cb07b474f695841733796dfa3c2876965c7e8b",
-#   "comment"=&gt;"File written by Adobe Photoshop\250 4.0"}
+img = Magick::Image.read('ex/images/Flower_Hat.jpg').first #=&gt; ex/images/Flower_Hat.jpg JPEG 200x250 200x250+0+0 DirectClass 8-bit 9kb
+img.properties.key?('signature')                           #=&gt; false
+sig = img.signature                                        # a string of 64 hexadecimal digits
+img.properties['signature'] == sig                         #=&gt; true
 </pre>
 
       <h4>See also</h4>
@@ -3159,33 +3156,6 @@ img.properties
     </div>
 
     <div class="sig">
-      <h3 id="sync_profiles">sync_profiles</h3>
-
-      <p>
-        <span class="arg">img</span>.sync_profiles -&gt; <code>true</code> or
-        <code>false</code>
-      </p>
-    </div>
-
-    <div class="desc">
-      <h4>Description</h4>
-
-      <p class="imquote">Synchronizes image properties with the image profiles.</p>
-
-      <h4>Returns</h4>
-
-      <p><code>True</code> if everything went okay, <code>false</code> if there was a problem with the profile.</p>
-
-      <h4>Notes</h4>
-
-      <p class="imquote">Currently we only support updating the EXIF resolution and orientation.</p>
-
-      <h4>Magick API</h4>
-
-      <p>SyncImageProfiles</p>
-    </div>
-
-    <div class="sig">
       <h3 id="texture_fill_to_border">texture_fill_to_border</h3>
 
       <p>
@@ -3583,8 +3553,9 @@ img.tint('white', 1.0, 0.8, 0.8)
 
       <h4>Example</h4>
       <pre class="language-ruby">
-img = Magick::Image.read('ex/images/Flower_Hat.jpg').first #=&gt; ex/images/Flower_Hat.jpg JPEG 200x250 DirectClass 8-bit 9761b
-pixel = img.pixel_color(img.columns/2, img.rows/2)         #=&gt; #&lt;struct Pixel red=216, green=147, blue=106, opacity=0&gt;
+img = Magick::Image.read('ex/images/Flower_Hat.jpg').first #=&gt; ex/images/Flower_Hat.jpg JPEG 200x250 200x250+0+0 DirectClass 8-bit 9kb
+pixel = img.pixel_color(img.columns/2, img.rows/2)
+pixel.to_s                                                 #=&gt; "red=55512, green=37779, blue=27242, alpha=65535" with Q16
 img.to_color(pixel)                                        #=&gt; "#D8936A"
 </pre>
 
@@ -3601,7 +3572,7 @@ img.to_color(pixel)                                        #=&gt; "#D8936A"
       <h3 id="transparent">transparent</h3>
 
       <p>
-        <span class="arg">img</span>.transparent(<span class="arg">color</span>, <span class="arg">opacity</span>=TransparentOpacity) -&gt;
+        <span class="arg">img</span>.transparent(<span class="arg">color</span>, <span class="arg">alpha</span>: TransparentAlpha) -&gt;
         <em>image</em>
       </p>
     </div>
@@ -3610,8 +3581,8 @@ img.to_color(pixel)                                        #=&gt; "#D8936A"
       <h4>Description</h4>
 
       <p>
-        Changes the opacity value of all the pixels that match
-        <span class="arg">color</span> to the value specified by <span class="arg">opacity</span>. By default the pixel must match exactly, but you can specify
+        Changes the alpha value of all the pixels that match
+        <span class="arg">color</span> to the value specified by <span class="arg">alpha</span>. By default the pixel must match exactly, but you can specify
         a tolerance level by setting the <a href="imageattrs.html#fuzz">fuzz</a> attribute on the image.
       </p>
 
@@ -3622,11 +3593,11 @@ img.to_color(pixel)                                        #=&gt; "#D8936A"
 
         <dd>Either a <a href="imusage.html#color_names">color name</a> or a <a href="struct.html#Pixel">pixel</a>.</dd>
 
-        <dt>opacity</dt>
+        <dt>alpha</dt>
 
         <dd>
-          The new opacity value, either an
-          <a href="constants.html#Opacity">opacity</a> value or a number between 0 and QuantumRange. The default is TransparentOpacity.
+          A keyword argument. The new alpha value, a number between 0 and QuantumRange. The default is
+          <a href="constants.html#Miscellaneous_constants">TransparentAlpha</a>.
         </dd>
       </dl>
 
@@ -3655,7 +3626,7 @@ img.to_color(pixel)                                        #=&gt; "#D8936A"
       <h4>See also</h4>
 
       <p>
-        <a href="image2.html#matte_replace">matte_replace</a>, <a href="draw.html#matte">Draw#matte</a>, <a href="#paint_transparent">paint_transparent</a>,
+        <a href="image2.html#matte_replace">matte_replace</a>, <a href="draw.html#alpha">Draw#alpha</a>, <a href="#paint_transparent">paint_transparent</a>,
         <a href="#transparent_chroma">transparent_chroma</a>
       </p>
 
@@ -3669,7 +3640,7 @@ img.to_color(pixel)                                        #=&gt; "#D8936A"
 
       <p>
         <span class="arg">img</span>.transparent_chroma(<span class="arg">low</span>, <span class="arg">high</span>,
-        <span class="arg">opacity</span>=TransparentOpacity, <span class="arg">invert</span>=<code>false</code>) -&gt; <em>image</em>
+        <span class="arg">invert</span>=<code>false</code>, <span class="arg">alpha</span>: TransparentAlpha) -&gt; <em>image</em>
       </p>
     </div>
 
@@ -3677,8 +3648,8 @@ img.to_color(pixel)                                        #=&gt; "#D8936A"
       <h4>Description</h4>
 
       <p>
-        Changes the opacity value associated with any pixel between
-        <span class="arg">low</span> and <span class="arg">high</span> to the value defined by <span class="arg">opacity</span>.
+        Changes the alpha value associated with any pixel between
+        <span class="arg">low</span> and <span class="arg">high</span> to the value defined by <span class="arg">alpha</span>.
       </p>
 
       <p class="imquote">
@@ -3695,15 +3666,18 @@ img.to_color(pixel)                                        #=&gt; "#D8936A"
 
         <dd>The low and high ends of the pixel range</dd>
 
-        <dt>opacity</dt>
-
-        <dd>The desired opacity. The default value is transparent.</dd>
-
         <dt>invert</dt>
 
         <dd>
           If true, all pixels outside the range are set to
-          <span class="arg">opacity</span>.
+          <span class="arg">alpha</span>.
+        </dd>
+
+        <dt>alpha</dt>
+
+        <dd>
+          A keyword argument. The desired alpha value. The default is
+          <a href="constants.html#Miscellaneous_constants">TransparentAlpha</a>.
         </dd>
       </dl>
 
@@ -4173,7 +4147,7 @@ img = Magick::Image.new(40, 40) { |options| options.background_color = 'lightcya
 img.view( 10, 5, 20, 20) do |view|
 
   # Set all the pixels in the view to green.
-  view[][] = Pixel.new(0, Magick::QuantumRange)
+  view[][] = Magick::Pixel.new(0, Magick::QuantumRange)
 
   # Change the top and bottom rows to red.
   view[0][] = 'red'
@@ -4382,11 +4356,13 @@ end
 
       <p>
         When the <span class="arg">gravity</span> argument is present and the <span class="arg">x-offset</span> (and optionally the
-        <span class="arg">y-offset</span>) is present, the <span class="arg">x-</span> and <span class="arg">y-offset</span> are measured from the right and/or
-        bottom edges of the target image based on the value of <span class="arg">gravity</span>. If the argument is NorthEastGravity, EastGravity, or
-        SouthEastGravity, the <span class="arg">x-offset</span> is measured from the right side of the image. If the argument is SouthEastGravity, SouthGravity,
-        or SouthWestGravity, the <span class="arg">y-offset</span> is measured from the bottom of the image. All other values are ignored and the
-        <span class="arg">x-</span> and <span class="arg">y-offset</span> are measured from the upper-left corner of the image.
+        <span class="arg">y-offset</span>) is present, the <span class="arg">x-</span> and <span class="arg">y-offset</span> are measured based on the value of
+        <span class="arg">gravity</span>. If the argument is NorthEastGravity, EastGravity, or SouthEastGravity, the <span class="arg">x-offset</span> is
+        measured from the right side of the image. If the argument is NorthGravity, SouthGravity, or CenterGravity, the <span class="arg">x-offset</span> is
+        measured from the position that centers the watermark left-to-right. Otherwise the <span class="arg">x-offset</span> is measured from the left side of
+        the image. If the argument is SouthEastGravity, SouthGravity, or SouthWestGravity, the <span class="arg">y-offset</span> is measured from the bottom of
+        the image. If the argument is EastGravity, WestGravity, or CenterGravity, the <span class="arg">y-offset</span> is measured from the position that
+        centers the watermark top-to-bottom. Otherwise the <span class="arg">y-offset</span> is measured from the top of the image.
       </p>
 
       <h4>Returns</h4>
@@ -4542,7 +4518,9 @@ end
 
       <p>
         <span class="arg">img</span>.white_threshold(<span class="arg">red_channel</span> [, <span class="arg">green_channel</span>[,
-        <span class="arg">blue_channel</span>[, <span class="arg">opacity_channel</span>]]]) -&gt; <em>image</em>
+        <span class="arg">blue_channel</span>]]) -&gt; <em>image</em><br />
+        <span class="arg">img</span>.white_threshold(<span class="arg">red_channel</span>, <span class="arg">green_channel</span>,
+        <span class="arg">blue_channel</span>, <span class="arg">alpha</span>: <span class="arg">alpha_channel</span>) -&gt; <em>image</em>
       </p>
     </div>
 
@@ -4556,8 +4534,8 @@ end
       <p>
         Each channel argument is a number between 0 and QuantumRange. All arguments except the first may be omitted. If the
         <span class="arg">green_channel</span> or <span class="arg">blue_channel</span> argument is omitted, the default value is the
-        <span class="arg">red_channel</span> value. If the <span class="arg">opacity_channel</span> argument is omitted, the default value is
-        <a href="constants.html#Opacity">OpaqueOpacity</a>.
+        <span class="arg">red_channel</span> value. The <span class="arg">alpha_channel</span> threshold can be given only as the <code>alpha:</code> keyword
+        argument, together with all three color thresholds.
       </p>
 
       <h4>Returns</h4>
@@ -4604,7 +4582,7 @@ end
 
       <h4>Returns</h4>
 
-      <p><code>self</code>, or <code>nil</code> if the image format cannot be determined.</p>
+      <p><code>self</code>. Raises <code>ImageMagickError</code> if the image format cannot be determined.</p>
 
       <h4>Example</h4>
 
