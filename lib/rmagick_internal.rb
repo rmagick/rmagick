@@ -250,7 +250,7 @@ module Magick
 
     # ImageMagick 7.1.2-0 and 6.9.13-26 read the second and third values of
     # the affine primitive as ry and rx, the other way round from before.
-    im_version = Magick::Magick_version.split[1].split(/[.-]/).map(&:to_i)
+    im_version = Magick::Magick_version.split[1].split(/[.-]/).values_at(0, 1, 2, 3).map!(&:to_i)
     AFFINE_RX_RY_SWAPPED = (im_version <=> (im_version.first == 6 ? [6, 9, 13, 26] : [7, 1, 2, 0])) >= 0
     private_constant :AFFINE_RX_RY_SWAPPED
 
