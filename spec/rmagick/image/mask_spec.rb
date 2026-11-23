@@ -104,13 +104,46 @@ RSpec.describe Magick::Image, '#mask' do
   it 'reads the alpha the same way whatever the colorspace of the mask' do
     mask = described_class.new(1, 1) { |options| options.background_color = 'none' }
     mask.alpha(Magick::ActivateAlphaChannel)
-    mask.pixel_color(0, 0, 'rgba(255,255,255,0.7)')
+    mask.pixel_color(0, 0, 'rgba(255,255,255,0.75)')
     mask.colorspace = Magick::RGBColorspace
     image = described_class.new(1, 1)
 
     image.mask(mask)
 
-    expect(image.mask.pixel_color(0, 0).red).to be_within(1).of(Magick::QuantumRange * 0.3)
+    expect(image.mask.pixel_color(0, 0).red).to be_within(1).of(Magick::QuantumRange * 0.25)
+  end
+
+  it 'uses an alpha copied from the intensity' do
+    mask = described_class.new(2, 1)
+    mask.pixel_color(1, 0, 'black')
+    mask.alpha(Magick::CopyAlphaChannel)
+    image = described_class.new(2, 1) { |options| options.background_color = 'red' }
+
+    image.mask(mask)
+    draw = Magick::Draw.new
+    draw.fill('blue')
+    draw.rectangle(0, 0, 1, 0)
+    draw.draw(image)
+
+    changed = (0..1).map { |x| image.pixel_color(x, 0).blue > Magick::QuantumRange / 2 }
+    expect(changed).to eq([true, false])
+  end
+
+  it 'uses the intensity of a mask that has a mask of its own, as ImageMagick 6 does' do
+    mask = described_class.new(4, 1) { |options| options.background_color = 'none' }
+    mask.alpha(Magick::ActivateAlphaChannel)
+    %w[white rgba(255,255,255,0) black rgba(0,0,0,0)].each_with_index { |color, x| mask.pixel_color(x, 0, color) }
+    mask.mask(described_class.new(4, 1) { |options| options.background_color = 'black' })
+    image = described_class.new(4, 1) { |options| options.background_color = 'red' }
+
+    image.mask(mask)
+    draw = Magick::Draw.new
+    draw.fill('blue')
+    draw.rectangle(0, 0, 3, 0)
+    draw.draw(image)
+
+    changed = (0..3).map { |x| image.pixel_color(x, 0).blue > Magick::QuantumRange / 2 }
+    expect(changed).to eq([false, false, true, true])
   end
 
   it 'frees the copies of a mask with alpha when one of its calls is interrupted or fails' do
