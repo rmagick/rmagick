@@ -39,7 +39,12 @@ module Magick
 
       public
 
-      # Applies the transformation matrix [sx, rx, ry, sy, tx, ty]
+      # Multiplies the current transformation matrix by [sx, rx, ry, sy, tx, ty].
+      # <tt>rx</tt> and <tt>ry</tt> are matrix elements, not angles. With
+      # ImageMagick 7.1.2-0 or later, or 6.9.13-26 or later, a point (x, y) is
+      # mapped to (sx*x + rx*y + tx, ry*x + sy*y + ty), so SVG's
+      # matrix(a, b, c, d, e, f) is matrix(a, c, b, d, e, f) here. With older
+      # versions, this is the same as SVG's matrix(sx, rx, ry, sy, tx, ty).
       def matrix(sx, rx, ry, sy, tx, ty)
         begin
           @transforms << [:affine, [Float(sx), Float(rx), Float(ry), Float(sy), Float(tx), Float(ty)]]
@@ -102,7 +107,8 @@ module Magick
         self
       end
 
-      # Skew the X-axis by <tt>angle</tt> degrees.
+      # Skew the X-axis. ImageMagick shears by sin(<tt>angle</tt>), not
+      # tan(<tt>angle</tt>) as SVG does, so the result differs from SVG's skewX.
       def skewX(angle)
         begin
           @transforms << [:skewx, [Float(angle)]]
@@ -113,7 +119,8 @@ module Magick
         self
       end
 
-      # Skew the Y-axis by <tt>angle</tt> degrees.
+      # Skew the Y-axis. ImageMagick shears by -tan(<tt>angle</tt>/2), not
+      # tan(<tt>angle</tt>) as SVG does, so the result differs from SVG's skewY.
       def skewY(angle)
         begin
           @transforms << [:skewy, [Float(angle)]]

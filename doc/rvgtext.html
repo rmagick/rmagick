@@ -194,8 +194,8 @@
       <h3 id="tref">tref</h3>
 
       <p>
-        <span class="arg">text</span>.tref(<span class="arg">tspan</span>, <span class="arg">x</span>=0, <span class="arg">y</span>=0) -&gt;
-        <em>self</em>
+        <span class="arg">text</span>.tref(<span class="arg">tspan</span>, <span class="arg">x</span>=nil, <span class="arg">y</span>=nil) -&gt;
+        <em>tref</em>
       </p>
     </div>
 
@@ -213,7 +213,7 @@
 
         <dt>x, y</dt>
 
-        <dd>The absolute text position</dd>
+        <dd>The absolute text position. If omitted, the tspan starts at the current text position.</dd>
       </dl>
 
       <h4>Example</h4>
@@ -221,24 +221,25 @@
       <p>
         <a href="javascript:popup('tref01.rb.html')"><img src="ex/tref01.gif" title="Click to see the example script" alt="tref example" /></a>
       </p>
+
+      <h4>Returns</h4>
+
+      <p>A new object that holds a copy of the tspan. You can chain the <a href="rvgstyle.html">styles</a> method to it.</p>
     </div>
 
     <div class="sig">
       <h3 id="tspan">tspan</h3>
 
       <p>
-        <span class="arg">text</span>.tspan(<span class="arg">string</span>=nil, <span class="arg">x</span>=nil, <span class="arg">y</span>=nil) [
-        <span class="arg">{ |tspan| ...}</span> ] -&gt; <em>tspan</em>
+        <span class="arg">text</span>.tspan(<span class="arg">string</span>, <span class="arg">x</span>=nil, <span class="arg">y</span>=nil) -&gt;
+        <em>tspan</em>
       </p>
     </div>
 
     <div class="desc">
       <h4>Description</h4>
 
-      <p>
-        Calls <a href="rvgtspan.html#new">RVG::Tspan.new</a> to construct a tspan and adds it to the enclosing RVG::Text object. Yields to a block if one is
-        present, passing the new tspan as an argument.
-      </p>
+      <p>Calls <a href="rvgtspan.html#new">RVG::Tspan.new</a> to construct a tspan and adds it to the enclosing RVG::Text object.</p>
 
       <p>
         <em
@@ -343,9 +344,11 @@
 
         <p>
           These styles are emulated by RVG by orienting and positioning each glyph individually. Consequently any use of a non-default value for one of these
-          styles will probably cause your script to dramatically slow down. If you specify an invalid value for any of these styles RVG ignores the value and
-          uses the default. RVG frequently uses approximate measurements to emulate these styles so the results will not be as precise as when ImageMagick is
-          doing the work.
+          styles will probably cause your script to dramatically slow down. If you specify an invalid value for <code>:writing_mode</code> or
+          <code>:baseline_shift</code>, RVG ignores the value and uses the default. However, RVG does not support the right-to-left values 'rl' and 'rl-tb'
+          of <code>:writing_mode</code>, and <code>draw</code> raises an exception for them. The other styles take numbers, and <code>draw</code> raises
+          ArgumentError for a value that cannot be converted to Float. RVG frequently uses approximate measurements to emulate these styles so the results will
+          not be as precise as when ImageMagick is doing the work.
         </p>
 
         <h4>Styles</h4>

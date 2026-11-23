@@ -64,7 +64,7 @@
       <h3 id="new">new</h3>
 
       <p>
-        RVG::Tspan.new(<span class="arg">text</span>=nil, <span class="arg">x</span>=0, <span class="arg">y</span>=0) [
+        RVG::Tspan.new(<span class="arg">text</span>=nil, <span class="arg">x</span>=nil, <span class="arg">y</span>=nil) [
         <span class="arg">{ |tspan| ...}</span> ] -&gt; <em>tspan</em>
       </p>
     </div>
@@ -180,8 +180,8 @@
       <h3 id="tspan">tspan</h3>
 
       <p>
-        <span class="arg">tspan</span>.tspan(<span class="arg">string</span>=0, <span class="arg">x</span>=nil, <span class="arg">y</span>=0) [
-        <span class="arg">{ |tspan| ...}</span> ] -&gt; <em>tspan</em>
+        <span class="arg">tspan</span>.tspan(<span class="arg">string</span>, <span class="arg">x</span>=nil, <span class="arg">y</span>=nil) -&gt;
+        <em>tspan</em>
       </p>
     </div>
 
@@ -189,8 +189,8 @@
       <h4>Description</h4>
 
       <p>
-        Calls <a href="#new">RVG::Tspan.new</a> to construct a tspan and adds it to the tspan. Yields to a block if one is present, passing the new tspan as an
-        argument. Styles defined on the container tspan propagate to the contained tspan.
+        Calls <a href="#new">RVG::Tspan.new</a> to construct a tspan and adds it to the tspan. Styles defined on the container tspan propagate to the contained
+        tspan.
       </p>
 
       <h4>Arguments</h4>

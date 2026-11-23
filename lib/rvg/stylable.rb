@@ -108,7 +108,7 @@ module Magick
       # [:text_anchor] 'start','middle','end'
       # [:text_decoration] 'none','underline','overline','line_through'
       # [:word_spacing] modify the spacing between words
-      # [:writing_mode] 'lr-tb', 'lr', 'rt-tb', 'rl', 'tb-rl', 'tb'
+      # [:writing_mode] 'lr-tb', 'lr', 'tb-rl', 'tb'
       def styles(styles)
         @styles.set(styles)
         yield(self) if block_given?

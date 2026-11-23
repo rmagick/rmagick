@@ -456,6 +456,8 @@ canvas.background_position = :scaled
 
       <p>
         If this RVG object is nested within another RVG object, returns the x-offset in user coordinates from the upper-left corner of the enclosing RVG object.
+        After <a href="#RVG_viewbox">viewbox</a> is called, returns the <span class="arg">min_x</span> argument to <code>viewbox</code> instead. Within the
+        block given to <a href="#RVG_rvg">rvg</a>, returns 0 until <code>viewbox</code> is called.
       </p>
 
       <h4>See also</h4>
@@ -474,6 +476,8 @@ canvas.background_position = :scaled
 
       <p>
         If this RVG object is nested within another RVG object, returns the y-offset in user coordinates from the upper-left corner of the enclosing RVG object.
+        After <a href="#RVG_viewbox">viewbox</a> is called, returns the <span class="arg">min_y</span> argument to <code>viewbox</code> instead. Within the
+        block given to <a href="#RVG_rvg">rvg</a>, returns 0 until <code>viewbox</code> is called.
       </p>
 
       <h4>See also</h4>
@@ -592,9 +596,10 @@ img.write('myDrawing.jpg')
         <dt>align</dt>
 
         <dd>
-          When the value of the <code>meet_or_slice</code> argument is 'meet' or 'slice', this argument controls the placement of the content within the
-          viewport. The <code>align</code> argument is the concatenation of an <em>x</em>-alignment and a <em>y</em>-alignment. The values are shown in these
-          lists:
+          If the value is 'none', the content is scaled as necessary so that it fits exactly within the viewport. The aspect ratio is <em>not</em>
+          maintained, and <code>meet_or_slice</code> has no effect, though it must still be 'meet' or 'slice'. Otherwise this argument controls the placement
+          of the content within the viewport. The <code>align</code> argument is the concatenation of an <em>x</em>-alignment and a <em>y</em>-alignment. The
+          values are shown in these lists:
 
           <h6><em>x</em>-alignment</h6>
 
@@ -632,13 +637,9 @@ img.write('myDrawing.jpg')
         <dt>meet_or_slice</dt>
 
         <dd>
-          This argument can have one of these three values:
+          This argument can have one of these two values:
 
           <dl>
-            <dt>'none'</dt>
-
-            <dd>The content is scaled as necessary so that it fits exactly within the viewport. The aspect ratio is <em>not</em> maintained.</dd>
-
             <dt>'meet'</dt>
 
             <dd>
@@ -678,7 +679,7 @@ img.write('myDrawing.jpg')
 
       <p>
         <span class="arg">rvg</span>.rvg(<span class="arg">width</span>, <span class="arg">height</span>, <span class="arg">x</span>=0,
-        <span class="arg">y</span>=0) [{|<span class="arg">new_rvg</span>| ...}] -&gt; <em>self</em>
+        <span class="arg">y</span>=0) [{|<span class="arg">new_rvg</span>| ...}] -&gt; <em>new_rvg</em>
       </p>
     </div>
 
@@ -700,7 +701,11 @@ img.write('myDrawing.jpg')
 
         <dt>x, y</dt>
 
-        <dd>The x- and y-axis offsets of the viewport upper-left corner. The units are in the user coordinate system of the parent container.</dd>
+        <dd>
+          The x- and y-axis offsets of the viewport upper-left corner. The units are in the user coordinate system of the parent container. Transforms called
+          on the nested RVG object in the block also apply to this offset. To keep the offset in the parent's coordinates, chain the transforms to
+          <code>rvg</code> instead.
+        </dd>
       </dl>
 
       <h4>Example</h4>
@@ -712,7 +717,7 @@ img.write('myDrawing.jpg')
 
       <h4>Returns</h4>
 
-      <p>The <code>RVG</code> object, so other <code>RVG</code> methods can be chained to this method.</p>
+      <p>The new <code>RVG</code> object, so other <code>RVG</code> methods can be chained to this method.</p>
     </div>
 
     <div class="sig">

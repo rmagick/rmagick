@@ -224,7 +224,7 @@ module Magick
 
       # Composite a raster image in the viewport defined by [x,y] and
       # +width+ and +height+.
-      # Use the RVG::ImageConstructors#image method to create Text objects in a container.
+      # Use the RVG::ImageConstructors#image method to create Image objects in a container.
       def initialize(image, width = nil, height = nil, x = 0, y = 0)
         super()             # run module initializers
         @image = image.copy # use a copy of the image in case app. re-uses the argument
@@ -281,11 +281,11 @@ module Magick
 
       # Draws a rectangle whose upper-left corner is [<tt>x</tt>, <tt>y</tt>] and
       # with the specified +width+ and +height+. Unless otherwise
-      # specified the rectangle has square corners. Returns a
-      # Rectangle object.
+      # specified the rectangle has square corners. Returns an
+      # RVG::Rect object.
       #
       # Draw a rectangle with rounded corners by calling the #round
-      # method on the Rectangle object. <tt>rx</tt> and <tt>ry</tt> are
+      # method on the RVG::Rect object. <tt>rx</tt> and <tt>ry</tt> are
       # the corner radii in the x- and y-directions. For example:
       #   canvas.rect(width, height, x, y).round(8, 6)
       # If <tt>ry</tt> is omitted it defaults to <tt>rx</tt>.
@@ -320,7 +320,7 @@ module Magick
     module UseConstructors
       # Reference an object to be inserted into the container's
       # content. [<tt>x</tt>,<tt>y</tt>] is the offset from the upper-left
-      # corner. If the argument is an RVG or Image object and +width+ and +height+
+      # corner. If the argument is an RVG object and +width+ and +height+
       # are specified, these values will override the +width+ and +height+
       # attributes on the argument.
       def use(obj, x = 0, y = 0, width = nil, height = nil)
@@ -333,7 +333,10 @@ module Magick
     # Methods that construct container objects within a container
     module StructureConstructors
       # Establishes a new viewport. [<tt>x</tt>, <tt>y</tt>] is the coordinate of the
-      # upper-left corner within the containing viewport. This is a
+      # upper-left corner within the containing viewport. Transforms called
+      # on the new object in the block also apply to [<tt>x</tt>, <tt>y</tt>].
+      # Chain them to this method to keep [<tt>x</tt>, <tt>y</tt>] in the
+      # containing viewport. This is a
       # _container_ method. Styles and
       # transforms specified on this object will be used by objects
       # contained within, unless overridden by an inner container or
