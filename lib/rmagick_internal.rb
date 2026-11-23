@@ -1278,12 +1278,15 @@ module Magick
 
         # iterator called from subscript methods
         def each
-          # An index only has to respond to each. to_a also forces a lazy one,
-          # so every index is checked before any pixel is touched.
-          rows = @row_indexes.to_enum.to_a.map { |j| to_index(j, @height) }
+          # Check every index before touching any pixel. Use each, not map: an index
+          # only has to respond to each, it may be lazy, and an endless one has to
+          # stop at the first index outside the view.
+          rows = []
+          @row_indexes.each { |j| rows << to_index(j, @height) } # rubocop:disable Style/MapIntoArray
           return if rows.empty?
 
-          cols = @cols.to_enum.to_a.map { |i| to_index(i, @width) }
+          cols = []
+          @cols.each { |i| cols << to_index(i, @width) } # rubocop:disable Style/MapIntoArray
 
           rows.each do |j|
             cols.each { |i| yield j * @width + i }

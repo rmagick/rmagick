@@ -23,6 +23,8 @@ RSpec.describe Magick::Image::View::Rows, '#[]' do
     expect { view[0][[10]] }.to raise_error(IndexError)
     expect { view[0][[-11]] }.to raise_error(IndexError, 'index [-11] out of range')
     expect { view[[-11]][0] }.to raise_error(IndexError)
+    expect { view[0][Range.new(2, nil)] }.to raise_error(IndexError)
+    expect { view[Range.new(0, nil)][0] }.to raise_error(IndexError)
   end
 
   it 'treats three or more integers as a list of indexes' do
