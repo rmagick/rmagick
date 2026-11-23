@@ -1125,7 +1125,7 @@ module Magick
         include Observable
 
         # Define a getter and a setter for each channel.
-        %i[red green blue opacity].each do |c|
+        %i[red green blue alpha].each do |c|
           module_eval <<-END_EVAL, __FILE__, __LINE__ + 1
             def #{c}
               return collect { |p| p.#{c} }
@@ -1226,8 +1226,7 @@ module Magick
             if start > @height || start < 0 || length < 0
               Kernel.raise IndexError, "index [#{@rows.first}] out of range"
             elsif start + length > @height
-              length = @height - length
-              length = [length, 0].max
+              length = @height - start
             end
             # Create a Range for the specified set of rows
             @rows = Range.new(start, start + length, true)
@@ -1262,8 +1261,7 @@ module Magick
             if start > @width || start < 0 || length < 0
             # nop
             elsif start + length > @width
-              length = @width - length
-              length = [length, 0].max
+              length = @width - start
             end
             # Create a Range for the specified set of columns
             @cols = Range.new(start, start + length, true)

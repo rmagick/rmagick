@@ -66,8 +66,8 @@ module Magick
         attr_writer green: Integer
         def blue: () -> Array[Integer]
         attr_writer blue: Integer
-        def opacity: () -> Array[Integer]
-        attr_writer opacity: Integer
+        def alpha: () -> Array[Integer]
+        attr_writer alpha: Integer
       end
 
       class Rows
