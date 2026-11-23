@@ -10265,6 +10265,25 @@ set_image_mask(VALUE self, VALUE mask)
 
     if (mask != Qnil)
     {
+        // ImageMagick 6 builds the mask from the inverted alpha of a mask that
+        // has one. The masks of the mask image would keep some of its pixels out
+        // of the resize and of the steps below, so drop them first.
+        bool use_alpha = (clip_mask->alpha_trait & (UpdatePixelTrait | BlendPixelTrait)) != 0;
+        if (use_alpha)
+        {
+            static const ChannelType channels[] = { ReadMaskChannel, WriteMaskChannel, CompositeMaskChannel };
+            static const PixelMask types[] = { ReadPixelMask, WritePixelMask, CompositePixelMask };
+            for (int n = 0; n < 3; n++)
+            {
+                if (clip_mask->channels & channels[n])
+                {
+                    DECLARE_GVL_CALL(unmask_call, SetImageMask, clip_mask, types[n], NULL, exception);
+                    unmask_call.update(self).read(mask).destroy(clip_mask).release(exception).run<void>();
+                    rm_check_exception(exception, clip_mask, DestroyOnError);
+                }
+            }
+        }
+
         // Resize if necessary
         if (clip_mask->columns != image->columns || clip_mask->rows != image->rows)
         {
@@ -10280,11 +10299,9 @@ set_image_mask(VALUE self, VALUE mask)
             clip_mask = resized_image;
         }
 
-        // ImageMagick 6 builds the mask from the inverted alpha unless the mask
-        // image has a mask of its own. SetImageMask reads the intensity, and the
-        // average intensity of the separated gray is its value in any colorspace.
-        if ((clip_mask->alpha_trait & (UpdatePixelTrait | BlendPixelTrait))
-            && !(clip_mask->channels & (ReadMaskChannel | WriteMaskChannel | CompositeMaskChannel)))
+        // SetImageMask reads the intensity, and the average intensity of the
+        // separated gray is its value in any colorspace.
+        if (use_alpha)
         {
             Image *alpha_image;
 
