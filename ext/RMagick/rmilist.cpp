@@ -584,7 +584,7 @@ ImageList_montage(VALUE self)
     VALUE linked;
     // The list links copies of the images, so the options below leave the
     // images of the imagelist as they are.
-    images = images_from_imagelist(self, &linked);
+    images = images_from_imagelist(self, &linked, LinkRead, montage_obj);
 
     for (Image *image = images; image; image = GetNextImageInList(image))
     {

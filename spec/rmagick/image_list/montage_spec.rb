@@ -140,11 +140,35 @@ RSpec.describe Magick::ImageList, "#montage" do
     expect(attributes.call).to eq(before)
   end
 
-  it 'raises instead of destroying an image of the list while the call uses it' do
+  it 'does not let an image be destroyed while it copies the images or makes the montage' do
     image_list = described_class.new
     image_list << Magick::Image.new(1, 1) << Magick::Image.new(1, 1)
+    errors = []
+    destroy = lambda do
+      image_list[1].destroy!
+    rescue RuntimeError => e
+      errors << e.message
+    end
 
-    expect { during_call(-> { image_list[1].destroy! }) { image_list.montage } }.to raise_error(RuntimeError, 'object is in use by another fiber')
-    expect(image_list[1].destroyed?).to be(false)
+    during_call(destroy, destroy, destroy) { image_list.montage }
+
+    expect(errors).to eq(['object is in use by another fiber'] * 3)
+    expect(image_list[1]).not_to be_destroyed
+  end
+
+  it 'does not let the options be changed while it copies the images' do
+    image_list = described_class.new
+    image_list << Magick::Image.new(1, 1) << Magick::Image.new(1, 1)
+    options = nil
+    error = nil
+    change = lambda do
+      options.background_color = 'red'
+    rescue RuntimeError => e
+      error = e.message
+    end
+
+    during_call(change) { image_list.montage { |montage| options = montage } }
+
+    expect(error).to eq('object is in use by another fiber')
   end
 end
