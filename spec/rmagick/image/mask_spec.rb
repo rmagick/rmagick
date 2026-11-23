@@ -146,6 +146,23 @@ RSpec.describe Magick::Image, '#mask' do
     expect(changed).to eq([false, false, true, true])
   end
 
+  # The ImageMagick 6 path loses a resized mask: it resizes with a blur of 0.
+  it 'resizes a mask with alpha before it reads the alpha', if: Gem::Version.new(Magick::IMAGEMAGICK_VERSION) >= Gem::Version.new('7.0.0') do
+    mask = described_class.new(2, 1) { |options| options.background_color = 'none' }
+    mask.alpha(Magick::ActivateAlphaChannel)
+    mask.pixel_color(0, 0, 'white')
+    image = described_class.new(4, 1) { |options| options.background_color = 'red' }
+
+    image.mask(mask)
+    draw = Magick::Draw.new
+    draw.fill('blue')
+    draw.rectangle(0, 0, 3, 0)
+    draw.draw(image)
+
+    changed = (0..3).map { |x| image.pixel_color(x, 0).blue > Magick::QuantumRange / 2 }
+    expect(changed).to eq([true, true, false, false])
+  end
+
   it 'frees the images it makes from a mask with alpha when one of its calls is interrupted or fails' do
     GC.start
     baseline = Magick.resource_usage(:memory)
