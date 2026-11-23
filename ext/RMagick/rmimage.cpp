@@ -149,6 +149,7 @@ DEFINE_GVL_STUB2(AutoLevelImage, Image *, ExceptionInfo *);
 DEFINE_GVL_STUB3(BilevelImage, Image *, const double, ExceptionInfo *);
 DEFINE_GVL_STUB3(BlackThresholdImage, Image *, const char *, ExceptionInfo *);
 DEFINE_GVL_STUB4(BorderImage, const Image *, const RectangleInfo *, const CompositeOperator, ExceptionInfo *);
+DEFINE_GVL_STUB2(ClampImage, Image *, ExceptionInfo *);
 DEFINE_GVL_STUB4(ClutImage, Image *, const Image *, const PixelInterpolateMethod, ExceptionInfo *);
 DEFINE_GVL_STUB4(ColorizeImage, const Image *, const char *, const PixelInfo *, ExceptionInfo *);
 DEFINE_GVL_STUB5(CompareImages, Image *, const Image *, const MetricType, double *, ExceptionInfo *);
@@ -11623,6 +11624,23 @@ Image_opaque_q(VALUE self)
 }
 
 
+#if defined(IMAGEMAGICK_7)
+// Ordered dither new_image, a copy of the image of self, with threshold_map.
+static void
+ordered_dither_image(VALUE self, Image *new_image, const char *threshold_map, ExceptionInfo *exception)
+{
+    DECLARE_GVL_CALL(call, OrderedDitherImage, new_image, threshold_map, exception);
+    call.read(self).destroy(new_image).release(exception).run<void>();
+#if defined(MAGICKCORE_HDRI_SUPPORT)
+    // With HDRI, OrderedDitherImage can leave values above QuantumRange, while
+    // ImageMagick 6 keeps them within the range.
+    DECLARE_GVL_CALL(clamp_call, ClampImage, new_image, exception);
+    clamp_call.read(self).destroy(new_image).release(exception).run<void>();
+#endif
+}
+#endif
+
+
 /**
  * Dithers the image to a predefined pattern. The threshold_map argument defines the pattern to use.
  *
@@ -11679,8 +11697,7 @@ Image_ordered_dither(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 
 #if defined(IMAGEMAGICK_7)
-    DECLARE_GVL_CALL(call, OrderedDitherImage, new_image, threshold_map, exception);
-    call.read(self).destroy(new_image).release(exception).run<void>();
+    ordered_dither_image(self, new_image, threshold_map, exception);
 #else
     DECLARE_GVL_CALL(call, OrderedPosterizeImage, new_image, threshold_map, exception);
     call.read(self).destroy(new_image).release(exception).run<void>();
@@ -12753,8 +12770,7 @@ Image_random_threshold_channel(int argc, VALUE *argv, VALUE self)
         BEGIN_CHANNEL_MASK(new_image, channels);
         if (ordered)
         {
-            DECLARE_GVL_CALL(call, OrderedDitherImage, new_image, thresholds, exception);
-            call.read(self).destroy(new_image).release(exception).run<void>();
+            ordered_dither_image(self, new_image, thresholds, exception);
         }
         else
         {
