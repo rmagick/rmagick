@@ -122,21 +122,11 @@ RSpec.describe Magick::ImageList, "#montage" do
     assert_same_image(File.join(FIXTURE_PATH, 'montage_border_color.jpg'), new_imagelist.first)
   end
 
-  it 'does not let an image be frozen while it copies a repeated image' do
-    image = Magick::Image.new(2, 2)
-    other = Magick::Image.new(2, 2)
+  it 'raises instead of destroying an image of the list while the call uses it' do
     image_list = described_class.new
-    image_list << image << other << other
-    error = nil
-    freeze = lambda do
-      image.freeze
-    rescue RuntimeError => e
-      error = e.message
-    end
+    image_list << Magick::Image.new(1, 1) << Magick::Image.new(1, 1)
 
-    during_call(freeze) { image_list.montage }
-
-    expect(error).to eq('object is in use by another fiber')
-    expect(image).not_to be_frozen
+    expect { during_call(-> { image_list[1].destroy! }) { image_list.montage } }.to raise_error(RuntimeError, 'object is in use by another fiber')
+    expect(image_list[1].destroyed?).to be(false)
   end
 end
