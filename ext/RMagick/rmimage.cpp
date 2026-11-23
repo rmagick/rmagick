@@ -11117,8 +11117,8 @@ own_pixel_cache(Image *image)
  * @param image the image
  * @param owner the Image object that holds image, an Array of the Image objects
  *   whose images are linked with it, or nil
- * @param held another Image object whose image the caller uses after the copy,
- *   an Array of them, or nil
+ * @param held another object that the caller uses after the copy, such as an
+ *   Image or the Montage options, an Array of them, or nil
  * @param changes whether the caller changes the images of owner after the copy
  * @return the copy
  */

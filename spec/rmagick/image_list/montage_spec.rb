@@ -122,21 +122,60 @@ RSpec.describe Magick::ImageList, "#montage" do
     assert_same_image(File.join(FIXTURE_PATH, 'montage_border_color.jpg'), new_imagelist.first)
   end
 
-  it 'does not let an image be frozen while it copies a repeated image' do
-    image = Magick::Image.new(2, 2)
-    other = Magick::Image.new(2, 2)
+  it 'does not change the images of the list' do
     image_list = described_class.new
-    image_list << image << other << other
+    image_list << Magick::Image.new(2, 2) << Magick::Image.new(2, 2)
+    image_list[1].compose = Magick::MultiplyCompositeOp
+    attributes = -> { image_list.to_a.map { |image| [image.background_color, image.border_color, image.matte_color, image.gravity, image.compose] } }
+    before = attributes.call
+
+    image_list.montage do |options|
+      options.background_color = 'pink'
+      options.border_color = 'blue'
+      options.matte_color = 'green'
+      options.gravity = Magick::SouthGravity
+      options.compose = Magick::OverCompositeOp
+    end
+
+    expect(attributes.call).to eq(before)
+  end
+
+  it 'does not let an image be destroyed while it copies the images or makes the montage' do
+    image_list = described_class.new
+    image_list << Magick::Image.new(1, 1) << Magick::Image.new(1, 1)
+    errors = []
+    destroy = lambda do
+      image_list[1].destroy!
+    rescue RuntimeError => e
+      errors << e.message
+    end
+
+    during_call(destroy, destroy, destroy) { image_list.montage }
+
+    expect(errors).to eq(['object is in use by another fiber'] * 3)
+    expect(image_list[1]).not_to be_destroyed
+  end
+
+  it 'does not let the options be changed while it copies the images' do
+    image_list = described_class.new
+    image_list << Magick::Image.new(1, 1) << Magick::Image.new(1, 1)
+    options = nil
     error = nil
-    freeze = lambda do
-      image.freeze
+    change = lambda do
+      options.background_color = 'red'
     rescue RuntimeError => e
       error = e.message
     end
 
-    during_call(freeze) { image_list.montage }
+    during_call(change) { image_list.montage { |montage| options = montage } }
 
     expect(error).to eq('object is in use by another fiber')
-    expect(image).not_to be_frozen
+  end
+
+  it 'raises ImageMagickError for an image with no columns on ImageMagick 6', if: Gem::Version.new(Magick::IMAGEMAGICK_VERSION) < Gem::Version.new('7.0.0') do
+    image_list = described_class.new
+    image_list << Magick::Image.new(0, 5)
+
+    expect { image_list.montage }.to raise_error(Magick::ImageMagickError)
   end
 end

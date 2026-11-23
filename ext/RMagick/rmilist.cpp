@@ -582,8 +582,9 @@ ImageList_montage(VALUE self)
     TypedData_Get_Struct(montage_obj, MagickMontage, &rm_montage_data_type, montage);
 
     VALUE linked;
-    check_images(self, rm_check_writable);
-    images = images_from_imagelist(self, &linked, LinkChange);
+    // The list links copies of the images, so the options below leave the
+    // images of the imagelist as they are.
+    images = images_from_imagelist(self, &linked, LinkRead, montage_obj);
 
     for (Image *image = images; image; image = GetNextImageInList(image))
     {
@@ -601,7 +602,7 @@ ImageList_montage(VALUE self)
 
     // MontageImage can return more than one image.
     DECLARE_GVL_CALL(call, MontageImages, images, montage->info, exception);
-    new_images = call.update_each(linked).read(montage_obj).split(images).release(exception).run<Image *>();
+    new_images = call.read_each(linked).read(montage_obj).split(images).release(exception).run<Image *>();
     rm_split(images);
     RB_GC_GUARD(linked);
     rm_check_exception(exception, new_images, DestroyOnError);
@@ -978,8 +979,8 @@ link_images(VALUE arg)
  *   uses, for the caller to register
  * @param mode whether the caller reads, changes or writes the images. The
  *   copies of frozen images to write get pixel caches of their own.
- * @param held another Image object that the caller uses, an Array of them, or
- *   nil
+ * @param held another object that the caller uses, such as an Image or the
+ *   Montage options, an Array of them, or nil
  * @return a pointer to the head of the scene sequence list
  * @see rm_imagelist_from_images
  */
