@@ -129,7 +129,7 @@ RSpec.describe Magick::Image, '#mask' do
     expect(changed).to eq([true, false])
   end
 
-  it 'uses the intensity of a mask that has a mask of its own, as ImageMagick 6 does' do
+  it 'reads the alpha of a mask that has a mask of its own' do
     mask = described_class.new(4, 1) { |options| options.background_color = 'none' }
     mask.alpha(Magick::ActivateAlphaChannel)
     %w[white rgba(255,255,255,0) black rgba(0,0,0,0)].each_with_index { |color, x| mask.pixel_color(x, 0, color) }
@@ -143,7 +143,7 @@ RSpec.describe Magick::Image, '#mask' do
     draw.draw(image)
 
     changed = (0..3).map { |x| image.pixel_color(x, 0).blue > Magick::QuantumRange / 2 }
-    expect(changed).to eq([false, false, true, true])
+    expect(changed).to eq([true, false, true, false])
   end
 
   # The ImageMagick 6 path loses a resized mask: it resizes with a blur of 0.
@@ -169,6 +169,7 @@ RSpec.describe Magick::Image, '#mask' do
     image = described_class.new(16, 16)
     mask = described_class.new(8, 8) { |options| options.background_color = 'none' }
     mask.alpha(Magick::ActivateAlphaChannel)
+    mask.mask(described_class.new(8, 8) { |options| options.background_color = 'black' })
     interrupted = interrupt_each_call(Class.new(StandardError)) { image.mask(mask) }
     failed = fail_each_call { image.mask(mask) }
     image.destroy!
