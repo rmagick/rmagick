@@ -67,4 +67,29 @@ RSpec.describe Magick::Image, '#mask' do
     expect(calls).to be_positive
     expect(Magick.resource_usage(:memory)).to be <= baseline
   end
+
+  it 'uses the alpha of a mask that has one' do
+    mask = described_class.new(4, 1) { |options| options.background_color = 'none' }
+    mask.alpha(Magick::ActivateAlphaChannel)
+    %w[white rgba(255,255,255,0) black rgba(0,0,0,0)].each_with_index { |color, x| mask.pixel_color(x, 0, color) }
+    image = described_class.new(4, 1) { |options| options.background_color = 'red' }
+
+    image.mask(mask)
+    draw = Magick::Draw.new
+    draw.fill('blue')
+    draw.rectangle(0, 0, 3, 0)
+    draw.draw(image)
+
+    changed = (0..3).map { |x| image.pixel_color(x, 0).blue > Magick::QuantumRange / 2 }
+    expect(changed).to eq([true, false, true, false])
+  end
+
+  it 'releases what it holds when a call for a mask with alpha is interrupted or fails' do
+    image = described_class.new(4, 4)
+    mask = described_class.new(4, 4) { |options| options.background_color = 'none' }
+    mask.alpha(Magick::ActivateAlphaChannel)
+
+    expect(interrupt_each_call(Class.new(StandardError)) { image.mask(mask) }).to be_positive
+    expect(fail_each_call { image.mask(mask) }).to be_positive
+  end
 end
