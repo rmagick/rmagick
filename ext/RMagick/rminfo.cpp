@@ -343,7 +343,7 @@ build_option_key(const char *format_p, size_t format_l, const char *key_p, size_
  * @overload [](key)
  *   @param key [String] A string that identifies the option.
  *
- * @return [String] The value of the option.
+ * @return [String, nil] The value of the option, or nil if it is not defined.
  */
 VALUE
 Info_aref(int argc, VALUE *argv, VALUE self)
@@ -401,12 +401,14 @@ Info_aref(int argc, VALUE *argv, VALUE self)
  *   %[pixel:@...] escape, is rejected for the "caption", "comment" and "label" keys because
  *   ImageMagick reads the file it names.
  *
- * @overload []=(format, key)
+ * @overload []=(format, key, value)
  *   @param format [String] An image format name such as "ps" or "tiff".
  *   @param key [String] A string that identifies the option.
+ *   @param value [Object] The value of the option, or nil to remove it.
  *
- * @overload []=(key)
+ * @overload []=(key, value)
  *   @param key [String] A string that identifies the option.
+ *   @param value [Object] The value of the option, or nil to remove it.
  *
  * @return [Magick::Image::Info] self
  * @raise [ArgumentError] if the "caption", "comment" or "label" value names a file with '@'
@@ -1707,9 +1709,9 @@ Info_monochrome_eq(VALUE self, VALUE val)
 }
 
 /**
- * Get the scene number of an image or the first image in a sequence.
+ * Get the number of images to read, starting at {Info#scene}.
  *
- * @return [Numeric] the scene number
+ * @return [Numeric] the number of images
  */
 VALUE
 Info_number_scenes(VALUE self)
@@ -1718,9 +1720,9 @@ Info_number_scenes(VALUE self)
 }
 
 /**
- * Set the scene number of an image or the first image in a sequence.
+ * Set the number of images to read, starting at {Info#scene}.
  *
- * @param val [Numeric] the scene number
+ * @param val [Numeric] the number of images
  * @return [Numeric] the given value
  */
 VALUE
@@ -2058,7 +2060,7 @@ Info_server_name_eq(VALUE self, VALUE server_arg)
 /**
  * Get the size
  *
- * @return [String] the size as a Geometry object
+ * @return [String, nil] the size as a geometry string
  * @see https://www.imagemagick.org/Magick++/Geometry.html
  */
 VALUE
@@ -2269,7 +2271,7 @@ Info_transparent_color(VALUE self)
 /**
  * Set the transparent color.
  *
- * @param tc_arg [String] the transparent color
+ * @param tc_arg [Magick::Pixel, String] the transparent color
  * @return [Magick::Pixel, String] the given value
  */
 VALUE
@@ -2289,7 +2291,7 @@ Info_transparent_color_eq(VALUE self, VALUE tc_arg)
  *
  * @param format [String] the format
  * @param key [String] the key
- * @return [Magick::Info] self
+ * @return [Magick::Image::Info] self
  */
 VALUE
 Info_undefine(VALUE self, VALUE format, VALUE key)

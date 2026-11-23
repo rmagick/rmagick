@@ -1642,9 +1642,9 @@ Image_background_color_eq(VALUE self, VALUE color)
 
 
 /**
- * Return the number of rows (before transformations).
+ * Return the number of columns (before transformations).
  *
- * @return [Integer] the number of rows
+ * @return [Integer] the number of columns
  */
 VALUE
 Image_base_columns(VALUE self)
@@ -1688,7 +1688,7 @@ Image_base_rows(VALUE self)
 /**
  * Get image bias (used when convolving an image).
  *
- * @return [Float] the image bias
+ * @return [Float] the image bias in quantum units, so 0.5 or '50%' returns 0.5 * QuantumRange
  */
 VALUE
 Image_bias(VALUE self)
@@ -3429,7 +3429,7 @@ set_profile(VALUE self, const char *name, VALUE profile)
 /**
  * Return the ICC color profile as a String.
  *
- * - If there is no profile, returns ""
+ * - If there is no profile, returns nil.
  * - This method has no real use but is retained for compatibility with earlier releases of RMagick,
  *   where it had no real use either.
  *
@@ -5643,7 +5643,7 @@ Image_cycle_colormap(VALUE self, VALUE amount)
 
 /**
  * Get the vertical and horizontal resolution in pixels of the image.
- * The default is "72x72".
+ * The default is "0x0".
  *
  * @return [String] a string of geometry in the form "XresxYres"
  * @see https://www.imagemagick.org/Magick++/Geometry.html
@@ -5957,7 +5957,7 @@ Image_delete_profile(VALUE self, VALUE name)
 
 
 /**
- * Return the image depth (8, 16 or 32).
+ * Return the number of bits per channel needed to represent the pixels without loss.
  *
  * - If all pixels have lower-order bytes equal to higher-order bytes, the depth will be reported as
  *   8 even if the depth field in the Image structure says 16.
@@ -8243,7 +8243,7 @@ Image_function_channel(int argc, VALUE *argv, VALUE self)
 
 
 /**
- * Get the number of algorithms search for a target color.
+ * Get the distance within which colors are considered equal.
  * By default the color must be exact.
  * Use this attribute to match colors that are close to the target color in RGB space.
  *
@@ -8258,7 +8258,7 @@ Image_fuzz(VALUE self)
 
 
 /**
- * Set the number of algorithms search for a target color.
+ * Set the distance within which colors are considered equal.
  *
  * @param fuzz [String, Numeric] The argument may be a floating-point numeric value or a string in the
  *   form "NN%".
@@ -17177,6 +17177,9 @@ Image_units(VALUE self)
 
 /**
  * Set the units of image resolution.
+ *
+ * - Changing the units between PixelsPerInchResolution and PixelsPerCentimeterResolution converts
+ *   the resolution. Changing the units from UndefinedResolution resets the resolution to 0.
  *
  * @param restype [Magick::ResolutionType] the resolution type
  * @return [Magick::ResolutionType] the given value

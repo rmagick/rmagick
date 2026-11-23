@@ -198,7 +198,7 @@
 
       <h4>Returns</h4>
 
-      <p>A color name or <a href="struct.html#Pixel">Pixel</a> object.</p>
+      <p>A color name. For a CMYK image, the name is in sRGB.</p>
     </div>
 
     <div class="sig">
@@ -253,7 +253,10 @@
 
       <h4>Argument</h4>
 
-      <p>Either a number between 0.0 and 1.0 or a string in the form "NN%".</p>
+      <p>
+        Either a number between 0.0 and 1.0 or a string in the form "NN%". The bias is stored in quantum units, so a value of 0.5 or '50%' sets
+        <code>bias</code> to 0.5*QuantumRange.
+      </p>
     </div>
 
     <div class="sig">
@@ -294,7 +297,7 @@
 
       <h4>Returns</h4>
 
-      <p>A color name.</p>
+      <p>A color name. For a CMYK image, the name is in sRGB.</p>
     </div>
 
     <div class="sig">
@@ -550,7 +553,7 @@
       <p>
         The
         <span class="imquote">vertical and horizontal resolution in pixels of the image.</span>
-        The default is "72x72".
+        The default is "0x0".
       </p>
 
       <h4>Argument</h4>
@@ -627,7 +630,7 @@
 
       <h4>Argument</h4>
 
-      <p>An integer corresponding to the disposal method.</p>
+      <p>A <a href="constants.html#DisposeType">DisposeType</a> constant.</p>
 
       <h4>Returns</h4>
 
@@ -793,7 +796,7 @@
 
       <h4>Returns</h4>
 
-      <p>A <code>Float</code> or string</p>
+      <p>A <code>Float</code> in quantum units, so a fuzz set as '10%' returns 0.1*QuantumRange.</p>
     </div>
 
     <div class="sig">
@@ -877,7 +880,6 @@
 
       <p>
         The image type classification. For example, GrayscaleType. Don't confuse this attribute with the <a href="#format">format</a>, that is "GIF" or "JPG".
-        Get-only.
       </p>
 
       <h4>Argument</h4>
@@ -970,7 +972,7 @@
 
       <h4>Returns</h4>
 
-      <p>A matte color name or <a href="struct.html#Pixel">Pixel</a> object.</p>
+      <p>A matte color name. For a CMYK image, the name is in sRGB.</p>
     </div>
 
     <div class="sig">
@@ -1000,7 +1002,7 @@
 
       <p>
         <span class="imquote">Returns the officially registered (or de facto) MIME media-type.</span>
-        If there is no registered media-type, returns "image/x-magick". Get-only.
+        If there is no registered media-type, returns "image/x-" followed by the lowercase format name, such as "image/x-rgb". Get-only.
       </p>
     </div>
 
@@ -1078,21 +1080,6 @@
       <h4>Description</h4>
 
       <p class="imquote">Number of initial bytes to skip over when reading raw image.</p>
-    </div>
-
-    <div class="desc">
-      <h4>Description</h4>
-
-      <p>
-        <span class="imquote">
-          Attenuates the opacity channel of an image. If the image pixels are opaque, they are set to the specified opacity level. Otherwise, the pixel opacity
-          values are blended with the supplied transparency value.
-        </span>
-      </p>
-
-      <h4>Argument</h4>
-
-      <p>A number between 0 and QuantumRange. Higher numbers increase transparency.</p>
     </div>
 
     <div class="sig">
@@ -1314,11 +1301,7 @@
     <div class="desc">
       <h4>Description</h4>
 
-      <p>
-        The number of colors in the image after quantization. Set by
-        <code>quantize</code> <a href="ilist.html#quantize">[ImageList]</a><a href="image3.html#quantize">[Image]</a> if the <code>measure_error</code> argument
-        is <code>true</code>. Get-only.
-      </p>
+      <p>The number of unique colors in the image. The same as <a href="#number_colors">number_colors</a>. Get-only.</p>
     </div>
 
     <div class="sig">
@@ -1355,7 +1338,7 @@
 
       <h4>Returns</h4>
 
-      <p>A transparent color name or <a href="struct.html#Pixel">Pixel</a> object.</p>
+      <p>A transparent color name. For a CMYK image, the name is in sRGB.</p>
     </div>
 
     <div class="sig">
@@ -1371,6 +1354,11 @@
       <h4>Description</h4>
 
       <p class="imquote">Units of image resolution.</p>
+
+      <p>
+        Changing the units between PixelsPerInchResolution and PixelsPerCentimeterResolution converts <a href="#x_resolution">x_resolution</a> and
+        <a href="#y_resolution">y_resolution</a>. Changing the units from UndefinedResolution resets them to 0, so set the units before the resolution.
+      </p>
 
       <h4>Argument</h4>
 
@@ -1479,7 +1467,10 @@
 
       <h4>Returns</h4>
 
-      <p>A <code>VirtualPixelMethod</code> constant.</p>
+      <p>
+        A <code>VirtualPixelMethod</code> constant. A new image returns UndefinedVirtualPixelMethod, which ImageMagick treats as
+        EdgeVirtualPixelMethod.
+      </p>
 
       <h4>Example</h4>
 
