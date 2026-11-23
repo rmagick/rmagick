@@ -10285,7 +10285,8 @@ set_image_mask(VALUE self, VALUE mask)
         }
 
         // Resize if necessary
-        if (clip_mask->columns != image->columns || clip_mask->rows != image->rows)
+        bool resized = clip_mask->columns != image->columns || clip_mask->rows != image->rows;
+        if (resized)
         {
             DECLARE_GVL_CALL(call, ResizeImage, clip_mask, image->columns, image->rows, image->filter, exception);
             resized_image = call.update(self).read(mask).destroy(clip_mask).release(exception).run<Image *>();
@@ -10320,6 +10321,17 @@ set_image_mask(VALUE self, VALUE mask)
             rm_check_exception(exception, clip_mask, DestroyOnError);
             clip_mask->intensity = AveragePixelIntensityMethod;
         }
+
+#if defined(MAGICKCORE_HDRI_SUPPORT)
+        // With HDRI, the resize can leave values outside the range, which would
+        // blend the image past its own colors.
+        if (resized)
+        {
+            DECLARE_GVL_CALL(clamp_call, ClampImage, clip_mask, exception);
+            clamp_call.update(self).read(mask).destroy(clip_mask).release(exception).run<void>();
+            rm_check_exception(exception, clip_mask, DestroyOnError);
+        }
+#endif
 
         DECLARE_GVL_CALL(call, SetImageMask, image, WritePixelMask, clip_mask, exception);
         call.update(self).read(mask).destroy(clip_mask).release(exception).run<void>();
@@ -10369,6 +10381,19 @@ set_image_mask(VALUE self, VALUE mask)
             DestroyExceptionInfo(exception);
             rm_ensure_result(resized_image);
             clip_mask = resized_image;
+        }
+
+        // The clip mask and the mask of the mask image would keep the gray
+        // below out of some of its pixels.
+        if (clip_mask->clip_mask)
+        {
+            DECLARE_GVL_CALL(unclip_call, SetImageClipMask, clip_mask, NULL);
+            unclip_call.update(self).read(mask).destroy(clip_mask).run<void>();
+        }
+        if (clip_mask->mask)
+        {
+            DECLARE_GVL_CALL(unmask_call, SetImageMask, clip_mask, NULL);
+            unmask_call.update(self).read(mask).destroy(clip_mask).run<void>();
         }
 
         // The following section is copied from mogrify.c (6.2.8-8)
