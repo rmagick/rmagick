@@ -10280,6 +10280,16 @@ set_image_mask(VALUE self, VALUE mask)
             clip_mask = resized_image;
         }
 
+        // SetImageMask reads only the intensity of the mask. ImageMagick 6 reads
+        // the alpha of a mask that has one, so turn the alpha into the same gray.
+        if (clip_mask->alpha_trait != UndefinedPixelTrait)
+        {
+            DECLARE_GVL_CALL(extract_call, SetImageAlphaChannel, clip_mask, ExtractAlphaChannel, exception);
+            extract_call.update(self).read(mask).destroy(clip_mask).release(exception).run<void>();
+            DECLARE_GVL_CALL(negate_call, NegateImage, clip_mask, MagickFalse, exception);
+            negate_call.update(self).read(mask).destroy(clip_mask).release(exception).run<void>();
+        }
+
         DECLARE_GVL_CALL(call, SetImageMask, image, WritePixelMask, clip_mask, exception);
         call.update(self).read(mask).destroy(clip_mask).release(exception).run<void>();
         DestroyImage(clip_mask);
