@@ -27,10 +27,9 @@ RSpec.describe Magick::Image, '#dispatch' do
     expect(image.dispatch(0, 0, 8, 8, 'RGB').length).to eq(8 * 8 * 3)
   end
 
-  # Regression: columns * rows * map_length is computed in unsigned arithmetic.
-  # A geometry that overflows it used to under-allocate the pixel buffer, so
-  # ImageMagick wrote out of bounds (SIGSEGV / heap corruption). It must raise
-  # RangeError instead.
+  # Regression: a geometry this large used to overflow columns * rows * map_length
+  # and under-allocate the pixel buffer, so ImageMagick wrote out of bounds
+  # (SIGSEGV / heap corruption). The bounds check now rejects it first.
   it 'raises RangeError when the geometry overflows the buffer size' do
     image = described_class.new(8, 8)
 
@@ -54,5 +53,17 @@ RSpec.describe Magick::Image, '#dispatch' do
     end
 
     expect(results).to eq([expected] * 10)
+  end
+
+  it 'raises RangeError for a rectangle outside the image' do
+    image = described_class.new(4, 4)
+
+    expect { image.dispatch(-1, 0, 2, 1, 'R') }.to raise_error(RangeError)
+    expect { image.dispatch(0, -1, 1, 2, 'R') }.to raise_error(RangeError)
+    expect { image.dispatch(0, 0, 5, 1, 'R') }.to raise_error(RangeError)
+    expect { image.dispatch(0, 0, 1, 5, 'R') }.to raise_error(RangeError)
+    expect { image.dispatch(4, 4, 1, 1, 'R') }.to raise_error(RangeError)
+    expect { image.dispatch(0, 0, -1, 1, 'R') }.to raise_error(RangeError)
+    expect(image.dispatch(3, 3, 1, 1, 'R').length).to eq(1)
   end
 end

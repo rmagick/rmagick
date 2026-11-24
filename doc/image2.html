@@ -646,7 +646,7 @@
     <div class="desc">
       <h4>Description</h4>
 
-      <p>Extracts the pixel data from the specified rectangle and returns it as an array of <code>Integer</code> values.</p>
+      <p>Extracts the pixel data from the specified rectangle and returns it as an array of <code>Integer</code> values. Raises <code>RangeError</code> if the offset or size is negative or the rectangle extends beyond the image. Raises <code>ArgumentError</code> if the width or height is 0.</p>
 
       <p>The array returned by <code>export_pixels</code> is suitable for use as an argument to <code>import_pixels</code>.</p>
 
@@ -716,7 +716,7 @@ scanline = img.export_pixels(0, r, img.columns, 1, "RGB");
       <p>
         Extracts the pixel data from the specified rectangle and returns it as a string. If you need to get the pixel data in a memory buffer (as input to
         another application, for example), this method is much, much faster than <a href="#export_pixels">export_pixels</a> or
-        <a href="#get_pixels">get_pixels</a>.
+        <a href="#get_pixels">get_pixels</a>. Raises <code>RangeError</code> if the offset or size is negative or the rectangle extends beyond the image. Raises <code>ArgumentError</code> if the width or height is 0.
       </p>
 
       <p>The string returned by <code>export_pixels_to_str</code> is suitable for use as an argument to <code>import_pixels</code>.</p>

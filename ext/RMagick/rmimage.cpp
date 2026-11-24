@@ -55,6 +55,7 @@ static VALUE file_arg_rescue(VALUE, VALUE ATTRIBUTE_UNUSED) ATTRIBUTE_NORETURN;
 static void rm_image_free(void *ptr);
 static size_t rm_image_memsize(const void *ptr);
 static size_t pixel_buffer_count(size_t, size_t, size_t);
+static void check_pixel_geometry(const Image *, long, long, long, long);
 static void color_to_image_pixel(ColorspaceType, Pixel *, VALUE);
 static PixelColor image_border_color(const Image *);
 static void border_color_to_colorspace(const Image *, Pixel *, ColorspaceType);
@@ -6419,6 +6420,31 @@ pixel_buffer_count(size_t columns, size_t rows, size_t map_length)
 
 
 /**
+ * Raise RangeError unless the rectangle lies inside the image, so that a call
+ * does not read or write the virtual pixels around it.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param image the image
+ * @param x the left edge of the rectangle
+ * @param y the top edge of the rectangle
+ * @param columns the width of the rectangle
+ * @param rows the height of the rectangle
+ * @throw RangeError if the rectangle is not inside the image
+ */
+static void
+check_pixel_geometry(const Image *image, long x, long y, long columns, long rows)
+{
+    if (x < 0 || y < 0 || columns < 0 || rows < 0
+        || (unsigned long)x + columns > image->columns || (unsigned long)y + rows > image->rows)
+    {
+        rb_raise(rb_eRangeError, "geometry (%ldx%ld%+ld%+ld) exceeds image bounds",
+                 columns, rows, x, y);
+    }
+}
+
+
+/**
  * Extract pixel data from the image and returns it as an array of pixels. The "x", "y", "width" and
  * "height" parameters specify the rectangle to be extracted. The "map" parameter reflects the
  * expected ordering of the pixel array. It can be any combination or order of R = red, G = green,
@@ -6440,8 +6466,8 @@ VALUE
 Image_dispatch(int argc, VALUE *argv, VALUE self)
 {
     Image *image;
-    long x, y;
-    unsigned long columns, rows, n, npixels;
+    long x, y, columns, rows;
+    unsigned long n, npixels;
     VALUE pixels_ary, map_arg;
     StorageType stg_type = QuantumPixel;
     char *map;
@@ -6464,8 +6490,8 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
 
     x       = NUM2LONG(argv[0]);
     y       = NUM2LONG(argv[1]);
-    columns = NUM2ULONG(argv[2]);
-    rows    = NUM2ULONG(argv[3]);
+    columns = NUM2LONG(argv[2]);
+    rows    = NUM2LONG(argv[3]);
     map_arg = rb_str_new_frozen(StringValue(argv[4]));
     map     = StringValueCStr(map_arg);
     mapL    = strlen(map);
@@ -6474,6 +6500,7 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
         stg_type = RTEST(argv[5]) ? DoublePixel : QuantumPixel;
     }
     image = rm_check_readable(self);
+    check_pixel_geometry(image, x, y, columns, rows);
 
     // Compute the size of the pixel array and allocate the memory.
     npixels = pixel_buffer_count(columns, rows, mapL);
@@ -6484,7 +6511,7 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
     pixels_ary = rb_ary_new();
 
     exception = AcquireExceptionInfo();
-    DECLARE_GVL_CALL(call, ExportImagePixels, image, x, y, columns, rows, map, stg_type, (void *)pixels.v, exception);
+    DECLARE_GVL_CALL(call, ExportImagePixels, image, x, y, (size_t)columns, (size_t)rows, map, stg_type, (void *)pixels.v, exception);
     okay = call.read(self).free_buffer(pixels.v).release(exception).run<MagickBooleanType>();
 
     if (!okay)
@@ -7411,8 +7438,7 @@ VALUE
 Image_export_pixels(int argc, VALUE *argv, VALUE self)
 {
     Image *image;
-    long x_off = 0L, y_off = 0L;
-    unsigned long cols, rows;
+    long x_off = 0L, y_off = 0L, cols = 0L, rows = 0L;
     long n, npixels;
     MagickBooleanType okay;
     const char *map = "RGB";
@@ -7421,9 +7447,7 @@ Image_export_pixels(int argc, VALUE *argv, VALUE self)
     ExceptionInfo *exception;
 
 
-    image = rm_check_readable(self);
-    cols = image->columns;
-    rows = image->rows;
+    rm_check_readable(self);
 
     switch (argc)
     {
@@ -7431,9 +7455,9 @@ Image_export_pixels(int argc, VALUE *argv, VALUE self)
             map_arg = rb_str_new_frozen(StringValue(argv[4]));
             map   = StringValueCStr(map_arg);
         case 4:
-            rows  = NUM2ULONG(argv[3]);
+            rows  = NUM2LONG(argv[3]);
         case 3:
-            cols  = NUM2ULONG(argv[2]);
+            cols  = NUM2LONG(argv[2]);
         case 2:
             y_off = NUM2LONG(argv[1]);
         case 1:
@@ -7446,12 +7470,19 @@ Image_export_pixels(int argc, VALUE *argv, VALUE self)
     }
 
     image = rm_check_readable(self);
-    if (   x_off < 0 || (unsigned long)x_off > image->columns
-           || y_off < 0 || (unsigned long)y_off > image->rows
-           || cols == 0 || rows == 0)
+    if (argc < 3)
+    {
+        cols = (long)image->columns;
+    }
+    if (argc < 4)
+    {
+        rows = (long)image->rows;
+    }
+    if (cols == 0 || rows == 0)
     {
         rb_raise(rb_eArgError, "invalid extract geometry");
     }
+    check_pixel_geometry(image, x_off, y_off, cols, rows);
 
 
     npixels = (long)pixel_buffer_count(cols, rows, strlen(map));
@@ -7463,7 +7494,7 @@ Image_export_pixels(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 
-    DECLARE_GVL_CALL(call, ExportImagePixels, image, x_off, y_off, cols, rows, map, QuantumPixel, (void *)pixels, exception);
+    DECLARE_GVL_CALL(call, ExportImagePixels, image, x_off, y_off, (size_t)cols, (size_t)rows, map, QuantumPixel, (void *)pixels, exception);
     okay = call.read(self).free_buffer(pixels).release(exception).run<MagickBooleanType>();
     if (!okay)
     {
@@ -7579,8 +7610,7 @@ VALUE
 Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
 {
     Image *image;
-    long x_off = 0L, y_off = 0L;
-    unsigned long cols, rows;
+    long x_off = 0L, y_off = 0L, cols = 0L, rows = 0L;
     unsigned long npixels;
     size_t sz;
     MagickBooleanType okay;
@@ -7589,9 +7619,7 @@ Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
     VALUE string, map_arg = Qnil;
     ExceptionInfo *exception;
 
-    image = rm_check_readable(self);
-    cols = image->columns;
-    rows = image->rows;
+    rm_check_readable(self);
 
     switch (argc)
     {
@@ -7601,9 +7629,9 @@ Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
             map_arg = rb_str_new_frozen(StringValue(argv[4]));
             map   = StringValueCStr(map_arg);
         case 4:
-            rows  = NUM2ULONG(argv[3]);
+            rows  = NUM2LONG(argv[3]);
         case 3:
-            cols  = NUM2ULONG(argv[2]);
+            cols  = NUM2LONG(argv[2]);
         case 2:
             y_off = NUM2LONG(argv[1]);
         case 1:
@@ -7616,12 +7644,19 @@ Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
     }
 
     image = rm_check_readable(self);
-    if (   x_off < 0 || (unsigned long)x_off > image->columns
-           || y_off < 0 || (unsigned long)y_off > image->rows
-           || cols == 0 || rows == 0)
+    if (argc < 3)
+    {
+        cols = (long)image->columns;
+    }
+    if (argc < 4)
+    {
+        rows = (long)image->rows;
+    }
+    if (cols == 0 || rows == 0)
     {
         rb_raise(rb_eArgError, "invalid extract geometry");
     }
+    check_pixel_geometry(image, x_off, y_off, cols, rows);
 
 
     npixels = pixel_buffer_count(cols, rows, strlen(map));
@@ -7662,7 +7697,7 @@ Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
 
-    DECLARE_GVL_CALL(call, ExportImagePixels, image, x_off, y_off, cols, rows, map, type, (void *)RSTRING_PTR(string), exception);
+    DECLARE_GVL_CALL(call, ExportImagePixels, image, x_off, y_off, (size_t)cols, (size_t)rows, map, type, (void *)RSTRING_PTR(string), exception);
     okay = call.read(self).release(exception).run<MagickBooleanType>();
     if (!okay)
     {
@@ -8840,12 +8875,7 @@ Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE row
     rows    = NUM2LONG(rows_arg);
 
     image = rm_check_readable(self);
-    if (x < 0 || y < 0 || columns < 0 || rows < 0
-        || (unsigned long)x + columns > image->columns || (unsigned long)y + rows > image->rows)
-    {
-        rb_raise(rb_eRangeError, "geometry (%ldx%ld%+ld%+ld) exceeds image bounds",
-                 columns, rows, x, y);
-    }
+    check_pixel_geometry(image, x, y, columns, rows);
 
     // Cast AcquireImagePixels to get rid of the const qualifier. We're not going
     // to change the pixels but I don't want to make "pixels" const.
@@ -15652,12 +15682,7 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg,
     cols = NUM2LONG(cols_arg);
     rows = NUM2LONG(rows_arg);
     image = rm_check_frozen(self);
-    if (x < 0 || y < 0 || cols < 0 || rows < 0
-        || (unsigned long)x + cols > image->columns || (unsigned long)y + rows > image->rows)
-    {
-        rb_raise(rb_eRangeError, "geometry (%ldx%ld%+ld%+ld) exceeds image bounds",
-                 cols, rows, x, y);
-    }
+    check_pixel_geometry(image, x, y, cols, rows);
 
     size = cols * rows;
     new_pixels = rb_Array(new_pixels);
