@@ -2101,8 +2101,7 @@ get_type_metrics(int argc, VALUE *argv, VALUE self, gvl_function_t fp)
     {
         call.read(t);
     }
-    void *ret = mark_draw(call, self, draw).release(info).run<void *>();
-    okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+    okay = mark_draw(call, self, draw).release(info).run<MagickBooleanType>();
     DestroyDrawInfo(info);
 
     if (!okay)
