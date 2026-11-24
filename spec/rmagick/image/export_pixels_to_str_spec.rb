@@ -55,10 +55,10 @@ RSpec.describe Magick::Image, '#export_pixels_to_str' do
     expect(result.unpack('L*')).to all(eq(0xffffffff))
   end
 
-  # Regression: cols * rows * map_length (and that times the storage-type size)
-  # is computed in unsigned arithmetic. A geometry that overflows it used to
-  # under-allocate the string buffer, so ImageMagick wrote out of bounds
-  # (SIGSEGV / heap corruption). It must raise RangeError instead.
+  # Regression: a geometry this large used to overflow cols * rows * map_length
+  # (and that times the storage-type size) and under-allocate the string
+  # buffer, so ImageMagick wrote out of bounds (SIGSEGV / heap corruption). The
+  # bounds check now rejects it first.
   it 'raises RangeError when the geometry overflows the buffer size' do
     image = described_class.new(8, 8)
 
@@ -76,5 +76,47 @@ RSpec.describe Magick::Image, '#export_pixels_to_str' do
     end
 
     expect(results).to eq([expected] * 10)
+  end
+
+  it 'raises RangeError for a rectangle outside the image' do
+    image = described_class.new(4, 4)
+
+    expect { image.export_pixels_to_str(-1, 0, 2, 1, 'R') }.to raise_error(RangeError)
+    expect { image.export_pixels_to_str(0, -1, 1, 2, 'R') }.to raise_error(RangeError)
+    expect { image.export_pixels_to_str(0, 0, 5, 1, 'R') }.to raise_error(RangeError)
+    expect { image.export_pixels_to_str(0, 0, 1, 5, 'R') }.to raise_error(RangeError)
+    expect { image.export_pixels_to_str(4, 4, 1, 1, 'R') }.to raise_error(RangeError)
+    expect { image.export_pixels_to_str(0, 0, -1, 1, 'R') }.to raise_error(RangeError)
+    expect(image.export_pixels_to_str(3, 3, 1, 1, 'R').bytesize).to eq(1)
+  end
+
+  it 'raises ArgumentError for an empty rectangle' do
+    image = described_class.new(4, 4)
+
+    expect { image.export_pixels_to_str(0, 0, 0, 1, 'R') }.to raise_error(ArgumentError)
+    expect { image.export_pixels_to_str(0, 0, 1, 0, 'R') }.to raise_error(ArgumentError)
+    expect { image.export_pixels_to_str(0, 1, 0) }.to raise_error(ArgumentError)
+    expect { image.export_pixels_to_str(-1, 0, 0, 1, 'R') }.to raise_error(ArgumentError)
+  end
+
+  it 'raises RangeError for an offset whose default size goes past the image' do
+    image = described_class.new(4, 4)
+
+    expect { image.export_pixels_to_str(1) }.to raise_error(RangeError)
+    expect { image.export_pixels_to_str(0, 1) }.to raise_error(RangeError)
+    expect { image.export_pixels_to_str(1, 1, 2) }.to raise_error(RangeError)
+    expect(image.export_pixels_to_str(0, 0).bytesize).to eq(4 * 4 * 3)
+    expect(image.export_pixels_to_str(1, 0, 3).bytesize).to eq(3 * 4 * 3)
+  end
+
+  it 'takes the default size from the image after converting the arguments' do
+    image = described_class.new(4, 4)
+    x = Object.new
+    x.define_singleton_method(:to_int) do
+      image.crop!(0, 0, 2, 2)
+      0
+    end
+
+    expect(image.export_pixels_to_str(x).bytesize).to eq(2 * 2 * 3)
   end
 end
