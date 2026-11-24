@@ -4332,7 +4332,7 @@ img.artifact('distort:viewport') #=&gt; nil
     <div class="desc">
       <h4>Description</h4>
 
-      <p>Extracts the pixel data from the specified rectangle and returns it as an array of either <code>Integer</code> or <code>Float</code> values.</p>
+      <p>Extracts the pixel data from the specified rectangle and returns it as an array of either <code>Integer</code> or <code>Float</code> values. Raises <code>RangeError</code> if the offset or size is negative or the rectangle extends beyond the image.</p>
 
       <p>The array returned by <code>dispatch</code> is suitable for use as an argument to <code>constitute</code>.</p>
 
