@@ -3288,8 +3288,7 @@ Image_color_histogram(VALUE self)
     }
 
     DECLARE_GVL_CALL(call, GetImageHistogram, image, &colors, exception);
-    void *ret = call.read(self).destroy(dc_copy).release(exception).free_result().run<void *>();
-    histogram = reinterpret_cast<decltype(histogram)>(ret);
+    histogram = call.read(self).destroy(dc_copy).release(exception).free_result().run<decltype(histogram)>();
 
     // The histogram does not refer to the copy, so it is no longer needed.
     if (dc_copy)
@@ -8853,8 +8852,7 @@ Image_get_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg, VALUE row
     exception = AcquireExceptionInfo();
     CacheView *view = AcquireVirtualCacheView(image, exception);
     DECLARE_GVL_CALL(call, GetCacheViewVirtualPixels, view, x, y, (size_t)columns, (size_t)rows, exception);
-    void *ret = call.cleanup(destroy_cache_view, view).release(exception).keep_thread().run<void *>();
-    pixels = reinterpret_cast<decltype(pixels)>(ret);
+    pixels = call.cleanup(destroy_cache_view, view).release(exception).keep_thread().run<decltype(pixels)>();
     check_cache_view_exception(view, exception);
 
     DestroyExceptionInfo(exception);
@@ -12061,8 +12059,7 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
         exception = AcquireExceptionInfo();
         CacheView *view = AcquireVirtualCacheView(image, exception);
         DECLARE_GVL_CALL(call, GetCacheViewVirtualPixels, view, x, y, 1, 1, exception);
-        void *ret = call.cleanup(destroy_cache_view, view).release(exception).keep_thread().run<void *>();
-        old_pixel = reinterpret_cast<decltype(old_pixel)>(ret);
+        old_pixel = call.cleanup(destroy_cache_view, view).release(exception).keep_thread().run<decltype(old_pixel)>();
         check_cache_view_exception(view, exception);
 
         DestroyExceptionInfo(exception);
@@ -12140,8 +12137,7 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
 
     CacheView *view = AcquireAuthenticCacheView(image, exception);
     DECLARE_GVL_CALL(call, GetCacheViewAuthenticPixels, view, x, y, 1, 1, exception);
-    void *ret = call.update(self).cleanup(destroy_cache_view, view).release(exception).keep_thread().run<void *>();
-    pixel = reinterpret_cast<decltype(pixel)>(ret);
+    pixel = call.update(self).cleanup(destroy_cache_view, view).release(exception).keep_thread().run<decltype(pixel)>();
     check_cache_view_exception(view, exception);
 
     if (pixel)
@@ -15694,8 +15690,7 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg,
     {
         CacheView *view = AcquireAuthenticCacheView(image, exception);
         DECLARE_GVL_CALL(call, GetCacheViewAuthenticPixels, view, x, y, (size_t)cols, (size_t)rows, exception);
-        void *ret = call.update(self).cleanup(destroy_cache_view, view).release(exception).run<void *>();
-        pixels = reinterpret_cast<decltype(pixels)>(ret);
+        pixels = call.update(self).cleanup(destroy_cache_view, view).release(exception).run<decltype(pixels)>();
         check_cache_view_exception(view, exception);
 
         if (pixels)
@@ -17914,8 +17909,7 @@ Image_wet_floor(int argc, VALUE *argv, VALUE self)
 #endif
 
         DECLARE_GVL_CALL(pixels_call, GetVirtualPixels, reflection, 0, y, image->columns, 1, exception);
-        void *ret = pixels_call.read(self).keep_thread().destroy(reflection).release(exception).run<void *>();
-        p = reinterpret_cast<decltype(p)>(ret);
+        p = pixels_call.read(self).keep_thread().destroy(reflection).release(exception).run<decltype(p)>();
         rm_check_exception(exception, reflection, DestroyOnError);
         if (!p)
         {
