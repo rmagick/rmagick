@@ -1032,7 +1032,7 @@ RSpec.describe Magick::Image, if: offloading do
       end
     end
 
-    it "does not let another fiber destroy an image while add_compose_mask negates the mask" do
+    it "does not let another fiber destroy an image while add_compose_mask sets the mask" do
       image = red_image
       mask = blue_image
       error = nil
@@ -1042,6 +1042,30 @@ RSpec.describe Magick::Image, if: offloading do
 
       expect(error).to in_use
       expect(image).not_to be_destroyed
+    end
+
+    it "does not let another fiber freeze an image while add_compose_mask sets the mask" do
+      image = red_image
+      mask = blue_image
+      error = nil
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { image.freeze } } }
+
+      scheduler.run { image.add_compose_mask(mask) }
+
+      expect(error).to in_use
+      expect(image).not_to be_frozen
+    end
+
+    it "does not let another fiber destroy the mask while add_compose_mask reads it" do
+      image = red_image
+      mask = blue_image
+      error = nil
+      scheduler.before_next_operation { Fiber.schedule { error = attempt { mask.destroy! } } }
+
+      scheduler.run { image.add_compose_mask(mask) }
+
+      expect(error).to in_use
+      expect(mask).not_to be_destroyed
     end
 
     it "does not let another fiber destroy an image while mask resizes the mask" do
