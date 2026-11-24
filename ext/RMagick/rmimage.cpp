@@ -958,8 +958,7 @@ Image_add_compose_mask(VALUE self, VALUE mask)
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
     DECLARE_GVL_CALL(mask_call, SetImageMask, new_image, CompositePixelMask, mask_image, exception);
-    void *ret = mask_call.update(self).read(mask).destroy(new_image).release(exception).run<void *>();
-    okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+    okay = mask_call.update(self).read(mask).destroy(new_image).release(exception).run<MagickBooleanType>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
     if (!okay)
@@ -3156,15 +3155,13 @@ Image_clut_channel(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(image, channels);
     DECLARE_GVL_CALL(call, ClutImage, image, clut, image->interpolate, exception);
-    void *ret = call.update(self).restore_mask(image, channel_mask).read(clut_obj).release(exception).run<void *>();
-    okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+    okay = call.update(self).restore_mask(image, channel_mask).read(clut_obj).release(exception).run<MagickBooleanType>();
     END_CHANNEL_MASK(image);
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     DECLARE_GVL_CALL(call, ClutImageChannel, image, channels, clut);
-    void *ret = call.update(self).read(clut_obj).run<void *>();
-    okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+    okay = call.update(self).read(clut_obj).run<MagickBooleanType>();
     rm_check_image_exception(image, RetainOnError);
     rm_check_image_exception(clut, RetainOnError);
 #endif
@@ -4694,14 +4691,12 @@ composite_tiled(int bang, int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
             BEGIN_CHANNEL_MASK(image, channels);
             DECLARE_GVL_CALL(call, CompositeImage, image, comp_image, composite_op, MagickTrue, x, y, exception);
-            void *ret = call.read(comp).hold(bang ? self : Qnil, true).keep_thread().restore_mask(image, channel_mask).destroy(bang ? NULL : image).release(exception).run<void *>();
-            status = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+            status = call.read(comp).hold(bang ? self : Qnil, true).keep_thread().restore_mask(image, channel_mask).destroy(bang ? NULL : image).release(exception).run<MagickBooleanType>();
             END_CHANNEL_MASK(image);
             rm_check_exception(exception, image, bang ? RetainOnError: DestroyOnError);
 #else
             DECLARE_GVL_CALL(call, CompositeImageChannel, image, channels, composite_op, comp_image, x, y);
-            void *ret = call.read(comp).hold(bang ? self : Qnil, true).keep_thread().destroy(bang ? NULL : image).run<void *>();
-            status = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+            status = call.read(comp).hold(bang ? self : Qnil, true).keep_thread().destroy(bang ? NULL : image).run<MagickBooleanType>();
             rm_check_image_exception(image, bang ? RetainOnError: DestroyOnError);
 #endif
         }
@@ -4817,14 +4812,12 @@ Image_compress_colormap_bang(VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, CompressImageColormap, image, exception);
-    void *ret = call.update(self).release(exception).run<void *>();
-    okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+    okay = call.update(self).release(exception).run<MagickBooleanType>();
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 #else
     DECLARE_GVL_CALL(call, CompressImageColormap, image);
-    void *ret = call.update(self).run<void *>();
-    okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+    okay = call.update(self).run<MagickBooleanType>();
     rm_check_image_exception(image, RetainOnError);
 #endif
     if (!okay)
@@ -5819,8 +5812,7 @@ Image_decipher(VALUE self, VALUE passphrase)
     exception = AcquireExceptionInfo();
 
     DECLARE_GVL_CALL(call, DecipherImage, new_image, pf, exception);
-    void *ret = call.read(self).destroy(new_image).release(exception).run<void *>();
-    okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+    okay = call.read(self).destroy(new_image).release(exception).run<MagickBooleanType>();
     rm_check_exception(exception, new_image, DestroyOnError);
     if (!okay)
     {
@@ -6494,8 +6486,7 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
 
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, ExportImagePixels, image, x, y, columns, rows, map, stg_type, (void *)pixels.v, exception);
-    void *ret = call.read(self).free_buffer(pixels.v).release(exception).run<void *>();
-    okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+    okay = call.read(self).free_buffer(pixels.v).release(exception).run<MagickBooleanType>();
 
     if (!okay)
     {
@@ -7119,8 +7110,7 @@ Image_encipher(VALUE self, VALUE passphrase)
     exception = AcquireExceptionInfo();
 
     DECLARE_GVL_CALL(call, EncipherImage, new_image, pf, exception);
-    void *ret = call.read(self).destroy(new_image).release(exception).run<void *>();
-    okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+    okay = call.read(self).destroy(new_image).release(exception).run<MagickBooleanType>();
     rm_check_exception(exception, new_image, DestroyOnError);
     if (!okay)
     {
@@ -7475,8 +7465,7 @@ Image_export_pixels(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 
     DECLARE_GVL_CALL(call, ExportImagePixels, image, x_off, y_off, cols, rows, map, QuantumPixel, (void *)pixels, exception);
-    void *ret = call.read(self).free_buffer(pixels).release(exception).run<void *>();
-    okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+    okay = call.read(self).free_buffer(pixels).release(exception).run<MagickBooleanType>();
     if (!okay)
     {
         xfree((void *)pixels);
@@ -7675,8 +7664,7 @@ Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 
     DECLARE_GVL_CALL(call, ExportImagePixels, image, x_off, y_off, cols, rows, map, type, (void *)RSTRING_PTR(string), exception);
-    void *ret = call.read(self).release(exception).run<void *>();
-    okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+    okay = call.read(self).release(exception).run<MagickBooleanType>();
     if (!okay)
     {
         // Let GC have the string buffer.
@@ -7826,12 +7814,11 @@ Image_find_similar_region(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
 #if defined(IMAGEMAGICK_7)
     DECLARE_GVL_CALL(call, IsEquivalentImage, image, target, &x, &y, exception);
-    void *ret = call.read(self).read(targ).release(exception).run<void *>();
+    okay = call.read(self).read(targ).release(exception).run<MagickBooleanType>();
 #else
     DECLARE_GVL_CALL(call, IsImageSimilar, image, target, &x, &y, exception);
-    void *ret = call.read(self).read(targ).release(exception).run<void *>();
+    okay = call.read(self).read(targ).release(exception).run<MagickBooleanType>();
 #endif
-    okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
     CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
 
@@ -9250,12 +9237,11 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, ImportImagePixels, image, x_off, y_off, (size_t)cols, (size_t)rows, map, stg_type, buffer, exception);
-    void *ret = call.update(self).free_buffer(pixels).free_buffer(fpixels).release(exception).run<void *>();
+    okay = call.update(self).free_buffer(pixels).free_buffer(fpixels).release(exception).run<MagickBooleanType>();
 #else
     DECLARE_GVL_CALL(call, ImportImagePixels, image, x_off, y_off, (size_t)cols, (size_t)rows, map, stg_type, buffer);
-    void *ret = call.update(self).free_buffer(pixels).free_buffer(fpixels).run<void *>();
+    okay = call.update(self).free_buffer(pixels).free_buffer(fpixels).run<MagickBooleanType>();
 #endif
-    okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
 
     // Free pixel array before checking for errors.
     if (pixels)
@@ -9787,15 +9773,13 @@ Image_level_colors(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(new_image, channels);
     DECLARE_GVL_CALL(call, LevelImageColors, new_image, &black_color, &white_color, invert, exception);
-    void *ret = call.read(self).destroy(new_image).release(exception).run<void *>();
-    okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+    okay = call.read(self).destroy(new_image).release(exception).run<MagickBooleanType>();
     END_CHANNEL_MASK(new_image);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
     DECLARE_GVL_CALL(call, LevelColorsImageChannel, new_image, channels, &black_color, &white_color, invert);
-    void *ret = call.read(self).destroy(new_image).run<void *>();
-    okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+    okay = call.read(self).destroy(new_image).run<MagickBooleanType>();
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
     if (!okay)
@@ -9869,15 +9853,13 @@ Image_levelize_channel(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(new_image, channels);
     DECLARE_GVL_CALL(call, LevelizeImage, new_image, black_point, white_point, gamma, exception);
-    void *ret = call.read(self).destroy(new_image).release(exception).run<void *>();
-    okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+    okay = call.read(self).destroy(new_image).release(exception).run<MagickBooleanType>();
     END_CHANNEL_MASK(new_image);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
     DECLARE_GVL_CALL(call, LevelizeImageChannel, new_image, channels, black_point, white_point, gamma);
-    void *ret = call.read(self).destroy(new_image).run<void *>();
-    okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+    okay = call.read(self).destroy(new_image).run<MagickBooleanType>();
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -11222,7 +11204,7 @@ rm_copy_image(Image *image, VALUE owner, VALUE held, bool changes)
 {
     Image *copy;
     ExceptionInfo *exception;
-    void *ret;
+    MagickBooleanType okay;
 
     copy = rm_clone_image(image, owner, held, changes);
     exception = AcquireExceptionInfo();
@@ -11233,8 +11215,8 @@ rm_copy_image(Image *image, VALUE owner, VALUE held, bool changes)
     ClearMagickException(&copy->exception);
     DECLARE_GVL_CALL(call, SetImageStorageClass, copy, copy->storage_class);
 #endif
-    ret = call.hold(owner, changes).hold(held).keep_thread().destroy(copy).release(exception).run<void *>();
-    if (!static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret)))
+    okay = call.hold(owner, changes).hold(held).keep_thread().destroy(copy).release(exception).run<MagickBooleanType>();
+    if (!okay)
     {
 #if defined(IMAGEMAGICK_6)
         InheritException(exception, &copy->exception);
@@ -11571,14 +11553,12 @@ Image_opaque(VALUE self, VALUE target, VALUE fill)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, OpaquePaintImage, new_image, &target_pp, &fill_pp, MagickFalse, exception);
-    void *ret = call.read(self).destroy(new_image).release(exception).run<void *>();
-    okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+    okay = call.read(self).destroy(new_image).release(exception).run<MagickBooleanType>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
     DECLARE_GVL_CALL(call, OpaquePaintImageChannel, new_image, DefaultChannels, &target_pp, &fill_pp, MagickFalse);
-    void *ret = call.read(self).destroy(new_image).run<void *>();
-    okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+    okay = call.read(self).destroy(new_image).run<MagickBooleanType>();
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
 
@@ -11676,16 +11656,14 @@ Image_opaque_channel(int argc, VALUE *argv, VALUE self)
     exception = AcquireExceptionInfo();
     BEGIN_CHANNEL_MASK(new_image, channels);
     DECLARE_GVL_CALL(call, OpaquePaintImage, new_image, &target_pp, &fill_pp, invert, exception);
-    void *ret = call.read(self).destroy(new_image).release(exception).run<void *>();
-    okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+    okay = call.read(self).destroy(new_image).release(exception).run<MagickBooleanType>();
     END_CHANNEL_MASK(new_image);
     new_image->fuzz = keep;
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
     DECLARE_GVL_CALL(call, OpaquePaintImageChannel, new_image, channels, &target_pp, &fill_pp, invert);
-    void *ret = call.read(self).destroy(new_image).run<void *>();
-    okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+    okay = call.read(self).destroy(new_image).run<MagickBooleanType>();
 
     new_image->fuzz = keep;
     rm_check_image_exception(new_image, DestroyOnError);
@@ -11742,8 +11720,8 @@ clamp_dithered_image(VALUE self, Image *new_image, ChannelType channels, Excepti
     if (exception->severity < ErrorException)
     {
         DECLARE_GVL_CALL(call, ClampImageChannel, new_image, channels);
-        void *ret = call.read(self).destroy(new_image).release(exception).run<void *>();
-        if (!static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret)))
+        MagickBooleanType okay = call.read(self).destroy(new_image).release(exception).run<MagickBooleanType>();
+        if (!okay)
         {
             InheritException(exception, &new_image->exception);
         }
@@ -11952,15 +11930,13 @@ Image_paint_transparent(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, TransparentPaintImage, new_image, (const MagickPixel *)&color, alpha, invert, exception);
-    void *ret = call.read(self).destroy(new_image).release(exception).run<void *>();
-    okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+    okay = call.read(self).destroy(new_image).release(exception).run<MagickBooleanType>();
     new_image->fuzz = keep;
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
     DECLARE_GVL_CALL(call, TransparentPaintImage, new_image, (const MagickPixel *)&color, (Quantum)(QuantumRange - alpha), invert);
-    void *ret = call.read(self).destroy(new_image).run<void *>();
-    okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+    okay = call.read(self).destroy(new_image).run<MagickBooleanType>();
     new_image->fuzz = keep;
 
     // Is it possible for TransparentPaintImage to silently fail?
@@ -12140,8 +12116,7 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
     {
 #if defined(IMAGEMAGICK_7)
         DECLARE_GVL_CALL(call, SetImageStorageClass, image, DirectClass, exception);
-        void *ret = call.update(self).release(exception).run<void *>();
-        okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+        okay = call.update(self).release(exception).run<MagickBooleanType>();
         CHECK_EXCEPTION();
         if (!okay)
         {
@@ -12150,8 +12125,7 @@ Image_pixel_color(int argc, VALUE *argv, VALUE self)
         }
 #else
         DECLARE_GVL_CALL(call, SetImageStorageClass, image, DirectClass);
-        void *ret = call.update(self).run<void *>();
-        okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+        okay = call.update(self).run<MagickBooleanType>();
         rm_check_image_exception(image, RetainOnError);
         if (!okay)
         {
@@ -15697,8 +15671,7 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg,
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, SetImageStorageClass, image, DirectClass, exception);
-    void *ret = call.update(self).release(exception).run<void *>();
-    okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+    okay = call.update(self).release(exception).run<MagickBooleanType>();
     CHECK_EXCEPTION();
     if (!okay)
     {
@@ -15707,8 +15680,7 @@ Image_store_pixels(VALUE self, VALUE x_arg, VALUE y_arg, VALUE cols_arg,
     }
 #else
     DECLARE_GVL_CALL(call, SetImageStorageClass, image, DirectClass);
-    void *ret = call.update(self).run<void *>();
-    okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+    okay = call.update(self).run<MagickBooleanType>();
     rm_check_image_exception(image, RetainOnError);
     if (!okay)
     {
@@ -16929,14 +16901,12 @@ Image_transparent(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, TransparentPaintImage, new_image, &color, alpha, MagickFalse, exception);
-    void *ret = call.read(self).destroy(new_image).release(exception).run<void *>();
-    okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+    okay = call.read(self).destroy(new_image).release(exception).run<MagickBooleanType>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
     DECLARE_GVL_CALL(call, TransparentPaintImage, new_image, &color, (Quantum)(QuantumRange - alpha), MagickFalse);
-    void *ret = call.read(self).destroy(new_image).run<void *>();
-    okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+    okay = call.read(self).destroy(new_image).run<MagickBooleanType>();
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
     if (!okay)
@@ -17001,14 +16971,12 @@ Image_transparent_chroma(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, TransparentPaintImageChroma, new_image, &low, &high, alpha, invert, exception);
-    void *ret = call.read(self).destroy(new_image).release(exception).run<void *>();
-    okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+    okay = call.read(self).destroy(new_image).release(exception).run<MagickBooleanType>();
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
 #else
     DECLARE_GVL_CALL(call, TransparentPaintImageChroma, new_image, &low, &high, (Quantum)(QuantumRange - alpha), invert);
-    void *ret = call.read(self).destroy(new_image).run<void *>();
-    okay = static_cast<MagickBooleanType>(reinterpret_cast<intptr_t &>(ret));
+    okay = call.read(self).destroy(new_image).run<MagickBooleanType>();
     rm_check_image_exception(new_image, DestroyOnError);
 #endif
     if (!okay)
