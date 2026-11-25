@@ -10307,8 +10307,7 @@ set_image_mask(VALUE self, VALUE mask)
     if (mask != Qnil)
     {
         // The masks of the mask image would keep some of its pixels out of the
-        // resize and of the steps below. The ImageMagick 6 path drops them before
-        // it writes the gray.
+        // resize and of the steps below. The ImageMagick 6 path drops them too.
         static const ChannelType channels[] = { ReadMaskChannel, WriteMaskChannel, CompositeMaskChannel };
         static const PixelMask types[] = { ReadPixelMask, WritePixelMask, CompositePixelMask };
         for (int n = 0; n < 3; n++)
@@ -10403,21 +10402,8 @@ set_image_mask(VALUE self, VALUE mask)
     {
         clip_mask = rm_clone_image(mask_image, mask, self);
 
-        // Resize if necessary
-        if (clip_mask->columns != image->columns || clip_mask->rows != image->rows)
-        {
-            exception = AcquireExceptionInfo();
-            DECLARE_GVL_CALL(call, ResizeImage, clip_mask, image->columns, image->rows, UndefinedFilter, 0.0, exception);
-            resized_image = call.update(self).read(mask).destroy(clip_mask).release(exception).run<Image *>();
-            DestroyImage(clip_mask);
-            rm_check_exception(exception, resized_image, DestroyOnError);
-            DestroyExceptionInfo(exception);
-            rm_ensure_result(resized_image);
-            clip_mask = resized_image;
-        }
-
-        // The clip mask and the mask of the mask image would keep the gray
-        // below out of some of its pixels.
+        // The clip mask and the mask of the mask image would keep some of its
+        // pixels out of the resize and of the gray below.
         if (clip_mask->clip_mask)
         {
             DECLARE_GVL_CALL(unclip_call, SetImageClipMask, clip_mask, NULL);
@@ -10427,6 +10413,19 @@ set_image_mask(VALUE self, VALUE mask)
         {
             DECLARE_GVL_CALL(unmask_call, SetImageMask, clip_mask, NULL);
             unmask_call.update(self).read(mask).destroy(clip_mask).run<void>();
+        }
+
+        // Resize if necessary
+        if (clip_mask->columns != image->columns || clip_mask->rows != image->rows)
+        {
+            exception = AcquireExceptionInfo();
+            DECLARE_GVL_CALL(call, ResizeImage, clip_mask, image->columns, image->rows, UndefinedFilter, 1.0, exception);
+            resized_image = call.update(self).read(mask).destroy(clip_mask).release(exception).run<Image *>();
+            DestroyImage(clip_mask);
+            rm_check_exception(exception, resized_image, DestroyOnError);
+            DestroyExceptionInfo(exception);
+            rm_ensure_result(resized_image);
+            clip_mask = resized_image;
         }
 
         // The following section is copied from mogrify.c (6.2.8-8)
@@ -10448,6 +10447,18 @@ set_image_mask(VALUE self, VALUE mask)
                 {
                     q->opacity = PIXEL_INTENSITY(q);
                 }
+#if defined(MAGICKCORE_HDRI_SUPPORT)
+                // With HDRI, a resize can leave an opacity outside the range,
+                // and the clip mask would keep a pixel whose value is negative.
+                if (q->opacity < 0)
+                {
+                    q->opacity = 0;
+                }
+                else if (q->opacity > QuantumRange)
+                {
+                    q->opacity = QuantumRange;
+                }
+#endif
                 q->red = q->opacity;
                 q->green = q->opacity;
                 q->blue = q->opacity;
