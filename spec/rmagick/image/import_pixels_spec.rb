@@ -26,10 +26,10 @@ RSpec.describe Magick::Image, '#import_pixels' do
     expect { image.import_pixels(0, 0, 'x', 1, 'RGB', pixels) }.to raise_error(TypeError)
     expect { image.import_pixels(0, 0, image.columns, 'x', 'RGB', pixels) }.to raise_error(TypeError)
     expect { image.import_pixels(0, 0, image.columns, 1, [2], pixels) }.to raise_error(TypeError)
-    expect { image.import_pixels(-1, 0, image.columns, 1, 'RGB', pixels) }.to raise_error(ArgumentError)
-    expect { image.import_pixels(0, -1, image.columns, 1, 'RGB', pixels) }.to raise_error(ArgumentError)
-    expect { image.import_pixels(0, 0, -1, 1, 'RGB', pixels) }.to raise_error(ArgumentError)
-    expect { image.import_pixels(0, 0, image.columns, -1, 'RGB', pixels) }.to raise_error(ArgumentError)
+    expect { image.import_pixels(-1, 0, image.columns, 1, 'RGB', pixels) }.to raise_error(RangeError)
+    expect { image.import_pixels(0, -1, image.columns, 1, 'RGB', pixels) }.to raise_error(RangeError)
+    expect { image.import_pixels(0, 0, -1, 1, 'RGB', pixels) }.to raise_error(RangeError)
+    expect { image.import_pixels(0, 0, image.columns, -1, 'RGB', pixels) }.to raise_error(RangeError)
 
     # pixel array is too small
     expect { image.import_pixels(0, 0, image.columns, 2, 'RGB', pixels) }.to raise_error(ArgumentError)
@@ -46,10 +46,9 @@ RSpec.describe Magick::Image, '#import_pixels' do
     expect { image.import_pixels(0, 0, 3, 1, 'R', [100, 'x', 100]) }.to raise_error(TypeError, 'type mismatch: String given')
   end
 
-  # Regression: cols * rows * map_length was computed in unsigned arithmetic.
-  # A geometry that overflowed it wrapped npixels down to a small value, so an
-  # undersized (even empty) pixel buffer passed the size check and
-  # ImportImagePixels read far past its end. It must raise RangeError instead.
+  # Regression: a geometry this large used to overflow cols * rows * map_length,
+  # so an undersized (even empty) pixel buffer passed the size check and
+  # ImportImagePixels read far past its end. The bounds check now rejects it first.
   it 'raises RangeError when the geometry overflows the buffer size' do
     image = described_class.new(8, 8)
 
@@ -67,6 +66,35 @@ RSpec.describe Magick::Image, '#import_pixels' do
       expect { image.import_pixels(x, y, columns, rows, 'R', "\0" * (columns * rows)) }.to raise_error(RangeError, /exceeds image bounds/)
     end
     expect(image.export_pixels(0, 0, 4, 4, 'R')).to eq(before)
+  end
+
+  it 'raises RangeError for a negative offset or size before it converts the pixels' do
+    element_class = Class.new do
+      def to_f
+        raise IOError, 'converted'
+      end
+    end
+    image = described_class.new(4, 4)
+    pixels = Array.new(2) { element_class.new }
+
+    [[-1, 0, 1, 1], [0, -1, 1, 1], [0, 0, -1, 1], [0, 0, 1, -1], [3, 0, 2, 1]].each do |x, y, columns, rows|
+      expect { image.import_pixels(x, y, columns, rows, 'R', pixels) }.to raise_error(RangeError, /exceeds image bounds/)
+    end
+
+    x = Object.new
+    x.define_singleton_method(:to_int) do
+      image.crop!(0, 0, 1, 1)
+      0
+    end
+    expect { image.import_pixels(x, 0, 2, 1, 'R', pixels) }.to raise_error(RangeError, /exceeds image bounds/)
+  end
+
+  it 'raises ArgumentError for an empty rectangle' do
+    image = described_class.new(4, 4)
+
+    expect { image.import_pixels(0, 0, 0, 1, 'R', []) }.to raise_error(ArgumentError, 'invalid import geometry')
+    expect { image.import_pixels(0, 0, 1, 0, 'R', []) }.to raise_error(ArgumentError, 'invalid import geometry')
+    expect { image.import_pixels(-1, 0, 0, 1, 'R', []) }.to raise_error(ArgumentError, 'invalid import geometry')
   end
 
   it 'checks the rectangle against the image that converting the pixels leaves' do
