@@ -58,6 +58,41 @@ RSpec.describe Magick::Image, '#import_pixels' do
     expect { image.import_pixels(0, 0, 2**62, 1, 'RGBA', '') }.to raise_error(RangeError)
   end
 
+  it 'raises RangeError given a rectangle that extends beyond the image' do
+    image = described_class.new(4, 4)
+    before = image.export_pixels(0, 0, 4, 4, 'R')
+
+    [[3, 0, 2, 1], [2, 0, 3, 2], [0, 3, 1, 2], [3, 3, 2, 1]].each do |x, y, columns, rows|
+      expect { image.import_pixels(x, y, columns, rows, 'R', Array.new(columns * rows, 0)) }.to raise_error(RangeError, /exceeds image bounds/)
+      expect { image.import_pixels(x, y, columns, rows, 'R', "\0" * (columns * rows)) }.to raise_error(RangeError, /exceeds image bounds/)
+    end
+    expect(image.export_pixels(0, 0, 4, 4, 'R')).to eq(before)
+  end
+
+  it 'checks the rectangle against the image that converting the pixels leaves' do
+    element_class = Class.new do
+      def initialize(image)
+        @image = image
+      end
+
+      def to_f
+        @image.crop!(0, 0, 2, 2)
+        0.0
+      end
+    end
+    image = described_class.new(4, 4)
+    element = element_class.new(image)
+    string_image = described_class.new(4, 4)
+    buffer = Object.new
+    buffer.define_singleton_method(:to_str) do
+      string_image.crop!(0, 0, 2, 2)
+      "\0" * 4
+    end
+
+    expect { image.import_pixels(0, 0, 4, 1, 'R', [element, 0, 0, 0]) }.to raise_error(RangeError, /exceeds image bounds/)
+    expect { string_image.import_pixels(0, 0, 4, 1, 'R', buffer) }.to raise_error(RangeError, /exceeds image bounds/)
+  end
+
   it 'clamps an out-of-range value in an array unless ImageMagick uses HDRI' do
     image = described_class.new(4, 1)
     image.import_pixels(0, 0, 4, 1, 'R', [Magick::QuantumRange + 1, -1, 100.7, Float::NAN])
