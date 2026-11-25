@@ -9059,6 +9059,10 @@ import_quantum(double value)
 typedef struct
 {
     VALUE self;
+    long x_off;
+    long y_off;
+    long cols;
+    long rows;
     VALUE pixel_ary;
     size_t npixels;
     Quantum *pixels;
@@ -9067,12 +9071,14 @@ typedef struct
 
 
 /**
- * Convert the elements of a pixel array for Image#import_pixels, and get the image again.
+ * Convert the elements of a pixel array for Image#import_pixels, get the image
+ * again, and check that the rectangle lies inside it.
  *
  * No Ruby usage (internal function)
  *
  * @param arg the import_pixels_args_t, with either pixels or fpixels to fill
  * @return the image
+ * @throw RangeError if the rectangle is not inside the image
  */
 static VALUE
 convert_pixel_array(VALUE arg)
@@ -9095,7 +9101,10 @@ convert_pixel_array(VALUE arg)
             args->pixels[n] = import_quantum(NUM2DBL(element));
         }
     }
-    return (VALUE)rm_check_frozen(args->self);
+
+    Image *image = rm_check_frozen(args->self);
+    check_pixel_geometry(image, args->x_off, args->y_off, args->cols, args->rows);
+    return (VALUE)image;
 }
 
 
@@ -9215,6 +9224,7 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
         }
 
         image = rm_check_frozen(self);
+        check_pixel_geometry(image, x_off, y_off, cols, rows);
     }
     // Otherwise convert the argument to an array and convert the array elements
     // to binary pixel data.
@@ -9234,7 +9244,7 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
                      npixels, RARRAY_LEN(pixel_ary));
         }
 
-        import_pixels_args_t args = { self, pixel_ary, npixels, NULL, NULL };
+        import_pixels_args_t args = { self, x_off, y_off, cols, rows, pixel_ary, npixels, NULL, NULL };
         int state;
 
         if (stg_type == DoublePixel || stg_type == FloatPixel)
