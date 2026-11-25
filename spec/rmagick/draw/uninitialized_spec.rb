@@ -42,7 +42,7 @@ RSpec.describe Magick::Draw do
 
   context 'when a subclass #initialize does not call super' do
     let(:subclass) do
-      Class.new(described_class) { def initialize; end } # rubocop:disable Lint/MissingSuper, Style/RedundantInitialize
+      Class.new(described_class) { def initialize; end } # rubocop:disable Lint/MissingSuper
     end
     let(:draw_obj) { subclass.new }
 
