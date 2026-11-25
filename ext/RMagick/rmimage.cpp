@@ -9166,10 +9166,14 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
             break;
     }
 
-    if (x_off < 0 || y_off < 0 || cols <= 0 || rows <= 0)
+    if (cols == 0 || rows == 0)
     {
         rb_raise(rb_eArgError, "invalid import geometry");
     }
+    // Converting the arguments or the pixels can run Ruby code that replaces
+    // the image, so get it again here and check again after the conversion.
+    image = rm_check_frozen(self);
+    check_pixel_geometry(image, x_off, y_off, cols, rows);
 
     map_l = strlen(map);
     if (map_l == 0)

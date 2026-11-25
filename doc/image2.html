@@ -2239,8 +2239,8 @@ image.get_exif_by_number()      #=&gt; {271=&gt;"Canon", 37377=&gt;"189/32" ...}
         Replaces the pixels in the specified rectangle with pixel data from the supplied array or string. When the
         <span class="arg">pixels</span> argument is an array of pixel data, this method is the reverse of <code>export_pixels</code>. When the
         <span class="arg">pixels</span> argument is a string, <code>import_pixels</code> is ideal for loading very large amounts of binary pixel data. Raises
-        <code>RangeError</code> if the rectangle extends beyond the image. Raises <code>ArgumentError</code> if the offset is negative or the width or height
-        is not positive.
+        <code>RangeError</code> if the offset or size is negative or the rectangle extends beyond the image. Raises <code>ArgumentError</code> if the width
+        or height is 0.
       </p>
 
       <h4>Arguments</h4>
