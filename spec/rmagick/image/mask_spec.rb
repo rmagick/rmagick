@@ -146,8 +146,25 @@ RSpec.describe Magick::Image, '#mask' do
     expect(changed).to eq([true, false, true, false])
   end
 
-  # The ImageMagick 6 path loses a resized mask: it resizes with a blur of 0.
-  it 'resizes a mask with alpha before it reads the alpha', if: Gem::Version.new(Magick::IMAGEMAGICK_VERSION) >= Gem::Version.new('7.0.0') do
+  it 'resizes a mask of another size before it uses it' do
+    results = [2, 8].map do |columns|
+      mask = described_class.new(columns, 1)
+      image = described_class.new(4, 1) { |options| options.background_color = 'red' }
+
+      image.mask(mask)
+      values = (0..3).map { |x| image.mask.pixel_color(x, 0).red }
+      draw = Magick::Draw.new
+      draw.fill('blue')
+      draw.rectangle(0, 0, 3, 0)
+      draw.draw(image)
+
+      [values, (0..3).map { |x| image.pixel_color(x, 0).blue > Magick::QuantumRange / 2 }]
+    end
+
+    expect(results).to eq([[[Magick::QuantumRange] * 4, [false] * 4]] * 2)
+  end
+
+  it 'resizes a mask with alpha before it reads the alpha' do
     mask = described_class.new(7, 1) { |options| options.background_color = 'none' }
     mask.alpha(Magick::ActivateAlphaChannel)
     mask.pixel_color(2, 0, 'white')
@@ -157,10 +174,11 @@ RSpec.describe Magick::Image, '#mask' do
 
     resized = mask.resize(4, 1)
     expected = (0..3).map { |x| (Magick::QuantumRange - resized.pixel_color(x, 0).alpha).clamp(0, Magick::QuantumRange) }
-    expect((0..3).map { |x| image.mask.pixel_color(x, 0).red }).to eq(expected)
+    # With HDRI, a channel rounds down, so the inverted alpha can be one more.
+    expect((0..3).map { |x| image.mask.pixel_color(x, 0).red }).to match(expected.map { |value| a_value_within(1).of(value) })
   end
 
-  it 'keeps the values of an enlarged mask with alpha within the range', if: Gem::Version.new(Magick::IMAGEMAGICK_VERSION) >= Gem::Version.new('7.0.0') do
+  it 'keeps the values of an enlarged mask with alpha within the range' do
     mask = described_class.new(2, 1) { |options| options.background_color = 'none' }
     mask.alpha(Magick::ActivateAlphaChannel)
     mask.pixel_color(0, 0, 'black')
@@ -174,19 +192,21 @@ RSpec.describe Magick::Image, '#mask' do
     expect(values).to all(be_between(0, Magick::QuantumRange))
   end
 
-  it 'resizes a mask that has a mask of its own as one without it', if: Gem::Version.new(Magick::IMAGEMAGICK_VERSION) >= Gem::Version.new('7.0.0') do
+  it 'resizes a mask that has a mask of its own as one without it' do
     mask = described_class.new(2, 1)
     mask.pixel_color(0, 0, 'black')
-    plain = mask.copy
-    mask.mask(described_class.new(2, 1) { |options| options.background_color = 'black' })
-    image = described_class.new(6, 1)
 
-    image.mask(mask)
-    nested_values = (0..5).map { |x| image.mask.pixel_color(x, 0).red }
-    image.mask(plain)
-    plain_values = (0..5).map { |x| image.mask.pixel_color(x, 0).red }
+    values = [['black', 6], ['black', 1], ['white', 6], ['white', 1]].map do |color, columns|
+      nested = mask.copy
+      nested.mask(described_class.new(2, 1) { |options| options.background_color = color })
+      image = described_class.new(columns, 1)
+      [nested, mask].map do |source|
+        image.mask(source)
+        (0...columns).map { |x| image.mask.pixel_color(x, 0).red }
+      end
+    end
 
-    expect(nested_values).to eq(plain_values)
+    expect(values.map(&:first)).to eq(values.map(&:last))
   end
 
   it 'frees the images it makes from a mask with alpha when one of its calls is interrupted or fails' do
