@@ -2006,8 +2006,15 @@ static void
 format_exception(const ExceptionType severity, const char *reason, const char *description, char *msg)
 {
     memset(msg, 0, ERROR_MSG_SIZE);
+    // A call that fails without setting an exception leaves no reason, and
+    // GetLocaleExceptionMessage asserts that it gets one.
+    if (!reason)
+    {
+        reason = description;
+        description = NULL;
+    }
     snprintf(msg, ERROR_MSG_SIZE, "%s%s%s",
-        GetLocaleExceptionMessage(severity, reason),
+        reason ? GetLocaleExceptionMessage(severity, reason) : "ImageMagick failed with no explanation",
         description ? ": " : "",
         description ? GetLocaleExceptionMessage(severity, description) : "");
 }
