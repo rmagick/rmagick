@@ -49,6 +49,9 @@ static VALUE scale(int, int, VALUE *, VALUE, gvl_function_t);
 static VALUE threshold_image(int, VALUE *, VALUE, gvl_function_t);
 static VALUE xform_image(int, VALUE, VALUE, VALUE, VALUE, VALUE, gvl_function_t);
 static void replace_image(VALUE, Image *);
+#if defined(IMAGEMAGICK_7)
+static void set_pixel_mask(VALUE, PixelMask, VALUE, const Image *, Image *);
+#endif
 static VALUE array_from_images(Image *);
 static VALUE array_from_synced_images(Image *, Info *);
 static VALUE file_arg_rescue(VALUE, VALUE ATTRIBUTE_UNUSED) ATTRIBUTE_NORETURN;
@@ -927,11 +930,7 @@ VALUE
 Image_add_compose_mask(VALUE self, VALUE mask)
 {
     Image *image, *mask_image = NULL;
-#if defined(IMAGEMAGICK_7)
-    Image *new_image;
-    MagickBooleanType okay;
-    ExceptionInfo *exception;
-#else
+#if defined(IMAGEMAGICK_6)
     Image *clip_mask = NULL;
 #endif
 
@@ -946,28 +945,8 @@ Image_add_compose_mask(VALUE self, VALUE mask)
 
 #if defined(IMAGEMAGICK_7)
     // Since 7.1.0, the white pixels of a composite mask let the image change,
-    // so the mask goes in as it is. A failed SetImageMask leaves the image with
-    // a pixel cache too small for its channels, so the mask goes on a copy.
-    exception = AcquireExceptionInfo();
-    // Not detached, so the copy keeps the blob and the file size in it.
-    DECLARE_GVL_CALL(clone_call, CloneImage, image, 0, 0, MagickFalse, exception);
-    new_image = clone_call.update(self).read(mask).keep_thread().release(exception).run<Image *>();
-    rm_check_exception(exception, new_image, DestroyOnError);
-    if (!new_image)
-    {
-        DestroyExceptionInfo(exception);
-        rb_raise(rb_eNoMemError, "not enough memory to continue");
-    }
-    DECLARE_GVL_CALL(mask_call, SetImageMask, new_image, CompositePixelMask, mask_image, exception);
-    okay = mask_call.update(self).read(mask).destroy(new_image).release(exception).run<MagickBooleanType>();
-    rm_check_exception(exception, new_image, DestroyOnError);
-    DestroyExceptionInfo(exception);
-    if (!okay)
-    {
-        DestroyImage(new_image);
-        rb_raise(rb_eRuntimeError, "SetImageMask failed.");
-    }
-    replace_image(self, new_image);
+    // so the mask goes in as it is.
+    set_pixel_mask(self, CompositePixelMask, mask, mask_image, NULL);
 #else
     clip_mask = rm_clone_image(mask_image, mask, self);
 
@@ -5549,6 +5528,100 @@ replace_image(VALUE self, Image *image)
 }
 
 
+#if defined(IMAGEMAGICK_7)
+static VALUE
+check_frozen_image(VALUE self)
+{
+    return (VALUE)rm_check_frozen(self);
+}
+
+
+/**
+ * Set or remove a mask of the image on a copy, and replace the image with the
+ * copy when that succeeds. A failed SetImageMask can leave the image it
+ * changes with a pixel cache too small for its channels or without its mask.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param self the Image object
+ * @param type WritePixelMask or CompositePixelMask
+ * @param mask the Image object the mask comes from, or Qnil
+ * @param mask_image the mask, or NULL to remove the mask
+ * @param temp an image that the caller made for the mask, or NULL. This
+ *   function destroys it.
+ */
+static void
+set_pixel_mask(VALUE self, PixelMask type, VALUE mask, const Image *mask_image, Image *temp)
+{
+    Image *image, *new_image;
+    MagickBooleanType okay;
+    ExceptionInfo *exception;
+    int state = 0;
+
+    // The image may have been frozen while the caller made temp.
+    image = (Image *)rb_protect(check_frozen_image, self, &state);
+    if (state)
+    {
+        DestroyImageList(temp);
+        rb_jump_tag(state);
+    }
+    if (!mask_image)
+    {
+        // SetImageMask removes the composite mask with the write mask. Without
+        // these channels there is nothing to remove, and the copy would cost
+        // a copy of the pixels.
+        ChannelType channels = type == WritePixelMask ? (ChannelType)(WriteMaskChannel | CompositeMaskChannel)
+                                                      : CompositeMaskChannel;
+        if (!(image->channels & channels))
+        {
+            DestroyImageList(temp);
+            return;
+        }
+    }
+
+    exception = AcquireExceptionInfo();
+    // Not detached, so the copy keeps the blob and the file size in it. Its
+    // links to other images are cut, as in shallow_clone.
+    DECLARE_GVL_CALL(clone_call, CloneImage, image, 0, 0, MagickFalse, exception);
+    clone_call.update(self).keep_thread().destroy(temp).release(exception);
+    if (mask != Qnil)
+    {
+        clone_call.read(mask);
+    }
+    new_image = clone_call.run<Image *>();
+    if (new_image)
+    {
+        new_image->next = NULL;
+        new_image->previous = NULL;
+    }
+    if (!new_image || exception->severity >= ErrorException)
+    {
+        DestroyImageList(temp);
+        rm_check_exception(exception, new_image, DestroyOnError);
+        DestroyExceptionInfo(exception);
+        rb_raise(rb_eNoMemError, "not enough memory to continue");
+    }
+
+    DECLARE_GVL_CALL(mask_call, SetImageMask, new_image, type, mask_image, exception);
+    mask_call.update(self).destroy(new_image).destroy(temp).release(exception);
+    if (mask != Qnil)
+    {
+        mask_call.read(mask);
+    }
+    okay = mask_call.run<MagickBooleanType>();
+    DestroyImageList(temp);
+    rm_check_exception(exception, new_image, DestroyOnError);
+    DestroyExceptionInfo(exception);
+    if (!okay)
+    {
+        DestroyImage(new_image);
+        rb_raise(rb_eRuntimeError, "SetImageMask failed.");
+    }
+    replace_image(self, new_image);
+}
+#endif
+
+
 /**
  * Initialize copy, clone, dup.
  *
@@ -5936,20 +6009,11 @@ Image_delay_eq(VALUE self, VALUE val)
 VALUE
 Image_delete_compose_mask(VALUE self)
 {
-    Image *image;
 #if defined(IMAGEMAGICK_7)
-    ExceptionInfo *exception;
-#endif
-
-    image = rm_check_frozen(self);
-
-#if defined(IMAGEMAGICK_7)
-    exception = AcquireExceptionInfo();
-    DECLARE_GVL_CALL(call, SetImageMask, image, CompositePixelMask, NULL, exception);
-    call.update(self).release(exception).run<void>();
-    CHECK_EXCEPTION();
-    DestroyExceptionInfo(exception);
+    set_pixel_mask(self, CompositePixelMask, Qnil, NULL, NULL);
 #else
+    Image *image = rm_check_frozen(self);
+
     DECLARE_GVL_CALL(call, SetImageMask, image, NULL);
     call.update(self).run<void>();
     rm_check_image_exception(image, RetainOnError);
@@ -10378,18 +10442,9 @@ set_image_mask(VALUE self, VALUE mask)
             rm_check_exception(exception, clip_mask, DestroyOnError);
 #endif
         }
-
-        DECLARE_GVL_CALL(call, SetImageMask, image, WritePixelMask, clip_mask, exception);
-        call.update(self).read(mask).destroy(clip_mask).release(exception).run<void>();
-        DestroyImage(clip_mask);
     }
-    else
-    {
-        DECLARE_GVL_CALL(call, SetImageMask, image, WritePixelMask, NULL, exception);
-        call.update(self).release(exception).run<void>();
-    }
-    CHECK_EXCEPTION();
     DestroyExceptionInfo(exception);
+    set_pixel_mask(self, WritePixelMask, mask, clip_mask, clip_mask);
 
     // Always return a copy of the mask!
     return get_image_mask(self);

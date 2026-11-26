@@ -5,6 +5,7 @@ require_relative 'support/matchers'
 require_relative 'support/gc_compaction'
 require_relative 'support/helpers'
 require_relative 'support/imagemagick_bugs'
+require_relative 'support/resource_limits'
 require_relative 'support/to_str_duck'
 
 require 'pry'
@@ -22,6 +23,7 @@ RSpec.configure do |config|
   config.include(TestHelpers)
   config.include(GCCompaction)
   config.include(ImageMagickBugs)
+  config.include(ResourceLimits)
 end
 
 if GC.respond_to?(:verify_compaction_references)
