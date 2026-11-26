@@ -47,6 +47,19 @@ RSpec.describe Magick::Image, '#mask' do
     expect(Magick.resource_usage(:memory)).to be <= baseline
   end
 
+  it 'frees the copy of the mask when the image is frozen while it copies the mask' do
+    image = described_class.new(1000, 1000)
+    GC.start
+    baseline = Magick.resource_usage(:memory)
+    mask = described_class.new(1000, 1000)
+
+    expect { during_call(-> { image.freeze }) { image.mask(mask) } }.to raise_error(FrozenError)
+    mask.destroy!
+    3.times { GC.start }
+
+    expect(Magick.resource_usage(:memory)).to be <= baseline
+  end
+
   it "releases what it holds when one of its calls is interrupted" do
     image = described_class.new(4, 4)
     mask = described_class.new(4, 4)
@@ -207,6 +220,33 @@ RSpec.describe Magick::Image, '#mask' do
     end
 
     expect(values.map(&:first)).to eq(values.map(&:last))
+  end
+
+  it 'keeps the image usable when ImageMagick runs out of resources' do
+    image = described_class.new(20, 20) { |options| options.background_color = 'red' }
+    mask = described_class.new(20, 20)
+    source = described_class.new(20, 20) { |options| options.background_color = 'blue' }
+
+    expect { without_resources { image.mask(mask) } }.to raise_error(Magick::ImageMagickError)
+    result = image.composite(source, 0, 0, Magick::OverCompositeOp)
+    expect(result.pixel_color(0, 0)).to eq(Magick::Pixel.from_color('blue'))
+  end
+
+  it 'keeps the mask and the image usable when removing the mask runs out of resources', if: Gem::Version.new(Magick::IMAGEMAGICK_VERSION) >= Gem::Version.new('7.0.0') do
+    image = described_class.new(20, 20) { |options| options.background_color = 'red' }
+    image.mask(described_class.new(20, 20))
+    source = described_class.new(20, 20) { |options| options.background_color = 'blue' }
+
+    expect { without_resources { image.mask(nil) } }.to raise_error(Magick::ImageMagickError)
+    result = image.composite(source, 0, 0, Magick::OverCompositeOp)
+    expect(result.pixel_color(0, 0)).to eq(Magick::Pixel.from_color('red'))
+  end
+
+  it 'needs no resources to remove a mask that the image does not have' do
+    image = described_class.new(20, 20)
+
+    expect { without_resources { image.mask(nil) } }.not_to raise_error
+    expect(image.mask).to be(nil)
   end
 
   it 'frees the images it makes from a mask with alpha when one of its calls is interrupted or fails' do

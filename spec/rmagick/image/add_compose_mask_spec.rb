@@ -28,29 +28,47 @@ RSpec.describe Magick::Image, "#add_compose_mask" do
   it 'raises an error when ImageMagick runs out of resources' do
     image = described_class.new(20, 20)
     mask = described_class.new(20, 20)
-    resources = %i[area memory map disk]
-    limits = resources.to_h { |resource| [resource, Magick.limit_resource(resource, 0)] }
 
-    expect { image.add_compose_mask(mask) }.to raise_error(Magick::ImageMagickError)
-  ensure
-    limits&.each { |resource, limit| Magick.limit_resource(resource, limit) }
+    expect { without_resources { image.add_compose_mask(mask) } }.to raise_error(Magick::ImageMagickError)
   end
 
   it 'keeps the image usable when ImageMagick runs out of resources' do
     image = described_class.new(20, 20) { |options| options.background_color = 'red' }
     mask = described_class.new(20, 20)
     source = described_class.new(20, 20) { |options| options.background_color = 'blue' }
-    resources = %i[area memory map disk]
-    limits = resources.to_h { |resource| [resource, Magick.limit_resource(resource, 0)] }
 
-    expect { image.add_compose_mask(mask) }.to raise_error(Magick::ImageMagickError)
-    limits.each { |resource, limit| Magick.limit_resource(resource, limit) }
-    limits = nil
-
+    expect { without_resources { image.add_compose_mask(mask) } }.to raise_error(Magick::ImageMagickError)
     result = image.composite(source, 0, 0, Magick::OverCompositeOp)
     expect(result.pixel_color(0, 0)).to eq(Magick::Pixel.from_color('blue'))
-  ensure
-    limits&.each { |resource, limit| Magick.limit_resource(resource, limit) }
+  end
+
+  it 'keeps the mask and the image usable when deleting the mask runs out of resources', if: Gem::Version.new(Magick::IMAGEMAGICK_VERSION) >= Gem::Version.new('7.0.0') do
+    image = described_class.new(20, 20) { |options| options.background_color = 'red' }
+    image.add_compose_mask(described_class.new(20, 20) { |options| options.background_color = 'black' })
+    source = described_class.new(20, 20) { |options| options.background_color = 'blue' }
+
+    expect { without_resources { image.delete_compose_mask } }.to raise_error(Magick::ImageMagickError)
+    result = image.composite(source, 0, 0, Magick::OverCompositeOp)
+    expect(result.pixel_color(0, 0)).to eq(Magick::Pixel.from_color('red'))
+  end
+
+  it 'keeps the composite mask when replacing it runs out of resources', if: Gem::Version.new(Magick::IMAGEMAGICK_VERSION) >= Gem::Version.new('7.0.0') do
+    image = described_class.new(2, 1) { |options| options.background_color = 'none' }
+    image.add_compose_mask(described_class.new(2, 1) { |options| options.background_color = 'black' })
+    mask = described_class.new(2, 1)
+    source = described_class.new(2, 1) { |options| options.background_color = '#123456' }
+    draw = Magick::Draw.new
+    draw.composite(0, 0, 2, 1, image)
+
+    expect { without_resources { image.add_compose_mask(mask) } }.to raise_error(Magick::ImageMagickError)
+    result = image.composite(source, 0, 0, Magick::OverCompositeOp)
+    expect(result.pixel_color(0, 0)).to eq(image.pixel_color(0, 0))
+  end
+
+  it 'needs no resources to delete a composite mask that the image does not have' do
+    image = described_class.new(20, 20)
+
+    expect { without_resources { image.delete_compose_mask } }.not_to raise_error
   end
 
   it 'keeps the file size of the image' do
