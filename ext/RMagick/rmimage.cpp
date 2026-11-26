@@ -5556,6 +5556,9 @@ set_pixel_mask(VALUE self, PixelMask type, VALUE mask, const Image *mask_image, 
     Image *image, *new_image;
     MagickBooleanType okay;
     ExceptionInfo *exception;
+    const ChannelType channel = type == WritePixelMask ? WriteMaskChannel : CompositeMaskChannel;
+    const ChannelType other_channel = type == WritePixelMask ? CompositeMaskChannel : WriteMaskChannel;
+    const char *failed_call = "SetImageMask";
     int state = 0;
 
     // The image may have been frozen while the caller made temp.
@@ -5565,18 +5568,12 @@ set_pixel_mask(VALUE self, PixelMask type, VALUE mask, const Image *mask_image, 
         DestroyImageList(temp);
         rb_jump_tag(state);
     }
-    if (!mask_image)
+    // Without the channel there is nothing to remove, and the copy would cost a
+    // copy of the pixels.
+    if (!mask_image && !(image->channels & channel))
     {
-        // SetImageMask removes the composite mask with the write mask. Without
-        // these channels there is nothing to remove, and the copy would cost
-        // a copy of the pixels.
-        ChannelType channels = type == WritePixelMask ? (ChannelType)(WriteMaskChannel | CompositeMaskChannel)
-                                                      : CompositeMaskChannel;
-        if (!(image->channels & channels))
-        {
-            DestroyImageList(temp);
-            return;
-        }
+        DestroyImageList(temp);
+        return;
     }
 
     exception = AcquireExceptionInfo();
@@ -5602,20 +5599,33 @@ set_pixel_mask(VALUE self, PixelMask type, VALUE mask, const Image *mask_image, 
         rb_raise(rb_eNoMemError, "not enough memory to continue");
     }
 
-    DECLARE_GVL_CALL(mask_call, SetImageMask, new_image, type, mask_image, exception);
-    mask_call.update(self).destroy(new_image).destroy(temp).release(exception);
-    if (mask != Qnil)
+    if (!mask_image && (new_image->channels & other_channel))
     {
-        mask_call.read(mask);
+        // SetImageMask would remove the composite mask with the write mask, and
+        // stop applying the write mask without the composite mask, so only the
+        // channel goes. mask_trait stays, and setting the class syncs the cache.
+        new_image->channels = (ChannelType)(new_image->channels & ~channel);
+        DECLARE_GVL_CALL(sync_call, SetImageStorageClass, new_image, new_image->storage_class, exception);
+        okay = sync_call.update(self).destroy(new_image).release(exception).run<MagickBooleanType>();
+        failed_call = "SetImageStorageClass";
     }
-    okay = mask_call.run<MagickBooleanType>();
+    else
+    {
+        DECLARE_GVL_CALL(mask_call, SetImageMask, new_image, type, mask_image, exception);
+        mask_call.update(self).destroy(new_image).destroy(temp).release(exception);
+        if (mask != Qnil)
+        {
+            mask_call.read(mask);
+        }
+        okay = mask_call.run<MagickBooleanType>();
+    }
     DestroyImageList(temp);
     rm_check_exception(exception, new_image, DestroyOnError);
     DestroyExceptionInfo(exception);
     if (!okay)
     {
         DestroyImage(new_image);
-        rb_raise(rb_eRuntimeError, "SetImageMask failed.");
+        rb_raise(rb_eRuntimeError, "%s failed.", failed_call);
     }
     replace_image(self, new_image);
 }
