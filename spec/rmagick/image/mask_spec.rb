@@ -242,6 +242,22 @@ RSpec.describe Magick::Image, '#mask' do
     expect(result.pixel_color(0, 0)).to eq(Magick::Pixel.from_color('red'))
   end
 
+  it 'keeps the composite mask when it removes the mask' do
+    image = described_class.new(2, 1) { |options| options.background_color = 'red' }
+    image.mask(described_class.new(2, 1))
+    compose_mask = described_class.new(2, 1)
+    compose_mask.pixel_color(0, 0, 'black')
+    image.add_compose_mask(compose_mask)
+    source = described_class.new(2, 1) { |options| options.background_color = 'blue' }
+
+    image.mask(nil)
+    result = image.composite(source, 0, 0, Magick::OverCompositeOp)
+
+    expect(image.mask).to be(nil)
+    changed = (0..1).map { |x| result.pixel_color(x, 0).blue > Magick::QuantumRange / 2 }
+    expect(changed).to eq([false, true])
+  end
+
   it 'needs no resources to remove a mask that the image does not have' do
     image = described_class.new(20, 20)
 
