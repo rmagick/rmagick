@@ -49,6 +49,7 @@ static VALUE scale(int, int, VALUE *, VALUE, gvl_function_t);
 static VALUE threshold_image(int, VALUE *, VALUE, gvl_function_t);
 static VALUE xform_image(int, VALUE, VALUE, VALUE, VALUE, VALUE, gvl_function_t);
 static void replace_image(VALUE, Image *);
+static void own_pixel_cache(Image *);
 #if defined(IMAGEMAGICK_7)
 static void set_pixel_mask(VALUE, PixelMask, VALUE, const Image *, Image *);
 #endif
@@ -5500,9 +5501,26 @@ check_replaceable(VALUE self)
 
 
 /**
+ * Call own_pixel_cache from rb_protect.
+ *
+ * No Ruby usage (internal function)
+ *
+ * @param image the image
+ * @return nil
+ */
+static VALUE
+own_pixel_cache_protected(VALUE image)
+{
+    own_pixel_cache((Image *)image);
+    return Qnil;
+}
+
+
+/**
  * Store an image in the Image object and destroy the one it held, as
- * Image#destroy! does. If the object is frozen or in use, destroy the new
- * image instead and raise.
+ * Image#destroy! does. If the object is frozen or in use, or the new image
+ * cannot get a pixel cache of its own, destroy the new image instead and
+ * raise.
  *
  * No Ruby usage (internal function)
  *
@@ -5512,18 +5530,26 @@ check_replaceable(VALUE self)
 static void
 replace_image(VALUE self, Image *image)
 {
+    MagickImage *magick_image;
     Image *old_image;
     int state = 0;
 
     rb_protect(check_replaceable, self, &state);
+    if (!state)
+    {
+        // Before the swap, as a copy that shares the cache of the old image
+        // needs a new cache, and failing after the swap would leak the old one.
+        rb_protect(own_pixel_cache_protected, (VALUE)image, &state);
+    }
     if (state)
     {
         DestroyImage(image);
         rb_jump_tag(state);
     }
 
-    old_image = rm_image_get(self);
-    rm_image_set(self, image);
+    TypedData_Get_Struct(self, MagickImage, &rm_image_data_type, magick_image);
+    old_image = magick_image->image;
+    magick_image->image = image;
     rm_image_destroy(old_image);
 }
 
