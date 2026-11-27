@@ -13413,7 +13413,7 @@ Image_recolor(VALUE self, VALUE color_matrix)
     {
         xfree((void *) matrix);
         DestroyExceptionInfo(exception);
-        return Qnil;
+        rb_raise(rb_eNoMemError, "not enough memory to initialize KernelInfo");
     }
     kernel_info->width = order;
     kernel_info->height = order;
