@@ -17,6 +17,6 @@ module ImageMagickBugs
     numbers = version.scan(/\d+/).map { |number| Integer(number, 10) }
     return if numbers.first != 6 || (numbers <=> [6, 9, 13, 60]).negative?
 
-    pending "ImageMagick #{version} writes a wrong color for the first pixel of a GIF" # rubocop:disable RSpec/Pending
+    pending "ImageMagick #{version} writes a wrong color for the first pixel of a GIF"
   end
 end
