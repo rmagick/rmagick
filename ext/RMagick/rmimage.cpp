@@ -6544,6 +6544,56 @@ check_pixel_geometry(const Image *image, long x, long y, long columns, long rows
 }
 
 
+struct PixelBufferToAry_Args {
+    VALUE ary; //!< Qnil to make one of npixels
+    const void *pixels;
+    size_t npixels;
+    StorageType type;
+};
+
+
+static VALUE
+pixel_buffer_to_ary(VALUE arg)
+{
+    PixelBufferToAry_Args *args = (PixelBufferToAry_Args *)arg;
+    size_t n;
+
+    if (NIL_P(args->ary))
+    {
+        args->ary = rb_ary_new2((long)args->npixels);
+    }
+
+    if (args->type == QuantumPixel)
+    {
+        const Quantum *pixels = (const Quantum *)args->pixels;
+
+        for (n = 0; n < args->npixels; n++)
+        {
+            rb_ary_push(args->ary, QUANTUM2NUM(pixels[n]));
+        }
+    }
+    else
+    {
+        const double *pixels = (const double *)args->pixels;
+
+        for (n = 0; n < args->npixels; n++)
+        {
+            rb_ary_push(args->ary, rb_float_new(pixels[n]));
+        }
+    }
+
+    return args->ary;
+}
+
+
+static VALUE
+free_pixel_buffer(VALUE pixels)
+{
+    xfree((void *)pixels);
+    return Qnil;
+}
+
+
 /**
  * Extract pixel data from the image and returns it as an array of pixels. The "x", "y", "width" and
  * "height" parameters specify the rectangle to be extracted. The "map" parameter reflects the
@@ -6567,7 +6617,7 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
 {
     Image *image;
     long x, y, columns, rows;
-    unsigned long n, npixels;
+    unsigned long npixels;
     VALUE pixels_ary, map_arg;
     StorageType stg_type = QuantumPixel;
     char *map;
@@ -6602,49 +6652,40 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
     image = rm_check_readable(self);
     check_pixel_geometry(image, x, y, columns, rows);
 
+    // Create the Ruby array for the pixels. Return this even if ExportImagePixels fails.
+    pixels_ary = rb_ary_new();
+
     // Compute the size of the pixel array and allocate the memory.
     npixels = pixel_buffer_count(columns, rows, mapL);
     pixels.v = stg_type == QuantumPixel ? (void *) ALLOC_N(Quantum, npixels)
                : (void *) ALLOC_N(double, npixels);
 
-    // Create the Ruby array for the pixels. Return this even if ExportImagePixels fails.
-    pixels_ary = rb_ary_new();
-
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, ExportImagePixels, image, x, y, (size_t)columns, (size_t)rows, map, stg_type, (void *)pixels.v, exception);
     okay = call.read(self).free_buffer(pixels.v).release(exception).run<MagickBooleanType>();
 
+    RB_GC_GUARD(map_arg);
+
     if (!okay)
     {
         DestroyExceptionInfo(exception);
-        goto exit;
+        xfree((void *)pixels.v);
+        return pixels_ary;
     }
 
-    CHECK_EXCEPTION();
+    if (rm_should_raise_exception(exception, RetainExceptionRetention))
+    {
+        xfree((void *)pixels.v);
+        rm_raise_exception(exception);
+    }
 
     DestroyExceptionInfo(exception);
 
-    // Convert the pixel data to the appropriate Ruby type
-    if (stg_type == QuantumPixel)
-    {
-        for (n = 0; n < npixels; n++)
-        {
-            rb_ary_push(pixels_ary, QUANTUM2NUM(pixels.i[n]));
-        }
-    }
-    else
-    {
-        for (n = 0; n < npixels; n++)
-        {
-            rb_ary_push(pixels_ary, rb_float_new(pixels.f[n]));
-        }
-    }
-
-    exit:
-    xfree((void *)pixels.v);
+    // Free the buffer even if converting the pixels raises, such as NoMemoryError.
+    PixelBufferToAry_Args args = { pixels_ary, (const void *)pixels.v, npixels, stg_type };
+    rb_ensure(pixel_buffer_to_ary, (VALUE)&args, free_pixel_buffer, (VALUE)pixels.v);
 
     RB_GC_GUARD(pixels_ary);
-    RB_GC_GUARD(map_arg);
 
     return pixels_ary;
 }
@@ -7539,7 +7580,7 @@ Image_export_pixels(int argc, VALUE *argv, VALUE self)
 {
     Image *image;
     long x_off = 0L, y_off = 0L, cols = 0L, rows = 0L;
-    long n, npixels;
+    long npixels;
     MagickBooleanType okay;
     const char *map = "RGB";
     Quantum *pixels;
@@ -7607,13 +7648,9 @@ Image_export_pixels(int argc, VALUE *argv, VALUE self)
 
     DestroyExceptionInfo(exception);
 
-    ary = rb_ary_new2(npixels);
-    for (n = 0; n < npixels; n++)
-    {
-        rb_ary_push(ary, QUANTUM2NUM(pixels[n]));
-    }
-
-    xfree((void *)pixels);
+    // Free the buffer even if converting the pixels raises, such as NoMemoryError.
+    PixelBufferToAry_Args args = { Qnil, (const void *)pixels, (size_t)npixels, QuantumPixel };
+    ary = rb_ensure(pixel_buffer_to_ary, (VALUE)&args, free_pixel_buffer, (VALUE)pixels);
 
     RB_GC_GUARD(ary);
     RB_GC_GUARD(map_arg);
