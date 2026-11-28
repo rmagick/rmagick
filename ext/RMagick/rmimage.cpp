@@ -4808,6 +4808,180 @@ Image_compress_colormap_bang(VALUE self)
     return self;
 }
 
+// A pixel buffer that the GC owns without scanning it. The GC scans an ALLOCV
+// buffer for references, and nothing frees an ALLOC_N one in the child of a
+// fork made during a call, where the calling thread does not exist.
+struct PixelBuffer {
+    void *pixels;
+    size_t size;
+};
+
+
+static void
+pixel_buffer_free(void *ptr)
+{
+    PixelBuffer *buffer = (PixelBuffer *)ptr;
+
+    xfree(buffer->pixels);
+    xfree(buffer);
+}
+
+
+static size_t
+pixel_buffer_memsize(const void *ptr)
+{
+    const PixelBuffer *buffer = (const PixelBuffer *)ptr;
+
+    return sizeof(PixelBuffer) + (buffer->pixels ? buffer->size : 0);
+}
+
+
+static const rb_data_type_t pixel_buffer_data_type = {
+    "Magick::PixelBuffer",
+    { NULL, pixel_buffer_free, pixel_buffer_memsize, },
+    0, 0,
+    RUBY_TYPED_FREE_IMMEDIATELY,
+};
+
+
+static VALUE
+pixel_buffer_new(size_t count, size_t size, void **pixels)
+{
+    PixelBuffer *buffer;
+    VALUE obj = TypedData_Make_Struct(0, PixelBuffer, &pixel_buffer_data_type, buffer);
+
+    buffer->pixels = ruby_xmalloc2(count, size);
+    buffer->size = count * size;
+    *pixels = buffer->pixels;
+    return obj;
+}
+
+
+static VALUE
+pixel_buffer_release(VALUE obj)
+{
+    PixelBuffer *buffer;
+
+    TypedData_Get_Struct(obj, PixelBuffer, &pixel_buffer_data_type, buffer);
+    xfree(buffer->pixels);
+    buffer->pixels = NULL;
+    return Qnil;
+}
+
+
+struct Constitute_Args {
+    VALUE pixels_arg;
+    VALUE pixel0;
+    VALUE pixel_class;
+    long npixels;
+    size_t width;
+    size_t height;
+    const char *map;
+    StorageType stg_type;
+    void *pixels;
+};
+
+
+static VALUE
+constitute_image(VALUE arg)
+{
+    Constitute_Args *args = (Constitute_Args *)arg;
+    double *fpixels = (double *)args->pixels;
+    Quantum *ipixels = (Quantum *)args->pixels;
+    Image *new_image;
+    VALUE pixel;
+    long x;
+    ExceptionInfo *exception;
+
+    // Convert the array elements to the appropriate C type, store in pixel
+    // buffer.
+    for (x = 0; x < args->npixels; x++)
+    {
+        pixel = rb_ary_entry(args->pixels_arg, x);
+        if (rb_obj_is_kind_of(pixel, args->pixel_class) != Qtrue)
+        {
+            rb_raise(rb_eTypeError, "element %ld in pixel array is %s, expected %s",
+                     x, rb_class2name(CLASS_OF(pixel)), rb_class2name(CLASS_OF(args->pixel0)));
+        }
+        if (args->pixel_class == rb_cFloat)
+        {
+            double value = NUM2DBL(pixel);
+
+            if (!(value >= 0.0 && value <= 1.0))
+            {
+                rb_raise(rb_eArgError, "element %ld is out of range [0..1]: %" PRIsVALUE, x, pixel);
+            }
+            fpixels[x] = value;
+        }
+        else
+        {
+            ipixels[x] = APP2QUANTUM(pixel);
+        }
+    }
+
+    // This is based on ConstituteImage in IM 5.5.7
+    new_image = rm_acquire_image((ImageInfo *) NULL);
+    if (!new_image)
+    {
+        rb_raise(rb_eNoMemError, "not enough memory to continue.");
+    }
+
+#if defined(IMAGEMAGICK_7)
+    exception = AcquireExceptionInfo();
+    DECLARE_GVL_CALL(extent_call, SetImageExtent, new_image, args->width, args->height, exception);
+    extent_call.destroy(new_image).release(exception).run<void>();
+#else
+    DECLARE_GVL_CALL(extent_call, SetImageExtent, new_image, args->width, args->height);
+    extent_call.destroy(new_image).run<void>();
+    exception = &new_image->exception;
+#endif
+
+    if (rm_should_raise_exception(exception, RetainExceptionRetention))
+    {
+#if defined(IMAGEMAGICK_7)
+        DestroyImage(new_image);
+        rm_raise_exception(exception);
+#else
+        rm_check_image_exception(new_image, DestroyOnError);
+#endif
+    }
+
+#if defined(IMAGEMAGICK_7)
+    DECLARE_GVL_CALL(background_call, SetImageBackgroundColor, new_image, exception);
+    background_call.destroy(new_image).release(exception).run<void>();
+#else
+    DECLARE_GVL_CALL(background_call, SetImageBackgroundColor, new_image);
+    background_call.destroy(new_image).run<void>();
+    exception = &new_image->exception;
+#endif
+
+    if (rm_should_raise_exception(exception, RetainExceptionRetention))
+    {
+#if defined(IMAGEMAGICK_7)
+        DestroyImage(new_image);
+        rm_raise_exception(exception);
+#else
+        rm_check_image_exception(new_image, DestroyOnError);
+#endif
+    }
+
+#if defined(IMAGEMAGICK_7)
+    DECLARE_GVL_CALL(import_call, ImportImagePixels, new_image, 0, 0, args->width, args->height, args->map, args->stg_type, (const void *)args->pixels, exception);
+    import_call.destroy(new_image).release(exception).run<void>();
+    rm_check_exception(exception, new_image, DestroyOnError);
+    DestroyExceptionInfo(exception);
+#else
+    DECLARE_GVL_CALL(import_call, ImportImagePixels, new_image, 0, 0, args->width, args->height, args->map, args->stg_type, (const void *)args->pixels);
+    import_call.destroy(new_image).run<void>();
+    rm_check_image_exception(new_image, DestroyOnError);
+#endif
+
+    RB_GC_GUARD(pixel);
+
+    return (VALUE)new_image;
+}
+
+
 /**
  * Creates an Image from the supplied pixel data. The pixel data must be in scanline order,
  * top-to-bottom. The pixel data is an array of either all Fixed or all Float elements. If Fixed,
@@ -4834,20 +5008,13 @@ Image_constitute(VALUE klass ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
                  VALUE map_arg, VALUE pixels_arg)
 {
     Image *new_image;
-    VALUE pixel, pixel0;
-    long x, npixels;
+    VALUE pixel0;
+    long npixels;
     size_t width, height, map_l, count;
     char *map;
-    volatile union
-    {
-        double *f;
-        Quantum *i;
-        void *v;
-    } pixels;
-    VALUE pixel_class;
-    VALUE pixels_buf;
+    void *pixels;
+    VALUE buffer, pixel_class;
     StorageType stg_type;
-    ExceptionInfo *exception;
 
     // rb_Array converts objects that are not Arrays to Arrays if possible,
     // and raises TypeError if it can't.
@@ -4876,17 +5043,15 @@ Image_constitute(VALUE klass ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
     npixels = (long)count;
 
     // Inspect the first element in the pixels array to determine the expected
-    // type of all the elements. Allocate the pixel buffer.
+    // type of all the elements.
     pixel0 = rb_ary_entry(pixels_arg, 0);
     if (rb_obj_is_kind_of(pixel0, rb_cFloat) == Qtrue)
     {
-        pixels.f = ALLOCV_N(double, pixels_buf, npixels);
         stg_type = DoublePixel;
         pixel_class = rb_cFloat;
     }
     else if (rb_obj_is_kind_of(pixel0, rb_cInteger) == Qtrue)
     {
-        pixels.i = ALLOCV_N(Quantum, pixels_buf, npixels);
         stg_type = QuantumPixel;
         pixel_class = rb_cInteger;
     }
@@ -4896,102 +5061,15 @@ Image_constitute(VALUE klass ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
                  rb_class2name(CLASS_OF(pixel0)));
     }
 
+    buffer = pixel_buffer_new(npixels, stg_type == DoublePixel ? sizeof(double) : sizeof(Quantum), &pixels);
 
+    Constitute_Args args = { pixels_arg, pixel0, pixel_class, npixels, width, height, map, stg_type, pixels };
+    new_image = (Image *)rb_ensure(constitute_image, (VALUE)&args, pixel_buffer_release, buffer);
 
-    // Convert the array elements to the appropriate C type, store in pixel
-    // buffer.
-    for (x = 0; x < npixels; x++)
-    {
-        pixel = rb_ary_entry(pixels_arg, x);
-        if (rb_obj_is_kind_of(pixel, pixel_class) != Qtrue)
-        {
-            ALLOCV_END(pixels_buf);
-            rb_raise(rb_eTypeError, "element %ld in pixel array is %s, expected %s",
-                     x, rb_class2name(CLASS_OF(pixel)), rb_class2name(CLASS_OF(pixel0)));
-        }
-        if (pixel_class == rb_cFloat)
-        {
-            double value = NUM2DBL(pixel);
-
-            if (!(value >= 0.0 && value <= 1.0))
-            {
-                ALLOCV_END(pixels_buf);
-                rb_raise(rb_eArgError, "element %ld is out of range [0..1]: %" PRIsVALUE, x, pixel);
-            }
-            pixels.f[x] = value;
-        }
-        else
-        {
-            pixels.i[x] = APP2QUANTUM(pixel);
-        }
-    }
-
-    // This is based on ConstituteImage in IM 5.5.7
-    new_image = rm_acquire_image((ImageInfo *) NULL);
-    if (!new_image)
-    {
-        ALLOCV_END(pixels_buf);
-        rb_raise(rb_eNoMemError, "not enough memory to continue.");
-    }
-
-#if defined(IMAGEMAGICK_7)
-    exception = AcquireExceptionInfo();
-    DECLARE_GVL_CALL(extent_call, SetImageExtent, new_image, width, height, exception);
-    extent_call.destroy(new_image).release(exception).run<void>();
-#else
-    DECLARE_GVL_CALL(extent_call, SetImageExtent, new_image, width, height);
-    extent_call.destroy(new_image).run<void>();
-    exception = &new_image->exception;
-#endif
-
-    if (rm_should_raise_exception(exception, RetainExceptionRetention))
-    {
-        ALLOCV_END(pixels_buf);
-#if defined(IMAGEMAGICK_7)
-        DestroyImage(new_image);
-        rm_raise_exception(exception);
-#else
-        rm_check_image_exception(new_image, DestroyOnError);
-#endif
-    }
-
-#if defined(IMAGEMAGICK_7)
-    DECLARE_GVL_CALL(background_call, SetImageBackgroundColor, new_image, exception);
-    background_call.destroy(new_image).release(exception).run<void>();
-#else
-    DECLARE_GVL_CALL(background_call, SetImageBackgroundColor, new_image);
-    background_call.destroy(new_image).run<void>();
-    exception = &new_image->exception;
-#endif
-
-    if (rm_should_raise_exception(exception, RetainExceptionRetention))
-    {
-        ALLOCV_END(pixels_buf);
-#if defined(IMAGEMAGICK_7)
-        DestroyImage(new_image);
-        rm_raise_exception(exception);
-#else
-        rm_check_image_exception(new_image, DestroyOnError);
-#endif
-    }
-
-#if defined(IMAGEMAGICK_7)
-    DECLARE_GVL_CALL(import_call, ImportImagePixels, new_image, 0, 0, width, height, map, stg_type, (const void *)pixels.v, exception);
-    import_call.destroy(new_image).release(exception).run<void>();
-    ALLOCV_END(pixels_buf);
-    rm_check_exception(exception, new_image, DestroyOnError);
-    DestroyExceptionInfo(exception);
-#else
-    DECLARE_GVL_CALL(import_call, ImportImagePixels, new_image, 0, 0, width, height, map, stg_type, (const void *)pixels.v);
-    import_call.destroy(new_image).run<void>();
-    ALLOCV_END(pixels_buf);
-    rm_check_image_exception(new_image, DestroyOnError);
-#endif
-
-    RB_GC_GUARD(pixel);
+    RB_GC_GUARD(buffer);
+    RB_GC_GUARD(pixels_arg);
     RB_GC_GUARD(pixel0);
     RB_GC_GUARD(pixel_class);
-    RB_GC_GUARD(pixels_buf);
     RB_GC_GUARD(map_arg);
 
     return rm_image_new(new_image);
