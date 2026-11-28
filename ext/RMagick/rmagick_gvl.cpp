@@ -74,7 +74,10 @@ extern "C" int ruby_thread_has_gvl_p(void);
  * call: a fiber collected while it waits leaves its marks behind, and the next
  * fork changes back objects that may be gone. A worker that holds a lock of
  * ImageMagick at the fork can leave the cleanup of a dropped call in the child
- * waiting for good.
+ * waiting for good. A call that another thread is making at the fork never
+ * returns in the child, so what it holds there, such as the image that
+ * ImageMagick is making, is never freed. Only a pixel buffer that the GC owns
+ * is freed there.
  *
  * Without a scheduler that offloads, or on Ruby before 4.0, rm_gvl_call runs
  * the function with rb_thread_call_without_gvl. An interrupt that arrives
