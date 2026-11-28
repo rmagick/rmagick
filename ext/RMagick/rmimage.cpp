@@ -7747,8 +7747,9 @@ Image_export_pixels(int argc, VALUE *argv, VALUE self)
     {
         pixel_buffer_release(buffer);
         CHECK_EXCEPTION();
+        DestroyExceptionInfo(exception);
 
-        // Should never get here...
+        // ExportImagePixels can fail without an error, or with only a warning.
         rm_magick_error("ExportImagePixels failed with no explanation.");
     }
 
@@ -7948,8 +7949,9 @@ Image_export_pixels_to_str(int argc, VALUE *argv, VALUE self)
         // Let GC have the string buffer.
         rb_str_resize(string, 0);
         CHECK_EXCEPTION();
+        DestroyExceptionInfo(exception);
 
-        // Should never get here...
+        // ExportImagePixels can fail without an error, or with only a warning.
         rm_magick_error("ExportImagePixels failed with no explanation.");
     }
 
