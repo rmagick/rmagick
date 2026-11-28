@@ -4844,12 +4844,40 @@ static const rb_data_type_t pixel_buffer_data_type = {
 };
 
 
-static VALUE
-pixel_buffer_new(size_t count, size_t size, void **pixels)
-{
-    PixelBuffer *buffer;
-    VALUE obj = TypedData_Make_Struct(0, PixelBuffer, &pixel_buffer_data_type, buffer);
+// A buffer of up to this size lives on the caller's stack, as with ALLOCV, so
+// that a small call makes no object.
+#define PIXEL_BUFFER_STACK_SIZE 1024
 
+union PixelBufferStack {
+    double f[PIXEL_BUFFER_STACK_SIZE / sizeof(double)];
+    Quantum q[PIXEL_BUFFER_STACK_SIZE / sizeof(Quantum)];
+};
+
+
+static VALUE
+pixel_buffer_new(size_t count, StorageType type, PixelBufferStack *stack, void **pixels)
+{
+    size_t size = type == DoublePixel ? sizeof(double) : sizeof(Quantum);
+    PixelBuffer *buffer;
+    VALUE obj;
+
+    if (count <= PIXEL_BUFFER_STACK_SIZE / size)
+    {
+        // Assigning to an element through the union member makes that member
+        // active, before the caller uses it through a pointer.
+        if (type == DoublePixel)
+        {
+            stack->f[0] = 0.0;
+            *pixels = stack->f;
+        }
+        else
+        {
+            stack->q[0] = 0;
+            *pixels = stack->q;
+        }
+        return Qnil;
+    }
+    obj = TypedData_Make_Struct(0, PixelBuffer, &pixel_buffer_data_type, buffer);
     buffer->pixels = ruby_xmalloc2(count, size);
     buffer->size = count * size;
     *pixels = buffer->pixels;
@@ -4862,10 +4890,21 @@ pixel_buffer_release(VALUE obj)
 {
     PixelBuffer *buffer;
 
+    if (NIL_P(obj))
+    {
+        return Qnil;
+    }
     TypedData_Get_Struct(obj, PixelBuffer, &pixel_buffer_data_type, buffer);
     xfree(buffer->pixels);
     buffer->pixels = NULL;
     return Qnil;
+}
+
+
+static void
+pixel_buffer_cleanup(void *obj, intptr_t arg ATTRIBUTE_UNUSED)
+{
+    pixel_buffer_release((VALUE)obj);
 }
 
 
@@ -5013,6 +5052,7 @@ Image_constitute(VALUE klass ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
     size_t width, height, map_l, count;
     char *map;
     void *pixels;
+    PixelBufferStack stack;
     VALUE buffer, pixel_class;
     StorageType stg_type;
 
@@ -5061,7 +5101,7 @@ Image_constitute(VALUE klass ATTRIBUTE_UNUSED, VALUE width_arg, VALUE height_arg
                  rb_class2name(CLASS_OF(pixel0)));
     }
 
-    buffer = pixel_buffer_new(npixels, stg_type == DoublePixel ? sizeof(double) : sizeof(Quantum), &pixels);
+    buffer = pixel_buffer_new(npixels, stg_type, &stack, &pixels);
 
     Constitute_Args args = { pixels_arg, pixel0, pixel_class, npixels, width, height, map, stg_type, pixels };
     new_image = (Image *)rb_ensure(constitute_image, (VALUE)&args, pixel_buffer_release, buffer);
@@ -6664,14 +6704,6 @@ pixel_buffer_to_ary(VALUE arg)
 }
 
 
-static VALUE
-free_pixel_buffer(VALUE pixels)
-{
-    xfree((void *)pixels);
-    return Qnil;
-}
-
-
 /**
  * Extract pixel data from the image and returns it as an array of pixels. The "x", "y", "width" and
  * "height" parameters specify the rectangle to be extracted. The "map" parameter reflects the
@@ -6702,12 +6734,9 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
     size_t mapL;
     MagickBooleanType okay;
     ExceptionInfo *exception;
-    volatile union
-    {
-        Quantum *i;
-        double *f;
-        void *v;
-    } pixels;
+    VALUE buffer;
+    void *pixels;
+    PixelBufferStack stack;
 
     rm_check_readable(self);
 
@@ -6735,34 +6764,34 @@ Image_dispatch(int argc, VALUE *argv, VALUE self)
 
     // Compute the size of the pixel array and allocate the memory.
     npixels = pixel_buffer_count(columns, rows, mapL);
-    pixels.v = stg_type == QuantumPixel ? (void *) ALLOC_N(Quantum, npixels)
-               : (void *) ALLOC_N(double, npixels);
+    buffer = pixel_buffer_new(npixels, stg_type, &stack, &pixels);
 
     exception = AcquireExceptionInfo();
-    DECLARE_GVL_CALL(call, ExportImagePixels, image, x, y, (size_t)columns, (size_t)rows, map, stg_type, (void *)pixels.v, exception);
-    okay = call.read(self).free_buffer(pixels.v).release(exception).run<MagickBooleanType>();
+    DECLARE_GVL_CALL(call, ExportImagePixels, image, x, y, (size_t)columns, (size_t)rows, map, stg_type, pixels, exception);
+    okay = call.read(self).cleanup(pixel_buffer_cleanup, (void *)buffer).release(exception).run<MagickBooleanType>();
 
     RB_GC_GUARD(map_arg);
 
     if (!okay)
     {
         DestroyExceptionInfo(exception);
-        xfree((void *)pixels.v);
+        pixel_buffer_release(buffer);
         return pixels_ary;
     }
 
     if (rm_should_raise_exception(exception, RetainExceptionRetention))
     {
-        xfree((void *)pixels.v);
+        pixel_buffer_release(buffer);
         rm_raise_exception(exception);
     }
 
     DestroyExceptionInfo(exception);
 
     // Free the buffer even if converting the pixels raises, such as NoMemoryError.
-    PixelBufferToAry_Args args = { pixels_ary, (const void *)pixels.v, npixels, stg_type };
-    rb_ensure(pixel_buffer_to_ary, (VALUE)&args, free_pixel_buffer, (VALUE)pixels.v);
+    PixelBufferToAry_Args args = { pixels_ary, (const void *)pixels, npixels, stg_type };
+    rb_ensure(pixel_buffer_to_ary, (VALUE)&args, pixel_buffer_release, buffer);
 
+    RB_GC_GUARD(buffer);
     RB_GC_GUARD(pixels_ary);
 
     return pixels_ary;
@@ -7661,8 +7690,9 @@ Image_export_pixels(int argc, VALUE *argv, VALUE self)
     long npixels;
     MagickBooleanType okay;
     const char *map = "RGB";
-    Quantum *pixels;
-    VALUE ary, map_arg = Qnil;
+    void *pixels;
+    PixelBufferStack stack;
+    VALUE ary, buffer, map_arg = Qnil;
     ExceptionInfo *exception;
 
 
@@ -7705,19 +7735,15 @@ Image_export_pixels(int argc, VALUE *argv, VALUE self)
 
 
     npixels = (long)pixel_buffer_count(cols, rows, strlen(map));
-    pixels = ALLOC_N(Quantum, npixels);
-    if (!pixels)    // app recovered from exception
-    {
-        return rb_ary_new2(0L);
-    }
+    buffer = pixel_buffer_new((size_t)npixels, QuantumPixel, &stack, &pixels);
 
     exception = AcquireExceptionInfo();
 
-    DECLARE_GVL_CALL(call, ExportImagePixels, image, x_off, y_off, (size_t)cols, (size_t)rows, map, QuantumPixel, (void *)pixels, exception);
-    okay = call.read(self).free_buffer(pixels).release(exception).run<MagickBooleanType>();
+    DECLARE_GVL_CALL(call, ExportImagePixels, image, x_off, y_off, (size_t)cols, (size_t)rows, map, QuantumPixel, pixels, exception);
+    okay = call.read(self).cleanup(pixel_buffer_cleanup, (void *)buffer).release(exception).run<MagickBooleanType>();
     if (!okay)
     {
-        xfree((void *)pixels);
+        pixel_buffer_release(buffer);
         CHECK_EXCEPTION();
 
         // Should never get here...
@@ -7728,9 +7754,10 @@ Image_export_pixels(int argc, VALUE *argv, VALUE self)
 
     // Free the buffer even if converting the pixels raises, such as NoMemoryError.
     PixelBufferToAry_Args args = { Qnil, (const void *)pixels, (size_t)npixels, QuantumPixel };
-    ary = rb_ensure(pixel_buffer_to_ary, (VALUE)&args, free_pixel_buffer, (VALUE)pixels);
+    ary = rb_ensure(pixel_buffer_to_ary, (VALUE)&args, pixel_buffer_release, buffer);
 
     RB_GC_GUARD(ary);
+    RB_GC_GUARD(buffer);
     RB_GC_GUARD(map_arg);
 
     return ary;
@@ -9353,8 +9380,8 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
     VALUE pixel_arg, pixel_ary, map_arg;
     StorageType stg_type = CharPixel;
     size_t type_sz, map_l;
-    Quantum *pixels = NULL;
-    double *fpixels = NULL;
+    VALUE pixel_buffer = Qnil;
+    PixelBufferStack stack;
     void *buffer;
     MagickBooleanType okay;
 #if defined(IMAGEMAGICK_7)
@@ -9468,24 +9495,21 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
 
         if (stg_type == DoublePixel || stg_type == FloatPixel)
         {
-            fpixels = ALLOC_N(double, npixels);
-            args.fpixels = fpixels;
-            buffer = (void *) fpixels;
             stg_type = DoublePixel;
+            pixel_buffer = pixel_buffer_new(npixels, stg_type, &stack, &buffer);
+            args.fpixels = (double *)buffer;
         }
         else
         {
-            pixels = ALLOC_N(Quantum, npixels);
-            args.pixels = pixels;
-            buffer = (void *) pixels;
             stg_type = QuantumPixel;
+            pixel_buffer = pixel_buffer_new(npixels, stg_type, &stack, &buffer);
+            args.pixels = (Quantum *)buffer;
         }
 
         image = (Image *)rb_protect(convert_pixel_array, (VALUE)&args, &state);
         if (state)
         {
-            xfree(pixels);
-            xfree(fpixels);
+            pixel_buffer_release(pixel_buffer);
             rb_jump_tag(state);
         }
     }
@@ -9494,21 +9518,14 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
 #if defined(IMAGEMAGICK_7)
     exception = AcquireExceptionInfo();
     DECLARE_GVL_CALL(call, ImportImagePixels, image, x_off, y_off, (size_t)cols, (size_t)rows, map, stg_type, buffer, exception);
-    okay = call.update(self).free_buffer(pixels).free_buffer(fpixels).release(exception).run<MagickBooleanType>();
+    okay = call.update(self).cleanup(pixel_buffer_cleanup, (void *)pixel_buffer).release(exception).run<MagickBooleanType>();
 #else
     DECLARE_GVL_CALL(call, ImportImagePixels, image, x_off, y_off, (size_t)cols, (size_t)rows, map, stg_type, buffer);
-    okay = call.update(self).free_buffer(pixels).free_buffer(fpixels).run<MagickBooleanType>();
+    okay = call.update(self).cleanup(pixel_buffer_cleanup, (void *)pixel_buffer).run<MagickBooleanType>();
 #endif
 
     // Free pixel array before checking for errors.
-    if (pixels)
-    {
-        xfree((void *)pixels);
-    }
-    if (fpixels)
-    {
-        xfree((void *)fpixels);
-    }
+    pixel_buffer_release(pixel_buffer);
 
     if (!okay)
     {
@@ -9527,6 +9544,7 @@ Image_import_pixels(int argc, VALUE *argv, VALUE self)
 
     RB_GC_GUARD(pixel_arg);
     RB_GC_GUARD(pixel_ary);
+    RB_GC_GUARD(pixel_buffer);
     RB_GC_GUARD(map_arg);
 
     return self;
