@@ -66,6 +66,13 @@ RSpec.describe Magick::Image, '#constitute' do
       .to raise_error(RangeError, /pixel buffer dimensions too large/)
   end
 
+  it 'raises RangeError when the number of channel values does not fit in a C long' do
+    long_max = (2**((8 * [0].pack('l!').bytesize) - 1)) - 1
+
+    expect { described_class.constitute((long_max / 2) + 1, 1, 'RG', []) }
+      .to raise_error(RangeError, /pixel buffer dimensions too large/)
+  end
+
   it 'raises an error when the map is empty' do
     expect { described_class.constitute(1, 1, '', []) }.to raise_error(ArgumentError, 'map must not be empty')
   end

@@ -6603,12 +6603,14 @@ Image_displace(int argc, VALUE *argv, VALUE self)
 
 
 /**
- * Compute columns * rows * map_length for a pixel buffer, raising RangeError on
- * overflow.
+ * Compute columns * rows * map_length for a pixel buffer, raising RangeError if
+ * it exceeds LONG_MAX.
  *
  * The product is used to size the buffer that ImageMagick fills based on the
  * (caller-supplied) columns and rows. If the multiplication wrapped around, the
  * buffer would be allocated too small and ImageMagick would write out of bounds.
+ * The pixels come from or go to a Ruby Array or String, whose length is a long,
+ * and some callers keep the count in one. long has 32 bits on Windows.
  *
  * No Ruby usage (internal function)
  *
@@ -6616,19 +6618,19 @@ Image_displace(int argc, VALUE *argv, VALUE self)
  * @param rows the number of rows
  * @param map_length the number of channels per pixel (length of the map string)
  * @return columns * rows * map_length
- * @throw RangeError if the multiplication overflows
+ * @throw RangeError if the product exceeds LONG_MAX
  */
 static size_t
 pixel_buffer_count(size_t columns, size_t rows, size_t map_length)
 {
     size_t pixels;
 
-    if (columns != 0 && rows > SIZE_MAX / columns)
+    if (columns != 0 && rows > (size_t)LONG_MAX / columns)
     {
         rb_raise(rb_eRangeError, "pixel buffer dimensions too large (%" RMIuSIZE "x%" RMIuSIZE ")", columns, rows);
     }
     pixels = columns * rows;
-    if (map_length != 0 && pixels > SIZE_MAX / map_length)
+    if (map_length != 0 && pixels > (size_t)LONG_MAX / map_length)
     {
         rb_raise(rb_eRangeError, "pixel buffer dimensions too large (%" RMIuSIZE "x%" RMIuSIZE " map=%" RMIuSIZE ")",
                  columns, rows, map_length);
