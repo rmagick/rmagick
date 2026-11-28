@@ -166,6 +166,8 @@ KernelInfo_initialize(VALUE self, VALUE kernel_string)
     kernel = AcquireKernelInfo(string);
 #endif
 
+    RB_GC_GUARD(kernel_string);
+
     if (!kernel)
     {
         rb_raise(rb_eRuntimeError, "failed to parse kernel string");
