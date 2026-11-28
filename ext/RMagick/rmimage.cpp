@@ -13192,7 +13192,8 @@ typedef GVL_STRUCT_TYPE(PingImage) GVL_STRUCT_TYPE(rd_image);
  */
 
 #if defined(__APPLE__) || defined(__FreeBSD__)
-void sig_handler(int sig ATTRIBUTE_UNUSED)
+static void
+sig_handler(int sig ATTRIBUTE_UNUSED)
 {
 }
 
